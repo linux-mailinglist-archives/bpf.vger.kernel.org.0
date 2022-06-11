@@ -2,59 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 373AA547458
-	for <lists+bpf@lfdr.de>; Sat, 11 Jun 2022 13:42:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFF4154745C
+	for <lists+bpf@lfdr.de>; Sat, 11 Jun 2022 13:42:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229543AbiFKLmi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 11 Jun 2022 07:42:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47516 "EHLO
+        id S230224AbiFKLmk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 11 Jun 2022 07:42:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229708AbiFKLmi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S229740AbiFKLmi (ORCPT <rfc822;bpf@vger.kernel.org>);
         Sat, 11 Jun 2022 07:42:38 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E12921CB30
-        for <bpf@vger.kernel.org>; Sat, 11 Jun 2022 04:42:31 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id s6so2135704lfo.13
-        for <bpf@vger.kernel.org>; Sat, 11 Jun 2022 04:42:31 -0700 (PDT)
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 555861CB3A
+        for <bpf@vger.kernel.org>; Sat, 11 Jun 2022 04:42:32 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id s10so1597851ljh.12
+        for <bpf@vger.kernel.org>; Sat, 11 Jun 2022 04:42:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4FfHmQjx4mtPcF8La0NIopHbF6tNLW/oeLpWOZtmNGg=;
-        b=YRHAHvfDbrC6K7yASz0kTfzM2+bmuZtr5hmIGHt58FUM7/AG6NiNlzZ4cE44UF5H5+
-         TDB7Eu1tqUyFn7K2rYAAuFluA/SyePaw2POiuhUsXw1ncDCIdaMrriumHlUjrd8cHso9
-         ewpJb014KnAhaI1wIJH1yBo//6pzaK4Q/p5VNeP/vl7wStQimssKT8XkgLRUFyLwtFVh
-         lubXmTdarw/pIJX589ZrABNvSFlwDYzPZ4Ogn1Sm6GOjEAczlK+sfXm4+HE3Acc8ojnc
-         lOFcU/RTgUib5mVxRbht35wBcfcw56jyqOsIF2u3Yi5zb8y+8LALYwhBpaB3hOYoVXea
-         SuAA==
+        bh=SkDuT1KiEcVLZHXMuhgKtcOU/CnyJs5ZUeY38A+sCVM=;
+        b=bRYxU0vrJkQBWk3VuhUWmNK0aaj1Pk5Mp0RRcayPPlFnRKTGfQDSpOZlXdexJeQGMr
+         BUHaFWb99m4a+5ubMs4iAaBKvd0O/MUYJBcUmySTG33ULAKNuKyLc6QDBKp0hC26vPEU
+         Xrhpw/8FaSkV2NAN3UUH59WxEXYUM/jIPLJtv06AJJVv/FpyaW4cNQ2RkHRJxyABd9w/
+         oa4n4bhLid6wE8L2cO8NeyTOwncyAep/sCftnZ4nKO/Mr/KNlPiW9/yVtBoPjOLhq4mF
+         4CsoexQAUfVWcwl7lJEtV9ncHIt+FQsVnvrZt63PkA0ZVdYeDimW9N7U6EXxaO89i7kn
+         adHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4FfHmQjx4mtPcF8La0NIopHbF6tNLW/oeLpWOZtmNGg=;
-        b=eMTsPO2d+bC3QvCGF8wBRUEqxwr+wSA9O2glR0/2WfUo+HrebgOMQJgoQQ5N3A5lDX
-         wYVhMDxR7aAfe68rWlsJGBw9FpLJabAy/vn4jcVBIO1InBuDmM4TwP0mbKGdu/oZySws
-         KCX7vO9Y525oslMYERWeq0Q4OnkPO8ODMbg2HlMKXN0ALlORC+B/nf7mRHPIkIJwcFP9
-         doTLu4p89oV0Jg8MgtrkWPt2iNX+Rg3/19wM3eCPq6xGsHto8uZQ1y+UKnZ4tD0Me7GZ
-         lHtkECtBeG+C4WCv0t4NT/LsRm+IO27bUaMxhpuZ1e5NsWSaBLsiAEBFWNQ4yPbQLBm5
-         UhYA==
-X-Gm-Message-State: AOAM530ua8CVC+DaL8gRjIiVZi0iPCNygLj/9q37iACktMEo+mww0Xpo
-        Lgl5VtMcpU6I/tcIwATwXt59Q4nwRzA2cfMv
-X-Google-Smtp-Source: ABdhPJxiuyhskkvf9FR+RSzb7D6VI80xgmjRVWf4rS0hSuvQSC3aHnn2YdJLTH7A/F2ERmJym3wdAA==
-X-Received: by 2002:a05:6512:282b:b0:47a:e70d:8723 with SMTP id cf43-20020a056512282b00b0047ae70d8723mr8893438lfb.557.1654947749204;
-        Sat, 11 Jun 2022 04:42:29 -0700 (PDT)
+        bh=SkDuT1KiEcVLZHXMuhgKtcOU/CnyJs5ZUeY38A+sCVM=;
+        b=GfAXWiC+zrGXMsLlq6g6pt43BdjDxuon3wAIa4/jU8W+V6xBkVX3RP9FrgUJuPUxd3
+         U4mdeQqthFoBTbW+8J8yrVyx8rv8PhiNxqIwbnfD/9LpvhdYtfCkPBYaponruN11Zddu
+         IP2f6Ga2SwMDnXyGv/UnHVwVJBo55pvPpPm3BRslS4RXyTCHjZ4hrpuxHKFg5sp92lBI
+         al/sE3fILx4D3VkgXCK5hAwnpEZ8xbOjjeaPhwZ+nwsVZtnjtf02cnKkQRnSLhtxQWyG
+         bPmVk2fxI30/6kBfd/GxMbsrfjtHPCNkbODeY7JY/KqIEjxTFBQILRouGO5TN0dfFbOl
+         Fl3Q==
+X-Gm-Message-State: AOAM532yUb85jSUQTRrTnPssEukusM+vgxINO7T57GD842UpHrYyg3JN
+        gppHzqQ1Lrf3A/gJbfMDHQO7UWFDvTtz+XwE
+X-Google-Smtp-Source: ABdhPJzHaPvfTjEgHQd4BehlSfbepuf6O+Xjq/sGoxnoTdcRaW13rlH/u188lJCRSDvqdG+qJnMo6Q==
+X-Received: by 2002:a2e:3c12:0:b0:255:7b24:6fe5 with SMTP id j18-20020a2e3c12000000b002557b246fe5mr24375595lja.117.1654947750416;
+        Sat, 11 Jun 2022 04:42:30 -0700 (PDT)
 Received: from localhost.localdomain (boundsly.muster.volia.net. [93.72.16.93])
-        by smtp.gmail.com with ESMTPSA id u18-20020ac25bd2000000b004795d64f37dsm229303lfn.105.2022.06.11.04.42.28
+        by smtp.gmail.com with ESMTPSA id u18-20020ac25bd2000000b004795d64f37dsm229303lfn.105.2022.06.11.04.42.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Jun 2022 04:42:28 -0700 (PDT)
+        Sat, 11 Jun 2022 04:42:29 -0700 (PDT)
 From:   Eduard Zingerman <eddyz87@gmail.com>
 To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
         daniel@iogearbox.net, kernel-team@fb.com, song@kernel.org,
         joannelkoong@gmail.com
 Cc:     eddyz87@gmail.com, Song Liu <songliubraving@fb.com>
-Subject: [PATCH bpf-next v5 1/5] selftests/bpf: specify expected instructions in test_verifier tests
-Date:   Sat, 11 Jun 2022 14:40:17 +0300
-Message-Id: <20220611114021.484408-2-eddyz87@gmail.com>
+Subject: [PATCH bpf-next v5 2/5] selftests/bpf: allow BTF specs and func infos in test_verifier tests
+Date:   Sat, 11 Jun 2022 14:40:18 +0300
+Message-Id: <20220611114021.484408-3-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220611114021.484408-1-eddyz87@gmail.com>
 References: <20220611114021.484408-1-eddyz87@gmail.com>
@@ -70,333 +70,241 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Allows to specify expected and unexpected instruction sequences in
-test_verifier test cases. The instructions are requested from kernel
-after BPF program loading, thus allowing to check some of the
-transformations applied by BPF verifier.
+The BTF and func_info specification for test_verifier tests follows
+the same notation as in prog_tests/btf.c tests. E.g.:
 
-- `expected_insn` field specifies a sequence of instructions expected
-  to be found in the program;
-- `unexpected_insn` field specifies a sequence of instructions that
-  are not expected to be found in the program;
-- `INSN_OFF_MASK` and `INSN_IMM_MASK` values could be used to mask
-  `off` and `imm` fields.
-- `SKIP_INSNS` could be used to specify that some instructions in the
-  (un)expected pattern are not important (behavior similar to usage of
-  `\t` in `errstr` field).
-
-The intended usage is as follows:
-
-  {
-	"inline simple bpf_loop call",
-	.insns = {
-	/* main */
-	BPF_ALU64_IMM(BPF_MOV, BPF_REG_1, 1),
-	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, BPF_REG_2,
-			BPF_PSEUDO_FUNC, 0, 6),
-    ...
-	BPF_EXIT_INSN(),
-	/* callback */
-	BPF_ALU64_IMM(BPF_MOV, BPF_REG_0, 1),
-	BPF_EXIT_INSN(),
-	},
-	.expected_insns = {
-	BPF_ALU64_IMM(BPF_MOV, BPF_REG_1, 1),
-	SKIP_INSNS(),
-	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_CALL, 8, 1)
-	},
-	.unexpected_insns = {
-	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0,
-			INSN_OFF_MASK, INSN_IMM_MASK),
-	},
-	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
-	.result = ACCEPT,
-	.runs = 0,
+  ...
+  .func_info = { { 0, 6 }, { 8, 7 } },
+  .func_info_cnt = 2,
+  .btf_strings = "\0int\0",
+  .btf_types = {
+    BTF_TYPE_INT_ENC(1, BTF_INT_SIGNED, 0, 32, 4),
+    BTF_PTR_ENC(1),
   },
+  ...
 
-Here it is expected that move of 1 to register 1 would remain in place
-and helper function call instruction would be replaced by a relative
-call instruction.
+The BTF specification is loaded only when specified.
 
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 Acked-by: Song Liu <songliubraving@fb.com>
 ---
- tools/testing/selftests/bpf/test_verifier.c | 234 ++++++++++++++++++++
- 1 file changed, 234 insertions(+)
+ tools/testing/selftests/bpf/prog_tests/btf.c |  1 -
+ tools/testing/selftests/bpf/test_btf.h       |  2 +
+ tools/testing/selftests/bpf/test_verifier.c  | 94 ++++++++++++++++----
+ 3 files changed, 79 insertions(+), 18 deletions(-)
 
+diff --git a/tools/testing/selftests/bpf/prog_tests/btf.c b/tools/testing/selftests/bpf/prog_tests/btf.c
+index edb387163baa..1fd792a92a1c 100644
+--- a/tools/testing/selftests/bpf/prog_tests/btf.c
++++ b/tools/testing/selftests/bpf/prog_tests/btf.c
+@@ -34,7 +34,6 @@ static bool always_log;
+ #undef CHECK
+ #define CHECK(condition, format...) _CHECK(condition, "check", duration, format)
+ 
+-#define BTF_END_RAW 0xdeadbeef
+ #define NAME_TBD 0xdeadb33f
+ 
+ #define NAME_NTH(N) (0xfffe0000 | N)
+diff --git a/tools/testing/selftests/bpf/test_btf.h b/tools/testing/selftests/bpf/test_btf.h
+index 38782bd47fdc..fb4f4714eeb4 100644
+--- a/tools/testing/selftests/bpf/test_btf.h
++++ b/tools/testing/selftests/bpf/test_btf.h
+@@ -4,6 +4,8 @@
+ #ifndef _TEST_BTF_H
+ #define _TEST_BTF_H
+ 
++#define BTF_END_RAW 0xdeadbeef
++
+ #define BTF_INFO_ENC(kind, kind_flag, vlen)			\
+ 	((!!(kind_flag) << 31) | ((kind) << 24) | ((vlen) & BTF_MAX_VLEN))
+ 
 diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index 372579c9f45e..1f24eae9e16e 100644
+index 1f24eae9e16e..7fe897c66d81 100644
 --- a/tools/testing/selftests/bpf/test_verifier.c
 +++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -51,6 +51,8 @@
- #endif
- 
- #define MAX_INSNS	BPF_MAXINSNS
-+#define MAX_EXPECTED_INSNS	32
-+#define MAX_UNEXPECTED_INSNS	32
- #define MAX_TEST_INSNS	1000000
- #define MAX_FIXUPS	8
- #define MAX_NR_MAPS	23
-@@ -58,6 +60,10 @@
+@@ -59,11 +59,17 @@
+ #define MAX_TEST_RUNS	8
  #define POINTER_VALUE	0xcafe4all
  #define TEST_DATA_LEN	64
++#define MAX_FUNC_INFOS	8
++#define MAX_BTF_STRINGS	256
++#define MAX_BTF_TYPES	256
  
-+#define INSN_OFF_MASK	((__s16)0xFFFF)
-+#define INSN_IMM_MASK	((__s32)0xFFFFFFFF)
-+#define SKIP_INSNS()	BPF_RAW_INSN(0xde, 0xa, 0xd, 0xbeef, 0xdeadbeef)
+ #define INSN_OFF_MASK	((__s16)0xFFFF)
+ #define INSN_IMM_MASK	((__s32)0xFFFFFFFF)
+ #define SKIP_INSNS()	BPF_RAW_INSN(0xde, 0xa, 0xd, 0xbeef, 0xdeadbeef)
+ 
++#define DEFAULT_LIBBPF_LOG_LEVEL	4
++#define VERBOSE_LIBBPF_LOG_LEVEL	1
 +
  #define F_NEEDS_EFFICIENT_UNALIGNED_ACCESS	(1 << 0)
  #define F_LOAD_WITH_STRICT_ALIGNMENT		(1 << 1)
  
-@@ -79,6 +85,23 @@ struct bpf_test {
- 	const char *descr;
- 	struct bpf_insn	insns[MAX_INSNS];
- 	struct bpf_insn	*fill_insns;
-+	/* If specified, test engine looks for this sequence of
-+	 * instructions in the BPF program after loading. Allows to
-+	 * test rewrites applied by verifier.  Use values
-+	 * INSN_OFF_MASK and INSN_IMM_MASK to mask `off` and `imm`
-+	 * fields if content does not matter.  The test case fails if
-+	 * specified instructions are not found.
-+	 *
-+	 * The sequence could be split into sub-sequences by adding
-+	 * SKIP_INSNS instruction at the end of each sub-sequence. In
-+	 * such case sub-sequences are searched for one after another.
+@@ -158,6 +164,14 @@ struct bpf_test {
+ 	};
+ 	enum bpf_attach_type expected_attach_type;
+ 	const char *kfunc;
++	struct bpf_func_info func_info[MAX_FUNC_INFOS];
++	int func_info_cnt;
++	char btf_strings[MAX_BTF_STRINGS];
++	/* A set of BTF types to load when specified,
++	 * use macro definitions from test_btf.h,
++	 * must end with BTF_END_RAW
 +	 */
-+	struct bpf_insn expected_insns[MAX_EXPECTED_INSNS];
-+	/* If specified, test engine applies same pattern matching
-+	 * logic as for `expected_insns`. If the specified pattern is
-+	 * matched test case is marked as failed.
-+	 */
-+	struct bpf_insn unexpected_insns[MAX_UNEXPECTED_INSNS];
- 	int fixup_map_hash_8b[MAX_FIXUPS];
- 	int fixup_map_hash_48b[MAX_FIXUPS];
- 	int fixup_map_hash_16b[MAX_FIXUPS];
-@@ -1126,6 +1149,214 @@ static bool cmp_str_seq(const char *log, const char *exp)
- 	return true;
++	__u32 btf_types[MAX_BTF_TYPES];
+ };
+ 
+ /* Note we want this to be 64 bit aligned so that the end of our array is
+@@ -687,34 +701,66 @@ static __u32 btf_raw_types[] = {
+ 	BTF_MEMBER_ENC(71, 13, 128), /* struct prog_test_member __kptr_ref *ptr; */
+ };
+ 
+-static int load_btf(void)
++static char bpf_vlog[UINT_MAX >> 8];
++
++static int load_btf_spec(__u32 *types, int types_len,
++			 const char *strings, int strings_len)
+ {
+ 	struct btf_header hdr = {
+ 		.magic = BTF_MAGIC,
+ 		.version = BTF_VERSION,
+ 		.hdr_len = sizeof(struct btf_header),
+-		.type_len = sizeof(btf_raw_types),
+-		.str_off = sizeof(btf_raw_types),
+-		.str_len = sizeof(btf_str_sec),
++		.type_len = types_len,
++		.str_off = types_len,
++		.str_len = strings_len,
+ 	};
+ 	void *ptr, *raw_btf;
+ 	int btf_fd;
++	LIBBPF_OPTS(bpf_btf_load_opts, opts,
++		    .log_buf = bpf_vlog,
++		    .log_size = sizeof(bpf_vlog),
++		    .log_level = (verbose
++				  ? VERBOSE_LIBBPF_LOG_LEVEL
++				  : DEFAULT_LIBBPF_LOG_LEVEL),
++	);
+ 
+-	ptr = raw_btf = malloc(sizeof(hdr) + sizeof(btf_raw_types) +
+-			       sizeof(btf_str_sec));
++	raw_btf = malloc(sizeof(hdr) + types_len + strings_len);
+ 
++	ptr = raw_btf;
+ 	memcpy(ptr, &hdr, sizeof(hdr));
+ 	ptr += sizeof(hdr);
+-	memcpy(ptr, btf_raw_types, hdr.type_len);
++	memcpy(ptr, types, hdr.type_len);
+ 	ptr += hdr.type_len;
+-	memcpy(ptr, btf_str_sec, hdr.str_len);
++	memcpy(ptr, strings, hdr.str_len);
+ 	ptr += hdr.str_len;
+ 
+-	btf_fd = bpf_btf_load(raw_btf, ptr - raw_btf, NULL);
+-	free(raw_btf);
++	btf_fd = bpf_btf_load(raw_btf, ptr - raw_btf, &opts);
+ 	if (btf_fd < 0)
+-		return -1;
+-	return btf_fd;
++		printf("Failed to load BTF spec: '%s'\n", strerror(errno));
++
++	free(raw_btf);
++
++	return btf_fd < 0 ? -1 : btf_fd;
++}
++
++static int load_btf(void)
++{
++	return load_btf_spec(btf_raw_types, sizeof(btf_raw_types),
++			     btf_str_sec, sizeof(btf_str_sec));
++}
++
++static int load_btf_for_test(struct bpf_test *test)
++{
++	int types_num = 0;
++
++	while (types_num < MAX_BTF_TYPES &&
++	       test->btf_types[types_num] != BTF_END_RAW)
++		++types_num;
++
++	int types_len = types_num * sizeof(test->btf_types[0]);
++
++	return load_btf_spec(test->btf_types, types_len,
++			     test->btf_strings, sizeof(test->btf_strings));
  }
  
-+static int get_xlated_program(int fd_prog, struct bpf_insn **buf, int *cnt)
-+{
-+	struct bpf_prog_info info = {};
-+	__u32 info_len = sizeof(info);
-+	__u32 xlated_prog_len;
-+	__u32 buf_element_size = sizeof(struct bpf_insn);
-+
-+	if (bpf_obj_get_info_by_fd(fd_prog, &info, &info_len)) {
-+		perror("bpf_obj_get_info_by_fd failed");
-+		return -1;
-+	}
-+
-+	xlated_prog_len = info.xlated_prog_len;
-+	if (xlated_prog_len % buf_element_size) {
-+		printf("Program length %d is not multiple of %d\n",
-+		       xlated_prog_len, buf_element_size);
-+		return -1;
-+	}
-+
-+	*cnt = xlated_prog_len / buf_element_size;
-+	*buf = calloc(*cnt, buf_element_size);
-+	if (!buf) {
-+		perror("can't allocate xlated program buffer");
-+		return -ENOMEM;
-+	}
-+
-+	bzero(&info, sizeof(info));
-+	info.xlated_prog_len = xlated_prog_len;
-+	info.xlated_prog_insns = (__u64)*buf;
-+	if (bpf_obj_get_info_by_fd(fd_prog, &info, &info_len)) {
-+		perror("second bpf_obj_get_info_by_fd failed");
-+		goto out_free_buf;
-+	}
-+
-+	return 0;
-+
-+out_free_buf:
-+	free(*buf);
-+	return -1;
-+}
-+
-+static bool is_null_insn(struct bpf_insn *insn)
-+{
-+	struct bpf_insn null_insn = {};
-+
-+	return memcmp(insn, &null_insn, sizeof(null_insn)) == 0;
-+}
-+
-+static bool is_skip_insn(struct bpf_insn *insn)
-+{
-+	struct bpf_insn skip_insn = SKIP_INSNS();
-+
-+	return memcmp(insn, &skip_insn, sizeof(skip_insn)) == 0;
-+}
-+
-+static int null_terminated_insn_len(struct bpf_insn *seq, int max_len)
-+{
-+	int i;
-+
-+	for (i = 0; i < max_len; ++i) {
-+		if (is_null_insn(&seq[i]))
-+			return i;
-+	}
-+	return max_len;
-+}
-+
-+static bool compare_masked_insn(struct bpf_insn *orig, struct bpf_insn *masked)
-+{
-+	struct bpf_insn orig_masked;
-+
-+	memcpy(&orig_masked, orig, sizeof(orig_masked));
-+	if (masked->imm == INSN_IMM_MASK)
-+		orig_masked.imm = INSN_IMM_MASK;
-+	if (masked->off == INSN_OFF_MASK)
-+		orig_masked.off = INSN_OFF_MASK;
-+
-+	return memcmp(&orig_masked, masked, sizeof(orig_masked)) == 0;
-+}
-+
-+static int find_insn_subseq(struct bpf_insn *seq, struct bpf_insn *subseq,
-+			    int seq_len, int subseq_len)
-+{
-+	int i, j;
-+
-+	if (subseq_len > seq_len)
-+		return -1;
-+
-+	for (i = 0; i < seq_len - subseq_len + 1; ++i) {
-+		bool found = true;
-+
-+		for (j = 0; j < subseq_len; ++j) {
-+			if (!compare_masked_insn(&seq[i + j], &subseq[j])) {
-+				found = false;
-+				break;
-+			}
-+		}
-+		if (found)
-+			return i;
-+	}
-+
-+	return -1;
-+}
-+
-+static int find_skip_insn_marker(struct bpf_insn *seq, int len)
-+{
-+	int i;
-+
-+	for (i = 0; i < len; ++i)
-+		if (is_skip_insn(&seq[i]))
-+			return i;
-+
-+	return -1;
-+}
-+
-+/* Return true if all sub-sequences in `subseqs` could be found in
-+ * `seq` one after another. Sub-sequences are separated by a single
-+ * nil instruction.
-+ */
-+static bool find_all_insn_subseqs(struct bpf_insn *seq, struct bpf_insn *subseqs,
-+				  int seq_len, int max_subseqs_len)
-+{
-+	int subseqs_len = null_terminated_insn_len(subseqs, max_subseqs_len);
-+
-+	while (subseqs_len > 0) {
-+		int skip_idx = find_skip_insn_marker(subseqs, subseqs_len);
-+		int cur_subseq_len = skip_idx < 0 ? subseqs_len : skip_idx;
-+		int subseq_idx = find_insn_subseq(seq, subseqs,
-+						  seq_len, cur_subseq_len);
-+
-+		if (subseq_idx < 0)
-+			return false;
-+		seq += subseq_idx + cur_subseq_len;
-+		seq_len -= subseq_idx + cur_subseq_len;
-+		subseqs += cur_subseq_len + 1;
-+		subseqs_len -= cur_subseq_len + 1;
-+	}
-+
-+	return true;
-+}
-+
-+static void print_insn(struct bpf_insn *buf, int cnt)
-+{
-+	int i;
-+
-+	printf("  addr  op d s off  imm\n");
-+	for (i = 0; i < cnt; ++i) {
-+		struct bpf_insn *insn = &buf[i];
-+
-+		if (is_null_insn(insn))
-+			break;
-+
-+		if (is_skip_insn(insn))
-+			printf("  ...\n");
-+		else
-+			printf("  %04x: %02x %1x %x %04hx %08x\n",
-+			       i, insn->code, insn->dst_reg,
-+			       insn->src_reg, insn->off, insn->imm);
-+	}
-+}
-+
-+static bool check_xlated_program(struct bpf_test *test, int fd_prog)
-+{
-+	struct bpf_insn *buf;
-+	int cnt;
-+	bool result = true;
-+	bool check_expected = !is_null_insn(test->expected_insns);
-+	bool check_unexpected = !is_null_insn(test->unexpected_insns);
-+
-+	if (!check_expected && !check_unexpected)
-+		goto out;
-+
-+	if (get_xlated_program(fd_prog, &buf, &cnt)) {
-+		printf("FAIL: can't get xlated program\n");
-+		result = false;
-+		goto out;
-+	}
-+
-+	if (check_expected &&
-+	    !find_all_insn_subseqs(buf, test->expected_insns,
-+				   cnt, MAX_EXPECTED_INSNS)) {
-+		printf("FAIL: can't find expected subsequence of instructions\n");
-+		result = false;
-+		if (verbose) {
-+			printf("Program:\n");
-+			print_insn(buf, cnt);
-+			printf("Expected subsequence:\n");
-+			print_insn(test->expected_insns, MAX_EXPECTED_INSNS);
-+		}
-+	}
-+
-+	if (check_unexpected &&
-+	    find_all_insn_subseqs(buf, test->unexpected_insns,
-+				  cnt, MAX_UNEXPECTED_INSNS)) {
-+		printf("FAIL: found unexpected subsequence of instructions\n");
-+		result = false;
-+		if (verbose) {
-+			printf("Program:\n");
-+			print_insn(buf, cnt);
-+			printf("Un-expected subsequence:\n");
-+			print_insn(test->unexpected_insns, MAX_UNEXPECTED_INSNS);
-+		}
-+	}
-+
-+	free(buf);
-+ out:
-+	return result;
-+}
-+
+ static int create_map_spin_lock(void)
+@@ -793,8 +839,6 @@ static int create_map_kptr(void)
+ 	return fd;
+ }
+ 
+-static char bpf_vlog[UINT_MAX >> 8];
+-
+ static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog_type,
+ 			  struct bpf_insn *prog, int *map_fds)
+ {
+@@ -1360,7 +1404,7 @@ static bool check_xlated_program(struct bpf_test *test, int fd_prog)
  static void do_test_single(struct bpf_test *test, bool unpriv,
  			   int *passes, int *errors)
  {
-@@ -1262,6 +1493,9 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
- 	if (verbose)
- 		printf(", verifier log:\n%s", bpf_vlog);
+-	int fd_prog, expected_ret, alignment_prevented_execution;
++	int fd_prog, btf_fd, expected_ret, alignment_prevented_execution;
+ 	int prog_len, prog_type = test->prog_type;
+ 	struct bpf_insn *prog = test->insns;
+ 	LIBBPF_OPTS(bpf_prog_load_opts, opts);
+@@ -1372,8 +1416,10 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
+ 	__u32 pflags;
+ 	int i, err;
  
-+	if (!check_xlated_program(test, fd_prog))
-+		goto fail_log;
++	fd_prog = -1;
+ 	for (i = 0; i < MAX_NR_MAPS; i++)
+ 		map_fds[i] = -1;
++	btf_fd = -1;
+ 
+ 	if (!prog_type)
+ 		prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
+@@ -1406,11 +1452,11 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
+ 
+ 	opts.expected_attach_type = test->expected_attach_type;
+ 	if (verbose)
+-		opts.log_level = 1;
++		opts.log_level = VERBOSE_LIBBPF_LOG_LEVEL;
+ 	else if (expected_ret == VERBOSE_ACCEPT)
+ 		opts.log_level = 2;
+ 	else
+-		opts.log_level = 4;
++		opts.log_level = DEFAULT_LIBBPF_LOG_LEVEL;
+ 	opts.prog_flags = pflags;
+ 
+ 	if (prog_type == BPF_PROG_TYPE_TRACING && test->kfunc) {
+@@ -1428,6 +1474,19 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
+ 		opts.attach_btf_id = attach_btf_id;
+ 	}
+ 
++	if (test->btf_types[0] != 0) {
++		btf_fd = load_btf_for_test(test);
++		if (btf_fd < 0)
++			goto fail_log;
++		opts.prog_btf_fd = btf_fd;
++	}
 +
- 	run_errs = 0;
- 	run_successes = 0;
- 	if (!alignment_prevented_execution && fd_prog >= 0 && test->runs >= 0) {
++	if (test->func_info_cnt != 0) {
++		opts.func_info = test->func_info;
++		opts.func_info_cnt = test->func_info_cnt;
++		opts.func_info_rec_size = sizeof(test->func_info[0]);
++	}
++
+ 	opts.log_buf = bpf_vlog;
+ 	opts.log_size = sizeof(bpf_vlog);
+ 	fd_prog = bpf_prog_load(prog_type, NULL, "GPL", prog, prog_len, &opts);
+@@ -1539,6 +1598,7 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
+ 	if (test->fill_insns)
+ 		free(test->fill_insns);
+ 	close(fd_prog);
++	close(btf_fd);
+ 	for (i = 0; i < MAX_NR_MAPS; i++)
+ 		close(map_fds[i]);
+ 	sched_yield();
 -- 
 2.25.1
 
