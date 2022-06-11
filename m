@@ -2,105 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CBA754705C
-	for <lists+bpf@lfdr.de>; Sat, 11 Jun 2022 02:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27E4154712E
+	for <lists+bpf@lfdr.de>; Sat, 11 Jun 2022 03:46:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347794AbiFJX5J (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jun 2022 19:57:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40776 "EHLO
+        id S1348917AbiFKBqZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jun 2022 21:46:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235486AbiFJX5I (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jun 2022 19:57:08 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA26B179960;
-        Fri, 10 Jun 2022 16:57:07 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id v1so788736ejg.13;
-        Fri, 10 Jun 2022 16:57:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jQmPRsTR95ymz+EPvppaVNmzqWaaicoojJhIHHo9hvI=;
-        b=pWoyzC8h/FhE6fU9Yh3CiG/b9TsFgd5VDusl8nHM1Heuatmuka6s14VpcXnC8xpKDh
-         wRa6T9khqo3gG7zDZUp1+w3EE1bL01z3yI3RICEuvO9hDnRobOJLXux4looeAGsQIf51
-         jYVEfZlEd6FF8heTjX8bdo4yrcYAq67wkaHvEyehY9ta3EKJwi6Xa4O6R/e7qmpDbWLs
-         cJFP9nwXQtPqvPuzlsNeq1L2S0ILfAhQRZXZKfS9juVBzNYbr6D1DC0WPkamN8/8bV+7
-         PwNE5rQaiqla7aum1tRJX1O+C8opIL74OpyHlK46s1KwmHh+N7NfgfuJTkxOizjbVQPA
-         pCpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jQmPRsTR95ymz+EPvppaVNmzqWaaicoojJhIHHo9hvI=;
-        b=PyLqe+/jwcV21mvsoNztjXyDF1lFlEGllomMlaYcZAwH71kd9qvKRx78fjODtQyhnd
-         hQYHDygGTq2xGBiOTiNdW39RXaKhTBJm8xe5enif9+KOUUQdGFowi6uDhE5Yaf8cIXE/
-         vh25TUPEcodNBMpbooeAwpIUczI1fSbi5NUSTqT1AtWlVO8tHuy9WPH8QXrs7BrGpMz2
-         TSH0e39LsxzUtzjWkcNAFJ2u2m1hIKcYr/mhe/ZqAE8gud6DQndSxo20DLvKiR3+59TX
-         7RFkr+2vfnda8MNMLsIRgYr6Uye6n5jp2qbnr4dBaajmgwhbC1R4r3jxc2fpkAPtmRsh
-         ow/Q==
-X-Gm-Message-State: AOAM532933s8Dm6Q3D8mwqDFzwHTnUGud4TPw2gfEow7fN/AHK1EgCNM
-        rh/8QcOIw+Do0Cbn33o/o/2juHUvf6l8c3O1/qI=
-X-Google-Smtp-Source: ABdhPJwNEr9ctOLJamvMSijPc7FQAKaxX0cnirbr532zEVadx9l03L/RdP5Ck+qc6L27B8L2cezX93j48N0bJi0QeZ8=
-X-Received: by 2002:a17:906:51d0:b0:6ff:2415:fc18 with SMTP id
- v16-20020a17090651d000b006ff2415fc18mr2360086ejk.94.1654905426298; Fri, 10
- Jun 2022 16:57:06 -0700 (PDT)
+        with ESMTP id S1345147AbiFKBqY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jun 2022 21:46:24 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F04EF443E0D
+        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 18:46:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 45413B837C4
+        for <bpf@vger.kernel.org>; Sat, 11 Jun 2022 01:46:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00658C341C0
+        for <bpf@vger.kernel.org>; Sat, 11 Jun 2022 01:46:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1654911980;
+        bh=w30Kihj1wSWDstep9T3cTNL+OV7zjtcJgR9l8jz4kJs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZqBpqYwT93jfDe1IiMMJc3fhRZIyJ/9kZ6XqOTKGVg5q6cBfe15jI+NAwZFsjgzQM
+         bbwm2jIKy4jXzNtGjKMptnEdRq8NTnXfd0JKzZGzcQfyNFIQfgJwBVgmTg1j6rBbTg
+         O5zdnhOv+AetD0hfpymc6BqBZmDBnXMv3nnrMYuDoO88V6o7+WucTudphMv8ryb1GV
+         C/jddKwrLNoHt1zVMJc34kKwMxBjvXg2Gny9dfrgqsvuTcyxYCa04ANSsqkhpJx8LV
+         3lYMzf2yu7w5GYUkJhKMuzW4oxaSGf74Pt/V4KWtgrgZQgKIIIB/pQocVFEqa1GJFa
+         Qvx4a/6zRh5pw==
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-3137eb64b67so7128327b3.12
+        for <bpf@vger.kernel.org>; Fri, 10 Jun 2022 18:46:19 -0700 (PDT)
+X-Gm-Message-State: AOAM532LHrgAX6OkHDmkswgMUuxBs6xIKTThycCLn/s2vw8IXHvDBLY4
+        PtQxzLKTBg2geMOc9Pxa7mGb4bTiZrh0PMfbVVY=
+X-Google-Smtp-Source: ABdhPJw5hlHlLpdtbQr3YSm3f7k/sAAmwWTZazs5uwF6AD5RO5TRaU3Dyq2VZ4FTpMcv01/5BmOZoOws+QWTe+Rcspw=
+X-Received: by 2002:a81:3904:0:b0:310:cc3:15a2 with SMTP id
+ g4-20020a813904000000b003100cc315a2mr46724795ywa.447.1654911979034; Fri, 10
+ Jun 2022 18:46:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220610135916.1285509-1-roberto.sassu@huawei.com>
- <20220610135916.1285509-2-roberto.sassu@huawei.com> <ce56c551-019f-9e10-885f-4e88001a8f6b@iogearbox.net>
- <4b877d4877be495787cb431d0a42cbc9@huawei.com> <1a5534e6-4d63-7c91-8dcd-41b22f1ea2ba@iogearbox.net>
- <CACYkzJ7-b7orpuUf-Uy7zLGufi8JJFGyWeH0SKwS_GsZVdQWeg@mail.gmail.com>
-In-Reply-To: <CACYkzJ7-b7orpuUf-Uy7zLGufi8JJFGyWeH0SKwS_GsZVdQWeg@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 10 Jun 2022 16:56:54 -0700
-Message-ID: <CAADnVQLL_5NHxNJytDrZCKkQpHx6zLTJYVFzYwPxyWVJZHE-FQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] bpf: Add bpf_verify_signature() helper
-To:     KP Singh <kpsingh@kernel.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Roberto Sassu <roberto.sassu@huawei.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>
+References: <20220608192630.3710333-1-eddyz87@gmail.com> <20220608192630.3710333-4-eddyz87@gmail.com>
+ <CAPhsuW6RfokP8U6tDX+Qg+ufxpHfvgm_f=giE0nOUXONmV+iGA@mail.gmail.com>
+ <23ad183ee89f016f7b5cbc1f08ff086b44d9fc0d.camel@gmail.com>
+ <CAPhsuW7wPz+jwdT01BjLgpr0zPCkhc2gFzXBhph64FDvjh0oCQ@mail.gmail.com>
+ <f712fb0e6e0d72542b047f174f8590888d025918.camel@gmail.com>
+ <CAPhsuW4MMAFEOWn0ehvOZtt3h0w_Z6HaD0UJ2PH47PLHcExKwQ@mail.gmail.com> <c083c5cb2bc42eb455484cfd9ea803bd6a5e9d77.camel@gmail.com>
+In-Reply-To: <c083c5cb2bc42eb455484cfd9ea803bd6a5e9d77.camel@gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Fri, 10 Jun 2022 18:46:08 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7GC2fLPCzt8OeSvikoCDR4TU6nFG9CL+ebCZf1urBQvg@mail.gmail.com>
+Message-ID: <CAPhsuW7GC2fLPCzt8OeSvikoCDR4TU6nFG9CL+ebCZf1urBQvg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 3/5] bpf: Inline calls to bpf_loop when
+ callback is known
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>, joannelkoong@gmail.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 10, 2022 at 4:53 PM KP Singh <kpsingh@kernel.org> wrote:
-> > >>> +static const struct bpf_func_proto bpf_verify_signature_proto = {
-> > >>> +   .func           = bpf_verify_signature,
-> > >>> +   .gpl_only       = false,
-> > >>> +   .ret_type       = RET_INTEGER,
-> > >>> +   .arg1_type      = ARG_PTR_TO_MEM,
-> > >>> +   .arg2_type      = ARG_CONST_SIZE_OR_ZERO,
-> > >>
-> > >> Can verify_pkcs7_signature() handle null/0 len for data* args?
-> > >
-> > > Shouldn't ARG_PTR_TO_MEM require valid memory? 0 len should
-> > > not be a problem.
-> >
-> > check_helper_mem_access() has:
-> >
-> >       /* Allow zero-byte read from NULL, regardless of pointer type */
-> >       if (zero_size_allowed && access_size == 0 &&
-> >           register_is_null(reg))
-> >               return 0;
+On Fri, Jun 10, 2022 at 4:21 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
 >
-> Daniel, makes a fair point here. Alexei, what do you think?
+> > On Fri, 2022-06-10 at 16:01 -0700, Song Liu wrote:
+> >
+> > In this case, we need to initialize fit_for_inline to true, no?
 >
-> I wonder if some "future" signature verification would need even more
-> / different arguments so a unified bpf_verify_signature might get more
-> complex / not easy to extend.
+> You are right...
+>
+> My Last try is below, if you don't like it I'll proceed with your
+> version.  I just really don't like the "not-cannot" part in the
+> expression "!inline_state->cannot_inline" :)
 
-You mean a pkcs7 specific helper for now?
-Makes sense.
+Yeah, this version looks good to me.
+
+Thanks,
+Song
+
+>
+> static void update_loop_inline_state(struct bpf_verifier_env *env, u32 subprogno)
+> {
+>         struct bpf_loop_inline_state *state = &cur_aux(env)->loop_inline_state;
+>         struct bpf_reg_state *regs = cur_regs(env);
+>         struct bpf_reg_state *flags_reg = &regs[BPF_REG_4];
+>         int flags_is_zero =
+>                 register_is_const(flags_reg) && flags_reg->var_off.value == 0;
+>
+>         if (!state->initialized) {
+>                 state->initialized = 1;
+>                 state->fit_for_inline = flags_is_zero;
+>                 state->callback_subprogno = subprogno;
+>                 return;
+>         }
+>
+>         if (!state->fit_for_inline)
+>                 return;
+>
+>         state->fit_for_inline =
+>                 flags_is_zero &&
+>                 state->callback_subprogno == subprogno;
+> }
+>
+> static int optimize_bpf_loop(struct bpf_verifier_env *env)
+> {
+>         // ...
+>         if (is_bpf_loop_call(insn) && inline_state->fit_for_inline) { ... }
+>         // ...
+> }
+>
+> Thanks,
+> Eduard
+>
