@@ -2,60 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A58BF547457
-	for <lists+bpf@lfdr.de>; Sat, 11 Jun 2022 13:42:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 373AA547458
+	for <lists+bpf@lfdr.de>; Sat, 11 Jun 2022 13:42:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230088AbiFKLmd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 11 Jun 2022 07:42:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47374 "EHLO
+        id S229543AbiFKLmi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 11 Jun 2022 07:42:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230053AbiFKLmc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 11 Jun 2022 07:42:32 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 248DD193D8
-        for <bpf@vger.kernel.org>; Sat, 11 Jun 2022 04:42:30 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id y32so2179685lfa.6
-        for <bpf@vger.kernel.org>; Sat, 11 Jun 2022 04:42:30 -0700 (PDT)
+        with ESMTP id S229708AbiFKLmi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 11 Jun 2022 07:42:38 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E12921CB30
+        for <bpf@vger.kernel.org>; Sat, 11 Jun 2022 04:42:31 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id s6so2135704lfo.13
+        for <bpf@vger.kernel.org>; Sat, 11 Jun 2022 04:42:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dqTvSopQWqmTfxdl+CWb/qR+J3Sn7fTtUDEz16mkXnc=;
-        b=N6pC7WtKnLi9mEm4zplMm038g6zW/aNcpa5NpxYHnENwTBQNYpIj81DwdKWrJeub+d
-         jxZKPRBVOeZnnmvLbWugv+qNjW06xd8jS1gkUlcif2TbR578bw1drj21vzNJasIWezS+
-         1QXD26r9uPC0wZMF2e4lF9ANTE2gkMRnlEJmIC1F5aLa9thqNbPG52qOKnWe6GsCXLzi
-         Cxy7CXm6/QGQhJQD2whOggetS1LXb1iNKB1ysr6sEDATTadlHG1jq+VgaBBY3A4WQr9v
-         PAkm7llkh22UHrTIQY8zdCpK288Z/A0+Xb8+eVB6YvWilBztfa1ei1i3MctgkJxSnqAT
-         acVQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=4FfHmQjx4mtPcF8La0NIopHbF6tNLW/oeLpWOZtmNGg=;
+        b=YRHAHvfDbrC6K7yASz0kTfzM2+bmuZtr5hmIGHt58FUM7/AG6NiNlzZ4cE44UF5H5+
+         TDB7Eu1tqUyFn7K2rYAAuFluA/SyePaw2POiuhUsXw1ncDCIdaMrriumHlUjrd8cHso9
+         ewpJb014KnAhaI1wIJH1yBo//6pzaK4Q/p5VNeP/vl7wStQimssKT8XkgLRUFyLwtFVh
+         lubXmTdarw/pIJX589ZrABNvSFlwDYzPZ4Ogn1Sm6GOjEAczlK+sfXm4+HE3Acc8ojnc
+         lOFcU/RTgUib5mVxRbht35wBcfcw56jyqOsIF2u3Yi5zb8y+8LALYwhBpaB3hOYoVXea
+         SuAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dqTvSopQWqmTfxdl+CWb/qR+J3Sn7fTtUDEz16mkXnc=;
-        b=PepRDZElPp1ugmry9rPjkodACEKLMeddwOGcNmROMx+akEGWl0ND8OUt1bOOYKW0ai
-         SRRQtHg0KPvyk8YnDLZHxsqvYZi/OAgHQ3FpsJ2Uk0xvXNQcOzUtd73Up7ieeWxtbjL9
-         DcLUHJ7hTdove3LsmipUA3hNFveLbMuJ9rTh0qGhYuxo3yhU0EHeR3OAwqHcnBtNHNYT
-         e7URB1hFAlPEBcg/WP6Hl1gOmhEYqv6MuPSS+jQEWSm0S2oNGsZ8JrUjN1c3unf9agvp
-         GDWaApRQxGN4qqyblCmJSgKNkRmGKxC17IKelbHq7TPPaw3p1F2r1C8ROxRDtvlYUG0j
-         Bymw==
-X-Gm-Message-State: AOAM531OiYvoCzU61Fk+tW2GDSM1F2Vl45HpKsvZSRvHKW6DwtWBIp23
-        h1euITtccTLp09OO7yLfqpXSJNzSxI9AhtTw
-X-Google-Smtp-Source: ABdhPJxHVsDul2DB1hIGhLkW2cmATPGNJjFU7a6jkW04w9TLLbSYE+wJSCEkTp4u6yVjW/8bT0Jj4w==
-X-Received: by 2002:a05:6512:39d6:b0:478:fd24:36 with SMTP id k22-20020a05651239d600b00478fd240036mr29149698lfu.504.1654947748077;
-        Sat, 11 Jun 2022 04:42:28 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=4FfHmQjx4mtPcF8La0NIopHbF6tNLW/oeLpWOZtmNGg=;
+        b=eMTsPO2d+bC3QvCGF8wBRUEqxwr+wSA9O2glR0/2WfUo+HrebgOMQJgoQQ5N3A5lDX
+         wYVhMDxR7aAfe68rWlsJGBw9FpLJabAy/vn4jcVBIO1InBuDmM4TwP0mbKGdu/oZySws
+         KCX7vO9Y525oslMYERWeq0Q4OnkPO8ODMbg2HlMKXN0ALlORC+B/nf7mRHPIkIJwcFP9
+         doTLu4p89oV0Jg8MgtrkWPt2iNX+Rg3/19wM3eCPq6xGsHto8uZQ1y+UKnZ4tD0Me7GZ
+         lHtkECtBeG+C4WCv0t4NT/LsRm+IO27bUaMxhpuZ1e5NsWSaBLsiAEBFWNQ4yPbQLBm5
+         UhYA==
+X-Gm-Message-State: AOAM530ua8CVC+DaL8gRjIiVZi0iPCNygLj/9q37iACktMEo+mww0Xpo
+        Lgl5VtMcpU6I/tcIwATwXt59Q4nwRzA2cfMv
+X-Google-Smtp-Source: ABdhPJxiuyhskkvf9FR+RSzb7D6VI80xgmjRVWf4rS0hSuvQSC3aHnn2YdJLTH7A/F2ERmJym3wdAA==
+X-Received: by 2002:a05:6512:282b:b0:47a:e70d:8723 with SMTP id cf43-20020a056512282b00b0047ae70d8723mr8893438lfb.557.1654947749204;
+        Sat, 11 Jun 2022 04:42:29 -0700 (PDT)
 Received: from localhost.localdomain (boundsly.muster.volia.net. [93.72.16.93])
-        by smtp.gmail.com with ESMTPSA id u18-20020ac25bd2000000b004795d64f37dsm229303lfn.105.2022.06.11.04.42.27
+        by smtp.gmail.com with ESMTPSA id u18-20020ac25bd2000000b004795d64f37dsm229303lfn.105.2022.06.11.04.42.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Jun 2022 04:42:27 -0700 (PDT)
+        Sat, 11 Jun 2022 04:42:28 -0700 (PDT)
 From:   Eduard Zingerman <eddyz87@gmail.com>
 To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
         daniel@iogearbox.net, kernel-team@fb.com, song@kernel.org,
         joannelkoong@gmail.com
-Cc:     eddyz87@gmail.com
-Subject: [PATCH bpf-next v5 0/5] bpf_loop inlining
-Date:   Sat, 11 Jun 2022 14:40:16 +0300
-Message-Id: <20220611114021.484408-1-eddyz87@gmail.com>
+Cc:     eddyz87@gmail.com, Song Liu <songliubraving@fb.com>
+Subject: [PATCH bpf-next v5 1/5] selftests/bpf: specify expected instructions in test_verifier tests
+Date:   Sat, 11 Jun 2022 14:40:17 +0300
+Message-Id: <20220611114021.484408-2-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220611114021.484408-1-eddyz87@gmail.com>
+References: <20220611114021.484408-1-eddyz87@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -68,122 +70,333 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Everyone,
+Allows to specify expected and unexpected instruction sequences in
+test_verifier test cases. The instructions are requested from kernel
+after BPF program loading, thus allowing to check some of the
+transformations applied by BPF verifier.
 
-This is the next iteration of the patch. It includes changes suggested
-by Song, Joanne and Alexei. Please find updated intro message and
-change log below.
+- `expected_insn` field specifies a sequence of instructions expected
+  to be found in the program;
+- `unexpected_insn` field specifies a sequence of instructions that
+  are not expected to be found in the program;
+- `INSN_OFF_MASK` and `INSN_IMM_MASK` values could be used to mask
+  `off` and `imm` fields.
+- `SKIP_INSNS` could be used to specify that some instructions in the
+  (un)expected pattern are not important (behavior similar to usage of
+  `\t` in `errstr` field).
 
-This patch implements inlining of calls to bpf_loop helper function
-when bpf_loop's callback is statically known. E.g. the rewrite does
-the following transformation during BPF program processing:
+The intended usage is as follows:
 
-  bpf_loop(10, foo, NULL, 0);
+  {
+	"inline simple bpf_loop call",
+	.insns = {
+	/* main */
+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_1, 1),
+	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, BPF_REG_2,
+			BPF_PSEUDO_FUNC, 0, 6),
+    ...
+	BPF_EXIT_INSN(),
+	/* callback */
+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_0, 1),
+	BPF_EXIT_INSN(),
+	},
+	.expected_insns = {
+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_1, 1),
+	SKIP_INSNS(),
+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_CALL, 8, 1)
+	},
+	.unexpected_insns = {
+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0,
+			INSN_OFF_MASK, INSN_IMM_MASK),
+	},
+	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
+	.result = ACCEPT,
+	.runs = 0,
+  },
 
- ->
+Here it is expected that move of 1 to register 1 would remain in place
+and helper function call instruction would be replaced by a relative
+call instruction.
 
-  for (int i = 0; i < 10; ++i)
-    foo(i, NULL);
+Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+Acked-by: Song Liu <songliubraving@fb.com>
+---
+ tools/testing/selftests/bpf/test_verifier.c | 234 ++++++++++++++++++++
+ 1 file changed, 234 insertions(+)
 
-The transformation leads to measurable latency change for simple
-loops. Measurements using `benchs/run_bench_bpf_loop.sh` inside QEMU /
-KVM on i7-4710HQ CPU show a drop in latency from 14 ns/op to 2 ns/op.
-
-The change is split in five parts:
-
-* Update to test_verifier.c to specify expected and unexpected
-  instruction sequences. This allows to check BPF program rewrites
-  applied by e.g. do_mix_fixups function.
-
-* Update to test_verifier.c to specify BTF function infos and types
-  per test case. This is necessary for tests that load sub-program
-  addresses to a variable because of the checks applied by
-  check_ld_imm function.
-
-* The update to verifier.c that tracks state of the parameters for
-  each bpf_loop call in a program and decides whether it could be
-  replaced by a loop.
-
-* A set of test cases for `test_verifier` that use capabilities added
-  by the first two patches to verify instructions produced by inlining
-  logic.
-
-* Two test cases for `test_prog` to check that possible corner cases
-  behave as expected.
-
-Additional details are available in commit messages for each patch.
-
-Changes since v4:
- - Added missing `static` modifier for `update_loop_inline_state` and
-   `inline_bpf_loop` functions.
- - `update_loop_inline_state` updated for better readability.
- - Fields `initialized` and `fit_for_inline` of `struct
-   bpf_loop_inline_state` are changed back from `bool` to bitfields.
- - Acks from Song Liu added to comments for patches 1/5, 2/5, 4/5,
-   5/5.
-
-Changes since v3:
- - Function `adjust_stack_depth_for_loop_inlining` is replaced by
-   function `optimize_bpf_loop`. Function `optimize_bpf_loop` is
-   responsible for both stack depth adjustment and call instruction
-   replacement.
- - Changes in `do_misc_fixups` are reverted.
- - Changes in `adjust_subprog_starts_after_remove` are reverted and
-   function `adjust_loop_inline_subprogno` is removed. This is
-   possible because call to `optimize_bpf_loop` is placed before the
-   dead code removal in `opt_remove_dead_code` (in contrast to the
-   position of `do_misc_fixups` where inlining was done in v3).
- - Field `bpf_insn_aux_data.loop_inline_state` is now a part of
-   anonymous union at the start of the `bpf_insn_aux_data`.
- - Data structure `bpf_loop_inline_state` is simplified to use single
-   flag field `fit_for_inline` instead of separate fields
-   `flags_is_zero` & `callback_is_constant`.
- - Macro definition `BPF_MAX_LOOPS` is moved from
-   `include/linux/bpf_verifier.h` to `include/linux/bpf.h` to avoid
-   include of `include/linux/bpf_verifier.h` in `bpf_iter.c`.
- - `inline_bpf_loop` changed back to use array initialization and hard
-   coded offsets as in v2.
- - Style / formatting updates.
-
-Changes since v2:
- - fix for `stack_check` test case in `test_progs-no_alu32`, all tests
-   are passing now;
- - v2 3/3 patch is split in three parts:
-   - kernel changes
-   - test_verifier changes
-   - test_prog changes
- - updated `inline_bpf_loop` in `verifier.c` to calculate each offset
-   used in instructions to avoid "magic" numbers;
- - removed newline handling logic in `fail_log` branch of
-   `do_single_test` in `test_verifier.c` to simplify the patch set;
- - styling fixes suggested in review for v2 of this patch set.
-
-Changes since v1:
- - allow to use SKIP_INSNS in instruction pattern specification in
-   test_verifier tests;
- - fix for a bug in spill offset assignement for loop vars when
-   bpf_loop is located in a non-main function.
-
-Eduard Zingerman (5):
-  selftests/bpf: specify expected instructions in test_verifier tests
-  selftests/bpf: allow BTF specs and func infos in test_verifier tests
-  bpf: Inline calls to bpf_loop when callback is known
-  selftests/bpf: BPF test_verifier selftests for bpf_loop inlining
-  selftests/bpf: BPF test_prog selftests for bpf_loop inlining
-
- include/linux/bpf.h                           |   3 +
- include/linux/bpf_verifier.h                  |  12 +
- kernel/bpf/bpf_iter.c                         |   9 +-
- kernel/bpf/verifier.c                         | 171 ++++++++-
- .../selftests/bpf/prog_tests/bpf_loop.c       |  62 ++++
- tools/testing/selftests/bpf/prog_tests/btf.c  |   1 -
- tools/testing/selftests/bpf/progs/bpf_loop.c  | 114 ++++++
- tools/testing/selftests/bpf/test_btf.h        |   2 +
- tools/testing/selftests/bpf/test_verifier.c   | 328 +++++++++++++++++-
- .../selftests/bpf/verifier/bpf_loop_inline.c  | 244 +++++++++++++
- 10 files changed, 919 insertions(+), 27 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/verifier/bpf_loop_inline.c
-
+diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
+index 372579c9f45e..1f24eae9e16e 100644
+--- a/tools/testing/selftests/bpf/test_verifier.c
++++ b/tools/testing/selftests/bpf/test_verifier.c
+@@ -51,6 +51,8 @@
+ #endif
+ 
+ #define MAX_INSNS	BPF_MAXINSNS
++#define MAX_EXPECTED_INSNS	32
++#define MAX_UNEXPECTED_INSNS	32
+ #define MAX_TEST_INSNS	1000000
+ #define MAX_FIXUPS	8
+ #define MAX_NR_MAPS	23
+@@ -58,6 +60,10 @@
+ #define POINTER_VALUE	0xcafe4all
+ #define TEST_DATA_LEN	64
+ 
++#define INSN_OFF_MASK	((__s16)0xFFFF)
++#define INSN_IMM_MASK	((__s32)0xFFFFFFFF)
++#define SKIP_INSNS()	BPF_RAW_INSN(0xde, 0xa, 0xd, 0xbeef, 0xdeadbeef)
++
+ #define F_NEEDS_EFFICIENT_UNALIGNED_ACCESS	(1 << 0)
+ #define F_LOAD_WITH_STRICT_ALIGNMENT		(1 << 1)
+ 
+@@ -79,6 +85,23 @@ struct bpf_test {
+ 	const char *descr;
+ 	struct bpf_insn	insns[MAX_INSNS];
+ 	struct bpf_insn	*fill_insns;
++	/* If specified, test engine looks for this sequence of
++	 * instructions in the BPF program after loading. Allows to
++	 * test rewrites applied by verifier.  Use values
++	 * INSN_OFF_MASK and INSN_IMM_MASK to mask `off` and `imm`
++	 * fields if content does not matter.  The test case fails if
++	 * specified instructions are not found.
++	 *
++	 * The sequence could be split into sub-sequences by adding
++	 * SKIP_INSNS instruction at the end of each sub-sequence. In
++	 * such case sub-sequences are searched for one after another.
++	 */
++	struct bpf_insn expected_insns[MAX_EXPECTED_INSNS];
++	/* If specified, test engine applies same pattern matching
++	 * logic as for `expected_insns`. If the specified pattern is
++	 * matched test case is marked as failed.
++	 */
++	struct bpf_insn unexpected_insns[MAX_UNEXPECTED_INSNS];
+ 	int fixup_map_hash_8b[MAX_FIXUPS];
+ 	int fixup_map_hash_48b[MAX_FIXUPS];
+ 	int fixup_map_hash_16b[MAX_FIXUPS];
+@@ -1126,6 +1149,214 @@ static bool cmp_str_seq(const char *log, const char *exp)
+ 	return true;
+ }
+ 
++static int get_xlated_program(int fd_prog, struct bpf_insn **buf, int *cnt)
++{
++	struct bpf_prog_info info = {};
++	__u32 info_len = sizeof(info);
++	__u32 xlated_prog_len;
++	__u32 buf_element_size = sizeof(struct bpf_insn);
++
++	if (bpf_obj_get_info_by_fd(fd_prog, &info, &info_len)) {
++		perror("bpf_obj_get_info_by_fd failed");
++		return -1;
++	}
++
++	xlated_prog_len = info.xlated_prog_len;
++	if (xlated_prog_len % buf_element_size) {
++		printf("Program length %d is not multiple of %d\n",
++		       xlated_prog_len, buf_element_size);
++		return -1;
++	}
++
++	*cnt = xlated_prog_len / buf_element_size;
++	*buf = calloc(*cnt, buf_element_size);
++	if (!buf) {
++		perror("can't allocate xlated program buffer");
++		return -ENOMEM;
++	}
++
++	bzero(&info, sizeof(info));
++	info.xlated_prog_len = xlated_prog_len;
++	info.xlated_prog_insns = (__u64)*buf;
++	if (bpf_obj_get_info_by_fd(fd_prog, &info, &info_len)) {
++		perror("second bpf_obj_get_info_by_fd failed");
++		goto out_free_buf;
++	}
++
++	return 0;
++
++out_free_buf:
++	free(*buf);
++	return -1;
++}
++
++static bool is_null_insn(struct bpf_insn *insn)
++{
++	struct bpf_insn null_insn = {};
++
++	return memcmp(insn, &null_insn, sizeof(null_insn)) == 0;
++}
++
++static bool is_skip_insn(struct bpf_insn *insn)
++{
++	struct bpf_insn skip_insn = SKIP_INSNS();
++
++	return memcmp(insn, &skip_insn, sizeof(skip_insn)) == 0;
++}
++
++static int null_terminated_insn_len(struct bpf_insn *seq, int max_len)
++{
++	int i;
++
++	for (i = 0; i < max_len; ++i) {
++		if (is_null_insn(&seq[i]))
++			return i;
++	}
++	return max_len;
++}
++
++static bool compare_masked_insn(struct bpf_insn *orig, struct bpf_insn *masked)
++{
++	struct bpf_insn orig_masked;
++
++	memcpy(&orig_masked, orig, sizeof(orig_masked));
++	if (masked->imm == INSN_IMM_MASK)
++		orig_masked.imm = INSN_IMM_MASK;
++	if (masked->off == INSN_OFF_MASK)
++		orig_masked.off = INSN_OFF_MASK;
++
++	return memcmp(&orig_masked, masked, sizeof(orig_masked)) == 0;
++}
++
++static int find_insn_subseq(struct bpf_insn *seq, struct bpf_insn *subseq,
++			    int seq_len, int subseq_len)
++{
++	int i, j;
++
++	if (subseq_len > seq_len)
++		return -1;
++
++	for (i = 0; i < seq_len - subseq_len + 1; ++i) {
++		bool found = true;
++
++		for (j = 0; j < subseq_len; ++j) {
++			if (!compare_masked_insn(&seq[i + j], &subseq[j])) {
++				found = false;
++				break;
++			}
++		}
++		if (found)
++			return i;
++	}
++
++	return -1;
++}
++
++static int find_skip_insn_marker(struct bpf_insn *seq, int len)
++{
++	int i;
++
++	for (i = 0; i < len; ++i)
++		if (is_skip_insn(&seq[i]))
++			return i;
++
++	return -1;
++}
++
++/* Return true if all sub-sequences in `subseqs` could be found in
++ * `seq` one after another. Sub-sequences are separated by a single
++ * nil instruction.
++ */
++static bool find_all_insn_subseqs(struct bpf_insn *seq, struct bpf_insn *subseqs,
++				  int seq_len, int max_subseqs_len)
++{
++	int subseqs_len = null_terminated_insn_len(subseqs, max_subseqs_len);
++
++	while (subseqs_len > 0) {
++		int skip_idx = find_skip_insn_marker(subseqs, subseqs_len);
++		int cur_subseq_len = skip_idx < 0 ? subseqs_len : skip_idx;
++		int subseq_idx = find_insn_subseq(seq, subseqs,
++						  seq_len, cur_subseq_len);
++
++		if (subseq_idx < 0)
++			return false;
++		seq += subseq_idx + cur_subseq_len;
++		seq_len -= subseq_idx + cur_subseq_len;
++		subseqs += cur_subseq_len + 1;
++		subseqs_len -= cur_subseq_len + 1;
++	}
++
++	return true;
++}
++
++static void print_insn(struct bpf_insn *buf, int cnt)
++{
++	int i;
++
++	printf("  addr  op d s off  imm\n");
++	for (i = 0; i < cnt; ++i) {
++		struct bpf_insn *insn = &buf[i];
++
++		if (is_null_insn(insn))
++			break;
++
++		if (is_skip_insn(insn))
++			printf("  ...\n");
++		else
++			printf("  %04x: %02x %1x %x %04hx %08x\n",
++			       i, insn->code, insn->dst_reg,
++			       insn->src_reg, insn->off, insn->imm);
++	}
++}
++
++static bool check_xlated_program(struct bpf_test *test, int fd_prog)
++{
++	struct bpf_insn *buf;
++	int cnt;
++	bool result = true;
++	bool check_expected = !is_null_insn(test->expected_insns);
++	bool check_unexpected = !is_null_insn(test->unexpected_insns);
++
++	if (!check_expected && !check_unexpected)
++		goto out;
++
++	if (get_xlated_program(fd_prog, &buf, &cnt)) {
++		printf("FAIL: can't get xlated program\n");
++		result = false;
++		goto out;
++	}
++
++	if (check_expected &&
++	    !find_all_insn_subseqs(buf, test->expected_insns,
++				   cnt, MAX_EXPECTED_INSNS)) {
++		printf("FAIL: can't find expected subsequence of instructions\n");
++		result = false;
++		if (verbose) {
++			printf("Program:\n");
++			print_insn(buf, cnt);
++			printf("Expected subsequence:\n");
++			print_insn(test->expected_insns, MAX_EXPECTED_INSNS);
++		}
++	}
++
++	if (check_unexpected &&
++	    find_all_insn_subseqs(buf, test->unexpected_insns,
++				  cnt, MAX_UNEXPECTED_INSNS)) {
++		printf("FAIL: found unexpected subsequence of instructions\n");
++		result = false;
++		if (verbose) {
++			printf("Program:\n");
++			print_insn(buf, cnt);
++			printf("Un-expected subsequence:\n");
++			print_insn(test->unexpected_insns, MAX_UNEXPECTED_INSNS);
++		}
++	}
++
++	free(buf);
++ out:
++	return result;
++}
++
+ static void do_test_single(struct bpf_test *test, bool unpriv,
+ 			   int *passes, int *errors)
+ {
+@@ -1262,6 +1493,9 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
+ 	if (verbose)
+ 		printf(", verifier log:\n%s", bpf_vlog);
+ 
++	if (!check_xlated_program(test, fd_prog))
++		goto fail_log;
++
+ 	run_errs = 0;
+ 	run_successes = 0;
+ 	if (!alignment_prevented_execution && fd_prog >= 0 && test->runs >= 0) {
 -- 
 2.25.1
 
