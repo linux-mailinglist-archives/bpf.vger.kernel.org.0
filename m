@@ -2,313 +2,228 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC142547B0F
-	for <lists+bpf@lfdr.de>; Sun, 12 Jun 2022 18:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B64547CBF
+	for <lists+bpf@lfdr.de>; Mon, 13 Jun 2022 00:23:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230144AbiFLQZQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 12 Jun 2022 12:25:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58988 "EHLO
+        id S234393AbiFLWXd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 12 Jun 2022 18:23:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbiFLQZP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 12 Jun 2022 12:25:15 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 060AC5E156;
-        Sun, 12 Jun 2022 09:25:14 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id s1so4407048wra.9;
-        Sun, 12 Jun 2022 09:25:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5flk/qL29qSBs94WkHtYEwD+wqRTcbtd2jwDx4HEmtw=;
-        b=kCZC/ubVDGgfgJOVNWXI+3kJ02DI3Gcre3OAO5T1JVJ2mwAXcSAawvwpWwyLVABuc5
-         NH2/mT8v9/3bXBTqbmcCtmhlh6dPIaGuOxAEYaL6Hkxe5YTx+duCyOyGZlo1IECtuy53
-         7FRR5yfqFsZB+fpymAiGle7AZygTeFIuAxut5r4AsYPnXif51MfXXwOl4m30l1RInQM1
-         mS1zvywicUEs44S/k3NvXw8TkTxy/giidylVZ7J0WBvboOvJ+8gcq08/OlUQqviyguub
-         dEaYDj86E17t4szLBjvnKN4iP25sF9tSY60/z3qQxyEC36Vpg2L4h1HVsm7W/tcvnyex
-         KXlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5flk/qL29qSBs94WkHtYEwD+wqRTcbtd2jwDx4HEmtw=;
-        b=4383g0FTSX0ZGT0rFp4Jadyn7fB0bPhKIcmuY6oMRbR+1uks7uYjPNF6WJ0BR4kMgi
-         /mZSi0cFaoeU8V+meABtq3Ij/FlxB6OklhMTJynrO3NkyY5Qb3I2IyYI0rikwmG6ZzM/
-         cvpmFsKsfraXIreCIt+thQqXcLU1da2rlslkAyfY7uMwD4kEMkDz6idRMrr/ZuOmdoFS
-         abP+tPi66zfj+2r45lKDowPnzP+Y1oE2j509aYoMEq11BuP9FDN1K3ETijiSwJ2E0EKD
-         ufmuYxWXSj4gvOSFCOFVUFpPomSADj3LO86heTZljK2abdKQ3p2ktlYDCter6EGRzRBT
-         fMmA==
-X-Gm-Message-State: AOAM531rjm+oY2v2wr4aSzmigdrHUDxz8ovNq+q3Ts/W7yCjKInaFlBZ
-        c+wg3hyyyQS9X3peDsrylM4=
-X-Google-Smtp-Source: ABdhPJzQR8sIKhKkmeF3b5mQJO9Q/sBMcf3hU2YFJhcGfnIIEvoVi8aCQdWdCSB7rstN0yVsI4LuPw==
-X-Received: by 2002:adf:e991:0:b0:210:3222:cd1e with SMTP id h17-20020adfe991000000b002103222cd1emr55285164wrm.49.1655051112386;
-        Sun, 12 Jun 2022 09:25:12 -0700 (PDT)
-Received: from krava ([193.85.244.190])
-        by smtp.gmail.com with ESMTPSA id r15-20020a05600c35cf00b0039c54f34948sm11277924wmq.5.2022.06.12.09.25.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Jun 2022 09:25:11 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Sun, 12 Jun 2022 18:25:09 +0200
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S238444AbiFLWX0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 12 Jun 2022 18:23:26 -0400
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A4D2603
+        for <bpf@vger.kernel.org>; Sun, 12 Jun 2022 15:23:22 -0700 (PDT)
+Received: from [192.168.1.107] ([37.4.249.155]) by mrelayeu.kundenserver.de
+ (mreue106 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MNccf-1oOONn1lyV-00P7sO; Mon, 13 Jun 2022 00:22:48 +0200
+Message-ID: <f038d6f9-b96b-0749-111c-33ac8939a1c0@i2se.com>
+Date:   Mon, 13 Jun 2022 00:22:47 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Content-Language: en-US
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCHv4 bpf-next 0/2] perf tools: Fix prologue generation
-Message-ID: <YqYTZVa44Y6RQ11W@krava>
-References: <20220603204509.15044-1-jolsa@kernel.org>
- <CAEf4BzbT4Z=B2hZxTQf1MrCp6TGiMgP+_t7p8G5A+RdVyNP+8w@mail.gmail.com>
- <YqOOsL8EbbO3lhmC@kernel.org>
- <CAEf4BzaKP8MHtGZDVSpwbCxNUD4zY9wkjEa4HKR0LWxYKW5cGQ@mail.gmail.com>
- <YqOvYo1tp32gKviM@krava>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YqOvYo1tp32gKviM@krava>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Shubham Bansal <illusionist.neo@gmail.com>
+Cc:     bpf@vger.kernel.org, jpalus@fastmail.com,
+        regressions@lists.linux.dev,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+From:   Stefan Wahren <stefan.wahren@i2se.com>
+Subject: [BUG] null pointer dereference when loading bpf_preload on Raspberry
+ Pi
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:Jj30T8ghvSQPTo/veJ6pqA61fN+atWnJj62zBRCtM6MZPI2H2Ma
+ ZEGqld1BX4/3dYCsX4GhvAVMz04HW4H7SWF1S5NSzmniLdAZWK2R+99LJPqj7a3a29wFq2R
+ ziHcTce58IuBwifU2kkfwXuM/susOFaRgpD8wCWB2z7DvlBgXRWBi6GyOonFI6zlsoOGgkP
+ rKu0TKodmGPlF/k6oMttw==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:YAN4JjkHQFs=:hI3ZpfELtu+D+pthjqxnUi
+ VeubRTuActJdS+7yH8d5z9xTbEZl2qtKG6ondmmulQZFla8VaqzGPYKIJ0jIioWfEB8BCasod
+ jCo28euHaRMbcLz7quL/aMjZiDMxhX0i+i0tlfSmfgk8JSM7+GWrlVgXZHiMh21hzEg7yqSnI
+ LXRDFUCev3zaPmMj0xInCrZNbejIhSH2qvAsw8+6LuvwD7f7CUHY4VeZjDDjPE5fneKQJLT4Y
+ 4PQY2IlPKvWWg2enRqsqdOTca/9nFF655INMAcj+c5U79HtdhpoZqWU/njmbjTPlbzmYZYZmy
+ 7uUymOhu27dI8sH9RmDABP9EHxHgahHdmD4CiXQq1V4knF94fkY2qtwr4WlUKt09lpidEu44T
+ 3V0qqJwDP9R9Npzwu8xD1m1k5H2PSvikoR8eoRjM9QJnLeV9PetBilaqRbYuGvOfTe6n3LY0K
+ lXobo3BX2Fn7qtvEDbUHFW4MBCC1CSdOLIsKcePj9dpDef2BOViGDHUVlQx7SlaVjOvSDgdFi
+ u8UZHKEDXccyrESiAfcO998eaRnEoUtfPZWPfsRQsffWpQENF5KvrHSpK/3DTsFa+CL2Jb/Rg
+ 3tYq8lwfV0ZHJ0N/05V6tdZq+fKaKsnu2gL96+WDn/Wjb31a29T7p8YEnpQViPfccCQ6P5Fz/
+ rdSawea2QoV8QfjKDzSZrf+FVR0YwA2CVav89D1oWPx28lRU//nby/0Ws0GO0aiUeHf0/fz87
+ PCwanRsGvUb6Hu0e9RnDKDiCz7V72uzhfAuuyH1sY1q5kTp9wakQQ53J8JE=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 10, 2022 at 10:53:57PM +0200, Jiri Olsa wrote:
-> On Fri, Jun 10, 2022 at 11:45:48AM -0700, Andrii Nakryiko wrote:
-> > On Fri, Jun 10, 2022 at 11:34 AM Arnaldo Carvalho de Melo
-> > <acme@kernel.org> wrote:
-> > >
-> > > Em Thu, Jun 09, 2022 at 01:31:52PM -0700, Andrii Nakryiko escreveu:
-> > > > On Fri, Jun 3, 2022 at 1:45 PM Jiri Olsa <jolsa@kernel.org> wrote:
-> > > > >
-> > > > > hi,
-> > > > > sending change we discussed some time ago [1] to get rid of
-> > > > > some deprecated functions we use in perf prologue code.
-> > > > >
-> > > > > Despite the gloomy discussion I think the final code does
-> > > > > not look that bad ;-)
-> > > > >
-> > > > > This patchset removes following libbpf functions from perf:
-> > > > >   bpf_program__set_prep
-> > > > >   bpf_program__nth_fd
-> > > > >   struct bpf_prog_prep_result
-> > > > >
-> > > > > v4 changes:
-> > > > >   - fix typo [Andrii]
-> > > > >
-> > > > > v3 changes:
-> > > > >   - removed R0/R1 zero init in libbpf_prog_prepare_load_fn,
-> > > > >     because it's not needed [Andrii]
-> > > > >   - rebased/post on top of bpf-next/master which now has
-> > > > >     all the needed perf/core changes
-> > > > >
-> > > > > v2 changes:
-> > > > >   - use fallback section prog handler, so we don't need to
-> > > > >     use section prefix [Andrii]
-> > > > >   - realloc prog->insns array in bpf_program__set_insns [Andrii]
-> > > > >   - squash patch 1 from previous version with
-> > > > >     bpf_program__set_insns change [Daniel]
-> > > > >   - patch 3 already merged [Arnaldo]
-> > > > >   - added more comments
-> > > > >
-> > > > > thanks,
-> > > > > jirka
-> > > > >
-> > > >
-> > > > Arnaldo, can I get an ack from you for this patch set? Thank you!
-> > >
-> > > So, before these patches:
-> > >
-> > > [acme@quaco perf-urgent]$ git log --oneline -5
-> > > 22905f78d181f446 (HEAD) libperf evsel: Open shouldn't leak fd on failure
-> > > a3c6da3dbd4bdf9c perf test: Fix "perf stat CSV output linter" test on s390
-> > > 785cb9e85e8ba66f perf unwind: Fix uninitialized variable
-> > > 874c8ca1e60b2c56 netfs: Fix gcc-12 warning by embedding vfs inode in netfs_i_context
-> > > 3d9f55c57bc3659f Merge tag 'fs_for_v5.19-rc2' of git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs
-> > > [acme@quaco perf-urgent]$ sudo su -
-> > > [root@quaco ~]# perf -v
-> > > perf version 5.19.rc1.g22905f78d181
-> > > [root@quaco ~]# perf test 42
-> > >  42: BPF filter                                                      :
-> > >  42.1: Basic BPF filtering                                           : Ok
-> > >  42.2: BPF pinning                                                   : Ok
-> > >  42.3: BPF prologue generation                                       : Ok
-> > > [root@quaco ~]#
-> > >
-> > > And after:
-> > >
-> > > [acme@quaco perf-urgent]$ git log --oneline -5
-> > > f8ec656242acf2de (HEAD -> perf/urgent) perf tools: Rework prologue generation code
-> > > a750a8dd7e5d2d4b perf tools: Register fallback libbpf section handler
-> > > d28f2a8ad42af160 libperf evsel: Open shouldn't leak fd on failure
-> > > a3c6da3dbd4bdf9c perf test: Fix "perf stat CSV output linter" test on s390
-> > > 785cb9e85e8ba66f perf unwind: Fix uninitialized variable
-> > > [acme@quaco perf-urgent]$ sudo su -
-> > > [root@quaco ~]# perf -v
-> > > perf version 5.19.rc1.gf8ec656242ac
-> > > [root@quaco ~]# perf test 42
-> > >  42: BPF filter                                                      :
-> > >  42.1: Basic BPF filtering                                           : FAILED!
-> > >  42.2: BPF pinning                                                   : FAILED!
-> > >  42.3: BPF prologue generation                                       : Ok
-> > > [root@quaco ~]#
-> > >
-> > > Jiri, can you try reproducing these? Do this require some other work
-> > > that is in bpf-next/master? Lemme try...
-> > >
-> > > Further details:
-> > >
-> > > [acme@quaco perf-urgent]$ clang -v
-> > > clang version 13.0.0 (five:git/llvm-project d667b96c98438edcc00ec85a3b151ac2dae862f3)
-> > > Target: x86_64-unknown-linux-gnu
-> > > Thread model: posix
-> > > InstalledDir: /usr/local/bin
-> > > Found candidate GCC installation: /usr/lib/gcc/x86_64-redhat-linux/12
-> > > Selected GCC installation: /usr/lib/gcc/x86_64-redhat-linux/12
-> > > Candidate multilib: .;@m64
-> > > Candidate multilib: 32;@m32
-> > > Selected multilib: .;@m64
-> > > [acme@quaco perf-urgent]$ cat /etc/fedora-release
-> > > Fedora release 36 (Thirty Six)
-> > > [acme@quaco perf-urgent]$ gcc -v
-> > > Using built-in specs.
-> > > COLLECT_GCC=/usr/bin/gcc
-> > > COLLECT_LTO_WRAPPER=/usr/libexec/gcc/x86_64-redhat-linux/12/lto-wrapper
-> > > OFFLOAD_TARGET_NAMES=nvptx-none
-> > > OFFLOAD_TARGET_DEFAULT=1
-> > > Target: x86_64-redhat-linux
-> > > Configured with: ../configure --enable-bootstrap --enable-languages=c,c++,fortran,objc,obj-c++,ada,go,d,lto --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --with-bugurl=http://bugzilla.redhat.com/bugzilla --enable-shared --enable-threads=posix --enable-checking=release --enable-multilib --with-system-zlib --enable-__cxa_atexit --disable-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id --with-gcc-major-version-only --enable-libstdcxx-backtrace --with-linker-hash-style=gnu --enable-plugin --enable-initfini-array --with-isl=/builddir/build/BUILD/gcc-12.1.1-20220507/obj-x86_64-redhat-linux/isl-install --enable-offload-targets=nvptx-none --without-cuda-driver --enable-offload-defaulted --enable-gnu-indirect-function --enable-cet --with-tune=generic --with-arch_32=i686 --build=x86_64-redhat-linux --with-build-config=bootstrap-lto --enable-link-serialization=1
-> > > Thread model: posix
-> > > Supported LTO compression algorithms: zlib zstd
-> > > gcc version 12.1.1 20220507 (Red Hat 12.1.1-1) (GCC)
-> > > [acme@quaco perf-urgent]$
-> > >
-> > > [root@quaco ~]# perf test -v 42
-> > >  42: BPF filter                                                      :
-> > >  42.1: Basic BPF filtering                                           :
-> > > --- start ---
-> > > test child forked, pid 638881
-> > > Kernel build dir is set to /lib/modules/5.17.11-300.fc36.x86_64/build
-> > > set env: KBUILD_DIR=/lib/modules/5.17.11-300.fc36.x86_64/build
-> > > unset env: KBUILD_OPTS
-> > > include option is set to -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h
-> > > set env: NR_CPUS=8
-> > > set env: LINUX_VERSION_CODE=0x5110b
-> > > set env: CLANG_EXEC=/usr/lib64/ccache/clang
-> > > set env: CLANG_OPTIONS=-xc -g
-> 
-> ok, it's the BTF debug info as Andrii mentioned below,
-> I assume you have 'clang-opt=-g' in .perfconfig, right?
-> 
-> when I add it to mine I can reproduce, perfect
-> 
-> SNIP
-> 
-> > > bpf: config 'func=do_epoll_wait' is ok
-> > > Looking at the vmlinux_path (8 entries long)
-> > > symsrc__init: build id mismatch for vmlinux.
-> > > Using /usr/lib/debug/lib/modules/5.17.11-300.fc36.x86_64/vmlinux for symbols
-> > > Open Debuginfo file: /usr/lib/debug/.build-id/f2/26f5d75e6842add57095a0615a1e5c16783dd7.debug
-> > > Try to find probe point from debuginfo.
-> > > Matched function: do_epoll_wait [38063fb]
-> > > Probe point found: do_epoll_wait+0
-> > > Found 1 probe_trace_events.
-> > > Opening /sys/kernel/tracing//kprobe_events write=1
-> > > Opening /sys/kernel/tracing//README write=0
-> > > Writing event: p:perf_bpf_probe/func _text+3943040
-> > > libbpf: map 'flip_table': created successfully, fd=4
-> > > libbpf: prog 'bpf_func__SyS_epoll_pwait': BPF program load failed: Invalid argument
-> > > libbpf: prog 'bpf_func__SyS_epoll_pwait': -- BEGIN PROG LOAD LOG --
-> > > Invalid insn code at line_info[11].insn_off
-> > 
-> > Mismatched line_info.
-> > 
-> > Jiri, I think we need to clear func_info and line_info in
-> > bpf_program__set_insns() because at that point func/line info can be
-> > mismatched and won't correspond to the actual set of instructions.
+Hi,
 
-so the problem is that we prepend init proglogue instructions
-for each program not just for the one that needs it, so it will
-mismatch later on.. the fix below makes it work for me
+Jan Palus already reported this NULL pointer dereference on bugzilla 
+[1], but i want to make sure this is noticed by the right people.
 
-Arnaldo,
-I squashed and pushed the change below changes to my bpf/depre
-branch, could you please retest?
+I've i boot my Raspberry Pi 3 B Plus with multi_v7_defconfig and the 
+following config settings:
 
-thanks,
-jirka
+CONFIG_BPF_SYSCALL=y
+CONFIG_BPF_JIT=y
+CONFIG_BPF_JIT_ALWAYS_ON=y
+CONFIG_BPF_JIT_DEFAULT_ON=y
+CONFIG_BPF_UNPRIV_DEFAULT_OFF=y
+CONFIG_USERMODE_DRIVER=y
+CONFIG_BPF_PRELOAD=y
+CONFIG_BPF_PRELOAD_UMD=m
 
+The kernel (Linux 5.18.3) crashes with a null pointer deference:
 
----
-diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
-index 30d0e688beec..6bd7c288e820 100644
---- a/tools/perf/util/bpf-loader.c
-+++ b/tools/perf/util/bpf-loader.c
-@@ -107,6 +107,17 @@ static int bpf_perf_object__add(struct bpf_object *obj)
- 	return perf_obj ? 0 : -ENOMEM;
- }
- 
-+static void *program_priv(const struct bpf_program *prog)
-+{
-+	void *priv;
-+
-+	if (IS_ERR_OR_NULL(bpf_program_hash))
-+		return NULL;
-+	if (!hashmap__find(bpf_program_hash, prog, &priv))
-+		return NULL;
-+	return priv;
-+}
-+
- static struct bpf_insn prologue_init_insn[] = {
- 	BPF_MOV64_IMM(BPF_REG_2, 0),
- 	BPF_MOV64_IMM(BPF_REG_3, 0),
-@@ -120,9 +131,18 @@ static int libbpf_prog_prepare_load_fn(struct bpf_program *prog,
- {
- 	size_t init_size_cnt = ARRAY_SIZE(prologue_init_insn);
- 	size_t orig_insn_cnt, insn_cnt, init_size, orig_size;
-+	struct bpf_prog_priv *priv = program_priv(prog);
- 	const struct bpf_insn *orig_insn;
- 	struct bpf_insn *insn;
- 
-+	if (IS_ERR_OR_NULL(priv)) {
-+		pr_debug("bpf: failed to get private field\n");
-+		return -BPF_LOADER_ERRNO__INTERNAL;
-+	}
-+
-+	if (!priv->need_prologue)
-+		return 0;
-+
- 	/* prepend initialization code to program instructions */
- 	orig_insn = bpf_program__insns(prog);
- 	orig_insn_cnt = bpf_program__insn_cnt(prog);
-@@ -312,17 +332,6 @@ static bool ptr_equal(const void *key1, const void *key2,
- 	return key1 == key2;
- }
- 
--static void *program_priv(const struct bpf_program *prog)
--{
--	void *priv;
--
--	if (IS_ERR_OR_NULL(bpf_program_hash))
--		return NULL;
--	if (!hashmap__find(bpf_program_hash, prog, &priv))
--		return NULL;
--	return priv;
--}
--
- static int program_set_priv(struct bpf_program *prog, void *priv)
- {
- 	void *old_priv;
+[    5.551587] Unable to handle kernel NULL pointer dereference at 
+virtual address 00000048
+[    5.564467] [00000048] *pgd=39a12835
+[    5.572700] Internal error: Oops: 17 [#1] SMP ARM
+[    5.581249] Modules linked in: bpf_preload(+)
+[    5.589400] CPU: 1 PID: 85 Comm: modprobe Not tainted 5.18.3 #1
+[    5.597966] usb 1-1.1: new high-speed USB device number 3 using dwc2
+[    5.599251] Hardware name: BCM2835
+[    5.616839] PC is at mmiocpy+0xc8/0x334
+[    5.624534] LR is at copy_from_bpfptr+0x60/0x80
+[    5.632973] pc : [<c06e77e8>]    lr : [<c03fee50>]    psr: 60000013
+[    5.643146] sp : f1515b30  ip : f1515b48  fp : f1515b30
+[    5.652331] r10: c328e040  r9 : f1515b68  r8 : 00000000
+[    5.661506] r7 : c328e040  r6 : 00000002  r5 : 00000048  r4 : 00000002
+[    5.672037] r3 : 0000003d  r2 : 00000000  r1 : 00000048  r0 : f1515c08
+[    5.682572] Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  
+Segment none
+[    5.693670] Control: 10c5383d  Table: 023c406a  DAC: 00000051
+[    5.703426] Register r0 information: 2-page vmalloc region starting 
+at 0xf1514000 allocated at kernel_clone+0x98/0x27c
+[    5.718310] Register r1 information: non-paged memory
+[    5.727454] Register r2 information: NULL pointer
+[    5.736205] Register r3 information: non-paged memory
+[    5.738825] hub 1-1.1:1.0: USB hub found
+[    5.745334] Register r4 information: non-paged memory
+[    5.753345] hub 1-1.1:1.0: 3 ports detected
+[    5.762358] Register r5 information: non-paged memory
+[    5.762364] Register r6 information: non-paged memory
+[    5.762368] Register r7 information: slab task_struct start c328e040 
+pointer offset 0
+[    5.800440] Register r8 information: NULL pointer
+[    5.809029] Register r9 information: 2-page vmalloc region starting 
+at 0xf1514000 allocated at kernel_clone+0x98/0x27c
+[    5.823843] Register r10 information: slab task_struct start c328e040 
+pointer offset 0
+[    5.835847] Register r11 information: 2-page vmalloc region starting 
+at 0xf1514000 allocated at kernel_clone+0x98/0x27c
+[    5.850796] Register r12 information: 2-page vmalloc region starting 
+at 0xf1514000 allocated at kernel_clone+0x98/0x27c
+[    5.865664] Process modprobe (pid: 85, stack limit = 0x(ptrval))
+[    5.867961] usb 1-1.3: new low-speed USB device number 4 using dwc2
+[    5.875679] Stack: (0xf1515b30 to 0xf1516000)
+[    5.894419] 5b20:                                     f1515c08 
+00000002 00000000 c03fee50
+[    5.906750] 5b40: 00000048 c051aa3d 00000000 c0402520 ef80327c 
+ef80328c c2001180 f1515c08
+[    5.919097] 5b60: c1a45808 00012cc0 00000048 c051aa3d c3022440 
+00000001 c2ee9898 ffffffff
+[    5.931435] 5b80: 00000000 f1515bb4 00000000 00000000 c2ee9a48 
+5beb87ed c22c4c8c 00000000
+[    5.943733] 5ba0: 00000001 c328e040 00000000 00012cc0 00000dc0 
+00000000 f1515f38 c048fb58
+[    5.956089] 5bc0: f1515c00 00000000 c328e040 c217c000 4a389946 
+00000001 00012cc0 ef7ff780
+[    5.968456] 5be0: 00000000 4a389946 00000005 00000001 00000001 
+c328e2c0 c1804d8c c036a868
+[    5.980852] 5c00: 00000801 ef7ff780 00000000 00000000 00000000 
+00000000 00000000 00000000
+[    5.993238] 5c20: 00000000 00000000 00000000 00000000 00000000 
+00000000 00000000 00000000
+[    6.005643] 5c40: 00000000 00000000 00000000 00000000 00000000 
+00000000 00000000 00000000
+[    6.018026] 5c60: 00000000 00000000 00000000 00000000 00000000 
+00000000 00000000 00000000
+[    6.030371] 5c80: 00000000 00000000 00000000 00000000 00000000 
+00000000 00000019 5beb87ed
+[    6.042719] 5ca0: c2004208 000017a8 00000048 c328e040 ffffffff 
+00000000 c328e040 c328e040
+[    6.055020] 5cc0: 00000000 c04043ec 00005dd9 7fffffff c2004208 
+00000048 c051aa3d 5beb87ed
+[    6.067330] 5ce0: 00005df9 000017a8 c328e040 c328e040 ffffffff 
+00000000 c328e040 0000017b
+[    6.079612] 5d00: 00000000 bf0031e0 00000002 00000004 000017a8 
+00000001 00000000 00000000
+[    6.091957] 5d20: 00000000 6f6c5f5f 72656461 70616d2e 00000000 
+00000000 00000000 00000000
+[    6.104254] 5d40: 00000000 00000000 00000000 00000000 c328e040 
+c0380594 c1325856 00000001
+[    6.116521] 5d60: c23729a0 c051b97c c23729a0 5beb87ed 00000000 
+00000000 c200423c c1a4a551
+[    6.117969] usb 1-1.1.2: new low-speed USB device number 5 using dwc2
+[    6.128707] 5d80: c2372a50 00000001 c1325856 00000124 c2372a50 
+c051b97c c2372a50 5beb87ed
+[    6.128716] 5da0: 00000000 c22d1980 f1515e6c bf00322c ffffffff 
+00000000 c2372a50 00000000
+[    6.163743] 5dc0: 00000030 00000000 c2372a50 c0f179f0 c2348280 
+ef87f900 c2001180 c328e040
+[    6.176062] 5de0: c04897dc 00000013 c0464698 c22d1980 c22d1980 
+00000062 00000cc0 c049d584
+[    6.188380] 5e00: 00000cc0 c328e040 c22d1980 5beb87ed 00000001 
+00000cc0 00000062 bf00a05c
+[    6.200720] 5e20: ffffffff c1a4a9e0 c328e040 0000017b 00000000 
+c0464698 c2348280 5beb87ed
+[    6.213033] 5e40: 00000002 c328e040 bf007280 5beb87ed c22d1980 
+bf007280 c328e040 c2348280
+[    6.225441] 5e60: 00000000 bf00a0e0 00000001 c2348280 bf0040b7 
+bf005860 000017a8 000008a8
+[    6.237841] 5e80: 00000000 5beb87ed c328e040 bf00a000 c23481c0 
+00000000 c1a4a9e0 c0301f30
+[    6.250269] 5ea0: c357a3c0 c357a3c0 00000000 00000000 00000000 
+00000000 c03c17f0 c23481c0
+[    6.262591] 5ec0: c2001180 00000cc0 c03c17f0 c049d888 00000cc0 
+00000000 c23481c0 5beb87ed
+[    6.274942] 5ee0: 00000000 bf007040 0002d064 5beb87ed bf007040 
+0002d064 c23481c0 c328e040
+[    6.287336] 5f00: c0300324 c03c1810 bf007040 0000008f 00000000 
+0002d064 00000000 c03c3ce4
+[    6.299841] 5f20: f1515f34 7fffffff 00000000 00000002 c353e040 
+f151b000 f151d8cf f151d940
+[    6.312151] 5f40: f151b000 00003f1c f151e904 f151e760 f151e25c 
+00005000 00005150 00002884
+[    6.324534] 5f60: 00005241 00000000 00000000 00000000 00002874 
+00000024 00000025 0000001b
+[    6.336923] 5f80: 00000000 00000017 00000000 5beb87ed 00000000 
+bbbecb00 000417d8 00000000
+[    6.349310] 5fa0: 0000017b c03000c0 bbbecb00 000417d8 00000000 
+0002d064 00000000 0002ec3c
+[    6.361662] 5fc0: bbbecb00 000417d8 00000000 0000017b 00042ce0 
+00000000 00042c38 00000000
+[    6.374053] 5fe0: be8e3a88 be8e3a78 00022cb8 b6cb3ae0 60000010 
+00000000 00000000 00000000
+[    6.386437]  mmiocpy from copy_from_bpfptr+0x60/0x80
+[    6.395558]  copy_from_bpfptr from __sys_bpf+0x78/0x1d30
+[    6.404992]  __sys_bpf from bpf_sys_bpf+0x214/0x238
+[    6.413982]  bpf_sys_bpf from skel_map_create.constprop.0+0x60/0x80 
+[bpf_preload]
+[    6.425677]  skel_map_create.constprop.0 [bpf_preload] from 
+bpf_load_and_run.constprop.0+0x2c/0x1f8 [bpf_preload]
+[    6.440256]  bpf_load_and_run.constprop.0 [bpf_preload] from 
+load+0xe0/0x1000 [bpf_preload]
+[    6.452929]  load [bpf_preload] from do_one_initcall+0x68/0x170
+[    6.463114]  do_one_initcall from do_init_module+0x3c/0x1e0
+[    6.472955]  do_init_module from sys_finit_module+0xc8/0xd4
+[    6.482802]  sys_finit_module from ret_fast_syscall+0x0/0x54
+[    6.492679] Exception stack(0xf1515fa8 to 0xf1515ff0)
+[    6.501975] 5fa0:                   bbbecb00 000417d8 00000000 
+0002d064 00000000 0002ec3c
+[    6.514476] 5fc0: bbbecb00 000417d8 00000000 0000017b 00042ce0 
+00000000 00042c38 00000000
+[    6.526999] 5fe0: be8e3a88 be8e3a78 00022cb8 b6cb3ae0
+[    6.536392] Code: e480e004 e8bd0360 e1b02f82 14d13001 (24d14001)
+[    6.546878] ---[ end trace 0000000000000000 ]---
+
+It would be nice to get a hint, how to narrow down or which commit might 
+trigger this issue.
+
+[1] - https://bugzilla.kernel.org/show_bug.cgi?id=216105
+
