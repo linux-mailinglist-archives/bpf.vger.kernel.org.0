@@ -2,62 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9321D549B8D
-	for <lists+bpf@lfdr.de>; Mon, 13 Jun 2022 20:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45328549B84
+	for <lists+bpf@lfdr.de>; Mon, 13 Jun 2022 20:30:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240139AbiFMSbh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Jun 2022 14:31:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53252 "EHLO
+        id S245578AbiFMSaE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Jun 2022 14:30:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244839AbiFMSbL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Jun 2022 14:31:11 -0400
-X-Greylist: delayed 329 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 13 Jun 2022 07:48:45 PDT
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DAFFBCBB
-        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 07:48:45 -0700 (PDT)
-Received: from [192.168.1.107] ([37.4.249.155]) by mrelayeu.kundenserver.de
- (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1M1HuU-1o2PAH2rHe-002pGD; Mon, 13 Jun 2022 16:42:35 +0200
-Message-ID: <de4da55b-a074-b375-c41d-413bb19a428b@i2se.com>
-Date:   Mon, 13 Jun 2022 16:42:33 +0200
+        with ESMTP id S237959AbiFMS3x (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Jun 2022 14:29:53 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 046C7B2E8A
+        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 07:44:51 -0700 (PDT)
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25CFxXgj028010
+        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 07:44:51 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=Z2DwcMRvAwGR0sLzNCOqbpUyDze37RamK+RcELpjIs8=;
+ b=XQYbGWXiLoMW/2aZVWta8wTQZl2MS9G42iKmKe3rXs4o7arVNn0zlgvFn7qsT41Ws+EL
+ iU3Jm/YqJQo4agNBlaNhe/MBGqUAHS36mDcpGbtpW8imQKlWg56Qw7QTPGqMrexehfms
+ teC4RrWwuZ4ky9H2ZBnuos5WdX4W/bQxp6o= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3gmpcmh3tj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 07:44:51 -0700
+Received: from twshared14577.08.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28; Mon, 13 Jun 2022 07:44:49 -0700
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+        id 44310B8DCBB8; Mon, 13 Jun 2022 07:44:40 -0700 (PDT)
+From:   Yonghong Song <yhs@fb.com>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        <dwarves@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
+Subject: [PATCH dwarves 0/2] btf: support BTF_KIND_ENUM64
+Date:   Mon, 13 Jun 2022 07:44:40 -0700
+Message-ID: <20220613144440.4107327-1-yhs@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [BUG] null pointer dereference when loading bpf_preload on
- Raspberry Pi
-Content-Language: en-US
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Shubham Bansal <illusionist.neo@gmail.com>,
-        bpf@vger.kernel.org, jpalus@fastmail.com,
-        regressions@lists.linux.dev,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-References: <f038d6f9-b96b-0749-111c-33ac8939a1c0@i2se.com>
- <YqcbgmTmezGM0VPr@shell.armlinux.org.uk>
-From:   Stefan Wahren <stefan.wahren@i2se.com>
-In-Reply-To: <YqcbgmTmezGM0VPr@shell.armlinux.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:RUNrFBwO0Rxcmop+xh2sE+cCQBp6k7JRB/aBlkwKSR5DZbbnnuK
- JzNwJOnHUCBbVTQF4vvpq45KCFOfjlvWG+h0CBWrquW+sLSTdcyq/JW9ACJIuLXwXO5jOFn
- n7cX6JIug22sB911HFAVE2Ym19DV+AQ4ibGWGDXOhxUmQB8nP0YeTdozmAuE7DlToDm2xsc
- 2ggpSyzOPQFvCUCyDSnWg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:WzokOsTgqhU=:qsIgKmQvGURvx6eca4GQCF
- qtonQCxBOG1f8otpPzDKPWk7zB8KtcQxcYFnfXCAr7AJu881Wax4S1d77iTlWHXkRRJqn383/
- ADm2PhfWJ1VO8IFjT5bDoHlUGm28tZRw3L/pp5GN84j8eE/z1p54E2XnRVNgSrNCHZJ8ftqcf
- UL0Ew2LABcTIelIOF3XyAuQsFZJdE9sJi6UQc/uJZ37Rh1luurl8MLGJR2EJxmIquA6IUPBzE
- JLxWkBv+QjjSziqBQ/ttt9r3dRej9/JAkKCg08kkf0PodpXD7AKQeJeGTyQqyBOawaxTK6uGq
- WNRuE6xk5M3GnR8oWlQqxG/pUB2ub3m18USg+QmznK7gxTwSfhuEpp0zq1m4kFxkVs+qMjNYt
- VrN9dAwU/Fm7KI61AsAObSelk4aJHHwd2FM64WE4V177vJbIVnfO4Hi+dbcO6RfmBJ46hy02G
- +8zXUTQdYhUls4Ngp0WPKTmCDsryEJoX2g1jUOnE4nwVPYwExC7dNt3zqrTfywT8lwicDPWq4
- 73IxjyZPlYhDseD9/UQhnhMuLXPSL7xMChNZyEl2mdP60f/gAh20ZU4vPVNxSn6FMJZsPX9Dc
- l8LirM8msZi8TYee8uQ3PtpIUkkmqMvVTQ+6GN961ZvPgwMws+cEdYCKE9vVuTF0f1/1Hxub1
- zDGlFzPjtDF/oNsMqfXMvOurPwcB/Z24953GlDrwa0DJ9YxK/a3guufxJAO0EIyw0x8qYXzJa
- 1IAl0uZyhnAgMz2/PDA8UVvX39c7iGvs3U1R1tpIt1QzW7BuUG5BGCvs3rg=
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: UolTfxeD3yjOFzMZcyYxCmP_dudkVe_n
+X-Proofpoint-GUID: UolTfxeD3yjOFzMZcyYxCmP_dudkVe_n
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.517,FMLib:17.11.64.514
+ definitions=2022-06-13_06,2022-06-13_01,2022-02-23_01
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,20 +62,35 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+Add support for enum64. For 64-bit enumerator value,
+previously, the value is truncated into 32bit, e.g.,
+for the following enum in linux uapi bpf.h,
+  enum {
+        BPF_F_INDEX_MASK                =3D 0xffffffffULL,
+        BPF_F_CURRENT_CPU               =3D BPF_F_INDEX_MASK,
+  /* BPF_FUNC_perf_event_output for sk_buff input context. */
+        BPF_F_CTXLEN_MASK               =3D (0xfffffULL << 32),
+  };
 
-Am 13.06.22 um 13:12 schrieb Russell King (Oracle):
-> On Mon, Jun 13, 2022 at 12:22:47AM +0200, Stefan Wahren wrote:
->> It would be nice to get a hint, how to narrow down or which commit might
->> trigger this issue.
-> The standard way? git bisect?
->
-> So it happens on 5.18.0 and 5.18.3. Presumably it didn't happen with
-> 5.17?
+BPF_F_CTXLEN_MASK will be encoded with 0 with BTF_KIND_ENUM
+after pahole dwarf-to-btf conversion.
+With this patch, the BPF_F_CTXLEN_MASK will be encoded properly
+with BTF_KIND_ENUM64.
 
-in 5.17 there is a libelf dependency (was removed in 5.18), which cause 
-a compile issue about missing libelf.h which is only available on my 
-host system but not available in my Linaro cross toolchain.
+This patch is on top of tmp.master since tmp.master has not
+been sync'ed with master branch yet.
 
-Should i copy the libelf.h somewhere, so the cross compiler finds it?
+Yonghong Song (2):
+  libbpf: Sync with latest libbpf repo
+  btf: Support BTF_KIND_ENUM64
+
+ btf_encoder.c     | 38 +++++++++++++++++++++++++++-----------
+ dwarf_loader.c    | 12 ++++++++++++
+ dwarves.h         |  3 ++-
+ dwarves_fprintf.c |  6 +++++-
+ lib/bpf           |  2 +-
+ 5 files changed, 47 insertions(+), 14 deletions(-)
+
+--=20
+2.30.2
 
