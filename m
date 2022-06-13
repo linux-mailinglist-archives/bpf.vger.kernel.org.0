@@ -2,95 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A288548356
-	for <lists+bpf@lfdr.de>; Mon, 13 Jun 2022 11:44:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 748D354842B
+	for <lists+bpf@lfdr.de>; Mon, 13 Jun 2022 12:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240338AbiFMJWa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Jun 2022 05:22:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35112 "EHLO
+        id S239807AbiFMJre (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Jun 2022 05:47:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232021AbiFMJW3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Jun 2022 05:22:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 18FEA1262A
-        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 02:22:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1655112147;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dMsPhpNVvNr+iFjDlmObttc0WGu8hFlqVqfZpEVrzew=;
-        b=c0k4+Qck2qqVzcDxZ/v4daban6XKrRM3uFtHW7c8WlcEGa3omEXTYettCz6pfPzNwnM53r
-        59O3R9luzuR1e2dNvcIzzL+jasLkfjEUaT6pUvBfs0A60feaAPRUDMfPpuQUKGLJit3/uV
-        I2+J3GDDC88lM5406f53Ru70kPbB7+4=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-605-uN_YvowAMMizsk4hdZZm0Q-1; Mon, 13 Jun 2022 05:22:26 -0400
-X-MC-Unique: uN_YvowAMMizsk4hdZZm0Q-1
-Received: by mail-ej1-f71.google.com with SMTP id gr1-20020a170906e2c100b006fefea3ec0aso1547312ejb.14
-        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 02:22:25 -0700 (PDT)
+        with ESMTP id S239858AbiFMJrd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Jun 2022 05:47:33 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79AB318364;
+        Mon, 13 Jun 2022 02:47:29 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id hv24-20020a17090ae41800b001e33eebdb5dso7935437pjb.0;
+        Mon, 13 Jun 2022 02:47:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tMhF7UpFyMXPAr4OwfDi4X/Mo5y4My8mdBCRAqnUwMU=;
+        b=QyBkOmBNdFyl4YRcjSTNDoaa9Kdd9Oy2z9OfMbS28uuaXEQrUTMNT5LCmjR5Z3XX7n
+         MXV2NI6+DzHW+9/05omSg7+etQo8QA7IRX4K0+8UHM6tpHRxicIzY5IZxDMFijbZkf9W
+         BrkkcIBbT37V7tQMVEo3swWuh8wMNAdagEGPcQX7LfP7w2RZOeCbk4tuuzKscaSjos4Q
+         GPiJ+mhqAhMb+s3nqL/QQ+DJe4T2wNBaCosKGSerA8YJYYSdFPimA14A1Kg0qIthHEzB
+         6wRHvD8HF3RSBDGfqa90UYZI5FjTrRWO/TPEvKhsit2IQvC2n+YzN+xH3+pIrhb3CUyt
+         sN1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=dMsPhpNVvNr+iFjDlmObttc0WGu8hFlqVqfZpEVrzew=;
-        b=fXFNXk+XU85fzLz9y/7vbEoFNrDP3tkLtU/pzckJMB1YcFtebQ9BINwzFuVabZxfZQ
-         GxMj+a2Ym2uaHQhF1QYMJufUPVOF/5oARMJgASYP9JrYwuHiqoRZwVigR9xqQXRrwG9d
-         J/cADvQvO4h0g8E2JzVg+kEV87dAVfR6ut60GoPM2ydEJ4xToORgCRaZ+zLD3dAsR0Hd
-         +qQO0FFnoiGatK40CIX4uVVkRv49yLhOqWHenh+wyIFCVGSs/S7ud70922WQ3MA5Rvgu
-         r4/k3QOFkJTcwKkSrCkOpH3YozP1yDEPTGTE4wDq1K0566AShamVR6l/VlbVd25TuAYH
-         yh+g==
-X-Gm-Message-State: AOAM531sQSZCyTrYOC5y75GYnM5szmIGDcmo83hisA0MoxG4dpZWkYhE
-        /fdT5+GF+tpmZR5SbkG1IsIa2rWqp82cAthjnsSJGT83liEA3pmvx0z+tqjvU1zRlZ3gIwdfGGd
-        j6CS2oZGbiqmE
-X-Received: by 2002:a05:6402:ca2:b0:433:4a31:d0ee with SMTP id cn2-20020a0564020ca200b004334a31d0eemr19030571edb.288.1655112142770;
-        Mon, 13 Jun 2022 02:22:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyY/g6w7khMaqsUdYgiQRYbXm6AODDlqhoYxvYkUq+nE43RhLQtKmwLbYMypMxWhac6YIsmQQ==
-X-Received: by 2002:a05:6402:ca2:b0:433:4a31:d0ee with SMTP id cn2-20020a0564020ca200b004334a31d0eemr19030497edb.288.1655112141611;
-        Mon, 13 Jun 2022 02:22:21 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id h8-20020a1709060f4800b0070a50832376sm3573051ejj.154.2022.06.13.02.22.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jun 2022 02:22:20 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 2FFBA406851; Mon, 13 Jun 2022 11:22:20 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>,
-        bpf@vger.kernel.org
-Cc:     Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>,
-        ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
-        joannelkoong@gmail.com, brouer@redhat.com
-Subject: Re: [PATCH] bpf: fix rq lock recursion issue
-In-Reply-To: <20220613025244.31595-1-quic_satyap@quicinc.com>
-References: <20220613025244.31595-1-quic_satyap@quicinc.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 13 Jun 2022 11:22:20 +0200
-Message-ID: <87r13s2a0j.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tMhF7UpFyMXPAr4OwfDi4X/Mo5y4My8mdBCRAqnUwMU=;
+        b=P2ju/B2+fNRivXm/rl1hD1B7CdIL09Un8wLpYO/Ckp2lbtNGS/kIYduPObsm2CHTx/
+         +YtrN7HYpzzwRKfGJ1v4k4J04DuEmxiF+lN/SDFoZKmmVPdFqms5zI99EDQXcJTUsXtB
+         IRaHMh7W76tzBGX9KD7PwnlfyhNxi/TpfcUchohuzPtyP+VIB5BMQ8hoPR5V+lQrurKk
+         weMiBeR0txt9U2YvZFC0puFo30uAt95XMPL25nRm9rgxLCXepZR+83FBebH1PbBXuuWP
+         FdWYjdBi0qzFkc+hsnnDF8jOV4qNp8ir/sCwdweQGbkl4eg0Qw3H5OPZvfCSvwAMf8ZU
+         SC5Q==
+X-Gm-Message-State: AOAM533VwsAQLNV2luJN0qBd7MFdhI2Upb/22ejfbhZu4v6v5+VzmUxp
+        HYf9uDxln2arc4kMSIfT8XcTCREjaogT9Sy5emU=
+X-Google-Smtp-Source: ABdhPJxhOoHeUYbl3XkTh1JeIZv7cQH37VYq3JWfb0Ajsls1DMDxhUoRbSbphQDUwfu1e+bLB8m5RtM+lMdbiIXsm0A=
+X-Received: by 2002:a17:90b:350d:b0:1e6:7780:6c92 with SMTP id
+ ls13-20020a17090b350d00b001e677806c92mr14851809pjb.46.1655113648881; Mon, 13
+ Jun 2022 02:47:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220610150923.583202-1-maciej.fijalkowski@intel.com> <20220610150923.583202-5-maciej.fijalkowski@intel.com>
+In-Reply-To: <20220610150923.583202-5-maciej.fijalkowski@intel.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Mon, 13 Jun 2022 11:47:17 +0200
+Message-ID: <CAJ8uoz3vd_Qhe9=oixMfq6zyuaHBwrQZvSQpU3OYA4Oh-9wmnQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 04/10] selftests: xsk: query for native XDP support
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com> writes:
+On Fri, Jun 10, 2022 at 5:15 PM Maciej Fijalkowski
+<maciej.fijalkowski@intel.com> wrote:
+>
+> Currently, xdpxceiver assumes that underlying device supports XDP in
+> native mode - it is fine by now since tests can run only on a veth pair.
+> Future commit is going to allow running test suite against physical
+> devices, so let us query the device if it is capable of running XDP
+> programs in native mode. This way xdpxceiver will not try to run
+> TEST_MODE_DRV if device being tested is not supporting it.
+>
+> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> ---
+>  tools/testing/selftests/bpf/xdpxceiver.c | 38 ++++++++++++++++++++++--
+>  1 file changed, 36 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/xdpxceiver.c b/tools/testing/selftests/bpf/xdpxceiver.c
+> index e5992a6b5e09..da8098f1b655 100644
+> --- a/tools/testing/selftests/bpf/xdpxceiver.c
+> +++ b/tools/testing/selftests/bpf/xdpxceiver.c
+> @@ -98,6 +98,8 @@
+>  #include <unistd.h>
+>  #include <stdatomic.h>
+>  #include <bpf/xsk.h>
+> +#include <bpf/bpf.h>
+> +#include <linux/filter.h>
+>  #include "xdpxceiver.h"
+>  #include "../kselftest.h"
+>
+> @@ -1605,10 +1607,39 @@ static void ifobject_delete(struct ifobject *ifobj)
+>         free(ifobj);
+>  }
+>
+> +static bool is_xdp_supported(struct ifobject *ifobject)
+> +{
+> +       int flags = XDP_FLAGS_DRV_MODE;
+> +
+> +       LIBBPF_OPTS(bpf_link_create_opts, opts, .flags = flags);
+> +       struct bpf_insn insns[2] = {
+> +               BPF_MOV64_IMM(BPF_REG_0, XDP_PASS),
+> +               BPF_EXIT_INSN()
+> +       };
+> +       int ifindex = if_nametoindex(ifobject->ifname);
+> +       int prog_fd, insn_cnt = ARRAY_SIZE(insns);
+> +       bool ret = false;
+> +       int err;
+> +
+> +       prog_fd = bpf_prog_load(BPF_PROG_TYPE_XDP, NULL, "GPL", insns, insn_cnt, NULL);
+> +       if (prog_fd < 0)
+> +               return ret;
+> +
+> +       err = bpf_xdp_attach(ifindex, prog_fd, flags, NULL);
+> +
+> +       if (!err) {
+> +               ret = true;
+> +               bpf_xdp_detach(ifindex, flags, NULL);
+> +       }
+> +
+> +       return ret;
 
-> Below recursion is observed in a rare scenario where __schedule()
-> takes rq lock, at around same time task's affinity is being changed,
-> bpf function for tracing sched_switch calls migrate_enabled(),
-> checks for affinity change (cpus_ptr != cpus_mask) lands into
-> __set_cpus_allowed_ptr which tries acquire rq lock and causing the
-> recursion bug.
+Think it would be clearer if you got rid of the bool ret and just
+wrote "return false" and "return true" where applicable.
 
-So this only affects tracing programs that attach to tasks that can have
-their affinity changed? Or do we need to review migrate_enable() vs
-preempt_enable() for networking hooks as well?
+> +}
+> +
+>  int main(int argc, char **argv)
+>  {
+>         struct pkt_stream *pkt_stream_default;
+>         struct ifobject *ifobj_tx, *ifobj_rx;
+> +       int modes = TEST_MODE_SKB + 1;
 
--Toke
+Why not keep it a u32? A nit in any way.
 
+>         u32 i, j, failed_tests = 0;
+>         struct test_spec test;
+>
+> @@ -1636,15 +1667,18 @@ int main(int argc, char **argv)
+>         init_iface(ifobj_rx, MAC2, MAC1, IP2, IP1, UDP_PORT2, UDP_PORT1,
+>                    worker_testapp_validate_rx);
+>
+> +       if (is_xdp_supported(ifobj_tx))
+> +               modes++;
+> +
+>         test_spec_init(&test, ifobj_tx, ifobj_rx, 0);
+>         pkt_stream_default = pkt_stream_generate(ifobj_tx->umem, DEFAULT_PKT_CNT, PKT_SIZE);
+>         if (!pkt_stream_default)
+>                 exit_with_error(ENOMEM);
+>         test.pkt_stream_default = pkt_stream_default;
+>
+> -       ksft_set_plan(TEST_MODE_MAX * TEST_TYPE_MAX);
+> +       ksft_set_plan(modes * TEST_TYPE_MAX);
+>
+> -       for (i = 0; i < TEST_MODE_MAX; i++)
+> +       for (i = 0; i < modes; i++)
+>                 for (j = 0; j < TEST_TYPE_MAX; j++) {
+>                         test_spec_init(&test, ifobj_tx, ifobj_rx, i);
+>                         run_pkt_test(&test, i, j);
+> --
+> 2.27.0
+>
