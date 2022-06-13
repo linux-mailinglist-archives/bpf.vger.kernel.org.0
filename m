@@ -2,60 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D259B549CD4
-	for <lists+bpf@lfdr.de>; Mon, 13 Jun 2022 21:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1D5549CD9
+	for <lists+bpf@lfdr.de>; Mon, 13 Jun 2022 21:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346758AbiFMTFZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Jun 2022 15:05:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54672 "EHLO
+        id S1348109AbiFMTGo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Jun 2022 15:06:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346878AbiFMTEU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Jun 2022 15:04:20 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA092AEE3E;
-        Mon, 13 Jun 2022 09:54:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1655139294; x=1686675294;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=T8DsjbHMJH9H/sas4zjaNcK0/xHg+etx706tBmmx1aU=;
-  b=LE0dM8ryqkChJPM5zgV8oahRuUvjuvJijdF1SQCMlCEljXzGV/ugA0is
-   fgq4rbjjeeOn6vHBZWt12JN1pSytkloxaldlDmuK+lH5xwaDZlSpJsoAg
-   yRU//Kfpu7JQPE+2seiAajdGyNzM4wa4Z2qIgBkKc2ot0SFazIaFxdJzt
-   TVp3Qdro5tlapqWesyb7VmApX3NUHJBpimF1eXfB+hkOH8zTFO3nBPejU
-   PcWBi2Db2S1uqKuqzHyNvHtZgMwxu7f8FKJ5T+99Ef7eZEnT5cN8XiPWk
-   +zE2pbr9wbElqJMoBq/u8MKtys4geJEofgQ0KooiTMtQz7kUkQHFxLtJf
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10377"; a="277120297"
-X-IronPort-AV: E=Sophos;i="5.91,297,1647327600"; 
-   d="scan'208";a="277120297"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jun 2022 09:54:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,297,1647327600"; 
-   d="scan'208";a="726354239"
-Received: from anguy11-desk2.jf.intel.com ([10.166.244.147])
-  by fmsmga001.fm.intel.com with ESMTP; 13 Jun 2022 09:54:52 -0700
-From:   Tony Nguyen <anthony.l.nguyen@intel.com>
-To:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        edumazet@google.com
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
-        anthony.l.nguyen@intel.com, sassmann@redhat.com,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, bpf@vger.kernel.org,
-        Sarkar Tirthendu <tirthendu.sarkar@intel.com>,
-        George Kuruvinakunnel <george.kuruvinakunnel@intel.com>
-Subject: [PATCH net-next 1/1] i40e: add xdp frags support to ndo_xdp_xmit
-Date:   Mon, 13 Jun 2022 09:51:50 -0700
-Message-Id: <20220613165150.439856-1-anthony.l.nguyen@intel.com>
-X-Mailer: git-send-email 2.35.1
+        with ESMTP id S1346426AbiFMTGZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Jun 2022 15:06:25 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 600105520D
+        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 09:57:11 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1FB9DB8110A
+        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 16:57:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAFD7C3411B
+        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 16:57:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1655139428;
+        bh=CttcP1ORZtchLBZZPGaFZZGXn8OJpby+Wh8lL0lratk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=OQm4eFNhNqO/JIocWSz1SEz/BIEkMrT9xoBxCEsmUYI1nGkKP2dJLM19Dv/YJNtRO
+         NS7JVuxQgbeCfNCSzPbwTLXUVzB32mR2cVssK+Ysh6XVpO5t8nMCo09JYDtk9O29cm
+         zxjWQ5sR5Z3tRP1mHkVwWImfM1snk4O/ghUGG0UiGgOONvlryOP3H9UM1PKFfNIivF
+         AvjsMyNM70XrRimLZpTIbBvqrsd514Yf7/itTvP6OD/pSXAn7EcTesr8lyR6XD+SQG
+         cO8nFKp+NSk93vlImtWHYLD/2Mx8RC5TfpgHIi7zdMjyJP4afMhmIQmfwpnM8e86gV
+         pjWdESag78r0w==
+Received: by mail-yb1-f177.google.com with SMTP id w2so10855117ybi.7
+        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 09:57:08 -0700 (PDT)
+X-Gm-Message-State: AJIora+XxOCaZToRQQF1t1vrdG13+UG+aHaQ4zfUtjztvq/BkUllpg0q
+        Vj4IBKYt2/QUYfbwSsR7nnn+fQhOm2IqV1UkUAk=
+X-Google-Smtp-Source: AGRyM1sDfRpb0r/JczMwmZOEfUn6Sjuhxbr6ZVyhV+lwO7XMGzFqCaWHhnHS00I2gCF/HwxRcqFfYKfVGpkYXNOg6tY=
+X-Received: by 2002:a05:6902:50f:b0:65c:d620:f6d3 with SMTP id
+ x15-20020a056902050f00b0065cd620f6d3mr599693ybs.322.1655139427970; Mon, 13
+ Jun 2022 09:57:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20220613150141.169619-1-eddyz87@gmail.com> <20220613150141.169619-4-eddyz87@gmail.com>
+ <CAPhsuW44ryeaWog0+md=q-MgdaUqJQczcoksybKzmCy9j=w7hA@mail.gmail.com> <97c0de337b9471caf91c203885676e5078aac0f1.camel@gmail.com>
+In-Reply-To: <97c0de337b9471caf91c203885676e5078aac0f1.camel@gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Mon, 13 Jun 2022 09:56:57 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7K5LOLJYtsr_YSTqBKVJ+1nfCsqJ43ih9yL032E0fj_A@mail.gmail.com>
+Message-ID: <CAPhsuW7K5LOLJYtsr_YSTqBKVJ+1nfCsqJ43ih9yL032E0fj_A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 3/5] bpf: Inline calls to bpf_loop when
+ callback is known
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>, joannelkoong@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,143 +65,53 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Lorenzo Bianconi <lorenzo@kernel.org>
+On Mon, Jun 13, 2022 at 9:22 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
+>
+> > On Mon, 2022-06-13 at 08:48 -0700, Song Liu wrote:
+> > > +static int optimize_bpf_loop(struct bpf_verifier_env *env)
+> > > +                       new_prog = inline_bpf_loop(env,
+> > > +                                                  i + delta,
+> > > +                                                  -(stack_depth + stack_depth_extra),
+> > > +                                                  inline_state->callback_subprogno,
+> > > +                                                  &cnt);
+> > > +                       if (!new_prog)
+> > > +                               return -ENOMEM;
+> >
+> > We do not fail over for -ENOMEM, which is reasonable. (It is also reasonable if
+> > we do fail the program with -ENOMEM. However, if we don't fail the program,
+> > we need to update stack_depth properly before returning, right?
+> >
+>
+> Ouch, you are correct! Sorry, this was really sloppy on my side. The
+> behavior here should be the same as in `do_misc_fixups` which does
+> fail in case of -ENOMEM. In order to do the same `optimize_bpf_loop`
+> should remain as is but the following part of the patch has to be
+> updated:
+>
+> > @@ -15031,6 +15193,9 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr)
+> >               ret = check_max_stack_depth(env);
+> >
+> >       /* instruction rewrites happen after this point */
+> > +     if (ret == 0)
+> > +             optimize_bpf_loop(env);
+> > +
+>
+> It should be as follows:
+>
+> +       if (ret == 0)
+> +               ret = optimize_bpf_loop(env);  // added `ret` assignment!
+>
+> Not sure if there is a reasonable way to write a test for this case.
 
-Add the capability to map non-linear xdp frames in XDP_TX and ndo_xdp_xmit
-callback.
+Some error injection will catch this. But IIUC, we don't have it in
+the selftests
+at the moment.
 
-Tested-by: Sarkar Tirthendu <tirthendu.sarkar@intel.com>
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-Tested-by: George Kuruvinakunnel <george.kuruvinakunnel@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
----
- drivers/net/ethernet/intel/i40e/i40e_txrx.c | 87 +++++++++++++++------
- 1 file changed, 62 insertions(+), 25 deletions(-)
+> I will add this change and produce the v7 today. Do you see anything
+> else that should be updated?
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-index 7bc1174edf6b..b7967105a549 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-@@ -2509,6 +2509,7 @@ static int i40e_clean_rx_irq(struct i40e_ring *rx_ring, int budget)
- 			hard_start = page_address(rx_buffer->page) +
- 				     rx_buffer->page_offset - offset;
- 			xdp_prepare_buff(&xdp, hard_start, offset, size, true);
-+			xdp_buff_clear_frags_flag(&xdp);
- #if (PAGE_SIZE > 4096)
- 			/* At larger PAGE_SIZE, frame_sz depend on len size */
- 			xdp.frame_sz = i40e_rx_frame_truesize(rx_ring, size);
-@@ -3713,35 +3714,55 @@ u16 i40e_lan_select_queue(struct net_device *netdev,
- static int i40e_xmit_xdp_ring(struct xdp_frame *xdpf,
- 			      struct i40e_ring *xdp_ring)
- {
--	u16 i = xdp_ring->next_to_use;
--	struct i40e_tx_buffer *tx_bi;
--	struct i40e_tx_desc *tx_desc;
-+	struct skb_shared_info *sinfo = xdp_get_shared_info_from_frame(xdpf);
-+	u8 nr_frags = unlikely(xdp_frame_has_frags(xdpf)) ? sinfo->nr_frags : 0;
-+	u16 i = 0, index = xdp_ring->next_to_use;
-+	struct i40e_tx_buffer *tx_head = &xdp_ring->tx_bi[index];
-+	struct i40e_tx_buffer *tx_bi = tx_head;
-+	struct i40e_tx_desc *tx_desc = I40E_TX_DESC(xdp_ring, index);
- 	void *data = xdpf->data;
- 	u32 size = xdpf->len;
--	dma_addr_t dma;
- 
--	if (!unlikely(I40E_DESC_UNUSED(xdp_ring))) {
-+	if (unlikely(I40E_DESC_UNUSED(xdp_ring) < 1 + nr_frags)) {
- 		xdp_ring->tx_stats.tx_busy++;
- 		return I40E_XDP_CONSUMED;
- 	}
--	dma = dma_map_single(xdp_ring->dev, data, size, DMA_TO_DEVICE);
--	if (dma_mapping_error(xdp_ring->dev, dma))
--		return I40E_XDP_CONSUMED;
- 
--	tx_bi = &xdp_ring->tx_bi[i];
--	tx_bi->bytecount = size;
--	tx_bi->gso_segs = 1;
--	tx_bi->xdpf = xdpf;
-+	tx_head->bytecount = xdp_get_frame_len(xdpf);
-+	tx_head->gso_segs = 1;
-+	tx_head->xdpf = xdpf;
- 
--	/* record length, and DMA address */
--	dma_unmap_len_set(tx_bi, len, size);
--	dma_unmap_addr_set(tx_bi, dma, dma);
-+	for (;;) {
-+		dma_addr_t dma;
- 
--	tx_desc = I40E_TX_DESC(xdp_ring, i);
--	tx_desc->buffer_addr = cpu_to_le64(dma);
--	tx_desc->cmd_type_offset_bsz = build_ctob(I40E_TX_DESC_CMD_ICRC
--						  | I40E_TXD_CMD,
--						  0, size, 0);
-+		dma = dma_map_single(xdp_ring->dev, data, size, DMA_TO_DEVICE);
-+		if (dma_mapping_error(xdp_ring->dev, dma))
-+			goto unmap;
-+
-+		/* record length, and DMA address */
-+		dma_unmap_len_set(tx_bi, len, size);
-+		dma_unmap_addr_set(tx_bi, dma, dma);
-+
-+		tx_desc->buffer_addr = cpu_to_le64(dma);
-+		tx_desc->cmd_type_offset_bsz =
-+			build_ctob(I40E_TX_DESC_CMD_ICRC, 0, size, 0);
-+
-+		if (++index == xdp_ring->count)
-+			index = 0;
-+
-+		if (i == nr_frags)
-+			break;
-+
-+		tx_bi = &xdp_ring->tx_bi[index];
-+		tx_desc = I40E_TX_DESC(xdp_ring, index);
-+
-+		data = skb_frag_address(&sinfo->frags[i]);
-+		size = skb_frag_size(&sinfo->frags[i]);
-+		i++;
-+	}
-+
-+	tx_desc->cmd_type_offset_bsz |=
-+		cpu_to_le64(I40E_TXD_CMD << I40E_TXD_QW1_CMD_SHIFT);
- 
- 	/* Make certain all of the status bits have been updated
- 	 * before next_to_watch is written.
-@@ -3749,14 +3770,30 @@ static int i40e_xmit_xdp_ring(struct xdp_frame *xdpf,
- 	smp_wmb();
- 
- 	xdp_ring->xdp_tx_active++;
--	i++;
--	if (i == xdp_ring->count)
--		i = 0;
- 
--	tx_bi->next_to_watch = tx_desc;
--	xdp_ring->next_to_use = i;
-+	tx_head->next_to_watch = tx_desc;
-+	xdp_ring->next_to_use = index;
- 
- 	return I40E_XDP_TX;
-+
-+unmap:
-+	for (;;) {
-+		tx_bi = &xdp_ring->tx_bi[index];
-+		if (dma_unmap_len(tx_bi, len))
-+			dma_unmap_page(xdp_ring->dev,
-+				       dma_unmap_addr(tx_bi, dma),
-+				       dma_unmap_len(tx_bi, len),
-+				       DMA_TO_DEVICE);
-+		dma_unmap_len_set(tx_bi, len, 0);
-+		if (tx_bi == tx_head)
-+			break;
-+
-+		if (!index)
-+			index += xdp_ring->count;
-+		index--;
-+	}
-+
-+	return I40E_XDP_CONSUMED;
- }
- 
- /**
--- 
-2.35.1
+That's all the issues I can see at the moment. Sorry for not catching this one
+in earlier versions.
 
+Thanks,
+Song
