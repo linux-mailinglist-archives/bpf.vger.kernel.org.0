@@ -2,104 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97486547F3C
-	for <lists+bpf@lfdr.de>; Mon, 13 Jun 2022 07:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F0B8547F45
+	for <lists+bpf@lfdr.de>; Mon, 13 Jun 2022 07:51:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234871AbiFMFpa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Jun 2022 01:45:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59498 "EHLO
+        id S233369AbiFMFvS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Jun 2022 01:51:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239472AbiFMFoU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Jun 2022 01:44:20 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E229C13D39
-        for <bpf@vger.kernel.org>; Sun, 12 Jun 2022 22:43:20 -0700 (PDT)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 25CCfg0k019411
-        for <bpf@vger.kernel.org>; Sun, 12 Jun 2022 22:43:19 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=1Et9sD425wjUkkvcQvbRk7BSmebj5+XQNNZzVBmcpp4=;
- b=JY7Jay1GUNYJ2z0tg0fjk80TEjNqJCs6Zf6+V8jyYZunLMt6GLI88nnwWKAFhmoe/8W9
- XFGaM2CDYC+Mr1hyVWK4d+k3kyIvPZC5TFWjneGuLcvJwLeDWQnjQmCHUlptmyNX5Z2S
- ebb/MuQ8kg+BBd4BVcEVWMUwLsb5zOeqLT4= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3gmpj86pbc-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Sun, 12 Jun 2022 22:43:19 -0700
-Received: from twshared34609.14.frc2.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Sun, 12 Jun 2022 22:43:18 -0700
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 394EEB89B522; Sun, 12 Jun 2022 22:43:14 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next] libbpf: Fix an unsigned < 0 bug
-Date:   Sun, 12 Jun 2022 22:43:14 -0700
-Message-ID: <20220613054314.1251905-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S232418AbiFMFvR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Jun 2022 01:51:17 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7212DF42
+        for <bpf@vger.kernel.org>; Sun, 12 Jun 2022 22:51:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C2C15B80D5C
+        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 05:51:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51623C385A2
+        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 05:51:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1655099473;
+        bh=l3dV3kZehEhWWA1TBeEEO1V3rCrXLIwxVLy1aHTLBBY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fOSTu94kNEkHJMuPTgmH742zyvDhy3zT1s5xNt6IkIDYu/Vcm/dTeEgJhnPnNHOoa
+         /ckmb2W4lTIEOYpRM0QmalN2fHVhCL2UdIkVRTzs4ma8oHd5xTyodfl34mPpW5vcNZ
+         WsjoctqJu9ItuZnQ9TkGjPmnYYsak+D7Jrs4+HDQDq/RGJubvb5JJ0QEDqXtjzXPJ0
+         2R/wNfSKmcBBw0HbxEEsjBzJvOjShdZO0qgdf5AV/iaNqd/6flkBV+jFBagH/oYJyF
+         8dpkbbHvLvzKEAClDzo1CcljGGkZwidN8YhjL1Dlic4QDJ9JbI5OKWjHYVWhxJ7KHK
+         4iKQRjUGa3lMg==
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-3137c877092so39917007b3.13
+        for <bpf@vger.kernel.org>; Sun, 12 Jun 2022 22:51:13 -0700 (PDT)
+X-Gm-Message-State: AOAM5306nnUBbSUnL7jzsHmtXmM5QRgOa92Co4OtS3NuOpjSLabbTh0j
+        mmoUHbQnAyGBIyAfz2o0VMM/T+CptvltLZY6N00=
+X-Google-Smtp-Source: ABdhPJz1lrJH+NDi5TiWqjvB3oI0GWB/dka8/xE/+q7bQs4RF0ewmDJqpO3U1lQ5x1uMX9eKNMXfCIA5wG3mBW0T3Uk=
+X-Received: by 2002:a0d:eb4d:0:b0:30c:9849:27a1 with SMTP id
+ u74-20020a0deb4d000000b0030c984927a1mr61220108ywe.472.1655099472358; Sun, 12
+ Jun 2022 22:51:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: QQTJJ2gJBuyjh7JusXehJMHOTtoSMWEq
-X-Proofpoint-ORIG-GUID: QQTJJ2gJBuyjh7JusXehJMHOTtoSMWEq
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.517,FMLib:17.11.64.514
- definitions=2022-06-13_02,2022-06-09_02,2022-02-23_01
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220611114021.484408-1-eddyz87@gmail.com> <20220611114021.484408-4-eddyz87@gmail.com>
+In-Reply-To: <20220611114021.484408-4-eddyz87@gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Sun, 12 Jun 2022 22:51:01 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6r9f=yt93vOG0Lz+yxMWBKaj1xzg0bAVaG18MAtX3_uA@mail.gmail.com>
+Message-ID: <CAPhsuW6r9f=yt93vOG0Lz+yxMWBKaj1xzg0bAVaG18MAtX3_uA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 3/5] bpf: Inline calls to bpf_loop when
+ callback is known
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>, joannelkoong@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii reported a bug with the following information:
-  2859 	if (enum64_placeholder_id =3D=3D 0) {
-  2860 		enum64_placeholder_id =3D btf__add_int(btf, "enum64_placeholder"=
-, 1, 0);
-  >>>     CID 394804:  Control flow issues  (NO_EFFECT)
-  >>>     This less-than-zero comparison of an unsigned value is never tr=
-ue. "enum64_placeholder_id < 0U".
-  2861 		if (enum64_placeholder_id < 0)
-  2862 			return enum64_placeholder_id;
-  2863    	...
+On Sat, Jun 11, 2022 at 4:42 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
+>
 
-Here enum64_placeholder_id declared as '__u32' so enum64_placeholder_id <=
- 0
-is always false.
+[...]
 
-Declare enum64_placeholder_id as 'int' in order to capture the potential
-error properly.
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
 
-Fixes: f2a625889bb8("libbpf: Add enum64 sanitization")
-Reported-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- tools/lib/bpf/libbpf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[...]
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 0781fae58a06..d989b0a17a89 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -2786,7 +2786,7 @@ static int bpf_object__sanitize_btf(struct bpf_obje=
-ct *obj, struct btf *btf)
- 	bool has_decl_tag =3D kernel_supports(obj, FEAT_BTF_DECL_TAG);
- 	bool has_type_tag =3D kernel_supports(obj, FEAT_BTF_TYPE_TAG);
- 	bool has_enum64 =3D kernel_supports(obj, FEAT_BTF_ENUM64);
--	__u32 enum64_placeholder_id =3D 0;
-+	int enum64_placeholder_id =3D 0;
- 	struct btf_type *t;
- 	int i, j, vlen;
-=20
---=20
-2.30.2
+>
+> +static struct bpf_insn_aux_data *cur_aux(struct bpf_verifier_env *env)
+> +{
+> +       return &env->insn_aux_data[env->insn_idx];
+> +}
+> +
+> +static void update_loop_inline_state(struct bpf_verifier_env *env, u32 subprogno)
+> +{
+> +       struct bpf_loop_inline_state *state = &cur_aux(env)->loop_inline_state;
+> +       struct bpf_reg_state *regs = cur_regs(env);
+> +       struct bpf_reg_state *flags_reg = &regs[BPF_REG_4];
+> +       int flags_is_zero =
+> +               register_is_const(flags_reg) && flags_reg->var_off.value == 0;
 
+How about we add helper
+
+static bool flag_is_zero(struct bpf_verifier_env *env, int regno)
+{
+        struct bpf_loop_inline_state *state = &cur_aux(env)->loop_inline_state;
+        struct bpf_reg_state *regs = cur_regs(env);
+        struct bpf_reg_state *flags_reg = &regs[regno];
+
+        return register_is_const(flags_reg) && flags_reg->var_off.value == 0;
+}
+
+and ...
+
+> +
+> +       if (!state->initialized) {
+> +               state->initialized = 1;
+> +               state->fit_for_inline = flags_is_zero;
+
+       state->fit_for_inline = flag_is_zero(env, BPF_REG_4);
+
+and ...
+
+> +               state->callback_subprogno = subprogno;
+> +               return;
+> +       }
+> +
+> +       if (!state->fit_for_inline)
+> +               return;
+> +
+> +       state->fit_for_inline =
+> +               flags_is_zero &&
+
+flag_is_zero(env, BPF_REG_4);
+
+This would avoid calculating flag_is_zero for !state->fix_for_inline case.
+
+
+> +               state->callback_subprogno == subprogno;
+> +}
+> +
+>  static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+
+[...]
+
+>  static void free_states(struct bpf_verifier_env *env)
+>  {
+>         struct bpf_verifier_state_list *sl, *sln;
+> @@ -15030,6 +15188,9 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr)
+>         if (ret == 0)
+>                 ret = check_max_stack_depth(env);
+>
+> +       if (ret == 0)
+> +               optimize_bpf_loop(env);
+> +
+>         /* instruction rewrites happen after this point */
+
+nit: I guess optimize_bpf_loop() is part of "instruction rewrite", so
+this comment
+should be above optimize_bpf_loop()?
+
+>         if (is_priv) {
+>                 if (ret == 0)
+> --
+> 2.25.1
+>
