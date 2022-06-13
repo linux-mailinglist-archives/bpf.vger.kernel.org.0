@@ -2,151 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3F11549C25
-	for <lists+bpf@lfdr.de>; Mon, 13 Jun 2022 20:50:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0AB1549C2E
+	for <lists+bpf@lfdr.de>; Mon, 13 Jun 2022 20:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343595AbiFMSuE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Jun 2022 14:50:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57060 "EHLO
+        id S245062AbiFMSwl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Jun 2022 14:52:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344170AbiFMStq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Jun 2022 14:49:46 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A4C5EAB85
-        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 08:48:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8BC1E614F9
-        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 15:48:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB6F3C34114
-        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 15:48:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655135293;
-        bh=mmVu2lhSDeg0eBKKJrz5YQVwgZwEHoER0JIpaaZADME=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Qqc9sgifg8XDsxLd1QQZf9enxezV810kGb/7SNND+5TLT9vJRxJjotW95SyqoUuGG
-         eUdL67DgC3aDxmoPU+SL1/gN6sPfsbJHSkOjL0lGDdQ7T5q1BkesbZVs0SEtS2MpLv
-         XHGLyHrZVW3SpupzzvjyPUk6sSIIMxkaWF+i79qHCgzEIS1Y4EbrNgxi5GPkcBhN8k
-         Y7AgK7Egk2bJwheRdKLDDUXxv3N7UBZ46PHbQZI7HXwsy8WUK+niKXno9Eg6ijaqs5
-         QAgCjswFcU4mLjSK8rk/qwZUNBMrROv747pz2oXVTua5QePUOXcYDE8nZk6NdebGRT
-         3aJxJ8+ROmqDw==
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-2ef5380669cso2293977b3.9
-        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 08:48:12 -0700 (PDT)
-X-Gm-Message-State: AJIora/0BMTKbmjP92YfYYV0DHBhKEKBsWCvBU3nHyVr3SDF4LzJjxs8
-        uCaObjpBCIiPfIq+630f0m74fVeGLTyrXLemVvQ=
-X-Google-Smtp-Source: AGRyM1sI2SxnwL1ejoM2AA6QhWUGm4lXl0GtGvBjtoLyYRpFnx5Ha3MLxADClP5kLvuHcvHYusSDqpdrBcFDYUToNt8=
-X-Received: by 2002:a81:7505:0:b0:30c:45e3:71bc with SMTP id
- q5-20020a817505000000b0030c45e371bcmr403480ywc.460.1655135291975; Mon, 13 Jun
- 2022 08:48:11 -0700 (PDT)
+        with ESMTP id S237087AbiFMSwW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Jun 2022 14:52:22 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA50F3CA69
+        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 08:53:56 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id f9so5480784plg.0
+        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 08:53:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2GbAzwYBGIAdGpmUitTP78WCtQDJfOSlirBrPIPUJV8=;
+        b=m3ONiZU+Rou5uFM8Eo43NO6t1p7xohN4UsrO9zzqfd2t5DSYZF6aCyNo1PAEp4wGy4
+         mGb30oww3a1gWPumw6dGcs+YAvtJSUSawhqQyB4TG+Gy0c8AmMEnVCl4g0gBqBTpFYHr
+         hplz9lwGhl6cXOpvxYPhhEgk8QIhI6pLJ/vVDf+s7QNuXGSrPUm9CubDqvm1eaJ+n9pY
+         aIKfqoNmGg66euRy4TPmYoGq044fdfvFQVAVvyJXRiG2S4+aS2w8Fq1mE+KKD5PJovGl
+         2w5DZWherj/mZ1dVBZUeGojVIPIjXSsiBotJL8ltyJycwKBhruNHmOyPm+H0lA1wm/6c
+         j31w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2GbAzwYBGIAdGpmUitTP78WCtQDJfOSlirBrPIPUJV8=;
+        b=HKK0+xFi5eH6pL7tFW6YQAv7x54ZKtUX1tbPVT9vW+EvbqSYvlEz7GxFWTJucuGOqd
+         IajCnKatieGJSlrpaf6dJ1qKOEYzsLJcEo+VgTq16W0tzzRzTFrSUHxdFHMg3vonz+We
+         x9UdITywt4Av7U1I2YC58B2VFNqgxCIbdi/iCNMf9dBPDk+XFX0vOyvaS2xsE4Fl6eLE
+         K0s/znNDwuMBkN1JsEI/GaMWvN1W0YV55IjEqMD3aGEDe1JKGG2IiSqy4iFYlmK0BYS9
+         nMe9MKCHiKGhDCL0Jm04rfz/PcMYjV0z1+MdhR+H42Tmo6ISbYCykkdQps99HE/q91Vd
+         emOw==
+X-Gm-Message-State: AOAM533zNg7Zw78JDnT8oHhGydFhllByMrvOO1Phtely/dpZUk4pT9GX
+        tLxdqxHcO+tM/F7KV0GJPX/vqAtiUwUL/rzSgu5s3g==
+X-Google-Smtp-Source: ABdhPJwLvjhNA4wdh9PO/0kLpiWDSG4Sg8BkodLfb2uzxEvf+kazkBVqDJpJmcve/BAAaS7b4YKa91joEJt/KhvkX5U=
+X-Received: by 2002:a17:90b:380b:b0:1e6:67f6:f70c with SMTP id
+ mq11-20020a17090b380b00b001e667f6f70cmr16244566pjb.120.1655135635925; Mon, 13
+ Jun 2022 08:53:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220613150141.169619-1-eddyz87@gmail.com> <20220613150141.169619-4-eddyz87@gmail.com>
-In-Reply-To: <20220613150141.169619-4-eddyz87@gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Mon, 13 Jun 2022 08:48:00 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW44ryeaWog0+md=q-MgdaUqJQczcoksybKzmCy9j=w7hA@mail.gmail.com>
-Message-ID: <CAPhsuW44ryeaWog0+md=q-MgdaUqJQczcoksybKzmCy9j=w7hA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 3/5] bpf: Inline calls to bpf_loop when
- callback is known
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>, joannelkoong@gmail.com
+References: <20220610165803.2860154-1-sdf@google.com> <20220610165803.2860154-10-sdf@google.com>
+ <a0ebf40e-6c21-435e-0d87-bca7a2113241@isovalent.com>
+In-Reply-To: <a0ebf40e-6c21-435e-0d87-bca7a2113241@isovalent.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Mon, 13 Jun 2022 08:53:44 -0700
+Message-ID: <CAKH8qBudovmLGuBiTBXXu_TZkev-mBbTtz1fqdsqsk61uMAWiQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v9 09/10] bpftool: implement cgroup tree for BPF_LSM_CGROUP
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 13, 2022 at 8:02 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
+On Mon, Jun 13, 2022 at 5:08 AM Quentin Monnet <quentin@isovalent.com> wrote:
 >
-> Calls to `bpf_loop` are replaced with direct loops to avoid
-> indirection. E.g. the following:
+> 2022-06-10 09:58 UTC-0700 ~ Stanislav Fomichev <sdf@google.com>
+> > $ bpftool --nomount prog loadall $KDIR/tools/testing/selftests/bpf/lsm_cgroup.o /sys/fs/bpf/x
+> > $ bpftool cgroup attach /sys/fs/cgroup lsm_cgroup pinned /sys/fs/bpf/x/socket_alloc
+> > $ bpftool cgroup attach /sys/fs/cgroup lsm_cgroup pinned /sys/fs/bpf/x/socket_bind
+> > $ bpftool cgroup attach /sys/fs/cgroup lsm_cgroup pinned /sys/fs/bpf/x/socket_clone
+> > $ bpftool cgroup attach /sys/fs/cgroup lsm_cgroup pinned /sys/fs/bpf/x/socket_post_create
+> > $ bpftool cgroup tree
+> > CgroupPath
+> > ID       AttachType      AttachFlags     Name
+> > /sys/fs/cgroup
+> > 6        lsm_cgroup                      socket_post_create bpf_lsm_socket_post_create
+> > 8        lsm_cgroup                      socket_bind     bpf_lsm_socket_bind
+> > 10       lsm_cgroup                      socket_alloc    bpf_lsm_sk_alloc_security
+> > 11       lsm_cgroup                      socket_clone    bpf_lsm_inet_csk_clone
+> >
+> > $ bpftool cgroup detach /sys/fs/cgroup lsm_cgroup pinned /sys/fs/bpf/x/socket_post_create
+> > $ bpftool cgroup tree
+> > CgroupPath
+> > ID       AttachType      AttachFlags     Name
+> > /sys/fs/cgroup
+> > 8        lsm_cgroup                      socket_bind     bpf_lsm_socket_bind
+> > 10       lsm_cgroup                      socket_alloc    bpf_lsm_sk_alloc_security
+> > 11       lsm_cgroup                      socket_clone    bpf_lsm_inet_csk_clone
+> >
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
 >
->   bpf_loop(10, foo, NULL, 0);
->
-> Is replaced by equivalent of the following:
->
->   for (int i = 0; i < 10; ++i)
->     foo(i, NULL);
->
-> This transformation could be applied when:
-> - callback is known and does not change during program execution;
-> - flags passed to `bpf_loop` are always zero.
->
-> Inlining logic works as follows:
->
-> - During execution simulation function `update_loop_inline_state`
->   tracks the following information for each `bpf_loop` call
->   instruction:
->   - is callback known and constant?
->   - are flags constant and zero?
-> - Function `optimize_bpf_loop` increases stack depth for functions
->   where `bpf_loop` calls can be inlined and invokes `inline_bpf_loop`
->   to apply the inlining. The additional stack space is used to spill
->   registers R6, R7 and R8. These registers are used as loop counter,
->   loop maximal bound and callback context parameter;
->
-> Measurements using `benchs/run_bench_bpf_loop.sh` inside QEMU / KVM on
-> i7-4710HQ CPU show a drop in latency from 14 ns/op to 2 ns/op.
->
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-[...]
+> The changes for bpftool look good to me, thanks!
+> Reviewed-by: Quentin Monnet <quentin@isovalent.com>
 
-> +static int optimize_bpf_loop(struct bpf_verifier_env *env)
-> +{
-> +       struct bpf_subprog_info *subprogs = env->subprog_info;
-> +       int i, cur_subprog = 0, cnt, delta = 0;
-> +       struct bpf_insn *insn = env->prog->insnsi;
-> +       int insn_cnt = env->prog->len;
-> +       u16 stack_depth = subprogs[cur_subprog].stack_depth;
-> +       u16 stack_depth_extra = 0;
-> +
-> +       for (i = 0; i < insn_cnt; i++, insn++) {
-> +               struct bpf_loop_inline_state *inline_state =
-> +                       &env->insn_aux_data[i + delta].loop_inline_state;
-> +
-> +               if (is_bpf_loop_call(insn) && inline_state->fit_for_inline) {
-> +                       struct bpf_prog *new_prog;
-> +
-> +                       stack_depth_extra = BPF_REG_SIZE * 3;
-> +                       new_prog = inline_bpf_loop(env,
-> +                                                  i + delta,
-> +                                                  -(stack_depth + stack_depth_extra),
-> +                                                  inline_state->callback_subprogno,
-> +                                                  &cnt);
-> +                       if (!new_prog)
-> +                               return -ENOMEM;
+Thank you for the review!
 
-We do not fail over for -ENOMEM, which is reasonable. (It is also reasonable if
-we do fail the program with -ENOMEM. However, if we don't fail the program,
-we need to update stack_depth properly before returning, right?
+> > ---
+> >  tools/bpf/bpftool/cgroup.c | 80 +++++++++++++++++++++++++++-----------
+> >  1 file changed, 58 insertions(+), 22 deletions(-)
+> >
+> > diff --git a/tools/bpf/bpftool/cgroup.c b/tools/bpf/bpftool/cgroup.c
+> > index 42421fe47a58..6e55f583a62f 100644
+> > --- a/tools/bpf/bpftool/cgroup.c
+> > +++ b/tools/bpf/bpftool/cgroup.c
+>
+> > @@ -542,5 +577,6 @@ static const struct cmd cmds[] = {
+> >
+> >  int do_cgroup(int argc, char **argv)
+> >  {
+> > +     btf_vmlinux = libbpf_find_kernel_btf();
+> >       return cmd_select(cmds, argc, argv, do_help);
+> >  }
+>
+> This is not required for all "bpftool cgroup" operations (attach/detach
+> don't need it I think), but should be inexpensive, right?
 
-Thanks,
-Song
-
-> +
-> +                       delta     += cnt - 1;
-> +                       env->prog  = new_prog;
-> +                       insn       = new_prog->insnsi + i + delta;
-> +               }
-> +
-> +               if (subprogs[cur_subprog + 1].start == i + delta + 1) {
-> +                       subprogs[cur_subprog].stack_depth += stack_depth_extra;
-> +                       cur_subprog++;
-> +                       stack_depth = subprogs[cur_subprog].stack_depth;
-> +                       stack_depth_extra = 0;
-> +               }
-> +       }
-> +
-> +       env->prog->aux->stack_depth = env->subprog_info[0].stack_depth;
-> +
-> +       return 0;
-> +}
-> +
+Good point, let's move it close to the place where we use it
+regardless of whether it's expensive or not.
