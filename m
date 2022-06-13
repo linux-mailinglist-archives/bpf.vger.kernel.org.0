@@ -2,67 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F39549BFB
-	for <lists+bpf@lfdr.de>; Mon, 13 Jun 2022 20:44:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 755C0549BEE
+	for <lists+bpf@lfdr.de>; Mon, 13 Jun 2022 20:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344450AbiFMSoX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Jun 2022 14:44:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45168 "EHLO
+        id S1344477AbiFMSmc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Jun 2022 14:42:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345440AbiFMSnd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Jun 2022 14:43:33 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3AC5CE32
-        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 08:02:29 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id c30so6487471ljr.9
-        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 08:02:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=e0gJlAyr6iWp++zpBDPdS2GGhrkA349ug3a4vI2yiaw=;
-        b=gglHpSlmQQoK3CMAyNkryaW6Vw53Bwvn3/8i1nmzBYfZuawsdO11LHl9BESINr4i1g
-         wmCpWVtF0biIPn5uKQs/zdQRh3NXLf7eER2Tv93Kb2xWlyo3QBZ27NSlTTb7AlscKb1U
-         AxKJeLRGzmlXbASnOVSm6Ic2vqYJWeEGx/8M5v8DPqGqhi9yD/0QK77akCzWUqVLAsbc
-         VsLxW2VcwW5d/4msy1oNvm+60ku18uy8qEzNy2abP6CcK1lJXZv21oOu8tJVkGjEfgHF
-         obV7/qo7Ya5p7V+Io7vxaHNYyKiyvb6peEJA9wXACtz4iy39Yh/mTtDZSTo5qId+nzFq
-         0lQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=e0gJlAyr6iWp++zpBDPdS2GGhrkA349ug3a4vI2yiaw=;
-        b=ewJxPyjE4CgS0B5jFgI/ps/bwqex9A0MfNmXfz8vsKXlmtr6ALL2bMyW1yYstycEJe
-         nI3b09qLm6ilHKRApQiGcGysdrGQxLXRYc1Q27NwU7or3cH7aymVXJm12FgZMpPpxu7c
-         iLnx9XRECFLid1z7gZan/YFpfA7uoTDFq9dGOv2dzxUS9xPhpZHJWlp+GQuePUUC5ai6
-         PkRGsvG1YRRuV33OrowukrfQkVsDcGYccaA8o8I8Hb12tNREgpMCl32KH8lhXlpA7vPS
-         qx+zosHE7uSut4Ut/JeEWf6auetl8J6aQpjOYVRXYBN96tXe2fP8GcCtxJtPiuE5sXNP
-         QBWw==
-X-Gm-Message-State: AJIora9H8WUC4YeNU/Qm+XUhdcrZz8HxIRC4HmN+DZZcYwE8rzsZmA2S
-        DI48BdjYWW3W7midSdJawnfhaNJ9UReGGQ==
-X-Google-Smtp-Source: AGRyM1tHISHpNSczJFXH353l0khvfDfw3S79dQEEwO+TUCDDOtysxWkCOuRCCVpA2dhg6KFeWjE3JA==
-X-Received: by 2002:a2e:8752:0:b0:255:6df7:7ad5 with SMTP id q18-20020a2e8752000000b002556df77ad5mr6752ljj.73.1655132547698;
-        Mon, 13 Jun 2022 08:02:27 -0700 (PDT)
-Received: from localhost.localdomain (boundsly.muster.volia.net. [93.72.16.93])
-        by smtp.gmail.com with ESMTPSA id a9-20020ac25e69000000b0047910511c23sm1021362lfr.45.2022.06.13.08.02.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jun 2022 08:02:27 -0700 (PDT)
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com, song@kernel.org,
-        joannelkoong@gmail.com
-Cc:     eddyz87@gmail.com, Song Liu <songliubraving@fb.com>
-Subject: [PATCH bpf-next v6 5/5] selftests/bpf: BPF test_prog selftests for bpf_loop inlining
-Date:   Mon, 13 Jun 2022 18:01:41 +0300
-Message-Id: <20220613150141.169619-6-eddyz87@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220613150141.169619-1-eddyz87@gmail.com>
-References: <20220613150141.169619-1-eddyz87@gmail.com>
+        with ESMTP id S240865AbiFMSl5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Jun 2022 14:41:57 -0400
+Received: from sonic308-15.consmr.mail.ne1.yahoo.com (sonic308-15.consmr.mail.ne1.yahoo.com [66.163.187.38])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86885E277A
+        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 08:23:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1655133829; bh=k6swwIFZqAzL7SBEhBTa/ZMKE1/o6lUjDfKoNOQ84pw=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=Ni7z0Gs+JC9C4Tu59d3o/4uRAaKCLDYcFEy44hcCpA7MUDRFpD7OHcTOELJWl7diqkZs67DcN7lzjA22a5CeApLxtOcYb4u98yq4IZbL/uHomdhKcCkPUVttIkgnudy/nIOEs166f2b4s5xmK3B7x38hcJkRFIkXTkM5qG8XDe4MMao0wuAmIwE77nNCbuRamg7EaQSgkHcVGH4yIvy/tpu+8e7olwPkGZ/O3GixEgon4apaQhDyuaabDwkZUVsv9I0FSLbTVpfZD/mcXJUwAZ2UXkCCaNnLtE6v5WE7Sx6MiFcNV2Tqr/s90AQ78mqnAK8hWjJFYFEdzJdTGa0N+Q==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1655133829; bh=qLsakBHZ+VMj03EOcUdNkyzlgqLy9/XQiSqX2Jmw6st=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=YfTVYfPxiZaVBM6xo5uP+dh9Umv0tJsBPyCHy6M27X9viwxytQ33re15GoU/DvCYfJAOwHoID+CLHcYfR4IWh50FD+9u+G7mRiLGJH5MG1+dThWMM2Q4qGRO/Zh1sJ7UiPYjqX+FJf5xktFGKjIyaMUaC5TFiSZBaxM/7XZJY/X4yCVWDLHDb4GvDg9bpRcqUaWSW+XWObXWl7Ci/AZUY7D70Nsqb90+u9mbcUx3B9a2dxeBMvNTwVNE9lUzqOSqN3yfIXfvTYKxxfiKys43yaasrKLbdlUFFA34zrjjD1PFdP52Q2mWcx6R/Ec3A/gh6R2j1DqYRkLi0+WDw3Htig==
+X-YMail-OSG: zJivHawVM1lR1s6hTjJMPj9G64EwY92.2d.rC9Vld3Kq1JvPg4FSnEt2oYijaVI
+ 03eJpXtWYi9I3S8zIoApE8vT1MeaNexrgdormfVYCz0x1FNYFcC8IWhaHd95JWHV40gZtJfxBShA
+ Zb1XtmgXvPOyWZPyASGzgBfebcSmGAiZX.Jx75QDyAS5GEIxo3T5c3Ziyn624P5B2dMfhz552aog
+ Nb5P2pY6V3EnC1WRJF.MQxMq0knGcN5Pay50EIkPtRze1qWMM1h9A5SwrPFG7vqsWk_YsoCQyavU
+ Uw48v0dre.y8hf5dEtFGixtvpdUNW4pN3Y8PHWdrkHunvUOlfgLXcdW_bfWSnbLzUK17v1iOo5iO
+ hCbB8Vxtln_TwHANMFAjzNzubjrs6NJc0ZEmKJ409R43mAKRQoeU15B2VM623MexUhhr3IRlbrY.
+ SRjTxN6soC2X_SVDlp4uEz7cDHGLtqK3GdM_9iUTeuzf9pr3Lv_ovl0JdM5i8F_FbMF5crUydYDf
+ ouvOCX2woI_S_vvljQDMip3n9p0a37JZDDwGuLZlaOHLIcsPaOkFDvdYc5xrWh_ZMN3q02sSmYtq
+ 7pFRccKX_3omQ2FqtO6hOakAkeLtTcyQjr4gu.n_2B06pctRHac2nJOFa4N1AZReRL.9ezpvAJQY
+ gORE.OVVUwxjTQAT9D2otHooDkjSswXsWGwO1VV9SUn17dluagsX4hsuVFo.NI65GH0RYWakP1ua
+ tvC9blLXAFi0V4_mOnV7ExCgHAn96MyuAxe3u4vuhd_FFP0s9MqAKT_CcEDjL9gv3gBpDwzJfD2r
+ RsH_8GW9pvzD.pppHHlpwiIz75thCLCWC1ebAb76DAH_vhbdKVfqcVM0a6i0Pe2LWCZaghOPbKpG
+ Tncfgo1AJ9O9eoqEpR1PUBZ2AfbzXDXDMQslBdR3QWSJPmbdfH0cXz.orlDVUzXpbmIn8ay5UTUl
+ l63q3F2nx17jJQ7ZXXO1nsKHlJLPS831u5PhDD5G2QXN5U9KQGFXJILOFePg.16qvelXGdSYkpUc
+ Uj5CX4jtUDiDcxj8WnT9lybyVGL8u9rjiJbjyqhiJMmvH9GdoArQmVYhC_taE7zQVonTO8htYUT8
+ Slei5DNz.S0vM4w5tq6y.B5RCHg.jzk_kV2Y8n_nEjo2EJW._WbyvTrYKbxhvyqjMkm3_j8_MfSc
+ Q8Gbbu1MHFF7eRJHy9ubw0fqhpM89ieukTDCpt2aYuM1BDk9M0ImdxvYFKkrrHlHOhPh2CIRU_jo
+ pbM__6JxvQ6LlnZiUNd9NoEkykXwObaXFkF9oVdDwC28TzuYJKDzyMDnkgWUYp0TJha.JB.Kg7m9
+ JjunO5U4H6e2WHv72TttNTymPSiNLtaMl7VmVA_TePR3rhiXeO4CXVQS13oBWS9_AAQ5Qp81U1ma
+ KcVEUVrhNbaOKsyUFhXP4Gu64AD7S0xPpDlZ9yR.KCRvGi3ImbwkAThInYI4iuy1TJiFLI4yzJx6
+ _C.Da_72YGOy4_i_gjLJ_mwF4Fm3VhlhSHHaQMJjj_yHzKyOCwpDN4DfGsrfw_6yyyyjSW_e9vMs
+ IUdaDMv3oz8JYfhpD1MmsytLPojGrWdj_qScgpPgIyKxlf5rs1Ef438otpnDFXFX.UA6lri6LeFs
+ gqhEPVAXccFO4nq2328CYBkZC_pAgkUOL7pmR6oOdDi_y3MYUbWOAMCsDqhZ3FYrMx7GkRxMdjr8
+ UW33O6ZBP4BJEFQ5kvMDxYz7_RkT_otfjdNGkT27RlsEGy1PqBGG2Ucv1ArwutC6gCDbc7C0h1fP
+ k4Tdt0DRWlX0mctXo.A1oWOSZOMWKjksWJYUWYlcZH9mefPrnW3fU7Io8lGLcH.6OsayvMJ.Y7yT
+ Of4uFha322Uxu5zw6wnUnxyCZ1RgUkPKwTTpVglzU7mR5r4wK6iDNliLZY6CXp5jQgdcaCo2iEn6
+ YpNML76uCBkjJ7orpSYEke4nDHY1kmxJw3DXc02JeCZVtETQlprXbaNaUgYbSteNLbOzK2n9Is_B
+ sS2E3dG.Y5Qn0J.7Vl8Urt37DZrmu7C68zObaHY_35jQFgJcQ1iAuW9R4TIMgTufWcqbMb9HKmXn
+ Hj0MJdd3FVYy0mEOrIWwpoWd02R7mvhnuKAK.iFBVd96psvU0BqhhwKmE0048hKrc199sjWSWEAK
+ e7RTwY5zzvq4QTMvHK1KtLI.O2Jy8_SjPAEdqR3OoOsH4A11GPzdwnmGoOkEap0HZTAoX.BkELVQ
+ QnHpLUoFe5fiKQxN6CVBlBzAYcK8wo9qfEqdPifSkFn00cERpqCy4UI_pLqnBEf.agjgBNrI7trL
+ fcekNnIIxljMGCuqrtQ--
+X-Sonic-MF: <casey@schaufler-ca.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic308.consmr.mail.ne1.yahoo.com with HTTP; Mon, 13 Jun 2022 15:23:49 +0000
+Received: by hermes--canary-production-bf1-856dbf94db-lhjkg (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 31b0896f80a37b0ff0abab2c4fa57d76;
+          Mon, 13 Jun 2022 15:23:46 +0000 (UTC)
+Message-ID: <5e6d1293-000e-18f9-a593-8efd49eaa55b@schaufler-ca.com>
+Date:   Mon, 13 Jun 2022 08:23:44 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH linux-next] security: Fix side effects of default BPF LSM
+ hooks
+Content-Language: en-US
+To:     KP Singh <kpsingh@kernel.org>
+Cc:     linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
+        Jann Horn <jannh@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20220609234601.2026362-1-kpsingh@kernel.org>
+ <bc4fe45a-b730-1832-7476-8ecb10ae5f90@schaufler-ca.com>
+ <CACYkzJ6e2f+vdQmWBvRaQCJJ1ABPrfw4hYU231LbwhB_03GWLQ@mail.gmail.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <CACYkzJ6e2f+vdQmWBvRaQCJJ1ABPrfw4hYU231LbwhB_03GWLQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Mailer: WebService/1.1.20280 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,234 +86,73 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Two new test BPF programs for test_prog selftests checking bpf_loop
-behavior. Both are corner cases for bpf_loop inlinig transformation:
- - check that bpf_loop behaves correctly when callback function is not
-   a compile time constant
- - check that local function variables are not affected by allocating
-   additional stack storage for registers spilled by loop inlining
+On 6/10/2022 4:49 PM, KP Singh wrote:
+> On Fri, Jun 10, 2022 at 8:50 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+>> On 6/9/2022 4:46 PM, KP Singh wrote:
+>>> BPF LSM currently has a default implementation for each LSM hooks which
+>>> return a default value defined in include/linux/lsm_hook_defs.h. These
+>>> hooks should have no functional effect when there is no BPF program
+>>> loaded to implement the hook logic.
+>>>
+>>> Some LSM hooks treat any return value of the hook as policy decision
+>>> which results in destructive side effects.
+>>>
+>>> This issue and the effects were reported to me by Jann Horn:
+>>>
+>>> For a system configured with CONFIG_BPF_LSM and the bpf lsm is enabled
+>>> (via lsm= or CONFIG_LSM) an unprivileged user can vandalize the system
+>>> by removing the security.capability xattrs from binaries, preventing
+>>> them from working normally:
+>>>
+>>> $ getfattr -d -m- /bin/ping
+>>> getfattr: Removing leading '/' from absolute path names
+>>> security.capability=0sAQAAAgAgAAAAAAAAAAAAAAAAAAA=
+>>>
+>>> $ setfattr -x security.capability /bin/ping
+>>> $ getfattr -d -m- /bin/ping
+>>> $ ping 1.2.3.4
+>>> $ ping google.com
+>>> $ echo $?
+>>> 2
+>>>
+>>> The above reproduces with:
+>>>
+>>> cat /sys/kernel/security/lsm
+>>> capability,apparmor,bpf
+>>>
+>>> But not with SELinux as SELinux does the required check in its LSM hook:
+>>>
+>>> cat /sys/kernel/security/lsm
+>>> capability,selinux,bpf
+>>>
+>>> In this case security_inode_removexattr() calls
+>>> call_int_hook(inode_removexattr, 1, mnt_userns, dentry, name), which
+>>> expects a return value of 1 to mean "no LSM hooks hit" and 0 is
+>>> supposed to mean "the LSM decided to permit the access and checked
+>>> cap_inode_removexattr"
+>>>
+>>> There are other security hooks that are similarly effected.
+>> This shouldn't come as a surprise.
+>> https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2281257.html
+>> is just one place where this sort of issue has been discussed.
+>>
+>>> In order to reliably fix this issue and also allow LSM Hooks and BPF
+>>> programs which implement hook logic to choose to not make a decision
+>>> in certain conditions (e.g. when BPF programs are used for auditing),
+>>> introduce a special return value LSM_HOOK_NO_EFFECT which can be used
+>>> by the hook to indicate to the framework that it does not intend to
+>>> make a decision.
+>> The LSM infrastructure already has a convention of returning
+>> -EOPNOTSUPP for this condition. Why add another value to check?'
+> This is not the case in call_int_hook currently.
+>
+> If we can update the LSM infra to imply that  -EOPNOTSUPP means
+> that the hook iteration can continue as that implies "no decision"
+> this would be okay as well.
 
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-Acked-by: Song Liu <songliubraving@fb.com>
----
- .../selftests/bpf/prog_tests/bpf_loop.c       |  62 ++++++++++
- tools/testing/selftests/bpf/progs/bpf_loop.c  | 114 ++++++++++++++++++
- 2 files changed, 176 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_loop.c b/tools/testing/selftests/bpf/prog_tests/bpf_loop.c
-index 380d7a2072e3..4cd8a25afe68 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_loop.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_loop.c
-@@ -120,6 +120,64 @@ static void check_nested_calls(struct bpf_loop *skel)
- 	bpf_link__destroy(link);
- }
- 
-+static void check_non_constant_callback(struct bpf_loop *skel)
-+{
-+	struct bpf_link *link =
-+		bpf_program__attach(skel->progs.prog_non_constant_callback);
-+
-+	if (!ASSERT_OK_PTR(link, "link"))
-+		return;
-+
-+	skel->bss->callback_selector = 0x0F;
-+	usleep(1);
-+	ASSERT_EQ(skel->bss->g_output, 0x0F, "g_output #1");
-+
-+	skel->bss->callback_selector = 0xF0;
-+	usleep(1);
-+	ASSERT_EQ(skel->bss->g_output, 0xF0, "g_output #2");
-+
-+	bpf_link__destroy(link);
-+}
-+
-+static void check_stack(struct bpf_loop *skel)
-+{
-+	struct bpf_link *link = bpf_program__attach(skel->progs.stack_check);
-+	const int max_key = 12;
-+	int key;
-+	int map_fd;
-+
-+	if (!ASSERT_OK_PTR(link, "link"))
-+		return;
-+
-+	map_fd = bpf_map__fd(skel->maps.map1);
-+
-+	if (!ASSERT_GE(map_fd, 0, "bpf_map__fd"))
-+		goto out;
-+
-+	for (key = 1; key <= max_key; ++key) {
-+		int val = key;
-+		int err = bpf_map_update_elem(map_fd, &key, &val, BPF_NOEXIST);
-+
-+		if (!ASSERT_OK(err, "bpf_map_update_elem"))
-+			goto out;
-+	}
-+
-+	usleep(1);
-+
-+	for (key = 1; key <= max_key; ++key) {
-+		int val;
-+		int err = bpf_map_lookup_elem(map_fd, &key, &val);
-+
-+		if (!ASSERT_OK(err, "bpf_map_lookup_elem"))
-+			goto out;
-+		if (!ASSERT_EQ(val, key + 1, "bad value in the map"))
-+			goto out;
-+	}
-+
-+out:
-+	bpf_link__destroy(link);
-+}
-+
- void test_bpf_loop(void)
- {
- 	struct bpf_loop *skel;
-@@ -140,6 +198,10 @@ void test_bpf_loop(void)
- 		check_invalid_flags(skel);
- 	if (test__start_subtest("check_nested_calls"))
- 		check_nested_calls(skel);
-+	if (test__start_subtest("check_non_constant_callback"))
-+		check_non_constant_callback(skel);
-+	if (test__start_subtest("check_stack"))
-+		check_stack(skel);
- 
- 	bpf_loop__destroy(skel);
- }
-diff --git a/tools/testing/selftests/bpf/progs/bpf_loop.c b/tools/testing/selftests/bpf/progs/bpf_loop.c
-index e08565282759..de1fc82d2710 100644
---- a/tools/testing/selftests/bpf/progs/bpf_loop.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_loop.c
-@@ -11,11 +11,19 @@ struct callback_ctx {
- 	int output;
- };
- 
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, 32);
-+	__type(key, int);
-+	__type(value, int);
-+} map1 SEC(".maps");
-+
- /* These should be set by the user program */
- u32 nested_callback_nr_loops;
- u32 stop_index = -1;
- u32 nr_loops;
- int pid;
-+int callback_selector;
- 
- /* Making these global variables so that the userspace program
-  * can verify the output through the skeleton
-@@ -111,3 +119,109 @@ int prog_nested_calls(void *ctx)
- 
- 	return 0;
- }
-+
-+static int callback_set_f0(int i, void *ctx)
-+{
-+	g_output = 0xF0;
-+	return 0;
-+}
-+
-+static int callback_set_0f(int i, void *ctx)
-+{
-+	g_output = 0x0F;
-+	return 0;
-+}
-+
-+/*
-+ * non-constant callback is a corner case for bpf_loop inline logic
-+ */
-+SEC("fentry/" SYS_PREFIX "sys_nanosleep")
-+int prog_non_constant_callback(void *ctx)
-+{
-+	struct callback_ctx data = {};
-+
-+	if (bpf_get_current_pid_tgid() >> 32 != pid)
-+		return 0;
-+
-+	int (*callback)(int i, void *ctx);
-+
-+	g_output = 0;
-+
-+	if (callback_selector == 0x0F)
-+		callback = callback_set_0f;
-+	else
-+		callback = callback_set_f0;
-+
-+	bpf_loop(1, callback, NULL, 0);
-+
-+	return 0;
-+}
-+
-+static int stack_check_inner_callback(void *ctx)
-+{
-+	return 0;
-+}
-+
-+static int map1_lookup_elem(int key)
-+{
-+	int *val = bpf_map_lookup_elem(&map1, &key);
-+
-+	return val ? *val : -1;
-+}
-+
-+static void map1_update_elem(int key, int val)
-+{
-+	bpf_map_update_elem(&map1, &key, &val, BPF_ANY);
-+}
-+
-+static int stack_check_outer_callback(void *ctx)
-+{
-+	int a = map1_lookup_elem(1);
-+	int b = map1_lookup_elem(2);
-+	int c = map1_lookup_elem(3);
-+	int d = map1_lookup_elem(4);
-+	int e = map1_lookup_elem(5);
-+	int f = map1_lookup_elem(6);
-+
-+	bpf_loop(1, stack_check_inner_callback, NULL, 0);
-+
-+	map1_update_elem(1, a + 1);
-+	map1_update_elem(2, b + 1);
-+	map1_update_elem(3, c + 1);
-+	map1_update_elem(4, d + 1);
-+	map1_update_elem(5, e + 1);
-+	map1_update_elem(6, f + 1);
-+
-+	return 0;
-+}
-+
-+/* Some of the local variables in stack_check and
-+ * stack_check_outer_callback would be allocated on stack by
-+ * compiler. This test should verify that stack content for these
-+ * variables is preserved between calls to bpf_loop (might be an issue
-+ * if loop inlining allocates stack slots incorrectly).
-+ */
-+SEC("fentry/" SYS_PREFIX "sys_nanosleep")
-+int stack_check(void *ctx)
-+{
-+	if (bpf_get_current_pid_tgid() >> 32 != pid)
-+		return 0;
-+
-+	int a = map1_lookup_elem(7);
-+	int b = map1_lookup_elem(8);
-+	int c = map1_lookup_elem(9);
-+	int d = map1_lookup_elem(10);
-+	int e = map1_lookup_elem(11);
-+	int f = map1_lookup_elem(12);
-+
-+	bpf_loop(1, stack_check_outer_callback, NULL, 0);
-+
-+	map1_update_elem(7,  a + 1);
-+	map1_update_elem(8, b + 1);
-+	map1_update_elem(9, c + 1);
-+	map1_update_elem(10, d + 1);
-+	map1_update_elem(11, e + 1);
-+	map1_update_elem(12, f + 1);
-+
-+	return 0;
-+}
--- 
-2.25.1
+It would be really nice if there was sufficient consistency in
+the LSM infrastructure for this to make sense. The cases where
+a module supplies a hook but only cares about the data some of
+the time are rare, excepting for BPF. As I mention elsewhere,
+general stacking is what you need.
 
