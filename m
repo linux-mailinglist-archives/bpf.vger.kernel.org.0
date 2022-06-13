@@ -2,96 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E85E549A51
-	for <lists+bpf@lfdr.de>; Mon, 13 Jun 2022 19:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9321D549B8D
+	for <lists+bpf@lfdr.de>; Mon, 13 Jun 2022 20:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241543AbiFMRoN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Jun 2022 13:44:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52166 "EHLO
+        id S240139AbiFMSbh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Jun 2022 14:31:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243389AbiFMRns (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Jun 2022 13:43:48 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C63F1632A3
-        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 06:16:41 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id 15so5731644pfy.3
-        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 06:16:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=F8E8EW69SjJfLjRPxyFMXJUarXVVc6zvpFhOJ1im6tE=;
-        b=ehpF0GC/kA/vqjTRYiELruBjwg4Z/4IdizdA3YJ16HOLokC7Vt62K578JRlZYBVjDc
-         fVohQHqjIjiEARBJVaLtRWI/rA7rll0MduKdz2IPaWjV72WyBR7R3ft2jJ/FPLmRD8cu
-         6V3WVrGbjseErdGGxV/AEDBemYRre2H+UZ7LjqPuCjHhsncPFBMsjCCf4n1qOW64bxj6
-         rVI0BxXbmn4ZCrPcbl7y1kGRcZC5srG+RcygRB11mrbiRwijDahwXCXcf6eFR2YVLELC
-         JbbVGisO/Y9Opi/zhNXRnEkx8DpuTFC/fTNoM9J3TrF4mwBi6KYP0f77AsqPFrVn10/K
-         flWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=F8E8EW69SjJfLjRPxyFMXJUarXVVc6zvpFhOJ1im6tE=;
-        b=6v6KjubWrB89v8FT728P/eP8YKt/8dqPgpttLtSKCwyRl3FxQwVxdeR5hfJ1nAtI5D
-         ggh+vPoKtorvw3dTxARoae7qne9gvN9OvkbGQrdYNbJKJz1CV1v+Y+rhldwMkyaskFCN
-         8E5psw6g98vMwKZx1n4hw7DUWqzy46dyDJ2a/xJ9sg6FqCXeQuPadPiffIDSCCGzA/FT
-         VK9tOvwtdtyZpPL5Ch/AL4PL+C75Kb3k5RLyBf5sDQpmRoLSiitkm6Lprk+I8c+AN5+z
-         h6sj/sHKhpVf+J+SdbvzjiybPWWAgkFEzChBeQWHKi49+o7+vBaMNqaB5u5GjPyoWPC+
-         w0/Q==
-X-Gm-Message-State: AOAM530OKa9b2mqq8dge515KGmgq7LQ+j3Xef8yhxPwDXj9FvFkrkgZf
-        Qj2wkGJA/W0OQ+W6INwLrA==
-X-Google-Smtp-Source: ABdhPJyHUxW9xYEC8N0h9QlFrid1OcatauSstYHA0RYMEjK0Kcw2DuJtLrWv+eru/EteY5c3eTOtug==
-X-Received: by 2002:a63:4f05:0:b0:405:5463:2ea8 with SMTP id d5-20020a634f05000000b0040554632ea8mr6246778pgb.94.1655126200920;
-        Mon, 13 Jun 2022 06:16:40 -0700 (PDT)
-Received: from localhost ([163.125.33.113])
-        by smtp.gmail.com with ESMTPSA id b3-20020a1709027e0300b001635a8f9dfdsm5088824plm.26.2022.06.13.06.16.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jun 2022 06:16:40 -0700 (PDT)
-From:   john <jwnhy0@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, andriin@fb.com
-Cc:     bpf@vger.kernel.org, Hongyi Lu <jwnhy0@gmail.com>
-Subject: [PATCH] bpf: fix spelling in bpf_verifier.h
-Date:   Mon, 13 Jun 2022 21:16:33 +0000
-Message-Id: <20220613211633.58647-1-jwnhy0@gmail.com>
-X-Mailer: git-send-email 2.35.1
+        with ESMTP id S244839AbiFMSbL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Jun 2022 14:31:11 -0400
+X-Greylist: delayed 329 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 13 Jun 2022 07:48:45 PDT
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DAFFBCBB
+        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 07:48:45 -0700 (PDT)
+Received: from [192.168.1.107] ([37.4.249.155]) by mrelayeu.kundenserver.de
+ (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1M1HuU-1o2PAH2rHe-002pGD; Mon, 13 Jun 2022 16:42:35 +0200
+Message-ID: <de4da55b-a074-b375-c41d-413bb19a428b@i2se.com>
+Date:   Mon, 13 Jun 2022 16:42:33 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [BUG] null pointer dereference when loading bpf_preload on
+ Raspberry Pi
+Content-Language: en-US
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Shubham Bansal <illusionist.neo@gmail.com>,
+        bpf@vger.kernel.org, jpalus@fastmail.com,
+        regressions@lists.linux.dev,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <f038d6f9-b96b-0749-111c-33ac8939a1c0@i2se.com>
+ <YqcbgmTmezGM0VPr@shell.armlinux.org.uk>
+From:   Stefan Wahren <stefan.wahren@i2se.com>
+In-Reply-To: <YqcbgmTmezGM0VPr@shell.armlinux.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:RUNrFBwO0Rxcmop+xh2sE+cCQBp6k7JRB/aBlkwKSR5DZbbnnuK
+ JzNwJOnHUCBbVTQF4vvpq45KCFOfjlvWG+h0CBWrquW+sLSTdcyq/JW9ACJIuLXwXO5jOFn
+ n7cX6JIug22sB911HFAVE2Ym19DV+AQ4ibGWGDXOhxUmQB8nP0YeTdozmAuE7DlToDm2xsc
+ 2ggpSyzOPQFvCUCyDSnWg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:WzokOsTgqhU=:qsIgKmQvGURvx6eca4GQCF
+ qtonQCxBOG1f8otpPzDKPWk7zB8KtcQxcYFnfXCAr7AJu881Wax4S1d77iTlWHXkRRJqn383/
+ ADm2PhfWJ1VO8IFjT5bDoHlUGm28tZRw3L/pp5GN84j8eE/z1p54E2XnRVNgSrNCHZJ8ftqcf
+ UL0Ew2LABcTIelIOF3XyAuQsFZJdE9sJi6UQc/uJZ37Rh1luurl8MLGJR2EJxmIquA6IUPBzE
+ JLxWkBv+QjjSziqBQ/ttt9r3dRej9/JAkKCg08kkf0PodpXD7AKQeJeGTyQqyBOawaxTK6uGq
+ WNRuE6xk5M3GnR8oWlQqxG/pUB2ub3m18USg+QmznK7gxTwSfhuEpp0zq1m4kFxkVs+qMjNYt
+ VrN9dAwU/Fm7KI61AsAObSelk4aJHHwd2FM64WE4V177vJbIVnfO4Hi+dbcO6RfmBJ46hy02G
+ +8zXUTQdYhUls4Ngp0WPKTmCDsryEJoX2g1jUOnE4nwVPYwExC7dNt3zqrTfywT8lwicDPWq4
+ 73IxjyZPlYhDseD9/UQhnhMuLXPSL7xMChNZyEl2mdP60f/gAh20ZU4vPVNxSn6FMJZsPX9Dc
+ l8LirM8msZi8TYee8uQ3PtpIUkkmqMvVTQ+6GN961ZvPgwMws+cEdYCKE9vVuTF0f1/1Hxub1
+ zDGlFzPjtDF/oNsMqfXMvOurPwcB/Z24953GlDrwa0DJ9YxK/a3guufxJAO0EIyw0x8qYXzJa
+ 1IAl0uZyhnAgMz2/PDA8UVvX39c7iGvs3U1R1tpIt1QzW7BuUG5BGCvs3rg=
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Hongyi Lu <jwnhy0@gmail.com>
+Hi,
 
-6689139af (HEAD -> master) fix spelling in bpf_verifier.h
-Spelling is no big deal, but it is still an improvement.
-This is my first patch as a newbie. Hope I didn't cause much trouble.
+Am 13.06.22 um 13:12 schrieb Russell King (Oracle):
+> On Mon, Jun 13, 2022 at 12:22:47AM +0200, Stefan Wahren wrote:
+>> It would be nice to get a hint, how to narrow down or which commit might
+>> trigger this issue.
+> The standard way? git bisect?
+>
+> So it happens on 5.18.0 and 5.18.3. Presumably it didn't happen with
+> 5.17?
 
-Signed-off-by: Hongyi Lu <jwnhy0@gmail.com>
----
- include/linux/bpf_verifier.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+in 5.17 there is a libelf dependency (was removed in 5.18), which cause 
+a compile issue about missing libelf.h which is only available on my 
+host system but not available in my Linaro cross toolchain.
 
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index e8439f6cb..3930c963f 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -299,7 +299,7 @@ struct bpf_verifier_state {
- 	 * If is_state_visited() sees a state with branches > 0 it means
- 	 * there is a loop. If such state is exactly equal to the current state
- 	 * it's an infinite loop. Note states_equal() checks for states
--	 * equvalency, so two states being 'states_equal' does not mean
-+	 * equivalency, so two states being 'states_equal' does not mean
- 	 * infinite loop. The exact comparison is provided by
- 	 * states_maybe_looping() function. It's a stronger pre-check and
- 	 * much faster than states_equal().
--- 
-2.35.1
+Should i copy the libelf.h somewhere, so the cross compiler finds it?
 
