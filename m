@@ -2,85 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A148F54958B
-	for <lists+bpf@lfdr.de>; Mon, 13 Jun 2022 18:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F4F7548965
+	for <lists+bpf@lfdr.de>; Mon, 13 Jun 2022 18:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353977AbiFMLbL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Jun 2022 07:31:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46046 "EHLO
+        id S1353210AbiFMMwr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Jun 2022 08:52:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354409AbiFML32 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Jun 2022 07:29:28 -0400
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 090E1CE1A
-        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 03:44:08 -0700 (PDT)
-Received: by mail-io1-f70.google.com with SMTP id w21-20020a5d9cd5000000b00669e6796a8aso1106611iow.7
-        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 03:44:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=fEZcgfMVZzqJc7ybxib8fa3FVpwuXcVDtcH0dPsG3A0=;
-        b=Puz34NoN2ampriFi1KNZqNA4+KmJy/aaRzcNF4kEee19Yb7kizXZiLEu97CLk8yAG8
-         xqX41mmihiHp3DiV3AVpsbFvGeRyGeNFAbQopTnjQSorCTLvQkR58vn9lvfGKTugVW3O
-         LXM8CCm4VY/q82pfEWE5hiXiRw5/7Ejh5P7b7EGaI4Xp++UMOLS0hoGlP/5/B0Q05fvI
-         mh90r8fThtqs1B6T1Enlekg0lkAL1i5+QvB/X1mQncKX+TuEtvtG/6YXjPCqGL2w8K6N
-         OVczjEVrVop8r88au9Ac8vzra/GYZndeA9TPC1HF1j11MXJpNoJ3khphdFWm+11MuGwH
-         TvNA==
-X-Gm-Message-State: AOAM533AkFOjoTkdUJO2N5vLZQI9VZxBUXo6icmN+KRzp3M8Jm7lnAaq
-        N3cNeLGBv2nrBQPoBgaQ3VaRU/mp/vNBpTEYbP4uOzxqQ1Xk
-X-Google-Smtp-Source: ABdhPJzYGM8wyFXxpBqce+DRay56fuykYJTlm3Z97gco3gXVLKQDBQe+LJkoivDQ05RRSo2Ln1SRxrgMrCK2ym0icmTglewkd24E
+        with ESMTP id S1354134AbiFMMwO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Jun 2022 08:52:14 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9887E656D
+        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 04:12:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=74UX7MWPYAaIblRMnIERw/k0jzzIxCFbAdKIQkmHh8I=; b=Z7AyPWON+EVR26AMxKjCiZ1zRp
+        so/WmMmBjYRf1iowFiQ+fN7Y3ZMMl6YEFFlsIpKbwEfUNYBwuoPAu7qr77415PyebY7OPdQCOozQ5
+        VoAAEh0zdR63YjNnpmf4S3jIws/U5ZCUUC9Gsc89dAC4T3V8uJdIvkMMJSDpUrBSwgRBX2u1gJdYH
+        x1QMfwp6kX19tCHRWYKjPXsGcsqysfdj9ocgSC1DBWcbvnGqGSd8Df84U3ZCBIOnx75Fwmllyo8hf
+        fJOXqCRkqnU0SXXu9S2o9njpnrQyzdxg6fa5deOqmQzkrS3vaqeCGNqGui79DPjiJqzMAk/e86KjE
+        Agc/xT0A==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:32846)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1o0hzJ-0001g6-4V; Mon, 13 Jun 2022 12:12:05 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1o0hzG-0006VI-8u; Mon, 13 Jun 2022 12:12:02 +0100
+Date:   Mon, 13 Jun 2022 12:12:02 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Stefan Wahren <stefan.wahren@i2se.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Shubham Bansal <illusionist.neo@gmail.com>,
+        bpf@vger.kernel.org, jpalus@fastmail.com,
+        regressions@lists.linux.dev,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [BUG] null pointer dereference when loading bpf_preload on
+ Raspberry Pi
+Message-ID: <YqcbgmTmezGM0VPr@shell.armlinux.org.uk>
+References: <f038d6f9-b96b-0749-111c-33ac8939a1c0@i2se.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:438c:b0:331:adac:a274 with SMTP id
- bo12-20020a056638438c00b00331adaca274mr23027146jab.192.1655117047472; Mon, 13
- Jun 2022 03:44:07 -0700 (PDT)
-Date:   Mon, 13 Jun 2022 03:44:07 -0700
-In-Reply-To: <000000000000e2fc3f05e141f930@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ad299205e151f7d3@google.com>
-Subject: Re: [syzbot] WARNING in exit_tasks_rcu_finish
-From:   syzbot <syzbot+9bb26e7c5e8e4fa7e641@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        brauner@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        ebiederm@xmission.com, frederic@kernel.org, hawk@kernel.org,
-        jiangshanlai@gmail.com, joel@joelfernandes.org,
-        john.fastabend@gmail.com, josh@joshtriplett.org, kafai@fb.com,
-        keescook@chromium.org, kpsingh@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
-        netdev@vger.kernel.org, pabeni@redhat.com, paulmck@kernel.org,
-        quic_neeraju@quicinc.com, rcu@vger.kernel.org, rostedt@goodmis.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f038d6f9-b96b-0749-111c-33ac8939a1c0@i2se.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot has bisected this issue to:
+On Mon, Jun 13, 2022 at 12:22:47AM +0200, Stefan Wahren wrote:
+> It would be nice to get a hint, how to narrow down or which commit might
+> trigger this issue.
 
-commit 09f110d4a1597185a5ed177da8573eec997b7227
-Author: Paul E. McKenney <paulmck@kernel.org>
-Date:   Tue May 17 18:30:32 2022 +0000
+The standard way? git bisect?
 
-    rcu-tasks: Track blocked RCU Tasks Trace readers
+So it happens on 5.18.0 and 5.18.3. Presumably it didn't happen with
+5.17?
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=170f6ee7f00000
-start commit:   6d0c80680317 Add linux-next specific files for 20220610
-git tree:       linux-next
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=148f6ee7f00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=108f6ee7f00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a30d6e3e814e5931
-dashboard link: https://syzkaller.appspot.com/bug?extid=9bb26e7c5e8e4fa7e641
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=177b6230080000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=148207bff00000
+I've tried to trace the code but failed - skel_map_create() doesn't seem
+to feature anywhere obvious in my kernels.
 
-Reported-by: syzbot+9bb26e7c5e8e4fa7e641@syzkaller.appspotmail.com
-Fixes: 09f110d4a159 ("rcu-tasks: Track blocked RCU Tasks Trace readers")
+It looks to me like some BPF code is being loaded by the bpf_reload
+module and is being run. I'm guessing that the BPF code is calling
+bpf_sys_bpf, but as I can't find skel_map_create() that's all it is,
+a guess.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+It looks like copy_from_bpfptr() which calls copy_from_sockptr_offset()
+is passing in a source pointer of 0x0048. I'm guessing this is the value
+of the pointer that is passed into bpf_sys_bpf() - that's another guess,
+there's no information on that in the backtraces.
+
+So, there's really not much to go on here to debug the oops as the
+kernel has printed... I'd say its pretty much undebuggable from just
+the kernel oops.
+
+Maybe someone on the bpf list will have a better idea.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
