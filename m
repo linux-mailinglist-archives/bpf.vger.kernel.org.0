@@ -2,242 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84EC8548A52
-	for <lists+bpf@lfdr.de>; Mon, 13 Jun 2022 18:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2C72548E58
+	for <lists+bpf@lfdr.de>; Mon, 13 Jun 2022 18:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379575AbiFMN7e (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Jun 2022 09:59:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40904 "EHLO
+        id S1386354AbiFMPCr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Jun 2022 11:02:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1380467AbiFMN67 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Jun 2022 09:58:59 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D59358BD31;
-        Mon, 13 Jun 2022 04:37:41 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id z14so604954pjb.4;
-        Mon, 13 Jun 2022 04:37:41 -0700 (PDT)
+        with ESMTP id S243063AbiFMPCH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Jun 2022 11:02:07 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E4DA51338
+        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 05:08:06 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id i17-20020a7bc951000000b0039c4760ec3fso3984789wml.0
+        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 05:08:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=V6PseXy2x281yW3ux49iTm5SxTlq+D4xccCjsrNRk8o=;
-        b=jm4W9XsbwsSRKQHIkLv8vIY97nT4LD4GY9lsq+XsecSfl8jv14SH3eexr6RIpomksO
-         Z2GeQrgD3BJTe9n13p91WgBaW3UxVLQKvMFxjDcugufhINla9LWOSOiFGfLvaoFR0PD8
-         H1xnkuymZrJRDCdLiA9NYBWwvaSfhPVN1hF3QbFMlQ9drijFPAHbTvSFvWAF6x1BSr7e
-         1B1rt0Xy67gShM1O5/gvVmlgSOajtZYLUPRKvRdOMu6XdrpqbVzXuWHJSMbiUd7fZUGi
-         CNTBjqnWmsk9QrsJxP+GkUxqkMhjogn0lvNWc53iZCFOfYOxZSlEEUvn4ebeyZePH/yE
-         ESZA==
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=N7rruoIsMJ3RkeCWCy171/3t1oq0KgMw8VchdIork7A=;
+        b=EnV/axKj6VN3b9oEKk50eyG5ILm0c8Rlr6okYx0UglOSle2KwPXhwUFOPsSa2TyNNz
+         mnTG8QJE9LAbEPla6EqD5tsgq3SVIkzVDMPrlW+v6BnXMsVghttsoRSZJVbeS7Oy2SYp
+         XxutAS2uGY1XhHNALo/IrcmZ/zNdYdOen6vLJQCbUev/XQ5LcccYyBJLFgR06/HsJfu8
+         ErgH9i8AOhnHdGDW0Lo15HkBM+rh5cg+7yIJ6PIFGX+IMtM/SUUmKflp5iwoH9yNWzxU
+         YpUHGgMAWOOdtICMAKR0iBDzyw+g/TiodBlk+rF3ev6A01HTF/6Gvw490Jb+GFYLWfG6
+         TDbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V6PseXy2x281yW3ux49iTm5SxTlq+D4xccCjsrNRk8o=;
-        b=mo9vzVxloJZR96wJCnPrqojWY1qWFPBh1nH5MUqVVdhVxuLth7nhaRTlBfGDpVActY
-         JxSa06QWqfmkqBMmO/ZhU/bPuF0q9Uq4iA4fVVZHmz8Wck0U8E0NkTHloXnwzCV0uQlQ
-         iFu6mr7O3JxgtW3w/xtDzaZFSg0l3xTWaY4Ps/lqv+Ull0QE9MG3rGd49uHlMNjmLaU6
-         R8Wf7YToaMkA4v1BIyy1XCWjLK26StvFdSGTSrhVox3Zk9BwOIiTNLyLbqw8aEiUJTwB
-         /B0mJULLYL+u11jCwt3WoYotQdJFgD9VJTyoQPEUuEKNWI0zEgsTBjyt8CgYIHYALNx3
-         LATA==
-X-Gm-Message-State: AOAM532yS9za4CzqmYMjShn2bjxUjIUhqrAXfaAnpPBva5xDoyCquciv
-        yfDovlvc0fo6sIx1q0zQjYHmyXQNipoNu22TWGLmBfoQOAkAAw==
-X-Google-Smtp-Source: ABdhPJwiBkSqH44oX35ICf7hshF77Pk4JuT8WV/zCuHPydHlthQtPefbuaen4545939rkcQN6Vutwrj46PLzo/rnHBw=
-X-Received: by 2002:a17:90b:350d:b0:1e6:7780:6c92 with SMTP id
- ls13-20020a17090b350d00b001e677806c92mr15364658pjb.46.1655120260918; Mon, 13
- Jun 2022 04:37:40 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=N7rruoIsMJ3RkeCWCy171/3t1oq0KgMw8VchdIork7A=;
+        b=jeDNHUNKe/VdPfUJiOT0+ItLg4GNaWxNvSWZdFAHXpbxjq8hgGAUuDdg69x3DqcBbX
+         vcgNnfR4jnh9mVUAI07vL1QE1fT9K/BvoPsnadlRS+Po3AdrbwFIELbhcpDujCJNgQig
+         DEDEzNkMvGfb/7Ai5jFSalnW6mCsxSXElY2QY7l0YBwB9LYKAQ1ua/ZboI/P4pmWAVMo
+         9tr5OAnOeJfB0S5e/+wYYAHfKPr81yDd9/JCjaU/M1q5VZ2EpfP4Gm1K238+yJyA1Y0e
+         BUVCaWcxPV5pnvWbqR5IGl4dmJaltpAoxjSAmmV1co4YYGmpO/hid4cz/YD7ALqPD8f+
+         zE8Q==
+X-Gm-Message-State: AOAM533U2d9aA0i82NuEaIw+NxxE77gxAGxCFzylolwEyiOH8qndaJR3
+        YfZXLof7MBK/uaG8J/ehg5fXnw==
+X-Google-Smtp-Source: ABdhPJxZHfPQbqgUOWITj1lZaV6sQW6adOheR+e3UEyTwf4fUO4vsScxcoVC2XQnP9V1goOSaJ8gNA==
+X-Received: by 2002:a05:600c:1d9b:b0:39c:7e00:6b7c with SMTP id p27-20020a05600c1d9b00b0039c7e006b7cmr14109866wms.50.1655122081015;
+        Mon, 13 Jun 2022 05:08:01 -0700 (PDT)
+Received: from [192.168.178.21] ([51.155.200.13])
+        by smtp.gmail.com with ESMTPSA id f14-20020a5d58ee000000b0020fc6590a12sm8492187wrd.41.2022.06.13.05.07.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Jun 2022 05:08:00 -0700 (PDT)
+Message-ID: <a0ebf40e-6c21-435e-0d87-bca7a2113241@isovalent.com>
+Date:   Mon, 13 Jun 2022 13:07:59 +0100
 MIME-Version: 1.0
-References: <20220610150923.583202-1-maciej.fijalkowski@intel.com> <20220610150923.583202-11-maciej.fijalkowski@intel.com>
-In-Reply-To: <20220610150923.583202-11-maciej.fijalkowski@intel.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Mon, 13 Jun 2022 13:37:30 +0200
-Message-ID: <CAJ8uoz1ENfOwXUdzGnnVqTj2NUzFGAgRCv0CeYev0_PcGT6iSA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 10/10] selftests: xsk: add support for zero copy testing
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH bpf-next v9 09/10] bpftool: implement cgroup tree for
+ BPF_LSM_CGROUP
+Content-Language: en-GB
+To:     Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+References: <20220610165803.2860154-1-sdf@google.com>
+ <20220610165803.2860154-10-sdf@google.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <20220610165803.2860154-10-sdf@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 10, 2022 at 5:20 PM Maciej Fijalkowski
-<maciej.fijalkowski@intel.com> wrote:
->
-> Introduce new mode to xdpxceiver responsible for testing AF_XDP zero
-> copy support of driver that serves underlying physical device. When
-> setting up test suite, determine whether driver has ZC support or not by
-> trying to bind XSK ZC socket to the interface. If it succeeded,
-> interpret it as ZC support being in place and do softirq and busy poll
-> tests for zero copy mode.
->
-> Note that Rx dropped tests are skipped since ZC path is not touching
-> rx_dropped stat at all.
+2022-06-10 09:58 UTC-0700 ~ Stanislav Fomichev <sdf@google.com>
+> $ bpftool --nomount prog loadall $KDIR/tools/testing/selftests/bpf/lsm_cgroup.o /sys/fs/bpf/x
+> $ bpftool cgroup attach /sys/fs/cgroup lsm_cgroup pinned /sys/fs/bpf/x/socket_alloc
+> $ bpftool cgroup attach /sys/fs/cgroup lsm_cgroup pinned /sys/fs/bpf/x/socket_bind
+> $ bpftool cgroup attach /sys/fs/cgroup lsm_cgroup pinned /sys/fs/bpf/x/socket_clone
+> $ bpftool cgroup attach /sys/fs/cgroup lsm_cgroup pinned /sys/fs/bpf/x/socket_post_create
+> $ bpftool cgroup tree
+> CgroupPath
+> ID       AttachType      AttachFlags     Name
+> /sys/fs/cgroup
+> 6        lsm_cgroup                      socket_post_create bpf_lsm_socket_post_create
+> 8        lsm_cgroup                      socket_bind     bpf_lsm_socket_bind
+> 10       lsm_cgroup                      socket_alloc    bpf_lsm_sk_alloc_security
+> 11       lsm_cgroup                      socket_clone    bpf_lsm_inet_csk_clone
+> 
+> $ bpftool cgroup detach /sys/fs/cgroup lsm_cgroup pinned /sys/fs/bpf/x/socket_post_create
+> $ bpftool cgroup tree
+> CgroupPath
+> ID       AttachType      AttachFlags     Name
+> /sys/fs/cgroup
+> 8        lsm_cgroup                      socket_bind     bpf_lsm_socket_bind
+> 10       lsm_cgroup                      socket_alloc    bpf_lsm_sk_alloc_security
+> 11       lsm_cgroup                      socket_clone    bpf_lsm_inet_csk_clone
+> 
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
 
-Great to be able to test zero-copy drivers. Thank you! Some small
-comments below.
+The changes for bpftool look good to me, thanks!
+Reviewed-by: Quentin Monnet <quentin@isovalent.com>
 
-> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 > ---
->  tools/testing/selftests/bpf/xdpxceiver.c | 80 ++++++++++++++++++++++--
->  tools/testing/selftests/bpf/xdpxceiver.h |  2 +
->  2 files changed, 77 insertions(+), 5 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/xdpxceiver.c b/tools/testing/selftests/bpf/xdpxceiver.c
-> index a2aa652d0bb8..beef8d694fa6 100644
-> --- a/tools/testing/selftests/bpf/xdpxceiver.c
-> +++ b/tools/testing/selftests/bpf/xdpxceiver.c
-> @@ -124,9 +124,20 @@ static void __exit_with_error(int error, const char *file, const char *func, int
->  }
->
->  #define exit_with_error(error) __exit_with_error(error, __FILE__, __func__, __LINE__)
-> -
-> -#define mode_string(test) (test)->ifobj_tx->xdp_flags & XDP_FLAGS_SKB_MODE ? "SKB" : "DRV"
->  #define busy_poll_string(test) (test)->ifobj_tx->busy_poll ? "BUSY-POLL " : ""
-> +static char *mode_string(struct test_spec *test)
-> +{
-> +       switch (test->mode) {
-> +       case TEST_MODE_SKB:
-> +               return "SKB";
-> +       case TEST_MODE_DRV:
-> +               return "DRV";
-> +       case TEST_MODE_ZC:
-> +               return "ZC";
-> +       default:
-> +               return "BOGUS";
-> +       }
-> +}
->
->  static void report_failure(struct test_spec *test)
+>  tools/bpf/bpftool/cgroup.c | 80 +++++++++++++++++++++++++++-----------
+>  1 file changed, 58 insertions(+), 22 deletions(-)
+> 
+> diff --git a/tools/bpf/bpftool/cgroup.c b/tools/bpf/bpftool/cgroup.c
+> index 42421fe47a58..6e55f583a62f 100644
+> --- a/tools/bpf/bpftool/cgroup.c
+> +++ b/tools/bpf/bpftool/cgroup.c
+
+> @@ -542,5 +577,6 @@ static const struct cmd cmds[] = {
+>  
+>  int do_cgroup(int argc, char **argv)
 >  {
-> @@ -317,6 +328,53 @@ static int __xsk_configure_socket(struct xsk_socket_info *xsk, struct xsk_umem_i
->         return xsk_socket__create(&xsk->xsk, ifobject->ifname, 0, umem->umem, rxr, txr, &cfg);
+> +	btf_vmlinux = libbpf_find_kernel_btf();
+>  	return cmd_select(cmds, argc, argv, do_help);
 >  }
->
-> +static bool ifobj_zc_avail(struct ifobject *ifobject)
-> +{
-> +       size_t umem_sz = DEFAULT_UMEM_BUFFERS * XSK_UMEM__DEFAULT_FRAME_SIZE;
-> +       int mmap_flags = MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE;
-> +       struct xsk_socket_info *xsk;
-> +       struct xsk_umem_info *umem;
-> +       bool zc_avail = false;
-> +       void *bufs;
-> +       int ret;
-> +
-> +       bufs = mmap(NULL, umem_sz, PROT_READ | PROT_WRITE, mmap_flags, -1, 0);
-> +       if (bufs == MAP_FAILED)
-> +               exit_with_error(errno);
-> +
-> +       umem = calloc(1, sizeof(struct xsk_umem_info));
-> +       if (!umem) {
-> +               munmap(bufs, umem_sz);
-> +               exit_with_error(-ENOMEM);
-> +       }
-> +       umem->frame_size = XSK_UMEM__DEFAULT_FRAME_SIZE;
-> +       ret = xsk_configure_umem(umem, bufs, umem_sz);
-> +       if (ret)
-> +               exit_with_error(-ret);
-> +
-> +       xsk = calloc(1, sizeof(struct xsk_socket_info));
-> +       if (!xsk)
-> +               goto out;
-> +       ifobject->xdp_flags = 0;
 
-This is redundant.
+This is not required for all "bpftool cgroup" operations (attach/detach
+don't need it I think), but should be inexpensive, right?
 
-> +       ifobject->xdp_flags = XDP_FLAGS_UPDATE_IF_NOEXIST;
-> +       ifobject->xdp_flags |= XDP_FLAGS_DRV_MODE;
-> +       ifobject->bind_flags = XDP_USE_NEED_WAKEUP | XDP_ZEROCOPY;
-> +       ifobject->rx_on = true;
-> +       xsk->rxqsize = XSK_RING_CONS__DEFAULT_NUM_DESCS;
-> +       ret = __xsk_configure_socket(xsk, umem, ifobject, false);
-> +       if (!ret)
-> +               zc_avail = true;
-> +
-> +       ifobject->xdp_flags = 0;
-
-Why this assignment?
-
-> +       xsk_socket__delete(xsk->xsk);
-> +       free(xsk);
-> +out:
-> +       munmap(umem->buffer, umem_sz);
-> +       xsk_umem__delete(umem->umem);
-> +       free(umem);
-> +       return zc_avail;
-> +}
-> +
->  static struct option long_options[] = {
->         {"interface", required_argument, 0, 'i'},
->         {"busy-poll", no_argument, 0, 'b'},
-> @@ -483,9 +541,14 @@ static void test_spec_init(struct test_spec *test, struct ifobject *ifobj_tx,
->                 else
->                         ifobj->xdp_flags |= XDP_FLAGS_DRV_MODE;
->
-> -               ifobj->bind_flags = XDP_USE_NEED_WAKEUP | XDP_COPY;
-> +               ifobj->bind_flags = XDP_USE_NEED_WAKEUP;
-> +               if (mode == TEST_MODE_ZC)
-> +                       ifobj->bind_flags |= XDP_ZEROCOPY;
-> +               else
-> +                       ifobj->bind_flags |= XDP_COPY;
->         }
->
-> +       test->mode = mode;
->         __test_spec_init(test, ifobj_tx, ifobj_rx);
->  }
->
-> @@ -1543,6 +1606,10 @@ static void run_pkt_test(struct test_spec *test, enum test_mode mode, enum test_
->  {
->         switch (type) {
->         case TEST_TYPE_STATS_RX_DROPPED:
-> +               if (mode == TEST_MODE_ZC) {
-> +                       ksft_test_result_skip("Can not run RX_DROPPED test for ZC mode\n");
-> +                       return;
-> +               }
->                 testapp_stats_rx_dropped(test);
->                 break;
->         case TEST_TYPE_STATS_TX_INVALID_DESCS:
-> @@ -1723,8 +1790,11 @@ int main(int argc, char **argv)
->         init_iface(ifobj_rx, MAC2, MAC1, IP2, IP1, UDP_PORT2, UDP_PORT1,
->                    worker_testapp_validate_rx);
->
-> -       if (is_xdp_supported(ifobj_tx))
-> -               modes++;
-> +       if (is_xdp_supported(ifobj_tx)) {
-> +               modes++;
-> +               if (ifobj_zc_avail(ifobj_tx))
-> +                       modes++;
-> +       }
->
->         test_spec_init(&test, ifobj_tx, ifobj_rx, 0);
->         tx_pkt_stream_default = pkt_stream_generate(ifobj_tx->umem, DEFAULT_PKT_CNT, PKT_SIZE);
-> diff --git a/tools/testing/selftests/bpf/xdpxceiver.h b/tools/testing/selftests/bpf/xdpxceiver.h
-> index 12b792004163..a86331c6b0c5 100644
-> --- a/tools/testing/selftests/bpf/xdpxceiver.h
-> +++ b/tools/testing/selftests/bpf/xdpxceiver.h
-> @@ -61,6 +61,7 @@
->  enum test_mode {
->         TEST_MODE_SKB,
->         TEST_MODE_DRV,
-> +       TEST_MODE_ZC,
->         TEST_MODE_MAX
->  };
->
-> @@ -162,6 +163,7 @@ struct test_spec {
->         u16 current_step;
->         u16 nb_sockets;
->         bool fail;
-> +       enum test_mode mode;
->         char name[MAX_TEST_NAME_SIZE];
->  };
->
-> --
-> 2.27.0
->
+Quentin
