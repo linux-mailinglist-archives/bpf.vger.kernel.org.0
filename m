@@ -2,156 +2,182 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8869154A1FC
-	for <lists+bpf@lfdr.de>; Tue, 14 Jun 2022 00:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62F8A54A2CB
+	for <lists+bpf@lfdr.de>; Tue, 14 Jun 2022 01:37:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236542AbiFMWPQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Jun 2022 18:15:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51558 "EHLO
+        id S234542AbiFMXfB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Jun 2022 19:35:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231726AbiFMWPO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Jun 2022 18:15:14 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C032C67D;
-        Mon, 13 Jun 2022 15:15:13 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id g25so13680855ejh.9;
-        Mon, 13 Jun 2022 15:15:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B+2PglEldv0HYHksy5djPq2g3MZD4lIsMqBUNoVjzkw=;
-        b=Rce/Y7ilXJlidhIhVtwS7WAqUTuNY57Krrblz/fK0qZuLLmW/Co6Xbkh2Sr9za8ToF
-         ukK+t8dbrTn736MKYqUYCn7CDHoIVMmf69soKwthY4na99xUcyQHxcR6qk7tFUxv8Owf
-         UNqncORjMq/mZAPusiPCl7qFVwSaYB3SRVVuo3KAVZriLtMwS55hPW5rZMWMQ4ElY/1n
-         Uvs60Gxhxg4ce9u1Ed8LQ5L61AITYuijMwUzHQd2khpEUgLZGZziGA4GT3JV0sY/WoYO
-         hpJ6m/wxtD3GKTgt0ofjEWUVaIxH14WW6aRC1bi1Qwo1AitXAmYBnOg4fFPRPzL9QxOq
-         EoqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B+2PglEldv0HYHksy5djPq2g3MZD4lIsMqBUNoVjzkw=;
-        b=Nhb8atjAtD3Wa/IG445v87fDA6QNYfOfo3NxR+CZsEtbQ+8X0ypBrcKPhcfaAaKKT/
-         fnzwZL6pbY1qa31VeYQu9CsnCZfs7rM13NlOxxFCdAIgtDZLk/J7J0TqkZbEdDiQpowA
-         taD3Why28ZjuxXocawFn2GHC03R00S9UJgciBR5eqw+SHgO3dONf4ik5bS5C9v2v0FTi
-         SH2nq3Ll5IvCcIo2SLjKrkiKI1GBsa+UksOhSJIExZIutR1vLsd6XGMtmN/m6lAHvfYi
-         xW7Og/ht0LCbnH8JgDHGu7YnJG35J5JZcy+x9GrTxsRDZF2iAndGhkVaiEdpqEltJnwW
-         ssQw==
-X-Gm-Message-State: AOAM531TocahrQutNJBr9gbJvoi87lAKhyoetDmbNVXM84zn8Qkl8+1y
-        ti57/5kvFTW4ByAVN2/xUs4W+LZDGtXeaXKi+y0=
-X-Google-Smtp-Source: ABdhPJyhEOjKSdoSTzlCp0usTun9X0cG4MrMT6dkJfNubqK/TEJ2LOObaQwZUy+2st6iPeV4p2+natOk8MhtrBuyoxQ=
-X-Received: by 2002:a17:906:449:b0:711:c975:cfb8 with SMTP id
- e9-20020a170906044900b00711c975cfb8mr1697453eja.58.1655158511985; Mon, 13 Jun
- 2022 15:15:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1653600577.git.lorenzo@kernel.org> <20220611201117.euqca7rgn5wydlwk@macbook-pro-3.dhcp.thefacebook.com>
- <20220613161413.sowe7bv3da2nuqsg@apollo.legion>
-In-Reply-To: <20220613161413.sowe7bv3da2nuqsg@apollo.legion>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 13 Jun 2022 15:15:00 -0700
-Message-ID: <CAADnVQKk9LPm=4OeosxLZCmv+_PnowPZdz9QP4f-H8Vd4HSLVw@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 00/14] net: netfilter: add kfunc helper to
- update ct timeout
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S235522AbiFMXe7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Jun 2022 19:34:59 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BC003207C
+        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 16:34:57 -0700 (PDT)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25DFSOkk026869
+        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 16:34:57 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=ger9X5gKDs13t9VEIHqbJrv/huhTOZSgQhBWmvdBQU4=;
+ b=MP96RUGjjSypGtDJp/QzT90GRmAkZV6OhU6ox9wSjNIi/jMZ0S4zzz/saCVd3G34AJsR
+ O/IC7NDh3n6wkqZD9+NILuX8S9/dWL0Y8EuTsoWgAQJzoSv7CF4IgVw37PLEMDkgFnR5
+ GA+lKVPnwm89A0MojO1eJsRKTDOdmFhWZeI= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3gmr5sc3ca-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 16:34:57 -0700
+Received: from snc-exhub201.TheFacebook.com (2620:10d:c085:21d::7) by
+ snc-exhub101.TheFacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28; Mon, 13 Jun 2022 16:34:56 -0700
+Received: from twshared22934.08.ash9.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28; Mon, 13 Jun 2022 16:34:56 -0700
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+        id EBE6AB91CCE3; Mon, 13 Jun 2022 16:34:49 -0700 (PDT)
+From:   Yonghong Song <yhs@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next] selftests/bpf: Fix test_varlen verification failure with latest llvm
+Date:   Mon, 13 Jun 2022 16:34:49 -0700
+Message-ID: <20220613233449.2860753-1-yhs@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: JG0_Piuzc11pyQlt1GhT25-PpuJ_XLNn
+X-Proofpoint-GUID: JG0_Piuzc11pyQlt1GhT25-PpuJ_XLNn
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.517,FMLib:17.11.64.514
+ definitions=2022-06-13_09,2022-06-13_01,2022-02-23_01
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 13, 2022 at 9:14 AM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> On Sun, Jun 12, 2022 at 01:41:17AM IST, Alexei Starovoitov wrote:
-> > On Thu, May 26, 2022 at 11:34:48PM +0200, Lorenzo Bianconi wrote:
-> > > Changes since v3:
-> > > - split bpf_xdp_ct_add in bpf_xdp_ct_alloc/bpf_skb_ct_alloc and
-> > >   bpf_ct_insert_entry
-> > > - add verifier code to properly populate/configure ct entry
-> > > - improve selftests
-> >
-> > Kumar, Lorenzo,
-> >
-> > are you planning on sending v5 ?
-> > The patches 1-5 look good.
-> > Patch 6 is questionable as Florian pointed out.
->
-> Yes, it is almost there.
->
-> > What is the motivation to allow writes into ct->status?
->
-> It will only be allowed for ct from alloc function, after that ct = insert(ct)
-> releases old one with new read only ct. I need to recheck once again with the
-> code what other bits would cause problems on insert before I rework and reply.
+With latest llvm15, test_varlen failed with the following verifier log:
 
-I still don't understand why you want to allow writing after alloc.
+  17: (85) call bpf_probe_read_kernel_str#115   ; R0_w=3Dscalar(smin=3D-409=
+5,smax=3D256)
+  18: (bf) r1 =3D r0                      ; R0_w=3Dscalar(id=3D1,smin=3D-40=
+95,smax=3D256) R1_w=3Dscalar(id=3D1,smin=3D-4095,smax=3D256)
+  19: (67) r1 <<=3D 32                    ; R1_w=3Dscalar(smax=3D1099511627=
+776,umax=3D18446744069414584320,var_off=3D(0x0; 0xffffffff00000000),s32_min=
+=3D0,s32_max=3D0,u32_max=3D)
+  20: (bf) r2 =3D r1                      ; R1_w=3Dscalar(id=3D2,smax=3D109=
+9511627776,umax=3D18446744069414584320,var_off=3D(0x0; 0xffffffff00000000),=
+s32_min=3D0,s32_max=3D0,u32)
+  21: (c7) r2 s>>=3D 32                   ; R2=3Dscalar(smin=3D-2147483648,=
+smax=3D256)
+  ; if (len >=3D 0) {
+  22: (c5) if r2 s< 0x0 goto pc+7       ; R2=3Dscalar(umax=3D256,var_off=3D=
+(0x0; 0x1ff))
+  ; payload4_len1 =3D len;
+  23: (18) r2 =3D 0xffffc90000167418      ; R2_w=3Dmap_value(off=3D1048,ks=
+=3D4,vs=3D1572,imm=3D0)
+  25: (63) *(u32 *)(r2 +0) =3D r0         ; R0=3Dscalar(id=3D1,smin=3D-4095=
+,smax=3D256) R2_w=3Dmap_value(off=3D1048,ks=3D4,vs=3D1572,imm=3D0)
+  26: (77) r1 >>=3D 32                    ; R1_w=3Dscalar(umax=3D4294967295=
+,var_off=3D(0x0; 0xffffffff))
+  ; payload +=3D len;
+  27: (18) r6 =3D 0xffffc90000167424      ; R6_w=3Dmap_value(off=3D1060,ks=
+=3D4,vs=3D1572,imm=3D0)
+  29: (0f) r6 +=3D r1                     ; R1_w=3DPscalar(umax=3D429496729=
+5,var_off=3D(0x0; 0xffffffff)) R6_w=3Dmap_value(off=3D1060,ks=3D4,vs=3D1572=
+,umax=3D4294967295,var_off=3D(0)
+  ; len =3D bpf_probe_read_kernel_str(payload, MAX_LEN, &buf_in2[0]);
+  30: (bf) r1 =3D r6                      ; R1_w=3Dmap_value(off=3D1060,ks=
+=3D4,vs=3D1572,umax=3D4294967295,var_off=3D(0x0; 0xffffffff)) R6_w=3Dmap_va=
+lue(off=3D1060,ks=3D4,vs=3D1572,um)
+  31: (b7) r2 =3D 256                     ; R2_w=3D256
+  32: (18) r3 =3D 0xffffc90000164100      ; R3_w=3Dmap_value(off=3D256,ks=
+=3D4,vs=3D1056,imm=3D0)
+  34: (85) call bpf_probe_read_kernel_str#115
+  R1 unbounded memory access, make sure to bounds check any such access
+  processed 27 insns (limit 1000000) max_states_per_insn 0 total_states 2 p=
+eak_states 2 mark_read 1
+  -- END PROG LOAD LOG --
+  libbpf: failed to load program 'handler32_signed'
 
-> > The selftest doesn't do that anyway.
->
-> Yes, it wasn't updated, we will do that in v5.
->
-> > Patch 7 (acquire-release pairs) is too narrow.
-> > The concept of a pair will not work well. There could be two acq funcs and one release.
->
-> That is already handled (you define two pairs: acq1, rel and acq2, rel).
-> There is also an example: bpf_ct_insert_entry -> bpf_ct_release,
-> bpf_xdp_ct_lookup -> ct_release.
+The failure is due to
+  20: (bf) r2 =3D r1                      ; R1_w=3Dscalar(id=3D2,smax=3D109=
+9511627776,umax=3D18446744069414584320,var_off=3D(0x0; 0xffffffff00000000),=
+s32_min=3D0,s32_max=3D0,u32)
+  21: (c7) r2 s>>=3D 32                   ; R2=3Dscalar(smin=3D-2147483648,=
+smax=3D256)
+  22: (c5) if r2 s< 0x0 goto pc+7       ; R2=3Dscalar(umax=3D256,var_off=3D=
+(0x0; 0x1ff))
+  26: (77) r1 >>=3D 32                    ; R1_w=3Dscalar(umax=3D4294967295=
+,var_off=3D(0x0; 0xffffffff))
+  29: (0f) r6 +=3D r1                     ; R1_w=3DPscalar(umax=3D429496729=
+5,var_off=3D(0x0; 0xffffffff)) R6_w=3Dmap_value(off=3D1060,ks=3D4,vs=3D1572=
+,umax=3D4294967295,var_off=3D(0)
+where r1 has conservative value range compared to r2 and r1 is used later.
 
-If we can represent that without all these additional btf_id sets
-it would be much better.
+In llvm, commit [1] triggered the above code generation and caused
+verification failure.
 
-> > Please think of some other mechanism. Maybe type based? BTF?
-> > Or encode that info into type name? or some other way.
->
-> Hmm, ok. I kinda dislike this solution too. The other idea that comes to mind is
-> encapsulating nf_conn into another struct and returning pointer to that:
->
->         struct nf_conn_alloc {
->                 struct nf_conn ct;
->         };
->
->         struct nf_conn_alloc *bpf_xdp_ct_alloc(...);
->         struct nf_conn *bpf_ct_insert_entry(struct nf_conn_alloc *act, ...);
->
-> Then nf_conn_alloc gets a different BTF ID, and hence the type can be matched in
-> the prototype. Any opinions?
+It may take a while for llvm to address this issue. In the main time,
+let us change the variable 'len' type to 'long' and adjust condition proper=
+ly.
+Tested with llvm14 and latest llvm15, both worked fine.
 
-Yes. Or maybe typedef ?
-typedef struct nf_conn nf_conn__alloc;
-typedef struct nf_conn nf_conn__ro;
+ [1] https://reviews.llvm.org/D126647
 
-C will accept silent type casts from one type to another,
-but BTF type checking can be strict?
-Not sure. wrapping a struct works too, but extra '.ct' accessor
-might be annoying? Unless you only use it with container_of().
-I would prefer double or triple underscore to highlight a flavor.
-struct nf_conn___init {...}
-The main benefit, of course, is no need for extra btf_id sets.
-Different types take care of correct arg passing.
-In that sense typedef idea doesn't quite work,
-since BTF checks with typedef would be unnecessarily strict
-compared to regular C type checking rules. That difference
-in behavior might bite us later.
-So let's go with struct wrapping.
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ tools/testing/selftests/bpf/progs/test_varlen.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/progs/test_varlen.c b/tools/testin=
+g/selftests/bpf/progs/test_varlen.c
+index 913acdffd90f..3987ff174f1f 100644
+--- a/tools/testing/selftests/bpf/progs/test_varlen.c
++++ b/tools/testing/selftests/bpf/progs/test_varlen.c
+@@ -41,20 +41,20 @@ int handler64_unsigned(void *regs)
+ {
+ 	int pid =3D bpf_get_current_pid_tgid() >> 32;
+ 	void *payload =3D payload1;
+-	u64 len;
++	long len;
+=20
+ 	/* ignore irrelevant invocations */
+ 	if (test_pid !=3D pid || !capture)
+ 		return 0;
+=20
+ 	len =3D bpf_probe_read_kernel_str(payload, MAX_LEN, &buf_in1[0]);
+-	if (len <=3D MAX_LEN) {
++	if (len >=3D 0) {
+ 		payload +=3D len;
+ 		payload1_len1 =3D len;
+ 	}
+=20
+ 	len =3D bpf_probe_read_kernel_str(payload, MAX_LEN, &buf_in2[0]);
+-	if (len <=3D MAX_LEN) {
++	if (len >=3D 0) {
+ 		payload +=3D len;
+ 		payload1_len2 =3D len;
+ 	}
+@@ -123,7 +123,7 @@ int handler32_signed(void *regs)
+ {
+ 	int pid =3D bpf_get_current_pid_tgid() >> 32;
+ 	void *payload =3D payload4;
+-	int len;
++	long len;
+=20
+ 	/* ignore irrelevant invocations */
+ 	if (test_pid !=3D pid || !capture)
+--=20
+2.30.2
+
