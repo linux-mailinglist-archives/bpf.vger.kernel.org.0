@@ -2,204 +2,204 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA9A549CB7
-	for <lists+bpf@lfdr.de>; Mon, 13 Jun 2022 21:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D259B549CD4
+	for <lists+bpf@lfdr.de>; Mon, 13 Jun 2022 21:05:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346311AbiFMTDK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Jun 2022 15:03:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53594 "EHLO
+        id S1346758AbiFMTFZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Jun 2022 15:05:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346888AbiFMTC4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Jun 2022 15:02:56 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 132CFA26FF;
-        Mon, 13 Jun 2022 09:38:34 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id m20so12200490ejj.10;
-        Mon, 13 Jun 2022 09:38:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vBiRUZCaUFh1bxErkc0s3g1NzHjtPwcGxqqDUf1ieFg=;
-        b=pDvKPqeZ4B3uprvaLolYqLk1UqKH19EYq3jlXWMvu07M/x32H57/VwqkeEVFc8jKA8
-         KGhVYz4itVvoGSr58xlYkkeLOqSsgyBfjaVnmb6KAZ+yZe3VlnR3FKSQ+Vkq4JqsufRg
-         9F3fApoBEhmBVcuVW44KzhwruMbn/ED3muYEMBnwzLwZ/yqjr5PPfTsUM4iyD+Rm4AQX
-         aYW8WMUSINND+jNrkgfgMEnEIXNSmItIXmz09kJvBNXmbprdUgZGoVeODSsEgaioNxWK
-         Tnkx80T73LSn7evfC2Z9cuRhsUuk1QoXWg+vzJn7lDR0OMVj1Aohcv0ZNmTBg2jpf47k
-         qrZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vBiRUZCaUFh1bxErkc0s3g1NzHjtPwcGxqqDUf1ieFg=;
-        b=nsH/zwavryew+6tHIhv7qQ+NMBdjR6kgYErG23smonrZxblFgBmk8v15MGBBFw+jfi
-         6/kxCwJIieLwZsW1ZKeD3KYQgYhk9ckD/VTPIVHEUFjUTtE4Bk1gu8cUunRg8JNa+j+/
-         IUDMVN+//qGxnzF49ae4oCNfLUuD1bIAvs7iqrCb5NFuCshxeyLNlI+PZcjXjdjZOWNr
-         sh/QoHUEH+wynOp0u6oJ4FVNXbRGWYTuIhJkB8SS4UBe9d6LCkN8734SZqNs9egUYYHn
-         z/hVu5iRmMAtE5ShTdrrX+IzLkvEb3PIkrXM+uqn8G1KZDi8PY3f4k3eGOIocMzQ5IOW
-         iTZQ==
-X-Gm-Message-State: AJIora/NHhmH4N2rNGgh2nxpL3KOU72TEtrt++lx32v3n0jLjDAofzSy
-        rZ+YZxbRs58X07YfUFUw/3yHzl9hSKGG+W02TnY=
-X-Google-Smtp-Source: AGRyM1sfgmsE/9lYJPZoSlFhzYQ+SjIxrglf2pWD73IgwDc+d0sNn6NRXwFhykP+MEjo52yf+pK0Q1DQEe0WV+YrizE=
-X-Received: by 2002:a17:906:610:b0:715:79ac:7db9 with SMTP id
- s16-20020a170906061000b0071579ac7db9mr609253ejb.226.1655138312491; Mon, 13
- Jun 2022 09:38:32 -0700 (PDT)
+        with ESMTP id S1346878AbiFMTEU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Jun 2022 15:04:20 -0400
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA092AEE3E;
+        Mon, 13 Jun 2022 09:54:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1655139294; x=1686675294;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=T8DsjbHMJH9H/sas4zjaNcK0/xHg+etx706tBmmx1aU=;
+  b=LE0dM8ryqkChJPM5zgV8oahRuUvjuvJijdF1SQCMlCEljXzGV/ugA0is
+   fgq4rbjjeeOn6vHBZWt12JN1pSytkloxaldlDmuK+lH5xwaDZlSpJsoAg
+   yRU//Kfpu7JQPE+2seiAajdGyNzM4wa4Z2qIgBkKc2ot0SFazIaFxdJzt
+   TVp3Qdro5tlapqWesyb7VmApX3NUHJBpimF1eXfB+hkOH8zTFO3nBPejU
+   PcWBi2Db2S1uqKuqzHyNvHtZgMwxu7f8FKJ5T+99Ef7eZEnT5cN8XiPWk
+   +zE2pbr9wbElqJMoBq/u8MKtys4geJEofgQ0KooiTMtQz7kUkQHFxLtJf
+   w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10377"; a="277120297"
+X-IronPort-AV: E=Sophos;i="5.91,297,1647327600"; 
+   d="scan'208";a="277120297"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jun 2022 09:54:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,297,1647327600"; 
+   d="scan'208";a="726354239"
+Received: from anguy11-desk2.jf.intel.com ([10.166.244.147])
+  by fmsmga001.fm.intel.com with ESMTP; 13 Jun 2022 09:54:52 -0700
+From:   Tony Nguyen <anthony.l.nguyen@intel.com>
+To:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        edumazet@google.com
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
+        anthony.l.nguyen@intel.com, sassmann@redhat.com,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, bpf@vger.kernel.org,
+        Sarkar Tirthendu <tirthendu.sarkar@intel.com>,
+        George Kuruvinakunnel <george.kuruvinakunnel@intel.com>
+Subject: [PATCH net-next 1/1] i40e: add xdp frags support to ndo_xdp_xmit
+Date:   Mon, 13 Jun 2022 09:51:50 -0700
+Message-Id: <20220613165150.439856-1-anthony.l.nguyen@intel.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-References: <20220525114003.61890-1-jolsa@kernel.org> <CAEf4BzZ-xe-zSjbBpKLHfQKPnTRTBMA2Eg382+_4kQoTLnj4eQ@mail.gmail.com>
- <CAADnVQJcDKVAOeJ8LX9j-cUKdkptuFWFDnB3o9C_o0bSScGnsQ@mail.gmail.com>
- <CAEf4Bzay1-pRLw+zHG1TjHRTRpqQdtmpmDvNdq=ef-0OUQD0QQ@mail.gmail.com>
- <CAADnVQJtJEzsr4a+brn4n65Pt1dP-3WTSHZe23_AetxWRTm0Tg@mail.gmail.com>
- <CAEf4BzafJ8wThrsaYgn_WtmCau_VFDXB9enp-FiYhnzb==tsMQ@mail.gmail.com> <20220611205326.7ladtowtvt3ap6z3@macbook-pro-3.dhcp.thefacebook.com>
-In-Reply-To: <20220611205326.7ladtowtvt3ap6z3@macbook-pro-3.dhcp.thefacebook.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 13 Jun 2022 09:38:21 -0700
-Message-ID: <CAEf4BzYLUsiQd05f_v1KXq6wqmrrZqbiKRrJEQ_J5k7pj95-2g@mail.gmail.com>
-Subject: Re: [RFC bpf-next] bpf: Use prog->active instead of bpf_prog_active
- for kprobe_multi
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jun 11, 2022 at 1:53 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Fri, Jun 10, 2022 at 10:58:50AM -0700, Andrii Nakryiko wrote:
-> > On Thu, Jun 9, 2022 at 3:03 PM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Thu, Jun 9, 2022 at 11:27 AM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > >
-> > > > On Tue, Jun 7, 2022 at 9:29 PM Alexei Starovoitov
-> > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > >
-> > > > > On Tue, May 31, 2022 at 4:24 PM Andrii Nakryiko
-> > > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > > >
-> > > > > > On Wed, May 25, 2022 at 4:40 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > > > > > >
-> > > > > > > hi,
-> > > > > > > Alexei suggested to use prog->active instead global bpf_prog_active
-> > > > > > > for programs attached with kprobe multi [1].
-> > > > > > >
-> > > > > > > AFAICS this will bypass bpf_disable_instrumentation, which seems to be
-> > > > > > > ok for some places like hash map update, but I'm not sure about other
-> > > > > > > places, hence this is RFC post.
-> > > > > > >
-> > > > > > > I'm not sure how are kprobes different to trampolines in this regard,
-> > > > > > > because trampolines use prog->active and it's not a problem.
-> > > > > > >
-> > > > > > > thoughts?
-> > > > > > >
-> > > > > >
-> > > > > > Let's say we have two kernel functions A and B? B can be called from
-> > > > > > BPF program though some BPF helper, ok? Now let's say I have two BPF
-> > > > > > programs kprobeX and kretprobeX, both are attached to A and B. With
-> > > > > > using prog->active instead of per-cpu bpf_prog_active, what would be
-> > > > > > the behavior when A is called somewhere in the kernel.
-> > > > > >
-> > > > > > 1. A is called
-> > > > > > 2. kprobeX is activated for A, calls some helper which eventually calls B
-> > > > > >   3. kprobeX is attempted to be called for B, but is skipped due to prog->active
-> > > > > >   4. B runs
-> > > > > >   5. kretprobeX is activated for B, calls some helper which eventually calls B
-> > > > > >     6. kprobeX is ignored (prog->active > 0)
-> > > > > >     7. B runs
-> > > > > >     8. kretprobeX is ignored (prog->active > 0)
-> > > > > > 9. kretprobeX is activated for A, calls helper which calls B
-> > > > > >   10. kprobeX is activated for B
-> > > > > >     11. kprobeX is ignored (prog->active > 0)
-> > > > >
-> > > > > not correct. kprobeX actually runs.
-> > > > > but the end result is correct.
-> > > > >
-> > > >
-> > > > Right, it was a long sequence, but you got the idea :)
->
-> The above analysis was actually incorrect.
-> There are three kprobe flavors: int3, opt, ftrace.
-> while multi-kprobe is based on fprobe.
-> kretprobe can be traditional and rethook based.
-> In all of these mechanisms there is at least ftrace_test_recursion_trylock()
-> and for kprobes there is kprobe_running (per-cpu current_kprobe) filter
-> that acts as bpf_prog_active.
->
-> So this:
-> 1. kprobeX for A
-> 2. kretprobeX for B
-> 3. kretprobeX for A
-> 4. kprobeX for B
-> doesn't seem possible.
-> Unless there is reproducer of above behavior there is no point using above
-> as a design argument.
->
+From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-Cool, seems like Jiri confirmed this can't in fact happen for kprobes,
-so I'm good, this behavior was the one I was worried about, not global
-vs per-prog active flag, per se.
+Add the capability to map non-linear xdp frames in XDP_TX and ndo_xdp_xmit
+callback.
 
-> > > > > It's awful. We have to fix it.
-> > > >
-> > > > You can call it "a fix" if you'd like, but it's changing a very
-> > > > user-visible behavior and guarantees on which users relied for a
-> > > > while. So even if we switch to per-prog protection it will have to be
-> > > > some sort of opt-in (flag, new program type, whatever).
-> > >
-> > > No opt-in allowed for fixes and it's a bug fix.
-> > > No one should rely on broken kernel behavior.
-> > > If retsnoop rely on that it's really retsnoop's fault.
-> >
-> > No point in arguing if we can't even agree on whether this is a bug or
-> > not, sorry.
-> >
-> > Getting kretprobe invocation out of the blue without getting
-> > corresponding kprobe invocation first (both of which were successfully
-> > attached) seems like more of a bug to me. But perhaps that's a matter
-> > of subjective opinion.
->
-> The issue of kprobe/kretprobe mismatch was known for long time.
-> First maxactive was an issue. It should be solved by rethook now.
-> Then kprobe/kretprobe attach is not atomic.
-> bpf prog attaching kprobe and kretprobe to the same func cannot assume
-> that they will always pair. bcc scripts had to deal with this.
->
-> Say, kprobe/kretprobe will become fentry/fexit like with prog->active only.
-> If retsnoop wants to do its own per-cpu prog_active counter it will
-> prevent out-of-order fentry/fexit for the case when the same prog
-> is attached to before-bpf-func and during-bpf-func. Only retsnoop's progs
-> will miss during-bpf-func events. Such policy decisions is localized to one tool.
-> All other users will see the events they care about.
-> kprobe/kretprobe/fprobe run handlers with preemption disabled which makes
-> these mechanisms unfriendly to RT. Their design shows that they're not suitable
-> for always-on running. When bpf+kprobe was introduced 7 years ago it wasn't
-> meant to be 24-7 either. bpf_prog_active is modeled like current_kprobe.
-> It was addressing the deadlock issue with spinlocks in maps.
-> Recursion was not an issue.
-> Sadly kprobe/kretprobe/fprobe look unfixable in this form. Too much work
-> needs to be done to enable something like:
-> user A attaches prog A to func X. X runs, prog A runs with migration disabled.
-> Preemption. Something else starts on this cpu. Another user B attaching prog B
-> to func Y should see its prog being executed.
-> With kprobes it looks impossible. While fentry was designed with this use case
-> in mind. Note it's not about sleepable progs. Normal bpf progs can be preempted.
->
-> Back to Jiri's question whether we can remove bpf_prog_active from
-> trace_call_bpf.  Yes. We can and we should. It will allow bperf to collect
-> stack traces that include bpf progs. It's an important fix. Incorrect retsnoop
-> assumptions about kprobes will not be affected.
+Tested-by: Sarkar Tirthendu <tirthendu.sarkar@intel.com>
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Tested-by: George Kuruvinakunnel <george.kuruvinakunnel@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+---
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c | 87 +++++++++++++++------
+ 1 file changed, 62 insertions(+), 25 deletions(-)
+
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+index 7bc1174edf6b..b7967105a549 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+@@ -2509,6 +2509,7 @@ static int i40e_clean_rx_irq(struct i40e_ring *rx_ring, int budget)
+ 			hard_start = page_address(rx_buffer->page) +
+ 				     rx_buffer->page_offset - offset;
+ 			xdp_prepare_buff(&xdp, hard_start, offset, size, true);
++			xdp_buff_clear_frags_flag(&xdp);
+ #if (PAGE_SIZE > 4096)
+ 			/* At larger PAGE_SIZE, frame_sz depend on len size */
+ 			xdp.frame_sz = i40e_rx_frame_truesize(rx_ring, size);
+@@ -3713,35 +3714,55 @@ u16 i40e_lan_select_queue(struct net_device *netdev,
+ static int i40e_xmit_xdp_ring(struct xdp_frame *xdpf,
+ 			      struct i40e_ring *xdp_ring)
+ {
+-	u16 i = xdp_ring->next_to_use;
+-	struct i40e_tx_buffer *tx_bi;
+-	struct i40e_tx_desc *tx_desc;
++	struct skb_shared_info *sinfo = xdp_get_shared_info_from_frame(xdpf);
++	u8 nr_frags = unlikely(xdp_frame_has_frags(xdpf)) ? sinfo->nr_frags : 0;
++	u16 i = 0, index = xdp_ring->next_to_use;
++	struct i40e_tx_buffer *tx_head = &xdp_ring->tx_bi[index];
++	struct i40e_tx_buffer *tx_bi = tx_head;
++	struct i40e_tx_desc *tx_desc = I40E_TX_DESC(xdp_ring, index);
+ 	void *data = xdpf->data;
+ 	u32 size = xdpf->len;
+-	dma_addr_t dma;
+ 
+-	if (!unlikely(I40E_DESC_UNUSED(xdp_ring))) {
++	if (unlikely(I40E_DESC_UNUSED(xdp_ring) < 1 + nr_frags)) {
+ 		xdp_ring->tx_stats.tx_busy++;
+ 		return I40E_XDP_CONSUMED;
+ 	}
+-	dma = dma_map_single(xdp_ring->dev, data, size, DMA_TO_DEVICE);
+-	if (dma_mapping_error(xdp_ring->dev, dma))
+-		return I40E_XDP_CONSUMED;
+ 
+-	tx_bi = &xdp_ring->tx_bi[i];
+-	tx_bi->bytecount = size;
+-	tx_bi->gso_segs = 1;
+-	tx_bi->xdpf = xdpf;
++	tx_head->bytecount = xdp_get_frame_len(xdpf);
++	tx_head->gso_segs = 1;
++	tx_head->xdpf = xdpf;
+ 
+-	/* record length, and DMA address */
+-	dma_unmap_len_set(tx_bi, len, size);
+-	dma_unmap_addr_set(tx_bi, dma, dma);
++	for (;;) {
++		dma_addr_t dma;
+ 
+-	tx_desc = I40E_TX_DESC(xdp_ring, i);
+-	tx_desc->buffer_addr = cpu_to_le64(dma);
+-	tx_desc->cmd_type_offset_bsz = build_ctob(I40E_TX_DESC_CMD_ICRC
+-						  | I40E_TXD_CMD,
+-						  0, size, 0);
++		dma = dma_map_single(xdp_ring->dev, data, size, DMA_TO_DEVICE);
++		if (dma_mapping_error(xdp_ring->dev, dma))
++			goto unmap;
++
++		/* record length, and DMA address */
++		dma_unmap_len_set(tx_bi, len, size);
++		dma_unmap_addr_set(tx_bi, dma, dma);
++
++		tx_desc->buffer_addr = cpu_to_le64(dma);
++		tx_desc->cmd_type_offset_bsz =
++			build_ctob(I40E_TX_DESC_CMD_ICRC, 0, size, 0);
++
++		if (++index == xdp_ring->count)
++			index = 0;
++
++		if (i == nr_frags)
++			break;
++
++		tx_bi = &xdp_ring->tx_bi[index];
++		tx_desc = I40E_TX_DESC(xdp_ring, index);
++
++		data = skb_frag_address(&sinfo->frags[i]);
++		size = skb_frag_size(&sinfo->frags[i]);
++		i++;
++	}
++
++	tx_desc->cmd_type_offset_bsz |=
++		cpu_to_le64(I40E_TXD_CMD << I40E_TXD_QW1_CMD_SHIFT);
+ 
+ 	/* Make certain all of the status bits have been updated
+ 	 * before next_to_watch is written.
+@@ -3749,14 +3770,30 @@ static int i40e_xmit_xdp_ring(struct xdp_frame *xdpf,
+ 	smp_wmb();
+ 
+ 	xdp_ring->xdp_tx_active++;
+-	i++;
+-	if (i == xdp_ring->count)
+-		i = 0;
+ 
+-	tx_bi->next_to_watch = tx_desc;
+-	xdp_ring->next_to_use = i;
++	tx_head->next_to_watch = tx_desc;
++	xdp_ring->next_to_use = index;
+ 
+ 	return I40E_XDP_TX;
++
++unmap:
++	for (;;) {
++		tx_bi = &xdp_ring->tx_bi[index];
++		if (dma_unmap_len(tx_bi, len))
++			dma_unmap_page(xdp_ring->dev,
++				       dma_unmap_addr(tx_bi, dma),
++				       dma_unmap_len(tx_bi, len),
++				       DMA_TO_DEVICE);
++		dma_unmap_len_set(tx_bi, len, 0);
++		if (tx_bi == tx_head)
++			break;
++
++		if (!index)
++			index += xdp_ring->count;
++		index--;
++	}
++
++	return I40E_XDP_CONSUMED;
+ }
+ 
+ /**
+-- 
+2.35.1
+
