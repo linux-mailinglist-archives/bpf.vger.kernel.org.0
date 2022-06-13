@@ -2,61 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F0B8547F45
-	for <lists+bpf@lfdr.de>; Mon, 13 Jun 2022 07:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A288548356
+	for <lists+bpf@lfdr.de>; Mon, 13 Jun 2022 11:44:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233369AbiFMFvS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Jun 2022 01:51:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47856 "EHLO
+        id S240338AbiFMJWa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Jun 2022 05:22:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232418AbiFMFvR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Jun 2022 01:51:17 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7212DF42
-        for <bpf@vger.kernel.org>; Sun, 12 Jun 2022 22:51:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C2C15B80D5C
-        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 05:51:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51623C385A2
-        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 05:51:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655099473;
-        bh=l3dV3kZehEhWWA1TBeEEO1V3rCrXLIwxVLy1aHTLBBY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fOSTu94kNEkHJMuPTgmH742zyvDhy3zT1s5xNt6IkIDYu/Vcm/dTeEgJhnPnNHOoa
-         /ckmb2W4lTIEOYpRM0QmalN2fHVhCL2UdIkVRTzs4ma8oHd5xTyodfl34mPpW5vcNZ
-         WsjoctqJu9ItuZnQ9TkGjPmnYYsak+D7Jrs4+HDQDq/RGJubvb5JJ0QEDqXtjzXPJ0
-         2R/wNfSKmcBBw0HbxEEsjBzJvOjShdZO0qgdf5AV/iaNqd/6flkBV+jFBagH/oYJyF
-         8dpkbbHvLvzKEAClDzo1CcljGGkZwidN8YhjL1Dlic4QDJ9JbI5OKWjHYVWhxJ7KHK
-         4iKQRjUGa3lMg==
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-3137c877092so39917007b3.13
-        for <bpf@vger.kernel.org>; Sun, 12 Jun 2022 22:51:13 -0700 (PDT)
-X-Gm-Message-State: AOAM5306nnUBbSUnL7jzsHmtXmM5QRgOa92Co4OtS3NuOpjSLabbTh0j
-        mmoUHbQnAyGBIyAfz2o0VMM/T+CptvltLZY6N00=
-X-Google-Smtp-Source: ABdhPJz1lrJH+NDi5TiWqjvB3oI0GWB/dka8/xE/+q7bQs4RF0ewmDJqpO3U1lQ5x1uMX9eKNMXfCIA5wG3mBW0T3Uk=
-X-Received: by 2002:a0d:eb4d:0:b0:30c:9849:27a1 with SMTP id
- u74-20020a0deb4d000000b0030c984927a1mr61220108ywe.472.1655099472358; Sun, 12
- Jun 2022 22:51:12 -0700 (PDT)
+        with ESMTP id S232021AbiFMJW3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Jun 2022 05:22:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 18FEA1262A
+        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 02:22:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1655112147;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dMsPhpNVvNr+iFjDlmObttc0WGu8hFlqVqfZpEVrzew=;
+        b=c0k4+Qck2qqVzcDxZ/v4daban6XKrRM3uFtHW7c8WlcEGa3omEXTYettCz6pfPzNwnM53r
+        59O3R9luzuR1e2dNvcIzzL+jasLkfjEUaT6pUvBfs0A60feaAPRUDMfPpuQUKGLJit3/uV
+        I2+J3GDDC88lM5406f53Ru70kPbB7+4=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-605-uN_YvowAMMizsk4hdZZm0Q-1; Mon, 13 Jun 2022 05:22:26 -0400
+X-MC-Unique: uN_YvowAMMizsk4hdZZm0Q-1
+Received: by mail-ej1-f71.google.com with SMTP id gr1-20020a170906e2c100b006fefea3ec0aso1547312ejb.14
+        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 02:22:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=dMsPhpNVvNr+iFjDlmObttc0WGu8hFlqVqfZpEVrzew=;
+        b=fXFNXk+XU85fzLz9y/7vbEoFNrDP3tkLtU/pzckJMB1YcFtebQ9BINwzFuVabZxfZQ
+         GxMj+a2Ym2uaHQhF1QYMJufUPVOF/5oARMJgASYP9JrYwuHiqoRZwVigR9xqQXRrwG9d
+         J/cADvQvO4h0g8E2JzVg+kEV87dAVfR6ut60GoPM2ydEJ4xToORgCRaZ+zLD3dAsR0Hd
+         +qQO0FFnoiGatK40CIX4uVVkRv49yLhOqWHenh+wyIFCVGSs/S7ud70922WQ3MA5Rvgu
+         r4/k3QOFkJTcwKkSrCkOpH3YozP1yDEPTGTE4wDq1K0566AShamVR6l/VlbVd25TuAYH
+         yh+g==
+X-Gm-Message-State: AOAM531sQSZCyTrYOC5y75GYnM5szmIGDcmo83hisA0MoxG4dpZWkYhE
+        /fdT5+GF+tpmZR5SbkG1IsIa2rWqp82cAthjnsSJGT83liEA3pmvx0z+tqjvU1zRlZ3gIwdfGGd
+        j6CS2oZGbiqmE
+X-Received: by 2002:a05:6402:ca2:b0:433:4a31:d0ee with SMTP id cn2-20020a0564020ca200b004334a31d0eemr19030571edb.288.1655112142770;
+        Mon, 13 Jun 2022 02:22:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyY/g6w7khMaqsUdYgiQRYbXm6AODDlqhoYxvYkUq+nE43RhLQtKmwLbYMypMxWhac6YIsmQQ==
+X-Received: by 2002:a05:6402:ca2:b0:433:4a31:d0ee with SMTP id cn2-20020a0564020ca200b004334a31d0eemr19030497edb.288.1655112141611;
+        Mon, 13 Jun 2022 02:22:21 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id h8-20020a1709060f4800b0070a50832376sm3573051ejj.154.2022.06.13.02.22.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jun 2022 02:22:20 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 2FFBA406851; Mon, 13 Jun 2022 11:22:20 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>,
+        bpf@vger.kernel.org
+Cc:     Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>,
+        ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+        joannelkoong@gmail.com, brouer@redhat.com
+Subject: Re: [PATCH] bpf: fix rq lock recursion issue
+In-Reply-To: <20220613025244.31595-1-quic_satyap@quicinc.com>
+References: <20220613025244.31595-1-quic_satyap@quicinc.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 13 Jun 2022 11:22:20 +0200
+Message-ID: <87r13s2a0j.fsf@toke.dk>
 MIME-Version: 1.0
-References: <20220611114021.484408-1-eddyz87@gmail.com> <20220611114021.484408-4-eddyz87@gmail.com>
-In-Reply-To: <20220611114021.484408-4-eddyz87@gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Sun, 12 Jun 2022 22:51:01 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW6r9f=yt93vOG0Lz+yxMWBKaj1xzg0bAVaG18MAtX3_uA@mail.gmail.com>
-Message-ID: <CAPhsuW6r9f=yt93vOG0Lz+yxMWBKaj1xzg0bAVaG18MAtX3_uA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 3/5] bpf: Inline calls to bpf_loop when
- callback is known
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>, joannelkoong@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,92 +79,18 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jun 11, 2022 at 4:42 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
->
+Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com> writes:
 
-[...]
+> Below recursion is observed in a rare scenario where __schedule()
+> takes rq lock, at around same time task's affinity is being changed,
+> bpf function for tracing sched_switch calls migrate_enabled(),
+> checks for affinity change (cpus_ptr != cpus_mask) lands into
+> __set_cpus_allowed_ptr which tries acquire rq lock and causing the
+> recursion bug.
 
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> ---
+So this only affects tracing programs that attach to tasks that can have
+their affinity changed? Or do we need to review migrate_enable() vs
+preempt_enable() for networking hooks as well?
 
-[...]
+-Toke
 
->
-> +static struct bpf_insn_aux_data *cur_aux(struct bpf_verifier_env *env)
-> +{
-> +       return &env->insn_aux_data[env->insn_idx];
-> +}
-> +
-> +static void update_loop_inline_state(struct bpf_verifier_env *env, u32 subprogno)
-> +{
-> +       struct bpf_loop_inline_state *state = &cur_aux(env)->loop_inline_state;
-> +       struct bpf_reg_state *regs = cur_regs(env);
-> +       struct bpf_reg_state *flags_reg = &regs[BPF_REG_4];
-> +       int flags_is_zero =
-> +               register_is_const(flags_reg) && flags_reg->var_off.value == 0;
-
-How about we add helper
-
-static bool flag_is_zero(struct bpf_verifier_env *env, int regno)
-{
-        struct bpf_loop_inline_state *state = &cur_aux(env)->loop_inline_state;
-        struct bpf_reg_state *regs = cur_regs(env);
-        struct bpf_reg_state *flags_reg = &regs[regno];
-
-        return register_is_const(flags_reg) && flags_reg->var_off.value == 0;
-}
-
-and ...
-
-> +
-> +       if (!state->initialized) {
-> +               state->initialized = 1;
-> +               state->fit_for_inline = flags_is_zero;
-
-       state->fit_for_inline = flag_is_zero(env, BPF_REG_4);
-
-and ...
-
-> +               state->callback_subprogno = subprogno;
-> +               return;
-> +       }
-> +
-> +       if (!state->fit_for_inline)
-> +               return;
-> +
-> +       state->fit_for_inline =
-> +               flags_is_zero &&
-
-flag_is_zero(env, BPF_REG_4);
-
-This would avoid calculating flag_is_zero for !state->fix_for_inline case.
-
-
-> +               state->callback_subprogno == subprogno;
-> +}
-> +
->  static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
-
-[...]
-
->  static void free_states(struct bpf_verifier_env *env)
->  {
->         struct bpf_verifier_state_list *sl, *sln;
-> @@ -15030,6 +15188,9 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr)
->         if (ret == 0)
->                 ret = check_max_stack_depth(env);
->
-> +       if (ret == 0)
-> +               optimize_bpf_loop(env);
-> +
->         /* instruction rewrites happen after this point */
-
-nit: I guess optimize_bpf_loop() is part of "instruction rewrite", so
-this comment
-should be above optimize_bpf_loop()?
-
->         if (is_priv) {
->                 if (ret == 0)
-> --
-> 2.25.1
->
