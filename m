@@ -2,123 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7359D54BE2C
-	for <lists+bpf@lfdr.de>; Wed, 15 Jun 2022 01:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A722E54BE2A
+	for <lists+bpf@lfdr.de>; Wed, 15 Jun 2022 01:12:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235852AbiFNXKy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Jun 2022 19:10:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36440 "EHLO
+        id S239660AbiFNXKx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Jun 2022 19:10:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240106AbiFNXKv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S235852AbiFNXKv (ORCPT <rfc822;bpf@vger.kernel.org>);
         Tue, 14 Jun 2022 19:10:51 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C13052E65
-        for <bpf@vger.kernel.org>; Tue, 14 Jun 2022 16:10:48 -0700 (PDT)
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25EMd1rY002772
-        for <bpf@vger.kernel.org>; Tue, 14 Jun 2022 16:10:47 -0700
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A1D150B2D
+        for <bpf@vger.kernel.org>; Tue, 14 Jun 2022 16:10:50 -0700 (PDT)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25EMcqs2006248
+        for <bpf@vger.kernel.org>; Tue, 14 Jun 2022 16:10:50 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : subject :
- date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=e5hgjKMWM18b5zqxpyY+I7kffWVOC76p6uHNMKcJm/8=;
- b=C2pFDdaBW3G9x9RyxV+S5fKNWwfgSF3eh3qqdMQ1k6JRN4zVlMHZPbuS9Aebw9Mo3Lsj
- cBTiedaXtMd7vS2xW2aoMffonq1Tyrpi4g+32ac9HOJOmgOyOvNPP202Oe2/2T4ljkhn
- OMHo6/ac/zsPHkFLZuIdtcDriu75It6bYY4= 
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2173.outbound.protection.outlook.com [104.47.59.173])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3gp8aw1uet-3
+ date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=dYXhyYNUU6QlU3s2VrtJhEeZ8UHskZN6vKNhpBYMOFE=;
+ b=R7WphPP7gUD5rg6q+fGSGattTk3fbommk+Af5gyhVYLb/MahHNa/6QeW6qr8JmP80+m+
+ ljAlPFRnt+IhxHID0KIDH4fjJdUv2B/JIXl75fGEFDXZL8031rkKMHyghpXNTG/ePL3k
+ 5LAnT8vjXfaZ7DcuwBtNg1kBJJK4TurKdIA= 
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2176.outbound.protection.outlook.com [104.47.59.176])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3gpht16dws-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 14 Jun 2022 16:10:47 -0700
+        for <bpf@vger.kernel.org>; Tue, 14 Jun 2022 16:10:49 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=igZSUTiHotlCASE4C3jidbUNODWDougMMdst41+uZVmy3dRU706sQV15gLep1jV7aViC+5NhSHNaYbzgGu+B4RHN8YnT69JtNEVn1gYM/85EEmz4W2jCA67AgaZlzt04ITZNrzVvUokDwJnmailspA4/cBURxxgPQLWzCs8Ndy5ir7BXo+IgHlkPazskRkL6kS06JLXBnHDh0jizJ4GZKYhsNaTtmT6gJDlTtgXXIPZE3CsP5BG6ZD+opfo3As3CpCJynVj0b/m/mz+qq9oGlhu5bZcQYYV2zDYN58ZPzE9MpYCxzwyDVQcgGOnyYgQXG+Vgx7sZ39a3jTApD+dj4g==
+ b=AIYZTK5MzGxrr5ry2dMiLLbTJ9AoxRVEswQ4WOW8+bqkrv3PWQOAnyyWuCrQnW5EvZwB/JrxXjEXjpoywA3jc2I+oX4AGCO5mSme5tKojFb9gi1Uv59Cf7FfsUxNpnpmtFpqJTFRuOIK3+AVcA3+Avm5anMpuHQYL21+hB9+oA4x3zZZgfYkVptyv1eIfaSmN70/W1+Ry5hP0utdpgMSLxXLReXjbD0sVVbFKVKe+Y4d2wvqnND+xb98c3R0Syzry040FG/azM9FL4GSC6HcrHqY2VfuY+/QAL2v5jYXU4flmkUEzqseEsD7OazMtcjmZHAVaobjvfSg/u1n8VwdWA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LfH8x7mPkjMpqyh2MhosrbdB6oHwfgb/+82/gOfmJSY=;
- b=NqBxaX/CyTDEsIdX4NyVMuJfidKE9szzyngXKZ6pjnPcRQ0umNhfNOfMkxRpO4WZ8fFS0/J8A4DCiUgx/pm76ItFtfs2AZ92AI6bmTJzBBXSoMxVSNn7zzmlB0uhShsAsRlnWkU873IC01z8KZzBD8elu4/Ev8lNvPfDafMFiii2mNrCqo+f6JxmWide08rFi41/qwi2qTmWNwRKzYIvnGQSekQh4gR5sRpGbz6DzLPpWcmsLM2YoCuTNyQH2hCaEzYth1zPDEbuSnZuZ9TINFDlKqe6ptmJEmODznrR8n8NLoS8oEn1CsOHbw+4Oql3ej+HSaiYpim8slEgrnsKEw==
+ bh=dYXhyYNUU6QlU3s2VrtJhEeZ8UHskZN6vKNhpBYMOFE=;
+ b=g3wpWIgrxMZkwUahp7qr1vynvCR7d7jx4Ta603JbrRBWdWDulxhQoVh5dfQJDc+3bqqfSssH3W51vByWGlBl82T3GEdcvZCHDdcdvGrBProJnuvKOLDDpUGO5eGB/yFzUrn82EV1mjpNknf1Pg6JvzHpwaur9McICe5u7W46m8OLsHzxSD9rj4gjkO5q1PZYBT5dyLJlqEUTfBrMgXZJeFFCc/QcKpoSS76sHxPX6cTx3TS9BfvdGQWwdunNNqylUBv8A7rSfWofOorXlJsn1KOJWAHNcN7UdzLeuDVW7VoDzdQDKnbswltfI/1MV9jSWYDFF60+cPMKYNETKa63MQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Received: from SJ0PR15MB5154.namprd15.prod.outlook.com (2603:10b6:a03:423::6)
- by MW5PR15MB5220.namprd15.prod.outlook.com (2603:10b6:303:1a0::18) with
+ by DM6PR15MB2665.namprd15.prod.outlook.com (2603:10b6:5:1a7::31) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5332.20; Tue, 14 Jun
- 2022 23:10:45 +0000
+ 2022 23:10:47 +0000
 Received: from SJ0PR15MB5154.namprd15.prod.outlook.com
  ([fe80::8910:e73d:9868:600b]) by SJ0PR15MB5154.namprd15.prod.outlook.com
  ([fe80::8910:e73d:9868:600b%9]) with mapi id 15.20.5332.016; Tue, 14 Jun 2022
- 23:10:45 +0000
+ 23:10:46 +0000
 From:   Delyan Kratunov <delyank@fb.com>
 To:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
         "ast@kernel.org" <ast@kernel.org>,
         "andrii@kernel.org" <andrii@kernel.org>,
         "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: [PATCH bpf-next v4 0/5] sleepable uprobe support
-Thread-Topic: [PATCH bpf-next v4 0/5] sleepable uprobe support
-Thread-Index: AQHYgEP6HIJ8fqTs3kql16+mzmQJ+Q==
-Date:   Tue, 14 Jun 2022 23:10:45 +0000
-Message-ID: <cover.1655248075.git.delyank@fb.com>
+Subject: [PATCH bpf-next v4 2/5] bpf: implement sleepable uprobes by chaining
+ gps
+Thread-Topic: [PATCH bpf-next v4 2/5] bpf: implement sleepable uprobes by
+ chaining gps
+Thread-Index: AQHYgEP6z21FSZhSH0KwohIX05SbaA==
+Date:   Tue, 14 Jun 2022 23:10:46 +0000
+Message-ID: <ce844d62a2fd0443b08c5ab02e95bc7149f9aeb1.1655248076.git.delyank@fb.com>
+References: <cover.1655248075.git.delyank@fb.com>
+In-Reply-To: <cover.1655248075.git.delyank@fb.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 141285f8-98c6-4ea9-8a22-08da4e5b1cbe
-x-ms-traffictypediagnostic: MW5PR15MB5220:EE_
-x-microsoft-antispam-prvs: <MW5PR15MB5220871C4A57B9F5CEB1496FC1AA9@MW5PR15MB5220.namprd15.prod.outlook.com>
+x-ms-office365-filtering-correlation-id: 1a4e2f9b-2760-4f4e-4923-08da4e5b1d57
+x-ms-traffictypediagnostic: DM6PR15MB2665:EE_
+x-microsoft-antispam-prvs: <DM6PR15MB2665A402DD238EE79CA7B231C1AA9@DM6PR15MB2665.namprd15.prod.outlook.com>
 x-fb-source: Internal
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: FqL3VicfhSVP52aFnE3a6/RX16uKG57TwBPgaY5RzLfL60V+76a5uaOMOTsEOxhZIHG/9qnBDtsqyLsOaTh6qEjXc6ujR+pdflbHlTvDklIazD3nIw3YWZy4o3pQBootopOjrmBV5dlY1TetHnNqQ5ES1pAbYsqiltznjBi3h7FbZDi+7irlpwN1oUAhsGHpnZU20+SgMcJV06/jS4xy0gE2whQDp38kKPVk/nFGG18k0vPhwtCK5yHcVatIHhLJj/KmLfUNnv6geyakAVBMa9IpBJa1NHU5A0hVWp1eVWxPWjungIPgWLgMTFWWfFKNBXg/KpQnmZBpMYQqtUnxGUfCxy9wcLk+ro9yL48VjMwyGwes6Gmtq8f+lgBYPGi5aDHowAr8dRNQI0fKkkyxcmcyMkftimfwAx80jpzuxypCnw5MLC/Rnvh6SvP/fDSVQRCnubzfDRpm/YSc1NYVKtNc/pvjDwtgU6F6xEvg3HkN10nkM3IgKJwn9vXs0OpU6BdzFCP3YnnTFme9pSEIcK/AHqg08znkGo3AD3gtUte1+Fi8SLEtAXCbwDgb2Q7uf6EFmC1jtUmlFOLcpxxlVRjU7Ny7gYtVzNuxyRvhsMcMvyhB8Fro0aXC8gr93YSw4qFQPd3J6rHEseQ/edMds7LgUI5TZ/kYc3Dq7/cLl11YMfVGPRw/yBgwFxucXGARLTa3+UhvZ0zGQWcqTsbHZhG9fVhNgqZTjW6Sj6dBF6v/+J7efF8EtQkgxnJzxrC6bvMDDX3CnWYoTXofAiQuCc+iasUn+4ej+UovwcTdMvI=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR15MB5154.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(366004)(186003)(8936002)(5660300002)(122000001)(38100700002)(83380400001)(6506007)(6486002)(36756003)(966005)(508600001)(38070700005)(6512007)(71200400001)(66946007)(316002)(66476007)(2616005)(2906002)(64756008)(66446008)(76116006)(8676002)(91956017)(66556008)(86362001)(110136005);DIR:OUT;SFP:1102;
+x-microsoft-antispam-message-info: eJvR99Z0lqED7/rnmf00/UTbAdPYLH4n2RRurfdTw6uGXbQ9MEkirIpZW3FzX373OqSzh/6sgSOs4GI0fwLbqJ2SflRLXO0m/ALYA3+vRdn6OgNkQJ/G1LIVjRQ5GgBtgTACoFfPLsByRxYzdzQQkIAcrnb1Fw5Hw3HW4dv+Luk3othWzk5LC6BZdBSm8P37MoZaT+O9sp9RLjazTZVmd4inhxjuoOgYTDUcJdKMI9kP23w0BRGY4KdfaafjB2pYfKjk/iRoJQQkUEeyAq0HQ8RsyaJe6GZEYN7kqlQ0NMTZf9Pc72RAKICfaMPm5xKA5DzjQ15PJ3TXjmU9jVr4lXuKeBKv4zHL1HCeZPKEsvzJuJsJQ3Yqtr6QgOhmHLxzHMPDVABqZdV5lbs2zQEnMz9k44nxM1ifitCwaNu96OvIt0WAYUfk0xKfbgtUuLLKhH9jBZnejazmE8gGLogOCqbiIKKboi2iLOqLGBReilAl5FRDKFZK3c8yj1QbS5UiLflMgUU800TihCj+lk0632RRa5p2a0YGB4zNFI1SVrpMnhl5XqLB0TsAh+szkJNo1lWG2QfA4+IpU34/H40J929PqQxBQ6xdrs79FPWKsqRFz+THDrRgtye5Bk+OioCVo0a6C0qufvP9MSyL+HoTAZ0pKGPl6CYQ5Xu0QAcJ7Q6aQu7ahI6KgLspG/J0bcTEwLXow+eEr0DoPLF8ErxeRg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR15MB5154.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(366004)(8936002)(5660300002)(508600001)(71200400001)(6486002)(36756003)(38100700002)(6506007)(110136005)(76116006)(86362001)(66946007)(38070700005)(64756008)(66476007)(66556008)(91956017)(122000001)(2906002)(8676002)(316002)(2616005)(6512007)(66446008)(186003)(83380400001);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?PkYO+kHt0y7hLIDhtSeLT40uKGolA7QrlrKRiLcROxMdMxbFhtDMAuXaHG?=
- =?iso-8859-1?Q?0Jzeh6FP8YvhBXpgS/1d/I/G1dQcA9PwHe4SUK8fsmr1d9NyDdG2abWOLO?=
- =?iso-8859-1?Q?fIzRKa4R0X9zlB80uAep/qh0j2fkokKsq1s83MiXH23Jshzu+8IHd2KoKx?=
- =?iso-8859-1?Q?U0czDminupsYcsfZeJXci+YrYy8UsJdzRb1SDSVduvbrl03amr6BcNsPKi?=
- =?iso-8859-1?Q?uZ+CaDjADSeF97m8/Dq2SbMHJO4JcHUyt2YtDrZMl3/oIm/WRn+TTyD6Rq?=
- =?iso-8859-1?Q?Vwjd08dHLe7rHGdN6Ld1ERTxvlvCA88gc4o5ee2BrqjelQdsLNM8YQ3/cL?=
- =?iso-8859-1?Q?k/51B4ikFTMr/nz2LV23CKPbR9yG1RvEgf7xKSfFtG38LWz+vgmk6wmGRe?=
- =?iso-8859-1?Q?FejuQojJIbX1I+rtys3ZG4cYcISDke2aO/HisLqOASpWSrJpDsehcgilIV?=
- =?iso-8859-1?Q?NYtGtWJ/LJoVGhXyctRFRGBw9ZucMb5fKXtoltFrmlu8OgjPV3I0vZIQfu?=
- =?iso-8859-1?Q?fYU+pPtgX5oVx8St6SD4o48JGftVNT5grdnTX7561DO2KSr3wTYBnju2r7?=
- =?iso-8859-1?Q?BRR4k4RSvZoQa+/oLYp52RUV3UPEsQO6kp62tAa6qLh27/0GPTvv19v/Ke?=
- =?iso-8859-1?Q?QYwPg57xw4/kevmCNByVC/LEu/VleuZlRK2D9x7SpkE1ip9s7cA292Lwc2?=
- =?iso-8859-1?Q?23KWJrYKYlt7brjM8fhkSOXGeuWIKviBslO27tVfDCr9cKtYqC9ivH8SXw?=
- =?iso-8859-1?Q?iePD2Oe4Sd6CnONpChBoTQc2TgRYPmWhVSsiOlVZiAnQ8kzqLeWy9rpfe5?=
- =?iso-8859-1?Q?SzbVEfiFMYFrJLjflNyribK+mA03s1zcihL8YNSKUf+gx5f9sET48WFYAA?=
- =?iso-8859-1?Q?JyUUh+/BmDi9/dbn6WPa1150o+yzuAn4+MeHhifaD1qJQa15YjezdHlx4v?=
- =?iso-8859-1?Q?APDiCaiIrGy2n9UhGu46OASwiqRmiNZ3X82klfL0/QDsLwOtK0CgFateCV?=
- =?iso-8859-1?Q?9cgj7KTOLzp4OvJXqD9vsbtMZ0hvNw13lhXpsaE8ppg3hQr11g+H1804CL?=
- =?iso-8859-1?Q?z64vviwc/+3UcYFIi8F1T7K9EMgXSxCnP4e2Ala8vdW0XFsw3tACl/LDxn?=
- =?iso-8859-1?Q?5H8abtv5LKXQSp0L8IujWFnw5oJWsMG2ME3jXrWCPG+ZnZRXRNYcAY/7UA?=
- =?iso-8859-1?Q?M2+VBiVWUYuJuktrDGD40mT0fDpQmtbOF9DRletyw13j8tYzzMVCqvkp2E?=
- =?iso-8859-1?Q?ds8nJQIyK+A9LUEXvPZ310oEAdRG3Sr5TDzhqugJ0o9jLZC+IJBiU9b1qB?=
- =?iso-8859-1?Q?vI8ryNTcV9XSFQTTamByOv640lgYOOzyVOxUiryaDPJlaVQ1sYDbdGYAL/?=
- =?iso-8859-1?Q?Sllh3OoZWJ0oI1bnSiEJYJTFNL9wxEyjoP43kV/BW3bxgP4dR6A/G1DHkW?=
- =?iso-8859-1?Q?Rc2KV4McdFcY5C+VuYJYeWiIWik6jrzNUlZDn64enzmGtmQqHTSrwwWrnw?=
- =?iso-8859-1?Q?Fg7dsveryhnsehPiUkcOYW2M0JLOKkTr1FxZ85BRA4sSuNuOppnEdVgLvO?=
- =?iso-8859-1?Q?Sai7ME5cwKcoNm+9d8Ob1/0Os/GvJGNVPxofQk1y3JEtrKoTizFlu35rco?=
- =?iso-8859-1?Q?m7SgfVHIFJyomsTEcd1s2Dm+kvZZ40dDSqSDs4rN+Hq8qDifiaaCNTkTvs?=
- =?iso-8859-1?Q?k9hdsNx4CVCv7LOr9F94Y4/FNERvM9YqAqzzVJYVVznTD7UtgNNKKmRTDf?=
- =?iso-8859-1?Q?uuyvfPjprVN0ZWgD97nIs77JBauPqZR8VHnUKFSvqA5QHgbq5EPGuT2Tbj?=
- =?iso-8859-1?Q?bCyo0LCpt8cxUTnDJnAKRJj8F1UMd6vDaG4AtMosFN94dedpS7iX?=
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?gcLr1VTJI3jpzRok/dAF2Vb4O+SWA6c4o+t+F7Kqv24zR9V7dZI8DQ+Xbf?=
+ =?iso-8859-1?Q?2wVuA3X+CSS6jmqXnVvWEFpZ6nD5apORccbCslAgYAryiR+FhPIJzEixqY?=
+ =?iso-8859-1?Q?HKekLV8gJPJI+f+HaHmZjOTb8PdZm0s+cqffIwcaVeu8n+ww56sCeIVl0F?=
+ =?iso-8859-1?Q?DnB/0g+5ULe7xelDKOQTjZnIrAJpf2NI7KAWje1Sb3TsYVfQs7St93hIxb?=
+ =?iso-8859-1?Q?wL67LRJo4UiWDoq1CFSD/XN4BfhXLs5/NSi/eQ++R+0LxKM363pkj1CV7D?=
+ =?iso-8859-1?Q?q+9QvMkvHKpDl9fAEZ9SLclRfo11edtv1bjTqEJvHnw9YDDRREgeh0wEIS?=
+ =?iso-8859-1?Q?X66pvr8jF9AriwdzZggsKWwl1tiSXmZcq6xq0uG8MMDA85UvKy7gTbVB2i?=
+ =?iso-8859-1?Q?Elo3Ry6ZHUnmOJU3uVepGf/FHQaKDqkTDosV0zVuYK9HddEJkX2pbp/Ymg?=
+ =?iso-8859-1?Q?zsvQssfq7soKt7S+zRxFz/kxdv3pwvE+xZUp0VsEcspgCl/q/wApJNSc8S?=
+ =?iso-8859-1?Q?XFFDbs/QgqiefAJD9IURhw6KEjOVLYQN5WIllw/AiJnvDBmu6YbQqItSZH?=
+ =?iso-8859-1?Q?skLxbeC9vDFJY0SP77EfTmil1N6IMNiP5hAllLS0o1fod3d1QhsMCk+d/k?=
+ =?iso-8859-1?Q?iMrtHOysxPnJXsOyEEhX61aXN94HajjL+L9iP1bkeu6qrAOV3EUxusMrrM?=
+ =?iso-8859-1?Q?Cyagh8ftkCwNvFEd0lEhhi/8rYEgXZ8tuMlnURXdxR/bSpaYFYfr32xncA?=
+ =?iso-8859-1?Q?J98RbeJWKcHiu90fJNWj3wvx5mk9mcpJJXEw7kZmquPU4Io7cI/emT8blp?=
+ =?iso-8859-1?Q?SWhq3vGmNKtwxYpznn4SENHRJo0uLt99ZRX82493BTqcecPzlGpn5BwK7O?=
+ =?iso-8859-1?Q?gHFdwqExkWBLGzdt4kkJcKgoAqbB2U6AFN9kbtszGXFLf0hQIfg+I+vMxm?=
+ =?iso-8859-1?Q?l5caVrRsdIlV6WU601rJcEhJXMaarTJOSAYp2aiCIv3sYPuIcrOBfEkk1S?=
+ =?iso-8859-1?Q?opMsnCk0uxrfzhYAAb0DaWmkclL2oCrlvxYhMSKiyWB0elmV+JrG4p0bTJ?=
+ =?iso-8859-1?Q?5HtGOqzEFUlowBgRQjPrwPKslF9XwhECTdvktBD8faaCxTeiHFEeERAAMK?=
+ =?iso-8859-1?Q?VeAklq5Q879SktcPGK9EYZoAp3pVsReG1H/gWFaVmk2e9cHPNkMKe5aezg?=
+ =?iso-8859-1?Q?Xrm7z4jXFuwYeBfu9KElekcufg+BMklHa/AimWwv1gt9wRa3XLPxwq++++?=
+ =?iso-8859-1?Q?EEccUSnrwwGV2dhkr1DoosH5xnzEOAlzslh5OZoGMHbBXh23inMwZC8gn4?=
+ =?iso-8859-1?Q?tFf9ZVLgX3kZlx0Ifc220DjW4IZaGP16XO1C4inkifYoULBLGXg7Zh+BoC?=
+ =?iso-8859-1?Q?OtvmFzvlkOAhD0wuH935Ka5rMJIqtCUYVberRxfr1W1vRYWYuKQ69ophRM?=
+ =?iso-8859-1?Q?h8XWJyEBx3JpwPyUBnwOzMWIEQjmHb9r1zgDSTRbDC6LePSRoGGUGjM800?=
+ =?iso-8859-1?Q?2Cnik2B90I73rME2a/ZOQVxQZ0hefMZq/QHUdBH1b42bNorSetNoO16i3i?=
+ =?iso-8859-1?Q?bPIWuVbCnXZtsySfLt859q6LeIA35AUOD6GCPcArqLw9Qoo3q1jOgYGufG?=
+ =?iso-8859-1?Q?rX0KFcTaepjeFujrfJt1pX3bqcdQN9Tq0Wrb+ANMsxbyB/rGiALV+L9QR/?=
+ =?iso-8859-1?Q?95WUYd46L6FBKxajEbRCR36qgHNITl3I9nEbE9yFgLtMskPdb7WlIr4LcW?=
+ =?iso-8859-1?Q?8PfDsUcMm8KfGlOI8FafpBg41J9xYgTZRdSHZsn9H0/05Ck9go+tBCATkx?=
+ =?iso-8859-1?Q?rWum2PPDfkPh7/4XHsGF7TYm0FUVVVjIneODOFaCydSmVo1cCOC3?=
 Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 X-OriginatorOrg: fb.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: SJ0PR15MB5154.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 141285f8-98c6-4ea9-8a22-08da4e5b1cbe
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Jun 2022 23:10:45.7429
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1a4e2f9b-2760-4f4e-4923-08da4e5b1d57
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Jun 2022 23:10:46.6971
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ISuSiVam0R8IB4sgxyuUH3k+9YP0dwyxaMy4rAf5hfb6ts4x3z3cwySOqbw3qWtx
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW5PR15MB5220
-X-Proofpoint-GUID: PxmMMt-pqRDWOr25EaY4y6Fvn2F38ylb
-X-Proofpoint-ORIG-GUID: PxmMMt-pqRDWOr25EaY4y6Fvn2F38ylb
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-userprincipalname: +rDcu9J3uyKdKtCHuDoUQpMh03G5zdYCw7LL9NGJOBxh4nZCXF057SwcI8Qh8nq2
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB2665
+X-Proofpoint-GUID: IjXujJGMF8I_MDIxvnc9-hY-ugjS5Fwq
+X-Proofpoint-ORIG-GUID: IjXujJGMF8I_MDIxvnc9-hY-ugjS5Fwq
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.517,FMLib:17.11.64.514
  definitions=2022-06-14_10,2022-06-13_01,2022-02-23_01
@@ -132,66 +136,197 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This series implements support for sleepable uprobe programs.
-Key work is in patches 2 and 3, the rest is plumbing and tests.
+uprobes work by raising a trap, setting a task flag from within the
+interrupt handler, and processing the actual work for the uprobe on the
+way back to userspace. As a result, uprobe handlers already execute in a
+might_fault/_sleep context. The primary obstacle to sleepable bpf uprobe
+programs is therefore on the bpf side.
 
-The main observation is that the only obstacle in the way of sleepable upro=
-be
-programs is not the uprobe infrastructure, which already runs in a user-like
-context, but the rcu usage around bpf_prog_array.
+Namely, the bpf_prog_array attached to the uprobe is protected by normal
+rcu. In order for uprobe bpf programs to become sleepable, it has to be
+protected by the tasks_trace rcu flavor instead (and kfree() called after
+a corresponding grace period).
 
-Details are in patch 2 but the tl;dr is that we chain trace_tasks and norma=
-l rcu
-grace periods when releasing to array to accommodate users of either rcu ty=
-pe.
-This introduces latency for non-sleepable users (kprobe, tp) but that's dee=
-med
-acceptable, given recent benchmarks by Andrii [1]. We're a couple of orders=
- of
-magnitude under the rate of bpf_prog_array churn that would raise flags (~1=
-MM/s per Paul).
+Therefore, the free path for bpf_prog_array now chains a tasks_trace and
+normal grace periods one after the other.
 
-  [1]: https://lore.kernel.org/bpf/CAEf4BzbpjN6ca7D9KOTiFPOoBYkciYvTz0UJNp5=
-c-_3ptm=3DMrg@mail.gmail.com/
+Users who iterate under tasks_trace read section would
+be safe, as would users who iterate under normal read sections (from
+non-sleepable locations).
 
-v3 -> v4:
- * Fix kdoc and inline issues
- * Rebase
+The downside is that the tasks_trace latency affects all perf_event-attache=
+d
+bpf programs (and not just uprobe ones). This is deemed safe given the
+possible attach rates for kprobe/uprobe/tp programs.
 
-v2 -> v3:
- * Inline uprobe_call_bpf into trace_uprobe.c, it's just a bpf_prog_run_arr=
-ay_sleepable call now.
- * Do not disable preemption for uprobe non-sleepable programs.
- * Add acks.
+Separately, non-sleepable programs need access to dynamically sized
+rcu-protected maps, so bpf_run_prog_array_sleepables now conditionally take=
+s
+an rcu read section, in addition to the overarching tasks_trace section.
 
-v1 -> v2:
- * Fix lockdep annotations in bpf_prog_run_array_sleepable
- * Chain rcu grace periods only for perf_event-attached programs. This limi=
-ts
-   the additional latency on the free path to use cases where we know it wo=
-n't
-   be a problem.
- * Add tests calling helpers only available in sleepable programs.
- * Remove kprobe.s support from libbpf.
+Signed-off-by: Delyan Kratunov <delyank@fb.com>
+---
+ include/linux/bpf.h         | 52 +++++++++++++++++++++++++++++++++++++
+ kernel/bpf/core.c           | 15 +++++++++++
+ kernel/trace/bpf_trace.c    |  4 +--
+ kernel/trace/trace_uprobe.c |  5 ++--
+ 4 files changed, 71 insertions(+), 5 deletions(-)
 
-Delyan Kratunov (5):
-  bpf: move bpf_prog to bpf.h
-  bpf: implement sleepable uprobes by chaining gps
-  bpf: allow sleepable uprobe programs to attach
-  libbpf: add support for sleepable uprobe programs
-  selftests/bpf: add tests for sleepable (uk)probes
-
- include/linux/bpf.h                           | 88 +++++++++++++++++++
- include/linux/filter.h                        | 34 -------
- kernel/bpf/core.c                             | 15 ++++
- kernel/bpf/verifier.c                         |  4 +-
- kernel/events/core.c                          | 16 ++--
- kernel/trace/bpf_trace.c                      |  4 +-
- kernel/trace/trace_uprobe.c                   |  5 +-
- tools/lib/bpf/libbpf.c                        |  5 +-
- .../selftests/bpf/prog_tests/attach_probe.c   | 49 ++++++++++-
- .../selftests/bpf/progs/test_attach_probe.c   | 60 +++++++++++++
- 10 files changed, 231 insertions(+), 49 deletions(-)
-
---
-2.36.1=
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 69106ae46464..f3e88afdaffe 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -26,6 +26,7 @@
+ #include <linux/stddef.h>
+ #include <linux/bpfptr.h>
+ #include <linux/btf.h>
++#include <linux/rcupdate_trace.h>
+=20
+ struct bpf_verifier_env;
+ struct bpf_verifier_log;
+@@ -1372,6 +1373,8 @@ extern struct bpf_empty_prog_array bpf_empty_prog_arr=
+ay;
+=20
+ struct bpf_prog_array *bpf_prog_array_alloc(u32 prog_cnt, gfp_t flags);
+ void bpf_prog_array_free(struct bpf_prog_array *progs);
++/* Use when traversal over the bpf_prog_array uses tasks_trace rcu */
++void bpf_prog_array_free_sleepable(struct bpf_prog_array *progs);
+ int bpf_prog_array_length(struct bpf_prog_array *progs);
+ bool bpf_prog_array_is_empty(struct bpf_prog_array *array);
+ int bpf_prog_array_copy_to_user(struct bpf_prog_array *progs,
+@@ -1463,6 +1466,55 @@ bpf_prog_run_array(const struct bpf_prog_array *arra=
+y,
+ 	return ret;
+ }
+=20
++/* Notes on RCU design for bpf_prog_arrays containing sleepable programs:
++ *
++ * We use the tasks_trace rcu flavor read section to protect the bpf_prog_=
+array
++ * overall. As a result, we must use the bpf_prog_array_free_sleepable
++ * in order to use the tasks_trace rcu grace period.
++ *
++ * When a non-sleepable program is inside the array, we take the rcu read
++ * section and disable preemption for that program alone, so it can access
++ * rcu-protected dynamically sized maps.
++ */
++static __always_inline u32
++bpf_prog_run_array_sleepable(const struct bpf_prog_array __rcu *array_rcu,
++			     const void *ctx, bpf_prog_run_fn run_prog)
++{
++	const struct bpf_prog_array_item *item;
++	const struct bpf_prog *prog;
++	const struct bpf_prog_array *array;
++	struct bpf_run_ctx *old_run_ctx;
++	struct bpf_trace_run_ctx run_ctx;
++	u32 ret =3D 1;
++
++	might_fault();
++
++	rcu_read_lock_trace();
++	migrate_disable();
++
++	array =3D rcu_dereference_check(array_rcu, rcu_read_lock_trace_held());
++	if (unlikely(!array))
++		goto out;
++	old_run_ctx =3D bpf_set_run_ctx(&run_ctx.run_ctx);
++	item =3D &array->items[0];
++	while ((prog =3D READ_ONCE(item->prog))) {
++		if (!prog->aux->sleepable)
++			rcu_read_lock();
++
++		run_ctx.bpf_cookie =3D item->bpf_cookie;
++		ret &=3D run_prog(prog, ctx);
++		item++;
++
++		if (!prog->aux->sleepable)
++			rcu_read_unlock();
++	}
++	bpf_reset_run_ctx(old_run_ctx);
++out:
++	migrate_enable();
++	rcu_read_unlock_trace();
++	return ret;
++}
++
+ #ifdef CONFIG_BPF_SYSCALL
+ DECLARE_PER_CPU(int, bpf_prog_active);
+ extern struct mutex bpf_stats_enabled_mutex;
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index e78cc5eea4a5..b5ffebcce6cc 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -2279,6 +2279,21 @@ void bpf_prog_array_free(struct bpf_prog_array *prog=
+s)
+ 	kfree_rcu(progs, rcu);
+ }
+=20
++static void __bpf_prog_array_free_sleepable_cb(struct rcu_head *rcu)
++{
++	struct bpf_prog_array *progs;
++
++	progs =3D container_of(rcu, struct bpf_prog_array, rcu);
++	kfree_rcu(progs, rcu);
++}
++
++void bpf_prog_array_free_sleepable(struct bpf_prog_array *progs)
++{
++	if (!progs || progs =3D=3D &bpf_empty_prog_array.hdr)
++		return;
++	call_rcu_tasks_trace(&progs->rcu, __bpf_prog_array_free_sleepable_cb);
++}
++
+ int bpf_prog_array_length(struct bpf_prog_array *array)
+ {
+ 	struct bpf_prog_array_item *item;
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 10b157a6d73e..d1c22594dbf9 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1936,7 +1936,7 @@ int perf_event_attach_bpf_prog(struct perf_event *eve=
+nt,
+ 	event->prog =3D prog;
+ 	event->bpf_cookie =3D bpf_cookie;
+ 	rcu_assign_pointer(event->tp_event->prog_array, new_array);
+-	bpf_prog_array_free(old_array);
++	bpf_prog_array_free_sleepable(old_array);
+=20
+ unlock:
+ 	mutex_unlock(&bpf_event_mutex);
+@@ -1962,7 +1962,7 @@ void perf_event_detach_bpf_prog(struct perf_event *ev=
+ent)
+ 		bpf_prog_array_delete_safe(old_array, event->prog);
+ 	} else {
+ 		rcu_assign_pointer(event->tp_event->prog_array, new_array);
+-		bpf_prog_array_free(old_array);
++		bpf_prog_array_free_sleepable(old_array);
+ 	}
+=20
+ 	bpf_prog_put(event->prog);
+diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+index 9711589273cd..0282c119b1b2 100644
+--- a/kernel/trace/trace_uprobe.c
++++ b/kernel/trace/trace_uprobe.c
+@@ -16,6 +16,7 @@
+ #include <linux/namei.h>
+ #include <linux/string.h>
+ #include <linux/rculist.h>
++#include <linux/filter.h>
+=20
+ #include "trace_dynevent.h"
+ #include "trace_probe.h"
+@@ -1346,9 +1347,7 @@ static void __uprobe_perf_func(struct trace_uprobe *t=
+u,
+ 	if (bpf_prog_array_valid(call)) {
+ 		u32 ret;
+=20
+-		preempt_disable();
+-		ret =3D trace_call_bpf(call, regs);
+-		preempt_enable();
++		ret =3D bpf_prog_run_array_sleepable(call->prog_array, regs, bpf_prog_ru=
+n);
+ 		if (!ret)
+ 			return;
+ 	}
+--=20
+2.36.1
