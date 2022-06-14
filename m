@@ -2,72 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DBFF54B5D9
-	for <lists+bpf@lfdr.de>; Tue, 14 Jun 2022 18:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2571254B723
+	for <lists+bpf@lfdr.de>; Tue, 14 Jun 2022 19:02:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236527AbiFNQUr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Jun 2022 12:20:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35226 "EHLO
+        id S238276AbiFNRB1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Jun 2022 13:01:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230121AbiFNQUr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Jun 2022 12:20:47 -0400
-Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.73])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 396BE22295;
-        Tue, 14 Jun 2022 09:20:45 -0700 (PDT)
-Received: from mail-yb1-f179.google.com ([209.85.219.179]) by
- mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MadC8-1nQAtt3KHq-00c8na; Tue, 14 Jun 2022 18:20:44 +0200
-Received: by mail-yb1-f179.google.com with SMTP id u99so15976759ybi.11;
-        Tue, 14 Jun 2022 09:20:43 -0700 (PDT)
-X-Gm-Message-State: AJIora/6g6EPvxslekopfsnoX6xFhapU42p83CqpLpLD8QH4wuuPffIP
-        Lgn2GBkENdzz5jtxrW9kYGPFxIhi3qedfXVupN0=
-X-Google-Smtp-Source: AGRyM1vL8YmZq2CJCAYY9lO5nRWLWOkqiKpTfzNi8RRXvdFTlfQo46XRqaiOQVYpttr+UTW5s4kkZ2oWrKpG9iJxDw0=
-X-Received: by 2002:a25:7645:0:b0:664:70b9:b093 with SMTP id
- r66-20020a257645000000b0066470b9b093mr5733329ybc.480.1655223642290; Tue, 14
- Jun 2022 09:20:42 -0700 (PDT)
+        with ESMTP id S1357152AbiFNQ7k (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Jun 2022 12:59:40 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 218A011163;
+        Tue, 14 Jun 2022 09:59:37 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id w2so16179088ybi.7;
+        Tue, 14 Jun 2022 09:59:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NrzbgcNkUQ7Zz63xqhepzP97koEMht4Jhs6UIjwgzis=;
+        b=V3/W/fKyA3uoUiUA9aT+aWTgy1wwkxhnteXP50eGwFpDuNmBHPwfj6nRaS3vncCqwu
+         M15I7n3lpyYLg/3uEZlwW7lqd8DANUrPt2z2GsFBIWTozAUhtVHM8sjBPj4f9abuPDf7
+         dYRck76N1vqEeSrMAe3tojVIybQK1yt2MH0ItTzORfuLs9VZBq8dG+khQSbbBz9r1+Ab
+         fIVL8JrYpaqegZyeGvtBNgz9ql/O9oV6f6XToqU8C49EvHmF3H3L6i/tIx5Xd8C4GnvX
+         IaeUnc8Sdn5EZEfryzaEQhYdxh3rT8qKls6yEHKxjR8iAKbAp+7AvbRoeLwKMhtb2loC
+         jb7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NrzbgcNkUQ7Zz63xqhepzP97koEMht4Jhs6UIjwgzis=;
+        b=JjSxnrMpqZPpl7v2EGqxhL9X+GDahnjXswIX9N9jf3tIsw+CsRSVXNdayiMdVrzcfq
+         rgzU9IQxoFLa7bIx+WaAVDP2PmcM67aUdaf24xB9EK9UJox5PSA4Wsx93i+HZkKLqABN
+         +HvBtYCYJpMd85PGLDisz0+PxlJE0ddiK+8hCbto+yYgR+Ce1eynYaKPTrLlcQEQttI3
+         eaZzgQ2+gIP6PSBZLkshrHlJk2zT7LJzwJ0wv/E60DRZLW3ctZ4UEXpcTj9snvyF+Hfo
+         ZiY7Jp+Wci2YSTqtr/2JuMIcr6j7fOdgnxJdwWyUCwD6MvVABtq/ii9qOBxekn/C+M6K
+         fxmQ==
+X-Gm-Message-State: AJIora8NXpqoi4bzof9/Xc7sajC4RiQ5PSGRMD/9DYVezPiALxPtCsWu
+        lCuDf8IZNUNNfr72J3YjHPqyq8EjtCHFtIR4o9A=
+X-Google-Smtp-Source: AGRyM1s0CA6NwVMVfHhR6mzaguUfsT3S3k/e7TA0AYn0Nyt4w9paFcqYcHihga4qUy8I2d9Gq0icGGz0RGnoMNxqmGg=
+X-Received: by 2002:a25:90a:0:b0:664:3dd3:63de with SMTP id
+ 10-20020a25090a000000b006643dd363demr5919917ybj.506.1655225976180; Tue, 14
+ Jun 2022 09:59:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <202206120438.Un6Wq4N0-lkp@intel.com>
-In-Reply-To: <202206120438.Un6Wq4N0-lkp@intel.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 14 Jun 2022 18:20:25 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3dvzLhAGV8rdCpX__54vkL0=e5pACUY-es3xiJau=uwg@mail.gmail.com>
-Message-ID: <CAK8P3a3dvzLhAGV8rdCpX__54vkL0=e5pACUY-es3xiJau=uwg@mail.gmail.com>
-Subject: Re: arm-linux-gnueabi-ld: error: .btf.vmlinux.bin.o is already in
- final BE8 format
-To:     kernel test robot <lkp@intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>
+References: <20220607133135.271788-1-eyal.birger@gmail.com> <f80edf4f-c795-1e1e-bac2-414189988156@iogearbox.net>
+In-Reply-To: <f80edf4f-c795-1e1e-bac2-414189988156@iogearbox.net>
+From:   Eyal Birger <eyal.birger@gmail.com>
+Date:   Tue, 14 Jun 2022 19:59:24 +0300
+Message-ID: <CAHsH6GvWkyDg5mXnSNoyY0H2V2i4iMsucydB=RZB100czc-85A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: add lwt ip encap tests to test_progs
+To:     Daniel Borkmann <daniel@iogearbox.net>, andrii@kernel.org
+Cc:     shuah@kernel.org, ast@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, posk@google.com,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:igAUm1LzDSLl29TXXz/+lQAUwgRNCk6eMol8eFWliL6moUdfvqg
- ZedgsqHBkdqYthWVHsqcekZlVk8i2lJX1jvFOG8tM/QGWI+VDaDrDfpO9+4I+OEYPcxGakO
- 0kyCxNVykYiYSgvE0Wv1vwBFdLt5TX9IRWTULRGBkYWtEic2CbZCicWmawl+zvcqv1w6hF/
- eiyvc6n4BzZeDiwtNtvvQ==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:yHDEjxbyy+8=:Rw4wAtq/uqU2yJrfg/zEde
- Fns53zpACA3tdkPDsH0IMz4lOVcCd6sziz3TuYGmOFLHUZJx2BKOyhMGD0Ka6bJoNqgSuYdMA
- c+cG8c9XFXg7gyLfWhcKsWTmio7aFOFQd9PxJoK6t/kgo/K2C6AqCsT7FBcX46WS3BF7QlEsE
- 0Dw9uoYEJZJ15jS4k6tV0SLC6IcSzC5DXDNra8BMSMKhKwIaaKh5IX6jPTS5TOPClWejFjV5W
- AFGWo5YG9fGbMO0191pSSp2W5w2M0gdrVPKFpRO+0+GsjrLYbYlEGpwb8iFLVedfPlenVmREw
- yBQrS/Jy2dJBmd4D3GsGXDuLzZkud6h4EiYH422yY8QRuscFp+CK9KRKNWX2983fInRcXTNtx
- 4kb7b9nLi0EBmAo5nJSh5ZZeZEu0QHMouzhzAoftsJgeBzKaLwZ4smeldIPuC5j3aw1y/8GzS
- trCnKSbtefw1u0wsp4H4zuEXtIOZ2GBxZXBTDqoNfz2wvAfMr6uX6iMyLsnQDMtgSuHoGY6il
- pKhuZC4fZeSTqCNQoU5HWzWcTazsOU0bvr20JDzdfERQuajdX5sq0qVeX7C8GKnWlkQGL2oPH
- G8A/MFuUeYcAzhVIPOipBrLv2BST9jqGA58BhB9BO3Yniu37xjQts85oITlGRCU0WWg/zBux0
- 0yhQtCm+tTItSiFkbZ9RrR0EAoEJFYEogd8cKCGBGnZs4sG2cMrqtskdm92HDgVAOYtBbvYmd
- dgNdJFkduWyOdKoO8RSOUmjGIO1lN+XXIanb+LGLvK7JgRZbNel5+9OjPMZfC6/wHWxX8dhS4
- j9J5MM0iaRZZ/KlQvA8qVhQfKvgtivSLu+O0vU4bNf8m9pNa/I6G4f45BJ6d+ThU29u5ukGBE
- CykbGr8y1Ok76xGKneNQ==
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,39 +68,56 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jun 11, 2022 at 11:00 PM kernel test robot <lkp@intel.com> wrote:
+On Fri, Jun 10, 2022 at 12:37 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
 >
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   0678afa6055d14799c1dc1eee47c8025eba56cab
-> commit: 5d6f52671e76ca2d55d74e676ac4c38ceb14a2d3 ARM: rework endianess selection
-> date:   9 weeks ago
-> configrong.a.chen@intel.com: arm-randconfig-r012-20220612 (https://download.01.org/0day-ci/archive/20220612/202206120438.Un6Wq4N0-lkp@intel.com/config)
-> compiler: arm-linux-gnueabi-gcc (GCC) 11.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5d6f52671e76ca2d55d74e676ac4c38ceb14a2d3
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 5d6f52671e76ca2d55d74e676ac4c38ceb14a2d3
->         # save the config file
->         mkdir build_dir && cp config build_dir/.config
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.3.0 make.cross W=1 O=build_dir ARCH=arm SHELL=/bin/bash
+> Hi Eyal,
 >
-> If you fix the issue, kindly add following tag where applicable
-> Reported-by: kernel test robot <lkp@intel.com>
+> On 6/7/22 3:31 PM, Eyal Birger wrote:
+> > Port test_lwt_ip_encap.sh tests onto test_progs.
+> >
+> > In addition, this commit adds "egress_md" tests which test a similar
+> > flow as egress tests only they use gre devices in collect_md mode
+> > for encapsulation and set the tunnel key using bpf_set_tunnel_key().
+> >
+> > This introduces minor changes to test_lwt_ip_encap.{sh,c} for consistency
+> > with the new tests:
+> >
+> > - GRE key must exist as bpf_set_tunnel_key() explicitly sets the
+> >    TUNNEL_KEY flag
+> >
+> > - Source address for GRE traffic is set to IP*_5 instead of IP*_1 since
+> >    GRE traffic is sent via veth5 so its address is selected when using
+> >    bpf_set_tunnel_key()
+> >
+> > Note: currently these programs use the legacy section name convention
+> > as iproute2 lwt configuration does not support providing function names.
+> >
+> > Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
+> > ---
+> >   .../selftests/bpf/prog_tests/lwt_ip_encap.c   | 582 ++++++++++++++++++
+> >   .../selftests/bpf/progs/test_lwt_ip_encap.c   |  51 +-
+> >   .../selftests/bpf/test_lwt_ip_encap.sh        |   6 +-
+> >   3 files changed, 633 insertions(+), 6 deletions(-)
+> >   create mode 100644 tools/testing/selftests/bpf/prog_tests/lwt_ip_encap.c
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/lwt_ip_encap.c b/tools/testing/selftests/bpf/prog_tests/lwt_ip_encap.c
+> > new file mode 100644
+> > index 000000000000..e1b6f3ce6045
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/prog_tests/lwt_ip_encap.c
+> > @@ -0,0 +1,582 @@
+> [...]
 >
-> All errors (new ones prefixed by >>):
+> Thanks a lot for porting the test into test_progs! Looks like the BPF CI currently
+> bails out here:
 >
-> >> arm-linux-gnueabi-ld: error: .btf.vmlinux.bin.o is already in final BE8 format
->    arm-linux-gnueabi-ld: failed to merge target specific data of file .btf.vmlinux.bin.o
+> https://github.com/kernel-patches/bpf/runs/6812283921?check_suite_focus=true
+>
+> Andrii, looks like we might be missing CONFIG_NET_VRF in vmtest config-latest.*?
 
-I had a look at this bug, and found that this is not caused by my commit, but
-rather is the result of CONFIG_CPU_BIG_ENDIAN with BE8 format being
-incompatible with CONFIG_DEBUG_INFO_BTF.
+Hi Andrii,
 
-I'm sure there is an easy fix but I have not found it. Should we just
-add a Kconfig
-dependency to prevent this, or does anyone have an idea for a proper fix?
+What's the next step - should I submit a PR to libbpf on Github for adding
+CONFIG_NET_VRF?
 
-          Arnd
+Eyal.
