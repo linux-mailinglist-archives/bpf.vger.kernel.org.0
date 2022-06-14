@@ -2,85 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D184E54BA74
-	for <lists+bpf@lfdr.de>; Tue, 14 Jun 2022 21:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3F9954BAFC
+	for <lists+bpf@lfdr.de>; Tue, 14 Jun 2022 21:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbiFNTWC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Jun 2022 15:22:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33970 "EHLO
+        id S239417AbiFNTz6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Jun 2022 15:55:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229988AbiFNTWB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Jun 2022 15:22:01 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E6DE29C83;
-        Tue, 14 Jun 2022 12:21:58 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id d14so12990836eda.12;
-        Tue, 14 Jun 2022 12:21:57 -0700 (PDT)
+        with ESMTP id S237013AbiFNTz4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Jun 2022 15:55:56 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 419F13614F;
+        Tue, 14 Jun 2022 12:55:55 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id y17so7348598ilj.11;
+        Tue, 14 Jun 2022 12:55:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LQS7VowSx/S+w+iLmTbGWcWoA0CZ0lVjX4LifZSTEZE=;
-        b=mkwtIuPkjTinjeBHAd5Uk6q8Vvx8bh0z0iEkAXqqNBw0Y2+CaMFvPqlvGLfXZITELb
-         YBuK5VTzTFnmw0pmtEtLqiAnB3BAkGBcOwLfU4IBLEqjdhFAkX4fn1jcqAYCbmpbbe9y
-         qIQB3roKngMuYrqLQt6tHVobbxTPTy9wEl872Z//dlchLBqIvw3Af4yqRLFkleyz4OAS
-         E4Br6e17PtEpu6UWOBiNRWsMVGLCX50rE/iUnrvfXR5ZDZC3g4f6ef5AIWvMgPJwesgh
-         GvBCNQYwantRaRYldKt9Ga3WER1QqMjDTovwiqcGbcXGxrw9I5xBrMSRqI/v8o/HAw0P
-         YBoQ==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=GswxPjj5LlRJS8/1xA3S8U0VTLxjsWU69fZdjcSjxNc=;
+        b=qPvCwe+42tFJZm9piIdnp95hZr1vFiUekb//DXTUvWx5+kGlEZBNUnEdHgErDlM5lx
+         jor9EB6Rc9OfbpCJqHjJ/B77PUA9fOsZ3fHZPiA8/JZaGS1PAur9aXBARedIz4iDcKcw
+         mlHd5wYVxJjPhOgyURLw5M/caSdp5DzInIZTEqXAWrwMUrCjpNeoZYoBh3tzll8Emskf
+         QSsBNiabfh9e33xArMY93b6Ub4V30WgTCL61Se2moNFWtRFGFs4ulkG8WciYggms4hoD
+         bzjgmadk/kv80olhyiRjCeCTApEAFL2xcMv7mZIhTFKNZAaMme6pU0BSZg2uk2AFD6v5
+         hJ9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LQS7VowSx/S+w+iLmTbGWcWoA0CZ0lVjX4LifZSTEZE=;
-        b=eZUhVstDdf+00VBiB5nwTa45MyIDg7F+b7qRVF7dixsVu9DOgFzOaTQdeEYJJYzPD1
-         LYxAI7BDl7xyibURp6L9j5HasELCk/nCNIJ2s3ImWiDLLmFwCVCkwTUoxFhE59CYwAb2
-         /Liw79FfKhk/YQG5T3a3FgFFsuH3aGeGJZ0l4FU8mD3WMgh0tGWnhh14uFthPQDhmFfR
-         UhFRSlV1VdOi1UXkUkJcPaoHzS29FMDHqbxF8iwAtN96syNlB1R3o+kZ/NKNomfBttkm
-         peeEtkbQoYD9S6qbl2vk+Wwf2aufecgGsPUbXuJrUNwnzpUBBKbrxTMDZF8m/6eUdsOC
-         7OZg==
-X-Gm-Message-State: AOAM530Pq8eJpZ4v0hMhTZvtfgBSQKL3teW//5JJQQWd+HKJJND9MYSK
-        j12r69j0DDa+Pf0T1SOmFSs=
-X-Google-Smtp-Source: AGRyM1uXyoNKfAQKrnzBo+Kl6QJ1CIMw3KffZh36hLSPIpfuU3sWnM3dANTOgt0/85LMRqh7ljL/yg==
-X-Received: by 2002:a05:6402:2548:b0:42d:dd95:5bfe with SMTP id l8-20020a056402254800b0042ddd955bfemr7928262edb.285.1655234516470;
-        Tue, 14 Jun 2022 12:21:56 -0700 (PDT)
-Received: from krava ([83.240.63.226])
-        by smtp.gmail.com with ESMTPSA id s11-20020aa7d78b000000b0042bca34bd15sm7567589edq.95.2022.06.14.12.21.55
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=GswxPjj5LlRJS8/1xA3S8U0VTLxjsWU69fZdjcSjxNc=;
+        b=PdrPNUkCl8rhBwAY9MItro29mRWm3i6MRzhOkYrFc2gjTLp3SohqcdEp2pBn2Oo8Xw
+         tZCemsp+Z+0bY5iv033vwNpGL/7gLHGZrg8qKlhvfV3FXWNbqLZF4gwsKoHBL9DUq5Qf
+         O/ylrH0vJsptxoC7gfqVhxNMItLabNZ73wTSZYM01gopIbS1lj9Q6R7tJnAXMNDh93CC
+         BY0dPUjYRrkzGRVloLXvdZBNUYJYObZZ0Z52+M9XmMjgSvilGeHm+1ZYivsxUj1VTL/h
+         xlVaVkW+l54GNevR9OwApeJ/tmOJcI67achfrVR2+//64nvkZpoQ17XZvc+AvyBn7Q3a
+         gbFg==
+X-Gm-Message-State: AJIora83qZu7OcV/buhSurAhqRB9h59eT9qiWfO3Mt23V2NOCOG8Yg2j
+        euvwkGa6Pzw/+hpYatqBtHc=
+X-Google-Smtp-Source: AGRyM1suQcVJvpIHswCqg4IOJM3LnlzOerWQcV9DeQ4FCBhvromABH0V+RuImflBp3AO1HdF79dtiA==
+X-Received: by 2002:a92:c94e:0:b0:2d3:be50:3e2f with SMTP id i14-20020a92c94e000000b002d3be503e2fmr4072343ilq.143.1655236554292;
+        Tue, 14 Jun 2022 12:55:54 -0700 (PDT)
+Received: from localhost ([172.243.153.43])
+        by smtp.gmail.com with ESMTPSA id h5-20020a056602130500b00668d3772a81sm5741342iov.30.2022.06.14.12.55.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jun 2022 12:21:55 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Tue, 14 Jun 2022 21:21:53 +0200
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Jiri Olsa <olsajiri@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        Tue, 14 Jun 2022 12:55:53 -0700 (PDT)
+Date:   Tue, 14 Jun 2022 12:55:47 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Cong Wang <cong.wang@bytedance.com>,
+        Eric Dumazet <edumazet@google.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [PATCHv2 bpf 3/3] bpf: Force cookies array to follow symbols
- sorting
-Message-ID: <Yqjf0VWT2k6VizQ3@krava>
-References: <20220606184731.437300-4-jolsa@kernel.org>
- <CAADnVQJA54Ra8+tV0e0KwSXAg93JRoiefDXWR-Lqatya5YWKpg@mail.gmail.com>
- <Yp+tTsqPOuVdjpba@krava>
- <CAADnVQJGoM9eqcODx2LGo-qLo0=O05gSw=iifRsWXgU0XWifAA@mail.gmail.com>
- <YqBW65t+hlWNok8e@krava>
- <YqBynO64am32z13X@krava>
- <20220608084023.4be8ffe2@gandalf.local.home>
- <CAEf4BzYkHkB60qPxGu0D=x-BidxObX95+1wjEYN8xsK7Dg_4cw@mail.gmail.com>
- <20220608120830.1ff5c5eb@gandalf.local.home>
- <CAEf4BzakYUnM3ZNgRbix=Z4bnPpzGiazAffMVh239476qH_c7A@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzakYUnM3ZNgRbix=Z4bnPpzGiazAffMVh239476qH_c7A@mail.gmail.com>
+        Jakub Sitnicki <jakub@cloudflare.com>
+Message-ID: <62a8e7c340baf_2f2a0208a2@john.notmuch>
+In-Reply-To: <CAM_iQpVRhBEGGtO+NDppqxDR0jf6W4+OJyvELx+Sxx66LxH13g@mail.gmail.com>
+References: <20220602012105.58853-1-xiyou.wangcong@gmail.com>
+ <20220602012105.58853-2-xiyou.wangcong@gmail.com>
+ <62a20ceaba3d4_b28ac2082c@john.notmuch>
+ <CAM_iQpWN-PidFerX+2jdKNaNpx4wTVRbp+gGDow=1qKx12i4qA@mail.gmail.com>
+ <62a2461c2688b_bb7f820876@john.notmuch>
+ <CAM_iQpVRhBEGGtO+NDppqxDR0jf6W4+OJyvELx+Sxx66LxH13g@mail.gmail.com>
+Subject: Re: [Patch bpf-next v3 1/4] tcp: introduce tcp_read_skb()
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -91,37 +79,31 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 09, 2022 at 11:32:59AM -0700, Andrii Nakryiko wrote:
-> On Wed, Jun 8, 2022 at 9:08 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+Cong Wang wrote:
+> On Thu, Jun 9, 2022 at 12:12 PM John Fastabend <john.fastabend@gmail.com> wrote:
+> > Considering, the other case where we do kfree_skb when consume_skb()
+> > is correct. We have logic in the Cilium tracing tools (tetragon) to
+> > trace kfree_skb's and count them. So in the good case here
+> > we end up tripping that logic even though its expected.
 > >
-> > On Wed, 8 Jun 2022 08:59:50 -0700
-> > Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> >
-> > > Would it be possible to preprocess ftrace_pages to remove such invalid
-> > > records (so that by the time we have to report
-> > > available_filter_functions there are no invalid records)? Or that data
-> > > is read-only when kernel is running?
-> >
-> > It's possible, but will be time consuming (slow down boot up) and racy. In
-> > other words, I didn't feel it was worth it.
-> >
-> > We can add it. How much of an issue is it to have these place holders for
-> > you? Currently, I only see it causes issues with tests. Is it really an
-> > issue for use cases?
+> > The question is which is better noisy kfree_skb even when
+> > expected or missing kfree_skb on the drops. I'm leaning
+> > to consume_skb() is safer instead of noisy kfree_skb().
 > 
-> I have the tool (retsnoop) that uses available_filter_functions, I'll
-> have to update it to ignore such entries. It's a small inconvenience,
-> once you know about this change, but multiply that for multiple users
-> that use available_filter_functions for some sort of generic tooling
-> doing kprobes/tracing, and it adds up. So while it's not horrible,
-> ideally user-visible data shouldn't have non-usable placeholders.
-> 
-> How much slowdown would you expect on start up? Not clear what would
-> be racy about this start up preprocessing, but I believe you.
-> 
-> So in summary, it's not the end of the world, but as a user I'd prefer
-> not to know about this quirk, of course :)
+> Oh, sure. As long as we all know neither of them is accurate,
+> I am 100% fine with changing it to consume_skb() to reduce the noise
+> for you.
 
-ok, I'l resend with the test workaround
+Thanks that would be great.
 
-jirka
+> 
+> Meanwhile, let me think about how to make it accurate, if possible at
+> all. But clearly this deserves a separate patch.
+
+Yep should be ok. We set the error code in desc->error in the verdict
+recv handler maybe tracking through this.
+
+> 
+> Thanks.
+
+
