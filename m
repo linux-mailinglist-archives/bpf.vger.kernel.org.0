@@ -2,122 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2974954B32C
-	for <lists+bpf@lfdr.de>; Tue, 14 Jun 2022 16:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC3A54B40A
+	for <lists+bpf@lfdr.de>; Tue, 14 Jun 2022 17:00:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245190AbiFNO0o (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Jun 2022 10:26:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44702 "EHLO
+        id S239186AbiFNPAV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Jun 2022 11:00:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244867AbiFNO0n (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Jun 2022 10:26:43 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C92632FFF8;
-        Tue, 14 Jun 2022 07:26:42 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id 184so8624332pga.12;
-        Tue, 14 Jun 2022 07:26:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HX6j/JD0P8ViHMlHg7WyYldgm56QAZWdqgVJ9jnPJgM=;
-        b=ppu8W0HHefaAqCG7W5h72lu9tapfC3y65tgq+at8TKkuYvzp5WLB4XE5P7z3MtA+mr
-         5RdO2qcuh2GpPFvg1Pbkm2aZWP4RqGnN5b66blbsvnXH5RfPVkwCYhC2B0nro210nse2
-         HcRjubRYwB4jN3+zy0ikMhzqL4/DpsFtM77dBQEF2STszGm/oHuphGNucTY3FF7dUBAd
-         VaQInJDu+x9Z9E3umk6UhUjH0A3YFptxM6ihJ6UinvvMd46kXGldy8VvG5W3JKpwTNOz
-         d91e+lLgtjSvW9TVYh3LeV6YBM7Y1XFZukSegBA7uk6PCEy4BpQzRLhGvr5oSFJxdTEi
-         JW8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HX6j/JD0P8ViHMlHg7WyYldgm56QAZWdqgVJ9jnPJgM=;
-        b=58LxRdtION2OodgE7qiggqRmHATZrda2bc6VxnYOQl8FSLWsayJvUlcG/+IHsuzGhU
-         jLFU5cMBx3McD4VPCdbXPOS6+gxnai0Ea3ubQLkvScY7sPsseIiOa5H3omjq1OY46p74
-         rONDDxAinwSA08CZt+frIPtVd7NH6HEjcAZlj9kqsMO76FUXyqaC59SE49k89b65J0Vu
-         /tmvMARcaeCblUy28ns5VSLbL7D90J7vKjDawaDTy1clGhFWcRCVz/xtdURLDzHSdfni
-         8e9jnF0+5aBjUNkiq7TRyTnw8d2XGEwHRyx1vOJbljSs3zVD2XbQOj6cIoCUnqxvbeTG
-         6xuQ==
-X-Gm-Message-State: AOAM531rQe3q3KB6DO56zTRf0J0nq2aeqJlS3NxU9dfPf82Pe8X0a+6g
-        gbCg9Ro0W1BWPoafbd/teag=
-X-Google-Smtp-Source: ABdhPJwDYOdewme8SussyfdqonnOtEyn4v66iA7GLe/qy65ln/zKk85TLwbfZ6knvbX59HXs/kr+Cg==
-X-Received: by 2002:a62:d045:0:b0:51b:fcf6:3add with SMTP id p66-20020a62d045000000b0051bfcf63addmr5088275pfg.68.1655216802241;
-        Tue, 14 Jun 2022 07:26:42 -0700 (PDT)
-Received: from localhost.localdomain ([43.132.141.9])
-        by smtp.gmail.com with ESMTPSA id m25-20020a637119000000b003f6ba49bc57sm7806752pgc.71.2022.06.14.07.26.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jun 2022 07:26:41 -0700 (PDT)
-From:   Yuntao Wang <ytcoode@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     daniel@iogearbox.net, linux-kernel@vger.kernel.org, pavel@denx.de,
-        sashal@kernel.org, stable@vger.kernel.org, ytcoode@gmail.com,
-        ast@kernel.org, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, bpf@vger.kernel.org
-Subject: [PATCH] bpf: Fix incorrect memory charge cost calculation in stack_map_alloc()
-Date:   Tue, 14 Jun 2022 22:26:22 +0800
-Message-Id: <20220614142622.998611-1-ytcoode@gmail.com>
-X-Mailer: git-send-email 2.36.0
-In-Reply-To: <YqbunqapIFiIVqOb@kroah.com>
-References: <YqbunqapIFiIVqOb@kroah.com>
+        with ESMTP id S1347514AbiFNPAT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Jun 2022 11:00:19 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9112432EE4
+        for <bpf@vger.kernel.org>; Tue, 14 Jun 2022 08:00:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 350A0B8197D
+        for <bpf@vger.kernel.org>; Tue, 14 Jun 2022 15:00:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D3BD5C341C8;
+        Tue, 14 Jun 2022 15:00:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1655218813;
+        bh=81f/6E2D/+VvzHSSilJoBBmXwSyZMtIXiObBWKvYZsM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=UVeEPCCvpHOL08C/OEgDROu85I3b2PXyv9MaXKvHdWSlcJciPWjtdIF01YFBd2bnm
+         ig0Lrr2C8XmJIgcV4BL+Kt6UxSa0T6wbO0WsJgBUNeGsIk2nemEH/+a00whAITnoSJ
+         ryasHRSRFhs4ltrOw0GxkuBPNEOyRl346L3YbzQVA2S7Y2emyNcJlQMPU0D6TMBrdv
+         AoTR2COz6gkRWkJsuD9tX0N1a6gcG2VM4bFL0nRYyfKNH/xpq3qVs85e9jHDOwd5ya
+         NoeVLYRZEZ7acwMxkFrQGZjqpe/JQf4oJXZHe07OZYTjk//DNcokdeQ7AI1FDsZzTr
+         96i0yu9hYcHoQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BAE4AFD99FF;
+        Tue, 14 Jun 2022 15:00:13 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] bpf: fix spelling in bpf_verifier.h
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <165521881376.16120.14765344364029939449.git-patchwork-notify@kernel.org>
+Date:   Tue, 14 Jun 2022 15:00:13 +0000
+References: <20220613211633.58647-1-jwnhy0@gmail.com>
+In-Reply-To: <20220613211633.58647-1-jwnhy0@gmail.com>
+To:     john <jwnhy0@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        bpf@vger.kernel.org
+X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-commit b45043192b3e481304062938a6561da2ceea46a6 upstream.
+Hello:
 
-This is a backport of the original upstream patch for 5.4/5.10.
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-The original upstream patch has been applied to 5.4/5.10 branches, which
-simply removed the line:
+On Mon, 13 Jun 2022 21:16:33 +0000 you wrote:
+> From: Hongyi Lu <jwnhy0@gmail.com>
+> 
+> 6689139af (HEAD -> master) fix spelling in bpf_verifier.h
+> Spelling is no big deal, but it is still an improvement.
+> This is my first patch as a newbie. Hope I didn't cause much trouble.
+> 
+> Signed-off-by: Hongyi Lu <jwnhy0@gmail.com>
+> 
+> [...]
 
-  cost += n_buckets * (value_size + sizeof(struct stack_map_bucket));
+Here is the summary with links:
+  - bpf: fix spelling in bpf_verifier.h
+    https://git.kernel.org/bpf/bpf-next/c/6dbdc9f35360
 
-This is correct for upstream branch but incorrect for 5.4/5.10 branches,
-as the 5.4/5.10 branches do not have the commit 370868107bf6 ("bpf:
-Eliminate rlimit-based memory accounting for stackmap maps"), so the
-bpf_map_charge_init() function has not been removed.
-
-Currently the bpf_map_charge_init() function in 5.4/5.10 branches takes a
-wrong memory charge cost, the
-
-  attr->max_entries * (sizeof(struct stack_map_bucket) + (u64)value_size))
-
-part is missing, let's fix it.
-
-Cc: <stable@vger.kernel.org> # 5.4.y
-Cc: <stable@vger.kernel.org> # 5.10.y
-Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
----
-Note that the original upstream patch is currently applied to
-linux-stable-rc/linux-5.4.y branch, not linux/linux-5.4.y, this patch
-depends on that patch.
-
- kernel/bpf/stackmap.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index c19e669afba0..0c5bf98d5576 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -121,7 +121,8 @@ static struct bpf_map *stack_map_alloc(union bpf_attr *attr)
- 		return ERR_PTR(-E2BIG);
- 
- 	cost = n_buckets * sizeof(struct stack_map_bucket *) + sizeof(*smap);
--	err = bpf_map_charge_init(&mem, cost);
-+	err = bpf_map_charge_init(&mem, cost + attr->max_entries *
-+			   (sizeof(struct stack_map_bucket) + (u64)value_size));
- 	if (err)
- 		return ERR_PTR(err);
- 
+You are awesome, thank you!
 -- 
-2.36.0
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
