@@ -2,124 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1256A54AA08
-	for <lists+bpf@lfdr.de>; Tue, 14 Jun 2022 09:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84DCD54AC6F
+	for <lists+bpf@lfdr.de>; Tue, 14 Jun 2022 10:52:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237522AbiFNHII (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Jun 2022 03:08:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42284 "EHLO
+        id S1355697AbiFNIuh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Jun 2022 04:50:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352962AbiFNHIB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Jun 2022 03:08:01 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 326B52F388;
-        Tue, 14 Jun 2022 00:08:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1655190480; x=1686726480;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=fidju0wTS+1QmlVVjMFvWw+XSYdPQvDSGcv+svNoSvs=;
-  b=daBrODs1cDxA8w552rrnT42taphwo6TcxxJspCAM7gbVhPmenkt9n5ro
-   0ez2TXkAFu3rAxxupKeif17Kw1evPLFaZfRCC2f/y9QDvFc1lsT+L3Ks+
-   Esk/2zed8AVJetWRsniSz3tl+f7vgYAPg9A/wFBSJhVgNzKxR5Wz6XdxP
-   GbcTdBohufIfITfuiHHHaTHwKaseEyEghVdlPxWSbcxVgKb58CgjHIa+e
-   bedZDh7Lr7F9VTFsL2mRIWmRnvgkfDWBZyUX3S6Q5cB9DgZEShujt7qmx
-   zK7lH0d+HrDibo5q563WsbP+h1hEAQ4O854CaK1apc8B2D+T6RgQxwpt5
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10377"; a="258981200"
-X-IronPort-AV: E=Sophos;i="5.91,299,1647327600"; 
-   d="scan'208";a="258981200"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jun 2022 00:07:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,299,1647327600"; 
-   d="scan'208";a="651872188"
-Received: from silpixa00401086.ir.intel.com (HELO localhost.localdomain) ([10.55.128.121])
-  by fmsmga004.fm.intel.com with ESMTP; 14 Jun 2022 00:07:55 -0700
-From:   Ciara Loftus <ciara.loftus@intel.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     bjorn@kernel.org, magnus.karlsson@intel.com,
-        jonathan.lemon@gmail.com, maciej.fijalkowski@intel.com,
-        Ciara Loftus <ciara.loftus@intel.com>
-Subject: [PATCH bpf] xsk: fix generic transmit when completion queue reservation fails
-Date:   Tue, 14 Jun 2022 07:07:46 +0000
-Message-Id: <20220614070746.8871-1-ciara.loftus@intel.com>
+        with ESMTP id S1355486AbiFNIuE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Jun 2022 04:50:04 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FD3643EFB;
+        Tue, 14 Jun 2022 01:50:00 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id g10-20020a17090a708a00b001ea8aadd42bso8489139pjk.0;
+        Tue, 14 Jun 2022 01:50:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8Ddvsni7SZUlV7IwHtn1fL03u3KMw5Zi9EmHvYFfjdo=;
+        b=dZzPMmBVxZPixpOfUVjpJSD2S0j74d0VGTJ1I3QkGLHkWaarrHVNY/YhDFiJVb7x9v
+         OaiCZKpx/mCxUQceQhnYpF1KDZud+Y+KMxi3/TgDpl+YxYq91jWwUorzMpUJc5LfwfxL
+         G6ykl5xhD3iMs31e9GghGZt0IpSSyuK5tZ3SakPkOlC3i1VJQWr+OLa4w7Q7l9Zf8lx7
+         cAimDLwgolLaUJzeYrWFacuGGWWRjpOZPlNooRcUygOVLFMjsgPFLwJNOTQ82Z3yHJep
+         k1NrIT2TfbQbSThhSBTlBGRTR5bsYr2TqXxTSmjvAE4cjGQl/aePFcu7aCxDYQgG9WVj
+         2Bsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8Ddvsni7SZUlV7IwHtn1fL03u3KMw5Zi9EmHvYFfjdo=;
+        b=FzeOAH2Lpnpru9t07iNLgR0Hgkyp6Q7RgEBY00uo1+BzyK9gV7FVOBzBqX5ZarCU1I
+         ptB2xUF2qLgope7PlJWRvL+nfHGdkm9dh1O3edxNL8Ill7uuSk0MnsDBxUK1eMjE6g4L
+         9OYSips6tyI1VNFIP48wqMjbMS4b9+aa51Eb34+KtaXxmU5DKmRDqzauqR+c65qsY9bS
+         s0/7ap+9qpB2fkFAdcpp8WPiZnD2I6cyWCU9LYMWbN58Xao1847cigqMkj0l8lWfKGaF
+         DmnAbEQTCxOsy8aTW6odIjOpMq9Xf6uy1s5j/VCu7SO5saygzwA76UsKFQ+aRm5Dpt/W
+         Snkw==
+X-Gm-Message-State: AOAM530EsqEJG4tVeR3+GiNWrLOfT84+cdmn04uvRpBjbeStEEcUbJKL
+        vAIrAv5xAblYDR6/StEMmbqCKEvwBnfS6g==
+X-Google-Smtp-Source: AGRyM1vw+SPWJ82YEoJ0AFk0NArNWxwueMYF2jKq/fwa6elGx0eEnoarMHhQGf1E42D4OPwtRBM0IA==
+X-Received: by 2002:a17:903:28c:b0:167:6127:ed99 with SMTP id j12-20020a170903028c00b001676127ed99mr3361504plr.94.1655196599581;
+        Tue, 14 Jun 2022 01:49:59 -0700 (PDT)
+Received: from localhost.localdomain ([47.242.114.172])
+        by smtp.gmail.com with ESMTPSA id q2-20020a170902f78200b001617541c94fsm6659913pln.60.2022.06.14.01.49.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jun 2022 01:49:58 -0700 (PDT)
+From:   Chuang W <nashuiliang@gmail.com>
+Cc:     Chuang W <nashuiliang@gmail.com>,
+        Jingren Zhou <zhoujingren@didiglobal.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] libbpf: Remove kprobe_event on failed kprobe_open_legacy
+Date:   Tue, 14 Jun 2022 16:49:30 +0800
+Message-Id: <20220614084930.43276-1-nashuiliang@gmail.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Two points of potential failure in the generic transmit function are:
-1. completion queue (cq) reservation failure.
-2. skb allocation failure
+In a scenario where livepatch and aggrprobe coexist, the creating
+kprobe_event using tracefs API will succeed, a trace event (e.g.
+/debugfs/tracing/events/kprobe/XX) will exist, but perf_event_open()
+will return an error.
 
-Originally the cq reservation was performed first, followed by the skb
-allocation. Commit 675716400da6 ("xdp: fix possible cq entry leak")
-reversed the order because at the time there was no mechanism available to
-undo the cq reservation which could have led to possible cq entry leaks in
-the event of skb allocation failure. However if the skb allocation is
-performed first and the cq reservation then fails, the xsk skb destructor
-is called which blindly adds the skb address to the already full cq leading
-to undefined behavior.
-
-This commit restores the original order (cq reservation followed by skb
-allocation) and uses the xskq_prod_cancel helper to undo the cq reserve in
-event of skb allocation failure.
-
-Fixes: 675716400da6 ("xdp: fix possible cq entry leak")
-Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
+Signed-off-by: Chuang W <nashuiliang@gmail.com>
+Signed-off-by: Jingren Zhou <zhoujingren@didiglobal.com>
 ---
- net/xdp/xsk.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ tools/lib/bpf/libbpf.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 19ac872a6624..09002387987e 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -538,12 +538,6 @@ static int xsk_generic_xmit(struct sock *sk)
- 			goto out;
- 		}
- 
--		skb = xsk_build_skb(xs, &desc);
--		if (IS_ERR(skb)) {
--			err = PTR_ERR(skb);
--			goto out;
--		}
--
- 		/* This is the backpressure mechanism for the Tx path.
- 		 * Reserve space in the completion queue and only proceed
- 		 * if there is space in it. This avoids having to implement
-@@ -552,11 +546,19 @@ static int xsk_generic_xmit(struct sock *sk)
- 		spin_lock_irqsave(&xs->pool->cq_lock, flags);
- 		if (xskq_prod_reserve(xs->pool->cq)) {
- 			spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
--			kfree_skb(skb);
- 			goto out;
- 		}
- 		spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
- 
-+		skb = xsk_build_skb(xs, &desc);
-+		if (IS_ERR(skb)) {
-+			err = PTR_ERR(skb);
-+			spin_lock_irqsave(&xs->pool->cq_lock, flags);
-+			xskq_prod_cancel(xs->pool->cq);
-+			spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
-+			goto out;
-+		}
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 0781fae58a06..d0a36350e22a 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -10809,10 +10809,11 @@ static int perf_event_kprobe_open_legacy(const char *probe_name, bool retprobe,
+ 	}
+ 	type = determine_kprobe_perf_type_legacy(probe_name, retprobe);
+ 	if (type < 0) {
++		err = type;
+ 		pr_warn("failed to determine legacy kprobe event id for '%s+0x%zx': %s\n",
+ 			kfunc_name, offset,
+-			libbpf_strerror_r(type, errmsg, sizeof(errmsg)));
+-		return type;
++			libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
++		goto clear_kprobe_event;
+ 	}
+ 	attr.size = sizeof(attr);
+ 	attr.config = type;
+@@ -10826,9 +10827,14 @@ static int perf_event_kprobe_open_legacy(const char *probe_name, bool retprobe,
+ 		err = -errno;
+ 		pr_warn("legacy kprobe perf_event_open() failed: %s\n",
+ 			libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
+-		return err;
++		goto clear_kprobe_event;
+ 	}
+ 	return pfd;
 +
- 		err = __dev_direct_xmit(skb, xs->queue_id);
- 		if  (err == NETDEV_TX_BUSY) {
- 			/* Tell user-space to retry the send */
++clear_kprobe_event:
++	/* Clear the newly added kprobe_event */
++	remove_kprobe_event_legacy(probe_name, retprobe);
++	return err;
+ }
+ 
+ struct bpf_link *
 -- 
-2.25.1
+2.34.1
 
