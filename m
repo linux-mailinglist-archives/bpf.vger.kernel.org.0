@@ -2,63 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C4F54B4B3
-	for <lists+bpf@lfdr.de>; Tue, 14 Jun 2022 17:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DBFF54B5D9
+	for <lists+bpf@lfdr.de>; Tue, 14 Jun 2022 18:22:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238080AbiFNPbT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Jun 2022 11:31:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36848 "EHLO
+        id S236527AbiFNQUr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Jun 2022 12:20:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241161AbiFNPbS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Jun 2022 11:31:18 -0400
-Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C12F339B8C
-        for <bpf@vger.kernel.org>; Tue, 14 Jun 2022 08:31:13 -0700 (PDT)
-Received: by mail-vk1-xa2e.google.com with SMTP id n203so4191865vke.7
-        for <bpf@vger.kernel.org>; Tue, 14 Jun 2022 08:31:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qOb6CpBWEpKZ1+Jps+OohSr73vseQ2npOzb0IAq+X/s=;
-        b=c5U/7TkMHKRXH6jJkhw/01tvzVyQ7Cn9YMbxdzG5nXKwidVLmsaatwAqTr9NNpzf3i
-         70hm03dfTMUDc64hsd0ElhxllFkQqgRh8WAqk635lh3I/Z5X9ftIIw+mBZGjYWcv3+mN
-         mqhj0PosPrVsj+yIx4QTfQ7LEFz9fi/QHn3AeDxyx7i8kMeuVjI5OjQmxRce6xV1qPOe
-         TkhgjAKzz3zbu1Pdu5NxZym1/8WoXMUtn5EVgm21ppylzDcYnZFc9qjnfS/kCzmuTcVt
-         uUjRuuB9GiW3keiWM6SOnvaZMC/9Cn7/5rzuBZ1z1D9GYqAp/wfGbyW0cYlwU6TxNc2K
-         37xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qOb6CpBWEpKZ1+Jps+OohSr73vseQ2npOzb0IAq+X/s=;
-        b=N0NFExASRKL82OYFbxFDu6l5RrJXws0/sZ+yWY8AfxP2kI8iVFc3W2BE1re88fE0er
-         +MpgCxWm5D+BqO+pG0SgwEXnTxmt6MNbgYUSleq/+u4CQNp1g0Z9VM490GdlDBIuCavD
-         h/qms3Qf84rK2/H+GuX2BA+rKgwGMfSvPxr/TnYCIwNCLex8jOss1HmBkGdFEOFgW95J
-         mDsAnLJlD9saKw20Nmi0yZvAL6s004D9e0DNkj6Ku91zm1Hyp2eUmS6MTEG4qWQGweFz
-         Qypq6T+mUsv0pJCLIBMWe3+n0nrnSWM6ho7xM8IY+R21p3ibJylR5HxTQnUKD9/Dlxpa
-         jXnw==
-X-Gm-Message-State: AJIora99yRr6a/X6G5/GE7db8pgLjCu23DcQcuZDMSDJ1FmA466961TE
-        5DCeo/zrdDtmXY8w2vqSBbQfuw4Vrs+KTTcFWhM=
-X-Google-Smtp-Source: AGRyM1sL2yuQGxAfvgsYwZvON2SqbtF8+J+g4FH+6ubzLZSiTz1OD9REbUYLI6orcF4y5lre5cEGjrNnCjSGL0THMv8=
-X-Received: by 2002:a05:6122:1801:b0:35d:8ffd:84a0 with SMTP id
- ay1-20020a056122180100b0035d8ffd84a0mr2437930vkb.24.1655220672735; Tue, 14
- Jun 2022 08:31:12 -0700 (PDT)
+        with ESMTP id S230121AbiFNQUr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Jun 2022 12:20:47 -0400
+Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.73])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 396BE22295;
+        Tue, 14 Jun 2022 09:20:45 -0700 (PDT)
+Received: from mail-yb1-f179.google.com ([209.85.219.179]) by
+ mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MadC8-1nQAtt3KHq-00c8na; Tue, 14 Jun 2022 18:20:44 +0200
+Received: by mail-yb1-f179.google.com with SMTP id u99so15976759ybi.11;
+        Tue, 14 Jun 2022 09:20:43 -0700 (PDT)
+X-Gm-Message-State: AJIora/6g6EPvxslekopfsnoX6xFhapU42p83CqpLpLD8QH4wuuPffIP
+        Lgn2GBkENdzz5jtxrW9kYGPFxIhi3qedfXVupN0=
+X-Google-Smtp-Source: AGRyM1vL8YmZq2CJCAYY9lO5nRWLWOkqiKpTfzNi8RRXvdFTlfQo46XRqaiOQVYpttr+UTW5s4kkZ2oWrKpG9iJxDw0=
+X-Received: by 2002:a25:7645:0:b0:664:70b9:b093 with SMTP id
+ r66-20020a257645000000b0066470b9b093mr5733329ybc.480.1655223642290; Tue, 14
+ Jun 2022 09:20:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <CANqewP1RFzD9TWgyyZy00ZVQhQr8QjmjUgyaaNK0g0_GJse=KA@mail.gmail.com>
- <CANqewP0cDTXVf1ekJTvaetB1DGkEKu56_H8dPjVQqxSvHfPziA@mail.gmail.com> <CAEf4BzaSc_nMrYr3YvSnwEXhzhiUjkQ=-zOnyyH0jqeH__w9JA@mail.gmail.com>
-In-Reply-To: <CAEf4BzaSc_nMrYr3YvSnwEXhzhiUjkQ=-zOnyyH0jqeH__w9JA@mail.gmail.com>
-From:   Tatsuyuki Ishi <ishitatsuyuki@gmail.com>
-Date:   Wed, 15 Jun 2022 00:31:01 +0900
-Message-ID: <CANqewP3BKc+seCaneyc+GJqf62q+aY9qcTwN276OrB0hK4faJA@mail.gmail.com>
-Subject: Re: [Resend] BPF ringbuf misses notifications due to improper coherence
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andriin@fb.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
+References: <202206120438.Un6Wq4N0-lkp@intel.com>
+In-Reply-To: <202206120438.Un6Wq4N0-lkp@intel.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 14 Jun 2022 18:20:25 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3dvzLhAGV8rdCpX__54vkL0=e5pACUY-es3xiJau=uwg@mail.gmail.com>
+Message-ID: <CAK8P3a3dvzLhAGV8rdCpX__54vkL0=e5pACUY-es3xiJau=uwg@mail.gmail.com>
+Subject: Re: arm-linux-gnueabi-ld: error: .btf.vmlinux.bin.o is already in
+ final BE8 format
+To:     kernel test robot <lkp@intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, kbuild-all@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Provags-ID: V03:K1:igAUm1LzDSLl29TXXz/+lQAUwgRNCk6eMol8eFWliL6moUdfvqg
+ ZedgsqHBkdqYthWVHsqcekZlVk8i2lJX1jvFOG8tM/QGWI+VDaDrDfpO9+4I+OEYPcxGakO
+ 0kyCxNVykYiYSgvE0Wv1vwBFdLt5TX9IRWTULRGBkYWtEic2CbZCicWmawl+zvcqv1w6hF/
+ eiyvc6n4BzZeDiwtNtvvQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:yHDEjxbyy+8=:Rw4wAtq/uqU2yJrfg/zEde
+ Fns53zpACA3tdkPDsH0IMz4lOVcCd6sziz3TuYGmOFLHUZJx2BKOyhMGD0Ka6bJoNqgSuYdMA
+ c+cG8c9XFXg7gyLfWhcKsWTmio7aFOFQd9PxJoK6t/kgo/K2C6AqCsT7FBcX46WS3BF7QlEsE
+ 0Dw9uoYEJZJ15jS4k6tV0SLC6IcSzC5DXDNra8BMSMKhKwIaaKh5IX6jPTS5TOPClWejFjV5W
+ AFGWo5YG9fGbMO0191pSSp2W5w2M0gdrVPKFpRO+0+GsjrLYbYlEGpwb8iFLVedfPlenVmREw
+ yBQrS/Jy2dJBmd4D3GsGXDuLzZkud6h4EiYH422yY8QRuscFp+CK9KRKNWX2983fInRcXTNtx
+ 4kb7b9nLi0EBmAo5nJSh5ZZeZEu0QHMouzhzAoftsJgeBzKaLwZ4smeldIPuC5j3aw1y/8GzS
+ trCnKSbtefw1u0wsp4H4zuEXtIOZ2GBxZXBTDqoNfz2wvAfMr6uX6iMyLsnQDMtgSuHoGY6il
+ pKhuZC4fZeSTqCNQoU5HWzWcTazsOU0bvr20JDzdfERQuajdX5sq0qVeX7C8GKnWlkQGL2oPH
+ G8A/MFuUeYcAzhVIPOipBrLv2BST9jqGA58BhB9BO3Yniu37xjQts85oITlGRCU0WWg/zBux0
+ 0yhQtCm+tTItSiFkbZ9RrR0EAoEJFYEogd8cKCGBGnZs4sG2cMrqtskdm92HDgVAOYtBbvYmd
+ dgNdJFkduWyOdKoO8RSOUmjGIO1lN+XXIanb+LGLvK7JgRZbNel5+9OjPMZfC6/wHWxX8dhS4
+ j9J5MM0iaRZZ/KlQvA8qVhQfKvgtivSLu+O0vU4bNf8m9pNa/I6G4f45BJ6d+ThU29u5ukGBE
+ CykbGr8y1Ok76xGKneNQ==
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,22 +75,39 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Andrii,
-Thanks for looking into this.
+On Sat, Jun 11, 2022 at 11:00 PM kernel test robot <lkp@intel.com> wrote:
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   0678afa6055d14799c1dc1eee47c8025eba56cab
+> commit: 5d6f52671e76ca2d55d74e676ac4c38ceb14a2d3 ARM: rework endianess selection
+> date:   9 weeks ago
+> configrong.a.chen@intel.com: arm-randconfig-r012-20220612 (https://download.01.org/0day-ci/archive/20220612/202206120438.Un6Wq4N0-lkp@intel.com/config)
+> compiler: arm-linux-gnueabi-gcc (GCC) 11.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5d6f52671e76ca2d55d74e676ac4c38ceb14a2d3
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 5d6f52671e76ca2d55d74e676ac4c38ceb14a2d3
+>         # save the config file
+>         mkdir build_dir && cp config build_dir/.config
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.3.0 make.cross W=1 O=build_dir ARCH=arm SHELL=/bin/bash
+>
+> If you fix the issue, kindly add following tag where applicable
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+> >> arm-linux-gnueabi-ld: error: .btf.vmlinux.bin.o is already in final BE8 format
+>    arm-linux-gnueabi-ld: failed to merge target specific data of file .btf.vmlinux.bin.o
 
-> I'd like to get to this in next few days, but meanwhile have you tried
-> to benchmark what are the implications of stricter memory ordering
-> changes on libbpf side? Do you have example changes you were thinking
-> about for libbpf side? I can try benchmarking it on my side as well.
+I had a look at this bug, and found that this is not caused by my commit, but
+rather is the result of CONFIG_CPU_BIG_ENDIAN with BE8 format being
+incompatible with CONFIG_DEBUG_INFO_BTF.
 
-I don't have a benchmark yet. I'll try to prepare a benchmark when I
-have time to do so.
+I'm sure there is an easy fix but I have not found it. Should we just
+add a Kconfig
+dependency to prevent this, or does anyone have an idea for a proper fix?
 
-The proposed change to libbpf is simply to replace the two
-smp_store_release with smp_store_mb. I just realized that the Linux
-kernel memory model doesn't have direct mappings to seq_cst loads and
-stores though, so this will lead to a redundant barrier on AArch64
-etc.
-
-Regards,
-Tatsuyuki
+          Arnd
