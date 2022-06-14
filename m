@@ -2,63 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F8A54A2CB
-	for <lists+bpf@lfdr.de>; Tue, 14 Jun 2022 01:37:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C0554A364
+	for <lists+bpf@lfdr.de>; Tue, 14 Jun 2022 03:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234542AbiFMXfB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Jun 2022 19:35:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40034 "EHLO
+        id S236652AbiFNBF6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Jun 2022 21:05:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235522AbiFMXe7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Jun 2022 19:34:59 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BC003207C
-        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 16:34:57 -0700 (PDT)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25DFSOkk026869
-        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 16:34:57 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=ger9X5gKDs13t9VEIHqbJrv/huhTOZSgQhBWmvdBQU4=;
- b=MP96RUGjjSypGtDJp/QzT90GRmAkZV6OhU6ox9wSjNIi/jMZ0S4zzz/saCVd3G34AJsR
- O/IC7NDh3n6wkqZD9+NILuX8S9/dWL0Y8EuTsoWgAQJzoSv7CF4IgVw37PLEMDkgFnR5
- GA+lKVPnwm89A0MojO1eJsRKTDOdmFhWZeI= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3gmr5sc3ca-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 16:34:57 -0700
-Received: from snc-exhub201.TheFacebook.com (2620:10d:c085:21d::7) by
- snc-exhub101.TheFacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Mon, 13 Jun 2022 16:34:56 -0700
-Received: from twshared22934.08.ash9.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Mon, 13 Jun 2022 16:34:56 -0700
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id EBE6AB91CCE3; Mon, 13 Jun 2022 16:34:49 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next] selftests/bpf: Fix test_varlen verification failure with latest llvm
-Date:   Mon, 13 Jun 2022 16:34:49 -0700
-Message-ID: <20220613233449.2860753-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: JG0_Piuzc11pyQlt1GhT25-PpuJ_XLNn
-X-Proofpoint-GUID: JG0_Piuzc11pyQlt1GhT25-PpuJ_XLNn
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S233869AbiFNBF5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Jun 2022 21:05:57 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB5630548;
+        Mon, 13 Jun 2022 18:05:56 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id d6so5545529ilm.4;
+        Mon, 13 Jun 2022 18:05:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i79EkBhkPIyeEclK83vYe/WWgIUjIHUtUL15eE6Q/6M=;
+        b=Ocwtq7ECt7BU1qiAaarMmKL2+8gfQj7WEXeFDOVcsSoRZakYjdP5JJPSO2IoRCkR7p
+         9kLnFOMkG5HBgk/FST+gOuyGDns4vesbNoNHL95Jy9YAzrTzoJQvFWGbxFslPVUau0N1
+         sm13fsJBzdNUvuSKol9GXD0oc+J7kcWHlLOZRrx1H7VSYuCuZnpj9pASTYAMKwBibLbf
+         8MPLPwZjRIxfmoW3JL28kmlex77kulqYkLQ5qCkjV0rGs9zTTYt7ujZOAII8ahQJmgpB
+         G+vtg7/z1X/+6MG9ib5ehMCCk/VjqDBrnexKSyuBOgU9CT12jMMTXTNXl3+//YvGVXqc
+         4EyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i79EkBhkPIyeEclK83vYe/WWgIUjIHUtUL15eE6Q/6M=;
+        b=OjP2m7G/AvZU6PLhZqjlSxxJjwdj3ofu7t3BoY08B4sjFSpLjUnXBp0/sWTHSDqCRR
+         kFHeFdB7nv0cmcTojxSZtAn3sZvLP0az5dGvU0f3uwsIs+46elXDsvmtCcWEIEq0tJ7O
+         1xgt2nqZxGRi0v/09y2RB9VmcAG6bdLZQoE2AShbCpZNUX09vDVH3IU3Agfn2mM2PXaz
+         D7pFbWxQdvebAZcSSrqQgWp+jraBruHaaLVwk48390xT5uZVNeRYBUpU0dh/vRx5M+yy
+         Y5Is4Kypg82Abfqc5IRoKfgOaNdLCI6UWtHf4DoCHtOYtqN3ncSs3uPCIw07+cEBpNRQ
+         PrdQ==
+X-Gm-Message-State: AJIora/WusF32v9XkRy19xxHaCkZ0k0Ska8DZ4Qyz5/ckQ8UDO7yfwcu
+        AhK6nmUKdpw4Bv14FA3DyiekHXpfBhVYcMjN/iU=
+X-Google-Smtp-Source: AGRyM1twWiZmwa8sr1CnjOZrbx3iuXD2yIOKfKOcORYnsEH3zXfyBuiTPjoWzGiZlUmbk3jMqcNgFGs5w7dfMu/QZhk=
+X-Received: by 2002:a05:6e02:1d18:b0:2d3:bd9f:1a5f with SMTP id
+ i24-20020a056e021d1800b002d3bd9f1a5fmr1526840ila.35.1655168755893; Mon, 13
+ Jun 2022 18:05:55 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.517,FMLib:17.11.64.514
- definitions=2022-06-13_09,2022-06-13_01,2022-02-23_01
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+References: <20220609011844.404011-1-jmaxwell37@gmail.com> <56d6f898-bde0-bb25-3427-12a330b29fb8@iogearbox.net>
+ <20220610001743.z5nxapagwknlfjqi@kafai-mbp> <76972cdc-6a3c-2052-f353-06ebd2d61eca@iogearbox.net>
+ <20220610175826.zbi6nwt23wky3ho2@kafai-mbp>
+In-Reply-To: <20220610175826.zbi6nwt23wky3ho2@kafai-mbp>
+From:   Jonathan Maxwell <jmaxwell37@gmail.com>
+Date:   Tue, 14 Jun 2022 11:05:20 +1000
+Message-ID: <CAGHK07CaXEyjxx5QO3f5FxVrXgavCZ9TyS-tDD6SEfvdKAFp7Q@mail.gmail.com>
+Subject: Re: [PATCH net] net: bpf: fix request_sock leak in filter.c
+To:     Martin KaFai Lau <kafai@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Netdev <netdev@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, pabeni@redhat.com,
+        Antoine Tenart <atenart@kernel.org>, cutaylor-pub@yahoo.com,
+        alexei.starovoitov@gmail.com, joe@cilium.io, i@lmb.io,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,118 +73,112 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-With latest llvm15, test_varlen failed with the following verifier log:
+On Sat, Jun 11, 2022 at 3:58 AM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> On Fri, Jun 10, 2022 at 09:08:41AM +0200, Daniel Borkmann wrote:
+> > On 6/10/22 2:17 AM, Martin KaFai Lau wrote:
+> > > On Thu, Jun 09, 2022 at 10:29:15PM +0200, Daniel Borkmann wrote:
+> > > > On 6/9/22 3:18 AM, Jon Maxwell wrote:
+> > > > > A customer reported a request_socket leak in a Calico cloud environment. We
+> > > > > found that a BPF program was doing a socket lookup with takes a refcnt on
+> > > > > the socket and that it was finding the request_socket but returning the parent
+> > > > > LISTEN socket via sk_to_full_sk() without decrementing the child request socket
+> > > > > 1st, resulting in request_sock slab object leak. This patch retains the
+> > > Great catch and debug indeed!
+> > >
+> > > > > existing behaviour of returning full socks to the caller but it also decrements
+> > > > > the child request_socket if one is present before doing so to prevent the leak.
+> > > > >
+> > > > > Thanks to Curtis Taylor for all the help in diagnosing and testing this. And
+> > > > > thanks to Antoine Tenart for the reproducer and patch input.
+> > > > >
+> > > > > Fixes: f7355a6c0497 bpf: ("Check sk_fullsock() before returning from bpf_sk_lookup()")
+> > > > > Fixes: edbf8c01de5a bpf: ("add skc_lookup_tcp helper")
+> > > Instead of the above commits, I think this dated back to
+> > > 6acc9b432e67 ("bpf: Add helper to retrieve socket in BPF")
+> > >
+> > > > > Tested-by: Curtis Taylor <cutaylor-pub@yahoo.com>
+> > > > > Co-developed-by: Antoine Tenart <atenart@kernel.org>
+> > > > > Signed-off-by:: Antoine Tenart <atenart@kernel.org>
+> > > > > Signed-off-by: Jon Maxwell <jmaxwell37@gmail.com>
+> > > > > ---
+> > > > >    net/core/filter.c | 20 ++++++++++++++------
+> > > > >    1 file changed, 14 insertions(+), 6 deletions(-)
+> > > > >
+> > > > > diff --git a/net/core/filter.c b/net/core/filter.c
+> > > > > index 2e32cee2c469..e3c04ae7381f 100644
+> > > > > --- a/net/core/filter.c
+> > > > > +++ b/net/core/filter.c
+> > > > > @@ -6202,13 +6202,17 @@ __bpf_sk_lookup(struct sk_buff *skb, struct bpf_sock_tuple *tuple, u32 len,
+> > > > >    {
+> > > > >         struct sock *sk = __bpf_skc_lookup(skb, tuple, len, caller_net,
+> > > > >                                            ifindex, proto, netns_id, flags);
+> > > > > +       struct sock *sk1 = sk;
+> > > > >         if (sk) {
+> > > > >                 sk = sk_to_full_sk(sk);
+> > > > > -               if (!sk_fullsock(sk)) {
+> > > > > -                       sock_gen_put(sk);
+> > > > > +               /* sk_to_full_sk() may return (sk)->rsk_listener, so make sure the original sk1
+> > > > > +                * sock refcnt is decremented to prevent a request_sock leak.
+> > > > > +                */
+> > > > > +               if (!sk_fullsock(sk1))
+> > > > > +                       sock_gen_put(sk1);
+> > > > > +               if (!sk_fullsock(sk))
+> > > In this case, sk1 == sk (timewait).  It is a bit worrying to pass
+> > > sk to sk_fullsock(sk) after the above sock_gen_put().
+> > > I think Daniel's 'if (sk2 != sk) { sock_gen_put(sk); }' check is better.
+> > >
+> > > > [ +Martin/Joe/Lorenz ]
+> > > >
+> > > > I wonder, should we also add some asserts in here to ensure we don't get an unbalance for the
+> > > > bpf_sk_release() case later on? Rough pseudocode could be something like below:
+> > > >
+> > > > static struct sock *
+> > > > __bpf_sk_lookup(struct sk_buff *skb, struct bpf_sock_tuple *tuple, u32 len,
+> > > >                  struct net *caller_net, u32 ifindex, u8 proto, u64 netns_id,
+> > > >                  u64 flags)
+> > > > {
+> > > >          struct sock *sk = __bpf_skc_lookup(skb, tuple, len, caller_net,
+> > > >                                             ifindex, proto, netns_id, flags);
+> > > >          if (sk) {
+> > > >                  struct sock *sk2 = sk_to_full_sk(sk);
+> > > >
+> > > >                  if (!sk_fullsock(sk2))
+> > > >                          sk2 = NULL;
+> > > >                  if (sk2 != sk) {
+> > > >                          sock_gen_put(sk);
+> > > >                          if (unlikely(sk2 && !sock_flag(sk2, SOCK_RCU_FREE))) {
+> > > I don't think it matters if the helper-returned sk2 is refcounted or not (SOCK_RCU_FREE).
+> > > The verifier has ensured the bpf_sk_lookup() and bpf_sk_release() are
+> > > always balanced regardless of the type of sk2.
+> > >
+> > > bpf_sk_release() will do the right thing to check the sk2 is refcounted or not
+> > > before calling sock_gen_put().
+> > >
+> > > The bug here is the helper forgot to call sock_gen_put(sk) while
+> > > the verifier only tracks the sk2, so I think the 'if (unlikely...) { WARN_ONCE(...); }'
+> > > can be saved.
+> >
+> > I was mainly thinking given in sk_lookup() we have the check around `sk && !refcounted &&
+> > !sock_flag(sk, SOCK_RCU_FREE)` to check for unreferenced non-SOCK_RCU_FREE socket, and
+> > given sk_to_full_sk() can return inet_reqsk(sk)->rsk_listener we don't have a similar
+> > assertion there. Given we don't bump any ref on the latter, it must be SOCK_RCU_FREE then
+> Ah. got it.  Thanks for the explanation.
+>
+> Yep, agree.  It is useful to have this check here to ensure
+> no need to bump the sk2 refcnt.  A comment may be useful
+> here also, /* Ensure there is no need to bump sk2 refcnt */
+>
 
-  17: (85) call bpf_probe_read_kernel_str#115   ; R0_w=3Dscalar(smin=3D-409=
-5,smax=3D256)
-  18: (bf) r1 =3D r0                      ; R0_w=3Dscalar(id=3D1,smin=3D-40=
-95,smax=3D256) R1_w=3Dscalar(id=3D1,smin=3D-4095,smax=3D256)
-  19: (67) r1 <<=3D 32                    ; R1_w=3Dscalar(smax=3D1099511627=
-776,umax=3D18446744069414584320,var_off=3D(0x0; 0xffffffff00000000),s32_min=
-=3D0,s32_max=3D0,u32_max=3D)
-  20: (bf) r2 =3D r1                      ; R1_w=3Dscalar(id=3D2,smax=3D109=
-9511627776,umax=3D18446744069414584320,var_off=3D(0x0; 0xffffffff00000000),=
-s32_min=3D0,s32_max=3D0,u32)
-  21: (c7) r2 s>>=3D 32                   ; R2=3Dscalar(smin=3D-2147483648,=
-smax=3D256)
-  ; if (len >=3D 0) {
-  22: (c5) if r2 s< 0x0 goto pc+7       ; R2=3Dscalar(umax=3D256,var_off=3D=
-(0x0; 0x1ff))
-  ; payload4_len1 =3D len;
-  23: (18) r2 =3D 0xffffc90000167418      ; R2_w=3Dmap_value(off=3D1048,ks=
-=3D4,vs=3D1572,imm=3D0)
-  25: (63) *(u32 *)(r2 +0) =3D r0         ; R0=3Dscalar(id=3D1,smin=3D-4095=
-,smax=3D256) R2_w=3Dmap_value(off=3D1048,ks=3D4,vs=3D1572,imm=3D0)
-  26: (77) r1 >>=3D 32                    ; R1_w=3Dscalar(umax=3D4294967295=
-,var_off=3D(0x0; 0xffffffff))
-  ; payload +=3D len;
-  27: (18) r6 =3D 0xffffc90000167424      ; R6_w=3Dmap_value(off=3D1060,ks=
-=3D4,vs=3D1572,imm=3D0)
-  29: (0f) r6 +=3D r1                     ; R1_w=3DPscalar(umax=3D429496729=
-5,var_off=3D(0x0; 0xffffffff)) R6_w=3Dmap_value(off=3D1060,ks=3D4,vs=3D1572=
-,umax=3D4294967295,var_off=3D(0)
-  ; len =3D bpf_probe_read_kernel_str(payload, MAX_LEN, &buf_in2[0]);
-  30: (bf) r1 =3D r6                      ; R1_w=3Dmap_value(off=3D1060,ks=
-=3D4,vs=3D1572,umax=3D4294967295,var_off=3D(0x0; 0xffffffff)) R6_w=3Dmap_va=
-lue(off=3D1060,ks=3D4,vs=3D1572,um)
-  31: (b7) r2 =3D 256                     ; R2_w=3D256
-  32: (18) r3 =3D 0xffffc90000164100      ; R3_w=3Dmap_value(off=3D256,ks=
-=3D4,vs=3D1056,imm=3D0)
-  34: (85) call bpf_probe_read_kernel_str#115
-  R1 unbounded memory access, make sure to bounds check any such access
-  processed 27 insns (limit 1000000) max_states_per_insn 0 total_states 2 p=
-eak_states 2 mark_read 1
-  -- END PROG LOAD LOG --
-  libbpf: failed to load program 'handler32_signed'
+I'll add that comment.
 
-The failure is due to
-  20: (bf) r2 =3D r1                      ; R1_w=3Dscalar(id=3D2,smax=3D109=
-9511627776,umax=3D18446744069414584320,var_off=3D(0x0; 0xffffffff00000000),=
-s32_min=3D0,s32_max=3D0,u32)
-  21: (c7) r2 s>>=3D 32                   ; R2=3Dscalar(smin=3D-2147483648,=
-smax=3D256)
-  22: (c5) if r2 s< 0x0 goto pc+7       ; R2=3Dscalar(umax=3D256,var_off=3D=
-(0x0; 0x1ff))
-  26: (77) r1 >>=3D 32                    ; R1_w=3Dscalar(umax=3D4294967295=
-,var_off=3D(0x0; 0xffffffff))
-  29: (0f) r6 +=3D r1                     ; R1_w=3DPscalar(umax=3D429496729=
-5,var_off=3D(0x0; 0xffffffff)) R6_w=3Dmap_value(off=3D1060,ks=3D4,vs=3D1572=
-,umax=3D4294967295,var_off=3D(0)
-where r1 has conservative value range compared to r2 and r1 is used later.
+I'll add the SOCK_RCU_FREE check. We are currently testing the new patch
+based on Daniels recommendation. When that is complete I'll resubmit the next
+version of the patch including that. It'll probably be a few days.
 
-In llvm, commit [1] triggered the above code generation and caused
-verification failure.
+Regards
 
-It may take a while for llvm to address this issue. In the main time,
-let us change the variable 'len' type to 'long' and adjust condition proper=
-ly.
-Tested with llvm14 and latest llvm15, both worked fine.
+Jon
 
- [1] https://reviews.llvm.org/D126647
-
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- tools/testing/selftests/bpf/progs/test_varlen.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/progs/test_varlen.c b/tools/testin=
-g/selftests/bpf/progs/test_varlen.c
-index 913acdffd90f..3987ff174f1f 100644
---- a/tools/testing/selftests/bpf/progs/test_varlen.c
-+++ b/tools/testing/selftests/bpf/progs/test_varlen.c
-@@ -41,20 +41,20 @@ int handler64_unsigned(void *regs)
- {
- 	int pid =3D bpf_get_current_pid_tgid() >> 32;
- 	void *payload =3D payload1;
--	u64 len;
-+	long len;
-=20
- 	/* ignore irrelevant invocations */
- 	if (test_pid !=3D pid || !capture)
- 		return 0;
-=20
- 	len =3D bpf_probe_read_kernel_str(payload, MAX_LEN, &buf_in1[0]);
--	if (len <=3D MAX_LEN) {
-+	if (len >=3D 0) {
- 		payload +=3D len;
- 		payload1_len1 =3D len;
- 	}
-=20
- 	len =3D bpf_probe_read_kernel_str(payload, MAX_LEN, &buf_in2[0]);
--	if (len <=3D MAX_LEN) {
-+	if (len >=3D 0) {
- 		payload +=3D len;
- 		payload1_len2 =3D len;
- 	}
-@@ -123,7 +123,7 @@ int handler32_signed(void *regs)
- {
- 	int pid =3D bpf_get_current_pid_tgid() >> 32;
- 	void *payload =3D payload4;
--	int len;
-+	long len;
-=20
- 	/* ignore irrelevant invocations */
- 	if (test_pid !=3D pid || !capture)
---=20
-2.30.2
-
+> Thanks!
+>
