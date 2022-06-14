@@ -2,134 +2,207 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA61D54A3C4
-	for <lists+bpf@lfdr.de>; Tue, 14 Jun 2022 03:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE44154A700
+	for <lists+bpf@lfdr.de>; Tue, 14 Jun 2022 04:46:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346417AbiFNBrh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Jun 2022 21:47:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54972 "EHLO
+        id S1353526AbiFNCq1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Jun 2022 22:46:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240517AbiFNBre (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Jun 2022 21:47:34 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4228AD40
-        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 18:47:28 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id n201-20020a2540d2000000b0065cbae85d67so6425838yba.11
-        for <bpf@vger.kernel.org>; Mon, 13 Jun 2022 18:47:28 -0700 (PDT)
+        with ESMTP id S1354700AbiFNCqF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Jun 2022 22:46:05 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87A58403E8;
+        Mon, 13 Jun 2022 19:23:41 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id 3-20020a17090a174300b001e426a02ac5so10520451pjm.2;
+        Mon, 13 Jun 2022 19:23:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=l4PjIvONm1IQKFepEMuDqPyve0EvuaStAKHleWOI5U4=;
-        b=keMrD0lK99MmEmZqNHED9SqQIvx29ap+MgANfW658dwlfZvJrsoNWlI9FXDBxqa+za
-         VARGdXXoJmn5KryQWZj+8ScXKK6VXqNwAmxBq3WrvJtTYqyF49pPQeabsvoQ33dd7Zm9
-         GUdC5cio7eBOfzPKl6VgquXY1jLeMHFBa0mblXnksXxjh9ZBheHBbS2YBLkmyB2cnv0z
-         RODtwrbl065MJcM4aR2i0vB2oIgwB4RMKqps974SsAItXpR+hUM9whwp/5wZxzkdRDOz
-         ZEJKu26kcTh5Mj7t2oGlCPJPuLSeewLtsuZoU0kfm6Fy8cQ92KsRwUtE31ZwuEw4o661
-         pfTQ==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XjnTSu5YVo6p0PNi2ROa3mEbh6BHijt95wNCKK1ch38=;
+        b=JxPO0xmFQUBFVMEOD8M2u7b5JvA5Vcaba39CkGs/eT+7Jdd/efLfRLmVISSbpBy8GY
+         ALhMObYEZ78Jsr7apCiCYPM/o+xsmBmXvR3rbjQCuBBN/wmNZMdXF5a1bpYExOEQdyHC
+         7ROZK3L06w33ZA9x8fqx/hRt8vVP9NeT9NoQM6JBVMKQiYzMA9Cun4Yo9V9s6C/lkA4X
+         QuDMwiiMBouPt1fjTr4UD9Gx2EgUbXkLAPTlqBO+Dd4Hk6p2YYTh2vOxdAml1KKwGfOv
+         jdryXlaEO4iaYtuLvwiu+Q6N6+d5k3kwI97b49OWafvEEforCGB5xwNhzXV/v7C5Ltzk
+         K5TA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=l4PjIvONm1IQKFepEMuDqPyve0EvuaStAKHleWOI5U4=;
-        b=3mTZhHLtiPRzlFGjlMed/nIL+gZOxgRNVCaLfHH3vgn/YsijdEgFXrngebnQZ/e6P5
-         0DTa89WwnIv/9l90j+x37cmcaA6eCdBCwkmQybBRYm5knil0y5fFF3s3D6RIybNWyzzD
-         jp6SOpkOly+EiOa2z3IKdlQhLltvL/QwYNZyHzLe+esxKQMkPzcpMK7K2ptcmm0HRnq4
-         EWecqEXlybbXOkkyZFG8FmdJ9lQMVAcH9KGyi8OkuF9azH4ZSjji7iC7ezz8a8CdyyeQ
-         AMH+kratnGUFjygwX3wuIvyugfdOzQfmBJrdrWGutkt2cKDfCqNcDtO/FalptkvJo5BS
-         HPhQ==
-X-Gm-Message-State: AJIora9WRUrUeksXe+6ncDH7Qj05tyZd5q8UXjQ3/plOinLPddhCTk9q
-        GcRcDX/Ivj9Na9C/5zi6WG2aidtocUWs
-X-Google-Smtp-Source: AGRyM1subzJdwRtf+vAOstyD6tqNevSviIR17aL9d/daU5mnA6A1DY7dA9Gj0iqv9t7BAYwDQeVntF57tsLy
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:e4b4:1d0c:1c56:a7ed])
- (user=irogers job=sendgmr) by 2002:a25:3c45:0:b0:664:cf75:c2d6 with SMTP id
- j66-20020a253c45000000b00664cf75c2d6mr2520288yba.446.1655171248020; Mon, 13
- Jun 2022 18:47:28 -0700 (PDT)
-Date:   Mon, 13 Jun 2022 18:47:14 -0700
-Message-Id: <20220614014714.1407239-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.36.1.476.g0c4daa206d-goog
-Subject: [PATCH] perf bpf: 8 byte align bpil data
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XjnTSu5YVo6p0PNi2ROa3mEbh6BHijt95wNCKK1ch38=;
+        b=JC8CTXkdRqYy6n7t2kIH9XULmjG1nPSHTTnV0i51wFMMZLlmf39NWw67mlXzn1pvOO
+         Hgc2V331Nw9QQLpQuHduvpybzz7hhrZQEGxStoSsKSZ2m1y/+wXRLyTQVzwZ2nB6YTfp
+         RyxEA02Lpzl7oo15ueppTYyMzbvrSiA7bWl2y3UEgV/WEI2RIYGsoQot+eT0xCw9paLP
+         bhW+zIxZiLkftGywMVqCIdpNtRQAbyPD3q3Dg6UCrDA84tD6vtGNMcgQX2xM6Rso5krh
+         d8uBtJ6QhNTN2A+KXGGcPK+Ao413csMXbnN2Yxxe7L5rq0fCcO3nZvwDbGXeJI5vSw6U
+         x8AA==
+X-Gm-Message-State: AJIora89U8013fH4YAwEnWdNp52Q8bgtpQ0gckAy9RCLJh6Y8j76W5Fe
+        9VfFXLkcnVcsnTNo/c0vpi8=
+X-Google-Smtp-Source: AGRyM1twt6SFH6QriRuk9U2RD2USL+sKauy4VuoM2bSf5bBhA4mUgOx4m14GvF45Lqh8bLrlRVN8fA==
+X-Received: by 2002:a17:902:e353:b0:168:9a78:25cb with SMTP id p19-20020a170902e35300b001689a7825cbmr1989491plc.13.1655173420580;
+        Mon, 13 Jun 2022 19:23:40 -0700 (PDT)
+Received: from localhost ([2405:201:6014:d0c0:79de:f3f4:353c:8616])
+        by smtp.gmail.com with ESMTPSA id h65-20020a62de44000000b0050dc762813csm6155656pfg.22.2022.06.13.19.23.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jun 2022 19:23:40 -0700 (PDT)
+Date:   Tue, 14 Jun 2022 07:53:37 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH v4 bpf-next 00/14] net: netfilter: add kfunc helper to
+ update ct timeout
+Message-ID: <20220614022337.cdtulpzjyamjos5s@apollo.legion>
+References: <cover.1653600577.git.lorenzo@kernel.org>
+ <20220611201117.euqca7rgn5wydlwk@macbook-pro-3.dhcp.thefacebook.com>
+ <20220613161413.sowe7bv3da2nuqsg@apollo.legion>
+ <CAADnVQKk9LPm=4OeosxLZCmv+_PnowPZdz9QP4f-H8Vd4HSLVw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQKk9LPm=4OeosxLZCmv+_PnowPZdz9QP4f-H8Vd4HSLVw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bpil data is accessed assuming 64-bit alignment resulting in undefined
-behavior as the data is just byte aligned. With an -fsanitize=undefined
-build the following errors are observed:
+On Tue, Jun 14, 2022 at 03:45:00AM IST, Alexei Starovoitov wrote:
+> On Mon, Jun 13, 2022 at 9:14 AM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
+> >
+> > On Sun, Jun 12, 2022 at 01:41:17AM IST, Alexei Starovoitov wrote:
+> > > On Thu, May 26, 2022 at 11:34:48PM +0200, Lorenzo Bianconi wrote:
+> > > > Changes since v3:
+> > > > - split bpf_xdp_ct_add in bpf_xdp_ct_alloc/bpf_skb_ct_alloc and
+> > > >   bpf_ct_insert_entry
+> > > > - add verifier code to properly populate/configure ct entry
+> > > > - improve selftests
+> > >
+> > > Kumar, Lorenzo,
+> > >
+> > > are you planning on sending v5 ?
+> > > The patches 1-5 look good.
+> > > Patch 6 is questionable as Florian pointed out.
+> >
+> > Yes, it is almost there.
+> >
+> > > What is the motivation to allow writes into ct->status?
+> >
+> > It will only be allowed for ct from alloc function, after that ct = insert(ct)
+> > releases old one with new read only ct. I need to recheck once again with the
+> > code what other bits would cause problems on insert before I rework and reply.
+>
+> I still don't understand why you want to allow writing after alloc.
+>
 
-$ sudo perf record -a sleep 1
-util/bpf-event.c:310:22: runtime error: load of misaligned address 0x55f61084520f for type '__u64', which requires 8 byte alignment
-0x55f61084520f: note: pointer points here
- a8 fe ff ff 3c  51 d3 c0 ff ff ff ff 04  84 d3 c0 ff ff ff ff d8  aa d3 c0 ff ff ff ff a4  c0 d3 c0
-             ^
-util/bpf-event.c:311:20: runtime error: load of misaligned address 0x55f61084522f for type '__u32', which requires 4 byte alignment
-0x55f61084522f: note: pointer points here
- ff ff ff ff c7  17 00 00 f1 02 00 00 1f  04 00 00 58 04 00 00 00  00 00 00 0f 00 00 00 63  02 00 00
-             ^
-util/bpf-event.c:198:33: runtime error: member access within misaligned address 0x55f61084523f for type 'const struct bpf_func_info', which requires 4 byte alignment
-0x55f61084523f: note: pointer points here
- 58 04 00 00 00  00 00 00 0f 00 00 00 63  02 00 00 3b 00 00 00 ab  02 00 00 44 00 00 00 14  03 00 00
+It is just a way to set the status, instead of a helper to set it. Eventually
+before nf_conntrack_hash_check_insert it will still be checked and error
+returned for disallowed bits (e.g. anything in IPS_UNCHANGEABLE_MASK, etc.).
+The current series missed that check.
 
-Correct this by rouding up the data sizes and aligning the pointers.
+Florian is right in that it is a can of worms, but I think we can atleast permit
+things like confirmed, assured, etc. which can also be set when crafting a ct
+using netlink. Both of them can share the same check so it is consistent when
+done from kfunc or netlink side, and any changes internally wrt status bits are
+in sync.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/util/bpf-utils.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Anyway, if you don't like the direct write into ct, I can drop it, for now just
+insert a confirmed entry (since this was just for testing). That also means
+patch 3-6 are not strictly needed anymore, so they can be dropped, but I can
+keep them if you want, since they might be useful.
 
-diff --git a/tools/perf/util/bpf-utils.c b/tools/perf/util/bpf-utils.c
-index e271e05e51bc..80b1d2b3729b 100644
---- a/tools/perf/util/bpf-utils.c
-+++ b/tools/perf/util/bpf-utils.c
-@@ -149,11 +149,10 @@ get_bpf_prog_info_linear(int fd, __u64 arrays)
- 		count = bpf_prog_info_read_offset_u32(&info, desc->count_offset);
- 		size  = bpf_prog_info_read_offset_u32(&info, desc->size_offset);
- 
--		data_len += count * size;
-+		data_len += roundup(count * size, sizeof(__u64));
- 	}
- 
- 	/* step 3: allocate continuous memory */
--	data_len = roundup(data_len, sizeof(__u64));
- 	info_linear = malloc(sizeof(struct perf_bpil) + data_len);
- 	if (!info_linear)
- 		return ERR_PTR(-ENOMEM);
-@@ -180,7 +179,7 @@ get_bpf_prog_info_linear(int fd, __u64 arrays)
- 		bpf_prog_info_set_offset_u64(&info_linear->info,
- 					     desc->array_offset,
- 					     ptr_to_u64(ptr));
--		ptr += count * size;
-+		ptr += roundup(count * size, sizeof(__u64));
- 	}
- 
- 	/* step 5: call syscall again to get required arrays */
--- 
-2.36.1.476.g0c4daa206d-goog
+Florian asked for the pipeline, it is like this:
 
+ct = bpf_xdp_ct_alloc();
+ct->a = ...; // private ct, not yet visible to anyone but us
+ct->b = ...;
+   or we would now set using helpers
+alloc_ct_set_status(ct, IPS_CONFIRMED);
+alloc_ct_set_timeout(ct, timeout);
+...
+ct = bpf_ct_insert_entry(ct); // old alloc_ct release, new inserted nf_conn returned
+if (!ct)
+	return -1;
+/* Inserted successfully */
+In the earlier approach this ct->a could now not be written to, as it was
+inserted, instead of allocated ct, which insert function took as arg and
+invalidated, so BPF program held a read only pointer now. If we drop that
+approach all pointers are read only anyway, so writing won't be allowed either.
+
+> > > The selftest doesn't do that anyway.
+> >
+> > Yes, it wasn't updated, we will do that in v5.
+> >
+> > > Patch 7 (acquire-release pairs) is too narrow.
+> > > The concept of a pair will not work well. There could be two acq funcs and one release.
+> >
+> > That is already handled (you define two pairs: acq1, rel and acq2, rel).
+> > There is also an example: bpf_ct_insert_entry -> bpf_ct_release,
+> > bpf_xdp_ct_lookup -> ct_release.
+>
+> If we can represent that without all these additional btf_id sets
+> it would be much better.
+>
+> > > Please think of some other mechanism. Maybe type based? BTF?
+> > > Or encode that info into type name? or some other way.
+> >
+> > Hmm, ok. I kinda dislike this solution too. The other idea that comes to mind is
+> > encapsulating nf_conn into another struct and returning pointer to that:
+> >
+> >         struct nf_conn_alloc {
+> >                 struct nf_conn ct;
+> >         };
+> >
+> >         struct nf_conn_alloc *bpf_xdp_ct_alloc(...);
+> >         struct nf_conn *bpf_ct_insert_entry(struct nf_conn_alloc *act, ...);
+> >
+> > Then nf_conn_alloc gets a different BTF ID, and hence the type can be matched in
+> > the prototype. Any opinions?
+>
+> Yes. Or maybe typedef ?
+> typedef struct nf_conn nf_conn__alloc;
+> typedef struct nf_conn nf_conn__ro;
+>
+> C will accept silent type casts from one type to another,
+> but BTF type checking can be strict?
+> Not sure. wrapping a struct works too, but extra '.ct' accessor
+> might be annoying? Unless you only use it with container_of().
+> I would prefer double or triple underscore to highlight a flavor.
+> struct nf_conn___init {...}
+> The main benefit, of course, is no need for extra btf_id sets.
+> Different types take care of correct arg passing.
+> In that sense typedef idea doesn't quite work,
+> since BTF checks with typedef would be unnecessarily strict
+> compared to regular C type checking rules. That difference
+> in behavior might bite us later.
+> So let's go with struct wrapping.
+
+Makes sense, I will go with this. But now if we are not even allowing write to
+such allocated ct (probably only helpers that set some field and check value),
+it can just be an empty opaque struct for the BPF program, while it is still
+a nf_conn in the kernel. There doesn't seem to be much point in wrapping around
+nf_conn when reading from allocated nf_conn isn't going to be of any use.
+
+--
+Kartikeya
