@@ -2,51 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9A1854CEF3
-	for <lists+bpf@lfdr.de>; Wed, 15 Jun 2022 18:45:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C140254CF23
+	for <lists+bpf@lfdr.de>; Wed, 15 Jun 2022 18:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236601AbiFOQpp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jun 2022 12:45:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48910 "EHLO
+        id S1348296AbiFOQ5v (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jun 2022 12:57:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234700AbiFOQpo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jun 2022 12:45:44 -0400
-Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF0B37BFE;
-        Wed, 15 Jun 2022 09:45:43 -0700 (PDT)
-Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-313a8a8b95aso67305477b3.5;
-        Wed, 15 Jun 2022 09:45:43 -0700 (PDT)
+        with ESMTP id S1345683AbiFOQ5u (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jun 2022 12:57:50 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65F191145F
+        for <bpf@vger.kernel.org>; Wed, 15 Jun 2022 09:57:49 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id q11so13296164iod.8
+        for <bpf@vger.kernel.org>; Wed, 15 Jun 2022 09:57:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=4BoGoYL/hQwqQHt/e6uyTXhiyZO4K0k4ufMSQdDzzyU=;
-        b=nBfYqDdGnV2+1cdagPVZJWmCVvra5folpIaRRtVtc8u9HOsqiYpCIMSMs4DzR1fLwS
-         l9VS73LxN6Z0VCaXVlw7bYMXauJ35n9zG0VG3MOTHIlRo7QE1KxHSc5Fhl/7tJJb/mEL
-         /BZXBMldL5Q+cDCVYvy9JzQqFcvF5hoM2wjo0znGf0vfJU6mTmUkkzuXRh1/i69fH2x9
-         zdJmqDHmLmefxlMAIc+6E4uyr3MXRMjBsoicS61B9npo1B5ocoarqc8+sm5w1BsqzuS9
-         +2rXn5bkR3DUt1l+5p7epRXweKiX9g0Iu6WILuwDi20/Q3r+tQj0PEdu3Wgf0iM+2lvp
-         3lMg==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=z4mhbOThc+P+9ZptBNQK+QlWI6YEZoFWsJHobLiQRRg=;
+        b=XbrMJz8RJRy5+o8hX9edh7vY0TPdXcoxgbRHO2SxDZff2lRIpfw9MlI+tTtTzq7gKK
+         J3yf4ZWEijrvoj2CM8oiD5/rbQMuagAHfKjrH6ECWNQN1DQYNZMGSi/qqg0pgfSeDNhe
+         iQHyEmTcRqrgLrsBpjDQqyTItNEHnE1YI/JSCUXeM37DoIGABPFJHfcddgnLDUwMuqKd
+         lOHPpgXlXxSL+htucsRDpcJAyGOzwNby1TSafc/KlZ940GJhfwXHF2SVrz4+KXLFtQs2
+         rxZpJMDfMlKgmPkxr/vyifMEQ4P+w6QUq8qrxJ/TFfbDgbI37ZWOb61w2qVa0KgSjD4z
+         rO7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=4BoGoYL/hQwqQHt/e6uyTXhiyZO4K0k4ufMSQdDzzyU=;
-        b=c+K1ZsNHzYLnAIwGK2QAeF31K5epjx0h0fvVXkvEyyPO8egf1sgptdDU31g/NJbIO5
-         BcgATqQKzr2VUFryaeFB13NHaKNCDhhZh23CRzcTtLgcCriVMG55SRwXlYjFlBw+KebD
-         hRXXJEs1Dyx6I2r7CWgwJ29MnhSI1rGzv9D097XdccSBcuU7PISXW3o4ruXCM9eR6MoG
-         4hkYPEIBvXAgkRlaxHLJZ7TnShL4NLGWz083RBFutGI6CWoa7n2lS/QbwMzM5keMAkJw
-         J9Y3Dt9YsCUwmY6DYiBlBtP2WrPnJoKxMDgg1sLFtA6SBl/JuF0+XhI5/XRZyxKatpCs
-         fagg==
-X-Gm-Message-State: AJIora+etrgTpXzHfyKd8FxNHQ5WEs10RctUFSHWP2N2D+wkzuA39wt7
-        dQhu9LIebqu/yXZRJinj8RPwHYqDLt/VOXZG93uGkA9nioY=
-X-Google-Smtp-Source: AGRyM1tP/F/OhvpaDWEhXE4P0i0ZHlSSh4iOlQuWM9SeM31Z9F31hbjYKaYyh9bV8u5SdVAoIKer3kZjN0pmhcP5Fbs=
-X-Received: by 2002:a81:920e:0:b0:30c:201e:b3d1 with SMTP id
- j14-20020a81920e000000b0030c201eb3d1mr604811ywg.374.1655311541958; Wed, 15
- Jun 2022 09:45:41 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=z4mhbOThc+P+9ZptBNQK+QlWI6YEZoFWsJHobLiQRRg=;
+        b=VYTymN1sDwXP19xXrveiS2qrJ+X9/VtbvFZJslQBwflDkYCU0B9T/dnhgCjMGvG7qD
+         FM2hgq+UtVsaJYOMj8Y+OjzfZa1EXzLTI2mNSf7CvU0Jja2rgMDjpcx0URws179+jVs/
+         jxUJC6MrZKmiqIequnCdaSpPK3CUdfDvjpmBsGv6qymqPYWWotERdeQffmYuLYeZKOvT
+         XdmIa+ukTLn+aD68EJfuiFFaSIqZgvf/BMdCYX0mTPruneTGLO7H+zqad15CoZKQarOm
+         YE3JwA3dAtjWetHoZMhwqmXq4NWdfG2KY2JGGJ5pb0deMEwd9HnvmsqcLtHrUeBIhuEW
+         Jh9A==
+X-Gm-Message-State: AJIora/LtCaFzl72eu8EW9xifJR2yp/F+JM9eMojWUcZoGDwQsH1HqBl
+        ic1hKYIU8D3jwt9hi1Rugq+XVors7Gc8v8aj6J0h3Q==
+X-Google-Smtp-Source: AGRyM1tQ8vvCEn7WE4Os3IyiWGT9CglJus0zS3+5c74KrhfeFiUtS/uu0jRUUWAu7DLIVdlFMVruCBayK9UlyByyLrY=
+X-Received: by 2002:a5d:9d9b:0:b0:669:cd74:7e0d with SMTP id
+ ay27-20020a5d9d9b000000b00669cd747e0dmr343888iob.7.1655312268533; Wed, 15 Jun
+ 2022 09:57:48 -0700 (PDT)
 MIME-Version: 1.0
-From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
-Date:   Wed, 15 Jun 2022 09:45:31 -0700
-Message-ID: <CAHo-Ooy+8O16k0oyMGHaAcmLm_Pfo=Ju4moTc95kRp2Z6itBcg@mail.gmail.com>
-Subject: Curious bpf regression in 5.18 already fixed in stable 5.18.3
+References: <CAHo-Ooy+8O16k0oyMGHaAcmLm_Pfo=Ju4moTc95kRp2Z6itBcg@mail.gmail.com>
+In-Reply-To: <CAHo-Ooy+8O16k0oyMGHaAcmLm_Pfo=Ju4moTc95kRp2Z6itBcg@mail.gmail.com>
+From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
+Date:   Wed, 15 Jun 2022 09:57:35 -0700
+Message-ID: <CANP3RGed9Vbu=8HfLyNs9zwA=biqgyew=+2tVxC6BAx2ktzNxA@mail.gmail.com>
+Subject: Re: Curious bpf regression in 5.18 already fixed in stable 5.18.3
 To:     Linux NetDev <netdev@vger.kernel.org>,
         BPF Mailing List <bpf@vger.kernel.org>,
         =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>,
@@ -56,9 +60,11 @@ To:     Linux NetDev <netdev@vger.kernel.org>,
         Sasha Levin <sashal@kernel.org>,
         Carlos Llamas <cmllamas@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,138 +72,48 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Are you folks aware that:
+On Wed, Jun 15, 2022 at 9:45 AM Maciej =C5=BBenczykowski
+<zenczykowski@gmail.com> wrote:
+>
+> Are you folks aware that:
+>
+> 'bpf: Move rcu lock management out of BPF_PROG_RUN routines'
+>
+> fixes a weird regression where sendmsg with an egress tc bpf program
+> denying it was returning EFAULT instead of EPERM
+>
+> I've confirmed vanilla 5.18.0 is broken, and all it takes is
+> cherrypicking that specific stable 5.18.x patch [
+> 710a8989b4b4067903f5b61314eda491667b6ab3 ] to fix behaviour.
+>
+> This was not a flaky failure... but a 100% reproducible behavioural
+> breakage/failure in the test case at
+> https://cs.android.com/android/platform/superproject/+/master:kernel/test=
+s/net/test/bpf_test.py;l=3D517
+> (where 5.18 would return EFAULT instead of EPERM)
 
-'bpf: Move rcu lock management out of BPF_PROG_RUN routines'
+I bisected on 5.18.x to find the fixing CL, so I don't know which CL
+actually caused the breakage.
 
-fixes a weird regression where sendmsg with an egress tc bpf program
-denying it was returning EFAULT instead of EPERM
+sdf says:
+5.15 is where they rewrote defines to funcs, so there is still
+something else involved it seems
 
-I've confirmed vanilla 5.18.0 is broken, and all it takes is
-cherrypicking that specific stable 5.18.x patch [
-710a8989b4b4067903f5b61314eda491667b6ab3 ] to fix behaviour.
+b8bd3ee1971d1edbc53cf322c149ca0227472e56 this is where we added EFAULT in 5=
+.16
+(we've added a mechanism to return custom errno, I wonder if some of
+that is related)
 
-This was not a flaky failure... but a 100% reproducible behavioural
-breakage/failure in the test case at
-https://cs.android.com/android/platform/superproject/+/master:kernel/tests/net/test/bpf_test.py;l=517
-(where 5.18 would return EFAULT instead of EPERM)
+and that this EFAULT breakage is not something he was expecting to fix...
+so it's some sort of unintended consequence.
 
----
+I recall that:
+- vanilla 5.15 and 5.16 are definitely good
+- I think the only regression in 5.17 is an unrelated icmp socket one
+- so from a bpf perspective it was also good.
+- 5.18 had 3 regressions: icmp sockets, the pf_key regression (fixed
+via revert in 5.18.4) plus this bpf one
 
-A non standalone but perhaps useful (for reading) simplification of
-the test case follows.
-
-I was planning on reporting it, hence why I was trying to trim it down
-and have this ready anyway, only to discover it's already been fixed.
-But the commit message seems to be unrelated...  some sort of compiler
-optimization shenanigans?  Missing test case opportunity?
-
-Note: that I run this on x86_64 UML - that might matter??
-
-#!/usr/bin/python
-# extracted snippet from AOSP, Apache2 licensed
-
-import csocket
-import cstruct
-import ctypes
-import errno
-import os
-import platform
-import socket
-import unittest
-
-__NR_bpf = {  # pylint: disable=invalid-name
-    "aarch64-32bit": 386,
-    "aarch64-64bit": 280,
-    "armv7l-32bit": 386,
-    "armv8l-32bit": 386,
-    "armv8l-64bit": 280,
-    "i686-32bit": 357,
-    "i686-64bit": 321,
-    "x86_64-32bit": 357,
-    "x86_64-64bit": 321,
-}[os.uname()[4] + "-" + platform.architecture()[0]]
-
-LOG_LEVEL = 1
-LOG_SIZE = 65536
-
-BPF_PROG_LOAD = 5
-BPF_PROG_ATTACH = 8
-BPF_PROG_DETACH = 9
-
-BPF_PROG_TYPE_CGROUP_SKB = 8
-
-BPF_CGROUP_INET_EGRESS = 1
-
-BPF_REG_0 = 0
-
-BPF_JMP = 0x05
-BPF_K = 0x00
-BPF_ALU64 = 0x07
-BPF_MOV = 0xb0
-BPF_EXIT = 0x90
-
-BpfAttrProgLoad = cstruct.Struct(
-    "bpf_attr_prog_load", "=IIQQIIQI", "prog_type insn_cnt insns"
-    " license log_level log_size log_buf kern_version")
-BpfAttrProgAttach = cstruct.Struct(
-    "bpf_attr_prog_attach", "=III", "target_fd attach_bpf_fd attach_type")
-BpfInsn = cstruct.Struct("bpf_insn", "=BBhi", "code dst_src_reg off imm")
-
-libc = ctypes.CDLL(ctypes.util.find_library("c"), use_errno=True)
-
-
-def BpfSyscall(op, attr):
-  ret = libc.syscall(__NR_bpf, op, csocket.VoidPointer(attr), len(attr))
-  csocket.MaybeRaiseSocketError(ret)
-  return ret
-
-
-def BpfProgLoad(prog_type, instructions, prog_license=b"GPL"):
-  bpf_prog = "".join(instructions)
-  insn_buff = ctypes.create_string_buffer(bpf_prog)
-  gpl_license = ctypes.create_string_buffer(prog_license)
-  log_buf = ctypes.create_string_buffer(b"", LOG_SIZE)
-  return BpfSyscall(BPF_PROG_LOAD,
-                    BpfAttrProgLoad((prog_type, len(insn_buff) / len(BpfInsn),
-                                    ctypes.addressof(insn_buff),
-                                    ctypes.addressof(gpl_license), LOG_LEVEL,
-                                    LOG_SIZE, ctypes.addressof(log_buf), 0)))
-
-
-# Attach a eBPF filter to a cgroup
-def BpfProgAttach(prog_fd, target_fd, prog_type):
-  attr = BpfAttrProgAttach((target_fd, prog_fd, prog_type))
-  return BpfSyscall(BPF_PROG_ATTACH, attr)
-
-
-# Detach a eBPF filter from a cgroup
-def BpfProgDetach(target_fd, prog_type):
-  attr = BpfAttrProgAttach((target_fd, 0, prog_type))
-  return BpfSyscall(BPF_PROG_DETACH, attr)
-
-
-class BpfCgroupEgressTest(unittest.TestCase):
-  def setUp(self):
-    self._cg_fd = os.open("/sys/fs/cgroup", os.O_DIRECTORY | os.O_RDONLY)
-    BpfProgAttach(BpfProgLoad(BPF_PROG_TYPE_CGROUP_SKB, [
-        BpfInsn((BPF_ALU64 | BPF_MOV | BPF_K, BPF_REG_0, 0,
-0)).Pack(),  # Mov64Imm(REG0, 0)
-        BpfInsn((BPF_JMP | BPF_EXIT, 0, 0, 0)).Pack()                    # Exit
-    ]), self._cg_fd, BPF_CGROUP_INET_EGRESS)
-
-  def tearDown(self):
-    BpfProgDetach(self._cg_fd, BPF_CGROUP_INET_EGRESS)
-    os.close(self._cg_fd)
-
-  def testCgroupEgressBlocked(self):
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, 0)
-    s.bind(("127.0.0.1", 0))
-    addr = s.getsockname()
-    # previously:   s.sendto("foo", addr)   would fail with EPERM, but
-on 5.18+ it EFAULTs
-    self.assertRaisesRegexp(EnvironmentError,
-os.strerror(errno.EFAULT), s.sendto, "foo", addr)
-
-if __name__ == "__main__":
-  unittest.main()
+The bad pf_key change being reverted in 5.18.4 is why I even switched
+from dev/test against 5.18 to against 5.18.4
+and noticed that this was already fixed before I could even report it...
