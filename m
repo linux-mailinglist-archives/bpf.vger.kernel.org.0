@@ -2,133 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D142354BF34
-	for <lists+bpf@lfdr.de>; Wed, 15 Jun 2022 03:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34ECF54C09C
+	for <lists+bpf@lfdr.de>; Wed, 15 Jun 2022 06:23:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232346AbiFOBUE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Jun 2022 21:20:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54458 "EHLO
+        id S232417AbiFOEV6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jun 2022 00:21:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233337AbiFOBUD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Jun 2022 21:20:03 -0400
-X-Greylist: delayed 184 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 14 Jun 2022 18:20:02 PDT
-Received: from rpt-glb-mail01.tpgi.com.au (rpt-glb-mail01.tpgi.com.au [60.241.0.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 342C1B4B8
-        for <bpf@vger.kernel.org>; Tue, 14 Jun 2022 18:20:01 -0700 (PDT)
-X-TPG-Junk-Checked: Yes
-X-TPG-Junk-Status: score=5.4 tests=DKIM_ADSP_CUSTOM_MED,FORGED_GMAIL_RCVD,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,KHOP_HELO_FCRDNS,NML_ADSP_CUSTOM_MED,RDNS_DYNAMIC,SPF_HELO_FAIL,SPF_SOFTFAIL,SPOOFED_FREEMAIL,SPOOF_GMAIL_MID,T_SCC_BODY_TEXT_LINE
-X-TPG-Junk-Level: *****
-X-TPG-Abuse: host=193-119-124-135.tpgi.com.au; ip=193.119.124.135; date=Wed, 15 Jun 2022 11:16:14 +1000; auth=iEj2ZfQRwc6ozpDLztTMgpwuFWivWeUIwRXsv1WQFa8=
-Received: from jmaxwell.com (193-119-124-135.tpgi.com.au [193.119.124.135])
-        (authenticated bits=0)
-        by rpt-glb-mail01.tpgi.com.au (envelope-from jmaxwell37@gmail.com) (8.14.3/8.14.3) with ESMTP id 25F1G5XX018835;
-        Wed, 15 Jun 2022 11:16:14 +1000
-From:   Jon Maxwell <jmaxwell37@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, cutaylor-pub@yahoo.com, atenart@kernel.org,
-        daniel@iogearbox.net, joe@cilium.io, i@lmb.io, kafai@fb.com,
-        alexei.starovoitov@gmail.com, jmaxwell37@gmail.com,
-        bpf@vger.kernel.org
-Subject: [PATCH v2] net: bpf: fix request_sock leak in filter.c
-Date:   Wed, 15 Jun 2022 11:15:40 +1000
-Message-Id: <20220615011540.813025-1-jmaxwell37@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S231288AbiFOEV5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jun 2022 00:21:57 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1883A4A92C
+        for <bpf@vger.kernel.org>; Tue, 14 Jun 2022 21:21:55 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id r5so3598089pgr.3
+        for <bpf@vger.kernel.org>; Tue, 14 Jun 2022 21:21:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tvi0Pet38SQ8/+46IhE/cHlf27vOO2fZhDd7hKsF5AA=;
+        b=ZBtKBC4Q21X2HH+eyWp801VF7NceOQQkxttgr2EgpHmk+jP8HIR3doYI46TpPLOuAK
+         n5TxTy6RrH+OqGSXdEocPbP4sOnPXtsL6eVXSLhkpU2ff2vF3KCqByWRQBQlqH95MH2e
+         rcxs54cGUhDnQzt6mBCaz1XfsA76GNs+5r3kSSwLqmZ41SRTE3JHmN972FqfXMhzLQOt
+         1hYlu4utvpg+VbFbEDVHxkPtGk3a77Rbi9+DJ8auBvybHbxLJ+yifz83tSKFCJbfDkdY
+         yYt72hb+eFQhC7tJkEqrav41KVJZhN4qw7VIN/UBycS4blsROUkF/gjsyGAVrlTh8M/j
+         nHSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tvi0Pet38SQ8/+46IhE/cHlf27vOO2fZhDd7hKsF5AA=;
+        b=nZOwUCqgWeUsT/60OAPXYe5XZOWZoFlGJ+SkVDGigda+4YIycf45LJmIYQiabDrrDt
+         eJpCCV7zkXeIFErOOzXMd2kWfMYLYd1jIxUT/6Wb8uSJbtBJul8/Vh++HMeT0nEvlW4P
+         45VddRMAYPv0h/jK8vTZhqLwjqOGaP5LoqBDa6XAybzHu3mWdKYZ35dHrGLXhkG2nUyo
+         O3/lI6bXL6rMqy4Tsfcctlgzm4dJwpHgokBIlhqMv7AvSSZhfMCMQlhtZDjLWZi2mP/X
+         TyRURNmpT3GmLkaJ/Wi8eYmIr5cGzdiNZ34kyIQXdBn7PUYclGpQO2z5ciZEuXxNPmv4
+         XTnQ==
+X-Gm-Message-State: AOAM530c1GASdYxP/83kZa3lluNK+krBB4MijrnJiobnibCwRg+slmKX
+        L8T7UsED9KNeQ4xtf8W6y1Q6/kCKgWQ=
+X-Google-Smtp-Source: ABdhPJxsgkwPnIQ81WOKbFFAWyqLF3HUZuI17ConKVEHsBYfeUBXn5DxotBLuyKvf0yQiUjkZppRzQ==
+X-Received: by 2002:a63:2b87:0:b0:3fd:31d6:6a0e with SMTP id r129-20020a632b87000000b003fd31d66a0emr7308974pgr.488.1655266914242;
+        Tue, 14 Jun 2022 21:21:54 -0700 (PDT)
+Received: from localhost ([2405:201:6014:d0c0:79de:f3f4:353c:8616])
+        by smtp.gmail.com with ESMTPSA id 142-20020a621994000000b00518b4cfbbe0sm8458581pfz.203.2022.06.14.21.21.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jun 2022 21:21:53 -0700 (PDT)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: [PATCH bpf] bpf: Limit maximum modifier chain length in btf_check_type_tags
+Date:   Wed, 15 Jun 2022 09:51:51 +0530
+Message-Id: <20220615042151.2266537-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=2.5 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-        FORGED_GMAIL_RCVD,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
-        NML_ADSP_CUSTOM_MED,SPF_HELO_NONE,SPF_SOFTFAIL,SPOOFED_FREEMAIL,
-        SPOOF_GMAIL_MID,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: **
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-v2 of this patch contains, refactor as per Daniel Borkmann's suggestions to 
-validate RCU flags on the listen socket so that it balances with 
-bpf_sk_release() and update comments as per Martin KaFai Lau's suggestion.
-One small change to Daniels suggestion, put "sk = sk2" under "if (sk2 != sk)"
-to avoid an extra instruction.
- 
-A customer reported a request_socket leak in a Calico cloud environment. We 
-found that a BPF program was doing a socket lookup with takes a refcnt on 
-the socket and that it was finding the request_socket but returning the parent 
-LISTEN socket via sk_to_full_sk() without decrementing the child request socket 
-1st, resulting in request_sock slab object leak. This patch retains the 
-existing behaviour of returning full socks to the caller but it also decrements
-the child request_socket if one is present before doing so to prevent the leak.
+On processing a module BTF of module built for an older kernel, we might
+sometimes find that some type points to itself forming a loop. If such a
+type is a modifier, btf_check_type_tags's while loop following modifier
+chain will be caught in an infinite loop.
 
-Thanks to Curtis Taylor for all the help in diagnosing and testing this. And 
-thanks to Antoine Tenart for the reproducer and patch input.
+Fix this by defining a maximum chain length and bailing out if we spin
+any longer than that.
 
-Fixes: f7355a6c0497 ("bpf: Check sk_fullsock() before returning from bpf_sk_lookup()")
-Fixes: edbf8c01de5a ("bpf: add skc_lookup_tcp helper")
-Tested-by: Curtis Taylor <cutaylor-pub@yahoo.com>
-Co-developed-by: Antoine Tenart <atenart@kernel.org>
-Signed-off-by: Antoine Tenart <atenart@kernel.org>
-Signed-off-by: Jon Maxwell <jmaxwell37@gmail.com>
+Fixes: eb596b090558 ("bpf: Ensure type tags precede modifiers in BTF")
+Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- net/core/filter.c | 34 ++++++++++++++++++++++++++++------
- 1 file changed, 28 insertions(+), 6 deletions(-)
+ kernel/bpf/btf.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 2e32cee2c469..ec2a1e68af12 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -6204,10 +6204,21 @@ __bpf_sk_lookup(struct sk_buff *skb, struct bpf_sock_tuple *tuple, u32 len,
- 					   ifindex, proto, netns_id, flags);
- 
- 	if (sk) {
--		sk = sk_to_full_sk(sk);
--		if (!sk_fullsock(sk)) {
-+		struct sock *sk2 = sk_to_full_sk(sk);
-+
-+		/* sk_to_full_sk() may return (sk)->rsk_listener, so make sure the original sk
-+		 * sock refcnt is decremented to prevent a request_sock leak.
-+		 */
-+		if (!sk_fullsock(sk2))
-+			sk2 = NULL;
-+		if (sk2 != sk) {
- 			sock_gen_put(sk);
--			return NULL;
-+			/* Ensure there is no need to bump sk2 refcnt */
-+			if (unlikely(sk2 && !sock_flag(sk2, SOCK_RCU_FREE))) {
-+				WARN_ONCE(1, "Found non-RCU, unreferenced socket!");
-+				return NULL;
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 63d0ac7dfe2f..eb12d4f705cc 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -4815,6 +4815,7 @@ static int btf_check_type_tags(struct btf_verifier_env *env,
+ 	n = btf_nr_types(btf);
+ 	for (i = start_id; i < n; i++) {
+ 		const struct btf_type *t;
++		int chain_limit = 32;
+ 		u32 cur_id = i;
+
+ 		t = btf_type_by_id(btf, i);
+@@ -4827,6 +4828,10 @@ static int btf_check_type_tags(struct btf_verifier_env *env,
+
+ 		in_tags = btf_type_is_type_tag(t);
+ 		while (btf_type_is_modifier(t)) {
++			if (!chain_limit--) {
++				btf_verifier_log(env, "Max chain length or cycle detected");
++				return -ELOOP;
 +			}
-+			sk = sk2;
- 		}
- 	}
- 
-@@ -6241,10 +6252,21 @@ bpf_sk_lookup(struct sk_buff *skb, struct bpf_sock_tuple *tuple, u32 len,
- 					 flags);
- 
- 	if (sk) {
--		sk = sk_to_full_sk(sk);
--		if (!sk_fullsock(sk)) {
-+		struct sock *sk2 = sk_to_full_sk(sk);
-+
-+		/* sk_to_full_sk() may return (sk)->rsk_listener, so make sure the original sk
-+		 * sock refcnt is decremented to prevent a request_sock leak.
-+		 */
-+		if (!sk_fullsock(sk2))
-+			sk2 = NULL;
-+		if (sk2 != sk) {
- 			sock_gen_put(sk);
--			return NULL;
-+			/* Ensure there is no need to bump sk2 refcnt */
-+			if (unlikely(sk2 && !sock_flag(sk2, SOCK_RCU_FREE))) {
-+				WARN_ONCE(1, "Found non-RCU, unreferenced socket!");
-+				return NULL;
-+			}
-+			sk = sk2;
- 		}
- 	}
- 
--- 
-2.31.1
+ 			if (btf_type_is_type_tag(t)) {
+ 				if (!in_tags) {
+ 					btf_verifier_log(env, "Type tags don't precede modifiers");
+--
+2.36.1
 
