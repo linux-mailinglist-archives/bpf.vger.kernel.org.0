@@ -2,132 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B7054D2C4
-	for <lists+bpf@lfdr.de>; Wed, 15 Jun 2022 22:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A5B54D35D
+	for <lists+bpf@lfdr.de>; Wed, 15 Jun 2022 23:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240289AbiFOUjQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jun 2022 16:39:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34814 "EHLO
+        id S1348559AbiFOVKd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jun 2022 17:10:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233389AbiFOUjQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jun 2022 16:39:16 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD6A03EAB2
-        for <bpf@vger.kernel.org>; Wed, 15 Jun 2022 13:39:14 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id cd16-20020a056a00421000b00520785db095so5622723pfb.15
-        for <bpf@vger.kernel.org>; Wed, 15 Jun 2022 13:39:14 -0700 (PDT)
+        with ESMTP id S244672AbiFOVKc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jun 2022 17:10:32 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC01754005;
+        Wed, 15 Jun 2022 14:10:31 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id kq6so25613811ejb.11;
+        Wed, 15 Jun 2022 14:10:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc:content-transfer-encoding;
-        bh=39LfOahOWBeznqRLsmc0XNeidpa6Y7IwGuuTQ+sNseU=;
-        b=GHuxGEOysxz8flQI6TwxR3lQ7faLVTXmWuSJLd9OXuI+gXxsIsumlwaMTnW5DUyOzR
-         TWCZqZMpziq1Ysu4nFYm2y49TqLvISRdc2WkUT2ejVGEmf+WVzua0jHfyOTXbaSz5/CQ
-         TlhJDzi59xcrioxFYQYvhfezpj3DHDzsx/b9SXb+D6OwedCBmU+aM5dLcK2g9dTiotDR
-         u6wxnVlPORFECR1p6r5Tx6aaL9+3r7wts7R/Cs37dZN+LMn3pp+qSagnHs3LPrITD7Zp
-         icP37sMWQxTL57sAXJ/C2x24uozogM420bVPxEd59tMf9qBOMPgDVnFeilRtJMCDgBID
-         0xuQ==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+e5WSuTokr9JPK19yT3iV5VjDMxp0CsMqUd82dkDfNw=;
+        b=E7fl3/tfPrJIHXOdi2ZLg0bezkWJaCCVssMcntFzW/rG8qML0Lg9+RaHh/fS9w71G+
+         hx6lM2B7obpx8AnKtQHbJGeFl2nhzgF63kN9dnhO/N1WB5B6PyiV64N2IOUPyHXF/Pav
+         fuQaYfTeesgH1MMdHRdpvvf3JzYLKQoxf7PzincM96t5gIA81WMe3vyLsYagwjC+7+LZ
+         uHKv6zvPg2ctlnWnBzD+20nv0gXMV647gBgoKkqCJvJMMxrrhKJsUcjWBYzCO3OuKzZe
+         KxVyYZ0i57LGZGmEGeYzXmB/pawwrdtjmak5KO0cZd7qxxGMbhcSZACiPFV17M0vy0G4
+         fjRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc:content-transfer-encoding;
-        bh=39LfOahOWBeznqRLsmc0XNeidpa6Y7IwGuuTQ+sNseU=;
-        b=xsTl1xYUunPZxNtWwJJ5t5IFV9ypC9O63h7k87nNPmGqEBgSRPSX/cp7JeDHmRs1Sy
-         TW4UmV7OFeDEpkpDyIIss12NCSjz72My6aYDHqd/NDBbYnIodyNsXh7W5XK+Co0aNdqY
-         OIn0FWK6NP56ZwovrRTf6MjcaQLWcQWBn4Q2yJ6Vq0r8yMp4u8tYF4XYOrRNdAgsBQDV
-         +pOtLpPdFB6pH8Q0RLqRYFDaJ5Mh9CBUm8zywQaC5ddxm13BHf3XqIeuMYU35NC4T0P7
-         aiu7h0DuZwledp47M1zk8B1Z20yhc0JVeaSJm/zK+WDzMRceqGqpJR9NmwVaQTguMbhV
-         79Aw==
-X-Gm-Message-State: AJIora+rHajRrHc1U8MMjlzyP4MxdcZnknF2h7jyaf3zngyGQfYsSaKI
-        oGHUxDiA22qva3RcuK+R9k57mnw=
-X-Google-Smtp-Source: AGRyM1tgc2AGGdSSDwOwbtM/nMgWQP9YKZBj1ztN16bLvGDO1/l9RcVNtwXkyAEQFi8H5A8QN35DWoU=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a05:6a00:410a:b0:51e:6fc6:e4da with SMTP id
- bu10-20020a056a00410a00b0051e6fc6e4damr1380745pfb.84.1655325554401; Wed, 15
- Jun 2022 13:39:14 -0700 (PDT)
-Date:   Wed, 15 Jun 2022 13:39:12 -0700
-In-Reply-To: <YqpB+7pDwyOk20Cp@google.com>
-Message-Id: <YqpDcD6vkZZfWH4L@google.com>
-Mime-Version: 1.0
-References: <CAHo-Ooy+8O16k0oyMGHaAcmLm_Pfo=Ju4moTc95kRp2Z6itBcg@mail.gmail.com>
- <CANP3RGed9Vbu=8HfLyNs9zwA=biqgyew=+2tVxC6BAx2ktzNxA@mail.gmail.com>
- <CAADnVQKBqjowbGsSuc2g8yP9MBANhsroB+dhJep93cnx_EmNow@mail.gmail.com>
- <CANP3RGcZ4NULOwe+nwxfxsDPSXAUo50hWyN9Sb5b_d=kfDg=qg@mail.gmail.com>
- <YqodE5lxUCt6ojIw@google.com> <YqpAYcvM9DakTjWL@google.com> <YqpB+7pDwyOk20Cp@google.com>
-Subject: Re: Curious bpf regression in 5.18 already fixed in stable 5.18.3
-From:   sdf@google.com
-To:     "Maciej =?utf-8?Q?=C5=BBenczykowski?=" <maze@google.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Linux NetDev <netdev@vger.kernel.org>,
-        BPF Mailing List <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Carlos Llamas <cmllamas@google.com>, zhuyifei@google.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+e5WSuTokr9JPK19yT3iV5VjDMxp0CsMqUd82dkDfNw=;
+        b=DbDYzch5EhjXVYZsLiH+IxMAxpNUbkhJ9nao1Srk2p/qhhqyUEr2FsJkvN/rz+jNN4
+         9aQhio54zGhIloLWK3LBi1ANk0/4E0of9FNCyYJ2IwpAx0IaGzeMf6A6d/kI1x71NUIQ
+         w89XFKqdkGY+yZGVf1t86s5jzzdZsMffWjGr0Ulxe/vp8JGlP3yHswSk87efFLassi8m
+         jap3lvDIvWn7CSbTmhOmGKHofmCbv6J5J8nEcSpzFFkDnaOholx57ftTnLxJWQFCKu+x
+         3IhzGBgwuXWV5JoPXq0nqxjc5k84yGzOPSPQzGoAuiEzhg5zHp+bCGrJTKMPIpsYXqPN
+         CbBg==
+X-Gm-Message-State: AJIora+A882bDpBTk64zrFL88crPiE4EtMVH5QIbJQO1JAuh3Z6JEpck
+        vEdPhvRcq/cFwbiaj10vLJc=
+X-Google-Smtp-Source: AGRyM1u2aR6m0+zusfzkc1IccfcreBIzvcK7QxJ4O76ZRZ1UqhFZa/ZvZ0x6LAv/HuZhPMsRoDvsvw==
+X-Received: by 2002:a17:907:97c4:b0:711:ea9a:103b with SMTP id js4-20020a17090797c400b00711ea9a103bmr1657077ejc.155.1655327430278;
+        Wed, 15 Jun 2022 14:10:30 -0700 (PDT)
+Received: from erthalion.local (dslb-094-222-028-039.094.222.pools.vodafone-ip.de. [94.222.28.39])
+        by smtp.gmail.com with ESMTPSA id ch25-20020a0564021bd900b0042dd4ccccf5sm171123edb.82.2022.06.15.14.10.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jun 2022 14:10:29 -0700 (PDT)
+Date:   Wed, 15 Jun 2022 23:09:28 +0200
+From:   Dmitry Dolgov <9erthalion6@gmail.com>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "alexei.starovoitov@gmail.com" <alexei.starovoitov@gmail.com>
+Subject: Re: [PATCH v2 1/1] perf/kprobe: maxactive for fd-based kprobe
+Message-ID: <20220615210928.6asl44eqiznvnyef@erthalion.local>
+References: <20220615195501.15597-1-songliubraving@fb.com>
+ <D96E92E8-46A2-440C-AF8B-71BADA60C5D9@fb.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <D96E92E8-46A2-440C-AF8B-71BADA60C5D9@fb.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gMDYvMTUsIFN0YW5pc2xhdiBGb21pY2hldiB3cm90ZToNCj4gT24gMDYvMTUsIFN0YW5pc2xh
-diBGb21pY2hldiB3cm90ZToNCj4gPiBPbiAwNi8xNSwgc2RmQGdvb2dsZS5jb20gd3JvdGU6DQo+
-ID4gPiBPbiAwNi8xNSwgTWFjaWVqIMW7ZW5jenlrb3dza2kgd3JvdGU6DQo+ID4gPiA+IE9uIFdl
-ZCwgSnVuIDE1LCAyMDIyIGF0IDEwOjM4IEFNIEFsZXhlaSBTdGFyb3ZvaXRvdg0KPiA+ID4gPiA8
-YWxleGVpLnN0YXJvdm9pdG92QGdtYWlsLmNvbT4gd3JvdGU6DQo+ID4gPiA+ID4NCj4gPiA+ID4g
-PiBPbiBXZWQsIEp1biAxNSwgMjAyMiBhdCA5OjU3IEFNIE1hY2llaiDFu2VuY3p5a293c2tpICAN
-Cj4gPG1hemVAZ29vZ2xlLmNvbT4NCj4gPiA+ID4gd3JvdGU6DQo+ID4gPiA+ID4gPiA+DQo+ID4g
-PiA+ID4gPiA+IEkndmUgY29uZmlybWVkIHZhbmlsbGEgNS4xOC4wIGlzIGJyb2tlbiwgYW5kIGFs
-bCBpdCB0YWtlcyBpcw0KPiA+ID4gPiA+ID4gPiBjaGVycnlwaWNraW5nIHRoYXQgc3BlY2lmaWMg
-c3RhYmxlIDUuMTgueCBwYXRjaCBbDQo+ID4gPiA+ID4gPiA+IDcxMGE4OTg5YjRiNDA2NzkwM2Y1
-YjYxMzE0ZWRhNDkxNjY3YjZhYjMgXSB0byBmaXggYmVoYXZpb3VyLg0KPiA+ID4gPiA+IC4uLg0K
-PiA+ID4gPiA+ID4gYjhiZDNlZTE5NzFkMWVkYmM1M2NmMzIyYzE0OWNhMDIyNzQ3MmU1NiB0aGlz
-IGlzIHdoZXJlIHdlIGFkZGVkDQo+ID4gPiA+IEVGQVVMVCBpbiA1LjE2DQo+ID4gPiA+ID4NCj4g
-PiA+ID4gPiBUaGVyZSBhcmUgbm8gc3VjaCBzaGEtcyBpbiB0aGUgdXBzdHJlYW0ga2VybmVsLg0K
-PiA+ID4gPiA+IFNvcnJ5IHdlIGNhbm5vdCBoZWxwIHdpdGggZGVidWdnaW5nIG9mIGFuZHJvaWQg
-a2VybmVscy4NCj4gPiA+DQo+ID4gPiA+IFllcywgc2RmQCBxdW90ZWQgdGhlIHdyb25nIHNoYTEs
-IGl0J3MgYSBjbGVhbiBjaGVycnlwaWNrIHRvIGFuDQo+ID4gPiA+IGludGVybmFsIGJyYW5jaCBv
-Zg0KPiA+ID4gPiAnYnBmOiBBZGQgY2dyb3VwIGhlbHBlcnMgYnBmX3tnZXQsc2V0fV9yZXR2YWwg
-dG8gZ2V0L3NldCBzeXNjYWxsICANCj4gcmV0dXJuDQo+ID4gPiA+IHZhbHVlJw0KPiA+ID4gPiBj
-b21taXQgYjQ0MTIzYjRhM2RjYWQ0NjY0ZDNhMGY3MmMwMTFmZmQ0YzljNGQ5My4NCj4gPiA+DQo+
-ID4gPiA+ICANCj4gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9n
-aXQvc3RhYmxlL2xpbnV4LmdpdC9jb21taXQvP2g9bGludXgtNS4xNi55JmlkPWI0NDEyM2I0YTNk
-Y2FkNDY2NGQzYTBmNzJjMDExZmZkNGM5YzRkOTMNCj4gPiA+DQo+ID4gPiA+IEFueXdheSwgSSB0
-aGluayBpdCdzIHVucmVsYXRlZCAtIG9yIGF0IGxlYXN0IG5vdCB0aGUgaW1tZWRpYXRlIHJvb3Qg
-IA0KPiBjYXVzZS4NCj4gPiA+DQo+ID4gPiA+IEFsc28gdGhlcmUncyAqbm8qIEFuZHJvaWQga2Vy
-bmVscyBpbnZvbHZlZCBoZXJlLg0KPiA+ID4gPiBUaGlzIGlzIHRoZSBhbmRyb2lkIG5ldCB0ZXN0
-cyBmYWlsaW5nIG9uIHZhbmlsbGEgNS4xOCBhbmQgcGFzc2luZyBvbg0KPiA+ID4gPiA1LjE4LjMu
-DQo+ID4gPg0KPiA+ID4gWWVhaCwgc29ycnksIGRpZG4ndCBtZWFuIHRvIHNlbmQgdGhvc2Ugb3V0
-c2lkZSA6LSkNCj4gPiA+DQo+ID4gPiBBdHRhY2hlZCB1bi1hbmRyb2lkLWlmaWVkIHRlc3RjYXNl
-LiBQYXNzZXMgb24gYnBmLW5leHQsIHRyeWluZyB0byBzZWUNCj4gPiA+IHdoYXQgaGFwcGVucyBv
-biB2YW5pbGxhIDUuMTguIFdpbGwgdXBkYXRlIG9uY2UgSSBnZXQgbW9yZSBkYXRhLi4NCj4gPg0K
-PiA+IEkndmUgYmlzZWN0ZWQgdGhlIG9yaWdpbmFsIGlzc3VlIHRvOg0KPiA+DQo+ID4gYjQ0MTIz
-YjRhM2RjICgiYnBmOiBBZGQgY2dyb3VwIGhlbHBlcnMgYnBmX3tnZXQsc2V0fV9yZXR2YWwgdG8g
-Z2V0L3NldA0KPiA+IHN5c2NhbGwgcmV0dXJuIHZhbHVlIikNCj4gPg0KPiA+IEFuZCBJIGJlbGll
-dmUgaXQncyB0aGVzZSB0d28gbGluZXMgZnJvbSB0aGUgb3JpZ2luYWwgcGF0Y2g6DQo+ID4NCj4g
-PiAgI2RlZmluZSBCUEZfUFJPR19DR1JPVVBfSU5FVF9FR1JFU1NfUlVOX0FSUkFZKGFycmF5LCBj
-dHgsIGZ1bmMpCQlcDQo+ID4gIAkoewkJCQkJCVwNCj4gPiBAQCAtMTM5OCwxMCArMTM5OCwxMiBA
-QCBvdXQ6DQo+ID4gIAkJdTMyIF9yZXQ7CQkJCVwNCj4gPiAgCQlfcmV0ID0gQlBGX1BST0dfUlVO
-X0FSUkFZX0NHX0ZMQUdTKGFycmF5LCBjdHgsIGZ1bmMsIDAsICZfZmxhZ3MpOyBcDQo+ID4gIAkJ
-X2NuID0gX2ZsYWdzICYgQlBGX1JFVF9TRVRfQ047CQlcDQo+ID4gKwkJaWYgKF9yZXQgJiYgIUlT
-X0VSUl9WQUxVRSgobG9uZylfcmV0KSkJXA0KPiA+ICsJCQlfcmV0ID0gLUVGQVVMVDsJDQo+ID4N
-Cj4gPiBfcmV0IGlzIHUzMiBhbmQgcmV0IGdldHMgLTEgKGZmZmZmZmZmKS4gSVNfRVJSX1ZBTFVF
-KChsb25nKWZmZmZmZmZmKSAgDQo+IHJldHVybnMNCj4gPiBmYWxzZSBpbiB0aGlzIGNhc2UgYmVj
-YXVzZSBpdCBkb2Vzbid0IHNpZ24tZXhwYW5kIHRoZSBhcmd1bWVudCBhbmQgIA0KPiBpbnRlcm5h
-bGx5DQo+ID4gZG9lcyBmZmZmX2ZmZmYgPj0gZmZmZl9mZmZmX2ZmZmZfZjAwMSBjb21wYXJpc29u
-Lg0KPiA+DQo+ID4gSSdsbCB0cnkgdG8gc2VlIHdoYXQgSSd2ZSBjaGFuZ2VkIGluIG15IHVucmVs
-YXRlZCBwYXRjaCB0byBmaXggaXQuIEJ1dCAgDQo+IEkgdGhpbmsNCj4gPiB3ZSBzaG91bGQgYXVk
-aXQgYWxsIHRoZXNlIElTX0VSUl9WQUxVRSgobG9uZylfcmV0KSByZWdhcmRsZXNzOyB0aGV5ICAN
-Cj4gZG9uJ3QNCj4gPiBzZWVtIHRvIHdvcmsgdGhlIHdheSB3ZSB3YW50IHRoZW0gdG8uLi4NCg0K
-PiBPaywgYW5kIG15IHBhdGNoIGZpeGVzIGl0IGJlY2F1c2UgSSdtIHJlcGxhY2luZyAndTMyIF9y
-ZXQnIHdpdGggJ2ludCByZXQnLg0KDQo+IFNvLCBiYXNpY2FsbHksIHdpdGggdTMyIF9yZXQgd2Ug
-aGF2ZSB0byBkbyBJU19FUlJfVkFMVUUoKGxvbmcpKGludClfcmV0KS4NCg0KPiBTaWdoLi4NCg0K
-QW5kIHRvIGZvbGxvdyB1cCBvbiB0aGF0LCB0aGUgb3RoZXIgdHdvIHBsYWNlcyB3ZSBoYXZlIGFy
-ZSBmaW5lOg0KDQpJU19FUlJfVkFMVUUoKGxvbmcpcnVuX2N0eC5yZXR2YWwpKQ0KDQpydW5fY3R4
-LnJldHZhbCBpcyBhbiBpbnQuDQo=
+> On Wed, Jun 15, 2022 at 08:27:41PM +0000, Song Liu wrote:
+>
+> > On Jun 15, 2022, at 12:55 PM, Song Liu <9erthalion6@gmail.com> wrote:
+>
+> This is not the right way to change author of a commit, as it still keeps
+> your email. You need
+>
+> git commit --amend --author="Song Liu <songliubraving@fb.com>"
+
+Thanks, I was thinking the --from key would be enough. Let me get a
+second try.
