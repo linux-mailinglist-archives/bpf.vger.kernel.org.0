@@ -2,59 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AECDA54CAC2
-	for <lists+bpf@lfdr.de>; Wed, 15 Jun 2022 16:02:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 788B154CB8F
+	for <lists+bpf@lfdr.de>; Wed, 15 Jun 2022 16:42:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355957AbiFOOCq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jun 2022 10:02:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47396 "EHLO
+        id S231605AbiFOOmF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jun 2022 10:42:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356068AbiFOOCi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jun 2022 10:02:38 -0400
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48E5F44767;
-        Wed, 15 Jun 2022 07:02:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1655301744; x=1686837744;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=gUzSbxPGKlv3orYjrbcR9owy96sB5gAjpsZZ/65MvcQ=;
-  b=Gv0NakvzmnEtYxxrHJeIRlRwJyxScGKKqzQXdHfkyWPXcU0/ApEUD/++
-   L7HLuGnN9gMa++Rh0TP6Z2971iGZRAyX8JhMGc0XreUZkLPSYSOoITf9E
-   txhOv7zSPF1I8oCT4z2KQQEUztaqq1I9U0ZE4uHTRGNVjUhBMuJPdGIEN
-   bVie0yUjvokZYjfHFzBSIfT41cL/JFI9F0PekJBxsGyBouoNjKMmDUsZv
-   M+OUjdEJO4ICEkq8w1+sL+T2dQgIrN7VLAakbKhWiyAepu7VvwFpkGDdL
-   AVlg3fGZ0BLxogJzVasE6JiA2nmQ1W4lIE96r2vaqjeMyon2zXwB5ObAN
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10378"; a="280004469"
-X-IronPort-AV: E=Sophos;i="5.91,302,1647327600"; 
-   d="scan'208";a="280004469"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2022 07:01:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,302,1647327600"; 
-   d="scan'208";a="612751608"
-Received: from boxer.igk.intel.com (HELO boxer) ([10.102.20.173])
-  by orsmga008.jf.intel.com with ESMTP; 15 Jun 2022 07:01:49 -0700
-Date:   Wed, 15 Jun 2022 16:01:49 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Alexander Lobakin <alexandr.lobakin@intel.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        netdev@vger.kernel.org, magnus.karlsson@intel.com, bjorn@kernel.org
-Subject: Re: [PATCH v2 bpf-next 01/10] ice: allow toggling loopback mode via
- ndo_set_features callback
-Message-ID: <YqnmTUpTgquVOsP5@boxer>
-References: <20220614174749.901044-1-maciej.fijalkowski@intel.com>
- <20220614174749.901044-2-maciej.fijalkowski@intel.com>
- <20220615103804.1260221-1-alexandr.lobakin@intel.com>
+        with ESMTP id S1348001AbiFOOkU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jun 2022 10:40:20 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A6D31DC3;
+        Wed, 15 Jun 2022 07:40:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0AA04B81EAA;
+        Wed, 15 Jun 2022 14:40:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 9738DC3411C;
+        Wed, 15 Jun 2022 14:40:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1655304013;
+        bh=wUKIpD5mViMom0zx5vefjmKD76K/NxZlyeucxykzhV8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=uhAevbgdLjZFe7oz7H9cdF+T8bEuywC1LcUB5CD77I/wBH/TCtc4ppnBP5Fhj2Dub
+         1zKSAI4AFKMShxi5eXyjHNK2nOjGnTy7F876X5a5lAGKiSGcd3qPMFZ0mfl8/UC1wi
+         JcwA4wDgIMLi4BC7srNfehJJ1NJ5Tp2u3Zhkt/OMnqCZbQUqRpPPRq3UfVB7PoDpK1
+         VaZ6nbyZ8tqbdVbec9BjXWXP0QInePP54NR4zZIQ+D+8ie8lq0iKllp1XYu6ruvzVf
+         bAo461Fj709qSrcSmjHspBfC8P8Lg87mcQh0ik0NWC62kSS4WthxsXmkwmUbUgIB7j
+         K3SMFrZ++wZDQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7A641E6D466;
+        Wed, 15 Jun 2022 14:40:13 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220615103804.1260221-1-alexandr.lobakin@intel.com>
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] net: bpf: fix request_sock leak in filter.c
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <165530401349.30434.14644430973088453576.git-patchwork-notify@kernel.org>
+Date:   Wed, 15 Jun 2022 14:40:13 +0000
+References: <20220615011540.813025-1-jmaxwell37@gmail.com>
+In-Reply-To: <20220615011540.813025-1-jmaxwell37@gmail.com>
+To:     Jon Maxwell <jmaxwell37@gmail.com>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, cutaylor-pub@yahoo.com,
+        atenart@kernel.org, daniel@iogearbox.net, joe@cilium.io, i@lmb.io,
+        kafai@fb.com, alexei.starovoitov@gmail.com, bpf@vger.kernel.org
+X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,162 +58,35 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 15, 2022 at 12:38:04PM +0200, Alexander Lobakin wrote:
-> From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> Date: Tue, 14 Jun 2022 19:47:40 +0200
-> 
-> > Add support for NETIF_F_LOOPBACK. Also, simplify checks throughout whole
-> > ice_set_features().
-> > 
-> > CC: Alexandr Lobakin <alexandr.lobakin@intel.com>
-> > Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> > ---
-> >  drivers/net/ethernet/intel/ice/ice_main.c | 54 ++++++++++++++---------
-> >  1 file changed, 34 insertions(+), 20 deletions(-)
-> > 
-> > diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
-> > index e1cae253412c..ab00b0361e87 100644
-> > --- a/drivers/net/ethernet/intel/ice/ice_main.c
-> > +++ b/drivers/net/ethernet/intel/ice/ice_main.c
-> > @@ -3358,6 +3358,7 @@ static void ice_set_netdev_features(struct net_device *netdev)
-> >  	netdev->features |= netdev->hw_features;
-> >  
-> >  	netdev->hw_features |= NETIF_F_HW_TC;
-> > +	netdev->hw_features |= NETIF_F_LOOPBACK;
-> >  
-> >  	/* encap and VLAN devices inherit default, csumo and tso features */
-> >  	netdev->hw_enc_features |= dflt_features | csumo_features |
-> > @@ -5902,6 +5903,18 @@ ice_set_vlan_features(struct net_device *netdev, netdev_features_t features)
-> >  	return 0;
-> >  }
-> >  
-> > +static void ice_set_loopback(struct ice_pf *pf, struct net_device *netdev, bool ena)
-> 
-> I feel like the first argument is redundant in here since we can do
-> 
-> 	const struct ice_netdev_priv *np = netdev_priv(netdev);
-> 	struct ice_pf *pf = np->vsi->back;
-> 
-> But at the same time one function argument can be cheaper than two
-> jumps, so up to you.
-> 
-> > +{
-> > +	bool if_running = netif_running(netdev);
-> > +
-> > +	if (if_running)
-> > +		ice_stop(netdev);
-> > +	if (ice_aq_set_mac_loopback(&pf->hw, ena, NULL))
-> > +		dev_err(ice_pf_to_dev(pf), "Failed to toggle loopback state\n");
-> 
-> netdev_err() instead probably? I guess dev_err() is used for
-> consistency with the rest of ice_set_features(), but I'd recommend
-> using the former anyways.
+Hello:
 
-So let's use netdev_err and drop the pf from arguments that are passed
+This patch was applied to bpf/bpf.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
+On Wed, 15 Jun 2022 11:15:40 +1000 you wrote:
+> v2 of this patch contains, refactor as per Daniel Borkmann's suggestions to
+> validate RCU flags on the listen socket so that it balances with
+> bpf_sk_release() and update comments as per Martin KaFai Lau's suggestion.
+> One small change to Daniels suggestion, put "sk = sk2" under "if (sk2 != sk)"
+> to avoid an extra instruction.
 > 
-> > +	if (if_running)
-> > +		ice_open(netdev);
-> > +}
-> > +
-> >  /**
-> >   * ice_set_features - set the netdev feature flags
-> >   * @netdev: ptr to the netdev being adjusted
-> > @@ -5910,6 +5923,7 @@ ice_set_vlan_features(struct net_device *netdev, netdev_features_t features)
-> >  static int
-> >  ice_set_features(struct net_device *netdev, netdev_features_t features)
-> >  {
-> > +	netdev_features_t changed = netdev->features ^ features;
-> >  	struct ice_netdev_priv *np = netdev_priv(netdev);
-> >  	struct ice_vsi *vsi = np->vsi;
-> >  	struct ice_pf *pf = vsi->back;
-> > @@ -5917,37 +5931,33 @@ ice_set_features(struct net_device *netdev, netdev_features_t features)
-> >  
-> >  	/* Don't set any netdev advanced features with device in Safe Mode */
-> >  	if (ice_is_safe_mode(vsi->back)) {
-> > -		dev_err(ice_pf_to_dev(vsi->back), "Device is in Safe Mode - not enabling advanced netdev features\n");
-> > +		dev_err(ice_pf_to_dev(vsi->back),
-> > +			"Device is in Safe Mode - not enabling advanced netdev features\n");
+> A customer reported a request_socket leak in a Calico cloud environment. We
+> found that a BPF program was doing a socket lookup with takes a refcnt on
+> the socket and that it was finding the request_socket but returning the parent
+> LISTEN socket via sk_to_full_sk() without decrementing the child request socket
+> 1st, resulting in request_sock slab object leak. This patch retains the
+> existing behaviour of returning full socks to the caller but it also decrements
+> the child request_socket if one is present before doing so to prevent the leak.
 > 
-> This (I mean the whole ice_set_features() cleanup) deserves to be in
-> a separate patch to me. In can be a past of this series for sure.
+> [...]
 
-ack, will pull out this to a standalone patch followed by loopback
-enablement
+Here is the summary with links:
+  - [v2] net: bpf: fix request_sock leak in filter.c
+    https://git.kernel.org/bpf/bpf/c/3046a827316c
 
-> 
-> >  		return ret;
-> >  	}
-> >  
-> >  	/* Do not change setting during reset */
-> >  	if (ice_is_reset_in_progress(pf->state)) {
-> > -		dev_err(ice_pf_to_dev(vsi->back), "Device is resetting, changing advanced netdev features temporarily unavailable.\n");
-> > +		dev_err(ice_pf_to_dev(vsi->back),
-> > +			"Device is resetting, changing advanced netdev features temporarily unavailable.\n");
-> >  		return -EBUSY;
-> >  	}
-> >  
-> >  	/* Multiple features can be changed in one call so keep features in
-> >  	 * separate if/else statements to guarantee each feature is checked
-> >  	 */
-> > -	if (features & NETIF_F_RXHASH && !(netdev->features & NETIF_F_RXHASH))
-> > -		ice_vsi_manage_rss_lut(vsi, true);
-> > -	else if (!(features & NETIF_F_RXHASH) &&
-> > -		 netdev->features & NETIF_F_RXHASH)
-> > -		ice_vsi_manage_rss_lut(vsi, false);
-> > +	if (changed & NETIF_F_RXHASH)
-> > +		ice_vsi_manage_rss_lut(vsi, !!(features & NETIF_F_RXHASH));
-> >  
-> >  	ret = ice_set_vlan_features(netdev, features);
-> >  	if (ret)
-> >  		return ret;
-> >  
-> > -	if ((features & NETIF_F_NTUPLE) &&
-> > -	    !(netdev->features & NETIF_F_NTUPLE)) {
-> > -		ice_vsi_manage_fdir(vsi, true);
-> > -		ice_init_arfs(vsi);
-> > -	} else if (!(features & NETIF_F_NTUPLE) &&
-> > -		 (netdev->features & NETIF_F_NTUPLE)) {
-> > -		ice_vsi_manage_fdir(vsi, false);
-> > -		ice_clear_arfs(vsi);
-> > +	if (changed & NETIF_F_NTUPLE) {
-> > +		bool ena = !!(features & NETIF_F_NTUPLE);
-> > +
-> > +		ice_vsi_manage_fdir(vsi, ena);
-> > +		ena ? ice_init_arfs(vsi) : ice_clear_arfs(vsi);
-> >  	}
-> >  
-> >  	/* don't turn off hw_tc_offload when ADQ is already enabled */
-> > @@ -5956,11 +5966,15 @@ ice_set_features(struct net_device *netdev, netdev_features_t features)
-> >  		return -EACCES;
-> >  	}
-> >  
-> > -	if ((features & NETIF_F_HW_TC) &&
-> > -	    !(netdev->features & NETIF_F_HW_TC))
-> > -		set_bit(ICE_FLAG_CLS_FLOWER, pf->flags);
-> > -	else
-> > -		clear_bit(ICE_FLAG_CLS_FLOWER, pf->flags);
-> > +	if (changed & NETIF_F_HW_TC) {
-> > +		bool ena = !!(features & NETIF_F_HW_TC);
-> > +
-> > +		ena ? set_bit(ICE_FLAG_CLS_FLOWER, pf->flags) :
-> > +		      clear_bit(ICE_FLAG_CLS_FLOWER, pf->flags);
-> > +	}
-> > +
-> > +	if (changed & NETIF_F_LOOPBACK)
-> > +		ice_set_loopback(pf, netdev, !!(features & NETIF_F_LOOPBACK));
-> >  
-> >  	return 0;
-> >  }
-> > -- 
-> > 2.27.0
-> 
-> The rest is good, I like wiring up standard interfaces with the
-> existing hardware functionality :) Loopback mode is useful for
-> testing stuff.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-thanks for review!
 
-> 
-> Thanks!
-> Olek
