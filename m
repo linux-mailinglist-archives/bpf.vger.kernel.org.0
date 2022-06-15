@@ -2,207 +2,202 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE6C754D0D0
-	for <lists+bpf@lfdr.de>; Wed, 15 Jun 2022 20:20:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58D7D54D1B8
+	for <lists+bpf@lfdr.de>; Wed, 15 Jun 2022 21:37:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346483AbiFOSUM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jun 2022 14:20:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60454 "EHLO
+        id S1348581AbiFOTgi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jun 2022 15:36:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbiFOSUL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jun 2022 14:20:11 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA70A3CFD5;
-        Wed, 15 Jun 2022 11:20:10 -0700 (PDT)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25FHPXPa003301;
-        Wed, 15 Jun 2022 11:20:10 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : mime-version; s=facebook;
- bh=PLsR9gLysm493qDnl7rEDIazxyv8VH3gVqeBWTXNCLc=;
- b=ieSgb5bXcRuR6Ig74Ax7jXieXnmUwzZOsIaIr8/HJ7E6kyqYRxr/e7mR8QbhKObIuR7+
- DQeB41ID5kaz7DTC+o7WlN3yOCAchDvOd8L58kadtMczFwe78wXsC8L2v094Jmv5zOSr
- 6+Z96x6s/RRnUIoN+ZDWAh3il0IqPTsXuMM= 
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2105.outbound.protection.outlook.com [104.47.70.105])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3gqktg0xuf-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Jun 2022 11:20:10 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X/bPgKFZf8SW/JUNfbDMXqBhfNVg5nSlCqK5nGRjOaWzZ/atte/VzqFxU/A8ctqMOxmueE4gggPMAyvkd1bxupkX02zBUxOCBx12NgtqSOgQR7QrREShZRJrdoh0MoDV/qaGcK54yg+DCF1DPG4fkTFBawX+adP2XY6nmSKEB9EIorv9DjEYTHReZB1pSmPbwnMKG3IsD/PPjtwB+tNb4rFEue2N35k8YeA4UcsD3ebuPCFxKK2nJaB7TL6eZMDbLaAZG/sxSx4uL6bFP2cPErnEfQMzgYo/V0MuWO7o+co/okUpkVOiHydMWYer1iGfHDyg9yxlFt+4c88845USUQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PLsR9gLysm493qDnl7rEDIazxyv8VH3gVqeBWTXNCLc=;
- b=lhTDCljfr8qhh88/0qaUyAvOZpY5idE7RVPs6dXbZZUEfeRHEqCkts1Q1R+Rhr9FK+n3bgAkoA0moqsX19lhD3co4T/uIwzBQGmOAgfYLKxrkdPhSxv1rLpnmg6zfLAR7hZiy8OSYwyWczaFV+SWq+XGAsg/MHRYx+MUZo69gSEz0MAKHIo4SPuo0JKCHLwC08H0zh4w1CdKuCptvx9z/8mClLPb1pAq9LJV8SwQfytrqMcKVfd1kHK/FLbf9VtbqWV1aXxxDIWAyKslyu3pZku6IO9DnHCl5zgaOBqoyjgsS1sS2O6h2G2GmIq3MlmdBbmxzuXpt6MQMZzxdkFEug==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
- by DM6PR15MB3452.namprd15.prod.outlook.com (2603:10b6:5:164::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5332.22; Wed, 15 Jun
- 2022 18:20:05 +0000
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::b9ad:f353:17ee:7be3]) by SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::b9ad:f353:17ee:7be3%6]) with mapi id 15.20.5332.023; Wed, 15 Jun 2022
- 18:20:05 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Dmitrii Dolgov <9erthalion6@gmail.com>
-CC:     "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "mingo@redhat.com" <mingo@redhat.com>
-Subject: Re: [PATCH] perf/kprobe: maxactive for fd-based kprobe
-Thread-Topic: [PATCH] perf/kprobe: maxactive for fd-based kprobe
-Thread-Index: AQHYfDdvxGSxEZV2gk+Y68sd0Icii61Q0KIA
-Date:   Wed, 15 Jun 2022 18:20:05 +0000
-Message-ID: <9AB360B5-F7DE-4159-B75E-9C21106FDB49@fb.com>
-References: <20220609192936.23985-1-9erthalion6@gmail.com>
-In-Reply-To: <20220609192936.23985-1-9erthalion6@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3696.80.82.1.1)
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 16b2b62a-21d8-4da6-12be-08da4efbabb1
-x-ms-traffictypediagnostic: DM6PR15MB3452:EE_
-x-microsoft-antispam-prvs: <DM6PR15MB345255B28A2353FE30E8693AB3AD9@DM6PR15MB3452.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Ia5vlK7AbPlTvQlF3YMUVk+ymluhgube2j8NS2Z9uE2fIS02aPQK6N7nO5AL8Qn0tNjJPkCZLkl8JBa8N4ZuV5P4HXpRXj9LSd4JrVwUc0FJUlrNwoRCkkGNgzP1hvZ++IoWIVSAXzRlwDw75Xc3hBX0lF41VGSUh303qDX2zj7OAU4DRCALAKwo7TCjI5kL3lvamq0t7dp6nldbOwMDr8HDCsYVms2dgHyhwd62ALFvX4f99CrgdTd8dN8zU+kw4WeaZ39iwX6fLihaatQkRPhLyOjbddYNrVxQOtvzTO8gx+UFok94X8t0l5ZvfYG4gkU0rBDA8AnKezB82CB8WPaw8P+RuIEDw8kM8ks/3+REGvT/5fPP7tIF6gRv5REXWgMKJWK5T3KLvrT3H8cQfzwEDBSm+NPUH1n3LZCWOUkCPbfPqlrKUwp48L+CNqdffVHncuYCQF+DRScLvUlyS012hTRm7v8I1f7+Lo7OVdZsUA8D3I9s13EWcuiWGJzU5G5fgZEgQqt9PEFonUyKy4c9CbEeWzu7duZYLe6MO+meLzIDseWuZnYLL1XPw+Gl6AWC+j4uLQVpNumZLOokZFpU656Ywr43BcOP77toFVbpJuOhYwh7sYI6tv17hNhaWwd6e9fD7zA4dvVvgMVs9kNTMHWaLhxE6FrWV5NQKQf4nTGXYih6PPa4uvJov3F9i+7C2PVNbbVv+go48bpBFq5h+0X8sdyXLtg74ZxYy47qDIuxFKB0UP709u4xeLGnBtIG/LE3L/joWpiBHo/2ZpK0Z/lrEQinvDtqGSFQ60Q4SG8C6g8Vmq1D1HVwI8gbB8cWFXhi44QTzWtlUygVIUC1ZL5+X2Xj9jw4H2pt76w=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(366004)(122000001)(38100700002)(2906002)(8936002)(38070700005)(966005)(6486002)(64756008)(508600001)(33656002)(86362001)(83380400001)(6506007)(53546011)(66946007)(6916009)(5660300002)(8676002)(66446008)(76116006)(66556008)(4326008)(91956017)(36756003)(66476007)(6512007)(2616005)(316002)(186003)(71200400001)(54906003)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?bhVLRdvnzUwkooTJPd+443srf8AmffQUjH3pZ48sb1qybfYyNAyuuQAhXoPW?=
- =?us-ascii?Q?eFaTNtlibg5nCPUP4ZGpu7pKPe462Ghj/9u7wN3CAdxv4hlrWUv+MucBOqdW?=
- =?us-ascii?Q?1346qBrROfg9WrAKWJbmDKyX/MePN1VtJP8qAZc07oUaKsYC4sUxwRS/882o?=
- =?us-ascii?Q?xkFd+9QWSQ1kaq/OpQnO6f55IOl2G6TLdGE/7/k6Uwx/pH6rvAFSjoG+mus8?=
- =?us-ascii?Q?Yij0p2iq3j1fU8H+xV2FHYgdiPEQhF+w6GTa37g2En5IuEJjX0eXCfbZV9+D?=
- =?us-ascii?Q?XkjgiWHPqALNDdvbzSiYtVx7fuzIIOlAyNHMrUEtp3xs0uFLh6cfB5m7gs7M?=
- =?us-ascii?Q?/vIsNvOOaNZo4HdLt/ykBYmqzVAeJqsbRFmup/4BOM5KwmF1j7rSAP1DQFSb?=
- =?us-ascii?Q?bhqaqX0syARL27UPaWZ6eYCwmGcrH30Wnj+WwrQnCJQ++jiCI+k3TiCg9KvR?=
- =?us-ascii?Q?bm6jla5jj4hi2eoQ9n5ksCk9TWO25DjmelGGJZxFPygmp5qcQOkeAIrFqLqC?=
- =?us-ascii?Q?He4T2GXGn1g8+EWDrTB7Aitx0wf42Tl8kUa9/iOlasY8o9FyCS7nDEMZjr+M?=
- =?us-ascii?Q?Cjw8aHhL6lewH4ctG5IuOOxrd01ZvttvSoqqzLiNUYOHLkS6epNDJf2mp+tM?=
- =?us-ascii?Q?AainmodLFgH3axeiMxgNo6u2LACt+giNi7nR5sa0B1uvCyshbe9a5lby1TGq?=
- =?us-ascii?Q?kt8uulnuhnBJOvLd/Eg9s6gOuYU91SPBGZGJsd/o8e7px4po63HwZHLO9/Mt?=
- =?us-ascii?Q?Ir0skrfVrQAvClo5qdigFe/dyNWZhXEOz8ygvu15Lk3nBL+eVTPbPb91orLD?=
- =?us-ascii?Q?D+vpRrpFqYy6iQJUQQSu7xlyFJIQlMT01QfH9qNlPsc+ncIT4NSJ2o+kZHjD?=
- =?us-ascii?Q?NXn7CPT54vT+AuFVCZ4ccaYgKb4NENxnJVf0JPq8s0fbswCASbqYwWa+hh29?=
- =?us-ascii?Q?fBYepW+LBbipMq2TGj+ay6BJwAc4FLCLRif2mC+zDA0vOGMXYYM51XqUsBzU?=
- =?us-ascii?Q?E4Jdys3HPSAjWpaLEpeyRNEVaeQ2F9BoXeyLceItRp3uCNIz90Aq0iF7pic+?=
- =?us-ascii?Q?u1c+Q/HU2fs1TwsDHZfpQQLKtDf7rQswyT3AdTbgF1KXOvnu2RHE3NMd4pvA?=
- =?us-ascii?Q?8REpNv6frR+7f4sEBjhkH00I3QtnmYdI4O/V0bPXwZ+hZCfJPmqkMlJz3Ls/?=
- =?us-ascii?Q?Zp7z3LQMF5vNjtLT3r5K1msS3tFwiYynl0AcRWXtCXFRgz0Ui/dq1Zvkq2CU?=
- =?us-ascii?Q?v5WSBbNEcsewlzji/pzhRAQuOg8ZOEV+bka3k/U8LDG8Ab7Ri1InH7PHG3/Y?=
- =?us-ascii?Q?qsX+3fK+nf21g0qbA4RwmNKCI+OZ2pTFVu2supwLLt+IHfS/fma3K4viALSu?=
- =?us-ascii?Q?Y080TWcFf4snYA2c0Te6s0OXpkEFtRRGZTY7xBsdTJ6d4dpYuniJCf4jU1QH?=
- =?us-ascii?Q?b++hOTzMqmZ89aObRejItaoGzSnqwweT59XNOA9guK8RgFiYLHpmpv0m9m98?=
- =?us-ascii?Q?rhLCef3jBvPbG8SQQ0h6Xers2qbEep8aeX9Nwn4STMFqYDcqoiJi4VfX9NEX?=
- =?us-ascii?Q?ZSHwAgf9pSi1AE9Y+0ELxGvihbD0R+abnRI46KDhP5GLGxBGjQCJMHcJyPkt?=
- =?us-ascii?Q?Ra3HR5ijGjggv+DpLmDUglR3lNNzdB3ZaidcLiB9ivVsF85ZrUbqI4VEHC6K?=
- =?us-ascii?Q?AWlElEENQMjq69FLsUuQ/Dir9flzSFm1TBZ8+hXRYttqv4lb9ogOBNZ0Kf+g?=
- =?us-ascii?Q?85NJoEYgY538yR+IVvmacvSJ/JLEDz0qKPIybOfKdiIKWky3yBQ5?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <8C1086EE61AE534EA4E774246CE03A46@namprd15.prod.outlook.com>
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 16b2b62a-21d8-4da6-12be-08da4efbabb1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jun 2022 18:20:05.0144
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: dz5H+D/e7LvbhWYYNg+9I0MuInH5I0Ef8f/0+0U+jStFDNTOzqOhc5XuWLWDo4Y793lfhqYGYYv6mHvoheCYtQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB3452
-X-Proofpoint-ORIG-GUID: nSC4qTyVm3WsXHzuWpzEW60oduh2NMPT
-X-Proofpoint-GUID: nSC4qTyVm3WsXHzuWpzEW60oduh2NMPT
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S1348813AbiFOTgh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jun 2022 15:36:37 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39BBD4C43A;
+        Wed, 15 Jun 2022 12:36:36 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id c2so17659057edf.5;
+        Wed, 15 Jun 2022 12:36:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VvNrl1qIZ7QjwGn1p8grj8G4avQd4JwfaXvIgRnwt/A=;
+        b=XdJCz4NqeMUuVACaqDP/ajWeM22aRypRPvgr/IGNfLpAoqEo9zGYhos58kutmuFBEF
+         7D6nLPqm7YmnfLuGCPQgbuyW7M7gPTHFVRasbgmGgXu+a3UMPfAYbgsvZLfrg4omeVIM
+         kDAjzPCdpotcvfN5cxjN/pMGLm59+YsRknN9B+4ZsGoQ5P6S8EHwWHtsExbf0vQZEaRb
+         6TpXp/E7E6KWoyVv53KJ/wkcUWaZ6QP7DkeUIpPdCjWM/pzbycdZu4enfApqQCZ5dpAE
+         wMR0ainBo6OeScNSrWFKQGgFBOW4sUP0qeU4WRz1gcY+Ot2U8NgRgqwWTw0QWixRzps7
+         NjdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VvNrl1qIZ7QjwGn1p8grj8G4avQd4JwfaXvIgRnwt/A=;
+        b=1zMJEcO/pwiGcISjKaDKpxgpjYIvn8G9U/sf5wk2oKoATGaGQf4l0RcxNTlDcEJ8j7
+         0yyL9LFewi3urqjynPRLWj42gzhLumoIuFxXp1ZRMHOMXv70mGVYjy9lVWOvw8Ylc45I
+         HVeHt+8LWQpD6pnKTQReNKMh/wb0W/KnoTU7JDpntm9xfNKGEarR2B3VjJRwvASvOS5l
+         YIJvz2/eLyj+IgfU7PQEEuly9j5ZNL4YvPbm+PFPDRCKO7/WHB40YB2cBvoSLOp4uPF+
+         Pbel4vYjSw6Gc/YFh8qp30/yUcr4pm+4VP1LTBB1a/gqKFePWa5Zyg4TujJHISua5q2g
+         EUdg==
+X-Gm-Message-State: AJIora/S1GGCszy7UigrfHq6ZwG6mRpjAsKgM0psryJmr5508l+bwWDu
+        vQsEG23CTFCekINYnpyZVrE=
+X-Google-Smtp-Source: AGRyM1tltrcxSMuKIzv3wKCaikT0S09DjDKhN+HJSKQk0rOZ2PGVyPn1e1ertCwAPbokM9ouEAZ3Tw==
+X-Received: by 2002:a05:6402:1e8b:b0:41c:59f6:2c26 with SMTP id f11-20020a0564021e8b00b0041c59f62c26mr1754577edf.156.1655321794640;
+        Wed, 15 Jun 2022 12:36:34 -0700 (PDT)
+Received: from krava ([83.240.63.226])
+        by smtp.gmail.com with ESMTPSA id h7-20020a05640250c700b004315f96fd24sm42257edb.31.2022.06.15.12.36.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jun 2022 12:36:34 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Wed, 15 Jun 2022 21:36:32 +0200
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Jiri Olsa <olsajiri@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCHv4 bpf-next 0/2] perf tools: Fix prologue generation
+Message-ID: <Yqo0wMcrUmcZR0f3@krava>
+References: <20220603204509.15044-1-jolsa@kernel.org>
+ <CAEf4BzbT4Z=B2hZxTQf1MrCp6TGiMgP+_t7p8G5A+RdVyNP+8w@mail.gmail.com>
+ <YqOOsL8EbbO3lhmC@kernel.org>
+ <CAEf4BzaKP8MHtGZDVSpwbCxNUD4zY9wkjEa4HKR0LWxYKW5cGQ@mail.gmail.com>
+ <YqOvYo1tp32gKviM@krava>
+ <YqYTZVa44Y6RQ11W@krava>
+ <Yqn6R2BA12U6Ftzt@kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.517,FMLib:17.11.64.514
- definitions=2022-06-15_15,2022-06-15_01,2022-02-23_01
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Yqn6R2BA12U6Ftzt@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-> On Jun 9, 2022, at 12:29 PM, Dmitrii Dolgov <9erthalion6@gmail.com> wrote:
+On Wed, Jun 15, 2022 at 12:27:03PM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Sun, Jun 12, 2022 at 06:25:09PM +0200, Jiri Olsa escreveu:
+> > so the problem is that we prepend init proglogue instructions
+> > for each program not just for the one that needs it, so it will
+> > mismatch later on.. the fix below makes it work for me
 > 
-> Enable specifying maxactive for fd based kretprobe. This will be useful
-> for tracing tools like bcc and bpftrace (see for example discussion [1]).
-> Use highest 12 bit (bit 52-63) to allow maximal maxactive of 4095.
+> > Arnaldo,
+> > I squashed and pushed the change below changes to my bpf/depre
+> > branch, could you please retest?
 > 
-> The original patch [2] seems to be fallen through the cracks and wasn't
-> applied. I've merely rebased the work done by Song Liu and verififed it
-> still works.
+> Before:
 > 
-> [1]: https://github.com/iovisor/bpftrace/issues/835
-> [2]: https://lore.kernel.org/all/20191007223111.1142454-1-songliubraving@fb.com/
-
-Thanks for pulling this out of the cracks. :)
-
-Since there isn't much change from [2], I think this should still show 
-"From:" me, and with "Signed-off-by" both of us. 
-
-And a nit below:
-
-Thanks,
-Song
-
+> [acme@quaco perf-urgent]$ git log --oneline -5
+> e2cf9d315f90670f (HEAD -> perf/urgent, five/perf/urgent) perf test topology: Use !strncmp(right platform) to fix guest PPC comparision check
+> 42e4fb08ff987b50 perf test: Record only user callchains on the "Check Arm64 callgraphs are complete in fp mode" test
+> 819d5c3cf75d0f95 perf beauty: Update copy of linux/socket.h with the kernel sources
+> ebdc02b3ece8238b perf test: Fix variable length array undefined behavior in bp_account
+> 8ff58c35adb7f118 libperf evsel: Open shouldn't leak fd on failure
+> [acme@quaco perf-urgent]$ sudo su -
+> [root@quaco ~]# perf -v
+> perf version 5.19.rc2.ge2cf9d315f90
+> [root@quaco ~]# perf test bpf
+>  40: LLVM search and compile                                         :
+>  40.1: Basic BPF llvm compile                                        : Ok
+>  40.3: Compile source for BPF prologue generation                    : Ok
+>  40.4: Compile source for BPF relocation                             : Ok
+>  42: BPF filter                                                      :
+>  42.1: Basic BPF filtering                                           : Ok
+>  42.2: BPF pinning                                                   : Ok
+>  42.3: BPF prologue generation                                       : Ok
+>  63: Test libpfm4 support                                            :
+>  96: perf stat --bpf-counters test                                   : Ok
+> [root@quaco ~]#
 > 
-> Signed-off-by: Dmitrii Dolgov <9erthalion6@gmail.com>
-> ---
-> include/linux/trace_events.h    |  3 ++-
-> kernel/events/core.c            | 20 ++++++++++++++++----
-> kernel/trace/trace_event_perf.c |  5 +++--
-> kernel/trace/trace_kprobe.c     |  4 ++--
-> kernel/trace/trace_probe.h      |  2 +-
-> 5 files changed, 24 insertions(+), 10 deletions(-)
+> After your first patch:
 > 
-> diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-> index e6e95a9f07a5..7ca453a73252 100644
-> --- a/include/linux/trace_events.h
-> +++ b/include/linux/trace_events.h
-> @@ -850,7 +850,8 @@ extern void perf_trace_destroy(struct perf_event *event);
-> extern int  perf_trace_add(struct perf_event *event, int flags);
-> extern void perf_trace_del(struct perf_event *event, int flags);
-> #ifdef CONFIG_KPROBE_EVENTS
-> -extern int  perf_kprobe_init(struct perf_event *event, bool is_retprobe);
-> +extern int  perf_kprobe_init(struct perf_event *event, bool is_retprobe,
-> +			     int max_active);
-> extern void perf_kprobe_destroy(struct perf_event *event);
-> extern int bpf_get_kprobe_info(const struct perf_event *event,
-> 			       u32 *fd_type, const char **symbol,
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 23bb19716ad3..f0e936b3dfc4 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -9809,24 +9809,34 @@ static struct pmu perf_tracepoint = {
->  * PERF_PROBE_CONFIG_IS_RETPROBE if set, create kretprobe/uretprobe
->  *                               if not set, create kprobe/uprobe
->  *
-> - * The following values specify a reference counter (or semaphore in the
-> - * terminology of tools like dtrace, systemtap, etc.) Userspace Statically
-> - * Defined Tracepoints (USDT). Currently, we use 40 bit for the offset.
-> + * PERF_UPROBE_REF_CTR_OFFSET_* specify a reference counter (or semaphore
-> + * in the terminology of tools like dtrace, systemtap, etc.) Userspace
-> + * Statically Defined Tracepoints (USDT). Currently, we use 40 bit for the
+> [acme@quaco perf-urgent]$ git log --oneline -5 jolsa/bpf/depre
+> 9317b879db422632 (jolsa/bpf/depre) perf tools: Rework prologue generation code
+> 4d40831f29f2c9ad perf tools: Register fallback libbpf section handler
+> f913ad6559e337b4 libbpf: Fix is_pow_of_2
+> f175ece2e3436748 selftests/bpf: Fix tc_redirect_dtime
+> 7b711e721234f475 bpf, test_run: Remove unnecessary prog type checks
+> [acme@quaco perf-urgent]$ git cherry-pick 4d40831f29f2c9ad
+> [perf/urgent ab39fb6880b57507] perf tools: Register fallback libbpf section handler
+>  Author: Jiri Olsa <jolsa@kernel.org>
+>  Date: Thu Apr 21 15:22:25 2022 +0200
+>  1 file changed, 65 insertions(+), 11 deletions(-)
+> [acme@quaco perf-urgent]$
+> [acme@quaco perf-urgent]$ alias m='rm -rf ~/libexec/perf-core/ ; perf stat -e cycles:u,instructions:u make -k BUILD_BPF_SKEL=1 PYTHON=python3 O=/tmp/build/perf-urgent -C tools/perf install-bin && perf test python'
+> [acme@quaco perf-urgent]$ rm -rf /tmp/build/perf-urgent ; mkdir -p /tmp/build/perf-urgent ; m
+> <SNIP>
+>  19: 'import perf' in python                                         : Ok
+> [acme@quaco perf-urgent]$
+> [acme@quaco perf-urgent]$ sudo su -
+> [sudo] password for acme:
+> [root@quaco ~]# perf test bpf
+>  40: LLVM search and compile                                         :
+>  40.1: Basic BPF llvm compile                                        : Ok
+>  40.3: Compile source for BPF prologue generation                    : Ok
+>  40.4: Compile source for BPF relocation                             : Ok
+>  42: BPF filter                                                      :
+>  42.1: Basic BPF filtering                                           : Ok
+>  42.2: BPF pinning                                                   : Ok
+>  42.3: BPF prologue generation                                       : FAILED!
+>  63: Test libpfm4 support                                            :
+>  96: perf stat --bpf-counters test                                   : Ok
+> [root@quaco ~]#
+> 
+> perf test -v bpf later, lets see if landing the second patch fixes
+> things and this bisection problem is justified:
+> 
+> [acme@quaco perf-urgent]$ git log --oneline -5 jolsa/bpf/depre
+> 9317b879db422632 (jolsa/bpf/depre) perf tools: Rework prologue generation code
+> 4d40831f29f2c9ad perf tools: Register fallback libbpf section handler
+> f913ad6559e337b4 libbpf: Fix is_pow_of_2
+> f175ece2e3436748 selftests/bpf: Fix tc_redirect_dtime
+> 7b711e721234f475 bpf, test_run: Remove unnecessary prog type checks
+> [acme@quaco perf-urgent]$ git remote update jolsa
+> Fetching jolsa
+> [acme@quaco perf-urgent]$ git cherry-pick 9317b879db422632
+> [perf/urgent 9a36c7c94e1f596d] perf tools: Rework prologue generation code
+>  Author: Jiri Olsa <jolsa@kernel.org>
+>  Date: Mon May 9 22:46:20 2022 +0200
+>  1 file changed, 110 insertions(+), 18 deletions(-)
+> [acme@quaco perf-urgent]$
+> [acme@quaco perf-urgent]$ rm -rf /tmp/build/perf-urgent ; mkdir -p /tmp/build/perf-urgent ; m
+> <SNIP>
+>  19: 'import perf' in python                                         : Ok
+> [acme@quaco perf-urgent]$ sudo su -
+> [root@quaco ~]# perf test bpf
+>  40: LLVM search and compile                                         :
+>  40.1: Basic BPF llvm compile                                        : Ok
+>  40.3: Compile source for BPF prologue generation                    : Ok
+>  40.4: Compile source for BPF relocation                             : Ok
+>  42: BPF filter                                                      :
+>  42.1: Basic BPF filtering                                           : Ok
+>  42.2: BPF pinning                                                   : Ok
+>  42.3: BPF prologue generation                                       : Ok
+>  63: Test libpfm4 support                                            :
+>  96: perf stat --bpf-counters test                                   : Ok
+> [root@quaco ~]#
+> 
+> So it works in the end, can it be made to work after the first step? I
+> didn't check that.
 
-40 bit is not accurate anymore, let's fix it (32). 
+heya,
+so the first patch is preparation and the last one is the real fix
 
-Otherwise, LGTM. 
+at the moment it does not work without this change, so I don't
+think it's a problem for the bisect, is it?
 
-[...]
+jirka
