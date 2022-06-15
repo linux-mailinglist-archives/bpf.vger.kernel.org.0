@@ -2,258 +2,230 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31FB154C9AB
-	for <lists+bpf@lfdr.de>; Wed, 15 Jun 2022 15:23:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EA7E54CA30
+	for <lists+bpf@lfdr.de>; Wed, 15 Jun 2022 15:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231524AbiFONXD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jun 2022 09:23:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58896 "EHLO
+        id S245396AbiFONtG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jun 2022 09:49:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231396AbiFONXC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jun 2022 09:23:02 -0400
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F25D2CCB9;
-        Wed, 15 Jun 2022 06:23:01 -0700 (PDT)
-Received: by mail-vs1-xe33.google.com with SMTP id e20so11820682vso.4;
-        Wed, 15 Jun 2022 06:23:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ufNQBZt7YLp4+qQLjrX0YlyAotDuovCxEI/BTOAgdow=;
-        b=RPmWsrPI6OXi/zL3xAd1EG3vojirDTQ2g0zcI5P67tebSQvtaMm3NdxEUHDouMfymY
-         MGjOpcnxQSoPVSWyTYD9T+I1uzCvBfHx8suWAVL6xwF9BPUVR9snmC8N+pcvq8eufeOn
-         JNYZdyU9Xk4wN+9uagWuDzxmQxcZtGaEbuZK8KMdJg012nUXwj5a0q4Ko2jMS3H/syaj
-         PKZ1h5oxAvh49C8PH4pC7pjszk/gcM6Bb5WDwLquk4OxGfN2azvNonZaA0wrmiskk1q9
-         6cHb0Tqr/tt5xPVm1WTiU3W8inPmTtI4cRxHyp+iBXFTNEzsJtV76TesDCHbpTu68a9V
-         FyrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ufNQBZt7YLp4+qQLjrX0YlyAotDuovCxEI/BTOAgdow=;
-        b=BYDxx7MyFJp8XhpynDluISvciKULwc0pktFtY3OzVQhGplWypg2u7gNFA72Y5zxM+O
-         yvxWoBfy0ogZC3HFEUPZ6oggcqRQmgIQhncyUkqnFBwvXgV56lbfXy8ZYzd4ws1+5oW5
-         /57x8L87pfxZ7Qzpvofwm7pUlNwSKHLjDqUrTDE0fmI6GdkLSLlA4dMJa96gtTPRbeBM
-         EfnonMHrygb775vcJgBsJ6/I72oHF1CIjivcKSPlqMBECJrF8/UipXDVRa5OXj2AUn5p
-         YeL/9coRrV+y2uSJiUIzM2YOntvyH02kAp0zteYq98WbLGHXDAJuZ0aSiD5Wu0lx3xuB
-         P+Vg==
-X-Gm-Message-State: AJIora8MTlVTuGUcEmVWOigxBreDLqmSJZk9v5zQGIlnT8/xQvIutUzf
-        0bghsDd37WcUw5hfVBauGwFQRBXdeblx+0BiInIHByeQa7U0HA==
-X-Google-Smtp-Source: AGRyM1uEfcIF9Fmd3ZQp1J/ChJ5J63yEVU3xuacO2ZIuI/qTRlgXk5epf0slDQ/raT/Ocv0BKKNrD0bPgz/Czz+8EMA=
-X-Received: by 2002:a67:6245:0:b0:34b:977b:7d31 with SMTP id
- w66-20020a676245000000b0034b977b7d31mr4496179vsb.22.1655299380151; Wed, 15
- Jun 2022 06:23:00 -0700 (PDT)
+        with ESMTP id S238566AbiFONtE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jun 2022 09:49:04 -0400
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2048.outbound.protection.outlook.com [40.107.95.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA28A2E0BE;
+        Wed, 15 Jun 2022 06:49:02 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WMU7dkjnkMZPLQd3380ivUsKIrmI4elLm835teYfdedWjLDcWsvNWzS5Ibi0pGUqIfXMZdu15EpkAsiijq9DUMa1/4hQSK3H0qdXNy+6lsnjXoJmPTglcORpY+quKVzZfP7/qqPN/EEEzyLNAObHw7pCwwREitrJoaVxPW9IPnoNrYRQACZdltuTnoUBr7m/PzI49xxN1a3SIwFlUcPRVk8NrCWoSh1QBen62TJuURMSte04g6Wq8vdIrdjedtzRhElaaX8UvU0e30wUjhm6uLaokTYUF0jI9oyE3YmaBN1cTbmUSmUqSE3YR70nIb9b7Xg1nH8qygSZe5yhulyo2A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=B34WQPbsi0GH2dwchTh78p88CTpjN1t+3oIYgGzcWyA=;
+ b=ha/wUwTQXbS6BEPupqAtclE5c+aOezAEgIMW5/6g7ZRj2RjC4wW3M5JBXyWByGLmOGvZ/B38WDVRp/tMeS+Vw/4vUP4YO7IjvpbLLwngKAnBlg1Of0RyJ7deedcdjkjp8a9ribzyeipanhYW+zhxScf0+52CiFHX1L/JYje5Wm10O0go/rdpzDXFI5McxT8BwXAX5dXkWSGeqAj46T5rtUHvSNAVe7I5bqTgYj4VfVxYZ0tEqBOwdhpWzn3CbdeydZGryfxkFVKEACP6GACrvCvNgzCQDikwwP4QP3h7qLGfDwYN24Ud0XGzxX4xPkN2sW//PCtrxGebJMjuwZANxA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 12.22.5.234) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com; dmarc=pass
+ (p=reject sp=reject pct=100) action=none header.from=nvidia.com; dkim=none
+ (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B34WQPbsi0GH2dwchTh78p88CTpjN1t+3oIYgGzcWyA=;
+ b=pSIPcwMqt8jrFlcim2+aFNCUN0EgxZBiuIrkNvxyEMirzUurk1MzzGfsy/vC3r44IS8S5Frf9yiZqOtOiJ4nDJKT6sANEIO7F5g1KuXFDcWVOOdSpsFt/KPdjwC6R24UahHI/Yp7Cr7EYr7xC+sxrJkNCmTS2qN63hTjFMBj/D7Lk6DWox0sML+rL3SF0UjI7P3HMam+VfY0uX+jX7Tr4aNbVGoXvDNVcPOkWHYDL1gUQzikfDOFo0q3XjYNhNiVwJSkCKt3umq0OVzR0kiQ6p3YzB1TnbPxijaQyHDeappx2ePcViJhQDwCjT+xcNgb0GTdQRyq4pWEnzwEbVpJLA==
+Received: from MW4P221CA0022.NAMP221.PROD.OUTLOOK.COM (2603:10b6:303:8b::27)
+ by CH2PR12MB3989.namprd12.prod.outlook.com (2603:10b6:610:23::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5332.15; Wed, 15 Jun
+ 2022 13:49:00 +0000
+Received: from CO1NAM11FT035.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:8b:cafe::68) by MW4P221CA0022.outlook.office365.com
+ (2603:10b6:303:8b::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5332.13 via Frontend
+ Transport; Wed, 15 Jun 2022 13:49:00 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 12.22.5.234)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 12.22.5.234 as permitted sender) receiver=protection.outlook.com;
+ client-ip=12.22.5.234; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (12.22.5.234) by
+ CO1NAM11FT035.mail.protection.outlook.com (10.13.175.36) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.5332.12 via Frontend Transport; Wed, 15 Jun 2022 13:49:00 +0000
+Received: from drhqmail201.nvidia.com (10.126.190.180) by
+ DRHQMAIL101.nvidia.com (10.27.9.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.32; Wed, 15 Jun 2022 13:48:59 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by
+ drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.22; Wed, 15 Jun 2022 06:48:59 -0700
+Received: from vdi.nvidia.com (10.127.8.12) by mail.nvidia.com
+ (10.126.190.182) with Microsoft SMTP Server id 15.2.986.22 via Frontend
+ Transport; Wed, 15 Jun 2022 06:48:52 -0700
+From:   Maxim Mikityanskiy <maximmi@nvidia.com>
+To:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, <netdev@vger.kernel.org>
+CC:     Tariq Toukan <tariqt@nvidia.com>, Martin KaFai Lau <kafai@fb.com>,
+        "Song Liu" <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        "David Ahern" <dsahern@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "Jesper Dangaard Brouer" <hawk@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Nick Desaulniers" <ndesaulniers@google.com>,
+        Joe Stringer <joe@cilium.io>,
+        "Florent Revest" <revest@chromium.org>,
+        <linux-kselftest@vger.kernel.org>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+        "Kumar Kartikeya Dwivedi" <memxor@gmail.com>,
+        Florian Westphal <fw@strlen.de>, <pabeni@redhat.com>,
+        Maxim Mikityanskiy <maximmi@nvidia.com>
+Subject: [PATCH bpf-next v10 0/6] New BPF helpers to accelerate synproxy
+Date:   Wed, 15 Jun 2022 16:48:41 +0300
+Message-ID: <20220615134847.3753567-1-maximmi@nvidia.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20220610112648.29695-1-quentin@isovalent.com> <20220610112648.29695-2-quentin@isovalent.com>
- <YqNsWAH24bAIPjqy@google.com> <cb05a59e-07d5-ddd1-b028-82133faaf67e@isovalent.com>
- <CAKH8qBvvq0f+D8BXChw_8krH896J_cYg0yhRfnDOSO_U1n394w@mail.gmail.com>
- <71b56050-11ad-bd06-09c9-1a8c61b4c1b4@isovalent.com> <CAKH8qBsFyakQRd1q6XWggdv4F5+HrHoC4njg9jQFDOfq+kRBCQ@mail.gmail.com>
- <CALOAHbCvWzOJ169fPTCp1KsFpkEVukKgGnH4mDeYGOEv6hsEpQ@mail.gmail.com> <e9aa57d2-4ce7-23f2-0ba1-ea58f3254353@isovalent.com>
-In-Reply-To: <e9aa57d2-4ce7-23f2-0ba1-ea58f3254353@isovalent.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Wed, 15 Jun 2022 21:22:23 +0800
-Message-ID: <CALOAHbDDx_xDeUk8R+y-aREX9KMRbo+CqCV7m5dADdvijuHRQw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] Revert "bpftool: Use libbpf 1.0 API mode
- instead of RLIMIT_MEMLOCK"
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Stanislav Fomichev <sdf@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Harsh Modi <harshmodi@google.com>,
-        Paul Chaignon <paul@cilium.io>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d71aa688-9ce3-4a68-8fe6-08da4ed5cd0c
+X-MS-TrafficTypeDiagnostic: CH2PR12MB3989:EE_
+X-Microsoft-Antispam-PRVS: <CH2PR12MB39894BF0198A254B7D5B4B83DCAD9@CH2PR12MB3989.namprd12.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9IqRiyx8qZus8u4qX32yjyNagtFPOZWKpKRgvuSya8KsQjPL9qhnMRqkSgI/ZPfvna4T3K4nNi7l+kAL+19sOQGlZXOJTE0dX3a8czYSP6/7o7lZw5gZPWBh2eNl0Z3VBm0gTOSdby+lmV9p/ZerGDinXeRqna2wrcRpnhQK8W/9bQkkEJscPqE4S2NwnFOipk5HJU6BwzbR5iGoAFXoq/wGeIqqC2wgfK7x/q373Po3e+/2fGSI9wXAA8wsqu7gM7jXhEFYJO1vkY789+JlCVXIVxUiTENKi6KycRK8sKV8bDRzCu+exr0juI4mRRgLFlId5bRDKdfKD1gpv9GR4Bb2L4R3DgHqv6McddYOPn0FX1TbpVnoaWZWBIuDH+qJNmZDJTswuPjzQmowU5mJBgFYsqZOdXhanp0RTzdpTvH+dTanrBRnaYDC4yF4MSpT399/cTGxsqTQsS8TAD8gm52mRl4Mev2c0O7y/eKUWdNDxJ/r7HufSBgh0o4s624ODGmYoewjuHbAXe1Yfj+tTuDp13vH5a3ZM111TAswJcbH5XyRgE5+CCEuhYuxJ24SXiBH03XW1FQX6qAohHRB2de9hXmRM4R2EX9tFa8ft01THzP1UkkdK2LgOFfAEprJq8pntwIs8GTSJGfzwleoUQ/WG45KLKRANX1l2askyte745jfWg31zToHs3fUv3sm1M4tW1jh2Mcs6w5X+K2AYE5iw1ESqj0xCG1kewoUq2XnclbTUjNcY9yu9ekapxc9cM1XDovTWjoll++GgKE0I/EnYvKCO4jE6e7EbHlChAEcLE4go7/zXx3qbRkJc7wbu5U6Yc7juLl3SE900Igv2A==
+X-Forefront-Antispam-Report: CIP:12.22.5.234;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:InfoNoRecords;CAT:NONE;SFS:(13230016)(4636009)(46966006)(40470700004)(36840700001)(186003)(7416002)(47076005)(8936002)(426003)(356005)(82310400005)(83380400001)(36860700001)(336012)(5660300002)(2906002)(966005)(36756003)(81166007)(508600001)(86362001)(8676002)(2616005)(40460700003)(7696005)(70206006)(316002)(70586007)(26005)(54906003)(110136005)(107886003)(6666004)(4326008)(1076003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jun 2022 13:49:00.0405
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d71aa688-9ce3-4a68-8fe6-08da4ed5cd0c
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[12.22.5.234];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT035.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB3989
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 14, 2022 at 10:20 PM Quentin Monnet <quentin@isovalent.com> wrote:
->
-> 2022-06-14 20:37 UTC+0800 ~ Yafang Shao <laoar.shao@gmail.com>
-> > On Sat, Jun 11, 2022 at 1:17 AM Stanislav Fomichev <sdf@google.com> wrote:
-> >>
-> >> On Fri, Jun 10, 2022 at 10:00 AM Quentin Monnet <quentin@isovalent.com> wrote:
-> >>>
-> >>> 2022-06-10 09:46 UTC-0700 ~ Stanislav Fomichev <sdf@google.com>
-> >>>> On Fri, Jun 10, 2022 at 9:34 AM Quentin Monnet <quentin@isovalent.com> wrote:
-> >>>>>
-> >>>>> 2022-06-10 09:07 UTC-0700 ~ sdf@google.com
-> >>>>>> On 06/10, Quentin Monnet wrote:
-> >>>>>>> This reverts commit a777e18f1bcd32528ff5dfd10a6629b655b05eb8.
-> >>>>>>
-> >>>>>>> In commit a777e18f1bcd ("bpftool: Use libbpf 1.0 API mode instead of
-> >>>>>>> RLIMIT_MEMLOCK"), we removed the rlimit bump in bpftool, because the
-> >>>>>>> kernel has switched to memcg-based memory accounting. Thanks to the
-> >>>>>>> LIBBPF_STRICT_AUTO_RLIMIT_MEMLOCK, we attempted to keep compatibility
-> >>>>>>> with other systems and ask libbpf to raise the limit for us if
-> >>>>>>> necessary.
-> >>>>>>
-> >>>>>>> How do we know if memcg-based accounting is supported? There is a probe
-> >>>>>>> in libbpf to check this. But this probe currently relies on the
-> >>>>>>> availability of a given BPF helper, bpf_ktime_get_coarse_ns(), which
-> >>>>>>> landed in the same kernel version as the memory accounting change. This
-> >>>>>>> works in the generic case, but it may fail, for example, if the helper
-> >>>>>>> function has been backported to an older kernel. This has been observed
-> >>>>>>> for Google Cloud's Container-Optimized OS (COS), where the helper is
-> >>>>>>> available but rlimit is still in use. The probe succeeds, the rlimit is
-> >>>>>>> not raised, and probing features with bpftool, for example, fails.
-> >>>>>>
-> >>>>>>> A patch was submitted [0] to update this probe in libbpf, based on what
-> >>>>>>> the cilium/ebpf Go library does [1]. It would lower the soft rlimit to
-> >>>>>>> 0, attempt to load a BPF object, and reset the rlimit. But it may induce
-> >>>>>>> some hard-to-debug flakiness if another process starts, or the current
-> >>>>>>> application is killed, while the rlimit is reduced, and the approach was
-> >>>>>>> discarded.
-> >>>>>>
-> >>>>>>> As a workaround to ensure that the rlimit bump does not depend on the
-> >>>>>>> availability of a given helper, we restore the unconditional rlimit bump
-> >>>>>>> in bpftool for now.
-> >>>>>>
-> >>>>>>> [0]
-> >>>>>>> https://lore.kernel.org/bpf/20220609143614.97837-1-quentin@isovalent.com/
-> >>>>>>> [1] https://github.com/cilium/ebpf/blob/v0.9.0/rlimit/rlimit.go#L39
-> >>>>>>
-> >>>>>>> Cc: Yafang Shao <laoar.shao@gmail.com>
-> >>>>>>> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-> >>>>>>> ---
-> >>>>>>>   tools/bpf/bpftool/common.c     | 8 ++++++++
-> >>>>>>>   tools/bpf/bpftool/feature.c    | 2 ++
-> >>>>>>>   tools/bpf/bpftool/main.c       | 6 +++---
-> >>>>>>>   tools/bpf/bpftool/main.h       | 2 ++
-> >>>>>>>   tools/bpf/bpftool/map.c        | 2 ++
-> >>>>>>>   tools/bpf/bpftool/pids.c       | 1 +
-> >>>>>>>   tools/bpf/bpftool/prog.c       | 3 +++
-> >>>>>>>   tools/bpf/bpftool/struct_ops.c | 2 ++
-> >>>>>>>   8 files changed, 23 insertions(+), 3 deletions(-)
-> >>>>>>
-> >>>>>>> diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
-> >>>>>>> index a45b42ee8ab0..a0d4acd7c54a 100644
-> >>>>>>> --- a/tools/bpf/bpftool/common.c
-> >>>>>>> +++ b/tools/bpf/bpftool/common.c
-> >>>>>>> @@ -17,6 +17,7 @@
-> >>>>>>>   #include <linux/magic.h>
-> >>>>>>>   #include <net/if.h>
-> >>>>>>>   #include <sys/mount.h>
-> >>>>>>> +#include <sys/resource.h>
-> >>>>>>>   #include <sys/stat.h>
-> >>>>>>>   #include <sys/vfs.h>
-> >>>>>>
-> >>>>>>> @@ -72,6 +73,13 @@ static bool is_bpffs(char *path)
-> >>>>>>>       return (unsigned long)st_fs.f_type == BPF_FS_MAGIC;
-> >>>>>>>   }
-> >>>>>>
-> >>>>>>> +void set_max_rlimit(void)
-> >>>>>>> +{
-> >>>>>>> +    struct rlimit rinf = { RLIM_INFINITY, RLIM_INFINITY };
-> >>>>>>> +
-> >>>>>>> +    setrlimit(RLIMIT_MEMLOCK, &rinf);
-> >>>>>>
-> >>>>>> Do you think it might make sense to print to stderr some warning if
-> >>>>>> we actually happen to adjust this limit?
-> >>>>>>
-> >>>>>> if (getrlimit(MEMLOCK) != RLIM_INFINITY) {
-> >>>>>>     fprintf(stderr, "Warning: resetting MEMLOCK rlimit to
-> >>>>>>     infinity!\n");
-> >>>>>>     setrlimit(RLIMIT_MEMLOCK, &rinf);
-> >>>>>> }
-> >>>>>>
-> >>>>>> ?
-> >>>>>>
-> >>>>>> Because while it's nice that we automatically do this, this might still
-> >>>>>> lead to surprises for some users. OTOH, not sure whether people
-> >>>>>> actually read those warnings? :-/
-> >>>>>
-> >>>>> I'm not strictly opposed to a warning, but I'm not completely sure this
-> >>>>> is desirable.
-> >>>>>
-> >>>>> Bpftool has raised the rlimit for a long time, it changed only in April,
-> >>>>> so I don't think it would come up as a surprise for people who have used
-> >>>>> it for a while. I think this is also something that several other
-> >>>>> BPF-related applications (BCC I think?, bpftrace, Cilium come to mind)
-> >>>>> have been doing too.
-> >>>>
-> >>>> In this case ignore me and let's continue doing that :-)
-> >>>>
-> >>>> Btw, eventually we'd still like to stop doing that I'd presume?
-> >>>
-> >>> Agreed. I was thinking either finding a way to improve the probe in
-> >>> libbpf, or waiting for some more time until 5.11 gets old, but this may
-> >>> take years :/
-> >>>
-> >>>> Should
-> >>>> we at some point follow up with something like:
-> >>>>
-> >>>> if (kernel_version >= 5.11) { don't touch memlock; }
-> >>>>
-> >>>> ?
-> >>>>
-> >>>> I guess we care only about <5.11 because of the backports, but 5.11+
-> >>>> kernels are guaranteed to have memcg.
-> >>>
-> >>> You mean from uname() and parsing the release? Yes I suppose we could do
-> >>> that, can do as a follow-up.
-> >>
-> >> Yeah, uname-based, I don't think we can do better? Given that probing
-> >> is problematic as well :-(
-> >> But idk, up to you.
-> >>
-> >
-> > Agreed with the uname-based solution. Another possible solution is to
-> > probe the member 'memcg' in struct bpf_map, in case someone may
-> > backport memcg-based  memory accounting, but that will be a little
-> > over-engineering. The uname-based solution is simple and can work.
-> >
->
-> Thanks! Yes, memcg would be more complex: the struct is not exposed to
-> user space, and BTF is not a hard dependency for bpftool. I'll work on
-> the uname-based test as a follow-up to this set.
->
+The first patch of this series is a documentation fix.
 
-After a second thought, the uname-based test may not work, because
-CONFIG_MEMCG_KMEM can be disabled.
-Maybe we can probe the member 'memcg' in struct bpf_map by parsing
-/sys/kernel/btf/vmlinux:
-[8584] STRUCT 'bpf_map' size=256 vlen=27
-        'ops' type_id=8659 bits_offset=0
-        'inner_map_meta' type_id=8587 bits_offset=64
-        'security' type_id=93 bits_offset=128
-        'map_type' type_id=8532 bits_offset=192
-        'key_size' type_id=36 bits_offset=224
-        'value_size' type_id=36 bits_offset=256
-        'max_entries' type_id=36 bits_offset=288
-        'map_extra' type_id=38 bits_offset=320
-        'map_flags' type_id=36 bits_offset=384
-        'spin_lock_off' type_id=21 bits_offset=416
-        'timer_off' type_id=21 bits_offset=448
-        'id' type_id=36 bits_offset=480
-        'numa_node' type_id=21 bits_offset=512
-        'btf_key_type_id' type_id=36 bits_offset=544
-        'btf_value_type_id' type_id=36 bits_offset=576
-        'btf_vmlinux_value_type_id' type_id=36 bits_offset=608
-        'btf' type_id=8660 bits_offset=640
-        'memcg' type_id=687 bits_offset=704                       <<<< here
-        'name' type_id=337 bits_offset=768
-        'bypass_spec_v1' type_id=63 bits_offset=896
-        'frozen' type_id=63 bits_offset=904
-        'refcnt' type_id=81 bits_offset=1024
-        'usercnt' type_id=81 bits_offset=1088
-        'work' type_id=484 bits_offset=1152
-        'freeze_mutex' type_id=443 bits_offset=1408
-        'writecnt' type_id=81 bits_offset=1664
-        'owner' type_id=8658 bits_offset=1728
+The second patch allows BPF helpers to accept memory regions of fixed
+size without doing runtime size checks.
 
-If 'memcg' exists, it is memcg-based, otherwise it is rlimit-based.
+The two next patches add new functionality that allows XDP to
+accelerate iptables synproxy.
 
-WDYT?
+v1 of this series [1] used to include a patch that exposed conntrack
+lookup to BPF using stable helpers. It was superseded by series [2] by
+Kumar Kartikeya Dwivedi, which implements this functionality using
+unstable helpers.
+
+The third patch adds new helpers to issue and check SYN cookies without
+binding to a socket, which is useful in the synproxy scenario.
+
+The fourth patch adds a selftest, which includes an XDP program and a
+userspace control application. The XDP program uses socketless SYN
+cookie helpers and queries conntrack status instead of socket status.
+The userspace control application allows to tune parameters of the XDP
+program. This program also serves as a minimal example of usage of the
+new functionality.
+
+The last two patches expose the new helpers to TC BPF and extend the
+selftest.
+
+The draft of the new functionality was presented on Netdev 0x15 [3].
+
+v2 changes:
+
+Split into two series, submitted bugfixes to bpf, dropped the conntrack
+patches, implemented the timestamp cookie in BPF using bpf_loop, dropped
+the timestamp cookie patch.
+
+v3 changes:
+
+Moved some patches from bpf to bpf-next, dropped the patch that changed
+error codes, split the new helpers into IPv4/IPv6, added verifier
+functionality to accept memory regions of fixed size.
+
+v4 changes:
+
+Converted the selftest to the test_progs runner. Replaced some
+deprecated functions in xdp_synproxy userspace helper.
+
+v5 changes:
+
+Fixed a bug in the selftest. Added questionable functionality to support
+new helpers in TC BPF, added selftests for it.
+
+v6 changes:
+
+Wrap the new helpers themselves into #ifdef CONFIG_SYN_COOKIES, replaced
+fclose with pclose and fixed the MSS for IPv6 in the selftest.
+
+v7 changes:
+
+Fixed the off-by-one error in indices, changed the section name to
+"xdp", added missing kernel config options to vmtest in CI.
+
+v8 changes:
+
+Properly rebased, dropped the first patch (the same change was applied
+by someone else), updated the cover letter.
+
+v9 changes:
+
+Fixed selftests for no_alu32.
+
+v10 changes:
+
+Selftests for s390x were blacklisted due to lack of support of kfunc,
+rebased the series, split selftests to separate commits, created
+ARG_PTR_TO_FIXED_SIZE_MEM and packed arg_size, addressed the rest of
+comments.
+
+[1]: https://lore.kernel.org/bpf/20211020095815.GJ28644@breakpoint.cc/t/
+[2]: https://lore.kernel.org/bpf/20220114163953.1455836-1-memxor@gmail.com/
+[3]: https://netdevconf.info/0x15/session.html?Accelerating-synproxy-with-XDP
+
+Maxim Mikityanskiy (6):
+  bpf: Fix documentation of th_len in bpf_tcp_{gen,check}_syncookie
+  bpf: Allow helpers to accept pointers with a fixed size
+  bpf: Add helpers to issue and check SYN cookies in XDP
+  selftests/bpf: Add selftests for raw syncookie helpers
+  bpf: Allow the new syncookie helpers to work with SKBs
+  selftests/bpf: Add selftests for raw syncookie helpers in TC mode
+
+ include/linux/bpf.h                           |  13 +
+ include/net/tcp.h                             |   1 +
+ include/uapi/linux/bpf.h                      |  88 +-
+ kernel/bpf/verifier.c                         |  43 +-
+ net/core/filter.c                             | 128 +++
+ net/ipv4/tcp_input.c                          |   3 +-
+ scripts/bpf_doc.py                            |   4 +
+ tools/include/uapi/linux/bpf.h                |  88 +-
+ tools/testing/selftests/bpf/.gitignore        |   1 +
+ tools/testing/selftests/bpf/Makefile          |   3 +-
+ .../selftests/bpf/prog_tests/xdp_synproxy.c   | 183 ++++
+ .../selftests/bpf/progs/xdp_synproxy_kern.c   | 833 ++++++++++++++++++
+ tools/testing/selftests/bpf/xdp_synproxy.c    | 466 ++++++++++
+ 13 files changed, 1833 insertions(+), 21 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c
+ create mode 100644 tools/testing/selftests/bpf/xdp_synproxy.c
 
 -- 
-Regards
-Yafang
+2.30.2
+
