@@ -2,115 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91CDA54D239
-	for <lists+bpf@lfdr.de>; Wed, 15 Jun 2022 22:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E95454D27D
+	for <lists+bpf@lfdr.de>; Wed, 15 Jun 2022 22:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231737AbiFOUBj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jun 2022 16:01:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60512 "EHLO
+        id S237904AbiFOU0N (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jun 2022 16:26:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231604AbiFOUBd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jun 2022 16:01:33 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC6D93EB96;
-        Wed, 15 Jun 2022 13:01:31 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id h23so25297048ejj.12;
-        Wed, 15 Jun 2022 13:01:31 -0700 (PDT)
+        with ESMTP id S232127AbiFOU0M (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jun 2022 16:26:12 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E53515A0
+        for <bpf@vger.kernel.org>; Wed, 15 Jun 2022 13:26:11 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-313bc9c54acso61874097b3.4
+        for <bpf@vger.kernel.org>; Wed, 15 Jun 2022 13:26:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hIlp8V9Q8v6hu5DNptd3+GZdAUxwOd6BVN7T3SmNAC0=;
-        b=GludlRjE3UvJ9aeG2sXp9y0eSoTdXTV8d0YUkjkL3rUOGggpigV7Rg4z31Rfu7ogjS
-         zt7i9NoaUmf5YZSrJvEOlY11za6NPfgEI17l5lgltsou3m7D+VP86CAg69La1QeWHu0R
-         ev3ziHbuWozAGUvPu9pS3ZxWUvcJHT9S9EraYMdKV5811qkvIg0Odc3Q2zzWDjPpl8tC
-         mT9DJKXsABfokUYUX/f4vGs9Nn0CrAzGfxq0uPRI5Qu7SgBn3tCtJtcb3byCx8fDlyy4
-         SRpbZWmmPkg1geBtCxxhnoZceVHevBE7QCO+HErOsAzbbOXjCwt5RDZbd5UU16TUwjlj
-         B3iQ==
+        d=google.com; s=20210112;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc:content-transfer-encoding;
+        bh=c4vJ9F4RUqydpkYcTxY+nie+eEJvDNr5fBTNv3Yvpn8=;
+        b=OLGnCavk8OlJCcND4aEW4fUS6FExhYPMNVZrY8ehyi9VvK8mpglblNs9RXsKt6tmLh
+         776q67KMmP3G9ox7aggWGf6ciPEcMG5gaDg9bnfb6v8qMTS3m7WFuquQFH5p4ekluobg
+         sSFV1D86dU/s5Z+gtEIajyWkcBSBV6HR0jpXRgkaKopwFHAGcRDx6r8kj6VIYq0qobPL
+         wiD4Dla7rIpBEx3RWQxfIZ1L+HeNqAcSVmLXa0GzYqjTox2Rjl5qnKx/lOGzdYaVE+fW
+         ba+BWsDKKViwwp8wJhHwH+qszOagnZsbmHHKzZqKD9O+WfujBMPkNMvNiRgcYCncxQLT
+         ciog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hIlp8V9Q8v6hu5DNptd3+GZdAUxwOd6BVN7T3SmNAC0=;
-        b=AekOZd3Tziz/YDt3FVhBJg/vdLj5w87A346TFAZD04qbQKxZHpldVWybdnaMNd9vx/
-         wsaoNr8574ZhbOpneTMnLWSNni2HyhWZxOWECqDbv2rVSqTbxwLt8Y9jafyMmD1qLFk0
-         OiZrhFfgIYrFSmRKLPwKkrxP76mfwNvzeWasX9erdp9ZZTyvuHcyzYrSprb28MpW44II
-         uFFTzaab7TOYoI3B35uX8FEK/P/RGYoqNnH+X5dXdRkH7e7CaWWczVGS8EP+4IxUdSME
-         joPzPXbXfKa0OLWTrtWrMrEAoVimRN6g2865q7Ga/GXiPi+qEWDE6goWbQTsFLh6+77T
-         rLHw==
-X-Gm-Message-State: AJIora8aPa/yTgndf7VJbSUpAhxg5LALdQd+DlMQ4D7w3FB+4LLaJzz8
-        si2HEXgWwZcPZTrJWggBEvg=
-X-Google-Smtp-Source: AGRyM1vborzrD0jc6uxsycNAdKtdxUFE1HBGt7Xa82xesY7UIGRgX0JHwkHieFpgybdVVoOtXFsFKQ==
-X-Received: by 2002:a17:907:a064:b0:711:c819:3cbf with SMTP id ia4-20020a170907a06400b00711c8193cbfmr1419984ejc.460.1655323290449;
-        Wed, 15 Jun 2022 13:01:30 -0700 (PDT)
-Received: from erthalion.local (dslb-094-222-028-039.094.222.pools.vodafone-ip.de. [94.222.28.39])
-        by smtp.gmail.com with ESMTPSA id z18-20020a170906241200b006f3ef214da8sm6859880eja.14.2022.06.15.13.01.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jun 2022 13:01:29 -0700 (PDT)
-Date:   Wed, 15 Jun 2022 22:00:29 +0200
-From:   Dmitry Dolgov <9erthalion6@gmail.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc:content-transfer-encoding;
+        bh=c4vJ9F4RUqydpkYcTxY+nie+eEJvDNr5fBTNv3Yvpn8=;
+        b=tG5qsbeFn3uJw9BuFx47Bb3e5bMyhPUevEb1zf9Gtff08COtJVCghzcWiElomXuAz0
+         Q1RThVQZzzFIR2nsYUiTI5uo4Lp0CddWgWmi0ib/Drvv1C7E1uymX0jiIHWkxPNJQ29h
+         7dVAcPpAhiyGl0LQ25J3nAcVIQer1+FJCRc+mPW6Kk0p2K5eThXN9INcWT2DTZCF5MWu
+         VeDMAYAXa0Of6pp9TMdxYzUG3GDt5H43U/Uk3cfXf/yuuw+SgsxUa2AlfP53kPswDSlO
+         7yCZNPUTr3OV3zXxecVOEzWOKTl7Pq7gp1IsBxwgt2+20+eGUg2o0vCbCmPhyTRbkraj
+         vX/g==
+X-Gm-Message-State: AJIora+zPq71aqRLeJfSzHDi0oQ0saAtXV+gl0QtBQaJ3fe+xKvxdAj6
+        H3ibRI5WiPDkHtPGDT+lxbEb5Qw=
+X-Google-Smtp-Source: AGRyM1vnrMJ/JOoQG74ngLx7eZ6zEHpQeI55cUvJDyFTfl6agbpspFVR0Lv7plmUY5tcGBPFLhLslf4=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a81:b8c:0:b0:30c:a798:3786 with SMTP id
+ 134-20020a810b8c000000b0030ca7983786mr1645989ywl.69.1655324771131; Wed, 15
+ Jun 2022 13:26:11 -0700 (PDT)
+Date:   Wed, 15 Jun 2022 13:26:09 -0700
+In-Reply-To: <YqodE5lxUCt6ojIw@google.com>
+Message-Id: <YqpAYcvM9DakTjWL@google.com>
+Mime-Version: 1.0
+References: <CAHo-Ooy+8O16k0oyMGHaAcmLm_Pfo=Ju4moTc95kRp2Z6itBcg@mail.gmail.com>
+ <CANP3RGed9Vbu=8HfLyNs9zwA=biqgyew=+2tVxC6BAx2ktzNxA@mail.gmail.com>
+ <CAADnVQKBqjowbGsSuc2g8yP9MBANhsroB+dhJep93cnx_EmNow@mail.gmail.com>
+ <CANP3RGcZ4NULOwe+nwxfxsDPSXAUo50hWyN9Sb5b_d=kfDg=qg@mail.gmail.com> <YqodE5lxUCt6ojIw@google.com>
+Subject: Re: Curious bpf regression in 5.18 already fixed in stable 5.18.3
+From:   sdf@google.com
+To:     "Maciej =?utf-8?Q?=C5=BBenczykowski?=" <maze@google.com>
 Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Song Liu <songliubraving@fb.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>
-Subject: Re: [PATCH] perf/kprobe: maxactive for fd-based kprobe
-Message-ID: <20220615200029.ngyayghtnma3ywnb@erthalion.local>
-References: <20220609192936.23985-1-9erthalion6@gmail.com>
- <20220609193028.zhxpxscawnd3sep6@erthalion.local>
- <CAADnVQLLq+=gc1r+5pxrf3=VL29yZG=_9z6Th-rzcpC+xxsoyA@mail.gmail.com>
- <20220612211232.3b82015bfabd194893cf0418@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220612211232.3b82015bfabd194893cf0418@kernel.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Linux NetDev <netdev@vger.kernel.org>,
+        BPF Mailing List <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Carlos Llamas <cmllamas@google.com>, zhuyifei@google.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> On Sun, Jun 12, 2022 at 09:12:32PM +0900, Masami Hiramatsu wrote:
-> On Sat, 11 Jun 2022 11:28:36 -0700
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
->
-> > On Thu, Jun 9, 2022 at 1:14 PM Dmitry Dolgov <9erthalion6@gmail.com> wrote:
-> > >
-> > > > On Thu, Jun 09, 2022 at 09:29:36PM +0200, Dmitrii Dolgov wrote:
-> > > >
-> > > > Enable specifying maxactive for fd based kretprobe. This will be useful
-> > > > for tracing tools like bcc and bpftrace (see for example discussion [1]).
-> > > > Use highest 12 bit (bit 52-63) to allow maximal maxactive of 4095.
-> > > >
-> > > > The original patch [2] seems to be fallen through the cracks and wasn't
-> > > > applied. I've merely rebased the work done by Song Liu and verififed it
-> > > > still works.
-> > > >
-> > > > [1]: https://github.com/iovisor/bpftrace/issues/835
-> > > > [2]: https://lore.kernel.org/all/20191007223111.1142454-1-songliubraving@fb.com/
-> > >
-> > > I've recently stumbled upon this seemingly lost topic, and wanted to raise it
-> > > again. Please let me know if there is a more appropriate way to do so.
-> >
-> > With kretprobe using rethook the maxactive limit is no longer used.
-> > So we probably don't need this patch.
-> >
-> > Masami, wdyt?
->
-> No, rethook is just a library version of kretprobe return hook,
-> so the maxactive is still alive. I would like to make the rethook
-> to use(share with) function graph's per-task shadow stack. When
-> that is done, the maxactive will be removed.
-
-Thanks for clarification! Does it mean that the possibility of setting
-maxactive still makes sense, until the rethook changes you've mentioned
-will land?
-
-On a side note, is it possible to somehow follow/review/test the work
-about rethook and function graph's shadow stack?
+T24gMDYvMTUsIHNkZkBnb29nbGUuY29tIHdyb3RlOg0KPiBPbiAwNi8xNSwgTWFjaWVqIMW7ZW5j
+enlrb3dza2kgd3JvdGU6DQo+ID4gT24gV2VkLCBKdW4gMTUsIDIwMjIgYXQgMTA6MzggQU0gQWxl
+eGVpIFN0YXJvdm9pdG92DQo+ID4gPGFsZXhlaS5zdGFyb3ZvaXRvdkBnbWFpbC5jb20+IHdyb3Rl
+Og0KPiA+ID4NCj4gPiA+IE9uIFdlZCwgSnVuIDE1LCAyMDIyIGF0IDk6NTcgQU0gTWFjaWVqIMW7
+ZW5jenlrb3dza2kgPG1hemVAZ29vZ2xlLmNvbT4NCj4gPiB3cm90ZToNCj4gPiA+ID4gPg0KPiA+
+ID4gPiA+IEkndmUgY29uZmlybWVkIHZhbmlsbGEgNS4xOC4wIGlzIGJyb2tlbiwgYW5kIGFsbCBp
+dCB0YWtlcyBpcw0KPiA+ID4gPiA+IGNoZXJyeXBpY2tpbmcgdGhhdCBzcGVjaWZpYyBzdGFibGUg
+NS4xOC54IHBhdGNoIFsNCj4gPiA+ID4gPiA3MTBhODk4OWI0YjQwNjc5MDNmNWI2MTMxNGVkYTQ5
+MTY2N2I2YWIzIF0gdG8gZml4IGJlaGF2aW91ci4NCj4gPiA+IC4uLg0KPiA+ID4gPiBiOGJkM2Vl
+MTk3MWQxZWRiYzUzY2YzMjJjMTQ5Y2EwMjI3NDcyZTU2IHRoaXMgaXMgd2hlcmUgd2UgYWRkZWQN
+Cj4gPiBFRkFVTFQgaW4gNS4xNg0KPiA+ID4NCj4gPiA+IFRoZXJlIGFyZSBubyBzdWNoIHNoYS1z
+IGluIHRoZSB1cHN0cmVhbSBrZXJuZWwuDQo+ID4gPiBTb3JyeSB3ZSBjYW5ub3QgaGVscCB3aXRo
+IGRlYnVnZ2luZyBvZiBhbmRyb2lkIGtlcm5lbHMuDQoNCj4gPiBZZXMsIHNkZkAgcXVvdGVkIHRo
+ZSB3cm9uZyBzaGExLCBpdCdzIGEgY2xlYW4gY2hlcnJ5cGljayB0byBhbg0KPiA+IGludGVybmFs
+IGJyYW5jaCBvZg0KPiA+ICdicGY6IEFkZCBjZ3JvdXAgaGVscGVycyBicGZfe2dldCxzZXR9X3Jl
+dHZhbCB0byBnZXQvc2V0IHN5c2NhbGwgcmV0dXJuDQo+ID4gdmFsdWUnDQo+ID4gY29tbWl0IGI0
+NDEyM2I0YTNkY2FkNDY2NGQzYTBmNzJjMDExZmZkNGM5YzRkOTMuDQoNCj4gPiAgDQo+IGh0dHBz
+Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3N0YWJsZS9saW51eC5n
+aXQvY29tbWl0Lz9oPWxpbnV4LTUuMTYueSZpZD1iNDQxMjNiNGEzZGNhZDQ2NjRkM2EwZjcyYzAx
+MWZmZDRjOWM0ZDkzDQoNCj4gPiBBbnl3YXksIEkgdGhpbmsgaXQncyB1bnJlbGF0ZWQgLSBvciBh
+dCBsZWFzdCBub3QgdGhlIGltbWVkaWF0ZSByb290ICANCj4gY2F1c2UuDQoNCj4gPiBBbHNvIHRo
+ZXJlJ3MgKm5vKiBBbmRyb2lkIGtlcm5lbHMgaW52b2x2ZWQgaGVyZS4NCj4gPiBUaGlzIGlzIHRo
+ZSBhbmRyb2lkIG5ldCB0ZXN0cyBmYWlsaW5nIG9uIHZhbmlsbGEgNS4xOCBhbmQgcGFzc2luZyBv
+bg0KPiA+IDUuMTguMy4NCg0KPiBZZWFoLCBzb3JyeSwgZGlkbid0IG1lYW4gdG8gc2VuZCB0aG9z
+ZSBvdXRzaWRlIDotKQ0KDQo+IEF0dGFjaGVkIHVuLWFuZHJvaWQtaWZpZWQgdGVzdGNhc2UuIFBh
+c3NlcyBvbiBicGYtbmV4dCwgdHJ5aW5nIHRvIHNlZQ0KPiB3aGF0IGhhcHBlbnMgb24gdmFuaWxs
+YSA1LjE4LiBXaWxsIHVwZGF0ZSBvbmNlIEkgZ2V0IG1vcmUgZGF0YS4uDQoNCkkndmUgYmlzZWN0
+ZWQgdGhlIG9yaWdpbmFsIGlzc3VlIHRvOg0KDQpiNDQxMjNiNGEzZGMgKCJicGY6IEFkZCBjZ3Jv
+dXAgaGVscGVycyBicGZfe2dldCxzZXR9X3JldHZhbCB0byBnZXQvc2V0DQpzeXNjYWxsIHJldHVy
+biB2YWx1ZSIpDQoNCkFuZCBJIGJlbGlldmUgaXQncyB0aGVzZSB0d28gbGluZXMgZnJvbSB0aGUg
+b3JpZ2luYWwgcGF0Y2g6DQoNCiAgI2RlZmluZSBCUEZfUFJPR19DR1JPVVBfSU5FVF9FR1JFU1Nf
+UlVOX0FSUkFZKGFycmF5LCBjdHgsIGZ1bmMpCQlcDQogIAkoewkJCQkJCVwNCkBAIC0xMzk4LDEw
+ICsxMzk4LDEyIEBAIG91dDoNCiAgCQl1MzIgX3JldDsJCQkJXA0KICAJCV9yZXQgPSBCUEZfUFJP
+R19SVU5fQVJSQVlfQ0dfRkxBR1MoYXJyYXksIGN0eCwgZnVuYywgMCwgJl9mbGFncyk7IFwNCiAg
+CQlfY24gPSBfZmxhZ3MgJiBCUEZfUkVUX1NFVF9DTjsJCVwNCisJCWlmIChfcmV0ICYmICFJU19F
+UlJfVkFMVUUoKGxvbmcpX3JldCkpCVwNCisJCQlfcmV0ID0gLUVGQVVMVDsJDQoNCl9yZXQgaXMg
+dTMyIGFuZCByZXQgZ2V0cyAtMSAoZmZmZmZmZmYpLiBJU19FUlJfVkFMVUUoKGxvbmcpZmZmZmZm
+ZmYpIHJldHVybnMNCmZhbHNlIGluIHRoaXMgY2FzZSBiZWNhdXNlIGl0IGRvZXNuJ3Qgc2lnbi1l
+eHBhbmQgdGhlIGFyZ3VtZW50IGFuZCAgDQppbnRlcm5hbGx5DQpkb2VzIGZmZmZfZmZmZiA+PSBm
+ZmZmX2ZmZmZfZmZmZl9mMDAxIGNvbXBhcmlzb24uDQoNCkknbGwgdHJ5IHRvIHNlZSB3aGF0IEkn
+dmUgY2hhbmdlZCBpbiBteSB1bnJlbGF0ZWQgcGF0Y2ggdG8gZml4IGl0LiBCdXQgSSAgDQp0aGlu
+aw0Kd2Ugc2hvdWxkIGF1ZGl0IGFsbCB0aGVzZSBJU19FUlJfVkFMVUUoKGxvbmcpX3JldCkgcmVn
+YXJkbGVzczsgdGhleSBkb24ndA0Kc2VlbSB0byB3b3JrIHRoZSB3YXkgd2Ugd2FudCB0aGVtIHRv
+Li4uDQo=
