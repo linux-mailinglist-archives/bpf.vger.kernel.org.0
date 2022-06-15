@@ -2,203 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1105F54CC7F
-	for <lists+bpf@lfdr.de>; Wed, 15 Jun 2022 17:17:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CFF054CCB8
+	for <lists+bpf@lfdr.de>; Wed, 15 Jun 2022 17:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347596AbiFOPRf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jun 2022 11:17:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40348 "EHLO
+        id S1348414AbiFOP1K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jun 2022 11:27:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348953AbiFOPRd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jun 2022 11:17:33 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D5CE6165
-        for <bpf@vger.kernel.org>; Wed, 15 Jun 2022 08:17:28 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id o10so16663370edi.1
-        for <bpf@vger.kernel.org>; Wed, 15 Jun 2022 08:17:28 -0700 (PDT)
+        with ESMTP id S1351186AbiFOP0v (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jun 2022 11:26:51 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD03C40E58;
+        Wed, 15 Jun 2022 08:26:49 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id me5so24005735ejb.2;
+        Wed, 15 Jun 2022 08:26:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
+        d=googlemail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=1zxHUk/GfIhfOHa/GSNAjcvN5sqLhVkUytfRHVP0LF8=;
-        b=E/D7uzT6mxUKKN1191it7WfQmI1aUU5Ij9K4+R2eaM7R1uep22kPp615vCfDzWncm8
-         IUd3XbZJtxncS/r6Y4Gev5XNAKJQNzpLQq8aryfTE2Hj7HbBUzVSUXS54iYBGE5LdRP1
-         1ir5MBZBItKYsDq2QyTHLzHZXAYFZCx2Fkndk=
+        bh=T+bg9HaZZ+oP5bIF1b4K9YGaUkHTt0c/WUPVLm53m7A=;
+        b=AMbMghKy7vJkeG3gJE6nCFwrda5pZm9BXP0BEacN4gjDycVmtVbP/zqaAYrNmqRxXa
+         wFlB2r09WowNII7qUYac6XlTDZl8vnoO9GE4rZ/1LDcabGgP0SKaTRLDcy+ypaE1k9/8
+         gXMWMXiQNbDpGv5frQL/r3O69hN4B8VDkmJxNCPnBspLeo2uyNC6R67enc1PuBACRnlb
+         No/yTMuGqpNULWplgW8FgmovbNeaQIlCq+MVjeIeIKK3VinHiRzufv0Uh8ef0yAolex4
+         YLn2qGzvRDPBKxmD7tpUHrJ2HMtoXZDIoRK3s+hZ2zAC+MtTjynG0pKbLbz7iSGKDqmv
+         0zwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1zxHUk/GfIhfOHa/GSNAjcvN5sqLhVkUytfRHVP0LF8=;
-        b=NFUBcfbX6Z9xd/YuqiYv6OAdy+JPeMR6ZB0VkiuThM4mG/OL7ogzWLQGJ8T2ubv9wV
-         DMX3HA1mYnrNcldkYRVgwti3+u64f24sYjqA9qMWXiKuYf9Vp3KOBhpTED/IEzuKDf7w
-         6j7NnykdCLZFoUeLvw0Pu+qG6SY1MZG77LSuWIAx3l2DGqBdGBIGJPO6fLxflqIFypbL
-         B/FvP4iox7awowksPbIEm6iA6EqHqaOLQjKS/3UnxykNzXHEXtvCp8EDDVzjUr44uGM4
-         b6uiLXkl7FZN7MB1nfbcDymW0kNQezyL7kYZlE82X7RDHyVrwgJW+1HzMKpclyPU43tD
-         SqwA==
-X-Gm-Message-State: AJIora+XcT8dPmDFo5MvdUO+HVG/UdVisQqoCWJIr0vf/stkIR+oT2+P
-        sIe99eFSBNTcgiOHpo+ZM+j38GKHLG4FIg==
-X-Google-Smtp-Source: AGRyM1sJk67Jz10AaKalpsmiJDrZcXSc2FqoKY+gpQMalPVhI8cRjIKcp5lLve0QDpNJYyc7TqVb4w==
-X-Received: by 2002:a05:6402:1851:b0:42d:c904:d73b with SMTP id v17-20020a056402185100b0042dc904d73bmr223231edy.417.1655306246862;
-        Wed, 15 Jun 2022 08:17:26 -0700 (PDT)
-Received: from cloudflare.com (79.184.138.130.ipv4.supernova.orange.pl. [79.184.138.130])
-        by smtp.gmail.com with ESMTPSA id h8-20020aa7c5c8000000b0042e21f8c412sm9549087eds.42.2022.06.15.08.17.25
+        bh=T+bg9HaZZ+oP5bIF1b4K9YGaUkHTt0c/WUPVLm53m7A=;
+        b=Ec+WzJwMA6AdB3FuKLXwGS2KjYZgXQvviajqchQ9bFhCoa4rZ+/DKiVMo56zJNdNKn
+         tuKasmDZpLOvXk75BlEpOiKDEFHfQzSbPgOIEyqicYSJGwwMGs/IpncMQGpcP+rH6ucI
+         R6HsrDak5cS7J80lCXXz06ZurhrQ82lfnqYlZcH/xC5irQO4ukcdgAebZJ8UC3Mbs90W
+         bWzb3boIZ02FYUq4J9nvFbCFL6AKetxzCgjPPTZV57OEBNYMS8hDjaF59Z2xnU3DTBYl
+         KK8x/mHr+zrQMmxASbUzR1ctHKf9cO+/XaouUAkeKAOlELssJe5Idh9b/IZMFvJV4cAf
+         4NiA==
+X-Gm-Message-State: AJIora8Q+KHzHzjjBkRTRqO037MenfOTwfIRg5LebDYLf3uLJgP4vU9y
+        JeZzxyQGj6TFZXLOWU7X6a2+GitnOM6gUA==
+X-Google-Smtp-Source: AGRyM1ucXzOzSIK8wbEIN5Fk2mwEvpjZHUKwpJJ2wCRHcAM/BVAUQ2hijnPv6ufAD1puGYJzu4UGOg==
+X-Received: by 2002:a17:907:6287:b0:6e1:6ac:c769 with SMTP id nd7-20020a170907628700b006e106acc769mr343519ejc.388.1655306808173;
+        Wed, 15 Jun 2022 08:26:48 -0700 (PDT)
+Received: from debianHome.localdomain (dynamic-077-003-151-196.77.3.pool.telefonica.de. [77.3.151.196])
+        by smtp.gmail.com with ESMTPSA id v14-20020aa7d9ce000000b0042bc97322desm9501224eds.43.2022.06.15.08.26.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jun 2022 08:17:26 -0700 (PDT)
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Wed, 15 Jun 2022 08:26:47 -0700 (PDT)
+From:   =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>
+To:     selinux@vger.kernel.org
+Cc:     Serge Hallyn <serge@hallyn.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        kernel-team@cloudflare.com
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Test tail call counting with bpf2bpf and data on stack
-Date:   Wed, 15 Jun 2022 17:17:21 +0200
-Message-Id: <20220615151721.404596-3-jakub@cloudflare.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20220615151721.404596-1-jakub@cloudflare.com>
-References: <20220615151721.404596-1-jakub@cloudflare.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH v3 7/8] bpf: use new capable_any functionality
+Date:   Wed, 15 Jun 2022 17:26:21 +0200
+Message-Id: <20220615152623.311223-6-cgzones@googlemail.com>
+X-Mailer: git-send-email 2.36.1
+In-Reply-To: <20220615152623.311223-1-cgzones@googlemail.com>
+References: <20220502160030.131168-8-cgzones@googlemail.com>
+ <20220615152623.311223-1-cgzones@googlemail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Cover the case when tail call count needs to be passed from BPF function to
-BPF function, and the caller has data on stack. Specifically when the size
-of data allocated on BPF stack is not a multiple on 8.
+Use the new added capable_any function in appropriate cases, where a
+task is required to have any of two capabilities.
 
-Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
 ---
- .../selftests/bpf/prog_tests/tailcalls.c      | 55 +++++++++++++++++++
- .../selftests/bpf/progs/tailcall_bpf2bpf6.c   | 42 ++++++++++++++
- 2 files changed, 97 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf6.c
+v3:
+   rename to capable_any()
+---
+ kernel/bpf/syscall.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/tailcalls.c b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-index c4da87ec3ba4..19c70880cfb3 100644
---- a/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
-@@ -831,6 +831,59 @@ static void test_tailcall_bpf2bpf_4(bool noise)
- 	bpf_object__close(obj);
- }
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 2b69306d3c6e..92e274c7a5c2 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2473,7 +2473,7 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr)
+ 	    !bpf_capable())
+ 		return -EPERM;
  
-+#include "tailcall_bpf2bpf6.skel.h"
-+
-+/* Tail call counting works even when there is data on stack which is
-+ * not aligned to 8 bytes.
-+ */
-+static void test_tailcall_bpf2bpf_6(void)
-+{
-+	struct tailcall_bpf2bpf6 *obj;
-+	int err, map_fd, prog_fd, main_fd, data_fd, i, val;
-+	LIBBPF_OPTS(bpf_test_run_opts, topts,
-+		.data_in = &pkt_v4,
-+		.data_size_in = sizeof(pkt_v4),
-+		.repeat = 1,
-+	);
-+
-+	obj = tailcall_bpf2bpf6__open_and_load();
-+	if (!ASSERT_OK_PTR(obj, "open and load"))
-+		return;
-+
-+	main_fd = bpf_program__fd(obj->progs.entry);
-+	if (!ASSERT_GE(main_fd, 0, "entry prog fd"))
-+		goto out;
-+
-+	map_fd = bpf_map__fd(obj->maps.jmp_table);
-+	if (!ASSERT_GE(map_fd, 0, "jmp_table map fd"))
-+		goto out;
-+
-+	prog_fd = bpf_program__fd(obj->progs.classifier_0);
-+	if (!ASSERT_GE(prog_fd, 0, "classifier_0 prog fd"))
-+		goto out;
-+
-+	i = 0;
-+	err = bpf_map_update_elem(map_fd, &i, &prog_fd, BPF_ANY);
-+	if (!ASSERT_OK(err, "jmp_table map update"))
-+		goto out;
-+
-+	err = bpf_prog_test_run_opts(main_fd, &topts);
-+	ASSERT_OK(err, "entry prog test run");
-+	ASSERT_EQ(topts.retval, 0, "tailcall retval");
-+
-+	data_fd = bpf_map__fd(obj->maps.bss);
-+	if (!ASSERT_GE(map_fd, 0, "bss map fd"))
-+		goto out;
-+
-+	i = 0;
-+	err = bpf_map_lookup_elem(data_fd, &i, &val);
-+	ASSERT_OK(err, "bss map lookup");
-+	ASSERT_EQ(val, 1, "done flag is set");
-+
-+out:
-+	tailcall_bpf2bpf6__destroy(obj);
-+}
-+
- void test_tailcalls(void)
- {
- 	if (test__start_subtest("tailcall_1"))
-@@ -855,4 +908,6 @@ void test_tailcalls(void)
- 		test_tailcall_bpf2bpf_4(false);
- 	if (test__start_subtest("tailcall_bpf2bpf_5"))
- 		test_tailcall_bpf2bpf_4(true);
-+	if (test__start_subtest("tailcall_bpf2bpf_6"))
-+		test_tailcall_bpf2bpf_6();
- }
-diff --git a/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf6.c b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf6.c
-new file mode 100644
-index 000000000000..256de9bcc621
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf6.c
-@@ -0,0 +1,42 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+#define __unused __attribute__((always_unused))
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
-+	__uint(max_entries, 1);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(__u32));
-+} jmp_table SEC(".maps");
-+
-+int done = 0;
-+
-+SEC("tc")
-+int classifier_0(struct __sk_buff *skb __unused)
-+{
-+	done = 1;
-+	return 0;
-+}
-+
-+static __noinline
-+int subprog_tail(struct __sk_buff *skb)
-+{
-+	/* Don't propagate the constant to the caller */
-+	volatile int ret = 1;
-+
-+	bpf_tail_call_static(skb, &jmp_table, 0);
-+	return ret;
-+}
-+
-+SEC("tc")
-+int entry(struct __sk_buff *skb)
-+{
-+	/* Have data on stack which size is not a multiple of 8 */
-+	volatile char arr[1] = {};
-+
-+	return subprog_tail(skb);
-+}
-+
-+char __license[] SEC("license") = "GPL";
+-	if (is_net_admin_prog_type(type) && !capable(CAP_NET_ADMIN) && !capable(CAP_SYS_ADMIN))
++	if (is_net_admin_prog_type(type) && !capable_any(CAP_NET_ADMIN, CAP_SYS_ADMIN))
+ 		return -EPERM;
+ 	if (is_perfmon_prog_type(type) && !perfmon_capable())
+ 		return -EPERM;
 -- 
-2.35.3
+2.36.1
 
