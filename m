@@ -2,236 +2,207 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B403854D37F
-	for <lists+bpf@lfdr.de>; Wed, 15 Jun 2022 23:17:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3990454D446
+	for <lists+bpf@lfdr.de>; Thu, 16 Jun 2022 00:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348281AbiFOVRS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jun 2022 17:17:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42180 "EHLO
+        id S1349667AbiFOWMY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jun 2022 18:12:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346840AbiFOVRR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jun 2022 17:17:17 -0400
+        with ESMTP id S244186AbiFOWMW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jun 2022 18:12:22 -0400
 Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B2B55535B;
-        Wed, 15 Jun 2022 14:17:16 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id gl15so25663384ejb.4;
-        Wed, 15 Jun 2022 14:17:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8900562D1;
+        Wed, 15 Jun 2022 15:12:21 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id y19so25865494ejq.6;
+        Wed, 15 Jun 2022 15:12:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=acFZjeQbPbG/W+34Xt6CKod4UkLK3sFwa3+HWGx3msk=;
-        b=Vct6bycomh7Zuwc1nNEWB+tZIt6sBAEXPeeCSRhhNxvmHJ3/EqVlnwk7jCzEPuwfCI
-         rmk0eaIKSUnRmOw5ot1eQttjnvEkC/xD26Gb8fKJHRihDthnvU20c9IeXVN838eh6xzm
-         PA7Yl5GNLx/RTEGxlQIc7lvZ/snGHPDu0U43cUT7aGL7CpbihSG8u0bv7TeSIvlr0TJk
-         R8VGzRWh6zbM7BtEcltDtvVVGxjvnw49ebeE23MEk4DB3K9MsUdseXKkW0/jNTo9Gd1q
-         q2qE74QtL6PcARyQ9pZwnmQ+h05p66ZLRCwTcrwBZu6C42Q/n4mihrIN6bsthI20JwAJ
-         wbMA==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4xTyERPA39iUjeUW7Z+SYRw6OKvwLTV66kGbsFvVjDQ=;
+        b=HO6+SKTn9pBKukQkKcHQ22SzvyF0ZCBxBF2AxICtJmOAdMgSoE3wnsHKYyewxOQ3G+
+         AuJSHEaCOFlnY0Uflos0UeQLMlsKm2G7/k+ZoOb9/dsdpbR5ikV7ttscmLTN23CNw+xh
+         b5pZ6sojdZncuUTKkqMY4y6HVEwak8+lbQdNvaP2Q2NH0pYdyELmtkxRIoBu1EOrafd0
+         b44gKnq0/pdo8cxzRq4kfEIhIttF9IYdZbqbL6/jh5ZoXTEtueAMB5ux0n1iqI2BSK1X
+         viT8CX/3UbrUFSELtp7vuxkefDzz8lNl81KHEqpWEYHoyUpz/tvn0IFcojs5KxTvTDlf
+         CyOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=acFZjeQbPbG/W+34Xt6CKod4UkLK3sFwa3+HWGx3msk=;
-        b=DNczuDe7lrtZdUu85pm0KUClcjqIRY//eJZ2vMu+3F3jcAmkUglHLQS9343pHhO41c
-         UFxLYKScB5bO0k7186cMJFa/R8WxYhZAGIXUKSBTCSOM4LxvyPp2Dgh0h4ubV5MOzYA/
-         CZUT5ynurcIorE4a6lr7NwwNJ90TBLaK1sNY7MPAL3sfU5FIaLVQ0YlrT2z+EoVRokp1
-         q62RY55v9Y9EzVAJ3ThzaS1Sf2NkCFGMA2Pxq2qN3nbrRPjzO4AqbS9wEQo96QRaYvta
-         +7facCdihKnLXMY9DPY7XZsG1FcCIkDF101zoU6LxHj0bw1ZFx/Yz3n1skXm2nsI6rsz
-         Z+vA==
-X-Gm-Message-State: AJIora81t81QlFRaa0sZeaDzbsmcQX+gOTtUmTON64yYV/wZh5nKKKWH
-        0cWd1Zpdv6+VrGhLajC0phwQlrA0hCfwfw==
-X-Google-Smtp-Source: AGRyM1tKL20v53GtHIu2rMxKfGU4pd5Wku1sc09EGB+bL6qXd45KyDc7dw0pXmW9KZA0yisR7HQgAw==
-X-Received: by 2002:a17:906:5e4c:b0:70a:4673:bdcc with SMTP id b12-20020a1709065e4c00b0070a4673bdccmr1533927eju.511.1655327835108;
-        Wed, 15 Jun 2022 14:17:15 -0700 (PDT)
-Received: from erthalion.local (dslb-094-222-028-039.094.222.pools.vodafone-ip.de. [94.222.28.39])
-        by smtp.gmail.com with ESMTPSA id d18-20020a1709067f1200b00711eea3fa9bsm6756234ejr.42.2022.06.15.14.17.14
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4xTyERPA39iUjeUW7Z+SYRw6OKvwLTV66kGbsFvVjDQ=;
+        b=28THMqfP/A9fr1j2rg4MF0QdNw+RJBJ578tQgcZwWUUDHm4raE3tP3SwXAUbLmA0Ji
+         4XzA2XJcgebZhQciQckosNxHTKY1QLiP8FdTddAzUJy2EAAvbK4WMkYtunKVkZEwZZB2
+         e75r6bfNAgkoNXiIFc54cJD8Tm0czigTFyk3pNSnd7CanSVf+uVKmdZ+3U5alkUctFeu
+         bNSOe5PzGUuCXhekgO9DTTmT9+vKsgei4b6KoWBwW/S8Y6Hoth+bmpzeuP9OJl10O56X
+         W9vpBRqFFdQrwiPfcVJsLy97P9dYnoTzL1YHY/b+/ExE7D+LE0oV1PNcQgG16L3TN8oq
+         41ug==
+X-Gm-Message-State: AJIora9IZJIa9kxl5lFHYSJOyib2x/LUCQRrWDP7au+EkEW3w9z6rqoB
+        /lpMHhrrr+fPsyGYk4O4lGQ=
+X-Google-Smtp-Source: AGRyM1vYuj8eZbo1R67Y5m7pYOJ+FGYBcwDnaUCfZ6kd5zdHIvc3rqLiJ0tboxgtfn8joRK46EZNAg==
+X-Received: by 2002:a17:906:2b8e:b0:718:cd1e:88cf with SMTP id m14-20020a1709062b8e00b00718cd1e88cfmr1837091ejg.11.1655331140094;
+        Wed, 15 Jun 2022 15:12:20 -0700 (PDT)
+Received: from krava ([83.240.63.226])
+        by smtp.gmail.com with ESMTPSA id ee15-20020a056402290f00b0042dd3bf1403sm288778edb.54.2022.06.15.15.12.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jun 2022 14:17:14 -0700 (PDT)
-From:   Dmitrii Dolgov <9erthalion6@gmail.com>
-To:     linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
-        songliubraving@fb.com, rostedt@goodmis.org, peterz@infradead.org,
-        mingo@redhat.com, mhiramat@kernel.org, alexei.starovoitov@gmail.com
-Cc:     Dmitrii Dolgov <9erthalion6@gmail.com>
-Subject: [PATCH v3 1/1] perf/kprobe: maxactive for fd-based kprobe
-Date:   Wed, 15 Jun 2022 23:15:59 +0200
-Message-Id: <20220615211559.7856-1-9erthalion6@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Wed, 15 Jun 2022 15:12:19 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 16 Jun 2022 00:12:10 +0200
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Jiri Olsa <olsajiri@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCHv4 bpf-next 0/2] perf tools: Fix prologue generation
+Message-ID: <YqpZOtkwxB28UbRU@krava>
+References: <20220603204509.15044-1-jolsa@kernel.org>
+ <CAEf4BzbT4Z=B2hZxTQf1MrCp6TGiMgP+_t7p8G5A+RdVyNP+8w@mail.gmail.com>
+ <YqOOsL8EbbO3lhmC@kernel.org>
+ <CAEf4BzaKP8MHtGZDVSpwbCxNUD4zY9wkjEa4HKR0LWxYKW5cGQ@mail.gmail.com>
+ <YqOvYo1tp32gKviM@krava>
+ <YqYTZVa44Y6RQ11W@krava>
+ <Yqn6R2BA12U6Ftzt@kernel.org>
+ <Yqo0wMcrUmcZR0f3@krava>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Yqo0wMcrUmcZR0f3@krava>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Song Liu <songliubraving@fb.com>
+On Wed, Jun 15, 2022 at 09:36:34PM +0200, Jiri Olsa wrote:
+> On Wed, Jun 15, 2022 at 12:27:03PM -0300, Arnaldo Carvalho de Melo wrote:
+> > Em Sun, Jun 12, 2022 at 06:25:09PM +0200, Jiri Olsa escreveu:
+> > > so the problem is that we prepend init proglogue instructions
+> > > for each program not just for the one that needs it, so it will
+> > > mismatch later on.. the fix below makes it work for me
+> > 
+> > > Arnaldo,
+> > > I squashed and pushed the change below changes to my bpf/depre
+> > > branch, could you please retest?
+> > 
+> > Before:
+> > 
+> > [acme@quaco perf-urgent]$ git log --oneline -5
+> > e2cf9d315f90670f (HEAD -> perf/urgent, five/perf/urgent) perf test topology: Use !strncmp(right platform) to fix guest PPC comparision check
+> > 42e4fb08ff987b50 perf test: Record only user callchains on the "Check Arm64 callgraphs are complete in fp mode" test
+> > 819d5c3cf75d0f95 perf beauty: Update copy of linux/socket.h with the kernel sources
+> > ebdc02b3ece8238b perf test: Fix variable length array undefined behavior in bp_account
+> > 8ff58c35adb7f118 libperf evsel: Open shouldn't leak fd on failure
+> > [acme@quaco perf-urgent]$ sudo su -
+> > [root@quaco ~]# perf -v
+> > perf version 5.19.rc2.ge2cf9d315f90
+> > [root@quaco ~]# perf test bpf
+> >  40: LLVM search and compile                                         :
+> >  40.1: Basic BPF llvm compile                                        : Ok
+> >  40.3: Compile source for BPF prologue generation                    : Ok
+> >  40.4: Compile source for BPF relocation                             : Ok
+> >  42: BPF filter                                                      :
+> >  42.1: Basic BPF filtering                                           : Ok
+> >  42.2: BPF pinning                                                   : Ok
+> >  42.3: BPF prologue generation                                       : Ok
+> >  63: Test libpfm4 support                                            :
+> >  96: perf stat --bpf-counters test                                   : Ok
+> > [root@quaco ~]#
+> > 
+> > After your first patch:
+> > 
+> > [acme@quaco perf-urgent]$ git log --oneline -5 jolsa/bpf/depre
+> > 9317b879db422632 (jolsa/bpf/depre) perf tools: Rework prologue generation code
+> > 4d40831f29f2c9ad perf tools: Register fallback libbpf section handler
+> > f913ad6559e337b4 libbpf: Fix is_pow_of_2
+> > f175ece2e3436748 selftests/bpf: Fix tc_redirect_dtime
+> > 7b711e721234f475 bpf, test_run: Remove unnecessary prog type checks
+> > [acme@quaco perf-urgent]$ git cherry-pick 4d40831f29f2c9ad
+> > [perf/urgent ab39fb6880b57507] perf tools: Register fallback libbpf section handler
+> >  Author: Jiri Olsa <jolsa@kernel.org>
+> >  Date: Thu Apr 21 15:22:25 2022 +0200
+> >  1 file changed, 65 insertions(+), 11 deletions(-)
+> > [acme@quaco perf-urgent]$
+> > [acme@quaco perf-urgent]$ alias m='rm -rf ~/libexec/perf-core/ ; perf stat -e cycles:u,instructions:u make -k BUILD_BPF_SKEL=1 PYTHON=python3 O=/tmp/build/perf-urgent -C tools/perf install-bin && perf test python'
+> > [acme@quaco perf-urgent]$ rm -rf /tmp/build/perf-urgent ; mkdir -p /tmp/build/perf-urgent ; m
+> > <SNIP>
+> >  19: 'import perf' in python                                         : Ok
+> > [acme@quaco perf-urgent]$
+> > [acme@quaco perf-urgent]$ sudo su -
+> > [sudo] password for acme:
+> > [root@quaco ~]# perf test bpf
+> >  40: LLVM search and compile                                         :
+> >  40.1: Basic BPF llvm compile                                        : Ok
+> >  40.3: Compile source for BPF prologue generation                    : Ok
+> >  40.4: Compile source for BPF relocation                             : Ok
+> >  42: BPF filter                                                      :
+> >  42.1: Basic BPF filtering                                           : Ok
+> >  42.2: BPF pinning                                                   : Ok
+> >  42.3: BPF prologue generation                                       : FAILED!
+> >  63: Test libpfm4 support                                            :
+> >  96: perf stat --bpf-counters test                                   : Ok
+> > [root@quaco ~]#
+> > 
+> > perf test -v bpf later, lets see if landing the second patch fixes
+> > things and this bisection problem is justified:
+> > 
+> > [acme@quaco perf-urgent]$ git log --oneline -5 jolsa/bpf/depre
+> > 9317b879db422632 (jolsa/bpf/depre) perf tools: Rework prologue generation code
+> > 4d40831f29f2c9ad perf tools: Register fallback libbpf section handler
+> > f913ad6559e337b4 libbpf: Fix is_pow_of_2
+> > f175ece2e3436748 selftests/bpf: Fix tc_redirect_dtime
+> > 7b711e721234f475 bpf, test_run: Remove unnecessary prog type checks
+> > [acme@quaco perf-urgent]$ git remote update jolsa
+> > Fetching jolsa
+> > [acme@quaco perf-urgent]$ git cherry-pick 9317b879db422632
+> > [perf/urgent 9a36c7c94e1f596d] perf tools: Rework prologue generation code
+> >  Author: Jiri Olsa <jolsa@kernel.org>
+> >  Date: Mon May 9 22:46:20 2022 +0200
+> >  1 file changed, 110 insertions(+), 18 deletions(-)
+> > [acme@quaco perf-urgent]$
+> > [acme@quaco perf-urgent]$ rm -rf /tmp/build/perf-urgent ; mkdir -p /tmp/build/perf-urgent ; m
+> > <SNIP>
+> >  19: 'import perf' in python                                         : Ok
+> > [acme@quaco perf-urgent]$ sudo su -
+> > [root@quaco ~]# perf test bpf
+> >  40: LLVM search and compile                                         :
+> >  40.1: Basic BPF llvm compile                                        : Ok
+> >  40.3: Compile source for BPF prologue generation                    : Ok
+> >  40.4: Compile source for BPF relocation                             : Ok
+> >  42: BPF filter                                                      :
+> >  42.1: Basic BPF filtering                                           : Ok
+> >  42.2: BPF pinning                                                   : Ok
+> >  42.3: BPF prologue generation                                       : Ok
+> >  63: Test libpfm4 support                                            :
+> >  96: perf stat --bpf-counters test                                   : Ok
+> > [root@quaco ~]#
+> > 
+> > So it works in the end, can it be made to work after the first step? I
+> > didn't check that.
+> 
+> heya,
+> so the first patch is preparation and the last one is the real fix
+> 
+> at the moment it does not work without this change, so I don't
+> think it's a problem for the bisect, is it?
 
-Enable specifying maxactive for fd based kretprobe. This will be useful
-for tracing tools like bcc and bpftrace (see for example discussion [1]).
-Use highest 12 bit (bit 52-63) to allow maximal maxactive of 4095.
+ah I just checked that thing worked before :)) ok.. I think the only
+way here is to squash them together.. doesn't look that bad
 
-The original patch [2] seems to be fallen through the cracks and wasn't
-applied. I've merely rebased the work done by Song Liu and verififed it
-still works.
-
-Note that changes in rethook implementation may render maxactive
-obsolete.
-
-[1]: https://github.com/iovisor/bpftrace/issues/835
-[2]: https://lore.kernel.org/all/20191007223111.1142454-1-songliubraving@fb.com/
-
-Signed-off-by: Song Liu <songliubraving@fb.com>
-Signed-off-by: Dmitrii Dolgov <9erthalion6@gmail.com>
----
-Changes in v3:
-    - Set correct author
-
-Changes in v2:
-    - Fix comment about number bits for the offset
-
- include/linux/trace_events.h    |  3 ++-
- kernel/events/core.c            | 20 ++++++++++++++++----
- kernel/trace/trace_event_perf.c |  5 +++--
- kernel/trace/trace_kprobe.c     |  4 ++--
- kernel/trace/trace_probe.h      |  2 +-
- 5 files changed, 24 insertions(+), 10 deletions(-)
-
-diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-index e6e95a9f07a5..7ca453a73252 100644
---- a/include/linux/trace_events.h
-+++ b/include/linux/trace_events.h
-@@ -850,7 +850,8 @@ extern void perf_trace_destroy(struct perf_event *event);
- extern int  perf_trace_add(struct perf_event *event, int flags);
- extern void perf_trace_del(struct perf_event *event, int flags);
- #ifdef CONFIG_KPROBE_EVENTS
--extern int  perf_kprobe_init(struct perf_event *event, bool is_retprobe);
-+extern int  perf_kprobe_init(struct perf_event *event, bool is_retprobe,
-+			     int max_active);
- extern void perf_kprobe_destroy(struct perf_event *event);
- extern int bpf_get_kprobe_info(const struct perf_event *event,
- 			       u32 *fd_type, const char **symbol,
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 23bb19716ad3..e8127f9b4df5 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -9809,24 +9809,34 @@ static struct pmu perf_tracepoint = {
-  * PERF_PROBE_CONFIG_IS_RETPROBE if set, create kretprobe/uretprobe
-  *                               if not set, create kprobe/uprobe
-  *
-- * The following values specify a reference counter (or semaphore in the
-- * terminology of tools like dtrace, systemtap, etc.) Userspace Statically
-- * Defined Tracepoints (USDT). Currently, we use 40 bit for the offset.
-+ * PERF_UPROBE_REF_CTR_OFFSET_* specify a reference counter (or semaphore
-+ * in the terminology of tools like dtrace, systemtap, etc.) Userspace
-+ * Statically Defined Tracepoints (USDT). Currently, we use 32 bit for the
-+ * offset.
-  *
-  * PERF_UPROBE_REF_CTR_OFFSET_BITS	# of bits in config as th offset
-  * PERF_UPROBE_REF_CTR_OFFSET_SHIFT	# of bits to shift left
-+ *
-+ * PERF_KPROBE_MAX_ACTIVE_* defines max_active for kretprobe.
-+ * KRETPROBE_MAXACTIVE_MAX is 4096. We allow 4095 here to save a bit.
-  */
- enum perf_probe_config {
- 	PERF_PROBE_CONFIG_IS_RETPROBE = 1U << 0,  /* [k,u]retprobe */
- 	PERF_UPROBE_REF_CTR_OFFSET_BITS = 32,
- 	PERF_UPROBE_REF_CTR_OFFSET_SHIFT = 64 - PERF_UPROBE_REF_CTR_OFFSET_BITS,
-+	PERF_KPROBE_MAX_ACTIVE_BITS = 12,
-+	PERF_KPROBE_MAX_ACTIVE_SHIFT = 64 - PERF_KPROBE_MAX_ACTIVE_BITS,
- };
- 
- PMU_FORMAT_ATTR(retprobe, "config:0");
- #endif
- 
- #ifdef CONFIG_KPROBE_EVENTS
-+/* KRETPROBE_MAXACTIVE_MAX is 4096, only allow 4095 here to save a bit */
-+PMU_FORMAT_ATTR(max_active, "config:52-63");
-+
- static struct attribute *kprobe_attrs[] = {
-+	&format_attr_max_active.attr,
- 	&format_attr_retprobe.attr,
- 	NULL,
- };
-@@ -9857,6 +9867,7 @@ static int perf_kprobe_event_init(struct perf_event *event)
- {
- 	int err;
- 	bool is_retprobe;
-+	int max_active;
- 
- 	if (event->attr.type != perf_kprobe.type)
- 		return -ENOENT;
-@@ -9871,7 +9882,8 @@ static int perf_kprobe_event_init(struct perf_event *event)
- 		return -EOPNOTSUPP;
- 
- 	is_retprobe = event->attr.config & PERF_PROBE_CONFIG_IS_RETPROBE;
--	err = perf_kprobe_init(event, is_retprobe);
-+	max_active = event->attr.config >> PERF_KPROBE_MAX_ACTIVE_SHIFT;
-+	err = perf_kprobe_init(event, is_retprobe, max_active);
- 	if (err)
- 		return err;
- 
-diff --git a/kernel/trace/trace_event_perf.c b/kernel/trace/trace_event_perf.c
-index a114549720d6..129000327809 100644
---- a/kernel/trace/trace_event_perf.c
-+++ b/kernel/trace/trace_event_perf.c
-@@ -245,7 +245,8 @@ void perf_trace_destroy(struct perf_event *p_event)
- }
- 
- #ifdef CONFIG_KPROBE_EVENTS
--int perf_kprobe_init(struct perf_event *p_event, bool is_retprobe)
-+int perf_kprobe_init(struct perf_event *p_event, bool is_retprobe,
-+					 int max_active)
- {
- 	int ret;
- 	char *func = NULL;
-@@ -271,7 +272,7 @@ int perf_kprobe_init(struct perf_event *p_event, bool is_retprobe)
- 
- 	tp_event = create_local_trace_kprobe(
- 		func, (void *)(unsigned long)(p_event->attr.kprobe_addr),
--		p_event->attr.probe_offset, is_retprobe);
-+		p_event->attr.probe_offset, is_retprobe, max_active);
- 	if (IS_ERR(tp_event)) {
- 		ret = PTR_ERR(tp_event);
- 		goto out;
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index 47cebef78532..3ad30cfce9c3 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -1784,7 +1784,7 @@ static int unregister_kprobe_event(struct trace_kprobe *tk)
- /* create a trace_kprobe, but don't add it to global lists */
- struct trace_event_call *
- create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
--			  bool is_return)
-+			  bool is_return, int max_active)
- {
- 	enum probe_print_type ptype;
- 	struct trace_kprobe *tk;
-@@ -1799,7 +1799,7 @@ create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
- 	event = func ? func : "DUMMY_EVENT";
- 
- 	tk = alloc_trace_kprobe(KPROBE_EVENT_SYSTEM, event, (void *)addr, func,
--				offs, 0 /* maxactive */, 0 /* nargs */,
-+				offs, max_active, 0 /* nargs */,
- 				is_return);
- 
- 	if (IS_ERR(tk)) {
-diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
-index 92cc149af0fd..26fe21980793 100644
---- a/kernel/trace/trace_probe.h
-+++ b/kernel/trace/trace_probe.h
-@@ -376,7 +376,7 @@ extern int traceprobe_set_print_fmt(struct trace_probe *tp, enum probe_print_typ
- #ifdef CONFIG_PERF_EVENTS
- extern struct trace_event_call *
- create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
--			  bool is_return);
-+			  bool is_return, int max_active);
- extern void destroy_local_trace_kprobe(struct trace_event_call *event_call);
- 
- extern struct trace_event_call *
--- 
-2.32.0
-
+jirka
