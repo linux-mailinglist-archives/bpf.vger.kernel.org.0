@@ -2,93 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA7354E843
-	for <lists+bpf@lfdr.de>; Thu, 16 Jun 2022 19:01:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3E4954E8B6
+	for <lists+bpf@lfdr.de>; Thu, 16 Jun 2022 19:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344730AbiFPRAf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jun 2022 13:00:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37064 "EHLO
+        id S231159AbiFPRkD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jun 2022 13:40:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376865AbiFPRAZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jun 2022 13:00:25 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE59A49FB6;
-        Thu, 16 Jun 2022 10:00:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1655398814; x=1686934814;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=AFZhHva36n9bSC1o+D2V/qCWtqlnJrh6gWIkUf10m8U=;
-  b=HX2/SGAGWf9epOlvpRZlDDAaHS6GrCnPzkWQQYqEqA5ovjrHQ+/jGX9s
-   n59OfLNd/STVXgT2tgvI1PFkP6P0zje7eZqsAHtit4GWLUcL3EsTZaEl/
-   lxJQaGgOfKoCsgGabLMapDvtBW+vQ/CKxvN0Gw68+xDwI6mH1yezjtkMO
-   hLrTx1e5by6/r8nMVGm+DFJ6tSXkH8MvIYXupUOpIPnejLsmUWugSR3ci
-   FSDUmu+ETruDoPCZ58W/uXABu6RRWMCZyIVpFTb7poxR4mIP2eyzve/PH
-   7Iv2ARRyqxnI9sixOTHSjmDSKgEYmbb1A2UJn0sfFu56y8DUFFAdYOKgM
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="279353117"
-X-IronPort-AV: E=Sophos;i="5.92,305,1650956400"; 
-   d="scan'208";a="279353117"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2022 10:00:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,305,1650956400"; 
-   d="scan'208";a="583705493"
-Received: from boxer.igk.intel.com (HELO boxer) ([10.102.20.173])
-  by orsmga007.jf.intel.com with ESMTP; 16 Jun 2022 10:00:12 -0700
-Date:   Thu, 16 Jun 2022 19:00:11 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        netdev@vger.kernel.org, magnus.karlsson@intel.com,
-        bjorn@kernel.org, Alexandr Lobakin <alexandr.lobakin@intel.com>
-Subject: Re: [PATCH v2 bpf-next 01/10] ice: allow toggling loopback mode via
- ndo_set_features callback
-Message-ID: <Yqthm2ZFoJ1SnK6B@boxer>
-References: <20220614174749.901044-1-maciej.fijalkowski@intel.com>
- <20220614174749.901044-2-maciej.fijalkowski@intel.com>
- <20220615164740.5e1f8915@kernel.org>
- <YqtTqP+S0jvDNRJF@boxer>
- <20220616094740.276b8312@kernel.org>
+        with ESMTP id S229647AbiFPRkB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jun 2022 13:40:01 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B91583ED23
+        for <bpf@vger.kernel.org>; Thu, 16 Jun 2022 10:40:00 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id c196so2112926pfb.1
+        for <bpf@vger.kernel.org>; Thu, 16 Jun 2022 10:40:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=onP0sXsK4JvSncBfDCXl6EmwmLA/F+tO3xFCBOUoBPU=;
+        b=hHRoHv1h0MnLBF4CoiKvHxvxx3aesx1lb/k9ECeCD41+KZVZLJkX0m2oPPFhptp4Qx
+         Uup7Rdh0oMfP2/vTnr/YHB93/Fxe9Dshy6YNqffwewsWHuc/3aPbOwsGmsNv4G8Y1D4d
+         y87ieqMEgxR+STb1frkZ7KK9yEQTt5+CZWL/ZlNWS9wCeyT32xI9f+Wl8L615ZUdBLmA
+         Kw4WKioUlNBrfPMQFaTAGExxesg8m/MQZuE7l8Xdlx7lThBSendoXAOcLUhjNy+fStdI
+         0i1NzbZwIQZFStpXG+WC4JbcX7sIgj9iGbLUNLU8fwpLngok+RN0s7TtRzWITj+tqYS6
+         C1Vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=onP0sXsK4JvSncBfDCXl6EmwmLA/F+tO3xFCBOUoBPU=;
+        b=wx7UnwRSIGMwJlE/6IO7YA8R86A4Yq2mpOlxzuVDAZ1z22Kj0WaBWazkpBlbtFjeGI
+         COw3rTNPAnbJg5St1jjAvyEJS64jY91n8oh+DuefgrdbgyT6yc3TYzTknMcdR32SsCU/
+         LZUH5W9rlOxjE0mpaqCK6mDEppc2sj9AK4k4Om4QoW0aEsagXtAcNY5G9+p8SYHS8yLE
+         JaKpDXP44HtT9Dv7v6FTVVT3K4uxwO9gSD5DxKQpOyAMHMLItY0duIZu6uKGLC/hVTEU
+         NXxz3B4FTew4SoH1cvkd3gMQBz5osVnaW9qSHD8c5bpSCJoQfmwAwTG6gB6iIhr43Euy
+         sfkw==
+X-Gm-Message-State: AJIora+hYSzi4uGsO+tlwiP7IcBlVXpqquD+zZ1u45vz6zSd4hmuJjXf
+        wUZacNUxc0ev7wHPXmkN6TrYjKbhpJlwdijCKGSEUfvdtS4=
+X-Google-Smtp-Source: AGRyM1vAQ3usZcQ7CXRyrWvjwIwFjZl+3XZFOs6Pva4izs1aLGwZZ0EIlXJwfp+u6lnNhCGjeZ5hAuejA2Q8598CSbQ=
+X-Received: by 2002:a05:6a00:338e:b0:51b:c452:4210 with SMTP id
+ cm14-20020a056a00338e00b0051bc4524210mr5679505pfb.69.1655401199992; Thu, 16
+ Jun 2022 10:39:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220616094740.276b8312@kernel.org>
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <CAHo-Ooy+8O16k0oyMGHaAcmLm_Pfo=Ju4moTc95kRp2Z6itBcg@mail.gmail.com>
+ <CANP3RGed9Vbu=8HfLyNs9zwA=biqgyew=+2tVxC6BAx2ktzNxA@mail.gmail.com>
+ <CAADnVQKBqjowbGsSuc2g8yP9MBANhsroB+dhJep93cnx_EmNow@mail.gmail.com>
+ <CANP3RGcZ4NULOwe+nwxfxsDPSXAUo50hWyN9Sb5b_d=kfDg=qg@mail.gmail.com>
+ <YqodE5lxUCt6ojIw@google.com> <YqpAYcvM9DakTjWL@google.com>
+ <YqpB+7pDwyOk20Cp@google.com> <YqpDcD6vkZZfWH4L@google.com>
+ <CANP3RGcBCeMeCfpY3__4X_OHx6PB6bXtRjwLdYi-LRiegicVXQ@mail.gmail.com>
+ <CAKH8qBv=+QVBqHd=9rAWe3d5d47dSkppYc1JbS+WgQs8XgB+Yg@mail.gmail.com> <CANP3RGc-9VkZkBK-N3y39F0Y+cLsPSLsQGvuR2QKAeQsWEoq9w@mail.gmail.com>
+In-Reply-To: <CANP3RGc-9VkZkBK-N3y39F0Y+cLsPSLsQGvuR2QKAeQsWEoq9w@mail.gmail.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Thu, 16 Jun 2022 10:39:49 -0700
+Message-ID: <CAKH8qBsB+DGMUBRCa4j+cWuGVg2_GLTZU4G_iun7wJ1GddaNHw@mail.gmail.com>
+Subject: Re: Curious bpf regression in 5.18 already fixed in stable 5.18.3
+To:     =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Linux NetDev <netdev@vger.kernel.org>,
+        BPF Mailing List <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        YiFei Zhu <zhuyifei@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 16, 2022 at 09:47:40AM -0700, Jakub Kicinski wrote:
-> On Thu, 16 Jun 2022 18:00:40 +0200 Maciej Fijalkowski wrote:
-> > > Loopback or not, I don't think we should be accepting the shutdown ->
-> > > set config -> pray approach in modern drivers. ice_open() seems to be
-> > > allocating all the Rx memory, and can fail.  
-> > 
-> > They say that those who sing pray twice, so why don't we sing? :)
-> > 
-> > But seriously, I'll degrade this to ice_down/up and check retvals. I think
-> > I just mimicked flow from ice_self_test(), which should be fixed as
-> > well...
-> > 
-> > I'll send v4.
-> 
-> checking retval is not enough, does ice not have the ability to
-> allocate resources upfront? I think iavf was already restructured
-> to follow the "resilient" paradigm, time for ice to follow suit?
+On Thu, Jun 16, 2022 at 9:41 AM Maciej =C5=BBenczykowski <maze@google.com> =
+wrote:
+>
+> On Thu, Jun 16, 2022 at 8:57 AM Stanislav Fomichev <sdf@google.com> wrote=
+:
+> > On Wed, Jun 15, 2022 at 6:36 PM Maciej =C5=BBenczykowski <maze@google.c=
+om> wrote:
+> > > I'm guessing this means the regression only affects 64-bit archs,
+> > > where long =3D void* is 8 bytes > u32 of 4 bytes, but not 32-bit ones=
+,
+> > > where long =3D u32 =3D 4 bytes
+> > >
+> > > Unfortunately my dev machine's 32-bit build capability has somehow
+> > > regressed again and I can't check this.
+> >
+> > Seems so, yes. But I'm actually not sure whether we should at all
+> > treat it as a regression. There is a question of whether that EPERM is
+> > UAPI or not. That's why we most likely haven't caught it in the
+> > selftests; most of the time we only check that syscall has returned -1
+> > and don't pay attention to the particular errno.
+>
+> EFAULT seems like a terrible error to return no matter what, it has a ver=
+y clear
+> 'memory read/write access violation' semantic (ie. if you'd done from
+> userspace you'd get a SIGSEGV)
+>
+> I'm actually surprised to learn you return EFAULT on positive number...
+> It should rather be some unique error code or EINVAL or something.
+>
+> I know someone will argue that (most/all) system calls can return EFAULT.=
+..
+> But that's not actually true.  From a userspace developer the expectation=
+ is
+> they will not return EFAULT if you pass in memory you know is good.
+>
+> #include <sys/utsname.h>
+> int main() {
+>   struct utsname uts;
+>   uname(&uts);
+> }
+>
+> The above cannot EFAULT in spite of it being documented as the only
+> error uname can report,
+> because obviously the uts structure on the stack is valid memory.
+>
+> Maybe ENOSYS would at least make it obvious something is very weird.
 
-I'm not aware of such restructure TBH. FWIW ice_down() won't free
-irqs/rings. I said I'll switch to it plus check its retval whereas I feel
-like you took it like I would want to keep the ice_stop() and check its
-retval.
+I'd like to see less of the applications poking into errno and making
+some decisions based on that. IMO, the only time where it makes sense
+is EINTR/EAGAIN vs the rest; the rest should be logged. Having errnos
+hard-coded in the tests is fine to make sure that the condition you're
+testing against has been triggered; but still treating them as UAPI
+might be too much, idk.
 
-> 
-> This is something DaveM complained about in the first Ethernet driver 
-> I upstreamed, which must have been a decade ago by now. It's time we
-> all get on board :)
+We had to add bpf_set_retval() because some of our and third party
+libraries would upgrade to v6/v4 sockets only when they receive some
+specific errno, which doesn't make a lot of sense to me.
