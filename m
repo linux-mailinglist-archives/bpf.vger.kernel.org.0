@@ -2,139 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E431D54E619
-	for <lists+bpf@lfdr.de>; Thu, 16 Jun 2022 17:31:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07DB854E674
+	for <lists+bpf@lfdr.de>; Thu, 16 Jun 2022 17:57:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235576AbiFPPbB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jun 2022 11:31:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40122 "EHLO
+        id S233673AbiFPP52 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jun 2022 11:57:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377927AbiFPPa6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jun 2022 11:30:58 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EF8440A1D
-        for <bpf@vger.kernel.org>; Thu, 16 Jun 2022 08:30:57 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 25so2699263edw.8
-        for <bpf@vger.kernel.org>; Thu, 16 Jun 2022 08:30:57 -0700 (PDT)
+        with ESMTP id S1377829AbiFPP51 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jun 2022 11:57:27 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBAD22FE71
+        for <bpf@vger.kernel.org>; Thu, 16 Jun 2022 08:57:26 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id y196so1868249pfb.6
+        for <bpf@vger.kernel.org>; Thu, 16 Jun 2022 08:57:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:date:in-reply-to
-         :message-id:mime-version;
-        bh=v//CUxzEr8ArkTHXqMywoytyzVYtHGMcre8gIGXw7zA=;
-        b=zAfzEPEU0HL8QAF50ahVgPFzYDlZv71iPvraEh/d4LGAsNkMKYVzn1sVExcp12zfaX
-         qPsDiBKP/emm4BOpXQH774pucRYOpPKtiGuJjfBIRJzYHUqXUHp/BLLX/e6xMuqbwkOm
-         huh6iZ6Rh6eZ0fLODDk9u2lEGoyPi1aK+uTbI=
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=y4hIoccrpEBvbRmekAk7uJ6aJ9uBx6pEBsR/N5eo7qo=;
+        b=b3UcH0OXINDS1EuYLbs/VNoRuYYlEAIvvV3oGEZJkXqzIXpNDpRWLlYHCjcftLL9yK
+         Ead9OZ85TawNLeKn0616r3m7uM4LhsGFEb8uohi1mTi/F5y1/KsbN1cIRjLwD3Uerp79
+         SoUQ2B5LhCNvbu1bqnLCpIIuZymnTtd7nUKkv8OYKz6WlkNhB8xKE/INTyFuQP6lAVM4
+         qwFEPBEw69YhZOu38XuD3LopokYuzA62VQ77znCCDS9SXYF2g6FQV+UBlGHrggyYyYXW
+         Q/wQodKpWApb7VL6sEThHONtrES2AaZmtQvYQSKdn33PyEsA0L2QhVBckRzbTj4GUUGP
+         oyHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
-         :in-reply-to:message-id:mime-version;
-        bh=v//CUxzEr8ArkTHXqMywoytyzVYtHGMcre8gIGXw7zA=;
-        b=31c1PG8FLn6WsL8RmwsZAA4KttFyt2Wzp/Dfg3inJ6BF/ojyMPIiwkXCVep/vjCUd7
-         lhx0syeKqhnoPfgocjpUM0tfdzwsp4NwndwCP1Q3UgGhoSY2wVryCwPc0/cAcAueQYL6
-         GRxw8ZVxlcboiKilmcMGG8FiDMJjyvPGm6T+2RHAZg048r7stND57jz03/xMpmZ6GJm3
-         xYVf8TTSP2NlYT+UX+wHE8ho1z757ODu1tP1WodVRQXr6SSceor5VdGY6w33WJgUlbTZ
-         fdDRCQslqBL+5cC3yn5joOD2tluaYWOA+gSq8/hvN512zsjczYYfAJmAyqYfV7iKg6nS
-         nBbg==
-X-Gm-Message-State: AJIora8ZkCV9/MnxZovsUvkcPNxehiEAvo1eo9tbmNcyPLjNjQ8i8+qX
-        kgeC+j0Z/E8zPaSvDnohUFKhS/EdhbJhTQ==
-X-Google-Smtp-Source: AGRyM1sEAS6AIAGWi7DcR29KEvOtjjr5Lhyp1hVNUS62cCx5OoHJkfbQ0Y3AXXxbl39QF0aI1T8MTQ==
-X-Received: by 2002:a05:6402:388b:b0:42b:5f20:c616 with SMTP id fd11-20020a056402388b00b0042b5f20c616mr7228997edb.50.1655393456030;
-        Thu, 16 Jun 2022 08:30:56 -0700 (PDT)
-Received: from cloudflare.com (79.184.138.130.ipv4.supernova.orange.pl. [79.184.138.130])
-        by smtp.gmail.com with ESMTPSA id j14-20020aa7c0ce000000b0042bca34bd15sm1918874edp.95.2022.06.16.08.30.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jun 2022 08:30:55 -0700 (PDT)
-References: <20220616110252.418333-1-jakub@cloudflare.com>
- <YqtFgYkUsM8VMWRy@boxer>
- <d7a52f4c-9bad-da94-2501-015bdde32e97@iogearbox.net>
-User-agent: mu4e 1.6.10; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, kernel-team@cloudflare.com
-Subject: Re: [RFC bpf] selftests/bpf: Curious case of a successful tailcall
- that returns to caller
-Date:   Thu, 16 Jun 2022 17:28:25 +0200
-In-reply-to: <d7a52f4c-9bad-da94-2501-015bdde32e97@iogearbox.net>
-Message-ID: <8735g4wrpt.fsf@cloudflare.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=y4hIoccrpEBvbRmekAk7uJ6aJ9uBx6pEBsR/N5eo7qo=;
+        b=orqgKXPX3eS9Q6lfDBbeZpMkDt+crZ/bWqhhPtU7aIzkDeiIcOYjqeo9XB7NOgvOo3
+         As05TI8UtDSVCfkUTr0dOav4xVq/tH2NO0dBvVAtHwBJlt066H4iDcyFooX/s2MowJtJ
+         QpIaF1Gare/kruK62FMog8VGxY38sU/9KV/HtqCfumIB9zrzt33UBpgY2ksmfTGDkJHp
+         TE4QQCeXxstODgar1Re5cfCiACNghQd7bY2yuJ4DeQ5YYjyqWNfS04tPz6QIebQAGAF1
+         uAKGvm4OXqDMsRmPoSRvtrgk9rLJUtnE0S2ZLmE/GmgXSmImwNsJippR7fO1tHW+Jkp5
+         k1Kw==
+X-Gm-Message-State: AJIora+MutrTVnZLaR7TlLrXPQVrqnRZSzosOGky65y6PGY02pkJVOEp
+        CoCnsqXqwoX/HavuS30vpEGIGV+TsieSwNOyrJg3CQ==
+X-Google-Smtp-Source: AGRyM1tgdihzLruKB0/p4TES0q+uCOr/NKoSqikU431QPVJ2IRxlAKRL8A1X734iOfj79eFGf6t2YuU4ZmYe0XL/Epg=
+X-Received: by 2002:aa7:8691:0:b0:51c:db9:4073 with SMTP id
+ d17-20020aa78691000000b0051c0db94073mr5589886pfo.72.1655395046062; Thu, 16
+ Jun 2022 08:57:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <CAHo-Ooy+8O16k0oyMGHaAcmLm_Pfo=Ju4moTc95kRp2Z6itBcg@mail.gmail.com>
+ <CANP3RGed9Vbu=8HfLyNs9zwA=biqgyew=+2tVxC6BAx2ktzNxA@mail.gmail.com>
+ <CAADnVQKBqjowbGsSuc2g8yP9MBANhsroB+dhJep93cnx_EmNow@mail.gmail.com>
+ <CANP3RGcZ4NULOwe+nwxfxsDPSXAUo50hWyN9Sb5b_d=kfDg=qg@mail.gmail.com>
+ <YqodE5lxUCt6ojIw@google.com> <YqpAYcvM9DakTjWL@google.com>
+ <YqpB+7pDwyOk20Cp@google.com> <YqpDcD6vkZZfWH4L@google.com> <CANP3RGcBCeMeCfpY3__4X_OHx6PB6bXtRjwLdYi-LRiegicVXQ@mail.gmail.com>
+In-Reply-To: <CANP3RGcBCeMeCfpY3__4X_OHx6PB6bXtRjwLdYi-LRiegicVXQ@mail.gmail.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Thu, 16 Jun 2022 08:57:14 -0700
+Message-ID: <CAKH8qBv=+QVBqHd=9rAWe3d5d47dSkppYc1JbS+WgQs8XgB+Yg@mail.gmail.com>
+Subject: Re: Curious bpf regression in 5.18 already fixed in stable 5.18.3
+To:     =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Linux NetDev <netdev@vger.kernel.org>,
+        BPF Mailing List <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        YiFei Zhu <zhuyifei@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-On Thu, Jun 16, 2022 at 05:22 PM +02, Daniel Borkmann wrote:
-> On 6/16/22 5:00 PM, Maciej Fijalkowski wrote:
->> On Thu, Jun 16, 2022 at 01:02:52PM +0200, Jakub Sitnicki wrote:
->>> While working aarch64 JIT to allow mixing bpf2bpf calls with tailcalls, I
->>> noticed unexpected tailcall behavior in x86 JIT.
->>>
->>> I don't know if it is by design or a bug. The bpf_tail_call helper
->>> documentation says that the user should not expect the control flow to
->>> return to the previous program, if the tail call was successful:
->>>
->>>> If the call succeeds, the kernel immediately runs the first
->>>> instruction of the new program. This is not a function call,
->>>> and it never returns to the previous program.
->>>
->>> However, when a tailcall happens from a subprogram, that is after a bpf2bpf
->>> call, that is not the case. We return to the caller program because the
->>> stack destruction is too shallow. BPF stack of just the top-most BPF
->>> function gets destroyed.
->>>
->>> This in turn allows the return value of the tailcall'ed program to get
->>> overwritten, as the test below test demonstrates. It currently fails on
->>> x86:
->> Disclaimer: some time has passed by since I looked into this :P
->> To me the bug would be if test would have returned 1 in your case. If I
->> recall correctly that was the design choice, so tailcalls when mixed with
->> bpf2bpf will consume current stack frame. When tailcall happens from
->> subprogram then we would return to the caller of this subprog. We added
->> logic to verifier that checks if this (tc + bpf2bpf) mix wouldn't cause
->> stack overflow. We even limit the stack frame size to 256 in such case.
+On Wed, Jun 15, 2022 at 6:36 PM Maciej =C5=BBenczykowski <maze@google.com> =
+wrote:
 >
-> Yes, that is the desired behavior, so return 2 from your example below looks
-> correct / expected:
+> > > > I've bisected the original issue to:
+> > > >
+> > > > b44123b4a3dc ("bpf: Add cgroup helpers bpf_{get,set}_retval to get/=
+set
+> > > > syscall return value")
+> > > >
+> > > > And I believe it's these two lines from the original patch:
+> > > >
+> > > >  #define BPF_PROG_CGROUP_INET_EGRESS_RUN_ARRAY(array, ctx, func)   =
+         \
+> > > >     ({                                              \
+> > > > @@ -1398,10 +1398,12 @@ out:
+> > > >             u32 _ret;                               \
+> > > >             _ret =3D BPF_PROG_RUN_ARRAY_CG_FLAGS(array, ctx, func, =
+0, &_flags); \
+> > > >             _cn =3D _flags & BPF_RET_SET_CN;          \
+> > > > +           if (_ret && !IS_ERR_VALUE((long)_ret))  \
+> > > > +                   _ret =3D -EFAULT;
+> > > >
+> > > > _ret is u32 and ret gets -1 (ffffffff). IS_ERR_VALUE((long)ffffffff=
+)
+> > > returns
+> > > > false in this case because it doesn't sign-expand the argument and
+> > > internally
+> > > > does ffff_ffff >=3D ffff_ffff_ffff_f001 comparison.
+> > > >
+> > > > I'll try to see what I've changed in my unrelated patch to fix it. =
+But
+> > > I think
+> > > > we should audit all these IS_ERR_VALUE((long)_ret) regardless; they
+> > > don't
+> > > > seem to work the way we want them to...
+> >
+> > > Ok, and my patch fixes it because I'm replacing 'u32 _ret' with 'int =
+ret'.
+> >
+> > > So, basically, with u32 _ret we have to do IS_ERR_VALUE((long)(int)_r=
+et).
+> >
+> > > Sigh..
+> >
+> > And to follow up on that, the other two places we have are fine:
+> >
+> > IS_ERR_VALUE((long)run_ctx.retval))
+> >
+> > run_ctx.retval is an int.
 >
-> +SEC("tc")
-> +int classifier_0(struct __sk_buff *skb __unused)
-> +{
-> +	done = 1;
-> +	return 0;
-> +}
-> +
-> +static __noinline
-> +int subprog_tail(struct __sk_buff *skb)
-> +{
-> +	bpf_tail_call_static(skb, &jmp_table, 0);
-> +	return 1;
-> +}
-> +
-> +SEC("tc")
-> +int entry(struct __sk_buff *skb)
-> +{
-> +	subprog_tail(skb);
-> +	return 2;
-> +}
-
-Great. Thanks for confirming.
-
-Since I have the test ready, I might as well submit it.
-I think the case of ignoring the tailcall result is not covered yet.
-
-Also, this makes changes needed to support bpf2bpf+tailcalls on arm64
-simpler. Will post soon.
-
+> I'm guessing this means the regression only affects 64-bit archs,
+> where long =3D void* is 8 bytes > u32 of 4 bytes, but not 32-bit ones,
+> where long =3D u32 =3D 4 bytes
 >
->> Cilium docs explain this:
->> https://docs.cilium.io/en/latest/bpf/#bpf-to-bpf-calls
+> Unfortunately my dev machine's 32-bit build capability has somehow
+> regressed again and I can't check this.
 
+Seems so, yes. But I'm actually not sure whether we should at all
+treat it as a regression. There is a question of whether that EPERM is
+UAPI or not. That's why we most likely haven't caught it in the
+selftests; most of the time we only check that syscall has returned -1
+and don't pay attention to the particular errno.
