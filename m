@@ -2,111 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87B0254E591
-	for <lists+bpf@lfdr.de>; Thu, 16 Jun 2022 17:02:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1410E54E5EB
+	for <lists+bpf@lfdr.de>; Thu, 16 Jun 2022 17:23:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377746AbiFPPCZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jun 2022 11:02:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41112 "EHLO
+        id S1376939AbiFPPXC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jun 2022 11:23:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377502AbiFPPCZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jun 2022 11:02:25 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52EC83FDBA;
-        Thu, 16 Jun 2022 08:02:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1655391743; x=1686927743;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=cPIvtGkzUaCtMm3FU+yIhMsE21kpvjfDBJRq5gORsFE=;
-  b=EYwuygfNWQ+BE3jz+nte2gYiUNYTiVJB8db7hF9V0MnKU6bzeU8oOeSl
-   OQe+rcl4YFzGWTipJ0WH+esfuKO3AelN+Mxg2aMDogA52D5KBZxhnYPAk
-   OZ2jlFT4owFE+oOAhP3Um15OL/mTDXawxHs+lKncpKGbQfC25sh3HmCEv
-   f/W0L4awfoXXEKzFzBeNYGSeOSeDKk6fY2UDxGitd9JKi8+Mw9nhwQiV5
-   jhZow2o7SKwPtapZ4sSUJtYRO3T9NYYKwfeAfqZ7MMlzME2Sh2OuXV+jw
-   TE5hIL6r7KCRhkoOqOoSaigyuMCx+9Ck5usv0ABYaipzpepID5kNXObbB
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10379"; a="279981317"
-X-IronPort-AV: E=Sophos;i="5.92,305,1650956400"; 
-   d="scan'208";a="279981317"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2022 08:01:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,305,1650956400"; 
-   d="scan'208";a="912192935"
-Received: from boxer.igk.intel.com (HELO boxer) ([10.102.20.173])
-  by fmsmga005.fm.intel.com with ESMTP; 16 Jun 2022 08:01:55 -0700
-Date:   Thu, 16 Jun 2022 17:01:55 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Jakub Sitnicki <jakub@cloudflare.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S1350792AbiFPPXC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jun 2022 11:23:02 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D92205EC;
+        Thu, 16 Jun 2022 08:23:01 -0700 (PDT)
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1o1rKi-000FQv-K2; Thu, 16 Jun 2022 17:22:56 +0200
+Received: from [85.1.206.226] (helo=linux-3.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1o1rKi-0006SR-C4; Thu, 16 Jun 2022 17:22:56 +0200
+Subject: Re: [RFC bpf] selftests/bpf: Curious case of a successful tailcall
+ that returns to caller
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>, kernel-team@cloudflare.com
-Subject: Re: [PATCH bpf-next 1/2] bpf, x86: Fix tail call count offset
- calculation on bpf2bpf call
-Message-ID: <YqtF4/1nNLfO/6Pn@boxer>
-References: <20220615151721.404596-1-jakub@cloudflare.com>
- <20220615151721.404596-2-jakub@cloudflare.com>
- <c19ed052-90ea-3bf5-c57c-7879844579ea@iogearbox.net>
+References: <20220616110252.418333-1-jakub@cloudflare.com>
+ <YqtFgYkUsM8VMWRy@boxer>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <d7a52f4c-9bad-da94-2501-015bdde32e97@iogearbox.net>
+Date:   Thu, 16 Jun 2022 17:22:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c19ed052-90ea-3bf5-c57c-7879844579ea@iogearbox.net>
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <YqtFgYkUsM8VMWRy@boxer>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.6/26574/Thu Jun 16 10:06:40 2022)
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 16, 2022 at 04:45:09PM +0200, Daniel Borkmann wrote:
-> On 6/15/22 5:17 PM, Jakub Sitnicki wrote:
-> [...]
-> > int entry(struct __sk_buff * skb):
-> >     0xffffffffa0201788:  nop    DWORD PTR [rax+rax*1+0x0]
-> >     0xffffffffa020178d:  xor    eax,eax
-> >     0xffffffffa020178f:  push   rbp
-> >     0xffffffffa0201790:  mov    rbp,rsp
-> >     0xffffffffa0201793:  sub    rsp,0x8
-> >     0xffffffffa020179a:  push   rax
-> >     0xffffffffa020179b:  xor    esi,esi
-> >     0xffffffffa020179d:  mov    BYTE PTR [rbp-0x1],sil
-> >     0xffffffffa02017a1:  mov    rax,QWORD PTR [rbp-0x9]	!!! tail call count
-> >     0xffffffffa02017a8:  call   0xffffffffa02017d8       !!! is at rbp-0x10
-> >     0xffffffffa02017ad:  leave
-> >     0xffffffffa02017ae:  ret
-> > 
-> > Fix it by rounding up the BPF stack depth to a multiple of 8, when
-> > calculating the tail call count offset on stack.
-> > 
-> > Fixes: ebf7d1f508a7 ("bpf, x64: rework pro/epilogue and tailcall handling in JIT")
-> > Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
-> > ---
-> >   arch/x86/net/bpf_jit_comp.c | 3 ++-
-> >   1 file changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> > index f298b18a9a3d..c98b8c0ed3b8 100644
-> > --- a/arch/x86/net/bpf_jit_comp.c
-> > +++ b/arch/x86/net/bpf_jit_comp.c
-> > @@ -1420,8 +1420,9 @@ st:			if (is_imm8(insn->off))
-> >   		case BPF_JMP | BPF_CALL:
-> >   			func = (u8 *) __bpf_call_base + imm32;
-> >   			if (tail_call_reachable) {
-> > +				/* mov rax, qword ptr [rbp - rounded_stack_depth - 8] */
-> >   				EMIT3_off32(0x48, 0x8B, 0x85,
-> > -					    -(bpf_prog->aux->stack_depth + 8));
-> > +					    -round_up(bpf_prog->aux->stack_depth, 8) - 8);
+On 6/16/22 5:00 PM, Maciej Fijalkowski wrote:
+> On Thu, Jun 16, 2022 at 01:02:52PM +0200, Jakub Sitnicki wrote:
+>> While working aarch64 JIT to allow mixing bpf2bpf calls with tailcalls, I
+>> noticed unexpected tailcall behavior in x86 JIT.
+>>
+>> I don't know if it is by design or a bug. The bpf_tail_call helper
+>> documentation says that the user should not expect the control flow to
+>> return to the previous program, if the tail call was successful:
+>>
+>>> If the call succeeds, the kernel immediately runs the first
+>>> instruction of the new program. This is not a function call,
+>>> and it never returns to the previous program.
+>>
+>> However, when a tailcall happens from a subprogram, that is after a bpf2bpf
+>> call, that is not the case. We return to the caller program because the
+>> stack destruction is too shallow. BPF stack of just the top-most BPF
+>> function gets destroyed.
+>>
+>> This in turn allows the return value of the tailcall'ed program to get
+>> overwritten, as the test below test demonstrates. It currently fails on
+>> x86:
 > 
-> Lgtm, great catch by the way!
+> Disclaimer: some time has passed by since I looked into this :P
+> 
+> To me the bug would be if test would have returned 1 in your case. If I
+> recall correctly that was the design choice, so tailcalls when mixed with
+> bpf2bpf will consume current stack frame. When tailcall happens from
+> subprogram then we would return to the caller of this subprog. We added
+> logic to verifier that checks if this (tc + bpf2bpf) mix wouldn't cause
+> stack overflow. We even limit the stack frame size to 256 in such case.
 
-Indeed!
+Yes, that is the desired behavior, so return 2 from your example below looks
+correct / expected:
 
-Acked-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
++SEC("tc")
++int classifier_0(struct __sk_buff *skb __unused)
++{
++	done = 1;
++	return 0;
++}
++
++static __noinline
++int subprog_tail(struct __sk_buff *skb)
++{
++	bpf_tail_call_static(skb, &jmp_table, 0);
++	return 1;
++}
++
++SEC("tc")
++int entry(struct __sk_buff *skb)
++{
++	subprog_tail(skb);
++	return 2;
++}
 
-I was wondering if it would be possible to work only on rounded up to 8
-stack depth from JIT POV since it's what we do everywhere we use it...
+> Cilium docs explain this:
+> https://docs.cilium.io/en/latest/bpf/#bpf-to-bpf-calls
