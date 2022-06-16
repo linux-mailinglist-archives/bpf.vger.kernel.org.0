@@ -2,65 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A4F754D724
-	for <lists+bpf@lfdr.de>; Thu, 16 Jun 2022 03:37:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55FFD54D98F
+	for <lists+bpf@lfdr.de>; Thu, 16 Jun 2022 07:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356728AbiFPBhZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jun 2022 21:37:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40986 "EHLO
+        id S1346679AbiFPFLO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jun 2022 01:11:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243323AbiFPBhX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jun 2022 21:37:23 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 218D8443E7
-        for <bpf@vger.kernel.org>; Wed, 15 Jun 2022 18:37:21 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id v1so26431361ejg.13
-        for <bpf@vger.kernel.org>; Wed, 15 Jun 2022 18:37:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=1kHhIidVOs0bZvu1mvilMjAHxoDp2iPxojmTkeNKlYM=;
-        b=NKcNoAt8jX7PrmmXB0moefuQGhuQyILDYYhEoCQhdvhbHuxo9vFizPYY1biy0EJ6bt
-         32R5JxGevu7vcisj2/jbnt7gpouGMtiYDwLImkrU7PpBSQGnOX0kpQaIYzmOGEfaHdD0
-         YPv3rX94xExCgZska+yH0H3eFbMAhwbaiDFbuY+i1MkKfwg9kjU1JzqFTNNf8yG0wizM
-         fnhyE8xkjGFutwQg7cBDnXiUDsD/GRt9FeJNNmbRtD4N6TG13mD0+grmrRCX77g1oowP
-         m0MRknSNbW2uF7eX1HugZ3/9jQ0kFWqJ6tkkadsIfDlAwWzItNMV4osHCYClq/6omXRA
-         Nj2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=1kHhIidVOs0bZvu1mvilMjAHxoDp2iPxojmTkeNKlYM=;
-        b=inPAbWQgz4RGAkywNq/uBitcqiQeUh4nJqwwPftnLDMbpmi8mhpZy8uOqvnkGyHO/B
-         Kx/zCJFP2DUEyeXxQXjkCqRsWK1ObUjs7htrAaGq5Apuj5CkphIon3PR7RzP32WYGG+t
-         4TTV9Qn1AzJqKnoC/0Sfu8E6Ouwrd14S5f6QRlu4AO2VoSX/Y9yaAjgPp32Y7h/Q/CwJ
-         Wyimx2bKfzWV0eeiULJQTFxyVhWz27EeIqvbKGloebGjjOTzzvtz1rri3U+K2/LaMwp0
-         pJjNsSTtnlxbQVlBgnwASs3cBMFC5o3iJchBqaVYrrTfM/DNFl95rtA+zjmrk833/O7e
-         CTng==
-X-Gm-Message-State: AJIora+c+w3vEPAU8by4jgDkzwBSjL8v1jfW1qtgTYthN3AjUFpRT0vZ
-        hsg4CsqWmiciHw7724XH7hdAG3WIIlVWx6CCp5M=
-X-Google-Smtp-Source: AGRyM1umP8j2RgB1oBFCNeeIedLLns2SD10zLc7PHDkVqEbs0CCNg+psxOko6PBl88V9Cqkjt4k6/YFzbBFIRwJH+Ck=
-X-Received: by 2002:a17:906:4d50:b0:70d:afd4:1e63 with SMTP id
- b16-20020a1709064d5000b0070dafd41e63mr2478130ejv.618.1655343439794; Wed, 15
- Jun 2022 18:37:19 -0700 (PDT)
+        with ESMTP id S229694AbiFPFLM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jun 2022 01:11:12 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA18558E72;
+        Wed, 15 Jun 2022 22:11:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1655356270; x=1686892270;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=NkEFYvNXfkRiyQzrKr5w73UFu/bNjvCsd8osZsw1FkQ=;
+  b=fSxT62GXW1uxpxMMMowHxS5yZ6Veu9TYnr/t88PvBquBKZwEfSeW/RMZ
+   Ng5dAVC5qymZlqW4m/MhCTQlAZcReXjEnRdmdKetYGPsy/u154+oqaXBn
+   TQBw5qGehLFSt5XtvfdUAcTBFCBuKwh9fkfsy5jXPRJW8V8e6Oszv4UiT
+   nMR7IcS7Z6rWonXcCue0oEESnknGDmdfmwVQ1fZbJIKhprP+1qHUWAgsN
+   FQgdvhTZiaxbWSawapdW8uDlQTlazhca8hFkjdHN2tUsGIF9cYx+s+sr0
+   Mkwwkv6/4vPEijDoH+j3E59js7TH9n9Juy1Fq5U1cbJGjzAYcavpXMcc4
+   g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10379"; a="276741256"
+X-IronPort-AV: E=Sophos;i="5.91,304,1647327600"; 
+   d="scan'208";a="276741256"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2022 22:11:10 -0700
+X-IronPort-AV: E=Sophos;i="5.91,304,1647327600"; 
+   d="scan'208";a="641365226"
+Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.249.174.230]) ([10.249.174.230])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jun 2022 22:11:05 -0700
+Subject: Re: [linux-next:master] BUILD REGRESSION
+ 8cb8311e95e3bb58bd84d6350365f14a718faa6d
+To:     Arnd Bergmann <arnd@arndb.de>, kernel test robot <lkp@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>,
+        Networking <netdev@vger.kernel.org>,
+        linux-staging@lists.linux.dev,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-parport@lists.infradead.org,
+        linux-omap <linux-omap@vger.kernel.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        kvm list <kvm@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        bpf <bpf@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+References: <628ea118.wJYf60YnZco0hs9o%lkp@intel.com>
+ <CAK8P3a10aGYNr=nKZVzv+1n_DRibSCCkoCLuTDtmhZskBMWfyw@mail.gmail.com>
+From:   "Chen, Rong A" <rong.a.chen@intel.com>
+Message-ID: <7a9f0c2d-f1e9-dd2f-6836-26d08bfa45a0@intel.com>
+Date:   Thu, 16 Jun 2022 13:11:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.12.0
 MIME-Version: 1.0
-Received: by 2002:a05:6402:35d0:0:0:0:0 with HTTP; Wed, 15 Jun 2022 18:37:19
- -0700 (PDT)
-From:   Elizabeth Blaz <elizabethblaz06@gmail.com>
-Date:   Thu, 16 Jun 2022 01:37:19 +0000
-Message-ID: <CAPxMj5nbWZsZh2JXKfXN0aYBppnO82_K_ONySO6r46Jt90LZ_Q@mail.gmail.com>
-Subject: 028
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAK8P3a10aGYNr=nKZVzv+1n_DRibSCCkoCLuTDtmhZskBMWfyw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-9.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-KINDLY  confirm to me that this is your correct email address.Thanks,
-From
-Mrs.Elizabeth Blaze
+
+
+On 5/26/2022 4:32 PM, Arnd Bergmann wrote:
+> On Wed, May 25, 2022 at 11:35 PM kernel test robot <lkp@intel.com> wrote:
+>> .__mulsi3.o.cmd: No such file or directory
+>> Makefile:686: arch/h8300/Makefile: No such file or directory
+>> Makefile:765: arch/h8300/Makefile: No such file or directory
+>> arch/Kconfig:10: can't open file "arch/h8300/Kconfig"
+> 
+> Please stop building h8300  after the asm-generic tree is merged, the
+> architecture is getting removed.
+> 
+>          Arnd
+> 
+
+Hi Arnd,
+
+Thanks for the advice, we have stopped building h8300 for new kernel.
+
+Best Regards,
+Rong Chen
