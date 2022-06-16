@@ -2,54 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 410B554DC4C
-	for <lists+bpf@lfdr.de>; Thu, 16 Jun 2022 09:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4959A54DFA3
+	for <lists+bpf@lfdr.de>; Thu, 16 Jun 2022 13:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359234AbiFPH6Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jun 2022 03:58:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48460 "EHLO
+        id S232333AbiFPLC7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jun 2022 07:02:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbiFPH6X (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jun 2022 03:58:23 -0400
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBB395B3EA
-        for <bpf@vger.kernel.org>; Thu, 16 Jun 2022 00:58:21 -0700 (PDT)
-Received: by mail-il1-f197.google.com with SMTP id p12-20020a056e02144c00b002d196a4d73eso380897ilo.18
-        for <bpf@vger.kernel.org>; Thu, 16 Jun 2022 00:58:21 -0700 (PDT)
+        with ESMTP id S232390AbiFPLC5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jun 2022 07:02:57 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 441C8764E
+        for <bpf@vger.kernel.org>; Thu, 16 Jun 2022 04:02:56 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id b8so1643269edj.11
+        for <bpf@vger.kernel.org>; Thu, 16 Jun 2022 04:02:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jHmItW+ZxwsMa6slplXFNuLqcY8BV5v91LocLylbQD4=;
+        b=AZTIgM6InXYmFsMIHmRPf4ZMAVOranMWT/E7XjxyA4oDUgAmVc2x15qcVzeGFeDdQz
+         07e2JHXyg0Kkf6cKsq3n17aYRjtwby+GHMxVlQUFaIEc7GEHQ6VmQGPZaaFqWf0t7cQk
+         tJ1ad6zYPbsba7S09kXZb/vBd6s4CLXU+CGE0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=sGxImpxhD4BnXQPVGC953AQBXBQaUcD+L5GsSAV1Cck=;
-        b=krcF3GAXqi/ETEq7shz9s7AYHyU/qPxNekLTmQCSXiElYiq57ufShZEjXWlv2cq+La
-         4GYHF0PxCuhLqgjZj7g1MlMyPLa99/zxB9oSGr0qDv0xD6devV4HoE8E8vyjuFaQ8+LB
-         QzTthG+xtu/efpQo70Hy2/h9zpJ3NsboG3FmZ0L6RcDfWhidU4OlyGSm56WF5CfeDktr
-         WyzFdy+LLrD4Akvms2Nz8GHc6oFjdAe1lUQVUJ1hNezywYlwzO/yYs/O9tdg4E0j93HX
-         S0svp6hnsqNKetOhPJ8/C47d7JCikQntDOyhGWYWsutUHj+pkuaf47z/BYrUDsdpdAt3
-         fOuw==
-X-Gm-Message-State: AJIora9Rbtern3NHgec5WpQY6NeWqtxgG9iPXbqLpO+lSYQgqHngRftJ
-        d43nkb5ryBN/hzNLsSpsyfByI4Z7seeCvROTrh8461benDlp
-X-Google-Smtp-Source: AGRyM1sQwWSgbeTrEzw1GnK+CMyO7rX/jtG5jT8QKtuQBC+NX9F3Pyy+BaDGTkNQpdWqDCOe8swGBY7BuB4eJBLflDicMoVfcuYG
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jHmItW+ZxwsMa6slplXFNuLqcY8BV5v91LocLylbQD4=;
+        b=C2a400IlwZg24O+dpUZghNQOhFxoS7kOe7BDxu6pqVJ7S/pg3gPzpMfcjyQhLMKKWm
+         wrclQMlgt/Pi93UnVFo+jC0iSfBTGn0p9V3ydCZT/Cb8IxFQyi3pwywp8b5Sppx1nPCc
+         KrNmpUjxZ37WUE7Rs7nfUhsSTEjELXUtyd3O+X0JVo/d01IyrFZhjeAxI2YcSs7peqbX
+         dVin2b1I2vqp1jj2TMOrZ1/9sLOWdhFE8Po9Os1y+N8tOYsDP2w92kK29V/z2pSuso89
+         iRLTHeHH9ZQpXkJd+zwjlzUQqo6UkV5gbmfCtU8JcVJ4eRJV71pkDEZcjJwm7y8CX+qv
+         whEw==
+X-Gm-Message-State: AJIora8xlY/meVe6pXl7D1YW/x+38hYTFV/kY2SCvi6TVJA52s40aV8u
+        VoBAfbIacHaYgFSbF5T/7iw86OHz/PfYXQ==
+X-Google-Smtp-Source: AGRyM1uDJ3gJ1a5ZwmwT/V5YUbz1BmXc/d52BMOip9jfBRdom3zr2FZS0NekZPdLZI1e0KAspahCfA==
+X-Received: by 2002:a05:6402:28b6:b0:433:2b53:157a with SMTP id eg54-20020a05640228b600b004332b53157amr5779307edb.395.1655377374326;
+        Thu, 16 Jun 2022 04:02:54 -0700 (PDT)
+Received: from cloudflare.com (79.184.138.130.ipv4.supernova.orange.pl. [79.184.138.130])
+        by smtp.gmail.com with ESMTPSA id m24-20020a170906849800b006fed8dfcf78sm616313ejx.225.2022.06.16.04.02.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jun 2022 04:02:53 -0700 (PDT)
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        kernel-team@cloudflare.com,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: [RFC bpf] selftests/bpf: Curious case of a successful tailcall that returns to caller
+Date:   Thu, 16 Jun 2022 13:02:52 +0200
+Message-Id: <20220616110252.418333-1-jakub@cloudflare.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-X-Received: by 2002:a02:cab3:0:b0:332:c2b:d815 with SMTP id
- e19-20020a02cab3000000b003320c2bd815mr1953754jap.79.1655366301305; Thu, 16
- Jun 2022 00:58:21 -0700 (PDT)
-Date:   Thu, 16 Jun 2022 00:58:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005cd14505e18c007e@google.com>
-Subject: [syzbot] KASAN: use-after-free Write in inet_put_port
-From:   syzbot <syzbot+0a847a982613c6438fba@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, dsahern@kernel.org,
-        edumazet@google.com, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com,
-        yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,196 +67,225 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+While working aarch64 JIT to allow mixing bpf2bpf calls with tailcalls, I
+noticed unexpected tailcall behavior in x86 JIT.
 
-syzbot found the following issue on:
+I don't know if it is by design or a bug. The bpf_tail_call helper
+documentation says that the user should not expect the control flow to
+return to the previous program, if the tail call was successful:
 
-HEAD commit:    7a68065eb9cd Merge tag 'gpio-fixes-for-v5.19-rc2' of git:/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10bfcc6bf00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d918e534921ed083
-dashboard link: https://syzkaller.appspot.com/bug?extid=0a847a982613c6438fba
-compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
+> If the call succeeds, the kernel immediately runs the first
+> instruction of the new program. This is not a function call,
+> and it never returns to the previous program.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+However, when a tailcall happens from a subprogram, that is after a bpf2bpf
+call, that is not the case. We return to the caller program because the
+stack destruction is too shallow. BPF stack of just the top-most BPF
+function gets destroyed.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0a847a982613c6438fba@syzkaller.appspotmail.com
+This in turn allows the return value of the tailcall'ed program to get
+overwritten, as the test below test demonstrates. It currently fails on
+x86:
 
-==================================================================
-BUG: KASAN: use-after-free in __hlist_del include/linux/list.h:886 [inline]
-BUG: KASAN: use-after-free in inet_bind2_bucket_destroy net/ipv4/inet_hashtables.c:136 [inline]
-BUG: KASAN: use-after-free in __inet_put_port net/ipv4/inet_hashtables.c:174 [inline]
-BUG: KASAN: use-after-free in inet_put_port+0x4e6/0x590 net/ipv4/inet_hashtables.c:182
-Write of size 8 at addr ffff888078a0b028 by task syz-executor.0/21904
+test_tailcall_bpf2bpf_7:PASS:open and load 0 nsec
+test_tailcall_bpf2bpf_7:PASS:entry prog fd 0 nsec
+test_tailcall_bpf2bpf_7:PASS:jmp_table map fd 0 nsec
+test_tailcall_bpf2bpf_7:PASS:classifier_0 prog fd 0 nsec
+test_tailcall_bpf2bpf_7:PASS:jmp_table map update 0 nsec
+test_tailcall_bpf2bpf_7:PASS:entry prog test run 0 nsec
+test_tailcall_bpf2bpf_7:FAIL:tailcall retval unexpected tailcall retval: actual 2 != expected 0
+test_tailcall_bpf2bpf_7:PASS:bss map fd 0 nsec
+test_tailcall_bpf2bpf_7:PASS:bss map lookup 0 nsec
+test_tailcall_bpf2bpf_7:PASS:done flag is set 0 nsec
 
-CPU: 1 PID: 21904 Comm: syz-executor.0 Not tainted 5.19.0-rc1-syzkaller-00303-g7a68065eb9cd #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e3/0x2cb lib/dump_stack.c:106
- print_address_description+0x65/0x4b0 mm/kasan/report.c:313
- print_report+0xf4/0x210 mm/kasan/report.c:429
- kasan_report+0xfb/0x130 mm/kasan/report.c:491
- __hlist_del include/linux/list.h:886 [inline]
- inet_bind2_bucket_destroy net/ipv4/inet_hashtables.c:136 [inline]
- __inet_put_port net/ipv4/inet_hashtables.c:174 [inline]
- inet_put_port+0x4e6/0x590 net/ipv4/inet_hashtables.c:182
- dccp_set_state+0x1b7/0x250 net/dccp/proto.c:103
- dccp_terminate_connection net/dccp/proto.c:969 [inline]
- dccp_close+0x873/0xfc0 net/dccp/proto.c:1023
- inet_release+0x184/0x1e0 net/ipv4/af_inet.c:428
- __sock_release net/socket.c:650 [inline]
- sock_close+0xd7/0x260 net/socket.c:1365
- __fput+0x3b9/0x820 fs/file_table.c:317
- task_work_run+0x146/0x1c0 kernel/task_work.c:177
- get_signal+0x15d9/0x1780 kernel/signal.c:2634
- arch_do_signal_or_restart+0x8d/0x750 arch/x86/kernel/signal.c:869
- exit_to_user_mode_loop+0x74/0x160 kernel/entry/common.c:166
- exit_to_user_mode_prepare+0xad/0x110 kernel/entry/common.c:201
- __syscall_exit_to_user_mode_work kernel/entry/common.c:283 [inline]
- syscall_exit_to_user_mode+0x2e/0x60 kernel/entry/common.c:294
- entry_SYSCALL_64_after_hwframe+0x46/0xb0
-RIP: 0033:0x7f19cb489109
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f19cc573168 EFLAGS: 00000246 ORIG_RAX: 000000000000002a
-RAX: fffffffffffffe00 RBX: 00007f19cb59c100 RCX: 00007f19cb489109
-RDX: 0000000000000010 RSI: 0000000020000180 RDI: 0000000000000006
-RBP: 00007f19cb4e30ad R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007fffda88fa9f R14: 00007f19cc573300 R15: 0000000000022000
- </TASK>
+If we step through the program, we can observe the flow as so:
 
-Allocated by task 21893:
- kasan_save_stack mm/kasan/common.c:38 [inline]
- kasan_set_track mm/kasan/common.c:45 [inline]
- set_alloc_info mm/kasan/common.c:436 [inline]
- __kasan_slab_alloc+0xb2/0xe0 mm/kasan/common.c:469
- kasan_slab_alloc include/linux/kasan.h:224 [inline]
- slab_post_alloc_hook mm/slab.h:750 [inline]
- slab_alloc_node mm/slub.c:3214 [inline]
- slab_alloc mm/slub.c:3222 [inline]
- __kmem_cache_alloc_lru mm/slub.c:3229 [inline]
- kmem_cache_alloc+0x199/0x2f0 mm/slub.c:3239
- inet_bind2_bucket_create net/ipv4/inet_hashtables.c:91 [inline]
- __inet_hash_connect+0xdf9/0x17c0 net/ipv4/inet_hashtables.c:951
- dccp_v4_connect+0x93b/0x1150 net/dccp/ipv4.c:108
- __inet_stream_connect+0x250/0xe10 net/ipv4/af_inet.c:660
- inet_stream_connect+0x61/0xa0 net/ipv4/af_inet.c:724
- __sys_connect_file net/socket.c:1979 [inline]
- __sys_connect+0x29b/0x2d0 net/socket.c:1996
- __do_sys_connect net/socket.c:2006 [inline]
- __se_sys_connect net/socket.c:2003 [inline]
- __x64_sys_connect+0x76/0x80 net/socket.c:2003
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x2b/0x70 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x46/0xb0
+int entry(struct __sk_buff * skb):
+bpf_prog_3bb007ac57240471_entry:
+; subprog_tail(skb);
+   0:   nopl   0x0(%rax,%rax,1)
+   5:   xor    %eax,%eax
+   7:   push   %rbp
+   8:   mov    %rsp,%rbp
+   b:   push   %rax
+   c:   mov    -0x8(%rbp),%rax
+  13:   call   0x0000000000000048 ---------.
+; return 2;                                |
+  18:   mov    $0x2,%eax <--------------------------------------.
+  1d:   leave                              |                    |
+  1e:   ret                                |                    |
+                                           |                    |
+int subprog_tail(struct __sk_buff * skb):  |                    |
+bpf_prog_3a140cef239a4b4f_F:               |                    |
+; int subprog_tail(struct __sk_buff *skb)  |                    |
+   0:   nopl   0x0(%rax,%rax,1) <----------'                    |
+   5:   xchg   %ax,%ax                                          |
+   7:   push   %rbp                                             |
+   8:   mov    %rsp,%rbp                                        |
+   b:   push   %rax                                             |
+   c:   push   %rbx                                             |
+   d:   push   %r13                                             |
+   f:   mov    %rdi,%rbx                                        |
+; asm volatile("r1 = %[ctx]\n\t"                                |
+  12:   movabs $0xffff888104119000,%r13                         |
+  1c:   mov    %rbx,%rdi                                        |
+  1f:   mov    %r13,%rsi                                        |
+  22:   xor    %edx,%edx                                        |
+  24:   mov    -0x4(%rbp),%eax                                  |
+  2a:   cmp    $0x21,%eax                                       |
+  2d:   jae    0x0000000000000046                               |
+  2f:   add    $0x1,%eax                                        |
+  32:   mov    %eax,-0x4(%rbp)                                  |
+  38:   jmp    0x0000000000000046 ---------------------------.  |
+  3d:   pop    %r13                                          |  |
+  3f:   pop    %rbx                                          |  |
+  40:   pop    %rax                                          |  |
+  41:   nopl   0x0(%rax,%rax,1)                              |  |
+; return 1;                                                  |  |
+  46:   pop    %r13                                          |  |
+  48:   pop    %rbx                                          |  |
+  49:   leave                                                |  |
+  4a:   ret                                                  |  |
+                                                             |  |
+int classifier_0(struct __sk_buff * skb):                    |  |
+bpf_prog_6e664b22811ace0d_classifier_0:                      |  |
+; done = 1;                                                  |  |
+   0:   nopl   0x0(%rax,%rax,1)                              |  |
+   5:   xchg   %ax,%ax                                       |  |
+   7:   push   %rbp                                          |  |
+   8:   mov    %rsp,%rbp                                     |  |
+   b:   movabs $0xffffc900000b6000,%rdi <--------------------'  |
+  15:   mov    $0x1,%esi                                        |
+  1a:   mov    %esi,0x0(%rdi)                                   |
+; return 0;                                                     |
+  1d:   xor    %eax,%eax                                        |
+  1f:   leave                                                   |
+  20:   ret ----------------------------------------------------'
 
-Freed by task 21893:
- kasan_save_stack mm/kasan/common.c:38 [inline]
- kasan_set_track+0x4c/0x70 mm/kasan/common.c:45
- kasan_set_free_info+0x1f/0x40 mm/kasan/generic.c:370
- ____kasan_slab_free+0xd8/0x110 mm/kasan/common.c:366
- kasan_slab_free include/linux/kasan.h:200 [inline]
- slab_free_hook mm/slub.c:1727 [inline]
- slab_free_freelist_hook+0x12e/0x1a0 mm/slub.c:1753
- slab_free mm/slub.c:3507 [inline]
- kmem_cache_free+0xc7/0x270 mm/slub.c:3524
- inet_bind2_bucket_destroy net/ipv4/inet_hashtables.c:137 [inline]
- __inet_put_port net/ipv4/inet_hashtables.c:174 [inline]
- inet_put_port+0x500/0x590 net/ipv4/inet_hashtables.c:182
- dccp_set_state+0x1b7/0x250 net/dccp/proto.c:103
- dccp_terminate_connection net/dccp/proto.c:969 [inline]
- dccp_close+0x873/0xfc0 net/dccp/proto.c:1023
- inet_release+0x184/0x1e0 net/ipv4/af_inet.c:428
- __sock_release net/socket.c:650 [inline]
- sock_close+0xd7/0x260 net/socket.c:1365
- __fput+0x3b9/0x820 fs/file_table.c:317
- task_work_run+0x146/0x1c0 kernel/task_work.c:177
- get_signal+0x15d9/0x1780 kernel/signal.c:2634
- arch_do_signal_or_restart+0x8d/0x750 arch/x86/kernel/signal.c:869
- exit_to_user_mode_loop+0x74/0x160 kernel/entry/common.c:166
- exit_to_user_mode_prepare+0xad/0x110 kernel/entry/common.c:201
- __syscall_exit_to_user_mode_work kernel/entry/common.c:283 [inline]
- syscall_exit_to_user_mode+0x2e/0x60 kernel/entry/common.c:294
- entry_SYSCALL_64_after_hwframe+0x46/0xb0
+My question is - is it a bug or intended behavior that other JITs should
+replicate?
 
-The buggy address belongs to the object at ffff888078a0b000
- which belongs to the cache dccp_bind2_bucket of size 56
-The buggy address is located 40 bytes inside of
- 56-byte region [ffff888078a0b000, ffff888078a0b038)
-
-The buggy address belongs to the physical page:
-page:ffffea0001e282c0 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x78a0b
-memcg:ffff8880490a8a01
-flags: 0xfff00000000200(slab|node=0|zone=1|lastcpupid=0x7ff)
-raw: 00fff00000000200 0000000000000000 dead000000000122 ffff88814a99e8c0
-raw: 0000000000000000 0000000080200020 00000001ffffffff ffff8880490a8a01
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x112a20(GFP_ATOMIC|__GFP_NOWARN|__GFP_NORETRY|__GFP_HARDWALL), pid 19042, tgid 19041 (syz-executor.3), ts 338492193643, free_ts 338281576402
- prep_new_page mm/page_alloc.c:2456 [inline]
- get_page_from_freelist+0x72b/0x7a0 mm/page_alloc.c:4198
- __alloc_pages+0x259/0x560 mm/page_alloc.c:5426
- alloc_slab_page+0x70/0xf0 mm/slub.c:1797
- allocate_slab+0x5e/0x520 mm/slub.c:1942
- new_slab mm/slub.c:2002 [inline]
- ___slab_alloc+0x41e/0xcd0 mm/slub.c:3002
- __slab_alloc mm/slub.c:3089 [inline]
- slab_alloc_node mm/slub.c:3180 [inline]
- slab_alloc mm/slub.c:3222 [inline]
- __kmem_cache_alloc_lru mm/slub.c:3229 [inline]
- kmem_cache_alloc+0x246/0x2f0 mm/slub.c:3239
- inet_bind2_bucket_create+0x30/0x310 net/ipv4/inet_hashtables.c:91
- inet_csk_get_port+0x107f/0x17f0 net/ipv4/inet_connection_sock.c:501
- __inet6_bind+0xac5/0x12d0 net/ipv6/af_inet6.c:405
- inet6_bind+0x18d/0x250 net/ipv6/af_inet6.c:464
- __sys_bind+0x233/0x2e0 net/socket.c:1776
- __do_sys_bind net/socket.c:1787 [inline]
- __se_sys_bind net/socket.c:1785 [inline]
- __x64_sys_bind+0x76/0x80 net/socket.c:1785
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x2b/0x70 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x46/0xb0
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1371 [inline]
- free_pcp_prepare+0x812/0x900 mm/page_alloc.c:1421
- free_unref_page_prepare mm/page_alloc.c:3343 [inline]
- free_unref_page_list+0x12c/0x890 mm/page_alloc.c:3475
- release_pages+0x2a04/0x2cb0 mm/swap.c:980
- tlb_batch_pages_flush mm/mmu_gather.c:58 [inline]
- tlb_flush_mmu_free mm/mmu_gather.c:255 [inline]
- tlb_flush_mmu+0x850/0xa70 mm/mmu_gather.c:262
- tlb_finish_mmu+0xcb/0x200 mm/mmu_gather.c:353
- exit_mmap+0x1dc/0x530 mm/mmap.c:3164
- __mmput+0x111/0x3a0 kernel/fork.c:1187
- exit_mm+0x211/0x2f0 kernel/exit.c:510
- do_exit+0x4ca/0x1ed0 kernel/exit.c:782
- do_group_exit+0x23b/0x2f0 kernel/exit.c:925
- get_signal+0x172f/0x1780 kernel/signal.c:2857
- arch_do_signal_or_restart+0x8d/0x750 arch/x86/kernel/signal.c:869
- exit_to_user_mode_loop+0x74/0x160 kernel/entry/common.c:166
- exit_to_user_mode_prepare+0xad/0x110 kernel/entry/common.c:201
- __syscall_exit_to_user_mode_work kernel/entry/common.c:283 [inline]
- syscall_exit_to_user_mode+0x2e/0x60 kernel/entry/common.c:294
- entry_SYSCALL_64_after_hwframe+0x46/0xb0
-
-Memory state around the buggy address:
- ffff888078a0af00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff888078a0af80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffff888078a0b000: fa fb fb fb fb fb fb fc fc fc fc fc fc fc fc fc
-                                  ^
- ffff888078a0b080: fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc fc
- ffff888078a0b100: fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc fc
-==================================================================
-
-
+Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ .../selftests/bpf/prog_tests/tailcalls.c      | 55 +++++++++++++++++++
+ .../selftests/bpf/progs/tailcall_bpf2bpf7.c   | 37 +++++++++++++
+ 2 files changed, 92 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf7.c
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/tools/testing/selftests/bpf/prog_tests/tailcalls.c b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
+index c4da87ec3ba4..696c307a1bee 100644
+--- a/tools/testing/selftests/bpf/prog_tests/tailcalls.c
++++ b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
+@@ -831,6 +831,59 @@ static void test_tailcall_bpf2bpf_4(bool noise)
+ 	bpf_object__close(obj);
+ }
+ 
++#include "tailcall_bpf2bpf7.skel.h"
++
++/* The tail call should never return to the previous program, if the
++ * jump was successful.
++ */
++static void test_tailcall_bpf2bpf_7(void)
++{
++	struct tailcall_bpf2bpf7 *obj;
++	int err, map_fd, prog_fd, main_fd, data_fd, i, val;
++	LIBBPF_OPTS(bpf_test_run_opts, topts,
++		.data_in = &pkt_v4,
++		.data_size_in = sizeof(pkt_v4),
++		.repeat = 1,
++	);
++
++	obj = tailcall_bpf2bpf7__open_and_load();
++	if (!ASSERT_OK_PTR(obj, "open and load"))
++		return;
++
++	main_fd = bpf_program__fd(obj->progs.entry);
++	if (!ASSERT_GE(main_fd, 0, "entry prog fd"))
++		goto out;
++
++	map_fd = bpf_map__fd(obj->maps.jmp_table);
++	if (!ASSERT_GE(map_fd, 0, "jmp_table map fd"))
++		goto out;
++
++	prog_fd = bpf_program__fd(obj->progs.classifier_0);
++	if (!ASSERT_GE(prog_fd, 0, "classifier_0 prog fd"))
++		goto out;
++
++	i = 0;
++	err = bpf_map_update_elem(map_fd, &i, &prog_fd, BPF_ANY);
++	if (!ASSERT_OK(err, "jmp_table map update"))
++		goto out;
++
++	err = bpf_prog_test_run_opts(main_fd, &topts);
++	ASSERT_OK(err, "entry prog test run");
++	ASSERT_EQ(topts.retval, 0, "tailcall retval");
++
++	data_fd = bpf_map__fd(obj->maps.bss);
++	if (!ASSERT_GE(map_fd, 0, "bss map fd"))
++		goto out;
++
++	i = 0;
++	err = bpf_map_lookup_elem(data_fd, &i, &val);
++	ASSERT_OK(err, "bss map lookup");
++	ASSERT_EQ(val, 1, "done flag is set");
++
++out:
++	tailcall_bpf2bpf7__destroy(obj);
++}
++
+ void test_tailcalls(void)
+ {
+ 	if (test__start_subtest("tailcall_1"))
+@@ -855,4 +908,6 @@ void test_tailcalls(void)
+ 		test_tailcall_bpf2bpf_4(false);
+ 	if (test__start_subtest("tailcall_bpf2bpf_5"))
+ 		test_tailcall_bpf2bpf_4(true);
++	if (test__start_subtest("tailcall_bpf2bpf_7"))
++		test_tailcall_bpf2bpf_7();
+ }
+diff --git a/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf7.c b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf7.c
+new file mode 100644
+index 000000000000..1be27cfa1702
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/tailcall_bpf2bpf7.c
+@@ -0,0 +1,37 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++
++#define __unused __attribute__((always_unused))
++
++struct {
++	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
++	__uint(max_entries, 1);
++	__uint(key_size, sizeof(__u32));
++	__uint(value_size, sizeof(__u32));
++} jmp_table SEC(".maps");
++
++int done = 0;
++
++SEC("tc")
++int classifier_0(struct __sk_buff *skb __unused)
++{
++	done = 1;
++	return 0;
++}
++
++static __noinline
++int subprog_tail(struct __sk_buff *skb)
++{
++	bpf_tail_call_static(skb, &jmp_table, 0);
++	return 1;
++}
++
++SEC("tc")
++int entry(struct __sk_buff *skb)
++{
++	subprog_tail(skb);
++	return 2;
++}
++
++char __license[] SEC("license") = "GPL";
+-- 
+2.35.3
+
