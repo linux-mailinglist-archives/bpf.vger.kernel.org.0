@@ -2,138 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3E4954E8B6
-	for <lists+bpf@lfdr.de>; Thu, 16 Jun 2022 19:40:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D89B54E918
+	for <lists+bpf@lfdr.de>; Thu, 16 Jun 2022 20:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231159AbiFPRkD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jun 2022 13:40:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47192 "EHLO
+        id S1350391AbiFPSGe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jun 2022 14:06:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229647AbiFPRkB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jun 2022 13:40:01 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B91583ED23
-        for <bpf@vger.kernel.org>; Thu, 16 Jun 2022 10:40:00 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id c196so2112926pfb.1
-        for <bpf@vger.kernel.org>; Thu, 16 Jun 2022 10:40:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=onP0sXsK4JvSncBfDCXl6EmwmLA/F+tO3xFCBOUoBPU=;
-        b=hHRoHv1h0MnLBF4CoiKvHxvxx3aesx1lb/k9ECeCD41+KZVZLJkX0m2oPPFhptp4Qx
-         Uup7Rdh0oMfP2/vTnr/YHB93/Fxe9Dshy6YNqffwewsWHuc/3aPbOwsGmsNv4G8Y1D4d
-         y87ieqMEgxR+STb1frkZ7KK9yEQTt5+CZWL/ZlNWS9wCeyT32xI9f+Wl8L615ZUdBLmA
-         Kw4WKioUlNBrfPMQFaTAGExxesg8m/MQZuE7l8Xdlx7lThBSendoXAOcLUhjNy+fStdI
-         0i1NzbZwIQZFStpXG+WC4JbcX7sIgj9iGbLUNLU8fwpLngok+RN0s7TtRzWITj+tqYS6
-         C1Vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=onP0sXsK4JvSncBfDCXl6EmwmLA/F+tO3xFCBOUoBPU=;
-        b=wx7UnwRSIGMwJlE/6IO7YA8R86A4Yq2mpOlxzuVDAZ1z22Kj0WaBWazkpBlbtFjeGI
-         COw3rTNPAnbJg5St1jjAvyEJS64jY91n8oh+DuefgrdbgyT6yc3TYzTknMcdR32SsCU/
-         LZUH5W9rlOxjE0mpaqCK6mDEppc2sj9AK4k4Om4QoW0aEsagXtAcNY5G9+p8SYHS8yLE
-         JaKpDXP44HtT9Dv7v6FTVVT3K4uxwO9gSD5DxKQpOyAMHMLItY0duIZu6uKGLC/hVTEU
-         NXxz3B4FTew4SoH1cvkd3gMQBz5osVnaW9qSHD8c5bpSCJoQfmwAwTG6gB6iIhr43Euy
-         sfkw==
-X-Gm-Message-State: AJIora+hYSzi4uGsO+tlwiP7IcBlVXpqquD+zZ1u45vz6zSd4hmuJjXf
-        wUZacNUxc0ev7wHPXmkN6TrYjKbhpJlwdijCKGSEUfvdtS4=
-X-Google-Smtp-Source: AGRyM1vAQ3usZcQ7CXRyrWvjwIwFjZl+3XZFOs6Pva4izs1aLGwZZ0EIlXJwfp+u6lnNhCGjeZ5hAuejA2Q8598CSbQ=
-X-Received: by 2002:a05:6a00:338e:b0:51b:c452:4210 with SMTP id
- cm14-20020a056a00338e00b0051bc4524210mr5679505pfb.69.1655401199992; Thu, 16
- Jun 2022 10:39:59 -0700 (PDT)
+        with ESMTP id S1355597AbiFPSGd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jun 2022 14:06:33 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C10704EA32;
+        Thu, 16 Jun 2022 11:06:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1655402792; x=1686938792;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=/doCgaA4+XHWFiF5aY5ptTbuf7V2rYnBuqnLKbBy2g8=;
+  b=Mdb02Zd0tEqj2PqMkDsZq3O1rVHvSEiyMzgjXel+D4mtShLP4o8zimoP
+   u8IkHDm6nL4IEIrbfvuaukmLZQiTeItgO5zjA4oShiRZE+5X6TMeck4oZ
+   cQxNaIqaGIhfnLVV8qHGccj/JzSBRhnO5HyYilpFiPldyoK+PP9s0fwGi
+   58at0JeOeIPAHfvtGMw3cfKP4HWLDJdm8+WCqJ4x3yy8ima5xlKSIMw1U
+   2s9KvNW47ZZzNW555y1CuLgQ8BPY1buVjMYqjcRoCnWuk6roHR74V0u9w
+   YUfEpD4GXClN2aU0pjRkbzZJpICrX+rzV8DtRcQFnZeI+fuPqipP0SMom
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="343275897"
+X-IronPort-AV: E=Sophos;i="5.92,305,1650956400"; 
+   d="scan'208";a="343275897"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2022 11:06:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.92,305,1650956400"; 
+   d="scan'208";a="641664258"
+Received: from boxer.igk.intel.com ([10.102.20.173])
+  by fmsmga008.fm.intel.com with ESMTP; 16 Jun 2022 11:06:16 -0700
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
+Cc:     netdev@vger.kernel.org, magnus.karlsson@intel.com,
+        bjorn@kernel.org, kuba@kernel.org,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: [PATCH v4 bpf-next 00/10] AF_XDP ZC selftests
+Date:   Thu, 16 Jun 2022 20:05:59 +0200
+Message-Id: <20220616180609.905015-1-maciej.fijalkowski@intel.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-References: <CAHo-Ooy+8O16k0oyMGHaAcmLm_Pfo=Ju4moTc95kRp2Z6itBcg@mail.gmail.com>
- <CANP3RGed9Vbu=8HfLyNs9zwA=biqgyew=+2tVxC6BAx2ktzNxA@mail.gmail.com>
- <CAADnVQKBqjowbGsSuc2g8yP9MBANhsroB+dhJep93cnx_EmNow@mail.gmail.com>
- <CANP3RGcZ4NULOwe+nwxfxsDPSXAUo50hWyN9Sb5b_d=kfDg=qg@mail.gmail.com>
- <YqodE5lxUCt6ojIw@google.com> <YqpAYcvM9DakTjWL@google.com>
- <YqpB+7pDwyOk20Cp@google.com> <YqpDcD6vkZZfWH4L@google.com>
- <CANP3RGcBCeMeCfpY3__4X_OHx6PB6bXtRjwLdYi-LRiegicVXQ@mail.gmail.com>
- <CAKH8qBv=+QVBqHd=9rAWe3d5d47dSkppYc1JbS+WgQs8XgB+Yg@mail.gmail.com> <CANP3RGc-9VkZkBK-N3y39F0Y+cLsPSLsQGvuR2QKAeQsWEoq9w@mail.gmail.com>
-In-Reply-To: <CANP3RGc-9VkZkBK-N3y39F0Y+cLsPSLsQGvuR2QKAeQsWEoq9w@mail.gmail.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Thu, 16 Jun 2022 10:39:49 -0700
-Message-ID: <CAKH8qBsB+DGMUBRCa4j+cWuGVg2_GLTZU4G_iun7wJ1GddaNHw@mail.gmail.com>
-Subject: Re: Curious bpf regression in 5.18 already fixed in stable 5.18.3
-To:     =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Linux NetDev <netdev@vger.kernel.org>,
-        BPF Mailing List <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        YiFei Zhu <zhuyifei@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 16, 2022 at 9:41 AM Maciej =C5=BBenczykowski <maze@google.com> =
-wrote:
->
-> On Thu, Jun 16, 2022 at 8:57 AM Stanislav Fomichev <sdf@google.com> wrote=
-:
-> > On Wed, Jun 15, 2022 at 6:36 PM Maciej =C5=BBenczykowski <maze@google.c=
-om> wrote:
-> > > I'm guessing this means the regression only affects 64-bit archs,
-> > > where long =3D void* is 8 bytes > u32 of 4 bytes, but not 32-bit ones=
-,
-> > > where long =3D u32 =3D 4 bytes
-> > >
-> > > Unfortunately my dev machine's 32-bit build capability has somehow
-> > > regressed again and I can't check this.
-> >
-> > Seems so, yes. But I'm actually not sure whether we should at all
-> > treat it as a regression. There is a question of whether that EPERM is
-> > UAPI or not. That's why we most likely haven't caught it in the
-> > selftests; most of the time we only check that syscall has returned -1
-> > and don't pay attention to the particular errno.
->
-> EFAULT seems like a terrible error to return no matter what, it has a ver=
-y clear
-> 'memory read/write access violation' semantic (ie. if you'd done from
-> userspace you'd get a SIGSEGV)
->
-> I'm actually surprised to learn you return EFAULT on positive number...
-> It should rather be some unique error code or EINVAL or something.
->
-> I know someone will argue that (most/all) system calls can return EFAULT.=
-..
-> But that's not actually true.  From a userspace developer the expectation=
- is
-> they will not return EFAULT if you pass in memory you know is good.
->
-> #include <sys/utsname.h>
-> int main() {
->   struct utsname uts;
->   uname(&uts);
-> }
->
-> The above cannot EFAULT in spite of it being documented as the only
-> error uname can report,
-> because obviously the uts structure on the stack is valid memory.
->
-> Maybe ENOSYS would at least make it obvious something is very weird.
+v3->v4:
+* use ice_{down,up} rather than ice_{stop,open} and check retvals
+  when toggling loopback mode (Jakub)
+* Remove patch that was throwing away xsk->outstanding_tx (Magnus)
 
-I'd like to see less of the applications poking into errno and making
-some decisions based on that. IMO, the only time where it makes sense
-is EINTR/EAGAIN vs the rest; the rest should be logged. Having errnos
-hard-coded in the tests is fine to make sure that the condition you're
-testing against has been triggered; but still treating them as UAPI
-might be too much, idk.
+v2->v3:
+* split loopback patch to ice_set_features() refactor part and other
+  part with actual loopback toggling support (Alexandr)
+* collect more acks from Magnus
 
-We had to add bpf_set_retval() because some of our and third party
-libraries would upgrade to v6/v4 sockets only when they receive some
-specific errno, which doesn't make a lot of sense to me.
+v1->v2:
+* collect acks from Magnus
+* drop redundant 'ret' variable in patch 4 (Magnus)
+* drop redundant assignments to ifobject->xdp_flags in patch 10 (Magnus)
+* use NETIF_F_LOOPBACK instead of introducing priv-flag (Alexandr)
+
+Hi!
+
+This set makes it possible to test ice driver with test suite that
+xdpxceiver provides. In order to do it, device needs to be turned on to
+loopback mode, so in first patch ice_set_features() is refactored and
+then in second patch NETIF_F_LOOPBACK support is added to it.
+Furthermore, ethtool's loopback test is fixed for ice (patch 3 and 4).
+Besides turning device into loopback mode, I was limiting queue count to
+1, so that none of the steering filters are needed.
+
+Rest of the work is related to xdpxceiver. Currently it is assumed that
+underlying device supports native XDP. It is true for veth, but might
+not be for other device that might be used with xdpxceiver once this
+patch set land. So, patch 4 adds a logic to find out if underlying
+device supports XDP so that TEST_MODE_DRV can be used for test suite.
+Patch 6 restores close() on netns fd that was removed by accident.
+
+In patch 7, default Rx pkt stream is added so physical device testing
+will be able to use shared UMEM in a way that Tx will utilize first half
+of buffer space and Rx second one. Then, patch 8 adds support for running
+xdpxceiver on physical devices.
+
+Patch 9 prepares xdpxceiver to address ZC drivers that clean lazily Tx
+descriptors (and therefore produce XSK descs to CQ) so that pacing
+algorithm works fine.
+
+Patch 10 finally adds new TEST_MODE_ZC for testing zero copy AF_XDP
+driver support.
+
+This work already allowed us to spot and fix two bugs in AF_XDP kernel
+side ([0], [1]).
+
+v1 is here [2].
+v2 is here [3].
+v3 is here [4].
+
+[0]: https://lore.kernel.org/bpf/20220425153745.481322-1-maciej.fijalkowski@intel.com/
+[1]: https://lore.kernel.org/bpf/20220607142200.576735-1-maciej.fijalkowski@intel.com/
+[2]: https://lore.kernel.org/bpf/20220610150923.583202-1-maciej.fijalkowski@intel.com/
+[3]: https://lore.kernel.org/bpf/20220614174749.901044-1-maciej.fijalkowski@intel.com/
+[4]: https://lore.kernel.org/bpf/20220615161041.902916-1-maciej.fijalkowski@intel.com/
+
+Thank you.
+
+
+Maciej Fijalkowski (10):
+  ice: compress branches in ice_set_features()
+  ice: allow toggling loopback mode via ndo_set_features callback
+  ice: check DD bit on Rx descriptor rather than (EOP | RS)
+  ice: do not setup vlan for loopback VSI
+  selftests: xsk: query for native XDP support
+  selftests: xsk: add missing close() on netns fd
+  selftests: xsk: introduce default Rx pkt stream
+  selftests: xsk: add support for executing tests on physical device
+  selftests: xsk: rely on pkts_in_flight in wait_for_tx_completion()
+  selftests: xsk: add support for zero copy testing
+
+ drivers/net/ethernet/intel/ice/ice_ethtool.c |   2 +-
+ drivers/net/ethernet/intel/ice/ice_main.c    |  81 ++--
+ tools/testing/selftests/bpf/test_xsk.sh      |  52 ++-
+ tools/testing/selftests/bpf/xdpxceiver.c     | 380 ++++++++++++++-----
+ tools/testing/selftests/bpf/xdpxceiver.h     |   9 +-
+ 5 files changed, 378 insertions(+), 146 deletions(-)
+
+-- 
+2.27.0
+
