@@ -2,80 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A080D54E6BA
-	for <lists+bpf@lfdr.de>; Thu, 16 Jun 2022 18:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BC3D54E6E4
+	for <lists+bpf@lfdr.de>; Thu, 16 Jun 2022 18:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377141AbiFPQMp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jun 2022 12:12:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48228 "EHLO
+        id S1377006AbiFPQUm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jun 2022 12:20:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378069AbiFPQMn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jun 2022 12:12:43 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81FC9222;
-        Thu, 16 Jun 2022 09:12:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1655395949; x=1686931949;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=9UssI0jjeOgubtdLVdnr3HWEhp3FQKF6wiN0xHRReqE=;
-  b=AmFNPTjUoC/+s6Z2vl5sN/LrQqlvzJtYENA+8pplEoHFOnDdDHtjL0BX
-   B0jHDIfcDHdnuf0ybydOMuFt1uRzIySmFTgvlRRwf341yFEDisjSvxyNh
-   KwLL1QBtUhssv4dykhSbOaDyp5Pj100J2j4v7OWj9Yl2sHN9Z5bDAHwg3
-   SEOW42mQyvxGn62oluqkCMREkSINi/bo5LEXGZtq63c2g/yg7QCmxEC8m
-   353n4D5zcDRmfvgrH6q60A+OsYXSwfzGmbZlayxWbRWtYK0W9S51Y3yVS
-   jO/OaBNezRiMNm8/d32JZTaaYWrLNyAYytxPuAh8+VqNsNWE0ImcqtUH5
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="279342002"
-X-IronPort-AV: E=Sophos;i="5.92,305,1650956400"; 
-   d="scan'208";a="279342002"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2022 09:10:07 -0700
-X-IronPort-AV: E=Sophos;i="5.92,305,1650956400"; 
-   d="scan'208";a="641609610"
-Received: from rrmiller-mobl.amr.corp.intel.com (HELO [10.212.205.54]) ([10.212.205.54])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jun 2022 09:10:06 -0700
-Message-ID: <8ceff343-32fc-9131-1a37-44ca10a34723@intel.com>
-Date:   Thu, 16 Jun 2022 09:10:07 -0700
+        with ESMTP id S232642AbiFPQUl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jun 2022 12:20:41 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09AD343EC5
+        for <bpf@vger.kernel.org>; Thu, 16 Jun 2022 09:20:39 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id s12so3751031ejx.3
+        for <bpf@vger.kernel.org>; Thu, 16 Jun 2022 09:20:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9sOnHDhrC9NqDZ1168Chx77lsgaAKJtv3Vw9HfioHEA=;
+        b=RmORFZ+J+O9rhDCS5BEwnpS8Myc917PDBduBbP/qi7zp8WEXEAnX5FsTfuQOXQbRIZ
+         zUHKe/4RFnvZKh4vDIxkW8cVC0o7ekdK7FxtPnEMqdqq2pWxhxhhBnzBU0e4B5GTTerP
+         LKnfTR9FKfzsLxrzlJ9iUzwlyWZcl/Ku4wcFI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9sOnHDhrC9NqDZ1168Chx77lsgaAKJtv3Vw9HfioHEA=;
+        b=sgn/pq9kf4/rDCsKtP9BiNaGQtwQyoE2DdOHF3JQRjbScCrjE7w93rR0Qkqlh0IsTF
+         A3BxUGDrLqRRrZEHTDjpNFhlHJ8TfXw5lNEljfVwWFMFjY6Zy8CVPIdqu4o0JDSoreTQ
+         fPaVNf3hY60qUR2VeUh2MD5XLbF65YuE3HrIbpOfyuELw3FotsWZWFUuLmgxHg34o3OB
+         QtHmti3z+9tLSJVfjSRm33Pti4Z5sqAN1FfJMnudfOysm0Jl2T/HCCUmeGKVJtld3RPC
+         PCYcv2mXG/QkVmzIVnERwByCiAQfBbZHmMONGPOPhMdkBtkmBim/VSF7SCURYFqDMbWj
+         ErNg==
+X-Gm-Message-State: AJIora+PvWRobUXHbxxGcGiW0DyBfQ9L3Qw3Ummc7AdMQObUZfp2pKYH
+        VAVQI1nTAiCchWavTBwIpeN47/eDVw0zgQ==
+X-Google-Smtp-Source: AGRyM1uENapBB3D4By0NXki/D8ONzPYmQgpinBeWaUw8fx6JJstBoNxuCkgaXm8pYM1U1OEbVGDRzw==
+X-Received: by 2002:a17:907:c1d:b0:70f:469a:3d73 with SMTP id ga29-20020a1709070c1d00b0070f469a3d73mr5206367ejc.248.1655396438245;
+        Thu, 16 Jun 2022 09:20:38 -0700 (PDT)
+Received: from cloudflare.com (79.184.138.130.ipv4.supernova.orange.pl. [79.184.138.130])
+        by smtp.gmail.com with ESMTPSA id q12-20020a5085cc000000b0042ab87ea713sm2064930edh.22.2022.06.16.09.20.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jun 2022 09:20:37 -0700 (PDT)
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        kernel-team@cloudflare.com
+Subject: [PATCH bpf-next v2 0/2] Fix tail call counting with bpf2bpf
+Date:   Thu, 16 Jun 2022 18:20:35 +0200
+Message-Id: <20220616162037.535469-1-jakub@cloudflare.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v4 bpf 3/4] module: introduce module_alloc_huge
-Content-Language: en-US
-To:     Song Liu <song@kernel.org>, bpf@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, kernel-team@fb.com,
-        akpm@linux-foundation.org, rick.p.edgecombe@intel.com,
-        hch@infradead.org, imbrenda@linux.ibm.com, mcgrof@kernel.org,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-References: <20220415164413.2727220-1-song@kernel.org>
- <20220415164413.2727220-4-song@kernel.org>
-From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <20220415164413.2727220-4-song@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/15/22 09:44, Song Liu wrote:
->  arch/x86/kernel/module.c     | 21 +++++++++++++++++++++
->  include/linux/moduleloader.h |  5 +++++
->  kernel/module.c              |  8 ++++++++
+Please see patch 1 for the explanation of the problem.
+Patch 2 adds a test so that we don't regress.
 
-A cc of x86@kernel.org or better yet the "X86 MM" folks would be really
-appreciated on future patches.  It sounds like these parts were pretty
-lightly reviewed before.
+v1 -> v2:
+- switch from __attibute__((always_unused)) to unused to avoid CI failures.
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/tree/MAINTAINERS#n21629
+Jakub Sitnicki (2):
+  bpf, x86: Fix tail call count offset calculation on bpf2bpf call
+  selftests/bpf: Test tail call counting with bpf2bpf and data on stack
 
-Feel free to cc the whole series, not _just_ the parts touching arch/x86/.
+ arch/x86/net/bpf_jit_comp.c                   |  3 +-
+ .../selftests/bpf/prog_tests/tailcalls.c      | 55 +++++++++++++++++++
+ .../selftests/bpf/progs/tailcall_bpf2bpf6.c   | 42 ++++++++++++++
+ 3 files changed, 99 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/tailcall_bpf2bpf6.c
+
+-- 
+2.35.3
+
