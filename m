@@ -2,85 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFCA954D6F2
-	for <lists+bpf@lfdr.de>; Thu, 16 Jun 2022 03:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE07854D720
+	for <lists+bpf@lfdr.de>; Thu, 16 Jun 2022 03:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345745AbiFPBUS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jun 2022 21:20:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54618 "EHLO
+        id S1356657AbiFPBg4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jun 2022 21:36:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244771AbiFPBUR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jun 2022 21:20:17 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CE9C5712A;
-        Wed, 15 Jun 2022 18:20:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 81114B8226D;
-        Thu, 16 Jun 2022 01:20:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 0D76FC3411A;
-        Thu, 16 Jun 2022 01:20:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655342413;
-        bh=SdVecEtOD6facjq6QjGenYkU51hZeeV8mVhwtshg23c=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=DIf9XCULPnL8DQQrmovHTec4TpfZIblMvSvfwO8mwHz+qZvNODplSEf2MMlQ1mBC4
-         HneMbsfI6WCO+zhEClFoWoPcuNPH5btEaCVyZFwEYCqZn0AaeIaxuCgkb2cDlyURCn
-         EQpbMvcQK74yqLQJk3mDj46iPs4FTMS+zH5TQE1COH3hZeMijoZBD1iAq1eeHEzdDm
-         OnELooZO6+vtO3WL0CfDhBFMXwo+kyO/8Z2gG8gRfoS96T3XTOpX5ukI7p58oFSwaG
-         INmIomAG+PEHNyQRCgct/5gQK/lPkQhXMD4bkdaEJQD0BSXbpKF0bpDeeXeJSR0Lq4
-         v84vXBlj19RyQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E5C69E7385E;
-        Thu, 16 Jun 2022 01:20:12 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S243323AbiFPBgz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jun 2022 21:36:55 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5258B21E08
+        for <bpf@vger.kernel.org>; Wed, 15 Jun 2022 18:36:54 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id y12so114956ior.7
+        for <bpf@vger.kernel.org>; Wed, 15 Jun 2022 18:36:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KLUGXrqOHQOsir08lP6RK8a7Hv7qyvb4djg5zmUdCCs=;
+        b=LNaKhOwqACvpCUAog5NX8Ap/mrL/8Sq5E1ZfZ5G/IlQb0VfeFVkUYfpRNc+cqTkAqy
+         TCeHfIrtuA92pTN3n9m/FbfyDrsGjAid45yIVkVYqzGmH0to9ZHh1+OI9QBkNzL7qqBf
+         DZMu2ESsmlfKLQMO2+Jn7EfM7PlT51s7lyzp6KnWKJBMd3skxdcpAw000BlU7a6l0PqY
+         7RPxWweNrU1Q89z9jb64yjTDcoxbRlGEstk66pWCm3KyR6Xn1U4/r1vvApTVihiRcO+B
+         w5xevQDWlVVz3aQWGoKf1C8hQD25f14Y9IyFL2DnHW8prabihwzdC1p/Kb7uu2+uZk93
+         6bMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KLUGXrqOHQOsir08lP6RK8a7Hv7qyvb4djg5zmUdCCs=;
+        b=I2cBpeVOWUNaqh4b/5BxmBTJx4sTmYRvLUTyGo9sAXL4Op0cmOYf0ATmLc1sItEVBd
+         wFrJDqL77FLv5Xq8IfCBFqF3MddaDFOlXQ4nFs8tgGh1xEJ8oS7FgZzgkrAsbW9GWi+/
+         S06Dh6N45sh6AdejCIXwe/b+aQRkE45q/YRgHg0NZyOXsASwjS79v4tHVI7kZDVPayNG
+         nUKk7sq+GcV3U0aE6Kz3e53oAI6lCgRxS1uZQ9QX/lh/1yGqZkmgir6lwnMbayFhSWU+
+         VDmlGCaV031JsXR56DxqO5EbsyGJVVesAT9g4j1rFAkugCQ6t0RBy8LlnkmJMLmVKkxd
+         s6Ww==
+X-Gm-Message-State: AJIora+hSRVPHF3ulQq/WM3a5mkDFvzfkPYghbONUW+FJdV6+GpQ9ay6
+        N29GZwmWASwg5t/DUNcc6D2o84BJJHTvC/75dW6sAfQQijk=
+X-Google-Smtp-Source: AGRyM1vWBZ7vS4WyQRP87GheRqZX8lPBh3G80o2TCvAEzi4Ve0Po42zYbOxyWJng4ye7URYp5aw4jbfTKrBTwcb7fnQ=
+X-Received: by 2002:a05:6638:d86:b0:331:fb54:c3e3 with SMTP id
+ l6-20020a0566380d8600b00331fb54c3e3mr1430903jaj.198.1655343413501; Wed, 15
+ Jun 2022 18:36:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v6,bpf-next] samples/bpf: check detach prog exist or not in
- xdp_fwd
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165534241293.492.17334475395893203264.git-patchwork-notify@kernel.org>
-Date:   Thu, 16 Jun 2022 01:20:12 +0000
-References: <20220606005425.261967-1-shaozhengchao@huawei.com>
-In-Reply-To: <20220606005425.261967-1-shaozhengchao@huawei.com>
-To:     Zhengchao Shao <shaozhengchao@huawei.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
-        john.fastabend@gmail.com, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
-        toke@kernel.org, weiyongjun1@huawei.com, yuehaibing@huawei.com
-X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <CAHo-Ooy+8O16k0oyMGHaAcmLm_Pfo=Ju4moTc95kRp2Z6itBcg@mail.gmail.com>
+ <CANP3RGed9Vbu=8HfLyNs9zwA=biqgyew=+2tVxC6BAx2ktzNxA@mail.gmail.com>
+ <CAADnVQKBqjowbGsSuc2g8yP9MBANhsroB+dhJep93cnx_EmNow@mail.gmail.com>
+ <CANP3RGcZ4NULOwe+nwxfxsDPSXAUo50hWyN9Sb5b_d=kfDg=qg@mail.gmail.com>
+ <YqodE5lxUCt6ojIw@google.com> <YqpAYcvM9DakTjWL@google.com>
+ <YqpB+7pDwyOk20Cp@google.com> <YqpDcD6vkZZfWH4L@google.com>
+In-Reply-To: <YqpDcD6vkZZfWH4L@google.com>
+From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
+Date:   Wed, 15 Jun 2022 18:36:42 -0700
+Message-ID: <CANP3RGcBCeMeCfpY3__4X_OHx6PB6bXtRjwLdYi-LRiegicVXQ@mail.gmail.com>
+Subject: Re: Curious bpf regression in 5.18 already fixed in stable 5.18.3
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Linux NetDev <netdev@vger.kernel.org>,
+        BPF Mailing List <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        YiFei Zhu <zhuyifei@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+> > > I've bisected the original issue to:
+> > >
+> > > b44123b4a3dc ("bpf: Add cgroup helpers bpf_{get,set}_retval to get/set
+> > > syscall return value")
+> > >
+> > > And I believe it's these two lines from the original patch:
+> > >
+> > >  #define BPF_PROG_CGROUP_INET_EGRESS_RUN_ARRAY(array, ctx, func)            \
+> > >     ({                                              \
+> > > @@ -1398,10 +1398,12 @@ out:
+> > >             u32 _ret;                               \
+> > >             _ret = BPF_PROG_RUN_ARRAY_CG_FLAGS(array, ctx, func, 0, &_flags); \
+> > >             _cn = _flags & BPF_RET_SET_CN;          \
+> > > +           if (_ret && !IS_ERR_VALUE((long)_ret))  \
+> > > +                   _ret = -EFAULT;
+> > >
+> > > _ret is u32 and ret gets -1 (ffffffff). IS_ERR_VALUE((long)ffffffff)
+> > returns
+> > > false in this case because it doesn't sign-expand the argument and
+> > internally
+> > > does ffff_ffff >= ffff_ffff_ffff_f001 comparison.
+> > >
+> > > I'll try to see what I've changed in my unrelated patch to fix it. But
+> > I think
+> > > we should audit all these IS_ERR_VALUE((long)_ret) regardless; they
+> > don't
+> > > seem to work the way we want them to...
+>
+> > Ok, and my patch fixes it because I'm replacing 'u32 _ret' with 'int ret'.
+>
+> > So, basically, with u32 _ret we have to do IS_ERR_VALUE((long)(int)_ret).
+>
+> > Sigh..
+>
+> And to follow up on that, the other two places we have are fine:
+>
+> IS_ERR_VALUE((long)run_ctx.retval))
+>
+> run_ctx.retval is an int.
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+I'm guessing this means the regression only affects 64-bit archs,
+where long = void* is 8 bytes > u32 of 4 bytes, but not 32-bit ones,
+where long = u32 = 4 bytes
 
-On Mon, 6 Jun 2022 08:54:25 +0800 you wrote:
-> Before detach the prog, we should check detach prog exist or not.
-> 
-> Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
-> ---
->  samples/bpf/xdp_fwd_user.c | 55 +++++++++++++++++++++++++++++++++-----
->  1 file changed, 49 insertions(+), 6 deletions(-)
-
-Here is the summary with links:
-  - [v6,bpf-next] samples/bpf: check detach prog exist or not in xdp_fwd
-    https://git.kernel.org/bpf/bpf-next/c/de5bb43826dd
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Unfortunately my dev machine's 32-bit build capability has somehow
+regressed again and I can't check this.
