@@ -2,442 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 771AB54EAFC
-	for <lists+bpf@lfdr.de>; Thu, 16 Jun 2022 22:22:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B61A54EB5D
+	for <lists+bpf@lfdr.de>; Thu, 16 Jun 2022 22:39:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378474AbiFPUWn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jun 2022 16:22:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36984 "EHLO
+        id S1378721AbiFPUjB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jun 2022 16:39:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378504AbiFPUWi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jun 2022 16:22:38 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB31AC37;
-        Thu, 16 Jun 2022 13:22:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9D597B82604;
-        Thu, 16 Jun 2022 20:22:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C558C34114;
-        Thu, 16 Jun 2022 20:22:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655410953;
-        bh=u6J4k0Aouia2m9rZ+u49/nuOJQNy5dTSftDpj0hAF+4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pkxLq8XSnVHmqQt0smfpvDe8ugSPeQ9muYnYlas9qwbEtUjIaLXhwf+ArP+E1oSFg
-         nRgvJPNYIvf6EWS/VseVJ8WVQJYVXX/veUZXpDF7GopiDcGXnuEyKmwPmleY5BAXXD
-         xjA7ODRUm0gztbwPaKgoyfYqCl8Ry+LXBPNIXvoX+0rNNZQLt8u652W5tDsMQX/Pqc
-         TwSJTyzVBHHZIZ5PO1SNKKfmpW1GAQc4njGrSPupCEvOTTu0buXqxNC5djBG4dHBY2
-         xpUKANeXEC1bNSiVS5KKtB11//ZEMKneZUsa8lh7Fjim285NTGPlofg6GAvbNjuLlS
-         Sy5YTIgd4RIRw==
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        with ESMTP id S1378367AbiFPUi7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jun 2022 16:38:59 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D12335DD25
+        for <bpf@vger.kernel.org>; Thu, 16 Jun 2022 13:38:53 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id eo8so3764587edb.0
+        for <bpf@vger.kernel.org>; Thu, 16 Jun 2022 13:38:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XJARqM/NqasEvhC9Y89kwlEP8NLgr7BQ25Jz1zgF72k=;
+        b=NBOMhgsHCOlL+j7HXkTorTG1fSnHRY2uPaAbXGUsW/pmvppzeBfSErFIPsEwZ/hzZg
+         WsOECi98i+KaU4sH+DbNAbaETd6C+o5hxAPGLOjgVD/mryOxmcSYuVle3skR8wMPw0T8
+         4VEjotZFHgLHhUawLbNrOW9gcC7lFz1GCAQEryUe1RcJ8KlCo7FeItH74Yqf2cuhv3t8
+         UMV4xRmPAMye6d3L9GzAFiP5j1ePICK7WyXifk6cGAgYg4ff7GDFVd9+z11n3EA9xocg
+         Mad1BzonyUHYpRRPKw2kDpet1BVWYS4FJC/R98gQIEzd4axKfVzsfstWD063IOENF3Ip
+         FFUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XJARqM/NqasEvhC9Y89kwlEP8NLgr7BQ25Jz1zgF72k=;
+        b=Kv5X40xHxV4lTzi8Q6OxRb1gn/OnfHrqH6a5HQ4uQmi2AFMyDrgoXpQUNZiT68Php4
+         keZBAU/WU5jvbHmxl2sE7yVw5ufzQCEUBo6k+/IJJ8NjO1COPgKtCKzPjKf7ChVovXsT
+         R5qevVFVUaWHho4fQzxJ4kuYU9VaEbzMWmSKcbkhrKEB5XI95eVDrR4E5xcAmq7lDfVW
+         9ATjKnVKfSFYQm1NTrgN8rrCY9WJPZOKX2oedNb9WfvTteZ6b6esdoUgO9v2WJSqlKMw
+         BKNZEnnE4MdinfcTK0MlhS4nqEOUc41l9WxSNkqHOvQMLmH4RxoxzZYaOgLT5MP8rlEZ
+         ZnSw==
+X-Gm-Message-State: AJIora/kKcxjRwu5WdGhh+njonazPPdKbq0FV/sN5DzH+YaixV9zBPqN
+        bJBGL3dusy3AuCrBZYMfM5tS3hP4orVqiKans+M=
+X-Google-Smtp-Source: AGRyM1suwOgBiDBGttf+RCyj5s0/c1kI1Goks0zkjmyrjJdXH83rsh4JKFr8Nz6G0E29DFDuS75x9GZKpXSwr2IzWOg=
+X-Received: by 2002:aa7:c450:0:b0:431:55c6:29f9 with SMTP id
+ n16-20020aa7c450000000b0043155c629f9mr8720596edr.14.1655411932176; Thu, 16
+ Jun 2022 13:38:52 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220616055543.3285835-1-andrii@kernel.org> <CAADnVQ+OXAk8=FoyHP0pt5o_9sB7Qj=nm7xLZJYpLEczMt8i2g@mail.gmail.com>
+In-Reply-To: <CAADnVQ+OXAk8=FoyHP0pt5o_9sB7Qj=nm7xLZJYpLEczMt8i2g@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 16 Jun 2022 13:38:40 -0700
+Message-ID: <CAEf4BzaOOig5m+M5EbNDnBi=rPL1DcbSF-GrOkZvSNFxLymOCw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: fix internal USDT address translation
+ logic for shared libraries
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     linux-perf-users@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Ian Rogers <irogers@google.com>
-Subject: [PATCHv5 bpf-next 1/1] perf tools: Rework prologue generation code
-Date:   Thu, 16 Jun 2022 22:22:14 +0200
-Message-Id: <20220616202214.70359-2-jolsa@kernel.org>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20220616202214.70359-1-jolsa@kernel.org>
-References: <20220616202214.70359-1-jolsa@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Some functions we use for bpf prologue generation are going to be
-deprecated. This change reworks current code not to use them.
+On Thu, Jun 16, 2022 at 1:00 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, Jun 15, 2022 at 10:56 PM Andrii Nakryiko <andrii@kernel.org> wrote:
+> >
+> > Perform the same virtual address to file offset translation that libbpf
+> > is doing for executable ELF binaries also for shared libraries.
+> > Currently libbpf is making a simplifying and sometimes wrong assumption
+> > that for shared libraries relative virtual addresses inside ELF are
+> > always equal to file offsets.
+> >
+> > Unfortunately, this is not always the case with LLVM's lld linker, which
+> > now by default generates quite more complicated ELF segments layout.
+> > E.g., for liburandom_read.so from selftests/bpf, here's an excerpt from
+> > readelf output listing ELF segments (a.k.a. program headers):
+> >
+> >   Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+> >   PHDR           0x000040 0x0000000000000040 0x0000000000000040 0x0001f8 0x0001f8 R   0x8
+> >   LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x0005e4 0x0005e4 R   0x1000
+> >   LOAD           0x0005f0 0x00000000000015f0 0x00000000000015f0 0x000160 0x000160 R E 0x1000
+> >   LOAD           0x000750 0x0000000000002750 0x0000000000002750 0x000210 0x000210 RW  0x1000
+> >   LOAD           0x000960 0x0000000000003960 0x0000000000003960 0x000028 0x000029 RW  0x1000
+> >
+> > Compare that to what is generated by GNU ld (or LLVM lld's with extra
+> > -znoseparate-code argument which disables this cleverness in the name of
+> > file size reduction):
+> >
+> >   Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
+> >   LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x000550 0x000550 R   0x1000
+> >   LOAD           0x001000 0x0000000000001000 0x0000000000001000 0x000131 0x000131 R E 0x1000
+> >   LOAD           0x002000 0x0000000000002000 0x0000000000002000 0x0000ac 0x0000ac R   0x1000
+> >   LOAD           0x002dc0 0x0000000000003dc0 0x0000000000003dc0 0x000262 0x000268 RW  0x1000
+> >
+> > You can see from the first example above that for executable (Flg == "R E")
+> > PT_LOAD segment (LOAD #2), Offset doesn't match VirtAddr columns.
+> > And it does in the second case (GNU ld output).
+> >
+> > This is important because all the addresses, including USDT specs,
+> > operate in a virtual address space, while kernel is expecting file
+> > offsets when performing uprobe attach. So such mismatches have to be
+> > properly taken care of and compensated by libbpf, which is what this
+> > patch is fixing.
+> >
+> > Also patch clarifies few function and variable names, as well as updates
+> > comments to reflect this important distinction (virtaddr vs file offset)
+> > and to ephasize that shared libraries are not all that different from
+> > executables in this regard.
+> >
+> > This patch also changes selftests/bpf Makefile to force urand_read and
+> > liburand_read.so to be built with Clang and LLVM's lld (and explicitly
+> > request this ELF file size optimization through -znoseparate-code linker
+> > parameter) to validate libbpf logic and ensure regressions don't happen
+> > in the future. I've bundled these selftests changes together with libbpf
+> > changes to keep the above description tied with both libbpf and
+> > selftests changes.
+> >
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > ---
+> >  tools/lib/bpf/usdt.c                 | 123 ++++++++++++++-------------
+>
+> What should be the Fixes tag here?
+> Back to the beginning of this usdt.c file?
 
-We need to replace following functions/struct:
-   bpf_program__set_prep
-   bpf_program__nth_fd
-   struct bpf_prog_prep_result
+Oh, sorry, forgot about the Fixes tag. Yeah, it's pretty much never
+worked properly for such fancy ELF shared libraries.
 
-Currently we use bpf_program__set_prep to hook perf callback before
-program is loaded and provide new instructions with the prologue.
-
-We replace this function/ality by taking instructions for specific
-program, attaching prologue to them and load such new ebpf programs
-with prologue using separate bpf_prog_load calls (outside libbpf
-load machinery).
-
-Before we can take and use program instructions, we need libbpf to
-actually load it. This way we get the final shape of its instructions
-with all relocations and verifier adjustments).
-
-There's one glitch though.. perf kprobe program already assumes
-generated prologue code with proper values in argument registers,
-so loading such program directly will fail in the verifier.
-
-That's where the fallback pre-load handler fits in and prepends
-the initialization code to the program. Once such program is loaded
-we take its instructions, cut off the initialization code and prepend
-the prologue.
-
-I know.. sorry ;-)
-
-To have access to the program when loading this patch adds support to
-register 'fallback' section handler to take care of perf kprobe programs.
-The fallback means that it handles any section definition besides the
-ones that libbpf handles.
-
-The handler serves two purposes:
-  - allows perf programs to have special arguments in section name
-  - allows perf to use pre-load callback where we can attach init
-    code (zeroing all argument registers) to each perf program
-
-Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/perf/util/bpf-loader.c | 204 ++++++++++++++++++++++++++++++-----
- 1 file changed, 175 insertions(+), 29 deletions(-)
-
-diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
-index f8ad581ea247..6bd7c288e820 100644
---- a/tools/perf/util/bpf-loader.c
-+++ b/tools/perf/util/bpf-loader.c
-@@ -9,6 +9,7 @@
- #include <linux/bpf.h>
- #include <bpf/libbpf.h>
- #include <bpf/bpf.h>
-+#include <linux/filter.h>
- #include <linux/err.h>
- #include <linux/kernel.h>
- #include <linux/string.h>
-@@ -49,6 +50,7 @@ struct bpf_prog_priv {
- 	struct bpf_insn *insns_buf;
- 	int nr_types;
- 	int *type_mapping;
-+	int *prologue_fds;
- };
- 
- struct bpf_perf_object {
-@@ -56,6 +58,11 @@ struct bpf_perf_object {
- 	struct bpf_object *obj;
- };
- 
-+struct bpf_preproc_result {
-+	struct bpf_insn *new_insn_ptr;
-+	int new_insn_cnt;
-+};
-+
- static LIST_HEAD(bpf_objects_list);
- static struct hashmap *bpf_program_hash;
- static struct hashmap *bpf_map_hash;
-@@ -86,6 +93,7 @@ bpf_perf_object__next(struct bpf_perf_object *prev)
- 	     (perf_obj) = (tmp), (tmp) = bpf_perf_object__next(tmp))
- 
- static bool libbpf_initialized;
-+static int libbpf_sec_handler;
- 
- static int bpf_perf_object__add(struct bpf_object *obj)
- {
-@@ -99,12 +107,76 @@ static int bpf_perf_object__add(struct bpf_object *obj)
- 	return perf_obj ? 0 : -ENOMEM;
- }
- 
-+static void *program_priv(const struct bpf_program *prog)
-+{
-+	void *priv;
-+
-+	if (IS_ERR_OR_NULL(bpf_program_hash))
-+		return NULL;
-+	if (!hashmap__find(bpf_program_hash, prog, &priv))
-+		return NULL;
-+	return priv;
-+}
-+
-+static struct bpf_insn prologue_init_insn[] = {
-+	BPF_MOV64_IMM(BPF_REG_2, 0),
-+	BPF_MOV64_IMM(BPF_REG_3, 0),
-+	BPF_MOV64_IMM(BPF_REG_4, 0),
-+	BPF_MOV64_IMM(BPF_REG_5, 0),
-+};
-+
-+static int libbpf_prog_prepare_load_fn(struct bpf_program *prog,
-+				       struct bpf_prog_load_opts *opts __maybe_unused,
-+				       long cookie __maybe_unused)
-+{
-+	size_t init_size_cnt = ARRAY_SIZE(prologue_init_insn);
-+	size_t orig_insn_cnt, insn_cnt, init_size, orig_size;
-+	struct bpf_prog_priv *priv = program_priv(prog);
-+	const struct bpf_insn *orig_insn;
-+	struct bpf_insn *insn;
-+
-+	if (IS_ERR_OR_NULL(priv)) {
-+		pr_debug("bpf: failed to get private field\n");
-+		return -BPF_LOADER_ERRNO__INTERNAL;
-+	}
-+
-+	if (!priv->need_prologue)
-+		return 0;
-+
-+	/* prepend initialization code to program instructions */
-+	orig_insn = bpf_program__insns(prog);
-+	orig_insn_cnt = bpf_program__insn_cnt(prog);
-+	init_size = init_size_cnt * sizeof(*insn);
-+	orig_size = orig_insn_cnt * sizeof(*insn);
-+
-+	insn_cnt = orig_insn_cnt + init_size_cnt;
-+	insn = malloc(insn_cnt * sizeof(*insn));
-+	if (!insn)
-+		return -ENOMEM;
-+
-+	memcpy(insn, prologue_init_insn, init_size);
-+	memcpy((char *) insn + init_size, orig_insn, orig_size);
-+	bpf_program__set_insns(prog, insn, insn_cnt);
-+	return 0;
-+}
-+
- static int libbpf_init(void)
- {
-+	LIBBPF_OPTS(libbpf_prog_handler_opts, handler_opts,
-+		.prog_prepare_load_fn = libbpf_prog_prepare_load_fn,
-+	);
-+
- 	if (libbpf_initialized)
- 		return 0;
- 
- 	libbpf_set_print(libbpf_perf_print);
-+	libbpf_sec_handler = libbpf_register_prog_handler(NULL, BPF_PROG_TYPE_KPROBE,
-+							  0, &handler_opts);
-+	if (libbpf_sec_handler < 0) {
-+		pr_debug("bpf: failed to register libbpf section handler: %d\n",
-+			 libbpf_sec_handler);
-+		return -BPF_LOADER_ERRNO__INTERNAL;
-+	}
- 	libbpf_initialized = true;
- 	return 0;
- }
-@@ -188,14 +260,31 @@ struct bpf_object *bpf__prepare_load(const char *filename, bool source)
- 	return obj;
- }
- 
-+static void close_prologue_programs(struct bpf_prog_priv *priv)
-+{
-+	struct perf_probe_event *pev;
-+	int i, fd;
-+
-+	if (!priv->need_prologue)
-+		return;
-+	pev = &priv->pev;
-+	for (i = 0; i < pev->ntevs; i++) {
-+		fd = priv->prologue_fds[i];
-+		if (fd != -1)
-+			close(fd);
-+	}
-+}
-+
- static void
- clear_prog_priv(const struct bpf_program *prog __maybe_unused,
- 		void *_priv)
- {
- 	struct bpf_prog_priv *priv = _priv;
- 
-+	close_prologue_programs(priv);
- 	cleanup_perf_probe_events(&priv->pev, 1);
- 	zfree(&priv->insns_buf);
-+	zfree(&priv->prologue_fds);
- 	zfree(&priv->type_mapping);
- 	zfree(&priv->sys_name);
- 	zfree(&priv->evt_name);
-@@ -243,17 +332,6 @@ static bool ptr_equal(const void *key1, const void *key2,
- 	return key1 == key2;
- }
- 
--static void *program_priv(const struct bpf_program *prog)
--{
--	void *priv;
--
--	if (IS_ERR_OR_NULL(bpf_program_hash))
--		return NULL;
--	if (!hashmap__find(bpf_program_hash, prog, &priv))
--		return NULL;
--	return priv;
--}
--
- static int program_set_priv(struct bpf_program *prog, void *priv)
- {
- 	void *old_priv;
-@@ -558,8 +636,8 @@ static int bpf__prepare_probe(void)
- 
- static int
- preproc_gen_prologue(struct bpf_program *prog, int n,
--		     struct bpf_insn *orig_insns, int orig_insns_cnt,
--		     struct bpf_prog_prep_result *res)
-+		     const struct bpf_insn *orig_insns, int orig_insns_cnt,
-+		     struct bpf_preproc_result *res)
- {
- 	struct bpf_prog_priv *priv = program_priv(prog);
- 	struct probe_trace_event *tev;
-@@ -607,7 +685,6 @@ preproc_gen_prologue(struct bpf_program *prog, int n,
- 
- 	res->new_insn_ptr = buf;
- 	res->new_insn_cnt = prologue_cnt + orig_insns_cnt;
--	res->pfd = NULL;
- 	return 0;
- 
- errout:
-@@ -715,7 +792,7 @@ static int hook_load_preprocessor(struct bpf_program *prog)
- 	struct bpf_prog_priv *priv = program_priv(prog);
- 	struct perf_probe_event *pev;
- 	bool need_prologue = false;
--	int err, i;
-+	int i;
- 
- 	if (IS_ERR_OR_NULL(priv)) {
- 		pr_debug("Internal error when hook preprocessor\n");
-@@ -753,6 +830,13 @@ static int hook_load_preprocessor(struct bpf_program *prog)
- 		return -ENOMEM;
- 	}
- 
-+	priv->prologue_fds = malloc(sizeof(int) * pev->ntevs);
-+	if (!priv->prologue_fds) {
-+		pr_debug("Not enough memory: alloc prologue fds failed\n");
-+		return -ENOMEM;
-+	}
-+	memset(priv->prologue_fds, -1, sizeof(int) * pev->ntevs);
-+
- 	priv->type_mapping = malloc(sizeof(int) * pev->ntevs);
- 	if (!priv->type_mapping) {
- 		pr_debug("Not enough memory: alloc type_mapping failed\n");
-@@ -761,13 +845,7 @@ static int hook_load_preprocessor(struct bpf_program *prog)
- 	memset(priv->type_mapping, -1,
- 	       sizeof(int) * pev->ntevs);
- 
--	err = map_prologue(pev, priv->type_mapping, &priv->nr_types);
--	if (err)
--		return err;
--
--	err = bpf_program__set_prep(prog, priv->nr_types,
--				    preproc_gen_prologue);
--	return err;
-+	return map_prologue(pev, priv->type_mapping, &priv->nr_types);
- }
- 
- int bpf__probe(struct bpf_object *obj)
-@@ -874,6 +952,77 @@ int bpf__unprobe(struct bpf_object *obj)
- 	return ret;
- }
- 
-+static int bpf_object__load_prologue(struct bpf_object *obj)
-+{
-+	int init_cnt = ARRAY_SIZE(prologue_init_insn);
-+	const struct bpf_insn *orig_insns;
-+	struct bpf_preproc_result res;
-+	struct perf_probe_event *pev;
-+	struct bpf_program *prog;
-+	int orig_insns_cnt;
-+
-+	bpf_object__for_each_program(prog, obj) {
-+		struct bpf_prog_priv *priv = program_priv(prog);
-+		int err, i, fd;
-+
-+		if (IS_ERR_OR_NULL(priv)) {
-+			pr_debug("bpf: failed to get private field\n");
-+			return -BPF_LOADER_ERRNO__INTERNAL;
-+		}
-+
-+		if (!priv->need_prologue)
-+			continue;
-+
-+		/*
-+		 * For each program that needs prologue we do following:
-+		 *
-+		 * - take its current instructions and use them
-+		 *   to generate the new code with prologue
-+		 * - load new instructions with bpf_prog_load
-+		 *   and keep the fd in prologue_fds
-+		 * - new fd will be used in bpf__foreach_event
-+		 *   to connect this program with perf evsel
-+		 */
-+		orig_insns = bpf_program__insns(prog);
-+		orig_insns_cnt = bpf_program__insn_cnt(prog);
-+
-+		pev = &priv->pev;
-+		for (i = 0; i < pev->ntevs; i++) {
-+			/*
-+			 * Skipping artificall prologue_init_insn instructions
-+			 * (init_cnt), so the prologue can be generated instead
-+			 * of them.
-+			 */
-+			err = preproc_gen_prologue(prog, i,
-+						   orig_insns + init_cnt,
-+						   orig_insns_cnt - init_cnt,
-+						   &res);
-+			if (err)
-+				return err;
-+
-+			fd = bpf_prog_load(bpf_program__get_type(prog),
-+					   bpf_program__name(prog), "GPL",
-+					   res.new_insn_ptr,
-+					   res.new_insn_cnt, NULL);
-+			if (fd < 0) {
-+				char bf[128];
-+
-+				libbpf_strerror(-errno, bf, sizeof(bf));
-+				pr_debug("bpf: load objects with prologue failed: err=%d: (%s)\n",
-+					 -errno, bf);
-+				return -errno;
-+			}
-+			priv->prologue_fds[i] = fd;
-+		}
-+		/*
-+		 * We no longer need the original program,
-+		 * we can unload it.
-+		 */
-+		bpf_program__unload(prog);
-+	}
-+	return 0;
-+}
-+
- int bpf__load(struct bpf_object *obj)
- {
- 	int err;
-@@ -885,7 +1034,7 @@ int bpf__load(struct bpf_object *obj)
- 		pr_debug("bpf: load objects failed: err=%d: (%s)\n", err, bf);
- 		return err;
- 	}
--	return 0;
-+	return bpf_object__load_prologue(obj);
- }
- 
- int bpf__foreach_event(struct bpf_object *obj,
-@@ -920,13 +1069,10 @@ int bpf__foreach_event(struct bpf_object *obj,
- 		for (i = 0; i < pev->ntevs; i++) {
- 			tev = &pev->tevs[i];
- 
--			if (priv->need_prologue) {
--				int type = priv->type_mapping[i];
--
--				fd = bpf_program__nth_fd(prog, type);
--			} else {
-+			if (priv->need_prologue)
-+				fd = priv->prologue_fds[i];
-+			else
- 				fd = bpf_program__fd(prog);
--			}
- 
- 			if (fd < 0) {
- 				pr_debug("bpf: failed to get file descriptor\n");
--- 
-2.35.3
-
+Fixes: 74cc6311cec9 ("libbpf: Add USDT notes parsing and resolution logic")
