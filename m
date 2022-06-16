@@ -2,50 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CFE154DA10
-	for <lists+bpf@lfdr.de>; Thu, 16 Jun 2022 07:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 030C754DA7F
+	for <lists+bpf@lfdr.de>; Thu, 16 Jun 2022 08:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358767AbiFPF4I convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 16 Jun 2022 01:56:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44958 "EHLO
+        id S1358953AbiFPGZS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jun 2022 02:25:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358797AbiFPF4G (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jun 2022 01:56:06 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4811E5B8AE
-        for <bpf@vger.kernel.org>; Wed, 15 Jun 2022 22:56:05 -0700 (PDT)
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25G2Qhxb002989
-        for <bpf@vger.kernel.org>; Wed, 15 Jun 2022 22:56:04 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3gp8awvjhc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 15 Jun 2022 22:56:04 -0700
-Received: from twshared18213.14.prn3.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Wed, 15 Jun 2022 22:56:03 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id E17941B478A90; Wed, 15 Jun 2022 22:55:46 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next] libbpf: fix internal USDT address translation logic for shared libraries
-Date:   Wed, 15 Jun 2022 22:55:43 -0700
-Message-ID: <20220616055543.3285835-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S229569AbiFPGZR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jun 2022 02:25:17 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D273B27FF4
+        for <bpf@vger.kernel.org>; Wed, 15 Jun 2022 23:25:15 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id r3so561545ybr.6
+        for <bpf@vger.kernel.org>; Wed, 15 Jun 2022 23:25:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0QhpRsnpqN2gDwCjPZET5E+75fQS7DQEBgjpXAx4Kmk=;
+        b=npsR0pb0hYDQy/2YFqxITKWKTPhOUq+ZEcflVvrSPzv2bVu2Z4b269qCW4/jzmRG2E
+         Tzb7lZ5TeO06lSe2zl9dzLdR4ANrzYR47XT3+wcXTw2pnPXWy4pwpyoKvDIte6qP2gxW
+         oOkuMH+hPCwa2pY9+LPWAfmTVwYinXiYx5PL/CCVIZ+ykEh007tXAvnBsyk33Mc/PCBS
+         P9rpqZwpQaGpxqwrjKjmsWrsQVckQu87C8fyIeFLKF8WemK/aOuKPp8dVWwFWONTn+L6
+         7OanJQotSZIqCu2xAXF/1BKkOMY6MF5QUbWMkDP1FchJaaCHC1hBhxNxofIYMPzYZV8b
+         cuFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0QhpRsnpqN2gDwCjPZET5E+75fQS7DQEBgjpXAx4Kmk=;
+        b=2Ku7hXfhup69H2AqRqnRzs2RxjNAHxXhV3gDbKy9Wecl+lwhjpOvaRV5MH6EZOhxnx
+         3L5bZg2iBbBk9tEc3oARJ4dwrUSZgKMJD6CCXFvGCj2T44DyvtPE8HAHsCO/qG37Pv99
+         UUgP9noMZ0UzsXikKnSrR+F3eTyD25lpRn34rcLvwnvbeHT1AEHFMlMRu9yyD9fsS5lz
+         bUymXCkRHmuMBnPMVPcKBIlCGLWeFuh3RaRFRoNS/eeLt9TRxgb74DKSxfqUqvx4bQwE
+         zPKYaHILJfAVsdHJvYchD58jfU1vUBWb7tyQmjNjUxOt2QS2r/RJjXZNdSSYtAAE/+FI
+         7siA==
+X-Gm-Message-State: AJIora/e0LF2+wEuxMQF5oNMDu0D9VQ62K0HU8+4reJP/JEe1ApOYaMr
+        XwoEd+J0TLiURRkgvHf53BQAoc1VnNj5AHE+nHJVJQ==
+X-Google-Smtp-Source: AGRyM1tLwkKIpZSHFrZnDBLK2MWSKsEfoLz77zmc1heDP5n1J31F07UOmLPleXo9xMjAHkEYSYWaMJ7Q57+5jY1N8B8=
+X-Received: by 2002:a25:d649:0:b0:65c:9e37:8bb3 with SMTP id
+ n70-20020a25d649000000b0065c9e378bb3mr3732105ybg.387.1655360714776; Wed, 15
+ Jun 2022 23:25:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: LUahz6Viqk7kmhLllJw6T1tKa44Sn1Oj
-X-Proofpoint-ORIG-GUID: LUahz6Viqk7kmhLllJw6T1tKa44Sn1Oj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.517,FMLib:17.11.64.514
- definitions=2022-06-16_02,2022-06-15_01,2022-02-23_01
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+References: <20220615162014.89193-1-xiyou.wangcong@gmail.com> <20220615162014.89193-2-xiyou.wangcong@gmail.com>
+In-Reply-To: <20220615162014.89193-2-xiyou.wangcong@gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 15 Jun 2022 23:25:03 -0700
+Message-ID: <CANn89iJY2fY_fa+ECJaOgzcR12VOTpqmET8h4ZhgSo_uA=d27g@mail.gmail.com>
+Subject: Re: [Patch bpf-next v4 1/4] tcp: introduce tcp_read_skb()
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Cong Wang <cong.wang@bytedance.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,332 +69,23 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Perform the same virtual address to file offset translation that libbpf
-is doing for executable ELF binaries also for shared libraries.
-Currently libbpf is making a simplifying and sometimes wrong assumption
-that for shared libraries relative virtual addresses inside ELF are
-always equal to file offsets.
+On Wed, Jun 15, 2022 at 9:20 AM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+>
+> From: Cong Wang <cong.wang@bytedance.com>
+>
+> This patch inroduces tcp_read_skb() based on tcp_read_sock(),
+> a preparation for the next patch which actually introduces
+> a new sock ops.
+>
+> TCP is special here, because it has tcp_read_sock() which is
+> mainly used by splice(). tcp_read_sock() supports partial read
+> and arbitrary offset, neither of them is needed for sockmap.
+>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Jakub Sitnicki <jakub@cloudflare.com>
+> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> ---
 
-Unfortunately, this is not always the case with LLVM's lld linker, which
-now by default generates quite more complicated ELF segments layout.
-E.g., for liburandom_read.so from selftests/bpf, here's an excerpt from
-readelf output listing ELF segments (a.k.a. program headers):
-
-  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
-  PHDR           0x000040 0x0000000000000040 0x0000000000000040 0x0001f8 0x0001f8 R   0x8
-  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x0005e4 0x0005e4 R   0x1000
-  LOAD           0x0005f0 0x00000000000015f0 0x00000000000015f0 0x000160 0x000160 R E 0x1000
-  LOAD           0x000750 0x0000000000002750 0x0000000000002750 0x000210 0x000210 RW  0x1000
-  LOAD           0x000960 0x0000000000003960 0x0000000000003960 0x000028 0x000029 RW  0x1000
-
-Compare that to what is generated by GNU ld (or LLVM lld's with extra
--znoseparate-code argument which disables this cleverness in the name of
-file size reduction):
-
-  Type           Offset   VirtAddr           PhysAddr           FileSiz  MemSiz   Flg Align
-  LOAD           0x000000 0x0000000000000000 0x0000000000000000 0x000550 0x000550 R   0x1000
-  LOAD           0x001000 0x0000000000001000 0x0000000000001000 0x000131 0x000131 R E 0x1000
-  LOAD           0x002000 0x0000000000002000 0x0000000000002000 0x0000ac 0x0000ac R   0x1000
-  LOAD           0x002dc0 0x0000000000003dc0 0x0000000000003dc0 0x000262 0x000268 RW  0x1000
-
-You can see from the first example above that for executable (Flg == "R E")
-PT_LOAD segment (LOAD #2), Offset doesn't match VirtAddr columns.
-And it does in the second case (GNU ld output).
-
-This is important because all the addresses, including USDT specs,
-operate in a virtual address space, while kernel is expecting file
-offsets when performing uprobe attach. So such mismatches have to be
-properly taken care of and compensated by libbpf, which is what this
-patch is fixing.
-
-Also patch clarifies few function and variable names, as well as updates
-comments to reflect this important distinction (virtaddr vs file offset)
-and to ephasize that shared libraries are not all that different from
-executables in this regard.
-
-This patch also changes selftests/bpf Makefile to force urand_read and
-liburand_read.so to be built with Clang and LLVM's lld (and explicitly
-request this ELF file size optimization through -znoseparate-code linker
-parameter) to validate libbpf logic and ensure regressions don't happen
-in the future. I've bundled these selftests changes together with libbpf
-changes to keep the above description tied with both libbpf and
-selftests changes.
-
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/lib/bpf/usdt.c                 | 123 ++++++++++++++-------------
- tools/testing/selftests/bpf/Makefile |  14 +--
- 2 files changed, 72 insertions(+), 65 deletions(-)
-
-diff --git a/tools/lib/bpf/usdt.c b/tools/lib/bpf/usdt.c
-index f1c9339cfbbc..5159207cbfd9 100644
---- a/tools/lib/bpf/usdt.c
-+++ b/tools/lib/bpf/usdt.c
-@@ -441,7 +441,7 @@ static int parse_elf_segs(Elf *elf, const char *path, struct elf_seg **segs, siz
- 	return 0;
- }
- 
--static int parse_lib_segs(int pid, const char *lib_path, struct elf_seg **segs, size_t *seg_cnt)
-+static int parse_vma_segs(int pid, const char *lib_path, struct elf_seg **segs, size_t *seg_cnt)
- {
- 	char path[PATH_MAX], line[PATH_MAX], mode[16];
- 	size_t seg_start, seg_end, seg_off;
-@@ -531,35 +531,40 @@ static int parse_lib_segs(int pid, const char *lib_path, struct elf_seg **segs,
- 	return err;
- }
- 
--static struct elf_seg *find_elf_seg(struct elf_seg *segs, size_t seg_cnt, long addr, bool relative)
-+static struct elf_seg *find_elf_seg(struct elf_seg *segs, size_t seg_cnt, long virtaddr)
- {
- 	struct elf_seg *seg;
- 	int i;
- 
--	if (relative) {
--		/* for shared libraries, address is relative offset and thus
--		 * should be fall within logical offset-based range of
--		 * [offset_start, offset_end)
--		 */
--		for (i = 0, seg = segs; i < seg_cnt; i++, seg++) {
--			if (seg->offset <= addr && addr < seg->offset + (seg->end - seg->start))
--				return seg;
--		}
--	} else {
--		/* for binaries, address is absolute and thus should be within
--		 * absolute address range of [seg_start, seg_end)
--		 */
--		for (i = 0, seg = segs; i < seg_cnt; i++, seg++) {
--			if (seg->start <= addr && addr < seg->end)
--				return seg;
--		}
-+	/* for ELF binaries (both executables and shared libraries), we are
-+	 * given virtual address (absolute for executables, relative for
-+	 * libraries) which should match address range of [seg_start, seg_end)
-+	 */
-+	for (i = 0, seg = segs; i < seg_cnt; i++, seg++) {
-+		if (seg->start <= virtaddr && virtaddr < seg->end)
-+			return seg;
- 	}
-+	return NULL;
-+}
- 
-+static struct elf_seg *find_vma_seg(struct elf_seg *segs, size_t seg_cnt, long offset)
-+{
-+	struct elf_seg *seg;
-+	int i;
-+
-+	/* for VMA segments from /proc/<pid>/maps file, provided "address" is
-+	 * actually a file offset, so should be fall within logical
-+	 * offset-based range of [offset_start, offset_end)
-+	 */
-+	for (i = 0, seg = segs; i < seg_cnt; i++, seg++) {
-+		if (seg->offset <= offset && offset < seg->offset + (seg->end - seg->start))
-+			return seg;
-+	}
- 	return NULL;
- }
- 
--static int parse_usdt_note(Elf *elf, const char *path, long base_addr,
--			   GElf_Nhdr *nhdr, const char *data, size_t name_off, size_t desc_off,
-+static int parse_usdt_note(Elf *elf, const char *path, GElf_Nhdr *nhdr,
-+			   const char *data, size_t name_off, size_t desc_off,
- 			   struct usdt_note *usdt_note);
- 
- static int parse_usdt_spec(struct usdt_spec *spec, const struct usdt_note *note, __u64 usdt_cookie);
-@@ -568,8 +573,8 @@ static int collect_usdt_targets(struct usdt_manager *man, Elf *elf, const char *
- 				const char *usdt_provider, const char *usdt_name, __u64 usdt_cookie,
- 				struct usdt_target **out_targets, size_t *out_target_cnt)
- {
--	size_t off, name_off, desc_off, seg_cnt = 0, lib_seg_cnt = 0, target_cnt = 0;
--	struct elf_seg *segs = NULL, *lib_segs = NULL;
-+	size_t off, name_off, desc_off, seg_cnt = 0, vma_seg_cnt = 0, target_cnt = 0;
-+	struct elf_seg *segs = NULL, *vma_segs = NULL;
- 	struct usdt_target *targets = NULL, *target;
- 	long base_addr = 0;
- 	Elf_Scn *notes_scn, *base_scn;
-@@ -613,8 +618,7 @@ static int collect_usdt_targets(struct usdt_manager *man, Elf *elf, const char *
- 		struct elf_seg *seg = NULL;
- 		void *tmp;
- 
--		err = parse_usdt_note(elf, path, base_addr, &nhdr,
--				      data->d_buf, name_off, desc_off, &note);
-+		err = parse_usdt_note(elf, path, &nhdr, data->d_buf, name_off, desc_off, &note);
- 		if (err)
- 			goto err_out;
- 
-@@ -654,30 +658,29 @@ static int collect_usdt_targets(struct usdt_manager *man, Elf *elf, const char *
- 			usdt_rel_ip += base_addr - note.base_addr;
- 		}
- 
--		if (ehdr.e_type == ET_EXEC) {
--			/* When attaching uprobes (which what USDTs basically
--			 * are) kernel expects a relative IP to be specified,
--			 * so if we are attaching to an executable ELF binary
--			 * (i.e., not a shared library), we need to calculate
--			 * proper relative IP based on ELF's load address
--			 */
--			seg = find_elf_seg(segs, seg_cnt, usdt_abs_ip, false /* relative */);
--			if (!seg) {
--				err = -ESRCH;
--				pr_warn("usdt: failed to find ELF program segment for '%s:%s' in '%s' at IP 0x%lx\n",
--					usdt_provider, usdt_name, path, usdt_abs_ip);
--				goto err_out;
--			}
--			if (!seg->is_exec) {
--				err = -ESRCH;
--				pr_warn("usdt: matched ELF binary '%s' segment [0x%lx, 0x%lx) for '%s:%s' at IP 0x%lx is not executable\n",
--					path, seg->start, seg->end, usdt_provider, usdt_name,
--					usdt_abs_ip);
--				goto err_out;
--			}
-+		/* When attaching uprobes (which is what USDTs basically are)
-+		 * kernel expects file offset to be specified, not a relative
-+		 * virtual address, so we need to translate virtual address to
-+		 * file offset, for both ET_EXEC and ET_DYN binaries.
-+		 */
-+		seg = find_elf_seg(segs, seg_cnt, usdt_abs_ip);
-+		if (!seg) {
-+			err = -ESRCH;
-+			pr_warn("usdt: failed to find ELF program segment for '%s:%s' in '%s' at IP 0x%lx\n",
-+				usdt_provider, usdt_name, path, usdt_abs_ip);
-+			goto err_out;
-+		}
-+		if (!seg->is_exec) {
-+			err = -ESRCH;
-+			pr_warn("usdt: matched ELF binary '%s' segment [0x%lx, 0x%lx) for '%s:%s' at IP 0x%lx is not executable\n",
-+				path, seg->start, seg->end, usdt_provider, usdt_name,
-+				usdt_abs_ip);
-+			goto err_out;
-+		}
-+		/* translate from virtual address to file offset */
-+		usdt_rel_ip = usdt_abs_ip - seg->start + seg->offset;
- 
--			usdt_rel_ip = usdt_abs_ip - (seg->start - seg->offset);
--		} else if (!man->has_bpf_cookie) { /* ehdr.e_type == ET_DYN */
-+		if (ehdr.e_type == ET_DYN && !man->has_bpf_cookie) {
- 			/* If we don't have BPF cookie support but need to
- 			 * attach to a shared library, we'll need to know and
- 			 * record absolute addresses of attach points due to
-@@ -697,9 +700,9 @@ static int collect_usdt_targets(struct usdt_manager *man, Elf *elf, const char *
- 				goto err_out;
- 			}
- 
--			/* lib_segs are lazily initialized only if necessary */
--			if (lib_seg_cnt == 0) {
--				err = parse_lib_segs(pid, path, &lib_segs, &lib_seg_cnt);
-+			/* vma_segs are lazily initialized only if necessary */
-+			if (vma_seg_cnt == 0) {
-+				err = parse_vma_segs(pid, path, &vma_segs, &vma_seg_cnt);
- 				if (err) {
- 					pr_warn("usdt: failed to get memory segments in PID %d for shared library '%s': %d\n",
- 						pid, path, err);
-@@ -707,7 +710,7 @@ static int collect_usdt_targets(struct usdt_manager *man, Elf *elf, const char *
- 				}
- 			}
- 
--			seg = find_elf_seg(lib_segs, lib_seg_cnt, usdt_rel_ip, true /* relative */);
-+			seg = find_vma_seg(vma_segs, vma_seg_cnt, usdt_rel_ip);
- 			if (!seg) {
- 				err = -ESRCH;
- 				pr_warn("usdt: failed to find shared lib memory segment for '%s:%s' in '%s' at relative IP 0x%lx\n",
-@@ -715,7 +718,7 @@ static int collect_usdt_targets(struct usdt_manager *man, Elf *elf, const char *
- 				goto err_out;
- 			}
- 
--			usdt_abs_ip = seg->start + (usdt_rel_ip - seg->offset);
-+			usdt_abs_ip = seg->start - seg->offset + usdt_rel_ip;
- 		}
- 
- 		pr_debug("usdt: probe for '%s:%s' in %s '%s': addr 0x%lx base 0x%lx (resolved abs_ip 0x%lx rel_ip 0x%lx) args '%s' in segment [0x%lx, 0x%lx) at offset 0x%lx\n",
-@@ -723,7 +726,7 @@ static int collect_usdt_targets(struct usdt_manager *man, Elf *elf, const char *
- 			 note.loc_addr, note.base_addr, usdt_abs_ip, usdt_rel_ip, note.args,
- 			 seg ? seg->start : 0, seg ? seg->end : 0, seg ? seg->offset : 0);
- 
--		/* Adjust semaphore address to be a relative offset */
-+		/* Adjust semaphore address to be a file offset */
- 		if (note.sema_addr) {
- 			if (!man->has_sema_refcnt) {
- 				pr_warn("usdt: kernel doesn't support USDT semaphore refcounting for '%s:%s' in '%s'\n",
-@@ -732,7 +735,7 @@ static int collect_usdt_targets(struct usdt_manager *man, Elf *elf, const char *
- 				goto err_out;
- 			}
- 
--			seg = find_elf_seg(segs, seg_cnt, note.sema_addr, false /* relative */);
-+			seg = find_elf_seg(segs, seg_cnt, note.sema_addr);
- 			if (!seg) {
- 				err = -ESRCH;
- 				pr_warn("usdt: failed to find ELF loadable segment with semaphore of '%s:%s' in '%s' at 0x%lx\n",
-@@ -747,7 +750,7 @@ static int collect_usdt_targets(struct usdt_manager *man, Elf *elf, const char *
- 				goto err_out;
- 			}
- 
--			usdt_sema_off = note.sema_addr - (seg->start - seg->offset);
-+			usdt_sema_off = note.sema_addr - seg->start + seg->offset;
- 
- 			pr_debug("usdt: sema  for '%s:%s' in %s '%s': addr 0x%lx base 0x%lx (resolved 0x%lx) in segment [0x%lx, 0x%lx] at offset 0x%lx\n",
- 				 usdt_provider, usdt_name, ehdr.e_type == ET_EXEC ? "exec" : "lib ",
-@@ -770,7 +773,7 @@ static int collect_usdt_targets(struct usdt_manager *man, Elf *elf, const char *
- 		target->rel_ip = usdt_rel_ip;
- 		target->sema_off = usdt_sema_off;
- 
--		/* notes->args references strings from Elf itself, so they can
-+		/* notes.args references strings from Elf itself, so they can
- 		 * be referenced safely until elf_end() call
- 		 */
- 		target->spec_str = note.args;
-@@ -788,7 +791,7 @@ static int collect_usdt_targets(struct usdt_manager *man, Elf *elf, const char *
- 
- err_out:
- 	free(segs);
--	free(lib_segs);
-+	free(vma_segs);
- 	if (err < 0)
- 		free(targets);
- 	return err;
-@@ -1089,8 +1092,8 @@ struct bpf_link *usdt_manager_attach_usdt(struct usdt_manager *man, const struct
- /* Parse out USDT ELF note from '.note.stapsdt' section.
-  * Logic inspired by perf's code.
-  */
--static int parse_usdt_note(Elf *elf, const char *path, long base_addr,
--			   GElf_Nhdr *nhdr, const char *data, size_t name_off, size_t desc_off,
-+static int parse_usdt_note(Elf *elf, const char *path, GElf_Nhdr *nhdr,
-+			   const char *data, size_t name_off, size_t desc_off,
- 			   struct usdt_note *note)
- {
- 	const char *provider, *name, *args;
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 8ad7a733a505..e08e8e34e793 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -172,13 +172,15 @@ $(OUTPUT)/%:%.c
- # do not fail. Static builds leave urandom_read relying on system-wide shared libraries.
- $(OUTPUT)/liburandom_read.so: urandom_read_lib1.c urandom_read_lib2.c
- 	$(call msg,LIB,,$@)
--	$(Q)$(CC) $(filter-out -static,$(CFLAGS) $(LDFLAGS)) $^ $(LDLIBS) -fPIC -shared -o $@
-+	$(Q)$(CLANG) $(filter-out -static,$(CFLAGS) $(LDFLAGS)) $^ $(LDLIBS)   \
-+		     -fuse-ld=lld -Wl,-znoseparate-code -fPIC -shared -o $@
- 
- $(OUTPUT)/urandom_read: urandom_read.c urandom_read_aux.c $(OUTPUT)/liburandom_read.so
- 	$(call msg,BINARY,,$@)
--	$(Q)$(CC) $(filter-out -static,$(CFLAGS) $(LDFLAGS)) $(filter %.c,$^)  \
--		  liburandom_read.so $(LDLIBS)	       			       \
--		  -Wl,-rpath=. -Wl,--build-id=sha1 -o $@
-+	$(Q)$(CLANG) $(filter-out -static,$(CFLAGS) $(LDFLAGS)) $(filter %.c,$^) \
-+		     liburandom_read.so $(LDLIBS)			       \
-+		     -fuse-ld=lld -Wl,-znoseparate-code	       		       \
-+		     -Wl,-rpath=. -Wl,--build-id=sha1 -o $@
- 
- $(OUTPUT)/bpf_testmod.ko: $(VMLINUX_BTF) $(wildcard bpf_testmod/Makefile bpf_testmod/*.[ch])
- 	$(call msg,MOD,,$@)
-@@ -580,6 +582,8 @@ $(OUTPUT)/bench: $(OUTPUT)/bench.o \
- EXTRA_CLEAN := $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)	\
- 	prog_tests/tests.h map_tests/tests.h verifier/tests.h		\
- 	feature bpftool							\
--	$(addprefix $(OUTPUT)/,*.o *.skel.h *.lskel.h *.subskel.h no_alu32 bpf_gcc bpf_testmod.ko)
-+	$(addprefix $(OUTPUT)/,*.o *.skel.h *.lskel.h *.subskel.h	\
-+			       no_alu32 bpf_gcc bpf_testmod.ko		\
-+			       liburandom_read.so)
- 
- .PHONY: docs docs-clean
--- 
-2.30.2
-
+Reviewed-by: Eric Dumazet <edumazet@google.com>
