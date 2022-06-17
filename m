@@ -2,56 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EA0F54F301
-	for <lists+bpf@lfdr.de>; Fri, 17 Jun 2022 10:32:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D6F654F3F8
+	for <lists+bpf@lfdr.de>; Fri, 17 Jun 2022 11:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381035AbiFQIca (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Jun 2022 04:32:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42488 "EHLO
+        id S1380749AbiFQJLX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 17 Jun 2022 05:11:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1380987AbiFQIcX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Jun 2022 04:32:23 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B998E69282;
-        Fri, 17 Jun 2022 01:32:22 -0700 (PDT)
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1o27Oq-0007dX-Lf; Fri, 17 Jun 2022 10:32:16 +0200
-Received: from [85.1.206.226] (helo=linux-3.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1o27Oq-000CB7-Co; Fri, 17 Jun 2022 10:32:16 +0200
-Subject: Re: [PATCH] tracing/kprobes: Check whether get_kretprobe() returns
- NULL in kretprobe_dispatcher()
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Yonghong Song <yhs@fb.com>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <165366693881.797669.16926184644089588731.stgit@devnote2>
- <0204f480-cdb0-e49f-9034-602eced02966@iogearbox.net>
- <7619DB57-C39B-4A49-808C-7ACF12D58592@goodmis.org>
- <d28e1548-98fb-a533-4fdc-ae4f4568fb75@iogearbox.net>
- <20220608091017.0596dade@gandalf.local.home>
- <3d535ae1-69cd-dbae-32f6-7d571a88c2d8@iogearbox.net>
-Message-ID: <c4d48f60-a24b-459e-ccbd-617d0518efc7@iogearbox.net>
-Date:   Fri, 17 Jun 2022 10:32:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <3d535ae1-69cd-dbae-32f6-7d571a88c2d8@iogearbox.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        with ESMTP id S234893AbiFQJLW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Jun 2022 05:11:22 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC19F5640F;
+        Fri, 17 Jun 2022 02:11:19 -0700 (PDT)
+Received: from fraeml710-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4LPYDn718dz687wq;
+        Fri, 17 Jun 2022 17:11:05 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml710-chm.china.huawei.com (10.206.15.59) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Fri, 17 Jun 2022 11:11:17 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2375.024;
+ Fri, 17 Jun 2022 11:11:17 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "kafai@fb.com" <kafai@fb.com>, "yhs@fb.com" <yhs@fb.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "dhowells@redhat.com" <dhowells@redhat.com>
+Subject: RE: [RESEND][PATCH v4 2/4] bpf: Add bpf_request_key_by_id() helper
+Thread-Topic: [RESEND][PATCH v4 2/4] bpf: Add bpf_request_key_by_id() helper
+Thread-Index: AQHYf++U6MIlvDYsd0yY3m2zPy+uQa1S2DKAgABsoGA=
+Date:   Fri, 17 Jun 2022 09:11:17 +0000
+Message-ID: <b146ee9242cb4c128e56bc9cb3b20b26@huawei.com>
+References: <20220614130621.1976089-1-roberto.sassu@huawei.com>
+ <20220614130621.1976089-3-roberto.sassu@huawei.com>
+ <20220617034617.db23phfavuhqx4vi@MacBook-Pro-3.local>
+In-Reply-To: <20220617034617.db23phfavuhqx4vi@MacBook-Pro-3.local>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26574/Thu Jun 16 10:06:40 2022)
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.81.221.51]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,32 +66,138 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/17/22 10:26 AM, Daniel Borkmann wrote:
-> On 6/8/22 3:10 PM, Steven Rostedt wrote:
->> On Wed, 8 Jun 2022 14:38:39 +0200
->> Daniel Borkmann <daniel@iogearbox.net> wrote:
->>
->>>>>> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
->>>>>
->>>>> Steven, I presume you'll pick this fix up?
->>>>
->>>> I'm currently at Embedded/Kernel Recipes, but yeah, I'll take a look at it. (Just need to finish my slides first ;-)
->>>
->>> Ok, thanks. If I don't hear back I presume you'll pick it up then.
->>
->> Yeah, I'm way behind due to the conference. And I'll be on PTO from
->> tomorrow and back on Tuesday. And registration for Linux Plumbers is
->> supposed to open today (but of course there's issues with that!), thus, I'm
->> really have too much on my plate today :-p
+> From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> Sent: Friday, June 17, 2022 5:46 AM
+
+Adding in CC the keyring mailing list and David.
+
+Sort summary: we are adding an eBPF helper, to let eBPF programs
+verify PKCS#7 signatures. The helper simply calls verify_pkcs7_signature().
+
+The problem is how to pass the key for verification.
+
+For hardcoded keyring IDs, it is easy, pass 0, 1 or 2 for respectively
+the built-in, secondary and platform keyring.
+
+If you want to pass another keyring, you need to do a lookup,
+which returns a key with reference count increased.
+
+While in the kernel you can call key_put() to decrease the
+reference count, that is not guaranteed with an eBPF program,
+if the developer forgets about it. What probably is necessary,
+is to add the capability to the verifier to check whether the
+reference count is decreased, or adding a callback mechanism
+to call automatically key_put() when the eBPF program is
+terminated.
+
+Is there an alternative solution?
+
+Thanks
+
+Roberto
+
+HUAWEI TECHNOLOGIES Duesseldorf GmbH,
+HRB 56063 Managing Director: Li Peng, Yang Xi, Li He
+
+> On Tue, Jun 14, 2022 at 03:06:19PM +0200, Roberto Sassu wrote:
+> > Add the bpf_request_key_by_id() helper, so that an eBPF program can
+> > obtain a suitable key pointer to pass to the
+> > bpf_verify_pkcs7_signature() helper, to be introduced in a later patch.
+> >
+> > The passed identifier can have the following values: 0 for the primary
+> > keyring (immutable keyring of system keys); 1 for both the primary and
+> > secondary keyring (where keys can be added only if they are vouched
+> > for by existing keys in those keyrings); 2 for the platform keyring
+> > (primarily used by the integrity subsystem to verify a kexec'ed kerned
+> > image and, possibly, the initramfs signature); ULONG_MAX for the
+> > session keyring (for testing purposes).
+> >
+> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > ---
+> >  include/uapi/linux/bpf.h       | 17 +++++++++++++++++
+> >  kernel/bpf/bpf_lsm.c           | 30 ++++++++++++++++++++++++++++++
+> >  scripts/bpf_doc.py             |  2 ++
+> >  tools/include/uapi/linux/bpf.h | 17 +++++++++++++++++
+> >  4 files changed, 66 insertions(+)
+> >
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h index
+> > f4009dbdf62d..dfd93e0e0759 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -5249,6 +5249,22 @@ union bpf_attr {
+> >   *		Pointer to the underlying dynptr data, NULL if the dynptr is
+> >   *		read-only, if the dynptr is invalid, or if the offset and length
+> >   *		is out of bounds.
+> > + *
+> > + * struct key *bpf_request_key_by_id(unsigned long id)
+> > + *	Description
+> > + *		Request a keyring by *id*.
+> > + *
+> > + *		*id* can have the following values (some defined in
+> > + *		verification.h): 0 for the primary keyring (immutable keyring
+> of
+> > + *		system keys); 1 for both the primary and secondary keyring
+> > + *		(where keys can be added only if they are vouched for by
+> > + *		existing keys in those keyrings); 2 for the platform keyring
+> > + *		(primarily used by the integrity subsystem to verify a
+> kexec'ed
+> > + *		kerned image and, possibly, the initramfs signature);
+> ULONG_MAX
+> > + *		for the session keyring (for testing purposes).
 > 
-> Steven, we still have this in our patchwork for tracking so it doesn't fall
-> off the radar. The patch is 3 weeks old by now. Has this been picked up yet,
-> or do you want to Ack and we ship the fix via bpf tree? Just asking as I
-> didn't see any further updates ever since.
-
-Same goes for these two fixes waiting for Ack:
-
-   https://lore.kernel.org/bpf/165461825202.280167.12903689442217921817.stgit@devnote2/
-
-Thanks,
-Daniel
+> It's never ok to add something like this to uapi 'for testing purposes'.
+> If it's not useful in general it should not be a part of api.
+> 
+> > + *	Return
+> > + *		A non-NULL pointer if *id* is valid and not 0, a NULL pointer
+> > + *		otherwise.
+> >   */
+> >  #define __BPF_FUNC_MAPPER(FN)		\
+> >  	FN(unspec),			\
+> > @@ -5455,6 +5471,7 @@ union bpf_attr {
+> >  	FN(dynptr_read),		\
+> >  	FN(dynptr_write),		\
+> >  	FN(dynptr_data),		\
+> > +	FN(request_key_by_id),		\
+> >  	/* */
+> >
+> >  /* integer value in 'imm' field of BPF_CALL instruction selects which
+> > helper diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c index
+> > c1351df9f7ee..e1911812398b 100644
+> > --- a/kernel/bpf/bpf_lsm.c
+> > +++ b/kernel/bpf/bpf_lsm.c
+> > @@ -16,6 +16,7 @@
+> >  #include <linux/bpf_local_storage.h>
+> >  #include <linux/btf_ids.h>
+> >  #include <linux/ima.h>
+> > +#include <linux/verification.h>
+> >
+> >  /* For every LSM hook that allows attachment of BPF programs, declare a
+> nop
+> >   * function where a BPF program can be attached.
+> > @@ -132,6 +133,31 @@ static const struct bpf_func_proto
+> bpf_get_attach_cookie_proto = {
+> >  	.arg1_type	= ARG_PTR_TO_CTX,
+> >  };
+> >
+> > +#ifdef CONFIG_KEYS
+> > +BTF_ID_LIST_SINGLE(bpf_request_key_by_id_btf_ids, struct, key)
+> > +
+> > +BPF_CALL_1(bpf_request_key_by_id, unsigned long, id) {
+> > +	const struct cred *cred = current_cred();
+> > +
+> > +	if (id > (unsigned long)VERIFY_USE_PLATFORM_KEYRING && id !=
+> ULONG_MAX)
+> > +		return (unsigned long)NULL;
+> > +
+> > +	if (id == ULONG_MAX)
+> > +		return (unsigned long)cred->session_keyring;
+> > +
+> > +	return id;
+> 
+> It needs to do a proper lookup.
+> Why cannot it do lookup_user_key ?
+> The helper needs 'flags' arg too.
+> Please think hard of extensibility and long term usefulness of api.
+> At present this api feels like it was 'let me just hack something quickly'. Not
+> ok.
