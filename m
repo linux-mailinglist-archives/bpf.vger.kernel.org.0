@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 708D954FCF2
-	for <lists+bpf@lfdr.de>; Fri, 17 Jun 2022 20:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B1EC54FCFF
+	for <lists+bpf@lfdr.de>; Fri, 17 Jun 2022 20:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232619AbiFQS2k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Jun 2022 14:28:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58802 "EHLO
+        id S233032AbiFQS2l (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Jun 2022 14:28:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233442AbiFQS2i (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Jun 2022 14:28:38 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F7B731DD4
-        for <bpf@vger.kernel.org>; Fri, 17 Jun 2022 11:28:33 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id c196so4850175pfb.1
-        for <bpf@vger.kernel.org>; Fri, 17 Jun 2022 11:28:33 -0700 (PDT)
+        with ESMTP id S234027AbiFQS2j (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Jun 2022 14:28:39 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 127D632EC0
+        for <bpf@vger.kernel.org>; Fri, 17 Jun 2022 11:28:36 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id go6so129238pjb.0
+        for <bpf@vger.kernel.org>; Fri, 17 Jun 2022 11:28:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=aIOzEJ9nDorPAb1CIWF343uwJxbCVbmMR2xp/p1y2bM=;
-        b=JDoHowU7VuvIsjSTwGuHzxLQt+SroQuo+Sdjg8F6E9k2hLpCHgdeU1k9A2j5/YSuY8
-         ICpt5ywtkQXIDQQFJIOHT0RIViwCA617sjcmknvqpMtcTh9HvEdcHGaQJL8fUodFZiIB
-         pgYE4zWiQghjew3tm58XNgGsLBDrT1LPLyMxlQbRj+dQLVZh98cIvOKEIbjY7+W72XLd
-         Xj4772UQXyS7lx1JYo1Q25mPuBD8rxuOGZ/iCxbL5sw8maCZEf5mL9OvEtl2r4RXiN00
-         3hPPhafCoMDjL6vz4WwMrTSH2XbFndeeBiKtida2/kqrS3zExYz2UOvYNOAq1brxuhWA
-         urVQ==
+        bh=qPswYsxqtC1oZ0etiJP07gT7b1rpEa53QlAztj0chnw=;
+        b=BmUqgFFPgSU9u0HBQ4RjYVJjsY3qlgDVDaSuNMRUOLnm84cKru8qSpcJgkrjcwWCbr
+         GECEqGrPophEbKNbhxq2Nro4t82EgCWvFVxT8XWdet7ZAJf94YC8NbBuGcqtxZ9Ly+5+
+         B2AC/NQ2ldBxQLufX+KBLbPAZj9YVT80SmoYk2Cz3g6TvXyXYUCNypkO0Ejk5yhH8gcf
+         HlduthUAFbT+rgNwuifa3RjFtx4RWmzETsKi1D4biLsuEkdjGOm47YFBAvYvzI2msZul
+         zfGAIaPMAB5xyNG5XiUlGASdWc07lGguhjVozawcIhchtutca60JAbau58R5/SRhX9sz
+         IRMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=aIOzEJ9nDorPAb1CIWF343uwJxbCVbmMR2xp/p1y2bM=;
-        b=1BTuD9Cmbld0lycvxYp4LeIB353iV/rDPtkMwE0i+23RZWUPZ5RDZM72M67ub8+fS0
-         oPkw8AlLNz9GR/fRhCdbx3nUPNWEATBTqdRmwZF5dFjNcf+U+b8g3xHAfU+JmRt4swWM
-         VLz4V4ZbutZcYjdWxPiuMkHiORfEYdZn5UG9cOQX71f86hIyJsH9h+6KD1uFuQ/qZtE/
-         bjWcTciOMSqJDICMf+0G7kkq7AIq90WG/BgfIqt+tuAbIB0T+hPNjK9yeF0YEWT9mQ6v
-         5lu0xUCBe0t8oSG2pBAe1NscOb+PwxLrk/11/GWc6OpbbTfo4x4NbHsF7Pv77YRE5hoG
-         CeDA==
-X-Gm-Message-State: AJIora8GxqMIifCL/unEHVRms3xUUztG690S99+drsnDSGqja9j9VULX
-        tlSe9UZcuyW0ZnN5dg+aitosorMAq2f+rJtJ9xiV2y6mgPI=
-X-Google-Smtp-Source: AGRyM1vM0sf4kwEDAHSFcKgbVy1EVOIl/sVWlKRUU9vONC4f+pB4l31f+guUPvbYNfuzrnIFhiTR0xnGbhLPs7kWqw4=
-X-Received: by 2002:a65:588b:0:b0:3fe:4237:2ee5 with SMTP id
- d11-20020a65588b000000b003fe42372ee5mr10145872pgu.442.1655490512733; Fri, 17
- Jun 2022 11:28:32 -0700 (PDT)
+        bh=qPswYsxqtC1oZ0etiJP07gT7b1rpEa53QlAztj0chnw=;
+        b=skDKtjpRxNcwUhFlXv6mcZlyE5UMIvq7KULtNvhtbBKadMTY2jNy8QijIJytTvxAJh
+         +zILrJ+BEefVDajD+0MuYIl+uRoDz6yP7fOJA+s6s30qbL/wPCWfDCLrBB4GFuiCe2GS
+         PEvmDeGpXvV7ic5R7QJpGE3wsrbcbiwsbg3wn5AsDDhB0rsXhQhSl3NlvWKvzapRuezu
+         AoG9/Q/FCfPUNE2KW6FN00OGMpUn9aXwR3GDHN2a3MqWX3b0wqvqrWX/KUpjFwPF3Fal
+         iJ/5dKA0vRySN89NK5MKwr9BtJxtT//VAf3aiF1AQhI0HOMBrmeuby12ReekylIvmgqK
+         2atA==
+X-Gm-Message-State: AJIora/DgNL6WbaslsUf/b2kuIDEhi7e0zCkHJxBLdi+L3sdeBQ0m12+
+        UsbW84fmUYPK0KXXR1I7fH+nc/JigWjgqQyASXdCcQ==
+X-Google-Smtp-Source: AGRyM1uCRt48L5gWUiHbeLcPZWpDdEFxZh+bfMDcLVGDD2SZfJZ+ZS01NdwLtO3xo/4EO34Jb0AGFNEQgH4wkNcLNU0=
+X-Received: by 2002:a17:90b:380b:b0:1e6:67f6:f70c with SMTP id
+ mq11-20020a17090b380b00b001e667f6f70cmr22650014pjb.120.1655490515286; Fri, 17
+ Jun 2022 11:28:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220610165803.2860154-1-sdf@google.com> <20220610165803.2860154-6-sdf@google.com>
- <20220617005829.66pboow5uubbrdcu@kafai-mbp>
-In-Reply-To: <20220617005829.66pboow5uubbrdcu@kafai-mbp>
+References: <20220610165803.2860154-1-sdf@google.com> <20220610165803.2860154-7-sdf@google.com>
+ <20220617054249.iedbzuakyzg67o75@kafai-mbp>
+In-Reply-To: <20220617054249.iedbzuakyzg67o75@kafai-mbp>
 From:   Stanislav Fomichev <sdf@google.com>
-Date:   Fri, 17 Jun 2022 11:28:21 -0700
-Message-ID: <CAKH8qBvzBHgouvRvXYpi66RoYbjXrmPXQwW9gsC3sk8J=VzBng@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v9 05/10] bpf: implement BPF_PROG_QUERY for BPF_LSM_CGROUP
+Date:   Fri, 17 Jun 2022 11:28:24 -0700
+Message-ID: <CAKH8qBsRKNNR+9zvn5G3DtruYqWJ0eF0TZp1ORM5VH2WKiBVng@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v9 06/10] bpf: expose bpf_{g,s}etsockopt to lsm cgroup
 To:     Martin KaFai Lau <kafai@fb.com>
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
         daniel@iogearbox.net, andrii@kernel.org
@@ -67,104 +67,109 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 16, 2022 at 5:58 PM Martin KaFai Lau <kafai@fb.com> wrote:
+On Thu, Jun 16, 2022 at 10:42 PM Martin KaFai Lau <kafai@fb.com> wrote:
 >
-> On Fri, Jun 10, 2022 at 09:57:58AM -0700, Stanislav Fomichev wrote:
-> > diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> > index ba402d50e130..c869317479ec 100644
-> > --- a/kernel/bpf/cgroup.c
-> > +++ b/kernel/bpf/cgroup.c
-> > @@ -1029,57 +1029,92 @@ static int cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
-> >  static int __cgroup_bpf_query(struct cgroup *cgrp, const union bpf_attr *attr,
-> >                             union bpf_attr __user *uattr)
-> >  {
-> > +     __u32 __user *prog_attach_flags = u64_to_user_ptr(attr->query.prog_attach_flags);
-> >       __u32 __user *prog_ids = u64_to_user_ptr(attr->query.prog_ids);
-> >       enum bpf_attach_type type = attr->query.attach_type;
-> > +     enum cgroup_bpf_attach_type from_atype, to_atype;
-> >       enum cgroup_bpf_attach_type atype;
-> >       struct bpf_prog_array *effective;
-> >       struct hlist_head *progs;
-> >       struct bpf_prog *prog;
-> >       int cnt, ret = 0, i;
-> > +     int total_cnt = 0;
-> >       u32 flags;
+> On Fri, Jun 10, 2022 at 09:57:59AM -0700, Stanislav Fomichev wrote:
+> > I don't see how to make it nice without introducing btf id lists
+> > for the hooks where these helpers are allowed. Some LSM hooks
+> > work on the locked sockets, some are triggering early and
+> > don't grab any locks, so have two lists for now:
 > >
-> > -     atype = to_cgroup_bpf_attach_type(type);
-> > -     if (atype < 0)
-> > -             return -EINVAL;
-> > +     if (type == BPF_LSM_CGROUP) {
-> > +             if (attr->query.prog_cnt && prog_ids && !prog_attach_flags)
-> > +                     return -EINVAL;
-> >
-> > -     progs = &cgrp->bpf.progs[atype];
-> > -     flags = cgrp->bpf.flags[atype];
-> > +             from_atype = CGROUP_LSM_START;
-> > +             to_atype = CGROUP_LSM_END;
-> > +             flags = 0;
-> > +     } else {
-> > +             from_atype = to_cgroup_bpf_attach_type(type);
-> > +             if (from_atype < 0)
-> > +                     return -EINVAL;
-> > +             to_atype = from_atype;
-> > +             flags = cgrp->bpf.flags[from_atype];
-> > +     }
-> >
-> > -     effective = rcu_dereference_protected(cgrp->bpf.effective[atype],
-> > -                                           lockdep_is_held(&cgroup_mutex));
-> > +     for (atype = from_atype; atype <= to_atype; atype++) {
-> > +             progs = &cgrp->bpf.progs[atype];
-> nit. Move the 'progs = ...' into the 'else {}' case below.
+> > 1. LSM hooks which trigger under socket lock - minority of the hooks,
+> >    but ideal case for us, we can expose existing BTF-based helpers
+> > 2. LSM hooks which trigger without socket lock, but they trigger
+> >    early in the socket creation path where it should be safe to
+> >    do setsockopt without any locks
+> > 3. The rest are prohibited. I'm thinking that this use-case might
+> >    be a good gateway to sleeping lsm cgroup hooks in the future.
+> >    We can either expose lock/unlock operations (and add tracking
+> >    to the verifier) or have another set of bpf_setsockopt
+> >    wrapper that grab the locks and might sleep.
+> Another possibility is to acquire/release the sk lock in
+> __bpf_prog_{enter,exit}_lsm_cgroup().  However, it will unnecessarily
+> acquire it even the prog is not doing any get/setsockopt.
+> It probably can make some checking to avoid the lock...etc. :/
 >
+> sleepable bpf-prog is a cleaner way out.  From a quick look,
+> cgroup_storage is not safe for sleepable bpf-prog.
+
+Is it because it's using non-trace-flavor of rcu?
+
+> All other BPF_MAP_TYPE_{SK,INODE,TASK}_STORAGE is already
+> safe once their common infra in bpf_local_storage.c was made
+> sleepable-safe.
+
+That might be another argument in favor of replacing the internal
+implementation for cgroup_storage with the generic framework we use
+for sk/inode/task.
+
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
+> >  include/linux/bpf.h  |  2 ++
+> >  kernel/bpf/bpf_lsm.c | 40 +++++++++++++++++++++++++++++
+> >  net/core/filter.c    | 60 ++++++++++++++++++++++++++++++++++++++------
+> >  3 files changed, 95 insertions(+), 7 deletions(-)
 > >
-> > -     if (attr->query.query_flags & BPF_F_QUERY_EFFECTIVE)
-> > -             cnt = bpf_prog_array_length(effective);
-> > -     else
-> > -             cnt = prog_list_length(progs);
-> > +             if (attr->query.query_flags & BPF_F_QUERY_EFFECTIVE) {
-> > +                     effective = rcu_dereference_protected(cgrp->bpf.effective[atype],
-> > +                                                           lockdep_is_held(&cgroup_mutex));
-> > +                     total_cnt += bpf_prog_array_length(effective);
-> > +             } else {
-> > +                     total_cnt += prog_list_length(progs);
-> > +             }
-> > +     }
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index 503f28fa66d2..c0a269269882 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -2282,6 +2282,8 @@ extern const struct bpf_func_proto bpf_for_each_map_elem_proto;
+> >  extern const struct bpf_func_proto bpf_btf_find_by_name_kind_proto;
+> >  extern const struct bpf_func_proto bpf_sk_setsockopt_proto;
+> >  extern const struct bpf_func_proto bpf_sk_getsockopt_proto;
+> > +extern const struct bpf_func_proto bpf_unlocked_sk_setsockopt_proto;
+> > +extern const struct bpf_func_proto bpf_unlocked_sk_getsockopt_proto;
+> >  extern const struct bpf_func_proto bpf_kallsyms_lookup_name_proto;
+> >  extern const struct bpf_func_proto bpf_find_vma_proto;
+> >  extern const struct bpf_func_proto bpf_loop_proto;
+> > diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+> > index 83aa431dd52e..52b6e3067986 100644
+> > --- a/kernel/bpf/bpf_lsm.c
+> > +++ b/kernel/bpf/bpf_lsm.c
+> > @@ -45,6 +45,26 @@ BTF_ID(func, bpf_lsm_sk_alloc_security)
+> >  BTF_ID(func, bpf_lsm_sk_free_security)
+> >  BTF_SET_END(bpf_lsm_current_hooks)
 > >
-> >       if (copy_to_user(&uattr->query.attach_flags, &flags, sizeof(flags)))
-> >               return -EFAULT;
-> > -     if (copy_to_user(&uattr->query.prog_cnt, &cnt, sizeof(cnt)))
-> > +     if (copy_to_user(&uattr->query.prog_cnt, &total_cnt, sizeof(total_cnt)))
-> >               return -EFAULT;
-> > -     if (attr->query.prog_cnt == 0 || !prog_ids || !cnt)
-> > +     if (attr->query.prog_cnt == 0 || !prog_ids || !total_cnt)
-> >               /* return early if user requested only program count + flags */
-> >               return 0;
-> > -     if (attr->query.prog_cnt < cnt) {
-> > -             cnt = attr->query.prog_cnt;
+> > +/* List of LSM hooks that trigger while the socket is properly locked.
+> > + */
+> > +BTF_SET_START(bpf_lsm_locked_sockopt_hooks)
+> > +BTF_ID(func, bpf_lsm_socket_sock_rcv_skb)
+> > +BTF_ID(func, bpf_lsm_sk_clone_security)
+> From looking how security_sk_clone() is used at sock_copy(),
+> it has two sk args, one is listen sk and one is the clone.
+> I think both of them are not locked.
+>
+> The bpf_lsm_inet_csk_clone below should be enough to
+> do setsockopt in the new clone?
+
+Hm, good point, let me drop this one.
+
+I wonder if long term, instead of those lists, we can annotate the
+arguments with __locked or __unlocked (the way we do with __user
+pointers)? That might be more scalable and we can let sleepable bpf
+deal with __unlocked cases. Just thinking out loud...
+
+> > +BTF_ID(func, bpf_lsm_sock_graft)
+> > +BTF_ID(func, bpf_lsm_inet_csk_clone)
+> > +BTF_ID(func, bpf_lsm_inet_conn_established)
+> > +BTF_ID(func, bpf_lsm_sctp_bind_connect)
+> I didn't look at this one, so I can't comment.
+> Do you have a use case?
+
+No, let's drop as well. I didn't want those lists to contain only the
+cases I want, otherwise it doesn't feel generic. But sctp seems dead
+anyway.
+
+
+> > +BTF_SET_END(bpf_lsm_locked_sockopt_hooks)
 > > +
-> > +     if (attr->query.prog_cnt < total_cnt) {
-> > +             total_cnt = attr->query.prog_cnt;
-> >               ret = -ENOSPC;
-> >       }
-> >
-> > -     if (attr->query.query_flags & BPF_F_QUERY_EFFECTIVE) {
-> > -             return bpf_prog_array_copy_to_user(effective, prog_ids, cnt);
-> > -     } else {
-> > -             struct bpf_prog_list *pl;
-> > -             u32 id;
-> > +     for (atype = from_atype; atype <= to_atype && total_cnt; atype++) {
-> > +             progs = &cgrp->bpf.progs[atype];
-> same here.
->
-> > +             flags = cgrp->bpf.flags[atype];
-> and the 'flags = ...' can be moved to 'if (prog_attach_flags) {}'
->
-> Others lgtm.
->
-> Reviewed-by: Martin KaFai Lau <kafai@fb.com>
-
-Everything makes sense, will do, thanks!
-
-Maybe we should also move "struct hlist_head *progs;" closer to the
-places where we use them? Same for "struct bpf_prog *prog;" which
-seems to be used only in one place.
+> > +/* List of LSM hooks that trigger while the socket is _not_ locked,
+> > + * but it's ok to call bpf_{g,s}etsockopt because the socket is still
+> > + * in the early init phase.
+> > + */
+> > +BTF_SET_START(bpf_lsm_unlocked_sockopt_hooks)
+> > +BTF_ID(func, bpf_lsm_socket_post_create)
+> > +BTF_ID(func, bpf_lsm_socket_socketpair)
+> > +BTF_SET_END(bpf_lsm_unlocked_sockopt_hooks)
+> > +
