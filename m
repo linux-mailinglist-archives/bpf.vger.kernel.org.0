@@ -2,50 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5A7454EFAE
-	for <lists+bpf@lfdr.de>; Fri, 17 Jun 2022 05:40:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FDF554EF8D
+	for <lists+bpf@lfdr.de>; Fri, 17 Jun 2022 05:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233262AbiFQCkR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jun 2022 22:40:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53384 "EHLO
+        id S1379799AbiFQCux (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jun 2022 22:50:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233045AbiFQCkQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jun 2022 22:40:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD2D764D18
-        for <bpf@vger.kernel.org>; Thu, 16 Jun 2022 19:40:15 -0700 (PDT)
+        with ESMTP id S1379823AbiFQCup (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jun 2022 22:50:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 264D86620B;
+        Thu, 16 Jun 2022 19:50:15 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 77A9A61D0E
-        for <bpf@vger.kernel.org>; Fri, 17 Jun 2022 02:40:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C4A2CC3411F;
-        Fri, 17 Jun 2022 02:40:14 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B6BDF61D0A;
+        Fri, 17 Jun 2022 02:50:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2326CC3411C;
+        Fri, 17 Jun 2022 02:50:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655433614;
-        bh=5iw4Q4y9LlGZJBVdpmFl3FlN7RYk7M4/NBaVy4uJH44=;
+        s=k20201202; t=1655434214;
+        bh=/9ka6KX+DtuVeeL1Q+48YoPiCR6JqGjx2YfTEqmj2B8=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=FxwcdU2E4FrtoNfJ4lapKptTYw7rvsFAL9jeGoojmLnj0qSM/USGHV1PL9nwx2UQr
-         1A1/XyVkJFlE8Y4npfLFXioVqie7+qB3dbj3B2GnEi1V/+mmOsSbHw0iI9V+c1D8Ey
-         yeKx1X6ql5kM+LYDKMMcsi7gL4viBYLZmwif+zmtT4gmkZD9Jf9F/x2ART3Zy5X5HK
-         xy5i0ffHkhdMH3kw1s8HnLOPx34gkgD7w7wJWr2P3bYaUSNFRSkBEiSjgHN7Ev4uEY
-         4TIkFrPezvrAtlEMmXdHYTS2qbZVf/BQQpz89Qa4LOfl0QjL85yjOkZSva6dQ79rJ5
-         w4q4CJI9Gbi+g==
+        b=MJoLvwvPvHtdggwhpsWss9agtvR047SoNsKrd81OtvQdMJ3riHJtGNr1dKj0tpz6B
+         77klexpFwo0KMZ9uuZo7JfcNvMkBULPW3GvcrVUhJzemovYasiY6fhJcA5eOa0VC9e
+         JM+0rR5yqyzmRm0jd/YlNwpJrzBj0M53+EiOJweI54SGhScu0RrKzkOuEu9tnmfrWr
+         nHd03QgcCIG9cW2PZKl6iBL3NCB8rX//N86rkR5bENNKH5aCkDdi378RwqdWjkjNBQ
+         JWtCZFxLzcjNVw69BHh3IRrCIQMghC5hDkld4iO+GaZ5Daxx+jTIfVcRZmqDFnxPU4
+         KThN6lB2QUxoA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A5384E73858;
-        Fri, 17 Jun 2022 02:40:14 +0000 (UTC)
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 06C1EFD99FB;
+        Fri, 17 Jun 2022 02:50:14 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v4 0/5] sleepable uprobe support
+Subject: Re: [PATCHv3 bpf 0/4] bpf: Fix cookie values for kprobe multi
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165543361467.3693.12822289754642314492.git-patchwork-notify@kernel.org>
-Date:   Fri, 17 Jun 2022 02:40:14 +0000
-References: <cover.1655248075.git.delyank@fb.com>
-In-Reply-To: <cover.1655248075.git.delyank@fb.com>
-To:     Delyan Kratunov <delyank@fb.com>
-Cc:     daniel@iogearbox.net, ast@kernel.org, andrii@kernel.org,
-        bpf@vger.kernel.org
+Message-Id: <165543421402.9013.17384793233209616966.git-patchwork-notify@kernel.org>
+Date:   Fri, 17 Jun 2022 02:50:14 +0000
+References: <20220615112118.497303-1-jolsa@kernel.org>
+In-Reply-To: <20220615112118.497303-1-jolsa@kernel.org>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
+        rostedt@goodmis.org, mhiramat@kernel.org
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -58,30 +61,31 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Hello:
 
-This series was applied to bpf/bpf-next.git (master)
+This series was applied to bpf/bpf.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Tue, 14 Jun 2022 23:10:45 +0000 you wrote:
-> This series implements support for sleepable uprobe programs.
-> Key work is in patches 2 and 3, the rest is plumbing and tests.
+On Wed, 15 Jun 2022 13:21:14 +0200 you wrote:
+> hi,
+> there's bug in kprobe_multi link that makes cookies misplaced when
+> using symbols to attach. The reason is that we sort symbols by name
+> but not adjacent cookie values. Current test did not find it because
+> bpf_fentry_test* are already sorted by name.
 > 
-> The main observation is that the only obstacle in the way of sleepable uprobe
-> programs is not the uprobe infrastructure, which already runs in a user-like
-> context, but the rcu usage around bpf_prog_array.
+> v3 changes:
+>   - fixed kprobe_multi bench test to filter out invalid entries
+>     from available_filter_functions
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf-next,v4,1/5] bpf: move bpf_prog to bpf.h
-    https://git.kernel.org/bpf/bpf-next/c/d687f621c518
-  - [bpf-next,v4,3/5] bpf: allow sleepable uprobe programs to attach
-    https://git.kernel.org/bpf/bpf-next/c/64ad7556c75e
-  - [bpf-next,v4,5/5] selftests/bpf: add tests for sleepable (uk)probes
-    https://git.kernel.org/bpf/bpf-next/c/cb3f4a4a462b
-  - [bpf-next,v4,2/5] bpf: implement sleepable uprobes by chaining gps
-    https://git.kernel.org/bpf/bpf-next/c/8c7dcb84e3b7
-  - [bpf-next,v4,4/5] libbpf: add support for sleepable uprobe programs
-    https://git.kernel.org/bpf/bpf-next/c/c4cac71fc8a5
+  - [PATCHv3,bpf,1/4] selftests/bpf: Shuffle cookies symbols in kprobe multi test
+    https://git.kernel.org/bpf/bpf/c/ad8848535e97
+  - [PATCHv3,bpf,2/4] ftrace: Keep address offset in ftrace_lookup_symbols
+    https://git.kernel.org/bpf/bpf/c/eb1b2985fe5c
+  - [PATCHv3,bpf,3/4] bpf: Force cookies array to follow symbols sorting
+    https://git.kernel.org/bpf/bpf/c/eb5fb0325698
+  - [PATCHv3,bpf,4/4] selftest/bpf: Fix kprobe_multi bench test
+    https://git.kernel.org/bpf/bpf/c/730067022c01
 
 You are awesome, thank you!
 -- 
