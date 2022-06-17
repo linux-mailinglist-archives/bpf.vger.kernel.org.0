@@ -2,43 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82B9654FAB9
-	for <lists+bpf@lfdr.de>; Fri, 17 Jun 2022 18:03:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B347E54FAD2
+	for <lists+bpf@lfdr.de>; Fri, 17 Jun 2022 18:09:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382646AbiFQQDB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Jun 2022 12:03:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50418 "EHLO
+        id S1382426AbiFQQG6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Jun 2022 12:06:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231377AbiFQQDA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Jun 2022 12:03:00 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B797BC16;
-        Fri, 17 Jun 2022 09:02:59 -0700 (PDT)
+        with ESMTP id S229794AbiFQQG5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Jun 2022 12:06:57 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39905186F5;
+        Fri, 17 Jun 2022 09:06:56 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id CADC6B8282A;
-        Fri, 17 Jun 2022 16:02:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FDD2C3411B;
-        Fri, 17 Jun 2022 16:02:55 +0000 (UTC)
-Date:   Fri, 17 Jun 2022 12:02:54 -0400
+        by ams.source.kernel.org (Postfix) with ESMTPS id EC7A5B82998;
+        Fri, 17 Jun 2022 16:06:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD825C3411B;
+        Fri, 17 Jun 2022 16:06:52 +0000 (UTC)
+Date:   Fri, 17 Jun 2022 12:06:51 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Yonghong Song <yhs@fb.com>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] tracing/kprobes: Check whether get_kretprobe() returns
- NULL in kretprobe_dispatcher()
-Message-ID: <20220617120254.30bb0f15@gandalf.local.home>
-In-Reply-To: <3d535ae1-69cd-dbae-32f6-7d571a88c2d8@iogearbox.net>
-References: <165366693881.797669.16926184644089588731.stgit@devnote2>
-        <0204f480-cdb0-e49f-9034-602eced02966@iogearbox.net>
-        <7619DB57-C39B-4A49-808C-7ACF12D58592@goodmis.org>
-        <d28e1548-98fb-a533-4fdc-ae4f4568fb75@iogearbox.net>
-        <20220608091017.0596dade@gandalf.local.home>
-        <3d535ae1-69cd-dbae-32f6-7d571a88c2d8@iogearbox.net>
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf v2 1/2] fprobe: samples: Add use_trace option and
+ show hit/missed counter
+Message-ID: <20220617120651.1e525a02@gandalf.local.home>
+In-Reply-To: <165461826247.280167.11939123218334322352.stgit@devnote2>
+References: <165461825202.280167.12903689442217921817.stgit@devnote2>
+        <165461826247.280167.11939123218334322352.stgit@devnote2>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -52,15 +48,40 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 17 Jun 2022 10:26:40 +0200
-Daniel Borkmann <daniel@iogearbox.net> wrote:
+On Wed,  8 Jun 2022 01:11:02 +0900
+"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
 
-> Steven, we still have this in our patchwork for tracking so it doesn't fall
-> off the radar. The patch is 3 weeks old by now. Has this been picked up yet,
-> or do you want to Ack and we ship the fix via bpf tree? Just asking as I
-> didn't see any further updates ever since.
+>  
+>  static void sample_entry_handler(struct fprobe *fp, unsigned long ip, struct pt_regs *regs)
+>  {
+> -	pr_info("Enter <%pS> ip = 0x%p\n", (void *)ip, (void *)ip);
+> +	if (use_trace)
+> +		trace_printk("Enter <%pS> ip = 0x%p\n", (void *)ip, (void *)ip);
 
-Sorry, between traveling for conferences and PTO I fell behind. I'll pull
-this into my urgent queue and start running my tests on it.
+Could we add a comment stating something like "this is just an example, no
+kernel code should call trace_printk() except when actively debugging".
 
 -- Steve
+
+
+> +	else
+> +		pr_info("Enter <%pS> ip = 0x%p\n", (void *)ip, (void *)ip);
+> +	nhit++;
+>  	if (stackdump)
+>  		show_backtrace();
+>  }
+> @@ -49,8 +56,13 @@ static void sample_exit_handler(struct fprobe *fp, unsigned long ip, struct pt_r
+>  {
+>  	unsigned long rip = instruction_pointer(regs);
+>  
+> -	pr_info("Return from <%pS> ip = 0x%p to rip = 0x%p (%pS)\n",
+> -		(void *)ip, (void *)ip, (void *)rip, (void *)rip);
+> +	if (use_trace)
+> +		trace_printk("Return from <%pS> ip = 0x%p to rip = 0x%p (%pS)\n",
+> +			(void *)ip, (void *)ip, (void *)rip, (void *)rip);
+> +	else
+> +		pr_info("Return from <%pS> ip = 0x%p to rip = 0x%p (%pS)\n",
+> +			(void *)ip, (void *)ip, (void *)rip, (void *)rip);
+> +	nhit++;
+>  	if (stackdump)
+>  		show_backtrace();
