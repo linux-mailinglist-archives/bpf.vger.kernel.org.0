@@ -2,74 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 839C254FAD7
-	for <lists+bpf@lfdr.de>; Fri, 17 Jun 2022 18:10:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F19FD54FAF6
+	for <lists+bpf@lfdr.de>; Fri, 17 Jun 2022 18:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383146AbiFQQJ7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Jun 2022 12:09:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56428 "EHLO
+        id S245186AbiFQQTl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Jun 2022 12:19:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1383127AbiFQQJ7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Jun 2022 12:09:59 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C7835DC9;
-        Fri, 17 Jun 2022 09:09:57 -0700 (PDT)
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1o2EXZ-0007dE-0c; Fri, 17 Jun 2022 18:09:45 +0200
-Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=linux-3.fritz.box)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1o2EXY-000MyH-P3; Fri, 17 Jun 2022 18:09:44 +0200
-Subject: Re: [PATCH] tracing/kprobes: Check whether get_kretprobe() returns
- NULL in kretprobe_dispatcher()
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Yonghong Song <yhs@fb.com>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <165366693881.797669.16926184644089588731.stgit@devnote2>
- <0204f480-cdb0-e49f-9034-602eced02966@iogearbox.net>
- <7619DB57-C39B-4A49-808C-7ACF12D58592@goodmis.org>
- <d28e1548-98fb-a533-4fdc-ae4f4568fb75@iogearbox.net>
- <20220608091017.0596dade@gandalf.local.home>
- <3d535ae1-69cd-dbae-32f6-7d571a88c2d8@iogearbox.net>
- <20220617120254.30bb0f15@gandalf.local.home>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <26a91f26-8d9c-e5e4-0a2f-4f17746c28b8@iogearbox.net>
-Date:   Fri, 17 Jun 2022 18:09:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S229930AbiFQQTk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Jun 2022 12:19:40 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E3B31227;
+        Fri, 17 Jun 2022 09:19:39 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id ACEFEB82B10;
+        Fri, 17 Jun 2022 16:19:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D069C3411B;
+        Fri, 17 Jun 2022 16:19:36 +0000 (UTC)
+Date:   Fri, 17 Jun 2022 12:19:34 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf v2 2/2] rethook: Reject getting a rethook if RCU is
+ not watching
+Message-ID: <20220617121934.71bc8752@gandalf.local.home>
+In-Reply-To: <165461827269.280167.7379263615545598958.stgit@devnote2>
+References: <165461825202.280167.12903689442217921817.stgit@devnote2>
+        <165461827269.280167.7379263615545598958.stgit@devnote2>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20220617120254.30bb0f15@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26575/Fri Jun 17 10:08:05 2022)
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/17/22 6:02 PM, Steven Rostedt wrote:
-> On Fri, 17 Jun 2022 10:26:40 +0200
-> Daniel Borkmann <daniel@iogearbox.net> wrote:
-> 
->> Steven, we still have this in our patchwork for tracking so it doesn't fall
->> off the radar. The patch is 3 weeks old by now. Has this been picked up yet,
->> or do you want to Ack and we ship the fix via bpf tree? Just asking as I
->> didn't see any further updates ever since.
-> 
-> Sorry, between traveling for conferences and PTO I fell behind. I'll pull
-> this into my urgent queue and start running my tests on it.
+On Wed,  8 Jun 2022 01:11:12 +0900
+"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
 
-Okay, if you pick these fixes up today then I'll toss them from our bpf patchwork.
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 
+> Since the rethook_recycle() will involve the call_rcu() for reclaiming
+> the rethook_instance, the rethook must be set up at the RCU available
+> context (non idle). This rethook_recycle() in the rethook trampoline
+> handler is inevitable, thus the RCU available check must be done before
+> setting the rethook trampoline.
+> 
+> This adds a rcu_is_watching() check in the rethook_try_get() so that
+> it will return NULL if it is called when !rcu_is_watching().
+> 
+> Fixes: 54ecbe6f1ed5 ("rethook: Add a generic return hook")
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> ---
+>  kernel/trace/rethook.c |    9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/kernel/trace/rethook.c b/kernel/trace/rethook.c
+> index b56833700d23..c69d82273ce7 100644
+> --- a/kernel/trace/rethook.c
+> +++ b/kernel/trace/rethook.c
+> @@ -154,6 +154,15 @@ struct rethook_node *rethook_try_get(struct rethook *rh)
+>  	if (unlikely(!handler))
+>  		return NULL;
+>  
+> +	/*
+> +	 * This expects the caller will set up a rethook on a function entry.
+> +	 * When the function returns, the rethook will eventually be reclaimed
+> +	 * or released in the rethook_recycle() with call_rcu().
+> +	 * This means the caller must be run in the RCU-availabe context.
+> +	 */
+> +	if (unlikely(!rcu_is_watching()))
+> +		return NULL;
+
+Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+
+-- Steve
+
+> +
+>  	fn = freelist_try_get(&rh->pool);
+>  	if (!fn)
+>  		return NULL;
+
