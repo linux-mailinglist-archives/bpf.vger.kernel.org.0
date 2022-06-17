@@ -2,129 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D13654F53C
-	for <lists+bpf@lfdr.de>; Fri, 17 Jun 2022 12:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC3954F605
+	for <lists+bpf@lfdr.de>; Fri, 17 Jun 2022 12:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381046AbiFQKVs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Jun 2022 06:21:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41788 "EHLO
+        id S1381836AbiFQK5l (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Jun 2022 06:57:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235307AbiFQKVs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Jun 2022 06:21:48 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46CD76A058;
-        Fri, 17 Jun 2022 03:21:47 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id b8so5560602edj.11;
-        Fri, 17 Jun 2022 03:21:47 -0700 (PDT)
+        with ESMTP id S234702AbiFQK5k (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Jun 2022 06:57:40 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C8FC19035
+        for <bpf@vger.kernel.org>; Fri, 17 Jun 2022 03:57:38 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id ej4so1738507edb.7
+        for <bpf@vger.kernel.org>; Fri, 17 Jun 2022 03:57:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1gyXVsIhrLNPJrdyWtNBJe4UGWrCbFBxMLTRYov+4hk=;
-        b=MrrsjJZ7Xg+X8ZgiineV5L4+flDD7zT5NAfgJ1is3b4d7vTHeMmECYAgYe5Q9Nfu4A
-         rUyV0NoU7PNBWZUZlWPkJGUWU7SoOfRH2Q8EHh3TW8N9Dg7NEomE6ukzoNqazYcbGaEs
-         K47TZsdkEo2cOS4b+JC087cuwjSKRf9f6PkwWLHXJv90ay1VlVJB9ousn+HSY73XHA6n
-         hCLTt/imY0qwIOsvYBueJGwbxV7ncyrhAq093etIofXohWs7zDu5671z92WiTce73un3
-         7OCVbYNCSAq8Uqd8F6DmZ0t+hGwTe/Di057OSZxO/ERV0+3isZIq+ckcnksviY68Ets5
-         gVAA==
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=b/Dy8Jnr8/LXglvk2vgtZpW47clC5IdLNRi23nJJpmc=;
+        b=jwaf7LG7Gxk14lQBdxMAaZ4YRzwCsIDpFELTXDxdtLlMEsay8HZmMsk7rXapbmKqUy
+         gxXJ7zv8Etu9AUf9rtmy6aUb9QTae7dPi0vNwkAV89/S2U/QhGpRlnQP118OSSi7Fl/R
+         CJaaTknBKOVDoFel+JGX2xLRdQ0o9+PG2OJfk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1gyXVsIhrLNPJrdyWtNBJe4UGWrCbFBxMLTRYov+4hk=;
-        b=puinX2EI6OHoTQboILGCEOcJAjcDmcd3XuHj58+hlTejMQqKlg17cjC+CcJ2Ft9BS+
-         ScFG+UvB9FUNnUkjlS6zuKyK8EMAJQOCwxUuC+VMrIt3qE1jB1VDZgyeM7dDKyO0Mpzn
-         Gif9eJAg8ITX/7075YyjQ+7NNXf+mZN8pOnzesCBeV1vqEnA6NkU1b8yzwz0dY4lwb02
-         20HJgJ+dTMAvilvK5iaGpEl7IvonqUIFAQJmQQfFgbX3KQPYm9HEVaiTbQIlzztZbGgg
-         cM2rmJeAgtOETLzz55PAufyeOJWz4H0+K7tWnSfEoGTGuoN1rjkGhNUh4cQSdgwVFYYw
-         nltQ==
-X-Gm-Message-State: AJIora+KmEjgLilcOxrDp2Xv+79tRYvvPF6F/XCv+qkUxhdRO0cIoout
-        92+qDVcW3DeJzSlisLmTuAw=
-X-Google-Smtp-Source: AGRyM1srWN7X/BOxcDMj7JdYRHWaINLoUpIb354qnBf8uviawJkdpr6+taDx4Q2BZCqDJOLnYr9zGg==
-X-Received: by 2002:a05:6402:3808:b0:435:5a6c:9dd9 with SMTP id es8-20020a056402380800b004355a6c9dd9mr4874558edb.368.1655461305760;
-        Fri, 17 Jun 2022 03:21:45 -0700 (PDT)
-Received: from krava ([193.85.244.190])
-        by smtp.gmail.com with ESMTPSA id r1-20020a170906280100b006fefd1d5c2bsm1987782ejc.148.2022.06.17.03.21.44
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=b/Dy8Jnr8/LXglvk2vgtZpW47clC5IdLNRi23nJJpmc=;
+        b=cDw3b/N10WB1wie79ePwjclWxAh25OfKCRuaSgfcTPV7QyvDYNLQhbQ78I7KQBHdYl
+         +I3QreB66djVWq47EF7+Xw8d4uMhdHI63fiE2AK6bvn2hBxKBfNKYtRr7OGFxNfOprZq
+         AmbGMrwyPIO3qBr5Nw6XR67QnMTMgLRs0UuQRf0gyR08N/jw72609QtCAG1GfKgBBXHv
+         KoOb05IEZYsCjN36bwHYG40Yqh7Vh9j04kXWxsiTwST6MG7CeGCn5lHQRAZi5cTPbKh5
+         cpgp5I2y93X1gEJV1M/fAVu9qoQ4WMA3Lq6gvqamsudJKxroCDJQpIG7h2FqZukVv5kt
+         0SvQ==
+X-Gm-Message-State: AJIora9kT9GYB1uUjMjXwK6n3BaN7wk+7JsWdDkiw6Mh0Y7LGwzs1oFX
+        vGY2sPfnFokjq3E3CwzC8R/LMlJGZ63/ug==
+X-Google-Smtp-Source: AGRyM1vf4vb47rYEVaDJpGq7ncwYv3Mpbgq2EzGwOMrzp4BfySt6eR1zFn7o1IVsRrO2bxNKpi3LdA==
+X-Received: by 2002:aa7:c9d2:0:b0:42e:1776:63e0 with SMTP id i18-20020aa7c9d2000000b0042e177663e0mr11298996edt.185.1655463456592;
+        Fri, 17 Jun 2022 03:57:36 -0700 (PDT)
+Received: from cloudflare.com (79.184.138.130.ipv4.supernova.orange.pl. [79.184.138.130])
+        by smtp.gmail.com with ESMTPSA id x16-20020aa7cd90000000b0042fb3badd48sm3485937edv.9.2022.06.17.03.57.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jun 2022 03:21:45 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Fri, 17 Jun 2022 12:21:43 +0200
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Yonghong Song <yhs@fb.com>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] tracing/kprobes: Check whether get_kretprobe() returns
- NULL in kretprobe_dispatcher()
-Message-ID: <YqxVt4KoSIMHUH+/@krava>
-References: <165366693881.797669.16926184644089588731.stgit@devnote2>
+        Fri, 17 Jun 2022 03:57:36 -0700 (PDT)
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        kernel-team@cloudflare.com, Tony Ambardar <tony.ambardar@gmail.com>
+Subject: [PATCH bpf-next 0/2] Allow mixing bpf2bpf calls with tail calls on arm64
+Date:   Fri, 17 Jun 2022 12:57:33 +0200
+Message-Id: <20220617105735.733938-1-jakub@cloudflare.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <165366693881.797669.16926184644089588731.stgit@devnote2>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, May 28, 2022 at 12:55:39AM +0900, Masami Hiramatsu (Google) wrote:
-> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> 
-> There is a small chance that get_kretprobe(ri) returns NULL in
-> kretprobe_dispatcher() when another CPU unregisters the kretprobe
-> right after __kretprobe_trampoline_handler().
-> 
-> To avoid this issue, kretprobe_dispatcher() checks the get_kretprobe()
-> return value again. And if it is NULL, it returns soon because that
-> kretprobe is under unregistering process.
-> 
-> This issue has been introduced when the kretprobe is decoupled
-> from the struct kretprobe_instance by commit d741bf41d7c7
-> ("kprobes: Remove kretprobe hash"). Before that commit, the
-> struct kretprob_instance::rp directly points the kretprobe
-> and it is never be NULL.
-> 
-> Reported-by: Yonghong Song <yhs@fb.com>
-> Fixes: d741bf41d7c7 ("kprobes: Remove kretprobe hash")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+This patch set enables using bpf2bpf calls together with tail calls on arm64.
+Patch 1 was borrowed from an RFC series for MIPS JIT [1].
+Patch 2 gives an explanation of tweaks needed to arm64 BPF JIT.
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+[1] https://lore.kernel.org/bpf/77dfea2d224e7545e5e4d3f350721d27e5a77b0d.1633392335.git.Tony.Ambardar@gmail.com/#r
 
-jirka
+Jakub Sitnicki (1):
+  bpf: arm64: Keep tail call count across bpf2bpf calls
 
-> ---
->  kernel/trace/trace_kprobe.c |   11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-> index 93507330462c..a245ea673715 100644
-> --- a/kernel/trace/trace_kprobe.c
-> +++ b/kernel/trace/trace_kprobe.c
-> @@ -1718,8 +1718,17 @@ static int
->  kretprobe_dispatcher(struct kretprobe_instance *ri, struct pt_regs *regs)
->  {
->  	struct kretprobe *rp = get_kretprobe(ri);
-> -	struct trace_kprobe *tk = container_of(rp, struct trace_kprobe, rp);
-> +	struct trace_kprobe *tk;
-> +
-> +	/*
-> +	 * There is a small chance that get_kretprobe(ri) returns NULL when
-> +	 * the kretprobe is unregister on another CPU between kretprobe's
-> +	 * trampoline_handler and this function.
-> +	 */
-> +	if (unlikely(!rp))
-> +		return 0;
->  
-> +	tk = container_of(rp, struct trace_kprobe, rp);
->  	raw_cpu_inc(*tk->nhit);
->  
->  	if (trace_probe_test_flag(&tk->tp, TP_FLAG_TRACE))
-> 
+Tony Ambardar (1):
+  bpf: x64: Add predicate for bpf2bpf with tailcalls support in JIT
+
+ arch/arm64/net/bpf_jit_comp.c | 9 ++++++++-
+ arch/x86/net/bpf_jit_comp.c   | 6 ++++++
+ include/linux/filter.h        | 1 +
+ kernel/bpf/core.c             | 6 ++++++
+ kernel/bpf/verifier.c         | 3 ++-
+ 5 files changed, 23 insertions(+), 2 deletions(-)
+
+-- 
+2.35.3
+
