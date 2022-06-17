@@ -2,83 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 150E854FDE6
-	for <lists+bpf@lfdr.de>; Fri, 17 Jun 2022 21:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4FB854FE0A
+	for <lists+bpf@lfdr.de>; Fri, 17 Jun 2022 22:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235697AbiFQTuS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Jun 2022 15:50:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60158 "EHLO
+        id S234252AbiFQT7T (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Jun 2022 15:59:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241681AbiFQTuR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Jun 2022 15:50:17 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E921B33350
-        for <bpf@vger.kernel.org>; Fri, 17 Jun 2022 12:50:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9D360B82B8A
-        for <bpf@vger.kernel.org>; Fri, 17 Jun 2022 19:50:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 25835C3411D;
-        Fri, 17 Jun 2022 19:50:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655495413;
-        bh=SrzaWjR9Q0Ix81rYxINc2TtnH06Oh+Y827HrpTpQJjg=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=aupQpyWKDPwGLpLczE3v8pcqNFidTlIMeYp8GnO5q6p/gvJ242gLpavr65RETZPe5
-         8R5G4n7RQH060ulaBTPphXkBVcPgVa52VNOFwz4lHnNw46MCAhL/bLOm6tbZp10ise
-         Vd+HNLHG9gVfLMfIT2CiSV+jFrMjqfN4fyH3DXnFnkQ9ZoTZ+fM6SfJogzvQzvxOZD
-         UPP+41Mezl15Lphmi6SrmAt2oTD6z+8vbOD9klEahe6p87Dc2uMv3q6KH7v1i9BUHT
-         arq+9IthhuhhfPLvVF+vPyBvVRvNQIBzNqMjJgiZ4grZKjpe9ueR+AZlRAusK+XOXm
-         IIkMzi6XTTUrQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0967EE73877;
-        Fri, 17 Jun 2022 19:50:13 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S231723AbiFQT7R (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Jun 2022 15:59:17 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D0B259B92;
+        Fri, 17 Jun 2022 12:59:16 -0700 (PDT)
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1o2I7W-000Caq-Jx; Fri, 17 Jun 2022 21:59:06 +0200
+Received: from [85.1.206.226] (helo=linux-3.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1o2I7W-0002t7-Bo; Fri, 17 Jun 2022 21:59:06 +0200
+Subject: Re: [PATCH] tracing/kprobes: Check whether get_kretprobe() returns
+ NULL in kretprobe_dispatcher()
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Yonghong Song <yhs@fb.com>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <165366693881.797669.16926184644089588731.stgit@devnote2>
+ <0204f480-cdb0-e49f-9034-602eced02966@iogearbox.net>
+ <7619DB57-C39B-4A49-808C-7ACF12D58592@goodmis.org>
+ <d28e1548-98fb-a533-4fdc-ae4f4568fb75@iogearbox.net>
+ <20220608091017.0596dade@gandalf.local.home>
+ <3d535ae1-69cd-dbae-32f6-7d571a88c2d8@iogearbox.net>
+ <20220617120254.30bb0f15@gandalf.local.home>
+ <26a91f26-8d9c-e5e4-0a2f-4f17746c28b8@iogearbox.net>
+ <20220617134815.5e1a97de@gandalf.local.home>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <cdf7e29f-306b-92af-4e12-0d440156ee5c@iogearbox.net>
+Date:   Fri, 17 Jun 2022 21:59:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] bpf, docs: Update some of the JIT/maintenance entries
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165549541303.30132.12312177417355175803.git-patchwork-notify@kernel.org>
-Date:   Fri, 17 Jun 2022 19:50:13 +0000
-References: <f9b8a63a0b48dc764bd4c50f87632889f5813f69.1655494758.git.daniel@iogearbox.net>
-In-Reply-To: <f9b8a63a0b48dc764bd4c50f87632889f5813f69.1655494758.git.daniel@iogearbox.net>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     ast@kernel.org, andrii@kernel.org, bpf@vger.kernel.org,
-        john.fastabend@gmail.com
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20220617134815.5e1a97de@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.6/26575/Fri Jun 17 10:08:05 2022)
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
-
-On Fri, 17 Jun 2022 21:42:33 +0200 you wrote:
-> Various minor updates around some of the BPF-related entries:
+On 6/17/22 7:48 PM, Steven Rostedt wrote:
+> On Fri, 17 Jun 2022 18:09:44 +0200
+> Daniel Borkmann <daniel@iogearbox.net> wrote:
 > 
-> JITs for ARM32/NFP/SPARC/X86-32 haven't seen updates in quite a while, thus
-> for now, mark them as 'Odd Fixes' until they become more actively developed.
+>>> Sorry, between traveling for conferences and PTO I fell behind. I'll pull
+>>> this into my urgent queue and start running my tests on it.
+>>
+>> Okay, if you pick these fixes up today then I'll toss them from our bpf patchwork.
 > 
-> JITs for POWERPC/S390 are in good shape and receive active development and
-> review, thus bump to 'Supported' similar as we have with X86-64/ARM64.
-> 
-> [...]
+> This patch I'll take, but please keep the fprobe/rethook one, as that's
+> specific to your tree.
 
-Here is the summary with links:
-  - [bpf] bpf, docs: Update some of the JIT/maintenance entries
-    https://git.kernel.org/bpf/bpf/c/63ce81d1c404
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Ok, sounds good to me. I just applied them with the comment suggestion added.
