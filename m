@@ -2,63 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EC3954F605
-	for <lists+bpf@lfdr.de>; Fri, 17 Jun 2022 12:57:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F0F954F607
+	for <lists+bpf@lfdr.de>; Fri, 17 Jun 2022 12:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381836AbiFQK5l (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Jun 2022 06:57:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52912 "EHLO
+        id S1382001AbiFQK5q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Jun 2022 06:57:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234702AbiFQK5k (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Jun 2022 06:57:40 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C8FC19035
-        for <bpf@vger.kernel.org>; Fri, 17 Jun 2022 03:57:38 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id ej4so1738507edb.7
-        for <bpf@vger.kernel.org>; Fri, 17 Jun 2022 03:57:38 -0700 (PDT)
+        with ESMTP id S1381964AbiFQK5n (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Jun 2022 06:57:43 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6845629351
+        for <bpf@vger.kernel.org>; Fri, 17 Jun 2022 03:57:39 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id kq6so8021838ejb.11
+        for <bpf@vger.kernel.org>; Fri, 17 Jun 2022 03:57:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=b/Dy8Jnr8/LXglvk2vgtZpW47clC5IdLNRi23nJJpmc=;
-        b=jwaf7LG7Gxk14lQBdxMAaZ4YRzwCsIDpFELTXDxdtLlMEsay8HZmMsk7rXapbmKqUy
-         gxXJ7zv8Etu9AUf9rtmy6aUb9QTae7dPi0vNwkAV89/S2U/QhGpRlnQP118OSSi7Fl/R
-         CJaaTknBKOVDoFel+JGX2xLRdQ0o9+PG2OJfk=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=mWYyeMwi13pXDXYKNIGoy1I9a/3/4b0VlegrhxpACmM=;
+        b=RXMz2l9Vog/STEZaAhE8CQCzZTS8R7Wub4UBYMqp3c/iaJh0Q6EVsOtbbLct8PngB9
+         M0qKhLrPI6cxYN0pqTNJ5I8ZoEfE9nzg2WeX+pbJr+dGSjsg+cPrdPHA41/IV74PoT1+
+         R/O5ZKpHQz2tjgIKKHFpwwdy0FQI6mghEzIyM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=b/Dy8Jnr8/LXglvk2vgtZpW47clC5IdLNRi23nJJpmc=;
-        b=cDw3b/N10WB1wie79ePwjclWxAh25OfKCRuaSgfcTPV7QyvDYNLQhbQ78I7KQBHdYl
-         +I3QreB66djVWq47EF7+Xw8d4uMhdHI63fiE2AK6bvn2hBxKBfNKYtRr7OGFxNfOprZq
-         AmbGMrwyPIO3qBr5Nw6XR67QnMTMgLRs0UuQRf0gyR08N/jw72609QtCAG1GfKgBBXHv
-         KoOb05IEZYsCjN36bwHYG40Yqh7Vh9j04kXWxsiTwST6MG7CeGCn5lHQRAZi5cTPbKh5
-         cpgp5I2y93X1gEJV1M/fAVu9qoQ4WMA3Lq6gvqamsudJKxroCDJQpIG7h2FqZukVv5kt
-         0SvQ==
-X-Gm-Message-State: AJIora9kT9GYB1uUjMjXwK6n3BaN7wk+7JsWdDkiw6Mh0Y7LGwzs1oFX
-        vGY2sPfnFokjq3E3CwzC8R/LMlJGZ63/ug==
-X-Google-Smtp-Source: AGRyM1vf4vb47rYEVaDJpGq7ncwYv3Mpbgq2EzGwOMrzp4BfySt6eR1zFn7o1IVsRrO2bxNKpi3LdA==
-X-Received: by 2002:aa7:c9d2:0:b0:42e:1776:63e0 with SMTP id i18-20020aa7c9d2000000b0042e177663e0mr11298996edt.185.1655463456592;
-        Fri, 17 Jun 2022 03:57:36 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=mWYyeMwi13pXDXYKNIGoy1I9a/3/4b0VlegrhxpACmM=;
+        b=lS3cC3V4/Gqaq0blFUv5CZxV0wgiuYx9brerxhuggdHHzhrI1OzNQVeM/r9dvMSXUK
+         iBB4SKrx+t0hCtLt7J9ekvwcW15q7RnnKrcIHVEEZTMv7lRBjCZWQBHQ5rt11UKyPsry
+         KODMoQzyFvhPFDqiMRJDpK8IdmvTUK3f5k4dS1AB+203mNj5xdXgfBI8fqUEhRyMmgSX
+         3na8AN+1n+9nzlKAoAMZa5E3QBratMWsOzbOmCe2DVSJ4O7Dold/zNXeGZvTiMLgBalm
+         Jr+0EW6m6njDpMCX96Z20/qwGdUpscb//CI+SYlJ+CZ+tXC87NVD2Bqa22ND6h6tHVuh
+         zllQ==
+X-Gm-Message-State: AJIora8ofCL28eyhCyRBMrE5lwipTVICwffaSwGd73PLgALiHgcoP0Wc
+        nHx8gmnnKrMrogLwSm8RCw8RGu3wkpn5DQ==
+X-Google-Smtp-Source: AGRyM1sV0qqhkERnD1bTlYaRu4Pd+wAcbE8FanYJC5y8agcrGMDgrvECljMAwPlIvWtdIrqbWFbd5w==
+X-Received: by 2002:a17:906:a245:b0:708:ce69:e38b with SMTP id bi5-20020a170906a24500b00708ce69e38bmr8590575ejb.100.1655463458090;
+        Fri, 17 Jun 2022 03:57:38 -0700 (PDT)
 Received: from cloudflare.com (79.184.138.130.ipv4.supernova.orange.pl. [79.184.138.130])
-        by smtp.gmail.com with ESMTPSA id x16-20020aa7cd90000000b0042fb3badd48sm3485937edv.9.2022.06.17.03.57.35
+        by smtp.gmail.com with ESMTPSA id us12-20020a170906bfcc00b00709e786c7b2sm2017376ejb.213.2022.06.17.03.57.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jun 2022 03:57:36 -0700 (PDT)
+        Fri, 17 Jun 2022 03:57:37 -0700 (PDT)
 From:   Jakub Sitnicki <jakub@cloudflare.com>
 To:     bpf@vger.kernel.org
 Cc:     netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        kernel-team@cloudflare.com, Tony Ambardar <tony.ambardar@gmail.com>
-Subject: [PATCH bpf-next 0/2] Allow mixing bpf2bpf calls with tail calls on arm64
-Date:   Fri, 17 Jun 2022 12:57:33 +0200
-Message-Id: <20220617105735.733938-1-jakub@cloudflare.com>
+        kernel-team@cloudflare.com,
+        Tony Ambardar <tony.ambardar@gmail.com>,
+        Tony Ambardar <Tony.Ambardar@gmail.com>
+Subject: [PATCH bpf-next 1/2] bpf: x64: Add predicate for bpf2bpf with tailcalls support in JIT
+Date:   Fri, 17 Jun 2022 12:57:34 +0200
+Message-Id: <20220617105735.733938-2-jakub@cloudflare.com>
 X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20220617105735.733938-1-jakub@cloudflare.com>
+References: <20220617105735.733938-1-jakub@cloudflare.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,25 +70,82 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch set enables using bpf2bpf calls together with tail calls on arm64.
-Patch 1 was borrowed from an RFC series for MIPS JIT [1].
-Patch 2 gives an explanation of tweaks needed to arm64 BPF JIT.
+From: Tony Ambardar <tony.ambardar@gmail.com>
 
-[1] https://lore.kernel.org/bpf/77dfea2d224e7545e5e4d3f350721d27e5a77b0d.1633392335.git.Tony.Ambardar@gmail.com/#r
+The BPF core/verifier is hard-coded to permit mixing bpf2bpf and tail
+calls for only x86-64. Change the logic to instead rely on a new weak
+function 'bool bpf_jit_supports_subprog_tailcalls(void)', which a capable
+JIT backend can override.
 
-Jakub Sitnicki (1):
-  bpf: arm64: Keep tail call count across bpf2bpf calls
+Update the x86-64 eBPF JIT to reflect this.
 
-Tony Ambardar (1):
-  bpf: x64: Add predicate for bpf2bpf with tailcalls support in JIT
+Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
+[jakub: drop MIPS bits and tweak patch subject]
+Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+---
+ arch/x86/net/bpf_jit_comp.c | 6 ++++++
+ include/linux/filter.h      | 1 +
+ kernel/bpf/core.c           | 6 ++++++
+ kernel/bpf/verifier.c       | 3 ++-
+ 4 files changed, 15 insertions(+), 1 deletion(-)
 
- arch/arm64/net/bpf_jit_comp.c | 9 ++++++++-
- arch/x86/net/bpf_jit_comp.c   | 6 ++++++
- include/linux/filter.h        | 1 +
- kernel/bpf/core.c             | 6 ++++++
- kernel/bpf/verifier.c         | 3 ++-
- 5 files changed, 23 insertions(+), 2 deletions(-)
-
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index f298b18a9a3d..2c51ca9f7cec 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -2491,3 +2491,9 @@ void *bpf_arch_text_copy(void *dst, void *src, size_t len)
+ 		return ERR_PTR(-EINVAL);
+ 	return dst;
+ }
++
++/* Indicate the JIT backend supports mixing bpf2bpf and tailcalls. */
++bool bpf_jit_supports_subprog_tailcalls(void)
++{
++	return true;
++}
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index d0cbb31b1b4d..4c1a8b247545 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -914,6 +914,7 @@ u64 __bpf_call_base(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5);
+ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog);
+ void bpf_jit_compile(struct bpf_prog *prog);
+ bool bpf_jit_needs_zext(void);
++bool bpf_jit_supports_subprog_tailcalls(void);
+ bool bpf_jit_supports_kfunc_call(void);
+ bool bpf_helper_changes_pkt_data(void *func);
+ 
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index b5ffebcce6cc..f023cb399e3f 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -2729,6 +2729,12 @@ bool __weak bpf_jit_needs_zext(void)
+ 	return false;
+ }
+ 
++/* Return TRUE if the JIT backend supports mixing bpf2bpf and tailcalls. */
++bool __weak bpf_jit_supports_subprog_tailcalls(void)
++{
++	return false;
++}
++
+ bool __weak bpf_jit_supports_kfunc_call(void)
+ {
+ 	return false;
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 2859901ffbe3..f64d2598d7d8 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -6154,7 +6154,8 @@ static bool may_update_sockmap(struct bpf_verifier_env *env, int func_id)
+ 
+ static bool allow_tail_call_in_subprogs(struct bpf_verifier_env *env)
+ {
+-	return env->prog->jit_requested && IS_ENABLED(CONFIG_X86_64);
++	return env->prog->jit_requested &&
++	       bpf_jit_supports_subprog_tailcalls();
+ }
+ 
+ static int check_map_func_compatibility(struct bpf_verifier_env *env,
 -- 
 2.35.3
 
