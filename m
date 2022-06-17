@@ -2,72 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41B3354EEC0
-	for <lists+bpf@lfdr.de>; Fri, 17 Jun 2022 03:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C0254EF2B
+	for <lists+bpf@lfdr.de>; Fri, 17 Jun 2022 04:15:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379514AbiFQBZo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jun 2022 21:25:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51318 "EHLO
+        id S232885AbiFQCPF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jun 2022 22:15:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379491AbiFQBZl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jun 2022 21:25:41 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A6BD63536
-        for <bpf@vger.kernel.org>; Thu, 16 Jun 2022 18:25:33 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id a15so3893083wrh.2
-        for <bpf@vger.kernel.org>; Thu, 16 Jun 2022 18:25:33 -0700 (PDT)
+        with ESMTP id S232651AbiFQCPE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jun 2022 22:15:04 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14CE564BFC
+        for <bpf@vger.kernel.org>; Thu, 16 Jun 2022 19:15:04 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id hj18so5471040ejb.0
+        for <bpf@vger.kernel.org>; Thu, 16 Jun 2022 19:15:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=uNbNtYNUOkpq4DQQYD/bNQd8Np096f4o4ecAA/LLibg=;
-        b=VHF+oQVqevD5c6rS1Dz6843WU5L6AgsnakYt/4mxKpLAGz9+OTYEMjgA2rRCnGloJy
-         mihdf5Yfw9Co5rbDvexaeb+HN5aFOFbsUBWHXcDDyrVUbeMVsYLaKQaULsUvZHWI0dqp
-         y7IIV2x+CnmHfTWdB9x1dwL5yVW/DRgiAEJbac30yOqgvj4zd/iKnkOBuRK9cUIEmA3U
-         2+/OrMYQjWOj3ac/T2mNqDrx7CgnrZiYsVC6kPnXqXpOstK3nskxjtTIWOHhXUs3onTS
-         tOIb4dr8tg2qHY4OXi+hOv8xHuvsYNL6KM9Ya1zWOkZId7CeSBWDZqhws4h/XNitWjAE
-         oByg==
+        bh=8HrBRGA4EcIG5+0lmFSEC1SLiCFB1VTOZ3vuXga034s=;
+        b=OYu6rwx05eO2kf2+kCyfzrMYKTYF4wF6qBKyOTaZovD7WzC55WpGwT08AHDGP/0QZ1
+         V6IWOwPCFpvDYBHSgSFyLp3VNY822lYTu16ct4gOaa/iDHv197G3dKtq9kqD96wohqT8
+         2EUnlRriiiIxU8X2hGBp2/Mzbk1DjD8xIRcX/101EH1OblnyMOJfghv1TH3RYOOELFeZ
+         BkO/be+KN4adzPJ0l+9xWh7sY+pLlgXU6n3fEyQUuPdHPw1eoqw3xII7Xnvke2XCIvjR
+         nfQlhnOLRjDQtikKDyEMAE+VT6hSyI4w3hclxdUJtAFH0eqyfr1yGmX2Hfc9jEcqRoCv
+         hehg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=uNbNtYNUOkpq4DQQYD/bNQd8Np096f4o4ecAA/LLibg=;
-        b=7CTIMO1wDpJOIpMdAwjHvT7B+Edy2yUgllGv+7AR+iyPfAQPdSfBERYNZ1MePoAO90
-         nfKsK251UsLKuEqEE5E1nd0VG3hHFHUUgwCJVaqC9kehsvlV1o9Gh/zQ+esu8XKN48IK
-         2dtYQsFHTw2jYliQgneZVq3p/VU98uh4IFSX/2KTlzcFLgZmbi4HkincEvJvVIhkraWM
-         BP7ETG9OoQFlhqEqICnYCkceH3W2D8/xCWXAdyAHeX6f2Sc0YkbQwej+Uk90iO+aSImP
-         csgspVH1l5342UgXbQEaekbBc5SAcJfi8iLnAkjlsemgu5FWpZQnG2njvGorOsqWYynF
-         0BiA==
-X-Gm-Message-State: AJIora/Avc7YETXSqcJAvwY9rypWjsOiFORS4s8KcjCSXNTiGxsvzWIe
-        VqUmkd52kPG19KelqzRNU99i5nMTPn0+sNvCKcxoAQ==
-X-Google-Smtp-Source: AGRyM1u4B9pMpm2deQth0yQOPQYn3dwuz9UuLSAJFr/qfwTvYClla643fCKd2wzXCjLopKl4LX5mONAYT7rJ5OP1BHY=
-X-Received: by 2002:a05:6000:1a8d:b0:219:e3f2:c092 with SMTP id
- f13-20020a0560001a8d00b00219e3f2c092mr7105521wry.375.1655429131650; Thu, 16
- Jun 2022 18:25:31 -0700 (PDT)
+        bh=8HrBRGA4EcIG5+0lmFSEC1SLiCFB1VTOZ3vuXga034s=;
+        b=viRo80aT2mjyke7MtmN4rlndc2GS56p5jMkNcUH26XOuAMUY/gpIYYhGWPzUz/EcQT
+         TC3TeERjf7qohKQFd9po41y0QMJlyxZ6CIcFzbxpVqPoqNzV4k4f8tGMfAfuiXoi4yjE
+         DgC19ee0Okdi77mzrGuOJoiMABvN4c93J68+ELEp03G6XZm0UWQ9hfi3R1u2RSBO21kI
+         HmLaY7bkxPkrOXolU/gUYRx18enGRIoYF7D9od2bZwdh2ykjE5QiVvzleInFvQ1X2jGL
+         piGDBfEH/saqc+FHsZ/iCXgIjP32OPV4BGb/UaEJRl92UkKjEzNL1vZX1WeNe2kygZAL
+         w9UQ==
+X-Gm-Message-State: AJIora/G6Wr0bpbjTUr6yNiguLYRz+DjjnYHgR4mXWyWZTpvx2+p/swL
+        sUOdpdnhsf5wfa3XiEXjmSCCQOFCLhTgqbvJdZ4=
+X-Google-Smtp-Source: AGRyM1vV/Md76Ws1EMQ/nq4YxLmp0TLTC9PVD0WOBAgp5eNmA5e1XZrev1/7njQhQgVz4DI47Rdakk58Dsvtyw2CPFc=
+X-Received: by 2002:a17:906:f293:b0:718:82e3:226b with SMTP id
+ gu19-20020a170906f29300b0071882e3226bmr7247784ejb.676.1655432102544; Thu, 16
+ Jun 2022 19:15:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220603055156.2830463-1-irogers@google.com> <165428101333.23591.13242354654538988127.git-patchwork-notify@kernel.org>
- <CAP-5=fWwKkj1HtAvOXxGxcrG99gpy8v4ReW_Jh7uumbQMiJYng@mail.gmail.com>
- <CAEf4BzYYcnu1PHoudKnvpjPJAszgu3TFSbNe=E6vctgh9JLkTg@mail.gmail.com>
- <CAP-5=fUANeeEHyCrynbJRrE4cU0BNrWYXN2G=MikjZS0cTJ1ZA@mail.gmail.com> <CAEf4BzbTJGbixzP7ZoUNTYPAa1=7AqrXoUutZPiHS97Dik4Xfw@mail.gmail.com>
-In-Reply-To: <CAEf4BzbTJGbixzP7ZoUNTYPAa1=7AqrXoUutZPiHS97Dik4Xfw@mail.gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 16 Jun 2022 18:25:18 -0700
-Message-ID: <CAP-5=fV1LXNEi3U_RZxt12xPze41W9s27X_Gc6DbY6oDMJ4WvQ@mail.gmail.com>
-Subject: Re: [PATCH v2] libbpf: Fix is_pow_of_2
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+References: <20220613205008.212724-1-eddyz87@gmail.com> <20220613205008.212724-4-eddyz87@gmail.com>
+In-Reply-To: <20220613205008.212724-4-eddyz87@gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 16 Jun 2022 19:14:50 -0700
+Message-ID: <CAADnVQ+rwwCoEPQUg+CS_iXSzqoptrgtW4TpqoM9XkMW9Jj+ag@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v7 3/5] bpf: Inline calls to bpf_loop when
+ callback is known
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Networking <netdev@vger.kernel.org>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Yuze Chi <chiyuze@google.com>,
-        open list <linux-kernel@vger.kernel.org>
+        Kernel Team <kernel-team@fb.com>, Song Liu <song@kernel.org>,
+        Joanne Koong <joannelkoong@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,78 +69,68 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 16, 2022 at 4:55 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Jun 16, 2022 at 2:07 PM Ian Rogers <irogers@google.com> wrote:
-> >
-> > On Thu, Jun 16, 2022 at 2:00 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Tue, Jun 14, 2022 at 1:41 PM Ian Rogers <irogers@google.com> wrote:
-> > > >
-> > > > On Fri, Jun 3, 2022 at 11:30 AM <patchwork-bot+netdevbpf@kernel.org> wrote:
-> > > > >
-> > > > > Hello:
-> > > > >
-> > > > > This patch was applied to bpf/bpf-next.git (master)
-> > > > > by Andrii Nakryiko <andrii@kernel.org>:
-> > > > >
-> > > > > On Thu,  2 Jun 2022 22:51:56 -0700 you wrote:
-> > > > > > From: Yuze Chi <chiyuze@google.com>
-> > > > > >
-> > > > > > Move the correct definition from linker.c into libbpf_internal.h.
-> > > > > >
-> > > > > > Reported-by: Yuze Chi <chiyuze@google.com>
-> > > > > > Signed-off-by: Yuze Chi <chiyuze@google.com>
-> > > > > > Signed-off-by: Ian Rogers <irogers@google.com>
-> > > > > >
-> > > > > > [...]
-> > > > >
-> > > > > Here is the summary with links:
-> > > > >   - [v2] libbpf: Fix is_pow_of_2
-> > > > >     https://git.kernel.org/bpf/bpf-next/c/f913ad6559e3
-> > > > >
-> > > > > You are awesome, thank you!
-> > > >
-> > > > Will this patch get added to 5.19?
-> > > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/lib/bpf/libbpf.c#n4948
-> > > >
-> > >
-> > > I've applied it to bpf-next, so as it stands right now - no. Do you
-> > > need this for perf?
-> >
-> > Nope. We carry it as a patch against 5.19 in Google and was surprised
-> > to see I didn't need to drop the patch.  Our internal code had
-> > encountered the bug, hence needing the fix. I'd expect others could
-> > encounter it, but I'm unaware of an issue with it and perf.
-> >
->
-> So the fix is in Github mirror ([0]) and it is expected that everyone
-> is using libbpf based on Github repo, so not sure why you'd care about
-> this fix in bpf tree. I somehow assumed that you need it due to perf,
-> but was a bit surprised that perf is affected because I don't think
-> it's using BPF ringbuf.
->
-> So I guess the question I have is why you don't use libbpf from [0]
-> and what can be done to switch to the official libbpf repo?
->
->   [0] https://github.com/libbpf/libbpf
+On Mon, Jun 13, 2022 at 1:50 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
+> +
+> +static bool loop_flag_is_zero(struct bpf_verifier_env *env)
+> +{
+> +       struct bpf_reg_state *regs = cur_regs(env);
+> +       struct bpf_reg_state *reg = &regs[BPF_REG_4];
+> +
+> +       return register_is_const(reg) && reg->var_off.value == 0;
+> +}
 
-Agreed on not following Linus' tree for libbpf. Not sure about having
-such an obvious bug in Linus' tree.
+Great catch here by Daniel.
+It needs mark_chain_precision().
 
-Thanks,
-Ian
+> +
+> +static void update_loop_inline_state(struct bpf_verifier_env *env, u32 subprogno)
+> +{
+> +       struct bpf_loop_inline_state *state = &cur_aux(env)->loop_inline_state;
+> +
+> +       if (!state->initialized) {
+> +               state->initialized = 1;
+> +               state->fit_for_inline = loop_flag_is_zero(env);
+> +               state->callback_subprogno = subprogno;
+> +               return;
+> +       }
+> +
+> +       if (!state->fit_for_inline)
+> +               return;
+> +
+> +       state->fit_for_inline =
+> +               loop_flag_is_zero(env) &&
+> +               state->callback_subprogno == subprogno;
 
-> > Thanks,
-> > Ian
-> >
-> > > > Thanks,
-> > > > Ian
-> > > >
-> > > > > --
-> > > > > Deet-doot-dot, I am a bot.
-> > > > > https://korg.docs.kernel.org/patchwork/pwbot.html
-> > > > >
-> > > > >
+No need to heavy indent. Up to 100 char is fine.
+
+> +static int optimize_bpf_loop(struct bpf_verifier_env *env)
+> +{
+> +       struct bpf_subprog_info *subprogs = env->subprog_info;
+> +       int i, cur_subprog = 0, cnt, delta = 0;
+> +       struct bpf_insn *insn = env->prog->insnsi;
+> +       int insn_cnt = env->prog->len;
+> +       u16 stack_depth = subprogs[cur_subprog].stack_depth;
+> +       u16 stack_depth_extra = 0;
+> +
+> +       for (i = 0; i < insn_cnt; i++, insn++) {
+> +               struct bpf_loop_inline_state *inline_state =
+> +                       &env->insn_aux_data[i + delta].loop_inline_state;
+> +
+> +               if (is_bpf_loop_call(insn) && inline_state->fit_for_inline) {
+> +                       struct bpf_prog *new_prog;
+> +
+> +                       stack_depth_extra = BPF_REG_SIZE * 3;
+> +                       new_prog = inline_bpf_loop(env,
+> +                                                  i + delta,
+> +                                                  -(stack_depth + stack_depth_extra),
+
+See the fix that just landed:
+https://lore.kernel.org/bpf/20220616162037.535469-2-jakub@cloudflare.com/
+
+subprogs[cur_subprog].stack_depth may not be a multiple of 8.
+But spill slots for r[678] have to be.
+We need to round_up(,8) here and
+increase stack_depth_extra accordingly.
+
+The rest looks great.
+Thank you for working on it!
