@@ -2,120 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12B1C5502F0
-	for <lists+bpf@lfdr.de>; Sat, 18 Jun 2022 07:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58FB15503FA
+	for <lists+bpf@lfdr.de>; Sat, 18 Jun 2022 12:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231715AbiFRFbP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 18 Jun 2022 01:31:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38650 "EHLO
+        id S231449AbiFRKQO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 18 Jun 2022 06:16:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbiFRFbP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 18 Jun 2022 01:31:15 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D0D06006B;
-        Fri, 17 Jun 2022 22:31:14 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id fu3so12118501ejc.7;
-        Fri, 17 Jun 2022 22:31:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xCv5ZFaf8lE9/RCZn/mnFHKDQpvJJAzq648WOUNKZXI=;
-        b=JPWBm5MbnBHiAlK92Qz+JGFp5rZR9xLLsktGh2cLPQzh1z2pDSCcsl8HmRwzoSX4Er
-         ku5BauTtY8t+KA0QnhHlDvB0stpBeVXZbWithupIrhLXvfV9lt3J9BVpu5oZ9mbMErIP
-         g0y4xrJUbfZBw5tZJxLQANa05UP84bmbnB0B5gCf/iy88mr+VxhV6hAuHOW9go+sDCpM
-         yJ3kYB/vZR5LkTHVy84XLAqqYmZ84GRG+IFuxOgtEOP+zExtCcrZeDfT5nhP/bwYSvXY
-         AUM9YIJJxPNTQfGa8Zs1mkYirOhvpoQHjBxOvxKV0oIX5uldpbDkacPWLSiLx+gGR4fo
-         fSFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xCv5ZFaf8lE9/RCZn/mnFHKDQpvJJAzq648WOUNKZXI=;
-        b=W8lPJmtKmj8iZPiF0GrRxZ6NMNZfL3i3Ads2LUuwF66w05PZo4UXQ+eO6nCL28uyGn
-         mKO5JY1Ejl3uLoPU4iBOFLIB0NsIgAiimvswrHW52aKkET64/DoeHuX6e+fRwZV3n0yQ
-         UxSlNFBEe6DD1nDSa4naaCwnVpskkax02vScQFjiL4u9IEeiSZPG4mbcEUeJGCTc2RWw
-         4uW5uSvyt1CP25ZqnIR1KRjx5A2hgzxItIXihL5rJM0zc96GeGf+gUoZ3EJnH+x5f09o
-         9e50LMOON9L8qnR8tzgQcnvXp1h3cBaEQ9hT1U7NQSRelk022QSJQvyqUjNGxeeLJO7a
-         6Exg==
-X-Gm-Message-State: AJIora+xmoQkajuhEbMpa4mCeJa6xkriuiXpx5SP5hcNKWEkXISls3bO
-        uf3CxJDFGQdwSLxDxTJtzjTngOIu8WjUbWUo11Y=
-X-Google-Smtp-Source: AGRyM1vUpaYmfj3lsw1euFr0QccAb41puW7mGJoFiawl2lyvmjfbIq2tygHMXkGTYV2RawH9eMUSaGL15etZ4C6O6bE=
-X-Received: by 2002:a17:906:649b:b0:711:fde7:be43 with SMTP id
- e27-20020a170906649b00b00711fde7be43mr12454129ejm.294.1655530272557; Fri, 17
- Jun 2022 22:31:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220614084930.43276-1-nashuiliang@gmail.com> <62ad50fa9d42d_24b34208d6@john.notmuch>
-In-Reply-To: <62ad50fa9d42d_24b34208d6@john.notmuch>
-From:   chuang <nashuiliang@gmail.com>
-Date:   Sat, 18 Jun 2022 13:31:01 +0800
-Message-ID: <CACueBy7NqRszA3tCOvLhfi1OraUrL_GD9YZ9XOPNHzbR1=+z7g@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: Remove kprobe_event on failed kprobe_open_legacy
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Jingren Zhou <zhoujingren@didiglobal.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229505AbiFRKQO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 18 Jun 2022 06:16:14 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF22F2870C;
+        Sat, 18 Jun 2022 03:16:12 -0700 (PDT)
+Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4LQBYY6nCCzBrjR;
+        Sat, 18 Jun 2022 18:12:49 +0800 (CST)
+Received: from dggpeml500011.china.huawei.com (7.185.36.84) by
+ kwepemi500008.china.huawei.com (7.221.188.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Sat, 18 Jun 2022 18:16:10 +0800
+Received: from dggpeml500011.china.huawei.com ([7.185.36.84]) by
+ dggpeml500011.china.huawei.com ([7.185.36.84]) with mapi id 15.01.2375.024;
+ Sat, 18 Jun 2022 18:16:10 +0800
+From:   "zhudi (E)" <zhudi2@huawei.com>
+To:     Eric Dumazet <edumazet@google.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Yonghong Song <yhs@fb.com>, David Miller <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "Chenxiang (EulerOS)" <rose.chen@huawei.com>,
+        "syzbot+7a12909485b94426aceb@syzkaller.appspotmail.com" 
+        <syzbot+7a12909485b94426aceb@syzkaller.appspotmail.com>
+Subject: Re: [PATCH] bpf: Don't redirect packets with pkt_len 0
+Thread-Topic: [PATCH] bpf: Don't redirect packets with pkt_len 0
+Thread-Index: AdiCIxVtWh2F13e8R+GdQJ4vMdgHbA==
+Date:   Sat, 18 Jun 2022 10:16:10 +0000
+Message-ID: <a7c3605fa1ee4b899175fbdc36fe2799@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.136.114.155]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi John,
-
-On Sat, Jun 18, 2022 at 12:13 PM John Fastabend
-<john.fastabend@gmail.com> wrote:
->
-> Chuang W wrote:
-> > In a scenario where livepatch and aggrprobe coexist, the creating
-> > kprobe_event using tracefs API will succeed, a trace event (e.g.
-> > /debugfs/tracing/events/kprobe/XX) will exist, but perf_event_open()
-> > will return an error.
->
-> This seems a bit strange from API side. I'm not really familiar with
-> livepatch, but I guess this is UAPI now so fixing add_kprobe_event_legacy
-> to fail is not an option?
->
-
-The legacy kprobe API (i.e. tracefs API) has two steps:
-
-1) register_kprobe
-$ echo 'p:mykprobe XXX' > /sys/kernel/debug/tracing/kprobe_events
-This will create a trace event of mykprobe and register a disable
-kprobe that waits to be activated.
-
-2) enable_kprobe
-2.1) using syscall perf_event_open
-as the following code, perf_event_kprobe_open_legacy (file:
-tools/lib/bpf/libbpf.c):
----
-attr.type = PERF_TYPE_TRACEPOINT;
-pfd = syscall(__NR_perf_event_open, &attr,
-              pid < 0 ? -1 : pid, /* pid */
-              pid == -1 ? 0 : -1, /* cpu */
-              -1 /* group_fd */,  PERF_FLAG_FD_CLOEXEC);
----
-In the implementation code of perf_event_open, enable_kprobe() will be executed.
-2.2) using shell
-$ echo 1 > /sys/kernel/debug/tracing/events/kprobes/mykprobe/enable
-As with perf_event_open, enable_kprobe() will also be executed.
-
-When using the same function XXX, kprobe and livepatch cannot coexist,
-that is, step 2) will return an error (ref: arm_kprobe_ftrace()),
-however, step 1) is ok!
-However, the new kprobe API (i.e. perf kprobe API) aggregates
-register_kprobe and enable_kprobe, internally fixes the issue on
-failed enable_kprobe.
-But above all, for the legacy kprobe API, I think it should remove
-kprobe_event on failed add_kprobe_event_legacy() in
-perf_event_kprobe_open_legacy (file: tools/lib/bpf/libbpf.c).
+PiBPbiBGcmksIEp1biAxNywgMjAyMiBhdCA5OjE5IEFNIERpIFpodSA8emh1ZGkyQGh1YXdlaS5j
+b20+IHdyb3RlOg0KPiA+DQo+ID4gU3l6Ym90IGZvdW5kIGFuIGlzc3VlIFsxXTogZnFfY29kZWxf
+ZHJvcCgpIHRyeSB0byBkcm9wIGEgZmxvdyB3aGl0b3V0IGFueQ0KPiA+IHNrYnMsIHRoYXQgaXMs
+IHRoZSBmbG93LT5oZWFkIGlzIG51bGwuDQo+ID4gVGhlIHJvb3QgY2F1c2UsIGFzIHRoZSBbMl0g
+c2F5cywgaXMgYmVjYXVzZSB0aGF0IGJwZl9wcm9nX3Rlc3RfcnVuX3NrYigpDQo+ID4gcnVuIGEg
+YnBmIHByb2cgd2hpY2ggcmVkaXJlY3RzIGVtcHR5IHNrYnMuDQo+ID4gU28gd2Ugc2hvdWxkIGRl
+dGVybWluZSB3aGV0aGVyIHRoZSBsZW5ndGggb2YgdGhlIHBhY2tldCBtb2RpZmllZCBieSBicGYN
+Cj4gPiBwcm9nIG9yIG90aGVycyBsaWtlIGJwZl9wcm9nX3Rlc3QgaXMgMCBiZWZvcmUgZm9yd2Fy
+ZGluZyBpdCBkaXJlY3RseS4NCj4gPg0KPiA+IExJTks6IFsxXQ0KPiBodHRwczovL3N5emthbGxl
+ci5hcHBzcG90LmNvbS9idWc/aWQ9MGI4NGRhODBjMjkxNzc1NzkxNWFmYTg5Zjc3MzhhOWQxNmUN
+Cj4gYzk2YzUNCj4gPiBMSU5LOiBbMl0gaHR0cHM6Ly93d3cuc3Bpbmljcy5uZXQvbGlzdHMvbmV0
+ZGV2L21zZzc3NzUwMy5odG1sDQo+ID4NCj4gPiBSZXBvcnRlZC1ieTogc3l6Ym90KzdhMTI5MDk0
+ODViOTQ0MjZhY2ViQHN5emthbGxlci5hcHBzcG90bWFpbC5jb20NCj4gPiBTaWduZWQtb2ZmLWJ5
+OiBEaSBaaHUgPHpodWRpMkBodWF3ZWkuY29tPg0KPiA+IC0tLQ0KPiA+ICBuZXQvY29yZS9maWx0
+ZXIuYyB8IDMgKysrDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMoKykNCj4gPg0K
+PiA+IGRpZmYgLS1naXQgYS9uZXQvY29yZS9maWx0ZXIuYyBiL25ldC9jb3JlL2ZpbHRlci5jDQo+
+ID4gaW5kZXggNWFmNThlYjQ4NTg3Li5jN2ZiZmE5MDg5OGEgMTAwNjQ0DQo+ID4gLS0tIGEvbmV0
+L2NvcmUvZmlsdGVyLmMNCj4gPiArKysgYi9uZXQvY29yZS9maWx0ZXIuYw0KPiA+IEBAIC0yMTU2
+LDYgKzIxNTYsOSBAQCBzdGF0aWMgaW50IF9fYnBmX3JlZGlyZWN0X2NvbW1vbihzdHJ1Y3Qgc2tf
+YnVmZg0KPiAqc2tiLCBzdHJ1Y3QgbmV0X2RldmljZSAqZGV2LA0KPiA+ICBzdGF0aWMgaW50IF9f
+YnBmX3JlZGlyZWN0KHN0cnVjdCBza19idWZmICpza2IsIHN0cnVjdCBuZXRfZGV2aWNlICpkZXYs
+DQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICB1MzIgZmxhZ3MpDQo+ID4gIHsNCj4gPiAr
+ICAgICAgIGlmICh1bmxpa2VseShza2ItPmxlbiA9PSAwKSkNCj4gPiArICAgICAgICAgICAgICAg
+cmV0dXJuIC1FSU5WQUw7DQo+ID4gKw0KPiANCj4gWW91IGZvY3VzIGFnYWluIG9uIGZxX2NvZGVs
+LCBidXQgd2UgaGF2ZSBhIG1vcmUgZ2VuZXJpYyBpc3N1ZSBhdCBoYW5kLg0KPiANCj4gSSBzYWlk
+IHRoYXQgbW9zdCBkcml2ZXJzIHdpbGwgYXNzdW1lIHBhY2tldHMgYXJlIEV0aGVybmV0IG9uZXMs
+IGhhdmluZw0KPiBhdCBsZWFzdCBhbiBFdGhlcm5ldCBoZWFkZXIgaW4gdGhlbS4NCg0KSSBvbmx5
+IGZvY3VzZWQgb24gdGhpcyBwYXJ0aWN1bGFyIHRlc3QgY2FzZS4uLg0KdGhlIHN1Ym1pc3Npb24g
+aW5mb3JtYXRpb24gc2hvdWxkIGJlIG1vZGlmaWVkIHRvIGRlc2NyaWJlIGEgZ2VuZXJhbCBwcm9i
+bGVtLg0KIA0KPiBBbHNvIHJldHVybmluZyAtRUlOVkFMIHdpbGwgbGVhayB0aGUgc2tiIDovDQoN
+Clllcy4uLiANCg0KPiANCj4gSSB0aGluayBhIGJldHRlciBmaXggd291bGQgYmUgdG8gbWFrZSBz
+dXJlIHRoZSBza2IgY2FycmllcyBhbiBleHBlY3RlZA0KPiBwYWNrZXQgbGVuZ3RoLA0KPiBhbmQg
+dGhpcyBwcm9iYWJseSBkaWZmZXJzIGluIF9fYnBmX3JlZGlyZWN0X2NvbW1vbigpIGFuZA0KPiBf
+X2JwZl9yZWRpcmVjdF9ub19tYWMoKSA/DQoNCkRvZXMgdGhlIG5vIG1hYyBkZXZpY2UgbmVlZCB0
+byBjaGVjayB0aGUgbGVuZ3RoIG9mIHRoZSBwYWNrYWdlPw0KDQo+IEN1cnJlbnQgdGVzdCBpbiBf
+X2JwZl9yZWRpcmVjdF9jb21tb24oKSBzZWVtcyBub3QgZ29vZCBlbm91Z2guDQo+IA0KPiArICAg
+ICAgIC8qIFZlcmlmeSB0aGF0IGEgbGluayBsYXllciBoZWFkZXIgaXMgY2FycmllZCAqLw0KPiAr
+ICAgICAgIGlmICh1bmxpa2VseShza2ItPm1hY19oZWFkZXIgPj0gc2tiLT5uZXR3b3JrX2hlYWRl
+cikpIHsNCj4gKyAgICAgICAgICAgICAgIGtmcmVlX3NrYihza2IpOw0KPiArICAgICAgICAgICAg
+ICAgcmV0dXJuIC1FUkFOR0U7DQo+ICsgICAgICAgfQ0KPiArDQo+IA0KPiBJdCBzaG91bGQgY2hl
+Y2sgdGhhdCB0aGUgbGluayBsYXllciBoZWFkZXIgc2l6ZSBpcyA+PSBkZXYtPm1pbl9oZWFkZXJf
+bGVuDQoNCkl0IGlzIG9ubHkgdmFsaWQgZm9yIGRldmljZSB3aXRoIG1hYyBoZWFkZXIuIHN1Y2gg
+YXMgaXAgdHVubmVsIGRldmljZSwgZGV2LT5taW5faGVhZGVyX2xlbg0KaGFzIG5vdCBzZXQuDQoN
+Cj4gDQo+IA0KPiA+ICAgICAgICAgaWYgKGRldl9pc19tYWNfaGVhZGVyX3htaXQoZGV2KSkNCj4g
+PiAgICAgICAgICAgICAgICAgcmV0dXJuIF9fYnBmX3JlZGlyZWN0X2NvbW1vbihza2IsIGRldiwg
+ZmxhZ3MpOw0KPiA+ICAgICAgICAgZWxzZQ0KPiA+IC0tDQo+ID4gMi4yNy4wDQo+ID4NCg==
