@@ -2,64 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 514A9550230
-	for <lists+bpf@lfdr.de>; Sat, 18 Jun 2022 04:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE3355029E
+	for <lists+bpf@lfdr.de>; Sat, 18 Jun 2022 06:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231438AbiFRC41 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Jun 2022 22:56:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33110 "EHLO
+        id S230057AbiFREN4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 18 Jun 2022 00:13:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229767AbiFRC41 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Jun 2022 22:56:27 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47DBD6C0DE;
-        Fri, 17 Jun 2022 19:56:26 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id r5so6248046iod.5;
-        Fri, 17 Jun 2022 19:56:26 -0700 (PDT)
+        with ESMTP id S229478AbiFREN4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 18 Jun 2022 00:13:56 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FA3860BB5;
+        Fri, 17 Jun 2022 21:13:55 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id c4so670978ilj.7;
+        Fri, 17 Jun 2022 21:13:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=U3HYhcyZNnttgoB9WEg09gKNhxYsBxK1b2GJ8pko3jo=;
-        b=q3YXVZK1V+ZKf9XoYjL0CJenOHwGlaV2tLHyu0EM0PBKaa9PwQJupJ+b2nH3zTzZcM
-         r+8CDtQV7+QByJOkvpnFRtbRC1DHPhVxtZOhUlJiTz3hvK7M8hTwR58IvfYGg2l2rWv4
-         Uh9CiJ/ViRModq3K0Tkyu6mf360ynZwQgXWARY7lpZdFWxV0Fv/+IAO3fiZgr1llurqR
-         7sevZgpxNQ22l+L5E0Bdw/B2JA2uPm9vny5QuY9MIxsB8d8ayKrzidTfqSUQ5Emj+RHw
-         CsVGJB24QK2bqVtjAZPGmKILWclIjVMgELJNpOz1gS9mqPPAU3ZklOYe4VPyrgJ/pya5
-         fEWw==
+        bh=y+vyOEdq3OiKKyr88imZLMREIzkAehWVmx3urHTS3LY=;
+        b=NRgIlefOqcke0tnkQ43EBWC8BvsQMCmT3cauYKD+OUINd3vZjoLfpBQPZkPMXneRir
+         iyhoMpwkzMvxd+rtXacu6cbc4kQt2zeAsygLQdwpAE2gD4UEhScrK4B2Gmk7/H8H8v36
+         aQSADm54eCHiqnPVbS4K4/VQ9UvbXgK+DzTPQhLKKsQt82aMHWBo0gV93s7IWt1QuRf7
+         APPduv+esD0gK7QcbMKsTdo/K6uKnCxQx+BMDWyhkNHR4DMc69fRfuZWubqaIVgBOX/0
+         Wrp3ZpaTUgEyL5BfB6zNt8C1HQGY55M2YF34ZUtRdju0VqyfMcaZh4gdO9h+OqT/1a4d
+         ZjoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=U3HYhcyZNnttgoB9WEg09gKNhxYsBxK1b2GJ8pko3jo=;
-        b=xdnznTvD8cb6Q7Q/wch1gvtZZy5aVGokTE9mVEf7u7tg0+ovG4V9EOHxk0VSjs37Eu
-         GDkUvhPjKI0g0B6QvtqpPrnZwlxKkdQi5s23wfJggAkJ0BREfFPHmiQPQ/83s8cNpuIr
-         aziixqX/Xh24mUXippYtHZW+9fGn+kh7acYWgIEewgTcgit9YzKs4YU6le+rxEXrlZCQ
-         8Lui/q40be1HSHc/cjuCes2mreRxkcrJZiOZYP7zhp706LQ7a8hBJoGsBYjUvlhx13BF
-         Wu72RQcqh5VjpnjzJMifG4XFn5SCKoHz+603AL5QaQ1YWavPcgZ+JsBcM91mH4SoOFeu
-         K6vQ==
-X-Gm-Message-State: AJIora/M2Eiut8Q0L1LAdqI+uGSqaOXF5tOPILqbsVVsJXmbmFat+6S4
-        WTgC7cbkwPkqFGaQPQdjuUc=
-X-Google-Smtp-Source: AGRyM1tdSUFbHu2XQbPnq8+CMVDe/ehv6Yq1BbOK0I9xHGfK5hSVXgFpALKgmkX1I19EJX9BM76sxg==
-X-Received: by 2002:a05:6602:2b0b:b0:64f:acc1:52c3 with SMTP id p11-20020a0566022b0b00b0064facc152c3mr6452194iov.38.1655520985707;
-        Fri, 17 Jun 2022 19:56:25 -0700 (PDT)
+        bh=y+vyOEdq3OiKKyr88imZLMREIzkAehWVmx3urHTS3LY=;
+        b=n+1t9xJzF4Q8Y+vg1kWLfv5TwnpEEiL93Qn2OLPBdvyEWKYnMw82bJLzgDENR4YmUS
+         4JqANtXUUm7gLMFi75b9NYifgCD/+MRBXLs7CKQFWw9XpjRp9ffGoFqNyqk0CQVES69k
+         o8/f1WGwzKxPwFG0S8E/76aWxY+j4qHYijWXjNMYJMfUUlgWZ3bRiOzWIIECzJHv3oND
+         nLhsObla+/P5T/cr1iQVZ5TWj6hvMdiyMhHmrC8hCe0TWO3YpSiokFQC2q/hQWbEyDMk
+         Ry4294P+U5bpk0TO0pK3T44a0pdwBWQqGz1OlE/iiJYCWnahG+OZXWJPesoyW6AXLpTt
+         ajGA==
+X-Gm-Message-State: AJIora8+i8mGwghYGBU3EaZeFSVRywhKfCde8RRhBSjJ+yoF8d9JZxLR
+        ZCCxDl0btTx2VQs0BI2G+BY=
+X-Google-Smtp-Source: AGRyM1vjWfBtV27HJB5mj92weeZvqAKQEy/lwq28Tn9M4ISBXlArgR6oDZupkcobqYxlCv9lt3IT1w==
+X-Received: by 2002:a05:6e02:20c6:b0:2d8:e62f:349f with SMTP id 6-20020a056e0220c600b002d8e62f349fmr2921107ilq.160.1655525634503;
+        Fri, 17 Jun 2022 21:13:54 -0700 (PDT)
 Received: from localhost ([172.243.153.43])
-        by smtp.gmail.com with ESMTPSA id 10-20020a02110a000000b003316f4b9b26sm2945409jaf.131.2022.06.17.19.56.23
+        by smtp.gmail.com with ESMTPSA id e62-20020a6bb541000000b00669384fcf88sm3505408iof.1.2022.06.17.21.13.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jun 2022 19:56:25 -0700 (PDT)
-Date:   Fri, 17 Jun 2022 19:56:17 -0700
+        Fri, 17 Jun 2022 21:13:54 -0700 (PDT)
+Date:   Fri, 17 Jun 2022 21:13:46 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
-Cc:     netdev@vger.kernel.org, magnus.karlsson@intel.com,
-        bjorn@kernel.org, kuba@kernel.org,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Message-ID: <62ad3ed172224_24b342084d@john.notmuch>
-In-Reply-To: <20220616180609.905015-10-maciej.fijalkowski@intel.com>
-References: <20220616180609.905015-1-maciej.fijalkowski@intel.com>
- <20220616180609.905015-10-maciej.fijalkowski@intel.com>
-Subject: RE: [PATCH v4 bpf-next 09/10] selftests: xsk: rely on pkts_in_flight
- in wait_for_tx_completion()
+To:     Chuang W <nashuiliang@gmail.com>
+Cc:     Chuang W <nashuiliang@gmail.com>,
+        Jingren Zhou <zhoujingren@didiglobal.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <62ad50fa9d42d_24b34208d6@john.notmuch>
+In-Reply-To: <20220614084930.43276-1-nashuiliang@gmail.com>
+References: <20220614084930.43276-1-nashuiliang@gmail.com>
+Subject: RE: [PATCH] libbpf: Remove kprobe_event on failed kprobe_open_legacy
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -74,69 +78,59 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Maciej Fijalkowski wrote:
-> Some of the drivers that implement support for AF_XDP Zero Copy (like
-> ice) can have lazy approach for cleaning Tx descriptors. For ZC, when
-> descriptor is cleaned, it is placed onto AF_XDP completion queue. This
-> means that current implementation of wait_for_tx_completion() in
-> xdpxceiver can get onto infinite loop, as some of the descriptors can
-> never reach CQ.
+Chuang W wrote:
+> In a scenario where livepatch and aggrprobe coexist, the creating
+> kprobe_event using tracefs API will succeed, a trace event (e.g.
+> /debugfs/tracing/events/kprobe/XX) will exist, but perf_event_open()
+> will return an error.
+
+This seems a bit strange from API side. I'm not really familiar with
+livepatch, but I guess this is UAPI now so fixing add_kprobe_event_legacy
+to fail is not an option?
+
 > 
-> This function can be changed to rely on pkts_in_flight instead.
-> 
-> Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> Signed-off-by: Chuang W <nashuiliang@gmail.com>
+> Signed-off-by: Jingren Zhou <zhoujingren@didiglobal.com>
 > ---
-
-Sorry I'm going to need more details to follow whats going on here.
-
-In send_pkts() we do the expected thing and send all the pkts and
-then call wait_for_tx_completion().
-
-Wait for completion is obvious,
-
- static void wait_for_tx_completion(struct xsk_socket_info *xsk)               
- {                                                   
-        while (xsk->outstanding_tx)                                                      
-                complete_pkts(xsk, BATCH_SIZE);
- }  
-
-the 'outstanding_tx' counter appears to be decremented in complete_pkts().
-This is done by looking at xdk_ring_cons__peek() makes sense to me until
-it shows up here we don't know the pkt has been completely sent and
-can release the resources.
-
-Now if you just zero it on exit and call it good how do you know the
-resources are safe to clean up? Or that you don't have a real bug
-in the driver that isn't correctly releasing the resource.
-
-How are users expected to use a lazy approach to tx descriptor cleaning
-in this case e.g. on exit like in this case. It seems we need to
-fix the root cause of ice not putting things on the completion queue
-or I misunderstood the patch.
-
-
->  tools/testing/selftests/bpf/xdpxceiver.c | 3 ++-
->  tools/testing/selftests/bpf/xdpxceiver.h | 2 +-
->  2 files changed, 3 insertions(+), 2 deletions(-)
+>  tools/lib/bpf/libbpf.c | 12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
 > 
-> diff --git a/tools/testing/selftests/bpf/xdpxceiver.c b/tools/testing/selftests/bpf/xdpxceiver.c
-> index de4cf0432243..13a3b2ac2399 100644
-> --- a/tools/testing/selftests/bpf/xdpxceiver.c
-> +++ b/tools/testing/selftests/bpf/xdpxceiver.c
-> @@ -965,7 +965,7 @@ static int __send_pkts(struct ifobject *ifobject, u32 *pkt_nb)
->  
->  static void wait_for_tx_completion(struct xsk_socket_info *xsk)
->  {
-> -	while (xsk->outstanding_tx)
-> +	while (pkts_in_flight)
->  		complete_pkts(xsk, BATCH_SIZE);
->  }
->  
-> @@ -1269,6 +1269,7 @@ static void *worker_testapp_validate_rx(void *arg)
->  		pthread_mutex_unlock(&pacing_mutex);
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 0781fae58a06..d0a36350e22a 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -10809,10 +10809,11 @@ static int perf_event_kprobe_open_legacy(const char *probe_name, bool retprobe,
 >  	}
->  
-> +	pkts_in_flight = 0;
->  	pthread_exit(NULL);
+>  	type = determine_kprobe_perf_type_legacy(probe_name, retprobe);
+>  	if (type < 0) {
+> +		err = type;
+>  		pr_warn("failed to determine legacy kprobe event id for '%s+0x%zx': %s\n",
+>  			kfunc_name, offset,
+> -			libbpf_strerror_r(type, errmsg, sizeof(errmsg)));
+> -		return type;
+> +			libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
+> +		goto clear_kprobe_event;
+>  	}
+>  	attr.size = sizeof(attr);
+>  	attr.config = type;
+> @@ -10826,9 +10827,14 @@ static int perf_event_kprobe_open_legacy(const char *probe_name, bool retprobe,
+>  		err = -errno;
+>  		pr_warn("legacy kprobe perf_event_open() failed: %s\n",
+>  			libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
+> -		return err;
+> +		goto clear_kprobe_event;
+>  	}
+>  	return pfd;
+> +
+> +clear_kprobe_event:
+> +	/* Clear the newly added kprobe_event */
+> +	remove_kprobe_event_legacy(probe_name, retprobe);
+> +	return err;
 >  }
+>  
+>  struct bpf_link *
+> -- 
+> 2.34.1
+> 
+
+
