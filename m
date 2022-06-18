@@ -2,258 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9836F550624
-	for <lists+bpf@lfdr.de>; Sat, 18 Jun 2022 18:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 248145506CE
+	for <lists+bpf@lfdr.de>; Sat, 18 Jun 2022 23:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233953AbiFRQnP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 18 Jun 2022 12:43:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52686 "EHLO
+        id S232227AbiFRVR1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 18 Jun 2022 17:17:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231359AbiFRQnO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 18 Jun 2022 12:43:14 -0400
-Received: from mailrelay.tu-berlin.de (mailrelay.tu-berlin.de [130.149.7.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18AA06454;
-        Sat, 18 Jun 2022 09:43:11 -0700 (PDT)
-Received: from SPMA-04.tubit.win.tu-berlin.de (localhost.localdomain [127.0.0.1])
-        by localhost (Email Security Appliance) with SMTP id C05EB974F53_2AE009CB;
-        Sat, 18 Jun 2022 16:43:08 +0000 (GMT)
-Received: from mail.tu-berlin.de (postcard.tu-berlin.de [141.23.12.142])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "exchange.tu-berlin.de", Issuer "DFN-Verein Global Issuing CA" (verified OK))
-        by SPMA-04.tubit.win.tu-berlin.de (Sophos Email Appliance) with ESMTPS id 019E69787B2_2AE009CF;
-        Sat, 18 Jun 2022 16:43:08 +0000 (GMT)
-Received: from [192.168.178.14] (77.191.21.30) by ex-02.svc.tu-berlin.de
- (10.150.18.6) with Microsoft SMTP Server id 15.2.986.22; Sat, 18 Jun 2022
- 18:43:07 +0200
-Message-ID: <629bc069dd807d7ac646f836e9dca28bbc1108e2.camel@mailbox.tu-berlin.de>
-Subject: Re: [PATCH bpf-next v3 3/5] selftests/bpf: Test a BPF CC writing
- sk_pacing_*
-From:   =?ISO-8859-1?Q?J=F6rn-Thorben?= Hinz <jthinz@mailbox.tu-berlin.de>
-To:     Martin KaFai Lau <kafai@fb.com>
-CC:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, <netdev@vger.kernel.org>
-Date:   Sat, 18 Jun 2022 18:43:06 +0200
-In-Reply-To: <20220617210425.xpeyxd4ahnudxnxb@kafai-mbp>
-References: <20220614104452.3370148-1-jthinz@mailbox.tu-berlin.de>
-         <20220614104452.3370148-4-jthinz@mailbox.tu-berlin.de>
-         <20220617210425.xpeyxd4ahnudxnxb@kafai-mbp>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1 
+        with ESMTP id S232078AbiFRVR0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 18 Jun 2022 17:17:26 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D2626E1;
+        Sat, 18 Jun 2022 14:17:25 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id o8so9782467wro.3;
+        Sat, 18 Jun 2022 14:17:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=F9zHQ5BDlESv+EJld7HTiBi3G93zCJ7miFrzqyCk/Ys=;
+        b=dfQzXNEvZ6jMhwDtZrRIQghsVUkY4XdSbUtJaOIebJgfW4IgNmRiLfaEhzJU4kvSkO
+         sFGsrmX//kn1dE9Bjik5X0Gqj4kkRtbgb909R3uFbLgYislj8kqwg8zHPtQObYDMBaQh
+         tKgbJy+nnhZRmDNFnc4nrztEwpSVWA5XwGknqDulxOnmSGVtZUKIbC3VY4K9kfpGR4Oo
+         hr+44L1/lMe/zAjrL+0z9zQ2OwpHYZez1rtyejk+mvoKuGsr6ik8ly6rJfCv5gF1e085
+         RVJCUbn83HPcmECcolCEoB062RAMl1yHgJ7JReOx/pSx9C+5gn9kW6CyyjdhCsXI/giA
+         CAWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=F9zHQ5BDlESv+EJld7HTiBi3G93zCJ7miFrzqyCk/Ys=;
+        b=Px8v82h76Oau3FQiTQ3H9yRVcVtZv21iOTZB/dP5floUEVLHBHUpyRcqt+gQW5dIVN
+         r+J3KrKXY+gizGnjQEFxwDeO5cc6UtWLL7uClLwtocVByUmuSZmMQRvH/NKw3roJswGM
+         6oWS9MUU9IvET9xuhaUDaHMhmDFWafYAwV//D1x/ALJ0HLlJ3BztAUsLiM3tnpx7PLt/
+         /KEb5jqmaJ8QKf73HEvBeEQkH/LNEdF6EOAK9SlGSTS/HrkmJk0Fx0FlSy6yfoA7Ic0C
+         zvjV0oUa+WAbVG++xnT2N9wGOE/9RDJJQzDuuIRgbOTs5SzGfdso7odGVskLwihpALzh
+         qyEw==
+X-Gm-Message-State: AJIora9Oetw7gZlj40Xq1lCZrv/vA7hidmwrSOY5Eb3Nfv9P/hcOsYAK
+        vKKhqc0wYvF3gJO9JlDiOIvhxyyDH6fQOw==
+X-Google-Smtp-Source: AGRyM1t/JX5RywE/NQdTYsk48Ow61saXwVBAj7MztKbhguVyPqtnjprupf+48GYsrEubjrq1po0PwQ==
+X-Received: by 2002:adf:e648:0:b0:210:bac2:c6cf with SMTP id b8-20020adfe648000000b00210bac2c6cfmr15201246wrn.310.1655587043663;
+        Sat, 18 Jun 2022 14:17:23 -0700 (PDT)
+Received: from krava (94.113.247.30.static.b2b.upcbusiness.cz. [94.113.247.30])
+        by smtp.gmail.com with ESMTPSA id n5-20020a05600c4f8500b0039c18d3fe27sm9921639wmq.19.2022.06.18.14.17.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Jun 2022 14:17:23 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Sat, 18 Jun 2022 23:17:20 +0200
+To:     chuang <nashuiliang@gmail.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Jingren Zhou <zhoujingren@didiglobal.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [PATCH] libbpf: Remove kprobe_event on failed kprobe_open_legacy
+Message-ID: <Yq5A4Cln4qeTaAeM@krava>
+References: <20220614084930.43276-1-nashuiliang@gmail.com>
+ <62ad50fa9d42d_24b34208d6@john.notmuch>
+ <CACueBy7NqRszA3tCOvLhfi1OraUrL_GD9YZ9XOPNHzbR1=+z7g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SASI-RCODE: 200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=campus.tu-berlin.de; h=message-id:subject:from:to:cc:date:in-reply-to:references:content-type:mime-version:content-transfer-encoding; s=dkim-tub; bh=6Rtoe1X8vqsaXMzSQejEJx5OSjXs4Fw7+IacNXVLR28=; b=ZjOTED6Nhz23r4NtHMldFmLuTZ2AnCeWrlpsWrLiYxbCd0mTL42IrEmW08i+59jhjyo+z9ls9R13Unn6O6exdS6j9Z/lFNq/mT20KP7KN2O/EaSgWDEZj1timBpRc1De6J3H+BULrg9xBzgszYp+klRnQeDvILrMd+LehSIu5S0=
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACueBy7NqRszA3tCOvLhfi1OraUrL_GD9YZ9XOPNHzbR1=+z7g@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 2022-06-17 at 14:04 -0700, Martin KaFai Lau wrote:
-> On Tue, Jun 14, 2022 at 12:44:50PM +0200, Jörn-Thorben Hinz wrote:
-> > Test whether a TCP CC implemented in BPF is allowed to write
-> > sk_pacing_rate and sk_pacing_status in struct sock. This is needed
-> > when
-> > cong_control() is implemented and used.
-> > 
-> > Signed-off-by: Jörn-Thorben Hinz <jthinz@mailbox.tu-berlin.de>
-> > ---
-> >  .../selftests/bpf/prog_tests/bpf_tcp_ca.c     | 21 +++++++
-> >  .../bpf/progs/tcp_ca_write_sk_pacing.c        | 60
-> > +++++++++++++++++++
-> >  2 files changed, 81 insertions(+)
-> >  create mode 100644
-> > tools/testing/selftests/bpf/progs/tcp_ca_write_sk_pacing.c
-> > 
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-> > b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-> > index e9a9a31b2ffe..a797497e2864 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-> > @@ -9,6 +9,7 @@
-> >  #include "bpf_cubic.skel.h"
-> >  #include "bpf_tcp_nogpl.skel.h"
-> >  #include "bpf_dctcp_release.skel.h"
-> > +#include "tcp_ca_write_sk_pacing.skel.h"
-> >  
-> >  #ifndef ENOTSUPP
-> >  #define ENOTSUPP 524
-> > @@ -322,6 +323,24 @@ static void test_rel_setsockopt(void)
-> >         bpf_dctcp_release__destroy(rel_skel);
-> >  }
-> >  
-> > +static void test_write_sk_pacing(void)
-> > +{
-> > +       struct tcp_ca_write_sk_pacing *skel;
-> > +       struct bpf_link *link;
-> > +
-> > +       skel = tcp_ca_write_sk_pacing__open_and_load();
-> > +       if (!ASSERT_OK_PTR(skel, "open_and_load")) {
-> nit. Remove this single line '{'.
+On Sat, Jun 18, 2022 at 01:31:01PM +0800, chuang wrote:
+> Hi John,
 > 
-> ./scripts/checkpatch.pl has reported that also:
-> WARNING: braces {} are not necessary for single statement blocks
-> #43: FILE: tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c:332:
-> +       if (!ASSERT_OK_PTR(skel, "open_and_load")) {
-> +               return;
-> +       }
-Have to admit I knowingly disregarded that warning as more of a
-recommendation. Out of habit and since I personally don’t see any
-compelling reason to generally use single-line statements after ifs,
-only multiple disadvantages.
-
-But wrong place to argue here, of course. Will bow to the warning.
-
+> On Sat, Jun 18, 2022 at 12:13 PM John Fastabend
+> <john.fastabend@gmail.com> wrote:
+> >
+> > Chuang W wrote:
+> > > In a scenario where livepatch and aggrprobe coexist, the creating
+> > > kprobe_event using tracefs API will succeed, a trace event (e.g.
+> > > /debugfs/tracing/events/kprobe/XX) will exist, but perf_event_open()
+> > > will return an error.
+> >
+> > This seems a bit strange from API side. I'm not really familiar with
+> > livepatch, but I guess this is UAPI now so fixing add_kprobe_event_legacy
+> > to fail is not an option?
+> >
 > 
+> The legacy kprobe API (i.e. tracefs API) has two steps:
 > 
-> > +               return;
-> > +       }
-> > +
-> > +       link = bpf_map__attach_struct_ops(skel-
-> > >maps.write_sk_pacing);
-> > +       if (ASSERT_OK_PTR(link, "attach_struct_ops")) {
-> Same here.
+> 1) register_kprobe
+> $ echo 'p:mykprobe XXX' > /sys/kernel/debug/tracing/kprobe_events
+> This will create a trace event of mykprobe and register a disable
+> kprobe that waits to be activated.
 > 
-> and no need to check the link before bpf_link__destroy.
-> bpf_link__destroy can handle error link.  Something like:
+> 2) enable_kprobe
+> 2.1) using syscall perf_event_open
+> as the following code, perf_event_kprobe_open_legacy (file:
+> tools/lib/bpf/libbpf.c):
+> ---
+> attr.type = PERF_TYPE_TRACEPOINT;
+> pfd = syscall(__NR_perf_event_open, &attr,
+>               pid < 0 ? -1 : pid, /* pid */
+>               pid == -1 ? 0 : -1, /* cpu */
+>               -1 /* group_fd */,  PERF_FLAG_FD_CLOEXEC);
+> ---
+> In the implementation code of perf_event_open, enable_kprobe() will be executed.
+> 2.2) using shell
+> $ echo 1 > /sys/kernel/debug/tracing/events/kprobes/mykprobe/enable
+> As with perf_event_open, enable_kprobe() will also be executed.
 > 
->         ASSERT_OK_PTR(link, "attach_struct_ops");
->         bpf_link__destroy(link);
->         tcp_ca_write_sk_pacing__destroy(skel);
-> 
-> The earlier examples in test_cubic and test_dctcp were
-> written before bpf_link__destroy can handle error link.
-You are right, I followed the other two test_*() functions there. Good
-to know that it behaves similar to (k)free() and others. Will remove
-the ifs around bpf_link__destroy().
+> When using the same function XXX, kprobe and livepatch cannot coexist,
+> that is, step 2) will return an error (ref: arm_kprobe_ftrace()),
 
-> 
-> > +               bpf_link__destroy(link);
-> > +       }
-> > +
-> > +       tcp_ca_write_sk_pacing__destroy(skel);
-> > +}
-> > +
-> >  void test_bpf_tcp_ca(void)
-> >  {
-> >         if (test__start_subtest("dctcp"))
-> > @@ -334,4 +353,6 @@ void test_bpf_tcp_ca(void)
-> >                 test_dctcp_fallback();
-> >         if (test__start_subtest("rel_setsockopt"))
-> >                 test_rel_setsockopt();
-> > +       if (test__start_subtest("write_sk_pacing"))
-> > +               test_write_sk_pacing();
-> >  }
-> > diff --git
-> > a/tools/testing/selftests/bpf/progs/tcp_ca_write_sk_pacing.c
-> > b/tools/testing/selftests/bpf/progs/tcp_ca_write_sk_pacing.c
-> > new file mode 100644
-> > index 000000000000..43447704cf0e
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/tcp_ca_write_sk_pacing.c
-> > @@ -0,0 +1,60 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +
-> > +#include "vmlinux.h"
-> > +
-> > +#include <bpf/bpf_helpers.h>
-> > +#include <bpf/bpf_tracing.h>
-> > +
-> > +char _license[] SEC("license") = "GPL";
-> > +
-> > +#define USEC_PER_SEC 1000000UL
-> > +
-> > +#define min(a, b) ((a) < (b) ? (a) : (b))
-> > +
-> > +static inline struct tcp_sock *tcp_sk(const struct sock *sk)
-> > +{
-> This helper is already available in bpf_tcp_helpers.h.
-> Is there a reason not to use that one and redefine
-> it in both patch 3 and 4?  The mss_cache and srtt_us can be added
-> to bpf_tcp_helpers.h.  It will need another effort to move
-> all selftest's bpf-cc to vmlinux.h.
-I fully agree it’s not elegant to redefine tcp_sk() twice more.
+just curious.. is that because of ipmodify flag on ftrace_ops?
+AFAICS that be a poblem just for kretprobes, cc-ing Masami
 
-It was between either using bpf_tcp_helpers.h and adding and
-maintaining additional struct members there. Or using the (as I
-understood it) more “modern” approach with vmlinux.h and redefining the
-trivial tcp_sk(). I chose the later. Didn’t see a reason not to slowly
-introduce vmlinux.h into the CA tests.
-
-I had the same dilemma for the algorithm I’m implementing: Reuse
-bpf_tcp_helpers.h from the kernel tree and extend it. Or use vmlinux.h
-and copy only some of the (mostly trivial) helper functions. Also chose
-the later here.
-
-While doing the above, I also considered extracting the type
-declarations from bpf_tcp_helpers.h into an, e.g.,
-bpf_tcp_types_helper.h, keeping only the functions in
-bpf_tcp_helpers.h. bpf_tcp_helpers.h could have been a base helper for
-any BPF CA implementation then and used with either vmlinux.h or the
-“old-school” includes. Similar to the way bpf_helpers.h is used. But at
-that point, a bpf_tcp_types_helper.h could have probably just been
-dropped for good and in favor of vmlinux.h. So I didn’t continue with
-that.
-
-Do you insist to use bpf_tcp_helpers.h instead of vmlinux.h? Or could
-the described split into two headers make sense after all?
-
-(Will wait for your reply here before sending a v4.)
-
-> 
-> > +       return (struct tcp_sock *)sk;
-> > +}
-> > +
-> > +SEC("struct_ops/write_sk_pacing_init")
-> > +void BPF_PROG(write_sk_pacing_init, struct sock *sk)
-> > +{
-> > +#ifdef ENABLE_ATOMICS_TESTS
-> > +       __sync_bool_compare_and_swap(&sk->sk_pacing_status,
-> > SK_PACING_NONE,
-> > +                                    SK_PACING_NEEDED);
-> > +#else
-> > +       sk->sk_pacing_status = SK_PACING_NEEDED;
-> > +#endif
-> > +}
-> > +
-> > +SEC("struct_ops/write_sk_pacing_cong_control")
-> > +void BPF_PROG(write_sk_pacing_cong_control, struct sock *sk,
-> > +             const struct rate_sample *rs)
-> > +{
-> > +       const struct tcp_sock *tp = tcp_sk(sk);
-> > +       unsigned long rate =
-> > +               ((tp->snd_cwnd * tp->mss_cache * USEC_PER_SEC) <<
-> > 3) /
-> > +               (tp->srtt_us ?: 1U << 3);
-> > +       sk->sk_pacing_rate = min(rate, sk->sk_max_pacing_rate);
-> > +}
-> > +
-> > +SEC("struct_ops/write_sk_pacing_ssthresh")
-> > +__u32 BPF_PROG(write_sk_pacing_ssthresh, struct sock *sk)
-> > +{
-> > +       return tcp_sk(sk)->snd_ssthresh;
-> > +}
-> > +
-> > +SEC("struct_ops/write_sk_pacing_undo_cwnd")
-> > +__u32 BPF_PROG(write_sk_pacing_undo_cwnd, struct sock *sk)
-> > +{
-> > +       return tcp_sk(sk)->snd_cwnd;
-> > +}
-> > +
-> > +SEC(".struct_ops")
-> > +struct tcp_congestion_ops write_sk_pacing = {
-> > +       .init = (void *)write_sk_pacing_init,
-> > +       .cong_control = (void *)write_sk_pacing_cong_control,
-> > +       .ssthresh = (void *)write_sk_pacing_ssthresh,
-> > +       .undo_cwnd = (void *)write_sk_pacing_undo_cwnd,
-> > +       .name = "bpf_w_sk_pacing",
-> > +};
-> > -- 
-> > 2.30.2
-> > 
+thanks,
+jirka
 
 
+> however, step 1) is ok!
+> However, the new kprobe API (i.e. perf kprobe API) aggregates
+> register_kprobe and enable_kprobe, internally fixes the issue on
+> failed enable_kprobe.
+> But above all, for the legacy kprobe API, I think it should remove
+> kprobe_event on failed add_kprobe_event_legacy() in
+> perf_event_kprobe_open_legacy (file: tools/lib/bpf/libbpf.c).
