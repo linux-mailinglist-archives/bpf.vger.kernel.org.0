@@ -2,63 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1FDF5501D2
-	for <lists+bpf@lfdr.de>; Sat, 18 Jun 2022 04:01:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA555501E2
+	for <lists+bpf@lfdr.de>; Sat, 18 Jun 2022 04:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238105AbiFRCBt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Jun 2022 22:01:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51350 "EHLO
+        id S1383833AbiFRCML (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Jun 2022 22:12:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230301AbiFRCBt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Jun 2022 22:01:49 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4A536B7DC;
-        Fri, 17 Jun 2022 19:01:48 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id i16so6176740ioa.6;
-        Fri, 17 Jun 2022 19:01:48 -0700 (PDT)
+        with ESMTP id S230301AbiFRCMJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Jun 2022 22:12:09 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 869AC6AA40;
+        Fri, 17 Jun 2022 19:12:08 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id p1so4061926ilj.9;
+        Fri, 17 Jun 2022 19:12:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=73MEOrbzE3ax8V04SP0mBcUvOAjpQzCDavp7u+MsS1A=;
-        b=PjmM+Ah6v7ckzA7L/loqODl5JGBhLe5T6ueGPbcwG8n1W7ySnxPu5ZXcsDGhDzI9PT
-         Z/jPtA8ypT+4OVHTojh2fDB0vMJLQ9PgjQkl95jWeNZx5tXl9MvN5xMgD/ul0sF96BkN
-         2o5lzah/BYXNvVKOz/twEODCmw7cGt1dpd96KUfDwxcyZtdtpIJcsmTfjwSVtQrts0Ht
-         juQUIINwRRsqgTcNnpWTJsYS6HyEcPAJQPeEBp5xf2t/3+0kvBO9kwDHz3MPvYXM7u20
-         XIg3jcWFQUSzBEOqlMd8CNJ/WE6Yn3oZBVHkeDlzPrWz4na6OweLtYpJgTkYBsfXSpH6
-         ho0w==
+        bh=r/6+/AHt+HZI8YUEqtv8kZ1LRpMZA4bMPoqnri1dvzY=;
+        b=Z2ECTprNLG5NvgN85/BYWE77BKlJc+32WCVomvgYXUmA6x0u2vBGBQx8TwHfmEGN+d
+         DBx+uv6XDlzrV8/naTM5V/1ouQz84rBVkSvjYhUbSXx/7V8in8q6ueRn/FDsOeyjmRhv
+         2lsgmS28h0s5m6vXh/6LoztD50LZMwq+UGjisKTJeo/9QcZCnuJ1TlyeTdlYwGKTyHxA
+         cvWC+xTt89th7+M8qw+vfoZa/BzWJAEcxJRfQWYL6x7xycI7vwYFBfyDCWXSCfHTX68w
+         nMeh6W8a8JZIWguaK25AkqjJNItG4YJEH7MfBeqT3u5ySH//ZrObgCqytGT3UpaDZrQH
+         ZNKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=73MEOrbzE3ax8V04SP0mBcUvOAjpQzCDavp7u+MsS1A=;
-        b=K79ruohAimYg04RoGpm46tUAhGAZNheRhYS3zctx/NDp1ORKXPaxcfG168zkImuV9g
-         AwffI+VAzp56sq6x2Ev/1GcNjSesmXeM3o/xOul4uA77b35juEnhK42UF6nWHL/GSwsO
-         Mji4ayVKbqf5tJIInm4aLoP846z5tSkZcn0RCRMFoYHxjMa5okWtc2WaB9ISOsWSPbAy
-         SU8YbzQXak+fOtnpQL5Iz9VLpeZNJOOQrYRi8YpAYKgOeUPxFq/ZbUc+ebErXuZOJwJ3
-         w8en5/Kx+gl5dcvUoi9JpS0Fv1tne6tY5ZYM7HR/u2JJO+ZUGuzd1kGzuYCT21Ibt44b
-         SuEg==
-X-Gm-Message-State: AJIora+s+AiBnPmxJMSw7DViDmh4wUAq7uHJQ1fw91sbPagizTBQ76i/
-        lqk5BFUATKahQL4IPceW/Q8=
-X-Google-Smtp-Source: AGRyM1shytZfDTlraWsBl8stKabWGKteLo9OYpnpKHWpEucZBBT7DV3fr9EfrqvIy0zlW0vBmkR03Q==
-X-Received: by 2002:a5d:9748:0:b0:669:4785:75bd with SMTP id c8-20020a5d9748000000b00669478575bdmr6516037ioo.93.1655517708234;
-        Fri, 17 Jun 2022 19:01:48 -0700 (PDT)
+        bh=r/6+/AHt+HZI8YUEqtv8kZ1LRpMZA4bMPoqnri1dvzY=;
+        b=yL5D8RYco9QazG/chzcSXdsjsGElDQuEXVKSmDCPEe9jJJ1trWoyt+c5Apa2hF6xDH
+         H+wOK6eYj1Xiz+MLISrDGwIzkLfr9S2BCovEdMqGY9xdVIptqQwJFu7hiT4N0rjBMLbI
+         Xg5XBJmvqQvP2FNeH9M7GGtxUV+jMCSRBUVRLOUd72Lv/b+QnckcfbcAo3mmWEl5zGzJ
+         pAVtp5muDXYIhTg0y9AM0LMubYSxPZlPOrTs+AyNgeruWL1flJQrkT0FCG3sTRJJoNul
+         4Ez2azBfQrN0T552vZuhur7BYGnlOEHZddLLY16wOIA0GkXzH+8iSWtYkVmuFascuYMT
+         ZDRQ==
+X-Gm-Message-State: AJIora8C7GCibZBw9p1LDSwq7z9dCt2nFwHniMm+uNFxsl7am2+DBKTr
+        sXfzhc5mZI3iSvvbtST/xj8e8dHSiyZmcw==
+X-Google-Smtp-Source: AGRyM1vhOUOJCsI4d1Q3YnauEoFscZEjo0dwBCyxHUR81QIg3Z9Q+JaQGCiGEv6eBemFWJdwql9KwA==
+X-Received: by 2002:a05:6e02:19cc:b0:2d3:e20f:4959 with SMTP id r12-20020a056e0219cc00b002d3e20f4959mr7566784ill.40.1655518327802;
+        Fri, 17 Jun 2022 19:12:07 -0700 (PDT)
 Received: from localhost ([172.243.153.43])
-        by smtp.gmail.com with ESMTPSA id t5-20020a056e02060500b002d8f2385d56sm612637ils.63.2022.06.17.19.01.47
+        by smtp.gmail.com with ESMTPSA id v3-20020a922e03000000b002d8f50441absm419156ile.10.2022.06.17.19.12.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jun 2022 19:01:47 -0700 (PDT)
-Date:   Fri, 17 Jun 2022 19:01:40 -0700
+        Fri, 17 Jun 2022 19:12:07 -0700 (PDT)
+Date:   Fri, 17 Jun 2022 19:12:00 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
 To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
         bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
 Cc:     netdev@vger.kernel.org, magnus.karlsson@intel.com,
         bjorn@kernel.org, kuba@kernel.org,
         Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Message-ID: <62ad3204b355b_24b3420897@john.notmuch>
-In-Reply-To: <20220616180609.905015-5-maciej.fijalkowski@intel.com>
+Message-ID: <62ad3470573f9_24b342082e@john.notmuch>
+In-Reply-To: <20220616180609.905015-6-maciej.fijalkowski@intel.com>
 References: <20220616180609.905015-1-maciej.fijalkowski@intel.com>
- <20220616180609.905015-5-maciej.fijalkowski@intel.com>
-Subject: RE: [PATCH v4 bpf-next 04/10] ice: do not setup vlan for loopback VSI
+ <20220616180609.905015-6-maciej.fijalkowski@intel.com>
+Subject: RE: [PATCH v4 bpf-next 05/10] selftests: xsk: query for native XDP
+ support
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -74,35 +75,66 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Maciej Fijalkowski wrote:
-> Currently loopback test is failiing due to the error returned from
-> ice_vsi_vlan_setup(). Skip calling it when preparing loopback VSI.
+> Currently, xdpxceiver assumes that underlying device supports XDP in
+> native mode - it is fine by now since tests can run only on a veth pair.
+> Future commit is going to allow running test suite against physical
+> devices, so let us query the device if it is capable of running XDP
+> programs in native mode. This way xdpxceiver will not try to run
+> TEST_MODE_DRV if device being tested is not supporting it.
 > 
+> Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
 > Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-
-These look like fixes unrelated to BPF and probably should go as
-driver fixes into net tree?
-
 > ---
->  drivers/net/ethernet/intel/ice/ice_main.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
+>  tools/testing/selftests/bpf/xdpxceiver.c | 36 ++++++++++++++++++++++--
+>  1 file changed, 34 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
-> index 5bdd515142ec..882f8e280317 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_main.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_main.c
-> @@ -6026,10 +6026,12 @@ int ice_vsi_cfg(struct ice_vsi *vsi)
->  	if (vsi->netdev) {
->  		ice_set_rx_mode(vsi->netdev);
+> diff --git a/tools/testing/selftests/bpf/xdpxceiver.c b/tools/testing/selftests/bpf/xdpxceiver.c
+> index e5992a6b5e09..a1e410f6a5d8 100644
+> --- a/tools/testing/selftests/bpf/xdpxceiver.c
+> +++ b/tools/testing/selftests/bpf/xdpxceiver.c
+> @@ -98,6 +98,8 @@
+>  #include <unistd.h>
+>  #include <stdatomic.h>
+>  #include <bpf/xsk.h>
+> +#include <bpf/bpf.h>
+> +#include <linux/filter.h>
+>  #include "xdpxceiver.h"
+>  #include "../kselftest.h"
 >  
-> -		err = ice_vsi_vlan_setup(vsi);
-> +		if (vsi->type != ICE_VSI_LB) {
-> +			err = ice_vsi_vlan_setup(vsi);
+> @@ -1605,10 +1607,37 @@ static void ifobject_delete(struct ifobject *ifobj)
+>  	free(ifobj);
+>  }
 >  
+> +static bool is_xdp_supported(struct ifobject *ifobject)
+> +{
+> +	int flags = XDP_FLAGS_DRV_MODE;
+> +
+> +	LIBBPF_OPTS(bpf_link_create_opts, opts, .flags = flags);
+> +	struct bpf_insn insns[2] = {
+> +		BPF_MOV64_IMM(BPF_REG_0, XDP_PASS),
+> +		BPF_EXIT_INSN()
+> +	};
+> +	int ifindex = if_nametoindex(ifobject->ifname);
+> +	int prog_fd, insn_cnt = ARRAY_SIZE(insns);
+> +	int err;
+> +
+> +	prog_fd = bpf_prog_load(BPF_PROG_TYPE_XDP, NULL, "GPL", insns, insn_cnt, NULL);
+> +	if (prog_fd < 0)
+> +		return false;
+> +
+> +	err = bpf_xdp_attach(ifindex, prog_fd, flags, NULL);
+> +	if (err)
 
-Extra newline here makes it less readable in my opinion.
+Best not to leave around prog_fd in the error case or in the
+good case.
 
-> -		if (err)
-> -			return err;
-> +			if (err)
-> +				return err;
-> +		}
+> +		return false;
+> +
+> +	bpf_xdp_detach(ifindex, flags, NULL);
+> +
+
+close(prog_fd)
+
+> +	return true;
+> +}
+> +
