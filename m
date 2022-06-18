@@ -2,240 +2,258 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D6855061E
-	for <lists+bpf@lfdr.de>; Sat, 18 Jun 2022 18:31:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9836F550624
+	for <lists+bpf@lfdr.de>; Sat, 18 Jun 2022 18:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231496AbiFRQbp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 18 Jun 2022 12:31:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47054 "EHLO
+        id S233953AbiFRQnP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 18 Jun 2022 12:43:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231359AbiFRQbo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 18 Jun 2022 12:31:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F089C12767;
-        Sat, 18 Jun 2022 09:31:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        with ESMTP id S231359AbiFRQnO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 18 Jun 2022 12:43:14 -0400
+Received: from mailrelay.tu-berlin.de (mailrelay.tu-berlin.de [130.149.7.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18AA06454;
+        Sat, 18 Jun 2022 09:43:11 -0700 (PDT)
+Received: from SPMA-04.tubit.win.tu-berlin.de (localhost.localdomain [127.0.0.1])
+        by localhost (Email Security Appliance) with SMTP id C05EB974F53_2AE009CB;
+        Sat, 18 Jun 2022 16:43:08 +0000 (GMT)
+Received: from mail.tu-berlin.de (postcard.tu-berlin.de [141.23.12.142])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 87CB160F0C;
-        Sat, 18 Jun 2022 16:31:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE232C3411A;
-        Sat, 18 Jun 2022 16:31:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655569902;
-        bh=26jE2uXz7Qy0ouBoZd/MG6kDUODEbjwsPVOfy5Rn33U=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=X/JL2qcn4Y4ykRH/mIy2DLOvKHGwN1grE8aLIidEdzoENnwp06Lwi6DbRtes/jhOn
-         VNKMV1r+VWgLQlhMHuAI5ohexBKGWZXgdGmVDVsamXSY4CPKAnOV1Lt5UidGC4Mlv9
-         mLMeBD3RdGXagLapbSIFcEsKCvaG4aCRDz+oALKEvSC5tugA2LMN7hbhmyi4bgdLO+
-         B4nEKsdvzYopZcWKf7NzCXhU7Cvmk+TF3UzqW6kBFnj1SCrMhFXmBaKTdzsx13FpMt
-         Go9mHwz1RY6YxRgBnMfWb5qkwHJHoNFIYvr8c7TcP01WiGov389Aw/C6FqQKPmgaFK
-         peYUzV4er3uKA==
-Date:   Sun, 19 Jun 2022 01:31:37 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Dmitrii Dolgov <9erthalion6@gmail.com>
-Cc:     linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
-        songliubraving@fb.com, rostedt@goodmis.org, peterz@infradead.org,
-        mingo@redhat.com, alexei.starovoitov@gmail.com
-Subject: Re: [PATCH v3 1/1] perf/kprobe: maxactive for fd-based kprobe
-Message-Id: <20220619013137.6d10a232246be482a5c0db82@kernel.org>
-In-Reply-To: <20220615211559.7856-1-9erthalion6@gmail.com>
-References: <20220615211559.7856-1-9erthalion6@gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-9.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        (Client CN "exchange.tu-berlin.de", Issuer "DFN-Verein Global Issuing CA" (verified OK))
+        by SPMA-04.tubit.win.tu-berlin.de (Sophos Email Appliance) with ESMTPS id 019E69787B2_2AE009CF;
+        Sat, 18 Jun 2022 16:43:08 +0000 (GMT)
+Received: from [192.168.178.14] (77.191.21.30) by ex-02.svc.tu-berlin.de
+ (10.150.18.6) with Microsoft SMTP Server id 15.2.986.22; Sat, 18 Jun 2022
+ 18:43:07 +0200
+Message-ID: <629bc069dd807d7ac646f836e9dca28bbc1108e2.camel@mailbox.tu-berlin.de>
+Subject: Re: [PATCH bpf-next v3 3/5] selftests/bpf: Test a BPF CC writing
+ sk_pacing_*
+From:   =?ISO-8859-1?Q?J=F6rn-Thorben?= Hinz <jthinz@mailbox.tu-berlin.de>
+To:     Martin KaFai Lau <kafai@fb.com>
+CC:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, <netdev@vger.kernel.org>
+Date:   Sat, 18 Jun 2022 18:43:06 +0200
+In-Reply-To: <20220617210425.xpeyxd4ahnudxnxb@kafai-mbp>
+References: <20220614104452.3370148-1-jthinz@mailbox.tu-berlin.de>
+         <20220614104452.3370148-4-jthinz@mailbox.tu-berlin.de>
+         <20220617210425.xpeyxd4ahnudxnxb@kafai-mbp>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SASI-RCODE: 200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=campus.tu-berlin.de; h=message-id:subject:from:to:cc:date:in-reply-to:references:content-type:mime-version:content-transfer-encoding; s=dkim-tub; bh=6Rtoe1X8vqsaXMzSQejEJx5OSjXs4Fw7+IacNXVLR28=; b=ZjOTED6Nhz23r4NtHMldFmLuTZ2AnCeWrlpsWrLiYxbCd0mTL42IrEmW08i+59jhjyo+z9ls9R13Unn6O6exdS6j9Z/lFNq/mT20KP7KN2O/EaSgWDEZj1timBpRc1De6J3H+BULrg9xBzgszYp+klRnQeDvILrMd+LehSIu5S0=
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 15 Jun 2022 23:15:59 +0200
-Dmitrii Dolgov <9erthalion6@gmail.com> wrote:
+On Fri, 2022-06-17 at 14:04 -0700, Martin KaFai Lau wrote:
+> On Tue, Jun 14, 2022 at 12:44:50PM +0200, Jörn-Thorben Hinz wrote:
+> > Test whether a TCP CC implemented in BPF is allowed to write
+> > sk_pacing_rate and sk_pacing_status in struct sock. This is needed
+> > when
+> > cong_control() is implemented and used.
+> > 
+> > Signed-off-by: Jörn-Thorben Hinz <jthinz@mailbox.tu-berlin.de>
+> > ---
+> >  .../selftests/bpf/prog_tests/bpf_tcp_ca.c     | 21 +++++++
+> >  .../bpf/progs/tcp_ca_write_sk_pacing.c        | 60
+> > +++++++++++++++++++
+> >  2 files changed, 81 insertions(+)
+> >  create mode 100644
+> > tools/testing/selftests/bpf/progs/tcp_ca_write_sk_pacing.c
+> > 
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
+> > b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
+> > index e9a9a31b2ffe..a797497e2864 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
+> > @@ -9,6 +9,7 @@
+> >  #include "bpf_cubic.skel.h"
+> >  #include "bpf_tcp_nogpl.skel.h"
+> >  #include "bpf_dctcp_release.skel.h"
+> > +#include "tcp_ca_write_sk_pacing.skel.h"
+> >  
+> >  #ifndef ENOTSUPP
+> >  #define ENOTSUPP 524
+> > @@ -322,6 +323,24 @@ static void test_rel_setsockopt(void)
+> >         bpf_dctcp_release__destroy(rel_skel);
+> >  }
+> >  
+> > +static void test_write_sk_pacing(void)
+> > +{
+> > +       struct tcp_ca_write_sk_pacing *skel;
+> > +       struct bpf_link *link;
+> > +
+> > +       skel = tcp_ca_write_sk_pacing__open_and_load();
+> > +       if (!ASSERT_OK_PTR(skel, "open_and_load")) {
+> nit. Remove this single line '{'.
+> 
+> ./scripts/checkpatch.pl has reported that also:
+> WARNING: braces {} are not necessary for single statement blocks
+> #43: FILE: tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c:332:
+> +       if (!ASSERT_OK_PTR(skel, "open_and_load")) {
+> +               return;
+> +       }
+Have to admit I knowingly disregarded that warning as more of a
+recommendation. Out of habit and since I personally don’t see any
+compelling reason to generally use single-line statements after ifs,
+only multiple disadvantages.
 
-> From: Song Liu <songliubraving@fb.com>
-> 
-> Enable specifying maxactive for fd based kretprobe. This will be useful
-> for tracing tools like bcc and bpftrace (see for example discussion [1]).
-> Use highest 12 bit (bit 52-63) to allow maximal maxactive of 4095.
-
-I'm not sure what environment you are considering to use this
-feature, but is 4095 enough, and are you really need to specify
-the maxactive by linear digit?
-I mean you may need the logarithm of maxactive? In this case, you
-only need 4 bits for 2 - 65546 (1 = 2^0 will be used for the default
-value). 
-
-Thank you,
+But wrong place to argue here, of course. Will bow to the warning.
 
 > 
-> The original patch [2] seems to be fallen through the cracks and wasn't
-> applied. I've merely rebased the work done by Song Liu and verififed it
-> still works.
 > 
-> Note that changes in rethook implementation may render maxactive
-> obsolete.
+> > +               return;
+> > +       }
+> > +
+> > +       link = bpf_map__attach_struct_ops(skel-
+> > >maps.write_sk_pacing);
+> > +       if (ASSERT_OK_PTR(link, "attach_struct_ops")) {
+> Same here.
 > 
-> [1]: https://github.com/iovisor/bpftrace/issues/835
-> [2]: https://lore.kernel.org/all/20191007223111.1142454-1-songliubraving@fb.com/
+> and no need to check the link before bpf_link__destroy.
+> bpf_link__destroy can handle error link.  Something like:
 > 
-> Signed-off-by: Song Liu <songliubraving@fb.com>
-> Signed-off-by: Dmitrii Dolgov <9erthalion6@gmail.com>
-> ---
-> Changes in v3:
->     - Set correct author
+>         ASSERT_OK_PTR(link, "attach_struct_ops");
+>         bpf_link__destroy(link);
+>         tcp_ca_write_sk_pacing__destroy(skel);
 > 
-> Changes in v2:
->     - Fix comment about number bits for the offset
+> The earlier examples in test_cubic and test_dctcp were
+> written before bpf_link__destroy can handle error link.
+You are right, I followed the other two test_*() functions there. Good
+to know that it behaves similar to (k)free() and others. Will remove
+the ifs around bpf_link__destroy().
+
 > 
->  include/linux/trace_events.h    |  3 ++-
->  kernel/events/core.c            | 20 ++++++++++++++++----
->  kernel/trace/trace_event_perf.c |  5 +++--
->  kernel/trace/trace_kprobe.c     |  4 ++--
->  kernel/trace/trace_probe.h      |  2 +-
->  5 files changed, 24 insertions(+), 10 deletions(-)
+> > +               bpf_link__destroy(link);
+> > +       }
+> > +
+> > +       tcp_ca_write_sk_pacing__destroy(skel);
+> > +}
+> > +
+> >  void test_bpf_tcp_ca(void)
+> >  {
+> >         if (test__start_subtest("dctcp"))
+> > @@ -334,4 +353,6 @@ void test_bpf_tcp_ca(void)
+> >                 test_dctcp_fallback();
+> >         if (test__start_subtest("rel_setsockopt"))
+> >                 test_rel_setsockopt();
+> > +       if (test__start_subtest("write_sk_pacing"))
+> > +               test_write_sk_pacing();
+> >  }
+> > diff --git
+> > a/tools/testing/selftests/bpf/progs/tcp_ca_write_sk_pacing.c
+> > b/tools/testing/selftests/bpf/progs/tcp_ca_write_sk_pacing.c
+> > new file mode 100644
+> > index 000000000000..43447704cf0e
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/tcp_ca_write_sk_pacing.c
+> > @@ -0,0 +1,60 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +#include "vmlinux.h"
+> > +
+> > +#include <bpf/bpf_helpers.h>
+> > +#include <bpf/bpf_tracing.h>
+> > +
+> > +char _license[] SEC("license") = "GPL";
+> > +
+> > +#define USEC_PER_SEC 1000000UL
+> > +
+> > +#define min(a, b) ((a) < (b) ? (a) : (b))
+> > +
+> > +static inline struct tcp_sock *tcp_sk(const struct sock *sk)
+> > +{
+> This helper is already available in bpf_tcp_helpers.h.
+> Is there a reason not to use that one and redefine
+> it in both patch 3 and 4?  The mss_cache and srtt_us can be added
+> to bpf_tcp_helpers.h.  It will need another effort to move
+> all selftest's bpf-cc to vmlinux.h.
+I fully agree it’s not elegant to redefine tcp_sk() twice more.
+
+It was between either using bpf_tcp_helpers.h and adding and
+maintaining additional struct members there. Or using the (as I
+understood it) more “modern” approach with vmlinux.h and redefining the
+trivial tcp_sk(). I chose the later. Didn’t see a reason not to slowly
+introduce vmlinux.h into the CA tests.
+
+I had the same dilemma for the algorithm I’m implementing: Reuse
+bpf_tcp_helpers.h from the kernel tree and extend it. Or use vmlinux.h
+and copy only some of the (mostly trivial) helper functions. Also chose
+the later here.
+
+While doing the above, I also considered extracting the type
+declarations from bpf_tcp_helpers.h into an, e.g.,
+bpf_tcp_types_helper.h, keeping only the functions in
+bpf_tcp_helpers.h. bpf_tcp_helpers.h could have been a base helper for
+any BPF CA implementation then and used with either vmlinux.h or the
+“old-school” includes. Similar to the way bpf_helpers.h is used. But at
+that point, a bpf_tcp_types_helper.h could have probably just been
+dropped for good and in favor of vmlinux.h. So I didn’t continue with
+that.
+
+Do you insist to use bpf_tcp_helpers.h instead of vmlinux.h? Or could
+the described split into two headers make sense after all?
+
+(Will wait for your reply here before sending a v4.)
+
 > 
-> diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-> index e6e95a9f07a5..7ca453a73252 100644
-> --- a/include/linux/trace_events.h
-> +++ b/include/linux/trace_events.h
-> @@ -850,7 +850,8 @@ extern void perf_trace_destroy(struct perf_event *event);
->  extern int  perf_trace_add(struct perf_event *event, int flags);
->  extern void perf_trace_del(struct perf_event *event, int flags);
->  #ifdef CONFIG_KPROBE_EVENTS
-> -extern int  perf_kprobe_init(struct perf_event *event, bool is_retprobe);
-> +extern int  perf_kprobe_init(struct perf_event *event, bool is_retprobe,
-> +			     int max_active);
->  extern void perf_kprobe_destroy(struct perf_event *event);
->  extern int bpf_get_kprobe_info(const struct perf_event *event,
->  			       u32 *fd_type, const char **symbol,
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 23bb19716ad3..e8127f9b4df5 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -9809,24 +9809,34 @@ static struct pmu perf_tracepoint = {
->   * PERF_PROBE_CONFIG_IS_RETPROBE if set, create kretprobe/uretprobe
->   *                               if not set, create kprobe/uprobe
->   *
-> - * The following values specify a reference counter (or semaphore in the
-> - * terminology of tools like dtrace, systemtap, etc.) Userspace Statically
-> - * Defined Tracepoints (USDT). Currently, we use 40 bit for the offset.
-> + * PERF_UPROBE_REF_CTR_OFFSET_* specify a reference counter (or semaphore
-> + * in the terminology of tools like dtrace, systemtap, etc.) Userspace
-> + * Statically Defined Tracepoints (USDT). Currently, we use 32 bit for the
-> + * offset.
->   *
->   * PERF_UPROBE_REF_CTR_OFFSET_BITS	# of bits in config as th offset
->   * PERF_UPROBE_REF_CTR_OFFSET_SHIFT	# of bits to shift left
-> + *
-> + * PERF_KPROBE_MAX_ACTIVE_* defines max_active for kretprobe.
-> + * KRETPROBE_MAXACTIVE_MAX is 4096. We allow 4095 here to save a bit.
->   */
->  enum perf_probe_config {
->  	PERF_PROBE_CONFIG_IS_RETPROBE = 1U << 0,  /* [k,u]retprobe */
->  	PERF_UPROBE_REF_CTR_OFFSET_BITS = 32,
->  	PERF_UPROBE_REF_CTR_OFFSET_SHIFT = 64 - PERF_UPROBE_REF_CTR_OFFSET_BITS,
-> +	PERF_KPROBE_MAX_ACTIVE_BITS = 12,
-> +	PERF_KPROBE_MAX_ACTIVE_SHIFT = 64 - PERF_KPROBE_MAX_ACTIVE_BITS,
->  };
->  
->  PMU_FORMAT_ATTR(retprobe, "config:0");
->  #endif
->  
->  #ifdef CONFIG_KPROBE_EVENTS
-> +/* KRETPROBE_MAXACTIVE_MAX is 4096, only allow 4095 here to save a bit */
-> +PMU_FORMAT_ATTR(max_active, "config:52-63");
-> +
->  static struct attribute *kprobe_attrs[] = {
-> +	&format_attr_max_active.attr,
->  	&format_attr_retprobe.attr,
->  	NULL,
->  };
-> @@ -9857,6 +9867,7 @@ static int perf_kprobe_event_init(struct perf_event *event)
->  {
->  	int err;
->  	bool is_retprobe;
-> +	int max_active;
->  
->  	if (event->attr.type != perf_kprobe.type)
->  		return -ENOENT;
-> @@ -9871,7 +9882,8 @@ static int perf_kprobe_event_init(struct perf_event *event)
->  		return -EOPNOTSUPP;
->  
->  	is_retprobe = event->attr.config & PERF_PROBE_CONFIG_IS_RETPROBE;
-> -	err = perf_kprobe_init(event, is_retprobe);
-> +	max_active = event->attr.config >> PERF_KPROBE_MAX_ACTIVE_SHIFT;
-> +	err = perf_kprobe_init(event, is_retprobe, max_active);
->  	if (err)
->  		return err;
->  
-> diff --git a/kernel/trace/trace_event_perf.c b/kernel/trace/trace_event_perf.c
-> index a114549720d6..129000327809 100644
-> --- a/kernel/trace/trace_event_perf.c
-> +++ b/kernel/trace/trace_event_perf.c
-> @@ -245,7 +245,8 @@ void perf_trace_destroy(struct perf_event *p_event)
->  }
->  
->  #ifdef CONFIG_KPROBE_EVENTS
-> -int perf_kprobe_init(struct perf_event *p_event, bool is_retprobe)
-> +int perf_kprobe_init(struct perf_event *p_event, bool is_retprobe,
-> +					 int max_active)
->  {
->  	int ret;
->  	char *func = NULL;
-> @@ -271,7 +272,7 @@ int perf_kprobe_init(struct perf_event *p_event, bool is_retprobe)
->  
->  	tp_event = create_local_trace_kprobe(
->  		func, (void *)(unsigned long)(p_event->attr.kprobe_addr),
-> -		p_event->attr.probe_offset, is_retprobe);
-> +		p_event->attr.probe_offset, is_retprobe, max_active);
->  	if (IS_ERR(tp_event)) {
->  		ret = PTR_ERR(tp_event);
->  		goto out;
-> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-> index 47cebef78532..3ad30cfce9c3 100644
-> --- a/kernel/trace/trace_kprobe.c
-> +++ b/kernel/trace/trace_kprobe.c
-> @@ -1784,7 +1784,7 @@ static int unregister_kprobe_event(struct trace_kprobe *tk)
->  /* create a trace_kprobe, but don't add it to global lists */
->  struct trace_event_call *
->  create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
-> -			  bool is_return)
-> +			  bool is_return, int max_active)
->  {
->  	enum probe_print_type ptype;
->  	struct trace_kprobe *tk;
-> @@ -1799,7 +1799,7 @@ create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
->  	event = func ? func : "DUMMY_EVENT";
->  
->  	tk = alloc_trace_kprobe(KPROBE_EVENT_SYSTEM, event, (void *)addr, func,
-> -				offs, 0 /* maxactive */, 0 /* nargs */,
-> +				offs, max_active, 0 /* nargs */,
->  				is_return);
->  
->  	if (IS_ERR(tk)) {
-> diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
-> index 92cc149af0fd..26fe21980793 100644
-> --- a/kernel/trace/trace_probe.h
-> +++ b/kernel/trace/trace_probe.h
-> @@ -376,7 +376,7 @@ extern int traceprobe_set_print_fmt(struct trace_probe *tp, enum probe_print_typ
->  #ifdef CONFIG_PERF_EVENTS
->  extern struct trace_event_call *
->  create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
-> -			  bool is_return);
-> +			  bool is_return, int max_active);
->  extern void destroy_local_trace_kprobe(struct trace_event_call *event_call);
->  
->  extern struct trace_event_call *
-> -- 
-> 2.32.0
-> 
+> > +       return (struct tcp_sock *)sk;
+> > +}
+> > +
+> > +SEC("struct_ops/write_sk_pacing_init")
+> > +void BPF_PROG(write_sk_pacing_init, struct sock *sk)
+> > +{
+> > +#ifdef ENABLE_ATOMICS_TESTS
+> > +       __sync_bool_compare_and_swap(&sk->sk_pacing_status,
+> > SK_PACING_NONE,
+> > +                                    SK_PACING_NEEDED);
+> > +#else
+> > +       sk->sk_pacing_status = SK_PACING_NEEDED;
+> > +#endif
+> > +}
+> > +
+> > +SEC("struct_ops/write_sk_pacing_cong_control")
+> > +void BPF_PROG(write_sk_pacing_cong_control, struct sock *sk,
+> > +             const struct rate_sample *rs)
+> > +{
+> > +       const struct tcp_sock *tp = tcp_sk(sk);
+> > +       unsigned long rate =
+> > +               ((tp->snd_cwnd * tp->mss_cache * USEC_PER_SEC) <<
+> > 3) /
+> > +               (tp->srtt_us ?: 1U << 3);
+> > +       sk->sk_pacing_rate = min(rate, sk->sk_max_pacing_rate);
+> > +}
+> > +
+> > +SEC("struct_ops/write_sk_pacing_ssthresh")
+> > +__u32 BPF_PROG(write_sk_pacing_ssthresh, struct sock *sk)
+> > +{
+> > +       return tcp_sk(sk)->snd_ssthresh;
+> > +}
+> > +
+> > +SEC("struct_ops/write_sk_pacing_undo_cwnd")
+> > +__u32 BPF_PROG(write_sk_pacing_undo_cwnd, struct sock *sk)
+> > +{
+> > +       return tcp_sk(sk)->snd_cwnd;
+> > +}
+> > +
+> > +SEC(".struct_ops")
+> > +struct tcp_congestion_ops write_sk_pacing = {
+> > +       .init = (void *)write_sk_pacing_init,
+> > +       .cong_control = (void *)write_sk_pacing_cong_control,
+> > +       .ssthresh = (void *)write_sk_pacing_ssthresh,
+> > +       .undo_cwnd = (void *)write_sk_pacing_undo_cwnd,
+> > +       .name = "bpf_w_sk_pacing",
+> > +};
+> > -- 
+> > 2.30.2
+> > 
 
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
