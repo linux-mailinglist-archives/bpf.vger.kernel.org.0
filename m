@@ -2,68 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD4145507E9
-	for <lists+bpf@lfdr.de>; Sun, 19 Jun 2022 03:56:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45203550BED
+	for <lists+bpf@lfdr.de>; Sun, 19 Jun 2022 17:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229883AbiFSB4S (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 18 Jun 2022 21:56:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46280 "EHLO
+        id S232333AbiFSPup (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 19 Jun 2022 11:50:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbiFSB4R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 18 Jun 2022 21:56:17 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F76DEF8;
-        Sat, 18 Jun 2022 18:56:16 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id h23so15046727ejj.12;
-        Sat, 18 Jun 2022 18:56:16 -0700 (PDT)
+        with ESMTP id S229490AbiFSPuo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 19 Jun 2022 11:50:44 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40495BC94
+        for <bpf@vger.kernel.org>; Sun, 19 Jun 2022 08:50:43 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id c205so1487910pfc.7
+        for <bpf@vger.kernel.org>; Sun, 19 Jun 2022 08:50:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8vfH2d4aXGbYFoRQ1C1A/di4tJyn3VCLYTTFPUgdEmo=;
-        b=PjmUHsk4ejduQshsd6kONL41Dl1HLFaqnNxEEmMZeAZtG8CIN3DxeyXOalYmUDvOnR
-         vm4hZ/xgdo/lWIIFNZm7n3AG/VoLrMg/ldey2tnEDJqvwo+smU3dGcuLK7iyFE9WoUYC
-         3z2aUZBInv1XRnJLn0v61a3ne81w0Gms9Q6EnMbz9dXz7yacPznWFd2j0v28INyroCuL
-         2BbAMaPDoNSXT9KmZ5gvm1IuEUIAU0TzHRn0gMapFQ0LQeo8Q32JPp3XdIY2ZmQIJULL
-         8dnsvGztGyFVRLew6UOYSGckLgO9swgaY+T/55Du8YvL0EtHBVkCFSdZDuYWUQCqxaG1
-         grRg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FhdaJmZLa4lgn0vywCQI5gQdzVYdyrnEzxNVG21VKeE=;
+        b=LmsDr227lZ2D8Vs3vBOAaTIHp2Dn8RCvzoyFeLXh4aFHgLPVfXm7oMygok1pAUnkwR
+         HFyJoSmU/ttiuhM8Px7e3LsXQA1OsT3beaiqVqZL4kPhp6mf+P07O5Fq+BeghRuek/1L
+         fImHmGMi1LCshDjSTdC7absqS5/PKu0rccTeW4/4Xy1wB5TuxVGnOKPRVP0CynswbDvU
+         oy4PAON0zHiXvElvBezy3hJlsojPkY93SgzxCySujvbeyv02OsHpG7letyIu9rM4G6QF
+         4buL1QQ/6yXdvUD11j+UVD/5mBDBuj02GFzTlgwuYM3/dKKR1FrL8o3yXUS23gBcsKfn
+         zcYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8vfH2d4aXGbYFoRQ1C1A/di4tJyn3VCLYTTFPUgdEmo=;
-        b=4mkmvuvKpQfuvJBFbLRf9q0YXH9sL60Qg4RDJHb0HwOWbVD9kOwR7UwFh6qX95YN2O
-         SbquwYj3s1UFogUmJEzJ/AC63/nVgPpuj3/QPJVe2Kpb2m88/WwgPk0YpaN2qlYJuMwa
-         z3q9eZLyCnPNtONsXu2TSdwSFO5Fb+BYM2YWCRGCOwO/lYUcro4uNDaLfyd/aD6o4LET
-         f09Y9HyooetkpX6B8bNgQUQyaRiSkQ+GKez4vonfOBtoflVks/qvnQvtjG8lYjPSgIY2
-         7fZ/xZu16lDL2cdBUm4CggESUjlDAbSjLmeJj06roZ7wmrFVCVuM0S4qIqzQWUl6FfTQ
-         1EDg==
-X-Gm-Message-State: AJIora9sbAFoYgsc+a2QZxKqcnRfb2nrEDBiPBjqiSqA4iUiOWdlnvvv
-        nKg/B+bnoG72xa6C9gnzFUdrLDXakYU6DAPfgJ0=
-X-Google-Smtp-Source: AGRyM1veday674gQan5uJCUawQeX3lk/gOhXxOiac8cW0YQbkKg2rcfykeGnYh0kCH++BZB5BGgEoqxnWailGE4idMI=
-X-Received: by 2002:a17:906:74ca:b0:712:585:751c with SMTP id
- z10-20020a17090674ca00b007120585751cmr14879127ejl.739.1655603774897; Sat, 18
- Jun 2022 18:56:14 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FhdaJmZLa4lgn0vywCQI5gQdzVYdyrnEzxNVG21VKeE=;
+        b=rAxcM0a3VC/4lXEBrpxefgD+DgGHqU920J8WGPemYF1zByUNzRWEg5wjW9pgkUzGz3
+         8oO9o3eSNyZBm6cSks+aDpcxsNI8Kawq5gPj2wAB0qVi+WkgtrgtS5S8K0QR2k9/ncZK
+         moqS485wPhXxu8wuQltpGsWUhwdbT72rdLkCWiBM3fx7lpQW1AQT79nP3M/2pKNEvkQT
+         fSg6lcqogl7Zv0R4WmE/oqV3YyIVwU2hKeUd9fXGzx9V4gEUnzOI4bRMXPHZRZ0g6Xd0
+         fwuyGwYPdq8HUFMKmSXo3GBzUkgBHURrtb3f7qC7b5GLy/WJbWlz8rkTZGnzWWDCAUfg
+         EiJA==
+X-Gm-Message-State: AJIora/bpBw0+dinbCFLXZveITG54WSFUpAZLgV9iGN5Ncn4Ft+TfqBC
+        1ahwKRRA9ZABVFd76uC19KQ=
+X-Google-Smtp-Source: AGRyM1tx4Q4QjDwW+wVu6B4Vc2cBVjRf26HbWz0WoxKexcw52/rxTjw1238jYtKU8fRsHjIdL5fzlQ==
+X-Received: by 2002:a05:6a00:1941:b0:50d:807d:530b with SMTP id s1-20020a056a00194100b0050d807d530bmr20146343pfk.17.1655653842609;
+        Sun, 19 Jun 2022 08:50:42 -0700 (PDT)
+Received: from vultr.guest ([2001:19f0:6001:2b24:5400:4ff:fe09:b144])
+        by smtp.gmail.com with ESMTPSA id z10-20020a1709027e8a00b001690a7df347sm6381761pla.96.2022.06.19.08.50.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 19 Jun 2022 08:50:41 -0700 (PDT)
+From:   Yafang Shao <laoar.shao@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        quentin@isovalent.com, hannes@cmpxchg.org, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        songmuchun@bytedance.com, akpm@linux-foundation.org, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        vbabka@suse.cz
+Cc:     linux-mm@kvack.org, bpf@vger.kernel.org,
+        Yafang Shao <laoar.shao@gmail.com>
+Subject: [RFC PATCH bpf-next 00/10] bpf, mm: Recharge pages when reuse bpf map 
+Date:   Sun, 19 Jun 2022 15:50:22 +0000
+Message-Id: <20220619155032.32515-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20220614084930.43276-1-nashuiliang@gmail.com> <62ad50fa9d42d_24b34208d6@john.notmuch>
- <CACueBy7NqRszA3tCOvLhfi1OraUrL_GD9YZ9XOPNHzbR1=+z7g@mail.gmail.com> <Yq5A4Cln4qeTaAeM@krava>
-In-Reply-To: <Yq5A4Cln4qeTaAeM@krava>
-From:   chuang <nashuiliang@gmail.com>
-Date:   Sun, 19 Jun 2022 09:56:03 +0800
-Message-ID: <CACueBy4Nr+rqJjZ3guBimd6t36V5B3CBp6_oZVMRzLvMZoTRpg@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: Remove kprobe_event on failed kprobe_open_legacy
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Jingren Zhou <zhoujingren@didiglobal.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -74,19 +74,114 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Jiri,
+After switching to memcg-based bpf memory accounting, the bpf memory is
+charged to the loader's memcg by default, that causes unexpected issues for
+us. For instance, the container of the loader may be restarted after
+pinning progs and maps, but the bpf memcg will be left and pinned on the
+system. Once the loader's new generation container is started, the leftover
+pages won't be charged to it. That inconsistent behavior will make trouble
+for the memory resource management for this container.
 
-On Sun, Jun 19, 2022 at 5:17 AM Jiri Olsa <olsajiri@gmail.com> wrote:
->
-> just curious.. is that because of ipmodify flag on ftrace_ops?
-> AFAICS that be a poblem just for kretprobes, cc-ing Masami
->
+In the past few days, I have proposed two patchsets[1][2] to try to resolve
+this issue, but in both of these two proposals the user code has to be
+changed to adapt to it, that is a pain for us. This patchset relieves the
+pain by triggering the recharge in libbpf. It also addresses Roman's
+critical comments.
 
-Yes, the core reason is caused by ipmodify flag (not only for kretprobes).
-Before commit 0bc11ed5ab60 ("kprobes: Allow kprobes coexist with
-livepatch"), it's very easy to trigger this problem.
-The kprobe has other problems and is communicating with Masami.
+The key point we can avoid changing the user code is that there's a resue
+path in libbpf. Once the bpf container is restarted again, it will try
+to re-run the required bpf programs, if the bpf programs are the same with
+the already pinned one, it will reuse them.
 
-With this fix, whenever an error is returned after
-add_kprobe_event_legacy(), this guarantees cleanup of the kprobe
-event.
+To make sure we either recharge all of them successfully or don't recharge
+any of them. The recharge prograss is divided into three steps:
+  - Pre charge to the new generation 
+    To make sure once we uncharge from the old generation, we can always
+    charge to the new generation succeesfully. If we can't pre charge to
+    the new generation, we won't allow it to be uncharged from the old
+    generation.
+  - Uncharge from the old generation
+    After pre charge to the new generation, we can uncharge from the old
+    generation.
+  - Post charge to the new generation
+    Finnaly we can set pages' memcg_data to the new generation. 
+In the pre charge step, we may succeed to charge some addresses, but fail
+to charge a new address, then we should uncharge the already charged
+addresses, so another recharge-err step is instroduced.
+ 
+This pachset has finished recharging bpf hash map. which is mostly used
+by our bpf services. The other maps hasn't been implemented yet. The bpf
+progs hasn't been implemented neither.
+
+The prev generation and the new generation may have the same parant,
+that can be optimized in the future.
+
+In the disccussion with Roman in the previous two proposals, he also
+mentioned that the leftover page caches have similar issue.  There're key
+differences between leftover page caches and leftover bpf programs:
+  - The leftover page caches may not be reused again
+    Because once a container exited, it may be deployed on another host
+    next time for better resource management. That's why we fix leftover
+    page caches by _trying_ to drop all its page caches when it is exiting.
+    But regarding the bpf conatainer, it will always be deployed on the
+    same host next time, that's why bpf programs are pinned.
+ - The lefeover page caches can be reclaimed, but bpf memory can't.
+   It means the leftover page caches can be accepted while the leftover bpf
+   memory can't.
+Regardless of these differences, we can also extend this method to
+recharge leftover page caches if we need it, for example when we 'reuse' a
+leftover inode, we recharge all its page caches to the new generation. But
+unforunately there's no such a clear reuse path in page cache layer, so we
+must build a resue path for it first:
+
+      page cache's reuse path(X)           bpf's reuse path 
+          |                                    |
+   ------------------                   -------------
+   | page cache layer|                  | bpf layer |
+   ------------------                   -------------
+      \                                     /
+    page cache's recharge handler(X)     bpf's recharge handler
+       \                                   /
+       ------------------------------------
+       |        Memcg layer               |
+       |----------------------------------|
+
+[1] https://lwn.net/Articles/887180/
+[2] https://lwn.net/Articles/888549/
+
+
+Yafang Shao (10):
+  mm, memcg: Add a new helper memcg_should_recharge()
+  bpftool: Show memcg info of bpf map
+  mm, memcg: Add new helper obj_cgroup_from_current()
+  mm, memcg: Make obj_cgroup_{charge, uncharge}_pages public
+  mm: Add helper to recharge kmalloc'ed address
+  mm: Add helper to recharge vmalloc'ed address
+  mm: Add helper to recharge percpu address
+  bpf: Recharge memory when reuse bpf map
+  bpf: Make bpf_map_{save, release}_memcg public
+  bpf: Support recharge for hash map
+
+ include/linux/bpf.h            |  23 ++++++
+ include/linux/memcontrol.h     |  22 ++++++
+ include/linux/percpu.h         |   1 +
+ include/linux/slab.h           |  18 +++++
+ include/linux/vmalloc.h        |   2 +
+ include/uapi/linux/bpf.h       |   4 +-
+ kernel/bpf/hashtab.c           |  74 +++++++++++++++++++
+ kernel/bpf/syscall.c           |  40 ++++++-----
+ mm/memcontrol.c                |  35 +++++++--
+ mm/percpu.c                    |  98 ++++++++++++++++++++++++++
+ mm/slab.c                      |  85 ++++++++++++++++++++++
+ mm/slob.c                      |   7 ++
+ mm/slub.c                      | 125 +++++++++++++++++++++++++++++++++
+ mm/util.c                      |   9 +++
+ mm/vmalloc.c                   |  87 +++++++++++++++++++++++
+ tools/bpf/bpftool/map.c        |   2 +
+ tools/include/uapi/linux/bpf.h |   4 +-
+ tools/lib/bpf/libbpf.c         |   2 +-
+ 18 files changed, 609 insertions(+), 29 deletions(-)
+
+-- 
+2.17.1
+
