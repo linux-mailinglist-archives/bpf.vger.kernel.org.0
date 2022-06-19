@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E61550BF0
-	for <lists+bpf@lfdr.de>; Sun, 19 Jun 2022 17:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85FF5550BF1
+	for <lists+bpf@lfdr.de>; Sun, 19 Jun 2022 17:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232730AbiFSPuv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 19 Jun 2022 11:50:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42626 "EHLO
+        id S232771AbiFSPuw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 19 Jun 2022 11:50:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233255AbiFSPuu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 19 Jun 2022 11:50:50 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66486BE09
-        for <bpf@vger.kernel.org>; Sun, 19 Jun 2022 08:50:49 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id k5-20020a17090a404500b001e8875e6242so8109699pjg.5
-        for <bpf@vger.kernel.org>; Sun, 19 Jun 2022 08:50:49 -0700 (PDT)
+        with ESMTP id S233005AbiFSPuw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 19 Jun 2022 11:50:52 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D57CBCA7
+        for <bpf@vger.kernel.org>; Sun, 19 Jun 2022 08:50:51 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id g10-20020a17090a708a00b001ea8aadd42bso8160508pjk.0
+        for <bpf@vger.kernel.org>; Sun, 19 Jun 2022 08:50:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=WaE/WLiaH5o5ki3TY2BjGi6nEsbC9ev3Bayiew634jE=;
-        b=lg4hLmrvx1aAxFRgX2lydGh2RYsS+K8/vHGdBT3GPJM2V/iumEKMc9+bns60t1/KuB
-         J1TuHcq8XADBIaFEVzyfvThx9pJUKJuJOKByFLFtB3cvZod6/1K+3pO5KBTrbMAriRSp
-         0aA84OhCbo1cxE5mjGwVS8OjVkf8uyLxSG96ru3xWftJyjaRYeDWc//IT0jYdBNtRhPn
-         WcloU6qqNmA+04BwAXt7Tyjzl/yvXQUfBqUwQO+iOJ6GZB91CgEPWKZXrsjb0Cphc5pp
-         f7Z0OMdpQ6lWNQjBQSjPrk9BqXMbRzM5/bOul+57dEAkay+yUKbMpZ9MsZadWBKuXs7W
-         AYJQ==
+        bh=fG2YxPMk3XHSDo57as/MEaodXX0vf3EFBzxExOHzp94=;
+        b=XkgPPFKVR0Jb570fcBCjFqP4oTrs6/NzA9SwpN40QvOkpRrkdVm4xtW+wtc1OeLYnQ
+         7n5ljaFkzV62y5SctU2XLyM5Ncv2PvQXvXlTPFHLGngn5hRYSNnk/hAML04kw5vaftoC
+         kicAFGjW8BsQmffGKtlas6ScJlQuTDHwrwdPMjdRMG4+MbIEI/+4yBkDRHeRmPwSA9pr
+         ZFBtd8SEVoAv/qVyE5F76lxq6R1Jd47JM6IooznrhE3yduAUu+K8GZYPIRZc5jleBog6
+         Z2XpWHdYxSbHdu+VIYBfO0TJAdtxROQ77z4rPcz4rXDjpZ0kS+mzu8bj5jSq4/PuEIPu
+         a4HQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=WaE/WLiaH5o5ki3TY2BjGi6nEsbC9ev3Bayiew634jE=;
-        b=NtIELYtTa53onP1YqKpRKZmMctJQ3OHdYZ/euxgndkqw8wOTB9rb/ziVuURSploSE9
-         y6S7EX3OsVl6Go5qboj0Ueah3IK4BD8Y4uxl2/faXvZ5A2zd/RfLYiyGdHcbZkHszDcQ
-         +74uFr9vK2mzAruXLqabpQuvtRrP1oCaa7Lwh2dPY3HIxiS8ARV1QeQxDJGRdyOb5mGP
-         cymfuA2Onwksj4890kJ6SclKjGknACmOtwyiQPWL+GhTDQymXh30cBnMV3pC6vbI2heI
-         Vr/mOQQr/kbWyi6Xjo1o/Z3m4uo3pS/jlP0428tCuJl06EYIMJf0OcEqGv/g30Av8DwD
-         Aemw==
-X-Gm-Message-State: AJIora/jptJ2Dg/5K61rRLJlC7gzalBlEb+MYiB2qtsCHaGNR7y1iRRU
-        8Mrns7HDVu/vWMOWcFpqzh0=
-X-Google-Smtp-Source: AGRyM1tw+4VoyM5S+fxLBlskF4kAB2xCBsbZchmj1iffm8dIiAU8+M1iozEcYYLSnyvhMrmeJK+cAw==
-X-Received: by 2002:a17:903:11cd:b0:167:90e6:5d83 with SMTP id q13-20020a17090311cd00b0016790e65d83mr19355523plh.136.1655653848680;
-        Sun, 19 Jun 2022 08:50:48 -0700 (PDT)
+        bh=fG2YxPMk3XHSDo57as/MEaodXX0vf3EFBzxExOHzp94=;
+        b=Vn73e/Nl2HlJ8DrII18NZBrEjFiSWpdg2N8S0Mbqkz5vWpJ1bh9h2cNnmzuJcWZmVo
+         5epoFSt0gXCVdD7gdo8Sxrkjjcnlsslx9t2SvuXZ+QhFPtqaF1GSWVU8r3EAZHC1bEWt
+         y7P0N1eUKLaihaqbdjR8tCC24u9klTYkDxpPp3W6jgproiwOyytVGaOruIIAuzt2NtFm
+         QdSLy+iyuwCo3BW++XTWRyJ0Z8n5w2Inp9EJnhLPYSqoVEzAu9t3LMu13DBXaG4HcR3j
+         fmx6nbdGsujirfHcZ4yfTdqJs+B/4r/P82gyzAlaG+fyh2HXRqyLEIb+HdLRp+DGjoor
+         apsA==
+X-Gm-Message-State: AJIora/Gn7AUTa3R62lL5gM6jHp63mbIlH9UcIqZIsPpdMtbK5ANfPmh
+        rAtuqdwpnpEbTUgeu0jRnd0=
+X-Google-Smtp-Source: AGRyM1vxAU7OTmDElw6CQ4IfMkyUasemfaxdeD46XcwgZFgN1qsd8XEuFJv7/HuK+g+5Vt/uKY9xag==
+X-Received: by 2002:a17:90b:4d11:b0:1e8:436b:a9cc with SMTP id mw17-20020a17090b4d1100b001e8436ba9ccmr33074721pjb.40.1655653850770;
+        Sun, 19 Jun 2022 08:50:50 -0700 (PDT)
 Received: from vultr.guest ([2001:19f0:6001:2b24:5400:4ff:fe09:b144])
-        by smtp.gmail.com with ESMTPSA id z10-20020a1709027e8a00b001690a7df347sm6381761pla.96.2022.06.19.08.50.46
+        by smtp.gmail.com with ESMTPSA id z10-20020a1709027e8a00b001690a7df347sm6381761pla.96.2022.06.19.08.50.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Jun 2022 08:50:47 -0700 (PDT)
+        Sun, 19 Jun 2022 08:50:49 -0700 (PDT)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
@@ -58,9 +58,9 @@ To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         vbabka@suse.cz
 Cc:     linux-mm@kvack.org, bpf@vger.kernel.org,
         Yafang Shao <laoar.shao@gmail.com>
-Subject: [RFC PATCH bpf-next 03/10] mm, memcg: Add new helper obj_cgroup_from_current()
-Date:   Sun, 19 Jun 2022 15:50:25 +0000
-Message-Id: <20220619155032.32515-4-laoar.shao@gmail.com>
+Subject: [RFC PATCH bpf-next 04/10] mm, memcg: Make obj_cgroup_{charge, uncharge}_pages public
+Date:   Sun, 19 Jun 2022 15:50:26 +0000
+Message-Id: <20220619155032.32515-5-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20220619155032.32515-1-laoar.shao@gmail.com>
 References: <20220619155032.32515-1-laoar.shao@gmail.com>
@@ -76,62 +76,65 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The difference between get_obj_cgroup_from_current() and obj_cgroup_from_current()
-is that the later one doesn't add objcg's refcnt.
+Make these two helpers public for later use.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- include/linux/memcontrol.h |  1 +
- mm/memcontrol.c            | 24 ++++++++++++++++++++++++
- 2 files changed, 25 insertions(+)
+ include/linux/memcontrol.h |  4 ++++
+ mm/memcontrol.c            | 11 ++++-------
+ 2 files changed, 8 insertions(+), 7 deletions(-)
 
 diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index cf074156c6ac..402b42670bcd 100644
+index 402b42670bcd..ec4637687d6a 100644
 --- a/include/linux/memcontrol.h
 +++ b/include/linux/memcontrol.h
-@@ -1703,6 +1703,7 @@ bool mem_cgroup_kmem_disabled(void);
- int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order);
- void __memcg_kmem_uncharge_page(struct page *page, int order);
+@@ -1709,6 +1709,10 @@ struct obj_cgroup *get_obj_cgroup_from_page(struct page *page);
  
-+struct obj_cgroup *obj_cgroup_from_current(void);
- struct obj_cgroup *get_obj_cgroup_from_current(void);
- struct obj_cgroup *get_obj_cgroup_from_page(struct page *page);
+ int obj_cgroup_charge(struct obj_cgroup *objcg, gfp_t gfp, size_t size);
+ void obj_cgroup_uncharge(struct obj_cgroup *objcg, size_t size);
++int obj_cgroup_charge_pages(struct obj_cgroup *objcg, gfp_t gfp,
++			    unsigned int nr_pages);
++void obj_cgroup_uncharge_pages(struct obj_cgroup *objcg,
++			       unsigned int nr_pages);
+ 
+ extern struct static_key_false memcg_kmem_enabled_key;
  
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index abec50f31fe6..350a7849dac3 100644
+index 350a7849dac3..0ba321afba3b 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -2950,6 +2950,30 @@ struct obj_cgroup *get_obj_cgroup_from_page(struct page *page)
- 	return objcg;
+@@ -260,9 +260,6 @@ bool mem_cgroup_kmem_disabled(void)
+ 	return cgroup_memory_nokmem;
  }
  
-+__always_inline struct obj_cgroup *obj_cgroup_from_current(void)
-+{
-+	struct obj_cgroup *objcg = NULL;
-+	struct mem_cgroup *memcg;
-+
-+	if (memcg_kmem_bypass())
-+		return NULL;
-+
-+	rcu_read_lock();
-+	if (unlikely(active_memcg()))
-+		memcg = active_memcg();
-+	else
-+		memcg = mem_cgroup_from_task(current);
-+
-+	for (; memcg != root_mem_cgroup; memcg = parent_mem_cgroup(memcg)) {
-+		objcg = rcu_dereference(memcg->objcg);
-+		if (objcg)
-+			break;
-+	}
-+	rcu_read_unlock();
-+
-+	return objcg;
-+}
-+
- static void memcg_account_kmem(struct mem_cgroup *memcg, int nr_pages)
+-static void obj_cgroup_uncharge_pages(struct obj_cgroup *objcg,
+-				      unsigned int nr_pages);
+-
+ static void obj_cgroup_release(struct percpu_ref *ref)
  {
- 	mod_memcg_state(memcg, MEMCG_KMEM, nr_pages);
+ 	struct obj_cgroup *objcg = container_of(ref, struct obj_cgroup, refcnt);
+@@ -2991,8 +2988,8 @@ static void memcg_account_kmem(struct mem_cgroup *memcg, int nr_pages)
+  * @objcg: object cgroup to uncharge
+  * @nr_pages: number of pages to uncharge
+  */
+-static void obj_cgroup_uncharge_pages(struct obj_cgroup *objcg,
+-				      unsigned int nr_pages)
++void obj_cgroup_uncharge_pages(struct obj_cgroup *objcg,
++				unsigned int nr_pages)
+ {
+ 	struct mem_cgroup *memcg;
+ 
+@@ -3012,8 +3009,8 @@ static void obj_cgroup_uncharge_pages(struct obj_cgroup *objcg,
+  *
+  * Returns 0 on success, an error code on failure.
+  */
+-static int obj_cgroup_charge_pages(struct obj_cgroup *objcg, gfp_t gfp,
+-				   unsigned int nr_pages)
++int obj_cgroup_charge_pages(struct obj_cgroup *objcg, gfp_t gfp,
++			    unsigned int nr_pages)
+ {
+ 	struct mem_cgroup *memcg;
+ 	int ret;
 -- 
 2.17.1
 
