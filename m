@@ -2,126 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5336555073F
-	for <lists+bpf@lfdr.de>; Sun, 19 Jun 2022 00:15:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4145507E9
+	for <lists+bpf@lfdr.de>; Sun, 19 Jun 2022 03:56:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232909AbiFRWP0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 18 Jun 2022 18:15:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35492 "EHLO
+        id S229883AbiFSB4S (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 18 Jun 2022 21:56:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232099AbiFRWPX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 18 Jun 2022 18:15:23 -0400
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 922AFDF61
-        for <bpf@vger.kernel.org>; Sat, 18 Jun 2022 15:15:21 -0700 (PDT)
-Received: by mail-il1-f197.google.com with SMTP id r9-20020a92cd89000000b002d16798b3cfso4924163ilb.22
-        for <bpf@vger.kernel.org>; Sat, 18 Jun 2022 15:15:21 -0700 (PDT)
+        with ESMTP id S229446AbiFSB4R (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 18 Jun 2022 21:56:17 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F76DEF8;
+        Sat, 18 Jun 2022 18:56:16 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id h23so15046727ejj.12;
+        Sat, 18 Jun 2022 18:56:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8vfH2d4aXGbYFoRQ1C1A/di4tJyn3VCLYTTFPUgdEmo=;
+        b=PjmUHsk4ejduQshsd6kONL41Dl1HLFaqnNxEEmMZeAZtG8CIN3DxeyXOalYmUDvOnR
+         vm4hZ/xgdo/lWIIFNZm7n3AG/VoLrMg/ldey2tnEDJqvwo+smU3dGcuLK7iyFE9WoUYC
+         3z2aUZBInv1XRnJLn0v61a3ne81w0Gms9Q6EnMbz9dXz7yacPznWFd2j0v28INyroCuL
+         2BbAMaPDoNSXT9KmZ5gvm1IuEUIAU0TzHRn0gMapFQ0LQeo8Q32JPp3XdIY2ZmQIJULL
+         8dnsvGztGyFVRLew6UOYSGckLgO9swgaY+T/55Du8YvL0EtHBVkCFSdZDuYWUQCqxaG1
+         grRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=cExQdbV21IqFMasbKvZDPSAnWQDgKTx+CTrkWms6YdA=;
-        b=GgePPV9QLZjfi9KM5j4pLAJg0Z43PrDUa5pLESAKU2M448hmMmpVCfTe+WctCV0Gdq
-         Y/BgV59bYobtpQi/1CUaNtdBKhMiQLp6066pw/XxJBwHs+F8Fk/CjjPVSySch2T+zzS3
-         RxvOW8tU1m42ZbxK86gVJENTD91mqhmPpIVSdvy3HzQy/uhU9t2Byy0+/XQWnx5FfCWr
-         wu10ERk8vSOWD4rr5/nFyVqByfqqyo+zZhYhgVMJK9rNeDIvoglh8qovPQYLc7Fb1H0B
-         92AhS/7UG5HyoaZZ2PnawR4xr4lVn0ZKz3SoVi69QyT3n/7ykcWok1gHfbqqCABCZNZu
-         cJQQ==
-X-Gm-Message-State: AJIora/wWLZ3AKlxghKiWPSWOL0yE1UdGEDtMkqpb7dfpNonkKtl6FOo
-        3pPf+69YPnpgQSW4aOLFj7S3shnt3MATzkn50oxVV+Y9u7gU
-X-Google-Smtp-Source: AGRyM1sARy0g+5GkMm0W+suRvje6+JpWzSbPJ5cyjpiWIkQY8QW6Ni49id3SO+uMBASqQRfaDvMt/vImGE6pZaSeePhIv8+MtdPU
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8vfH2d4aXGbYFoRQ1C1A/di4tJyn3VCLYTTFPUgdEmo=;
+        b=4mkmvuvKpQfuvJBFbLRf9q0YXH9sL60Qg4RDJHb0HwOWbVD9kOwR7UwFh6qX95YN2O
+         SbquwYj3s1UFogUmJEzJ/AC63/nVgPpuj3/QPJVe2Kpb2m88/WwgPk0YpaN2qlYJuMwa
+         z3q9eZLyCnPNtONsXu2TSdwSFO5Fb+BYM2YWCRGCOwO/lYUcro4uNDaLfyd/aD6o4LET
+         f09Y9HyooetkpX6B8bNgQUQyaRiSkQ+GKez4vonfOBtoflVks/qvnQvtjG8lYjPSgIY2
+         7fZ/xZu16lDL2cdBUm4CggESUjlDAbSjLmeJj06roZ7wmrFVCVuM0S4qIqzQWUl6FfTQ
+         1EDg==
+X-Gm-Message-State: AJIora9sbAFoYgsc+a2QZxKqcnRfb2nrEDBiPBjqiSqA4iUiOWdlnvvv
+        nKg/B+bnoG72xa6C9gnzFUdrLDXakYU6DAPfgJ0=
+X-Google-Smtp-Source: AGRyM1veday674gQan5uJCUawQeX3lk/gOhXxOiac8cW0YQbkKg2rcfykeGnYh0kCH++BZB5BGgEoqxnWailGE4idMI=
+X-Received: by 2002:a17:906:74ca:b0:712:585:751c with SMTP id
+ z10-20020a17090674ca00b007120585751cmr14879127ejl.739.1655603774897; Sat, 18
+ Jun 2022 18:56:14 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a6b:c985:0:b0:66c:ce19:a5b6 with SMTP id
- z127-20020a6bc985000000b0066cce19a5b6mr6874900iof.94.1655590520975; Sat, 18
- Jun 2022 15:15:20 -0700 (PDT)
-Date:   Sat, 18 Jun 2022 15:15:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e57c2b05e1c03426@google.com>
-Subject: [syzbot] BUG: sleeping function called from invalid context in __vmalloc_node_range
-From:   syzbot <syzbot+b577bc624afda52c78de@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
-        bigeasy@linutronix.de, bpf@vger.kernel.org, brauner@kernel.org,
-        daniel@iogearbox.net, david@redhat.com, ebiederm@xmission.com,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, yhs@fb.com
+References: <20220614084930.43276-1-nashuiliang@gmail.com> <62ad50fa9d42d_24b34208d6@john.notmuch>
+ <CACueBy7NqRszA3tCOvLhfi1OraUrL_GD9YZ9XOPNHzbR1=+z7g@mail.gmail.com> <Yq5A4Cln4qeTaAeM@krava>
+In-Reply-To: <Yq5A4Cln4qeTaAeM@krava>
+From:   chuang <nashuiliang@gmail.com>
+Date:   Sun, 19 Jun 2022 09:56:03 +0800
+Message-ID: <CACueBy4Nr+rqJjZ3guBimd6t36V5B3CBp6_oZVMRzLvMZoTRpg@mail.gmail.com>
+Subject: Re: [PATCH] libbpf: Remove kprobe_event on failed kprobe_open_legacy
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Jingren Zhou <zhoujingren@didiglobal.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+Hi Jiri,
 
-syzbot found the following issue on:
+On Sun, Jun 19, 2022 at 5:17 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+>
+> just curious.. is that because of ipmodify flag on ftrace_ops?
+> AFAICS that be a poblem just for kretprobes, cc-ing Masami
+>
 
-HEAD commit:    35d872b9ea5b Add linux-next specific files for 20220614
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=155b0d10080000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d7bf2236c6bb2403
-dashboard link: https://syzkaller.appspot.com/bug?extid=b577bc624afda52c78de
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+Yes, the core reason is caused by ipmodify flag (not only for kretprobes).
+Before commit 0bc11ed5ab60 ("kprobes: Allow kprobes coexist with
+livepatch"), it's very easy to trigger this problem.
+The kprobe has other problems and is communicating with Masami.
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b577bc624afda52c78de@syzkaller.appspotmail.com
-
-BUG: sleeping function called from invalid context at mm/vmalloc.c:2980
-in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 30561, name: syz-executor.0
-preempt_count: 1, expected: 0
-RCU nest depth: 0, expected: 0
-no locks held by syz-executor.0/30561.
-Preemption disabled at:
-[<ffffffff81bc76f5>] rmqueue_pcplist mm/page_alloc.c:3813 [inline]
-[<ffffffff81bc76f5>] rmqueue mm/page_alloc.c:3858 [inline]
-[<ffffffff81bc76f5>] get_page_from_freelist+0x455/0x3a20 mm/page_alloc.c:4293
-CPU: 1 PID: 30561 Comm: syz-executor.0 Not tainted 5.19.0-rc2-next-20220614-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- __might_resched.cold+0x222/0x26b kernel/sched/core.c:9823
- vm_area_alloc_pages mm/vmalloc.c:2980 [inline]
- __vmalloc_area_node mm/vmalloc.c:3025 [inline]
- __vmalloc_node_range+0x6a1/0x13b0 mm/vmalloc.c:3195
- alloc_thread_stack_node kernel/fork.c:311 [inline]
- dup_task_struct kernel/fork.c:971 [inline]
- copy_process+0x1568/0x7080 kernel/fork.c:2065
- kernel_clone+0xe7/0xab0 kernel/fork.c:2649
- __do_sys_clone+0xba/0x100 kernel/fork.c:2783
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x46/0xb0
-RIP: 0033:0x7fe727a8a531
-Code: 48 85 ff 74 3d 48 85 f6 74 38 48 83 ee 10 48 89 4e 08 48 89 3e 48 89 d7 4c 89 c2 4d 89 c8 4c 8b 54 24 08 b8 38 00 00 00 0f 05 <48> 85 c0 7c 13 74 01 c3 31 ed 58 5f ff d0 48 89 c7 b8 3c 00 00 00
-RSP: 002b:00007ffee47acde8 EFLAGS: 00000206 ORIG_RAX: 0000000000000038
-RAX: ffffffffffffffda RBX: 00007fe728cb3700 RCX: 00007fe727a8a531
-RDX: 00007fe728cb39d0 RSI: 00007fe728cb32f0 RDI: 00000000003d0f00
-RBP: 00007ffee47ad030 R08: 00007fe728cb3700 R09: 00007fe728cb3700
-R10: 00007fe728cb39d0 R11: 0000000000000206 R12: 00007ffee47ace9e
-R13: 00007ffee47ace9f R14: 00007fe728cb3300 R15: 0000000000022000
- </TASK>
-BUG: scheduling while atomic: syz-executor.0/30561/0x00000002
-no locks held by syz-executor.0/30561.
-Modules linked in:
-Preemption disabled at:
-[<ffffffff81bc76f5>] rmqueue_pcplist mm/page_alloc.c:3813 [inline]
-[<ffffffff81bc76f5>] rmqueue mm/page_alloc.c:3858 [inline]
-[<ffffffff81bc76f5>] get_page_from_freelist+0x455/0x3a20 mm/page_alloc.c:4293
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+With this fix, whenever an error is returned after
+add_kprobe_event_legacy(), this guarantees cleanup of the kprobe
+event.
