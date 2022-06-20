@@ -2,89 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 923D8550D9E
-	for <lists+bpf@lfdr.de>; Mon, 20 Jun 2022 01:37:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4FC5511FA
+	for <lists+bpf@lfdr.de>; Mon, 20 Jun 2022 09:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234111AbiFSXhz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 19 Jun 2022 19:37:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45778 "EHLO
+        id S237980AbiFTH7O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Jun 2022 03:59:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231539AbiFSXhy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 19 Jun 2022 19:37:54 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C0C1317
-        for <bpf@vger.kernel.org>; Sun, 19 Jun 2022 16:37:53 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id y19so17976413ejq.6
-        for <bpf@vger.kernel.org>; Sun, 19 Jun 2022 16:37:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1jAMmJOUC9nZj5heCzBViozs9wQrTPw9g8rOhXgIZ8A=;
-        b=hOz3qbKYlptEDRgNbgJrOz56FCDx0Y/L+UxpbPqGswCUJywZz3hm2DHFjlnKtKS+eK
-         Elmq14VdBIfyOfD1LzqV727ZmCaVrBOmq8dBSf4zd2Wb6lfRCdwLBwhwF/VIW2K5pwk6
-         LuZ7Xp/k/7LthinhL+FjrJ6Srvf9nhV0ReQ1mcF0Cm9zsuizDllahR+7pxTWjgX/7HTQ
-         c6MB3ce1DQ3rGoGHKpIkJiNwS05bs9MmlHZPI7hnfnedzKiP8wJ4LGW/zQOuSD6SjfdU
-         yRD6tIWZ9s5DjAhQpDTUQEA9bvmgyMSAmKXzj96RdB6pZntmSk2LLptNDgQNtQeLHnHm
-         nR9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1jAMmJOUC9nZj5heCzBViozs9wQrTPw9g8rOhXgIZ8A=;
-        b=kCXfQ6oYvSoe9JMyZIiTxbez3noBEop0ieg2jm5oEACvZztbSHsDd9+qu0U+oVAE6T
-         orbYoj2uVPZrvnZ6LkyTcSZGtRkf+zm7N6Z00GZKG+5/l6Zc8NpOY7Zj4uqFzICGqW+f
-         PVWrIXOcxsxLWZklBMCruYezVKDEV/NpcNvnHjRJ9su/oFdPVw5MQuL6kRBFZXHFp5pc
-         ydHyOghprR6hY7Zg5AHY69uL65Y6f20xiAItG70inei3vBxDaSMXRefoej9C6lNQYaR+
-         O311KHUTJhIN53nf/8P334NIRX+0zcyotq7toIn9ywdCZrHqQJHMpQeIuons/3VmzZtt
-         WUFA==
-X-Gm-Message-State: AJIora/KzkUMfUzEwu3OBMzlG6e5mMFtC9dfbnOt/FdDRwpKRA75PvIi
-        m2TnBNHgsKNG3eU+pPdOgbBAdjX6hrakwA0LG+g=
-X-Google-Smtp-Source: AGRyM1s1DipKWzt34XqCldUI067TlUeTUoVrxht9ni6DYIPVqGCLy5xwiGtr0bZ20t42pmPuUIh7/E2xCSYHgh2ghM4=
-X-Received: by 2002:a17:906:b816:b0:708:2e56:97d7 with SMTP id
- dv22-20020a170906b81600b007082e5697d7mr18480566ejb.502.1655681871985; Sun, 19
- Jun 2022 16:37:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220613205008.212724-1-eddyz87@gmail.com> <20220613205008.212724-4-eddyz87@gmail.com>
- <CAADnVQ+rwwCoEPQUg+CS_iXSzqoptrgtW4TpqoM9XkMW9Jj+ag@mail.gmail.com>
- <fb17ffcbdfa6b75813352133c5655f01aefe71ec.camel@gmail.com>
- <20220619211028.tuhgxmtivvwkzo7m@macbook-pro-3.dhcp.thefacebook.com> <b3441513293da1e7e25767446ed5c30592d190e4.camel@gmail.com>
-In-Reply-To: <b3441513293da1e7e25767446ed5c30592d190e4.camel@gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sun, 19 Jun 2022 16:37:40 -0700
-Message-ID: <CAADnVQKz7EFH+QGBtpO2j-MPNAAREta+GjHaKn2cN0LaNQk-1Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v7 3/5] bpf: Inline calls to bpf_loop when
- callback is known
-To:     Eduard Zingerman <eddyz87@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        with ESMTP id S237445AbiFTH7N (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Jun 2022 03:59:13 -0400
+Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E41B72DDE;
+        Mon, 20 Jun 2022 00:59:11 -0700 (PDT)
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxX07GKLBir6JOAA--.21225S2;
+        Mon, 20 Jun 2022 15:59:03 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>, Song Liu <song@kernel.org>,
-        Joanne Koong <joannelkoong@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Pavel Machek <pavel@ucw.cz>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next] libbpf: Include linux/log2.h to use is_pow_of_2()
+Date:   Mon, 20 Jun 2022 15:59:02 +0800
+Message-Id: <1655711942-6181-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9DxX07GKLBir6JOAA--.21225S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrKF17WF43Kw1kAF1rKr48Zwb_yoWkCrc_C3
+        4xJr48Wr9Iyryavw1fAFZ29Fyqqa1ruF18XF1rtwnrGas0kw15GwnrG34kAa4Yg3sayryf
+        WFykXrWfZr1rWjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2xYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwV
+        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8CwCF04k2
+        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
+        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41l
+        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
+        AIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
+        z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUcU73DUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jun 19, 2022 at 3:01 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
->
-> /* Mark a register as having a completely unknown (scalar) value. */
-> static void __mark_reg_unknown(const struct bpf_verifier_env *env,
->                                struct bpf_reg_state *reg)
-> {
->         ...
->         reg->precise = env->subprog_cnt > 1 || !env->bpf_capable;
+is_pow_of_2() is already defined in tools/include/linux/log2.h [1],
+so no need to define it again in tools/lib/bpf/libbpf_internal.h,
+just include linux/log2.h directly.
 
-Ahh. Thanks for explaining.
-We probably need to fix this conservative logic.
-Can you repro the issue when you comment out above ?
+[1] https://lore.kernel.org/bpf/20220619171248.GC3362@bug/
 
-Let's skip the test for now. Just add mark_chain_precision
-to loop logic, so we don't have to come back to it later
-when subprogs>1 is fixed.
+Suggested-by: Pavel Machek <pavel@ucw.cz>
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ tools/lib/bpf/libbpf_internal.h | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+index a1ad145..021946a 100644
+--- a/tools/lib/bpf/libbpf_internal.h
++++ b/tools/lib/bpf/libbpf_internal.h
+@@ -13,6 +13,7 @@
+ #include <limits.h>
+ #include <errno.h>
+ #include <linux/err.h>
++#include <linux/log2.h>
+ #include <fcntl.h>
+ #include <unistd.h>
+ #include "libbpf_legacy.h"
+@@ -582,9 +583,4 @@ struct bpf_link * usdt_manager_attach_usdt(struct usdt_manager *man,
+ 					   const char *usdt_provider, const char *usdt_name,
+ 					   __u64 usdt_cookie);
+ 
+-static inline bool is_pow_of_2(size_t x)
+-{
+-	return x && (x & (x - 1)) == 0;
+-}
+-
+ #endif /* __LIBBPF_LIBBPF_INTERNAL_H */
+-- 
+2.1.0
+
