@@ -2,261 +2,215 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E1C55283F
-	for <lists+bpf@lfdr.de>; Tue, 21 Jun 2022 01:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C36A552869
+	for <lists+bpf@lfdr.de>; Tue, 21 Jun 2022 01:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346531AbiFTXXV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Jun 2022 19:23:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44710 "EHLO
+        id S241672AbiFTXyl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Jun 2022 19:54:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347369AbiFTXXL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Jun 2022 19:23:11 -0400
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F3492C648
-        for <bpf@vger.kernel.org>; Mon, 20 Jun 2022 16:18:16 -0700 (PDT)
-Received: from submission (posteo.de [185.67.36.169]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id 9B03C240107
-        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 01:18:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1655767094; bh=/hvehwMkNSOMape3WP4mwp4pPVa6Y6Eo1bGnnvvrfpw=;
-        h=From:To:Subject:Date:From;
-        b=ZH75+EINTQHhpcmnXhJznzfMnDiU7/YK0+hLaiTEN/OfmzesvmdF9DoDa7PbqRFa/
-         Mw/+1HCPbyysJceIMNANnSnbFT1EQ/8Ehnc9NtQNNuwDstBOgBPkwF37j6h7eNTiCm
-         IYeyBqhNBZV+fO6G4v2PfvmUSUx8OycV+RIVS3g/S2ogRMAIb8/D/1AMXU+i8RbgsS
-         pKxlI+/BY4trcGWIhj2/qQw5tqPFXaIjQjCmB/hY80gCPEiQN8wkGqbyxE8JkGqyKc
-         YA8ty0GpkJSzUkscA/kQ/i1HeFiq89BlJc97icHuUD3HKuHx84jkTWzazOrpqM2J+9
-         XgTb3rs/jXReA==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4LRlts62Y0z6tmb;
-        Tue, 21 Jun 2022 01:18:13 +0200 (CEST)
-From:   =?UTF-8?q?Daniel=20M=C3=BCller?= <deso@posteo.net>
+        with ESMTP id S239638AbiFTXyk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Jun 2022 19:54:40 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C057113D12
+        for <bpf@vger.kernel.org>; Mon, 20 Jun 2022 16:54:38 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id fu3so24071339ejc.7
+        for <bpf@vger.kernel.org>; Mon, 20 Jun 2022 16:54:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mCMCWpJ7kvfb1lmZWPLDlA81tRfDKgHfwd/xKqa4BQk=;
+        b=X81H511bje5F6b4sWl+DiEj0/OaA+7pksq+2T4tThfWHvPD+247bt7m+vvp3B51g5E
+         Upk36L85ui4FDoTt1RHlSbILW7QUYIUJLj61NHNpiCnTab42sJkQ604HRLPdnH1J0Vua
+         ZA5ID7QLEWcIZJh9pwl4jIDyJsEarDImw3XIdvjeUbSNa2ieb4X433T/upiRCEEWily2
+         yts9LnV1CprzvcRnt2274sS0SYHiVhaZF7Oj1yw8wc/31rcYnUkuQyne/Xt1RnJTQt0f
+         O4pFIWdqDgL3U2DVG8VjfexTftwp23CL9+xMvoBjlEzZrrEkZiGHS8VgEObAoXm//AzT
+         KjQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mCMCWpJ7kvfb1lmZWPLDlA81tRfDKgHfwd/xKqa4BQk=;
+        b=RQw9rW71h7eZ/JXQLqYnOo+cuns8gu2OVusMxkNtsVN/ty3ZBXTA4Sq0+Ra4nhcv5z
+         YFIYKKNDn1oCIah0BKfko2fhxdY3xVyJBVDhfdl7QdSRgNPdIH7z0/vUUilFGCq0o4c3
+         N1gPTxYguaV4pwvPfCw2jA9JACfqw7+8C8hh3+Tk0Vnf2HISMnzeXnNy4DF0328bF6c6
+         BoIB6o++hcTNBvTFsCrCyrgiiUDkNOxhG9PnwspP21zL5AabTDWOpQUlNkncAnkmE7ZI
+         TgVM35NVE2h4aEejCz3D9iCWeMo9B9fcElgiXYN5X429wyf+8L6W7bLmnswhXns/Ynsc
+         kk2Q==
+X-Gm-Message-State: AJIora9lGQTO4nbcu0WytLTLeOUN2gPrUWfjLIjvTbon9V0/wBsATClI
+        NRD2r2tiOyrxAPpQUrY3aAHAYaZphjMGcP9E
+X-Google-Smtp-Source: AGRyM1tlJAoUnY8L6G9b5Ps2AUOctDZqY1u83jTrtYZj0EUDcujYNix91vxDD0RqFI1TegQGFSU1KQ==
+X-Received: by 2002:a17:906:a10e:b0:6f3:e70b:b572 with SMTP id t14-20020a170906a10e00b006f3e70bb572mr22246896ejy.546.1655769276914;
+        Mon, 20 Jun 2022 16:54:36 -0700 (PDT)
+Received: from localhost.localdomain (boundsly.muster.volia.net. [93.72.16.93])
+        by smtp.gmail.com with ESMTPSA id e21-20020a056402105500b004356d08bbbasm7078560edu.40.2022.06.20.16.54.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Jun 2022 16:54:35 -0700 (PDT)
+From:   Eduard Zingerman <eddyz87@gmail.com>
 To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com
-Subject: [PATCH bpf-next 7/7] selftests/bpf: Add nested type to type based tests
-Date:   Mon, 20 Jun 2022 23:17:13 +0000
-Message-Id: <20220620231713.2143355-8-deso@posteo.net>
-In-Reply-To: <20220620231713.2143355-1-deso@posteo.net>
-References: <20220620231713.2143355-1-deso@posteo.net>
+        daniel@iogearbox.net, kernel-team@fb.com, song@kernel.org,
+        joannelkoong@gmail.com
+Cc:     eddyz87@gmail.com
+Subject: [PATCH bpf-next v8 0/5] bpf_loop inlining
+Date:   Tue, 21 Jun 2022 02:53:39 +0300
+Message-Id: <20220620235344.569325-1-eddyz87@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This change extends the type based tests with another struct type (in
-addition to a_struct) to check relocations against: a_complex_struct.
-This type is nested more deeply to provide additional coverage of
-certain paths in the type match logic.
+Hi Everyone,
 
-Signed-off-by: Daniel Müller <deso@posteo.net>
----
- .../selftests/bpf/prog_tests/core_reloc.c     |  4 ++
- .../selftests/bpf/progs/core_reloc_types.h    | 62 +++++++++++++------
- .../bpf/progs/test_core_reloc_type_based.c    | 12 ++++
- 3 files changed, 58 insertions(+), 20 deletions(-)
+This is the next iteration of the patch. It includes changes suggested
+by Song, Joanne and Alexei. Please find updated intro message and
+change log below.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-index eb47bf..8882c9c 100644
---- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-+++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-@@ -754,6 +754,7 @@ static const struct core_reloc_test_case test_cases[] = {
- 	/* validate type existence, match, and size relocations */
- 	TYPE_BASED_CASE(type_based, {
- 		.struct_exists = 1,
-+		.complex_struct_exists = 1,
- 		.union_exists = 1,
- 		.enum_exists = 1,
- 		.typedef_named_struct_exists = 1,
-@@ -766,6 +767,7 @@ static const struct core_reloc_test_case test_cases[] = {
- 		.typedef_arr_exists = 1,
- 
- 		.struct_matches = 1,
-+		.complex_struct_matches = 1,
- 		.union_matches = 1,
- 		.enum_matches = 1,
- 		.typedef_named_struct_matches = 1,
-@@ -794,6 +796,7 @@ static const struct core_reloc_test_case test_cases[] = {
- 	}),
- 	TYPE_BASED_CASE(type_based___diff, {
- 		.struct_exists = 1,
-+		.complex_struct_exists = 1,
- 		.union_exists = 1,
- 		.enum_exists = 1,
- 		.typedef_named_struct_exists = 1,
-@@ -806,6 +809,7 @@ static const struct core_reloc_test_case test_cases[] = {
- 		.typedef_arr_exists = 1,
- 
- 		.struct_matches = 1,
-+		.complex_struct_matches = 1,
- 		.union_matches = 1,
- 		.enum_matches = 1,
- 		.typedef_named_struct_matches = 1,
-diff --git a/tools/testing/selftests/bpf/progs/core_reloc_types.h b/tools/testing/selftests/bpf/progs/core_reloc_types.h
-index e326b6..aa265c3 100644
---- a/tools/testing/selftests/bpf/progs/core_reloc_types.h
-+++ b/tools/testing/selftests/bpf/progs/core_reloc_types.h
-@@ -864,6 +864,7 @@ struct core_reloc_size___err_ambiguous2 {
-  */
- struct core_reloc_type_based_output {
- 	bool struct_exists;
-+	bool complex_struct_exists;
- 	bool union_exists;
- 	bool enum_exists;
- 	bool typedef_named_struct_exists;
-@@ -876,6 +877,7 @@ struct core_reloc_type_based_output {
- 	bool typedef_arr_exists;
- 
- 	bool struct_matches;
-+	bool complex_struct_matches;
- 	bool union_matches;
- 	bool enum_matches;
- 	bool typedef_named_struct_matches;
-@@ -904,6 +906,14 @@ struct a_struct {
- 	int x;
- };
- 
-+struct a_complex_struct {
-+	union {
-+		struct a_struct *a;
-+		void *b;
-+	} x;
-+	volatile long y;
-+};
-+
- union a_union {
- 	int y;
- 	int z;
-@@ -935,16 +945,17 @@ typedef char arr_typedef[20];
- 
- struct core_reloc_type_based {
- 	struct a_struct f1;
--	union a_union f2;
--	enum an_enum f3;
--	named_struct_typedef f4;
--	anon_struct_typedef f5;
--	struct_ptr_typedef f6;
--	int_typedef f7;
--	enum_typedef f8;
--	void_ptr_typedef f9;
--	func_proto_typedef f10;
--	arr_typedef f11;
-+	struct a_complex_struct f2;
-+	union a_union f3;
-+	enum an_enum f4;
-+	named_struct_typedef f5;
-+	anon_struct_typedef f6;
-+	struct_ptr_typedef f7;
-+	int_typedef f8;
-+	enum_typedef f9;
-+	void_ptr_typedef f10;
-+	func_proto_typedef f11;
-+	arr_typedef f12;
- };
- 
- /* no types in target */
-@@ -957,6 +968,16 @@ struct a_struct___diff {
- 	int a;
- };
- 
-+struct a_struct___forward;
-+
-+struct a_complex_struct___diff {
-+	union {
-+		struct a_struct___forward *a;
-+		void *b;
-+	} x;
-+	volatile long y;
-+};
-+
- union a_union___diff {
- 	int z;
- 	int y;
-@@ -990,16 +1011,17 @@ typedef char arr_typedef___diff[3];
- 
- struct core_reloc_type_based___diff {
- 	struct a_struct___diff f1;
--	union a_union___diff f2;
--	enum an_enum___diff f3;
--	named_struct_typedef___diff f4;
--	anon_struct_typedef___diff f5;
--	struct_ptr_typedef___diff f6;
--	int_typedef___diff f7;
--	enum_typedef___diff f8;
--	void_ptr_typedef___diff f9;
--	func_proto_typedef___diff f10;
--	arr_typedef___diff f11;
-+	struct a_complex_struct___diff f2;
-+	union a_union___diff f3;
-+	enum an_enum___diff f4;
-+	named_struct_typedef___diff f5;
-+	anon_struct_typedef___diff f6;
-+	struct_ptr_typedef___diff f7;
-+	int_typedef___diff f8;
-+	enum_typedef___diff f9;
-+	void_ptr_typedef___diff f10;
-+	func_proto_typedef___diff f11;
-+	arr_typedef___diff f12;
- };
- 
- /* different type sizes, extra modifiers, anon vs named enums, etc */
-diff --git a/tools/testing/selftests/bpf/progs/test_core_reloc_type_based.c b/tools/testing/selftests/bpf/progs/test_core_reloc_type_based.c
-index 325ead..d95bc08 100644
---- a/tools/testing/selftests/bpf/progs/test_core_reloc_type_based.c
-+++ b/tools/testing/selftests/bpf/progs/test_core_reloc_type_based.c
-@@ -19,6 +19,14 @@ struct a_struct {
- 	int x;
- };
- 
-+struct a_complex_struct {
-+	union {
-+		struct a_struct *a;
-+		void *b;
-+	} x;
-+	volatile long y;
-+};
-+
- union a_union {
- 	int y;
- 	int z;
-@@ -50,6 +58,7 @@ typedef char arr_typedef[20];
- 
- struct core_reloc_type_based_output {
- 	bool struct_exists;
-+	bool complex_struct_exists;
- 	bool union_exists;
- 	bool enum_exists;
- 	bool typedef_named_struct_exists;
-@@ -62,6 +71,7 @@ struct core_reloc_type_based_output {
- 	bool typedef_arr_exists;
- 
- 	bool struct_matches;
-+	bool complex_struct_matches;
- 	bool union_matches;
- 	bool enum_matches;
- 	bool typedef_named_struct_matches;
-@@ -99,6 +109,7 @@ int test_core_type_based(void *ctx)
- 	struct core_reloc_type_based_output *out = (void *)&data.out;
- 
- 	out->struct_exists = bpf_core_type_exists(struct a_struct);
-+	out->complex_struct_exists = bpf_core_type_exists(struct a_complex_struct);
- 	out->union_exists = bpf_core_type_exists(union a_union);
- 	out->enum_exists = bpf_core_type_exists(enum an_enum);
- 	out->typedef_named_struct_exists = bpf_core_type_exists(named_struct_typedef);
-@@ -111,6 +122,7 @@ int test_core_type_based(void *ctx)
- 	out->typedef_arr_exists = bpf_core_type_exists(arr_typedef);
- 
- 	out->struct_matches = bpf_core_type_matches(struct a_struct);
-+	out->complex_struct_matches = bpf_core_type_matches(struct a_complex_struct);
- 	out->union_matches = bpf_core_type_matches(union a_union);
- 	out->enum_matches = bpf_core_type_matches(enum an_enum);
- 	out->typedef_named_struct_matches = bpf_core_type_matches(named_struct_typedef);
+This patch implements inlining of calls to bpf_loop helper function
+when bpf_loop's callback is statically known. E.g. the rewrite does
+the following transformation during BPF program processing:
+
+  bpf_loop(10, foo, NULL, 0);
+
+ ->
+
+  for (int i = 0; i < 10; ++i)
+    foo(i, NULL);
+
+The transformation leads to measurable latency change for simple
+loops. Measurements using `benchs/run_bench_bpf_loop.sh` inside QEMU /
+KVM on i7-4710HQ CPU show a drop in latency from 14 ns/op to 2 ns/op.
+
+The change is split in five parts:
+
+* Update to test_verifier.c to specify expected and unexpected
+  instruction sequences. This allows to check BPF program rewrites
+  applied by e.g. do_mix_fixups function.
+
+* Update to test_verifier.c to specify BTF function infos and types
+  per test case. This is necessary for tests that load sub-program
+  addresses to a variable because of the checks applied by
+  check_ld_imm function.
+
+* The update to verifier.c that tracks state of the parameters for
+  each bpf_loop call in a program and decides whether it could be
+  replaced by a loop.
+
+* A set of test cases for `test_verifier` that use capabilities added
+  by the first two patches to verify instructions produced by inlining
+  logic.
+
+* Two test cases for `test_prog` to check that possible corner cases
+  behave as expected.
+
+Additional details are available in commit messages for each patch.
+
+Changes since v7:
+ - Call to `mark_chain_precision` is added in `loop_flag_is_zero` to
+   avoid potential issues with state pruning and precision tracking.
+ - `flags non-zero` test_verifier test case is updated to have two
+   execution paths reaching `bpf_loop` call, one with flags = 0,
+   another with flags = 1. Potentially this test case should be able
+   to show that call to `mark_chain_precision` is necessary in
+   `loop_flag_is_zero` but not at the moment. Please refer to
+   discussion for [PATCH bpf-next v7 3/5] for additional details.
+ - `stack_depth_extra` computation is updated to guarantee that R6, R7
+   and R8 offsets are always aligned on 8 byte boundary.
+ - `stack locations for loop vars` test_verifier test case updated to
+   show that R6, R7, R8 offsets are indeed aligned when function stack
+   depth is not a multiple of 8.
+ - I removed Song Liu's ACK from commit message for [PATCH bpf-next v8
+   4/5] because I updated the patch. (Please let me know if I had to
+   keep the ACK tag).
+
+Changes since v6:
+ - Return value of the `optimize_bpf_loop` function is no longer
+   ignored. This is necessary to properly propagate -ENOMEM error.
+
+Changes since v5:
+ - Added function `loop_flag_is_zero` to skip a few checks in
+   `update_loop_inline_state` when loop instruction is not fit for
+   inline.
+
+Changes since v4:
+ - Added missing `static` modifier for `update_loop_inline_state` and
+   `inline_bpf_loop` functions.
+ - `update_loop_inline_state` updated for better readability.
+ - Fields `initialized` and `fit_for_inline` of `struct
+   bpf_loop_inline_state` are changed back from `bool` to bitfields.
+ - Acks from Song Liu added to comments for patches 1/5, 2/5, 4/5,
+   5/5.
+
+Changes since v3:
+ - Function `adjust_stack_depth_for_loop_inlining` is replaced by
+   function `optimize_bpf_loop`. Function `optimize_bpf_loop` is
+   responsible for both stack depth adjustment and call instruction
+   replacement.
+ - Changes in `do_misc_fixups` are reverted.
+ - Changes in `adjust_subprog_starts_after_remove` are reverted and
+   function `adjust_loop_inline_subprogno` is removed. This is
+   possible because call to `optimize_bpf_loop` is placed before the
+   dead code removal in `opt_remove_dead_code` (in contrast to the
+   position of `do_misc_fixups` where inlining was done in v3).
+ - Field `bpf_insn_aux_data.loop_inline_state` is now a part of
+   anonymous union at the start of the `bpf_insn_aux_data`.
+ - Data structure `bpf_loop_inline_state` is simplified to use single
+   flag field `fit_for_inline` instead of separate fields
+   `flags_is_zero` & `callback_is_constant`.
+ - Macro definition `BPF_MAX_LOOPS` is moved from
+   `include/linux/bpf_verifier.h` to `include/linux/bpf.h` to avoid
+   include of `include/linux/bpf_verifier.h` in `bpf_iter.c`.
+ - `inline_bpf_loop` changed back to use array initialization and hard
+   coded offsets as in v2.
+ - Style / formatting updates.
+
+Changes since v2:
+ - fix for `stack_check` test case in `test_progs-no_alu32`, all tests
+   are passing now;
+ - v2 3/3 patch is split in three parts:
+   - kernel changes
+   - test_verifier changes
+   - test_prog changes
+ - updated `inline_bpf_loop` in `verifier.c` to calculate each offset
+   used in instructions to avoid "magic" numbers;
+ - removed newline handling logic in `fail_log` branch of
+   `do_single_test` in `test_verifier.c` to simplify the patch set;
+ - styling fixes suggested in review for v2 of this patch set.
+
+Changes since v1:
+ - allow to use SKIP_INSNS in instruction pattern specification in
+   test_verifier tests;
+ - fix for a bug in spill offset assignement for loop vars when
+   bpf_loop is located in a non-main function.
+
+Eduard Zingerman (5):
+  selftests/bpf: specify expected instructions in test_verifier tests
+  selftests/bpf: allow BTF specs and func infos in test_verifier tests
+  bpf: Inline calls to bpf_loop when callback is known
+  selftests/bpf: BPF test_verifier selftests for bpf_loop inlining
+  selftests/bpf: BPF test_prog selftests for bpf_loop inlining
+
+ include/linux/bpf.h                           |   3 +
+ include/linux/bpf_verifier.h                  |  12 +
+ kernel/bpf/bpf_iter.c                         |   9 +-
+ kernel/bpf/verifier.c                         | 180 +++++++++-
+ .../selftests/bpf/prog_tests/bpf_loop.c       |  62 ++++
+ tools/testing/selftests/bpf/prog_tests/btf.c  |   1 -
+ tools/testing/selftests/bpf/progs/bpf_loop.c  | 114 ++++++
+ tools/testing/selftests/bpf/test_btf.h        |   2 +
+ tools/testing/selftests/bpf/test_verifier.c   | 328 +++++++++++++++++-
+ .../selftests/bpf/verifier/bpf_loop_inline.c  | 252 ++++++++++++++
+ 10 files changed, 936 insertions(+), 27 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/verifier/bpf_loop_inline.c
+
 -- 
-2.30.2
+2.25.1
 
