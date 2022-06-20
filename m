@@ -2,59 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C4BA55286C
-	for <lists+bpf@lfdr.de>; Tue, 21 Jun 2022 01:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07DF455286D
+	for <lists+bpf@lfdr.de>; Tue, 21 Jun 2022 01:54:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245097AbiFTXyu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Jun 2022 19:54:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34634 "EHLO
+        id S239638AbiFTXyv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Jun 2022 19:54:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244396AbiFTXyt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Jun 2022 19:54:49 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 087F813D39
-        for <bpf@vger.kernel.org>; Mon, 20 Jun 2022 16:54:48 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id es26so15433952edb.4
-        for <bpf@vger.kernel.org>; Mon, 20 Jun 2022 16:54:47 -0700 (PDT)
+        with ESMTP id S244396AbiFTXyv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Jun 2022 19:54:51 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C383F13D28
+        for <bpf@vger.kernel.org>; Mon, 20 Jun 2022 16:54:49 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id ay16so4701874ejb.6
+        for <bpf@vger.kernel.org>; Mon, 20 Jun 2022 16:54:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=gUNlDq4gqclg6ilFHgssD0hNdQf9GAvVjVxet0bXss8=;
-        b=XZ/5JqP6kIBTJ94NXEDP5ZmStL0L0jqpUUcBbFlj5q8zpDrnSNk2BsYBHMfGCHM0pU
-         Z0EN3ntEDaalJMkZRL8g3RgmrshBZKiAwOZC7Ly/j9qnlpq1DwQvNSUDyIcYWgxTGueO
-         BXEaPx5gGs1jftbVGHzoZ8iCfsFKsGNVoVWVtaGdZuejnghubhKXwgj7dV99kHiQp4Pj
-         la5HnsskKi0LNx6rAc11RddFCyPLfB/bRijWvT/gk1likw/2xfxPlPGKs/bLOBsfwECu
-         UARComszD79sEIfA9u4zhte7+cpPMgwKhMVBqUxHkYAmuQXLO+sc73OR+vVR4LTwU8cI
-         FI0A==
+        bh=e0gJlAyr6iWp++zpBDPdS2GGhrkA349ug3a4vI2yiaw=;
+        b=JtaD7B2aoT4+8Tl2TvLxMSB0ddeIgCjuHkDVDW7PZ3/A7FBHohW4Ucxaa/o7Jetm6L
+         v6XiNXWiKCd/eCJnmHnNhAANG626FHbwtR9uBPsiRGW7AnECMyZcqai4O5+8Gz3F46a2
+         asJlIvGY7N470afr/DT88rHP9SEbJgU4bZ2v2Q+MSG2ZmixSXAtMluXlYUk1kEy8Cnwo
+         ojGsIe9/iTbngr0OEkUfI2XRq4U8vEnxmfNveudlAniKFK4CDz8QoB3UaJMV2Vaj0o1s
+         lCFSxEgTwdy23WUTXFp7Yvq3MSiEtTR+D9/kTktQXn8HK/6NLAvkrav/WYbGERYl3nm/
+         5Zjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gUNlDq4gqclg6ilFHgssD0hNdQf9GAvVjVxet0bXss8=;
-        b=KP9leRv6suD/8R/oVZOSg60XTgctIY/K7M02JuEjoIrAPQjjPgkqNRbvz6Rih+nl7B
-         MVni7Hfwc+lOAfq9Ez4dOJLtI7Av6t4iDaE5IK+/7XdVIQOI6DFS1yODoQTHxdCFqPWV
-         P64uR/WB8iTQX+Z53pP6xQaRRq71NbmtzkmD0UehmblZYLI0ADXwNjyrYpigeQ9kCwSw
-         Fzg6MecHeia00NWiRkbnqkgxwPF0k1+eK2LXwHf7c8VIGbRJBMjdq5BZoAep9C5jJj65
-         UIFqGPbwKUe7q4VSQbxA8xSW6sIYoN70xSgEo4ybJd9pVqO3qoJ0omU9BJRKI9N9Sf7g
-         5oKQ==
-X-Gm-Message-State: AJIora9grUD68wyPE2zd1G5jMnIH8XRfrWr5i3AhyoRShRTOH1zO5Tyo
-        Bb20wMkTYEw1xk87iLiyZCme/25dJlalvEFD
-X-Google-Smtp-Source: AGRyM1uMqV+5AwuLa4GM7uKyhG7i1LhXtkvtbOwcn87z+Ad2gc85vgwG2CL3azGW+53Xmn3DEaf11w==
-X-Received: by 2002:a05:6402:3988:b0:434:e2a8:8459 with SMTP id fk8-20020a056402398800b00434e2a88459mr32208561edb.253.1655769286256;
-        Mon, 20 Jun 2022 16:54:46 -0700 (PDT)
+        bh=e0gJlAyr6iWp++zpBDPdS2GGhrkA349ug3a4vI2yiaw=;
+        b=EMLzRD+G6KHZGlDPOQtka0iVDv3NJOYd0sUhOIUVvZ/mcQfmSHBRVa+n7d5FEk2KDO
+         S4lF7HxAKmpj6tPnpd524EFD9afaFr94ijdmN2Pw1ytJYSl2b8eizhB4NF4g3wKIoOIO
+         uLb0j0ZuLvsrq4UyVtPk9TeYSX6+IV4TfAqdmXofzNX3SIVri/8laVCTLBFcfrkEn/jC
+         b84lf3lOKJFwKJNrSKY7ab12PDFsbr28z4muIFmUPhkBdSgh+22YG71pnnW7m9Xk/5+J
+         d88S2noXKbIx6vwHROjKnIGCKBrf5+NLZayFzDKTW0w/ec4w0yFuehBlN5XNnCwtH1J8
+         t2Ag==
+X-Gm-Message-State: AJIora8V2AgIeGb6EtOfUKKmP/L7r0CwNBr4nT8VWwquuX4PrtNag1C6
+        598l+vS1F8/v0RXqfsX9sp0OJVTHtB8YupaI
+X-Google-Smtp-Source: AGRyM1vTbYoiRIXL2DV/2vIcwjCOO+hmaEIcHbuJ/d3ntBKmfp1yk0GEWVoERzNynwJMOqqcAqJU3Q==
+X-Received: by 2002:a17:906:49d4:b0:6d6:e5ec:9a23 with SMTP id w20-20020a17090649d400b006d6e5ec9a23mr23493959ejv.79.1655769287937;
+        Mon, 20 Jun 2022 16:54:47 -0700 (PDT)
 Received: from localhost.localdomain (boundsly.muster.volia.net. [93.72.16.93])
-        by smtp.gmail.com with ESMTPSA id e21-20020a056402105500b004356d08bbbasm7078560edu.40.2022.06.20.16.54.43
+        by smtp.gmail.com with ESMTPSA id e21-20020a056402105500b004356d08bbbasm7078560edu.40.2022.06.20.16.54.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jun 2022 16:54:43 -0700 (PDT)
+        Mon, 20 Jun 2022 16:54:47 -0700 (PDT)
 From:   Eduard Zingerman <eddyz87@gmail.com>
 To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
         daniel@iogearbox.net, kernel-team@fb.com, song@kernel.org,
         joannelkoong@gmail.com
-Cc:     eddyz87@gmail.com
-Subject: [PATCH bpf-next v8 4/5] selftests/bpf: BPF test_verifier selftests for bpf_loop inlining
-Date:   Tue, 21 Jun 2022 02:53:43 +0300
-Message-Id: <20220620235344.569325-5-eddyz87@gmail.com>
+Cc:     eddyz87@gmail.com, Song Liu <songliubraving@fb.com>
+Subject: [PATCH bpf-next v8 5/5] selftests/bpf: BPF test_prog selftests for bpf_loop inlining
+Date:   Tue, 21 Jun 2022 02:53:44 +0300
+Message-Id: <20220620235344.569325-6-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220620235344.569325-1-eddyz87@gmail.com>
 References: <20220620235344.569325-1-eddyz87@gmail.com>
@@ -63,289 +63,241 @@ Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
         FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UPPERCASE_50_75 autolearn=no autolearn_force=no
-        version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-A number of test cases for BPF selftests test_verifier to check how
-bpf_loop inline transformation rewrites the BPF program. The following
-cases are covered:
- - happy path
- - no-rewrite when flags is non-zero
- - no-rewrite when callback is non-constant
- - subprogno in insn_aux is updated correctly when dead sub-programs
-   are removed
- - check that correct stack offsets are assigned for spilling of R6-R8
-   registers
+Two new test BPF programs for test_prog selftests checking bpf_loop
+behavior. Both are corner cases for bpf_loop inlinig transformation:
+ - check that bpf_loop behaves correctly when callback function is not
+   a compile time constant
+ - check that local function variables are not affected by allocating
+   additional stack storage for registers spilled by loop inlining
 
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+Acked-by: Song Liu <songliubraving@fb.com>
 ---
- .../selftests/bpf/verifier/bpf_loop_inline.c  | 252 ++++++++++++++++++
- 1 file changed, 252 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/verifier/bpf_loop_inline.c
+ .../selftests/bpf/prog_tests/bpf_loop.c       |  62 ++++++++++
+ tools/testing/selftests/bpf/progs/bpf_loop.c  | 114 ++++++++++++++++++
+ 2 files changed, 176 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/verifier/bpf_loop_inline.c b/tools/testing/selftests/bpf/verifier/bpf_loop_inline.c
-new file mode 100644
-index 000000000000..232da07c93b5
---- /dev/null
-+++ b/tools/testing/selftests/bpf/verifier/bpf_loop_inline.c
-@@ -0,0 +1,252 @@
-+#define BTF_TYPES \
-+	.btf_strings = "\0int\0i\0ctx\0callback\0main\0", \
-+	.btf_types = { \
-+	/* 1: int   */ BTF_TYPE_INT_ENC(1, BTF_INT_SIGNED, 0, 32, 4), \
-+	/* 2: int*  */ BTF_PTR_ENC(1), \
-+	/* 3: void* */ BTF_PTR_ENC(0), \
-+	/* 4: int __(void*) */ BTF_FUNC_PROTO_ENC(1, 1), \
-+		BTF_FUNC_PROTO_ARG_ENC(7, 3), \
-+	/* 5: int __(int, int*) */ BTF_FUNC_PROTO_ENC(1, 2), \
-+		BTF_FUNC_PROTO_ARG_ENC(5, 1), \
-+		BTF_FUNC_PROTO_ARG_ENC(7, 2), \
-+	/* 6: main      */ BTF_FUNC_ENC(20, 4), \
-+	/* 7: callback  */ BTF_FUNC_ENC(11, 5), \
-+	BTF_END_RAW \
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_loop.c b/tools/testing/selftests/bpf/prog_tests/bpf_loop.c
+index 380d7a2072e3..4cd8a25afe68 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_loop.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_loop.c
+@@ -120,6 +120,64 @@ static void check_nested_calls(struct bpf_loop *skel)
+ 	bpf_link__destroy(link);
+ }
+ 
++static void check_non_constant_callback(struct bpf_loop *skel)
++{
++	struct bpf_link *link =
++		bpf_program__attach(skel->progs.prog_non_constant_callback);
++
++	if (!ASSERT_OK_PTR(link, "link"))
++		return;
++
++	skel->bss->callback_selector = 0x0F;
++	usleep(1);
++	ASSERT_EQ(skel->bss->g_output, 0x0F, "g_output #1");
++
++	skel->bss->callback_selector = 0xF0;
++	usleep(1);
++	ASSERT_EQ(skel->bss->g_output, 0xF0, "g_output #2");
++
++	bpf_link__destroy(link);
++}
++
++static void check_stack(struct bpf_loop *skel)
++{
++	struct bpf_link *link = bpf_program__attach(skel->progs.stack_check);
++	const int max_key = 12;
++	int key;
++	int map_fd;
++
++	if (!ASSERT_OK_PTR(link, "link"))
++		return;
++
++	map_fd = bpf_map__fd(skel->maps.map1);
++
++	if (!ASSERT_GE(map_fd, 0, "bpf_map__fd"))
++		goto out;
++
++	for (key = 1; key <= max_key; ++key) {
++		int val = key;
++		int err = bpf_map_update_elem(map_fd, &key, &val, BPF_NOEXIST);
++
++		if (!ASSERT_OK(err, "bpf_map_update_elem"))
++			goto out;
 +	}
 +
-+#define MAIN_TYPE	6
-+#define CALLBACK_TYPE	7
++	usleep(1);
 +
-+/* can't use BPF_CALL_REL, jit_subprogs adjusts IMM & OFF
-+ * fields for pseudo calls
++	for (key = 1; key <= max_key; ++key) {
++		int val;
++		int err = bpf_map_lookup_elem(map_fd, &key, &val);
++
++		if (!ASSERT_OK(err, "bpf_map_lookup_elem"))
++			goto out;
++		if (!ASSERT_EQ(val, key + 1, "bad value in the map"))
++			goto out;
++	}
++
++out:
++	bpf_link__destroy(link);
++}
++
+ void test_bpf_loop(void)
+ {
+ 	struct bpf_loop *skel;
+@@ -140,6 +198,10 @@ void test_bpf_loop(void)
+ 		check_invalid_flags(skel);
+ 	if (test__start_subtest("check_nested_calls"))
+ 		check_nested_calls(skel);
++	if (test__start_subtest("check_non_constant_callback"))
++		check_non_constant_callback(skel);
++	if (test__start_subtest("check_stack"))
++		check_stack(skel);
+ 
+ 	bpf_loop__destroy(skel);
+ }
+diff --git a/tools/testing/selftests/bpf/progs/bpf_loop.c b/tools/testing/selftests/bpf/progs/bpf_loop.c
+index e08565282759..de1fc82d2710 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_loop.c
++++ b/tools/testing/selftests/bpf/progs/bpf_loop.c
+@@ -11,11 +11,19 @@ struct callback_ctx {
+ 	int output;
+ };
+ 
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__uint(max_entries, 32);
++	__type(key, int);
++	__type(value, int);
++} map1 SEC(".maps");
++
+ /* These should be set by the user program */
+ u32 nested_callback_nr_loops;
+ u32 stop_index = -1;
+ u32 nr_loops;
+ int pid;
++int callback_selector;
+ 
+ /* Making these global variables so that the userspace program
+  * can verify the output through the skeleton
+@@ -111,3 +119,109 @@ int prog_nested_calls(void *ctx)
+ 
+ 	return 0;
+ }
++
++static int callback_set_f0(int i, void *ctx)
++{
++	g_output = 0xF0;
++	return 0;
++}
++
++static int callback_set_0f(int i, void *ctx)
++{
++	g_output = 0x0F;
++	return 0;
++}
++
++/*
++ * non-constant callback is a corner case for bpf_loop inline logic
 + */
-+#define PSEUDO_CALL_INSN() \
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_CALL, \
-+		     INSN_OFF_MASK, INSN_IMM_MASK)
++SEC("fentry/" SYS_PREFIX "sys_nanosleep")
++int prog_non_constant_callback(void *ctx)
++{
++	struct callback_ctx data = {};
 +
-+/* can't use BPF_FUNC_loop constant,
-+ * do_mix_fixups adjusts the IMM field
++	if (bpf_get_current_pid_tgid() >> 32 != pid)
++		return 0;
++
++	int (*callback)(int i, void *ctx);
++
++	g_output = 0;
++
++	if (callback_selector == 0x0F)
++		callback = callback_set_0f;
++	else
++		callback = callback_set_f0;
++
++	bpf_loop(1, callback, NULL, 0);
++
++	return 0;
++}
++
++static int stack_check_inner_callback(void *ctx)
++{
++	return 0;
++}
++
++static int map1_lookup_elem(int key)
++{
++	int *val = bpf_map_lookup_elem(&map1, &key);
++
++	return val ? *val : -1;
++}
++
++static void map1_update_elem(int key, int val)
++{
++	bpf_map_update_elem(&map1, &key, &val, BPF_ANY);
++}
++
++static int stack_check_outer_callback(void *ctx)
++{
++	int a = map1_lookup_elem(1);
++	int b = map1_lookup_elem(2);
++	int c = map1_lookup_elem(3);
++	int d = map1_lookup_elem(4);
++	int e = map1_lookup_elem(5);
++	int f = map1_lookup_elem(6);
++
++	bpf_loop(1, stack_check_inner_callback, NULL, 0);
++
++	map1_update_elem(1, a + 1);
++	map1_update_elem(2, b + 1);
++	map1_update_elem(3, c + 1);
++	map1_update_elem(4, d + 1);
++	map1_update_elem(5, e + 1);
++	map1_update_elem(6, f + 1);
++
++	return 0;
++}
++
++/* Some of the local variables in stack_check and
++ * stack_check_outer_callback would be allocated on stack by
++ * compiler. This test should verify that stack content for these
++ * variables is preserved between calls to bpf_loop (might be an issue
++ * if loop inlining allocates stack slots incorrectly).
 + */
-+#define HELPER_CALL_INSN() \
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, INSN_OFF_MASK, INSN_IMM_MASK)
-+
++SEC("fentry/" SYS_PREFIX "sys_nanosleep")
++int stack_check(void *ctx)
 +{
-+	"inline simple bpf_loop call",
-+	.insns = {
-+	/* main */
-+	/* force verifier state branching to verify logic on first and
-+	 * subsequent bpf_loop insn processing steps
-+	 */
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_jiffies64),
-+	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 777, 2),
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_1, 1),
-+	BPF_JMP_IMM(BPF_JA, 0, 0, 1),
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_1, 2),
++	if (bpf_get_current_pid_tgid() >> 32 != pid)
++		return 0;
 +
-+	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, BPF_REG_2, BPF_PSEUDO_FUNC, 0, 6),
-+	BPF_RAW_INSN(0, 0, 0, 0, 0),
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_3, 0),
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_4, 0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_loop),
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	/* callback */
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_0, 1),
-+	BPF_EXIT_INSN(),
-+	},
-+	.expected_insns = { PSEUDO_CALL_INSN() },
-+	.unexpected_insns = { HELPER_CALL_INSN() },
-+	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
-+	.result = ACCEPT,
-+	.runs = 0,
-+	.func_info = { { 0, MAIN_TYPE }, { 12, CALLBACK_TYPE } },
-+	.func_info_cnt = 2,
-+	BTF_TYPES
-+},
-+{
-+	"don't inline bpf_loop call, flags non-zero",
-+	.insns = {
-+	/* main */
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_jiffies64),
-+	BPF_ALU64_REG(BPF_MOV, BPF_REG_6, BPF_REG_0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_jiffies64),
-+	BPF_ALU64_REG(BPF_MOV, BPF_REG_7, BPF_REG_0),
-+	BPF_JMP_IMM(BPF_JNE, BPF_REG_6, 0, 9),
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_4, 0),
-+	BPF_JMP_IMM(BPF_JNE, BPF_REG_7, 0, 0),
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_1, 1),
-+	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, BPF_REG_2, BPF_PSEUDO_FUNC, 0, 7),
-+	BPF_RAW_INSN(0, 0, 0, 0, 0),
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_3, 0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_loop),
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_4, 1),
-+	BPF_JMP_IMM(BPF_JA, 0, 0, -10),
-+	/* callback */
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_0, 1),
-+	BPF_EXIT_INSN(),
-+	},
-+	.expected_insns = { HELPER_CALL_INSN() },
-+	.unexpected_insns = { PSEUDO_CALL_INSN() },
-+	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
-+	.result = ACCEPT,
-+	.runs = 0,
-+	.func_info = { { 0, MAIN_TYPE }, { 16, CALLBACK_TYPE } },
-+	.func_info_cnt = 2,
-+	BTF_TYPES
-+},
-+{
-+	"don't inline bpf_loop call, callback non-constant",
-+	.insns = {
-+	/* main */
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_jiffies64),
-+	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 777, 4), /* pick a random callback */
++	int a = map1_lookup_elem(7);
++	int b = map1_lookup_elem(8);
++	int c = map1_lookup_elem(9);
++	int d = map1_lookup_elem(10);
++	int e = map1_lookup_elem(11);
++	int f = map1_lookup_elem(12);
 +
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_1, 1),
-+	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, BPF_REG_2, BPF_PSEUDO_FUNC, 0, 10),
-+	BPF_RAW_INSN(0, 0, 0, 0, 0),
-+	BPF_JMP_IMM(BPF_JA, 0, 0, 3),
++	bpf_loop(1, stack_check_outer_callback, NULL, 0);
 +
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_1, 1),
-+	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, BPF_REG_2, BPF_PSEUDO_FUNC, 0, 8),
-+	BPF_RAW_INSN(0, 0, 0, 0, 0),
++	map1_update_elem(7,  a + 1);
++	map1_update_elem(8, b + 1);
++	map1_update_elem(9, c + 1);
++	map1_update_elem(10, d + 1);
++	map1_update_elem(11, e + 1);
++	map1_update_elem(12, f + 1);
 +
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_3, 0),
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_4, 0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_loop),
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	/* callback */
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_0, 1),
-+	BPF_EXIT_INSN(),
-+	/* callback #2 */
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_0, 1),
-+	BPF_EXIT_INSN(),
-+	},
-+	.expected_insns = { HELPER_CALL_INSN() },
-+	.unexpected_insns = { PSEUDO_CALL_INSN() },
-+	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
-+	.result = ACCEPT,
-+	.runs = 0,
-+	.func_info = {
-+		{ 0, MAIN_TYPE },
-+		{ 14, CALLBACK_TYPE },
-+		{ 16, CALLBACK_TYPE }
-+	},
-+	.func_info_cnt = 3,
-+	BTF_TYPES
-+},
-+{
-+	"bpf_loop_inline and a dead func",
-+	.insns = {
-+	/* main */
-+
-+	/* A reference to callback #1 to make verifier count it as a func.
-+	 * This reference is overwritten below and callback #1 is dead.
-+	 */
-+	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, BPF_REG_2, BPF_PSEUDO_FUNC, 0, 9),
-+	BPF_RAW_INSN(0, 0, 0, 0, 0),
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_1, 1),
-+	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, BPF_REG_2, BPF_PSEUDO_FUNC, 0, 8),
-+	BPF_RAW_INSN(0, 0, 0, 0, 0),
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_3, 0),
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_4, 0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_loop),
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	/* callback */
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_0, 1),
-+	BPF_EXIT_INSN(),
-+	/* callback #2 */
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_0, 1),
-+	BPF_EXIT_INSN(),
-+	},
-+	.expected_insns = { PSEUDO_CALL_INSN() },
-+	.unexpected_insns = { HELPER_CALL_INSN() },
-+	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
-+	.result = ACCEPT,
-+	.runs = 0,
-+	.func_info = {
-+		{ 0, MAIN_TYPE },
-+		{ 10, CALLBACK_TYPE },
-+		{ 12, CALLBACK_TYPE }
-+	},
-+	.func_info_cnt = 3,
-+	BTF_TYPES
-+},
-+{
-+	"bpf_loop_inline stack locations for loop vars",
-+	.insns = {
-+	/* main */
-+	BPF_ST_MEM(BPF_W, BPF_REG_10, -12, 0x77),
-+	/* bpf_loop call #1 */
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_1, 1),
-+	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, BPF_REG_2, BPF_PSEUDO_FUNC, 0, 22),
-+	BPF_RAW_INSN(0, 0, 0, 0, 0),
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_3, 0),
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_4, 0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_loop),
-+	/* bpf_loop call #2 */
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_1, 2),
-+	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, BPF_REG_2, BPF_PSEUDO_FUNC, 0, 16),
-+	BPF_RAW_INSN(0, 0, 0, 0, 0),
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_3, 0),
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_4, 0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_loop),
-+	/* call func and exit */
-+	BPF_CALL_REL(2),
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	/* func */
-+	BPF_ST_MEM(BPF_DW, BPF_REG_10, -32, 0x55),
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_1, 2),
-+	BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW, BPF_REG_2, BPF_PSEUDO_FUNC, 0, 6),
-+	BPF_RAW_INSN(0, 0, 0, 0, 0),
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_3, 0),
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_4, 0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_loop),
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	/* callback */
-+	BPF_ALU64_IMM(BPF_MOV, BPF_REG_0, 1),
-+	BPF_EXIT_INSN(),
-+	},
-+	.expected_insns = {
-+	BPF_ST_MEM(BPF_W, BPF_REG_10, -12, 0x77),
-+	SKIP_INSNS(),
-+	BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_6, -40),
-+	BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_7, -32),
-+	BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_8, -24),
-+	SKIP_INSNS(),
-+	/* offsets are the same as in the first call */
-+	BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_6, -40),
-+	BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_7, -32),
-+	BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_8, -24),
-+	SKIP_INSNS(),
-+	BPF_ST_MEM(BPF_DW, BPF_REG_10, -32, 0x55),
-+	SKIP_INSNS(),
-+	/* offsets differ from main because of different offset
-+	 * in BPF_ST_MEM instruction
-+	 */
-+	BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_6, -56),
-+	BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_7, -48),
-+	BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_8, -40),
-+	},
-+	.unexpected_insns = { HELPER_CALL_INSN() },
-+	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
-+	.result = ACCEPT,
-+	.func_info = {
-+		{ 0, MAIN_TYPE },
-+		{ 16, MAIN_TYPE },
-+		{ 25, CALLBACK_TYPE },
-+	},
-+	.func_info_cnt = 3,
-+	BTF_TYPES
-+},
-+
-+#undef HELPER_CALL_INSN
-+#undef PSEUDO_CALL_INSN
-+#undef CALLBACK_TYPE
-+#undef MAIN_TYPE
-+#undef BTF_TYPES
++	return 0;
++}
 -- 
 2.25.1
 
