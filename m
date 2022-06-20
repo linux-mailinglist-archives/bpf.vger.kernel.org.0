@@ -2,109 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C24E551526
-	for <lists+bpf@lfdr.de>; Mon, 20 Jun 2022 12:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2285E5515A6
+	for <lists+bpf@lfdr.de>; Mon, 20 Jun 2022 12:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240543AbiFTKDZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Jun 2022 06:03:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34546 "EHLO
+        id S240227AbiFTKUK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Jun 2022 06:20:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240821AbiFTKCx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Jun 2022 06:02:53 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F9B8265D;
-        Mon, 20 Jun 2022 03:02:52 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id u37so9779381pfg.3;
-        Mon, 20 Jun 2022 03:02:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bpfZ/kYo7akCRG3R46WmbFjXJuTRk2P19UNZKT2W+CY=;
-        b=GIJbtJWy0EkRqQ5Wo8Ij7IWK47z8TDBPFMPnoHQGbGD2EpAKUocGqFHef/JamYJc8D
-         XA3iKG+kepUG+2B9rjjWileafUhosulHE155BEsnh6vpdNWRlFDqODduyKNrIlxDDteV
-         yzgyR0SEgzk/OTTi7Au0CYIDDCGwXvarlIMCEZHz9GDoaVO/Onpbe8cmjBccMgRL5N4V
-         7xWslV7xPSqJzCMhAxNPpWYCbA+l5x2skf/Bc2W6724F6lRx2veg/SNWuh/mOuJ980Mr
-         Uw6DIMRFCJPQnJj4sDEe7FzSReZWUr8YROLcy9Vdyon7AAQskRqE6tSoDJaEpmZ4ehc+
-         C9AA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bpfZ/kYo7akCRG3R46WmbFjXJuTRk2P19UNZKT2W+CY=;
-        b=DbXy5Dc1QcIzJFHZ8idwu9eqWfgaMRFK3SpjKTIsbaz3Ft5xS2v6vOrGIffaN4HEZI
-         fEKYpBpgbc7f8A18t9g8hY1leEziArQZ2Z/3MzEKWJtaYK8V3ROJHeJ/8BAOgHmT3Azc
-         nGBRt9h+NHeR54JL9C79dJLp80pMq4LPnYTswvOIzBkEhOgkWQ1jKbHKdrpcvnfX6j9K
-         DmcYntSf/KunugfAXzJGSUPE2u38JrDq9ate85otWOMYFIQB74ds95KcDlKLoepBUL6T
-         s+S5d8PftznmDM+aVvAx2UTAdxpJgn7XgYp1WdIDeXoq0Lb7odwWevBdTjJ9bcZZiMxL
-         g65g==
-X-Gm-Message-State: AJIora/RuXqprKCQvM+9V2p3VrJvaIuryZY4ZPXFnaUW0m8z54t138ri
-        dTh8/S5DSiLqiJK+pqLB/iDnmbuU0IiyM6al
-X-Google-Smtp-Source: AGRyM1uIZZ/N3u1c3wCPbZ8U+wpCgO9AkAqhO+btuKzCy2ZGLybOVqHxKWYlIz4BJA9psC9OKyb5CQ==
-X-Received: by 2002:a05:6a00:1a4a:b0:518:bbd5:3c1d with SMTP id h10-20020a056a001a4a00b00518bbd53c1dmr23728781pfv.64.1655719371441;
-        Mon, 20 Jun 2022 03:02:51 -0700 (PDT)
-Received: from C02FG34WMD6R.bytedance.net ([139.177.225.236])
-        by smtp.gmail.com with ESMTPSA id bj24-20020a056a00319800b0050dc76281ddsm8481679pfb.183.2022.06.20.03.02.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jun 2022 03:02:51 -0700 (PDT)
-From:   wuchi <wuchi.zero@gmail.com>
-To:     mhiramat@kernel.org, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH] lib/error-inject: Traverse list with mutex
-Date:   Mon, 20 Jun 2022 18:02:44 +0800
-Message-Id: <20220620100244.82896-1-wuchi.zero@gmail.com>
-X-Mailer: git-send-email 2.32.0 (Apple Git-132)
+        with ESMTP id S238905AbiFTKTz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Jun 2022 06:19:55 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F4B313F85;
+        Mon, 20 Jun 2022 03:19:53 -0700 (PDT)
+Date:   Mon, 20 Jun 2022 12:19:50 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1655720391;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+gOFJVRzxcO7qZkVW4n1+mq7b+cmJCRjJw0+qfAQR04=;
+        b=jkej/6jbYDD+i0FdkqiDtrKRBeBfLjCBx30wGELUP6jIOrSdhMJH+QzRM+d/tTNISq5uJK
+        a/IUz/OHK5tB+d8YbyA9SvR57+PrONE+MZ6IyFZJuTqnLhr045BqbvF1l+kIIuKeKQbJa+
+        +LIWBJYkVR7lIER7wnZ98zNObi18kt8P6sqGBywAH1sMbscNih5JJErk10jGfRhPn2MRyF
+        7i2scfCi7Npk4x/KWzu9yOikB3aVShV9zm9dS+TBaUrG6rkYtDn3bsSRF4tSlqlUec7OGD
+        SfWlEfgh0cavN9rUogj56wYBxzjXVaGQdYtaMMxwFd+ZbfeT92Igx4ELcBevfA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1655720391;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+gOFJVRzxcO7qZkVW4n1+mq7b+cmJCRjJw0+qfAQR04=;
+        b=LwUL2esLEgCBtMngnNlmv0aq9kVTLuPdvBF6fdd33HIrNIsSHykXPFffbw7FvK0v6pstTr
+        jE0jd94D7hK2/gDQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     syzbot <syzbot+b577bc624afda52c78de@syzkaller.appspotmail.com>
+Cc:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
+        bpf@vger.kernel.org, brauner@kernel.org, daniel@iogearbox.net,
+        david@redhat.com, ebiederm@xmission.com, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, yhs@fb.com,
+        linux-mm@kvack.org, Christoph Hellwig <hch@infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>
+Subject: Re: [syzbot] BUG: sleeping function called from invalid context in
+ __vmalloc_node_range
+Message-ID: <YrBJxrbq8Yvrpshj@linutronix.de>
+References: <000000000000e57c2b05e1c03426@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <000000000000e57c2b05e1c03426@google.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Traversing list without mutex in get_injectable_error_type will
-race with the following code:
-    list_del_init(&ent->list)
-    kfree(ent)
-in module_unload_ei_list. So fix that.
+#syz fix: mm/page_alloc: protect PCP lists with a spinlock
+#syz dup: BUG: sleeping function called from invalid context in relay_open_=
+buf
 
-Signed-off-by: wuchi <wuchi.zero@gmail.com>
----
- lib/error-inject.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+The version of the patch above in next-20220614 is buggy leading to the
+report below. The version in next-20220620 is fine. Not sure how to tell
+syz bot this=E2=80=A6
 
-diff --git a/lib/error-inject.c b/lib/error-inject.c
-index 4a4f1278c419..1afca1b1cdea 100644
---- a/lib/error-inject.c
-+++ b/lib/error-inject.c
-@@ -40,12 +40,18 @@ bool within_error_injection_list(unsigned long addr)
- int get_injectable_error_type(unsigned long addr)
- {
- 	struct ei_entry *ent;
-+	int ei_type = EI_ETYPE_NONE;
- 
-+	mutex_lock(&ei_mutex);
- 	list_for_each_entry(ent, &error_injection_list, list) {
--		if (addr >= ent->start_addr && addr < ent->end_addr)
--			return ent->etype;
-+		if (addr >= ent->start_addr && addr < ent->end_addr) {
-+			ei_type = ent->etype;
-+			break;
-+		}
- 	}
--	return EI_ETYPE_NONE;
-+	mutex_unlock(&ei_mutex);
-+
-+	return ei_type;
- }
- 
- /*
--- 
-2.20.1
+On 2022-06-18 15:15:20 [-0700], syzbot wrote:
+> Hello,
+>=20
+> syzbot found the following issue on:
+>=20
+> HEAD commit:    35d872b9ea5b Add linux-next specific files for 20220614
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D155b0d10080000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dd7bf2236c6bb2=
+403
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3Db577bc624afda52=
+c78de
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binuti=
+ls for Debian) 2.35.2
+>=20
+> Unfortunately, I don't have any reproducer for this issue yet.
+>=20
+> IMPORTANT: if you fix the issue, please add the following tag to the comm=
+it:
+> Reported-by: syzbot+b577bc624afda52c78de@syzkaller.appspotmail.com
+>=20
+> BUG: sleeping function called from invalid context at mm/vmalloc.c:2980
+=E2=80=A6
+> Preemption disabled at:
+> [<ffffffff81bc76f5>] rmqueue_pcplist mm/page_alloc.c:3813 [inline]
+> [<ffffffff81bc76f5>] rmqueue mm/page_alloc.c:3858 [inline]
+> [<ffffffff81bc76f5>] get_page_from_freelist+0x455/0x3a20 mm/page_alloc.c:=
+4293
 
+Sebastian
