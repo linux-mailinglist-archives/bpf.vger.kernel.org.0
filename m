@@ -2,108 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0EFD5519B1
-	for <lists+bpf@lfdr.de>; Mon, 20 Jun 2022 15:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84E855521CD
+	for <lists+bpf@lfdr.de>; Mon, 20 Jun 2022 18:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244551AbiFTNFp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Jun 2022 09:05:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50960 "EHLO
+        id S232421AbiFTQEn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Jun 2022 12:04:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244875AbiFTNEF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Jun 2022 09:04:05 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AD10167E6
-        for <bpf@vger.kernel.org>; Mon, 20 Jun 2022 05:59:07 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id fu3so20947330ejc.7
-        for <bpf@vger.kernel.org>; Mon, 20 Jun 2022 05:59:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :content-transfer-encoding:user-agent:mime-version;
-        bh=YeAJ65TAhJhjSBRZnr227VyJ5Qt4DLw2yf7fk1pahig=;
-        b=qXJtXhGqlN16behyooyM1csz38krqTMRexCFQga/INfvRffXatTYXnZqHM6P1fy+Al
-         mBdxyB0FfrnG6w1TvRykQsvhBv+VMKpOf671m06lNmpWqvE5TaxFbH/VvWFWaSsQnR1g
-         FOzVOx1mGinyrYJ6piN7c9KE6wzF7wNs6woit//dcEFHb7EKAz9mGnaGnU4GvZCR6SoV
-         z9WAXSkZMxjvw2nhI9dtB8zDEPOIGUwAsYBK7ZpWEo/NxJthfvHHpN3zk2M1pHE68TvN
-         bdJu/DhIlsgZ8un3RsU0WSEkhp0q2aeSC2U3xTYaLSp3QsJGNNy+O4GRdiKzwt7y5mCd
-         KhFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:content-transfer-encoding:user-agent:mime-version;
-        bh=YeAJ65TAhJhjSBRZnr227VyJ5Qt4DLw2yf7fk1pahig=;
-        b=nOv40ZX+CS02flXCnULHOle8WQv2uA2gvicJsXLvKzxTQimtCC/PYfTv7qGK1aOK8e
-         QM7K7Mr/brlazJcdecelC3rkDuKthUdr7xWQdhp1ZlfC5DPgq5BK8I+jLZ3jjhJra17f
-         9widqBZQMQaxl2wJkI8MwZMnAiugsR+nYGZM6nBCz9rJ2hnNwxY+evE6Cq4by3DIavr3
-         CvBHsq2qEDCnPt9dXJan4QfGwHvxwOHwNQKQhReFaAy02sejTwhDQnM4NOujX2vViTbl
-         pYkVoxnkyGwR+FB4JJW83xEtX1IrY+dLP9/fpdHay8RFNER0leG48/xxxRcxES2kqm9a
-         KcGg==
-X-Gm-Message-State: AJIora/JXdDhmzNXuiS1Y2kT1ITxmsHn06nwlyttGAT8hVBDX3OXA4XV
-        LzTkvnFXd/kti9vFwYkr5Zo=
-X-Google-Smtp-Source: AGRyM1uQJqx4nkjXlRzw6ExMZOt+mz4J2xEtbt2b7RD1gf09E6JTFlbTOzVyXquKqWpkX9QEMwzmKg==
-X-Received: by 2002:a17:907:d8d:b0:711:d61d:dee with SMTP id go13-20020a1709070d8d00b00711d61d0deemr20590038ejc.670.1655729945858;
-        Mon, 20 Jun 2022 05:59:05 -0700 (PDT)
-Received: from [192.168.1.113] (boundsly.muster.volia.net. [93.72.16.93])
-        by smtp.gmail.com with ESMTPSA id v18-20020a170906293200b006f3ef214e20sm5918382ejd.134.2022.06.20.05.59.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jun 2022 05:59:04 -0700 (PDT)
-Message-ID: <fbe4fe4ae4f6f9db0d32208c0de8440647b24f91.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v7 3/5] bpf: Inline calls to bpf_loop when
- callback is known
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>, Song Liu <song@kernel.org>,
-        Joanne Koong <joannelkoong@gmail.com>
-Date:   Mon, 20 Jun 2022 15:59:03 +0300
-In-Reply-To: <CAADnVQKz7EFH+QGBtpO2j-MPNAAREta+GjHaKn2cN0LaNQk-1Q@mail.gmail.com>
-References: <20220613205008.212724-1-eddyz87@gmail.com>
-         <20220613205008.212724-4-eddyz87@gmail.com>
-         <CAADnVQ+rwwCoEPQUg+CS_iXSzqoptrgtW4TpqoM9XkMW9Jj+ag@mail.gmail.com>
-         <fb17ffcbdfa6b75813352133c5655f01aefe71ec.camel@gmail.com>
-         <20220619211028.tuhgxmtivvwkzo7m@macbook-pro-3.dhcp.thefacebook.com>
-         <b3441513293da1e7e25767446ed5c30592d190e4.camel@gmail.com>
-         <CAADnVQKz7EFH+QGBtpO2j-MPNAAREta+GjHaKn2cN0LaNQk-1Q@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.2 (by Flathub.org) 
+        with ESMTP id S229487AbiFTQEn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Jun 2022 12:04:43 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B561FCFE;
+        Mon, 20 Jun 2022 09:04:40 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AD79C614B3;
+        Mon, 20 Jun 2022 16:04:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE0ACC341C5;
+        Mon, 20 Jun 2022 16:04:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1655741079;
+        bh=eH2GAASlt54g98N+vPQt3HAgdfH+Rj39/LZHtqyPJGg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hnsu4BBCJ2zky9wcC/uFViHVphj2A2MpjRV6/EupRfzqi+8ZEPa2dsC45cK2A5psD
+         vijAeGH9A1TgC8SpFuqH97VaF8bNuH+yWjuWaG85U+lum4BfEBdV2xDUadAKytV2nQ
+         4QEDH/l/E4HGaOBoB6rl+1KITrBddWPF9ic+Rhk06MA10ABx5EVfoHDuWdXVRlMkOE
+         S5xnGWOoLjbPhKtGt0+Tkwq/gCOGunDxj09k3ja7PBXCLQv4qfin+R3IzM8CG0xZhK
+         cIgZC4in3kJjgI7U6Y0RZZDySg93f71s06R1ezjxfxaJqjwDzkgpKD0zUSrRGdEt1X
+         L0ftpdSCIQQOw==
+Received: by mail-yb1-f172.google.com with SMTP id i15so14918211ybp.1;
+        Mon, 20 Jun 2022 09:04:38 -0700 (PDT)
+X-Gm-Message-State: AJIora/ap3LOX2+NA+d9Bw7oCs409zESst2dIgbXJ+dZgDn+hGE9BP5V
+        CrjkJyuRw9DAleLhiG6l9izX/ZF21UnfDPkIKsI=
+X-Google-Smtp-Source: AGRyM1t3VYOwecfPvJe+k+RvYpPl8MpH2EqIn2VWJHKicFq3ni6wZ+GIiVERVN6Aa2escSloM2PYmanZEqga4+4KDuE=
+X-Received: by 2002:a05:6902:114c:b0:641:87a7:da90 with SMTP id
+ p12-20020a056902114c00b0064187a7da90mr27215793ybu.561.1655741078011; Mon, 20
+ Jun 2022 09:04:38 -0700 (PDT)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220520235758.1858153-1-song@kernel.org> <YrBV8darrlmUnrHR@ziqianlu-Dell-Optiplex7000>
+In-Reply-To: <YrBV8darrlmUnrHR@ziqianlu-Dell-Optiplex7000>
+From:   Song Liu <song@kernel.org>
+Date:   Mon, 20 Jun 2022 09:03:52 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW5oqJKHUr6wwbFyC8DFyawKr8djuv5Bjk7FEQ5dnKDGyw@mail.gmail.com>
+Message-ID: <CAPhsuW5oqJKHUr6wwbFyC8DFyawKr8djuv5Bjk7FEQ5dnKDGyw@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 0/8] bpf_prog_pack followup
+To:     Aaron Lu <aaron.lu@intel.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> On Sun, 2022-06-19 at 16:37 -0700, Alexei Starovoitov wrote:
-> On Sun, Jun 19, 2022 at 3:01 PM Eduard Zingerman <eddyz87@gmail.com> wrot=
-e:
-> >=20
-> > /* Mark a register as having a completely unknown (scalar) value. */
-> > static void __mark_reg_unknown(const struct bpf_verifier_env *env,
-> >                                struct bpf_reg_state *reg)
-> > {
-> >         ...
-> >         reg->precise =3D env->subprog_cnt > 1 || !env->bpf_capable;
->=20
-> Ahh. Thanks for explaining.
-> We probably need to fix this conservative logic.
-> Can you repro the issue when you comment out above ?
+Hi Aaron,
 
-If I replace the assignment above with `reg->precise =3D false` the
-verifier does skip the second branch with BPF_REG_4 set to 1.
+On Mon, Jun 20, 2022 at 4:12 AM Aaron Lu <aaron.lu@intel.com> wrote:
+>
+> Hi Song,
+>
+> On Fri, May 20, 2022 at 04:57:50PM -0700, Song Liu wrote:
+>
+> ... ...
+>
+> > The primary goal of bpf_prog_pack is to reduce iTLB miss rate and reduce
+> > direct memory mapping fragmentation. This leads to non-trivial performance
+> > improvements.
+> >
+> > For our web service production benchmark, bpf_prog_pack on 4kB pages
+> > gives 0.5% to 0.7% more throughput than not using bpf_prog_pack.
+> > bpf_prog_pack on 2MB pages 0.6% to 0.9% more throughput than not using
+> > bpf_prog_pack. Note that 0.5% is a huge improvement for our fleet. I
+> > believe this is also significant for other companies with many thousand
+> > servers.
+> >
+>
+> I'm evaluationg performance impact due to direct memory mapping
+> fragmentation and seeing the above, I wonder: is the performance improve
+> mostly due to prog pack and hugepage instead of less direct mapping
+> fragmentation?
+>
+> I can understand that when progs are packed together, iTLB miss rate will
+> be reduced and thus, performance can be improved. But I don't see
+> immediately how direct mapping fragmentation can impact performance since
+> the bpf code are running from the module alias addresses, not the direct
+> mapping addresses IIUC?
 
-> Let's skip the test for now. Just add mark_chain_precision
-> to loop logic, so we don't have to come back to it later
-> when subprogs>1 is fixed.
+You are right that BPF code runs from module alias addresses. However, to
+protect text from overwrites, we use set_memory_x() and set_memory_ro()
+for the BPF code. These two functions will set permissions for all aliases
+of the memory, including the direct map, and thus cause fragmentation of
+the direct map. Does this make sense?
 
-Will provide the updated version tonight, thank you for the
-suggestions.
-
-Best regards,
-Eduard.
+Thanks,
+Song
