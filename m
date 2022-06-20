@@ -2,84 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 199FC55195D
-	for <lists+bpf@lfdr.de>; Mon, 20 Jun 2022 14:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0EFD5519B1
+	for <lists+bpf@lfdr.de>; Mon, 20 Jun 2022 15:06:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234708AbiFTMvX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Jun 2022 08:51:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33760 "EHLO
+        id S244551AbiFTNFp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Jun 2022 09:05:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240792AbiFTMvW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Jun 2022 08:51:22 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F19C717A9D;
-        Mon, 20 Jun 2022 05:51:17 -0700 (PDT)
-Received: from sslproxy04.your-server.de ([78.46.152.42])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1o3Gs4-0005hk-A0; Mon, 20 Jun 2022 14:51:12 +0200
-Received: from [2a02:168:f656:0:d16a:7287:ccf0:4fff] (helo=localhost.localdomain)
-        by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1o3Gs3-000Luv-UF; Mon, 20 Jun 2022 14:51:11 +0200
-Subject: Re: [PATCH] libbpf: Remove kprobe_event on failed kprobe_open_legacy
-To:     chuang <nashuiliang@gmail.com>, Jiri Olsa <olsajiri@gmail.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Jingren Zhou <zhoujingren@didiglobal.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S244875AbiFTNEF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Jun 2022 09:04:05 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AD10167E6
+        for <bpf@vger.kernel.org>; Mon, 20 Jun 2022 05:59:07 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id fu3so20947330ejc.7
+        for <bpf@vger.kernel.org>; Mon, 20 Jun 2022 05:59:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :content-transfer-encoding:user-agent:mime-version;
+        bh=YeAJ65TAhJhjSBRZnr227VyJ5Qt4DLw2yf7fk1pahig=;
+        b=qXJtXhGqlN16behyooyM1csz38krqTMRexCFQga/INfvRffXatTYXnZqHM6P1fy+Al
+         mBdxyB0FfrnG6w1TvRykQsvhBv+VMKpOf671m06lNmpWqvE5TaxFbH/VvWFWaSsQnR1g
+         FOzVOx1mGinyrYJ6piN7c9KE6wzF7wNs6woit//dcEFHb7EKAz9mGnaGnU4GvZCR6SoV
+         z9WAXSkZMxjvw2nhI9dtB8zDEPOIGUwAsYBK7ZpWEo/NxJthfvHHpN3zk2M1pHE68TvN
+         bdJu/DhIlsgZ8un3RsU0WSEkhp0q2aeSC2U3xTYaLSp3QsJGNNy+O4GRdiKzwt7y5mCd
+         KhFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:content-transfer-encoding:user-agent:mime-version;
+        bh=YeAJ65TAhJhjSBRZnr227VyJ5Qt4DLw2yf7fk1pahig=;
+        b=nOv40ZX+CS02flXCnULHOle8WQv2uA2gvicJsXLvKzxTQimtCC/PYfTv7qGK1aOK8e
+         QM7K7Mr/brlazJcdecelC3rkDuKthUdr7xWQdhp1ZlfC5DPgq5BK8I+jLZ3jjhJra17f
+         9widqBZQMQaxl2wJkI8MwZMnAiugsR+nYGZM6nBCz9rJ2hnNwxY+evE6Cq4by3DIavr3
+         CvBHsq2qEDCnPt9dXJan4QfGwHvxwOHwNQKQhReFaAy02sejTwhDQnM4NOujX2vViTbl
+         pYkVoxnkyGwR+FB4JJW83xEtX1IrY+dLP9/fpdHay8RFNER0leG48/xxxRcxES2kqm9a
+         KcGg==
+X-Gm-Message-State: AJIora/JXdDhmzNXuiS1Y2kT1ITxmsHn06nwlyttGAT8hVBDX3OXA4XV
+        LzTkvnFXd/kti9vFwYkr5Zo=
+X-Google-Smtp-Source: AGRyM1uQJqx4nkjXlRzw6ExMZOt+mz4J2xEtbt2b7RD1gf09E6JTFlbTOzVyXquKqWpkX9QEMwzmKg==
+X-Received: by 2002:a17:907:d8d:b0:711:d61d:dee with SMTP id go13-20020a1709070d8d00b00711d61d0deemr20590038ejc.670.1655729945858;
+        Mon, 20 Jun 2022 05:59:05 -0700 (PDT)
+Received: from [192.168.1.113] (boundsly.muster.volia.net. [93.72.16.93])
+        by smtp.gmail.com with ESMTPSA id v18-20020a170906293200b006f3ef214e20sm5918382ejd.134.2022.06.20.05.59.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Jun 2022 05:59:04 -0700 (PDT)
+Message-ID: <fbe4fe4ae4f6f9db0d32208c0de8440647b24f91.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v7 3/5] bpf: Inline calls to bpf_loop when
+ callback is known
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>
-References: <20220614084930.43276-1-nashuiliang@gmail.com>
- <62ad50fa9d42d_24b34208d6@john.notmuch>
- <CACueBy7NqRszA3tCOvLhfi1OraUrL_GD9YZ9XOPNHzbR1=+z7g@mail.gmail.com>
- <Yq5A4Cln4qeTaAeM@krava>
- <CACueBy4Nr+rqJjZ3guBimd6t36V5B3CBp6_oZVMRzLvMZoTRpg@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <1b813650-baac-a93e-97b0-11967080fdfe@iogearbox.net>
-Date:   Mon, 20 Jun 2022 14:51:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>, Song Liu <song@kernel.org>,
+        Joanne Koong <joannelkoong@gmail.com>
+Date:   Mon, 20 Jun 2022 15:59:03 +0300
+In-Reply-To: <CAADnVQKz7EFH+QGBtpO2j-MPNAAREta+GjHaKn2cN0LaNQk-1Q@mail.gmail.com>
+References: <20220613205008.212724-1-eddyz87@gmail.com>
+         <20220613205008.212724-4-eddyz87@gmail.com>
+         <CAADnVQ+rwwCoEPQUg+CS_iXSzqoptrgtW4TpqoM9XkMW9Jj+ag@mail.gmail.com>
+         <fb17ffcbdfa6b75813352133c5655f01aefe71ec.camel@gmail.com>
+         <20220619211028.tuhgxmtivvwkzo7m@macbook-pro-3.dhcp.thefacebook.com>
+         <b3441513293da1e7e25767446ed5c30592d190e4.camel@gmail.com>
+         <CAADnVQKz7EFH+QGBtpO2j-MPNAAREta+GjHaKn2cN0LaNQk-1Q@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.2 (by Flathub.org) 
 MIME-Version: 1.0
-In-Reply-To: <CACueBy4Nr+rqJjZ3guBimd6t36V5B3CBp6_oZVMRzLvMZoTRpg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26578/Mon Jun 20 10:06:11 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/19/22 3:56 AM, chuang wrote:
-> On Sun, Jun 19, 2022 at 5:17 AM Jiri Olsa <olsajiri@gmail.com> wrote:
->>
->> just curious.. is that because of ipmodify flag on ftrace_ops?
->> AFAICS that be a poblem just for kretprobes, cc-ing Masami
-> 
-> Yes, the core reason is caused by ipmodify flag (not only for kretprobes).
-> Before commit 0bc11ed5ab60 ("kprobes: Allow kprobes coexist with
-> livepatch"), it's very easy to trigger this problem.
-> The kprobe has other problems and is communicating with Masami.
-> 
-> With this fix, whenever an error is returned after
-> add_kprobe_event_legacy(), this guarantees cleanup of the kprobe
-> event.
+> On Sun, 2022-06-19 at 16:37 -0700, Alexei Starovoitov wrote:
+> On Sun, Jun 19, 2022 at 3:01 PM Eduard Zingerman <eddyz87@gmail.com> wrot=
+e:
+> >=20
+> > /* Mark a register as having a completely unknown (scalar) value. */
+> > static void __mark_reg_unknown(const struct bpf_verifier_env *env,
+> >                                struct bpf_reg_state *reg)
+> > {
+> >         ...
+> >         reg->precise =3D env->subprog_cnt > 1 || !env->bpf_capable;
+>=20
+> Ahh. Thanks for explaining.
+> We probably need to fix this conservative logic.
+> Can you repro the issue when you comment out above ?
 
-The details from this follow-up conversation should definitely be part of
-the commit description, please add them to a v2 as otherwise context is
-missing if we look at the commit again in say few months from now. Also,
-would be good if Masami could provide ack given 0bc11ed5ab60.
+If I replace the assignment above with `reg->precise =3D false` the
+verifier does skip the second branch with BPF_REG_4 set to 1.
 
-Thanks,
-Daniel
+> Let's skip the test for now. Just add mark_chain_precision
+> to loop logic, so we don't have to come back to it later
+> when subprogs>1 is fixed.
+
+Will provide the updated version tonight, thank you for the
+suggestions.
+
+Best regards,
+Eduard.
