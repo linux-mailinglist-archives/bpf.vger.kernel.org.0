@@ -2,119 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C303B551299
-	for <lists+bpf@lfdr.de>; Mon, 20 Jun 2022 10:23:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A33F0551309
+	for <lists+bpf@lfdr.de>; Mon, 20 Jun 2022 10:41:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238854AbiFTIXk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Jun 2022 04:23:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41604 "EHLO
+        id S233998AbiFTIli (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Jun 2022 04:41:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239911AbiFTIXd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Jun 2022 04:23:33 -0400
-Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CA2F0105;
-        Mon, 20 Jun 2022 01:23:30 -0700 (PDT)
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9BxaeR8LrBiO65OAA--.25988S2;
-        Mon, 20 Jun 2022 16:23:24 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S238955AbiFTIlh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Jun 2022 04:41:37 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8AD612ACC;
+        Mon, 20 Jun 2022 01:41:36 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id a14so93040pgh.11;
+        Mon, 20 Jun 2022 01:41:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UyZN/z+R30sBWAH4bVCY1NOY8McXNrBdunEmtVZ9mPY=;
+        b=mQ0aMR6ajaqbIiBajcKyiiTf/Wbvfs3E/Kv/ATVMG+KK4bbOIYzQJqBMIaieRJQuY4
+         kUFMWf7MSpfO+El4ibxZK0No0IbuVW+a2xc6qldbOEmiJ6J/LZUAN/xPiRgZWpdCbuhu
+         sObASb4o5R8HHelsfMzX/mDPqAXJ6OVMlH3INVkg/e8h2f76ZRkJcflb0hrPLcFv9XFY
+         PWnagtYx4JmT7h4ct1yrcszq8zFL56kBlb2wlrkY36fcyJhPkN1/YbPIq0F/zxS2Cvmy
+         TAaNOmMm5vuNcdOCggY7R+8I4oZdhS0LcOms5OhN/q10D+14wfF0UiSBoNOs0Bk/XlcE
+         PYfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UyZN/z+R30sBWAH4bVCY1NOY8McXNrBdunEmtVZ9mPY=;
+        b=pZuoBnMvtfVsI5JUCoU6bqp9HXvpf1qePBYSLbmht8vsWtdsbzAiMYQC7qX+UQDNDs
+         ncxb3ieoHTws6ojEQnyDDeYCJFigbVsixF0JjWGeVgokwkAWi4nTbDemTbc/s0fwDI5I
+         FnRBc9iGZSIzqb8JpL3JddorFk9uyBspIpOp85/1sc5t7g79PBLJyLmFkqe4zOVubo1d
+         osuZ6/eXigNt9NR8sP2GJMDxWgw3bcCqMdwhQL6shYktiHtuLwVfqYmFX/ht3EE4Pt0O
+         SRWOuo4sc6EQ2XOyhf7FeVu5ACU08iW52Q4fZhkwI1I6N/QdwYL/9WBpetfJHNimoVzM
+         pa8A==
+X-Gm-Message-State: AJIora/lpXB7O+luPUhgiemL+e5Bb4DdNz7ONYWNxoC60AxHV1eU4TGt
+        zm6Z+AczMGbrliJnXqU3LzHKVzqer7SQuEtQUHl4VU4j8H4=
+X-Google-Smtp-Source: AGRyM1vf5K2vEQX3/dhEfGzqGGOkheMj5WaGL5y8tC2PJRX8OPDw1jAE06454GF6OdLbhaw2hyIcXcu1M+k7VS/iIH4=
+X-Received: by 2002:a63:7c5a:0:b0:40c:a376:6176 with SMTP id
+ l26-20020a637c5a000000b0040ca3766176mr5416672pgn.156.1655714496150; Mon, 20
+ Jun 2022 01:41:36 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220616180609.905015-1-maciej.fijalkowski@intel.com>
+ <20220616180609.905015-8-maciej.fijalkowski@intel.com> <62ad3b4f60ece_24b34208d@john.notmuch>
+In-Reply-To: <62ad3b4f60ece_24b34208d@john.notmuch>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Mon, 20 Jun 2022 10:41:25 +0200
+Message-ID: <CAJ8uoz0DZXMVYETSzjWY-VGfy0vi7tYMod7_9E395B1x+-zJEw@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 07/10] selftests: xsk: introduce default Rx
+ pkt stream
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Pavel Machek <pavel@ucw.cz>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v2] libbpf: Include linux/log2.h to use is_power_of_2()
-Date:   Mon, 20 Jun 2022 16:23:24 +0800
-Message-Id: <1655713404-7133-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9BxaeR8LrBiO65OAA--.25988S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZFyrZFWDuFWUGF43KrWUCFg_yoW8tw4DpF
-        4DCr18Gr1rWr15ZFyDuF1F93y5K3W7WFW7KFy7GryjvwnIqFsrXr1qyFnI9r13W395Ww15
-        ArWY9ryUZr1UX3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkab7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwV
-        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8ZwCF04k2
-        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
-        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41l
-        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
-        AIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
-        x4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07bwYFZUUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        Network Development <netdev@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-is_power_of_2() is already defined in tools/include/linux/log2.h [1],
-so no need to define it again in tools/lib/bpf/libbpf_internal.h, so
-just include linux/log2.h directly.
+On Sat, Jun 18, 2022 at 4:44 AM John Fastabend <john.fastabend@gmail.com> wrote:
+>
+> Maciej Fijalkowski wrote:
+> > In order to prepare xdpxceiver for physical device testing, let us
+> > introduce default Rx pkt stream. Reason for doing it is that physical
+> > device testing will use a UMEM with a doubled size where half of it will
+> > be used by Tx and other half by Rx. This means that pkt addresses will
+> > differ for Tx and Rx streams. Rx thread will initialize the
+> > xsk_umem_info::base_addr that is added here so that pkt_set(), when
+> > working on Rx UMEM will add this offset and second half of UMEM space
+> > will be used. Note that currently base_addr is 0 on both sides. Future
+> > commit will do the mentioned initialization.
+> >
+> > Previously, veth based testing worked on separate UMEMs, so single
+> > default stream was fine.
+> >
+> > Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> > Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> > ---
+>
+> Just curious why can't we make veth use a single umem with double size?
+> Would be nice to have a single test setup. Why choose two vs a single
+> size.
 
-[1] https://lore.kernel.org/bpf/20220619171248.GC3362@bug/
+Good point. We could do that, but I prefer if we keep the two modes as
+one uses the XDP_SHARED_UMEM feature and the other one does not as it
+uses private umems. The more modes we can test, the better. But what
+we should do is test both modes when possible and also the third mode
+when a umem is shared between separate queue ids and netdevs,
+something we do not test at all today. So I say, keep it like this for
+now and I can submit another patch set that extends the veth tests to
+also use a shared umem (the double umem size case) and introduce
+testing of the third mode when applicable.
 
-Suggested-by: Pavel Machek <pavel@ucw.cz>
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- tools/lib/bpf/libbpf.c          | 2 +-
- tools/lib/bpf/libbpf_internal.h | 6 +-----
- tools/lib/bpf/linker.c          | 2 +-
- 3 files changed, 3 insertions(+), 7 deletions(-)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 49e359c..5252e51 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -5131,7 +5131,7 @@ static size_t adjust_ringbuf_sz(size_t sz)
- 	 * a power-of-2 multiple of kernel's page size. If user diligently
- 	 * satisified these conditions, pass the size through.
- 	 */
--	if ((sz % page_sz) == 0 && is_pow_of_2(sz / page_sz))
-+	if ((sz % page_sz) == 0 && is_power_of_2(sz / page_sz))
- 		return sz;
- 
- 	/* Otherwise find closest (page_sz * power_of_2) product bigger than
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-index a1ad145..021946a 100644
---- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -13,6 +13,7 @@
- #include <limits.h>
- #include <errno.h>
- #include <linux/err.h>
-+#include <linux/log2.h>
- #include <fcntl.h>
- #include <unistd.h>
- #include "libbpf_legacy.h"
-@@ -582,9 +583,4 @@ struct bpf_link * usdt_manager_attach_usdt(struct usdt_manager *man,
- 					   const char *usdt_provider, const char *usdt_name,
- 					   __u64 usdt_cookie);
- 
--static inline bool is_pow_of_2(size_t x)
--{
--	return x && (x & (x - 1)) == 0;
--}
--
- #endif /* __LIBBPF_LIBBPF_INTERNAL_H */
-diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
-index 4ac02c2..b2edb5f 100644
---- a/tools/lib/bpf/linker.c
-+++ b/tools/lib/bpf/linker.c
-@@ -719,7 +719,7 @@ static int linker_sanity_check_elf(struct src_obj *obj)
- 			return -EINVAL;
- 		}
- 
--		if (sec->shdr->sh_addralign && !is_pow_of_2(sec->shdr->sh_addralign))
-+		if (sec->shdr->sh_addralign && !is_power_of_2(sec->shdr->sh_addralign))
- 			return -EINVAL;
- 		if (sec->shdr->sh_addralign != sec->data->d_align)
- 			return -EINVAL;
--- 
-2.1.0
-
+> Thanks.
