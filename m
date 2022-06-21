@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F7D5528FA
-	for <lists+bpf@lfdr.de>; Tue, 21 Jun 2022 03:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 789A55528FC
+	for <lists+bpf@lfdr.de>; Tue, 21 Jun 2022 03:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234350AbiFUB2a (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Jun 2022 21:28:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46776 "EHLO
+        id S241056AbiFUB2b (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Jun 2022 21:28:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242831AbiFUB2Z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Jun 2022 21:28:25 -0400
+        with ESMTP id S243292AbiFUB21 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Jun 2022 21:28:27 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A13681928B
-        for <bpf@vger.kernel.org>; Mon, 20 Jun 2022 18:28:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B0B91928B
+        for <bpf@vger.kernel.org>; Mon, 20 Jun 2022 18:28:26 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4A54061596
-        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 01:28:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F170C341C5;
-        Tue, 21 Jun 2022 01:28:22 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2149A61598
+        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 01:28:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25A25C385A9;
+        Tue, 21 Jun 2022 01:28:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655774903;
-        bh=7ru/BD8lvgDJnszDvUzzT9MCF7A89UGdXDKmbwMRzZ0=;
+        s=k20201202; t=1655774905;
+        bh=0LgVkL1ldA/mk8/nk4zJk2Opn3AP379tvwspSLDBYjI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xv/w32cd6RNANi9DSN6C5EJ7TEHeR2IsMdXkTyYfBaiPbRtc92bpph6MxHYqZH1HA
-         1XbFqxStdZHEhIUW18nNz1+7IArNM2HfUNBNegV3bqEx0Kg5UE8AWzvkCf05YEf98V
-         gXUq4ByTEOucws5je9G4P4YmCKzDx1x/cOyLcweo3TtWctbS3SaFexK1DC3G4ZQmuX
-         TEAiLy1qN/2YAWMw5PXTlD48AoNex59/4W5RDdVwMHUzXyeAW8vkJ2dtUwNSW1Z/Xx
-         COTR4i9+EkQj31BSOvfNUolGaUls7kDFOtmlQ1cAQ75ZWa2KkFH+cYUQrFwip06i4S
-         IQDVcylDaTgXg==
+        b=fF+gqZ4zIE0zGSlt/V8+DmsH5nOZ2rXzm8Aai7gm/EinXB4PVxz4nIPM4DBA7zJXT
+         qQJS927Q+qWxBbb3Fza23xT1cp0OS3Eek6jnDuHXvby91KCKtVcwzedMQ7OBnlhMkS
+         iL2RrxFohyyTt7SpBqAehRnLsA+ijameJZAssGoSGnHy9e2DORhYkEGocU59A5TjYb
+         IHcnmDX/4dH5/px+0eACP39yo/WuIhotFuweT7iq6R1SM8LC1I8QIzaljDqXeyXFec
+         OY8XyD5VfjWEUKLeF776oE+IzcnlXh+rT+3ujiV8019vm/8YhQGPslWBp5wrhhxZgl
+         0SWZ1Ode0V5Ag==
 From:   KP Singh <kpsingh@kernel.org>
 To:     bpf@vger.kernel.org
 Cc:     KP Singh <kpsingh@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
@@ -38,9 +38,9 @@ Cc:     KP Singh <kpsingh@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Benjamin Tissoires <benjamin.tissoires@redhat.com>,
         Yosry Ahmed <yosryahmed@google.com>
-Subject: [PATCH v2 bpf-next 4/5] bpf: Add a bpf_getxattr kfunc
-Date:   Tue, 21 Jun 2022 01:28:10 +0000
-Message-Id: <20220621012811.2683313-5-kpsingh@kernel.org>
+Subject: [PATCH v2 bpf-next 5/5] bpf/selftests: Add a selftest for bpf_getxattr
+Date:   Tue, 21 Jun 2022 01:28:11 +0000
+Message-Id: <20220621012811.2683313-6-kpsingh@kernel.org>
 X-Mailer: git-send-email 2.37.0.rc0.104.g0611611a94-goog
 In-Reply-To: <20220621012811.2683313-1-kpsingh@kernel.org>
 References: <20220621012811.2683313-1-kpsingh@kernel.org>
@@ -56,74 +56,124 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-LSMs like SELinux store security state in xattrs. bpf_getxattr enables
-BPF LSM to implement similar functionality. In combination with
-bpf_local_storage, xattrs can be used to develop more complex security
-policies.
-
-This kfunc wraps around __vfs_getxattr which can sleep and is,
-therefore, limited to sleepable programs using the newly added
-sleepable_set for kfuncs.
+A simple test that adds an xattr on a copied /bin/ls and reads it back
+when the copied ls is executed.
 
 Signed-off-by: KP Singh <kpsingh@kernel.org>
 ---
- kernel/trace/bpf_trace.c | 36 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+ .../testing/selftests/bpf/prog_tests/xattr.c  | 58 +++++++++++++++++++
+ tools/testing/selftests/bpf/progs/xattr.c     | 37 ++++++++++++
+ 2 files changed, 95 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xattr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xattr.c
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 4be976cf7d63..b5682d55ebde 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -20,6 +20,7 @@
- #include <linux/fprobe.h>
- #include <linux/bsearch.h>
- #include <linux/sort.h>
-+#include <linux/xattr.h>
- 
- #include <net/bpf_sk_storage.h>
- 
-@@ -1181,6 +1182,41 @@ static const struct bpf_func_proto bpf_get_func_arg_cnt_proto = {
- 	.arg1_type	= ARG_PTR_TO_CTX,
- };
- 
-+noinline __weak ssize_t bpf_getxattr(struct dentry *dentry, struct inode *inode,
-+				     const char *name, void *value, int size)
+diff --git a/tools/testing/selftests/bpf/prog_tests/xattr.c b/tools/testing/selftests/bpf/prog_tests/xattr.c
+new file mode 100644
+index 000000000000..442b6c1aed0e
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/xattr.c
+@@ -0,0 +1,58 @@
++// SPDX-License-Identifier: GPL-2.0
++
++/*
++ * Copyright 2022 Google LLC.
++ */
++
++#include <test_progs.h>
++#include <sys/xattr.h>
++#include "xattr.skel.h"
++
++#define XATTR_NAME "security.bpf"
++#define XATTR_VALUE "test_progs"
++
++static unsigned int duration;
++
++void test_xattr(void)
 +{
-+	return __vfs_getxattr(dentry, inode, name, value, size);
++	struct xattr *skel = NULL;
++	char tmp_dir_path[] = "/tmp/xattrXXXXXX";
++	char tmp_exec_path[64];
++	char cmd[256];
++	int err;
++
++	if (CHECK(!mkdtemp(tmp_dir_path), "mkdtemp",
++		  "unable to create tmpdir: %d\n", errno))
++		goto close_prog;
++
++	snprintf(tmp_exec_path, sizeof(tmp_exec_path), "%s/copy_of_ls",
++		 tmp_dir_path);
++	snprintf(cmd, sizeof(cmd), "cp /bin/ls %s", tmp_exec_path);
++	if (CHECK_FAIL(system(cmd)))
++		goto close_prog_rmdir;
++
++	if (CHECK(setxattr(tmp_exec_path, XATTR_NAME, XATTR_VALUE,
++			   sizeof(XATTR_VALUE), 0),
++		  "setxattr", "unable to setxattr: %d", errno))
++		goto close_prog_rmdir;
++
++	skel = xattr__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "skel_load"))
++		goto close_prog_rmdir;
++
++	err = xattr__attach(skel);
++	if (!ASSERT_OK(err, "xattr__attach failed"))
++		goto close_prog_rmdir;
++
++	snprintf(cmd, sizeof(cmd), "%s -l", tmp_exec_path);
++	if (CHECK_FAIL(system(cmd)))
++		goto close_prog_rmdir;
++
++	ASSERT_EQ(skel->bss->result, 1, "xattr result");
++
++close_prog_rmdir:
++	snprintf(cmd, sizeof(cmd), "rm -rf %s", tmp_dir_path);
++	system(cmd);
++close_prog:
++	xattr__destroy(skel);
 +}
+diff --git a/tools/testing/selftests/bpf/progs/xattr.c b/tools/testing/selftests/bpf/progs/xattr.c
+new file mode 100644
+index 000000000000..ccc078fb8ebd
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/xattr.c
+@@ -0,0 +1,37 @@
++// SPDX-License-Identifier: GPL-2.0
 +
-+BTF_SET_START(bpf_trace_kfunc_ids)
-+BTF_ID(func, bpf_getxattr)
-+BTF_SET_END(bpf_trace_kfunc_ids)
++/*
++ * Copyright 2022 Google LLC.
++ */
 +
-+BTF_SET_START(bpf_trace_sleepable_kfunc_ids)
-+BTF_ID(func, bpf_getxattr)
-+BTF_SET_END(bpf_trace_sleepable_kfunc_ids)
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
 +
-+static const struct btf_kfunc_id_set bpf_trace_kfunc_set = {
-+	.owner = THIS_MODULE,
-+	.check_set = &bpf_trace_kfunc_ids,
-+	.sleepable_set = &bpf_trace_sleepable_kfunc_ids,
-+};
++char _license[] SEC("license") = "GPL";
 +
-+static int __init bpf_trace_kfunc_init(void)
++#define XATTR_NAME "security.bpf"
++#define XATTR_VALUE "test_progs"
++
++__u64 result = 0;
++
++extern ssize_t bpf_getxattr(struct dentry *dentry, struct inode *inode,
++			    const char *name, void *value, int size) __ksym;
++
++SEC("lsm.s/bprm_committed_creds")
++void BPF_PROG(bprm_cc, struct linux_binprm *bprm)
 +{
-+	int ret;
++	struct task_struct *current = bpf_get_current_task_btf();
++	char dir_xattr_value[64] = {0};
++	int xattr_sz = 0;
 +
-+	ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING,
-+					&bpf_trace_kfunc_set);
-+	if (!ret)
-+		return ret;
++	xattr_sz = bpf_getxattr(bprm->file->f_path.dentry,
++				bprm->file->f_path.dentry->d_inode, XATTR_NAME,
++				dir_xattr_value, 64);
 +
-+	return register_btf_kfunc_id_set(BPF_PROG_TYPE_LSM,
-+					&bpf_trace_kfunc_set);
++	if (xattr_sz <= 0)
++		return;
 +
++	if (!bpf_strncmp(dir_xattr_value, sizeof(XATTR_VALUE), XATTR_VALUE))
++		result = 1;
 +}
-+late_initcall(bpf_trace_kfunc_init);
-+
- static const struct bpf_func_proto *
- bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- {
 -- 
 2.37.0.rc0.104.g0611611a94-goog
 
