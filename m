@@ -2,68 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E3EB553A53
-	for <lists+bpf@lfdr.de>; Tue, 21 Jun 2022 21:19:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D52C553AB7
+	for <lists+bpf@lfdr.de>; Tue, 21 Jun 2022 21:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352979AbiFUTTU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Jun 2022 15:19:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36838 "EHLO
+        id S1351199AbiFUTlg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Jun 2022 15:41:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353489AbiFUTTJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Jun 2022 15:19:09 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E9F62D1F7
-        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 12:18:04 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id n12so2694470ilt.4
-        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 12:18:04 -0700 (PDT)
+        with ESMTP id S1348473AbiFUTlf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Jun 2022 15:41:35 -0400
+Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com [IPv6:2607:f8b0:4864:20::a32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFB596157
+        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 12:41:34 -0700 (PDT)
+Received: by mail-vk1-xa32.google.com with SMTP id s1so7201137vkl.3
+        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 12:41:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=m1rLTRVD/2sg8vR2B4hxWhx0vDPDz7W+AGIeWIe05S0=;
-        b=BhiHJrqVGBeBdxH9tV4XPGosKr36AfR5IWr1suzwwJGFkLupgqpMjIO9xrO1zHjhOr
-         g9xbsh9Y1p2M4Q2q6yMS1FEyN+r1uoDwDeXtY2B1Mv6zQDiMf1YAmOoHe+Aw4DJVYXbh
-         geV5XV8J7aHhJNO9ZE4qePK0PYzdRLix/iLX4xvJJqzrVKRsHe6h/gR4CfwiZt1KUd2y
-         YQQd5tXRLv7RwxDwj2K0b84hi+vjkWDSpq47ixP9df4JCWrFsn2ildE9Y8cVHm6IXDFU
-         N7PYs1YyK8A7r8LOPbIPTdP/549Ag1rLc0Bvx7eg1teEnqQx5yxZ1rNRl20I2h4XbM5L
-         qFyg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=JSx/Z7UuDVspHgcw7nI7XB9P3bW+N9r4foMzAYckQm4=;
+        b=ID5ZP8iEVlOe4J3hi2e53A57E6H3CMhc8L9YulsnmPdNIO/uvu23nxZl69osig/cKW
+         FY2iWID7QGtQwPhXh/vwdybrPb0FRi6MXWD/qvD/0KR3jfNGTs2AwSyTe131vSfAbp22
+         2JlhLY6p8S6upoqaD3w9XbwWo7iFRXornfodxku3ydh1/pRoEYJFHxkTBNxKPQvIJsjc
+         wL8gFJnQGUE3ovK1TfeKTcx+3infoc8XkmT84IX1S9zTka7Xk8K7fEAIS6z94gM4VPOx
+         z8U6iRJha+4quvwnTm66Gx49KDd5LGqXSUXVzEZppT0BASgf0YobVkYwhZQV7Zk7YdWE
+         D/mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=m1rLTRVD/2sg8vR2B4hxWhx0vDPDz7W+AGIeWIe05S0=;
-        b=q9E2cZGXB2M0zJ0ifhwkZepmOwssx+8uw79OVHND8Y9fiRpjUKsJ27C6Fo4I+4OVDo
-         sWH1wk2CSvWikBa8aTQsu1UWpduJ+lEvATFi9WJGXBqnnUTvRBB+Xbs+w7Pl1HwbLF7q
-         AA/8IoItPlyN+OWhK6aEIB/KowaNbXP/1KdqCcKMuje1jJ/m0ELmpaD+Vn6AON7CwdOd
-         kfWSrSDWuSuVroIkahbJ2uh8DVPDNyRVWGD8iq15X8UxcWW0uj8XNmSl5WuKKpjfxKnw
-         e9riSUK/wSM0YyIBVrPMF35CXSYc5argkN1tudBCoRIZdex66LX2cii9X0zIk/KDfcw7
-         vatA==
-X-Gm-Message-State: AJIora+IrRsKCxkfRlqK6YOARZQX8BySlHIDEM3urbUf6+BRwqqUaA2O
-        3UGZ7q+RWD33ch54GNw5+cDNHQbyWtgxuA==
-X-Google-Smtp-Source: AGRyM1twy2m/bNQ7hY4CswVHAnrbsJN8jn1cQ/7bMwKvaT5LbNmg3ye3vWecy4AgrZB/Ed5JxrAzxQ==
-X-Received: by 2002:a05:6e02:1c0e:b0:2d3:fa6d:ce23 with SMTP id l14-20020a056e021c0e00b002d3fa6dce23mr16634575ilh.98.1655839083366;
-        Tue, 21 Jun 2022 12:18:03 -0700 (PDT)
-Received: from localhost ([172.243.153.43])
-        by smtp.gmail.com with ESMTPSA id r13-20020a02880d000000b00331b841cf9fsm7418430jai.33.2022.06.21.12.18.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jun 2022 12:18:02 -0700 (PDT)
-Date:   Tue, 21 Jun 2022 12:17:54 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Dave Marchevsky <davemarchevsky@fb.com>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=JSx/Z7UuDVspHgcw7nI7XB9P3bW+N9r4foMzAYckQm4=;
+        b=v1VsIg1uZm9JgeLa0n1uOZ+hyMsBa1z5NzfZVsURzEDqnaULObk566iCrohOlCSIe1
+         WXW6jIcfMrLu7BNw8QD+lDkvvgiiSaRlYklXlUpGPXfHmnCKAYsB0+64RNMd6qTtwjNm
+         PQtfCe1knKKVHb7aWcDpxTNXGW46tJqmcFG37LQyYE08C2xwlGiFQP6fYOwV4GxyKM+F
+         l9nXak4sMLqopjaLeEPgKeFmMJupCrttfx50HgDCVqMNLkzDw1y59cN7K8m9SebY19Sj
+         MjCze8HPy98zCbPDUsxJKaLQbtQpzYn/cxIn2qie3dBnH44a7LsrETilEfUDKKZiIoCy
+         +Dvw==
+X-Gm-Message-State: AJIora9ZrVP+NlsvxVU4wqEYOQP8x3qbcijdoLuPAq0s30loIUoykTPO
+        6l6OrlEuOQsATNPQZwS6XS4S9zbpjQBPcnvb3jk=
+X-Google-Smtp-Source: AGRyM1vOZRNvu/ak3yqI2FLZIquRU1ixind0A27uQ2nS94PDrye4P5pC8+bHvs7JDcNC5usPWLRrnkuL09pZyERxH+Q=
+X-Received: by 2002:a05:6122:1399:b0:36c:51b4:57b5 with SMTP id
+ m25-20020a056122139900b0036c51b457b5mr3401562vkp.25.1655840493850; Tue, 21
+ Jun 2022 12:41:33 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220620231713.2143355-1-deso@posteo.net> <20220620231713.2143355-4-deso@posteo.net>
+In-Reply-To: <20220620231713.2143355-4-deso@posteo.net>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Tue, 21 Jun 2022 12:41:22 -0700
+Message-ID: <CAJnrk1YL9E2GJN+8Gnr9Db=yAHDOm2nwLb_LUQTEuStkm1jHEg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/7] bpf: Add type match support
+To:     =?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Kernel Team <kernel-team@fb.com>,
-        Dave Marchevsky <davemarchevsky@fb.com>
-Message-ID: <62b21962dc64_1627420844@john.notmuch>
-In-Reply-To: <20220620222554.270578-1-davemarchevsky@fb.com>
-References: <20220620222554.270578-1-davemarchevsky@fb.com>
-Subject: RE: [PATCH v6 bpf-next] selftests/bpf: Add benchmark for
- local_storage get
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -75,326 +67,376 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dave Marchevsky wrote:
-> Add a benchmarks to demonstrate the performance cliff for local_storage=
-
-> get as the number of local_storage maps increases beyond current
-> local_storage implementation's cache size.
-> =
-
-> "sequential get" and "interleaved get" benchmarks are added, both of
-> which do many bpf_task_storage_get calls on sets of task local_storage
-> maps of various counts, while considering a single specific map to be
-> 'important' and counting task_storage_gets to the important map
-> separately in addition to normal 'hits' count of all gets. Goal here is=
-
-> to mimic scenario where a particular program using one map - the
-> important one - is running on a system where many other local_storage
-> maps exist and are accessed often.
-> =
-
-> While "sequential get" benchmark does bpf_task_storage_get for map 0, 1=
-,
-> ..., {9, 99, 999} in order, "interleaved" benchmark interleaves 4
-> bpf_task_storage_gets for the important map for every 10 map gets. This=
-
-> is meant to highlight performance differences when important map is
-> accessed far more frequently than non-important maps.
-> =
-
-> A "hashmap control" benchmark is also included for easy comparison of
-> standard bpf hashmap lookup vs local_storage get. The benchmark is
-> similar to "sequential get", but creates and uses BPF_MAP_TYPE_HASH
-> instead of local storage. Only one inner map is created - a hashmap
-> meant to hold tid -> data mapping for all tasks. Size of the hashmap is=
-
-> hardcoded to my system's PID_MAX_LIMIT (4,194,304). The number of these=
-
-> keys which are actually fetched as part of the benchmark is
-> configurable.
-> =
-
-> Addition of this benchmark is inspired by conversation with Alexei in a=
-
-> previous patchset's thread [0], which highlighted the need for such a
-> benchmark to motivate and validate improvements to local_storage
-> implementation. My approach in that series focused on improving
-> performance for explicitly-marked 'important' maps and was rejected
-> with feedback to make more generally-applicable improvements while
-> avoiding explicitly marking maps as important. Thus the benchmark
-> reports both general and important-map-focused metrics, so effect of
-> future work on both is clear.
-> =
-
-> Regarding the benchmark results. On a powerful system (Skylake, 20
-> cores, 256gb ram):
-> =
-
-> Hashmap Control
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->         num keys: 10
-> hashmap (control) sequential    get:  hits throughput: 20.900 =C2=B1 0.=
-334 M ops/s, hits latency: 47.847 ns/op, important_hits throughput: 20.90=
-0 =C2=B1 0.334 M ops/s
-> =
-
->         num keys: 1000
-> hashmap (control) sequential    get:  hits throughput: 13.758 =C2=B1 0.=
-219 M ops/s, hits latency: 72.683 ns/op, important_hits throughput: 13.75=
-8 =C2=B1 0.219 M ops/s
-> =
-
->         num keys: 10000
-> hashmap (control) sequential    get:  hits throughput: 6.995 =C2=B1 0.0=
-34 M ops/s, hits latency: 142.959 ns/op, important_hits throughput: 6.995=
- =C2=B1 0.034 M ops/s
-> =
-
->         num keys: 100000
-> hashmap (control) sequential    get:  hits throughput: 4.452 =C2=B1 0.3=
-71 M ops/s, hits latency: 224.635 ns/op, important_hits throughput: 4.452=
- =C2=B1 0.371 M ops/s
-> =
-
->         num keys: 4194304
-> hashmap (control) sequential    get:  hits throughput: 3.043 =C2=B1 0.0=
-33 M ops/s, hits latency: 328.587 ns/op, important_hits throughput: 3.043=
- =C2=B1 0.033 M ops/s
-> =
-
-
-Why is the hashmap lookup not constant with the number of keys? It looks
-like its prepopulated without collisions so I wouldn't expect any
-extra ops on the lookup side after looking at the code quickly.
-
-
-> Local Storage
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->         num_maps: 1
-> local_storage cache sequential  get:  hits throughput: 47.298 =C2=B1 0.=
-180 M ops/s, hits latency: 21.142 ns/op, important_hits throughput: 47.29=
-8 =C2=B1 0.180 M ops/s
-> local_storage cache interleaved get:  hits throughput: 55.277 =C2=B1 0.=
-888 M ops/s, hits latency: 18.091 ns/op, important_hits throughput: 55.27=
-7 =C2=B1 0.888 M ops/s
-> =
-
->         num_maps: 10
-> local_storage cache sequential  get:  hits throughput: 40.240 =C2=B1 0.=
-802 M ops/s, hits latency: 24.851 ns/op, important_hits throughput: 4.024=
- =C2=B1 0.080 M ops/s
-> local_storage cache interleaved get:  hits throughput: 48.701 =C2=B1 0.=
-722 M ops/s, hits latency: 20.533 ns/op, important_hits throughput: 17.39=
-3 =C2=B1 0.258 M ops/s
-> =
-
->         num_maps: 16
-> local_storage cache sequential  get:  hits throughput: 44.515 =C2=B1 0.=
-708 M ops/s, hits latency: 22.464 ns/op, important_hits throughput: 2.782=
- =C2=B1 0.044 M ops/s
-> local_storage cache interleaved get:  hits throughput: 49.553 =C2=B1 2.=
-260 M ops/s, hits latency: 20.181 ns/op, important_hits throughput: 15.76=
-7 =C2=B1 0.719 M ops/s
-> =
-
->         num_maps: 17
-> local_storage cache sequential  get:  hits throughput: 38.778 =C2=B1 0.=
-302 M ops/s, hits latency: 25.788 ns/op, important_hits throughput: 2.284=
- =C2=B1 0.018 M ops/s
-> local_storage cache interleaved get:  hits throughput: 43.848 =C2=B1 1.=
-023 M ops/s, hits latency: 22.806 ns/op, important_hits throughput: 13.34=
-9 =C2=B1 0.311 M ops/s
-> =
-
->         num_maps: 24
-> local_storage cache sequential  get:  hits throughput: 19.317 =C2=B1 0.=
-568 M ops/s, hits latency: 51.769 ns/op, important_hits throughput: 0.806=
- =C2=B1 0.024 M ops/s
-> local_storage cache interleaved get:  hits throughput: 24.397 =C2=B1 0.=
-272 M ops/s, hits latency: 40.989 ns/op, important_hits throughput: 6.863=
- =C2=B1 0.077 M ops/s
-> =
-
->         num_maps: 32
-> local_storage cache sequential  get:  hits throughput: 13.333 =C2=B1 0.=
-135 M ops/s, hits latency: 75.000 ns/op, important_hits throughput: 0.417=
- =C2=B1 0.004 M ops/s
-> local_storage cache interleaved get:  hits throughput: 16.898 =C2=B1 0.=
-383 M ops/s, hits latency: 59.178 ns/op, important_hits throughput: 4.717=
- =C2=B1 0.107 M ops/s
-> =
-
->         num_maps: 100
-> local_storage cache sequential  get:  hits throughput: 6.360 =C2=B1 0.1=
-07 M ops/s, hits latency: 157.233 ns/op, important_hits throughput: 0.064=
- =C2=B1 0.001 M ops/s
-> local_storage cache interleaved get:  hits throughput: 7.303 =C2=B1 0.3=
-62 M ops/s, hits latency: 136.930 ns/op, important_hits throughput: 1.907=
- =C2=B1 0.094 M ops/s
-> =
-
->         num_maps: 1000
-> local_storage cache sequential  get:  hits throughput: 0.452 =C2=B1 0.0=
-10 M ops/s, hits latency: 2214.022 ns/op, important_hits throughput: 0.00=
-0 =C2=B1 0.000 M ops/s
-> local_storage cache interleaved get:  hits throughput: 0.542 =C2=B1 0.0=
-07 M ops/s, hits latency: 1843.341 ns/op, important_hits throughput: 0.13=
-6 =C2=B1 0.002 M ops/s
-> =
-
-> Looking at the "sequential get" results, it's clear that as the
-> number of task local_storage maps grows beyond the current cache size
-> (16), there's a significant reduction in hits throughput. Note that
-> current local_storage implementation assigns a cache_idx to maps as the=
-y
-> are created. Since "sequential get" is creating maps 0..n in order and
-> then doing bpf_task_storage_get calls in the same order, the benchmark
-> is effectively ensuring that a map will not be in cache when the progra=
-m
-> tries to access it.
-> =
-
-> For "interleaved get" results, important-map hits throughput is greatly=
-
-> increased as the important map is more likely to be in cache by virtue
-> of being accessed far more frequently. Throughput still reduces as #
-> maps increases, though.
-> =
-
-> To get a sense of the overhead of the benchmark program, I
-> commented out bpf_task_storage_get/bpf_map_lookup_elem in
-> local_storage_bench.c and ran the benchmark on the same host as the
-> 'real' run. Results:
-
-Also just checking the hash overhead was taken including the
-urandom so we can pull that out of the cost.
-
-[...]
-
-> +#include "vmlinux.h"
-> +#include <bpf/bpf_helpers.h>
-> +#include "bpf_misc.h"
-> +
-> +#define HASHMAP_SZ 4194304
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
-> +	__uint(max_entries, 1000);
-> +	__type(key, int);
-> +	__type(value, int);
-> +	__array(values, struct {
-> +		__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
-> +		__uint(map_flags, BPF_F_NO_PREALLOC);
-> +		__type(key, int);
-> +		__type(value, int);
-> +	});
-> +} array_of_local_storage_maps SEC(".maps");
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
-> +	__uint(max_entries, 1000);
-> +	__type(key, int);
-> +	__type(value, int);
-> +	__array(values, struct {
-> +		__uint(type, BPF_MAP_TYPE_HASH);
-> +		__uint(max_entries, HASHMAP_SZ);
-> +		__type(key, int);
-> +		__type(value, int);
-> +	});
-> +} array_of_hash_maps SEC(".maps");
-> +
-> +long important_hits;
-> +long hits;
-> +
-> +/* set from user-space */
-> +const volatile unsigned int use_hashmap;
-> +const volatile unsigned int hashmap_num_keys;
-> +const volatile unsigned int num_maps;
-> +const volatile unsigned int interleave;
-> +
-> +struct loop_ctx {
-> +	struct task_struct *task;
-> +	long loop_hits;
-> +	long loop_important_hits;
-> +};
-> +
-> +static int do_lookup(unsigned int elem, struct loop_ctx *lctx)
+ On Mon, Jun 20, 2022 at 4:25 PM Daniel M=C3=BCller <deso@posteo.net> wrote=
+:
+>
+> This change implements the kernel side of the "type matches" support.
+> Please refer to the next change ("libbpf: Add type match support") for
+> more details on the relation. This one is first in the stack because
+> the follow-on libbpf changes depend on it.
+>
+> Signed-off-by: Daniel M=C3=BCller <deso@posteo.net>
+> ---
+>  include/linux/btf.h |   5 +
+>  kernel/bpf/btf.c    | 267 ++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 272 insertions(+)
+>
+> diff --git a/include/linux/btf.h b/include/linux/btf.h
+> index 1bfed7..7376934 100644
+> --- a/include/linux/btf.h
+> +++ b/include/linux/btf.h
+> @@ -242,6 +242,11 @@ static inline u8 btf_int_offset(const struct btf_typ=
+e *t)
+>         return BTF_INT_OFFSET(*(u32 *)(t + 1));
+>  }
+>
+> +static inline u8 btf_int_bits(const struct btf_type *t)
 > +{
-> +	void *map, *inner_map;
-> +	int idx =3D 0;
-> +
-> +	if (use_hashmap)
-> +		map =3D &array_of_hash_maps;
-> +	else
-> +		map =3D &array_of_local_storage_maps;
-> +
-> +	inner_map =3D bpf_map_lookup_elem(map, &elem);
-> +	if (!inner_map)
-> +		return -1;
-> +
-> +	if (use_hashmap) {
-> +		idx =3D bpf_get_prandom_u32() % hashmap_num_keys;
-> +		bpf_map_lookup_elem(inner_map, &idx);
-
-The htab lookup is just,
-
- static void *htab_map_lookup_elem(struct bpf_map *map, void *key)       =
-   =
-
- {                                                                      =
-
-        struct htab_elem *l =3D __htab_map_lookup_elem(map, key);
-                                                =
-
-        if (l)                                                       =
-
-                return l->key + round_up(map->key_size, 8);
-        return NULL;                                    =
-
- }   =
-
-
-> +	} else {
-> +		bpf_task_storage_get(inner_map, lctx->task, &idx,
-> +				     BPF_LOCAL_STORAGE_GET_F_CREATE);
-> +	}
-> +
-> +	lctx->loop_hits++;
-> +	if (!elem)
-> +		lctx->loop_important_hits++;
-> +	return 0;
+> +       return BTF_INT_BITS(*(__u32 *)(t + 1));
+nit: u32 here instead of __u32
 > +}
 > +
-> +static long loop(u32 index, void *ctx)
-> +{
-> +	struct loop_ctx *lctx =3D (struct loop_ctx *)ctx;
-> +	unsigned int map_idx =3D index % num_maps;
+>  static inline u8 btf_int_encoding(const struct btf_type *t)
+>  {
+>         return BTF_INT_ENCODING(*(u32 *)(t + 1));
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index f08037..3790b4 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -7524,6 +7524,273 @@ int bpf_core_types_are_compat(const struct btf *l=
+ocal_btf, __u32 local_id,
+>                                            MAX_TYPES_ARE_COMPAT_DEPTH);
+>  }
+>
+> +#define MAX_TYPES_MATCH_DEPTH 2
 > +
-> +	do_lookup(map_idx, lctx);
-> +	if (interleave && map_idx % 3 =3D=3D 0)
-> +		do_lookup(0, lctx);
-> +	return 0;
+> +static bool bpf_core_names_match(const struct btf *local_btf, u32 local_=
+id,
+> +                                const struct btf *targ_btf, u32 targ_id)
+> +{
+> +       const struct btf_type *local_t, *targ_t;
+> +       const char *local_n, *targ_n;
+> +       size_t local_len, targ_len;
+> +
+> +       local_t =3D btf_type_by_id(local_btf, local_id);
+> +       targ_t =3D btf_type_by_id(targ_btf, targ_id);
+> +       local_n =3D btf_str_by_offset(local_btf, local_t->name_off);
+> +       targ_n =3D btf_str_by_offset(targ_btf, targ_t->name_off);
+> +       local_len =3D bpf_core_essential_name_len(local_n);
+> +       targ_len =3D bpf_core_essential_name_len(targ_n);
+nit: i personally think this would be a little visually easier to read
+if there was a line space between targ_t and local_n, and between
+targ_n and local_len
+> +
+> +       return local_len =3D=3D targ_len && strncmp(local_n, targ_n, loca=
+l_len) =3D=3D 0;
+Does calling "return !strcmp(local_n, targ_n);" do the same thing here?
 > +}
 > +
-> +SEC("fentry/" SYS_PREFIX "sys_getpgid")
-> +int get_local(void *ctx)
+> +static int bpf_core_enums_match(const struct btf *local_btf, const struc=
+t btf_type *local_t,
+I find the return values a bit confusing here.  The convention in
+linux is to return 0 for the success case. Maybe I'm totally missing
+something here, but is there a reason this doesn't just return a
+boolean?
+> +                               const struct btf *targ_btf, const struct =
+btf_type *targ_t)
 > +{
-> +	struct loop_ctx lctx;
+> +       u16 local_vlen =3D btf_vlen(local_t);
+> +       u16 targ_vlen =3D btf_vlen(targ_t);
+> +       int i, j;
 > +
-> +	lctx.task =3D bpf_get_current_task_btf();
-> +	lctx.loop_hits =3D 0;
-> +	lctx.loop_important_hits =3D 0;
-> +	bpf_loop(10000, &loop, &lctx, 0);
-> +	__sync_add_and_fetch(&hits, lctx.loop_hits);
-> +	__sync_add_and_fetch(&important_hits, lctx.loop_important_hits);
-> +	return 0;
+> +       if (local_t->size !=3D targ_t->size)
+> +               return 0;
+> +
+> +       if (local_vlen > targ_vlen)
+> +               return 0;
+> +
+> +       /* iterate over the local enum's variants and make sure each has
+> +        * a symbolic name correspondent in the target
+> +        */
+> +       for (i =3D 0; i < local_vlen; i++) {
+> +               bool matched =3D false;
+> +               const char *local_n;
+> +               __u32 local_n_off;
+nit: u32 instead of __u32 :)
+> +               size_t local_len;
+> +
+> +               local_n_off =3D btf_is_enum(local_t) ? btf_type_enum(loca=
+l_t)[i].name_off :
+> +                                                    btf_type_enum64(loca=
+l_t)[i].name_off;
+> +
+> +               local_n =3D btf_name_by_offset(local_btf, local_n_off);
+> +               local_len =3D bpf_core_essential_name_len(local_n);
+> +
+> +               for (j =3D 0; j < targ_vlen; j++) {
+> +                       const char *targ_n;
+> +                       __u32 targ_n_off;
+> +                       size_t targ_len;
+> +
+> +                       targ_n_off =3D btf_is_enum(targ_t) ? btf_type_enu=
+m(targ_t)[j].name_off :
+> +                                                          btf_type_enum6=
+4(targ_t)[j].name_off;
+> +                       targ_n =3D btf_name_by_offset(targ_btf, targ_n_of=
+f);
+> +
+> +                       if (str_is_empty(targ_n))
+> +                               continue;
+> +
+> +                       targ_len =3D bpf_core_essential_name_len(targ_n);
+> +
+> +                       if (local_len =3D=3D targ_len && strncmp(local_n,=
+ targ_n, local_len) =3D=3D 0) {
+same question here - does strcmp suffice?
+> +                               matched =3D true;
+> +                               break;
+> +                       }
+> +               }
+> +
+> +               if (!matched)
+> +                       return 0;
+> +       }
+> +       return 1;
 > +}
 > +
-> +char _license[] SEC("license") =3D "GPL";
-> -- =
+> +static int __bpf_core_types_match(const struct btf *local_btf, u32 local=
+_id,
+> +                                 const struct btf *targ_btf, u32 targ_id=
+, int level);
+> +
+> +static int bpf_core_composites_match(const struct btf *local_btf, const =
+struct btf_type *local_t,
+Same question here - is there a reason this doesn't use a boolean as
+its return value?
 
+> +                                    const struct btf *targ_btf, const st=
+ruct btf_type *targ_t,
+> +                                    int level)
+> +{
+> +       /* check that all local members have a match in the target */
+> +       const struct btf_member *local_m =3D btf_members(local_t);
+> +       u16 local_vlen =3D btf_vlen(local_t);
+> +       u16 targ_vlen =3D btf_vlen(targ_t);
+> +       int i, j, err;
+> +
+> +       if (local_vlen > targ_vlen)
+> +               return 0;
+> +
+> +       for (i =3D 0; i < local_vlen; i++, local_m++) {
+> +               const char *local_n =3D btf_name_by_offset(local_btf, loc=
+al_m->name_off);
+> +               const struct btf_member *targ_m =3D btf_members(targ_t);
+> +               bool matched =3D false;
+> +
+> +               for (j =3D 0; j < targ_vlen; j++, targ_m++) {
+> +                       const char *targ_n =3D btf_name_by_offset(targ_bt=
+f, targ_m->name_off);
+> +
+> +                       if (str_is_empty(targ_n))
+> +                               continue;
+> +
+> +                       if (strcmp(local_n, targ_n) !=3D 0)
+> +                               continue;
+> +
+> +                       err =3D __bpf_core_types_match(local_btf, local_m=
+->type, targ_btf,
+> +                                                    targ_m->type, level =
+- 1);
+> +                       if (err > 0) {
+> +                               matched =3D true;
+> +                               break;
+> +                       }
+> +               }
+> +
+> +               if (!matched)
+> +                       return 0;
+> +       }
+> +       return 1;
+> +}
+> +
+> +static int __bpf_core_types_match(const struct btf *local_btf, u32 local=
+_id,
+I personally think it's cleaner (though more verbose) if a boolean
+return arg is passed in to denote whether there's a match, instead of
+returning error, 0 for not a match, and 1 for a match
+> +                                 const struct btf *targ_btf, u32 targ_id=
+, int level)
+> +{
+> +       const struct btf_type *local_t, *targ_t, *prev_local_t;
+> +       int depth =3D 32; /* max recursion depth */
+> +       __u16 local_k;
+nit: u16 and elsewhere in this function
+> +
+> +       if (level <=3D 0)
+> +               return -EINVAL;
+> +
+> +       local_t =3D btf_type_by_id(local_btf, local_id);
+> +       targ_t =3D btf_type_by_id(targ_btf, targ_id);
+> +
+> +recur:
+> +       depth--;
+> +       if (depth < 0)
+> +               return -EINVAL;
+> +
+> +       prev_local_t =3D local_t;
+> +
+> +       local_t =3D btf_type_skip_modifiers(local_btf, local_id, &local_i=
+d);
+> +       targ_t =3D btf_type_skip_modifiers(targ_btf, targ_id, &targ_id);
+> +       if (!local_t || !targ_t)
+> +               return -EINVAL;
+> +
+> +       if (!bpf_core_names_match(local_btf, local_id, targ_btf, targ_id)=
+)
+> +               return 0;
+> +
+> +       local_k =3D btf_kind(local_t);
+> +
+> +       switch (local_k) {
+> +       case BTF_KIND_UNKN:
+> +               return local_k =3D=3D btf_kind(targ_t);
+> +       case BTF_KIND_FWD: {
+> +               bool local_f =3D btf_type_kflag(local_t);
+> +               __u16 targ_k =3D btf_kind(targ_t);
+> +
+> +               if (btf_is_ptr(prev_local_t)) {
+> +                       if (local_k =3D=3D targ_k)
+> +                               return local_f =3D=3D btf_type_kflag(loca=
+l_t);
+> +
+> +                       return (targ_k =3D=3D BTF_KIND_STRUCT && !local_f=
+) ||
+> +                              (targ_k =3D=3D BTF_KIND_UNION && local_f);
+I think it'd be helpful if a comment was included here that the kind
+flag for BTF_KIND_FWD is 0 for struct and 1 for union
+> +               } else {
+> +                       if (local_k !=3D targ_k)
+> +                               return 0;
+> +
+> +                       /* match if the forward declaration is for the sa=
+me kind */
+> +                       return local_f =3D=3D btf_type_kflag(local_t);
+> +               }
+> +       }
+> +       case BTF_KIND_ENUM:
+> +       case BTF_KIND_ENUM64:
+> +               if (!btf_is_any_enum(targ_t))
+> +                       return 0;
+> +
+> +               return bpf_core_enums_match(local_btf, local_t, targ_btf,=
+ targ_t);
+> +       case BTF_KIND_STRUCT:
+> +       case BTF_KIND_UNION: {
+> +               __u16 targ_k =3D btf_kind(targ_t);
+> +
+> +               if (btf_is_ptr(prev_local_t)) {
+> +                       bool targ_f =3D btf_type_kflag(local_t);
+Did you mean btf_type_kflag(targ_t)?
+> +
+> +                       if (local_k =3D=3D targ_k)
+> +                               return 1;
+Why don't we need to check if bpf_core_composites_match() in this case?
+> +
+> +                       if (targ_k !=3D BTF_KIND_FWD)
+> +                               return 0;
+Can there be the case where targ_k is a BTF_KIND_PTR to the same struct/uni=
+on?
+> +
+> +                       return (local_k =3D=3D BTF_KIND_UNION) =3D=3D tar=
+g_f;
+> +               } else {
+> +                       if (local_k !=3D targ_k)
+> +                               return 0;
+> +
+> +                       return bpf_core_composites_match(local_btf, local=
+_t, targ_btf, targ_t,
+> +                                                        level);
+> +               }
+> +       }
+> +       case BTF_KIND_INT: {
+> +               __u8 local_sgn;
+> +               __u8 targ_sgn;
+> +
+> +               if (local_k !=3D btf_kind(targ_t))
+> +                       return 0;
+> +
+> +               local_sgn =3D btf_int_encoding(local_t) & BTF_INT_SIGNED;
+> +               targ_sgn =3D btf_int_encoding(targ_t) & BTF_INT_SIGNED;
+> +
+> +               return btf_int_bits(local_t) =3D=3D btf_int_bits(targ_t) =
+&& local_sgn =3D=3D targ_sgn;
+> +       }
+> +       case BTF_KIND_PTR:
+> +               if (local_k !=3D btf_kind(targ_t))
+> +                       return 0;
+> +
+> +               local_id =3D local_t->type;
+> +               targ_id =3D targ_t->type;
+> +               goto recur;
+> +       case BTF_KIND_ARRAY: {
+> +               const struct btf_array *local_array =3D btf_type_array(lo=
+cal_t);
+> +               const struct btf_array *targ_array =3D btf_type_array(tar=
+g_t);
+> +
+> +               if (local_k !=3D btf_kind(targ_t))
+> +                       return 0;
+> +
+> +               if (local_array->nelems !=3D targ_array->nelems)
+> +                       return 0;
+> +
+> +               local_id =3D local_array->type;
+> +               targ_id =3D targ_array->type;
+> +               goto recur;
+> +       }
+> +       case BTF_KIND_FUNC_PROTO: {
+> +               struct btf_param *local_p =3D btf_params(local_t);
+> +               struct btf_param *targ_p =3D btf_params(targ_t);
+> +               u16 local_vlen =3D btf_vlen(local_t);
+> +               u16 targ_vlen =3D btf_vlen(targ_t);
+> +               int i, err;
+> +
+> +               if (local_k !=3D btf_kind(targ_t))
+> +                       return 0;
+> +
+> +               if (local_vlen !=3D targ_vlen)
+> +                       return 0;
+> +
+> +               for (i =3D 0; i < local_vlen; i++, local_p++, targ_p++) {
+> +                       err =3D __bpf_core_types_match(local_btf, local_p=
+->type, targ_btf,
+> +                                                    targ_p->type, level =
+- 1);
+> +                       if (err <=3D 0)
+> +                               return err;
+> +               }
+> +
+> +               /* tail recurse for return type check */
+> +               local_id =3D local_t->type;
+> +               targ_id =3D targ_t->type;
+> +               goto recur;
+> +       }
+> +       default:
+Do BTF_KIND_FLOAT and BTF_KIND_TYPEDEF need to be checked as well?
+> +               return 0;
+> +       }
+> +}
+> +
+> +int bpf_core_types_match(const struct btf *local_btf, u32 local_id,
+> +                        const struct btf *targ_btf, u32 targ_id)
+> +{
+> +       return __bpf_core_types_match(local_btf, local_id,
+> +                                     targ_btf, targ_id,
+> +                                     MAX_TYPES_MATCH_DEPTH);
+> +}
+Also, btw, thanks for the thorough cover letter - its high-level
+overview made it easier to understand the patches
+> +
+>  static bool bpf_core_is_flavor_sep(const char *s)
+>  {
+>         /* check X___Y name pattern, where X and Y are not underscores */
+> --
 > 2.30.2
-> =
-
-
-
+>
