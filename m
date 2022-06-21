@@ -2,251 +2,213 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0F0D553938
-	for <lists+bpf@lfdr.de>; Tue, 21 Jun 2022 19:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEFDC55395C
+	for <lists+bpf@lfdr.de>; Tue, 21 Jun 2022 20:04:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352731AbiFURyR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Jun 2022 13:54:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46834 "EHLO
+        id S1352345AbiFUSEX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Jun 2022 14:04:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352458AbiFURyO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Jun 2022 13:54:14 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1864C1C12A
-        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 10:54:14 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id m2so5934400plx.3
-        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 10:54:14 -0700 (PDT)
+        with ESMTP id S1352655AbiFUSET (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Jun 2022 14:04:19 -0400
+Received: from mail-vk1-xa33.google.com (mail-vk1-xa33.google.com [IPv6:2607:f8b0:4864:20::a33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 189E4222A3
+        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 11:04:18 -0700 (PDT)
+Received: by mail-vk1-xa33.google.com with SMTP id j26so2051780vki.12
+        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 11:04:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version;
-        bh=Ct2ALihqOk/QyUzbrkKGbZv46gLvoHk5+rjNAnoDMlY=;
-        b=NRFE3NjwuM9SlO0JJOe06J6Cd7jnHhwBxgQGDs1R6nLGLkRlU6ff8VVbA22Z2XCP22
-         KskjMUCVd4RqDbHowhZXNUKaTru3zGWk2Q9NgIyjlv/Vy3Jop9QbI242z8poyNnMtPui
-         FaKjQWvs+jnNK6EDWv+PCEWpXxgc7USce+Usg=
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lhT1HWYUA3J9St0d2yJp7CrZzV5NgcNJLF3mhYyaLrM=;
+        b=TS54QlO7LG11YjwIOKwZgXuOB3hnx+zKZa1qiJVZysfGQ+PFO3et6u1GrWVdyAth4J
+         zt5Z01C9fakd8L/uE6gnDSHlKImV17ydpZYJDuANCD0q4Pykgez7jOSL4f6irZ7DeLxE
+         kMoMvLvFYDlC+mDoYf5qoINYKs9TbcykA0/8imgnyeqBe/4ZAiI9y1aX3KliRsw48yBg
+         djDWM3H1EFJrsrAn6ctyFF2jQUlZU9x/li/CxDFFYoKGryffiq1lHESVsikLgnHR1csp
+         oBq0JfXg6dhHw6FOuvfV0LTa7DyDx34FxiJ5jxCFyreCgtG7acKUxhMf8bKkO18GkrcO
+         Gi8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version;
-        bh=Ct2ALihqOk/QyUzbrkKGbZv46gLvoHk5+rjNAnoDMlY=;
-        b=jMPW1ZdSltRBygGb/FkQEDG0/Zsf6XHdxScmJJ5RERn0xkNoRoOnlRL3ahcW1n+P5B
-         vC0vQR51eTWSxBSdIAqoT929wEtsvVX2zIAhXjz4nui/W3/jdpsMucJ8DHtQi6yPKSvy
-         w6ov1yCj9R/Ug9lVxiGDXRSJQJzdh3VDhaIN72pbj7FhZk+/VG23mcUTdYWJTGAfHtft
-         alHu8zYwC03vm74hcte3jFbQLpzXNaPsZSxhAQ59gFmQ4yDKEsE9SEJRdO3gs0ekF+Ag
-         EFOKaCmFLf5m4ABzuSnkUVwKuWBfUu8hD6ddmMlaGW69J8ahlcAKW9WQ/jjc+khbxxoq
-         GjbQ==
-X-Gm-Message-State: AJIora84PeXGRo56IZEgcmsP55UfFqcfZJBUpjyleyn7mm+1ob+o0r/7
-        RTGVqOS+yE+oBEoXFwpN1sFyEw==
-X-Google-Smtp-Source: AGRyM1tuZrQJlxghPeRNsQGZlbKytq2s/RUis1pZFNX5jwx91AWKK9hoWy9T3yzdaMV72mqrfxxqhg==
-X-Received: by 2002:a17:903:2012:b0:16a:856:96a7 with SMTP id s18-20020a170903201200b0016a085696a7mr22549922pla.109.1655834053565;
-        Tue, 21 Jun 2022 10:54:13 -0700 (PDT)
-Received: from driver-testing.dhcp.broadcom.net ([192.19.144.250])
-        by smtp.gmail.com with ESMTPSA id z14-20020a17090a540e00b001e095a5477bsm12694558pjh.33.2022.06.21.10.54.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jun 2022 10:54:13 -0700 (PDT)
-From:   Andy Gospodarek <andrew.gospodarek@broadcom.com>
-X-Google-Original-From: Andy Gospodarek <gospo@broadcom.com>
-To:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, toke@redhat.com, lorenzo.bianconi@redhat.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Andy Gospodarek <gospo@broadcom.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>
-Subject: [PATCH net-next v2] samples/bpf: fixup some tools to be able to support xdp multibuffer
-Date:   Tue, 21 Jun 2022 17:54:02 +0000
-Message-Id: <20220621175402.35327-1-gospo@broadcom.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lhT1HWYUA3J9St0d2yJp7CrZzV5NgcNJLF3mhYyaLrM=;
+        b=tJFqvDzmVOpUhtCxP6dqpjemVVfxDI44kjna6+w3uMwbUvgbNRcoNZr9X96ylhzip3
+         wWq/eTm+9fX8bj+Iq1VlF9joP4bishit4p1m82EAJvPW6rglbdpDaZWznGKcvKTz7mQz
+         d6TE6MXiBwLKODA4qFnRDWBsv1IAP+YnnR3KIpWWOrjKxXbi03Z2pfj5oo2OnApIgAl2
+         hhdodo/33JRrb57aWEOstXl1+yD1rKbwHQGfEGOeRwzBb/ADK0X2mG7PURXD6FmPitV7
+         aY7ABtMJ5T/I5/c4uS9xaYsuLFRvtJ6je79HbG6cHdI/a1Dypo/TeBfG3hwwMhpqAnml
+         Cpjw==
+X-Gm-Message-State: AJIora8dTpXMjBGrMyyS6/ZFTazd5NAjwzmu5N/F94s5v+GMhjQJ8uzl
+        WnAVoZ4vt29wSl8TjeZB/SlKNOiOd2ATl/UuAL8=
+X-Google-Smtp-Source: AGRyM1vsbfa5agxB+F8pRtK8MLgiRCFXTqSd68CjLzkxpB5GEoat4lZ7TTdq8+Fmu5++V8EVVgXbh5Ow/GAzzPYe/lk=
+X-Received: by 2002:a05:6122:1990:b0:36b:f70c:ba55 with SMTP id
+ bv16-20020a056122199000b0036bf70cba55mr6496225vkb.12.1655834656722; Tue, 21
+ Jun 2022 11:04:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000967e4b05e1f8e8e1"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MIME_NO_TEXT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20220621012811.2683313-1-kpsingh@kernel.org> <20220621012811.2683313-3-kpsingh@kernel.org>
+In-Reply-To: <20220621012811.2683313-3-kpsingh@kernel.org>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Tue, 21 Jun 2022 11:04:05 -0700
+Message-ID: <CAJnrk1ZzvocB8i5iBrbEQBFnbSw9ek423ps9uOmm4ahp5z3bVg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 2/5] bpf: kfunc support for ARG_PTR_TO_CONST_STR
+To:     KP Singh <kpsingh@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---000000000000967e4b05e1f8e8e1
-Content-Transfer-Encoding: 8bit
+On Mon, Jun 20, 2022 at 6:29 PM KP Singh <kpsingh@kernel.org> wrote:
+>
+> kfuncs can handle pointers to memory when the next argument is
+> the size of the memory that can be read and verify these as
+> ARG_CONST_SIZE_OR_ZERO
+>
+> Similarly add support for string constants (const char *) and
+> verify it similar to ARG_PTR_TO_CONST_STR.
+>
+> Signed-off-by: KP Singh <kpsingh@kernel.org>
+> ---
+>  include/linux/bpf_verifier.h |  2 +
+>  kernel/bpf/btf.c             | 29 ++++++++++++
+>  kernel/bpf/verifier.c        | 85 ++++++++++++++++++++----------------
+>  3 files changed, 79 insertions(+), 37 deletions(-)
+>
+[...]
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 668ecf61649b..02d7951591ae 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -6162,6 +6162,26 @@ static bool is_kfunc_arg_mem_size(const struct btf *btf,
+>         return true;
+>  }
+>
+> +static bool btf_param_is_const_str_ptr(const struct btf *btf,
+> +                                      const struct btf_param *param)
+> +{
+> +       const struct btf_type *t;
+> +
+> +       t = btf_type_by_id(btf, param->type);
+> +       if (!btf_type_is_ptr(t))
+> +               return false;
+> +
+> +       t = btf_type_by_id(btf, t->type);
+> +       if (!(BTF_INFO_KIND(t->info) == BTF_KIND_CONST))
+"if (BTF_INFO_KIND(t->info) != BTF_KIND_CONST)" looks clearer to me
+> +               return false;
+> +
+> +       t = btf_type_skip_modifiers(btf, t->type, NULL);
+> +       if (!strcmp(btf_name_by_offset(btf, t->name_off), "char"))
+"return !strcmp(btf_name_by_offset(btf, t->name_off), "char")" looks
+clearer to me here too
+> +               return true;
+> +
+> +       return false;
+> +}
+> +
+>  static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+>                                     const struct btf *btf, u32 func_id,
+>                                     struct bpf_reg_state *regs,
+> @@ -6344,6 +6364,7 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+>                 } else if (ptr_to_mem_ok) {
+>                         const struct btf_type *resolve_ret;
+>                         u32 type_size;
+> +                       int err;
+>
+>                         if (is_kfunc) {
+>                                 bool arg_mem_size = i + 1 < nargs && is_kfunc_arg_mem_size(btf, &args[i + 1], &regs[regno + 1]);
+> @@ -6354,6 +6375,14 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+>                                  * When arg_mem_size is true, the pointer can be
+>                                  * void *.
+>                                  */
+> +                               if (btf_param_is_const_str_ptr(btf, &args[i])) {
+> +                                       err = check_const_str(env, reg, regno);
+> +                                       if (err < 0)
+> +                                               return err;
+> +                                       i++;
+> +                                       continue;
+If I'm understanding it correctly, this patch is intended to allow
+helper functions to take in a kfunc as an arg as long as the next arg
+is the size of the memory. Do we need to check the memory size access
+here (eg like a call to check_mem_size_reg() in the verifier) to
+ensure that memory accesses of that size are safe?
+> +                               }
+> +
+>                                 if (!btf_type_is_scalar(ref_t) &&
+>                                     !__btf_type_is_scalar_struct(log, btf, ref_t, 0) &&
+>                                     (arg_mem_size ? !btf_type_is_void(ref_t) : 1)) {
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 2859901ffbe3..14a434792d7b 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -5840,6 +5840,52 @@ static u32 stack_slot_get_id(struct bpf_verifier_env *env, struct bpf_reg_state
+>         return state->stack[spi].spilled_ptr.id;
+>  }
+[...]
+> +
+>  static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>                           struct bpf_call_arg_meta *meta,
+>                           const struct bpf_func_proto *fn)
+> @@ -6074,44 +6120,9 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>                         return err;
+>                 err = check_ptr_alignment(env, reg, 0, size, true);
+>         } else if (arg_type == ARG_PTR_TO_CONST_STR) {
+> -               struct bpf_map *map = reg->map_ptr;
+> -               int map_off;
+> -               u64 map_addr;
+> -               char *str_ptr;
+> -
+> -               if (!bpf_map_is_rdonly(map)) {
+> -                       verbose(env, "R%d does not point to a readonly map'\n", regno);
+> -                       return -EACCES;
+> -               }
+> -
+> -               if (!tnum_is_const(reg->var_off)) {
+> -                       verbose(env, "R%d is not a constant address'\n", regno);
+> -                       return -EACCES;
+> -               }
+> -
+> -               if (!map->ops->map_direct_value_addr) {
+> -                       verbose(env, "no direct value access support for this map type\n");
+> -                       return -EACCES;
+> -               }
+> -
+> -               err = check_map_access(env, regno, reg->off,
+> -                                      map->value_size - reg->off, false,
+> -                                      ACCESS_HELPER);
+> -               if (err)
+> -                       return err;
+> -
+> -               map_off = reg->off + reg->var_off.value;
+> -               err = map->ops->map_direct_value_addr(map, &map_addr, map_off);
+> -               if (err) {
+> -                       verbose(env, "direct value access on string failed\n");
+> +               err = check_const_str(env, reg, regno);
+> +               if (err < 0)
+>                         return err;
+nit: I don't think you need the if check here since thsi function will
+return err automatically in the next line
 
-This changes the section name for the bpf program embedded in these
-files to "xdp.frags" to allow the programs to be loaded on drivers that
-are using an MTU greater than PAGE_SIZE.  Rather than directly accessing
-the buffers, the packet data is now accessed via xdp helper functions to
-provide an example for those who may need to write more complex
-programs.
-
-v2: remove new unnecessary variable
-
-Signed-off-by: Andy Gospodarek <gospo@broadcom.com>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-Acked-by: Lorenzo Bianconi <lorenzo@kernel.org>
----
- samples/bpf/xdp1_kern.c            | 11 ++++++++---
- samples/bpf/xdp2_kern.c            | 11 ++++++++---
- samples/bpf/xdp_tx_iptunnel_kern.c |  2 +-
- 3 files changed, 17 insertions(+), 7 deletions(-)
-
-diff --git a/samples/bpf/xdp1_kern.c b/samples/bpf/xdp1_kern.c
-index f0c5d95084de..0a5c704badd0 100644
---- a/samples/bpf/xdp1_kern.c
-+++ b/samples/bpf/xdp1_kern.c
-@@ -39,11 +39,13 @@ static int parse_ipv6(void *data, u64 nh_off, void *data_end)
- 	return ip6h->nexthdr;
- }
- 
--SEC("xdp1")
-+#define XDPBUFSIZE	64
-+SEC("xdp.frags")
- int xdp_prog1(struct xdp_md *ctx)
- {
--	void *data_end = (void *)(long)ctx->data_end;
--	void *data = (void *)(long)ctx->data;
-+	__u8 pkt[XDPBUFSIZE] = {};
-+	void *data_end = &pkt[XDPBUFSIZE-1];
-+	void *data = pkt;
- 	struct ethhdr *eth = data;
- 	int rc = XDP_DROP;
- 	long *value;
-@@ -51,6 +53,9 @@ int xdp_prog1(struct xdp_md *ctx)
- 	u64 nh_off;
- 	u32 ipproto;
- 
-+	if (bpf_xdp_load_bytes(ctx, 0, pkt, sizeof(pkt)))
-+		return rc;
-+
- 	nh_off = sizeof(*eth);
- 	if (data + nh_off > data_end)
- 		return rc;
-diff --git a/samples/bpf/xdp2_kern.c b/samples/bpf/xdp2_kern.c
-index d8a64ab077b0..3332ba6bb95f 100644
---- a/samples/bpf/xdp2_kern.c
-+++ b/samples/bpf/xdp2_kern.c
-@@ -55,11 +55,13 @@ static int parse_ipv6(void *data, u64 nh_off, void *data_end)
- 	return ip6h->nexthdr;
- }
- 
--SEC("xdp1")
-+#define XDPBUFSIZE	64
-+SEC("xdp.frags")
- int xdp_prog1(struct xdp_md *ctx)
- {
--	void *data_end = (void *)(long)ctx->data_end;
--	void *data = (void *)(long)ctx->data;
-+	__u8 pkt[XDPBUFSIZE] = {};
-+	void *data_end = &pkt[XDPBUFSIZE-1];
-+	void *data = pkt;
- 	struct ethhdr *eth = data;
- 	int rc = XDP_DROP;
- 	long *value;
-@@ -67,6 +69,9 @@ int xdp_prog1(struct xdp_md *ctx)
- 	u64 nh_off;
- 	u32 ipproto;
- 
-+	if (bpf_xdp_load_bytes(ctx, 0, pkt, sizeof(pkt)))
-+		return rc;
-+
- 	nh_off = sizeof(*eth);
- 	if (data + nh_off > data_end)
- 		return rc;
-diff --git a/samples/bpf/xdp_tx_iptunnel_kern.c b/samples/bpf/xdp_tx_iptunnel_kern.c
-index 575d57e4b8d6..0e2bca3a3fff 100644
---- a/samples/bpf/xdp_tx_iptunnel_kern.c
-+++ b/samples/bpf/xdp_tx_iptunnel_kern.c
-@@ -212,7 +212,7 @@ static __always_inline int handle_ipv6(struct xdp_md *xdp)
- 	return XDP_TX;
- }
- 
--SEC("xdp_tx_iptunnel")
-+SEC("xdp.frags")
- int _xdp_tx_iptunnel(struct xdp_md *xdp)
- {
- 	void *data_end = (void *)(long)xdp->data_end;
--- 
-2.25.1
-
-
---000000000000967e4b05e1f8e8e1
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBVkwggRBoAMCAQICDBPdG+g0KtOPKKsBCTANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMTAyMjIxNDAyMzhaFw0yMjA5MjIxNDExNTVaMIGW
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xGDAWBgNVBAMTD0FuZHkgR29zcG9kYXJlazEtMCsGCSqGSIb3
-DQEJARYeYW5kcmV3Lmdvc3BvZGFyZWtAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
-AQ8AMIIBCgKCAQEAp9JFtMqwgpbnvA3lNVCpnR5ehv0kWK9zMpw2VWslbEZq4WxlXr1zZLZEFo9Y
-rdIZ0jlxwJ4QGYCvxE093p9easqc7NMemeMg7JpF63hhjCksrGnsxb6jCVUreXPSpBDD0cjaE409
-9yo/J5OQORNPelDd4Ihod6g0XlcxOLtlTk1F0SOODSjBZvaDm0zteqiVZb+7xgle3NOSZm3kiCby
-iRuyS0gMTdQN3gdgwal9iC3cSXHMZFBXyQz+JGSHomhPC66L6j4t6dUqSTdSP07wg38ZPV6ct/Sv
-/O2HcK+E/yYkdMXrDBgcOelO4t8AYHhmedCIvFVp4pFb2oit9tBuFQIDAQABo4IB3zCCAdswDgYD
-VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
-ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
-CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
-MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
-d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
-hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
-bDApBgNVHREEIjAggR5hbmRyZXcuZ29zcG9kYXJla0Bicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYI
-KwYBBQUHAwQwHwYDVR0jBBgwFoAUljPR5lgXWzR1ioFWZNW+SN6hj88wHQYDVR0OBBYEFKARn7Ud
-RlGu+rBdUDirYE+Ee4TeMA0GCSqGSIb3DQEBCwUAA4IBAQAcWqh4fdwhDN0+MKyH7Mj0vS10E7xg
-mDetQhQ+twwKk5qPe3tJXrjD/NyZzrUgguNaE+X97jRsEbszO7BqdnM0j5vLDOmzb7d6qeNluJvk
-OYyzItlqZk9cJPoP9sD8w3lr2GRcajj5JCKV4pd2PX/i7r30Qco0VnloXpiesFmNTXQqD6lguUyn
-nb7IGM3v/Nb7NTFH8/KUVg33xw829ztuGrOvfrHfBbeVcUoOHEHObXoaofYOJjtmSOQdMeJIiBgP
-XEpJG8/HB8t4FF6A8W++4cHhv0+ayyEnznrbOCn6WUmIvV2WiJymRpvRG7Hhdlk0zA97MRpqK5yn
-ai3dQ6VvMYICbTCCAmkCAQEwazBbMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBu
-di1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMgUGVyc29uYWxTaWduIDIgQ0EgMjAyMAIM
-E90b6DQq048oqwEJMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCCCOXVSBQs5Hm63
-gGCRio7N0wX2k6HhRXanVaaZw+9cHDAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3
-DQEJBTEPFw0yMjA2MjExNzU0MTNaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUDBAEqMAsGCWCG
-SAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsGCSqGSIb3DQEB
-BzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAf8OQwZP/dLekEjgPXnhB7NuCcRXEXgjy
-inNzyfKoDu18FYXu4W4ZwMbTshhHo9ctNWGy+ld9RR1Ckg+KxEOW/bu4BIhtrOeAjoT0ANj0zo8u
-Fb9tGEQC4TAM4HCl5nK+P7xCa1hkzDfcdAcCCpTS3Qb56zjHaem9hPza77Gf43pOgaMiIgu08d9v
-Kw7J5gcpYQ0X9Sjqv9nNfgSJGMbmCErwPe0fX7g9EjfUpZcgpNSJDbREIeXPYpKGaVFVs0OEA0oX
-G+ro+hkC4qYcFtXop5nQAx/fg1lTtW3PqVWPBf9SfcsXA6xC37wTBX/uioxBOGAhDajWQ2Q9PWog
-GvXNew==
---000000000000967e4b05e1f8e8e1--
+> -               }
+> -
+> -               str_ptr = (char *)(long)(map_addr);
+> -               if (!strnchr(str_ptr + map_off, map->value_size - map_off, 0)) {
+> -                       verbose(env, "string is not zero-terminated\n");
+> -                       return -EINVAL;
+> -               }
+>         } else if (arg_type == ARG_PTR_TO_KPTR) {
+>                 if (process_kptr_func(env, regno, meta))
+>                         return -EACCES;
+> --
+> 2.37.0.rc0.104.g0611611a94-goog
+>
