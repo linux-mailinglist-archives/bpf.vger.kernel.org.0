@@ -2,132 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC495552C21
-	for <lists+bpf@lfdr.de>; Tue, 21 Jun 2022 09:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41D8E552EED
+	for <lists+bpf@lfdr.de>; Tue, 21 Jun 2022 11:41:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346202AbiFUHdj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Jun 2022 03:33:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60462 "EHLO
+        id S1349198AbiFUJl3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Jun 2022 05:41:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347576AbiFUHcz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Jun 2022 03:32:55 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AC8E6472;
-        Tue, 21 Jun 2022 00:32:54 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id p5so6475069pjt.2;
-        Tue, 21 Jun 2022 00:32:54 -0700 (PDT)
+        with ESMTP id S1349278AbiFUJlG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Jun 2022 05:41:06 -0400
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2911B275F0
+        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 02:40:46 -0700 (PDT)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-317741c86fdso123031977b3.2
+        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 02:40:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=b/lnUx0hJ7HqJOINayp9iAYgQI8WL9Iz9w2/x6bwfX4=;
-        b=RnUTro16AXZ0eBQ3b6jODrf2FLbY6MWXm+1M8J3korWvN95fVWDrOvROe4RGaXa6ZV
-         ywmLOOWMirDtDb4x2TSxc2kGKU4h+Fl4dOnwkSWhi05CXKMJjyzP1MuukEDeSXvSUeQq
-         EoeBXRjqLYLI2oMab3Cg5Eqgl/Hu/DQgsFFpTPG6nABHA7LQSAphe7pF3Sm33Qor/Dby
-         MEfCNMfqmwa0Fj0DhglTSDPYZq+dzphCcOPvFCZv69dlyIkuUKdJCWLHc8N/PeSKKgU3
-         R6wxIYP9NiBxI2E1Xg1m1ByTLrfSveOFXuzcQAMM5gLo56lfVGynDan1QC4NWpk8rYae
-         awsA==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=/0bRExIb6Mv4sy5raFRmeQINC+UUx7zEZcUUOWWOPJg=;
+        b=FKASb223d3NtQMBP5RFeOXN8P5DQKBcTJ4QRO19It+KvFk7OoqZ0LY+SnXESJzqqMs
+         lfDl3HKAsgjnf77inGhyMfyUPW+gehhHUcwxRcYdFe6WkOfCq2z2M/6PDQ/0TVy21NBS
+         Iygtd4xmTrIfD9GTsPMbvS+k5vJICxMpU0oD7Df4yj0CXeOxzs85EyDtxsNYT2oVpcHN
+         xhx8VFupooD1KEcwkZpkE4SKs+sLm4KHZTDwNmOZMGcRpWiK3jxMWd/BOMAvYgBQDht0
+         j9igC/CZQLX8d72bCNggwD3GKX1HBiOqNQgsEQY797T3zvcTFVxbgPY0qY0VcLUJkhbF
+         QMmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=b/lnUx0hJ7HqJOINayp9iAYgQI8WL9Iz9w2/x6bwfX4=;
-        b=5Lh3M/3qRTnJ5P2WOe+GxsxxYO8sjx5sKIivxDqyKJljzYArAgLkUY5boWVNRBF640
-         ighKFhKsCOjXOjauABh69+3D1bb1tia78cRmg/oha/eEw7NGJsuynACNNXzotOYztWl+
-         6uNChbiMRksBIg/ZXGKtSKNZ5TtZBYx6wf+sSugMgeTx3YmdjsOpZE8VhsDtMCGGbhCO
-         imhab/KqH0iSELG9TftVizUbuxBNNyTrI7COppCKRUHBYiEAUxgPbe5B3ZwnKeUnvoJq
-         Gc7QPMXcTlyumFtVsPzu2w6SlwJ3QlNCNcAeGDU56lb5Bq6bQJTFrSLpUAoisV9c+6vw
-         lbIA==
-X-Gm-Message-State: AJIora+8Sj/0GG9lyWAi73Xz4Uzh+sD+unUJMZmo6QAU7D8NRGXbp92A
-        ar4tb/tn2cT7mqPYt5xmXw4=
-X-Google-Smtp-Source: AGRyM1u7kuN98EazRnRgzVwwdQ0H23jAruWbOed9O8/IYVCI1vHt1AHRq1XiCb3ltxIfkRLSlXh74g==
-X-Received: by 2002:a17:902:d50b:b0:16a:2cb3:74f7 with SMTP id b11-20020a170902d50b00b0016a2cb374f7mr6357042plg.6.1655796773424;
-        Tue, 21 Jun 2022 00:32:53 -0700 (PDT)
-Received: from localhost.localdomain ([47.242.114.172])
-        by smtp.gmail.com with ESMTPSA id jj4-20020a170903048400b001678898ad06sm3944394plb.47.2022.06.21.00.32.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jun 2022 00:32:52 -0700 (PDT)
-From:   Chuang W <nashuiliang@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Chuang W <nashuiliang@gmail.com>,
-        Jingren Zhou <zhoujingren@didiglobal.com>
-Subject: [PATCH v2] libbpf: Cleanup the kprobe_event on failed add_kprobe_event_legacy()
-Date:   Tue, 21 Jun 2022 15:32:33 +0800
-Message-Id: <20220621073233.53776-1-nashuiliang@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=/0bRExIb6Mv4sy5raFRmeQINC+UUx7zEZcUUOWWOPJg=;
+        b=n+uS6HX8RMMW09/kY+t4ezQl+iuIJZNA+z31ZI3Wi3Ks/s8dARvbKOJxZziCqEznJf
+         KWczB1FM0KoEd0isG1DxS3JM0ih/TP05q5iZDSZzVBZMJ6kvyqX2z7JVanCPXNK1/Ick
+         BVCs40ZS0S/CeboMEw5amGwkscFDAFsg92YiEUx2ZvekY5hGjJMsZ4JNvHxwC6pt1epT
+         pHtFgCQdan5VXVeUH7o81DUnHX2GTk4KS5bugyER+TrnZuUG5/PbyfEAgeYIGcxTcVTg
+         2gNVoZC/esNvGV35ZFFlfjFLU3DRcPLOrFbGGJ9zTYbZvHGb9Ex9Vw5/KxNZmnsx/qyJ
+         NQ+w==
+X-Gm-Message-State: AJIora+Gg7nOjxaoqnQZmGrLGTniF+GlIXnDG6Yqg1IVtG87B39NlFWW
+        tbui5ga9NQH/9mR04M7Y5nm8TuTkEuFYAkZ7x0g=
+X-Google-Smtp-Source: AGRyM1tvUOMq0dP6kPGJWYLIcVNsK+vhjIL6HHZUPVMJgQYZULc+k5Gn5MHTe3oSh8hINosUy7J+fiZtAW+V3I/oPGE=
+X-Received: by 2002:a81:9103:0:b0:317:9522:e7d9 with SMTP id
+ i3-20020a819103000000b003179522e7d9mr19220965ywg.61.1655804444892; Tue, 21
+ Jun 2022 02:40:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a05:7010:e10a:b0:2d9:e631:94d0 with HTTP; Tue, 21 Jun 2022
+ 02:40:44 -0700 (PDT)
+Reply-To: dimitryedik@gmail.com
+From:   Dimitry Edik <lsbthdwrds@gmail.com>
+Date:   Tue, 21 Jun 2022 02:40:44 -0700
+Message-ID: <CAGrL05bYBDDFjz8tb3skfCP7XM=q8os5O9pY=EqmRcH8FFAS4A@mail.gmail.com>
+Subject: Dear Partner,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=7.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_MONEY_PERCENT,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM,
+        UNDISC_MONEY autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:1132 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [lsbthdwrds[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  2.2 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+        *  2.0 MONEY_FREEMAIL_REPTO Lots of money from someone using free
+        *      email?
+        *  0.0 T_MONEY_PERCENT X% of a lot of money for you
+        *  2.0 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Before the 0bc11ed5ab60 commit ("kprobes: Allow kprobes coexist with
-livepatch"), in a scenario where livepatch and kprobe coexist on the
-same function entry, the creation of kprobe_event using
-add_kprobe_event_legacy() will be successful, at the same time as a
-trace event (e.g. /debugfs/tracing/events/kprobe/XX) will exist, but
-perf_event_open() will return an error because both livepatch and kprobe
-use FTRACE_OPS_FL_IPMODIFY.
+Hello Dear,
 
-With this patch, whenever an error is returned after
-add_kprobe_event_legacy(), this ensures that the created kprobe_event is
-cleaned.
+My Name is Dimitry Edik from Russia A special assistance to my Russia
+boss who deals in oil import and export He was killed by the Ukraine
+soldiers at the border side. He supplied
+oil to the Philippines company and he was paid over 90 per cent of the
+transaction and the remaining $18.6 Million dollars have been paid into a
+Taiwan bank in the Philippines..i want a partner that will assist me
+with the claims. Is a (DEAL ) 40% for you and 60% for me
+I have all information for the claims.
+Kindly read and reply to me back is 100 per cent risk-free
 
-Signed-off-by: Chuang W <nashuiliang@gmail.com>
-Signed-off-by: Jingren Zhou <zhoujingren@didiglobal.com>
----
- tools/lib/bpf/libbpf.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 0781fae58a06..d0a36350e22a 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -10809,10 +10809,11 @@ static int perf_event_kprobe_open_legacy(const char *probe_name, bool retprobe,
- 	}
- 	type = determine_kprobe_perf_type_legacy(probe_name, retprobe);
- 	if (type < 0) {
-+		err = type;
- 		pr_warn("failed to determine legacy kprobe event id for '%s+0x%zx': %s\n",
- 			kfunc_name, offset,
--			libbpf_strerror_r(type, errmsg, sizeof(errmsg)));
--		return type;
-+			libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
-+		goto clear_kprobe_event;
- 	}
- 	attr.size = sizeof(attr);
- 	attr.config = type;
-@@ -10826,9 +10827,14 @@ static int perf_event_kprobe_open_legacy(const char *probe_name, bool retprobe,
- 		err = -errno;
- 		pr_warn("legacy kprobe perf_event_open() failed: %s\n",
- 			libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
--		return err;
-+		goto clear_kprobe_event;
- 	}
- 	return pfd;
-+
-+clear_kprobe_event:
-+	/* Clear the newly added kprobe_event */
-+	remove_kprobe_event_legacy(probe_name, retprobe);
-+	return err;
- }
- 
- struct bpf_link *
--- 
-2.34.1
-
+Yours Sincerely
+Dimitry Edik
