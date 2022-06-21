@@ -2,159 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C6DC553252
-	for <lists+bpf@lfdr.de>; Tue, 21 Jun 2022 14:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C033A553271
+	for <lists+bpf@lfdr.de>; Tue, 21 Jun 2022 14:47:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349421AbiFUMll (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Jun 2022 08:41:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42986 "EHLO
+        id S230497AbiFUMrB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Jun 2022 08:47:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348753AbiFUMlk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Jun 2022 08:41:40 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAA7B237C2
-        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 05:41:39 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id w6so5828179pfw.5
-        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 05:41:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=e7ENr1H0aV6W45zGV/4bz4+Kuctr067y9ar8/0vuczY=;
-        b=OwspgshMn6BiCdMLukmPqPUWedaDeDUsS87hh+q2/VwZel9RV+40LU0UAypwXkpPCI
-         zOBLMm1WV5mYeXylPEtvCwxa4vIAyg8j6wC8Te4oBueI1NyYjeGr459L4ZMCQO+6VFLm
-         2R65Ztdx3MESFs3b1ogeZYGWFtx04rHxQ+RCX5GlnaW9Lni/neNq294X58bZpXhxqhfm
-         JXf7GPRaPo6GiEy2FmZ8xbYU6+so67HbDQOpyJi973Fm+e3A6j3LQJznVbJGGMMK+g76
-         cS9lCAqPTpb/KjRx1v4eQTjvdwbeE0QXFZlUUO4CkgMJEGFBIgyIec+gHTbBPzB7CnVN
-         BpKw==
+        with ESMTP id S1344117AbiFUMrA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Jun 2022 08:47:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 73746286C7
+        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 05:46:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1655815618;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=N+Zc+zs/CTabWFdASR8nBFUHsR9XBPlUJlIq03EFu3E=;
+        b=IiD+7ezlvf/XSTLaI2m29BYA6uJPg6/LgEBI91gSuR6mU2uxchziGwCpMzHA9aBIUH6W82
+        d9c7P7puXbZKBP3d0Hq5UWBUYpMi1zgmw7FPyi17v/5QVSrdJDFSXzDaUYRVxN80RRnw6u
+        v3fEdTFhUEKiw+qux+T/Vy7yavJxoOg=
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
+ [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-10-vluYtgQQP5C3-ICIUfKiZQ-1; Tue, 21 Jun 2022 08:46:57 -0400
+X-MC-Unique: vluYtgQQP5C3-ICIUfKiZQ-1
+Received: by mail-pj1-f71.google.com with SMTP id gi2-20020a17090b110200b001ecad6feb7cso2958043pjb.5
+        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 05:46:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=e7ENr1H0aV6W45zGV/4bz4+Kuctr067y9ar8/0vuczY=;
-        b=HxWoOgEDzBHmHEdE6sP22YFJh9rk6Ub6KUrykCw9I+bmGYrMBl3+N7wUw33haeSI7i
-         mMW7EWUzhZ1qPbUlN84Lsuee764d+KiPaw1ntnbFU1vzzBKbyBdO3qbPrTvAwLGOhgMr
-         m7dSPmdueNlCjdycbm8htAzRi9LohKulDdeKRaXe9hLqKSSPML1Z8ofs+ChjjUpFoss7
-         kN2XmAyobUxmaAI9xqEXbvGAG0pHqA6Wg5xsLAqUx778ifk/a6NC9vo4MNASZopx34LA
-         fu9fAVmmdMs+tQOlmflQoL9YRNc+9zwRSi7Vur7exXbBbYBgetd5DYnJtTDEOFByY8Nk
-         Kcjg==
-X-Gm-Message-State: AJIora8WcOzoIi0w6XOd3DpQElGL/XqhQpstkhRPth11t5H9C/HfAKZh
-        gU0NVf7ZtxwGFSx9iGk02hA=
-X-Google-Smtp-Source: AGRyM1uOFqaAapmIbJdhCxBNlvQSrIVj8puFpOadXOKN35qH08m9ZNG9ICgVO16DfNJIDZCeAi05vA==
-X-Received: by 2002:a63:3c14:0:b0:40c:a228:c3c3 with SMTP id j20-20020a633c14000000b0040ca228c3c3mr11368667pga.256.1655815299158;
-        Tue, 21 Jun 2022 05:41:39 -0700 (PDT)
-Received: from localhost ([2405:201:6014:d0c0:79de:f3f4:353c:8616])
-        by smtp.gmail.com with ESMTPSA id h13-20020a17090a3d0d00b001ea5d9ae7d9sm12234210pjc.40.2022.06.21.05.41.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jun 2022 05:41:38 -0700 (PDT)
-Date:   Tue, 21 Jun 2022 18:11:15 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=N+Zc+zs/CTabWFdASR8nBFUHsR9XBPlUJlIq03EFu3E=;
+        b=wtgdcLqXqBbg3IC8w2gAlFjoLpoY/zi1wggxjKBJCRkaI95JcfTBDuhdJwLXkmK+G5
+         zak2a0n4Pt4VDzkx4XeV3zsmX7Q5fm5hd54Vn4wVrMcQlrxnPdhD7jWX2R4di4oOwyxy
+         FPo8X6FpUnfBCC7+r9/l/GB2J3UTaJ9MljY2U9dUKMDddy+XV8aGhYrE5/Wd3WDY3hdA
+         rrCvrMe8joFx4+/AEawcvlmq7uox7SaMEBjc1UJ5g7FsP6Ediz3f5bPs2pr9W9cYgIBP
+         XD+sXmERNolCwLx0D5ptZCR9Irvx/LBC1juyERCq1EmhgTvfGpQVVsEjGWlkV+4lu0xY
+         yecA==
+X-Gm-Message-State: AJIora++uotaIrtBQ4CAFvkb3J0FRzCz2d880m7VlLNVkAbswVMETbjw
+        804BbJDwytkVGARECx+2Jyb+iNzAuH/0QcZjUDrVqdWtuscnQgdEbzHPFcP0HIcJ0500OKeF/O9
+        s+TEg+bt+v38dcZWjAcF8sjPCowFu
+X-Received: by 2002:a17:902:6946:b0:167:8ff3:1608 with SMTP id k6-20020a170902694600b001678ff31608mr28655456plt.116.1655815616299;
+        Tue, 21 Jun 2022 05:46:56 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1teC0OkbDR7N7pOPAmvKa08vFkUWc/koR9zPlIJH29RZ+AlXdwjCmgImUHkgGInBsWhnUkoZ8Gqxeap7A+nWZw=
+X-Received: by 2002:a17:902:6946:b0:167:8ff3:1608 with SMTP id
+ k6-20020a170902694600b001678ff31608mr28655430plt.116.1655815616037; Tue, 21
+ Jun 2022 05:46:56 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220621012811.2683313-1-kpsingh@kernel.org>
+In-Reply-To: <20220621012811.2683313-1-kpsingh@kernel.org>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Tue, 21 Jun 2022 14:46:45 +0200
+Message-ID: <CAO-hwJ+G6ZaNUFC-Qv7Lw2PQOEs0rV7r5ZD8FEAj0=+NVy5zYw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 0/5] Add bpf_getxattr
 To:     KP Singh <kpsingh@kernel.org>
-Cc:     kernel test robot <lkp@intel.com>, bpf@vger.kernel.org,
-        llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        Alexei Starovoitov <ast@kernel.org>,
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
         Yosry Ahmed <yosryahmed@google.com>
-Subject: Re: [PATCH v2 bpf-next 4/5] bpf: Add a bpf_getxattr kfunc
-Message-ID: <20220621124115.7daxj2csuyfxfvq5@apollo.legion>
-References: <20220621012811.2683313-5-kpsingh@kernel.org>
- <202206211035.p3LxbVfK-lkp@intel.com>
- <CACYkzJ775f+EGSpFiKUXkYdtx5x1mygbGC9P+knqvapio9XUyg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACYkzJ775f+EGSpFiKUXkYdtx5x1mygbGC9P+knqvapio9XUyg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 21, 2022 at 12:48:08PM IST, KP Singh wrote:
-> On Tue, Jun 21, 2022 at 5:20 AM kernel test robot <lkp@intel.com> wrote:
-> >
-> > Hi KP,
-> >
-> > I love your patch! Perhaps something to improve:
-> >
-> > [auto build test WARNING on bpf-next/master]
-> >
-> > url:    https://github.com/intel-lab-lkp/linux/commits/KP-Singh/Add-bpf_getxattr/20220621-093013
-> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-> > config: x86_64-randconfig-a015-20220620 (https://download.01.org/0day-ci/archive/20220621/202206211035.p3LxbVfK-lkp@intel.com/config)
-> > compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project af6d2a0b6825e71965f3e2701a63c239fa0ad70f)
-> > reproduce (this is a W=1 build):
-> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         # https://github.com/intel-lab-lkp/linux/commit/dd49d2ffb18adceafa98bd517008f59aa9bc910b
-> >         git remote add linux-review https://github.com/intel-lab-lkp/linux
-> >         git fetch --no-tags linux-review KP-Singh/Add-bpf_getxattr/20220621-093013
-> >         git checkout dd49d2ffb18adceafa98bd517008f59aa9bc910b
-> >         # save the config file
-> >         mkdir build_dir && cp config build_dir/.config
-> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash kernel/trace/
-> >
-> > If you fix the issue, kindly add following tag where applicable
-> > Reported-by: kernel test robot <lkp@intel.com>
-> >
-> > All warnings (new ones prefixed by >>):
-> >
-> > >> kernel/trace/bpf_trace.c:1185:25: warning: no previous prototype for function 'bpf_getxattr' [-Wmissing-prototypes]
-> >    noinline __weak ssize_t bpf_getxattr(struct dentry *dentry, struct inode *inode,
-> >                            ^
-> >    kernel/trace/bpf_trace.c:1185:17: note: declare 'static' if the function is not intended to be used outside of this translation unit
-> >    noinline __weak ssize_t bpf_getxattr(struct dentry *dentry, struct inode *inode,
-> >                    ^
-> >                    static
-> >    1 warning generated.
-> >
+On Tue, Jun 21, 2022 at 3:28 AM KP Singh <kpsingh@kernel.org> wrote:
 >
-> So it looks like this needs a function prototype. Let's do an initial round
-> of reviews on this series and I can respin with something like:
+> v1 -> v2
 >
-> diff --git a/kernel/trace/bpf_trace.h b/kernel/trace/bpf_trace.h
-> index 9acbc11ac7bb..3f62e5d35037 100644
-> --- a/kernel/trace/bpf_trace.h
-> +++ b/kernel/trace/bpf_trace.h
-> @@ -25,6 +25,11 @@ TRACE_EVENT(bpf_trace_printk,
->         TP_printk("%s", __get_str(bpf_string))
->  );
+> - Used kfuncs as suggested by Alexei
+> - Used Benjamin Tissoires' patch from the HID v4 series to add a
+>   sleepable kfunc set (I sent the patch as a part of this series as it
+>   seems to have been dropped from v5) and acked it. Hope this is okay.
+
+FWIW, this is perfectly OK with me.
+
+The reason I dropped the patch from the series is because I don't
+absolutely need it anymore: all of my sleepable kfuncs are now
+declared as SYSCALL type, which is by definition sleepable.
+
+I still believe it's valuable to be able to define sleepable kfuncs however.
+
+Cheers,
+Benjamin
+
+> - Added support for verifying string constants to kfuncs
 >
-> +/* Prototypes for kernel functions exposed to tracing and LSM
-> + * programs
-> + */
-> +ssize_t bpf_getxattr(struct dentry *dentry, struct inode *inode,
-> +                    const char *name, void *value, int size);
->  #endif /* _TRACE_BPF_TRACE_H */
+> Foundation for building more complex security policies using the
+> BPF LSM as presented in LSF/MM/BPF:
 >
-> (or anything else folks suggest)
+>  http://vger.kernel.org/bpfconf2022_material/lsfmmbpf2022-xattr.pdf
+>
+> Benjamin Tissoires (1):
+>   btf: Add a new kfunc set which allows to mark a function to be
+>     sleepable
+>
+> KP Singh (4):
+>   bpf: kfunc support for ARG_PTR_TO_CONST_STR
+>   bpf: Allow kfuncs to be used in LSM programs
+>   bpf: Add a bpf_getxattr kfunc
+>   bpf/selftests: Add a selftest for bpf_getxattr
+>
+>  include/linux/bpf_verifier.h                  |  2 +
+>  include/linux/btf.h                           |  2 +
+>  kernel/bpf/btf.c                              | 42 ++++++++-
+>  kernel/bpf/verifier.c                         | 85 +++++++++++--------
+>  kernel/trace/bpf_trace.c                      | 36 ++++++++
+>  .../testing/selftests/bpf/prog_tests/xattr.c  | 58 +++++++++++++
+>  tools/testing/selftests/bpf/progs/xattr.c     | 37 ++++++++
+>  7 files changed, 223 insertions(+), 39 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/xattr.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/xattr.c
+>
+> --
+> 2.37.0.rc0.104.g0611611a94-goog
 >
 
-You can silence this warning using __diag_push, e.g. see kfunc definitions in
-net/netfilter/nf_conntrack_bpf.c.
-
-> - KP
->
-> >
-> > vim +/bpf_getxattr +1185 kernel/trace/bpf_trace.c
-> >
-> >   1184
-> > > 1185  noinline __weak ssize_t bpf_getxattr(struct dentry *dentry, struct inode *inode,
-> >   1186                                       const char *name, void *value, int size)
-> >   1187  {
-> >   1188          return __vfs_getxattr(dentry, inode, name, value, size);
-> >   1189  }
-> >   1190
-> >
-> > --
-> > 0-DAY CI Kernel Test Service
-> > https://01.org/lkp
-
---
-Kartikeya
