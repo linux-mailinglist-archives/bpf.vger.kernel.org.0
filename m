@@ -2,78 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B733553C29
-	for <lists+bpf@lfdr.de>; Tue, 21 Jun 2022 22:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09319553D7F
+	for <lists+bpf@lfdr.de>; Tue, 21 Jun 2022 23:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354546AbiFUUvI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Jun 2022 16:51:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46408 "EHLO
+        id S1354879AbiFUVWr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Jun 2022 17:22:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354549AbiFUUtT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Jun 2022 16:49:19 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D342ED48
-        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 13:48:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id DE5DDB81B30
-        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 20:48:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7553C341C4
-        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 20:48:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655844500;
-        bh=t1XMw3g4Buqba29JyAYcuXXVn69FbVIYD+HoGbR2Jt8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=YljWZDlYRtE3Crg/6G1MfUXnceNqx78QQLfNcM4mgZYfU0oxEC0zLzIwUN951MqPb
-         c+i6DztMfM9LtN1Ce8n1YvWGRbpv0FFK7AkqcazCFtXTBMQTCO8mgu3OoEJN4YZYAS
-         nUTCwo1poezC8eBhXHGeLlVpA66XRM0yToSZtCBOeGCbeXgK0c9POAXDulIez9SMQt
-         0088sz2H24g5N7bijyOoTqwjotRGeD9XM+huTeeRAunWm4cjSNskiB7AM28Bl0gSyF
-         kbLaQAda0mSF5wh15feMqs3tnLF2xbf5hKJKr09ioMQ1YayQMppuUwtdVm1bhv4qrE
-         98wbqi24P0+MQ==
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-3176b6ed923so142997217b3.11
-        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 13:48:20 -0700 (PDT)
-X-Gm-Message-State: AJIora/qYb1riRhfpjovZDxam/LXRFJVX1Q5GJ/z8mj6xCNI3fts2r85
-        9w2p8N7TrSpi/s/I5iSbb6JBe1/I2qSraL2STqMpkA==
-X-Google-Smtp-Source: AGRyM1vpKiG68tZuli+HPlIhHtrOpzij6JrQJMj6vTR9uy5UdmqTjZA1ak3XZK8F1TE2UwUnOv37nufgVZt2Ru6vaSY=
-X-Received: by 2002:a81:1b4b:0:b0:317:a2dd:31fa with SMTP id
- b72-20020a811b4b000000b00317a2dd31famr34481ywb.476.1655844499736; Tue, 21 Jun
- 2022 13:48:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220621204642.2891979-1-kpsingh@kernel.org> <20220621204642.2891979-2-kpsingh@kernel.org>
-In-Reply-To: <20220621204642.2891979-2-kpsingh@kernel.org>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Tue, 21 Jun 2022 15:48:09 -0500
-X-Gmail-Original-Message-ID: <CACYkzJ4vU8qSXOhYGY+7=AcFdzptbZTJst5M1SNHj53RGwasbw@mail.gmail.com>
-Message-ID: <CACYkzJ4vU8qSXOhYGY+7=AcFdzptbZTJst5M1SNHj53RGwasbw@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 1/5] btf: Add a new kfunc set which allows to
- mark a function to be sleepable
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S1355681AbiFUVWZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Jun 2022 17:22:25 -0400
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1A043191D
+        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 14:11:06 -0700 (PDT)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout01.posteo.de (Postfix) with ESMTPS id 47E0D240029
+        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 23:11:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1655845864; bh=GHqAhGWr0Bi+fuGg+xivKajdJDNkJa3exZ5tjPlFkCA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=MHcaD7PmAq3YOBJltO74A0YeghC+0yQvtG8MHNg7bZKPyL47TD7xWWxHZoXU1Pv46
+         lEpTHCtaVGrrlYJhFJiZ4uiMEScPXfweyC85FFn/0etN9a/5lJ3P1bCtV6Gja1A2sc
+         3ll/tAzE/LRQgIQVbeD3poSmYm4d9igDoWS15q+hSeId5BbzKppLX8Mbc7o/AkQF0l
+         0OoqA8f0zEwc8xNWITHugwEvkoDQYQVCM1t2p/kC4YNb4EdEQoP6xYz32jAZ7bpbjv
+         fj0tZ2yj5Jka/iy61YR/21AO1NeTWYT/H8mXb978WzqIBzozv5gzq/W7LurcWuk9cI
+         lCRZbOxKFxZKw==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4LSK1d3gWcz6tmX;
+        Tue, 21 Jun 2022 23:11:01 +0200 (CEST)
+Date:   Tue, 21 Jun 2022 21:10:58 +0000
+From:   Daniel =?utf-8?Q?M=C3=BCller?= <deso@posteo.net>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Yosry Ahmed <yosryahmed@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH bpf-next 4/7] libbpf: Add type match support
+Message-ID: <20220621211058.urhntwkf64yn546a@muellerd-fedora-MJ0AC3F3>
+References: <20220620231713.2143355-1-deso@posteo.net>
+ <20220620231713.2143355-5-deso@posteo.net>
+ <20220620235919.q4xsy7xqxw2rrjv3@macbook-pro-3.dhcp.thefacebook.com>
+ <20220621164556.4zh5yajzlvf6mglo@muellerd-fedora-MJ0AC3F3>
+ <CAADnVQJKiiFafS5R3-3RmKCRNxWzLuqhqyahRN=eyM4dsg07-A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQJKiiFafS5R3-3RmKCRNxWzLuqhqyahRN=eyM4dsg07-A@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 21, 2022 at 3:46 PM KP Singh <kpsingh@kernel.org> wrote:
->
-> From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
->
-> This allows to declare a kfunc as sleepable and prevents its use in
-> a non sleepable program.
->
-> Acked-by: KP Singh <kpsingh@kernel.org>
-> Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> Signed-off-by: KP Singh <kpsingh@kernel.org>
+On Tue, Jun 21, 2022 at 11:44:17AM -0700, Alexei Starovoitov wrote:
+> On Tue, Jun 21, 2022 at 9:46 AM Daniel Müller <deso@posteo.net> wrote:
+> >
+> > On Mon, Jun 20, 2022 at 04:59:19PM -0700, Alexei Starovoitov wrote:
+> > > On Mon, Jun 20, 2022 at 11:17:10PM +0000, Daniel Müller wrote:
+> > > > +int bpf_core_types_match(const struct btf *local_btf, __u32 local_id,
+> > > > +                    const struct btf *targ_btf, __u32 targ_id)
+> > > > +{
+> > >
+> > > The libbpf and kernel support for types_match looks nearly identical.
+> > > Maybe put in tools/lib/bpf/relo_core.c so it's one copy for both?
+> >
+> > Thanks for the suggestion. Yes, at least for parts we should probably do it.
+> >
+> > Would you happen to know why that has not been done for
+> > bpf_core_types_are_compat equally? Is it because of the recursion level
+> > tracking that is only present in the kernel? I'd think that similar reasoning
+> > applies here.
+> 
+> Historical. Probably should be combined.
+> Code duplication is the source of all kinds of maintenance issues
+> and subtle bugs.
 
-Please feel free to drop this, this is my broken "automation".
+Certainly. I noticed that btf.c's bpf_core_types_are_compat uses direct equality
+check of the local and target kind while libbpf.c's version utilizes
+btf_kind_core_compat, which treats enum and enum64 as compatible. I suspect that
+may be a bug in the former.
+
+Will move the implementation then. Thanks!
+
+Cc: Yonghong Song <yhs@fb.com>
