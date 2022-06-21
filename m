@@ -2,88 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7B9E55384D
-	for <lists+bpf@lfdr.de>; Tue, 21 Jun 2022 19:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B88553855
+	for <lists+bpf@lfdr.de>; Tue, 21 Jun 2022 19:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242442AbiFURAV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Jun 2022 13:00:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39054 "EHLO
+        id S1351476AbiFURAl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Jun 2022 13:00:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237238AbiFURAT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Jun 2022 13:00:19 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 294D622BD7;
-        Tue, 21 Jun 2022 10:00:19 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 67745CE1BCE;
-        Tue, 21 Jun 2022 17:00:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B971AC3411C;
-        Tue, 21 Jun 2022 17:00:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655830815;
-        bh=iEUVf79dlSkhgkZYn+jLGG8VPISS4lvpWlkWSSE4ZUA=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=mLmKlbeK7rKv2c3vnwkKqD+9/f4NAE+NN+/wNShsjh/iB9dZP7KKmLl7y30EhCeCu
-         omeHlSmJp//kbDcuNlYIwZNvpphnKYnZnDdPXy7f0Kr7ct9qB9Gm2yMnwxh0Rdz9yR
-         UzU/OJjY7+9EUXfxDHQYFERioAiWWUql2Ip68PF6mciOCVmy1dbXxWMGL67Mvm9yGM
-         KNHkx7XcawtZ+gyb15HQFYznC4cY8TCNM2upFG1hXjSMj5aSkDbG8V5qUJHxQ4WdG1
-         o2L64Ogmcjrt6VIUodg60eu2eS1jDuHxxiHesfpMzo/BLX3L8m25BSkRWUVQFtMEb9
-         a4O8e/rIFkJfw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 90B49E73856;
-        Tue, 21 Jun 2022 17:00:15 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S1352058AbiFURAk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Jun 2022 13:00:40 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5622526ADD
+        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 10:00:39 -0700 (PDT)
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1o3hEz-0009MA-8M; Tue, 21 Jun 2022 19:00:37 +0200
+Received: from [2a02:168:f656:0:d16a:7287:ccf0:4fff] (helo=localhost.localdomain)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1o3hEz-000S10-2O; Tue, 21 Jun 2022 19:00:37 +0200
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix rare segfault in sock_fields
+ prog test
+To:     =?UTF-8?Q?J=c3=b6rn-Thorben_Hinz?= <jthinz@mailbox.tu-berlin.de>,
+        bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+References: <20220621070116.307221-1-jthinz@mailbox.tu-berlin.de>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <6f2b2c24-22e8-9fbe-10d3-9347be3ac067@iogearbox.net>
+Date:   Tue, 21 Jun 2022 19:00:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
+In-Reply-To: <20220621070116.307221-1-jthinz@mailbox.tu-berlin.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next 0/2] Allow mixing bpf2bpf calls with tail calls on
- arm64
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165583081558.23938.2888618327676957069.git-patchwork-notify@kernel.org>
-Date:   Tue, 21 Jun 2022 17:00:15 +0000
-References: <20220617105735.733938-1-jakub@cloudflare.com>
-In-Reply-To: <20220617105735.733938-1-jakub@cloudflare.com>
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org,
-        kernel-team@cloudflare.com, tony.ambardar@gmail.com
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.6/26579/Tue Jun 21 10:15:30 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Fri, 17 Jun 2022 12:57:33 +0200 you wrote:
-> This patch set enables using bpf2bpf calls together with tail calls on arm64.
-> Patch 1 was borrowed from an RFC series for MIPS JIT [1].
-> Patch 2 gives an explanation of tweaks needed to arm64 BPF JIT.
+On 6/21/22 9:01 AM, Jörn-Thorben Hinz wrote:
+> test_sock_fields__detach() got called with a null pointer here when one
+> of the CHECKs or ASSERTs up to the test_sock_fields__open_and_load()
+> call resulted in a jump to the "done" label.
 > 
-> [1] https://lore.kernel.org/bpf/77dfea2d224e7545e5e4d3f350721d27e5a77b0d.1633392335.git.Tony.Ambardar@gmail.com/#r
+> A skeletons *__detach() is not safe to call with a null pointer, though.
+> This led to a segfault.
 > 
-> Jakub Sitnicki (1):
->   bpf: arm64: Keep tail call count across bpf2bpf calls
+> Go the easy route and only call test_sock_fields__destroy() which is
+> null-pointer safe and includes detaching.
 > 
-> [...]
+> Came across this while looking[1] to introduce the usage of
+> bpf_tcp_helpers.h (included in progs/test_sock_fields.c) together with
+> vmlinux.h.
+> 
+> [1] https://lore.kernel.org/bpf/629bc069dd807d7ac646f836e9dca28bbc1108e2.camel@mailbox.tu-berlin.de/
+> 
+> Fixes: 8f50f16ff39d ("selftests/bpf: Extend verifier and bpf_sock tests for dst_port loads")
+> Signed-off-by: Jörn-Thorben Hinz <jthinz@mailbox.tu-berlin.de>
+> ---
+>   tools/testing/selftests/bpf/prog_tests/sock_fields.c | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/sock_fields.c b/tools/testing/selftests/bpf/prog_tests/sock_fields.c
+> index 9d211b5c22c4..7d23166c77af 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/sock_fields.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/sock_fields.c
+> @@ -394,7 +394,6 @@ void serial_test_sock_fields(void)
+>   	test();
+>   
+>   done:
+> -	test_sock_fields__detach(skel);
+>   	test_sock_fields__destroy(skel);
+>   	if (child_cg_fd >= 0)
+>   		close(child_cg_fd);
+> 
 
-Here is the summary with links:
-  - [bpf-next,1/2] bpf: x64: Add predicate for bpf2bpf with tailcalls support in JIT
-    https://git.kernel.org/bpf/bpf-next/c/95acd8817e66
-  - [bpf-next,2/2] bpf: arm64: Keep tail call count across bpf2bpf calls
-    https://git.kernel.org/bpf/bpf-next/c/d4609a5d8c70
+Great catch! I think we have similar detach & destroy pattern in a number
+of places in selftests.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Should we rather just move the label, like:
 
+diff --git a/tools/testing/selftests/bpf/prog_tests/sock_fields.c b/tools/testing/selftests/bpf/prog_tests/sock_fields.c
+index 9d211b5c22c4..e8a947241e37 100644
+--- a/tools/testing/selftests/bpf/prog_tests/sock_fields.c
++++ b/tools/testing/selftests/bpf/prog_tests/sock_fields.c
+@@ -393,8 +393,8 @@ void serial_test_sock_fields(void)
 
+         test();
+
+-done:
+         test_sock_fields__detach(skel);
++done:
+         test_sock_fields__destroy(skel);
+         if (child_cg_fd >= 0)
+                 close(child_cg_fd);
