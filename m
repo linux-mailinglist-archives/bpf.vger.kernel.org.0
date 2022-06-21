@@ -2,65 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 509EF55389B
-	for <lists+bpf@lfdr.de>; Tue, 21 Jun 2022 19:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 007FE5538BC
+	for <lists+bpf@lfdr.de>; Tue, 21 Jun 2022 19:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352794AbiFURLr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Jun 2022 13:11:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47716 "EHLO
+        id S1353180AbiFURRX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Jun 2022 13:17:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352680AbiFURLq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Jun 2022 13:11:46 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8672252B7
-        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 10:11:44 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id ay16so9510313ejb.6
-        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 10:11:44 -0700 (PDT)
+        with ESMTP id S1353074AbiFURQh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Jun 2022 13:16:37 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D51712C117
+        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 10:16:34 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id m14so13109151plg.5
+        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 10:16:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:date:in-reply-to
-         :message-id:mime-version:content-transfer-encoding;
-        bh=5if4vWcK03ZvFcUQc81+FDfDj1EnlPgb15mAzztZsWA=;
-        b=CqujiHmn4NkmjTXOWLT60V0CMET4thnoVQ5XSaqBbzzWPjdm40bILvjlZk7wFABsiZ
-         uBCUjz2LeF4UxZQNKqm0YgSBpt7pSDC9WCvfyViydsv1u1JPkZJIPVUbsfZsCLNVbj1R
-         aBpjair/i3jf0EdZmjVmSAiUzyCtKksztEYSA=
+        d=broadcom.com; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :in-reply-to;
+        bh=XRQTKu9XxvL8G1b6qs6f5vw6jnv2xCEYnL03EZmkYx4=;
+        b=cz1v//gwCas6qNqOCgC4U0S8R7+O3sKWmVgmBGHZoK5S1dp2DRavCK1Cm296PzuBwM
+         P5dQUoIiPXodZVmR3QoX056SyEXow39kAQS/87f/LU97f7gkP/GQQ0tgzs2Ag5aeOR7h
+         s1kjg24BljxcAM8pAB55oWX4jEqPV3Ccraxw8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
-         :in-reply-to:message-id:mime-version:content-transfer-encoding;
-        bh=5if4vWcK03ZvFcUQc81+FDfDj1EnlPgb15mAzztZsWA=;
-        b=Gazu4L2yFHIJe+1n9zy/juIVGqlzNyK7Tyceh5LcrdToW4t5cce5N50T50t5kDpEem
-         EFrPOg64j727J8B2SB/i+W/SM9hSVJl6fKQ4azsKA4r6jo3h9D2/lzdxlo1KUlY6/8at
-         b4yL1URDbPWQRA1Bh3WQSsvkj6su72/Py/3eL+PNCekhn5JT/bCU9bW4IDrnh0S8/Itu
-         mz4z/MH0r8kQHVmfM0MgYDma9/D31ANIW/Ea9cMIjXiBsAISC/DznEArEG46RNlXzB0n
-         KTWqxRRHP/g5QVptXtsfvzD+xoJhZh9nq53hm2Dhdam754Ye4LcH3/sDlF5LTBAelF33
-         s5IA==
-X-Gm-Message-State: AJIora92zFqF4lB3uoanXRTJzXOOWNzUfafHrtBF2QtzFtk5grw9Gmj/
-        oTW4frvn4UUkhw1IR5tnxLm5mw==
-X-Google-Smtp-Source: AGRyM1t+dNi9d8UUM9gzZG3DUjgXrL82tC7Buce5jcxlQzJ/HqZE8h1ElUzlSHbu6rvjGTKnM/i4EQ==
-X-Received: by 2002:a17:907:1ca8:b0:706:9ee2:dbc with SMTP id nb40-20020a1709071ca800b007069ee20dbcmr26938169ejc.398.1655831503445;
-        Tue, 21 Jun 2022 10:11:43 -0700 (PDT)
-Received: from cloudflare.com (79.184.138.130.ipv4.supernova.orange.pl. [79.184.138.130])
-        by smtp.gmail.com with ESMTPSA id l2-20020a1709060cc200b006feed200464sm8044243ejh.131.2022.06.21.10.11.42
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:in-reply-to;
+        bh=XRQTKu9XxvL8G1b6qs6f5vw6jnv2xCEYnL03EZmkYx4=;
+        b=Zlg5lWJn6IL2xGVqil4PQ/sxIJmZqSFRkY3z0nXrdZV6iFDsUAlSUFsvKsSg4S4nf7
+         5aVqIeaq7TIMw5QTBabV/nF3ZeIdBP+U00wcQBTD5j7yVuIsRl7TheilFF5Cb/nsfnsi
+         GUqYUtTLHGdnXZPvXX3JEyW5VoahXGwZCxroqFBVN83h8sPGBSL/Tvwr3z5Hej7wztbT
+         w/ciVHPjRQC7RJb9jogShcTLWOMmHBJdMNylxQRN48Yf74Rx4J4AB5IXhL4M9T80v1XX
+         y4t8PpCIO0RSIfX1lxORrE3o72YZTiZ4dyFq5alpqw0Rli3pmX8yas+iQvKX4s7xK1AT
+         aINA==
+X-Gm-Message-State: AJIora+kXBbWCBc4NF5Fp+YRjK57lb73kNdBdaQu6JBhX0UuoTw61noU
+        +c/WQXTA7pCGcSj/mY/uWjh/tw==
+X-Google-Smtp-Source: AGRyM1vd8xbQwzdh6Yfrn9olFj1kgatBeb5Z5OH+waypR66RExfMMuylbwLqj88HVaSjG5t5Sk4Ikg==
+X-Received: by 2002:a17:90b:4b82:b0:1e6:7835:2f05 with SMTP id lr2-20020a17090b4b8200b001e678352f05mr33513390pjb.121.1655831794306;
+        Tue, 21 Jun 2022 10:16:34 -0700 (PDT)
+Received: from C02YVCJELVCG.dhcp.broadcom.net ([192.19.144.250])
+        by smtp.gmail.com with ESMTPSA id mq17-20020a17090b381100b001ec71258838sm6393088pjb.27.2022.06.21.10.16.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jun 2022 10:11:43 -0700 (PDT)
-References: <20220621070116.307221-1-jthinz@mailbox.tu-berlin.de>
- <6f2b2c24-22e8-9fbe-10d3-9347be3ac067@iogearbox.net>
-User-agent: mu4e 1.6.10; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        =?utf-8?Q?J=C3=B6rn-Thorben?= Hinz <jthinz@mailbox.tu-berlin.de>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix rare segfault in
- sock_fields prog test
-Date:   Tue, 21 Jun 2022 19:09:06 +0200
-In-reply-to: <6f2b2c24-22e8-9fbe-10d3-9347be3ac067@iogearbox.net>
-Message-ID: <87k09a3prl.fsf@cloudflare.com>
+        Tue, 21 Jun 2022 10:16:33 -0700 (PDT)
+From:   Andy Gospodarek <andrew.gospodarek@broadcom.com>
+X-Google-Original-From: Andy Gospodarek <gospo@broadcom.com>
+Date:   Tue, 21 Jun 2022 13:16:24 -0400
+To:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Cc:     Andy Gospodarek <andrew.gospodarek@broadcom.com>, ast@kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
+        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, toke@redhat.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH net-next] samples/bpf: fixup some xdp progs to be able to
+ support xdp multibuffer
+Message-ID: <YrH86MxwX9VXnGbC@C02YVCJELVCG.dhcp.broadcom.net>
+References: <20220617220738.3593-1-gospo@broadcom.com>
+ <YrHxF3j5cqqVWE2y@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+In-Reply-To: <YrHxF3j5cqqVWE2y@localhost.localdomain>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000ecd77405e1f861a4"
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
@@ -70,65 +73,208 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 21, 2022 at 07:00 PM +02, Daniel Borkmann wrote:
-> On 6/21/22 9:01 AM, J=C3=B6rn-Thorben Hinz wrote:
->> test_sock_fields__detach() got called with a null pointer here when one
->> of the CHECKs or ASSERTs up to the test_sock_fields__open_and_load()
->> call resulted in a jump to the "done" label.
->> A skeletons *__detach() is not safe to call with a null pointer, though.
->> This led to a segfault.
->> Go the easy route and only call test_sock_fields__destroy() which is
->> null-pointer safe and includes detaching.
->> Came across this while looking[1] to introduce the usage of
->> bpf_tcp_helpers.h (included in progs/test_sock_fields.c) together with
->> vmlinux.h.
->> [1]
->> https://lore.kernel.org/bpf/629bc069dd807d7ac646f836e9dca28bbc1108e2.cam=
-el@mailbox.tu-berlin.de/
->> Fixes: 8f50f16ff39d ("selftests/bpf: Extend verifier and bpf_sock tests =
-for
->> dst_port loads")
->> Signed-off-by: J=C3=B6rn-Thorben Hinz <jthinz@mailbox.tu-berlin.de>
->> ---
->>   tools/testing/selftests/bpf/prog_tests/sock_fields.c | 1 -
->>   1 file changed, 1 deletion(-)
->> diff --git a/tools/testing/selftests/bpf/prog_tests/sock_fields.c
->> b/tools/testing/selftests/bpf/prog_tests/sock_fields.c
->> index 9d211b5c22c4..7d23166c77af 100644
->> --- a/tools/testing/selftests/bpf/prog_tests/sock_fields.c
->> +++ b/tools/testing/selftests/bpf/prog_tests/sock_fields.c
->> @@ -394,7 +394,6 @@ void serial_test_sock_fields(void)
->>   	test();
->>     done:
->> -	test_sock_fields__detach(skel);
->>   	test_sock_fields__destroy(skel);
->>   	if (child_cg_fd >=3D 0)
->>   		close(child_cg_fd);
->>=20
->
-> Great catch! I think we have similar detach & destroy pattern in a number
-> of places in selftests.
->
-> Should we rather just move the label, like:
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/sock_fields.c b/tools=
-/testing/selftests/bpf/prog_tests/sock_fields.c
-> index 9d211b5c22c4..e8a947241e37 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/sock_fields.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/sock_fields.c
-> @@ -393,8 +393,8 @@ void serial_test_sock_fields(void)
->
->         test();
->
-> -done:
->         test_sock_fields__detach(skel);
-> +done:
->         test_sock_fields__destroy(skel);
->         if (child_cg_fd >=3D 0)
->                 close(child_cg_fd);
+--000000000000ecd77405e1f861a4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-*__destroy() will call bpf_object__detach_skeleton(), so it LGTM.
+On Tue, Jun 21, 2022 at 06:25:59PM +0200, Lorenzo Bianconi wrote:
+> > This changes the section name for the bpf program embedded in these
+> > files to "xdp.frags" to allow the programs to be loaded on drivers that
+> > are using an MTU greater than PAGE_SIZE.  Rather than directly accessing
+> > the buffers, the packet data is now accessed via xdp helper functions to
+> > provide an example for those who may need to write more complex
+> > programs.
+> > 
+> > Signed-off-by: Andy Gospodarek <gospo@broadcom.com>
+> 
+> Hi Andy,
+> 
+> Just 2 nit inline but the code is fine.
 
-Thanks for the fix.
+Thanks, Lorenzo.  I'll re-spin now.
 
-Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
+
+> Acked-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> 
+> > ---
+> >  samples/bpf/xdp1_kern.c            | 13 ++++++++++---
+> >  samples/bpf/xdp2_kern.c            | 13 ++++++++++---
+> >  samples/bpf/xdp_tx_iptunnel_kern.c |  2 +-
+> >  3 files changed, 21 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/samples/bpf/xdp1_kern.c b/samples/bpf/xdp1_kern.c
+> > index f0c5d95084de..a798553fca3b 100644
+> > --- a/samples/bpf/xdp1_kern.c
+> > +++ b/samples/bpf/xdp1_kern.c
+> > @@ -39,17 +39,24 @@ static int parse_ipv6(void *data, u64 nh_off, void *data_end)
+> >  	return ip6h->nexthdr;
+> >  }
+> >  
+> > -SEC("xdp1")
+> > +#define XDPBUFSIZE	64
+> > +SEC("xdp.frags")
+> >  int xdp_prog1(struct xdp_md *ctx)
+> >  {
+> > -	void *data_end = (void *)(long)ctx->data_end;
+> > -	void *data = (void *)(long)ctx->data;
+> > +	__u8 pkt[XDPBUFSIZE] = {};
+> > +	void *data_end = &pkt[XDPBUFSIZE-1];
+> > +	void *data = pkt;
+> >  	struct ethhdr *eth = data;
+> >  	int rc = XDP_DROP;
+> >  	long *value;
+> >  	u16 h_proto;
+> >  	u64 nh_off;
+> >  	u32 ipproto;
+> > +	int err;
+> > +
+> > +	err = bpf_xdp_load_bytes(ctx, 0, pkt, sizeof(pkt));
+> > +	if (err < 0)
+> > +		return rc;
+> 
+> I guess we do not need err here:
+> 
+> 	if (bpf_xdp_load_bytes(ctx, 0, pkt, sizeof(pkt)) < 0)
+> 		return XDP_DROP;
+> 
+> >  
+> >  	nh_off = sizeof(*eth);
+> >  	if (data + nh_off > data_end)
+> > diff --git a/samples/bpf/xdp2_kern.c b/samples/bpf/xdp2_kern.c
+> > index d8a64ab077b0..1502ef820aed 100644
+> > --- a/samples/bpf/xdp2_kern.c
+> > +++ b/samples/bpf/xdp2_kern.c
+> > @@ -55,17 +55,24 @@ static int parse_ipv6(void *data, u64 nh_off, void *data_end)
+> >  	return ip6h->nexthdr;
+> >  }
+> >  
+> > -SEC("xdp1")
+> > +#define XDPBUFSIZE	64
+> > +SEC("xdp.frags")
+> >  int xdp_prog1(struct xdp_md *ctx)
+> >  {
+> > -	void *data_end = (void *)(long)ctx->data_end;
+> > -	void *data = (void *)(long)ctx->data;
+> > +	__u8 pkt[XDPBUFSIZE] = {};
+> > +	void *data_end = &pkt[XDPBUFSIZE-1];
+> > +	void *data = pkt;
+> >  	struct ethhdr *eth = data;
+> >  	int rc = XDP_DROP;
+> >  	long *value;
+> >  	u16 h_proto;
+> >  	u64 nh_off;
+> >  	u32 ipproto;
+> > +	int err;
+> > +
+> > +	err = bpf_xdp_load_bytes(ctx, 0, pkt, sizeof(pkt));
+> > +	if (err < 0)
+> > +		return rc;
+> 
+> same here
+> 
+> >  
+> >  	nh_off = sizeof(*eth);
+> >  	if (data + nh_off > data_end)
+> > diff --git a/samples/bpf/xdp_tx_iptunnel_kern.c b/samples/bpf/xdp_tx_iptunnel_kern.c
+> > index 575d57e4b8d6..0e2bca3a3fff 100644
+> > --- a/samples/bpf/xdp_tx_iptunnel_kern.c
+> > +++ b/samples/bpf/xdp_tx_iptunnel_kern.c
+> > @@ -212,7 +212,7 @@ static __always_inline int handle_ipv6(struct xdp_md *xdp)
+> >  	return XDP_TX;
+> >  }
+> >  
+> > -SEC("xdp_tx_iptunnel")
+> > +SEC("xdp.frags")
+> >  int _xdp_tx_iptunnel(struct xdp_md *xdp)
+> >  {
+> >  	void *data_end = (void *)(long)xdp->data_end;
+> > -- 
+> > 2.25.1
+> > 
+> 
+> 
+
+
+
+--000000000000ecd77405e1f861a4
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBVkwggRBoAMCAQICDBPdG+g0KtOPKKsBCTANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMTAyMjIxNDAyMzhaFw0yMjA5MjIxNDExNTVaMIGW
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xGDAWBgNVBAMTD0FuZHkgR29zcG9kYXJlazEtMCsGCSqGSIb3
+DQEJARYeYW5kcmV3Lmdvc3BvZGFyZWtAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
+AQ8AMIIBCgKCAQEAp9JFtMqwgpbnvA3lNVCpnR5ehv0kWK9zMpw2VWslbEZq4WxlXr1zZLZEFo9Y
+rdIZ0jlxwJ4QGYCvxE093p9easqc7NMemeMg7JpF63hhjCksrGnsxb6jCVUreXPSpBDD0cjaE409
+9yo/J5OQORNPelDd4Ihod6g0XlcxOLtlTk1F0SOODSjBZvaDm0zteqiVZb+7xgle3NOSZm3kiCby
+iRuyS0gMTdQN3gdgwal9iC3cSXHMZFBXyQz+JGSHomhPC66L6j4t6dUqSTdSP07wg38ZPV6ct/Sv
+/O2HcK+E/yYkdMXrDBgcOelO4t8AYHhmedCIvFVp4pFb2oit9tBuFQIDAQABo4IB3zCCAdswDgYD
+VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
+ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
+CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
+MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
+d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
+hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
+bDApBgNVHREEIjAggR5hbmRyZXcuZ29zcG9kYXJla0Bicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYI
+KwYBBQUHAwQwHwYDVR0jBBgwFoAUljPR5lgXWzR1ioFWZNW+SN6hj88wHQYDVR0OBBYEFKARn7Ud
+RlGu+rBdUDirYE+Ee4TeMA0GCSqGSIb3DQEBCwUAA4IBAQAcWqh4fdwhDN0+MKyH7Mj0vS10E7xg
+mDetQhQ+twwKk5qPe3tJXrjD/NyZzrUgguNaE+X97jRsEbszO7BqdnM0j5vLDOmzb7d6qeNluJvk
+OYyzItlqZk9cJPoP9sD8w3lr2GRcajj5JCKV4pd2PX/i7r30Qco0VnloXpiesFmNTXQqD6lguUyn
+nb7IGM3v/Nb7NTFH8/KUVg33xw829ztuGrOvfrHfBbeVcUoOHEHObXoaofYOJjtmSOQdMeJIiBgP
+XEpJG8/HB8t4FF6A8W++4cHhv0+ayyEnznrbOCn6WUmIvV2WiJymRpvRG7Hhdlk0zA97MRpqK5yn
+ai3dQ6VvMYICbTCCAmkCAQEwazBbMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBu
+di1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMgUGVyc29uYWxTaWduIDIgQ0EgMjAyMAIM
+E90b6DQq048oqwEJMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCAnmIlaP9uCu2ky
+HfECSm3RJkXQJ6f4FKTHxyIsY5BRBjAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3
+DQEJBTEPFw0yMjA2MjExNzE2MzRaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUDBAEqMAsGCWCG
+SAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsGCSqGSIb3DQEB
+BzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAOEYweQUp/sKyWKbYxTJX1Iez6War48WR
+RbJ6fjZqsmO9MM7pU7ZGEYsMAwFovRSGJubvJ90h1uXuL9qaa3C7nWZTzrneFtK3RYiFwQ+iplk1
+fgkdRoszlYhhv6dREtlEmU9pClRsiXetRWz113NStB6k0z65M6RBXTb2Sjfj8HGknmjWsnofmYx3
+/ZUkrPrYVCv7N2xip2B7YRW47+0Ob7b7mhkFKVreVYezmgb0g9n6V7wTkJngixKBgtVb/8OyKCVQ
+u96PGGylNGf7ScgfwjgVtLFZUzJ+6FvKhN/HE1AfjNpBIRSJ5nGrpAxAT/+lbTD0tabmpFDfs1wf
+S5hJZQ==
+--000000000000ecd77405e1f861a4--
