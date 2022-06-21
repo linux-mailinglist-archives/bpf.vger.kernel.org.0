@@ -2,69 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9F735536AC
-	for <lists+bpf@lfdr.de>; Tue, 21 Jun 2022 17:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A7555372E
+	for <lists+bpf@lfdr.de>; Tue, 21 Jun 2022 18:03:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353137AbiFUPvp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Jun 2022 11:51:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33664 "EHLO
+        id S1353662AbiFUQCe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Jun 2022 12:02:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353129AbiFUPvo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Jun 2022 11:51:44 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB8F52CE21;
-        Tue, 21 Jun 2022 08:51:43 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id o4so2843799ilm.9;
-        Tue, 21 Jun 2022 08:51:43 -0700 (PDT)
+        with ESMTP id S1353490AbiFUQCD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Jun 2022 12:02:03 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CCCC2C139
+        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 09:01:06 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id fu3so28467452ejc.7
+        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 09:01:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=zBZb647A5JWWJ7wBT3x+zsfDMTyFWupMzBDefNrfeDs=;
-        b=DS30ubZxgUz9LLQlV8/zuyl4hIa76tN4A0tWhwcdQtKE9KfI+D6i0W+0kzrEd2rUk3
-         LeRFxUIHT65gDPzvPgZoGifWNfn5Vd+u2raTnWveQokaEcMpJ6+1ST311ywU/xVr+8nT
-         j1kWzJfDMijceLUTV3R1VvPdmbIXCP+m+uAw8HYhJ5O4Vx4cuYV5E3wewNEvr/oWPBUq
-         xNiHXjOt8WQ6LZYP7oZ7c96kzUURar3iwJAi5OFa1zTY89NRnKu6ZrQH0nvNxqiFYt0h
-         db/fo9bEna509U2u+h2ZjkbQA5jduHMg3VS/XxdudbIcIYMuw434fjlrPvQ2RqmKR05x
-         2o5Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xdyyuERQea68cN3wmYDeRMyvTyvfFqxsUiJ9KSCVVWI=;
+        b=Z6T5xthgBuDa4VShjwVsx5IrBG8jWmEWLEtNM/57nrNR3aNFm3ibUeYvzKXQ53ugmD
+         HXZ9Aw88X/fQKhD9v6GRvXCnR/StMh3SUG2FO++PX6tJ7b8HsfLTWDIjv+y8UFqLJ9x6
+         nm8vqsZzvVD5spG1mTsTdhqx1LIvKTVscKY0hNJ6hJ8g98+GRBKrrEwQL09Sb9otC/Pb
+         SVa8ewzCzXtrzmESylGCXoMXBjX1oaoJz3p6YJxbadO4oCdftJIgv3VsvpaCs/YquOHw
+         ybSQKQEAR0PIzDqFp0KGU0K5GbLtt/vALPedu7AUw2D5X/DAujPK2WP7SPKIbqc2EdOq
+         GErw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=zBZb647A5JWWJ7wBT3x+zsfDMTyFWupMzBDefNrfeDs=;
-        b=eXFhuCj6IzG35Y3dp95EPc/vqtwxpdkBxOIqCzzViesB2eamu92zbkIQG2cBlAPL14
-         ABOJpCOtG6lqa+qgWcW4I8CuaHVbV6i3CCSod96eQs+NJaes1OyePQP9p93sflNIBfIC
-         wZd/w4q+ZKPi3CY+wPk21gCXSnGZWySYSFENPNuZYJV3aSu5LyML8Thj43lDRo96quZ3
-         WmIX4TaUrv/lQfFevOVboO+fZgq6r95jI9cuL9q6mzxYs4Yz9sjsD7E9QY7auVyjys6a
-         6Kv3c+hhL9n6mLBaeIuL+x5Nj4OzgqoEEgo4U25iE+OmK96S/gRF4du3PPM5woaARa+Q
-         AZ8A==
-X-Gm-Message-State: AJIora8zE2QUgFxJujyl2nZaZ2FJMkboV+/jsxsVF6eW4+9PkxIqfZ3h
-        AlGQ+ybgHd/BsJt9USTFz/A=
-X-Google-Smtp-Source: AGRyM1s/9MidBaAVp7Fbd50I4g4VQ5ZhzFb1XLiaPlWucaSkRdWxcjs4t+J+9vIW/6a+qr3cPz3efw==
-X-Received: by 2002:a05:6e02:1c25:b0:2d1:c551:65e1 with SMTP id m5-20020a056e021c2500b002d1c55165e1mr16525797ilh.246.1655826703290;
-        Tue, 21 Jun 2022 08:51:43 -0700 (PDT)
-Received: from localhost ([172.243.153.43])
-        by smtp.gmail.com with ESMTPSA id s18-20020a02cf32000000b00331c58086d8sm643942jar.147.2022.06.21.08.51.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jun 2022 08:51:42 -0700 (PDT)
-Date:   Tue, 21 Jun 2022 08:51:34 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Andy Gospodarek <andrew.gospodarek@broadcom.com>, ast@kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
-        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, toke@redhat.com, lorenzo.bianconi@redhat.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Andy Gospodarek <gospo@broadcom.com>
-Message-ID: <62b1e906cb539_13fa92084a@john.notmuch>
-In-Reply-To: <20220617220738.3593-1-gospo@broadcom.com>
-References: <20220617220738.3593-1-gospo@broadcom.com>
-Subject: RE: [PATCH net-next] samples/bpf: fixup some xdp progs to be able to
- support xdp multibuffer
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xdyyuERQea68cN3wmYDeRMyvTyvfFqxsUiJ9KSCVVWI=;
+        b=XMoemIh6bIvHqVUyaQL090Z0evmzVrBX++XxyYuU/eCmZME+IV3kaYy6EagNu3PIdQ
+         KfCwN9/TrHEiY7aBK4ucZq+q5lpMBiQFw0BGsjHUwywmX3aEZnkpFNz4FfKilRnscdoH
+         33dsKHUwU3NioSUXWGqZM/iQb2rCU3xf86tLHE9pnTdkhdhm+HNqzCWXX285/Z2VLpjE
+         qKwckR1InZADZdhki4E+MWynqT0f4js4ZPhSQ8UI1zoOWL2NQDv+4+pUM1BDvOFFPUKH
+         xGubaHuhNAyto7Mbn66qQN4vHHilZTV+e2CTBn53YEWwxtqCEm5x2gnYEpraPF8Koro9
+         d63A==
+X-Gm-Message-State: AJIora8VxbtQGCOrAt28+gYcPFRLfM8f+5CKaNugACJ+uXx+rkDt39VL
+        Z+5dTbsTB5HvKar3/WRfMLQLVkInqa1LxsuOVTVhGKT/7FA=
+X-Google-Smtp-Source: AGRyM1v0+XJ1uCC/QrY4Azw/uHxyTdx7XrrAe3NGcooJQcx1M+GG6dehRZw5xf0mboPLT8dfBVcK+sS+1zziusBB7jM=
+X-Received: by 2002:a17:907:971e:b0:71d:955c:b296 with SMTP id
+ jg30-20020a170907971e00b0071d955cb296mr18310158ejc.633.1655827264755; Tue, 21
+ Jun 2022 09:01:04 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220621012811.2683313-1-kpsingh@kernel.org> <20220621012811.2683313-4-kpsingh@kernel.org>
+ <20220621123646.wxdx4lzk3cgnknjr@apollo.legion>
+In-Reply-To: <20220621123646.wxdx4lzk3cgnknjr@apollo.legion>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 21 Jun 2022 09:00:53 -0700
+Message-ID: <CAADnVQJ9+gpU-92Umj9Cu0TznFHNHxn67WbQAo+62iWNA+2cCA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 3/5] bpf: Allow kfuncs to be used in LSM programs
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -75,18 +70,52 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andy Gospodarek wrote:
-> This changes the section name for the bpf program embedded in these
-> files to "xdp.frags" to allow the programs to be loaded on drivers that
-> are using an MTU greater than PAGE_SIZE.  Rather than directly accessing
-> the buffers, the packet data is now accessed via xdp helper functions to
-> provide an example for those who may need to write more complex
-> programs.
-> 
-> Signed-off-by: Andy Gospodarek <gospo@broadcom.com>
-> ---
+On Tue, Jun 21, 2022 at 5:36 AM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> On Tue, Jun 21, 2022 at 06:58:09AM IST, KP Singh wrote:
+> > In preparation for the addition of bpf_getxattr kfunc.
+> >
+> > Signed-off-by: KP Singh <kpsingh@kernel.org>
+> > ---
+> >  kernel/bpf/btf.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > index 02d7951591ae..541cf4635aa1 100644
+> > --- a/kernel/bpf/btf.c
+> > +++ b/kernel/bpf/btf.c
+> > @@ -7264,6 +7264,7 @@ static int bpf_prog_type_to_kfunc_hook(enum bpf_prog_type prog_type)
+> >       case BPF_PROG_TYPE_STRUCT_OPS:
+> >               return BTF_KFUNC_HOOK_STRUCT_OPS;
+> >       case BPF_PROG_TYPE_TRACING:
+> > +     case BPF_PROG_TYPE_LSM:
+> >               return BTF_KFUNC_HOOK_TRACING;
+>
+> Should we define another BTF_KFUNC_HOOK_LSM instead? Otherwise when you register
+> for tracing or lsm progs, you write to the same hook instead, so kfunc enabled
+> for tracing progs also gets enabled for lsm, I guess that is not what user
+> intends when registering kfunc set.
 
-OK. Although we lose the non frag example, but I guess that is fine and
-highlights we don't maintain samples.
-
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+It's probably ok for this case.
+We might combine BTF_KFUNC_HOOK* into fewer hooks and
+scope them by attach_btf_id.
+Everything is 'tracing' like at the end.
+Upcoming hid-bpf is 'tracing'. lsm is 'tracing'.
+but we may need to reduce the scope of kfuncs
+based on attach point or based on argument type.
+tc vs xdp don't need to be separate sets.
+Their types (skb vs xdp_md) are different, so only
+right kfuncs can be used, but bpf_ct_release() is needed
+in both tc and xdp.
+So we could combine tc and xdp into 'btf_kfunc_hook_networking'
+without compromising the safety.
+acquire vs release ideally would be indicated with btf_tag,
+but gcc still doesn't have support for btf_tag and we cannot
+require the kernel to be built with clang.
+acquire, release, sleepable, ret_null should be flags on a kfunc
+instead of a set. It would be easier to manage and less boilerplate
+code. Not clear how to do this cleanly.
+export_symbol approach is a bit heavy and requires name being unique
+across kernel and modules.
+func name mangling or typedef-ing comes to mind. not so clean either.
