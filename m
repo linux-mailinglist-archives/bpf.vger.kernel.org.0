@@ -2,88 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8467B553E98
-	for <lists+bpf@lfdr.de>; Wed, 22 Jun 2022 00:35:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 052EB553EDB
+	for <lists+bpf@lfdr.de>; Wed, 22 Jun 2022 01:03:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354571AbiFUWfs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Jun 2022 18:35:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38156 "EHLO
+        id S1355102AbiFUXDn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Jun 2022 19:03:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354293AbiFUWfr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Jun 2022 18:35:47 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 929A432079;
-        Tue, 21 Jun 2022 15:35:46 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id s17so9482768iob.7;
-        Tue, 21 Jun 2022 15:35:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=EuOFBlwUe3i2VoLtrHcHqXQ3t7ZpmfRz4L66vLYl0Zk=;
-        b=ptky5XMl0C3VvHRE/uN2yj0zyO83oB3rrU+1mqb9m+5IQHtMjLDmGRjPecZPnoJ9zP
-         7WWSmBea+PmzduZkvctleKQV6yE33uqc+cUi1WQ2zrUndRDQowQAvoV9TMJ0hyVUDf0Z
-         PJOsmIitgmJcz+vz6pMcrTDux5dXQ2VyCyIClLkx4qhF8jjCXSyU7CV5Y9JFSET8aNbY
-         n8s9WDtRev7csG9bg40o9WpNSf19I3hTwjl903TfAHMFKzNoiIWZYtcjkvnYJgWEA4ZH
-         cVORxtP5I2J5JFrXiGCYCIkH2KWJpkGzMmARvpCHpcBjJqisgG4p6uttLCUS+NRwhG5U
-         mKDg==
+        with ESMTP id S1355010AbiFUXDn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Jun 2022 19:03:43 -0400
+Received: from mail-pj1-x1063.google.com (mail-pj1-x1063.google.com [IPv6:2607:f8b0:4864:20::1063])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E136617E23
+        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 16:03:41 -0700 (PDT)
+Received: by mail-pj1-x1063.google.com with SMTP id h34-20020a17090a29a500b001eb01527d9eso14122469pjd.3
+        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 16:03:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=EuOFBlwUe3i2VoLtrHcHqXQ3t7ZpmfRz4L66vLYl0Zk=;
-        b=BE6kfr8d2nkiwioSIs86K6twcQ2TwYBts2xHqjGdIiFHwlelmtyU9FGuno/NTw7Ql5
-         MtK+A4zu67Hr222uF+ml1Ct1zvfBc9auekkgoTaeMbAr3lUL5i9jffMYgKqfLKf8sPAo
-         oONZR0K95qAA8hz76YT7qHJ6WA2T+CV3KN7fVZsqJ8gmXOelaxUzHq/Hz3uuAbMBRkg1
-         wGZICyWXrmZUD0SnFDtRhVyFzjhprdfJ5qRCs/fug2T5emWR0usFcyQ5YB/YC5Ksrh8k
-         vPC5cGRKQKCH3I40Nj9LvFZ+HzLGnox7AXRX7dXlprZMMlyRBfV6GU38xNo9hu8HwsDX
-         RY+w==
-X-Gm-Message-State: AJIora9goMezfgz84HSbk9i/wdUZhCVKC77qmqCOk07cevIC0FDYaMh8
-        lPA4ImU/oPlGl+at/sDPeio=
-X-Google-Smtp-Source: AGRyM1vSA9nv/dLh6RGsJZZBucx8gPMUZ0qn7+Xw9uYIKkOwaymRH/SE5i5Dj5O3fkGwjkqVJD3CNw==
-X-Received: by 2002:a05:6602:2d06:b0:66a:2cdc:e6f7 with SMTP id c6-20020a0566022d0600b0066a2cdce6f7mr178003iow.113.1655850945946;
-        Tue, 21 Jun 2022 15:35:45 -0700 (PDT)
-Received: from localhost ([172.243.153.43])
-        by smtp.gmail.com with ESMTPSA id o8-20020a02cc28000000b003318783c940sm7681429jap.113.2022.06.21.15.35.43
+        h=x-gm-message-state:dkim-signature:mime-version:references
+         :in-reply-to:from:date:message-id:subject:to:cc;
+        bh=48KAdNirHEv4RkT4Y2Kkn02In+bwoIBN5NSUht1OZRU=;
+        b=brT2ktqYqlxV+g1+S5FKGIVv9vcAjIvfLbjQSQZLLe+efW2BF4Frzq2Sv8VG96yutU
+         0afUAsHvxjkiEFYzWPt6jxyYYtU0Ah2OLbika0dFLl9ncWA9N4zwr+FgJ0G6SvSMGr/L
+         CfRNefUDa3fNJ16v5wCR5Me5IKuxavBeWDeoC02OBpXhjltNfNZE9sLCp2/OF49PyCjw
+         FnWTk++qCK6w98+9WT+UJe91LRmrpP8tJ7nl+AfvIgXoymjOUgWK/Ehn1XjA3M3Z9//D
+         Hc2UYM3bo2d2OyPQKovYMdy+DDSLhUPBwp0huXJtbiuFs1poiXywQBKzYdoqVb/e+jLK
+         /3Dw==
+X-Gm-Message-State: AJIora+SibniHu0ARgO+1QELe/tYrK1EgkJXd/j7+PelKOUD0+aq1F0G
+        oiGH7bhVjhcCiENXLfEcl7hd942q3L6eJmx49KuvEwga1H+nSA==
+X-Google-Smtp-Source: AGRyM1twwLxY3nbzzhpg608QQ8eKNBCxqzCsmlWjCUYyjJifxJTj1bRfvSrDZ0/Tpv2fIk99NIxP5RHOeycB
+X-Received: by 2002:a17:90a:c981:b0:1e6:75f0:d4ea with SMTP id w1-20020a17090ac98100b001e675f0d4eamr46453741pjt.37.1655852621523;
+        Tue, 21 Jun 2022 16:03:41 -0700 (PDT)
+Received: from riotgames.com ([163.116.128.209])
+        by smtp-relay.gmail.com with ESMTPS id n4-20020a170902f60400b0016790b76eabsm566452plg.88.2022.06.21.16.03.41
+        for <bpf@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jun 2022 15:35:45 -0700 (PDT)
-Date:   Tue, 21 Jun 2022 15:35:37 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kpsingh@kernel.org,
-        john.fastabend@gmail.com, songliubraving@fb.com, kafai@fb.com,
-        yhs@fb.com
-Cc:     dhowells@redhat.com, keyrings@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Message-ID: <62b247b975506_162742082f@john.notmuch>
-In-Reply-To: <20220621163757.760304-5-roberto.sassu@huawei.com>
-References: <20220621163757.760304-1-roberto.sassu@huawei.com>
- <20220621163757.760304-5-roberto.sassu@huawei.com>
-Subject: RE: [PATCH v5 4/5] selftests/bpf: Add test for unreleased key
- references
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        Tue, 21 Jun 2022 16:03:41 -0700 (PDT)
+X-Relaying-Domain: riotgames.com
+Received: by mail-qk1-f197.google.com with SMTP id u8-20020a05620a454800b006a74e6b39eeso18007196qkp.12
+        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 16:03:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=riotgames.com; s=riotgames;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=48KAdNirHEv4RkT4Y2Kkn02In+bwoIBN5NSUht1OZRU=;
+        b=kBimiMtzGauaXSvCkt7GgQTWwj+GP7yn/VNJb1Vx36GxhxEyrYuFiJXD/S/hr9ftJo
+         QNaL21c7eiLtUwGVK+C+fPQEo6rRdoipqaVitnU5R12StEbE3Itbidm7HEoKUsDvBMR6
+         iCKRgxwgYF3XyjV0z1ry5AHmV6uwicX5pRkN8=
+X-Received: by 2002:a0c:fe48:0:b0:462:6a02:a17d with SMTP id u8-20020a0cfe48000000b004626a02a17dmr25915816qvs.108.1655852619390;
+        Tue, 21 Jun 2022 16:03:39 -0700 (PDT)
+X-Received: by 2002:a0c:fe48:0:b0:462:6a02:a17d with SMTP id
+ u8-20020a0cfe48000000b004626a02a17dmr25915786qvs.108.1655852618955; Tue, 21
+ Jun 2022 16:03:38 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220603041701.2799595-1-irogers@google.com> <20220619171248.GC3362@bug>
+In-Reply-To: <20220619171248.GC3362@bug>
+From:   Zvi Effron <zeffron@riotgames.com>
+Date:   Tue, 21 Jun 2022 18:03:27 -0500
+Message-ID: <CAC1LvL0rZcEHe_ZHDcB38XD49FmdURg4+yKHP0O=J7=4Xx8M3Q@mail.gmail.com>
+Subject: Re: [PATCH] libbpf: Fix is_pow_of_2
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Ian Rogers <irogers@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yuze Chi <chiyuze@google.com>
+Content-Type: text/plain; charset="UTF-8"
+x-netskope-inspected: true
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Roberto Sassu wrote:
-> Ensure that the verifier detects the attempt of acquiring a reference of a
-> key through the helper bpf_lookup_user_key(), without releasing that
-> reference with bpf_key_put(), and refuses to load the program.
-> 
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> ---
+On Sun, Jun 19, 2022 at 12:13 PM Pavel Machek <pavel@ucw.cz> wrote:
+>
+> Hi!
+>
+> > From: Yuze Chi <chiyuze@google.com>
+> >
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -4956,7 +4956,7 @@ static void bpf_map__destroy(struct bpf_map *map);
+> >
+> > static bool is_pow_of_2(size_t x)
+> > {
+> > - return x && (x & (x - 1));
+> > + return x && !(x & (x - 1));
+> > }
+>
+> I'm pretty sure we have this test in macro in includes somewhere... should we use
+> that instead?
 
-Any reason not to add these to ./verifier/ref_tracking.c tests? Seems it
-might be easier to follow there and test both good/bad cases.
+I went looking for a macro that provided this check and could not find one. I
+did find the inlined static function is_power_of_2 in log2.h, though, that we
+could use.
+
+> Pavel
+> --
+> (english) http://www.livejournal.com/~pavelmachek
+> (cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
