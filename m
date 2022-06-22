@@ -2,29 +2,29 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC94955540A
+	by mail.lfdr.de (Postfix) with ESMTP id 908E4555409
 	for <lists+bpf@lfdr.de>; Wed, 22 Jun 2022 21:12:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355550AbiFVTMw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Jun 2022 15:12:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54116 "EHLO
+        id S231178AbiFVTMv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jun 2022 15:12:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231967AbiFVTMu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S1355550AbiFVTMu (ORCPT <rfc822;bpf@vger.kernel.org>);
         Wed, 22 Jun 2022 15:12:50 -0400
 Received: from mailrelay.tu-berlin.de (mailrelay.tu-berlin.de [130.149.7.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D30218B23
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7832F18B2F
         for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 12:12:49 -0700 (PDT)
 Received: from SPMA-03.tubit.win.tu-berlin.de (localhost.localdomain [127.0.0.1])
-        by localhost (Email Security Appliance) with SMTP id 81CA86E522_2B369AFB;
-        Wed, 22 Jun 2022 19:12:47 +0000 (GMT)
-Received: from mail.tu-berlin.de (mail.tu-berlin.de [141.23.12.141])
+        by localhost (Email Security Appliance) with SMTP id 293D26E523_2B369B0B;
+        Wed, 22 Jun 2022 19:12:48 +0000 (GMT)
+Received: from mail.tu-berlin.de (bulkmail.tu-berlin.de [141.23.12.143])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client CN "exchange.tu-berlin.de", Issuer "DFN-Verein Global Issuing CA" (verified OK))
-        by SPMA-03.tubit.win.tu-berlin.de (Sophos Email Appliance) with ESMTPS id 3F83072BE1_2B369AFF;
+        by SPMA-03.tubit.win.tu-berlin.de (Sophos Email Appliance) with ESMTPS id BB26272BE5_2B369AFF;
         Wed, 22 Jun 2022 19:12:47 +0000 (GMT)
 Received: from jt.fritz.box (77.191.241.175) by ex-04.svc.tu-berlin.de
  (10.150.18.8) with Microsoft SMTP Server id 15.2.986.22; Wed, 22 Jun 2022
- 21:12:46 +0200
+ 21:12:47 +0200
 From:   =?UTF-8?q?J=C3=B6rn-Thorben=20Hinz?= <jthinz@mailbox.tu-berlin.de>
 To:     <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
@@ -32,9 +32,9 @@ CC:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
         =?UTF-8?q?J=C3=B6rn-Thorben=20Hinz?= <jthinz@mailbox.tu-berlin.de>
-Subject: [PATCH bpf-next v4 1/5] bpf: Allow a TCP CC to write sk_pacing_rate and sk_pacing_status
-Date:   Wed, 22 Jun 2022 21:12:23 +0200
-Message-ID: <20220622191227.898118-2-jthinz@mailbox.tu-berlin.de>
+Subject: [PATCH bpf-next v4 2/5] bpf: Require only one of cong_avoid() and cong_control() from a TCP CC
+Date:   Wed, 22 Jun 2022 21:12:24 +0200
+Message-ID: <20220622191227.898118-3-jthinz@mailbox.tu-berlin.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220622191227.898118-1-jthinz@mailbox.tu-berlin.de>
 References: <20220622191227.898118-1-jthinz@mailbox.tu-berlin.de>
@@ -42,7 +42,7 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
 X-SASI-RCODE: 200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=campus.tu-berlin.de; h=from:to:cc:subject:date:message-id:in-reply-to:references:mime-version:content-type:content-transfer-encoding; s=dkim-tub; bh=EM0k8Ro8pAC74vcjLR9yR3JpL6km1wzvS9zKe2hd4Mk=; b=I5BPPHxf9lISnb3ZKPP8hHXLJb6Tih9r6Cx2XViP+MSrLMcGp5DwUL4FMHfJvSQ1d9JJC8UNXCix7IyU4Npzbrv/cJLamcJCUyPYEo9XQ1mWzq29fMMPwPw3gwvGMMeqRaWJxpSR2AOOoF4S8EIdDqUBc9PQjYMltoFtUtDu3XE=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=campus.tu-berlin.de; h=from:to:cc:subject:date:message-id:in-reply-to:references:mime-version:content-type:content-transfer-encoding; s=dkim-tub; bh=NG0yxXcDhQJpe0+5cudVxRuFhB4LtJGf+CArmJJwq/c=; b=I1MMGGWVWFjigzfvKTomFn9Rsk4sua3xEL4Etak+ZvCu8rnxhcO+4V3E7BJoA9/BB4uA4S3/x3PseOXHGcF2g0WvSGOSWEaifQxgl51XXtATXurJZZFoHTmue39fQGFyPWAonV4oCqZUzrBLBYA974HG0G+Q68evm02TyCjMvQw=
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
@@ -52,35 +52,106 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-A CC that implements tcp_congestion_ops.cong_control() should be able to
-control sk_pacing_rate and set sk_pacing_status, since
-tcp_update_pacing_rate() is never called in this case. A built-in CC or
-one from a kernel module is already able to write to both struct sock
-members. For a BPF program, write access has not been allowed, yet.
+Remove the check for required and optional functions in a struct
+tcp_congestion_ops from bpf_tcp_ca.c. Rely on
+tcp_register_congestion_control() to reject a BPF CC that does not
+implement all required functions, as it will do for a non-BPF CC.
+
+When a CC implements tcp_congestion_ops.cong_control(), the alternate
+cong_avoid() is not in use in the TCP stack. Previously, a BPF CC was
+still forced to implement cong_avoid() as a no-op since it was
+non-optional in bpf_tcp_ca.c.
 
 Signed-off-by: Jörn-Thorben Hinz <jthinz@mailbox.tu-berlin.de>
 Reviewed-by: Martin KaFai Lau <kafai@fb.com>
 ---
- net/ipv4/bpf_tcp_ca.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ kernel/bpf/bpf_struct_ops.c |  7 +++----
+ net/ipv4/bpf_tcp_ca.c       | 33 ---------------------------------
+ 2 files changed, 3 insertions(+), 37 deletions(-)
 
-diff --git a/net/ipv4/bpf_tcp_ca.c b/net/ipv4/bpf_tcp_ca.c
-index f79ab942f03b..1f5c53ede4e5 100644
---- a/net/ipv4/bpf_tcp_ca.c
-+++ b/net/ipv4/bpf_tcp_ca.c
-@@ -111,6 +111,12 @@ static int bpf_tcp_ca_btf_struct_access(struct bpf_verifier_log *log,
+diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+index d9a3c9207240..7e0068c3399c 100644
+--- a/kernel/bpf/bpf_struct_ops.c
++++ b/kernel/bpf/bpf_struct_ops.c
+@@ -503,10 +503,9 @@ static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+ 		goto unlock;
  	}
  
- 	switch (off) {
-+	case offsetof(struct sock, sk_pacing_rate):
-+		end = offsetofend(struct sock, sk_pacing_rate);
-+		break;
-+	case offsetof(struct sock, sk_pacing_status):
-+		end = offsetofend(struct sock, sk_pacing_status);
-+		break;
- 	case bpf_ctx_range(struct inet_connection_sock, icsk_ca_priv):
- 		end = offsetofend(struct inet_connection_sock, icsk_ca_priv);
- 		break;
+-	/* Error during st_ops->reg().  It is very unlikely since
+-	 * the above init_member() should have caught it earlier
+-	 * before reg().  The only possibility is if there was a race
+-	 * in registering the struct_ops (under the same name) to
++	/* Error during st_ops->reg(). Can happen if this struct_ops needs to be
++	 * verified as a whole, after all init_member() calls. Can also happen if
++	 * there was a race in registering the struct_ops (under the same name) to
+ 	 * a sub-system through different struct_ops's maps.
+ 	 */
+ 	set_memory_nx((long)st_map->image, 1);
+diff --git a/net/ipv4/bpf_tcp_ca.c b/net/ipv4/bpf_tcp_ca.c
+index 1f5c53ede4e5..7a181631b995 100644
+--- a/net/ipv4/bpf_tcp_ca.c
++++ b/net/ipv4/bpf_tcp_ca.c
+@@ -14,18 +14,6 @@
+ /* "extern" is to avoid sparse warning.  It is only used in bpf_struct_ops.c. */
+ extern struct bpf_struct_ops bpf_tcp_congestion_ops;
+ 
+-static u32 optional_ops[] = {
+-	offsetof(struct tcp_congestion_ops, init),
+-	offsetof(struct tcp_congestion_ops, release),
+-	offsetof(struct tcp_congestion_ops, set_state),
+-	offsetof(struct tcp_congestion_ops, cwnd_event),
+-	offsetof(struct tcp_congestion_ops, in_ack_event),
+-	offsetof(struct tcp_congestion_ops, pkts_acked),
+-	offsetof(struct tcp_congestion_ops, min_tso_segs),
+-	offsetof(struct tcp_congestion_ops, sndbuf_expand),
+-	offsetof(struct tcp_congestion_ops, cong_control),
+-};
+-
+ static u32 unsupported_ops[] = {
+ 	offsetof(struct tcp_congestion_ops, get_info),
+ };
+@@ -51,18 +39,6 @@ static int bpf_tcp_ca_init(struct btf *btf)
+ 	return 0;
+ }
+ 
+-static bool is_optional(u32 member_offset)
+-{
+-	unsigned int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(optional_ops); i++) {
+-		if (member_offset == optional_ops[i])
+-			return true;
+-	}
+-
+-	return false;
+-}
+-
+ static bool is_unsupported(u32 member_offset)
+ {
+ 	unsigned int i;
+@@ -246,7 +222,6 @@ static int bpf_tcp_ca_init_member(const struct btf_type *t,
+ {
+ 	const struct tcp_congestion_ops *utcp_ca;
+ 	struct tcp_congestion_ops *tcp_ca;
+-	int prog_fd;
+ 	u32 moff;
+ 
+ 	utcp_ca = (const struct tcp_congestion_ops *)udata;
+@@ -268,14 +243,6 @@ static int bpf_tcp_ca_init_member(const struct btf_type *t,
+ 		return 1;
+ 	}
+ 
+-	if (!btf_type_resolve_func_ptr(btf_vmlinux, member->type, NULL))
+-		return 0;
+-
+-	/* Ensure bpf_prog is provided for compulsory func ptr */
+-	prog_fd = (int)(*(unsigned long *)(udata + moff));
+-	if (!prog_fd && !is_optional(moff) && !is_unsupported(moff))
+-		return -EINVAL;
+-
+ 	return 0;
+ }
+ 
 -- 
 2.30.2
 
