@@ -2,120 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4A755468A
-	for <lists+bpf@lfdr.de>; Wed, 22 Jun 2022 14:10:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA238554A07
+	for <lists+bpf@lfdr.de>; Wed, 22 Jun 2022 14:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347638AbiFVKPS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Jun 2022 06:15:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35528 "EHLO
+        id S232954AbiFVMbv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jun 2022 08:31:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234389AbiFVKPQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Jun 2022 06:15:16 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9CD53AA56
-        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 03:15:15 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id a14so6076702pgh.11
-        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 03:15:15 -0700 (PDT)
+        with ESMTP id S230256AbiFVMbu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Jun 2022 08:31:50 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3EED35246
+        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 05:31:49 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id 19so17375640iou.12
+        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 05:31:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+1XWq8cw7OHb2Bf6aNzAKak0QHCkVQAfW5Wzo+sDjjk=;
-        b=U+vnYvVIkG45EDXtQB/tlbop+jl3hoZt7SOJDx5EVsD6SAenfVOatdKhxjCvhKh80h
-         ps7x+2lvF7C9wUnLa2U8SfiQ+/JNLkYJj0wskFRYgiGPojH0QVVEeMd3tcm98sJtSuKQ
-         6tK4QEOw4QUA14h6XFvA3zMmj+QjyiIzL9r9mZ3Xpxr0mHi7EP0+KkKLKM/Nlcenmuvk
-         dLqQgV1ocQ46Nd5ggC+/K+eeb55FaZmEpMat1GoWCYT61e7VauW4EkpMIRxSi27VuBg3
-         jMvhdL72i1AtFmPkz3v7rFwFRSETH4ZKV5dZ7NctQlvZnqlEDQJ62YbFoluDKS5ydsK4
-         3DBQ==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=w57PyM5ymkkfGSszFNozBaZLMWQ4EZrgt+Fi+IcoLN0=;
+        b=MVf3ntrwW9qAyAXyhhQuq4aLGoNTf6pyExN19mNntzgq69r/8rt4PPI6RCTKxHizcx
+         O6ptJKuc/1s852iQ2RCpvbcX7PMVxVvWrElVQfx98WJ149aw60Fym5b3c9JUOZG/sqpc
+         UwlmiJDJNKcO+1E5DFX/IZ8LzDoVdjrTP9PglK4hzcSFUKPAHmpnH+8yhprX32yK/BS7
+         g5+TgzMkLqqzB2ggfEUezkUe5BE08Xj3mGK0C36TKo/XHXoI+fkouIyWLm9mlzcP2FCN
+         co1IwdOI6inzT4TJFxOrje+DkbLujroUUXTkf4IsWG56+Fcs0x1WL7Isly89PVzHn/f2
+         XS6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+1XWq8cw7OHb2Bf6aNzAKak0QHCkVQAfW5Wzo+sDjjk=;
-        b=p26RCrwB/dffkDSH9ER2ex6l7WPTr/9WeDPd5ySX2SLqXI2+FBhZZVyUvYrJdo33m6
-         oFMdntkX7bT2Fa39OxHfpS0l4uvuuO9uW+dKY1/UM0ENv6emAnLnU6f2xi+YvJVvR4bv
-         +5lESxz0FDYtKB0oFcmGSwjB8+tfw1Jdf5smI/V5BI/EdoP/DabJwlW+ASYRhtr0h9rh
-         CzQzBoBAmN3fq1DhfApl2BBM/GZkhkw/Vn7GWJCs8HuQCQIbj2igYMydgOGjqMlE7ic6
-         5L67TT1OaBZ//sphlSkWP/g2a/VACP6X0wfxOfegSm+NWZdEAHA+LZYa4iH2odydQuyQ
-         W7ow==
-X-Gm-Message-State: AJIora+TJlNAAvEqENjTufP8X+EWvney2DbGQDIbasr/G9RQU+THJmej
-        +lZCfhGLABiiAxVn6OHPhA0OnKb+1b8=
-X-Google-Smtp-Source: AGRyM1vqv/PF80vPpLS6/6MNMtKILKRt7JbY8uD6dwRDdXJx5sirhECsFnJdw3oI0oIRkOr+GN3P1Q==
-X-Received: by 2002:a63:8f04:0:b0:40c:a447:a189 with SMTP id n4-20020a638f04000000b0040ca447a189mr2384493pgd.515.1655892915338;
-        Wed, 22 Jun 2022 03:15:15 -0700 (PDT)
-Received: from Laptop-X1 ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id t7-20020a17090b018700b001ece55aec38sm1131230pjs.30.2022.06.22.03.15.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jun 2022 03:15:14 -0700 (PDT)
-Date:   Wed, 22 Jun 2022 18:15:09 +0800
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        Yauheni Kaliuta <ykaliuta@redhat.com>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Subject: Re: How about adding a name for bpftool self created maps?
-Message-ID: <YrLrrVMFApQdYpmL@Laptop-X1>
-References: <YrEoRyty7decoMhh@Laptop-X1>
- <CACdoK4JrrVoMjvwQusdpYOO5gDqZDKky2QZqyb08p+2R1186Gw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=w57PyM5ymkkfGSszFNozBaZLMWQ4EZrgt+Fi+IcoLN0=;
+        b=1rV2TIDC15PgstOTSj2DOfvTvz5SmKWSQGA55XyCanB61wg0+Q2F2vR4xVrYhUvr8f
+         HMEHhtvEwHmxgVgSl8aNHVo5mg0IKQpOSoIDbi1Hn7x7u8Fkjh78JJa62vfba2N/ZNxt
+         FwZYbhixvZMK2ogdliRS4puDe0I7Vi9M1ozTRU567pv59K+CPfsS/mySQ1IBCIpMmz/R
+         ezH0nkhVaHW3d+3ZyVdcQXl4Whp9jYbVLVjK8N63P8B1wtbM9A3AsufHCJOe2sqlMxyr
+         L68230t3CKt/FgJnucPRizuL6M8eOtcvmE/vnwQ+N7gbjpY1aZgm1a4shE8VjMAZaat6
+         +3Tw==
+X-Gm-Message-State: AJIora+iBkhb6jgWt9QV4Mnc1n5x2CaVVZsKW6Gcp3pCDClLwTpvTDRo
+        nPEzXVob2ugvRX8f93WAyFNWdTZo0+V4Af1QQIU=
+X-Google-Smtp-Source: AGRyM1vQSFJZKooXdJkRebGRa5a/Z++GrXJLR+zWvkLazGs1YQCOQEl6DzSg9h92QZOd8p/e6JGdF7nbZjg0a6PLmWA=
+X-Received: by 2002:a5d:9850:0:b0:668:eb75:5898 with SMTP id
+ p16-20020a5d9850000000b00668eb755898mr1751758ios.97.1655901109430; Wed, 22
+ Jun 2022 05:31:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACdoK4JrrVoMjvwQusdpYOO5gDqZDKky2QZqyb08p+2R1186Gw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a05:6e02:b27:0:0:0:0 with HTTP; Wed, 22 Jun 2022 05:31:49
+ -0700 (PDT)
+Reply-To: biksusan825@gmail.com
+From:   Susan Bikram <jbi880375@gmail.com>
+Date:   Wed, 22 Jun 2022 05:31:49 -0700
+Message-ID: <CAHiEHe9Fdte_WYioPgdNsuUmA238E+hBy2DB9McKdEy2_sskhg@mail.gmail.com>
+Subject: Please can i have your attention
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 21, 2022 at 10:28:27PM +0100, Quentin Monnet wrote:
-> > When I using `bpftool map list` to show what maps user using. bpftool will
-> > show maps including self created maps. Apart from the "pid_iter.rodata",
-> > there are also array maps without name, which makes it hard to filter out
-> > what maps user using. e.g.
-> >
-> > # bpftool map list
-> > 63: array  flags 0x0
-> >          key 4B  value 32B  max_entries 1  memlock 4096B
-> > 65: array  name pid_iter.rodata  flags 0x480
-> >          key 4B  value 4B  max_entries 1  memlock 4096B
-> >          btf_id 98  frozen
-> >          pids bpftool(10572)
-> > 66: array  flags 0x0
-> >          key 4B  value 32B  max_entries 1  memlock 4096B
-> >
-> > So do you have plan to add a special name for the bpftool self created maps?
-> > Or do you know if there is a way to filter out these maps?
-> 
-> Hi Hangbin,
-> 
-> No plan currently. Adding names has been suggested before, but it's
-> not compatible with some older kernels that don't support map names
-> [0]. Maybe one solution would be to probe the kernel for map name
-> support, and to add a name if supported.
+Dear ,
 
-Hi Quentin,
+  Please can I have your attention and possibly help me for humanity's
+sake please. I am writing this message with a heavy heart filled with
+sorrows and sadness.
+Please if you can respond, i have an issue that i will be most
+grateful if you could help me deal with it please.
 
-Thanks for the reply. Probe the kernel and add name if supported makes
-sense to me.
-
-Thanks
-Hangbin
-
-> 
-> Other than this I'm not aware of a reliable way to filter out these
-> maps at the moment. This could probably be done in bpftool since we
-> should have the ids of the self-generated maps. But I think I'd rather
-> find a way to add map names, if possible. It would make it easier to
-> recognise/filter these maps on regular listing, whereas a new option
-> would be harder for users to discover.
-> 
-> Quentin
-> 
-> [0] https://lore.kernel.org/bpf/CAEf4BzY66WPKQbDe74AKZ6nFtZjq5e+G3Ji2egcVytB9R6_sGQ@mail.gmail.com/
+Susan
