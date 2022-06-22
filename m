@@ -2,160 +2,272 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DCE2553F89
-	for <lists+bpf@lfdr.de>; Wed, 22 Jun 2022 02:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A83F0553FCF
+	for <lists+bpf@lfdr.de>; Wed, 22 Jun 2022 03:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355409AbiFVAaO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Jun 2022 20:30:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41762 "EHLO
+        id S1352701AbiFVBBa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Jun 2022 21:01:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355393AbiFVAaN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Jun 2022 20:30:13 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C20872F64A
-        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 17:30:12 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25LN9JFN016198;
-        Tue, 21 Jun 2022 17:29:57 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type :
- content-transfer-encoding : in-reply-to : mime-version; s=facebook;
- bh=LlxMht+x7OZIulwQtn5TLeK5aUxk7ZwShiosbQFv5c4=;
- b=PDz6EPZYd86D6PJCsQNkXi682Q9WQ2I8LgK12elyHQf50o5tATswK5F2GvrCiLkoiA8t
- lZk5kfgHl11pqz/CbSeqqyjDdf2AANIgq2PW8SfMriB1oJ030GRYJe78rZ8/38LK7hHG
- 6Ei/cUxhHKKSDtJOWxICbt+a8W+RNzA9+BQ= 
-Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1anam02lp2043.outbound.protection.outlook.com [104.47.57.43])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3gukcga4cf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 Jun 2022 17:29:57 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GsjJdqWUWNsHFQizeF/eySDDsye1JPF97+K+RzsYZcvO9aKHfHB0GXOZ2eBH9Ay16WDlovhzgvKOnd+rDf41hNdZn3JsmdzHsIIli+5q97+4rit3pnP9PZdTgrVL283W5zcnLVobOXoOPk8Mvvg89soU2oQnb8uBD8y6KDGIeWFCDlJXuvDy3qIhC1ADYCpUB9fxG9e9Cg3pNjmCYYXijr/qyMpN0ygXTtovvscHpnQM4Iju32Kdz6IUTKajNFoIA3uTV0cPwOiEtnn0tOLXHGWmoMU/Q325mPnm7ks3Su7eEU5+nbUfwD+lPHUZouyWmW1J2HN//q7W/DMkhgmKVA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mf79d0o3pxkBtHghPc6Q/m65uZLWM0QtQN1Ffk8EG+4=;
- b=LuPfllMF+RctIIH7HLhmuZTwgfkH0dWirKRXtwEGoG6evpulxrWa/8dlUjrH6lPzQqJaiegMJ57yAt+UuoEUvyngeTb4E5Kg5PYNCSty64ufyWNam+73CBx5lkWDbj6ZWzwlR2hoL/J0xKQs+yCtOoiN+rHoDu2qvVrSSBZuOJ33YgbvpUe5dL/pWjhs8mPzrDnqevbBYHT4JVEsHh9qg3x1GGzBodH1ZLO9ly2+b57WmG0C9T7IDtf0+UvmT630H1g2LyGA81BWIa1GIBJemUD8ddo+NQ86jT+rNduxQOSwWk1nYvVTilt8dQ0ldbHVs73zrWLt2wN+6ic0FF+YuA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from MW4PR15MB4475.namprd15.prod.outlook.com (2603:10b6:303:104::16)
- by SA1PR15MB4904.namprd15.prod.outlook.com (2603:10b6:806:1d3::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5353.22; Wed, 22 Jun
- 2022 00:29:55 +0000
-Received: from MW4PR15MB4475.namprd15.prod.outlook.com
- ([fe80::3941:25c6:c1cd:5762]) by MW4PR15MB4475.namprd15.prod.outlook.com
- ([fe80::3941:25c6:c1cd:5762%7]) with mapi id 15.20.5353.022; Wed, 22 Jun 2022
- 00:29:55 +0000
-Date:   Tue, 21 Jun 2022 17:29:52 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Dave Marchevsky <davemarchevsky@fb.com>, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH v6 bpf-next] selftests/bpf: Add benchmark for
- local_storage get
-Message-ID: <20220622002952.6334ieb3kfysx7vl@kafai-mbp>
-References: <20220620222554.270578-1-davemarchevsky@fb.com>
- <62b21962dc64_1627420844@john.notmuch>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <62b21962dc64_1627420844@john.notmuch>
-X-ClientProxiedBy: SJ0PR13CA0151.namprd13.prod.outlook.com
- (2603:10b6:a03:2c7::6) To MW4PR15MB4475.namprd15.prod.outlook.com
- (2603:10b6:303:104::16)
+        with ESMTP id S233201AbiFVBB3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Jun 2022 21:01:29 -0400
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B51183190B
+        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 18:01:25 -0700 (PDT)
+Received: by mail-io1-f70.google.com with SMTP id p3-20020a6b8d03000000b00669c6d6c089so8459586iod.1
+        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 18:01:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=5mPCIc9HWLqyDlRHAbHeSV4t2zvDD9FqrVDB16msq7Y=;
+        b=tblNqzuCvRoV6VbdrhbdBNewreju3Hg5SFWH1Ci8uUUe2oHOooqHzEM8ZDNSssFsLG
+         tRBqkfUG+itZnpOx/uctzfCQI/lPFVzmpwjrvTYd20NywYpnWzRzw4/0pacgssowJys6
+         IUUvepebDkFM131ZZw+PshovxjKcX0aq4dJtCEKiUVSD9GtIVTJT8BPTl4PEwxEQLRoa
+         qT5msgUJyH4Y2CJXkxfWfF/IDwafrAHyxuk1f1MaarfoR9IYsNTY7sah/epfewlLlSL6
+         oRWS7JvywRZq1KksALWYicnTscmdAt6Py7FjNLIYMp2ylSgplJodfA+0IMRge5+U3IOJ
+         AxOw==
+X-Gm-Message-State: AJIora8/j4t/biaN6IZpPaudUBYpGps45pd+9oiuPOrlHIoA2rj+0Mum
+        EoUhNUWRri6TawZ5X1HfBjN6irYoLLD0Y5iLhYSLd9f6NTwL
+X-Google-Smtp-Source: AGRyM1sTAfcNbJVV7eA2DE7yqMDl455yWDieF4f9Xfyuo0j0nM6y++/ilAjvK4ncxQzGAhWItevjhSp6ZeuKlqi0snprFhVmhwAV
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 76a06074-7ba1-4867-c9ca-08da53e65482
-X-MS-TrafficTypeDiagnostic: SA1PR15MB4904:EE_
-X-Microsoft-Antispam-PRVS: <SA1PR15MB49045A76195B2C8075190701D5B29@SA1PR15MB4904.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6W7cZa0uN2GPEwsEg+OGpLPhsTr7HXlve3j1E5YkqhJxU5G7MU5wAMO4anSfno+mMOoGKxY5ERVFcj3oOgtpj6GlA67mNkayhbQbZzLEqHaFDWAmK/vripfDkwwlpo9Ua709gIPKjCJBmTQHcLHDHehtazyWUULR5dua4S/7tQVnZZOOOZdi7BSg+HOOptfVO64aw6K9nJAmzJym1tKEUfQYTXriuVTeyLOIRux9YNX77hq18kCcdKG888/Et08prVJfUk44ae4t1sXBIVsx0sTIG5bJz7pw+u5lORxVTlVQOqgb4nSl90stn2NPzmxpxqU82/gHyM+lqxV85X6NDZ1ifdMa/MyK10x6nabMdLZIM0DfKDZszAFrEM20TLyB5GteCIzQInTy8PTog0qOspV8M+hhW3q9P3NWU6r4d0Dt/v83lx94N7nzlUhnv9FJxhZsmVM6Xd/i+hHugQRHuox4lMHFx4MOD4Yrjvy0v3j7CT5Gsuqb8EEShtCt+MSucsEgondfR8JwxPtolm8FPtomcUVdCdI8p9gMHWICKR2ASzefhTnPS1x/QK+UUKY3eEMTnSJlUAcB8aUO60pdSZuZwYuGr7fgDxLqbJ5FmPU+S4TBKnIEFqZGatpZn6nl9KzUwI3r6Ri0+8SocC79tA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4475.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(7916004)(4636009)(136003)(39860400002)(376002)(396003)(346002)(366004)(2906002)(6666004)(54906003)(6512007)(9686003)(1076003)(86362001)(5660300002)(186003)(478600001)(8936002)(6486002)(52116002)(6916009)(38100700002)(41300700001)(66946007)(8676002)(66556008)(4326008)(66476007)(6506007)(316002)(33716001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?Ts5JuqjS6GY445RYiTbAjwEmlJuuqjnL8ivZ0+7EXqF0R+ioxOsx++RMtR?=
- =?iso-8859-1?Q?GyopFEOBhdzQKBOzAzd86w6yEjLe4V4yVOw8UoC2sMo2V+1H5B25jA93D4?=
- =?iso-8859-1?Q?DmqkyVPOU17h9pYwsejGbekvA79xaEWKLbMs2B6qBrlDBlbiPJPKD9qbUL?=
- =?iso-8859-1?Q?XojeEvPAC/77CHZ06A4Sis5Yr8ueOw22uGJlyKPmrBYfrF7EY5c5XkM6Sg?=
- =?iso-8859-1?Q?ffmA+YYd3EK4Hf4JLhNbilWVlG7ND3ImngXeI4YlRm3wGXybShi7gdGpw5?=
- =?iso-8859-1?Q?2MXFBn0ZYvyoSLw0h/KRq2oacBctf0aiZWuHLrbtAcX8pY+BrUqrqRWHDh?=
- =?iso-8859-1?Q?1VM9uA4h8tsTqVBpAq4brHM2HmW2QvV9n4Q4+oaA/2bXggBX3kGE9SyS44?=
- =?iso-8859-1?Q?LrqVIWEtTN0hXRX5pVThlYggjFil4RMEA+LXUCo7MNnxc7dJZrD1zNNCQW?=
- =?iso-8859-1?Q?jkIe+/Ch9dQhkR4Jev83HSTKLV0b51BN2BVM/jDz2LcBE5Q0XUQSS7mMvo?=
- =?iso-8859-1?Q?xaj6f1zdDke4ipsKFnF6kHvtMaamjjYuq0r/WRNVhPuFE6MaWU15z57o3E?=
- =?iso-8859-1?Q?oYGl9eyLPlFe4nXkmazmkeTP10/L8t+t6NKtxFtIQ34hxVUTjJ4G2uNzsD?=
- =?iso-8859-1?Q?1/Id8fCFaXR5BcLVcw1wMm38sq5O3sZ6OAbmoBu5oMS3WiSTK07sGCPIC9?=
- =?iso-8859-1?Q?F02hoQaI9LbK9arwI4lzEB5S/Xvi549ACIRZwhYGiWc15M9r/uixDeom15?=
- =?iso-8859-1?Q?XVUTFzOTweNGoly2hSirtTKoVuF0EZ9jLohav2gPpG7VUy+6EUNFtcyzHd?=
- =?iso-8859-1?Q?/sVgiG5yaMTsTU7aG5aYupMwbqRquVFnNIfAXuQg91lDY5Pttazes0K/9K?=
- =?iso-8859-1?Q?H7QTcCVPUGp6bgSEyhV6xow7xgxKqBRQZmLnCHZZoWh6NosmziN1DXXJJm?=
- =?iso-8859-1?Q?q/KkM63BeJBOl7hCFbI4F8IcJEC2dEkSe3221wuWeazk3I0uO7zeU3+b9Q?=
- =?iso-8859-1?Q?fnm7+kc6IvGOYFjNKVVM+qozwi/bPRlSRfQJFgBbr2alBZBAbfcA5BdUGM?=
- =?iso-8859-1?Q?3HqnIlvyLdhB1N1QWrwx8QPV6RXthYqn2qaJB5xZwu7eRehwkNDM/CbtLp?=
- =?iso-8859-1?Q?hNhRg0OP88iILlwFbKlWdBFCzbzOKVj+DV4Dhc0KtLQlQGd6aOK3Z9iugT?=
- =?iso-8859-1?Q?sEl+HRQT9sWWcM3v+uiWFZC+GvdiKpvmFcDjk3+LfQrjs+WkHN1WtU1+UY?=
- =?iso-8859-1?Q?71hlxaU7w/PisWEXP4a3FaBwewwF4TFt+MXSIgqYKaMp5Xij2t0vE6JopD?=
- =?iso-8859-1?Q?1WqMRebGXLzxBNqg9SYbi3iqFGnuywPd9LKLGRx1Pba1jT3cfu9y+CrY6J?=
- =?iso-8859-1?Q?+kKFFyPuLCk90mnzCaTQ2w0YtfETm9zIMRK8w/kbNLwJsog9332jnRHNzs?=
- =?iso-8859-1?Q?2PiylyBDgOOasFLaU545W7tKMhFvby1a6CX7fWNNXoHCvRWZ1DGX/WIeiq?=
- =?iso-8859-1?Q?/0lCtXCNw9ye9W+K/g5abW72YyZ3InVxdgn1aUgPMtU7AeaOu2xe4ktlPR?=
- =?iso-8859-1?Q?vVn0RNy5hmJbxy79ep0B6YqIxa9XdlDJ4yYQGxGqFAbT8fjiLdTUGICOk0?=
- =?iso-8859-1?Q?yLcpDD4pAStoMWIgyb4ju9LzkdMCy3YQ68D7N42U5e6YewF2ayddqeWG+D?=
- =?iso-8859-1?Q?d3WntpveSgw1+AhNhQ+lKdAckBKSdxbptq2cPY6r8xD4DEFGmtUBb0onxN?=
- =?iso-8859-1?Q?gtn3VrpvVX+b7zeQhPmugWKdl6h++pXE3jM5xjDtFhsSHTJwls3WfUJiCU?=
- =?iso-8859-1?Q?YxXWopM04xZIZYoN7sRjvlQpnOMkkBs=3D?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 76a06074-7ba1-4867-c9ca-08da53e65482
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4475.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2022 00:29:55.3349
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CtXSqyOQtqGez8Nbjwm4CTAWWNqHJQN65UGjVI6f5TMXNuBZf0uVwn95Sx/+VzWa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4904
-X-Proofpoint-GUID: EExzyJ_VtGdntnpR1BULJwvFK2nsLdIb
-X-Proofpoint-ORIG-GUID: EExzyJ_VtGdntnpR1BULJwvFK2nsLdIb
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.64.514
- definitions=2022-06-21_11,2022-06-21_01,2022-02-23_01
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6e02:10cf:b0:2d9:2310:e6b3 with SMTP id
+ s15-20020a056e0210cf00b002d92310e6b3mr599171ilj.212.1655859684903; Tue, 21
+ Jun 2022 18:01:24 -0700 (PDT)
+Date:   Tue, 21 Jun 2022 18:01:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005115d105e1fee003@google.com>
+Subject: [syzbot] KASAN: use-after-free Read in free_netdev (3)
+From:   syzbot <syzbot+b75c138e9286ac742647@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
+        hawk@kernel.org, idosch@nvidia.com, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, petrm@nvidia.com, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 21, 2022 at 12:17:54PM -0700, John Fastabend wrote:
-> > Hashmap Control
-> > ===============
-> >         num keys: 10
-> > hashmap (control) sequential    get:  hits throughput: 20.900 ± 0.334 M ops/s, hits latency: 47.847 ns/op, important_hits throughput: 20.900 ± 0.334 M ops/s
-> > 
-> >         num keys: 1000
-> > hashmap (control) sequential    get:  hits throughput: 13.758 ± 0.219 M ops/s, hits latency: 72.683 ns/op, important_hits throughput: 13.758 ± 0.219 M ops/s
-> > 
-> >         num keys: 10000
-> > hashmap (control) sequential    get:  hits throughput: 6.995 ± 0.034 M ops/s, hits latency: 142.959 ns/op, important_hits throughput: 6.995 ± 0.034 M ops/s
-> > 
-> >         num keys: 100000
-> > hashmap (control) sequential    get:  hits throughput: 4.452 ± 0.371 M ops/s, hits latency: 224.635 ns/op, important_hits throughput: 4.452 ± 0.371 M ops/s
-> > 
-> >         num keys: 4194304
-> > hashmap (control) sequential    get:  hits throughput: 3.043 ± 0.033 M ops/s, hits latency: 328.587 ns/op, important_hits throughput: 3.043 ± 0.033 M ops/s
-> > 
-> 
-> Why is the hashmap lookup not constant with the number of keys? It looks
-> like its prepopulated without collisions so I wouldn't expect any
-> extra ops on the lookup side after looking at the code quickly.
-It may be due to the cpu-cache misses as the map grows.
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    b4a028c4d031 ipv4: ping: fix bind address validity check
+git tree:       net
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=17a3ab08080000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=70e1a4d352a3c6ae
+dashboard link: https://syzkaller.appspot.com/bug?extid=b75c138e9286ac742647
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15506c60080000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=116b6628080000
+
+Bisection is inconclusive: the issue happens on the oldest tested release.
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15270be8080000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=17270be8080000
+console output: https://syzkaller.appspot.com/x/log.txt?x=13270be8080000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b75c138e9286ac742647@syzkaller.appspotmail.com
+
+netlink: 20 bytes leftover after parsing attributes in process `syz-executor304'.
+==================================================================
+BUG: KASAN: use-after-free in free_netdev+0x58c/0x620 net/core/dev.c:10704
+Read of size 8 at addr ffff88807e9de738 by task syz-executor304/3633
+
+CPU: 1 PID: 3633 Comm: syz-executor304 Not tainted 5.19.0-rc2-syzkaller-00103-gb4a028c4d031 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ print_address_description.constprop.0.cold+0xeb/0x495 mm/kasan/report.c:313
+ print_report mm/kasan/report.c:429 [inline]
+ kasan_report.cold+0xf4/0x1c6 mm/kasan/report.c:491
+ free_netdev+0x58c/0x620 net/core/dev.c:10704
+ netdev_run_todo+0xb48/0x10f0 net/core/dev.c:10356
+ rtnl_unlock net/core/rtnetlink.c:147 [inline]
+ rtnetlink_rcv_msg+0x447/0xc90 net/core/rtnetlink.c:6090
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2501
+ netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
+ netlink_unicast+0x543/0x7f0 net/netlink/af_netlink.c:1345
+ netlink_sendmsg+0x917/0xe10 net/netlink/af_netlink.c:1921
+ sock_sendmsg_nosec net/socket.c:714 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:734
+ ____sys_sendmsg+0x6eb/0x810 net/socket.c:2492
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2546
+ __sys_sendmsg net/socket.c:2575 [inline]
+ __do_sys_sendmsg net/socket.c:2584 [inline]
+ __se_sys_sendmsg net/socket.c:2582 [inline]
+ __x64_sys_sendmsg+0x132/0x220 net/socket.c:2582
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x46/0xb0
+RIP: 0033:0x7fae52dad6e9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 a1 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fae52d5b308 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007fae52e364e8 RCX: 00007fae52dad6e9
+RDX: 0000000000000000 RSI: 0000000020000180 RDI: 0000000000000004
+RBP: 00007fae52e364e0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007fae52e364ec
+R13: 00007fae52e03494 R14: 74656e2f7665642f R15: 0000000000022000
+ </TASK>
+
+Allocated by task 3633:
+ kasan_save_stack+0x1e/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:45 [inline]
+ set_alloc_info mm/kasan/common.c:436 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:515 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:474 [inline]
+ __kasan_kmalloc+0xa9/0xd0 mm/kasan/common.c:524
+ kmalloc include/linux/slab.h:605 [inline]
+ sk_prot_alloc+0x110/0x290 net/core/sock.c:1975
+ sk_alloc+0x36/0x770 net/core/sock.c:2028
+ tun_chr_open+0x7b/0x540 drivers/net/tun.c:3408
+ misc_open+0x376/0x4a0 drivers/char/misc.c:143
+ chrdev_open+0x266/0x770 fs/char_dev.c:414
+ do_dentry_open+0x4a1/0x11f0 fs/open.c:848
+ do_open fs/namei.c:3520 [inline]
+ path_openat+0x1c71/0x2910 fs/namei.c:3653
+ do_filp_open+0x1aa/0x400 fs/namei.c:3680
+ do_sys_openat2+0x16d/0x4c0 fs/open.c:1278
+ do_sys_open fs/open.c:1294 [inline]
+ __do_sys_openat fs/open.c:1310 [inline]
+ __se_sys_openat fs/open.c:1305 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1305
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x46/0xb0
+
+Freed by task 3634:
+ kasan_save_stack+0x1e/0x40 mm/kasan/common.c:38
+ kasan_set_track+0x21/0x30 mm/kasan/common.c:45
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:370
+ ____kasan_slab_free mm/kasan/common.c:366 [inline]
+ ____kasan_slab_free+0x166/0x1a0 mm/kasan/common.c:328
+ kasan_slab_free include/linux/kasan.h:200 [inline]
+ slab_free_hook mm/slub.c:1727 [inline]
+ slab_free_freelist_hook+0x8b/0x1c0 mm/slub.c:1753
+ slab_free mm/slub.c:3507 [inline]
+ kfree+0xd6/0x4d0 mm/slub.c:4555
+ sk_prot_free net/core/sock.c:2011 [inline]
+ __sk_destruct+0x5e5/0x710 net/core/sock.c:2097
+ sk_destruct net/core/sock.c:2112 [inline]
+ __sk_free+0x1a4/0x4a0 net/core/sock.c:2123
+ sk_free+0x78/0xa0 net/core/sock.c:2134
+ sock_put include/net/sock.h:1927 [inline]
+ __tun_detach+0xdb7/0x13e0 drivers/net/tun.c:680
+ tun_detach drivers/net/tun.c:692 [inline]
+ tun_chr_close+0x15c/0x180 drivers/net/tun.c:3444
+ __fput+0x277/0x9d0 fs/file_table.c:317
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:177
+ ptrace_notify+0x114/0x140 kernel/signal.c:2353
+ ptrace_report_syscall include/linux/ptrace.h:420 [inline]
+ ptrace_report_syscall_exit include/linux/ptrace.h:482 [inline]
+ syscall_exit_work kernel/entry/common.c:249 [inline]
+ syscall_exit_to_user_mode_prepare+0xdb/0x230 kernel/entry/common.c:276
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:281 [inline]
+ syscall_exit_to_user_mode+0x9/0x50 kernel/entry/common.c:294
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x46/0xb0
+
+The buggy address belongs to the object at ffff88807e9de000
+ which belongs to the cache kmalloc-4k of size 4096
+The buggy address is located 1848 bytes inside of
+ 4096-byte region [ffff88807e9de000, ffff88807e9df000)
+
+The buggy address belongs to the physical page:
+page:ffffea0001fa7600 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x7e9d8
+head:ffffea0001fa7600 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+raw: 00fff00000010200 dead000000000100 dead000000000122 ffff888011842140
+raw: 0000000000000000 0000000000040004 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd2040(__GFP_IO|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 2984, tgid 2984 (udevd), ts 16101031779, free_ts 16095933951
+ prep_new_page mm/page_alloc.c:2456 [inline]
+ get_page_from_freelist+0x1290/0x3b70 mm/page_alloc.c:4198
+ __alloc_pages+0x1c7/0x510 mm/page_alloc.c:5426
+ alloc_pages+0x1aa/0x310 mm/mempolicy.c:2272
+ alloc_slab_page mm/slub.c:1797 [inline]
+ allocate_slab+0x26c/0x3c0 mm/slub.c:1942
+ new_slab mm/slub.c:2002 [inline]
+ ___slab_alloc+0x985/0xd90 mm/slub.c:3002
+ __slab_alloc.constprop.0+0x4d/0xa0 mm/slub.c:3089
+ slab_alloc_node mm/slub.c:3180 [inline]
+ slab_alloc mm/slub.c:3222 [inline]
+ __kmalloc+0x318/0x350 mm/slub.c:4413
+ kmalloc include/linux/slab.h:605 [inline]
+ tomoyo_realpath_from_path+0xc3/0x620 security/tomoyo/realpath.c:254
+ tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
+ tomoyo_check_open_permission+0x272/0x380 security/tomoyo/file.c:771
+ tomoyo_file_open security/tomoyo/tomoyo.c:320 [inline]
+ tomoyo_file_open+0x9d/0xc0 security/tomoyo/tomoyo.c:315
+ security_file_open+0x45/0xb0 security/security.c:1645
+ do_dentry_open+0x349/0x11f0 fs/open.c:835
+ do_open fs/namei.c:3520 [inline]
+ path_openat+0x1c71/0x2910 fs/namei.c:3653
+ do_filp_open+0x1aa/0x400 fs/namei.c:3680
+ do_sys_openat2+0x16d/0x4c0 fs/open.c:1278
+ do_sys_open fs/open.c:1294 [inline]
+ __do_sys_openat fs/open.c:1310 [inline]
+ __se_sys_openat fs/open.c:1305 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1305
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1371 [inline]
+ free_pcp_prepare+0x549/0xd20 mm/page_alloc.c:1421
+ free_unref_page_prepare mm/page_alloc.c:3343 [inline]
+ free_unref_page+0x19/0x6a0 mm/page_alloc.c:3438
+ __unfreeze_partials+0x17c/0x1a0 mm/slub.c:2521
+ qlink_free mm/kasan/quarantine.c:168 [inline]
+ qlist_free_all+0x6a/0x170 mm/kasan/quarantine.c:187
+ kasan_quarantine_reduce+0x180/0x200 mm/kasan/quarantine.c:294
+ __kasan_slab_alloc+0xa2/0xc0 mm/kasan/common.c:446
+ kasan_slab_alloc include/linux/kasan.h:224 [inline]
+ slab_post_alloc_hook mm/slab.h:750 [inline]
+ slab_alloc_node mm/slub.c:3214 [inline]
+ slab_alloc mm/slub.c:3222 [inline]
+ __kmem_cache_alloc_lru mm/slub.c:3229 [inline]
+ kmem_cache_alloc_lru+0x31a/0x720 mm/slub.c:3246
+ __d_alloc+0x32/0x960 fs/dcache.c:1769
+ d_alloc+0x4a/0x230 fs/dcache.c:1849
+ d_alloc_parallel+0xe7/0x1af0 fs/dcache.c:2601
+ __lookup_slow+0x193/0x480 fs/namei.c:1686
+ lookup_slow fs/namei.c:1718 [inline]
+ walk_component+0x40f/0x6a0 fs/namei.c:2014
+ lookup_last fs/namei.c:2469 [inline]
+ path_lookupat+0x1bb/0x860 fs/namei.c:2493
+ filename_lookup+0x1c6/0x590 fs/namei.c:2522
+ vfs_statx+0x148/0x390 fs/stat.c:228
+ vfs_fstatat+0x8c/0xb0 fs/stat.c:255
+
+Memory state around the buggy address:
+ ffff88807e9de600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88807e9de680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88807e9de700: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                        ^
+ ffff88807e9de780: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88807e9de800: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
