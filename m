@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 913285550C0
-	for <lists+bpf@lfdr.de>; Wed, 22 Jun 2022 18:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 299225550C4
+	for <lists+bpf@lfdr.de>; Wed, 22 Jun 2022 18:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376601AbiFVQEc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Jun 2022 12:04:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39320 "EHLO
+        id S1376608AbiFVQEe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jun 2022 12:04:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376607AbiFVQEL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S1376609AbiFVQEL (ORCPT <rfc822;bpf@vger.kernel.org>);
         Wed, 22 Jun 2022 12:04:11 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF64F34BA1
-        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 09:04:03 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id bm2-20020a056a00320200b0052531ca7c1cso3128020pfb.15
-        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 09:04:03 -0700 (PDT)
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92E5D36B51
+        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 09:04:05 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id e3-20020a170902ef4300b0016a14be17daso6633655plx.5
+        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 09:04:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=LTElPRlk6nNIs/oP/so8PYC11Pmr5ka01hOAoud8yoI=;
-        b=kn2A+P7PT5PCBToVNThfA8rDEpqsLZVaT89w9PryWGHLkaotEPvuMWZ8H8JP2wqXij
-         eJXPlBjYdfzHp0djPG/J0Ah8PVFzqwu0n60NUeTqk4aNox7LX12uAq2Yck6PJDVsSO5/
-         2gcMn9mLInnZ5LMGKNkfRe8q0rcdGyP8SYJKkBnA3u/cdNNa1ElhJg/CJ98rC2zwTLA/
-         80VQA3QLGeW53FVMhHEkD4FkVEOWooQBTtpPS+DDaeyJ4pis7HYf5WL9bj9XCATdEtwP
-         2+yJHsO6KAJLMhLL6k6StyF1sB8EznzO0sogybNuDY6k4ZldbWd/FAyZDkmoue36p1kI
-         MzpA==
+        bh=UXuka4BFyLFGuWoAnLaszoN+ipFkLzHli/q8mm4HvyE=;
+        b=bN+jmcqOWRR4CaJM+AzYdknRIOu8l0DD6qvCKJrIU9h4fDE/O0ivisq0XpbDUIiSPm
+         d6jU26/JY93GWgj18C2tRTU62Zhl4c2XTrnBgF0TUjEI3UAWtpWWydImlkLvIUH1i5S0
+         PYBdtDGQKYEUt4zjmgN4233OZ4KymCTLBUCLVlVqorQwQcGOaLXZkB8lshLJgEjiBWho
+         PkIiU7XBRGUKDuAaWOCyuFZvxnEbV45GGztg0PYDdBCjyLZlyt0loRBb2235BaYcisQw
+         jFYveQnxEO7EklPZdvtXwzCsrJVkZZ6atz1JovjceJMXOAUUZsxplyTsTM49HLRjBxPc
+         OkOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=LTElPRlk6nNIs/oP/so8PYC11Pmr5ka01hOAoud8yoI=;
-        b=FTujwcC7+gqtXrDHgmnvenKOdxRVMzrcSumqNvULZzT1cObxG12UuUxJgQE5/47R48
-         i3K+1gBqzM8kC9z+Zbzo6wl1UsFL1q9Qqc+I0beZLbKQ8So7gQskUE8bhFlEAUQboI6g
-         qww+oZ4/XLng/0/zIVI4xcfFBz1i/6XSSjPmHMZyj1/I5AX/WqL8I137qkiOF8Qs27tm
-         IWRy0czXnKfLDMkRgTSsKs1AcKoUVcp8T0j24B/Pt9HbXlibUvHJ0Z1sh9uFAe3fMFYb
-         Yku8fgt4bXx4S4VBSVoDPzGg1C3pg6n7c4srtpe0cqogwyyHI30pohBZ+iPU65uc8lMj
-         VJOw==
-X-Gm-Message-State: AJIora/gCGklFTsOAKlPxuXiT4SKtkhHixM6wUUV2AB1qhhmIAIsdNxi
-        3QHYgON8c1MDVRhEVFc9p0cPfZM=
-X-Google-Smtp-Source: AGRyM1tUx24uJKeLuebO7WdcPwgZUAkRt5C+q0MAhncbutaWCHjJ9BCbtLRsWBdGE6WBcbr/qLav33E=
+        bh=UXuka4BFyLFGuWoAnLaszoN+ipFkLzHli/q8mm4HvyE=;
+        b=x9cE1EmlZavat2i2JBHOXMF0eMrXdcIvgQ7dWWgYjPYdA/TJzqgfqzBx/DEXwymtz+
+         AcfiX61JXsHZESnnVSeXQOp5Sg1zSQXDybFpyRdgmx/0XTspdXWrofnPusM9zfzD0gl5
+         juM/auYbWx185dhD5/YpA5jchHrFLEXveSoBwBl87jt0FfqK14m/i3SwgBtxN+PiT6ZY
+         m4URp5dcsOHQ2tXgbvL1qO9XcPDSDRnQQyIioprktfeF9fzvLa27rv5IDgj60zOLkFLc
+         yWFIus9S8pcJTT18FZvHSEhtb1fSi4PzN407cQphDOnCpZvCaqCyiOvWgZfS81oW9uH8
+         RqAw==
+X-Gm-Message-State: AJIora+yvol8yIk5y/8cNfhTBt5Vl9VAFXwx83j2XnXCJRe0+E4IKGtx
+        m+pxum4pFVRqLyp6x8a/GcoMfKo=
+X-Google-Smtp-Source: AGRyM1vrWqPfPNd3QJOa4eztlB1yd1yurZ4WNXQNgi8M8PbaunIqr2HWc/+PqryqmWNVQDvTu0FJjRM=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:aa7:814c:0:b0:51b:b3ee:6be2 with SMTP id
- d12-20020aa7814c000000b0051bb3ee6be2mr35866254pfn.3.1655913843117; Wed, 22
- Jun 2022 09:04:03 -0700 (PDT)
-Date:   Wed, 22 Jun 2022 09:03:43 -0700
+ (user=sdf job=sendgmr) by 2002:a17:90a:4a97:b0:1ea:fa24:467c with SMTP id
+ f23-20020a17090a4a9700b001eafa24467cmr10016pjh.1.1655913844836; Wed, 22 Jun
+ 2022 09:04:04 -0700 (PDT)
+Date:   Wed, 22 Jun 2022 09:03:44 -0700
 In-Reply-To: <20220622160346.967594-1-sdf@google.com>
-Message-Id: <20220622160346.967594-9-sdf@google.com>
+Message-Id: <20220622160346.967594-10-sdf@google.com>
 Mime-Version: 1.0
 References: <20220622160346.967594-1-sdf@google.com>
 X-Mailer: git-send-email 2.37.0.rc0.104.g0611611a94-goog
-Subject: [PATCH bpf-next v10 08/11] libbpf: add lsm_cgoup_sock type
+Subject: [PATCH bpf-next v10 09/11] libbpf: implement bpf_prog_query_opts
 From:   Stanislav Fomichev <sdf@google.com>
 To:     netdev@vger.kernel.org, bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
@@ -67,42 +67,147 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-lsm_cgroup/ is the prefix for BPF_LSM_CGROUP.
+Implement bpf_prog_query_opts as a more expendable version of
+bpf_prog_query. Expose new prog_attach_flags and attach_btf_func_id as
+well:
+
+* prog_attach_flags is a per-program attach_type; relevant only for
+  lsm cgroup program which might have different attach_flags
+  per attach_btf_id
+* attach_btf_func_id is a new field expose for prog_query which
+  specifies real btf function id for lsm cgroup attachments
 
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- tools/lib/bpf/libbpf.c | 3 +++
- 1 file changed, 3 insertions(+)
+ tools/include/uapi/linux/bpf.h |  3 +++
+ tools/lib/bpf/bpf.c            | 38 +++++++++++++++++++++++++++-------
+ tools/lib/bpf/bpf.h            | 15 ++++++++++++++
+ tools/lib/bpf/libbpf.map       |  1 +
+ 4 files changed, 50 insertions(+), 7 deletions(-)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 49e359cd34df..8de7628a199b 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -107,6 +107,7 @@ static const char * const attach_type_name[] = {
- 	[BPF_TRACE_FEXIT]		= "trace_fexit",
- 	[BPF_MODIFY_RETURN]		= "modify_return",
- 	[BPF_LSM_MAC]			= "lsm_mac",
-+	[BPF_LSM_CGROUP]		= "lsm_cgroup",
- 	[BPF_SK_LOOKUP]			= "sk_lookup",
- 	[BPF_TRACE_ITER]		= "trace_iter",
- 	[BPF_XDP_DEVMAP]		= "xdp_devmap",
-@@ -9203,6 +9204,7 @@ static const struct bpf_sec_def section_defs[] = {
- 	SEC_DEF("freplace+",		EXT, 0, SEC_ATTACH_BTF, attach_trace),
- 	SEC_DEF("lsm+",			LSM, BPF_LSM_MAC, SEC_ATTACH_BTF, attach_lsm),
- 	SEC_DEF("lsm.s+",		LSM, BPF_LSM_MAC, SEC_ATTACH_BTF | SEC_SLEEPABLE, attach_lsm),
-+	SEC_DEF("lsm_cgroup+",		LSM, BPF_LSM_CGROUP, SEC_ATTACH_BTF),
- 	SEC_DEF("iter+",		TRACING, BPF_TRACE_ITER, SEC_ATTACH_BTF, attach_iter),
- 	SEC_DEF("iter.s+",		TRACING, BPF_TRACE_ITER, SEC_ATTACH_BTF | SEC_SLEEPABLE, attach_iter),
- 	SEC_DEF("syscall",		SYSCALL, 0, SEC_SLEEPABLE),
-@@ -9656,6 +9658,7 @@ void btf_get_kernel_prefix_kind(enum bpf_attach_type attach_type,
- 		*kind = BTF_KIND_TYPEDEF;
- 		break;
- 	case BPF_LSM_MAC:
-+	case BPF_LSM_CGROUP:
- 		*prefix = BTF_LSM_PREFIX;
- 		*kind = BTF_KIND_FUNC;
- 		break;
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index b7479898c879..ad9e7311c4cf 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -1432,6 +1432,7 @@ union bpf_attr {
+ 		__u32		attach_flags;
+ 		__aligned_u64	prog_ids;
+ 		__u32		prog_cnt;
++		__aligned_u64	prog_attach_flags; /* output: per-program attach_flags */
+ 	} query;
+ 
+ 	struct { /* anonymous struct used by BPF_RAW_TRACEPOINT_OPEN command */
+@@ -6076,6 +6077,8 @@ struct bpf_prog_info {
+ 	__u64 run_cnt;
+ 	__u64 recursion_misses;
+ 	__u32 verified_insns;
++	__u32 attach_btf_obj_id;
++	__u32 attach_btf_id;
+ } __attribute__((aligned(8)));
+ 
+ struct bpf_map_info {
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index 240186aac8e6..accc97cf9928 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -888,24 +888,48 @@ int bpf_iter_create(int link_fd)
+ 	return libbpf_err_errno(fd);
+ }
+ 
+-int bpf_prog_query(int target_fd, enum bpf_attach_type type, __u32 query_flags,
+-		   __u32 *attach_flags, __u32 *prog_ids, __u32 *prog_cnt)
++int bpf_prog_query_opts(int target_fd,
++			enum bpf_attach_type type,
++			struct bpf_prog_query_opts *opts)
+ {
+ 	union bpf_attr attr;
+ 	int ret;
+ 
++	if (!OPTS_VALID(opts, bpf_prog_query_opts))
++		return libbpf_err(-EINVAL);
++
+ 	memset(&attr, 0, sizeof(attr));
++
+ 	attr.query.target_fd	= target_fd;
+ 	attr.query.attach_type	= type;
+-	attr.query.query_flags	= query_flags;
+-	attr.query.prog_cnt	= *prog_cnt;
+-	attr.query.prog_ids	= ptr_to_u64(prog_ids);
++	attr.query.query_flags	= OPTS_GET(opts, query_flags, 0);
++	attr.query.prog_cnt	= OPTS_GET(opts, prog_cnt, 0);
++	attr.query.prog_ids	= ptr_to_u64(OPTS_GET(opts, prog_ids, NULL));
++	attr.query.prog_attach_flags = ptr_to_u64(OPTS_GET(opts, prog_attach_flags, NULL));
+ 
+ 	ret = sys_bpf(BPF_PROG_QUERY, &attr, sizeof(attr));
+ 
++	OPTS_SET(opts, attach_flags, attr.query.attach_flags);
++	OPTS_SET(opts, prog_cnt, attr.query.prog_cnt);
++
++	return libbpf_err_errno(ret);
++}
++
++int bpf_prog_query(int target_fd, enum bpf_attach_type type, __u32 query_flags,
++		   __u32 *attach_flags, __u32 *prog_ids, __u32 *prog_cnt)
++{
++	LIBBPF_OPTS(bpf_prog_query_opts, opts);
++	int ret;
++
++	opts.query_flags = query_flags;
++	opts.prog_ids = prog_ids;
++	opts.prog_cnt = *prog_cnt;
++
++	ret = bpf_prog_query_opts(target_fd, type, &opts);
++
+ 	if (attach_flags)
+-		*attach_flags = attr.query.attach_flags;
+-	*prog_cnt = attr.query.prog_cnt;
++		*attach_flags = opts.attach_flags;
++	*prog_cnt = opts.prog_cnt;
+ 
+ 	return libbpf_err_errno(ret);
+ }
+diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+index cabc03703e29..e8f70ce6b537 100644
+--- a/tools/lib/bpf/bpf.h
++++ b/tools/lib/bpf/bpf.h
+@@ -442,9 +442,24 @@ LIBBPF_API int bpf_map_get_fd_by_id(__u32 id);
+ LIBBPF_API int bpf_btf_get_fd_by_id(__u32 id);
+ LIBBPF_API int bpf_link_get_fd_by_id(__u32 id);
+ LIBBPF_API int bpf_obj_get_info_by_fd(int bpf_fd, void *info, __u32 *info_len);
++
++struct bpf_prog_query_opts {
++	size_t sz; /* size of this struct for forward/backward compatibility */
++	__u32 query_flags;
++	__u32 attach_flags; /* output argument */
++	__u32 *prog_ids;
++	__u32 prog_cnt; /* input+output argument */
++	__u32 *prog_attach_flags;
++};
++#define bpf_prog_query_opts__last_field prog_attach_flags
++
++LIBBPF_API int bpf_prog_query_opts(int target_fd,
++				   enum bpf_attach_type type,
++				   struct bpf_prog_query_opts *opts);
+ LIBBPF_API int bpf_prog_query(int target_fd, enum bpf_attach_type type,
+ 			      __u32 query_flags, __u32 *attach_flags,
+ 			      __u32 *prog_ids, __u32 *prog_cnt);
++
+ LIBBPF_API int bpf_raw_tracepoint_open(const char *name, int prog_fd);
+ LIBBPF_API int bpf_task_fd_query(int pid, int fd, __u32 flags, char *buf,
+ 				 __u32 *buf_len, __u32 *prog_id, __u32 *fd_type,
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index 116a2a8ee7c2..03c69cb821b3 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -462,6 +462,7 @@ LIBBPF_0.8.0 {
+ 
+ LIBBPF_1.0.0 {
+ 	global:
++		bpf_prog_query_opts;
+ 		btf__add_enum64;
+ 		btf__add_enum64_value;
+ 		libbpf_bpf_attach_type_str;
 -- 
 2.37.0.rc0.104.g0611611a94-goog
 
