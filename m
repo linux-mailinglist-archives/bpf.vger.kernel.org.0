@@ -2,146 +2,179 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98CB955524C
-	for <lists+bpf@lfdr.de>; Wed, 22 Jun 2022 19:24:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 950A055525C
+	for <lists+bpf@lfdr.de>; Wed, 22 Jun 2022 19:27:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377345AbiFVRYn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Jun 2022 13:24:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33244 "EHLO
+        id S1358620AbiFVR0y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jun 2022 13:26:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376298AbiFVRYk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Jun 2022 13:24:40 -0400
-Received: from mail-pg1-x563.google.com (mail-pg1-x563.google.com [IPv6:2607:f8b0:4864:20::563])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E24C275D2
-        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 10:24:39 -0700 (PDT)
-Received: by mail-pg1-x563.google.com with SMTP id d129so16675458pgc.9
-        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 10:24:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:dkim-signature:mime-version:references
-         :in-reply-to:from:date:message-id:subject:to:cc;
-        bh=Eg7pKoREa62TqDRaU+yo2zrV2x8I6979kwBHk4P4AYE=;
-        b=yCMJXYjlOVOgxSQW41qc2I6s0BIgAMukk2o1aNXa7XJLSMwJlBRC77aIXS5NAr8pfP
-         VfSsR6jJk19oWMw+/6/BJ8U5KMgHD7KkMTXK89/ESwkPKhKFXT3ww9vc5KVB1s9n46U5
-         WS5Dv+XZLATsaNU8YAGY/fJvJd+RKal/VzPLXT3QMrIBlhCzoU38mIX7kZFi1/5YRyBx
-         HioUFIY0HRrG6/4izGT8nlS5GZ29l7UH9v/m/pNz3oIjItb+o1d25k/nmcMkpizPoWrs
-         HQYRfTFFQtKpP2+uaeYas6A5UR1LjrKx6mH6F/Uw92plQHUMmLPe+kR78dWhJjPG8HU+
-         5upA==
-X-Gm-Message-State: AJIora+K1U8YnR195k58Y+N7Sq+2mZKjfpsmyzPoYLZ8tSTZOSjQpdPk
-        KKTf9Xr8NFDi/FpfsmJ9sWY0+0JJ4VgctpafJJOmyZBBqQpLSA==
-X-Google-Smtp-Source: AGRyM1tRXLh3lv/S1lvHwP8eokS1mx+lFTZoGX3rVrF1bNj23eHMxubdK1AuFvWVbEWZk8dvfCP1WOnlb0Z+
-X-Received: by 2002:a65:610f:0:b0:408:8af8:28fd with SMTP id z15-20020a65610f000000b004088af828fdmr3773097pgu.286.1655918678409;
-        Wed, 22 Jun 2022 10:24:38 -0700 (PDT)
-Received: from riotgames.com ([163.116.131.243])
-        by smtp-relay.gmail.com with ESMTPS id w24-20020a17090aaf9800b001ec9e27742dsm2230pjq.17.2022.06.22.10.24.38
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jun 2022 10:24:38 -0700 (PDT)
-X-Relaying-Domain: riotgames.com
-Received: by mail-qk1-f199.google.com with SMTP id i16-20020a05620a249000b006aedb25493cso2824012qkn.15
-        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 10:24:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=riotgames.com; s=riotgames;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Eg7pKoREa62TqDRaU+yo2zrV2x8I6979kwBHk4P4AYE=;
-        b=U40zH1A0nsIU3C11b6t2RtEag/I6/6Q5eEbPZKTaTfpUbfOjaEWrGDc866SG/INK35
-         1EFdMcPJZteT9+M4NW1Yms+k4RBYZvvsYuX9CEothlBXRGGl9bnK+Mbz3vvxLNbgsWTX
-         FcfEwQev8Nj+DBdD55qFCN6OJutEpn/XZ/TS0=
-X-Received: by 2002:a05:620a:4591:b0:6a7:5a82:3d2d with SMTP id bp17-20020a05620a459100b006a75a823d2dmr3163073qkb.694.1655918677020;
-        Wed, 22 Jun 2022 10:24:37 -0700 (PDT)
-X-Received: by 2002:a05:620a:4591:b0:6a7:5a82:3d2d with SMTP id
- bp17-20020a05620a459100b006a75a823d2dmr3163048qkb.694.1655918676729; Wed, 22
- Jun 2022 10:24:36 -0700 (PDT)
+        with ESMTP id S1359637AbiFVR0x (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Jun 2022 13:26:53 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BEB727FCE
+        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 10:26:52 -0700 (PDT)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25MGKiBQ032549;
+        Wed, 22 Jun 2022 10:26:39 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type :
+ content-transfer-encoding : in-reply-to : mime-version; s=facebook;
+ bh=5XpnYXBZ3g84i+/r1E0fu0yhrfxtGr4FfgJ2e356R8U=;
+ b=bSruzpICdeDAMnn3iOfrngMY83lTpKFPf2P2ORAWPC91eiFzjIrt7xsM+oBJRDrBxkVA
+ hH2t8ODPLfQKXWzRyW5aFcExaxS+57S2uZ6S618msiA7GwRkd7f1OpWWvX4GH5f5/HZV
+ GjcBkgiY6nBOA63eUkTBb7oIzdx942m8wGk= 
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2177.outbound.protection.outlook.com [104.47.55.177])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3guef4sff9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Jun 2022 10:26:39 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hfBujuaGNcVkmII8lOxoklkwwVqWzZSJFtX2TEZqmMB0T0lGO/wxb2HexBD2RAHE1yuk4O3Wy8NyH2c/ghSNzV8iSIzwspVsn+LOb/HIERlN7D3JTL46Gy+ki1yJp7pIyNn8Ed0GmvoA49GgrtHPxHfAeJjhLAg1jtfaRunkr3Dnn6PBj1sCJd2Rf9e2ce149U7jws5uGnO2TFswyno7rrLiqxpqC7w/Hqm/AWZkqf/xHhbBEOHH/gqFtywOnaNW89yQaMTgwij18ghEI67Ke+eDiJlX0q2cKGsJvUOOOPO0tGSakuNFYguFf0c3T8r1By7/OgKBmrxXH7CFUqFeTw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=p16T5+2jR5KIu3KucR8UsWcxqfqSyUCRPLYfHPBB2Ug=;
+ b=OViHq7PKSvCTtIPLLlIiDaZNwbV66UmlAfUQlEc6xfMW52x3Ta9XIFOZPphikD+aDZTbWWNkVytOtYb9nCsGnKEOBrYtPJ+FP2tqYEn2WlF1E2+3bGHcxGwhdtWNXj8kVRiEtDq0EpXc0BQ8IUcyKbX69EQdcvAaV6c6ufX7IKhe95Tw0O0ol5cwuLcTJmqLUQ9CdcQWQdFoaQxEJDtND7W6dQIV19t9MueVDxWRCUHZZkdwcNti4h9AU+EC3efIVVA9iVOS2rr0vu9YuUZpKExCXI+TeeCkzvyakMxd838GMaPFzHoKOS+aIRuhlsguE3XVJqpQmJGNygFYFrNvfQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from MW4PR15MB4475.namprd15.prod.outlook.com (2603:10b6:303:104::16)
+ by MWHPR15MB1133.namprd15.prod.outlook.com (2603:10b6:320:24::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5353.22; Wed, 22 Jun
+ 2022 17:26:37 +0000
+Received: from MW4PR15MB4475.namprd15.prod.outlook.com
+ ([fe80::3941:25c6:c1cd:5762]) by MW4PR15MB4475.namprd15.prod.outlook.com
+ ([fe80::3941:25c6:c1cd:5762%7]) with mapi id 15.20.5353.022; Wed, 22 Jun 2022
+ 17:26:37 +0000
+Date:   Wed, 22 Jun 2022 10:26:32 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Dave Marchevsky <davemarchevsky@fb.com>, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH v6 bpf-next] selftests/bpf: Add benchmark for
+ local_storage get
+Message-ID: <20220622172632.psejkta24nwz3k5m@kafai-mbp.dhcp.thefacebook.com>
+References: <20220620222554.270578-1-davemarchevsky@fb.com>
+ <62b21962dc64_1627420844@john.notmuch>
+ <20220622002952.6334ieb3kfysx7vl@kafai-mbp>
+ <62b2ad7a21e88_34dc820812@john.notmuch>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <62b2ad7a21e88_34dc820812@john.notmuch>
+X-ClientProxiedBy: SJ0PR05CA0120.namprd05.prod.outlook.com
+ (2603:10b6:a03:334::35) To MW4PR15MB4475.namprd15.prod.outlook.com
+ (2603:10b6:303:104::16)
 MIME-Version: 1.0
-References: <20220622091447.243101-1-ciara.loftus@intel.com>
-In-Reply-To: <20220622091447.243101-1-ciara.loftus@intel.com>
-From:   Zvi Effron <zeffron@riotgames.com>
-Date:   Wed, 22 Jun 2022 12:24:25 -0500
-Message-ID: <CAC1LvL2zjEF16_Gbwrxwke7wpeKxNKR=vd_E2N_CpDezeo4sbw@mail.gmail.com>
-Subject: Re: [PATCH net-next] i40e: xsk: read the XDP program once per NAPI
-To:     Ciara Loftus <ciara.loftus@intel.com>
-Cc:     intel-wired-lan@lists.osuosl.org, anthony.l.nguyen@intel.com,
-        kuba@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com
-Content-Type: text/plain; charset="UTF-8"
-x-netskope-inspected: true
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f51d5c27-e711-4ff9-a384-08da54745c32
+X-MS-TrafficTypeDiagnostic: MWHPR15MB1133:EE_
+X-Microsoft-Antispam-PRVS: <MWHPR15MB113357E8B1ED2409CE45391ED5B29@MWHPR15MB1133.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: s2uMJDf01c+8tTrs+rmB1zTbFTHCIUEV0fw0Edb8835ji7LE0okoZYB1lJnZ5hGnSc+D32eI3vSAiU4zMB91mjHGH/JabfFZGX2bmkPRH4JkYkep4meZYam+8WxsMysB9haaVjrCF23Q8bICPql5SItdPCIy4PKcDPiEoEjF1M9oWGX6nZDuntuYmYaFrSawGDOl2xrSQwFFGg/L6F6onFklLcvUGDwimAg+BpOFlmg9KgSLi/0VyGNl7kNkuI+bqdNOzuik5PESjNZVdNw/q+pJ6OIXaE4cH3evF9Ti1KXPk/mqjSwib2X43MOtELN4x+yzLle/0yE+GWsb0Sy7AYxVxICgmd4l6rbIIk+ySNbiidwv/KJQsPyUzud8Ep+hSL5+z3A/XJ9Lban9wPKPWDzobLwaZVAqqBTl5gvWsD1BfOmxngV/+SkYjaoRCcNiUN2/HPuvJVhawhdJYPBVfMcdDubac04QHe10/JwzzesrmHqqk6UhkUCSOvI7IBCzeQmNdoK0t7gyvXfbNsXHJpSoEv5w8GLs36qnVxxhbovfdqCmvZSzfpRwYJhOCkJZaeBxvfwELXtyAbLu4vN/wZE7tj0ntLS/v7fLxXwSGrTy1gON9GYujo5rj1Xp54motcYzK2nVXa/TVnAWc3l4GgaqJDT7doODkrH4tun4vIIJatMvQdnBcRXtS7+RGTkrBr+fEaNGWtamTkJGjv68wg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4475.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(136003)(346002)(366004)(39860400002)(396003)(376002)(8936002)(6486002)(6916009)(86362001)(9686003)(5660300002)(54906003)(478600001)(66556008)(6666004)(66946007)(8676002)(66476007)(4326008)(41300700001)(316002)(38100700002)(186003)(1076003)(2906002)(52116002)(6506007)(6512007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?9+/ebSP87SoGLIK5vp6MbPCC1ExXXWAD+Th2JT5a2xmikv27zCYsLYmC26?=
+ =?iso-8859-1?Q?BvQY7wrXhaHt8ebTMLmZ/hDjPAhOAJ3s0NAU4PTBg0WoKzQA6z7oZEcjL5?=
+ =?iso-8859-1?Q?KOCrj57d81FxFjOQqxluzdE8Y0xtX5ogtm2nd+0r6mtmMrnlZ5WdT8IH6L?=
+ =?iso-8859-1?Q?B87ZU7fpYfsF4b5VEabralZMe/MMPZVq40NxFkPPt/oIj94YCjdYC1qMi8?=
+ =?iso-8859-1?Q?oy4vwz6Kx2gxhu4zGyRTaVVKb00x1XKpZrJ0LSVZix3bBB6X8bxJSQNQA3?=
+ =?iso-8859-1?Q?BnohWAN62y0rJ/y919pJsOgtkNfoaZCb3sRx29kcfZ7yg+A+FibY63jTA4?=
+ =?iso-8859-1?Q?3nQR31A6QoYtb8RBtpDsO96/y9nzB/Ur4Z0ukD8kljcKwAAbDfPRJe6Ulm?=
+ =?iso-8859-1?Q?/FYMoJ4KyAbW6FVB+lnOle92WxDPU+3Q04IsGdxp3LT1iVJcfR5WLmmC6E?=
+ =?iso-8859-1?Q?qkuMo4p13YoimarQPNBL9o0k4rXdz0qYZiZNNc4yRlfSsWwETwusJBljBj?=
+ =?iso-8859-1?Q?T1JGS3Jgl5Y49DM/gRebDsUYaywBz5oyfVjGbnnW4uMpBA39bPRMu6ACu2?=
+ =?iso-8859-1?Q?lQmY02YN1fWJaeF/pRwXoGsK9zNZIdKxRjUpOXCUr8u4ZyYJ6GnpLRcNYO?=
+ =?iso-8859-1?Q?qwtUKhgbv71ptTCPlpxM+B7w9KucVJDjzwNf82cuXNooPXe/CmQhJxffXm?=
+ =?iso-8859-1?Q?kQO3z1h/DpjOo0x+it0+y7B5fXwBan/IvPGIufMu3NcPBYgIOGWV0wzY8K?=
+ =?iso-8859-1?Q?09izSKcgfbYIvP3+fp0l51rosr1eN7LVerStgdcLXcjh4JBP9U6EliPvxm?=
+ =?iso-8859-1?Q?3TYMlIj6zzJaGvOcPASKFO7vP3LXrgtyDJNWi/TzprtgBbu7mFaH2v/XBh?=
+ =?iso-8859-1?Q?fKIFxiwLLhmEGzF8+It1cUPYU2bo49E6YoQc+evYNRZ7Q3Y3NQx0sDCnir?=
+ =?iso-8859-1?Q?8StEFTTM+2cyZrCsGyy7nfkfSkcxeLrWKeG2l0UKBbQeStAhBm9q91VQy7?=
+ =?iso-8859-1?Q?tnnONSeihyHmUWdZmZSqNjrNcvNoV/QUrZlFbdcDytgs6TglPu5SH8LfZ/?=
+ =?iso-8859-1?Q?s33GabYjCJG66PzgIXe828ur0LAYiWgPQftWHisADU6iygc07mnhNSUsOS?=
+ =?iso-8859-1?Q?ZjNateZS6EX/7cEDLBdmXvaAB6mBs1laN/2FKVK6trhzEEnn38GLSmGov0?=
+ =?iso-8859-1?Q?J2NIDf/LYQ3sDxLKU7NpbGBCnCvCAKfH24HL+2DruNid1F1+kw6BaSh+Y8?=
+ =?iso-8859-1?Q?NkB39NMyqCPQGNUCL6MpmQAM9V8hek7nZ935ulFG7tPYcQ7DGHWp6PvEFu?=
+ =?iso-8859-1?Q?kMINEZo/Y1QdV7ZWirBKAc4JAnqu/ryUTkKGMY213F9P1ey6W5G2Ezyvsd?=
+ =?iso-8859-1?Q?DTvk8hmRT/ydvjh9B+gMgCnfp5BFRlVXZnZjRxlFZ+TN0PHub4NupOJ9rk?=
+ =?iso-8859-1?Q?ebd4EwV2fAVZEShLktemQIFEhZrNy1bQxEVhuj0j5FhEDzzUsOBrGQuCJx?=
+ =?iso-8859-1?Q?53BWCT1jOzFuaPgfzOO48fk4NdeKO95PZZqBzZIQYD1GGoeFfUKnrOetVj?=
+ =?iso-8859-1?Q?KxSDfShKH9Reqvle0hYJcFCOjg2gCkgsJ0DxxK9pbon5IdsufN/9je+yiH?=
+ =?iso-8859-1?Q?56yRdsAKZKi1Ad4oD8uWPiucI6qrkZp42wCxaDOmXCKaUjmOW9zp7s1WMD?=
+ =?iso-8859-1?Q?Xe6KHv5h1w59YQmBvxr0wpLafAaaE+5TuIgUB2bJYnSi7cpW6PStewSwUb?=
+ =?iso-8859-1?Q?ZgsZxs175wBVeqU7mMhO/q5t4HPGlj5H5EwT1ZiMdzsAUG3Xrqwc1TWgTR?=
+ =?iso-8859-1?Q?1xS617QvrofIeK7aUesPEmWW0IvQWFU=3D?=
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f51d5c27-e711-4ff9-a384-08da54745c32
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4475.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2022 17:26:36.8764
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Y1HQlnj3VdpOkv4hK9FfkiJgesMyYqJVGCiR5I5qPqZDhCICJ3lyQQ0TdLN+dAVw
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1133
+X-Proofpoint-GUID: CHpSKBpA8S-eW8-cKnf9rlCANi0OINUW
+X-Proofpoint-ORIG-GUID: CHpSKBpA8S-eW8-cKnf9rlCANi0OINUW
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-06-22_04,2022-06-22_03,2022-06-22_01
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 22, 2022 at 4:15 AM Ciara Loftus <ciara.loftus@intel.com> wrote:
->
-> Similar to how it's done in the ice driver since 'eb087cd82864 ("ice:
-> propagate xdp_ring onto rx_ring")', read the XDP program once per NAPI
-> instead of once per descriptor cleaned. I measured an improvement in
-> throughput of 2% for the AF_XDP xdpsock l2fwd benchmark in busy polling
-> mode on my platform.
->
+On Tue, Jun 21, 2022 at 10:49:46PM -0700, John Fastabend wrote:
+> Martin KaFai Lau wrote:
+> > On Tue, Jun 21, 2022 at 12:17:54PM -0700, John Fastabend wrote:
+> > > > Hashmap Control
+> > > > ===============
+> > > >         num keys: 10
+> > > > hashmap (control) sequential    get:  hits throughput: 20.900 ± 0.334 M ops/s, hits latency: 47.847 ns/op, important_hits throughput: 20.900 ± 0.334 M ops/s
+> > > > 
+> > > >         num keys: 1000
+> > > > hashmap (control) sequential    get:  hits throughput: 13.758 ± 0.219 M ops/s, hits latency: 72.683 ns/op, important_hits throughput: 13.758 ± 0.219 M ops/s
+> > > > 
+> > > >         num keys: 10000
+> > > > hashmap (control) sequential    get:  hits throughput: 6.995 ± 0.034 M ops/s, hits latency: 142.959 ns/op, important_hits throughput: 6.995 ± 0.034 M ops/s
+> > > > 
+> > > >         num keys: 100000
+> > > > hashmap (control) sequential    get:  hits throughput: 4.452 ± 0.371 M ops/s, hits latency: 224.635 ns/op, important_hits throughput: 4.452 ± 0.371 M ops/s
+> > > > 
+> > > >         num keys: 4194304
+> > > > hashmap (control) sequential    get:  hits throughput: 3.043 ± 0.033 M ops/s, hits latency: 328.587 ns/op, important_hits throughput: 3.043 ± 0.033 M ops/s
+> > > > 
+> > > 
+> > > Why is the hashmap lookup not constant with the number of keys? It looks
+> > > like its prepopulated without collisions so I wouldn't expect any
+> > > extra ops on the lookup side after looking at the code quickly.
+> > It may be due to the cpu-cache misses as the map grows.
+> 
+> Maybe but, values are just ints so even 1k * 4B = 4kB should be
+> inside an otherwise unused server class system. Would be more
+> believable (to me at least) if the drop off happened at 100k or
+> more.
+It is not only value (and key) size.  There is overhead.
+htab_elem alone is 48bytes.  key and value need to 8bytes align also.
 
-Should the same improvement be made to i40e_run_xdp/i40e_clean_rx_irq for the
-non-AF_XDP case?
-
-> Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
-> ---
->  drivers/net/ethernet/intel/i40e/i40e_xsk.c | 16 +++++++++-------
->  1 file changed, 9 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> index af3e7e6afc85..2f422c61ac11 100644
-> --- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> +++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> @@ -146,17 +146,13 @@ int i40e_xsk_pool_setup(struct i40e_vsi *vsi, struct xsk_buff_pool *pool,
->   *
->   * Returns any of I40E_XDP_{PASS, CONSUMED, TX, REDIR}
->   **/
-> -static int i40e_run_xdp_zc(struct i40e_ring *rx_ring, struct xdp_buff *xdp)
-> +static int i40e_run_xdp_zc(struct i40e_ring *rx_ring, struct xdp_buff *xdp,
-> +                          struct bpf_prog *xdp_prog)
->  {
->         int err, result = I40E_XDP_PASS;
->         struct i40e_ring *xdp_ring;
-> -       struct bpf_prog *xdp_prog;
->         u32 act;
->
-> -       /* NB! xdp_prog will always be !NULL, due to the fact that
-> -        * this path is enabled by setting an XDP program.
-> -        */
-> -       xdp_prog = READ_ONCE(rx_ring->xdp_prog);
->         act = bpf_prog_run_xdp(xdp_prog, xdp);
->
->         if (likely(act == XDP_REDIRECT)) {
-> @@ -339,9 +335,15 @@ int i40e_clean_rx_irq_zc(struct i40e_ring *rx_ring, int budget)
->         u16 next_to_clean = rx_ring->next_to_clean;
->         u16 count_mask = rx_ring->count - 1;
->         unsigned int xdp_res, xdp_xmit = 0;
-> +       struct bpf_prog *xdp_prog;
->         bool failure = false;
->         u16 cleaned_count;
->
-> +       /* NB! xdp_prog will always be !NULL, due to the fact that
-> +        * this path is enabled by setting an XDP program.
-> +        */
-> +       xdp_prog = READ_ONCE(rx_ring->xdp_prog);
-> +
->         while (likely(total_rx_packets < (unsigned int)budget)) {
->                 union i40e_rx_desc *rx_desc;
->                 unsigned int rx_packets;
-> @@ -378,7 +380,7 @@ int i40e_clean_rx_irq_zc(struct i40e_ring *rx_ring, int budget)
->                 xsk_buff_set_size(bi, size);
->                 xsk_buff_dma_sync_for_cpu(bi, rx_ring->xsk_pool);
->
-> -               xdp_res = i40e_run_xdp_zc(rx_ring, bi);
-> +               xdp_res = i40e_run_xdp_zc(rx_ring, bi, xdp_prog);
->                 i40e_handle_xdp_result_zc(rx_ring, bi, rx_desc, &rx_packets,
->                                           &rx_bytes, size, xdp_res, &failure);
->                 if (failure)
-> --
-> 2.25.1
->
+From a random machine:
+lscpu -C
+NAME ONE-SIZE ALL-SIZE WAYS TYPE        LEVEL  SETS PHY-LINE COHERENCY-SIZE
+L1d       32K     576K    8 Data            1    64        1             64
+L1i       32K     576K    8 Instruction     1    64        1             64
+L2         1M      18M   16 Unified         2  1024        1             64
+L3      24.8M    24.8M   11 Unified         3 36864        1             64
