@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 309245550BF
+	by mail.lfdr.de (Postfix) with ESMTP id 913285550C0
 	for <lists+bpf@lfdr.de>; Wed, 22 Jun 2022 18:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376632AbiFVQEb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Jun 2022 12:04:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39304 "EHLO
+        id S1376601AbiFVQEc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jun 2022 12:04:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376593AbiFVQEK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Jun 2022 12:04:10 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99E1631373
-        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 09:04:01 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id ie11-20020a17090b400b00b001eccac2af53so29075pjb.9
-        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 09:04:01 -0700 (PDT)
+        with ESMTP id S1376607AbiFVQEL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Jun 2022 12:04:11 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF64F34BA1
+        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 09:04:03 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id bm2-20020a056a00320200b0052531ca7c1cso3128020pfb.15
+        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 09:04:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=r0Lj6PtlHqrSuvZYIBihZTa4s3/QqaHCC+51XLBQesU=;
-        b=dBhpu92abKzO7KIKqwO4gSNKF6LQbKmuTy/8vw52x+et0yOUxkv+3aatVXI0qJVA1k
-         jZ51L/sV17bf8vjd4fD/edu97sOGQgQUq/kwDDFqsaZQB+nM8xHYA/QKO4zzbLpieNbc
-         13cEOJykniWNT5AXK67TpS5cl8wFdmAJfKaBcFOHo6u5LSmxoC6hFYHT5XUDMU4keidW
-         HZRQQFgDNlr2GvBXU8wJpvx8REftJ3bCqZsqM5hTcjCLa8dMFxt881DMHGL4k4d13npo
-         EoONVvrcTO58ZnQw7RcxJaeC1ir6QD+NxSJNU1sFCe3bfNMF6GbUeWODeQBV2pm8E7Z4
-         PgPQ==
+        bh=LTElPRlk6nNIs/oP/so8PYC11Pmr5ka01hOAoud8yoI=;
+        b=kn2A+P7PT5PCBToVNThfA8rDEpqsLZVaT89w9PryWGHLkaotEPvuMWZ8H8JP2wqXij
+         eJXPlBjYdfzHp0djPG/J0Ah8PVFzqwu0n60NUeTqk4aNox7LX12uAq2Yck6PJDVsSO5/
+         2gcMn9mLInnZ5LMGKNkfRe8q0rcdGyP8SYJKkBnA3u/cdNNa1ElhJg/CJ98rC2zwTLA/
+         80VQA3QLGeW53FVMhHEkD4FkVEOWooQBTtpPS+DDaeyJ4pis7HYf5WL9bj9XCATdEtwP
+         2+yJHsO6KAJLMhLL6k6StyF1sB8EznzO0sogybNuDY6k4ZldbWd/FAyZDkmoue36p1kI
+         MzpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=r0Lj6PtlHqrSuvZYIBihZTa4s3/QqaHCC+51XLBQesU=;
-        b=I6pmzLO4lFddSz/9N1BRPAWPY7DAbKRaEVSx4edrhbjgWlkpPIeEyc+E/keH6ozv1X
-         4mEylMLT0pEvEYm08yG5wgWUEY3UBMHw1zGo9xbZxrn+Wx1O4/PNsp+VZ0FNExauViqr
-         lkpeAxS65fhNbLhLw9Hdem7MF9E/mEa0fH7IgKkPidI9CiXbtHYZ+CyYtFTLLOSX/kiI
-         gI3I8X5sHrHiQ9bbBhh7FSnW80MMOx14tEsFyDdhtlUOBT7NSseQCajqOYHy5Swiq5tU
-         7eoh+QxIcXvHDhGMp9XI8scalb3nPpWe9y70bqFD5NDXs1vZRQ1HL3NiCMEztsJ81ame
-         Uz7w==
-X-Gm-Message-State: AJIora/rvszNNbrC96PuxVHXAmMuwtHB6g4VtJ85EgHX8gq74HXMrpm/
-        jsx+jHI8ZEA+cdpNXlcj/560wd0=
-X-Google-Smtp-Source: AGRyM1vrS/3nrnPBc6pbKgfJHcN0fPfmqmine9GonsORm5PuwsPNubQlFOSD55Lxn4YfWM3cjGL7JAs=
+        bh=LTElPRlk6nNIs/oP/so8PYC11Pmr5ka01hOAoud8yoI=;
+        b=FTujwcC7+gqtXrDHgmnvenKOdxRVMzrcSumqNvULZzT1cObxG12UuUxJgQE5/47R48
+         i3K+1gBqzM8kC9z+Zbzo6wl1UsFL1q9Qqc+I0beZLbKQ8So7gQskUE8bhFlEAUQboI6g
+         qww+oZ4/XLng/0/zIVI4xcfFBz1i/6XSSjPmHMZyj1/I5AX/WqL8I137qkiOF8Qs27tm
+         IWRy0czXnKfLDMkRgTSsKs1AcKoUVcp8T0j24B/Pt9HbXlibUvHJ0Z1sh9uFAe3fMFYb
+         Yku8fgt4bXx4S4VBSVoDPzGg1C3pg6n7c4srtpe0cqogwyyHI30pohBZ+iPU65uc8lMj
+         VJOw==
+X-Gm-Message-State: AJIora/gCGklFTsOAKlPxuXiT4SKtkhHixM6wUUV2AB1qhhmIAIsdNxi
+        3QHYgON8c1MDVRhEVFc9p0cPfZM=
+X-Google-Smtp-Source: AGRyM1tUx24uJKeLuebO7WdcPwgZUAkRt5C+q0MAhncbutaWCHjJ9BCbtLRsWBdGE6WBcbr/qLav33E=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:902:f602:b0:16a:178a:7b0b with SMTP id
- n2-20020a170902f60200b0016a178a7b0bmr20423267plg.20.1655913841348; Wed, 22
- Jun 2022 09:04:01 -0700 (PDT)
-Date:   Wed, 22 Jun 2022 09:03:42 -0700
+ (user=sdf job=sendgmr) by 2002:aa7:814c:0:b0:51b:b3ee:6be2 with SMTP id
+ d12-20020aa7814c000000b0051bb3ee6be2mr35866254pfn.3.1655913843117; Wed, 22
+ Jun 2022 09:04:03 -0700 (PDT)
+Date:   Wed, 22 Jun 2022 09:03:43 -0700
 In-Reply-To: <20220622160346.967594-1-sdf@google.com>
-Message-Id: <20220622160346.967594-8-sdf@google.com>
+Message-Id: <20220622160346.967594-9-sdf@google.com>
 Mime-Version: 1.0
 References: <20220622160346.967594-1-sdf@google.com>
 X-Mailer: git-send-email 2.37.0.rc0.104.g0611611a94-goog
-Subject: [PATCH bpf-next v10 07/11] tools/bpf: Sync btf_ids.h to tools
+Subject: [PATCH bpf-next v10 08/11] libbpf: add lsm_cgoup_sock type
 From:   Stanislav Fomichev <sdf@google.com>
 To:     netdev@vger.kernel.org, bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
@@ -67,103 +67,42 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Has been slowly getting out of sync, let's update it.
+lsm_cgroup/ is the prefix for BPF_LSM_CGROUP.
 
-resolve_btfids usage has been updated to match the header changes.
-
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- tools/include/linux/btf_ids.h                 | 35 +++++++++++++++----
- .../selftests/bpf/prog_tests/resolve_btfids.c |  2 +-
- 2 files changed, 29 insertions(+), 8 deletions(-)
+ tools/lib/bpf/libbpf.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/tools/include/linux/btf_ids.h b/tools/include/linux/btf_ids.h
-index 57890b357f85..71e54b1e3796 100644
---- a/tools/include/linux/btf_ids.h
-+++ b/tools/include/linux/btf_ids.h
-@@ -73,7 +73,7 @@ asm(							\
- __BTF_ID_LIST(name, local)				\
- extern u32 name[];
- 
--#define BTF_ID_LIST_GLOBAL(name)			\
-+#define BTF_ID_LIST_GLOBAL(name, n)			\
- __BTF_ID_LIST(name, globl)
- 
- /* The BTF_ID_LIST_SINGLE macro defines a BTF_ID_LIST with
-@@ -82,6 +82,9 @@ __BTF_ID_LIST(name, globl)
- #define BTF_ID_LIST_SINGLE(name, prefix, typename)	\
- 	BTF_ID_LIST(name) \
- 	BTF_ID(prefix, typename)
-+#define BTF_ID_LIST_GLOBAL_SINGLE(name, prefix, typename) \
-+	BTF_ID_LIST_GLOBAL(name, 1)			  \
-+	BTF_ID(prefix, typename)
- 
- /*
-  * The BTF_ID_UNUSED macro defines 4 zero bytes.
-@@ -143,13 +146,14 @@ extern struct btf_id_set name;
- 
- #else
- 
--#define BTF_ID_LIST(name) static u32 name[5];
-+#define BTF_ID_LIST(name) static u32 __maybe_unused name[5];
- #define BTF_ID(prefix, name)
- #define BTF_ID_UNUSED
--#define BTF_ID_LIST_GLOBAL(name) u32 name[1];
--#define BTF_ID_LIST_SINGLE(name, prefix, typename) static u32 name[1];
--#define BTF_SET_START(name) static struct btf_id_set name = { 0 };
--#define BTF_SET_START_GLOBAL(name) static struct btf_id_set name = { 0 };
-+#define BTF_ID_LIST_GLOBAL(name, n) u32 __maybe_unused name[n];
-+#define BTF_ID_LIST_SINGLE(name, prefix, typename) static u32 __maybe_unused name[1];
-+#define BTF_ID_LIST_GLOBAL_SINGLE(name, prefix, typename) u32 __maybe_unused name[1];
-+#define BTF_SET_START(name) static struct btf_id_set __maybe_unused name = { 0 };
-+#define BTF_SET_START_GLOBAL(name) static struct btf_id_set __maybe_unused name = { 0 };
- #define BTF_SET_END(name)
- 
- #endif /* CONFIG_DEBUG_INFO_BTF */
-@@ -172,7 +176,10 @@ extern struct btf_id_set name;
- 	BTF_SOCK_TYPE(BTF_SOCK_TYPE_TCP_TW, tcp_timewait_sock)		\
- 	BTF_SOCK_TYPE(BTF_SOCK_TYPE_TCP6, tcp6_sock)			\
- 	BTF_SOCK_TYPE(BTF_SOCK_TYPE_UDP, udp_sock)			\
--	BTF_SOCK_TYPE(BTF_SOCK_TYPE_UDP6, udp6_sock)
-+	BTF_SOCK_TYPE(BTF_SOCK_TYPE_UDP6, udp6_sock)			\
-+	BTF_SOCK_TYPE(BTF_SOCK_TYPE_UNIX, unix_sock)			\
-+	BTF_SOCK_TYPE(BTF_SOCK_TYPE_MPTCP, mptcp_sock)			\
-+	BTF_SOCK_TYPE(BTF_SOCK_TYPE_SOCKET, socket)
- 
- enum {
- #define BTF_SOCK_TYPE(name, str) name,
-@@ -184,4 +191,18 @@ MAX_BTF_SOCK_TYPE,
- extern u32 btf_sock_ids[];
- #endif
- 
-+#define BTF_TRACING_TYPE_xxx	\
-+	BTF_TRACING_TYPE(BTF_TRACING_TYPE_TASK, task_struct)	\
-+	BTF_TRACING_TYPE(BTF_TRACING_TYPE_FILE, file)		\
-+	BTF_TRACING_TYPE(BTF_TRACING_TYPE_VMA, vm_area_struct)
-+
-+enum {
-+#define BTF_TRACING_TYPE(name, type) name,
-+BTF_TRACING_TYPE_xxx
-+#undef BTF_TRACING_TYPE
-+MAX_BTF_TRACING_TYPE,
-+};
-+
-+extern u32 btf_tracing_ids[];
-+
- #endif
-diff --git a/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c b/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-index f4a13d9dd5c8..c197261d02e2 100644
---- a/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-+++ b/tools/testing/selftests/bpf/prog_tests/resolve_btfids.c
-@@ -44,7 +44,7 @@ BTF_ID(union,   U)
- BTF_ID(func,    func)
- 
- extern __u32 test_list_global[];
--BTF_ID_LIST_GLOBAL(test_list_global)
-+BTF_ID_LIST_GLOBAL(test_list_global, 1)
- BTF_ID_UNUSED
- BTF_ID(typedef, S)
- BTF_ID(typedef, T)
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 49e359cd34df..8de7628a199b 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -107,6 +107,7 @@ static const char * const attach_type_name[] = {
+ 	[BPF_TRACE_FEXIT]		= "trace_fexit",
+ 	[BPF_MODIFY_RETURN]		= "modify_return",
+ 	[BPF_LSM_MAC]			= "lsm_mac",
++	[BPF_LSM_CGROUP]		= "lsm_cgroup",
+ 	[BPF_SK_LOOKUP]			= "sk_lookup",
+ 	[BPF_TRACE_ITER]		= "trace_iter",
+ 	[BPF_XDP_DEVMAP]		= "xdp_devmap",
+@@ -9203,6 +9204,7 @@ static const struct bpf_sec_def section_defs[] = {
+ 	SEC_DEF("freplace+",		EXT, 0, SEC_ATTACH_BTF, attach_trace),
+ 	SEC_DEF("lsm+",			LSM, BPF_LSM_MAC, SEC_ATTACH_BTF, attach_lsm),
+ 	SEC_DEF("lsm.s+",		LSM, BPF_LSM_MAC, SEC_ATTACH_BTF | SEC_SLEEPABLE, attach_lsm),
++	SEC_DEF("lsm_cgroup+",		LSM, BPF_LSM_CGROUP, SEC_ATTACH_BTF),
+ 	SEC_DEF("iter+",		TRACING, BPF_TRACE_ITER, SEC_ATTACH_BTF, attach_iter),
+ 	SEC_DEF("iter.s+",		TRACING, BPF_TRACE_ITER, SEC_ATTACH_BTF | SEC_SLEEPABLE, attach_iter),
+ 	SEC_DEF("syscall",		SYSCALL, 0, SEC_SLEEPABLE),
+@@ -9656,6 +9658,7 @@ void btf_get_kernel_prefix_kind(enum bpf_attach_type attach_type,
+ 		*kind = BTF_KIND_TYPEDEF;
+ 		break;
+ 	case BPF_LSM_MAC:
++	case BPF_LSM_CGROUP:
+ 		*prefix = BTF_LSM_PREFIX;
+ 		*kind = BTF_KIND_FUNC;
+ 		break;
 -- 
 2.37.0.rc0.104.g0611611a94-goog
 
