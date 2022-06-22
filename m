@@ -2,87 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF171554054
-	for <lists+bpf@lfdr.de>; Wed, 22 Jun 2022 04:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C3635540D3
+	for <lists+bpf@lfdr.de>; Wed, 22 Jun 2022 05:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356032AbiFVCAQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Jun 2022 22:00:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60078 "EHLO
+        id S1355815AbiFVDTz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Jun 2022 23:19:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344874AbiFVCAP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Jun 2022 22:00:15 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28BB433376;
-        Tue, 21 Jun 2022 19:00:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C8B44B81995;
-        Wed, 22 Jun 2022 02:00:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8B35BC341C4;
-        Wed, 22 Jun 2022 02:00:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655863212;
-        bh=eyqTJvsf0+JAYQg4PVv4vGn/KR4fykNsjwWyXIEgJNE=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=BdJv342r8OuJLCZfl+bnreYh4r+eJmd3/9gyGablIF4QuCCbvdK2EMMhyzedRQ3/y
-         Usd0OLyqlqIjuF3TQlFPTusTAv0V0SQGLSEb74kMutbnIpZxz2vf3KGzOOzIza7i23
-         fzcuApePX0+AC5mhuoxc20b2NbIYqsBXwpEFk+DAlFUUe24ujGZRfX1oHb1SMQefSD
-         b5SN+ByzBXpngDUnxCZAckIW5bEPVAcZdvPa956BCAlaNO0vlHEkaGivXMIcQLFp5/
-         rV2/hCe1C12/Ub3sUgScYLh2TokHINnKNo4/anyfrywHjqB3ZO2e+SX8HD5eb4UhqQ
-         uf5I4dePFU/sA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6ED1BE574DA;
-        Wed, 22 Jun 2022 02:00:12 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S231720AbiFVDTz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Jun 2022 23:19:55 -0400
+Received: from ssh248.corpemail.net (ssh248.corpemail.net [210.51.61.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 483363123C;
+        Tue, 21 Jun 2022 20:19:52 -0700 (PDT)
+Received: from ([60.208.111.195])
+        by ssh248.corpemail.net ((D)) with ASMTP (SSL) id QZP00047;
+        Wed, 22 Jun 2022 11:19:47 +0800
+Received: from localhost.localdomain (10.49.41.6) by
+ jtjnmail201608.home.langchao.com (10.100.2.8) with Microsoft SMTP Server id
+ 15.1.2308.27; Wed, 22 Jun 2022 11:19:47 +0800
+From:   Simon wang <wangchuanguo@inspur.com>
+To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>
+CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Simon Wang <wangchuanguo@inspur.com>
+Subject: [PATCH] bpf: Replace 0 with BPF_K
+Date:   Tue, 21 Jun 2022 23:19:23 -0400
+Message-ID: <20220622031923.65692-1-wangchuanguo@inspur.com>
+X-Mailer: git-send-email 2.18.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2] samples/bpf: fixup some tools to be able to
- support xdp multibuffer
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165586321244.12721.10386124108651169178.git-patchwork-notify@kernel.org>
-Date:   Wed, 22 Jun 2022 02:00:12 +0000
-References: <20220621175402.35327-1-gospo@broadcom.com>
-In-Reply-To: <20220621175402.35327-1-gospo@broadcom.com>
-To:     Andy Gospodarek <andrew.gospodarek@broadcom.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, toke@redhat.com, lorenzo.bianconi@redhat.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, gospo@broadcom.com,
-        lorenzo@kernel.org
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.49.41.6]
+tUid:   2022622111947fb8a8e5ac3db23c86facd553ee87b236
+X-Abuse-Reports-To: service@corp-email.com
+Abuse-Reports-To: service@corp-email.com
+X-Complaints-To: service@corp-email.com
+X-Report-Abuse-To: service@corp-email.com
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+From: Simon Wang <wangchuanguo@inspur.com>
 
-This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+Enhance readability.
 
-On Tue, 21 Jun 2022 17:54:02 +0000 you wrote:
-> This changes the section name for the bpf program embedded in these
-> files to "xdp.frags" to allow the programs to be loaded on drivers that
-> are using an MTU greater than PAGE_SIZE.  Rather than directly accessing
-> the buffers, the packet data is now accessed via xdp helper functions to
-> provide an example for those who may need to write more complex
-> programs.
-> 
-> [...]
+Signed-off-by: Simon Wang <wangchuanguo@inspur.com>
+---
+ kernel/bpf/verifier.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Here is the summary with links:
-  - [net-next,v2] samples/bpf: fixup some tools to be able to support xdp multibuffer
-    https://git.kernel.org/bpf/bpf-next/c/772251742262
-
-You are awesome, thank you!
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 2859901ffbe3..29060f15daab 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -9064,7 +9064,7 @@ static int check_alu_op(struct bpf_verifier_env *env, struct bpf_insn *insn)
+ 
+ 	if (opcode == BPF_END || opcode == BPF_NEG) {
+ 		if (opcode == BPF_NEG) {
+-			if (BPF_SRC(insn->code) != 0 ||
++			if (BPF_SRC(insn->code) != BPF_K ||
+ 			    insn->src_reg != BPF_REG_0 ||
+ 			    insn->off != 0 || insn->imm != 0) {
+ 				verbose(env, "BPF_NEG uses reserved fields\n");
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.27.0
 
