@@ -2,568 +2,236 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C02435550C6
-	for <lists+bpf@lfdr.de>; Wed, 22 Jun 2022 18:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1110C55514F
+	for <lists+bpf@lfdr.de>; Wed, 22 Jun 2022 18:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376436AbiFVQEg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Jun 2022 12:04:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39326 "EHLO
+        id S1355987AbiFVQ1P (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jun 2022 12:27:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376611AbiFVQEM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Jun 2022 12:04:12 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD2C739685
-        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 09:04:08 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id u6-20020a63d346000000b00407d7652203so9216583pgi.18
-        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 09:04:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=dgFcTMIBeCiTMvjWl1gbe38zzKI+RdqE8O9njFuxXyE=;
-        b=e2YipWvXXiqH4i6NYMoyr/ka1fy8IoLeY1zARq/mLOFD345eMFWkofMkM496ajApeu
-         mB6zHnW7lZH4Pw43hplS24gtTmqslh8glAVPfn2TqIwQYlq2adCGl9SJjo9eN96ylc5X
-         N8+OEWHdlxplRiZoUKQu9dxb7hbPv+zhy9d2v4uXkJl9WFtOyB1nu+JgG2Xz6E4VkuhQ
-         8LovmsF9GoKNA3tZH3Q+Fw/UdY6UVJCpgSQg0w91fWTdI37BpNEaC1bikjpp2gAXWv64
-         N8kt5chZY5o+jD8cRzk2EvGwTKn57MNDF6q+XuAKSv/uVhM11L89NblQ3r4GAk63woxe
-         MOmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=dgFcTMIBeCiTMvjWl1gbe38zzKI+RdqE8O9njFuxXyE=;
-        b=c9rQ/jkNI/0zAdoOEF7IGHuugTlO5PXcdb+QwQKEcGYp0sHvJooxgMj/8OJjZXlmfg
-         KyEL0Hll284osgrouiFAR19ACMpS75JYEHhl4ut1s6/88Y1VFTdMLDL2llq38jZlgASw
-         67CwjU3poJ9IUoJNVlRVJYEcXV3pKtnd/m8aNNV4GmDbCuxQXc4lwwM78BlKKMZVApzI
-         vNldFV+lcVDDwLrlEjoVOSX0FXjNDVCkLywvvfGdnhF8OITZsmsMfHUHuFseFtT1+Cc/
-         7gDqnkADfP1ovgwCxNQGVE/mwy+0iNAXxNCHvW8U4oJofcymCFXAYdCTpf6FhrroMLhO
-         CzwA==
-X-Gm-Message-State: AJIora/h5V3lMX2cZkfOJX/qSSp7Mr4ydcNojYho96ATo+erhB1jIM41
-        13ynPkvJQadqeQVqjFiebWM5/FQ=
-X-Google-Smtp-Source: AGRyM1vM1aOnCK+ql4j8iZX+j1rCgmktv/X2+xC10jbtVKCf74wwUctLQi5bshutnGuLKSRleb816YE=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a63:3c58:0:b0:40c:83b6:1a4e with SMTP id
- i24-20020a633c58000000b0040c83b61a4emr3617936pgn.194.1655913848596; Wed, 22
- Jun 2022 09:04:08 -0700 (PDT)
-Date:   Wed, 22 Jun 2022 09:03:46 -0700
-In-Reply-To: <20220622160346.967594-1-sdf@google.com>
-Message-Id: <20220622160346.967594-12-sdf@google.com>
-Mime-Version: 1.0
-References: <20220622160346.967594-1-sdf@google.com>
-X-Mailer: git-send-email 2.37.0.rc0.104.g0611611a94-goog
-Subject: [PATCH bpf-next v10 11/11] selftests/bpf: lsm_cgroup functional test
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        Stanislav Fomichev <sdf@google.com>
+        with ESMTP id S1350478AbiFVQ1P (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Jun 2022 12:27:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F7A23F8BA
+        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 09:27:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2DB9F61A9F
+        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 16:27:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92E77C385A5
+        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 16:27:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1655915233;
+        bh=QlkwfKO/O+ezfdVbq+OOo8OjBTwkzVDeLs1njPN8xoQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=WC2K5J0Vvw76NUBLMLYv0sj+p0KjMurz/Zqh1JSSj34VXc5TptN94ir/4CDfz+xKC
+         J7+JhKMPk2Hf/rLnnGc8QXH4IhfXvlaEDdUyWL4NEHZUQSWkrEGMz3Dl6hczXtFbmX
+         YSPKyu3GOUuCfAxgNA7FEWO3rNUhNbHkmIMRedUGjT9PJ7T13pprRnqGmO4n9FKz5w
+         DtQsHaZ4vLi+EGGlx1kVKyju4wMH/uslnqi1hbBXedVs/byQWXO15OpkOklujg1E6u
+         eiKX7YIDAK+GPNGTPm2mtQMiBSsNw0fNQ+xaiPhf+DEHOcVvrUdxyGvAmola9EmGi3
+         O4b3hxuEwEAXQ==
+Received: by mail-yb1-f173.google.com with SMTP id v81so31127731ybe.0
+        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 09:27:13 -0700 (PDT)
+X-Gm-Message-State: AJIora9VWeoTGpjZN7o5QeJjtM8+oiGtmGUR2NsYbnakSoo/KPxNCOvq
+        HwEHpr3L53FW1REsf+YmogPKlJqP6ZVtkfdMWEg8OA==
+X-Google-Smtp-Source: AGRyM1u6u+D6oTjcwjMK2rirGkNGuHAlFjnO8nJrABk9lUWr3uqGWoYNFxKD34FCOHlX3xY+wKVKuMMIM5EEtetl6oE=
+X-Received: by 2002:a25:a0ca:0:b0:664:c86b:4c24 with SMTP id
+ i10-20020a25a0ca000000b00664c86b4c24mr4616424ybm.65.1655915232543; Wed, 22
+ Jun 2022 09:27:12 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220621012811.2683313-1-kpsingh@kernel.org> <20220621012811.2683313-3-kpsingh@kernel.org>
+ <CAJnrk1ZzvocB8i5iBrbEQBFnbSw9ek423ps9uOmm4ahp5z3bVg@mail.gmail.com> <CACYkzJ4sS+oAbCJwA38SkUb2+GmRsC+dqZ-vy4O4+xwkO3uBjw@mail.gmail.com>
+In-Reply-To: <CACYkzJ4sS+oAbCJwA38SkUb2+GmRsC+dqZ-vy4O4+xwkO3uBjw@mail.gmail.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Wed, 22 Jun 2022 11:27:01 -0500
+X-Gmail-Original-Message-ID: <CACYkzJ7c5W2L7RArYc0GA066V1gLFYz6yKrJV2yUXS1KcMKm9Q@mail.gmail.com>
+Message-ID: <CACYkzJ7c5W2L7RArYc0GA066V1gLFYz6yKrJV2yUXS1KcMKm9Q@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 2/5] bpf: kfunc support for ARG_PTR_TO_CONST_STR
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Yosry Ahmed <yosryahmed@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Functional test that exercises the following:
+On Tue, Jun 21, 2022 at 3:19 PM KP Singh <kpsingh@kernel.org> wrote:
+>
+> On Tue, Jun 21, 2022 at 8:04 PM Joanne Koong <joannelkoong@gmail.com> wrote:
+> >
+> > On Mon, Jun 20, 2022 at 6:29 PM KP Singh <kpsingh@kernel.org> wrote:
+> > >
+> > > kfuncs can handle pointers to memory when the next argument is
+> > > the size of the memory that can be read and verify these as
+> > > ARG_CONST_SIZE_OR_ZERO
+> > >
+> > > Similarly add support for string constants (const char *) and
+> > > verify it similar to ARG_PTR_TO_CONST_STR.
+> > >
+> > > Signed-off-by: KP Singh <kpsingh@kernel.org>
+> > > ---
+> > >  include/linux/bpf_verifier.h |  2 +
+> > >  kernel/bpf/btf.c             | 29 ++++++++++++
+> > >  kernel/bpf/verifier.c        | 85 ++++++++++++++++++++----------------
+> > >  3 files changed, 79 insertions(+), 37 deletions(-)
+> > >
+> > [...]
+> > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > > index 668ecf61649b..02d7951591ae 100644
+> > > --- a/kernel/bpf/btf.c
+> > > +++ b/kernel/bpf/btf.c
+> > > @@ -6162,6 +6162,26 @@ static bool is_kfunc_arg_mem_size(const struct btf *btf,
+> > >         return true;
+> > >  }
+> > >
+> > > +static bool btf_param_is_const_str_ptr(const struct btf *btf,
+> > > +                                      const struct btf_param *param)
+> > > +{
+> > > +       const struct btf_type *t;
+> > > +
+> > > +       t = btf_type_by_id(btf, param->type);
+> > > +       if (!btf_type_is_ptr(t))
+> > > +               return false;
+> > > +
+> > > +       t = btf_type_by_id(btf, t->type);
+> > > +       if (!(BTF_INFO_KIND(t->info) == BTF_KIND_CONST))
+> > "if (BTF_INFO_KIND(t->info) != BTF_KIND_CONST)" looks clearer to me
+> > > +               return false;
+> > > +
+> > > +       t = btf_type_skip_modifiers(btf, t->type, NULL);
+> > > +       if (!strcmp(btf_name_by_offset(btf, t->name_off), "char"))
+> > "return !strcmp(btf_name_by_offset(btf, t->name_off), "char")" looks
+> > clearer to me here too
+>
+> Agreed. Updated.
+>
+> > > +               return true;
+> > > +
+> > > +       return false;
+> > > +}
+> > > +
+> > >  static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+> > >                                     const struct btf *btf, u32 func_id,
+> > >                                     struct bpf_reg_state *regs,
+> > > @@ -6344,6 +6364,7 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+> > >                 } else if (ptr_to_mem_ok) {
+> > >                         const struct btf_type *resolve_ret;
+> > >                         u32 type_size;
+> > > +                       int err;
+> > >
+> > >                         if (is_kfunc) {
+> > >                                 bool arg_mem_size = i + 1 < nargs && is_kfunc_arg_mem_size(btf, &args[i + 1], &regs[regno + 1]);
+> > > @@ -6354,6 +6375,14 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+> > >                                  * When arg_mem_size is true, the pointer can be
+> > >                                  * void *.
+> > >                                  */
+> > > +                               if (btf_param_is_const_str_ptr(btf, &args[i])) {
+> > > +                                       err = check_const_str(env, reg, regno);
+> > > +                                       if (err < 0)
+> > > +                                               return err;
+> > > +                                       i++;
+> > > +                                       continue;
+> > If I'm understanding it correctly, this patch is intended to allow
+> > helper functions to take in a kfunc as an arg as long as the next arg
+> > is the size of the memory. Do we need to check the memory size access
+> > here (eg like a call to check_mem_size_reg() in the verifier) to
+> > ensure that memory accesses of that size are safe?
 
-1. apply default sk_priority policy
-2. permit TX-only AF_PACKET socket
-3. cgroup attach/detach/replace
-4. reusing trampoline shim
+I see what confused you, it's the i++ that's incorrectly added here. Kumar
+spotted it in my next rev.
 
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- .../selftests/bpf/prog_tests/lsm_cgroup.c     | 277 ++++++++++++++++++
- .../selftests/bpf/progs/bpf_tracing_net.h     |   1 +
- .../testing/selftests/bpf/progs/lsm_cgroup.c  | 180 ++++++++++++
- 3 files changed, 458 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
- create mode 100644 tools/testing/selftests/bpf/progs/lsm_cgroup.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
-new file mode 100644
-index 000000000000..a96057ec7dd4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
-@@ -0,0 +1,277 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+#include <test_progs.h>
-+#include <bpf/btf.h>
-+
-+#include "lsm_cgroup.skel.h"
-+#include "cgroup_helpers.h"
-+#include "network_helpers.h"
-+
-+static __u32 query_prog_cnt(int cgroup_fd, const char *attach_func)
-+{
-+	LIBBPF_OPTS(bpf_prog_query_opts, p);
-+	static struct btf *btf;
-+	int cnt = 0;
-+	int i;
-+
-+	ASSERT_OK(bpf_prog_query_opts(cgroup_fd, BPF_LSM_CGROUP, &p), "prog_query");
-+
-+	if (!attach_func)
-+		return p.prog_cnt;
-+
-+	/* When attach_func is provided, count the number of progs that
-+	 * attach to the given symbol.
-+	 */
-+
-+	if (!btf)
-+		btf = btf__load_vmlinux_btf();
-+	if (!ASSERT_OK(libbpf_get_error(btf), "btf_vmlinux"))
-+		return -1;
-+
-+	p.prog_ids = malloc(sizeof(u32) * p.prog_cnt);
-+	p.prog_attach_flags = malloc(sizeof(u32) * p.prog_cnt);
-+	ASSERT_OK(bpf_prog_query_opts(cgroup_fd, BPF_LSM_CGROUP, &p), "prog_query");
-+
-+	for (i = 0; i < p.prog_cnt; i++) {
-+		struct bpf_prog_info info = {};
-+		__u32 info_len = sizeof(info);
-+		int fd;
-+
-+		fd = bpf_prog_get_fd_by_id(p.prog_ids[i]);
-+		ASSERT_GE(fd, 0, "prog_get_fd_by_id");
-+		ASSERT_OK(bpf_obj_get_info_by_fd(fd, &info, &info_len), "prog_info_by_fd");
-+		close(fd);
-+
-+		if (info.attach_btf_id ==
-+		    btf__find_by_name_kind(btf, attach_func, BTF_KIND_FUNC))
-+			cnt++;
-+	}
-+
-+	return cnt;
-+}
-+
-+static void test_lsm_cgroup_functional(void)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_prog_attach_opts, attach_opts);
-+	DECLARE_LIBBPF_OPTS(bpf_link_update_opts, update_opts);
-+	int cgroup_fd, cgroup_fd2, err, fd, prio;
-+	int listen_fd, client_fd, accepted_fd;
-+	struct lsm_cgroup *skel = NULL;
-+	int post_create_prog_fd2 = -1;
-+	int post_create_prog_fd = -1;
-+	int bind_link_fd2 = -1;
-+	int bind_prog_fd2 = -1;
-+	int alloc_prog_fd = -1;
-+	int bind_prog_fd = -1;
-+	int bind_link_fd = -1;
-+	int clone_prog_fd = -1;
-+	socklen_t socklen;
-+
-+	cgroup_fd = test__join_cgroup("/sock_policy");
-+	if (!ASSERT_GE(cgroup_fd, 0, "join_cgroup"))
-+		goto close_skel;
-+
-+	cgroup_fd2 = create_and_get_cgroup("/sock_policy2");
-+	if (!ASSERT_GE(cgroup_fd2, 0, "create second cgroup"))
-+		goto close_skel;
-+
-+	skel = lsm_cgroup__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "open_and_load"))
-+		goto close_cgroup;
-+
-+	post_create_prog_fd = bpf_program__fd(skel->progs.socket_post_create);
-+	post_create_prog_fd2 = bpf_program__fd(skel->progs.socket_post_create2);
-+	bind_prog_fd = bpf_program__fd(skel->progs.socket_bind);
-+	bind_prog_fd2 = bpf_program__fd(skel->progs.socket_bind2);
-+	alloc_prog_fd = bpf_program__fd(skel->progs.socket_alloc);
-+	clone_prog_fd = bpf_program__fd(skel->progs.socket_clone);
-+
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_sk_alloc_security"), 0, "prog count");
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, NULL), 0, "total prog count");
-+	err = bpf_prog_attach(alloc_prog_fd, cgroup_fd, BPF_LSM_CGROUP, 0);
-+	if (!ASSERT_OK(err, "attach alloc_prog_fd"))
-+		goto detach_cgroup;
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_sk_alloc_security"), 1, "prog count");
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, NULL), 1, "total prog count");
-+
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_inet_csk_clone"), 0, "prog count");
-+	err = bpf_prog_attach(clone_prog_fd, cgroup_fd, BPF_LSM_CGROUP, 0);
-+	if (!ASSERT_OK(err, "attach clone_prog_fd"))
-+		goto detach_cgroup;
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_inet_csk_clone"), 1, "prog count");
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, NULL), 2, "total prog count");
-+
-+	/* Make sure replacing works. */
-+
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_socket_post_create"), 0, "prog count");
-+	err = bpf_prog_attach(post_create_prog_fd, cgroup_fd,
-+			      BPF_LSM_CGROUP, 0);
-+	if (!ASSERT_OK(err, "attach post_create_prog_fd"))
-+		goto close_cgroup;
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_socket_post_create"), 1, "prog count");
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, NULL), 3, "total prog count");
-+
-+	attach_opts.replace_prog_fd = post_create_prog_fd;
-+	err = bpf_prog_attach_opts(post_create_prog_fd2, cgroup_fd,
-+				   BPF_LSM_CGROUP, &attach_opts);
-+	if (!ASSERT_OK(err, "prog replace post_create_prog_fd"))
-+		goto detach_cgroup;
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_socket_post_create"), 1, "prog count");
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, NULL), 3, "total prog count");
-+
-+	/* Try the same attach/replace via link API. */
-+
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_socket_bind"), 0, "prog count");
-+	bind_link_fd = bpf_link_create(bind_prog_fd, cgroup_fd,
-+				       BPF_LSM_CGROUP, NULL);
-+	if (!ASSERT_GE(bind_link_fd, 0, "link create bind_prog_fd"))
-+		goto detach_cgroup;
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_socket_bind"), 1, "prog count");
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, NULL), 4, "total prog count");
-+
-+	update_opts.old_prog_fd = bind_prog_fd;
-+	update_opts.flags = BPF_F_REPLACE;
-+
-+	err = bpf_link_update(bind_link_fd, bind_prog_fd2, &update_opts);
-+	if (!ASSERT_OK(err, "link update bind_prog_fd"))
-+		goto detach_cgroup;
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_socket_bind"), 1, "prog count");
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, NULL), 4, "total prog count");
-+
-+	/* Attach another instance of bind program to another cgroup.
-+	 * This should trigger the reuse of the trampoline shim (two
-+	 * programs attaching to the same btf_id).
-+	 */
-+
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_socket_bind"), 1, "prog count");
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd2, "bpf_lsm_socket_bind"), 0, "prog count");
-+	bind_link_fd2 = bpf_link_create(bind_prog_fd2, cgroup_fd2,
-+					BPF_LSM_CGROUP, NULL);
-+	if (!ASSERT_GE(bind_link_fd2, 0, "link create bind_prog_fd2"))
-+		goto detach_cgroup;
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd2, "bpf_lsm_socket_bind"), 1, "prog count");
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd, NULL), 4, "total prog count");
-+	ASSERT_EQ(query_prog_cnt(cgroup_fd2, NULL), 1, "total prog count");
-+
-+	/* AF_UNIX is prohibited. */
-+
-+	fd = socket(AF_UNIX, SOCK_STREAM, 0);
-+	ASSERT_LT(fd, 0, "socket(AF_UNIX)");
-+
-+	/* AF_INET6 gets default policy (sk_priority). */
-+
-+	fd = socket(AF_INET6, SOCK_STREAM, 0);
-+	if (!ASSERT_GE(fd, 0, "socket(SOCK_STREAM)"))
-+		goto detach_cgroup;
-+
-+	prio = 0;
-+	socklen = sizeof(prio);
-+	ASSERT_GE(getsockopt(fd, SOL_SOCKET, SO_PRIORITY, &prio, &socklen), 0,
-+		  "getsockopt");
-+	ASSERT_EQ(prio, 123, "sk_priority");
-+
-+	close(fd);
-+
-+	/* TX-only AF_PACKET is allowed. */
-+
-+	ASSERT_LT(socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL)), 0,
-+		  "socket(AF_PACKET, ..., ETH_P_ALL)");
-+
-+	fd = socket(AF_PACKET, SOCK_RAW, 0);
-+	ASSERT_GE(fd, 0, "socket(AF_PACKET, ..., 0)");
-+
-+	/* TX-only AF_PACKET can not be rebound. */
-+
-+	struct sockaddr_ll sa = {
-+		.sll_family = AF_PACKET,
-+		.sll_protocol = htons(ETH_P_ALL),
-+	};
-+	ASSERT_LT(bind(fd, (struct sockaddr *)&sa, sizeof(sa)), 0,
-+		  "bind(ETH_P_ALL)");
-+
-+	close(fd);
-+
-+	/* Trigger passive open. */
-+
-+	listen_fd = start_server(AF_INET6, SOCK_STREAM, "::1", 0, 0);
-+	ASSERT_GE(listen_fd, 0, "start_server");
-+	client_fd = connect_to_fd(listen_fd, 0);
-+	ASSERT_GE(client_fd, 0, "connect_to_fd");
-+	accepted_fd = accept(listen_fd, NULL, NULL);
-+	ASSERT_GE(accepted_fd, 0, "accept");
-+
-+	prio = 0;
-+	socklen = sizeof(prio);
-+	ASSERT_GE(getsockopt(accepted_fd, SOL_SOCKET, SO_PRIORITY, &prio, &socklen), 0,
-+		  "getsockopt");
-+	ASSERT_EQ(prio, 234, "sk_priority");
-+
-+	/* These are replaced and never called. */
-+	ASSERT_EQ(skel->bss->called_socket_post_create, 0, "called_create");
-+	ASSERT_EQ(skel->bss->called_socket_bind, 0, "called_bind");
-+
-+	/* AF_INET6+SOCK_STREAM
-+	 * AF_PACKET+SOCK_RAW
-+	 * listen_fd
-+	 * client_fd
-+	 * accepted_fd
-+	 */
-+	ASSERT_EQ(skel->bss->called_socket_post_create2, 5, "called_create2");
-+
-+	/* start_server
-+	 * bind(ETH_P_ALL)
-+	 */
-+	ASSERT_EQ(skel->bss->called_socket_bind2, 2, "called_bind2");
-+	/* Single accept(). */
-+	ASSERT_EQ(skel->bss->called_socket_clone, 1, "called_clone");
-+
-+	/* AF_UNIX+SOCK_STREAM (failed)
-+	 * AF_INET6+SOCK_STREAM
-+	 * AF_PACKET+SOCK_RAW (failed)
-+	 * AF_PACKET+SOCK_RAW
-+	 * listen_fd
-+	 * client_fd
-+	 * accepted_fd
-+	 */
-+	ASSERT_EQ(skel->bss->called_socket_alloc, 7, "called_alloc");
-+
-+	/* Make sure other cgroup doesn't trigger the programs. */
-+
-+	if (!ASSERT_OK(join_cgroup(""), "join root cgroup"))
-+		goto detach_cgroup;
-+
-+	fd = socket(AF_INET6, SOCK_STREAM, 0);
-+	if (!ASSERT_GE(fd, 0, "socket(SOCK_STREAM)"))
-+		goto detach_cgroup;
-+
-+	prio = 0;
-+	socklen = sizeof(prio);
-+	ASSERT_GE(getsockopt(fd, SOL_SOCKET, SO_PRIORITY, &prio, &socklen), 0,
-+		  "getsockopt");
-+	ASSERT_EQ(prio, 0, "sk_priority");
-+
-+	close(fd);
-+
-+detach_cgroup:
-+	ASSERT_GE(bpf_prog_detach2(post_create_prog_fd2, cgroup_fd,
-+				   BPF_LSM_CGROUP), 0, "detach_create");
-+	close(bind_link_fd);
-+	/* Don't close bind_link_fd2, exercise cgroup release cleanup. */
-+	ASSERT_GE(bpf_prog_detach2(alloc_prog_fd, cgroup_fd,
-+				   BPF_LSM_CGROUP), 0, "detach_alloc");
-+	ASSERT_GE(bpf_prog_detach2(clone_prog_fd, cgroup_fd,
-+				   BPF_LSM_CGROUP), 0, "detach_clone");
-+
-+close_cgroup:
-+	close(cgroup_fd);
-+close_skel:
-+	lsm_cgroup__destroy(skel);
-+}
-+
-+void test_lsm_cgroup(void)
-+{
-+	if (test__start_subtest("functional"))
-+		test_lsm_cgroup_functional();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/bpf_tracing_net.h b/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-index 1c1289ba5fc5..98dd2c4815f0 100644
---- a/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-+++ b/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-@@ -8,6 +8,7 @@
- #define SOL_SOCKET		1
- #define SO_SNDBUF		7
- #define __SO_ACCEPTCON		(1 << 16)
-+#define SO_PRIORITY		12
- 
- #define SOL_TCP			6
- #define TCP_CONGESTION		13
-diff --git a/tools/testing/selftests/bpf/progs/lsm_cgroup.c b/tools/testing/selftests/bpf/progs/lsm_cgroup.c
-new file mode 100644
-index 000000000000..89f3b1e961a8
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/lsm_cgroup.c
-@@ -0,0 +1,180 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "vmlinux.h"
-+#include "bpf_tracing_net.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+#ifndef AF_PACKET
-+#define AF_PACKET 17
-+#endif
-+
-+#ifndef AF_UNIX
-+#define AF_UNIX 1
-+#endif
-+
-+#ifndef EPERM
-+#define EPERM 1
-+#endif
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_CGROUP_STORAGE);
-+	__type(key, __u64);
-+	__type(value, __u64);
-+} cgroup_storage SEC(".maps");
-+
-+int called_socket_post_create;
-+int called_socket_post_create2;
-+int called_socket_bind;
-+int called_socket_bind2;
-+int called_socket_alloc;
-+int called_socket_clone;
-+
-+static __always_inline int test_local_storage(void)
-+{
-+	__u64 *val;
-+
-+	val = bpf_get_local_storage(&cgroup_storage, 0);
-+	if (!val)
-+		return 0;
-+	*val += 1;
-+
-+	return 1;
-+}
-+
-+static __always_inline int real_create(struct socket *sock, int family,
-+				       int protocol)
-+{
-+	struct sock *sk;
-+	int prio = 123;
-+
-+	/* Reject non-tx-only AF_PACKET. */
-+	if (family == AF_PACKET && protocol != 0)
-+		return 0; /* EPERM */
-+
-+	sk = sock->sk;
-+	if (!sk)
-+		return 1;
-+
-+	/* The rest of the sockets get default policy. */
-+	if (bpf_setsockopt(sk, SOL_SOCKET, SO_PRIORITY, &prio, sizeof(prio)))
-+		return 0; /* EPERM */
-+
-+	/* Make sure bpf_getsockopt is allowed and works. */
-+	prio = 0;
-+	if (bpf_getsockopt(sk, SOL_SOCKET, SO_PRIORITY, &prio, sizeof(prio)))
-+		return 0; /* EPERM */
-+	if (prio != 123)
-+		return 0; /* EPERM */
-+
-+	/* Can access cgroup local storage. */
-+	if (!test_local_storage())
-+		return 0; /* EPERM */
-+
-+	return 1;
-+}
-+
-+/* __cgroup_bpf_run_lsm_socket */
-+SEC("lsm_cgroup/socket_post_create")
-+int BPF_PROG(socket_post_create, struct socket *sock, int family,
-+	     int type, int protocol, int kern)
-+{
-+	called_socket_post_create++;
-+	return real_create(sock, family, protocol);
-+}
-+
-+/* __cgroup_bpf_run_lsm_socket */
-+SEC("lsm_cgroup/socket_post_create")
-+int BPF_PROG(socket_post_create2, struct socket *sock, int family,
-+	     int type, int protocol, int kern)
-+{
-+	called_socket_post_create2++;
-+	return real_create(sock, family, protocol);
-+}
-+
-+static __always_inline int real_bind(struct socket *sock,
-+				     struct sockaddr *address,
-+				     int addrlen)
-+{
-+	struct sockaddr_ll sa = {};
-+
-+	if (sock->sk->__sk_common.skc_family != AF_PACKET)
-+		return 1;
-+
-+	if (sock->sk->sk_kern_sock)
-+		return 1;
-+
-+	bpf_probe_read_kernel(&sa, sizeof(sa), address);
-+	if (sa.sll_protocol)
-+		return 0; /* EPERM */
-+
-+	/* Can access cgroup local storage. */
-+	if (!test_local_storage())
-+		return 0; /* EPERM */
-+
-+	return 1;
-+}
-+
-+/* __cgroup_bpf_run_lsm_socket */
-+SEC("lsm_cgroup/socket_bind")
-+int BPF_PROG(socket_bind, struct socket *sock, struct sockaddr *address,
-+	     int addrlen)
-+{
-+	called_socket_bind++;
-+	return real_bind(sock, address, addrlen);
-+}
-+
-+/* __cgroup_bpf_run_lsm_socket */
-+SEC("lsm_cgroup/socket_bind")
-+int BPF_PROG(socket_bind2, struct socket *sock, struct sockaddr *address,
-+	     int addrlen)
-+{
-+	called_socket_bind2++;
-+	return real_bind(sock, address, addrlen);
-+}
-+
-+/* __cgroup_bpf_run_lsm_current (via bpf_lsm_current_hooks) */
-+SEC("lsm_cgroup/sk_alloc_security")
-+int BPF_PROG(socket_alloc, struct sock *sk, int family, gfp_t priority)
-+{
-+	called_socket_alloc++;
-+	if (family == AF_UNIX)
-+		return 0; /* EPERM */
-+
-+	/* Can access cgroup local storage. */
-+	if (!test_local_storage())
-+		return 0; /* EPERM */
-+
-+	return 1;
-+}
-+
-+/* __cgroup_bpf_run_lsm_sock */
-+SEC("lsm_cgroup/inet_csk_clone")
-+int BPF_PROG(socket_clone, struct sock *newsk, const struct request_sock *req)
-+{
-+	int prio = 234;
-+
-+	called_socket_clone++;
-+
-+	if (!newsk)
-+		return 1;
-+
-+	/* Accepted request sockets get a different priority. */
-+	if (bpf_setsockopt(newsk, SOL_SOCKET, SO_PRIORITY, &prio, sizeof(prio)))
-+		return 0; /* EPERM */
-+
-+	/* Make sure bpf_getsockopt is allowed and works. */
-+	prio = 0;
-+	if (bpf_getsockopt(newsk, SOL_SOCKET, SO_PRIORITY, &prio, sizeof(prio)))
-+		return 0; /* EPERM */
-+	if (prio != 234)
-+		return 0; /* EPERM */
-+
-+	/* Can access cgroup local storage. */
-+	if (!test_local_storage())
-+		return 0; /* EPERM */
-+
-+	return 1;
-+}
--- 
-2.37.0.rc0.104.g0611611a94-goog
-
+>
+> No, this is different. We already have the verification for where we pair a
+> void * pointer to a size argument in the next arg.
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/kernel/bpf/btf.c#n6366
+>
+> This logic is similar to the verification we do for ARG_PTR_TO_CONST_STR where
+> we do not need a matching size argument and we just check for a null
+> terminated string
+> passed via a R/O map.
+>
+>
+> > > +                               }
+> > > +
+> > >                                 if (!btf_type_is_scalar(ref_t) &&
+> > >                                     !__btf_type_is_scalar_struct(log, btf, ref_t, 0) &&
+> > >                                     (arg_mem_size ? !btf_type_is_void(ref_t) : 1)) {
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index 2859901ffbe3..14a434792d7b 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -5840,6 +5840,52 @@ static u32 stack_slot_get_id(struct bpf_verifier_env *env, struct bpf_reg_state
+> > >         return state->stack[spi].spilled_ptr.id;
+> > >  }
+> > [...]
+> > > +
+> > >  static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+> > >                           struct bpf_call_arg_meta *meta,
+> > >                           const struct bpf_func_proto *fn)
+> > > @@ -6074,44 +6120,9 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+> > >                         return err;
+> > >                 err = check_ptr_alignment(env, reg, 0, size, true);
+> > >         } else if (arg_type == ARG_PTR_TO_CONST_STR) {
+> > > -               struct bpf_map *map = reg->map_ptr;
+> > > -               int map_off;
+> > > -               u64 map_addr;
+> > > -               char *str_ptr;
+> > > -
+> > > -               if (!bpf_map_is_rdonly(map)) {
+> > > -                       verbose(env, "R%d does not point to a readonly map'\n", regno);
+> > > -                       return -EACCES;
+> > > -               }
+> > > -
+> > > -               if (!tnum_is_const(reg->var_off)) {
+> > > -                       verbose(env, "R%d is not a constant address'\n", regno);
+> > > -                       return -EACCES;
+> > > -               }
+> > > -
+> > > -               if (!map->ops->map_direct_value_addr) {
+> > > -                       verbose(env, "no direct value access support for this map type\n");
+> > > -                       return -EACCES;
+> > > -               }
+> > > -
+> > > -               err = check_map_access(env, regno, reg->off,
+> > > -                                      map->value_size - reg->off, false,
+> > > -                                      ACCESS_HELPER);
+> > > -               if (err)
+> > > -                       return err;
+> > > -
+> > > -               map_off = reg->off + reg->var_off.value;
+> > > -               err = map->ops->map_direct_value_addr(map, &map_addr, map_off);
+> > > -               if (err) {
+> > > -                       verbose(env, "direct value access on string failed\n");
+> > > +               err = check_const_str(env, reg, regno);
+> > > +               if (err < 0)
+> > >                         return err;
+> > nit: I don't think you need the if check here since thsi function will
+> > return err automatically in the next line
+>
+> Makes sense. Fixed.
+>
+> >
+> > > -               }
+> > > -
+> > > -               str_ptr = (char *)(long)(map_addr);
+> > > -               if (!strnchr(str_ptr + map_off, map->value_size - map_off, 0)) {
+> > > -                       verbose(env, "string is not zero-terminated\n");
+> > > -                       return -EINVAL;
+> > > -               }
+> > >         } else if (arg_type == ARG_PTR_TO_KPTR) {
+> > >                 if (process_kptr_func(env, regno, meta))
+> > >                         return -EACCES;
+> > > --
+> > > 2.37.0.rc0.104.g0611611a94-goog
+> > >
