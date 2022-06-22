@@ -2,92 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CDB755498F
-	for <lists+bpf@lfdr.de>; Wed, 22 Jun 2022 14:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8497C55493D
+	for <lists+bpf@lfdr.de>; Wed, 22 Jun 2022 14:17:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352469AbiFVIyj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Jun 2022 04:54:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51246 "EHLO
+        id S239558AbiFVJPQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jun 2022 05:15:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355528AbiFVIy1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Jun 2022 04:54:27 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 092A733E95;
-        Wed, 22 Jun 2022 01:54:25 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id n1so22139727wrg.12;
-        Wed, 22 Jun 2022 01:54:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XSnTuKyAEQznMOKio5DJTSS6Ar+VbuhbWZFcTUrdno0=;
-        b=kQxE01iQo67i7D7weXgdN2OAzpYTszypFwo7OSDINe53zPxhw5gNX6Xp/3pjD2z2U0
-         C8oDVtga14pstgNMbkx7DNsXGducbRp+rbgVQ769sFyWdtG6xVoolN9I87vqGo7s+2mA
-         JiBzJXsOA7uyMlLjsPSvqboiYP64j46eJAT4zu+uDNBzU6QU8+lUxelYBqyS8z4posWX
-         d4Gg+z3UGPwX2wNOc0j08EUKJkM4Z8a6pkUukPrjhlYmbhD+6PnSvqKI8dVt3rURuD1Z
-         diK6bm8GJ/Z7kbAQ27Y/qRH4LiaYoysaaU7SwxfAyFt0waCljoAsLkcoH1n+7ocDbvid
-         Mcaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XSnTuKyAEQznMOKio5DJTSS6Ar+VbuhbWZFcTUrdno0=;
-        b=KJucKNziQOLfKeqf/cmDxqJO8IIrVmj+oCgaOPYxE8P1q9i8Y6jQwhjf7QtHgXRaF+
-         T3dhlBuLj+5A9d9a+JIQsnmcBa2X1q5fQBod+GZkw6A+AF6ojya3zlRPYfSmNgHnJMgA
-         zYPdEr7OAsSsVXaznRv8RRKEA5LJ09nTHNck+U9Fy72M8TmgI8sFUfOdYiPQOovYx4K8
-         nT1AyoMYkKGd/+dbtuNyIwUDx2YA31LvseqELc3r8W21gKyYRg1+EZe8CiaNK16ye6tK
-         sYiUOO5oZyIPYogsCmyeIuYxiudTqf6eyCBaqOn9BuZSn9MnO6/WBpKnIB9AoFQRSbZ3
-         Pasw==
-X-Gm-Message-State: AJIora8HJcCAi6B6IANzHRHgfQsoTgazE1x+EKtTUzW+QINJDQ9DBqNj
-        IxTaxYZ/coR9CYD9Y5ZUolJL5QGuuW3iMw==
-X-Google-Smtp-Source: AGRyM1tn+kK6+v7DTfaND8NnETGmYc84yT2z8QjXz1XX6/5JmCJE8rhuxZm4l0FA9ZUu+13OebayfQ==
-X-Received: by 2002:adf:fdca:0:b0:21b:8e8e:686e with SMTP id i10-20020adffdca000000b0021b8e8e686emr2200982wrs.368.1655888063459;
-        Wed, 22 Jun 2022 01:54:23 -0700 (PDT)
-Received: from ddolgov.remote.csb (dslb-094-222-028-039.094.222.pools.vodafone-ip.de. [94.222.28.39])
-        by smtp.gmail.com with ESMTPSA id n3-20020a5d67c3000000b0021b8cd8a068sm9511209wrw.49.2022.06.22.01.54.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jun 2022 01:54:22 -0700 (PDT)
-Date:   Wed, 22 Jun 2022 10:54:21 +0200
-From:   Dmitry Dolgov <9erthalion6@gmail.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
-        songliubraving@fb.com, rostedt@goodmis.org, peterz@infradead.org,
-        mingo@redhat.com, alexei.starovoitov@gmail.com
-Subject: Re: [PATCH v3 1/1] perf/kprobe: maxactive for fd-based kprobe
-Message-ID: <20220622085421.k2kikjndluxfmf7q@ddolgov.remote.csb>
-References: <20220615211559.7856-1-9erthalion6@gmail.com>
- <20220619013137.6d10a232246be482a5c0db82@kernel.org>
+        with ESMTP id S232067AbiFVJPP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Jun 2022 05:15:15 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DCA52E4;
+        Wed, 22 Jun 2022 02:15:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1655889315; x=1687425315;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=qkIbc9bgxwlz5t1sR0ht0Cvk/IpQWMrSNCWK6J6W2/A=;
+  b=X4cIlpYb4Ne449deqTVWfktSJ5+mVOUkdKIYUISZbjn57Kf1RT8tWF95
+   iu5Jwc6Fk4BrYShfSI4glkudRpekP8nRNEp8+fQGoM7RwM5vBlyMZWKiw
+   WmOl1/0DNJ2MkH7bpKzTyUyf1j5cPICrqnRHIMdq4TlwUYfAyYHgJ0V5l
+   JHS711pqwT4l98oLWyzbXK6FakAmYnlB84iKZ4sZa6mIEAOuO9WzN7fSW
+   vWMBbO5Ggr0JyTMnM/6F86zkmk6f0Jg8Ub0fGKxEjxaUYAhTwRlI32jde
+   GiCQq/97Rn8vKJVeJzzXyOAVr8V6NMBSyKMDIICvV8ssuVyrFaKkpEYLa
+   w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10385"; a="344354844"
+X-IronPort-AV: E=Sophos;i="5.92,212,1650956400"; 
+   d="scan'208";a="344354844"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2022 02:15:14 -0700
+X-IronPort-AV: E=Sophos;i="5.92,212,1650956400"; 
+   d="scan'208";a="562883193"
+Received: from silpixa00401086.ir.intel.com ([10.55.128.124])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2022 02:15:12 -0700
+From:   Ciara Loftus <ciara.loftus@intel.com>
+To:     intel-wired-lan@lists.osuosl.org, anthony.l.nguyen@intel.com,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
+        Ciara Loftus <ciara.loftus@intel.com>
+Subject: [PATCH net-next] i40e: xsk: read the XDP program once per NAPI
+Date:   Wed, 22 Jun 2022 09:14:47 +0000
+Message-Id: <20220622091447.243101-1-ciara.loftus@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220619013137.6d10a232246be482a5c0db82@kernel.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> On Sun, Jun 19, 2022 at 01:31:37AM +0900, Masami Hiramatsu wrote:
-> On Wed, 15 Jun 2022 23:15:59 +0200
-> Dmitrii Dolgov <9erthalion6@gmail.com> wrote:
->
-> > From: Song Liu <songliubraving@fb.com>
-> >
-> > Enable specifying maxactive for fd based kretprobe. This will be useful
-> > for tracing tools like bcc and bpftrace (see for example discussion [1]).
-> > Use highest 12 bit (bit 52-63) to allow maximal maxactive of 4095.
->
-> I'm not sure what environment you are considering to use this
-> feature, but is 4095 enough, and are you really need to specify
-> the maxactive by linear digit?
-> I mean you may need the logarithm of maxactive? In this case, you
-> only need 4 bits for 2 - 65546 (1 = 2^0 will be used for the default
-> value).
+Similar to how it's done in the ice driver since 'eb087cd82864 ("ice:
+propagate xdp_ring onto rx_ring")', read the XDP program once per NAPI
+instead of once per descriptor cleaned. I measured an improvement in
+throughput of 2% for the AF_XDP xdpsock l2fwd benchmark in busy polling
+mode on my platform.
 
-From what I see it's capped by KRETPROBE_MAXACTIVE_MAX anyway, which
-value is 4096. Do I miss something, is it possible to use maxactive with
-larger values down the line?
+Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
+---
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+index af3e7e6afc85..2f422c61ac11 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+@@ -146,17 +146,13 @@ int i40e_xsk_pool_setup(struct i40e_vsi *vsi, struct xsk_buff_pool *pool,
+  *
+  * Returns any of I40E_XDP_{PASS, CONSUMED, TX, REDIR}
+  **/
+-static int i40e_run_xdp_zc(struct i40e_ring *rx_ring, struct xdp_buff *xdp)
++static int i40e_run_xdp_zc(struct i40e_ring *rx_ring, struct xdp_buff *xdp,
++			   struct bpf_prog *xdp_prog)
+ {
+ 	int err, result = I40E_XDP_PASS;
+ 	struct i40e_ring *xdp_ring;
+-	struct bpf_prog *xdp_prog;
+ 	u32 act;
+ 
+-	/* NB! xdp_prog will always be !NULL, due to the fact that
+-	 * this path is enabled by setting an XDP program.
+-	 */
+-	xdp_prog = READ_ONCE(rx_ring->xdp_prog);
+ 	act = bpf_prog_run_xdp(xdp_prog, xdp);
+ 
+ 	if (likely(act == XDP_REDIRECT)) {
+@@ -339,9 +335,15 @@ int i40e_clean_rx_irq_zc(struct i40e_ring *rx_ring, int budget)
+ 	u16 next_to_clean = rx_ring->next_to_clean;
+ 	u16 count_mask = rx_ring->count - 1;
+ 	unsigned int xdp_res, xdp_xmit = 0;
++	struct bpf_prog *xdp_prog;
+ 	bool failure = false;
+ 	u16 cleaned_count;
+ 
++	/* NB! xdp_prog will always be !NULL, due to the fact that
++	 * this path is enabled by setting an XDP program.
++	 */
++	xdp_prog = READ_ONCE(rx_ring->xdp_prog);
++
+ 	while (likely(total_rx_packets < (unsigned int)budget)) {
+ 		union i40e_rx_desc *rx_desc;
+ 		unsigned int rx_packets;
+@@ -378,7 +380,7 @@ int i40e_clean_rx_irq_zc(struct i40e_ring *rx_ring, int budget)
+ 		xsk_buff_set_size(bi, size);
+ 		xsk_buff_dma_sync_for_cpu(bi, rx_ring->xsk_pool);
+ 
+-		xdp_res = i40e_run_xdp_zc(rx_ring, bi);
++		xdp_res = i40e_run_xdp_zc(rx_ring, bi, xdp_prog);
+ 		i40e_handle_xdp_result_zc(rx_ring, bi, rx_desc, &rx_packets,
+ 					  &rx_bytes, size, xdp_res, &failure);
+ 		if (failure)
+-- 
+2.25.1
+
