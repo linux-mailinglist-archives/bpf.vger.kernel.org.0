@@ -2,45 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 332A8554BB5
-	for <lists+bpf@lfdr.de>; Wed, 22 Jun 2022 15:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B774554BEB
+	for <lists+bpf@lfdr.de>; Wed, 22 Jun 2022 15:57:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233919AbiFVNso (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Jun 2022 09:48:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38926 "EHLO
+        id S1356938AbiFVN44 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jun 2022 09:56:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357671AbiFVNsa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Jun 2022 09:48:30 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10C722E9CB;
-        Wed, 22 Jun 2022 06:48:27 -0700 (PDT)
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4LSl622Rl5zhXcb;
-        Wed, 22 Jun 2022 21:46:18 +0800 (CST)
-Received: from kwepemm600016.china.huawei.com (7.193.23.20) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Wed, 22 Jun 2022 21:48:25 +0800
+        with ESMTP id S234792AbiFVN4z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Jun 2022 09:56:55 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B44FE3525C;
+        Wed, 22 Jun 2022 06:56:54 -0700 (PDT)
+Received: from dggpeml500022.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4LSlHm32cYz1KC3T;
+        Wed, 22 Jun 2022 21:54:44 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
- kwepemm600016.china.huawei.com (7.193.23.20) with Microsoft SMTP Server
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Wed, 22 Jun 2022 21:48:25 +0800
-From:   Guangbin Huang <huangguangbin2@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <edumazet@google.com>,
-        <pabeni@redhat.com>, <bpf@vger.kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lipeng321@huawei.com>, <huangguangbin2@huawei.com>,
-        <chenhao288@hisilicon.com>
-Subject: [PATCH] net: page_pool: optimize page pool page allocation in NUMA scenario
-Date:   Wed, 22 Jun 2022 21:42:02 +0800
-Message-ID: <20220622134202.7591-1-huangguangbin2@huawei.com>
+ 15.1.2375.24; Wed, 22 Jun 2022 21:56:29 +0800
+From:   Jian Shen <shenjian15@huawei.com>
+To:     <daniel@iogearbox.net>, <shmulik@metanetworks.com>
+CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linuxarm@openeuler.org>
+Subject: [PATCH net] test_bpf: fix incorrect netdev features
+Date:   Wed, 22 Jun 2022 21:50:02 +0800
+Message-ID: <20220622135002.8263-1-shenjian15@huawei.com>
 X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
 X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600016.china.huawei.com (7.193.23.20)
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -51,92 +45,33 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jie Wang <wangjie125@huawei.com>
+The prototype of .features is netdev_features_t, it should use
+NETIF_F_LLTX and NETIF_F_HW_VLAN_STAG_TX, not NETIF_F_LLTX_BIT
+and NETIF_F_HW_VLAN_STAG_TX_BIT.
 
-Currently NIC packet receiving performance based on page pool deteriorates
-occasionally. To analysis the causes of this problem page allocation stats
-are collected. Here are the stats when NIC rx performance deteriorates:
+Fixes: cf204a718357 ("test_bpf: Introduce 'gso_linear_no_head_frag' skb_segment test")
 
-bandwidth(Gbits/s)		16.8		6.91
-rx_pp_alloc_fast		13794308	21141869
-rx_pp_alloc_slow		108625		166481
-rx_pp_alloc_slow_h		0		0
-rx_pp_alloc_empty		8192		8192
-rx_pp_alloc_refill		0		0
-rx_pp_alloc_waive		100433		158289
-rx_pp_recycle_cached		0		0
-rx_pp_recycle_cache_full	0		0
-rx_pp_recycle_ring		362400		420281
-rx_pp_recycle_ring_full		6064893		9709724
-rx_pp_recycle_released_ref	0		0
-
-The rx_pp_alloc_waive count indicates that a large number of pages' numa
-node are inconsistent with the NIC device numa node. Therefore these pages
-can't be reused by the page pool. As a result, many new pages would be
-allocated by __page_pool_alloc_pages_slow which is time consuming. This
-causes the NIC rx performance fluctuations.
-
-The main reason of huge numa mismatch pages in page pool is that page pool
-uses alloc_pages_bulk_array to allocate original pages. This function is
-not suitable for page allocation in NUMA scenario. So this patch uses
-alloc_pages_bulk_array_node which has a NUMA id input parameter to ensure
-the NUMA consistent between NIC device and allocated pages.
-
-Repeated NIC rx performance tests are performed 40 times. NIC rx bandwidth
-is higher and more stable compared to the datas above. Here are three test
-stats, the rx_pp_alloc_waive count is zero and rx_pp_alloc_slow which
-indicates pages allocated from slow patch is relatively low.
-
-bandwidth(Gbits/s)		93		93.9		93.8
-rx_pp_alloc_fast		60066264	61266386	60938254
-rx_pp_alloc_slow		16512		16517		16539
-rx_pp_alloc_slow_ho		0		0		0
-rx_pp_alloc_empty		16512		16517		16539
-rx_pp_alloc_refill		473841		481910		481585
-rx_pp_alloc_waive		0		0		0
-rx_pp_recycle_cached		0		0		0
-rx_pp_recycle_cache_full	0		0		0
-rx_pp_recycle_ring		29754145	30358243	30194023
-rx_pp_recycle_ring_full		0		0		0
-rx_pp_recycle_released_ref	0		0		0
-
-Signed-off-by: Jie Wang <wangjie125@huawei.com>
+Signed-off-by: Jian Shen <shenjian15@huawei.com>
 ---
- net/core/page_pool.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ lib/test_bpf.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index b151772dd94b..d88c0c24041a 100644
---- a/net/core/page_pool.c
-+++ b/net/core/page_pool.c
-@@ -377,6 +377,7 @@ static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
- 	unsigned int pp_order = pool->p.order;
- 	struct page *page;
- 	int i, nr_pages;
-+	int pref_nid; /* preferred NUMA node */
- 
- 	/* Don't support bulk alloc for high-order pages */
- 	if (unlikely(pp_order))
-@@ -386,10 +387,18 @@ static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
- 	if (unlikely(pool->alloc.count > 0))
- 		return pool->alloc.cache[--pool->alloc.count];
- 
-+#ifdef CONFIG_NUMA
-+	pref_nid = (pool->p.nid == NUMA_NO_NODE) ? numa_mem_id() : pool->p.nid;
-+#else
-+	/* Ignore pool->p.nid setting if !CONFIG_NUMA, helps compiler */
-+	pref_nid = numa_mem_id(); /* will be zero like page_to_nid() */
-+#endif
-+
- 	/* Mark empty alloc.cache slots "empty" for alloc_pages_bulk_array */
- 	memset(&pool->alloc.cache, 0, sizeof(void *) * bulk);
- 
--	nr_pages = alloc_pages_bulk_array(gfp, bulk, pool->alloc.cache);
-+	nr_pages = alloc_pages_bulk_array_node(gfp, pref_nid, bulk,
-+					       pool->alloc.cache);
- 	if (unlikely(!nr_pages))
- 		return NULL;
+diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+index 2a7836e115b4..5820704165a6 100644
+--- a/lib/test_bpf.c
++++ b/lib/test_bpf.c
+@@ -14733,9 +14733,9 @@ static struct skb_segment_test skb_segment_tests[] __initconst = {
+ 		.build_skb = build_test_skb_linear_no_head_frag,
+ 		.features = NETIF_F_SG | NETIF_F_FRAGLIST |
+ 			    NETIF_F_HW_VLAN_CTAG_TX | NETIF_F_GSO |
+-			    NETIF_F_LLTX_BIT | NETIF_F_GRO |
++			    NETIF_F_LLTX | NETIF_F_GRO |
+ 			    NETIF_F_IPV6_CSUM | NETIF_F_RXCSUM |
+-			    NETIF_F_HW_VLAN_STAG_TX_BIT
++			    NETIF_F_HW_VLAN_STAG_TX
+ 	}
+ };
  
 -- 
-2.30.0
+2.33.0
 
