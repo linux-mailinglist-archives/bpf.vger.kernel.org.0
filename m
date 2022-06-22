@@ -2,272 +2,251 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A83F0553FCF
-	for <lists+bpf@lfdr.de>; Wed, 22 Jun 2022 03:01:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66F03553FF4
+	for <lists+bpf@lfdr.de>; Wed, 22 Jun 2022 03:17:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352701AbiFVBBa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Jun 2022 21:01:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57440 "EHLO
+        id S1355309AbiFVBRh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Jun 2022 21:17:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233201AbiFVBB3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Jun 2022 21:01:29 -0400
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B51183190B
-        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 18:01:25 -0700 (PDT)
-Received: by mail-io1-f70.google.com with SMTP id p3-20020a6b8d03000000b00669c6d6c089so8459586iod.1
-        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 18:01:25 -0700 (PDT)
+        with ESMTP id S229990AbiFVBRf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Jun 2022 21:17:35 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B24031513
+        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 18:17:34 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id k127so9462707pfd.10
+        for <bpf@vger.kernel.org>; Tue, 21 Jun 2022 18:17:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KAysJOCMi0bv17OYU+i1GNhggWE5A+KygazE38/Iyj0=;
+        b=Fdv7BabVyuzv3SGc5QFZUJ1YtCDHYy1xuFjYzbQZBsgGbpT1SUOtbTtIooByoaO6iO
+         vxJ/yGjMCc5/fRpJX2TOtDqLBbM4mlOy35VhuUXxJ1m4Gc9DHiGyu4vSl7jcg0fHwFBH
+         ks11rFJ3qcNWuGI0Ug0uhBxs8pepVaRqCttCBW1UAQzk9D4Pj2xQ3APtkmf25BBCHDe/
+         C3gIdNb04CR/v+EyMMznSPrrB5n32XfUlBuAbDBD5CRzFCC3csHOZN9D4PglQK6AfVAe
+         VkGxAimbepWxRONUzWXVL3uuvR8aS7QvlRDnTAjGNSm7jouslgFMCzbEIeiEmt0R3ZbQ
+         vlAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=5mPCIc9HWLqyDlRHAbHeSV4t2zvDD9FqrVDB16msq7Y=;
-        b=tblNqzuCvRoV6VbdrhbdBNewreju3Hg5SFWH1Ci8uUUe2oHOooqHzEM8ZDNSssFsLG
-         tRBqkfUG+itZnpOx/uctzfCQI/lPFVzmpwjrvTYd20NywYpnWzRzw4/0pacgssowJys6
-         IUUvepebDkFM131ZZw+PshovxjKcX0aq4dJtCEKiUVSD9GtIVTJT8BPTl4PEwxEQLRoa
-         qT5msgUJyH4Y2CJXkxfWfF/IDwafrAHyxuk1f1MaarfoR9IYsNTY7sah/epfewlLlSL6
-         oRWS7JvywRZq1KksALWYicnTscmdAt6Py7FjNLIYMp2ylSgplJodfA+0IMRge5+U3IOJ
-         AxOw==
-X-Gm-Message-State: AJIora8/j4t/biaN6IZpPaudUBYpGps45pd+9oiuPOrlHIoA2rj+0Mum
-        EoUhNUWRri6TawZ5X1HfBjN6irYoLLD0Y5iLhYSLd9f6NTwL
-X-Google-Smtp-Source: AGRyM1sTAfcNbJVV7eA2DE7yqMDl455yWDieF4f9Xfyuo0j0nM6y++/ilAjvK4ncxQzGAhWItevjhSp6ZeuKlqi0snprFhVmhwAV
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KAysJOCMi0bv17OYU+i1GNhggWE5A+KygazE38/Iyj0=;
+        b=GUPRFf1ZHW6jtKV6drRMYSlsXHkr93fs4igNxLBz2lugcb/iQRygJZnuIQwFNPAf2e
+         Nkec//ixDGltSkktgnaZxfPIUqoRbEGwV7N2o0fSEvgFCvbaEMFKFlc9vmunCc+x6tMb
+         9wyt3hANFdeoQ1q/KMpTL5yGin8kv5TBmcTr1m6/D6wicQN5xgpcSl3lEfCFD7Waz2it
+         2o2F3BZsQEs6lI35DfOWpszm3jCZ3qzrwgXOBqfTID6fzvK2+XS5OFAgpZgp60mUISbJ
+         1FuakN+GUNNgIwKUZucR22Wxu/6BaHDJSRGzdVMbf2a1+EXWOhyrvFIAbFBsbEEqKp6/
+         6QNA==
+X-Gm-Message-State: AJIora/CbF4dNQ/xi/ciH/GvF9n3Vs/B9KPchzjt9vkRj/kyjKdUpXLK
+        Q/d9eqgi0B3fdiCCc4p88nY=
+X-Google-Smtp-Source: AGRyM1vaH+0NRa0FImX0vGcOMilrObCFscdRtN4+NIcKZ+D4cF1T+JRg1PaI0bwNjyXCA5UgfKSZJw==
+X-Received: by 2002:a05:6a00:2349:b0:51c:29c0:82f6 with SMTP id j9-20020a056a00234900b0051c29c082f6mr32992464pfj.32.1655860653650;
+        Tue, 21 Jun 2022 18:17:33 -0700 (PDT)
+Received: from localhost ([2405:201:6014:d0c0:79de:f3f4:353c:8616])
+        by smtp.gmail.com with ESMTPSA id o17-20020a170903301100b0016223016d79sm7947301pla.90.2022.06.21.18.17.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jun 2022 18:17:33 -0700 (PDT)
+Date:   Wed, 22 Jun 2022 06:47:29 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     KP Singh <kpsingh@kernel.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Yosry Ahmed <yosryahmed@google.com>
+Subject: Re: [PATCH v2 bpf-next 3/5] bpf: Allow kfuncs to be used in LSM
+ programs
+Message-ID: <20220622011729.abw56td3w27v55ft@apollo.legion>
+References: <20220621012811.2683313-1-kpsingh@kernel.org>
+ <20220621012811.2683313-4-kpsingh@kernel.org>
+ <20220621123646.wxdx4lzk3cgnknjr@apollo.legion>
+ <CAADnVQJ9+gpU-92Umj9Cu0TznFHNHxn67WbQAo+62iWNA+2cCA@mail.gmail.com>
+ <CACYkzJ4oyHxh_MwVbazGD5+068JGcMCcP9yUbLsnMoOa8X=rXQ@mail.gmail.com>
+ <20220621173545.g74htfbjabx7lk4a@apollo.legion>
+ <20220621201157.q7rqsqmghpjnxe5b@macbook-pro-3.dhcp.thefacebook.com>
+ <CACYkzJ7N+u_n56f=GBcxd-UgejHF+yidndSq6OnBF47MS80iog@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:10cf:b0:2d9:2310:e6b3 with SMTP id
- s15-20020a056e0210cf00b002d92310e6b3mr599171ilj.212.1655859684903; Tue, 21
- Jun 2022 18:01:24 -0700 (PDT)
-Date:   Tue, 21 Jun 2022 18:01:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005115d105e1fee003@google.com>
-Subject: [syzbot] KASAN: use-after-free Read in free_netdev (3)
-From:   syzbot <syzbot+b75c138e9286ac742647@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
-        hawk@kernel.org, idosch@nvidia.com, john.fastabend@gmail.com,
-        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, petrm@nvidia.com, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACYkzJ7N+u_n56f=GBcxd-UgejHF+yidndSq6OnBF47MS80iog@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Wed, Jun 22, 2022 at 01:55:29AM IST, KP Singh wrote:
+> On Tue, Jun 21, 2022 at 10:12 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Tue, Jun 21, 2022 at 11:05:45PM +0530, Kumar Kartikeya Dwivedi wrote:
+> > > On Tue, Jun 21, 2022 at 09:45:15PM IST, KP Singh wrote:
+> > > > On Tue, Jun 21, 2022 at 6:01 PM Alexei Starovoitov
+> > > > <alexei.starovoitov@gmail.com> wrote:
+> > > > >
+> > > > > On Tue, Jun 21, 2022 at 5:36 AM Kumar Kartikeya Dwivedi
+> > > > > <memxor@gmail.com> wrote:
+> > > > > >
+> > > > > > On Tue, Jun 21, 2022 at 06:58:09AM IST, KP Singh wrote:
+> > > > > > > In preparation for the addition of bpf_getxattr kfunc.
+> > > > > > >
+> > > > > > > Signed-off-by: KP Singh <kpsingh@kernel.org>
+> > > >
+> > > > [...]
+> > > >
+> > > > > > > +++ b/kernel/bpf/btf.c
+> > > > > > > @@ -7264,6 +7264,7 @@ static int bpf_prog_type_to_kfunc_hook(enum bpf_prog_type prog_type)
+> > > > > > >       case BPF_PROG_TYPE_STRUCT_OPS:
+> > > > > > >               return BTF_KFUNC_HOOK_STRUCT_OPS;
+> > > > > > >       case BPF_PROG_TYPE_TRACING:
+> > > > > > > +     case BPF_PROG_TYPE_LSM:
+> > > > > > >               return BTF_KFUNC_HOOK_TRACING;
+> > > > > >
+> > > > > > Should we define another BTF_KFUNC_HOOK_LSM instead? Otherwise when you register
+> > > > > > for tracing or lsm progs, you write to the same hook instead, so kfunc enabled
+> > > > > > for tracing progs also gets enabled for lsm, I guess that is not what user
+> > > > > > intends when registering kfunc set.
+> > > > >
+> > > > > It's probably ok for this case.
+> > > > > We might combine BTF_KFUNC_HOOK* into fewer hooks and
+> > > >
+> > > > I did this intentionally. We do this similarly for helpers too and we
+> > > > unfortunately, we do realize that LSM hooks are not there in all
+> > > > places (esp. where one is auditing stuff).
+> > > >
+> > > > So in reality one does use a combination of LSM and tracing hooks
+> > > > with the policy decision coming from the LSM hook but the state
+> > > > gets accumulated from different hooks.
+> > > >
+> > > >
+> > > > > scope them by attach_btf_id.
+> > > > > Everything is 'tracing' like at the end.
+> > > > > Upcoming hid-bpf is 'tracing'. lsm is 'tracing'.
+> > > > > but we may need to reduce the scope of kfuncs
+> > > > > based on attach point or based on argument type.
+> > > > > tc vs xdp don't need to be separate sets.
+> > > > > Their types (skb vs xdp_md) are different, so only
+> > > > > right kfuncs can be used, but bpf_ct_release() is needed
+> > > > > in both tc and xdp.
+> > > > > So we could combine tc and xdp into 'btf_kfunc_hook_networking'
+> > > > > without compromising the safety.
+> > > > > acquire vs release ideally would be indicated with btf_tag,
+> > > > > but gcc still doesn't have support for btf_tag and we cannot
+> > > > > require the kernel to be built with clang.
+> > > > > acquire, release, sleepable, ret_null should be flags on a kfunc
+> > > > > instead of a set. It would be easier to manage and less boilerplate
+> > > >
+> > > > +1 This would be awesome, I gave it a shot to use btf_tag but hit this
+> > > > feature gap in GCC.
+> > > >
+> > > > - KP
+> > > >
+> > > > > code. Not clear how to do this cleanly.
+> > > > > export_symbol approach is a bit heavy and requires name being unique
+> > > > > across kernel and modules.
+> > > > > func name mangling or typedef-ing comes to mind. not so clean either.
+> > >
+> > > How does this approach look to 'tag' a kfunc?
+> > >
+> > > https://godbolt.org/z/jGeK6Y49K
+> > >
+> > > Then we find the function whose symbol should be emitted and available in BTF
+> > > with the prefix (__kfunc_name_) and read off the tag values. Due to the extern
+> > > inline it should still inline the definition, so there is no overhead at
+> > > runtime.
+> >
+> > No run-time overhead, but code size duplication is prohibitive.
+> > Both functions will have full body.
+> > We can hack around with another noinline function that both will call,
+> > but it's getting ugly.
+> >
 
-syzbot found the following issue on:
+You can just make the __foobar_1_2 noinline instead: https://godbolt.org/z/zT18h81T6
 
-HEAD commit:    b4a028c4d031 ipv4: ping: fix bind address validity check
-git tree:       net
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=17a3ab08080000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=70e1a4d352a3c6ae
-dashboard link: https://syzkaller.appspot.com/bug?extid=b75c138e9286ac742647
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15506c60080000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=116b6628080000
+but anyway...
 
-Bisection is inconclusive: the issue happens on the oldest tested release.
+> > > As you see in godbolt, __foobar_1_2 symbol is visible, with 1 and 2 being tag
+> > > values. Substituting tag name with underlying value makes parsing easier. We
+> > > can have fixed number of slots and keep others as 0 (ignore).
+> > >
+> > > It can be extended to also tag arguments, which I already did before at [0], but
+> > > never sent out. Then we don't need the suffixes or special naming of arguments
+> > > to indicate some tag.
+> > >
+> > > e.g.
+> > >
+> > > bpf_ct_release will be:
+> > >
+> > > KFUNC_CALL_0(void, bpf_ct_release, __kfunc_release,
+> > >            KARG(struct nf_conn *, nfct, __ptr_ref))
+> > > {
+> > >       ...
+> > > }
+> >
+> > -struct nf_conn *
+> > -bpf_skb_ct_lookup(struct __sk_buff *skb_ctx, struct bpf_sock_tuple *bpf_tuple,
+> > -                 u32 tuple__sz, struct bpf_ct_opts *opts, u32 opts__sz)
+> > +KFUNC_CALL_5(struct nf_conn *, bpf_skb_ct_lookup,
+> > +            KARG(struct __sk_buff *, skb_ctx, PTR_TO_CTX),
+> > +            KARG(struct bpf_sock_tuple *, bpf_tuple, PTR_TO_MEM),
+> > +            KARG(u32, tuple__sz, SIZE),
+> > +            KARG(struct bpf_ct_opts *, opts, PTR_TO_MEM),
+> > +            KARG(u32, opts__sz, SIZE))
+> >
+> > I think it's too ugly for majority of kernel folks to accept.
+>
+> I agree. It's quite a creative idea :D
+>
+> but will pollute the symbol table a lot.
+>
+> > We will have a lot more kfuncs than we have now. Above code will be
+> > present in many different subsystems. The trade-off is not worth it.
+> > __sz suffix convention works. Similar approach can be used.
+> > This is orthogonal discussion anyway.
+> >
+> > Back to kfunc tagging.
+> > How about we use
+> >   BTF_SET_START8(list)
+> >   BTF_ID_FLAGS(func, bpf_xdp_ct_lookup, ACQUIRE | RET_NULL)
+> >   BTF_ID_FLAGS(func, bpf_ct_release, RELEASE)
+> >   BTF_SET_END8(list)
+>
+> SGTM. Kumar is this something you can send a patch for?
+>
+> Also, while we are at it, it would be great documenting what these sets
+> are in:
+>
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15270be8080000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=17270be8080000
-console output: https://syzkaller.appspot.com/x/log.txt?x=13270be8080000
+Yes, the resolve_btfids method looks ok to me. I will send a patch for both of
+these things.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b75c138e9286ac742647@syzkaller.appspotmail.com
+> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/include/linux/btf.h#n31
+>
+> - KP
+>
+>
+>
+>
+> >
+> > where BTF_SET_START8 macro will do "__BTF_ID__set8__" #name
+> > so that resolve_btfid side knows that it needs to ignore 4 bytes after btf_id
+> > when it's doing set sorting.
+> > The kernel side btf_id_set_contains() would need to call bsearch()
+> > with sizeof(u64) instead of sizeof(u32).
+> >
+> > The verifier side will be cleaner and faster too.
+> > Instead of two bsearch calls (that are about to become 3 calls with sleepable set):
+> >                 rel = btf_kfunc_id_set_contains(btf, resolve_prog_type(env->prog),
+> >                                                 BTF_KFUNC_TYPE_RELEASE, func_id);
+> >                 kptr_get = btf_kfunc_id_set_contains(btf, resolve_prog_type(env->prog),
+> >                                                      BTF_KFUNC_TYPE_KPTR_ACQUIRE, func_id);
+> > It will be a single call plus flag check.
 
-netlink: 20 bytes leftover after parsing attributes in process `syz-executor304'.
-==================================================================
-BUG: KASAN: use-after-free in free_netdev+0x58c/0x620 net/core/dev.c:10704
-Read of size 8 at addr ffff88807e9de738 by task syz-executor304/3633
-
-CPU: 1 PID: 3633 Comm: syz-executor304 Not tainted 5.19.0-rc2-syzkaller-00103-gb4a028c4d031 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- print_address_description.constprop.0.cold+0xeb/0x495 mm/kasan/report.c:313
- print_report mm/kasan/report.c:429 [inline]
- kasan_report.cold+0xf4/0x1c6 mm/kasan/report.c:491
- free_netdev+0x58c/0x620 net/core/dev.c:10704
- netdev_run_todo+0xb48/0x10f0 net/core/dev.c:10356
- rtnl_unlock net/core/rtnetlink.c:147 [inline]
- rtnetlink_rcv_msg+0x447/0xc90 net/core/rtnetlink.c:6090
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2501
- netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
- netlink_unicast+0x543/0x7f0 net/netlink/af_netlink.c:1345
- netlink_sendmsg+0x917/0xe10 net/netlink/af_netlink.c:1921
- sock_sendmsg_nosec net/socket.c:714 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:734
- ____sys_sendmsg+0x6eb/0x810 net/socket.c:2492
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2546
- __sys_sendmsg net/socket.c:2575 [inline]
- __do_sys_sendmsg net/socket.c:2584 [inline]
- __se_sys_sendmsg net/socket.c:2582 [inline]
- __x64_sys_sendmsg+0x132/0x220 net/socket.c:2582
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x46/0xb0
-RIP: 0033:0x7fae52dad6e9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 a1 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fae52d5b308 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007fae52e364e8 RCX: 00007fae52dad6e9
-RDX: 0000000000000000 RSI: 0000000020000180 RDI: 0000000000000004
-RBP: 00007fae52e364e0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007fae52e364ec
-R13: 00007fae52e03494 R14: 74656e2f7665642f R15: 0000000000022000
- </TASK>
-
-Allocated by task 3633:
- kasan_save_stack+0x1e/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:45 [inline]
- set_alloc_info mm/kasan/common.c:436 [inline]
- ____kasan_kmalloc mm/kasan/common.c:515 [inline]
- ____kasan_kmalloc mm/kasan/common.c:474 [inline]
- __kasan_kmalloc+0xa9/0xd0 mm/kasan/common.c:524
- kmalloc include/linux/slab.h:605 [inline]
- sk_prot_alloc+0x110/0x290 net/core/sock.c:1975
- sk_alloc+0x36/0x770 net/core/sock.c:2028
- tun_chr_open+0x7b/0x540 drivers/net/tun.c:3408
- misc_open+0x376/0x4a0 drivers/char/misc.c:143
- chrdev_open+0x266/0x770 fs/char_dev.c:414
- do_dentry_open+0x4a1/0x11f0 fs/open.c:848
- do_open fs/namei.c:3520 [inline]
- path_openat+0x1c71/0x2910 fs/namei.c:3653
- do_filp_open+0x1aa/0x400 fs/namei.c:3680
- do_sys_openat2+0x16d/0x4c0 fs/open.c:1278
- do_sys_open fs/open.c:1294 [inline]
- __do_sys_openat fs/open.c:1310 [inline]
- __se_sys_openat fs/open.c:1305 [inline]
- __x64_sys_openat+0x13f/0x1f0 fs/open.c:1305
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x46/0xb0
-
-Freed by task 3634:
- kasan_save_stack+0x1e/0x40 mm/kasan/common.c:38
- kasan_set_track+0x21/0x30 mm/kasan/common.c:45
- kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:370
- ____kasan_slab_free mm/kasan/common.c:366 [inline]
- ____kasan_slab_free+0x166/0x1a0 mm/kasan/common.c:328
- kasan_slab_free include/linux/kasan.h:200 [inline]
- slab_free_hook mm/slub.c:1727 [inline]
- slab_free_freelist_hook+0x8b/0x1c0 mm/slub.c:1753
- slab_free mm/slub.c:3507 [inline]
- kfree+0xd6/0x4d0 mm/slub.c:4555
- sk_prot_free net/core/sock.c:2011 [inline]
- __sk_destruct+0x5e5/0x710 net/core/sock.c:2097
- sk_destruct net/core/sock.c:2112 [inline]
- __sk_free+0x1a4/0x4a0 net/core/sock.c:2123
- sk_free+0x78/0xa0 net/core/sock.c:2134
- sock_put include/net/sock.h:1927 [inline]
- __tun_detach+0xdb7/0x13e0 drivers/net/tun.c:680
- tun_detach drivers/net/tun.c:692 [inline]
- tun_chr_close+0x15c/0x180 drivers/net/tun.c:3444
- __fput+0x277/0x9d0 fs/file_table.c:317
- task_work_run+0xdd/0x1a0 kernel/task_work.c:177
- ptrace_notify+0x114/0x140 kernel/signal.c:2353
- ptrace_report_syscall include/linux/ptrace.h:420 [inline]
- ptrace_report_syscall_exit include/linux/ptrace.h:482 [inline]
- syscall_exit_work kernel/entry/common.c:249 [inline]
- syscall_exit_to_user_mode_prepare+0xdb/0x230 kernel/entry/common.c:276
- __syscall_exit_to_user_mode_work kernel/entry/common.c:281 [inline]
- syscall_exit_to_user_mode+0x9/0x50 kernel/entry/common.c:294
- do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x46/0xb0
-
-The buggy address belongs to the object at ffff88807e9de000
- which belongs to the cache kmalloc-4k of size 4096
-The buggy address is located 1848 bytes inside of
- 4096-byte region [ffff88807e9de000, ffff88807e9df000)
-
-The buggy address belongs to the physical page:
-page:ffffea0001fa7600 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x7e9d8
-head:ffffea0001fa7600 order:3 compound_mapcount:0 compound_pincount:0
-flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-raw: 00fff00000010200 dead000000000100 dead000000000122 ffff888011842140
-raw: 0000000000000000 0000000000040004 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd2040(__GFP_IO|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 2984, tgid 2984 (udevd), ts 16101031779, free_ts 16095933951
- prep_new_page mm/page_alloc.c:2456 [inline]
- get_page_from_freelist+0x1290/0x3b70 mm/page_alloc.c:4198
- __alloc_pages+0x1c7/0x510 mm/page_alloc.c:5426
- alloc_pages+0x1aa/0x310 mm/mempolicy.c:2272
- alloc_slab_page mm/slub.c:1797 [inline]
- allocate_slab+0x26c/0x3c0 mm/slub.c:1942
- new_slab mm/slub.c:2002 [inline]
- ___slab_alloc+0x985/0xd90 mm/slub.c:3002
- __slab_alloc.constprop.0+0x4d/0xa0 mm/slub.c:3089
- slab_alloc_node mm/slub.c:3180 [inline]
- slab_alloc mm/slub.c:3222 [inline]
- __kmalloc+0x318/0x350 mm/slub.c:4413
- kmalloc include/linux/slab.h:605 [inline]
- tomoyo_realpath_from_path+0xc3/0x620 security/tomoyo/realpath.c:254
- tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
- tomoyo_check_open_permission+0x272/0x380 security/tomoyo/file.c:771
- tomoyo_file_open security/tomoyo/tomoyo.c:320 [inline]
- tomoyo_file_open+0x9d/0xc0 security/tomoyo/tomoyo.c:315
- security_file_open+0x45/0xb0 security/security.c:1645
- do_dentry_open+0x349/0x11f0 fs/open.c:835
- do_open fs/namei.c:3520 [inline]
- path_openat+0x1c71/0x2910 fs/namei.c:3653
- do_filp_open+0x1aa/0x400 fs/namei.c:3680
- do_sys_openat2+0x16d/0x4c0 fs/open.c:1278
- do_sys_open fs/open.c:1294 [inline]
- __do_sys_openat fs/open.c:1310 [inline]
- __se_sys_openat fs/open.c:1305 [inline]
- __x64_sys_openat+0x13f/0x1f0 fs/open.c:1305
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1371 [inline]
- free_pcp_prepare+0x549/0xd20 mm/page_alloc.c:1421
- free_unref_page_prepare mm/page_alloc.c:3343 [inline]
- free_unref_page+0x19/0x6a0 mm/page_alloc.c:3438
- __unfreeze_partials+0x17c/0x1a0 mm/slub.c:2521
- qlink_free mm/kasan/quarantine.c:168 [inline]
- qlist_free_all+0x6a/0x170 mm/kasan/quarantine.c:187
- kasan_quarantine_reduce+0x180/0x200 mm/kasan/quarantine.c:294
- __kasan_slab_alloc+0xa2/0xc0 mm/kasan/common.c:446
- kasan_slab_alloc include/linux/kasan.h:224 [inline]
- slab_post_alloc_hook mm/slab.h:750 [inline]
- slab_alloc_node mm/slub.c:3214 [inline]
- slab_alloc mm/slub.c:3222 [inline]
- __kmem_cache_alloc_lru mm/slub.c:3229 [inline]
- kmem_cache_alloc_lru+0x31a/0x720 mm/slub.c:3246
- __d_alloc+0x32/0x960 fs/dcache.c:1769
- d_alloc+0x4a/0x230 fs/dcache.c:1849
- d_alloc_parallel+0xe7/0x1af0 fs/dcache.c:2601
- __lookup_slow+0x193/0x480 fs/namei.c:1686
- lookup_slow fs/namei.c:1718 [inline]
- walk_component+0x40f/0x6a0 fs/namei.c:2014
- lookup_last fs/namei.c:2469 [inline]
- path_lookupat+0x1bb/0x860 fs/namei.c:2493
- filename_lookup+0x1c6/0x590 fs/namei.c:2522
- vfs_statx+0x148/0x390 fs/stat.c:228
- vfs_fstatat+0x8c/0xb0 fs/stat.c:255
-
-Memory state around the buggy address:
- ffff88807e9de600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88807e9de680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff88807e9de700: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                        ^
- ffff88807e9de780: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88807e9de800: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+--
+Kartikeya
