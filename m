@@ -2,188 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF42554C1F
-	for <lists+bpf@lfdr.de>; Wed, 22 Jun 2022 16:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2398E554CDD
+	for <lists+bpf@lfdr.de>; Wed, 22 Jun 2022 16:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236563AbiFVOEi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Jun 2022 10:04:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54550 "EHLO
+        id S1358277AbiFVOY5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jun 2022 10:24:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239961AbiFVOEh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Jun 2022 10:04:37 -0400
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5052A1ADBA
-        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 07:04:33 -0700 (PDT)
-Received: by mail-vs1-xe35.google.com with SMTP id 184so2067603vsz.2
-        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 07:04:33 -0700 (PDT)
+        with ESMTP id S1358368AbiFVOYt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Jun 2022 10:24:49 -0400
+Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C83CC3A5F1
+        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 07:24:35 -0700 (PDT)
+Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-101cdfddfacso14494559fac.7
+        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 07:24:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dtwtT2xU4j8gOT4mH64wj0iI4pj/U4lgPtbUiyNkbZk=;
-        b=W2aLiBMDiqPThzXrd2LN0bTCnkAJjmKGaueXEF/vWPV40sD2n8fXCeSkA/YYHuSAqX
-         I3BK2aRkBXO7IzPpcLJ9NDB0vU+xa5N3H2gFXbZC/hz2Q7vIBjoNqF+H6LXgJYLDzi24
-         Z68IQauMwDkgScdgWfDGVLUM27NFlG46p+FliPDaitL7ATGJQIu3NIIMeHV6S3chdwQN
-         lqkPGs5IEyRW8o46wmjaOWmZuoeqeG4/KFzMRo0lO+1dD2iYFLNgx63BRoQ27Zhf1hcW
-         bh94gtO5gZPSyphNRbl1b1RGiAU4ATAaF551e3mA3fe2W79TNlWu+Gl1dwE5u1NXiJF7
-         svBg==
+        d=cloudflare.com; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=RTCiI3z/FejuYZ8fuG7ALGW0XqlrQSjMbaE9qwJX9Cg=;
+        b=ZQVTbEN7aUSDEdVs2YzfZWlgi3LbLYER2SLB8yHQY9UzSHPRwUSbJ/NDygAsKrAd7J
+         aCH94nDm4GL5jbWvtBLV8vfQuiMl7/ZDQHOeePpUKtuiYYEaVMFgNk3doBxXIONUBjgv
+         I6Rp+PmtrGPbaTovYHGreme6UXJYrZb4m5Bjs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dtwtT2xU4j8gOT4mH64wj0iI4pj/U4lgPtbUiyNkbZk=;
-        b=JGtlFOdPj0OnuCLISfKmNIavzjno7OEROu1kLwl83Ywemhi6dxgqjTeF5mfhe5WPW1
-         17lbONa9rYV6D3zhGCXyVl5Ko52k1G3v4FtzAgvKkKVJ9FJdQrLI+6uyenhhgxIni5nM
-         VCGXVRV6tEniyNBiGZymkBkiwudcwAhbVuXul8Av7X7Lc5Ioaqy5UDReK8RI2gI+nYrt
-         A4kM91pFrxc8McdNqwLSQAu/Alhi2opSKEBPjLOWtxMc1iAoNehjDHwXCFda74FA8V93
-         53EkBYWfS03a6LF2q5LAf/uLfKVzH+FOYuIS2vuvf2zUjdPuvaftcKDjzW4cKBP2fPgs
-         KE9w==
-X-Gm-Message-State: AJIora+VP97Ww6uy8SgEXXT7rdFVuIQy76Am66V8/wPVdkSdc5o7L+RT
-        m3VLiOUJkccWxCaQXDTeDkrD2KiqA+Ug4IPyH/Q=
-X-Google-Smtp-Source: AGRyM1tQNpwRJF4W7gKzIoOQpg+veVUC9JuRFxQAd0iHfqa9Jdq+AWKAIKjRJ90O7Ywd27nw1R6jmcEkbdmjjmMfk78=
-X-Received: by 2002:a05:6102:3d28:b0:354:5e75:7031 with SMTP id
- i40-20020a0561023d2800b003545e757031mr1277081vsv.35.1655906672311; Wed, 22
- Jun 2022 07:04:32 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=RTCiI3z/FejuYZ8fuG7ALGW0XqlrQSjMbaE9qwJX9Cg=;
+        b=wj5pWnqYCVEf+CmjD2Dd4VtxDI0GuPpFwdZx+6N66Y1i5c40BN1Zhp5AnpB8cxbCyq
+         bSDb//OQuDjt2YbsmnFkm+fM4ygHED6gtnB1+NtlUI5JwAnORCoYWm0hO/xixqDeMAcG
+         MYFkYoVwRJOTYSWJuqDnzxUEG8wSJIw8XK4q98xRNQywQQLP+qKrcszr48jHBp9rtsI/
+         6+3uNlmxL+KxIBJYy/GKY/WHRFQRdPW6C2vZY4I/4eKp+CzPmaqfzH1c5LE8Ebo7rn9N
+         e2BNSo30d0v04kr7Mz0YNkBtxXhddXKpUyzNyHyEYs9duIMlGHx7oU5/EVvBBkUrCARJ
+         Jdvw==
+X-Gm-Message-State: AJIora9k13B5VN1jJ3sq1Cjji/6Q7g7jEufjRxPGWbSacCPS0tB1BaGk
+        lNXAvEjijpBhmg14V3/pfMDsbw==
+X-Google-Smtp-Source: AGRyM1v60GyMFZawKSzE9AV+dokDeZ2oOw03of096v2vdWHskT34HNJlwjkQbYpYkHqZslvi3hON/w==
+X-Received: by 2002:a05:6870:3320:b0:fd:a944:1abf with SMTP id x32-20020a056870332000b000fda9441abfmr24133333oae.251.1655907874821;
+        Wed, 22 Jun 2022 07:24:34 -0700 (PDT)
+Received: from [192.168.0.115] ([172.58.70.161])
+        by smtp.gmail.com with ESMTPSA id w25-20020a4a7659000000b0035eb4e5a6cesm11612512ooe.36.2022.06.22.07.24.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Jun 2022 07:24:34 -0700 (PDT)
+Message-ID: <b72c889a-4a50-3330-baae-3bbf065e7187@cloudflare.com>
+Date:   Wed, 22 Jun 2022 09:24:31 -0500
 MIME-Version: 1.0
-References: <20220619155032.32515-1-laoar.shao@gmail.com> <20220621232831.nkw2e7ezfy55p6hg@macbook-pro-3.dhcp.thefacebook.com>
-In-Reply-To: <20220621232831.nkw2e7ezfy55p6hg@macbook-pro-3.dhcp.thefacebook.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Wed, 22 Jun 2022 22:03:55 +0800
-Message-ID: <CALOAHbCM=ZxwutQOPmJx2LKY3Pd_hs+8v8r4-ybwPbBNBuNjXA@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 00/10] bpf, mm: Recharge pages when reuse bpf map
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>, songmuchun@bytedance.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>, penberg@kernel.org,
-        David Rientjes <rientjes@google.com>, iamjoonsoo.kim@lge.com,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Linux MM <linux-mm@kvack.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH 0/2] Introduce security_create_user_ns()
+Content-Language: en-US
+To:     Casey Schaufler <casey@schaufler-ca.com>, kpsingh@kernel.org,
+        revest@chromium.org, jackmanb@chromium.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        jmorris@namei.org, serge@hallyn.com, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Cc:     brauner@kernel.org, paul@paul-moore.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@cloudflare.com
+References: <20220621233939.993579-1-fred@cloudflare.com>
+ <ce1653b1-feb0-1a99-0e97-8dfb289eeb79@schaufler-ca.com>
+From:   Frederick Lawler <fred@cloudflare.com>
+In-Reply-To: <ce1653b1-feb0-1a99-0e97-8dfb289eeb79@schaufler-ca.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 22, 2022 at 7:28 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Sun, Jun 19, 2022 at 03:50:22PM +0000, Yafang Shao wrote:
-> > After switching to memcg-based bpf memory accounting, the bpf memory is
-> > charged to the loader's memcg by default, that causes unexpected issues for
-> > us. For instance, the container of the loader may be restarted after
-> > pinning progs and maps, but the bpf memcg will be left and pinned on the
-> > system. Once the loader's new generation container is started, the leftover
-> > pages won't be charged to it. That inconsistent behavior will make trouble
-> > for the memory resource management for this container.
-> >
-> > In the past few days, I have proposed two patchsets[1][2] to try to resolve
-> > this issue, but in both of these two proposals the user code has to be
-> > changed to adapt to it, that is a pain for us. This patchset relieves the
-> > pain by triggering the recharge in libbpf. It also addresses Roman's
-> > critical comments.
-> >
-> > The key point we can avoid changing the user code is that there's a resue
-> > path in libbpf. Once the bpf container is restarted again, it will try
-> > to re-run the required bpf programs, if the bpf programs are the same with
-> > the already pinned one, it will reuse them.
-> >
-> > To make sure we either recharge all of them successfully or don't recharge
-> > any of them. The recharge prograss is divided into three steps:
-> >   - Pre charge to the new generation
-> >     To make sure once we uncharge from the old generation, we can always
-> >     charge to the new generation succeesfully. If we can't pre charge to
-> >     the new generation, we won't allow it to be uncharged from the old
-> >     generation.
-> >   - Uncharge from the old generation
-> >     After pre charge to the new generation, we can uncharge from the old
-> >     generation.
-> >   - Post charge to the new generation
-> >     Finnaly we can set pages' memcg_data to the new generation.
-> > In the pre charge step, we may succeed to charge some addresses, but fail
-> > to charge a new address, then we should uncharge the already charged
-> > addresses, so another recharge-err step is instroduced.
-> >
-> > This pachset has finished recharging bpf hash map. which is mostly used
-> > by our bpf services. The other maps hasn't been implemented yet. The bpf
-> > progs hasn't been implemented neither.
->
-> ... and the implementation in patch 10 is missing recharge of htab->elems
-> which consumes the most memory.
+Hi Casey,
 
-You got to the point. I intended to skip htab->elemes due to some reasons.
-You have pointed out one of the reasons that it is complex for
-non-preallocated memory.
-Another reason is memcg reparenting, for example, once the memcg is
-offline, its pages and other related memory things like obj_cgroup
-will be reparented, but unlikely the map->memcg is still the offline
-memcg. There _must_ be issues in it, but I haven't figured out what it
-may cause to the user. One issue I can imagine is that the memcg limit
-may not work well in this case.  That should be another different
-issue, and I'm still working on it.
+On 6/21/22 7:19 PM, Casey Schaufler wrote:
+> On 6/21/2022 4:39 PM, Frederick Lawler wrote:
+>> While creating a LSM BPF MAC policy to block user namespace creation, we
+>> used the LSM cred_prepare hook because that is the closest hook to 
+>> prevent
+>> a call to create_user_ns().
+>>
+>> The calls look something like this:
+>>
+>>      cred = prepare_creds()
+>>          security_prepare_creds()
+>>              call_int_hook(cred_prepare, ...
+>>      if (cred)
+>>          create_user_ns(cred)
+>>
+>> We noticed that error codes were not propagated from this hook and
+>> introduced a patch [1] to propagate those errors.
+>>
+>> The discussion notes that security_prepare_creds()
+>> is not appropriate for MAC policies, and instead the hook is
+>> meant for LSM authors to prepare credentials for mutation. [2]
+>>
+>> Ultimately, we concluded that a better course of action is to introduce
+>> a new security hook for LSM authors. [3]
+>>
+>> This patch set first introduces a new security_create_user_ns() function
+>> and create_user_ns LSM hook, then marks the hook as sleepable in BPF.
+> 
+> Why restrict this hook to user namespaces? It seems that an LSM that
+> chooses to preform controls on user namespaces may want to do so for
+> network namespaces as well.
+IIRC, CLONE_NEWUSER is the only namespace flag that does not require 
+CAP_SYS_ADMIN. There is a security use case to prevent this namespace 
+from being created within an unprivileged environment. I'm not opposed 
+to a more generic hook, but I don't currently have a use case to block 
+any others. We can also say the same is true for the other namespaces: 
+add this generic security function to these too.
 
-> That begs the question how the whole set was tested.
+I'm curious what others think about this too.
 
-In my test case, htab->buckets is around 120MB, which can be used to
-do the comparison.  The number is charged back without any kernel
-warnings, so I posted this incomplete patchset to get feedback to
-check if I'm in the right direction.
 
->
-> Even if that bug is fixed this recharge approach works only with preallocated
-> maps. Their use will be reduced in the future.
-> Maps with kmalloc won't work with this multi step approach.
-> There is no place where bpf_map_release_memcg can be done without racing
-> with concurrent kmallocs from bpf program side.
+> Also, the hook seems backwards. You should
+> decide if the creation of the namespace is allowed before you create it.
+> Passing the new namespace to a function that checks to see creating a
+> namespace is allowed doesn't make a lot off sense.
+> 
 
-Right, that is really an issue.
+I think having more context to a security hook is a good thing. I 
+believe you brought up in the previous discussions that you'd like to 
+use this hook for xattr purposes. Doesn't that require a namespace?
 
->
-> Despite being painful for user space the user space has to deal with it.
-> It created a container, charged its memcg, then destroyed the container,
-> but didn't free the bpf map. It's a user bug. It has to free the map.
+>>
+>> Links:
+>> 1. 
+>> https://lore.kernel.org/all/20220608150942.776446-1-fred@cloudflare.com/
+>> 2. 
+>> https://lore.kernel.org/all/87y1xzyhub.fsf@email.froward.int.ebiederm.org/ 
+>>
+>> 3. 
+>> https://lore.kernel.org/all/9fe9cd9f-1ded-a179-8ded-5fde8960a586@cloudflare.com/ 
+>>
+>>
+>> Frederick Lawler (2):
+>>    security, lsm: Introduce security_create_user_ns()
+>>    bpf-lsm: Make bpf_lsm_create_user_ns() sleepable
+>>
+>>   include/linux/lsm_hook_defs.h | 2 ++
+>>   include/linux/lsm_hooks.h     | 5 +++++
+>>   include/linux/security.h      | 8 ++++++++
+>>   kernel/bpf/bpf_lsm.c          | 1 +
+>>   kernel/user_namespace.c       | 5 +++++
+>>   security/security.c           | 6 ++++++
+>>   6 files changed, 27 insertions(+)
+>>
+>> -- 
+>> 2.30.2
+>>
 
-It seems that I didn't describe this case clearly.
-It is not a user bug but a user case in the k8s environment. For
-example, after the user has deployed its container, it may need to
-upgrade its user application or bpf prog, then the user should upgrade
-its container, that means the old container will be destroyed and a
-new container will be created.  In this upgrade progress, the bpf
-program can continue to work without interruption because they are
-pinned.
-
-> The user space can use map-in-map solution. In the new container the new bpf map
-> can be allocated (and charged to new memcg), the data copied from old map,
-> and then inner map replaced. At this point old map can be freed and memcg
-> uncharged.
-
-The map-in-map solution may work for some cases, but it will allocate
-more memory, which is not okay if the bpf map has lots of memory.
-
-> To make things easier we can consider introducing an anon FD that points to a memcg.
-> Then user can pick a memcg at map creation time instead of get_mem_cgroup_from_current.
-
-This may be a workable solution.  The life cycle of a pinned bpf
-program is independent of the application which loads an pins it, so
-it is reasonable to introduce an independent memcg to manage the bpf
-memory, for example a memcg like /sys/fs/cgroup/memory/pinned_bpf
-which is independent of the k8s pod.
-I will analyze it. Thanks for the suggestion.
-
--- 
-Regards
-Yafang
