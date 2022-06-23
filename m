@@ -2,71 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CEBF558A64
-	for <lists+bpf@lfdr.de>; Thu, 23 Jun 2022 22:54:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0FD5558A7A
+	for <lists+bpf@lfdr.de>; Thu, 23 Jun 2022 23:10:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229760AbiFWUy2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Jun 2022 16:54:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51604 "EHLO
+        id S229470AbiFWVKA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Jun 2022 17:10:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbiFWUy2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Jun 2022 16:54:28 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35DFB62728;
-        Thu, 23 Jun 2022 13:54:27 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id lw20so695437ejb.4;
-        Thu, 23 Jun 2022 13:54:27 -0700 (PDT)
+        with ESMTP id S229493AbiFWVKA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Jun 2022 17:10:00 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7123337A2D
+        for <bpf@vger.kernel.org>; Thu, 23 Jun 2022 14:09:59 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id c13so694327eds.10
+        for <bpf@vger.kernel.org>; Thu, 23 Jun 2022 14:09:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=+NeDhzIsosAc6zjoUbMznd330rNHziGlr8pP4p3fVF0=;
-        b=fAx3pvL2mb1wUs/cl1pnaZOCuwao8+6SnBAODybSfO6ROi8NVo0gsKiyWCmyMbmkMF
-         b9S4yoI2SKgUW/Vp2Y4iNLOKbFtK0G6tdJi2kYeqDOqZaUlXCixb5Yx09/gLwJDkX9g2
-         WYGdfXOv7BKXlYhDmhz/UJrZDqvzmK5TbDKG9S39mn/+cW6tq78J/W6GZrg7aeuMCjOx
-         bz6q/v5o5SuZy856wRedvW5sCeM0PJprg1hDe5IvdltJYfCPXMmnNkS8QYXRUI89g290
-         AiXG2CJPs4gS2iuURPvnSXllm4vbU7SppK6KhveNTjEuGhjUDsg5v1ziIpgHh/S2n47a
-         lGWA==
+        bh=3fN93irlt8vgDW4hKqbSxKPWsTPMN5h9pNYJXqICNW0=;
+        b=ijQHjh+ndHH6mlMLmASSdPwP62YH3rUr73biUczpa915hkwuIwIYrgmUn0dyHLm16p
+         9L3o6qNyNJBhAbgu7g3Ti2BFTLMTSep8LmQ/aKR8YGt8ddFYZ1/dLNh2P/WdPG666Its
+         w5Ddt+boCevRmPbhJdalQJ6AkoLqiCT/7GumkISCuZSDEkD9pnuYRfUXVF543c9ZFJrj
+         M66aCb/9IiYd+9sgoyJJZMljSGi209smxz81RuG+ObGR9k8GuUfabqHez5/954U3JlgA
+         IShJBv98TxM5bbNBYbdOyDfCly6+a9TSauOspJVXdvgqoioiguY2KgA2LSeJagHUa2/K
+         sdZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=+NeDhzIsosAc6zjoUbMznd330rNHziGlr8pP4p3fVF0=;
-        b=TX766x9RN6iQgt5sl+tL+hokKmzPlBmAP4pZaJYHgH0KdjW5GXjHOrjAb4/NEnjwkR
-         2HluYevT3cIFFue8Pb86QW9XdVSPgmOA4/wttBPY1QzNrNxtSMSnUp+scG4JXkaWL5ZL
-         1HAteUtbh1nk2L5SQuYXpXpuwjBzo5XqWiiPNma3d8ZjeJsPRO6vDt4ArLEAnT75dZvE
-         xA+xUt3OW8yQ8oqGHpjN3cd9XyxfLtpMnMoNPOSI0N3Kfw5EsY8+8Bq/rx4oISwqFij3
-         e07OxdiXszyqwmmd3SwqGWDz6mvcvjyemsbwaXgsyzhf6Vd0Mv2t/DM605ZWL/uelRQS
-         NsJQ==
-X-Gm-Message-State: AJIora8nans6J/nKolpLjuTJFNSps6ppc1ngspxo2bxcdRJwsG1yRg3t
-        JTXFZw0yABTCuwMBgdk7ESXFtQonNt4zvqX/ma0=
-X-Google-Smtp-Source: AGRyM1uthzr9Oy84rLqxABiXeKGAOyvcg+MqzD8Qykjqulo8c8PXkSAiveDwBCRGCtZDd07fq0RBqRpxnYdg/51DLHM=
-X-Received: by 2002:a17:907:971e:b0:71d:955c:b296 with SMTP id
- jg30-20020a170907971e00b0071d955cb296mr9639163ejc.633.1656017665626; Thu, 23
- Jun 2022 13:54:25 -0700 (PDT)
+        bh=3fN93irlt8vgDW4hKqbSxKPWsTPMN5h9pNYJXqICNW0=;
+        b=dAXXr7J6RcpR6YnadxxW7LMOPEDNylHNGeK3ZlOeLHCMHJ8LADggZw0dTDc2QU/kJq
+         opTgGyXBcfU+3IX+qZWwaNgOJWgAJcjqID2z1IycBYmSTjCQAAehZphc8F1vAZmMiEhT
+         hJ7xC63VTzaJAZyFfatMM2/KT1zjgHWT/KYm6bnVJLqregDTEL0pd4vVu3X3MoFCzowr
+         +Fu/r0Yn6r5fK9TCpvWR7jtLLldCjkCnUWUzcSJfMS1i3FeKHzzcluUcLki8fO5JHin6
+         Rx7+vb8VS4G4SHvE66NLzkNvSL27rWWMBBIvY5j4yNJg2XTwPx0S/Tqkcn1i0oeSKK8z
+         arxA==
+X-Gm-Message-State: AJIora96+V9HLKwV9NCmWIMb6SgHiTCDoOalt7Ro6tD1thfmcwygOtVo
+        8bR5XuMbFHxLh5H8FhwYN8UfFEAFwwaDBfYOZgY=
+X-Google-Smtp-Source: AGRyM1sZTj0NNvffRaLQtk1xRMuAZmv9u/LLf5QMMOK/S9daSz3PncFzD98VMR0/gONR4RJl7Uu8O5VDumMHqW0n5VY=
+X-Received: by 2002:a05:6402:4496:b0:435:d605:6ff8 with SMTP id
+ er22-20020a056402449600b00435d6056ff8mr5624696edb.357.1656018597999; Thu, 23
+ Jun 2022 14:09:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220621163757.760304-1-roberto.sassu@huawei.com>
- <20220621163757.760304-3-roberto.sassu@huawei.com> <20220621223248.f6wgyewajw6x4lgr@macbook-pro-3.dhcp.thefacebook.com>
- <796b55c79be142cab6a22dd281fdb9fa@huawei.com> <f2d3da08e7774df9b44cc648dda7d0b8@huawei.com>
-In-Reply-To: <f2d3da08e7774df9b44cc648dda7d0b8@huawei.com>
+References: <YrQicyVuXTF3WecL@kili> <f3c818802a7df5a58256ac1494d6267e478d8dbc.camel@gmail.com>
+In-Reply-To: <f3c818802a7df5a58256ac1494d6267e478d8dbc.camel@gmail.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 23 Jun 2022 13:54:13 -0700
-Message-ID: <CAADnVQKVx9o1PcCV_F3ywJCzDTPtQG4MTKM2BmwdCwNvyxdNPg@mail.gmail.com>
-Subject: Re: [PATCH v5 2/5] bpf: Add bpf_lookup_user_key() and bpf_key_put() helpers
-To:     Roberto Sassu <roberto.sassu@huawei.com>
-Cc:     "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "songliubraving@fb.com" <songliubraving@fb.com>,
-        "kafai@fb.com" <kafai@fb.com>, "yhs@fb.com" <yhs@fb.com>,
-        "dhowells@redhat.com" <dhowells@redhat.com>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Thu, 23 Jun 2022 14:09:46 -0700
+Message-ID: <CAADnVQJTMw3Yx4MVQvtLKhr3zjc0-iVh_Up8+YBPH1enzCk=YA@mail.gmail.com>
+Subject: Re: [bug report] bpf: Inline calls to bpf_loop when callback is known
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -78,72 +65,21 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 23, 2022 at 5:36 AM Roberto Sassu <roberto.sassu@huawei.com> wrote:
->
-> > From: Roberto Sassu [mailto:roberto.sassu@huawei.com]
-> > Sent: Wednesday, June 22, 2022 9:12 AM
-> > > From: Alexei Starovoitov [mailto:alexei.starovoitov@gmail.com]
-> > > Sent: Wednesday, June 22, 2022 12:33 AM
-> > > On Tue, Jun 21, 2022 at 06:37:54PM +0200, Roberto Sassu wrote:
-> > > > Add the bpf_lookup_user_key() and bpf_key_put() helpers, to respectively
-> > > > search a key with a given serial, and release the reference count of the
-> > > > found key.
-> > > >
-> > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > > > ---
-> > > >  include/uapi/linux/bpf.h       | 16 ++++++++++++
-> > > >  kernel/bpf/bpf_lsm.c           | 46 ++++++++++++++++++++++++++++++++++
-> > > >  kernel/bpf/verifier.c          |  6 +++--
-> > > >  scripts/bpf_doc.py             |  2 ++
-> > > >  tools/include/uapi/linux/bpf.h | 16 ++++++++++++
-> > > >  5 files changed, 84 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > > index e81362891596..7bbcf2cd105d 100644
-> > > > --- a/include/uapi/linux/bpf.h
-> > > > +++ b/include/uapi/linux/bpf.h
-> > > > @@ -5325,6 +5325,20 @@ union bpf_attr {
-> > > >   *               **-EACCES** if the SYN cookie is not valid.
-> > > >   *
-> > > >   *               **-EPROTONOSUPPORT** if CONFIG_IPV6 is not builtin.
-> > > > + *
-> > > > + * struct key *bpf_lookup_user_key(u32 serial, unsigned long flags)
-> > > > + *       Description
-> > > > + *               Search a key with a given *serial* and the provided *flags*, and
-> > > > + *               increment the reference count of the key.
-> > >
-> > > Why passing 'flags' is ok to do?
-> > > Please think through every line of the patch.
+On Thu, Jun 23, 2022 at 2:05 AM Eduard Zingerman <eddyz87@gmail.com> wrote:
+call_insn_offset - 1;
+> > --> 14420         env->prog->insnsi[call_insn_offset].imm = callback_offset;
+...
 > >
-> > To be honest, I thought about it. Probably yes, I should do some
-> > sanitization, like I did for the keyring ID. When I checked
-> > lookup_user_key(), I saw that flags are checked individually, so
-> > an arbitrary value passed to the helper should not cause harm.
-> > Will do sanitization, if you prefer. It is just that we have to keep
-> > the eBPF code in sync with key flag definition (unless we have
-> > a 'last' flag).
+> >       new_prog->insnsi[call_insn_offset].imm = callback_offset;
 >
-> I'm not sure that having a helper for lookup_user_key() alone is
-> correct. By having separate helpers for lookup and usage of the
-> key, nothing would prevent an eBPF program to ask for a
-> permission to pass the access control check, and then use the
-> key for something completely different from what it requested.
->
-> Looking at how lookup_user_key() is used in security/keys/keyctl.c,
-> it seems clear that it should be used together with the operation
-> that needs to be performed. Only in this way, the key permission
-> would make sense.
+> Yes, I agree.
 
-lookup is roughly equivalent to open when all permission checks are done.
-And using the key is read/write.
+Good catch. The fix makes sense.
 
-> What do you think (also David)?
 >
-> Thanks
->
-> Roberto
->
-> HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-> Managing Director: Li Peng, Yang Xi, Li He
+> Alexei, could you please suggest how should I proceed:
+> - submit a new patch with a fix, or
+> - submit a the complete patchset with the fix included?
 
-Please use a different email server and get rid of this.
+The patchset already landed (see bpf-next). We don't revert
+for cases like this. Please send a follow up patch.
