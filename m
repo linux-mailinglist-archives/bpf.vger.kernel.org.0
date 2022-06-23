@@ -2,71 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD4965571D4
-	for <lists+bpf@lfdr.de>; Thu, 23 Jun 2022 06:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D53FD5571CC
+	for <lists+bpf@lfdr.de>; Thu, 23 Jun 2022 06:43:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbiFWEjm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Jun 2022 00:39:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37774 "EHLO
+        id S229739AbiFWEkC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Jun 2022 00:40:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238408AbiFWD10 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Jun 2022 23:27:26 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 805652FFCD
-        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 20:27:25 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id p14so12169836pfh.6
-        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 20:27:25 -0700 (PDT)
+        with ESMTP id S238873AbiFWD3Y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Jun 2022 23:29:24 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF09D3584F
+        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 20:29:23 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id s185so12164515pgs.3
+        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 20:29:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=PYLf+McgE1v7VZmfEmle34zbko4zETjKip0SRez/UOg=;
-        b=pezrpDAAMRBLAkuapdHVaP/tmYgvU5TLDp6emyGNXqQIzvK4XD1gVYfZqkrXpj9VNM
-         o7QlkBMSq+5OogWJU88IAplqWQ0fHvCdDNS36gUtEIGuJSfIkahEV0Df9b+TZxjaqwC/
-         mPnP+GHcvBJw338OeMiKQ/r0UaggWfLzOkQBZ/hXEavu1961n3DuifeK5xkhaMDagW9l
-         jMRxTzznhrZEFgeNCTe30rbgognlN6rrzy78knBk3O/bTpkIZNgsnPb9QpeGXsYZPWsK
-         32JXoWoAK6va9PcmYZiFyRpOCGCNap4mfS1PUjQvwU9WDHu13ETKbTZp/QesZiLRJNWf
-         Zmgg==
+        bh=v2cMJ22H421S3fhYLc4f4jwE1UZ1i2XJOMgK6XKGTmI=;
+        b=NzddAi+hvTRYyY4ArlVtSKNwukA4qtzfcdLE+XUz6THeX1B70vgXw10bVGAd909Ev0
+         ySke1Bh5+Y5kIbyaPqIlxKhLbPQ4/p7X/R2bx7oA/flYxXyVb1FWcFwWH/b6V5fJnFi3
+         8I5S1pyDUnW4P5rTvMPOEYX4XitUEykk4Tt0v36ZJnhGgX/1nPZEcqoMU11hBSvCt3pW
+         GbmScZCBlOBkQfrn/KATckzMg65qwJJV5zfgNyBODDNxtHS4sSawSPSHNO1p1kXT2eyv
+         dq+rLuzzyXTGz295yv+xUV6iqBWo26BuqY6cGh0QcNqKog+K6Lxr47ybBsPRy0BchJT+
+         qr5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=PYLf+McgE1v7VZmfEmle34zbko4zETjKip0SRez/UOg=;
-        b=j9bpC/R6maMStBz8gqZC/2l8EGRxyxCOp1+bAlBvT0i717pPlhKi2+r5ZAE9+ZrSR7
-         12/XluKImtokaVg9lm6duUYcwgRm3F5vJPtFyy3TaFJpeKp7JyFGY32rd8xr9H6vUFOK
-         cKOcV1+rqSvgm5imNrdppXNraIcRb7wyFdU/MCQc5DN9Yj6J8T3HrdwUe+eX0MXB22Cv
-         DT0ofB7aaiKfGtTU14MtZ7iUOQ+Pubj4Av8019PQIJhI5L38/V/8nDhIL8XEQynI3vdG
-         wgptrcBOxfYkrNhRWntDXVuE0rtJwB3DLZTbaQdk5gUrHPu6zxtzAevOGrusVjg8MaYM
-         bDcQ==
-X-Gm-Message-State: AJIora8zVzIy4s5r8v6o4P2xHSqG8p0Y5eQ+a/Ahaiumny3bfltyTB1K
-        /HZW5/6aPhKJwudGJpgR9Wo=
-X-Google-Smtp-Source: AGRyM1vUSciN+g0qPK6mHutgB8uHuW9WlntLXGZg8bBqbl6xKf/MY35zjnvpVYdKZG11Ol6T1lRyKA==
-X-Received: by 2002:a65:6a94:0:b0:40c:977c:9665 with SMTP id q20-20020a656a94000000b0040c977c9665mr5788677pgu.5.1655954844897;
-        Wed, 22 Jun 2022 20:27:24 -0700 (PDT)
+        bh=v2cMJ22H421S3fhYLc4f4jwE1UZ1i2XJOMgK6XKGTmI=;
+        b=KKVNDFrZXxO4xvCb+ciz5cV8IXhMN9ZaHj194FU8SeixGxvc4rnPRis/a9k6IrLHoV
+         Qh7yq8E/Qqy+IrzC3QmyTyPjw7XGo1Eh4AFanIKncdfXymvc1WF7rVtFUHlksxSO4YBK
+         QCkInz+672V1UEXTIuIRIjKCNpjUXc0g4A7BXLJQ9z3dEDZPvR18AdXA/X8YTnBaTyIy
+         niv1PexgvNV+4dEB5RIG/5RTYs5uCrTrX7NdD9yUiE5G3nx3HII/SkjpM4SFi5cCZfv5
+         yE9zFTZpfmGrfOAN08hk8GW94YtRBTSzBJEKTsRbCUn6M27kWOqgpXiZv7SC9AiOMWJS
+         COFA==
+X-Gm-Message-State: AJIora+TZ1QjPaUeg50IUXRn59TIh8rO7eFxIUKvVtnCZf3atWsK4mGC
+        rOM+lFQj970rNrgO2QjKXaA=
+X-Google-Smtp-Source: AGRyM1v1/Vx1GP7GB/xRFRFRBjN7YiJ8Ray3RBxc6u6P2G3lN+6131UxKhUuEy1Ourb/KfMKzi2flg==
+X-Received: by 2002:a63:7b5c:0:b0:40d:684:b760 with SMTP id k28-20020a637b5c000000b0040d0684b760mr5793955pgn.323.1655954963344;
+        Wed, 22 Jun 2022 20:29:23 -0700 (PDT)
 Received: from localhost ([98.97.116.244])
-        by smtp.gmail.com with ESMTPSA id b8-20020a17090a010800b001ecd9a69933sm561626pjb.34.2022.06.22.20.27.24
+        by smtp.gmail.com with ESMTPSA id y18-20020a170902ed5200b00168c4c3ed94sm5175429plb.309.2022.06.22.20.29.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jun 2022 20:27:24 -0700 (PDT)
-Date:   Wed, 22 Jun 2022 20:27:23 -0700
+        Wed, 22 Jun 2022 20:29:23 -0700 (PDT)
+Date:   Wed, 22 Jun 2022 20:29:21 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     Dave Marchevsky <davemarchevsky@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+To:     =?UTF-8?B?SsO2cm4tVGhvcmJlbiBIaW56?= <jthinz@mailbox.tu-berlin.de>,
+        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Message-ID: <62b3dd9b8249b_6a3b2208a4@john.notmuch>
-In-Reply-To: <31bba044-6bb0-1a78-d706-f9fd9fbb1e2c@fb.com>
-References: <20220620222554.270578-1-davemarchevsky@fb.com>
- <62b21962dc64_1627420844@john.notmuch>
- <20220622002952.6334ieb3kfysx7vl@kafai-mbp>
- <62b2ad7a21e88_34dc820812@john.notmuch>
- <20220622172632.psejkta24nwz3k5m@kafai-mbp.dhcp.thefacebook.com>
- <62b3c156ad70a_6a3b2208d7@john.notmuch>
- <31bba044-6bb0-1a78-d706-f9fd9fbb1e2c@fb.com>
-Subject: Re: [PATCH v6 bpf-next] selftests/bpf: Add benchmark for
- local_storage get
+        Jakub Sitnicki <jakub@cloudflare.com>
+Message-ID: <62b3de11c4d5a_6a3b220898@john.notmuch>
+In-Reply-To: <2fb2e2f72f2bead11cf24f9ee2558e2f4169aec9.camel@mailbox.tu-berlin.de>
+References: <20220621070116.307221-1-jthinz@mailbox.tu-berlin.de>
+ <62b221f3886d0_16274208b@john.notmuch>
+ <2fb2e2f72f2bead11cf24f9ee2558e2f4169aec9.camel@mailbox.tu-berlin.de>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix rare segfault in sock_fields
+ prog test
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -81,157 +76,113 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dave Marchevsky wrote:
-> On 6/22/22 9:26 PM, John Fastabend wrote:   =
+J=C3=B6rn-Thorben Hinz wrote:
+> On Tue, 2022-06-21 at 12:54 -0700, John Fastabend wrote:
+> > J=C3=B6rn-Thorben Hinz wrote:
+> > > test_sock_fields__detach() got called with a null pointer here when=
 
-> > Martin KaFai Lau wrote:
-> >> On Tue, Jun 21, 2022 at 10:49:46PM -0700, John Fastabend wrote:
-> >>> Martin KaFai Lau wrote:
-> >>>> On Tue, Jun 21, 2022 at 12:17:54PM -0700, John Fastabend wrote:
-> >>>>>> Hashmap Control
-> >>>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >>>>>>         num keys: 10
-> >>>>>> hashmap (control) sequential    get:  hits throughput: 20.900 =C2=
-=B1 0.334 M ops/s, hits latency: 47.847 ns/op, important_hits throughput:=
- 20.900 =C2=B1 0.334 M ops/s
-> >>>>>>
-> >>>>>>         num keys: 1000
-> >>>>>> hashmap (control) sequential    get:  hits throughput: 13.758 =C2=
-=B1 0.219 M ops/s, hits latency: 72.683 ns/op, important_hits throughput:=
- 13.758 =C2=B1 0.219 M ops/s
-> >>>>>>
-> >>>>>>         num keys: 10000
-> >>>>>> hashmap (control) sequential    get:  hits throughput: 6.995 =C2=
-=B1 0.034 M ops/s, hits latency: 142.959 ns/op, important_hits throughput=
-: 6.995 =C2=B1 0.034 M ops/s
-> >>>>>>
-> >>>>>>         num keys: 100000
-> >>>>>> hashmap (control) sequential    get:  hits throughput: 4.452 =C2=
-=B1 0.371 M ops/s, hits latency: 224.635 ns/op, important_hits throughput=
-: 4.452 =C2=B1 0.371 M ops/s
-> >>>>>>
-> >>>>>>         num keys: 4194304
-> >>>>>> hashmap (control) sequential    get:  hits throughput: 3.043 =C2=
-=B1 0.033 M ops/s, hits latency: 328.587 ns/op, important_hits throughput=
-: 3.043 =C2=B1 0.033 M ops/s
-> >>>>>>
-> >>>>>
-> >>>>> Why is the hashmap lookup not constant with the number of keys? I=
-t looks
-> >>>>> like its prepopulated without collisions so I wouldn't expect any=
+> > > one
+> > > of the CHECKs or ASSERTs up to the
+> > > test_sock_fields__open_and_load()
+> > > call resulted in a jump to the "done" label.
+> > > =
 
-> >>>>> extra ops on the lookup side after looking at the code quickly.
-> >>>> It may be due to the cpu-cache misses as the map grows.
-> >>>
-> >>> Maybe but, values are just ints so even 1k * 4B =3D 4kB should be
-> >>> inside an otherwise unused server class system. Would be more
-> >>> believable (to me at least) if the drop off happened at 100k or
-> >>> more.
-> >> It is not only value (and key) size.  There is overhead.
-> >> htab_elem alone is 48bytes.  key and value need to 8bytes align also=
-.
-> >>
+> > > A skeletons *__detach() is not safe to call with a null pointer,
+> > > though.
+> > > This led to a segfault.
+> > > =
+
+> > > Go the easy route and only call test_sock_fields__destroy() which
+> > > is
+> > > null-pointer safe and includes detaching.
+> > > =
+
+> > > Came across this while looking[1] to introduce the usage of
+> > > bpf_tcp_helpers.h (included in progs/test_sock_fields.c) together
+> > > with
+> > > vmlinux.h.
+> > > =
+
+> > > [1]  =
+
+> > > https://lore.kernel.org/bpf/629bc069dd807d7ac646f836e9dca28bbc1108e=
+2.camel@mailbox.tu-berlin.de/
+> > > =
+
+> > > Fixes: 8f50f16ff39d ("selftests/bpf: Extend verifier and bpf_sock
+> > > tests for dst_port loads")
+> > > Signed-off-by: J=C3=B6rn-Thorben Hinz <jthinz@mailbox.tu-berlin.de>=
+
+> > > ---
+> > > =C2=A0tools/testing/selftests/bpf/prog_tests/sock_fields.c | 1 -
+> > > =C2=A01 file changed, 1 deletion(-)
+> > > =
+
+> > > diff --git a/tools/testing/selftests/bpf/prog_tests/sock_fields.c
+> > > b/tools/testing/selftests/bpf/prog_tests/sock_fields.c
+> > > index 9d211b5c22c4..7d23166c77af 100644
+> > > --- a/tools/testing/selftests/bpf/prog_tests/sock_fields.c
+> > > +++ b/tools/testing/selftests/bpf/prog_tests/sock_fields.c
+> > > @@ -394,7 +394,6 @@ void serial_test_sock_fields(void)
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0test();
+> > > =C2=A0
+> > > =C2=A0done:
+> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0test_sock_fields__detach=
+(skel);
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0test_sock_fields__d=
+estroy(skel);
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (child_cg_fd >=3D=
+ 0)
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0close(child_cg_fd);
+> > > -- =
+
+> > > 2.30.2
+> > > =
+
 > > =
 
-> > Right late night math didn't add up. Now I'm wondering if we can make=
+> > But we should still call __detach(skel) after the !skel check
+> > is done I assume.
+> If I=E2=80=99m not mistaken, that=E2=80=99s not necessary for a proper =
+clean-up. It
+> should be more of a stylistic question. See the parallel message from
+> Daniel (and replies).
+> =
 
-> > hashmap behave much better, that drop off is looking really ugly.
+> test_sock_fields__detach() directly translates to
+> bpf_object__detach_skeleton(). test_sock_fields__destroy() basically
+> translates to bpf_object__destroy_skeleton(), including a null-ptr
+> check.
+> =
+
+> But bpf_object__destroy_skeleton() calls bpf_object__detach_skeleton()
+> as its first step. So calling __detach()/__detach_skeleton() explicitly=
+
+> and separately is not necessary for a clean exit, if not otherwise
+> required.
+
+Seems to be the case nice catch. I'm OK with it as is then.
+
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+
+> =
+
+> =
+
+> > So rather than remove it should add a new label
+> > and jump to that,
 > > =
 
-> >> From a random machine:
-> >> lscpu -C
-> >> NAME ONE-SIZE ALL-SIZE WAYS TYPE        LEVEL  SETS PHY-LINE COHEREN=
-CY-SIZE
-> >> L1d       32K     576K    8 Data            1    64        1        =
-     64
-> >> L1i       32K     576K    8 Instruction     1    64        1        =
-     64
-> >> L2         1M      18M   16 Unified         2  1024        1        =
-     64
-> >> L3      24.8M    24.8M   11 Unified         3 36864        1        =
-     64
-> > =
+> > =C2=A0 =
 
-> > Could you do a couple more data point then, num keys=3D100,200,400? I=
- would
-> > expect those to fit in the cache and be same as 10 by the cache theor=
-y. I
-> > could try as well but looking like Friday before I have a spare momen=
-t.
-> > =
-
-> > Thanks,
-> > John
+> > =C2=A0done:
+> > =C2=A0=C2=A0 test_sock_fields__detach();
+> > =C2=A0done_no_skel:
+> > =C2=A0=C2=A0 test_sock_fields__destroy()
 > =
 
-> Here's a benchmark run with those num_keys.
 > =
 
-> Hashmap Control
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->         num keys: 10
-> hashmap (control) sequential    get:  hits throughput: 23.072 =C2=B1 0.=
-208 M ops/s, hits latency: 43.343 ns/op, important_hits throughput: 23.07=
-2 =C2=B1 0.208 M ops/s
-> =
-
->         num keys: 100
-> hashmap (control) sequential    get:  hits throughput: 17.967 =C2=B1 0.=
-236 M ops/s, hits latency: 55.659 ns/op, important_hits throughput: 17.96=
-7 =C2=B1 0.236 M ops/s
-> =
-
-
-Hmmm this is interesting. I expected a flat line and then a hard drop off=
-
-which to me would indicate the cache miss being the culprit. But this is
-almost a linear perf dec over num_keys. Guess we need to debug more.
-
->         num keys: 200
-> hashmap (control) sequential    get:  hits throughput: 17.812 =C2=B1 0.=
-428 M ops/s, hits latency: 56.143 ns/op, important_hits throughput: 17.81=
-2 =C2=B1 0.428 M ops/s
-> =
-
->         num keys: 300
-> hashmap (control) sequential    get:  hits throughput: 17.070 =C2=B1 0.=
-293 M ops/s, hits latency: 58.582 ns/op, important_hits throughput: 17.07=
-0 =C2=B1 0.293 M ops/s
-> =
-
->         num keys: 400
-> hashmap (control) sequential    get:  hits throughput: 17.667 =C2=B1 0.=
-316 M ops/s, hits latency: 56.604 ns/op, important_hits throughput: 17.66=
-7 =C2=B1 0.316 M ops/s
-> =
-
->         num keys: 500
-> hashmap (control) sequential    get:  hits throughput: 17.010 =C2=B1 0.=
-409 M ops/s, hits latency: 58.789 ns/op, important_hits throughput: 17.01=
-0 =C2=B1 0.409 M ops/s
-> =
-
->         num keys: 1000
-> hashmap (control) sequential    get:  hits throughput: 14.330 =C2=B1 0.=
-172 M ops/s, hits latency: 69.784 ns/op, important_hits throughput: 14.33=
-0 =C2=B1 0.172 M ops/s
-> =
-
->         num keys: 10000
-> hashmap (control) sequential    get:  hits throughput: 6.047 =C2=B1 0.0=
-24 M ops/s, hits latency: 165.380 ns/op, important_hits throughput: 6.047=
- =C2=B1 0.024 M ops/s
-> =
-
->         num keys: 100000
-> hashmap (control) sequential    get:  hits throughput: 4.472 =C2=B1 0.1=
-63 M ops/s, hits latency: 223.630 ns/op, important_hits throughput: 4.472=
- =C2=B1 0.163 M ops/s
-> =
-
->         num keys: 4194304
-> hashmap (control) sequential    get:  hits throughput: 2.785 =C2=B1 0.0=
-24 M ops/s, hits latency: 359.066 ns/op, important_hits throughput: 2.785=
- =C2=B1 0.024 M ops/s
 
 
