@@ -2,75 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E844B556FD7
-	for <lists+bpf@lfdr.de>; Thu, 23 Jun 2022 03:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB6F556FF0
+	for <lists+bpf@lfdr.de>; Thu, 23 Jun 2022 03:32:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236761AbiFWB1r (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Jun 2022 21:27:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48874 "EHLO
+        id S1344345AbiFWBci (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jun 2022 21:32:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235768AbiFWB1q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Jun 2022 21:27:46 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A40673DA73;
-        Wed, 22 Jun 2022 18:27:45 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id cv13so14736492pjb.4;
-        Wed, 22 Jun 2022 18:27:45 -0700 (PDT)
+        with ESMTP id S236859AbiFWBch (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Jun 2022 21:32:37 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 193704339C;
+        Wed, 22 Jun 2022 18:32:37 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id cv13so14744494pjb.4;
+        Wed, 22 Jun 2022 18:32:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=8VtBJj3dwIr7vdto3kime56JLy8UxuXRGHD/jLDfBZ8=;
-        b=ACUnfB7TcKfLAfJBfhcaPF+f78pJ9pZvYRIBSMYZXztjinI+e3PAkxTmUkZA6BMhVy
-         lgzJny9JTEHKSWk9DfJ+HdJje00DhI4FEKsaNqxPSuxpF+kh5PkylT0FN9Hi5gJT5sgY
-         A2ehlFQ3qbGmHAGSgTffQCBlBHRL4om5Hz6C+GGXlC2FijwZFpjzOECseQ5john2M5Ke
-         Hi3bgDVyFhf0FFqdw/ZmZ+UileflvIkPlLgCs4a+hv6I8k1CYjYUE8BCgCE9EgqWiYu1
-         Z39sWXepIbSjvYkySf1VSYp7yPJfUtiwtIREkR41TXjgkjuPafjv5BItyAT8At0mkmEX
-         +fRA==
+        bh=Rizxo4YIgzujeff3i3wJibaet374744wEuNwtRhWUPU=;
+        b=bmuqoVyOs9kIVFlZ1bb2/ytvsmaCVCgE/WaGLJOqTUtqwGAFpof+gO+Hdlep3ugTKq
+         8uJsP3us+JgCqpmlGy+b2A+5mhHF6HR282W6H8fUf3Fabhl3BRo321QYwuLdH1mW3MEl
+         9lAca6H+96IG6mLfqEaOF7DSPyCTND5ALmk1qDkju5efF5x604xA0+OExupLYfmWm/u1
+         H+aZHGH8cczvhv5h1300Y7I2TuF3AqpDW7B+1rAeWNz205/wgzrV1aB6ronEEiqIcdOt
+         pqgRjcweiq7UmxVz9gNI7LCQ7HWwV4XJfmH5pAJz4mqWyd7ccVdvunssGuQ7QGTbwNTQ
+         KwKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=8VtBJj3dwIr7vdto3kime56JLy8UxuXRGHD/jLDfBZ8=;
-        b=i2AMGT1IVUFvkmOC4f7xvnG4eMdIp0hGjA7H/YbiQr9JgsTRHWrLgNyHOUn+K8f0Tb
-         c7xaHOI/KRQ+Rk1H8M5ZATIZ6sS6gFksbla/kWlKVtxG2WmP//UQKuLhCAZXDwaZ7i9C
-         pWQvgTTU3ygw0I8iaQhirS/TKCIw1SFI1llqoxIhb5yXF3tMQ4cL9r6D0ZLNdXqH3CFW
-         KFSpKSWXyo+78vJbnWGS2cWOP0q+k0hzyiecZamj8pdb5+vdvVOrF5boXNjqQsnvG4Sy
-         uis9tpCloG7GBm+FLC/jmNcRjZK+Mg/jb1GPO2kPX8MtWeQXSJsbjUnF7Oan0Bg1e0LS
-         Ro/Q==
-X-Gm-Message-State: AJIora8918jxl0Q2GOOl8jkXlHbPWwEAEIKIXmgdWTpMWQzXYLehCqXS
-        +yuZmrIhO/eO84MGT1wWmNw=
-X-Google-Smtp-Source: AGRyM1tTibF5bOTcCSW3Nh3zCY7nikJHhxnA1qVR2f6DefieHghgXDPNZl7ycJ1Ll00eb0KgjuQ9rg==
-X-Received: by 2002:a17:902:ca83:b0:16a:3317:b5c1 with SMTP id v3-20020a170902ca8300b0016a3317b5c1mr13019955pld.34.1655947665102;
-        Wed, 22 Jun 2022 18:27:45 -0700 (PDT)
+        bh=Rizxo4YIgzujeff3i3wJibaet374744wEuNwtRhWUPU=;
+        b=tC9dvC/JB87VkQdwIxGy+ESQg0COgM5GA8JsL8d7YoWw5AgkpGfkG6Dc3e7ao/EEsy
+         8E+oXKVThJ/hG3HaCC1EPI9qknIi8gdT/fsQfRluA0BXSCe0lw5mDboyk9nUpVcDXUWm
+         t22tkM8s0yI9J0FSQZ04a27rmuRD+GmLx0wa1Zhl/l2DwDt2PPJoQRdFBvFR9+s3ksYC
+         +ctP61d+2KN844ceN8xXg+JefjoFUcxzxDYG0kbOPxKLCHKQuUNhDylKNDJW68aWQjGG
+         uKmKP7mTPAzPZEk1lsxDCJXzvGqtG6oixxzHm7BWv2OquepAwu+YbTctAG9jfAoTuvDx
+         tjlQ==
+X-Gm-Message-State: AJIora+UjbjzUhRxRXaKfJCtWKhWnxgVwgGfjoo8y3BsGmewtbMZeUMw
+        cEmoVcx7Vg5jlEoSh7I29Bw=
+X-Google-Smtp-Source: AGRyM1unsrqEe2CVtMLzBfGaE7XL1ldbhN2npVXYGftEcZRAYRp7crbsIaxQji9rGneJS+MmRKNKrQ==
+X-Received: by 2002:a17:90b:4f41:b0:1ed:712:fd80 with SMTP id pj1-20020a17090b4f4100b001ed0712fd80mr688781pjb.224.1655947956594;
+        Wed, 22 Jun 2022 18:32:36 -0700 (PDT)
 Received: from localhost ([98.97.116.244])
-        by smtp.gmail.com with ESMTPSA id a13-20020a1709027e4d00b0015e8d4eb26csm13522728pln.182.2022.06.22.18.27.44
+        by smtp.gmail.com with ESMTPSA id m18-20020a639412000000b0040c74f0cdb5sm10031147pge.6.2022.06.22.18.32.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jun 2022 18:27:44 -0700 (PDT)
-Date:   Wed, 22 Jun 2022 18:27:38 -0700
+        Wed, 22 Jun 2022 18:32:36 -0700 (PDT)
+Date:   Wed, 22 Jun 2022 18:32:35 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "songliubraving@fb.com" <songliubraving@fb.com>,
-        "kafai@fb.com" <kafai@fb.com>, "yhs@fb.com" <yhs@fb.com>
-Cc:     "dhowells@redhat.com" <dhowells@redhat.com>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>
-Message-ID: <62b3c18ab4dda_6a3b220812@john.notmuch>
-In-Reply-To: <03b67c7a6161428c9ff8a5dde0450402@huawei.com>
-References: <20220621163757.760304-1-roberto.sassu@huawei.com>
- <20220621163757.760304-4-roberto.sassu@huawei.com>
- <62b245e22effa_1627420871@john.notmuch>
- <03b67c7a6161428c9ff8a5dde0450402@huawei.com>
-Subject: RE: [PATCH v5 3/5] bpf: Add bpf_verify_pkcs7_signature() helper
+To:     Jian Shen <shenjian15@huawei.com>, daniel@iogearbox.net,
+        shmulik@metanetworks.com
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, linuxarm@openeuler.org
+Message-ID: <62b3c2b310915_6a3b2208bf@john.notmuch>
+In-Reply-To: <20220622135002.8263-1-shenjian15@huawei.com>
+References: <20220622135002.8263-1-shenjian15@huawei.com>
+Subject: RE: [PATCH net] test_bpf: fix incorrect netdev features
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -85,69 +70,14 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Roberto Sassu wrote:
-> > From: John Fastabend [mailto:john.fastabend@gmail.com]
-> > Sent: Wednesday, June 22, 2022 12:28 AM
-> > Roberto Sassu wrote:
-> > > Add the bpf_verify_pkcs7_signature() helper, to give eBPF security modules
-> > > the ability to check the validity of a signature against supplied data, by
-> > > using user-provided or system-provided keys as trust anchor.
-> > >
-> > > The new helper makes it possible to enforce mandatory policies, as eBPF
-> > > programs might be allowed to make security decisions only based on data
-> > > sources the system administrator approves.
-> > >
-> > > The caller should provide both the data to be verified and the signature as
-> > > eBPF dynamic pointers (to minimize the number of parameters).
-> > >
-> > > The caller should also provide a keyring pointer obtained with
-> > > bpf_lookup_user_key() or, alternatively, a keyring ID with values defined
-> > > in verification.h. While the first choice gives users more flexibility, the
-> > > second offers better security guarantees, as the keyring selection will not
-> > > depend on possibly untrusted user space but on the kernel itself.
-> > >
-> > > Defined keyring IDs are: 0 for the primary keyring (immutable keyring of
-> > > system keys); 1 for both the primary and secondary keyring (where keys can
-> > > be added only if they are vouched for by existing keys in those keyrings);
-> > > 2 for the platform keyring (primarily used by the integrity subsystem to
-> > > verify a kexec'ed kerned image and, possibly, the initramfs signature).
-> > >
-> > > Note: since the keyring ID assignment is understood only by
-> > > verify_pkcs7_signature(), it must be passed directly to the corresponding
-> > > helper, rather than to a separate new helper returning a struct key pointer
-> > > with the keyring ID as a pointer value. If such pointer is passed to any
-> > > other helper which does not check its validity, an illegal memory access
-> > > could occur.
-> > >
-> > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > > Reported-by: kernel test robot <lkp@intel.com> (cast warning)
-> > > ---
-> > >  include/uapi/linux/bpf.h       | 17 +++++++++++++++
-> > >  kernel/bpf/bpf_lsm.c           | 39 ++++++++++++++++++++++++++++++++++
-> > >  tools/include/uapi/linux/bpf.h | 17 +++++++++++++++
-> > >  3 files changed, 73 insertions(+)
-> > >
-> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > index 7bbcf2cd105d..524bed4d7170 100644
-> > > --- a/include/uapi/linux/bpf.h
-> > > +++ b/include/uapi/linux/bpf.h
-> > > @@ -5339,6 +5339,22 @@ union bpf_attr {
-> > >   *		bpf_lookup_user_key() helper.
-> > >   *	Return
-> > >   *		0
-> > > + *
-> > > + * long bpf_verify_pkcs7_signature(struct bpf_dynptr *data_ptr, struct
-> > bpf_dynptr *sig_ptr, struct key *trusted_keys, unsigned long keyring_id)
-> > > + *	Description
-> > > + *		Verify the PKCS#7 signature *sig* against the supplied *data*
-> > > + *		with keys in *trusted_keys* or in a keyring with ID
-> > > + *		*keyring_id*.
-> > 
-> > Would be nice to give precedence here so that its obvious order between
-> > trusted_keys and keyring_id.
+Jian Shen wrote:
+> The prototype of .features is netdev_features_t, it should use
+> NETIF_F_LLTX and NETIF_F_HW_VLAN_STAG_TX, not NETIF_F_LLTX_BIT
+> and NETIF_F_HW_VLAN_STAG_TX_BIT.
 > 
-> Did you mean to add at the end of the sentence:
+> Fixes: cf204a718357 ("test_bpf: Introduce 'gso_linear_no_head_frag' skb_segment test")
 > 
-> or in a keyring with ID *keyring_id*, if *trusted_keys* is NULL.
+> Signed-off-by: Jian Shen <shenjian15@huawei.com>
+> ---
 
-Yes something like this.
+Acked-by: John Fastabend <john.fastabend@gmail.com>
