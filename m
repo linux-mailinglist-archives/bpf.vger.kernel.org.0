@@ -2,54 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD378557E0E
-	for <lists+bpf@lfdr.de>; Thu, 23 Jun 2022 16:47:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 200AE557E88
+	for <lists+bpf@lfdr.de>; Thu, 23 Jun 2022 17:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231346AbiFWOrg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Jun 2022 10:47:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40814 "EHLO
+        id S231628AbiFWPWn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Jun 2022 11:22:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231157AbiFWOrf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Jun 2022 10:47:35 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED5F545ACC;
-        Thu, 23 Jun 2022 07:47:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A5B49B82422;
-        Thu, 23 Jun 2022 14:47:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29FEBC3411B;
-        Thu, 23 Jun 2022 14:47:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655995652;
-        bh=af0iae8HaeTxr0L0VH0dFIhG0wCfGGbdqwmTEFpdFTg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=isfNEgjoQSlvl5pmOxC5JC5kNZFflOZ8+t8uffUf5JRSNNaMJVds+1CLACz/XFx+Q
-         i4X1bniywgiDrRHQ4VB+k7m6SVCMrhr9rdyWvwgzdpezpzTLkaPMLd8/DrX85offbZ
-         VdUw8xh6iqhPky0Bi+HGqzAj131hNXvG94fxdP2HGH8SJYUXP5qftHG304H2hvR+ur
-         SKgESQ3lVpaxZkYsmNy8FP0jMO421F1lTy4MQuHicvJc0M7RjrRPu85O+via6YgYeU
-         m+U2DUKGERZR3hEWgiCnWcAAe06fPdy/muDE8tdgli/0VrbDkPEOget5LO44s6N4GZ
-         ucgnbwEhVM/5w==
-Date:   Thu, 23 Jun 2022 23:47:27 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Dmitry Dolgov <9erthalion6@gmail.com>
-Cc:     linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
-        songliubraving@fb.com, rostedt@goodmis.org, peterz@infradead.org,
-        mingo@redhat.com, alexei.starovoitov@gmail.com
-Subject: Re: [PATCH v3 1/1] perf/kprobe: maxactive for fd-based kprobe
-Message-Id: <20220623234727.db1dda76c11d660200b2b804@kernel.org>
-In-Reply-To: <20220622085421.k2kikjndluxfmf7q@ddolgov.remote.csb>
-References: <20220615211559.7856-1-9erthalion6@gmail.com>
-        <20220619013137.6d10a232246be482a5c0db82@kernel.org>
-        <20220622085421.k2kikjndluxfmf7q@ddolgov.remote.csb>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        with ESMTP id S230508AbiFWPWm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Jun 2022 11:22:42 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B088D3EF1A
+        for <bpf@vger.kernel.org>; Thu, 23 Jun 2022 08:22:41 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id o16so28452021wra.4
+        for <bpf@vger.kernel.org>; Thu, 23 Jun 2022 08:22:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:from:to:subject
+         :content-transfer-encoding;
+        bh=JJmoq/ZADJvfUkTIPovwoxSHG0QChe7hCEODQxUM/Co=;
+        b=h4c/iJiGDYLXiD6ONbffLtD9i1UnklYK0yUKooAgAq0MJBC3MC5olTYq1tZd5ZuwDy
+         DV0SNcM1KTUhahC4vobMO5KOBHokLhd41DiKOv6KL5HKVD2azwqIsLFfEjXNWcx6U966
+         zdC+LjBNl8GSOJvHohmhgH1cdtMP4zmftr2n5Hv0/s5DYA7jaWweSWTpdgzVn+m+CXyC
+         Rmtw4ED2UhViXBInU9B3vCAhpVE1wQRbSC4drWG3xPEptxYICBDJ9XR4y/sP32dFGUS0
+         n9qkFzgvIJEJq10OUAmZnQO/9DMVsSOHK0MyjVvKt4iNfDFJ3flRdvwsFu5XXNAXMumc
+         y6Yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:from:to:subject
+         :content-transfer-encoding;
+        bh=JJmoq/ZADJvfUkTIPovwoxSHG0QChe7hCEODQxUM/Co=;
+        b=QvfafRJewscnQvZ/usJu6G7L/JipTH05lgyEQ2A1h4bGavQdrz5w94Au0MM6+dCBcn
+         WiD6Fv3404dE52Hg3TShjejWHdyvh3nQX//VyiFTv4LaLik3hXccOXC9CudjgR4u4Q1E
+         BQ51xVSJyDJqDv61/5BO3YcyTHheo32GWhe6hkBXM6j3+mzOOH32FHVbpJSKYZ8VSgUa
+         uxN5oqADMb4jQtaRXxK0l/p4qD96hnaayLVaAHG+UnzkvvqDda+S2oImiO49YLdyEquH
+         5AGnulrnwbY9yGB68kbUYBp/L0BzQGt28X1xIZJZusznjKX3OjSTGx/Skk4yMz8IVy3f
+         LFow==
+X-Gm-Message-State: AJIora/M81zPO7h7KZYUovOW6DsddFBn7kFnEUY6RguFKRUntCBHzckI
+        XqX3z/uMrE9XH78lOeTHHODxDW+Oan8=
+X-Google-Smtp-Source: AGRyM1s4Ac1sbNHmSh8wePdnx/YPc3d+nno9ZefWrj4TOP2C8pKsQUvxVQReoriWOwx2PyRUK3ou/w==
+X-Received: by 2002:a5d:6da8:0:b0:218:510a:be9f with SMTP id u8-20020a5d6da8000000b00218510abe9fmr8890295wrs.352.1655997760194;
+        Thu, 23 Jun 2022 08:22:40 -0700 (PDT)
+Received: from DESKTOP-DLIJ48C ([39.42.130.216])
+        by smtp.gmail.com with ESMTPSA id m18-20020a05600c4f5200b0039748be12dbsm3746014wmq.47.2022.06.23.08.22.39
+        for <bpf@vger.kernel.org>
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Thu, 23 Jun 2022 08:22:39 -0700 (PDT)
+Message-ID: <62b4853f.1c69fb81.3baf3.6d0b@mx.google.com>
+Date:   Thu, 23 Jun 2022 08:22:39 -0700 (PDT)
+X-Google-Original-Date: 23 Jun 2022 11:22:41 -0400
+MIME-Version: 1.0
+From:   spencer.crosslandestimation@gmail.com
+To:     bpf@vger.kernel.org
+Subject: Quote To Bid
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.7 required=5.0 tests=BAYES_05,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,39 +67,13 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 22 Jun 2022 10:54:21 +0200
-Dmitry Dolgov <9erthalion6@gmail.com> wrote:
+Hi,=0D=0A=0D=0AWe provide estimation & quantities takeoff service=
+s. We are providing 98-100 accuracy in our estimates and take-off=
+s. Please tell us if you need any estimating services regarding y=
+our projects.=0D=0A=0D=0ASend over the plans and mention the exac=
+t scope of work and shortly we will get back with a proposal on w=
+hich our charges and turnaround time will be mentioned=0D=0A=0D=0A=
+You may ask for sample estimates and take-offs. Thanks.=0D=0A=0D=0A=
+Kind Regards=0D=0ASpencer Harrison=0D=0ACrossland Estimating, INC=
+=20
 
-> > On Sun, Jun 19, 2022 at 01:31:37AM +0900, Masami Hiramatsu wrote:
-> > On Wed, 15 Jun 2022 23:15:59 +0200
-> > Dmitrii Dolgov <9erthalion6@gmail.com> wrote:
-> >
-> > > From: Song Liu <songliubraving@fb.com>
-> > >
-> > > Enable specifying maxactive for fd based kretprobe. This will be useful
-> > > for tracing tools like bcc and bpftrace (see for example discussion [1]).
-> > > Use highest 12 bit (bit 52-63) to allow maximal maxactive of 4095.
-> >
-> > I'm not sure what environment you are considering to use this
-> > feature, but is 4095 enough, and are you really need to specify
-> > the maxactive by linear digit?
-> > I mean you may need the logarithm of maxactive? In this case, you
-> > only need 4 bits for 2 - 65546 (1 = 2^0 will be used for the default
-> > value).
-> 
-> From what I see it's capped by KRETPROBE_MAXACTIVE_MAX anyway, which
-> value is 4096. Do I miss something, is it possible to use maxactive with
-> larger values down the line?
-
-Ah, I forgot to cap the maxactive in trace_kprobe. Yes, kretprobe's
-maxactive has no limitation check (it depends on how much memory you
-can allocate in the kernel.) If you think that is not enough, you
-can expand the maximum number. Unless a huge system which runs
-a ten thoudsands of similar process/threads, 4096 will be a good
-number. So, it up to you. But personally I think the maxactive
-should be specified by log2. 
-
-Thank you,
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
