@@ -2,54 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47D585571A5
-	for <lists+bpf@lfdr.de>; Thu, 23 Jun 2022 06:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5797C5571C1
+	for <lists+bpf@lfdr.de>; Thu, 23 Jun 2022 06:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230037AbiFWEkK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Jun 2022 00:40:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56336 "EHLO
+        id S230457AbiFWEkQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Jun 2022 00:40:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345137AbiFWEPQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Jun 2022 00:15:16 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC20B43AE1
-        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 21:15:13 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id u12so38392150eja.8
-        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 21:15:13 -0700 (PDT)
+        with ESMTP id S1345163AbiFWEPf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Jun 2022 00:15:35 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60A2343AE1
+        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 21:15:33 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id g26so17020324ejb.5
+        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 21:15:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=XqaeoKxO25KFagg5Ozue/XbCJT1yNS3NZ8bCAzbaK/E=;
-        b=bPbyYVfnw6IWc9u6Jxxvb0sg4UNtVMXIz8wndaV5i95hZebrQfA/OkYbRykLjwhmN4
-         zhVqP1mnDrEf+uBCh/if5HsJvTYFej8PKYqlMnQLIFmtwIdggWHwx+OA9kzJtMymAMsH
-         D1UI2k8pBHkWJrKAatZcoMnoFokGzi6h/7/1aifftA+WcnYi401K9OwohgQ/PjbmoiBK
-         ICVplijuWTcwaNkExLVf5d0NUbXSVnKGjseuonZV/VCttpU0vm+zxtjWveP8mSp/s+Qx
-         PAJV7jRIv1QDRW6yqgumWUYEvJo8jJrxLQtJ4bz6fw32qNcubf4BKyCu4w01M/BPtyBb
-         ZF8w==
+        bh=78rZhP2i9bdPK9r2fiQ66uipcMHv7v9gQuH9nlkZQfs=;
+        b=VDXIzg86qcVyLt22oZ+0yoKUVC+Z4f3km2+D2fqQALkkEY8jSfTkLuVHNq8UcAoPs5
+         xKlHYFooBDXMQ2RTPp13uH9dYsHbs3siuXwz7S6iSfEWwuY1EdsQOUA4UYWvHJL+ysHG
+         ANCTxVK4KUMXUHNXzU2OH7OFGY9mZv/lM4WcinIpzGKUSqpGmuNOnJNgZnaA5cukA0fk
+         k6C1LUVJbNOGHQePZ6aV0PaVzNVx5mI1WqsxRpHEAgoWAJ7VOlseMBRxghDjKvsbhpGp
+         J80IisvyptPOt7k+RlN2vVjkHXNUKiJjRsIst4ItPzcNELmVtAwU8sX1zLRn2abiIAvA
+         2Mgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=XqaeoKxO25KFagg5Ozue/XbCJT1yNS3NZ8bCAzbaK/E=;
-        b=vr4lXXvJt5uF2W5Z0wH/oeftlyUx1gws+Ty7uPDjmyNc7g4+lY6CfuZUflm6oCJmQA
-         4LQjrsS9gyOW7ps0HpPazguvLpmrT5iEovsBAiXW0ouqQ0Ds06QwB61nPR2akfsBR1oC
-         IdgGFGTI3qi4NXtmnI2IZIshCTRlmORmyuii8a1+1Aj9BIB1Thf31LPkKb6KQ1NtlAmL
-         +SPoHfrFcWZCDebhc/HtnJaf/iA1JN3eXpIgqn+0WPimM3g1sEWMCnEeilEefG91dUp2
-         hxzPcURt8T3eWNorUQW5Ns0SuU0AfTvXXHQ0bMcwVaiU3Lx6XfFGUa2ba/kFkSl3dp8b
-         GMZA==
-X-Gm-Message-State: AJIora9DA0OEDxRGy99J44GeAxKZJDlT3NrbXeetSmID5RcOyKtJGptV
-        cJoRDctVjxBnnqt/7MS8jW1x1Y8hm7MzFJeP/QE=
-X-Google-Smtp-Source: AGRyM1ucDWZM8aGEHYf9OLwiP+V0JAagjWYoZho9Gcw5goQz10H5fgntD2l/sLtNegA383Iy8m+Ws6A0/vd4LC9DLgs=
-X-Received: by 2002:a17:907:ea5:b0:722:d031:cf3d with SMTP id
- ho37-20020a1709070ea500b00722d031cf3dmr6252414ejc.226.1655957712248; Wed, 22
- Jun 2022 21:15:12 -0700 (PDT)
+        bh=78rZhP2i9bdPK9r2fiQ66uipcMHv7v9gQuH9nlkZQfs=;
+        b=gbm6XCxIuKcTW5KDuW1+2YZ11dULd+YcT+Thn2bQkKF67wlqUilpyak20YD08kCpBE
+         zjcdJY8H/piCTsg5IIXSTc8+wOgv4IjgPB4SSVuHyygTKG3LzLDExnMx+5P8rfcxNzlN
+         zwXgpwItO+fyfaFleMsWnyfY7HbeXevTj7J44xaKo4XCBarANxmgAoQN6WRXZ6o881g3
+         f+dl43G4iDCZGElnBBZBsqDalSs2RUezfgVVkOAKC3vkA+O9o1B9l1oeHNrmpfWx9vWe
+         xWEJNnm/Y0vlS2IhwRXmbK0FPO9nptI5A0HuRv3SueW2BmHXUJWOzuJgRbYplJt9p2Km
+         P/nQ==
+X-Gm-Message-State: AJIora8R49djWuLQJ20Zrb4CKJvIEKF76gHyuMH890NLq48DXCiHAukf
+        anfxdDQ223aYKcYQ2TPZAL/5pSSv32yhdVfSZS0=
+X-Google-Smtp-Source: AGRyM1u1il2vGOhWAbXxsTaGJ8DVyz2kuL+dRfY7nzXa06HfF5hN8RHpVgyMjDhVhU7d6zqEAF3QdfbEVC5eN0lmub0=
+X-Received: by 2002:a17:906:3f51:b0:712:3945:8c0d with SMTP id
+ f17-20020a1709063f5100b0071239458c0dmr6214859ejj.302.1655957732001; Wed, 22
+ Jun 2022 21:15:32 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220622173506.860578-1-deso@posteo.net> <20220622173506.860578-2-deso@posteo.net>
-In-Reply-To: <20220622173506.860578-2-deso@posteo.net>
+ <20220622221921.q65wjyirsaqhvg4h@muellerd-fedora-MJ0AC3F3>
+In-Reply-To: <20220622221921.q65wjyirsaqhvg4h@muellerd-fedora-MJ0AC3F3>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 22 Jun 2022 21:15:01 -0700
-Message-ID: <CAEf4Bzbe-r+G00Zy-wTFE+Y765BtmaTNHYdjoXc91XNwzuJWWQ@mail.gmail.com>
+Date:   Wed, 22 Jun 2022 21:15:20 -0700
+Message-ID: <CAEf4BzZqBvvzY8qrgmddkPPXeSeEqi73jh_O-LwHyQ4LCTP-7w@mail.gmail.com>
 Subject: Re: [PATCH bpf-next 1/2] libbpf: Move core "types_are_compat" logic
  into relo_core.c
 To:     =?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>
@@ -69,72 +70,44 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 22, 2022 at 10:35 AM Daniel M=C3=BCller <deso@posteo.net> wrote=
-:
+On Wed, Jun 22, 2022 at 3:19 PM Daniel M=C3=BCller <deso@posteo.net> wrote:
 >
-> This change merges the two existing implementations of the
-> bpf_core_types_are_compat() function into relo_core.c, inheriting the
-> recursion tracking from the kernel and the usage of
-> btf_kind_core_compat() from libbpf. The kernel is left untouched and
-> will be adjusted subsequently.
+> On Wed, Jun 22, 2022 at 05:35:05PM +0000, Daniel M=C3=BCller wrote:
+> > diff --git a/tools/lib/bpf/relo_core.c b/tools/lib/bpf/relo_core.c
+> > index 6ad3c3..e54370 100644
+> > --- a/tools/lib/bpf/relo_core.c
+> > +++ b/tools/lib/bpf/relo_core.c
+> > @@ -141,6 +141,84 @@ static bool core_relo_is_enumval_based(enum bpf_co=
+re_relo_kind kind)
+> >       }
+> >  }
+> >
+> > +int bpf_core_types_are_compat_recur(const struct btf *local_btf, __u32=
+ local_id,
+> > +                                 const struct btf *targ_btf, __u32 tar=
+g_id, int level)
+> > +{
 >
-> Signed-off-by: Daniel M=C3=BCller <deso@posteo.net>
-> ---
-
-I don't feel very strongly about this, but given we are consolidating
-kernel and libbpf code, I think it makes sense to do it in one patch.
-
->  tools/lib/bpf/libbpf.c    | 72 +-----------------------------------
->  tools/lib/bpf/relo_core.c | 78 +++++++++++++++++++++++++++++++++++++++
->  tools/lib/bpf/relo_core.h |  2 +
->  3 files changed, 81 insertions(+), 71 deletions(-)
+> [...]
 >
-
-[...]
-
-> -       default:
-> -               pr_warn("unexpected kind %s relocated, local [%d], target=
- [%d]\n",
-> -                       btf_kind_str(local_type), local_id, targ_id);
-> -               return 0;
-> -       }
-> +       return bpf_core_types_are_compat_recur(local_btf, local_id, targ_=
-btf, targ_id, INT_MAX);
-
-INT_MAX seems like an overkill, let's just hard-code 32 just like we
-have for a local recursion limit here?
-
->  }
+> > +
+> > +             /* tail recurse for return type check */
+> > +             skip_mods_and_typedefs(local_btf, local_type->type, &loca=
+l_id);
+> > +             skip_mods_and_typedefs(targ_btf, targ_type->type, &targ_i=
+d);
+> > +             goto recur;
+> > +     }
+> > +     default:
+> > +             return 0;
 >
+> I actually left out the pr_warn here (present in libbpf but not the kerne=
+l). I
+> suppose it would be best to carry it over from libbpf?
 
-[...]
+Yes, please.
 
->  /*
->   * Turn bpf_core_relo into a low- and high-level spec representation,
->   * validating correctness along the way, as well as calculating resultin=
-g
-> diff --git a/tools/lib/bpf/relo_core.h b/tools/lib/bpf/relo_core.h
-> index 7df0da0..b8998f 100644
-> --- a/tools/lib/bpf/relo_core.h
-> +++ b/tools/lib/bpf/relo_core.h
-> @@ -68,6 +68,8 @@ struct bpf_core_relo_res {
->         __u32 new_type_id;
->  };
+
 >
-> +int bpf_core_types_are_compat_recur(const struct btf *local_btf, __u32 l=
-ocal_id,
-> +                                   const struct btf *targ_btf, __u32 tar=
-g_id, int level);
-
-Just leave it called __bpf_core_types_are_compat like in kernel, it is
-clearly an "internal" version of bpf_core_types_are_compat(), so it's
-more proper naming convention.
-
-
->  int bpf_core_types_are_compat(const struct btf *local_btf, __u32 local_i=
-d,
->                               const struct btf *targ_btf, __u32 targ_id);
->
-> --
-> 2.30.2
->
+> Thanks,
+> Daniel
