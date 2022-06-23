@@ -2,144 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16C7C556EEC
-	for <lists+bpf@lfdr.de>; Thu, 23 Jun 2022 01:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 318E7556F75
+	for <lists+bpf@lfdr.de>; Thu, 23 Jun 2022 02:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234198AbiFVXQn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Jun 2022 19:16:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34588 "EHLO
+        id S233608AbiFWAch (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jun 2022 20:32:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377128AbiFVXQl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Jun 2022 19:16:41 -0400
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B506A41F9D;
-        Wed, 22 Jun 2022 16:16:28 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 2342E3200564;
-        Wed, 22 Jun 2022 19:16:26 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Wed, 22 Jun 2022 19:16:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
-        cc:cc:content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm2; t=1655939785; x=1656026185; bh=zObwhBmn5V
-        RZQhkN+fOHap5f7+dJvPSHPdfpoTMXBqo=; b=Uadwy22QHZ5Zza1m0x2J1u6xkk
-        9IyYmOPRBeHqH93r7Tt2EcJvOOz5gF+Sp5tn/2dlBsUzNunGEpksWJxxdEaiTo+6
-        ydqW+ADPtCWA2INADQcJq4ySnQof99E4w6OgQUo01fwtUY5P+56i/tlY7LGVpp2O
-        bTqi+6xe6VMsRywO489lFgXl5U7COMpjQFCX/SAbTaSz7T7ZRco/ff2aKnIr7WNJ
-        TxeirXij9NOg5818MV2nQubMsYuqdQ1jyewR2s4D4RbMrKMtgglXoZ4P1gg6iIHA
-        IeuaSAfGuQDSnoCME/ya6QPK80+Hrw+BcFgm7OQOD0rIkepn0e8DVvnLNX2Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; t=1655939785; x=1656026185; bh=zObwhBmn5VRZQhkN+fOHap5f7+dJ
-        vPSHPdfpoTMXBqo=; b=XkpsJ1g+PBFOJbsZE3VfVl1Vn6L/ZwLtJeZuBeqyIt1K
-        8PvBdBV80Hb9jOPyCflrSP0Dpo1skHpP4rhp38TmsjgchStOHl5RRzZCc7GZu+8U
-        WDGszuHAomf8fuGwfuqc0CXGrxN5g/BO/fjwdf01vojlutLXEUl3OKO6OTiMH+IF
-        5MNveS+D5kWxd3jqmhjbWgrjCgRfUlJyA77pEG4e9gIs8ow/6EmxPe7b4S3AL3pC
-        HeJ5nvRzy6LHPFMktwKNSQb9DyyGNiY1U8x+ukgHWwUZLMDCXMAASBsqUx20wYwH
-        Z34Csdy9oDpvSU3ZB9LgDw/u3M57K8tz3H64EAEPPg==
-X-ME-Sender: <xms:yaKzYk8wAPOFdIyCYIenqmBHBmUXDJqA747EBLN54HmNPPqukZldvg>
-    <xme:yaKzYsunRfV5OKV3dX9ueS8ID1mcn1Zl8xaacdRvWdRdQGcoOCsTzIZvh8FomgF_M
-    Fb2cG4nrYm58iCGhQ>
-X-ME-Received: <xmr:yaKzYqAr7bPeybU5EqYgouUQ8HSu43HxqoSLy7CF12BhoZYh51LrBEUPxA1WaCJ4UPxBC-7B6cHpI5g2Uk-s49zJxml0jaWilc7DuVcUhHEWW7NSy0HJh5PcEd85>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudefiedgvddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomheptehnughr
-    vghsucfhrhgvuhhnugcuoegrnhgurhgvshesrghnrghrrgiivghlrdguvgeqnecuggftrf
-    grthhtvghrnhepueelhedvkeehvddvgeevleektefhteefueefhefhteeigffgtdegkeek
-    geeigeeunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhgurhgvshesrghnrghrrgiivghl
-    rdguvg
-X-ME-Proxy: <xmx:yaKzYke_kO2ZHdKWQrbqWt-xD3-43BDRJkaK6eWOsmPjBUlt6SvkIw>
-    <xmx:yaKzYpP_MlZcAlE-halNcNedh0WZKhNykyLVN823M3Z9WzrLFa7icQ>
-    <xmx:yaKzYul_vxvxWWh0FSWpyhsJ-THQ6hDgtp5yazf-PnHLAPsoGcFLLQ>
-    <xmx:yaKzYqqZdp3Jj5jb89ilfvw0Nz3ry2um3i6Kv5YYXOR1xyOxdfvdvQ>
-Feedback-ID: id4a34324:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 22 Jun 2022 19:16:25 -0400 (EDT)
-Date:   Wed, 22 Jun 2022 16:16:24 -0700
-From:   Andres Freund <andres@anarazel.de>
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Andrew Burgess <aburgess@redhat.com>
-Subject: Re: init_disassemble_info() signature changes causes compile failures
-Message-ID: <20220622231624.t63bkmkzphqvh3kx@alap3.anarazel.de>
-References: <20220622181918.ykrs5rsnmx3og4sv@alap3.anarazel.de>
- <CACdoK4LeRPkACejq87VLFgP-b=y1ZoRX3196f7xEVo-UWm8jWA@mail.gmail.com>
+        with ESMTP id S236540AbiFWAcg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Jun 2022 20:32:36 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BCB241639
+        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 17:32:35 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id r66so11642972pgr.2
+        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 17:32:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0OlBtbHx2pJ20jGrnc2KSnXpq7kmRYHkUCtKtQop8ug=;
+        b=led+H5AtWo5wFkwszCJHc/G09wwQw7viWLV5cmgHGOJAib/s4kQ/1cjjU0XnWaUA/i
+         Qd21F3nc+p5WeSjlTNrO3h9Rq+Hz1LgVcUzF8jKWgVqDNSPd4omS5NIzzfZXCnC0nM96
+         TOxiFwUI2oetqbBJUhOcBImR1/7RHEw18s/p7qxf2mXm+zy2+Bm/gGGU9zhdf2vDH/VH
+         tjt/32spKPaytkQbQjLajE9zvhKweBW+mJWF5Vb5QGRttLyrKr8XYWOWVbLgTlClf2vl
+         pU6wNAo/kV+EOgfeHhbWy6NiwDuj5y89OC1JCNt5A2P0XkrE18K989lnPkxKOnH0jn9b
+         HGrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0OlBtbHx2pJ20jGrnc2KSnXpq7kmRYHkUCtKtQop8ug=;
+        b=N92rCRGheLjuBzeMH6Boghjp9KMgYP3LfULr8BFCb0D6ku1iFfBwgGQvZCK8RIpFe1
+         +HCfVUii2LEbXCD/nK0df/DoGgq7FQ+7C7DHvGI/MZFpZ2vwQqhlESW29d4qUYmzSSnd
+         731Z0QozqWiJMdWyEjaQiTfkn0vyPaQFC87TfU5ovL138P2PUjSe0kouNJiUO4kDWUb1
+         8txerE8aSffd1sdYj8Yd+0ExFqIoFbW8TKfiGXKLOheYo8MewjjJHCWlwHD4VO/A7P2w
+         7wImIvHKmumlMsyHCVeBLdtrwCFQfSQWQgG07VuX1UKLVE/vdxj6DH/rj0Bt23ZwjbeL
+         Y6vA==
+X-Gm-Message-State: AJIora+sdmsVkvemNMiy3QdhUgFlzy3V8shDTnR5AqiH1yqKLf13krd2
+        Mhhq7dFQCzCr7iUObkSDJYI=
+X-Google-Smtp-Source: AGRyM1sqCAP7EEZZYBHbnA2w0H920/VjFgybOsBBnNd6Z2DN0tjyf9EfSYCMMzpRCSSUPx84vRFS1g==
+X-Received: by 2002:a65:464a:0:b0:408:b022:877a with SMTP id k10-20020a65464a000000b00408b022877amr5116333pgr.78.1655944354769;
+        Wed, 22 Jun 2022 17:32:34 -0700 (PDT)
+Received: from macbook-pro-3.dhcp.thefacebook.com ([2620:10d:c090:400::5:29cb])
+        by smtp.gmail.com with ESMTPSA id ay21-20020a056a00301500b005251ec8bb5bsm7975101pfb.199.2022.06.22.17.32.33
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Wed, 22 Jun 2022 17:32:34 -0700 (PDT)
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     davem@davemloft.net
+Cc:     daniel@iogearbox.net, andrii@kernel.org, tj@kernel.org,
+        kafai@fb.com, bpf@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH bpf-next 0/5] bpf: BPF specific memory allocator.
+Date:   Wed, 22 Jun 2022 17:32:25 -0700
+Message-Id: <20220623003230.37497-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACdoK4LeRPkACejq87VLFgP-b=y1ZoRX3196f7xEVo-UWm8jWA@mail.gmail.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+From: Alexei Starovoitov <ast@kernel.org>
 
-On 2022-06-22 23:53:58 +0100, Quentin Monnet wrote:
-> Too bad the libbfd API is changing again :/
+Introduce any context BPF specific memory allocator.
 
-Yea, not great. Particularly odd that
-/* For compatibility with existing code.  */
-#define INIT_DISASSEMBLE_INFO(INFO, STREAM, FPRINTF_FUNC, FPRINTF_STYLED_FUNC)  \
+Tracing BPF programs can attach to kprobe and fentry. Hence they
+run in unknown context where calling plain kmalloc() might not be safe.
+Front-end kmalloc() with per-cpu per-bucket cache of free elements.
+Refill this cache asynchronously from irq_work.
 
-was changed. Leaving the "For compatibility with existing code." around,
-despite obviously not providing compatibility...
+There is a lot more work ahead, but this set is useful base.
+Future work:
+- get rid of call_rcu in hash map
+- get rid of atomic_inc/dec in hash map
+- tune watermarks per allocation size
+- adopt this approach alloc_percpu_gfp
+- expose bpf_mem_alloc as uapi FD to be used in dynptr_alloc, kptr_alloc
+- add sysctl to force bpf_mem_alloc in hash map when safe even if pre-alloc
+  requested to reduce memory consumption
+- convert lru map to bpf_mem_alloc
 
-CCed the author of that commit, maybe worth fixing?
+Alexei Starovoitov (5):
+  bpf: Introduce any context BPF specific memory allocator.
+  bpf: Convert hash map to bpf_mem_alloc.
+  selftests/bpf: Improve test coverage of test_maps
+  samples/bpf: Reduce syscall overhead in map_perf_test.
+  bpf: Relax the requirement to use preallocated hash maps in tracing
+    progs.
 
-Given that disassemble_set_printf() was added, it seems like it'd have been
-easy to not change init_disassemble_info() / INIT_DISASSEMBLE_INFO() and
-require disassemble_set_printf() to be called to get styled printf support.
+ include/linux/bpf_mem_alloc.h           |  26 ++
+ kernel/bpf/Makefile                     |   2 +-
+ kernel/bpf/hashtab.c                    |  16 +-
+ kernel/bpf/memalloc.c                   | 512 ++++++++++++++++++++++++
+ kernel/bpf/verifier.c                   |  31 +-
+ samples/bpf/map_perf_test_kern.c        |  22 +-
+ tools/testing/selftests/bpf/test_maps.c |  38 +-
+ 7 files changed, 610 insertions(+), 37 deletions(-)
+ create mode 100644 include/linux/bpf_mem_alloc.h
+ create mode 100644 kernel/bpf/memalloc.c
 
+-- 
+2.30.2
 
-> > The fix is easy enough, add a wrapper around fprintf() that conforms to the
-> > new signature.
-> >
-> > However I assume the necessary feature test and wrapper should only be added
-> > once? I don't know the kernel stuff well enough to choose the right structure
-> > here.
-> 
-> We can probably find a common header for the wrapper under
-> tools/include/. One possibility could be a new header under
-> tools/include/tools/, like for libc_compat.h. Although personally I
-> don't mind too much about redefining the wrapper several times given
-> how short it is, and because maybe some tools could redefine it anyway
-> to use colour output in the future.
-
-I'm more bothered by duplicating the necessary ifdefery than duplicating the
-short fprintf wrapper...
-
-
-> The feature test would better be shared, it would probably be similar
-> to what was done in the following commit to accommodate for a previous
-> change in libbfd:
-> 
->     https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fb982666e380c1632a74495b68b3c33a66e76430
-
-Ah, beautiful hand-rolled feature tests :)
-
-
-> > Attached is my local fix for perf. Obviously would need work to be a real
-> > solution.
-> 
-> Thanks a lot! Would you be willing to submit a patch for the feature
-> detection and wrapper?
-
-I'll give it a go, albeit probably not today.
-
-Greetings,
-
-Andres Freund
