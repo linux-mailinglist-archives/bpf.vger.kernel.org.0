@@ -2,107 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB715571B4
-	for <lists+bpf@lfdr.de>; Thu, 23 Jun 2022 06:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C69995571B3
+	for <lists+bpf@lfdr.de>; Thu, 23 Jun 2022 06:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229686AbiFWEjt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Jun 2022 00:39:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38924 "EHLO
+        id S230314AbiFWEjg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Jun 2022 00:39:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238983AbiFWD3z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Jun 2022 23:29:55 -0400
-Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC453584F
-        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 20:29:54 -0700 (PDT)
-Date:   Wed, 22 Jun 2022 20:29:43 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1655954992;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7m7PQ41eyC1auFWCI8Zpow+ZtCZNE5Ds6mZn3mJOYLE=;
-        b=gqcrSqAIqvA4tGnnDQSdrA4QcBbGIY4GjjVlUblJoFA6Ga6YgvXJiLKzSMQzckepJfBCGh
-        6ymvLL545ttlYYvLsqsmxCJscoLt+9n+UwUoDNDvJNzjzj/9uup/3ZvspazXP9RaXTMg2r
-        Xom5H1CZu6Teuici16/sjaWd7KXrLdQ=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        quentin@isovalent.com, hannes@cmpxchg.org, mhocko@kernel.org,
-        shakeelb@google.com, songmuchun@bytedance.com,
-        akpm@linux-foundation.org, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, iamjoonsoo.kim@lge.com, vbabka@suse.cz,
-        linux-mm@kvack.org, bpf@vger.kernel.org
-Subject: Re: [RFC PATCH bpf-next 00/10] bpf, mm: Recharge pages when reuse
- bpf map
-Message-ID: <YrPeJ5L5mSI/MqrP@castle>
-References: <20220619155032.32515-1-laoar.shao@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220619155032.32515-1-laoar.shao@gmail.com>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        with ESMTP id S240771AbiFWDhR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Jun 2022 23:37:17 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF1A436155;
+        Wed, 22 Jun 2022 20:37:16 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id p3-20020a17090a428300b001ec865eb4a2so1256728pjg.3;
+        Wed, 22 Jun 2022 20:37:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=KYNLoM6OlEsOl9RGsNpTi6ZntIlmfhhXqJ1nIViCbJQ=;
+        b=iZIQWR+Aag78WcApUrSCQOmM60KmHwBGPVbXctBC6lirexHofTRjfbzjeFnnZurh2B
+         3fQKpsbPYH+W8i1OzIFjtOZi/QLzF3lrGDJ6QC8lhLheuAsBj4CFQ8lekzGHS2bOs2yD
+         ubjVd7Uz5OmFPkRMrJrnbynVDmGdzPKSqeK8GKSP1DBnetPLEPXrkTGUhq/EFO9SDpZr
+         6esfYoCacWIzY3I28zvQoNMND652iaD70tTxbDSbnwrOMq9/kwmvh2/tpWeTW2aX86aA
+         zfAewdgNMnjVTD4Qw0NU0X6K5kr4e8W+v5VyYfY3PUXWuz4E9JJJhw3sRv2dmhDxYnZd
+         lWyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=KYNLoM6OlEsOl9RGsNpTi6ZntIlmfhhXqJ1nIViCbJQ=;
+        b=0iuVjdnNYTUknxDi4jhC1POzCMygh2vjTafopX3glnE/D3iY/QRZMjPDkvcwy+pkfz
+         C0VttDE2ogIDb74sHr6Xx8/uWDeJ2qod+UzHz2N14X6Bp8q9+xDDE17XEcvsBsAYD4Oc
+         pJmwbB4LFCE0EPvt0aqxeuZAJhKVa/d7DnB4ESOKF0S4yrju1bOgB7cvqG6Rhu+5HRVa
+         Cb9XyTZ69VDt25ululN0neTP77IBHoC7hha3TnCaMJGfIynoPPJfJZYVTLfKi/JK94TG
+         7XgVOgCQSTvmXyiLOJSeV4jrKaAZgNUNYaxNGIlXdrn+XHpjKqneeWw+9DTmW26Efx6B
+         WSOw==
+X-Gm-Message-State: AJIora+1myUQel8Y4ja6sATcrRV89a+KTDjJw6CFSppHSfN/f3/X1j5u
+        mVbxvqshib7b6V9c9yX4SwmzGLIXEu6SLA==
+X-Google-Smtp-Source: AGRyM1sJec17Ley3ioCU511oMWlFJPlqtB0xifo802yLKNfnlq8KmtHa1x+W/rHzggvvWIbJDak/zw==
+X-Received: by 2002:a17:90b:38c3:b0:1ec:cb07:f216 with SMTP id nn3-20020a17090b38c300b001eccb07f216mr1823373pjb.168.1655955436339;
+        Wed, 22 Jun 2022 20:37:16 -0700 (PDT)
+Received: from localhost ([98.97.116.244])
+        by smtp.gmail.com with ESMTPSA id c18-20020a170902b69200b00168eb15f4c1sm13579227pls.210.2022.06.22.20.37.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Jun 2022 20:37:16 -0700 (PDT)
+Date:   Wed, 22 Jun 2022 20:37:14 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Chuang W <nashuiliang@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Chuang W <nashuiliang@gmail.com>,
+        Jingren Zhou <zhoujingren@didiglobal.com>
+Message-ID: <62b3dfeae3f40_6a3b2208a3@john.notmuch>
+In-Reply-To: <20220621073233.53776-1-nashuiliang@gmail.com>
+References: <20220621073233.53776-1-nashuiliang@gmail.com>
+Subject: RE: [PATCH v2] libbpf: Cleanup the kprobe_event on failed
+ add_kprobe_event_legacy()
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jun 19, 2022 at 03:50:22PM +0000, Yafang Shao wrote:
-> After switching to memcg-based bpf memory accounting, the bpf memory is
-> charged to the loader's memcg by default, that causes unexpected issues for
-> us. For instance, the container of the loader may be restarted after
-> pinning progs and maps, but the bpf memcg will be left and pinned on the
-> system. Once the loader's new generation container is started, the leftover
-> pages won't be charged to it. That inconsistent behavior will make trouble
-> for the memory resource management for this container.
+Chuang W wrote:
+> Before the 0bc11ed5ab60 commit ("kprobes: Allow kprobes coexist with
+> livepatch"), in a scenario where livepatch and kprobe coexist on the
+> same function entry, the creation of kprobe_event using
+> add_kprobe_event_legacy() will be successful, at the same time as a
+> trace event (e.g. /debugfs/tracing/events/kprobe/XX) will exist, but
+> perf_event_open() will return an error because both livepatch and kprobe
+> use FTRACE_OPS_FL_IPMODIFY.
 > 
-> In the past few days, I have proposed two patchsets[1][2] to try to resolve
-> this issue, but in both of these two proposals the user code has to be
-> changed to adapt to it, that is a pain for us. This patchset relieves the
-> pain by triggering the recharge in libbpf. It also addresses Roman's
-> critical comments.
+> With this patch, whenever an error is returned after
+> add_kprobe_event_legacy(), this ensures that the created kprobe_event is
+> cleaned.
 > 
-> The key point we can avoid changing the user code is that there's a resue
-> path in libbpf. Once the bpf container is restarted again, it will try
-> to re-run the required bpf programs, if the bpf programs are the same with
-> the already pinned one, it will reuse them.
-> 
-> To make sure we either recharge all of them successfully or don't recharge
-> any of them. The recharge prograss is divided into three steps:
->   - Pre charge to the new generation 
->     To make sure once we uncharge from the old generation, we can always
->     charge to the new generation succeesfully. If we can't pre charge to
->     the new generation, we won't allow it to be uncharged from the old
->     generation.
->   - Uncharge from the old generation
->     After pre charge to the new generation, we can uncharge from the old
->     generation.
->   - Post charge to the new generation
->     Finnaly we can set pages' memcg_data to the new generation. 
-> In the pre charge step, we may succeed to charge some addresses, but fail
-> to charge a new address, then we should uncharge the already charged
-> addresses, so another recharge-err step is instroduced.
->  
-> This pachset has finished recharging bpf hash map. which is mostly used
-> by our bpf services. The other maps hasn't been implemented yet. The bpf
-> progs hasn't been implemented neither.
+> Signed-off-by: Chuang W <nashuiliang@gmail.com>
+> Signed-off-by: Jingren Zhou <zhoujingren@didiglobal.com>
+> ---
+>  tools/lib/bpf/libbpf.c | 12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
 
-Without going into the implementation details, the overall approach looks
-ok to me. But it adds complexity and code into several different subsystems,
-and I'm 100% sure it's not worth it if we talking about a partial support
-of a single map type. Are you committed to implement the recharging
-for all/most map types and progs and support this code in the future?
+I think we want to improve the commit message otherwise I'm sure we will
+stumble on this in the future and from just above its tricky to follow.
+I would suggest almost verbatim the description you gave in reply to
+my question. Just cut'n'pasting your text together with minor edit
+glue,
 
-I'm still feeling you trying to solve a userspace problem in the kernel.
-Not saying it can't be solved this way, but it seems like there are
-easier options.
+"
+ The legacy kprobe API (i.e. tracefs API) has two steps:
+ 
+ 1) register_kprobe
 
-Thanks!
+ $ echo 'p:mykprobe XXX' > /sys/kernel/debug/tracing/kprobe_events
+
+ This will create a trace event of mykprobe and register a disable
+ kprobe that waits to be activated.
+ 
+ 2) enable_kprobe
+
+ 2.1) using syscall perf_event_open as the following code,
+ perf_event_kprobe_open_legacy (file: tools/lib/bpf/libbpf.c):
+ ---
+ attr.type = PERF_TYPE_TRACEPOINT;
+ pfd = syscall(__NR_perf_event_open, &attr,
+               pid < 0 ? -1 : pid, /* pid */
+               pid == -1 ? 0 : -1, /* cpu */
+               -1 /* group_fd */,  PERF_FLAG_FD_CLOEXEC);
+ ---
+
+ In the implementation code of perf_event_open, enable_kprobe() will be executed.
+
+ 2.2) using shell
+
+ $ echo 1 > /sys/kernel/debug/tracing/events/kprobes/mykprobe/enable
+
+ As with perf_event_open, enable_kprobe() will also be executed.
+ 
+ When using the same function XXX, kprobe and livepatch cannot coexist,
+ that is, step 2) will return an error (ref: arm_kprobe_ftrace()),
+ however, step 1) is ok! The new kprobe API (i.e. perf kprobe API)
+ aggregates register_kprobe and enable_kprobe, internally fixes the
+ issue on failed enable_kprobe.
+
+ To fix: before the 0bc11ed5ab60 commit ("kprobes: Allow kprobes coexist with
+ livepatch"), in a scenario where livepatch and kprobe coexist on the
+ same function entry, the creation of kprobe_event using
+ add_kprobe_event_legacy() will be successful, at the same time as a
+ trace event (e.g. /debugfs/tracing/events/kprobe/XX) will exist, but
+ perf_event_open() will return an error because both livepatch and kprobe
+ use FTRACE_OPS_FL_IPMODIFY.
+ 
+ With this patch, whenever an error is returned after
+ add_kprobe_event_legacy(), this ensures that the created kprobe_event is
+ cleaned.
+"
+
+Thanks,
+John
