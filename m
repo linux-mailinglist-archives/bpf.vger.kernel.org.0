@@ -2,102 +2,178 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C91D05582AA
-	for <lists+bpf@lfdr.de>; Thu, 23 Jun 2022 19:18:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C8255587D6
+	for <lists+bpf@lfdr.de>; Thu, 23 Jun 2022 20:53:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231411AbiFWRSv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Jun 2022 13:18:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60212 "EHLO
+        id S231527AbiFWSwc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Jun 2022 14:52:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233879AbiFWRSP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Jun 2022 13:18:15 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD8189D1F
-        for <bpf@vger.kernel.org>; Thu, 23 Jun 2022 10:00:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 86E4461573
-        for <bpf@vger.kernel.org>; Thu, 23 Jun 2022 17:00:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id BCAA4C341C4;
-        Thu, 23 Jun 2022 17:00:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656003614;
-        bh=tGY5b5h9pFCyQMhgOcTawZNfc8Es5adYT4oNwRSQoN0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=G4Qc8h6d59OVLlVDeCDMeAkTC84RBdnhWR/HuTQDVUEu9shbGdIH7r2cJVe00Zp0u
-         9pwF731uxdTvXa3bQ6sRp/sEmX2BXQUOiGJrcBxx0aQwqTaDLYZCj+M/oW/uv/ATHe
-         siEKnXh/520jhS0qmTemHCkcZHSxLxZ5uMjl7l62at3yyujHhBDPWEOpRE2qZlogtK
-         H6VWx5BfBLK3n3SkuU1VyYCaUQvjg6xPUN7cQPfSFdLawxLYzpM6KNSclj18Y4VMDl
-         xMGG+BFXGuLQnYsLCZHpS8h+LFr6ToTZWvmCnykZZO1xmOrh2y3CLX/+he/GzfHxTS
-         XgDnGTEmsiKqg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A2621E7BA3C;
-        Thu, 23 Jun 2022 17:00:14 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S239675AbiFWSwN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Jun 2022 14:52:13 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D6A0FE014
+        for <bpf@vger.kernel.org>; Thu, 23 Jun 2022 10:57:08 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id t5so10188337eje.1
+        for <bpf@vger.kernel.org>; Thu, 23 Jun 2022 10:57:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L3o7lvY9y14bRaUXUMDEqnxgARMhV76ElzGzrTEpkW0=;
+        b=RYZEP/Lj3xajAVAEazBpjfQCYGrtpz7YPf2qY3DjFckdAGo6THiKtoCPrJn3QhF1LC
+         etmVnVLCC9WmeaTkdFnleguA3XoI57Oiy2HgKUttcgDw1SApH9PpdI1XxBAUiD2iieU0
+         zYHuOANDJ5C6hcbY85cMbIqCtDsF7F9p93LF0eVQJ+ODxNrz+80htwXBL4ahLHn+aqu1
+         iP2yZLVpsVerxGhvLuh92ydNL8XWAtayZD0Bb/RWgFxWRnIoXWzvsOcJjZavzBupLB3G
+         2yfyneZTa/pd/tRcNk7Ic99pbkjC6nPAvXDrejI90kjO8nKEK/kNh9Cvh3I9uzJ7QQo3
+         4Kzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L3o7lvY9y14bRaUXUMDEqnxgARMhV76ElzGzrTEpkW0=;
+        b=geHxcl0tU2oVBeUJzK1V002Iv9bmuwUURMTkOI5oPcuAlFZfGCD8Yiwl3QR2qV1mts
+         HVymq6UHQ114qPAir1te1uVbLFDvJgVNpKPu2gGWGy2UXTQQAnyjC4/tFL62p8ksUD2W
+         PpezZTuTMRPAUrp/BhEa3v99/cQL/557RiKyUpB4aP8SYwVg8hQrRqO2A5V9o6sG/jt4
+         8kaExFHhdKYYqGFZufZB9sY1GBl0Em3PzGv76GG/HXlrf9cnv7d/kxOUB5U+NHZCJlNK
+         z3SBZnxX6Sdl8ieiJYpLmsXIwkLnAhUovRkQQslfuwhUg9bT2coLaFld9xc+aOCA347/
+         YxLA==
+X-Gm-Message-State: AJIora+PKFETz78d144ixjcaMRAQnnm5WHIgQB38k77jK27/4caTYwm4
+        k8VYd3fnS8vn+WM+XYFpGmP7EoT5n02BG1H2bX4=
+X-Google-Smtp-Source: AGRyM1uBYizx0FuZ0GNlk6No3NcgioOCMvgX7pmIVGqb7o8o0YhS5/v0LI2BVY+wZEVdPl1MHOE8Wk3qckOugcNTUCc=
+X-Received: by 2002:a17:906:3f51:b0:712:3945:8c0d with SMTP id
+ f17-20020a1709063f5100b0071239458c0dmr9270826ejj.302.1656007026756; Thu, 23
+ Jun 2022 10:57:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v4 0/5] Align BPF TCP CCs implementing cong_control()
- with non-BPF CCs
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165600361466.15099.15840998947275266596.git-patchwork-notify@kernel.org>
-Date:   Thu, 23 Jun 2022 17:00:14 +0000
-References: <20220622191227.898118-1-jthinz@mailbox.tu-berlin.de>
-In-Reply-To: <20220622191227.898118-1-jthinz@mailbox.tu-berlin.de>
-To:     =?utf-8?q?J=C3=B6rn-Thorben_Hinz_=3Cjthinz=40mailbox=2Etu-berlin=2Ede=3E?=@ci.codeaurora.org
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, yhs@fb.com
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <1655982614-13571-1-git-send-email-alan.maguire@oracle.com>
+In-Reply-To: <1655982614-13571-1-git-send-email-alan.maguire@oracle.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 23 Jun 2022 10:56:54 -0700
+Message-ID: <CAEf4BzbbME=oZbp26=OMVpMSfrH-6Bp38ELcY6oNYSCAsnobQw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: support building selftests when CONFIG_NF_CONNTRACK=m
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Thu, Jun 23, 2022 at 4:10 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+>
+> when CONFIG_NF_CONNTRACK=m, vmlinux BTF does not contain
+> BPF_F_CURRENT_NETNS or bpf_ct_opts; they are both found in nf_conntrack
+> BTF; for example:
+>
+> bpftool btf dump file /sys/kernel/btf/nf_conntrack|grep ct_opts
+> [114754] STRUCT 'bpf_ct_opts' size=12 vlen=5
+>
+> This causes compilation errors as follows:
+>
+>   CLNG-BPF [test_maps] xdp_synproxy_kern.o
+> progs/xdp_synproxy_kern.c:83:14: error: declaration of 'struct bpf_ct_opts' will not be visible outside of this function [-Werror,-Wvisibility]
+>                                          struct bpf_ct_opts *opts,
+>                                                 ^
+> progs/xdp_synproxy_kern.c:89:14: error: declaration of 'struct bpf_ct_opts' will not be visible outside of this function [-Werror,-Wvisibility]
+>                                          struct bpf_ct_opts *opts,
+>                                                 ^
+> progs/xdp_synproxy_kern.c:397:15: error: use of undeclared identifier 'BPF_F_CURRENT_NETNS'; did you mean 'BPF_F_CURRENT_CPU'?
+>                 .netns_id = BPF_F_CURRENT_NETNS,
+>                             ^~~~~~~~~~~~~~~~~~~
+>                             BPF_F_CURRENT_CPU
+> tools/testing/selftests/bpf/tools/include/vmlinux.h:43115:2: note: 'BPF_F_CURRENT_CPU' declared here
+>         BPF_F_CURRENT_CPU = 4294967295,
+>
+> While tools/testing/selftests/bpf/config does specify
+> CONFIG_NF_CONNTRACK=y, it would be good to use this case to show
+> how we can generate a module header file via split BTF.
+>
+> In the selftests Makefile, we define NF_CONNTRACK BTF via VMLINUX_BTF
+> (thus gaining the path determination logic it uses).  If the nf_conntrack
+> BTF file exists (which means it is built as a module), we run
+> "bpftool btf dump" to generate module BTF, and if not we simply copy
+> vmlinux.h to nf_conntrack.h; this allows us to avoid having to pass
+> a #define or deal with CONFIG variables in the program.
+>
+> With these changes the test builds and passes:
+>
+> Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
+>
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
-
-On Wed, 22 Jun 2022 21:12:22 +0200 you wrote:
-> This series corrects some inconveniences for a BPF TCP CC that
-> implements and uses tcp_congestion_ops.cong_control(). Until now, such a
-> CC did not have all necessary write access to struct sock and
-> unnecessarily needed to implement cong_avoid().
-> 
-> v4:
->  - Remove braces around single statements after if
->  - Don’t check pointer passed to bpf_link__destroy()
-> v3:
->  - Add a selftest writing sk_pacing_*
->  - Add a selftest with incomplete tcp_congestion_ops
->  - Add a selftest with unsupported get_info()
->  - Remove an unused variable
->  - Reword a comment about reg() in bpf_struct_ops_map_update_elem()
-> v2:
->  - Drop redundant check for required functions and just rely on
->    tcp_register_congestion_control() (Martin KaFai Lau)
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next,v4,1/5] bpf: Allow a TCP CC to write sk_pacing_rate and sk_pacing_status
-    https://git.kernel.org/bpf/bpf-next/c/41c95dd6a604
-  - [bpf-next,v4,2/5] bpf: Require only one of cong_avoid() and cong_control() from a TCP CC
-    https://git.kernel.org/bpf/bpf-next/c/9f0265e921de
-  - [bpf-next,v4,3/5] selftests/bpf: Test a BPF CC writing sk_pacing_*
-    https://git.kernel.org/bpf/bpf-next/c/6e945d57cc9f
-  - [bpf-next,v4,4/5] selftests/bpf: Test an incomplete BPF CC
-    https://git.kernel.org/bpf/bpf-next/c/0735627d78ca
-  - [bpf-next,v4,5/5] selftests/bpf: Test a BPF CC implementing the unsupported get_info()
-    https://git.kernel.org/bpf/bpf-next/c/f14a3f644a1c
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Why not just define expected types locally (doesn't have to be a full
+definition)? Adding extra rule and generating header for each
+potential module seems like a huge overkill.
 
 
+>  tools/testing/selftests/bpf/Makefile                  | 11 +++++++++++
+>  tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c |  2 +-
+>  2 files changed, 12 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index cb8e552..a5fa636 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -141,6 +141,8 @@ VMLINUX_BTF ?= $(abspath $(firstword $(wildcard $(VMLINUX_BTF_PATHS))))
+>  ifeq ($(VMLINUX_BTF),)
+>  $(error Cannot find a vmlinux for VMLINUX_BTF at any of "$(VMLINUX_BTF_PATHS)")
+>  endif
+> +# If nf_conntrack is a module, need BTF for it also
+> +NF_CONNTRACK_BTF ?= $(shell dirname $(VMLINUX_BTF))/nf_conntrack
+>
+>  # Define simple and short `make test_progs`, `make test_sysctl`, etc targets
+>  # to build individual tests.
+> @@ -280,6 +282,14 @@ else
+>         $(Q)cp "$(VMLINUX_H)" $@
+>  endif
+>
+> +$(INCLUDE_DIR)/nf_conntrack.h: $(INCLUDE_DIR)/vmlinux.h
+> +ifneq ("$(wildcard $(NF_CONNTRACK_BTF))","")
+> +       $(call msg,GEN,,$@)
+> +       $(BPFTOOL) btf dump file $(NF_CONNTRACK_BTF) format c > $@
+> +else
+> +       $(Q)cp $(INCLUDE_DIR)/vmlinux.h $@
+> +endif
+> +
+>  $(RESOLVE_BTFIDS): $(HOST_BPFOBJ) | $(HOST_BUILD_DIR)/resolve_btfids   \
+>                        $(TOOLSDIR)/bpf/resolve_btfids/main.c    \
+>                        $(TOOLSDIR)/lib/rbtree.c                 \
+> @@ -417,6 +427,7 @@ $(TRUNNER_BPF_OBJS): $(TRUNNER_OUTPUT)/%.o:                         \
+>                      $(TRUNNER_BPF_PROGS_DIR)/%.c                       \
+>                      $(TRUNNER_BPF_PROGS_DIR)/*.h                       \
+>                      $$(INCLUDE_DIR)/vmlinux.h                          \
+> +                    $$(INCLUDE_DIR)/nf_conntrack.h                     \
+>                      $(wildcard $(BPFDIR)/bpf_*.h)                      \
+>                      $(wildcard $(BPFDIR)/*.bpf.h)                      \
+>                      | $(TRUNNER_OUTPUT) $$(BPFOBJ)
+> diff --git a/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c b/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c
+> index 9fd62e9..8c5f46e 100644
+> --- a/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c
+> +++ b/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c
+> @@ -1,7 +1,7 @@
+>  // SPDX-License-Identifier: LGPL-2.1 OR BSD-2-Clause
+>  /* Copyright (c) 2022, NVIDIA CORPORATION & AFFILIATES. All rights reserved. */
+>
+> -#include "vmlinux.h"
+> +#include "nf_conntrack.h"
+>
+>  #include <bpf/bpf_helpers.h>
+>  #include <bpf/bpf_endian.h>
+> --
+> 1.8.3.1
+>
