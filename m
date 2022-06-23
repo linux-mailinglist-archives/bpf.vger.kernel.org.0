@@ -2,135 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA265557113
-	for <lists+bpf@lfdr.de>; Thu, 23 Jun 2022 04:32:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40064557137
+	for <lists+bpf@lfdr.de>; Thu, 23 Jun 2022 04:55:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236375AbiFWCcC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Jun 2022 22:32:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39332 "EHLO
+        id S229492AbiFWCzs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jun 2022 22:55:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235053AbiFWCcA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Jun 2022 22:32:00 -0400
+        with ESMTP id S235733AbiFWCxx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Jun 2022 22:53:53 -0400
 Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6710E427C3
-        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 19:31:57 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25N0wZrQ028476;
-        Wed, 22 Jun 2022 19:31:43 -0700
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42B8343488
+        for <bpf@vger.kernel.org>; Wed, 22 Jun 2022 19:53:52 -0700 (PDT)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25N0wWMR017423;
+        Wed, 22 Jun 2022 19:53:35 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
  subject : to : cc : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=Wp8Elj9h+9zJO3MdKkbW+UM4MMxmkLXbKQJ7g76atFk=;
- b=SdmQT9K8xHDGm8Io6HNt9Kh929wk/60naE3uB1URH9Z8mt3roSrTqkzfNomLWLTyhFeT
- m54OHSxBC+s9S/7fhPYod0p0ixV3obpx13LaB5Mqx7YzHhdBQIXhHK6YcWVgW7UN+vWL
- of3FtVpPlpzyAZ/owGxrwIiWDAbln8aMsSA= 
-Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam07lp2047.outbound.protection.outlook.com [104.47.51.47])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3gukcgj0eu-1
+ bh=5OO/P01dwVG5KqSR66odbD/YrgGUEdNPCKm4ZBP7Nw8=;
+ b=BwjfrCN44hocq3ehKIq4JWdeHQCRAB3nLuVlmae3+EdqYUTlmil1coSsrc07oh3XSWk6
+ KBX2Owzx7ftpCsgO2et9EroGY8APbhRhWFbd0oXpPt5v/StyM9eEz6fK1PnOB10HkiEI
+ zvqi0igKRJepltPFXu03JwraqVIuz9Ahs5g= 
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2040.outbound.protection.outlook.com [104.47.66.40])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3guef4vjde-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Jun 2022 19:31:42 -0700
+        Wed, 22 Jun 2022 19:53:35 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Sm26caWZV3E8CRRysYOnI7AmnKkXqKcwL5OSQRxExRWHOz3eT4M7QPhs70uYYRa1xJ5/x6Tq6J9+XjMLm9eC67RwZ3/JSSEechP0MhiCHJh9BgFtMA4NCfrl5UjtPoF9FNNeubiktYBlVHC4TbIYMFbQjPGl1Xq6/BLiOEc69p0HYie2ZjDPIzEQ5puLexTvTOy93TB1XljtCtG4vgQIG80JmdMot8DkoJTa744tfW4sJAguPswrjgNaTbS/9SCUFwjSdGOWpwa/x4Md/F0LfeoVv+LY/Cs4D0lLKvIDZ8k8xyq3+lSUpkhJaaP9M8U6iAsfMfBUr4hfHR9yjn8SdA==
+ b=D5FhU6CHlwWFYyUAqlX6a9tT2gjNszFvA1w7s430AphKLOPglgC3hjQ71vd9wg6dvtKtJCgtgJoOblCFR/V/DBsLoAxDedqMWF/JGWCK0vETbFrWCl+JtWxS0PYdKq5IyH6EDhJaTstbB0n4K2T756sjTeYm5taUhkZp5ez2ImMX9bzx97DZH8iXJvO3mJ6ROJmFLPo/KK2GR6Hk7RQ0R6KRuJeVH2/b7Kkxd/VYTGeJXec2Vp9WDSG12V2w2Al+eQFlEzdBrsD1gYf7Mi8PwIaXdUMY7G8QJFSj/A4eUQEKwgl767oUGOwDKopceCZfGQNRk9JXBl08oSt7LQIkUw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Wp8Elj9h+9zJO3MdKkbW+UM4MMxmkLXbKQJ7g76atFk=;
- b=mghE4icnEZW07CHFM1VWauVU4pZxlGsFVxd5Pv1lAmsPaAxOOGvGq29onkVCDXuKUOg/WGqs9HAokdUVKhauE2WBijBe2tilupNBcO0n8s+W5unwobkOwKQY1Wmr/l34avuInNX4JKD8Sm6hs6c7d2rQEQTdlR6nnJZr8ppXaKq/dz7OgDXpjXOd379ajc03XgaudiocwG+CyPpTA2GcR7MgsIedaaWRx12+8Tt7MgFtcucbgYvuRgjTNlm7GfjHFuOJJnoY/F6R/IOS+TQW/G4PuV0+KU6mI3pp+lPzx/CJ4OQEkwNAqRCKfmp8rKraIBeQdEykSMClDhIIm/HCoA==
+ bh=5OO/P01dwVG5KqSR66odbD/YrgGUEdNPCKm4ZBP7Nw8=;
+ b=B4Icx8xueKBwveZpELuiczKk6uxIiNss7UTKYOcmKgoVunKRxwbPJHZB3HBfgapIAPFxbj/GTUecseqomQGtZ7cqsqebUr6B+wSqMTYwoM0J8+j4Yfb6Vd6CivuCQA3IwtB7PQdi8dN7Ez6XqKmsfvblSumsctmm7qVd1uIJSXtNKD11oj2E5BDxjhjhUt0FkwQBz9XlL8F4/G2279jwDD80EFX8sy7ZcwlnXv3/1NjmHCUvFjOK7tsuutaopDRRo1IiecGoJe4wMO783qq8CXyFz2/d2Ty8QpjRf/c6SVwqVhWN5gQ29mQjh031fpki0sbO/PNjh9U5MwuK/kJt3Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Received: from DM6PR15MB4039.namprd15.prod.outlook.com (2603:10b6:5:2b2::20)
- by MW4PR15MB4714.namprd15.prod.outlook.com (2603:10b6:303:10b::17) with
+ by BN7PR15MB2225.namprd15.prod.outlook.com (2603:10b6:406:81::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5373.16; Thu, 23 Jun
- 2022 02:31:40 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5373.15; Thu, 23 Jun
+ 2022 02:53:32 +0000
 Received: from DM6PR15MB4039.namprd15.prod.outlook.com
  ([fe80::2197:2f04:3527:d764]) by DM6PR15MB4039.namprd15.prod.outlook.com
  ([fe80::2197:2f04:3527:d764%8]) with mapi id 15.20.5373.015; Thu, 23 Jun 2022
- 02:31:40 +0000
-Message-ID: <6d8e08a5-7fd1-8b0d-4333-1287dd880c4e@fb.com>
-Date:   Wed, 22 Jun 2022 22:31:37 -0400
+ 02:53:32 +0000
+Message-ID: <31bba044-6bb0-1a78-d706-f9fd9fbb1e2c@fb.com>
+Date:   Wed, 22 Jun 2022 22:53:29 -0400
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
  Gecko/20100101 Thunderbird/91.10.0
 Subject: Re: [PATCH v6 bpf-next] selftests/bpf: Add benchmark for
  local_storage get
 Content-Language: en-US
-To:     John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+To:     John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
         Kernel Team <kernel-team@fb.com>
 References: <20220620222554.270578-1-davemarchevsky@fb.com>
  <62b21962dc64_1627420844@john.notmuch>
+ <20220622002952.6334ieb3kfysx7vl@kafai-mbp>
+ <62b2ad7a21e88_34dc820812@john.notmuch>
+ <20220622172632.psejkta24nwz3k5m@kafai-mbp.dhcp.thefacebook.com>
+ <62b3c156ad70a_6a3b2208d7@john.notmuch>
 From:   Dave Marchevsky <davemarchevsky@fb.com>
-In-Reply-To: <62b21962dc64_1627420844@john.notmuch>
+In-Reply-To: <62b3c156ad70a_6a3b2208d7@john.notmuch>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: BL1PR13CA0396.namprd13.prod.outlook.com
- (2603:10b6:208:2c2::11) To DM6PR15MB4039.namprd15.prod.outlook.com
+X-ClientProxiedBy: BLAPR03CA0105.namprd03.prod.outlook.com
+ (2603:10b6:208:32a::20) To DM6PR15MB4039.namprd15.prod.outlook.com
  (2603:10b6:5:2b2::20)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a1e8a8dd-8869-4e41-85c5-08da54c0810b
-X-MS-TrafficTypeDiagnostic: MW4PR15MB4714:EE_
-X-Microsoft-Antispam-PRVS: <MW4PR15MB47147EA106E9219ECAA1206EA0B59@MW4PR15MB4714.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: cb2d0be0-be59-4ab5-3e93-08da54c38f3c
+X-MS-TrafficTypeDiagnostic: BN7PR15MB2225:EE_
+X-Microsoft-Antispam-PRVS: <BN7PR15MB2225A8392AFCA92A7C388C9EA0B59@BN7PR15MB2225.namprd15.prod.outlook.com>
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CqF4aXirKOjD5saRnUc3t4mCvLyfGrN84LJKVykoIeKw9a9og9lOAUu/SXPkfcXS6G+RZWETTaavA9ZylUHVys3GT/fBj0+pCgeNNAdg/BQELyWNbvcjNFGxMPo8NEJjo6Q1enNZ1u8f65vztTC95fE5jUJzIXpMtBmr7KTo8Th5+mapPqYMins417RYIxWthidRMgmvDIUPkgFKpSA0QPPOQVRPbq15NRFJa4HDQWqty2luHrNj3jw+PwRvIbwuKuhrCCnpzeGJrbmKYpR0litOzrb2nhZHxZVPolsq4dPMk6JNkdbetULV19p00yq6Wy7IkmUWK/FAAoyriZBJxQt3T6y4kpay8cbJk39iQI79+dOj/M5DYOof630pJ96uUXO8Hb5r3v3IaZuA4RNH+n9Eh5fl1ZpGNRaV67Ob/AqKTseZuFDnsMYRh5lG9rYKcXNbM7vXLI6KO05nWrOoULOvTEafGqelepauvsHdHUBXtZuv/w7osibHCC2vlsLUpZxYN8kOLMuvNhUQXV758TTAe5WsGNUtmT/M2+AdfWlXR3IvJ1N+jRmLsID9S+D/CRRcxKK9AOKwGaTNW0+oNnPDjdKDwQBvn/WXrfbIv6pCX91wjnBmZUSI6MHsVmM53l6mrQoDj24A2cHk4mhxwTd7VFyFSoYqTZsYTodg5EZtFv2FCZ/MCYUNHnwSRL9ZWTn9sdsJs/+UnrlgUOzx8ZuccdFkQsc8X0vrdT2vAjkW21aOEnkTOux2rDlf0WcUu9W2DI2qpTLhWajk/MrOkXi0c15/yAhc2DUvWeA5yvg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR15MB4039.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(366004)(376002)(136003)(396003)(39860400002)(346002)(316002)(6506007)(6512007)(2906002)(53546011)(6666004)(41300700001)(6486002)(31686004)(36756003)(54906003)(478600001)(2616005)(4326008)(66476007)(66556008)(66946007)(8676002)(86362001)(31696002)(83380400001)(5660300002)(8936002)(38100700002)(186003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: o3ZAc7kYf9JXsOHFkPP+uNvs04EMPi/4uy71WWwwXUiD5ZhQP0M8fR8aDP+MWAxDDhrOqfE3M32BTGhoJm3Ql53qRIWFTtU5IgXhNEQL4NUfJ2bdH4oGJQcC+j0GTEvJdcE/djajoKMDbs+quXKISz3a+RIzIuk75c1sdu/ngkz/JQcWiSEi3NJBn1F8du3thSWsjn0EOWM/qtVcxprxyS1W/KG8815H3OabtGKzx5dwuXXlltmY7zXPMljQDQU2+4FwF8JIUHw/Dq3TAT4HDXlHjHkspPfFdhqt7SFPTdtMHh8kQZtj2v9F54xMG56bvgLK3FnCaPJisGG4sLO2Ff0bHMR4gbtWCzKnLPOsmTU2jiM445DKSgE8VLNOmyMFaZRodgL1kEY6faU+U/O6Xxvhs8fadeZtDHOPju99BMFSmBFRtUHyrdou6Vycm8m3yO386tueJr8bthevKP+bW5X+Kx58Ponk46+2K28bMHdOHReSBbUoXKNB/fgRYREF0oYUOyxS7N3PwXaNArkA0v0hLhiJSEy+RrpMly03QoSdC8dE6Nl/T2jkdsS6VrWLONeJDQqs48alE9mRlDPCkgptn3AWXcocDQDB+ERZqwr2qzgmGbHzSva/nkaSVH7Aatp0mnP+5k3P6PtLdj3fRRkxSvnzBM030cDNFvjo2cKbFxsfLpPDm92LM07G2M4VjmPTmMXJOiTriyhapo4uoZTqSxJpIqUyfLiHV57tzWXH05+KWuovx0lG/HvPh4tPppNeVZ4lqdv1bxX7N7UksMKrzT9ZXbkGRtIR1wdi0Ug=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR15MB4039.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(366004)(376002)(39860400002)(346002)(396003)(136003)(41300700001)(66556008)(66946007)(4326008)(8676002)(66476007)(31696002)(2906002)(316002)(6666004)(110136005)(6636002)(54906003)(36756003)(38100700002)(31686004)(5660300002)(186003)(53546011)(6506007)(6486002)(8936002)(478600001)(2616005)(86362001)(6512007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VWNOckJBU3RnNFFPNXBwaXo1YTN4cDBTMnZSLzJCc0tMbk5QZnpiQTJ2dWIr?=
- =?utf-8?B?ZEdQUDVZSWhWSlhLQnFZcS9jSDFIbFNac1pHTHIvSHhBeE5lZWE3amVkVWNH?=
- =?utf-8?B?YlYvSk5wUEJ5ZC9FMjJvYXJQV1hqQ1lXdWdwaDFuWURjYnFYZkc2dWxTcmVm?=
- =?utf-8?B?WENhYkhIclRYeXFNb0MxS2U4MThORUxSaExUWEdwMjVpR3NRVlJUc2lUdDY3?=
- =?utf-8?B?aHBhZ1k4MmZCMkJqQytaeEFEdmZTVlY4aEp4SWR4dHBHclZCdkhGQ0doT3BV?=
- =?utf-8?B?Sy90MFF0QUYwdlpCeEFhd2haWEozWEt2ektFSlJ4L3dxN1ErN1BYa1BZQ2lM?=
- =?utf-8?B?U2VWN05KLzVqMUFFOW9zQ1ppZm5menhYNnZHMFc2OEJBbUpiSGxzT3ozeHlM?=
- =?utf-8?B?M3d6TXZ2RzdXU1FQbmppWUdLYkdCc2czV05aczd3blhlQ2VlWkovUkdBZ2lT?=
- =?utf-8?B?bm5qemw1aW1xNlNSdXUvNU9pTnM0SG1TdGZHU2tNNDIxem1TWlhKNkVWRHlD?=
- =?utf-8?B?R0tUWVlSZWozNXFaUGNBWnZPalVxYTU5Y3JyUW5aK0grTXdhUU9aTFgyWllz?=
- =?utf-8?B?amxHdU1GT2F2UWhxajNUOXJESDV2TjBjUkpDV3JvZmJtNzUzQmQ0Y3VqVVlG?=
- =?utf-8?B?YWJMWDltZnN0MlZEd3BGNU5aTG42MkNwbGFxZHZ5L2JsVklxdHNyMmJESjdp?=
- =?utf-8?B?c293WHkxQ1JuQUhYTzRGd2IwM1l5dThrOEZCczFpa0NOejZXS3hnWXJtT3BB?=
- =?utf-8?B?L2FoZTYxU1NZa1dtTDVVcVhkZTZBTUMxbDBvQUhPOUVTVFpRSEoxOC9QOXhp?=
- =?utf-8?B?WFV0bXJWSWhFNEhNelZGbi90QmZOZitpbDA2TVN2MmdkRWNVTzVrTU5KMlQv?=
- =?utf-8?B?aEJVQUp0SFlQWnh0cG1kMk5RblBHUkp0VkhJUTZuMmk3MjhuVkZvNmVKUEM3?=
- =?utf-8?B?TVM4WEFWNEJ6NWJ0QnkvTWE5K3FhdWJDN214VGJHQ01LVlh5aHpXN2VIR25z?=
- =?utf-8?B?cmlCaWxZUjBBb2duQ0dkYzNpNmxQdlN1ZDdnWVg3QkZNM08wVUJTVkQzckNJ?=
- =?utf-8?B?b0k5ZCtYQWpuMFZoTStURWpDM0tHQUtyZ3AvU0dIbUpXN3dPTHNuV0ZaMFBM?=
- =?utf-8?B?U1V4WGlMVVo5NlhRQzJtQmVHS3lBeTlJako1VW5PK1hvYTA4ZkFIdnhQM3dM?=
- =?utf-8?B?MTh3Zk5KTjltb3RvUFp5WkJkNVVUVEtLYm9oZDlYdnNpbVRVVTZmRnFIV0lP?=
- =?utf-8?B?SlJhc21vTDcrbko4TlAzSS9GdUM2MWdGVlpycUxWTjdzdHNXTW9aQnRwc1Vo?=
- =?utf-8?B?d1dBZEpjcXVzVkQ2eXZkbHdMMXFpbStsSDFPdkVyRUE1cHV4ekRsN1BkZ3Jp?=
- =?utf-8?B?RFVlMzlaZGJnR2dkRDBjWU5hSTVSYzNzaTF0bkdWaDFhajIyaHp5Q0I4dmll?=
- =?utf-8?B?MEt1ZjlaekpFUS94UG1DNENQamgrZ2tQa1p6Y2hOYWVyb0pZd3VjU1F3RERq?=
- =?utf-8?B?Wmp2OTFsMkpHTWZKakRwRStQZTd3U1A5VzlQNFl0c3dBbG1Wb3RJdWRycEY2?=
- =?utf-8?B?Zzloa3ZyaGRQdUZXZ0xEd0RtNTRsc2FRUWV3NkxtajllT1NObE1NeW1oVXQ2?=
- =?utf-8?B?eXJWcXl0L21XNFJ3WEJ3RlhSQ01Kd0tUaXNEN2xGUWpCd05DY1pGS2N6V2tn?=
- =?utf-8?B?YmpNYzBRazgvSFhJYTRZK0Rnb3QybkxIN2RSQ0h4eElxb29lZnltZlcycjEr?=
- =?utf-8?B?TTRjTTZ1cVN6cjZJUFZkL1RUK0ZlTmFpT1VGYzM0bVRyTnlLa09IY05WT2Uw?=
- =?utf-8?B?STVpRW9NY3BvV1pQcXgyc2FyeDRJU3JjcGZpcG43OTIyZ2o2cTV2dE5aclVq?=
- =?utf-8?B?K2JTa2V2MW9ydXRVTDY4QS9SUGhyWm1uaGpkY2ZDd2FqQUR6MDFETGcvTkgr?=
- =?utf-8?B?ditDTWpMTlNuZ0NFQnErYmJnT3lja2hSUnp2SXRFU2lZVVJhekp3Y2ZqVStK?=
- =?utf-8?B?eWdxUE10UkdVdGNlZG9xMEFVQWpTRXM0TzZaQ0x0ZTI3WFB1QXBkRERoM1BE?=
- =?utf-8?B?STJPa3BjUUY3VzJ1RTBDUVdjOVVSSkM2cFFCbXdaandPbzVwSUpGY2xCMy9j?=
- =?utf-8?B?ckdGR0tKcTZ5RnI1SFBFTFQ0Y3IwdlBhTngrYmwvbStabzVjeWZRVy9JQm1H?=
- =?utf-8?Q?JcheTXlYybWBCK8ALrV0WRk=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YXFGakc1M0pDRDFGelFzMldNQUowUWNGMktnNXFmOUkxY1RDREZPTGdUNHlT?=
+ =?utf-8?B?RUljdDRTT3BvUVJub3BPZHFjZ2M2bmI5T2paamFReHlKRDJBMWZvU2grRk5q?=
+ =?utf-8?B?cDdSZi83TFBBUHZqSTRTUXFLU3VXZGFiYVB1QUo4TktCcCtNWlFWUk96cnJm?=
+ =?utf-8?B?NUthTHQvTWJjMitWTzhTODBlcUQzVlArcm15eHFGR0NROTdmVGhISUhWcHM2?=
+ =?utf-8?B?RWg4VjVnSHdHNXV6NjdDWWwvTmFzc2drL1pJeVZjOUFDUklZNjcyNnlzZGVl?=
+ =?utf-8?B?em5jNEQ3SVdHUG9EZENxcndPOEYyc2dRRUhBYzNlcm5sRXpidGRrNHpiOVh4?=
+ =?utf-8?B?YXA1Nmt1blZZT2lTWU13SC9aMFloRUc4YWViLzFNUUh0Qm5aakpwd2pET0Uw?=
+ =?utf-8?B?TkdpdDF6a0w0YkNJVlpXS29xMXhyZUQ2dnBJNnNWcFRCWVVVcHlzUGI4MnNp?=
+ =?utf-8?B?SWtoUXAyQlhKOENuelA4LzVQWEFENzhTKy94SDI3ZmovbDZ2by9wK3J2Y3hk?=
+ =?utf-8?B?RFVENnRlZmNma2NMS1UyeERSWHI4NUR6ZEpwZ2hnUFQ5ZlZERVFRMkFwWDlI?=
+ =?utf-8?B?d2JjWkIzTmtkSVZYUFhWaHFUb09ldkNVOUlDcTFwbTJVem9Qd1dlRmFIMHR3?=
+ =?utf-8?B?dnVjL2hnNWovTlVzRTFHS2ZiOTF6Q1MxSVQzajZqVlZJdVhURnBtdXFLSm1N?=
+ =?utf-8?B?Y0JCdHJ5Tnh6eFpDazNMY2FyM3pDb01qcklZcDBwNzRTelF5R1RwMVFkOWQx?=
+ =?utf-8?B?ZG5qWkFPeHJ4RTh0N2tYN29QQTZuVHhXa0NqQUVHcG9aSnJzRWV3bjl4MlBu?=
+ =?utf-8?B?L0ErWTFvUERkbjRrT3cyc0FjQUtGMGROb1ljV2JOS0hhcHkrMWlpdFU5cWt6?=
+ =?utf-8?B?OC92cWtXaWw0cFl3cDJvTWxmc3RRNjE3RTZVYmlnK0UvU0J0NzAzSkNkaW1t?=
+ =?utf-8?B?RHFCdmdBVmlITVAwMng4ektrTnlNYmVCdzJXdGlvSC96aC9aSk9TMzR2NDgx?=
+ =?utf-8?B?TE1RdlhSTnhSdFZOcnNVejkra0tScGREbjIwY21JZzlOaXhOZmd4K3kyQ3hj?=
+ =?utf-8?B?R1JLQ2wrNFRRV2tLR3ZZZU9VSjBTaHBubktsMmhlUThnSlFudVE2OWdQWnVN?=
+ =?utf-8?B?Zi8wS3Q2T3Q1L3lPZFhEM1YwNlBkMndqdlV0QWpvVlY0cy9sd3R0dVVEVzlF?=
+ =?utf-8?B?Zzg5YVJDdjR1cGIxYVkzSlZ0bTFMNjFiYzgzb2lTZ1JFbGFDV0JIdkJVZmJq?=
+ =?utf-8?B?dCtmY2pCTllTRkU2anFtZ3JMbmthVFRTemVEVHpFVWlVNDF4c0k1VERUT1hP?=
+ =?utf-8?B?NnRnV0szZDRFVXNFNzVmcTRjbElvenV4Z2k5WkNPNWZtMFlXOXpSbUU3VmJn?=
+ =?utf-8?B?WG1ha1c5SGZzL3RUUTFmdEw3bnN5T203eG44WGM0cFFaYzI4RzNxbytkV2hp?=
+ =?utf-8?B?L2szQVFyU2xqM01GbmtSLzA0dUw4dVhrbjVxRWdSazhWTHB3eWFKOWFHQ2xK?=
+ =?utf-8?B?V2FaaEZzVGN5NFlvT3hiUEhkZERJK0w3UmpZSWpIbTgxbk9FaDdWUW1Sc1Jz?=
+ =?utf-8?B?L093ejdVRTYvbDhCZFBtWWFjNW9OVG15SGZ0UEVEMUpVZDVwa0xtenZNWnFz?=
+ =?utf-8?B?M1pubE01N3pyVjlpa0k1ZzhOc2hLdy9sd29CTFM4eGk2QTZzeHl3eXFWdG82?=
+ =?utf-8?B?TWNnZ0VsL0VmK3NWdE1YRElrTVF4RjZNTG5hTkZBOHRwcjBkMHFOdzVEZ2pB?=
+ =?utf-8?B?QnUvTGszbHhoQzJqTTZTSHBEUmxheDVWeHRCUERSdmhVYmJDNkF1cVBRNlZv?=
+ =?utf-8?B?emFYUzNlOHB1MTNkdllFb1VtUnRneURmQ2xQYlc3anpLQWVhaXhZVDNSR2hr?=
+ =?utf-8?B?TTR3NFg4Z25KYWZnTUFhbFpjcXphM1dWTkNyRGJlTGNZSllvMmFESkdYQVZG?=
+ =?utf-8?B?bERBazEvaGsvMjZFQlBmd0FtZk9XT1IvMGcvNGxtWVBxelNIV21Fd09UZDFY?=
+ =?utf-8?B?bThPKzREb3FSbzJCR2R2QkcyaUo2aDJLakQydG9GL0ZweXRacCt4RlZHWFNt?=
+ =?utf-8?B?ZEZCaU1PSTFtbVNjTDV2ZDZOWnNwSDgzTjhnT01XSmY1MHpJb3I2dVFERHJW?=
+ =?utf-8?B?Vkt0ajJCQk85dy9YTXZGblF2NnNtTXNVRWY0d0ZMR2F2alBqTGxBLzcxVURj?=
+ =?utf-8?Q?HWrv/S2hbkE2C99bGO4kjU4=3D?=
 X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a1e8a8dd-8869-4e41-85c5-08da54c0810b
+X-MS-Exchange-CrossTenant-Network-Message-Id: cb2d0be0-be59-4ab5-3e93-08da54c38f3c
 X-MS-Exchange-CrossTenant-AuthSource: DM6PR15MB4039.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jun 2022 02:31:40.6815
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jun 2022 02:53:32.5729
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JNLhy5A4MooZxNc+X2ZWL7w32+zFMt7mZcoMlhq3RNr6Bs2JG6arTw40ZnY/WKho/KC2eMmZsYu+3NKupvOP/A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR15MB4714
-X-Proofpoint-GUID: BPNDv5ccqqTijwJJIZ9apvZ9eUuV_tWw
-X-Proofpoint-ORIG-GUID: BPNDv5ccqqTijwJJIZ9apvZ9eUuV_tWw
+X-MS-Exchange-CrossTenant-UserPrincipalName: LKE6fQmiT4XZ7hKBlJATy+OtVBfUaBrVhnVCHZO7UVMB+OQGDj7htURRsL7nlIJbwRVJkfFRzRGnk3uJNNNONQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR15MB2225
+X-Proofpoint-GUID: 1NtD1JiiakNi2Gq75Es9f3Supd-2pv3I
+X-Proofpoint-ORIG-GUID: 1NtD1JiiakNi2Gq75Es9f3Supd-2pv3I
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
  definitions=2022-06-22_10,2022-06-22_03,2022-06-22_01
@@ -145,129 +149,90 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/21/22 3:17 PM, John Fastabend wrote:   
-> Dave Marchevsky wrote:
->> Add a benchmarks to demonstrate the performance cliff for local_storage
->> get as the number of local_storage maps increases beyond current
->> local_storage implementation's cache size.
->>
->> "sequential get" and "interleaved get" benchmarks are added, both of
->> which do many bpf_task_storage_get calls on sets of task local_storage
->> maps of various counts, while considering a single specific map to be
->> 'important' and counting task_storage_gets to the important map
->> separately in addition to normal 'hits' count of all gets. Goal here is
->> to mimic scenario where a particular program using one map - the
->> important one - is running on a system where many other local_storage
->> maps exist and are accessed often.
->>
->> While "sequential get" benchmark does bpf_task_storage_get for map 0, 1,
->> ..., {9, 99, 999} in order, "interleaved" benchmark interleaves 4
->> bpf_task_storage_gets for the important map for every 10 map gets. This
->> is meant to highlight performance differences when important map is
->> accessed far more frequently than non-important maps.
->>
->> A "hashmap control" benchmark is also included for easy comparison of
->> standard bpf hashmap lookup vs local_storage get. The benchmark is
->> similar to "sequential get", but creates and uses BPF_MAP_TYPE_HASH
->> instead of local storage. Only one inner map is created - a hashmap
->> meant to hold tid -> data mapping for all tasks. Size of the hashmap is
->> hardcoded to my system's PID_MAX_LIMIT (4,194,304). The number of these
->> keys which are actually fetched as part of the benchmark is
->> configurable.
->>
->> Addition of this benchmark is inspired by conversation with Alexei in a
->> previous patchset's thread [0], which highlighted the need for such a
->> benchmark to motivate and validate improvements to local_storage
->> implementation. My approach in that series focused on improving
->> performance for explicitly-marked 'important' maps and was rejected
->> with feedback to make more generally-applicable improvements while
->> avoiding explicitly marking maps as important. Thus the benchmark
->> reports both general and important-map-focused metrics, so effect of
->> future work on both is clear.
->>
->> Regarding the benchmark results. On a powerful system (Skylake, 20
->> cores, 256gb ram):
->>
->> Hashmap Control
->> ===============
->>         num keys: 10
->> hashmap (control) sequential    get:  hits throughput: 20.900 ± 0.334 M ops/s, hits latency: 47.847 ns/op, important_hits throughput: 20.900 ± 0.334 M ops/s
->>
->>         num keys: 1000
->> hashmap (control) sequential    get:  hits throughput: 13.758 ± 0.219 M ops/s, hits latency: 72.683 ns/op, important_hits throughput: 13.758 ± 0.219 M ops/s
->>
->>         num keys: 10000
->> hashmap (control) sequential    get:  hits throughput: 6.995 ± 0.034 M ops/s, hits latency: 142.959 ns/op, important_hits throughput: 6.995 ± 0.034 M ops/s
->>
->>         num keys: 100000
->> hashmap (control) sequential    get:  hits throughput: 4.452 ± 0.371 M ops/s, hits latency: 224.635 ns/op, important_hits throughput: 4.452 ± 0.371 M ops/s
->>
->>         num keys: 4194304
->> hashmap (control) sequential    get:  hits throughput: 3.043 ± 0.033 M ops/s, hits latency: 328.587 ns/op, important_hits throughput: 3.043 ± 0.033 M ops/s
+On 6/22/22 9:26 PM, John Fastabend wrote:   
+> Martin KaFai Lau wrote:
+>> On Tue, Jun 21, 2022 at 10:49:46PM -0700, John Fastabend wrote:
+>>> Martin KaFai Lau wrote:
+>>>> On Tue, Jun 21, 2022 at 12:17:54PM -0700, John Fastabend wrote:
+>>>>>> Hashmap Control
+>>>>>> ===============
+>>>>>>         num keys: 10
+>>>>>> hashmap (control) sequential    get:  hits throughput: 20.900 ± 0.334 M ops/s, hits latency: 47.847 ns/op, important_hits throughput: 20.900 ± 0.334 M ops/s
+>>>>>>
+>>>>>>         num keys: 1000
+>>>>>> hashmap (control) sequential    get:  hits throughput: 13.758 ± 0.219 M ops/s, hits latency: 72.683 ns/op, important_hits throughput: 13.758 ± 0.219 M ops/s
+>>>>>>
+>>>>>>         num keys: 10000
+>>>>>> hashmap (control) sequential    get:  hits throughput: 6.995 ± 0.034 M ops/s, hits latency: 142.959 ns/op, important_hits throughput: 6.995 ± 0.034 M ops/s
+>>>>>>
+>>>>>>         num keys: 100000
+>>>>>> hashmap (control) sequential    get:  hits throughput: 4.452 ± 0.371 M ops/s, hits latency: 224.635 ns/op, important_hits throughput: 4.452 ± 0.371 M ops/s
+>>>>>>
+>>>>>>         num keys: 4194304
+>>>>>> hashmap (control) sequential    get:  hits throughput: 3.043 ± 0.033 M ops/s, hits latency: 328.587 ns/op, important_hits throughput: 3.043 ± 0.033 M ops/s
+>>>>>>
+>>>>>
+>>>>> Why is the hashmap lookup not constant with the number of keys? It looks
+>>>>> like its prepopulated without collisions so I wouldn't expect any
+>>>>> extra ops on the lookup side after looking at the code quickly.
+>>>> It may be due to the cpu-cache misses as the map grows.
+>>>
+>>> Maybe but, values are just ints so even 1k * 4B = 4kB should be
+>>> inside an otherwise unused server class system. Would be more
+>>> believable (to me at least) if the drop off happened at 100k or
+>>> more.
+>> It is not only value (and key) size.  There is overhead.
+>> htab_elem alone is 48bytes.  key and value need to 8bytes align also.
 >>
 > 
-> Why is the hashmap lookup not constant with the number of keys? It looks
-> like its prepopulated without collisions so I wouldn't expect any
-> extra ops on the lookup side after looking at the code quickly.
+> Right late night math didn't add up. Now I'm wondering if we can make
+> hashmap behave much better, that drop off is looking really ugly.
 > 
+>> From a random machine:
+>> lscpu -C
+>> NAME ONE-SIZE ALL-SIZE WAYS TYPE        LEVEL  SETS PHY-LINE COHERENCY-SIZE
+>> L1d       32K     576K    8 Data            1    64        1             64
+>> L1i       32K     576K    8 Instruction     1    64        1             64
+>> L2         1M      18M   16 Unified         2  1024        1             64
+>> L3      24.8M    24.8M   11 Unified         3 36864        1             64
 > 
->> Local Storage
->> =============
->>         num_maps: 1
->> local_storage cache sequential  get:  hits throughput: 47.298 ± 0.180 M ops/s, hits latency: 21.142 ns/op, important_hits throughput: 47.298 ± 0.180 M ops/s
->> local_storage cache interleaved get:  hits throughput: 55.277 ± 0.888 M ops/s, hits latency: 18.091 ns/op, important_hits throughput: 55.277 ± 0.888 M ops/s
->>
->>         num_maps: 10
->> local_storage cache sequential  get:  hits throughput: 40.240 ± 0.802 M ops/s, hits latency: 24.851 ns/op, important_hits throughput: 4.024 ± 0.080 M ops/s
->> local_storage cache interleaved get:  hits throughput: 48.701 ± 0.722 M ops/s, hits latency: 20.533 ns/op, important_hits throughput: 17.393 ± 0.258 M ops/s
->>
->>         num_maps: 16
->> local_storage cache sequential  get:  hits throughput: 44.515 ± 0.708 M ops/s, hits latency: 22.464 ns/op, important_hits throughput: 2.782 ± 0.044 M ops/s
->> local_storage cache interleaved get:  hits throughput: 49.553 ± 2.260 M ops/s, hits latency: 20.181 ns/op, important_hits throughput: 15.767 ± 0.719 M ops/s
->>
->>         num_maps: 17
->> local_storage cache sequential  get:  hits throughput: 38.778 ± 0.302 M ops/s, hits latency: 25.788 ns/op, important_hits throughput: 2.284 ± 0.018 M ops/s
->> local_storage cache interleaved get:  hits throughput: 43.848 ± 1.023 M ops/s, hits latency: 22.806 ns/op, important_hits throughput: 13.349 ± 0.311 M ops/s
->>
->>         num_maps: 24
->> local_storage cache sequential  get:  hits throughput: 19.317 ± 0.568 M ops/s, hits latency: 51.769 ns/op, important_hits throughput: 0.806 ± 0.024 M ops/s
->> local_storage cache interleaved get:  hits throughput: 24.397 ± 0.272 M ops/s, hits latency: 40.989 ns/op, important_hits throughput: 6.863 ± 0.077 M ops/s
->>
->>         num_maps: 32
->> local_storage cache sequential  get:  hits throughput: 13.333 ± 0.135 M ops/s, hits latency: 75.000 ns/op, important_hits throughput: 0.417 ± 0.004 M ops/s
->> local_storage cache interleaved get:  hits throughput: 16.898 ± 0.383 M ops/s, hits latency: 59.178 ns/op, important_hits throughput: 4.717 ± 0.107 M ops/s
->>
->>         num_maps: 100
->> local_storage cache sequential  get:  hits throughput: 6.360 ± 0.107 M ops/s, hits latency: 157.233 ns/op, important_hits throughput: 0.064 ± 0.001 M ops/s
->> local_storage cache interleaved get:  hits throughput: 7.303 ± 0.362 M ops/s, hits latency: 136.930 ns/op, important_hits throughput: 1.907 ± 0.094 M ops/s
->>
->>         num_maps: 1000
->> local_storage cache sequential  get:  hits throughput: 0.452 ± 0.010 M ops/s, hits latency: 2214.022 ns/op, important_hits throughput: 0.000 ± 0.000 M ops/s
->> local_storage cache interleaved get:  hits throughput: 0.542 ± 0.007 M ops/s, hits latency: 1843.341 ns/op, important_hits throughput: 0.136 ± 0.002 M ops/s
->>
->> Looking at the "sequential get" results, it's clear that as the
->> number of task local_storage maps grows beyond the current cache size
->> (16), there's a significant reduction in hits throughput. Note that
->> current local_storage implementation assigns a cache_idx to maps as they
->> are created. Since "sequential get" is creating maps 0..n in order and
->> then doing bpf_task_storage_get calls in the same order, the benchmark
->> is effectively ensuring that a map will not be in cache when the program
->> tries to access it.
->>
->> For "interleaved get" results, important-map hits throughput is greatly
->> increased as the important map is more likely to be in cache by virtue
->> of being accessed far more frequently. Throughput still reduces as #
->> maps increases, though.
->>
->> To get a sense of the overhead of the benchmark program, I
->> commented out bpf_task_storage_get/bpf_map_lookup_elem in
->> local_storage_bench.c and ran the benchmark on the same host as the
->> 'real' run. Results:
+> Could you do a couple more data point then, num keys=100,200,400? I would
+> expect those to fit in the cache and be same as 10 by the cache theory. I
+> could try as well but looking like Friday before I have a spare moment.
 > 
-> Also just checking the hash overhead was taken including the
-> urandom so we can pull that out of the cost.
-> 
-> [...]
-> 
+> Thanks,
+> John
 
-Yep, confirmed.
+Here's a benchmark run with those num_keys.
+
+Hashmap Control
+===============
+        num keys: 10
+hashmap (control) sequential    get:  hits throughput: 23.072 ± 0.208 M ops/s, hits latency: 43.343 ns/op, important_hits throughput: 23.072 ± 0.208 M ops/s
+
+        num keys: 100
+hashmap (control) sequential    get:  hits throughput: 17.967 ± 0.236 M ops/s, hits latency: 55.659 ns/op, important_hits throughput: 17.967 ± 0.236 M ops/s
+
+        num keys: 200
+hashmap (control) sequential    get:  hits throughput: 17.812 ± 0.428 M ops/s, hits latency: 56.143 ns/op, important_hits throughput: 17.812 ± 0.428 M ops/s
+
+        num keys: 300
+hashmap (control) sequential    get:  hits throughput: 17.070 ± 0.293 M ops/s, hits latency: 58.582 ns/op, important_hits throughput: 17.070 ± 0.293 M ops/s
+
+        num keys: 400
+hashmap (control) sequential    get:  hits throughput: 17.667 ± 0.316 M ops/s, hits latency: 56.604 ns/op, important_hits throughput: 17.667 ± 0.316 M ops/s
+
+        num keys: 500
+hashmap (control) sequential    get:  hits throughput: 17.010 ± 0.409 M ops/s, hits latency: 58.789 ns/op, important_hits throughput: 17.010 ± 0.409 M ops/s
+
+        num keys: 1000
+hashmap (control) sequential    get:  hits throughput: 14.330 ± 0.172 M ops/s, hits latency: 69.784 ns/op, important_hits throughput: 14.330 ± 0.172 M ops/s
+
+        num keys: 10000
+hashmap (control) sequential    get:  hits throughput: 6.047 ± 0.024 M ops/s, hits latency: 165.380 ns/op, important_hits throughput: 6.047 ± 0.024 M ops/s
+
+        num keys: 100000
+hashmap (control) sequential    get:  hits throughput: 4.472 ± 0.163 M ops/s, hits latency: 223.630 ns/op, important_hits throughput: 4.472 ± 0.163 M ops/s
+
+        num keys: 4194304
+hashmap (control) sequential    get:  hits throughput: 2.785 ± 0.024 M ops/s, hits latency: 359.066 ns/op, important_hits throughput: 2.785 ± 0.024 M ops/s
