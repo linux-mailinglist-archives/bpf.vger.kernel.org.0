@@ -2,572 +2,184 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63C5C55A19C
-	for <lists+bpf@lfdr.de>; Fri, 24 Jun 2022 21:25:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA3355A289
+	for <lists+bpf@lfdr.de>; Fri, 24 Jun 2022 22:22:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230222AbiFXS72 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Jun 2022 14:59:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56216 "EHLO
+        id S231138AbiFXUWl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Jun 2022 16:22:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbiFXS71 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Jun 2022 14:59:27 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 148517C53B;
-        Fri, 24 Jun 2022 11:59:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 95110B82B86;
-        Fri, 24 Jun 2022 18:59:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8B90C34114;
-        Fri, 24 Jun 2022 18:59:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656097163;
-        bh=9lG/oNBpocVsZWbSlBaA7xBp6sq+q5dWcKQtjzSW/J4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CqP0l0s9B6WiDpvpg3x90jCaLt78gxi5nMbSk3AsCfMNkecdyrLgV1IpnPsWTMKfj
-         pXtpF02igze5un5WJW9lHkhXFldmldSzL1OBeKtEnfF6Nk9BTqFrjwv6NlUQw8C7GQ
-         i5hh/9g7aPPx7MftrCLY5/8YgHv54D36CtnFRJHJ86a3s2ev+8PTJ37HPKTXP7OGE9
-         bn/8cqktRSnHw9AM1hybkYzYXY4KYPQthRPXIhMl45X7Bpy95rnwNg115HBfHr69ug
-         xtsd7dnxgyeicg06E6mlAqcu5TOJrTSmeCaclEHY0ex/fkLlkrIanNOg3u71HPPF+2
-         vCUtN6FMj1Pqg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 1EA1B4096F; Fri, 24 Jun 2022 15:59:20 -0300 (-03)
-Date:   Fri, 24 Jun 2022 15:59:20 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S230308AbiFXUWl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Jun 2022 16:22:41 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 816DC8289B
+        for <bpf@vger.kernel.org>; Fri, 24 Jun 2022 13:22:40 -0700 (PDT)
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25OK9e2q030269;
+        Fri, 24 Jun 2022 13:22:25 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=Ti8Cyzv6ygS5ks1rUln2U4wSMC7OhQ6bdC1+HwHx03k=;
+ b=QYe2P//HcK6Wq1p9hwotXEj6ZavancPK5h2f6OLSJNJS5LLsSr2b4LcOywVAfnmAt8UC
+ +9aypgD1O/uuDuRRcc7FQHPUunK6o+CsnTg0F2CeaoWM9nDcZa9a6DLlPs6SirUEAuZ7
+ qL+yPiV4OqVj0yiKlkru7w+ljxB/gW8XzM4= 
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2175.outbound.protection.outlook.com [104.47.57.175])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3gwbd8bhh5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Jun 2022 13:22:25 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VqbgZZibcElwQGqqf7Jy+fSU1WlhL2vS1iEN9SBR9A0aZMtnlA4O8q9kNAlAFYa5wrMZLPVdyzthxQerETryWY1qjqBcumIlWjmlvdmVnR/OYDMjEfQhcRSEoHYzj3TQmxUPukJPCH6OG9aqVKWfVyVGvSlbC+E4eZtTW/OazMKqVHJA1Teg3HITtBGCD3YB6PpfW3/+kxzljYK0tkhH2pDLvnksCzK6l5J6fhpvK1jply6gLUKW2SSOparHe+TcNZCRx3tIzfrKqVtuzVVf0hmmU5EXybM+UDDTuLWQDUHV8KFB0Q0/TDwsxrjH2hOat1JLqy+kEG7aQDbeiPGoYA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Ti8Cyzv6ygS5ks1rUln2U4wSMC7OhQ6bdC1+HwHx03k=;
+ b=I3IcF0eATVLfiInIb404annVkKuYMrlhzybiNXoku9RwnEHuyM9SJKqzhAe9rTTiEBeXJ9HsZyyjK4AcsRZVBuWADzV5GNQcGXPCNo/ls5p7+dkVcE0c0VqjQvr4V3WV4sFLwJkpYFXdgl6gNjMz6jJmrhK4vI5zp3QoN1qVNs6F53AUdduHOyFhM3I3nocYYKnafhJkq7gyOcqoceVLsMUus3unB0Yo1QXAHCdkd68Ec67YeRN/idmZ5tBowRSPIC3JLHVllBhXWG2AYr0Y9BlxOKcB3iDXTb4JtbSF/FYi7OZrbXwE+uP2KjWT8XER+S5R6zxjmEAxoucnfebinA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from MW4PR15MB4475.namprd15.prod.outlook.com (2603:10b6:303:104::16)
+ by MN2PR15MB2736.namprd15.prod.outlook.com (2603:10b6:208:128::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5373.15; Fri, 24 Jun
+ 2022 20:22:22 +0000
+Received: from MW4PR15MB4475.namprd15.prod.outlook.com
+ ([fe80::3941:25c6:c1cd:5762]) by MW4PR15MB4475.namprd15.prod.outlook.com
+ ([fe80::3941:25c6:c1cd:5762%7]) with mapi id 15.20.5353.022; Fri, 24 Jun 2022
+ 20:22:22 +0000
+Date:   Fri, 24 Jun 2022 13:22:20 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Dave Marchevsky <davemarchevsky@fb.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        linux-perf-users@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCHv5 bpf-next 1/1] perf tools: Rework prologue generation
- code
-Message-ID: <YrYJiELwAlufv3gA@kernel.org>
-References: <20220616202214.70359-1-jolsa@kernel.org>
- <20220616202214.70359-2-jolsa@kernel.org>
-MIME-Version: 1.0
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH v5 bpf-next] selftests/bpf: Add benchmark for
+ local_storage get
+Message-ID: <20220624202220.bpbwozm7tjcwxcep@kafai-mbp>
+References: <20220604222006.3006708-1-davemarchevsky@fb.com>
+ <CAJD7tkYkhg2RQWJi72Eu0UOAqLGAPYm21TxQvCVC4R74TK0vqg@mail.gmail.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220616202214.70359-2-jolsa@kernel.org>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CAJD7tkYkhg2RQWJi72Eu0UOAqLGAPYm21TxQvCVC4R74TK0vqg@mail.gmail.com>
+X-ClientProxiedBy: BYAPR04CA0019.namprd04.prod.outlook.com
+ (2603:10b6:a03:40::32) To MW4PR15MB4475.namprd15.prod.outlook.com
+ (2603:10b6:303:104::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0c6e9bb7-66a5-4095-40e9-08da561f3eed
+X-MS-TrafficTypeDiagnostic: MN2PR15MB2736:EE_
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7A4sIox/iTxYf548RQ6FNUHHRaquXDz2cNoxBtTGtTdD+n7Y26rxt2nspPPlvSKrvxHIXXWhsPWzWtLDSv4t/t+3uzsJpw6uCDjOoBuHEoHp3F4usdyv7Pf07ejJGYbpUf0e5OCMCDG3wvRaekxWSLnE/JRL/suNwAsQBLEdpvmdi98k75nXGu9OaePVD3shmIrgCa755L69esmpBFbxSBOgjGoWRnSxpMgBvcclo7zKg3zZXFkegduKW1YM9qXHrQpMwsJwg+28938ed9OFbXpQv+vPli5hISC8OPdGF9v0lz7QUWOWTkFRgjg/YtJTjCocDhxiqPCeQHnk6Vx86l6s3v1EoVwG2Co4Sih58RTXXLdrAdRdbL0PvbV771qeSp85xvCANRqtoxAF+5HyHxSVowm2AhoonenGklFuyHbZu82lct3aoNeKfb/WvoBDKL5N4nd+kRjN0R0rRdNH8rSRKTWVZCEUsB/29ylhfoeDi3/cUeSOVKLmNz+WBYCDDuyqh2l+4SQik/YvT0UgnBuIR8eeE8ec6HvvJ+BHUN6/tA/Qd2dzND2Wd2qd3P7O1wwWbTx2uRW+V1sR3US12hLF9U4/02KbvoZDDCJdzmvCfL9zNH0qtE+FEiPo/yjRat5nFCru+iBrvObJXiJNNIypwJ+rdYnC2kSAFsYAeOGd0MZFcd/AYZ7aV1BcGWKX1e/WU3+93+u0xH0Hqm3HZf8NMaltJrX93vP2M7nV/W8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4475.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(7916004)(396003)(366004)(346002)(39860400002)(136003)(376002)(6506007)(83380400001)(38100700002)(41300700001)(53546011)(1076003)(186003)(478600001)(33716001)(52116002)(6486002)(6512007)(66946007)(54906003)(8676002)(86362001)(66556008)(5660300002)(9686003)(316002)(66476007)(2906002)(8936002)(4326008)(6916009);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?eGq0vqOcuKGnjrLXU5Oi84EyZK3RA8O0gIPvtzxttfHGn1jLMaUK2TxFQhw/?=
+ =?us-ascii?Q?j0BKEvLzizfPeqpR30+ZTqPQbLwND38RsfOD5Db4lnxye3dvakkeQU4Kir7G?=
+ =?us-ascii?Q?WaKUaUO3UjARgqm+AFNMt/x7bFw7vpzPGsv5VkNGrWmcztgcAepXGlmqRCjS?=
+ =?us-ascii?Q?oQ8vPzs2ss1b0FMqb1VDKA2LKL009qvj1VbDBaK2wnFUUR20k2XX2XdGgMiz?=
+ =?us-ascii?Q?7+C7zJ+wEEpalIXf1ln1q3tx7cSledByrihNSz1t3IMhO07wVZYjIEPgvtlg?=
+ =?us-ascii?Q?FSS6SaL9gV0eQLQjyIsWiDw/Ld+nhvdGr0tMCOXeTGnfMnUKQR8V6caPEMBi?=
+ =?us-ascii?Q?LXGmrhj35XCaxYcY8kZLDD9V0LqMSlrnUl8tJLjlCswS233FdSI71A2yZMrG?=
+ =?us-ascii?Q?HRHdm5XjI8JeFJgnAl7turEGV4TP3VdMDMuWRyT8eLvfzdxKAXw+mtReh6Gi?=
+ =?us-ascii?Q?1hF1Wd82MPrfC6Zzy3nQPEwVu/Pguw1N3j9JZ4U7fVd4w+ceNo6e8cI0V1J+?=
+ =?us-ascii?Q?qllOcvtwlUNnBGtXLNTormcbTyEFYyVwXp+qOwonjOAWJjDjrQFRFVdr4ESi?=
+ =?us-ascii?Q?nO3AnZhD16pAx/uu0+v1NqdKdqLViJXJMRG9XUc8NmPsTT4oiR3t7GgaifGc?=
+ =?us-ascii?Q?DNdC0M0sZbztuOZmYh7pEq1DTerCIrTX9Zg9XQXIKnAvQ5qYUE15owTT965y?=
+ =?us-ascii?Q?ZjmRPEebruZQgV5FqxeSw/EpdOVcN/HNV9fwDMFVZQXEsFhpo86rJsutcicQ?=
+ =?us-ascii?Q?2U7nNtTkRs11qkC8n4MvqfuUZ3vqwvXaTGXKsINPuhFe3OMHmSeP286MzisI?=
+ =?us-ascii?Q?Iz/pqtQ5BAuHwuTfwXSX+k1IVv1ziyTYcxKpCZtUwFW0bqUDcQ2C8M1sNGhi?=
+ =?us-ascii?Q?79pBs4p3kZdGWtMM7umHYeGXRROyPCsXcS4e67ZX+dAKuD93HuWSrBt+LH9h?=
+ =?us-ascii?Q?KgrARmr40F49D+MioL4JHsN3N1/O6cPhUB9BRAD7qp+eDchyAadXR4//9rhr?=
+ =?us-ascii?Q?YvsJSPYb5T3cqDoOxtM8BpLAG6Qt/JaYaUeVc84uWeo0ZMchEwyJ8NR7uIqt?=
+ =?us-ascii?Q?LqJ6w3LcNu+L3O64+pZNyXXYWF4dzroFS5tA4EzQTw9M3rlv45/XzbEFQkEb?=
+ =?us-ascii?Q?kzkxRvrQdwFebqLF42UZDGMbE1jYTUD4E502T6G6cf7qZimXB8fW4srHst6g?=
+ =?us-ascii?Q?yWrMPfYoJBPTgjuOW0gqTSmjk1DqcJNAf8Anp+Ghtp9LygaISJNJajfl9kl4?=
+ =?us-ascii?Q?kkExCNQNN6zrAdOoAppnEKDL0MRrRU2jRy3tOLWJohEXRbBtsOZ7TWEtox9j?=
+ =?us-ascii?Q?zG1fVu+i7hWKJtW+qzWjO/oiMy/VB4Wl/yHprmhQADoLDqmQIbR0XT344/KX?=
+ =?us-ascii?Q?zuJVqACME47blYga0z7zXb9GKZrt2S1nBAQUl4Wr9Slqfw2FBR9BFJIQOMCR?=
+ =?us-ascii?Q?2u0x6UfANF5BYeFrbLs0eAn1FpTuCnp//suC8BZQIQ2ASieWcotJjiJGUZXy?=
+ =?us-ascii?Q?YcXFAaKIiJjcfZkf9g5BobSS0siyE/Jo6F5ZchQDDcnhrc+Fh12LIAf5HoML?=
+ =?us-ascii?Q?me+EefCPTWSTnE/Hd09JgHpGUdMqLI0q2vhkxhG3On1wdKAZ9g4/BUV1QfBd?=
+ =?us-ascii?Q?Jg=3D=3D?=
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0c6e9bb7-66a5-4095-40e9-08da561f3eed
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4475.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jun 2022 20:22:22.8088
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: h6mZrNKmvBYcSV/ciE+BR5UACjQnq2UwrtTNPr7T9G2RikPFb7FWir2uUIPQfu+0
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB2736
+X-Proofpoint-GUID: zwahuPmp8hmlql4ZEncvvJIOpV-6bB4r
+X-Proofpoint-ORIG-GUID: zwahuPmp8hmlql4ZEncvvJIOpV-6bB4r
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-06-24_09,2022-06-24_01,2022-06-22_01
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Thu, Jun 16, 2022 at 10:22:14PM +0200, Jiri Olsa escreveu:
-> Some functions we use for bpf prologue generation are going to be
-> deprecated. This change reworks current code not to use them.
+On Wed, Jun 22, 2022 at 04:00:04PM -0700, Yosry Ahmed wrote:
+> Thanks for adding these benchmarks!
 > 
-> We need to replace following functions/struct:
->    bpf_program__set_prep
->    bpf_program__nth_fd
->    struct bpf_prog_prep_result
-
-So this is a combination of those two patches, ok:
-
-Before:
-
-[root@quaco ~]# perf -v
-perf version 5.19.rc3.g3af6e6d06631
-[root@quaco ~]# perf test bpf
- 40: LLVM search and compile                                         :
- 40.1: Basic BPF llvm compile                                        : Ok
- 40.3: Compile source for BPF prologue generation                    : Ok
- 40.4: Compile source for BPF relocation                             : Ok
- 42: BPF filter                                                      :
- 42.1: Basic BPF filtering                                           : Ok
- 42.2: BPF pinning                                                   : Ok
- 42.3: BPF prologue generation                                       : Ok
- 63: Test libpfm4 support                                            :
- 96: perf stat --bpf-counters test                                   : Ok
-[root@quaco ~]#
-
-After:
-[acme@quaco perf-urgent]$ git log --oneline -5
-44d22a24d0d49588 (HEAD -> perf/urgent) perf tools: Rework prologue generation code
-3af6e6d0663196e7 (five/perf/urgent) perf stat: Enable ignore_missing_thread
-c3259c85b333af5e perf inject: Adjust output data offset for backward compatibility
-8e6445010f7bffbb perf trace beauty: Fix generation of errno id->str table on ALT Linux
-57a438eb2aef4f1f perf build-id: Fix caching files with a wrong build ID
-[acme@quaco perf-urgent]$ 
-[root@quaco ~]# perf -v
-perf version 5.19.rc3.g44d22a24d0d4
-[root@quaco ~]# perf test bpf
- 40: LLVM search and compile                                         :
- 40.1: Basic BPF llvm compile                                        : Ok
- 40.3: Compile source for BPF prologue generation                    : Ok
- 40.4: Compile source for BPF relocation                             : Ok
- 42: BPF filter                                                      :
- 42.1: Basic BPF filtering                                           : Ok
- 42.2: BPF pinning                                                   : Ok
- 42.3: BPF prologue generation                                       : Ok
- 63: Test libpfm4 support                                            :
- 96: perf stat --bpf-counters test                                   : Ok
-[root@quaco ~]#
-
-And 'perf test' with the augmented_raw_syscalls.c eBPF support also
-continues to work:
-
-[root@quaco ~]# perf trace -e /home/acme/git/perf/tools/perf/examples/bpf/augmented_raw_syscalls.c,open*,connect* --max-events 20
-     0.000 systemd-oomd/948 openat(dfd: CWD, filename: "/proc/meminfo", flags: RDONLY|CLOEXEC) = 12
-     0.151 abrt-dump-jour/1338 openat(dfd: CWD, filename: "/var/log/journal/d6a97235307247e09f13f326fb607e3c/system.journal", flags: RDONLY|CLOEXEC|NONBLOCK) = 31
-     0.096 abrt-dump-jour/1336 openat(dfd: CWD, filename: "/var/log/journal/d6a97235307247e09f13f326fb607e3c/system.journal", flags: RDONLY|CLOEXEC|NONBLOCK) = 31
-     0.092 abrt-dump-jour/1337 openat(dfd: CWD, filename: "/var/log/journal/d6a97235307247e09f13f326fb607e3c/system.journal", flags: RDONLY|CLOEXEC|NONBLOCK) = 31
-     9.024 isc-net-0000/1108 connect(fd: 512, uservaddr: { .family: INET6, port: 53, addr: 2406:8600:f03f:1f8::1003 }, addrlen: 28) = -1 ENETUNREACH (Network is unreachable)
-     9.728 isc-net-0000/1108 connect(fd: 513, uservaddr: { .family: INET6, port: 53, addr: 2406:2000:1d0::7961:686f:6f21 }, addrlen: 28) = -1 ENETUNREACH (Network is unreachable)
-     9.811 systemd-journa/712 openat(dfd: CWD, filename: "/proc/1107/comm", flags: RDONLY|CLOEXEC) ...
-    10.061 isc-net-0000/1108 connect(fd: 514, uservaddr: { .family: INET6, port: 53, addr: 2001:4998:1c0::7961:686f:6f21 }, addrlen: 28) = -1 ENETUNREACH (Network is unreachable)
-     9.811 systemd-journa/712  ... [continued]: openat())             = 66
-    10.401 systemd-journa/712 openat(dfd: CWD, filename: "/proc/1107/cmdline", flags: RDONLY|CLOEXEC|NOCTTY) = 66
-    10.438 isc-net-0000/1108 connect(fd: 513, uservaddr: { .family: INET6, port: 53, addr: 2001:4998:1b0::7961:686f:6f21 }, addrlen: 28) = -1 ENETUNREACH (Network is unreachable)
-    10.803 isc-net-0000/1108 connect(fd: 514, uservaddr: { .family: INET, port: 53, addr: 98.138.11.157 }, addrlen: 16) = 0
-    10.851 systemd-journa/712 openat(dfd: CWD, filename: "/proc/1107/status", flags: RDONLY|CLOEXEC|NOCTTY) = 66
-    11.165 systemd-journa/712 openat(dfd: CWD, filename: "/proc/1107/sessionid", flags: RDONLY|CLOEXEC) = 66
-    11.420 systemd-journa/712 openat(dfd: CWD, filename: "/proc/1107/loginuid", flags: RDONLY|CLOEXEC) = 66
-    11.631 systemd-journa/712 openat(dfd: CWD, filename: "/proc/1107/cgroup", flags: RDONLY|CLOEXEC) = 66
-    11.903 systemd-journa/712 openat(dfd: CWD, filename: "/run/systemd/units/log-extra-fields:named.service", flags: RDONLY|CLOEXEC) = -1 ENOENT (No such file or directory)
-    12.085 systemd-journa/712 openat(dfd: CWD, filename: "/run/log/journal/d6a97235307247e09f13f326fb607e3c/system.journal", flags: RDWR|CLOEXEC|NONBLOCK) = -1 ENOENT (No such file or directory)
-    12.849 systemd-journa/712 openat(dfd: CWD, filename: "/run/log/journal/d6a97235307247e09f13f326fb607e3c/system.journal", flags: RDWR|CLOEXEC|NONBLOCK) = -1 ENOENT (No such file or directory)
-    13.141 systemd-journa/712 openat(dfd: CWD, filename: "/run/log/journal/d6a97235307247e09f13f326fb607e3c/system.journal", flags: RDWR|CLOEXEC|NONBLOCK) = -1 ENOENT (No such file or directory)
-[root@quaco ~]#
-
-[root@quaco ~]# grep -A2 SEC /home/acme/git/perf/tools/perf/examples/bpf/augmented_raw_syscalls.c
-SEC("!raw_syscalls:unaugmented")
-int syscall_unaugmented(struct syscall_enter_args *args)
-{
---
- * These will be tail_called from SEC("raw_syscalls:sys_enter"), so will find in
- * augmented_args_tmp what was read by that raw_syscalls:sys_enter and go
- * on from there, reading the first syscall arg as a string, i.e. open's
---
-SEC("!syscalls:sys_enter_connect")
-int sys_enter_connect(struct syscall_enter_args *args)
-{
---
-SEC("!syscalls:sys_enter_sendto")
-int sys_enter_sendto(struct syscall_enter_args *args)
-{
---
-SEC("!syscalls:sys_enter_open")
-int sys_enter_open(struct syscall_enter_args *args)
-{
---
-SEC("!syscalls:sys_enter_openat")
-int sys_enter_openat(struct syscall_enter_args *args)
-{
---
-SEC("!syscalls:sys_enter_rename")
-int sys_enter_rename(struct syscall_enter_args *args)
-{
---
-SEC("!syscalls:sys_enter_renameat")
-int sys_enter_renameat(struct syscall_enter_args *args)
-{
---
-SEC("raw_syscalls:sys_enter")
-int sys_enter(struct syscall_enter_args *args)
-{
---
-SEC("raw_syscalls:sys_exit")
-int sys_exit(struct syscall_exit_args *args)
-{
-[root@quaco ~]#
-
-
-Thanks, you can have my:
-
-Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-
-Stronger than an:
-
-Acked-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-
-- Arnaldo
- 
-> Currently we use bpf_program__set_prep to hook perf callback before
-> program is loaded and provide new instructions with the prologue.
 > 
-> We replace this function/ality by taking instructions for specific
-> program, attaching prologue to them and load such new ebpf programs
-> with prologue using separate bpf_prog_load calls (outside libbpf
-> load machinery).
+> On Sat, Jun 4, 2022 at 3:20 PM Dave Marchevsky <davemarchevsky@fb.com> wrote:
+> >
+> > Add a benchmarks to demonstrate the performance cliff for local_storage
+> > get as the number of local_storage maps increases beyond current
+> > local_storage implementation's cache size.
+> >
+> > "sequential get" and "interleaved get" benchmarks are added, both of
+> > which do many bpf_task_storage_get calls on sets of task local_storage
+> > maps of various counts, while considering a single specific map to be
+> > 'important' and counting task_storage_gets to the important map
+> > separately in addition to normal 'hits' count of all gets. Goal here is
+> > to mimic scenario where a particular program using one map - the
+> > important one - is running on a system where many other local_storage
+> > maps exist and are accessed often.
+> >
+> > While "sequential get" benchmark does bpf_task_storage_get for map 0, 1,
+> > ..., {9, 99, 999} in order, "interleaved" benchmark interleaves 4
+> > bpf_task_storage_gets for the important map for every 10 map gets. This
+> > is meant to highlight performance differences when important map is
+> > accessed far more frequently than non-important maps.
+> >
+> > A "hashmap control" benchmark is also included for easy comparison of
+> > standard bpf hashmap lookup vs local_storage get. The benchmark is
+> > similar to "sequential get", but creates and uses BPF_MAP_TYPE_HASH
+> > instead of local storage. Only one inner map is created - a hashmap
+> > meant to hold tid -> data mapping for all tasks. Size of the hashmap is
+> > hardcoded to my system's PID_MAX_LIMIT (4,194,304). The number of these
+> > keys which are actually fetched as part of the benchmark is
+> > configurable.
+> >
+> > Addition of this benchmark is inspired by conversation with Alexei in a
+> > previous patchset's thread [0], which highlighted the need for such a
+> > benchmark to motivate and validate improvements to local_storage
+> > implementation. My approach in that series focused on improving
+> > performance for explicitly-marked 'important' maps and was rejected
+> > with feedback to make more generally-applicable improvements while
+> > avoiding explicitly marking maps as important. Thus the benchmark
+> > reports both general and important-map-focused metrics, so effect of
+> > future work on both is clear.
 > 
-> Before we can take and use program instructions, we need libbpf to
-> actually load it. This way we get the final shape of its instructions
-> with all relocations and verifier adjustments).
-> 
-> There's one glitch though.. perf kprobe program already assumes
-> generated prologue code with proper values in argument registers,
-> so loading such program directly will fail in the verifier.
-> 
-> That's where the fallback pre-load handler fits in and prepends
-> the initialization code to the program. Once such program is loaded
-> we take its instructions, cut off the initialization code and prepend
-> the prologue.
-> 
-> I know.. sorry ;-)
-> 
-> To have access to the program when loading this patch adds support to
-> register 'fallback' section handler to take care of perf kprobe programs.
-> The fallback means that it handles any section definition besides the
-> ones that libbpf handles.
-> 
-> The handler serves two purposes:
->   - allows perf programs to have special arguments in section name
->   - allows perf to use pre-load callback where we can attach init
->     code (zeroing all argument registers) to each perf program
-> 
-> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/perf/util/bpf-loader.c | 204 ++++++++++++++++++++++++++++++-----
->  1 file changed, 175 insertions(+), 29 deletions(-)
-> 
-> diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
-> index f8ad581ea247..6bd7c288e820 100644
-> --- a/tools/perf/util/bpf-loader.c
-> +++ b/tools/perf/util/bpf-loader.c
-> @@ -9,6 +9,7 @@
->  #include <linux/bpf.h>
->  #include <bpf/libbpf.h>
->  #include <bpf/bpf.h>
-> +#include <linux/filter.h>
->  #include <linux/err.h>
->  #include <linux/kernel.h>
->  #include <linux/string.h>
-> @@ -49,6 +50,7 @@ struct bpf_prog_priv {
->  	struct bpf_insn *insns_buf;
->  	int nr_types;
->  	int *type_mapping;
-> +	int *prologue_fds;
->  };
->  
->  struct bpf_perf_object {
-> @@ -56,6 +58,11 @@ struct bpf_perf_object {
->  	struct bpf_object *obj;
->  };
->  
-> +struct bpf_preproc_result {
-> +	struct bpf_insn *new_insn_ptr;
-> +	int new_insn_cnt;
-> +};
-> +
->  static LIST_HEAD(bpf_objects_list);
->  static struct hashmap *bpf_program_hash;
->  static struct hashmap *bpf_map_hash;
-> @@ -86,6 +93,7 @@ bpf_perf_object__next(struct bpf_perf_object *prev)
->  	     (perf_obj) = (tmp), (tmp) = bpf_perf_object__next(tmp))
->  
->  static bool libbpf_initialized;
-> +static int libbpf_sec_handler;
->  
->  static int bpf_perf_object__add(struct bpf_object *obj)
->  {
-> @@ -99,12 +107,76 @@ static int bpf_perf_object__add(struct bpf_object *obj)
->  	return perf_obj ? 0 : -ENOMEM;
->  }
->  
-> +static void *program_priv(const struct bpf_program *prog)
-> +{
-> +	void *priv;
-> +
-> +	if (IS_ERR_OR_NULL(bpf_program_hash))
-> +		return NULL;
-> +	if (!hashmap__find(bpf_program_hash, prog, &priv))
-> +		return NULL;
-> +	return priv;
-> +}
-> +
-> +static struct bpf_insn prologue_init_insn[] = {
-> +	BPF_MOV64_IMM(BPF_REG_2, 0),
-> +	BPF_MOV64_IMM(BPF_REG_3, 0),
-> +	BPF_MOV64_IMM(BPF_REG_4, 0),
-> +	BPF_MOV64_IMM(BPF_REG_5, 0),
-> +};
-> +
-> +static int libbpf_prog_prepare_load_fn(struct bpf_program *prog,
-> +				       struct bpf_prog_load_opts *opts __maybe_unused,
-> +				       long cookie __maybe_unused)
-> +{
-> +	size_t init_size_cnt = ARRAY_SIZE(prologue_init_insn);
-> +	size_t orig_insn_cnt, insn_cnt, init_size, orig_size;
-> +	struct bpf_prog_priv *priv = program_priv(prog);
-> +	const struct bpf_insn *orig_insn;
-> +	struct bpf_insn *insn;
-> +
-> +	if (IS_ERR_OR_NULL(priv)) {
-> +		pr_debug("bpf: failed to get private field\n");
-> +		return -BPF_LOADER_ERRNO__INTERNAL;
-> +	}
-> +
-> +	if (!priv->need_prologue)
-> +		return 0;
-> +
-> +	/* prepend initialization code to program instructions */
-> +	orig_insn = bpf_program__insns(prog);
-> +	orig_insn_cnt = bpf_program__insn_cnt(prog);
-> +	init_size = init_size_cnt * sizeof(*insn);
-> +	orig_size = orig_insn_cnt * sizeof(*insn);
-> +
-> +	insn_cnt = orig_insn_cnt + init_size_cnt;
-> +	insn = malloc(insn_cnt * sizeof(*insn));
-> +	if (!insn)
-> +		return -ENOMEM;
-> +
-> +	memcpy(insn, prologue_init_insn, init_size);
-> +	memcpy((char *) insn + init_size, orig_insn, orig_size);
-> +	bpf_program__set_insns(prog, insn, insn_cnt);
-> +	return 0;
-> +}
-> +
->  static int libbpf_init(void)
->  {
-> +	LIBBPF_OPTS(libbpf_prog_handler_opts, handler_opts,
-> +		.prog_prepare_load_fn = libbpf_prog_prepare_load_fn,
-> +	);
-> +
->  	if (libbpf_initialized)
->  		return 0;
->  
->  	libbpf_set_print(libbpf_perf_print);
-> +	libbpf_sec_handler = libbpf_register_prog_handler(NULL, BPF_PROG_TYPE_KPROBE,
-> +							  0, &handler_opts);
-> +	if (libbpf_sec_handler < 0) {
-> +		pr_debug("bpf: failed to register libbpf section handler: %d\n",
-> +			 libbpf_sec_handler);
-> +		return -BPF_LOADER_ERRNO__INTERNAL;
-> +	}
->  	libbpf_initialized = true;
->  	return 0;
->  }
-> @@ -188,14 +260,31 @@ struct bpf_object *bpf__prepare_load(const char *filename, bool source)
->  	return obj;
->  }
->  
-> +static void close_prologue_programs(struct bpf_prog_priv *priv)
-> +{
-> +	struct perf_probe_event *pev;
-> +	int i, fd;
-> +
-> +	if (!priv->need_prologue)
-> +		return;
-> +	pev = &priv->pev;
-> +	for (i = 0; i < pev->ntevs; i++) {
-> +		fd = priv->prologue_fds[i];
-> +		if (fd != -1)
-> +			close(fd);
-> +	}
-> +}
-> +
->  static void
->  clear_prog_priv(const struct bpf_program *prog __maybe_unused,
->  		void *_priv)
->  {
->  	struct bpf_prog_priv *priv = _priv;
->  
-> +	close_prologue_programs(priv);
->  	cleanup_perf_probe_events(&priv->pev, 1);
->  	zfree(&priv->insns_buf);
-> +	zfree(&priv->prologue_fds);
->  	zfree(&priv->type_mapping);
->  	zfree(&priv->sys_name);
->  	zfree(&priv->evt_name);
-> @@ -243,17 +332,6 @@ static bool ptr_equal(const void *key1, const void *key2,
->  	return key1 == key2;
->  }
->  
-> -static void *program_priv(const struct bpf_program *prog)
-> -{
-> -	void *priv;
-> -
-> -	if (IS_ERR_OR_NULL(bpf_program_hash))
-> -		return NULL;
-> -	if (!hashmap__find(bpf_program_hash, prog, &priv))
-> -		return NULL;
-> -	return priv;
-> -}
-> -
->  static int program_set_priv(struct bpf_program *prog, void *priv)
->  {
->  	void *old_priv;
-> @@ -558,8 +636,8 @@ static int bpf__prepare_probe(void)
->  
->  static int
->  preproc_gen_prologue(struct bpf_program *prog, int n,
-> -		     struct bpf_insn *orig_insns, int orig_insns_cnt,
-> -		     struct bpf_prog_prep_result *res)
-> +		     const struct bpf_insn *orig_insns, int orig_insns_cnt,
-> +		     struct bpf_preproc_result *res)
->  {
->  	struct bpf_prog_priv *priv = program_priv(prog);
->  	struct probe_trace_event *tev;
-> @@ -607,7 +685,6 @@ preproc_gen_prologue(struct bpf_program *prog, int n,
->  
->  	res->new_insn_ptr = buf;
->  	res->new_insn_cnt = prologue_cnt + orig_insns_cnt;
-> -	res->pfd = NULL;
->  	return 0;
->  
->  errout:
-> @@ -715,7 +792,7 @@ static int hook_load_preprocessor(struct bpf_program *prog)
->  	struct bpf_prog_priv *priv = program_priv(prog);
->  	struct perf_probe_event *pev;
->  	bool need_prologue = false;
-> -	int err, i;
-> +	int i;
->  
->  	if (IS_ERR_OR_NULL(priv)) {
->  		pr_debug("Internal error when hook preprocessor\n");
-> @@ -753,6 +830,13 @@ static int hook_load_preprocessor(struct bpf_program *prog)
->  		return -ENOMEM;
->  	}
->  
-> +	priv->prologue_fds = malloc(sizeof(int) * pev->ntevs);
-> +	if (!priv->prologue_fds) {
-> +		pr_debug("Not enough memory: alloc prologue fds failed\n");
-> +		return -ENOMEM;
-> +	}
-> +	memset(priv->prologue_fds, -1, sizeof(int) * pev->ntevs);
-> +
->  	priv->type_mapping = malloc(sizeof(int) * pev->ntevs);
->  	if (!priv->type_mapping) {
->  		pr_debug("Not enough memory: alloc type_mapping failed\n");
-> @@ -761,13 +845,7 @@ static int hook_load_preprocessor(struct bpf_program *prog)
->  	memset(priv->type_mapping, -1,
->  	       sizeof(int) * pev->ntevs);
->  
-> -	err = map_prologue(pev, priv->type_mapping, &priv->nr_types);
-> -	if (err)
-> -		return err;
-> -
-> -	err = bpf_program__set_prep(prog, priv->nr_types,
-> -				    preproc_gen_prologue);
-> -	return err;
-> +	return map_prologue(pev, priv->type_mapping, &priv->nr_types);
->  }
->  
->  int bpf__probe(struct bpf_object *obj)
-> @@ -874,6 +952,77 @@ int bpf__unprobe(struct bpf_object *obj)
->  	return ret;
->  }
->  
-> +static int bpf_object__load_prologue(struct bpf_object *obj)
-> +{
-> +	int init_cnt = ARRAY_SIZE(prologue_init_insn);
-> +	const struct bpf_insn *orig_insns;
-> +	struct bpf_preproc_result res;
-> +	struct perf_probe_event *pev;
-> +	struct bpf_program *prog;
-> +	int orig_insns_cnt;
-> +
-> +	bpf_object__for_each_program(prog, obj) {
-> +		struct bpf_prog_priv *priv = program_priv(prog);
-> +		int err, i, fd;
-> +
-> +		if (IS_ERR_OR_NULL(priv)) {
-> +			pr_debug("bpf: failed to get private field\n");
-> +			return -BPF_LOADER_ERRNO__INTERNAL;
-> +		}
-> +
-> +		if (!priv->need_prologue)
-> +			continue;
-> +
-> +		/*
-> +		 * For each program that needs prologue we do following:
-> +		 *
-> +		 * - take its current instructions and use them
-> +		 *   to generate the new code with prologue
-> +		 * - load new instructions with bpf_prog_load
-> +		 *   and keep the fd in prologue_fds
-> +		 * - new fd will be used in bpf__foreach_event
-> +		 *   to connect this program with perf evsel
-> +		 */
-> +		orig_insns = bpf_program__insns(prog);
-> +		orig_insns_cnt = bpf_program__insn_cnt(prog);
-> +
-> +		pev = &priv->pev;
-> +		for (i = 0; i < pev->ntevs; i++) {
-> +			/*
-> +			 * Skipping artificall prologue_init_insn instructions
-> +			 * (init_cnt), so the prologue can be generated instead
-> +			 * of them.
-> +			 */
-> +			err = preproc_gen_prologue(prog, i,
-> +						   orig_insns + init_cnt,
-> +						   orig_insns_cnt - init_cnt,
-> +						   &res);
-> +			if (err)
-> +				return err;
-> +
-> +			fd = bpf_prog_load(bpf_program__get_type(prog),
-> +					   bpf_program__name(prog), "GPL",
-> +					   res.new_insn_ptr,
-> +					   res.new_insn_cnt, NULL);
-> +			if (fd < 0) {
-> +				char bf[128];
-> +
-> +				libbpf_strerror(-errno, bf, sizeof(bf));
-> +				pr_debug("bpf: load objects with prologue failed: err=%d: (%s)\n",
-> +					 -errno, bf);
-> +				return -errno;
-> +			}
-> +			priv->prologue_fds[i] = fd;
-> +		}
-> +		/*
-> +		 * We no longer need the original program,
-> +		 * we can unload it.
-> +		 */
-> +		bpf_program__unload(prog);
-> +	}
-> +	return 0;
-> +}
-> +
->  int bpf__load(struct bpf_object *obj)
->  {
->  	int err;
-> @@ -885,7 +1034,7 @@ int bpf__load(struct bpf_object *obj)
->  		pr_debug("bpf: load objects failed: err=%d: (%s)\n", err, bf);
->  		return err;
->  	}
-> -	return 0;
-> +	return bpf_object__load_prologue(obj);
->  }
->  
->  int bpf__foreach_event(struct bpf_object *obj,
-> @@ -920,13 +1069,10 @@ int bpf__foreach_event(struct bpf_object *obj,
->  		for (i = 0; i < pev->ntevs; i++) {
->  			tev = &pev->tevs[i];
->  
-> -			if (priv->need_prologue) {
-> -				int type = priv->type_mapping[i];
-> -
-> -				fd = bpf_program__nth_fd(prog, type);
-> -			} else {
-> +			if (priv->need_prologue)
-> +				fd = priv->prologue_fds[i];
-> +			else
->  				fd = bpf_program__fd(prog);
-> -			}
->  
->  			if (fd < 0) {
->  				pr_debug("bpf: failed to get file descriptor\n");
-> -- 
-> 2.35.3
+> The current implementation falls back to a list traversal of
+> bpf_local_storage->list when there is a cache miss. I wonder if this
+> is a place with room for optimization? Maybe a hash table or a tree
+> would be a more performant alternative?
+With a benchmark to ensure it won't regress the common use cases
+and guage the potential improvement,  it is probably something Dave
+is planning to explore next if I read the last thread correctly.
 
--- 
-
-- Arnaldo
+How many task storages is in your production use cases ?
