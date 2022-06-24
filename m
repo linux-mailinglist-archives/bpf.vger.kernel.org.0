@@ -2,161 +2,214 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D6B558D1C
-	for <lists+bpf@lfdr.de>; Fri, 24 Jun 2022 04:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1FCE558DE1
+	for <lists+bpf@lfdr.de>; Fri, 24 Jun 2022 04:57:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229642AbiFXCHC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Jun 2022 22:07:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37180 "EHLO
+        id S229587AbiFXC4c (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Jun 2022 22:56:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230061AbiFXCHA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Jun 2022 22:07:00 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1D244E3A9
-        for <bpf@vger.kernel.org>; Thu, 23 Jun 2022 19:06:59 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id z19so1411646edb.11
-        for <bpf@vger.kernel.org>; Thu, 23 Jun 2022 19:06:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3qFmR+ZzyTE/7iBqNnRBYvNlOiXaymY4to15+CafWDU=;
-        b=B6pIx3QXSMWbgNT+Fmi9/D6Ah5+n3O7fc9lChwXckCpjicZrKO6Oh6E+EVZraSKIm6
-         i1cYAkN/Mx2hr9vPZcjhPyIk5rMciMQOQdEPCkINtxN4+5ZbywKDBLhYY96BldCGoQFg
-         +/H3Xg6jIvsPWkkFvnHYvioj/VB0Ef+Tl9fnPHM4+f0fseVSrUywSwtG2RTjMmPJH9HU
-         IWSeyMQs/eVGcv++nuy+t4TdodA3vn42fPkWTLoUvV39jVqt8sEwBZLGRyNp2lMZ4T6P
-         6j8nzLF/xMCbetVib31OsHqMsY2fyMtZkgmk3xDkZHTA/Qi4Y56thAlF6125YFXvVRFN
-         JFpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3qFmR+ZzyTE/7iBqNnRBYvNlOiXaymY4to15+CafWDU=;
-        b=l28ffNUZVHa9tvnlu1lunUHLI+9tcYEpUa2e3vNs2D/sYUhQQYyNS7BdKRNSsPy5VT
-         VNgcxeLeoSWfiOlFf7nUN4v3ElRLW6xj7gXugvTtxkVjKCP2Sg/G/nNpHnI2nCGBGGG5
-         9KpaMdIVdPqvt8xDvfo67QQ2lhqiPWTDt7ltyvzVEZsBGHtftgK63rrh2ddFpfKFLLZR
-         O4UchyxpnsEZaOFXZOrr0EdDEHejE8SNyDNYj01h0yGYEiM7K4N4naJv7MH3l37ZO7l1
-         r1IRvoZT9e3yL4gydhhGPWKictTWD9VUzx8/McovzW3lSVn6ZVXEzK+ME7xpiHX0YDFQ
-         H65g==
-X-Gm-Message-State: AJIora/9hsKKYe2O3pamnvSgYQz7aI0vKnsXzHn2O6TU3J8qk3XyWr5K
-        c4bkmhvoz3NF2Rvo9vdu6fUzW3RQGdgHSo6c
-X-Google-Smtp-Source: AGRyM1sO7TC3yyKjv/KKlmjwLI+8TN9rfHE26GKBOGKy2kQCTAHwxCqPXlu8NO9m6+0z7Jao3YVqvQ==
-X-Received: by 2002:a05:6402:1386:b0:431:6911:a151 with SMTP id b6-20020a056402138600b004316911a151mr14475595edv.105.1656036417963;
-        Thu, 23 Jun 2022 19:06:57 -0700 (PDT)
-Received: from localhost.localdomain (boundsly.muster.volia.net. [93.72.16.93])
-        by smtp.gmail.com with ESMTPSA id h10-20020a50ed8a000000b00435728cd12fsm856595edr.18.2022.06.23.19.06.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jun 2022 19:06:57 -0700 (PDT)
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com, dan.carpenter@oracle.com
-Cc:     eddyz87@gmail.com
-Subject: [PATCH bpf-next 2/2] selftest/bpf: test for use after free bug fix in inline_bpf_loop
-Date:   Fri, 24 Jun 2022 05:06:13 +0300
-Message-Id: <20220624020613.548108-3-eddyz87@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220624020613.548108-1-eddyz87@gmail.com>
-References: <20220624020613.548108-1-eddyz87@gmail.com>
+        with ESMTP id S229559AbiFXC4b (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Jun 2022 22:56:31 -0400
+Received: from out30-43.freemail.mail.aliyun.com (out30-43.freemail.mail.aliyun.com [115.124.30.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F2A556C0A;
+        Thu, 23 Jun 2022 19:56:28 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=37;SR=0;TI=SMTPD_---0VHEo97T_1656039381;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VHEo97T_1656039381)
+          by smtp.aliyun-inc.com;
+          Fri, 24 Jun 2022 10:56:22 +0800
+From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To:     virtualization@lists.linux-foundation.org
+Cc:     Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Vadim Pasternak <vadimp@nvidia.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        linux-um@lists.infradead.org, netdev@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+        kvm@vger.kernel.org, bpf@vger.kernel.org,
+        kangjie.xu@linux.alibaba.com
+Subject: [PATCH v10 00/41] virtio pci support VIRTIO_F_RING_RESET
+Date:   Fri, 24 Jun 2022 10:55:40 +0800
+Message-Id: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
+X-Git-Hash: fef800c86cd2
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This test verifies that bpf_loop inlining works as expected when
-address of `env->prog` is updated. This address is updated upon BPF
-program reallocation.  Reallocation is handled by
-core.c:bpf_prog_realloc, which reuses old memory if page boundary is
-not crossed. The value of `len` in the test is chosen to cross this
-boundary on bpf_loop patching.
+The virtio spec already supports the virtio queue reset function. This patch set
+is to add this function to the kernel. The relevant virtio spec information is
+here:
 
-Verifies that use after free bug in inline_bpf_loop() reported by Dan
-Carpenter is fixed.
+    https://github.com/oasis-tcs/virtio-spec/issues/124
+    https://github.com/oasis-tcs/virtio-spec/issues/139
 
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
----
- tools/testing/selftests/bpf/test_verifier.c   | 39 +++++++++++++++++++
- .../selftests/bpf/verifier/bpf_loop_inline.c  | 11 ++++++
- 2 files changed, 50 insertions(+)
+Also regarding MMIO support for queue reset, I plan to support it after this
+patch is passed.
 
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index 7fe897c66d81..f9d553fbf68a 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -425,6 +425,45 @@ static void bpf_fill_torturous_jumps(struct bpf_test *self)
- 	}
- }
- 
-+static void bpf_fill_big_prog_with_loop_1(struct bpf_test *self)
-+{
-+	struct bpf_insn *insn = self->fill_insns;
-+	/* This test was added to catch a specific use after free
-+	 * error, which happened upon BPF program reallocation.
-+	 * Reallocation is handled by core.c:bpf_prog_realloc, which
-+	 * reuses old memory if page boundary is not crossed. The
-+	 * value of `len` is chosen to cross this boundary on bpf_loop
-+	 * patching.
-+	 */
-+	const int len = getpagesize() - 25;
-+	int callback_load_idx;
-+	int callback_idx;
-+	int i = 0;
-+
-+	insn[i++] = BPF_ALU64_IMM(BPF_MOV, BPF_REG_1, 1);
-+	callback_load_idx = i;
-+	insn[i++] = BPF_RAW_INSN(BPF_LD | BPF_IMM | BPF_DW,
-+				 BPF_REG_2, BPF_PSEUDO_FUNC, 0,
-+				 777 /* filled below */);
-+	insn[i++] = BPF_RAW_INSN(0, 0, 0, 0, 0);
-+	insn[i++] = BPF_ALU64_IMM(BPF_MOV, BPF_REG_3, 0);
-+	insn[i++] = BPF_ALU64_IMM(BPF_MOV, BPF_REG_4, 0);
-+	insn[i++] = BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_loop);
-+
-+	while (i < len - 3)
-+		insn[i++] = BPF_ALU64_IMM(BPF_MOV, BPF_REG_0, 0);
-+	insn[i++] = BPF_EXIT_INSN();
-+
-+	callback_idx = i;
-+	insn[i++] = BPF_ALU64_IMM(BPF_MOV, BPF_REG_0, 0);
-+	insn[i++] = BPF_EXIT_INSN();
-+
-+	insn[callback_load_idx].imm = callback_idx - callback_load_idx - 1;
-+	self->func_info[1].insn_off = callback_idx;
-+	self->prog_len = i;
-+	assert(i == len);
-+}
-+
- /* BPF_SK_LOOKUP contains 13 instructions, if you need to fix up maps */
- #define BPF_SK_LOOKUP(func)						\
- 	/* struct bpf_sock_tuple tuple = {} */				\
-diff --git a/tools/testing/selftests/bpf/verifier/bpf_loop_inline.c b/tools/testing/selftests/bpf/verifier/bpf_loop_inline.c
-index 232da07c93b5..2d0023659d88 100644
---- a/tools/testing/selftests/bpf/verifier/bpf_loop_inline.c
-+++ b/tools/testing/selftests/bpf/verifier/bpf_loop_inline.c
-@@ -244,6 +244,17 @@
- 	.func_info_cnt = 3,
- 	BTF_TYPES
- },
-+{
-+	"inline bpf_loop call in a big program",
-+	.insns = {},
-+	.fill_helper = bpf_fill_big_prog_with_loop_1,
-+	.expected_insns = { PSEUDO_CALL_INSN() },
-+	.unexpected_insns = { HELPER_CALL_INSN() },
-+	.result = ACCEPT,
-+	.func_info = { { 0, MAIN_TYPE }, { 16, CALLBACK_TYPE } },
-+	.func_info_cnt = 2,
-+	BTF_TYPES
-+},
- 
- #undef HELPER_CALL_INSN
- #undef PSEUDO_CALL_INSN
--- 
-2.25.1
+This patch set implements the refactoring of vring. Finally, the
+virtuque_resize() interface is provided based on the reset function of the
+transport layer.
+
+Test environment:
+    Host: 4.19.91
+    Qemu: QEMU emulator version 6.2.50 (with vq reset support)
+    Test Cmd:  ethtool -G eth1 rx $1 tx $2; ethtool -g eth1
+
+    The default is split mode, modify Qemu virtio-net to add PACKED feature to test
+    packed mode.
+
+Qemu code:
+    https://github.com/fengidri/qemu/compare/89f3bfa3265554d1d591ee4d7f1197b6e3397e84...master
+
+In order to simplify the review of this patch set, the function of reusing
+the old buffers after resize will be introduced in subsequent patch sets.
+
+Please review. Thanks.
+
+v10:
+  1. on top of the harden vring IRQ
+  2. factor out split and packed from struct vring_virtqueue
+  3. some suggest from @Jason Wang
+
+v9:
+  1. Provide a virtqueue_resize() interface directly
+  2. A patch set including vring resize, virtio pci reset, virtio-net resize
+  3. No more separate structs
+
+v8:
+  1. Provide a virtqueue_reset() interface directly
+  2. Split the two patch sets, this is the first part
+  3. Add independent allocation helper for allocating state, extra
+
+v7:
+  1. fix #6 subject typo
+  2. fix #6 ring_size_in_bytes is uninitialized
+  3. check by: make W=12
+
+v6:
+  1. virtio_pci: use synchronize_irq(irq) to sync the irq callbacks
+  2. Introduce virtqueue_reset_vring() to implement the reset of vring during
+     the reset process. May use the old vring if num of the vq not change.
+  3. find_vqs() support sizes to special the max size of each vq
+
+v5:
+  1. add virtio-net support set_ringparam
+
+v4:
+  1. just the code of virtio, without virtio-net
+  2. Performing reset on a queue is divided into these steps:
+    1. reset_vq: reset one vq
+    2. recycle the buffer from vq by virtqueue_detach_unused_buf()
+    3. release the ring of the vq by vring_release_virtqueue()
+    4. enable_reset_vq: re-enable the reset queue
+  3. Simplify the parameters of enable_reset_vq()
+  4. add container structures for virtio_pci_common_cfg
+
+v3:
+  1. keep vq, irq unreleased
+
+*** BLURB HERE ***
+
+Xuan Zhuo (41):
+  remoteproc: rename len of rpoc_vring to num
+  virtio: add helper virtqueue_get_vring_max_size()
+  virtio: struct virtio_config_ops add callbacks for queue_reset
+  virtio_ring: update the document of the virtqueue_detach_unused_buf
+    for queue reset
+  virtio_ring: remove the arg vq of vring_alloc_desc_extra()
+  virtio_ring: extract the logic of freeing vring
+  virtio_ring: split vring_virtqueue
+  virtio_ring: introduce virtqueue_init()
+  virtio_ring: split: introduce vring_free_split()
+  virtio_ring: split: extract the logic of alloc queue
+  virtio_ring: split: extract the logic of alloc state and extra
+  virtio_ring: split: extract the logic of attach vring
+  virtio_ring: split: extract the logic of vring init
+  virtio_ring: split: introduce virtqueue_reinit_split()
+  virtio_ring: split: reserve vring_align, may_reduce_num
+  virtio_ring: split: introduce virtqueue_resize_split()
+  virtio_ring: packed: introduce vring_free_packed
+  virtio_ring: packed: extract the logic of alloc queue
+  virtio_ring: packed: extract the logic of alloc state and extra
+  virtio_ring: packed: extract the logic of attach vring
+  virtio_ring: packed: extract the logic of vring init
+  virtio_ring: packed: introduce virtqueue_reinit_packed()
+  virtio_ring: packed: introduce virtqueue_resize_packed()
+  virtio_ring: introduce virtqueue_resize()
+  virtio_pci: struct virtio_pci_common_cfg add queue_notify_data
+  virtio: queue_reset: add VIRTIO_F_RING_RESET
+  virtio: allow to unbreak/break virtqueue individually
+  virtio_pci: update struct virtio_pci_common_cfg
+  virtio_pci: introduce helper to get/set queue reset
+  virtio_pci: extract the logic of active vq for modern pci
+  virtio_pci: support VIRTIO_F_RING_RESET
+  virtio: find_vqs() add arg sizes
+  virtio_pci: support the arg sizes of find_vqs()
+  virtio_mmio: support the arg sizes of find_vqs()
+  virtio: add helper virtio_find_vqs_ctx_size()
+  virtio_net: set the default max ring size by find_vqs()
+  virtio_net: get ringparam by virtqueue_get_vring_max_size()
+  virtio_net: split free_unused_bufs()
+  virtio_net: support rx queue resize
+  virtio_net: support tx queue resize
+  virtio_net: support set_ringparam
+
+ arch/um/drivers/virtio_uml.c             |   3 +-
+ drivers/net/virtio_net.c                 | 209 +++++-
+ drivers/platform/mellanox/mlxbf-tmfifo.c |   3 +
+ drivers/remoteproc/remoteproc_core.c     |   4 +-
+ drivers/remoteproc/remoteproc_virtio.c   |  13 +-
+ drivers/s390/virtio/virtio_ccw.c         |   4 +
+ drivers/virtio/virtio_mmio.c             |  11 +-
+ drivers/virtio/virtio_pci_common.c       |  32 +-
+ drivers/virtio/virtio_pci_common.h       |   3 +-
+ drivers/virtio/virtio_pci_legacy.c       |   8 +-
+ drivers/virtio/virtio_pci_modern.c       | 157 ++++-
+ drivers/virtio/virtio_pci_modern_dev.c   |  39 ++
+ drivers/virtio/virtio_ring.c             | 794 +++++++++++++++++------
+ drivers/virtio/virtio_vdpa.c             |   3 +
+ include/linux/remoteproc.h               |   4 +-
+ include/linux/virtio.h                   |   9 +
+ include/linux/virtio_config.h            |  38 +-
+ include/linux/virtio_pci_modern.h        |   2 +
+ include/uapi/linux/virtio_config.h       |   7 +-
+ include/uapi/linux/virtio_pci.h          |  14 +
+ 20 files changed, 1063 insertions(+), 294 deletions(-)
+
+--
+2.31.0
 
