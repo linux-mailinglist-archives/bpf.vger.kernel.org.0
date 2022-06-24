@@ -2,84 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39B8F55A460
-	for <lists+bpf@lfdr.de>; Sat, 25 Jun 2022 00:30:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D383555A4AA
+	for <lists+bpf@lfdr.de>; Sat, 25 Jun 2022 01:13:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229893AbiFXWaP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Jun 2022 18:30:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46028 "EHLO
+        id S231305AbiFXXNS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Jun 2022 19:13:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229840AbiFXWaO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Jun 2022 18:30:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4D7D87D47;
-        Fri, 24 Jun 2022 15:30:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 65D59623E4;
-        Fri, 24 Jun 2022 22:30:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B80E6C3411C;
-        Fri, 24 Jun 2022 22:30:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656109812;
-        bh=46jOEpmGjXiyFeBBgverTvj9yURNB8k6scYDNE2OVUw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=JXzf7Jt2Sw2z2I2Q/CId2rIq5Z9b5oQzzxtz8RRub0AkCd/EDSv085gS3dSin8v7q
-         aJ1MERQtiwGe76Z2IpfIGJILroPmsiiRoxgl6g7qnQ/uFnWnG5NGjIvZsqF7uZLSOL
-         ptaY4/k7oqLFIGJmGh+543gRJ7iez94j7LsjQCCWy/Kn7kcDjuI3TmncnK6+b+TyDa
-         w3EF34VndDj5dJl4QiaPy5Iou9rRmM0baREOxTkVudTQC4JUViKambtoJMkSlLl/8v
-         /kSlT+wgV97iLrZFaFr2Q9xpshzH7yeFngICrj549UkOwktKi1cpaNCRZYqYIqwquV
-         sW6sl8J1mL2iw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9BFD0E85DBE;
-        Fri, 24 Jun 2022 22:30:12 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229441AbiFXXNR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Jun 2022 19:13:17 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 034A468012;
+        Fri, 24 Jun 2022 16:13:16 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 68so3681189pgb.10;
+        Fri, 24 Jun 2022 16:13:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=97W1aGnfJTsRH0sQeB3uyZG1FdhNBzAYORArQFFa5J8=;
+        b=WaQTACkscwQ+r10TsXLL2IDdBXO78KeBOqyPH1sEf7nHOfk/88AkzO/GRuWjF8cOvl
+         pTH2J7EM5+tcc/pM49YYi12tc9NsS3F+QVdPYtsF05j+fs9mW3Lu9BU6KLS+Ln+snonm
+         CQocnuVS6GgqZeivqXaouar2yFPS3ljolbxXEBV7DM2rqYg7mjOKYaRvsjZmNLFdMZKj
+         15jGbtn9phJS2OEikiiRPvLTd0H6zJcgsu5armedsY8pQhB7kLBENwsmkblXjD5m1chL
+         4DGKiqSV4Q1owDTwxj33HiY9FWQ0c8bzgzOGJ2410tnkODzTtLhY1QKxAMqOIpU4nMNs
+         vEdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=97W1aGnfJTsRH0sQeB3uyZG1FdhNBzAYORArQFFa5J8=;
+        b=FP/brQVtddT5shmYM78NAH4t7+KcxnIp1k7K6SqqGIsMJ/a1LKnHhzTMZS+B7/zH5T
+         2bNUmSI8Tfitg0Y5tIq3HUIf/DAo4VgRhOhv37UIePy2Yos3cEZ8rf2Dkx8GiOtNvgX7
+         R5uQVgt+SawQeWslCVrgWQoflETYFbjljEYlNo/sWcbrpKDs/9+GeI1lM5TAk3KqLUSN
+         4YLUgFx0Liey4/Fuxl1ZzpdmXwy07AKXRl9ywlZx2JDiNp5YPP+xpq1WkWPmbJoxpveg
+         Hts5zpU7YD5PklDtRant3cSdPBGCP3XRbuR0mvprIPtYhSau3vIykOv0dLn+FRUYnj2S
+         zSZQ==
+X-Gm-Message-State: AJIora+Rhq56Ckycv9bSxUZHTUce2m3YSOx9XGateW4tkR0e46E9nALo
+        ZMXNnysfQRXSisiO84zzcYQ=
+X-Google-Smtp-Source: AGRyM1tRHHjEWu+SxmsXdStgAmXUbMstdEJ81AIJqaNRIFgHwUDeylo9SumsU2ECSZWng7xqzcvskw==
+X-Received: by 2002:a05:6a00:d9b:b0:525:6b81:4f14 with SMTP id bf27-20020a056a000d9b00b005256b814f14mr1554852pfb.38.1656112395401;
+        Fri, 24 Jun 2022 16:13:15 -0700 (PDT)
+Received: from balhae.hsd1.ca.comcast.net ([2601:647:6780:480:eeb0:3156:8fd:28f6])
+        by smtp.gmail.com with ESMTPSA id z19-20020aa78893000000b0050dc76281e0sm2242439pfe.186.2022.06.24.16.13.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Jun 2022 16:13:14 -0700 (PDT)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        linux-perf-users@vger.kernel.org, Song Liu <songliubraving@fb.com>,
+        Hao Luo <haoluo@google.com>,
+        Milian Wolff <milian.wolff@kdab.com>, bpf@vger.kernel.org,
+        Blake Jones <blakejones@google.com>
+Subject: [PATCHSET 0/6] perf tools: A couple of fixes for perf record --off-cpu (v1)
+Date:   Fri, 24 Jun 2022 16:13:07 -0700
+Message-Id: <20220624231313.367909-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.37.0.rc0.161.g10f37bed90-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] fprobe, samples: Add module parameter descriptions
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165610981263.18572.3699045881023144660.git-patchwork-notify@kernel.org>
-Date:   Fri, 24 Jun 2022 22:30:12 +0000
-References: <165602349520.56016.1314423560740428008.stgit@devnote2>
-In-Reply-To: <165602349520.56016.1314423560740428008.stgit@devnote2>
-To:     Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        jolsa@kernel.org, rostedt@goodmis.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Hello,
 
-This patch was applied to bpf/bpf.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+The first patch fixes a build error on old kernels which has
+task_struct->state field that is renamed to __state.  Actually I made
+a mistake when I wrote the code and assumed new kernel version.
 
-On Fri, 24 Jun 2022 07:31:35 +0900 you wrote:
-> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> 
-> Add module parameter descriptions for the fprobe_example module.
-> 
-> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> ---
->  samples/fprobe/fprobe_example.c |    7 +++++++
->  1 file changed, 7 insertions(+)
+The second patch is to prevent invalid sample synthesize by
+disallowing unsupported sample types.
 
-Here is the summary with links:
-  - [bpf] fprobe, samples: Add module parameter descriptions
-    https://git.kernel.org/bpf/bpf/c/179a93f74b29
+The rest of the series implements inheritance of offcpu events for the
+child processes.  Unlike perf events, BPF cannot know which task it
+should track except for ones set in a BPF map at the beginning.  Add
+another BPF program to the fork path and add the process id to the
+map if the parent is tracked.
 
-You are awesome, thank you!
+With this change, it can get the correct off-cpu events for child
+processes.  I've tested it with perf bench sched messaging which
+creates a lot of processes.
+
+  $ sudo perf record -e dummy --off-cpu -- perf bench sched messaging
+  # Running 'sched/messaging' benchmark:
+  # 20 sender and receiver processes per group
+  # 10 groups == 400 processes run
+
+       Total time: 0.196 [sec]
+  [ perf record: Woken up 1 times to write data ]
+  [ perf record: Captured and wrote 0.178 MB perf.data (851 samples) ]
+
+
+  $ sudo perf report --stat | grep -A1 offcpu
+  offcpu-time stats:
+            SAMPLE events:        851
+
+The benchmark passes messages by read/write and it creates off-cpu
+events.  With 400 processes, we can see more than 800 events.
+
+The child process tracking is also enabled when -p option is given.
+But -t option does NOT as it only cares about the specific threads.
+It may be different what perf_event does now, but I think it makes
+more sense.
+
+You can get it from 'perf/offcpu-child-v1' branch in my tree
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
+
+Thanks,
+Namhyung
+
+
+Namhyung Kim (6):
+  perf offcpu: Fix a build failure on old kernels
+  perf offcpu: Accept allowed sample types only
+  perf offcpu: Check process id for the given workload
+  perf offcpu: Parse process id separately
+  perf offcpu: Track child processes
+  perf offcpu: Update offcpu test for child process
+
+ tools/perf/tests/shell/record_offcpu.sh | 57 ++++++++++++++++++++---
+ tools/perf/util/bpf_off_cpu.c           | 60 +++++++++++++++++++++++--
+ tools/perf/util/bpf_skel/off_cpu.bpf.c  | 58 +++++++++++++++++++++---
+ tools/perf/util/evsel.c                 |  9 ++++
+ tools/perf/util/off_cpu.h               |  9 ++++
+ 5 files changed, 176 insertions(+), 17 deletions(-)
+
+
+base-commit: 9886142c7a2226439c1e3f7d9b69f9c7094c3ef6
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.37.0.rc0.161.g10f37bed90-goog
 
