@@ -2,102 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 506D555980B
-	for <lists+bpf@lfdr.de>; Fri, 24 Jun 2022 12:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84301559898
+	for <lists+bpf@lfdr.de>; Fri, 24 Jun 2022 13:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231620AbiFXKmg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Jun 2022 06:42:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51036 "EHLO
+        id S229587AbiFXLhO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Jun 2022 07:37:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231616AbiFXKmf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Jun 2022 06:42:35 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBD057C867;
-        Fri, 24 Jun 2022 03:42:34 -0700 (PDT)
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25OALx0j015133;
-        Fri, 24 Jun 2022 10:42:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
- to : cc : references : in-reply-to : mime-version : message-id :
- content-type : content-transfer-encoding; s=pp1;
- bh=/ReY4q8LSwkqVJLz/FiVwZsbdICwkTULS923eQ5fhec=;
- b=FglWVjZrAhKI72+l4guaX07i4DBl40HiT4pN4vgiQFAsNJhHkpCO9NqUNe5ticavJVhi
- vErC0eGN75OcfR5j7t/cjugD/evnZDtJ9hEtS2Dl77QLHbuGHmC4pWKICQMMH6/zj7vI
- auAM3UyvMjOQjTvxmPAOUmWVikcbwu2NBmfPOoBDPR9hwITb/aFhJATvxJOHb6ympj0X
- edVtdjXoKq5e1i4H5Pb7hLMmt6+Z/YsqaBad6g2cBTfJWp5wOEwQOOOQCo30ikCfqoDH
- bGvjVzTBHfbF1ppPZK6zsHYlqLeC4u+LVtEoq+iyI+BLnWFDwBR/snwwkTeNpMzDg7sb sA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3gwbf18dau-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 24 Jun 2022 10:42:04 +0000
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 25OAUkYC024049;
-        Fri, 24 Jun 2022 10:42:03 GMT
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3gwbf18d9y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 24 Jun 2022 10:42:03 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 25OAcTgI009034;
-        Fri, 24 Jun 2022 10:42:01 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04ams.nl.ibm.com with ESMTP id 3gs6b98um9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 24 Jun 2022 10:42:01 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 25OAf8fn14352716
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 24 Jun 2022 10:41:08 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F066C4C04E;
-        Fri, 24 Jun 2022 10:41:58 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 504984C040;
-        Fri, 24 Jun 2022 10:41:58 +0000 (GMT)
-Received: from localhost (unknown [9.43.19.217])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 24 Jun 2022 10:41:58 +0000 (GMT)
-Date:   Fri, 24 Jun 2022 16:11:57 +0530
-From:   "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-Subject: Re: [PATCH v2 5/5] bpf ppc32: Add instructions for atomic_[cmp]xchg
-To:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Hari Bathini <hbathini@linux.ibm.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jordan Niethe <jniethe5@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
-References: <20220610155552.25892-1-hbathini@linux.ibm.com>
-        <20220610155552.25892-6-hbathini@linux.ibm.com>
-        <f09b59ee-c965-a140-4d03-723830cba66d@csgroup.eu>
-        <3d5f05d1-448f-58a6-20b0-3e9f0b13df03@linux.ibm.com>
-        <bb492bb1-e9e4-76fb-4c5f-2a0a2537d544@linux.ibm.com>
-In-Reply-To: <bb492bb1-e9e4-76fb-4c5f-2a0a2537d544@linux.ibm.com>
+        with ESMTP id S229446AbiFXLhO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Jun 2022 07:37:14 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B1D7946B
+        for <bpf@vger.kernel.org>; Fri, 24 Jun 2022 04:37:12 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id m1so2775147wrb.2
+        for <bpf@vger.kernel.org>; Fri, 24 Jun 2022 04:37:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=kFHIsLpnRngnhveG5SS8YxStPFGCqilJv+KNYCsp+p4=;
+        b=06Uzn64evaRqUHY3wgJhGf0j+xejHu/p31jHOuv06d0evYTZOB5ADeSmuWTpgGoGrX
+         Kdmr8p8FZssH3WMlgMnl1XxduTInUUd/b8tgxlOzxw4qqKHxRA9ttCT6w2DagWPHnTDa
+         nOMw77D/0D2J8D+FUblJUd1WkOAaTIiRajnQpv3UAIOWD+p76Fi7lUjl84cSnGJzDmUL
+         nHCatoxLHkd7dpOeNOapH6BV06OWA5NnpEE2YOym7Tdxwg6FVHdMYCCYz1Uau7nBfC2+
+         rQuybZKnlgswV10b1LWCacvMxOCEAyxBrnGmMEl2XQFGQDtMDun8LGSs8KzqUvCfMWRb
+         54eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=kFHIsLpnRngnhveG5SS8YxStPFGCqilJv+KNYCsp+p4=;
+        b=rm9tZ3ul6X90nPTlq/VN0oqfJWGs/qu0bJls+gpTKtKQI+1hZwEbUuuTQ4DWw89plF
+         VfyvMfHPDOIbLXUdcEcp7/J/tGZZ+Fttsv4BDj0nPHwaon+NNqSKiON9Fn+jWvPanu+Z
+         Ib7Br8AU7ltu9J4sJqsrS08Ut8/DYihC1bvk7BZgm/6F2JiFME8Rip+iTNvzfdSGFt/y
+         T2/qh9RnggZe1vrHOV03giZ4m1ZfCtnnI6sB92b2c/OwyMgGSwGokvIj7Ksgtamxs2wT
+         2S8M4N49o3plggH3bjqEmmCJuyW65jBtmrkwg6rz+RzWNkd8p4HBjxmatfP41bE81CfK
+         Uahw==
+X-Gm-Message-State: AJIora+RpMWmOcELZ5ajEVk+8rR4RxdJrKXxieET8ofdac5evQAJYmXv
+        fpciHhbfhLtaKxubAXzFwUjZLw==
+X-Google-Smtp-Source: AGRyM1sa/8pU6r2Ay5BubikGheGU/nuRzY4lDkSGEN/XMlyfrmEBhoxNvQStzqyri9JUL8HsYamI9Q==
+X-Received: by 2002:a5d:4a42:0:b0:21b:838f:12bc with SMTP id v2-20020a5d4a42000000b0021b838f12bcmr12668870wrs.523.1656070631063;
+        Fri, 24 Jun 2022 04:37:11 -0700 (PDT)
+Received: from [192.168.178.21] ([51.155.200.13])
+        by smtp.gmail.com with ESMTPSA id o4-20020a5d6484000000b0020d02262664sm2188410wri.25.2022.06.24.04.37.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Jun 2022 04:37:10 -0700 (PDT)
+Message-ID: <a4770a25-b78a-d721-4d30-ae58feec965c@isovalent.com>
+Date:   Fri, 24 Jun 2022 12:37:09 +0100
 MIME-Version: 1.0
-User-Agent: astroid/4d6b06ad (https://github.com/astroidmail/astroid)
-Message-Id: <1656067094.lxf6wftwai.naveen@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: nZ8FQ679B7xbpHdpQd3Hs0z4UdBqLv8J
-X-Proofpoint-GUID: PbzvuLvRUIF4mEVX6aF9Q6qR-cfltJkz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-06-24_07,2022-06-23_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
- mlxscore=0 suspectscore=0 phishscore=0 lowpriorityscore=0 adultscore=0
- spamscore=0 mlxlogscore=999 impostorscore=0 priorityscore=1501 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2204290000
- definitions=main-2206240041
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH bpf-next v2 2/9] bpftool: Honor BPF_CORE_TYPE_MATCHES
+ relocation
+Content-Language: en-GB
+To:     =?UTF-8?Q?Daniel_M=c3=bcller?= <deso@posteo.net>,
+        bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com
+Cc:     joannelkoong@gmail.com,
+        =?UTF-8?Q?Mauricio_V=c3=a1squez?= <mauricio@kinvolk.io>
+References: <20220623212205.2805002-1-deso@posteo.net>
+ <20220623212205.2805002-3-deso@posteo.net>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <20220623212205.2805002-3-deso@posteo.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -105,169 +76,157 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hari Bathini wrote:
->=20
->=20
-> On 14/06/22 12:41 am, Hari Bathini wrote:
->>=20
->>=20
->> On 11/06/22 11:04 pm, Christophe Leroy wrote:
->>>
->>>
->>> Le 10/06/2022 =C3=A0 17:55, Hari Bathini a =C3=A9crit=C2=A0:
->>>> This adds two atomic opcodes BPF_XCHG and BPF_CMPXCHG on ppc32, both
->>>> of which include the BPF_FETCH flag.=C2=A0 The kernel's atomic_cmpxchg
->>>> operation fundamentally has 3 operands, but we only have two register
->>>> fields. Therefore the operand we compare against (the kernel's API
->>>> calls it 'old') is hard-coded to be BPF_REG_R0. Also, kernel's
->>>> atomic_cmpxchg returns the previous value at dst_reg + off. JIT the
->>>> same for BPF too with return value put in BPF_REG_0.
->>>>
->>>> =C2=A0=C2=A0=C2=A0 BPF_REG_R0 =3D atomic_cmpxchg(dst_reg + off, BPF_RE=
-G_R0, src_reg);
->>>>
->>>> Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
->>>> ---
->>>>
->>>> Changes in v2:
->>>> * Moved variable declaration to avoid late declaration error on
->>>> =C2=A0=C2=A0=C2=A0 some compilers.
->>>> * Tried to make code readable and compact.
->>>>
->>>>
->>>> =C2=A0=C2=A0 arch/powerpc/net/bpf_jit_comp32.c | 25 ++++++++++++++++++=
-++++---
->>>> =C2=A0=C2=A0 1 file changed, 22 insertions(+), 3 deletions(-)
->>>>
->>>> diff --git a/arch/powerpc/net/bpf_jit_comp32.c=20
->>>> b/arch/powerpc/net/bpf_jit_comp32.c
->>>> index 28dc6a1a8f2f..43f1c76d48ce 100644
->>>> --- a/arch/powerpc/net/bpf_jit_comp32.c
->>>> +++ b/arch/powerpc/net/bpf_jit_comp32.c
->>>> @@ -297,6 +297,7 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32=20
->>>> *image, struct codegen_context *
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u32 ax_re=
-g =3D bpf_to_ppc(BPF_REG_AX);
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u32 tmp_r=
-eg =3D bpf_to_ppc(TMP_REG);
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u32 size =
-=3D BPF_SIZE(code);
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u32 save_reg, ret_reg;
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 s16 off =
-=3D insn[i].off;
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 s32 imm =
-=3D insn[i].imm;
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bool func=
-_addr_fixed;
->>>> @@ -799,6 +800,9 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32=20
->>>> *image, struct codegen_context *
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * B=
-PF_STX ATOMIC (atomic ops)
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 case BPF_=
-STX | BPF_ATOMIC | BPF_W:
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sa=
-ve_reg =3D _R0;
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 re=
-t_reg =3D src_reg;
->>>> +
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 bpf_set_seen_register(ctx, tmp_reg);
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 bpf_set_seen_register(ctx, ax_reg);
->>>> @@ -829,6 +833,21 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32=20
->>>> *image, struct codegen_context *
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 case BPF_XOR | BPF_FETCH:
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 EMIT(PPC_RAW_XOR(_R0, _R0, src_reg)=
-);
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 break;
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ca=
-se BPF_CMPXCHG:
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 /*
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Return old value in BPF_REG_0 for BPF_CMPXCHG=
- &
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 * in src_reg for other cases.
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 ret_reg =3D bpf_to_ppc(BPF_REG_0);
->>>> +
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 /* Compare with old value in BPF_REG_0 */
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 EMIT(PPC_RAW_CMPW(bpf_to_ppc(BPF_REG_0), _R0));
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 /* Don't set if different from old value */
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 PPC_BCC_SHORT(COND_NE, (ctx->idx + 3) * 4);
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 fallthrough;
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ca=
-se BPF_XCHG:
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 save_reg =3D src_reg;
->>>
->>> I'm a bit lost, when save_reg is src_reg, don't we expect the upper par=
-t
->>> (ie src_reg - 1) to be explicitely zeroised ?
->>>
->>=20
->> For BPF_FETCH variants, old value is returned in src_reg (ret_reg).
->> In all such cases, higher 32-bit is zero'ed. But in case of BPF_CMPXCHG,
->> src_reg is untouched as BPF_REG_0 is used instead. So, higher 32-bit
->> remains untouched for that case alone..
->>=20
->>=20
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 break;
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 default:
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pr_err_ratelimited("eBPF filter ato=
-mic op code=20
->>>> %02x (@%d) unsupported\n",
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 code, i);
->>>> @@ -836,15 +855,15 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32=20
->>>> *image, struct codegen_context *
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 }
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 /* store new value */
->>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 EM=
-IT(PPC_RAW_STWCX(_R0, tmp_reg, dst_reg));
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 EM=
-IT(PPC_RAW_STWCX(save_reg, tmp_reg, dst_reg));
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 /* we're done if this succeeded */
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 PPC_BCC_SHORT(COND_NE, tmp_idx);
->=20
->>=20
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 /* For the BPF_FETCH variant, get old data into=20
->>>> src_reg */
->>=20
->> With this commit, this comment is not true for BPF_CMPXCHG. So, this
->> comment should not be removed..
->=20
-> Sorry, the above should read:
->    "should be removed" instead of "should not be removed"..
->=20
+2022-06-23 21:21 UTC+0000 ~ Daniel Müller <deso@posteo.net>
+> bpftool needs to know about the newly introduced BPF_CORE_TYPE_MATCHES
+> relocation for its 'gen min_core_btf' command to work properly in the
+> present of this relocation.
+> Specifically, we need to make sure to mark types and fields so that they
+> are present in the minimized BTF for "type match" checks to work out.
+> However, contrary to the existing btfgen_record_field_relo, we need to
+> rely on the BTF -- and not the spec -- to find fields. With this change
+> we handle this new variant correctly. The functionality will be tested
+> with follow on changes to BPF selftests, which already run against a
+> minimized BTF created with bpftool.
+> 
+> Cc: Quentin Monnet <quentin@isovalent.com>
+> Signed-off-by: Daniel Müller <deso@posteo.net>
+> ---
+>  tools/bpf/bpftool/gen.c | 107 ++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 107 insertions(+)
+> 
+> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+> index 480cbd8..6cd0ed 100644
+> --- a/tools/bpf/bpftool/gen.c
+> +++ b/tools/bpf/bpftool/gen.c
+> @@ -1856,6 +1856,111 @@ static int btfgen_record_field_relo(struct btfgen_info *info, struct bpf_core_sp
+>  	return 0;
+>  }
+>  
+> +/* Mark types, members, and member types. Compared to btfgen_record_field_relo,
+> + * this function does not rely on the target spec for inferring members, but
+> + * uses the associated BTF.
+> + *
+> + * The `behind_ptr` argument is used to stop marking of composite types reached
+> + * through a pointer. This way, we keep can keep BTF size in check while
 
-Or, just add BPF_REG_0 at the end:
-  /* For the BPF_FETCH variant, get old data into src_reg/BPF_REG_0 */
+Typo, "we keep can keep"
 
-The comment in CMPXCHG anyway details the difference. In any case, we=20
-can clean this up subsequently.
+> + * providing reasonable match semantics.
+> + */
+> +static int btfgen_mark_types_match(struct btfgen_info *info, __u32 type_id, bool behind_ptr)
+> +{
+> +	const struct btf_type *btf_type;
+> +	struct btf *btf = info->src_btf;
+> +	struct btf_type *cloned_type;
+> +	int i, err;
+> +
+> +	if (type_id == 0)
+> +		return 0;
+> +
+> +	btf_type = btf__type_by_id(btf, type_id);
+> +	/* mark type on cloned BTF as used */
+> +	cloned_type = (struct btf_type *)btf__type_by_id(info->marked_btf, type_id);
+> +	cloned_type->name_off = MARKED;
+> +
+> +	switch (btf_kind(btf_type)) {
+> +	case BTF_KIND_UNKN:
+> +	case BTF_KIND_INT:
+> +	case BTF_KIND_FLOAT:
+> +	case BTF_KIND_ENUM:
+> +	case BTF_KIND_ENUM64:
+> +		break;
+> +	case BTF_KIND_STRUCT:
+> +	case BTF_KIND_UNION: {
+> +		struct btf_member *m = btf_members(btf_type);
+> +		__u16 vlen = btf_vlen(btf_type);
+> +
+> +		if (behind_ptr)
+> +			break;
+> +
+> +		for (i = 0; i < vlen; i++, m++) {
+> +			/* mark member */
+> +			btfgen_mark_member(info, type_id, i);
+> +
+> +			/* mark member's type */
+> +			err = btfgen_mark_types_match(info, m->type, false);
+> +			if (err)
+> +				return err;
+> +		}
+> +		break;
+> +	}
+> +	case BTF_KIND_CONST:
+> +	case BTF_KIND_FWD:
+> +	case BTF_KIND_VOLATILE:
+> +	case BTF_KIND_TYPEDEF:
+> +		return btfgen_mark_types_match(info, btf_type->type, false);
+> +	case BTF_KIND_PTR:
+> +		return btfgen_mark_types_match(info, btf_type->type, true);
+> +	case BTF_KIND_ARRAY: {
+> +		struct btf_array *array;
+> +
+> +		array = btf_array(btf_type);
+> +		/* mark array type */
+> +		err = btfgen_mark_types_match(info, array->type, false);
+> +		/* mark array's index type */
+> +		err = err ? : btfgen_mark_types_match(info, array->index_type, false);
+> +		if (err)
+> +			return err;
+> +		break;
+> +	}
+> +	case BTF_KIND_FUNC_PROTO: {
+> +		__u16 vlen = btf_vlen(btf_type);
+> +		struct btf_param *param;
+> +
+> +		/* mark ret type */
+> +		err = btfgen_mark_types_match(info, btf_type->type, false);
+> +		if (err)
+> +			return err;
+> +
+> +		/* mark parameters types */
+> +		param = btf_params(btf_type);
+> +		for (i = 0; i < vlen; i++) {
+> +			err = btfgen_mark_types_match(info, param->type, false);
+> +			if (err)
+> +				return err;
+> +			param++;
+> +		}
+> +		break;
+> +	}
+> +	/* tells if some other type needs to be handled */
+> +	default:
+> +		p_err("unsupported kind: %s (%d)", btf_kind_str(btf_type), type_id);
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +/* Mark types, members, and member types. Compared to btfgen_record_field_relo,
+> + * this function does not rely on the target spec for inferring members, but
+> + * uses the associated BTF.
+> + */
+> +static int btfgen_record_types_match_relo(struct btfgen_info *info, struct bpf_core_spec *targ_spec)
 
+Nit: Maybe btfgen_record_type_match_relo() ("type" singular), for
+consistency with btfgen_record_type_relo()?
 
-- Naveen
+> +{
+> +	return btfgen_mark_types_match(info, targ_spec->root_type_id, false);
+> +}
+> +
+>  static int btfgen_record_type_relo(struct btfgen_info *info, struct bpf_core_spec *targ_spec)
+>  {
+>  	return btfgen_mark_type(info, targ_spec->root_type_id, true);
+> @@ -1882,6 +1987,8 @@ static int btfgen_record_reloc(struct btfgen_info *info, struct bpf_core_spec *r
+>  	case BPF_CORE_TYPE_EXISTS:
+>  	case BPF_CORE_TYPE_SIZE:
+>  		return btfgen_record_type_relo(info, res);
+> +	case BPF_CORE_TYPE_MATCHES:
+> +		return btfgen_record_types_match_relo(info, res);
+>  	case BPF_CORE_ENUMVAL_EXISTS:
+>  	case BPF_CORE_ENUMVAL_VALUE:
+>  		return btfgen_record_enumval_relo(info, res);
 
+Aside from the minor nits, the patch looks good to me. Thanks!
+
+Acked-by: Quentin Monnet <quentin@isovalent.com>
