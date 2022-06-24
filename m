@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D383555A4AA
-	for <lists+bpf@lfdr.de>; Sat, 25 Jun 2022 01:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 293BA55A4AB
+	for <lists+bpf@lfdr.de>; Sat, 25 Jun 2022 01:13:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231305AbiFXXNS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Jun 2022 19:13:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44756 "EHLO
+        id S231476AbiFXXNT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Jun 2022 19:13:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbiFXXNR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S231151AbiFXXNR (ORCPT <rfc822;bpf@vger.kernel.org>);
         Fri, 24 Jun 2022 19:13:17 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 034A468012;
-        Fri, 24 Jun 2022 16:13:16 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id 68so3681189pgb.10;
-        Fri, 24 Jun 2022 16:13:15 -0700 (PDT)
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34EAC69999;
+        Fri, 24 Jun 2022 16:13:17 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id o18so3323885plg.2;
+        Fri, 24 Jun 2022 16:13:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=97W1aGnfJTsRH0sQeB3uyZG1FdhNBzAYORArQFFa5J8=;
-        b=WaQTACkscwQ+r10TsXLL2IDdBXO78KeBOqyPH1sEf7nHOfk/88AkzO/GRuWjF8cOvl
-         pTH2J7EM5+tcc/pM49YYi12tc9NsS3F+QVdPYtsF05j+fs9mW3Lu9BU6KLS+Ln+snonm
-         CQocnuVS6GgqZeivqXaouar2yFPS3ljolbxXEBV7DM2rqYg7mjOKYaRvsjZmNLFdMZKj
-         15jGbtn9phJS2OEikiiRPvLTd0H6zJcgsu5armedsY8pQhB7kLBENwsmkblXjD5m1chL
-         4DGKiqSV4Q1owDTwxj33HiY9FWQ0c8bzgzOGJ2410tnkODzTtLhY1QKxAMqOIpU4nMNs
-         vEdg==
+        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=W/W8LDN+tzFAEf2BPgwfAuc3ZnltgoEwHVT0bAe4brM=;
+        b=WsF0G+VJ7ZJaU1x/sk1Qfm+U7PZteKatAdVE/LWM9L4N5BQMXcGGqMrKf+N3R9k+Vr
+         uDnQNwc6BhjqQStOjG0837AISbMPODVUDT8hdU6jpv78kCkuVr51qcu14e7PqZu2nYPm
+         8SJsMJUwUQ0hlfRGfE0jcXU0aYW+JdqZocvrF6IWaRku1l1ngUyFDDIGSvX4Qhvi+Gdg
+         E9hb9PkBuPRDfRn98raNarAuWaTJwwY0H0MOtuwjquWAjmA6Lc/wmBkBb8D4DPjVKCzE
+         dSrCll6BLJVw7oDqeRivZ0j13r7CSxCEMy70swpUTFPeSJ5gynHeYJN5pwUpMGV06Lzd
+         nljw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=97W1aGnfJTsRH0sQeB3uyZG1FdhNBzAYORArQFFa5J8=;
-        b=FP/brQVtddT5shmYM78NAH4t7+KcxnIp1k7K6SqqGIsMJ/a1LKnHhzTMZS+B7/zH5T
-         2bNUmSI8Tfitg0Y5tIq3HUIf/DAo4VgRhOhv37UIePy2Yos3cEZ8rf2Dkx8GiOtNvgX7
-         R5uQVgt+SawQeWslCVrgWQoflETYFbjljEYlNo/sWcbrpKDs/9+GeI1lM5TAk3KqLUSN
-         4YLUgFx0Liey4/Fuxl1ZzpdmXwy07AKXRl9ywlZx2JDiNp5YPP+xpq1WkWPmbJoxpveg
-         Hts5zpU7YD5PklDtRant3cSdPBGCP3XRbuR0mvprIPtYhSau3vIykOv0dLn+FRUYnj2S
-         zSZQ==
-X-Gm-Message-State: AJIora+Rhq56Ckycv9bSxUZHTUce2m3YSOx9XGateW4tkR0e46E9nALo
-        ZMXNnysfQRXSisiO84zzcYQ=
-X-Google-Smtp-Source: AGRyM1tRHHjEWu+SxmsXdStgAmXUbMstdEJ81AIJqaNRIFgHwUDeylo9SumsU2ECSZWng7xqzcvskw==
-X-Received: by 2002:a05:6a00:d9b:b0:525:6b81:4f14 with SMTP id bf27-20020a056a000d9b00b005256b814f14mr1554852pfb.38.1656112395401;
-        Fri, 24 Jun 2022 16:13:15 -0700 (PDT)
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=W/W8LDN+tzFAEf2BPgwfAuc3ZnltgoEwHVT0bAe4brM=;
+        b=5Wpj9nSWXD/04p8aTcK/+UIkqYrD5fX+fBUatPM9TWD0VMCsxfYRHV+Our7xtMiPDh
+         ozL4h/vQqyJfOZMvkoyzo/C0BNo2a2JQiI1gOrGJlap4pxqoWo97YkCtU6DYlCrGxKti
+         8iyUye6JxRP3BTBNj7w3CrAfT2+MUzt06zW0P9cZLzycFCxzsO9gICh2P/3Znktly025
+         UYzxc8dwphy/YciYJHCTD96zIJzJtBFIEeaskdEIjsDzZi2vJL1I8Q+wNn1WzwAkEVxQ
+         +JAgybi2cUS9QUvTjAWL/Bo73cNTq6XQVVzEr26HoCfg8mHZk5Gt2nOpORmyLgsZhx9x
+         Cjaw==
+X-Gm-Message-State: AJIora9ASotTQC+im7YFASQ+rk4dFhY4rh1z97D9yY4H/l8jJDSrtxRj
+        PmK8KDmricOqFUhn0OjzemLwX0+ZOAs17w==
+X-Google-Smtp-Source: AGRyM1t5gNy4v4K5UHhprgbyO6kecjEaSRwHg3Gm6BjqBiNSbVYJlSWnDzW0lsyjutiMi0S2TPglTg==
+X-Received: by 2002:a17:90b:1650:b0:1ec:b5e7:42ae with SMTP id il16-20020a17090b165000b001ecb5e742aemr1356755pjb.15.1656112396599;
+        Fri, 24 Jun 2022 16:13:16 -0700 (PDT)
 Received: from balhae.hsd1.ca.comcast.net ([2601:647:6780:480:eeb0:3156:8fd:28f6])
-        by smtp.gmail.com with ESMTPSA id z19-20020aa78893000000b0050dc76281e0sm2242439pfe.186.2022.06.24.16.13.14
+        by smtp.gmail.com with ESMTPSA id z19-20020aa78893000000b0050dc76281e0sm2242439pfe.186.2022.06.24.16.13.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jun 2022 16:13:14 -0700 (PDT)
+        Fri, 24 Jun 2022 16:13:16 -0700 (PDT)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -59,10 +59,12 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Hao Luo <haoluo@google.com>,
         Milian Wolff <milian.wolff@kdab.com>, bpf@vger.kernel.org,
         Blake Jones <blakejones@google.com>
-Subject: [PATCHSET 0/6] perf tools: A couple of fixes for perf record --off-cpu (v1)
-Date:   Fri, 24 Jun 2022 16:13:07 -0700
-Message-Id: <20220624231313.367909-1-namhyung@kernel.org>
+Subject: [PATCH 1/6] perf offcpu: Fix a build failure on old kernels
+Date:   Fri, 24 Jun 2022 16:13:08 -0700
+Message-Id: <20220624231313.367909-2-namhyung@kernel.org>
 X-Mailer: git-send-email 2.37.0.rc0.161.g10f37bed90-goog
+In-Reply-To: <20220624231313.367909-1-namhyung@kernel.org>
+References: <20220624231313.367909-1-namhyung@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -76,72 +78,61 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+Old kernels have task_struct which contains "state" field and newer
+kernels have "__state".  While the get_task_state() in the BPF code
+handles that in some way, it assumed the current kernel has the new
+definition and it caused a build error on old kernels.
 
-The first patch fixes a build error on old kernels which has
-task_struct->state field that is renamed to __state.  Actually I made
-a mistake when I wrote the code and assumed new kernel version.
+We should not assume anything and access them carefully.  Do not use
+the task struct directly and access them using new and old definitions
+in a row.
 
-The second patch is to prevent invalid sample synthesize by
-disallowing unsupported sample types.
+Reported-by: Ian Rogers <irogers@google.com>
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/util/bpf_skel/off_cpu.bpf.c | 20 ++++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
 
-The rest of the series implements inheritance of offcpu events for the
-child processes.  Unlike perf events, BPF cannot know which task it
-should track except for ones set in a BPF map at the beginning.  Add
-another BPF program to the fork path and add the process id to the
-map if the parent is tracked.
-
-With this change, it can get the correct off-cpu events for child
-processes.  I've tested it with perf bench sched messaging which
-creates a lot of processes.
-
-  $ sudo perf record -e dummy --off-cpu -- perf bench sched messaging
-  # Running 'sched/messaging' benchmark:
-  # 20 sender and receiver processes per group
-  # 10 groups == 400 processes run
-
-       Total time: 0.196 [sec]
-  [ perf record: Woken up 1 times to write data ]
-  [ perf record: Captured and wrote 0.178 MB perf.data (851 samples) ]
-
-
-  $ sudo perf report --stat | grep -A1 offcpu
-  offcpu-time stats:
-            SAMPLE events:        851
-
-The benchmark passes messages by read/write and it creates off-cpu
-events.  With 400 processes, we can see more than 800 events.
-
-The child process tracking is also enabled when -p option is given.
-But -t option does NOT as it only cares about the specific threads.
-It may be different what perf_event does now, but I think it makes
-more sense.
-
-You can get it from 'perf/offcpu-child-v1' branch in my tree
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
-
-Thanks,
-Namhyung
-
-
-Namhyung Kim (6):
-  perf offcpu: Fix a build failure on old kernels
-  perf offcpu: Accept allowed sample types only
-  perf offcpu: Check process id for the given workload
-  perf offcpu: Parse process id separately
-  perf offcpu: Track child processes
-  perf offcpu: Update offcpu test for child process
-
- tools/perf/tests/shell/record_offcpu.sh | 57 ++++++++++++++++++++---
- tools/perf/util/bpf_off_cpu.c           | 60 +++++++++++++++++++++++--
- tools/perf/util/bpf_skel/off_cpu.bpf.c  | 58 +++++++++++++++++++++---
- tools/perf/util/evsel.c                 |  9 ++++
- tools/perf/util/off_cpu.h               |  9 ++++
- 5 files changed, 176 insertions(+), 17 deletions(-)
-
-
-base-commit: 9886142c7a2226439c1e3f7d9b69f9c7094c3ef6
+diff --git a/tools/perf/util/bpf_skel/off_cpu.bpf.c b/tools/perf/util/bpf_skel/off_cpu.bpf.c
+index 792ae2847080..cc6d7fd55118 100644
+--- a/tools/perf/util/bpf_skel/off_cpu.bpf.c
++++ b/tools/perf/util/bpf_skel/off_cpu.bpf.c
+@@ -71,6 +71,11 @@ struct {
+ 	__uint(max_entries, 1);
+ } cgroup_filter SEC(".maps");
+ 
++/* new kernel task_struct definition */
++struct task_struct___new {
++	long __state;
++} __attribute__((preserve_access_index));
++
+ /* old kernel task_struct definition */
+ struct task_struct___old {
+ 	long state;
+@@ -93,14 +98,17 @@ const volatile bool uses_cgroup_v1 = false;
+  */
+ static inline int get_task_state(struct task_struct *t)
+ {
+-	if (bpf_core_field_exists(t->__state))
+-		return BPF_CORE_READ(t, __state);
++	/* recast pointer to capture new type for compiler */
++	struct task_struct___new *t_new = (void *)t;
+ 
+-	/* recast pointer to capture task_struct___old type for compiler */
+-	struct task_struct___old *t_old = (void *)t;
++	if (bpf_core_field_exists(t_new->__state)) {
++		return BPF_CORE_READ(t_new, __state);
++	} else {
++		/* recast pointer to capture old type for compiler */
++		struct task_struct___old *t_old = (void *)t;
+ 
+-	/* now use old "state" name of the field */
+-	return BPF_CORE_READ(t_old, state);
++		return BPF_CORE_READ(t_old, state);
++	}
+ }
+ 
+ static inline __u64 get_cgroup_id(struct task_struct *t)
 -- 
 2.37.0.rc0.161.g10f37bed90-goog
 
