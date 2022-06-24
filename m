@@ -2,66 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4942355A308
-	for <lists+bpf@lfdr.de>; Fri, 24 Jun 2022 22:51:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9103E55A324
+	for <lists+bpf@lfdr.de>; Fri, 24 Jun 2022 23:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbiFXUvo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Jun 2022 16:51:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55220 "EHLO
+        id S229645AbiFXU6P (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Jun 2022 16:58:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230032AbiFXUvn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Jun 2022 16:51:43 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 934924F1F2
-        for <bpf@vger.kernel.org>; Fri, 24 Jun 2022 13:51:42 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id i5-20020a170902c94500b0016a644a6008so1819041pla.1
-        for <bpf@vger.kernel.org>; Fri, 24 Jun 2022 13:51:42 -0700 (PDT)
+        with ESMTP id S229962AbiFXU6O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Jun 2022 16:58:14 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2BFF1A063
+        for <bpf@vger.kernel.org>; Fri, 24 Jun 2022 13:58:07 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id e40so5110946eda.2
+        for <bpf@vger.kernel.org>; Fri, 24 Jun 2022 13:58:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=e/ErN8VxVghbsrVmXyM/32O9sa9FPILwd78z3c5zUx4=;
-        b=P2hH0z+sd2hBJk83/skvppQMZpLb46AZIX7tH2UFAVBnFf3BbEkAt7zwo5og3p0/wF
-         IrkjLBDejuewktmbHxaFhoOOd+1OAv+W5DpbxMNoS+yOLlZv43J2dBOVsHYs1g5cCYYc
-         xrLrtjfJGlo6jKxTDhYFDeEPis5bSWmXJ4JSULVnLQfcluB1FE9csR/RIpHf1hgkSe27
-         LBYnVQtXGCATLtRfmJUOJlm/g2edWCkJTDAZeCYDN4tQk+ROF9zpUlWMJJ4BwJwokl/l
-         VEvuRD5mjAwYtFYIZJBBMj4tq29uCCo9YYwWkOazwSl6myVsYSpp9MTkvT0m+Rq/Hr1e
-         IZDg==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=0E6GaFoCmlDPdQ7oc8NPrEcUyWMA4N1ys1Z9tLHhFBs=;
+        b=oE1tMvqSrobJS1nlznDYU+Ujjv4LNwAls8SS1iJusE9QlDuFXa/6FYUa3RDOtG4tM5
+         H4gQSZH0ApWBrFd9E8f31wh5utmUeKjOCx2a41JM4pyQgJS9ihd1MXxDrufbAPYBKjxA
+         /FnEeDVjUeOn0LbOThZpwXJqzXDlb6vexjNafIh2UmM8jzI/KFN1fgsqMX5XEOf1KYFn
+         Vs4eVOgACx5l4cNeF6GDj/1dxiDH8B/Uz5zow7COTLDwlHWS0Lgeds07ZERykJ26OwHC
+         tbIrG0SBhMR5lw6Y2+4pDhMyCjw36TJq82iVu5umZz1yMGpk13ES/ltFOcuhGbK25e1D
+         tTKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=e/ErN8VxVghbsrVmXyM/32O9sa9FPILwd78z3c5zUx4=;
-        b=i8+kr/VanKNC1kON3k+9zD7IXxI5XY5eybRT/ELVZJxgGnoCBJUkyRxd6gdD3QfMYI
-         dWNf8hmLD3CQEV/BORiVaAkUxd1vZWuKAoV+CxdXxLf6l3c48cmfkyvq89dDSwxrvj9w
-         0Eap+SMvWK4u7imM9Sd5upE7Nun7HSPFhb8ujBzgbVC/7BE7s7BubuvU2opcrFe+g/sk
-         vz2fnsnwVLNWE5a9RbaHw0Ajp/npOGSf5RLkNUWFZ2ajXzM1rmeiXC4CvVI6Gl3o0Qpx
-         c7zveZcYRJsbAaLrVNxEsBewJweLQiM5KhqnPihRTARGYubUDGYeUyI6y6vcYZm3rJ2y
-         wgaw==
-X-Gm-Message-State: AJIora9oefcfumB+QJ9HKKZ7bHOwAYnC+UZT4mVdJAmXC05y57RQojme
-        ruPIg3WYcmin5YxJHg6CKtRiuwQ=
-X-Google-Smtp-Source: AGRyM1svMVfm0FJH3dQsxg+7/8JmDnVTU9cAq2u5M5SAoMqYfAtMB5Pw4bcaOd++TFXssUvDVa63Vao=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:903:41d2:b0:16a:2cca:4869 with SMTP id
- u18-20020a17090341d200b0016a2cca4869mr917447ple.13.1656103902114; Fri, 24 Jun
- 2022 13:51:42 -0700 (PDT)
-Date:   Fri, 24 Jun 2022 13:51:40 -0700
-In-Reply-To: <20220602041028.95124-1-xiyou.wangcong@gmail.com>
-Message-Id: <YrYj3LPaHV7thgJW@google.com>
-Mime-Version: 1.0
-References: <20220602041028.95124-1-xiyou.wangcong@gmail.com>
-Subject: Re: [RFC Patch v5 0/5] net_sched: introduce eBPF based Qdisc
-From:   sdf@google.com
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Cong Wang <cong.wang@bytedance.com>,
-        "Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?=" <toke@redhat.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jiri Pirko <jiri@resnulli.us>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=0E6GaFoCmlDPdQ7oc8NPrEcUyWMA4N1ys1Z9tLHhFBs=;
+        b=6WqZiujZos3LbAxXbW66dM/HI01JyMBeWpqZaQxOuz+HCS2LGjh9S0kmJkHoxAY5/n
+         bt60z20LNlVNdikcTyT71giHh5V7t3qxNOgkQndC6fJFS1IMhSHEPlUuKvPDNPDORRmz
+         V203r9rjNkzzxdmKVoxPz3bgKYTqy+pf/ix4IotHTS3oqNWmAytg301mv+pRtHMiQ15+
+         tvtVQWmSv5InJ0Bqjne4xT8MPUbuekaeK8dailHPD9xVrTCsUBezH97bZ+c38RU+wL1q
+         Mi3m6kYTqfExkb/EKtHm0PywICWwrzjXc5AkX7Q9BLivlLjN+KfOFqejUr+cyAYRSbzq
+         EM2A==
+X-Gm-Message-State: AJIora+bR2evsXnWculBJfvRKuowgeldc3w7anWyjwQWBaUkKP9G4uNa
+        ejTWdTSttoivhDkBrps04IiXpxA3xRbbuRkFGSI=
+X-Google-Smtp-Source: AGRyM1u0eNNyFfbRUGy940TOMJVhmjCPtrvlT49g2hVJmIgZ96pDDyheLcwUqzkyuSMqgrC6GWAxd/OrHGgmnHwjwSo=
+X-Received: by 2002:a05:6402:4408:b0:435:9ed2:9be with SMTP id
+ y8-20020a056402440800b004359ed209bemr1218446eda.81.1656104285815; Fri, 24 Jun
+ 2022 13:58:05 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220603190155.3924899-1-andrii@kernel.org> <87wndwvjax.fsf@toke.dk>
+ <CAEf4Bzb75b5cPjv1ZnM9aME3vxy4nxY0=Utp1wd0Z9P3s9mvaw@mail.gmail.com> <87mte2p03a.fsf@toke.dk>
+In-Reply-To: <87mte2p03a.fsf@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 24 Jun 2022 13:57:54 -0700
+Message-ID: <CAEf4BzZmbxOCjtk8zPP-DdSA2r3FZQwrDT-L9dogh6GgAd36YA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 00/15] libbpf: remove deprecated APIs
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,87 +69,117 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 06/01, Cong Wang wrote:
-> From: Cong Wang <cong.wang@bytedance.com>
+On Fri, Jun 24, 2022 at 8:12 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@kern=
+el.org> wrote:
+>
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>
+> > On Sat, Jun 4, 2022 at 3:01 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@k=
+ernel.org> wrote:
+> >>
+> >> Andrii Nakryiko <andrii@kernel.org> writes:
+> >>
+> >> > This patch set removes all the deprecated APIs in preparation for 1.=
+0 release.
+> >> > It also makes libbpf_set_strict_mode() a no-op (but keeps it to let =
+per-1.0
+> >> > applications buildable and dynamically linkable against libbpf 1.0 i=
+f they
+> >> > were already libbpf-1.0 ready) and starts enforcing all the
+> >> > behaviors that were previously opt-in through libbpf_set_strict_mode=
+().
+> >> >
+> >> > xsk.{c,h} parts that are now properly provided by libxdp ([0]) are s=
+till used
+> >> > by xdpxceiver.c in selftest/bpf, so I've moved xsk.{c,h} with barely=
+ any
+> >> > changes to under selftests/bpf.
+> >> >
+> >> > Other than that, apart from removing all the LIBBPF_DEPRECATED-marke=
+d APIs,
+> >> > there is a bunch of internal clean ups allowed by that. I've also "r=
+estored"
+> >> > libbpf.map inheritance chain while removing all the deprecated APIs.=
+ I think
+> >> > that's the right way to do this, as applications using libbpf as sha=
+red
+> >> > library but not relying on any deprecated APIs (i.e., "good citizens=
+" that
+> >> > prepared for libbpf 1.0 release ahead of time to minimize disruption=
+) should
+> >> > be able to link both against 0.x and 1.x versions. Either way, it do=
+esn't seem
+> >> > to break anything and preserve a history on when each "surviving" AP=
+I was
+> >> > added.
+> >> >
+> >> > NOTE. This shouldn't be yet landed until Jiri's changes ([1]) removi=
+ng last
+> >> > deprecated API usage in perf lands. But I thought to post it now to =
+get the
+> >> > ball rolling.
+> >>
+> >> Any chance you could push this to a branch of github as well? Makes it
+> >> easier to test libxdp against it :)
+> >>
+> >
+> > Sure, pushed to
+> > https://github.com/libbpf/libbpf/tree/libbpf-remove-deprecated-apis
+>
+> Hi Andrii
+>
+> Took this for a test run, and besides having to fix up the Makefile in
+> the github repository a bit (diff below), nothing broke
+> catastrophically. So yay!
+>
+> It did flush out a BPF object file we used for testing that still had
+> the old long-style section name, but libbpf does output a helpful error
+> message for that even if it can get lost in the noise. So I guess that's
+> as friendly as we can make it :)
+>
 
-> This *incomplete* patchset introduces a programmable Qdisc with eBPF.
+Cool, thanks for testing! And yeah, I should try and not forget to do
+these Github-only changes when I do proper sync, thanks for the
+reminder! Now that Jiri's perf patch is merged, I'll rebase my changes
+and post them as v2.
 
-> There are a few use cases:
-
-> 1. Allow customizing Qdisc's in an easier way. So that people don't
->     have to write a complete Qdisc kernel module just to experiment
->     some new queuing theory.
-
-> 2. Solve EDT's problem. EDT calcuates the "tokens" in clsact which
->     is before enqueue, it is impossible to adjust those "tokens" after
->     packets get dropped in enqueue. With eBPF Qdisc, it is easy to
->     be solved with a shared map between clsact and sch_bpf.
-
-> 3. Replace qevents, as now the user gains much more control over the
->     skb and queues.
-
-> 4. Provide a new way to reuse TC filters. Currently TC relies on filter
->     chain and block to reuse the TC filters, but they are too complicated
->     to understand. With eBPF helper bpf_skb_tc_classify(), we can invoke
->     TC filters on _any_ Qdisc (even on a different netdev) to do the
->     classification.
-
-> 5. Potentially pave a way for ingress to queue packets, although
->     current implementation is still only for egress.
-
-> 6. Possibly pave a way for handling TCP protocol in TC, as rbtree itself
->     is already used by TCP to handle TCP retransmission.
-
-> The goal here is to make this Qdisc as programmable as possible,
-> that is, to replace as many existing Qdisc's as we can, no matter
-> in tree or out of tree. This is why I give up on PIFO which has
-> serious limitations on the programmablity.
-
-> Here is a summary of design decisions I made:
-
-> 1. Avoid eBPF struct_ops, as it would be really hard to program
->     a Qdisc with this approach, literally all the struct Qdisc_ops
->     and struct Qdisc_class_ops are needed to implement. This is almost
->     as hard as programming a Qdisc kernel module.
-
-> 2. Introduce skb map, which will allow other eBPF programs to store skb's
->     too.
-
->     a) As eBPF maps are not directly visible to the kernel, we have to
->     dump the stats via eBPF map API's instead of netlink.
-
->     b) The user-space is not allowed to read the entire packets, only  
-> __sk_buff
->     itself is readable, because we don't have such a use case yet and it  
-> would
->     require a different API to read the data, as map values have fixed  
-> length.
-
->     c) Two eBPF helpers are introduced for skb map operations:
->     bpf_skb_map_push() and bpf_skb_map_pop(). Normal map update is
->     not allowed.
-
->     d) Multi-queue support is implemented via map-in-map, in a similar
->     push/pop fasion.
-
->     e) Use the netdevice notifier to reset the packets inside skb map upon
->     NETDEV_DOWN event.
-
-> 3. Integrate with existing TC infra. For example, if the user doesn't want
->     to implement her own filters (e.g. a flow dissector), she should be  
-> able
->     to re-use the existing TC filters. Another helper  
-> bpf_skb_tc_classify() is
->     introduced for this purpose.
-
-> Any high-level feedback is welcome. Please kindly do not review any coding
-> details until RFC tag is removed.
-
-> TODO:
-> 1. actually test it
-
-Can you try to implement some existing qdisc using your new mechanism?
-For BPF-CC, Martin showcased how dctcp/cubic can be reimplemented;
-I feel like this patch series (even rfc), should also have a good example
-to show that bpf qdisc is on par and can be used to at least implement
-existing policies. fq/fq_codel/cake are good candidates.
+> -Toke
+>
+>
+> diff --git a/src/Makefile b/src/Makefile
+> index 40f4f98b5681..99766f4c418c 100644
+> --- a/src/Makefile
+> +++ b/src/Makefile
+> @@ -8,8 +8,8 @@ else
+>         msg =3D @printf '  %-8s %s%s\n' "$(1)" "$(2)" "$(if $(3), $(3))";
+>  endif
+>
+> -LIBBPF_MAJOR_VERSION :=3D 0
+> -LIBBPF_MINOR_VERSION :=3D 8
+> +LIBBPF_MAJOR_VERSION :=3D 1
+> +LIBBPF_MINOR_VERSION :=3D 0
+>  LIBBPF_PATCH_VERSION :=3D 0
+>  LIBBPF_VERSION :=3D $(LIBBPF_MAJOR_VERSION).$(LIBBPF_MINOR_VERSION).$(LI=
+BBPF_PATCH_VERSION)
+>  LIBBPF_MAJMIN_VERSION :=3D $(LIBBPF_MAJOR_VERSION).$(LIBBPF_MINOR_VERSIO=
+N).0
+> @@ -50,7 +50,7 @@ OBJDIR ?=3D .
+>  SHARED_OBJDIR :=3D $(OBJDIR)/sharedobjs
+>  STATIC_OBJDIR :=3D $(OBJDIR)/staticobjs
+>  OBJS :=3D bpf.o btf.o libbpf.o libbpf_errno.o netlink.o \
+> -       nlattr.o str_error.o libbpf_probes.o bpf_prog_linfo.o xsk.o \
+> +       nlattr.o str_error.o libbpf_probes.o bpf_prog_linfo.o  \
+>         btf_dump.o hashmap.o ringbuf.o strset.o linker.o gen_loader.o \
+>         relo_core.o usdt.o
+>  SHARED_OBJS :=3D $(addprefix $(SHARED_OBJDIR)/,$(OBJS))
+> @@ -64,7 +64,7 @@ ifndef BUILD_STATIC_ONLY
+>         VERSION_SCRIPT :=3D libbpf.map
+>  endif
+>
+> -HEADERS :=3D bpf.h libbpf.h btf.h libbpf_common.h libbpf_legacy.h xsk.h =
+\
+> +HEADERS :=3D bpf.h libbpf.h btf.h libbpf_common.h libbpf_legacy.h  \
+>            bpf_helpers.h bpf_helper_defs.h bpf_tracing.h \
+>            bpf_endian.h bpf_core_read.h skel_internal.h libbpf_version.h =
+\
+>            usdt.bpf.h
