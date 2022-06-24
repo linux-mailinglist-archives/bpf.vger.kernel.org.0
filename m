@@ -2,68 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18068559EDC
-	for <lists+bpf@lfdr.de>; Fri, 24 Jun 2022 18:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EBB4559ED6
+	for <lists+bpf@lfdr.de>; Fri, 24 Jun 2022 18:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229480AbiFXQrA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Jun 2022 12:47:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42738 "EHLO
+        id S229786AbiFXQuf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Jun 2022 12:50:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbiFXQq7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Jun 2022 12:46:59 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1D6C53A75
-        for <bpf@vger.kernel.org>; Fri, 24 Jun 2022 09:46:58 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id t5so5906225eje.1
-        for <bpf@vger.kernel.org>; Fri, 24 Jun 2022 09:46:58 -0700 (PDT)
+        with ESMTP id S229476AbiFXQub (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Jun 2022 12:50:31 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 563124EDCF;
+        Fri, 24 Jun 2022 09:50:30 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id eo8so4365995edb.0;
+        Fri, 24 Jun 2022 09:50:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=pXV8+aET3FoQ5HjxLu1r8THoF+tZs5D/Xr7EgaJQfwo=;
-        b=q13ZA5DuMXyJOMlisabTdnLZHCTrK/yzpdh/xx9ZhO/Bz00F+h05YYnCbVbiSLDO+O
-         rnWCXSczQ4RtmPL/vPUAE57Qu0HGQ5liolX+z0chRn2Df682NGXqMl3v0jkEaPBlHe+Z
-         C5GMnDr6/6llecL06+wscQF/mUnT16uiSZa+Sm3CAIQKlgE7Fb68ufmhjusXIEBPzneo
-         Q1lj9nv6XxNmk7ZOQrJQKLnOO7UN65CoAEh9+ZHNeU2LJKNC5Tpw6SZhU+RKeCJ8HDMY
-         Ygswo5GQB9r3bgKM2LI4YmQjYEN6ZXVTAzezTs+eAW4OKRhWgHrprQd4nUJfw592d8gU
-         KdPg==
+        bh=D6bSR6eKZinN1uglMVeg9l3qo/AOUJIfypofdktuB4E=;
+        b=WSBylA0owMVGcEdh93AP5NVJHW6tL1PlszLC9ZsTlN2oVBRMxpllo/mD84O2RdmM26
+         wFQJI9sJatNUjam5txYBMCemE1OFvvi2HWRhScI90pNlIRzbvSQPlvUKhce06PN6Y3tm
+         9H76N4O1AClN7AwJZuWcGJa8swByyAoFEdHGN7NlRU/+6A3qASSR3AdYlrPxm1LVxO4b
+         zW5RgFjGKLCdSqKjXpNv0gai8dZBIQ3cNo4e1MmB2KPm57fxZpiix8E7X7M6IhTdaWBl
+         Q63jZdSuMMhAKwRNlq/MfpERWaZyq9Izg+WPplhGNNS8dRsfKUwIW/OS3A9N7XPaEQCg
+         pcDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=pXV8+aET3FoQ5HjxLu1r8THoF+tZs5D/Xr7EgaJQfwo=;
-        b=R7jGADfZvSA08syzlB+wJr/fTi3kXmRTNU2dt62t51Wx4+UNZaDLvdj9e40LWcr8+u
-         G1M09O/X+/2XR7ZjxcT0x0Q4BD7IIoVZYEKa8WO/gHw/vnMM68KYUWWDQfGr3dzspJ1O
-         7HERUbyfCPRkVTZOI7dxWFd2a8qlEaY/ec/DoyzfJy4NaJUnM9L8x7szA9fkVgilp2VC
-         sW0CjynLi9YFH8R29yv2y3zhp2E9znQ0uDIU5o8Q2Axr26JDA6Lw1zrQUzFvxQMzRoy0
-         dTEffBZVkIlntiTUEFRBs2rNcnjjd31GygtadPT68RXamWdrfwSShBMrJmcuyjvfN1xG
-         MJJw==
-X-Gm-Message-State: AJIora/vCBgB/cV50p5w5dgXvoHU3BWxmAcdW4kKQLJcbr8Wx9XWq9N5
-        QGWXZkxEWM/Cefbio1q2wX8hi2bR/ts8Sh+Nazw=
-X-Google-Smtp-Source: AGRyM1sCz0j5dubfi1jO9rTrv1wj2VaTyJTbqmOkKm4qTdXRAJwRJwhAgYuuRLw85r5JXwD77msUcdI963ZumdInzG4=
-X-Received: by 2002:a17:907:608d:b0:722:ebcc:b108 with SMTP id
- ht13-20020a170907608d00b00722ebccb108mr14180319ejc.94.1656089217388; Fri, 24
- Jun 2022 09:46:57 -0700 (PDT)
+        bh=D6bSR6eKZinN1uglMVeg9l3qo/AOUJIfypofdktuB4E=;
+        b=qwM+mxMLL3MZS/D1ZnPJTr2TuaD5W8f1yq433xumXqGuqOyS0brbFfRCSMgDH6f+oW
+         KIEOHf6Xi8lL1za96Sxih1IGtQE5JDi1BrLSayYHGW6dV+K4H9zt//EYAjxwQngqcB8W
+         LIC62LP0HGYPAEvyEWAJrDlsKFcMvwwwhUwZevD+SqeYBLvJPQaDdnRf0T6Ibzsy0WyC
+         i1NaZGx3TivScVmUQpc9pkhWVK1xpdtuwwAQbNCYsL2i/TCa/mEtNXe3w7mf7IlNtKN5
+         bjC/tFLxnmo2tBVWGzvhttqjVKB7d1yeSlgnjbgQkqhXtBs6/dSlyhYaU483RM4Lq7Rc
+         WUIw==
+X-Gm-Message-State: AJIora801lfhif4hdBbEtY4K4RFuhCyzj7SFZX2vQ5an0/QRmcJ1sAHi
+        Mg+9xwaixuNqVE9l3rqS4rFWjqJIz7cgjyj1BYdLXUlqhYU=
+X-Google-Smtp-Source: AGRyM1t+bTNZdEMZEsDZnO7STdl64p2wN3eY2r0luJn8BUEps4cKK8JgFGhhKrUrVSziA3+0tzaDUFTXjoLk97KmlLE=
+X-Received: by 2002:a05:6402:3487:b0:435:b0d2:606e with SMTP id
+ v7-20020a056402348700b00435b0d2606emr17614edc.66.1656089428911; Fri, 24 Jun
+ 2022 09:50:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220613025244.31595-1-quic_satyap@quicinc.com>
- <87r13s2a0j.fsf@toke.dk> <fc16df47-df2b-ffa2-4e66-5a3dc92cb4db@fb.com>
- <005f01d87f4d$9a075210$ce15f630$@quicinc.com> <CAADnVQJUyvhqjnn9OuB=GN=NgA3Wu59fQqLM8nzg_TWh1HnJ4Q@mail.gmail.com>
- <006701d87f6d$7fe0a060$7fa1e120$@quicinc.com> <CAADnVQKq-e1TT1Y2uhgCaRY4CUP37dq0HuSyTdgtxkNfv8DQUg@mail.gmail.com>
- <009d01d87f8b$79f83140$6de893c0$@quicinc.com> <621b35ac-5c93-9a6d-eaf0-62cceb52cf34@fb.com>
- <002601d88797$8699d6b0$93cd8410$@quicinc.com>
-In-Reply-To: <002601d88797$8699d6b0$93cd8410$@quicinc.com>
+References: <20220621163757.760304-1-roberto.sassu@huawei.com>
+ <20220621163757.760304-3-roberto.sassu@huawei.com> <20220621223248.f6wgyewajw6x4lgr@macbook-pro-3.dhcp.thefacebook.com>
+ <796b55c79be142cab6a22dd281fdb9fa@huawei.com> <f2d3da08e7774df9b44cc648dda7d0b8@huawei.com>
+ <CAADnVQKVx9o1PcCV_F3ywJCzDTPtQG4MTKM2BmwdCwNvyxdNPg@mail.gmail.com> <27e25756f96548aeb56d1af5c94197f6@huawei.com>
+In-Reply-To: <27e25756f96548aeb56d1af5c94197f6@huawei.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 24 Jun 2022 09:46:45 -0700
-Message-ID: <CAADnVQJV2kJwZeynV_2FeZ8vKXGk=Ht+R5dj8OEtKHOpNeWa7w@mail.gmail.com>
-Subject: Re: [PATCH] bpf: fix rq lock recursion issue
-To:     Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>
-Cc:     Yonghong Song <yhs@fb.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
+Date:   Fri, 24 Jun 2022 09:50:17 -0700
+Message-ID: <CAADnVQ+PnTOK-6dE2LMsjUU_OPksX=QVxZ-QvvaxDWTw7rRR5Q@mail.gmail.com>
+Subject: Re: [PATCH v5 2/5] bpf: Add bpf_lookup_user_key() and bpf_key_put() helpers
+To:     Roberto Sassu <roberto.sassu@huawei.com>
+Cc:     "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "kafai@fb.com" <kafai@fb.com>, "yhs@fb.com" <yhs@fb.com>,
+        "dhowells@redhat.com" <dhowells@redhat.com>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -75,66 +79,75 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 23, 2022 at 11:56 PM Satya Durga Srinivasu Prabhala
-<quic_satyap@quicinc.com> wrote:
+On Fri, Jun 24, 2022 at 8:32 AM Roberto Sassu <roberto.sassu@huawei.com> wrote:
 >
+> > From: Alexei Starovoitov [mailto:alexei.starovoitov@gmail.com]
+> > Sent: Thursday, June 23, 2022 10:54 PM
+> > On Thu, Jun 23, 2022 at 5:36 AM Roberto Sassu <roberto.sassu@huawei.com>
+> > wrote:
+> > >
+> > > > From: Roberto Sassu [mailto:roberto.sassu@huawei.com]
+> > > > Sent: Wednesday, June 22, 2022 9:12 AM
+> > > > > From: Alexei Starovoitov [mailto:alexei.starovoitov@gmail.com]
+> > > > > Sent: Wednesday, June 22, 2022 12:33 AM
+> > > > > On Tue, Jun 21, 2022 at 06:37:54PM +0200, Roberto Sassu wrote:
+> > > > > > Add the bpf_lookup_user_key() and bpf_key_put() helpers, to respectively
+> > > > > > search a key with a given serial, and release the reference count of the
+> > > > > > found key.
+> > > > > >
+> > > > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > > > > > ---
+> > > > > >  include/uapi/linux/bpf.h       | 16 ++++++++++++
+> > > > > >  kernel/bpf/bpf_lsm.c           | 46
+> > ++++++++++++++++++++++++++++++++++
+> > > > > >  kernel/bpf/verifier.c          |  6 +++--
+> > > > > >  scripts/bpf_doc.py             |  2 ++
+> > > > > >  tools/include/uapi/linux/bpf.h | 16 ++++++++++++
+> > > > > >  5 files changed, 84 insertions(+), 2 deletions(-)
+> > > > > >
+> > > > > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > > > > > index e81362891596..7bbcf2cd105d 100644
+> > > > > > --- a/include/uapi/linux/bpf.h
+> > > > > > +++ b/include/uapi/linux/bpf.h
+> > > > > > @@ -5325,6 +5325,20 @@ union bpf_attr {
+> > > > > >   *               **-EACCES** if the SYN cookie is not valid.
+> > > > > >   *
+> > > > > >   *               **-EPROTONOSUPPORT** if CONFIG_IPV6 is not builtin.
+> > > > > > + *
+> > > > > > + * struct key *bpf_lookup_user_key(u32 serial, unsigned long flags)
+> > > > > > + *       Description
+> > > > > > + *               Search a key with a given *serial* and the provided *flags*,
+> > and
+> > > > > > + *               increment the reference count of the key.
+> > > > >
+> > > > > Why passing 'flags' is ok to do?
+> > > > > Please think through every line of the patch.
+> > > >
+> > > > To be honest, I thought about it. Probably yes, I should do some
+> > > > sanitization, like I did for the keyring ID. When I checked
+> > > > lookup_user_key(), I saw that flags are checked individually, so
+> > > > an arbitrary value passed to the helper should not cause harm.
+> > > > Will do sanitization, if you prefer. It is just that we have to keep
+> > > > the eBPF code in sync with key flag definition (unless we have
+> > > > a 'last' flag).
+> > >
+> > > I'm not sure that having a helper for lookup_user_key() alone is
+> > > correct. By having separate helpers for lookup and usage of the
+> > > key, nothing would prevent an eBPF program to ask for a
+> > > permission to pass the access control check, and then use the
+> > > key for something completely different from what it requested.
+> > >
+> > > Looking at how lookup_user_key() is used in security/keys/keyctl.c,
+> > > it seems clear that it should be used together with the operation
+> > > that needs to be performed. Only in this way, the key permission
+> > > would make sense.
+> >
+> > lookup is roughly equivalent to open when all permission checks are done.
+> > And using the key is read/write.
 >
-> On 6/13/22 11:09 PM, Yonghong Song wrote:
-> >
-> >
-> > On 6/13/22 6:10 PM, Satya Durga Srinivasu Prabhala wrote:
-> >>
-> >> On 6/13/22 2:49 PM, Alexei Starovoitov wrote:
-> >>> On Mon, Jun 13, 2022 at 2:35 PM Satya Durga Srinivasu Prabhala
-> >>> <quic_satyap@quicinc.com> wrote:
-> >>>>
-> >>>> On 6/13/22 2:01 PM, Alexei Starovoitov wrote:
-> >>>>> is doesn't solve anything.
-> >>>>> Please provide a reproducer.
-> >>>> I'm trying to find an easy way to repro the issue, so far,
-> >>>> unsuccessful.
-> >>>>
-> >>>>> iirc the task's affinity change can race even with preemption
-> >>>>> disabled
-> >>>>> on this cpu. Why would s/migrate/preemption/ address the deadlock ?
-> >>>> I don't think task's affinity change races with preemption
-> >>>> disabled/enabled.
-> >>>>
-> >>>> Switching to preemption disable/enable calls helps as it's just simple
-> >>>> counter increment and decrement with a barrier, but with migrate
-> >>>> disable/enable when task's affinity changes, we run into recursive bug
-> >>>> due to rq lock.
-> >>> As Yonghong already explained, replacing migrate_disable
-> >>> with preempt_disable around bpf prog invocation is not an option.
-> >>
-> >> If I understand correctly, Yonghong mentioned that replacing migrate_
-> >> with preempt_ won't work for RT Kernels and migrate_ APIs were
-> >> introduced
-> >> for RT Kernels is what he was pointing to. I went back and cross checked
-> >> on 5.10 LTS Kernel, I see that the migrate_ calls end up just calling
-> >> into
-> >> preemt_ calls [1]. So far non-RT kernels, sticking to preemt_ calls
-> >> should
-> >> still work. Please let me know if I missed anything.
-> >
-> > Yes, old kernel migrate_disable/enable() implementation with
-> > simply preempt_disable/enable() are transitional. You can check
-> > 5.12 kernel migrate_disable/enable() implementation. Note that
-> > your patch, if accepted, will apply to the latest kernel. So we
-> > cannot simply replace migrate_disable() with prempt_disable(),
-> > which won't work for RT kernel.
->
-> Thanks for getting back and apologies for the delay. I understand that
-> we may break RT kernels with this patch. So, I was proposing to stick to
-> migrate_disable/enable() calls on RT Kernels and use preempt_disable/enable()
-> in case of non-RT Kernel. Which warrants change in scheduler, will push
-> patch and try get feedback from Scheduler experts.
+> For bpf_verify_pkcs7_signature(), we need the search permission
+> on the keyring containing the key used for signature verification.
 
-We will stay with migrate_disable/enable on all types of kernel.
-This is not negotiable.
+you mean lookup_user_key(serial, flags, KEY_NEED_SEARCH) ?
 
-> While I'm here I would like to cross check with you xperts on ideas to
-> reproduce the issue easily and consistently. Your inputs will immensely help to
-> debug issue further.
-
-Please do. No patches will be applied until there is a clear reproducer.
+right. and ? what's your point?
