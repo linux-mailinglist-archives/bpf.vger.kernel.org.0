@@ -2,67 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B336B55AB44
-	for <lists+bpf@lfdr.de>; Sat, 25 Jun 2022 17:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FE7155AB48
+	for <lists+bpf@lfdr.de>; Sat, 25 Jun 2022 17:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232883AbiFYPW2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 25 Jun 2022 11:22:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47156 "EHLO
+        id S233072AbiFYPZs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 25 Jun 2022 11:25:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232852AbiFYPW1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 25 Jun 2022 11:22:27 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2730613D3A;
-        Sat, 25 Jun 2022 08:22:25 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id u15so10380178ejc.10;
-        Sat, 25 Jun 2022 08:22:25 -0700 (PDT)
+        with ESMTP id S229593AbiFYPZr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 25 Jun 2022 11:25:47 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0CD414D28;
+        Sat, 25 Jun 2022 08:25:45 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id w17so6976087wrg.7;
+        Sat, 25 Jun 2022 08:25:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BcaUv7xgJEuarwlAmIEp3dF0pi23WDsk1UWCQCDopAc=;
-        b=OCRF2t/kaZgohKQ23v2S4mq/j6YGQmVxFF+x5SXISrhv4QHHvcrpEnDUHGotlvdLrg
-         T/nq2kI7vUfFBtvWPYq3SlgHOSwD7kF1y/PgGB8fiSagRK09pm2JL13A8trV93/3KLSn
-         0rlhHgye18QE+mmB7q5P15cfzJrsXFvuFNYlk82RbY9B3pwSnDnge0FnhlgsRVhNWdjA
-         RyfC9wajNMmiajSgbqgoBVn219xDEsdMBBy/cG3ZVnS+Qm40WpRNFJSvq/4kLQNeO0uZ
-         V/+1FPQlWlBnTXNp4X8mqu5HQyy6t/8whm//9gCrNVm4lNwzqo/Vje7VYM0sZoxgAS+0
-         /4nw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zgGO7U9DdA5YZSCFLSKmP2RN/wbTiwA9Y91npEvr7rY=;
+        b=ZpADZz80LxfxgKED+cv4OxebXRaFdgPWLCfMiQSOUe13efp8ac96MJmxgvFyob0E6T
+         ZtyjoWv3p66381+qxG3Y3Cc4PcVdsTfjKbInT+R2kUBI1LEKNnWIyxvdJD8CihGcAhV9
+         ZmiDTCge+eweIIw1WfJVKAcAr+LGS244T+BXfvC5293GuOfkCwimLL069+gyjorBmt2j
+         EGfGm4T32ldHh5VtErT8aIi5vocPXjv0hLye+bcb/WskAHV7kWazhgUSCbJf/G9lmuAi
+         j1X7rNHIt3A6sGadIay1AH7VoqANnkQ5dStvBAeJ0VCtW7PvZcV0fDTwWUd5xQuk6mWJ
+         BBfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BcaUv7xgJEuarwlAmIEp3dF0pi23WDsk1UWCQCDopAc=;
-        b=JfTo73vxUTvSIurOo3fdVVFc992zL9nRGTdnXYBY+zIqw/Swun0FyO/dlRToSjC6lc
-         FdZUHTPWu7IuG6qoowtkeuwLCCXInePlyUb/r68khA7iAoZqtW8ASNFkbeoy7J3fZGg0
-         SX0D3+iiVkL1zJUvMmBII+2G94zx/cD+e0N9euTmpujczlxnqfdQuoij+KXlF/Y2yQ+l
-         gGTHcVKBbfS4waYUeFksfjJpMgIgArXuZErdYijebsIu2QjWFbXaB48msw1SczR9VLN/
-         Kk5EI4Jcb4bkxIIAJiN05u9B3gUeY/D0CW8tFLFte1PfvF/66QfEJ5bHWnllqIJgYb4w
-         wf7A==
-X-Gm-Message-State: AJIora/58qlol4UvDCyd4T2ImmrdrtNpVebwkAr/PHJJOfrYXr3hlN0Z
-        We0/AnGwKwTd7XesfgLb7JY=
-X-Google-Smtp-Source: AGRyM1uYjblcaHFVr/zTOwDWvM6xTiioxpDUZ9AJMokK6lng8bHJlwZc0wUUqc8MmxHuWYtXO90QYw==
-X-Received: by 2002:a17:906:b294:b0:726:2a95:7e1a with SMTP id q20-20020a170906b29400b007262a957e1amr4336952ejz.404.1656170543566;
-        Sat, 25 Jun 2022 08:22:23 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zgGO7U9DdA5YZSCFLSKmP2RN/wbTiwA9Y91npEvr7rY=;
+        b=FRIWm8+wvVLz33/XCcK+L9WvxRq4/8sCabmb1a/BvJMk6Z6vhTHBWXm+Y/ToM/Xb8f
+         qsJlYik3W3r7NiOA9zh4hYQgOhvKWPjteuyCYKqdNofS7vguXzBvKbmNY4nH9aWsSAsp
+         hKknpfDLLtxZYZQumVVhbGsY4ViXtVrUuBSog6GtZPvSR/DyCOHGmiw8eENi0ayy2Ul3
+         faYpSKffOW0mU5LCQxIJgMXyAksekWBv6PUxwCtZSH51CHqkkl5auv2saFirhMe0B49O
+         TOtwiFNqoIvpbQvQwV/ns2GaHMmPmfvQh+P1saIw18PEeC0lEPrCnGUFB+bpF1gelE/f
+         0yug==
+X-Gm-Message-State: AJIora9B8UaF/uDsnnAi9cYy2hM+z3dgc6MfHPY/SgCYxJTLwVuTewl1
+        TplciHwxU9G2UiPtu7m9dkh5B9zJ32c=
+X-Google-Smtp-Source: AGRyM1stDFlwOpZ15Khez1nL1qRhrYDB//TZ3hP6+fgRSg0MvJ+l8v4HsfRfEDgcjnCZfunIW3yIPA==
+X-Received: by 2002:adf:ef8f:0:b0:21a:3757:1b0f with SMTP id d15-20020adfef8f000000b0021a37571b0fmr4393917wro.404.1656170744056;
+        Sat, 25 Jun 2022 08:25:44 -0700 (PDT)
 Received: from erthalion.local (dslb-094-222-028-039.094.222.pools.vodafone-ip.de. [94.222.28.39])
-        by smtp.gmail.com with ESMTPSA id u6-20020aa7d0c6000000b0043572ffafe0sm4110787edo.92.2022.06.25.08.22.22
+        by smtp.gmail.com with ESMTPSA id z11-20020a5d654b000000b0021b8c554196sm5557392wrv.29.2022.06.25.08.25.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Jun 2022 08:22:23 -0700 (PDT)
-Date:   Sat, 25 Jun 2022 17:21:19 +0200
-From:   Dmitry Dolgov <9erthalion6@gmail.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
+        Sat, 25 Jun 2022 08:25:43 -0700 (PDT)
+From:   Dmitrii Dolgov <9erthalion6@gmail.com>
+To:     linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
         songliubraving@fb.com, rostedt@goodmis.org, peterz@infradead.org,
-        mingo@redhat.com, alexei.starovoitov@gmail.com
-Subject: Re: [PATCH v3 1/1] perf/kprobe: maxactive for fd-based kprobe
-Message-ID: <20220625152119.f4k4unepbcdwxcpe@erthalion.local>
-References: <20220615211559.7856-1-9erthalion6@gmail.com>
- <20220619013137.6d10a232246be482a5c0db82@kernel.org>
- <20220622085421.k2kikjndluxfmf7q@ddolgov.remote.csb>
- <20220623234727.db1dda76c11d660200b2b804@kernel.org>
+        mingo@redhat.com, mhiramat@kernel.org, alexei.starovoitov@gmail.com
+Cc:     Dmitrii Dolgov <9erthalion6@gmail.com>
+Subject: [PATCH v4 1/1] perf/kprobe: maxactive for fd-based kprobe
+Date:   Sat, 25 Jun 2022 17:24:29 +0200
+Message-Id: <20220625152429.27539-1-9erthalion6@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220623234727.db1dda76c11d660200b2b804@kernel.org>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
         FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
@@ -73,38 +68,176 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> On Thu, Jun 23, 2022 at 11:47:27PM +0900, Masami Hiramatsu wrote:
-> On Wed, 22 Jun 2022 10:54:21 +0200
-> Dmitry Dolgov <9erthalion6@gmail.com> wrote:
->
-> > > On Sun, Jun 19, 2022 at 01:31:37AM +0900, Masami Hiramatsu wrote:
-> > > On Wed, 15 Jun 2022 23:15:59 +0200
-> > > Dmitrii Dolgov <9erthalion6@gmail.com> wrote:
-> > >
-> > > > From: Song Liu <songliubraving@fb.com>
-> > > >
-> > > > Enable specifying maxactive for fd based kretprobe. This will be useful
-> > > > for tracing tools like bcc and bpftrace (see for example discussion [1]).
-> > > > Use highest 12 bit (bit 52-63) to allow maximal maxactive of 4095.
-> > >
-> > > I'm not sure what environment you are considering to use this
-> > > feature, but is 4095 enough, and are you really need to specify
-> > > the maxactive by linear digit?
-> > > I mean you may need the logarithm of maxactive? In this case, you
-> > > only need 4 bits for 2 - 65546 (1 = 2^0 will be used for the default
-> > > value).
-> >
-> > From what I see it's capped by KRETPROBE_MAXACTIVE_MAX anyway, which
-> > value is 4096. Do I miss something, is it possible to use maxactive with
-> > larger values down the line?
->
-> Ah, I forgot to cap the maxactive in trace_kprobe. Yes, kretprobe's
-> maxactive has no limitation check (it depends on how much memory you
-> can allocate in the kernel.) If you think that is not enough, you
-> can expand the maximum number. Unless a huge system which runs
-> a ten thoudsands of similar process/threads, 4096 will be a good
-> number. So, it up to you. But personally I think the maxactive
-> should be specified by log2.
+From: Song Liu <songliubraving@fb.com>
 
-Thanks for clarification. Yep, makes sense to me, I'll prepare a new
-version soon.
+Enable specifying maxactive for fd based kretprobe. This will be useful
+for tracing tools like bcc and bpftrace (see for example discussion [1]).
+Use highest 4 bit (bit 59-63) to allow specifying maxactive by log2.
+
+The original patch [2] seems to be fallen through the cracks and wasn't
+applied. I've merely rebased the work done by Song Liu, verififed it
+still works, and modified to allow specifying maxactive by log2 per
+suggestion from the discussion thread.
+
+Note that changes in rethook implementation may render maxactive
+obsolete.
+
+[1]: https://github.com/iovisor/bpftrace/issues/835
+[2]: https://lore.kernel.org/all/20191007223111.1142454-1-songliubraving@fb.com/
+
+Signed-off-by: Song Liu <songliubraving@fb.com>
+Signed-off-by: Dmitrii Dolgov <9erthalion6@gmail.com>
+---
+Previous discussion: https://lore.kernel.org/bpf/20220615211559.7856-1-9erthalion6@gmail.com/
+
+Changes in v4:
+    - Allow specifying maxactive by log2
+
+Changes in v3:
+    - Set correct author
+
+Changes in v2:
+    - Fix comment about number bits for the offset
+
+ include/linux/trace_events.h    |  3 ++-
+ kernel/events/core.c            | 20 ++++++++++++++++----
+ kernel/trace/trace_event_perf.c |  5 +++--
+ kernel/trace/trace_kprobe.c     |  4 ++--
+ kernel/trace/trace_probe.h      |  2 +-
+ 5 files changed, 24 insertions(+), 10 deletions(-)
+
+diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+index e6e95a9f07a5..7ca453a73252 100644
+--- a/include/linux/trace_events.h
++++ b/include/linux/trace_events.h
+@@ -850,7 +850,8 @@ extern void perf_trace_destroy(struct perf_event *event);
+ extern int  perf_trace_add(struct perf_event *event, int flags);
+ extern void perf_trace_del(struct perf_event *event, int flags);
+ #ifdef CONFIG_KPROBE_EVENTS
+-extern int  perf_kprobe_init(struct perf_event *event, bool is_retprobe);
++extern int  perf_kprobe_init(struct perf_event *event, bool is_retprobe,
++			     int max_active);
+ extern void perf_kprobe_destroy(struct perf_event *event);
+ extern int bpf_get_kprobe_info(const struct perf_event *event,
+ 			       u32 *fd_type, const char **symbol,
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 23bb19716ad3..184325ff2656 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -9809,24 +9809,34 @@ static struct pmu perf_tracepoint = {
+  * PERF_PROBE_CONFIG_IS_RETPROBE if set, create kretprobe/uretprobe
+  *                               if not set, create kprobe/uprobe
+  *
+- * The following values specify a reference counter (or semaphore in the
+- * terminology of tools like dtrace, systemtap, etc.) Userspace Statically
+- * Defined Tracepoints (USDT). Currently, we use 40 bit for the offset.
++ * PERF_UPROBE_REF_CTR_OFFSET_* specify a reference counter (or semaphore
++ * in the terminology of tools like dtrace, systemtap, etc.) Userspace
++ * Statically Defined Tracepoints (USDT). Currently, we use 32 bit for the
++ * offset.
+  *
+  * PERF_UPROBE_REF_CTR_OFFSET_BITS	# of bits in config as th offset
+  * PERF_UPROBE_REF_CTR_OFFSET_SHIFT	# of bits to shift left
++ *
++ * PERF_KPROBE_MAX_ACTIVE_* defines log2 of max_active for kretprobe.
++ * KRETPROBE_MAXACTIVE_MAX is 4096. We allow 4095 here to save a bit.
+  */
+ enum perf_probe_config {
+ 	PERF_PROBE_CONFIG_IS_RETPROBE = 1U << 0,  /* [k,u]retprobe */
+ 	PERF_UPROBE_REF_CTR_OFFSET_BITS = 32,
+ 	PERF_UPROBE_REF_CTR_OFFSET_SHIFT = 64 - PERF_UPROBE_REF_CTR_OFFSET_BITS,
++	PERF_KPROBE_MAX_ACTIVE_BITS = 4,
++	PERF_KPROBE_MAX_ACTIVE_SHIFT = 64 - PERF_KPROBE_MAX_ACTIVE_BITS,
+ };
+ 
+ PMU_FORMAT_ATTR(retprobe, "config:0");
+ #endif
+ 
+ #ifdef CONFIG_KPROBE_EVENTS
++/* max_active is specified by log2, to allow larger values if needed */
++PMU_FORMAT_ATTR(max_active_log2, "config:59-63");
++
+ static struct attribute *kprobe_attrs[] = {
++	&format_attr_max_active_log2.attr,
+ 	&format_attr_retprobe.attr,
+ 	NULL,
+ };
+@@ -9857,6 +9867,7 @@ static int perf_kprobe_event_init(struct perf_event *event)
+ {
+ 	int err;
+ 	bool is_retprobe;
++	int max_active_log2;
+ 
+ 	if (event->attr.type != perf_kprobe.type)
+ 		return -ENOENT;
+@@ -9871,7 +9882,8 @@ static int perf_kprobe_event_init(struct perf_event *event)
+ 		return -EOPNOTSUPP;
+ 
+ 	is_retprobe = event->attr.config & PERF_PROBE_CONFIG_IS_RETPROBE;
+-	err = perf_kprobe_init(event, is_retprobe);
++	max_active_log2 = event->attr.config >> PERF_KPROBE_MAX_ACTIVE_SHIFT;
++	err = perf_kprobe_init(event, is_retprobe, 1U << max_active_log2);
+ 	if (err)
+ 		return err;
+ 
+diff --git a/kernel/trace/trace_event_perf.c b/kernel/trace/trace_event_perf.c
+index a114549720d6..129000327809 100644
+--- a/kernel/trace/trace_event_perf.c
++++ b/kernel/trace/trace_event_perf.c
+@@ -245,7 +245,8 @@ void perf_trace_destroy(struct perf_event *p_event)
+ }
+ 
+ #ifdef CONFIG_KPROBE_EVENTS
+-int perf_kprobe_init(struct perf_event *p_event, bool is_retprobe)
++int perf_kprobe_init(struct perf_event *p_event, bool is_retprobe,
++					 int max_active)
+ {
+ 	int ret;
+ 	char *func = NULL;
+@@ -271,7 +272,7 @@ int perf_kprobe_init(struct perf_event *p_event, bool is_retprobe)
+ 
+ 	tp_event = create_local_trace_kprobe(
+ 		func, (void *)(unsigned long)(p_event->attr.kprobe_addr),
+-		p_event->attr.probe_offset, is_retprobe);
++		p_event->attr.probe_offset, is_retprobe, max_active);
+ 	if (IS_ERR(tp_event)) {
+ 		ret = PTR_ERR(tp_event);
+ 		goto out;
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index 47cebef78532..3ad30cfce9c3 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -1784,7 +1784,7 @@ static int unregister_kprobe_event(struct trace_kprobe *tk)
+ /* create a trace_kprobe, but don't add it to global lists */
+ struct trace_event_call *
+ create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
+-			  bool is_return)
++			  bool is_return, int max_active)
+ {
+ 	enum probe_print_type ptype;
+ 	struct trace_kprobe *tk;
+@@ -1799,7 +1799,7 @@ create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
+ 	event = func ? func : "DUMMY_EVENT";
+ 
+ 	tk = alloc_trace_kprobe(KPROBE_EVENT_SYSTEM, event, (void *)addr, func,
+-				offs, 0 /* maxactive */, 0 /* nargs */,
++				offs, max_active, 0 /* nargs */,
+ 				is_return);
+ 
+ 	if (IS_ERR(tk)) {
+diff --git a/kernel/trace/trace_probe.h b/kernel/trace/trace_probe.h
+index 92cc149af0fd..26fe21980793 100644
+--- a/kernel/trace/trace_probe.h
++++ b/kernel/trace/trace_probe.h
+@@ -376,7 +376,7 @@ extern int traceprobe_set_print_fmt(struct trace_probe *tp, enum probe_print_typ
+ #ifdef CONFIG_PERF_EVENTS
+ extern struct trace_event_call *
+ create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
+-			  bool is_return);
++			  bool is_return, int max_active);
+ extern void destroy_local_trace_kprobe(struct trace_event_call *event_call);
+ 
+ extern struct trace_event_call *
+-- 
+2.32.0
+
