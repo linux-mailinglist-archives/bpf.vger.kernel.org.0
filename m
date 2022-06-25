@@ -2,146 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1520755AAA7
+	by mail.lfdr.de (Postfix) with ESMTP id A64BA55AAA9
 	for <lists+bpf@lfdr.de>; Sat, 25 Jun 2022 15:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232892AbiFYNy5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 25 Jun 2022 09:54:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58532 "EHLO
+        id S232902AbiFYNzO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 25 Jun 2022 09:55:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232822AbiFYNy4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 25 Jun 2022 09:54:56 -0400
-Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3AA612ACB
-        for <bpf@vger.kernel.org>; Sat, 25 Jun 2022 06:54:55 -0700 (PDT)
-Received: by mail-vk1-xa34.google.com with SMTP id m188so2467722vkm.3
-        for <bpf@vger.kernel.org>; Sat, 25 Jun 2022 06:54:55 -0700 (PDT)
+        with ESMTP id S232822AbiFYNzN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 25 Jun 2022 09:55:13 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CAE912ACB;
+        Sat, 25 Jun 2022 06:55:12 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id g16-20020a17090a7d1000b001ea9f820449so8207440pjl.5;
+        Sat, 25 Jun 2022 06:55:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+DzUTh7oPyYwfjy5rFYKtBOpCrN54eQl+KjUU0VIh5M=;
-        b=C4eCcZabKFsj4hQcQKh7cvv/ikD1fLep7IDkjj0qOpKHWFvWkiSVGrtoCF8WmD2xlX
-         +iBvzDP0SRHu+U/Nczulb41AG/gqJfdt+rFVY27oAuPcQSWB6qpckJbqki5su87EoKgh
-         l/BhWT6JG7B9TDv/ek35oARiUjMULhZaii1LnWeEK0kmm1mX8YmsJBIvA9AfG05hmvJk
-         VMHyuEkt+gYFz4WvIBQQkq+gP8BuEw0snTuJDywL7MC9FrcTbrIeKRtGtN6TstWZgSNm
-         JJfn1X9JjLXvmOen4DlJJb+vIKfNIViBG9ICXcy4xUe4tEx61/Ox9gvdVyrcJeL2np4w
-         3i4g==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rq85kfN+kIsKSpiVIlYRgY/oRH6pyH6elOkY0pr17X8=;
+        b=hgfxS3V4J1iXv9Nrh0fcvKWIa/amBW6X3fvUiBLLphkpMJt9wcgDSWULqm7GP/0GaP
+         6aSfy+jSCZ9j4WZexZhFObM3rwxX5lPJsFFZN076vmGQmL5F6VIzmzoUAY8rY6KRMSjv
+         R6ZhugXIa6LdfrPlfK9JaOa2U5bXh812sAwaUmgup8SDolYUTYEo+70VZvtcrFnSuFxi
+         04ypGDWM//+TRLLtFoEyutvFarER9RIv67xr7XYhJR1OgU+hLOJ0DxkN7EHu9Um5lj4r
+         KISANjryYyHsprldO94mdBahgWp9ATn+ceH0x3vcFmnINanU50nMhQKDvWs4Phh9vN1z
+         vACA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+DzUTh7oPyYwfjy5rFYKtBOpCrN54eQl+KjUU0VIh5M=;
-        b=rX8wZIz9CbHFfP+OCUziU5Y/TVwoJc79vcODguBdJbywi5JyFawWfK01fPU7iSD7by
-         nY4em5YmXfLadhxENSvw0GSmc2NRFmmQZ2qcEQsTQRilFiK8crff5vCaNgMyfBnrN9k1
-         LSnuP0dAG3xlbATpAKgcOghRsxG7nAoY0Pr7b/0+eekjFpOFeEhyFZhq/5FLiXAVDpo+
-         TMCv3+BSt11QonvNKRW1YWZDau3q9SLjAVQ6WmnNj/cLVGYsMRpM/YvYStqM+0WpDxI6
-         oxCk2Jl9NmClmTAFWuVdGhvX0UYBQotzwvH86met4nVyJF1ycE+zNCL4ShSjl+5YSm9p
-         wjtg==
-X-Gm-Message-State: AJIora+aY+fSjfwkHBn+7NxxXrc9upw+pxCi+MD0mrAWzNbecQWtuZPf
-        j6y1urlTziLpZo1IqwWLpQBG/3WwqMvPHmfWksg=
-X-Google-Smtp-Source: AGRyM1vrRDfBHEkvghDMs3K9uonUUXqSV9b0f2DOGVI5iaL7QxKbYHFGCllywnwrOQU/Hs7NLl+LfK+3shinxuYlZ1k=
-X-Received: by 2002:a1f:a348:0:b0:36f:be56:9381 with SMTP id
- m69-20020a1fa348000000b0036fbe569381mr437176vke.8.1656165294893; Sat, 25 Jun
- 2022 06:54:54 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rq85kfN+kIsKSpiVIlYRgY/oRH6pyH6elOkY0pr17X8=;
+        b=c3BqLgFuxZZMw9oiFdXnxOq94AIpSgYY+Uq/0Q9+iyQu48R73HEQw0SdauQLRE2uPp
+         l8t9xoBerbSeeFwWeAgtVYRxaUx/RPuTIwduZ/fcMIfSSiTNI7u4hDTTG3VBSkSsZv/t
+         u3tVNNeo04X+wOcA3bEOCC36Oo37sCpsHhCm4NUOyY/MQoX+Kn9JonAa1+fzwVcq5E/b
+         43pHqipRCzes0+ufSjx9m5G/UKvTtqdesGerN3vaOXaa/pknTTNY+xY4SD19MwZ5kD2i
+         f31EAAuD8fBAVeEgc4/3IQ8CRFmSMqLApfV15c0MkCCbiOtUUDXauctbNaTcJUJQnbxF
+         5GuQ==
+X-Gm-Message-State: AJIora+pbcv8zYS//Ob9o9VRZFPxb2ZpETPkGAoJmMXmQ80q/w0v9w3M
+        ffP4dUwDG8bUUVBILO0yVwM56TA2k2nj588P
+X-Google-Smtp-Source: AGRyM1tHN1gbZ2yVQGHra6qT4FiOfTNe6GbslEsaiCOvnvsi/mWa+4LCop/8sCB+fYivYjFqNJC8HQ==
+X-Received: by 2002:a17:90b:3a8f:b0:1ec:93d4:f955 with SMTP id om15-20020a17090b3a8f00b001ec93d4f955mr9909343pjb.23.1656165311419;
+        Sat, 25 Jun 2022 06:55:11 -0700 (PDT)
+Received: from fedora.. ([2409:4042:261d:8029:35f0:415b:b9b4:3fcb])
+        by smtp.gmail.com with ESMTPSA id a4-20020a170902710400b00162037fbb68sm3708733pll.215.2022.06.25.06.55.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Jun 2022 06:55:10 -0700 (PDT)
+From:   Gautam <gautammenghani201@gmail.com>
+To:     shuah@kernel.org, brauner@kernel.org, keescook@chromium.org
+Cc:     Gautam <gautammenghani201@gmail.com>, kafai@fb.com,
+        songliubraving@fb.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-security-module@vger.kernel.org
+Subject: [PATCH] kselftests: Enable the echo command to print newlines in Makefile
+Date:   Sat, 25 Jun 2022 19:24:55 +0530
+Message-Id: <20220625135455.167939-1-gautammenghani201@gmail.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-References: <20220619155032.32515-1-laoar.shao@gmail.com> <20220619155032.32515-4-laoar.shao@gmail.com>
- <YrPXfG4UVNw2lmkk@castle>
-In-Reply-To: <YrPXfG4UVNw2lmkk@castle>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Sat, 25 Jun 2022 21:54:17 +0800
-Message-ID: <CALOAHbAET_9=CqYOuxt9zxwYo4O4u5-GfQGMKtMOqrjEpp7khw@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 03/10] mm, memcg: Add new helper obj_cgroup_from_current()
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>, songmuchun@bytedance.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>, penberg@kernel.org,
-        David Rientjes <rientjes@google.com>, iamjoonsoo.kim@lge.com,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Linux MM <linux-mm@kvack.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 23, 2022 at 11:01 AM Roman Gushchin
-<roman.gushchin@linux.dev> wrote:
->
-> On Sun, Jun 19, 2022 at 03:50:25PM +0000, Yafang Shao wrote:
-> > The difference between get_obj_cgroup_from_current() and obj_cgroup_from_current()
-> > is that the later one doesn't add objcg's refcnt.
-> >
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > ---
-> >  include/linux/memcontrol.h |  1 +
-> >  mm/memcontrol.c            | 24 ++++++++++++++++++++++++
-> >  2 files changed, 25 insertions(+)
-> >
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index cf074156c6ac..402b42670bcd 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -1703,6 +1703,7 @@ bool mem_cgroup_kmem_disabled(void);
-> >  int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order);
-> >  void __memcg_kmem_uncharge_page(struct page *page, int order);
-> >
-> > +struct obj_cgroup *obj_cgroup_from_current(void);
-> >  struct obj_cgroup *get_obj_cgroup_from_current(void);
-> >  struct obj_cgroup *get_obj_cgroup_from_page(struct page *page);
-> >
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index abec50f31fe6..350a7849dac3 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -2950,6 +2950,30 @@ struct obj_cgroup *get_obj_cgroup_from_page(struct page *page)
-> >       return objcg;
-> >  }
-> >
-> > +__always_inline struct obj_cgroup *obj_cgroup_from_current(void)
-> > +{
-> > +     struct obj_cgroup *objcg = NULL;
-> > +     struct mem_cgroup *memcg;
-> > +
-> > +     if (memcg_kmem_bypass())
-> > +             return NULL;
-> > +
-> > +     rcu_read_lock();
-> > +     if (unlikely(active_memcg()))
-> > +             memcg = active_memcg();
-> > +     else
-> > +             memcg = mem_cgroup_from_task(current);
-> > +
-> > +     for (; memcg != root_mem_cgroup; memcg = parent_mem_cgroup(memcg)) {
-> > +             objcg = rcu_dereference(memcg->objcg);
-> > +             if (objcg)
-> > +                     break;
-> > +     }
-> > +     rcu_read_unlock();
->
-> Hm, what prevents the objcg from being released here? Under which conditions
-> it's safe to call it?
+In the install section of the main Makefile of kselftests, the echo
+command is used with -n flag, which disables the printing of new line
+due to which the output contains "\n" chars as follows:
 
-obj_cgroup_from_current() is used when we know the objcg's refcnt has
-already been incremented.
-For example in my case, it is called after we have already call get_
-parent_mem_cgroup().
-I should add a comment or a WARN_ON() in this function.
+  Emit Tests for alsa\nSkipping non-existent dir: arm64
+  Emit Tests for breakpoints\nEmit Tests for capabilities\n
 
+This patch fixes the above bug by using the -e flag.
+
+Signed-off-by: Gautam <gautammenghani201@gmail.com>
+---
+ tools/testing/selftests/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
+index de11992dc577..52e31437f1a3 100644
+--- a/tools/testing/selftests/Makefile
++++ b/tools/testing/selftests/Makefile
+@@ -253,7 +253,7 @@ ifdef INSTALL_PATH
+ 	for TARGET in $(TARGETS); do \
+ 		BUILD_TARGET=$$BUILD/$$TARGET;	\
+ 		[ ! -d $(INSTALL_PATH)/$$TARGET ] && echo "Skipping non-existent dir: $$TARGET" && continue; \
+-		echo -n "Emit Tests for $$TARGET\n"; \
++		echo -ne "Emit Tests for $$TARGET\n"; \
+ 		$(MAKE) -s --no-print-directory OUTPUT=$$BUILD_TARGET COLLECTION=$$TARGET \
+ 			-C $$TARGET emit_tests >> $(TEST_LIST); \
+ 	done;
 -- 
-Regards
-Yafang
+2.36.1
+
