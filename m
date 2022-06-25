@@ -2,243 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E018755AAE5
-	for <lists+bpf@lfdr.de>; Sat, 25 Jun 2022 16:23:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B336B55AB44
+	for <lists+bpf@lfdr.de>; Sat, 25 Jun 2022 17:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232821AbiFYOSn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 25 Jun 2022 10:18:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44188 "EHLO
+        id S232883AbiFYPW2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 25 Jun 2022 11:22:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbiFYOSm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 25 Jun 2022 10:18:42 -0400
-Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 270B6D11A
-        for <bpf@vger.kernel.org>; Sat, 25 Jun 2022 07:18:41 -0700 (PDT)
-Received: by mail-vk1-xa2f.google.com with SMTP id 8so2475350vkg.10
-        for <bpf@vger.kernel.org>; Sat, 25 Jun 2022 07:18:41 -0700 (PDT)
+        with ESMTP id S232852AbiFYPW1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 25 Jun 2022 11:22:27 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2730613D3A;
+        Sat, 25 Jun 2022 08:22:25 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id u15so10380178ejc.10;
+        Sat, 25 Jun 2022 08:22:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EYhSLaohKIEssxf/fNlbOqQk67cnyoEd3iS2K5d+Hmc=;
-        b=auaHFR3raXiYXDOhV9N2vsSHiwKKL2v+60qnrKBAYiOHiwWhkbUr1xbjbVYHP1W2i2
-         auoTzPOPs5BHYfkxtp3fRcuaEQ6reswO8lkzMfrtHF2uZWbPjpQLghqKEfifd1J9kVYB
-         7cLqgqB+A6nvTlkxfQxaip5vv3B002R2EEkmfGmTg6j/88LF5LegSnH/4dcbXqsaKLBt
-         u1c8xL7Tc7lVWdgOopCxm2c60FGUz4ZDkYLdW0Fb0dCzMeLpOl1tqUC5X1hrfNltpyty
-         E1Nbf9RK1AQtF3Wa7+1D/wXwsk71eIL1kTNLwYUAKKK80LIPKIWzvVuK1c6JbT5hNT2K
-         aZ7w==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BcaUv7xgJEuarwlAmIEp3dF0pi23WDsk1UWCQCDopAc=;
+        b=OCRF2t/kaZgohKQ23v2S4mq/j6YGQmVxFF+x5SXISrhv4QHHvcrpEnDUHGotlvdLrg
+         T/nq2kI7vUfFBtvWPYq3SlgHOSwD7kF1y/PgGB8fiSagRK09pm2JL13A8trV93/3KLSn
+         0rlhHgye18QE+mmB7q5P15cfzJrsXFvuFNYlk82RbY9B3pwSnDnge0FnhlgsRVhNWdjA
+         RyfC9wajNMmiajSgbqgoBVn219xDEsdMBBy/cG3ZVnS+Qm40WpRNFJSvq/4kLQNeO0uZ
+         V/+1FPQlWlBnTXNp4X8mqu5HQyy6t/8whm//9gCrNVm4lNwzqo/Vje7VYM0sZoxgAS+0
+         /4nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EYhSLaohKIEssxf/fNlbOqQk67cnyoEd3iS2K5d+Hmc=;
-        b=6KSe7EA7BfsBqU9oWY8gM77X6JEjR/tKdKcxFyd7EAPjct9nJQMdnR6fVNCyknuQTg
-         ByEdrCVMVmgT4jQbYfSFtYw/9m0CKRt/a2Qv8FrHfYemxAc6kBe7NccOpUl2e3qVe52k
-         8tK30LXbbCv9uGjCRjPDz+GwwXFAjXQo+Rd3crXpLEj8Arbz5Nm4gacneJUAshT26Vjk
-         ASNHh0Gspi4x/Jd6rnYwf5q1bEt51TUqfOfzMJZeaysQznNWNMmqaiFIK3SVNi5MhfQh
-         A7cD/t8UWJA6drX/A5oo+dko6iuj1c7aGEb1ftEUQL2pppwQgu/K1h0F1GcVw1aIK8eI
-         qotg==
-X-Gm-Message-State: AJIora8hJ5YIdBeFcu3AfHiWkeNyDpuPROl8nYaPIiwpW7lmVmptA3hJ
-        Bs8PaxiZAVKzNKeGHLj2zLuRouIODVpVYaX2R3w=
-X-Google-Smtp-Source: AGRyM1vqa1yJcSonJArtV5Ue+/fmev6sr/82ERc5TmUzBxC1iqjt39GDfSbmzPfLqIA506Z4yVVAHuY8MDfkxhQKYbU=
-X-Received: by 2002:a05:6122:c63:b0:36c:95ef:f6ce with SMTP id
- i35-20020a0561220c6300b0036c95eff6cemr1421691vkr.5.1656166720236; Sat, 25 Jun
- 2022 07:18:40 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BcaUv7xgJEuarwlAmIEp3dF0pi23WDsk1UWCQCDopAc=;
+        b=JfTo73vxUTvSIurOo3fdVVFc992zL9nRGTdnXYBY+zIqw/Swun0FyO/dlRToSjC6lc
+         FdZUHTPWu7IuG6qoowtkeuwLCCXInePlyUb/r68khA7iAoZqtW8ASNFkbeoy7J3fZGg0
+         SX0D3+iiVkL1zJUvMmBII+2G94zx/cD+e0N9euTmpujczlxnqfdQuoij+KXlF/Y2yQ+l
+         gGTHcVKBbfS4waYUeFksfjJpMgIgArXuZErdYijebsIu2QjWFbXaB48msw1SczR9VLN/
+         Kk5EI4Jcb4bkxIIAJiN05u9B3gUeY/D0CW8tFLFte1PfvF/66QfEJ5bHWnllqIJgYb4w
+         wf7A==
+X-Gm-Message-State: AJIora/58qlol4UvDCyd4T2ImmrdrtNpVebwkAr/PHJJOfrYXr3hlN0Z
+        We0/AnGwKwTd7XesfgLb7JY=
+X-Google-Smtp-Source: AGRyM1uYjblcaHFVr/zTOwDWvM6xTiioxpDUZ9AJMokK6lng8bHJlwZc0wUUqc8MmxHuWYtXO90QYw==
+X-Received: by 2002:a17:906:b294:b0:726:2a95:7e1a with SMTP id q20-20020a170906b29400b007262a957e1amr4336952ejz.404.1656170543566;
+        Sat, 25 Jun 2022 08:22:23 -0700 (PDT)
+Received: from erthalion.local (dslb-094-222-028-039.094.222.pools.vodafone-ip.de. [94.222.28.39])
+        by smtp.gmail.com with ESMTPSA id u6-20020aa7d0c6000000b0043572ffafe0sm4110787edo.92.2022.06.25.08.22.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Jun 2022 08:22:23 -0700 (PDT)
+Date:   Sat, 25 Jun 2022 17:21:19 +0200
+From:   Dmitry Dolgov <9erthalion6@gmail.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
+        songliubraving@fb.com, rostedt@goodmis.org, peterz@infradead.org,
+        mingo@redhat.com, alexei.starovoitov@gmail.com
+Subject: Re: [PATCH v3 1/1] perf/kprobe: maxactive for fd-based kprobe
+Message-ID: <20220625152119.f4k4unepbcdwxcpe@erthalion.local>
+References: <20220615211559.7856-1-9erthalion6@gmail.com>
+ <20220619013137.6d10a232246be482a5c0db82@kernel.org>
+ <20220622085421.k2kikjndluxfmf7q@ddolgov.remote.csb>
+ <20220623234727.db1dda76c11d660200b2b804@kernel.org>
 MIME-Version: 1.0
-References: <20220619155032.32515-1-laoar.shao@gmail.com> <20220619155032.32515-8-laoar.shao@gmail.com>
- <YrP5S64OsUD6Hmgo@fedora>
-In-Reply-To: <YrP5S64OsUD6Hmgo@fedora>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Sat, 25 Jun 2022 22:18:03 +0800
-Message-ID: <CALOAHbAvC+2z4XftejPY21CsPOcQFGHOFSU3CzFyA6kYUSbDiA@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 07/10] mm: Add helper to recharge percpu address
-To:     Dennis Zhou <dennisszhou@gmail.com>,
-        kbuild test robot <lkp@intel.com>, kbuild-all@lists.01.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>, songmuchun@bytedance.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>, penberg@kernel.org,
-        David Rientjes <rientjes@google.com>, iamjoonsoo.kim@lge.com,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Linux MM <linux-mm@kvack.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220623234727.db1dda76c11d660200b2b804@kernel.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 23, 2022 at 1:25 PM Dennis Zhou <dennisszhou@gmail.com> wrote:
+> On Thu, Jun 23, 2022 at 11:47:27PM +0900, Masami Hiramatsu wrote:
+> On Wed, 22 Jun 2022 10:54:21 +0200
+> Dmitry Dolgov <9erthalion6@gmail.com> wrote:
 >
-> Hello,
->
-> On Sun, Jun 19, 2022 at 03:50:29PM +0000, Yafang Shao wrote:
-> > This patch introduces a helper to recharge the corresponding pages of
-> > a given percpu address. It is similar with how to recharge a kmalloc'ed
-> > address.
+> > > On Sun, Jun 19, 2022 at 01:31:37AM +0900, Masami Hiramatsu wrote:
+> > > On Wed, 15 Jun 2022 23:15:59 +0200
+> > > Dmitrii Dolgov <9erthalion6@gmail.com> wrote:
+> > >
+> > > > From: Song Liu <songliubraving@fb.com>
+> > > >
+> > > > Enable specifying maxactive for fd based kretprobe. This will be useful
+> > > > for tracing tools like bcc and bpftrace (see for example discussion [1]).
+> > > > Use highest 12 bit (bit 52-63) to allow maximal maxactive of 4095.
+> > >
+> > > I'm not sure what environment you are considering to use this
+> > > feature, but is 4095 enough, and are you really need to specify
+> > > the maxactive by linear digit?
+> > > I mean you may need the logarithm of maxactive? In this case, you
+> > > only need 4 bits for 2 - 65546 (1 = 2^0 will be used for the default
+> > > value).
 > >
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > ---
-> >  include/linux/percpu.h |  1 +
-> >  mm/percpu.c            | 98 ++++++++++++++++++++++++++++++++++++++++++
-> >  2 files changed, 99 insertions(+)
-> >
-> > diff --git a/include/linux/percpu.h b/include/linux/percpu.h
-> > index f1ec5ad1351c..e88429410179 100644
-> > --- a/include/linux/percpu.h
-> > +++ b/include/linux/percpu.h
-> > @@ -128,6 +128,7 @@ extern void __init setup_per_cpu_areas(void);
-> >  extern void __percpu *__alloc_percpu_gfp(size_t size, size_t align, gfp_t gfp) __alloc_size(1);
-> >  extern void __percpu *__alloc_percpu(size_t size, size_t align) __alloc_size(1);
-> >  extern void free_percpu(void __percpu *__pdata);
-> > +bool recharge_percpu(void __percpu *__pdata, int step);
+> > From what I see it's capped by KRETPROBE_MAXACTIVE_MAX anyway, which
+> > value is 4096. Do I miss something, is it possible to use maxactive with
+> > larger values down the line?
 >
-> Nit: can you add extern to keep the file consistent.
->
+> Ah, I forgot to cap the maxactive in trace_kprobe. Yes, kretprobe's
+> maxactive has no limitation check (it depends on how much memory you
+> can allocate in the kernel.) If you think that is not enough, you
+> can expand the maximum number. Unless a huge system which runs
+> a ten thoudsands of similar process/threads, 4096 will be a good
+> number. So, it up to you. But personally I think the maxactive
+> should be specified by log2.
 
-Sure, I will do it.
-
-> >  extern phys_addr_t per_cpu_ptr_to_phys(void *addr);
-> >
-> >  #define alloc_percpu_gfp(type, gfp)                                  \
-> > diff --git a/mm/percpu.c b/mm/percpu.c
-> > index 3633eeefaa0d..fd81f4d79f2f 100644
-> > --- a/mm/percpu.c
-> > +++ b/mm/percpu.c
-> > @@ -2310,6 +2310,104 @@ void free_percpu(void __percpu *ptr)
-> >  }
-> >  EXPORT_SYMBOL_GPL(free_percpu);
-> >
-> > +#ifdef CONFIG_MEMCG_KMEM
-> > +bool recharge_percpu(void __percpu *ptr, int step)
-> > +{
-> > +     int bit_off, off, bits, size, end;
-> > +     struct obj_cgroup *objcg_old;
-> > +     struct obj_cgroup *objcg_new;
-> > +     struct pcpu_chunk *chunk;
-> > +     unsigned long flags;
-> > +     void *addr;
-> > +
-> > +     WARN_ON(!in_task());
-> > +
-> > +     if (!ptr)
-> > +             return true;
-> > +
-> > +     addr = __pcpu_ptr_to_addr(ptr);
-> > +     spin_lock_irqsave(&pcpu_lock, flags);
-> > +     chunk = pcpu_chunk_addr_search(addr);
-> > +     off = addr - chunk->base_addr;
-> > +     objcg_old = chunk->obj_cgroups[off >> PCPU_MIN_ALLOC_SHIFT];
-> > +     if (!objcg_old && step != MEMCG_KMEM_POST_CHARGE) {
-> > +             spin_unlock_irqrestore(&pcpu_lock, flags);
-> > +             return true;
-> > +     }
-> > +
-> > +     bit_off = off / PCPU_MIN_ALLOC_SIZE;
-> > +     /* find end index */
-> > +     end = find_next_bit(chunk->bound_map, pcpu_chunk_map_bits(chunk),
-> > +                     bit_off + 1);
-> > +     bits = end - bit_off;
-> > +     size = bits * PCPU_MIN_ALLOC_SIZE;
-> > +
-> > +     switch (step) {
-> > +     case MEMCG_KMEM_PRE_CHARGE:
-> > +             objcg_new = get_obj_cgroup_from_current();
-> > +             WARN_ON(!objcg_new);
-> > +             if (obj_cgroup_charge(objcg_new, GFP_KERNEL,
-> > +                                   size * num_possible_cpus())) {
-> > +                     obj_cgroup_put(objcg_new);
-> > +                     spin_unlock_irqrestore(&pcpu_lock, flags);
-> > +                     return false;
-> > +             }
-> > +             break;
-> > +     case MEMCG_KMEM_UNCHARGE:
-> > +             obj_cgroup_uncharge(objcg_old, size * num_possible_cpus());
-> > +             rcu_read_lock();
-> > +             mod_memcg_state(obj_cgroup_memcg(objcg_old), MEMCG_PERCPU_B,
-> > +                     -(size * num_possible_cpus()));
-> > +             rcu_read_unlock();
-> > +             chunk->obj_cgroups[off >> PCPU_MIN_ALLOC_SHIFT] = NULL;
-> > +             obj_cgroup_put(objcg_old);
-> > +             break;
-> > +     case MEMCG_KMEM_POST_CHARGE:
-> > +             rcu_read_lock();
-> > +             chunk->obj_cgroups[off >> PCPU_MIN_ALLOC_SHIFT] = obj_cgroup_from_current();
-> > +             mod_memcg_state(mem_cgroup_from_task(current), MEMCG_PERCPU_B,
-> > +                     (size * num_possible_cpus()));
-> > +             rcu_read_unlock();
-> > +             break;
-> > +     case MEMCG_KMEM_CHARGE_ERR:
-> > +             /*
-> > +              * In case fail to charge to the new one in the pre charge state,
-> > +              * for example, we have pre-charged one memcg successfully but fail
-> > +              * to pre-charge the second memcg, then we should uncharge the first
-> > +              * memcg.
-> > +              */
-> > +             objcg_new = obj_cgroup_from_current();
-> > +             obj_cgroup_uncharge(objcg_new, size * num_possible_cpus());
-> > +             obj_cgroup_put(objcg_new);
-> > +             rcu_read_lock();
-> > +             mod_memcg_state(obj_cgroup_memcg(objcg_new), MEMCG_PERCPU_B,
-> > +                     -(size * num_possible_cpus()));
-> > +             rcu_read_unlock();
-> > +
-> > +             break;
-> > +     }
->
-> I'm not really the biggest fan of this step stuff. I see why you're
-> doing it because you want to do all or nothing recharging the percpu bpf
-> maps. Is there a way to have percpu own this logic and attempt to do all
-> or nothing instead? I realize bpf is likely the largest percpu user, but
-> the recharge_percpu() api seems to be more generic than forcing
-> potential other users in the future to open code it.
->
-
-Agree with you that the recharge api may be used by other users. It
-should be a more generic helper.
-Maybe we can make percpu own this logic by introducing a new value for
-the parameter step, for example,
-    recharge_percpu(ptr, -1); // -1 means the user doesn't need to
-care about the multiple steps.
-
-> > +
-> > +     spin_unlock_irqrestore(&pcpu_lock, flags);
-> > +
-> > +     return true;
-> > +}
-> > +EXPORT_SYMBOL(recharge_percpu);
-> > +
-> > +#else /* CONFIG_MEMCG_KMEM */
-> > +
-> > +bool charge_percpu(void __percpu *ptr, bool charge)
-> > +{
-> > +     return true;
-> > +}
-> > +EXPORT_SYMBOL(charge_percpu);
-> > +
-> > +void uncharge_percpu(void __percpu *ptr)
-> > +{
-> > +}
->
-> I'm guessing this is supposed to be recharge_percpu() not
-> (un)charge_percpu().
-
-Thanks for pointing out this bug.  The lkp robot also reported this bug to me.
-I will change it.
-
--- 
-Regards
-Yafang
+Thanks for clarification. Yep, makes sense to me, I'll prepare a new
+version soon.
