@@ -2,220 +2,366 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56DCF55B29D
-	for <lists+bpf@lfdr.de>; Sun, 26 Jun 2022 17:18:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F7F55B318
+	for <lists+bpf@lfdr.de>; Sun, 26 Jun 2022 19:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231472AbiFZPSt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 26 Jun 2022 11:18:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44524 "EHLO
+        id S230346AbiFZRTT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 26 Jun 2022 13:19:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbiFZPSs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 26 Jun 2022 11:18:48 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5316AFD1E;
-        Sun, 26 Jun 2022 08:18:47 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CB4F56128E;
-        Sun, 26 Jun 2022 15:18:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0D7BC34114;
-        Sun, 26 Jun 2022 15:18:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656256726;
-        bh=OfyIZ2aNwQeuhLBDMPwxc5nqF+GSkCgpyg8gVm/NQEM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NiTWeoQ+Pwq4w5SvvhHHG5XMx/B4B94NQm/vC1/y6dpDqeEuBhr3He3hxp08Sd38o
-         c+8I2P6bHAHFTOBXxCWHjjcy//PgoMhgtFPqtnLD7JxAa4VMJZWOfgueW6tMLcHobs
-         dapKuCJt11q/jMdeq9yLelu7Ee2hh6SxEvdJPTr7u28EZlX7187MOnS0WXWyKbhvlf
-         evBOBMIioJwCipx6iC2EsXj6covjOkpw+eQ81nM66XOhnVZ/oAM0pE6bl96Qmv8FcM
-         TZo21vgd8jJDaWd4GHkAkbOQaKqCHqy/pfquaXRjmEvIwKX/gt0uunJykCz3OTNuOV
-         nND3rMNxnmVLg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 97AFE4096F; Sun, 26 Jun 2022 12:18:43 -0300 (-03)
-Date:   Sun, 26 Jun 2022 12:18:43 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Zixuan Tan <tanzixuangg@gmail.com>, terrelln@fb.com,
-        Zixuan Tan <tanzixuan.me@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] perf build: Suppress openssl v3 deprecation warnings in
- libcrypto feature test
-Message-ID: <Yrh40wCIb1zDqTt5@kernel.org>
-References: <20220625153439.513559-1-tanzixuan.me@gmail.com>
- <YrhxE4s0hLvbbibp@krava>
+        with ESMTP id S231397AbiFZRTS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 26 Jun 2022 13:19:18 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2871DE0AD
+        for <bpf@vger.kernel.org>; Sun, 26 Jun 2022 10:19:17 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id 184so6981743pga.12
+        for <bpf@vger.kernel.org>; Sun, 26 Jun 2022 10:19:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UMWk7J8g8bFvhtFEU4VTABaRORT/iHBBYfrLc3E0fm0=;
+        b=dlE7t3Q/tauoeq/ugMNk1D2LmqmnjnAjN7XqWFmQJtAcaNebDovGmOl4p643mXLRYE
+         mzBRadgWt0kMLTIrbRYV/88pGNYgNkHI17wd1+rS2Dao+CZwdbuZ5Axsd6vRSafsmgyK
+         E7pgWlwHFj+VbYn3woIVR5E9svA6r/pxb7V1AZxMcnBusMfyWo2YD9RfAAAXcldpRTrS
+         15qGeW7X6+YqEzU5oPzXFyN7fafspQmwrqWa3jCaGtwLrzLUEK8BKiEGYaVe/pIa/Jny
+         QK4HjHQA99fVedJPM7Ofti5MkC0+LfrxiLkgYwKTOw/wd2YPv5pLFrHUvXfmft3Hepyb
+         JPOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UMWk7J8g8bFvhtFEU4VTABaRORT/iHBBYfrLc3E0fm0=;
+        b=EPT1j0JsLFFm759t2jhY3HB4JC1V5Afx0Apx1auZC7XTR/CKCB8b7UrVLw31w+myXe
+         yCLU4TGILNctOVvILyJzl71dOHx0zkACq9K3UM+Gbt6FfG2Fv5sE/yAtske0ps+R5Zrg
+         NG8OwsbR0Ub12fRvbTrf9NE6jHessekN1QrSmCJSCRHlJEHFg8+APeP5v5evfxAN/oKd
+         oDTOOY2sthxNYRJUr5NTSlylFlxLmiM767n04jHoW2ruN3213zDPxepUfg46KfA7OLVu
+         iwKeW/8VduVA/c5j4O5WgkMBUjQauu8ZqvsgRjZ5ama9FhVoDHsxRTW1YG1RQ1t/7gg/
+         t4fw==
+X-Gm-Message-State: AJIora9qtGoKcny+45fGXSvbZnKjxrOhkTOuZHe/3gj18KdtLtLhwdVI
+        yEGRvw+EzglAAfDxgLI1Pjvs1ZKlOp8=
+X-Google-Smtp-Source: AGRyM1vbwGaFwLFrygOc0srEY0Clu9OXkm4RMacJG32gy0ldo5rQUN60OmxKwSOvy7JyB34/vU3a7A==
+X-Received: by 2002:a65:6a94:0:b0:40c:977c:9665 with SMTP id q20-20020a656a94000000b0040c977c9665mr8951730pgu.5.1656263956195;
+        Sun, 26 Jun 2022 10:19:16 -0700 (PDT)
+Received: from macbook-pro-3.dhcp.thefacebook.com ([2620:10d:c090:400::5:9232])
+        by smtp.gmail.com with ESMTPSA id md6-20020a17090b23c600b001e305f5cd22sm5414442pjb.47.2022.06.26.10.19.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 26 Jun 2022 10:19:15 -0700 (PDT)
+Date:   Sun, 26 Jun 2022 10:19:13 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
+        tj@kernel.org, kafai@fb.com, bpf@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH bpf-next 1/5] bpf: Introduce any context BPF specific
+ memory allocator.
+Message-ID: <20220626171913.b7wsixncfn42nfpv@macbook-pro-3.dhcp.thefacebook.com>
+References: <20220623003230.37497-1-alexei.starovoitov@gmail.com>
+ <20220623003230.37497-2-alexei.starovoitov@gmail.com>
+ <62b6638e4e0d1_347af208e3@john.notmuch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YrhxE4s0hLvbbibp@krava>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <62b6638e4e0d1_347af208e3@john.notmuch>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Sun, Jun 26, 2022 at 04:45:39PM +0200, Jiri Olsa escreveu:
-> On Sat, Jun 25, 2022 at 11:34:38PM +0800, Zixuan Tan wrote:
-> > With OpenSSL v3 installed, the libcrypto feature check fails as it use the
-> > deprecated MD5_* API (and is compiled with -Werror). The error message is
-> > as follows.
+On Fri, Jun 24, 2022 at 06:23:26PM -0700, John Fastabend wrote:
+> Alexei Starovoitov wrote:
+> > From: Alexei Starovoitov <ast@kernel.org>
 > > 
-> > $ make tools/perf
-> > ```
-> > Makefile.config:778: No libcrypto.h found, disables jitted code injection,
-> > please install openssl-devel or libssl-dev
+> > Tracing BPF programs can attach to kprobe and fentry. Hence they
+> > run in unknown context where calling plain kmalloc() might not be safe.
 > > 
-> > Auto-detecting system features:
-> > ...                         dwarf: [ on  ]
-> > ...            dwarf_getlocations: [ on  ]
-> > ...                         glibc: [ on  ]
-> > ...                        libbfd: [ on  ]
-> > ...                libbfd-buildid: [ on  ]
-> > ...                        libcap: [ on  ]
-> > ...                        libelf: [ on  ]
-> > ...                       libnuma: [ on  ]
-> > ...        numa_num_possible_cpus: [ on  ]
-> > ...                       libperl: [ on  ]
-> > ...                     libpython: [ on  ]
-> > ...                     libcrypto: [ OFF ]
-> > ...                     libunwind: [ on  ]
-> > ...            libdw-dwarf-unwind: [ on  ]
-> > ...                          zlib: [ on  ]
-> > ...                          lzma: [ on  ]
-> > ...                     get_cpuid: [ on  ]
-> > ...                           bpf: [ on  ]
-> > ...                        libaio: [ on  ]
-> > ...                       libzstd: [ on  ]
-> > ...        disassembler-four-args: [ on  ]
-> > ```
+> > Front-end kmalloc() with per-cpu per-bucket cache of free elements.
+> > Refill this cache asynchronously from irq_work.
 > > 
-> > This is very confusing because the suggested library (on my Ubuntu 20.04
-> > it is libssl-dev) is already installed. As the test only checks for the
-> > presence of libcrypto, this commit suppresses the deprecation warning to
-> > allow the test to pass.
+> > BPF programs always run with migration disabled.
+> > It's safe to allocate from cache of the current cpu with irqs disabled.
+> > Free-ing is always done into bucket of the current cpu as well.
+> > irq_work trims extra free elements from buckets with kfree
+> > and refills them with kmalloc, so global kmalloc logic takes care
+> > of freeing objects allocated by one cpu and freed on another.
 > > 
-> > Signed-off-by: Zixuan Tan <tanzixuan.me@gmail.com>
+> > struct bpf_mem_alloc supports two modes:
+> > - When size != 0 create kmem_cache and bpf_mem_cache for each cpu.
+> >   This is typical bpf hash map use case when all elements have equal size.
+> > - When size == 0 allocate 11 bpf_mem_cache-s for each cpu, then rely on
+> >   kmalloc/kfree. Max allocation size is 4096 in this case.
+> >   This is bpf_dynptr and bpf_kptr use case.
+> > 
+> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 > > ---
-> >  tools/build/feature/test-libcrypto.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> > 
-> > diff --git a/tools/build/feature/test-libcrypto.c b/tools/build/feature/test-libcrypto.c
-> > index a98174e0569c..31afff093d0b 100644
-> > --- a/tools/build/feature/test-libcrypto.c
-> > +++ b/tools/build/feature/test-libcrypto.c
-> > @@ -2,6 +2,12 @@
-> >  #include <openssl/sha.h>
-> >  #include <openssl/md5.h>
-> >  
-> > +/*
-> > + * The MD5_* API have been deprecated since OpenSSL 3.0, which causes the
-> > + * feature test to fail silently. This is a workaround.
+> 
+> Some initial feedback but still looking over it. Figured it made more
+> sense to dump current thoughts then drop it this evening for Monday.
+> 
+> [...]
+> 
+> > +static int bpf_mem_cache_idx(size_t size)
+>     [...]
+> 
+> > +#define NUM_CACHES 11
+> > +
+> > +struct bpf_mem_cache {
+> > +	/* per-cpu list of free objects of size 'unit_size'.
+> > +	 * All accesses are done with preemption disabled
+> > +	 * with __llist_add() and __llist_del_first().
+> > +	 */
+> > +	struct llist_head free_llist;
+> > +
+> > +	/* NMI only free list.
+> > +	 * All accesses are NMI-safe llist_add() and llist_del_first().
+> > +	 *
+> > +	 * Each allocated object is either on free_llist or on free_llist_nmi.
+> > +	 * One cpu can allocate it from NMI by doing llist_del_first() from
+> > +	 * free_llist_nmi, while another might free it back from non-NMI by
+> > +	 * doing llist_add() into free_llist.
+> > +	 */
+> > +	struct llist_head free_llist_nmi;
+> 
+> stupid nit but newline here helps me read this.
+
+sure.
+
+> > +	/* kmem_cache != NULL when bpf_mem_alloc was created for specific
+> > +	 * element size.
+> > +	 */
+> > +	struct kmem_cache *kmem_cache;
+> 
+> > +	struct irq_work refill_work;
+> > +	struct mem_cgroup *memcg;
+> > +	int unit_size;
+> > +	/* count of objects in free_llist */
+> > +	int free_cnt;
+> > +	/* count of objects in free_llist_nmi */
+> > +	atomic_t free_cnt_nmi;
+> > +	/* flag to refill nmi list too */
+> > +	bool refill_nmi_list;
+> > +};
+> 
+> What about having two types one for fixed size cache and one for buckets?
+> The logic below gets a bunch of if cases with just the single type. OTOH
+> I messed around with it for a bit and then had to duplicate most of the
+> codes so I'm not sure its entirely a good idea, but the __alloc() with
+> the 'if this else that' sort of made me think of it.
+
+Two 'if's in __alloc and __free are the only difference.
+The rest of bpf_mem_cache logic is exactly the same between fixed size
+and buckets.
+I'm not sure what 'two types' would look like.
+
+> > +
+> > +static struct llist_node notrace *__llist_del_first(struct llist_head *head)
+>      [...]
+> 
+> > +
+> > +#define BATCH 48
+> > +#define LOW_WATERMARK 32
+> > +#define HIGH_WATERMARK 96
+> > +/* Assuming the average number of elements per bucket is 64, when all buckets
+> > + * are used the total memory will be: 64*16*32 + 64*32*32 + 64*64*32 + ... +
+> > + * 64*4096*32 ~ 20Mbyte
+> > + */
+> > +
+> > +/* extra macro useful for testing by randomizing in_nmi condition */
+> > +#define bpf_in_nmi() in_nmi()
+> > +
+> > +static void *__alloc(struct bpf_mem_cache *c, int node)
+> 
+> For example with two types this mostly drops out. Of course then the callers
+> have to know the type so not sure. And you get two alloc_bulks and
+> so on. Its not obviously this works out well.
+> 
+> [...]
+> 
+> > +static void free_bulk_nmi(struct bpf_mem_cache *c)
+> > +{
+> > +	struct llist_node *llnode;
+> > +	int cnt;
+> > +
+> > +	do {
+> > +		llnode = llist_del_first(&c->free_llist_nmi);
+> > +		if (llnode)
+> > +			cnt = atomic_dec_return(&c->free_cnt_nmi);
+> > +		else
+> > +			cnt = 0;
+> > +		__free(c, llnode);
+> > +	} while (cnt > (HIGH_WATERMARK + LOW_WATERMARK) / 2);
+> > +}
+> 
+> Comment from irq_work_run_list,
+> 
+> 	/*
+> 	 * On PREEMPT_RT IRQ-work which is not marked as HARD will be processed
+> 	 * in a per-CPU thread in preemptible context. Only the items which are
+> 	 * marked as IRQ_WORK_HARD_IRQ will be processed in hardirq context.
+> 	 */
+> 
+> Not an RT expert but I read this to mean in PREEMPT_RT case we can't assume
+> this is !preemptible? If I read correctly then is there a risk we get
+> two runners here? And by extension would need to worry about free_cnt
+> and friends getting corrupted.
+
+Right. That's why there is local_irq_save:
+                if (IS_ENABLED(CONFIG_PREEMPT_RT))
+                        local_irq_save(flags);
+                llnode = __llist_del_first(&c->free_llist);
+                if (llnode)
+                        cnt = --c->free_cnt;
+in alloc/free_bulk specifically for RT.
+So that alloc_bulk doesn't race with that kthread.
+and free_cnt doesn't get corrupted.
+
+> 
+> > +
+> > +static void bpf_mem_refill(struct irq_work *work)
+> > +{
+> > +	struct bpf_mem_cache *c = container_of(work, struct bpf_mem_cache, refill_work);
+> > +	int cnt;
+> > +
+> > +	cnt = c->free_cnt;
+> > +	if (cnt < LOW_WATERMARK)
+> > +		/* irq_work runs on this cpu and kmalloc will allocate
+> > +		 * from the current numa node which is what we want here.
+> > +		 */
+> > +		alloc_bulk(c, BATCH, NUMA_NO_NODE);
+> > +	else if (cnt > HIGH_WATERMARK)
+> > +		free_bulk(c);
+> > +
+> > +	if (!c->refill_nmi_list)
+> > +		/* don't refill NMI specific freelist
+> > +		 * until alloc/free from NMI.
+> > +		 */
+> > +		return;
+> > +	cnt = atomic_read(&c->free_cnt_nmi);
+> > +	if (cnt < LOW_WATERMARK)
+> > +		alloc_bulk_nmi(c, BATCH, NUMA_NO_NODE);
+> > +	else if (cnt > HIGH_WATERMARK)
+> > +		free_bulk_nmi(c);
+> > +	c->refill_nmi_list = false;
+> > +}
+> > +
+> > +static void notrace irq_work_raise(struct bpf_mem_cache *c, bool in_nmi)
+> > +{
+> > +	c->refill_nmi_list = in_nmi;
+> 
+> Should this be,
+> 
+> 	c->refill_nmi_list |= in_nmi;
+> 
+> this would resolve comment in unit_alloc? We don't want to clear it if
+> we end up calling irq_work_raise from in_nmi and then in another
+> context. It would be really hard to debug if the case is possible and
+> a busy box just doesn't refill nmi enough.
+
+Excellent catch. Yes. That's a bug.
+
+> 
+> > +	irq_work_queue(&c->refill_work);
+> > +}
+> > +
+> > +static void prefill_mem_cache(struct bpf_mem_cache *c, int cpu)
+>     [...]
+> 
+> > +
+> > +/* notrace is necessary here and in other functions to make sure
+> > + * bpf programs cannot attach to them and cause llist corruptions.
 > > + */
 > 
-> then we use these deprecated MD5 calls in util/genelf.c if libcrypto is detected,
-> so I wonder how come the rest of the compilation passed for you.. do you have
-> CONFIG_JITDUMP disabled?
+> Thanks for the comment.
+> 
+> > +static void notrace *unit_alloc(struct bpf_mem_cache *c)
+> > +{
+> > +	bool in_nmi = bpf_in_nmi();
+> > +	struct llist_node *llnode;
+> > +	unsigned long flags;
+> > +	int cnt = 0;
+> > +
+> > +	if (unlikely(in_nmi)) {
+> > +		llnode = llist_del_first(&c->free_llist_nmi);
+> > +		if (llnode)
+> > +			cnt = atomic_dec_return(&c->free_cnt_nmi);
+> 
+> Dumb question maybe its Friday afternoon. If we are in_nmi() and preempt
+> disabled why do we need the atomic_dec_return()?
 
-So, here, on fedora 36:
+atomic instead of normal free_cnt_nmi-- ?
+because it's nmi. The if(in_nmi) bits of unit_alloc can be reentrant.
 
-[acme@quaco perf-urgent]$ m
-make: Entering directory '/home/acme/git/perf-urgent/tools/perf'
-  BUILD:   Doing 'make -j8' parallel build
-  HOSTCC  /tmp/build/perf-urgent/fixdep.o
-  HOSTLD  /tmp/build/perf-urgent/fixdep-in.o
-  LINK    /tmp/build/perf-urgent/fixdep
-Warning: Kernel ABI header at 'tools/include/uapi/linux/kvm.h' differs from latest version at 'include/uapi/linux/kvm.h'
-diff -u tools/include/uapi/linux/kvm.h include/uapi/linux/kvm.h
-Warning: Kernel ABI header at 'tools/arch/x86/include/asm/disabled-features.h' differs from latest version at 'arch/x86/include/asm/disabled-features.h'
-diff -u tools/arch/x86/include/asm/disabled-features.h arch/x86/include/asm/disabled-features.h
-Warning: Kernel ABI header at 'tools/arch/arm64/include/uapi/asm/perf_regs.h' differs from latest version at 'arch/arm64/include/uapi/asm/perf_regs.h'
-diff -u tools/arch/arm64/include/uapi/asm/perf_regs.h arch/arm64/include/uapi/asm/perf_regs.h
-Warning: Kernel ABI header at 'tools/arch/x86/include/uapi/asm/svm.h' differs from latest version at 'arch/x86/include/uapi/asm/svm.h'
-diff -u tools/arch/x86/include/uapi/asm/svm.h arch/x86/include/uapi/asm/svm.h
-Warning: Kernel ABI header at 'tools/arch/arm64/include/uapi/asm/kvm.h' differs from latest version at 'arch/arm64/include/uapi/asm/kvm.h'
-diff -u tools/arch/arm64/include/uapi/asm/kvm.h arch/arm64/include/uapi/asm/kvm.h
-Warning: Kernel ABI header at 'tools/include/linux/coresight-pmu.h' differs from latest version at 'include/linux/coresight-pmu.h'
-diff -u tools/include/linux/coresight-pmu.h include/linux/coresight-pmu.h
-Makefile.config:778: No libcrypto.h found, disables jitted code injection, please install openssl-devel or libssl-dev
-Makefile.config:1108: No openjdk development package found, please install JDK package, e.g. openjdk-8-jdk, java-1.8.0-openjdk-devel
+> 
+> > +	} else {
+> > +		/* Disable irqs to prevent the following race:
+> > +		 * bpf_prog_A
+> > +		 *   bpf_mem_alloc
+> > +		 *      preemption or irq -> bpf_prog_B
+> > +		 *        bpf_mem_alloc
+> > +		 */
+> > +		local_irq_save(flags);
+> > +		llnode = __llist_del_first(&c->free_llist);
+> > +		if (llnode)
+> > +			cnt = --c->free_cnt;
+> > +		local_irq_restore(flags);
+> > +	}
+> > +	WARN_ON(cnt < 0);
+> > +
+> 
+> Is this a problem?
+> 
+>   in_nmi = false
+>   bpf_prog_A
+>    bpf_mem_alloc
+>    irq_restore
+>    irq -> bpf_prog_B
+>             bpf_mem_alloc
+>                in_nmi = true
+>                irq_work_raise(c, true)
+>    irq_work_raise(c, false)
+> 
+> At somepoint later
+>  
+>    bpf_mem_refill()
+>     refill_nmi_list <- false
+> 
+> The timing is tight but possible I suspect. See above simple fix would
+> be to just | the refill_nim_list bool? We shouldn't be clearing it
+> from a raise op.
 
-Auto-detecting system features:
-...                         dwarf: [ on  ]
-...            dwarf_getlocations: [ on  ]
-...                         glibc: [ on  ]
-...                        libbfd: [ on  ]
-...                libbfd-buildid: [ on  ]
-...                        libcap: [ on  ]
-...                        libelf: [ on  ]
-...                       libnuma: [ on  ]
-...        numa_num_possible_cpus: [ on  ]
-...                       libperl: [ on  ]
-...                     libpython: [ on  ]
-...                     libcrypto: [ OFF ] <-------------------------------------------------------
-...                     libunwind: [ on  ]
-...            libdw-dwarf-unwind: [ on  ]
-...                          zlib: [ on  ]
-...                          lzma: [ on  ]
-...                     get_cpuid: [ on  ]
-...                           bpf: [ on  ]
-...                        libaio: [ on  ]
-...                       libzstd: [ on  ]
-...        disassembler-four-args: [ on  ]
+Yes. refill_nmi_list |= in_nmi or similar is necessary.
+This |= is not atomic, so just |= may not be good enough.
+Probably something like this would be better:
 
+if (in_nmi)
+  c->refill_nmi_list = in_nmi;
 
-  GEN     /tmp/build/perf-urgent/common-cmds.h
-  MKDIR   /tmp/build/perf-urgent/fd/
-  CC      /tmp/build/perf-urgent/exec-cmd.o
-  CC      /tmp/build/perf-urgent/fd/array.o
+so that irq_work_raise() will only set it
+and bpf_mem_refill() will clear it.
 
+> > +	if (cnt < LOW_WATERMARK)
+> > +		irq_work_raise(c, in_nmi);
+> > +	return llnode;
+> > +}
+> >
+> 
+> OK need to drop for now. Will pick up reviewing the rest later.
 
-But then:
+Thanks a lot for quick review! Looking forward to the rest.
+There is still a ton of work to improve this algo:
+- get rid of call_rcu in hash map
+- get rid of atomic_inc/dec in hash map
+- tune watermarks per allocation size
+- adopt this approach alloc_percpu_gfp
 
-⬢[acme@toolbox perf-urgent]$ perf -vv
-perf version 5.19.rc3.gfbec4d8dd3a7
-                 dwarf: [ on  ]  # HAVE_DWARF_SUPPORT
-    dwarf_getlocations: [ on  ]  # HAVE_DWARF_GETLOCATIONS_SUPPORT
-                 glibc: [ on  ]  # HAVE_GLIBC_SUPPORT
-         syscall_table: [ on  ]  # HAVE_SYSCALL_TABLE_SUPPORT
-                libbfd: [ on  ]  # HAVE_LIBBFD_SUPPORT
-            debuginfod: [ on  ]  # HAVE_DEBUGINFOD_SUPPORT
-                libelf: [ on  ]  # HAVE_LIBELF_SUPPORT
-               libnuma: [ on  ]  # HAVE_LIBNUMA_SUPPORT
-numa_num_possible_cpus: [ on  ]  # HAVE_LIBNUMA_SUPPORT
-               libperl: [ on  ]  # HAVE_LIBPERL_SUPPORT
-             libpython: [ on  ]  # HAVE_LIBPYTHON_SUPPORT
-              libslang: [ on  ]  # HAVE_SLANG_SUPPORT
-             libcrypto: [ OFF ]  # HAVE_LIBCRYPTO_SUPPORT
-             libunwind: [ on  ]  # HAVE_LIBUNWIND_SUPPORT
-    libdw-dwarf-unwind: [ on  ]  # HAVE_DWARF_SUPPORT
-                  zlib: [ on  ]  # HAVE_ZLIB_SUPPORT
-                  lzma: [ on  ]  # HAVE_LZMA_SUPPORT
-             get_cpuid: [ on  ]  # HAVE_AUXTRACE_SUPPORT
-                   bpf: [ on  ]  # HAVE_LIBBPF_SUPPORT
-                   aio: [ on  ]  # HAVE_AIO_SUPPORT
-                  zstd: [ on  ]  # HAVE_ZSTD_SUPPORT
-               libpfm4: [ OFF ]  # HAVE_LIBPFM
-⬢[acme@toolbox perf-urgent]$
-
-
-But...:
-
-⬢[acme@toolbox perf-urgent]$ ldd ~/bin/perf | grep ssl
-	libssl.so.3 => /lib64/libssl.so.3 (0x00007f02dc87e000)
-⬢[acme@toolbox perf-urgent]$
-
-
-- Arnaldo
+The watermarks are hacky now. The batch of ~64 for large units feels wasteful.
+Probably should be lover for any unit larger than 1k.
+Also explicit bpf_mem_prealloc(... cnt ...) is needed, so that bpf prog
+can preallocate 'cnt' elements from safe context. This would mean that
+watermarks will be floating, so that bpf_mem_refill doesn't go and
+immediately free_bulk after user requested prealloc.
