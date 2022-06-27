@@ -2,78 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04AD755C16C
-	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 14:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CBB655CEA9
+	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 15:05:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242589AbiF0W2C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Jun 2022 18:28:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59868 "EHLO
+        id S242592AbiF0W2D (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Jun 2022 18:28:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238748AbiF0W1y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Jun 2022 18:27:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AE0C18365
+        with ESMTP id S240414AbiF0W16 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Jun 2022 18:27:58 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 802ED186C9
         for <bpf@vger.kernel.org>; Mon, 27 Jun 2022 15:27:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AEBF76141B
-        for <bpf@vger.kernel.org>; Mon, 27 Jun 2022 22:27:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10CAAC341D5
-        for <bpf@vger.kernel.org>; Mon, 27 Jun 2022 22:27:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656368872;
-        bh=03aUzh2P41f8R3+uqRi+zXL9L2QyADNnmhukdx1x8oQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=sHxQPip+Xur4yX9gLzGSv7o4ZwtI+mzxy3S0mtmLBDT9g5g6NoG9Vm6zRO/bpJOSA
-         /jJ3shMy+7w0c8YfP2iHb3BPFJvO7CzoudbvBf6CcL8UQtzuyf7qdPoe0llSWMTzvU
-         14DyMK022abu8QFEOU8Ogg8RSE/1CvVhBTXAyRtMyRG4bDLtqYnb2mL43LC9lU8jZn
-         jV+34FhqgpgJ98Bpj9NXg+1EeKjk2WTzFuon7sl0CuO/Oyc44Fn1rLYBYuYOIEnS1v
-         JH+agtLrzDqpoKDBV0DNW/y0RDuaYZXbmE4CvHCRgFnjkz6AIP9SHASYig8uNTBbL9
-         pXAEOm1XlZtPg==
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-317741c86fdso99510237b3.2
-        for <bpf@vger.kernel.org>; Mon, 27 Jun 2022 15:27:52 -0700 (PDT)
-X-Gm-Message-State: AJIora/Irrwq+x96eQkYIxmbFLuZSqQXE0XQIa82LBmTTwzgrFvh7gYx
-        KkLq0Ft5UQ5y3/WvCWIgElQWpbjvZ4TQmlAgOCalew==
-X-Google-Smtp-Source: AGRyM1s+brzyh8+b1+jeJisD0AwVEow/K3/JnoECm822oaP8ydxCvK2X3DAE463Q3acN5ykmjIR7LAvXyhJojrjhinM=
-X-Received: by 2002:a81:68e:0:b0:317:ca36:5807 with SMTP id
- 136-20020a81068e000000b00317ca365807mr16886302ywg.314.1656368870858; Mon, 27
- Jun 2022 15:27:50 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id be14-20020a05600c1e8e00b003a04a458c54so2482566wmb.3
+        for <bpf@vger.kernel.org>; Mon, 27 Jun 2022 15:27:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6H5qeaobYQUTlAspwPBB2xrGsBk6hNCYhAOl2xyT8HY=;
+        b=ZED/uT+o8rKMOGeHCqoMWdgu8ZJTnJ+JF0CGr6haoTY9/Z0J70WP8FGexhIE1A8lZf
+         U92GeOIIlijje3boPQ4yMZfNSWlAbs31Y/4dpM5ZHsTHu3b82VZdjnstB4f3KNtySNoc
+         DiFW30HK2GcVlb31wU+6p03mNdOcp0b/fkGzhD1ZTCuul8jdopQJHGSUSEscCuabO5CE
+         1RHHmtV4ZCX7odTdU8K8b6WuEGSbdSDCRpCrQA3b0CBvYJ061vuO+XKnByFrVa/X57Ds
+         TBHjQQiJ2LVjawYyLtV4BEqQN6xlmT4ksvLYxlT/zhk/F4tceOWWbx/4Ru4nZumnnYk2
+         tjHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6H5qeaobYQUTlAspwPBB2xrGsBk6hNCYhAOl2xyT8HY=;
+        b=fq9IHz7doGZkEmMBYOYVYy+bTq5r2lm//tLY6VWpdpqVi9/XFHs4IHsN4020rXnBOM
+         1M3pAhNPaXD8x0oI4Syt8hrItHrulK1JMwciat8Rnji8Gl46oVNtK2qg4orW0kTAkHQQ
+         ohe4Wcsv8vgh7ZyHDEaXtzZl7ZDMRPeFzrHaVpdtE1jZsy19Qn6j7nWy3jW+NgtSXlO5
+         CbtXPk615Ga3qAsMeck79UU6GtjucEcEYOfqhSoOj2/oOx11CnmiCyEP1iWPb7LlJIlE
+         kaLsCJidpmoURQW2sk37zLQijof/59FTOXcD1k2Nl+ecQMaJxFyx7Id5YdmKzHuFa6au
+         yokw==
+X-Gm-Message-State: AJIora+PIt5rN2nsfZOx4pnppOCpx+VhEYQ6hIlEzYTuPDf4fyCOfio9
+        FWOfvtO840DHiMN3SIv6zF1cd8ci8BrD5IwM6lKh
+X-Google-Smtp-Source: AGRyM1v9d9aBEV9xES44UyVjQACuMzur27anppTkxqi4LIgjEA/6+QcupXLwrwvNFaQIQJKh1od8tjVzHqKz+P9UfQs=
+X-Received: by 2002:a7b:c152:0:b0:3a0:3e53:aa17 with SMTP id
+ z18-20020a7bc152000000b003a03e53aa17mr19448317wmi.78.1656368872087; Mon, 27
+ Jun 2022 15:27:52 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220621233939.993579-1-fred@cloudflare.com> <ce1653b1-feb0-1a99-0e97-8dfb289eeb79@schaufler-ca.com>
  <b72c889a-4a50-3330-baae-3bbf065e7187@cloudflare.com> <CAHC9VhSTkEMT90Tk+=iTyp3npWEm+3imrkFVX2qb=XsOPp9F=A@mail.gmail.com>
  <20220627121137.cnmctlxxtcgzwrws@wittgenstein> <CAHC9VhSQH9tE-NgU6Q-GLqSy7R6FVjSbp4Tc4gVTbjZCqAWy5Q@mail.gmail.com>
  <6a8fba0a-c9c9-61ba-793a-c2e0c2924f88@iogearbox.net>
 In-Reply-To: <6a8fba0a-c9c9-61ba-793a-c2e0c2924f88@iogearbox.net>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Tue, 28 Jun 2022 00:27:40 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ5CfBmc8th0t5_URvr0eKcx7_knqyi6GoCpvSJfXdv6cQ@mail.gmail.com>
-Message-ID: <CACYkzJ5CfBmc8th0t5_URvr0eKcx7_knqyi6GoCpvSJfXdv6cQ@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 27 Jun 2022 18:27:41 -0400
+Message-ID: <CAHC9VhQQJH95jTWMOGDB4deS=whSfnaF_e73zoabOOeHJMv+0Q@mail.gmail.com>
 Subject: Re: [PATCH 0/2] Introduce security_create_user_ns()
 To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Paul Moore <paul@paul-moore.com>,
-        Christian Brauner <brauner@kernel.org>,
+Cc:     Christian Brauner <brauner@kernel.org>,
         Frederick Lawler <fred@cloudflare.com>,
-        Casey Schaufler <casey@schaufler-ca.com>, revest@chromium.org,
-        jackmanb@chromium.org, ast@kernel.org, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        Casey Schaufler <casey@schaufler-ca.com>, kpsingh@kernel.org,
+        revest@chromium.org, jackmanb@chromium.org, ast@kernel.org,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
         john.fastabend@gmail.com, jmorris@namei.org, serge@hallyn.com,
         bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@cloudflare.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 28, 2022 at 12:15 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
+On Mon, Jun 27, 2022 at 6:15 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
 > On 6/27/22 11:56 PM, Paul Moore wrote:
 > > On Mon, Jun 27, 2022 at 8:11 AM Christian Brauner <brauner@kernel.org> wrote:
 > >> On Thu, Jun 23, 2022 at 11:21:37PM -0400, Paul Moore wrote:
@@ -106,9 +107,12 @@ On Tue, Jun 28, 2022 at 12:15 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
 > CI test coverage. Shipping with a BPF selftest at least would be the
 > usual expectation.
 
-+1 I would also recommend that this comes with a BPF selftest as
-suggested by Daniel.
+I'm not going to disagree with that, I generally require matching
+tests for new SELinux kernel code, but I was careful to mention code
+under 'security/' and not necessarily just a test implementation :)  I
+don't want to get into a big discussion about it, but I think having a
+working implementation somewhere under 'security/' is more
+discoverable for most LSM folks.
 
->
-> Thanks,
-> Daniel
+-- 
+paul-moore.com
