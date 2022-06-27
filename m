@@ -2,91 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13CC455B4B4
-	for <lists+bpf@lfdr.de>; Mon, 27 Jun 2022 02:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EAA955B539
+	for <lists+bpf@lfdr.de>; Mon, 27 Jun 2022 04:31:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229521AbiF0Akt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 26 Jun 2022 20:40:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42614 "EHLO
+        id S231561AbiF0Ca6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 26 Jun 2022 22:30:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbiF0Akt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 26 Jun 2022 20:40:49 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C56A2DE3
-        for <bpf@vger.kernel.org>; Sun, 26 Jun 2022 17:40:48 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id o9so10808747edt.12
-        for <bpf@vger.kernel.org>; Sun, 26 Jun 2022 17:40:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=s1nvrNEcMz+SCaU8rTwCEG+EJDY+e//mlpXeVHB0cbs=;
-        b=iZZF7mZMoAi6Dp9gnPKbUh5RBWW6LPqI29mYA04/0MQGWe1yy1asuoHiJ9chDqMnPr
-         hzylNzpnrnGDE/PGbPUC2xXdTErd2mZfQgmU6uK2ggctm081bQAUsy1XZpcU311RPpjb
-         2I6KXBqH0/Gqlj8DsqlhxfcSoohXchSmya1FfSKpwblWiIrkaAjzNKNMV9chF7Hs9Wk0
-         pfoP+FP/1vizDteU1HiBgxW8x0DKqhUM6LiE49kiCT5JgEex4434n8hSUzyrCNaQeB6o
-         eLCWPko2STy03DFUT4w1HN8BjXRekeWeOoA+1XicFDBh8ygtolGQlzPOBtRPA2pkYgsM
-         4++A==
+        with ESMTP id S229516AbiF0Ca6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 26 Jun 2022 22:30:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 247B02BD5
+        for <bpf@vger.kernel.org>; Sun, 26 Jun 2022 19:30:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1656297056;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kJbcwB7EfNKpZ99plzFtpzkiIgmO0GfWqgxD6ydKGBA=;
+        b=O+AVCCYAVcZ+unyq4WDBIyDHCnIFtjwZo6ua7+oY0je044DHpfBv0eDeF6Hz3+NTx89/1S
+        2yOBQnJsh5l/n1+5eSWxKWMcIuxw2OsDc75iVnp4Om5NxZxK6A893PBKr0Et8zHNpxxIiJ
+        Wxeq0YhxOcC/pmsRN5NePbhyJaEOap4=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-391-LvJKfzlcN66yB8wE473g3Q-1; Sun, 26 Jun 2022 22:30:54 -0400
+X-MC-Unique: LvJKfzlcN66yB8wE473g3Q-1
+Received: by mail-lf1-f72.google.com with SMTP id f29-20020a19dc5d000000b004811c8d1918so357814lfj.2
+        for <bpf@vger.kernel.org>; Sun, 26 Jun 2022 19:30:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=s1nvrNEcMz+SCaU8rTwCEG+EJDY+e//mlpXeVHB0cbs=;
-        b=kL6NFSvO6rkT3LCX/Pjss9wH6attQk/kzGZhDWArZ2AVGLqUy5MctVleyuyoC3EuSb
-         r/5MfMiVmNT4t43wY0evpNqigLPUIM+3r3eK3x6uaRk8PIgKDqJhi2JSkEnLde36qP2y
-         yiBH3+UaQe/UcyKeh87VNHgvtdLZwrBccyvhy+4HqtYXbvgBLmV32QmCsiADuw2pUpw5
-         wg4oonSGXYbBAzyLhv1TqNMlXPoeHlNIQKAgf5EOdn5dUWgGE/38CXW53JH9avgXGQb7
-         bnBjwU0m3ZMEn79r7JP3pWpHw7J7Gw9AueMsdH6yKm4xNzWNIhZ2Y9s9d9z/C8+T/V93
-         stOQ==
-X-Gm-Message-State: AJIora/8OHeUUJ2OK2MwX81uzIScKy5mM21sGf+SdNoApPrusmINTt2+
-        xhh5Riz1Ds5hilUHIezaUtb82uOXqyJC7QcfLu0=
-X-Google-Smtp-Source: AGRyM1ukjWkWsE1bOP1O1a/cnANVhmqET8VtBCPEROUakZqZm3N1tWLOWIKoHVJOJJ5N1OvdD6TOTyYm65+VGfzKkKE=
-X-Received: by 2002:a05:6402:3487:b0:435:b0d2:606e with SMTP id
- v7-20020a056402348700b00435b0d2606emr13966235edc.66.1656290446969; Sun, 26
- Jun 2022 17:40:46 -0700 (PDT)
+        bh=kJbcwB7EfNKpZ99plzFtpzkiIgmO0GfWqgxD6ydKGBA=;
+        b=Ws4NxlRKSNdCRVTc24o2mnVWbhAuw0tcqJVIlNntHpPZKmx2qAVzneqtNzoJLsCEK8
+         /JY+YgAluT1t/z5+llDD6XCprjC+k8kua4AsPP/Kir7zpxNlsp/07vqVGF9/YQsNrJYd
+         YMzYlZaVnuW845HUDBwJv9snO/MU811evPI3ZN6lSWUI4moBBmG+1TacWmK3o/Q2uGnC
+         P7OT+bSNsSFVhR0kr3CZuLef36j1mplzuCpYy/NyqXonQm46RwovLahu96KwVkMhNY5e
+         fUf3ane+qpzu6MyJmJD3VCK7y+2Ey2wR6O6O/L6XJyCx0cZWS798NRWTY0swH54Ad+zA
+         2Syg==
+X-Gm-Message-State: AJIora/CqxQh9Dg4a83Bj5M08ZvBZMMP4SAkUUqtcA8k8oHgT4ARLPVT
+        uU/NGVv0dBAmxRZ4QRy5GbKiTwHSyx6bFZDoWUrFSP8jV1CVAjvNx0K1HwJYmqZaZTBl7Lt+HGR
+        4GNe0dS0h8czxtLT3dfmrz+Avj5h0
+X-Received: by 2002:a05:6512:13a5:b0:47d:c1d9:dea8 with SMTP id p37-20020a05651213a500b0047dc1d9dea8mr6773776lfa.442.1656297053240;
+        Sun, 26 Jun 2022 19:30:53 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1ur82ARcDJaALzWVAunDCgq4vaJSklh1IynesHEAuaeWnmZYcX/Br+tGQmrs/x93fW3c+90sT9mKBAdQ35aQEI=
+X-Received: by 2002:a05:6512:13a5:b0:47d:c1d9:dea8 with SMTP id
+ p37-20020a05651213a500b0047dc1d9dea8mr6773770lfa.442.1656297053073; Sun, 26
+ Jun 2022 19:30:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220619155032.32515-1-laoar.shao@gmail.com> <YrPeJ5L5mSI/MqrP@castle>
- <CALOAHbBXJkOqMZEzeTVy8JmMVjRr62n=69W5EQ=oTWyoeGVgNQ@mail.gmail.com>
-In-Reply-To: <CALOAHbBXJkOqMZEzeTVy8JmMVjRr62n=69W5EQ=oTWyoeGVgNQ@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sun, 26 Jun 2022 17:40:35 -0700
-Message-ID: <CAADnVQJHi+MUBmfU0rcgagJo0T5yzzpjK2Kv90SNH5Ng5yFbDA@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 00/10] bpf, mm: Recharge pages when reuse bpf map
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
+References: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
+ <20220624025621.128843-26-xuanzhuo@linux.alibaba.com> <20220624025817-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20220624025817-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Mon, 27 Jun 2022 10:30:42 +0800
+Message-ID: <CACGkMEseptD=45j3kQr0yciRxR679Jcig=292H07-RYC2vXmFQ@mail.gmail.com>
+Subject: Re: [PATCH v10 25/41] virtio_pci: struct virtio_pci_common_cfg add queue_notify_data
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Vadim Pasternak <vadimp@nvidia.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>, penberg@kernel.org,
-        David Rientjes <rientjes@google.com>, iamjoonsoo.kim@lge.com,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Linux MM <linux-mm@kvack.org>, bpf <bpf@vger.kernel.org>
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        linux-um@lists.infradead.org, netdev <netdev@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+        kvm <kvm@vger.kernel.org>,
+        "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>,
+        kangjie.xu@linux.alibaba.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jun 24, 2022 at 8:26 PM Yafang Shao <laoar.shao@gmail.com> wrote:
+On Fri, Jun 24, 2022 at 2:59 PM Michael S. Tsirkin <mst@redhat.com> wrote:
 >
-> I'm planning to support it for all map types and progs. Regarding the
-> progs, it seems that we have to introduce a new UAPI for the user to
-> do the recharge, because there's no similar reuse path in libbpf.
+> On Fri, Jun 24, 2022 at 10:56:05AM +0800, Xuan Zhuo wrote:
+> > Add queue_notify_data in struct virtio_pci_common_cfg, which comes from
+> > here https://github.com/oasis-tcs/virtio-spec/issues/89
+> >
+> > For not breaks uABI, add a new struct virtio_pci_common_cfg_notify.
 >
-> Our company is a heavy bpf user.
+> What exactly is meant by not breaking uABI?
+> Users are supposed to be prepared for struct size to change ... no?
 
-What company is that?
+Not sure, any doc for this?
+
+Thanks
+
+
+>
+>
+> > Since I want to add queue_reset after queue_notify_data, I submitted
+> > this patch first.
+> >
+> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > Acked-by: Jason Wang <jasowang@redhat.com>
+> > ---
+> >  include/uapi/linux/virtio_pci.h | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> >
+> > diff --git a/include/uapi/linux/virtio_pci.h b/include/uapi/linux/virtio_pci.h
+> > index 3a86f36d7e3d..22bec9bd0dfc 100644
+> > --- a/include/uapi/linux/virtio_pci.h
+> > +++ b/include/uapi/linux/virtio_pci.h
+> > @@ -166,6 +166,13 @@ struct virtio_pci_common_cfg {
+> >       __le32 queue_used_hi;           /* read-write */
+> >  };
+> >
+> > +struct virtio_pci_common_cfg_notify {
+> > +     struct virtio_pci_common_cfg cfg;
+> > +
+> > +     __le16 queue_notify_data;       /* read-write */
+> > +     __le16 padding;
+> > +};
+> > +
+> >  /* Fields in VIRTIO_PCI_CAP_PCI_CFG: */
+> >  struct virtio_pci_cfg_cap {
+> >       struct virtio_pci_cap cap;
+> > --
+> > 2.31.0
+>
+
