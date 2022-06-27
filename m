@@ -2,189 +2,260 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E407255D1D8
-	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 15:10:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA5255CC77
+	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 15:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238339AbiF0V1Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Jun 2022 17:27:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34764 "EHLO
+        id S240218AbiF0V2q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Jun 2022 17:28:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236805AbiF0V1Y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Jun 2022 17:27:24 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C726119006;
-        Mon, 27 Jun 2022 14:27:22 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id lw20so21818691ejb.4;
-        Mon, 27 Jun 2022 14:27:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ffH6sqTChxu/43eEw2gjEC1ladRfvkvB5r33/uaRpY8=;
-        b=ZH41EW1m/LJARcI+lm9nKo4a+XCFNfAO01a4+XvRgu17owajzK7SWiJ6umyLqaEI5z
-         jtUqSCXtgl7coDCjeX1nmWgXwCLebD1HkAccjXIU10uED93z6YnLewRmivRjRL8zeS3W
-         Cawk1sLYTfbz50BP0AEAPF02iWvX2GlBtoUkdeoKiarH+3f2w4hhH32aombGon+0SFww
-         B8jJCgwNvnTqbArkUoPzC6O2VrgGuXqlDSfyBSgnh/iDSv6rimLc6/zQCXKU76X8wSP/
-         a7OkL5M9QG8JOimVMYR7wPp5v2T9T/ZV5X+sA2rpRA+uu5KU1a/ottJGJKuvzNazGTYq
-         Yj4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ffH6sqTChxu/43eEw2gjEC1ladRfvkvB5r33/uaRpY8=;
-        b=stV5892MLK7w3OQNJD232hnRcalTwWVNiOt9CSwWZageXlA8MLtNKKJVjle+cEQXtp
-         Y/NpygBf3ORUG1yCmbGG0UlKbEKVT5kGF4+EXlIOrtExuWQAfZhEv2Qu/hCHRK/vxkWl
-         YRySYtnZnJR/qYtAJ7q32xGSIOiLQgZGzeMhAgxibkboBVaHfzcgWIm3Ytd+L98Pa992
-         vd4XoWDpqVrcAxgxq4xXwJ0M9FTORu04pbtKwVgqxeB2P/IuUeZ6ywv7OsQSy3bJc6+z
-         v/r2PMoPQCE6mcNl4QDRUsn/T9eOn/cOSrLulFs2TyGX5Jwhsw8HI0p0KaoELNpJ0BNK
-         SC3Q==
-X-Gm-Message-State: AJIora9NaGb1UoxfLPdMn1q95SPfnuFQZPKYOliOqgdGD7Qy1TL6h5Z2
-        MfKX5MreTiNuK8zaEh3q5gWXRaSTHjP7o3JF2YE=
-X-Google-Smtp-Source: AGRyM1ubCMGDYUtM5u6GHoJvohmX1hyk2R3j56/JEUUZbxsjNRJW9HJRpSWU/HrVmabaokS5XgV0PPvDaZB/p/KNecM=
-X-Received: by 2002:a17:907:980a:b0:722:f4a7:e00 with SMTP id
- ji10-20020a170907980a00b00722f4a70e00mr15016491ejc.114.1656365241370; Mon, 27
- Jun 2022 14:27:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220626031301.60390-1-nashuiliang@gmail.com>
-In-Reply-To: <20220626031301.60390-1-nashuiliang@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 27 Jun 2022 14:27:09 -0700
-Message-ID: <CAEf4BzbnEFqdEZTNRWf8vJ8hExpKkg_rwgoQE-cyyU7fDafxZw@mail.gmail.com>
-Subject: Re: [PATCH v3] libbpf: Cleanup the legacy kprobe_event on failed add/attach_event()
-To:     Chuang W <nashuiliang@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S241163AbiF0V2p (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Jun 2022 17:28:45 -0400
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55C58B1EA
+        for <bpf@vger.kernel.org>; Mon, 27 Jun 2022 14:28:43 -0700 (PDT)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout01.posteo.de (Postfix) with ESMTPS id EFB0B240029
+        for <bpf@vger.kernel.org>; Mon, 27 Jun 2022 23:28:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1656365322; bh=K6DgMMPmUfLIDULJTueDnOJKMc5VVYtoBafnar0XsZE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Tuvla14rYSZcuGuuoPN6nO0+gbzBgTggxXp8w7Xcnk2LTWUKMiFkCcDM+PwAKQIQ5
+         BJlYHiprnqgWWGWkjHBu/QPnCMS+VmK7mW+5X+CKAlfOlP7P+edJNkaabyB1p3y2oW
+         Y8KTWO/euv1TMTK4edBGdN/QTZXu2rWHRvKkfJHGIF0zelt2lw+8MEKHKYm2fTv2Fp
+         ynNOCzBhTa48gv0vNAoa9MVVm0Rc9inUtLmQ4VkkltHlxWxvOJaBfqNmxuaHLkF9ua
+         y2ShKbPFewUA/zr3BTfo9KtilcMomPh+rJY516b1O+eenc2uZ2Gvf1E/OkFmpS15mE
+         sF+FiBzD/vU0Q==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4LX17C1pchz6tmR;
+        Mon, 27 Jun 2022 23:28:39 +0200 (CEST)
+Date:   Mon, 27 Jun 2022 21:28:35 +0000
+From:   Daniel =?utf-8?Q?M=C3=BCller?= <deso@posteo.net>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jingren Zhou <zhoujingren@didiglobal.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Joanne Koong <joannelkoong@gmail.com>
+Subject: Re: [PATCH bpf-next v2 4/9] libbpf: Add type match support
+Message-ID: <20220627212835.ymcgpalreldvipkb@muellerd-fedora-MJ0AC3F3>
+References: <20220623212205.2805002-1-deso@posteo.net>
+ <20220623212205.2805002-5-deso@posteo.net>
+ <CAEf4BzZA43SMt1_ex6LzLHWO2=P_G=YJbocejyEP2WU2atRHQA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzZA43SMt1_ex6LzLHWO2=P_G=YJbocejyEP2WU2atRHQA@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jun 25, 2022 at 8:13 PM Chuang W <nashuiliang@gmail.com> wrote:
->
-> Before the 0bc11ed5ab60 commit ("kprobes: Allow kprobes coexist with
-> livepatch"), in a scenario where livepatch and kprobe coexist on the
-> same function entry, the creation of kprobe_event using
-> add_kprobe_event_legacy() will be successful, at the same time as a
-> trace event (e.g. /debugfs/tracing/events/kprobe/XXX) will exist, but
-> perf_event_open() will return an error because both livepatch and kprobe
-> use FTRACE_OPS_FL_IPMODIFY. As follows:
->
-> 1) add a livepatch
->
-> $ insmod livepatch-XXX.ko
->
-> 2) add a kprobe using tracefs API (i.e. add_kprobe_event_legacy)
->
-> $ echo 'p:mykprobe XXX' > /sys/kernel/debug/tracing/kprobe_events
->
-> 3) enable this kprobe (i.e. sys_perf_event_open)
->
-> This will return an error, -EBUSY.
->
-> On Andrii Nakryiko's comment, few error paths in
-> bpf_program__attach_kprobe_opts() which should need to call
-> remove_kprobe_event_legacy().
->
-> With this patch, whenever an error is returned after
-> add_kprobe_event_legacy() or bpf_program__attach_perf_event_opts(), this
-> ensures that the created kprobe_event is cleaned.
->
-> Signed-off-by: Chuang W <nashuiliang@gmail.com>
+On Fri, Jun 24, 2022 at 02:39:00PM -0700, Andrii Nakryiko wrote:
+> On Thu, Jun 23, 2022 at 2:22 PM Daniel Müller <deso@posteo.net> wrote:
+> >
+> > This patch adds support for the proposed type match relation to
+> > relo_core where it is shared between userspace and kernel. A bit more
+> > plumbing is necessary and will arrive with subsequent changes to
+> > actually use it -- this patch only introduces the main matching
+> > algorithm.
+> >
+> > The matching relation is defined as follows (copy from source):
+> > - modifiers and typedefs are stripped (and, hence, effectively ignored)
+> > - generally speaking types need to be of same kind (struct vs. struct, union
+> >   vs. union, etc.)
+> >   - exceptions are struct/union behind a pointer which could also match a
+> >     forward declaration of a struct or union, respectively, and enum vs.
+> >     enum64 (see below)
+> > Then, depending on type:
+> > - integers:
+> >   - match if size and signedness match
+> > - arrays & pointers:
+> >   - target types are recursively matched
+> > - structs & unions:
+> >   - local members need to exist in target with the same name
+> >   - for each member we recursively check match unless it is already behind a
+> >     pointer, in which case we only check matching names and compatible kind
+> > - enums:
+> >   - local variants have to have a match in target by symbolic name (but not
+> >     numeric value)
+> >   - size has to match (but enum may match enum64 and vice versa)
+> > - function pointers:
+> >   - number and position of arguments in local type has to match target
+> >   - for each argument and the return value we recursively check match
+> >
+> > Signed-off-by: Daniel Müller <deso@posteo.net>
+> > ---
+> >  tools/lib/bpf/relo_core.c | 276 ++++++++++++++++++++++++++++++++++++++
+> >  tools/lib/bpf/relo_core.h |   2 +
+> >  2 files changed, 278 insertions(+)
+> >
+> > diff --git a/tools/lib/bpf/relo_core.c b/tools/lib/bpf/relo_core.c
+> > index 6ad3c3..bc5b060 100644
+> > --- a/tools/lib/bpf/relo_core.c
+> > +++ b/tools/lib/bpf/relo_core.c
+> > @@ -1330,3 +1330,279 @@ int bpf_core_calc_relo_insn(const char *prog_name,
+> >
+> >         return 0;
+> >  }
+> > +
+> > +static bool bpf_core_names_match(const struct btf *local_btf, const struct btf_type *local_t,
+> > +                                const struct btf *targ_btf, const struct btf_type *targ_t)
+> > +{
+> > +       const char *local_n, *targ_n;
+> > +
+> > +       local_n = btf__name_by_offset(local_btf, local_t->name_off);
+> > +       targ_n = btf__name_by_offset(targ_btf, targ_t->name_off);
+> > +
+> > +       return !strncmp(local_n, targ_n, bpf_core_essential_name_len(local_n));
+> > +}
+> > +
+> 
+> we have similar check in existing code in at least two other places
+> (search for strncmp in relo_core.c). But it doesn't always work with
+> btf_type, it sometimes is field name, sometimes is part of core_spec.
+> 
+> so it's confusing that we have this helper used in *one* place, and
+> other places open-code this logic. We can probably have a helper, but
+> it will have to be taking const char * arguments and doing
+> bpf_core_essential_name_len() for both
 
-Is this your full name? Signed-off-by is required to have a full name
-of a person, please update if it's not
+Sure.
 
-> Signed-off-by: Jingren Zhou <zhoujingren@didiglobal.com>
-> ---
-> V2->v3:
-> - add detail commits
-> - call remove_kprobe_event_legacy() on failed bpf_program__attach_perf_event_opts()
->
->  tools/lib/bpf/libbpf.c | 15 ++++++++++++---
->  1 file changed, 12 insertions(+), 3 deletions(-)
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 49e359cd34df..038b0cb3313f 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -10811,10 +10811,11 @@ static int perf_event_kprobe_open_legacy(const char *probe_name, bool retprobe,
->         }
->         type = determine_kprobe_perf_type_legacy(probe_name, retprobe);
->         if (type < 0) {
-> +               err = type;
->                 pr_warn("failed to determine legacy kprobe event id for '%s+0x%zx': %s\n",
->                         kfunc_name, offset,
-> -                       libbpf_strerror_r(type, errmsg, sizeof(errmsg)));
-> -               return type;
-> +                       libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
-> +               goto clear_kprobe_event;
->         }
->         attr.size = sizeof(attr);
->         attr.config = type;
-> @@ -10828,9 +10829,14 @@ static int perf_event_kprobe_open_legacy(const char *probe_name, bool retprobe,
->                 err = -errno;
->                 pr_warn("legacy kprobe perf_event_open() failed: %s\n",
->                         libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
-> -               return err;
-> +               goto clear_kprobe_event;
->         }
->         return pfd;
-> +
-> +clear_kprobe_event:
-> +       /* Clear the newly added legacy kprobe_event */
-> +       remove_kprobe_event_legacy(probe_name, retprobe);
-> +       return err;
->  }
->
+> > +static int bpf_core_enums_match(const struct btf *local_btf, const struct btf_type *local_t,
+> > +                               const struct btf *targ_btf, const struct btf_type *targ_t)
+> > +{
+> > +       __u16 local_vlen = btf_vlen(local_t);
+> > +       __u16 targ_vlen = btf_vlen(targ_t);
+> > +       int i, j;
+> > +
+> > +       if (local_t->size != targ_t->size)
+> > +               return 0;
+> > +
+> > +       if (local_vlen > targ_vlen)
+> > +               return 0;
+> > +
+> > +       /* iterate over the local enum's variants and make sure each has
+> > +        * a symbolic name correspondent in the target
+> > +        */
+> > +       for (i = 0; i < local_vlen; i++) {
+> > +               bool matched = false;
+> > +               const char *local_n;
+> > +               __u32 local_n_off;
+> > +               size_t local_len;
+> > +
+> > +               local_n_off = btf_is_enum(local_t) ? btf_enum(local_t)[i].name_off :
+> > +                                                    btf_enum64(local_t)[i].name_off;
+> > +
+> > +               local_n = btf__name_by_offset(local_btf, local_n_off);
+> > +               local_len = bpf_core_essential_name_len(local_n);
+> > +
+> > +               for (j = 0; j < targ_vlen; j++) {
+> > +                       const char *targ_n;
+> > +                       __u32 targ_n_off;
+> > +
+> > +                       targ_n_off = btf_is_enum(targ_t) ? btf_enum(targ_t)[j].name_off :
+> > +                                                          btf_enum64(targ_t)[j].name_off;
+> > +                       targ_n = btf__name_by_offset(targ_btf, targ_n_off);
+> > +
+> > +                       if (str_is_empty(targ_n))
+> > +                               continue;
+> > +
+> > +                       if (!strncmp(local_n, targ_n, local_len)) {
+> 
+> and here you open-code name check instead of using your helper ;) but
+> also shouldn't you calculate "essential name len" for target enum as
+> well?.. otherwise local whatever___abc will match whatever123, which
+> won't be right
+> 
+> and I'm not hard-core enough to easily understand !strncmp() (as I
+> also mentioned in another email), I think explicit == 0 is easier to
+> follow for str[n]cmp() APIs.
 
-this part looks good
+Done.
 
+> > +                               matched = true;
+> > +                               break;
+> > +                       }
+> > +               }
+> > +
+> > +               if (!matched)
+> > +                       return 0;
+> > +       }
+> > +       return 1;
+> > +}
+> > +
+> > +static int bpf_core_composites_match(const struct btf *local_btf, const struct btf_type *local_t,
+> > +                                    const struct btf *targ_btf, const struct btf_type *targ_t,
+> > +                                    int level)
+> > +{
+> > +       const struct btf_member *local_m = btf_members(local_t);
+> > +       __u16 local_vlen = btf_vlen(local_t);
+> > +       __u16 targ_vlen = btf_vlen(targ_t);
+> > +       int i, j, err;
+> > +
+> > +       if (local_vlen > targ_vlen)
+> > +               return 0;
+> > +
+> > +       /* check that all local members have a match in the target */
+> > +       for (i = 0; i < local_vlen; i++, local_m++) {
+> > +               const char *local_n = btf__name_by_offset(local_btf, local_m->name_off);
+> > +               const struct btf_member *targ_m = btf_members(targ_t);
+> > +               bool matched = false;
+> > +
+> > +               for (j = 0; j < targ_vlen; j++, targ_m++) {
+> > +                       const char *targ_n = btf__name_by_offset(targ_btf, targ_m->name_off);
+> > +
+> > +                       if (str_is_empty(targ_n))
+> > +                               continue;
+> > +
+> > +                       if (strcmp(local_n, targ_n) != 0)
+> > +                               continue;
+> 
+> let's have the essential_len logic used consistently for all these
+> field and type name checks?
 
->  struct bpf_link *
-> @@ -10899,6 +10905,9 @@ bpf_program__attach_kprobe_opts(const struct bpf_program *prog,
->
->         return link;
->  err_out:
-> +       /* Clear the newly added legacy kprobe_event */
-> +       if (legacy)
-> +               remove_kprobe_event_legacy(legacy_probe, retprobe);
+Sounds good.
 
-this one will call remove_kprobe_event_legacy() even if we failed to
-create that kprobe_event in the first place. So let's maybe add
+[...]
 
-err_clean_legacy:
-    if (legacy)
-         remove_kprobe_event_legacy(legacy_probe, retprobe);
+> > +       depth--;
+> > +       if (depth < 0)
+> > +               return -EINVAL;
+> > +
+> > +       prev_local_t = local_t;
+> > +
+> > +       local_t = skip_mods_and_typedefs(local_btf, local_id, &local_id);
+> > +       targ_t = skip_mods_and_typedefs(targ_btf, targ_id, &targ_id);
+> > +       if (!local_t || !targ_t)
+> > +               return -EINVAL;
+> > +
+> > +       if (!bpf_core_names_match(local_btf, local_t, targ_btf, targ_t))
+> > +               return 0;
+> > +
+> > +       local_k = btf_kind(local_t);
+> > +
+> > +       switch (local_k) {
+> > +       case BTF_KIND_UNKN:
+> > +               return local_k == btf_kind(targ_t);
+> > +       case BTF_KIND_FWD: {
+> > +               bool local_f = BTF_INFO_KFLAG(local_t->info);
+> > +               __u16 targ_k = btf_kind(targ_t);
+> > +
+> > +               if (btf_is_ptr(prev_local_t)) {
+> 
+> this doesn't work in general, you can have PTR -> CONST -> FWD, you
+> need to just remember that you saw PTR in the chain of types
 
-before err_out: and goto there if we fail to attach (but not if we
-fail to create pfd)?
+Fair enough; will adjust.
 
+[...]
 
-Also, looking through libbpf code, I realized that we have exactly the
-same problem for uprobes, so please add same fixed to
-perf_event_uprobe_open_legacy and attach_uprobe_opts. Thanks!
-
-
-
-
->         free(legacy_probe);
->         return libbpf_err_ptr(err);
->  }
-> --
-> 2.34.1
->
+Thanks,
+Daniel
