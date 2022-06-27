@@ -2,192 +2,220 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5936A55D285
-	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 15:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7656F55DAE5
+	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 15:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237691AbiF0P4v (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Jun 2022 11:56:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59252 "EHLO
+        id S235043AbiF0Qn3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Jun 2022 12:43:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237456AbiF0P4t (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Jun 2022 11:56:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC7331AE;
-        Mon, 27 Jun 2022 08:56:48 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 437666162F;
-        Mon, 27 Jun 2022 15:56:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EADAC3411D;
-        Mon, 27 Jun 2022 15:56:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656345407;
-        bh=0uKIHk5NAfqiC1sw9PWOYGqU8fOKFZ6Vg6CrIR19Zgk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hZHHtIFw51nNpjsX7K/dxIQcTbD2G+uJd1OfO3hGMoQGBgPQxqvCUqglpOJ+0Miq1
-         /K9FJ6bviXkg8wvG9kV6dx2lv8AS20+9aO0WKX6mGy4sWw4nEM0sKNiC1vw1oXz0S8
-         MZC45o3icMlBflLrxfR5pKEh6xshNAP+BJb5XnUEKnHgz3Eq1HkDflYfMJKH94Uv9/
-         pInFmw9bADF7m9RkzBOUbRJioaLOLLZd5TIE004Mec+oRIdJki75A6bh0/lDJXQQ5a
-         H6/cA13NJWiimkA6z33xsWtpyYowiwfMSH4XGy7/ueH8+uOhaRdVFplx04Sh009dWU
-         0kV3+gimxBa0w==
-Date:   Mon, 27 Jun 2022 17:56:39 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Frederick Lawler <fred@cloudflare.com>
-Cc:     Paul Moore <paul@paul-moore.com>,
-        Casey Schaufler <casey@schaufler-ca.com>, kpsingh@kernel.org,
-        revest@chromium.org, jackmanb@chromium.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        jmorris@namei.org, serge@hallyn.com, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@cloudflare.com
-Subject: Re: [PATCH 0/2] Introduce security_create_user_ns()
-Message-ID: <20220627155639.b5jky27loen3ydrz@wittgenstein>
-References: <20220621233939.993579-1-fred@cloudflare.com>
- <ce1653b1-feb0-1a99-0e97-8dfb289eeb79@schaufler-ca.com>
- <b72c889a-4a50-3330-baae-3bbf065e7187@cloudflare.com>
- <CAHC9VhSTkEMT90Tk+=iTyp3npWEm+3imrkFVX2qb=XsOPp9F=A@mail.gmail.com>
- <20220627121137.cnmctlxxtcgzwrws@wittgenstein>
- <b7c23d54-d196-98d1-8187-605f6d4dca4d@cloudflare.com>
+        with ESMTP id S239408AbiF0Qn2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Jun 2022 12:43:28 -0400
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 845D9DEBD
+        for <bpf@vger.kernel.org>; Mon, 27 Jun 2022 09:43:27 -0700 (PDT)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout01.posteo.de (Postfix) with ESMTPS id C691724002A
+        for <bpf@vger.kernel.org>; Mon, 27 Jun 2022 18:43:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1656348204; bh=IyUvi7V19IaRfn4ugg9lUzrftgBj1gIce8beJfKTCfY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ribODehmbDnCtv62uzgCaUAq+pmQuQbcRDZbeszou+vVVcL18sn7c19U7KupFWH2v
+         xrqW4JwCzwvucgwV0CEMRakYnMVhd53c3m6AGvZNEEYsAEnxe2KoUadg6WR7AInikn
+         kRv46ifMCDdXOnlzO11prjpEZMGvWbZsTI6oURQ/MIRF7qTPgFnlTnZKLssirxnC2V
+         5g8fbOd9HlVK8zwd5fFiTSxpT1yNJxnrUMyu0eZGGI0tIvVqtDej+rn6/6nEXQ3/ps
+         TIM8e1HCbIb4BkHHUEl6gz0yIR+1hEqA0MGwxv+L4aLyUdYoSXJSBDIwMsSNZO/52w
+         6Gi/PSDpN19mw==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4LWtp06ccqz6tn0;
+        Mon, 27 Jun 2022 18:43:20 +0200 (CEST)
+Date:   Mon, 27 Jun 2022 16:43:17 +0000
+From:   Daniel =?utf-8?Q?M=C3=BCller?= <deso@posteo.net>
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com, joannelkoong@gmail.com,
+        Mauricio =?utf-8?Q?V=C3=A1squez?= <mauricio@kinvolk.io>
+Subject: Re: [PATCH bpf-next v2 2/9] bpftool: Honor BPF_CORE_TYPE_MATCHES
+ relocation
+Message-ID: <20220627164317.k7rkbrtlkzsa4ypk@muellerd-fedora-MJ0AC3F3>
+References: <20220623212205.2805002-1-deso@posteo.net>
+ <20220623212205.2805002-3-deso@posteo.net>
+ <a4770a25-b78a-d721-4d30-ae58feec965c@isovalent.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <b7c23d54-d196-98d1-8187-605f6d4dca4d@cloudflare.com>
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a4770a25-b78a-d721-4d30-ae58feec965c@isovalent.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 27, 2022 at 10:51:48AM -0500, Frederick Lawler wrote:
-> On 6/27/22 7:11 AM, Christian Brauner wrote:
-> > On Thu, Jun 23, 2022 at 11:21:37PM -0400, Paul Moore wrote:
-> > > On Wed, Jun 22, 2022 at 10:24 AM Frederick Lawler <fred@cloudflare.com> wrote:
-> > > > On 6/21/22 7:19 PM, Casey Schaufler wrote:
-> > > > > On 6/21/2022 4:39 PM, Frederick Lawler wrote:
-> > > > > > While creating a LSM BPF MAC policy to block user namespace creation, we
-> > > > > > used the LSM cred_prepare hook because that is the closest hook to
-> > > > > > prevent
-> > > > > > a call to create_user_ns().
-> > > > > > 
-> > > > > > The calls look something like this:
-> > > > > > 
-> > > > > >       cred = prepare_creds()
-> > > > > >           security_prepare_creds()
-> > > > > >               call_int_hook(cred_prepare, ...
-> > > > > >       if (cred)
-> > > > > >           create_user_ns(cred)
-> > > > > > 
-> > > > > > We noticed that error codes were not propagated from this hook and
-> > > > > > introduced a patch [1] to propagate those errors.
-> > > > > > 
-> > > > > > The discussion notes that security_prepare_creds()
-> > > > > > is not appropriate for MAC policies, and instead the hook is
-> > > > > > meant for LSM authors to prepare credentials for mutation. [2]
-> > > > > > 
-> > > > > > Ultimately, we concluded that a better course of action is to introduce
-> > > > > > a new security hook for LSM authors. [3]
-> > > > > > 
-> > > > > > This patch set first introduces a new security_create_user_ns() function
-> > > > > > and create_user_ns LSM hook, then marks the hook as sleepable in BPF.
-> > > > > 
-> > > > > Why restrict this hook to user namespaces? It seems that an LSM that
-> > > > > chooses to preform controls on user namespaces may want to do so for
-> > > > > network namespaces as well.
-> > > > 
-> > > > IIRC, CLONE_NEWUSER is the only namespace flag that does not require
-> > > > CAP_SYS_ADMIN. There is a security use case to prevent this namespace
-> > > > from being created within an unprivileged environment. I'm not opposed
-> > > > to a more generic hook, but I don't currently have a use case to block
-> > > > any others. We can also say the same is true for the other namespaces:
-> > > > add this generic security function to these too.
-> > > > 
-> > > > I'm curious what others think about this too.
-> > > 
-> > > While user namespaces are obviously one of the more significant
-> > > namespaces from a security perspective, I do think it seems reasonable
-> > > that the LSMs could benefit from additional namespace creation hooks.
-> > > However, I don't think we need to do all of them at once, starting
-> > > with a userns hook seems okay to me.
-> > > 
-> > > I also think that using the same LSM hook as an access control point
-> > > for all of the different namespaces would be a mistake.  At the very
+On Fri, Jun 24, 2022 at 12:37:09PM +0100, Quentin Monnet wrote:
+> 2022-06-23 21:21 UTC+0000 ~ Daniel Müller <deso@posteo.net>
+> > bpftool needs to know about the newly introduced BPF_CORE_TYPE_MATCHES
+> > relocation for its 'gen min_core_btf' command to work properly in the
+> > present of this relocation.
+> > Specifically, we need to make sure to mark types and fields so that they
+> > are present in the minimized BTF for "type match" checks to work out.
+> > However, contrary to the existing btfgen_record_field_relo, we need to
+> > rely on the BTF -- and not the spec -- to find fields. With this change
+> > we handle this new variant correctly. The functionality will be tested
+> > with follow on changes to BPF selftests, which already run against a
+> > minimized BTF created with bpftool.
 > > 
-> > Agreed. >
-> > > least we would need to pass a flag or some form of context to the hook
-> > > to indicate which new namespace(s) are being requested and I fear that
-> > > is a problem waiting to happen.  That isn't to say someone couldn't
-> > > mistakenly call the security_create_user_ns(...) from the mount
-> > > namespace code, but I suspect that is much easier to identify as wrong
-> > > than the equivalent security_create_ns(USER, ...).
+> > Cc: Quentin Monnet <quentin@isovalent.com>
+> > Signed-off-by: Daniel Müller <deso@posteo.net>
+> > ---
+> >  tools/bpf/bpftool/gen.c | 107 ++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 107 insertions(+)
 > > 
-> > Yeah, I think that's a pretty unlikely scenario.
-> > 
-> > > 
-> > > We also should acknowledge that while in most cases the current task's
-> > > credentials are probably sufficient to make any LSM access control
-> > > decisions around namespace creation, it's possible that for some
-> > > namespaces we would need to pass additional, namespace specific info
-> > > to the LSM.  With a shared LSM hook this could become rather awkward.
-> > 
-> > Agreed.
-> > 
-> > > 
-> > > > > Also, the hook seems backwards. You should
-> > > > > decide if the creation of the namespace is allowed before you create it.
-> > > > > Passing the new namespace to a function that checks to see creating a
-> > > > > namespace is allowed doesn't make a lot off sense.
-> > > > 
-> > > > I think having more context to a security hook is a good thing.
-> > > 
-> > > This is one of the reasons why I usually like to see at least one LSM
-> > > implementation to go along with every new/modified hook.  The
-> > > implementation forces you to think about what information is necessary
-> > > to perform a basic access control decision; sometimes it isn't always
-> > > obvious until you have to write the access control :)
-> > 
-> > I spoke to Frederick at length during LSS and as I've been given to
-> > understand there's a eBPF program that would immediately use this new
-> > hook. Now I don't want to get into the whole "Is the eBPF LSM hook
-> > infrastructure an LSM" but I think we can let this count as a legitimate
-> > first user of this hook/code.
-> > 
-> > > 
-> > > [aside: If you would like to explore the SELinux implementation let me
-> > > know, I'm happy to work with you on this.  I suspect Casey and the
-> > > other LSM maintainers would also be willing to do the same for their
-> > > LSMs.]
-> > > 
+> > diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+> > index 480cbd8..6cd0ed 100644
+> > --- a/tools/bpf/bpftool/gen.c
+> > +++ b/tools/bpf/bpftool/gen.c
+> > @@ -1856,6 +1856,111 @@ static int btfgen_record_field_relo(struct btfgen_info *info, struct bpf_core_sp
+> >  	return 0;
+> >  }
+> >  
+> > +/* Mark types, members, and member types. Compared to btfgen_record_field_relo,
+> > + * this function does not rely on the target spec for inferring members, but
+> > + * uses the associated BTF.
+> > + *
+> > + * The `behind_ptr` argument is used to stop marking of composite types reached
+> > + * through a pointer. This way, we keep can keep BTF size in check while
 > 
-> I can take a shot at making a SELinux implementation, but the question
-> becomes: is that for v2 or a later patch? I don't think the implementation
-> for SELinux would be too complicated (i.e. make a call to avc_has_perm()?)
-> but, testing and revisions might take a bit longer.
-> 
-> > > In this particular case I think the calling task's credentials are
-> > > generally all that is needed.  You mention that the newly created
-> > 
-> > Agreed.
-> > 
-> > > namespace would be helpful, so I'll ask: what info in the new ns do
-> > > you believe would be helpful in making an access decision about its
-> > > creation?
-> > > 
-> 
-> In the other thread [1], there was mention of xattr mapping support. As I
-> understand Caseys response to this thread [2], that feature is no longer
-> requested for this hook.
+> Typo, "we keep can keep"
 
-I think that is an orthogonal problem at least wrt to this hook.
+Fixed. Thanks!
 
+> > + * providing reasonable match semantics.
+> > + */
+> > +static int btfgen_mark_types_match(struct btfgen_info *info, __u32 type_id, bool behind_ptr)
+> > +{
+> > +	const struct btf_type *btf_type;
+> > +	struct btf *btf = info->src_btf;
+> > +	struct btf_type *cloned_type;
+> > +	int i, err;
+> > +
+> > +	if (type_id == 0)
+> > +		return 0;
+> > +
+> > +	btf_type = btf__type_by_id(btf, type_id);
+> > +	/* mark type on cloned BTF as used */
+> > +	cloned_type = (struct btf_type *)btf__type_by_id(info->marked_btf, type_id);
+> > +	cloned_type->name_off = MARKED;
+> > +
+> > +	switch (btf_kind(btf_type)) {
+> > +	case BTF_KIND_UNKN:
+> > +	case BTF_KIND_INT:
+> > +	case BTF_KIND_FLOAT:
+> > +	case BTF_KIND_ENUM:
+> > +	case BTF_KIND_ENUM64:
+> > +		break;
+> > +	case BTF_KIND_STRUCT:
+> > +	case BTF_KIND_UNION: {
+> > +		struct btf_member *m = btf_members(btf_type);
+> > +		__u16 vlen = btf_vlen(btf_type);
+> > +
+> > +		if (behind_ptr)
+> > +			break;
+> > +
+> > +		for (i = 0; i < vlen; i++, m++) {
+> > +			/* mark member */
+> > +			btfgen_mark_member(info, type_id, i);
+> > +
+> > +			/* mark member's type */
+> > +			err = btfgen_mark_types_match(info, m->type, false);
+> > +			if (err)
+> > +				return err;
+> > +		}
+> > +		break;
+> > +	}
+> > +	case BTF_KIND_CONST:
+> > +	case BTF_KIND_FWD:
+> > +	case BTF_KIND_VOLATILE:
+> > +	case BTF_KIND_TYPEDEF:
+> > +		return btfgen_mark_types_match(info, btf_type->type, false);
+> > +	case BTF_KIND_PTR:
+> > +		return btfgen_mark_types_match(info, btf_type->type, true);
+> > +	case BTF_KIND_ARRAY: {
+> > +		struct btf_array *array;
+> > +
+> > +		array = btf_array(btf_type);
+> > +		/* mark array type */
+> > +		err = btfgen_mark_types_match(info, array->type, false);
+> > +		/* mark array's index type */
+> > +		err = err ? : btfgen_mark_types_match(info, array->index_type, false);
+> > +		if (err)
+> > +			return err;
+> > +		break;
+> > +	}
+> > +	case BTF_KIND_FUNC_PROTO: {
+> > +		__u16 vlen = btf_vlen(btf_type);
+> > +		struct btf_param *param;
+> > +
+> > +		/* mark ret type */
+> > +		err = btfgen_mark_types_match(info, btf_type->type, false);
+> > +		if (err)
+> > +			return err;
+> > +
+> > +		/* mark parameters types */
+> > +		param = btf_params(btf_type);
+> > +		for (i = 0; i < vlen; i++) {
+> > +			err = btfgen_mark_types_match(info, param->type, false);
+> > +			if (err)
+> > +				return err;
+> > +			param++;
+> > +		}
+> > +		break;
+> > +	}
+> > +	/* tells if some other type needs to be handled */
+> > +	default:
+> > +		p_err("unsupported kind: %s (%d)", btf_kind_str(btf_type), type_id);
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +/* Mark types, members, and member types. Compared to btfgen_record_field_relo,
+> > + * this function does not rely on the target spec for inferring members, but
+> > + * uses the associated BTF.
+> > + */
+> > +static int btfgen_record_types_match_relo(struct btfgen_info *info, struct bpf_core_spec *targ_spec)
 > 
-> Users can still access the older parent ns from the passed in cred, but I
-> was thinking of handling the transition point here. There's probably more
-> suitable hooks for that case.
+> Nit: Maybe btfgen_record_type_match_relo() ("type" singular), for
+> consistency with btfgen_record_type_relo()?
 
-Yes.
+Sure, changed.
+
+> > +{
+> > +	return btfgen_mark_types_match(info, targ_spec->root_type_id, false);
+> > +}
+> > +
+> >  static int btfgen_record_type_relo(struct btfgen_info *info, struct bpf_core_spec *targ_spec)
+> >  {
+> >  	return btfgen_mark_type(info, targ_spec->root_type_id, true);
+> > @@ -1882,6 +1987,8 @@ static int btfgen_record_reloc(struct btfgen_info *info, struct bpf_core_spec *r
+> >  	case BPF_CORE_TYPE_EXISTS:
+> >  	case BPF_CORE_TYPE_SIZE:
+> >  		return btfgen_record_type_relo(info, res);
+> > +	case BPF_CORE_TYPE_MATCHES:
+> > +		return btfgen_record_types_match_relo(info, res);
+> >  	case BPF_CORE_ENUMVAL_EXISTS:
+> >  	case BPF_CORE_ENUMVAL_VALUE:
+> >  		return btfgen_record_enumval_relo(info, res);
+> 
+> Aside from the minor nits, the patch looks good to me. Thanks!
+
+Thanks for your review!
+
+Daniel
+
+> Acked-by: Quentin Monnet <quentin@isovalent.com>
