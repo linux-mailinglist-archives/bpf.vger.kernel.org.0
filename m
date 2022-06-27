@@ -2,32 +2,32 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA52555CE6A
-	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 15:05:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A46255D222
+	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 15:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237497AbiF0Lsx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Jun 2022 07:48:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45234 "EHLO
+        id S235635AbiF0LiN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Jun 2022 07:38:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237367AbiF0LrF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Jun 2022 07:47:05 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB50DFCE;
-        Mon, 27 Jun 2022 04:39:12 -0700 (PDT)
+        with ESMTP id S235868AbiF0Lgy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Jun 2022 07:36:54 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 787BEF4B;
+        Mon, 27 Jun 2022 04:32:07 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 0F487B81123;
-        Mon, 27 Jun 2022 11:39:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 789AFC3411D;
-        Mon, 27 Jun 2022 11:39:09 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 21B54B81117;
+        Mon, 27 Jun 2022 11:32:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F326C341C7;
+        Mon, 27 Jun 2022 11:32:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1656329949;
-        bh=8ia3nNOVzZ5UNhPme1mGfZzE7vviwrDh22cP1FO2jrI=;
+        s=korg; t=1656329524;
+        bh=GmqmtaTI0/LiJ1Sct5tUvm1b/7X632fN2hVc8J/D6h0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SM5WAtnwXv9bpFBOVqerrKgs6LsY+UGNO3xbuXfiZVLTxHdmYS7u5WVUsuCAXTkE1
-         RJKvrey8oIoXkegGORIhLlNnE1N1qTy2vzg7KmaXVFtfc+vUi1Fb/tzK/V2Teg6Gnu
-         1or4RXuIAQUo7w4IjT+FietGwIflkLQHb2iDRYdc=
+        b=gskxtTM5yZmYp/GS4+76bHJk9tm2T+n5iHSn7mtfqBGs4EQSLb06qSER+qgYFOgWU
+         JdBrI1yc50FNj/35r5MhllKlczBklQCxR0vZy3ZQGSgvtqotLdpC7wF+07doh2VTEw
+         mTkOEHhyk3MdaUwnEs6itPAXoWOQx2GcySiB/+gQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -38,12 +38,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
         Jiri Olsa <jolsa@kernel.org>,
         "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Subject: [PATCH 5.18 032/181] tracing/kprobes: Check whether get_kretprobe() returns NULL in kretprobe_dispatcher()
-Date:   Mon, 27 Jun 2022 13:20:05 +0200
-Message-Id: <20220627111945.494369505@linuxfoundation.org>
+Subject: [PATCH 5.15 027/135] tracing/kprobes: Check whether get_kretprobe() returns NULL in kretprobe_dispatcher()
+Date:   Mon, 27 Jun 2022 13:20:34 +0200
+Message-Id: <20220627111938.948911559@linuxfoundation.org>
 X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20220627111944.553492442@linuxfoundation.org>
-References: <20220627111944.553492442@linuxfoundation.org>
+In-Reply-To: <20220627111938.151743692@linuxfoundation.org>
+References: <20220627111938.151743692@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -95,7 +95,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/kernel/trace/trace_kprobe.c
 +++ b/kernel/trace/trace_kprobe.c
-@@ -1718,8 +1718,17 @@ static int
+@@ -1733,8 +1733,17 @@ static int
  kretprobe_dispatcher(struct kretprobe_instance *ri, struct pt_regs *regs)
  {
  	struct kretprobe *rp = get_kretprobe(ri);
