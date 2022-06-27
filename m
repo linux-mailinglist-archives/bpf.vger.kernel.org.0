@@ -2,203 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B4C455B5BC
-	for <lists+bpf@lfdr.de>; Mon, 27 Jun 2022 05:21:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6474855D9BD
+	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 15:21:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbiF0DJH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 26 Jun 2022 23:09:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42890 "EHLO
+        id S232234AbiF0Gj4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Jun 2022 02:39:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230384AbiF0DJG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 26 Jun 2022 23:09:06 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78A2E21BC;
-        Sun, 26 Jun 2022 20:09:04 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id r9so4090342ljp.9;
-        Sun, 26 Jun 2022 20:09:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WvIC9OvUBfBvTPqKiHij6MJ+gTuN01q56rsASlI6Vw4=;
-        b=N4ePTGRVI2MbUavCF5Mr07vChNUUP9Ug6sycoWzNN846VPxMvy5OUFetl+mfFFEK90
-         COjDBwnM80/IFCJnc84ahmtOVMyAP59zt0By/C18yiI0oluLQXf37J2RiKH0QrxX01wG
-         J3V0UuPH5L4Q899OFl7oG2rIZjWSikE0eQP6eAO1twUtVP+BzTcfLyqpWShqTbfx3mhW
-         ziARONAC+fQejRJivwMB6G9lVLaKaTJe8osTQTwjMak/GhbBaycisUUIQWNim38/Ib2c
-         Xmo2rWzbuec5Vd6QsdUYjJ9Z6jg6QyPOS1g+SDBVKliDmBoSjAKM1KUyScQy1eSx+LDq
-         kMvg==
+        with ESMTP id S232386AbiF0Gjz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Jun 2022 02:39:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E258B100A
+        for <bpf@vger.kernel.org>; Sun, 26 Jun 2022 23:39:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1656311994;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=U7baKcmVh0uhuh+ZmBGa53jqLb2UYPCAjccnnH6jK0k=;
+        b=NXucSeTqtHMjZoEw1tMQpcxHK3XnuABsbc1aQ2lX2xv3tW4Tt6dtXje45BtLpxKiaCPP8K
+        KZYOmSyc1Y89UKiqgvbJIWKzx5toZxXiMyY/PRywjW5zNNkW5o5kWviZy9636uWeoHPMUc
+        dSx2D1x148RXiI8SQMxwTN5lsSnWjNs=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-130-qKQ5uzaHPyKztYT5-vyK3Q-1; Mon, 27 Jun 2022 02:39:49 -0400
+X-MC-Unique: qKQ5uzaHPyKztYT5-vyK3Q-1
+Received: by mail-wm1-f70.google.com with SMTP id p6-20020a05600c358600b003a0483b3c2eso1762487wmq.3
+        for <bpf@vger.kernel.org>; Sun, 26 Jun 2022 23:39:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WvIC9OvUBfBvTPqKiHij6MJ+gTuN01q56rsASlI6Vw4=;
-        b=HSEN/4fZjAluM6dqLIQ7Uk0NauDWEbicgTkpmWOWCSUdFKXrwBZm9+cIk16BReTRgx
-         1aQCymHZ6VrcJ4sDqiZ6yQnEIMiekv1TZc4Lbvyg/YBc9PLp0HsyRCGLvbIj/SyLmKi7
-         f4zOwWyUL9eMN67y0S3TYa6MmLpOvHsexPaauqeF8l+xWTUnh/EGYRJAgwa4PJFLUSFt
-         v1xL6BaoFhw8UZDEoe6WzM17LJ8w7Epn17Rv8nso/kiJI09kMpQR7HvlgpyVF3uc7ii8
-         nHXqiwWlur56NDRtLcE3PX/Il1ZEeXiElU9ALuxXFZmoBfRFRb9Xj2jozRkjsJEE3hpr
-         wpZQ==
-X-Gm-Message-State: AJIora/TaKVCEiPihGT8c2SC7lgPjwm2H3ynO+vj+XrKeL/7yGVkSPC1
-        0BRV7Dp2H7hXwBWb6ExP9JPOnr0Nl/OjkZKK+tU=
-X-Google-Smtp-Source: AGRyM1se/Xl2csUNLIaa15GXvPosumiIesoPofcb9H+G41ZaW5mACO49PGUcBi0NrOheV0NXPgqFw3EU9HzrHS4cG/A=
-X-Received: by 2002:a2e:b4b4:0:b0:25b:b56e:9c9d with SMTP id
- q20-20020a2eb4b4000000b0025bb56e9c9dmr4000703ljm.168.1656299342700; Sun, 26
- Jun 2022 20:09:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220625153439.513559-1-tanzixuan.me@gmail.com> <YrhxE4s0hLvbbibp@krava>
-In-Reply-To: <YrhxE4s0hLvbbibp@krava>
-From:   =?UTF-8?B?6LCt5qKT54WK?= <tanzixuan.me@gmail.com>
-Date:   Mon, 27 Jun 2022 11:08:34 +0800
-Message-ID: <CABwm_eT_LE6VbLMgT31yqW=tc_obLP=6E0jnMqVn1sMdWrVVNw@mail.gmail.com>
-Subject: Re: [PATCH] perf build: Suppress openssl v3 deprecation warnings in
- libcrypto feature test
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Zixuan Tan <tanzixuangg@gmail.com>, terrelln@fb.com,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=U7baKcmVh0uhuh+ZmBGa53jqLb2UYPCAjccnnH6jK0k=;
+        b=AmAZHl61Z2m1P41NrPdkHT+PhxfwKKXnjELK5JRfut/dUttqGcP8HjyDHVlDdCGWOo
+         3mmCQTBsVzFBvd79lbI+gF00zi4p8NiFNVlGr0eGRUBb35w84cSXof1pj4FrT3yv1Bt6
+         IwnnCPOdVS6418xu/kDF0p0I7VL9EgsC19tQXeWREPV7h98sUDmFEAECLnVdA7HDYUMl
+         BS80L9XxuqZhFBXrbsza/Ba7ChWLqwe/KRDFf56e7KSK6SYzJVR6etg+MJwPauDJT3Go
+         /HxWW1jUiPdmA09y8x7IYB+0IPonPjmuxPCL5RPNuRfjVH1z5udKxzCefMtPKor9q59z
+         ZN5A==
+X-Gm-Message-State: AJIora+9djcYvmRJUluGb12ePM49ub+lkc/VfeuUwtGUJA7FEgIJ+TcL
+        ivTxBLtz5suWQTk0TQGiUB0/72LDRsdyuLQ9GHa2KlovQ8gSmutoYf0OSiX8c8aZ68MHIbaI/wD
+        VmVl4U5klnqIH
+X-Received: by 2002:a1c:7719:0:b0:3a0:31a6:4469 with SMTP id t25-20020a1c7719000000b003a031a64469mr13386056wmi.20.1656311988762;
+        Sun, 26 Jun 2022 23:39:48 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1vfc26YvQIey3qttFGe5qu2ZyIXAHXaFMfl6hGpqk+G+5KirT06gbQyA+crLIwD71j66IUjig==
+X-Received: by 2002:a1c:7719:0:b0:3a0:31a6:4469 with SMTP id t25-20020a1c7719000000b003a031a64469mr13386024wmi.20.1656311988469;
+        Sun, 26 Jun 2022 23:39:48 -0700 (PDT)
+Received: from redhat.com ([2.54.45.90])
+        by smtp.gmail.com with ESMTPSA id bg21-20020a05600c3c9500b003a046549a85sm5777975wmb.37.2022.06.26.23.39.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 26 Jun 2022 23:39:47 -0700 (PDT)
+Date:   Mon, 27 Jun 2022 02:39:41 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Vadim Pasternak <vadimp@nvidia.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        linux-um@lists.infradead.org, netdev <netdev@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+        kvm <kvm@vger.kernel.org>,
+        "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>,
+        kangjie.xu@linux.alibaba.com
+Subject: Re: [PATCH v10 25/41] virtio_pci: struct virtio_pci_common_cfg add
+ queue_notify_data
+Message-ID: <20220627023841-mutt-send-email-mst@kernel.org>
+References: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
+ <20220624025621.128843-26-xuanzhuo@linux.alibaba.com>
+ <20220624025817-mutt-send-email-mst@kernel.org>
+ <CACGkMEseptD=45j3kQr0yciRxR679Jcig=292H07-RYC2vXmFQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACGkMEseptD=45j3kQr0yciRxR679Jcig=292H07-RYC2vXmFQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jun 26, 2022 at 10:45 PM Jiri Olsa <olsajiri@gmail.com> wrote:
->
-> On Sat, Jun 25, 2022 at 11:34:38PM +0800, Zixuan Tan wrote:
-> > With OpenSSL v3 installed, the libcrypto feature check fails as it use the
-> > deprecated MD5_* API (and is compiled with -Werror). The error message is
-> > as follows.
+On Mon, Jun 27, 2022 at 10:30:42AM +0800, Jason Wang wrote:
+> On Fri, Jun 24, 2022 at 2:59 PM Michael S. Tsirkin <mst@redhat.com> wrote:
 > >
-> > $ make tools/perf
-> > ```
-> > Makefile.config:778: No libcrypto.h found, disables jitted code injection,
-> > please install openssl-devel or libssl-dev
+> > On Fri, Jun 24, 2022 at 10:56:05AM +0800, Xuan Zhuo wrote:
+> > > Add queue_notify_data in struct virtio_pci_common_cfg, which comes from
+> > > here https://github.com/oasis-tcs/virtio-spec/issues/89
+> > >
+> > > For not breaks uABI, add a new struct virtio_pci_common_cfg_notify.
 > >
-> > Auto-detecting system features:
-> > ...                         dwarf: [ on  ]
-> > ...            dwarf_getlocations: [ on  ]
-> > ...                         glibc: [ on  ]
-> > ...                        libbfd: [ on  ]
-> > ...                libbfd-buildid: [ on  ]
-> > ...                        libcap: [ on  ]
-> > ...                        libelf: [ on  ]
-> > ...                       libnuma: [ on  ]
-> > ...        numa_num_possible_cpus: [ on  ]
-> > ...                       libperl: [ on  ]
-> > ...                     libpython: [ on  ]
-> > ...                     libcrypto: [ OFF ]
-> > ...                     libunwind: [ on  ]
-> > ...            libdw-dwarf-unwind: [ on  ]
-> > ...                          zlib: [ on  ]
-> > ...                          lzma: [ on  ]
-> > ...                     get_cpuid: [ on  ]
-> > ...                           bpf: [ on  ]
-> > ...                        libaio: [ on  ]
-> > ...                       libzstd: [ on  ]
-> > ...        disassembler-four-args: [ on  ]
-> > ```
+> > What exactly is meant by not breaking uABI?
+> > Users are supposed to be prepared for struct size to change ... no?
+> 
+> Not sure, any doc for this?
+> 
+> Thanks
+
+
+Well we have this:
+
+        The drivers SHOULD only map part of configuration structure
+        large enough for device operation.  The drivers MUST handle
+        an unexpectedly large \field{length}, but MAY check that \field{length}
+        is large enough for device operation.
+
+
+
+> 
 > >
-> > This is very confusing because the suggested library (on my Ubuntu 20.04
-> > it is libssl-dev) is already installed. As the test only checks for the
-> > presence of libcrypto, this commit suppresses the deprecation warning to
-> > allow the test to pass.
 > >
-> > Signed-off-by: Zixuan Tan <tanzixuan.me@gmail.com>
-> > ---
-> >  tools/build/feature/test-libcrypto.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
+> > > Since I want to add queue_reset after queue_notify_data, I submitted
+> > > this patch first.
+> > >
+> > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > Acked-by: Jason Wang <jasowang@redhat.com>
+> > > ---
+> > >  include/uapi/linux/virtio_pci.h | 7 +++++++
+> > >  1 file changed, 7 insertions(+)
+> > >
+> > > diff --git a/include/uapi/linux/virtio_pci.h b/include/uapi/linux/virtio_pci.h
+> > > index 3a86f36d7e3d..22bec9bd0dfc 100644
+> > > --- a/include/uapi/linux/virtio_pci.h
+> > > +++ b/include/uapi/linux/virtio_pci.h
+> > > @@ -166,6 +166,13 @@ struct virtio_pci_common_cfg {
+> > >       __le32 queue_used_hi;           /* read-write */
+> > >  };
+> > >
+> > > +struct virtio_pci_common_cfg_notify {
+> > > +     struct virtio_pci_common_cfg cfg;
+> > > +
+> > > +     __le16 queue_notify_data;       /* read-write */
+> > > +     __le16 padding;
+> > > +};
+> > > +
+> > >  /* Fields in VIRTIO_PCI_CAP_PCI_CFG: */
+> > >  struct virtio_pci_cfg_cap {
+> > >       struct virtio_pci_cap cap;
+> > > --
+> > > 2.31.0
 > >
-> > diff --git a/tools/build/feature/test-libcrypto.c b/tools/build/feature/test-libcrypto.c
-> > index a98174e0569c..31afff093d0b 100644
-> > --- a/tools/build/feature/test-libcrypto.c
-> > +++ b/tools/build/feature/test-libcrypto.c
-> > @@ -2,6 +2,12 @@
-> >  #include <openssl/sha.h>
-> >  #include <openssl/md5.h>
-> >
-> > +/*
-> > + * The MD5_* API have been deprecated since OpenSSL 3.0, which causes the
-> > + * feature test to fail silently. This is a workaround.
-> > + */
->
-> then we use these deprecated MD5 calls in util/genelf.c if libcrypto is detected,
-> so I wonder how come the rest of the compilation passed for you.. do you have
-> CONFIG_JITDUMP disabled?
->
-> thanks,
-> jirka
->
-No, CONFIG_JITDUMP is not disabled. I am using the default configuration.
 
-Yes, you are right. The rest of the compilation should fail, but it doesn't.
-I checked the verbose build commands. This seems to be the result of another
-inconsistency.
-
-If libcrypto is detected, the macro "HAVE_LIBCRYPTO_SUPPORT" will be
-defined, but in perf/util/genelf.c, "HAVE_LIBCRYPTO" without the "_SUPPORT"
-prefix is checked. This causes urandom always be used to create build id
-rather than MD5 and SHA1, no matter what the detection result is.
-
-In perf/Makefile.config, from line 776
-```
-ifndef NO_LIBCRYPTO
-  ifneq ($(feature-libcrypto), 1)
-    msg := $(warning No libcrypto.h found, disables jitted code injection,
-            please install openssl-devel or libssl-dev);
-    NO_LIBCRYPTO := 1
-  else                                  <-- if libcrypto feature detected
-    CFLAGS += -DHAVE_LIBCRYPTO_SUPPORT  <-- define this
-    EXTLIBS += -lcrypto
-    $(call detected,CONFIG_CRYPTO)
-  endif
-endif
-```
-
-In perf/util/genelf.c, from line 33
-```
-#ifdef HAVE_LIBCRYPTO                <-- but check this, it's always false
-
-#define BUILD_ID_MD5
-#undef BUILD_ID_SHA /* does not seem to work well when linked with Java */
-#undef BUILD_ID_URANDOM /* different uuid for each run */
-
-#ifdef BUILD_ID_SHA
-#include <openssl/sha.h>
-#endif
-
-#ifdef BUILD_ID_MD5
-#include <openssl/md5.h>
-#endif
-#endif                               <-- this block will be skipped
-```
-
-Maybe we should fix this, to really make use of libcrypto if it is available?
-
-Links:
- This commit include the genelf.c:
-  https://lore.kernel.org/all/1448874143-7269-3-git-send-email-eranian@google.com/T/#mb6d3e18bee4901b71a4d4ef4f406feaaf48346d9
- This commit include the feature test:
-  https://lore.kernel.org/all/1448874143-7269-3-git-send-email-eranian@google.com/T/#m12a2ababf8ad3e366d56d9efab870592e6ff60a5
-
-Thanks,
-Zixuan
-
-> > +#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-> > +
-> >  int main(void)
-> >  {
-> >       MD5_CTX context;
-> > --
-> > 2.34.1
-> >
