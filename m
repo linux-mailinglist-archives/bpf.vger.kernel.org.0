@@ -2,143 +2,213 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6671655C181
-	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 14:45:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66FC155C5D5
+	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 14:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239914AbiF0RSK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Jun 2022 13:18:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37838 "EHLO
+        id S234714AbiF0RZG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Jun 2022 13:25:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236200AbiF0RSJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Jun 2022 13:18:09 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6880613A
-        for <bpf@vger.kernel.org>; Mon, 27 Jun 2022 10:18:07 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id i25so8504924wrc.13
-        for <bpf@vger.kernel.org>; Mon, 27 Jun 2022 10:18:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Rx9f3FFpQHBCbk0ON6Xh6VW45WNeEZB24W/hAUNIOhc=;
-        b=G+D6o8B0JVucQW6+PhCQ5L2XRwfWedIWe5iLwmsIKnP8l2kIPE3ln4/ME0/NvRV+UI
-         IRq3HZNljewherNlCxkZNHbPRyhOKbLAJsPLf/122Lc0zDeUZ3DSYptMKEcEzzE5M49v
-         K7z5/G6X58efTmpm/XecTLJdA7JzogWXZL37jfBfaiP12a4vZimKbpMNVbZqbhlrQndn
-         amVSil4XRxHxN3Czg+9XDVPJzWWjWA1lGbD0M6Gf9a4KCdlQI4edBbYRGLimeSp7uaaN
-         pvrRhrhKcOF/RRlK5ucxsSdCE8jF8RFh7BplqDvHDLsP9MUYF1Emg8N/f0LtedmrcKxn
-         UcoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Rx9f3FFpQHBCbk0ON6Xh6VW45WNeEZB24W/hAUNIOhc=;
-        b=zJlurnyTOXNRkPQvgZLR1+jNX+qblHTGKVMo+5YCqqR8MJg9FNmRNoMj2Id14WTB10
-         D+394iFIpsmSAaSVnU1eGrVMEMu0CKsXcPQ+hHWEPPK64F5x98VwJ31w+KinTAePUHGb
-         5l6ASPTHD6a2FH9tU450esBTzS34ChviI6hiWBj77ygp7SPn5189WoDoEX6n+wggdZ0/
-         ixec4KW7rqDsiyqyq5lqhFd8Zvm8wVQMVYcpiHx8d0aGlzGF17Olo+WEEQDS1+w0/nD5
-         2/aLmjdzL0f4xIt6OMsjSbsC/mrVM6HUoWS7Q71zkSqgPl6C0fbVnKp7G0zarWWi6bDX
-         UikA==
-X-Gm-Message-State: AJIora9+MfF0CEOutkr0qPim+ioiRVwehoHoYtmBQ1rBUPODHqM7Vl+i
-        4npQRchmpS1qv1SyAP75k5eSgHedUoR8o8UVFb2vOw==
-X-Google-Smtp-Source: AGRyM1vXlEJ2cJEQvlLdrnPihXwK9o/E1cIAWChD1xuv8agkjMs9iJuTfwntYyHAZfhGP9MzEdXOJwWhE277bB/fsJI=
-X-Received: by 2002:a5d:6b91:0:b0:21b:bc0b:7282 with SMTP id
- n17-20020a5d6b91000000b0021bbc0b7282mr13477019wrx.375.1656350285740; Mon, 27
- Jun 2022 10:18:05 -0700 (PDT)
+        with ESMTP id S236368AbiF0RZF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Jun 2022 13:25:05 -0400
+Received: from sonic316-26.consmr.mail.ne1.yahoo.com (sonic316-26.consmr.mail.ne1.yahoo.com [66.163.187.152])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EAE512752
+        for <bpf@vger.kernel.org>; Mon, 27 Jun 2022 10:25:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1656350701; bh=jxel8bTjG3W3h1RD32LktqNRvAXqoxtEjoNyKlu4UI4=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=Pw19L37gV+8n5LICrnZzd3+bB3AMwtQAi2ogf0LYs5ZxB6folivGMAYHOIKPC43HbETw240MYdQ+WnkBJhqBDLidr7xnWMqwEIT9u2zQOYDOOfBVuLepTrRhkaYWNdCo0JCtaYuR3beB5zhxi7TP05lunI72dEW9JHDiC3HdaAteCXwLNrPnb1pE1m8XAnSpJX3wb+2WQIgO+8xvLGFc5XMkNwWkikEJ2enWY/wQRwMcFqHi9sZbYfOTCF3fLaKGtyTdVELjtV0EhyK/a9qeRo0Z/1PqPw39Gbrpp6+SrOiO1/9IcSprPsXcVlG11IW4s9xJhO+fL8eiipHdU37VNw==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1656350701; bh=x8SDBHhPSDxecqI7yLXEoUaOYcPThrh5OOqkXQa5QMi=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=QNXKT4fgC45mMKDqHqt9oEx8DoZjn3bdWbWsA622BTgNXVUVuv4Q6mvgMy4GXxp3IGqBnH87fU5ccFlwV9B88zGBo6U8u57BFCHZYkxxVvHkF1+aqbxK9qIN2i1Fpz9bwf22v4UhyeBuzOeUKzoAG7UURD9rNJnK5JqMHadQc4gNC8iSYik2+mU60k+W0QOnpz2bxpU4tLKfO1xwys/yus3FTwSX3Un17CPPNfolkxagIjQbdCRV7aU8qsrpHNCmz0/WkRBp/85YwY00RoO/sYmG5pnUqAvu8vnu3eeNWdCWAHsrGkfb+GydnhDDnnKZaLKjZhUXEpmrBjR2nRgF2Q==
+X-YMail-OSG: JMvsJk0VM1mX9Zcld89SIAeehjI8Fif.qvkNdYzMOvrTG_DThf1WAfzHUfMbgbw
+ 9QrQl0A1zrD815FiXJGhmZ87VfMFx0NoySGFrncX3v4fnapVh4lNTun3zMH8gU85utUwlIpom3IP
+ Wn5u4gTryQeEgbgx8jglnqVfKhi07XBq7qsCnt9lu9JVkX9N78DG01xvpzxobq2HFg0q8h_KZpDX
+ p69aaw4GeOcWZhdM9hgZX7DL8bUb3Snv4IbO03lymDOb0ISl_itLSxtoEnXiYLCu3MvRDQ63s5tY
+ GJrTbAOg8YL_XXSQ6ZmI4Mi4lL8AcJsVSgT2wxj4YyeLxAQMPNvw9YL1QvP3r9zOaoFC.28yGAHQ
+ iYKUSPRA5tb.lpclmGuV2dijok7nxaBzUcbmLcU0kAaH3FwCPk5tuMrQOy7g_D5pf78Pg06YErxJ
+ htHhiVbR.CzrLU.ByqJ24MzgXqc2ReIkZYwCMStDUOULit8yhnIUvOjVaPzbsLkLEyxHK.6aEbCZ
+ ibPajYXPE5B.Xcb8mPL6wOd3ySI8kyXQVILcELddVmQNTkmLkNI8V3VGAM1IUaPkP6Z5oSSM2GyK
+ pFb8FYIUPbnFsv6p5JfAAj3juXiwtKFpc1vpUGbTTjDby38PbQLNAVZLuVKlUYLP8hvsyVrhApqH
+ 8ejU7OSWjdXGZWeQR7AsV77An8AvLJSmGWPQ_hfNhj1eXUOOP8bb2STvg1GvI0Q5RXN_H2jMGrYO
+ nhmPtEnijIydxFBDtGyWPOdWjaCo3wacgnMGaITw7cgtaVJgotcl52Z7sZoRMGinMJMf5uL19WxC
+ 0TZaqp9.NzH6c2C8KHgLkE7j0eVila9ifK3JNjb3eqwtNFtILMkjAaroSgROduiNym6z8dAfEC6I
+ WQ.2Pa41Lm4fsEZBmGpfmwbQ5lhLtLqSdTpT_K_pQbMyS2hz8r4.Z3cYdfSaKXjywNJq4tlt_y28
+ OC4NCfSjRnxQthCaP8d5bGFv0JrIOw1GhTao7i0BnSjVp97PNQfS7A1LGP33DzGzS32PaaasqQ54
+ YNfTQ_ioiicWiFxUsr47SoPqI8i1FIvcnC38w520ne5ek5hKy0sDPDHkhK3rqT9A8V1OIJdVKZqz
+ tlPsbdEKTF_BwWIYC8okpnA3mkVM14a4wkeuAveKdvPByxm6IksY_oNR4uPMke3o3syXj76V9OUe
+ Tq0zYHhKWy5ryw3sZ6rFONv50n4t4CKGDgY6vGlRUnapYHKevtw3ONUNmX_N8VnL.v5q20DguWnp
+ 7huKasCY5w5EiK7dFgooV0pKiwGvzmT8iBJ9.t5z659Heb6WvkjXwAOC9ltEDKiS.cA.dvaF4F1i
+ lQG.HGAEZEgV8NMFV84KxJhHU4ag6_A8wtM9Gl4hD3HdVXy2UVW5Zys8hwYjEpG1JLvvYtYKusnS
+ c16QehoAWxGH7eUn.DpiwLoys6QAWaUdj2pHHdz6qVWnNaV5y6E.FkhZht2j56EaqRph4Hy7EDmh
+ FErLmvWPw2HPSCxIH9hdkDHWCqTvER8xsBZ.G3u8MWZDtP17Vcqv2xsDVDKDU_lAatgBWiiAuGQb
+ 9AA4j2sgBYJS74.n.0jpoN3kr2WbG1pCbNI5H4sLKMlPByYBse0VJQXEup63kgtMPQF2XzVjVPcR
+ ryEYbzAyKblSHQX0ApQ0lrSr4PIwTdeJ_6gesPK7bvKZ3G9TypZ16Z3XPCY6nbB8.BnpIHbN0yux
+ hbOBy3MkZfs1T4Wn8ZbafHACYlD9xm36WHjw8hHatALeS_ClAIrrg8gpOMPNIKpocUjI.dHmlgk3
+ DfoW6VYBW83BAoTMa1EHnznfVSEEoVLr2qeVdxNkQvAQ_e1kZDyi_B_khxZQsiHuwDVY_r9Zhv9F
+ EBhFRwE_WqqxPbXKufQXytzgQ9PbVTHiI3PDu2ONleVFr_zzPX88k4fLhi2qbRLxE.LDvxudSduj
+ WlovE77tB4tAW8vLcZV7AuVvHHxObq7aKtnHlYqVaRNxHWA5yHh2T06lFDaLbaA8Z3ab9uNJTvGj
+ nhZR1e794a2RNkTYIqStLQjzAYSPABFwF4PN8WzLRW2r9j1Czykt8ZvpyDckA14ZKS.DSOgyXpmk
+ RondCQ1Msr4Zejta_NLWU7VrNJdNeFtgkNaO2TFsBG7VMVKolV7oIBmBxCi9gIEaMsNgNHxBOzc2
+ f6r_bq6uyFern8spPEuODsWvWcKMNNsBwoKBuD2yHDwNABFFVuNy.yCde2dDw4lShVEKdnulTqVv
+ HG7SNqXSHjUxsvhWugw4ZRwXIFlS29o56jyMr0fEUElOgt.zMhqwQKfsa6BuQ2VcIXFRI
+X-Sonic-MF: <casey@schaufler-ca.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic316.consmr.mail.ne1.yahoo.com with HTTP; Mon, 27 Jun 2022 17:25:01 +0000
+Received: by hermes--production-ne1-7459d5c5c9-fdkvw (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 220ceb13a755144268a58ef99922991a;
+          Mon, 27 Jun 2022 17:24:57 +0000 (UTC)
+Message-ID: <1c0be7d4-3f81-3117-6fb7-4fbd84aaeea7@schaufler-ca.com>
+Date:   Mon, 27 Jun 2022 10:24:56 -0700
 MIME-Version: 1.0
-References: <20220614014714.1407239-1-irogers@google.com>
-In-Reply-To: <20220614014714.1407239-1-irogers@google.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 27 Jun 2022 10:17:51 -0700
-Message-ID: <CAP-5=fVg9ZVOONuiJZopC7RyuEXvP8t79EFjQF0GCcV=atGbCg@mail.gmail.com>
-Subject: Re: [PATCH] perf bpf: 8 byte align bpil data
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     Stephane Eranian <eranian@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Song Liu <songliubraving@fb.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH 0/2] Introduce security_create_user_ns()
+Content-Language: en-US
+To:     Christian Brauner <brauner@kernel.org>,
+        Frederick Lawler <fred@cloudflare.com>
+Cc:     Paul Moore <paul@paul-moore.com>, kpsingh@kernel.org,
+        revest@chromium.org, jackmanb@chromium.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        jmorris@namei.org, serge@hallyn.com, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@cloudflare.com,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20220621233939.993579-1-fred@cloudflare.com>
+ <ce1653b1-feb0-1a99-0e97-8dfb289eeb79@schaufler-ca.com>
+ <b72c889a-4a50-3330-baae-3bbf065e7187@cloudflare.com>
+ <CAHC9VhSTkEMT90Tk+=iTyp3npWEm+3imrkFVX2qb=XsOPp9F=A@mail.gmail.com>
+ <20220627121137.cnmctlxxtcgzwrws@wittgenstein>
+ <b7c23d54-d196-98d1-8187-605f6d4dca4d@cloudflare.com>
+ <20220627155639.b5jky27loen3ydrz@wittgenstein>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <20220627155639.b5jky27loen3ydrz@wittgenstein>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Mailer: WebService/1.1.20280 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 13, 2022 at 6:47 PM Ian Rogers <irogers@google.com> wrote:
->
-> bpil data is accessed assuming 64-bit alignment resulting in undefined
-> behavior as the data is just byte aligned. With an -fsanitize=undefined
-> build the following errors are observed:
->
-> $ sudo perf record -a sleep 1
-> util/bpf-event.c:310:22: runtime error: load of misaligned address 0x55f61084520f for type '__u64', which requires 8 byte alignment
-> 0x55f61084520f: note: pointer points here
->  a8 fe ff ff 3c  51 d3 c0 ff ff ff ff 04  84 d3 c0 ff ff ff ff d8  aa d3 c0 ff ff ff ff a4  c0 d3 c0
->              ^
-> util/bpf-event.c:311:20: runtime error: load of misaligned address 0x55f61084522f for type '__u32', which requires 4 byte alignment
-> 0x55f61084522f: note: pointer points here
->  ff ff ff ff c7  17 00 00 f1 02 00 00 1f  04 00 00 58 04 00 00 00  00 00 00 0f 00 00 00 63  02 00 00
->              ^
-> util/bpf-event.c:198:33: runtime error: member access within misaligned address 0x55f61084523f for type 'const struct bpf_func_info', which requires 4 byte alignment
-> 0x55f61084523f: note: pointer points here
->  58 04 00 00 00  00 00 00 0f 00 00 00 63  02 00 00 3b 00 00 00 ab  02 00 00 44 00 00 00 14  03 00 00
->
-> Correct this by rouding up the data sizes and aligning the pointers.
+On 6/27/2022 8:56 AM, Christian Brauner wrote:
+> On Mon, Jun 27, 2022 at 10:51:48AM -0500, Frederick Lawler wrote:
+>> On 6/27/22 7:11 AM, Christian Brauner wrote:
+>>> On Thu, Jun 23, 2022 at 11:21:37PM -0400, Paul Moore wrote:
+>>>> On Wed, Jun 22, 2022 at 10:24 AM Frederick Lawler <fred@cloudflare.com> wrote:
+>>>>> On 6/21/22 7:19 PM, Casey Schaufler wrote:
+>>>>>> On 6/21/2022 4:39 PM, Frederick Lawler wrote:
+>>>>>>> While creating a LSM BPF MAC policy to block user namespace creation, we
+>>>>>>> used the LSM cred_prepare hook because that is the closest hook to
+>>>>>>> prevent
+>>>>>>> a call to create_user_ns().
+>>>>>>>
+>>>>>>> The calls look something like this:
+>>>>>>>
+>>>>>>>        cred = prepare_creds()
+>>>>>>>            security_prepare_creds()
+>>>>>>>                call_int_hook(cred_prepare, ...
+>>>>>>>        if (cred)
+>>>>>>>            create_user_ns(cred)
+>>>>>>>
+>>>>>>> We noticed that error codes were not propagated from this hook and
+>>>>>>> introduced a patch [1] to propagate those errors.
+>>>>>>>
+>>>>>>> The discussion notes that security_prepare_creds()
+>>>>>>> is not appropriate for MAC policies, and instead the hook is
+>>>>>>> meant for LSM authors to prepare credentials for mutation. [2]
+>>>>>>>
+>>>>>>> Ultimately, we concluded that a better course of action is to introduce
+>>>>>>> a new security hook for LSM authors. [3]
+>>>>>>>
+>>>>>>> This patch set first introduces a new security_create_user_ns() function
+>>>>>>> and create_user_ns LSM hook, then marks the hook as sleepable in BPF.
+>>>>>> Why restrict this hook to user namespaces? It seems that an LSM that
+>>>>>> chooses to preform controls on user namespaces may want to do so for
+>>>>>> network namespaces as well.
+>>>>> IIRC, CLONE_NEWUSER is the only namespace flag that does not require
+>>>>> CAP_SYS_ADMIN. There is a security use case to prevent this namespace
+>>>>> from being created within an unprivileged environment. I'm not opposed
+>>>>> to a more generic hook, but I don't currently have a use case to block
+>>>>> any others. We can also say the same is true for the other namespaces:
+>>>>> add this generic security function to these too.
+>>>>>
+>>>>> I'm curious what others think about this too.
+>>>> While user namespaces are obviously one of the more significant
+>>>> namespaces from a security perspective, I do think it seems reasonable
+>>>> that the LSMs could benefit from additional namespace creation hooks.
+>>>> However, I don't think we need to do all of them at once, starting
+>>>> with a userns hook seems okay to me.
+>>>>
+>>>> I also think that using the same LSM hook as an access control point
+>>>> for all of the different namespaces would be a mistake.  At the very
+>>> Agreed. >
+>>>> least we would need to pass a flag or some form of context to the hook
+>>>> to indicate which new namespace(s) are being requested and I fear that
+>>>> is a problem waiting to happen.  That isn't to say someone couldn't
+>>>> mistakenly call the security_create_user_ns(...) from the mount
+>>>> namespace code, but I suspect that is much easier to identify as wrong
+>>>> than the equivalent security_create_ns(USER, ...).
+>>> Yeah, I think that's a pretty unlikely scenario.
+>>>
+>>>> We also should acknowledge that while in most cases the current task's
+>>>> credentials are probably sufficient to make any LSM access control
+>>>> decisions around namespace creation, it's possible that for some
+>>>> namespaces we would need to pass additional, namespace specific info
+>>>> to the LSM.  With a shared LSM hook this could become rather awkward.
+>>> Agreed.
+>>>
+>>>>>> Also, the hook seems backwards. You should
+>>>>>> decide if the creation of the namespace is allowed before you create it.
+>>>>>> Passing the new namespace to a function that checks to see creating a
+>>>>>> namespace is allowed doesn't make a lot off sense.
+>>>>> I think having more context to a security hook is a good thing.
+>>>> This is one of the reasons why I usually like to see at least one LSM
+>>>> implementation to go along with every new/modified hook.  The
+>>>> implementation forces you to think about what information is necessary
+>>>> to perform a basic access control decision; sometimes it isn't always
+>>>> obvious until you have to write the access control :)
+>>> I spoke to Frederick at length during LSS and as I've been given to
+>>> understand there's a eBPF program that would immediately use this new
+>>> hook. Now I don't want to get into the whole "Is the eBPF LSM hook
+>>> infrastructure an LSM" but I think we can let this count as a legitimate
+>>> first user of this hook/code.
 
-Happy Monday, polite ping!
+Yes, although it would be really helpful if there were a recognized upstream
+for eBPF programs so that we could see not only that the hook is used but how
+it is being used. It is possible (even likely) that someone will want to change
+either the interface or the caller some day. Without having the eBPF that
+depends on it, it's hard to determine if a change would be a regression.
 
-Thanks,
-Ian
+>>>
+>>>> [aside: If you would like to explore the SELinux implementation let me
+>>>> know, I'm happy to work with you on this.  I suspect Casey and the
+>>>> other LSM maintainers would also be willing to do the same for their
+>>>> LSMs.]
+>>>>
+>> I can take a shot at making a SELinux implementation, but the question
+>> becomes: is that for v2 or a later patch? I don't think the implementation
+>> for SELinux would be too complicated (i.e. make a call to avc_has_perm()?)
+>> but, testing and revisions might take a bit longer.
+>>
+>>>> In this particular case I think the calling task's credentials are
+>>>> generally all that is needed.  You mention that the newly created
+>>> Agreed.
+>>>
+>>>> namespace would be helpful, so I'll ask: what info in the new ns do
+>>>> you believe would be helpful in making an access decision about its
+>>>> creation?
+>>>>
+>> In the other thread [1], there was mention of xattr mapping support. As I
+>> understand Caseys response to this thread [2], that feature is no longer
+>> requested for this hook.
+> I think that is an orthogonal problem at least wrt to this hook.
 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/util/bpf-utils.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+Agreed. It was always a look deeply into the future sort of thing.
+At this point I don't see anything blocking the proposed hook moving
+forward.
+
 >
-> diff --git a/tools/perf/util/bpf-utils.c b/tools/perf/util/bpf-utils.c
-> index e271e05e51bc..80b1d2b3729b 100644
-> --- a/tools/perf/util/bpf-utils.c
-> +++ b/tools/perf/util/bpf-utils.c
-> @@ -149,11 +149,10 @@ get_bpf_prog_info_linear(int fd, __u64 arrays)
->                 count = bpf_prog_info_read_offset_u32(&info, desc->count_offset);
->                 size  = bpf_prog_info_read_offset_u32(&info, desc->size_offset);
->
-> -               data_len += count * size;
-> +               data_len += roundup(count * size, sizeof(__u64));
->         }
->
->         /* step 3: allocate continuous memory */
-> -       data_len = roundup(data_len, sizeof(__u64));
->         info_linear = malloc(sizeof(struct perf_bpil) + data_len);
->         if (!info_linear)
->                 return ERR_PTR(-ENOMEM);
-> @@ -180,7 +179,7 @@ get_bpf_prog_info_linear(int fd, __u64 arrays)
->                 bpf_prog_info_set_offset_u64(&info_linear->info,
->                                              desc->array_offset,
->                                              ptr_to_u64(ptr));
-> -               ptr += count * size;
-> +               ptr += roundup(count * size, sizeof(__u64));
->         }
->
->         /* step 5: call syscall again to get required arrays */
-> --
-> 2.36.1.476.g0c4daa206d-goog
->
+>> Users can still access the older parent ns from the passed in cred, but I
+>> was thinking of handling the transition point here. There's probably more
+>> suitable hooks for that case.
+> Yes.
