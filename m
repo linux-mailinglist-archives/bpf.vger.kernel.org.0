@@ -2,37 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5AFB55D50E
-	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 15:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37C9A55D499
+	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 15:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241118AbiF0VSE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Mon, 27 Jun 2022 17:18:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57448 "EHLO
+        id S241074AbiF0VQJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Mon, 27 Jun 2022 17:16:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238090AbiF0VSA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Jun 2022 17:18:00 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02E9E186DB
-        for <bpf@vger.kernel.org>; Mon, 27 Jun 2022 14:17:58 -0700 (PDT)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 25RJ1QlV015391
-        for <bpf@vger.kernel.org>; Mon, 27 Jun 2022 14:17:58 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3gwwv75pf8-2
+        with ESMTP id S238386AbiF0VQI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Jun 2022 17:16:08 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E3A71838A
+        for <bpf@vger.kernel.org>; Mon, 27 Jun 2022 14:16:07 -0700 (PDT)
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25RJ1QpS004938
+        for <bpf@vger.kernel.org>; Mon, 27 Jun 2022 14:16:06 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3gx03ywd10-10
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 27 Jun 2022 14:17:58 -0700
-Received: from twshared16308.14.prn3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Mon, 27 Jun 2022 14:16:06 -0700
+Received: from snc-exhub201.TheFacebook.com (2620:10d:c085:21d::7) by
+ snc-exhub102.TheFacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28; Mon, 27 Jun 2022 14:16:00 -0700
+Received: from twshared31479.05.prn5.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Mon, 27 Jun 2022 14:17:56 -0700
+ 15.1.2375.28; Mon, 27 Jun 2022 14:15:49 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 2E3361BAC27CC; Mon, 27 Jun 2022 14:15:42 -0700 (PDT)
+        id 44BBF1BAC27D5; Mon, 27 Jun 2022 14:15:44 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
 CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH v2 bpf-next 06/15] libbpf: clean up perfbuf APIs
-Date:   Mon, 27 Jun 2022 14:15:18 -0700
-Message-ID: <20220627211527.2245459-7-andrii@kernel.org>
+Subject: [PATCH v2 bpf-next 07/15] libbpf: remove prog_info_linear APIs
+Date:   Mon, 27 Jun 2022 14:15:19 -0700
+Message-ID: <20220627211527.2245459-8-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220627211527.2245459-1-andrii@kernel.org>
 References: <20220627211527.2245459-1-andrii@kernel.org>
@@ -40,8 +44,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: eUjNM5UcpIQIJDblri22_j28WWDYz2ta
-X-Proofpoint-ORIG-GUID: eUjNM5UcpIQIJDblri22_j28WWDYz2ta
+X-Proofpoint-GUID: bEVNCY-rmpNpCbLNLO-c66a8yxDEN5PR
+X-Proofpoint-ORIG-GUID: bEVNCY-rmpNpCbLNLO-c66a8yxDEN5PR
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
  definitions=2022-06-27_06,2022-06-24_01,2022-06-22_01
@@ -55,254 +59,365 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Remove deprecated perfbuf APIs and clean up opts structs.
+Remove prog_info_linear-related APIs previously used by perf.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/libbpf.c   | 54 +++++++-----------------------
- tools/lib/bpf/libbpf.h   | 71 ++++------------------------------------
- tools/lib/bpf/libbpf.map |  5 ---
- 3 files changed, 18 insertions(+), 112 deletions(-)
+ tools/lib/bpf/libbpf.c   | 248 ---------------------------------------
+ tools/lib/bpf/libbpf.h   |  66 -----------
+ tools/lib/bpf/libbpf.map |   3 -
+ 3 files changed, 317 deletions(-)
 
 diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index c0150a7dbd81..38dc00e440c3 100644
+index 38dc00e440c3..cd06989812c9 100644
 --- a/tools/lib/bpf/libbpf.c
 +++ b/tools/lib/bpf/libbpf.c
-@@ -11975,6 +11975,9 @@ struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map)
- 	return link;
+@@ -12509,254 +12509,6 @@ int perf_buffer__consume(struct perf_buffer *pb)
+ 	return 0;
  }
  
-+typedef enum bpf_perf_event_ret (*bpf_perf_event_print_t)(struct perf_event_header *hdr,
-+							  void *private_data);
-+
- static enum bpf_perf_event_ret
- perf_event_read_simple(void *mmap_mem, size_t mmap_size, size_t page_size,
- 		       void **copy_mem, size_t *copy_size,
-@@ -12023,12 +12026,6 @@ perf_event_read_simple(void *mmap_mem, size_t mmap_size, size_t page_size,
- 	return libbpf_err(ret);
- }
- 
--__attribute__((alias("perf_event_read_simple")))
--enum bpf_perf_event_ret
--bpf_perf_event_read_simple(void *mmap_mem, size_t mmap_size, size_t page_size,
--			   void **copy_mem, size_t *copy_size,
--			   bpf_perf_event_print_t fn, void *private_data);
+-struct bpf_prog_info_array_desc {
+-	int	array_offset;	/* e.g. offset of jited_prog_insns */
+-	int	count_offset;	/* e.g. offset of jited_prog_len */
+-	int	size_offset;	/* > 0: offset of rec size,
+-				 * < 0: fix size of -size_offset
+-				 */
+-};
 -
- struct perf_buffer;
- 
- struct perf_buffer_params {
-@@ -12162,12 +12159,11 @@ perf_buffer__open_cpu_buf(struct perf_buffer *pb, struct perf_event_attr *attr,
- static struct perf_buffer *__perf_buffer__new(int map_fd, size_t page_cnt,
- 					      struct perf_buffer_params *p);
- 
--DEFAULT_VERSION(perf_buffer__new_v0_6_0, perf_buffer__new, LIBBPF_0.6.0)
--struct perf_buffer *perf_buffer__new_v0_6_0(int map_fd, size_t page_cnt,
--					    perf_buffer_sample_fn sample_cb,
--					    perf_buffer_lost_fn lost_cb,
--					    void *ctx,
--					    const struct perf_buffer_opts *opts)
-+struct perf_buffer *perf_buffer__new(int map_fd, size_t page_cnt,
-+				     perf_buffer_sample_fn sample_cb,
-+				     perf_buffer_lost_fn lost_cb,
-+				     void *ctx,
-+				     const struct perf_buffer_opts *opts)
- {
- 	struct perf_buffer_params p = {};
- 	struct perf_event_attr attr = {};
-@@ -12189,22 +12185,10 @@ struct perf_buffer *perf_buffer__new_v0_6_0(int map_fd, size_t page_cnt,
- 	return libbpf_ptr(__perf_buffer__new(map_fd, page_cnt, &p));
- }
- 
--COMPAT_VERSION(perf_buffer__new_deprecated, perf_buffer__new, LIBBPF_0.0.4)
--struct perf_buffer *perf_buffer__new_deprecated(int map_fd, size_t page_cnt,
--						const struct perf_buffer_opts *opts)
+-static struct bpf_prog_info_array_desc bpf_prog_info_array_desc[] = {
+-	[BPF_PROG_INFO_JITED_INSNS] = {
+-		offsetof(struct bpf_prog_info, jited_prog_insns),
+-		offsetof(struct bpf_prog_info, jited_prog_len),
+-		-1,
+-	},
+-	[BPF_PROG_INFO_XLATED_INSNS] = {
+-		offsetof(struct bpf_prog_info, xlated_prog_insns),
+-		offsetof(struct bpf_prog_info, xlated_prog_len),
+-		-1,
+-	},
+-	[BPF_PROG_INFO_MAP_IDS] = {
+-		offsetof(struct bpf_prog_info, map_ids),
+-		offsetof(struct bpf_prog_info, nr_map_ids),
+-		-(int)sizeof(__u32),
+-	},
+-	[BPF_PROG_INFO_JITED_KSYMS] = {
+-		offsetof(struct bpf_prog_info, jited_ksyms),
+-		offsetof(struct bpf_prog_info, nr_jited_ksyms),
+-		-(int)sizeof(__u64),
+-	},
+-	[BPF_PROG_INFO_JITED_FUNC_LENS] = {
+-		offsetof(struct bpf_prog_info, jited_func_lens),
+-		offsetof(struct bpf_prog_info, nr_jited_func_lens),
+-		-(int)sizeof(__u32),
+-	},
+-	[BPF_PROG_INFO_FUNC_INFO] = {
+-		offsetof(struct bpf_prog_info, func_info),
+-		offsetof(struct bpf_prog_info, nr_func_info),
+-		offsetof(struct bpf_prog_info, func_info_rec_size),
+-	},
+-	[BPF_PROG_INFO_LINE_INFO] = {
+-		offsetof(struct bpf_prog_info, line_info),
+-		offsetof(struct bpf_prog_info, nr_line_info),
+-		offsetof(struct bpf_prog_info, line_info_rec_size),
+-	},
+-	[BPF_PROG_INFO_JITED_LINE_INFO] = {
+-		offsetof(struct bpf_prog_info, jited_line_info),
+-		offsetof(struct bpf_prog_info, nr_jited_line_info),
+-		offsetof(struct bpf_prog_info, jited_line_info_rec_size),
+-	},
+-	[BPF_PROG_INFO_PROG_TAGS] = {
+-		offsetof(struct bpf_prog_info, prog_tags),
+-		offsetof(struct bpf_prog_info, nr_prog_tags),
+-		-(int)sizeof(__u8) * BPF_TAG_SIZE,
+-	},
+-
+-};
+-
+-static __u32 bpf_prog_info_read_offset_u32(struct bpf_prog_info *info,
+-					   int offset)
 -{
--	return perf_buffer__new_v0_6_0(map_fd, page_cnt,
--				       opts ? opts->sample_cb : NULL,
--				       opts ? opts->lost_cb : NULL,
--				       opts ? opts->ctx : NULL,
--				       NULL);
+-	__u32 *array = (__u32 *)info;
+-
+-	if (offset >= 0)
+-		return array[offset / sizeof(__u32)];
+-	return -(int)offset;
 -}
 -
--DEFAULT_VERSION(perf_buffer__new_raw_v0_6_0, perf_buffer__new_raw, LIBBPF_0.6.0)
--struct perf_buffer *perf_buffer__new_raw_v0_6_0(int map_fd, size_t page_cnt,
--						struct perf_event_attr *attr,
--						perf_buffer_event_fn event_cb, void *ctx,
--						const struct perf_buffer_raw_opts *opts)
-+struct perf_buffer *perf_buffer__new_raw(int map_fd, size_t page_cnt,
-+					 struct perf_event_attr *attr,
-+					 perf_buffer_event_fn event_cb, void *ctx,
-+					 const struct perf_buffer_raw_opts *opts)
- {
- 	struct perf_buffer_params p = {};
- 
-@@ -12224,20 +12208,6 @@ struct perf_buffer *perf_buffer__new_raw_v0_6_0(int map_fd, size_t page_cnt,
- 	return libbpf_ptr(__perf_buffer__new(map_fd, page_cnt, &p));
- }
- 
--COMPAT_VERSION(perf_buffer__new_raw_deprecated, perf_buffer__new_raw, LIBBPF_0.0.4)
--struct perf_buffer *perf_buffer__new_raw_deprecated(int map_fd, size_t page_cnt,
--						    const struct perf_buffer_raw_opts *opts)
+-static __u64 bpf_prog_info_read_offset_u64(struct bpf_prog_info *info,
+-					   int offset)
 -{
--	LIBBPF_OPTS(perf_buffer_raw_opts, inner_opts,
--		.cpu_cnt = opts->cpu_cnt,
--		.cpus = opts->cpus,
--		.map_keys = opts->map_keys,
--	);
+-	__u64 *array = (__u64 *)info;
 -
--	return perf_buffer__new_raw_v0_6_0(map_fd, page_cnt, opts->attr,
--					   opts->event_cb, opts->ctx, &inner_opts);
+-	if (offset >= 0)
+-		return array[offset / sizeof(__u64)];
+-	return -(int)offset;
 -}
 -
- static struct perf_buffer *__perf_buffer__new(int map_fd, size_t page_cnt,
- 					      struct perf_buffer_params *p)
- {
+-static void bpf_prog_info_set_offset_u32(struct bpf_prog_info *info, int offset,
+-					 __u32 val)
+-{
+-	__u32 *array = (__u32 *)info;
+-
+-	if (offset >= 0)
+-		array[offset / sizeof(__u32)] = val;
+-}
+-
+-static void bpf_prog_info_set_offset_u64(struct bpf_prog_info *info, int offset,
+-					 __u64 val)
+-{
+-	__u64 *array = (__u64 *)info;
+-
+-	if (offset >= 0)
+-		array[offset / sizeof(__u64)] = val;
+-}
+-
+-struct bpf_prog_info_linear *
+-bpf_program__get_prog_info_linear(int fd, __u64 arrays)
+-{
+-	struct bpf_prog_info_linear *info_linear;
+-	struct bpf_prog_info info = {};
+-	__u32 info_len = sizeof(info);
+-	__u32 data_len = 0;
+-	int i, err;
+-	void *ptr;
+-
+-	if (arrays >> BPF_PROG_INFO_LAST_ARRAY)
+-		return libbpf_err_ptr(-EINVAL);
+-
+-	/* step 1: get array dimensions */
+-	err = bpf_obj_get_info_by_fd(fd, &info, &info_len);
+-	if (err) {
+-		pr_debug("can't get prog info: %s", strerror(errno));
+-		return libbpf_err_ptr(-EFAULT);
+-	}
+-
+-	/* step 2: calculate total size of all arrays */
+-	for (i = BPF_PROG_INFO_FIRST_ARRAY; i < BPF_PROG_INFO_LAST_ARRAY; ++i) {
+-		bool include_array = (arrays & (1UL << i)) > 0;
+-		struct bpf_prog_info_array_desc *desc;
+-		__u32 count, size;
+-
+-		desc = bpf_prog_info_array_desc + i;
+-
+-		/* kernel is too old to support this field */
+-		if (info_len < desc->array_offset + sizeof(__u32) ||
+-		    info_len < desc->count_offset + sizeof(__u32) ||
+-		    (desc->size_offset > 0 && info_len < desc->size_offset))
+-			include_array = false;
+-
+-		if (!include_array) {
+-			arrays &= ~(1UL << i);	/* clear the bit */
+-			continue;
+-		}
+-
+-		count = bpf_prog_info_read_offset_u32(&info, desc->count_offset);
+-		size  = bpf_prog_info_read_offset_u32(&info, desc->size_offset);
+-
+-		data_len += count * size;
+-	}
+-
+-	/* step 3: allocate continuous memory */
+-	data_len = roundup(data_len, sizeof(__u64));
+-	info_linear = malloc(sizeof(struct bpf_prog_info_linear) + data_len);
+-	if (!info_linear)
+-		return libbpf_err_ptr(-ENOMEM);
+-
+-	/* step 4: fill data to info_linear->info */
+-	info_linear->arrays = arrays;
+-	memset(&info_linear->info, 0, sizeof(info));
+-	ptr = info_linear->data;
+-
+-	for (i = BPF_PROG_INFO_FIRST_ARRAY; i < BPF_PROG_INFO_LAST_ARRAY; ++i) {
+-		struct bpf_prog_info_array_desc *desc;
+-		__u32 count, size;
+-
+-		if ((arrays & (1UL << i)) == 0)
+-			continue;
+-
+-		desc  = bpf_prog_info_array_desc + i;
+-		count = bpf_prog_info_read_offset_u32(&info, desc->count_offset);
+-		size  = bpf_prog_info_read_offset_u32(&info, desc->size_offset);
+-		bpf_prog_info_set_offset_u32(&info_linear->info,
+-					     desc->count_offset, count);
+-		bpf_prog_info_set_offset_u32(&info_linear->info,
+-					     desc->size_offset, size);
+-		bpf_prog_info_set_offset_u64(&info_linear->info,
+-					     desc->array_offset,
+-					     ptr_to_u64(ptr));
+-		ptr += count * size;
+-	}
+-
+-	/* step 5: call syscall again to get required arrays */
+-	err = bpf_obj_get_info_by_fd(fd, &info_linear->info, &info_len);
+-	if (err) {
+-		pr_debug("can't get prog info: %s", strerror(errno));
+-		free(info_linear);
+-		return libbpf_err_ptr(-EFAULT);
+-	}
+-
+-	/* step 6: verify the data */
+-	for (i = BPF_PROG_INFO_FIRST_ARRAY; i < BPF_PROG_INFO_LAST_ARRAY; ++i) {
+-		struct bpf_prog_info_array_desc *desc;
+-		__u32 v1, v2;
+-
+-		if ((arrays & (1UL << i)) == 0)
+-			continue;
+-
+-		desc = bpf_prog_info_array_desc + i;
+-		v1 = bpf_prog_info_read_offset_u32(&info, desc->count_offset);
+-		v2 = bpf_prog_info_read_offset_u32(&info_linear->info,
+-						   desc->count_offset);
+-		if (v1 != v2)
+-			pr_warn("%s: mismatch in element count\n", __func__);
+-
+-		v1 = bpf_prog_info_read_offset_u32(&info, desc->size_offset);
+-		v2 = bpf_prog_info_read_offset_u32(&info_linear->info,
+-						   desc->size_offset);
+-		if (v1 != v2)
+-			pr_warn("%s: mismatch in rec size\n", __func__);
+-	}
+-
+-	/* step 7: update info_len and data_len */
+-	info_linear->info_len = sizeof(struct bpf_prog_info);
+-	info_linear->data_len = data_len;
+-
+-	return info_linear;
+-}
+-
+-void bpf_program__bpil_addr_to_offs(struct bpf_prog_info_linear *info_linear)
+-{
+-	int i;
+-
+-	for (i = BPF_PROG_INFO_FIRST_ARRAY; i < BPF_PROG_INFO_LAST_ARRAY; ++i) {
+-		struct bpf_prog_info_array_desc *desc;
+-		__u64 addr, offs;
+-
+-		if ((info_linear->arrays & (1UL << i)) == 0)
+-			continue;
+-
+-		desc = bpf_prog_info_array_desc + i;
+-		addr = bpf_prog_info_read_offset_u64(&info_linear->info,
+-						     desc->array_offset);
+-		offs = addr - ptr_to_u64(info_linear->data);
+-		bpf_prog_info_set_offset_u64(&info_linear->info,
+-					     desc->array_offset, offs);
+-	}
+-}
+-
+-void bpf_program__bpil_offs_to_addr(struct bpf_prog_info_linear *info_linear)
+-{
+-	int i;
+-
+-	for (i = BPF_PROG_INFO_FIRST_ARRAY; i < BPF_PROG_INFO_LAST_ARRAY; ++i) {
+-		struct bpf_prog_info_array_desc *desc;
+-		__u64 addr, offs;
+-
+-		if ((info_linear->arrays & (1UL << i)) == 0)
+-			continue;
+-
+-		desc = bpf_prog_info_array_desc + i;
+-		offs = bpf_prog_info_read_offset_u64(&info_linear->info,
+-						     desc->array_offset);
+-		addr = offs + ptr_to_u64(info_linear->data);
+-		bpf_prog_info_set_offset_u64(&info_linear->info,
+-					     desc->array_offset, addr);
+-	}
+-}
+-
+ int bpf_program__set_attach_target(struct bpf_program *prog,
+ 				   int attach_prog_fd,
+ 				   const char *attach_func_name)
 diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 71b19ae1659c..5dc4271fcdb7 100644
+index 5dc4271fcdb7..e6357ea7bf41 100644
 --- a/tools/lib/bpf/libbpf.h
 +++ b/tools/lib/bpf/libbpf.h
-@@ -1269,17 +1269,7 @@ typedef void (*perf_buffer_lost_fn)(void *ctx, int cpu, __u64 cnt);
+@@ -1396,72 +1396,6 @@ LIBBPF_API int libbpf_probe_bpf_map_type(enum bpf_map_type map_type, const void
+ LIBBPF_API int libbpf_probe_bpf_helper(enum bpf_prog_type prog_type,
+ 				       enum bpf_func_id helper_id, const void *opts);
  
- /* common use perf buffer options */
- struct perf_buffer_opts {
--	union {
--		size_t sz;
--		struct { /* DEPRECATED: will be removed in v1.0 */
--			/* if specified, sample_cb is called for each sample */
--			perf_buffer_sample_fn sample_cb;
--			/* if specified, lost_cb is called for each batch of lost samples */
--			perf_buffer_lost_fn lost_cb;
--			/* ctx is provided to sample_cb and lost_cb */
--			void *ctx;
--		};
--	};
-+	size_t sz;
- };
- #define perf_buffer_opts__last_field sz
- 
-@@ -1300,21 +1290,6 @@ perf_buffer__new(int map_fd, size_t page_cnt,
- 		 perf_buffer_sample_fn sample_cb, perf_buffer_lost_fn lost_cb, void *ctx,
- 		 const struct perf_buffer_opts *opts);
- 
--LIBBPF_API struct perf_buffer *
--perf_buffer__new_v0_6_0(int map_fd, size_t page_cnt,
--			perf_buffer_sample_fn sample_cb, perf_buffer_lost_fn lost_cb, void *ctx,
--			const struct perf_buffer_opts *opts);
+-/*
+- * Get bpf_prog_info in continuous memory
+- *
+- * struct bpf_prog_info has multiple arrays. The user has option to choose
+- * arrays to fetch from kernel. The following APIs provide an uniform way to
+- * fetch these data. All arrays in bpf_prog_info are stored in a single
+- * continuous memory region. This makes it easy to store the info in a
+- * file.
+- *
+- * Before writing bpf_prog_info_linear to files, it is necessary to
+- * translate pointers in bpf_prog_info to offsets. Helper functions
+- * bpf_program__bpil_addr_to_offs() and bpf_program__bpil_offs_to_addr()
+- * are introduced to switch between pointers and offsets.
+- *
+- * Examples:
+- *   # To fetch map_ids and prog_tags:
+- *   __u64 arrays = (1UL << BPF_PROG_INFO_MAP_IDS) |
+- *           (1UL << BPF_PROG_INFO_PROG_TAGS);
+- *   struct bpf_prog_info_linear *info_linear =
+- *           bpf_program__get_prog_info_linear(fd, arrays);
+- *
+- *   # To save data in file
+- *   bpf_program__bpil_addr_to_offs(info_linear);
+- *   write(f, info_linear, sizeof(*info_linear) + info_linear->data_len);
+- *
+- *   # To read data from file
+- *   read(f, info_linear, <proper_size>);
+- *   bpf_program__bpil_offs_to_addr(info_linear);
+- */
+-enum bpf_prog_info_array {
+-	BPF_PROG_INFO_FIRST_ARRAY = 0,
+-	BPF_PROG_INFO_JITED_INSNS = 0,
+-	BPF_PROG_INFO_XLATED_INSNS,
+-	BPF_PROG_INFO_MAP_IDS,
+-	BPF_PROG_INFO_JITED_KSYMS,
+-	BPF_PROG_INFO_JITED_FUNC_LENS,
+-	BPF_PROG_INFO_FUNC_INFO,
+-	BPF_PROG_INFO_LINE_INFO,
+-	BPF_PROG_INFO_JITED_LINE_INFO,
+-	BPF_PROG_INFO_PROG_TAGS,
+-	BPF_PROG_INFO_LAST_ARRAY,
+-};
 -
--LIBBPF_API LIBBPF_DEPRECATED_SINCE(0, 7, "use new variant of perf_buffer__new() instead")
--struct perf_buffer *perf_buffer__new_deprecated(int map_fd, size_t page_cnt,
--						const struct perf_buffer_opts *opts);
+-struct bpf_prog_info_linear {
+-	/* size of struct bpf_prog_info, when the tool is compiled */
+-	__u32			info_len;
+-	/* total bytes allocated for data, round up to 8 bytes */
+-	__u32			data_len;
+-	/* which arrays are included in data */
+-	__u64			arrays;
+-	struct bpf_prog_info	info;
+-	__u8			data[];
+-};
 -
--#define perf_buffer__new(...) ___libbpf_overload(___perf_buffer_new, __VA_ARGS__)
--#define ___perf_buffer_new6(map_fd, page_cnt, sample_cb, lost_cb, ctx, opts) \
--	perf_buffer__new(map_fd, page_cnt, sample_cb, lost_cb, ctx, opts)
--#define ___perf_buffer_new3(map_fd, page_cnt, opts) \
--	perf_buffer__new_deprecated(map_fd, page_cnt, opts)
+-LIBBPF_DEPRECATED_SINCE(0, 6, "use a custom linear prog_info wrapper")
+-LIBBPF_API struct bpf_prog_info_linear *
+-bpf_program__get_prog_info_linear(int fd, __u64 arrays);
 -
- enum bpf_perf_event_ret {
- 	LIBBPF_PERF_EVENT_DONE	= 0,
- 	LIBBPF_PERF_EVENT_ERROR	= -1,
-@@ -1328,21 +1303,9 @@ typedef enum bpf_perf_event_ret
- 
- /* raw perf buffer options, giving most power and control */
- struct perf_buffer_raw_opts {
--	union {
--		struct {
--			size_t sz;
--			long :0;
--			long :0;
--		};
--		struct { /* DEPRECATED: will be removed in v1.0 */
--			/* perf event attrs passed directly into perf_event_open() */
--			struct perf_event_attr *attr;
--			/* raw event callback */
--			perf_buffer_event_fn event_cb;
--			/* ctx is provided to event_cb */
--			void *ctx;
--		};
--	};
-+	size_t sz;
-+	long :0;
-+	long :0;
- 	/* if cpu_cnt == 0, open all on all possible CPUs (up to the number of
- 	 * max_entries of given PERF_EVENT_ARRAY map)
- 	 */
-@@ -1354,26 +1317,13 @@ struct perf_buffer_raw_opts {
- };
- #define perf_buffer_raw_opts__last_field map_keys
- 
-+struct perf_event_attr;
-+
- LIBBPF_API struct perf_buffer *
- perf_buffer__new_raw(int map_fd, size_t page_cnt, struct perf_event_attr *attr,
- 		     perf_buffer_event_fn event_cb, void *ctx,
- 		     const struct perf_buffer_raw_opts *opts);
- 
--LIBBPF_API struct perf_buffer *
--perf_buffer__new_raw_v0_6_0(int map_fd, size_t page_cnt, struct perf_event_attr *attr,
--			    perf_buffer_event_fn event_cb, void *ctx,
--			    const struct perf_buffer_raw_opts *opts);
+-LIBBPF_DEPRECATED_SINCE(0, 6, "use a custom linear prog_info wrapper")
+-LIBBPF_API void
+-bpf_program__bpil_addr_to_offs(struct bpf_prog_info_linear *info_linear);
 -
--LIBBPF_API LIBBPF_DEPRECATED_SINCE(0, 7, "use new variant of perf_buffer__new_raw() instead")
--struct perf_buffer *perf_buffer__new_raw_deprecated(int map_fd, size_t page_cnt,
--						    const struct perf_buffer_raw_opts *opts);
+-LIBBPF_DEPRECATED_SINCE(0, 6, "use a custom linear prog_info wrapper")
+-LIBBPF_API void
+-bpf_program__bpil_offs_to_addr(struct bpf_prog_info_linear *info_linear);
 -
--#define perf_buffer__new_raw(...) ___libbpf_overload(___perf_buffer_new_raw, __VA_ARGS__)
--#define ___perf_buffer_new_raw6(map_fd, page_cnt, attr, event_cb, ctx, opts) \
--	perf_buffer__new_raw(map_fd, page_cnt, attr, event_cb, ctx, opts)
--#define ___perf_buffer_new_raw3(map_fd, page_cnt, opts) \
--	perf_buffer__new_raw_deprecated(map_fd, page_cnt, opts)
--
- LIBBPF_API void perf_buffer__free(struct perf_buffer *pb);
- LIBBPF_API int perf_buffer__epoll_fd(const struct perf_buffer *pb);
- LIBBPF_API int perf_buffer__poll(struct perf_buffer *pb, int timeout_ms);
-@@ -1382,15 +1332,6 @@ LIBBPF_API int perf_buffer__consume_buffer(struct perf_buffer *pb, size_t buf_id
- LIBBPF_API size_t perf_buffer__buffer_cnt(const struct perf_buffer *pb);
- LIBBPF_API int perf_buffer__buffer_fd(const struct perf_buffer *pb, size_t buf_idx);
- 
--typedef enum bpf_perf_event_ret
--	(*bpf_perf_event_print_t)(struct perf_event_header *hdr,
--				  void *private_data);
--LIBBPF_DEPRECATED_SINCE(0, 8, "use perf_buffer__poll() or  perf_buffer__consume() instead")
--LIBBPF_API enum bpf_perf_event_ret
--bpf_perf_event_read_simple(void *mmap_mem, size_t mmap_size, size_t page_size,
--			   void **copy_mem, size_t *copy_size,
--			   bpf_perf_event_print_t fn, void *private_data);
--
- struct bpf_prog_linfo;
- struct bpf_prog_info;
- 
+ /**
+  * @brief **libbpf_num_possible_cpus()** is a helper function to get the
+  * number of possible CPUs that the host kernel supports and expects.
 diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index ff5fba17764b..f327adc66933 100644
+index f327adc66933..93c7bcc058c6 100644
 --- a/tools/lib/bpf/libbpf.map
 +++ b/tools/lib/bpf/libbpf.map
-@@ -46,7 +46,6 @@ LIBBPF_0.0.1 {
- 		bpf_object__unload;
- 		bpf_object__unpin_maps;
- 		bpf_object__unpin_programs;
--		bpf_perf_event_read_simple;
- 		bpf_prog_attach;
- 		bpf_prog_detach;
- 		bpf_prog_detach2;
-@@ -144,8 +143,6 @@ LIBBPF_0.0.4 {
- 		btf__parse_elf;
- 		libbpf_num_possible_cpus;
- 		perf_buffer__free;
--		perf_buffer__new;
--		perf_buffer__new_raw;
- 		perf_buffer__poll;
- } LIBBPF_0.0.3;
+@@ -118,9 +118,6 @@ LIBBPF_0.0.2 {
+ 		btf_ext__free;
+ 		btf_ext__get_raw_data;
+ 		btf_ext__new;
+-		bpf_program__get_prog_info_linear;
+-		bpf_program__bpil_addr_to_offs;
+-		bpf_program__bpil_offs_to_addr;
+ } LIBBPF_0.0.1;
  
-@@ -369,9 +366,7 @@ LIBBPF_0.6.0 {
- 		libbpf_minor_version;
- 		libbpf_version_string;
- 		perf_buffer__new;
--		perf_buffer__new_deprecated;
- 		perf_buffer__new_raw;
--		perf_buffer__new_raw_deprecated;
- } LIBBPF_0.5.0;
- 
- LIBBPF_0.7.0 {
+ LIBBPF_0.0.3 {
 -- 
 2.30.2
 
