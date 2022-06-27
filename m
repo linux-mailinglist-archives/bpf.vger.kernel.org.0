@@ -2,71 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BD7355D7EE
-	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 15:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34AE255CD19
+	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 15:02:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239184AbiF0SiY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Jun 2022 14:38:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37490 "EHLO
+        id S240351AbiF0TJM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Jun 2022 15:09:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240436AbiF0SiC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Jun 2022 14:38:02 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9128FC34;
-        Mon, 27 Jun 2022 11:35:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S237795AbiF0TJL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Jun 2022 15:09:11 -0400
+X-Greylist: delayed 462 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 27 Jun 2022 12:09:10 PDT
+Received: from shelob.oktetlabs.ru (shelob.oktetlabs.ru [91.220.146.113])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3E9725C4;
+        Mon, 27 Jun 2022 12:09:10 -0700 (PDT)
+Received: from bree.oktetlabs.ru (bree.oktetlabs.ru [192.168.34.5])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 5B84EB81A31;
-        Mon, 27 Jun 2022 18:35:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43D52C3411D;
-        Mon, 27 Jun 2022 18:35:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656354918;
-        bh=lSduwLf0URPGJXhzE2uMPDSka0BN2NuObX6s6wiVjLw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V1wgnhWIBSxTWZs7oVLQcgu6ow7j/nvOHPvXzsT1Nn9X7hdwGhqh7NAL8uHaamcIf
-         IY07sAxOhUQqndCnsaxA3ScC1kTdg2Yn9hsnKIlxq8rxFKlV7RaY+NRmyVh3m75Tb8
-         ZpcqX4hfVCDBy0N1EVQnXiwwX9rIvnnkMDcCS04gZPnAV3H3k5TZVX9FzOMlpLx209
-         8O1zovzb/AU8MtbMYOdG7MyCPnmJKw+tFasJC0wEQpVPIKC5aCfVMO84EEc2E/4TTl
-         9dxSDJTazopgz1hOdfhMFc0UNVAF149+GJwdJJ2/y5zxk6J7RR9WnMOk8pk02PIKf/
-         G0d/RZr8PVXzA==
-Date:   Mon, 27 Jun 2022 20:35:13 +0200
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
-        x86@kernel.org, dm-devel@redhat.com,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-can@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        linux1394-devel@lists.sourceforge.net, io-uring@vger.kernel.org,
-        lvs-devel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        kasan-dev@googlegroups.com, linux-mmc@vger.kernel.org,
-        nvdimm@lists.linux.dev, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, linux-perf-users@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-usb@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        v9fs-developer@lists.sourceforge.net, linux-rdma@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] treewide: uapi: Replace zero-length arrays with
- flexible-array members
-Message-ID: <20220627183513.GA137875@embeddedor>
-References: <20220627180432.GA136081@embeddedor>
- <6bc1e94c-ce1d-a074-7d0c-8dbe6ce22637@iogearbox.net>
+        by shelob.oktetlabs.ru (Postfix) with ESMTPS id 92342A5;
+        Mon, 27 Jun 2022 22:01:25 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 shelob.oktetlabs.ru 92342A5
+Authentication-Results: shelob.oktetlabs.ru/92342A5; dkim=none;
+        dkim-atps=neutral
+From:   Ivan Malov <ivan.malov@oktetlabs.ru>
+To:     Magnus Karlsson <magnus.karlsson@intel.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        netdev@vger.kernel.org
+Cc:     Andrew Rybchenko <andrew.rybchenko@oktetlabs.ru>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Maxim Mikityanskiy <maximmi@mellanox.com>
+Subject: [PATCH] xsk: clear page contiguity bit when unmapping pool
+Date:   Mon, 27 Jun 2022 22:01:20 +0300
+Message-Id: <20220627190120.176470-1-ivan.malov@oktetlabs.ru>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <6bc1e94c-ce1d-a074-7d0c-8dbe6ce22637@iogearbox.net>
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_ADSP_DISCARD,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,68 +57,32 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 27, 2022 at 08:27:37PM +0200, Daniel Borkmann wrote:
-> On 6/27/22 8:04 PM, Gustavo A. R. Silva wrote:
-> > There is a regular need in the kernel to provide a way to declare
-> > having a dynamically sized set of trailing elements in a structure.
-> > Kernel code should always use “flexible array members”[1] for these
-> > cases. The older style of one-element or zero-length arrays should
-> > no longer be used[2].
-> > 
-> > This code was transformed with the help of Coccinelle:
-> > (linux-5.19-rc2$ spatch --jobs $(getconf _NPROCESSORS_ONLN) --sp-file script.cocci --include-headers --dir . > output.patch)
-> > 
-> > @@
-> > identifier S, member, array;
-> > type T1, T2;
-> > @@
-> > 
-> > struct S {
-> >    ...
-> >    T1 member;
-> >    T2 array[
-> > - 0
-> >    ];
-> > };
-> > 
-> > -fstrict-flex-arrays=3 is coming and we need to land these changes
-> > to prevent issues like these in the short future:
-> > 
-> > ../fs/minix/dir.c:337:3: warning: 'strcpy' will always overflow; destination buffer has size 0,
-> > but the source string has length 2 (including NUL byte) [-Wfortify-source]
-> > 		strcpy(de3->name, ".");
-> > 		^
-> > 
-> > Since these are all [0] to [] changes, the risk to UAPI is nearly zero. If
-> > this breaks anything, we can use a union with a new member name.
-> > 
-> > [1] https://en.wikipedia.org/wiki/Flexible_array_member
-> > [2] https://www.kernel.org/doc/html/v5.16/process/deprecated.html#zero-length-and-one-element-arrays
-> > 
-> > Link: https://github.com/KSPP/linux/issues/78
-> > Build-tested-by: https://lore.kernel.org/lkml/62b675ec.wKX6AOZ6cbE71vtF%25lkp@intel.com/
-> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> > ---
-> > Hi all!
-> > 
-> > JFYI: I'm adding this to my -next tree. :)
-> 
-> Fyi, this breaks BPF CI:
+When a XSK pool gets mapped, xp_check_dma_contiguity() adds bit 0x1
+to pages' DMA addresses that go in ascending order and at 4K stride.
+The problem is that the bit does not get cleared before doing unmap.
 
-Thanks for the report! It seems the 0-day robot didn't catch that one.
-I'll fix it up right away. :)
+As a result, a lot of warnings from iommu_dma_unmap_page() are seen
+suggesting mapping lookup failures at drivers/iommu/dma-iommu.c:848.
 
---
-Gustavo
+Fixes: 2b43470add8c ("xsk: Introduce AF_XDP buffer allocation API")
 
-> 
-> https://github.com/kernel-patches/bpf/runs/7078719372?check_suite_focus=true
-> 
->   [...]
->   progs/map_ptr_kern.c:314:26: error: field 'trie_key' with variable sized type 'struct bpf_lpm_trie_key' not at the end of a struct or class is a GNU extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
->           struct bpf_lpm_trie_key trie_key;
->                                   ^
->   1 error generated.
->   make: *** [Makefile:519: /tmp/runner/work/bpf/bpf/tools/testing/selftests/bpf/map_ptr_kern.o] Error 1
->   make: *** Waiting for unfinished jobs....
->   Error: Process completed with exit code 2.
+Signed-off-by: Ivan Malov <ivan.malov@oktetlabs.ru>
+---
+ net/xdp/xsk_buff_pool.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
+index 87bdd71c7bb6..f70112176b7c 100644
+--- a/net/xdp/xsk_buff_pool.c
++++ b/net/xdp/xsk_buff_pool.c
+@@ -332,6 +332,7 @@ static void __xp_dma_unmap(struct xsk_dma_map *dma_map, unsigned long attrs)
+ 	for (i = 0; i < dma_map->dma_pages_cnt; i++) {
+ 		dma = &dma_map->dma_pages[i];
+ 		if (*dma) {
++			*dma &= ~XSK_NEXT_PG_CONTIG_MASK;
+ 			dma_unmap_page_attrs(dma_map->dev, *dma, PAGE_SIZE,
+ 					     DMA_BIDIRECTIONAL, attrs);
+ 			*dma = 0;
+-- 
+2.30.2
+
