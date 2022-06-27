@@ -2,69 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 041BF55D544
-	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 15:15:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 355E755C4E5
+	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 14:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237732AbiF0Uii (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Jun 2022 16:38:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58598 "EHLO
+        id S231961AbiF0U43 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Jun 2022 16:56:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235320AbiF0Uig (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Jun 2022 16:38:36 -0400
+        with ESMTP id S229583AbiF0U42 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Jun 2022 16:56:28 -0400
 Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CDB8B29
-        for <bpf@vger.kernel.org>; Mon, 27 Jun 2022 13:38:35 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id o10so14767019edi.1
-        for <bpf@vger.kernel.org>; Mon, 27 Jun 2022 13:38:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E9132ACD;
+        Mon, 27 Jun 2022 13:56:27 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id o9so14764561edt.12;
+        Mon, 27 Jun 2022 13:56:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=FzzQTGImZTE3jed6uGE3sGYhVcak3SDF4WFGnEwYiuA=;
-        b=XNbhgQXJQiiQ4w7XUfuoeHkZKypjnQacode/yi0FJwsQxc99iX6caSiTQAsdivVPq7
-         OCeRqzL6UCq12Q9O7Ea6MGSKtieyYxVtd0iiX7QBy7M70g84dUgZlv5VSB/EdIruzmxg
-         3x1HMcXU0YvKGAexnVdR5WMiUV1wS672HZCt/+nrqf1izVFCvlYZKwYXiLo0mRqHSvar
-         Jhrtblw6SX3b4ZoHWhuJvWGWrFJCI8WsluuRB5y9LiN2+ZWEncMuCTYFv7UzYwnw+fJS
-         xs9+iTo5zRzlRTG4XhddSQ58xFPFCxxyidEBMzWCAul+KYunglFM++slXRmHbXgo59nQ
-         HQmA==
+        bh=zZYxoCPScWXjQwHFlcANYHGk3bPGNCdA16fhomtXzig=;
+        b=faGaQLRpG+IQROqdEzZ4ky3l7Le5IQ+LCAxS/3EHNHKYbddYRQ9XgwIwUqXyWa3R2K
+         Zl6dEtw1+qLg8qaj14p++CQBTiPXbQFX8kzaUqFaWxmT1ak2rJ6i7xftxkpORqvkP/+x
+         ccjiGREgPQf8W3l5Lr0OAHGgduHe27M1Vci6ciP58d3lb1CFdaoMSD1pD87RAVakxh5E
+         5pWp45VYYC5N/3vNHhlilp8dSWi9HiWRKq29g9MTVNzr9JtRzgOIPYN/FMZvwFl8L+wM
+         zgGMimUBRZDUUEM7JpeMhGXki8/I86b8N/SZHlA0nJASY6kbTRkBMTtF/cLDwyQbiJux
+         z+Fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=FzzQTGImZTE3jed6uGE3sGYhVcak3SDF4WFGnEwYiuA=;
-        b=k7r3AnCJf408h3kEZxMeoviszZPZU96URMDp9koaIM6RsdgieU+Bk2eNtIfQO0pSLt
-         7/+fD/yW/0BW9C3Uefstkg/iTzziid99s1TFqncZ3uWTbrC2BR66fnGPj1iA3E/XQtIA
-         ASDybUs2OdrdId+iSnn0p+3zv90LM260ycA1lfKrRnIM+Ethj4ckAYLoEoKdPVKPvSzT
-         W+90bJ7RSvnqgR2LKLvzzw+mb5UeQ52+ECZ4sI8xiqhyanRAqhuADRqoS2JWN/RuhTRe
-         BHmbJhOSbCoCf0e2Ips1qNLKX5rJzGbqxlPzPDUOGDqUk/TfrNIdYne66P55W7GmSd8b
-         +ihg==
-X-Gm-Message-State: AJIora+2gb9Z46s6EFzrggs39U9f9muoMJcAAK7Ns8hnMf9TSjcYJLuK
-        hFcanLSVhs70dgLdp+4/ALX+EXkvqZzuDnjJd0s=
-X-Google-Smtp-Source: AGRyM1v8zCM2CnQN5bPQZJZqApMMYm0HKQeAyW2vaqrmo7n6W0UFfTn/jiV67GBGD+DwBqE/93Kz2Z4+LOJqqYJXRyo=
-X-Received: by 2002:a05:6402:1459:b0:437:9282:2076 with SMTP id
- d25-20020a056402145900b0043792822076mr8701909edx.6.1656362313702; Mon, 27 Jun
- 2022 13:38:33 -0700 (PDT)
+        bh=zZYxoCPScWXjQwHFlcANYHGk3bPGNCdA16fhomtXzig=;
+        b=ku/CSB3eyq2p0/9Z6lOn1A74G4iKYIr5fMr7cYTgK/x371HmP4ZsjnTBU6uKmAm2Ee
+         jII5sd5+qw8h+uppYkGoD0VE3iZXR1e7uXEVY5KThdnEHY8qLL+HyOGM2JNrG38puA2e
+         jIlbmeR7Gp1ZRYqQ44dRAQx7+Pi1smk16lgCfUBG144NZoMGAgSYkDWCucIfwqTwGYQe
+         aKeuNmQO/Fhee0hQc3K8c5xr5PaBbbIrC7DOOJRV5fyfKqBY1dan936MmL6rqvTbck8L
+         rqL6f9/Hx7155K+5RoeFVuI+O+tser0u8hj7vIl8VqJinhhXDeIUM013P0KgN3TuGu2T
+         xlfg==
+X-Gm-Message-State: AJIora80sbXaUQ96xkuEfKgH/Bn6RMJKNHXr3yGwbUrTeY0rQp12/G0L
+        DcjtP6kISBE+1/rkqp06y05e3VQtUcF1VJ4z1eg=
+X-Google-Smtp-Source: AGRyM1vSFR/5VfuUx99F/9e3fpf5w79op2GZg/nz3Tn8dAZhwJQByxpaIv+hq3rUNAk1YwfppxULTZUS/fan6EOKfTk=
+X-Received: by 2002:a05:6402:3514:b0:435:f24a:fbad with SMTP id
+ b20-20020a056402351400b00435f24afbadmr18301496edd.311.1656363385709; Mon, 27
+ Jun 2022 13:56:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <5bdc73e7f5a087299589944fa074563cdf2c2c1a.1656353995.git.daniel@iogearbox.net>
- <20220627122535.6020f23e@kicinski-fedora-PC1C0HJN> <CAADnVQLOS4kvmcp+aaX6gtDUCUfoL906K+Y4KUZOsYBDso_xMw@mail.gmail.com>
- <20220627133027.1e141f11@kernel.org>
-In-Reply-To: <20220627133027.1e141f11@kernel.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 27 Jun 2022 13:38:22 -0700
-Message-ID: <CAADnVQKf8huK_bdGPQzOZwXJD7aqr-2a3jFPfhYrEz8BD115qw@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf, docs: Better scale maintenance of BPF subsystem
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+References: <20220614014714.1407239-1-irogers@google.com>
+In-Reply-To: <20220614014714.1407239-1-irogers@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 27 Jun 2022 13:56:13 -0700
+Message-ID: <CAEf4BzYXQULPgC_qP-O9F6yo9ohKfDRWChDAOsqYX8bWYuv5ng@mail.gmail.com>
+Subject: Re: [PATCH] perf bpf: 8 byte align bpil data
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Mykola Lysenko <mykolal@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>, KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Quentin Monnet <quentin@isovalent.com>
+        KP Singh <kpsingh@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -76,39 +83,67 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 27, 2022 at 1:30 PM Jakub Kicinski <kuba@kernel.org> wrote:
+On Mon, Jun 13, 2022 at 6:47 PM Ian Rogers <irogers@google.com> wrote:
 >
-> On Mon, 27 Jun 2022 12:57:21 -0700 Alexei Starovoitov wrote:
-> > And that's a good thing.
+> bpil data is accessed assuming 64-bit alignment resulting in undefined
+> behavior as the data is just byte aligned. With an -fsanitize=undefined
+> build the following errors are observed:
 >
-> My concern is that folks will rebel against populating the CC list if
-> they never receive feedback from the CCed. I often have to go and
-> manually trim the CC list because I don't think Jiri, KP, Yonghong etc.
-> care about my random TLS patch, or removal of a driver which happens
-> to contain the letters "bpf".
+> $ sudo perf record -a sleep 1
+> util/bpf-event.c:310:22: runtime error: load of misaligned address 0x55f61084520f for type '__u64', which requires 8 byte alignment
+> 0x55f61084520f: note: pointer points here
+>  a8 fe ff ff 3c  51 d3 c0 ff ff ff ff 04  84 d3 c0 ff ff ff ff d8  aa d3 c0 ff ff ff ff a4  c0 d3 c0
+>              ^
+> util/bpf-event.c:311:20: runtime error: load of misaligned address 0x55f61084522f for type '__u32', which requires 4 byte alignment
+> 0x55f61084522f: note: pointer points here
+>  ff ff ff ff c7  17 00 00 f1 02 00 00 1f  04 00 00 58 04 00 00 00  00 00 00 0f 00 00 00 63  02 00 00
+>              ^
+> util/bpf-event.c:198:33: runtime error: member access within misaligned address 0x55f61084523f for type 'const struct bpf_func_info', which requires 4 byte alignment
+> 0x55f61084523f: note: pointer points here
+>  58 04 00 00 00  00 00 00 0f 00 00 00 63  02 00 00 3b 00 00 00 ab  02 00 00 44 00 00 00 14  03 00 00
+>
+> Correct this by rouding up the data sizes and aligning the pointers.
 
-but they might! Trimming the cc list doesn't help anything.
-We used to trim cc list only because of silly vger anti-spam
-feature which is dropping emails with long cc.
-Since vger is broken anyway we should be increasing cc where we can.
-
-> I was hoping the delegation you're
-> performing could help with the large Cc list. Would you perhaps
-> consider moving the K/N regexes to the "Core" entry? It'd lower
-> the pain of false positives.
-
-sure. but I'd rather address the misconception that
-long cc list is somehow bad. It's good!
+typo: rounding
 
 >
-> > vger continues to cause trouble and it doesn't sound that the fix is coming.
-> > So having everyone directly cc-ed is the only option we have.
->
-> Yeah, Exhibit A - vger is lagging right now...
-> I guess the "real fix" is on the vger, trying to massage MAINTAINERS
-> now is not a great use of time..
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
 
-The real fix is to move away from vger and adjust get_maintainer
-script to be smarter when the mailer can do its job.
-MAINTAINERS file should list everyone who performs code reviews
-and maintains the code.
+Makes sense.
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+
+>  tools/perf/util/bpf-utils.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/tools/perf/util/bpf-utils.c b/tools/perf/util/bpf-utils.c
+> index e271e05e51bc..80b1d2b3729b 100644
+> --- a/tools/perf/util/bpf-utils.c
+> +++ b/tools/perf/util/bpf-utils.c
+> @@ -149,11 +149,10 @@ get_bpf_prog_info_linear(int fd, __u64 arrays)
+>                 count = bpf_prog_info_read_offset_u32(&info, desc->count_offset);
+>                 size  = bpf_prog_info_read_offset_u32(&info, desc->size_offset);
+>
+> -               data_len += count * size;
+> +               data_len += roundup(count * size, sizeof(__u64));
+>         }
+>
+>         /* step 3: allocate continuous memory */
+> -       data_len = roundup(data_len, sizeof(__u64));
+>         info_linear = malloc(sizeof(struct perf_bpil) + data_len);
+>         if (!info_linear)
+>                 return ERR_PTR(-ENOMEM);
+> @@ -180,7 +179,7 @@ get_bpf_prog_info_linear(int fd, __u64 arrays)
+>                 bpf_prog_info_set_offset_u64(&info_linear->info,
+>                                              desc->array_offset,
+>                                              ptr_to_u64(ptr));
+> -               ptr += count * size;
+> +               ptr += roundup(count * size, sizeof(__u64));
+>         }
+>
+>         /* step 5: call syscall again to get required arrays */
+> --
+> 2.36.1.476.g0c4daa206d-goog
+>
