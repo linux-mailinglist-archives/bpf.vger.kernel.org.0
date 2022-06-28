@@ -2,37 +2,34 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A41955EAEE
-	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 19:23:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FC5755EB45
+	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 19:46:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231716AbiF1RXP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Jun 2022 13:23:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35930 "EHLO
+        id S231958AbiF1RqL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Jun 2022 13:46:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232997AbiF1RWb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Jun 2022 13:22:31 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4614538DB8;
-        Tue, 28 Jun 2022 10:22:30 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B8F1561937;
-        Tue, 28 Jun 2022 17:22:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C214CC3411D;
-        Tue, 28 Jun 2022 17:22:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656436949;
-        bh=AW4NvSDSH3WYN2zjWgwf6ndsawKs4nf7g7OMTdNj0TY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LmAThDZKaCeBk3WeY/01QFAuLlyrBMop0iKe6RoJwALfnRuIpUvMPHgkPvU3KEC33
-         8hP3Wizxq9/12Q88PGFFBBCHzr8xiMtAkJkG/flI8U0EPQw3+7VUPJzvoHgDt4Tt16
-         D/5N5EBcqOIdPFWj1eqkAuufEPoCBcVXz9qR87/dYw18dbnSMJleFFX4okkyVSUOvF
-         LmZ8z4G5o1UIFEa3qwazaIOfShP/enU3TxtmvKzV0cXx8hNSzVXbbloeSIJvZbhLl5
-         T1dHNBMd1OMg+GRguf2jv5IgWDnQLIj+oy/DOsablaaAWBGZ4h8hzRe8wVt4+ySfq9
-         ht6sV3ZmltL7w==
-Date:   Tue, 28 Jun 2022 19:22:18 +0200
-From:   Christian Brauner <brauner@kernel.org>
+        with ESMTP id S231258AbiF1RqK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Jun 2022 13:46:10 -0400
+X-Greylist: delayed 1382 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 28 Jun 2022 10:46:10 PDT
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F76260B;
+        Tue, 28 Jun 2022 10:46:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=9fZi2wVpseV5qaJLN8cZxnxeYMl08M5K1Z2WID49zDo=; b=v4FWrxlcBnWQ6N/88GLnrGBy7o
+        tKSMy1wSolOLXEeAlE6mtFmhU+uBhrQoOQFkstc7W0HnfL4giQhmOp6ashAMtoP+3cNgr9+B+5S6H
+        xBQ2ir1IkhQZIY1oLL77pocaVYstTjvr7qbgXIv7vKrNd6ldKwX69fl1LtU484zB/wa7/brRjYv8S
+        lQTreRU21Al1j0tMJpquq73DtUdkScha8HvIFQag4yrXiOCrvo3G0gkD5RZErjIS8wdRBVBQ8FFQj
+        57Z8MyoUShjtQZGLoLhK35+SvJWgf1Efcqh/YZqUeHX1r5Ldz+gK+LSYH+I36Z2XCN4FsFDhOuU2+
+        e92sqrCw==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.95 #2 (Red Hat Linux))
+        id 1o6EvZ-005gwn-Aj;
+        Tue, 28 Jun 2022 17:23:05 +0000
+Date:   Tue, 28 Jun 2022 18:23:05 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
 To:     KP Singh <kpsingh@kernel.org>
 Cc:     bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
@@ -41,17 +38,17 @@ Cc:     bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
         Benjamin Tissoires <benjamin.tissoires@redhat.com>,
         Yosry Ahmed <yosryahmed@google.com>
 Subject: Re: [PATCH v5 bpf-next 4/5] bpf: Add a bpf_getxattr kfunc
-Message-ID: <20220628172218.yzsrafhoof4wuf45@wittgenstein>
+Message-ID: <Yrs4+ThR4ACb5eD/@ZenIV>
 References: <20220628161948.475097-1-kpsingh@kernel.org>
  <20220628161948.475097-5-kpsingh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20220628161948.475097-5-kpsingh@kernel.org>
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -67,56 +64,12 @@ On Tue, Jun 28, 2022 at 04:19:47PM +0000, KP Singh wrote:
 > This kfunc wraps around __vfs_getxattr which can sleep and is,
 > therefore, limited to sleepable programs using the newly added
 > sleepable_set for kfuncs.
-> 
-> Signed-off-by: KP Singh <kpsingh@kernel.org>
-> ---
->  kernel/trace/bpf_trace.c | 42 ++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 42 insertions(+)
-> 
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 4be976cf7d63..87496d57b099 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -20,6 +20,7 @@
->  #include <linux/fprobe.h>
->  #include <linux/bsearch.h>
->  #include <linux/sort.h>
-> +#include <linux/xattr.h>
->  
->  #include <net/bpf_sk_storage.h>
->  
-> @@ -1181,6 +1182,47 @@ static const struct bpf_func_proto bpf_get_func_arg_cnt_proto = {
->  	.arg1_type	= ARG_PTR_TO_CTX,
->  };
->  
-> +__diag_push();
-> +__diag_ignore_all("-Wmissing-prototypes",
-> +		  "kfuncs that are used in tracing/LSM BPF programs");
-> +
-> +ssize_t bpf_getxattr(struct dentry *dentry, struct inode *inode,
-> +		     const char *name, void *value, int value__sz)
-> +{
-> +	return __vfs_getxattr(dentry, inode, name, value, value__sz);
 
-So this might all be due to my ignorance where and how this is supposed
-to be used but using __vfs_getxattr() is performing _zero_ permission
-checks. That means every eBPF program will be able to retrieve whatever
-extended attribute it likes.
+"Sleepable" is nowhere near enough - for a trivial example, consider
+what e.g. ext2_xattr_get() does.
+        down_read(&EXT2_I(inode)->xattr_sem);
+in there means that having that thing executed in anything that happens
+to hold ->xattr_sem is a deadlock fodder.
 
-In addition to generic permission checking your code also assumes that
-every caller is located in the initial user namespace. Is that a valid
-assumption?
-
-POSIX ACLs can store additional [u,g]ids on disk that need to be
-translated according to the caller's user namespace.
-
-Looking at your selftest example you have a current task and you also
-have access to a struct file which makes me doubt that this assumption
-is correct. But I'm happy to be convinced otherwise.
-
-Also, if the current task is retrieving extended attributes from an
-idmapped mount you also need to take the mount's idmapping into account.
-Otherwise again, you'll retrieve misleading [g,u]id values...
-
-Could you explain to me why that is safe and how this is going to be
-used, please? As it stands I can't make heads nor tails of this.
+"Can't use that in BPF program executed in non-blocking context" is
+*not* sufficient to make it safe.
