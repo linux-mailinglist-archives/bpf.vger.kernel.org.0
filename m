@@ -2,164 +2,227 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B34F55EA3B
-	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 18:53:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB4455EA41
+	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 18:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233311AbiF1Quu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Jun 2022 12:50:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60674 "EHLO
+        id S232925AbiF1Qut (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Jun 2022 12:50:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237751AbiF1Qrq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Jun 2022 12:47:46 -0400
-Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD0E4286FB
-        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 09:44:50 -0700 (PDT)
-Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-fb6b4da1dfso17804482fac.4
-        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 09:44:50 -0700 (PDT)
+        with ESMTP id S242191AbiF1Qs0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Jun 2022 12:48:26 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E770A2E0B6
+        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 09:45:40 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id m184so7711959wme.1
+        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 09:45:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:reply-to:from:in-reply-to:content-transfer-encoding;
-        bh=vJfBn+f7lVK7AifdRhZ14mIHvBk5ROqtbtEkpEUekVI=;
-        b=PStwN8J9WglnPwSrV0dM3AVahzXE6kSqMbbkzaOjiLnRigpJdtZbsznzA6h0ZHFxCl
-         VCc2EwXkgQTpc2I8msSXawKjWhovEq4qPlEq9FHqwcAnhsRf38LfjGSr2OksXXnBDVe5
-         D2AXYVst8rALAmrORJawmosR19EMmGOJojF8g=
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Mo8doXYA9emrg3uQBgrdNC6baXQfzRLIjgAua2IloJE=;
+        b=BnkiZnq4yE71oiRH6bWiyg0HKscyhulPRcQNetE++yj/npAp7DlRZp8GekQJX25kPh
+         xOd6q1DmKVivBNw4UhwusQXj6FC5+CdZ2qm7llDnapiE/N2jv4pT5TyH2e/JgHzqokyC
+         7SOcqbZGLaqp89QKoBYYPtCdma+fUwjZ85OVq3Md+hY0XVkf+LXbLZ0IShgIRRNebOs5
+         jur0Pd1TVjEjJnj1A4HJkwqi43xj339pd6r8/zk+KJ+h2UbtMbG/WXXvMD5TE9cmF9X4
+         6DbGE+9gcLE2yJDYzJRzj6N7uQhu2hYtLU0LrwL46p7xoX7dJg5bpUpKRzG5zA46oSMl
+         0Asw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:reply-to:from:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=vJfBn+f7lVK7AifdRhZ14mIHvBk5ROqtbtEkpEUekVI=;
-        b=TElkDEi1i+Y/Dqqmxk2fg7Yl2LLTSA78bAi4QiL3e6Cr7qxuT2tzzfqhzK95q5w7eX
-         M9xhn2UeM36cnzOyefuJGahLZMhAT+/q9IiXm1toGZmjyu5tgRNdIpObHWUoqw+R9kxA
-         FhbgiAlA7e6JNBgHVljKaO2E+Qqh6abkC+XpaVAgNwKb5RnZ23soDBpZ6YqcRPv4/0c8
-         hVFxjuRV5U1YDKOk1duiWj0ObqwePMuWFRZW5FcY8/CDa+PZ+uB9LuWbQpMkkEvNcsWw
-         uJJuDpEbshrutmAmuZWY5z7RWQysRl2wuFGbRYWg8FDnslON8UTZmaIFDEH5h4c8Ftkv
-         UxDA==
-X-Gm-Message-State: AJIora+i6TMP80AorA93E46ytX4SCmQwBfGgkHPkYP+M70TLaHLxcQVl
-        vE9YsFLnGIngIrp4Q7wjZVczkA==
-X-Google-Smtp-Source: AGRyM1uH8/M2iGX2n2wOrXwL+tXc5HmSsj392p52tR/beA2RwQ1QmjHwdDlm5rbSnYFM5umdpppZNA==
-X-Received: by 2002:a05:6870:649e:b0:ed:a1c0:f810 with SMTP id cz30-20020a056870649e00b000eda1c0f810mr285467oab.289.1656434689573;
-        Tue, 28 Jun 2022 09:44:49 -0700 (PDT)
-Received: from [192.168.0.41] ([184.4.90.121])
-        by smtp.gmail.com with ESMTPSA id y27-20020a544d9b000000b0032b99637366sm4400950oix.25.2022.06.28.09.44.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Jun 2022 09:44:49 -0700 (PDT)
-Message-ID: <83b9774f-5cda-d05f-e62d-7bf7547ae7ba@cloudflare.com>
-Date:   Tue, 28 Jun 2022 11:44:47 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH 0/2] Introduce security_create_user_ns()
-Content-Language: en-US
-To:     KP Singh <kpsingh@kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Paul Moore <paul@paul-moore.com>,
+        bh=Mo8doXYA9emrg3uQBgrdNC6baXQfzRLIjgAua2IloJE=;
+        b=m0Q9+8RxBt0HH+cNHrwTQP+FUHyJEvTaTXBLynxVCjLD1narb0ZI+8Qd8h7fnyh+C/
+         Uyyps4aYQ4aXDEDjXagLQe7HBgHD/T0J1hliRJx/zjm2mCbtpPhPUcYeWRp9FII6oQW7
+         Y8w/kGXKs1GlsE8j+KPHA1g1GyNQXz0GTeaFjisKWzzuf0XgnSKipYJJhZcR0qIwwbVj
+         qWbJ7LQFE7oVyweeqNH2YaSJvcyJCcfFOug6aKvT1oi5YKKOa3Yn5+Y43T+ENA0z8bhM
+         BJg2PbVfISKzR48pcMqVFkBnB5zDoAhU7+RlMsjgQ8mrv87h0nEMZiSahpBH1acubEqg
+         zOKQ==
+X-Gm-Message-State: AJIora+F4W6Akt2iGrkVvRY0CvZsETzZMQcHRlQ9T5yYbziNVxn5eX4b
+        bErUoUsKJuCQWilOFmAC9+sG4A==
+X-Google-Smtp-Source: AGRyM1tx8LtiV7j5ISfbHRGmE8XllPMXBpjzg4+mdg5OasURbqX1AWPtI+Cylpx6hUEotSiiyU7s+Q==
+X-Received: by 2002:a05:600c:583:b0:39c:3637:b9f with SMTP id o3-20020a05600c058300b0039c36370b9fmr578011wmd.79.1656434739332;
+        Tue, 28 Jun 2022 09:45:39 -0700 (PDT)
+Received: from harfang.fritz.box ([51.155.200.13])
+        by smtp.gmail.com with ESMTPSA id a2-20020adfbc42000000b0021ba1b6186csm15585151wrh.40.2022.06.28.09.45.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jun 2022 09:45:38 -0700 (PDT)
+From:   Quentin Monnet <quentin@isovalent.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Christian Brauner <brauner@kernel.org>, revest@chromium.org,
-        jackmanb@chromium.org, ast@kernel.org, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@cloudflare.com
-References: <20220621233939.993579-1-fred@cloudflare.com>
- <ce1653b1-feb0-1a99-0e97-8dfb289eeb79@schaufler-ca.com>
- <b72c889a-4a50-3330-baae-3bbf065e7187@cloudflare.com>
- <CAHC9VhSTkEMT90Tk+=iTyp3npWEm+3imrkFVX2qb=XsOPp9F=A@mail.gmail.com>
- <20220627121137.cnmctlxxtcgzwrws@wittgenstein>
- <CAHC9VhSQH9tE-NgU6Q-GLqSy7R6FVjSbp4Tc4gVTbjZCqAWy5Q@mail.gmail.com>
- <6a8fba0a-c9c9-61ba-793a-c2e0c2924f88@iogearbox.net>
- <CAHC9VhQQJH95jTWMOGDB4deS=whSfnaF_e73zoabOOeHJMv+0Q@mail.gmail.com>
- <685096bb-af0a-08c0-491a-e176ac009e85@schaufler-ca.com>
- <9ae473c4-cd42-bb45-bce2-8aa2e4784a43@cloudflare.com>
- <d70d3b2d-6c3f-b1fc-f40c-f5ec01a627c0@schaufler-ca.com>
- <CACYkzJ6GmotfhBk1+9BjGC6Ct7bGxQGVTZTX2iQcrhjfV7VHwQ@mail.gmail.com>
-Reply-To: CACYkzJ6GmotfhBk1+9BjGC6Ct7bGxQGVTZTX2iQcrhjfV7VHwQ@mail.gmail.com
-From:   Frederick Lawler <fred@cloudflare.com>
-In-Reply-To: <CACYkzJ6GmotfhBk1+9BjGC6Ct7bGxQGVTZTX2iQcrhjfV7VHwQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Yafang Shao <laoar.shao@gmail.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>,
+        Stanislav Fomichev <sdf@google.com>
+Subject: [PATCH bpf-next] bpftool: Probe for memcg-based accounting before bumping rlimit
+Date:   Tue, 28 Jun 2022 17:45:29 +0100
+Message-Id: <20220628164529.80050-1-quentin@isovalent.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/28/22 11:12 AM, KP Singh wrote:
-> On Tue, Jun 28, 2022 at 6:02 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
->>
->> On 6/28/2022 8:14 AM, Frederick Lawler wrote:
->>> On 6/27/22 6:18 PM, Casey Schaufler wrote:
->>>> On 6/27/2022 3:27 PM, Paul Moore wrote:
->>>>> On Mon, Jun 27, 2022 at 6:15 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>>>>> On 6/27/22 11:56 PM, Paul Moore wrote:
->>>>>>> On Mon, Jun 27, 2022 at 8:11 AM Christian Brauner <brauner@kernel.org> wrote:
->>>>>>>> On Thu, Jun 23, 2022 at 11:21:37PM -0400, Paul Moore wrote:
->>>>>>> ...
->>>>>>>
->>>>>>>>> This is one of the reasons why I usually like to see at least one LSM
->>>>>>>>> implementation to go along with every new/modified hook.  The
->>>>>>>>> implementation forces you to think about what information is necessary
->>>>>>>>> to perform a basic access control decision; sometimes it isn't always
->>>>>>>>> obvious until you have to write the access control :)
->>>>>>>> I spoke to Frederick at length during LSS and as I've been given to
->>>>>>>> understand there's a eBPF program that would immediately use this new
->>>>>>>> hook. Now I don't want to get into the whole "Is the eBPF LSM hook
->>>>>>>> infrastructure an LSM" but I think we can let this count as a legitimate
->>>>>>>> first user of this hook/code.
->>>>>>> Yes, for the most part I don't really worry about the "is a BPF LSM a
->>>>>>> LSM?" question, it's generally not important for most discussions.
->>>>>>> However, there is an issue unique to the BPF LSMs which I think is
->>>>>>> relevant here: there is no hook implementation code living under
->>>>>>> security/.  While I talked about a hook implementation being helpful
->>>>>>> to verify the hook prototype, it is also helpful in providing an
->>>>>>> in-tree example for other LSMs; unfortunately we don't get that same
->>>>>>> example value when the initial hook implementation is a BPF LSM.
->>>>>> I would argue that such a patch series must come together with a BPF
->>>>>> selftest which then i) contains an in-tree usage example, ii) adds BPF
->>>>>> CI test coverage. Shipping with a BPF selftest at least would be the
->>>>>> usual expectation.
->>>>> I'm not going to disagree with that, I generally require matching
->>>>> tests for new SELinux kernel code, but I was careful to mention code
->>>>> under 'security/' and not necessarily just a test implementation :)  I
->>>>> don't want to get into a big discussion about it, but I think having a
->>>>> working implementation somewhere under 'security/' is more
->>>>> discoverable for most LSM folks.
->>>>
->>>> I agree. It would be unfortunate if we added a hook explicitly for eBPF
->>>> only to discover that the proposed user needs something different. The
->>>> LSM community should have a chance to review the code before committing
->>>> to all the maintenance required in supporting it.
->>>>
->>>> Is there a reference on how to write an eBPF security module?
->>>
->>> There's a documentation page that briefly touches on a BPF LSM implementation [1].
->>
->> That's a brief touch, alright. I'll grant that the LSM interface isn't
->> especially well documented for C developers, but we have done tutorials
->> and have multiple examples. I worry that without an in-tree example for
->> eBPF we might well be setting developers up for spectacular failure.
->>
-> 
-> Casey, Daniel and I are recommending an in-tree example, it will be
-> in BPF selftests and we will CC you on the reviews.
-> 
-> Frederick, is that okay with you?
+Bpftool used to bump the memlock rlimit to make sure to be able to load
+BPF objects. After the kernel has switched to memcg-based memory
+accounting [0] in 5.11, bpftool has relied on libbpf to probe the system
+for memcg-based accounting support and for raising the rlimit if
+necessary [1]. But this was later reverted, because the probe would
+sometimes fail, resulting in bpftool not being able to load all required
+objects [2].
 
-Yep.
+Here we add a more efficient probe, in bpftool itself. We first lower
+the rlimit to 0, then we attempt to load a BPF object (and finally reset
+the rlimit): if the load succeeds, then memcg-based memory accounting is
+supported.
 
-> 
->>>
->>>> There should be something out there warning the eBPF programmer of the
->>>> implications of providing a secid_to_secctx hook for starters.
->>>>
->>>
->>> Links:
->>> 1. https://docs.kernel.org/bpf/prog_lsm.html?highlight=bpf+lsm#
->>>
+This approach was earlier proposed for the probe in libbpf itself [3],
+but given that the library may be used in multithreaded applications,
+the probe could have undesirable consequences if one thread attempts to
+lock kernel memory while memlock rlimit is at 0. Since bpftool is
+single-threaded and the rlimit is process-based, this is fine to do in
+bpftool itself.
+
+This probe was inspired by the similar one from the cilium/ebpf Go
+library [4].
+
+[0] commit 97306be45fbe ("Merge branch 'switch to memcg-based memory accounting'")
+[1] commit a777e18f1bcd ("bpftool: Use libbpf 1.0 API mode instead of RLIMIT_MEMLOCK")
+[2] commit 6b4384ff1088 ("Revert "bpftool: Use libbpf 1.0 API mode instead of RLIMIT_MEMLOCK"")
+[3] https://lore.kernel.org/bpf/20220609143614.97837-1-quentin@isovalent.com/t/#u
+[4] https://github.com/cilium/ebpf/blob/v0.9.0/rlimit/rlimit.go#L39
+
+Cc: Stanislav Fomichev <sdf@google.com>
+Cc: Yafang Shao <laoar.shao@gmail.com>
+Suggested-by: Daniel Borkmann <daniel@iogearbox.net>
+Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+---
+ tools/bpf/bpftool/common.c   | 71 ++++++++++++++++++++++++++++++++++--
+ tools/include/linux/kernel.h |  5 +++
+ 2 files changed, 73 insertions(+), 3 deletions(-)
+
+diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
+index a0d4acd7c54a..e07769802f76 100644
+--- a/tools/bpf/bpftool/common.c
++++ b/tools/bpf/bpftool/common.c
+@@ -13,14 +13,17 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
+-#include <linux/limits.h>
+-#include <linux/magic.h>
+ #include <net/if.h>
+ #include <sys/mount.h>
+ #include <sys/resource.h>
+ #include <sys/stat.h>
+ #include <sys/vfs.h>
+ 
++#include <linux/filter.h>
++#include <linux/limits.h>
++#include <linux/magic.h>
++#include <linux/unistd.h>
++
+ #include <bpf/bpf.h>
+ #include <bpf/hashmap.h>
+ #include <bpf/libbpf.h> /* libbpf_num_possible_cpus */
+@@ -73,11 +76,73 @@ static bool is_bpffs(char *path)
+ 	return (unsigned long)st_fs.f_type == BPF_FS_MAGIC;
+ }
+ 
++/* Probe whether kernel switched from memlock-based (RLIMIT_MEMLOCK) to
++ * memcg-based memory accounting for BPF maps and programs. This was done in
++ * commit 97306be45fbe ("Merge branch 'switch to memcg-based memory
++ * accounting'"), in Linux 5.11.
++ *
++ * Libbpf also offers to probe for memcg-based accounting vs rlimit, but does
++ * so by checking for the availability of a given BPF helper and this has
++ * failed on some kernels with backports in the past, see commit 6b4384ff1088
++ * ("Revert "bpftool: Use libbpf 1.0 API mode instead of RLIMIT_MEMLOCK"").
++ * Instead, we can probe by lowering the process-based rlimit to 0, trying to
++ * load a BPF object, and resetting the rlimit. If the load succeeds then
++ * memcg-based accounting is supported.
++ *
++ * This would be too dangerous to do in the library, because multithreaded
++ * applications might attempt to load items while the rlimit is at 0. Given
++ * that bpftool is single-threaded, this is fine to do here.
++ */
++static bool known_to_need_rlimit(void)
++{
++	const size_t prog_load_attr_sz = offsetofend(union bpf_attr, attach_btf_obj_fd);
++	struct bpf_insn insns[] = {
++		BPF_EXIT_INSN(),
++	};
++	struct rlimit rlim_init, rlim_cur_zero = {};
++	size_t insn_cnt = ARRAY_SIZE(insns);
++	union bpf_attr attr;
++	int prog_fd, err;
++
++	memset(&attr, 0, prog_load_attr_sz);
++	attr.prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
++	attr.insns = ptr_to_u64(insns);
++	attr.insn_cnt = insn_cnt;
++	attr.license = ptr_to_u64("GPL");
++
++	if (getrlimit(RLIMIT_MEMLOCK, &rlim_init))
++		return false;
++
++	/* Drop the soft limit to zero. We maintain the hard limit to its
++	 * current value, because lowering it would be a permanent operation
++	 * for unprivileged users.
++	 */
++	rlim_cur_zero.rlim_max = rlim_init.rlim_max;
++	if (setrlimit(RLIMIT_MEMLOCK, &rlim_cur_zero))
++		return false;
++
++	/* Do not use bpf_prog_load() from libbpf here, because it calls
++	 * bump_rlimit_memlock(), interfering with the current probe.
++	 */
++	prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, prog_load_attr_sz);
++	err = errno;
++
++	/* reset soft rlimit to its initial value */
++	setrlimit(RLIMIT_MEMLOCK, &rlim_init);
++
++	if (prog_fd < 0)
++		return err == EPERM;
++
++	close(prog_fd);
++	return false;
++}
++
+ void set_max_rlimit(void)
+ {
+ 	struct rlimit rinf = { RLIM_INFINITY, RLIM_INFINITY };
+ 
+-	setrlimit(RLIMIT_MEMLOCK, &rinf);
++	if (known_to_need_rlimit())
++		setrlimit(RLIMIT_MEMLOCK, &rinf);
+ }
+ 
+ static int
+diff --git a/tools/include/linux/kernel.h b/tools/include/linux/kernel.h
+index 4b0673bf52c2..5c90d65cc2d3 100644
+--- a/tools/include/linux/kernel.h
++++ b/tools/include/linux/kernel.h
+@@ -24,6 +24,11 @@
+ #define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
+ #endif
+ 
++#ifndef offsetofend
++# define offsetofend(TYPE, FIELD) \
++	(offsetof(TYPE, FIELD) + sizeof(((TYPE *)0)->FIELD))
++#endif
++
+ #ifndef container_of
+ /**
+  * container_of - cast a member of a structure out to the containing structure
+-- 
+2.34.1
 
