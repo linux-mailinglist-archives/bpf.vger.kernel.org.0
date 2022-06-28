@@ -2,107 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1262755EB4F
-	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 19:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FF1655EB5A
+	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 19:53:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233452AbiF1RtG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Jun 2022 13:49:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36602 "EHLO
+        id S232261AbiF1Rxj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Jun 2022 13:53:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233362AbiF1Rsr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Jun 2022 13:48:47 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F3D64D3
-        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 10:48:32 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id p13so8689828ilq.0
-        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 10:48:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=csp-edu.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3LBlOsHDDvMdp4y73P1jZxUXSiowmAwvg2Xs0aTbdiQ=;
-        b=WNWZQLxtnV+XDSNndK3uTuvHqQcoFqbdsbXNLG3WG/5u7zQsy836LJBWNMrB6jkmtP
-         2nUd/0YOGpoFgmxeHRthpfuaLm7Il7xiS+GtRH6Dh0N/MgVRiegDY9Lv/TM2RTA389XR
-         VZtT2RpsfggYMFOAjrXxL75Y5AW/5diMbm6NLevXIGyaoBvpjo6TPEY4XSZAom6Ol2zG
-         6aX5ZuBR48nkQpgXM1b9bT59GhBr3jwzWphxSDZOrpCk7uHoFE5fQv9gxrCbK9pBa4xY
-         GPzEykKXAQ06WWCf2vvn0tIJLHQr2eEtwWa+z/2zMt0mHZEPgzj5T36n2CjnJ7L8DpT7
-         P1lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3LBlOsHDDvMdp4y73P1jZxUXSiowmAwvg2Xs0aTbdiQ=;
-        b=AjwnnBC42Dc6enVHc+0Wxw1IKQokq+EZvydjpruRU+3y6oDWeDxvw0ek4Q2dHXIJvF
-         zwUlHQZ4CeezTb3bkJJtQ1tR/T7R7RMV8rNKI2NnNrUjzbGh3wPCduSfqIHjgFUEkEzl
-         aL8QdY1F4cYDwuzB3onNwtfOXM4eFXOjWuc/QsXQbxu1IFt1mX1TzKOt1U9dAdL7TqcU
-         K7CqC1UF2oASLcgWzMk9uv1mc019dhnUsF0xUinKlDtFBA8y6/yZQYHUMK5aVZWacg2y
-         tdkWfy2xI1iNr7GfYle22JygchRnSKeQNYpnTBhUWJK3HLVIS8SPsbhHXnTbtfMlDO4E
-         zqhw==
-X-Gm-Message-State: AJIora/m+B+YPUsFlvduhffkwNomSMGb5dS33DHNPGAR5x/c9Dv5v/bB
-        z2lqiTN1ukfDJr6rjBOEts8icQ==
-X-Google-Smtp-Source: AGRyM1sgcFYWfJ9UEVGyZgKpCri6wKICjkhE65hbuPqiGbd6RUWnd42zOoe4rRwk3R043c4MnVYl/g==
-X-Received: by 2002:a92:d94f:0:b0:2d9:3ebe:7252 with SMTP id l15-20020a92d94f000000b002d93ebe7252mr10884416ilq.279.1656438511968;
-        Tue, 28 Jun 2022 10:48:31 -0700 (PDT)
-Received: from kernel-dev-1 (75-168-90-187.mpls.qwest.net. [75.168.90.187])
-        by smtp.gmail.com with ESMTPSA id p3-20020a92da43000000b002daa3e1fe85sm1703442ilq.58.2022.06.28.10.48.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jun 2022 10:48:31 -0700 (PDT)
-From:   Coleman Dietsch <dietschc@csp.edu>
-To:     linux-kselftest@vger.kernel.org
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S233052AbiF1RxS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Jun 2022 13:53:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA67AA44A
+        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 10:52:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 24032619CF
+        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 17:52:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D0CBC385A2
+        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 17:52:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1656438754;
+        bh=1CFWsHDyBFCdk9FMXqZqtRxlJwOD4QYi3VLp5L9waFM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=BCxJVxRxNIvf878wioP92nIRzTDhLQJrXig5WEBroiYB/kVtUw7aznYFX2/Pr7oy4
+         VcM+Bvs/DfZeKQ5TYWNGkm1xwm3OKQ1w5eQZbkJYjvPeDKlmKWfwFhSCdc5LHYEDqV
+         UiT4O2bgPfk9tpmFDjAMDtsDITn4xtZIwSYPTkKc7flUI7UUpzve6EiuAurjImAfp7
+         TRb5v3FnpQmTkRpj4bIH/3MWWUAWVLlwHyNr6/PJ+J9qjczlRIoI1W3ADbyjVNH02o
+         smWHLt/gbva1MfV5XNYFroFZ6PkKiBoh5+5RL4Ua2RDqryXcjZppYzwWLhc/uSciZf
+         L/hoFskcccFUw==
+Received: by mail-yb1-f169.google.com with SMTP id l11so23450850ybu.13
+        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 10:52:34 -0700 (PDT)
+X-Gm-Message-State: AJIora+PkUBovoevWOSpREfooVSWySrchKaaFeouOmWyIY62WpByHxSm
+        ksM3BJygbbpb+OuuZVwFxUCrmomtnjHtonGPiqfa3A==
+X-Google-Smtp-Source: AGRyM1sPwROEYpARjmuZt7KnRCmkADqIZe/mLmQImXBKPlGfyx79CeXHkdgcwtsTldmt0vI4w1n6oI7l1gAz2DhnFDI=
+X-Received: by 2002:a25:9a48:0:b0:669:b51a:5b8d with SMTP id
+ r8-20020a259a48000000b00669b51a5b8dmr20982749ybo.404.1656438753522; Tue, 28
+ Jun 2022 10:52:33 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220628161948.475097-1-kpsingh@kernel.org> <20220628161948.475097-6-kpsingh@kernel.org>
+ <20220628173344.h7ihvyl6vuky5xus@wittgenstein>
+In-Reply-To: <20220628173344.h7ihvyl6vuky5xus@wittgenstein>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Tue, 28 Jun 2022 19:52:22 +0200
+X-Gmail-Original-Message-ID: <CACYkzJ5ij9rth_v3KQrCVYsQr2STBEWq1EAzkDb5D06CoRRSjA@mail.gmail.com>
+Message-ID: <CACYkzJ5ij9rth_v3KQrCVYsQr2STBEWq1EAzkDb5D06CoRRSjA@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 5/5] bpf/selftests: Add a selftest for bpf_getxattr
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Coleman Dietsch <dietschc@csp.edu>
-Subject: [PATCH] selftests net: fix kselftest net fatal error
-Date:   Tue, 28 Jun 2022 12:47:44 -0500
-Message-Id: <20220628174744.7908-1-dietschc@csp.edu>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Yosry Ahmed <yosryahmed@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The incorrect path is causing the following error when trying to run net
-kselftests:
+On Tue, Jun 28, 2022 at 7:33 PM Christian Brauner <brauner@kernel.org> wrote:
+>
+> On Tue, Jun 28, 2022 at 04:19:48PM +0000, KP Singh wrote:
+> > A simple test that adds an xattr on a copied /bin/ls and reads it back
+> > when the copied ls is executed.
+> >
+> > Signed-off-by: KP Singh <kpsingh@kernel.org>
+> > ---
+> >  .../testing/selftests/bpf/prog_tests/xattr.c  | 54 +++++++++++++++++++
 
-In file included from bpf/nat6to4.c:43:
-../../../lib/bpf/bpf_helpers.h:11:10: fatal error: 'bpf_helper_defs.h' file not found
-         ^~~~~~~~~~~~~~~~~~~
-1 error generated.
+[...]
 
-Signed-off-by: Coleman Dietsch <dietschc@csp.edu>
----
- tools/testing/selftests/net/bpf/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > +SEC("lsm.s/bprm_committed_creds")
+> > +void BPF_PROG(bprm_cc, struct linux_binprm *bprm)
+> > +{
+> > +     struct task_struct *current = bpf_get_current_task_btf();
+> > +     char dir_xattr_value[64] = {0};
+> > +     int xattr_sz = 0;
+> > +
+> > +     xattr_sz = bpf_getxattr(bprm->file->f_path.dentry,
+> > +                             bprm->file->f_path.dentry->d_inode, XATTR_NAME,
+> > +                             dir_xattr_value, 64);
+>
+> Yeah, this isn't right. You're not accounting for the caller's userns
+> nor for the idmapped mount. If this is supposed to work you will need a
+> variant of vfs_getxattr() that takes the mount's idmapping into account
+> afaict. See what needs to happen after do_getxattr().
 
-diff --git a/tools/testing/selftests/net/bpf/Makefile b/tools/testing/selftests/net/bpf/Makefile
-index 8a69c91fcca0..8ccaf8732eb2 100644
---- a/tools/testing/selftests/net/bpf/Makefile
-+++ b/tools/testing/selftests/net/bpf/Makefile
-@@ -2,7 +2,7 @@
- 
- CLANG ?= clang
- CCINCLUDE += -I../../bpf
--CCINCLUDE += -I../../../lib
-+CCINCLUDE += -I../../../../lib
- CCINCLUDE += -I../../../../../usr/include/
- 
- TEST_CUSTOM_PROGS = $(OUTPUT)/bpf/nat6to4.o
--- 
-2.34.1
+Thanks for taking a look.
 
+So, If I understand correctly, we don't need xattr_permission (and
+other checks in
+vfs_getxattr) here as the BPF programs run as CAP_SYS_ADMIN.
+
+but...
+
+So, Is this bit what's missing then?
+
+error = vfs_getxattr(mnt_userns, d, kname, ctx->kvalue, ctx->size);
+if (error > 0) {
+    if ((strcmp(kname, XATTR_NAME_POSIX_ACL_ACCESS) == 0) ||
+(strcmp(kname, XATTR_NAME_POSIX_ACL_DEFAULT) == 0))
+        posix_acl_fix_xattr_to_user(mnt_userns, d_inode(d),
+            ctx->kvalue, error);
+    if (ctx->size && copy_to_user(ctx->value, ctx->kvalue, error))
+        error = -EFAULT;
+}
+else if (error == -ERANGE && ctx->size >= XATTR_SIZE_MAX) {
+    /* The file system tried to returned a value bigger
+than XATTR_SIZE_MAX bytes. Not possible. */
+    error = -E2BIG;
+}
