@@ -2,44 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5FEA55EE2B
-	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 21:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE08255EE2C
+	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 21:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232512AbiF1TvC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Jun 2022 15:51:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44860 "EHLO
+        id S232518AbiF1TvD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Jun 2022 15:51:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231736AbiF1Tut (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S229571AbiF1Tut (ORCPT <rfc822;bpf@vger.kernel.org>);
         Tue, 28 Jun 2022 15:50:49 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AE853A70C;
-        Tue, 28 Jun 2022 12:49:06 -0700 (PDT)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C343A70F;
+        Tue, 28 Jun 2022 12:49:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1656445746; x=1687981746;
+  t=1656445749; x=1687981749;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=sgjOMZvqwy3/sgeJmIw/5jGoi4GaZrbkmWa1wRm6tdY=;
-  b=AONLCuT4qgIwK4zUm6RFmNB5ns3q/SZHwV36K52ChsFU04ak0jh7N8qI
-   wc8gH6MuqT4Zok5oDPKkvut+ZrEHrhKZex0d8NqG+uI7ryPxSi6+lo8AR
-   UrCYt5lfvDHn6Z4vdivr5L9VNNztk7s15iiRxMSV+2ENezs3kowd6DWa2
-   h4eTG9QhqBXp5ad9+C5zdbgr/OXlDTvdoL6w/Oeu96B8Z/RxltyUkYqg0
-   CX7fkerH8e+AKQGQcBlgPcfnYX9uS8ng9chm98+IgGQ4C+j75bUH9l9Lk
-   rqIv+v/8r0D0cfdZjg6GSakNKaKMXbwiTfHsN0oa3ZaFIDpFhPBEl/Kql
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10392"; a="345828299"
+  bh=sU25U5z5Fc524fPGWGwlzdwktQUtdwxy/KN7ZKjuDgg=;
+  b=mq8Q9LSUF6oCyxKAiCE/RoEeJVrMWv4z20yJDeMLi721w6LSj4xiotIy
+   r+lewqVNNKqXZiuSi6UTDwCKanerJWk1qMbGdGLareZFKNiSL/mhBCXvs
+   xhVAh1KeqzrG7xjvI9pc2oeuX+z/WsqeH3nzecT4TU7P8/COQmfbCZmZz
+   z9nkE/hx/V1I41R63Rc0I2y+rpnTbDvpxRqz5qEhcZHj81HIgSfm0c387
+   FD/TweloT9rueCIu/A97hXz1+U5HgIRN6sqcAyLbpth/dDj46D4PAqkOv
+   O5Dwnz5tK3yCMOxsCowmleIoTAM4AS0+/wtusBWLfp7GqMyjC4dhUWaGX
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10392"; a="282568051"
 X-IronPort-AV: E=Sophos;i="5.92,229,1650956400"; 
-   d="scan'208";a="345828299"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2022 12:49:05 -0700
+   d="scan'208";a="282568051"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jun 2022 12:49:08 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.92,229,1650956400"; 
-   d="scan'208";a="836809320"
+   d="scan'208";a="590426284"
 Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by fmsmga006.fm.intel.com with ESMTP; 28 Jun 2022 12:49:00 -0700
+  by orsmga002.jf.intel.com with ESMTP; 28 Jun 2022 12:49:03 -0700
 Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 25SJmr94022013;
-        Tue, 28 Jun 2022 20:48:59 +0100
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 25SJmr96022013;
+        Tue, 28 Jun 2022 20:49:02 +0100
 From:   Alexander Lobakin <alexandr.lobakin@intel.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -64,9 +64,9 @@ Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
         Willem de Bruijn <willemb@google.com>, bpf@vger.kernel.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         xdp-hints@xdp-project.net
-Subject: [PATCH RFC bpf-next 04/52] libbpf: patch module BTF ID into BPF insns
-Date:   Tue, 28 Jun 2022 21:47:24 +0200
-Message-Id: <20220628194812.1453059-5-alexandr.lobakin@intel.com>
+Subject: [PATCH RFC bpf-next 06/52] bpf: pass a pointer to union bpf_attr to bpf_link_ops::update_prog()
+Date:   Tue, 28 Jun 2022 21:47:26 +0200
+Message-Id: <20220628194812.1453059-7-alexandr.lobakin@intel.com>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20220628194812.1453059-1-alexandr.lobakin@intel.com>
 References: <20220628194812.1453059-1-alexandr.lobakin@intel.com>
@@ -74,92 +74,112 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Larysa Zaremba <larysa.zaremba@intel.com>
+In order to be able to use any arbitrary data from
+bpf_attr::link_update inside the bpf_link_ops::update_prog()
+implementations, pass a pointer to the whole attr as a callback
+argument.
+@new_prog and @old_prog arguments are still here as ::link_update
+contains only their FDs.
 
-Return both type id and BTF id from bpf_core_type_id_kernel().
-Earlier only type id was returned despite the fact that llvm
-has enabled the 64 return type for this instruction [1].
-This was done as a preparation to the patch [2], which
-also strongly served as a inspiration for this implementation.
-
-[1] https://reviews.llvm.org/D91489
-[2] https://lore.kernel.org/all/20201205025140.443115-1-andrii@kernel.org
-
-Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
 Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
 ---
- tools/lib/bpf/bpf_core_read.h | 3 ++-
- tools/lib/bpf/relo_core.c     | 8 +++++++-
- tools/lib/bpf/relo_core.h     | 1 +
- 3 files changed, 10 insertions(+), 2 deletions(-)
+ include/linux/bpf.h        | 3 ++-
+ kernel/bpf/bpf_iter.c      | 1 +
+ kernel/bpf/cgroup.c        | 4 +++-
+ kernel/bpf/net_namespace.c | 1 +
+ kernel/bpf/syscall.c       | 2 +-
+ net/bpf/dev.c              | 4 +++-
+ 6 files changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/tools/lib/bpf/bpf_core_read.h b/tools/lib/bpf/bpf_core_read.h
-index fd48b1ff59ca..2b7d675b2dd0 100644
---- a/tools/lib/bpf/bpf_core_read.h
-+++ b/tools/lib/bpf/bpf_core_read.h
-@@ -167,7 +167,8 @@ enum bpf_enum_value_kind {
-  * Convenience macro to get BTF type ID of a target kernel's type that matches
-  * specified local type.
-  * Returns:
-- *    - valid 32-bit unsigned type ID in kernel BTF;
-+ *    - valid 64-bit unsigned integer: the upper 32 bits is the BTF ID
-+ *      and the lower 32 bits is the type ID within the BTF.
-  *    - 0, if no matching type was found in a target kernel BTF.
-  */
- #define bpf_core_type_id_kernel(type)					    \
-diff --git a/tools/lib/bpf/relo_core.c b/tools/lib/bpf/relo_core.c
-index e070123332cd..020f0f81374c 100644
---- a/tools/lib/bpf/relo_core.c
-+++ b/tools/lib/bpf/relo_core.c
-@@ -884,6 +884,7 @@ static int bpf_core_calc_relo(const char *prog_name,
- 	res->fail_memsz_adjust = false;
- 	res->orig_sz = res->new_sz = 0;
- 	res->orig_type_id = res->new_type_id = 0;
-+	res->btf_obj_id = 0;
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index d05e1495a06e..c08690a49011 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1155,7 +1155,8 @@ struct bpf_link_ops {
+ 	void (*release)(struct bpf_link *link);
+ 	void (*dealloc)(struct bpf_link *link);
+ 	int (*detach)(struct bpf_link *link);
+-	int (*update_prog)(struct bpf_link *link, struct bpf_prog *new_prog,
++	int (*update_prog)(struct bpf_link *link, const union bpf_attr *attr,
++			   struct bpf_prog *new_prog,
+ 			   struct bpf_prog *old_prog);
+ 	void (*show_fdinfo)(const struct bpf_link *link, struct seq_file *seq);
+ 	int (*fill_link_info)(const struct bpf_link *link,
+diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
+index 7e8fd49406f6..1d3dcc853f70 100644
+--- a/kernel/bpf/bpf_iter.c
++++ b/kernel/bpf/bpf_iter.c
+@@ -400,6 +400,7 @@ static void bpf_iter_link_dealloc(struct bpf_link *link)
+ }
  
- 	if (core_relo_is_field_based(relo->kind)) {
- 		err = bpf_core_calc_field_relo(prog_name, relo, local_spec,
-@@ -934,6 +935,8 @@ static int bpf_core_calc_relo(const char *prog_name,
- 	} else if (core_relo_is_type_based(relo->kind)) {
- 		err = bpf_core_calc_type_relo(relo, local_spec, &res->orig_val, &res->validate);
- 		err = err ?: bpf_core_calc_type_relo(relo, targ_spec, &res->new_val, NULL);
-+		if (!err && relo->kind == BPF_CORE_TYPE_ID_TARGET)
-+			res->btf_obj_id = btf_obj_id(targ_spec->btf);
- 	} else if (core_relo_is_enumval_based(relo->kind)) {
- 		err = bpf_core_calc_enumval_relo(relo, local_spec, &res->orig_val);
- 		err = err ?: bpf_core_calc_enumval_relo(relo, targ_spec, &res->new_val);
-@@ -1125,7 +1128,10 @@ int bpf_core_patch_insn(const char *prog_name, struct bpf_insn *insn,
- 		}
+ static int bpf_iter_link_replace(struct bpf_link *link,
++				 const union bpf_attr *attr,
+ 				 struct bpf_prog *new_prog,
+ 				 struct bpf_prog *old_prog)
+ {
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index 7a394f7c205c..f4d8100dd22f 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -664,7 +664,9 @@ static int __cgroup_bpf_replace(struct cgroup *cgrp,
+ 	return 0;
+ }
  
- 		insn[0].imm = new_val;
--		insn[1].imm = new_val >> 32;
-+		/* For type IDs, upper 32 bits are used for BTF ID */
-+		insn[1].imm = relo->kind == BPF_CORE_TYPE_ID_TARGET ?
-+					    res->btf_obj_id :
-+					    (new_val >> 32);
- 		pr_debug("prog '%s': relo #%d: patched insn #%d (LDIMM64) imm64 %llu -> %llu\n",
- 			 prog_name, relo_idx, insn_idx,
- 			 (unsigned long long)imm, (unsigned long long)new_val);
-diff --git a/tools/lib/bpf/relo_core.h b/tools/lib/bpf/relo_core.h
-index 3fd3842d4230..f026ea36140e 100644
---- a/tools/lib/bpf/relo_core.h
-+++ b/tools/lib/bpf/relo_core.h
-@@ -66,6 +66,7 @@ struct bpf_core_relo_res {
- 	__u32 orig_type_id;
- 	__u32 new_sz;
- 	__u32 new_type_id;
-+	__u32 btf_obj_id;
- };
+-static int cgroup_bpf_replace(struct bpf_link *link, struct bpf_prog *new_prog,
++static int cgroup_bpf_replace(struct bpf_link *link,
++			      const union bpf_attr *attr,
++			      struct bpf_prog *new_prog,
+ 			      struct bpf_prog *old_prog)
+ {
+ 	struct bpf_cgroup_link *cg_link;
+diff --git a/kernel/bpf/net_namespace.c b/kernel/bpf/net_namespace.c
+index 868cc2c43899..5d80a4a9d0bd 100644
+--- a/kernel/bpf/net_namespace.c
++++ b/kernel/bpf/net_namespace.c
+@@ -162,6 +162,7 @@ static void bpf_netns_link_dealloc(struct bpf_link *link)
+ }
  
- int __bpf_core_types_are_compat(const struct btf *local_btf, __u32 local_id,
+ static int bpf_netns_link_update_prog(struct bpf_link *link,
++				      const union bpf_attr *attr,
+ 				      struct bpf_prog *new_prog,
+ 				      struct bpf_prog *old_prog)
+ {
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 7d5af5b99f0d..f7a674656067 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -4614,7 +4614,7 @@ static int link_update(union bpf_attr *attr)
+ 	}
+ 
+ 	if (link->ops->update_prog)
+-		ret = link->ops->update_prog(link, new_prog, old_prog);
++		ret = link->ops->update_prog(link, attr, new_prog, old_prog);
+ 	else
+ 		ret = -EINVAL;
+ 
+diff --git a/net/bpf/dev.c b/net/bpf/dev.c
+index dfe0402947f8..68a7b2c49392 100644
+--- a/net/bpf/dev.c
++++ b/net/bpf/dev.c
+@@ -619,7 +619,9 @@ static int bpf_xdp_link_fill_link_info(const struct bpf_link *link,
+ 	return 0;
+ }
+ 
+-static int bpf_xdp_link_update(struct bpf_link *link, struct bpf_prog *new_prog,
++static int bpf_xdp_link_update(struct bpf_link *link,
++			       const union bpf_attr *attr,
++			       struct bpf_prog *new_prog,
+ 			       struct bpf_prog *old_prog)
+ {
+ 	struct bpf_xdp_link *xdp_link = container_of(link, struct bpf_xdp_link, link);
 -- 
 2.36.1
 
