@@ -2,121 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E7155E7E5
-	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 18:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD41F55E7E4
+	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 18:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346951AbiF1N4c (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Jun 2022 09:56:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33650 "EHLO
+        id S230344AbiF1N6V (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Jun 2022 09:58:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346917AbiF1N4a (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Jun 2022 09:56:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0FA633378;
-        Tue, 28 Jun 2022 06:56:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 556076198B;
-        Tue, 28 Jun 2022 13:56:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C80ADC341CA;
-        Tue, 28 Jun 2022 13:56:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656424588;
-        bh=b5FsKFMrP1+S6zwgUlKhr8WAIjk2qEr4j/i4jiXKeUI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ipH9xLLON/wfF1+doX0YwzWNurZbGyHCLx43ahE7WR8jLi1R48cI2m2yJAsZCWDQT
-         Un4VNsnpjcqqdwdfvJBWhdCzCR6kAmILST6sGe+QmxtUWHpxGj2/l2NK930cX7S1Vb
-         ck1tdm9dVL3hHqJ5pPK6X9u94v/kg7IeqTTrypuenoyOXdLstD1jm9a1r2/Mn+hjvK
-         A5gIe8GNT4XoGXRtGng12sB0ehpNIhwjOmzNMxwSBDvTu3O5JPGVxOwJ5SG66up68M
-         dTuMxAaqVKV5rVpkj9AWHYexDQNYp0rXQRl//EEgGVYdOgnC2OLlmpTSGeWpC665ae
-         t2Abf09RRIvCQ==
-Date:   Tue, 28 Jun 2022 15:56:23 +0200
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org, dm-devel@redhat.com,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-can@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        linux1394-devel@lists.sourceforge.net, io-uring@vger.kernel.org,
-        lvs-devel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        kasan-dev@googlegroups.com, linux-mmc@vger.kernel.org,
-        nvdimm@lists.linux.dev, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, linux-perf-users@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-usb@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        v9fs-developer@lists.sourceforge.net, linux-rdma@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] treewide: uapi: Replace zero-length arrays with
- flexible-array members
-Message-ID: <20220628135623.GA25163@embeddedor>
-References: <20220627180432.GA136081@embeddedor>
- <6bc1e94c-ce1d-a074-7d0c-8dbe6ce22637@iogearbox.net>
- <20220628004052.GM23621@ziepe.ca>
- <20220628005825.GA161566@embeddedor>
- <20220628022129.GA8452@embeddedor>
- <20220628133651.GO23621@ziepe.ca>
+        with ESMTP id S1347180AbiF1N56 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Jun 2022 09:57:58 -0400
+Received: from gentwo.de (gentwo.de [161.97.139.209])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21A96344F0
+        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 06:57:56 -0700 (PDT)
+Received: by gentwo.de (Postfix, from userid 1001)
+        id 85421B00288; Tue, 28 Jun 2022 15:57:54 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gentwo.de; s=default;
+        t=1656424674; bh=VT8t4+mQig9OHwaOUo8PSDyy3DkhSeEak6r67HuPmB8=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=ihddj4pHEl8O1YbhCY63nb3i7cS1+j1fP6ZlwqcOkp2nypfaq8UBPWY7gE1sktLWD
+         wt8KhDYmklnczDFwKbGaRfxbDgkKcMVz3zq0hh5JEhYEPRqIgNLS8Tw+R+2jgCT3QX
+         FpNwHYmmFNxwh67WbnZsD3vynoQUlhxajKyDzI70oDTYxXcntP1VUvtuydTlFAVjnC
+         cQsNPMyY9aS+vxLkJECNXgpR/TxSxPzRIfCNHJcrIbe21DKBn2SMfPNRvQI9ODIC28
+         BhNauNbGMs92yX+I7JAa+OYnDspvlBk320AqxKqApexIw4TOul6gdu9yGD4oUxXhgp
+         Eo645rgeTyQZw==
+Received: from localhost (localhost [127.0.0.1])
+        by gentwo.de (Postfix) with ESMTP id 82930B00132;
+        Tue, 28 Jun 2022 15:57:54 +0200 (CEST)
+Date:   Tue, 28 Jun 2022 15:57:54 +0200 (CEST)
+From:   Christoph Lameter <cl@gentwo.de>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+cc:     Christoph Hellwig <hch@infradead.org>,
+        David Miller <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        linux-mm <linux-mm@kvack.org>, Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH bpf-next 0/5] bpf: BPF specific memory allocator.
+In-Reply-To: <CAADnVQKfLE6mwh8BrijgJeLL60DNaGgVy9b133vZ6edZmugong@mail.gmail.com>
+Message-ID: <alpine.DEB.2.22.394.2206281550210.328950@gentwo.de>
+References: <YrlWLLDdvDlH0C6J@infradead.org> <alpine.DEB.2.22.394.2206280213510.280764@gentwo.de> <CAADnVQKfLE6mwh8BrijgJeLL60DNaGgVy9b133vZ6edZmugong@mail.gmail.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220628133651.GO23621@ziepe.ca>
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 28, 2022 at 10:36:51AM -0300, Jason Gunthorpe wrote:
-> On Tue, Jun 28, 2022 at 04:21:29AM +0200, Gustavo A. R. Silva wrote:
-> 
-> > > > Though maybe we could just switch off -Wgnu-variable-sized-type-not-at-end  during configuration ?
-> 
-> > We need to think in a different strategy.
-> 
-> I think we will need to switch off the warning in userspace - this is
-> doable for rdma-core.
-> 
-> On the other hand, if the goal is to enable the array size check
-> compiler warning I would suggest focusing only on those structs that
-> actually hit that warning in the kernel. IIRC infiniband doesn't
-> trigger it because it just pointer casts the flex array to some other
-> struct.
+On Mon, 27 Jun 2022, Alexei Starovoitov wrote:
 
-Yep; this is actually why I reverted those changes in rdma (before
-sending out the patch) when 0-day reported the same problems you pointed
-out[1].
+> On Mon, Jun 27, 2022 at 5:17 PM Christoph Lameter <cl@gentwo.de> wrote:
+> >
+> > > From: Alexei Starovoitov <ast@kernel.org>
+> > >
+> > > Introduce any context BPF specific memory allocator.
+> > >
+> > > Tracing BPF programs can attach to kprobe and fentry. Hence they
+> > > run in unknown context where calling plain kmalloc() might not be safe.
+> > > Front-end kmalloc() with per-cpu per-bucket cache of free elements.
+> > > Refill this cache asynchronously from irq_work.
+> >
+> > GFP_ATOMIC etc is not going to work for you?
+>
+> slab_alloc_node->slab_alloc->local_lock_irqsave
+> kprobe -> bpf prog -> slab_alloc_node -> deadlock.
+> In other words, the slow path of slab allocator takes locks.
 
-Also, that's the strategy I'm following right now with the one-element
-array into flex-array member transformations. I'm addressing those cases
-in which the trailing array is actually being iterated over, first.
+That is a relatively new feature due to RT logic support. without RT this
+would be a simple irq disable.
 
-I just added the patch to my -next tree, so it can be build-tested by
-other people, and let's see what else is reported this week. :)
+Generally doing slab allocation  while debugging slab allocation is not
+something that can work. Can we exempt RT locks/irqsave or slab alloc from
+BPF tracing?
 
---
-Gustavo
+I would assume that other key items of kernel logic will have similar
+issues.
 
-[1] https://lore.kernel.org/lkml/620ca2a5.NkAEIDEfiYoxE9%2Fu%25lkp@intel.com/
+> Which makes it unsafe to use from tracing bpf progs.
+> That's why we preallocated all elements in bpf maps,
+> so there are no calls to mm or rcu logic.
+> bpf specific allocator cannot use locks at all.
+> try_lock approach could have been used in alloc path,
+> but free path cannot fail with try_lock.
+> Hence the algorithm in this patch is purely lockless.
+> bpf prog can attach to spin_unlock_irqrestore and
+> safely do bpf_mem_alloc.
 
-> 
-> It isn't actually an array it is a placeholder for a trailing
-> structure, so it is never indexed.
-> 
-> This is also why we hit the warning because the convient way for
-> userspace to compose the message is to squash the header and trailer
-> structs together in a super struct on the stack, then invoke the
-> ioctl.
-> 
-> Jason 
+That is generally safe unless you get into reetrance issues with memory
+allocation.
+
+Which begs the question:
+
+What happens if I try to use BPF to trace *your* shiny new memory
+allocation functions in the BPF logic like bpf_mem_alloc? How do you stop
+that from happening?
+
