@@ -2,227 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB4455EA41
+	by mail.lfdr.de (Postfix) with ESMTP id E159355EA43
 	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 18:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232925AbiF1Qut (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Jun 2022 12:50:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34404 "EHLO
+        id S232513AbiF1Qum (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Jun 2022 12:50:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242191AbiF1Qs0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Jun 2022 12:48:26 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E770A2E0B6
-        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 09:45:40 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id m184so7711959wme.1
-        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 09:45:40 -0700 (PDT)
+        with ESMTP id S1343864AbiF1QtM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Jun 2022 12:49:12 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B74853207A
+        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 09:46:47 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id w24so13116346pjg.5
+        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 09:46:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Mo8doXYA9emrg3uQBgrdNC6baXQfzRLIjgAua2IloJE=;
-        b=BnkiZnq4yE71oiRH6bWiyg0HKscyhulPRcQNetE++yj/npAp7DlRZp8GekQJX25kPh
-         xOd6q1DmKVivBNw4UhwusQXj6FC5+CdZ2qm7llDnapiE/N2jv4pT5TyH2e/JgHzqokyC
-         7SOcqbZGLaqp89QKoBYYPtCdma+fUwjZ85OVq3Md+hY0XVkf+LXbLZ0IShgIRRNebOs5
-         jur0Pd1TVjEjJnj1A4HJkwqi43xj339pd6r8/zk+KJ+h2UbtMbG/WXXvMD5TE9cmF9X4
-         6DbGE+9gcLE2yJDYzJRzj6N7uQhu2hYtLU0LrwL46p7xoX7dJg5bpUpKRzG5zA46oSMl
-         0Asw==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=POy+zBjn312v0YhfuOKTjwLjE/i7nInlT7W/RUAD3x0=;
+        b=mwh9lspGqFai2wIzZ2N0tIigtwUZApjXm4sL69nMcR2WGlXJdMeZNHSSmCQIEPmyS2
+         APfkkVbYEaSnXI+rpLEyznXB0rQ8927dNT0SNzWD5cRuoWk/5VNvt+Nzno5SNZr+xerA
+         jdJXFdUoELrS3bWSNsPj1Y3RWykTSOxFwWmxCUygjhMn5AlL1Ms7spXu89nuJeop6mkJ
+         ikUR56yLCVHJAFgWvNe6cQtXbeYsCU7ORFoOsrKNxX3N9D5Qib9qlX8N14TVkbTidbSV
+         kiPYlgHk0Q4iTqzTEzklKMG6kn+r7CfeBqp2Z03sDzFveMk9AMnpkALrjZtL6JYYSfjC
+         CTsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Mo8doXYA9emrg3uQBgrdNC6baXQfzRLIjgAua2IloJE=;
-        b=m0Q9+8RxBt0HH+cNHrwTQP+FUHyJEvTaTXBLynxVCjLD1narb0ZI+8Qd8h7fnyh+C/
-         Uyyps4aYQ4aXDEDjXagLQe7HBgHD/T0J1hliRJx/zjm2mCbtpPhPUcYeWRp9FII6oQW7
-         Y8w/kGXKs1GlsE8j+KPHA1g1GyNQXz0GTeaFjisKWzzuf0XgnSKipYJJhZcR0qIwwbVj
-         qWbJ7LQFE7oVyweeqNH2YaSJvcyJCcfFOug6aKvT1oi5YKKOa3Yn5+Y43T+ENA0z8bhM
-         BJg2PbVfISKzR48pcMqVFkBnB5zDoAhU7+RlMsjgQ8mrv87h0nEMZiSahpBH1acubEqg
-         zOKQ==
-X-Gm-Message-State: AJIora+F4W6Akt2iGrkVvRY0CvZsETzZMQcHRlQ9T5yYbziNVxn5eX4b
-        bErUoUsKJuCQWilOFmAC9+sG4A==
-X-Google-Smtp-Source: AGRyM1tx8LtiV7j5ISfbHRGmE8XllPMXBpjzg4+mdg5OasURbqX1AWPtI+Cylpx6hUEotSiiyU7s+Q==
-X-Received: by 2002:a05:600c:583:b0:39c:3637:b9f with SMTP id o3-20020a05600c058300b0039c36370b9fmr578011wmd.79.1656434739332;
-        Tue, 28 Jun 2022 09:45:39 -0700 (PDT)
-Received: from harfang.fritz.box ([51.155.200.13])
-        by smtp.gmail.com with ESMTPSA id a2-20020adfbc42000000b0021ba1b6186csm15585151wrh.40.2022.06.28.09.45.38
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=POy+zBjn312v0YhfuOKTjwLjE/i7nInlT7W/RUAD3x0=;
+        b=VoNIaRAnuYCAAiPMIHAwyuHg5YIZ4uOHwnZqLqs7P19rUUx4Og6y87lb4Ssxmg4qBV
+         KjQJwv0siLh94xokeCEzo2QEVfCPUqZEbKp9nHKrQYYcHnb9+xBP0yxFVMmAojTbkMAz
+         Mguqie66ixYH73qwmfQf/n7OIfvNCjyiPjxNluYIL+r+x2VsSK9gTBJaLdB25u/IXqD8
+         WIkxFMhYm4/RVikH8D0eGqe/S4zHUOUFoYmCJwtsQ/8bzUPmsl+vEvZN0vGCremyfsqj
+         QndlppTXYPma8BL5Oy2ywt/H5lKzqRlnG4O6qc7Du335c8tqN6yhaHW/Tc91EyfqeKYg
+         nYKw==
+X-Gm-Message-State: AJIora++Y1NctZK2LWlBdhkzl5v+qM5UDokPKAs6MNt63HHaARbi0nu4
+        0yaQiY2IA2q6sVsZd17B6lA=
+X-Google-Smtp-Source: AGRyM1vW7Nb2qyBiAAVgyD9R0+sj+gkP53tntlKYA2kMl9UgDMK5fSKOpNVDsFU1hV9zHAWZ3+BRWQ==
+X-Received: by 2002:a17:90a:9407:b0:1ed:5b4c:4df2 with SMTP id r7-20020a17090a940700b001ed5b4c4df2mr587198pjo.114.1656434807088;
+        Tue, 28 Jun 2022 09:46:47 -0700 (PDT)
+Received: from MacBook-Pro-3.local ([2620:10d:c090:500::1:50])
+        by smtp.gmail.com with ESMTPSA id x4-20020a1709027c0400b0016a04b577f1sm9531765pll.246.2022.06.28.09.46.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jun 2022 09:45:38 -0700 (PDT)
-From:   Quentin Monnet <quentin@isovalent.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Yafang Shao <laoar.shao@gmail.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>,
-        Stanislav Fomichev <sdf@google.com>
-Subject: [PATCH bpf-next] bpftool: Probe for memcg-based accounting before bumping rlimit
-Date:   Tue, 28 Jun 2022 17:45:29 +0100
-Message-Id: <20220628164529.80050-1-quentin@isovalent.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 28 Jun 2022 09:46:46 -0700 (PDT)
+Date:   Tue, 28 Jun 2022 09:46:43 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Jakub Kicinski <kuba@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Mykola Lysenko <mykolal@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>, KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Quentin Monnet <quentin@isovalent.com>
+Subject: Re: [PATCH bpf] bpf, docs: Better scale maintenance of BPF subsystem
+Message-ID: <20220628164643.2gdyifct4x2zbbsb@MacBook-Pro-3.local>
+References: <5bdc73e7f5a087299589944fa074563cdf2c2c1a.1656353995.git.daniel@iogearbox.net>
+ <20220627122535.6020f23e@kicinski-fedora-PC1C0HJN>
+ <CAADnVQLOS4kvmcp+aaX6gtDUCUfoL906K+Y4KUZOsYBDso_xMw@mail.gmail.com>
+ <20220627133027.1e141f11@kernel.org>
+ <CAADnVQKf8huK_bdGPQzOZwXJD7aqr-2a3jFPfhYrEz8BD115qw@mail.gmail.com>
+ <ac8da400-f403-7817-414d-d3001c82dc4c@iogearbox.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ac8da400-f403-7817-414d-d3001c82dc4c@iogearbox.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Bpftool used to bump the memlock rlimit to make sure to be able to load
-BPF objects. After the kernel has switched to memcg-based memory
-accounting [0] in 5.11, bpftool has relied on libbpf to probe the system
-for memcg-based accounting support and for raising the rlimit if
-necessary [1]. But this was later reverted, because the probe would
-sometimes fail, resulting in bpftool not being able to load all required
-objects [2].
+On Tue, Jun 28, 2022 at 10:59:02AM +0200, Daniel Borkmann wrote:
+> On 6/27/22 10:38 PM, Alexei Starovoitov wrote:
+> > On Mon, Jun 27, 2022 at 1:30 PM Jakub Kicinski <kuba@kernel.org> wrote:
+> [...]
+> > > > vger continues to cause trouble and it doesn't sound that the fix is coming.
+> > > > So having everyone directly cc-ed is the only option we have.
+> > > 
+> > > Yeah, Exhibit A - vger is lagging right now...
+> > > I guess the "real fix" is on the vger, trying to massage MAINTAINERS
+> > > now is not a great use of time..
+> > 
+> > The real fix is to move away from vger and adjust get_maintainer
+> > script to be smarter when the mailer can do its job.
+> > MAINTAINERS file should list everyone who performs code reviews
+> > and maintains the code.
+> 
+> Agree to all above. I think to address Jakub's concern, we could adapt
+> this regex similarly as we have in XDP and move this as a remainder to
+> a misc/noise section, like below:
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index dbf978014e8a..b5a1960c8339 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -3657,8 +3657,6 @@ F:        scripts/pahole-version.sh
+>  F:     tools/bpf/
+>  F:     tools/lib/bpf/
+>  F:     tools/testing/selftests/bpf/
+> -N:     bpf
+> -K:     bpf
+> 
+>  BPF JIT for ARM
+>  M:     Shubham Bansal <illusionist.neo@gmail.com>
+> @@ -3850,6 +3848,11 @@ L:       bpf@vger.kernel.org
+>  S:     Maintained
+>  F:     tools/testing/selftests/bpf/
+> 
+> +BPF [MISC]
+> +L:     bpf@vger.kernel.org
+> +S:     Odd Fixes
+> +K:     (?:\b|_)bpf(?:\b|_)
+> +
 
-Here we add a more efficient probe, in bpftool itself. We first lower
-the rlimit to 0, then we attempt to load a BPF object (and finally reset
-the rlimit): if the load succeeds, then memcg-based memory accounting is
-supported.
+Good idea!
 
-This approach was earlier proposed for the probe in libbpf itself [3],
-but given that the library may be used in multithreaded applications,
-the probe could have undesirable consequences if one thread attempts to
-lock kernel memory while memlock rlimit is at 0. Since bpftool is
-single-threaded and the rlimit is process-based, this is fine to do in
-bpftool itself.
+>  BROADCOM B44 10/100 ETHERNET DRIVER
+>  M:     Michael Chan <michael.chan@broadcom.com>
+>  L:     netdev@vger.kernel.org
+> 
+> If there are no objections, I can fold this in..
 
-This probe was inspired by the similar one from the cilium/ebpf Go
-library [4].
-
-[0] commit 97306be45fbe ("Merge branch 'switch to memcg-based memory accounting'")
-[1] commit a777e18f1bcd ("bpftool: Use libbpf 1.0 API mode instead of RLIMIT_MEMLOCK")
-[2] commit 6b4384ff1088 ("Revert "bpftool: Use libbpf 1.0 API mode instead of RLIMIT_MEMLOCK"")
-[3] https://lore.kernel.org/bpf/20220609143614.97837-1-quentin@isovalent.com/t/#u
-[4] https://github.com/cilium/ebpf/blob/v0.9.0/rlimit/rlimit.go#L39
-
-Cc: Stanislav Fomichev <sdf@google.com>
-Cc: Yafang Shao <laoar.shao@gmail.com>
-Suggested-by: Daniel Borkmann <daniel@iogearbox.net>
-Signed-off-by: Quentin Monnet <quentin@isovalent.com>
----
- tools/bpf/bpftool/common.c   | 71 ++++++++++++++++++++++++++++++++++--
- tools/include/linux/kernel.h |  5 +++
- 2 files changed, 73 insertions(+), 3 deletions(-)
-
-diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
-index a0d4acd7c54a..e07769802f76 100644
---- a/tools/bpf/bpftool/common.c
-+++ b/tools/bpf/bpftool/common.c
-@@ -13,14 +13,17 @@
- #include <stdlib.h>
- #include <string.h>
- #include <unistd.h>
--#include <linux/limits.h>
--#include <linux/magic.h>
- #include <net/if.h>
- #include <sys/mount.h>
- #include <sys/resource.h>
- #include <sys/stat.h>
- #include <sys/vfs.h>
- 
-+#include <linux/filter.h>
-+#include <linux/limits.h>
-+#include <linux/magic.h>
-+#include <linux/unistd.h>
-+
- #include <bpf/bpf.h>
- #include <bpf/hashmap.h>
- #include <bpf/libbpf.h> /* libbpf_num_possible_cpus */
-@@ -73,11 +76,73 @@ static bool is_bpffs(char *path)
- 	return (unsigned long)st_fs.f_type == BPF_FS_MAGIC;
- }
- 
-+/* Probe whether kernel switched from memlock-based (RLIMIT_MEMLOCK) to
-+ * memcg-based memory accounting for BPF maps and programs. This was done in
-+ * commit 97306be45fbe ("Merge branch 'switch to memcg-based memory
-+ * accounting'"), in Linux 5.11.
-+ *
-+ * Libbpf also offers to probe for memcg-based accounting vs rlimit, but does
-+ * so by checking for the availability of a given BPF helper and this has
-+ * failed on some kernels with backports in the past, see commit 6b4384ff1088
-+ * ("Revert "bpftool: Use libbpf 1.0 API mode instead of RLIMIT_MEMLOCK"").
-+ * Instead, we can probe by lowering the process-based rlimit to 0, trying to
-+ * load a BPF object, and resetting the rlimit. If the load succeeds then
-+ * memcg-based accounting is supported.
-+ *
-+ * This would be too dangerous to do in the library, because multithreaded
-+ * applications might attempt to load items while the rlimit is at 0. Given
-+ * that bpftool is single-threaded, this is fine to do here.
-+ */
-+static bool known_to_need_rlimit(void)
-+{
-+	const size_t prog_load_attr_sz = offsetofend(union bpf_attr, attach_btf_obj_fd);
-+	struct bpf_insn insns[] = {
-+		BPF_EXIT_INSN(),
-+	};
-+	struct rlimit rlim_init, rlim_cur_zero = {};
-+	size_t insn_cnt = ARRAY_SIZE(insns);
-+	union bpf_attr attr;
-+	int prog_fd, err;
-+
-+	memset(&attr, 0, prog_load_attr_sz);
-+	attr.prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
-+	attr.insns = ptr_to_u64(insns);
-+	attr.insn_cnt = insn_cnt;
-+	attr.license = ptr_to_u64("GPL");
-+
-+	if (getrlimit(RLIMIT_MEMLOCK, &rlim_init))
-+		return false;
-+
-+	/* Drop the soft limit to zero. We maintain the hard limit to its
-+	 * current value, because lowering it would be a permanent operation
-+	 * for unprivileged users.
-+	 */
-+	rlim_cur_zero.rlim_max = rlim_init.rlim_max;
-+	if (setrlimit(RLIMIT_MEMLOCK, &rlim_cur_zero))
-+		return false;
-+
-+	/* Do not use bpf_prog_load() from libbpf here, because it calls
-+	 * bump_rlimit_memlock(), interfering with the current probe.
-+	 */
-+	prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, prog_load_attr_sz);
-+	err = errno;
-+
-+	/* reset soft rlimit to its initial value */
-+	setrlimit(RLIMIT_MEMLOCK, &rlim_init);
-+
-+	if (prog_fd < 0)
-+		return err == EPERM;
-+
-+	close(prog_fd);
-+	return false;
-+}
-+
- void set_max_rlimit(void)
- {
- 	struct rlimit rinf = { RLIM_INFINITY, RLIM_INFINITY };
- 
--	setrlimit(RLIMIT_MEMLOCK, &rinf);
-+	if (known_to_need_rlimit())
-+		setrlimit(RLIMIT_MEMLOCK, &rinf);
- }
- 
- static int
-diff --git a/tools/include/linux/kernel.h b/tools/include/linux/kernel.h
-index 4b0673bf52c2..5c90d65cc2d3 100644
---- a/tools/include/linux/kernel.h
-+++ b/tools/include/linux/kernel.h
-@@ -24,6 +24,11 @@
- #define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
- #endif
- 
-+#ifndef offsetofend
-+# define offsetofend(TYPE, FIELD) \
-+	(offsetof(TYPE, FIELD) + sizeof(((TYPE *)0)->FIELD))
-+#endif
-+
- #ifndef container_of
- /**
-  * container_of - cast a member of a structure out to the containing structure
--- 
-2.34.1
-
+sgtm
