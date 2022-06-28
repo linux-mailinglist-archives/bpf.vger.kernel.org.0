@@ -2,83 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2FB555EA54
-	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 18:56:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D70FC55EA5B
+	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 18:56:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231199AbiF1QzO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Jun 2022 12:55:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36656 "EHLO
+        id S233976AbiF1QzN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Jun 2022 12:55:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234149AbiF1Qyf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Jun 2022 12:54:35 -0400
-Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F2262B268;
-        Tue, 28 Jun 2022 09:52:40 -0700 (PDT)
-Received: by mail-oi1-f181.google.com with SMTP id q11so17938546oih.10;
-        Tue, 28 Jun 2022 09:52:40 -0700 (PDT)
+        with ESMTP id S234076AbiF1Qye (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Jun 2022 12:54:34 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF09C0
+        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 09:52:37 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 189so7257189wmz.2
+        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 09:52:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=lFKEEyiTQsvs2ddCbf3cjiC1UaHwb4p7/C9iETksuO8=;
+        b=CjZanmBpOZVdIhdZrYwxOXbpdv6zqkxzEuKTNItGvSCPZhoMuKkyIBBjzqWaM1qIkT
+         4cp1CBG4bkgLSyZM63b4xOp9YC40E7Hw9Y81hA6LlZIKIZNzhCpLP/yjlAZqS0MHocPi
+         +5ErFzJmdTCRdGrH2mnRMpRerFtOO7ltlVAK3kwCwVTt4qeM0XsU87BvgnNUW+b9fwlq
+         rvn6C379YPkF/5omQaIHDjn5PsmmNsT2HSutk2gY7aps9yZgeYYB1oHYHJvsdHNFdRTg
+         6EUDCy3t2JRq5syjjCwa+rp51Gptse7IBxpneCgSdFOVZKIk2nRF9Ktyom3HAKdzzIvO
+         1aRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E648dBFHTDJv9vUh9mhheRk7gXIcU15BjfaY5SWNU/4=;
-        b=gSOVjOcaZjALmK5EbfhepRESzg4GXINUrjHEeizQpL7tEMR01Fpqo/0q9LiBDhPxjX
-         7FoTvZhsbl8QY9p66GREDRk1O92ugUyTjYH+QjUSX3EpIIG9322ru9vWy8ZgkCw0vfAE
-         Cy2gLMtYI3WUUBD64a6VsoRSPjMke93xJt0GqfZQjAG+ZYK8eAilDLZHaB9pmrMRNuU0
-         Kp0zRpUJxraFtu0xJMnHHGD3q4ZFLWTGV0ENtljaPzrZAJRvmWZ5nZiOiyDvHxabd4kX
-         Whsi7Z1bUSvinvIhyTN4mQ0Qhbd9bgMvL5Em4piMmIsX6BsqCQ5Qp8tkMtqQ32frgKtG
-         /XBQ==
-X-Gm-Message-State: AJIora9iM6tLltSP80PZLveZ4OwdsovipQY1RTXzxjnmmdOkw4grTvZD
-        AUcfnCodqQKbbuVF40rhZ1eW6HWtVDMad2ZLq7M=
-X-Google-Smtp-Source: AGRyM1sbCijzlGmpKPdegGoOMfsLP5Ed4vha/ePGdTsixV1iBn+35ReKPUl0TQoX1sPRdZ7ta5gDOyitlr+H1Ui4kzg=
-X-Received: by 2002:aca:bb56:0:b0:32f:2160:bfd8 with SMTP id
- l83-20020acabb56000000b0032f2160bfd8mr402430oif.92.1656435159732; Tue, 28 Jun
- 2022 09:52:39 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=lFKEEyiTQsvs2ddCbf3cjiC1UaHwb4p7/C9iETksuO8=;
+        b=zGd7r0Rf1ruUNnK4nHq1Uy5jmy4oehcQ+NJDekW11VGVyuJAkgGbxU5L2/rqwGSPWF
+         4bfugO+awrejSiV4WU+lbhW2j7rcNl8N4t7fTolUhr60txUIpVnooYjzeoE89UegOIeX
+         mnHvX6qV3Avx/Omc3+b0zL8bRJy1VghnDYotHJgcyjBzOJMEKMcjws1pGWpfcTQt69f9
+         xn6RcR5zk/DE+A5Srdp6Y19FM3WeByAaE5Q2bxiXT1xT48nVizWpjnZi5uKoTUjQB2St
+         c+o0AHlCmLPI+X7728DKqulX6pDvMQlCK4vUtNQ7t3Sc0YTVyMPw3mZRA86BJRJQGIDS
+         E69A==
+X-Gm-Message-State: AJIora/47ygKxJ2PQ6GWTg6c8AJmTkeOetgnvpXDQiyHncgbCNL7wtXs
+        RLLLmBCSaCnYwM80jXFt8w57HA==
+X-Google-Smtp-Source: AGRyM1sydGLUZduCj94shSkzl/ouVI7Gpo7XW+fVDk5SXwhYfIOPIuulXGtRLG87TmyLgSpCA4qnPg==
+X-Received: by 2002:a05:600c:3d92:b0:3a0:4b71:f2c4 with SMTP id bi18-20020a05600c3d9200b003a04b71f2c4mr638988wmb.160.1656435156093;
+        Tue, 28 Jun 2022 09:52:36 -0700 (PDT)
+Received: from [192.168.178.21] ([51.155.200.13])
+        by smtp.gmail.com with ESMTPSA id j3-20020a05600c410300b0039c4506bd25sm160657wmi.14.2022.06.28.09.52.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Jun 2022 09:52:35 -0700 (PDT)
+Message-ID: <2acc744b-be20-2503-2c2d-40a0a8d47a57@isovalent.com>
+Date:   Tue, 28 Jun 2022 17:52:34 +0100
 MIME-Version: 1.0
-References: <20220624231313.367909-1-namhyung@kernel.org> <20220624231313.367909-2-namhyung@kernel.org>
- <YrsT3iw+FEXb6kxF@kernel.org>
-In-Reply-To: <YrsT3iw+FEXb6kxF@kernel.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 28 Jun 2022 09:52:28 -0700
-Message-ID: <CAM9d7ciPK4Z05LYNNukAsTdEMEce4hOWRa83THbENDuWjXcyEQ@mail.gmail.com>
-Subject: Re: [PATCH 1/6] perf offcpu: Fix a build failure on old kernels
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Milian Wolff <milian.wolff@kdab.com>,
-        bpf <bpf@vger.kernel.org>, Blake Jones <blakejones@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH bpf-next v3 02/10] bpftool: Honor BPF_CORE_TYPE_MATCHES
+ relocation
+Content-Language: en-GB
+To:     =?UTF-8?Q?Daniel_M=c3=bcller?= <deso@posteo.net>,
+        bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com
+Cc:     joannelkoong@gmail.com
+References: <20220628160127.607834-1-deso@posteo.net>
+ <20220628160127.607834-3-deso@posteo.net>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <20220628160127.607834-3-deso@posteo.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 28, 2022 at 7:44 AM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Fri, Jun 24, 2022 at 04:13:08PM -0700, Namhyung Kim escreveu:
-> > Old kernels have task_struct which contains "state" field and newer
-> > kernels have "__state".  While the get_task_state() in the BPF code
-> > handles that in some way, it assumed the current kernel has the new
-> > definition and it caused a build error on old kernels.
-> >
-> > We should not assume anything and access them carefully.  Do not use
-> > the task struct directly and access them using new and old definitions
-> > in a row.
->
-> I added a:
->
-> Fixes: edc41a1099c2d08c ("perf record: Enable off-cpu analysis with BPF")
->
-> Ok?
+2022-06-28 16:01 UTC+0000 ~ Daniel Müller <deso@posteo.net>
+> bpftool needs to know about the newly introduced BPF_CORE_TYPE_MATCHES
+> relocation for its 'gen min_core_btf' command to work properly in the
+> present of this relocation.
+> Specifically, we need to make sure to mark types and fields so that they
+> are present in the minimized BTF for "type match" checks to work out.
+> However, contrary to the existing btfgen_record_field_relo, we need to
+> rely on the BTF -- and not the spec -- to find fields. With this change
+> we handle this new variant correctly. The functionality will be tested
+> with follow on changes to BPF selftests, which already run against a
+> minimized BTF created with bpftool.
+> 
+> Cc: Quentin Monnet <quentin@isovalent.com>
+> Signed-off-by: Daniel Müller <deso@posteo.net>
 
-Sure, thanks for doing this!
-Namhyung
+Acked-by: Quentin Monnet <quentin@isovalent.com>
+
+Thanks!
+
