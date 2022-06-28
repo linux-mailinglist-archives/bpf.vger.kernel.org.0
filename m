@@ -2,95 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D70FC55EA5B
-	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 18:56:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7135055EA8C
+	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 19:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233976AbiF1QzN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Jun 2022 12:55:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40202 "EHLO
+        id S229945AbiF1Q7B (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Jun 2022 12:59:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234076AbiF1Qye (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Jun 2022 12:54:34 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF09C0
-        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 09:52:37 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 189so7257189wmz.2
-        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 09:52:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=lFKEEyiTQsvs2ddCbf3cjiC1UaHwb4p7/C9iETksuO8=;
-        b=CjZanmBpOZVdIhdZrYwxOXbpdv6zqkxzEuKTNItGvSCPZhoMuKkyIBBjzqWaM1qIkT
-         4cp1CBG4bkgLSyZM63b4xOp9YC40E7Hw9Y81hA6LlZIKIZNzhCpLP/yjlAZqS0MHocPi
-         +5ErFzJmdTCRdGrH2mnRMpRerFtOO7ltlVAK3kwCwVTt4qeM0XsU87BvgnNUW+b9fwlq
-         rvn6C379YPkF/5omQaIHDjn5PsmmNsT2HSutk2gY7aps9yZgeYYB1oHYHJvsdHNFdRTg
-         6EUDCy3t2JRq5syjjCwa+rp51Gptse7IBxpneCgSdFOVZKIk2nRF9Ktyom3HAKdzzIvO
-         1aRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=lFKEEyiTQsvs2ddCbf3cjiC1UaHwb4p7/C9iETksuO8=;
-        b=zGd7r0Rf1ruUNnK4nHq1Uy5jmy4oehcQ+NJDekW11VGVyuJAkgGbxU5L2/rqwGSPWF
-         4bfugO+awrejSiV4WU+lbhW2j7rcNl8N4t7fTolUhr60txUIpVnooYjzeoE89UegOIeX
-         mnHvX6qV3Avx/Omc3+b0zL8bRJy1VghnDYotHJgcyjBzOJMEKMcjws1pGWpfcTQt69f9
-         xn6RcR5zk/DE+A5Srdp6Y19FM3WeByAaE5Q2bxiXT1xT48nVizWpjnZi5uKoTUjQB2St
-         c+o0AHlCmLPI+X7728DKqulX6pDvMQlCK4vUtNQ7t3Sc0YTVyMPw3mZRA86BJRJQGIDS
-         E69A==
-X-Gm-Message-State: AJIora/47ygKxJ2PQ6GWTg6c8AJmTkeOetgnvpXDQiyHncgbCNL7wtXs
-        RLLLmBCSaCnYwM80jXFt8w57HA==
-X-Google-Smtp-Source: AGRyM1sydGLUZduCj94shSkzl/ouVI7Gpo7XW+fVDk5SXwhYfIOPIuulXGtRLG87TmyLgSpCA4qnPg==
-X-Received: by 2002:a05:600c:3d92:b0:3a0:4b71:f2c4 with SMTP id bi18-20020a05600c3d9200b003a04b71f2c4mr638988wmb.160.1656435156093;
-        Tue, 28 Jun 2022 09:52:36 -0700 (PDT)
-Received: from [192.168.178.21] ([51.155.200.13])
-        by smtp.gmail.com with ESMTPSA id j3-20020a05600c410300b0039c4506bd25sm160657wmi.14.2022.06.28.09.52.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Jun 2022 09:52:35 -0700 (PDT)
-Message-ID: <2acc744b-be20-2503-2c2d-40a0a8d47a57@isovalent.com>
-Date:   Tue, 28 Jun 2022 17:52:34 +0100
+        with ESMTP id S231834AbiF1Q5N (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Jun 2022 12:57:13 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E78E31EAE0
+        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 09:56:51 -0700 (PDT)
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1o6EW8-0007gm-Ez; Tue, 28 Jun 2022 18:56:48 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1o6EW8-0000vS-1e; Tue, 28 Jun 2022 18:56:48 +0200
+Subject: Re: [PATCH bpf] bpf, docs: Better scale maintenance of BPF subsystem
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Mykola Lysenko <mykolal@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>, KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Quentin Monnet <quentin@isovalent.com>
+References: <5bdc73e7f5a087299589944fa074563cdf2c2c1a.1656353995.git.daniel@iogearbox.net>
+ <20220627122535.6020f23e@kicinski-fedora-PC1C0HJN>
+ <CAADnVQLOS4kvmcp+aaX6gtDUCUfoL906K+Y4KUZOsYBDso_xMw@mail.gmail.com>
+ <20220627133027.1e141f11@kernel.org>
+ <CAADnVQKf8huK_bdGPQzOZwXJD7aqr-2a3jFPfhYrEz8BD115qw@mail.gmail.com>
+ <ac8da400-f403-7817-414d-d3001c82dc4c@iogearbox.net>
+ <20220628164643.2gdyifct4x2zbbsb@MacBook-Pro-3.local>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <50da58e3-e056-2d24-765b-818fed09e216@iogearbox.net>
+Date:   Tue, 28 Jun 2022 18:56:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH bpf-next v3 02/10] bpftool: Honor BPF_CORE_TYPE_MATCHES
- relocation
-Content-Language: en-GB
-To:     =?UTF-8?Q?Daniel_M=c3=bcller?= <deso@posteo.net>,
-        bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com
-Cc:     joannelkoong@gmail.com
-References: <20220628160127.607834-1-deso@posteo.net>
- <20220628160127.607834-3-deso@posteo.net>
-From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <20220628160127.607834-3-deso@posteo.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220628164643.2gdyifct4x2zbbsb@MacBook-Pro-3.local>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.6/26587/Tue Jun 28 10:07:12 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2022-06-28 16:01 UTC+0000 ~ Daniel Müller <deso@posteo.net>
-> bpftool needs to know about the newly introduced BPF_CORE_TYPE_MATCHES
-> relocation for its 'gen min_core_btf' command to work properly in the
-> present of this relocation.
-> Specifically, we need to make sure to mark types and fields so that they
-> are present in the minimized BTF for "type match" checks to work out.
-> However, contrary to the existing btfgen_record_field_relo, we need to
-> rely on the BTF -- and not the spec -- to find fields. With this change
-> we handle this new variant correctly. The functionality will be tested
-> with follow on changes to BPF selftests, which already run against a
-> minimized BTF created with bpftool.
+On 6/28/22 6:46 PM, Alexei Starovoitov wrote:
+> On Tue, Jun 28, 2022 at 10:59:02AM +0200, Daniel Borkmann wrote:
+>> On 6/27/22 10:38 PM, Alexei Starovoitov wrote:
+>>> On Mon, Jun 27, 2022 at 1:30 PM Jakub Kicinski <kuba@kernel.org> wrote:
+[...]
+>> +BPF [MISC]
+>> +L:     bpf@vger.kernel.org
+>> +S:     Odd Fixes
+>> +K:     (?:\b|_)bpf(?:\b|_)
+>> +
 > 
-> Cc: Quentin Monnet <quentin@isovalent.com>
-> Signed-off-by: Daniel Müller <deso@posteo.net>
+> Good idea!
+> 
+>>   BROADCOM B44 10/100 ETHERNET DRIVER
+>>   M:     Michael Chan <michael.chan@broadcom.com>
+>>   L:     netdev@vger.kernel.org
+>>
+>> If there are no objections, I can fold this in..
+> 
+> sgtm
 
-Acked-by: Quentin Monnet <quentin@isovalent.com>
+Ok, done now & pushed out.
 
-Thanks!
-
+Thanks,
+Daniel
