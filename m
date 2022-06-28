@@ -2,119 +2,236 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF1655EB5A
-	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 19:53:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93FBA55EB5E
+	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 19:54:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232261AbiF1Rxj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Jun 2022 13:53:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36420 "EHLO
+        id S229721AbiF1Rx7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Jun 2022 13:53:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233052AbiF1RxS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Jun 2022 13:53:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA67AA44A
-        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 10:52:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 24032619CF
-        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 17:52:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D0CBC385A2
-        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 17:52:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656438754;
-        bh=1CFWsHDyBFCdk9FMXqZqtRxlJwOD4QYi3VLp5L9waFM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BCxJVxRxNIvf878wioP92nIRzTDhLQJrXig5WEBroiYB/kVtUw7aznYFX2/Pr7oy4
-         VcM+Bvs/DfZeKQ5TYWNGkm1xwm3OKQ1w5eQZbkJYjvPeDKlmKWfwFhSCdc5LHYEDqV
-         UiT4O2bgPfk9tpmFDjAMDtsDITn4xtZIwSYPTkKc7flUI7UUpzve6EiuAurjImAfp7
-         TRb5v3FnpQmTkRpj4bIH/3MWWUAWVLlwHyNr6/PJ+J9qjczlRIoI1W3ADbyjVNH02o
-         smWHLt/gbva1MfV5XNYFroFZ6PkKiBoh5+5RL4Ua2RDqryXcjZppYzwWLhc/uSciZf
-         L/hoFskcccFUw==
-Received: by mail-yb1-f169.google.com with SMTP id l11so23450850ybu.13
-        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 10:52:34 -0700 (PDT)
-X-Gm-Message-State: AJIora+PkUBovoevWOSpREfooVSWySrchKaaFeouOmWyIY62WpByHxSm
-        ksM3BJygbbpb+OuuZVwFxUCrmomtnjHtonGPiqfa3A==
-X-Google-Smtp-Source: AGRyM1sPwROEYpARjmuZt7KnRCmkADqIZe/mLmQImXBKPlGfyx79CeXHkdgcwtsTldmt0vI4w1n6oI7l1gAz2DhnFDI=
-X-Received: by 2002:a25:9a48:0:b0:669:b51a:5b8d with SMTP id
- r8-20020a259a48000000b00669b51a5b8dmr20982749ybo.404.1656438753522; Tue, 28
- Jun 2022 10:52:33 -0700 (PDT)
+        with ESMTP id S230292AbiF1Rx6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Jun 2022 13:53:58 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FBEE2E3
+        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 10:53:57 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id 23so12887182pgc.8
+        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 10:53:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BawOF30jreBw6h+htpf+3bv16wUJ+LKNYVml1Jeqpw0=;
+        b=teopuH3YajUvyRSjpzuJ0w6HC+e25mYt3gIiW4Oz6o7f9migqOsNznrGpM3E/faGW9
+         hA954PfTeCDeExUSQWdZbedOjy/LkDa6k48rXl/Z88jdBJnhzfj68ZK6ICc7PS/Y87jz
+         kmdCF/NlivvaIpNsM4sDUX33e1eXEvwbceF7/mzweKS/8MGvEKysJnhG/GpjJmdOPEEv
+         cy9pKwYKYORdfxehAboJ82yTbcP+6SehWlX+yUD9IesX+mn06mLAv52SqmpK9oitYaCM
+         F1awtQ3XNVOH0dugB3T6vC/QZT/Sg3rvLljQsQQFuaZg5ElBpdV9jGfzHu9XDgMXp8mP
+         XEfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BawOF30jreBw6h+htpf+3bv16wUJ+LKNYVml1Jeqpw0=;
+        b=GQraST1qCJzUOmBAEorqjPDmhDVBXA5i2MHxh0Ocp2xBt6jmU3IiB3u1bKGcihn7p2
+         csiz8ppHaO9/Ytj711Ve3QEtHVpc99MqfiLPg3rVJI8OAAq/BHaqlqX+qxa/8BTY64SI
+         XNUU4Zg3mvebL+APVvcNDwI39+A8Y3SlcBN/u4kLZYhXb+L0+D1I7sruJcggI2hWknEA
+         qrN8v2u2UFzRFPZTlJKFSL/lo5RzfTt5neAmL2SrGS36arkM6jz25+0mm7WvnDfnPMhK
+         WmdpMfONVS15EJRF4Kt/tqnWKZZUer37kYHKDmDmQCDLy7JF8h3VPYxaL86a/tcKzGYP
+         y36Q==
+X-Gm-Message-State: AJIora8wNSAnOkUH+GRgYDsBNtX8ytJiUdlTWgnfYSi7j3g32Cr+mMwy
+        zW5+GqpsRDoH98GdvodG2czDXJXXEkCm/O4QVe33rQ==
+X-Google-Smtp-Source: AGRyM1sC3ogLLDXNLb1gHLxxs5KL+4rKb/G8HX+uluA6x+uMkIcdcbQdiPIqw344QtLriRX9dDPn+fUdexdtPtQfjLA=
+X-Received: by 2002:a62:1582:0:b0:525:6361:85cd with SMTP id
+ 124-20020a621582000000b00525636185cdmr4665342pfv.72.1656438836687; Tue, 28
+ Jun 2022 10:53:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220628161948.475097-1-kpsingh@kernel.org> <20220628161948.475097-6-kpsingh@kernel.org>
- <20220628173344.h7ihvyl6vuky5xus@wittgenstein>
-In-Reply-To: <20220628173344.h7ihvyl6vuky5xus@wittgenstein>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Tue, 28 Jun 2022 19:52:22 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ5ij9rth_v3KQrCVYsQr2STBEWq1EAzkDb5D06CoRRSjA@mail.gmail.com>
-Message-ID: <CACYkzJ5ij9rth_v3KQrCVYsQr2STBEWq1EAzkDb5D06CoRRSjA@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 5/5] bpf/selftests: Add a selftest for bpf_getxattr
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+References: <20220628164529.80050-1-quentin@isovalent.com>
+In-Reply-To: <20220628164529.80050-1-quentin@isovalent.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Tue, 28 Jun 2022 10:53:45 -0700
+Message-ID: <CAKH8qBvzZvHoUpkVPXN-v=XrvdPQ-1tEJOcd=PrGosHbY7+KdA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpftool: Probe for memcg-based accounting before
+ bumping rlimit
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Yosry Ahmed <yosryahmed@google.com>
+        Yafang Shao <laoar.shao@gmail.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 28, 2022 at 7:33 PM Christian Brauner <brauner@kernel.org> wrote:
+On Tue, Jun 28, 2022 at 9:45 AM Quentin Monnet <quentin@isovalent.com> wrote:
 >
-> On Tue, Jun 28, 2022 at 04:19:48PM +0000, KP Singh wrote:
-> > A simple test that adds an xattr on a copied /bin/ls and reads it back
-> > when the copied ls is executed.
-> >
-> > Signed-off-by: KP Singh <kpsingh@kernel.org>
-> > ---
-> >  .../testing/selftests/bpf/prog_tests/xattr.c  | 54 +++++++++++++++++++
-
-[...]
-
-> > +SEC("lsm.s/bprm_committed_creds")
-> > +void BPF_PROG(bprm_cc, struct linux_binprm *bprm)
-> > +{
-> > +     struct task_struct *current = bpf_get_current_task_btf();
-> > +     char dir_xattr_value[64] = {0};
-> > +     int xattr_sz = 0;
-> > +
-> > +     xattr_sz = bpf_getxattr(bprm->file->f_path.dentry,
-> > +                             bprm->file->f_path.dentry->d_inode, XATTR_NAME,
-> > +                             dir_xattr_value, 64);
+> Bpftool used to bump the memlock rlimit to make sure to be able to load
+> BPF objects. After the kernel has switched to memcg-based memory
+> accounting [0] in 5.11, bpftool has relied on libbpf to probe the system
+> for memcg-based accounting support and for raising the rlimit if
+> necessary [1]. But this was later reverted, because the probe would
+> sometimes fail, resulting in bpftool not being able to load all required
+> objects [2].
 >
-> Yeah, this isn't right. You're not accounting for the caller's userns
-> nor for the idmapped mount. If this is supposed to work you will need a
-> variant of vfs_getxattr() that takes the mount's idmapping into account
-> afaict. See what needs to happen after do_getxattr().
+> Here we add a more efficient probe, in bpftool itself. We first lower
+> the rlimit to 0, then we attempt to load a BPF object (and finally reset
+> the rlimit): if the load succeeds, then memcg-based memory accounting is
+> supported.
+>
+> This approach was earlier proposed for the probe in libbpf itself [3],
+> but given that the library may be used in multithreaded applications,
+> the probe could have undesirable consequences if one thread attempts to
+> lock kernel memory while memlock rlimit is at 0. Since bpftool is
+> single-threaded and the rlimit is process-based, this is fine to do in
+> bpftool itself.
+>
+> This probe was inspired by the similar one from the cilium/ebpf Go
+> library [4].
+>
+> [0] commit 97306be45fbe ("Merge branch 'switch to memcg-based memory accounting'")
+> [1] commit a777e18f1bcd ("bpftool: Use libbpf 1.0 API mode instead of RLIMIT_MEMLOCK")
+> [2] commit 6b4384ff1088 ("Revert "bpftool: Use libbpf 1.0 API mode instead of RLIMIT_MEMLOCK"")
+> [3] https://lore.kernel.org/bpf/20220609143614.97837-1-quentin@isovalent.com/t/#u
+> [4] https://github.com/cilium/ebpf/blob/v0.9.0/rlimit/rlimit.go#L39
+>
+> Cc: Stanislav Fomichev <sdf@google.com>
+> Cc: Yafang Shao <laoar.shao@gmail.com>
+> Suggested-by: Daniel Borkmann <daniel@iogearbox.net>
+> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> ---
+>  tools/bpf/bpftool/common.c   | 71 ++++++++++++++++++++++++++++++++++--
+>  tools/include/linux/kernel.h |  5 +++
+>  2 files changed, 73 insertions(+), 3 deletions(-)
+>
+> diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
+> index a0d4acd7c54a..e07769802f76 100644
+> --- a/tools/bpf/bpftool/common.c
+> +++ b/tools/bpf/bpftool/common.c
+> @@ -13,14 +13,17 @@
+>  #include <stdlib.h>
+>  #include <string.h>
+>  #include <unistd.h>
+> -#include <linux/limits.h>
+> -#include <linux/magic.h>
+>  #include <net/if.h>
+>  #include <sys/mount.h>
+>  #include <sys/resource.h>
+>  #include <sys/stat.h>
+>  #include <sys/vfs.h>
+>
+> +#include <linux/filter.h>
+> +#include <linux/limits.h>
+> +#include <linux/magic.h>
+> +#include <linux/unistd.h>
+> +
+>  #include <bpf/bpf.h>
+>  #include <bpf/hashmap.h>
+>  #include <bpf/libbpf.h> /* libbpf_num_possible_cpus */
+> @@ -73,11 +76,73 @@ static bool is_bpffs(char *path)
+>         return (unsigned long)st_fs.f_type == BPF_FS_MAGIC;
+>  }
+>
+> +/* Probe whether kernel switched from memlock-based (RLIMIT_MEMLOCK) to
+> + * memcg-based memory accounting for BPF maps and programs. This was done in
+> + * commit 97306be45fbe ("Merge branch 'switch to memcg-based memory
+> + * accounting'"), in Linux 5.11.
+> + *
+> + * Libbpf also offers to probe for memcg-based accounting vs rlimit, but does
+> + * so by checking for the availability of a given BPF helper and this has
+> + * failed on some kernels with backports in the past, see commit 6b4384ff1088
+> + * ("Revert "bpftool: Use libbpf 1.0 API mode instead of RLIMIT_MEMLOCK"").
+> + * Instead, we can probe by lowering the process-based rlimit to 0, trying to
+> + * load a BPF object, and resetting the rlimit. If the load succeeds then
+> + * memcg-based accounting is supported.
+> + *
+> + * This would be too dangerous to do in the library, because multithreaded
+> + * applications might attempt to load items while the rlimit is at 0. Given
+> + * that bpftool is single-threaded, this is fine to do here.
+> + */
+> +static bool known_to_need_rlimit(void)
+> +{
+> +       const size_t prog_load_attr_sz = offsetofend(union bpf_attr, attach_btf_obj_fd);
 
-Thanks for taking a look.
+nit:
+Any specific reason you're hard coding this sz via offseofend? Why not
+use sizeof(bpf_attr) directly as a syscall/memset size?
+The kernel should handle all these cases where bpftool has extra zero
+padding, right?
 
-So, If I understand correctly, we don't need xattr_permission (and
-other checks in
-vfs_getxattr) here as the BPF programs run as CAP_SYS_ADMIN.
-
-but...
-
-So, Is this bit what's missing then?
-
-error = vfs_getxattr(mnt_userns, d, kname, ctx->kvalue, ctx->size);
-if (error > 0) {
-    if ((strcmp(kname, XATTR_NAME_POSIX_ACL_ACCESS) == 0) ||
-(strcmp(kname, XATTR_NAME_POSIX_ACL_DEFAULT) == 0))
-        posix_acl_fix_xattr_to_user(mnt_userns, d_inode(d),
-            ctx->kvalue, error);
-    if (ctx->size && copy_to_user(ctx->value, ctx->kvalue, error))
-        error = -EFAULT;
-}
-else if (error == -ERANGE && ctx->size >= XATTR_SIZE_MAX) {
-    /* The file system tried to returned a value bigger
-than XATTR_SIZE_MAX bytes. Not possible. */
-    error = -E2BIG;
-}
+> +       struct bpf_insn insns[] = {
+> +               BPF_EXIT_INSN(),
+> +       };
+> +       struct rlimit rlim_init, rlim_cur_zero = {};
+> +       size_t insn_cnt = ARRAY_SIZE(insns);
+> +       union bpf_attr attr;
+> +       int prog_fd, err;
+> +
+> +       memset(&attr, 0, prog_load_attr_sz);
+> +       attr.prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
+> +       attr.insns = ptr_to_u64(insns);
+> +       attr.insn_cnt = insn_cnt;
+> +       attr.license = ptr_to_u64("GPL");
+> +
+> +       if (getrlimit(RLIMIT_MEMLOCK, &rlim_init))
+> +               return false;
+> +
+> +       /* Drop the soft limit to zero. We maintain the hard limit to its
+> +        * current value, because lowering it would be a permanent operation
+> +        * for unprivileged users.
+> +        */
+> +       rlim_cur_zero.rlim_max = rlim_init.rlim_max;
+> +       if (setrlimit(RLIMIT_MEMLOCK, &rlim_cur_zero))
+> +               return false;
+> +
+> +       /* Do not use bpf_prog_load() from libbpf here, because it calls
+> +        * bump_rlimit_memlock(), interfering with the current probe.
+> +        */
+> +       prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, prog_load_attr_sz);
+> +       err = errno;
+> +
+> +       /* reset soft rlimit to its initial value */
+> +       setrlimit(RLIMIT_MEMLOCK, &rlim_init);
+> +
+> +       if (prog_fd < 0)
+> +               return err == EPERM;
+> +
+> +       close(prog_fd);
+> +       return false;
+> +}
+> +
+>  void set_max_rlimit(void)
+>  {
+>         struct rlimit rinf = { RLIM_INFINITY, RLIM_INFINITY };
+>
+> -       setrlimit(RLIMIT_MEMLOCK, &rinf);
+> +       if (known_to_need_rlimit())
+> +               setrlimit(RLIMIT_MEMLOCK, &rinf);
+>  }
+>
+>  static int
+> diff --git a/tools/include/linux/kernel.h b/tools/include/linux/kernel.h
+> index 4b0673bf52c2..5c90d65cc2d3 100644
+> --- a/tools/include/linux/kernel.h
+> +++ b/tools/include/linux/kernel.h
+> @@ -24,6 +24,11 @@
+>  #define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
+>  #endif
+>
+> +#ifndef offsetofend
+> +# define offsetofend(TYPE, FIELD) \
+> +       (offsetof(TYPE, FIELD) + sizeof(((TYPE *)0)->FIELD))
+> +#endif
+> +
+>  #ifndef container_of
+>  /**
+>   * container_of - cast a member of a structure out to the containing structure
+> --
+> 2.34.1
+>
