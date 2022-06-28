@@ -2,63 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 912E355EB3F
+	by mail.lfdr.de (Postfix) with ESMTP id 48A1B55EB3E
 	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 19:43:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233287AbiF1Rnj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Jun 2022 13:43:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59228 "EHLO
+        id S233186AbiF1Rni (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Jun 2022 13:43:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233249AbiF1Rna (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S233285AbiF1Rna (ORCPT <rfc822;bpf@vger.kernel.org>);
         Tue, 28 Jun 2022 13:43:30 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B195FFD
-        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 10:43:18 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id w191-20020a6382c8000000b0040c9dc669ccso6907642pgd.16
-        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 10:43:18 -0700 (PDT)
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A40C6324
+        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 10:43:19 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-31838c41186so110483957b3.23
+        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 10:43:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=d+3sdoUjcoYy8DBqdhikc0c+RrP2PqriDP+upgGmWb4=;
-        b=LDwPEwOrugC54Ej0yweTOLh8bJX7XzdW/lcnnkOuFrhZFpxPh1baRMep10x67K1GdZ
-         xTbWBkccTb6Z3h1A/Gz5eC6k94mlgSY/X//h4QEKmDHfiz5sLVMvseI/LMr830wO890A
-         Npo+DTTe1eYrAeAZ1Jix3DNhArJ/n3B9sMdnHd7ZoRZ/sZD/zBFJtVrQtwk1rIFy6Vq5
-         uAGoIR9Ju6usZyJ5vGFcJEhWAfJ8/SiZezHn1cIK3WZwaZk11GmE/qMj8bvy0ShBJNWA
-         003QeYSjsuyzJ+UY7835DTkOFWm8838nf9JqPZC/rl2OwfcG5RuY/ARxvqS7CooNYNwB
-         JEAw==
+        bh=UFo/iW2E83ABgVOlDMizkZ1qaDAcNMQVEi0IP7oOoNQ=;
+        b=OYJFgHEcbl0Ur0NkzOd1WJWfDJhLF4zFqQCejK8if7xt9PGDvpmPObyUZ50MFNqAO3
+         Ieqc0PipXUhv3/gVNrejziSXNa5ai1Jn/70xLO8Hu8UkV2B6IkqHXZr1oNzCC8b99Q0I
+         nngiGv0mLpxRBRILevAQ0oQ76Hv+1eNUABsBZRow3Oqj7HGlb/GuNQ1dDgDul2xYNNA4
+         S2QbDMHKcYgMXuymJTVzz9B5uUuOBXKPuxaXCXqPX2gBI3Ma6FK7ccENGr8K80pxMC3R
+         OtrKJT9C6Z2HHiNetJ6F1/t3EH9SNC+GofEcX1aG15EWjGV9JHCdRC0Ui7K3JMWB/YCY
+         BaNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=d+3sdoUjcoYy8DBqdhikc0c+RrP2PqriDP+upgGmWb4=;
-        b=dQw97eaM8qhz4c9r7XobXfhvP1nibQkvho7Db7WCRvcVEHVXU0S+fqFQJmb37xLuiQ
-         2GhyDOikEnmWzVfn+JTD6TnOshbKNT0UpgBtsJt8oFe86wPFL20ZFyBQLXghoooDnYcl
-         TlIKVFdy49ix4caXbPnwALmYSbfiU2FtiiuwLez6yADL7rPpOLetZK/KXuPSTseUKZME
-         MUlQE33sv9z+DKX/rNt+nQStk3NKM/RgQHv3b1FSAUKSNGfFyqo0IuipEXy0Hi1E2Owi
-         lAWcn2tlUOZ4N8jmsjkFgd/PZvKAXEAmbjoG9SF9J5SafXD4BlmfEzNmzCLht0Ou+6kC
-         22AA==
-X-Gm-Message-State: AJIora8aLjggcKo6Xk9IN/KXIg9JV5pM2GpgYZdw9iUDBmg8QM+rrrqm
-        qNpTUTFV9bUXCdEQsxUbGLLHDgQIKsQvPpdcZmbEe0D36BMhaDSJxNWapvmnbR87vevpiky/8w0
-        d7n9yknZ9+jRVRKKSqxG8ELhg0X60p8z1jgxbGJmkW1P72CYnvw==
-X-Google-Smtp-Source: AGRyM1v8ntwFwNjj4yWTnmFTXXFtUDkVq+OGIo4bequFqGRN2U7bQmy80D27aTjZ0UrFdEJ5wO/LaIA=
+        bh=UFo/iW2E83ABgVOlDMizkZ1qaDAcNMQVEi0IP7oOoNQ=;
+        b=atkJMqUgglsvSxQ+/st8UYrrLvXLP2FXd6kVSRM9ouJYDGM89zhyX2RDX9XnOvmRaX
+         XyV6TGTUwGQ8U6ojMqaLiX3e3vch+Hv+tA/ytIYsWMhrS7OxB+gYh0o7OVP+L2u8XU47
+         cmcxXBy3e5cee68F6a5eTZIeBp2eqaqxLZI0VJZB18jGxzSWigbE/3CMSnGuxLBECEJU
+         Tw1YM934qArPErJOTNE1E4xmCpIuZL1nlbHrbwlHWUn1jfyl8k7vADxVbALc12vZLun3
+         0MWmp2Y2XwpiE5nZeF3q7CABeIT5xqDKOPmEAFCpJjcngMJ53qgKWPtOFxUmsxR2vMcb
+         eJ+A==
+X-Gm-Message-State: AJIora/6ExqbulhnqU8w3sfGhdORA9VPAfLbYJI1dlPmpAIE+wPP3CbX
+        h1hE11K8ePDRbWkfLaO48uSCbOQ14gLhY3+ZSB4TxYtfROiq6kBUFu+Lu0TIixgboHITZxT8efK
+        lSgxu141Qaok2cYBrekE8FcGkP+fQDlSi6kYEzpRIuTgv++4cWA==
+X-Google-Smtp-Source: AGRyM1vhve8SE+wKZ9nANnmr00sv3M7biqYzk4kEkGRgh8X5/u1sjYTBdqYsnYjypySzSJkySAuszaY=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a62:4ed3:0:b0:525:5a10:d5ac with SMTP id
- c202-20020a624ed3000000b005255a10d5acmr4714534pfb.65.1656438197445; Tue, 28
- Jun 2022 10:43:17 -0700 (PDT)
-Date:   Tue, 28 Jun 2022 10:43:04 -0700
+ (user=sdf job=sendgmr) by 2002:a81:6ad7:0:b0:31b:a0f1:c093 with SMTP id
+ f206-20020a816ad7000000b0031ba0f1c093mr16136054ywc.400.1656438199162; Tue, 28
+ Jun 2022 10:43:19 -0700 (PDT)
+Date:   Tue, 28 Jun 2022 10:43:05 -0700
 In-Reply-To: <20220628174314.1216643-1-sdf@google.com>
-Message-Id: <20220628174314.1216643-2-sdf@google.com>
+Message-Id: <20220628174314.1216643-3-sdf@google.com>
 Mime-Version: 1.0
 References: <20220628174314.1216643-1-sdf@google.com>
 X-Mailer: git-send-email 2.37.0.rc0.161.g10f37bed90-goog
-Subject: [PATCH bpf-next v11 01/11] bpf: add bpf_func_t and trampoline helpers
+Subject: [PATCH bpf-next v11 02/11] bpf: convert cgroup_bpf.progs to hlist
 From:   Stanislav Fomichev <sdf@google.com>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
         john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
         haoluo@google.com, jolsa@kernel.org,
+        Jakub Sitnicki <jakub@cloudflare.com>,
         Martin KaFai Lau <kafai@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
@@ -71,182 +72,356 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-I'll be adding lsm cgroup specific helpers that grab
-trampoline mutex.
+This lets us reclaim some space to be used by new cgroup lsm slots.
 
-No functional changes.
+Before:
+struct cgroup_bpf {
+	struct bpf_prog_array *    effective[23];        /*     0   184 */
+	/* --- cacheline 2 boundary (128 bytes) was 56 bytes ago --- */
+	struct list_head           progs[23];            /*   184   368 */
+	/* --- cacheline 8 boundary (512 bytes) was 40 bytes ago --- */
+	u32                        flags[23];            /*   552    92 */
 
+	/* XXX 4 bytes hole, try to pack */
+
+	/* --- cacheline 10 boundary (640 bytes) was 8 bytes ago --- */
+	struct list_head           storages;             /*   648    16 */
+	struct bpf_prog_array *    inactive;             /*   664     8 */
+	struct percpu_ref          refcnt;               /*   672    16 */
+	struct work_struct         release_work;         /*   688    32 */
+
+	/* size: 720, cachelines: 12, members: 7 */
+	/* sum members: 716, holes: 1, sum holes: 4 */
+	/* last cacheline: 16 bytes */
+};
+
+After:
+struct cgroup_bpf {
+	struct bpf_prog_array *    effective[23];        /*     0   184 */
+	/* --- cacheline 2 boundary (128 bytes) was 56 bytes ago --- */
+	struct hlist_head          progs[23];            /*   184   184 */
+	/* --- cacheline 5 boundary (320 bytes) was 48 bytes ago --- */
+	u8                         flags[23];            /*   368    23 */
+
+	/* XXX 1 byte hole, try to pack */
+
+	/* --- cacheline 6 boundary (384 bytes) was 8 bytes ago --- */
+	struct list_head           storages;             /*   392    16 */
+	struct bpf_prog_array *    inactive;             /*   408     8 */
+	struct percpu_ref          refcnt;               /*   416    16 */
+	struct work_struct         release_work;         /*   432    72 */
+
+	/* size: 504, cachelines: 8, members: 7 */
+	/* sum members: 503, holes: 1, sum holes: 1 */
+	/* last cacheline: 56 bytes */
+};
+
+Suggested-by: Jakub Sitnicki <jakub@cloudflare.com>
+Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
 Reviewed-by: Martin KaFai Lau <kafai@fb.com>
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- include/linux/bpf.h     | 11 ++++---
- kernel/bpf/trampoline.c | 63 +++++++++++++++++++++--------------------
- 2 files changed, 38 insertions(+), 36 deletions(-)
+ include/linux/bpf-cgroup-defs.h |  4 +-
+ include/linux/bpf-cgroup.h      |  2 +-
+ kernel/bpf/cgroup.c             | 76 +++++++++++++++++++--------------
+ 3 files changed, 47 insertions(+), 35 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index d05e1495a06e..d547be9db75f 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -56,6 +56,8 @@ typedef u64 (*bpf_callback_t)(u64, u64, u64, u64, u64);
- typedef int (*bpf_iter_init_seq_priv_t)(void *private_data,
- 					struct bpf_iter_aux_info *aux);
- typedef void (*bpf_iter_fini_seq_priv_t)(void *private_data);
-+typedef unsigned int (*bpf_func_t)(const void *,
-+				   const struct bpf_insn *);
- struct bpf_iter_seq_info {
- 	const struct seq_operations *seq_ops;
- 	bpf_iter_init_seq_priv_t init_seq_private;
-@@ -879,8 +881,7 @@ struct bpf_dispatcher {
- static __always_inline __nocfi unsigned int bpf_dispatcher_nop_func(
- 	const void *ctx,
- 	const struct bpf_insn *insnsi,
--	unsigned int (*bpf_func)(const void *,
--				 const struct bpf_insn *))
-+	bpf_func_t bpf_func)
+diff --git a/include/linux/bpf-cgroup-defs.h b/include/linux/bpf-cgroup-defs.h
+index 695d1224a71b..5d268e76d8e6 100644
+--- a/include/linux/bpf-cgroup-defs.h
++++ b/include/linux/bpf-cgroup-defs.h
+@@ -47,8 +47,8 @@ struct cgroup_bpf {
+ 	 * have either zero or one element
+ 	 * when BPF_F_ALLOW_MULTI the list can have up to BPF_CGROUP_MAX_PROGS
+ 	 */
+-	struct list_head progs[MAX_CGROUP_BPF_ATTACH_TYPE];
+-	u32 flags[MAX_CGROUP_BPF_ATTACH_TYPE];
++	struct hlist_head progs[MAX_CGROUP_BPF_ATTACH_TYPE];
++	u8 flags[MAX_CGROUP_BPF_ATTACH_TYPE];
+ 
+ 	/* list of cgroup shared storages */
+ 	struct list_head storages;
+diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
+index 669d96d074ad..6673acfbf2ef 100644
+--- a/include/linux/bpf-cgroup.h
++++ b/include/linux/bpf-cgroup.h
+@@ -95,7 +95,7 @@ struct bpf_cgroup_link {
+ };
+ 
+ struct bpf_prog_list {
+-	struct list_head node;
++	struct hlist_node node;
+ 	struct bpf_prog *prog;
+ 	struct bpf_cgroup_link *link;
+ 	struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE];
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index 7a394f7c205c..4adb4f3ecb7f 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -157,11 +157,12 @@ static void cgroup_bpf_release(struct work_struct *work)
+ 	mutex_lock(&cgroup_mutex);
+ 
+ 	for (atype = 0; atype < ARRAY_SIZE(cgrp->bpf.progs); atype++) {
+-		struct list_head *progs = &cgrp->bpf.progs[atype];
+-		struct bpf_prog_list *pl, *pltmp;
++		struct hlist_head *progs = &cgrp->bpf.progs[atype];
++		struct bpf_prog_list *pl;
++		struct hlist_node *pltmp;
+ 
+-		list_for_each_entry_safe(pl, pltmp, progs, node) {
+-			list_del(&pl->node);
++		hlist_for_each_entry_safe(pl, pltmp, progs, node) {
++			hlist_del(&pl->node);
+ 			if (pl->prog)
+ 				bpf_prog_put(pl->prog);
+ 			if (pl->link)
+@@ -217,12 +218,12 @@ static struct bpf_prog *prog_list_prog(struct bpf_prog_list *pl)
+ /* count number of elements in the list.
+  * it's slow but the list cannot be long
+  */
+-static u32 prog_list_length(struct list_head *head)
++static u32 prog_list_length(struct hlist_head *head)
  {
- 	return bpf_func(ctx, insnsi);
- }
-@@ -909,8 +910,7 @@ int arch_prepare_bpf_dispatcher(void *image, s64 *funcs, int num_funcs);
- 	noinline __nocfi unsigned int bpf_dispatcher_##name##_func(	\
- 		const void *ctx,					\
- 		const struct bpf_insn *insnsi,				\
--		unsigned int (*bpf_func)(const void *,			\
--					 const struct bpf_insn *))	\
-+		bpf_func_t bpf_func)					\
- 	{								\
- 		return bpf_func(ctx, insnsi);				\
- 	}								\
-@@ -921,8 +921,7 @@ int arch_prepare_bpf_dispatcher(void *image, s64 *funcs, int num_funcs);
- 	unsigned int bpf_dispatcher_##name##_func(			\
- 		const void *ctx,					\
- 		const struct bpf_insn *insnsi,				\
--		unsigned int (*bpf_func)(const void *,			\
--					 const struct bpf_insn *));	\
-+		bpf_func_t bpf_func);					\
- 	extern struct bpf_dispatcher bpf_dispatcher_##name;
- #define BPF_DISPATCHER_FUNC(name) bpf_dispatcher_##name##_func
- #define BPF_DISPATCHER_PTR(name) (&bpf_dispatcher_##name)
-diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index 93c7675f0c9e..5466e15be61f 100644
---- a/kernel/bpf/trampoline.c
-+++ b/kernel/bpf/trampoline.c
-@@ -410,7 +410,7 @@ static enum bpf_tramp_prog_type bpf_attach_type_to_tramp(struct bpf_prog *prog)
- 	}
- }
+ 	struct bpf_prog_list *pl;
+ 	u32 cnt = 0;
  
--int bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr)
-+static int __bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr)
- {
- 	enum bpf_tramp_prog_type kind;
- 	struct bpf_tramp_link *link_exiting;
-@@ -418,44 +418,33 @@ int bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_trampoline
- 	int cnt = 0, i;
- 
- 	kind = bpf_attach_type_to_tramp(link->link.prog);
--	mutex_lock(&tr->mutex);
--	if (tr->extension_prog) {
-+	if (tr->extension_prog)
- 		/* cannot attach fentry/fexit if extension prog is attached.
- 		 * cannot overwrite extension prog either.
- 		 */
--		err = -EBUSY;
--		goto out;
--	}
-+		return -EBUSY;
- 
- 	for (i = 0; i < BPF_TRAMP_MAX; i++)
- 		cnt += tr->progs_cnt[i];
- 
- 	if (kind == BPF_TRAMP_REPLACE) {
- 		/* Cannot attach extension if fentry/fexit are in use. */
--		if (cnt) {
--			err = -EBUSY;
--			goto out;
--		}
-+		if (cnt)
-+			return -EBUSY;
- 		tr->extension_prog = link->link.prog;
--		err = bpf_arch_text_poke(tr->func.addr, BPF_MOD_JUMP, NULL,
--					 link->link.prog->bpf_func);
--		goto out;
--	}
--	if (cnt >= BPF_MAX_TRAMP_LINKS) {
--		err = -E2BIG;
--		goto out;
-+		return bpf_arch_text_poke(tr->func.addr, BPF_MOD_JUMP, NULL,
-+					  link->link.prog->bpf_func);
- 	}
--	if (!hlist_unhashed(&link->tramp_hlist)) {
-+	if (cnt >= BPF_MAX_TRAMP_LINKS)
-+		return -E2BIG;
-+	if (!hlist_unhashed(&link->tramp_hlist))
- 		/* prog already linked */
--		err = -EBUSY;
--		goto out;
--	}
-+		return -EBUSY;
- 	hlist_for_each_entry(link_exiting, &tr->progs_hlist[kind], tramp_hlist) {
- 		if (link_exiting->link.prog != link->link.prog)
+-	list_for_each_entry(pl, head, node) {
++	hlist_for_each_entry(pl, head, node) {
+ 		if (!prog_list_prog(pl))
  			continue;
- 		/* prog already linked */
--		err = -EBUSY;
--		goto out;
-+		return -EBUSY;
+ 		cnt++;
+@@ -291,7 +292,7 @@ static int compute_effective_progs(struct cgroup *cgrp,
+ 		if (cnt > 0 && !(p->bpf.flags[atype] & BPF_F_ALLOW_MULTI))
+ 			continue;
+ 
+-		list_for_each_entry(pl, &p->bpf.progs[atype], node) {
++		hlist_for_each_entry(pl, &p->bpf.progs[atype], node) {
+ 			if (!prog_list_prog(pl))
+ 				continue;
+ 
+@@ -342,7 +343,7 @@ int cgroup_bpf_inherit(struct cgroup *cgrp)
+ 		cgroup_bpf_get(p);
+ 
+ 	for (i = 0; i < NR; i++)
+-		INIT_LIST_HEAD(&cgrp->bpf.progs[i]);
++		INIT_HLIST_HEAD(&cgrp->bpf.progs[i]);
+ 
+ 	INIT_LIST_HEAD(&cgrp->bpf.storages);
+ 
+@@ -418,7 +419,7 @@ static int update_effective_progs(struct cgroup *cgrp,
+ 
+ #define BPF_CGROUP_MAX_PROGS 64
+ 
+-static struct bpf_prog_list *find_attach_entry(struct list_head *progs,
++static struct bpf_prog_list *find_attach_entry(struct hlist_head *progs,
+ 					       struct bpf_prog *prog,
+ 					       struct bpf_cgroup_link *link,
+ 					       struct bpf_prog *replace_prog,
+@@ -428,12 +429,12 @@ static struct bpf_prog_list *find_attach_entry(struct list_head *progs,
+ 
+ 	/* single-attach case */
+ 	if (!allow_multi) {
+-		if (list_empty(progs))
++		if (hlist_empty(progs))
+ 			return NULL;
+-		return list_first_entry(progs, typeof(*pl), node);
++		return hlist_entry(progs->first, typeof(*pl), node);
  	}
  
- 	hlist_add_head(&link->tramp_hlist, &tr->progs_hlist[kind]);
-@@ -465,30 +454,44 @@ int bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_trampoline
- 		hlist_del_init(&link->tramp_hlist);
- 		tr->progs_cnt[kind]--;
- 	}
--out:
-+	return err;
-+}
-+
-+int bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr)
-+{
-+	int err;
-+
-+	mutex_lock(&tr->mutex);
-+	err = __bpf_trampoline_link_prog(link, tr);
- 	mutex_unlock(&tr->mutex);
- 	return err;
- }
+-	list_for_each_entry(pl, progs, node) {
++	hlist_for_each_entry(pl, progs, node) {
+ 		if (prog && pl->prog == prog && prog != replace_prog)
+ 			/* disallow attaching the same prog twice */
+ 			return ERR_PTR(-EINVAL);
+@@ -444,7 +445,7 @@ static struct bpf_prog_list *find_attach_entry(struct list_head *progs,
  
--/* bpf_trampoline_unlink_prog() should never fail. */
--int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr)
-+static int __bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr)
- {
- 	enum bpf_tramp_prog_type kind;
+ 	/* direct prog multi-attach w/ replacement case */
+ 	if (replace_prog) {
+-		list_for_each_entry(pl, progs, node) {
++		hlist_for_each_entry(pl, progs, node) {
+ 			if (pl->prog == replace_prog)
+ 				/* a match found */
+ 				return pl;
+@@ -480,7 +481,7 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
+ 	struct bpf_cgroup_storage *new_storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
+ 	enum cgroup_bpf_attach_type atype;
+ 	struct bpf_prog_list *pl;
+-	struct list_head *progs;
++	struct hlist_head *progs;
  	int err;
  
- 	kind = bpf_attach_type_to_tramp(link->link.prog);
--	mutex_lock(&tr->mutex);
- 	if (kind == BPF_TRAMP_REPLACE) {
- 		WARN_ON_ONCE(!tr->extension_prog);
- 		err = bpf_arch_text_poke(tr->func.addr, BPF_MOD_JUMP,
- 					 tr->extension_prog->bpf_func, NULL);
- 		tr->extension_prog = NULL;
--		goto out;
-+		return err;
+ 	if (((flags & BPF_F_ALLOW_OVERRIDE) && (flags & BPF_F_ALLOW_MULTI)) ||
+@@ -503,7 +504,7 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
+ 	if (!hierarchy_allows_attach(cgrp, atype))
+ 		return -EPERM;
+ 
+-	if (!list_empty(progs) && cgrp->bpf.flags[atype] != saved_flags)
++	if (!hlist_empty(progs) && cgrp->bpf.flags[atype] != saved_flags)
+ 		/* Disallow attaching non-overridable on top
+ 		 * of existing overridable in this cgroup.
+ 		 * Disallow attaching multi-prog if overridable or none
+@@ -525,12 +526,22 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
+ 	if (pl) {
+ 		old_prog = pl->prog;
+ 	} else {
++		struct hlist_node *last = NULL;
++
+ 		pl = kmalloc(sizeof(*pl), GFP_KERNEL);
+ 		if (!pl) {
+ 			bpf_cgroup_storages_free(new_storage);
+ 			return -ENOMEM;
+ 		}
+-		list_add_tail(&pl->node, progs);
++		if (hlist_empty(progs))
++			hlist_add_head(&pl->node, progs);
++		else
++			hlist_for_each(last, progs) {
++				if (last->next)
++					continue;
++				hlist_add_behind(&pl->node, last);
++				break;
++			}
  	}
- 	hlist_del_init(&link->tramp_hlist);
- 	tr->progs_cnt[kind]--;
--	err = bpf_trampoline_update(tr);
--out:
-+	return bpf_trampoline_update(tr);
-+}
-+
-+/* bpf_trampoline_unlink_prog() should never fail. */
-+int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr)
-+{
-+	int err;
-+
-+	mutex_lock(&tr->mutex);
-+	err = __bpf_trampoline_unlink_prog(link, tr);
- 	mutex_unlock(&tr->mutex);
+ 
+ 	pl->prog = prog;
+@@ -556,7 +567,7 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
+ 	}
+ 	bpf_cgroup_storages_free(new_storage);
+ 	if (!old_prog) {
+-		list_del(&pl->node);
++		hlist_del(&pl->node);
+ 		kfree(pl);
+ 	}
  	return err;
+@@ -587,7 +598,7 @@ static void replace_effective_prog(struct cgroup *cgrp,
+ 	struct cgroup_subsys_state *css;
+ 	struct bpf_prog_array *progs;
+ 	struct bpf_prog_list *pl;
+-	struct list_head *head;
++	struct hlist_head *head;
+ 	struct cgroup *cg;
+ 	int pos;
+ 
+@@ -603,7 +614,7 @@ static void replace_effective_prog(struct cgroup *cgrp,
+ 				continue;
+ 
+ 			head = &cg->bpf.progs[atype];
+-			list_for_each_entry(pl, head, node) {
++			hlist_for_each_entry(pl, head, node) {
+ 				if (!prog_list_prog(pl))
+ 					continue;
+ 				if (pl->link == link)
+@@ -637,7 +648,7 @@ static int __cgroup_bpf_replace(struct cgroup *cgrp,
+ 	enum cgroup_bpf_attach_type atype;
+ 	struct bpf_prog *old_prog;
+ 	struct bpf_prog_list *pl;
+-	struct list_head *progs;
++	struct hlist_head *progs;
+ 	bool found = false;
+ 
+ 	atype = to_cgroup_bpf_attach_type(link->type);
+@@ -649,7 +660,7 @@ static int __cgroup_bpf_replace(struct cgroup *cgrp,
+ 	if (link->link.prog->type != new_prog->type)
+ 		return -EINVAL;
+ 
+-	list_for_each_entry(pl, progs, node) {
++	hlist_for_each_entry(pl, progs, node) {
+ 		if (pl->link == link) {
+ 			found = true;
+ 			break;
+@@ -688,7 +699,7 @@ static int cgroup_bpf_replace(struct bpf_link *link, struct bpf_prog *new_prog,
+ 	return ret;
  }
+ 
+-static struct bpf_prog_list *find_detach_entry(struct list_head *progs,
++static struct bpf_prog_list *find_detach_entry(struct hlist_head *progs,
+ 					       struct bpf_prog *prog,
+ 					       struct bpf_cgroup_link *link,
+ 					       bool allow_multi)
+@@ -696,14 +707,14 @@ static struct bpf_prog_list *find_detach_entry(struct list_head *progs,
+ 	struct bpf_prog_list *pl;
+ 
+ 	if (!allow_multi) {
+-		if (list_empty(progs))
++		if (hlist_empty(progs))
+ 			/* report error when trying to detach and nothing is attached */
+ 			return ERR_PTR(-ENOENT);
+ 
+ 		/* to maintain backward compatibility NONE and OVERRIDE cgroups
+ 		 * allow detaching with invalid FD (prog==NULL) in legacy mode
+ 		 */
+-		return list_first_entry(progs, typeof(*pl), node);
++		return hlist_entry(progs->first, typeof(*pl), node);
+ 	}
+ 
+ 	if (!prog && !link)
+@@ -713,7 +724,7 @@ static struct bpf_prog_list *find_detach_entry(struct list_head *progs,
+ 		return ERR_PTR(-EINVAL);
+ 
+ 	/* find the prog or link and detach it */
+-	list_for_each_entry(pl, progs, node) {
++	hlist_for_each_entry(pl, progs, node) {
+ 		if (pl->prog == prog && pl->link == link)
+ 			return pl;
+ 	}
+@@ -737,7 +748,7 @@ static void purge_effective_progs(struct cgroup *cgrp, struct bpf_prog *prog,
+ 	struct cgroup_subsys_state *css;
+ 	struct bpf_prog_array *progs;
+ 	struct bpf_prog_list *pl;
+-	struct list_head *head;
++	struct hlist_head *head;
+ 	struct cgroup *cg;
+ 	int pos;
+ 
+@@ -754,7 +765,7 @@ static void purge_effective_progs(struct cgroup *cgrp, struct bpf_prog *prog,
+ 				continue;
+ 
+ 			head = &cg->bpf.progs[atype];
+-			list_for_each_entry(pl, head, node) {
++			hlist_for_each_entry(pl, head, node) {
+ 				if (!prog_list_prog(pl))
+ 					continue;
+ 				if (pl->prog == prog && pl->link == link)
+@@ -791,7 +802,7 @@ static int __cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
+ 	enum cgroup_bpf_attach_type atype;
+ 	struct bpf_prog *old_prog;
+ 	struct bpf_prog_list *pl;
+-	struct list_head *progs;
++	struct hlist_head *progs;
+ 	u32 flags;
+ 
+ 	atype = to_cgroup_bpf_attach_type(type);
+@@ -822,9 +833,10 @@ static int __cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
+ 	}
+ 
+ 	/* now can actually delete it from this cgroup list */
+-	list_del(&pl->node);
++	hlist_del(&pl->node);
++
+ 	kfree(pl);
+-	if (list_empty(progs))
++	if (hlist_empty(progs))
+ 		/* last program was detached, reset flags to zero */
+ 		cgrp->bpf.flags[atype] = 0;
+ 	if (old_prog)
+@@ -852,7 +864,7 @@ static int __cgroup_bpf_query(struct cgroup *cgrp, const union bpf_attr *attr,
+ 	enum bpf_attach_type type = attr->query.attach_type;
+ 	enum cgroup_bpf_attach_type atype;
+ 	struct bpf_prog_array *effective;
+-	struct list_head *progs;
++	struct hlist_head *progs;
+ 	struct bpf_prog *prog;
+ 	int cnt, ret = 0, i;
+ 	u32 flags;
+@@ -891,7 +903,7 @@ static int __cgroup_bpf_query(struct cgroup *cgrp, const union bpf_attr *attr,
+ 		u32 id;
+ 
+ 		i = 0;
+-		list_for_each_entry(pl, progs, node) {
++		hlist_for_each_entry(pl, progs, node) {
+ 			prog = prog_list_prog(pl);
+ 			id = prog->aux->id;
+ 			if (copy_to_user(prog_ids + i, &id, sizeof(id)))
 -- 
 2.37.0.rc0.161.g10f37bed90-goog
 
