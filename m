@@ -2,178 +2,230 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8756855E628
-	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 18:26:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E7D955E96C
+	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 18:41:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347866AbiF1QDA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Jun 2022 12:03:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47612 "EHLO
+        id S1347401AbiF1QDC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Jun 2022 12:03:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348150AbiF1QCi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Jun 2022 12:02:38 -0400
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47CF72F3BD
-        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 09:02:00 -0700 (PDT)
+        with ESMTP id S1348205AbiF1QCj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Jun 2022 12:02:39 -0400
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE31A38184
+        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 09:02:02 -0700 (PDT)
 Received: from submission (posteo.de [185.67.36.169]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id C88E324010F
-        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 18:01:58 +0200 (CEST)
+        by mout01.posteo.de (Postfix) with ESMTPS id 3D497240036
+        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 18:02:01 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1656432118; bh=35+Oal5gTL3iqoNf+ZVp61v8p6y2moMZ8k2xBnjkwmo=;
+        t=1656432121; bh=BMp9XtfX2kj2mjbA+tVPu764UU6HiuGix3rEwLmc2XE=;
         h=From:To:Cc:Subject:Date:From;
-        b=L8NDfXQHqhZcz/j93tnKQfQvPxK5RX3/W1usBFadZ+28fu9tyg1264vShuHh9vxp3
-         75f1+7U2TdBAq5abd7S7V/An7W//gvUgu7OYsTk+4dcYhiqPUegSyuknjEjprNSS+p
-         wtQkG4MGuVCC0+uhEGpeymf3mxX0AOIGQLCcSWAGF+vIwHBMfNPbygAwVzegAdbnUY
-         ZnfeKJDvaCWfPpEUfcwcQCNIWV0kkleOvwJqLCbdiE8EqzUTxs1AkvVUMJO0kgUnID
-         7VO+ptM9R2qvvfdcH1kD51dLuUJBkcD5/rVdBxBpP8vBvcrpWXJfL4CclMFfP3oPWP
-         IhLAqUcQiOjGQ==
+        b=mUIeZ6m9MLVBmVaHbHHU8TYxpOp9Ydh0l6s2hAv2tlO7frPjyq4F7x/t2Q6aLCz08
+         ps2K9heyZYpvI8CrdJ5hw83hfPn/feHuJn+h9RippBxcbQTdrnlsD9FDxX8zdVbHLk
+         1P1tRJVWe8eWS3Waju1pWLajn1xXZAnyft3whK9+leSqS3pytVzFkQXGeX1ecYjEvU
+         rvwGGRfFCDWDhF//YNyhhn4TPrJwe85wpCRvqexO3+C6pGEWS8dUsCGCNeM/DCT0bJ
+         2vW5cztR9AceTPgztDzxUJ/ZRgeiGT7JWihrhK66PkxZNn5q1g0J5xTPplM6+AcKCk
+         c4N9JtHaS+ppQ==
 Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4LXTqn717Dz6tmS;
-        Tue, 28 Jun 2022 18:01:57 +0200 (CEST)
+        by submission (posteo.de) with ESMTPSA id 4LXTqr1LG2z6tmM;
+        Tue, 28 Jun 2022 18:02:00 +0200 (CEST)
 From:   =?UTF-8?q?Daniel=20M=C3=BCller?= <deso@posteo.net>
 To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
         daniel@iogearbox.net, kernel-team@fb.com
 Cc:     joannelkoong@gmail.com
-Subject: [PATCH bpf-next v3 06/10] libbpf: Honor TYPE_MATCH relocation
-Date:   Tue, 28 Jun 2022 16:01:23 +0000
-Message-Id: <20220628160127.607834-7-deso@posteo.net>
+Subject: [PATCH bpf-next v3 07/10] selftests/bpf: Add type-match checks to type-based tests
+Date:   Tue, 28 Jun 2022 16:01:24 +0000
+Message-Id: <20220628160127.607834-8-deso@posteo.net>
 In-Reply-To: <20220628160127.607834-1-deso@posteo.net>
 References: <20220628160127.607834-1-deso@posteo.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch finalizes support for the proposed type match relation in
-libbpf by hooking it up to the TYPE_MATCH relocation. For this
-relocation to be handled correctly by LLVM we have D126838
-(https://reviews.llvm.org/D126838).
-The main functionality is present behind the newly introduced
-bpf_core_type_matches macro (similar to bpf_core_type_exists). This
-macro can be used to check whether a local type has a "match" in a
-target BTF.
+Now that we have type-match logic in both libbpf and the kernel, this
+change adjusts the existing BPF self tests to check this functionality.
+Specifically, we extend the existing type-based tests to check the
+previously introduced bpf_core_type_matches macro.
 
 Signed-off-by: Daniel Müller <deso@posteo.net>
 ---
- tools/lib/bpf/bpf_core_read.h | 10 ++++++++++
- tools/lib/bpf/libbpf.c        |  6 ++++++
- tools/lib/bpf/relo_core.c     | 16 ++++++++++++----
- tools/lib/bpf/relo_core.h     |  2 ++
- 4 files changed, 30 insertions(+), 4 deletions(-)
+ .../selftests/bpf/prog_tests/core_reloc.c     | 31 ++++++++++++++++--
+ .../selftests/bpf/progs/core_reloc_types.h    | 14 +++++++-
+ .../bpf/progs/test_core_reloc_type_based.c    | 32 ++++++++++++++++++-
+ 3 files changed, 73 insertions(+), 4 deletions(-)
 
-diff --git a/tools/lib/bpf/bpf_core_read.h b/tools/lib/bpf/bpf_core_read.h
-index 2308f49..496e6a 100644
---- a/tools/lib/bpf/bpf_core_read.h
-+++ b/tools/lib/bpf/bpf_core_read.h
-@@ -184,6 +184,16 @@ enum bpf_enum_value_kind {
- #define bpf_core_type_exists(type)					    \
- 	__builtin_preserve_type_info(*(typeof(type) *)0, BPF_TYPE_EXISTS)
- 
-+/*
-+ * Convenience macro to check that provided named type
-+ * (struct/union/enum/typedef) "matches" that in a target kernel.
-+ * Returns:
-+ *    1, if the type matches in the target kernel's BTF;
-+ *    0, if the type does not match any in the target kernel
-+ */
-+#define bpf_core_type_matches(type)					    \
-+	__builtin_preserve_type_info(*(typeof(type) *)0, BPF_TYPE_MATCHES)
-+
- /*
-  * Convenience macro to get the byte size of a provided named type
-  * (struct/union/enum/typedef) in a target kernel.
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 335467..92fc399 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -5735,6 +5735,12 @@ int bpf_core_types_are_compat(const struct btf *local_btf, __u32 local_id,
- 	return __bpf_core_types_are_compat(local_btf, local_id, targ_btf, targ_id, 32);
+diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
+index 2f92fe..328dd7 100644
+--- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
++++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
+@@ -543,7 +543,6 @@ static int __trigger_module_test_read(const struct core_reloc_test_case *test)
+ 	return 0;
  }
  
-+int bpf_core_types_match(const struct btf *local_btf, __u32 local_id,
-+			 const struct btf *targ_btf, __u32 targ_id)
-+{
-+	return __bpf_core_types_match(local_btf, local_id, targ_btf, targ_id, false, 32);
-+}
+-
+ static const struct core_reloc_test_case test_cases[] = {
+ 	/* validate we can find kernel image and use its BTF for relocs */
+ 	{
+@@ -752,7 +751,7 @@ static const struct core_reloc_test_case test_cases[] = {
+ 	SIZE_CASE(size___diff_offs),
+ 	SIZE_ERR_CASE(size___err_ambiguous),
+ 
+-	/* validate type existence and size relocations */
++	/* validate type existence, match, and size relocations */
+ 	TYPE_BASED_CASE(type_based, {
+ 		.struct_exists = 1,
+ 		.union_exists = 1,
+@@ -765,6 +764,19 @@ static const struct core_reloc_test_case test_cases[] = {
+ 		.typedef_void_ptr_exists = 1,
+ 		.typedef_func_proto_exists = 1,
+ 		.typedef_arr_exists = 1,
 +
- static size_t bpf_core_hash_fn(const void *key, void *ctx)
++		.struct_matches = 1,
++		.union_matches = 1,
++		.enum_matches = 1,
++		.typedef_named_struct_matches = 1,
++		.typedef_anon_struct_matches = 1,
++		.typedef_struct_ptr_matches = 1,
++		.typedef_int_matches = 1,
++		.typedef_enum_matches = 1,
++		.typedef_void_ptr_matches = 1,
++		.typedef_func_proto_matches = 1,
++		.typedef_arr_matches = 1,
++
+ 		.struct_sz = sizeof(struct a_struct),
+ 		.union_sz = sizeof(union a_union),
+ 		.enum_sz = sizeof(enum an_enum),
+@@ -792,6 +804,19 @@ static const struct core_reloc_test_case test_cases[] = {
+ 		.typedef_void_ptr_exists = 1,
+ 		.typedef_func_proto_exists = 1,
+ 		.typedef_arr_exists = 1,
++
++		.struct_matches = 0,
++		.union_matches = 0,
++		.enum_matches = 0,
++		.typedef_named_struct_matches = 0,
++		.typedef_anon_struct_matches = 0,
++		.typedef_struct_ptr_matches = 1,
++		.typedef_int_matches = 0,
++		.typedef_enum_matches = 0,
++		.typedef_void_ptr_matches = 1,
++		.typedef_func_proto_matches = 0,
++		.typedef_arr_matches = 0,
++
+ 		.struct_sz = sizeof(struct a_struct___diff_sz),
+ 		.union_sz = sizeof(union a_union___diff_sz),
+ 		.enum_sz = sizeof(enum an_enum___diff_sz),
+@@ -806,10 +831,12 @@ static const struct core_reloc_test_case test_cases[] = {
+ 	}),
+ 	TYPE_BASED_CASE(type_based___incompat, {
+ 		.enum_exists = 1,
++		.enum_matches = 1,
+ 		.enum_sz = sizeof(enum an_enum),
+ 	}),
+ 	TYPE_BASED_CASE(type_based___fn_wrong_args, {
+ 		.struct_exists = 1,
++		.struct_matches = 1,
+ 		.struct_sz = sizeof(struct a_struct),
+ 	}),
+ 
+diff --git a/tools/testing/selftests/bpf/progs/core_reloc_types.h b/tools/testing/selftests/bpf/progs/core_reloc_types.h
+index 26e1033..6a44f3e 100644
+--- a/tools/testing/selftests/bpf/progs/core_reloc_types.h
++++ b/tools/testing/selftests/bpf/progs/core_reloc_types.h
+@@ -860,7 +860,7 @@ struct core_reloc_size___err_ambiguous2 {
+ };
+ 
+ /*
+- * TYPE EXISTENCE & SIZE
++ * TYPE EXISTENCE, MATCH & SIZE
+  */
+ struct core_reloc_type_based_output {
+ 	bool struct_exists;
+@@ -875,6 +875,18 @@ struct core_reloc_type_based_output {
+ 	bool typedef_func_proto_exists;
+ 	bool typedef_arr_exists;
+ 
++	bool struct_matches;
++	bool union_matches;
++	bool enum_matches;
++	bool typedef_named_struct_matches;
++	bool typedef_anon_struct_matches;
++	bool typedef_struct_ptr_matches;
++	bool typedef_int_matches;
++	bool typedef_enum_matches;
++	bool typedef_void_ptr_matches;
++	bool typedef_func_proto_matches;
++	bool typedef_arr_matches;
++
+ 	int struct_sz;
+ 	int union_sz;
+ 	int enum_sz;
+diff --git a/tools/testing/selftests/bpf/progs/test_core_reloc_type_based.c b/tools/testing/selftests/bpf/progs/test_core_reloc_type_based.c
+index fb60f8..325ead 100644
+--- a/tools/testing/selftests/bpf/progs/test_core_reloc_type_based.c
++++ b/tools/testing/selftests/bpf/progs/test_core_reloc_type_based.c
+@@ -61,6 +61,18 @@ struct core_reloc_type_based_output {
+ 	bool typedef_func_proto_exists;
+ 	bool typedef_arr_exists;
+ 
++	bool struct_matches;
++	bool union_matches;
++	bool enum_matches;
++	bool typedef_named_struct_matches;
++	bool typedef_anon_struct_matches;
++	bool typedef_struct_ptr_matches;
++	bool typedef_int_matches;
++	bool typedef_enum_matches;
++	bool typedef_void_ptr_matches;
++	bool typedef_func_proto_matches;
++	bool typedef_arr_matches;
++
+ 	int struct_sz;
+ 	int union_sz;
+ 	int enum_sz;
+@@ -77,7 +89,13 @@ struct core_reloc_type_based_output {
+ SEC("raw_tracepoint/sys_enter")
+ int test_core_type_based(void *ctx)
  {
- 	return (size_t)key;
-diff --git a/tools/lib/bpf/relo_core.c b/tools/lib/bpf/relo_core.c
-index b3f5d7e..5f1294c7 100644
---- a/tools/lib/bpf/relo_core.c
-+++ b/tools/lib/bpf/relo_core.c
-@@ -95,6 +95,7 @@ static const char *core_relo_kind_str(enum bpf_core_relo_kind kind)
- 	case BPF_CORE_TYPE_ID_LOCAL: return "local_type_id";
- 	case BPF_CORE_TYPE_ID_TARGET: return "target_type_id";
- 	case BPF_CORE_TYPE_EXISTS: return "type_exists";
-+	case BPF_CORE_TYPE_MATCHES: return "type_matches";
- 	case BPF_CORE_TYPE_SIZE: return "type_size";
- 	case BPF_CORE_ENUMVAL_EXISTS: return "enumval_exists";
- 	case BPF_CORE_ENUMVAL_VALUE: return "enumval_value";
-@@ -123,6 +124,7 @@ static bool core_relo_is_type_based(enum bpf_core_relo_kind kind)
- 	case BPF_CORE_TYPE_ID_LOCAL:
- 	case BPF_CORE_TYPE_ID_TARGET:
- 	case BPF_CORE_TYPE_EXISTS:
-+	case BPF_CORE_TYPE_MATCHES:
- 	case BPF_CORE_TYPE_SIZE:
- 		return true;
- 	default:
-@@ -251,7 +253,7 @@ int __bpf_core_types_are_compat(const struct btf *local_btf, __u32 local_id,
-  *   - field 'a' access (corresponds to '2' in low-level spec);
-  *   - array element #3 access (corresponds to '3' in low-level spec).
-  *
-- * Type-based relocations (TYPE_EXISTS/TYPE_SIZE,
-+ * Type-based relocations (TYPE_EXISTS/TYPE_MATCHES/TYPE_SIZE,
-  * TYPE_ID_LOCAL/TYPE_ID_TARGET) don't capture any field information. Their
-  * spec and raw_spec are kept empty.
-  *
-@@ -568,9 +570,14 @@ static int bpf_core_spec_match(struct bpf_core_spec *local_spec,
- 	targ_spec->relo_kind = local_spec->relo_kind;
+-#if __has_builtin(__builtin_preserve_type_info)
++	/* Support for the BPF_TYPE_MATCHES argument to the
++	 * __builtin_preserve_type_info builtin was added at some point during
++	 * development of clang 15 and it's what we require for this test. Part of it
++	 * could run with merely __builtin_preserve_type_info (which could be checked
++	 * separately), but we have to find an upper bound.
++	 */
++#if __has_builtin(__builtin_preserve_type_info) && __clang_major__ >= 15
+ 	struct core_reloc_type_based_output *out = (void *)&data.out;
  
- 	if (core_relo_is_type_based(local_spec->relo_kind)) {
--		return bpf_core_types_are_compat(local_spec->btf,
--						 local_spec->root_type_id,
--						 targ_btf, targ_id);
-+		if (local_spec->relo_kind == BPF_CORE_TYPE_MATCHES)
-+			return bpf_core_types_match(local_spec->btf,
-+						    local_spec->root_type_id,
-+						    targ_btf, targ_id);
-+		else
-+			return bpf_core_types_are_compat(local_spec->btf,
-+							 local_spec->root_type_id,
-+							 targ_btf, targ_id);
- 	}
+ 	out->struct_exists = bpf_core_type_exists(struct a_struct);
+@@ -92,6 +110,18 @@ int test_core_type_based(void *ctx)
+ 	out->typedef_func_proto_exists = bpf_core_type_exists(func_proto_typedef);
+ 	out->typedef_arr_exists = bpf_core_type_exists(arr_typedef);
  
- 	local_acc = &local_spec->spec[0];
-@@ -819,6 +826,7 @@ static int bpf_core_calc_type_relo(const struct bpf_core_relo *relo,
- 			*validate = false;
- 		break;
- 	case BPF_CORE_TYPE_EXISTS:
-+	case BPF_CORE_TYPE_MATCHES:
- 		*val = 1;
- 		break;
- 	case BPF_CORE_TYPE_SIZE:
-diff --git a/tools/lib/bpf/relo_core.h b/tools/lib/bpf/relo_core.h
-index 8462e0a..1c0566d 100644
---- a/tools/lib/bpf/relo_core.h
-+++ b/tools/lib/bpf/relo_core.h
-@@ -74,6 +74,8 @@ int bpf_core_types_are_compat(const struct btf *local_btf, __u32 local_id,
- 			      const struct btf *targ_btf, __u32 targ_id);
- int __bpf_core_types_match(const struct btf *local_btf, __u32 local_id, const struct btf *targ_btf,
- 			   __u32 targ_id, bool behind_ptr, int level);
-+int bpf_core_types_match(const struct btf *local_btf, __u32 local_id, const struct btf *targ_btf,
-+			 __u32 targ_id);
- 
- size_t bpf_core_essential_name_len(const char *name);
- 
++	out->struct_matches = bpf_core_type_matches(struct a_struct);
++	out->union_matches = bpf_core_type_matches(union a_union);
++	out->enum_matches = bpf_core_type_matches(enum an_enum);
++	out->typedef_named_struct_matches = bpf_core_type_matches(named_struct_typedef);
++	out->typedef_anon_struct_matches = bpf_core_type_matches(anon_struct_typedef);
++	out->typedef_struct_ptr_matches = bpf_core_type_matches(struct_ptr_typedef);
++	out->typedef_int_matches = bpf_core_type_matches(int_typedef);
++	out->typedef_enum_matches = bpf_core_type_matches(enum_typedef);
++	out->typedef_void_ptr_matches = bpf_core_type_matches(void_ptr_typedef);
++	out->typedef_func_proto_matches = bpf_core_type_matches(func_proto_typedef);
++	out->typedef_arr_matches = bpf_core_type_matches(arr_typedef);
++
+ 	out->struct_sz = bpf_core_type_size(struct a_struct);
+ 	out->union_sz = bpf_core_type_size(union a_union);
+ 	out->enum_sz = bpf_core_type_size(enum an_enum);
 -- 
 2.30.2
 
