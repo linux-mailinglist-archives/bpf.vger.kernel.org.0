@@ -2,45 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EA4A55D772
-	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 15:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A0FF55E4F3
+	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 15:39:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345814AbiF1MbE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Jun 2022 08:31:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59570 "EHLO
+        id S1346724AbiF1NhS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Jun 2022 09:37:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345827AbiF1MbD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Jun 2022 08:31:03 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73AB02E9C3;
-        Tue, 28 Jun 2022 05:31:02 -0700 (PDT)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4LXP4M00w2zTgG7;
-        Tue, 28 Jun 2022 20:27:30 +0800 (CST)
-Received: from huawei.com (10.175.101.6) by canpemm500010.china.huawei.com
- (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Tue, 28 Jun
- 2022 20:30:59 +0800
-From:   Liu Jian <liujian56@huawei.com>
-To:     <john.fastabend@gmail.com>, <jakub@cloudflare.com>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <kpsingh@kernel.org>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-CC:     <liujian56@huawei.com>
-Subject: [PATCH bpf] skmsg: Fix invalid last sg check in sk_msg_recvmsg()
-Date:   Tue, 28 Jun 2022 20:36:16 +0800
-Message-ID: <20220628123616.186950-1-liujian56@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        with ESMTP id S1345541AbiF1Ng7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Jun 2022 09:36:59 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30BAB2A966
+        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 06:36:54 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id n15so19876482qvh.12
+        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 06:36:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gN4ZNyT9GRZ46Vwx3CUzNgwGxKE3ptwelsb3O/2waMc=;
+        b=SRPS2zIET11DP06FAnMANUW30rX+F+KLnmvgpItTZuHDiHMYbx191l+udZ0BIKVo+p
+         DUqKNFcRnPxEdciA9v/rjMoUuUABeinU5a59o91m7mO0ei+LjGwfeqP1sFK6bST4r2Sc
+         +kwNrequilw+r3whlSvEqjUrw7uEou8aBEv26lUqmckZs7QEO1gxqNAIdKmR6ixdoBBW
+         VwXL+VitONeiHER4+6czyOuvux/gSa01CsajOGl6xQeKgTZdOU9/PF5ai6yeP3/8Na6A
+         VkyCaiWAoLiX3IML+rZ/qAH9obhof6Stg3VEpk4n7D6sOfmWV6A4zI2itZ9nI+NyrBEn
+         GAtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gN4ZNyT9GRZ46Vwx3CUzNgwGxKE3ptwelsb3O/2waMc=;
+        b=Pst/Lp4TOIw6ndMAq2yDcmGmwhTFUkY2Tn6H6FPmDBnZgtll7sg41knhJ2Y+r1sCPy
+         DHLati4jv/n1jbK//Tja2NvYxghR4eUQQsnQ6HAuxBjSI/tNdYxj51JLo0dqb9NXPxlp
+         sl9/W8gVlVxpPZz3b4jg+DBDLJ6VY7MuuFHaMoT/LeMXzU54rm7LD5lMerejw2DE3pHe
+         uAG3yvi0Xe+Qly5WMGQKZCiRBelc/y8mUBVu0wvKt9LPsu4Hgwrg9oWhj+829T8vSBQq
+         nbdM3fD95CERl9fEmaaz4c2Le7wzqS3bLgJ5YKSfDalFHieCUjgs/UW2Slj+qBAiTQXY
+         DGIQ==
+X-Gm-Message-State: AJIora/fH42O31sSGSmcIIf7p0wRHsAIPbHd5A5u3f3TZLBX1PMA7nX3
+        HKdB79hwdZ+VZYRNMsPaIRuAMA==
+X-Google-Smtp-Source: AGRyM1uooXTVlKXYemR9EvbrrQp4i2XA4BpQT09bjvN7I6xIwm3cKCnpXCNHNGqwd+HxVz52pv3Omw==
+X-Received: by 2002:ac8:5b0d:0:b0:31b:f519:4107 with SMTP id m13-20020ac85b0d000000b0031bf5194107mr1237416qtw.331.1656423413317;
+        Tue, 28 Jun 2022 06:36:53 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id s10-20020a05620a29ca00b006a79479657fsm708363qkp.108.2022.06.28.06.36.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jun 2022 06:36:52 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1o6BOd-002vAA-VA; Tue, 28 Jun 2022 10:36:51 -0300
+Date:   Tue, 28 Jun 2022 10:36:51 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org, dm-devel@redhat.com,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        linux1394-devel@lists.sourceforge.net, io-uring@vger.kernel.org,
+        lvs-devel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        kasan-dev@googlegroups.com, linux-mmc@vger.kernel.org,
+        nvdimm@lists.linux.dev, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, linux-perf-users@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-usb@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        v9fs-developer@lists.sourceforge.net, linux-rdma@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] treewide: uapi: Replace zero-length arrays with
+ flexible-array members
+Message-ID: <20220628133651.GO23621@ziepe.ca>
+References: <20220627180432.GA136081@embeddedor>
+ <6bc1e94c-ce1d-a074-7d0c-8dbe6ce22637@iogearbox.net>
+ <20220628004052.GM23621@ziepe.ca>
+ <20220628005825.GA161566@embeddedor>
+ <20220628022129.GA8452@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220628022129.GA8452@embeddedor>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,48 +96,27 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In sk_psock_skb_ingress_enqueue function, if the linear area + nr_frags +
-frag_list of the SKB has NR_MSG_FRAG_IDS blocks in total, skb_to_sgvec
-will return NR_MSG_FRAG_IDS, then msg->sg.end will be set to
-NR_MSG_FRAG_IDS, and in addition, (NR_MSG_FRAG_IDS - 1) is set to the last
-SG of msg. Recv the msg in sk_msg_recvmsg, when i is (NR_MSG_FRAG_IDS - 1),
-the sk_msg_iter_var_next(i) will change i to 0 (not NR_MSG_FRAG_IDS), the
-judgment condition "msg_rx->sg.start==msg_rx->sg.end" and
-"i != msg_rx->sg.end" can not work.
+On Tue, Jun 28, 2022 at 04:21:29AM +0200, Gustavo A. R. Silva wrote:
 
-As a result, the processed msg cannot be deleted from ingress_msg list.
-But the length of all the sge of the msg has changed to 0. Then the next
-recvmsg syscall will process the msg repeatedly, because the length of sge
-is 0, the -EFAULT error is always returned.
+> > > Though maybe we could just switch off -Wgnu-variable-sized-type-not-at-end  during configuration ?
 
-Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
-Signed-off-by: Liu Jian <liujian56@huawei.com>
----
- net/core/skmsg.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> We need to think in a different strategy.
 
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index b0fcd0200e84..a8dbea559c7f 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -462,7 +462,7 @@ int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
- 
- 			if (copied == len)
- 				break;
--		} while (i != msg_rx->sg.end);
-+		} while (!sg_is_last(sge));
- 
- 		if (unlikely(peek)) {
- 			msg_rx = sk_psock_next_msg(psock, msg_rx);
-@@ -472,7 +472,7 @@ int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
- 		}
- 
- 		msg_rx->sg.start = i;
--		if (!sge->length && msg_rx->sg.start == msg_rx->sg.end) {
-+		if (!sge->length && sg_is_last(sge)) {
- 			msg_rx = sk_psock_dequeue_msg(psock);
- 			kfree_sk_msg(msg_rx);
- 		}
--- 
-2.17.1
+I think we will need to switch off the warning in userspace - this is
+doable for rdma-core.
 
+On the other hand, if the goal is to enable the array size check
+compiler warning I would suggest focusing only on those structs that
+actually hit that warning in the kernel. IIRC infiniband doesn't
+trigger it because it just pointer casts the flex array to some other
+struct.
+
+It isn't actually an array it is a placeholder for a trailing
+structure, so it is never indexed.
+
+This is also why we hit the warning because the convient way for
+userspace to compose the message is to squash the header and trailer
+structs together in a super struct on the stack, then invoke the
+ioctl.
+
+Jason 
