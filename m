@@ -2,164 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D12B355E874
-	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 18:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C54EF55E994
+	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 18:42:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347831AbiF1Pfa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Jun 2022 11:35:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39862 "EHLO
+        id S1348157AbiF1QCi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Jun 2022 12:02:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347854AbiF1Pf3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Jun 2022 11:35:29 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F04833E89;
-        Tue, 28 Jun 2022 08:35:28 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id mf9so26692549ejb.0;
-        Tue, 28 Jun 2022 08:35:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DL43punzQ+qzj6hSdoTRg0mAdzG3rAXkxtHbjtjcKDk=;
-        b=J/pl124QRt2Wk2blBedwyS9d7/NqidqGNjmcJKmMTwWV1k2PN4bCCL1XaJI2c4NegV
-         Tv7PPzrhPRaTW/hgrurPvvbIIjcf2579WfQqhCfIu8GwswFzunf+HuxpWGSQFGwOFG/P
-         yKppR+dssvXShdpG2cskbpM2bfmSZNYTFgfDukzoWZasp0UcuvUGbKo0qZJjfEn3t1H8
-         cdMKbenRdJgMdGiaOHLS7i/Ic/HqygfFKoJYVNQsZCruUioBSMdg5q0UE714pBAWOkNk
-         XY3ulXdyYYl4yKo9JPcylZrcfs5CCZ9h/yqD/4NYcjrjJAmcyO77F2grc2SyfMXit+qx
-         BUbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DL43punzQ+qzj6hSdoTRg0mAdzG3rAXkxtHbjtjcKDk=;
-        b=pzT17uwl6Fba0V2ZPkqe4zMZFBuLECzCZbShEO2QFYosiO68qy3aDx+96iwhHlEIb7
-         GAsmJNR3UEfV6vlJ687RXGQkh6dYBgEugJfjt3keLmjrKl7qvsP8hjc52k8Bdfsb7m+Q
-         YO+m8t5tmvdTlujwPmbRsG8+200ijNBcFhosH69IveNG0ZGcnFn8yrorzlUrSXqbzeuj
-         fmkfBLty3agHu3jsYT9mpJPJcwuuqGZDvbkmmFbbtShBqUFTFFmLCchDNMO9rd28qzlL
-         AeaDiA9isidd11CojjJwrC/P1l0yX+52R8yqgeiVnOVog4lL9mLKEUJ1w4+B7AqClAcd
-         xYgw==
-X-Gm-Message-State: AJIora8h23NQt640u/jGZqDTlpmH485ZsQXaH4lhIinwcBxb2qul6jKz
-        xwFiXHW2op1kY2e5KXo0ILk=
-X-Google-Smtp-Source: AGRyM1uPRSomYbKmcMmXmhjerNWDelmBl5PQl5c4/qUVsG9o1Ty4qLP7QnFBMkjQwr2Ou31X8L2+FQ==
-X-Received: by 2002:a17:906:4794:b0:722:f10e:6240 with SMTP id cw20-20020a170906479400b00722f10e6240mr19530893ejc.704.1656430526484;
-        Tue, 28 Jun 2022 08:35:26 -0700 (PDT)
-Received: from krava (net-109-116-206-47.cust.vodafonedsl.it. [109.116.206.47])
-        by smtp.gmail.com with ESMTPSA id by27-20020a0564021b1b00b004356112a8a2sm9698253edb.15.2022.06.28.08.35.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jun 2022 08:35:25 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Tue, 28 Jun 2022 17:35:21 +0200
-To:     Ian Rogers <irogers@google.com>
-Cc:     olsajiri@gmail.com, Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH] perf bpf: 8 byte align bpil data
-Message-ID: <YrsfueiaxKmpf0Ng@krava>
-References: <20220614014714.1407239-1-irogers@google.com>
- <Yrq5Bun3Nmb1vrW3@krava>
- <CAP-5=fXNJjRxGCE=mH22bLg1mNXMRgL_px4=-=8Zq-DLUXbxTg@mail.gmail.com>
+        with ESMTP id S1347466AbiF1QCY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Jun 2022 12:02:24 -0400
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BCF437A0E
+        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 09:01:43 -0700 (PDT)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout01.posteo.de (Postfix) with ESMTPS id 212B4240032
+        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 18:01:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1656432101; bh=tQl+Fqv9coEa5c/MTZqdBCnIzUrFzLB9VMKzx4C/bOw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=evGiPwU1WXWWvf3ayGdXTR810/tC0WGowSROH0r4SCh+lEdlpH2ao/TW5TFGntIYO
+         f9jQY898HawcDNY7yG7mGMKxLSeQA0ttyeci2PM6hSp0ZlGNKECmydNDfteUaoEpEF
+         71fx8idc+pRBfT79CFnkrv8dtlryX1rQm3dEYtWXpohoUg7ZTAdt0WZMADMZ9buECS
+         2WE00P82IriO9c4kNSY1Ba0WBQRnK7sARz3dbS+C02Oz0yR1vdgXWczZ8ELIKlpTae
+         of7cGyhRFGHOtZnj2AVPMhvdgiRn82h+9NSiF1FFu1lL9WbphrX5l4T+KzX1qpWO1B
+         AhpjVzuEJ4Jhw==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4LXTqS0d3nz6tmG;
+        Tue, 28 Jun 2022 18:01:39 +0200 (CEST)
+From:   =?UTF-8?q?Daniel=20M=C3=BCller?= <deso@posteo.net>
+To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com
+Cc:     joannelkoong@gmail.com
+Subject: [PATCH bpf-next v3 00/10] Introduce type match support
+Date:   Tue, 28 Jun 2022 16:01:17 +0000
+Message-Id: <20220628160127.607834-1-deso@posteo.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fXNJjRxGCE=mH22bLg1mNXMRgL_px4=-=8Zq-DLUXbxTg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 28, 2022 at 08:15:04AM -0700, Ian Rogers wrote:
-> On Tue, Jun 28, 2022 at 1:41 AM <olsajiri@gmail.com> wrote:
-> >
-> > On Mon, Jun 13, 2022 at 06:47:14PM -0700, Ian Rogers wrote:
-> > > bpil data is accessed assuming 64-bit alignment resulting in undefined
-> > > behavior as the data is just byte aligned. With an -fsanitize=undefined
-> > > build the following errors are observed:
-> >
-> > I need to add -w to get the clean build with that, do you see that as well?
-> >
-> >   $ make EXTRA_CFLAGS='-fsanitize=undefined -w'
-> 
-> I don't recall needing this, but I was stacking fixes which may explain it.
-> 
-> > >
-> > > $ sudo perf record -a sleep 1
-> > > util/bpf-event.c:310:22: runtime error: load of misaligned address 0x55f61084520f for type '__u64', which requires 8 byte alignment
-> > > 0x55f61084520f: note: pointer points here
-> > >  a8 fe ff ff 3c  51 d3 c0 ff ff ff ff 04  84 d3 c0 ff ff ff ff d8  aa d3 c0 ff ff ff ff a4  c0 d3 c0
-> > >              ^
-> > > util/bpf-event.c:311:20: runtime error: load of misaligned address 0x55f61084522f for type '__u32', which requires 4 byte alignment
-> > > 0x55f61084522f: note: pointer points here
-> > >  ff ff ff ff c7  17 00 00 f1 02 00 00 1f  04 00 00 58 04 00 00 00  00 00 00 0f 00 00 00 63  02 00 00
-> > >              ^
-> > > util/bpf-event.c:198:33: runtime error: member access within misaligned address 0x55f61084523f for type 'const struct bpf_func_info', which requires 4 byte alignment
-> > > 0x55f61084523f: note: pointer points here
-> > >  58 04 00 00 00  00 00 00 0f 00 00 00 63  02 00 00 3b 00 00 00 ab  02 00 00 44 00 00 00 14  03 00 00
-> >
-> >
-> > and I'm also getting another error in:
-> >
-> > [root@krava perf]# ./perf record -a sleep 1
-> > util/synthetic-events.c:1202:11: runtime error: member access within misaligned address 0x00000286f7ea for type 'struct perf_record_record_cpu_map', which requires 8 byte alignment
-> > 0x00000286f7ea: note: pointer points here
-> >  20 00  01 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00 00 00
-> >               ^
-> > util/synthetic-events.c:1203:18: runtime error: member access within misaligned address 0x00000286f7ea for type 'struct perf_record_record_cpu_map', which requires 8 byte alignment
-> > 0x00000286f7ea: note: pointer points here
-> >  20 00  01 00 01 00 00 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00 00 00
-> >               ^
-> > util/synthetic-events.c:1206:46: runtime error: member access within misaligned address 0x00000286f7ea for type 'struct perf_record_record_cpu_map', which requires 8 byte alignment
-> > 0x00000286f7ea: note: pointer points here
-> >  20 00  01 00 01 00 08 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00 00 00
-> >               ^
-> > /home/jolsa/kernel/linux-perf/tools/include/asm-generic/bitops/atomic.h:10:29: runtime error: load of misaligned address 0x00000286f7f2 for type 'long unsigned int', which requires 8 byte alignment
-> > 0x00000286f7f2: note: pointer points here
-> >  00 00  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  51 00 00 00 00 00
-> >               ^
-> >
-> > are you going to address this one as well?
-> >
-> >
-> > the reason for this one is that 'data' in struct perf_record_cpu_map_data
-> > is not alligned(8), so that's why I raised the question in my other reply ;-)
-> >
-> > I wonder we should mark all tools/lib/perf/include/perf/event.h types
-> > as packed to prevent any compiler padding
-> 
-> I already sent out a fix and some improvements related to this:
-> https://lore.kernel.org/lkml/20220614143353.1559597-1-irogers@google.com/
-> Could you take a look?
+This patch set proposes the addition of a new way for performing type queries to
+BPF. It introduces the "type matches" relation, similar to what is already
+present with "type exists" (in the form of bpf_core_type_exists).
 
-ok, I overlooked that one
+"type exists" performs fairly superficial checking, mostly concerned with
+whether a type exists in the kernel and is of the same kind (enum/struct/...).
+Notably, compatibility checks for members of composite types is lacking.
 
-> 
-> I'm not sure about aligned and packed. I tried to minimize it in the
-> change above. The issue is that taking the address of a variable in a
-> packed struct results in an unaligned pointer. To address this in the
-> fix above I changed the functions to pass pointers to the whole
-> struct.
+The newly introduced "type matches" (bpf_core_type_matches) fills this gap in
+that it performs stricter checks: compatibility of members and existence of
+similarly named enum variants is checked as well. E.g., given these definitions:
 
-ok, will check,
+	struct task_struct___og { int pid; int tgid; };
 
-thanks,
-jirka
+	struct task_struct___foo { int foo; }
+
+'task_struct___og' would "match" the kernel type 'task_struct', because the
+members match up, while 'task_struct___foo' would not match, because the
+kernel's 'task_struct' has no member named 'foo'.
+
+More precisely, the "type match" relation is defined as follows (copied from
+source):
+- modifiers and typedefs are stripped (and, hence, effectively ignored)
+- generally speaking types need to be of same kind (struct vs. struct, union
+  vs. union, etc.)
+  - exceptions are struct/union behind a pointer which could also match a
+    forward declaration of a struct or union, respectively, and enum vs.
+    enum64 (see below)
+Then, depending on type:
+- integers:
+  - match if size and signedness match
+- arrays & pointers:
+  - target types are recursively matched
+- structs & unions:
+  - local members need to exist in target with the same name
+  - for each member we recursively check match unless it is already behind a
+    pointer, in which case we only check matching names and compatible kind
+- enums:
+  - local variants have to have a match in target by symbolic name (but not
+    numeric value)
+  - size has to match (but enum may match enum64 and vice versa)
+- function pointers:
+  - number and position of arguments in local type has to match target
+  - for each argument and the return value we recursively check match
+
+Enabling this feature requires a new relocation to be made known to the
+compiler. This is being taken care of for LLVM as part of
+https://reviews.llvm.org/D126838.
+
+If applied, among other things, usage of this functionality could have helped
+flag issues such as the one discussed here
+https://lore.kernel.org/all/93a20759600c05b6d9e4359a1517c88e06b44834.camel@fb.com/
+earlier.
+
+Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+---
+Changelog:
+v2 -> v3:
+- renamed btfgen_mark_types_match
+- covered BTF_KIND_RESTRICT in type match marking logic
+- used bpf_core_names_match in more places
+- reworked "behind pointer" logic
+- added test using live task_struct
+
+v1 -> v2:
+- deduplicated and moved core algorithm into relo_core.c
+- adjusted bpf_core_names_match to get btf_type passed in
+- removed some length equality checks before strncmp usage
+- correctly use kflag from targ_t instead of local_t
+- added comment for meaning of kflag w/ FWD kind
+- __u32 -> u32
+- handle BTF_KIND_FWD properly in bpftool marking logic
+- rebased
+
+Daniel Müller (10):
+  bpf: Introduce TYPE_MATCH related constants/macros
+  bpftool: Honor BPF_CORE_TYPE_MATCHES relocation
+  bpf: Introduce btf_int_bits() function
+  libbpf: Add type match support
+  bpf: Add type match support
+  libbpf: Honor TYPE_MATCH relocation
+  selftests/bpf: Add type-match checks to type-based tests
+  selftests/bpf: Add test checking more characteristics
+  selftests/bpf: Add nested type to type based tests
+  selftests/bpf: Add type match test against kernel's task_struct
+
+ include/linux/btf.h                           |   5 +
+ include/uapi/linux/bpf.h                      |   1 +
+ kernel/bpf/btf.c                              |   9 +
+ tools/bpf/bpftool/gen.c                       | 108 +++++++
+ tools/include/uapi/linux/bpf.h                |   1 +
+ tools/lib/bpf/bpf_core_read.h                 |  11 +
+ tools/lib/bpf/libbpf.c                        |   6 +
+ tools/lib/bpf/relo_core.c                     | 284 +++++++++++++++++-
+ tools/lib/bpf/relo_core.h                     |   4 +
+ .../selftests/bpf/prog_tests/core_reloc.c     |  73 ++++-
+ .../progs/btf__core_reloc_type_based___diff.c |   3 +
+ .../selftests/bpf/progs/core_reloc_types.h    | 108 ++++++-
+ .../bpf/progs/test_core_reloc_kernel.c        |  11 +
+ .../bpf/progs/test_core_reloc_type_based.c    |  44 ++-
+ 14 files changed, 650 insertions(+), 18 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_type_based___diff.c
+
+-- 
+2.30.2
+
