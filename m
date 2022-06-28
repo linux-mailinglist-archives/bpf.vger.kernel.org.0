@@ -2,55 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF5CA55C595
-	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 14:51:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4B055E1A9
+	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 15:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242441AbiF1ASA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Jun 2022 20:18:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45090 "EHLO
+        id S241637AbiF1Ak6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Jun 2022 20:40:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230347AbiF1AR7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Jun 2022 20:17:59 -0400
-Received: from shelob.oktetlabs.ru (shelob.oktetlabs.ru [91.220.146.113])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA8C636F;
-        Mon, 27 Jun 2022 17:17:58 -0700 (PDT)
-Received: from bree.oktetlabs.ru (bree.oktetlabs.ru [192.168.34.5])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by shelob.oktetlabs.ru (Postfix) with ESMTPS id CE03BAA;
-        Tue, 28 Jun 2022 03:17:56 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 shelob.oktetlabs.ru CE03BAA
-Authentication-Results: shelob.oktetlabs.ru/CE03BAA; dkim=none;
-        dkim-atps=neutral
-From:   Ivan Malov <ivan.malov@oktetlabs.ru>
-To:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        netdev@vger.kernel.org
-Cc:     Andrew Rybchenko <andrew.rybchenko@oktetlabs.ru>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Maxim Mikityanskiy <maximmi@mellanox.com>
-Subject: [PATCH v2 1/1] xsk: clear page contiguity bit when unmapping pool
-Date:   Tue, 28 Jun 2022 03:17:52 +0300
-Message-Id: <20220628001752.17586-1-ivan.malov@oktetlabs.ru>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220627190120.176470-1-ivan.malov@oktetlabs.ru>
-References: <20220627190120.176470-1-ivan.malov@oktetlabs.ru>
+        with ESMTP id S235179AbiF1Ak5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Jun 2022 20:40:57 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97AF2BE1C
+        for <bpf@vger.kernel.org>; Mon, 27 Jun 2022 17:40:55 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id z16so3720015qkj.7
+        for <bpf@vger.kernel.org>; Mon, 27 Jun 2022 17:40:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=nrCjPCGAs4MTUiLBt7Ijf/MJPuIyH6lM8yqPhdyhJD8=;
+        b=QGfGz2XeyaJLxS6IycR7jteyzbs2f9vu4fQQcftWhoNW5sUtbyuMKwRS5XXshn3Hg2
+         yZubOZXW72TGsXoMKBc9lhqncUYMSH0Z6bymz383cNPRRHeF7rKM5RXMNm4Eaw5tsGTg
+         BQX0bHWNlf6m2F5J4oWG32dxQT2CTBmnGX6tl+1lipYgts8fc/1uUmHwN5t3zZzoA6Qn
+         DTeDwoNVOxWo0hy32OR9hFE/UO0/97qh5eo+5ewqu/iIRVMFQ1AIctopaFBuZOm9BPLs
+         HAx/pGMXLvvVO6Cb9sesF2T5smUMb44u7gsx78px69APS8fFzY4PmSgo/WM3D328ZbRr
+         X/FA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=nrCjPCGAs4MTUiLBt7Ijf/MJPuIyH6lM8yqPhdyhJD8=;
+        b=pw3HOX4ieEZu//la3csFsHxZLUrKlXZIojOsh46vDUE/cSFAN+/nHWAlz04FUeOEkk
+         adm0PQyf6O3F4d+gRbgCLy7RzRPtkssNIVpoSCmuELLkgMRv0cC5+sde0fmojP4p+THs
+         o35DqNC6r4sxGLxGQSMFM6NaRQpcREIAJegNk5wFeIr/AlGxf/bGC5QiPxtC+GlX8Am3
+         1ZbJO0sdhq61ANsBoVviYdzZmygBzBtSi/tKun9cHQHbD1yXX6oEmoFp5j+xH7/jhGOf
+         AKElQBYj8gvNo+DBNWBhMZTp1JD61NgCf1+4q7ciI1VQr45JyAyTyRL6YuVUeuTgM0na
+         2TTA==
+X-Gm-Message-State: AJIora+UN4FHdNaawV5jjaWREyoAiaH23gEhVGmmkOM7yH9TZ3M9HIeo
+        FzxL1UcBHxizwNqr9bC4XcG03Q==
+X-Google-Smtp-Source: AGRyM1vTCFcIzhygOqc0dfz0XQz9dolsiNFu6n34Zw7Kl9e9LRh00tD6U1uaxZUOgaZBY5Ks0qTgkA==
+X-Received: by 2002:a05:620a:1450:b0:6af:1999:5f4c with SMTP id i16-20020a05620a145000b006af19995f4cmr7538467qkl.301.1656376854703;
+        Mon, 27 Jun 2022 17:40:54 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id x11-20020a05620a448b00b006a768c699adsm10335849qkp.125.2022.06.27.17.40.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jun 2022 17:40:53 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1o5zHg-002iu4-9Z; Mon, 27 Jun 2022 21:40:52 -0300
+Date:   Mon, 27 Jun 2022 21:40:52 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org, dm-devel@redhat.com,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        linux1394-devel@lists.sourceforge.net, io-uring@vger.kernel.org,
+        lvs-devel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        kasan-dev@googlegroups.com, linux-mmc@vger.kernel.org,
+        nvdimm@lists.linux.dev, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, linux-perf-users@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-usb@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        v9fs-developer@lists.sourceforge.net, linux-rdma@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] treewide: uapi: Replace zero-length arrays with
+ flexible-array members
+Message-ID: <20220628004052.GM23621@ziepe.ca>
+References: <20220627180432.GA136081@embeddedor>
+ <6bc1e94c-ce1d-a074-7d0c-8dbe6ce22637@iogearbox.net>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_ADSP_DISCARD,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+In-Reply-To: <6bc1e94c-ce1d-a074-7d0c-8dbe6ce22637@iogearbox.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,32 +95,79 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When a XSK pool gets mapped, xp_check_dma_contiguity() adds bit 0x1
-to pages' DMA addresses that go in ascending order and at 4K stride.
-The problem is that the bit does not get cleared before doing unmap.
-As a result, a lot of warnings from iommu_dma_unmap_page() are seen
-suggesting mapping lookup failures at drivers/iommu/dma-iommu.c:848.
+On Mon, Jun 27, 2022 at 08:27:37PM +0200, Daniel Borkmann wrote:
+> On 6/27/22 8:04 PM, Gustavo A. R. Silva wrote:
+> > There is a regular need in the kernel to provide a way to declare
+> > having a dynamically sized set of trailing elements in a structure.
+> > Kernel code should always use “flexible array members”[1] for these
+> > cases. The older style of one-element or zero-length arrays should
+> > no longer be used[2].
+> > 
+> > This code was transformed with the help of Coccinelle:
+> > (linux-5.19-rc2$ spatch --jobs $(getconf _NPROCESSORS_ONLN) --sp-file script.cocci --include-headers --dir . > output.patch)
+> > 
+> > @@
+> > identifier S, member, array;
+> > type T1, T2;
+> > @@
+> > 
+> > struct S {
+> >    ...
+> >    T1 member;
+> >    T2 array[
+> > - 0
+> >    ];
+> > };
+> > 
+> > -fstrict-flex-arrays=3 is coming and we need to land these changes
+> > to prevent issues like these in the short future:
+> > 
+> > ../fs/minix/dir.c:337:3: warning: 'strcpy' will always overflow; destination buffer has size 0,
+> > but the source string has length 2 (including NUL byte) [-Wfortify-source]
+> > 		strcpy(de3->name, ".");
+> > 		^
+> > 
+> > Since these are all [0] to [] changes, the risk to UAPI is nearly zero. If
+> > this breaks anything, we can use a union with a new member name.
+> > 
+> > [1] https://en.wikipedia.org/wiki/Flexible_array_member
+> > [2] https://www.kernel.org/doc/html/v5.16/process/deprecated.html#zero-length-and-one-element-arrays
+> > 
+> > Link: https://github.com/KSPP/linux/issues/78
+> > Build-tested-by: https://lore.kernel.org/lkml/62b675ec.wKX6AOZ6cbE71vtF%25lkp@intel.com/
+> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> > ---
+> > Hi all!
+> > 
+> > JFYI: I'm adding this to my -next tree. :)
+> 
+> Fyi, this breaks BPF CI:
+> 
+> https://github.com/kernel-patches/bpf/runs/7078719372?check_suite_focus=true
+> 
+>   [...]
+>   progs/map_ptr_kern.c:314:26: error: field 'trie_key' with variable sized type 'struct bpf_lpm_trie_key' not at the end of a struct or class is a GNU extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
+>           struct bpf_lpm_trie_key trie_key;
+>                                   ^
 
-Fixes: 2b43470add8c ("xsk: Introduce AF_XDP buffer allocation API")
-Signed-off-by: Ivan Malov <ivan.malov@oktetlabs.ru>
----
- v1 -> v2: minor adjustments to dispose of the "Fixes:" tag warning
+This will break the rdma-core userspace as well, with a similar
+error:
 
- net/xdp/xsk_buff_pool.c | 1 +
- 1 file changed, 1 insertion(+)
+/usr/bin/clang-13 -DVERBS_DEBUG -Dibverbs_EXPORTS -Iinclude -I/usr/include/libnl3 -I/usr/include/drm -g -O2 -fdebug-prefix-map=/__w/1/s=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -Wmissing-prototypes -Wmissing-declarations -Wwrite-strings -Wformat=2 -Wcast-function-type -Wformat-nonliteral -Wdate-time -Wnested-externs -Wshadow -Wstrict-prototypes -Wold-style-definition -Werror -Wredundant-decls -g -fPIC   -std=gnu11 -MD -MT libibverbs/CMakeFiles/ibverbs.dir/cmd_flow.c.o -MF libibverbs/CMakeFiles/ibverbs.dir/cmd_flow.c.o.d -o libibverbs/CMakeFiles/ibverbs.dir/cmd_flow.c.o   -c ../libibverbs/cmd_flow.c
+In file included from ../libibverbs/cmd_flow.c:33:
+In file included from include/infiniband/cmd_write.h:36:
+In file included from include/infiniband/cmd_ioctl.h:41:
+In file included from include/infiniband/verbs.h:48:
+In file included from include/infiniband/verbs_api.h:66:
+In file included from include/infiniband/ib_user_ioctl_verbs.h:38:
+include/rdma/ib_user_verbs.h:436:34: error: field 'base' with variable sized type 'struct ib_uverbs_create_cq_resp' not at the end of a struct or class is a GNU extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
+        struct ib_uverbs_create_cq_resp base;
+                                        ^
+include/rdma/ib_user_verbs.h:644:34: error: field 'base' with variable sized type 'struct ib_uverbs_create_qp_resp' not at the end of a struct or class is a GNU extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
+        struct ib_uverbs_create_qp_resp base;
 
-diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-index 87bdd71c7bb6..f70112176b7c 100644
---- a/net/xdp/xsk_buff_pool.c
-+++ b/net/xdp/xsk_buff_pool.c
-@@ -332,6 +332,7 @@ static void __xp_dma_unmap(struct xsk_dma_map *dma_map, unsigned long attrs)
- 	for (i = 0; i < dma_map->dma_pages_cnt; i++) {
- 		dma = &dma_map->dma_pages[i];
- 		if (*dma) {
-+			*dma &= ~XSK_NEXT_PG_CONTIG_MASK;
- 			dma_unmap_page_attrs(dma_map->dev, *dma, PAGE_SIZE,
- 					     DMA_BIDIRECTIONAL, attrs);
- 			*dma = 0;
--- 
-2.30.2
+Which is why I gave up trying to change these..
 
+Though maybe we could just switch off -Wgnu-variable-sized-type-not-at-end  during configuration ?
+
+Jason
