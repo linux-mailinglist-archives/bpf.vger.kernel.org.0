@@ -2,142 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D81C55DB73
-	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 15:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C04E55CD05
+	for <lists+bpf@lfdr.de>; Tue, 28 Jun 2022 15:02:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237958AbiF1ITP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Jun 2022 04:19:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43590 "EHLO
+        id S230030AbiF1I7J (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Jun 2022 04:59:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243873AbiF1IS4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Jun 2022 04:18:56 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 383282DA8E;
-        Tue, 28 Jun 2022 01:17:15 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id k129so5446562wme.0;
-        Tue, 28 Jun 2022 01:17:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rvtNK3NUMkA8CEKQZP6QnJui/bz93uaFnF6matKQyQM=;
-        b=cxAglpNwSh89Nnir5pAQ7ttQI2O9psUBx/mFiwgkBjNaiztLg+9vV2idAHUlq65XHu
-         2kg7maDDPRYq60w8hevSYnMBCGoc2b7LP7uC+vPgY9HTvgXd/pAGwaiT2/AmoO5NvPZQ
-         Pw7C3O5PHfDYdY7BTZPz9ueL5C+B5EpwGRstFjXazmSVuJBiY2orpEj+r8yFfP1FcWvm
-         f2J46zgVt0BFOB/gWI5RnOheRBehRsZCKhi0NDRko8AHLaYt0aqV/bSZEibKuC5bAAaT
-         /QuUPpPssS4xW8xM4+y6XFwxGEjT9rG/KA9H2/lgoItG7buGO0SC5KKJ38Zuj8QY9Y9e
-         uVsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rvtNK3NUMkA8CEKQZP6QnJui/bz93uaFnF6matKQyQM=;
-        b=WezqgjzZqX7FYUWaEamf2hj8Onyuh9aRlnin0SrmMffvafiVRGsdxlf8NLp8fcVxHK
-         sfFLSNPhiwLwrdH2PgFevUjDAZ7q7AZ/ZihEt7mqSFl3v053tkTQ8jMgRcOPvQ3mFEop
-         xyP31QZPFoEpuvAyQzImqeZYQOE91Gg3I/LI0U07p9ITHWWoboUQ+np40xB0Hp30CPjq
-         RP818RERdjKylZSaRa0s+4vLsTjYnpEyxY/K6o5mXernIPb+gP7b7qBXJ0+laRV9KETY
-         XKF6BGbKKfwBbsRpTws67DWZRdXQaQ8cQcKVLqSI7Wm1SdKHaULdToyyHCrHfGeGWQ9j
-         qMqA==
-X-Gm-Message-State: AJIora+yW9VyYOOKyeJz4LfmTCEymtvZpNXqZmKcNAMLyTas2vDt03//
-        6HTIPF0cSbLGyF1k4yGpjCg=
-X-Google-Smtp-Source: AGRyM1uRSYDZ9aC5Z8EfsD/JtEoL1Mk+C1NLf+4DXGkBtIFLknP8eoN1sBhSiqy97pj2VMo4RrXs0A==
-X-Received: by 2002:a05:600c:a42:b0:39c:9086:8a34 with SMTP id c2-20020a05600c0a4200b0039c90868a34mr24969500wmq.169.1656404233695;
-        Tue, 28 Jun 2022 01:17:13 -0700 (PDT)
-Received: from krava (net-109-116-206-47.cust.vodafonedsl.it. [109.116.206.47])
-        by smtp.gmail.com with ESMTPSA id y10-20020a1c4b0a000000b0039c587342d8sm20620836wma.3.2022.06.28.01.17.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jun 2022 01:17:13 -0700 (PDT)
-From:   olsajiri@gmail.com
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>, To: Ian Rogers <irogers@google.com>;
-Date:   Tue, 28 Jun 2022 10:17:10 +0200
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S243923AbiF1I7I (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Jun 2022 04:59:08 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3981EAB
+        for <bpf@vger.kernel.org>; Tue, 28 Jun 2022 01:59:06 -0700 (PDT)
+Received: from sslproxy04.your-server.de ([78.46.152.42])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1o673n-000ErO-Ag; Tue, 28 Jun 2022 10:59:03 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1o673m-000EWO-TV; Tue, 28 Jun 2022 10:59:02 +0200
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Subject: Re: [PATCH bpf] bpf, docs: Better scale maintenance of BPF subsystem
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Mykola Lysenko <mykolal@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH] perf bpf: 8 byte align bpil data
-Message-ID: <Yrq5Bun3Nmb1vrW3@krava>
-References: <20220614014714.1407239-1-irogers@google.com>
+        Jiri Olsa <jolsa@kernel.org>, KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Quentin Monnet <quentin@isovalent.com>
+References: <5bdc73e7f5a087299589944fa074563cdf2c2c1a.1656353995.git.daniel@iogearbox.net>
+ <20220627122535.6020f23e@kicinski-fedora-PC1C0HJN>
+ <CAADnVQLOS4kvmcp+aaX6gtDUCUfoL906K+Y4KUZOsYBDso_xMw@mail.gmail.com>
+ <20220627133027.1e141f11@kernel.org>
+ <CAADnVQKf8huK_bdGPQzOZwXJD7aqr-2a3jFPfhYrEz8BD115qw@mail.gmail.com>
+Message-ID: <ac8da400-f403-7817-414d-d3001c82dc4c@iogearbox.net>
+Date:   Tue, 28 Jun 2022 10:59:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220614014714.1407239-1-irogers@google.com>
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,MISSING_HEADERS,
+In-Reply-To: <CAADnVQKf8huK_bdGPQzOZwXJD7aqr-2a3jFPfhYrEz8BD115qw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.6/26587/Tue Jun 28 10:07:12 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jun 13, 2022 at 06:47:14PM -0700, Ian Rogers wrote:
-> bpil data is accessed assuming 64-bit alignment resulting in undefined
-> behavior as the data is just byte aligned. With an -fsanitize=undefined
-> build the following errors are observed:
-
-I need to add -w to get the clean build with that, do you see that as well?
-
-  $ make EXTRA_CFLAGS='-fsanitize=undefined -w'
-
+On 6/27/22 10:38 PM, Alexei Starovoitov wrote:
+> On Mon, Jun 27, 2022 at 1:30 PM Jakub Kicinski <kuba@kernel.org> wrote:
+[...]
+>>> vger continues to cause trouble and it doesn't sound that the fix is coming.
+>>> So having everyone directly cc-ed is the only option we have.
+>>
+>> Yeah, Exhibit A - vger is lagging right now...
+>> I guess the "real fix" is on the vger, trying to massage MAINTAINERS
+>> now is not a great use of time..
 > 
-> $ sudo perf record -a sleep 1
-> util/bpf-event.c:310:22: runtime error: load of misaligned address 0x55f61084520f for type '__u64', which requires 8 byte alignment
-> 0x55f61084520f: note: pointer points here
->  a8 fe ff ff 3c  51 d3 c0 ff ff ff ff 04  84 d3 c0 ff ff ff ff d8  aa d3 c0 ff ff ff ff a4  c0 d3 c0
->              ^
-> util/bpf-event.c:311:20: runtime error: load of misaligned address 0x55f61084522f for type '__u32', which requires 4 byte alignment
-> 0x55f61084522f: note: pointer points here
->  ff ff ff ff c7  17 00 00 f1 02 00 00 1f  04 00 00 58 04 00 00 00  00 00 00 0f 00 00 00 63  02 00 00
->              ^
-> util/bpf-event.c:198:33: runtime error: member access within misaligned address 0x55f61084523f for type 'const struct bpf_func_info', which requires 4 byte alignment
-> 0x55f61084523f: note: pointer points here
->  58 04 00 00 00  00 00 00 0f 00 00 00 63  02 00 00 3b 00 00 00 ab  02 00 00 44 00 00 00 14  03 00 00
+> The real fix is to move away from vger and adjust get_maintainer
+> script to be smarter when the mailer can do its job.
+> MAINTAINERS file should list everyone who performs code reviews
+> and maintains the code.
 
+Agree to all above. I think to address Jakub's concern, we could adapt
+this regex similarly as we have in XDP and move this as a remainder to
+a misc/noise section, like below:
 
-and I'm also getting another error in:
+diff --git a/MAINTAINERS b/MAINTAINERS
+index dbf978014e8a..b5a1960c8339 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3657,8 +3657,6 @@ F:        scripts/pahole-version.sh
+  F:     tools/bpf/
+  F:     tools/lib/bpf/
+  F:     tools/testing/selftests/bpf/
+-N:     bpf
+-K:     bpf
 
-[root@krava perf]# ./perf record -a sleep 1
-util/synthetic-events.c:1202:11: runtime error: member access within misaligned address 0x00000286f7ea for type 'struct perf_record_record_cpu_map', which requires 8 byte alignment
-0x00000286f7ea: note: pointer points here
- 20 00  01 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00 00 00
-              ^ 
-util/synthetic-events.c:1203:18: runtime error: member access within misaligned address 0x00000286f7ea for type 'struct perf_record_record_cpu_map', which requires 8 byte alignment
-0x00000286f7ea: note: pointer points here
- 20 00  01 00 01 00 00 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00 00 00
-              ^ 
-util/synthetic-events.c:1206:46: runtime error: member access within misaligned address 0x00000286f7ea for type 'struct perf_record_record_cpu_map', which requires 8 byte alignment
-0x00000286f7ea: note: pointer points here
- 20 00  01 00 01 00 08 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00 00 00
-              ^ 
-/home/jolsa/kernel/linux-perf/tools/include/asm-generic/bitops/atomic.h:10:29: runtime error: load of misaligned address 0x00000286f7f2 for type 'long unsigned int', which requires 8 byte alignment
-0x00000286f7f2: note: pointer points here
- 00 00  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  51 00 00 00 00 00
-              ^ 
+  BPF JIT for ARM
+  M:     Shubham Bansal <illusionist.neo@gmail.com>
+@@ -3850,6 +3848,11 @@ L:       bpf@vger.kernel.org
+  S:     Maintained
+  F:     tools/testing/selftests/bpf/
 
-are you going to address this one as well?
++BPF [MISC]
++L:     bpf@vger.kernel.org
++S:     Odd Fixes
++K:     (?:\b|_)bpf(?:\b|_)
++
+  BROADCOM B44 10/100 ETHERNET DRIVER
+  M:     Michael Chan <michael.chan@broadcom.com>
+  L:     netdev@vger.kernel.org
 
+If there are no objections, I can fold this in..
 
-the reason for this one is that 'data' in struct perf_record_cpu_map_data
-is not alligned(8), so that's why I raised the question in my other reply ;-)
-
-I wonder we should mark all tools/lib/perf/include/perf/event.h types
-as packed to prevent any compiler padding
-
-thanks,
-jirka
+Thanks,
+Daniel
