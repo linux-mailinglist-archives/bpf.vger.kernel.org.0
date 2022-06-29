@@ -2,162 +2,183 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED165606C5
-	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 18:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 096B55606C9
+	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 18:57:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229622AbiF2Q4U (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jun 2022 12:56:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41258 "EHLO
+        id S230456AbiF2Q44 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jun 2022 12:56:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbiF2Q4U (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jun 2022 12:56:20 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C4902250C;
-        Wed, 29 Jun 2022 09:56:19 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2D904B81F16;
-        Wed, 29 Jun 2022 16:56:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC169C34114;
-        Wed, 29 Jun 2022 16:56:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656521776;
-        bh=Se6NFgyiC4GcUPYnrSqtoRQ3Op0cRWCNFQsoCe38huo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JypqSwVlAQWeU11KSHD+K1HglvBSV7QT5NjTHhlSWtFlE7rtW9kx2ZLKCaz/3i8I0
-         hpDD7fUaLfcRiG8m9UCc7jTlbYac2MUOi6gXAx2xnuFt22u7Gm+QYpcDfOjbXbPrCK
-         p0ueGSgjVVMe3awHNHeaPuGB2OG0nLtHPfT8TJ5zVCF9LKtqr3mPOGihMMJHraY8m6
-         gszT8tKPpuvWWLHMCFtbagtltg6ku2SKOCxjbUWRQmZnxLZl4uMZCYXmmd5sh4oBxA
-         EqCD+k9ApdL8d3aRxZKru10ikDWNbW3NDUVbeKQinQ7Weisxb10yv+JzXnOlEtCekO
-         oDNhgzac6l6OA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id CDCBD4096F; Wed, 29 Jun 2022 13:56:13 -0300 (-03)
-Date:   Wed, 29 Jun 2022 13:56:13 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Yonghong Song <yhs@fb.com>, Jiri Olsa <olsajiri@gmail.com>
-Cc:     dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
-Subject: [PATCH] btf_loader: support BTF_KIND_ENUM64 was Re: [PATCH dwarves
- v2 0/2] btf: support BTF_KIND_ENUM64
-Message-ID: <YryELT6OadpiJki/@kernel.org>
-References: <20220615230306.851750-1-yhs@fb.com>
- <YrrPOFzYAGHm0oht@krava>
- <Yrx+Ehpc71/6WHVT@kernel.org>
+        with ESMTP id S229575AbiF2Q4y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jun 2022 12:56:54 -0400
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A4723164
+        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 09:56:51 -0700 (PDT)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout01.posteo.de (Postfix) with ESMTPS id B97FE240028
+        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 18:56:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1656521809; bh=29ajJh0MHN97aVLux0uitCQId1MGwnNE5RwUBHtWjlA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=j8kF+Gt8VJnnUBDpvkXUq5j49KysZiOclx1JetJLI1+eFqk6DWtLK2e9HK/OMsyat
+         z9d1mATa1URH10UekCBNbuNqDfdhLAJZSdQ9f2bE/8Cm24W8+ERzryXpFqXufvHuea
+         ypvYH/+307ymUgxelPz++jEnyqYZXCmUPam6xx7TjdWTosljqq5Sl7YWS5aEWKr4ss
+         3hTLG/q622eE9KIgXYbXoIt5GCQJA7gYXqIk+6J2Y3VP/g8+VM7BU2uev8YdtK3TTF
+         fDKQvtmFuDloTqh9MRjnsnK9NHzPsCqxUF9W9G1ADEs9rYllBf5/2RNqtseD9skxhR
+         NHz8dD6czo36g==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4LY70Y334Gz6tmM;
+        Wed, 29 Jun 2022 18:56:45 +0200 (CEST)
+Date:   Wed, 29 Jun 2022 16:56:41 +0000
+From:   Daniel =?utf-8?Q?M=C3=BCller?= <deso@posteo.net>
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next 2/2] bpftool: Use feature list in bash completion
+Message-ID: <20220629165641.4nn7tf5imc7uklcn@muellerd-fedora-MJ0AC3F3>
+References: <20220629144019.75181-1-quentin@isovalent.com>
+ <20220629144019.75181-3-quentin@isovalent.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <Yrx+Ehpc71/6WHVT@kernel.org>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20220629144019.75181-3-quentin@isovalent.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Wed, Jun 29, 2022 at 01:30:10PM -0300, Arnaldo Carvalho de Melo escreveu:
-> ⬢[acme@toolbox pahole]$ pdwtags -F btf vmlinux-v5.18-rc7+ | grep -B10 -A5 BPF_F_CTXLEN_MASK
-> BTF: idx: 4173, Unknown kind 19
-> BTF: idx: 4975, Unknown kind 19
-> BTF: idx: 6673, Unknown kind 19
-> BTF: idx: 27413, Unknown kind 19
-> BTF: idx: 30626, Unknown kind 19
-> BTF: idx: 30829, Unknown kind 19
-> BTF: idx: 38040, Unknown kind 19
-> BTF: idx: 56969, Unknown kind 19
-> BTF: idx: 83004, Unknown kind 19
-> ⬢[acme@toolbox pahole]$
+On Wed, Jun 29, 2022 at 03:40:19PM +0100, Quentin Monnet wrote:
+> Now that bpftool is able to produce a list of known program, map, attach
+> types, let's use as much of this as we can in the bash completion file,
+> so that we don't have to expand the list each time a new type is added
+> to the kernel.
 > 
-> Ok, I need to update pahole's BTF loader to support:
+> Also update the relevant test script to remove some checks that are no
+> longer needed.
 > 
-> lib/bpf/src/btf.h:#define BTF_KIND_ENUM64		19	/* Enum for up-to 64bit values */
+> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> ---
+>  tools/bpf/bpftool/bash-completion/bpftool     | 21 ++++---------------
+>  .../selftests/bpf/test_bpftool_synctypes.py   | 20 +++---------------
+>  2 files changed, 7 insertions(+), 34 deletions(-)
 > 
-> 
-> Working on it now.
+> diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
+> index 9cef6516320b..ee177f83b179 100644
+> --- a/tools/bpf/bpftool/bash-completion/bpftool
+> +++ b/tools/bpf/bpftool/bash-completion/bpftool
+> @@ -703,15 +703,8 @@ _bpftool()
+>                              return 0
+>                              ;;
+>                          type)
+> -                            local BPFTOOL_MAP_CREATE_TYPES='hash array \
+> -                                prog_array perf_event_array percpu_hash \
+> -                                percpu_array stack_trace cgroup_array lru_hash \
+> -                                lru_percpu_hash lpm_trie array_of_maps \
+> -                                hash_of_maps devmap devmap_hash sockmap cpumap \
+> -                                xskmap sockhash cgroup_storage reuseport_sockarray \
+> -                                percpu_cgroup_storage queue stack sk_storage \
+> -                                struct_ops ringbuf inode_storage task_storage \
+> -                                bloom_filter'
+> +                            local BPFTOOL_MAP_CREATE_TYPES="$(bpftool feature list map_types | \
+> +                                grep -v '^unspec$')"
+>                              COMPREPLY=( $( compgen -W "$BPFTOOL_MAP_CREATE_TYPES" -- "$cur" ) )
+>                              return 0
+>                              ;;
+> @@ -1039,14 +1032,8 @@ _bpftool()
+>                      return 0
+>                      ;;
+>                  attach|detach)
+> -                    local BPFTOOL_CGROUP_ATTACH_TYPES='cgroup_inet_ingress cgroup_inet_egress \
+> -                        cgroup_inet_sock_create cgroup_sock_ops cgroup_device cgroup_inet4_bind \
+> -                        cgroup_inet6_bind cgroup_inet4_post_bind cgroup_inet6_post_bind \
+> -                        cgroup_inet4_connect cgroup_inet6_connect cgroup_inet4_getpeername \
+> -                        cgroup_inet6_getpeername cgroup_inet4_getsockname cgroup_inet6_getsockname \
+> -                        cgroup_udp4_sendmsg cgroup_udp6_sendmsg cgroup_udp4_recvmsg \
+> -                        cgroup_udp6_recvmsg cgroup_sysctl cgroup_getsockopt cgroup_setsockopt \
+> -                        cgroup_inet_sock_release'
+> +                    local BPFTOOL_CGROUP_ATTACH_TYPES="$(bpftool feature list attach_types | \
+> +                        grep '^cgroup_')"
+>                      local ATTACH_FLAGS='multi override'
+>                      local PROG_TYPE='id pinned tag name'
+>                      # Check for $prev = $command first
+> diff --git a/tools/testing/selftests/bpf/test_bpftool_synctypes.py b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
+> index e443e6542cb9..a6410bebe603 100755
+> --- a/tools/testing/selftests/bpf/test_bpftool_synctypes.py
+> +++ b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
+> @@ -471,12 +471,6 @@ class BashcompExtractor(FileExtractor):
+>      def get_prog_attach_types(self):
+>          return self.get_bashcomp_list('BPFTOOL_PROG_ATTACH_TYPES')
+>  
+> -    def get_map_types(self):
+> -        return self.get_bashcomp_list('BPFTOOL_MAP_CREATE_TYPES')
+> -
+> -    def get_cgroup_attach_types(self):
+> -        return self.get_bashcomp_list('BPFTOOL_CGROUP_ATTACH_TYPES')
+> -
+>  def verify(first_set, second_set, message):
+>      """
+>      Print all values that differ between two sets.
+> @@ -516,17 +510,12 @@ def main():
+>      man_map_types = man_map_info.get_map_types()
+>      man_map_info.close()
+>  
+> -    bashcomp_info = BashcompExtractor()
+> -    bashcomp_map_types = bashcomp_info.get_map_types()
+> -
+>      verify(source_map_types, help_map_types,
+>              f'Comparing {BpfHeaderExtractor.filename} (bpf_map_type) and {MapFileExtractor.filename} (do_help() TYPE):')
+>      verify(source_map_types, man_map_types,
+>              f'Comparing {BpfHeaderExtractor.filename} (bpf_map_type) and {ManMapExtractor.filename} (TYPE):')
+>      verify(help_map_options, man_map_options,
+>              f'Comparing {MapFileExtractor.filename} (do_help() OPTIONS) and {ManMapExtractor.filename} (OPTIONS):')
+> -    verify(source_map_types, bashcomp_map_types,
+> -            f'Comparing {BpfHeaderExtractor.filename} (bpf_map_type) and {BashcompExtractor.filename} (BPFTOOL_MAP_CREATE_TYPES):')
+>  
+>      # Attach types (names)
+>  
+> @@ -542,8 +531,10 @@ def main():
+>      man_prog_attach_types = man_prog_info.get_attach_types()
+>      man_prog_info.close()
+>  
+> -    bashcomp_info.reset_read() # We stopped at map types, rewind
+> +
+> +    bashcomp_info = BashcompExtractor()
+>      bashcomp_prog_attach_types = bashcomp_info.get_prog_attach_types()
+> +    bashcomp_info.close()
+>  
+>      verify(source_prog_attach_types, help_prog_attach_types,
+>              f'Comparing {ProgFileExtractor.filename} (bpf_attach_type) and {ProgFileExtractor.filename} (do_help() ATTACH_TYPE):')
+> @@ -568,17 +559,12 @@ def main():
+>      man_cgroup_attach_types = man_cgroup_info.get_attach_types()
+>      man_cgroup_info.close()
+>  
+> -    bashcomp_cgroup_attach_types = bashcomp_info.get_cgroup_attach_types()
+> -    bashcomp_info.close()
+> -
+>      verify(source_cgroup_attach_types, help_cgroup_attach_types,
+>              f'Comparing {BpfHeaderExtractor.filename} (bpf_attach_type) and {CgroupFileExtractor.filename} (do_help() ATTACH_TYPE):')
+>      verify(source_cgroup_attach_types, man_cgroup_attach_types,
+>              f'Comparing {BpfHeaderExtractor.filename} (bpf_attach_type) and {ManCgroupExtractor.filename} (ATTACH_TYPE):')
+>      verify(help_cgroup_options, man_cgroup_options,
+>              f'Comparing {CgroupFileExtractor.filename} (do_help() OPTIONS) and {ManCgroupExtractor.filename} (OPTIONS):')
+> -    verify(source_cgroup_attach_types, bashcomp_cgroup_attach_types,
+> -            f'Comparing {BpfHeaderExtractor.filename} (bpf_attach_type) and {BashcompExtractor.filename} (BPFTOOL_CGROUP_ATTACH_TYPES):')
+>  
+>      # Options for remaining commands
+>  
 
-⬢[acme@toolbox pahole]$ pdwtags -F btf vmlinux-v5.18-rc7+ | grep -B5 -A5 BPF_F_CTXLEN_MASK
+That is a nice simplification. Looks good to me.
 
-/* 27413 */
-enum {
-	BPF_F_INDEX_MASK  = 4294967295,
-	BPF_F_CURRENT_CPU = 4294967295,
-	BPF_F_CTXLEN_MASK = 4503595332403200,
-} __attribute__((__packed__)); /* size: 8 */
-
-/* 27414 */
-enum {
-	BPF_F_GET_BRANCH_RECORDS_SIZE = 1,
-⬢[acme@toolbox pahole]$
-
-Quick patch here, please Ack, if possible:
-
-diff --git a/btf_loader.c b/btf_loader.c
-index b5d444643adf30b1..e57ecce2cde26e4e 100644
---- a/btf_loader.c
-+++ b/btf_loader.c
-@@ -312,6 +312,49 @@ out_free:
- 	return -ENOMEM;
- }
- 
-+static struct enumerator *enumerator__new64(const char *name, uint64_t value)
-+{
-+	struct enumerator *en = tag__alloc(sizeof(*en));
-+
-+	if (en != NULL) {
-+		en->name = name;
-+		en->value = value; // Value is already 64-bit, as this is used with DWARF as well
-+		en->tag.tag = DW_TAG_enumerator;
-+	}
-+
-+	return en;
-+}
-+
-+static int create_new_enumeration64(struct cu *cu, const struct btf_type *tp, uint32_t id)
-+{
-+	struct btf_enum64 *ep = btf_enum64(tp);
-+	uint16_t i, vlen = btf_vlen(tp);
-+	struct type *enumeration = type__new(DW_TAG_enumeration_type,
-+					     cu__btf_str(cu, tp->name_off),
-+					     tp->size ? tp->size * 8 : (sizeof(int) * 8));
-+
-+	if (enumeration == NULL)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < vlen; i++) {
-+		const char *name = cu__btf_str(cu, ep[i].name_off);
-+		uint64_t value = ((uint64_t)ep[i].val_hi32) << 32 | ep[i].val_lo32;
-+		struct enumerator *enumerator = enumerator__new64(name, value);
-+
-+		if (enumerator == NULL)
-+			goto out_free;
-+
-+		enumeration__add(enumeration, enumerator);
-+	}
-+
-+	cu__add_tag_with_id(cu, &enumeration->namespace.tag, id);
-+
-+	return 0;
-+out_free:
-+	enumeration__delete(enumeration);
-+	return -ENOMEM;
-+}
-+
- static int create_new_subroutine_type(struct cu *cu, const struct btf_type *tp, uint32_t id)
- {
- 	struct ftype *proto = tag__alloc(sizeof(*proto));
-@@ -419,6 +462,9 @@ static int btf__load_types(struct btf *btf, struct cu *cu)
- 		case BTF_KIND_ENUM:
- 			err = create_new_enumeration(cu, type_ptr, type_index);
- 			break;
-+		case BTF_KIND_ENUM64:
-+			err = create_new_enumeration64(cu, type_ptr, type_index);
-+			break;
- 		case BTF_KIND_FWD:
- 			err = create_new_forward_decl(cu, type_ptr, type_index);
- 			break;
+Acked-by: Daniel M�ller <deso@posteo.net>
