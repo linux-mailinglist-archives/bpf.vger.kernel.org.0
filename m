@@ -2,123 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B152560BEC
-	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 23:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F35560CCE
+	for <lists+bpf@lfdr.de>; Thu, 30 Jun 2022 00:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230144AbiF2Vo4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jun 2022 17:44:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50684 "EHLO
+        id S231634AbiF2W5V (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jun 2022 18:57:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbiF2Vo4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jun 2022 17:44:56 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAD073818E;
-        Wed, 29 Jun 2022 14:44:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 60987617A3;
-        Wed, 29 Jun 2022 21:44:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9ADB3C34114;
-        Wed, 29 Jun 2022 21:44:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656539094;
-        bh=X7x/N79wD1zUoaZQkdzD8DGsjyqC+AIFRBPcxQZXsRU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sN59foP31R2pQrlR1fszVlsARfxfR15zI1g9R0loua+nKESZcJz/9OgPD51B+QecX
-         uerZC8KiWw5g9b1rTBFzQlGJJoeTOfybxnrzJbyqp6MN8WQALorUM+O1Z28g5SLPGQ
-         QR2mxLCm6JgwH8zqTWNjfymkzAbtAWKHj8tSN0NoubW3C4SZVUr3/osMDVHoNdvfys
-         RhN4axzezFfwV5Wkyr6A8t1EGj4SADnligIsjwKnFW8K+sx6t/zNwwJDRlObOBfkDT
-         Q5ASjEfKNTU2uP6IxMH/9HugJa8H6YQKNhtZKzB+KEUbObNSr5U/OY0/CYvfwomcqA
-         ww/DTwvRLGa6g==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 4EC8E4096F; Wed, 29 Jun 2022 18:44:52 -0300 (-03)
-Date:   Wed, 29 Jun 2022 18:44:52 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
-Subject: Re: [PATCH dwarves v3 0/2] btf: support BTF_KIND_ENUM64
-Message-ID: <YrzH1ABPYmKSEogS@kernel.org>
-References: <20220629071213.3178592-1-yhs@fb.com>
+        with ESMTP id S231298AbiF2W4J (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jun 2022 18:56:09 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71AC625C70
+        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 15:55:30 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id r18so16337179edb.9
+        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 15:55:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OXt14LuN+irbM9tgtsYCJdlKqXQxNLT2rmY5OiaJsAc=;
+        b=BM7Hm1RXfHhwE7FDxtzyKAy3ukPFA9YNEhOwPIEnbsS2RDdjL0e0vgfBY9dtsm0I+I
+         jL6VJR5HN/FfzBqMInJbJoz6l492MgwUy7yVSITAiQ1qC9DusMZ/lP8cCOjMh6v7oEYm
+         Kpab/wddgb4ZzAKz8md+n844wTWQhvqg709rGLkkZnkz+xyeJ0JUVNy31M19ij40TsoK
+         X75N10wHt8L/X3fe30G6lwMt9MgGqX3LaJOUoe85xhsxbkmF4xk4XkBhuz8YrYFBh+ML
+         FezhiTayRxrXPg/kuOSv28qKm3YbJzR4/CZ5sSB+cIMdg6urUBWyFrGMkk1qgU2QviGt
+         BBsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OXt14LuN+irbM9tgtsYCJdlKqXQxNLT2rmY5OiaJsAc=;
+        b=Ik0hR4MEeCB7OnWk6SUKC7HYDFQG8zDOOKoSAkeKSzxhSCF5pdVCnRCriZFVOIrqmV
+         HB2he0xkWl54wFfL9n4SROIT2Z8rNV+kDEk6+wC8T6SJZhLQbDwEQMNhoHB3DNfiK9nh
+         FFEqcjAFLKXkS3sBmN2TijrDuUcmHYvyrxOsv8fajlQo2kx3C8Ei/lz+66ATABfFL6dv
+         e4WxVAy4PuwEeb8xcTrCB/YmC0lhJqF+77mmdclXpzAJOclFgUABqu3J7HmyJBpgR1XZ
+         CjtwHIEj6F6QCtDRcCtXDMkTAFUozosTY9I9h1oZLq17QOgoUwG+ysDwMW+F15lQZV58
+         14yQ==
+X-Gm-Message-State: AJIora9Nd2zhAoJIC38aqwc+TfhOUpdA4vEBi23xvoZiVjG8cGVve0MG
+        MUFAnyUTr6Tezhx4Kj7jyvkryXKhY0IrhZPqCvWBuCpT
+X-Google-Smtp-Source: AGRyM1tE7rTS3VI15qyJ2YF6WlFtljpW8S7OS4zR9JMmeMy6jThCBR+OTeDOnmbAeUJPfSfWk5g4Q1sHnMMzgrHcRKI=
+X-Received: by 2002:a05:6402:1a4d:b0:435:74ce:7b36 with SMTP id
+ bf13-20020a0564021a4d00b0043574ce7b36mr7308785edb.94.1656543329024; Wed, 29
+ Jun 2022 15:55:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220629071213.3178592-1-yhs@fb.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220628174314.1216643-1-sdf@google.com> <20220628174314.1216643-12-sdf@google.com>
+ <CAADnVQJHKtYd2XKiWRj_5fnVdT7aP2NEwi4eVUdqCO7q2nQ6Og@mail.gmail.com>
+ <CAKH8qBtmoFbvvTSTA-u2J6n=So8Q9mMSwVqgdOBY6vzpOQzkKg@mail.gmail.com> <CAKH8qBu5F2SHwtbRJ+vpHRGeqEKT0pk-St6B9JTev5bWNy8f_g@mail.gmail.com>
+In-Reply-To: <CAKH8qBu5F2SHwtbRJ+vpHRGeqEKT0pk-St6B9JTev5bWNy8f_g@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 29 Jun 2022 15:55:17 -0700
+Message-ID: <CAADnVQJR-RYXvDpkv1hYuqJuxbv_Xak5JK2dJjMOWxbxEWsF+Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v11 11/11] selftests/bpf: lsm_cgroup functional test
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Wed, Jun 29, 2022 at 12:12:13AM -0700, Yonghong Song escreveu:
-> Add support for enum64. For 64-bit enumerator value,
-> previously, the value is truncated into 32bit, e.g.,
-> for the following enum in linux uapi bpf.h,
->   enum {
->         BPF_F_INDEX_MASK                = 0xffffffffULL,
->         BPF_F_CURRENT_CPU               = BPF_F_INDEX_MASK,
->   /* BPF_FUNC_perf_event_output for sk_buff input context. */
->         BPF_F_CTXLEN_MASK               = (0xfffffULL << 32),
->   };    
+On Wed, Jun 29, 2022 at 2:29 PM Stanislav Fomichev <sdf@google.com> wrote:
+>
+> On Wed, Jun 29, 2022 at 1:31 PM Stanislav Fomichev <sdf@google.com> wrote:
+> >
+> > On Wed, Jun 29, 2022 at 1:26 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Tue, Jun 28, 2022 at 10:43 AM Stanislav Fomichev <sdf@google.com> wrote:
+> > > > +
+> > > > +static void test_lsm_cgroup_functional(void)
+> > >
+> > > It fails BPF CI on s390:
+> > >
+> > > test_lsm_cgroup_functional:FAIL:attach alloc_prog_fd unexpected error:
+> > > -524 (errno 524)
+> > > test_lsm_cgroup_functional:FAIL:detach_create unexpected
+> > > detach_create: actual -2 < expected 0
+> > > test_lsm_cgroup_functional:FAIL:detach_alloc unexpected detach_alloc:
+> > > actual -2 < expected 0
+> > > test_lsm_cgroup_functional:FAIL:detach_clone unexpected detach_clone:
+> > > actual -2 < expected 0
+> > >
+> > > https://github.com/kernel-patches/bpf/runs/7100626120?check_suite_focus=true
+> > >
+> > > but I pushed it to bpf-next anyway.
+> > > Thanks a lot for this work and please follow up with a fix.
+> >
+> > Thanks, I'll take a look!
+>
+> Looks like this needs a blacklist entry in
+> https://github.com/kernel-patches/vmtest/blob/master/travis-ci/vmtest/configs/blacklist/BLACKLIST-latest.s390x
+>
+> Or, I can make tests more flexible by doing the following
+> (copy-pasting into gmail, so tabs are broken):
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
+> b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
+> index d40810a742fa..904b02a17598 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
+> @@ -100,6 +100,10 @@ static void test_lsm_cgroup_functional(void)
+>   ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_sk_alloc_security"), 0,
+> "prog count");
+>   ASSERT_EQ(query_prog_cnt(cgroup_fd, NULL), 0, "total prog count");
+>   err = bpf_prog_attach(alloc_prog_fd, cgroup_fd, BPF_LSM_CGROUP, 0);
+> + if (err < 0 && errno == ENOTSUPP) {
+> + test__skip();
+> + return;
+> + }
+>   if (!ASSERT_OK(err, "attach alloc_prog_fd"))
+>   goto detach_cgroup;
+>   ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_sk_alloc_security"), 1,
+> "prog count");
+>
+> Any preference?
 
-Applied, added the entry for skip generating enums to the man page,
-added support to the pahole BTF loader, used the new pahole to build
-bpf-next/master, all seems ok, pushing to next on git.kernel.org so that
-the libbpf github CI can give it a go.
-
-To build with torvalds/master one has to add --skip_encoding_btf_enum64,
-I think, haven't tested with it, without it isn't working, libbpf
-complains at that btfids tool.
-
-Please check/test what is in there now:
-
-  git://git.kernel.org/pub/scm/devel/pahole/pahole.git next
-  https://git.kernel.org/pub/scm/devel/pahole/pahole.git/log/?h=next
-
-Unless someone screams I plan pushing out a new release, update fedora
-packages, etc early next week its overdue by now.
-
-- Arnaldo
- 
-> BPF_F_CTXLEN_MASK will be encoded with 0 with BTF_KIND_ENUM
-> after pahole dwarf-to-btf conversion.
-> With this patch, the BPF_F_CTXLEN_MASK will be encoded properly
-> with BTF_KIND_ENUM64.
-> 
-> This patch is on top of tmp.master since tmp.master has not
-> been sync'ed with master branch yet.
-> 
-> Changelogs:
->   v2 -> v3:
->     - pass struct type/conf_load pointers to btf_encoder__add_enum[_value]
->       to make code easier to understand.
->   v1 -> v2:
->     - Add flag --skip_encoding_btf_enum64 to disable newly-added functionality.
-> 
-> Yonghong Song (2):
->   libbpf: Sync with latest libbpf repo
->   btf: Support BTF_KIND_ENUM64
-> 
->  btf_encoder.c     | 67 +++++++++++++++++++++++++++++++++++------------
->  btf_encoder.h     |  2 +-
->  dwarf_loader.c    | 12 +++++++++
->  dwarves.h         |  4 ++-
->  dwarves_fprintf.c |  6 ++++-
->  lib/bpf           |  2 +-
->  pahole.c          | 10 ++++++-
->  7 files changed, 81 insertions(+), 22 deletions(-)
-> 
-> -- 
-> 2.30.2
-
--- 
-
-- Arnaldo
+Ahh. Right. s390 lacks bpf trampoline support.
+We've been blacklisting the tests manually,
+but if it's fixable this way it's better to do it in the test,
+so when s390 (and other archs) gain trampoline support
+the test will be executed automatically without waiting for CI
+maintainers to unlist the tests.
