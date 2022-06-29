@@ -2,97 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03143560197
-	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 15:43:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CC82560270
+	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 16:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233341AbiF2NnU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jun 2022 09:43:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45148 "EHLO
+        id S230219AbiF2OVA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jun 2022 10:21:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233508AbiF2NnP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jun 2022 09:43:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7FA9DC2A
-        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 06:43:13 -0700 (PDT)
+        with ESMTP id S229654AbiF2OU7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jun 2022 10:20:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AF3E21B7AD
+        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 07:20:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1656510192;
+        s=mimecast20190719; t=1656512457;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=UW6EWWcDgP+o+MFt4vmMvtXMf9IPmqPd5CK2PWObuB8=;
-        b=gTy5OSQEGk6LtnHhF81UEQN8PoM+tAObcLLrd0LCDThpU3FSy0x39BJRQTu2aO6dxCN+II
-        3T9mlp/STfE397Q6Ui2i1uvJj1gZRrRG5ImgQZqU2gPhA17lRMjV+ZUCaMUB0CW9YTK4Pt
-        tgXiY/qw/KwWNXIwKDn2LyLExhLw1xw=
+        bh=FiYmpBBjlfIbeiZDsnGGJUZmzd2clNYiuFHxeXQgGzc=;
+        b=HYoz9wd9e5mZSE8w0+DDuOpKZ1VrsF4u7aEKt+HezNTnnLbuwa15Olukb3Shqct72ccmAq
+        o81cjiJph/h40Y4T5BbzXPXvaskYQFUWhuAYYl2tL1YyB2AtchOv4Dt2wychGor0DP9nsT
+        XJwuPJkZzlotnH0R22iNB+xapsVH7/k=
 Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
  [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-90-Yww6H5svMZaYTksGmP4h0g-1; Wed, 29 Jun 2022 09:43:11 -0400
-X-MC-Unique: Yww6H5svMZaYTksGmP4h0g-1
-Received: by mail-ed1-f70.google.com with SMTP id x21-20020a05640226d500b00435bd7f9367so11959181edd.8
-        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 06:43:11 -0700 (PDT)
+ us-mta-471-QdBZfZTZOGSyccTo2sfEng-1; Wed, 29 Jun 2022 10:20:49 -0400
+X-MC-Unique: QdBZfZTZOGSyccTo2sfEng-1
+Received: by mail-ed1-f70.google.com with SMTP id i9-20020a05640242c900b004373cd1c4d5so11210133edc.2
+        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 07:20:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
          :message-id:mime-version;
-        bh=UW6EWWcDgP+o+MFt4vmMvtXMf9IPmqPd5CK2PWObuB8=;
-        b=L37AV5g35n3glAHM7pRUYjK12vaGEYJ6R3eWZvVlq9bQ/u/mZs20AqFDpbJLnYfQXl
-         DxcXbFKx66wRTQqh8jwouUOIWMXJwxCxPF4jNEtNWAj2ypoOiSjxG+lggvSPZpteEUwD
-         B/fU38r7aj6Np4bbJjqlUFyEkICZxXPYJFE7E4AWRt0GO6WQAl+HQq5/aRcjNtW1vLxE
-         oibUiCOGHqDhwaWiuCtI+Ds2EQV5IYAxKnnGEFwjvuKtM/iHxUNU/Sm6knm+W9AoKd37
-         +x+ZgNKQ45Tvd4G1FQTsZl/fH+/lRMVJXvUKGE0xXJ2pmlEv/ySP9Pj0MPfvJNFibWAs
-         hrUQ==
-X-Gm-Message-State: AJIora8iRFIyO5aN0p96P22SyC4bN4pbRYAW+y6B/p3OZK8BfnxSZ+5+
-        66gZZ1T6QvE+Lbo8dfJvYNBlQvgcq4TiCOvOmhkTeqfymzWh5s7osWrHpUS5J7lwi7CE4FdPBbO
-        5YjjBC/z9B1fy
-X-Received: by 2002:a17:906:7790:b0:722:e6cf:126 with SMTP id s16-20020a170906779000b00722e6cf0126mr3292396ejm.244.1656510188263;
-        Wed, 29 Jun 2022 06:43:08 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1vYU5mFSCUdnqHAOrvLJwONCfM6OwKiQER0S5rAaKhWqFBhKQ46eiivE/FPbenKVMLh3jLbRw==
-X-Received: by 2002:a17:906:7790:b0:722:e6cf:126 with SMTP id s16-20020a170906779000b00722e6cf0126mr3292295ejm.244.1656510186810;
-        Wed, 29 Jun 2022 06:43:06 -0700 (PDT)
+        bh=FiYmpBBjlfIbeiZDsnGGJUZmzd2clNYiuFHxeXQgGzc=;
+        b=tn1RXHIFQd5/4lY0Vnunm209APA2hpE0vOzYssFTDkepaUXo48F7qleUFbYSlI3Agb
+         IStOfoG0jrDlXj0S7lKy5W3XA/d/YCROAqtt8Q4SJotjYntAtY27VkvHbbPIyqI/eA1h
+         XWiFNMta4BKaA4v7lhOfU+wXIU0p3Yn7NQdNtSfzRubqLRa8fI4wDwOYC8h/wua7jlKR
+         /5aDcPK2v17tDmCHyr1bKWfrinVu3EmpczYcNUqVwkIX6KW5Jk4kZs1GIKA7iqCFT6pd
+         0hdg4f8VKvOiiZ47lCajfEripjjiDAyDy7SJNwXQ+qOV8ZaJiGQ5S/RI/JSykd2HzA5R
+         WLoQ==
+X-Gm-Message-State: AJIora80Sy5uhw3z6c3TyIgcGPp/8KiiFpaW/Zh6Aqsrtd1EQ6fakPYb
+        dyKZxsTa4PgpF3AWy/S6teiMh3dOlSF+fVtnC7cLlBQdXBYiib2iszvEneL4c1F9DIq5pNVUNZk
+        Y2b4xqWk2mIJD
+X-Received: by 2002:a17:906:149b:b0:726:2968:e32a with SMTP id x27-20020a170906149b00b007262968e32amr3608540ejc.71.1656512446476;
+        Wed, 29 Jun 2022 07:20:46 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1u+aP3pQSccdfNXYWYB8kCCDBlEwDGDLuhva5jc+VbGERRJ2DQ0PTjF2LI9MvNSsCpmK+SFLQ==
+X-Received: by 2002:a17:906:149b:b0:726:2968:e32a with SMTP id x27-20020a170906149b00b007262968e32amr3608478ejc.71.1656512445656;
+        Wed, 29 Jun 2022 07:20:45 -0700 (PDT)
 Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id y20-20020a17090629d400b00704cf66d415sm7768808eje.13.2022.06.29.06.43.05
+        by smtp.gmail.com with ESMTPSA id g6-20020a1709064e4600b007121b22b376sm7737010ejw.105.2022.06.29.07.20.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jun 2022 06:43:05 -0700 (PDT)
+        Wed, 29 Jun 2022 07:20:45 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 4C5A4477057; Wed, 29 Jun 2022 15:43:05 +0200 (CEST)
+        id 8CA16477063; Wed, 29 Jun 2022 16:20:44 +0200 (CEST)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     John Fastabend <john.fastabend@gmail.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Larysa Zaremba <larysa.zaremba@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Yajun Deng <yajun.deng@linux.dev>,
-        Willem de Bruijn <willemb@google.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xdp-hints@xdp-project.net
-Subject: Re: [xdp-hints] Re: [PATCH RFC bpf-next 00/52] bpf, xdp: introduce
- and use Generic Hints/metadata
-In-Reply-To: <62bbedf07f44a_2181420830@john.notmuch>
-References: <20220628194812.1453059-1-alexandr.lobakin@intel.com>
- <62bbedf07f44a_2181420830@john.notmuch>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>, bpf@vger.kernel.org
+Cc:     xdp-hints@xdp-project.net
+Subject: Re: [xdp-hints] [PATCH RFC bpf-next 5/9] xdp: controlling XDP-hints
+ from BPF-prog via helper
+In-Reply-To: <165643385885.449467.3259561784742405947.stgit@firesoul>
+References: <165643378969.449467.13237011812569188299.stgit@firesoul>
+ <165643385885.449467.3259561784742405947.stgit@firesoul>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 29 Jun 2022 15:43:05 +0200
-Message-ID: <87iloja8ly.fsf@toke.dk>
+Date:   Wed, 29 Jun 2022 16:20:44 +0200
+Message-ID: <87fsjna6v7.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -100,120 +78,63 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-John Fastabend <john.fastabend@gmail.com> writes:
+Jesper Dangaard Brouer <brouer@redhat.com> writes:
 
-> Alexander Lobakin wrote:
->> This RFC is to give the whole picture. It will most likely be split
->> onto several series, maybe even merge cycles. See the "table of
->> contents" below.
+> XDP BPF-prog's need a way to interact with the XDP-hints. This patch
+> introduces a BPF-helper function, that allow XDP BPF-prog's to interact
+> with the XDP-hints.
 >
-> Even for RFC its a bit much. Probably improve the summary
-> message here as well I'm still not clear on the overall
-> architecture so not sure I want to dig into patches.
+> BPF-prog can query if any XDP-hints have been setup and if this is
+> compatible with the xdp_hints_common struct. If XDP-hints are available
+> the BPF "origin" is returned (see enum xdp_hints_btf_origin) as BTF can
+> come from different sources or origins e.g. vmlinux, module or local.
 
-+1 on this, and piggybacking on your comment to chime in on the general
-architecture.
+I'm not sure I quite understand what this origin is supposed to be good
+for? What is a BPF (or AF_XDP) program supposed to do with the
+information "this XDP hints struct came from a module?" without knowing
+which module that was? Ultimately, the origin is useful for a consumer
+to check that the metadata is in the format that it's expecting it to be
+in (so it can just load the data from the appropriate offsets). But to
+answer this, we really need a unique identifier; so I think the approach
+in Alexander's series of encoding the ID of the BTF structure itself
+into the next 32 bits is better? That way we'll have a unique "pointer"
+to the actual struct that's in the metadata area and can act on this.
 
->> Now, a NIC driver, or even a SmartNIC itself, can put those params
->> there in a well-defined format. The format is fixed, but can be of
->> several different types represented by structures, which definitions
->> are available to the kernel, BPF programs and the userland.
->
-> I don't think in general the format needs to be fixed.
+> RFC/TODO: Improve patch: Can verifier validate provided BTF on "update"
+> and detect if compatible with common struct???
 
-No, that's the whole point of BTF: it's not supposed to be UAPI, we'll
-use CO-RE to enable dynamic formats...
+If we have the unique ID as mentioned above, I think the kernel probably
+could resolve this automatically: whenever a module is loaded, the
+kernel could walk the BTF information from that module an simply inspect
+all the metadata structs and see if they contain the embedded
+xdp_hints_common struct. The IDs of any metadata structs that do contain
+the common struct can then be kept in a central lookup table and the
+consumption code can then simply compare the BTF ID to this table when
+building an SKB?
 
-[...]
+As for the validation on the BPF side:n
 
->> It is fixed due to it being almost a UAPI, and the exact format can
->> be determined by reading the last 10 bytes of metadata. They contain
->> a 2-byte magic ID to not confuse it with a non-compatible meta and
->> a 8-byte combined BTF ID + type ID: the ID of the BTF where this
->> structure is defined and the ID of that definition inside that BTF.
->> Users can obtain BTF IDs by structure types using helpers available
->> in the kernel, BPF (written by the CO-RE/verifier) and the userland
->> (libbpf -> kernel call) and then rely on those ID when reading data
->> to make sure whether they support it and what to do with it.
->> Why separate magic and ID? The idea is to make different formats
->> always contain the basic/"generic" structure embedded at the end.
->> This way we can still benefit in purely generic consumers (like
->> cpumap) while providing some "extra" data to those who support it.
->
-> I don't follow this. If you have a struct in your driver name it
-> something obvious, ice_xdp_metadata. If I understand things
-> correctly just dump the BTF for the driver, extract the
-> struct and done you can use CO-RE reads. For the 'fixed' case
-> this looks easy. And I don't think you even need a patch for this.
+> +	if (flags & HINTS_BTF_UPDATE) {
+> +		is_compat_common = !!(flags & HINTS_BTF_COMPAT_COMMON);
+> +	/* TODO: Can kernel validate if hints are BTF compat with common? */
+> +	/* TODO: Could BPF prog provide BTF as ARG_PTR_TO_BTF_ID to prove compat_common ? */
 
-...however as we've discussed previously, we do need a bit of
-infrastructure around this. In particular, we need to embed the embed
-the BTF ID into the metadata itself so BPF can do runtime disambiguation
-between different formats (and add the right CO-RE primitives to make
-this easy). This is for two reasons:
+If we use the "global ID + lookup table" approach above, we don't really
+need to validate anything here: if the program says it's writing
+metadata with a format given by a specific ID, that implies
+compatibility (or not) as given by the ID. We could sanity-check the
+metadata area size, but the consumption code has to do that anyway, so
+I'm not sure it's worth the runtime overhead to have an additional check
+here?
 
-- The metadata might be different per-packet (e.g., PTP packets with
-  timestamps interleaved with bulk data without them)
-
-- With redirects we may end up processing packets from different devices
-  in a single XDP program (in devmap or cpumap, or on a veth) so we need
-  to be able to disambiguate at runtime.
-
-So I think the part of the design that puts the BTF ID into the end of
-the metadata struct is sound; however, the actual format doesn't have to
-be fixed, we can use CO-RE to pick out the bits that a given BPF program
-needs; we just need a convention for how drivers report which format(s)
-they support. Which we should also agree on (and add core infrastructure
-around) so each driver doesn't go around inventing their own
-conventions.
-
->> The enablement of this feature is controlled on attaching/replacing
->> XDP program on an interface with two new parameters: that combined
->> BTF+type ID and metadata threshold.
->> The threshold specifies the minimum frame size which a driver (or
->> NIC) should start composing metadata from. It is introduced instead
->> of just false/true flag due to that often it's not worth it to spend
->> cycles to fetch all that data for such small frames: let's say, it
->> can be even faster to just calculate checksums for them on CPU
->> rather than touch non-coherent DMA zone. Simple XDP_DROP case loses
->> 15 Mpps on 64 byte frames with enabled metadata, threshold can help
->> mitigate that.
->
-> I would put this in the bonus category. Can you do the simple thing
-> above without these extra bits and then add them later. Just
-> pick some overly conservative threshold to start with.
-
-Yeah, I'd agree this kind of configuration is something that can be
-added later, and also it's sort of orthogonal to the consumption of the
-metadata itself.
-
-Also, tying this configuration into the loading of an XDP program is a
-terrible interface: these are hardware configuration options, let's just
-put them into ethtool or 'ip link' like any other piece of device
-configuration.
-
->> The RFC can be divided into 8 parts:
->
-> I'm missing something why not do the simplest bit of work and
-> get this running in ice with a few smallish driver updates
-> so we can all see it. No need for so many patches.
-
-Agreed. This incremental approach is basically what Jesper's
-simultaneous series makes a start on, AFAICT? Would be nice if y'all
-could converge the efforts :)
-
-[...]
-
-> I really think your asking questions that are two or three
-> jumps away. Why not do the simplest bit first and kick
-> the driver with an on/off switch into this mode. But
-> I don't understand this cpumap use case so maybe explain
-> that first.
->
-> And sorry didn't even look at your 50+ patches. Figure lets
-> get agreement on the goal first.
-
-+1 on both of these :)
+As for safety of the metadata content itself, I don't really think we
+can do anything to guarantee this: in any case the BPF program can pass
+a valid BTF ID and still write garbage values into the actual fields, so
+the consumption code has to do enough validation that this won't crash
+the kernel anyway. But this is no different from the packet data itself:
+XDP is basically in a position to be a MITM attacker of the network
+stack itself, which is why loading XDP programs is a privileged
+operation...
 
 -Toke
 
