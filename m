@@ -2,183 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 096B55606C9
-	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 18:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E832560729
+	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 19:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230456AbiF2Q44 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jun 2022 12:56:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41506 "EHLO
+        id S230103AbiF2ROj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jun 2022 13:14:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbiF2Q4y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jun 2022 12:56:54 -0400
-Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A4723164
-        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 09:56:51 -0700 (PDT)
-Received: from submission (posteo.de [185.67.36.169]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id B97FE240028
-        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 18:56:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1656521809; bh=29ajJh0MHN97aVLux0uitCQId1MGwnNE5RwUBHtWjlA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=j8kF+Gt8VJnnUBDpvkXUq5j49KysZiOclx1JetJLI1+eFqk6DWtLK2e9HK/OMsyat
-         z9d1mATa1URH10UekCBNbuNqDfdhLAJZSdQ9f2bE/8Cm24W8+ERzryXpFqXufvHuea
-         ypvYH/+307ymUgxelPz++jEnyqYZXCmUPam6xx7TjdWTosljqq5Sl7YWS5aEWKr4ss
-         3hTLG/q622eE9KIgXYbXoIt5GCQJA7gYXqIk+6J2Y3VP/g8+VM7BU2uev8YdtK3TTF
-         fDKQvtmFuDloTqh9MRjnsnK9NHzPsCqxUF9W9G1ADEs9rYllBf5/2RNqtseD9skxhR
-         NHz8dD6czo36g==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4LY70Y334Gz6tmM;
-        Wed, 29 Jun 2022 18:56:45 +0200 (CEST)
-Date:   Wed, 29 Jun 2022 16:56:41 +0000
-From:   Daniel =?utf-8?Q?M=C3=BCller?= <deso@posteo.net>
-To:     Quentin Monnet <quentin@isovalent.com>
+        with ESMTP id S229821AbiF2ROj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jun 2022 13:14:39 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 377D03C706;
+        Wed, 29 Jun 2022 10:14:38 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id r20so23478626wra.1;
+        Wed, 29 Jun 2022 10:14:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=QtkOAm0FQLhRgm9nQIcdvq/G+pjTMw1++vcyZDrhmCY=;
+        b=qNeOuwYwu8CSAclcMtI0eB4EyowiRSGhu/GjxlWeh6+xNjCSTzlc0UjUNepKIAdiqs
+         4A+DQe5VXZ0zghAi8AphvoK9Db//FTr3MD56CZ7FG+Vhvh3Tu4Hgb8+JEdeL8ky8IM7e
+         6DBYY37p14oePiNVP7vXutAASoUg/HQQcDCECFIFweDQabA0LXWz4pknxGP2l/c6lRzN
+         GVLvUdaE3HUpg5uDOXCHJJAx2razHNkL+pF0x5ZKrHX75/eUaoXLuqVKTM8+8sjphr8z
+         t2EgrHI4vurdlXVKPR8R4X2Y0wVdOzlUgkfAf6H1tT1vnFaCw/CTIKs77cxgAxjJz3jI
+         jnVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=QtkOAm0FQLhRgm9nQIcdvq/G+pjTMw1++vcyZDrhmCY=;
+        b=09elqe3BuRXtt7ZNVP2iZnU9DY4hX+joCNDCY82QzrhU1d5FHVd+dGMVY5fESfUBk0
+         5nlInFEb4iooWumNtuXmefUwa1V0FtGK6UiMeh9jksBLLKrnGBfLxQbKE+ziU2SAqwhc
+         xwUDB0oRdL/Jsm6JYjdAsGSb20csTaiNrDxmuCJ135jrSAQxcWGG6ordCNr7/7NhngZ/
+         IBKS62bRu7r6fdOpS0UhK5+0fuNU+Bf5N+wKPppHBZS+99DUkFpFk8gISBHq4S5MxOrV
+         OCnZewOC3EXS6YKpc9xR4vuOj2cVtsBIy6gvhtQwyAByZ80teYoS7TYf69tnSBuqzX5P
+         7b/g==
+X-Gm-Message-State: AJIora/VCXw4r2gQ6ekNyQb7GsTGEcNBzHwdud5oAp3yuY4zOZd5Uns/
+        N9DTi3wOjS4XhxLMl1I42pl51ok9lMp0fE+Brw==
+X-Google-Smtp-Source: AGRyM1tIRAchdw3GOYBjxXnXREzBWUO8obItkKRDgyPyadqp50TYce8Wl312TzI0qDl6L/q9Bs7y1g==
+X-Received: by 2002:a5d:6487:0:b0:21b:983c:5508 with SMTP id o7-20020a5d6487000000b0021b983c5508mr4197505wri.185.1656522876148;
+        Wed, 29 Jun 2022 10:14:36 -0700 (PDT)
+Received: from playground (host-78-146-72-11.as13285.net. [78.146.72.11])
+        by smtp.gmail.com with ESMTPSA id d11-20020a5d6dcb000000b0020e6ce4dabdsm16636281wrz.103.2022.06.29.10.14.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Jun 2022 10:14:35 -0700 (PDT)
+Date:   Wed, 29 Jun 2022 18:14:30 +0100
+From:   Jules Irenge <jbi.octave@gmail.com>
+To:     linux-kernel@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next 2/2] bpftool: Use feature list in bash completion
-Message-ID: <20220629165641.4nn7tf5imc7uklcn@muellerd-fedora-MJ0AC3F3>
-References: <20220629144019.75181-1-quentin@isovalent.com>
- <20220629144019.75181-3-quentin@isovalent.com>
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH 1/2] btf: Fix required space error
+Message-ID: <YryIdu0jdTF+fIiW@playground>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220629144019.75181-3-quentin@isovalent.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 29, 2022 at 03:40:19PM +0100, Quentin Monnet wrote:
-> Now that bpftool is able to produce a list of known program, map, attach
-> types, let's use as much of this as we can in the bash completion file,
-> so that we don't have to expand the list each time a new type is added
-> to the kernel.
-> 
-> Also update the relevant test script to remove some checks that are no
-> longer needed.
-> 
-> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-> ---
->  tools/bpf/bpftool/bash-completion/bpftool     | 21 ++++---------------
->  .../selftests/bpf/test_bpftool_synctypes.py   | 20 +++---------------
->  2 files changed, 7 insertions(+), 34 deletions(-)
-> 
-> diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-> index 9cef6516320b..ee177f83b179 100644
-> --- a/tools/bpf/bpftool/bash-completion/bpftool
-> +++ b/tools/bpf/bpftool/bash-completion/bpftool
-> @@ -703,15 +703,8 @@ _bpftool()
->                              return 0
->                              ;;
->                          type)
-> -                            local BPFTOOL_MAP_CREATE_TYPES='hash array \
-> -                                prog_array perf_event_array percpu_hash \
-> -                                percpu_array stack_trace cgroup_array lru_hash \
-> -                                lru_percpu_hash lpm_trie array_of_maps \
-> -                                hash_of_maps devmap devmap_hash sockmap cpumap \
-> -                                xskmap sockhash cgroup_storage reuseport_sockarray \
-> -                                percpu_cgroup_storage queue stack sk_storage \
-> -                                struct_ops ringbuf inode_storage task_storage \
-> -                                bloom_filter'
-> +                            local BPFTOOL_MAP_CREATE_TYPES="$(bpftool feature list map_types | \
-> +                                grep -v '^unspec$')"
->                              COMPREPLY=( $( compgen -W "$BPFTOOL_MAP_CREATE_TYPES" -- "$cur" ) )
->                              return 0
->                              ;;
-> @@ -1039,14 +1032,8 @@ _bpftool()
->                      return 0
->                      ;;
->                  attach|detach)
-> -                    local BPFTOOL_CGROUP_ATTACH_TYPES='cgroup_inet_ingress cgroup_inet_egress \
-> -                        cgroup_inet_sock_create cgroup_sock_ops cgroup_device cgroup_inet4_bind \
-> -                        cgroup_inet6_bind cgroup_inet4_post_bind cgroup_inet6_post_bind \
-> -                        cgroup_inet4_connect cgroup_inet6_connect cgroup_inet4_getpeername \
-> -                        cgroup_inet6_getpeername cgroup_inet4_getsockname cgroup_inet6_getsockname \
-> -                        cgroup_udp4_sendmsg cgroup_udp6_sendmsg cgroup_udp4_recvmsg \
-> -                        cgroup_udp6_recvmsg cgroup_sysctl cgroup_getsockopt cgroup_setsockopt \
-> -                        cgroup_inet_sock_release'
-> +                    local BPFTOOL_CGROUP_ATTACH_TYPES="$(bpftool feature list attach_types | \
-> +                        grep '^cgroup_')"
->                      local ATTACH_FLAGS='multi override'
->                      local PROG_TYPE='id pinned tag name'
->                      # Check for $prev = $command first
-> diff --git a/tools/testing/selftests/bpf/test_bpftool_synctypes.py b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-> index e443e6542cb9..a6410bebe603 100755
-> --- a/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-> +++ b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-> @@ -471,12 +471,6 @@ class BashcompExtractor(FileExtractor):
->      def get_prog_attach_types(self):
->          return self.get_bashcomp_list('BPFTOOL_PROG_ATTACH_TYPES')
->  
-> -    def get_map_types(self):
-> -        return self.get_bashcomp_list('BPFTOOL_MAP_CREATE_TYPES')
-> -
-> -    def get_cgroup_attach_types(self):
-> -        return self.get_bashcomp_list('BPFTOOL_CGROUP_ATTACH_TYPES')
-> -
->  def verify(first_set, second_set, message):
->      """
->      Print all values that differ between two sets.
-> @@ -516,17 +510,12 @@ def main():
->      man_map_types = man_map_info.get_map_types()
->      man_map_info.close()
->  
-> -    bashcomp_info = BashcompExtractor()
-> -    bashcomp_map_types = bashcomp_info.get_map_types()
-> -
->      verify(source_map_types, help_map_types,
->              f'Comparing {BpfHeaderExtractor.filename} (bpf_map_type) and {MapFileExtractor.filename} (do_help() TYPE):')
->      verify(source_map_types, man_map_types,
->              f'Comparing {BpfHeaderExtractor.filename} (bpf_map_type) and {ManMapExtractor.filename} (TYPE):')
->      verify(help_map_options, man_map_options,
->              f'Comparing {MapFileExtractor.filename} (do_help() OPTIONS) and {ManMapExtractor.filename} (OPTIONS):')
-> -    verify(source_map_types, bashcomp_map_types,
-> -            f'Comparing {BpfHeaderExtractor.filename} (bpf_map_type) and {BashcompExtractor.filename} (BPFTOOL_MAP_CREATE_TYPES):')
->  
->      # Attach types (names)
->  
-> @@ -542,8 +531,10 @@ def main():
->      man_prog_attach_types = man_prog_info.get_attach_types()
->      man_prog_info.close()
->  
-> -    bashcomp_info.reset_read() # We stopped at map types, rewind
-> +
-> +    bashcomp_info = BashcompExtractor()
->      bashcomp_prog_attach_types = bashcomp_info.get_prog_attach_types()
-> +    bashcomp_info.close()
->  
->      verify(source_prog_attach_types, help_prog_attach_types,
->              f'Comparing {ProgFileExtractor.filename} (bpf_attach_type) and {ProgFileExtractor.filename} (do_help() ATTACH_TYPE):')
-> @@ -568,17 +559,12 @@ def main():
->      man_cgroup_attach_types = man_cgroup_info.get_attach_types()
->      man_cgroup_info.close()
->  
-> -    bashcomp_cgroup_attach_types = bashcomp_info.get_cgroup_attach_types()
-> -    bashcomp_info.close()
-> -
->      verify(source_cgroup_attach_types, help_cgroup_attach_types,
->              f'Comparing {BpfHeaderExtractor.filename} (bpf_attach_type) and {CgroupFileExtractor.filename} (do_help() ATTACH_TYPE):')
->      verify(source_cgroup_attach_types, man_cgroup_attach_types,
->              f'Comparing {BpfHeaderExtractor.filename} (bpf_attach_type) and {ManCgroupExtractor.filename} (ATTACH_TYPE):')
->      verify(help_cgroup_options, man_cgroup_options,
->              f'Comparing {CgroupFileExtractor.filename} (do_help() OPTIONS) and {ManCgroupExtractor.filename} (OPTIONS):')
-> -    verify(source_cgroup_attach_types, bashcomp_cgroup_attach_types,
-> -            f'Comparing {BpfHeaderExtractor.filename} (bpf_attach_type) and {BashcompExtractor.filename} (BPFTOOL_CGROUP_ATTACH_TYPES):')
->  
->      # Options for remaining commands
->  
+This patch fixes error reported ny Checkpatch at bpf_log()
 
-That is a nice simplification. Looks good to me.
+ERROR: space required after that , ctx:VxV
+Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
+---
+ kernel/bpf/btf.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Acked-by: Daniel Müller <deso@posteo.net>
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 2e2066d6af94..1bc496162572 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -5454,7 +5454,9 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+ 
+ 		if (ctx_arg_info->offset == off) {
+ 			if (!ctx_arg_info->btf_id) {
+-				bpf_log(log,"invalid btf_id for context argument offset %u\n", off);
++				bpf_log(log,
++					"invalid btf_id for context argument offset %u\n",
++					off);
+ 				return false;
+ 			}
+ 
+-- 
+2.36.1
+
