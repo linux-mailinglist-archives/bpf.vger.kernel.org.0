@@ -2,466 +2,259 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF6A855F887
-	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 09:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C67955F9FE
+	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 10:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232181AbiF2HMh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jun 2022 03:12:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56922 "EHLO
+        id S231623AbiF2IEY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jun 2022 04:04:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229841AbiF2HMe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jun 2022 03:12:34 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC029EE20
-        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 00:12:33 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25T1ulCk002791
-        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 00:12:33 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=521SVVMN4oY5j9Uo9usrWG+UVQZ7suedZp9YDPkpWl0=;
- b=AX3iBYxvirBz6lyGY2om6XHWYYqW65nI5ITpVhTdK0M77AMXRW0bDayFBK3iD3kdlJh1
- aBzvG/6GAAB7UOvTt2NbAjz1+pfMgz37CY5bKMCDNMqmwW4kKeI1FoU7obvHkeFrTnSD
- +uVrtG4vh/7WZnnHK70v2eea/bQzlmedSTo= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3h0dgqh56u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 00:12:32 -0700
-Received: from twshared10560.18.frc3.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Wed, 29 Jun 2022 00:12:29 -0700
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 5CD95C24D718; Wed, 29 Jun 2022 00:12:24 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        <dwarves@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Subject: [PATCH dwarves v3 2/2] btf: Support BTF_KIND_ENUM64
-Date:   Wed, 29 Jun 2022 00:12:24 -0700
-Message-ID: <20220629071224.3180594-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220629071213.3178592-1-yhs@fb.com>
-References: <20220629071213.3178592-1-yhs@fb.com>
+        with ESMTP id S230295AbiF2IEX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jun 2022 04:04:23 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0BDE29805
+        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 01:04:21 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id n1so21121796wrg.12
+        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 01:04:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zRf5UwJSFwOKMWYCo+NYCtcvIlqTfbI8aBejevwXVI4=;
+        b=qGU014NppgnQ4NbDPye4XEUlwmw0vOqpih0l20x5Lyk+Wz4aDJ8DVlo9on/rJ9KU2l
+         h+7pRoY82L9tJXbAALnFHTmEmxkV1m6Av8BuOqJTndMfM/Gg/ZrvBJPPkY71wyB8CjL+
+         i+HmFQrI4WL7pXkhjMp0RPUB8BZChmeM/1Qf0X4yCN1QzeekMSLm15ybVmap+hDd/Qhb
+         7Y0uXcMiGGFjmgOpcGgeWuVsE9FFH7ALZIgsb97HLswmSLq4U9zn8iZkLmWEit9vhFcF
+         CGmhi56oBjLbI+944WQa22TdRrGeF8Mf6IQWDNvBqWkEopbF+UCKcRWLIOFwUS0MQCJ7
+         IkFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zRf5UwJSFwOKMWYCo+NYCtcvIlqTfbI8aBejevwXVI4=;
+        b=qukwQowsInFdYpSGs2LS7yqQX3iAQCT1H6yZBv9yg/2Q9/8DDpepenIFovCowA7cXd
+         7Og/UYR4AwjDQHIihR4ddG9oUVZSQRrNRejx6S6QEnSGxHUk5CJJyS208x0yFAguZkBl
+         g0gX6bs0f/RhYc0gwIBaQtlrs7nlQQFzg9qhIocoYABd1pGFUhITEZEMk6UH9eR5uVNM
+         uds8Vq8oEhUcnUe/sMss0xBfzdnD/gryx3gAxIW9VD+o0Q3ecut15xWO85F/neOi3A27
+         fZAVbqk6+JQJEa3JAzcHwrZEV06blDvmRUIG4VPk0B28yL+hJHiYV5zXc6HKPJeFHnqQ
+         WJ1Q==
+X-Gm-Message-State: AJIora+yaIX02BZiOWcGXe7nsyw1aUYbsHtSvx/fpUBHynsDjH7745eU
+        6CeQW4+Ar9HgfvnSN+FTE5SPMv/jhxFQDUFSxsFPdA==
+X-Google-Smtp-Source: AGRyM1v6bUugJ8jSFfCOXoA4e3bcYceOswWINVSQzWixUcdobsHBwooNlJ0+5gY/xuIH4Q/UwhfhFiSlnzV4d+KAhlM=
+X-Received: by 2002:adf:f146:0:b0:21b:8c7d:7294 with SMTP id
+ y6-20020adff146000000b0021b8c7d7294mr1698559wro.582.1656489860013; Wed, 29
+ Jun 2022 01:04:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: NipJwh9RC9T6A2pyeOdC-aughUN-tZNf
-X-Proofpoint-GUID: NipJwh9RC9T6A2pyeOdC-aughUN-tZNf
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-06-28_11,2022-06-28_01,2022-06-22_01
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20220610194435.2268290-1-yosryahmed@google.com>
+ <20220610194435.2268290-9-yosryahmed@google.com> <00df1932-38fe-c6f8-49d0-3a44affb1268@fb.com>
+ <CAJD7tkaNnx6ebFrMxWgkJbtx=Qoe+cEwnjtWeY5=EAaVktrenw@mail.gmail.com>
+ <CAJD7tkbOztCEWgMzoCOdD+g3whMMQWW2e0gwo9p0tVK=3hqmcw@mail.gmail.com> <59376285-21bc-ff12-3d64-3ea7257becb2@fb.com>
+In-Reply-To: <59376285-21bc-ff12-3d64-3ea7257becb2@fb.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Wed, 29 Jun 2022 01:03:43 -0700
+Message-ID: <CAJD7tkZ50QanA=2nrg6hBEk3p5oanHtF-6L_x0UQQ7AcZpBKrA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 8/8] bpf: add a selftest for cgroup
+ hierarchical stats collection
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-BTF_KIND_ENUM64 is supported with latest libbpf, which
-supports 64-bit enum values. Latest libbpf also supports
-signedness for enum values. Add enum64 support in
-dwarf-to-btf conversion.
+On Tue, Jun 28, 2022 at 11:27 PM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 6/28/22 12:43 AM, Yosry Ahmed wrote:
+> > On Mon, Jun 27, 2022 at 11:47 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+> >>
+> >> On Mon, Jun 27, 2022 at 11:14 PM Yonghong Song <yhs@fb.com> wrote:
+> >>>
+> >>>
+> >>>
+> >>> On 6/10/22 12:44 PM, Yosry Ahmed wrote:
+> >>>> Add a selftest that tests the whole workflow for collecting,
+> >>>> aggregating (flushing), and displaying cgroup hierarchical stats.
+> >>>>
+> >>>> TL;DR:
+> >>>> - Whenever reclaim happens, vmscan_start and vmscan_end update
+> >>>>     per-cgroup percpu readings, and tell rstat which (cgroup, cpu) pairs
+> >>>>     have updates.
+> >>>> - When userspace tries to read the stats, vmscan_dump calls rstat to flush
+> >>>>     the stats, and outputs the stats in text format to userspace (similar
+> >>>>     to cgroupfs stats).
+> >>>> - rstat calls vmscan_flush once for every (cgroup, cpu) pair that has
+> >>>>     updates, vmscan_flush aggregates cpu readings and propagates updates
+> >>>>     to parents.
+> >>>>
+> >>>> Detailed explanation:
+> >>>> - The test loads tracing bpf programs, vmscan_start and vmscan_end, to
+> >>>>     measure the latency of cgroup reclaim. Per-cgroup ratings are stored in
+> >>>>     percpu maps for efficiency. When a cgroup reading is updated on a cpu,
+> >>>>     cgroup_rstat_updated(cgroup, cpu) is called to add the cgroup to the
+> >>>>     rstat updated tree on that cpu.
+> >>>>
+> >>>> - A cgroup_iter program, vmscan_dump, is loaded and pinned to a file, for
+> >>>>     each cgroup. Reading this file invokes the program, which calls
+> >>>>     cgroup_rstat_flush(cgroup) to ask rstat to propagate the updates for all
+> >>>>     cpus and cgroups that have updates in this cgroup's subtree. Afterwards,
+> >>>>     the stats are exposed to the user. vmscan_dump returns 1 to terminate
+> >>>>     iteration early, so that we only expose stats for one cgroup per read.
+> >>>>
+> >>>> - An ftrace program, vmscan_flush, is also loaded and attached to
+> >>>>     bpf_rstat_flush. When rstat flushing is ongoing, vmscan_flush is invoked
+> >>>>     once for each (cgroup, cpu) pair that has updates. cgroups are popped
+> >>>>     from the rstat tree in a bottom-up fashion, so calls will always be
+> >>>>     made for cgroups that have updates before their parents. The program
+> >>>>     aggregates percpu readings to a total per-cgroup reading, and also
+> >>>>     propagates them to the parent cgroup. After rstat flushing is over, all
+> >>>>     cgroups will have correct updated hierarchical readings (including all
+> >>>>     cpus and all their descendants).
+> >>>>
+> >>>> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> >>>
+> >>> There are a selftest failure with test:
+> >>>
+> >>> get_cgroup_vmscan_delay:PASS:output format 0 nsec
+> >>> get_cgroup_vmscan_delay:PASS:cgroup_id 0 nsec
+> >>> get_cgroup_vmscan_delay:PASS:vmscan_reading 0 nsec
+> >>> get_cgroup_vmscan_delay:PASS:read cgroup_iter 0 nsec
+> >>> get_cgroup_vmscan_delay:PASS:output format 0 nsec
+> >>> get_cgroup_vmscan_delay:PASS:cgroup_id 0 nsec
+> >>> get_cgroup_vmscan_delay:FAIL:vmscan_reading unexpected vmscan_reading:
+> >>> actual 0 <= expected 0
+> >>> check_vmscan_stats:FAIL:child1_vmscan unexpected child1_vmscan: actual
+> >>> 781874 != expected 382092
+> >>> check_vmscan_stats:FAIL:child2_vmscan unexpected child2_vmscan: actual
+> >>> -1 != expected -2
+> >>> check_vmscan_stats:FAIL:test_vmscan unexpected test_vmscan: actual
+> >>> 781874 != expected 781873
+> >>> check_vmscan_stats:FAIL:root_vmscan unexpected root_vmscan: actual 0 <
+> >>> expected 781874
+> >>> destroy_progs:PASS:remove cgroup_iter pin 0 nsec
+> >>> destroy_progs:PASS:remove cgroup_iter pin 0 nsec
+> >>> destroy_progs:PASS:remove cgroup_iter pin 0 nsec
+> >>> destroy_progs:PASS:remove cgroup_iter pin 0 nsec
+> >>> destroy_progs:PASS:remove cgroup_iter pin 0 nsec
+> >>> destroy_progs:PASS:remove cgroup_iter pin 0 nsec
+> >>> destroy_progs:PASS:remove cgroup_iter pin 0 nsec
+> >>> destroy_progs:PASS:remove cgroup_iter root pin 0 nsec
+> >>> cleanup_bpffs:PASS:rmdir /sys/fs/bpf/vmscan/ 0 nsec
+> >>> #33      cgroup_hierarchical_stats:FAIL
+> >>>
+> >>
+> >> The test is passing on my setup. I am trying to figure out if there is
+> >> something outside the setup done by the test that can cause the test
+> >> to fail.
+> >>
+> >>>
+> >>> Also an existing test also failed.
+> >>>
+> >>> btf_dump_data:PASS:find type id 0 nsec
+> >>>
+> >>>
+> >>> btf_dump_data:PASS:failed/unexpected type_sz 0 nsec
+> >>>
+> >>>
+> >>> btf_dump_data:FAIL:ensure expected/actual match unexpected ensure
+> >>> expected/actual match: actual '(union bpf_iter_link_info){.map =
+> >>> (struct){.map_fd = (__u32)1,},.cgroup '
+> >>> test_btf_dump_struct_data:PASS:find struct sk_buff 0 nsec
+> >>>
+> >>
+> >> Yeah I see what happened there. bpf_iter_link_info was changed by the
+> >> patch that introduced cgroup_iter, and this specific union is used by
+> >> the test to test the "union with nested struct" btf dumping. I will
+> >> add a patch in the next version that updates the btf_dump_data test
+> >> accordingly. Thanks.
+> >>
+> >
+> > So I actually tried the attached diff to updated the expected dump of
+> > bpf_iter_link_info in this test, but the test still failed:
+> >
+> > btf_dump_data:FAIL:ensure expected/actual match unexpected ensure
+> > expected/actual match: actual '(union bpf_iter_link_info){.map =
+> > (struct){.map_fd = (__u32)1,},.cgroup = (struct){.cgroup_fd =
+> > (__u32)1,},}'  != expected '(union bpf_iter_link_info){.map =
+> > (struct){.map_fd = (__u32)1,},.cgroup = (struct){.cgroup_fd =
+> > (__u32)1,.traversal_order = (__u32)1},}'
+> >
+> > It seems to me that the actual output in this case is not right, it is
+> > missing traversal_order. Did we accidentally find a bug in btf dumping
+> > of unions with nested structs, or am I missing something here?
+>
+> Probably there is an issue in btf_dump_data() function in
+> tools/lib/bpf/btf_dump.c. Could you take a look at it?
 
-The following is an example of new encoding which covers
-signed/unsigned enum64/enum variations.
+I will try to take a look but after I figure out why the selftest
+added here is always passing for me and always failing for you :(
 
-  $cat t.c
-  enum { /* signed, enum64 */
-    A =3D -1,
-    B =3D 0xffffffff,
-  } g1;
-  enum { /* unsigned, enum64 */
-    C =3D 1,
-    D =3D 0xfffffffff,
-  } g2;
-  enum { /* signed, enum */
-    E =3D -1,
-    F =3D 0xfffffff,
-  } g3;
-  enum { /* unsigned, enum */
-    G =3D 1,
-    H =3D 0xfffffff,
-  } g4;
-  $ clang -g -c t.c
-  $ pahole -JV t.o
-  btf_encoder__new: 't.o' doesn't have '.data..percpu' section
-  Found 0 per-CPU variables!
-  File t.o:
-  [1] ENUM64 (anon) size=3D8
-          A val=3D-1
-          B val=3D4294967295
-  [2] INT long size=3D8 nr_bits=3D64 encoding=3DSIGNED
-  [3] ENUM64 (anon) size=3D8
-          C val=3D1
-          D val=3D68719476735
-  [4] INT unsigned long size=3D8 nr_bits=3D64 encoding=3D(none)
-  [5] ENUM (anon) size=3D4
-          E val=3D-1
-          F val=3D268435455
-  [6] INT int size=3D4 nr_bits=3D32 encoding=3DSIGNED
-  [7] ENUM (anon) size=3D4
-          G val=3D1
-          H val=3D268435455
-  [8] INT unsigned int size=3D4 nr_bits=3D32 encoding=3D(none)
-
-With the flag to skip enum64 encoding,
-
-  $ pahole -JV t.o --skip_encoding_btf_enum64
-  btf_encoder__new: 't.o' doesn't have '.data..percpu' section
-  Found 0 per-CPU variables!
-  File t.o:
-  [1] ENUM (anon) size=3D8
-        A val=3D4294967295
-        B val=3D4294967295
-  [2] INT long size=3D8 nr_bits=3D64 encoding=3DSIGNED
-  [3] ENUM (anon) size=3D8
-        C val=3D1
-        D val=3D4294967295
-  [4] INT unsigned long size=3D8 nr_bits=3D64 encoding=3D(none)
-  [5] ENUM (anon) size=3D4
-        E val=3D4294967295
-        F val=3D268435455
-  [6] INT int size=3D4 nr_bits=3D32 encoding=3DSIGNED
-  [7] ENUM (anon) size=3D4
-        G val=3D1
-        H val=3D268435455
-  [8] INT unsigned int size=3D4 nr_bits=3D32 encoding=3D(none)
-
-In the above btf encoding without enum64, all enum types
-with the same type size as the corresponding enum64. All these
-enum types have unsigned type (kflag =3D 0) which is required
-before kernel enum64 support.
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- btf_encoder.c     | 67 +++++++++++++++++++++++++++++++++++------------
- btf_encoder.h     |  2 +-
- dwarf_loader.c    | 12 +++++++++
- dwarves.h         |  4 ++-
- dwarves_fprintf.c |  6 ++++-
- pahole.c          | 10 ++++++-
- 6 files changed, 80 insertions(+), 21 deletions(-)
-
-diff --git a/btf_encoder.c b/btf_encoder.c
-index 9e708e4..daa8e3b 100644
---- a/btf_encoder.c
-+++ b/btf_encoder.c
-@@ -144,6 +144,7 @@ static const char * const btf_kind_str[NR_BTF_KINDS] =
-=3D {
- 	[BTF_KIND_FLOAT]        =3D "FLOAT",
- 	[BTF_KIND_DECL_TAG]     =3D "DECL_TAG",
- 	[BTF_KIND_TYPE_TAG]     =3D "TYPE_TAG",
-+	[BTF_KIND_ENUM64]	=3D "ENUM64",
- };
-=20
- static const char *btf__printable_name(const struct btf *btf, uint32_t o=
-ffset)
-@@ -490,34 +491,64 @@ static int32_t btf_encoder__add_struct(struct btf_e=
-ncoder *encoder, uint8_t kind
- 	return id;
- }
-=20
--static int32_t btf_encoder__add_enum(struct btf_encoder *encoder, const =
-char *name, uint32_t bit_size)
-+static int32_t btf_encoder__add_enum(struct btf_encoder *encoder, const =
-char *name, struct type *etype,
-+				     struct conf_load *conf_load)
- {
- 	struct btf *btf =3D encoder->btf;
- 	const struct btf_type *t;
- 	int32_t id, size;
-+	bool is_enum32;
-=20
--	size =3D BITS_ROUNDUP_BYTES(bit_size);
--	id =3D btf__add_enum(btf, name, size);
-+	size =3D BITS_ROUNDUP_BYTES(etype->size);
-+	is_enum32 =3D size <=3D 4 || conf_load->skip_encoding_btf_enum64;
-+	if (is_enum32)
-+		id =3D btf__add_enum(btf, name, size);
-+	else
-+		id =3D btf__add_enum64(btf, name, size, etype->is_signed_enum);
- 	if (id > 0) {
- 		t =3D btf__type_by_id(btf, id);
- 		btf_encoder__log_type(encoder, t, false, true, "size=3D%u", t->size);
- 	} else {
--		btf__log_err(btf, BTF_KIND_ENUM, name, true,
-+		btf__log_err(btf, is_enum32 ? BTF_KIND_ENUM : BTF_KIND_ENUM64, name, t=
-rue,
- 			      "size=3D%u Error emitting BTF type", size);
- 	}
- 	return id;
- }
-=20
--static int btf_encoder__add_enum_val(struct btf_encoder *encoder, const =
-char *name, int32_t value)
-+static int btf_encoder__add_enum_val(struct btf_encoder *encoder, const =
-char *name, int64_t value,
-+				     struct type *etype, struct conf_load *conf_load)
- {
--	int err =3D btf__add_enum_value(encoder->btf, name, value);
-+	const char *fmt_str;
-+	int err;
-+
-+	/* If enum64 is not allowed, generate enum32 with unsigned int value. I=
-n enum64-supported
-+	 * libbpf library, btf__add_enum_value() will set the kflag (sign bit) =
-in common_type
-+	 * if the value is negative.
-+	 */
-+	if (conf_load->skip_encoding_btf_enum64)
-+		err =3D btf__add_enum_value(encoder->btf, name, (uint32_t)value);
-+	else if (etype->size > 32)
-+		err =3D btf__add_enum64_value(encoder->btf, name, value);
-+	else
-+		err =3D btf__add_enum_value(encoder->btf, name, value);
-=20
- 	if (!err) {
--		if (encoder->verbose)
--			printf("\t%s val=3D%d\n", name, value);
-+		if (encoder->verbose) {
-+			if (conf_load->skip_encoding_btf_enum64) {
-+				printf("\t%s val=3D%u\n", name, (uint32_t)value);
-+			} else {
-+				fmt_str =3D etype->is_signed_enum ? "\t%s val=3D%lld\n" : "\t%s val=3D=
-%llu\n";
-+				printf(fmt_str, name, (unsigned long long)value);
-+			}
-+		}
- 	} else {
--		fprintf(stderr, "\t%s val=3D%d Error emitting BTF enum value\n",
--			name, value);
-+		if (conf_load->skip_encoding_btf_enum64) {
-+			fprintf(stderr, "\t%s val=3D%u Error emitting BTF enum value\n", name=
-, (uint32_t)value);
-+		} else {
-+			fmt_str =3D etype->is_signed_enum ? "\t%s val=3D%lld Error emitting B=
-TF enum value\n"
-+							: "\t%s val=3D%llu Error emitting BTF enum value\n";
-+			fprintf(stderr, fmt_str, name, (unsigned long long)value);
-+		}
- 	}
- 	return err;
- }
-@@ -844,27 +875,29 @@ static uint32_t array_type__nelems(struct tag *tag)
- 	return nelem;
- }
-=20
--static int32_t btf_encoder__add_enum_type(struct btf_encoder *encoder, s=
-truct tag *tag)
-+static int32_t btf_encoder__add_enum_type(struct btf_encoder *encoder, s=
-truct tag *tag,
-+					  struct conf_load *conf_load)
- {
- 	struct type *etype =3D tag__type(tag);
- 	struct enumerator *pos;
- 	const char *name =3D type__name(etype);
- 	int32_t type_id;
-=20
--	type_id =3D btf_encoder__add_enum(encoder, name, etype->size);
-+	type_id =3D btf_encoder__add_enum(encoder, name, etype, conf_load);
- 	if (type_id < 0)
- 		return type_id;
-=20
- 	type__for_each_enumerator(etype, pos) {
- 		name =3D enumerator__name(pos);
--		if (btf_encoder__add_enum_val(encoder, name, pos->value))
-+		if (btf_encoder__add_enum_val(encoder, name, pos->value, etype, conf_l=
-oad))
- 			return -1;
- 	}
-=20
- 	return type_id;
- }
-=20
--static int btf_encoder__encode_tag(struct btf_encoder *encoder, struct t=
-ag *tag, uint32_t type_id_off)
-+static int btf_encoder__encode_tag(struct btf_encoder *encoder, struct t=
-ag *tag, uint32_t type_id_off,
-+				   struct conf_load *conf_load)
- {
- 	/* single out type 0 as it represents special type "void" */
- 	uint32_t ref_type_id =3D tag->type =3D=3D 0 ? 0 : type_id_off + tag->ty=
-pe;
-@@ -903,7 +936,7 @@ static int btf_encoder__encode_tag(struct btf_encoder=
- *encoder, struct tag *tag,
- 		encoder->need_index_type =3D true;
- 		return btf_encoder__add_array(encoder, ref_type_id, encoder->array_ind=
-ex_id, array_type__nelems(tag));
- 	case DW_TAG_enumeration_type:
--		return btf_encoder__add_enum_type(encoder, tag);
-+		return btf_encoder__add_enum_type(encoder, tag, conf_load);
- 	case DW_TAG_subroutine_type:
- 		return btf_encoder__add_func_proto(encoder, tag__ftype(tag), type_id_o=
-ff);
- 	default:
-@@ -1422,7 +1455,7 @@ void btf_encoder__delete(struct btf_encoder *encode=
-r)
- 	free(encoder);
- }
-=20
--int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu)
-+int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, s=
-truct conf_load *conf_load)
- {
- 	uint32_t type_id_off =3D btf__type_cnt(encoder->btf) - 1;
- 	struct llvm_annotation *annot;
-@@ -1446,7 +1479,7 @@ int btf_encoder__encode_cu(struct btf_encoder *enco=
-der, struct cu *cu)
- 	}
-=20
- 	cu__for_each_type(cu, core_id, pos) {
--		btf_type_id =3D btf_encoder__encode_tag(encoder, pos, type_id_off);
-+		btf_type_id =3D btf_encoder__encode_tag(encoder, pos, type_id_off, con=
-f_load);
-=20
- 		if (btf_type_id < 0 ||
- 		    tag__check_id_drift(pos, core_id, btf_type_id, type_id_off)) {
-diff --git a/btf_encoder.h b/btf_encoder.h
-index 339fae2..a65120c 100644
---- a/btf_encoder.h
-+++ b/btf_encoder.h
-@@ -21,7 +21,7 @@ void btf_encoder__delete(struct btf_encoder *encoder);
-=20
- int btf_encoder__encode(struct btf_encoder *encoder);
-=20
--int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu);
-+int btf_encoder__encode_cu(struct btf_encoder *encoder, struct cu *cu, s=
-truct conf_load *conf_load);
-=20
- void btf_encoders__add(struct list_head *encoders, struct btf_encoder *e=
-ncoder);
-=20
-diff --git a/dwarf_loader.c b/dwarf_loader.c
-index a0d964b..4767602 100644
---- a/dwarf_loader.c
-+++ b/dwarf_loader.c
-@@ -632,6 +632,18 @@ static void type__init(struct type *type, Dwarf_Die =
-*die, struct cu *cu, struct
- 	type->resized		 =3D 0;
- 	type->nr_members	 =3D 0;
- 	type->nr_static_members	 =3D 0;
-+	type->is_signed_enum	 =3D 0;
-+
-+	Dwarf_Attribute attr;
-+	if (dwarf_attr(die, DW_AT_type, &attr) !=3D NULL) {
-+		Dwarf_Die type_die;
-+		if (dwarf_formref_die(&attr, &type_die) !=3D NULL) {
-+			uint64_t encoding =3D attr_numeric(&type_die, DW_AT_encoding);
-+
-+			if (encoding =3D=3D DW_ATE_signed || encoding =3D=3D DW_ATE_signed_ch=
-ar)
-+				type->is_signed_enum =3D 1;
-+		}
-+	}
- }
-=20
- static struct type *type__new(Dwarf_Die *die, struct cu *cu, struct conf=
-_load *conf)
-diff --git a/dwarves.h b/dwarves.h
-index 4d0e4b6..bec9f08 100644
---- a/dwarves.h
-+++ b/dwarves.h
-@@ -65,6 +65,7 @@ struct conf_load {
- 	bool			skip_encoding_btf_decl_tag;
- 	bool			skip_missing;
- 	bool			skip_encoding_btf_type_tag;
-+	bool			skip_encoding_btf_enum64;
- 	uint8_t			hashtable_bits;
- 	uint8_t			max_hashtable_bits;
- 	uint16_t		kabi_prefix_len;
-@@ -1046,6 +1047,7 @@ struct type {
- 	uint8_t		 definition_emitted:1;
- 	uint8_t		 fwd_decl_emitted:1;
- 	uint8_t		 resized:1;
-+	uint8_t		 is_signed_enum:1;
- };
-=20
- void __type__init(struct type *type);
-@@ -1365,7 +1367,7 @@ static inline struct string_type *tag__string_type(=
-const struct tag *tag)
- struct enumerator {
- 	struct tag	 tag;
- 	const char	 *name;
--	uint32_t	 value;
-+	uint64_t	 value;
- 	struct tag_cu	 type_enum; // To cache the type_enum searches
- };
-=20
-diff --git a/dwarves_fprintf.c b/dwarves_fprintf.c
-index 2cec584..ce64c79 100644
---- a/dwarves_fprintf.c
-+++ b/dwarves_fprintf.c
-@@ -437,7 +437,11 @@ size_t enumeration__fprintf(const struct tag *tag, c=
-onst struct conf_fprintf *co
- 	type__for_each_enumerator(type, pos) {
- 		printed +=3D fprintf(fp, "%.*s\t%-*s =3D ", indent, tabs,
- 				   max_entry_name_len, enumerator__name(pos));
--		printed +=3D fprintf(fp, conf->hex_fmt ?  "%#x" : "%u", pos->value);
-+		if (conf->hex_fmt)
-+			printed +=3D fprintf(fp, "%#llx", (unsigned long long)pos->value);
-+		else
-+			printed +=3D fprintf(fp, type->is_signed_enum ?  "%lld" : "%llu",
-+					   (unsigned long long)pos->value);
- 		printed +=3D fprintf(fp, ",\n");
- 	}
-=20
-diff --git a/pahole.c b/pahole.c
-index 78caa08..e87d9a4 100644
---- a/pahole.c
-+++ b/pahole.c
-@@ -1220,6 +1220,7 @@ ARGP_PROGRAM_VERSION_HOOK_DEF =3D dwarves_print_ver=
-sion;
- #define ARGP_compile		   334
- #define ARGP_languages		   335
- #define ARGP_languages_exclude	   336
-+#define ARGP_skip_encoding_btf_enum64 337
-=20
- static const struct argp_option pahole__options[] =3D {
- 	{
-@@ -1622,6 +1623,11 @@ static const struct argp_option pahole__options[] =
-=3D {
- 		.arg  =3D "LANGUAGES",
- 		.doc  =3D "Don't consider compilation units written in these languages=
-"
- 	},
-+	{
-+		.name =3D "skip_encoding_btf_enum64",
-+		.key  =3D ARGP_skip_encoding_btf_enum64,
-+		.doc  =3D "Do not encode ENUM64sin BTF."
-+	},
- 	{
- 		.name =3D NULL,
- 	}
-@@ -1787,6 +1793,8 @@ static error_t pahole__options_parser(int key, char=
- *arg,
- 		/* fallthru */
- 	case ARGP_languages:
- 		languages.str =3D arg;			break;
-+	case ARGP_skip_encoding_btf_enum64:
-+		conf_load.skip_encoding_btf_enum64 =3D true;	break;
- 	default:
- 		return ARGP_ERR_UNKNOWN;
- 	}
-@@ -3067,7 +3075,7 @@ static enum load_steal_kind pahole_stealer(struct c=
-u *cu,
- 			encoder =3D btf_encoder;
- 		}
-=20
--		if (btf_encoder__encode_cu(encoder, cu)) {
-+		if (btf_encoder__encode_cu(encoder, cu, conf_load)) {
- 			fprintf(stderr, "Encountered error while encoding BTF.\n");
- 			exit(1);
- 		}
---=20
-2.30.2
-
+>
+> > Thanks!
+> >
+> >>>
+> >>> test_btf_dump_struct_data:PASS:unexpected return value dumping sk_buff 0
+> >>> nsec
+> >>>
+> >>> btf_dump_data:PASS:verify prefix match 0 nsec
+> >>>
+> >>>
+> >>> btf_dump_data:PASS:find type id 0 nsec
+> >>>
+> >>>
+> >>> btf_dump_data:PASS:failed to return -E2BIG 0 nsec
+> >>>
+> >>>
+> >>> btf_dump_data:PASS:ensure expected/actual match 0 nsec
+> >>>
+> >>>
+> >>> btf_dump_data:PASS:verify prefix match 0 nsec
+> >>>
+> >>>
+> >>> btf_dump_data:PASS:find type id 0 nsec
+> >>>
+> >>>
+> >>> btf_dump_data:PASS:failed to return -E2BIG 0 nsec
+> >>>
+> >>>
+> >>> btf_dump_data:PASS:ensure expected/actual match 0 nsec
+> >>>
+> >>>
+> >>> #21/14   btf_dump/btf_dump: struct_data:FAIL
+> >>>
+> >>> please take a look.
+> >>>
+> >>>> ---
+> >>>>    .../prog_tests/cgroup_hierarchical_stats.c    | 351 ++++++++++++++++++
+> >>>>    .../bpf/progs/cgroup_hierarchical_stats.c     | 234 ++++++++++++
+> >>>>    2 files changed, 585 insertions(+)
+> >>>>    create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_hierarchical_stats.c
+> >>>>    create mode 100644 tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
+> >>>>
+> [...]
