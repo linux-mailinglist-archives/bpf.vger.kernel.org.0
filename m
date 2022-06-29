@@ -2,195 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C141560364
-	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 16:42:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8E656045A
+	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 17:19:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232711AbiF2Okc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jun 2022 10:40:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45632 "EHLO
+        id S233203AbiF2PTR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jun 2022 11:19:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233528AbiF2Okb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jun 2022 10:40:31 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4178A369D3
-        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 07:40:30 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id v9so7213511wrp.7
-        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 07:40:30 -0700 (PDT)
+        with ESMTP id S233738AbiF2PTQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jun 2022 11:19:16 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEB2E2250A;
+        Wed, 29 Jun 2022 08:19:14 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id h192so15645077pgc.4;
+        Wed, 29 Jun 2022 08:19:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9FOYmeRqmEoW2/yig11rWwWtWs0HE6T9aKmY5zyVAOM=;
-        b=gRWmmR+E7niwB9Tc8IO2UekKW5HrRiKXUnWERFfjYelcUuYoiHkmtHJkt1hpIM1D9M
-         AwOi5dd/M2rG2Gm9tiDd31EMILVznEOGWKfrG+areWTvsfsxat5H5eBt70MGXXclxv8/
-         HuJalQJIpgaKGQeJ596E90U15iwBAadB15vCMEEoe2jvF2CsdTCQRAnzMIngIiIFmPFR
-         9kHBQqDD1MEvSGCgAMt1XT26MTnFMOuWtXbAJEmvL+gB7C7KoCbWq+EF8rU/2wVuW3GP
-         g7wwXZvnIDRhqpOtb1Fr8F9Nim+4yRGItOasV5FE3yaT8h082BTa73knICy9IbR/L7r4
-         ql4g==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0cfmRdAvbEnfKmowk6LCE7SyxN1zSbLIUtfQLJkJW6Y=;
+        b=pjtQogg7gt8mwiT+xur+deDAPdeNdXQEG2sDYhvXu2EIXXpYl3VnaNp/PI/GnggDLU
+         GSPEBuPq5582VtpEooISWNts6FYsmGAoOBEgJVIpK+f/fV5CEg5oa3hD/5cP056g2Am8
+         4BCGbJ/rYGKjFU6ePRb+0ypPhuGpdxDvqV9gFaKXIFwHTz2pEcChCmcBJkyONA5PNxJQ
+         Bwz0b7Bz3KMcPcQzt2N6A+Fxo8rjjdb3f2KCktLhd2mS5itYuMz+p+lJYfSi0yZ5mOAH
+         Gu0URsOPnAgx5OnEM7gcs9XQ5jfMiE2MS9SYuJzKuF8J0BrJgR26tg5nK2stqZyvhgBl
+         kuYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9FOYmeRqmEoW2/yig11rWwWtWs0HE6T9aKmY5zyVAOM=;
-        b=GPskzDXCCM+0WgMC6mYHhGZEdZ/fmeCO8YQPe9qswyzsnRJz0qM1TG9y5RKJPyqUHx
-         GJYdMA2yPEhsRGN8OmS6IDYMfbtRuLzdZTKAEjDhCqBvpfIzAztWrIdObafIV5zkw3iz
-         Ze8/vxGr+/zN4YGYcOThrEs5QmxYFlwC3yVsG5vgAkfSCsSvg3pTss5FlOnodxDtmn3o
-         TzRTmwGRW2Xzj8zN4jJmzutrNoLrTGqDG7NVSKzJIHF1k0C8e5v5/xz2aDFEULuG5oHH
-         vZkuOjTnXVPdX1rPD5E+zZRpFOZDu+cRmcmDcmoU2SAfNIbIMb/JRqFFxTsgh24dO3DH
-         aeIQ==
-X-Gm-Message-State: AJIora/bT4CifPm6fra+oyb15WnzedUe9hGBiFdtansd3Zy7NBauUuoZ
-        rbK2yI4yMuxZ5D8icRcf3TtIWw==
-X-Google-Smtp-Source: AGRyM1sf1NniE8+WCB9DyNmkAbGZVIplracW3WM2R6hQItH6qhnsPws1rXqweY1l1LpbwqTPXLXy0Q==
-X-Received: by 2002:a05:6000:2ab:b0:21d:221c:20e5 with SMTP id l11-20020a05600002ab00b0021d221c20e5mr3420211wry.523.1656513628768;
-        Wed, 29 Jun 2022 07:40:28 -0700 (PDT)
-Received: from harfang.fritz.box ([51.155.200.13])
-        by smtp.gmail.com with ESMTPSA id h13-20020adff4cd000000b002103aebe8absm16770518wrp.93.2022.06.29.07.40.27
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0cfmRdAvbEnfKmowk6LCE7SyxN1zSbLIUtfQLJkJW6Y=;
+        b=VIXrsltamua+7pQgXC00Nfkz4KV3c++VJyHpd3sEx0E5zNt37RlSf7Lye96c3PEANQ
+         a01fmKJTN1c9t7eGc02ZUibd+qPDiMp08Z9P+4BsO8ealOGIuz99lXUMJ+1WvXtCbPl6
+         xI25Xv6AzwhHHyxwclObjd7DmFV2n8Y3YAzQXI3yOlFWey7kNUatSgdDSeSlnFKruc09
+         zkwZlqpCNFyzRLCWv0RTa2CJjA1RiP1pAOMND8WY3v3+jUPHAIH2z4j3Bu/u96Mxfp5Y
+         eOzQIBbL9i0Vvodt05rVlwv2AXZtutuwJTUngXtZMj/+4ps/MOcD8IELhGBdvs/hLYI5
+         W9rg==
+X-Gm-Message-State: AJIora+PPPLFCqK9yof83E5waHUdEVkiu9Rnsv4NZHE6HyVECPJOfbOE
+        EydL93fyFjA7O5QdwDVUsvo=
+X-Google-Smtp-Source: AGRyM1tOeiXCU8JbIsgPKDyIeqMIgVx2Jq8CZzCjYH0K+WhHef1aWXImkRainDoXdLBOX5x6ZH8cLw==
+X-Received: by 2002:a63:2c0d:0:b0:411:4fd7:ecba with SMTP id s13-20020a632c0d000000b004114fd7ecbamr3317264pgs.64.1656515954404;
+        Wed, 29 Jun 2022 08:19:14 -0700 (PDT)
+Received: from localhost.localdomain ([47.242.114.172])
+        by smtp.gmail.com with ESMTPSA id x20-20020a170902b41400b001676dac529asm11522657plr.146.2022.06.29.08.19.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jun 2022 07:40:28 -0700 (PDT)
-From:   Quentin Monnet <quentin@isovalent.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        Wed, 29 Jun 2022 08:19:13 -0700 (PDT)
+From:   Chuang Wang <nashuiliang@gmail.com>
+Cc:     Chuang Wang <nashuiliang@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next 2/2] bpftool: Use feature list in bash completion
-Date:   Wed, 29 Jun 2022 15:40:19 +0100
-Message-Id: <20220629144019.75181-3-quentin@isovalent.com>
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH v4 0/3] cleanup the legacy probe_event on failed scenario
+Date:   Wed, 29 Jun 2022 23:18:44 +0800
+Message-Id: <20220629151848.65587-1-nashuiliang@gmail.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220629144019.75181-1-quentin@isovalent.com>
-References: <20220629144019.75181-1-quentin@isovalent.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Now that bpftool is able to produce a list of known program, map, attach
-types, let's use as much of this as we can in the bash completion file,
-so that we don't have to expand the list each time a new type is added
-to the kernel.
+A potential scenario, when an error is returned after
+add_uprobe_event_legacy() in perf_event_uprobe_open_legacy(), or
+bpf_program__attach_perf_event_opts() in
+bpf_program__attach_uprobe_opts() returns an error, the uprobe_event
+that was previously created is not cleaned.
 
-Also update the relevant test script to remove some checks that are no
-longer needed.
+At the same time, the legacy kprobe_event also have similar problems.
 
-Signed-off-by: Quentin Monnet <quentin@isovalent.com>
----
- tools/bpf/bpftool/bash-completion/bpftool     | 21 ++++---------------
- .../selftests/bpf/test_bpftool_synctypes.py   | 20 +++---------------
- 2 files changed, 7 insertions(+), 34 deletions(-)
+With these patches, whenever an error is returned, it ensures that
+the created kprobe_event/uprobe_event is cleaned.
 
-diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-index 9cef6516320b..ee177f83b179 100644
---- a/tools/bpf/bpftool/bash-completion/bpftool
-+++ b/tools/bpf/bpftool/bash-completion/bpftool
-@@ -703,15 +703,8 @@ _bpftool()
-                             return 0
-                             ;;
-                         type)
--                            local BPFTOOL_MAP_CREATE_TYPES='hash array \
--                                prog_array perf_event_array percpu_hash \
--                                percpu_array stack_trace cgroup_array lru_hash \
--                                lru_percpu_hash lpm_trie array_of_maps \
--                                hash_of_maps devmap devmap_hash sockmap cpumap \
--                                xskmap sockhash cgroup_storage reuseport_sockarray \
--                                percpu_cgroup_storage queue stack sk_storage \
--                                struct_ops ringbuf inode_storage task_storage \
--                                bloom_filter'
-+                            local BPFTOOL_MAP_CREATE_TYPES="$(bpftool feature list map_types | \
-+                                grep -v '^unspec$')"
-                             COMPREPLY=( $( compgen -W "$BPFTOOL_MAP_CREATE_TYPES" -- "$cur" ) )
-                             return 0
-                             ;;
-@@ -1039,14 +1032,8 @@ _bpftool()
-                     return 0
-                     ;;
-                 attach|detach)
--                    local BPFTOOL_CGROUP_ATTACH_TYPES='cgroup_inet_ingress cgroup_inet_egress \
--                        cgroup_inet_sock_create cgroup_sock_ops cgroup_device cgroup_inet4_bind \
--                        cgroup_inet6_bind cgroup_inet4_post_bind cgroup_inet6_post_bind \
--                        cgroup_inet4_connect cgroup_inet6_connect cgroup_inet4_getpeername \
--                        cgroup_inet6_getpeername cgroup_inet4_getsockname cgroup_inet6_getsockname \
--                        cgroup_udp4_sendmsg cgroup_udp6_sendmsg cgroup_udp4_recvmsg \
--                        cgroup_udp6_recvmsg cgroup_sysctl cgroup_getsockopt cgroup_setsockopt \
--                        cgroup_inet_sock_release'
-+                    local BPFTOOL_CGROUP_ATTACH_TYPES="$(bpftool feature list attach_types | \
-+                        grep '^cgroup_')"
-                     local ATTACH_FLAGS='multi override'
-                     local PROG_TYPE='id pinned tag name'
-                     # Check for $prev = $command first
-diff --git a/tools/testing/selftests/bpf/test_bpftool_synctypes.py b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-index e443e6542cb9..a6410bebe603 100755
---- a/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-+++ b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-@@ -471,12 +471,6 @@ class BashcompExtractor(FileExtractor):
-     def get_prog_attach_types(self):
-         return self.get_bashcomp_list('BPFTOOL_PROG_ATTACH_TYPES')
- 
--    def get_map_types(self):
--        return self.get_bashcomp_list('BPFTOOL_MAP_CREATE_TYPES')
--
--    def get_cgroup_attach_types(self):
--        return self.get_bashcomp_list('BPFTOOL_CGROUP_ATTACH_TYPES')
--
- def verify(first_set, second_set, message):
-     """
-     Print all values that differ between two sets.
-@@ -516,17 +510,12 @@ def main():
-     man_map_types = man_map_info.get_map_types()
-     man_map_info.close()
- 
--    bashcomp_info = BashcompExtractor()
--    bashcomp_map_types = bashcomp_info.get_map_types()
--
-     verify(source_map_types, help_map_types,
-             f'Comparing {BpfHeaderExtractor.filename} (bpf_map_type) and {MapFileExtractor.filename} (do_help() TYPE):')
-     verify(source_map_types, man_map_types,
-             f'Comparing {BpfHeaderExtractor.filename} (bpf_map_type) and {ManMapExtractor.filename} (TYPE):')
-     verify(help_map_options, man_map_options,
-             f'Comparing {MapFileExtractor.filename} (do_help() OPTIONS) and {ManMapExtractor.filename} (OPTIONS):')
--    verify(source_map_types, bashcomp_map_types,
--            f'Comparing {BpfHeaderExtractor.filename} (bpf_map_type) and {BashcompExtractor.filename} (BPFTOOL_MAP_CREATE_TYPES):')
- 
-     # Attach types (names)
- 
-@@ -542,8 +531,10 @@ def main():
-     man_prog_attach_types = man_prog_info.get_attach_types()
-     man_prog_info.close()
- 
--    bashcomp_info.reset_read() # We stopped at map types, rewind
-+
-+    bashcomp_info = BashcompExtractor()
-     bashcomp_prog_attach_types = bashcomp_info.get_prog_attach_types()
-+    bashcomp_info.close()
- 
-     verify(source_prog_attach_types, help_prog_attach_types,
-             f'Comparing {ProgFileExtractor.filename} (bpf_attach_type) and {ProgFileExtractor.filename} (do_help() ATTACH_TYPE):')
-@@ -568,17 +559,12 @@ def main():
-     man_cgroup_attach_types = man_cgroup_info.get_attach_types()
-     man_cgroup_info.close()
- 
--    bashcomp_cgroup_attach_types = bashcomp_info.get_cgroup_attach_types()
--    bashcomp_info.close()
--
-     verify(source_cgroup_attach_types, help_cgroup_attach_types,
-             f'Comparing {BpfHeaderExtractor.filename} (bpf_attach_type) and {CgroupFileExtractor.filename} (do_help() ATTACH_TYPE):')
-     verify(source_cgroup_attach_types, man_cgroup_attach_types,
-             f'Comparing {BpfHeaderExtractor.filename} (bpf_attach_type) and {ManCgroupExtractor.filename} (ATTACH_TYPE):')
-     verify(help_cgroup_options, man_cgroup_options,
-             f'Comparing {CgroupFileExtractor.filename} (do_help() OPTIONS) and {ManCgroupExtractor.filename} (OPTIONS):')
--    verify(source_cgroup_attach_types, bashcomp_cgroup_attach_types,
--            f'Comparing {BpfHeaderExtractor.filename} (bpf_attach_type) and {BashcompExtractor.filename} (BPFTOOL_CGROUP_ATTACH_TYPES):')
- 
-     # Options for remaining commands
- 
+V1 -> v3:
+
+- add detail commits
+- call remove_kprobe_event_legacy() on failed bpf_program__attach_perf_event_opts()
+
+v3 -> v4:
+
+- cleanup the legacy kprobe_event on failed add/attach_event
+
+Chuang Wang (3):
+  libbpf: cleanup the legacy kprobe_event on failed add/attach_event()
+  libbpf: fix wrong variable used in perf_event_uprobe_open_legacy()
+  libbpf: cleanup the legacy uprobe_event on failed add/attach_event()
+
+ tools/lib/bpf/libbpf.c | 37 +++++++++++++++++++++++++++++--------
+ 1 file changed, 29 insertions(+), 8 deletions(-)
+
 -- 
 2.34.1
 
