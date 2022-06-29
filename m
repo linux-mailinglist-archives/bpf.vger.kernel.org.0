@@ -2,102 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A40E5604E8
-	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 17:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D408C560596
+	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 18:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234309AbiF2PtG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jun 2022 11:49:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60370 "EHLO
+        id S232400AbiF2QQe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jun 2022 12:16:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234299AbiF2PtF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jun 2022 11:49:05 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A3531EEFF;
-        Wed, 29 Jun 2022 08:49:04 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id m2so14516234plx.3;
-        Wed, 29 Jun 2022 08:49:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=rfwZRXZMUJDGu/8doZStZd5M09ONYzjmjpqvrokj+CQ=;
-        b=fZZ12bs6yX72c8VVlT+GCLcsLST+dJ56WPBDci2zMVkGajFVJDGhRpwVxHmi8XO0q7
-         ywCTkKt1BsF5mzUpfTz3ZLL0IeKZVywyJn1EFwSYApFZuZhlHmDjvKTQe5pUpoHXlCKS
-         RtSoKLiQJKeRpPhXBc21rueT0KoWN9/Oc5ediDq6og7HhJH5db7Z3nt+7aJ6IpQCOX5q
-         Ds5wuf2v93po9FLs0T9QHiUgfrqeuzblrm7Wge8dcl+kfHiaeu9Fu8w5qSdXBQhdlCVs
-         5BLEXU+OPmtn1WsaqQy0oRv4MKcrXLUVpuo78RrPdZm94Ec3fRo/8tiGMjuzWMwU9La1
-         0Exg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=rfwZRXZMUJDGu/8doZStZd5M09ONYzjmjpqvrokj+CQ=;
-        b=HLpiX/CEQCv42EI0nF7x+li24IyBH5A7TZMW2q0laMsAplrO7nuoFYuQFBx0Xl0Xsf
-         oMRxj3Yk7RlN+xHbLFFXcubboi3FsS06gR/l+Gj2PmkOzGkuR8Bs+EmLxVLk9rkewoKr
-         0cpH4xMoSDlPvK9nfLrVUBo6oD9KNlKVZU2ZX37He/BlA6dLwg6G1StamNm1BPYGRE3j
-         20kM+hskyvBTDYvqvBN3yO2P3tov4oDfFoVRXWF3ClPl1BXTKgjtOp44b0O+Us24EybK
-         OUIcti82ryXbVYnFds2F7HwBMs6z0H1mZeM3jabiutNJzZ/sKCyU7tmYB7MXQ5sCOn9h
-         sh9w==
-X-Gm-Message-State: AJIora+o2xRmaxSYJad2Vlla5VdKeAqmcGpp2RoceRP5exEPiZv489wk
-        UObCk27k/s/fXz+ydenAsMs=
-X-Google-Smtp-Source: AGRyM1tt9bD/jduGyp2X0xaN0NPYO+Z1Yacmnb6B5JA/JcZW4AMhcnmL/yAJJWe0rglLCwJVDt1h9A==
-X-Received: by 2002:a17:90b:1a8c:b0:1ed:1afb:7a73 with SMTP id ng12-20020a17090b1a8c00b001ed1afb7a73mr4632401pjb.144.1656517744036;
-        Wed, 29 Jun 2022 08:49:04 -0700 (PDT)
-Received: from vultr.guest ([45.32.72.20])
-        by smtp.gmail.com with ESMTPSA id 1-20020a620501000000b00527d84dfa42sm2661329pff.167.2022.06.29.08.49.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jun 2022 08:49:02 -0700 (PDT)
-From:   Yafang Shao <laoar.shao@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, quentin@isovalent.com
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH bpf-next 4/4] bpftool: Show also the name of type BPF_OBJ_LINK
-Date:   Wed, 29 Jun 2022 15:48:32 +0000
-Message-Id: <20220629154832.56986-5-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20220629154832.56986-1-laoar.shao@gmail.com>
-References: <20220629154832.56986-1-laoar.shao@gmail.com>
+        with ESMTP id S232986AbiF2QQd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jun 2022 12:16:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DE222FFCB;
+        Wed, 29 Jun 2022 09:16:32 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1843F61C16;
+        Wed, 29 Jun 2022 16:16:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DF41C34114;
+        Wed, 29 Jun 2022 16:16:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1656519391;
+        bh=QHsA81pBDUHzvuOvAqN+uRYkZTWtxw10l0dJ3X9plf8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=OzhMK4Q9EOfxzb5clqI2W+RIiztwmDuyBSdfP6q6wStI2ixwegAZVAJkU5SMOsi65
+         zOWhnOnG4YiMFmZLtuBi8C46Fged/kXfpCr0tkG3ACZ0DV0X2WOaz96RBjvf2jNSjA
+         aPbe+J6eqAM5OFRRdGQgrX8SE6CaaA+opucArTjP+csxDDoJX0M14B1ScWA78gDNSe
+         eq+Fi7bh761AZbr+SGpOtGKhUZGxDzb2driAra/g7s22gA70m/FQPeLfqPJ0k5lJnm
+         HwMq7GwsULXwZhohd35X9yuDYWS2QagN63xfVH0P98eE6vXgln+ewbur4ynKoN2HRh
+         EKDc3dLi5Y4Gg==
+Date:   Wed, 29 Jun 2022 09:16:29 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Subject: Re: [PATCH bpf] xsk: mark napi_id on sendmsg()
+Message-ID: <20220629091629.1c241c21@kernel.org>
+In-Reply-To: <YrxLTiOIpD44JM7R@boxer>
+References: <20220629105752.933839-1-maciej.fijalkowski@intel.com>
+        <CAJ+HfNj0FU=DBNdwD3HODbevcP-btoaeCCGCfn2Y5eP2WoEXHA@mail.gmail.com>
+        <YrxLTiOIpD44JM7R@boxer>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-For example,
-/sys/fs/bpf/maps.debug is a bpf link, when you run `bpftool map show` to
-show it,
-- before
-  $ bpftool map show pinned /sys/fs/bpf/maps.debug
-  Error: incorrect object type: unknown
-- after
-  $ bpftool map show pinned /sys/fs/bpf/maps.debug
-  Error: incorrect object type: link
+On Wed, 29 Jun 2022 14:53:34 +0200 Maciej Fijalkowski wrote:
+> > > +                       __sk_mark_napi_id_once(sk, xs->pool->heads[0].xdp.rxq->napi_id);  
+> > 
+> > Please hide this hideous pointer chasing in something neater:
+> > xsk_pool_get_napi_id() or something.  
+> 
+> Would it make sense to introduce napi_id to xsk_buff_pool then?
+> xp_set_rxq_info() could be setting it. We are sure that napi_id is the
+> same for whole pool (each xdp_buff_xsk's rxq info).
 
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
----
- tools/bpf/bpftool/common.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
-index a0d4acd7c54a..5e979269c89a 100644
---- a/tools/bpf/bpftool/common.c
-+++ b/tools/bpf/bpftool/common.c
-@@ -251,6 +251,7 @@ const char *get_fd_type_name(enum bpf_obj_type type)
- 		[BPF_OBJ_UNKNOWN]	= "unknown",
- 		[BPF_OBJ_PROG]		= "prog",
- 		[BPF_OBJ_MAP]		= "map",
-+		[BPF_OBJ_LINK]		= "link",
- 	};
- 
- 	if (type < 0 || type >= ARRAY_SIZE(names) || !names[type])
--- 
-2.17.1
-
+Would it be possible to move the marking to when the queue is getting
+bound instead of the recv/send paths? 
