@@ -2,257 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 401E7560761
-	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 19:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D65C560770
+	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 19:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229916AbiF2RdE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jun 2022 13:33:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42362 "EHLO
+        id S229996AbiF2RhM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jun 2022 13:37:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbiF2RdD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jun 2022 13:33:03 -0400
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 962513C737
-        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 10:33:01 -0700 (PDT)
-Received: from submission (posteo.de [185.67.36.169]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id CB00B24010F
-        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 19:32:59 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1656523979; bh=e3UzcE0gZuntK9S7N3Iw3VSU7kivNeJItC7WAz+6ZSo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=aXBgghT8mruOHsw4wFPD4TPJfga4YfY6neUNy6u6aw7nBQMWNBwOc2j28OQ4OVLiN
-         coIuAGAoDwKXZ2o6TgFD5O56xKnLefQHtrCVsi4vqMnG1wbDHC9GGv+1AuSDwcGGAl
-         kmcEzGQVYnBO/42I2O/Yqs/4A4DeJ/wlDonihQ/0S9qqdmCoLqwVe6IkhJyNziaFBj
-         4Noxa6CjAvL7lPtVrG3iaSUKZfH0Ys7WE5b/ErdI+sD1zZvOqFxMmc/bEMQlwIMfNx
-         lWUKfP8xwJbpDHS4n/jzBq3ITdwGHm+QGkFkPETCsKD7keCKx57Bm0GfltxlMB6Nh3
-         vB2qxDkkKoPsw==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4LY7pG6kRwz9rxQ;
-        Wed, 29 Jun 2022 19:32:54 +0200 (CEST)
-Date:   Wed, 29 Jun 2022 17:32:51 +0000
-From:   Daniel =?utf-8?Q?M=C3=BCller?= <deso@posteo.net>
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229717AbiF2RhL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jun 2022 13:37:11 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C08773BBD2;
+        Wed, 29 Jun 2022 10:37:10 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25T5aLcH025121;
+        Wed, 29 Jun 2022 10:36:53 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=x58BXN+PDF95Jq9QefzpwbAjIYBGTx1r2Tt4ak+TMnE=;
+ b=Je/ucdYYDRoFHyhkbKgp/GElT5mym669PQuKA4PYPYR5bLDzJEi1Y0DzJATIgoU9te7x
+ DwoFkoTahSu3mAlORRl94v+0NYN4+R5Q6fjN6XnD5NE7iedt11tvAj2RiIabf54c4Sdi
+ obvM/vVr/TUdS6Hb6Q1TtjZsd7XMYJRzAEA= 
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2168.outbound.protection.outlook.com [104.47.57.168])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3h0691fsaa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Jun 2022 10:36:53 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MeL4+8rHWR0CAQVroXj+DThkGd6SqE24SY5gZkP98c+bR00/X04Tr30YWp/U+rb6R5MAk23M8gHBoEK5I4wCieNWjYtqiWWf2wJmSgfjxZSPGq56T+BYylHOfG7iXLFKfQ7oEI9iUSR1GWA3Fnes4hCKwTlZA0CF+YhtotMBSstMrSsTZfKHA0aoBUOc2rwYhlR4a8xcq6idJIqCajTcn7sokkCdwv2cdaAh659U7jO3rukuyAhp42ZZNfjop9npnplOJXmFJ7xIqfQmngKl7vQzrfckriK3GzQ61z4ifN7uV5SGjrZdz3VgnpjpbYucsQCuRxw4g5WNrUd2W+jmnw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=x58BXN+PDF95Jq9QefzpwbAjIYBGTx1r2Tt4ak+TMnE=;
+ b=a28xfpMQumTpJhMDUJdO2IcPkS5jBo/XRlYFRtM0r88tCmdg/Csj6Y0niKccClavUwU7BhauFXiMgSxQ+sLKtv91folcqtWIgkhVlupiXNkUKTjgdDBzscVB/zH5lJ3etebh9wSZD1VlWnOEZm+fDcR8lxsTKnIHejhoBW1wbCKqfoudKT51blOJXaF0ylw540MpSy0RIkehbElJ2QWu9lJpauUnjibiiP6kvGs+YTv69eLlza5XePJzh2Py5ppOaFlcMoj8BZvJgwXVnwTBPrbfsl8ZpTScUkGX5STOZdkP9Yh9sloxLWf5ImYXliGyALcDTihtNi6drSy981wSAQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from MW4PR15MB4475.namprd15.prod.outlook.com (2603:10b6:303:104::16)
+ by SA0PR15MB3872.namprd15.prod.outlook.com (2603:10b6:806:91::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5395.14; Wed, 29 Jun
+ 2022 17:36:51 +0000
+Received: from MW4PR15MB4475.namprd15.prod.outlook.com
+ ([fe80::3941:25c6:c1cd:5762]) by MW4PR15MB4475.namprd15.prod.outlook.com
+ ([fe80::3941:25c6:c1cd:5762%7]) with mapi id 15.20.5395.014; Wed, 29 Jun 2022
+ 17:36:51 +0000
+Date:   Wed, 29 Jun 2022 10:36:50 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Jules Irenge <jbi.octave@gmail.com>
+Cc:     Elana.Copperman@mobileye.com, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next 1/2] bpftool: Add feature list
- (prog/map/link/attach types, helpers)
-Message-ID: <20220629173251.zk33plyiqsrkfpzg@muellerd-fedora-MJ0AC3F3>
-References: <20220629144019.75181-1-quentin@isovalent.com>
- <20220629144019.75181-2-quentin@isovalent.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] btf: Fix error of Macros with multiple statements
+Message-ID: <20220629173650.c4e67cmz7jqiadon@kafai-mbp.dhcp.thefacebook.com>
+References: <YryJosfh8z2DhKC0@playground>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220629144019.75181-2-quentin@isovalent.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <YryJosfh8z2DhKC0@playground>
+X-ClientProxiedBy: BYAPR08CA0062.namprd08.prod.outlook.com
+ (2603:10b6:a03:117::39) To MW4PR15MB4475.namprd15.prod.outlook.com
+ (2603:10b6:303:104::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: efadf9a0-5a5e-464e-49ed-08da59f5f3a1
+X-MS-TrafficTypeDiagnostic: SA0PR15MB3872:EE_
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0P/cuaLMLX6rTYuf336ePCouTpnDGuf9o78QtWCWwhDb2WhAweDqC9d41mboY6eW04FXBRPr6fwwfO9IvJADIfNBCNxfZMLZYbPfsPNg6yJVTojBLINmXqLcF73Et8hCkzrDt6sfn6I2tEIgdl6ZGhVeN4qbHgSlcVJ4Hhp2J2uxNg0RKMfjziVaHN1BehAm2wBqiATnTGwGgGT1uldSuitwuR0utzB2ikVC8lpzTdbJsUTGSS75MKUWpJLukUR1yXAir6PNAkpNGP8Xh13M1rFArAy4SF+snpX53BjlUodGIi2c8j9mlNWLJY+eH6VWmpbjPIXSY76h7uSNzzme1zS+MutjxQ5vP+TTR7IH2HPf3gV/aVpnm5P65bjA4nXzVMA391BoduJSh1OmCEBSzKsiVeixkMaZcEZqhuWw5g9vTt5swFmwpfV9Ea5YLQQ4g0sxsqqz2Dw0WtBiA2hfRKZpPUGrx7YrQYPJihCTs7Ynj0+4cMHYwn7JCahE8sQOe+OKcO54CLW9CU80EsMbUMNj94Ru0Cwzmsd30JGHkXWej7GLjwlR+ePv3rDTzr4woBBqTOcV4sKcZnym7K9qdKUzADXfyYDmAf+r62u7LIhDvFOvao8K5z55tk5hMk2aPK0F3Tl+cVkBfXZbSqxQUHcTpMDNyG8QeeYUyx+/uEcus9bweHAeu8d0UNv2Pi8FWFNG1dogpYCm4Fb50cZHD61E88YC9POxSOMY46rok+g=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4475.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(376002)(136003)(396003)(346002)(39860400002)(366004)(38100700002)(186003)(54906003)(1076003)(8936002)(6506007)(6916009)(316002)(66476007)(66556008)(8676002)(66946007)(6512007)(4326008)(9686003)(7416002)(83380400001)(52116002)(5660300002)(41300700001)(2906002)(86362001)(478600001)(6486002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?uK+ZStvZNGd36mzUdaQGacuYNrRQLSr+EB3U+Ua7/8GgNGIsRPPIaBSUR1Sv?=
+ =?us-ascii?Q?DPSt0cQpI8H9ID6MuJ+OEquU6i81Z5SanWsWLRwtyHXy9i1ieuLug+uspCZY?=
+ =?us-ascii?Q?INYdZR0olTviLx3j2sk/ahoncD7K5btDx56vrqelNx46GVvPicI5wVuqIoJU?=
+ =?us-ascii?Q?FU2pe5SMItpBMoYuZfNKKln95iR/mCUmLRQ09VPfPofK96/iZFfJLjkFQpgK?=
+ =?us-ascii?Q?TgqTLjy1cn2zyS+69TeicwlrwTECPKxGhPBsBCUqcVyitHygMsTa1swVMytO?=
+ =?us-ascii?Q?MQUwey0YlaZbSM2b5aD3KoAH+QaziSB4Sp/3s6kmKg9ppnsUhRWOldBHG7he?=
+ =?us-ascii?Q?nPRuT0wmhPLQJiedXxtN8IG1OdBBOn5CPxlbbzuSMEVtX+h8aODkJHZo+ZUO?=
+ =?us-ascii?Q?zla65VuPX+vmJkIwe38kRrTe+jTh4QMYJ17r5FNEj9q0YOeUu+Aq3H3bM4GN?=
+ =?us-ascii?Q?omYfn7ckg+wmdbwfNHQ+AWACO+L/wVxMSk7mRrjW0OeIc6292/kqoKl0+dkD?=
+ =?us-ascii?Q?8BiaUWNUWVFi2BcmEutouKavmLVIfYNp/YghEgQPmqhe0ewyQwFO+mnx1mYg?=
+ =?us-ascii?Q?kevEPxtbZ/myNedw7dR37LYe0P+Uxhj0Uq+Tr9GXQjl6oAdnWUqvtH88/puq?=
+ =?us-ascii?Q?9Lj/XbedRGkndEGyyyURkXCoQFn+B0vj9FV16TnBuBGuXaSgVn6iQQ8ApIoN?=
+ =?us-ascii?Q?3K1c3Zdlm/JBkUI9wMoTzFhTXFuY+SZQAxKUCCkEK/nogLDY7V4TjZwbpyBr?=
+ =?us-ascii?Q?DOIVuTQtWvA2CGizB1SYtxeX7KSMp5xSmk6HnBdqm4KEs8eWF6OKa37o5cI6?=
+ =?us-ascii?Q?1TRKkK9Y4CQGEp5Qf++52xBV5+yeafvhrhQxLS1E/ZHHAgF1fvamKPVb8pSa?=
+ =?us-ascii?Q?Qh+2OBiJqp+jHxB0NcIz4tuRjwpjyAwxnrwNGZOYmLHORUEDppjCDaYGpJlS?=
+ =?us-ascii?Q?dQhINs3BUYBjNSx5nO0nEfllbQcLaePxteUcrQxE71sNjTYhHa/+dLjsBjdU?=
+ =?us-ascii?Q?ukSuL+snl9MARihEX3HMFXJR8jIRVqrW2I3Yh1jJ53dS0m7OIP64h/abFRcO?=
+ =?us-ascii?Q?m2u+p0dLFGkCzgNUmjDCcFtWbFq0v/AutgvI20d/3RgBGHzYKFeomjsdxPU1?=
+ =?us-ascii?Q?9Xv7lvg2Nh0nRRkj+bpEq7o02B376S31nzCBDbETObhiMP+Da9oDz9OFyc02?=
+ =?us-ascii?Q?/M5bEPIJ/6tjuYQ+ZxzdGVDmP8InItNoBNPbbjBpV/JcPBWkTa/a2Samnkfk?=
+ =?us-ascii?Q?XQvs8hssa+b2b/kRXNcWVCTGI5djlXrehE+viI6wYIAWpVsK3yHcU5YXx1kG?=
+ =?us-ascii?Q?X5coSS1fOYnAEYQXFVLuNGKRl4LoZTOqwKNf7aUBfCgJBSSGaSvj9PKAa6uG?=
+ =?us-ascii?Q?mZX4/7y4dNsboFvp9JygZijtfEgWMcuK46uky8cAeFlq3Qu3hKzD3DmUBKHX?=
+ =?us-ascii?Q?lmqvHleYO8QVaEUUOQ57OyT6gix51IxxtzrkcAi4IDdty/2sUVmvk7WNyG1G?=
+ =?us-ascii?Q?QYh4tbZYRsY7xV1OA1woXIruWeKjeoAIR3sUlNwr0q58Q1JNJaXqL67cmFLy?=
+ =?us-ascii?Q?BzlRHwiZh1SUDky7xOvH876TsarmwaUmcBXknvzuXYqmCdukZbr8jgm34Uml?=
+ =?us-ascii?Q?Lw=3D=3D?=
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: efadf9a0-5a5e-464e-49ed-08da59f5f3a1
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4475.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jun 2022 17:36:51.6733
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KHVOQZ0JStWo6rYwL7M+gk9YYmj3iiaiqgocS4kbayzltY5pcrxuYsutrAfVpyVO
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB3872
+X-Proofpoint-GUID: e6iEIS58VZ9f_5egw6RDE6Xzydj38McY
+X-Proofpoint-ORIG-GUID: e6iEIS58VZ9f_5egw6RDE6Xzydj38McY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-06-29_18,2022-06-28_01,2022-06-22_01
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 29, 2022 at 03:40:18PM +0100, Quentin Monnet wrote:
-> Add a "bpftool feature list" subcommand to list BPF "features".
-> Contrarily to "bpftool feature probe", this is not about the features
-> available on the system. Instead, it lists all features known to bpftool
-> from compilation time; in other words, all program, map, attach, link
-> types known to the libbpf version in use, and all helpers found in the
-> UAPI BPF header.
+On Wed, Jun 29, 2022 at 06:19:30PM +0100, Jules Irenge wrote:
+> This patch fixes an error reported by checkpatch.pl
+No.  It is not a fix.
+
+Have you at least compiler tested it ?
+
 > 
-> The first use case for this feature is bash completion: running the
-> command provides a list of types that can be used to produce the list of
-> candidate map types, for example.
+> ERROR: Macros with multiple statements should be
+> enclosed in a do while loop
 > 
-> Now that bpftool uses "standard" names provided by libbpf for the
-> program, map, link, and attach types, having the ability to list these
-> types and helpers could also be useful in scripts to loop over existing
-> items.
+> To fix this a do while(0) loop is used
+> to encloses the multiple statements.
 > 
-> Sample output:
-> 
->     # bpftool feature list prog_types | grep -vw unspec | head -n 6
->     socket_filter
->     kprobe
->     sched_cls
->     sched_act
->     tracepoint
->     xdp
-> 
->     # bpftool -p feature list map_types | jq '.[1]'
->     "hash"
-> 
->     # bpftool feature list attach_types | grep '^cgroup_'
->     cgroup_inet_ingress
->     cgroup_inet_egress
->     [...]
->     cgroup_inet_sock_release
-> 
->     # bpftool feature list helpers | grep -vw bpf_unspec | wc -l
->     207
-> 
-> The "unspec" types and helpers are not filtered out by bpftool, so as to
-> remain closer to the enums, and to preserve the indices in the JSON
-> arrays (e.g. "hash" at index 1 == BPF_MAP_TYPE_HASH in map types list).
-> 
-> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
 > ---
->  .../bpftool/Documentation/bpftool-feature.rst | 12 ++++
->  tools/bpf/bpftool/bash-completion/bpftool     |  7 ++-
->  tools/bpf/bpftool/feature.c                   | 55 +++++++++++++++++++
->  3 files changed, 73 insertions(+), 1 deletion(-)
+>  kernel/bpf/btf.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 > 
-> diff --git a/tools/bpf/bpftool/Documentation/bpftool-feature.rst b/tools/bpf/bpftool/Documentation/bpftool-feature.rst
-> index 4ce9a77bc1e0..4bf1724d0e8c 100644
-> --- a/tools/bpf/bpftool/Documentation/bpftool-feature.rst
-> +++ b/tools/bpf/bpftool/Documentation/bpftool-feature.rst
-> @@ -24,9 +24,11 @@ FEATURE COMMANDS
->  ================
->  
->  |	**bpftool** **feature probe** [*COMPONENT*] [**full**] [**unprivileged**] [**macros** [**prefix** *PREFIX*]]
-> +|	**bpftool** **feature list** *GROUP*
->  |	**bpftool** **feature help**
->  |
->  |	*COMPONENT* := { **kernel** | **dev** *NAME* }
-> +|	*GROUP* := { **prog_types** | **map_types** | **attach_types** | **helpers** }
-
-Is **link_types** missing from this enumeration?
-
-
->  DESCRIPTION
->  ===========
-> @@ -70,6 +72,16 @@ DESCRIPTION
->  		  The keywords **full**, **macros** and **prefix** have the
->  		  same role as when probing the kernel.
->  
-> +	**bpftool feature list** *GROUP*
-> +		  List items known to bpftool. These can be BPF program types
-> +		  (**prog_types**), BPF map types (**map_types**), attach types
-> +		  (**attach_types**), link types (**link_types**), or BPF helper
-> +		  functions (**helpers**). The command does not probe the system, but
-> +		  simply lists the elements that bpftool knows from compilation time,
-> +		  as provided from libbpf (for all object types) or from the BPF UAPI
-> +		  header (list of helpers). This can be used in scripts to iterate over
-> +		  BPF types or helpers.
-> +
->  	**bpftool feature help**
->  		  Print short help message.
->  
-> diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-> index 91f89a9a5b36..9cef6516320b 100644
-> --- a/tools/bpf/bpftool/bash-completion/bpftool
-> +++ b/tools/bpf/bpftool/bash-completion/bpftool
-> @@ -1175,9 +1175,14 @@ _bpftool()
->                      _bpftool_once_attr 'full unprivileged'
->                      return 0
->                      ;;
-> +                list)
-> +                    [[ $prev != "$command" ]] && return 0
-> +                    COMPREPLY=( $( compgen -W 'prog_types map_types \
-> +                        attach_types link_types helpers' -- "$cur" ) )
-> +                    ;;
->                  *)
->                      [[ $prev == $object ]] && \
-> -                        COMPREPLY=( $( compgen -W 'help probe' -- "$cur" ) )
-> +                        COMPREPLY=( $( compgen -W 'help list probe' -- "$cur" ) )
->                      ;;
->              esac
->              ;;
-> diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
-> index bac4ef428a02..576cc6b90c6a 100644
-> --- a/tools/bpf/bpftool/feature.c
-> +++ b/tools/bpf/bpftool/feature.c
-> @@ -1258,6 +1258,58 @@ static int do_probe(int argc, char **argv)
->  	return 0;
->  }
->  
-> +static const char *get_helper_name(unsigned int id)
-> +{
-> +	if (id >= ARRAY_SIZE(helper_name))
-> +		return NULL;
-> +
-> +	return helper_name[id];
-> +}
-> +
-> +static int do_list(int argc, char **argv)
-> +{
-> +	const char *(*get_name)(unsigned int id);
-> +	unsigned int id = 0;
-> +
-> +	if (argc < 1)
-> +		usage();
-> +
-> +	if (is_prefix(*argv, "prog_types")) {
-> +		get_name = (const char *(*)(unsigned int))libbpf_bpf_prog_type_str;
-> +	} else if (is_prefix(*argv, "map_types")) {
-> +		get_name = (const char *(*)(unsigned int))libbpf_bpf_map_type_str;
-> +	} else if (is_prefix(*argv, "attach_types")) {
-> +		get_name = (const char *(*)(unsigned int))libbpf_bpf_attach_type_str;
-> +	} else if (is_prefix(*argv, "link_types")) {
-> +		get_name = (const char *(*)(unsigned int))libbpf_bpf_link_type_str;
-> +	} else if (is_prefix(*argv, "helpers")) {
-> +		get_name = get_helper_name;
-> +	} else {
-> +		p_err("expected 'prog_types', 'map_types', 'attach_types', 'link_types' or 'helpers', got: %s", *argv);
-> +		return -1;
-> +	}
-> +
-> +	if (json_output)
-> +		jsonw_start_array(json_wtr);	/* root array */
-> +
-> +	while (true) {
-> +		const char *name;
-> +
-> +		name = get_name(id++);
-> +		if (!name)
-> +			break;
-> +		if (json_output)
-> +			jsonw_string(json_wtr, name);
-> +		else
-> +			printf("%s\n", name);
-> +	}
-> +
-> +	if (json_output)
-> +		jsonw_end_array(json_wtr);	/* root array */
-> +
-> +	return 0;
-> +}
-> +
->  static int do_help(int argc, char **argv)
->  {
->  	if (json_output) {
-> @@ -1267,9 +1319,11 @@ static int do_help(int argc, char **argv)
->  
->  	fprintf(stderr,
->  		"Usage: %1$s %2$s probe [COMPONENT] [full] [unprivileged] [macros [prefix PREFIX]]\n"
-> +		"       %1$s %2$s list GROUP\n"
->  		"       %1$s %2$s help\n"
->  		"\n"
->  		"       COMPONENT := { kernel | dev NAME }\n"
-> +		"       GROUP := { prog_types | map_types | attach_types | link_types | helpers }\n"
->  		"       " HELP_SPEC_OPTIONS " }\n"
->  		"",
->  		bin_name, argv[-2]);
-> @@ -1279,6 +1333,7 @@ static int do_help(int argc, char **argv)
->  
->  static const struct cmd cmds[] = {
->  	{ "probe",	do_probe },
-> +	{ "list",	do_list },
->  	{ "help",	do_help },
->  	{ 0 }
->  };
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 1bc496162572..95c1ee525e28 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -5057,8 +5057,10 @@ extern struct btf *btf_vmlinux;
+>  static union {
+>  	struct bpf_ctx_convert {
+>  #define BPF_PROG_TYPE(_id, _name, prog_ctx_type, kern_ctx_type) \
+> -	prog_ctx_type _id##_prog; \
+> -	kern_ctx_type _id##_kern;
+> +		do { \
+> +			prog_ctx_type _id##_prog; \
+> +			kern_ctx_type _id##_kern; \
+> +		} while (0)
+>  #include <linux/bpf_types.h>
+>  #undef BPF_PROG_TYPE
+>  	} *__t;
 > -- 
-> 2.34.1
+> 2.36.1
 > 
-
-The rest looks good to me. Thanks!
-
-Acked-by: Daniel Müller <deso@posteo.net>
