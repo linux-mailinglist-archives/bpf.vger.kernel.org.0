@@ -2,169 +2,313 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D65C560770
-	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 19:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23CC75607EB
+	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 19:56:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbiF2RhM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jun 2022 13:37:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45518 "EHLO
+        id S229925AbiF2R4h (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jun 2022 13:56:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbiF2RhL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jun 2022 13:37:11 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C08773BBD2;
-        Wed, 29 Jun 2022 10:37:10 -0700 (PDT)
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25T5aLcH025121;
-        Wed, 29 Jun 2022 10:36:53 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=x58BXN+PDF95Jq9QefzpwbAjIYBGTx1r2Tt4ak+TMnE=;
- b=Je/ucdYYDRoFHyhkbKgp/GElT5mym669PQuKA4PYPYR5bLDzJEi1Y0DzJATIgoU9te7x
- DwoFkoTahSu3mAlORRl94v+0NYN4+R5Q6fjN6XnD5NE7iedt11tvAj2RiIabf54c4Sdi
- obvM/vVr/TUdS6Hb6Q1TtjZsd7XMYJRzAEA= 
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2168.outbound.protection.outlook.com [104.47.57.168])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3h0691fsaa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Jun 2022 10:36:53 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MeL4+8rHWR0CAQVroXj+DThkGd6SqE24SY5gZkP98c+bR00/X04Tr30YWp/U+rb6R5MAk23M8gHBoEK5I4wCieNWjYtqiWWf2wJmSgfjxZSPGq56T+BYylHOfG7iXLFKfQ7oEI9iUSR1GWA3Fnes4hCKwTlZA0CF+YhtotMBSstMrSsTZfKHA0aoBUOc2rwYhlR4a8xcq6idJIqCajTcn7sokkCdwv2cdaAh659U7jO3rukuyAhp42ZZNfjop9npnplOJXmFJ7xIqfQmngKl7vQzrfckriK3GzQ61z4ifN7uV5SGjrZdz3VgnpjpbYucsQCuRxw4g5WNrUd2W+jmnw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=x58BXN+PDF95Jq9QefzpwbAjIYBGTx1r2Tt4ak+TMnE=;
- b=a28xfpMQumTpJhMDUJdO2IcPkS5jBo/XRlYFRtM0r88tCmdg/Csj6Y0niKccClavUwU7BhauFXiMgSxQ+sLKtv91folcqtWIgkhVlupiXNkUKTjgdDBzscVB/zH5lJ3etebh9wSZD1VlWnOEZm+fDcR8lxsTKnIHejhoBW1wbCKqfoudKT51blOJXaF0ylw540MpSy0RIkehbElJ2QWu9lJpauUnjibiiP6kvGs+YTv69eLlza5XePJzh2Py5ppOaFlcMoj8BZvJgwXVnwTBPrbfsl8ZpTScUkGX5STOZdkP9Yh9sloxLWf5ImYXliGyALcDTihtNi6drSy981wSAQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from MW4PR15MB4475.namprd15.prod.outlook.com (2603:10b6:303:104::16)
- by SA0PR15MB3872.namprd15.prod.outlook.com (2603:10b6:806:91::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5395.14; Wed, 29 Jun
- 2022 17:36:51 +0000
-Received: from MW4PR15MB4475.namprd15.prod.outlook.com
- ([fe80::3941:25c6:c1cd:5762]) by MW4PR15MB4475.namprd15.prod.outlook.com
- ([fe80::3941:25c6:c1cd:5762%7]) with mapi id 15.20.5395.014; Wed, 29 Jun 2022
- 17:36:51 +0000
-Date:   Wed, 29 Jun 2022 10:36:50 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Jules Irenge <jbi.octave@gmail.com>
-Cc:     Elana.Copperman@mobileye.com, Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S231298AbiF2R4f (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jun 2022 13:56:35 -0400
+Received: from mail-pg1-x562.google.com (mail-pg1-x562.google.com [IPv6:2607:f8b0:4864:20::562])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B270C2610E
+        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 10:56:33 -0700 (PDT)
+Received: by mail-pg1-x562.google.com with SMTP id s206so7022837pgs.3
+        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 10:56:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:dkim-signature:mime-version:references
+         :in-reply-to:from:date:message-id:subject:to:cc;
+        bh=vWAvCTXesH+isNf+UwxdBMtz/4FeAjZHg/p3iLUXfgQ=;
+        b=qG55CzriZ0NE3UM4z45KG6tMsJOURZvj4SbsWXLqBUK06EMnb2fbeCDVONd6lffxl1
+         3r+fEBTN3uUCnZ26rivw30neKtmYR97ZwKxGP68fhhlZi+95uEVwzoaQ2pER4dle/CCJ
+         TmA5kIDBAPMJDtZyLNVKFhE+PyQ8x1+WBFjrwkh7uG/AhRq8D1G3RT4rh3M0IodRNJMd
+         05BJMiQAT2Log52y6cYi6jxJtxzxA07tEfxq0r1ncysIyXHJnCWdhCBjp0XLpzpF3RLQ
+         o5HMPxqIHYZZBtNn0aZmJo9T0dqYWUVxshsH73vge2cvdbiUUw0wQUOI9OL0SA7LpvTw
+         l29w==
+X-Gm-Message-State: AJIora+QefXDdr2BfUHXa75uNFunqRmWGjHzHPjpJTidiFNi8SFGmYOs
+        v0jkLGGUcm4/yZ8us30act90J7x20evxWJ/cWBR5Xi1moeFH2g==
+X-Google-Smtp-Source: AGRyM1tdwqUoJ9K9qC4O9jorjqmrKysvkKIVQrOX5N1LH8KhG4uSVTOdMalNHgYtRGtQmbltmxBDJMqUpSse
+X-Received: by 2002:a65:6c0a:0:b0:3fa:c20c:cbe7 with SMTP id y10-20020a656c0a000000b003fac20ccbe7mr3921628pgu.611.1656525393299;
+        Wed, 29 Jun 2022 10:56:33 -0700 (PDT)
+Received: from riotgames.com ([163.116.131.242])
+        by smtp-relay.gmail.com with ESMTPS id lr18-20020a17090b4b9200b001ecf8b35aaasm361902pjb.3.2022.06.29.10.56.29
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Jun 2022 10:56:33 -0700 (PDT)
+X-Relaying-Domain: riotgames.com
+Received: by mail-qk1-f199.google.com with SMTP id i124-20020a37b882000000b006af41a43f76so7673506qkf.6
+        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 10:56:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=riotgames.com; s=riotgames;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vWAvCTXesH+isNf+UwxdBMtz/4FeAjZHg/p3iLUXfgQ=;
+        b=FXoN8kTInIqbo9CRQIb0XtiKLzn/NKB5O3+yfpRUBkI0xloe63Jdn91IOtRFGEnZtM
+         9Yejh2eo3zarDK+cWonwdxlQtKKemLbxP4QIPHOUpF04UJehhZoQYhlyOkq8WnsRxQqr
+         tw+0RNF7Lq04wtzRi//x+1sxIg8FFavqqLfAY=
+X-Received: by 2002:a05:6214:21ec:b0:470:3f54:e846 with SMTP id p12-20020a05621421ec00b004703f54e846mr7713518qvj.58.1656525387597;
+        Wed, 29 Jun 2022 10:56:27 -0700 (PDT)
+X-Received: by 2002:a05:6214:21ec:b0:470:3f54:e846 with SMTP id
+ p12-20020a05621421ec00b004703f54e846mr7713495qvj.58.1656525387268; Wed, 29
+ Jun 2022 10:56:27 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220628194812.1453059-1-alexandr.lobakin@intel.com> <62bbedf07f44a_2181420830@john.notmuch>
+In-Reply-To: <62bbedf07f44a_2181420830@john.notmuch>
+From:   Zvi Effron <zeffron@riotgames.com>
+Date:   Wed, 29 Jun 2022 10:56:16 -0700
+Message-ID: <CAC1LvL0kTesx8bpL3GWe2Q60uT2WthO5dHX7h7bd-UOGOne_Zg@mail.gmail.com>
+Subject: Re: [xdp-hints] Re: [PATCH RFC bpf-next 00/52] bpf, xdp: introduce
+ and use Generic Hints/metadata
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] btf: Fix error of Macros with multiple statements
-Message-ID: <20220629173650.c4e67cmz7jqiadon@kafai-mbp.dhcp.thefacebook.com>
-References: <YryJosfh8z2DhKC0@playground>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YryJosfh8z2DhKC0@playground>
-X-ClientProxiedBy: BYAPR08CA0062.namprd08.prod.outlook.com
- (2603:10b6:a03:117::39) To MW4PR15MB4475.namprd15.prod.outlook.com
- (2603:10b6:303:104::16)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: efadf9a0-5a5e-464e-49ed-08da59f5f3a1
-X-MS-TrafficTypeDiagnostic: SA0PR15MB3872:EE_
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0P/cuaLMLX6rTYuf336ePCouTpnDGuf9o78QtWCWwhDb2WhAweDqC9d41mboY6eW04FXBRPr6fwwfO9IvJADIfNBCNxfZMLZYbPfsPNg6yJVTojBLINmXqLcF73Et8hCkzrDt6sfn6I2tEIgdl6ZGhVeN4qbHgSlcVJ4Hhp2J2uxNg0RKMfjziVaHN1BehAm2wBqiATnTGwGgGT1uldSuitwuR0utzB2ikVC8lpzTdbJsUTGSS75MKUWpJLukUR1yXAir6PNAkpNGP8Xh13M1rFArAy4SF+snpX53BjlUodGIi2c8j9mlNWLJY+eH6VWmpbjPIXSY76h7uSNzzme1zS+MutjxQ5vP+TTR7IH2HPf3gV/aVpnm5P65bjA4nXzVMA391BoduJSh1OmCEBSzKsiVeixkMaZcEZqhuWw5g9vTt5swFmwpfV9Ea5YLQQ4g0sxsqqz2Dw0WtBiA2hfRKZpPUGrx7YrQYPJihCTs7Ynj0+4cMHYwn7JCahE8sQOe+OKcO54CLW9CU80EsMbUMNj94Ru0Cwzmsd30JGHkXWej7GLjwlR+ePv3rDTzr4woBBqTOcV4sKcZnym7K9qdKUzADXfyYDmAf+r62u7LIhDvFOvao8K5z55tk5hMk2aPK0F3Tl+cVkBfXZbSqxQUHcTpMDNyG8QeeYUyx+/uEcus9bweHAeu8d0UNv2Pi8FWFNG1dogpYCm4Fb50cZHD61E88YC9POxSOMY46rok+g=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4475.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(376002)(136003)(396003)(346002)(39860400002)(366004)(38100700002)(186003)(54906003)(1076003)(8936002)(6506007)(6916009)(316002)(66476007)(66556008)(8676002)(66946007)(6512007)(4326008)(9686003)(7416002)(83380400001)(52116002)(5660300002)(41300700001)(2906002)(86362001)(478600001)(6486002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?uK+ZStvZNGd36mzUdaQGacuYNrRQLSr+EB3U+Ua7/8GgNGIsRPPIaBSUR1Sv?=
- =?us-ascii?Q?DPSt0cQpI8H9ID6MuJ+OEquU6i81Z5SanWsWLRwtyHXy9i1ieuLug+uspCZY?=
- =?us-ascii?Q?INYdZR0olTviLx3j2sk/ahoncD7K5btDx56vrqelNx46GVvPicI5wVuqIoJU?=
- =?us-ascii?Q?FU2pe5SMItpBMoYuZfNKKln95iR/mCUmLRQ09VPfPofK96/iZFfJLjkFQpgK?=
- =?us-ascii?Q?TgqTLjy1cn2zyS+69TeicwlrwTECPKxGhPBsBCUqcVyitHygMsTa1swVMytO?=
- =?us-ascii?Q?MQUwey0YlaZbSM2b5aD3KoAH+QaziSB4Sp/3s6kmKg9ppnsUhRWOldBHG7he?=
- =?us-ascii?Q?nPRuT0wmhPLQJiedXxtN8IG1OdBBOn5CPxlbbzuSMEVtX+h8aODkJHZo+ZUO?=
- =?us-ascii?Q?zla65VuPX+vmJkIwe38kRrTe+jTh4QMYJ17r5FNEj9q0YOeUu+Aq3H3bM4GN?=
- =?us-ascii?Q?omYfn7ckg+wmdbwfNHQ+AWACO+L/wVxMSk7mRrjW0OeIc6292/kqoKl0+dkD?=
- =?us-ascii?Q?8BiaUWNUWVFi2BcmEutouKavmLVIfYNp/YghEgQPmqhe0ewyQwFO+mnx1mYg?=
- =?us-ascii?Q?kevEPxtbZ/myNedw7dR37LYe0P+Uxhj0Uq+Tr9GXQjl6oAdnWUqvtH88/puq?=
- =?us-ascii?Q?9Lj/XbedRGkndEGyyyURkXCoQFn+B0vj9FV16TnBuBGuXaSgVn6iQQ8ApIoN?=
- =?us-ascii?Q?3K1c3Zdlm/JBkUI9wMoTzFhTXFuY+SZQAxKUCCkEK/nogLDY7V4TjZwbpyBr?=
- =?us-ascii?Q?DOIVuTQtWvA2CGizB1SYtxeX7KSMp5xSmk6HnBdqm4KEs8eWF6OKa37o5cI6?=
- =?us-ascii?Q?1TRKkK9Y4CQGEp5Qf++52xBV5+yeafvhrhQxLS1E/ZHHAgF1fvamKPVb8pSa?=
- =?us-ascii?Q?Qh+2OBiJqp+jHxB0NcIz4tuRjwpjyAwxnrwNGZOYmLHORUEDppjCDaYGpJlS?=
- =?us-ascii?Q?dQhINs3BUYBjNSx5nO0nEfllbQcLaePxteUcrQxE71sNjTYhHa/+dLjsBjdU?=
- =?us-ascii?Q?ukSuL+snl9MARihEX3HMFXJR8jIRVqrW2I3Yh1jJ53dS0m7OIP64h/abFRcO?=
- =?us-ascii?Q?m2u+p0dLFGkCzgNUmjDCcFtWbFq0v/AutgvI20d/3RgBGHzYKFeomjsdxPU1?=
- =?us-ascii?Q?9Xv7lvg2Nh0nRRkj+bpEq7o02B376S31nzCBDbETObhiMP+Da9oDz9OFyc02?=
- =?us-ascii?Q?/M5bEPIJ/6tjuYQ+ZxzdGVDmP8InItNoBNPbbjBpV/JcPBWkTa/a2Samnkfk?=
- =?us-ascii?Q?XQvs8hssa+b2b/kRXNcWVCTGI5djlXrehE+viI6wYIAWpVsK3yHcU5YXx1kG?=
- =?us-ascii?Q?X5coSS1fOYnAEYQXFVLuNGKRl4LoZTOqwKNf7aUBfCgJBSSGaSvj9PKAa6uG?=
- =?us-ascii?Q?mZX4/7y4dNsboFvp9JygZijtfEgWMcuK46uky8cAeFlq3Qu3hKzD3DmUBKHX?=
- =?us-ascii?Q?lmqvHleYO8QVaEUUOQ57OyT6gix51IxxtzrkcAi4IDdty/2sUVmvk7WNyG1G?=
- =?us-ascii?Q?QYh4tbZYRsY7xV1OA1woXIruWeKjeoAIR3sUlNwr0q58Q1JNJaXqL67cmFLy?=
- =?us-ascii?Q?BzlRHwiZh1SUDky7xOvH876TsarmwaUmcBXknvzuXYqmCdukZbr8jgm34Uml?=
- =?us-ascii?Q?Lw=3D=3D?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: efadf9a0-5a5e-464e-49ed-08da59f5f3a1
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4475.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jun 2022 17:36:51.6733
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KHVOQZ0JStWo6rYwL7M+gk9YYmj3iiaiqgocS4kbayzltY5pcrxuYsutrAfVpyVO
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB3872
-X-Proofpoint-GUID: e6iEIS58VZ9f_5egw6RDE6Xzydj38McY
-X-Proofpoint-ORIG-GUID: e6iEIS58VZ9f_5egw6RDE6Xzydj38McY
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-06-29_18,2022-06-28_01,2022-06-22_01
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Larysa Zaremba <larysa.zaremba@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Toke Hoiland-Jorgensen <toke@redhat.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Yajun Deng <yajun.deng@linux.dev>,
+        Willem de Bruijn <willemb@google.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xdp-hints@xdp-project.net
+Content-Type: text/plain; charset="UTF-8"
+x-netskope-inspected: true
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 29, 2022 at 06:19:30PM +0100, Jules Irenge wrote:
-> This patch fixes an error reported by checkpatch.pl
-No.  It is not a fix.
+On Tue, Jun 28, 2022 at 11:15 PM John Fastabend
+<john.fastabend@gmail.com> wrote:
+>
+> Alexander Lobakin wrote:
+> > This RFC is to give the whole picture. It will most likely be split
+> > onto several series, maybe even merge cycles. See the "table of
+> > contents" below.
+>
+> Even for RFC its a bit much. Probably improve the summary
+> message here as well I'm still not clear on the overall
+> architecture so not sure I want to dig into patches.
+>
+> >
+> > The series adds ability to pass different frame
+> > details/parameters/parameters used by most of NICs and the kernel
+> > stack (in skbs), not essential, but highly wanted, such as:
+> >
+> > * checksum value, status (Rx) or command (Tx);
+> > * hash value and type/level (Rx);
+> > * queue number (Rx);
+> > * timestamps;
+> > * and so on.
+> >
+> > As XDP structures used to represent frames are as small as possible
+> > and must stay like that, it is done by using the already existing
+> > concept of metadata, i.e. some space right before a frame where BPF
+> > programs can put arbitrary data.
+>
+> OK so you stick attributes in the metadata. You can do this without
+> touching anything but your driver today. Why not push a patch to
+> ice to start doing this? People could start using it today and put
+> it in some feature flag.
+>
+> I get everyone wants some grand theory around this but again one
+> patch would do it and your customers could start using it. Show
+> a benchmark with 20% speedup or whatever with small XDP prog
+> update and you win.
+>
+> >
+> > Now, a NIC driver, or even a SmartNIC itself, can put those params
+> > there in a well-defined format. The format is fixed, but can be of
+> > several different types represented by structures, which definitions
+> > are available to the kernel, BPF programs and the userland.
+>
+> I don't think in general the format needs to be fixed.
+>
+> > It is fixed due to it being almost a UAPI, and the exact format can
+> > be determined by reading the last 10 bytes of metadata. They contain
+> > a 2-byte magic ID to not confuse it with a non-compatible meta and
+> > a 8-byte combined BTF ID + type ID: the ID of the BTF where this
+> > structure is defined and the ID of that definition inside that BTF.
+> > Users can obtain BTF IDs by structure types using helpers available
+> > in the kernel, BPF (written by the CO-RE/verifier) and the userland
+> > (libbpf -> kernel call) and then rely on those ID when reading data
+> > to make sure whether they support it and what to do with it.
+> > Why separate magic and ID? The idea is to make different formats
+> > always contain the basic/"generic" structure embedded at the end.
+> > This way we can still benefit in purely generic consumers (like
+> > cpumap) while providing some "extra" data to those who support it.
+>
+> I don't follow this. If you have a struct in your driver name it
+> something obvious, ice_xdp_metadata. If I understand things
+> correctly just dump the BTF for the driver, extract the
+> struct and done you can use CO-RE reads. For the 'fixed' case
+> this looks easy. And I don't think you even need a patch for this.
+>
+> >
+> > The enablement of this feature is controlled on attaching/replacing
+> > XDP program on an interface with two new parameters: that combined
+> > BTF+type ID and metadata threshold.
+> > The threshold specifies the minimum frame size which a driver (or
+> > NIC) should start composing metadata from. It is introduced instead
+> > of just false/true flag due to that often it's not worth it to spend
+> > cycles to fetch all that data for such small frames: let's say, it
+> > can be even faster to just calculate checksums for them on CPU
+> > rather than touch non-coherent DMA zone. Simple XDP_DROP case loses
+> > 15 Mpps on 64 byte frames with enabled metadata, threshold can help
+> > mitigate that.
+>
+> I would put this in the bonus category. Can you do the simple thing
+> above without these extra bits and then add them later. Just
+> pick some overly conservative threshold to start with.
+>
+> >
+> > The RFC can be divided into 8 parts:
+>
+> I'm missing something why not do the simplest bit of work and
+> get this running in ice with a few smallish driver updates
+> so we can all see it. No need for so many patches.
+>
+> >
+> > 01-04: BTF ID hacking: here Larysa provides BPF programs with not
+> > only type ID, but the ID of the BTF as well by using the
+> > unused upper 32 bits.
+> > 05-10: this provides in-kernel mechanisms for taking ID and
+> > threshold from the userspace and passing it to the drivers.
+> > 11-18: provides libbpf API to be able to specify those params from
+> > the userspace, plus some small selftest to verify that both
+> > the kernel and the userspace parts work.
+> > 19-29: here the actual structure is defined, then the in-kernel
+> > helpers and finally here comes the first consumer: function
+> > used to convert &xdp_frame to &sk_buff now will be trying
+> > to parse metadata. The affected users are cpumap and veth.
+> > 30-36: here I try to benefit from the metadata in cpumap even more
+> > by switching it to GRO. Now that we have checksums from NIC
+> > available... but even with no meta it gives some fair
+> > improvements.
+> > 37-43: enabling building generic metadata on Generic/skb path. Since
+> > skbs already have all those fields, it's not a problem to do
+> > this in here, plus allows to benefit from it on interfaces
+> > not supporting meta yet.
+> > 44-47: ice driver part, including enabling prog hot-swap;
+> > 48-52: adds a complex selftest to verify everything works. Can be
+> > used as a sample as well, showing how to work with metadata
+> > in BPF programs and how to configure it from the userspace.
+> >
+> > Please refer to the actual commit messages where some precise
+> > implementation details might be explained.
+> > Nearly 20 of 52 are various cleanups and prereqs, as usually.
+> >
+> > Perf figures were taken on cpumap redirect from the ice interface
+> > (driver-side XDP), redirecting the traffic within the same node.
+> >
+> > Frame size / 64/42 128/20 256/8 512/4 1024/2 1532/1
+> > thread num
+>
+> You'll have to remind me whats the production use case for
+> cpu_map on a modern nic or even smart nic? Why are you not
+> just using a hardware queues and redirecting to the right
+> queues in hardware to start with?
+>
+> Also my understanding is if you do XDP_PASS up the stack
+> the skb is built with all the normal good stuff from hw
+> descriptor. Sorry going to need some extra context here
+> to understand.
+>
+> Could you do a benchmark for AF_XDP I thought this was
+> the troublesome use case where the user space ring lost
+> the hardware info e.g. timestamps and checksum values.
+>
+> >
+> > meta off 30022 31350 21993 12144 6374 3610
+> > meta on 33059 28502 21503 12146 6380 3610
+> > GRO meta off 30020 31822 21970 12145 6384 3610
+> > GRO meta on 34736 28848 21566 12144 6381 3610
+> >
+> > Yes, redirect between the nodes plays awfully with the metadata
+> > composed by the driver:
+>
+> Many production use case use XDP exactly for this. If it
+> slows this basic use case down its going to be very hard
+> to use in many environments. Likely it wont be used.
+>
+> >
+> > meta off 21449 18078 16897 11820 6383 3610
+> > meta on 16956 19004 14337 8228 5683 2822
+> > GRO meta off 22539 19129 16304 11659 6381 3592
+> > GRO meta on 17047 20366 15435 8878 5600 2753
+>
+> Do you have hardware that can write the data into the
+> metadata region so you don't do it in software? Seems
+> like it should be doable without much trouble and would
+> make this more viable.
+>
+> >
+> > Questions still open:
+> >
+> > * the actual generic structure: it must have all the fields used
+> > oftenly and by the majority of NICs. It can always be expanded
+> > later on (note that the structure grows to the left), but the
+> > less often UAPI is modified, the better (less compat pain);
+>
+> I don't believe a generic structure is needed.
+>
+> > * ability to specify the exact fields to fill by the driver, e.g.
+> > flags bitmap passed from the userspace. In theory it can be more
+> > optimal to not spend cycles on data we don't need, but at the
+> > same time increases the complexity of the whole concept (e.g. it
+> > will be more problematic to unify drivers' routines for collecting
+> > data from descriptors to metadata and to skbs);
+> > * there was an idea to be able to specify from the userspace the
+> > desired cacheline offset, so that [the wanted fields of] metadata
+> > and the packet headers would lay in the same CL. Can't be
+> > implemented in Generic/skb XDP and ice has some troubles with it
+> > too;
+> > * lacks AF_XDP/XSk perf numbers and different other scenarios in
+> > general, is the current implementation optimal for them?
+>
+> AF_XDP is the primary use case from my understanding.
+>
 
-Have you at least compiler tested it ?
+AF_XDP is a use case, and might be the primary, but we work with pure XDP and
+have been waiting for the ability to take advantage of the hardware checksums
+for years. It would be a very large performance boost for us (in theory) as
+we're currently having to verify the checksums ourselves in software, and
+recompute them on modifications (since we can't use hardware TX checksums).
 
-> 
-> ERROR: Macros with multiple statements should be
-> enclosed in a do while loop
-> 
-> To fix this a do while(0) loop is used
-> to encloses the multiple statements.
-> 
-> Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
-> ---
->  kernel/bpf/btf.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 1bc496162572..95c1ee525e28 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -5057,8 +5057,10 @@ extern struct btf *btf_vmlinux;
->  static union {
->  	struct bpf_ctx_convert {
->  #define BPF_PROG_TYPE(_id, _name, prog_ctx_type, kern_ctx_type) \
-> -	prog_ctx_type _id##_prog; \
-> -	kern_ctx_type _id##_kern;
-> +		do { \
-> +			prog_ctx_type _id##_prog; \
-> +			kern_ctx_type _id##_kern; \
-> +		} while (0)
->  #include <linux/bpf_types.h>
->  #undef BPF_PROG_TYPE
->  	} *__t;
-> -- 
-> 2.36.1
-> 
+Also, if I understand correctly, if the functionality is available to pure XDP,
+AF_XDP could benefit from it by having the XDP program that redirects to AF_XDP
+copy it into metadata where AF_XDP can find it because of the user defined
+contract between the XDP program and the userspace program? (Not as efficient,
+obviously, and duplicative, but would work, I think.)
+
+> > * metadata threshold and everything else present in this
+> > implementation.
+>
+> I really think your asking questions that are two or three
+> jumps away. Why not do the simplest bit first and kick
+> the driver with an on/off switch into this mode. But
+> I don't understand this cpumap use case so maybe explain
+> that first.
+>
+> And sorry didn't even look at your 50+ patches. Figure lets
+> get agreement on the goal first.
+>
+> .John
