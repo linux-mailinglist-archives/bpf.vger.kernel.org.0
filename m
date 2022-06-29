@@ -2,267 +2,257 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0362356074C
-	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 19:21:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 401E7560761
+	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 19:33:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231727AbiF2RVV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jun 2022 13:21:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35556 "EHLO
+        id S229916AbiF2RdE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jun 2022 13:33:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231534AbiF2RVT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jun 2022 13:21:19 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CED53D4AC
-        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 10:21:14 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id o4so19546154wrh.3
-        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 10:21:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nInAPILD3692be6/y628T5ZOhov3cRKSkyl8DeThGPY=;
-        b=UQi8uFO+M1aKaBOu8TKJXiIYUckj3dIU9ZpjE7hQDdAuLKvJAX/cKOWaCZYufPprH8
-         L28XegoX6Qc/t0G2kUvdWuVsTAfEkjiC/dndALnW27rwkPa9Kd0oYlgykIal6NiAnYFh
-         uWchij7wsEkKgEtN08lIEBkgG9N/5xV0X1ikiGLeRw65kycX4ukmDhfYW9U1xk/+byrp
-         C6LhLm1le7UZ10glgIvTYKuLtIg674v4z7JYQWINZpKxuusjuR0b1izmHUszMUX295qD
-         lH6ZG7ky8gt0r1zxQw17AyOMCe1i3R/Ph1wsvxdTZnlW2NqM7hFv565s/CtJ+ADoXW60
-         5/1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nInAPILD3692be6/y628T5ZOhov3cRKSkyl8DeThGPY=;
-        b=ZoiFeix0domVmtaPCiIb9zzc9Cbm4o5SzIFi6D9U22vkANKQTPoVaTisYVp8r97sRl
-         +DXrzfX+2g/gPyTqmHS3H57vAjox1vRCIU5nptIftChT7VbRnmMXwiFvf7A3YEt+tKHK
-         94NuKCB6VjXqWH4Ns75YKmtrptqbcVccMxDvYq9cH+b8tmNrTEJYCRNLri3PXOcQExxK
-         BQffLZ9sSwVU3GH1egf4ivuyAE0XI4AV93z5GFgnsUVTUn4n4KPbm7lAwQuNhbByjW0z
-         apqBHvDcO7+1VAFF9/vVZNKFD9OrWLZqz9K+2GLVQxn1FWuFQs1Ns1NOeCRQvYxOXl1r
-         6Wjg==
-X-Gm-Message-State: AJIora8VkaxkDxZboQ0zNuQUHlrNpp0O7rGjQq+RMBXtkbpKWIIgtmG5
-        H/FovP9HRR+EQtWiI+0JR3zPTz7fHYAD7SCMpcnM
-X-Google-Smtp-Source: AGRyM1vXOyGFovBjiH3CIANoqUaTBKffwn4W6SbJ7Mcn1OAirKgPULZXM1izVfn/GLdRFThsAiV8fyBK21HG8tYQHPI=
-X-Received: by 2002:a5d:6645:0:b0:21d:17c3:e10e with SMTP id
- f5-20020a5d6645000000b0021d17c3e10emr4159151wrw.483.1656523272969; Wed, 29
- Jun 2022 10:21:12 -0700 (PDT)
+        with ESMTP id S229635AbiF2RdD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jun 2022 13:33:03 -0400
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 962513C737
+        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 10:33:01 -0700 (PDT)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id CB00B24010F
+        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 19:32:59 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1656523979; bh=e3UzcE0gZuntK9S7N3Iw3VSU7kivNeJItC7WAz+6ZSo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=aXBgghT8mruOHsw4wFPD4TPJfga4YfY6neUNy6u6aw7nBQMWNBwOc2j28OQ4OVLiN
+         coIuAGAoDwKXZ2o6TgFD5O56xKnLefQHtrCVsi4vqMnG1wbDHC9GGv+1AuSDwcGGAl
+         kmcEzGQVYnBO/42I2O/Yqs/4A4DeJ/wlDonihQ/0S9qqdmCoLqwVe6IkhJyNziaFBj
+         4Noxa6CjAvL7lPtVrG3iaSUKZfH0Ys7WE5b/ErdI+sD1zZvOqFxMmc/bEMQlwIMfNx
+         lWUKfP8xwJbpDHS4n/jzBq3ITdwGHm+QGkFkPETCsKD7keCKx57Bm0GfltxlMB6Nh3
+         vB2qxDkkKoPsw==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4LY7pG6kRwz9rxQ;
+        Wed, 29 Jun 2022 19:32:54 +0200 (CEST)
+Date:   Wed, 29 Jun 2022 17:32:51 +0000
+From:   Daniel =?utf-8?Q?M=C3=BCller?= <deso@posteo.net>
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next 1/2] bpftool: Add feature list
+ (prog/map/link/attach types, helpers)
+Message-ID: <20220629173251.zk33plyiqsrkfpzg@muellerd-fedora-MJ0AC3F3>
+References: <20220629144019.75181-1-quentin@isovalent.com>
+ <20220629144019.75181-2-quentin@isovalent.com>
 MIME-Version: 1.0
-References: <00000000000065911f05e294e691@google.com>
-In-Reply-To: <00000000000065911f05e294e691@google.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 29 Jun 2022 13:21:02 -0400
-Message-ID: <CAHC9VhSDOhCz8L=sAR49RzHXWj0V3q5gDSLzp9AQwHWR+n8XtA@mail.gmail.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in selinux_socket_recvmsg
-To:     syzbot <syzbot+04b20e641c99a5d99ac2@syzkaller.appspotmail.com>
-Cc:     andrii@kernel.org, anton@enomsg.org, ast@kernel.org,
-        bpf@vger.kernel.org, ccross@android.com, daniel@iogearbox.net,
-        eparis@parisplace.org, john.fastabend@gmail.com, kafai@fb.com,
-        keescook@chromium.org, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        selinux@vger.kernel.org, songliubraving@fb.com,
-        stephen.smalley.work@gmail.com, syzkaller-bugs@googlegroups.com,
-        tony.luck@intel.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20220629144019.75181-2-quentin@isovalent.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 29, 2022 at 8:00 AM syzbot
-<syzbot+04b20e641c99a5d99ac2@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    941e3e791269 Merge tag 'for_linus' of git://git.kernel.org..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=175b3f90080000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3a010dbf6a7af480
-> dashboard link: https://syzkaller.appspot.com/bug?extid=04b20e641c99a5d99ac2
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+04b20e641c99a5d99ac2@syzkaller.appspotmail.com
->
-> ==================================================================
-> BUG: KASAN: use-after-free in sock_has_perm security/selinux/hooks.c:4535 [inline]
-> BUG: KASAN: use-after-free in selinux_socket_recvmsg+0x278/0x2b0 security/selinux/hooks.c:4899
-> Read of size 8 at addr ffff8880787ec480 by task syz-executor.3/5491
-
-Despite the SELinux functions listed above, it looks like this may be
-an issue with the netrom code calling sock_put() too many times.  I
-know very little about netrom, but I wonder if the issue might be
-nr_heartbeat_expiry() calling nr_destroy_socket(), which could drop a
-reference to the sock, and then calling sock_put() at the end of
-nr_heartbeat_expiry() potentially resulting in the sock being released
-prematurely.
-
-> CPU: 0 PID: 5491 Comm: syz-executor.3 Not tainted 5.19.0-rc4-syzkaller-00014-g941e3e791269 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
->  print_address_description.constprop.0.cold+0xeb/0x467 mm/kasan/report.c:313
->  print_report mm/kasan/report.c:429 [inline]
->  kasan_report.cold+0xf4/0x1c6 mm/kasan/report.c:491
->  sock_has_perm security/selinux/hooks.c:4535 [inline]
->  selinux_socket_recvmsg+0x278/0x2b0 security/selinux/hooks.c:4899
->  security_socket_recvmsg+0x5c/0xc0 security/security.c:2223
->  sock_recvmsg net/socket.c:1011 [inline]
->  ____sys_recvmsg+0x23b/0x600 net/socket.c:2711
->  ___sys_recvmsg+0x127/0x200 net/socket.c:2753
->  do_recvmmsg+0x254/0x6d0 net/socket.c:2847
->  __sys_recvmmsg net/socket.c:2926 [inline]
->  __do_sys_recvmmsg net/socket.c:2949 [inline]
->  __se_sys_recvmmsg net/socket.c:2942 [inline]
->  __x64_sys_recvmmsg+0x20b/0x260 net/socket.c:2942
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x46/0xb0
-> RIP: 0033:0x7fa488689109
-> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007fa4875dd168 EFLAGS: 00000246 ORIG_RAX: 000000000000012b
-> RAX: ffffffffffffffda RBX: 00007fa48879c100 RCX: 00007fa488689109
-> RDX: 00000000000005dd RSI: 0000000020000540 RDI: 0000000000000004
-> RBP: 00007fa4886e305d R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000040012062 R11: 0000000000000246 R12: 0000000000000000
-> R13: 00007ffd8d55b81f R14: 00007fa4875dd300 R15: 0000000000022000
->  </TASK>
->
-> Allocated by task 5468:
->  kasan_save_stack+0x1e/0x40 mm/kasan/common.c:38
->  kasan_set_track mm/kasan/common.c:45 [inline]
->  set_alloc_info mm/kasan/common.c:436 [inline]
->  ____kasan_kmalloc mm/kasan/common.c:515 [inline]
->  ____kasan_kmalloc mm/kasan/common.c:474 [inline]
->  __kasan_kmalloc+0xa6/0xd0 mm/kasan/common.c:524
->  kasan_kmalloc include/linux/kasan.h:234 [inline]
->  __do_kmalloc mm/slab.c:3696 [inline]
->  __kmalloc+0x209/0x4d0 mm/slab.c:3705
->  kmalloc include/linux/slab.h:605 [inline]
->  sk_prot_alloc+0x110/0x290 net/core/sock.c:1975
->  sk_alloc+0x36/0x770 net/core/sock.c:2028
->  nr_create+0xb2/0x5f0 net/netrom/af_netrom.c:433
->  __sock_create+0x353/0x790 net/socket.c:1515
->  sock_create net/socket.c:1566 [inline]
->  __sys_socket_create net/socket.c:1603 [inline]
->  __sys_socket_create net/socket.c:1588 [inline]
->  __sys_socket+0x12f/0x240 net/socket.c:1636
->  __do_sys_socket net/socket.c:1649 [inline]
->  __se_sys_socket net/socket.c:1647 [inline]
->  __x64_sys_socket+0x6f/0xb0 net/socket.c:1647
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x46/0xb0
->
-> Freed by task 15:
->  kasan_save_stack+0x1e/0x40 mm/kasan/common.c:38
->  kasan_set_track+0x21/0x30 mm/kasan/common.c:45
->  kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:370
->  ____kasan_slab_free mm/kasan/common.c:366 [inline]
->  ____kasan_slab_free+0x13d/0x180 mm/kasan/common.c:328
->  kasan_slab_free include/linux/kasan.h:200 [inline]
->  __cache_free mm/slab.c:3425 [inline]
->  kfree+0x113/0x310 mm/slab.c:3796
->  sk_prot_free net/core/sock.c:2011 [inline]
->  __sk_destruct+0x5e5/0x710 net/core/sock.c:2097
->  sk_destruct net/core/sock.c:2112 [inline]
->  __sk_free+0x1a4/0x4a0 net/core/sock.c:2123
->  sk_free+0x78/0xa0 net/core/sock.c:2134
->  sock_put include/net/sock.h:1927 [inline]
->  nr_heartbeat_expiry+0x2de/0x460 net/netrom/nr_timer.c:148
->  call_timer_fn+0x1a5/0x6b0 kernel/time/timer.c:1474
->  expire_timers kernel/time/timer.c:1519 [inline]
->  __run_timers.part.0+0x679/0xa80 kernel/time/timer.c:1790
->  __run_timers kernel/time/timer.c:1768 [inline]
->  run_timer_softirq+0xb3/0x1d0 kernel/time/timer.c:1803
->  __do_softirq+0x29b/0x9c2 kernel/softirq.c:571
->
-> The buggy address belongs to the object at ffff8880787ec000
->  which belongs to the cache kmalloc-2k of size 2048
-> The buggy address is located 1152 bytes inside of
->  2048-byte region [ffff8880787ec000, ffff8880787ec800)
->
-> The buggy address belongs to the physical page:
-> page:ffffea0001e1fb00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x787ec
-> flags: 0xfff00000000200(slab|node=0|zone=1|lastcpupid=0x7ff)
-> raw: 00fff00000000200 ffffea000099a248 ffffea0001e40888 ffff888011840800
-> raw: 0000000000000000 ffff8880787ec000 0000000100000001 0000000000000000
-> page dumped because: kasan: bad access detected
-> page_owner tracks the page as allocated
-> page last allocated via order 0, migratetype Unmovable, gfp_mask 0x3420c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_COMP|__GFP_HARDWALL|__GFP_THISNODE), pid 5390, tgid 5382 (syz-executor.5), ts 476769442431, free_ts 475866169421
->  prep_new_page mm/page_alloc.c:2456 [inline]
->  get_page_from_freelist+0x1290/0x3b70 mm/page_alloc.c:4198
->  __alloc_pages+0x1c7/0x510 mm/page_alloc.c:5426
->  __alloc_pages_node include/linux/gfp.h:587 [inline]
->  kmem_getpages mm/slab.c:1363 [inline]
->  cache_grow_begin+0x75/0x350 mm/slab.c:2569
->  cache_alloc_refill+0x27f/0x380 mm/slab.c:2942
->  ____cache_alloc mm/slab.c:3024 [inline]
->  ____cache_alloc mm/slab.c:3007 [inline]
->  __do_cache_alloc mm/slab.c:3253 [inline]
->  slab_alloc mm/slab.c:3295 [inline]
->  __do_kmalloc mm/slab.c:3694 [inline]
->  __kmalloc_track_caller+0x3b0/0x4d0 mm/slab.c:3711
->  __do_krealloc mm/slab_common.c:1185 [inline]
->  krealloc+0x87/0xf0 mm/slab_common.c:1218
->  krealloc_array include/linux/slab.h:660 [inline]
->  snd_pcm_hw_rule_add+0x41c/0x590 sound/core/pcm_lib.c:1133
->  snd_pcm_hw_constraints_init sound/core/pcm_native.c:2582 [inline]
->  snd_pcm_open_substream+0x958/0x1820 sound/core/pcm_native.c:2733
->  snd_pcm_oss_open_file sound/core/oss/pcm_oss.c:2454 [inline]
->  snd_pcm_oss_open.part.0+0x6dc/0x1320 sound/core/oss/pcm_oss.c:2535
->  snd_pcm_oss_open+0x3c/0x50 sound/core/oss/pcm_oss.c:2499
->  soundcore_open+0x44e/0x620 sound/sound_core.c:593
->  chrdev_open+0x266/0x770 fs/char_dev.c:414
->  do_dentry_open+0x4a1/0x11f0 fs/open.c:848
->  do_open fs/namei.c:3520 [inline]
->  path_openat+0x1c71/0x2910 fs/namei.c:3653
->  do_filp_open+0x1aa/0x400 fs/namei.c:3680
->  do_sys_openat2+0x16d/0x4c0 fs/open.c:1278
-> page last free stack trace:
->  reset_page_owner include/linux/page_owner.h:24 [inline]
->  free_pages_prepare mm/page_alloc.c:1371 [inline]
->  free_pcp_prepare+0x549/0xd20 mm/page_alloc.c:1421
->  free_unref_page_prepare mm/page_alloc.c:3343 [inline]
->  free_unref_page+0x19/0x6a0 mm/page_alloc.c:3438
->  kasan_depopulate_vmalloc_pte+0x5c/0x70 mm/kasan/shadow.c:359
->  apply_to_pte_range mm/memory.c:2625 [inline]
->  apply_to_pmd_range mm/memory.c:2669 [inline]
->  apply_to_pud_range mm/memory.c:2705 [inline]
->  apply_to_p4d_range mm/memory.c:2741 [inline]
->  __apply_to_page_range+0x686/0x1030 mm/memory.c:2775
->  kasan_release_vmalloc+0xa7/0xc0 mm/kasan/shadow.c:469
->  __purge_vmap_area_lazy+0x8f9/0x1c50 mm/vmalloc.c:1722
->  drain_vmap_area_work+0x52/0xe0 mm/vmalloc.c:1751
->  process_one_work+0x996/0x1610 kernel/workqueue.c:2289
->  worker_thread+0x665/0x1080 kernel/workqueue.c:2436
->  kthread+0x2e9/0x3a0 kernel/kthread.c:376
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:302
->
-> Memory state around the buggy address:
->  ffff8880787ec380: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->  ffff8880787ec400: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> >ffff8880787ec480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->                    ^
->  ffff8880787ec500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->  ffff8880787ec580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> ==================================================================
->
->
+On Wed, Jun 29, 2022 at 03:40:18PM +0100, Quentin Monnet wrote:
+> Add a "bpftool feature list" subcommand to list BPF "features".
+> Contrarily to "bpftool feature probe", this is not about the features
+> available on the system. Instead, it lists all features known to bpftool
+> from compilation time; in other words, all program, map, attach, link
+> types known to the libbpf version in use, and all helpers found in the
+> UAPI BPF header.
+> 
+> The first use case for this feature is bash completion: running the
+> command provides a list of types that can be used to produce the list of
+> candidate map types, for example.
+> 
+> Now that bpftool uses "standard" names provided by libbpf for the
+> program, map, link, and attach types, having the ability to list these
+> types and helpers could also be useful in scripts to loop over existing
+> items.
+> 
+> Sample output:
+> 
+>     # bpftool feature list prog_types | grep -vw unspec | head -n 6
+>     socket_filter
+>     kprobe
+>     sched_cls
+>     sched_act
+>     tracepoint
+>     xdp
+> 
+>     # bpftool -p feature list map_types | jq '.[1]'
+>     "hash"
+> 
+>     # bpftool feature list attach_types | grep '^cgroup_'
+>     cgroup_inet_ingress
+>     cgroup_inet_egress
+>     [...]
+>     cgroup_inet_sock_release
+> 
+>     # bpftool feature list helpers | grep -vw bpf_unspec | wc -l
+>     207
+> 
+> The "unspec" types and helpers are not filtered out by bpftool, so as to
+> remain closer to the enums, and to preserve the indices in the JSON
+> arrays (e.g. "hash" at index 1 == BPF_MAP_TYPE_HASH in map types list).
+> 
+> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
 > ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>  .../bpftool/Documentation/bpftool-feature.rst | 12 ++++
+>  tools/bpf/bpftool/bash-completion/bpftool     |  7 ++-
+>  tools/bpf/bpftool/feature.c                   | 55 +++++++++++++++++++
+>  3 files changed, 73 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/bpf/bpftool/Documentation/bpftool-feature.rst b/tools/bpf/bpftool/Documentation/bpftool-feature.rst
+> index 4ce9a77bc1e0..4bf1724d0e8c 100644
+> --- a/tools/bpf/bpftool/Documentation/bpftool-feature.rst
+> +++ b/tools/bpf/bpftool/Documentation/bpftool-feature.rst
+> @@ -24,9 +24,11 @@ FEATURE COMMANDS
+>  ================
+>  
+>  |	**bpftool** **feature probe** [*COMPONENT*] [**full**] [**unprivileged**] [**macros** [**prefix** *PREFIX*]]
+> +|	**bpftool** **feature list** *GROUP*
+>  |	**bpftool** **feature help**
+>  |
+>  |	*COMPONENT* := { **kernel** | **dev** *NAME* }
+> +|	*GROUP* := { **prog_types** | **map_types** | **attach_types** | **helpers** }
 
--- 
-paul-moore.com
+Is **link_types** missing from this enumeration?
+
+
+>  DESCRIPTION
+>  ===========
+> @@ -70,6 +72,16 @@ DESCRIPTION
+>  		  The keywords **full**, **macros** and **prefix** have the
+>  		  same role as when probing the kernel.
+>  
+> +	**bpftool feature list** *GROUP*
+> +		  List items known to bpftool. These can be BPF program types
+> +		  (**prog_types**), BPF map types (**map_types**), attach types
+> +		  (**attach_types**), link types (**link_types**), or BPF helper
+> +		  functions (**helpers**). The command does not probe the system, but
+> +		  simply lists the elements that bpftool knows from compilation time,
+> +		  as provided from libbpf (for all object types) or from the BPF UAPI
+> +		  header (list of helpers). This can be used in scripts to iterate over
+> +		  BPF types or helpers.
+> +
+>  	**bpftool feature help**
+>  		  Print short help message.
+>  
+> diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
+> index 91f89a9a5b36..9cef6516320b 100644
+> --- a/tools/bpf/bpftool/bash-completion/bpftool
+> +++ b/tools/bpf/bpftool/bash-completion/bpftool
+> @@ -1175,9 +1175,14 @@ _bpftool()
+>                      _bpftool_once_attr 'full unprivileged'
+>                      return 0
+>                      ;;
+> +                list)
+> +                    [[ $prev != "$command" ]] && return 0
+> +                    COMPREPLY=( $( compgen -W 'prog_types map_types \
+> +                        attach_types link_types helpers' -- "$cur" ) )
+> +                    ;;
+>                  *)
+>                      [[ $prev == $object ]] && \
+> -                        COMPREPLY=( $( compgen -W 'help probe' -- "$cur" ) )
+> +                        COMPREPLY=( $( compgen -W 'help list probe' -- "$cur" ) )
+>                      ;;
+>              esac
+>              ;;
+> diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
+> index bac4ef428a02..576cc6b90c6a 100644
+> --- a/tools/bpf/bpftool/feature.c
+> +++ b/tools/bpf/bpftool/feature.c
+> @@ -1258,6 +1258,58 @@ static int do_probe(int argc, char **argv)
+>  	return 0;
+>  }
+>  
+> +static const char *get_helper_name(unsigned int id)
+> +{
+> +	if (id >= ARRAY_SIZE(helper_name))
+> +		return NULL;
+> +
+> +	return helper_name[id];
+> +}
+> +
+> +static int do_list(int argc, char **argv)
+> +{
+> +	const char *(*get_name)(unsigned int id);
+> +	unsigned int id = 0;
+> +
+> +	if (argc < 1)
+> +		usage();
+> +
+> +	if (is_prefix(*argv, "prog_types")) {
+> +		get_name = (const char *(*)(unsigned int))libbpf_bpf_prog_type_str;
+> +	} else if (is_prefix(*argv, "map_types")) {
+> +		get_name = (const char *(*)(unsigned int))libbpf_bpf_map_type_str;
+> +	} else if (is_prefix(*argv, "attach_types")) {
+> +		get_name = (const char *(*)(unsigned int))libbpf_bpf_attach_type_str;
+> +	} else if (is_prefix(*argv, "link_types")) {
+> +		get_name = (const char *(*)(unsigned int))libbpf_bpf_link_type_str;
+> +	} else if (is_prefix(*argv, "helpers")) {
+> +		get_name = get_helper_name;
+> +	} else {
+> +		p_err("expected 'prog_types', 'map_types', 'attach_types', 'link_types' or 'helpers', got: %s", *argv);
+> +		return -1;
+> +	}
+> +
+> +	if (json_output)
+> +		jsonw_start_array(json_wtr);	/* root array */
+> +
+> +	while (true) {
+> +		const char *name;
+> +
+> +		name = get_name(id++);
+> +		if (!name)
+> +			break;
+> +		if (json_output)
+> +			jsonw_string(json_wtr, name);
+> +		else
+> +			printf("%s\n", name);
+> +	}
+> +
+> +	if (json_output)
+> +		jsonw_end_array(json_wtr);	/* root array */
+> +
+> +	return 0;
+> +}
+> +
+>  static int do_help(int argc, char **argv)
+>  {
+>  	if (json_output) {
+> @@ -1267,9 +1319,11 @@ static int do_help(int argc, char **argv)
+>  
+>  	fprintf(stderr,
+>  		"Usage: %1$s %2$s probe [COMPONENT] [full] [unprivileged] [macros [prefix PREFIX]]\n"
+> +		"       %1$s %2$s list GROUP\n"
+>  		"       %1$s %2$s help\n"
+>  		"\n"
+>  		"       COMPONENT := { kernel | dev NAME }\n"
+> +		"       GROUP := { prog_types | map_types | attach_types | link_types | helpers }\n"
+>  		"       " HELP_SPEC_OPTIONS " }\n"
+>  		"",
+>  		bin_name, argv[-2]);
+> @@ -1279,6 +1333,7 @@ static int do_help(int argc, char **argv)
+>  
+>  static const struct cmd cmds[] = {
+>  	{ "probe",	do_probe },
+> +	{ "list",	do_list },
+>  	{ "help",	do_help },
+>  	{ 0 }
+>  };
+> -- 
+> 2.34.1
+> 
+
+The rest looks good to me. Thanks!
+
+Acked-by: Daniel Müller <deso@posteo.net>
