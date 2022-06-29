@@ -2,149 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71A5C55F7AD
-	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 09:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C843655F894
+	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 09:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232953AbiF2HDZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jun 2022 03:03:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40562 "EHLO
+        id S232459AbiF2HMb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jun 2022 03:12:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232672AbiF2HDE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jun 2022 03:03:04 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E7D13BBCE;
-        Wed, 29 Jun 2022 00:00:26 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id x1-20020a17090abc8100b001ec7f8a51f5so18432197pjr.0;
-        Wed, 29 Jun 2022 00:00:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=FKirbHGv5NE/OGlSscdI5eG/5EMr2lgsHSJcWhi887Q=;
-        b=goBcePxgKcTn948PlfCdpZwfDfETzd2hGB4Pi1rtLCrg3LyScUNbU/6527qUqly074
-         eWl9f+RNsQMjv+r9OoFM8PlJPNAjOHZT2zelvBLwz2ov6/865bFPv6nsCbo02Wy6rg2q
-         FkDUdK9oV/ky9ZcHCSmd6O2fizd++Py6bmLWAegUYMgFBwEWKLcuR6pLK5IV9R0/78qx
-         cKtWJEe2V9ViWbLJgAfQCW2/ohnroJxOJpLPvnomctSQbqwX3kG8r3AHaYm9QjVKz153
-         hWZ755dA2/7Hx9IqIKrgQzZ0khNcb9jZZDqryk55XTmjxWrG7addv6AQQWtLQx7RCVA8
-         ahCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=FKirbHGv5NE/OGlSscdI5eG/5EMr2lgsHSJcWhi887Q=;
-        b=KIRagy8K1MtFmewiLeAf6fU3VHNLdCSYdEUyDi2WjZ0Fr++INPL86tPaG+p6b+08lJ
-         Bpf7AlohLwAcCYC9HHZNp33Zv1oopc9OhvpHvSYc95MsDK4M2XreWu4AcchYTZlQYZJV
-         WImQkO7bsAKBa3y+FwqWvArC0goa6N9dYT2TQ0avUvDfcr5chy/OYHhL6uFjCj54YnKz
-         VcXvuUtSVujI4Ptt/2TN7BgXKYINMX4PVz14CS+iTj6+jlsZOtRd3G3F/Sz4nuIFNMOd
-         hBjoMhXx0ma+DSH7Ryj8lCkn69HoKNPdo+z0hbPYWPKxrc6IWshjHTU+dF3HczWxW1Jo
-         +xjw==
-X-Gm-Message-State: AJIora8DDqDe3rH9ElrtFj2z+4UOAVafnK+v99bcBlq6Z0YKTy9rfrwD
-        8PV5KfbbjslOor7hzPxaTl4=
-X-Google-Smtp-Source: AGRyM1tT72CXyzhWfLUwxOjz4tkjA09Aw1cSPowmdrMLA5o7vMNq1tJD9r9rvKq73Kuv/1CSzYk86Q==
-X-Received: by 2002:a17:902:8690:b0:16a:61e9:b9ca with SMTP id g16-20020a170902869000b0016a61e9b9camr7690250plo.126.1656486026094;
-        Wed, 29 Jun 2022 00:00:26 -0700 (PDT)
-Received: from localhost ([98.97.119.237])
-        by smtp.gmail.com with ESMTPSA id jf17-20020a17090b175100b001ec86a0490csm1141594pjb.32.2022.06.29.00.00.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jun 2022 00:00:25 -0700 (PDT)
-Date:   Wed, 29 Jun 2022 00:00:15 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Julien Salleyron <julien.salleyron@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Marc Vertes <mvertes@free.fr>
-Message-ID: <62bbf87f16223_2181420853@john.notmuch>
-In-Reply-To: <20220628103424.5330e046@kernel.org>
-References: <20220628152505.298790-1-julien.salleyron@gmail.com>
- <20220628103424.5330e046@kernel.org>
-Subject: Re: [PATCH] net: tls: fix tls with sk_redirect using a BPF verdict.
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229656AbiF2HMY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jun 2022 03:12:24 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC2EEE20
+        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 00:12:23 -0700 (PDT)
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25SNDeHg006942
+        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 00:12:22 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=11Mmh1ktNaJLDFSZqPtyXu8VJNHrEdr4+JSsAcPQU0Q=;
+ b=bWrKk2kjcY1PK2+83dTZPmDIdxfdb6oy+jYtcup2LTn85xznS8NpWlEK+qBLQBQCp8tF
+ gJkEVIH5+TQOi848LhsbWhov1JBYxFW94rotEHe7DRapT3OIJTqRjQ+fr0DyunTZWSEG
+ RNT4QYG+HrguG7Xz5deeJ2iacZse1l006d0= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3h03ax61ym-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 00:12:22 -0700
+Received: from twshared34609.14.frc2.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28; Wed, 29 Jun 2022 00:12:20 -0700
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+        id D672DC24D6F4; Wed, 29 Jun 2022 00:12:13 -0700 (PDT)
+From:   Yonghong Song <yhs@fb.com>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        <dwarves@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
+Subject: [PATCH dwarves v3 0/2] btf: support BTF_KIND_ENUM64
+Date:   Wed, 29 Jun 2022 00:12:13 -0700
+Message-ID: <20220629071213.3178592-1-yhs@fb.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: HoJpWS9RvK_txly7RSPp41laRBdoPcoP
+X-Proofpoint-ORIG-GUID: HoJpWS9RvK_txly7RSPp41laRBdoPcoP
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-06-28_11,2022-06-28_01,2022-06-22_01
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jakub Kicinski wrote:
-> On Tue, 28 Jun 2022 17:25:05 +0200 Julien Salleyron wrote:
-> > This patch allows to use KTLS on a socket where we apply sk_redirect using a BPF
-> > verdict program.
-> > 
+Add support for enum64. For 64-bit enumerator value,
+previously, the value is truncated into 32bit, e.g.,
+for the following enum in linux uapi bpf.h,
+  enum {
+        BPF_F_INDEX_MASK                =3D 0xffffffffULL,
+        BPF_F_CURRENT_CPU               =3D BPF_F_INDEX_MASK,
+  /* BPF_FUNC_perf_event_output for sk_buff input context. */
+        BPF_F_CTXLEN_MASK               =3D (0xfffffULL << 32),
+  };   =20
 
-You'll also need a signed-off-by.
+BPF_F_CTXLEN_MASK will be encoded with 0 with BTF_KIND_ENUM
+after pahole dwarf-to-btf conversion.
+With this patch, the BPF_F_CTXLEN_MASK will be encoded properly
+with BTF_KIND_ENUM64.
 
-> > Without this patch, we see that the data received after the redirection are
-> > decrypted but with an incorrect offset and length. It seems to us that the
-> > offset and length are correct in the stream-parser data, but finally not applied
-> > in the skb. We have simply applied those values to the skb.
-> > 
-> > In the case of regular sockets, we saw a big performance improvement from
-> > applying redirect. This is not the case now with KTLS, may be related to the
-> > following point.
-> 
-> It's because kTLS does a very expensive reallocation and copy for the
-> non-zerocopy case (which currently means all of TLS 1.3). I have
-> code almost ready to fix that (just needs to be reshuffled into
-> upstreamable patches). Brings us up from 5.9 Gbps to 8.4 Gbps per CPU
-> on my test box with 16k records. Probably much more than that with
-> smaller records.
+This patch is on top of tmp.master since tmp.master has not
+been sync'ed with master branch yet.
 
-Also on my list open-ssl support is lacking ktls support for both
-direction in tls1.3 iirc. We have a couple test workloads pinned on
-1.2 for example which really isn't great.
+Changelogs:
+  v2 -> v3:
+    - pass struct type/conf_load pointers to btf_encoder__add_enum[_value=
+]
+      to make code easier to understand.
+  v1 -> v2:
+    - Add flag --skip_encoding_btf_enum64 to disable newly-added function=
+ality.
 
-> 
-> > It is still necessary to perform a read operation (never triggered) from user
-> > space despite the redirection. It makes no sense, since this read operation is
-> > not necessary on regular sockets without KTLS.
-> > 
-> > We do not see how to fix this problem without a change of architecture, for
-> > example by performing TLS decrypt directly inside the BPF verdict program.
-> > 
-> > An example program can be found at
-> > https://github.com/juliens/ktls-bpf_redirect-example/
-> > 
-> > Co-authored-by: Marc Vertes <mvertes@free.fr>
-> > ---
-> >  net/tls/tls_sw.c                           | 6 ++++++
-> >  tools/testing/selftests/bpf/test_sockmap.c | 8 +++-----
-> >  2 files changed, 9 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
-> > index 0513f82b8537..a409f8a251db 100644
-> > --- a/net/tls/tls_sw.c
-> > +++ b/net/tls/tls_sw.c
-> > @@ -1839,8 +1839,14 @@ int tls_sw_recvmsg(struct sock *sk,
-> >  			if (bpf_strp_enabled) {
-> >  				/* BPF may try to queue the skb */
-> >  				__skb_unlink(skb, &ctx->rx_list);
-> > +
-> >  				err = sk_psock_tls_strp_read(psock, skb);
-> > +
-> >  				if (err != __SK_PASS) {
-> > +                    if (err == __SK_REDIRECT) {
-> > +                        skb->data += rxm->offset;
-> > +                        skb->len = rxm->full_len;
-> > +                    }
-> 
-> IDK what this is trying to do but I certainly depends on the fact 
-> we run skb_cow_data() and is not "generally correct" :S
+Yonghong Song (2):
+  libbpf: Sync with latest libbpf repo
+  btf: Support BTF_KIND_ENUM64
 
-Ah also we are not handling partially consumed correctly either.
-Seems we might pop off the skb even when we need to continue;
+ btf_encoder.c     | 67 +++++++++++++++++++++++++++++++++++------------
+ btf_encoder.h     |  2 +-
+ dwarf_loader.c    | 12 +++++++++
+ dwarves.h         |  4 ++-
+ dwarves_fprintf.c |  6 ++++-
+ lib/bpf           |  2 +-
+ pahole.c          | 10 ++++++-
+ 7 files changed, 81 insertions(+), 22 deletions(-)
 
-Maybe look at how skb_copy_datagram_msg() goes below because it
-fixes the skb copy up with the rxm->offset. But, also we need to
-do this repair before sk_psock_tls_strp_read I think so that
-the BPF program reads the correct data in all cases? I guess
-your sample program (and selftests for that matter) just did
-the redirect without reading the data?
+--=20
+2.30.2
 
-Thanks!
