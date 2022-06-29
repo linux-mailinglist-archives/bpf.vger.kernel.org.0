@@ -2,104 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66832560B13
-	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 22:32:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD933560B18
+	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 22:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229570AbiF2UcH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jun 2022 16:32:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56768 "EHLO
+        id S229774AbiF2Ufz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jun 2022 16:35:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229615AbiF2UcG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jun 2022 16:32:06 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF34738DAD
-        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 13:32:05 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id d129so16379699pgc.9
-        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 13:32:05 -0700 (PDT)
+        with ESMTP id S229615AbiF2Ufy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jun 2022 16:35:54 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCA4C2FFE7
+        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 13:35:53 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id z16so8115360qkj.7
+        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 13:35:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ecGWF+v+mh0foR6TRTuLDZqGO2rNb7f0qblUYZWHgOM=;
-        b=DqCX8PD3D1UZMk4B4SbD0Qot2cvtKrH7sdN/k3I/uysDHGS7l4JF9nJJ+aOt4LV6/m
-         w37Oez1KJvylXgDXvKk3fO0bxwcTwD0aSB32M0XasLdg11zKPGfZfnt2FLDpLK2yekYe
-         1AIrcaDD+Ym5UoCixN1inuwpli5CwpoKQ9aJLpB8dj40whYasODZlDeBQvFyFbokzB46
-         S8sn7kXRg6medm+HcC6CcU0w7vcVVDIycZGzXqkHgYDoWrS3Ys2sHZvINmm7Lckr3+An
-         dR3cHIsnxcz1oAiGIGLBWjbIY8rR0v/5VzPioMVw0wNVaKaPbY9NcARf2OvBqIzGx/At
-         4UqA==
+         :cc:content-transfer-encoding;
+        bh=e06NiwlzrDtucaME1T23A36SMVhatovaVuRYM5kc3js=;
+        b=gSenJMJXQH60gXrQcKp6157X6re0UlV7vB44+S0ri+PGyiZqpxOICfVuyEd6agjs5M
+         YujXaVikzY8Wkjn6QiJ9KO1p6suVNuJJgY87vDDeSO25nPNLac/ARW3RQwKPpHhuMwQ9
+         r0rCu03420C8F6GKm5VoGveloFABhTlM7MKy9RLK9rgRA02Bwwqz8XR0hlrhGnz8xDvw
+         nMFY/c597dtRuqs01qE/Bf2Ht31OfpzvvC0sAbubL4x2SfmDkhJPfmve0Dl9bjOus/4j
+         iLwI2HWRzd4bONxrEAjqN35AW3v6TyTp98GOGTVDZIhcsg9GxCjVNkSWuLokirKjg5le
+         SJ/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ecGWF+v+mh0foR6TRTuLDZqGO2rNb7f0qblUYZWHgOM=;
-        b=Uis3M0ptreEMOONFo2aHV0MKyF4jo4l0WaeFSQT9OTvifmKC2fChR7YorSwmm+TBpY
-         YKi0vdZWB8uwXjKy2PXGKfa83e8tAOOHjCVqvLHKql9JPNkTNV1KbP2+uZRgAGVIoJ+4
-         sehuqZAw9tUVOdfjYnsLqWmL2TFUN5Fuad/ek6QRrMXeHJuzzPTpPFIqFYiRXXPVAiTb
-         OkiSTPjdDHI1Icsne5oJ5VV5Yq2nG2nfcNya2JosL/odGboTO0isATiHkzAQfzrikYOV
-         uEJVnA6rGhbysoZdc1UaRlPtB8XIH8Fi+CW7pw89pbo1QB7dB/K4cGCjWqZ2SsLxt85X
-         zrtw==
-X-Gm-Message-State: AJIora8LEnuNP5qyYGqnQmTQp0uqS7miufA9/OmO0EYMJ42clw1t7nm6
-        LwsTiqI5DjLZBJFuk91uUJxsfGNTQYya57jyHwtj6bP+CC8=
-X-Google-Smtp-Source: AGRyM1sii0RC5bOgxyRji6AJa3Vmd7rcO2+eeNdLcNsPTKcqpo1aNsabVJpMXDXUdJzwQPvf7+QPYhKsp6B8+zxIgjk=
-X-Received: by 2002:a63:db4d:0:b0:411:9d20:af14 with SMTP id
- x13-20020a63db4d000000b004119d20af14mr744886pgi.442.1656534725043; Wed, 29
- Jun 2022 13:32:05 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=e06NiwlzrDtucaME1T23A36SMVhatovaVuRYM5kc3js=;
+        b=Mz1AHEWrcHbRKbAmPOLR/FUmK6qKnQanpC/8IRRKV5Nt4JzrwUP/HGUZ1doh72/eOw
+         TR9wk7jIs0DlZfkicahV0VX58eUhfddqksBRLpg5jjFd34LLbYQgbr8H94CaATiCp/2b
+         fBs9aiOY1fzkcKiSg1bk7tUBlnslI/l7LjgZZwHC8Ugv6vkmIT/ffC2A2L8SNDinb0UF
+         aQ+nugkzxlW171ru2hBoCk+FJOqa0w+HQQDOa43utBsN7MrxfFFL5bgf6eweYNdOopze
+         D/T+eI4foapxftJzkKw2IU1cdmNPTjiUHR8tX05c3NXTlDbUFpFU0jmRM6gEtSc6Zdrb
+         x4fA==
+X-Gm-Message-State: AJIora+3bxunymZlaDsDYG01q4+6VXWWZE9jXEYZ3SMbdwgxS25E6tMi
+        717ebRQQzqeZvknLVXSkZ8YPlJIFyj+bZTb0Or5dLg==
+X-Google-Smtp-Source: AGRyM1smOK0ndpCernZcqsD06UibwdE1lKGZGWA4naiOMfm63gZOa/25JLmWc8ktqGtCZrpQwG3Afsm0jluqjw01hfw=
+X-Received: by 2002:a05:620a:6006:b0:6af:a58:a19 with SMTP id
+ dw6-20020a05620a600600b006af0a580a19mr3722206qkb.534.1656534953046; Wed, 29
+ Jun 2022 13:35:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220628174314.1216643-1-sdf@google.com> <20220628174314.1216643-12-sdf@google.com>
- <CAADnVQJHKtYd2XKiWRj_5fnVdT7aP2NEwi4eVUdqCO7q2nQ6Og@mail.gmail.com>
-In-Reply-To: <CAADnVQJHKtYd2XKiWRj_5fnVdT7aP2NEwi4eVUdqCO7q2nQ6Og@mail.gmail.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Wed, 29 Jun 2022 13:31:52 -0700
-Message-ID: <CAKH8qBtmoFbvvTSTA-u2J6n=So8Q9mMSwVqgdOBY6vzpOQzkKg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v11 11/11] selftests/bpf: lsm_cgroup functional test
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+References: <20220629144019.75181-1-quentin@isovalent.com> <20220629144019.75181-2-quentin@isovalent.com>
+ <20220629173251.zk33plyiqsrkfpzg@muellerd-fedora-MJ0AC3F3>
+In-Reply-To: <20220629173251.zk33plyiqsrkfpzg@muellerd-fedora-MJ0AC3F3>
+From:   Quentin Monnet <quentin@isovalent.com>
+Date:   Wed, 29 Jun 2022 21:35:41 +0100
+Message-ID: <CACdoK4Ktf4HWtrDK9_k0yMXEg3G90qYiG9+65NbbSn3aSVaBTQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpftool: Add feature list
+ (prog/map/link/attach types, helpers)
+To:     =?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>
+        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 29, 2022 at 1:26 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Wed, 29 Jun 2022 at 18:33, Daniel M=C3=BCller <deso@posteo.net> wrote:
 >
-> On Tue, Jun 28, 2022 at 10:43 AM Stanislav Fomichev <sdf@google.com> wrote:
-> > +
-> > +static void test_lsm_cgroup_functional(void)
+> On Wed, Jun 29, 2022 at 03:40:18PM +0100, Quentin Monnet wrote:
+> > Add a "bpftool feature list" subcommand to list BPF "features".
+> > Contrarily to "bpftool feature probe", this is not about the features
+> > available on the system. Instead, it lists all features known to bpftoo=
+l
+> > from compilation time; in other words, all program, map, attach, link
+> > types known to the libbpf version in use, and all helpers found in the
+> > UAPI BPF header.
+> >
+> > The first use case for this feature is bash completion: running the
+> > command provides a list of types that can be used to produce the list o=
+f
+> > candidate map types, for example.
+> >
+> > Now that bpftool uses "standard" names provided by libbpf for the
+> > program, map, link, and attach types, having the ability to list these
+> > types and helpers could also be useful in scripts to loop over existing
+> > items.
+> >
+> > Sample output:
+> >
+> >     # bpftool feature list prog_types | grep -vw unspec | head -n 6
+> >     socket_filter
+> >     kprobe
+> >     sched_cls
+> >     sched_act
+> >     tracepoint
+> >     xdp
+> >
+> >     # bpftool -p feature list map_types | jq '.[1]'
+> >     "hash"
+> >
+> >     # bpftool feature list attach_types | grep '^cgroup_'
+> >     cgroup_inet_ingress
+> >     cgroup_inet_egress
+> >     [...]
+> >     cgroup_inet_sock_release
+> >
+> >     # bpftool feature list helpers | grep -vw bpf_unspec | wc -l
+> >     207
+> >
+> > The "unspec" types and helpers are not filtered out by bpftool, so as t=
+o
+> > remain closer to the enums, and to preserve the indices in the JSON
+> > arrays (e.g. "hash" at index 1 =3D=3D BPF_MAP_TYPE_HASH in map types li=
+st).
+> >
+> > Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> > ---
+> >  .../bpftool/Documentation/bpftool-feature.rst | 12 ++++
+> >  tools/bpf/bpftool/bash-completion/bpftool     |  7 ++-
+> >  tools/bpf/bpftool/feature.c                   | 55 +++++++++++++++++++
+> >  3 files changed, 73 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/bpf/bpftool/Documentation/bpftool-feature.rst b/tool=
+s/bpf/bpftool/Documentation/bpftool-feature.rst
+> > index 4ce9a77bc1e0..4bf1724d0e8c 100644
+> > --- a/tools/bpf/bpftool/Documentation/bpftool-feature.rst
+> > +++ b/tools/bpf/bpftool/Documentation/bpftool-feature.rst
+> > @@ -24,9 +24,11 @@ FEATURE COMMANDS
+> >  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >
+> >  |    **bpftool** **feature probe** [*COMPONENT*] [**full**] [**unprivi=
+leged**] [**macros** [**prefix** *PREFIX*]]
+> > +|    **bpftool** **feature list** *GROUP*
+> >  |    **bpftool** **feature help**
+> >  |
+> >  |    *COMPONENT* :=3D { **kernel** | **dev** *NAME* }
+> > +|    *GROUP* :=3D { **prog_types** | **map_types** | **attach_types** =
+| **helpers** }
 >
-> It fails BPF CI on s390:
->
-> test_lsm_cgroup_functional:FAIL:attach alloc_prog_fd unexpected error:
-> -524 (errno 524)
-> test_lsm_cgroup_functional:FAIL:detach_create unexpected
-> detach_create: actual -2 < expected 0
-> test_lsm_cgroup_functional:FAIL:detach_alloc unexpected detach_alloc:
-> actual -2 < expected 0
-> test_lsm_cgroup_functional:FAIL:detach_clone unexpected detach_clone:
-> actual -2 < expected 0
->
-> https://github.com/kernel-patches/bpf/runs/7100626120?check_suite_focus=true
->
-> but I pushed it to bpf-next anyway.
-> Thanks a lot for this work and please follow up with a fix.
+> Is **link_types** missing from this enumeration?
 
-Thanks, I'll take a look!
-
-> Thanks a lot Martin for the code reviews.
-
-+1, thanks Martin. I was trying to keep respinning at most once per
-week, I hope I haven't overwhelmed you. The end result is so much
-better because of your inputs.
+Yes of course, thanks for catching this. And for the review! v2 is on its w=
+ay.
+Quentin
