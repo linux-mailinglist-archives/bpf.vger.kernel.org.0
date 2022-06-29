@@ -2,198 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CF4E560B25
-	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 22:37:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D27560BB6
+	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 23:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230152AbiF2Ugr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jun 2022 16:36:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59684 "EHLO
+        id S229747AbiF2V3o (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jun 2022 17:29:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230511AbiF2Ugp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jun 2022 16:36:45 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ABF1369FB
-        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 13:36:44 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id o4so20229066wrh.3
-        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 13:36:44 -0700 (PDT)
+        with ESMTP id S229456AbiF2V3o (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jun 2022 17:29:44 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F8C1F2DC
+        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 14:29:43 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id 9so16519474pgd.7
+        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 14:29:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=uh25l/IFco/FD8J+cYVy+J2iIOHc7T8pp9VdIsWpzAg=;
-        b=ien+f4LFgCja40NSqLyHWhVOv/7Wdfcavz4tlywtklkmXPhi34avqTB6f6ktZ0vPLj
-         eCHxrOOZUkuLIF6Uok85efNCTlpaJ98azX6Qqxw2g8ZB7DI4LD27dAazuGsTqYZsZ6WK
-         bnvRI5O9nlLZUN+KRlLegudtXPVNm5GwpL2k9ot8bMhqpc2cHeP6HOl7/InlN7jkutTF
-         WK6Dkerk6pTneLMdyLRsGNBAG6LT2Y5fC/+ja0+rDva8xshsA1U9cPOp445kfly7lsZq
-         sYFuGZcX1xmWWgSWepsTaTBTxh17ldY0nocaokRsg+/7lLzuVS1OPEdf/4hVnhYR03Ud
-         ofEg==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RYHM3pxc+fuotx0RRU3jAOWx/WCvcmmmXB8yVNijvPY=;
+        b=d5On02JYto//RaLr2xwoHQOBKIJoUqIYGNtuYBDYd4zfGVRet5w3kC298ktwQXT0Ms
+         e/81EpzDMyhCFAnCqBFw7vgbSX6fIqCzE5IGetqIKYuF0W4AuNnOFrf6Lu1yYPBSSgIU
+         TH3HwiFmW8/bDVUjN5obwf/ub6Vr/Iln6zTcndX+SWc2I5aR1+bY0xXdiwqDXV/HvDVb
+         o4/3+8WF/GjEhuRUJ7WfKR78uVGEarbEbPDPFgNy+qBoQpanxvCynG/WoXzk09LzeRwn
+         16A519uuOLnpCHm7qykuVxJrqYahLZ8KJDk+kYtAhPX8IlWplDYJxQMbcOc74x2K3khO
+         4lLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=uh25l/IFco/FD8J+cYVy+J2iIOHc7T8pp9VdIsWpzAg=;
-        b=3mGNMvqfgs8QM4GfgKAL+TDBiQLO7vfCfraGt/OSUXopYID+0Zxa4VaId28Fedn2F4
-         OteS08FyfCjADU573EsfZrSw0dPF6jqi35nIfnqaiRa4lfUJJCyQRIENwOOALK2fGCqt
-         MWLN0Fjl+ON7BA9YRb3FoB1Gs/rVkhmYWXunFhSKe+Cpo5K6G9Zkq7VRC2ZlrtKSwh3H
-         CnF0eKDdqv/MZQlifoMgP8eQztsmNwFA2e0iCVRpygxgp6yrLdPchg6q+H1anvLlI3/9
-         geGXafzcoU6u0VOk+KKNx50kRho0wndPzxFO6sLQ3LYRkwuHleglOFjlQUnWkAXapfiP
-         zZYA==
-X-Gm-Message-State: AJIora8FORRCbiPDlwwJMiDhzlNss0Wcu1X685kQH6jNkc3WiXa523vM
-        ta/8uC/P4SRHMkQWZJh7gc2DrA==
-X-Google-Smtp-Source: AGRyM1vVpwA30xKGQ6CowZhwLEKAGwXKAoHykqSixE3UeBRk1EDhTloDp+DL0Xg+fM1NzLODki8Y1g==
-X-Received: by 2002:a5d:4102:0:b0:21b:8a6f:ff64 with SMTP id l2-20020a5d4102000000b0021b8a6fff64mr4954665wrp.186.1656535003108;
-        Wed, 29 Jun 2022 13:36:43 -0700 (PDT)
-Received: from harfang.fritz.box ([51.155.200.13])
-        by smtp.gmail.com with ESMTPSA id l21-20020a05600c4f1500b003a02b9c47e4sm246986wmq.27.2022.06.29.13.36.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jun 2022 13:36:42 -0700 (PDT)
-From:   Quentin Monnet <quentin@isovalent.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>,
-        =?UTF-8?q?Daniel=20M=C3=BCller?= <deso@posteo.net>
-Subject: [PATCH bpf-next v2 2/2] bpftool: Use feature list in bash completion
-Date:   Wed, 29 Jun 2022 21:36:37 +0100
-Message-Id: <20220629203637.138944-3-quentin@isovalent.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220629203637.138944-1-quentin@isovalent.com>
-References: <20220629203637.138944-1-quentin@isovalent.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RYHM3pxc+fuotx0RRU3jAOWx/WCvcmmmXB8yVNijvPY=;
+        b=YRNbxrjLJVZuwFscup/FJTKgeiPGN/VLhrmBt3ca8t+ymU5CJNgrF4GEdZPeGIAkg8
+         Odl2WZ8gcTbbBFoTZ4F4jv7edxvnpvz80/vHlUDC0XVzlkwTtWyYup5PrBqQHoflVu6z
+         H8CyKDYdRbHAql+5BtEeyB0j1g/wgS6CLMfws632HHpA0bXLdMpM5xCPEPc7pzJYsWoi
+         lYjZJ7wTlx/84VMP5ZK+IfWJ3ugm3q5wHVj0YL4bDBD/2FhqUq00oWk3PxTlgPvREMX+
+         /CkdoT+G/S0hS/S+TswqhH1E7t6awwHd1jcvIpyIEitT+F7UgfmmKIlVugW0tnb7V5ww
+         T/NQ==
+X-Gm-Message-State: AJIora82gBeQ4F40eKq4JHfSBr0jhe3IrJ+TIESGHJ33qhjEYm3zD7QX
+        F8QD3IgMvQWffnIRZh3F8TtZq8j5Mk1goWZttQw35g==
+X-Google-Smtp-Source: AGRyM1uFNGy5nuQEjHxGtKH6gIQV4DYflkmLqvIesaR5/NBUm16DZrNhevMbkpZaibfEGag0I7J1rup/M5Ok+ZYjuY8=
+X-Received: by 2002:a62:1582:0:b0:525:6361:85cd with SMTP id
+ 124-20020a621582000000b00525636185cdmr10874628pfv.72.1656538183029; Wed, 29
+ Jun 2022 14:29:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220628174314.1216643-1-sdf@google.com> <20220628174314.1216643-12-sdf@google.com>
+ <CAADnVQJHKtYd2XKiWRj_5fnVdT7aP2NEwi4eVUdqCO7q2nQ6Og@mail.gmail.com> <CAKH8qBtmoFbvvTSTA-u2J6n=So8Q9mMSwVqgdOBY6vzpOQzkKg@mail.gmail.com>
+In-Reply-To: <CAKH8qBtmoFbvvTSTA-u2J6n=So8Q9mMSwVqgdOBY6vzpOQzkKg@mail.gmail.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Wed, 29 Jun 2022 14:29:32 -0700
+Message-ID: <CAKH8qBu5F2SHwtbRJ+vpHRGeqEKT0pk-St6B9JTev5bWNy8f_g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v11 11/11] selftests/bpf: lsm_cgroup functional test
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Now that bpftool is able to produce a list of known program, map, attach
-types, let's use as much of this as we can in the bash completion file,
-so that we don't have to expand the list each time a new type is added
-to the kernel.
+On Wed, Jun 29, 2022 at 1:31 PM Stanislav Fomichev <sdf@google.com> wrote:
+>
+> On Wed, Jun 29, 2022 at 1:26 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Tue, Jun 28, 2022 at 10:43 AM Stanislav Fomichev <sdf@google.com> wrote:
+> > > +
+> > > +static void test_lsm_cgroup_functional(void)
+> >
+> > It fails BPF CI on s390:
+> >
+> > test_lsm_cgroup_functional:FAIL:attach alloc_prog_fd unexpected error:
+> > -524 (errno 524)
+> > test_lsm_cgroup_functional:FAIL:detach_create unexpected
+> > detach_create: actual -2 < expected 0
+> > test_lsm_cgroup_functional:FAIL:detach_alloc unexpected detach_alloc:
+> > actual -2 < expected 0
+> > test_lsm_cgroup_functional:FAIL:detach_clone unexpected detach_clone:
+> > actual -2 < expected 0
+> >
+> > https://github.com/kernel-patches/bpf/runs/7100626120?check_suite_focus=true
+> >
+> > but I pushed it to bpf-next anyway.
+> > Thanks a lot for this work and please follow up with a fix.
+>
+> Thanks, I'll take a look!
 
-Also update the relevant test script to remove some checks that are no
-longer needed.
+Looks like this needs a blacklist entry in
+https://github.com/kernel-patches/vmtest/blob/master/travis-ci/vmtest/configs/blacklist/BLACKLIST-latest.s390x
 
-Acked-by: Daniel Müller <deso@posteo.net>
-Signed-off-by: Quentin Monnet <quentin@isovalent.com>
----
- tools/bpf/bpftool/bash-completion/bpftool     | 21 ++++---------------
- .../selftests/bpf/test_bpftool_synctypes.py   | 20 +++---------------
- 2 files changed, 7 insertions(+), 34 deletions(-)
+Or, I can make tests more flexible by doing the following
+(copy-pasting into gmail, so tabs are broken):
 
-diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-index 9cef6516320b..ee177f83b179 100644
---- a/tools/bpf/bpftool/bash-completion/bpftool
-+++ b/tools/bpf/bpftool/bash-completion/bpftool
-@@ -703,15 +703,8 @@ _bpftool()
-                             return 0
-                             ;;
-                         type)
--                            local BPFTOOL_MAP_CREATE_TYPES='hash array \
--                                prog_array perf_event_array percpu_hash \
--                                percpu_array stack_trace cgroup_array lru_hash \
--                                lru_percpu_hash lpm_trie array_of_maps \
--                                hash_of_maps devmap devmap_hash sockmap cpumap \
--                                xskmap sockhash cgroup_storage reuseport_sockarray \
--                                percpu_cgroup_storage queue stack sk_storage \
--                                struct_ops ringbuf inode_storage task_storage \
--                                bloom_filter'
-+                            local BPFTOOL_MAP_CREATE_TYPES="$(bpftool feature list map_types | \
-+                                grep -v '^unspec$')"
-                             COMPREPLY=( $( compgen -W "$BPFTOOL_MAP_CREATE_TYPES" -- "$cur" ) )
-                             return 0
-                             ;;
-@@ -1039,14 +1032,8 @@ _bpftool()
-                     return 0
-                     ;;
-                 attach|detach)
--                    local BPFTOOL_CGROUP_ATTACH_TYPES='cgroup_inet_ingress cgroup_inet_egress \
--                        cgroup_inet_sock_create cgroup_sock_ops cgroup_device cgroup_inet4_bind \
--                        cgroup_inet6_bind cgroup_inet4_post_bind cgroup_inet6_post_bind \
--                        cgroup_inet4_connect cgroup_inet6_connect cgroup_inet4_getpeername \
--                        cgroup_inet6_getpeername cgroup_inet4_getsockname cgroup_inet6_getsockname \
--                        cgroup_udp4_sendmsg cgroup_udp6_sendmsg cgroup_udp4_recvmsg \
--                        cgroup_udp6_recvmsg cgroup_sysctl cgroup_getsockopt cgroup_setsockopt \
--                        cgroup_inet_sock_release'
-+                    local BPFTOOL_CGROUP_ATTACH_TYPES="$(bpftool feature list attach_types | \
-+                        grep '^cgroup_')"
-                     local ATTACH_FLAGS='multi override'
-                     local PROG_TYPE='id pinned tag name'
-                     # Check for $prev = $command first
-diff --git a/tools/testing/selftests/bpf/test_bpftool_synctypes.py b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-index e443e6542cb9..a6410bebe603 100755
---- a/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-+++ b/tools/testing/selftests/bpf/test_bpftool_synctypes.py
-@@ -471,12 +471,6 @@ class BashcompExtractor(FileExtractor):
-     def get_prog_attach_types(self):
-         return self.get_bashcomp_list('BPFTOOL_PROG_ATTACH_TYPES')
- 
--    def get_map_types(self):
--        return self.get_bashcomp_list('BPFTOOL_MAP_CREATE_TYPES')
--
--    def get_cgroup_attach_types(self):
--        return self.get_bashcomp_list('BPFTOOL_CGROUP_ATTACH_TYPES')
--
- def verify(first_set, second_set, message):
-     """
-     Print all values that differ between two sets.
-@@ -516,17 +510,12 @@ def main():
-     man_map_types = man_map_info.get_map_types()
-     man_map_info.close()
- 
--    bashcomp_info = BashcompExtractor()
--    bashcomp_map_types = bashcomp_info.get_map_types()
--
-     verify(source_map_types, help_map_types,
-             f'Comparing {BpfHeaderExtractor.filename} (bpf_map_type) and {MapFileExtractor.filename} (do_help() TYPE):')
-     verify(source_map_types, man_map_types,
-             f'Comparing {BpfHeaderExtractor.filename} (bpf_map_type) and {ManMapExtractor.filename} (TYPE):')
-     verify(help_map_options, man_map_options,
-             f'Comparing {MapFileExtractor.filename} (do_help() OPTIONS) and {ManMapExtractor.filename} (OPTIONS):')
--    verify(source_map_types, bashcomp_map_types,
--            f'Comparing {BpfHeaderExtractor.filename} (bpf_map_type) and {BashcompExtractor.filename} (BPFTOOL_MAP_CREATE_TYPES):')
- 
-     # Attach types (names)
- 
-@@ -542,8 +531,10 @@ def main():
-     man_prog_attach_types = man_prog_info.get_attach_types()
-     man_prog_info.close()
- 
--    bashcomp_info.reset_read() # We stopped at map types, rewind
-+
-+    bashcomp_info = BashcompExtractor()
-     bashcomp_prog_attach_types = bashcomp_info.get_prog_attach_types()
-+    bashcomp_info.close()
- 
-     verify(source_prog_attach_types, help_prog_attach_types,
-             f'Comparing {ProgFileExtractor.filename} (bpf_attach_type) and {ProgFileExtractor.filename} (do_help() ATTACH_TYPE):')
-@@ -568,17 +559,12 @@ def main():
-     man_cgroup_attach_types = man_cgroup_info.get_attach_types()
-     man_cgroup_info.close()
- 
--    bashcomp_cgroup_attach_types = bashcomp_info.get_cgroup_attach_types()
--    bashcomp_info.close()
--
-     verify(source_cgroup_attach_types, help_cgroup_attach_types,
-             f'Comparing {BpfHeaderExtractor.filename} (bpf_attach_type) and {CgroupFileExtractor.filename} (do_help() ATTACH_TYPE):')
-     verify(source_cgroup_attach_types, man_cgroup_attach_types,
-             f'Comparing {BpfHeaderExtractor.filename} (bpf_attach_type) and {ManCgroupExtractor.filename} (ATTACH_TYPE):')
-     verify(help_cgroup_options, man_cgroup_options,
-             f'Comparing {CgroupFileExtractor.filename} (do_help() OPTIONS) and {ManCgroupExtractor.filename} (OPTIONS):')
--    verify(source_cgroup_attach_types, bashcomp_cgroup_attach_types,
--            f'Comparing {BpfHeaderExtractor.filename} (bpf_attach_type) and {BashcompExtractor.filename} (BPFTOOL_CGROUP_ATTACH_TYPES):')
- 
-     # Options for remaining commands
- 
--- 
-2.34.1
+diff --git a/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
+b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
+index d40810a742fa..904b02a17598 100644
+--- a/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
++++ b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
+@@ -100,6 +100,10 @@ static void test_lsm_cgroup_functional(void)
+  ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_sk_alloc_security"), 0,
+"prog count");
+  ASSERT_EQ(query_prog_cnt(cgroup_fd, NULL), 0, "total prog count");
+  err = bpf_prog_attach(alloc_prog_fd, cgroup_fd, BPF_LSM_CGROUP, 0);
++ if (err < 0 && errno == ENOTSUPP) {
++ test__skip();
++ return;
++ }
+  if (!ASSERT_OK(err, "attach alloc_prog_fd"))
+  goto detach_cgroup;
+  ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_sk_alloc_security"), 1,
+"prog count");
 
+Any preference?
