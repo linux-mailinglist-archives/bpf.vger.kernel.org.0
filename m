@@ -2,60 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2BEA55FF71
-	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 14:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59C9A560059
+	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 14:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232727AbiF2MOa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jun 2022 08:14:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45304 "EHLO
+        id S230328AbiF2Mp1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jun 2022 08:45:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232594AbiF2MO3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jun 2022 08:14:29 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 604CD17E1F
-        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 05:14:27 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4LY0kn4Hmbz4xZB;
-        Wed, 29 Jun 2022 22:14:25 +1000 (AEST)
-From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Cc:     bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-In-Reply-To: <20220627191119.142867-1-naveen.n.rao@linux.vnet.ibm.com>
-References: <20220627191119.142867-1-naveen.n.rao@linux.vnet.ibm.com>
-Subject: Re: [PATCH powerpc v2] powerpc/bpf: Fix use of user_pt_regs in uapi
-Message-Id: <165650484996.3003821.13352352877965822708.b4-ty@ellerman.id.au>
-Date:   Wed, 29 Jun 2022 22:14:09 +1000
+        with ESMTP id S229744AbiF2Mp0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jun 2022 08:45:26 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E34F2EA14;
+        Wed, 29 Jun 2022 05:45:25 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id e40so22055270eda.2;
+        Wed, 29 Jun 2022 05:45:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=F9B2/GHylPEkzk+guQHu18FKr2nBvjpNRS2pF7eaeSA=;
+        b=mkktxYdmYW96695r03bgzKcxp8DF0CntoClY1Zor4PQe/ZlQqsfRMOw12mpMSqjcAr
+         ayTFgRHl56lUgMvUeVKDOi1qH+pWjbhHFl6d2AGIxiONc0j8ml07f0lwkI7GdVNbJqB+
+         nKKdUh+8lCjAZ+4M1YdXsjQ+rKMxaGdO3OfYZlE6FFeZIyFNGkHUpnGSp51Bz9TXT5g9
+         E+4ccz5Alo6VBKjOW+R5UHlAiyud8w8ocTzWZ6whzAK+y9DvngVT6fpavwAI/oAClWiA
+         GlsgTWaFjB+tzCwS1w0GT0Cj9Id+rbKHGnAufUlYaUWbdCz//ulWcdCpewv5JQhjCYd5
+         dOpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=F9B2/GHylPEkzk+guQHu18FKr2nBvjpNRS2pF7eaeSA=;
+        b=MlfUefYL7Uq7Dv/PdpOpUqHQvLZOZoD3srQ68TCaYvL8SbhTJr/5PlYLQ72G4Oo5bg
+         seqRDccn/Mfy5VgJvkWwjTdBVBvjzJIstu7flVpvR0CmBeUdRIG7fG8jT5I0kvHbXheF
+         QZYnW+E3Nlbq06RTs/pRnAebhlIflgDUgDDkfXCiBL9iAZOL66JAUO560fqx1I5Y22n8
+         0nQt4uEVM0vDCJxHSLHQbajv4X6dOYEMJN5awnx15TkKXmuZTVTxtKMT+kczWDLWl3Z/
+         ikXi3FbIoRasGVdQzD+eyzEUpwiFgGtfsxxENCA2x8T4/ULb2smStIt2GSJMT/CYYpzJ
+         /e6w==
+X-Gm-Message-State: AJIora/xSuk5cTTLhkHQveyik2EuE2cjKSfesfSPUyQiO+kjHjwhQNPf
+        JXP4jnZUDcW/iKCoSm+KnOC2JcbOABgsa6RVVfbNHBBieOI=
+X-Google-Smtp-Source: AGRyM1uUrUyhumzdXveovgxMe8AZGnrP5uQWW6CcJ+1Lbm2AzN6Ywg1CU0XgHzkbJiPrZPvUgXr+H5bvRMx3+ekdu0U=
+X-Received: by 2002:a05:6402:f14:b0:435:7f82:302b with SMTP id
+ i20-20020a0564020f1400b004357f82302bmr3987124eda.57.1656506723926; Wed, 29
+ Jun 2022 05:45:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220629105752.933839-1-maciej.fijalkowski@intel.com>
+In-Reply-To: <20220629105752.933839-1-maciej.fijalkowski@intel.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Wed, 29 Jun 2022 14:45:11 +0200
+Message-ID: <CAJ+HfNj0FU=DBNdwD3HODbevcP-btoaeCCGCfn2Y5eP2WoEXHA@mail.gmail.com>
+Subject: Re: [PATCH bpf] xsk: mark napi_id on sendmsg()
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 28 Jun 2022 00:41:19 +0530, Naveen N. Rao wrote:
-> Trying to build a .c file that includes <linux/bpf_perf_event.h>:
->   $ cat test_bpf_headers.c
->   #include <linux/bpf_perf_event.h>
-> 
-> throws the below error:
->   /usr/include/linux/bpf_perf_event.h:14:28: error: field ‘regs’ has incomplete type
->      14 |         bpf_user_pt_regs_t regs;
-> 	|                            ^~~~
-> 
-> [...]
+On Wed, 29 Jun 2022 at 12:58, Maciej Fijalkowski
+<maciej.fijalkowski@intel.com> wrote:
+>
+> When application runs in zero copy busy poll mode and does not receive a
+> single packet but only sends them, it is currently impossible to get
+> into napi_busy_loop() as napi_id is only marked on Rx side in
+> xsk_rcv_check(). In there, napi_id is being taken from xdp_rxq_info
+> carried by xdp_buff. From Tx perspective, we do not have access to it.
+> What we have handy is the xsk pool.
 
-Applied to powerpc/fixes.
+The fact that the napi_id is not set unless set from the ingress side
+is actually "by design". It's CONFIG_NET_RX_BUSY_POLL after all. I
+followed the semantics of the regular busy-polling sockets. So, I
+wouldn't say it's a fix! The busy-polling in sendmsg is really just
+about "driving the RX busy-polling from another socket syscall".
 
-[1/1] powerpc/bpf: Fix use of user_pt_regs in uapi
-      https://git.kernel.org/powerpc/c/b21bd5a4b130f8370861478d2880985daace5913
+That being said, I definitely see that this is useful for AF_XDP
+sockets, but keep in mind that it sort of changes the behavior from
+regular sockets. And we'll get different behavior for
+copy-mode/zero-copy mode.
 
-cheers
+TL;DR, I think it's a good addition. One small nit below:
+
+> +                       __sk_mark_napi_id_once(sk, xs->pool->heads[0].xdp=
+.rxq->napi_id);
+
+Please hide this hideous pointer chasing in something neater:
+xsk_pool_get_napi_id() or something.
+
+
+Bj=C3=B6rn
