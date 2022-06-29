@@ -2,147 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E43560185
-	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 15:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1587560189
+	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 15:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232499AbiF2Njk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jun 2022 09:39:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42414 "EHLO
+        id S231426AbiF2NkO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jun 2022 09:40:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231933AbiF2Njj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jun 2022 09:39:39 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4361D15FE1;
-        Wed, 29 Jun 2022 06:39:38 -0700 (PDT)
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4LY2cG4lNsz9sx7;
-        Wed, 29 Jun 2022 21:38:54 +0800 (CST)
-Received: from kwepemm600016.china.huawei.com (7.193.23.20) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Wed, 29 Jun 2022 21:39:35 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- kwepemm600016.china.huawei.com (7.193.23.20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Wed, 29 Jun 2022 21:39:34 +0800
-From:   Guangbin Huang <huangguangbin2@huawei.com>
-To:     <jbrouer@redhat.com>, <hawk@kernel.org>, <brouer@redhat.com>,
-        <ilias.apalodimas@linaro.org>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <edumazet@google.com>, <pabeni@redhat.com>
-CC:     <lorenzo@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <lipeng321@huawei.com>, <huangguangbin2@huawei.com>,
-        <chenhao288@hisilicon.com>
-Subject: [PATCH net-next v2] net: page_pool: optimize page pool page allocation in NUMA scenario
-Date:   Wed, 29 Jun 2022 21:33:05 +0800
-Message-ID: <20220629133305.15012-1-huangguangbin2@huawei.com>
-X-Mailer: git-send-email 2.33.0
+        with ESMTP id S230264AbiF2NkO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jun 2022 09:40:14 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB10115825;
+        Wed, 29 Jun 2022 06:40:11 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id fd6so22245286edb.5;
+        Wed, 29 Jun 2022 06:40:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=qTC2bv1e9/i2DY9yoyJBZYcQ52UQ7X3XJtMOFo6SMV0=;
+        b=qJwkVZW8LKFm/SKPapzY3ew0vq+YIMWU0/aIAelxS3mKVz+RwGDfI9H2ZmSF7zePk+
+         WBMb2NK78nQr37JpWWUSVaBqMcT/kC7o0iWdZjjQSoG8BNzqBEv/GoBioy0XQEq0dk55
+         v5fBiQBkvSb32EaZvmFLCbgcJOlZjaM5UrlH9tyLAdiDH/07QgnL3KKWEXxgjwovb7OT
+         gWKoSOCfV95Dval9hDMjL3l/GH1WGA86oVSPfePC9wHvnfp4O/a5IQd6ARlDbp/wZRd3
+         2pCczifWys9rbABw8xoKtIRUuvpW3qiURv/nJo1iffIyD7dDCbe/U0Grjz5FNBDCx/8e
+         xWZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qTC2bv1e9/i2DY9yoyJBZYcQ52UQ7X3XJtMOFo6SMV0=;
+        b=h9yBFrRkfVpMGub7U7w0dYlahDWL5vyMcd1U4Mv+JGbi5iMPbmdRajKnWQHCiLj+Mx
+         NlDfeeZmVk0EGr0ZYQiwaZtLq7OgeeJQauSSVcGBAKnhgfe6AL952zbh5g+8hEhpKAze
+         TDdEh/8wo2QfvNXoWCGj89XbIZKwCPjlI4EgofYsTTju1BZB7uKq7R/Pl50gxVoV2qhU
+         p5z2dvy+14LIQ8YjzdHIyNgLd1X8jwtou5226Ss3Q3LaUgooIcTVbQwtU/VrPjfpie5d
+         eedSDUTJ/sYQ51zBNXhqc7gNt9q+nImdmxu4/7fdTBkZsFdC0v0vxUEJRTLhy3xWdyCW
+         nrOQ==
+X-Gm-Message-State: AJIora81XToR+/WfIskumU53xcSxv+CqjrVTBWjKaXjVU29oLxrBZoDl
+        bTGEhwvymTryHAlMYJRMv8h/hjFqMbylv3Bd+S3ObDN6G44=
+X-Google-Smtp-Source: AGRyM1tIoYbDNPtWBH2LU1XGPtsAK6BgpwHm5+1JP908HO3wcqqebKy/1EvwJTftaQaAmtBTFe68abzvoEhcNwAnqBc=
+X-Received: by 2002:a05:6402:f14:b0:435:7f82:302b with SMTP id
+ i20-20020a0564020f1400b004357f82302bmr4300100eda.57.1656510010334; Wed, 29
+ Jun 2022 06:40:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600016.china.huawei.com (7.193.23.20)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220629105752.933839-1-maciej.fijalkowski@intel.com> <CAJ+HfNj0FU=DBNdwD3HODbevcP-btoaeCCGCfn2Y5eP2WoEXHA@mail.gmail.com>
+In-Reply-To: <CAJ+HfNj0FU=DBNdwD3HODbevcP-btoaeCCGCfn2Y5eP2WoEXHA@mail.gmail.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Wed, 29 Jun 2022 15:39:57 +0200
+Message-ID: <CAJ+HfNgBXTWLWOthG1mOmy8ZZyzLAggpZLq9qOzbdzRxxmK77Q@mail.gmail.com>
+Subject: Re: [PATCH bpf] xsk: mark napi_id on sendmsg()
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jie Wang <wangjie125@huawei.com>
+On Wed, 29 Jun 2022 at 14:45, Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com>=
+ wrote:
+>
+> TL;DR, I think it's a good addition. One small nit below:
+>
 
-Currently NIC packet receiving performance based on page pool deteriorates
-occasionally. To analysis the causes of this problem page allocation stats
-are collected. Here are the stats when NIC rx performance deteriorates:
-
-bandwidth(Gbits/s)		16.8		6.91
-rx_pp_alloc_fast		13794308	21141869
-rx_pp_alloc_slow		108625		166481
-rx_pp_alloc_slow_h		0		0
-rx_pp_alloc_empty		8192		8192
-rx_pp_alloc_refill		0		0
-rx_pp_alloc_waive		100433		158289
-rx_pp_recycle_cached		0		0
-rx_pp_recycle_cache_full	0		0
-rx_pp_recycle_ring		362400		420281
-rx_pp_recycle_ring_full		6064893		9709724
-rx_pp_recycle_released_ref	0		0
-
-The rx_pp_alloc_waive count indicates that a large number of pages' numa
-node are inconsistent with the NIC device numa node. Therefore these pages
-can't be reused by the page pool. As a result, many new pages would be
-allocated by __page_pool_alloc_pages_slow which is time consuming. This
-causes the NIC rx performance fluctuations.
-
-The main reason of huge numa mismatch pages in page pool is that page pool
-uses alloc_pages_bulk_array to allocate original pages. This function is
-not suitable for page allocation in NUMA scenario. So this patch uses
-alloc_pages_bulk_array_node which has a NUMA id input parameter to ensure
-the NUMA consistent between NIC device and allocated pages.
-
-Repeated NIC rx performance tests are performed 40 times. NIC rx bandwidth
-is higher and more stable compared to the datas above. Here are three test
-stats, the rx_pp_alloc_waive count is zero and rx_pp_alloc_slow which
-indicates pages allocated from slow patch is relatively low.
-
-bandwidth(Gbits/s)		93		93.9		93.8
-rx_pp_alloc_fast		60066264	61266386	60938254
-rx_pp_alloc_slow		16512		16517		16539
-rx_pp_alloc_slow_ho		0		0		0
-rx_pp_alloc_empty		16512		16517		16539
-rx_pp_alloc_refill		473841		481910		481585
-rx_pp_alloc_waive		0		0		0
-rx_pp_recycle_cached		0		0		0
-rx_pp_recycle_cache_full	0		0		0
-rx_pp_recycle_ring		29754145	30358243	30194023
-rx_pp_recycle_ring_full		0		0		0
-rx_pp_recycle_released_ref	0		0		0
-
-Signed-off-by: Jie Wang <wangjie125@huawei.com>
----
-v1->v2:
-1, Remove two inappropriate comments.
-2, Use NUMA_NO_NODE instead of numa_mem_id() for code maintenance.
----
- net/core/page_pool.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
-
-diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index f18e6e771993..64cb2c617de8 100644
---- a/net/core/page_pool.c
-+++ b/net/core/page_pool.c
-@@ -377,6 +377,7 @@ static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
- 	unsigned int pp_order = pool->p.order;
- 	struct page *page;
- 	int i, nr_pages;
-+	int pref_nid; /* preferred NUMA node */
- 
- 	/* Don't support bulk alloc for high-order pages */
- 	if (unlikely(pp_order))
-@@ -386,10 +387,18 @@ static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
- 	if (unlikely(pool->alloc.count > 0))
- 		return pool->alloc.cache[--pool->alloc.count];
- 
-+#ifdef CONFIG_NUMA
-+	pref_nid = (pool->p.nid == NUMA_NO_NODE) ? numa_mem_id() : pool->p.nid;
-+#else
-+	/* Ignore pool->p.nid setting if !CONFIG_NUMA */
-+	pref_nid = NUMA_NO_NODE;
-+#endif
-+
- 	/* Mark empty alloc.cache slots "empty" for alloc_pages_bulk_array */
- 	memset(&pool->alloc.cache, 0, sizeof(void *) * bulk);
- 
--	nr_pages = alloc_pages_bulk_array(gfp, bulk, pool->alloc.cache);
-+	nr_pages = alloc_pages_bulk_array_node(gfp, pref_nid, bulk,
-+					       pool->alloc.cache);
- 	if (unlikely(!nr_pages))
- 		return NULL;
- 
--- 
-2.33.0
-
+I forgot one thing. Setting napi_id should be gated by
+"CONFIG_NET_RX_BUSY_POLL" ifdefs.
