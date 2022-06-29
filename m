@@ -2,139 +2,230 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CC82560270
-	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 16:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E28B356028A
+	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 16:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230219AbiF2OVA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jun 2022 10:21:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50362 "EHLO
+        id S229885AbiF2OZd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jun 2022 10:25:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229654AbiF2OU7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jun 2022 10:20:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AF3E21B7AD
-        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 07:20:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1656512457;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FiYmpBBjlfIbeiZDsnGGJUZmzd2clNYiuFHxeXQgGzc=;
-        b=HYoz9wd9e5mZSE8w0+DDuOpKZ1VrsF4u7aEKt+HezNTnnLbuwa15Olukb3Shqct72ccmAq
-        o81cjiJph/h40Y4T5BbzXPXvaskYQFUWhuAYYl2tL1YyB2AtchOv4Dt2wychGor0DP9nsT
-        XJwuPJkZzlotnH0R22iNB+xapsVH7/k=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-471-QdBZfZTZOGSyccTo2sfEng-1; Wed, 29 Jun 2022 10:20:49 -0400
-X-MC-Unique: QdBZfZTZOGSyccTo2sfEng-1
-Received: by mail-ed1-f70.google.com with SMTP id i9-20020a05640242c900b004373cd1c4d5so11210133edc.2
-        for <bpf@vger.kernel.org>; Wed, 29 Jun 2022 07:20:48 -0700 (PDT)
+        with ESMTP id S229778AbiF2OZc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jun 2022 10:25:32 -0400
+Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F21321267;
+        Wed, 29 Jun 2022 07:25:31 -0700 (PDT)
+Received: by mail-vs1-xe30.google.com with SMTP id j1so15298263vsj.12;
+        Wed, 29 Jun 2022 07:25:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jX3p6DenZNBEgcU3ch3YYakHc1wbWrFS7SkPyG+QQus=;
+        b=k7LriSy86O02qAchUK8qdaNiKkHBVFPD7dkBTLu+m+rmlgeudmRB7LhcpAQlG04V66
+         iLPvYDr379BVi88pgdODBp/FNhhmsntrQt7wj+/zDPrRQ5HV2DU84Az3jNtbTabDfg24
+         YblDTpdZ83deSpZX5+iA6i79wP+UHtUcpb3hPZNQxiqJ1TtywryMXfTqKFcBFFAOUnxY
+         E/X2V5d05Htta97aQXInk1QKmibSXk5My0q/v88jYE+w4G4EKQvEL86lJ2QsZPh/rttZ
+         woqfOnWqrPudGmVHugbAEzbsWj0ggPFeZAm1ps4wG1+IKegrNtYfHVKK+TAkqwqo9aRN
+         dX/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=FiYmpBBjlfIbeiZDsnGGJUZmzd2clNYiuFHxeXQgGzc=;
-        b=tn1RXHIFQd5/4lY0Vnunm209APA2hpE0vOzYssFTDkepaUXo48F7qleUFbYSlI3Agb
-         IStOfoG0jrDlXj0S7lKy5W3XA/d/YCROAqtt8Q4SJotjYntAtY27VkvHbbPIyqI/eA1h
-         XWiFNMta4BKaA4v7lhOfU+wXIU0p3Yn7NQdNtSfzRubqLRa8fI4wDwOYC8h/wua7jlKR
-         /5aDcPK2v17tDmCHyr1bKWfrinVu3EmpczYcNUqVwkIX6KW5Jk4kZs1GIKA7iqCFT6pd
-         0hdg4f8VKvOiiZ47lCajfEripjjiDAyDy7SJNwXQ+qOV8ZaJiGQ5S/RI/JSykd2HzA5R
-         WLoQ==
-X-Gm-Message-State: AJIora80Sy5uhw3z6c3TyIgcGPp/8KiiFpaW/Zh6Aqsrtd1EQ6fakPYb
-        dyKZxsTa4PgpF3AWy/S6teiMh3dOlSF+fVtnC7cLlBQdXBYiib2iszvEneL4c1F9DIq5pNVUNZk
-        Y2b4xqWk2mIJD
-X-Received: by 2002:a17:906:149b:b0:726:2968:e32a with SMTP id x27-20020a170906149b00b007262968e32amr3608540ejc.71.1656512446476;
-        Wed, 29 Jun 2022 07:20:46 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1u+aP3pQSccdfNXYWYB8kCCDBlEwDGDLuhva5jc+VbGERRJ2DQ0PTjF2LI9MvNSsCpmK+SFLQ==
-X-Received: by 2002:a17:906:149b:b0:726:2968:e32a with SMTP id x27-20020a170906149b00b007262968e32amr3608478ejc.71.1656512445656;
-        Wed, 29 Jun 2022 07:20:45 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id g6-20020a1709064e4600b007121b22b376sm7737010ejw.105.2022.06.29.07.20.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jun 2022 07:20:45 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 8CA16477063; Wed, 29 Jun 2022 16:20:44 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>, bpf@vger.kernel.org
-Cc:     xdp-hints@xdp-project.net
-Subject: Re: [xdp-hints] [PATCH RFC bpf-next 5/9] xdp: controlling XDP-hints
- from BPF-prog via helper
-In-Reply-To: <165643385885.449467.3259561784742405947.stgit@firesoul>
-References: <165643378969.449467.13237011812569188299.stgit@firesoul>
- <165643385885.449467.3259561784742405947.stgit@firesoul>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 29 Jun 2022 16:20:44 +0200
-Message-ID: <87fsjna6v7.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jX3p6DenZNBEgcU3ch3YYakHc1wbWrFS7SkPyG+QQus=;
+        b=LfUg5KBAA84sFNfFqSTQ2ThbDSx6tYoGuqwcKzHvIrRu3x3T4UJmTIwQe6rmqZIm4n
+         /16Q4iIYG7fiQi+EvvIY1+F0AkkiVdT20zhjs5ttJWbamIGfRUtIQqJPqFUFU/wSFaG8
+         chVecSrohThpq4PwEFhtuOGyfACfiN1rchkpUpk9nPxabvreGHiqBOyf9awn6d/n8+iq
+         1dx8+XdvE38F1pVNd7vDr61ljzYi01XPYfB84xp9KmKo77Ks4NHYlQdrI6uoUdF4kQeX
+         YE1tcqfmc95s1FW0r9fj1OBZYZTDKdIda3pmLPury24dy7WEoV1MmZYnQjfiYQk7DQ/n
+         EF1g==
+X-Gm-Message-State: AJIora8iQfczkGIsqCy1ciAZpA9g61vN4Rxvs1eHby8coe0olqnCj2RY
+        ObleKY/OhiWz5Fc43sZ2xyUJsmMvJuIVkAzUMqI=
+X-Google-Smtp-Source: AGRyM1uaoy8u7JL6ehg3hLz7HK18wCIoU1NSgsTiYQCJZG36LKjl0XBJme7WTvHQ9/6MlEbs82o2oZxAASeabK7GmnI=
+X-Received: by 2002:a05:6102:3d28:b0:354:5e75:7031 with SMTP id
+ i40-20020a0561023d2800b003545e757031mr4955069vsv.35.1656512730318; Wed, 29
+ Jun 2022 07:25:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220629111351.47699-1-quentin@isovalent.com>
+In-Reply-To: <20220629111351.47699-1-quentin@isovalent.com>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Wed, 29 Jun 2022 22:24:53 +0800
+Message-ID: <CALOAHbCFsqy1DXk5c_NLyi2TPnJd_tP5CtU==thESmTbF6oQDA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpftool: Probe for memcg-based accounting
+ before bumping rlimit
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jesper Dangaard Brouer <brouer@redhat.com> writes:
-
-> XDP BPF-prog's need a way to interact with the XDP-hints. This patch
-> introduces a BPF-helper function, that allow XDP BPF-prog's to interact
-> with the XDP-hints.
+On Wed, Jun 29, 2022 at 7:13 PM Quentin Monnet <quentin@isovalent.com> wrote:
 >
-> BPF-prog can query if any XDP-hints have been setup and if this is
-> compatible with the xdp_hints_common struct. If XDP-hints are available
-> the BPF "origin" is returned (see enum xdp_hints_btf_origin) as BTF can
-> come from different sources or origins e.g. vmlinux, module or local.
+> Bpftool used to bump the memlock rlimit to make sure to be able to load
+> BPF objects. After the kernel has switched to memcg-based memory
+> accounting [0] in 5.11, bpftool has relied on libbpf to probe the system
+> for memcg-based accounting support and for raising the rlimit if
+> necessary [1]. But this was later reverted, because the probe would
+> sometimes fail, resulting in bpftool not being able to load all required
+> objects [2].
+>
+> Here we add a more efficient probe, in bpftool itself. We first lower
+> the rlimit to 0, then we attempt to load a BPF object (and finally reset
+> the rlimit): if the load succeeds, then memcg-based memory accounting is
+> supported.
+>
+> This approach was earlier proposed for the probe in libbpf itself [3],
+> but given that the library may be used in multithreaded applications,
+> the probe could have undesirable consequences if one thread attempts to
+> lock kernel memory while memlock rlimit is at 0. Since bpftool is
+> single-threaded and the rlimit is process-based, this is fine to do in
+> bpftool itself.
+>
+> This probe was inspired by the similar one from the cilium/ebpf Go
+> library [4].
+>
+> v2:
+> - Simply use sizeof(attr) instead of hardcoding a size via
+>   offsetofend().
+> - Set r0 = 0 before returning in sample program.
+>
+> [0] commit 97306be45fbe ("Merge branch 'switch to memcg-based memory accounting'")
+> [1] commit a777e18f1bcd ("bpftool: Use libbpf 1.0 API mode instead of RLIMIT_MEMLOCK")
+> [2] commit 6b4384ff1088 ("Revert "bpftool: Use libbpf 1.0 API mode instead of RLIMIT_MEMLOCK"")
+> [3] https://lore.kernel.org/bpf/20220609143614.97837-1-quentin@isovalent.com/t/#u
+> [4] https://github.com/cilium/ebpf/blob/v0.9.0/rlimit/rlimit.go#L39
+>
+> Cc: Stanislav Fomichev <sdf@google.com>
+> Cc: Yafang Shao <laoar.shao@gmail.com>
+> Suggested-by: Daniel Borkmann <daniel@iogearbox.net>
+> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
 
-I'm not sure I quite understand what this origin is supposed to be good
-for? What is a BPF (or AF_XDP) program supposed to do with the
-information "this XDP hints struct came from a module?" without knowing
-which module that was? Ultimately, the origin is useful for a consumer
-to check that the metadata is in the format that it's expecting it to be
-in (so it can just load the data from the appropriate offsets). But to
-answer this, we really need a unique identifier; so I think the approach
-in Alexander's series of encoding the ID of the BTF structure itself
-into the next 32 bits is better? That way we'll have a unique "pointer"
-to the actual struct that's in the metadata area and can act on this.
+LGTM
 
-> RFC/TODO: Improve patch: Can verifier validate provided BTF on "update"
-> and detect if compatible with common struct???
+Acked-by: Yafang Shao <laoar.shao@gmail.com>
 
-If we have the unique ID as mentioned above, I think the kernel probably
-could resolve this automatically: whenever a module is loaded, the
-kernel could walk the BTF information from that module an simply inspect
-all the metadata structs and see if they contain the embedded
-xdp_hints_common struct. The IDs of any metadata structs that do contain
-the common struct can then be kept in a central lookup table and the
-consumption code can then simply compare the BTF ID to this table when
-building an SKB?
+> ---
+>  tools/bpf/bpftool/common.c | 71 ++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 68 insertions(+), 3 deletions(-)
+>
+> diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
+> index a0d4acd7c54a..fc8172a4969a 100644
+> --- a/tools/bpf/bpftool/common.c
+> +++ b/tools/bpf/bpftool/common.c
+> @@ -13,14 +13,17 @@
+>  #include <stdlib.h>
+>  #include <string.h>
+>  #include <unistd.h>
+> -#include <linux/limits.h>
+> -#include <linux/magic.h>
+>  #include <net/if.h>
+>  #include <sys/mount.h>
+>  #include <sys/resource.h>
+>  #include <sys/stat.h>
+>  #include <sys/vfs.h>
+>
+> +#include <linux/filter.h>
+> +#include <linux/limits.h>
+> +#include <linux/magic.h>
+> +#include <linux/unistd.h>
+> +
+>  #include <bpf/bpf.h>
+>  #include <bpf/hashmap.h>
+>  #include <bpf/libbpf.h> /* libbpf_num_possible_cpus */
+> @@ -73,11 +76,73 @@ static bool is_bpffs(char *path)
+>         return (unsigned long)st_fs.f_type == BPF_FS_MAGIC;
+>  }
+>
+> +/* Probe whether kernel switched from memlock-based (RLIMIT_MEMLOCK) to
+> + * memcg-based memory accounting for BPF maps and programs. This was done in
+> + * commit 97306be45fbe ("Merge branch 'switch to memcg-based memory
+> + * accounting'"), in Linux 5.11.
+> + *
+> + * Libbpf also offers to probe for memcg-based accounting vs rlimit, but does
+> + * so by checking for the availability of a given BPF helper and this has
+> + * failed on some kernels with backports in the past, see commit 6b4384ff1088
+> + * ("Revert "bpftool: Use libbpf 1.0 API mode instead of RLIMIT_MEMLOCK"").
+> + * Instead, we can probe by lowering the process-based rlimit to 0, trying to
+> + * load a BPF object, and resetting the rlimit. If the load succeeds then
+> + * memcg-based accounting is supported.
+> + *
+> + * This would be too dangerous to do in the library, because multithreaded
+> + * applications might attempt to load items while the rlimit is at 0. Given
+> + * that bpftool is single-threaded, this is fine to do here.
+> + */
+> +static bool known_to_need_rlimit(void)
+> +{
+> +       struct rlimit rlim_init, rlim_cur_zero = {};
+> +       struct bpf_insn insns[] = {
+> +               BPF_MOV64_IMM(BPF_REG_0, 0),
+> +               BPF_EXIT_INSN(),
+> +       };
+> +       size_t insn_cnt = ARRAY_SIZE(insns);
+> +       union bpf_attr attr;
+> +       int prog_fd, err;
+> +
+> +       memset(&attr, 0, sizeof(attr));
+> +       attr.prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
+> +       attr.insns = ptr_to_u64(insns);
+> +       attr.insn_cnt = insn_cnt;
+> +       attr.license = ptr_to_u64("GPL");
+> +
+> +       if (getrlimit(RLIMIT_MEMLOCK, &rlim_init))
+> +               return false;
+> +
+> +       /* Drop the soft limit to zero. We maintain the hard limit to its
+> +        * current value, because lowering it would be a permanent operation
+> +        * for unprivileged users.
+> +        */
+> +       rlim_cur_zero.rlim_max = rlim_init.rlim_max;
+> +       if (setrlimit(RLIMIT_MEMLOCK, &rlim_cur_zero))
+> +               return false;
+> +
+> +       /* Do not use bpf_prog_load() from libbpf here, because it calls
+> +        * bump_rlimit_memlock(), interfering with the current probe.
+> +        */
+> +       prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
+> +       err = errno;
+> +
+> +       /* reset soft rlimit to its initial value */
+> +       setrlimit(RLIMIT_MEMLOCK, &rlim_init);
+> +
+> +       if (prog_fd < 0)
+> +               return err == EPERM;
+> +
+> +       close(prog_fd);
+> +       return false;
+> +}
+> +
+>  void set_max_rlimit(void)
+>  {
+>         struct rlimit rinf = { RLIM_INFINITY, RLIM_INFINITY };
+>
+> -       setrlimit(RLIMIT_MEMLOCK, &rinf);
+> +       if (known_to_need_rlimit())
+> +               setrlimit(RLIMIT_MEMLOCK, &rinf);
+>  }
+>
+>  static int
+> --
+> 2.34.1
+>
 
-As for the validation on the BPF side:n
 
-> +	if (flags & HINTS_BTF_UPDATE) {
-> +		is_compat_common = !!(flags & HINTS_BTF_COMPAT_COMMON);
-> +	/* TODO: Can kernel validate if hints are BTF compat with common? */
-> +	/* TODO: Could BPF prog provide BTF as ARG_PTR_TO_BTF_ID to prove compat_common ? */
-
-If we use the "global ID + lookup table" approach above, we don't really
-need to validate anything here: if the program says it's writing
-metadata with a format given by a specific ID, that implies
-compatibility (or not) as given by the ID. We could sanity-check the
-metadata area size, but the consumption code has to do that anyway, so
-I'm not sure it's worth the runtime overhead to have an additional check
-here?
-
-As for safety of the metadata content itself, I don't really think we
-can do anything to guarantee this: in any case the BPF program can pass
-a valid BTF ID and still write garbage values into the actual fields, so
-the consumption code has to do enough validation that this won't crash
-the kernel anyway. But this is no different from the packet data itself:
-XDP is basically in a position to be a MITM attacker of the network
-stack itself, which is why loading XDP programs is a privileged
-operation...
-
--Toke
-
+-- 
+Regards
+Yafang
