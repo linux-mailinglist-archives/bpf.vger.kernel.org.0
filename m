@@ -2,180 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC4CD55FCAA
-	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 11:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F58355FDFF
+	for <lists+bpf@lfdr.de>; Wed, 29 Jun 2022 12:58:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230074AbiF2J4L (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Jun 2022 05:56:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42150 "EHLO
+        id S231897AbiF2K6K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Jun 2022 06:58:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231424AbiF2J4K (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Jun 2022 05:56:10 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEC963DA60;
-        Wed, 29 Jun 2022 02:56:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 802B0B8222A;
-        Wed, 29 Jun 2022 09:56:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B24BC34114;
-        Wed, 29 Jun 2022 09:56:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656496563;
-        bh=nyfiUFC0mX4TRqlbWUJcO+cLpI5YzdFGwSqbxo8eGiU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Q2kGArmCv+g7TA8BtsyZizJFsRnfx0mWrI9St1tO1mGmgj7YanJncRnnjsarTeBPE
-         K8xqv5C5UDjToR7aoPiMHQ2SMsAucqX9k6u+ukFjXTXxQbFJ6Odn9TEEZscnJZxaJy
-         y1Vub8AM5ZF04+kr7TQ521RC/TODKQGETgAfAhwOjdOl4ah7efG2tEte5VGiXw1wnd
-         LH2j5Fz4DYwaO5sBgQBQWxkkgNq7TskOXhZItKRyfUmZHRaDmS5UmSYy+yrw1ODLHi
-         atGs6iafQAvdOyMo0ZnPLHnpqQcOl8rubcmRw2uhv6fvSuKelPtTqye+DHUOx4AoJ2
-         FXnIzz7/wnRJw==
-Date:   Wed, 29 Jun 2022 11:55:57 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Yosry Ahmed <yosryahmed@google.com>
-Subject: Re: [PATCH v5 bpf-next 5/5] bpf/selftests: Add a selftest for
- bpf_getxattr
-Message-ID: <20220629095557.oet6u2hi7msit6ff@wittgenstein>
-References: <20220628161948.475097-1-kpsingh@kernel.org>
- <20220628161948.475097-6-kpsingh@kernel.org>
- <20220628173344.h7ihvyl6vuky5xus@wittgenstein>
- <CACYkzJ5ij9rth_v3KQrCVYsQr2STBEWq1EAzkDb5D06CoRRSjA@mail.gmail.com>
- <CAADnVQ+mokn3Yo492Zng=Gtn_LgT-T1XLth5BXyKZXFno-3ZDg@mail.gmail.com>
- <20220629081119.ddqvfn3al36fl27q@wittgenstein>
+        with ESMTP id S232129AbiF2K6I (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Jun 2022 06:58:08 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BB0CE04;
+        Wed, 29 Jun 2022 03:58:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1656500287; x=1688036287;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=qDwOeQCjAcCosJlIYFT+wV2S0XiAyg/mkUGTxioKq1I=;
+  b=OaazYW1jwoXQeFVfgOJwrIkjNUhqUkepASGZn1j9zjU2xlk8e/P/nLQC
+   q4Px9CCB9GshRRGw8eglq2/uBw3TwtA7okcyriMDPbAYlhSFMFEZhdCOe
+   ibK1T3s5ava0dZJXwAnivS2yBQeJxOSMnGX5Mf/2Aj5/3ifjcuR/2Zzc8
+   RHSBej9qA4Xxpbdu2MnBw6P7oCqC8uPSphUTPzvXTxF7Bwe0iW/Og2mQ5
+   GG8glZu77llMOdd0kD+hmJdIP3IxB5hLHuG1c0n6LBpYQykMKraCLV9+y
+   B+GBqX+rSdhuUJnMB8HK7GYolAGfLHm+IHxVZco+oVEzx64UwgdgzRZoq
+   g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10392"; a="282734960"
+X-IronPort-AV: E=Sophos;i="5.92,231,1650956400"; 
+   d="scan'208";a="282734960"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2022 03:58:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.92,231,1650956400"; 
+   d="scan'208";a="658512957"
+Received: from boxer.igk.intel.com ([10.102.20.173])
+  by fmsmga004.fm.intel.com with ESMTP; 29 Jun 2022 03:58:05 -0700
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org
+Cc:     netdev@vger.kernel.org, magnus.karlsson@intel.com,
+        bjorn@kernel.org, Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: [PATCH bpf] xsk: mark napi_id on sendmsg()
+Date:   Wed, 29 Jun 2022 12:57:52 +0200
+Message-Id: <20220629105752.933839-1-maciej.fijalkowski@intel.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20220629081119.ddqvfn3al36fl27q@wittgenstein>
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 29, 2022 at 10:11:19AM +0200, Christian Brauner wrote:
-> On Tue, Jun 28, 2022 at 03:28:42PM -0700, Alexei Starovoitov wrote:
-> > On Tue, Jun 28, 2022 at 10:52 AM KP Singh <kpsingh@kernel.org> wrote:
-> > >
-> > > On Tue, Jun 28, 2022 at 7:33 PM Christian Brauner <brauner@kernel.org> wrote:
-> > > >
-> > > > On Tue, Jun 28, 2022 at 04:19:48PM +0000, KP Singh wrote:
-> > > > > A simple test that adds an xattr on a copied /bin/ls and reads it back
-> > > > > when the copied ls is executed.
-> > > > >
-> > > > > Signed-off-by: KP Singh <kpsingh@kernel.org>
-> > > > > ---
-> > > > >  .../testing/selftests/bpf/prog_tests/xattr.c  | 54 +++++++++++++++++++
-> > >
-> > > [...]
-> > >
-> > > > > +SEC("lsm.s/bprm_committed_creds")
-> > > > > +void BPF_PROG(bprm_cc, struct linux_binprm *bprm)
-> > > > > +{
-> > > > > +     struct task_struct *current = bpf_get_current_task_btf();
-> > > > > +     char dir_xattr_value[64] = {0};
-> > > > > +     int xattr_sz = 0;
-> > > > > +
-> > > > > +     xattr_sz = bpf_getxattr(bprm->file->f_path.dentry,
-> > > > > +                             bprm->file->f_path.dentry->d_inode, XATTR_NAME,
-> > > > > +                             dir_xattr_value, 64);
-> > > >
-> > > > Yeah, this isn't right. You're not accounting for the caller's userns
-> > > > nor for the idmapped mount. If this is supposed to work you will need a
-> > > > variant of vfs_getxattr() that takes the mount's idmapping into account
-> > > > afaict. See what needs to happen after do_getxattr().
-> > >
-> > > Thanks for taking a look.
-> > >
-> > > So, If I understand correctly, we don't need xattr_permission (and
-> > > other checks in
-> > > vfs_getxattr) here as the BPF programs run as CAP_SYS_ADMIN.
-> > >
-> > > but...
-> > >
-> > > So, Is this bit what's missing then?
-> > >
-> > > error = vfs_getxattr(mnt_userns, d, kname, ctx->kvalue, ctx->size);
-> > > if (error > 0) {
-> > >     if ((strcmp(kname, XATTR_NAME_POSIX_ACL_ACCESS) == 0) ||
-> > > (strcmp(kname, XATTR_NAME_POSIX_ACL_DEFAULT) == 0))
-> > >         posix_acl_fix_xattr_to_user(mnt_userns, d_inode(d),
-> > >             ctx->kvalue, error);
-> > 
-> > That will not be correct.
-> > posix_acl_fix_xattr_to_user checking current_user_ns()
-> > is checking random tasks that happen to be running
-> > when lsm hook got invoked.
-> > 
-> > KP,
-> > we probably have to document clearly that neither 'current*'
-> > should not be used here.
-> > xattr_permission also makes little sense in this context.
-> > If anything it can be a different kfunc if there is a use case,
-> > but I don't see it yet.
-> > bpf-lsm prog calling __vfs_getxattr is just like other lsm-s that
-> > call it directly. It's the kernel that is doing its security thing.
-> 
-> Right, but LSMs usually only retrieve their own xattr namespace (ima,
-> selinux, smack) or they calculate hashes for xattrs based on the raw
-> filesystem xattr values (evm).
-> 
-> But this new bpf_getxattr() is different. It allows to retrieve _any_
-> xattr in any security hook it can be attached to. So someone can write a
-> bpf program that retrieves filesystem capabilites or posix acls. And
-> these are xattrs that require higher-level vfs involvement to be
-> sensible in most contexts.
-> 
-> So looking at:
-> 
-> SEC("lsm.s/bprm_committed_creds")
-> void BPF_PROG(bprm_cc, struct linux_binprm *bprm)
-> {
-> 	struct task_struct *current = bpf_get_current_task_btf();
-> 	char dir_xattr_value[64] = {0};
-> 	int xattr_sz = 0;
-> 
-> 	xattr_sz = bpf_getxattr(bprm->file->f_path.dentry,
-> 				bprm->file->f_path.dentry->d_inode, XATTR_NAME,
-> 				dir_xattr_value, 64);
-> 
-> 	if (xattr_sz <= 0)
-> 		return;
-> 
-> 	if (!bpf_strncmp(dir_xattr_value, sizeof(XATTR_VALUE), XATTR_VALUE))
-> 		result = 1;
-> }
-> 
-> This hooks a bpf-lsm program to the security_bprm_committed_creds()
-> hook. It then retrieves the extended attributes of the file to be
-> executed. The hook currently always retrieves the raw filesystem values.
-> 
-> But for example any XATTR_NAME_CAPS filesystem capabilities that
-> might've been stored will be taken into account during exec. And both
-> the idmapping of the mount and the caller matter when determing whether
-> they are used or not.
-> 
-> But the current implementation of bpf_getxattr() just ignores both. It
-> will always retrieve the raw filesystem values. So if one invokes this
-> hook they're not actually retrieving the values as they are seen by
-> fs/exec.c. And I'm wondering why that is ok? And even if this is ok for
-> some use-cases it might very well become a security issue in others if
-> access decisions are always based on the raw values.
-> 
-> I'm not well-versed in this so bear with me, please.
+When application runs in zero copy busy poll mode and does not receive a
+single packet but only sends them, it is currently impossible to get
+into napi_busy_loop() as napi_id is only marked on Rx side in
+xsk_rcv_check(). In there, napi_id is being taken from xdp_rxq_info
+carried by xdp_buff. From Tx perspective, we do not have access to it.
+What we have handy is the xsk pool.
 
-If this is really just about retrieving the "security.bpf" xattr and no
-other xattr then the bpf_getxattr() variant should somehow hard-code
-that to ensure that no other xattrs can be retrieved, imho.
+Xsk pool works on a pool of internal xdp_buff wrappers called
+xdp_buff_xsk. AF_XDP ZC enabled drivers call xp_set_rxq_info() so each
+of xdp_buff_xsk has a valid pointer to xdp_rxq_info of underlying queue.
+Therefore, on Tx side, napi_id can be pulled from
+xs->pool->heads[0].xdp.rxq->napi_id.
+
+Do this only for sockets working in ZC mode as otherwise rxq pointers
+would not be initialized.
+
+Fixes: a0731952d9cd ("xsk: Add busy-poll support for {recv,send}msg()")
+Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+---
+ net/xdp/xsk.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 19ac872a6624..eafd512d38b1 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -637,8 +637,11 @@ static int __xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len
+ 	if (unlikely(need_wait))
+ 		return -EOPNOTSUPP;
+ 
+-	if (sk_can_busy_loop(sk))
++	if (sk_can_busy_loop(sk)) {
++		if (xs->zc)
++			__sk_mark_napi_id_once(sk, xs->pool->heads[0].xdp.rxq->napi_id);
+ 		sk_busy_loop(sk, 1); /* only support non-blocking sockets */
++	}
+ 
+ 	if (xs->zc && xsk_no_wakeup(sk))
+ 		return 0;
+-- 
+2.27.0
+
