@@ -2,39 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC75F561954
-	for <lists+bpf@lfdr.de>; Thu, 30 Jun 2022 13:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27D4A56196C
+	for <lists+bpf@lfdr.de>; Thu, 30 Jun 2022 13:42:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232237AbiF3Lgl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Jun 2022 07:36:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51844 "EHLO
+        id S231679AbiF3Lmf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Jun 2022 07:42:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230363AbiF3Lgk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Jun 2022 07:36:40 -0400
+        with ESMTP id S235128AbiF3Lmc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Jun 2022 07:42:32 -0400
 Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F7E5A446;
-        Thu, 30 Jun 2022 04:36:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F6F58FCA;
+        Thu, 30 Jun 2022 04:42:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
         MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
         Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
         List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=YUegSAtrHJuf++oLd2AkDHyUJS1bF226T9zeUPibzdI=; b=a7IyqWkdA70BWwqXqNN4nS6fTV
-        52K3yOWMROiMYthiioE0NOH9Ir1XwJG5ltYsjVradu9PNBobke0xtZqhLqFjls/9RKQR56sB49MrW
-        UYUziAQa0i7ekm0yvuTbY0H2eeMjLvComguGJCv7m4g410lnooasvXKDqntBVQx98MsSy9rP+DFtH
-        o2EK19blD/VcqDrCuffcK/Up1avcHPtMBF1Aa1x01aIlWqtC+C7emT76eSYTUdp08/x4ZNczFdWPL
-        dRPwpftJN3R++G3Ac//nPYu5d3WJDfL8VpUNVA+p/YzfUMztYnIBtQrIWQySDu3wOyE55YtMIPaB4
-        pFXs5xRg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33114)
+        bh=pCVLDadV5ten+hI6vWRZbnBdPC+AeuTjF2D/qYD+soU=; b=URILelAHkP5sNj7GCPdqIAlP85
+        mwvBvo7cYQFudtfKq7Jpu0ifkS6tR/bsjkiNEg87fn6Keur4eVCZBcbZLL1AlXLx0oiMVMwRRtjTz
+        ucGVEQR4h4KZJNVUzHZdEuXXKsf17V5xOk3MNMmlSRcpojtU3gyJgOFN51+TtCNNNtGwFHLMCNLp6
+        WIMjOqTrMoR6mXHI8/R+tfdHgGnfuhpB0rUUTTxzYikWBNOuV9hXNRPsbiih8vMB6vHVpYQdv3FY7
+        mMhuAshVrIO6Qf/GegBaHIsZEH008S/x8aUhPNcPLhGclMW9aTWf2v0dZ+7gvBH0OK7eQ3lkBFI5n
+        7ZffnVGw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33116)
         by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <linux@armlinux.org.uk>)
-        id 1o6sTI-0004Lw-8e; Thu, 30 Jun 2022 12:36:32 +0100
+        id 1o6sZ2-0004MZ-OK; Thu, 30 Jun 2022 12:42:28 +0100
 Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
         (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1o6sTB-0006kW-4c; Thu, 30 Jun 2022 12:36:25 +0100
-Date:   Thu, 30 Jun 2022 12:36:25 +0100
+        id 1o6sZ0-0006lS-Qs; Thu, 30 Jun 2022 12:42:26 +0100
+Date:   Thu, 30 Jun 2022 12:42:26 +0100
 From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
 To:     Arun Ramadoss <arun.ramadoss@microchip.com>
 Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
@@ -57,15 +57,15 @@ Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>
-Subject: Re: [Patch net-next v14 10/13] net: dsa: microchip: lan937x: add
- phylink_get_caps support
-Message-ID: <Yr2KuQonUBo74As+@shell.armlinux.org.uk>
+Subject: Re: [Patch net-next v14 11/13] net: dsa: microchip: lan937x: add
+ phylink_mac_link_up support
+Message-ID: <Yr2MImcS9lzr3yx9@shell.armlinux.org.uk>
 References: <20220630102041.25555-1-arun.ramadoss@microchip.com>
- <20220630102041.25555-11-arun.ramadoss@microchip.com>
+ <20220630102041.25555-12-arun.ramadoss@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220630102041.25555-11-arun.ramadoss@microchip.com>
+In-Reply-To: <20220630102041.25555-12-arun.ramadoss@microchip.com>
 Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
@@ -76,29 +76,84 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 30, 2022 at 03:50:38PM +0530, Arun Ramadoss wrote:
-> The internal phy of the LAN937x are capable of 100Mbps speed. And the
-
-Good English grammar suggests never to start a sentence with "And".
-
-> xMII port of switch is capable of 10/100/1000Mbps.
-
-... and supports flow control?
-
-> +void lan937x_phylink_get_caps(struct ksz_device *dev, int port,
-> +			      struct phylink_config *config)
+On Thu, Jun 30, 2022 at 03:50:39PM +0530, Arun Ramadoss wrote:
+> +static void lan937x_config_gbit(struct ksz_device *dev, bool gbit, u8 *data)
 > +{
-> +	config->mac_capabilities = MAC_100FD;
+> +	if (gbit)
+> +		*data &= ~PORT_MII_NOT_1GBIT;
+> +	else
+> +		*data |= PORT_MII_NOT_1GBIT;
+> +}
 > +
-> +	if (dev->info->supports_rgmii[port]) {
-> +		/* MII/RMII/RGMII ports */
-> +		config->mac_capabilities |= MAC_ASYM_PAUSE | MAC_SYM_PAUSE |
-> +					    MAC_100HD | MAC_10 | MAC_1000FD;
+> +static void lan937x_config_interface(struct ksz_device *dev, int port,
+> +				     int speed, int duplex,
+> +				     bool tx_pause, bool rx_pause)
+> +{
+> +	u8 xmii_ctrl0, xmii_ctrl1;
+> +
+> +	ksz_pread8(dev, port, REG_PORT_XMII_CTRL_0, &xmii_ctrl0);
+> +	ksz_pread8(dev, port, REG_PORT_XMII_CTRL_1, &xmii_ctrl1);
+> +
+> +	switch (speed) {
+> +	case SPEED_1000:
+> +		lan937x_config_gbit(dev, true, &xmii_ctrl1);
+> +		break;
+> +	case SPEED_100:
+> +		lan937x_config_gbit(dev, false, &xmii_ctrl1);
+> +		xmii_ctrl0 |= PORT_MII_100MBIT;
+> +		break;
+> +	case SPEED_10:
+> +		lan937x_config_gbit(dev, false, &xmii_ctrl1);
+> +		xmii_ctrl0 &= ~PORT_MII_100MBIT;
+> +		break;
+> +	default:
+> +		dev_err(dev->dev, "Unsupported speed on port %d: %d\n",
+> +			port, speed);
+> +		return;
+> +	}
 
-And SGMII too? (Which seems to be a given because from your list in the
-series cover message, SGMII ports also support RGMII).
+Isn't this:
 
-Thanks.
+	if (speed == SPEED_1000)
+		xmii_ctrl1 &= ~PORT_MII_NOT_1GBIT;
+	else
+		xmii_ctrl1 |= PORT_MII_NOT_1GBIT;
+
+	if (speed == SPEED_100)
+		xmii_ctrl0 |= PORT_MII_100MBIT;
+	else
+		xmii_ctrl0 &= ~PORT_MII_100MBIT;
+
+There isn't much need to validate that "speed" is correct, you've
+already told phylink that you only support 1G, 100M and 10M so you're
+not going to get called with anything except one of those.
+
+> +
+> +	if (duplex)
+> +		xmii_ctrl0 |= PORT_MII_FULL_DUPLEX;
+> +	else
+> +		xmii_ctrl0 &= ~PORT_MII_FULL_DUPLEX;
+> +
+> +	if (tx_pause)
+> +		xmii_ctrl0 |= PORT_MII_TX_FLOW_CTRL;
+> +	else
+> +		xmii_ctrl1 &= ~PORT_MII_TX_FLOW_CTRL;
+
+It seems weird to set a bit in one register and clear it in a different
+register. I suspect you mean xmii_ctrl0 here.
+
+> +
+> +	if (rx_pause)
+> +		xmii_ctrl0 |= PORT_MII_RX_FLOW_CTRL;
+> +	else
+> +		xmii_ctrl0 &= ~PORT_MII_RX_FLOW_CTRL;
+> +
+> +	ksz_pwrite8(dev, port, REG_PORT_XMII_CTRL_0, xmii_ctrl0);
+> +	ksz_pwrite8(dev, port, REG_PORT_XMII_CTRL_1, xmii_ctrl1);
+> +}
+> +
+
+Thanks!
 
 -- 
 RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
