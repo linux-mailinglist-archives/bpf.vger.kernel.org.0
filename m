@@ -2,126 +2,284 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20EDC561B9D
-	for <lists+bpf@lfdr.de>; Thu, 30 Jun 2022 15:45:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BF76561BB0
+	for <lists+bpf@lfdr.de>; Thu, 30 Jun 2022 15:48:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234660AbiF3NpB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Jun 2022 09:45:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45746 "EHLO
+        id S234701AbiF3NrM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Jun 2022 09:47:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233823AbiF3NpA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Jun 2022 09:45:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 70DFB19C3D
-        for <bpf@vger.kernel.org>; Thu, 30 Jun 2022 06:44:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1656596698;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hmiyqrALBK4w6YMjE9/PPjw+5KLdyggL+3cKN8iImGM=;
-        b=TgZTmY65MDLOxFAp1EtrWNFz7Pbvy8J+RCgJHQr7UEhdBpX54zPRkrSA2qzIKVK/APCLUq
-        FJSNGcquCpLGwFgyVhGyzK//IwEeQXTyfzhs6sG5NRr13E6rqA/34zSbwc1wjRdLA0OL9O
-        WFBtkcukrADVOtPxD0IR4IX/+3Mfrjk=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-661-KogXn__lP1OI2uFbrMS96w-1; Thu, 30 Jun 2022 09:44:57 -0400
-X-MC-Unique: KogXn__lP1OI2uFbrMS96w-1
-Received: by mail-lj1-f198.google.com with SMTP id l5-20020a2e8345000000b0025bce6dcde0so2242176ljh.12
-        for <bpf@vger.kernel.org>; Thu, 30 Jun 2022 06:44:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:message-id:date:mime-version:user-agent:cc
-         :subject:content-language:to:references:in-reply-to
-         :content-transfer-encoding;
-        bh=hmiyqrALBK4w6YMjE9/PPjw+5KLdyggL+3cKN8iImGM=;
-        b=7DH/PFahW/xUTWXOCzLZ65qqs80GFZE1ihBJ46Rq0IIwb/xW8zGlHqIHd+kuKb7ss8
-         /wq6ISbcVlKDCVRWAerXVqD5i/d+uuiP6aN7zE8HK79Ig3v9fLbxi6rvKjX970BVq9IY
-         XEPBzVmF1NTOFfvyQFu2lhcdXBRn1HQTZ1vQNzmlngBlG/c+X3uFhV7zv66qxDEPBExr
-         71zH7yc4FSKdWsFikrmghU3MB3Qn9NvqtHKwpbb01B61eY+nlrZtE8+YSn6XQuzSOJZd
-         Gn5nzCsIqsN98SH6yPmmI8q/Hx8km5Z69g2wvA0tYS2XAN4SrokwuBbyNS981wX+S8lT
-         tlEw==
-X-Gm-Message-State: AJIora/jEpwT9Wg3IbezeETTQPTQ5nPkkJS696i3fDo/tHgMQKrU0SDl
-        jqGV9oKwsMmdIHFtcMdrwp8m+HSjbS5KnKmm9xsxFcLS39BvV23W+fPT0jA7HbD17T8IvpV9AXL
-        uVqLEjUTyxXOR
-X-Received: by 2002:a2e:83c6:0:b0:25a:d2c4:76c8 with SMTP id s6-20020a2e83c6000000b0025ad2c476c8mr5009227ljh.336.1656596695583;
-        Thu, 30 Jun 2022 06:44:55 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1vF59U2396jCMOcoH957hsj6kOjYeFktuehvWto7PorzaCjIxeQ4NPmAQLOvXE6DPG8b6KT5A==
-X-Received: by 2002:a2e:83c6:0:b0:25a:d2c4:76c8 with SMTP id s6-20020a2e83c6000000b0025ad2c476c8mr5009218ljh.336.1656596695380;
-        Thu, 30 Jun 2022 06:44:55 -0700 (PDT)
-Received: from [192.168.0.50] (87-59-106-155-cable.dk.customer.tdc.net. [87.59.106.155])
-        by smtp.gmail.com with ESMTPSA id j16-20020a056512109000b00477cc3fa475sm3098833lfg.204.2022.06.30.06.44.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Jun 2022 06:44:54 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <fa929729-6122-195f-aa4b-e5d3fedb1887@redhat.com>
-Date:   Thu, 30 Jun 2022 15:44:53 +0200
+        with ESMTP id S234351AbiF3NrK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Jun 2022 09:47:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56F6D21274;
+        Thu, 30 Jun 2022 06:47:09 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D9F1261FD8;
+        Thu, 30 Jun 2022 13:47:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 595C6C34115;
+        Thu, 30 Jun 2022 13:47:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1656596828;
+        bh=4G5k0bXtdhC4k9QaY/3v0A1UJHUFiNQv6ypXyp+WtcM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PtN9hMjxzkKuxC62LhAuhJP8RSUloNlIOcGOG1S74GPzJEigEleiiueyzmFd6lLF4
+         a2y5gJRgY2mNjUnGBvMqXTkpg6Zq8nwq+TsggZAeMgBjd23gXylZT+Chj5TXurKSPG
+         85dcAcMkkm0M2wB+aeB1fYEIjaLEORVcknJtPAY7QZPh4qma2gP2Ux5uU5rik++mx1
+         QpW+fFRrmvAIX/gU9x42iucgezygSNOtSNVX7Mai16vBXxg4UsS6cW9Cjj//x+nm6c
+         ArhK3DSFmoHLiOdQPgm45vbYS4fdDL50frvj6x0SOPokUwWaagdn/O6NdfeE+Hxq5M
+         iLE3dy4eZb1FA==
+Date:   Thu, 30 Jun 2022 15:47:02 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     KP Singh <kpsingh@kernel.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Serge Hallyn <serge@hallyn.com>,
+        Casey Schaufler <casey@schaufler-ca.com>
+Subject: Re: [PATCH v5 bpf-next 5/5] bpf/selftests: Add a selftest for
+ bpf_getxattr
+Message-ID: <20220630134702.bn2eq3mxeiqmg2fj@wittgenstein>
+References: <20220628173344.h7ihvyl6vuky5xus@wittgenstein>
+ <CACYkzJ5ij9rth_v3KQrCVYsQr2STBEWq1EAzkDb5D06CoRRSjA@mail.gmail.com>
+ <CAADnVQ+mokn3Yo492Zng=Gtn_LgT-T1XLth5BXyKZXFno-3ZDg@mail.gmail.com>
+ <20220629081119.ddqvfn3al36fl27q@wittgenstein>
+ <20220629095557.oet6u2hi7msit6ff@wittgenstein>
+ <CAADnVQ+HhhQdcz_u8kP45Db_gUK+pOYg=jObZpLtdin=v_t9tw@mail.gmail.com>
+ <20220630114549.uakuocpn7w5jfrz2@wittgenstein>
+ <CACYkzJ4uiY5B09RqRFhePNXKYLmhD_F2KepEO-UZ4tQN09yWBg@mail.gmail.com>
+ <20220630132635.bxxx7q654y5icd5b@wittgenstein>
+ <CACYkzJ6At2T9YGgs25mbqdVUiLtOh1LabZ5Auc+oDm4605A31A@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Cc:     brouer@redhat.com, bpf@vger.kernel.org,
-        Xdp <xdp-newbies@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] selftests, bpf: remove AF_XDP samples
-Content-Language: en-US
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>,
-        magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
-        andrii@kernel.org, hawk@kernel.org, toke@redhat.com
-References: <20220630093717.8664-1-magnus.karlsson@gmail.com>
-In-Reply-To: <20220630093717.8664-1-magnus.karlsson@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CACYkzJ6At2T9YGgs25mbqdVUiLtOh1LabZ5Auc+oDm4605A31A@mail.gmail.com>
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-On 30/06/2022 11.37, Magnus Karlsson wrote:
-> From: Magnus Karlsson <magnus.karlsson@intel.com>
+On Thu, Jun 30, 2022 at 03:29:53PM +0200, KP Singh wrote:
+> On Thu, Jun 30, 2022 at 3:26 PM Christian Brauner <brauner@kernel.org> wrote:
+> >
+> > On Thu, Jun 30, 2022 at 02:21:56PM +0200, KP Singh wrote:
+> > > On Thu, Jun 30, 2022 at 1:45 PM Christian Brauner <brauner@kernel.org> wrote:
+> > > >
+> > > > On Wed, Jun 29, 2022 at 08:02:50PM -0700, Alexei Starovoitov wrote:
+> > > > > On Wed, Jun 29, 2022 at 2:56 AM Christian Brauner <brauner@kernel.org> wrote:
+> > >
+> > > [...]
+> > >
+> > > > > > > > > > >
+> > > > > > > > > > > Signed-off-by: KP Singh <kpsingh@kernel.org>
+> > > > > > > > > > > ---
+> > > > > > > > > > >  .../testing/selftests/bpf/prog_tests/xattr.c  | 54 +++++++++++++++++++
+> > > > > > > > >
+> > > > > > > > > [...]
+> > > > > > > > >
+> > > > > > > > > > > +SEC("lsm.s/bprm_committed_creds")
+> > > > > > > > > > > +void BPF_PROG(bprm_cc, struct linux_binprm *bprm)
+> > > > > > > > > > > +{
+> > > > > > > > > > > +     struct task_struct *current = bpf_get_current_task_btf();
+> > > > > > > > > > > +     char dir_xattr_value[64] = {0};
+> > > > > > > > > > > +     int xattr_sz = 0;
+> > > > > > > > > > > +
+> > > > > > > > > > > +     xattr_sz = bpf_getxattr(bprm->file->f_path.dentry,
+> > > > > > > > > > > +                             bprm->file->f_path.dentry->d_inode, XATTR_NAME,
+> > > > > > > > > > > +                             dir_xattr_value, 64);
+> > > > > > > > > >
+> > > > > > > > > > Yeah, this isn't right. You're not accounting for the caller's userns
+> > > > > > > > > > nor for the idmapped mount. If this is supposed to work you will need a
+> > > > > > > > > > variant of vfs_getxattr() that takes the mount's idmapping into account
+> > > > > > > > > > afaict. See what needs to happen after do_getxattr().
+> > > > > > > > >
+> > > > > > > > > Thanks for taking a look.
+> > > > > > > > >
+> > >
+> > > [...]
+> > >
+> > > > > > > >
+> > > > > > > > That will not be correct.
+> > > > > > > > posix_acl_fix_xattr_to_user checking current_user_ns()
+> > > > > > > > is checking random tasks that happen to be running
+> > > > > > > > when lsm hook got invoked.
+> > > > > > > >
+> > > > > > > > KP,
+> > > > > > > > we probably have to document clearly that neither 'current*'
+> > > > > > > > should not be used here.
+> > > > > > > > xattr_permission also makes little sense in this context.
+> > > > > > > > If anything it can be a different kfunc if there is a use case,
+> > > > > > > > but I don't see it yet.
+> > > > > > > > bpf-lsm prog calling __vfs_getxattr is just like other lsm-s that
+> > > > > > > > call it directly. It's the kernel that is doing its security thing.
+> > > > > > >
+> > > > > > > Right, but LSMs usually only retrieve their own xattr namespace (ima,
+> > > > > > > selinux, smack) or they calculate hashes for xattrs based on the raw
+> > > > > > > filesystem xattr values (evm).
+> > > > > > >
+> > > > > > > But this new bpf_getxattr() is different. It allows to retrieve _any_
+> > > > > > > xattr in any security hook it can be attached to. So someone can write a
+> > > > > > > bpf program that retrieves filesystem capabilites or posix acls. And
+> > > > > > > these are xattrs that require higher-level vfs involvement to be
+> > > > > > > sensible in most contexts.
+> > > > > > >
+> > >
+> > > [...]
+> > >
+> > > > > > >
+> > > > > > > This hooks a bpf-lsm program to the security_bprm_committed_creds()
+> > > > > > > hook. It then retrieves the extended attributes of the file to be
+> > > > > > > executed. The hook currently always retrieves the raw filesystem values.
+> > > > > > >
+> > > > > > > But for example any XATTR_NAME_CAPS filesystem capabilities that
+> > > > > > > might've been stored will be taken into account during exec. And both
+> > > > > > > the idmapping of the mount and the caller matter when determing whether
+> > > > > > > they are used or not.
+> > > > > > >
+> > > > > > > But the current implementation of bpf_getxattr() just ignores both. It
+> > > > > > > will always retrieve the raw filesystem values. So if one invokes this
+> > > > > > > hook they're not actually retrieving the values as they are seen by
+> > > > > > > fs/exec.c. And I'm wondering why that is ok? And even if this is ok for
+> > > > > > > some use-cases it might very well become a security issue in others if
+> > > > > > > access decisions are always based on the raw values.
+> > > > > > >
+> > > > > > > I'm not well-versed in this so bear with me, please.
+> > > > > >
+> > > > > > If this is really just about retrieving the "security.bpf" xattr and no
+> > > > > > other xattr then the bpf_getxattr() variant should somehow hard-code
+> > > > > > that to ensure that no other xattrs can be retrieved, imho.
+> > > > >
+> > > > > All of these restrictions look very artificial to me.
+> > > > > Especially the part "might very well become a security issue"
+> > > > > just doesn't click.
+> > > > > We're talking about bpf-lsm progs here that implement security.
+> > > > > Can somebody implement a poor bpf-lsm that doesn't enforce
+> > > > > any actual security? Sure. It's a code.
+> > > >
+> > > > The point is that with the current implementation of bpf_getxattr() you
+> > > > are able to retrieve any xattrs and we have way less control over a
+> > > > bpf-lsm program than we do over selinux which a simple git grep
+> > > > __vfs_getxattr() is all we need.
+> > > >
+> > > > The thing is that with bpf_getxattr() as it stands it is currently
+> > > > impossible to retrieve xattr values - specifically filesystem
+> > > > capabilities and posix acls - and see them exactly like the code you're
+> > > > trying to supervise is. And that seems very strange from a security
+> > > > perspective. So if someone were to write
+> > > >
+> > > > SEC("lsm.s/bprm_creds_from_file")
+> > > > void BPF_PROG(bprm_cc, struct linux_binprm *bprm)
+> > > > {
+> > > >         struct task_struct *current = bpf_get_current_task_btf();
+> > > >
+> > > >         xattr_sz = bpf_getxattr(bprm->file->f_path.dentry,
+> > > >                                 bprm->file->f_path.dentry->d_inode,
+> > > >                                 XATTR_NAME_POSIX_ACL_ACCESS, ..);
+> > > >         // or
+> > > >         xattr_sz = bpf_getxattr(bprm->file->f_path.dentry,
+> > > >                                 bprm->file->f_path.dentry->d_inode,
+> > > >                                 XATTR_NAME_CAPS, ..);
+> > > >
+> > > > }
+> > > >
+> > > > they'd get the raw nscaps and the raw xattrs back. But now, as just a
+> > > > tiny example, the nscaps->rootuid and the ->e_id fields in the posix
+> > > > ACLs make zero sense in this context.
+> > > >
+> > > > And what's more there's no way for the bpf-lsm program to turn them into
+> > > > something that makes sense in the context of the hook they are retrieved
+> > > > in. It lacks all the necessary helpers to do so afaict.
+> > > >
+> > > > > No one complains about the usage of EXPORT_SYMBOL(__vfs_getxattr)
+> > > > > in the existing LSMs like selinux.
+> > > >
+> > > > Selinux only cares about its own xattr namespace. It doesn't retrieve
+> > > > fscaps or posix acls and it's not possible to write selinux programs
+> > > > that do so. With the bpf-lsm that's very much possible.
+> > > >
+> > > > And if we'd notice selinux would start retrieving random xattrs we'd ask
+> > > > the same questions we do here.
+> > > >
+> > > > > No one complains about its usage in out of tree LSMs.
+> > > > > Is that a security issue? Of course not.
+> > > > > __vfs_getxattr is a kernel mechanism that LSMs use to implement
+> > > > > the security features they need.
+> > > > > __vfs_getxattr as kfunc here is pretty much the same as EXPORT_SYMBOL
+> > > > > with a big difference that it's EXPORT_SYMBOL_GPL.
+> > > > > BPF land doesn't have an equivalent of non-gpl export and is not going
+> > > > > to get one.
+> > >
+> > > I want to reiterate what Alexei is saying here:
+> > >
+> > > *Please* consider this as a simple wrapper around __vfs_getxattr
+> > > with a limited attach surface and extra verification checks and
+> > > and nothing else.
+> > >
+> > > What you are saying is __vfs_getxattr does not make sense in some
+> > > contexts. But kernel modules can still use it right?
+> > >
+> > > The user is implementing an LSM, if they chose to do things that don't make
+> > > sense, then they can surely cause a lot more harm:
+> > >
+> > > SEC("lsm/bprm_check_security")
+> > > int BPF_PROG(bprm_check, struct linux_binprm *bprm)
+> > > {
+> > >      return -EPERM;
+> > > }
+> > >
+> > > >
+> > > > This discussion would probably be a lot shorter if this series were sent
+> > > > with a proper explanation of how this supposed to work and what it's
+> > > > used for.
+> > >
+> > > It's currently scoped to BPF LSM (albeit limited to LSM for now)
+> > > but it won't just be used in LSM programs but some (allow-listed)
+> > > tracing programs too.
+> > >
+> > > We want to leave the flexibility to the implementer of the LSM hooks. If the
+> > > implementer choses to retrieve posix_acl_* we can also expose
+> > > posix_acl_fix_xattr_to_user or a different kfunc that adds this logic too
+> > > but that would be a separate kfunc (and a separate use-case).
+> >
+> > No, sorry. That's what I feared and that's why I think this low-level
+> > exposure of __vfs_getxattr() is wrong:
+> > The posix_acl_fix_xattr_*() helpers, as well as the helpers like
+> > get_file_caps() will not be exported. We're not going to export that
 > 
-> Remove the AF_XDP samples from samples/bpf as they are dependent on
-> the AF_XDP support in libbpf. This support has now been removed in the
-> 1.0 release, so these samples cannot be compiled anymore. Please start
-> to use libxdp instead. It is backwards compatible with the AF_XDP
-> support that was offered in libbpf. New samples can be found in the
-> various xdp-project repositories connected to libxdp and by googling.
+> I don't want to expose them and I don't want any others to be
+> exposed either.
 > 
-> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> > deeply internal vfs machinery. So I would NACK that. If you want that -
+> > and that's what I'm saying here - you need to encapsulate this into your
+> > vfs_*xattr() helper that you can call from your kfuncs.
+> 
+> It seems like __vfs_getxattr is already exposed and does the wrong thing in
+> some contexts, why can't we just "fix" __vfs_getxattr then?
 
-Will you (or Maciej) be submitting these samples to XDP-tools[1] which 
-is the current home for libxdp or maybe BPF-examples[2] ?
+To me having either a version of bpf_getxattr() that restricts access to
+certain xattrs or a version that takes care to perform the neccesary
+translations is what seems to make the most sense. I suggested that in
+one of my first mails.
 
-  [1] https://github.com/xdp-project/xdp-tools
-  [2] https://github.com/xdp-project/bpf-examples
+The one thing where the way the xattrs are retrieved really matters is
+for vfscaps (see get_vfs_caps_from_disk()) you really need something
+like that function in order for vfs caps to make any sense and be
+interpretable by the user of the hook.
 
-I know Toke is ready to take over maintaining these, but we will 
-appreciate someone to open a PR with this code...
-
-> ---
->   MAINTAINERS                     |    2 -
->   samples/bpf/Makefile            |    9 -
->   samples/bpf/xdpsock.h           |   19 -
->   samples/bpf/xdpsock_ctrl_proc.c |  190 ---
->   samples/bpf/xdpsock_kern.c      |   24 -
->   samples/bpf/xdpsock_user.c      | 2019 -------------------------------
->   samples/bpf/xsk_fwd.c           | 1085 -----------------
-
-The code in samples/bpf/xsk_fwd.c is interesting, because it contains a
-buffer memory manager, something I've seen people struggle with getting
-right and performant (at the same time).
-
-You can get my ACK if someone commits to port this to [1] or [2], or a
-3rd place that have someone what will maintain this in the future.
-
---Jesper
-
+But again, I might just misunderstand the context here and for the
+bpf-lsm all of this isn't really a concern. If your new series comes out
+I'll try to get more into the wider context.
+If the security folks are happy with this then I won't argue.
