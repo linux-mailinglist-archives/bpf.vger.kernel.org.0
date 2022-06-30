@@ -2,125 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E51055623C2
-	for <lists+bpf@lfdr.de>; Thu, 30 Jun 2022 22:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E03E562490
+	for <lists+bpf@lfdr.de>; Thu, 30 Jun 2022 22:43:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236775AbiF3UDz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Jun 2022 16:03:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33776 "EHLO
+        id S237268AbiF3Un2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Jun 2022 16:43:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236665AbiF3UDy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Jun 2022 16:03:54 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8955338A0
-        for <bpf@vger.kernel.org>; Thu, 30 Jun 2022 13:03:53 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id g1so40372qkl.9
-        for <bpf@vger.kernel.org>; Thu, 30 Jun 2022 13:03:53 -0700 (PDT)
+        with ESMTP id S237443AbiF3UnZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Jun 2022 16:43:25 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D28BD377D5
+        for <bpf@vger.kernel.org>; Thu, 30 Jun 2022 13:43:21 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id n10so114595qkn.10
+        for <bpf@vger.kernel.org>; Thu, 30 Jun 2022 13:43:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=HM+W2Ta6F/8XU4LNaxg55KQeP8YL5SBzfGDpvAzW1/M=;
-        b=UZiRZK2hRMgnFjucQh/6ycH3EnbW//UwC42TtJudbgp6LCr7y9I3sRHvSkQUmGt0Nq
-         WWFq4hR+1aKL8tH6Uj4P5YG+ULmrpet63pDOHA15SQxltqjEDB06AA7hEYJ7tEpiBQDP
-         CIB12G2AIdyN/pBNqA19Sashs6O1zRrjBUOWnGZeIrniU01FPAlvNCIA3iCLQodoAcCb
-         ObMhqjFwOnrLSTjiTAEKFqOUeqijugrDnQRXsQ3WbnqjFIIvrV/qGpcM0VPSBn5MzD80
-         +UCbIk7lwVEZNJjqIybsff1rzImdvJ2XohvBjPTAlu0iZ356iCAmETVJJjPw1Dr85IXP
-         xy9A==
+        bh=ErrndpgymsMtrIg0H9zOHcUdUii9XdPu/yA4WHlmxXw=;
+        b=JtpimtWpgi17Rxa6x1HY2fH1BDH16MGtKLkqOSXFHTRVTbYXuNfmX8iDOTXW4/3Ddp
+         ur41Vmwej0Pm25fteVfcoyNeVVgNofFAVqePHVk6gip4LkzPh1mjq84WxAkYNpq6MWGs
+         vYwP+qwLi/rpsgJY99Ahl6963ScwjWrlbkUdfnpmfUL5GlQBVFKJn1ADdgY5uawbJ++m
+         /mLTj4IecazSuNqH6wWb9XmN59psuFYfacIJekpYN9JxMomHWb70P+CZ5C/cG5ydxLCV
+         OtwFqOItawdPumJ+fFD7Z4ReyILZci5Ft/vvb/wZlPp3UBASCITPDJr5YvkLCyaVAU8p
+         30wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HM+W2Ta6F/8XU4LNaxg55KQeP8YL5SBzfGDpvAzW1/M=;
-        b=TqQ0Hf+JWg+DcI1WkNuYYgmIxW21FCGccCrfSaD0Kyjm1RKOZFj/NHPwcQegi8gaPv
-         RMsekMgEJVMuQ+wJp34PnsBaR7udkKXY2k22H3SPVeJj7Q6qdEeDGpWCQi28ShUdtQtb
-         KN4Qd61b7Qjyo6uJg1U85EknpyxSyBC67CwBtMZ6lyWAuQ5x7+LSoJ/+0sTWjjjUOxJU
-         Iq74yOn3I4Ewt0TU0qzFtAm0X5n+I3mLAyRKIJqJWi4IpB3WGQiALGLUlQcVqd0NZlAq
-         L1dOzveKbLgXPAqgF55ONgkNcLRHNoiWiIebazXB5+v4O+CkOwNRcf9WWVHLufk5KNWA
-         /6ow==
-X-Gm-Message-State: AJIora/2ZBFNoNptOjAa2YTaQT/0bQyOMdDrD+xXcpDm5Ea1K01s8wXC
-        9AhQAdJfn7vYrsrC2OaQHERqMC2lYOdPJLmokKrM9Rwn28bvVLnWEqI=
-X-Google-Smtp-Source: AGRyM1uNXVxwajgwmdA+mDMFc2wydm8tIRUU6IwuVfHQsFFBzGvcT3q7cjjMlrdcHKMfVfdAl/sJfVnrZOrJmHHBqzw=
-X-Received: by 2002:a05:620a:27d0:b0:6af:1fed:2d10 with SMTP id
- i16-20020a05620a27d000b006af1fed2d10mr7546454qkp.127.1656619433063; Thu, 30
- Jun 2022 13:03:53 -0700 (PDT)
+        bh=ErrndpgymsMtrIg0H9zOHcUdUii9XdPu/yA4WHlmxXw=;
+        b=fgitI/vUooXeM1KsUer8+iBTj8gKPiA/KfI7IIkyQ6kyncQ7ujnoh+bJJyWRpSkucX
+         aA+5jTPwQHd6gVWvUnBmqXaxbAWgrHbyHuhxcIKQxbaHUgPpeYliBiyKelB71FH53UHZ
+         j06/4G360766P2lJtEvamdY/AQEuK8gwBlISCRzQkAJMQhfTebCTX7nKqfe8mTbZ3ujG
+         azXTCHP38MeHBzMbL+1xZAiQ/Gpo6/I3RwikmqoBhFVJVjd1VetszRKoNHG+oi6kBkD9
+         8BqOCJGKorTB6OuXrJfWWzdzEjADJqT1UbNeUBFr3fAHjje+Muo2pYhUOttR1I6/UDzn
+         TMQg==
+X-Gm-Message-State: AJIora+wbhi6RqtS1sq18xsLAQ8Az4HL82T0e7fbqklxhVgzcxvmETBS
+        ELWjc7g1/vxdJqqo25BqDZeD/+OldMiBhYYmydtRrQ==
+X-Google-Smtp-Source: AGRyM1u9M09bZfTZTeS9VH777eRVNUJdnHrl8QSycOG8gOImSaCz8p15BAza0d2QZfCP273BG666tEOc5Sb9sA5TXS8=
+X-Received: by 2002:a05:620a:67b:b0:6a6:8775:33e1 with SMTP id
+ a27-20020a05620a067b00b006a6877533e1mr8099880qkh.583.1656621800831; Thu, 30
+ Jun 2022 13:43:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220629143951.74851-1-quentin@isovalent.com> <CAEf4BzY3Zh_fgg5j7CeZtN5vUEXdBPio2PS71dULrE3UBEsFvw@mail.gmail.com>
-In-Reply-To: <CAEf4BzY3Zh_fgg5j7CeZtN5vUEXdBPio2PS71dULrE3UBEsFvw@mail.gmail.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-Date:   Thu, 30 Jun 2022 21:03:41 +0100
-Message-ID: <CACdoK4LTgpcuS9Sgk6F-9=cP09aACxJN4iTXJ=39OohPcBKXAg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpftool: Allow disabling features at compile time
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Peter Wu <peter@lekensteyn.nl>
+References: <20220629154832.56986-1-laoar.shao@gmail.com> <20220629154832.56986-4-laoar.shao@gmail.com>
+In-Reply-To: <20220629154832.56986-4-laoar.shao@gmail.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Thu, 30 Jun 2022 13:43:09 -0700
+Message-ID: <CA+khW7h2DWPM4nAOav+t8k+zbnUOkCO9C+47bSVN0UMHRE-v_w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/4] bpf: Don't do preempt check when migrate is disabled
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        quentin@isovalent.com, netdev@vger.kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 30 Jun 2022 at 20:25, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, Jun 29, 2022 at 7:40 AM Quentin Monnet <quentin@isovalent.com> wrote:
-> >
-> > Some dependencies for bpftool are optional, and the associated features
-> > may be left aside at compilation time depending on the available
-> > components on the system (libraries, BTF, clang version, etc.).
-> > Sometimes, it is useful to explicitly leave some of those features aside
-> > when compiling, even though the system would support them. For example,
-> > this can be useful:
-> >
-> >     - for testing bpftool's behaviour when the feature is not present,
-> >     - for copmiling for a different system, where some libraries are
-> >       missing,
-> >     - for producing a lighter binary,
-> >     - for disabling features that do not compile correctly on older
-> >       systems - although this is not supposed to happen, this is
-> >       currently the case for skeletons support on Linux < 5.15, where
-> >       struct bpf_perf_link is not defined in kernel BTF.
-> >
-> > For such cases, we introduce, in the Makefile, some environment
-> > variables that can be used to disable those features: namely,
-> > BPFTOOL_FEATURE_NO_LIBBFD, BPFTOOL_FEATURE_NO_LIBCAP, and
-> > BPFTOOL_FEATURE_NO_SKELETONS.
-> >
-> > Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-> > ---
-> >  tools/bpf/bpftool/Makefile | 20 ++++++++++++++++++--
-> >  1 file changed, 18 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-> > index c19e0e4c41bd..b3dd6a1482f6 100644
-> > --- a/tools/bpf/bpftool/Makefile
-> > +++ b/tools/bpf/bpftool/Makefile
-> > @@ -93,8 +93,24 @@ INSTALL ?= install
-> >  RM ?= rm -f
-> >
-> >  FEATURE_USER = .bpftool
-> > -FEATURE_TESTS = libbfd disassembler-four-args zlib libcap \
-> > -       clang-bpf-co-re
-> > +FEATURE_TESTS := disassembler-four-args zlib
->
-> as an aside, zlib is not really optional, libbpf depends on it and
-> bpftool depends on libbpf, so... what's the point of a feature test?
+Hi Yafang,
 
-I'm not sure either, it looks like it's mostly a way to print that the
-lib is missing (when it's the case) before attempting to compile [0].
-Probably something we can look into removing, I agree the feature test
-doesn't bring much here. We'll soon need a new test for the latest
-libbfd changes though [1].
+On Wed, Jun 29, 2022 at 8:49 AM Yafang Shao <laoar.shao@gmail.com> wrote:
+>
+> It doesn't need to do the preempt check when migrate is disabled
+> after commit
+> 74d862b682f5 ("sched: Make migrate_disable/enable() independent of RT").
+>
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> ---
 
-[0] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/commit/?id=d66fa3c70e598746a907e5db5ed024035e01817a
-[1] https://lore.kernel.org/bpf/20220622181918.ykrs5rsnmx3og4sv@alap3.anarazel.de/
+In my understanding, migrate_disable() doesn't imply
+preempt_disable(), I think this is not safe. Am I missing something?
+
+Hao
