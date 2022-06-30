@@ -2,77 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9170F561F2E
-	for <lists+bpf@lfdr.de>; Thu, 30 Jun 2022 17:26:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8300F561F7E
+	for <lists+bpf@lfdr.de>; Thu, 30 Jun 2022 17:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234330AbiF3P0A (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Jun 2022 11:26:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34672 "EHLO
+        id S230225AbiF3Plq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Jun 2022 11:41:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234026AbiF3PZz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Jun 2022 11:25:55 -0400
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C05B329814
-        for <bpf@vger.kernel.org>; Thu, 30 Jun 2022 08:25:53 -0700 (PDT)
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-3177f4ce3e2so182727357b3.5
-        for <bpf@vger.kernel.org>; Thu, 30 Jun 2022 08:25:53 -0700 (PDT)
+        with ESMTP id S235834AbiF3Plq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Jun 2022 11:41:46 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FEF33BBD6
+        for <bpf@vger.kernel.org>; Thu, 30 Jun 2022 08:41:45 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id q9so27912164wrd.8
+        for <bpf@vger.kernel.org>; Thu, 30 Jun 2022 08:41:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b1HHuJRU/PzgASK5LVwUbv/TAJnPbu4jGG6I27QsOqY=;
-        b=K7z0kaXZV+Vs0mudhBZ7v5I4hJ8K2IoRajqCVJXAvPAUEz8uwvT8kGg0TdLJ301AZC
-         JKYyEQwIY2IUACWR8lS97iGRrC3WGn0tOXHUT16Ho/0modgYkovGX6yeA4tUtBtJfS0z
-         Zlme6FyIJLdzNxUkBOwb8Mg7cC00jhPzMIFSa5h9jSd6wzE5flCIjTdT1UreW/ZMi4jZ
-         yZ1Hp5lhZBiHrqx3mTXl95L0gizbbmnSXYD/Qa7zF5btYwTA0Hz3lZxHv2AbyPMVnZzl
-         OM/jrbRauDoW2DR/7klV31KWRREq37PILkOqdgt1n2sU2VQbdKdICAxeJsewdFtutPMr
-         WhbQ==
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:from:to:subject
+         :content-transfer-encoding;
+        bh=08P6bq7um69CgFJcK8RfFuaLGTo4ycgPn1AeuKP6N2s=;
+        b=M6tzKji5SzZk8VSQVzIQs1KDUcvVMuJm5tQWhktko68AVm06Nv3H0pG+gZxCjQbzGR
+         O252I43uUl6CpMcnszF7WW2l1zv0OF7hlf38kzUp81E9E3rcjESfjk/1LLytkbm+QlMD
+         MoyDuTCjv4hc+M152hLnjuL5+03pNQXakxof+a0TfvzQlKeT3XutB2zy0a02yyKwsWa7
+         8gnaPyrFnzRuOyBUd30OPCGB+VNGpzdqRh/EiViive2ei0uI0eltpOf8UDM3g1ciRm68
+         fFOYvYwjmnHeSYYv7UMMUlyiFPPd4qd9ec1N04WYIODV56FoVtg2lP/rccLpdGlvJdCo
+         koUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b1HHuJRU/PzgASK5LVwUbv/TAJnPbu4jGG6I27QsOqY=;
-        b=yvTHqowBaH/90aGKQwfZ71NCg+QHsoTU6Qn4I7jDC6eaCN+1DeaXe6itjhssNAhtPD
-         zRlaKo/+gTe6SkdEyFPZUWIBaOvZHL/L9ZQniNfsizHNoI0/DI3HLyYF1l+okWjqpvGX
-         MepW/OxiE/SVLk0IJvVk4z/WNMt/e36G5GkNFYX/20meRS06NefN9yPv8dQcjQJPS+GH
-         sQCxfAGdPjmxZ1hayHdatVPgLERZ0I9Py3lE4E//zxONRES7C0IFdi1+4v1X3ILjl7Ic
-         +vregcdkMTBtRYDDB13OKlnlc/yKX1e2kgJA9zrm6H5wT4k38vtkbpMpxrXsxM3IIenU
-         ztUA==
-X-Gm-Message-State: AJIora9uzNL+c4MS71jFdcxop7yrt4KyrzPeiEkoxWQaR9QSKh2pkwEz
-        9OcYwqzEqsfoUvWiMmyuAiUSz6e8C9eqGpzH0hwwjg==
-X-Google-Smtp-Source: AGRyM1uuJ9rW4KbHFrPXVR1zK2ZCcPA3iz7q8YM9loeKl8FGUB46bzc9Tsz6h5bvkfR24CeeTCDnuPbW+dVmdEVQjFQ=
-X-Received: by 2002:a0d:df50:0:b0:317:9c40:3b8b with SMTP id
- i77-20020a0ddf50000000b003179c403b8bmr11226355ywe.332.1656602752755; Thu, 30
- Jun 2022 08:25:52 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:from:to:subject
+         :content-transfer-encoding;
+        bh=08P6bq7um69CgFJcK8RfFuaLGTo4ycgPn1AeuKP6N2s=;
+        b=YFqanwxbm98+XFnsdZ6pE8RhqKSD6E+vY7c4efioRmgTE5I0vN+Iu8yv9zdk1aCGmE
+         Z5A0pJTTgreAYhpx+0CSAoAH8fajepjE7OJ/Vb9zgnkdntKQmCIMCA9G9OpKT0HoW9gj
+         9hgL1mB0OmOeGqqOE1+6vGBimxGakXafPCkYZ2uQnA67IYU/euQYNZTaE8y9BgZ9v8Sq
+         tFL4jxrouhAVfsvfTd6nuXUCX1YtmlMwfa8BSnd6AChUkF4kqsk8sAptNcnt3JG4gfAp
+         eld6Kv7rgpj9fFoVk9HHAuVRSx+9k21/eYr+LPvccLzUwWX7sENMQTZ9G8oNYuHj6eCz
+         PInA==
+X-Gm-Message-State: AJIora/1ptSazBPWSTvQSJrVOxBzBjtJRP2r3u1gb+SnuTSGHOEse9c2
+        gVBF36JvtRpiQfcbjufDs1ygJ1pFeUQ=
+X-Google-Smtp-Source: AGRyM1s/3u7dCkD2PsERePUxMXB2MS9ZetTXvrykOxNTQfO5qB5QIpHohiu5MQKOVaIqNicTTVE2Dw==
+X-Received: by 2002:a05:6000:3cd:b0:21b:8e8d:470f with SMTP id b13-20020a05600003cd00b0021b8e8d470fmr8830300wrg.387.1656603703789;
+        Thu, 30 Jun 2022 08:41:43 -0700 (PDT)
+Received: from DESKTOP-L1U6HLH ([39.53.244.205])
+        by smtp.gmail.com with ESMTPSA id t5-20020a1c4605000000b0039db31f6372sm3047996wma.2.2022.06.30.08.41.42
+        for <bpf@vger.kernel.org>
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Thu, 30 Jun 2022 08:41:43 -0700 (PDT)
+Message-ID: <62bdc437.1c69fb81.7ffb7.6d30@mx.google.com>
+Date:   Thu, 30 Jun 2022 08:41:43 -0700 (PDT)
+X-Google-Original-Date: 30 Jun 2022 11:41:45 -0400
 MIME-Version: 1.0
-References: <20220629085836.18042-1-fmdefrancesco@gmail.com>
- <Yr12jl1nEqqVI3TT@boxer> <CAKgT0UfGM8nCZnnYjWPKT+JXOwVJx1xj6n7ssGi41vH4GrUy0Q@mail.gmail.com>
-In-Reply-To: <CAKgT0UfGM8nCZnnYjWPKT+JXOwVJx1xj6n7ssGi41vH4GrUy0Q@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 30 Jun 2022 17:25:40 +0200
-Message-ID: <CANn89iK6g+4Fy2VMV7=feUAOUDHu-J38be+oU76yp+zGH6xCJQ@mail.gmail.com>
-Subject: Re: [Intel-wired-lan] [PATCH] ixgbe: Use kmap_local_page in ixgbe_check_lbtest_frame()
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+From:   pride.dreamlandestimation@gmail.com
+To:     bpf@vger.kernel.org
+Subject: Estimating Services
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,39 +67,12 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 30, 2022 at 5:17 PM Alexander Duyck
-<alexander.duyck@gmail.com> wrote:
->
-> On Thu, Jun 30, 2022 at 3:10 AM Maciej Fijalkowski
-> <maciej.fijalkowski@intel.com> wrote:
-> >
-> > On Wed, Jun 29, 2022 at 10:58:36AM +0200, Fabio M. De Francesco wrote:
-> > > The use of kmap() is being deprecated in favor of kmap_local_page().
-> > >
-> > > With kmap_local_page(), the mapping is per thread, CPU local and not
-> > > globally visible. Furthermore, the mapping can be acquired from any context
-> > > (including interrupts).
-> > >
-> > > Therefore, use kmap_local_page() in ixgbe_check_lbtest_frame() because
-> > > this mapping is per thread, CPU local, and not globally visible.
-> >
-> > Hi,
-> >
-> > I'd like to ask why kmap was there in the first place and not plain
-> > page_address() ?
-> >
-> > Alex?
->
-> The page_address function only works on architectures that have access
-> to all of physical memory via virtual memory addresses. The kmap
-> function is meant to take care of highmem which will need to be mapped
-> before it can be accessed.
->
-> For non-highmem pages kmap just calls the page_address function.
-> https://elixir.bootlin.com/linux/latest/source/include/linux/highmem-internal.h#L40
+Hi,=0D=0A=0D=0AWe provide estimation & quantities takeoff service=
+s. We are providing 98-100 accuracy in our estimates and take-off=
+s. Please tell us if you need any estimating services regarding y=
+our projects.=0D=0A=0D=0ASend over the plans and mention the exac=
+t scope of work and shortly we will get back with a proposal on w=
+hich our charges and turnaround time will be mentioned=0D=0A=0D=0A=
+You may ask for sample estimates and take-offs. Thanks.=0D=0A=0D=0A=
+Kind Regards=0D=0APride Millard=0D=0ADreamland Estimation, LLC
 
-
-Sure, but drivers/net/ethernet/intel/ixgbe/ixgbe_main.c is allocating
-pages that are not highmem ?
-
-This kmap() does not seem needed.
