@@ -2,58 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A8B5622FE
-	for <lists+bpf@lfdr.de>; Thu, 30 Jun 2022 21:21:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38FD656230C
+	for <lists+bpf@lfdr.de>; Thu, 30 Jun 2022 21:25:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236415AbiF3TVB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Jun 2022 15:21:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54464 "EHLO
+        id S235755AbiF3TZY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Jun 2022 15:25:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236566AbiF3TU7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Jun 2022 15:20:59 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67FC543AE3
-        for <bpf@vger.kernel.org>; Thu, 30 Jun 2022 12:20:57 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id fw3so13225106ejc.10
-        for <bpf@vger.kernel.org>; Thu, 30 Jun 2022 12:20:57 -0700 (PDT)
+        with ESMTP id S232887AbiF3TZW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Jun 2022 15:25:22 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0800377FF;
+        Thu, 30 Jun 2022 12:25:20 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id k20so128372edj.13;
+        Thu, 30 Jun 2022 12:25:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=z47LFZy89yGsWvB479Vn8mKvDWE5geAeIy8MmuzMe0Y=;
-        b=a2W2wOsnaeelBJVsQWBApyAeDkf7l20Hz1gF3AAyv/YfDH3mrriXmFN7Wvlsq+hlE4
-         YIEUP1sK9MRJmwgn75G5vTU551xqtYF78FJ6g/I8ZSh5vIwpKkDWih2KpZDNVdxYU2ip
-         gpkGBiWIR4n3WQqJ+emuEdy0ei1WOd7b8S6tkYxzQfEV3ogI7iKdseQ+kmZW25eYlaoc
-         u84efCwOjwYG30iNoG5hDYwh+re316hPiXhdOPDyvtfwVgzX43c2UF+IjRcNWMxPpthB
-         l/LjMaWZzFmUfFXCUkxr0zqkx9MVCD8GJMj/xMX4vAuY5lYiPYVAD3+Gt2KDgDowLn3v
-         HHPQ==
+        bh=/4h1kWzi2Rq+Pv619m3vuzpCBmokzGDwSLu2Jrb6OMI=;
+        b=YAG4CUrXLfugX9MnKNziNXvpcdD/ERny9vQfwNm7PNk8pAiuPC0PFuLGGzfD029HTp
+         foHXSKywAsE0VfREaaM6sLSxP/xtMAT9g2TYSaNuDhbAy+7b+KtN/Lus0VIYqFYa61EU
+         IjABBmaj5iPnmhqiA4m576w+GgvkrsbZTHkVTqOvVD6z7s0wY/VJG/5MuMcB58xpbC7z
+         g9xBOGYYte4wlhDCDQBKE/wj2K04+lmEz4TgRJWYCfVupSKGWE3FX86yiXmX+2Bh717n
+         QSyvlEjDUzXv0ZaZCCLeoUWkRCLV0rNKxUeKwkeBaEvLViXuAw2jUW7Ky7so4Xpdl7h3
+         +RNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=z47LFZy89yGsWvB479Vn8mKvDWE5geAeIy8MmuzMe0Y=;
-        b=A9rjqCfno6Jffmxz3VEpEVntomF+VXJqIYF/SGlM5Pw05ltjcSGQbDK84cuTFeQ7qD
-         /T+UMKav0ojokdK6iSj/Q9ce1LqxjSpF5BAdZP71C+EhGzw18FOVO/PFJhZgUZkUqj+b
-         mVvri3WhJ12EvqfUgT6r2ENpb2KEEj6WQDmZjgYxs4xBT/BsMOXcjvqDlAW7+pe60c5d
-         u6r4jv5+HzoGN0VSKD8AgNTxe/ya6seffqplANmWITOGRpv1Mk2mgK3/XzWti91w3gYC
-         qLzWq5OhEeNOlc/OF2dPtBjVEA2SNFISmZ1EJucHCkCEm+VH6cgtdHkFJZBe1rFAzcXX
-         wZaQ==
-X-Gm-Message-State: AJIora9YiYPRIpwsfbQyKH1NHyiFWr2Vtdx/utdCqHm4KDD25P93JK+5
-        ZHuKYsy8MCelAGQ2upIkdkWmNNkCb5Lc3eu/FCU=
-X-Google-Smtp-Source: AGRyM1vsgMumEqPCXZ5DUgP2LnwxKmVuIhdYowc62A4wTNYMgqpsv3cBkeO6alPzoCdXnxSr58HwHbcWz3Shy2WfZSA=
-X-Received: by 2002:a17:907:a075:b0:72a:7508:c014 with SMTP id
- ia21-20020a170907a07500b0072a7508c014mr2522996ejc.176.1656616856014; Thu, 30
- Jun 2022 12:20:56 -0700 (PDT)
+        bh=/4h1kWzi2Rq+Pv619m3vuzpCBmokzGDwSLu2Jrb6OMI=;
+        b=hiET5rgj4Ecb9TkSnsDq5hi42QYa37lGORrHGQFHH2uB8HJhxfisxOXj/S5pKA51c9
+         dXHXZc44pn26t1nDMZkhkrHQ1Y99F81UihmjYIjNDyKtfCdATvATNTIGql9u+RPWkc6j
+         EE7qaCqpP0eEc5voVqkiIdGEYqqT7YkGje8ZBnegKC0/2IUhq9OfEAkaXmJ1wXR3s4I8
+         D7zSzIfJoxh3AEIdEkuM6Tx2uch0MoSBUcJbnSUrcwvGneom69yduVmeYpEcw3ydIm0g
+         75ITDuRRVvuLjV65uX2UI0gm2owr/ykYOp6EdljGoDGYk980CuxPcmHkLPcIq8xdz6hM
+         8yhA==
+X-Gm-Message-State: AJIora9IXHQ5BQE+3tOhNRFuBN3TrOdgzFmwrSz9J/jXvr7diqey1v/O
+        Vi++KwvIOUXND0vqo1ZI80fu4vBKno09lR4118o=
+X-Google-Smtp-Source: AGRyM1say/Qf64tjtG5GehfkwczzBCkewYdD8OncDHxUGllvZi27Fqj7KaYbGIP8EM/MJgaYRxF76JMUu19z0vTwn+Y=
+X-Received: by 2002:a05:6402:3514:b0:435:f24a:fbad with SMTP id
+ b20-20020a056402351400b00435f24afbadmr13191088edd.311.1656617119178; Thu, 30
+ Jun 2022 12:25:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220630135250.241795-1-hengqi.chen@gmail.com>
-In-Reply-To: <20220630135250.241795-1-hengqi.chen@gmail.com>
+References: <20220629143951.74851-1-quentin@isovalent.com>
+In-Reply-To: <20220629143951.74851-1-quentin@isovalent.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 30 Jun 2022 12:20:44 -0700
-Message-ID: <CAEf4Bzb+OyuRJbsxd2dfU2ROcuD4v24Wx3xVZctnbob-bUiPEQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: Allow attach USDT BPF program without
- specifying binary path
-To:     Hengqi Chen <hengqi.chen@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+Date:   Thu, 30 Jun 2022 12:25:07 -0700
+Message-ID: <CAEf4BzY3Zh_fgg5j7CeZtN5vUEXdBPio2PS71dULrE3UBEsFvw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpftool: Allow disabling features at compile time
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -65,59 +71,69 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 30, 2022 at 6:53 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
+On Wed, Jun 29, 2022 at 7:40 AM Quentin Monnet <quentin@isovalent.com> wrote:
 >
-> Currently, libbpf requires specifying binary path when attach USDT BPF program
-> manually. This is not necessary because we can infer that from /proc/$PID/exe.
-> This also avoids coredump when user do not provide binary path.
+> Some dependencies for bpftool are optional, and the associated features
+> may be left aside at compilation time depending on the available
+> components on the system (libraries, BTF, clang version, etc.).
+> Sometimes, it is useful to explicitly leave some of those features aside
+> when compiling, even though the system would support them. For example,
+> this can be useful:
 >
-> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+>     - for testing bpftool's behaviour when the feature is not present,
+>     - for copmiling for a different system, where some libraries are
+>       missing,
+>     - for producing a lighter binary,
+>     - for disabling features that do not compile correctly on older
+>       systems - although this is not supposed to happen, this is
+>       currently the case for skeletons support on Linux < 5.15, where
+>       struct bpf_perf_link is not defined in kernel BTF.
+>
+> For such cases, we introduce, in the Makefile, some environment
+> variables that can be used to disable those features: namely,
+> BPFTOOL_FEATURE_NO_LIBBFD, BPFTOOL_FEATURE_NO_LIBCAP, and
+> BPFTOOL_FEATURE_NO_SKELETONS.
+>
+> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
 > ---
-
-Hm... just because I specify PID, doesn't mean I mean main binary of
-that process, it could be some other shared library within that
-process.
-
-I don't really like this change because it doesn't feel 100% obvious
-and natural. User can easily specify "/proc/self/exe" or
-"/proc/<pid>/exe" if that's what they are targeting.
-
-Documentation for bpf_program__attach_usdt() states
-
-@param binary_path Path to binary that contains provided USDT probe
-
-it doesn't say it is optional and can be NULL, so there is no valid
-reason to pass NULL and expect things to work.
-
-
->  tools/lib/bpf/libbpf.c | 14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
+>  tools/bpf/bpftool/Makefile | 20 ++++++++++++++++++--
+>  1 file changed, 18 insertions(+), 2 deletions(-)
 >
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 8a45a84eb9b2..4ee9b6a0944e 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -10686,7 +10686,19 @@ struct bpf_link *bpf_program__attach_usdt(const struct bpf_program *prog,
->                 return libbpf_err_ptr(-EINVAL);
->         }
+> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+> index c19e0e4c41bd..b3dd6a1482f6 100644
+> --- a/tools/bpf/bpftool/Makefile
+> +++ b/tools/bpf/bpftool/Makefile
+> @@ -93,8 +93,24 @@ INSTALL ?= install
+>  RM ?= rm -f
 >
-> -       if (!strchr(binary_path, '/')) {
-> +       if (!binary_path) {
-> +               if (pid < 0) {
-> +                       pr_warn("prog '%s': missing attach target, pid or binary path required\n",
-> +                               prog->name);
-> +                       return libbpf_err_ptr(-EINVAL);
-> +               }
-> +               if (!pid)
-> +                       binary_path = "/proc/self/exe";
-> +               else {
-> +                       snprintf(resolved_path, sizeof(resolved_path), "/proc/%d/exe", pid);
-> +                       binary_path = resolved_path;
-> +               }
-> +       } else if (!strchr(binary_path, '/')) {
->                 err = resolve_full_path(binary_path, resolved_path, sizeof(resolved_path));
->                 if (err) {
->                         pr_warn("prog '%s': failed to resolve full path for '%s': %d\n",
+>  FEATURE_USER = .bpftool
+> -FEATURE_TESTS = libbfd disassembler-four-args zlib libcap \
+> -       clang-bpf-co-re
+> +FEATURE_TESTS := disassembler-four-args zlib
+
+as an aside, zlib is not really optional, libbpf depends on it and
+bpftool depends on libbpf, so... what's the point of a feature test?
+
+> +
+> +# Disable libbfd (for disassembling JIT-compiled programs) by setting
+> +# BPFTOOL_FEATURE_NO_LIBBFD
+> +ifeq ($(BPFTOOL_FEATURE_NO_LIBBFD),)
+> +  FEATURE_TESTS += libbfd
+> +endif
+> +# Disable libcap (for probing features available to unprivileged users) by
+> +# setting BPFTOOL_FEATURE_NO_LIBCAP
+> +ifeq ($(BPFTOOL_FEATURE_NO_LIBCAP),)
+> +  FEATURE_TESTS += libcap
+> +endif
+> +# Disable skeletons (e.g. for profiling programs or showing PIDs of processes
+> +# associated to BPF objects) by setting BPFTOOL_FEATURE_NO_SKELETONS
+> +ifeq ($(BPFTOOL_FEATURE_NO_SKELETONS),)
+> +  FEATURE_TESTS += clang-bpf-co-re
+> +endif
+> +
+>  FEATURE_DISPLAY = libbfd disassembler-four-args zlib libcap \
+>         clang-bpf-co-re
+>
 > --
-> 2.30.2
+> 2.34.1
 >
