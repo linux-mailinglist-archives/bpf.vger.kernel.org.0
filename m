@@ -2,62 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D41235621D8
-	for <lists+bpf@lfdr.de>; Thu, 30 Jun 2022 20:13:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D49325621E6
+	for <lists+bpf@lfdr.de>; Thu, 30 Jun 2022 20:18:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235411AbiF3SNo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Jun 2022 14:13:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60434 "EHLO
+        id S236251AbiF3SSn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Jun 2022 14:18:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233279AbiF3SNn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Jun 2022 14:13:43 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12249393F5;
-        Thu, 30 Jun 2022 11:13:42 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id fd6so27625291edb.5;
-        Thu, 30 Jun 2022 11:13:41 -0700 (PDT)
+        with ESMTP id S231596AbiF3SSm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Jun 2022 14:18:42 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE9C741638;
+        Thu, 30 Jun 2022 11:18:41 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id i1so24001714wrb.11;
+        Thu, 30 Jun 2022 11:18:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=8glAiFvvYAhfMI+vcfTy74bCy0VAErz9qlw2gOrB7qA=;
-        b=l1r+1Vmf9q2oWvjMcHJzsqJnIeHo07Lf7an896wGvxkwuV/81/9kjyXcVpowrnWjQR
-         MebPRwlejspQtTlgWcn6o56P0UE9VvteQLMMl153TNVbdz3gnJurMJCXzIV31PI9f3Gy
-         +LsuxTKlXXI3+buzGcTM0g9BN49+68ylLEbbQovNwqhHwMFaFnB1VL8mE/Cesmwq7RWw
-         w7MHT1YsfBSOYyRXOaoseLr8ybSjV+UhnJC0OkCsWNmyGRAgpQR3e8C+LMj+4S9UO4gm
-         fm1ma4xUoIcEn6Rwa4zlti9dlk2NSt+9w82HeC4rueqqWCPMsgeEzo7+9g5osgVQ7q4W
-         x00Q==
+        bh=IlWda/HqLDW0Gj9EzBCbVVvBNMNupFxIokvORQdSsqo=;
+        b=V/zbNJ6cE8PQmwOmoJpRuC574tlVTyOl3bRzQSGcqGDXct0qNy8MUEeBECXhj/izKq
+         UiVXAKMnTGkdjCUTIycQfaT4doug4CMxnqNEoxZSDoRsJGp0QgzInqRw88lm11V4Tn5c
+         nt/ho05icwky/AApXOKb5fuh/eDQo5Byho5ynpwCofAWcCrXg1km3LKX5FDh9fmgfIN7
+         9QmqnDnskFHha6ziAQtYGUiC7vrbTIOD0lIa3WA02vfli5feqRTEx5f+wohvzfl04HZp
+         BeULzibZbiN+ByeEVVZBmI+R0z8W+ZXNJ3QSwOK+KttculFfTLMBIl8A4SGiwLHBjz4J
+         MTHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8glAiFvvYAhfMI+vcfTy74bCy0VAErz9qlw2gOrB7qA=;
-        b=AXVUwmM0aa3B4qJq9Z1N2gf4rA9Bo9OOrd/8d3XeKvHH3Kw3wRDWn0Ep6jYPIP6n0X
-         yGRKlFGKggWTYgRi1LBoTuBO2hXsrh2DWJyQSjUGwjd2LuTdVrojfq0PvQ6YlqO6cxXO
-         xQQrWHAJAWQTOc1VUW15qns1gk8snQEyfp3x532tOSyGlk/iAVF4BIUGOpzAsxuSliX2
-         u33RhkkvSiX/lofasGcn4siPa+1LMUU+COTtbPqdMl82PvVfAR07liRZcnBVT0ZfIrvW
-         6TiH1oAZKZZczPLbceBQW/L8GVAOs4pPttflGS+rA9bEWLrU0qrZZG+n4H+dvBjvhnEL
-         8etQ==
-X-Gm-Message-State: AJIora9GLg9yNwRxfs48PE9u0Iv0LFRFp3E9+RMcvSlXjIA2+Ob7LFCv
-        +IPpTjQFxLVumfy3xKIKVhs=
-X-Google-Smtp-Source: AGRyM1tRbV9myCID4do+RE+BD6VuESTf79GpY37rWF1nuOjpF2gsd4l25Fxd/4Kig/NcRnR7mdixUA==
-X-Received: by 2002:a05:6402:26d6:b0:435:ba41:dbb0 with SMTP id x22-20020a05640226d600b00435ba41dbb0mr13327972edd.242.1656612820518;
-        Thu, 30 Jun 2022 11:13:40 -0700 (PDT)
+        bh=IlWda/HqLDW0Gj9EzBCbVVvBNMNupFxIokvORQdSsqo=;
+        b=G8YHqaVmYK5v6JBja2NVR5orVF4rIURfxY93muzAQ9Rnn9hSxnqbei3JFt3n0XlYld
+         FgR8n9zpvq5f9+JUUCV3gHh/Sb4Ma0D2Ec10fTte4G+l2xM9SIOo31gAb9w8xJglpmXp
+         ophXmgzo9luYxk94JF8Q5VqrzVgVhRpoeGORl1DlwdpM2SXmC4RGsJ2ks8Ck/uJYlQO6
+         NpZDV3XE10q/wkLU6KNTSivCUnyjQotUtRQ6+piXJrN9RqDt0MYgyAiDHmzxB2OL0S+b
+         VWzyNbwY1dh3d+12oxthn90DPSHbEOzWkw0h4H5Wd89WTuJGsLmhwQEivAq2KbD6UHDt
+         2rIg==
+X-Gm-Message-State: AJIora9I/E6hBL0Zb+KQUSP5iXhrAHb0ubs98pnr1Ts2UQy9/ODDIuHZ
+        QKHw2i/JvIHUYfRbPsdZDeQXFFlYa0Qn+w==
+X-Google-Smtp-Source: AGRyM1vREQxVFqTQbWuZ+WMeoR0noQOq0lb5dZV2MaVEVJr5GIj324clqAcL9faYncg9EBN8e8VzLA==
+X-Received: by 2002:adf:dc91:0:b0:21b:89bc:9d5c with SMTP id r17-20020adfdc91000000b0021b89bc9d5cmr9822813wrj.159.1656613120062;
+        Thu, 30 Jun 2022 11:18:40 -0700 (PDT)
 Received: from opensuse.localnet (host-87-6-98-182.retail.telecomitalia.it. [87.6.98.182])
-        by smtp.gmail.com with ESMTPSA id p5-20020a17090653c500b00722e8c47cc9sm1833654ejo.181.2022.06.30.11.13.37
+        by smtp.gmail.com with ESMTPSA id l34-20020a05600c1d2200b003a03e63e428sm4648060wms.36.2022.06.30.11.18.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jun 2022 11:13:38 -0700 (PDT)
+        Thu, 30 Jun 2022 11:18:38 -0700 (PDT)
 From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+To:     Eric Dumazet <edumazet@google.com>,
         Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Jesper Dangaard Brouer <hawk@kernel.org>,
+Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
         Alexander Duyck <alexanderduyck@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         Jesse Brandeburg <jesse.brandeburg@intel.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
         Netdev <netdev@vger.kernel.org>,
         Jakub Kicinski <kuba@kernel.org>, bpf <bpf@vger.kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
@@ -65,10 +65,10 @@ Cc:     Jesper Dangaard Brouer <hawk@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         LKML <linux-kernel@vger.kernel.org>
 Subject: Re: [Intel-wired-lan] [PATCH] ixgbe: Use kmap_local_page in ixgbe_check_lbtest_frame()
-Date:   Thu, 30 Jun 2022 20:13:37 +0200
-Message-ID: <12017329.O9o76ZdvQC@opensuse>
-In-Reply-To: <CAKgT0UfGM8nCZnnYjWPKT+JXOwVJx1xj6n7ssGi41vH4GrUy0Q@mail.gmail.com>
-References: <20220629085836.18042-1-fmdefrancesco@gmail.com> <Yr12jl1nEqqVI3TT@boxer> <CAKgT0UfGM8nCZnnYjWPKT+JXOwVJx1xj6n7ssGi41vH4GrUy0Q@mail.gmail.com>
+Date:   Thu, 30 Jun 2022 20:18:36 +0200
+Message-ID: <2254584.ElGaqSPkdT@opensuse>
+In-Reply-To: <CAKgT0UcKRJUJrpFHdNrdH98eu_dpiZiVakJRqc2qHrdGJJQRQA@mail.gmail.com>
+References: <20220629085836.18042-1-fmdefrancesco@gmail.com> <CANn89iK6g+4Fy2VMV7=feUAOUDHu-J38be+oU76yp+zGH6xCJQ@mail.gmail.com> <CAKgT0UcKRJUJrpFHdNrdH98eu_dpiZiVakJRqc2qHrdGJJQRQA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset="utf-8"
@@ -82,51 +82,80 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On gioved=C3=AC 30 giugno 2022 17:17:24 CEST Alexander Duyck wrote:
-> On Thu, Jun 30, 2022 at 3:10 AM Maciej Fijalkowski
-> <maciej.fijalkowski@intel.com> wrote:
+On gioved=C3=AC 30 giugno 2022 18:09:18 CEST Alexander Duyck wrote:
+> On Thu, Jun 30, 2022 at 8:25 AM Eric Dumazet <edumazet@google.com> wrote:
 > >
-> > On Wed, Jun 29, 2022 at 10:58:36AM +0200, Fabio M. De Francesco wrote:
-> > > The use of kmap() is being deprecated in favor of kmap_local_page().
+> > On Thu, Jun 30, 2022 at 5:17 PM Alexander Duyck
+> > <alexander.duyck@gmail.com> wrote:
 > > >
-> > > With kmap_local_page(), the mapping is per thread, CPU local and not
-> > > globally visible. Furthermore, the mapping can be acquired from any=20
-context
-> > > (including interrupts).
-> > >
-> > > Therefore, use kmap_local_page() in ixgbe_check_lbtest_frame()=20
+> > > On Thu, Jun 30, 2022 at 3:10 AM Maciej Fijalkowski
+> > > <maciej.fijalkowski@intel.com> wrote:
+> > > >
+> > > > On Wed, Jun 29, 2022 at 10:58:36AM +0200, Fabio M. De Francesco=20
+wrote:
+> > > > > The use of kmap() is being deprecated in favor of=20
+kmap_local_page().
+> > > > >
+> > > > > With kmap_local_page(), the mapping is per thread, CPU local and=
+=20
+not
+> > > > > globally visible. Furthermore, the mapping can be acquired from=20
+any context
+> > > > > (including interrupts).
+> > > > >
+> > > > > Therefore, use kmap_local_page() in ixgbe_check_lbtest_frame()=20
 because
-> > > this mapping is per thread, CPU local, and not globally visible.
+> > > > > this mapping is per thread, CPU local, and not globally visible.
+> > > >
+> > > > Hi,
+> > > >
+> > > > I'd like to ask why kmap was there in the first place and not plain
+> > > > page_address() ?
+> > > >
+> > > > Alex?
+> > >
+> > > The page_address function only works on architectures that have=20
+access
+> > > to all of physical memory via virtual memory addresses. The kmap
+> > > function is meant to take care of highmem which will need to be=20
+mapped
+> > > before it can be accessed.
+> > >
+> > > For non-highmem pages kmap just calls the page_address function.
+> > > https://elixir.bootlin.com/linux/latest/source/include/linux/highmem-=
+internal.h#L40
 > >
-> > Hi,
 > >
-> > I'd like to ask why kmap was there in the first place and not plain
-> > page_address() ?
+> > Sure, but drivers/net/ethernet/intel/ixgbe/ixgbe_main.c is allocating
+> > pages that are not highmem ?
 > >
-> > Alex?
+> > This kmap() does not seem needed.
 >=20
-> The page_address function only works on architectures that have access
-> to all of physical memory via virtual memory addresses. The kmap
-> function is meant to take care of highmem which will need to be mapped
-> before it can be accessed.
+> Good point. So odds are page_address is fine to use. Actually there is
+> a note to that effect in ixgbe_pull_tail.
 >=20
-> For non-highmem pages kmap just calls the page_address function.
-> https://elixir.bootlin.com/linux/latest/source/include/linux/highmem-inte=
-rnal.h#L40
+> As such we could probably go through and update igb, and several of
+> the other Intel drivers as well.
+>=20
+> - Alex
+>=20
+I don't know this code, however I know kmap*().
 
-Please take a look at documentation (highmem.rst). I've recently reworked=20
-it and added information about kmap_local_page()
+I assumed that, if author used kmap(), there was possibility that the page=
+=20
+came from highmem.
+
+In that case kmap_local_page() looks correct here.
+
+However, now I read that that page _cannot_ come from highmem. Therefore,=20
+page_address() would suffice.
+
+If you all want I can replace kmap() / kunmap() with a "plain"=20
+page_address(). Please let me know.
 
 Thanks,
 
 =46abio
-
->=20
-> Thanks,
->=20
-> - Alex
->=20
-
 
 
 
