@@ -2,63 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C3656219C
-	for <lists+bpf@lfdr.de>; Thu, 30 Jun 2022 20:02:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D41235621D8
+	for <lists+bpf@lfdr.de>; Thu, 30 Jun 2022 20:13:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235669AbiF3SCb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Jun 2022 14:02:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50840 "EHLO
+        id S235411AbiF3SNo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Jun 2022 14:13:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236604AbiF3SCY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Jun 2022 14:02:24 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D6CF387B5
-        for <bpf@vger.kernel.org>; Thu, 30 Jun 2022 11:02:22 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id i17so271242qvo.13
-        for <bpf@vger.kernel.org>; Thu, 30 Jun 2022 11:02:22 -0700 (PDT)
+        with ESMTP id S233279AbiF3SNn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Jun 2022 14:13:43 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12249393F5;
+        Thu, 30 Jun 2022 11:13:42 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id fd6so27625291edb.5;
+        Thu, 30 Jun 2022 11:13:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=P+FEOtcsYVm/GvL3ZDcoQ3bdrjIvEyeVOUJqdpuITIc=;
-        b=pJ/V6FCCmzx0kzvCsREEzipv3CIjwfr27dRd6xfTKry0nqmMz27t9Y+hMivHO5R/4k
-         ep0MT4gC9oceYTf8o7dqTSS5lk3KvZBLU0U/UNm1h37rmfaiUIpxsohuEzh3S5M9DhtJ
-         XEXcUE+0VvMVKQJejAWTr2d6gbXMR7JuA+bofXBZ/eVVKBGI3xAgRsX/0YOyu048vum1
-         tV93LS6G31Q3iAgUKSL/BwCw+IjfS4kmNz8w763qPfOXiZk/HXgKELUeUSgN1SLrqRrC
-         YR0xfbMBHcZ9RGc+H2fRY1RYoGyRlzBjT7uggCx5y+qfxDyOzLfeVC29Ebl7/Pxr7Guz
-         gnOw==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=8glAiFvvYAhfMI+vcfTy74bCy0VAErz9qlw2gOrB7qA=;
+        b=l1r+1Vmf9q2oWvjMcHJzsqJnIeHo07Lf7an896wGvxkwuV/81/9kjyXcVpowrnWjQR
+         MebPRwlejspQtTlgWcn6o56P0UE9VvteQLMMl153TNVbdz3gnJurMJCXzIV31PI9f3Gy
+         +LsuxTKlXXI3+buzGcTM0g9BN49+68ylLEbbQovNwqhHwMFaFnB1VL8mE/Cesmwq7RWw
+         w7MHT1YsfBSOYyRXOaoseLr8ybSjV+UhnJC0OkCsWNmyGRAgpQR3e8C+LMj+4S9UO4gm
+         fm1ma4xUoIcEn6Rwa4zlti9dlk2NSt+9w82HeC4rueqqWCPMsgeEzo7+9g5osgVQ7q4W
+         x00Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=P+FEOtcsYVm/GvL3ZDcoQ3bdrjIvEyeVOUJqdpuITIc=;
-        b=yqgZPDrw5XMwPmCJgj8mzW+RfJUYqD1h7In9lX6aOopocY1gwh+mX6xPBfJvc+1irX
-         vPTUxJsEHIC7LAC+429BhsSJ2EZL1YLuExwa9AgorTo/BmyCjJrw2IVmhy8lfWkaRweJ
-         56cQ1gfLybnVdk53RSxA0I9crk8L0qWG38ciOvuhuvzIH0xC2UiwqIIOk/MRBwbyz+6c
-         DeU2s0NCq0uUYRrDtSi+WX/FGKZPANOJdua15ry6A0fl0xTuu1j3pVSvqYpkRw4pagJo
-         c5fBXjnQ7votYrF9Hco5VbDaIt0DrepmHfdX6YmOPPyq0yhNVA5Oj7anQ/pHYTcdx6+2
-         pZwA==
-X-Gm-Message-State: AJIora99ugEOLn8hoAzsktaNQYsW6YV19jCBXiNUhZHyOd/Qhk+9tTgq
-        fhL3Mz1PbivFZ2cnuR5yg41HbBV2/jYH5cYNeR4vYg==
-X-Google-Smtp-Source: AGRyM1tw3leiby/TQG3z7/nHnH542nBRiNfwgHIpkFGHWIX6lugMxmA4w33N95RG+GAI3iIRLEg8yy5qaQ1+pEPygI4=
-X-Received: by 2002:a05:622a:1d2:b0:31d:2987:4c29 with SMTP id
- t18-20020a05622a01d200b0031d29874c29mr6741570qtw.565.1656612141422; Thu, 30
- Jun 2022 11:02:21 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=8glAiFvvYAhfMI+vcfTy74bCy0VAErz9qlw2gOrB7qA=;
+        b=AXVUwmM0aa3B4qJq9Z1N2gf4rA9Bo9OOrd/8d3XeKvHH3Kw3wRDWn0Ep6jYPIP6n0X
+         yGRKlFGKggWTYgRi1LBoTuBO2hXsrh2DWJyQSjUGwjd2LuTdVrojfq0PvQ6YlqO6cxXO
+         xQQrWHAJAWQTOc1VUW15qns1gk8snQEyfp3x532tOSyGlk/iAVF4BIUGOpzAsxuSliX2
+         u33RhkkvSiX/lofasGcn4siPa+1LMUU+COTtbPqdMl82PvVfAR07liRZcnBVT0ZfIrvW
+         6TiH1oAZKZZczPLbceBQW/L8GVAOs4pPttflGS+rA9bEWLrU0qrZZG+n4H+dvBjvhnEL
+         8etQ==
+X-Gm-Message-State: AJIora9GLg9yNwRxfs48PE9u0Iv0LFRFp3E9+RMcvSlXjIA2+Ob7LFCv
+        +IPpTjQFxLVumfy3xKIKVhs=
+X-Google-Smtp-Source: AGRyM1tRbV9myCID4do+RE+BD6VuESTf79GpY37rWF1nuOjpF2gsd4l25Fxd/4Kig/NcRnR7mdixUA==
+X-Received: by 2002:a05:6402:26d6:b0:435:ba41:dbb0 with SMTP id x22-20020a05640226d600b00435ba41dbb0mr13327972edd.242.1656612820518;
+        Thu, 30 Jun 2022 11:13:40 -0700 (PDT)
+Received: from opensuse.localnet (host-87-6-98-182.retail.telecomitalia.it. [87.6.98.182])
+        by smtp.gmail.com with ESMTPSA id p5-20020a17090653c500b00722e8c47cc9sm1833654ejo.181.2022.06.30.11.13.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Jun 2022 11:13:38 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Jesper Dangaard Brouer <hawk@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Netdev <netdev@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [Intel-wired-lan] [PATCH] ixgbe: Use kmap_local_page in ixgbe_check_lbtest_frame()
+Date:   Thu, 30 Jun 2022 20:13:37 +0200
+Message-ID: <12017329.O9o76ZdvQC@opensuse>
+In-Reply-To: <CAKgT0UfGM8nCZnnYjWPKT+JXOwVJx1xj6n7ssGi41vH4GrUy0Q@mail.gmail.com>
+References: <20220629085836.18042-1-fmdefrancesco@gmail.com> <Yr12jl1nEqqVI3TT@boxer> <CAKgT0UfGM8nCZnnYjWPKT+JXOwVJx1xj6n7ssGi41vH4GrUy0Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <20220630135250.241795-1-hengqi.chen@gmail.com>
-In-Reply-To: <20220630135250.241795-1-hengqi.chen@gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Thu, 30 Jun 2022 11:02:10 -0700
-Message-ID: <CA+khW7iP4XbZ4TPtQ7X2nWB_QXvUTJi3Y75d9Rd47E94aO4MzA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: Allow attach USDT BPF program without
- specifying binary path
-To:     Hengqi Chen <hengqi.chen@gmail.com>
-Cc:     bpf@vger.kernel.org, andrii@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,51 +82,51 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Hengqi,
+On gioved=C3=AC 30 giugno 2022 17:17:24 CEST Alexander Duyck wrote:
+> On Thu, Jun 30, 2022 at 3:10 AM Maciej Fijalkowski
+> <maciej.fijalkowski@intel.com> wrote:
+> >
+> > On Wed, Jun 29, 2022 at 10:58:36AM +0200, Fabio M. De Francesco wrote:
+> > > The use of kmap() is being deprecated in favor of kmap_local_page().
+> > >
+> > > With kmap_local_page(), the mapping is per thread, CPU local and not
+> > > globally visible. Furthermore, the mapping can be acquired from any=20
+context
+> > > (including interrupts).
+> > >
+> > > Therefore, use kmap_local_page() in ixgbe_check_lbtest_frame()=20
+because
+> > > this mapping is per thread, CPU local, and not globally visible.
+> >
+> > Hi,
+> >
+> > I'd like to ask why kmap was there in the first place and not plain
+> > page_address() ?
+> >
+> > Alex?
+>=20
+> The page_address function only works on architectures that have access
+> to all of physical memory via virtual memory addresses. The kmap
+> function is meant to take care of highmem which will need to be mapped
+> before it can be accessed.
+>=20
+> For non-highmem pages kmap just calls the page_address function.
+> https://elixir.bootlin.com/linux/latest/source/include/linux/highmem-inte=
+rnal.h#L40
 
-On Thu, Jun 30, 2022 at 7:07 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
->
-> Currently, libbpf requires specifying binary path when attach USDT BPF program
-> manually. This is not necessary because we can infer that from /proc/$PID/exe.
-> This also avoids coredump when user do not provide binary path.
->
-> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
-> ---
->  tools/lib/bpf/libbpf.c | 14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 8a45a84eb9b2..4ee9b6a0944e 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -10686,7 +10686,19 @@ struct bpf_link *bpf_program__attach_usdt(const struct bpf_program *prog,
->                 return libbpf_err_ptr(-EINVAL);
->         }
->
-> -       if (!strchr(binary_path, '/')) {
-> +       if (!binary_path) {
-> +               if (pid < 0) {
-> +                       pr_warn("prog '%s': missing attach target, pid or binary path required\n",
-> +                               prog->name);
-> +                       return libbpf_err_ptr(-EINVAL);
-> +               }
-> +               if (!pid)
-> +                       binary_path = "/proc/self/exe";
-> +               else {
-> +                       snprintf(resolved_path, sizeof(resolved_path), "/proc/%d/exe", pid);
-> +                       binary_path = resolved_path;
-> +               }
+Please take a look at documentation (highmem.rst). I've recently reworked=20
+it and added information about kmap_local_page()
 
-Please add matching brackets for the 'then' clause.
+Thanks,
 
-Besides, do you need to call readlink() to extract the real path of
-the binary? Reading /proc/$pid/exe may fail due to not being root.
-Detecting such failures early and giving a warning would be great.
+=46abio
 
-> +       } else if (!strchr(binary_path, '/')) {
->                 err = resolve_full_path(binary_path, resolved_path, sizeof(resolved_path));
->                 if (err) {
->                         pr_warn("prog '%s': failed to resolve full path for '%s': %d\n",
-> --
-> 2.30.2
->
+>=20
+> Thanks,
+>=20
+> - Alex
+>=20
+
+
+
+
