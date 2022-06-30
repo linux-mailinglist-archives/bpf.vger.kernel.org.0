@@ -2,114 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ECBD56260C
-	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 00:26:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B045562631
+	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 00:42:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229531AbiF3WZ6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Jun 2022 18:25:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53566 "EHLO
+        id S229563AbiF3WmH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Jun 2022 18:42:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229916AbiF3WZ6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Jun 2022 18:25:58 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C30A2E9E5
-        for <bpf@vger.kernel.org>; Thu, 30 Jun 2022 15:25:57 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1AAB861EDF
-        for <bpf@vger.kernel.org>; Thu, 30 Jun 2022 22:25:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B1B2C341CE
-        for <bpf@vger.kernel.org>; Thu, 30 Jun 2022 22:25:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656627956;
-        bh=tM0G24NVi0m2tyIVH7irgkid8Nrp64cFbylJfEA/+zA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CZCTjvE/7FveJHL4CoZOgo+8fEQsJJd77t5GdpRF9vDEzm8VPuKqWrQPuxKoU1ytz
-         reqJrEktB6AqatOXO7EhMXgJO1kkB6uVXq/f5jK+RJKUFZRDXlb/4hJ4nuY68ko2BT
-         8ngEc07r2plRyWSi7eZ1Ceo6CqInLw6fMhIxZWis/xfvXJfLaI7juXCSmyOYUJUpf2
-         10y4lKVaPqn25IgZRhetZdXFmoz+iR362fMnLUNvUDhkakpZ8madJlqJs/P5VtS6dj
-         f+TYHZIVRCKxid4JwKJi1e9byZy2xAEGW0SCU0tJbaLw5K8N881ik3quRGHRtWHkyS
-         cCaOFusKL+4Sg==
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-3176b6ed923so6911447b3.11
-        for <bpf@vger.kernel.org>; Thu, 30 Jun 2022 15:25:56 -0700 (PDT)
-X-Gm-Message-State: AJIora9SuT8TK6vhcF96/XRNuNJLi5lOlxZHssNbohmnH0kI4lIZqdgg
-        RhM4eGKFCalD5HMBjcjBFCNrHsSc+KaKUsBjHU66tA==
-X-Google-Smtp-Source: AGRyM1uMVVdq3Kmug6m/pyl8us5tBZC8Vm2D0Q0eIOFcdR32jfJQiRpVxoYGfCem3o5Qs+AJWtypoXJlfzz8Tac/TAs=
-X-Received: by 2002:a81:72d7:0:b0:317:917b:8a48 with SMTP id
- n206-20020a8172d7000000b00317917b8a48mr13524110ywc.495.1656627955534; Thu, 30
- Jun 2022 15:25:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220628161948.475097-1-kpsingh@kernel.org> <20220628161948.475097-6-kpsingh@kernel.org>
- <20220628173344.h7ihvyl6vuky5xus@wittgenstein> <CACYkzJ5ij9rth_v3KQrCVYsQr2STBEWq1EAzkDb5D06CoRRSjA@mail.gmail.com>
- <CAADnVQ+mokn3Yo492Zng=Gtn_LgT-T1XLth5BXyKZXFno-3ZDg@mail.gmail.com>
- <20220629081119.ddqvfn3al36fl27q@wittgenstein> <20220629095557.oet6u2hi7msit6ff@wittgenstein>
- <CAADnVQ+HhhQdcz_u8kP45Db_gUK+pOYg=jObZpLtdin=v_t9tw@mail.gmail.com>
- <20220630114549.uakuocpn7w5jfrz2@wittgenstein> <CACYkzJ4uiY5B09RqRFhePNXKYLmhD_F2KepEO-UZ4tQN09yWBg@mail.gmail.com>
- <CAOQ4uxhKG7wDsh2qhtzcF7QYFRD51r500C9YKp2NrBPJtjphww@mail.gmail.com>
-In-Reply-To: <CAOQ4uxhKG7wDsh2qhtzcF7QYFRD51r500C9YKp2NrBPJtjphww@mail.gmail.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Fri, 1 Jul 2022 00:25:44 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ6gZM5io54j+LcdyAiuK-pwOcwMaiknBhby+T_jG9cB0A@mail.gmail.com>
-Message-ID: <CACYkzJ6gZM5io54j+LcdyAiuK-pwOcwMaiknBhby+T_jG9cB0A@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 5/5] bpf/selftests: Add a selftest for bpf_getxattr
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Serge Hallyn <serge@hallyn.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Jan Kara <jack@suse.cz>, Alessio Balsini <balsini@android.com>
+        with ESMTP id S229540AbiF3WmH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Jun 2022 18:42:07 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B813751B0E
+        for <bpf@vger.kernel.org>; Thu, 30 Jun 2022 15:42:06 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id u13-20020a170902e5cd00b0016a53274671so320309plf.15
+        for <bpf@vger.kernel.org>; Thu, 30 Jun 2022 15:42:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=USCl0oClyAQxwwBeZaSfPbfkeObzur+l0xwvn6Jqc88=;
+        b=VLFe/81gXdcHB/VZERKU6+8ZOhUv/ptFVauyHgzah14cVfFKYCuyu/jClUcn/LyAFH
+         nR6vw0Z7lj5OwcUAcKDobkMJFRo1oXoTTeUpo3AOg34B9MEFKHs4ZYtvFLiI65gpw0mV
+         YdS41k70jrK2RytzpWr+cbqKnBAvvPu7JdK2PuejEy8P3kMMC0F2k9MrKY5l6sK62L9c
+         ccs9TPsE4Zg507+T3ZpkW/1OD4JwWlXjUeK1EFbfuQ58/Z95Ysa16EkGhT9IK1EaDSX3
+         /fpT2ZbQOJ2Nl1CBSEuLkhhoWU5LcocBXqxi5/q0jqKRGUtt0haOU9gRRKgAKnqtzWVc
+         rqlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=USCl0oClyAQxwwBeZaSfPbfkeObzur+l0xwvn6Jqc88=;
+        b=4zLEroR8McgTFIk6GKS58EUseT2wNeMdWR6/wUt2om77RXCpGD05hJfAFYFzRaSVap
+         6xo946067Fxbc7qpAyJlw+sm2BzypzwSs9qXKDv/viLFxEBefUF4zm+cMZxdnM6L8ZnS
+         PX2S36NJI/1z3vRsGJun0yo+HoN93FYIxOGjFe0l4Ck3WgEhCl5CKbIE8edirlEvCL7O
+         IIx0Zijg1WM80HGXC+41DVQt4oWClJBG9lU9tW9tBCNG7GcXTKO09ogDDnuE3WR/zsYw
+         iFT3sx2T6Fca2oZLHgCPWzL1B77hAe57mNQqCgN/REm8MrYXQHkd4m04r7XRspcPAhT9
+         1piw==
+X-Gm-Message-State: AJIora9xA098AA42iIQcKZbz+MtZ0+DeZeS9mLurwChhuBNld3D3YeGM
+        7aGo9zRnjuH79jt/SukaR0GRVxeu+pERmtF08ZMBvt7Dz/FH5Be2EnRyCMNoiuWMLdFZcP1KmRQ
+        q+GDs5fIQkqmsw8wPjFKVgFVmTsX/w2wYeMmyNilFsWAwXHbRaA==
+X-Google-Smtp-Source: AGRyM1s0zPVy53MJm9COjd8r2wqBHfUoJwBl+O8a1u3eZKxGee1qBsZ4fxLUFMc3kgKJaPXVtwdTiys=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:902:6901:b0:168:9bb4:7adb with SMTP id
+ j1-20020a170902690100b001689bb47adbmr16777502plk.147.1656628925752; Thu, 30
+ Jun 2022 15:42:05 -0700 (PDT)
+Date:   Thu, 30 Jun 2022 15:42:03 -0700
+Message-Id: <20220630224203.512815-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.37.0.rc0.161.g10f37bed90-goog
+Subject: [PATCH bpf-next] selftests/bpf: skip lsm_cgroup when don't have trampolines
+From:   Stanislav Fomichev <sdf@google.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 30, 2022 at 6:29 PM Amir Goldstein <amir73il@gmail.com> wrote:
->
-> > >
-> > > This discussion would probably be a lot shorter if this series were sent
-> > > with a proper explanation of how this supposed to work and what it's
-> > > used for.
-> >
-> > It's currently scoped to BPF LSM (albeit limited to LSM for now)
-> > but it won't just be used in LSM programs but some (allow-listed)
-> > tracing programs too.
-> >
->
-> KP,
->
-> Without taking sides in the discussion about the security aspect of
-> bpf_getxattr(),
-> I wanted to say that we have plans to add BPF hooks for fanotify event
-> filters and
-> AFAIK Alessio's team is working on adding BPF hooks for FUSE bypass decisions.
->
-> In both those cases, being able to tag files with some xattr and use
-> that as part of
-> criteria in the hook would be very useful IMO, but I don't think that
-> it should be a
-> problem to limit the scope of the allowed namespace to security.bpf.* for these
-> use cases.
+With arch_prepare_bpf_trampoline removed on x86:
 
-Thanks Amir, I agree, this does seem like a practical way to move forward.
+ #98/1    lsm_cgroup/functional:SKIP
+ #98      lsm_cgroup:SKIP
+ Summary: 1/0 PASSED, 1 SKIPPED, 0 FAILED
 
-Cheers,
-- KP
+Fixes: dca85aac8895 ("selftests/bpf: lsm_cgroup functional test")
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
->
-> Thanks,
-> Amir.
+diff --git a/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
+index d40810a742fa..c542d7e80a5b 100644
+--- a/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
++++ b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
+@@ -9,6 +9,10 @@
+ #include "cgroup_helpers.h"
+ #include "network_helpers.h"
+ 
++#ifndef ENOTSUPP
++#define ENOTSUPP 524
++#endif
++
+ static struct btf *btf;
+ 
+ static __u32 query_prog_cnt(int cgroup_fd, const char *attach_func)
+@@ -100,6 +104,10 @@ static void test_lsm_cgroup_functional(void)
+ 	ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_sk_alloc_security"), 0, "prog count");
+ 	ASSERT_EQ(query_prog_cnt(cgroup_fd, NULL), 0, "total prog count");
+ 	err = bpf_prog_attach(alloc_prog_fd, cgroup_fd, BPF_LSM_CGROUP, 0);
++	if (err == -ENOTSUPP) {
++		test__skip();
++		goto close_cgroup;
++	}
+ 	if (!ASSERT_OK(err, "attach alloc_prog_fd"))
+ 		goto detach_cgroup;
+ 	ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_sk_alloc_security"), 1, "prog count");
+-- 
+2.37.0.rc0.161.g10f37bed90-goog
+
