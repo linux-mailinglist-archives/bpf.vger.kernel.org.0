@@ -2,77 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8300F561F7E
-	for <lists+bpf@lfdr.de>; Thu, 30 Jun 2022 17:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23CBF561FB7
+	for <lists+bpf@lfdr.de>; Thu, 30 Jun 2022 17:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbiF3Plq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Jun 2022 11:41:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51214 "EHLO
+        id S236168AbiF3Pw4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Jun 2022 11:52:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235834AbiF3Plq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Jun 2022 11:41:46 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FEF33BBD6
-        for <bpf@vger.kernel.org>; Thu, 30 Jun 2022 08:41:45 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id q9so27912164wrd.8
-        for <bpf@vger.kernel.org>; Thu, 30 Jun 2022 08:41:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:from:to:subject
-         :content-transfer-encoding;
-        bh=08P6bq7um69CgFJcK8RfFuaLGTo4ycgPn1AeuKP6N2s=;
-        b=M6tzKji5SzZk8VSQVzIQs1KDUcvVMuJm5tQWhktko68AVm06Nv3H0pG+gZxCjQbzGR
-         O252I43uUl6CpMcnszF7WW2l1zv0OF7hlf38kzUp81E9E3rcjESfjk/1LLytkbm+QlMD
-         MoyDuTCjv4hc+M152hLnjuL5+03pNQXakxof+a0TfvzQlKeT3XutB2zy0a02yyKwsWa7
-         8gnaPyrFnzRuOyBUd30OPCGB+VNGpzdqRh/EiViive2ei0uI0eltpOf8UDM3g1ciRm68
-         fFOYvYwjmnHeSYYv7UMMUlyiFPPd4qd9ec1N04WYIODV56FoVtg2lP/rccLpdGlvJdCo
-         koUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:from:to:subject
-         :content-transfer-encoding;
-        bh=08P6bq7um69CgFJcK8RfFuaLGTo4ycgPn1AeuKP6N2s=;
-        b=YFqanwxbm98+XFnsdZ6pE8RhqKSD6E+vY7c4efioRmgTE5I0vN+Iu8yv9zdk1aCGmE
-         Z5A0pJTTgreAYhpx+0CSAoAH8fajepjE7OJ/Vb9zgnkdntKQmCIMCA9G9OpKT0HoW9gj
-         9hgL1mB0OmOeGqqOE1+6vGBimxGakXafPCkYZ2uQnA67IYU/euQYNZTaE8y9BgZ9v8Sq
-         tFL4jxrouhAVfsvfTd6nuXUCX1YtmlMwfa8BSnd6AChUkF4kqsk8sAptNcnt3JG4gfAp
-         eld6Kv7rgpj9fFoVk9HHAuVRSx+9k21/eYr+LPvccLzUwWX7sENMQTZ9G8oNYuHj6eCz
-         PInA==
-X-Gm-Message-State: AJIora/1ptSazBPWSTvQSJrVOxBzBjtJRP2r3u1gb+SnuTSGHOEse9c2
-        gVBF36JvtRpiQfcbjufDs1ygJ1pFeUQ=
-X-Google-Smtp-Source: AGRyM1s/3u7dCkD2PsERePUxMXB2MS9ZetTXvrykOxNTQfO5qB5QIpHohiu5MQKOVaIqNicTTVE2Dw==
-X-Received: by 2002:a05:6000:3cd:b0:21b:8e8d:470f with SMTP id b13-20020a05600003cd00b0021b8e8d470fmr8830300wrg.387.1656603703789;
-        Thu, 30 Jun 2022 08:41:43 -0700 (PDT)
-Received: from DESKTOP-L1U6HLH ([39.53.244.205])
-        by smtp.gmail.com with ESMTPSA id t5-20020a1c4605000000b0039db31f6372sm3047996wma.2.2022.06.30.08.41.42
-        for <bpf@vger.kernel.org>
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Thu, 30 Jun 2022 08:41:43 -0700 (PDT)
-Message-ID: <62bdc437.1c69fb81.7ffb7.6d30@mx.google.com>
-Date:   Thu, 30 Jun 2022 08:41:43 -0700 (PDT)
-X-Google-Original-Date: 30 Jun 2022 11:41:45 -0400
+        with ESMTP id S229756AbiF3Pwz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Jun 2022 11:52:55 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E311393F4;
+        Thu, 30 Jun 2022 08:52:54 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3DAF561EDC;
+        Thu, 30 Jun 2022 15:52:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 379BEC34115;
+        Thu, 30 Jun 2022 15:52:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1656604373;
+        bh=3Xebw/jjie/lQtBZVCHkIWVT9AugKulNmXEthxuX/iQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=C33igR/ZdLo1+RPlbeYWq4UG6ugew31y62+EfFfkOM7nn/pBEV+UopA5dfUMSuDGx
+         CPKJ3fEAK1P8Whq31L3Es5YnJVuFbPp1gnvA5clNxNu1dbBKn1gf9ibNQLAQ3wWMoF
+         Yv307UlFM9vkB356x1qPNDDRc6/XpsKRU2HdvT1BK3fekVnr94w4J0yuEvHv5sCwC2
+         sdVB6Tqx50kBvMVNuViKqCn4kHgsCEDRE2ESLEn9D4o1vd7d0gzxtl7jDyyv7J41N5
+         Lwe6TUf8K4E/XjHTOfzZdKVwFbezBKjk6NOp0bjs4fI5tEpvZSnRfiQ2j9NMb+ILcO
+         z8VtU1PXTSBvg==
+Date:   Thu, 30 Jun 2022 08:52:52 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Subject: Re: [PATCH bpf] xsk: mark napi_id on sendmsg()
+Message-ID: <20220630085252.51e29049@kernel.org>
+In-Reply-To: <Yr2Op9m1xt5gW7Pw@boxer>
+References: <20220629105752.933839-1-maciej.fijalkowski@intel.com>
+        <CAJ+HfNj0FU=DBNdwD3HODbevcP-btoaeCCGCfn2Y5eP2WoEXHA@mail.gmail.com>
+        <YrxLTiOIpD44JM7R@boxer>
+        <20220629091629.1c241c21@kernel.org>
+        <20220629091707.20d66524@kernel.org>
+        <Yr2Op9m1xt5gW7Pw@boxer>
 MIME-Version: 1.0
-From:   pride.dreamlandestimation@gmail.com
-To:     bpf@vger.kernel.org
-Subject: Estimating Services
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,=0D=0A=0D=0AWe provide estimation & quantities takeoff service=
-s. We are providing 98-100 accuracy in our estimates and take-off=
-s. Please tell us if you need any estimating services regarding y=
-our projects.=0D=0A=0D=0ASend over the plans and mention the exac=
-t scope of work and shortly we will get back with a proposal on w=
-hich our charges and turnaround time will be mentioned=0D=0A=0D=0A=
-You may ask for sample estimates and take-offs. Thanks.=0D=0A=0D=0A=
-Kind Regards=0D=0APride Millard=0D=0ADreamland Estimation, LLC
+On Thu, 30 Jun 2022 13:53:11 +0200 Maciej Fijalkowski wrote:
+> > > Would it be possible to move the marking to when the queue is getting
+> > > bound instead of the recv/send paths?   
+> > 
+> > I mean when socket is getting bound.  
+> 
+> So Bjorn said that it was the design choice to follow the standard
+> sockets' approach. I'm including a dirty diff for a discussion which
+> allows me to get napi_id at bind() time. But, this works for ice as this
+> driver during the XDP prog/XSK pool load only disables the NAPI, so we are
+> sure that napi_id stays the same. That might not be the case for other
+> AF_XDP ZC enabled drivers though, they might delete the NAPI and this
+> approach wouldn't work...or am I missing something?
+
+Possible, but IDK if we're changing anything substantially in that
+regard. The existing code already uses sk_mark_napi_id_once() so
+if the NAPI ID changes during the lifetime of the socket the user
+will be out of luck already. But no strong feelings.
+
+> I'd prefer the diff below though as it simplifies the data path, but I
+> can't say if it's safe to do so. We would have to be sure about drivers
+> keeping their NAPI struct. This would also allow us to drop napi_id from
+> xdp_rxq_info.
 
