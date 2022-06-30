@@ -2,226 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CEFF56199F
-	for <lists+bpf@lfdr.de>; Thu, 30 Jun 2022 13:53:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43535561A24
+	for <lists+bpf@lfdr.de>; Thu, 30 Jun 2022 14:16:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233724AbiF3LxV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Jun 2022 07:53:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38688 "EHLO
+        id S232835AbiF3MQA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Jun 2022 08:16:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230203AbiF3LxU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Jun 2022 07:53:20 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D53C913E04;
-        Thu, 30 Jun 2022 04:53:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1656589999; x=1688125999;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=cW0oQUR6mdBMaptzHfnzVmAMNLO56Yt4tc94/lzO07A=;
-  b=kWKfi2eI+JDfzNrCn+yuCY7ivbsxZRAzi64Iyg7OX5/XTWJi8srpJiDi
-   mXj8Z3OXR76tfrHbfrzqOTnP07WwfNypO5l8Z15IEDHZc4xTx+8V5+kjU
-   HZJYP8GRG/shnwnSj4eeg5gGhSNJrFB2w9bNRZauPskT2YxXr49HYhsaL
-   BKiBfXSzqou/77v8rkkatkpyxxiubB+y89paUVy6YfAjnNjSdHPj4XeCk
-   1QyvhsOrFltadWP81h1P1YejSmV9Q+HzHQMAbD81Baak7lT5fOXhnTfAG
-   sYrp4/7VWo3KXEByT6IBvm0pQIjq7p4AKbdQlcauZoAyOoogdtPHyZ0e3
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10393"; a="283060032"
-X-IronPort-AV: E=Sophos;i="5.92,234,1650956400"; 
-   d="scan'208";a="283060032"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jun 2022 04:53:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,234,1650956400"; 
-   d="scan'208";a="694023931"
-Received: from boxer.igk.intel.com (HELO boxer) ([10.102.20.173])
-  by fmsmga002.fm.intel.com with ESMTP; 30 Jun 2022 04:53:12 -0700
-Date:   Thu, 30 Jun 2022 13:53:11 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Subject: Re: [PATCH bpf] xsk: mark napi_id on sendmsg()
-Message-ID: <Yr2Op9m1xt5gW7Pw@boxer>
-References: <20220629105752.933839-1-maciej.fijalkowski@intel.com>
- <CAJ+HfNj0FU=DBNdwD3HODbevcP-btoaeCCGCfn2Y5eP2WoEXHA@mail.gmail.com>
- <YrxLTiOIpD44JM7R@boxer>
- <20220629091629.1c241c21@kernel.org>
- <20220629091707.20d66524@kernel.org>
+        with ESMTP id S230350AbiF3MP7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Jun 2022 08:15:59 -0400
+Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com [66.111.4.221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AF1A1EC69;
+        Thu, 30 Jun 2022 05:15:57 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 7677E5802C4;
+        Thu, 30 Jun 2022 08:04:32 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Thu, 30 Jun 2022 08:04:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:message-id
+        :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+        1656590672; x=1656597872; bh=pAZH5MTBdgS3CquuCfAfzYAxKgms2Uu1+KL
+        7ZAZvgAA=; b=EvEf7W+eOXP5lYbA71ryKh7xp6PoglK7MbvylNGO3aGGoHvcIZ1
+        /WZ7AcV09D5AMzBDBq0cb0/qQxIbYFT1HH09IlXRqvH6sd6Vr1aFZfAOr29GTsGm
+        w4ULvZ4pKZsFTxUhfLuSO1vYn+SN7Tajeo8D4ShNlFLw46WhzpsJiLiZfJDGAQfE
+        GjU95ZWGVAWu/RvtIuDjma8/Uy+0hm7PpUll2fTXXeJOPzJDlTRlgQeLEXVAfwLo
+        HiKjjiUQTG45IYc8Eu/SsdGwrjXKhmf8PGLnP0iwWeoHFS5V5UuxhENUiULTUb+o
+        xfm28LKWBamXQbDCYqKLcad61cpiwK7ORxg==
+X-ME-Sender: <xms:T5G9YjeGSFKqvKIWHutUc3pqfn-s0mYmcRlNXWLcJIRSoGyMrLOqAw>
+    <xme:T5G9YpOrIOabj2zmH_ue6okukwHuxSLcu4QKj_xfsXfwCMy5uwF3PTdcArGoQCJ3F
+    gcWiKz_5dDIJ9Fvng>
+X-ME-Received: <xmr:T5G9Ysh38_JA8Xn3R-tMENTbcX20SVfym-s38Hasrx3eY1touhofJnHzMepEOGHTbrhqHszMGQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudehuddggeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffoggfgsedtkeertd
+    ertddtnecuhfhrohhmpeffrghvvgcuvfhutghkvghruceouggrvhgvseguthhutghkvghr
+    rdgtohdruhhkqeenucggtffrrghtthgvrhhnpefhffdtkeegveeiveefgfdtudehkeehie
+    ejleduieehiedtffevjeekhfehfeehtdenucevlhhushhtvghrufhiiigvpedtnecurfgr
+    rhgrmhepmhgrihhlfhhrohhmpegurghvvgesughtuhgtkhgvrhdrtghordhukh
+X-ME-Proxy: <xmx:T5G9Yk8ci1CUBwvN2HTjAfU_WNUWvVNfxh2IV6_jstvMkFioSDQh9g>
+    <xmx:T5G9YvvLwR0sg5rmRDDj-go4SqIzZmXbsS2gmkAO6MEIxUYckkd-0w>
+    <xmx:T5G9YjH4Ef-P0Zt6996DfB8xvZh-_2-hjACdgawOIVhGSPExChK8Gg>
+    <xmx:UJG9YtLuaxoLMGwv7GaGuRTG433-kbS91x33MCS75Qg0bR4JBw4wOA>
+Feedback-ID: i559945a3:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 30 Jun 2022 08:04:31 -0400 (EDT)
+From:   Dave Tucker <dave@dtucker.co.uk>
+To:     bpf@vger.kernel.org
+Cc:     corbet@lwn.net, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        linux-doc@vger.kernel.org, Dave Tucker <dave@dtucker.co.uk>
+Subject: [PATCH v4 bpf-next 0/2] bpf, docs: Document BPF_MAP_TYPE_ARRAY
+Date:   Thu, 30 Jun 2022 13:04:07 +0100
+Message-Id: <cover.1656590177.git.dave@dtucker.co.uk>
+X-Mailer: git-send-email 2.37.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220629091707.20d66524@kernel.org>
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_FAIL,SPF_HELO_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 29, 2022 at 05:17:07PM +0100, Jakub Kicinski wrote:
-> On Wed, 29 Jun 2022 09:16:29 -0700 Jakub Kicinski wrote:
-> > > Would it make sense to introduce napi_id to xsk_buff_pool then?
-> > > xp_set_rxq_info() could be setting it. We are sure that napi_id is the
-> > > same for whole pool (each xdp_buff_xsk's rxq info).  
-> > 
-> > Would it be possible to move the marking to when the queue is getting
-> > bound instead of the recv/send paths? 
-> 
-> I mean when socket is getting bound.
+This series is the beginning of my attempt to improve the BPF map and
+program type documentation. It expands the template from
+map_cgroup_storage to include the kernel version it was introduced.
+I then used this template to document BPF_MAP_TYPE_ARRAY and
+BPF_MAP_TYPE_PERCPU_ARRAY
 
-So Bjorn said that it was the design choice to follow the standard
-sockets' approach. I'm including a dirty diff for a discussion which
-allows me to get napi_id at bind() time. But, this works for ice as this
-driver during the XDP prog/XSK pool load only disables the NAPI, so we are
-sure that napi_id stays the same. That might not be the case for other
-AF_XDP ZC enabled drivers though, they might delete the NAPI and this
-approach wouldn't work...or am I missing something?
+v3->v4:
+- fix doctest failure due to missing newline
 
-I'd prefer the diff below though as it simplifies the data path, but I
-can't say if it's safe to do so. We would have to be sure about drivers
-keeping their NAPI struct. This would also allow us to drop napi_id from
-xdp_rxq_info.
+v2->v3:
+- wrap text to 80 chars and add newline at end of file
 
-Thoughts?
+v1->v2:
+- point to selftests for functional examples
+- update examples to follow kernel style
+- add docs for BPF_F_MMAPABLE
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-index 49ba8bfdbf04..3d084558628e 100644
---- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-+++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-@@ -312,6 +312,7 @@ ice_xsk_pool_enable(struct ice_vsi *vsi, struct xsk_buff_pool *pool, u16 qid)
- 		return err;
- 
- 	set_bit(qid, vsi->af_xdp_zc_qps);
-+	xsk_pool_set_napi_id(pool, vsi->rx_rings[qid]->q_vector->napi.napi_id);
- 
- 	return 0;
- }
-@@ -348,7 +349,6 @@ int ice_xsk_pool_setup(struct ice_vsi *vsi, struct xsk_buff_pool *pool, u16 qid)
- 
- 	pool_failure = pool_present ? ice_xsk_pool_enable(vsi, pool, qid) :
- 				      ice_xsk_pool_disable(vsi, qid);
--
- xsk_pool_if_up:
- 	if (if_running) {
- 		ret = ice_qp_ena(vsi, qid);
-@@ -358,6 +358,7 @@ int ice_xsk_pool_setup(struct ice_vsi *vsi, struct xsk_buff_pool *pool, u16 qid)
- 			netdev_err(vsi->netdev, "ice_qp_ena error = %d\n", ret);
- 	}
- 
-+
- failure:
- 	if (pool_failure) {
- 		netdev_err(vsi->netdev, "Could not %sable buffer pool, error = %d\n",
-diff --git a/include/net/xdp_sock_drv.h b/include/net/xdp_sock_drv.h
-index 4aa031849668..1a20320cd556 100644
---- a/include/net/xdp_sock_drv.h
-+++ b/include/net/xdp_sock_drv.h
-@@ -44,6 +44,14 @@ static inline void xsk_pool_set_rxq_info(struct xsk_buff_pool *pool,
- 	xp_set_rxq_info(pool, rxq);
- }
- 
-+static inline void xsk_pool_set_napi_id(struct xsk_buff_pool *pool,
-+					unsigned int napi_id)
-+{
-+#ifdef CONFIG_NET_RX_BUSY_POLL
-+	xp_set_napi_id(pool, napi_id);
-+#endif
-+}
-+
- static inline void xsk_pool_dma_unmap(struct xsk_buff_pool *pool,
- 				      unsigned long attrs)
- {
-@@ -198,6 +206,11 @@ static inline void xsk_pool_set_rxq_info(struct xsk_buff_pool *pool,
- {
- }
- 
-+static inline void xsk_pool_set_napi_id(struct xsk_buff_pool *pool,
-+					unsigned int napi_id)
-+{
-+}
-+
- static inline void xsk_pool_dma_unmap(struct xsk_buff_pool *pool,
- 				      unsigned long attrs)
- {
-diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
-index 647722e847b4..60775a8d1bcb 100644
---- a/include/net/xsk_buff_pool.h
-+++ b/include/net/xsk_buff_pool.h
-@@ -70,6 +70,7 @@ struct xsk_buff_pool {
- 	u32 chunk_size;
- 	u32 chunk_shift;
- 	u32 frame_len;
-+	unsigned int napi_id;
- 	u8 cached_need_wakeup;
- 	bool uses_need_wakeup;
- 	bool dma_need_sync;
-@@ -125,6 +126,7 @@ static inline void xp_init_xskb_dma(struct xdp_buff_xsk *xskb, struct xsk_buff_p
- 
- /* AF_XDP ZC drivers, via xdp_sock_buff.h */
- void xp_set_rxq_info(struct xsk_buff_pool *pool, struct xdp_rxq_info *rxq);
-+void xp_set_napi_id(struct xsk_buff_pool *pool, unsigned int napi_id);
- int xp_dma_map(struct xsk_buff_pool *pool, struct device *dev,
- 	       unsigned long attrs, struct page **pages, u32 nr_pages);
- void xp_dma_unmap(struct xsk_buff_pool *pool, unsigned long attrs);
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index eafd512d38b1..18ac3f32a48d 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -222,7 +222,6 @@ static int xsk_rcv_check(struct xdp_sock *xs, struct xdp_buff *xdp)
- 	if (xs->dev != xdp->rxq->dev || xs->queue_id != xdp->rxq->queue_index)
- 		return -EINVAL;
- 
--	sk_mark_napi_id_once_xdp(&xs->sk, xdp);
- 	return 0;
- }
- 
-@@ -637,11 +636,8 @@ static int __xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len
- 	if (unlikely(need_wait))
- 		return -EOPNOTSUPP;
- 
--	if (sk_can_busy_loop(sk)) {
--		if (xs->zc)
--			__sk_mark_napi_id_once(sk, xs->pool->heads[0].xdp.rxq->napi_id);
-+	if (sk_can_busy_loop(sk))
- 		sk_busy_loop(sk, 1); /* only support non-blocking sockets */
--	}
- 
- 	if (xs->zc && xsk_no_wakeup(sk))
- 		return 0;
-@@ -1015,6 +1011,8 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
- 	xs->dev = dev;
- 	xs->zc = xs->umem->zc;
- 	xs->queue_id = qid;
-+	if (xs->zc)
-+		xs->sk.sk_napi_id = xs->pool->napi_id;
- 	xp_add_xsk(xs->pool, xs);
- 
- out_unlock:
-diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-index 87bdd71c7bb6..5ec6443be3fc 100644
---- a/net/xdp/xsk_buff_pool.c
-+++ b/net/xdp/xsk_buff_pool.c
-@@ -121,6 +121,14 @@ void xp_set_rxq_info(struct xsk_buff_pool *pool, struct xdp_rxq_info *rxq)
- }
- EXPORT_SYMBOL(xp_set_rxq_info);
- 
-+#ifdef CONFIG_NET_RX_BUSY_POLL
-+void xp_set_napi_id(struct xsk_buff_pool *pool, unsigned int napi_id)
-+{
-+	pool->napi_id = napi_id;
-+}
-+EXPORT_SYMBOL(xp_set_napi_id);
-+#endif
-+
- static void xp_disable_drv_zc(struct xsk_buff_pool *pool)
- {
- 	struct netdev_bpf bpf;
+Dave Tucker (2):
+  bpf, docs: add kernel version to map_cgroup_storage
+  bpf, docs: document BPF_MAP_TYPE_ARRAY
+
+ Documentation/bpf/map_array.rst          | 183 +++++++++++++++++++++++
+ Documentation/bpf/map_cgroup_storage.rst |   2 +
+ 2 files changed, 185 insertions(+)
+ create mode 100644 Documentation/bpf/map_array.rst
+
+-- 
+2.37.0
+
