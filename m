@@ -2,166 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 053FF5631EA
-	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 12:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 240D5563229
+	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 13:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231727AbiGAKwG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Jul 2022 06:52:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49224 "EHLO
+        id S232435AbiGALF3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Jul 2022 07:05:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232764AbiGAKwF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Jul 2022 06:52:05 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A05107D1C2;
-        Fri,  1 Jul 2022 03:51:59 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id o4so2655376wrh.3;
-        Fri, 01 Jul 2022 03:51:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oyc/+3fJaJYytyUhCXFNiLRQsFA3SKTfZsuSpfHSjfk=;
-        b=UPtMHhi38U0/t5d9VeVWXw3Io8R9s/W3Z+gbgw3uqRDHfFJyER3XwNewCH7fx6tnfU
-         6FtpREpQbHWHbbSSGaguF0ja8XHaKsi3W/0zTJcoj2URVrJ+6RPuwprENVG+zw+vvght
-         ViMEwfm1+iyQ97ybW5I6vmshwPvKtCIFF17J578SP1uOAuzTk0C7Ac0+k47zb6paL8yI
-         XI9wSrIr4EF73RzeTGxjOxHYtBgzhQjcgC5WOhD+Q8Q/Lx1AKmh6GKCEcJWSulicbgCC
-         zGGYVDPl+QENDSzbLqOMQfNL0wFBREzNi1wEM5x9HtumdzB1CUb6iEOz5iKYsITY5OGf
-         iOmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oyc/+3fJaJYytyUhCXFNiLRQsFA3SKTfZsuSpfHSjfk=;
-        b=yLbUyW1xkPWJ86jEQEsM30ufAIc9ic7w48esjarFdTZjc5AlgSkfvdQupb0CGODWEA
-         ckIGB0JKHVjcTSyLs/mG/tsBx5/ksCuhabiQNIAvXLbKGddmD7Ep7G88kjOkvrAU1SKa
-         uK/irh0B66edTz/VyY7MgAOpdNZGMkrsMWU42gPN5UgXp8/6o0fhbnlsThz8InHgvbkF
-         zyGteJFkGOZDNshl029jC04CnWlPL/H3qi0fKgI5O94wUqsJDaS5efI4CkZt7CpEMTYH
-         dadCx/9RJhE+13jDd+ovh3wtstZCA5a1NV7OY6mWCd+oD+jXSxl4dvViPimFnsH40z6E
-         SnkA==
-X-Gm-Message-State: AJIora8jYIrxpzCT/pXD0S+QIFyHvteMl1g0kJVwXw7CDdAYdcCmEbfS
-        j00FZ+O/ChfcVIAytMTT8IYU7P8QuinUrQ==
-X-Google-Smtp-Source: AGRyM1vJCec/8d+FAbjdDBBogA7EWffnj+go1kT2RROiZ2Wtkxj2zHc0G1hR3iDrC2zy6QAFcQgvWQ==
-X-Received: by 2002:a05:6000:1449:b0:21b:b171:5eb8 with SMTP id v9-20020a056000144900b0021bb1715eb8mr13325469wrx.634.1656672718089;
-        Fri, 01 Jul 2022 03:51:58 -0700 (PDT)
-Received: from localhost.localdomain (host-79-53-109-127.retail.telecomitalia.it. [79.53.109.127])
-        by smtp.gmail.com with ESMTPSA id 18-20020a05600c269200b003a03a8475bfsm5777498wmt.16.2022.07.01.03.51.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Jul 2022 03:51:56 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        David Ahern <dsahern@kernel.org>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Wei Wang <weiwan@google.com>, Yangbo Lu <yangbo.lu@nxp.com>,
-        Richard Palethorpe <rpalethorpe@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Ira Weiny <ira.weiny@intel.com>
-Subject: [RFC PATCH] net: core: Replace kmap() with kmap_local_page()
-Date:   Fri,  1 Jul 2022 12:51:52 +0200
-Message-Id: <20220701105152.6920-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.36.1
+        with ESMTP id S230145AbiGALF3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Jul 2022 07:05:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 351F2804A1
+        for <bpf@vger.kernel.org>; Fri,  1 Jul 2022 04:05:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1656673527;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=U3Od3nS8KpYuMftPr6xH8hvpZ00UV6WicD3k50HKB7E=;
+        b=bzWDZ51fSXmZud6R8X5q/K8o7j3o14Rk7W1O9lGPZiQsddm22a3Dancww/pgxBr2X7h4sR
+        bKgy0FCBwmrdDtw0Rhq6YAEXdhL11prQXXDRZyuGQOEMHnk7RW7AXGjvCISCKNIgV6z0LV
+        YzIy7IrGkKCtiGkklSPokDf2XBN+ydY=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-451-vscgEpMDP4iB1u34gh_sVw-1; Fri, 01 Jul 2022 07:05:24 -0400
+X-MC-Unique: vscgEpMDP4iB1u34gh_sVw-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BB74285A581;
+        Fri,  1 Jul 2022 11:05:23 +0000 (UTC)
+Received: from astarta.redhat.com (unknown [10.39.192.76])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id EC4C6463DFB;
+        Fri,  1 Jul 2022 11:05:22 +0000 (UTC)
+From:   Yauheni Kaliuta <ykaliuta@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf <bpf@vger.kernel.org>
+Subject: Re: test_kmod.sh fails with constant blinding
+References: <CANoWsw=eP+kYHvT+AUwY=8D=QDrwHz=1_6he8vz0t+Tc1PVVBQ@mail.gmail.com>
+        <6e86e8c4-4eaf-3e4e-ee72-035a215b48d3@iogearbox.net>
+Date:   Fri, 01 Jul 2022 14:05:20 +0300
+In-Reply-To: <6e86e8c4-4eaf-3e4e-ee72-035a215b48d3@iogearbox.net> (Daniel
+        Borkmann's message of "Thu, 30 Jun 2022 22:57:37 +0200")
+Message-ID: <xunyr135ytxr.fsf@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.85 on 10.11.54.10
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The use of kmap() is being deprecated in favor of kmap_local_page().
+Hi, Daniel!
 
-With kmap_local_page(), the mappings are per thread, CPU local and not
-globally visible. Taking page faults is allowed. Furthermore, the mappings
-can be acquired from any context (including interrupts).
+>>>>> On Thu, 30 Jun 2022 22:57:37 +0200, Daniel Borkmann  wrote:
 
-Therefore, use kmap_local_page() in sock.c and datagram.c because these
-mappings are per thread, CPU local, and not globally visible.
+ > On 6/30/22 3:19 PM, Yauheni Kaliuta wrote:
+ >> Hi!
+ >> test_kmod.sh fails for hardened 2 check with
+ >> test_bpf: #964 Staggered jumps: JMP_JA FAIL to select_runtime
+ >> err=-524
+ >> (-ERANGE during constant blinding)
+ >> Did I miss something?
 
-Actually this is an RFC because I'm not 100% sure that the mappings in
-sock.c are not handed over to other contexts. Unfortunately I know very
-little about this code. The fact that "page" is kmapped and then kunmapped
-before exiting sock_send_page*() is not a guarantee of thread locality.
-That "kernel_sendmsg*()" is a bit "suspicious".
+ > That could be expected if one of bpf_adj_delta_to_imm() / bpf_adj_delta_to_off()
+ > fails given the targets go out of range.
 
-Can anyone please confirm whether or not "kaddr" is handed over to other
-contexts while the call sites might sleep between kmap() / kunmap()?
+I believe that, but how to fix the test? It should not fail.
 
-Suggested-by: Ira Weiny <ira.weiny@intel.com>
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
- net/core/datagram.c | 4 ++--
- net/core/sock.c     | 8 ++++----
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ > How do the generated insn look?
 
-diff --git a/net/core/datagram.c b/net/core/datagram.c
-index 50f4faeea76c..3a8fa210e1a1 100644
---- a/net/core/datagram.c
-+++ b/net/core/datagram.c
-@@ -438,14 +438,14 @@ static int __skb_datagram_iter(const struct sk_buff *skb, int offset,
- 		end = start + skb_frag_size(frag);
- 		if ((copy = end - offset) > 0) {
- 			struct page *page = skb_frag_page(frag);
--			u8 *vaddr = kmap(page);
-+			u8 *vaddr = kmap_local_page(page);
- 
- 			if (copy > len)
- 				copy = len;
- 			n = INDIRECT_CALL_1(cb, simple_copy_to_iter,
- 					vaddr + skb_frag_off(frag) + offset - start,
- 					copy, data, to);
--			kunmap(page);
-+			kunmap_local(vaddr);
- 			offset += n;
- 			if (n != copy)
- 				goto short_copy;
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 2ff40dd0a7a6..12dd6ced62cf 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -3155,11 +3155,11 @@ ssize_t sock_no_sendpage(struct socket *sock, struct page *page, int offset, siz
- 	ssize_t res;
- 	struct msghdr msg = {.msg_flags = flags};
- 	struct kvec iov;
--	char *kaddr = kmap(page);
-+	char *kaddr = kmap_local_page(page);
- 	iov.iov_base = kaddr + offset;
- 	iov.iov_len = size;
- 	res = kernel_sendmsg(sock, &msg, &iov, 1, size);
--	kunmap(page);
-+	kunmap_local(kaddr);
- 	return res;
- }
- EXPORT_SYMBOL(sock_no_sendpage);
-@@ -3170,12 +3170,12 @@ ssize_t sock_no_sendpage_locked(struct sock *sk, struct page *page,
- 	ssize_t res;
- 	struct msghdr msg = {.msg_flags = flags};
- 	struct kvec iov;
--	char *kaddr = kmap(page);
-+	char *kaddr = kmap_local_page(page);
- 
- 	iov.iov_base = kaddr + offset;
- 	iov.iov_len = size;
- 	res = kernel_sendmsg_locked(sk, &msg, &iov, 1, size);
--	kunmap(page);
-+	kunmap_local(kaddr);
- 	return res;
- }
- EXPORT_SYMBOL(sock_no_sendpage_locked);
+The instruction when it fails is
+
+(gdb) p/x insn[0]
+$8 = {code = 0xb7, dst_reg = 0x0, src_reg = 0x0, off = 0x0, imm = 0x2aaa}
+
+And it's rewritten as
+
+(gdb) p rewritten 
+$9 = 3
+(gdb) p/x insn_buff[0]
+$10 = {code = 0xb7, dst_reg = 0xb, src_reg = 0x0, off = 0x0, imm = 0x68ad0283}
+(gdb) p/x insn_buff[1]
+$11 = {code = 0xa7, dst_reg = 0xb, src_reg = 0x0, off = 0x0, imm = 0x68ad2829}
+(gdb) p/x insn_buff[2]
+$12 = {code = 0xbf, dst_reg = 0x0, src_reg = 0xb, off = 0x0, imm = 0x0}
+
+IIUC.
+
+
+
+
+
 -- 
-2.36.1
+WBR,
+Yauheni Kaliuta
 
