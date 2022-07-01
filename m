@@ -2,67 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BEF0562BEB
-	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 08:44:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B039D562C5B
+	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 09:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233952AbiGAGoD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Jul 2022 02:44:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44456 "EHLO
+        id S233609AbiGAHKm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Jul 2022 03:10:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbiGAGoC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Jul 2022 02:44:02 -0400
-Received: from out30-54.freemail.mail.aliyun.com (out30-54.freemail.mail.aliyun.com [115.124.30.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CA8A33A1F;
-        Thu, 30 Jun 2022 23:43:57 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=36;SR=0;TI=SMTPD_---0VI-452o_1656657830;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VI-452o_1656657830)
-          by smtp.aliyun-inc.com;
-          Fri, 01 Jul 2022 14:43:52 +0800
-Message-ID: <1656657816.4296634-2-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH v11 01/40] virtio: add helper virtqueue_get_vring_max_size()
-Date:   Fri, 1 Jul 2022 14:43:36 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization <virtualization@lists.linux-foundation.org>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Vadim Pasternak <vadimp@nvidia.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        linux-um@lists.infradead.org, netdev <netdev@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
-        kvm <kvm@vger.kernel.org>,
-        "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>,
-        kangjie.xu@linux.alibaba.com
-References: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
- <20220629065656.54420-2-xuanzhuo@linux.alibaba.com>
- <CACGkMEuWK5i4pyvzN306v2ijstFQQbuspNCcNRJrw0kskvcozg@mail.gmail.com>
-In-Reply-To: <CACGkMEuWK5i4pyvzN306v2ijstFQQbuspNCcNRJrw0kskvcozg@mail.gmail.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        with ESMTP id S230273AbiGAHKk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Jul 2022 03:10:40 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E8FE677E8
+        for <bpf@vger.kernel.org>; Fri,  1 Jul 2022 00:10:39 -0700 (PDT)
+Received: from fraeml713-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4LZ5rW2Jthz6H6n8
+        for <bpf@vger.kernel.org>; Fri,  1 Jul 2022 15:08:11 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml713-chm.china.huawei.com (10.206.15.32) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Fri, 1 Jul 2022 09:10:37 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2375.024;
+ Fri, 1 Jul 2022 09:10:37 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Hao Luo <haoluo@google.com>
+CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: RE: libbfd feature autodetection
+Thread-Topic: libbfd feature autodetection
+Thread-Index: AdiMh7mzfuc144+UTkqQSD6Zj1VxZgADnL6AACCveYA=
+Date:   Fri, 1 Jul 2022 07:10:36 +0000
+Message-ID: <6f501b451d4a4f3882ee9aa662964310@huawei.com>
+References: <aa98e9e1a7f440779d509046021d0c1c@huawei.com>
+ <CA+khW7i39MXy4aTFCGeu+85Shyd47A+0w5EAA5qL7v+n4S74dA@mail.gmail.com>
+In-Reply-To: <CA+khW7i39MXy4aTFCGeu+85Shyd47A+0w5EAA5qL7v+n4S74dA@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.221.98.153]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,194 +53,40 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 30 Jun 2022 14:35:38 +0800, Jason Wang <jasowang@redhat.com> wrote:
-> On Wed, Jun 29, 2022 at 2:57 PM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
-> >
-> > Record the maximum queue num supported by the device.
-> >
-> > virtio-net can display the maximum (supported by hardware) ring size in
-> > ethtool -g eth0.
-> >
-> > When the subsequent patch implements vring reset, it can judge whether
-> > the ring size passed by the driver is legal based on this.
-> >
-> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > ---
-> >  arch/um/drivers/virtio_uml.c             |  1 +
-> >  drivers/platform/mellanox/mlxbf-tmfifo.c |  2 ++
-> >  drivers/remoteproc/remoteproc_virtio.c   |  2 ++
-> >  drivers/s390/virtio/virtio_ccw.c         |  3 +++
-> >  drivers/virtio/virtio_mmio.c             |  2 ++
-> >  drivers/virtio/virtio_pci_legacy.c       |  2 ++
-> >  drivers/virtio/virtio_pci_modern.c       |  2 ++
-> >  drivers/virtio/virtio_ring.c             | 14 ++++++++++++++
-> >  drivers/virtio/virtio_vdpa.c             |  2 ++
-> >  include/linux/virtio.h                   |  2 ++
-> >  10 files changed, 32 insertions(+)
-> >
-> > diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-> > index 82ff3785bf69..e719af8bdf56 100644
-> > --- a/arch/um/drivers/virtio_uml.c
-> > +++ b/arch/um/drivers/virtio_uml.c
-> > @@ -958,6 +958,7 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
-> >                 goto error_create;
-> >         }
-> >         vq->priv = info;
-> > +       vq->num_max = num;
-> >         num = virtqueue_get_vring_size(vq);
-> >
-> >         if (vu_dev->protocol_features &
-> > diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
-> > index 38800e86ed8a..1ae3c56b66b0 100644
-> > --- a/drivers/platform/mellanox/mlxbf-tmfifo.c
-> > +++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
-> > @@ -959,6 +959,8 @@ static int mlxbf_tmfifo_virtio_find_vqs(struct virtio_device *vdev,
-> >                         goto error;
-> >                 }
-> >
-> > +               vq->num_max = vring->num;
-> > +
-> >                 vqs[i] = vq;
-> >                 vring->vq = vq;
-> >                 vq->priv = vring;
-> > diff --git a/drivers/remoteproc/remoteproc_virtio.c b/drivers/remoteproc/remoteproc_virtio.c
-> > index d43d74733f0a..0f7706e23eb9 100644
-> > --- a/drivers/remoteproc/remoteproc_virtio.c
-> > +++ b/drivers/remoteproc/remoteproc_virtio.c
-> > @@ -125,6 +125,8 @@ static struct virtqueue *rp_find_vq(struct virtio_device *vdev,
-> >                 return ERR_PTR(-ENOMEM);
-> >         }
-> >
-> > +       vq->num_max = num;
-> > +
-> >         rvring->vq = vq;
-> >         vq->priv = rvring;
-> >
-> > diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/virtio_ccw.c
-> > index 161d3b141f0d..6b86d0280d6b 100644
-> > --- a/drivers/s390/virtio/virtio_ccw.c
-> > +++ b/drivers/s390/virtio/virtio_ccw.c
-> > @@ -530,6 +530,9 @@ static struct virtqueue *virtio_ccw_setup_vq(struct virtio_device *vdev,
-> >                 err = -ENOMEM;
-> >                 goto out_err;
-> >         }
-> > +
-> > +       vq->num_max = info->num;
-> > +
-> >         /* it may have been reduced */
-> >         info->num = virtqueue_get_vring_size(vq);
-> >
-> > diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
-> > index 083ff1eb743d..a20d5a6b5819 100644
-> > --- a/drivers/virtio/virtio_mmio.c
-> > +++ b/drivers/virtio/virtio_mmio.c
-> > @@ -403,6 +403,8 @@ static struct virtqueue *vm_setup_vq(struct virtio_device *vdev, unsigned int in
-> >                 goto error_new_virtqueue;
-> >         }
-> >
-> > +       vq->num_max = num;
-> > +
-> >         /* Activate the queue */
-> >         writel(virtqueue_get_vring_size(vq), vm_dev->base + VIRTIO_MMIO_QUEUE_NUM);
-> >         if (vm_dev->version == 1) {
-> > diff --git a/drivers/virtio/virtio_pci_legacy.c b/drivers/virtio/virtio_pci_legacy.c
-> > index a5e5721145c7..2257f1b3d8ae 100644
-> > --- a/drivers/virtio/virtio_pci_legacy.c
-> > +++ b/drivers/virtio/virtio_pci_legacy.c
-> > @@ -135,6 +135,8 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
-> >         if (!vq)
-> >                 return ERR_PTR(-ENOMEM);
-> >
-> > +       vq->num_max = num;
-> > +
-> >         q_pfn = virtqueue_get_desc_addr(vq) >> VIRTIO_PCI_QUEUE_ADDR_SHIFT;
-> >         if (q_pfn >> 32) {
-> >                 dev_err(&vp_dev->pci_dev->dev,
-> > diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
-> > index 623906b4996c..e7e0b8c850f6 100644
-> > --- a/drivers/virtio/virtio_pci_modern.c
-> > +++ b/drivers/virtio/virtio_pci_modern.c
-> > @@ -218,6 +218,8 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
-> >         if (!vq)
-> >                 return ERR_PTR(-ENOMEM);
-> >
-> > +       vq->num_max = num;
-> > +
-> >         /* activate the queue */
-> >         vp_modern_set_queue_size(mdev, index, virtqueue_get_vring_size(vq));
-> >         vp_modern_queue_address(mdev, index, virtqueue_get_desc_addr(vq),
-> > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-> > index a5ec724c01d8..4cac600856ad 100644
-> > --- a/drivers/virtio/virtio_ring.c
-> > +++ b/drivers/virtio/virtio_ring.c
-> > @@ -2385,6 +2385,20 @@ void vring_transport_features(struct virtio_device *vdev)
-> >  }
-> >  EXPORT_SYMBOL_GPL(vring_transport_features);
-> >
-> > +/**
-> > + * virtqueue_get_vring_max_size - return the max size of the virtqueue's vring
-> > + * @_vq: the struct virtqueue containing the vring of interest.
-> > + *
-> > + * Returns the max size of the vring.
-> > + *
-> > + * Unlike other operations, this need not be serialized.
-> > + */
-> > +unsigned int virtqueue_get_vring_max_size(struct virtqueue *_vq)
-> > +{
-> > +       return _vq->num_max;
-> > +}
-> > +EXPORT_SYMBOL_GPL(virtqueue_get_vring_max_size);
-> > +
-> >  /**
-> >   * virtqueue_get_vring_size - return the size of the virtqueue's vring
-> >   * @_vq: the struct virtqueue containing the vring of interest.
-> > diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
-> > index c40f7deb6b5a..9670cc79371d 100644
-> > --- a/drivers/virtio/virtio_vdpa.c
-> > +++ b/drivers/virtio/virtio_vdpa.c
-> > @@ -183,6 +183,8 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
-> >                 goto error_new_virtqueue;
-> >         }
-> >
-> > +       vq->num_max = max_num;
-> > +
-> >         /* Setup virtqueue callback */
-> >         cb.callback = callback ? virtio_vdpa_virtqueue_cb : NULL;
-> >         cb.private = info;
-> > diff --git a/include/linux/virtio.h b/include/linux/virtio.h
-> > index d8fdf170637c..a82620032e43 100644
-> > --- a/include/linux/virtio.h
-> > +++ b/include/linux/virtio.h
-> > @@ -31,6 +31,7 @@ struct virtqueue {
-> >         struct virtio_device *vdev;
-> >         unsigned int index;
-> >         unsigned int num_free;
-> > +       unsigned int num_max;
->
-> A question, since we export virtqueue to drivers, this means they can
-> access vq->num_max directly.
->
-> So we probably don't need a helper here.
-
-I think you are right.
-
-Thanks.
-
->
-> Thanks
->
-> >         void *priv;
-> >  };
-> >
-> > @@ -80,6 +81,7 @@ bool virtqueue_enable_cb_delayed(struct virtqueue *vq);
-> >
-> >  void *virtqueue_detach_unused_buf(struct virtqueue *vq);
-> >
-> > +unsigned int virtqueue_get_vring_max_size(struct virtqueue *vq);
-> >  unsigned int virtqueue_get_vring_size(struct virtqueue *vq);
-> >
-> >  bool virtqueue_is_broken(struct virtqueue *vq);
-> > --
-> > 2.31.0
-> >
->
+PiBGcm9tOiBIYW8gTHVvIFttYWlsdG86aGFvbHVvQGdvb2dsZS5jb21dDQo+IFNlbnQ6IFRodXJz
+ZGF5LCBKdW5lIDMwLCAyMDIyIDc6MjkgUE0NCj4gSGkgUm9iZXJ0bywNCj4gDQo+IE9uIFRodSwg
+SnVuIDMwLCAyMDIyIGF0IDY6NTUgQU0gUm9iZXJ0byBTYXNzdSA8cm9iZXJ0by5zYXNzdUBodWF3
+ZWkuY29tPg0KPiB3cm90ZToNCj4gPg0KPiA+IEhpIGV2ZXJ5b25lDQo+ID4NCj4gPiBJJ20gdGVz
+dGluZyBhIG1vZGlmaWVkIHZlcnNpb24gb2YgYnBmdG9vbCB3aXRoIHRoZSBDSS4NCj4gPg0KPiA+
+IFVuZm9ydHVuYXRlbHksIGl0IGRvZXMgbm90IHdvcmsgZHVlIHRvIGF1dG9kZXRlY3Rpb24NCj4g
+PiBvZiBsaWJiZmQgaW4gdGhlIGJ1aWxkIGVudmlyb25tZW50LCBidXQgbm90IGluIHRoZSB2aXJ0
+dWFsDQo+ID4gbWFjaGluZSB0aGF0IGFjdHVhbGx5IGV4ZWN1dGVzIHRoZSB0ZXN0cy4NCj4gPg0K
+PiA+IFdoYXQgdGhlIHByb3BlciBzb2x1dGlvbiBzaG91bGQgYmU/DQo+IA0KPiBDYW4geW91IGVs
+YWJvcmF0ZSBieSBub3Qgd29ya2luZz8gZG8geW91IG1lYW4gYnBmdG9vbCBkb2Vzbid0IGJ1aWxk
+Pw0KPiBvciBicGZ0b29sIGJ1aWxkcywgYnV0IGRvZXNuJ3QgYmVoYXZlIGFzIHlvdSBleHBlY3Qg
+d2hlbiBpdCBydW5zLiBPbg0KPiBteSBzaWRlLCB3aGVuIEkgYnVpbHQgYnBmdG9vbCwgbGliYmZk
+IHdhcyBub3QgZGV0ZWN0ZWQsIGJ1dCBJIGNhbg0KPiBzdGlsbCBicGZ0b29sIHN1Y2Nlc3NmdWxs
+eS4NCg0KSGkgSGFvDQoNCmluIEdpdGh1YiBBY3Rpb25zLCB0aGUgYnVpbGQgZW52aXJvbm1lbnQg
+aGFzIHN1cHBvcnQgZm9yDQpsaWJiZmQuIFdoZW4gYnBmdG9vbCBpcyBjb21waWxlZCwgbGliYmZk
+IGlzIGxpbmtlZCB0byBpdC4NCg0KSG93ZXZlciwgdGhlIHJ1bi10aW1lIGVudmlyb25tZW50IGlz
+IGRpZmZlcmVudCwgaXMgYW4gYWQgaG9jDQppbWFnZSBtYWRlIGJ5IHRoZSBlQlBGIG1haW50YWlu
+ZXJzLCB3aGljaCBkb2VzIG5vdCBoYXZlDQpsaWJiZmQuDQoNCldoZW4gYSB0ZXN0IGV4ZWN1dGVz
+IGJwZnRvb2wsIEkgZ2V0IHRoZSBmb2xsb3dpbmcgbWVzc2FnZToNCg0KMjAyMi0wNi0yOFQxNjox
+NToxNC44NTQ4NDMyWiAuL2JwZnRvb2xfbm9ib290c3RyYXA6IGVycm9yIHdoaWxlIGxvYWRpbmcg
+c2hhcmVkIGxpYnJhcmllczogbGliYmZkLTIuMzQtc3lzdGVtLnNvOiBjYW5ub3Qgb3BlbiBzaGFy
+ZWQgb2JqZWN0IGZpbGU6IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkNCg0KSSBzb2x2ZWQgd2l0
+aCB0aGlzOg0KDQpkaWZmIC0tZ2l0IGEvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL01ha2Vm
+aWxlIGIvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL01ha2VmaWxlDQppbmRleCBlMzJhMjhm
+ZThiYzEuLmQ0NGY0ZDM0ZjA0NiAxMDA2NDQNCi0tLSBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3Rz
+L2JwZi9NYWtlZmlsZQ0KKysrIGIvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL01ha2VmaWxl
+DQpAQCAtMjQyLDcgKzI0Miw5IEBAICQoREVGQVVMVF9CUEZUT09MKTogJCh3aWxkY2FyZCAkKEJQ
+RlRPT0xESVIpLyouW2NoXSAkKEJQRlRPT0xESVIpL01ha2VmaWxlKSAgICBcDQogCQkgICAgT1VU
+UFVUPSQoSE9TVF9CVUlMRF9ESVIpL2JwZnRvb2wvCQkJICAgICAgIFwNCiAJCSAgICBMSUJCUEZf
+T1VUUFVUPSQoSE9TVF9CVUlMRF9ESVIpL2xpYmJwZi8JCSAgICAgICBcDQogCQkgICAgTElCQlBG
+X0RFU1RESVI9JChIT1NUX1NDUkFUQ0hfRElSKS8JCQkgICAgICAgXA0KLQkJICAgIHByZWZpeD0g
+REVTVERJUj0kKEhPU1RfU0NSQVRDSF9ESVIpLyBpbnN0YWxsLWJpbg0KKwkJICAgIHByZWZpeD0g
+REVTVERJUj0kKEhPU1RfU0NSQVRDSF9ESVIpLyBpbnN0YWxsLWJpbgkgICAgICAgXA0KKwkJICAg
+IEZFQVRVUkVfVEVTVFM9J2Rpc2Fzc2VtYmxlci1mb3VyLWFyZ3MgemxpYiBsaWJjYXAgY2xhbmct
+YnBmLWNvLXJlJwlcDQorCQkgICAgRkVBVFVSRV9ESVNQTEFZPSdkaXNhc3NlbWJsZXItZm91ci1h
+cmdzIHpsaWIgbGliY2FwIGNsYW5nLWJwZi1jby1yZScNCg0KYnV0IEknbSBub3Qgc3VyZSBpdCBp
+cyB0aGUgcmlnaHQgYXBwcm9hY2guDQoNClRoYW5rcw0KDQpSb2JlcnRvDQo=
