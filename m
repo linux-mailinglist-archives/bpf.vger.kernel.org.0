@@ -2,50 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B039D562C5B
-	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 09:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6BC4562D46
+	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 10:00:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233609AbiGAHKm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Jul 2022 03:10:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39672 "EHLO
+        id S235842AbiGAH5R (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Jul 2022 03:57:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230273AbiGAHKk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Jul 2022 03:10:40 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E8FE677E8
-        for <bpf@vger.kernel.org>; Fri,  1 Jul 2022 00:10:39 -0700 (PDT)
-Received: from fraeml713-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4LZ5rW2Jthz6H6n8
-        for <bpf@vger.kernel.org>; Fri,  1 Jul 2022 15:08:11 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml713-chm.china.huawei.com (10.206.15.32) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 1 Jul 2022 09:10:37 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2375.024;
- Fri, 1 Jul 2022 09:10:37 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Hao Luo <haoluo@google.com>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: RE: libbfd feature autodetection
-Thread-Topic: libbfd feature autodetection
-Thread-Index: AdiMh7mzfuc144+UTkqQSD6Zj1VxZgADnL6AACCveYA=
-Date:   Fri, 1 Jul 2022 07:10:36 +0000
-Message-ID: <6f501b451d4a4f3882ee9aa662964310@huawei.com>
-References: <aa98e9e1a7f440779d509046021d0c1c@huawei.com>
- <CA+khW7i39MXy4aTFCGeu+85Shyd47A+0w5EAA5qL7v+n4S74dA@mail.gmail.com>
-In-Reply-To: <CA+khW7i39MXy4aTFCGeu+85Shyd47A+0w5EAA5qL7v+n4S74dA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.221.98.153]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        with ESMTP id S235813AbiGAH5O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Jul 2022 03:57:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0177F6EEBB
+        for <bpf@vger.kernel.org>; Fri,  1 Jul 2022 00:57:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1656662220;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fIrKXBVyZdoDvQRp8apiHHZa1MCXdxr3bOtHIpyaBs4=;
+        b=ExnejWWeTWV2H7KO9LKHxRxBHrotI0nuYnpQcTW0YfOzKgWVmELTpN55emYNL5ERiwqJ4p
+        bRId6tO9IoRG0FiT64hmwlugGSQyBwVMDDkvc4vMrRCmf2U1K0H5bYDJ6VHiabnivD8cJy
+        8eJJy9LZVm74Ai73Tchf8ZylkjMDoi0=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-653-95tgLTRyPh-w3N6bezmdvw-1; Fri, 01 Jul 2022 03:56:59 -0400
+X-MC-Unique: 95tgLTRyPh-w3N6bezmdvw-1
+Received: by mail-lf1-f70.google.com with SMTP id r28-20020ac25c1c000000b004809e9d21e5so776019lfp.18
+        for <bpf@vger.kernel.org>; Fri, 01 Jul 2022 00:56:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:message-id:date:mime-version:user-agent:cc
+         :subject:content-language:to:references:in-reply-to
+         :content-transfer-encoding;
+        bh=fIrKXBVyZdoDvQRp8apiHHZa1MCXdxr3bOtHIpyaBs4=;
+        b=KQwf/oJnmpqnkRiABQtBxs+2bPHaajZ7HaS3MlLIi6TpcK8g9ax+CtFgWxlPQYaQB0
+         c/SUGtL1TbHecnfcy2+zC5zLmvgNeJDgBX8q83Jl5S40E0S3IxD9m4W2MN+MCkN3TKnM
+         K712f6BpioYp+loVXiRrMLRH3d6wsDxqDB5Qupoe3460xFIi4DUqpE0qsRe/QCquQlMK
+         FwYebStmN7kF3AmZACqZjcQi2mjVwR1+uv/HhIyuqSyjM3iCKh12D7+h4Yu2pYSeYtTv
+         eOZnkmPBDO676oDA4l02oFdGsqLw3HZ3PB3xUKgYClQOqeKCj3T9gg9N1nKvbALlobrl
+         BQ8A==
+X-Gm-Message-State: AJIora9tcyEDHdKPSnRafIEi5nsf4topMK5hJcgr7bnr9RseR3Bcg93N
+        6bIf/izuaBVNEADdDm6RxfSpbmbfCKtqwGK2UfkhAZxVxwRWDVXTNpzHXB7Jf2TPCaCTWGS/DR1
+        +nhvKG39+2Xsw
+X-Received: by 2002:a2e:8787:0:b0:25b:efd1:2064 with SMTP id n7-20020a2e8787000000b0025befd12064mr6527174lji.369.1656662218020;
+        Fri, 01 Jul 2022 00:56:58 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1vJT4/sVGIa3RjZL7cGY2WKjApKKjg8AkzsZnAqMr1q7eNiOijDvdHMIC1bGPpnOayRioNyrA==
+X-Received: by 2002:a2e:8787:0:b0:25b:efd1:2064 with SMTP id n7-20020a2e8787000000b0025befd12064mr6527159lji.369.1656662217812;
+        Fri, 01 Jul 2022 00:56:57 -0700 (PDT)
+Received: from [192.168.0.50] (87-59-106-155-cable.dk.customer.tdc.net. [87.59.106.155])
+        by smtp.gmail.com with ESMTPSA id v10-20020a2e924a000000b0025bc62c1cafsm1959760ljg.44.2022.07.01.00.56.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Jul 2022 00:56:57 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <728b4c15-8114-e253-5d45-a5610882f891@redhat.com>
+Date:   Fri, 1 Jul 2022 09:56:56 +0200
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Cc:     brouer@redhat.com, jbrouer@redhat.com, hawk@kernel.org,
+        ilias.apalodimas@linaro.org, davem@davemloft.net,
+        edumazet@google.com, pabeni@redhat.com, lorenzo@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, lipeng321@huawei.com, chenhao288@hisilicon.com
+Subject: Re: [PATCH net-next v2] net: page_pool: optimize page pool page
+ allocation in NUMA scenario
+Content-Language: en-US
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Guangbin Huang <huangguangbin2@huawei.com>
+References: <20220629133305.15012-1-huangguangbin2@huawei.com>
+ <20220630211534.6d1c32da@kernel.org>
+In-Reply-To: <20220630211534.6d1c32da@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,40 +87,27 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-PiBGcm9tOiBIYW8gTHVvIFttYWlsdG86aGFvbHVvQGdvb2dsZS5jb21dDQo+IFNlbnQ6IFRodXJz
-ZGF5LCBKdW5lIDMwLCAyMDIyIDc6MjkgUE0NCj4gSGkgUm9iZXJ0bywNCj4gDQo+IE9uIFRodSwg
-SnVuIDMwLCAyMDIyIGF0IDY6NTUgQU0gUm9iZXJ0byBTYXNzdSA8cm9iZXJ0by5zYXNzdUBodWF3
-ZWkuY29tPg0KPiB3cm90ZToNCj4gPg0KPiA+IEhpIGV2ZXJ5b25lDQo+ID4NCj4gPiBJJ20gdGVz
-dGluZyBhIG1vZGlmaWVkIHZlcnNpb24gb2YgYnBmdG9vbCB3aXRoIHRoZSBDSS4NCj4gPg0KPiA+
-IFVuZm9ydHVuYXRlbHksIGl0IGRvZXMgbm90IHdvcmsgZHVlIHRvIGF1dG9kZXRlY3Rpb24NCj4g
-PiBvZiBsaWJiZmQgaW4gdGhlIGJ1aWxkIGVudmlyb25tZW50LCBidXQgbm90IGluIHRoZSB2aXJ0
-dWFsDQo+ID4gbWFjaGluZSB0aGF0IGFjdHVhbGx5IGV4ZWN1dGVzIHRoZSB0ZXN0cy4NCj4gPg0K
-PiA+IFdoYXQgdGhlIHByb3BlciBzb2x1dGlvbiBzaG91bGQgYmU/DQo+IA0KPiBDYW4geW91IGVs
-YWJvcmF0ZSBieSBub3Qgd29ya2luZz8gZG8geW91IG1lYW4gYnBmdG9vbCBkb2Vzbid0IGJ1aWxk
-Pw0KPiBvciBicGZ0b29sIGJ1aWxkcywgYnV0IGRvZXNuJ3QgYmVoYXZlIGFzIHlvdSBleHBlY3Qg
-d2hlbiBpdCBydW5zLiBPbg0KPiBteSBzaWRlLCB3aGVuIEkgYnVpbHQgYnBmdG9vbCwgbGliYmZk
-IHdhcyBub3QgZGV0ZWN0ZWQsIGJ1dCBJIGNhbg0KPiBzdGlsbCBicGZ0b29sIHN1Y2Nlc3NmdWxs
-eS4NCg0KSGkgSGFvDQoNCmluIEdpdGh1YiBBY3Rpb25zLCB0aGUgYnVpbGQgZW52aXJvbm1lbnQg
-aGFzIHN1cHBvcnQgZm9yDQpsaWJiZmQuIFdoZW4gYnBmdG9vbCBpcyBjb21waWxlZCwgbGliYmZk
-IGlzIGxpbmtlZCB0byBpdC4NCg0KSG93ZXZlciwgdGhlIHJ1bi10aW1lIGVudmlyb25tZW50IGlz
-IGRpZmZlcmVudCwgaXMgYW4gYWQgaG9jDQppbWFnZSBtYWRlIGJ5IHRoZSBlQlBGIG1haW50YWlu
-ZXJzLCB3aGljaCBkb2VzIG5vdCBoYXZlDQpsaWJiZmQuDQoNCldoZW4gYSB0ZXN0IGV4ZWN1dGVz
-IGJwZnRvb2wsIEkgZ2V0IHRoZSBmb2xsb3dpbmcgbWVzc2FnZToNCg0KMjAyMi0wNi0yOFQxNjox
-NToxNC44NTQ4NDMyWiAuL2JwZnRvb2xfbm9ib290c3RyYXA6IGVycm9yIHdoaWxlIGxvYWRpbmcg
-c2hhcmVkIGxpYnJhcmllczogbGliYmZkLTIuMzQtc3lzdGVtLnNvOiBjYW5ub3Qgb3BlbiBzaGFy
-ZWQgb2JqZWN0IGZpbGU6IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkNCg0KSSBzb2x2ZWQgd2l0
-aCB0aGlzOg0KDQpkaWZmIC0tZ2l0IGEvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL01ha2Vm
-aWxlIGIvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL01ha2VmaWxlDQppbmRleCBlMzJhMjhm
-ZThiYzEuLmQ0NGY0ZDM0ZjA0NiAxMDA2NDQNCi0tLSBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3Rz
-L2JwZi9NYWtlZmlsZQ0KKysrIGIvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL01ha2VmaWxl
-DQpAQCAtMjQyLDcgKzI0Miw5IEBAICQoREVGQVVMVF9CUEZUT09MKTogJCh3aWxkY2FyZCAkKEJQ
-RlRPT0xESVIpLyouW2NoXSAkKEJQRlRPT0xESVIpL01ha2VmaWxlKSAgICBcDQogCQkgICAgT1VU
-UFVUPSQoSE9TVF9CVUlMRF9ESVIpL2JwZnRvb2wvCQkJICAgICAgIFwNCiAJCSAgICBMSUJCUEZf
-T1VUUFVUPSQoSE9TVF9CVUlMRF9ESVIpL2xpYmJwZi8JCSAgICAgICBcDQogCQkgICAgTElCQlBG
-X0RFU1RESVI9JChIT1NUX1NDUkFUQ0hfRElSKS8JCQkgICAgICAgXA0KLQkJICAgIHByZWZpeD0g
-REVTVERJUj0kKEhPU1RfU0NSQVRDSF9ESVIpLyBpbnN0YWxsLWJpbg0KKwkJICAgIHByZWZpeD0g
-REVTVERJUj0kKEhPU1RfU0NSQVRDSF9ESVIpLyBpbnN0YWxsLWJpbgkgICAgICAgXA0KKwkJICAg
-IEZFQVRVUkVfVEVTVFM9J2Rpc2Fzc2VtYmxlci1mb3VyLWFyZ3MgemxpYiBsaWJjYXAgY2xhbmct
-YnBmLWNvLXJlJwlcDQorCQkgICAgRkVBVFVSRV9ESVNQTEFZPSdkaXNhc3NlbWJsZXItZm91ci1h
-cmdzIHpsaWIgbGliY2FwIGNsYW5nLWJwZi1jby1yZScNCg0KYnV0IEknbSBub3Qgc3VyZSBpdCBp
-cyB0aGUgcmlnaHQgYXBwcm9hY2guDQoNClRoYW5rcw0KDQpSb2JlcnRvDQo=
+
+On 01/07/2022 06.15, Jakub Kicinski wrote:
+> On Wed, 29 Jun 2022 21:33:05 +0800 Guangbin Huang wrote:
+>> +#ifdef CONFIG_NUMA
+>> +	pref_nid = (pool->p.nid == NUMA_NO_NODE) ? numa_mem_id() : pool->p.nid;
+>> +#else
+>> +	/* Ignore pool->p.nid setting if !CONFIG_NUMA */
+>> +	pref_nid = NUMA_NO_NODE;
+>> +#endif
+> 
+> Please factor this out to a helper, this is a copy of the code from
+> page_pool_refill_alloc_cache() and #ifdefs are a little yuck.
+> 
+
+I would say simply use 'pool->p.nid' in the call to
+alloc_pages_bulk_array_node() and drop this optimization (that was
+copy-pasted from fast-path).
+
+The optimization avoids one reading from memory compile time depending
+on CONFIG_NUMA.  It is *not* worth doing in this code path which is even
+named "slow" (__page_pool_alloc_pages_slow).
+
+--Jesper
+
