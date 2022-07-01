@@ -2,98 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EEE7563A77
-	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 22:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDBD6563AF4
+	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 22:32:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231320AbiGAUKT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Jul 2022 16:10:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45192 "EHLO
+        id S229606AbiGAUag (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Jul 2022 16:30:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231196AbiGAUKS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Jul 2022 16:10:18 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C44D3101E3
-        for <bpf@vger.kernel.org>; Fri,  1 Jul 2022 13:10:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7064DB831E3
-        for <bpf@vger.kernel.org>; Fri,  1 Jul 2022 20:10:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 31FC4C341CA;
-        Fri,  1 Jul 2022 20:10:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656706215;
-        bh=5lkgv2P9+OMI+a2wydNKtyF+Ixt+vVIGm41iMdLTrgw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=XBq3CZFc7/QtoSWuI64545xh/LqQdmeGIZMomR1pCnXaKs5VRUTrMf0+1E0+SbNIA
-         8AWYKFjxZmeISZtAqN6HvaR/risVO5Od+eVsHrB3rJiLd3WcLaDYYCjZv5IpOXpUW6
-         WEkc7+HSK6S8VzsfH65FxEVSUKN7i1kKB8CopcnQILsn2N8SvOg/JzFu4WAHCyy8fb
-         Wx1gGaDL9Kq3CNv1MBUrSfDsZT8iUY7LsVJyuWzu9Y3Qa6Mi5asQylGjE3IIDhn8GN
-         UCnI14jm5Y7ixbW+FwRpSFj9oUjwvMbcrbiBl9Nh5PVVrSgTW5Hr6fKjliWe9CIB7g
-         gf1N0vdlp+amA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 13266E49BBC;
-        Fri,  1 Jul 2022 20:10:15 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf 1/4] bpf: Fix incorrect verifier simulation around jmp32's
- jeq/jne
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165670621507.10143.15497711583157007755.git-patchwork-notify@kernel.org>
-Date:   Fri, 01 Jul 2022 20:10:15 +0000
-References: <20220701124727.11153-1-daniel@iogearbox.net>
-In-Reply-To: <20220701124727.11153-1-daniel@iogearbox.net>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     ast@kernel.org, andrii@kernel.org, john.fastabend@gmail.com,
-        liulin063@gmail.com, bpf@vger.kernel.org
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S230359AbiGAUaf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Jul 2022 16:30:35 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97ABA564FF;
+        Fri,  1 Jul 2022 13:30:34 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id s27so3360800pga.13;
+        Fri, 01 Jul 2022 13:30:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=t/Xde3nxkyQ96D2oze2R0Uw9k23+k7vYnS+3QBos+9c=;
+        b=CtUZGlZ2dRMn7WyIHQiDj+t+KvXl1CHWHrqUQJ+/IeeOiANaU5RZVEZYhm8ieCCQ4/
+         BeGFEe1fiAc9Do0SsByy5XTu3XMr3Gq+LQKI5SQubaeY0qBVD863fychTeNfZkrk2kTp
+         yeocAx8m3BkYddvpUJ4DGGpm7iK7qojBvGSejB5P8jGClITMnyiZv7zI0WmuPiRsptOO
+         UsZEisXGj1WpCBXofu34PWZ5C4t8amFzKjmQMttsEmrARIobZXiuddemtOyy4xqrgkax
+         80v8hYmHVnGS9hRX2WEcNOxN5urU+olIKQgk7sFufc2HA0LG9NJJ24/l2LwdcqORXVpN
+         UwAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=t/Xde3nxkyQ96D2oze2R0Uw9k23+k7vYnS+3QBos+9c=;
+        b=BkCcQvXawtmHuVWr29uoRqEZXLTmYSYhtTWXXiD2CLANVfp5vdU0f01xXyUWle5D1w
+         fbqJo8tKE5/wo6JMKTxY4zHVqluH+Xaw5WXBIpi/BZTskP2jefeY55IKEAc+7M55j0i0
+         2cmz40av0Ve2RzaXA82U51Zbk0vv0EOqyPqnmRLJdRhEV0foW5bcghdVchsBIGU0dano
+         RE+wouYeUIBJHwE8trnsCegzuq/uBalMZkPWu0FfKIAa+KQ2w0s6rUAZRnA403myhnGO
+         NnMhJ3FuwJGDinWmsRi3SDIMgvF5ivrOgE9AAcOL1snIwSth3aPpIHT/dXHFmq4cAmR0
+         UJ9Q==
+X-Gm-Message-State: AJIora+zvQaqc/wez4uEvKVARHUpwmbSEoNc7hVPbh2yS+63fw0QxUuL
+        p3wv0c0ntb7aHat29PWNV5zdDqdyjSs=
+X-Google-Smtp-Source: AGRyM1tieiu0IHw/DBK/9SNoekq7iCcI/CqeXCwcYD9airzczViI9shEvAoeWAl1b5BT8MkR4SLMlA==
+X-Received: by 2002:a05:6a00:16ca:b0:525:a5d5:d16f with SMTP id l10-20020a056a0016ca00b00525a5d5d16fmr23069165pfc.9.1656707433968;
+        Fri, 01 Jul 2022 13:30:33 -0700 (PDT)
+Received: from localhost ([98.97.119.237])
+        by smtp.gmail.com with ESMTPSA id iz19-20020a170902ef9300b0016378bfeb90sm15976159plb.227.2022.07.01.13.30.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Jul 2022 13:30:33 -0700 (PDT)
+Date:   Fri, 01 Jul 2022 13:30:31 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     John Fastabend <john.fastabend@gmail.com>,
+        Liu Jian <liujian56@huawei.com>, john.fastabend@gmail.com,
+        jakub@cloudflare.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     liujian56@huawei.com
+Message-ID: <62bf59673fafa_2103720852@john.notmuch>
+In-Reply-To: <62bd50d459166_54c3b2089f@john.notmuch>
+References: <20220628123616.186950-1-liujian56@huawei.com>
+ <62bd50d459166_54c3b2089f@john.notmuch>
+Subject: RE: [PATCH bpf] skmsg: Fix invalid last sg check in sk_msg_recvmsg()
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This series was applied to bpf/bpf.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
-
-On Fri,  1 Jul 2022 14:47:24 +0200 you wrote:
-> Kuee reported a quirk in the jmp32's jeq/jne simulation, namely that the
-> register value does not match expectations for the fall-through path. For
-> example:
+John Fastabend wrote:
+> Liu Jian wrote:
+> > In sk_psock_skb_ingress_enqueue function, if the linear area + nr_frags +
+> > frag_list of the SKB has NR_MSG_FRAG_IDS blocks in total, skb_to_sgvec
+> > will return NR_MSG_FRAG_IDS, then msg->sg.end will be set to
+> > NR_MSG_FRAG_IDS, and in addition, (NR_MSG_FRAG_IDS - 1) is set to the last
+> > SG of msg. Recv the msg in sk_msg_recvmsg, when i is (NR_MSG_FRAG_IDS - 1),
+> > the sk_msg_iter_var_next(i) will change i to 0 (not NR_MSG_FRAG_IDS), the
+> > judgment condition "msg_rx->sg.start==msg_rx->sg.end" and
+> > "i != msg_rx->sg.end" can not work.
+> > 
+> > As a result, the processed msg cannot be deleted from ingress_msg list.
+> > But the length of all the sge of the msg has changed to 0. Then the next
+> > recvmsg syscall will process the msg repeatedly, because the length of sge
+> > is 0, the -EFAULT error is always returned.
+> > 
+> > Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
+> > Signed-off-by: Liu Jian <liujian56@huawei.com>
+> > ---
+> >  net/core/skmsg.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+> > index b0fcd0200e84..a8dbea559c7f 100644
+> > --- a/net/core/skmsg.c
+> > +++ b/net/core/skmsg.c
+> > @@ -462,7 +462,7 @@ int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
+> >  
+> >  			if (copied == len)
+> >  				break;
+> > -		} while (i != msg_rx->sg.end);
+> > +		} while (!sg_is_last(sge));
+> >  
+> >  		if (unlikely(peek)) {
+> >  			msg_rx = sk_psock_next_msg(psock, msg_rx);
+> > @@ -472,7 +472,7 @@ int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
+> >  		}
+> >  
+> >  		msg_rx->sg.start = i;
+> > -		if (!sge->length && msg_rx->sg.start == msg_rx->sg.end) {
+> > +		if (!sge->length && sg_is_last(sge)) {
+> >  			msg_rx = sk_psock_dequeue_msg(psock);
+> >  			kfree_sk_msg(msg_rx);
+> >  		}
+> > -- 
+> > 2.17.1
+> > 
 > 
-> Before fix:
-> 
->   0: R1=ctx(off=0,imm=0) R10=fp0
->   0: (b7) r2 = 0                        ; R2_w=P0
->   1: (b7) r6 = 563                      ; R6_w=P563
->   2: (87) r2 = -r2                      ; R2_w=Pscalar()
->   3: (87) r2 = -r2                      ; R2_w=Pscalar()
->   4: (4c) w2 |= w6                      ; R2_w=Pscalar(umin=563,umax=4294967295,var_off=(0x233; 0xfffffdcc),s32_min=-2147483085) R6_w=P563
->   5: (56) if w2 != 0x8 goto pc+1        ; R2_w=P571  <--- [*]
->   6: (95) exit
->   R0 !read_ok
-> 
-> [...]
+> Looks correct to me, but I'll test it tomorrow and add a reviewed-by and
+> tested-by then. Thanks!
 
-Here is the summary with links:
-  - [bpf,1/4] bpf: Fix incorrect verifier simulation around jmp32's jeq/jne
-    https://git.kernel.org/bpf/bpf/c/a12ca6277eca
-  - [bpf,2/4] bpf: Fix insufficient bounds propagation from adjust_scalar_min_max_vals
-    https://git.kernel.org/bpf/bpf/c/3844d153a41a
-  - [bpf,3/4] bpf, selftests: Add verifier test case for imm=0,umin=0,umax=1 scalar
-    https://git.kernel.org/bpf/bpf/c/73c4936f916d
-  - [bpf,4/4] bpf, selftests: Add verifier test case for jmp32's jeq/jne
-    https://git.kernel.org/bpf/bpf/c/a49b8ce7306c
+Still testing but adding ack.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Acked-by: John Fastabend <john.fastabend@gmail.com>
