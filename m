@@ -2,101 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F015633AA
-	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 14:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D47FB5633F6
+	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 15:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236573AbiGAMrq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Jul 2022 08:47:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45004 "EHLO
+        id S236146AbiGANEp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Jul 2022 09:04:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236621AbiGAMrp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Jul 2022 08:47:45 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 131D233A3F
-        for <bpf@vger.kernel.org>; Fri,  1 Jul 2022 05:47:44 -0700 (PDT)
-Received: from 226.206.1.85.dynamic.wline.res.cust.swisscom.ch ([85.1.206.226] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1o7G3i-00044b-Fz; Fri, 01 Jul 2022 14:47:42 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     ast@kernel.org
-Cc:     andrii@kernel.org, john.fastabend@gmail.com, liulin063@gmail.com,
-        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf 4/4] bpf, selftests: Add verifier test case for jmp32's jeq/jne
-Date:   Fri,  1 Jul 2022 14:47:27 +0200
-Message-Id: <20220701124727.11153-4-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20220701124727.11153-1-daniel@iogearbox.net>
-References: <20220701124727.11153-1-daniel@iogearbox.net>
+        with ESMTP id S234347AbiGANEn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Jul 2022 09:04:43 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98EB91DA7D;
+        Fri,  1 Jul 2022 06:04:42 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id r20so3179510wra.1;
+        Fri, 01 Jul 2022 06:04:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6yQ/Ybxs/FeC8Yf6z24bF3+durgoCtXEuKWYb2rjDmE=;
+        b=gWYDht32suKdgvkpxu9xwdi10igo9pi6gutPFiT71MmtnfgNW8yC6mlF8qE1F2KAR2
+         iYYdBQnFRoRq7HGSJc5QI3uau1prmX7g04fpfrjz5PnrYI0SCEDucsNTGdkxqHcyTMhk
+         jx6KnpyFVIGdlgeAiCzQ/o8j52h+icPwVVFMHf2R7nBSX0ftLMrhGD7UKaYs8pB989hI
+         9fTQCUwIiAxE04REZI7mlWJoGYQ1uPgSuiut19nrrZSv5+YGNHoDCUzQfXU4qoTxHEk8
+         dmyeekEEe5Y0Y9YN7ZSTl3ZSaiWCd4m44Xi8C41HKFdnPw1ixxo7PSHYuB3C64k50F8J
+         lRfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6yQ/Ybxs/FeC8Yf6z24bF3+durgoCtXEuKWYb2rjDmE=;
+        b=ZYhWkGSkkYT079jN2e/Ifba95ftW7KRUesDwduX/MHxcRMo6Nb65mykak0qfglPs+H
+         9+zBce9P5KJVWlCfFfSjRunX7zttCjGR9Fy03iSmJM5z1sbEgHORl6nFT/XAHBNpk46r
+         +erGlQAgeQ1fjZIa1QKPIyGFGNsVRQLgGsZtmBzd4ZoIRMM8LB5IAAC/Bwtvi5nrNWRP
+         yytyD97UmZpKxQqgrP+xfGtnjYSarQdopX+5rMfYH2vbWKsjSzeEuROgry6oqSpFRDfh
+         +TkfpF8i+T6QnUva76sFL7Hg4Snkwii6p6D+5LeADzLJ5RPFhok1HRcsJhsiREoCspPC
+         68qQ==
+X-Gm-Message-State: AJIora9fD2HBtOjP23q7UgdjmOKmis5gWFqPR+f+spXAF31esj0a0iD3
+        hnksEPC87NYF5QndMkf12aDOvhnxXmdurTDLcI+63Rdw
+X-Google-Smtp-Source: AGRyM1t+emToFrYDmuWYvx+MVwKCifekSLnhwn1uxzrflbVgjLMp3ozOKDPETXGgNbhkevCNj5srktfuY1pOMTWgXbM=
+X-Received: by 2002:a5d:5108:0:b0:21b:964d:3241 with SMTP id
+ s8-20020a5d5108000000b0021b964d3241mr13664236wrt.532.1656680681089; Fri, 01
+ Jul 2022 06:04:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26590/Fri Jul  1 09:25:21 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220630093717.8664-1-magnus.karlsson@gmail.com>
+ <fa929729-6122-195f-aa4b-e5d3fedb1887@redhat.com> <CAJ8uoz2KmpVf7nkJXUsHhmOtS2Td+rMOX8-PRqzz9QxJB-tZ3g@mail.gmail.com>
+In-Reply-To: <CAJ8uoz2KmpVf7nkJXUsHhmOtS2Td+rMOX8-PRqzz9QxJB-tZ3g@mail.gmail.com>
+From:   Srivats P <pstavirs@gmail.com>
+Date:   Fri, 1 Jul 2022 18:34:01 +0530
+Message-ID: <CANzUK58FPeKa_b36=9Wnb2g7fVppmMGBnjORb-dkZUZk3mvp8A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests, bpf: remove AF_XDP samples
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        bpf <bpf@vger.kernel.org>, Xdp <xdp-newbies@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a test case to trigger the verifier's incorrect conclusion in the
-case of jmp32's jeq/jne. Also here, make use of dead code elimination,
-so that we can see the verifier bailing out on unfixed kernels.
+> I can push xsk_fwd to BPF-examples. Though I do think that xdpsock has
+> become way too big to serve as a sample. It slowly turned into a catch
+> all demonstrating every single feature of AF_XDP. We need a minimal
+> example and then likely other samples for other features that should
+> be demoed. So I suggest that xdpsock dies here and we start over with
+> something minimal and use xsk_fwd for the forwarding and mempool
+> example.
 
-Before:
+As an AF_XDP user, I want to say that I often refer to xdpsock to
+understand how to use a feature - it is very useful especially when
+there's a lack of good AF_XDP documentation.
 
-  # ./test_verifier 724
-  #724/p jeq32/jne32: bounds checking FAIL
-  Failed to load prog 'Permission denied'!
-  R4 !read_ok
-  verification time 8 usec
-  stack depth 0
-  processed 8 insns (limit 1000000) max_states_per_insn 0 total_states 1 peak_states 1 mark_read 0
-  Summary: 0 PASSED, 0 SKIPPED, 1 FAILED
-
-After:
-
-  # ./test_verifier 724
-  #724/p jeq32/jne32: bounds checking OK
-  Summary: 1 PASSED, 0 SKIPPED, 0 FAILED
-
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
----
- tools/testing/selftests/bpf/verifier/jmp32.c | 21 ++++++++++++++++++++
- 1 file changed, 21 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/verifier/jmp32.c b/tools/testing/selftests/bpf/verifier/jmp32.c
-index 6ddc418fdfaf..1a27a6210554 100644
---- a/tools/testing/selftests/bpf/verifier/jmp32.c
-+++ b/tools/testing/selftests/bpf/verifier/jmp32.c
-@@ -864,3 +864,24 @@
- 	.result = ACCEPT,
- 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
- },
-+{
-+	"jeq32/jne32: bounds checking",
-+	.insns = {
-+	BPF_MOV64_IMM(BPF_REG_6, 563),
-+	BPF_MOV64_IMM(BPF_REG_2, 0),
-+	BPF_ALU64_IMM(BPF_NEG, BPF_REG_2, 0),
-+	BPF_ALU64_IMM(BPF_NEG, BPF_REG_2, 0),
-+	BPF_ALU32_REG(BPF_OR, BPF_REG_2, BPF_REG_6),
-+	BPF_JMP32_IMM(BPF_JNE, BPF_REG_2, 8, 5),
-+	BPF_JMP_IMM(BPF_JSGE, BPF_REG_2, 500, 2),
-+	BPF_MOV64_IMM(BPF_REG_0, 2),
-+	BPF_EXIT_INSN(),
-+	BPF_MOV64_REG(BPF_REG_0, BPF_REG_4),
-+	BPF_EXIT_INSN(),
-+	BPF_MOV64_IMM(BPF_REG_0, 1),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_SCHED_CLS,
-+	.result = ACCEPT,
-+	.retval = 1,
-+},
--- 
-2.27.0
-
+Srivats
