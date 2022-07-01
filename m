@@ -2,79 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B07C563703
-	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 17:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CC01563780
+	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 18:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbiGAPg6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Jul 2022 11:36:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34096 "EHLO
+        id S231558AbiGAQMm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Jul 2022 12:12:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230090AbiGAPgu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Jul 2022 11:36:50 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4546939BA4;
-        Fri,  1 Jul 2022 08:36:47 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id pk21so4776980ejb.2;
-        Fri, 01 Jul 2022 08:36:47 -0700 (PDT)
+        with ESMTP id S231676AbiGAQMl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Jul 2022 12:12:41 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19486237DC
+        for <bpf@vger.kernel.org>; Fri,  1 Jul 2022 09:12:41 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id z14so2852385pgh.0
+        for <bpf@vger.kernel.org>; Fri, 01 Jul 2022 09:12:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=kVWP9v9nuRHyTkGEYSrcvx5uXVMOYJJ1wNoS0VDXg9k=;
-        b=SqZhVjf7YNNWixNsKmBLY6iXajXocLtajbIf7Rwa4/DgzXmfZOf929koyVGp5a4cJM
-         9rrisSEADI6F7uCEphtjMSxcfpYNk6hkQn7MYGwsnEJI42VB5gSdrHMeISl1m0u/uNbM
-         FKmTJpDjug72jjNeo2v6vGUKbrRVU6PK9rTE7g6l/txGHCOGAsbNNk3zbSU9w/LpDtbQ
-         Qz0foezAvyKetuqKHK/Epagqzwa+luCiiN6hbGSzAqzVloMh5MoCcakiImRU8hb+v4tP
-         LIlhFcBX1UfLysKyB5fLC+xNhn/ly0jvmTgqbw6LSKbR909kFJAWzGLH8VnoYHpd3R6d
-         tXeQ==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NqaAoVTRt3mx42tGv/fMRe0LGeHFOWmNmh13EcjF+WY=;
+        b=IRvezL4YH5AEmWN7YoTDIuuogkmECmrqyVIMUClxcQKOhwNovxRT+Z7R5mCFy/LRPz
+         G6Qxph9/QRFyfnMG6eTxdbPBtaKGOKZP4bjBR1FRROsVkeXy1S3JeVWZaoHvEUymcEne
+         YQfkvYPnrPfS0M0ckdmxp5pR4MtnpKR+Kovvwyyt6HeAPH5SPK7ewaKiEN0rhZofKPg2
+         nC5kGQNrXyeErlo4ZWolJ0h0myelSoGycm/ALcsRxXAJx4h7g/YAwuw+U4V8C1nZdvhb
+         WhOJUJp8JzRYGMtkNmHuReg98c0AkUoQ8qBn0pBuDwG0PPdbkghWq0ZKLcD6ZV0AIQa1
+         NBvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=kVWP9v9nuRHyTkGEYSrcvx5uXVMOYJJ1wNoS0VDXg9k=;
-        b=YKq8NJhHKbzPHz3BY36bJNlM9UQCfncHPgFHcTpxauBwqmWbXa7U5UBHv6XK8B4FIt
-         kJd3AdUwblEUSOPIlbrWHg4ghyD6MXOGiY77pQ1DpTgy2OY5gPhI6GCj74I4DfD87+0n
-         P0kN+gqDYU+PijmcnLtrcGyJoMImQOvFJOJX0IcwXk7EINu7pKx/7sHFuGLPrtHyzyem
-         yj1z9rnFgxrg2ak/4UJYiQzjz8oxVoKOk8LntY+3bK2+wr0F2xsRzPPeCuyxyAV32fzB
-         E1gSZNb4ckrK0Fy0Gl/fZJVPkOPpKa9XQR4r7MnQtZ6YJO5NCCL+oap1wa1QinGO+N40
-         cMmA==
-X-Gm-Message-State: AJIora95TztoNYBtbQegTcYwzOkNHYIdbrw5pY84kwrARFJlIWnH9x1w
-        y0U3/M9T4NweWWv+u1UN1v8=
-X-Google-Smtp-Source: AGRyM1sbuKQmRTnINPADgbGRg8JQE2qKqhXWTCOypWUscwCJZKjHhyoe3fG2hqQGXqGDHtdjsw8lJA==
-X-Received: by 2002:a17:907:628a:b0:6fe:526c:ebc with SMTP id nd10-20020a170907628a00b006fe526c0ebcmr14194125ejc.531.1656689805755;
-        Fri, 01 Jul 2022 08:36:45 -0700 (PDT)
-Received: from opensuse.localnet (host-79-53-109-127.retail.telecomitalia.it. [79.53.109.127])
-        by smtp.gmail.com with ESMTPSA id c12-20020a170906d18c00b00727c6da69besm3853562ejz.38.2022.07.01.08.36.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Jul 2022 08:36:44 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [Intel-wired-lan] [PATCH] ixgbe: Use kmap_local_page in ixgbe_check_lbtest_frame()
-Date:   Fri, 01 Jul 2022 17:36:42 +0200
-Message-ID: <2834855.e9J7NaK4W3@opensuse>
-In-Reply-To: <CAKgT0UfThk3MLcE38wQu5+2Qy7Ld2px-2WJgnD+2xbDsA8iEEw@mail.gmail.com>
-References: <20220629085836.18042-1-fmdefrancesco@gmail.com> <2254584.ElGaqSPkdT@opensuse> <CAKgT0UfThk3MLcE38wQu5+2Qy7Ld2px-2WJgnD+2xbDsA8iEEw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NqaAoVTRt3mx42tGv/fMRe0LGeHFOWmNmh13EcjF+WY=;
+        b=waHoPC7OJwSTgnrdRfL//RPIxakNEk/Ym5Y/t5Nx5ZAPYPwDeCiJrMmpLKw8zWJu99
+         iOYuikhJmZEUJXkAPh2kbvBLEXQlr4NHyKsoExQObQVJE/E5+okUOg4RpcRkXO2dZtq2
+         5GftL98nCdge40VDy/POkcRGd3ek/ZTOtix0OCknzESgjZ/5QcLjJCft64vsGUr53Vy/
+         l2oEJqd/pN1cI/ZFhmcWNejT6g8VrZUA5RVmKI1+yOxLGXF9vxtp1is8Arh0/RoQ70Fb
+         U62OL6+SJQf+9Dkfx3wni5/LKKTNHJyaDXw1Aykhhh010WphDyYcYRkPesD0GUvE6ke1
+         dRMA==
+X-Gm-Message-State: AJIora+o25Uqk26VfjM6w9Hbu457ARApx3NWe+inUSs/Sf9pHW2YT1Nb
+        SLRbfc1OT0xxhg6bQ5MmFHu4qT5DPVwzMOtR3noZ4A==
+X-Google-Smtp-Source: AGRyM1ss82mTuZW13RpyoRTBpAT2DaLXh9HZYUgRBfa4v2G56SCVI/hTVmvKJ/1oUwornRven98clJtb25ShwAACHpI=
+X-Received: by 2002:a63:494:0:b0:40d:9ebf:6e86 with SMTP id
+ 142-20020a630494000000b0040d9ebf6e86mr13266476pge.253.1656691960411; Fri, 01
+ Jul 2022 09:12:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <20220630224203.512815-1-sdf@google.com> <CA+khW7ixZWuKPXk0f-8=BNSUUWopKgkKJ8ev+KJ9oJdf8AyUQg@mail.gmail.com>
+ <CAKH8qBv=3hMzpTy=K-n5+rObPhkns0gjJibVFHhNgG7ojrrMVQ@mail.gmail.com> <bf5f2bcb-9c19-f5a7-f74c-cee874def883@iogearbox.net>
+In-Reply-To: <bf5f2bcb-9c19-f5a7-f74c-cee874def883@iogearbox.net>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Fri, 1 Jul 2022 09:12:29 -0700
+Message-ID: <CAKH8qBszRKrM==hs4NZVu+5w6pV+k1k3YvBYPE2-k_z9+ocaxA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: skip lsm_cgroup when don't have trampolines
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Hao Luo <haoluo@google.com>, bpf@vger.kernel.org, ast@kernel.org,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        jolsa@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,117 +69,63 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On gioved=C3=AC 30 giugno 2022 23:59:23 CEST Alexander Duyck wrote:
-> On Thu, Jun 30, 2022 at 11:18 AM Fabio M. De Francesco
-> <fmdefrancesco@gmail.com> wrote:
+On Fri, Jul 1, 2022 at 6:22 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> On 7/1/22 2:16 AM, Stanislav Fomichev wrote:
+> > On Thu, Jun 30, 2022 at 4:48 PM Hao Luo <haoluo@google.com> wrote:
+> >> On Thu, Jun 30, 2022 at 3:42 PM Stanislav Fomichev <sdf@google.com> wrote:
+> [...]
+> >>> With arch_prepare_bpf_trampoline removed on x86:
+> >>>
+> >>>   #98/1    lsm_cgroup/functional:SKIP
+> >>>   #98      lsm_cgroup:SKIP
+> >>>   Summary: 1/0 PASSED, 1 SKIPPED, 0 FAILED
+> >>>
+> >>> Fixes: dca85aac8895 ("selftests/bpf: lsm_cgroup functional test")
+> >>> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> >>> ---
+> >>>   tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c | 8 ++++++++
+> >>>   1 file changed, 8 insertions(+)
+> >>>
+> >>> diff --git a/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
+> >>> index d40810a742fa..c542d7e80a5b 100644
+> >>> --- a/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
+> >>> +++ b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
+> >>> @@ -9,6 +9,10 @@
+> >>>   #include "cgroup_helpers.h"
+> >>>   #include "network_helpers.h"
+> >>>
+> >>> +#ifndef ENOTSUPP
+> >>> +#define ENOTSUPP 524
+> >>> +#endif
+> >>> +
+> >>>   static struct btf *btf;
+> >>>
+> >>>   static __u32 query_prog_cnt(int cgroup_fd, const char *attach_func)
+> >>> @@ -100,6 +104,10 @@ static void test_lsm_cgroup_functional(void)
+> >>>          ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_sk_alloc_security"), 0, "prog count");
+> >>>          ASSERT_EQ(query_prog_cnt(cgroup_fd, NULL), 0, "total prog count");
+> >>>          err = bpf_prog_attach(alloc_prog_fd, cgroup_fd, BPF_LSM_CGROUP, 0);
+> >>> +       if (err == -ENOTSUPP) {
+> >>> +               test__skip();
+> >>> +               goto close_cgroup;
+> >>> +       }
+> >>
+> >> It seems ENOTSUPP is only used in the kernel. I wonder whether we
+> >> should let libbpf map ENOTSUPP to ENOTSUP, which is the errno used in
+> >> userspace and has been used in libbpf.
 > >
-> > On gioved=C3=AC 30 giugno 2022 18:09:18 CEST Alexander Duyck wrote:
-> > > On Thu, Jun 30, 2022 at 8:25 AM Eric Dumazet <edumazet@google.com>=20
-wrote:
-> > > >
-> > > > On Thu, Jun 30, 2022 at 5:17 PM Alexander Duyck
-> > > > <alexander.duyck@gmail.com> wrote:
-> > > > >
-> > > > > On Thu, Jun 30, 2022 at 3:10 AM Maciej Fijalkowski
-> > > > > <maciej.fijalkowski@intel.com> wrote:
-> > > > > >
-> > > > > > On Wed, Jun 29, 2022 at 10:58:36AM +0200, Fabio M. De Francesco
-> > wrote:
-> > > > > > > The use of kmap() is being deprecated in favor of
-> > kmap_local_page().
-> > > > > > >
-> > > > > > > With kmap_local_page(), the mapping is per thread, CPU local=
-=20
-and
-> > not
-> > > > > > > globally visible. Furthermore, the mapping can be acquired=20
-from
-> > any context
-> > > > > > > (including interrupts).
-> > > > > > >
-> > > > > > > Therefore, use kmap_local_page() in=20
-ixgbe_check_lbtest_frame()
-> > because
-> > > > > > > this mapping is per thread, CPU local, and not globally=20
-visible.
-> > > > > >
-> > > > > > Hi,
-> > > > > >
-> > > > > > I'd like to ask why kmap was there in the first place and not=20
-plain
-> > > > > > page_address() ?
-> > > > > >
-> > > > > > Alex?
-> > > > >
-> > > > > The page_address function only works on architectures that have
-> > access
-> > > > > to all of physical memory via virtual memory addresses. The kmap
-> > > > > function is meant to take care of highmem which will need to be
-> > mapped
-> > > > > before it can be accessed.
-> > > > >
-> > > > > For non-highmem pages kmap just calls the page_address function.
-> > > > > https://elixir.bootlin.com/linux/latest/source/include/linux/
-highmem-internal.h#L40
-> > > >
-> > > >
-> > > > Sure, but drivers/net/ethernet/intel/ixgbe/ixgbe_main.c is=20
-allocating
-> > > > pages that are not highmem ?
-> > > >
-> > > > This kmap() does not seem needed.
-> > >
-> > > Good point. So odds are page_address is fine to use. Actually there=20
-is
-> > > a note to that effect in ixgbe_pull_tail.
-> > >
-> > > As such we could probably go through and update igb, and several of
-> > > the other Intel drivers as well.
-> > >
-> > > - Alex
-> > >
-> > I don't know this code, however I know kmap*().
-> >
-> > I assumed that, if author used kmap(), there was possibility that the=20
-page
-> > came from highmem.
-> >
-> > In that case kmap_local_page() looks correct here.
-> >
-> > However, now I read that that page _cannot_ come from highmem.=20
-Therefore,
-> > page_address() would suffice.
-> >
-> > If you all want I can replace kmap() / kunmap() with a "plain"
-> > page_address(). Please let me know.
-> >
-> > Thanks,
-> >
-> > Fabio
->=20
-> Replacing it with just page_address() should be fine. Back when I
-> wrote the code I didn't realize that GFP_ATOMIC pages weren't
-> allocated from highmem so I suspect I just used kmap since it was the
-> way to cover all the bases.
->=20
+> > Yeah, this comes up occasionally, I don't think we've agreed on some
+> > kind of general policy about what to do with these :-(
+> > Thanks for the review!
+>
+> Consensus was that for existing code, the ship has sailed to change it given
+> applications could one way or another depend on this error code, but it should
+> be avoided for new APIs (e.g. [0]).
+
+Ah, great, thanks Daniel!
+
 > Thanks,
->=20
-> - Alex
->=20
-
-OK, I'm about to prepare another patch with page_address() (obviously, this=
-=20
-should be discarded).
-
-Last thing... Is that page allocated with dma_pool_alloc() at
-ixgbe/ixgbe_fcoe.c:196? Somewhere else?
-
-Thanks,
-
-=46abio
-
-P.S.: Can you say something about how pages are allocated in intel/e1000=20
-and in intel/e1000e? I see that those drivers use kmap_atomic().
-
-
-
+> Daniel
+>
+>    [0] https://lore.kernel.org/bpf/20211209182349.038ac2b8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com/
