@@ -2,141 +2,197 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 766905636C5
-	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 17:16:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B07C563703
+	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 17:37:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230497AbiGAPQ3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Jul 2022 11:16:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46790 "EHLO
+        id S231196AbiGAPg6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Jul 2022 11:36:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230521AbiGAPQ2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Jul 2022 11:16:28 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6BC430F7D;
-        Fri,  1 Jul 2022 08:16:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1656688587; x=1688224587;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=XFBVO6SXrO3FNt7nyhFxNsDwduLPRRwR8Ddld4oarBA=;
-  b=pO03cPW4b+OBmQTnv4drWTE/971ObouaPTu8Atnljj9izaY2pi1yx5xZ
-   mriUWBD5z3vzaChQQGjx2lHYAJVWYosQjJfpA4AT6GnDXDiRa3Gfw5nqQ
-   qS8JvSzM6APAv3/XFXKtJAHuO9IH3t0dVxdsJ50DffJDQgkxEysmvO6TG
-   +ltM91ajkzbgJmqmh8t+MYjG7OS9k+uPBXA76+J29r1W4dFcLXUbVUxpc
-   5hVbfPO3AAc9Z84Nb01txnMzScMEaZwTQH9AR3aDkv9rGqNMSQdx9QESC
-   BZLBCE8zpJ0i1u7Yo1RaD+T8GAtRLnMIY50xZVFmSHh6129Lbudc48i2u
-   A==;
-X-IronPort-AV: E=Sophos;i="5.92,237,1650956400"; 
-   d="scan'208";a="102673275"
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Jul 2022 08:16:26 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17; Fri, 1 Jul 2022 08:16:25 -0700
-Received: from CHE-LT-I17769U.microchip.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2375.17 via Frontend Transport; Fri, 1 Jul 2022 08:16:06 -0700
-From:   Arun Ramadoss <arun.ramadoss@microchip.com>
-To:     <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
-CC:     Woojung Huh <woojung.huh@microchip.com>,
-        <UNGLinuxDriver@microchip.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S230090AbiGAPgu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Jul 2022 11:36:50 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4546939BA4;
+        Fri,  1 Jul 2022 08:36:47 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id pk21so4776980ejb.2;
+        Fri, 01 Jul 2022 08:36:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=kVWP9v9nuRHyTkGEYSrcvx5uXVMOYJJ1wNoS0VDXg9k=;
+        b=SqZhVjf7YNNWixNsKmBLY6iXajXocLtajbIf7Rwa4/DgzXmfZOf929koyVGp5a4cJM
+         9rrisSEADI6F7uCEphtjMSxcfpYNk6hkQn7MYGwsnEJI42VB5gSdrHMeISl1m0u/uNbM
+         FKmTJpDjug72jjNeo2v6vGUKbrRVU6PK9rTE7g6l/txGHCOGAsbNNk3zbSU9w/LpDtbQ
+         Qz0foezAvyKetuqKHK/Epagqzwa+luCiiN6hbGSzAqzVloMh5MoCcakiImRU8hb+v4tP
+         LIlhFcBX1UfLysKyB5fLC+xNhn/ly0jvmTgqbw6LSKbR909kFJAWzGLH8VnoYHpd3R6d
+         tXeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=kVWP9v9nuRHyTkGEYSrcvx5uXVMOYJJ1wNoS0VDXg9k=;
+        b=YKq8NJhHKbzPHz3BY36bJNlM9UQCfncHPgFHcTpxauBwqmWbXa7U5UBHv6XK8B4FIt
+         kJd3AdUwblEUSOPIlbrWHg4ghyD6MXOGiY77pQ1DpTgy2OY5gPhI6GCj74I4DfD87+0n
+         P0kN+gqDYU+PijmcnLtrcGyJoMImQOvFJOJX0IcwXk7EINu7pKx/7sHFuGLPrtHyzyem
+         yj1z9rnFgxrg2ak/4UJYiQzjz8oxVoKOk8LntY+3bK2+wr0F2xsRzPPeCuyxyAV32fzB
+         E1gSZNb4ckrK0Fy0Gl/fZJVPkOPpKa9XQR4r7MnQtZ6YJO5NCCL+oap1wa1QinGO+N40
+         cMmA==
+X-Gm-Message-State: AJIora95TztoNYBtbQegTcYwzOkNHYIdbrw5pY84kwrARFJlIWnH9x1w
+        y0U3/M9T4NweWWv+u1UN1v8=
+X-Google-Smtp-Source: AGRyM1sbuKQmRTnINPADgbGRg8JQE2qKqhXWTCOypWUscwCJZKjHhyoe3fG2hqQGXqGDHtdjsw8lJA==
+X-Received: by 2002:a17:907:628a:b0:6fe:526c:ebc with SMTP id nd10-20020a170907628a00b006fe526c0ebcmr14194125ejc.531.1656689805755;
+        Fri, 01 Jul 2022 08:36:45 -0700 (PDT)
+Received: from opensuse.localnet (host-79-53-109-127.retail.telecomitalia.it. [79.53.109.127])
+        by smtp.gmail.com with ESMTPSA id c12-20020a170906d18c00b00727c6da69besm3853562ejz.38.2022.07.01.08.36.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Jul 2022 08:36:44 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        "Song Liu" <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        Alexander Duyck <alexanderduyck@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-Subject: [Patch net-next v15 13/13] net: dsa: microchip: add LAN937x in the ksz spi probe
-Date:   Fri, 1 Jul 2022 20:46:00 +0530
-Message-ID: <20220701151600.31805-1-arun.ramadoss@microchip.com>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20220701144652.10526-1-arun.ramadoss@microchip.com>
-References: <20220701144652.10526-1-arun.ramadoss@microchip.com>
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [Intel-wired-lan] [PATCH] ixgbe: Use kmap_local_page in ixgbe_check_lbtest_frame()
+Date:   Fri, 01 Jul 2022 17:36:42 +0200
+Message-ID: <2834855.e9J7NaK4W3@opensuse>
+In-Reply-To: <CAKgT0UfThk3MLcE38wQu5+2Qy7Ld2px-2WJgnD+2xbDsA8iEEw@mail.gmail.com>
+References: <20220629085836.18042-1-fmdefrancesco@gmail.com> <2254584.ElGaqSPkdT@opensuse> <CAKgT0UfThk3MLcE38wQu5+2Qy7Ld2px-2WJgnD+2xbDsA8iEEw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch add the LAN937x part support in the existing ksz_spi_probe.
+On gioved=C3=AC 30 giugno 2022 23:59:23 CEST Alexander Duyck wrote:
+> On Thu, Jun 30, 2022 at 11:18 AM Fabio M. De Francesco
+> <fmdefrancesco@gmail.com> wrote:
+> >
+> > On gioved=C3=AC 30 giugno 2022 18:09:18 CEST Alexander Duyck wrote:
+> > > On Thu, Jun 30, 2022 at 8:25 AM Eric Dumazet <edumazet@google.com>=20
+wrote:
+> > > >
+> > > > On Thu, Jun 30, 2022 at 5:17 PM Alexander Duyck
+> > > > <alexander.duyck@gmail.com> wrote:
+> > > > >
+> > > > > On Thu, Jun 30, 2022 at 3:10 AM Maciej Fijalkowski
+> > > > > <maciej.fijalkowski@intel.com> wrote:
+> > > > > >
+> > > > > > On Wed, Jun 29, 2022 at 10:58:36AM +0200, Fabio M. De Francesco
+> > wrote:
+> > > > > > > The use of kmap() is being deprecated in favor of
+> > kmap_local_page().
+> > > > > > >
+> > > > > > > With kmap_local_page(), the mapping is per thread, CPU local=
+=20
+and
+> > not
+> > > > > > > globally visible. Furthermore, the mapping can be acquired=20
+from
+> > any context
+> > > > > > > (including interrupts).
+> > > > > > >
+> > > > > > > Therefore, use kmap_local_page() in=20
+ixgbe_check_lbtest_frame()
+> > because
+> > > > > > > this mapping is per thread, CPU local, and not globally=20
+visible.
+> > > > > >
+> > > > > > Hi,
+> > > > > >
+> > > > > > I'd like to ask why kmap was there in the first place and not=20
+plain
+> > > > > > page_address() ?
+> > > > > >
+> > > > > > Alex?
+> > > > >
+> > > > > The page_address function only works on architectures that have
+> > access
+> > > > > to all of physical memory via virtual memory addresses. The kmap
+> > > > > function is meant to take care of highmem which will need to be
+> > mapped
+> > > > > before it can be accessed.
+> > > > >
+> > > > > For non-highmem pages kmap just calls the page_address function.
+> > > > > https://elixir.bootlin.com/linux/latest/source/include/linux/
+highmem-internal.h#L40
+> > > >
+> > > >
+> > > > Sure, but drivers/net/ethernet/intel/ixgbe/ixgbe_main.c is=20
+allocating
+> > > > pages that are not highmem ?
+> > > >
+> > > > This kmap() does not seem needed.
+> > >
+> > > Good point. So odds are page_address is fine to use. Actually there=20
+is
+> > > a note to that effect in ixgbe_pull_tail.
+> > >
+> > > As such we could probably go through and update igb, and several of
+> > > the other Intel drivers as well.
+> > >
+> > > - Alex
+> > >
+> > I don't know this code, however I know kmap*().
+> >
+> > I assumed that, if author used kmap(), there was possibility that the=20
+page
+> > came from highmem.
+> >
+> > In that case kmap_local_page() looks correct here.
+> >
+> > However, now I read that that page _cannot_ come from highmem.=20
+Therefore,
+> > page_address() would suffice.
+> >
+> > If you all want I can replace kmap() / kunmap() with a "plain"
+> > page_address(). Please let me know.
+> >
+> > Thanks,
+> >
+> > Fabio
+>=20
+> Replacing it with just page_address() should be fine. Back when I
+> wrote the code I didn't realize that GFP_ATOMIC pages weren't
+> allocated from highmem so I suspect I just used kmap since it was the
+> way to cover all the bases.
+>=20
+> Thanks,
+>=20
+> - Alex
+>=20
 
-Signed-off-by: Arun Ramadoss <arun.ramadoss@microchip.com>
----
- drivers/net/dsa/microchip/ksz_spi.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+OK, I'm about to prepare another patch with page_address() (obviously, this=
+=20
+should be discarded).
 
-diff --git a/drivers/net/dsa/microchip/ksz_spi.c b/drivers/net/dsa/microchip/ksz_spi.c
-index 69fabb190f26..4844830dca72 100644
---- a/drivers/net/dsa/microchip/ksz_spi.c
-+++ b/drivers/net/dsa/microchip/ksz_spi.c
-@@ -166,6 +166,26 @@ static const struct of_device_id ksz_dt_ids[] = {
- 		.compatible = "microchip,ksz9567",
- 		.data = &ksz_switch_chips[KSZ9567]
- 	},
-+	{
-+		.compatible = "microchip,lan9370",
-+		.data = &ksz_switch_chips[LAN9370]
-+	},
-+	{
-+		.compatible = "microchip,lan9371",
-+		.data = &ksz_switch_chips[LAN9371]
-+	},
-+	{
-+		.compatible = "microchip,lan9372",
-+		.data = &ksz_switch_chips[LAN9372]
-+	},
-+	{
-+		.compatible = "microchip,lan9373",
-+		.data = &ksz_switch_chips[LAN9373]
-+	},
-+	{
-+		.compatible = "microchip,lan9374",
-+		.data = &ksz_switch_chips[LAN9374]
-+	},
- 	{},
- };
- MODULE_DEVICE_TABLE(of, ksz_dt_ids);
-@@ -182,6 +202,11 @@ static const struct spi_device_id ksz_spi_ids[] = {
- 	{ "ksz9563" },
- 	{ "ksz8563" },
- 	{ "ksz9567" },
-+	{ "lan9370" },
-+	{ "lan9371" },
-+	{ "lan9372" },
-+	{ "lan9373" },
-+	{ "lan9374" },
- 	{ },
- };
- MODULE_DEVICE_TABLE(spi, ksz_spi_ids);
-@@ -206,6 +231,7 @@ MODULE_ALIAS("spi:ksz9893");
- MODULE_ALIAS("spi:ksz9563");
- MODULE_ALIAS("spi:ksz8563");
- MODULE_ALIAS("spi:ksz9567");
-+MODULE_ALIAS("spi:lan937x");
- MODULE_AUTHOR("Tristram Ha <Tristram.Ha@microchip.com>");
- MODULE_DESCRIPTION("Microchip ksz Series Switch SPI Driver");
- MODULE_LICENSE("GPL");
--- 
-2.36.1
+Last thing... Is that page allocated with dma_pool_alloc() at
+ixgbe/ixgbe_fcoe.c:196? Somewhere else?
+
+Thanks,
+
+=46abio
+
+P.S.: Can you say something about how pages are allocated in intel/e1000=20
+and in intel/e1000e? I see that those drivers use kmap_atomic().
+
+
 
