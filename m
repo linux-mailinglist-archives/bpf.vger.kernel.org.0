@@ -2,73 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A43256303B
-	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 11:34:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EE4A563050
+	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 11:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233950AbiGAJeb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Jul 2022 05:34:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54236 "EHLO
+        id S234249AbiGAJgy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Jul 2022 05:36:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234081AbiGAJe2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Jul 2022 05:34:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7EB1874373
-        for <bpf@vger.kernel.org>; Fri,  1 Jul 2022 02:34:27 -0700 (PDT)
+        with ESMTP id S235927AbiGAJgx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Jul 2022 05:36:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DDA6E747A9
+        for <bpf@vger.kernel.org>; Fri,  1 Jul 2022 02:36:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1656668066;
+        s=mimecast20190719; t=1656668212;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TRbVMG9pe9kLTW8fXLQQcAgh1G0fF5UqNIzjXT/Ehks=;
-        b=frQjgV8eDQIyeBUP7eS5JJ11PoKKd/sdDRGarXN0U8VLdqFiQS6G7fxAwuZsIyCOLesowF
-        goJ9kjryM/ws2dCqbMHUP/ksV/KnIfR0FUrDZmLG0EJbQXIiEaMRUesHP42ktUVb+AKxsI
-        ZQVIE1BetqJNqMiq/uVuHlw+4b/E0rk=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=3dN2Ed9BguDI5gyWO5SlL0rnKl20jgh9B0B8prvlwR0=;
+        b=H+CZHz8PKDirAu1OP5EfpjzPD7XQP0FLnWU9sWm8OyL7lA7QysWvLqWVFUBQvMwpmMGQkA
+        Y2kQIf5nJfRKgQmEDM4LNvzthY2YXdXR3pkwbm71BpY1mCiVnAlaZ1ErdGnBfqW9yNGeF9
+        xkdc0RHl/Yqk/hl8skMHiRSZ065Ihtk=
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
+ [209.85.210.197]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-270--uvRMPmvNravEZRa3lu5_Q-1; Fri, 01 Jul 2022 05:34:25 -0400
-X-MC-Unique: -uvRMPmvNravEZRa3lu5_Q-1
-Received: by mail-pl1-f198.google.com with SMTP id h18-20020a170902f55200b0016a4a78bd71so1207585plf.9
-        for <bpf@vger.kernel.org>; Fri, 01 Jul 2022 02:34:25 -0700 (PDT)
+ us-mta-659-4QBKR7NxMWK2_FayUflVbw-1; Fri, 01 Jul 2022 05:36:49 -0400
+X-MC-Unique: 4QBKR7NxMWK2_FayUflVbw-1
+Received: by mail-pf1-f197.google.com with SMTP id 5-20020a620605000000b00527ca01f8a3so766527pfg.19
+        for <bpf@vger.kernel.org>; Fri, 01 Jul 2022 02:36:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=TRbVMG9pe9kLTW8fXLQQcAgh1G0fF5UqNIzjXT/Ehks=;
-        b=cKblTImgmnNwmDZJNQ6mUtLk9IT1hlGpmxZekxGUzEy9UxxMPj9aUjwMmetYVyIDGx
-         e5f6CTPviGfIoy9dY8YK0Ja1wAF56/q5YR0GDcYPPfLCQNSeQFuoXJOF6KoLlkwMHUew
-         wBXOJnqVg+QmQVDhhVfqHuCB8Jrm3Jtl7ee6OU2YVwy5QFSBTvyqnLQVvUoCfhlgg4SJ
-         mQteS52cVFnpgLIJ7zbsoV+dS8amExlddXlfGmyD08nKjsccNNZosPfi68fK0XRIs1DE
-         nQsLTe6ypguwYZOEmPHie2BrsZBIOFuSJvL3EwVFgGIK8BGDHFB4jTGX1gtFuEIGmjC9
-         IWSQ==
-X-Gm-Message-State: AJIora+Gw74oEBhuYIT1GxPBb1TZE0HrXA3vXVVCF/vF6as+KS1uLrhB
-        97QpIR8KSOChQciKQgkEFphPNrbyueNKxhuGNSwDSVrHE9PaIRTvyIoPBFkA3y2xphc6h1CAmX9
-        S+IpDwUsOWq/Z
-X-Received: by 2002:a63:be41:0:b0:40c:b4a8:dee9 with SMTP id g1-20020a63be41000000b0040cb4a8dee9mr11432176pgo.107.1656668064250;
-        Fri, 01 Jul 2022 02:34:24 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1sE5v7ksf3buwxxjLGMpBCFIkErXWPc59l6I+VsrcgW6eytue9aR08XqOAivwqVk5DzrN+qQw==
-X-Received: by 2002:a63:be41:0:b0:40c:b4a8:dee9 with SMTP id g1-20020a63be41000000b0040cb4a8dee9mr11432146pgo.107.1656668063999;
-        Fri, 01 Jul 2022 02:34:23 -0700 (PDT)
+        bh=3dN2Ed9BguDI5gyWO5SlL0rnKl20jgh9B0B8prvlwR0=;
+        b=VTpmTse+lXbI93hesRWe34YYEPNbIzPXNWYTI/96SU1iOGag02WaWM3Q8KW1o7sn+S
+         QqOnRFLtBRjI+Qbgtgs+fRDwcuXyZmzhcYSLAL29d1NWEJTklhqv/bDNHiszW8bJSwAk
+         HIMjMGvjwT3JlUv0rndy5Nbsrz3O7JHkUmWBy78kMKW1I+hTysbSiF/iLmx5GGfjyvYy
+         +XVIzopIhYdpHmssOGsN/jMjB5NTBtFao8EDsfU4CEHEmoOtlH6VZBza0LQ/2uM78eQN
+         9Hr4KtDf3HUGIq6GXpEHmxneVK7vZZjPQBEpQPS1LZ88mDsvx60PTqdgHcodXn7wm4Nf
+         tUZQ==
+X-Gm-Message-State: AJIora+7XYDLHQWuiGMFvrBGr1wXip5GPaiFxXhKvN/Kk5SKVOfhBL3J
+        6sx0LDdvNogANgnPcsuUemOGLFIsOP+oKolszspZzdt92aJSbQQkql8YPPTZ6qjqXdhWTsXzP7x
+        Y0rmCym3vPqvc
+X-Received: by 2002:a17:903:24e:b0:16b:9fa2:41e5 with SMTP id j14-20020a170903024e00b0016b9fa241e5mr13769754plh.127.1656668208638;
+        Fri, 01 Jul 2022 02:36:48 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1s2tQyLCXMrbx9yXxpYY9TeU2uoF6cGR+tGI1XuAVQyHwDEpf0d8SFWt7v9pCDnMz5Bdj+bww==
+X-Received: by 2002:a17:903:24e:b0:16b:9fa2:41e5 with SMTP id j14-20020a170903024e00b0016b9fa241e5mr13769722plh.127.1656668208349;
+        Fri, 01 Jul 2022 02:36:48 -0700 (PDT)
 Received: from [10.72.13.237] ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id x1-20020a636301000000b004085adf1372sm14860507pgb.77.2022.07.01.02.34.14
+        by smtp.gmail.com with ESMTPSA id t129-20020a625f87000000b005259578e8fcsm11802013pfb.181.2022.07.01.02.36.33
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Jul 2022 02:34:23 -0700 (PDT)
-Message-ID: <10281add-4d72-efe6-e94d-1f19ced9cb27@redhat.com>
-Date:   Fri, 1 Jul 2022 17:34:12 +0800
+        Fri, 01 Jul 2022 02:36:47 -0700 (PDT)
+Message-ID: <79e519ec-0129-6a21-11da-44eaff1429fa@redhat.com>
+Date:   Fri, 1 Jul 2022 17:36:32 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
  Gecko/20100101 Thunderbird/91.11.0
-Subject: Re: [PATCH v11 24/40] virtio_pci: struct virtio_pci_common_cfg add
- queue_notify_data
+Subject: Re: [PATCH v11 25/40] virtio: allow to unbreak/break virtqueue
+ individually
 Content-Language: en-US
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        virtualization@lists.linux-foundation.org
-Cc:     Richard Weinberger <richard@nod.at>,
+To:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        Richard Weinberger <richard@nod.at>,
         Anton Ivanov <anton.ivanov@cambridgegreys.com>,
         Johannes Berg <johannes@sipsolutions.net>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
@@ -97,14 +97,15 @@ Cc:     Richard Weinberger <richard@nod.at>,
         kvm@vger.kernel.org, bpf@vger.kernel.org,
         kangjie.xu@linux.alibaba.com
 References: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
- <20220629065656.54420-25-xuanzhuo@linux.alibaba.com>
+ <20220629065656.54420-26-xuanzhuo@linux.alibaba.com>
+ <20220701022950-mutt-send-email-mst@kernel.org>
 From:   Jason Wang <jasowang@redhat.com>
-In-Reply-To: <20220629065656.54420-25-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220701022950-mutt-send-email-mst@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -113,51 +114,83 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
-在 2022/6/29 14:56, Xuan Zhuo 写道:
-> Add queue_notify_data in struct virtio_pci_common_cfg, which comes from
-> here https://github.com/oasis-tcs/virtio-spec/issues/89
->
-> Since I want to add queue_reset after queue_notify_data, I submitted
-> this patch first.
->
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> Acked-by: Jason Wang <jasowang@redhat.com>
-> ---
->   include/linux/virtio_pci_modern.h | 2 ++
->   include/uapi/linux/virtio_pci.h   | 1 +
->   2 files changed, 3 insertions(+)
->
-> diff --git a/include/linux/virtio_pci_modern.h b/include/linux/virtio_pci_modern.h
-> index c4f7ffbacb4e..9f31dde46f57 100644
-> --- a/include/linux/virtio_pci_modern.h
-> +++ b/include/linux/virtio_pci_modern.h
-> @@ -29,6 +29,8 @@ struct virtio_pci_common_cfg {
->   	__le32 queue_avail_hi;		/* read-write */
->   	__le32 queue_used_lo;		/* read-write */
->   	__le32 queue_used_hi;		/* read-write */
-> +	__le16 queue_notify_data;	/* read-write */
-> +	__le16 padding;
->   };
+在 2022/7/1 14:31, Michael S. Tsirkin 写道:
+> On Wed, Jun 29, 2022 at 02:56:41PM +0800, Xuan Zhuo wrote:
+>> This patch allows the new introduced
+>> __virtqueue_break()/__virtqueue_unbreak() to break/unbreak the
+>> virtqueue.
+>>
+>> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> I wonder how this interacts with the hardening patches.
+> Jason?
 
 
-As previous patch, I think it's better to simple embed the uAPI 
-structure here.
+Consider we've marked it as broken, I think we don't need to care about 
+the hardening in this series. Just make it work without hardening.
+
+And I will handle vq reset when rework the IRQ hardening.
 
 Thanks
 
 
->   
->   struct virtio_pci_modern_device {
-> diff --git a/include/uapi/linux/virtio_pci.h b/include/uapi/linux/virtio_pci.h
-> index 247ec42af2c8..748b3eb62d2f 100644
-> --- a/include/uapi/linux/virtio_pci.h
-> +++ b/include/uapi/linux/virtio_pci.h
-> @@ -176,6 +176,7 @@ struct virtio_pci_cfg_cap {
->   #define VIRTIO_PCI_COMMON_Q_AVAILHI	44
->   #define VIRTIO_PCI_COMMON_Q_USEDLO	48
->   #define VIRTIO_PCI_COMMON_Q_USEDHI	52
-> +#define VIRTIO_PCI_COMMON_Q_NDATA	56
->   
->   #endif /* VIRTIO_PCI_NO_MODERN */
->   
+>
+>> ---
+>>   drivers/virtio/virtio_ring.c | 24 ++++++++++++++++++++++++
+>>   include/linux/virtio.h       |  3 +++
+>>   2 files changed, 27 insertions(+)
+>>
+>> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+>> index 5ec43607cc15..7b02be7fce67 100644
+>> --- a/drivers/virtio/virtio_ring.c
+>> +++ b/drivers/virtio/virtio_ring.c
+>> @@ -2744,6 +2744,30 @@ unsigned int virtqueue_get_vring_size(struct virtqueue *_vq)
+>>   }
+>>   EXPORT_SYMBOL_GPL(virtqueue_get_vring_size);
+>>   
+>> +/*
+>> + * This function should only be called by the core, not directly by the driver.
+>> + */
+>> +void __virtqueue_break(struct virtqueue *_vq)
+>> +{
+>> +	struct vring_virtqueue *vq = to_vvq(_vq);
+>> +
+>> +	/* Pairs with READ_ONCE() in virtqueue_is_broken(). */
+>> +	WRITE_ONCE(vq->broken, true);
+>> +}
+>> +EXPORT_SYMBOL_GPL(__virtqueue_break);
+>> +
+>> +/*
+>> + * This function should only be called by the core, not directly by the driver.
+>> + */
+>> +void __virtqueue_unbreak(struct virtqueue *_vq)
+>> +{
+>> +	struct vring_virtqueue *vq = to_vvq(_vq);
+>> +
+>> +	/* Pairs with READ_ONCE() in virtqueue_is_broken(). */
+>> +	WRITE_ONCE(vq->broken, false);
+>> +}
+> I don't think these "Pairs" comments have any value.
+>
+>
+>> +EXPORT_SYMBOL_GPL(__virtqueue_unbreak);
+>> +
+>>   bool virtqueue_is_broken(struct virtqueue *_vq)
+>>   {
+>>   	struct vring_virtqueue *vq = to_vvq(_vq);
+>> diff --git a/include/linux/virtio.h b/include/linux/virtio.h
+>> index 1272566adec6..dc474a0d48d1 100644
+>> --- a/include/linux/virtio.h
+>> +++ b/include/linux/virtio.h
+>> @@ -138,6 +138,9 @@ bool is_virtio_device(struct device *dev);
+>>   void virtio_break_device(struct virtio_device *dev);
+>>   void __virtio_unbreak_device(struct virtio_device *dev);
+>>   
+>> +void __virtqueue_break(struct virtqueue *_vq);
+>> +void __virtqueue_unbreak(struct virtqueue *_vq);
+>> +
+>>   void virtio_config_changed(struct virtio_device *dev);
+>>   #ifdef CONFIG_PM_SLEEP
+>>   int virtio_device_freeze(struct virtio_device *dev);
+>> -- 
+>> 2.31.0
 
