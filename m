@@ -2,69 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29A52562A3B
-	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 06:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBEC5562A81
+	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 06:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233931AbiGAEPh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Jul 2022 00:15:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55146 "EHLO
+        id S233638AbiGAE3A (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Jul 2022 00:29:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233827AbiGAEPh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Jul 2022 00:15:37 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7759220C6;
-        Thu, 30 Jun 2022 21:15:36 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7EA9662308;
-        Fri,  1 Jul 2022 04:15:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B72FC341C7;
-        Fri,  1 Jul 2022 04:15:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656648935;
-        bh=nJlI/Jamu/8sQmVxqIyvQSpUXbhqCWxKej5hmDDfaIw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Llp1ksqgfDmiCd1pwpbpbiiI/s0klFoGRwf63umUn2iLf5NPLMnFTmWAhQfRpzacP
-         DgwsPRoQxivMa18KXjf2+K2xag3jNu55QB8kFLHrF6Pl6HxlHk43o/5DFkqh82PuXR
-         0GSOoypLQQmv7CPj1OL4PGGEnCzFIaoIpNBylrAntNhDJf9OXfWeB7VqwOrvTLhQYz
-         PseDLjx63PiAoLyqrtg6YkmE5uP15ShK3YInN0glxxNxeyv4Y/bjcM0GJpLXLjqgwh
-         0n4xDmEIBwxhkpoBkTAmHnZfrKc0eC/KHxNXeJiyVybeH3WH/959KT2GjtrAg6gYDA
-         nXXxC+dbkLLqQ==
-Date:   Thu, 30 Jun 2022 21:15:34 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Guangbin Huang <huangguangbin2@huawei.com>
-Cc:     <jbrouer@redhat.com>, <hawk@kernel.org>, <brouer@redhat.com>,
-        <ilias.apalodimas@linaro.org>, <davem@davemloft.net>,
-        <edumazet@google.com>, <pabeni@redhat.com>, <lorenzo@kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <lipeng321@huawei.com>,
-        <chenhao288@hisilicon.com>
-Subject: Re: [PATCH net-next v2] net: page_pool: optimize page pool page
- allocation in NUMA scenario
-Message-ID: <20220630211534.6d1c32da@kernel.org>
-In-Reply-To: <20220629133305.15012-1-huangguangbin2@huawei.com>
-References: <20220629133305.15012-1-huangguangbin2@huawei.com>
+        with ESMTP id S229549AbiGAE3A (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Jul 2022 00:29:00 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8373D58FDD;
+        Thu, 30 Jun 2022 21:28:58 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id cf14so1420450edb.8;
+        Thu, 30 Jun 2022 21:28:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0O4/oNbZ3YRoOmSuse2orABsjwO93HDgN0c9nygzXkg=;
+        b=fx0uLrcSQjZTXvB8Hu09bD0L2czFcKCI1dhTczw2jK//jpIFIOw9zrjIG4Ekl3fDyg
+         tsL8YBSJEeTLOHoKvqu6m5E9DdNlfBVoib6TBMnFAuEkdc0ENq0Ck0NCfnRxRx9gcO+1
+         JIikryE5KvK84hE00FXdGwLWDJnGlYaLICN4vG/07bBvYxRtLZyd25f66gXGxII9SsT/
+         tPNEW6OaaL/Uf+g90g1mikLHkU/VrZWyynVW3ixRiqJHU+rHkNJudhFH5/f+R98yWVFx
+         5uKDF7R4AiXRhjZUajMN47RNbeXi1tmNgV1d6/2ym28LeZU9IUm11P61VEfKzbTLhCoo
+         XfAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0O4/oNbZ3YRoOmSuse2orABsjwO93HDgN0c9nygzXkg=;
+        b=luBelySV2JtcU3G2lnCzkwozJkZhdgsOvZ+Sb660zSroeTahSSdmbbNRQLFJTlus70
+         0MhEd8pWWhRBRg01eTeoctNkVL6JmW9giJtqRF+IbiisG7zDQs4boqlPUBrfY32MmbF5
+         2zAghRcgnDbMG+ZrYIEWK/BR1DcjqD0NoubWV0IQ8rs+R0Jx88CA0lSJ7OqGm/pphow7
+         OMvz6nqdxiaaW54nbwpXbu3GlMPCGY0a/sV1FLILx2kj2Sq1pFmD8OBhpjv2A+nLxOQO
+         Ihgep8Vo2pwywkd9sIdlZ8ZCEVlDfKotuHwEeIsbMgpNmnG+s+jlySuxmyKKP/pSR+N+
+         QuJQ==
+X-Gm-Message-State: AJIora+VmHBZS+wf9xJVotik/KtK/FXRuAKprCBolhmvjhoepXo4SkmF
+        vTSq+UVQHgn4yXuea66jSaw=
+X-Google-Smtp-Source: AGRyM1veiW2EfEXKBX9p8FXLTR5ucjbaZny9cnQElotgkUzW71FChR9E1mXGinabKbKZoVmPsdt4gA==
+X-Received: by 2002:a05:6402:524d:b0:437:8d2e:c675 with SMTP id t13-20020a056402524d00b004378d2ec675mr16771826edd.65.1656649737098;
+        Thu, 30 Jun 2022 21:28:57 -0700 (PDT)
+Received: from felia.fritz.box (200116b826fa4e008c7f8ad93cf12391.dip.versatel-1u1.de. [2001:16b8:26fa:4e00:8c7f:8ad9:3cf1:2391])
+        by smtp.gmail.com with ESMTPSA id b27-20020a17090630db00b0072a72b0fe72sm1130850ejb.111.2022.06.30.21.28.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Jun 2022 21:28:56 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] MAINTAINERS: adjust XDP SOCKETS after file movement
+Date:   Fri,  1 Jul 2022 06:28:10 +0200
+Message-Id: <20220701042810.26362-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 29 Jun 2022 21:33:05 +0800 Guangbin Huang wrote:
-> +#ifdef CONFIG_NUMA
-> +	pref_nid = (pool->p.nid == NUMA_NO_NODE) ? numa_mem_id() : pool->p.nid;
-> +#else
-> +	/* Ignore pool->p.nid setting if !CONFIG_NUMA */
-> +	pref_nid = NUMA_NO_NODE;
-> +#endif
+Commit f36600634282 ("libbpf: move xsk.{c,h} into selftests/bpf") moves
+files tools/{lib => testing/selftests}/bpf/xsk.[ch], but misses to adjust
+the XDP SOCKETS (AF_XDP) section in MAINTAINERS.
 
-Please factor this out to a helper, this is a copy of the code from
-page_pool_refill_alloc_cache() and #ifdefs are a little yuck.
+Adjust the file entry after this file movement.
+
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+Andrii, please ack.
+
+Alexei, please pick this minor non-urgent clean-up on top of the commit above.
+
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index fa4bfa3d10bf..27d9e65b9a85 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -22042,7 +22042,7 @@ F:	include/uapi/linux/xdp_diag.h
+ F:	include/net/netns/xdp.h
+ F:	net/xdp/
+ F:	samples/bpf/xdpsock*
+-F:	tools/lib/bpf/xsk*
++F:	tools/testing/selftests/bpf/xsk*
+ 
+ XEN BLOCK SUBSYSTEM
+ M:	Roger Pau Monné <roger.pau@citrix.com>
+-- 
+2.17.1
+
