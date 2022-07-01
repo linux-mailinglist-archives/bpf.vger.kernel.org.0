@@ -2,61 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DABBF56336C
-	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 14:20:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAA2A5633A7
+	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 14:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234791AbiGAMUH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Jul 2022 08:20:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54104 "EHLO
+        id S236639AbiGAMrp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Jul 2022 08:47:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231420AbiGAMUG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Jul 2022 08:20:06 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B48314D39;
-        Fri,  1 Jul 2022 05:20:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1656678005; x=1688214005;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=L28F0IQuGJkDXQWYuN+rHaYbWwAfIFpmSFRtOHDrx1g=;
-  b=IijNPyZF4A1ieGaPQ+tCG3NINQiJGa8wPfc6CsxybkWZ8p+YRn7d5OPC
-   lkbn8ld/KIGmpVhwo9L55OI0bu1yGlRCQqRcEqD4DnAdpQAni8IjE1bCz
-   pRmZdY91t67uJH/jQsYSAbwxIbf+YdVO7PmyPf7zhzumpnWfcGLnSJ1GI
-   BOJm6kTJvXcznenjeCw94EGwVrwXUAE0fSZrkZ+4Jq0pyTU9dn8B1a7u8
-   TyIpqPwiCFSGOogkSd1BmL70GLM40sS2/Wck5rCrnXqynwFfNUiCD7lyV
-   SXzy3phFsuYB5FeMOz5cvTpD9f+cHooa+jS7SZCKl8So/bksT5Ix7UBNn
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10394"; a="282670256"
-X-IronPort-AV: E=Sophos;i="5.92,237,1650956400"; 
-   d="scan'208";a="282670256"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2022 05:20:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,237,1650956400"; 
-   d="scan'208";a="596242291"
-Received: from boxer.igk.intel.com (HELO boxer) ([10.102.20.173])
-  by fmsmga007.fm.intel.com with ESMTP; 01 Jul 2022 05:20:03 -0700
-Date:   Fri, 1 Jul 2022 14:20:02 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: adjust XDP SOCKETS after file movement
-Message-ID: <Yr7mcjRq57laZGEY@boxer>
-References: <20220701042810.26362-1-lukas.bulwahn@gmail.com>
+        with ESMTP id S236576AbiGAMrp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Jul 2022 08:47:45 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2A7D34648
+        for <bpf@vger.kernel.org>; Fri,  1 Jul 2022 05:47:43 -0700 (PDT)
+Received: from 226.206.1.85.dynamic.wline.res.cust.swisscom.ch ([85.1.206.226] helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1o7G3h-00044B-2A; Fri, 01 Jul 2022 14:47:41 +0200
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     ast@kernel.org
+Cc:     andrii@kernel.org, john.fastabend@gmail.com, liulin063@gmail.com,
+        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>
+Subject: [PATCH bpf 1/4] bpf: Fix incorrect verifier simulation around jmp32's jeq/jne
+Date:   Fri,  1 Jul 2022 14:47:24 +0200
+Message-Id: <20220701124727.11153-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220701042810.26362-1-lukas.bulwahn@gmail.com>
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.6/26590/Fri Jul  1 09:25:21 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,40 +40,115 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 01, 2022 at 06:28:10AM +0200, Lukas Bulwahn wrote:
-> Commit f36600634282 ("libbpf: move xsk.{c,h} into selftests/bpf") moves
-> files tools/{lib => testing/selftests}/bpf/xsk.[ch], but misses to adjust
-> the XDP SOCKETS (AF_XDP) section in MAINTAINERS.
-> 
-> Adjust the file entry after this file movement.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
-> Andrii, please ack.
-> 
-> Alexei, please pick this minor non-urgent clean-up on top of the commit above.
-> 
->  MAINTAINERS | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index fa4bfa3d10bf..27d9e65b9a85 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -22042,7 +22042,7 @@ F:	include/uapi/linux/xdp_diag.h
->  F:	include/net/netns/xdp.h
->  F:	net/xdp/
->  F:	samples/bpf/xdpsock*
-> -F:	tools/lib/bpf/xsk*
-> +F:	tools/testing/selftests/bpf/xsk*
+Kuee reported a quirk in the jmp32's jeq/jne simulation, namely that the
+register value does not match expectations for the fall-through path. For
+example:
 
-Magnus, this doesn't cover xdpxceiver.
-How about we move the lib part and xdpxceiver part to a dedicated
-directory? Or would it be too nested from main dir POV?
+Before fix:
 
->  
->  XEN BLOCK SUBSYSTEM
->  M:	Roger Pau Monné <roger.pau@citrix.com>
-> -- 
-> 2.17.1
-> 
+  0: R1=ctx(off=0,imm=0) R10=fp0
+  0: (b7) r2 = 0                        ; R2_w=P0
+  1: (b7) r6 = 563                      ; R6_w=P563
+  2: (87) r2 = -r2                      ; R2_w=Pscalar()
+  3: (87) r2 = -r2                      ; R2_w=Pscalar()
+  4: (4c) w2 |= w6                      ; R2_w=Pscalar(umin=563,umax=4294967295,var_off=(0x233; 0xfffffdcc),s32_min=-2147483085) R6_w=P563
+  5: (56) if w2 != 0x8 goto pc+1        ; R2_w=P571  <--- [*]
+  6: (95) exit
+  R0 !read_ok
+
+After fix:
+
+  0: R1=ctx(off=0,imm=0) R10=fp0
+  0: (b7) r2 = 0                        ; R2_w=P0
+  1: (b7) r6 = 563                      ; R6_w=P563
+  2: (87) r2 = -r2                      ; R2_w=Pscalar()
+  3: (87) r2 = -r2                      ; R2_w=Pscalar()
+  4: (4c) w2 |= w6                      ; R2_w=Pscalar(umin=563,umax=4294967295,var_off=(0x233; 0xfffffdcc),s32_min=-2147483085) R6_w=P563
+  5: (56) if w2 != 0x8 goto pc+1        ; R2_w=P8  <--- [*]
+  6: (95) exit
+  R0 !read_ok
+
+As can be seen on line 5 for the branch fall-through path in R2 [*] is that
+given condition w2 != 0x8 is false, verifier should conclude that r2 = 8 as
+upper 32 bit are known to be zero. However, verifier incorrectly concludes
+that r2 = 571 which is far off.
+
+The problem is it only marks false{true}_reg as known in the switch for JE/NE
+case, but at the end of the function, it uses {false,true}_{64,32}off to
+update {false,true}_reg->var_off and they still hold the prior value of
+{false,true}_reg->var_off before it got marked as known. The subsequent
+__reg_combine_32_into_64() then propagates this old var_off and derives new
+bounds. The information between min/max bounds on {false,true}_reg from
+setting the register to known const combined with the {false,true}_reg->var_off
+based on the old information then derives wrong register data.
+
+Fix it by detangling the BPF_JEQ/BPF_JNE cases and updating relevant
+{false,true}_{64,32}off tnums along with the register marking to known
+constant.
+
+Fixes: 3f50f132d840 ("bpf: Verifier, do explicit ALU32 bounds tracking")
+Reported-by: Kuee K1r0a <liulin063@gmail.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+---
+ kernel/bpf/verifier.c | 41 ++++++++++++++++++++++++-----------------
+ 1 file changed, 24 insertions(+), 17 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index aedac2ac02b9..ec164b3c0fa2 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -9577,26 +9577,33 @@ static void reg_set_min_max(struct bpf_reg_state *true_reg,
+ 		return;
+ 
+ 	switch (opcode) {
++	/* JEQ/JNE comparison doesn't change the register equivalence.
++	 *
++	 * r1 = r2;
++	 * if (r1 == 42) goto label;
++	 * ...
++	 * label: // here both r1 and r2 are known to be 42.
++	 *
++	 * Hence when marking register as known preserve it's ID.
++	 */
+ 	case BPF_JEQ:
++		if (is_jmp32) {
++			__mark_reg32_known(true_reg, val32);
++			true_32off = tnum_subreg(true_reg->var_off);
++		} else {
++			___mark_reg_known(true_reg, val);
++			true_64off = true_reg->var_off;
++		}
++		break;
+ 	case BPF_JNE:
+-	{
+-		struct bpf_reg_state *reg =
+-			opcode == BPF_JEQ ? true_reg : false_reg;
+-
+-		/* JEQ/JNE comparison doesn't change the register equivalence.
+-		 * r1 = r2;
+-		 * if (r1 == 42) goto label;
+-		 * ...
+-		 * label: // here both r1 and r2 are known to be 42.
+-		 *
+-		 * Hence when marking register as known preserve it's ID.
+-		 */
+-		if (is_jmp32)
+-			__mark_reg32_known(reg, val32);
+-		else
+-			___mark_reg_known(reg, val);
++		if (is_jmp32) {
++			__mark_reg32_known(false_reg, val32);
++			false_32off = tnum_subreg(false_reg->var_off);
++		} else {
++			___mark_reg_known(false_reg, val);
++			false_64off = false_reg->var_off;
++		}
+ 		break;
+-	}
+ 	case BPF_JSET:
+ 		if (is_jmp32) {
+ 			false_32off = tnum_and(false_32off, tnum_const(~val32));
+-- 
+2.27.0
+
