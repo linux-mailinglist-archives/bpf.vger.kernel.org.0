@@ -2,133 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09BA05627A9
-	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 02:16:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9050D5628C3
+	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 04:11:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229810AbiGAAQr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Jun 2022 20:16:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55844 "EHLO
+        id S231640AbiGACKJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Jun 2022 22:10:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbiGAAQp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Jun 2022 20:16:45 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DD36396BA
-        for <bpf@vger.kernel.org>; Thu, 30 Jun 2022 17:16:44 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id c4so813627plc.8
-        for <bpf@vger.kernel.org>; Thu, 30 Jun 2022 17:16:44 -0700 (PDT)
+        with ESMTP id S231284AbiGACKJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Jun 2022 22:10:09 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FA555926A;
+        Thu, 30 Jun 2022 19:10:08 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id 65so1085885pfw.11;
+        Thu, 30 Jun 2022 19:10:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=J4i+7gveYvxAkhZZJGXWU89NE3aHI+/61Hv4AI+qIZA=;
-        b=cClKcuofVl755PDxtd7MsQ2JrS5iHWEbdaOsYa4YyQoMPHc45PvD7Vm7kaPbUl9iSS
-         6cyS7hYebyvs7VkShmjFKRYCG2SuORNA4w6jAGExpSraVwmZq0GPJxjsGD79XgdrrhwK
-         efQdBw71qxHdvkB58LAzGSA0c/rqz4QFf+13vVnr08snGuXvUZAfHK5qo1y0S7c5yU6Z
-         2SvRuBNwdh95bUv4Vs2pauO3vapelVwnSw8iPkIStM0F7CM/dGbJhJfNEJJOcJ3wSawb
-         K6/O6Q+S4ZLCTsW6KURJsEiKK/nH0rO2nDY+oI6ukrjW7FkSKLkyqYusyM5OxIdC8F+A
-         GQVA==
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=TPzc9hzYI8k2FxRM2hpn3voDVDIHF4dVpsXHC+1Tu7s=;
+        b=gBVeDZ03KcvJBES5Mel1TOuI2RwnXE1c+L+ElZyTILyKlhCDOTKIeR9wnAKnsJUrvh
+         LnQd3AEdwMe2LtE37lwEiG2FO0InKy3L1hPLVU7CFErPYWI5R3ZhpHL6p94/Ys4i6mQt
+         PCQYrqI81+OzYptpJ8cHOxY7OLO+7KQBzU4GIocEDipCIKb4DjcanZx6qWBsoe5cRqH9
+         VEdZkpUV2D8ZsTofzGFNh8R4LIJvZxDL4EoC4UgdcVdbaQ0sPF3liu59uBojSsrBxHGG
+         TH8UNxYgLynwWXNhlgGqMzxPbe/mmdB/n64hexi79uZ6Yq3gJwxh2WuXNelCrCcW22xh
+         zZ5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=J4i+7gveYvxAkhZZJGXWU89NE3aHI+/61Hv4AI+qIZA=;
-        b=tY9qPc8uNIq45FPKWPX6BweFqme9pEMN1zkMordHPgoiOMC8sYLbG9vS6628GCGgsj
-         5ycOvuYwzcH05KZJapn5ulPxXReLOxOuxQNQSG+2mqCLxooh7iU5j2dWyyflcJkJVB3P
-         wmdPzJFwjg51mx8zRDvtgdzraBZwKhXalUbIWOtyyw/IXnw25CrP/YPpZxkHzY372eye
-         cAev6lrK9pqsMRqtw9HhZJjO7TPujgyBMsOtcqqE6ksCZW//H8iCqnnRWfiikqawqHI+
-         3WioRHAMb1GB0B4PPwQR21FgoZ/NKWlJ6jxPNV8HXEuoKTpNJxsmN3gzRQGzK/lHFY6s
-         QufQ==
-X-Gm-Message-State: AJIora+0ThY3ir9LkuHkm+w+sJtiscUgU8XbT+/1gWsnsawUX9Wtn/ia
-        xzTNhTxLAUO2gDZvnJCPalR8BRQ8ADhAYDfFsH+/hg==
-X-Google-Smtp-Source: AGRyM1s/1A2XqR8GD3V2ZFGfq/yKCtKnBEDzgeGE6mJRKqO7KmGH8aMQh3+N5MWEbSU7azWHyuFpkOEipiWGpIM5eAU=
-X-Received: by 2002:a17:903:1111:b0:16a:acf4:e951 with SMTP id
- n17-20020a170903111100b0016aacf4e951mr18032957plh.72.1656634603462; Thu, 30
- Jun 2022 17:16:43 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=TPzc9hzYI8k2FxRM2hpn3voDVDIHF4dVpsXHC+1Tu7s=;
+        b=mSR5h2dQTZnz+R971Vo8V1s2RpBienSqSkd3OQDtu70IcGwKnjGUBw4Laal9Mg4wPb
+         pv67ZLJkSxrDAcnlaHuESO/uprveiB5SvEIbYCEkIk28yu/7xDmML2YofxvCngoBGv4T
+         ah/H2dM4IYObfBABPlPGa8IVRcHi6YkeSnm+IuPbMwEqSDSdzl9dljE94bJLnOukwezK
+         S8Yvi8347sJeybhwd4rckHiJFg6ONKyKMgwWBkmgDSmaKKpWjbNfLv2RHUoyIGeSazta
+         JzdKnqU87fproWuZv2oG3dboyxnAz0k644opk9MDNlZm7JkYiMuj2GUv5Djn80FB5riS
+         HPAw==
+X-Gm-Message-State: AJIora8mKKD33OyQd3AqPgi5U8MzN51wpUhDDsD9fZtv1BFz5m/cXc/N
+        KaQDuLAO1rjN9LyhTXiQjm8=
+X-Google-Smtp-Source: AGRyM1tjvQMaTJXcBGxQwkQiQom0kfqFUwwOpv3sLBzgVMyjtxprWaW6B8FqExhFOrlktzQCqqWGrQ==
+X-Received: by 2002:a05:6a00:430e:b0:525:26c1:973e with SMTP id cb14-20020a056a00430e00b0052526c1973emr17594804pfb.52.1656641407899;
+        Thu, 30 Jun 2022 19:10:07 -0700 (PDT)
+Received: from [192.168.43.80] (subs09a-223-255-225-70.three.co.id. [223.255.225.70])
+        by smtp.gmail.com with ESMTPSA id b184-20020a62cfc1000000b0050dc762816asm14497108pfg.68.2022.06.30.19.10.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Jun 2022 19:10:07 -0700 (PDT)
+Message-ID: <06e90032-95ee-25ff-cf66-a1a31eded210@gmail.com>
+Date:   Fri, 1 Jul 2022 09:10:01 +0700
 MIME-Version: 1.0
-References: <20220630224203.512815-1-sdf@google.com> <CA+khW7ixZWuKPXk0f-8=BNSUUWopKgkKJ8ev+KJ9oJdf8AyUQg@mail.gmail.com>
-In-Reply-To: <CA+khW7ixZWuKPXk0f-8=BNSUUWopKgkKJ8ev+KJ9oJdf8AyUQg@mail.gmail.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Thu, 30 Jun 2022 17:16:32 -0700
-Message-ID: <CAKH8qBv=3hMzpTy=K-n5+rObPhkns0gjJibVFHhNgG7ojrrMVQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: skip lsm_cgroup when don't have trampolines
-To:     Hao Luo <haoluo@google.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        jolsa@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH v4 bpf-next 1/2] bpf, docs: add kernel version to
+ map_cgroup_storage
+Content-Language: en-US
+To:     Dave Tucker <dave@dtucker.co.uk>, bpf@vger.kernel.org
+Cc:     corbet@lwn.net, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        linux-doc@vger.kernel.org
+References: <cover.1656590177.git.dave@dtucker.co.uk>
+ <8fd94a697b41cd39e600b87c59954c703bc75850.1656590177.git.dave@dtucker.co.uk>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+In-Reply-To: <8fd94a697b41cd39e600b87c59954c703bc75850.1656590177.git.dave@dtucker.co.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 30, 2022 at 4:48 PM Hao Luo <haoluo@google.com> wrote:
->
-> Hi Stan,
->
-> On Thu, Jun 30, 2022 at 3:42 PM Stanislav Fomichev <sdf@google.com> wrote:
-> >
-> > With arch_prepare_bpf_trampoline removed on x86:
-> >
-> >  #98/1    lsm_cgroup/functional:SKIP
-> >  #98      lsm_cgroup:SKIP
-> >  Summary: 1/0 PASSED, 1 SKIPPED, 0 FAILED
-> >
-> > Fixes: dca85aac8895 ("selftests/bpf: lsm_cgroup functional test")
-> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > ---
-> >  tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
-> > index d40810a742fa..c542d7e80a5b 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
-> > @@ -9,6 +9,10 @@
-> >  #include "cgroup_helpers.h"
-> >  #include "network_helpers.h"
-> >
-> > +#ifndef ENOTSUPP
-> > +#define ENOTSUPP 524
-> > +#endif
-> > +
-> >  static struct btf *btf;
-> >
-> >  static __u32 query_prog_cnt(int cgroup_fd, const char *attach_func)
-> > @@ -100,6 +104,10 @@ static void test_lsm_cgroup_functional(void)
-> >         ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_sk_alloc_security"), 0, "prog count");
-> >         ASSERT_EQ(query_prog_cnt(cgroup_fd, NULL), 0, "total prog count");
-> >         err = bpf_prog_attach(alloc_prog_fd, cgroup_fd, BPF_LSM_CGROUP, 0);
-> > +       if (err == -ENOTSUPP) {
-> > +               test__skip();
-> > +               goto close_cgroup;
-> > +       }
->
-> It seems ENOTSUPP is only used in the kernel. I wonder whether we
-> should let libbpf map ENOTSUPP to ENOTSUP, which is the errno used in
-> userspace and has been used in libbpf.
+On 6/30/22 19:04, Dave Tucker wrote:
+> This adds the version at which this map became available to use in the
+> documentation
+> 
 
-Yeah, this comes up occasionally, I don't think we've agreed on some
-kind of general policy about what to do with these :-(
-Thanks for the review!
+Shouldn't this be separated from [2/2]?	Because I see cover letter ([0/2])
+only mentioning documenting BPF_MAP_TYPE_ARRAY, so I expect that only
+[2/2] is included in this series.
 
-> Maybe the right thing is having bpf syscall return EOPNOTSUPP.
->
-> But, anyway, this fix looks good to me.
->
-> Acked-by: Hao Luo <haoluo@google.com>
->
->
->
-> >         if (!ASSERT_OK(err, "attach alloc_prog_fd"))
-> >                 goto detach_cgroup;
-> >         ASSERT_EQ(query_prog_cnt(cgroup_fd, "bpf_lsm_sk_alloc_security"), 1, "prog count");
-> > --
-> > 2.37.0.rc0.161.g10f37bed90-goog
-> >
+-- 
+An old man doll... just what I always wanted! - Clara
