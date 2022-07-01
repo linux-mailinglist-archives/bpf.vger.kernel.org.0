@@ -2,93 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B99056345C
-	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 15:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 167235634B9
+	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 15:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbiGAN3d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Jul 2022 09:29:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55682 "EHLO
+        id S232012AbiGANwy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Jul 2022 09:52:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229673AbiGAN3c (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Jul 2022 09:29:32 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 232B712AEA;
-        Fri,  1 Jul 2022 06:29:32 -0700 (PDT)
-Received: from sslproxy04.your-server.de ([78.46.152.42])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1o7Gi2-0008yQ-ME; Fri, 01 Jul 2022 15:29:22 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1o7Gi2-00059I-78; Fri, 01 Jul 2022 15:29:22 +0200
-Subject: Re: [PATCH bpf] xdp: Fix spurious packet loss in generic XDP TX path
-To:     Eric Dumazet <edumazet@google.com>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S230214AbiGANwx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Jul 2022 09:52:53 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E766B286ED;
+        Fri,  1 Jul 2022 06:52:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1656683572; x=1688219572;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=hU5wtGG6cfmkysoPoL41jEdZ2gEmdJViRKm4NPb0bgE=;
+  b=EPv9QJTRepvHoM7RXJmoPC5ZR27AzQALETHdqoOUviwUbxg0lG6oWoIf
+   7M2gL+VrXfoRv8iKiG3m3vVuWM9aRkosYgJq90ZTP4AmkYq5z4iJ55E4Y
+   lWk3nofR4Kd4Lh+aCu3bsmqEaFdfAK+ni6wKlFntltEiJBcRAJM0OMk39
+   K5p3+GV30anucBwafxKe+bz0wG1SBJcDd3mVaCKYfYz4wyo1PVYU6hv30
+   nxe7sG5zC3sXuQruNX8mEAW/zhF53X23As4GoqNbolOqRVjG61JT0Mqdc
+   RE3A6ahiex3I/ykaxOZxe1ziSJyRIQR+Ra5QjQsSvW3SOHtryJNmtKt0y
+   g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10394"; a="280207482"
+X-IronPort-AV: E=Sophos;i="5.92,237,1650956400"; 
+   d="scan'208";a="280207482"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jul 2022 06:52:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.92,237,1650956400"; 
+   d="scan'208";a="694515095"
+Received: from boxer.igk.intel.com (HELO boxer) ([10.102.20.173])
+  by fmsmga002.fm.intel.com with ESMTP; 01 Jul 2022 06:52:50 -0700
+Date:   Fri, 1 Jul 2022 15:52:49 +0200
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, song@kernel.org,
-        martin.lau@linux.dev, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>, haoluo@google.com,
-        jolsa@kernel.org, bpf <bpf@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>
-References: <20220701094256.1970076-1-johan.almbladh@anyfinetworks.com>
- <CANn89i+FZ7t6F6tA8iFMjAzGmKkK=A+kdFpsm6ioygg5DnwT8g@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <73774e57-64c3-e32d-d762-1fcf64d5628c@iogearbox.net>
-Date:   Fri, 1 Jul 2022 15:29:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Alexei Starovoitov <ast@kernel.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, kernel-janitors@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] MAINTAINERS: adjust XDP SOCKETS after file movement
+Message-ID: <Yr78Md1Nqpj+peO0@boxer>
+References: <20220701042810.26362-1-lukas.bulwahn@gmail.com>
+ <Yr7mcjRq57laZGEY@boxer>
+ <CAJ8uoz16yGJqYX2xOcczTGKFnG4joh8+f1uPGMAP4rmm3feYDQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CANn89i+FZ7t6F6tA8iFMjAzGmKkK=A+kdFpsm6ioygg5DnwT8g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26590/Fri Jul  1 09:25:21 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJ8uoz16yGJqYX2xOcczTGKFnG4joh8+f1uPGMAP4rmm3feYDQ@mail.gmail.com>
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/1/22 11:57 AM, Eric Dumazet wrote:
-> On Fri, Jul 1, 2022 at 11:43 AM Johan Almbladh
-> <johan.almbladh@anyfinetworks.com> wrote:
->>
->> The byte queue limits (BQL) mechanism is intended to move queuing from
->> the driver to the network stack in order to reduce latency caused by
->> excessive queuing in hardware. However, when transmitting or redirecting
->> a packet with XDP, the qdisc layer is bypassed and there are no
->> additional queues. Since netif_xmit_stopped() also takes BQL limits into
->> account, but without having any alternative queuing, packets are
->> silently dropped.
->>
->> This patch modifies the drop condition to only consider cases when the
->> driver itself cannot accept any more packets. This is analogous to the
->> condition in __dev_direct_xmit(). Dropped packets are also counted on
->> the device.
+On Fri, Jul 01, 2022 at 03:13:36PM +0200, Magnus Karlsson wrote:
+> On Fri, Jul 1, 2022 at 2:38 PM Maciej Fijalkowski
+> <maciej.fijalkowski@intel.com> wrote:
+> >
+> > On Fri, Jul 01, 2022 at 06:28:10AM +0200, Lukas Bulwahn wrote:
+> > > Commit f36600634282 ("libbpf: move xsk.{c,h} into selftests/bpf") moves
+> > > files tools/{lib => testing/selftests}/bpf/xsk.[ch], but misses to adjust
+> > > the XDP SOCKETS (AF_XDP) section in MAINTAINERS.
+> > >
+> > > Adjust the file entry after this file movement.
+> > >
+> > > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> > > ---
+> > > Andrii, please ack.
+> > >
+> > > Alexei, please pick this minor non-urgent clean-up on top of the commit above.
+> > >
+> > >  MAINTAINERS | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/MAINTAINERS b/MAINTAINERS
+> > > index fa4bfa3d10bf..27d9e65b9a85 100644
+> > > --- a/MAINTAINERS
+> > > +++ b/MAINTAINERS
+> > > @@ -22042,7 +22042,7 @@ F:    include/uapi/linux/xdp_diag.h
+> > >  F:   include/net/netns/xdp.h
+> > >  F:   net/xdp/
+> > >  F:   samples/bpf/xdpsock*
+> > > -F:   tools/lib/bpf/xsk*
+> > > +F:   tools/testing/selftests/bpf/xsk*
+> >
+> > Magnus, this doesn't cover xdpxceiver.
+> > How about we move the lib part and xdpxceiver part to a dedicated
+> > directory? Or would it be too nested from main dir POV?
 > 
-> This means XDP packets are able to starve other packets going through a qdisc,
-> DDOS attacks will be more effective.
-> 
-> in-driver-XDP use dedicated TX queues, so they do not have this
-> starvation issue.
-> 
-> This should be mentioned somewhere I guess.
+> Or we can just call everything we add xsk* something?
 
-+1, Johan, could you add this as comment and into commit description in a v2
-of your fix? Definitely should be clarified that it's limited to generic XDP.
+No strong feelings. test_xsk.sh probably also needs to be addressed.
+That's why I proposed dedicated dir.
 
-Thanks,
-Daniel
+> 
+> > >
+> > >  XEN BLOCK SUBSYSTEM
+> > >  M:   Roger Pau Monné <roger.pau@citrix.com>
+> > > --
+> > > 2.17.1
+> > >
