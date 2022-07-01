@@ -2,82 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A21B8563A25
-	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 21:57:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EEE7563A77
+	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 22:12:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230094AbiGAT4w (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Jul 2022 15:56:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35310 "EHLO
+        id S231320AbiGAUKT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Jul 2022 16:10:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230090AbiGAT4v (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Jul 2022 15:56:51 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C9CF44A0A
-        for <bpf@vger.kernel.org>; Fri,  1 Jul 2022 12:56:50 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id be14-20020a05600c1e8e00b003a04a458c54so2138031wmb.3
-        for <bpf@vger.kernel.org>; Fri, 01 Jul 2022 12:56:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6Q66BpC/Bfw6KE9I0Ok3dyI9GpbNAKGGiuPxmBCNXl8=;
-        b=pH0Y2702b37wK3d0ETrivAg5zFbiQMTrzveJ/TumUiniz1hTe2Nhs2v9iS3GqRn+68
-         Bl6UX/nFMarhNTMNOLNo1jibbqLQWIdVMcLr8W4/W70d4nuu7Z6B34qXYHYAIbnOhh+W
-         3pTrADRA/hrj5RtHqQwc96pXtyTiMNdEuNJtuXC2WCGBH4V6kvNUj6l5vFijyegv+0nr
-         6gx2NqwOLWUPCaERB9joG4rmoqmzqHJSslygnVD/rl6Ybdjylzr28n1pv5yE6iNgBT/l
-         pmp1WQv13Gqc4FXSjPYrN+zkhSUUUcRGdoI4zOQenYCTWl0UhnYD5EX0packijAWZloN
-         CRjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6Q66BpC/Bfw6KE9I0Ok3dyI9GpbNAKGGiuPxmBCNXl8=;
-        b=YCvJovpNm0ZNF9gppABxyLoMFKfOTIP+VhKLmqiUAFqtcQdBNESu7s0AOY40iuvJLX
-         1u8psm8rZxNphP8prtIQk6ueLI4DjLHhlA/6SL1Osb+jdfX8l7jtpfFBfrmFcbtBGQvh
-         g2kVDtUWjsdvEGMBFnCxvL/PeB5BiR/LTfman5aPkmY5MUTqdObvtcka+ww2Ksq1yH8V
-         YtA9NbHYFWDXeeMkiwJM44E8t8WL90zzvUNmc6QkhHDgKZBmIvcdwEIMDkIGcpkNH0T3
-         c9JseBJHeRLcxq7CCjKrROeV0GhuvEIkTMEB/7YxzeZugx1kB/ySwApYkK7OJR3P5Tio
-         1o8A==
-X-Gm-Message-State: AJIora8jNyTbFRKf2mlKohM1vAbTWTGMCUJ2/BvKSqV5Wz6KeBf8eQic
-        BegrusVQHsub529bxO6KI6WEmZdqcIJTmcw=
-X-Google-Smtp-Source: AGRyM1tqkzzbpsKDInMBkTIt0UL0VTxJk4U8qztKg0wJj6/XD/Y8zbNTmdnwDN2jHtIvgz5dJuUzKg==
-X-Received: by 2002:a1c:2703:0:b0:3a0:2ffb:1781 with SMTP id n3-20020a1c2703000000b003a02ffb1781mr19480563wmn.146.1656705408962;
-        Fri, 01 Jul 2022 12:56:48 -0700 (PDT)
-Received: from playground (host-78-146-72-11.as13285.net. [78.146.72.11])
-        by smtp.gmail.com with ESMTPSA id ay30-20020a05600c1e1e00b003a033177655sm7802340wmb.29.2022.07.01.12.56.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Jul 2022 12:56:48 -0700 (PDT)
-Date:   Fri, 1 Jul 2022 20:56:44 +0100
-From:   Jules Irenge <jbi.octave@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH 1/2] btf: Fix required space error
-Message-ID: <Yr9RfDIdgl+lwzmJ@playground>
-References: <YryIdu0jdTF+fIiW@playground>
- <CAADnVQ+8dqkrp_tH4PfeY9wOA60QAHS2xo4xt5F09Q-UUBHeQA@mail.gmail.com>
+        with ESMTP id S231196AbiGAUKS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Jul 2022 16:10:18 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C44D3101E3
+        for <bpf@vger.kernel.org>; Fri,  1 Jul 2022 13:10:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7064DB831E3
+        for <bpf@vger.kernel.org>; Fri,  1 Jul 2022 20:10:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 31FC4C341CA;
+        Fri,  1 Jul 2022 20:10:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1656706215;
+        bh=5lkgv2P9+OMI+a2wydNKtyF+Ixt+vVIGm41iMdLTrgw=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=XBq3CZFc7/QtoSWuI64545xh/LqQdmeGIZMomR1pCnXaKs5VRUTrMf0+1E0+SbNIA
+         8AWYKFjxZmeISZtAqN6HvaR/risVO5Od+eVsHrB3rJiLd3WcLaDYYCjZv5IpOXpUW6
+         WEkc7+HSK6S8VzsfH65FxEVSUKN7i1kKB8CopcnQILsn2N8SvOg/JzFu4WAHCyy8fb
+         Wx1gGaDL9Kq3CNv1MBUrSfDsZT8iUY7LsVJyuWzu9Y3Qa6Mi5asQylGjE3IIDhn8GN
+         UCnI14jm5Y7ixbW+FwRpSFj9oUjwvMbcrbiBl9Nh5PVVrSgTW5Hr6fKjliWe9CIB7g
+         gf1N0vdlp+amA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 13266E49BBC;
+        Fri,  1 Jul 2022 20:10:15 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQ+8dqkrp_tH4PfeY9wOA60QAHS2xo4xt5F09Q-UUBHeQA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf 1/4] bpf: Fix incorrect verifier simulation around jmp32's
+ jeq/jne
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <165670621507.10143.15497711583157007755.git-patchwork-notify@kernel.org>
+Date:   Fri, 01 Jul 2022 20:10:15 +0000
+References: <20220701124727.11153-1-daniel@iogearbox.net>
+In-Reply-To: <20220701124727.11153-1-daniel@iogearbox.net>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     ast@kernel.org, andrii@kernel.org, john.fastabend@gmail.com,
+        liulin063@gmail.com, bpf@vger.kernel.org
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 29, 2022 at 12:21:44PM -0700, Alexei Starovoitov wrote:
-> On Wed, Jun 29, 2022 at 10:14 AM Jules Irenge <jbi.octave@gmail.com> wrote:
-> >
-> > This patch fixes error reported ny Checkpatch at bpf_log()
-> 
-> Please do not send patches suggested by checkpatch.
-> checkpatch is not an authoritative tool.
-> It's merely suggesting things.
+Hello:
 
-Thanks, I take good note. I will try with better tools with less false
-positive.
+This series was applied to bpf/bpf.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
+
+On Fri,  1 Jul 2022 14:47:24 +0200 you wrote:
+> Kuee reported a quirk in the jmp32's jeq/jne simulation, namely that the
+> register value does not match expectations for the fall-through path. For
+> example:
+> 
+> Before fix:
+> 
+>   0: R1=ctx(off=0,imm=0) R10=fp0
+>   0: (b7) r2 = 0                        ; R2_w=P0
+>   1: (b7) r6 = 563                      ; R6_w=P563
+>   2: (87) r2 = -r2                      ; R2_w=Pscalar()
+>   3: (87) r2 = -r2                      ; R2_w=Pscalar()
+>   4: (4c) w2 |= w6                      ; R2_w=Pscalar(umin=563,umax=4294967295,var_off=(0x233; 0xfffffdcc),s32_min=-2147483085) R6_w=P563
+>   5: (56) if w2 != 0x8 goto pc+1        ; R2_w=P571  <--- [*]
+>   6: (95) exit
+>   R0 !read_ok
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf,1/4] bpf: Fix incorrect verifier simulation around jmp32's jeq/jne
+    https://git.kernel.org/bpf/bpf/c/a12ca6277eca
+  - [bpf,2/4] bpf: Fix insufficient bounds propagation from adjust_scalar_min_max_vals
+    https://git.kernel.org/bpf/bpf/c/3844d153a41a
+  - [bpf,3/4] bpf, selftests: Add verifier test case for imm=0,umin=0,umax=1 scalar
+    https://git.kernel.org/bpf/bpf/c/73c4936f916d
+  - [bpf,4/4] bpf, selftests: Add verifier test case for jmp32's jeq/jne
+    https://git.kernel.org/bpf/bpf/c/a49b8ce7306c
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
