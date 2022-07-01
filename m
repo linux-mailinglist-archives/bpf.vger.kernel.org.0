@@ -2,134 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1E3D5630CF
-	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 11:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FCD6563171
+	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 12:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233303AbiGAJ6q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Jul 2022 05:58:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50560 "EHLO
+        id S234161AbiGAKdi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Jul 2022 06:33:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236158AbiGAJ6p (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Jul 2022 05:58:45 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF64913F43
-        for <bpf@vger.kernel.org>; Fri,  1 Jul 2022 02:58:44 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id i15so3189825ybp.1
-        for <bpf@vger.kernel.org>; Fri, 01 Jul 2022 02:58:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=zkRKKkHvNmeWqvRVOQLK4rfH21duyawXjkMEAhn/9YU=;
-        b=iH7zfi+XP7pIUZhUau9aJINoHOfYxpsLb/3wWq1V3ymavu45rdSzRw/FgItk8vRLG1
-         5Tyf0YGRrD1eNsHJd0eMvsszyXd3Rm+jDKfHCRoctjewnUxj/e8kTAzt83Xu5aEm8WqI
-         dmAe5in5k40uBm//jqtGzaaLzmziliUmdB0lSz4MdKJpQtd3n558fPHgkpOCn+m3++kZ
-         f0D+9hHzbuYxwXo+OwdxRj3eJOQoFpF7c9n3NKksPY0B2Au64CzMdraF4MWhAMbh+z0V
-         0jGiwABTLtE0AtC0PyIavQQ1JLaq0nT2/hKat7JlSovDTEdlBBEr5ErGarPCo3nVq8AK
-         0XVA==
+        with ESMTP id S234167AbiGAKdh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Jul 2022 06:33:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 290D529828
+        for <bpf@vger.kernel.org>; Fri,  1 Jul 2022 03:33:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1656671613;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=D9vvNVdwZntnKvurfg1+X4py3l/2siLv6GCS2CIvmXo=;
+        b=dh8Cbc5O6pgxNmQLfpiMeXq3rFnHM0mWhI6bnOjJCHjXBtosuwgSKnv9NaIVqVH5AbNCSq
+        Qm61FZEvYLFuL0G4OUM4Jx2Q1DpbjEqjxtdyZTNGDjade7YahjCqiS+et5SzyeS+oIW3as
+        IFLYy3AuW2H5382e3rE1TgIyxaSw28w=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-402-KaHGCf-BNaSGW6nwGo_mYQ-1; Fri, 01 Jul 2022 06:33:32 -0400
+X-MC-Unique: KaHGCf-BNaSGW6nwGo_mYQ-1
+Received: by mail-lf1-f70.google.com with SMTP id be18-20020a056512251200b0048120ff434dso951389lfb.19
+        for <bpf@vger.kernel.org>; Fri, 01 Jul 2022 03:33:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to:content-transfer-encoding;
-        bh=zkRKKkHvNmeWqvRVOQLK4rfH21duyawXjkMEAhn/9YU=;
-        b=jGL440c/YtIEg7jAOcZqv7E6BivmCVxjfqybu7aM60hhCECMdG4f+tEuA1F4TuqQJ6
-         N6OKxq7wBO06MA2nVUxFr8WTn3WenUrR7v+bPWg2/21HZrwoe2F4goWvDf3KGiwWdd17
-         UcBHdHKrZi670SDuGXGVEh4uhptXr8pAwsAALUKjLbrmQCvvL4CaOXrlfqP3HGaRG3FG
-         GBgNT8hniNCXtDpaQGWEZiD8JGDH/Fabve4gtZN5jZB2agST7p9q1rWm5Ips+EcZgV4B
-         rU8H1ylnTRjmJ7M+w9GauYKyzkQXOy1afyY8jx/DEW0PI6nD9p/HcOa6eMrzcQE+0FLv
-         kmbg==
-X-Gm-Message-State: AJIora+FPRuixZqOUx8FRsWFi3DUGtjlBRc0rWQIChXYx2/h6i4P7pho
-        Xs11d0VACr5j6jMtDZvUvHSTyjBt2jlT5nTA2dw=
-X-Google-Smtp-Source: AGRyM1vCSKD+0Z8GkEtOq6XrCadYXhqoL62ZHkT/R9HWeBXiBiYMNzKhuuB9zAGCX/CZO9CLPMmU/HOOLN6HLNiO7Gw=
-X-Received: by 2002:a5b:4c4:0:b0:668:5604:b395 with SMTP id
- u4-20020a5b04c4000000b006685604b395mr14516177ybp.355.1656669524034; Fri, 01
- Jul 2022 02:58:44 -0700 (PDT)
+        h=x-gm-message-state:from:message-id:date:mime-version:user-agent:cc
+         :subject:content-language:to:references:in-reply-to
+         :content-transfer-encoding;
+        bh=D9vvNVdwZntnKvurfg1+X4py3l/2siLv6GCS2CIvmXo=;
+        b=4zRyatuUajjOwUi/9UeHklyvVPBgxNviLD+YgRId4jpb99POYMy+yzaxSH1zlCJGO4
+         bDDnK0lZwPDN6eA7G071nIE+N3WxzTOE4PSCOr957GEi/8ruDWwklwUllMZlgl6PwIG1
+         uFb5Y0duDUn9jADTLkKUvzEMNfp7dCRHdVbFln98vWpUSTEjmht+Om6dRMLNSoQz1Kuk
+         riyEw1MjM+nOhB9nZPYCVkkxYV+Wy4UxycUcpr7UjdK8xo3ziMu9QJ3Vq2v7KXqIvEEh
+         ThMzXCtny78Ps1l8ugBN6ocVYoMV0XURpdqTz+1VTOsAgXBx49KKqiS9UNG4DdasIwWj
+         k0EQ==
+X-Gm-Message-State: AJIora/qto7VvMQRKj+cOHLsB6PqyoXy5N4zNkswKtAIHWp4iQUatbMD
+        NMWcZtJUiNsPY82gVApOesBRG/1lKaG8yhImsqdfkCWlCIhGi3/+8L/ICzUaPgdhBIc7tAmTfHJ
+        Ojxr4Qi9zy79D
+X-Received: by 2002:a2e:9355:0:b0:25a:9192:6c47 with SMTP id m21-20020a2e9355000000b0025a91926c47mr7979810ljh.190.1656671608836;
+        Fri, 01 Jul 2022 03:33:28 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1vcmteMDZtWRYHA9EU8MCQzoetmEZRfrs252gukrELHV8ZduHrcVh8HsCwabQsh6ZdIkBUQsQ==
+X-Received: by 2002:a2e:9355:0:b0:25a:9192:6c47 with SMTP id m21-20020a2e9355000000b0025a91926c47mr7979782ljh.190.1656671608572;
+        Fri, 01 Jul 2022 03:33:28 -0700 (PDT)
+Received: from [192.168.0.50] (87-59-106-155-cable.dk.customer.tdc.net. [87.59.106.155])
+        by smtp.gmail.com with ESMTPSA id h4-20020a05651c124400b0025a968f4ffesm3120080ljh.19.2022.07.01.03.33.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Jul 2022 03:33:27 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <224bc3b2-b63f-d1c8-5f4d-41b367f7b329@redhat.com>
+Date:   Fri, 1 Jul 2022 12:33:26 +0200
 MIME-Version: 1.0
-Sender: samsonka22@gmail.com
-Received: by 2002:a05:7000:9993:0:0:0:0 with HTTP; Fri, 1 Jul 2022 02:58:43
- -0700 (PDT)
-From:   HANAH VANDRAD <h.vandrad@gmail.com>
-Date:   Fri, 1 Jul 2022 02:58:43 -0700
-X-Google-Sender-Auth: kLQhUPwowyaZihuoeTULEYpoq6c
-Message-ID: <CAKY8iZozFUxKu3DfAcg_eqH9PCk-7E95-GJAxUWPHf3okqjhog@mail.gmail.com>
-Subject: Greetings dear
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=6.3 required=5.0 tests=ADVANCE_FEE_5_NEW_MONEY,
-        BAYES_50,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,LOTS_OF_MONEY,MONEY_FRAUD_8,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNDISC_MONEY autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:b42 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [samsonka22[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [samsonka22[at]gmail.com]
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        *  0.0 MONEY_FRAUD_8 Lots of money and very many fraud phrases
-        *  3.0 ADVANCE_FEE_5_NEW_MONEY Advance Fee fraud and lots of money
-        *  2.5 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: ******
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Cc:     brouer@redhat.com, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>, song@kernel.org,
+        martin.lau@linux.dev, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>, haoluo@google.com,
+        jolsa@kernel.org, bpf <bpf@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Freysteinn Alfredsson <Freysteinn.Alfredsson@kau.se>,
+        Toke Hoiland Jorgensen <toke@redhat.com>
+Subject: Re: [PATCH bpf] xdp: Fix spurious packet loss in generic XDP TX path
+Content-Language: en-US
+To:     Eric Dumazet <edumazet@google.com>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>
+References: <20220701094256.1970076-1-johan.almbladh@anyfinetworks.com>
+ <CANn89i+FZ7t6F6tA8iFMjAzGmKkK=A+kdFpsm6ioygg5DnwT8g@mail.gmail.com>
+In-Reply-To: <CANn89i+FZ7t6F6tA8iFMjAzGmKkK=A+kdFpsm6ioygg5DnwT8g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Greetings dear
 
+On 01/07/2022 11.57, Eric Dumazet wrote:
+> On Fri, Jul 1, 2022 at 11:43 AM Johan Almbladh
+> <johan.almbladh@anyfinetworks.com> wrote:
+>>
+>> The byte queue limits (BQL) mechanism is intended to move queuing from
+>> the driver to the network stack in order to reduce latency caused by
+>> excessive queuing in hardware. However, when transmitting or redirecting
+>> a packet with XDP, the qdisc layer is bypassed and there are no
+>> additional queues. Since netif_xmit_stopped() also takes BQL limits into
+>> account, but without having any alternative queuing, packets are
+>> silently dropped.
+>>
+>> This patch modifies the drop condition to only consider cases when the
+>> driver itself cannot accept any more packets. This is analogous to the
+>> condition in __dev_direct_xmit(). Dropped packets are also counted on
+>> the device.
+> 
+> This means XDP packets are able to starve other packets going through a qdisc,
+> DDOS attacks will be more effective.
+> 
+> in-driver-XDP use dedicated TX queues, so they do not have this
+> starvation issue.
 
-   This letter might be a surprise to you, But I believe that you will
-be honest to fulfill my final wish. I bring peace and love to you. It
-is by the grace of god, I had no choice than to do what is lawful and
-right in the sight of God for eternal life and in the sight of man for
-witness of god's mercy and glory upon my life. My dear, I sent this
-mail praying it will find you in a good condition, since I myself am
-in a very critical health condition in which I sleep every night
-without knowing if I may be alive to see the next day. I am Mrs.Hannah
-Vandrad, a widow suffering from a long time illness. I have some funds
-I inherited from my late husband, the sum of ($11,000,000.00,)
-my Doctor told me recently that I have serious
-sickness which is a cancer problem. What disturbs me most is my stroke
-sickness. Having known my condition, I decided to donate this fund to
-a good person that will utilize it the way I am going to instruct
-herein. I need a very honest and God fearing person who can claim this
-money and use it for Charity works, for orphanages and gives justice
-and help to the poor, needy and widows says The Lord." Jeremiah
-22:15-16.=E2=80=9C and also build schools for less privilege that will be
-named after my late husband if possible and to promote the word of god
-and the effort that the house of god is maintained.
+Good point. This happen in XDP-generic path, because XDP share the TX
+queue with normal network stack.
 
- I do not want a situation where this money will be used in an ungodly
-manner. That's why I'm taking this decision. I'm not afraid of death,
-so I know where I'm going. I accept this decision because I do not
-have any child who will inherit this money after I die. Please I want
-your sincere and urgent answer to know if you will be able to execute
-this project, and I will give you more information on how the fund
-will be transferred to your bank account. May the grace, peace, love
-and the truth in the Word of god be with you and all those that you
-love and  care for.
+> 
+> This should be mentioned somewhere I guess.
 
-I am waiting for your reply.
+I want to mention that (even for in-driver-XDP) not having a queuing 
+mechanism for XDP redirect is a general problem (and huge foot gun). 
+E.g. doing XDP-redirect between interfaces with different link rates 
+quickly result in issues.
+We have Toke + PhD student (Frey Cc) working[1] on "XDQ" to address this 
+generically.  I urge them to look at the code for the push-back 
+mechanism that netif_xmit_frozen_or_drv_stopped() and BQL provides and 
+somehow integrated XDQ with this...
 
-May God Bless you,
+--Jesper
 
- Mrs.Hannah Vandrad.
+  [1] https://youtu.be/tthG9LP5GFk
+
+>>
+>> Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+>> ---
+>>   net/core/dev.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/net/core/dev.c b/net/core/dev.c
+>> index 8e6f22961206..41b5d7ac5ec5 100644
+>> --- a/net/core/dev.c
+>> +++ b/net/core/dev.c
+>> @@ -4875,10 +4875,12 @@ void generic_xdp_tx(struct sk_buff *skb, struct bpf_prog *xdp_prog)
+>>          txq = netdev_core_pick_tx(dev, skb, NULL);
+>>          cpu = smp_processor_id();
+>>          HARD_TX_LOCK(dev, txq, cpu);
+>> -       if (!netif_xmit_stopped(txq)) {
+>> +       if (!netif_xmit_frozen_or_drv_stopped(txq)) {
+>>                  rc = netdev_start_xmit(skb, dev, txq, 0);
+>>                  if (dev_xmit_complete(rc))
+>>                          free_skb = false;
+>> +       } else {
+>> +               dev_core_stats_tx_dropped_inc(dev);
+>>          }
+>>          HARD_TX_UNLOCK(dev, txq);
+>>          if (free_skb) {
+>> --
+>> 2.30.2
+>>
+> 
+
