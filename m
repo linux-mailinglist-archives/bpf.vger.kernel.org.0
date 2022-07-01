@@ -2,141 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D6B7562986
-	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 05:21:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5861E56298C
+	for <lists+bpf@lfdr.de>; Fri,  1 Jul 2022 05:26:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233329AbiGADUU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Jun 2022 23:20:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39708 "EHLO
+        id S233490AbiGAD0d (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Jun 2022 23:26:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233605AbiGADUT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Jun 2022 23:20:19 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E788664D6B
-        for <bpf@vger.kernel.org>; Thu, 30 Jun 2022 20:20:18 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id 23so1200879pgc.8
-        for <bpf@vger.kernel.org>; Thu, 30 Jun 2022 20:20:18 -0700 (PDT)
+        with ESMTP id S231295AbiGAD0d (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Jun 2022 23:26:33 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64AB45C9F9;
+        Thu, 30 Jun 2022 20:26:31 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id g20-20020a17090a579400b001ed52939d72so1397645pji.4;
+        Thu, 30 Jun 2022 20:26:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=UXfGFCdmVuXm58c2GJyz3SYsDckxXPxP5AoGJYfEwo4=;
-        b=Q72FfzYPo2g8aHn5if7WORrBIL7CtcDlffOdx02JZTEq4eoGH8WYhH/mIrU3EG95d6
-         tJRxI3BEZtEzoX+eRhiS3nbdsw72ZC62cdDkQmQiYLQsRMpP803MpMsvGfXiPNgGWlaW
-         FmPd9Ku42w6dWE89LpcsWcf+/1TwAEeTzsxrLqFdf8ox3IsNHZq/jGbt51g302AYFbNh
-         10CZR/rgr1wl6aP6SvcWfgXRBTj2gH4zLXgzv9wnPgL2nEmSHkv+tcUSAX30Njs6Fb/W
-         vHnQfn6QmJ2tx2aa0xUd0IPNCyz+hbpSeC6XeCEfUFpQsyTaHyTClQbrdpIF3FNBIfBV
-         Dvjw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PG5AhYoIdRr8hftfaH4HQ+U2ZyYad5zoCCH/IXcLGSA=;
+        b=DDNHO4z1Xepl7Q3XmVKBG4VjEukeZsSSuMUY3FkQdPcEsoSQ9+c4xb9OzRPc/uh2jj
+         7macgjWYfrz1Qeta1chrT2cxjxP7TuXd6EK0o/8ayXT5Rd7IgFAlAqFejh2UaGiaMUnB
+         68Wo2RRHbO9hf/spbjM8KG3KOxN9tXX6E+K7OU4jPTmguQNw9boJucD9V99BPVZ1I7sA
+         CwI0ZZ9YZFC1KPWC2nIkkhbHyBGN79pPvpdyiP2dxLGoF/58RWnJeJraVJNF0WNOQ0rp
+         Bn/ZroPwjqN6mFbOK0iJcHMt2ewCrZej0gBQ2GyW8WofyR1hZ44a61+EtQJ3qlZDdNvj
+         IbYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=UXfGFCdmVuXm58c2GJyz3SYsDckxXPxP5AoGJYfEwo4=;
-        b=5SM9WO+uv0ow5iaKSA58C7BS/77kIFnJqsDWh8CKcYhPWIlGdsHJZDs6ZE8UFHgR9e
-         1YvQ0eqx9XSbkV5FZm9NATe7E1D9YughP/JW21opXr+teL+fwUrpEYewcdSygDBi0p9U
-         70IBIDgsdEFEaqsVOqqI4PkgIED6Dc+vgiFZdsaq4zqJ2bo5Nmg6mAytGx+M+Yn+RQ3n
-         qSm3OTpfapFZExdDWoWpfnm48uQlGAZYPtJYg6vWeXX5pThDcdHuOqc49/7atne084az
-         KjW5P0+4HHqo7ib6IZlqZNAmMllIQIqITY8CxPvd9oZgQH9zcspnkgMw5pfi9+YK/Lhl
-         xfHg==
-X-Gm-Message-State: AJIora8h+hy0l5zuC8cbwNAsIRpo8o1uq8HEDC2CJcecdFRQttXUSaW2
-        UeCkUf2N+jF11NHCdDU2en4=
-X-Google-Smtp-Source: AGRyM1u1ISs8a7nbL9uwKQq6XEksuAtVmpEXbeH6FCOOsTxqr1d2AaObRd8by6dTafmvqdxcTIG9Hw==
-X-Received: by 2002:a65:6a50:0:b0:3f6:4566:581d with SMTP id o16-20020a656a50000000b003f64566581dmr10171240pgu.122.1656645618499;
-        Thu, 30 Jun 2022 20:20:18 -0700 (PDT)
-Received: from [192.168.255.10] ([203.205.141.111])
-        by smtp.gmail.com with ESMTPSA id ij28-20020a170902ab5c00b0016223016d79sm14266049plb.90.2022.06.30.20.20.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Jun 2022 20:20:17 -0700 (PDT)
-Message-ID: <7f5af9ab-501d-1c61-04f8-6fb3c1017df4@gmail.com>
-Date:   Fri, 1 Jul 2022 11:20:15 +0800
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PG5AhYoIdRr8hftfaH4HQ+U2ZyYad5zoCCH/IXcLGSA=;
+        b=LjoDolqLcA7XYNt9xGgC7AelRzIUrKBYn5ynZnpWscFNbK+MCpyN68nsLHZL2N8NX/
+         KoboK4RNMzxEfIWuh8weRejlTQp9ND/g0b5X14mGGstEWYtVUv2ssR0NVgLeAVPoMjV4
+         dVuDtoASarwGbbQujRR+opGNq1cSH5TRHSGC7sT2uU+JETwHE8VTUqHG9c2V42YCskc+
+         5RAJQ1+RWvy0knF0Umcxi8NfMh7xSrBM65R3eteByBk+N9eZnKGkVQ3L4V5gX7fk9AFV
+         Cg5lDelCKbkOCyGo5PyGv9/qHN2A2la5kQ/tghiBWP/SERRwLjoFPbHwa3TFmrNqiiNQ
+         kZLQ==
+X-Gm-Message-State: AJIora/Vzg+JHcIAuXstN/HygQ4jRPV6iudUTaqVKzUWVdvBxMP1b3kc
+        fxJ8gcVrEbEBZUVQYJVLpYI=
+X-Google-Smtp-Source: AGRyM1uFgObytDbbIukP9x1A21itmngXZajIQu46vKpmIFkLsUb+TUpi6ahEOpftmv7vIog7rPipxg==
+X-Received: by 2002:a17:902:aa47:b0:16b:8e4c:93d2 with SMTP id c7-20020a170902aa4700b0016b8e4c93d2mr17692203plr.27.1656645990890;
+        Thu, 30 Jun 2022 20:26:30 -0700 (PDT)
+Received: from debian.me (subs03-180-214-233-70.three.co.id. [180.214.233.70])
+        by smtp.gmail.com with ESMTPSA id l11-20020a170903120b00b0016b953872a7sm5992830plh.201.2022.06.30.20.26.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Jun 2022 20:26:30 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 1BB781038C1; Fri,  1 Jul 2022 10:26:25 +0700 (WIB)
+Date:   Fri, 1 Jul 2022 10:26:25 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Dave Tucker <dave@dtucker.co.uk>
+Cc:     bpf@vger.kernel.org, corbet@lwn.net, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v4 bpf-next 2/2] bpf, docs: document BPF_MAP_TYPE_ARRAY
+Message-ID: <Yr5pYWg2YSyVgdqA@debian.me>
+References: <cover.1656590177.git.dave@dtucker.co.uk>
+ <ca8a57db17da57f403b029c14ba4f0b89774d361.1656590177.git.dave@dtucker.co.uk>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.9.0
-Subject: Re: [PATCH bpf-next] libbpf: Allow attach USDT BPF program without
- specifying binary path
-Content-Language: en-US
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
-References: <20220630135250.241795-1-hengqi.chen@gmail.com>
- <CAEf4Bzb+OyuRJbsxd2dfU2ROcuD4v24Wx3xVZctnbob-bUiPEQ@mail.gmail.com>
-From:   Hengqi Chen <hengqi.chen@gmail.com>
-In-Reply-To: <CAEf4Bzb+OyuRJbsxd2dfU2ROcuD4v24Wx3xVZctnbob-bUiPEQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ca8a57db17da57f403b029c14ba4f0b89774d361.1656590177.git.dave@dtucker.co.uk>
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 2022/7/1 03:20, Andrii Nakryiko wrote:
-> On Thu, Jun 30, 2022 at 6:53 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
->>
->> Currently, libbpf requires specifying binary path when attach USDT BPF program
->> manually. This is not necessary because we can infer that from /proc/$PID/exe.
->> This also avoids coredump when user do not provide binary path.
->>
->> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
->> ---
-> 
-> Hm... just because I specify PID, doesn't mean I mean main binary of
-> that process, it could be some other shared library within that
-> process.
-> 
-> I don't really like this change because it doesn't feel 100% obvious
-> and natural. User can easily specify "/proc/self/exe" or
-> "/proc/<pid>/exe" if that's what they are targeting.
+On Thu, Jun 30, 2022 at 01:04:09PM +0100, Dave Tucker wrote:
+> This commit adds documentation for the BPF_MAP_TYPE_ARRAY including
+> kernel version introduced, usage and examples.
+> It also documents BPF_MAP_TYPE_PERCPU_ARRAY since this is similar.
 > 
 
-Actually, this is an implication and practice set by BCC.
-If path is not set, BCC assumes that it is targeting the process.
+Use imperative mood instead of descriptive one for patch description.
 
-> Documentation for bpf_program__attach_usdt() states
+> Signed-off-by: Dave Tucker <dave@dtucker.co.uk>
+> ---
+>  Documentation/bpf/map_array.rst | 183 ++++++++++++++++++++++++++++++++
+>  1 file changed, 183 insertions(+)
+>  create mode 100644 Documentation/bpf/map_array.rst
 > 
-> @param binary_path Path to binary that contains provided USDT probe
-> 
-> it doesn't say it is optional and can be NULL, so there is no valid
-> reason to pass NULL and expect things to work.
-> 
-> 
+> diff --git a/Documentation/bpf/map_array.rst b/Documentation/bpf/map_array.rst
+> new file mode 100644
+> index 000000000000..eadc714591d2
+> --- /dev/null
+> +++ b/Documentation/bpf/map_array.rst
+> @@ -0,0 +1,183 @@
+> +.. SPDX-License-Identifier: GPL-2.0-only
+> +.. Copyright (C) 2021 Red Hat, Inc.
+> +
+> +================================================
+> +BPF_MAP_TYPE_ARRAY and BPF_MAP_TYPE_PERCPU_ARRAY
+> +================================================
+> +
+> +.. note:: ``BPF_MAP_TYPE_ARRAY`` was introduced in Kernel version 3.19 and
+> +   ``BPF_MAP_TYPE_PERCPU_ARRAY`` in version 4.6
+> +
 
-OK, then we should at least check against NULL and emit a warning.
+nit: s/Kernel/kernel/
 
->>  tools/lib/bpf/libbpf.c | 14 +++++++++++++-
->>  1 file changed, 13 insertions(+), 1 deletion(-)
->>
->> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->> index 8a45a84eb9b2..4ee9b6a0944e 100644
->> --- a/tools/lib/bpf/libbpf.c
->> +++ b/tools/lib/bpf/libbpf.c
->> @@ -10686,7 +10686,19 @@ struct bpf_link *bpf_program__attach_usdt(const struct bpf_program *prog,
->>                 return libbpf_err_ptr(-EINVAL);
->>         }
->>
->> -       if (!strchr(binary_path, '/')) {
->> +       if (!binary_path) {
->> +               if (pid < 0) {
->> +                       pr_warn("prog '%s': missing attach target, pid or binary path required\n",
->> +                               prog->name);
->> +                       return libbpf_err_ptr(-EINVAL);
->> +               }
->> +               if (!pid)
->> +                       binary_path = "/proc/self/exe";
->> +               else {
->> +                       snprintf(resolved_path, sizeof(resolved_path), "/proc/%d/exe", pid);
->> +                       binary_path = resolved_path;
->> +               }
->> +       } else if (!strchr(binary_path, '/')) {
->>                 err = resolve_full_path(binary_path, resolved_path, sizeof(resolved_path));
->>                 if (err) {
->>                         pr_warn("prog '%s': failed to resolve full path for '%s': %d\n",
->> --
->> 2.30.2
->>
+> +Since Kernel 5.4, memory mapping may be enabled for ``BPF_MAP_TYPE_ARRAY`` by
+> +setting the flag ``BPF_F_MMAPABLE``.  The map definition is page-aligned and
+> +starts on the first page.  Sufficient page-sized and page-aligned blocks of
+> +memory are allocated to store all array values, starting on the second page,
+> +which in some cases will result in over-allocation of memory. The benefit of
+> +using this is increased performance and ease of use since userspace programs
+> +would not be required to use helper functions to access and mutate data.
+> +
+
+same nit above
+
+> +Examples
+> +========
+> +
+> +Please see the `tools/testing/selftests/bpf`_ directory for functional examples.
+> +This sample code simply demonstrates the API.
+
+Shouldn't the examples in this doc be put somewhere else in the tree? Or
+where do they come from?
+
+> +
+> +.. section links
+> +.. _tools/testing/selftests/bpf:
+> +   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/testing/selftests/bpf
+
+I think the link isn't needed, since kernel developers will simply look at
+their own tree instead.
+
+Thanks.
+
+-- 
+An old man doll... just what I always wanted! - Clara
