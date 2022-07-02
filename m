@@ -2,163 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E812563E81
-	for <lists+bpf@lfdr.de>; Sat,  2 Jul 2022 06:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61CAD563EB2
+	for <lists+bpf@lfdr.de>; Sat,  2 Jul 2022 07:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231658AbiGBEjQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 2 Jul 2022 00:39:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39124 "EHLO
+        id S231775AbiGBFux (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 2 Jul 2022 01:50:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230289AbiGBEjP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 2 Jul 2022 00:39:15 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8038320F78
-        for <bpf@vger.kernel.org>; Fri,  1 Jul 2022 21:39:13 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id e69so737871ybh.2
-        for <bpf@vger.kernel.org>; Fri, 01 Jul 2022 21:39:13 -0700 (PDT)
+        with ESMTP id S231382AbiGBFuw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 2 Jul 2022 01:50:52 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D45E192BC
+        for <bpf@vger.kernel.org>; Fri,  1 Jul 2022 22:50:51 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id c13so432687pla.6
+        for <bpf@vger.kernel.org>; Fri, 01 Jul 2022 22:50:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anyfinetworks-com.20210112.gappssmtp.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=fcXrjy6USp+1HO3NzJ6oUGjfai/efuk6xIDLeKxBtPY=;
-        b=DgKf0ALqJ5mXoBMWwMaod4Uq31oa3BBX+hyu7XnAX7uILVe207HQWmjTejcHLhzyrC
-         U5sIXh9IkCOPWfsa/52Z5yU9zfBKsclpTIxzL1jviS38zHEyHKNm1urcqFb0OVPbBjKO
-         ag53BlXvXACH0E0B+PF7Xe0fZkhHytyOgCHXJegNx4O7Bvi92TKxT+3G8hwtSkUVH7Cb
-         jG5w7+2remvdGorg0d/2YhjORir4GJpcI4+8ntzuqZbrOVGCKW1ib4/Iu6yFBPGXPY9y
-         b/pW8MUr+0RD3GmsNldExMrlr0fsnxxeyWrAzLDI6UeKokF5VFBgzqF7NtNILroQtmgg
-         Uy6g==
+        bh=8qtzQsHSUiJ4njxuFZSHmk7WzYx/9S8h0IgnGcSJp0Q=;
+        b=XbpRXQnjxt6+EHcIDifmMhgCz9P8NjZYvPJBAcZpS+YAbhdr4Mf7ucGl3K9kDWb3Sk
+         +omwUSF8e7r/y9zsWXeYQTGko6DwIp1zn8qlu0/b97RKhhQur2P7I6eOomkFo2PU1ALH
+         hgR0bVsN0kiKxy8apJ780YH98SbKF0ZRzjbv68R9DXzZ8zDo3WWIaeYNFgNMUcwHJtm3
+         NA2FDZizt58+qGaSs1wCCGy6jERhpsILnicGek6cuTJ4TWYSyapTs3JoLWOCGZTy6FS0
+         aAtJWrvejyeFPvDiCh/SKTO4KRN+neIA605mh/Dpcy9lOJCa++OhJPONojzpSN0nzgZD
+         6ydg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=fcXrjy6USp+1HO3NzJ6oUGjfai/efuk6xIDLeKxBtPY=;
-        b=Ifz5rLpKTyBpl7sLG03PjpWGv0+UJl8IQpRTPtSPQGhde0GD2aBZOUTIcmPK+cykJp
-         udUYnNAkjYCarlQ7N4mFMhi3zGw1wQUqHYtM3v6QbHKKwv5uJgk1t5ekHhpmNjFbltx3
-         U35woX54ABbHZxSIGodShes63Bsy3sVNpH4nWlcWHD2e2UtfZq+pbkQNZm/77Wv6zxAg
-         Zr4R0FG7Zzjg3Fxs6Ks09juhayCQVwc04lHD0jVaEhEb4bKAPFN9NQun69JMxwTOtwUP
-         84Tvy/07ICLlBYHwVuHKBfsauzdoxHlbHvEUqm+1qHYKcR1oXJN6qo+vjyjkPdryC2Mg
-         Oucg==
-X-Gm-Message-State: AJIora/ADWPORqzDJadvQclGWFCM7PNr8gtzfH1xKlXsZQYGfJ81BMtV
-        eGf6PcJOEC0YtsH2PBgDqjKflMsO4se5XARBgtkmBg==
-X-Google-Smtp-Source: AGRyM1uQrnSvirfBdxClGd1N0T3VdTWivoUq/R2MZ/gPT2WVqAbJUXoputqV1WaS76zlMDOnkwu7eoHaj+f2bie7nrM=
-X-Received: by 2002:a25:3a81:0:b0:66a:645f:fe99 with SMTP id
- h123-20020a253a81000000b0066a645ffe99mr17617688yba.489.1656736752690; Fri, 01
- Jul 2022 21:39:12 -0700 (PDT)
+        bh=8qtzQsHSUiJ4njxuFZSHmk7WzYx/9S8h0IgnGcSJp0Q=;
+        b=j/f1uBHWXgXmBZuCNIBZxNWfR4dl1ZXBipDjhAw65KO7BOGQKVcRQbr9AH8ww8osTi
+         MeDg1GnN6JW0H3zNeVw80De8BeQ3r6EfttKkSEESUEziNhPD61IJonpGGQBzxh+PbYxt
+         HQ7lTxH3INpYLNh9v3zZNo3rl5wTTQammUN10w52A9LY1tfya4BPOOKSEfam0r8lUp3q
+         DqfVDEwysE2oZ3f7UdqSIt38El+EzCTNTSkJZPm4T5cS6cJdJXDOLpxEzNHqIdxZWGAa
+         fGjd1Fn4voRS18/H1m635NbNhsMPtXR8VfyB/WKcUpKGlqOwYuw+2BbDc5592G/WvnlN
+         PShg==
+X-Gm-Message-State: AJIora/i33dcgQ/ALfq5xRscLio2ogYVHO1EIFvMPyzuuzsP67lLcpqk
+        1phP01g2GP1peUQnYEJznSu9TOjJXxaFv7vHxd0z/Q==
+X-Google-Smtp-Source: AGRyM1vbSQdXGyH6L0zs8jtlDMyZ8BzhUpRxx/EAh8d4seGyQA8pdfr8jTcN+NEamh6jseV0fEVo1N0tm0Twp8/02rc=
+X-Received: by 2002:a17:90b:3b92:b0:1ec:b866:c398 with SMTP id
+ pc18-20020a17090b3b9200b001ecb866c398mr20816134pjb.237.1656741050960; Fri, 01
+ Jul 2022 22:50:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220701094256.1970076-1-johan.almbladh@anyfinetworks.com>
- <20220701151200.2033129-1-johan.almbladh@anyfinetworks.com> <1558ba51-c9dd-e265-4222-a69e27238813@iogearbox.net>
-In-Reply-To: <1558ba51-c9dd-e265-4222-a69e27238813@iogearbox.net>
-From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Date:   Sat, 2 Jul 2022 06:39:01 +0200
-Message-ID: <CAM1=_QTrTPaQn9fuYoOGV6vs-gjgztFyTieQKCCcY0pFuqvpKA@mail.gmail.com>
-Subject: Re: [PATCH bpf v2] xdp: Fix spurious packet loss in generic XDP TX path
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, song@kernel.org,
-        martin.lau@linux.dev, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, jolsa@kernel.org,
-        Freysteinn.Alfredsson@kau.se, toke@redhat.com,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
+References: <20220702033521.64630-1-roman.gushchin@linux.dev>
+In-Reply-To: <20220702033521.64630-1-roman.gushchin@linux.dev>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 1 Jul 2022 22:50:40 -0700
+Message-ID: <CALvZod7TGhWtcRD6HeEx90T2+Rod-yamq9i+WbEQUKwNFTi-1A@mail.gmail.com>
+Subject: Re: [PATCH] mm: memcontrol: do not miss MEMCG_MAX events for enforced allocations
+To:     Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jul 2, 2022 at 12:47 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+On Fri, Jul 1, 2022 at 8:35 PM Roman Gushchin <roman.gushchin@linux.dev> wrote:
 >
-> On 7/1/22 5:12 PM, Johan Almbladh wrote:
-> > The byte queue limits (BQL) mechanism is intended to move queuing from
-> > the driver to the network stack in order to reduce latency caused by
-> > excessive queuing in hardware. However, when transmitting or redirecting
-> > a packet using generic XDP, the qdisc layer is bypassed and there are no
-> > additional queues. Since netif_xmit_stopped() also takes BQL limits into
-> > account, but without having any alternative queuing, packets are
-> > silently dropped.
-> >
-> > This patch modifies the drop condition to only consider cases when the
-> > driver itself cannot accept any more packets. This is analogous to the
-> > condition in __dev_direct_xmit(). Dropped packets are also counted on
-> > the device.
-> >
-> > Bypassing the qdisc layer in the generic XDP TX path means that XDP
-> > packets are able to starve other packets going through a qdisc, and
-> > DDOS attacks will be more effective. In-driver-XDP use dedicated TX
-> > queues, so they do not have this starvation issue.
-> >
-> > Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-> > ---
-> >   net/core/dev.c | 9 +++++++--
-> >   1 file changed, 7 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/net/core/dev.c b/net/core/dev.c
-> > index 8e6f22961206..00fb9249357f 100644
-> > --- a/net/core/dev.c
-> > +++ b/net/core/dev.c
-> > @@ -4863,7 +4863,10 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
-> >   }
-> >
-> >   /* When doing generic XDP we have to bypass the qdisc layer and the
-> > - * network taps in order to match in-driver-XDP behavior.
-> > + * network taps in order to match in-driver-XDP behavior. This also means
-> > + * that XDP packets are able to starve other packets going through a qdisc,
-> > + * and DDOS attacks will be more effective. In-driver-XDP use dedicated TX
-> > + * queues, so they do not have this starvation issue.
-> >    */
-> >   void generic_xdp_tx(struct sk_buff *skb, struct bpf_prog *xdp_prog)
-> >   {
-> > @@ -4875,10 +4878,12 @@ void generic_xdp_tx(struct sk_buff *skb, struct bpf_prog *xdp_prog)
-> >       txq = netdev_core_pick_tx(dev, skb, NULL);
-> >       cpu = smp_processor_id();
-> >       HARD_TX_LOCK(dev, txq, cpu);
-> > -     if (!netif_xmit_stopped(txq)) {
-> > +     if (!netif_xmit_frozen_or_drv_stopped(txq)) {
-> >               rc = netdev_start_xmit(skb, dev, txq, 0);
-> >               if (dev_xmit_complete(rc))
-> >                       free_skb = false;
-> > +     } else {
-> > +             dev_core_stats_tx_dropped_inc(dev);
-> >       }
-> >       HARD_TX_UNLOCK(dev, txq);
-> >       if (free_skb) {
+> Yafang Shao reported an issue related to the accounting of bpf
+> memory: if a bpf map is charged indirectly for memory consumed
+> from an interrupt context and allocations are enforced, MEMCG_MAX
+> events are not raised.
 >
-> Small q: Shouldn't the drop counter go into the free_skb branch?
+> It's not/less of an issue in a generic case because consequent
+> allocations from a process context will trigger the reclaim and
+> MEMCG_MAX events. However a bpf map can belong to a dying/abandoned
+> memory cgroup, so it might never happen.
 
-This was on purpose to not increment the counter twice, but I think
-you are right. The driver update the tx_dropped counter if the packet
-is dropped, but I see that it also consumes the skb in those cases.
-Looking again at the driver tree I cannot found any examples where the
-driver updates the counter *without* consuming the skb. This logic
-makes sense - whoever consumes the skb it is also responsible for
-updating the counters on the netdev.
+The patch looks good but the above sentence is confusing. What might
+never happen? Reclaim or MAX event on dying memcg?
 
+> So the cgroup can
+> significantly exceed the memory.max limit without even triggering
+> MEMCG_MAX events.
 >
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index 00fb9249357f..17e2c39477c5 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -4882,11 +4882,10 @@ void generic_xdp_tx(struct sk_buff *skb, struct bpf_prog *xdp_prog)
->                  rc = netdev_start_xmit(skb, dev, txq, 0);
->                  if (dev_xmit_complete(rc))
->                          free_skb = false;
-> -       } else {
-> -               dev_core_stats_tx_dropped_inc(dev);
->          }
->          HARD_TX_UNLOCK(dev, txq);
->          if (free_skb) {
-> +               dev_core_stats_tx_dropped_inc(dev);
->                  trace_xdp_exception(dev, xdp_prog, XDP_TX);
->                  kfree_skb(skb);
->          }
+> Fix this by making sure that we never enforce allocations without
+> raising a MEMCG_MAX event.
+>
+> Reported-by: Yafang Shao <laoar.shao@gmail.com>
+> Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Cc: Shakeel Butt <shakeelb@google.com>
+> Cc: Muchun Song <songmuchun@bytedance.com>
+> Cc: cgroups@vger.kernel.org
+> Cc: linux-mm@kvack.org
+> Cc: bpf@vger.kernel.org
+> ---
+>  mm/memcontrol.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 655c09393ad5..eb383695659a 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2577,6 +2577,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>         bool passed_oom = false;
+>         bool may_swap = true;
+>         bool drained = false;
+> +       bool raised_max_event = false;
+>         unsigned long pflags;
+>
+>  retry:
+> @@ -2616,6 +2617,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>                 goto nomem;
+>
+>         memcg_memory_event(mem_over_limit, MEMCG_MAX);
+> +       raised_max_event = true;
+>
+>         psi_memstall_enter(&pflags);
+>         nr_reclaimed = try_to_free_mem_cgroup_pages(mem_over_limit, nr_pages,
+> @@ -2682,6 +2684,13 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>         if (!(gfp_mask & (__GFP_NOFAIL | __GFP_HIGH)))
+>                 return -ENOMEM;
+>  force:
+> +       /*
+> +        * If the allocation has to be enforced, don't forget to raise
+> +        * a MEMCG_MAX event.
+> +        */
+> +       if (!raised_max_event)
+> +               memcg_memory_event(mem_over_limit, MEMCG_MAX);
+> +
+>         /*
+>          * The allocation either can't fail or will lead to more memory
+>          * being freed very soon.  Allow memory usage go over the limit
+> --
+> 2.36.1
+>
