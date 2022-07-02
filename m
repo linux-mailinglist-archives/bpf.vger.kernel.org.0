@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78AE7563EB6
-	for <lists+bpf@lfdr.de>; Sat,  2 Jul 2022 07:59:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85B4C563EC8
+	for <lists+bpf@lfdr.de>; Sat,  2 Jul 2022 08:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230183AbiGBF63 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 2 Jul 2022 01:58:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49902 "EHLO
+        id S232013AbiGBGQe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 2 Jul 2022 02:16:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbiGBF62 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 2 Jul 2022 01:58:28 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61B1F9FFB;
-        Fri,  1 Jul 2022 22:58:24 -0700 (PDT)
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2623rwQh007485;
-        Fri, 1 Jul 2022 22:58:00 -0700
+        with ESMTP id S229446AbiGBGQd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 2 Jul 2022 02:16:33 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 956D41A837;
+        Fri,  1 Jul 2022 23:16:32 -0700 (PDT)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 261NSeoG027823;
+        Fri, 1 Jul 2022 23:16:10 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
  subject : to : cc : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=LFCaU5wLQ+IiSMPBU3IinAr04typU5Qa6tT7X7GkpBM=;
- b=I1uF/P0AoeThEThfmLBifxHg0Oz9gYy2seGj5x/8OZqwlfBFSk7iLRqrn/IOzRUzyYXy
- gWKYwscCIQaTIzYo2YjqTvwACygKSA6MuTF7KG9lGqRGuH1oJS5M7YJCYdkwdTq/5FXv
- /kh5RJ3uAd/dwwBcfQANWPnjABnowFaoNjA= 
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2103.outbound.protection.outlook.com [104.47.70.103])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3h1m1u85sd-1
+ bh=Ebk6ANhet4qEjKkYpQuJbhfIQh8z5PgMeoOwCX8XOeE=;
+ b=EesdfmN2GvW9vBmdyYwiK4LoMWaVrghG8Chcg3je1r0scr1OCd3kJczFG28sE1qSI9/N
+ cZFHBHEJlNz8Wfa09rDjRNv1xa2q0SimHYDiVrLGEaT5Yt0GmYXeHXWGWkoxqfX0h3q7
+ 3cx5LrtvKYtjt7JqHZRilRjCbeYX5OhCa80= 
+Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2045.outbound.protection.outlook.com [104.47.56.45])
+        by m0089730.ppops.net (PPS) with ESMTPS id 3h195ad9g8-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Jul 2022 22:58:00 -0700
+        Fri, 01 Jul 2022 23:16:10 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fQjIDXZIfw8TGo/wzOr149zken3MPQ5RUeAY4kqTq/PI5KDfifZfAc94S1vc3vwDdCDSdjL8+pQcRd2HhboruCntkV89YbP3g6d/OSj//TPOmACtiy8Czn92xeG8/4jmDAr8qfWsxYhikK+b3sQDVS6Vg8LLUaPysNOu+4xXWT492mJ/CPmOiO2vILKiBD+pht47j7WtRXnh4XFBEl4qcayi+uCEisvnz6TFZi9jQulXOCdITRuBQyaaUewsqjZ1oSpH7r/plqlFjvIwFciutHYA0JN02Or2dX6DIgqJo0mSCt4RJY7U3BFjCVFfYSvO8GSMWuF8rr91PXTEQh3mJQ==
+ b=EfeHpPAX+seC0rkW1tpB2xUmZueFVl1FFaEEiTG8sD9877rP982PDKIfPge65ALrmudafzyQoJJtI2lw3ymDs/gBFXy7MR3py92UMyCQdkHnv9oEc0YgOwJ7eSmJCGGdGnHfdnxcBxZgI/eg0QvU1mlkD7FMuZeRqc9kl7nDXBSMPusGNVcXFLI5B+UKhopPZSKZBSzqzt/zfD4x5YcjTuoLkreZYnSqJ7Wj0jpU2X6RR77LXwTLdZq2StD2bfFwRFRhO+BsLEzKUn1INy8EGauj9tJGZcrv32ZnaoNiM9CEKGdD9HGTM6ATMONDVcU+rOTdxLPID4ALqloQ/+FwMg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LFCaU5wLQ+IiSMPBU3IinAr04typU5Qa6tT7X7GkpBM=;
- b=EWAR4NO5NkU7R9P1tMzwuOTQCIAfUmZ9FYdg9iPgpWn8rPODRBH9Buhi4SDcpQgp/V1+twHflpKVE7h8+eHcW7Em3XqnbYefysHq3SVlszfhly4XTL3vrKkk2O5HYFK5EVzmreMmA2lur3YxyklyvzJa0DsOK6GpLw0RhKXPLU7jq+jvHR3aUvsvoumBEtNb2H9VmrhKK1q7zTGVLEoiICDRSG0OSG0cg3zMrT/X8DNJT+x4pVboNDwIBveEHfUYjonDEtMi3OPgFvk82oam1y0xGZf8WB1ltfcb64ngSYZL4Iq7mavPb1pqSpCiFrz6SgejKdD1LCd8d/w04I8kRQ==
+ bh=Ebk6ANhet4qEjKkYpQuJbhfIQh8z5PgMeoOwCX8XOeE=;
+ b=fcCQmtUdLc+K9o29B5QFcR0Ep8FArYLaZsTLZLDWKbHDmjCk4S5SaKJgmsgOpGoTKZa7fdBixY6wDzBUUbvklstHEQuBFQ7LtdlRVqPQuezPc8PD2M0DmC3XWBGdez2uZKwRYLWDqu0bmqrTcjnDnz1Xlx4xqBi8HUq+6z9Ji88qwmW5BhxzOo/0Hs7Bz5wt/nJjLWomx+Qem9cC2Ewa7fiF/DpI8taDevKROQ3qNUHNRSXV4On1c7Zqm8svQqWImSH7ersBqn+pdvvwcp+IJWGHDGISKJcqDf4MPrdpUMZekWl23zVR0cxkdcEeJ1S931FjOgAql5+9GsAX6pulzQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by MN2PR15MB2781.namprd15.prod.outlook.com (2603:10b6:208:122::14) with
+Received: from DM5PR1501MB2055.namprd15.prod.outlook.com (2603:10b6:4:a1::13)
+ by DM5PR15MB1163.namprd15.prod.outlook.com (2603:10b6:3:bf::13) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5395.17; Sat, 2 Jul
- 2022 05:57:57 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::9568:e5d9:b8ab:bb23]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::9568:e5d9:b8ab:bb23%6]) with mapi id 15.20.5395.017; Sat, 2 Jul 2022
- 05:57:57 +0000
-Message-ID: <92434e1c-62f5-021f-294d-fdb3d0d4fd90@fb.com>
-Date:   Fri, 1 Jul 2022 22:57:54 -0700
+ 2022 06:16:07 +0000
+Received: from DM5PR1501MB2055.namprd15.prod.outlook.com
+ ([fe80::acda:cdec:5c2f:af77]) by DM5PR1501MB2055.namprd15.prod.outlook.com
+ ([fe80::acda:cdec:5c2f:af77%7]) with mapi id 15.20.5395.017; Sat, 2 Jul 2022
+ 06:16:07 +0000
+Message-ID: <4fe6d1f1-32a8-7e4c-33fa-66cab1a295f7@fb.com>
+Date:   Fri, 1 Jul 2022 23:16:03 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
  Gecko/20100101 Thunderbird/91.11.0
-Subject: Re: [PATCH v2 bpf-next 1/2] bpf: add a ksym BPF iterator
+Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: add a ksym iter subtest
 Content-Language: en-US
 To:     Alan Maguire <alan.maguire@oracle.com>, ast@kernel.org,
         andrii@kernel.org, daniel@iogearbox.net
@@ -62,77 +62,78 @@ Cc:     kafai@fb.com, songliubraving@fb.com, john.fastabend@gmail.com,
         geliang.tang@suse.com, kuniyu@amazon.co.jp, bpf@vger.kernel.org,
         linux-kernel@vger.kernel.org
 References: <1656667620-18718-1-git-send-email-alan.maguire@oracle.com>
- <1656667620-18718-2-git-send-email-alan.maguire@oracle.com>
+ <1656667620-18718-3-git-send-email-alan.maguire@oracle.com>
 From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <1656667620-18718-2-git-send-email-alan.maguire@oracle.com>
+In-Reply-To: <1656667620-18718-3-git-send-email-alan.maguire@oracle.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-X-ClientProxiedBy: BYAPR01CA0013.prod.exchangelabs.com (2603:10b6:a02:80::26)
- To SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR13CA0191.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c3::16) To DM5PR1501MB2055.namprd15.prod.outlook.com
+ (2603:10b6:4:a1::13)
+MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fafa3df2-9763-44f9-c98b-08da5befd009
-X-MS-TrafficTypeDiagnostic: MN2PR15MB2781:EE_
+X-MS-Office365-Filtering-Correlation-Id: b0b10f10-b070-440b-0fc2-08da5bf25983
+X-MS-TrafficTypeDiagnostic: DM5PR15MB1163:EE_
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1yfb6laX7SS9FBn5VbAlN6xKywqkCNeorAf5mfNBawVfIpCcoCe01v81/xcCS86Fs5XNzMlITlZgntEJzQwqqqipkOw4lvNUjxvzxIqCKKnIPHKIRw7s0yL74nfbfR4jGHG1dhcOK8yT6Vsn1+UhcutYWjbaElCRDq69MqS9fw3v2T/8bZ0/pOPgkeZzOmYyhu+3GXzsvvI8qwWHzV77/HiPtbp20yjVG/N9PlcmG3ciqwhgmiW4lZJXUJbQt9isG2iX3pF1oRkwXHxuKCewtPYJeLNOHAC5TK+dW1KuoJ449CubENEkmq5hwWTG65df8pHFUi+qnBuE9TBvlw+SI+usKWPAsWb+TNpbv0O91Vg9eaiu4PH/EWfwnxcAWr/oofBtA3G8sJkFkLcBj4bsmyIdC0SDUyM+iZLU+hljpoLLlBAPkvFHV//QyicZ8ybSbnHf4s7zpYncn0kQa0D41UBluKLyKMsOn2xff3yvooGIKCjgQpNeIVYn2Ulx0r/j2Riyj0w1Ysemn0XEuQUPjTUHZexgP736Y87E1CN7u9LJhkf5T9bWzMNo9va6LSOJSxSdK05piaWCZELjVm8ALGC1F4r7h4pBDIw1L0rjj/q2lwiqrWVRxvTgshkEK8MvCXMLQpBbvbttuDSS+X8EB2CsQMvDC+aMyhcMU/zNgA3B8X2WkXiXbxXsIwHLF24F8SK83nk+b9lkdEfknwkBTJjQnLV+2qaR5nwag3EX4sPDtO7vq8j7Od57y0Nzmw9vaDNaX88tT0xPu4vLRf9mDIVV+pCstADg98FzuJZCvC5GGqSpyvSn6tiofQ7nqdwuMDlaz3vUj1TUWd53oY9Txqj34+R5u5EkZtr7TstLhnU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(376002)(136003)(366004)(396003)(346002)(39860400002)(7416002)(5660300002)(478600001)(8936002)(41300700001)(2906002)(66476007)(86362001)(31696002)(316002)(4326008)(6666004)(966005)(66556008)(66946007)(8676002)(6486002)(83380400001)(2616005)(6512007)(186003)(38100700002)(6506007)(53546011)(36756003)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: NMqIsca+y8o7itOb+hqOJsNejWCrsAontdYEkpVSq0+oSUZgX/HoKdJ8ARTLq68rMQG+gMc3WUVVVfTWuezYtV72ympNgKFn0iV9HxZQUQ9r6JY3D5qMYqiT8mKbzNGRC9HOsRiCRGsnR6LXKMMZS0wM0lqAbirR9jGMzfEcWB/4EbQhGquwWvO3RqXZqyzVPeRpqGd19ikHolg0kNtECR6S8+5CHmpt5Mv4iEzOmb5JMOdZ04BBmwBS3SO/px+l1Z95nbnR4f1Nd4MWGXE/X1c4XiU343AMRsJkVPcJdusJCzZWTJlWo0/jc/SW5ATGU3Ha5flVD0mBuZqJIdHFNR2cUk9qduOAhIhx64O862ly7f/VPnuHjvrUgqD95E8Hj8x/ngIo/o+pzflbH4mnkleljw5D4kmym7cohhvspRjJMMo9mzhIPFw4psq5jiQ/WjoQWucI4sYUO+Gz25s/PyzNI7E7O2htprl16Wt0Jx+l88v+8uJ9mteWWB30zCGu0+MI12bNRIsZkAsPAU9uDtX19AATktQ5CztWDJO1Mjb5An1ZX41LeuKK8mzPqWM5IdLhnyCmJ+3hc9t8KTprRw3cCeOb5/G53RF2zOAgRwEWJbOeacAko+7a1S5unFkivMzcekDPDoeTWo8p01+IYesAIonKSOBum7p3aAcU99OwahSMUGod0jI0uRGI7G7q4SC36hywxfDBJvFzTEsBv+OaSISlixHa0FyYXRPWV+QaTJ2fDtr0Ci5EXio+1Ro59p0PspcouMQhZQCtxh1hsxeKdJM8NVIz6TM1cuZYysZVes+4+xSZWbFMELg/ZI1wVoOH0pb2HX/oQNsbf4jgHYVS74lzpKTves04/3AWv1U=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR1501MB2055.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(346002)(396003)(39860400002)(366004)(376002)(136003)(5660300002)(7416002)(6486002)(8936002)(478600001)(2616005)(186003)(83380400001)(8676002)(41300700001)(6506007)(6512007)(53546011)(31696002)(2906002)(86362001)(6666004)(31686004)(316002)(66946007)(36756003)(66476007)(38100700002)(4326008)(66556008)(43740500002)(45980500001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dXo5T3JJZzNQVkNuUm1BV0dEcFRhNXoySXBTcHlCRkhJQWs5U1FnZEpicHhB?=
- =?utf-8?B?N29xc1FHdEpobU9tMXVlaWtrUVVjcE5NZHJ0YWtJRzl4SmF1V21JRklQWHdK?=
- =?utf-8?B?S3hGQ1NIV2R2Q1paNkU2RTJZS2k2OUhaV0FNNFpubndEV0VGSHh6dURRU2VI?=
- =?utf-8?B?Y1didUkxeGRPaGQ1SXJFcFFxdm1xdVhwZVN2bkQ0Wm8xaEdYeFNyVmJ6a3dh?=
- =?utf-8?B?NVh6ZGZKME1EMGdMQXYyVTVSWTBvekppOWxJZVA1TlVjTnoyRTJiTlRYaWNO?=
- =?utf-8?B?N1c2MVkzQk9FaXBOZHVhWGh2RzQrQVk5eXJQeVBmRVpReENCL1FLK1MyMm1a?=
- =?utf-8?B?QkhaOU14VzBQaGltTEZ5QjVqRG5wS0hvQmNNNzR5VElmU2p6MnpNVXRwUmZ0?=
- =?utf-8?B?UmlMczlsZmdBMkk4WUlXeG9ZSjE2VldqVTd0cUZPYm9TZTh1VDFXRVF4Z09v?=
- =?utf-8?B?aTJxS0NoTVA0U1JRZFpWSzNKSk9xZlIrNFdSM1pCam90QWkrUzE5WGxnT2dp?=
- =?utf-8?B?Nk1OMkdpMHFQR0VhOFlhVG1LaGxrVU1zQjlmZWVQTG5acHhQYS9VcHFGUjl4?=
- =?utf-8?B?cEVGYzBpZGlBWnc4dkV3QlNJVlFkdUVpcUdqWjUyWGJjTUdWa1RONmVQSzlj?=
- =?utf-8?B?bnlRUDhFcXRWT2tXeHgwdjlmUFc1UnNzT3ZMMk5YaWVtd0NZVGVMWGo0SmUr?=
- =?utf-8?B?S3NQR3RDMjN4MFMxNWNqTkVrM1lKOFUzOUtybG1vQjhrZW1WZy9Dd3VIRFA5?=
- =?utf-8?B?OGVXVDd2U3I3TWVYSTJ4aExCekxDbmdzTjh3MmlUU0dPRTlGaWd0OWNYYTNM?=
- =?utf-8?B?ODRnMjVyUHpmSUVvelBzWkc1NFFvQ1JBakRwWnZCQ09ydjNsRGJSb3RyQkQv?=
- =?utf-8?B?ZnlNWldiL3l0bmZyREtTR2VHc2tNU2FoMDlKME15YmI2b21HOTdrV0NVcG9r?=
- =?utf-8?B?M2Q0dmdxS0JkQ3phTXhGb05GeHNOR0pzd3UydnhsYXVFWENVU0QxUE1HRkVw?=
- =?utf-8?B?SndCLy9vU2JSR1czRi9OczJlRkVNMVlLZUZ1V2VoWm9ZUTd0bEhKYjZ0SGJu?=
- =?utf-8?B?azZ1Yi9hVzRsa0RLYzI0MDc5WkNUS2NmVVYySlFIeUtBTUZ4MkdvcDc5bGRO?=
- =?utf-8?B?U1Q2TVYrN2o0RVh4d1p1a0JiQlVlNWdjd2pScm8vMGIvVHFlYzVMcnJJTThE?=
- =?utf-8?B?OVYwWmxlQ3hUNStZU2c2bmk5MzV2YVNRWm1IT25RWTFEMlNYNTltUEplOHNx?=
- =?utf-8?B?aVJlOFFLbXU0aVlaN2tmZWVYem5vWDZOdndQZjNucGxMa3NHNkRYc3p4bnZj?=
- =?utf-8?B?NmQzblh5TW5NMlhqanYwaE9HNW5Uc3VLcFZIZWRJOEIzZWRzYmRpbWJpK2pj?=
- =?utf-8?B?a3ZaZm02NW1Td20zRjZoblZIdTd4RlVIaitXUmd2RzVlWDJLcmFSL2NWZksx?=
- =?utf-8?B?VEt0RkNvT1FwN2hKSkRnWUVIMHlHMFlSbVovT1JNamtJWHlFNFVUSVpFVTFu?=
- =?utf-8?B?U2wvWitjbjdrajRQeVlEamlNai9wYnpwMnJ6d3A1dE54M2hPUmZ3MTMybTdO?=
- =?utf-8?B?NlRnWGhuOS9zQnluL0cwa2liT0RJMTdsRVZUNTZGL2hnZG50aFJaTWNsbDQx?=
- =?utf-8?B?SUNCM2h4SVMxK0tHNEc0d3Z2WG56ZkdWV2l6a1dyc3lsSzJrUDF6NjB1L2ZN?=
- =?utf-8?B?aFZvU2I2TWVnR3F2SXlaQ3RXTThWUHloVDM4V2hSN0JtUE44R3ZpN09vZWxv?=
- =?utf-8?B?Yi95di80WldaYnkrUUk0ZGluUjc3clFwaG9RZmhOczJ0dXdpYTdlRzZDbmRQ?=
- =?utf-8?B?cmVIUlk2RkV2c2Z4d0dVRHU0aG5aeDJ6NkdTMmw3RkhpQXVqV1IvdDNhY3RR?=
- =?utf-8?B?cjEvS1FkSlFYVytLN0g3ZmZkNEo1SEZQQUdWMFZ5aSs4ZzVvekE0TitvbDN0?=
- =?utf-8?B?RlcxSkt0ZXdtdko5eStxSHFXa0JiUWI1eW1vSjBweW1IaTVFNXdrTVlDZUJD?=
- =?utf-8?B?OGhFSndENmJHM2FnTy96d3NDRllaN0FkS1NYaEhwbHhEbkFOWHAydGovZVJB?=
- =?utf-8?B?ZUNnVUFXZyszUWdSdStBSDd3RithRzlsdjFVWDJnbmcveWZFZXFaOWtiemdN?=
- =?utf-8?Q?tJ7XgzPH4kbIq93pQTj0WdhKC?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aEFRSmRYc2c4UWxrakJIbWdXVWJZcWNoM05KUVRxQmN5ekdJMmNiVGhjcTFl?=
+ =?utf-8?B?WGF6UGl2ZS9keHZzakEzNVB0MldCVTZZSnRHNUR4YVdWV0RycXJkRm1xaWJr?=
+ =?utf-8?B?TXlLUUE0eDcvRGhuaGRPbUh6cWNkK0NvZU1ValYwTEJWZEhTTE1LV3dsVFRX?=
+ =?utf-8?B?UUc1aGZLRFNYSGl2TEZTYjZLU2RZU3FWM3NSc3hjRmFRZHo3b3VOOXUwakh1?=
+ =?utf-8?B?S0dORFBua3poYTk1T0F3Y3JOSEMzNVpnaE05eVYwVDYvcjJwWE90YWk3Q2xh?=
+ =?utf-8?B?UzJlWFBaMUR0UzIxYkFPdFJ3SnpUbDdHM2NmYnd3R2JKN3E5bitaQ3c3UkhY?=
+ =?utf-8?B?UXdmeTQ4Zmp4Y2c4TVF0dEdCT0M1MzF5ZzhWdmpJVlFEM29xajNUOE9iQlBn?=
+ =?utf-8?B?V1Q2M1dOR2dpcENRYUNjbW9DNU9iNEUvR2NtTmpFMmdvY09NRWFxWWNPUXNa?=
+ =?utf-8?B?Mjhyc0M2RlBVMjFpWVNlZEFpM0ZlclBoNEs2MkJYRC9ObytnaTB2SXVLVVJv?=
+ =?utf-8?B?S0ZJQkEvZ1U1SjBTT3lhUElheVJPU1E2YWQwNmltU2VaTlZXWDIwRVFJRjBh?=
+ =?utf-8?B?WnpQWDAvOW1tSmljWW1YNU5zeVJBNGtGTTUwYnZMdk91cXRxNm5FNGNtdDFn?=
+ =?utf-8?B?QmMySHl3bStpWG9HUjRHRzdCTkNqcFU3RXlaaXd0Q01XVlVCQXh3UW1xcXkz?=
+ =?utf-8?B?Qk8zNWszWXRaSVYvRUgvejdaK3lLekhselUxdmlOR2xKbmt0cjFwSW9HTzE3?=
+ =?utf-8?B?Zm9KMG4vUTNiMDhDdUlpVHB6OHB4T3RodVBwcWt2emt2QXVoL1AwWElHY2Ix?=
+ =?utf-8?B?Z042ZUpaVnMvUkFwOFVLd1p6RjFKM0FEWkRjMW1FOWRhaEdLd25BMjhwcUtZ?=
+ =?utf-8?B?aGxlT3FIM3p4anUrdE1kNkU5dlI4MUpPWDBuMFB2cEUzdjlEQWZxdTMxT0xt?=
+ =?utf-8?B?N1FGSkRka1ZXU0tpcUs0OFpxMHdZMXVMTDh3ZHprSHN4Rm1SY3lHQ05QVjRr?=
+ =?utf-8?B?NUZOU3BDMjNvV0pTbmtYa01rVHYyM2JKZzJxN256ZENadzYzeFplekpVL25I?=
+ =?utf-8?B?OE9ENFVrMUxVcHZEelZmcFQwU0lDVWMvSEkvcmdTdDA2allJdnBzSHlGbjVy?=
+ =?utf-8?B?LzhXUzB1ems5aFpod0Q5SU4yU3o4OVFRRk55R3lpSXBKOXJwUVJoUVk3Sjl3?=
+ =?utf-8?B?WmVRMnJGZFRmQ084RU5ReDBDdmVkVFlrbU5sWFBKOGhKa3l1UWJHQUUyRzd1?=
+ =?utf-8?B?RWRhWkFUUVRDYm44NVdHeEJHSytCeW53dFZIc01vbXByb1hwZXp3UkFReVN0?=
+ =?utf-8?B?d0pHOFk3cml3ci9STXMwY0VXZXo4Mk8zNFpDV0lQbEpVY0J4Z004eTJ4L25i?=
+ =?utf-8?B?dDNwWlpjQVc3Q1hqdDM5L0lWT25kbm5zNXJzR0NGdUdSdU1oRmd3dVNDTTVo?=
+ =?utf-8?B?Y0NxSWpTdnVWTHhQTHV4a1ArRG5Zd1ZURjRkbkh4cXFsVVV1TWIwR0lJWmo4?=
+ =?utf-8?B?STNuYktYb2NaK21LazFKSXRIczFES2RRQlZDRVowZlBITlYvZVpxY2xYTkJm?=
+ =?utf-8?B?Z1RDVGR2TUZCQStiSngwTGtKdytkZ25PYjNyeURrUnk0NlhoeVh1Y21CTFE5?=
+ =?utf-8?B?QTlkTFlGdHd3NUF4SFFPb0VxdmtGT3JFNVRWU0FrbWc4MjdMaGVBVTNqbjF6?=
+ =?utf-8?B?Vzkwdy8ya2J5Yk9ZTXFyc2RER2RwdjcrM3l4cElKZVpNQldFUUxEVEZlTk00?=
+ =?utf-8?B?OTlxS3g3SVNkZ0Ewd0lEbWhEbzd5TTJNaEdjWEZkVnVBdTJxUFBLYXZ2TXk3?=
+ =?utf-8?B?aTFSdDR3QjR3VTZJa3VobzN4T3JNSDRyb25PTngyM3ZmUE1MNS9jNWNJMTV6?=
+ =?utf-8?B?UFFhamVaelVaWUtPc2JQc25RZXVFMktrL0pxY3JQV1Nsb1VhZnVITFZuR25v?=
+ =?utf-8?B?Q1dEM2U3OHpST0d6b3NFZGZ1RGxKbitaWmRLTVZsTFBBWVVONHZVMXE1Wkl3?=
+ =?utf-8?B?V0FKaGJVVElSWGVNM0s4T1FPbDRnZ1gzamhDeW52RG80djRCSzJMZWs1a05P?=
+ =?utf-8?B?Y1kxN3RpalZId013K2puRmxMdFN5R2l2VFppeXZkYXVlRGVrWTFqenpIcnpW?=
+ =?utf-8?B?VXVJL2F5M1d4QjdEQ1dzRjl0VU1mV3BKOUsrV0VhbnRpMTB2R040T2xNUVpQ?=
+ =?utf-8?B?MXc9PQ==?=
 X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fafa3df2-9763-44f9-c98b-08da5befd009
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b0b10f10-b070-440b-0fc2-08da5bf25983
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR1501MB2055.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jul 2022 05:57:57.3522
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Jul 2022 06:16:07.0977
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YFgFkJymPNdG9Qt5YB8lxLBIQQFOLxz5ksZuqS3Iph31QW7AcGu57p6+7dP7ynpv
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB2781
-X-Proofpoint-GUID: blfKb9ud3uPpa1s3IiiMMdSWBe0RPnTw
-X-Proofpoint-ORIG-GUID: blfKb9ud3uPpa1s3IiiMMdSWBe0RPnTw
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-UserPrincipalName: UfdJPtNfhUD5+4UtlXJ68qhq1aR97tMAI6+D22hv1XLrPaTzGCkAz5kVNodnnKfF
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR15MB1163
+X-Proofpoint-GUID: Ch03JkyG7DFHb4rpsNZD1sOld_Ra9D0j
+X-Proofpoint-ORIG-GUID: Ch03JkyG7DFHb4rpsNZD1sOld_Ra9D0j
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-07-02_04,2022-06-28_01,2022-06-22_01
+ definitions=2022-07-02_05,2022-06-28_01,2022-06-22_01
 X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
@@ -146,145 +147,39 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 7/1/22 2:26 AM, Alan Maguire wrote:
-> add a "ksym" iterator which provides access to a "struct kallsym_iter"
-> for each symbol.  Intent is to support more flexible symbol parsing
-> as discussed in [1].
+On 7/1/22 2:27 AM, Alan Maguire wrote:
+> add subtest verifying BPF ksym iter behaviour.  The BPF ksym
+> iter program shows an example of dumping a format different to
+> /proc/kallsyms.  It adds KIND and MAX_SIZE fields which represent the
+> kind of symbol (core kernel, module, ftrace, bpf, or kprobe) and
+> the maximum size the symbol can be.  The latter is calculated from
+> the difference between current symbol value and the next symbol
+> value.
 > 
-> [1] https://lore.kernel.org/all/YjRPZj6Z8vuLeEZo@krava/
+> The key benefit for this iterator will likely be supporting in-kernel
+> data-gathering rather than dumping symbol details to userspace and
+> parsing the results.
 > 
-> Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 > Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+
+LGTM. Thanks!
+
+Acked-by: Yonghong Song <yhs@fb.com>
+
 > ---
->   kernel/kallsyms.c | 89 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
->   1 file changed, 89 insertions(+)
+>   tools/testing/selftests/bpf/prog_tests/bpf_iter.c | 16 +++++
+>   tools/testing/selftests/bpf/progs/bpf_iter_ksym.c | 71 +++++++++++++++++++++++
+>   2 files changed, 87 insertions(+)
+>   create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_ksym.c
 > 
-> diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
-> index fbdf8d3..8b662da 100644
-> --- a/kernel/kallsyms.c
-> +++ b/kernel/kallsyms.c
-> @@ -30,6 +30,7 @@
->   #include <linux/module.h>
->   #include <linux/kernel.h>
->   #include <linux/bsearch.h>
-> +#include <linux/btf_ids.h>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> index 7ff5fa9..a33874b 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> @@ -27,6 +27,7 @@
+>   #include "bpf_iter_test_kern5.skel.h"
+>   #include "bpf_iter_test_kern6.skel.h"
+>   #include "bpf_iter_bpf_link.skel.h"
+> +#include "bpf_iter_ksym.skel.h"
 >   
->   /*
->    * These will be re-linked against their real values
-> @@ -799,6 +800,91 @@ static int s_show(struct seq_file *m, void *p)
->   	.show = s_show
->   };
->   
-> +#ifdef CONFIG_BPF_SYSCALL
-> +
-> +struct bpf_iter__ksym {
-> +	__bpf_md_ptr(struct bpf_iter_meta *, meta);
-> +	__bpf_md_ptr(struct kallsym_iter *, ksym);
-> +};
-> +
-> +static int ksym_prog_seq_show(struct seq_file *m, bool in_stop)
-> +{
-> +	struct bpf_iter__ksym ctx;
-> +	struct bpf_iter_meta meta;
-> +	struct bpf_prog *prog;
-> +
-> +	meta.seq = m;
-> +	prog = bpf_iter_get_info(&meta, in_stop);
-> +	if (!prog)
-> +		return 0;
-> +
-> +	ctx.meta = &meta;
-> +	ctx.ksym = m ? m->private : NULL;
-> +	return bpf_iter_run_prog(prog, &ctx);
-> +}
-> +
-> +static int bpf_iter_ksym_seq_show(struct seq_file *m, void *p)
-> +{
-> +	return ksym_prog_seq_show(m, false);
-> +}
-> +
-> +static void bpf_iter_ksym_seq_stop(struct seq_file *m, void *p)
-> +{
-> +	if (!p)
-> +		(void) ksym_prog_seq_show(m, true);
-> +	else
-> +		s_stop(m, p);
-> +}
-> +
-> +static const struct seq_operations bpf_iter_ksym_ops = {
-> +	.start = s_start,
-> +	.next = s_next,
-> +	.stop = bpf_iter_ksym_seq_stop,
-> +	.show = bpf_iter_ksym_seq_show,
-> +};
-> +
-> +static int bpf_iter_ksym_init(void *priv_data, struct bpf_iter_aux_info *aux)
-> +{
-> +	struct kallsym_iter *iter = priv_data;
-> +
-> +	reset_iter(iter, 0);
-> +
-> +	iter->show_value = true;
-
-I think instead of always having show_value = true, we should have
-    iter->show_value = kallsyms_show_value(...);
-
-this is consistent with what `cat /proc/kallsyms` is doing, and
-also consistent with bpf_dump_raw_ok() used when dumping various
-kernel info in syscall.c.
-
-We don't have a file here, so credential can be from the current
-process with current_cred().
-
-> +
-> +	return 0;
-> +}
-> +
-> +DEFINE_BPF_ITER_FUNC(ksym, struct bpf_iter_meta *meta, struct kallsym_iter *ksym)
-> +
-> +static const struct bpf_iter_seq_info ksym_iter_seq_info = {
-> +	.seq_ops		= &bpf_iter_ksym_ops,
-> +	.init_seq_private	= bpf_iter_ksym_init,
-> +	.fini_seq_private	= NULL,
-> +	.seq_priv_size		= sizeof(struct kallsym_iter),
-> +};
-> +
-> +static struct bpf_iter_reg ksym_iter_reg_info = {
-> +	.target                 = "ksym",
-> +	.ctx_arg_info_size	= 1,
-> +	.ctx_arg_info		= {
-> +		{ offsetof(struct bpf_iter__ksym, ksym),
-> +		  PTR_TO_BTF_ID_OR_NULL },
-> +	},
-> +	.seq_info		= &ksym_iter_seq_info,
-> +};
-> +
-> +BTF_ID_LIST(btf_ksym_iter_id)
-> +BTF_ID(struct, kallsym_iter)
-> +
-> +static void __init bpf_ksym_iter_register(void)
-> +{
-> +	ksym_iter_reg_info.ctx_arg_info[0].btf_id = *btf_ksym_iter_id;
-> +	if (bpf_iter_reg_target(&ksym_iter_reg_info))
-> +		pr_warn("Warning: could not register bpf ksym iterator\n");
-> +}
-> +
-> +#endif /* CONFIG_BPF_SYSCALL */
-> +
->   static inline int kallsyms_for_perf(void)
->   {
->   #ifdef CONFIG_PERF_EVENTS
-> @@ -885,6 +971,9 @@ const char *kdb_walk_kallsyms(loff_t *pos)
->   static int __init kallsyms_init(void)
->   {
->   	proc_create("kallsyms", 0444, NULL, &kallsyms_proc_ops);
-> +#if defined(CONFIG_BPF_SYSCALL)
-> +	bpf_ksym_iter_register();
-
-You can inline this function here and if bpf_iter_reg_target(...) 
-failed, just return the error code.
-
-> +#endif
->   	return 0;
->   }
->   device_initcall(kallsyms_init);
+[...]
