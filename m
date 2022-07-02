@@ -2,99 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62EFD563E38
-	for <lists+bpf@lfdr.de>; Sat,  2 Jul 2022 06:23:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E812563E81
+	for <lists+bpf@lfdr.de>; Sat,  2 Jul 2022 06:39:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229793AbiGBEXb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 2 Jul 2022 00:23:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56478 "EHLO
+        id S231658AbiGBEjQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 2 Jul 2022 00:39:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbiGBEXa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 2 Jul 2022 00:23:30 -0400
-Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8C5D1F2E4
-        for <bpf@vger.kernel.org>; Fri,  1 Jul 2022 21:23:28 -0700 (PDT)
-Date:   Fri, 1 Jul 2022 21:23:19 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1656735807;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SzXNs70WHMtboWd+grqVTGNXmGyPHBV+9qhpjinuT/Q=;
-        b=mN5Q7vRy1UUefFFp6lW21PTy22P2fZiejxINM5EGYmMxDGaz2xQU2S9Q0swwk6CnPVQ9en
-        dh64+nloD6q+mdFeCMTdh+u5TesvZlzbgdqcFPsWglix4UcgfHjrrXAMTZzQZmUkmwMxtx
-        hwypus3zirQNrFntcfhD/YAmuWIDp5s=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>, songmuchun@bytedance.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>, penberg@kernel.org,
-        David Rientjes <rientjes@google.com>, iamjoonsoo.kim@lge.com,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Linux MM <linux-mm@kvack.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [RFC PATCH bpf-next 00/10] bpf, mm: Recharge pages when reuse
- bpf map
-Message-ID: <Yr/INyiQ3eV4ToIP@castle>
-References: <20220619155032.32515-1-laoar.shao@gmail.com>
- <YrPeJ5L5mSI/MqrP@castle>
- <CALOAHbBXJkOqMZEzeTVy8JmMVjRr62n=69W5EQ=oTWyoeGVgNQ@mail.gmail.com>
- <YrfSXVDONpxcUDI+@castle>
- <CALOAHbC2j35V6wLh4+-m9_+EPPvFfT3KqkD_6JFsPYj78G6dSw@mail.gmail.com>
+        with ESMTP id S230289AbiGBEjP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 2 Jul 2022 00:39:15 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8038320F78
+        for <bpf@vger.kernel.org>; Fri,  1 Jul 2022 21:39:13 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id e69so737871ybh.2
+        for <bpf@vger.kernel.org>; Fri, 01 Jul 2022 21:39:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=anyfinetworks-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fcXrjy6USp+1HO3NzJ6oUGjfai/efuk6xIDLeKxBtPY=;
+        b=DgKf0ALqJ5mXoBMWwMaod4Uq31oa3BBX+hyu7XnAX7uILVe207HQWmjTejcHLhzyrC
+         U5sIXh9IkCOPWfsa/52Z5yU9zfBKsclpTIxzL1jviS38zHEyHKNm1urcqFb0OVPbBjKO
+         ag53BlXvXACH0E0B+PF7Xe0fZkhHytyOgCHXJegNx4O7Bvi92TKxT+3G8hwtSkUVH7Cb
+         jG5w7+2remvdGorg0d/2YhjORir4GJpcI4+8ntzuqZbrOVGCKW1ib4/Iu6yFBPGXPY9y
+         b/pW8MUr+0RD3GmsNldExMrlr0fsnxxeyWrAzLDI6UeKokF5VFBgzqF7NtNILroQtmgg
+         Uy6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fcXrjy6USp+1HO3NzJ6oUGjfai/efuk6xIDLeKxBtPY=;
+        b=Ifz5rLpKTyBpl7sLG03PjpWGv0+UJl8IQpRTPtSPQGhde0GD2aBZOUTIcmPK+cykJp
+         udUYnNAkjYCarlQ7N4mFMhi3zGw1wQUqHYtM3v6QbHKKwv5uJgk1t5ekHhpmNjFbltx3
+         U35woX54ABbHZxSIGodShes63Bsy3sVNpH4nWlcWHD2e2UtfZq+pbkQNZm/77Wv6zxAg
+         Zr4R0FG7Zzjg3Fxs6Ks09juhayCQVwc04lHD0jVaEhEb4bKAPFN9NQun69JMxwTOtwUP
+         84Tvy/07ICLlBYHwVuHKBfsauzdoxHlbHvEUqm+1qHYKcR1oXJN6qo+vjyjkPdryC2Mg
+         Oucg==
+X-Gm-Message-State: AJIora/ADWPORqzDJadvQclGWFCM7PNr8gtzfH1xKlXsZQYGfJ81BMtV
+        eGf6PcJOEC0YtsH2PBgDqjKflMsO4se5XARBgtkmBg==
+X-Google-Smtp-Source: AGRyM1uQrnSvirfBdxClGd1N0T3VdTWivoUq/R2MZ/gPT2WVqAbJUXoputqV1WaS76zlMDOnkwu7eoHaj+f2bie7nrM=
+X-Received: by 2002:a25:3a81:0:b0:66a:645f:fe99 with SMTP id
+ h123-20020a253a81000000b0066a645ffe99mr17617688yba.489.1656736752690; Fri, 01
+ Jul 2022 21:39:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALOAHbC2j35V6wLh4+-m9_+EPPvFfT3KqkD_6JFsPYj78G6dSw@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220701094256.1970076-1-johan.almbladh@anyfinetworks.com>
+ <20220701151200.2033129-1-johan.almbladh@anyfinetworks.com> <1558ba51-c9dd-e265-4222-a69e27238813@iogearbox.net>
+In-Reply-To: <1558ba51-c9dd-e265-4222-a69e27238813@iogearbox.net>
+From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Date:   Sat, 2 Jul 2022 06:39:01 +0200
+Message-ID: <CAM1=_QTrTPaQn9fuYoOGV6vs-gjgztFyTieQKCCcY0pFuqvpKA@mail.gmail.com>
+Subject: Re: [PATCH bpf v2] xdp: Fix spurious packet loss in generic XDP TX path
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>, song@kernel.org,
+        martin.lau@linux.dev, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, jolsa@kernel.org,
+        Freysteinn.Alfredsson@kau.se, toke@redhat.com,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jun 26, 2022 at 02:25:51PM +0800, Yafang Shao wrote:
-> > >                                              htab->map.numa_node);
-> > > And then we'd better introduce an improvement for memcg,
-> > > +      /*
-> > > +       *  Should wakeup async memcg reclaim first,
-> > > +       *   in case there will be no direct memcg reclaim for a long time.
-> > > +       *   We can either introduce async memcg reclaim
-> > > +       *   or modify kswapd to reclaim a specific memcg
-> > > +       */
-> > > +       if (gfp_mask & __GFP_KSWAPD_RECLAIM)
-> > > +            wake_up_async_memcg_reclaim();
-> > >          if (!gfpflags_allow_blocking(gfp_mask))
-> > >                 goto nomem;
+On Sat, Jul 2, 2022 at 12:47 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> On 7/1/22 5:12 PM, Johan Almbladh wrote:
+> > The byte queue limits (BQL) mechanism is intended to move queuing from
+> > the driver to the network stack in order to reduce latency caused by
+> > excessive queuing in hardware. However, when transmitting or redirecting
+> > a packet using generic XDP, the qdisc layer is bypassed and there are no
+> > additional queues. Since netif_xmit_stopped() also takes BQL limits into
+> > account, but without having any alternative queuing, packets are
+> > silently dropped.
 > >
-> > Hm, I see. It might be an issue if there is no global memory pressure, right?
-> > Let me think what I can do here too.
+> > This patch modifies the drop condition to only consider cases when the
+> > driver itself cannot accept any more packets. This is analogous to the
+> > condition in __dev_direct_xmit(). Dropped packets are also counted on
+> > the device.
 > >
-> 
-> Right. It is not a good idea to expect a global memory reclaimer to do it.
-> Thanks for following up with it again.
+> > Bypassing the qdisc layer in the generic XDP TX path means that XDP
+> > packets are able to starve other packets going through a qdisc, and
+> > DDOS attacks will be more effective. In-driver-XDP use dedicated TX
+> > queues, so they do not have this starvation issue.
+> >
+> > Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+> > ---
+> >   net/core/dev.c | 9 +++++++--
+> >   1 file changed, 7 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/net/core/dev.c b/net/core/dev.c
+> > index 8e6f22961206..00fb9249357f 100644
+> > --- a/net/core/dev.c
+> > +++ b/net/core/dev.c
+> > @@ -4863,7 +4863,10 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
+> >   }
+> >
+> >   /* When doing generic XDP we have to bypass the qdisc layer and the
+> > - * network taps in order to match in-driver-XDP behavior.
+> > + * network taps in order to match in-driver-XDP behavior. This also means
+> > + * that XDP packets are able to starve other packets going through a qdisc,
+> > + * and DDOS attacks will be more effective. In-driver-XDP use dedicated TX
+> > + * queues, so they do not have this starvation issue.
+> >    */
+> >   void generic_xdp_tx(struct sk_buff *skb, struct bpf_prog *xdp_prog)
+> >   {
+> > @@ -4875,10 +4878,12 @@ void generic_xdp_tx(struct sk_buff *skb, struct bpf_prog *xdp_prog)
+> >       txq = netdev_core_pick_tx(dev, skb, NULL);
+> >       cpu = smp_processor_id();
+> >       HARD_TX_LOCK(dev, txq, cpu);
+> > -     if (!netif_xmit_stopped(txq)) {
+> > +     if (!netif_xmit_frozen_or_drv_stopped(txq)) {
+> >               rc = netdev_start_xmit(skb, dev, txq, 0);
+> >               if (dev_xmit_complete(rc))
+> >                       free_skb = false;
+> > +     } else {
+> > +             dev_core_stats_tx_dropped_inc(dev);
+> >       }
+> >       HARD_TX_UNLOCK(dev, txq);
+> >       if (free_skb) {
+>
+> Small q: Shouldn't the drop counter go into the free_skb branch?
 
-After thinking a bit more, I'm not sure if it's actually a good idea:
-there might be not much memory to reclaim except the memory consumed by the bpf
-map itself, so waking kswapd might be useless (and just consume cpu and drain
-batteries).
+This was on purpose to not increment the counter twice, but I think
+you are right. The driver update the tx_dropped counter if the packet
+is dropped, but I see that it also consumes the skb in those cases.
+Looking again at the driver tree I cannot found any examples where the
+driver updates the counter *without* consuming the skb. This logic
+makes sense - whoever consumes the skb it is also responsible for
+updating the counters on the netdev.
 
-What we need to do instead is to prevent bpf maps to meaningfully exceed
-memory.max, which is btw guaranteed by the cgroup API: memory.max is defined
-as a hard limit in docs. Your recent patch is actually doing this for hash maps,
-let's fix the rest of the bpf code.
-
-Thanks!
+>
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index 00fb9249357f..17e2c39477c5 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -4882,11 +4882,10 @@ void generic_xdp_tx(struct sk_buff *skb, struct bpf_prog *xdp_prog)
+>                  rc = netdev_start_xmit(skb, dev, txq, 0);
+>                  if (dev_xmit_complete(rc))
+>                          free_skb = false;
+> -       } else {
+> -               dev_core_stats_tx_dropped_inc(dev);
+>          }
+>          HARD_TX_UNLOCK(dev, txq);
+>          if (free_skb) {
+> +               dev_core_stats_tx_dropped_inc(dev);
+>                  trace_xdp_exception(dev, xdp_prog, XDP_TX);
+>                  kfree_skb(skb);
+>          }
