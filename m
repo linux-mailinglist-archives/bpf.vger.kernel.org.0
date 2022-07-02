@@ -2,96 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46562563DC8
-	for <lists+bpf@lfdr.de>; Sat,  2 Jul 2022 04:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 927EC563DF4
+	for <lists+bpf@lfdr.de>; Sat,  2 Jul 2022 05:20:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231320AbiGBCe4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Jul 2022 22:34:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54482 "EHLO
+        id S231779AbiGBDUT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Jul 2022 23:20:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231196AbiGBCe4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Jul 2022 22:34:56 -0400
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CA761ADAE;
-        Fri,  1 Jul 2022 19:34:55 -0700 (PDT)
-Received: by mail-vs1-xe35.google.com with SMTP id d187so3900585vsd.10;
-        Fri, 01 Jul 2022 19:34:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XzrJ74Mq2J7i0uWext8oQxD8fgs8c6cXoUkiJ5+kvpc=;
-        b=QG4dOJQ7dCYw4l4b56Xsl/rpwYA/YasHuDYQFRC5VONcbEsV/9x55dpCGFUpMb60bv
-         Chme9/ccmks9oaUh33et6kKf9kl1tSO7Yi0M0g/GicLhPtcmUva6tu5q1xmFlAPV1qb3
-         AIJvM4MwbDAMGzL61TPqmkNIJOqEEmYW0LbJLPyP/7p7gDXXik244ZStnQI0va6GNnVX
-         xynHqWWqzX0A/tuvznF7bjlFn0lyLZul7hJ9YAv4VraEV/lab3RMURIjknTZzooGxhr7
-         q7C8UvRnRhvPSjcKAx4AKh2ttoYetO3NdeFkGaYTL91y9yaqE5vmm55/8GrvibbsoF/Q
-         Ytcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XzrJ74Mq2J7i0uWext8oQxD8fgs8c6cXoUkiJ5+kvpc=;
-        b=PR+Eca8hMPhrRvrB9aFt2hR52Z1XT4Y4p7n0gfmhb9ZCaSwipulvS5o9oG64ITEgoM
-         LTGnyDXSBhMqr48K7ohGnw+LX50MHWFDBTdMkw/GQmZuE/+54KVwruvE3ikwbaHsrtZ1
-         KKRDewBuL4S6i3mPzZQ+2LNNj+57RPnPmuEj2WNRE1oQ0DRHKsE33qmOihIAKDPm/Yby
-         VE4hsSPRvSE4L3fmUFqjLxZRGxq3Vo8O/k2MS5QgRIl0WTFmjJvV5ptwSvdEl9f4o78o
-         eMUBpFQcPVtpq/9VOpzE+kMkDxQ+fNPZ/AFo8VmY0m5rcrEvcyC3aqSyZoIHUCuOL2iw
-         xSEQ==
-X-Gm-Message-State: AJIora/Tn5b7nSTuTCHN2B9H6jJOy3hjMtTSc0BLWa+E0LvETuIdB2dT
-        7hJvJbILMhPhI7EszYmJYObL5pXnMftxYIQdVcU=
-X-Google-Smtp-Source: AGRyM1vYPmiFz5mBxB5iu1UtJJ88zmxNQyEe1soOhxXApIXQ2vWBGIMxPS1Swz+f5cwfEN1ScQB1DbcPRmaRMQ8VQP4=
-X-Received: by 2002:a05:6102:cc6:b0:356:3c5c:beb5 with SMTP id
- g6-20020a0561020cc600b003563c5cbeb5mr12760375vst.80.1656729294540; Fri, 01
- Jul 2022 19:34:54 -0700 (PDT)
+        with ESMTP id S231732AbiGBDUS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Jul 2022 23:20:18 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB10D33360;
+        Fri,  1 Jul 2022 20:20:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 97DC5B832BC;
+        Sat,  2 Jul 2022 03:20:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3A34BC341CA;
+        Sat,  2 Jul 2022 03:20:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1656732014;
+        bh=68rh7ufA452Dl9v8RHxzSzIT5CpzEUwnlnm8j9L2xxc=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=akJY5CGQZhV7FVcWbHN0/wJmxfuLBWRNs49DbU7CjE5GLGEXq/9fa9rFNXwhv2RSV
+         vk+fcds/ZXS5Q6qBgeH5cWNY/ByqNZAh3o04YMVyZZ2pDXH7LL7tzWPPEWnWs8UJ5D
+         T01j+0kYzwtFIH58FT+VV03Bg4vMYpiu2PmiDwvvBfyEhTkAHAyBxdGVte/CBZLkjk
+         kNTH4Kl3+x3m7beard0l8/PspYA3YIJKwfEDNdv+eH7JdsH28K4h764mca9+dP2tqJ
+         gesMvy/ZGwX4rqEhEqHxAY7dFIDljMW3PuC84QUCQ5Y63HByZyCKVHzXJjRboIbACL
+         RcM5RZIkFxwNA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1EB38E49FA0;
+        Sat,  2 Jul 2022 03:20:14 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20220629154832.56986-1-laoar.shao@gmail.com> <20220629154832.56986-4-laoar.shao@gmail.com>
- <CA+khW7h2DWPM4nAOav+t8k+zbnUOkCO9C+47bSVN0UMHRE-v_w@mail.gmail.com>
-In-Reply-To: <CA+khW7h2DWPM4nAOav+t8k+zbnUOkCO9C+47bSVN0UMHRE-v_w@mail.gmail.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Sat, 2 Jul 2022 10:34:17 +0800
-Message-ID: <CALOAHbDdj72pVsaohbj=JCsryiHFQYaia78OP5kO65OSYTVb5A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/4] bpf: Don't do preempt check when migrate is disabled
-To:     Hao Luo <haoluo@google.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: pull-request: bpf 2022-07-02
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <165673201412.6297.7979220898548456738.git-patchwork-notify@kernel.org>
+Date:   Sat, 02 Jul 2022 03:20:14 +0000
+References: <20220701230121.10354-1-daniel@iogearbox.net>
+In-Reply-To: <20220701230121.10354-1-daniel@iogearbox.net>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        edumazet@google.com, ast@kernel.org, andrii@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 1, 2022 at 4:43 AM Hao Luo <haoluo@google.com> wrote:
->
-> Hi Yafang,
->
-> On Wed, Jun 29, 2022 at 8:49 AM Yafang Shao <laoar.shao@gmail.com> wrote:
-> >
-> > It doesn't need to do the preempt check when migrate is disabled
-> > after commit
-> > 74d862b682f5 ("sched: Make migrate_disable/enable() independent of RT").
-> >
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > ---
->
-> In my understanding, migrate_disable() doesn't imply
-> preempt_disable(), I think this is not safe. Am I missing something?
->
+Hello:
 
-It seems I have some misunderstanding of it after second thoughts.
-I will think more about it.
+This pull request was applied to netdev/net.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
 
+On Sat,  2 Jul 2022 01:01:21 +0200 you wrote:
+> Hi David, hi Jakub, hi Paolo, hi Eric,
+> 
+> The following pull-request contains BPF updates for your *net* tree.
+> 
+> We've added 7 non-merge commits during the last 14 day(s) which contain
+> a total of 6 files changed, 193 insertions(+), 86 deletions(-).
+> 
+> [...]
+
+Here is the summary with links:
+  - pull-request: bpf 2022-07-02
+    https://git.kernel.org/netdev/net/c/bc38fae3a68b
+
+You are awesome, thank you!
 -- 
-Regards
-Yafang
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
