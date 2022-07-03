@@ -2,136 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26B81564766
-	for <lists+bpf@lfdr.de>; Sun,  3 Jul 2022 15:12:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24EAE564797
+	for <lists+bpf@lfdr.de>; Sun,  3 Jul 2022 15:55:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229550AbiGCNM0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 3 Jul 2022 09:12:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59274 "EHLO
+        id S232568AbiGCNzA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 3 Jul 2022 09:55:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232060AbiGCNMZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 3 Jul 2022 09:12:25 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43AD76361
-        for <bpf@vger.kernel.org>; Sun,  3 Jul 2022 06:12:23 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id e28so9754067wra.0
-        for <bpf@vger.kernel.org>; Sun, 03 Jul 2022 06:12:23 -0700 (PDT)
+        with ESMTP id S231574AbiGCNy5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 3 Jul 2022 09:54:57 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B210AF47;
+        Sun,  3 Jul 2022 06:54:56 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id n66so787385oia.11;
+        Sun, 03 Jul 2022 06:54:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=conchuod.ie; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=b2qZjru2AawbgH9jyJa3uiCOU1FEJ+Z4cEYmO5LMBTI=;
-        b=Vqo0MXFxvrz0CdYVFug56sJ0ZOEnGDrO/jKRHUiIHMmO5KoJf/kNYRSR9U7CeI/etA
-         NO3vH4GS3TfaGrKbzumHWt/WrwE3XH6Ak0LfGPAD9mSBJ3unOdk0cO3+j+rariAvDLfr
-         PceDbxaeUXLc2LbQaxVcfFvWWHMnRlgrZBUeFzBFHRZtJW6XfqAsR5bCy+YKOciDZ+0G
-         NRYE5lhGEgTZMyfo+UmSD/Yxmj0nR/bPx7OWuNI6FWHH+MJypRrx7o0c3AqKH7jO4a/l
-         uKY7FLfyt9rAD7cMEvf9Or882hrIfuprgqBti8ijLZD4YRDsRSsQjzMwye7SvL9nWtHe
-         lNEA==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:user-agent:in-reply-to:references
+         :message-id:mime-version:content-transfer-encoding;
+        bh=RjnBMrtfuHQRRhx/4U3UDDe42R12Gk4NKxVlso+Ig5o=;
+        b=nlm9rri0/2SNXvn8rTnkl1gyOBNgfx3L9Oy6c2sRHEoeVlIpcFI3U/grg9igVFhZqt
+         21OHjnlP+U8MI/p26kos9R1W/bCjFNzirwY/zA9YmaB2J5UwEMd0qn6MryG4lOhXQKgS
+         tzoHhCCbpprMpq84xZUtA6Dmd0aLkXmu9UdLr9GR1j+xdHM2/DvTzgwZUaNB9lCuGD5i
+         qzf8I+FzsxYU7T2dZAJF+OcCygQIc3vhEVVLePZ1fVZjJrUHG+FYqrmolxSEPklVm8S7
+         9gkm3eHUY5FS67N3XN6HmsyG27l/CERDYBkpC5ZsWaxKEL+9whenpQ8g7NJIBbR7bW/U
+         1WTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=b2qZjru2AawbgH9jyJa3uiCOU1FEJ+Z4cEYmO5LMBTI=;
-        b=7a3JOC4xEtDepNCkq7ehB+qiN8XvlP5q1S0Vv0OJvC8WAq0aSa2fq0URS+S9DfZBlM
-         BUy5dWaQa8Typm9p5RVOMlkrNoDg7m7GI4M3ClLhXiYwbScIh1xBx+GpkxqyVpxC5ZMm
-         HeMkOc63p19x8hAX4Tqfmvt+Fjo8xSgka7i87mrm02wD93T/4cY5q+ZKhvMP1S+YAVuw
-         Tc0z8PmoYKaJ5orbDFusLGa78dffjTGQ5yrzHtGqGJubSDtpoctBkDCNL5+bT3nODw86
-         ZvP0tzfLyOIVwzkF/ssUkPZQfnj6hgxnAcPBuolw17pZHlDJs7mhcIOeVTT5XOdk/IhX
-         XsmQ==
-X-Gm-Message-State: AJIora/cuoXW/+IIHpLlYhzG+814QaXDSdGAxN4de+vcCSGf/ZDce44u
-        YwR5DaVL8sDhokHKNNR92IDEtA==
-X-Google-Smtp-Source: AGRyM1uXArjvOOMo1FwzrB3m4V1RuMD/HIns9AME3FbmZRXJYIgUQQRLJuq4YI4OHIaEVsz16Zt6kw==
-X-Received: by 2002:adf:fb08:0:b0:21b:af81:2ffd with SMTP id c8-20020adffb08000000b0021baf812ffdmr22820107wrr.685.1656853941578;
-        Sun, 03 Jul 2022 06:12:21 -0700 (PDT)
-Received: from [192.168.2.222] ([51.37.234.167])
-        by smtp.gmail.com with ESMTPSA id h13-20020adff4cd000000b002103aebe8absm27452656wrp.93.2022.07.03.06.12.20
+        h=x-gm-message-state:date:from:to:cc:subject:user-agent:in-reply-to
+         :references:message-id:mime-version:content-transfer-encoding;
+        bh=RjnBMrtfuHQRRhx/4U3UDDe42R12Gk4NKxVlso+Ig5o=;
+        b=W4qWtJaMe3keolQLXa+yP5+tV5Ko2FsIudrlHCj9o4eQpo1ENjpkNX6H7/tPMpwLHh
+         6tPl3dFPJByUamF7xt/wGG0eEcBzDmTg3CFcE0kh3dejEBofktKWCBwzKNu71sZISzYl
+         is98oEYyBMn20rluyizjLOw4Zoaeqw+IdFctklCSpeDb+eTPiVjXagfcqG5H0Bz1j1kZ
+         o8tnsd1jeomg6Y3Blq9IsIiMFZ8u76xlA0YYm3zhZQQ3eUHtxWDOb6sO79f8WXirf3uA
+         Jv8uSl+3bjaaBLMzVLt7yh3Rna/9c5gbLqAbot1AMKXOMNmy3R1dNGFumHcVmA/bhSmE
+         2iZA==
+X-Gm-Message-State: AJIora+2c9qKmMkyrsThdE9Qyrs8F5NGZ6i/PyMQmVxXN2b7/UBJ7YE2
+        lyy/Awqev0ICqarzUxq/IiXyz1ZXldM=
+X-Google-Smtp-Source: AGRyM1uOfH2YgNUAJvWKgiRwJksiZR6thmzKqC/Gpt3afzUnoNtF+TTAek2Zm1OrwyufXpWFQwrsHA==
+X-Received: by 2002:aca:38c6:0:b0:32f:2477:2ec6 with SMTP id f189-20020aca38c6000000b0032f24772ec6mr14181068oia.66.1656856496039;
+        Sun, 03 Jul 2022 06:54:56 -0700 (PDT)
+Received: from [127.0.0.1] (187-26-175-65.3g.claro.net.br. [187.26.175.65])
+        by smtp.gmail.com with ESMTPSA id v202-20020acaacd3000000b0033326435494sm13376881oie.41.2022.07.03.06.54.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 03 Jul 2022 06:12:21 -0700 (PDT)
-Message-ID: <c373eec7-2cc4-a41d-916c-f073aba5494b@conchuod.ie>
-Date:   Sun, 3 Jul 2022 14:12:19 +0100
+        Sun, 03 Jul 2022 06:54:55 -0700 (PDT)
+Date:   Sun, 03 Jul 2022 10:54:45 -0300
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+To:     sedat.dilek@gmail.com, Sedat Dilek <sedat.dilek@gmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andres Freund <andres@anarazel.de>,
+        Quentin Monnet <quentin@isovalent.com>
+CC:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: =?US-ASCII?Q?Re=3A_=5Bperf-tools=5D_Build-error_in_too?= =?US-ASCII?Q?ls/perf/util/annotate=2Ec_with_LLVM-14?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <CA+icZUVpr8ZeOKCj4zMMqbFT013KJz2T1csvXg+VSkdvJH1Ubw@mail.gmail.com>
+References: <CA+icZUVVXq0Mh8=QuopF0tMZyZ0Tn8AiKEZoA3jfP47Q8B=x2A@mail.gmail.com> <CA+icZUW3VrDC8J4MnNb1H3nGYQggBwY4zOoaJkzSsNj7xKDvyQ@mail.gmail.com> <CA+icZUVcCMCGEaxytyJd_-Ur-Ey_gWyXx=tApo-SVUqbX_bhUA@mail.gmail.com> <CA+icZUVpr8ZeOKCj4zMMqbFT013KJz2T1csvXg+VSkdvJH1Ubw@mail.gmail.com>
+Message-ID: <1496A989-23D2-474D-B941-BA2D74761A7E@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH] RISC-V/bpf: Enable bpf_probe_read{, str}()
-Content-Language: en-US
-To:     Yixun Lan <dlan@gentoo.org>, Palmer Dabbelt <palmer@dabbelt.com>,
-        linux-riscv@lists.infradead.org
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <20220703130924.57240-1-dlan@gentoo.org>
-From:   Conor Dooley <mail@conchuod.ie>
-In-Reply-To: <20220703130924.57240-1-dlan@gentoo.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 03/07/2022 14:09, Yixun Lan wrote:
-> Enable this option to fix a bcc error in RISC-V platform
-> 
-> And, the error shows as follows:
-> 
-> ~ # runqlen
-> WARNING: This target JIT is not designed for the host you are running. \
-> If bad things happen, please choose a different -march switch.
-> bpf: Failed to load program: Invalid argument
-> 0: R1=ctx(off=0,imm=0) R10=fp0
-> 0: (85) call bpf_get_current_task#35          ; R0_w=scalar()
-> 1: (b7) r6 = 0                        ; R6_w=0
-> 2: (7b) *(u64 *)(r10 -8) = r6         ; R6_w=P0 R10=fp0 fp-8_w=00000000
-> 3: (07) r0 += 312                     ; R0_w=scalar()
-> 4: (bf) r1 = r10                      ; R1_w=fp0 R10=fp0
-> 5: (07) r1 += -8                      ; R1_w=fp-8
-> 6: (b7) r2 = 8                        ; R2_w=8
-> 7: (bf) r3 = r0                       ; R0_w=scalar(id=1) R3_w=scalar(id=1)
-> 8: (85) call bpf_probe_read#4
-> unknown func bpf_probe_read#4
-> processed 9 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
-> 
-> Traceback (most recent call last):
->   File "/usr/lib/python-exec/python3.9/runqlen", line 187, in <module>
->     b.attach_perf_event(ev_type=PerfType.SOFTWARE,
->   File "/usr/lib/python3.9/site-packages/bcc/__init__.py", line 1228, in attach_perf_event
->     fn = self.load_func(fn_name, BPF.PERF_EVENT)
->   File "/usr/lib/python3.9/site-packages/bcc/__init__.py", line 522, in load_func
->     raise Exception("Failed to load BPF program %s: %s" %
-> Exception: Failed to load BPF program b'do_perf_event': Invalid argument
-> 
-> Signed-off-by: Yixun Lan <dlan@gentoo.org>
 
-Do you know what commit this fixes?
-Thanks,
-Conor.
 
-> ---
->  arch/riscv/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 32ffef9f6e5b4..da0016f1be6ce 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -25,6 +25,7 @@ config RISCV
->  	select ARCH_HAS_GIGANTIC_PAGE
->  	select ARCH_HAS_KCOV
->  	select ARCH_HAS_MMIOWB
-> +	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
->  	select ARCH_HAS_PTE_SPECIAL
->  	select ARCH_HAS_SET_DIRECT_MAP if MMU
->  	select ARCH_HAS_SET_MEMORY if MMU
+On July 3, 2022 8:54:41 AM GMT-03:00, Sedat Dilek <sedat=2Edilek@gmail=2Ec=
+om> wrote:
+>On Sun, Jul 3, 2022 at 1:06 PM Sedat Dilek <sedat=2Edilek@gmail=2Ecom> wr=
+ote:
+>>
+>> On Sun, Jul 3, 2022 at 1:03 PM Sedat Dilek <sedat=2Edilek@gmail=2Ecom> =
+wrote:
+>> >
+>> > On Sun, Jul 3, 2022 at 12:57 PM Sedat Dilek <sedat=2Edilek@gmail=2Eco=
+m> wrote:
+>> > [ =2E=2E=2E ]
+>> > > util/annotate=2Ec:1766:33: error: too few arguments to function cal=
+l,
+>> > > expected 4, have 3
+>> > >                              (fprintf_ftype) fprintf);
+>> > >                                                     ^
+>> > > /usr/include/dis-asm=2Eh:472:13: note: 'init_disassemble_info' decl=
+ared here
+>> > > extern void init_disassemble_info (struct disassemble_info *dinfo, =
+void *stream,
+>> > >            ^
+>> > > 1 error generated=2E
+>> > > make[4]: *** [/home/dileks/src/linux/git/tools/build/Makefile=2Ebui=
+ld:97:
+>> > > util/annotate=2Eo] Error 1
+>> >
+>> > This is with Debian's binutils(-dev) version 2=2E38=2E50=2E20220629-4=
+=2E
+>> >
+>> > $ dpkg -S /usr/include/dis-asm=2Eh
+>> > binutils-dev: /usr/include/dis-asm=2Eh
+>> >
+>>
+>> [ /usr/include/dis-asm=2Eh ]
+>>
+>> 470 /* Method to initialize a disassemble_info struct=2E  This should b=
+e
+>> 471    called by all applications creating such a struct=2E  */
+>> 472 extern void init_disassemble_info (struct disassemble_info *dinfo,
+>> void *stream,
+>> 473                                    fprintf_ftype fprintf_func,
+>> 474                                    fprintf_styled_ftype
+>> fprintf_styled_func);
+>>
+>
+>[ CC Andres F=2E + bpf folks ]
+>
+>The patch-series from Andres Freund from [1] fixes the issue for me on
+>Debian/unstable AMD64:
+>
+>[PATCH v1 0/3] tools: fix compilation failure caused by
+>init_disassemble_info API changes
+>[PATCH v1 1/3] tools build: add feature test for init_disassemble_info
+>API changes
+>[PATCH v1 2/3] tools: add dis-asm-compat=2Eh to centralize handling of
+>version differences
+>[PATCH v1 3/3] tools: Use tools/dis-asm-compat=2Eh to fix compilation
+>errors with new binutils
+>
+>Compile-tested only (LLVM-14 x86-64)=2E
+>
+>link=3D"https://lore=2Ekernel=2Eorg/lkml/20220703044814=2E892617-1-andres=
+@anarazel=2Ede/"
+>b4 -d am $link
+>
+>Andres, you have some test-cases how you verified the built perf is OK?
+
+
+That series should be split a bit further, so that the=20
+new features test is in a separate patch, i=2Ee=2E I don't process bpftool=
+ patches, but can process the feature test and the tools/perf part=2E
+
+Thanks Sedat for drilling deeper, identifying Andres work as a cure, thank=
+s to Andres for that patch kit!
+
+- Arnaldo=20
+>
+>Thanks, Andres=2E
+>
+>-Sedat-
+>
+>[1] https://lore=2Ekernel=2Eorg/lkml/20220703044814=2E892617-1-andres@ana=
+razel=2Ede/
+>[2] https://lore=2Ekernel=2Eorg/lkml/CA+icZUVVXq0Mh8=3DQuopF0tMZyZ0Tn8AiK=
+EZoA3jfP47Q8B=3Dx2A@mail=2Egmail=2Ecom/
