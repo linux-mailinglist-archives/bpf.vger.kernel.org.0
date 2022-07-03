@@ -2,202 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B3B75645AC
-	for <lists+bpf@lfdr.de>; Sun,  3 Jul 2022 09:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 431D956466E
+	for <lists+bpf@lfdr.de>; Sun,  3 Jul 2022 11:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232070AbiGCH52 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 3 Jul 2022 03:57:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57172 "EHLO
+        id S230154AbiGCJd0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 3 Jul 2022 05:33:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232036AbiGCH51 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 3 Jul 2022 03:57:27 -0400
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B57B1D7
-        for <bpf@vger.kernel.org>; Sun,  3 Jul 2022 00:57:23 -0700 (PDT)
-Received: by mail-io1-f71.google.com with SMTP id h18-20020a5d9712000000b00674f83a60f0so4108782iol.4
-        for <bpf@vger.kernel.org>; Sun, 03 Jul 2022 00:57:23 -0700 (PDT)
+        with ESMTP id S230356AbiGCJdZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 3 Jul 2022 05:33:25 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 698123892;
+        Sun,  3 Jul 2022 02:33:24 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id ay16so11673446ejb.6;
+        Sun, 03 Jul 2022 02:33:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qN6TJiBzUxNdaAU6Co/vYWar8RPEaCWtbXsoQnQcIco=;
+        b=nip9Z/1qj7dJOHdJz9EqBkdU3JcEmxG0opD7kOyK8tFP0ol1GM7c+2zL4h9UI0V8eJ
+         zFDQ61hqfotB3j/A6fgewg9zKxP1E1I0hSo7Wa+xCniB0/5Vl5uoH0F7qaAqWETGtbH3
+         XkRtOVFgTXy3DWE/z1YjpY+YW/p2m5Ld69eqOacqoRoIRABiWnJ0C8REdnqXEL6SkjbN
+         UVLCunLQwYvNhFU3YRuu0mmi+S3pV4pjTQXMWTpvuUQJEN+7l6FLpTJgn6kHJlrnFoSK
+         XN8TDffnDvHQVRrFWakQmRpHFFkt7ruZU04CwF1eqzbIUFZFO/AkV8DBvXA/2duhW+73
+         v0EQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=pKXHXUQ8SF8H1iXfTQ0H7r6e3pNzOGjibivY6+EUllY=;
-        b=MgG3y0Or3y5/JE2bWZO+FeQ0DpgXeo0zhxkTQyLPAGenimytcpLNNzsbkUJshHSawI
-         ZFzFTD1mk6ewlHPD/9Sz3Ls7TwY0bqQU849DL66kBIwjWj1uJNJWWlELosCwhRELFBfK
-         7JEeeNj+qaugFPtn5pMrzcFwNvPs43S98ynA1zuJToyEU2C9dQJc3DkQycVbyB3v7tv4
-         JalMFpCxn8rOgjhYrMMmxac661dmiWnlO7qwCNfEL2aUdVBTaAmWkTUQOXmavafGIJV2
-         +I8QaLcwrAXrQIrH9leTH/yP/R33Jfd/g5VKRFDGnpnHS7te9wUFnEH8UngxiodPTOQk
-         vJKA==
-X-Gm-Message-State: AJIora+f1vC4SOzHpG8zCxgJf/kkT7fhwVijdgg8MeqMZ/y3QMbx/M0T
-        utgTdNd7Rzh8bGQ+tKDT2dNeRkuN22eZ66/P2UuAKDGpRXoi
-X-Google-Smtp-Source: AGRyM1tpWIwU1CgXOZqm2iMk1llhS+McHiymnuSOVRdUfLtk7MFZdhDl0T8n78AC0pHQlQ2vKpbjtnUTMwqQBsW2wDUu0lypeznt
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qN6TJiBzUxNdaAU6Co/vYWar8RPEaCWtbXsoQnQcIco=;
+        b=FPPkaBKgl8OAvzLf6Cj6uPjqKbzcwPaCjuoUp0Fcgx/eJhMBgrP3Iy2PsSi/W7HC3q
+         F/OElADstZcIkh6Q5AZDmJJzkcx+r0vrSZc7K0bEYAGFuf+5rOpr91ZQaOBqklS0e0Vg
+         yifvg4EXIY5329HIHe19LbaF6Dqs26edrqGqH8QEonGz8NwdOYad1L5lNDNWQig0xemx
+         7qVaSR8lTGgxreDN8GFp9TL1OlH7r7Nob/DuX1a+9X+GJgimgurnP/dorYDhuI7sSWc0
+         odWC583zureybZp6Qiikfi1UnQm1C4lOAUOgv8ZNBJvosex3TJj88abVdac9q2Y8X7Df
+         XfFA==
+X-Gm-Message-State: AJIora9GdRy7xlFiipXWDKYKCRuyBAFH7q37kAOOcmsAgdoxCQe7uM+I
+        84TDk7dQhogPOPcaScnYK+I=
+X-Google-Smtp-Source: AGRyM1uI75SkT5SuiOCumbsbjx+WyzWwxISdA50+mdBdzoDW8h0TmV2Bb/Cqo2rTUFrHKI8vykEeEQ==
+X-Received: by 2002:a17:906:8a53:b0:72a:8a2d:db61 with SMTP id gx19-20020a1709068a5300b0072a8a2ddb61mr12488186ejc.674.1656840802907;
+        Sun, 03 Jul 2022 02:33:22 -0700 (PDT)
+Received: from erthalion.local (dslb-094-222-028-039.094.222.pools.vodafone-ip.de. [94.222.28.39])
+        by smtp.gmail.com with ESMTPSA id f15-20020a170906084f00b00718d18a1860sm12819498ejd.61.2022.07.03.02.33.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Jul 2022 02:33:22 -0700 (PDT)
+Date:   Sun, 3 Jul 2022 11:32:16 +0200
+From:   Dmitry Dolgov <9erthalion6@gmail.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
+        songliubraving@fb.com, rostedt@goodmis.org, peterz@infradead.org,
+        mingo@redhat.com, alexei.starovoitov@gmail.com
+Subject: Re: [PATCH v4 1/1] perf/kprobe: maxactive for fd-based kprobe
+Message-ID: <20220703093216.5qpxfvza5dhuknru@erthalion.local>
+References: <20220625152429.27539-1-9erthalion6@gmail.com>
+ <20220627113731.00fa70887d19a163884243fa@kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a02:a892:0:b0:33b:b69c:304b with SMTP id
- l18-20020a02a892000000b0033bb69c304bmr14252796jam.150.1656835042750; Sun, 03
- Jul 2022 00:57:22 -0700 (PDT)
-Date:   Sun, 03 Jul 2022 00:57:22 -0700
-In-Reply-To: <00000000000073b3e805d7fed17e@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002cb7d405e2e1f886@google.com>
-Subject: Re: [syzbot] KASAN: vmalloc-out-of-bounds Read in bpf_jit_free
-From:   syzbot <syzbot+2f649ec6d2eea1495a8f@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, dvyukov@google.com,
-        hawk@kernel.org, john.fastabend@gmail.com, kafai@fb.com,
-        kernel-team@fb.com, kpsingh@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        nogikh@google.com, patchwork-bot@kernel.org, song@kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220627113731.00fa70887d19a163884243fa@kernel.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+> On Mon, Jun 27, 2022 at 11:37:31AM +0900, Masami Hiramatsu wrote:
+> On Sat, 25 Jun 2022 17:24:29 +0200
+> Dmitrii Dolgov <9erthalion6@gmail.com> wrote:
+>
+> > From: Song Liu <songliubraving@fb.com>
+> >
+> > Enable specifying maxactive for fd based kretprobe. This will be useful
+> > for tracing tools like bcc and bpftrace (see for example discussion [1]).
+> > Use highest 4 bit (bit 59-63) to allow specifying maxactive by log2.
+> >
+> > The original patch [2] seems to be fallen through the cracks and wasn't
+> > applied. I've merely rebased the work done by Song Liu, verififed it
+> > still works, and modified to allow specifying maxactive by log2 per
+> > suggestion from the discussion thread.
+> >
+> > Note that changes in rethook implementation may render maxactive
+> > obsolete.
+> >
+> > [1]: https://github.com/iovisor/bpftrace/issues/835
+> > [2]: https://lore.kernel.org/all/20191007223111.1142454-1-songliubraving@fb.com/
+> >
+> > Signed-off-by: Song Liu <songliubraving@fb.com>
+> > Signed-off-by: Dmitrii Dolgov <9erthalion6@gmail.com>
+>
+> This looks good to me.
+>
+> Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-HEAD commit:    b0d93b44641a selftests/bpf: Skip lsm_cgroup when we don't ..
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=10c495e0080000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=70e1a4d352a3c6ae
-dashboard link: https://syzkaller.appspot.com/bug?extid=2f649ec6d2eea1495a8f
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11a10a58080000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16ab8cb8080000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2f649ec6d2eea1495a8f@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: vmalloc-out-of-bounds in bpf_jit_binary_free kernel/bpf/core.c:1081 [inline]
-BUG: KASAN: vmalloc-out-of-bounds in bpf_jit_free+0x26c/0x2b0 kernel/bpf/core.c:1206
-Read of size 4 at addr ffffffffa0000000 by task syz-executor334/3608
-
-CPU: 0 PID: 3608 Comm: syz-executor334 Not tainted 5.19.0-rc2-syzkaller-00498-gb0d93b44641a #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/29/2022
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- print_address_description.constprop.0.cold+0xf/0x495 mm/kasan/report.c:313
- print_report mm/kasan/report.c:429 [inline]
- kasan_report.cold+0xf4/0x1c6 mm/kasan/report.c:491
- bpf_jit_binary_free kernel/bpf/core.c:1081 [inline]
- bpf_jit_free+0x26c/0x2b0 kernel/bpf/core.c:1206
- jit_subprogs kernel/bpf/verifier.c:13767 [inline]
- fixup_call_args kernel/bpf/verifier.c:13796 [inline]
- bpf_check+0x7035/0xb040 kernel/bpf/verifier.c:15287
- bpf_prog_load+0xfb2/0x2250 kernel/bpf/syscall.c:2575
- __sys_bpf+0x11a1/0x5790 kernel/bpf/syscall.c:4934
- __do_sys_bpf kernel/bpf/syscall.c:5038 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5036 [inline]
- __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:5036
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x46/0xb0
-RIP: 0033:0x7fe5b823e209
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffc68d718c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007fe5b823e209
-RDX: 0000000000000070 RSI: 0000000020000440 RDI: 0000000000000005
-RBP: 00007ffc68d718e0 R08: 0000000000000002 R09: 0000000000000001
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
-R13: 431bde82d7b634db R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-
-Memory state around the buggy address:
-BUG: unable to handle page fault for address: fffffbfff3ffffe0
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD 23ffe4067 P4D 23ffe4067 PUD 23ffe3067 PMD 0 
-Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 3608 Comm: syz-executor334 Not tainted 5.19.0-rc2-syzkaller-00498-gb0d93b44641a #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/29/2022
-RIP: 0010:memcpy_erms+0x6/0x10 arch/x86/lib/memcpy_64.S:55
-Code: cc cc cc cc eb 1e 0f 1f 00 48 89 f8 48 89 d1 48 c1 e9 03 83 e2 07 f3 48 a5 89 d1 f3 a4 c3 66 0f 1f 44 00 00 48 89 f8 48 89 d1 <f3> a4 c3 0f 1f 80 00 00 00 00 48 89 f8 48 83 fa 20 72 7e 40 38 fe
-RSP: 0018:ffffc9000215f7b8 EFLAGS: 00010082
-RAX: ffffc9000215f7c4 RBX: ffffffff9fffff00 RCX: 0000000000000010
-RDX: 0000000000000010 RSI: fffffbfff3ffffe0 RDI: ffffc9000215f7c4
-RBP: ffffffffa0000000 R08: 0000000000000007 R09: 0000000000000000
-R10: 0000000000000014 R11: 0000000000000001 R12: 00000000fffffffe
-R13: ffffffff9fffff80 R14: ffff888025745880 R15: 0000000000000282
-FS:  0000555555ac7300(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: fffffbfff3ffffe0 CR3: 000000007dc79000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- print_memory_metadata+0x5a/0xdf mm/kasan/report.c:404
- print_report mm/kasan/report.c:430 [inline]
- kasan_report.cold+0xfe/0x1c6 mm/kasan/report.c:491
- bpf_jit_binary_free kernel/bpf/core.c:1081 [inline]
- bpf_jit_free+0x26c/0x2b0 kernel/bpf/core.c:1206
- jit_subprogs kernel/bpf/verifier.c:13767 [inline]
- fixup_call_args kernel/bpf/verifier.c:13796 [inline]
- bpf_check+0x7035/0xb040 kernel/bpf/verifier.c:15287
- bpf_prog_load+0xfb2/0x2250 kernel/bpf/syscall.c:2575
- __sys_bpf+0x11a1/0x5790 kernel/bpf/syscall.c:4934
- __do_sys_bpf kernel/bpf/syscall.c:5038 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5036 [inline]
- __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:5036
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x46/0xb0
-RIP: 0033:0x7fe5b823e209
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffc68d718c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007fe5b823e209
-RDX: 0000000000000070 RSI: 0000000020000440 RDI: 0000000000000005
-RBP: 00007ffc68d718e0 R08: 0000000000000002 R09: 0000000000000001
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
-R13: 431bde82d7b634db R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-Modules linked in:
-CR2: fffffbfff3ffffe0
----[ end trace 0000000000000000 ]---
-RIP: 0010:memcpy_erms+0x6/0x10 arch/x86/lib/memcpy_64.S:55
-Code: cc cc cc cc eb 1e 0f 1f 00 48 89 f8 48 89 d1 48 c1 e9 03 83 e2 07 f3 48 a5 89 d1 f3 a4 c3 66 0f 1f 44 00 00 48 89 f8 48 89 d1 <f3> a4 c3 0f 1f 80 00 00 00 00 48 89 f8 48 83 fa 20 72 7e 40 38 fe
-RSP: 0018:ffffc9000215f7b8 EFLAGS: 00010082
-RAX: ffffc9000215f7c4 RBX: ffffffff9fffff00 RCX: 0000000000000010
-RDX: 0000000000000010 RSI: fffffbfff3ffffe0 RDI: ffffc9000215f7c4
-RBP: ffffffffa0000000 R08: 0000000000000007 R09: 0000000000000000
-R10: 0000000000000014 R11: 0000000000000001 R12: 00000000fffffffe
-R13: ffffffff9fffff80 R14: ffff888025745880 R15: 0000000000000282
-FS:  0000555555ac7300(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: fffffbfff3ffffe0 CR3: 000000007dc79000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	cc                   	int3
-   1:	cc                   	int3
-   2:	cc                   	int3
-   3:	cc                   	int3
-   4:	eb 1e                	jmp    0x24
-   6:	0f 1f 00             	nopl   (%rax)
-   9:	48 89 f8             	mov    %rdi,%rax
-   c:	48 89 d1             	mov    %rdx,%rcx
-   f:	48 c1 e9 03          	shr    $0x3,%rcx
-  13:	83 e2 07             	and    $0x7,%edx
-  16:	f3 48 a5             	rep movsq %ds:(%rsi),%es:(%rdi)
-  19:	89 d1                	mov    %edx,%ecx
-  1b:	f3 a4                	rep movsb %ds:(%rsi),%es:(%rdi)
-  1d:	c3                   	retq
-  1e:	66 0f 1f 44 00 00    	nopw   0x0(%rax,%rax,1)
-  24:	48 89 f8             	mov    %rdi,%rax
-  27:	48 89 d1             	mov    %rdx,%rcx
-* 2a:	f3 a4                	rep movsb %ds:(%rsi),%es:(%rdi) <-- trapping instruction
-  2c:	c3                   	retq
-  2d:	0f 1f 80 00 00 00 00 	nopl   0x0(%rax)
-  34:	48 89 f8             	mov    %rdi,%rax
-  37:	48 83 fa 20          	cmp    $0x20,%rdx
-  3b:	72 7e                	jb     0xbb
-  3d:	40 38 fe             	cmp    %dil,%sil
-
+Thanks. Is there anything else I can help with to get this change
+committed?
