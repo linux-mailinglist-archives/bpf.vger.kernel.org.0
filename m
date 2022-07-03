@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA8DA5649EE
-	for <lists+bpf@lfdr.de>; Sun,  3 Jul 2022 23:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E648F5649F2
+	for <lists+bpf@lfdr.de>; Sun,  3 Jul 2022 23:26:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231555AbiGCV0A (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 3 Jul 2022 17:26:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36282 "EHLO
+        id S231593AbiGCV0B (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 3 Jul 2022 17:26:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229742AbiGCVZ6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 3 Jul 2022 17:25:58 -0400
+        with ESMTP id S229954AbiGCVZ7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 3 Jul 2022 17:25:59 -0400
 Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FF3C55BC;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6031A5F52;
         Sun,  3 Jul 2022 14:25:56 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 3452D5C00B0;
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 5D5235C00B7;
         Sun,  3 Jul 2022 17:25:53 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Sun, 03 Jul 2022 17:25:53 -0400
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Sun, 03 Jul 2022 17:25:53 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
         cc:cc:content-transfer-encoding:date:date:from:from:in-reply-to
         :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1656883553; x=1656969953; bh=0R
-        ZUqWbxu+taN9I0W5oF8rpbxdv9lwgATydm8NiGcEY=; b=MinVfeoCMi7nwpMH95
-        eWYsOKE8/34rC5r/9BDSgkJL6sJgJ1aUb0KqkxTQEOWUHgOXTjsSpBM0Sc/EQtMA
-        Zs7HJV0hgy8BaTakCqAR5SWPeF3W3373e/kF3e//y8hRmDcYscFOm675kbg+4CZd
-        fIpUxwpqntW36ISEF3CRMMxKLJzy2xTEM9yMfrEsENap+UvNnpO/2eVrkl20ComQ
-        2hMHwuE7EOeYh/vb1Ux6p4BaXbti0JvuCHHXYrTLgwmlMKfr+XpxipQ3T935FbA4
-        8shOLH5FXI78W/cGqNh5rsqIyx26TDhFSA1/b2iPji6cDdTlWQWvIPWMC8DcTCRL
-        O3+w==
+        :subject:subject:to:to; s=fm2; t=1656883553; x=1656969953; bh=Ht
+        QcPPA/DlVVCi6tbjL3qdhgqXmt8/dZoOdf9WiKYMM=; b=WBZlfip0ObfKCoEp9T
+        u6kbdhyWlVyfwoZBO2UnJcWPl9DegZ2w12YI9Xs4wYiMGIT4EPN5pHTGfaNBz0rB
+        0IYGLDFen1VMPzyyvhpXdslFWZLu+sZ4rC1qHXGN7pLGQ9H3n3Elr4ME1tk2FaTo
+        F+ItQR2NW1NJAXG5Au9yYZcx3zWeOdBKcL57KeYHK7GW7kFm89nf7jx9TJdI+IUm
+        4J9k+dqcXrpNpXAszNPDetZNxeenw61sHxrrdWfL7k3rjyOzR5N8l5MwGmnVJLQy
+        so6Ud9oiBLET2nrytThKqNtB7LxLdASCPttS3uE7PtezjX2S7Y7PP+1GE/bxalKb
+        8Beg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
         :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
         :message-id:mime-version:references:reply-to:sender:subject
         :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1656883553; x=1656969953; bh=0RZUqWbxu+taN
-        9I0W5oF8rpbxdv9lwgATydm8NiGcEY=; b=rHCu5xFZhKXHLnheeWpuG5K+EMDjC
-        t5ucExUAikF4GPKlGFEVphpzw1yYLL+uDYxnVHZmIxKzwwf+GjLawbkQei4SHks0
-        iseEU4J9xawJOGCIh1bo6X9liBKcdv1vX1CE0pSuFf4hZ1VEMXTedvj4Q7m/590o
-        AeMC5hlo302rRhgyyAqzkzZlSgIjdO2SVvGJ3qI5W6Y5H08uQXlKxf/s14Bpq/Fq
-        Y+sLin2CHLEu6hc6+MpKK/xtN97Mz4693UaB7SE1LEE5z6nasd7G8+oS8ADg5SdW
-        cLO9j7KGpsNVN/d4TKKUv0v3mRbSJZiMQ8F+cLb1+CeCkx1+6A1qyJuAQ==
-X-ME-Sender: <xms:YQnCYqnANMkn4lvKNuwn50swv8Doe8wdLSDgaFuqML8i24BFTS8jVA>
-    <xme:YQnCYh36T4LuD8R2pqjyD_yCDnckRvOa01m0Lz86NwPjvtYMJCNLkiHqB9m4IBr93
-    7QvxOLr0V0NeS6RJg>
-X-ME-Received: <xmr:YQnCYork3wYlxvlSYn1gXHy6743Y9nUKeeWDyVhwi0sz8YOef9m18q_jP_3Ym4omARENvxmwt6dt0b08Lk5UKdtUjpuPvk076K59ohRRLic7U--8JInmjKq9mkyx>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudehjedgudeigecutefuodetggdotefrod
+        :x-sasl-enc; s=fm2; t=1656883553; x=1656969953; bh=HtQcPPA/DlVVC
+        i6tbjL3qdhgqXmt8/dZoOdf9WiKYMM=; b=NBdK458sWVd6bqN1LKtmTh1qD738U
+        aQ3wTCG5Y19t82n4Syg1re+FUFIoV2KZqGHtvAp8YafhA4UGAPXk8fV4FOWO826c
+        NDOCaQYCazthhhLJej5uoKdjU2zKykUidaSFEFfMbDcqDoK1inAu2duUzNDP5o5f
+        pX0lsgCdj5zOzYjrZhVHwJBqO4wD0VNCsHyDMpJNN5txvbHK943zCrL+jHws4QRO
+        o5joJ9F2O1N1YjDoql4Dxl/2U/PuDlKgqhr/mFI84AbDHwueCHYoQNT7uTbUAFnw
+        p2gNjOPQ3d0H55SMYfPn5lINNyPPD4GNG0S2AKxDeFyTW+CyzgIeETrLw==
+X-ME-Sender: <xms:YQnCYq_TxOu52g4hbZy--4vHcHHY2ClElOb7CfTZ5XXh5yS7lueInA>
+    <xme:YQnCYqt3R2htod2gAvLj6x61acOyFYwRQ6stCIrpPwXqvaJfB0Eh0id01VENw5uzg
+    ZuMbci1X30TwJPtog>
+X-ME-Received: <xmr:YQnCYgDu9S6aTJy5H9r3d8tjJgbyHblF569kf3g2epFU94ftUmrmngsYVou64O3DhYtHJ1hfex_f3xaNKilKxn4uFA-kqTYQj0RTmH3jLarhJH4dOblahBDW4t_a>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudehjedgudeihecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
     enucfjughrpefhvfevufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeetnhgu
@@ -55,10 +55,10 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudehjedgudeigecutefuodetgg
     ieefueegieenucffohhmrghinhepshhouhhrtggvfigrrhgvrdhorhhgpdhkvghrnhgvlh
     drohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhm
     pegrnhgurhgvshesrghnrghrrgiivghlrdguvg
-X-ME-Proxy: <xmx:YQnCYum2w7QmknMnOYKcAJsXWXfF3zBV8kuncCfvbuKSYVt8XdaYiQ>
-    <xmx:YQnCYo37ubaV6wUrfrzlMNKdcCWosvUhkm3LJg8WK0g919KZoEFKrA>
-    <xmx:YQnCYltlE5L0KUsNwGzFjmhbvpw32ueWDsXh0Fn_IrDMs_RBUyuE4g>
-    <xmx:YQnCYs_DopIgyegC3q-bBZSAKUeU3Ke6yeHW6e36QkI5vjWcYS1I9g>
+X-ME-Proxy: <xmx:YQnCYifCbZ_-IGYFpitJoR8jRwSJYY0GCHZ-Gk6qTwORi1kSy8cnSg>
+    <xmx:YQnCYvN4YogIx21fP2ZkDcBIHME0h-oEn87VVmvo-DK7rhWCzML0Ew>
+    <xmx:YQnCYsltgkXIAsHQHQTPDUCtMxol7qV-cGcQW0sVWlAxcA7UfVZc6Q>
+    <xmx:YQnCYq1K4auqYD5vi46gRViKxS2_FB7BK2xx9yTtSzy6vvBivdw-JA>
 Feedback-ID: id4a34324:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
  3 Jul 2022 17:25:52 -0400 (EDT)
@@ -69,9 +69,9 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Jiri Olsa <jolsa@kernel.org>,
         Sedat Dilek <sedat.dilek@gmail.com>,
         Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH v2 2/5] tools include: add dis-asm-compat.h to handle version differences
-Date:   Sun,  3 Jul 2022 14:25:48 -0700
-Message-Id: <20220703212551.1114923-3-andres@anarazel.de>
+Subject: [PATCH v2 3/5] tools perf: Fix compilation error with new binutils
+Date:   Sun,  3 Jul 2022 14:25:49 -0700
+Message-Id: <20220703212551.1114923-4-andres@anarazel.de>
 X-Mailer: git-send-email 2.37.0.3.g30cc8d0f14
 In-Reply-To: <20220703212551.1114923-1-andres@anarazel.de>
 References: <20220622231624.t63bkmkzphqvh3kx@alap3.anarazel.de>
@@ -89,87 +89,105 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 binutils changed the signature of init_disassemble_info(), which now causes
-compilation failures for tools/{perf,bpf}, e.g. on debian unstable.
-Relevant binutils commit:
+compilation failures for tools/perf/util/annotate.c, e.g. on debian
+unstable. Relevant binutils commit:
 https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=60a3da00bd5407f07
 
-This commit introduces a wrapper for init_disassemble_info(), to avoid
-spreading #ifdef DISASM_INIT_STYLED to a bunch of places. Subsequent
-commits will use it to fix the build failures.
+Wire up the feature test and switch to init_disassemble_info_compat(),
+which were introduced in prior commits, fixing the compilation failure.
 
-It likely is worth adding a wrapper for disassember(), to avoid the already
-existing DISASM_FOUR_ARGS_SIGNATURE ifdefery.
+I verified that perf can still disassemble bpf programs by using bpftrace
+under load, recording a perf trace, and then annotating the bpf "function"
+with and without the changes. With old binutils there's no change in output
+before/after this patch. When comparing the output from old binutils (2.35)
+to new bintuils with the patch (upstream snapshot) there are a few output
+differences, but they are unrelated to this patch. An example hunk is:
 
-Cc: Alexei Starovoitov <ast@kernel.org>
+     1.15 :   55:mov    %rbp,%rdx
+     0.00 :   58:add    $0xfffffffffffffff8,%rdx
+     0.00 :   5c:xor    %ecx,%ecx
+-    1.03 :   5e:callq  0xffffffffe12aca3c
++    1.03 :   5e:call   0xffffffffe12aca3c
+     0.00 :   63:xor    %eax,%eax
+-    2.18 :   65:leaveq
+-    2.82 :   66:retq
++    2.18 :   65:leave
++    2.82 :   66:ret
+
 Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
 Cc: Sedat Dilek <sedat.dilek@gmail.com>
-Cc: Quentin Monnet <quentin@isovalent.com>
 Link: http://lore.kernel.org/lkml/20220622181918.ykrs5rsnmx3og4sv@alap3.anarazel.de
 Signed-off-by: Andres Freund <andres@anarazel.de>
 ---
- tools/include/tools/dis-asm-compat.h | 53 ++++++++++++++++++++++++++++
- 1 file changed, 53 insertions(+)
- create mode 100644 tools/include/tools/dis-asm-compat.h
+ tools/perf/Makefile.config | 8 ++++++++
+ tools/perf/util/annotate.c | 7 ++++---
+ 2 files changed, 12 insertions(+), 3 deletions(-)
 
-diff --git a/tools/include/tools/dis-asm-compat.h b/tools/include/tools/dis-asm-compat.h
-new file mode 100644
-index 000000000000..d1d003ee3e2f
---- /dev/null
-+++ b/tools/include/tools/dis-asm-compat.h
-@@ -0,0 +1,53 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _TOOLS_DIS_ASM_COMPAT_H
-+#define _TOOLS_DIS_ASM_COMPAT_H
+diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+index 73e0762092fe..ee417c321adb 100644
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -298,6 +298,7 @@ FEATURE_CHECK_LDFLAGS-libpython := $(PYTHON_EMBED_LDOPTS)
+ FEATURE_CHECK_LDFLAGS-libaio = -lrt
+ 
+ FEATURE_CHECK_LDFLAGS-disassembler-four-args = -lbfd -lopcodes -ldl
++FEATURE_CHECK_LDFLAGS-disassembler-init-styled = -lbfd -lopcodes -ldl
+ 
+ CORE_CFLAGS += -fno-omit-frame-pointer
+ CORE_CFLAGS += -ggdb3
+@@ -905,13 +906,16 @@ ifndef NO_LIBBFD
+     ifeq ($(feature-libbfd-liberty), 1)
+       EXTLIBS += -lbfd -lopcodes -liberty
+       FEATURE_CHECK_LDFLAGS-disassembler-four-args += -liberty -ldl
++      FEATURE_CHECK_LDFLAGS-disassembler-init-styled += -liberty -ldl
+     else
+       ifeq ($(feature-libbfd-liberty-z), 1)
+         EXTLIBS += -lbfd -lopcodes -liberty -lz
+         FEATURE_CHECK_LDFLAGS-disassembler-four-args += -liberty -lz -ldl
++        FEATURE_CHECK_LDFLAGS-disassembler-init-styled += -liberty -lz -ldl
+       endif
+     endif
+     $(call feature_check,disassembler-four-args)
++    $(call feature_check,disassembler-init-styled)
+   endif
+ 
+   ifeq ($(feature-libbfd-buildid), 1)
+@@ -1025,6 +1029,10 @@ ifeq ($(feature-disassembler-four-args), 1)
+     CFLAGS += -DDISASM_FOUR_ARGS_SIGNATURE
+ endif
+ 
++ifeq ($(feature-disassembler-init-styled), 1)
++    CFLAGS += -DDISASM_INIT_STYLED
++endif
 +
-+#include <stdio.h>
-+#include <linux/compiler.h>
-+#include <dis-asm.h>
-+
-+/* define types for older binutils version, to centralize ifdef'ery a bit */
-+#ifndef DISASM_INIT_STYLED
-+enum disassembler_style {DISASSEMBLER_STYLE_NOT_EMPTY};
-+typedef int (*fprintf_styled_ftype) (void *, enum disassembler_style, const char*, ...);
-+#endif
-+
-+/*
-+ * Trivial fprintf wrapper to be used as the fprintf_styled_func argument to
-+ * init_disassemble_info_compat() when normal fprintf suffices.
-+ */
-+static inline int fprintf_styled(void *out,
-+				 enum disassembler_style style __maybe_unused,
-+				 const char *fmt, ...)
-+{
-+	va_list args;
-+	int r;
-+
-+	va_start(args, fmt);
-+	r = vfprintf(out, fmt, args);
-+	va_end(args);
-+
-+	return r;
-+}
-+
-+/*
-+ * Wrapper for init_disassemble_info() that hides version
-+ * differences. Depending on binutils version and architecture either
-+ * fprintf_func or fprintf_styled_func will be called.
-+ */
-+static inline void init_disassemble_info_compat(struct disassemble_info *info,
-+						void *stream,
-+						fprintf_ftype unstyled_func,
-+						fprintf_styled_ftype styled_func __maybe_unused)
-+{
-+#ifdef DISASM_INIT_STYLED
-+	init_disassemble_info(info, stream,
-+			      unstyled_func,
-+			      styled_func);
-+#else
-+	init_disassemble_info(info, stream,
-+			      unstyled_func);
-+#endif
-+}
-+
-+#endif /* _TOOLS_DIS_ASM_COMPAT_H */
+ ifeq (${IS_64_BIT}, 1)
+   ifndef NO_PERF_READ_VDSO32
+     $(call feature_check,compile-32)
+diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+index 82cc396ef516..daea1867381d 100644
+--- a/tools/perf/util/annotate.c
++++ b/tools/perf/util/annotate.c
+@@ -41,6 +41,7 @@
+ #include <linux/string.h>
+ #include <subcmd/parse-options.h>
+ #include <subcmd/run-command.h>
++#include <tools/dis-asm-compat.h>
+ 
+ /* FIXME: For the HE_COLORSET */
+ #include "ui/browser.h"
+@@ -1762,9 +1763,9 @@ static int symbol__disassemble_bpf(struct symbol *sym,
+ 		ret = errno;
+ 		goto out;
+ 	}
+-	init_disassemble_info(&info, s,
+-			      (fprintf_ftype) fprintf);
+-
++	init_disassemble_info_compat(&info, s,
++				     (fprintf_ftype) fprintf,
++				     fprintf_styled);
+ 	info.arch = bfd_get_arch(bfdf);
+ 	info.mach = bfd_get_mach(bfdf);
+ 
 -- 
 2.37.0.3.g30cc8d0f14
 
