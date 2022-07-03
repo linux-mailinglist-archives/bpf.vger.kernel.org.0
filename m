@@ -2,122 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F0C564A05
-	for <lists+bpf@lfdr.de>; Sun,  3 Jul 2022 23:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E9C2564A4D
+	for <lists+bpf@lfdr.de>; Mon,  4 Jul 2022 00:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229954AbiGCVbH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 3 Jul 2022 17:31:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39308 "EHLO
+        id S229673AbiGCWdv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 3 Jul 2022 18:33:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbiGCVbG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 3 Jul 2022 17:31:06 -0400
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A3A65FC2;
-        Sun,  3 Jul 2022 14:31:05 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id DB7595C0061;
-        Sun,  3 Jul 2022 17:31:04 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Sun, 03 Jul 2022 17:31:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
-        cc:cc:content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm2; t=1656883864; x=1656970264; bh=P+eL1Ug90j
-        cAif2rkt5zV/SsOFRZ2blzqg+nKXzhH5A=; b=peTEV+nkvEcmt6UExg13DKCuh2
-        YjduUwNbgmKsZwNWe7ho5HaWSwbCiuj+OZ4PZm+T1nJQQ+qeuKwoargnIsSa001G
-        SuCRg8Bw9hLA2I2fRbR7TMrlTsAJpp2E1sles6w+UrQ/y1bhLHdb9CjrqPU1/pUk
-        U6+Oy1T/wiiE6n8bFVDYm3ahoMr4Kz1ngUKzmfU/GuRyl9hr6iEYSOkB7fomARXC
-        9BEHuvVeUU1BEF3Pwa7VfxO5QFvZdFx6MLUDXDEwmWntA+2fEs0Gbyj/bj8HMn7g
-        GVudNvS5eS85tLVXeN7KAf5AHH4j43RV61oRUY5i6t2v6rHOfGpu5N1f4w8g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; t=1656883864; x=1656970264; bh=P+eL1Ug90jcAif2rkt5zV/SsOFRZ
-        2blzqg+nKXzhH5A=; b=cx2m+KpccWVMp3NQZAfrCj1nmSBTQSyb2YK9FeLo+82M
-        4/2BXTA05SG9XTe4oG/1OzmSbQsfbjnCqQXyY7wYQ1y6eu1d8UmOBTJ4SxYTukhg
-        XR14nTA0b/TjLqXQmiU/+d5gX2CQ7Y4x8vTmqA/6nQRimwlt2BcbEwrDaqBW+G9i
-        mmp7pUtkdpfjReZjhY8nZ046rSujKNfofg8HTE5gt8CyDgs4Ae7D+09BSRARnvXe
-        XznW1UEM6HkhwMHgi0Vf5ssXcbpJsuBvD9D5iAAPmlQwQBKwS/n53Mwy63O+mL6E
-        OlKHMt5KXh03ykFIXPmK+aKbfX9pUodsoOb1KLhLJQ==
-X-ME-Sender: <xms:mArCYoR71A8UMLf3CaJde7BBjyQLADjE2FZpuw_X-D4SurJPOsUAGQ>
-    <xme:mArCYlxLF0KQ6sC3kadYY4ZNJr2dNFBqOxkIsDbTP_glNLlrGZnmTQAG-WiyUaDeU
-    KNhZINgCirjb6icBw>
-X-ME-Received: <xmr:mArCYl0W0EmGlAjl6_-5D4U7jYAHNPvZPJSVGC__AExd26Ah2zVDqRvgZ-lRAx6XcAzT1OHQbsCEtmFN0aQhQ21-9P7P2VQcifoiLuc_t32e64FvlHZ_QWM_dhGI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudehjedgudeihecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeetnhgu
-    rhgvshcuhfhrvghunhguuceorghnughrvghssegrnhgrrhgriigvlhdruggvqeenucggtf
-    frrghtthgvrhhnpedvffefvefhteevffegieetfefhtddvffejvefhueetgeeludehteev
-    udeitedtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegrnhgurhgvshesrghnrghrrgiivghlrdguvg
-X-ME-Proxy: <xmx:mArCYsB_UOrtWhfLyQbEuR9lSYQTU557-7eMImdiZVlEoTf1gKfCug>
-    <xmx:mArCYhipUJg40X0JKrYU1X19MGmmdId8tRjVgS8y-3EPN8CV4SSAEg>
-    <xmx:mArCYoorSoU5Z8X5hARugFyvjckkrFUezWhJckmMDXjfnuzLQAcaRQ>
-    <xmx:mArCYmaxE32E5Xiu8urj7Rq_S_URgaYynHO0WcWnqvOC_3yD9iASIw>
-Feedback-ID: id4a34324:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 3 Jul 2022 17:31:04 -0400 (EDT)
-Date:   Sun, 3 Jul 2022 14:31:03 -0700
-From:   Andres Freund <andres@anarazel.de>
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        Namhyung Kim <namhyung@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [perf-tools] Build-error in tools/perf/util/annotate.c with
- LLVM-14
-Message-ID: <20220703213103.n3oxmdnlyjsdrty4@awork3.anarazel.de>
-References: <CA+icZUVVXq0Mh8=QuopF0tMZyZ0Tn8AiKEZoA3jfP47Q8B=x2A@mail.gmail.com>
- <CA+icZUW3VrDC8J4MnNb1H3nGYQggBwY4zOoaJkzSsNj7xKDvyQ@mail.gmail.com>
- <CA+icZUVcCMCGEaxytyJd_-Ur-Ey_gWyXx=tApo-SVUqbX_bhUA@mail.gmail.com>
- <CA+icZUVpr8ZeOKCj4zMMqbFT013KJz2T1csvXg+VSkdvJH1Ubw@mail.gmail.com>
- <20220703165115.gox3hlwwdcnorcul@awork3.anarazel.de>
- <CA+icZUXCqzZgdSNyPwM+nmdTdPoZrQm2M=2DgOy7j_YHXQ1T6w@mail.gmail.com>
+        with ESMTP id S229495AbiGCWdv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 3 Jul 2022 18:33:51 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1359A55B9
+        for <bpf@vger.kernel.org>; Sun,  3 Jul 2022 15:33:50 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id cb12-20020a056830618c00b00616b871cef3so6411484otb.5
+        for <bpf@vger.kernel.org>; Sun, 03 Jul 2022 15:33:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=Hon1eblQtyuzH1IFbwREzcS+AEQm0nDXuu+hKn3igvA=;
+        b=748KJBix6Pwq5WyZh7eBrO4aklyMBz2HlJYrjVdomq8bo17VNRFHFFNAsnVyTnXDsE
+         7uqF2uaevgrqE9cYQRJuQl59VkyBxmIEFVlOm5Wc0nu+13L4SQtNkzVgSM5nBUW6S3u3
+         ZPMtDupdjOA8bNxF5BfKv7q8jbmQSP6AXoaV7SDv829BU9xUnt+8dHfnl5f9+C3Bww30
+         evILVMpPOT8/OYLjtNXsBe0TiCUojJR3feFMqNxyKMneaQRyPzdSHvUkFzeSjcQRm0dD
+         /KMmQd4RowBaNbWM7SakhzBlB8VbNwrRdgxpzMVHalOCZRjPT97/QRseMpt3iZD/UrG7
+         zzJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=Hon1eblQtyuzH1IFbwREzcS+AEQm0nDXuu+hKn3igvA=;
+        b=qjtUR7BHV9GrRrMSDgMEfGLcXqzOAzcCBcoCFz/coPzXcFGQxysl+MrZuFxe0bivOP
+         yTPcZIuGlzROzblEmqtPxf4ZxttVqHyI2VxXo+asMDp5vOcnTfuPYmkTjDEkmqRFOlCu
+         aN8SWvUCf0/WOfXq7z6A0XE6xXzR6IaPOHIeEMytoM1+WLfNsFft2G0khMzsLefHoFq9
+         aUT9CH5FKXlX4WK+xXlct1h121f5AHnR9KAWMMZXpqbG6NkkE8hIzCQ5FlPzh6bbDlv9
+         SVeHg/NIaiftf7h0dB8gdZ9U1VNmELvnQtA3PEtPMV5JBke5fwC2ySa3oryOdd/jhdyJ
+         gRQw==
+X-Gm-Message-State: AJIora/uN2uCbofjEWN7fUk2T0J5tm+wshSp194Y0lv4W6pG/oqGF/3I
+        hN91sYY2oz2qKuDTQsHoi3kiyxsYgg37UA13NGOH63+ISDBXfQ==
+X-Google-Smtp-Source: AGRyM1sFoQKvULVz5vmky4x0BEGtuHclfWuCwWocZ4fVX9ndFYu4i3Hbv1Xt4wj2BRt0lERP57C7IAiDMCcwZBFLfco=
+X-Received: by 2002:a05:6830:630f:b0:614:d51e:23e6 with SMTP id
+ cg15-20020a056830630f00b00614d51e23e6mr11485292otb.210.1656887628922; Sun, 03
+ Jul 2022 15:33:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+icZUXCqzZgdSNyPwM+nmdTdPoZrQm2M=2DgOy7j_YHXQ1T6w@mail.gmail.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+From:   "Hao Xiang ." <hao.xiang@bytedance.com>
+Date:   Sun, 3 Jul 2022 15:33:38 -0700
+Message-ID: <CAAYibXiJTyGwXZf8h4tTJSFyP8dB5_4sjGDrr=Ag4fe4KA71rA@mail.gmail.com>
+Subject: Questions about querying map object information
+To:     bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+Hi everyone,
 
-On 2022-07-03 22:40:22 +0200, Sedat Dilek wrote:
-> My test-case was to build a Linux v5.19-rc4 plus custom patches
-> including your v1 patchset.
+I am super new to bpf and the open source community in general. Please
+bear with me asking some basic questions.
+We are working on a bpf monitoring tool to track the CPU and memory
+usage for all bpf programs loaded in the system. We were able to get
+CPU usage per bpf program with the BPF_OBJ_GET_INFO_BY_ID syscall on a
+bpf prog object. We are trying to do the same on a map object to query
+for per map memory usage. The information returned from bpf_map_info
+only contains things like max_entries, key_size, value_size, which can
+be used to calculate estimated memory allocation size. But we are also
+interested in knowing how much memory is actually being used by our
+program. For instance, one of our bpf program uses a map with type
+hashtable. The hashtable is created with a chunk of pre-allocated
+memory based on the max_entres, key_size and value size. The
+pre-allocated size is useful information to know but so is the current
+number of entries in the hashtable. We used to run into a performance
+issue where our bpf map's max_entries is set to be too small and we
+end up totally exhausting the pre-allocated memory. So knowing things
+like current entry count VS max entry count of a hashtable is useful
+information for us.
+With that being said, we have a few questions and hopefully we can get
+some help from the community.
+1) We couldn't find anything in bpf_map_info to give us the current
+entry count of a hashtable. I read that bpf_map_info returns
+information about a map object in general. So it makes total sense to
+not have information of a particular map type. But is there an
+existing place we can get the per map type information (eg, the
+current entry count of a hashtable, the number of elements pushed to a
+stack, etc)?
+2) If there isn't an existing place to return map type specific
+information, would it make sense to extend the structure bpf_map_info
+with a union at the end and have that union to contain per map type
+specific information?
 
-> make-line:
-> 
-> /home/dileks/bin/perf stat make V=1 -j4 LLVM=1 LLVM_IAS=1
-> PAHOLE=/opt/pahole/bin/pahole LOCALVERSION=-1-amd64-clang
-> 14-lto KBUILD_BUILD_HOST=iniza KBUILD_BUILD_USER=sedat.dilek@gmail.com
-> KBUILD_BUILD_TIMESTAMP=2022-07-03 bindeb-pkg
-> KDEB_PKGVERSION=5.19.0~rc4-1~bookworm+dileks1
-> [...]
-> Hmmm, it took a bit longer as usual.
-
-I don't think the patches would affect the performance of this workload - I
-don't know the kernel build process well, but I don't see why anything in it
-would trigger bpf programs to be disassembled? I guess the additional three
-feature tests can take a tiny bit of time, but...
-
-Sent out a new version, did add you as a CC.
-
-Greetings,
-
-Andres Freund
+Thanks, Hao
