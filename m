@@ -2,136 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8754D564736
-	for <lists+bpf@lfdr.de>; Sun,  3 Jul 2022 13:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3154856475F
+	for <lists+bpf@lfdr.de>; Sun,  3 Jul 2022 15:09:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230385AbiGCLzT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 3 Jul 2022 07:55:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57088 "EHLO
+        id S231972AbiGCNJs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 3 Jul 2022 09:09:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229739AbiGCLzT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 3 Jul 2022 07:55:19 -0400
-Received: from mail-oa1-x30.google.com (mail-oa1-x30.google.com [IPv6:2001:4860:4864:20::30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65FBB6385;
-        Sun,  3 Jul 2022 04:55:18 -0700 (PDT)
-Received: by mail-oa1-x30.google.com with SMTP id 586e51a60fabf-10be7325c29so2345357fac.0;
-        Sun, 03 Jul 2022 04:55:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=37BxPAvRpgzAahfLr9eYj1uTgiO8CqHg56N7QtGc68w=;
-        b=LQI+d58sh0nRT3/F5wsYXx7/C7lJK1H3ixr1NvYY8aLHoYrAP1vs9tijIPZ8455vds
-         MqfhXZXvWWx+QAZVVDKvOZ9oARyB6ug8CJqaSj7H/YI/i4q3BHuFDkz8AMTzUsx1V4IR
-         W8aV1hwvumoPhfJ5YeqbRNf82/QButc2T5UWpCtOJds589EYrOLo1NqjWhuQM9SPZwb3
-         GzO6p9kgRpnwL6JVkoz1gYy6QhPQ7dMpi58mvMjGIVfuFnxowE/VvdvuFYUKSi4K8ytr
-         rlMzDdAmjUoroYSmuU5gdg51TPHymS0k7MVoYuFQakhD1BqTh8H19HHnic7LrIvgfQw/
-         zH0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=37BxPAvRpgzAahfLr9eYj1uTgiO8CqHg56N7QtGc68w=;
-        b=t7++k3/CCpevQJ1BlL2DWBWS3ZOlxHLZTNE0/33QrXtQl6Y8E44r31yMgLMyrLLJ27
-         bQfVYzqKN+TkrNVdtX4xOWCHzCLplV8WItRr/+swnfxVJ6/oSMvtGn/24+kYp95ZhU7U
-         n8TrOCfgz8hWvpsA3Nxn2sbaX0y7jfib4UdPLUS6fGOZ3Gc40wBWAu28bC5nOSMF/P4g
-         rw4sLiRszgX4/W6cBeRkBu0eJL3pTBV20ipfJ49WaN4IleKbLDHXGOzwrJcEpemeO73b
-         JIewybpp4v0sw+UxB6SD3RroUON78YlIkBAskEYrrYcpfbWMA/H7CQQIjU/E+32Skyu8
-         R1FQ==
-X-Gm-Message-State: AJIora9rt7sL5VzldtRhN31iJi6qBVrgW3y5+HXcsUh/fDCrRyiwuptO
-        WX0BdNTovxR1qmbkA8082c10m4YMiJPh24dK4gM=
-X-Google-Smtp-Source: AGRyM1taASuXYGInEDySzLnL7JzrXZR1a5hNDkrbI5YYGJQ5H16JM6gjhDlLx5h8Z2mqh/jm02bm3Kis/TzQzLTeKLo=
-X-Received: by 2002:a05:6870:7a9:b0:10b:f5ef:5d27 with SMTP id
- en41-20020a05687007a900b0010bf5ef5d27mr625571oab.252.1656849317715; Sun, 03
- Jul 2022 04:55:17 -0700 (PDT)
+        with ESMTP id S229550AbiGCNJs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 3 Jul 2022 09:09:48 -0400
+Received: from smtp.gentoo.org (smtp.gentoo.org [IPv6:2001:470:ea4a:1:5054:ff:fec7:86e4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85CDC6350;
+        Sun,  3 Jul 2022 06:09:44 -0700 (PDT)
+From:   Yixun Lan <dlan@gentoo.org>
+To:     Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-riscv@lists.infradead.org
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Yixun Lan <dlan@gentoo.org>
+Subject: [PATCH] RISC-V/bpf: Enable bpf_probe_read{, str}()
+Date:   Sun,  3 Jul 2022 21:09:24 +0800
+Message-Id: <20220703130924.57240-1-dlan@gentoo.org>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-References: <CA+icZUVVXq0Mh8=QuopF0tMZyZ0Tn8AiKEZoA3jfP47Q8B=x2A@mail.gmail.com>
- <CA+icZUW3VrDC8J4MnNb1H3nGYQggBwY4zOoaJkzSsNj7xKDvyQ@mail.gmail.com> <CA+icZUVcCMCGEaxytyJd_-Ur-Ey_gWyXx=tApo-SVUqbX_bhUA@mail.gmail.com>
-In-Reply-To: <CA+icZUVcCMCGEaxytyJd_-Ur-Ey_gWyXx=tApo-SVUqbX_bhUA@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Sun, 3 Jul 2022 13:54:41 +0200
-Message-ID: <CA+icZUVpr8ZeOKCj4zMMqbFT013KJz2T1csvXg+VSkdvJH1Ubw@mail.gmail.com>
-Subject: Re: [perf-tools] Build-error in tools/perf/util/annotate.c with LLVM-14
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andres Freund <andres@anarazel.de>,
-        Quentin Monnet <quentin@isovalent.com>
-Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jul 3, 2022 at 1:06 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> On Sun, Jul 3, 2022 at 1:03 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> >
-> > On Sun, Jul 3, 2022 at 12:57 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > [ ... ]
-> > > util/annotate.c:1766:33: error: too few arguments to function call,
-> > > expected 4, have 3
-> > >                              (fprintf_ftype) fprintf);
-> > >                                                     ^
-> > > /usr/include/dis-asm.h:472:13: note: 'init_disassemble_info' declared here
-> > > extern void init_disassemble_info (struct disassemble_info *dinfo, void *stream,
-> > >            ^
-> > > 1 error generated.
-> > > make[4]: *** [/home/dileks/src/linux/git/tools/build/Makefile.build:97:
-> > > util/annotate.o] Error 1
-> >
-> > This is with Debian's binutils(-dev) version 2.38.50.20220629-4.
-> >
-> > $ dpkg -S /usr/include/dis-asm.h
-> > binutils-dev: /usr/include/dis-asm.h
-> >
->
-> [ /usr/include/dis-asm.h ]
->
-> 470 /* Method to initialize a disassemble_info struct.  This should be
-> 471    called by all applications creating such a struct.  */
-> 472 extern void init_disassemble_info (struct disassemble_info *dinfo,
-> void *stream,
-> 473                                    fprintf_ftype fprintf_func,
-> 474                                    fprintf_styled_ftype
-> fprintf_styled_func);
->
+Enable this option to fix a bcc error in RISC-V platform
 
-[ CC Andres F. + bpf folks ]
+And, the error shows as follows:
 
-The patch-series from Andres Freund from [1] fixes the issue for me on
-Debian/unstable AMD64:
+~ # runqlen
+WARNING: This target JIT is not designed for the host you are running. \
+If bad things happen, please choose a different -march switch.
+bpf: Failed to load program: Invalid argument
+0: R1=ctx(off=0,imm=0) R10=fp0
+0: (85) call bpf_get_current_task#35          ; R0_w=scalar()
+1: (b7) r6 = 0                        ; R6_w=0
+2: (7b) *(u64 *)(r10 -8) = r6         ; R6_w=P0 R10=fp0 fp-8_w=00000000
+3: (07) r0 += 312                     ; R0_w=scalar()
+4: (bf) r1 = r10                      ; R1_w=fp0 R10=fp0
+5: (07) r1 += -8                      ; R1_w=fp-8
+6: (b7) r2 = 8                        ; R2_w=8
+7: (bf) r3 = r0                       ; R0_w=scalar(id=1) R3_w=scalar(id=1)
+8: (85) call bpf_probe_read#4
+unknown func bpf_probe_read#4
+processed 9 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
 
-[PATCH v1 0/3] tools: fix compilation failure caused by
-init_disassemble_info API changes
-[PATCH v1 1/3] tools build: add feature test for init_disassemble_info
-API changes
-[PATCH v1 2/3] tools: add dis-asm-compat.h to centralize handling of
-version differences
-[PATCH v1 3/3] tools: Use tools/dis-asm-compat.h to fix compilation
-errors with new binutils
+Traceback (most recent call last):
+  File "/usr/lib/python-exec/python3.9/runqlen", line 187, in <module>
+    b.attach_perf_event(ev_type=PerfType.SOFTWARE,
+  File "/usr/lib/python3.9/site-packages/bcc/__init__.py", line 1228, in attach_perf_event
+    fn = self.load_func(fn_name, BPF.PERF_EVENT)
+  File "/usr/lib/python3.9/site-packages/bcc/__init__.py", line 522, in load_func
+    raise Exception("Failed to load BPF program %s: %s" %
+Exception: Failed to load BPF program b'do_perf_event': Invalid argument
 
-Compile-tested only (LLVM-14 x86-64).
+Signed-off-by: Yixun Lan <dlan@gentoo.org>
+---
+ arch/riscv/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-link="https://lore.kernel.org/lkml/20220703044814.892617-1-andres@anarazel.de/"
-b4 -d am $link
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 32ffef9f6e5b4..da0016f1be6ce 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -25,6 +25,7 @@ config RISCV
+ 	select ARCH_HAS_GIGANTIC_PAGE
+ 	select ARCH_HAS_KCOV
+ 	select ARCH_HAS_MMIOWB
++	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+ 	select ARCH_HAS_PTE_SPECIAL
+ 	select ARCH_HAS_SET_DIRECT_MAP if MMU
+ 	select ARCH_HAS_SET_MEMORY if MMU
+-- 
+2.35.1
 
-Andres, you have some test-cases how you verified the built perf is OK?
-
-Thanks, Andres.
-
--Sedat-
-
-[1] https://lore.kernel.org/lkml/20220703044814.892617-1-andres@anarazel.de/
-[2] https://lore.kernel.org/lkml/CA+icZUVVXq0Mh8=QuopF0tMZyZ0Tn8AiKEZoA3jfP47Q8B=x2A@mail.gmail.com/
