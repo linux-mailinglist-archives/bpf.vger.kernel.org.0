@@ -2,82 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 677DC5649F7
-	for <lists+bpf@lfdr.de>; Sun,  3 Jul 2022 23:26:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13F0C564A05
+	for <lists+bpf@lfdr.de>; Sun,  3 Jul 2022 23:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232059AbiGCV0C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 3 Jul 2022 17:26:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36298 "EHLO
+        id S229954AbiGCVbH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 3 Jul 2022 17:31:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231403AbiGCVZ7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 3 Jul 2022 17:25:59 -0400
+        with ESMTP id S229519AbiGCVbG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 3 Jul 2022 17:31:06 -0400
 Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F24E5F46;
-        Sun,  3 Jul 2022 14:25:59 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A3A65FC2;
+        Sun,  3 Jul 2022 14:31:05 -0700 (PDT)
 Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 55A395C00BD;
-        Sun,  3 Jul 2022 17:25:54 -0400 (EDT)
+        by mailout.nyi.internal (Postfix) with ESMTP id DB7595C0061;
+        Sun,  3 Jul 2022 17:31:04 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Sun, 03 Jul 2022 17:25:54 -0400
+  by compute5.internal (MEProxy); Sun, 03 Jul 2022 17:31:04 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
-        cc:cc:content-transfer-encoding:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1656883554; x=1656969954; bh=Bn
-        CSu4z9dXwavPNLrNVzFsrsFv86GTZpJNiCxUUqpwM=; b=WHu1Zn906HzTIscVZn
-        0ZSXzL2FiMJpjnx6C4TBS1+FsWwaiGWhSrKFxMeAum9JJM7oG9p4cJHqQk6Hnmfb
-        AvrkvEcWQjNWaLFdgGIlMKvIXI580cimSD8o4gPC2hBfKGntaiY8JCAJM2OQfbIG
-        NXzmKxFB7gJ1GpCe4IApKrqJWnipalRQoT8r712d76XW1oUFQerUUHlOdM/hk7eG
-        km5Y8XWPSlXseVMMf0kBOqruX4qN6DeammSckeOjflqJFCZCUq+uN9NWlRy09QN7
-        R9C4E9zgn7Sx0utjlvbEdAjgo1h7kdyKW/a+z4DMCg+8SVLKyfKa4ySa/1rUJOcB
-        5ocg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        cc:cc:content-type:date:date:from:from:in-reply-to:in-reply-to
         :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1656883554; x=1656969954; bh=BnCSu4z9dXwav
-        PNLrNVzFsrsFv86GTZpJNiCxUUqpwM=; b=VaK5+skPFW+4SkXiMma5WLMSLAEOH
-        hTTEm/EyE7yO1Ej/w1wTZTFedcLC+XCK1ab4ojmCIf/yf2puoPX8t9eqVvixyzuJ
-        R1raEw+qt/8mU9y9cY4xofM9jO02lkmtwhMAk07jTJWEne4qkFZixExExn68fy1t
-        /Mx3sMLbb8C9x5iUhrFkgHYI8Qq9g+c1ggtDBxeGGm0ORvn7SrMRs+ndFzOWexjA
-        IAK8+WVDirNk6uSB8+NBfhqhZ+tQEs0yXe+GH5RZ1WeBm8U53TwkpeHulVmH4+xM
-        bKUGxFXa493fJVLWVFPT0T+2Yg3dDhu+43VPPnvTtUyke02xHFRz+l0FQ==
-X-ME-Sender: <xms:YgnCYgW7ZsZ_DglSYH4CnddmaNn-s1tHNTaqtgSFuV9dTvvsFNBD0w>
-    <xme:YgnCYkk7VsyQsi4AKO16hXUTBWSWxlJ5ejQ7Z176M1GdzkumzNZ-tg84EZ_tl7pPg
-    2-ZBBJkHZl0_JIffw>
-X-ME-Received: <xmr:YgnCYkYsp2ZUzHJl2T6QU9hL82EzPtsF-EQNkHvzU2KAfwnXIsuJOSEUHTb0U8bNtbgHJGN3tt8wZSwk5giKhrmPCtoln8iyvw4Oq7zteaipywiXU-yigMzkqXhb>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudehjedgudeigecutefuodetggdotefrod
+        :subject:to:to; s=fm2; t=1656883864; x=1656970264; bh=P+eL1Ug90j
+        cAif2rkt5zV/SsOFRZ2blzqg+nKXzhH5A=; b=peTEV+nkvEcmt6UExg13DKCuh2
+        YjduUwNbgmKsZwNWe7ho5HaWSwbCiuj+OZ4PZm+T1nJQQ+qeuKwoargnIsSa001G
+        SuCRg8Bw9hLA2I2fRbR7TMrlTsAJpp2E1sles6w+UrQ/y1bhLHdb9CjrqPU1/pUk
+        U6+Oy1T/wiiE6n8bFVDYm3ahoMr4Kz1ngUKzmfU/GuRyl9hr6iEYSOkB7fomARXC
+        9BEHuvVeUU1BEF3Pwa7VfxO5QFvZdFx6MLUDXDEwmWntA+2fEs0Gbyj/bj8HMn7g
+        GVudNvS5eS85tLVXeN7KAf5AHH4j43RV61oRUY5i6t2v6rHOfGpu5N1f4w8g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm2; t=1656883864; x=1656970264; bh=P+eL1Ug90jcAif2rkt5zV/SsOFRZ
+        2blzqg+nKXzhH5A=; b=cx2m+KpccWVMp3NQZAfrCj1nmSBTQSyb2YK9FeLo+82M
+        4/2BXTA05SG9XTe4oG/1OzmSbQsfbjnCqQXyY7wYQ1y6eu1d8UmOBTJ4SxYTukhg
+        XR14nTA0b/TjLqXQmiU/+d5gX2CQ7Y4x8vTmqA/6nQRimwlt2BcbEwrDaqBW+G9i
+        mmp7pUtkdpfjReZjhY8nZ046rSujKNfofg8HTE5gt8CyDgs4Ae7D+09BSRARnvXe
+        XznW1UEM6HkhwMHgi0Vf5ssXcbpJsuBvD9D5iAAPmlQwQBKwS/n53Mwy63O+mL6E
+        OlKHMt5KXh03ykFIXPmK+aKbfX9pUodsoOb1KLhLJQ==
+X-ME-Sender: <xms:mArCYoR71A8UMLf3CaJde7BBjyQLADjE2FZpuw_X-D4SurJPOsUAGQ>
+    <xme:mArCYlxLF0KQ6sC3kadYY4ZNJr2dNFBqOxkIsDbTP_glNLlrGZnmTQAG-WiyUaDeU
+    KNhZINgCirjb6icBw>
+X-ME-Received: <xmr:mArCYl0W0EmGlAjl6_-5D4U7jYAHNPvZPJSVGC__AExd26Ah2zVDqRvgZ-lRAx6XcAzT1OHQbsCEtmFN0aQhQ21-9P7P2VQcifoiLuc_t32e64FvlHZ_QWM_dhGI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudehjedgudeihecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefhvfevufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeetnhgu
+    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeetnhgu
     rhgvshcuhfhrvghunhguuceorghnughrvghssegrnhgrrhgriigvlhdruggvqeenucggtf
-    frrghtthgvrhhnpeeljefgvdefhfdukedttdevgedtkeeigefftdekleejteduveffledt
-    ieefueegieenucffohhmrghinhepshhouhhrtggvfigrrhgvrdhorhhgpdhkvghrnhgvlh
-    drohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhm
-    pegrnhgurhgvshesrghnrghrrgiivghlrdguvg
-X-ME-Proxy: <xmx:YgnCYvUpYLBz_5P7HpWVd86h92xLkfj8cqQzo6fXJWo2tzrESlEF_Q>
-    <xmx:YgnCYqm_w943AIugIDXJ0d2xRX7bPm164h_uYHVTFxPEMihnjuDrow>
-    <xmx:YgnCYkcNPXYdKpJ9aGKiO_WU09YVIaGlf51jwXKHEnOHnz5yodeq7Q>
-    <xmx:YgnCYhuJrqPyDHGsOf0XTE628vmBsxx-8yk_vy-bpZcVm2xaFuH3og>
+    frrghtthgvrhhnpedvffefvefhteevffegieetfefhtddvffejvefhueetgeeludehteev
+    udeitedtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpegrnhgurhgvshesrghnrghrrgiivghlrdguvg
+X-ME-Proxy: <xmx:mArCYsB_UOrtWhfLyQbEuR9lSYQTU557-7eMImdiZVlEoTf1gKfCug>
+    <xmx:mArCYhipUJg40X0JKrYU1X19MGmmdId8tRjVgS8y-3EPN8CV4SSAEg>
+    <xmx:mArCYoorSoU5Z8X5hARugFyvjckkrFUezWhJckmMDXjfnuzLQAcaRQ>
+    <xmx:mArCYmaxE32E5Xiu8urj7Rq_S_URgaYynHO0WcWnqvOC_3yD9iASIw>
 Feedback-ID: id4a34324:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 3 Jul 2022 17:25:54 -0400 (EDT)
+ 3 Jul 2022 17:31:04 -0400 (EDT)
+Date:   Sun, 3 Jul 2022 14:31:03 -0700
 From:   Andres Freund <andres@anarazel.de>
-To:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH v2 5/5] tools bpftool: Fix compilation error with new binutils
-Date:   Sun,  3 Jul 2022 14:25:51 -0700
-Message-Id: <20220703212551.1114923-6-andres@anarazel.de>
-X-Mailer: git-send-email 2.37.0.3.g30cc8d0f14
-In-Reply-To: <20220703212551.1114923-1-andres@anarazel.de>
-References: <20220622231624.t63bkmkzphqvh3kx@alap3.anarazel.de>
- <20220703212551.1114923-1-andres@anarazel.de>
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        Namhyung Kim <namhyung@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [perf-tools] Build-error in tools/perf/util/annotate.c with
+ LLVM-14
+Message-ID: <20220703213103.n3oxmdnlyjsdrty4@awork3.anarazel.de>
+References: <CA+icZUVVXq0Mh8=QuopF0tMZyZ0Tn8AiKEZoA3jfP47Q8B=x2A@mail.gmail.com>
+ <CA+icZUW3VrDC8J4MnNb1H3nGYQggBwY4zOoaJkzSsNj7xKDvyQ@mail.gmail.com>
+ <CA+icZUVcCMCGEaxytyJd_-Ur-Ey_gWyXx=tApo-SVUqbX_bhUA@mail.gmail.com>
+ <CA+icZUVpr8ZeOKCj4zMMqbFT013KJz2T1csvXg+VSkdvJH1Ubw@mail.gmail.com>
+ <20220703165115.gox3hlwwdcnorcul@awork3.anarazel.de>
+ <CA+icZUXCqzZgdSNyPwM+nmdTdPoZrQm2M=2DgOy7j_YHXQ1T6w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+icZUXCqzZgdSNyPwM+nmdTdPoZrQm2M=2DgOy7j_YHXQ1T6w@mail.gmail.com>
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
@@ -88,143 +95,29 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-binutils changed the signature of init_disassemble_info(), which now causes
-compilation to fail for tools/bpf/bpftool/jit_disasm.c, e.g. on debian
-unstable. Relevant binutils commit:
-https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=60a3da00bd5407f07
+Hi,
 
-Wire up the feature test and switch to init_disassemble_info_compat(),
-which were introduced in prior commits, fixing the compilation failure.
+On 2022-07-03 22:40:22 +0200, Sedat Dilek wrote:
+> My test-case was to build a Linux v5.19-rc4 plus custom patches
+> including your v1 patchset.
 
-I verified that bpftool can still disassemble bpf programs, both with an
-old and new dis-asm.h API. There are no output changes for plain and json
-formats. When comparing the output from old binutils (2.35)
-to new bintuils with the patch (upstream snapshot) there are a few output
-differences, but they are unrelated to this patch. An example hunk is:
-   2f:	pop    %r14
-   31:	pop    %r13
-   33:	pop    %rbx
--  34:	leaveq
--  35:	retq
-+  34:	leave
-+  35:	ret
+> make-line:
+> 
+> /home/dileks/bin/perf stat make V=1 -j4 LLVM=1 LLVM_IAS=1
+> PAHOLE=/opt/pahole/bin/pahole LOCALVERSION=-1-amd64-clang
+> 14-lto KBUILD_BUILD_HOST=iniza KBUILD_BUILD_USER=sedat.dilek@gmail.com
+> KBUILD_BUILD_TIMESTAMP=2022-07-03 bindeb-pkg
+> KDEB_PKGVERSION=5.19.0~rc4-1~bookworm+dileks1
+> [...]
+> Hmmm, it took a bit longer as usual.
 
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Sedat Dilek <sedat.dilek@gmail.com>
-Cc: Quentin Monnet <quentin@isovalent.com>
-Link: http://lore.kernel.org/lkml/20220622181918.ykrs5rsnmx3og4sv@alap3.anarazel.de
-Signed-off-by: Andres Freund <andres@anarazel.de>
----
- tools/bpf/bpftool/Makefile     |  7 ++++--
- tools/bpf/bpftool/jit_disasm.c | 42 +++++++++++++++++++++++++++-------
- 2 files changed, 39 insertions(+), 10 deletions(-)
+I don't think the patches would affect the performance of this workload - I
+don't know the kernel build process well, but I don't see why anything in it
+would trigger bpf programs to be disassembled? I guess the additional three
+feature tests can take a tiny bit of time, but...
 
-diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-index c6d2c77d0252..62195118d377 100644
---- a/tools/bpf/bpftool/Makefile
-+++ b/tools/bpf/bpftool/Makefile
-@@ -93,9 +93,9 @@ INSTALL ?= install
- RM ?= rm -f
- 
- FEATURE_USER = .bpftool
--FEATURE_TESTS = libbfd disassembler-four-args zlib libcap \
-+FEATURE_TESTS = libbfd disassembler-four-args disassembler-init-styled zlib libcap \
- 	clang-bpf-co-re
--FEATURE_DISPLAY = libbfd disassembler-four-args zlib libcap \
-+FEATURE_DISPLAY = libbfd disassembler-four-args disassembler-init-styled zlib libcap \
- 	clang-bpf-co-re
- 
- check_feat := 1
-@@ -117,6 +117,9 @@ endif
- ifeq ($(feature-disassembler-four-args), 1)
- CFLAGS += -DDISASM_FOUR_ARGS_SIGNATURE
- endif
-+ifeq ($(feature-disassembler-init-styled), 1)
-+    CFLAGS += -DDISASM_INIT_STYLED
-+endif
- 
- LIBS = $(LIBBPF) -lelf -lz
- LIBS_BOOTSTRAP = $(LIBBPF_BOOTSTRAP) -lelf -lz
-diff --git a/tools/bpf/bpftool/jit_disasm.c b/tools/bpf/bpftool/jit_disasm.c
-index 24734f2249d6..aaf99a0168c9 100644
---- a/tools/bpf/bpftool/jit_disasm.c
-+++ b/tools/bpf/bpftool/jit_disasm.c
-@@ -24,6 +24,7 @@
- #include <sys/stat.h>
- #include <limits.h>
- #include <bpf/libbpf.h>
-+#include <tools/dis-asm-compat.h>
- 
- #include "json_writer.h"
- #include "main.h"
-@@ -39,15 +40,12 @@ static void get_exec_path(char *tpath, size_t size)
- }
- 
- static int oper_count;
--static int fprintf_json(void *out, const char *fmt, ...)
-+static int printf_json(void *out, const char *fmt, va_list ap)
- {
--	va_list ap;
- 	char *s;
- 	int err;
- 
--	va_start(ap, fmt);
- 	err = vasprintf(&s, fmt, ap);
--	va_end(ap);
- 	if (err < 0)
- 		return -1;
- 
-@@ -73,6 +71,32 @@ static int fprintf_json(void *out, const char *fmt, ...)
- 	return 0;
- }
- 
-+static int fprintf_json(void *out, const char *fmt, ...)
-+{
-+	va_list ap;
-+	int r;
-+
-+	va_start(ap, fmt);
-+	r = printf_json(out, fmt, ap);
-+	va_end(ap);
-+
-+	return r;
-+}
-+
-+static int fprintf_json_styled(void *out,
-+			       enum disassembler_style style __maybe_unused,
-+			       const char *fmt, ...)
-+{
-+	va_list ap;
-+	int r;
-+
-+	va_start(ap, fmt);
-+	r = printf_json(out, fmt, ap);
-+	va_end(ap);
-+
-+	return r;
-+}
-+
- void disasm_print_insn(unsigned char *image, ssize_t len, int opcodes,
- 		       const char *arch, const char *disassembler_options,
- 		       const struct btf *btf,
-@@ -99,11 +123,13 @@ void disasm_print_insn(unsigned char *image, ssize_t len, int opcodes,
- 	assert(bfd_check_format(bfdf, bfd_object));
- 
- 	if (json_output)
--		init_disassemble_info(&info, stdout,
--				      (fprintf_ftype) fprintf_json);
-+		init_disassemble_info_compat(&info, stdout,
-+					     (fprintf_ftype) fprintf_json,
-+					     fprintf_json_styled);
- 	else
--		init_disassemble_info(&info, stdout,
--				      (fprintf_ftype) fprintf);
-+		init_disassemble_info_compat(&info, stdout,
-+					     (fprintf_ftype) fprintf,
-+					     fprintf_styled);
- 
- 	/* Update architecture info for offload. */
- 	if (arch) {
--- 
-2.37.0.3.g30cc8d0f14
+Sent out a new version, did add you as a CC.
 
+Greetings,
+
+Andres Freund
