@@ -2,72 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AAF5564C21
-	for <lists+bpf@lfdr.de>; Mon,  4 Jul 2022 05:46:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEEAF564C2B
+	for <lists+bpf@lfdr.de>; Mon,  4 Jul 2022 05:47:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230360AbiGDDqL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 3 Jul 2022 23:46:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58402 "EHLO
+        id S231444AbiGDDrr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 3 Jul 2022 23:47:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229633AbiGDDqK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 3 Jul 2022 23:46:10 -0400
+        with ESMTP id S230391AbiGDDrq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 3 Jul 2022 23:47:46 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 62BC86261
-        for <bpf@vger.kernel.org>; Sun,  3 Jul 2022 20:46:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 09D8B62E7
+        for <bpf@vger.kernel.org>; Sun,  3 Jul 2022 20:47:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1656906368;
+        s=mimecast20190719; t=1656906464;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=k1fqdfPA46kNXwMkn+hgf7CVCtyPIFPh7p9ueCijmgk=;
-        b=QpIFeTRDbwD2e2OIQaO1J7XiDtNxpQ4gR1KsMZEHXJ7DvWkQKbEwMLX4uOJPoUUmzQBQYE
-        H8vTNanROKKAUR4cM/Hz8YCnJSmqKS8k9a5Vk+BFTnkiUnWr2keXhqPddCfB11ZpafIfWh
-        pifM19KsXCR0Jf7icri1Qv9o3RKZ7os=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=L2gDTuBKuZK9BdBvTV1z4CFK8vS6yKvfUsO3/KE/ibo=;
+        b=PBE4QMNNI0M/8LlN62bMqbOEl7LajpLJLO5Ur/m6yb1qveGNYnptNc5rTBuAUBQ3q3ILEw
+        p0pK7yA797kZ1EpBBjfInICTDMDD1aZvhGvJ0ify/D92YIBbdmUF6v4ap3FgPXVkhlyu+u
+        w+6UzeQxE3L8927Dlo2eXXiBbfGH4CU=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-668-gv5MkvfVOPqjp0hjjiwNhg-1; Sun, 03 Jul 2022 23:46:07 -0400
-X-MC-Unique: gv5MkvfVOPqjp0hjjiwNhg-1
-Received: by mail-pl1-f199.google.com with SMTP id l6-20020a170902f68600b0016a36fb2c9aso4412717plg.2
-        for <bpf@vger.kernel.org>; Sun, 03 Jul 2022 20:46:07 -0700 (PDT)
+ us-mta-310-ZTbMmEYnOsSKCzfmQr-uPA-1; Sun, 03 Jul 2022 23:47:43 -0400
+X-MC-Unique: ZTbMmEYnOsSKCzfmQr-uPA-1
+Received: by mail-pl1-f200.google.com with SMTP id h18-20020a170902f55200b0016a4a78bd71so4420635plf.9
+        for <bpf@vger.kernel.org>; Sun, 03 Jul 2022 20:47:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+         :content-language:from:to:cc:references:in-reply-to
          :content-transfer-encoding;
-        bh=k1fqdfPA46kNXwMkn+hgf7CVCtyPIFPh7p9ueCijmgk=;
-        b=rme7FnDeI7cfMiYwQSHppcs1S1JPVepJ01hJP8u+fGjR01T19LwmXi/FgcIZdp3O9I
-         wKT6q3y0dSkLBLa5AhJjpQW7HMaY7x1N0uq1Is34aWrj7s6DUD2fAZstBC74nvtqAulB
-         5VwrHmMFSTTp6I1KRi/3KSAeq85qqaBBP0i0etcqWgjfuCMUAEZ7SRk5IPkIPDuLlqnt
-         iyOyEWQsVb8KXpg+GCWNVRXLeDVW1gy0xBjbZusC7RzqpA/d8WGT4izylb8uwP9Vp/He
-         bzqObQyejrSVDKJl8YHZiyEcX2iGytJN5EH61Hprn+jCZq5otQNKRNMg9zMj1yRKONni
-         LUIg==
-X-Gm-Message-State: AJIora9Rn8bAzFnISwkuO8vybOcZihG+vikfCL87bMMppLWfXApF+d7d
-        BiyXPpHdDFTUwhm9dqaweYBfxMvrzzXP8Al/jnTs2xi8uX2j/5Fx46/7Q+maYaexkXnafPvCK0U
-        MdkiAVJgCFe39
-X-Received: by 2002:a63:2c90:0:b0:40c:fe76:59ef with SMTP id s138-20020a632c90000000b0040cfe7659efmr22961157pgs.288.1656906366265;
-        Sun, 03 Jul 2022 20:46:06 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1tMM6o7yalxZeXP62Xa+gMhpFFiuGy1AJFimSP7XmVuOI3Uo0EjGkGdnl1vLBLRphpJaPg+Zw==
-X-Received: by 2002:a63:2c90:0:b0:40c:fe76:59ef with SMTP id s138-20020a632c90000000b0040cfe7659efmr22961130pgs.288.1656906366010;
-        Sun, 03 Jul 2022 20:46:06 -0700 (PDT)
+        bh=L2gDTuBKuZK9BdBvTV1z4CFK8vS6yKvfUsO3/KE/ibo=;
+        b=ud7awTnWx1QmdAF/940sl7M4xnmhyiSbB7PHPPFdLB/kPBp6IG5HRn72kKScxfyBPt
+         LcxhLkPAXnnpUfMOFGxvCuhMdz2C8wkASYYVfggT+r+YI7eufBq2OsJ925eSrij0UCKe
+         3r4Evhza1ZrUCNeOxJwKuO7Elb3EXKz2t59hLj43cIOoBTOgibaRNvwZe2L+2DZWzJD5
+         DQjUqWVDSuYQGkI2RdaXBh97IuSfBe5Gjv3kd+4doxH1kZmsk3bPrEJQAdrEkDQeEgAN
+         IOsaBWV6LrLNW2qiG91Bb3JZXPJ793NbAJUn3ka2R60M7FB8jCmbO/szwzxiE8bL+9vU
+         Aisg==
+X-Gm-Message-State: AJIora/SaKJwxMOeq5qglonZbt9fzbqyag/paxdpdRGUgg2EstIVsHCU
+        VBFbV6zCGDetfMzDEEaRccCg3txKyx+nugWJjj7SnFpoYb4m/GmAWEE1CSUR+ECg6GXo2xR4jaX
+        wITvaT1iZ8PSC
+X-Received: by 2002:a17:902:8b87:b0:169:5e5:43de with SMTP id ay7-20020a1709028b8700b0016905e543demr33751365plb.8.1656906461961;
+        Sun, 03 Jul 2022 20:47:41 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1urar+tEFxn2OYR0nSzN1qR/6pFNL30ksJWbHZrPH1ZYknebpnFXj10hmhcTKfVqx002oRx8A==
+X-Received: by 2002:a17:902:8b87:b0:169:5e5:43de with SMTP id ay7-20020a1709028b8700b0016905e543demr33751314plb.8.1656906461703;
+        Sun, 03 Jul 2022 20:47:41 -0700 (PDT)
 Received: from [10.72.13.251] ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id s6-20020a170902ea0600b0016bdb5a3e37sm2067372plg.250.2022.07.03.20.45.55
+        by smtp.gmail.com with ESMTPSA id e11-20020a17090a7c4b00b001eee8998f2esm8701227pjl.17.2022.07.03.20.47.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 03 Jul 2022 20:46:05 -0700 (PDT)
-Message-ID: <102d3b83-1ae9-a59a-16ce-251c22b7afb0@redhat.com>
-Date:   Mon, 4 Jul 2022 11:45:52 +0800
+        Sun, 03 Jul 2022 20:47:41 -0700 (PDT)
+Message-ID: <2fdff856-cddf-1235-8078-312de94600c7@redhat.com>
+Date:   Mon, 4 Jul 2022 11:47:28 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
  Gecko/20100101 Thunderbird/91.11.0
-Subject: Re: [PATCH v11 39/40] virtio_net: support tx queue resize
+Subject: Re: [PATCH v11 25/40] virtio: allow to unbreak/break virtqueue
+ individually
 Content-Language: en-US
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        virtualization@lists.linux-foundation.org
-Cc:     Richard Weinberger <richard@nod.at>,
+From:   Jason Wang <jasowang@redhat.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        Richard Weinberger <richard@nod.at>,
         Anton Ivanov <anton.ivanov@cambridgegreys.com>,
         Johannes Berg <johannes@sipsolutions.net>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
@@ -96,9 +98,10 @@ Cc:     Richard Weinberger <richard@nod.at>,
         kvm@vger.kernel.org, bpf@vger.kernel.org,
         kangjie.xu@linux.alibaba.com
 References: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
- <20220629065656.54420-40-xuanzhuo@linux.alibaba.com>
-From:   Jason Wang <jasowang@redhat.com>
-In-Reply-To: <20220629065656.54420-40-xuanzhuo@linux.alibaba.com>
+ <20220629065656.54420-26-xuanzhuo@linux.alibaba.com>
+ <20220701022950-mutt-send-email-mst@kernel.org>
+ <79e519ec-0129-6a21-11da-44eaff1429fa@redhat.com>
+In-Reply-To: <79e519ec-0129-6a21-11da-44eaff1429fa@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -112,101 +115,95 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
-在 2022/6/29 14:56, Xuan Zhuo 写道:
-> This patch implements the resize function of the tx queues.
-> Based on this function, it is possible to modify the ring num of the
-> queue.
+在 2022/7/1 17:36, Jason Wang 写道:
 >
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> ---
->   drivers/net/virtio_net.c | 48 ++++++++++++++++++++++++++++++++++++++++
->   1 file changed, 48 insertions(+)
+> 在 2022/7/1 14:31, Michael S. Tsirkin 写道:
+>> On Wed, Jun 29, 2022 at 02:56:41PM +0800, Xuan Zhuo wrote:
+>>> This patch allows the new introduced
+>>> __virtqueue_break()/__virtqueue_unbreak() to break/unbreak the
+>>> virtqueue.
+>>>
+>>> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+>> I wonder how this interacts with the hardening patches.
+>> Jason?
 >
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 6ab16fd193e5..fd358462f802 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -135,6 +135,9 @@ struct send_queue {
->   	struct virtnet_sq_stats stats;
->   
->   	struct napi_struct napi;
-> +
-> +	/* Record whether sq is in reset state. */
-> +	bool reset;
->   };
->   
->   /* Internal representation of a receive virtqueue */
-> @@ -279,6 +282,7 @@ struct padded_vnet_hdr {
->   };
->   
->   static void virtnet_rq_free_unused_buf(struct virtqueue *vq, void *buf);
-> +static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf);
->   
->   static bool is_xdp_frame(void *ptr)
->   {
-> @@ -1603,6 +1607,11 @@ static void virtnet_poll_cleantx(struct receive_queue *rq)
->   		return;
->   
->   	if (__netif_tx_trylock(txq)) {
-> +		if (READ_ONCE(sq->reset)) {
-> +			__netif_tx_unlock(txq);
-> +			return;
-> +		}
-> +
->   		do {
->   			virtqueue_disable_cb(sq->vq);
->   			free_old_xmit_skbs(sq, true);
-> @@ -1868,6 +1877,45 @@ static int virtnet_rx_resize(struct virtnet_info *vi,
->   	return err;
->   }
->   
-> +static int virtnet_tx_resize(struct virtnet_info *vi,
-> +			     struct send_queue *sq, u32 ring_num)
-> +{
-> +	struct netdev_queue *txq;
-> +	int err, qindex;
-> +
-> +	qindex = sq - vi->sq;
-> +
-> +	virtnet_napi_tx_disable(&sq->napi);
-> +
-> +	txq = netdev_get_tx_queue(vi->dev, qindex);
-> +
-> +	/* 1. wait all ximt complete
-> +	 * 2. fix the race of netif_stop_subqueue() vs netif_start_subqueue()
-> +	 */
-> +	__netif_tx_lock_bh(txq);
-> +
-> +	/* Prevent rx poll from accessing sq. */
-> +	WRITE_ONCE(sq->reset, true);
+>
+> Consider we've marked it as broken, I think we don't need to care 
+> about the hardening in this series. Just make it work without hardening.
+>
+> And I will handle vq reset when rework the IRQ hardening.
+>
+> Thanks
 
 
-Can we simply disable RX NAPI here?
+Rethink of this, I think Xuan's code should be fine. We know we will 
+have another rework.
 
 Thanks
 
 
-> +
-> +	/* Prevent the upper layer from trying to send packets. */
-> +	netif_stop_subqueue(vi->dev, qindex);
-> +
-> +	__netif_tx_unlock_bh(txq);
-> +
-> +	err = virtqueue_resize(sq->vq, ring_num, virtnet_sq_free_unused_buf);
-> +	if (err)
-> +		netdev_err(vi->dev, "resize tx fail: tx queue index: %d err: %d\n", qindex, err);
-> +
-> +	/* Memory barrier before set reset and start subqueue. */
-> +	smp_mb();
-> +
-> +	WRITE_ONCE(sq->reset, false);
-> +	netif_tx_wake_queue(txq);
-> +
-> +	virtnet_napi_tx_enable(vi, sq->vq, &sq->napi);
-> +	return err;
-> +}
-> +
->   /*
->    * Send command via the control virtqueue and check status.  Commands
->    * supported by the hypervisor, as indicated by feature bits, should
+>
+>
+>>
+>>> ---
+>>>   drivers/virtio/virtio_ring.c | 24 ++++++++++++++++++++++++
+>>>   include/linux/virtio.h       |  3 +++
+>>>   2 files changed, 27 insertions(+)
+>>>
+>>> diff --git a/drivers/virtio/virtio_ring.c 
+>>> b/drivers/virtio/virtio_ring.c
+>>> index 5ec43607cc15..7b02be7fce67 100644
+>>> --- a/drivers/virtio/virtio_ring.c
+>>> +++ b/drivers/virtio/virtio_ring.c
+>>> @@ -2744,6 +2744,30 @@ unsigned int virtqueue_get_vring_size(struct 
+>>> virtqueue *_vq)
+>>>   }
+>>>   EXPORT_SYMBOL_GPL(virtqueue_get_vring_size);
+>>>   +/*
+>>> + * This function should only be called by the core, not directly by 
+>>> the driver.
+>>> + */
+>>> +void __virtqueue_break(struct virtqueue *_vq)
+>>> +{
+>>> +    struct vring_virtqueue *vq = to_vvq(_vq);
+>>> +
+>>> +    /* Pairs with READ_ONCE() in virtqueue_is_broken(). */
+>>> +    WRITE_ONCE(vq->broken, true);
+>>> +}
+>>> +EXPORT_SYMBOL_GPL(__virtqueue_break);
+>>> +
+>>> +/*
+>>> + * This function should only be called by the core, not directly by 
+>>> the driver.
+>>> + */
+>>> +void __virtqueue_unbreak(struct virtqueue *_vq)
+>>> +{
+>>> +    struct vring_virtqueue *vq = to_vvq(_vq);
+>>> +
+>>> +    /* Pairs with READ_ONCE() in virtqueue_is_broken(). */
+>>> +    WRITE_ONCE(vq->broken, false);
+>>> +}
+>> I don't think these "Pairs" comments have any value.
+>>
+>>
+>>> +EXPORT_SYMBOL_GPL(__virtqueue_unbreak);
+>>> +
+>>>   bool virtqueue_is_broken(struct virtqueue *_vq)
+>>>   {
+>>>       struct vring_virtqueue *vq = to_vvq(_vq);
+>>> diff --git a/include/linux/virtio.h b/include/linux/virtio.h
+>>> index 1272566adec6..dc474a0d48d1 100644
+>>> --- a/include/linux/virtio.h
+>>> +++ b/include/linux/virtio.h
+>>> @@ -138,6 +138,9 @@ bool is_virtio_device(struct device *dev);
+>>>   void virtio_break_device(struct virtio_device *dev);
+>>>   void __virtio_unbreak_device(struct virtio_device *dev);
+>>>   +void __virtqueue_break(struct virtqueue *_vq);
+>>> +void __virtqueue_unbreak(struct virtqueue *_vq);
+>>> +
+>>>   void virtio_config_changed(struct virtio_device *dev);
+>>>   #ifdef CONFIG_PM_SLEEP
+>>>   int virtio_device_freeze(struct virtio_device *dev);
+>>> -- 
+>>> 2.31.0
 
