@@ -2,71 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1E3B56582B
-	for <lists+bpf@lfdr.de>; Mon,  4 Jul 2022 16:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2228356584B
+	for <lists+bpf@lfdr.de>; Mon,  4 Jul 2022 16:09:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232791AbiGDOBo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 Jul 2022 10:01:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37664 "EHLO
+        id S234507AbiGDOJC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 Jul 2022 10:09:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbiGDOBh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 4 Jul 2022 10:01:37 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E297AB1D7;
-        Mon,  4 Jul 2022 07:01:36 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id v14so13641190wra.5;
-        Mon, 04 Jul 2022 07:01:36 -0700 (PDT)
+        with ESMTP id S234652AbiGDOJA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 4 Jul 2022 10:09:00 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FC816321
+        for <bpf@vger.kernel.org>; Mon,  4 Jul 2022 07:08:59 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id x18-20020a17090a8a9200b001ef83b332f5so3567268pjn.0
+        for <bpf@vger.kernel.org>; Mon, 04 Jul 2022 07:08:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=0RwqG+scDxa5sBRqSdCikrVrH/DlHuQpNG6BogojNcw=;
-        b=odnnTUp/LoUmKOUyIJo7vEDZ9yAuctYKOVpNuGmulrP9ucSUIzulweZaGGyx5FAYjS
-         pKtpKxi4+NqK+MuIKSu9ZSW3m5/J4CZD6x12SiuRNc6W268Bu7bBLJedQSHalLOH3Dni
-         /gb6Juv9w3rHsvJs7EYOlL7HBPp+qP8HHhDiIWrqC70++0qmzhrOY0dZd8xJqIFFTi1d
-         GkOERF7j+9cILgoS2NHfS5QT0eU6lR/yhdvYRtMYRy9tXXaOcBsHeHsQacSPAJubQ+Jv
-         Z0JebS6MOLja+VT6KCC3MFDQkpbg2heGJIdBA1Pl7CUgL5ungJ1Q1Ed3BEzeIHHWe9AU
-         NvnA==
+        bh=ACfoXSj1CfToA6OoRzL6FcX7n2xKgaruEGnzou6JEgM=;
+        b=ckaWGo+R5M3jr3kYjSOwIDza/g6Tu8GFSfwCNPIe7zy70j0/aEpbNA+0yxE+Bt7Zna
+         3vNCmJu78PSD7yirkbNTKexGJaVpuaM6neIJF7YcFX6qPoA5HNEuVMlz4oNi5h9gHgNK
+         HuWSN5e7xKoNaGTVmhK1AIWOvFOCB4jotafP1/XbMcHyyecxm8PUDTGYpCuvoZdKtKHs
+         XGEiDH48z3JULy1HguYEADDwmY71r62QlKuKWrDniPT7VMm4NIqy8B6b5KMdvxphwOCG
+         iCguSS4qAYQUFtbHtAFPgk6xG2zpOqAqeSW+bAVzq20J1xRq6sjsxnGnRKb00AFJ5+ZA
+         tMKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=0RwqG+scDxa5sBRqSdCikrVrH/DlHuQpNG6BogojNcw=;
-        b=ySMs09g5awH0MPHsCyP36pwzglULLh4DOOujaX7Jl88UwUmtAceI7ocrP1oJKv6utN
-         DgUyUEHCFWurgIcq9xqudsafXB4CeXLR5jVPvW79nd8qV6fAqDNWX0o+mHs2fK2zJLoL
-         A6/wFyuM+ksw4A8MBQrOKSsSts090GXoBoegEZPZKMMIj8zwrZj9G8G4a53UEMENwtCw
-         ryPOUabJO8U5A3FCM7UtgOVCMxZqvVnm3LcyYplOyw1ik3iCvISk/rkHtr6o8ytz8GE1
-         5QJERkkwZQ08M/c0ApcYvasj4+SOLsno2Dg+XnLiDJ0kiMloRTsCyooMlgz+ZQmmHkcG
-         AmEA==
-X-Gm-Message-State: AJIora+bYKnOt5tbF8QiqK7ppqYuyNlzb2ih87uLLYi48ZsxMGUqW9eZ
-        KD7K6VFkta8b9mqQEywoPYU=
-X-Google-Smtp-Source: AGRyM1smRSj3Ife5KLTAkAievRyKaIgwIO/zIdO2R0orYgNnwofMXGR9OfYzMd2s/lnJBQ5AknUp2w==
-X-Received: by 2002:a05:6000:1887:b0:21d:33c1:efd6 with SMTP id a7-20020a056000188700b0021d33c1efd6mr23299338wri.134.1656943295318;
-        Mon, 04 Jul 2022 07:01:35 -0700 (PDT)
-Received: from localhost.localdomain (host-79-53-109-127.retail.telecomitalia.it. [79.53.109.127])
-        by smtp.gmail.com with ESMTPSA id f7-20020a0560001b0700b0021d68e1fd42sm3963147wrz.89.2022.07.04.07.01.32
+        bh=ACfoXSj1CfToA6OoRzL6FcX7n2xKgaruEGnzou6JEgM=;
+        b=d+cL06RgxAxDMJyHX3qLMVXVLHjcj0O0NvLBNlFRbdUvJqX2Gk59pICGq7G9VDZr1U
+         iIM+zk+8oYiDTvLCUjeQqoY/bziV2grvMvgH/yBLsLnk1HyGTxiomeZNxxFSgdNQSLl/
+         BubIeJ0RnCzS3olMSAugDhVTtG1GzNlIOF63S6LIdoebhXTKUay6M+j6pe2zUiU+39LD
+         FGdZTBWS4JyQXhUDAiVssuyQb18dNbbKmJa3KYEx/ZZ2VF5BGHBOLCCaNCgIl7/oR6nh
+         Y/UxJh79DUtZO2Yif3IxGRgVEOmgW0awsaOR/Dg19j2BbUGEY8BOcZiHdHKcyt04fr6k
+         067w==
+X-Gm-Message-State: AJIora+Km70elCVJspgFtHCKNTpo9UyGx+JBFtY51Dm4MkRjID5Ze/vR
+        Ypy88FE4gS5X5cHFCGkaHNvGB/ZEvmw=
+X-Google-Smtp-Source: AGRyM1vZ1EcOuKO9oqU3Pe01gOBJa4TWMNvwYMzQY5B5xY49IWsd+8IXHLsEs17anvVxvj95lyKisQ==
+X-Received: by 2002:a17:902:db11:b0:16a:6381:f6f3 with SMTP id m17-20020a170902db1100b0016a6381f6f3mr35709553plx.108.1656943738933;
+        Mon, 04 Jul 2022 07:08:58 -0700 (PDT)
+Received: from localhost.localdomain ([119.28.83.143])
+        by smtp.gmail.com with ESMTPSA id q23-20020aa79837000000b00528369c7824sm6933987pfl.13.2022.07.04.07.08.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jul 2022 07:01:33 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>
-Subject: [PATCH] ixgbe: Don't call kmap() on page allocated with GFP_ATOMIC
-Date:   Mon,  4 Jul 2022 16:01:29 +0200
-Message-Id: <20220704140129.6463-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.36.1
+        Mon, 04 Jul 2022 07:08:58 -0700 (PDT)
+From:   Hengqi Chen <hengqi.chen@gmail.com>
+To:     bpf@vger.kernel.org, andrii@kernel.org
+Cc:     hengqi.chen@gmail.com
+Subject: [PATCH bpf-next] libbpf: Error out when missing binary_path for USDT attach
+Date:   Mon,  4 Jul 2022 22:08:50 +0800
+Message-Id: <20220704140850.1106119-1-hengqi.chen@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -79,40 +66,30 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Pages allocated with GFP_ATOMIC cannot come from Highmem. This is why
-there is no need to call kmap() on them.
+The binary_path parameter is required for bpf_program__attach_usdt().
+Error out when user attach USDT probe without specifying a binary_path.
 
-Therefore, don't call kmap() on rx_buffer->page() and instead use a
-plain page_address() to get the kernel address.
-
-Suggested-by: Ira Weiny <ira.weiny@intel.com>
-Suggested-by: Alexander Duyck <alexander.duyck@gmail.com>
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
 ---
- drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ tools/lib/bpf/libbpf.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
-index 628d0eb0599f..71196fd92f81 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
-@@ -1966,15 +1966,13 @@ static bool ixgbe_check_lbtest_frame(struct ixgbe_rx_buffer *rx_buffer,
- 
- 	frame_size >>= 1;
- 
--	data = kmap(rx_buffer->page) + rx_buffer->page_offset;
-+	data = page_address(rx_buffer->page) + rx_buffer->page_offset;
- 
- 	if (data[3] != 0xFF ||
- 	    data[frame_size + 10] != 0xBE ||
- 	    data[frame_size + 12] != 0xAF)
- 		match = false;
- 
--	kunmap(rx_buffer->page);
--
- 	return match;
- }
- 
--- 
-2.36.1
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 8a45a84eb9b2..5e4153c5b0a6 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -10686,6 +10686,12 @@ struct bpf_link *bpf_program__attach_usdt(const struct bpf_program *prog,
+ 		return libbpf_err_ptr(-EINVAL);
+ 	}
 
++	if (!binary_path) {
++		pr_warn("prog '%s': USDT attach requires binary_path\n",
++			prog->name);
++		return libbpf_err_ptr(-EINVAL);
++	}
++
+ 	if (!strchr(binary_path, '/')) {
+ 		err = resolve_full_path(binary_path, resolved_path, sizeof(resolved_path));
+ 		if (err) {
+--
+2.30.2
