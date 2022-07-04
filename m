@@ -2,243 +2,201 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A81565CA0
-	for <lists+bpf@lfdr.de>; Mon,  4 Jul 2022 19:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91292565D7C
+	for <lists+bpf@lfdr.de>; Mon,  4 Jul 2022 20:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233644AbiGDROR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 Jul 2022 13:14:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57052 "EHLO
+        id S230510AbiGDS0Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 Jul 2022 14:26:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231326AbiGDROO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 4 Jul 2022 13:14:14 -0400
+        with ESMTP id S229584AbiGDS0X (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 4 Jul 2022 14:26:23 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 29F1C11C34
-        for <bpf@vger.kernel.org>; Mon,  4 Jul 2022 10:14:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9A8FEB36
+        for <bpf@vger.kernel.org>; Mon,  4 Jul 2022 11:26:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1656954848;
+        s=mimecast20190719; t=1656959180;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=90xhSQDtM76aihPHt68+M5RcBuaIA4lDfnCcukO+uC4=;
-        b=RtovKlJMoO6yHzvssbz4ZymZ77xk0ve+VC3PW9K0B/VrNRXi+60EPAG2JNDYoBA4Li+92d
-        AxRsma0zM5k0L157jAdjW8MEMwhYIzH4z263dtQnK7AX1Tk9S3xH+BwrJ6jhuoSzVvxMEh
-        /Hh+1qQZfdK+XLtfougEn5Ob9F5ZmZM=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=PnHE1Fmm3dD20/PWMICE8P40a11Tvt3NNjhIvetHMKs=;
+        b=dMROpZQXPgP7FUfW8pPQBOi2ydZpyFNczgJXPeamZGrg3vxACo2U2ABsovJMsf/5w0oMD0
+        qHWrQ/I+F71ycrVjsZWdtyumqt457FUbfTiqpl4K1bXTEA3+Bt3YEUF6E9xsVb6ebSRFdx
+        YK+EpTdUqVlPn/zpsNlHVSr0LBkxkXI=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-462-8zCaTEFUP-G-Mjij6n-1CQ-1; Mon, 04 Jul 2022 13:14:07 -0400
-X-MC-Unique: 8zCaTEFUP-G-Mjij6n-1CQ-1
-Received: by mail-ed1-f71.google.com with SMTP id x21-20020a05640226d500b00435bd7f9367so7521478edd.8
-        for <bpf@vger.kernel.org>; Mon, 04 Jul 2022 10:14:06 -0700 (PDT)
+ us-mta-546-9Hv01JRSOg6nrG6PK9VlHg-1; Mon, 04 Jul 2022 14:26:19 -0400
+X-MC-Unique: 9Hv01JRSOg6nrG6PK9VlHg-1
+Received: by mail-lf1-f71.google.com with SMTP id p36-20020a05651213a400b004779d806c13so3294914lfa.10
+        for <bpf@vger.kernel.org>; Mon, 04 Jul 2022 11:26:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=90xhSQDtM76aihPHt68+M5RcBuaIA4lDfnCcukO+uC4=;
-        b=JyEa+DbkBX70XxjWAFWWc/E7Ekm+D7eWNosYyeCWqJX9aMXibSxOdg7z4uOJF4cqKL
-         r80eYGveAN6WUW/5TfFhPA6zv4aEuCbORchb3802pfSaJjaV94jY3PRO4RLnq+P1EUiH
-         6dYadsWoYINtOizG8i6uhd8xMdoaR+QDd/vGIZkWPvfFmSM8b5EQ2a+QIRiGTjQ4B+8s
-         Yl5ytf7Tkfj+dk4X7uXYPlC1Dtr6HHc2xSKpDLB9FEgfwA10rNbU4px9Nue21W1ghXtq
-         28Uokg2+IwCC5mjALKozeRrw29oVGaRhhwNrfWQCpuVQdlV38hTY0ExNNoodChiBsApv
-         PdDg==
-X-Gm-Message-State: AJIora+AUI8q0SdBh8lHBGDKgTttWCWFcXGIURWs6M2IasGL0WAS25zj
-        zG5hHoOOg9VVGx803GhHQZdYKNC3jZ7aHu7R856RdfuBRFH+3UQdjYBdwDn+Ds9Dss0JM+NMlyL
-        estpR84NElQvG
-X-Received: by 2002:a17:906:8479:b0:72a:5610:f151 with SMTP id hx25-20020a170906847900b0072a5610f151mr24224561ejc.125.1656954845687;
-        Mon, 04 Jul 2022 10:14:05 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1uef8hLBR0Q8A/DXYG20gzUAR43ekM2eDQ/JQ9p555cPa3vQ0ljoKeKV71ISz2WBRNK3kOVWw==
-X-Received: by 2002:a17:906:8479:b0:72a:5610:f151 with SMTP id hx25-20020a170906847900b0072a5610f151mr24224508ejc.125.1656954845270;
-        Mon, 04 Jul 2022 10:14:05 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id by27-20020a0564021b1b00b004356112a8a2sm21023202edb.15.2022.07.04.10.14.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jul 2022 10:14:04 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 14DE2477A3F; Mon,  4 Jul 2022 19:14:04 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexander Lobakin <alexandr.lobakin@intel.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Larysa Zaremba <larysa.zaremba@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Yajun Deng <yajun.deng@linux.dev>,
-        Willem de Bruijn <willemb@google.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xdp-hints@xdp-project.net
-Subject: Re: [xdp-hints] Re: [PATCH RFC bpf-next 00/52] bpf, xdp: introduce
- and use Generic Hints/metadata
-In-Reply-To: <20220704154440.7567-1-alexandr.lobakin@intel.com>
-References: <20220628194812.1453059-1-alexandr.lobakin@intel.com>
- <62bbedf07f44a_2181420830@john.notmuch> <87iloja8ly.fsf@toke.dk>
- <20220704154440.7567-1-alexandr.lobakin@intel.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 04 Jul 2022 19:14:04 +0200
-Message-ID: <87a69o94wz.fsf@toke.dk>
+        h=x-gm-message-state:from:message-id:date:mime-version:user-agent:cc
+         :subject:content-language:to:references:in-reply-to
+         :content-transfer-encoding;
+        bh=PnHE1Fmm3dD20/PWMICE8P40a11Tvt3NNjhIvetHMKs=;
+        b=STho7pASlVzy0txwvMZVljulP+TR2imgyiqEofXpuzkShBb25qcsuE2fGnJeZcgyOd
+         SH01dBS0jpFksGUkEDkfpAjB3u0Nw9iGDQbifFw+99bubF773MSA6WKGq/49xyOkUfd9
+         joiDuC/W5i1NPgapJ8Zak60wy1ngJDVVAHT8S0LmwmQa6tvz2/J6/9WjFHBEsgqxim0/
+         DZ1AsY6Sy9rwZRckfehE8ocGXgMhS0q/sVgin1h7xFq9wygN8aBrTlKPRZa9HFaMP5ip
+         tmkqlqndqU+xVInFBIF3KLMBlpRlHN1ZiiZTQ3KTg73SOxC/medH5JAja3JGe2Qz2/bg
+         GABQ==
+X-Gm-Message-State: AJIora/TXSa1HGE3IbQQhlTxRmEOc7MEUxzuaJAJPpeezBGOCbqPr+Pt
+        hwdYcjEB81idtnl/2EzmH3X2qgyRUbkFb7q7b29z4SfekRgRnPIl3zb63WqL49gxIE/Sz6Wd9mt
+        Gfl8YrLnMU4Yo
+X-Received: by 2002:a2e:bf27:0:b0:246:7ed6:33b0 with SMTP id c39-20020a2ebf27000000b002467ed633b0mr18205731ljr.167.1656959178034;
+        Mon, 04 Jul 2022 11:26:18 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1tAcT1V6ZC9TJlTz3gqpYB/0gVILKOCboMNrd6sk9hCWdcja7d6UyTIl9BqZhEQjLo/O2JEbA==
+X-Received: by 2002:a2e:bf27:0:b0:246:7ed6:33b0 with SMTP id c39-20020a2ebf27000000b002467ed633b0mr18205718ljr.167.1656959177737;
+        Mon, 04 Jul 2022 11:26:17 -0700 (PDT)
+Received: from [192.168.0.50] (87-59-106-155-cable.dk.customer.tdc.net. [87.59.106.155])
+        by smtp.gmail.com with ESMTPSA id c2-20020ac25f62000000b00478f3fe716asm5248002lfc.200.2022.07.04.11.26.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Jul 2022 11:26:16 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <b8085a4d-5ede-3cc0-a177-ad97fe08ce25@redhat.com>
+Date:   Mon, 4 Jul 2022 20:26:15 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Cc:     brouer@redhat.com,
+        "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>,
+        "Lobakin, Alexandr" <alexandr.lobakin@intel.com>
+Subject: Re: [PATCH RFC bpf-next 5/9] xdp: controlling XDP-hints from BPF-prog
+ via helper
+Content-Language: en-US
+To:     "Zaremba, Larysa" <larysa.zaremba@intel.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Netdev <netdev@vger.kernel.org>
+References: <DM4PR11MB54718267242004151337602F97BE9@DM4PR11MB5471.namprd11.prod.outlook.com>
+In-Reply-To: <DM4PR11MB54718267242004151337602F97BE9@DM4PR11MB5471.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexander Lobakin <alexandr.lobakin@intel.com> writes:
 
-> From: Toke H??iland-J??rgensen <toke@redhat.com>
-> Date: Wed, 29 Jun 2022 15:43:05 +0200
->
->> John Fastabend <john.fastabend@gmail.com> writes:
->> 
->> > Alexander Lobakin wrote:
->> >> This RFC is to give the whole picture. It will most likely be split
->> >> onto several series, maybe even merge cycles. See the "table of
->> >> contents" below.
->> >
->> > Even for RFC its a bit much. Probably improve the summary
->> > message here as well I'm still not clear on the overall
->> > architecture so not sure I want to dig into patches.
->> 
->> +1 on this, and piggybacking on your comment to chime in on the general
->> architecture.
->> 
->> >> Now, a NIC driver, or even a SmartNIC itself, can put those params
->> >> there in a well-defined format. The format is fixed, but can be of
->> >> several different types represented by structures, which definitions
->> >> are available to the kernel, BPF programs and the userland.
->> >
->> > I don't think in general the format needs to be fixed.
->> 
->> No, that's the whole point of BTF: it's not supposed to be UAPI, we'll
->> use CO-RE to enable dynamic formats...
->> 
+
+On 04/07/2022 13.00, Zaremba, Larysa wrote:
+> Toke Høiland-Jørgensen <toke@redhat.com> writes:
+>>
+>> Jesper Dangaard Brouer <jbrouer@redhat.com> writes:
+>>
+>>> On 29/06/2022 16.20, Toke Høiland-Jørgensen wrote:
+>>>> Jesper Dangaard Brouer <brouer@redhat.com> writes:
+>>>>
+>>>>> XDP BPF-prog's need a way to interact with the XDP-hints. This
+>>>>> patch introduces a BPF-helper function, that allow XDP BPF-prog's
+>>>>> to interact with the XDP-hints.
+>>>>>
+>>>>> BPF-prog can query if any XDP-hints have been setup and if this is
+>>>>> compatible with the xdp_hints_common struct. If XDP-hints are
+>>>>> available the BPF "origin" is returned (see enum
+>>>>> xdp_hints_btf_origin) as BTF can come from different sources or
+>>>>> origins e.g. vmlinux, module or local.
+>>>>
+>>>> I'm not sure I quite understand what this origin is supposed to be
+>>>> good for?
+>>>
+>>> Some background info on BTF is needed here: BTF_ID numbers are not
+>>> globally unique identifiers, thus we need to know where it originate
+>>> from, to make it unique (as we store this BTF_ID in XDP-hints).
+>>>
+>>> There is a connection between origin "vmlinux" and "module", which
+>>> is that vmlinux will start at ID=1 and end at a max ID number.
+>>> Modules refer to ID's in "vmlinux", and for this to work, they will
+>>> shift their own numbering to start after ID=max-vmlinux-id.
+>>>
+>>> Origin "local" is for BTF information stored in the BPF-ELF object file.
+>>> Their numbering starts at ID=1.  The use-case is that a BPF-prog
+>>> want to extend the kernel drivers BTF-layout, and e.g. add a
+>>> RX-timestamp like [1].  Then BPF-prog can check if it knows module's
+>>> BTF_ID and then extend via bpf_xdp_adjust_meta, and update BTF_ID in
+>>> XDP-hints and call the helper (I introduced) marking this as origin
+>>> "local" for kernel to know this is no-longer origin "module".
+>>
+>> Right, I realise that :)
+>>
+>> My point was that just knowing "this is a BTF ID coming from a module"
+>> is not terribly useful; you could already figure that out by just
+>> looking at the ID and seeing if it's larger than the maximum ID in vmlinux BTF.
+>>
+>> Rather, what we need is a way to identify *which* module the BTF ID
+>> comes from; and luckily, the kernel assigns a unique ID to every BTF
+>> *object* as well as to each type ID within that object. These can be
+>> dumped by bpftool:
+>>
+>> # bpftool btf
+>> bpftool btf
+>> [sudo] password for alrua:
+>> 1: name [vmlinux]  size 4800187B
+>> 2: name [serio]  size 2588B
+>> 3: name [i8042]  size 11786B
+>> 4: name [rng_core]  size 8184B
 >> [...]
->> 
->> >> It is fixed due to it being almost a UAPI, and the exact format can
->> >> be determined by reading the last 10 bytes of metadata. They contain
->> >> a 2-byte magic ID to not confuse it with a non-compatible meta and
->> >> a 8-byte combined BTF ID + type ID: the ID of the BTF where this
->> >> structure is defined and the ID of that definition inside that BTF.
->> >> Users can obtain BTF IDs by structure types using helpers available
->> >> in the kernel, BPF (written by the CO-RE/verifier) and the userland
->> >> (libbpf -> kernel call) and then rely on those ID when reading data
->> >> to make sure whether they support it and what to do with it.
->> >> Why separate magic and ID? The idea is to make different formats
->> >> always contain the basic/"generic" structure embedded at the end.
->> >> This way we can still benefit in purely generic consumers (like
->> >> cpumap) while providing some "extra" data to those who support it.
->> >
->> > I don't follow this. If you have a struct in your driver name it
->> > something obvious, ice_xdp_metadata. If I understand things
->> > correctly just dump the BTF for the driver, extract the
->> > struct and done you can use CO-RE reads. For the 'fixed' case
->> > this looks easy. And I don't think you even need a patch for this.
->> 
->> ...however as we've discussed previously, we do need a bit of
->> infrastructure around this. In particular, we need to embed the embed
->> the BTF ID into the metadata itself so BPF can do runtime disambiguation
->> between different formats (and add the right CO-RE primitives to make
->> this easy). This is for two reasons:
->> 
->> - The metadata might be different per-packet (e.g., PTP packets with
->>   timestamps interleaved with bulk data without them)
->> 
->> - With redirects we may end up processing packets from different devices
->>   in a single XDP program (in devmap or cpumap, or on a veth) so we need
->>   to be able to disambiguate at runtime.
->> 
->> So I think the part of the design that puts the BTF ID into the end of
->> the metadata struct is sound; however, the actual format doesn't have to
->> be fixed, we can use CO-RE to pick out the bits that a given BPF program
->> needs; we just need a convention for how drivers report which format(s)
->> they support. Which we should also agree on (and add core infrastructure
->> around) so each driver doesn't go around inventing their own
->> conventions.
->> 
->> >> The enablement of this feature is controlled on attaching/replacing
->> >> XDP program on an interface with two new parameters: that combined
->> >> BTF+type ID and metadata threshold.
->> >> The threshold specifies the minimum frame size which a driver (or
->> >> NIC) should start composing metadata from. It is introduced instead
->> >> of just false/true flag due to that often it's not worth it to spend
->> >> cycles to fetch all that data for such small frames: let's say, it
->> >> can be even faster to just calculate checksums for them on CPU
->> >> rather than touch non-coherent DMA zone. Simple XDP_DROP case loses
->> >> 15 Mpps on 64 byte frames with enabled metadata, threshold can help
->> >> mitigate that.
->> >
->> > I would put this in the bonus category. Can you do the simple thing
->> > above without these extra bits and then add them later. Just
->> > pick some overly conservative threshold to start with.
->> 
->> Yeah, I'd agree this kind of configuration is something that can be
->> added later, and also it's sort of orthogonal to the consumption of the
->> metadata itself.
->> 
->> Also, tying this configuration into the loading of an XDP program is a
->> terrible interface: these are hardware configuration options, let's just
->> put them into ethtool or 'ip link' like any other piece of device
->> configuration.
->
-> I don't believe it fits there, especially Ethtool. Ethtool is for
-> hardware configuration, XDP/AF_XDP is 95% software stuff (apart from
-> offload bits which is purely NFP's for now).
+>> 2062: name <anon>  size 36965B
+>> 	pids bpftool(547298)
+>>
+>> IDs 2-4 are module BTF objects, and that last one is the ID of a BTF
+>> object loaded along with a BPF program by bpftool itself... So we *do*
+>> in fact have a unique ID, by combining the BTF object ID with the type
+>> ID; this is what Alexander is proposing to put into the xdp-hints
+>> struct as well (combining the two IDs into a single u64).
 
-But XDP-hints is about consuming hardware features. When you're
-configuring which metadata items you want, you're saying "please provide
-me with these (hardware) features". So ethtool is an excellent place to
-do that :)
+Thanks for the explanation. I think I understand it now, and I agree
+that we should extend/combining the two IDs into a single u64.
 
-> I follow that way:
->
-> 1) you pick a program you want to attach;
-> 2) usually they are written for special needs and usecases;
-> 3) so most likely that program will be tied with metadata/driver/etc
->    in some way;
-> 4) so you want to enable Hints of a particular format primarily for
->    this program and usecase, same with threshold and everything
->    else.
->
-> Pls explain how you see it, I might be wrong for sure.
+To Andrii, what is the right terminology when talking about these two
+different BTF-ID's:
 
-As above: XDP hints is about giving XDP programs (and AF_XDP consumers)
-access to metadata that is not currently available. Tying the lifetime
-of that hardware configuration (i.e., which information to provide) to
-the lifetime of an XDP program is not a good interface: for one thing,
-how will it handle multiple programs? What about when XDP is not used at
-all but you still want to configure the same features?
+- BTF object ID and BTF type ID?
 
-In addition, in every other case where we do dynamic data access (with
-CO-RE) the BPF program is a consumer that modifies itself to access the
-data provided by the kernel. I get that this is harder to achieve for
-AF_XDP, but then let's solve that instead of making a totally
-inconsistent interface for XDP.
+- Where BTF *object* ID are the IDs we see above from 'bpftool btf',
+   where vmlinux=1 and module's IDs will start after 1.
 
-I'm as excited as you about the prospect of having totally programmable
-hardware where you can just specify any arbitrary metadata format and
-it'll provide that for you. But that is an orthogonal feature: let's
-start with creating a dynamic interface for consuming the (static)
-hardware features we already have, and then later we can have a separate
-interface for configuring more dynamic hardware features. XDP-hints is
-about adding this consumption feature in a way that's sufficiently
-dynamic that we can do the other (programmable hardware) thing on top
-later...
+- Where BTF *type* ID are the IDs the individual data "types" within a
+   BTF "object" (e.g. struct xdp_hints_common that BPF-prog's can get
+   via calling bpf_core_type_id_kernel()).
 
--Toke
+
+> That's correct, concept was previously discussed [1]. The ID of BTF object wasn't
+> exposed in CO-RE allocations though, we've changed it in the first 4 patches.
+> The main logic is in "libbpf: factor out BTF loading from load_module_btfs()"
+> and "libbpf: patch module BTF ID into BPF insns".
+> 
+> We have a sample that wasn't included eventually, but can possibly
+> give a general understanding of our approach [2].
+> 
+> [1] https://lore.kernel.org/all/CAEf4BzZO=7MKWfx2OCwEc+sKkfPZYzaELuobi4q5p1bOKk4AQQ@mail.gmail.com/
+> [2] https://github.com/alobakin/linux/pull/16/files#diff-c5983904cbe0c280453d59e8a1eefb56c67018c38d5da0c1122abc86225fc7c9
+> 
+(appreciate the links)
+
+I wonder how these BTF object IDs gets resolved for my "local" category?
+(Origin "local" is for BTF information stored in the BPF-ELF object file)
+
+Note: For "local" BTF type IDs BPF-prog resolve these via
+bpf_core_type_id_local() (why I choose the term "local").
+
+--Jesper
+
+p.s. For unknown reasons lore.kernel.org did match Larysa's reply with 
+the patchset thread here[3].
+
+  [3] 
+https://lore.kernel.org/bpf/165643378969.449467.13237011812569188299.stgit@firesoul/#r
+
 
