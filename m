@@ -2,94 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2228356584B
-	for <lists+bpf@lfdr.de>; Mon,  4 Jul 2022 16:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 612335658FF
+	for <lists+bpf@lfdr.de>; Mon,  4 Jul 2022 16:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234507AbiGDOJC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 Jul 2022 10:09:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45758 "EHLO
+        id S234812AbiGDOyj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 Jul 2022 10:54:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234652AbiGDOJA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 4 Jul 2022 10:09:00 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FC816321
-        for <bpf@vger.kernel.org>; Mon,  4 Jul 2022 07:08:59 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id x18-20020a17090a8a9200b001ef83b332f5so3567268pjn.0
-        for <bpf@vger.kernel.org>; Mon, 04 Jul 2022 07:08:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ACfoXSj1CfToA6OoRzL6FcX7n2xKgaruEGnzou6JEgM=;
-        b=ckaWGo+R5M3jr3kYjSOwIDza/g6Tu8GFSfwCNPIe7zy70j0/aEpbNA+0yxE+Bt7Zna
-         3vNCmJu78PSD7yirkbNTKexGJaVpuaM6neIJF7YcFX6qPoA5HNEuVMlz4oNi5h9gHgNK
-         HuWSN5e7xKoNaGTVmhK1AIWOvFOCB4jotafP1/XbMcHyyecxm8PUDTGYpCuvoZdKtKHs
-         XGEiDH48z3JULy1HguYEADDwmY71r62QlKuKWrDniPT7VMm4NIqy8B6b5KMdvxphwOCG
-         iCguSS4qAYQUFtbHtAFPgk6xG2zpOqAqeSW+bAVzq20J1xRq6sjsxnGnRKb00AFJ5+ZA
-         tMKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ACfoXSj1CfToA6OoRzL6FcX7n2xKgaruEGnzou6JEgM=;
-        b=d+cL06RgxAxDMJyHX3qLMVXVLHjcj0O0NvLBNlFRbdUvJqX2Gk59pICGq7G9VDZr1U
-         iIM+zk+8oYiDTvLCUjeQqoY/bziV2grvMvgH/yBLsLnk1HyGTxiomeZNxxFSgdNQSLl/
-         BubIeJ0RnCzS3olMSAugDhVTtG1GzNlIOF63S6LIdoebhXTKUay6M+j6pe2zUiU+39LD
-         FGdZTBWS4JyQXhUDAiVssuyQb18dNbbKmJa3KYEx/ZZ2VF5BGHBOLCCaNCgIl7/oR6nh
-         Y/UxJh79DUtZO2Yif3IxGRgVEOmgW0awsaOR/Dg19j2BbUGEY8BOcZiHdHKcyt04fr6k
-         067w==
-X-Gm-Message-State: AJIora+Km70elCVJspgFtHCKNTpo9UyGx+JBFtY51Dm4MkRjID5Ze/vR
-        Ypy88FE4gS5X5cHFCGkaHNvGB/ZEvmw=
-X-Google-Smtp-Source: AGRyM1vZ1EcOuKO9oqU3Pe01gOBJa4TWMNvwYMzQY5B5xY49IWsd+8IXHLsEs17anvVxvj95lyKisQ==
-X-Received: by 2002:a17:902:db11:b0:16a:6381:f6f3 with SMTP id m17-20020a170902db1100b0016a6381f6f3mr35709553plx.108.1656943738933;
-        Mon, 04 Jul 2022 07:08:58 -0700 (PDT)
-Received: from localhost.localdomain ([119.28.83.143])
-        by smtp.gmail.com with ESMTPSA id q23-20020aa79837000000b00528369c7824sm6933987pfl.13.2022.07.04.07.08.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jul 2022 07:08:58 -0700 (PDT)
-From:   Hengqi Chen <hengqi.chen@gmail.com>
-To:     bpf@vger.kernel.org, andrii@kernel.org
-Cc:     hengqi.chen@gmail.com
-Subject: [PATCH bpf-next] libbpf: Error out when missing binary_path for USDT attach
-Date:   Mon,  4 Jul 2022 22:08:50 +0800
-Message-Id: <20220704140850.1106119-1-hengqi.chen@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S234782AbiGDOyj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 4 Jul 2022 10:54:39 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 32E0D316;
+        Mon,  4 Jul 2022 07:54:38 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2633123A;
+        Mon,  4 Jul 2022 07:54:38 -0700 (PDT)
+Received: from e124483.cambridge.arm.com (e124483.cambridge.arm.com [10.1.29.145])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E3A633F792;
+        Mon,  4 Jul 2022 07:54:33 -0700 (PDT)
+From:   Andrew Kilroy <andrew.kilroy@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        acme@kernel.org
+Cc:     Andrew Kilroy <andrew.kilroy@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Tom Rix <trix@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, llvm@lists.linux.dev
+Subject: [PATCH 0/8] Perf stack unwinding with pointer authentication
+Date:   Mon,  4 Jul 2022 15:53:24 +0100
+Message-Id: <20220704145333.22557-1-andrew.kilroy@arm.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The binary_path parameter is required for bpf_program__attach_usdt().
-Error out when user attach USDT probe without specifying a binary_path.
+This patch series addresses issues that perf has when attempting to show
+userspace stacks in the presence of pointer authentication on arm64.
 
-Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
----
- tools/lib/bpf/libbpf.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Depending on whether libunwind or libdw is used, perf incorrectly
+displays the userspace stack in 'perf report --stdio'.  With libunwind,
+only the leaf function is shown.
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 8a45a84eb9b2..5e4153c5b0a6 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -10686,6 +10686,12 @@ struct bpf_link *bpf_program__attach_usdt(const struct bpf_program *prog,
- 		return libbpf_err_ptr(-EINVAL);
- 	}
+            |
+            ---0x200000004005bf
+               0x200000004005bf
+               my_leaf_function
 
-+	if (!binary_path) {
-+		pr_warn("prog '%s': USDT attach requires binary_path\n",
-+			prog->name);
-+		return libbpf_err_ptr(-EINVAL);
-+	}
-+
- 	if (!strchr(binary_path, '/')) {
- 		err = resolve_full_path(binary_path, resolved_path, sizeof(resolved_path));
- 		if (err) {
---
-2.30.2
+With libdw, only the leaf function is shown even though there are
+callers in the application.
+
+            |
+            ---my_leaf_function
+
+
+The reason perf cannot show the stack upon a perf report --stdio is
+because the unwinders are given instruction pointers which contain a
+pointer authentication code (PAC).  For the libraries to correctly
+unwind, they need to know which bits of the instruction pointer to turn
+off.
+
+The kernel exposes the set of PAC bits via the NT_ARM_PAC_MASK regset.
+It is expected that this may vary per-task in future. The kernel also
+exposes which pointer authentication keys are enabled via the
+NT_ARM_PAC_ENABLED_KEYS regset, and this can change dynamically. These
+are per-task state which perf would need to sample.
+
+It's not always feasible for perf to acquire these regsets via ptrace.
+When sampling system-wide or with inherited events this may require a
+large volume of ptrace requests, and by the time the perf tool processes
+a sample for a task, that task might already have terminated.
+
+Instead, these patches allow this state to be sampled into the perf
+ringbuffer, where it can be consumed more easily by the perf tool.
+
+The first patch changes the kernel to send the authentication PAC masks
+to userspace perf via the perf ring buffer.  This is published in the
+sample, using a new sample field PERF_SAMPLE_ARCH_1.
+
+The subsequent patches are changes to userspace perf to
+
+1) request the PERF_SAMPLE_ARCH_1
+2) supply the instruction mask to libunwind
+3) ensure perf can cope with an older kernel that does not know about
+   the PERF_SAMPLE_ARCH_1 sample field.
+4) checks if the version of libunwind has the capability to accept
+   an instruction mask from perf and if so enable the feature.
+
+These changes depend on a change to libunwind, that is yet to be
+released, although the patch has been merged.
+
+  https://github.com/libunwind/libunwind/pull/360
+
+
+Andrew Kilroy (6):
+  perf arm64: Send pointer auth masks to ring buffer
+  perf evsel: Do not request ptrauth sample field if not supported
+  perf tools: arm64: Read ptrauth data from kernel
+  perf libunwind: Feature check for libunwind ptrauth callback
+  perf libunwind: arm64 pointer authentication
+  perf tools: Print ptrauth struct in perf report
+
+German Gomez (2):
+  perf test: Update arm64 tests to expect ptrauth masks
+  perf test arm64: Test unwinding with PACs on gcc & clang compilers
+
+ arch/arm64/include/asm/arch_sample_data.h     |  38 ++++++
+ arch/arm64/kernel/Makefile                    |   2 +-
+ arch/arm64/kernel/arch_sample_data.c          |  37 ++++++
+ include/linux/perf_event.h                    |  24 ++++
+ include/uapi/linux/perf_event.h               |   5 +-
+ kernel/events/core.c                          |  35 ++++++
+ tools/build/Makefile.feature                  |   2 +
+ tools/build/feature/Makefile                  |   4 +
+ tools/build/feature/test-all.c                |   5 +
+ .../feature/test-libunwind-arm64-ptrauth.c    |  26 ++++
+ tools/include/uapi/linux/perf_event.h         |   5 +-
+ tools/perf/Makefile.config                    |  10 ++
+ tools/perf/Makefile.perf                      |   1 +
+ tools/perf/tests/Build                        |   1 +
+ tools/perf/tests/arm_unwind_pac.c             | 113 ++++++++++++++++++
+ tools/perf/tests/arm_unwind_pac.sh            |  57 +++++++++
+ tools/perf/tests/attr/README                  |   1 +
+ .../attr/test-record-graph-default-aarch64    |   3 +-
+ tools/perf/tests/attr/test-record-graph-dwarf |   1 +
+ .../attr/test-record-graph-dwarf-aarch64      |  13 ++
+ .../tests/attr/test-record-graph-fp-aarch64   |   3 +-
+ tools/perf/tests/builtin-test.c               |   1 +
+ tools/perf/tests/sample-parsing.c             |   2 +-
+ tools/perf/tests/tests.h                      |   1 +
+ tools/perf/util/event.h                       |   8 ++
+ tools/perf/util/evsel.c                       |  64 ++++++++++
+ tools/perf/util/evsel.h                       |   1 +
+ tools/perf/util/perf_event_attr_fprintf.c     |   2 +-
+ tools/perf/util/session.c                     |  15 +++
+ tools/perf/util/unwind-libunwind-local.c      |  12 ++
+ 30 files changed, 485 insertions(+), 7 deletions(-)
+ create mode 100644 arch/arm64/include/asm/arch_sample_data.h
+ create mode 100644 arch/arm64/kernel/arch_sample_data.c
+ create mode 100644 tools/build/feature/test-libunwind-arm64-ptrauth.c
+ create mode 100644 tools/perf/tests/arm_unwind_pac.c
+ create mode 100755 tools/perf/tests/arm_unwind_pac.sh
+ create mode 100644 tools/perf/tests/attr/test-record-graph-dwarf-aarch64
+
+-- 
+2.17.1
+
