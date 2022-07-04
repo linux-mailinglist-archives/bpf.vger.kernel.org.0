@@ -2,206 +2,193 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4219F56504E
-	for <lists+bpf@lfdr.de>; Mon,  4 Jul 2022 11:05:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB47D565083
+	for <lists+bpf@lfdr.de>; Mon,  4 Jul 2022 11:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233444AbiGDJEY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 Jul 2022 05:04:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35348 "EHLO
+        id S233239AbiGDJNl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 Jul 2022 05:13:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231810AbiGDJEY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 4 Jul 2022 05:04:24 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62F142DEC;
-        Mon,  4 Jul 2022 02:04:23 -0700 (PDT)
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1o8I0C-000CXw-PX; Mon, 04 Jul 2022 11:04:20 +0200
-Received: from [85.1.206.226] (helo=linux-3.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1o8I0C-000TNe-8p; Mon, 04 Jul 2022 11:04:20 +0200
-Subject: Re: [syzbot] KASAN: vmalloc-out-of-bounds Read in bpf_jit_free
-To:     syzbot <syzbot+2f649ec6d2eea1495a8f@syzkaller.appspotmail.com>,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        davem@davemloft.net, dvyukov@google.com, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kernel-team@fb.com,
-        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, nogikh@google.com,
-        patchwork-bot@kernel.org, song@kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-References: <0000000000002cb7d405e2e1f886@google.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <7a5eea26-e379-dfa3-b606-c6a841a2c5fb@iogearbox.net>
-Date:   Mon, 4 Jul 2022 11:04:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S233170AbiGDJNk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 4 Jul 2022 05:13:40 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB86D2C0;
+        Mon,  4 Jul 2022 02:13:38 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id c65so10878084edf.4;
+        Mon, 04 Jul 2022 02:13:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uCY8bPxzV96YCvPAPmQP862IoIgvFPMrFGOHyarbwX0=;
+        b=jsbKoVbBtZAkC9zdTa9hESMZLRrHU9tmcntzYXHwde6mGIo8o8nuYEMM3NxKaZYGfz
+         qOiUKRG/cNBSvhWD0EWsuipkr4u8F5EOUKJDNjBJ53xXKlN/xp+BxGOFnxUfqKzkeRf9
+         tcn2BrG/CjCbSvBO4avT+ejdVR53UiSDJHadX8wk1GbYqR/H4ffg8HzBEakS1pLx9zL8
+         5BB04Z7SaZ+JAvrO8HTZxIR2meNh8QxMgSeTVayPsjKT2YRxazq6ev0//QZAs8i0yX2p
+         7YxdsEdsTuzeJeyPLtc98dOo77kLn7JwPW/4I+Qs5RlvQJNhH2cjpp/WIb8WMb3JbI1a
+         6fkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uCY8bPxzV96YCvPAPmQP862IoIgvFPMrFGOHyarbwX0=;
+        b=bSPtkqjcvBGRBLmqWnJwPUzzbVgKrXoD7KRXXEvD499FqZxxiPKC/go7QJDNxNdQE7
+         LhM8YoZT+s/bElsbcsjd8pNih2CGlrhcMMLTeWxIDc31s0gNevuMmWIB79GC1bAiDbdT
+         /T9HX61QozJsjp3fnDuoqQEUcJFGI8fkkJGPONTeDUI64HovF54v2Hb5xME3e6Yx3MBs
+         YgAWBr9zvoarls9pu/INVsHuVUIhncN0K8jtSqjUQA9j2Ead6g9HlXlVMxV/qIH1J04T
+         MIzCMv30rzoqhtK0HetEDad8NWSuJ12XgAhr+Cy3pGA+NsSwNXHhA9/ymq+KLAIQQcqQ
+         d01Q==
+X-Gm-Message-State: AJIora9p8ixVXnpzHz5jq1zMhpxO01MByC2D8n5VKhxzlosWkKwP7ew6
+        uMDGgNRv6eWRDlxgKY6O76w=
+X-Google-Smtp-Source: AGRyM1tFjGSWqXs1J+d9SGsLZJlpvV6MOAOMbXiEqy6jYsJmgmWcaDP/SJg17VGDko2Ie5crrPBk6g==
+X-Received: by 2002:a05:6402:d5e:b0:435:dc14:d457 with SMTP id ec30-20020a0564020d5e00b00435dc14d457mr37214149edb.58.1656926017309;
+        Mon, 04 Jul 2022 02:13:37 -0700 (PDT)
+Received: from krava ([151.70.14.154])
+        by smtp.gmail.com with ESMTPSA id q14-20020a1709066ace00b00722e603c39asm13978655ejs.31.2022.07.04.02.13.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Jul 2022 02:13:36 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Mon, 4 Jul 2022 11:13:33 +0200
+To:     Andres Freund <andres@anarazel.de>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Quentin Monnet <quentin@isovalent.com>
+Subject: Re: [PATCH v2 0/5] tools: fix compilation failure caused by
+ init_disassemble_info API changes
+Message-ID: <YsKvPW+1RkVvq8aX@krava>
+References: <20220622231624.t63bkmkzphqvh3kx@alap3.anarazel.de>
+ <20220703212551.1114923-1-andres@anarazel.de>
 MIME-Version: 1.0
-In-Reply-To: <0000000000002cb7d405e2e1f886@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26593/Mon Jul  4 09:28:57 2022)
-X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220703212551.1114923-1-andres@anarazel.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/3/22 9:57 AM, syzbot wrote:
-> syzbot has found a reproducer for the following issue on:
-
-Song, ptal, thanks.
-
-> HEAD commit:    b0d93b44641a selftests/bpf: Skip lsm_cgroup when we don't ..
-> git tree:       bpf-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=10c495e0080000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=70e1a4d352a3c6ae
-> dashboard link: https://syzkaller.appspot.com/bug?extid=2f649ec6d2eea1495a8f
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11a10a58080000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16ab8cb8080000
-
-Looks like this time syzbot found a repro at least, so this should help making progress.
-
-https://lore.kernel.org/bpf/0000000000002cb7d405e2e1f886@google.com/T/#t
-
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+2f649ec6d2eea1495a8f@syzkaller.appspotmail.com
+On Sun, Jul 03, 2022 at 02:25:46PM -0700, Andres Freund wrote:
+> binutils changed the signature of init_disassemble_info(), which now causes
+> compilation failures for tools/{perf,bpf} on e.g. debian unstable. Relevant
+> binutils commit:
+> https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=60a3da00bd5407f07
 > 
-> ==================================================================
-> BUG: KASAN: vmalloc-out-of-bounds in bpf_jit_binary_free kernel/bpf/core.c:1081 [inline]
-> BUG: KASAN: vmalloc-out-of-bounds in bpf_jit_free+0x26c/0x2b0 kernel/bpf/core.c:1206
-> Read of size 4 at addr ffffffffa0000000 by task syz-executor334/3608
+> I first fixed this without introducing the compat header, as suggested by
+> Quentin, but I thought the amount of repeated boilerplate was a bit too
+> much. So instead I introduced a compat header to wrap the API changes. Even
+> tools/bpf/bpftool/jit_disasm.c, which needs its own callbacks for json, imo
+> looks nicer this way.
 > 
-> CPU: 0 PID: 3608 Comm: syz-executor334 Not tainted 5.19.0-rc2-syzkaller-00498-gb0d93b44641a #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/29/2022
-> Call Trace:
->   <TASK>
->   __dump_stack lib/dump_stack.c:88 [inline]
->   dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
->   print_address_description.constprop.0.cold+0xf/0x495 mm/kasan/report.c:313
->   print_report mm/kasan/report.c:429 [inline]
->   kasan_report.cold+0xf4/0x1c6 mm/kasan/report.c:491
->   bpf_jit_binary_free kernel/bpf/core.c:1081 [inline]
->   bpf_jit_free+0x26c/0x2b0 kernel/bpf/core.c:1206
->   jit_subprogs kernel/bpf/verifier.c:13767 [inline]
->   fixup_call_args kernel/bpf/verifier.c:13796 [inline]
->   bpf_check+0x7035/0xb040 kernel/bpf/verifier.c:15287
->   bpf_prog_load+0xfb2/0x2250 kernel/bpf/syscall.c:2575
->   __sys_bpf+0x11a1/0x5790 kernel/bpf/syscall.c:4934
->   __do_sys_bpf kernel/bpf/syscall.c:5038 [inline]
->   __se_sys_bpf kernel/bpf/syscall.c:5036 [inline]
->   __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:5036
->   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->   do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->   entry_SYSCALL_64_after_hwframe+0x46/0xb0
-> RIP: 0033:0x7fe5b823e209
-> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007ffc68d718c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-> RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007fe5b823e209
-> RDX: 0000000000000070 RSI: 0000000020000440 RDI: 0000000000000005
-> RBP: 00007ffc68d718e0 R08: 0000000000000002 R09: 0000000000000001
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
-> R13: 431bde82d7b634db R14: 0000000000000000 R15: 0000000000000000
->   </TASK>
+> I'm not regular contributor, so it very well might be my procedures are a
+> bit off...
 > 
-> Memory state around the buggy address:
-> BUG: unable to handle page fault for address: fffffbfff3ffffe0
-> #PF: supervisor read access in kernel mode
-> #PF: error_code(0x0000) - not-present page
-> PGD 23ffe4067 P4D 23ffe4067 PUD 23ffe3067 PMD 0
-> Oops: 0000 [#1] PREEMPT SMP KASAN
-> CPU: 0 PID: 3608 Comm: syz-executor334 Not tainted 5.19.0-rc2-syzkaller-00498-gb0d93b44641a #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/29/2022
-> RIP: 0010:memcpy_erms+0x6/0x10 arch/x86/lib/memcpy_64.S:55
-> Code: cc cc cc cc eb 1e 0f 1f 00 48 89 f8 48 89 d1 48 c1 e9 03 83 e2 07 f3 48 a5 89 d1 f3 a4 c3 66 0f 1f 44 00 00 48 89 f8 48 89 d1 <f3> a4 c3 0f 1f 80 00 00 00 00 48 89 f8 48 83 fa 20 72 7e 40 38 fe
-> RSP: 0018:ffffc9000215f7b8 EFLAGS: 00010082
-> RAX: ffffc9000215f7c4 RBX: ffffffff9fffff00 RCX: 0000000000000010
-> RDX: 0000000000000010 RSI: fffffbfff3ffffe0 RDI: ffffc9000215f7c4
-> RBP: ffffffffa0000000 R08: 0000000000000007 R09: 0000000000000000
-> R10: 0000000000000014 R11: 0000000000000001 R12: 00000000fffffffe
-> R13: ffffffff9fffff80 R14: ffff888025745880 R15: 0000000000000282
-> FS:  0000555555ac7300(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: fffffbfff3ffffe0 CR3: 000000007dc79000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->   <TASK>
->   print_memory_metadata+0x5a/0xdf mm/kasan/report.c:404
->   print_report mm/kasan/report.c:430 [inline]
->   kasan_report.cold+0xfe/0x1c6 mm/kasan/report.c:491
->   bpf_jit_binary_free kernel/bpf/core.c:1081 [inline]
->   bpf_jit_free+0x26c/0x2b0 kernel/bpf/core.c:1206
->   jit_subprogs kernel/bpf/verifier.c:13767 [inline]
->   fixup_call_args kernel/bpf/verifier.c:13796 [inline]
->   bpf_check+0x7035/0xb040 kernel/bpf/verifier.c:15287
->   bpf_prog_load+0xfb2/0x2250 kernel/bpf/syscall.c:2575
->   __sys_bpf+0x11a1/0x5790 kernel/bpf/syscall.c:4934
->   __do_sys_bpf kernel/bpf/syscall.c:5038 [inline]
->   __se_sys_bpf kernel/bpf/syscall.c:5036 [inline]
->   __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:5036
->   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->   do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->   entry_SYSCALL_64_after_hwframe+0x46/0xb0
-> RIP: 0033:0x7fe5b823e209
-> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007ffc68d718c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-> RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007fe5b823e209
-> RDX: 0000000000000070 RSI: 0000000020000440 RDI: 0000000000000005
-> RBP: 00007ffc68d718e0 R08: 0000000000000002 R09: 0000000000000001
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000003
-> R13: 431bde82d7b634db R14: 0000000000000000 R15: 0000000000000000
->   </TASK>
-> Modules linked in:
-> CR2: fffffbfff3ffffe0
-> ---[ end trace 0000000000000000 ]---
-> RIP: 0010:memcpy_erms+0x6/0x10 arch/x86/lib/memcpy_64.S:55
-> Code: cc cc cc cc eb 1e 0f 1f 00 48 89 f8 48 89 d1 48 c1 e9 03 83 e2 07 f3 48 a5 89 d1 f3 a4 c3 66 0f 1f 44 00 00 48 89 f8 48 89 d1 <f3> a4 c3 0f 1f 80 00 00 00 00 48 89 f8 48 83 fa 20 72 7e 40 38 fe
-> RSP: 0018:ffffc9000215f7b8 EFLAGS: 00010082
-> RAX: ffffc9000215f7c4 RBX: ffffffff9fffff00 RCX: 0000000000000010
-> RDX: 0000000000000010 RSI: fffffbfff3ffffe0 RDI: ffffc9000215f7c4
-> RBP: ffffffffa0000000 R08: 0000000000000007 R09: 0000000000000000
-> R10: 0000000000000014 R11: 0000000000000001 R12: 00000000fffffffe
-> R13: ffffffff9fffff80 R14: ffff888025745880 R15: 0000000000000282
-> FS:  0000555555ac7300(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: fffffbfff3ffffe0 CR3: 000000007dc79000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> ----------------
-> Code disassembly (best guess):
->     0:	cc                   	int3
->     1:	cc                   	int3
->     2:	cc                   	int3
->     3:	cc                   	int3
->     4:	eb 1e                	jmp    0x24
->     6:	0f 1f 00             	nopl   (%rax)
->     9:	48 89 f8             	mov    %rdi,%rax
->     c:	48 89 d1             	mov    %rdx,%rcx
->     f:	48 c1 e9 03          	shr    $0x3,%rcx
->    13:	83 e2 07             	and    $0x7,%edx
->    16:	f3 48 a5             	rep movsq %ds:(%rsi),%es:(%rdi)
->    19:	89 d1                	mov    %edx,%ecx
->    1b:	f3 a4                	rep movsb %ds:(%rsi),%es:(%rdi)
->    1d:	c3                   	retq
->    1e:	66 0f 1f 44 00 00    	nopw   0x0(%rax,%rax,1)
->    24:	48 89 f8             	mov    %rdi,%rax
->    27:	48 89 d1             	mov    %rdx,%rcx
-> * 2a:	f3 a4                	rep movsb %ds:(%rsi),%es:(%rdi) <-- trapping instruction
->    2c:	c3                   	retq
->    2d:	0f 1f 80 00 00 00 00 	nopl   0x0(%rax)
->    34:	48 89 f8             	mov    %rdi,%rax
->    37:	48 83 fa 20          	cmp    $0x20,%rdx
->    3b:	72 7e                	jb     0xbb
->    3d:	40 38 fe             	cmp    %dil,%sil
+> I am not sure I added the right [number of] people to CC?
 > 
+> WRT the feature test: Not sure what the point of the -DPACKAGE='"perf"' is,
+> nor why tools/perf/Makefile.config sets some LDFLAGS/CFLAGS that are also
+> in feature/Makefile and why -ldl isn't needed in the other places. But...
+> 
+> V2:
+> - split patches further, so that tools/bpf and tools/perf part are entirely
+>   separate
+> - included a bit more information about tests I did in commit messages
+> - add a maybe_unused to fprintf_json_styled's style argument
+> 
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Cc: Sedat Dilek <sedat.dilek@gmail.com>
+> Cc: Quentin Monnet <quentin@isovalent.com>
+> To: bpf@vger.kernel.org
+> To: linux-kernel@vger.kernel.org
+> Link: https://lore.kernel.org/lkml/20220622181918.ykrs5rsnmx3og4sv@alap3.anarazel.de
+> Link: https://lore.kernel.org/lkml/CA+icZUVpr8ZeOKCj4zMMqbFT013KJz2T1csvXg+VSkdvJH1Ubw@mail.gmail.com
+> 
+> Andres Freund (5):
+>   tools build: add feature test for init_disassemble_info API changes
+>   tools include: add dis-asm-compat.h to handle version differences
+>   tools perf: Fix compilation error with new binutils
+>   tools bpf_jit_disasm: Fix compilation error with new binutils
+>   tools bpftool: Fix compilation error with new binutils
 
+I think the disassembler checks should not be displayed by default,
+with your change I can see all the time:
+
+...        disassembler-four-args: [ on  ]
+...      disassembler-init-styled: [ OFF ]
+
+
+could you please squash something like below in? moving disassembler
+checks out of sight and do manual detection
+
+thanks,
+jirka
+
+
+---
+diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
+index 339686b99a6e..bce9a9b52b2c 100644
+--- a/tools/build/Makefile.feature
++++ b/tools/build/Makefile.feature
+@@ -69,8 +69,6 @@ FEATURE_TESTS_BASIC :=                  \
+         setns				\
+         libaio				\
+         libzstd				\
+-        disassembler-four-args		\
+-        disassembler-init-styled	\
+         file-handle
+ 
+ # FEATURE_TESTS_BASIC + FEATURE_TESTS_EXTRA is the complete list
+@@ -106,7 +104,9 @@ FEATURE_TESTS_EXTRA :=                  \
+          libbpf-bpf_create_map		\
+          libpfm4                        \
+          libdebuginfod			\
+-         clang-bpf-co-re
++         clang-bpf-co-re		\
++         disassembler-four-args		\
++         disassembler-init-styled
+ 
+ 
+ FEATURE_TESTS ?= $(FEATURE_TESTS_BASIC)
+@@ -135,9 +135,7 @@ FEATURE_DISPLAY ?=              \
+          get_cpuid              \
+          bpf			\
+          libaio			\
+-         libzstd		\
+-         disassembler-four-args	\
+-         disassembler-init-styled
++         libzstd
+ 
+ # Set FEATURE_CHECK_(C|LD)FLAGS-all for all FEATURE_TESTS features.
+ # If in the future we need per-feature checks/flags for features not
+diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+index ee417c321adb..2aa0bad11f05 100644
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -914,8 +914,6 @@ ifndef NO_LIBBFD
+         FEATURE_CHECK_LDFLAGS-disassembler-init-styled += -liberty -lz -ldl
+       endif
+     endif
+-    $(call feature_check,disassembler-four-args)
+-    $(call feature_check,disassembler-init-styled)
+   endif
+ 
+   ifeq ($(feature-libbfd-buildid), 1)
+@@ -1025,6 +1023,9 @@ ifdef HAVE_KVM_STAT_SUPPORT
+     CFLAGS += -DHAVE_KVM_STAT_SUPPORT
+ endif
+ 
++$(call feature_check,disassembler-four-args)
++$(call feature_check,disassembler-init-styled)
++
+ ifeq ($(feature-disassembler-four-args), 1)
+     CFLAGS += -DDISASM_FOUR_ARGS_SIGNATURE
+ endif
