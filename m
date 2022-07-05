@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0879567244
-	for <lists+bpf@lfdr.de>; Tue,  5 Jul 2022 17:15:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20BFF5672D9
+	for <lists+bpf@lfdr.de>; Tue,  5 Jul 2022 17:41:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229702AbiGEPPq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Jul 2022 11:15:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43258 "EHLO
+        id S230381AbiGEPlx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Jul 2022 11:41:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbiGEPPp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Jul 2022 11:15:45 -0400
+        with ESMTP id S230248AbiGEPlw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Jul 2022 11:41:52 -0400
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55338165AF;
-        Tue,  5 Jul 2022 08:15:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D7A12759;
+        Tue,  5 Jul 2022 08:41:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1657034144; x=1688570144;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
+  t=1657035711; x=1688571711;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
   bh=hp9+ZjKqW51mjGl+R+E35bg8BkjYNebZYZf7uvGtI7w=;
-  b=RvKOz0KjeGgvkiJ1d6TBBgwb6D4wlnwPING6nZ6SJxUTwOz8tUN1ok8T
-   AaMAtn3WIqvy05MchNBcjMa+JRws5e6UAFooPnoaxzuQ5rauA2VkbeWr4
-   2RE6yXLhmJXzGM8YJ+HuPJCwVtf+24sMqSerSvq7DJpLyP9wVfB00QiOn
-   eOa9elLA9DwJDkXKk24IFrZylEv4Q2qjKjt4w7tnDFwBHX1vHJpJJaNEi
-   siEt/FgcdxFtPEWsHAs1yx8tfNG6M1G2EYfrk6sqhk+lwO3QMIJ9T5gmU
-   NtAWBsugUO6ZMSQQfHbvWtUFCoPWIjkb1/p3AiSmSCMgAqwG9g/2wIPDx
-   Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10398"; a="263168612"
+  b=frUW89lIKZ4ZNu2jz6XOWK3/GhDhOUflFB+lXTJ0I4t3AP+gXzP9EebR
+   4b1O+t4nK88XgZPxWIY4dhqnW9MX52Iz67g/Bv/5WVwGqIwt8HF/TQFj/
+   y8TigyfYDqhMCZVpS6ubp7ODDXTp0Ya4Nwmzy3AtWkDUj1pgfYITzfWoQ
+   UtiKxPaQbk50C3XiSaZo6N0RLj/775ggGqjrKXyna/0m7ibVBU7KnqbFs
+   8BDkAEg4Iu+fnXIy9VtaOziUlOWXItOhH2w8oJpSXnKlRsTL7DMs59uEF
+   XrD4iwxlfrsbZkbtRsj5z0/N8Z4O37XNJiUH5cwlArwEnxk30L0mGMyak
+   w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10398"; a="263174660"
 X-IronPort-AV: E=Sophos;i="5.92,247,1650956400"; 
-   d="scan'208";a="263168612"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2022 08:15:44 -0700
+   d="scan'208";a="263174660"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2022 08:41:51 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.92,247,1650956400"; 
-   d="scan'208";a="719763721"
+   d="scan'208";a="735200315"
 Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by orsmga004.jf.intel.com with ESMTP; 05 Jul 2022 08:15:39 -0700
+  by fmsmga001.fm.intel.com with ESMTP; 05 Jul 2022 08:41:46 -0700
 Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 265FFblx023878;
-        Tue, 5 Jul 2022 16:15:37 +0100
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 265FfiYV030211;
+        Tue, 5 Jul 2022 16:41:45 +0100
 From:   Alexander Lobakin <alexandr.lobakin@intel.com>
 To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
         John Fastabend <john.fastabend@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Larysa Zaremba <larysa.zaremba@intel.com>,
+        "Larysa Zaremba" <larysa.zaremba@intel.com>,
         Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
         =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
@@ -61,15 +61,17 @@ Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
         Paolo Abeni <pabeni@redhat.com>,
         Jesse Brandeburg <jesse.brandeburg@intel.com>,
         Yajun Deng <yajun.deng@linux.dev>,
-        Willem de Bruijn <willemb@google.com>, bpf@vger.kernel.org,
+        "Willem de Bruijn" <willemb@google.com>, bpf@vger.kernel.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         xdp-hints@xdp-project.net
 Subject: Re: [xdp-hints] Re: [PATCH RFC bpf-next 00/52] bpf, xdp: introduce and use Generic Hints/metadata
-Date:   Tue,  5 Jul 2022 17:15:09 +0200
-Message-Id: <87a69o94wz.fsf@toke.dk>
+Date:   Tue,  5 Jul 2022 17:41:20 +0200
+Message-Id: <20220705154120.22497-1-alexandr.lobakin@intel.com>
 X-Mailer: git-send-email 2.36.1
+In-Reply-To: <87a69o94wz.fsf@toke.dk>
+References: <20220628194812.1453059-1-alexandr.lobakin@intel.com> <62bbedf07f44a_2181420830@john.notmuch> <87iloja8ly.fsf@toke.dk> <20220704154440.7567-1-alexandr.lobakin@intel.com> <87a69o94wz.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
