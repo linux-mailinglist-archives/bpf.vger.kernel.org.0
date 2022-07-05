@@ -2,154 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1652B56711D
-	for <lists+bpf@lfdr.de>; Tue,  5 Jul 2022 16:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E9E9567150
+	for <lists+bpf@lfdr.de>; Tue,  5 Jul 2022 16:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbiGEOeR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Jul 2022 10:34:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60232 "EHLO
+        id S231875AbiGEOjZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Jul 2022 10:39:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231482AbiGEOeQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Jul 2022 10:34:16 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E79C38B6
-        for <bpf@vger.kernel.org>; Tue,  5 Jul 2022 07:34:15 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id b26so17876255wrc.2
-        for <bpf@vger.kernel.org>; Tue, 05 Jul 2022 07:34:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=neO/j+HJyzs7QhvJAWtH5V8/341+rEvQ5kA5JjlOD0E=;
-        b=exS13Imt8UeKR/MS2j9FQocrQCOejU9rHmWPgIuFym7NE6pklPq3s2gqmM/Lzmci3J
-         /0emX5TeM3pfDB+ud7PHDEVoCpZNDuMhyNR7VGEQpiSPK97MQsBJpVNZppI4xmh9tiXt
-         UbSYwRdlYKs4JVkczQG958se8NNMCtwv/zchGmMcBPHHyHLyVRMjUUBO3oz0CG0LNUW5
-         SSAy5fl87jKds1fW7nVfwAvPqdrFvf1K0sh3kvN2tGqyCsa0R5hV9R13i8B9iFmwORQW
-         RrEshhe6aw8VYgTewMmvi6eyA5dUC99Aq0UDjq06CuxwnHkuFNFLxpiSqODOjT4T57qN
-         PwFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=neO/j+HJyzs7QhvJAWtH5V8/341+rEvQ5kA5JjlOD0E=;
-        b=aHoN4lgoN+02+UqQe2tjIcim5+C5Tf5OxK7MixlEtn+Gf7I7n1GvPuUpLOhCf1c7ig
-         7q+MqpZgDvsRWTi/nCGJ1hLFWGMQDnXIsPw2b2kFxbeLJhxUblzzBGqDJRFNMRudKvkS
-         rombjusRdy9SfOBCILyMgoHtLHcH4n1mKiB/Zlj8KqcpMp91N3owEDpQoxL1JXZutX9M
-         ckNOKiXxrR8Lw5QiALPmblGL4XxaxJsgK8GAmP/f4jOF7fP1E2Wo7o7nS4CxteLUZWev
-         oI1xoeayEidoBCzJLDCu4kOczZi7a/EJSRIurHA6Yjs51mGK94n2Cvmg3DYdu8ydsAes
-         eYeQ==
-X-Gm-Message-State: AJIora+Xlwd3/mSlemzmrzT0rFUBiwscDQg2wrn+4TT2lCO/QZOGFWId
-        PO9E0yzDUIVwWBoVnzkSd41h0Dh7YPq6vXAH
-X-Google-Smtp-Source: AGRyM1sbFu5iagL2XbnL6riGyMRwonUOhEAbBCBEOwiR9W5ifuMecpMiHXe860rPKQFdEMKRjPBXSw==
-X-Received: by 2002:a5d:4891:0:b0:21b:88c9:69ae with SMTP id g17-20020a5d4891000000b0021b88c969aemr33083557wrq.84.1657031653998;
-        Tue, 05 Jul 2022 07:34:13 -0700 (PDT)
-Received: from [192.168.178.32] ([51.155.200.13])
-        by smtp.gmail.com with ESMTPSA id bd16-20020a05600c1f1000b003a18ecfcd8csm14156383wmb.19.2022.07.05.07.34.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Jul 2022 07:34:13 -0700 (PDT)
-Message-ID: <ae8feec0-3c0f-d4f4-64e9-588df2d02d24@isovalent.com>
-Date:   Tue, 5 Jul 2022 15:34:13 +0100
+        with ESMTP id S232496AbiGEOjV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Jul 2022 10:39:21 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE0DA1B9;
+        Tue,  5 Jul 2022 07:39:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1657031953; x=1688567953;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=bwCbUaDqvMtVlN4ueDxGSnxY6sfa6e9kx0utA3eoaAw=;
+  b=TbPY1FsogGXp9xd6Nvzj/0yAAuq7nQgRbNIc/K3c/uTWFx4Qf6dDGiUN
+   JkaENztPG82B3qt7t8pEu2Nv8FW1Dqht/S0mozl3AGu2nudinsaFRfzKB
+   fjFPE8GjnMXfW29SnNmhAzWNhDTwQN9+y9aHVbAZHwtUbPOy+d5LlKOvE
+   eCO4kQU6bWysXxqIdpnw5GZW8Gg0H3g1Zf9Z4orD9SoydiL29b9iqRasj
+   o4qD7xl7/iatB/LM11v7ZpYlHk2NJoX3Y8+jjCAe0yYmjDqHO2cnfEdM1
+   gy3GrlCKUr13zjH5G+vDtHmNya1UXESqTE1KxbhADSlXLFvpXOrThvHFn
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10398"; a="283396868"
+X-IronPort-AV: E=Sophos;i="5.92,247,1650956400"; 
+   d="scan'208";a="283396868"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2022 07:39:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.92,247,1650956400"; 
+   d="scan'208";a="839142776"
+Received: from irvmail001.ir.intel.com ([10.43.11.63])
+  by fmsmga006.fm.intel.com with ESMTP; 05 Jul 2022 07:39:08 -0700
+Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 265Ed6BM016910;
+        Tue, 5 Jul 2022 15:39:06 +0100
+From:   Alexander Lobakin <alexandr.lobakin@intel.com>
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        brouer@redhat.com, John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Larysa Zaremba <larysa.zaremba@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Yajun Deng <yajun.deng@linux.dev>,
+        Willem de Bruijn <willemb@google.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xdp-hints@xdp-project.net
+Subject: Re: [xdp-hints] Re: [PATCH RFC bpf-next 00/52] bpf, xdp: introduce and use Generic Hints/metadata
+Date:   Tue,  5 Jul 2022 16:38:38 +0200
+Message-Id: <20220705143838.19500-1-alexandr.lobakin@intel.com>
+X-Mailer: git-send-email 2.36.1
+In-Reply-To: <0cd3fd67-e179-7c27-a74f-255a05359941@redhat.com>
+References: <20220628194812.1453059-1-alexandr.lobakin@intel.com> <62bbedf07f44a_2181420830@john.notmuch> <87iloja8ly.fsf@toke.dk> <20220704154440.7567-1-alexandr.lobakin@intel.com> <0cd3fd67-e179-7c27-a74f-255a05359941@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.0
-Subject: Re: libbfd feature autodetection
-Content-Language: en-GB
-To:     Roberto Sassu <roberto.sassu@huawei.com>,
-        Hao Luo <haoluo@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-References: <aa98e9e1a7f440779d509046021d0c1c@huawei.com>
- <CA+khW7i39MXy4aTFCGeu+85Shyd47A+0w5EAA5qL7v+n4S74dA@mail.gmail.com>
- <6f501b451d4a4f3882ee9aa662964310@huawei.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <6f501b451d4a4f3882ee9aa662964310@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 01/07/2022 08:10, Roberto Sassu wrote:
->> From: Hao Luo [mailto:haoluo@google.com]
->> Sent: Thursday, June 30, 2022 7:29 PM
->> Hi Roberto,
->>
->> On Thu, Jun 30, 2022 at 6:55 AM Roberto Sassu <roberto.sassu@huawei.com>
->> wrote:
->>>
->>> Hi everyone
->>>
->>> I'm testing a modified version of bpftool with the CI.
->>>
->>> Unfortunately, it does not work due to autodetection
->>> of libbfd in the build environment, but not in the virtual
->>> machine that actually executes the tests.
->>>
->>> What the proper solution should be?
->>
->> Can you elaborate by not working? do you mean bpftool doesn't build?
->> or bpftool builds, but doesn't behave as you expect when it runs. On
->> my side, when I built bpftool, libbfd was not detected, but I can
->> still bpftool successfully.
-> 
-> Hi Hao
-> 
-> in Github Actions, the build environment has support for
-> libbfd. When bpftool is compiled, libbfd is linked to it.
-> 
-> However, the run-time environment is different, is an ad hoc
-> image made by the eBPF maintainers, which does not have
-> libbfd.
-> 
-> When a test executes bpftool, I get the following message:
-> 
-> 2022-06-28T16:15:14.8548432Z ./bpftool_nobootstrap: error while loading shared libraries: libbfd-2.34-system.so: cannot open shared object file: No such file or directory
-> 
-> I solved with this:
-> 
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index e32a28fe8bc1..d44f4d34f046 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -242,7 +242,9 @@ $(DEFAULT_BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile)    \
->  		    OUTPUT=$(HOST_BUILD_DIR)/bpftool/			       \
->  		    LIBBPF_OUTPUT=$(HOST_BUILD_DIR)/libbpf/		       \
->  		    LIBBPF_DESTDIR=$(HOST_SCRATCH_DIR)/			       \
-> -		    prefix= DESTDIR=$(HOST_SCRATCH_DIR)/ install-bin
-> +		    prefix= DESTDIR=$(HOST_SCRATCH_DIR)/ install-bin	       \
-> +		    FEATURE_TESTS='disassembler-four-args zlib libcap clang-bpf-co-re'	\
+From: Jesper Dangaard Brouer <jbrouer@redhat.com>
+Date: Mon, 4 Jul 2022 19:13:53 +0200
 
-(disassembler-four-args can probably be removed too, the file using it
-shouldn't be compiled if libbfd support if not present.)
-
-> +		    FEATURE_DISPLAY='disassembler-four-args zlib libcap clang-bpf-co-re'
+> On 04/07/2022 17.44, Alexander Lobakin wrote:
+> >> Agreed. This incremental approach is basically what Jesper's
+> >> simultaneous series makes a start on, AFAICT? Would be nice if y'all
+> >> could converge the efforts :) >
+> > I don't know why at some point Jesper decided to go on his own as he
+> > for sure was using our tree as a base for some time, dunno what
+> > happened then. Regarding these two particular submissions, I didn't
+> > see Jesper's RFC when sending mine, only after when I went to read
+> > some stuff.
+> > 
 > 
-> but I'm not sure it is the right approach.
+> Well, I have written to you (offlist) that the git tree didn't compile,
+> so I had a hard time getting it into a working state.  We had a
+> ping-pong of stuff to fix, but it wasn't and you basically told me to
+> switch to using LLVM to compile your kernel tree, I was not interested
+> in doing that.
 
-Hi Roberto,
+Yes and no, I only told you that I missed those build issues due to
+that I use LLVM as my primary compiler, but I didn't suggest you
+switch to it. Then I fixed all of the issues in a couple days and
+wrote you the email on 3th of June saying that everything works
+now =\
 
-I don't think we have another solution for intentionally disabling
-bpftool's feature at build time at the moment. For the context: I
-submitted a patch last week to do just this [0], but in the end we
-preferred to avoid encouraging distributions to remove features.
+> 
+> I have looked at the code in your GitHub tree, and decided that it was
+> an over-engineered approach IMHO.  Also simply being 52 commits deep
+> without having posted this incrementally upstream were also a
+> non-starter for me, as this isn't the way-to-work upstream.
 
-But I agree it's not ideal. We shouldn't have to pass all existing
-bpftool's features to the selftests Makefile.
+So Ingo announced recently that he has a series of 2300+ patches
+to try to fix include hell. Now he's preparing to submit them by
+batches/series. Look at this RFC as at an announce. "Hey folks,
+I have a bunch of stuff and will be submitting it soon, but I'm
+posting the whole changeset here, so you could take a look or
+give it a try before it's actually started being posted".
+All this is mentioned in the cover letter as well. What is the
+problem? Ok, next time I can not do any announces and just start
+posting series if it made such misunderstandings.
 
-Daniel, what would you think of an alternative approach: instead of
-having variables with obvious names like BPFTOOL_FEATURE_NO_LIBCAP, we
-could maybe have a FEATURE_IGNORE in bpftool's Makefile and filter out
-its contents from FEATURE_TESTS/FEATURE_DISPLAY before running the
-tests? Given that features can already be edited as in the above patch,
-it wouldn't change much what we can do but would be cleaner here?
+Anyway, I will post a demo-version of the series in a couple weeks
+containing only the parts required to get Hints working on ice if
+folks prefer to look at the pencil draft instead of looking at the
+final painting (never thought I'll have to do that in the kernel
+dev community :D).
 
-Quentin
+> 
+> To get the ball rolling, I have implemented the base XDP-hints support
+> here[1] with only 9 patches (including support for two drivers).
+> 
+> IMHO we need to start out small and not intermix these huge refactoring
+> patches.  E.g. I'm not convinced renaming net/{core/xdp.c => bpf/core.c}
+> is an improvement.
 
-[0]
-https://lore.kernel.org/bpf/CACdoK4LTgpcuS9Sgk6F-9=cP09aACxJN4iTXJ=39OohPcBKXAg@mail.gmail.com/T/#t
+Those cleanup patches can be easily put in a standalone series as
+a prerequisite. I even mentioned them in the cover letter.
+File names is a matter of discussing, my intention there was mainly
+to move XDP stuff out of overburdened net/core/dev.c.
+
+> 
+> -Jesper
+> 
+> [1] 
+> https://lore.kernel.org/bpf/165643378969.449467.13237011812569188299.stgit@firesoul/
+
+Thanks,
+Olek
