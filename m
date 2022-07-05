@@ -2,82 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1080567696
-	for <lists+bpf@lfdr.de>; Tue,  5 Jul 2022 20:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 457695676D7
+	for <lists+bpf@lfdr.de>; Tue,  5 Jul 2022 20:51:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229502AbiGESe4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Jul 2022 14:34:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41040 "EHLO
+        id S231553AbiGESvX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Jul 2022 14:51:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232156AbiGESey (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Jul 2022 14:34:54 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0C0A1ADB5
-        for <bpf@vger.kernel.org>; Tue,  5 Jul 2022 11:34:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 69967B817F9
-        for <bpf@vger.kernel.org>; Tue,  5 Jul 2022 18:34:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23C23C341D3
-        for <bpf@vger.kernel.org>; Tue,  5 Jul 2022 18:34:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1657046091;
-        bh=6Q6L7ItvRpcjFL8OKolK1uJc+Q7Yy1msl+1o6EkRB/8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mktxa6x986AkFC5I8f5PhofPbCHGkpgol52ImALmNNGYZqrRiDT4+Dk++pSjhtX11
-         dJFVLFkkNSS76Ub1X14ZvCN7j5YlCxo4AEHf3WeVZo/FOJpDOiJP50EUXNDpYv70KS
-         mEHoma4CI4WFlRS1xXbWLWLgh1UKJO8SGKkX/rFYsb66BuMmCW7DFifhhZWcSb2Cjn
-         4VqxBDw44B3XqlDVorPkenPW55R1Xe2pkZ3Ys3gxVv3dl8u4vs3kdI0w9++gzyxFE5
-         JLm8ogFyFTDcO+PzS6EiX5gRhfK5XcfL8BICHIqnKIzzltyJ9MRXRh2ytkcqImiB4g
-         2ORoqyww/qDXA==
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-31c86fe1dddso70315987b3.1
-        for <bpf@vger.kernel.org>; Tue, 05 Jul 2022 11:34:51 -0700 (PDT)
-X-Gm-Message-State: AJIora/G7joi8j359K6d9hXD+hGThVC4hnjyLq5L7Ho/MBxsCMAj9fAF
-        TITvBEPmQVWa91P9NHfvNqcYco/iWvCXbpL+uJcqPQ==
-X-Google-Smtp-Source: AGRyM1smTdgkTIMoo8AgGK7QmKUaOKBEwIlG7ss1lMXSwBklEboyMmlSfQ0DqJyXk9F7WTuJiJpXJ4rynBZA5kZqd8I=
-X-Received: by 2002:a81:3d1:0:b0:31c:9b70:ba8a with SMTP id
- 200-20020a8103d1000000b0031c9b70ba8amr12627600ywd.204.1657046090114; Tue, 05
- Jul 2022 11:34:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220625161255.547944-1-xukuohai@huawei.com> <d3c1f1ed-353a-6af2-140d-c7051125d023@iogearbox.net>
- <20220705160045.GA1240@willie-the-truck>
-In-Reply-To: <20220705160045.GA1240@willie-the-truck>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Tue, 5 Jul 2022 20:34:39 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ4e6qrB+HV7Nj=S-zCsPZjcxwMFCBMSnrYbdkLaD04Hqg@mail.gmail.com>
-Message-ID: <CACYkzJ4e6qrB+HV7Nj=S-zCsPZjcxwMFCBMSnrYbdkLaD04Hqg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 0/4] bpf trampoline for arm64
-To:     Will Deacon <will@kernel.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        jean-philippe.brucker@arm.com, Xu Kuohai <xukuohai@huawei.com>,
-        bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+        with ESMTP id S230135AbiGESvX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Jul 2022 14:51:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EA43318370
+        for <bpf@vger.kernel.org>; Tue,  5 Jul 2022 11:51:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1657047081;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YmfLpEVVGSG+pjCQN/YHVyTZmK3zwrrR8NYj3lNrRFU=;
+        b=BAnc7pwvpwHlhSi9Ml7ogV9gbOsc2KfRpWYm0Jg7N57VUFTq7CR5eKcZEuHxq0lE1Oh0pe
+        XT6oBBBZKjmcufqqWFvoqzFhZGSB8GMa2xbmzwbC/zHR31YuUTneTq6LHRqSyX3Xh3cJX0
+        KUogwziDtkFnOpxSa1sfNtbkPx/Den8=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-643-8Tu2fVvLO4OABSLqDuIBpQ-1; Tue, 05 Jul 2022 14:51:19 -0400
+X-MC-Unique: 8Tu2fVvLO4OABSLqDuIBpQ-1
+Received: by mail-ej1-f71.google.com with SMTP id qa41-20020a17090786a900b00722f313a60eso3057016ejc.13
+        for <bpf@vger.kernel.org>; Tue, 05 Jul 2022 11:51:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=YmfLpEVVGSG+pjCQN/YHVyTZmK3zwrrR8NYj3lNrRFU=;
+        b=ih5eTJitodiSC8bUVBWp3JaSC8MYBbYF3sSMtG7qMCp9UiZw8kQk60//vf7WSy+b3u
+         Z7sIePw1XKin8ALlAfoqty0eo4+S2+c/wR8ljmUrMUGM7bxXmZFrbqu1oBVj7J3Vvw+w
+         lJp+xITeiN0pYTwhub0hv66bd2MVuXIawP6h8Un+SyhQtYk1j6h3l4zp5ZMTXngwlniV
+         avbI+78hU5rcbrgB6OzTjTrDEaih1eduNXWvI/oFU9Qs6rHQOLt7AWzlHNyGAyZBXDyM
+         VVTe/jVYj7f2phii8yUA/4vvpK0povusDIa13gprS6xWoeOA/KL9xw3C7cuBuE9QGeIW
+         0Rjg==
+X-Gm-Message-State: AJIora/8BSDdE9bch8cNeGuXbPrimdvpLlckaiZ7vhjuW6OwBwdo328p
+        OOkFJhn9i5h+pIJuJSTDYsqRI6mozaO7niOjhIzcuyh5/yAswlPmPl1d1MqcM6ClyQ6dVMCo8fE
+        aVCA/UOJOV182
+X-Received: by 2002:a17:906:6a1b:b0:726:a3b8:bb5e with SMTP id qw27-20020a1709066a1b00b00726a3b8bb5emr35645042ejc.191.1657047077285;
+        Tue, 05 Jul 2022 11:51:17 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1tuqx03sboCWCDsIewDBylgT3nW9xMk0osOEEBGq+GyWDE3hYyiDxena0vDc5ZRbJRjG78k6A==
+X-Received: by 2002:a17:906:6a1b:b0:726:a3b8:bb5e with SMTP id qw27-20020a1709066a1b00b00726a3b8bb5emr35644950ejc.191.1657047076174;
+        Tue, 05 Jul 2022 11:51:16 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id ku22-20020a170907789600b0072ae8fb13e6sm1158851ejc.126.2022.07.05.11.51.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jul 2022 11:51:15 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id C239B4AAD1D; Tue,  5 Jul 2022 20:51:14 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        Larysa Zaremba <larysa.zaremba@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        James Morse <james.morse@arm.com>,
-        Hou Tao <houtao1@huawei.com>,
-        Jason Wang <wangborong@cdjrlc.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Yajun Deng <yajun.deng@linux.dev>,
+        Willem de Bruijn <willemb@google.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xdp-hints@xdp-project.net
+Subject: Re: [xdp-hints] Re: [PATCH RFC bpf-next 00/52] bpf, xdp: introduce
+ and use Generic Hints/metadata
+In-Reply-To: <20220705154120.22497-1-alexandr.lobakin@intel.com>
+References: <20220628194812.1453059-1-alexandr.lobakin@intel.com>
+ <62bbedf07f44a_2181420830@john.notmuch> <87iloja8ly.fsf@toke.dk>
+ <20220704154440.7567-1-alexandr.lobakin@intel.com>
+ <87a69o94wz.fsf@toke.dk>
+ <20220705154120.22497-1-alexandr.lobakin@intel.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 05 Jul 2022 20:51:14 +0200
+Message-ID: <87pmij75r1.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,82 +101,161 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 5, 2022 at 6:00 PM Will Deacon <will@kernel.org> wrote:
+Alexander Lobakin <alexandr.lobakin@intel.com> writes:
+
+[... snipping a bit of context here ...]
+
+>> >> Yeah, I'd agree this kind of configuration is something that can be
+>> >> added later, and also it's sort of orthogonal to the consumption of the
+>> >> metadata itself.
+>> >> 
+>> >> Also, tying this configuration into the loading of an XDP program is a
+>> >> terrible interface: these are hardware configuration options, let's just
+>> >> put them into ethtool or 'ip link' like any other piece of device
+>> >> configuration.
+>> >
+>> > I don't believe it fits there, especially Ethtool. Ethtool is for
+>> > hardware configuration, XDP/AF_XDP is 95% software stuff (apart from
+>> > offload bits which is purely NFP's for now).
+>> 
+>> But XDP-hints is about consuming hardware features. When you're
+>> configuring which metadata items you want, you're saying "please provide
+>> me with these (hardware) features". So ethtool is an excellent place to
+>> do that :)
 >
-> Hi Daniel,
+> With Ethtool you configure the hardware, e.g. it won't strip VLAN
+> tags if you disable rx-cvlan-stripping. With configuring metadata
+> you only tell what you want to see there, don't you?
+
+Ah, I think we may be getting closer to identifying the disconnect
+between our way of thinking about this!
+
+In my mind, there's no separate "configuration of the metadata" step.
+You simply tell the hardware what features you want (say, "enable
+timestamps and VLAN offload"), and the driver will then provide the
+information related to these features in the metadata area
+unconditionally. All XDP hints is about, then, is a way for the driver
+to inform the rest of the system how that information is actually laid
+out in the metadata area.
+
+Having a separate configuration knob to tell the driver "please lay out
+these particular bits of metadata this way" seems like a totally
+unnecessary (and quite complicated) feature to have when we can just let
+the driver decide and use CO-RE to consume it?
+
+>> > I follow that way:
+>> >
+>> > 1) you pick a program you want to attach;
+>> > 2) usually they are written for special needs and usecases;
+>> > 3) so most likely that program will be tied with metadata/driver/etc
+>> >    in some way;
+>> > 4) so you want to enable Hints of a particular format primarily for
+>> >    this program and usecase, same with threshold and everything
+>> >    else.
+>> >
+>> > Pls explain how you see it, I might be wrong for sure.
+>> 
+>> As above: XDP hints is about giving XDP programs (and AF_XDP consumers)
+>> access to metadata that is not currently available. Tying the lifetime
+>> of that hardware configuration (i.e., which information to provide) to
+>> the lifetime of an XDP program is not a good interface: for one thing,
+>> how will it handle multiple programs? What about when XDP is not used at
 >
-> On Thu, Jun 30, 2022 at 11:12:54PM +0200, Daniel Borkmann wrote:
-> > On 6/25/22 6:12 PM, Xu Kuohai wrote:
-> > > This patchset introduces bpf trampoline on arm64. A bpf trampoline converts
-> > > native calling convention to bpf calling convention and is used to implement
-> > > various bpf features, such as fentry, fexit, fmod_ret and struct_ops.
-> > >
-> > > The trampoline introduced does essentially the same thing as the bpf
-> > > trampoline does on x86.
-> > >
-> > > Tested on raspberry pi 4b and qemu:
-> > >
-> > >   #18 /1     bpf_tcp_ca/dctcp:OK
-> > >   #18 /2     bpf_tcp_ca/cubic:OK
-> > >   #18 /3     bpf_tcp_ca/invalid_license:OK
-> > >   #18 /4     bpf_tcp_ca/dctcp_fallback:OK
-> > >   #18 /5     bpf_tcp_ca/rel_setsockopt:OK
-> > >   #18        bpf_tcp_ca:OK
-> > >   #51 /1     dummy_st_ops/dummy_st_ops_attach:OK
-> > >   #51 /2     dummy_st_ops/dummy_init_ret_value:OK
-> > >   #51 /3     dummy_st_ops/dummy_init_ptr_arg:OK
-> > >   #51 /4     dummy_st_ops/dummy_multiple_args:OK
-> > >   #51        dummy_st_ops:OK
-> > >   #57 /1     fexit_bpf2bpf/target_no_callees:OK
-> > >   #57 /2     fexit_bpf2bpf/target_yes_callees:OK
-> > >   #57 /3     fexit_bpf2bpf/func_replace:OK
-> > >   #57 /4     fexit_bpf2bpf/func_replace_verify:OK
-> > >   #57 /5     fexit_bpf2bpf/func_sockmap_update:OK
-> > >   #57 /6     fexit_bpf2bpf/func_replace_return_code:OK
-> > >   #57 /7     fexit_bpf2bpf/func_map_prog_compatibility:OK
-> > >   #57 /8     fexit_bpf2bpf/func_replace_multi:OK
-> > >   #57 /9     fexit_bpf2bpf/fmod_ret_freplace:OK
-> > >   #57        fexit_bpf2bpf:OK
-> > >   #237       xdp_bpf2bpf:OK
-> > >
-> > > v6:
-> > > - Since Mark is refactoring arm64 ftrace to support long jump and reduce the
-> > >    ftrace trampoline overhead, it's not clear how we'll attach bpf trampoline
-> > >    to regular kernel functions, so remove ftrace related patches for now.
-> > > - Add long jump support for attaching bpf trampoline to bpf prog, since bpf
-> > >    trampoline and bpf prog are allocated via vmalloc, there is chance the
-> > >    distance exceeds the max branch range.
-> > > - Collect ACK/Review-by, not sure if the ACK and Review-bys for bpf_arch_text_poke()
-> > >    should be kept, since the changes to it is not trivial
+> Multiple progs is stuff I didn't cover, but will do later (as you
+> all say to me, "let's start with something simple" :)). Aaaand
+> multiple XDP progs (I'm not talking about attaching progs in
+> differeng modes) is not a kernel feature, rather a libpf feature,
+> so I believe it should be handled there later...
 
-+1 I need to give it another pass.
+Right, but even if we don't *implement* it straight away we still need
+to take it into consideration in the design. And expecting libxdp to
+arbitrate between different XDP programs' metadata formats sounds like a
+royal PITA :)
 
-> > > - Update some commit messages and comments
-> >
-> > Given you've been taking a look and had objections in v5, would be great if you
-> > can find some cycles for this v6.
+>> all but you still want to configure the same features?
 >
-> Mark's out at the moment, so I wouldn't hold this series up pending his ack.
-> However, I agree that it would be good if _somebody_ from the Arm side can
-> give it the once over, so I've added Jean-Philippe to cc in case he has time
+> What's the point of configuring metadata when there are no progs
+> attached? To configure it once and not on every prog attach? I'm
+> not saying I don't like it, just want to clarify.
 
-Makes sense,  Jean-Philippe had worked on BPF trampolines for ARM.
+See above: you turn on the features because you want the stack to
+consume them.
 
-> for a quick review. KP said he would also have a look, as he is interested
+> Maybe I need opinions from some more people, just to have an
+> overview of how most of folks see it and would like to configure
+> it. 'Cause I heard from at least one of the consumers that
+> libpf API is a perfect place for Hints to him :)
 
-Thank you so much Will, I will give this another pass before the end
-of the week.
+Well, as a program author who wants to consume hints, you'd use
+lib{bpf,xdp} APIs to do so (probably in the form of suitable CO-RE
+macros)...
 
-> in this series landing.
+>> In addition, in every other case where we do dynamic data access (with
+>> CO-RE) the BPF program is a consumer that modifies itself to access the
+>> data provided by the kernel. I get that this is harder to achieve for
+>> AF_XDP, but then let's solve that instead of making a totally
+>> inconsistent interface for XDP.
 >
-> Failing that, I'll try to look this week, but I'm off next week and I don't
-> want this to miss the merge window on my account.
-
-Thanks for being considerate. Much appreciated.
-
-- KP
-
+> I also see CO-RE more fitting and convenient way to use them, but
+> didn't manage to solve two things:
 >
-> Cheers,
+> 1) AF_XDP programs, so what to do with them? Prepare patches for
+>    LLVM to make it able to do CO-RE on AF_XDP program load? Or
+>    just hardcode them for particular usecases and NICs? What about
+>    "general-purpose" programs?
+
+You provide a library to read the fields. Jesper actually already
+implemented this, did you look at his code?
+
+https://github.com/xdp-project/bpf-examples/tree/master/AF_XDP-interaction
+
+It basically builds a lookup table at load-time using BTF information
+from the kernel, keyed on BTF ID and field name, resolving them into
+offsets. It's not quite the zero-overhead of CO-RE, but it's fairly
+close and can be improved upon (CO-RE for userspace being one way of
+doing that).
+
+>    And if hardcode, what's the point then to do Generic Hints at
+>    all? Then all it needs is making driver building some meta in
+>    front of frames via on-off button and that's it? Why BTF ID in
+>    the meta then if consumers will access meta hardcoded (via CO-RE
+>    or literally hardcoded, doesn't matter)?
+
+You're quite right, we could probably implement all the access to
+existing (fixed) metadata without using any BTF at all - just define a
+common struct and some flags to designate which fields are set. In my
+mind, there are a couple of reasons for going the BTF route instead:
+
+- We can leverage CO-RE to get close to optimal efficiency in field
+  access.
+
+and, more importantly:
+
+- It's infinitely extensible. With the infrastructure in place to make
+  it really easy to consume metadata described by BTF, we lower the bar
+  for future innovation in hardware offloads. Both for just adding new
+  fixed-function stuff to hardware, but especially for fully
+  programmable hardware.
+
+> 2) In-kernel metadata consumers? Also do CO-RE? Otherwise, with no
+>    generic metadata structure they won't be able to benefit from
+>    Hints. But I guess we still need to provide kernel with meta?
+>    Or no?
+
+In the short term, I think the "generic structure" approach is fine for
+leveraging this in the stack. Both your and Jesper's series include
+this, and I think that's totally fine. Longer term, if it turns out to
+be useful to have something more dynamic for the stack consumption as
+well, we could extend it to be CO-RE based as well (most likely by
+having the stack load a "translator" BPF program or something along
+those lines).
+
+>> I'm as excited as you about the prospect of having totally programmable
 >
-> Will
+> But I mostly care about current generation with no programmable
+> Hints...
+
+Well, see above; we should be able to support both :)
+
+-Toke
+
