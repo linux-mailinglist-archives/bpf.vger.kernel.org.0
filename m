@@ -2,71 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6CEE56775A
-	for <lists+bpf@lfdr.de>; Tue,  5 Jul 2022 21:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D6FD567812
+	for <lists+bpf@lfdr.de>; Tue,  5 Jul 2022 21:52:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbiGETJI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Jul 2022 15:09:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43228 "EHLO
+        id S229525AbiGETww (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Jul 2022 15:52:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229872AbiGETJI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Jul 2022 15:09:08 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 403C515FE8;
-        Tue,  5 Jul 2022 12:09:07 -0700 (PDT)
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1o8nuc-000GK3-BY; Tue, 05 Jul 2022 21:08:42 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1o8nub-000Vkd-MV; Tue, 05 Jul 2022 21:08:41 +0200
-Subject: Re: [xdp-hints] Re: [PATCH RFC bpf-next 00/52] bpf, xdp: introduce
- and use Generic Hints/metadata
-To:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        brouer@redhat.com, John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Larysa Zaremba <larysa.zaremba@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
+        with ESMTP id S229516AbiGETwv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Jul 2022 15:52:51 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43F0A1CB10;
+        Tue,  5 Jul 2022 12:52:49 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id r14so13240029wrg.1;
+        Tue, 05 Jul 2022 12:52:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/doxS0i6Wxlf3MlQXzvD1rRavf5pbzG6RAdOF/mnCY4=;
+        b=ArexrY44HStoCcsS43la3guKBJ49QQtWvjH+cMc4ug5p3cyvHU5Dyaoyou9wlV98lU
+         t1rdtTH4PtO7TMcNN3JUzkdb1mY7LFdrvCuiKfl0rDvV/VcSVMPYlnvaUHFk2NaJPCU4
+         XkEjrVKV/65CCHIOXVBkO09lya86ZtlmV/BpPBKLJ74qfJwHi4Zrfq3tvmc7/4RH2UYt
+         hxGmVomn9hiIriN8+Zquy93JmujHo2e5lF+3IgxY8MUhetFqIv4HrlJNoowHBBmWt6+J
+         QCZ7STtbE+6h60ougeY8ry/e/Rya28iXXXF1KY0QwxW2WTCTZUW5zIvZBRylRhYfvIQg
+         JULw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/doxS0i6Wxlf3MlQXzvD1rRavf5pbzG6RAdOF/mnCY4=;
+        b=A7sTYKXASJ/2hZbu6DNRmZ4+/GBoctFgKLPCtwV6aGpF2av/KLxHvqGhfCJYKt3Xoc
+         QpWTjawkBNsmHgOel5xNGl7/NVat3hIoO8z1LGwqMycJEn2O1ziA2NM14gFSZDWQvDMl
+         AWwNLErjPUuhoSJ55nuh04sAkRO4/biA2TR6c5n4Bb9BIW05+60dAonu9aBVh/DAS+vh
+         Dfo1nxGaxCoHiLnPiAE/bDzGJNrigtjEd63qQU/ZBkOhGXB+X9T//t28BQK/zM/VQPKP
+         L1PgjXerkPnC6Y3q3Cn3zwGa4B5Mvbu6myqxDuwtdWQj6bFO4AYDfyb9fVr3KHJH1Chr
+         WEGA==
+X-Gm-Message-State: AJIora+8h4NAr9EIkUbsxtxmWBpE7zr7WQe7LQGGSVqEU1UvisWmeXbb
+        Ksy4NOZhItxMDKiprRS9Ke+/FyS8S8f/gBAsgIg=
+X-Google-Smtp-Source: AGRyM1v7ifsufKfy5Jeo+13iCkt+psbaynIFUU7eS3NIGXvLiFM9Ug8mRV/eLUpjyCfhBiEIOSJYh7GFnTe629aUmb0=
+X-Received: by 2002:a5d:5703:0:b0:21d:6c55:4986 with SMTP id
+ a3-20020a5d5703000000b0021d6c554986mr10402402wrv.455.1657050767617; Tue, 05
+ Jul 2022 12:52:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220704140129.6463-1-fmdefrancesco@gmail.com> <YsSBR5nJovFMHGcB@iweiny-desk3>
+In-Reply-To: <YsSBR5nJovFMHGcB@iweiny-desk3>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Tue, 5 Jul 2022 12:52:36 -0700
+Message-ID: <CAKgT0UcGvjczCZXBS_OunwnZ5Xc7ytDRqjpymiXQni0ugrdmug@mail.gmail.com>
+Subject: Re: [PATCH] ixgbe: Don't call kmap() on page allocated with GFP_ATOMIC
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Yajun Deng <yajun.deng@linux.dev>,
-        Willem de Bruijn <willemb@google.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xdp-hints@xdp-project.net
-References: <20220628194812.1453059-1-alexandr.lobakin@intel.com>
- <62bbedf07f44a_2181420830@john.notmuch> <87iloja8ly.fsf@toke.dk>
- <20220704154440.7567-1-alexandr.lobakin@intel.com>
- <0cd3fd67-e179-7c27-a74f-255a05359941@redhat.com>
- <20220705143838.19500-1-alexandr.lobakin@intel.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <dac999ed-be85-1e3b-138c-d31ef674d5d9@iogearbox.net>
-Date:   Tue, 5 Jul 2022 21:08:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <20220705143838.19500-1-alexandr.lobakin@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26594/Tue Jul  5 09:24:14 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,49 +77,24 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/5/22 4:38 PM, Alexander Lobakin wrote:
-> From: Jesper Dangaard Brouer <jbrouer@redhat.com>
-> Date: Mon, 4 Jul 2022 19:13:53 +0200
-[...]
->> I have looked at the code in your GitHub tree, and decided that it was
->> an over-engineered approach IMHO.  Also simply being 52 commits deep
->> without having posted this incrementally upstream were also a
->> non-starter for me, as this isn't the way-to-work upstream.
-> 
-> So Ingo announced recently that he has a series of 2300+ patches
-> to try to fix include hell. Now he's preparing to submit them by
-> batches/series. Look at this RFC as at an announce. "Hey folks,
-> I have a bunch of stuff and will be submitting it soon, but I'm
-> posting the whole changeset here, so you could take a look or
-> give it a try before it's actually started being posted".
-> All this is mentioned in the cover letter as well. What is the
-> problem? Ok, next time I can not do any announces and just start
-> posting series if it made such misunderstandings.
+On Tue, Jul 5, 2022 at 11:22 AM Ira Weiny <ira.weiny@intel.com> wrote:
+>
+> On Mon, Jul 04, 2022 at 04:01:29PM +0200, Fabio M. De Francesco wrote:
+> > Pages allocated with GFP_ATOMIC cannot come from Highmem. This is why
+> > there is no need to call kmap() on them.
+>
+> I'm still not 100% sure where this page gets allocated but AFAICT it is
+> allocated in ixgbe_alloc_mapped_page() which calls dev_alloc_pages() for the
+> allocation which is where the GFP_ATOMIC is specified.
+>
+> I think I would add this detail here.
+>
+> That said, and assuming my analysis is correct, the code looks fine so:
 
-I would suggest to please calm down first. No offense, but above example
-with the 2300+ patches is not a great one. There is no way any mortal
-would be able to review them, not even thinking about the cycles spent
-around rebasing, merge conflict resolution or bugs they may contain.
-Anyway, that aside..
+Yeah, this is actually called out in other spots in the buffer
+cleaning path. This is just something I had overlooked and left in
+place back a few refactors ago.. :-)
 
-Your series essentially starts out with ...
+https://elixir.bootlin.com/linux/latest/source/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c#L1795
 
-   The series adds ability to pass different frame
-   details/parameters/parameters used by most of NICs and the kernel
-   stack (in skbs), not essential, but highly wanted, such as:
-
-   * checksum value, status (Rx) or command (Tx);
-   * hash value and type/level (Rx);
-   * queue number (Rx);
-   * timestamps;
-   * and so on.
-
-... so my initial question would be whether in this context there has
-been done research / analysis of how this can speed up /real world/
-production applications such as Katran L4LB [0], for example? What is
-the speedup you observed with it by utilizing the fields from meta data?
-
-Thanks,
-Daniel
-
-   [0] https://github.com/facebookincubator/katran
+Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
