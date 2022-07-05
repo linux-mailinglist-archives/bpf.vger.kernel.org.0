@@ -2,60 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F9275664D5
-	for <lists+bpf@lfdr.de>; Tue,  5 Jul 2022 10:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 947A35664F5
+	for <lists+bpf@lfdr.de>; Tue,  5 Jul 2022 10:25:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229517AbiGEIGs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Jul 2022 04:06:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55644 "EHLO
+        id S229463AbiGEIX4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Jul 2022 04:23:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229641AbiGEIGr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Jul 2022 04:06:47 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DC1413D79
-        for <bpf@vger.kernel.org>; Tue,  5 Jul 2022 01:06:47 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id j7so14136009ybj.10
-        for <bpf@vger.kernel.org>; Tue, 05 Jul 2022 01:06:47 -0700 (PDT)
+        with ESMTP id S229798AbiGEIXz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Jul 2022 04:23:55 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6780C2C0
+        for <bpf@vger.kernel.org>; Tue,  5 Jul 2022 01:23:54 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id r9so13576295ljp.9
+        for <bpf@vger.kernel.org>; Tue, 05 Jul 2022 01:23:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=anyfinetworks-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B5hHTZX8k5YVulOX+y/19eWncPyMjQTiLI6tApiZDhk=;
-        b=6xDWK7ASvF7LjwW66OAkx87Ojwg+fadmN0koItgcLHqGOjPw8f75wIPFtzRL0dV6Pn
-         dEFtfO1lpIgYkSsgTCymRalfhlZtXMVUV8XL3c9UxGsn8sMcPA5JtYgALIRneKs0R0L3
-         ezAY0ulXmzTudrHn3aKXJVmMJhJe3GgBbCu87pCTKzyh9aUw8OLlWM1dTkiZ3AE5vtiv
-         yk77klYv5KlnH4oMyDUOvueT+77ccW0fIotr+aCEfdtzmIIXkmXfGC25HfZHuW1QzDIw
-         cEHKhpo+X1LYqvJD9jzcQsBQA2z+6qqxukuU9qR6k2+uyLh38efAtlx/VONHW9cOOROy
-         M+SA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=nm4GWncx/H7UbY0657xwuVdYq5JG1QruNhlsI4qkLAs=;
+        b=YS4a5WDDY6+mYy03sUjXRRWvWYQiFv7DWe888KPRMUPvweym264/F30f9Esq98+G0Z
+         bDDq05ZFNHMRRsPVYGcJSnEVvJBf56ulA7bnfa2W2u8R4fZl/Xhn2Ep5sue9GevdAmbY
+         r2ErBcEjLVMvCzoA35c94A3/UHJ/aELEoBYolXv+3EFVD7d9Fk6KVYStZIm+BdauupYE
+         XF9y54XB0np9K/HiFGC/DAMGSxhjSUvOTZvOnDikPAk23BefF5nA/UaMSuVkVOFrEEN3
+         FyDOACkLh9b9JTrT3vT0JiLPXAD1ClnnmgK8l3FDM7oKcpeZPT3plBRv15v66LaWyLXj
+         GYlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B5hHTZX8k5YVulOX+y/19eWncPyMjQTiLI6tApiZDhk=;
-        b=qxUbgr44JScfxx8/SMMfOtZ+iN45AAd1dcfAS+jXnbS17y10d6Rjfl/f5zl+P648/9
-         lNv/B6a60n2INoCLTx3sxlpziDGDxcU6Er5hXtyfZW8JwOhk9dO7eeoHSnj88QEKKmIT
-         wFMYvOuYA7eakJWP9HlaHhbHWD1hnI2WUnhJxiay1Qts9NQy4JoWZx6GpSU04mqtNssC
-         EvN87eAYgu74meFb6wK6iObiaHKkCp1b+IbRPE5Iwio6Uy20sR5BJFCJHkxmjSZ1Z5h6
-         ewM1Xbgtv2R0bY3h6WoF+QfvFtob0pKJHrhG9qMGtxc+/VhrhaYn3/kNuw06IVB3E0zb
-         jEbg==
-X-Gm-Message-State: AJIora+aeCw/4ZX/6tbslvMobrDy7eGBRCBRpeGYjjUXo7US9+ELwK1W
-        27T40jH3RWN5kp4e6bhrdIZHSEEAL7DB7RkHcGdo+w==
-X-Google-Smtp-Source: AGRyM1tcBgz1IY9sqZnh2yDyhQ83q5nmqLhSg283Gb5KHGXE7yZ5JxF303ch2a50yZtGJkGhsxL+FbW1h5rlQMrHMhU=
-X-Received: by 2002:a25:fe01:0:b0:66e:3653:d533 with SMTP id
- k1-20020a25fe01000000b0066e3653d533mr12986032ybe.445.1657008406289; Tue, 05
- Jul 2022 01:06:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <CANoWsw=eP+kYHvT+AUwY=8D=QDrwHz=1_6he8vz0t+Tc1PVVBQ@mail.gmail.com>
- <6e86e8c4-4eaf-3e4e-ee72-035a215b48d3@iogearbox.net> <xunyr135ytxr.fsf@redhat.com>
- <CANoWswmar9ELFGiqNeG7SCuaciaoNWEq2E+YaRq5J4fwRqfuZg@mail.gmail.com>
-In-Reply-To: <CANoWswmar9ELFGiqNeG7SCuaciaoNWEq2E+YaRq5J4fwRqfuZg@mail.gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=nm4GWncx/H7UbY0657xwuVdYq5JG1QruNhlsI4qkLAs=;
+        b=aLV2yY7jMAUGxioEKekgjEuTB2BJn0fAK3EqwJZ/dbDRFsPYtsnPfXnTyie+p8IaRY
+         jZji05KmzbK5Hd1mVCF5cDcqIvpiVdUclT37q7aq6TlAkXxQXMf8tNbOXDFwW6zdxUYF
+         f/214qfzjFVteoxj56k/NXl5ILo+9lcxgpltgRIBGezBHG/Rp0z78yA9gIJmgIddfD6y
+         zpdVunD0uE186m61rpUg2ET1Z8x9k14VYtgwq30LqlpvZsGa8kMXFu3+PMmdCzRGNbel
+         YaBIAIDMkfOv2HaHl4lPUCpKq3ll12hWLmemxUUKQ16LozPeCWvx/qrLHcq0J0hepSgp
+         sAaA==
+X-Gm-Message-State: AJIora/Ef3Le34nmTft+ON5cQ2u1uDG4MxFWkuC8Q1w74Vvbu5TgIQlj
+        0u9GNpe9+GVlo1KoTQGA/vxpOg==
+X-Google-Smtp-Source: AGRyM1soPHci+b7CH9FJb3u37LBINSfpUxKsSDyGYFvOI1twDP1j1eyteRfnHe4JSLb10OmwP5E2TQ==
+X-Received: by 2002:a2e:918f:0:b0:25a:7164:f408 with SMTP id f15-20020a2e918f000000b0025a7164f408mr19004646ljg.523.1657009432615;
+        Tue, 05 Jul 2022 01:23:52 -0700 (PDT)
+Received: from anpc2.lan ([62.119.107.74])
+        by smtp.gmail.com with ESMTPSA id a12-20020ac25e6c000000b0047f878aba7fsm5514733lfr.110.2022.07.05.01.23.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jul 2022 01:23:52 -0700 (PDT)
 From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Date:   Tue, 5 Jul 2022 10:07:47 +0200
-Message-ID: <CAM1=_QTEAA4vzVHJV3-fcLOGqAcef8q6U7bg5LbH-CKehuQLxw@mail.gmail.com>
-Subject: Re: test_kmod.sh fails with constant blinding
-To:     Yauheni Kaliuta <ykaliuta@redhat.com>
-Cc:     bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, hawk@kernel.org, john.fastabend@gmail.com
+Cc:     song@kernel.org, martin.lau@linux.dev, yhs@fb.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, Freysteinn.Alfredsson@kau.se, toke@redhat.com,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Subject: [PATCH bpf v3] xdp: Fix spurious packet loss in generic XDP TX path
+Date:   Tue,  5 Jul 2022 10:23:45 +0200
+Message-Id: <20220705082345.2494312-1-johan.almbladh@anyfinetworks.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220701151200.2033129-1-johan.almbladh@anyfinetworks.com>
+References: <20220701151200.2033129-1-johan.almbladh@anyfinetworks.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
@@ -65,49 +73,62 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 4, 2022 at 10:22 AM Yauheni Kaliuta <ykaliuta@redhat.com> wrote:
->
-> Hi!
->
-> On Fri, Jul 1, 2022 at 2:05 PM Yauheni Kaliuta <ykaliuta@redhat.com> wrote:
-> > >>>>> On Thu, 30 Jun 2022 22:57:37 +0200, Daniel Borkmann  wrote:
-> >
-> >  > On 6/30/22 3:19 PM, Yauheni Kaliuta wrote:
-> >  >> Hi!
-> >  >> test_kmod.sh fails for hardened 2 check with
-> >  >> test_bpf: #964 Staggered jumps: JMP_JA FAIL to select_runtime
-> >  >> err=-524
-> >  >> (-ERANGE during constant blinding)
-> >  >> Did I miss something?
-> >
-> >  > That could be expected if one of bpf_adj_delta_to_imm() / bpf_adj_delta_to_off()
-> >  > fails given the targets go out of range.
-> >
-> > I believe that, but how to fix the test? It should not fail.
-> >
-> >  > How do the generated insn look?
-> >
-> > The instruction when it fails is
-> >
-> > (gdb) p/x insn[0]
-> > $8 = {code = 0xb7, dst_reg = 0x0, src_reg = 0x0, off = 0x0, imm = 0x2aaa}
-> >
-> > And it's rewritten as
-> >
-> > (gdb) p rewritten
-> > $9 = 3
-> > (gdb) p/x insn_buff[0]
-> > $10 = {code = 0xb7, dst_reg = 0xb, src_reg = 0x0, off = 0x0, imm = 0x68ad0283}
-> > (gdb) p/x insn_buff[1]
-> > $11 = {code = 0xa7, dst_reg = 0xb, src_reg = 0x0, off = 0x0, imm = 0x68ad2829}
-> > (gdb) p/x insn_buff[2]
-> > $12 = {code = 0xbf, dst_reg = 0x0, src_reg = 0xb, off = 0x0, imm = 0x0}
-> >
-> > IIUC.
-> >
->
-> Johan, what do you think?
+The byte queue limits (BQL) mechanism is intended to move queuing from
+the driver to the network stack in order to reduce latency caused by
+excessive queuing in hardware. However, when transmitting or redirecting
+a packet using generic XDP, the qdisc layer is bypassed and there are no
+additional queues. Since netif_xmit_stopped() also takes BQL limits into
+account, but without having any alternative queuing, packets are
+silently dropped.
 
-Hmm, I can take a look at it. What is the target arch?
+This patch modifies the drop condition to only consider cases when the
+driver itself cannot accept any more packets. This is analogous to the
+condition in __dev_direct_xmit(). Dropped packets are also counted on
+the device.
 
-Johan
+Bypassing the qdisc layer in the generic XDP TX path means that XDP
+packets are able to starve other packets going through a qdisc, and
+DDOS attacks will be more effective. In-driver-XDP use dedicated TX
+queues, so they do not have this starvation issue.
+
+Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+---
+ net/core/dev.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 8e6f22961206..30a1603a7225 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -4863,7 +4863,10 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
+ }
+ 
+ /* When doing generic XDP we have to bypass the qdisc layer and the
+- * network taps in order to match in-driver-XDP behavior.
++ * network taps in order to match in-driver-XDP behavior. This also means
++ * that XDP packets are able to starve other packets going through a qdisc,
++ * and DDOS attacks will be more effective. In-driver-XDP use dedicated TX
++ * queues, so they do not have this starvation issue.
+  */
+ void generic_xdp_tx(struct sk_buff *skb, struct bpf_prog *xdp_prog)
+ {
+@@ -4875,7 +4878,7 @@ void generic_xdp_tx(struct sk_buff *skb, struct bpf_prog *xdp_prog)
+ 	txq = netdev_core_pick_tx(dev, skb, NULL);
+ 	cpu = smp_processor_id();
+ 	HARD_TX_LOCK(dev, txq, cpu);
+-	if (!netif_xmit_stopped(txq)) {
++	if (!netif_xmit_frozen_or_drv_stopped(txq)) {
+ 		rc = netdev_start_xmit(skb, dev, txq, 0);
+ 		if (dev_xmit_complete(rc))
+ 			free_skb = false;
+@@ -4883,6 +4886,7 @@ void generic_xdp_tx(struct sk_buff *skb, struct bpf_prog *xdp_prog)
+ 	HARD_TX_UNLOCK(dev, txq);
+ 	if (free_skb) {
+ 		trace_xdp_exception(dev, xdp_prog, XDP_TX);
++		dev_core_stats_tx_dropped_inc(dev);
+ 		kfree_skb(skb);
+ 	}
+ }
+-- 
+2.30.2
+
