@@ -2,80 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20BFF5672D9
-	for <lists+bpf@lfdr.de>; Tue,  5 Jul 2022 17:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B76F15673B6
+	for <lists+bpf@lfdr.de>; Tue,  5 Jul 2022 18:01:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230381AbiGEPlx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Jul 2022 11:41:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37566 "EHLO
+        id S231574AbiGEQBC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Jul 2022 12:01:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230248AbiGEPlw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Jul 2022 11:41:52 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D7A12759;
-        Tue,  5 Jul 2022 08:41:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1657035711; x=1688571711;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=hp9+ZjKqW51mjGl+R+E35bg8BkjYNebZYZf7uvGtI7w=;
-  b=frUW89lIKZ4ZNu2jz6XOWK3/GhDhOUflFB+lXTJ0I4t3AP+gXzP9EebR
-   4b1O+t4nK88XgZPxWIY4dhqnW9MX52Iz67g/Bv/5WVwGqIwt8HF/TQFj/
-   y8TigyfYDqhMCZVpS6ubp7ODDXTp0Ya4Nwmzy3AtWkDUj1pgfYITzfWoQ
-   UtiKxPaQbk50C3XiSaZo6N0RLj/775ggGqjrKXyna/0m7ibVBU7KnqbFs
-   8BDkAEg4Iu+fnXIy9VtaOziUlOWXItOhH2w8oJpSXnKlRsTL7DMs59uEF
-   XrD4iwxlfrsbZkbtRsj5z0/N8Z4O37XNJiUH5cwlArwEnxk30L0mGMyak
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10398"; a="263174660"
-X-IronPort-AV: E=Sophos;i="5.92,247,1650956400"; 
-   d="scan'208";a="263174660"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jul 2022 08:41:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,247,1650956400"; 
-   d="scan'208";a="735200315"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by fmsmga001.fm.intel.com with ESMTP; 05 Jul 2022 08:41:46 -0700
-Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 265FfiYV030211;
-        Tue, 5 Jul 2022 16:41:45 +0100
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        John Fastabend <john.fastabend@gmail.com>,
+        with ESMTP id S231997AbiGEQA5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Jul 2022 12:00:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B4D11839A;
+        Tue,  5 Jul 2022 09:00:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AC96761B68;
+        Tue,  5 Jul 2022 16:00:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 776F6C341C7;
+        Tue,  5 Jul 2022 16:00:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1657036856;
+        bh=YNoy2tz1hW0bUHeiRLsEX677IMFG+Q+xyAdLl28Mtqc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UGU6JIiEjRMRtof4/IjlS1ygWl+HXu2eAqiQGE7kkekGmdUD6sJWgbpch74gE4T7u
+         zqBWuZfI0n2u0AZeapu/OGLKpgAUFTZpyPhtKLHlv+Y4DUUz3dnKWNJlHH4RU59oaw
+         9N0+tLrXdbfGGrbuDj5VWj5N+ZzEQKOzvgOc/2MU554TZuVQ8Oom1sMa0zQcfHFQ14
+         98aUZQPw/TESnFu1HDny23iWt+fRy82vVXcZOKLac55O9YZH7Zel5DVa1MOPsj97gO
+         9VQbpfGYhyo+9WTzKsZsyFlUOBPUMl2xHthsFmRzu1Bhj3wZ3odx5xIVxXrdc0/0Nv
+         8kIkbVIZB4EtQ==
+Date:   Tue, 5 Jul 2022 17:00:46 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        jean-philippe.brucker@arm.com
+Cc:     Xu Kuohai <xukuohai@huawei.com>, bpf@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        "Larysa Zaremba" <larysa.zaremba@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Yajun Deng <yajun.deng@linux.dev>,
-        "Willem de Bruijn" <willemb@google.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xdp-hints@xdp-project.net
-Subject: Re: [xdp-hints] Re: [PATCH RFC bpf-next 00/52] bpf, xdp: introduce and use Generic Hints/metadata
-Date:   Tue,  5 Jul 2022 17:41:20 +0200
-Message-Id: <20220705154120.22497-1-alexandr.lobakin@intel.com>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <87a69o94wz.fsf@toke.dk>
-References: <20220628194812.1453059-1-alexandr.lobakin@intel.com> <62bbedf07f44a_2181420830@john.notmuch> <87iloja8ly.fsf@toke.dk> <20220704154440.7567-1-alexandr.lobakin@intel.com> <87a69o94wz.fsf@toke.dk>
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        James Morse <james.morse@arm.com>,
+        Hou Tao <houtao1@huawei.com>,
+        Jason Wang <wangborong@cdjrlc.com>
+Subject: Re: [PATCH bpf-next v6 0/4] bpf trampoline for arm64
+Message-ID: <20220705160045.GA1240@willie-the-truck>
+References: <20220625161255.547944-1-xukuohai@huawei.com>
+ <d3c1f1ed-353a-6af2-140d-c7051125d023@iogearbox.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d3c1f1ed-353a-6af2-140d-c7051125d023@iogearbox.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,194 +78,65 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Toke Høiland-Jørgensen <toke@redhat.com>
-Date: Mon, 04 Jul 2022 19:14:04 +0200
+Hi Daniel,
 
-> Alexander Lobakin <alexandr.lobakin@intel.com> writes:
+On Thu, Jun 30, 2022 at 11:12:54PM +0200, Daniel Borkmann wrote:
+> On 6/25/22 6:12 PM, Xu Kuohai wrote:
+> > This patchset introduces bpf trampoline on arm64. A bpf trampoline converts
+> > native calling convention to bpf calling convention and is used to implement
+> > various bpf features, such as fentry, fexit, fmod_ret and struct_ops.
+> > 
+> > The trampoline introduced does essentially the same thing as the bpf
+> > trampoline does on x86.
+> > 
+> > Tested on raspberry pi 4b and qemu:
+> > 
+> >   #18 /1     bpf_tcp_ca/dctcp:OK
+> >   #18 /2     bpf_tcp_ca/cubic:OK
+> >   #18 /3     bpf_tcp_ca/invalid_license:OK
+> >   #18 /4     bpf_tcp_ca/dctcp_fallback:OK
+> >   #18 /5     bpf_tcp_ca/rel_setsockopt:OK
+> >   #18        bpf_tcp_ca:OK
+> >   #51 /1     dummy_st_ops/dummy_st_ops_attach:OK
+> >   #51 /2     dummy_st_ops/dummy_init_ret_value:OK
+> >   #51 /3     dummy_st_ops/dummy_init_ptr_arg:OK
+> >   #51 /4     dummy_st_ops/dummy_multiple_args:OK
+> >   #51        dummy_st_ops:OK
+> >   #57 /1     fexit_bpf2bpf/target_no_callees:OK
+> >   #57 /2     fexit_bpf2bpf/target_yes_callees:OK
+> >   #57 /3     fexit_bpf2bpf/func_replace:OK
+> >   #57 /4     fexit_bpf2bpf/func_replace_verify:OK
+> >   #57 /5     fexit_bpf2bpf/func_sockmap_update:OK
+> >   #57 /6     fexit_bpf2bpf/func_replace_return_code:OK
+> >   #57 /7     fexit_bpf2bpf/func_map_prog_compatibility:OK
+> >   #57 /8     fexit_bpf2bpf/func_replace_multi:OK
+> >   #57 /9     fexit_bpf2bpf/fmod_ret_freplace:OK
+> >   #57        fexit_bpf2bpf:OK
+> >   #237       xdp_bpf2bpf:OK
+> > 
+> > v6:
+> > - Since Mark is refactoring arm64 ftrace to support long jump and reduce the
+> >    ftrace trampoline overhead, it's not clear how we'll attach bpf trampoline
+> >    to regular kernel functions, so remove ftrace related patches for now.
+> > - Add long jump support for attaching bpf trampoline to bpf prog, since bpf
+> >    trampoline and bpf prog are allocated via vmalloc, there is chance the
+> >    distance exceeds the max branch range.
+> > - Collect ACK/Review-by, not sure if the ACK and Review-bys for bpf_arch_text_poke()
+> >    should be kept, since the changes to it is not trivial
+> > - Update some commit messages and comments
 > 
-> > From: Toke H??iland-J??rgensen <toke@redhat.com>
-> > Date: Wed, 29 Jun 2022 15:43:05 +0200
-> >
-> >> John Fastabend <john.fastabend@gmail.com> writes:
-> >> 
-> >> > Alexander Lobakin wrote:
-> >> >> This RFC is to give the whole picture. It will most likely be split
-> >> >> onto several series, maybe even merge cycles. See the "table of
-> >> >> contents" below.
-> >> >
-> >> > Even for RFC its a bit much. Probably improve the summary
-> >> > message here as well I'm still not clear on the overall
-> >> > architecture so not sure I want to dig into patches.
-> >> 
-> >> +1 on this, and piggybacking on your comment to chime in on the general
-> >> architecture.
-> >> 
-> >> >> Now, a NIC driver, or even a SmartNIC itself, can put those params
-> >> >> there in a well-defined format. The format is fixed, but can be of
-> >> >> several different types represented by structures, which definitions
-> >> >> are available to the kernel, BPF programs and the userland.
-> >> >
-> >> > I don't think in general the format needs to be fixed.
-> >> 
-> >> No, that's the whole point of BTF: it's not supposed to be UAPI, we'll
-> >> use CO-RE to enable dynamic formats...
-> >> 
-> >> [...]
-> >> 
-> >> >> It is fixed due to it being almost a UAPI, and the exact format can
-> >> >> be determined by reading the last 10 bytes of metadata. They contain
-> >> >> a 2-byte magic ID to not confuse it with a non-compatible meta and
-> >> >> a 8-byte combined BTF ID + type ID: the ID of the BTF where this
-> >> >> structure is defined and the ID of that definition inside that BTF.
-> >> >> Users can obtain BTF IDs by structure types using helpers available
-> >> >> in the kernel, BPF (written by the CO-RE/verifier) and the userland
-> >> >> (libbpf -> kernel call) and then rely on those ID when reading data
-> >> >> to make sure whether they support it and what to do with it.
-> >> >> Why separate magic and ID? The idea is to make different formats
-> >> >> always contain the basic/"generic" structure embedded at the end.
-> >> >> This way we can still benefit in purely generic consumers (like
-> >> >> cpumap) while providing some "extra" data to those who support it.
-> >> >
-> >> > I don't follow this. If you have a struct in your driver name it
-> >> > something obvious, ice_xdp_metadata. If I understand things
-> >> > correctly just dump the BTF for the driver, extract the
-> >> > struct and done you can use CO-RE reads. For the 'fixed' case
-> >> > this looks easy. And I don't think you even need a patch for this.
-> >> 
-> >> ...however as we've discussed previously, we do need a bit of
-> >> infrastructure around this. In particular, we need to embed the embed
-> >> the BTF ID into the metadata itself so BPF can do runtime disambiguation
-> >> between different formats (and add the right CO-RE primitives to make
-> >> this easy). This is for two reasons:
-> >> 
-> >> - The metadata might be different per-packet (e.g., PTP packets with
-> >>   timestamps interleaved with bulk data without them)
-> >> 
-> >> - With redirects we may end up processing packets from different devices
-> >>   in a single XDP program (in devmap or cpumap, or on a veth) so we need
-> >>   to be able to disambiguate at runtime.
-> >> 
-> >> So I think the part of the design that puts the BTF ID into the end of
-> >> the metadata struct is sound; however, the actual format doesn't have to
-> >> be fixed, we can use CO-RE to pick out the bits that a given BPF program
-> >> needs; we just need a convention for how drivers report which format(s)
-> >> they support. Which we should also agree on (and add core infrastructure
-> >> around) so each driver doesn't go around inventing their own
-> >> conventions.
-> >> 
-> >> >> The enablement of this feature is controlled on attaching/replacing
-> >> >> XDP program on an interface with two new parameters: that combined
-> >> >> BTF+type ID and metadata threshold.
-> >> >> The threshold specifies the minimum frame size which a driver (or
-> >> >> NIC) should start composing metadata from. It is introduced instead
-> >> >> of just false/true flag due to that often it's not worth it to spend
-> >> >> cycles to fetch all that data for such small frames: let's say, it
-> >> >> can be even faster to just calculate checksums for them on CPU
-> >> >> rather than touch non-coherent DMA zone. Simple XDP_DROP case loses
-> >> >> 15 Mpps on 64 byte frames with enabled metadata, threshold can help
-> >> >> mitigate that.
-> >> >
-> >> > I would put this in the bonus category. Can you do the simple thing
-> >> > above without these extra bits and then add them later. Just
-> >> > pick some overly conservative threshold to start with.
-> >> 
-> >> Yeah, I'd agree this kind of configuration is something that can be
-> >> added later, and also it's sort of orthogonal to the consumption of the
-> >> metadata itself.
-> >> 
-> >> Also, tying this configuration into the loading of an XDP program is a
-> >> terrible interface: these are hardware configuration options, let's just
-> >> put them into ethtool or 'ip link' like any other piece of device
-> >> configuration.
-> >
-> > I don't believe it fits there, especially Ethtool. Ethtool is for
-> > hardware configuration, XDP/AF_XDP is 95% software stuff (apart from
-> > offload bits which is purely NFP's for now).
-> 
-> But XDP-hints is about consuming hardware features. When you're
-> configuring which metadata items you want, you're saying "please provide
-> me with these (hardware) features". So ethtool is an excellent place to
-> do that :)
+> Given you've been taking a look and had objections in v5, would be great if you
+> can find some cycles for this v6.
 
-With Ethtool you configure the hardware, e.g. it won't strip VLAN
-tags if you disable rx-cvlan-stripping. With configuring metadata
-you only tell what you want to see there, don't you?
+Mark's out at the moment, so I wouldn't hold this series up pending his ack.
+However, I agree that it would be good if _somebody_ from the Arm side can
+give it the once over, so I've added Jean-Philippe to cc in case he has time
+for a quick review. KP said he would also have a look, as he is interested
+in this series landing.
 
-> 
-> > I follow that way:
-> >
-> > 1) you pick a program you want to attach;
-> > 2) usually they are written for special needs and usecases;
-> > 3) so most likely that program will be tied with metadata/driver/etc
-> >    in some way;
-> > 4) so you want to enable Hints of a particular format primarily for
-> >    this program and usecase, same with threshold and everything
-> >    else.
-> >
-> > Pls explain how you see it, I might be wrong for sure.
-> 
-> As above: XDP hints is about giving XDP programs (and AF_XDP consumers)
-> access to metadata that is not currently available. Tying the lifetime
-> of that hardware configuration (i.e., which information to provide) to
-> the lifetime of an XDP program is not a good interface: for one thing,
-> how will it handle multiple programs? What about when XDP is not used at
+Failing that, I'll try to look this week, but I'm off next week and I don't
+want this to miss the merge window on my account.
 
-Multiple progs is stuff I didn't cover, but will do later (as you
-all say to me, "let's start with something simple" :)). Aaaand
-multiple XDP progs (I'm not talking about attaching progs in
-differeng modes) is not a kernel feature, rather a libpf feature,
-so I believe it should be handled there later...
+Cheers,
 
-> all but you still want to configure the same features?
-
-What's the point of configuring metadata when there are no progs
-attached? To configure it once and not on every prog attach? I'm
-not saying I don't like it, just want to clarify.
-Maybe I need opinions from some more people, just to have an
-overview of how most of folks see it and would like to configure
-it. 'Cause I heard from at least one of the consumers that
-libpf API is a perfect place for Hints to him :)
-
-> 
-> In addition, in every other case where we do dynamic data access (with
-> CO-RE) the BPF program is a consumer that modifies itself to access the
-> data provided by the kernel. I get that this is harder to achieve for
-> AF_XDP, but then let's solve that instead of making a totally
-> inconsistent interface for XDP.
-
-I also see CO-RE more fitting and convenient way to use them, but
-didn't manage to solve two things:
-
-1) AF_XDP programs, so what to do with them? Prepare patches for
-   LLVM to make it able to do CO-RE on AF_XDP program load? Or
-   just hardcode them for particular usecases and NICs? What about
-   "general-purpose" programs?
-   And if hardcode, what's the point then to do Generic Hints at
-   all? Then all it needs is making driver building some meta in
-   front of frames via on-off button and that's it? Why BTF ID in
-   the meta then if consumers will access meta hardcoded (via CO-RE
-   or literally hardcoded, doesn't matter)?
-2) In-kernel metadata consumers? Also do CO-RE? Otherwise, with no
-   generic metadata structure they won't be able to benefit from
-   Hints. But I guess we still need to provide kernel with meta?
-   Or no?
-
-> 
-> I'm as excited as you about the prospect of having totally programmable
-
-But I mostly care about current generation with no programmable
-Hints...
-
-> hardware where you can just specify any arbitrary metadata format and
-> it'll provide that for you. But that is an orthogonal feature: let's
-> start with creating a dynamic interface for consuming the (static)
-> hardware features we already have, and then later we can have a separate
-> interface for configuring more dynamic hardware features. XDP-hints is
-> about adding this consumption feature in a way that's sufficiently
-> dynamic that we can do the other (programmable hardware) thing on top
-> later...
-> 
-> -Toke
-
-Thanks,
-Olek
+Will
