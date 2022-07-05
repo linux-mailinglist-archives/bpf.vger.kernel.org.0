@@ -2,46 +2,46 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9DE3567A56
-	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 00:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BACC9567A62
+	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 00:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233318AbiGEWt6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 5 Jul 2022 18:49:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45076 "EHLO
+        id S232711AbiGEWuM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 5 Jul 2022 18:50:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232059AbiGEWtn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Jul 2022 18:49:43 -0400
+        with ESMTP id S232989AbiGEWtw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Jul 2022 18:49:52 -0400
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6E7A1D0C0
-        for <bpf@vger.kernel.org>; Tue,  5 Jul 2022 15:48:35 -0700 (PDT)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 265JHSmU006821
-        for <bpf@vger.kernel.org>; Tue, 5 Jul 2022 15:48:35 -0700
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E9021F60B
+        for <bpf@vger.kernel.org>; Tue,  5 Jul 2022 15:48:44 -0700 (PDT)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 265JJHLp016533
+        for <bpf@vger.kernel.org>; Tue, 5 Jul 2022 15:48:43 -0700
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3h4uaqs9jx-2
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3h4ubusa64-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 05 Jul 2022 15:48:35 -0700
-Received: from twshared13579.04.prn5.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Tue, 05 Jul 2022 15:48:43 -0700
+Received: from twshared0725.22.frc3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Tue, 5 Jul 2022 15:48:33 -0700
+ 15.1.2375.28; Tue, 5 Jul 2022 15:48:42 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 55D831BF1EBF7; Tue,  5 Jul 2022 15:48:27 -0700 (PDT)
+        id 993891BF1EC04; Tue,  5 Jul 2022 15:48:29 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
 CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next 1/3] selftests/bpf: fix bogus uninitialized variable warning
-Date:   Tue, 5 Jul 2022 15:48:16 -0700
-Message-ID: <20220705224818.4026623-2-andrii@kernel.org>
+Subject: [PATCH bpf-next 2/3] selftests/bpf: fix few more compiler warnings
+Date:   Tue, 5 Jul 2022 15:48:17 -0700
+Message-ID: <20220705224818.4026623-3-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220705224818.4026623-1-andrii@kernel.org>
 References: <20220705224818.4026623-1-andrii@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
-X-Proofpoint-ORIG-GUID: bEdpgYunCbG3AbeXG8wifS8uSCbiztYb
-X-Proofpoint-GUID: bEdpgYunCbG3AbeXG8wifS8uSCbiztYb
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: hB85bzjYv-XGYEEB8IMB-rF46Ev7SUMP
+X-Proofpoint-GUID: hB85bzjYv-XGYEEB8IMB-rF46Ev7SUMP
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
  definitions=2022-07-05_18,2022-06-28_01,2022-06-22_01
@@ -55,48 +55,69 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When compiling selftests/bpf in optimized mode (-O2), GCC erroneously
-complains about uninitialized token variable:
+When compiling with -O2, GCC detects few problems with selftests/bpf, so
+fix all of them. Two are real issues (uninitialized err and nums
+out-of-bounds access), but two other uninitialized variables warnings
+are due to GCC not being able to prove that variables are indeed
+initialized under conditions under which they are used.
 
-  In file included from network_helpers.c:22:
-  network_helpers.c: In function ‘open_netns’:
-  test_progs.h:355:22: error: ‘token’ may be used uninitialized [-Werror=maybe-uninitialized]
-    355 |         int ___err = libbpf_get_error(___res);                          \
-        |                      ^~~~~~~~~~~~~~~~~~~~~~~~
-  network_helpers.c:440:14: note: in expansion of macro ‘ASSERT_OK_PTR’
-    440 |         if (!ASSERT_OK_PTR(token, "malloc token"))
-        |              ^~~~~~~~~~~~~
-  In file included from /data/users/andriin/linux/tools/testing/selftests/bpf/tools/include/bpf/libbpf.h:21,
-                   from bpf_util.h:9,
-                   from network_helpers.c:20:
-  /data/users/andriin/linux/tools/testing/selftests/bpf/tools/include/bpf/libbpf_legacy.h:113:17: note: by argument 1 of type ‘const void *’ to ‘libbpf_get_error’ declared here
-    113 | LIBBPF_API long libbpf_get_error(const void *ptr);
-        |                 ^~~~~~~~~~~~~~~~
-  cc1: all warnings being treated as errors
-  make: *** [Makefile:522: /data/users/andriin/linux/tools/testing/selftests/bpf/network_helpers.o] Error 1
-
-This is completely bogus becuase libbpf_get_error() doesn't dereference
-pointer, but the only easy way to silence this is to allocate initialized
-memory with calloc().
+Fix all 4 cases, though.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/testing/selftests/bpf/network_helpers.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c | 4 ++--
+ tools/testing/selftests/bpf/prog_tests/usdt.c              | 2 +-
+ tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c      | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
-index 59cf81ec55af..bec15558fd93 100644
---- a/tools/testing/selftests/bpf/network_helpers.c
-+++ b/tools/testing/selftests/bpf/network_helpers.c
-@@ -436,7 +436,7 @@ struct nstoken *open_netns(const char *name)
- 	int err;
- 	struct nstoken *token;
+diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+index 586dc52d6fb9..a8cb8a96ddaf 100644
+--- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
++++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+@@ -329,7 +329,7 @@ static int get_syms(char ***symsp, size_t *cntp)
+ 	struct hashmap *map;
+ 	char buf[256];
+ 	FILE *f;
+-	int err;
++	int err = 0;
  
--	token = malloc(sizeof(struct nstoken));
-+	token = calloc(1, sizeof(struct nstoken));
- 	if (!ASSERT_OK_PTR(token, "malloc token"))
- 		return NULL;
+ 	/*
+ 	 * The available_filter_functions contains many duplicates,
+@@ -404,7 +404,7 @@ static void test_bench_attach(void)
+ 	double attach_delta, detach_delta;
+ 	struct bpf_link *link = NULL;
+ 	char **syms = NULL;
+-	size_t cnt, i;
++	size_t cnt = 0, i;
  
+ 	if (!ASSERT_OK(get_syms(&syms, &cnt), "get_syms"))
+ 		return;
+diff --git a/tools/testing/selftests/bpf/prog_tests/usdt.c b/tools/testing/selftests/bpf/prog_tests/usdt.c
+index 5f733d50b0d7..9ad9da0f215e 100644
+--- a/tools/testing/selftests/bpf/prog_tests/usdt.c
++++ b/tools/testing/selftests/bpf/prog_tests/usdt.c
+@@ -12,7 +12,7 @@ int lets_test_this(int);
+ 
+ static volatile int idx = 2;
+ static volatile __u64 bla = 0xFEDCBA9876543210ULL;
+-static volatile short nums[] = {-1, -2, -3, };
++static volatile short nums[] = {-1, -2, -3, -4};
+ 
+ static volatile struct {
+ 	int x;
+diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c b/tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c
+index fb77a123fe89..874a846e298c 100644
+--- a/tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c
++++ b/tools/testing/selftests/bpf/prog_tests/xdp_synproxy.c
+@@ -63,7 +63,7 @@ static bool expect_str(char *buf, size_t size, const char *str, const char *name
+ static void test_synproxy(bool xdp)
+ {
+ 	int server_fd = -1, client_fd = -1, accept_fd = -1;
+-	char *prog_id, *prog_id_end;
++	char *prog_id = NULL, *prog_id_end;
+ 	struct nstoken *ns = NULL;
+ 	FILE *ctrl_file = NULL;
+ 	char buf[CMD_OUT_BUF_SIZE];
 -- 
 2.30.2
 
