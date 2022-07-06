@@ -2,76 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8BE556920F
-	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 20:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F167569230
+	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 20:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233352AbiGFSom (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Jul 2022 14:44:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56472 "EHLO
+        id S233557AbiGFSvJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jul 2022 14:51:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231715AbiGFSok (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Jul 2022 14:44:40 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F40DD10E9;
-        Wed,  6 Jul 2022 11:44:39 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id z14so14738892pgh.0;
-        Wed, 06 Jul 2022 11:44:39 -0700 (PDT)
+        with ESMTP id S232239AbiGFSvI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Jul 2022 14:51:08 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD2D52A958
+        for <bpf@vger.kernel.org>; Wed,  6 Jul 2022 11:51:07 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id y18so6360445plb.2
+        for <bpf@vger.kernel.org>; Wed, 06 Jul 2022 11:51:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QBWnTGtWCIRK/R2Rxz0hgC6/YznGaVDZLzOauaR/k/s=;
-        b=WOD/8yZgRdtFPzBVVcE5rYoZy5KfnhmXEnQS9Et8gKO8Zjs/YhpFh73qtgXUM5Fo0e
-         2nP6Shv/maiRuRPdGqfhf1tQWKbyOxBv13hOOzskoSviImgwzmvoLtGtDuuvj74hZRNY
-         eM3aDa/Pt38iPYHyQVAGXrlW20nwRKnCB6lXDRJuwHeYRXBe+oz1HoLOFs6Zhz00QTkl
-         TQyR0ax+kc526qC40A356K4ZO3axf6B7To/HUu8bgflGITLsDc99asZxEgT1ZV96OTM7
-         pH24yvN/IAaGgjBAg4ArBqwYhX9pUOCzk13RTMvqtAdixZq5sDT8SAAbie3GUHTYSO2P
-         DSOA==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=qOVYbAeMuUTqqBL9cN7VNIllKUdudIxLEASAJ8q4pSo=;
+        b=kiYMusPRoyf2MXU7Z6Oz6kTe1rl1jQNhCf3sPKcG05Un85jHHFyqHXAI07NeI+Pbo9
+         Td3Kg5Aqf9GCry0uh4Ot6yFRZP6OzBCZ/UFtfc9oF/76q10jquN6ObefAsGn0qeoe+KT
+         kbU50KqYB22AkAghu1TbGnCFVpJI/lZqVYKyoX6Vud0vogmfw9jrZ38u3D4yyJpgvDeH
+         dzkikEE+QhkYSmCLb09G3xfpJ/qbQOOnNAGHso6Fh3a+f0PwuZ0AWwtVBdA3taqAsu/R
+         DgzSP1lI69TSvEWjcaEMoPVpbcds3c2IcO2kA+OS1AXFC378Xjk5TqqM5ZbJvfxtg1ZL
+         LeTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QBWnTGtWCIRK/R2Rxz0hgC6/YznGaVDZLzOauaR/k/s=;
-        b=bhPt+2zUPm5dZvD9nlKorTKn3ux+DgIjdb4WIGuPQyIevoRMkCuIEx8Kag59V0xAxh
-         EROBzM0oKPcvCCz3xATP1ccNMPMn3PrVQ7dFbqgV2k5yD2L9ErdF5LxJt6evbKMmsXbI
-         E4gp7s2D8tgBfSbKik0oKfkyHIv9ewjf1lie2NqISV3ZWsiclZXExrkFIsSr+3LjaIAe
-         RzZilLHvoA9HHzk7GRNad86LfzeiIpHEThtKjgqNd9dTiXw2kNUvu8QRfOKM/poYzeVn
-         2aGZPZwRSet/hT4O0I4RDkPio7W+hgO7VpDaROpscBdY7nLU6ebGllT5cwuelqITdJIc
-         rGyw==
-X-Gm-Message-State: AJIora9BCt4Jj5Kq8LeDgkKhw3C0vx4cyT6sjM227TirkmFZEObbuymZ
-        QLEz3tnbQ2fUvRJneXioyGI=
-X-Google-Smtp-Source: AGRyM1v8v1EviJzZooNw3rpihssTxo2CaorRno8GIJ+dHmIaf7vPw7fxAXRcaU4DCCNya66oFF1IvQ==
-X-Received: by 2002:a65:684a:0:b0:412:78ef:7f87 with SMTP id q10-20020a65684a000000b0041278ef7f87mr7820901pgt.61.1657133079430;
-        Wed, 06 Jul 2022 11:44:39 -0700 (PDT)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=qOVYbAeMuUTqqBL9cN7VNIllKUdudIxLEASAJ8q4pSo=;
+        b=41x6DquiBHedt+NQ29uloKe4uOs+W0NpMFqv0cQHbq1Npfy3iav/ay2wPU/nEg544B
+         ZO1y7Ds9YkRn28Y/VOIJ7HC8CdZW8KVyyjjxSiepDFP3x/QBqBCNfZ8XttIYAYLkWqJc
+         QqIpvvCK4JIe/xYKo7gfQdmq5I8dn0Hb8GhtuSs2aq1QjWjxc2lIWGGWfSC5egpahyiO
+         GZ/uFeQy8BjQSGvl6g17PpNgcQsEJGbnjxZ5SrhCxHmxoY0yl5tsd103PKGc+HC3Jbhb
+         gMnMvVDMXUeNKTfh4aQ8OEOR36QLHJoGPIFH2fy0TNcv5L88jGwKXI6vjRbqXuwWmNei
+         I5zg==
+X-Gm-Message-State: AJIora/7P0pp4FZi0MqtWmGb2xcRQeKwufzuKiSrwKzenqUfaYBpP99P
+        XhfeviUaeLEGmcv3d3rcE4Y=
+X-Google-Smtp-Source: AGRyM1uFB0iL8cEYKSKELNOUTDYbEHc7nn7WNdRd8QL5L5frD1AGt8s2utJ8xxPHqgESUjcvOAfhng==
+X-Received: by 2002:a17:902:cccf:b0:168:e13c:5cd9 with SMTP id z15-20020a170902cccf00b00168e13c5cd9mr48567088ple.53.1657133467180;
+        Wed, 06 Jul 2022 11:51:07 -0700 (PDT)
 Received: from MacBook-Pro-3.local ([2620:10d:c090:500::2:8597])
-        by smtp.gmail.com with ESMTPSA id a9-20020aa78649000000b0052531985e3esm25240083pfo.22.2022.07.06.11.44.37
+        by smtp.gmail.com with ESMTPSA id ij7-20020a170902ab4700b0016bd8a76f67sm8603745plb.67.2022.07.06.11.51.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Jul 2022 11:44:38 -0700 (PDT)
-Date:   Wed, 6 Jul 2022 11:44:36 -0700
+        Wed, 06 Jul 2022 11:51:06 -0700 (PDT)
+Date:   Wed, 6 Jul 2022 11:51:03 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org, Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v5 1/8] bpf: Add support for forcing kfunc args
- to be referenced
-Message-ID: <20220706184436.mf7oeexxfwswgdqf@MacBook-Pro-3.local>
-References: <20220623192637.3866852-1-memxor@gmail.com>
- <20220623192637.3866852-2-memxor@gmail.com>
- <20220629032304.h5ck7tizbfehiwut@macbook-pro-3.dhcp.thefacebook.com>
- <CAP01T77fsU8u6GP+HXfQQ_gdu+kp3Am1+Ao-mNYULjDazHs38Q@mail.gmail.com>
- <CAP01T75cVLehQbkE3LLwSG5wVecNz0FH9QZpmzoqs-e8YKpGtg@mail.gmail.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Christoph Hellwig <hch@infradead.org>, davem@davemloft.net,
+        daniel@iogearbox.net, andrii@kernel.org, tj@kernel.org,
+        kafai@fb.com, bpf@vger.kernel.org, kernel-team@fb.com,
+        linux-mm@kvack.org, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH bpf-next 0/5] bpf: BPF specific memory allocator.
+Message-ID: <20220706185103.jdybh757u5esokt3@MacBook-Pro-3.local>
+References: <YrlWLLDdvDlH0C6J@infradead.org>
+ <YsNOzwNztBsBcv7Q@casper.infradead.org>
+ <20220706175034.y4hw5gfbswxya36z@MacBook-Pro-3.local>
+ <YsXMmBf9Xsp61I0m@casper.infradead.org>
+ <20220706180525.ozkxnbifgd4vzxym@MacBook-Pro-3.local.dhcp.thefacebook.com>
+ <YsXSqSMxsvq13dV4@casper.infradead.org>
+ <20220706182635.ccgt6zcr6bkd3rjc@MacBook-Pro-3.local>
+ <YsXVBnLUiLSFxge4@casper.infradead.org>
+ <20220706183619.3mmtsyi72c6ss5tu@MacBook-Pro-3.local>
+ <YsXXLDy3u1AXDuGc@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAP01T75cVLehQbkE3LLwSG5wVecNz0FH9QZpmzoqs-e8YKpGtg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YsXXLDy3u1AXDuGc@casper.infradead.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -82,83 +87,55 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jul 03, 2022 at 11:04:22AM +0530, Kumar Kartikeya Dwivedi wrote:
-> On Sun, 3 Jul 2022 at 10:54, Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
-> >
-> > On Wed, 29 Jun 2022 at 08:53, Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Fri, Jun 24, 2022 at 12:56:30AM +0530, Kumar Kartikeya Dwivedi wrote:
-> > > > Similar to how we detect mem, size pairs in kfunc, teach verifier to
-> > > > treat __ref suffix on argument name to imply that it must be a
-> > > > referenced pointer when passed to kfunc. This is required to ensure that
-> > > > kfunc that operate on some object only work on acquired pointers and not
-> > > > normal PTR_TO_BTF_ID with same type which can be obtained by pointer
-> > > > walking. Release functions need not specify such suffix on release
-> > > > arguments as they are already expected to receive one referenced
-> > > > argument.
-> > > >
-> > > > Note that we use strict type matching when a __ref suffix is present on
-> > > > the argument.
-> > > ...
-> > > > +             /* Check if argument must be a referenced pointer, args + i has
-> > > > +              * been verified to be a pointer (after skipping modifiers).
-> > > > +              */
-> > > > +             arg_ref = is_kfunc_arg_ref(btf, args + i);
-> > > > +             if (is_kfunc && arg_ref && !reg->ref_obj_id) {
-> > > > +                     bpf_log(log, "R%d must be referenced\n", regno);
-> > > > +                     return -EINVAL;
-> > > > +             }
-> > > > +
-> > >
-> > > imo this suffix will be confusing to use.
-> > > If I understand the intent the __ref should only be used
-> > > in acquire (and other) kfuncs that also do release.
-> > > Adding __ref to actual release kfunc will be a nop.
-> > > It will be checked, but it's not necessary.
-> > >
-> > > At the end
-> > > +struct nf_conn *bpf_ct_insert_entry(struct nf_conn___init *nfct__ref)
-> > > will behave like kptr_xchg with exception that kptr_xchg takes any btf_id
-> > > while here it's fixed.
-> > >
-> > > The code:
-> > >  if (rel && reg->ref_obj_id)
-> > >         arg_type |= OBJ_RELEASE;
-> > > should probably be updated with '|| arg_ref'
-> > > to make sure reg->off == 0 ?
-> > > That looks like a small bug.
-> > >
-> >
-> > Indeed, I missed that. Thanks for catching it.
-> >
-> > > But stepping back... why __ref is needed ?
-> > > We can add bpf_ct_insert_entry to acq and rel sets and it should work?
-> > > I'm assuming you're doing the orthogonal cleanup of resolve_btfid,
-> > > so we will have a single kfunc set where bpf_ct_insert_entry will
-> > > have both acq and rel flags.
-> > > I'm surely missing something.
-> >
-> > It is needed to prevent the case where someone might do:
-> > ct = bpf_xdp_ct_alloc(...);
-> > bpf_ct_set_timeout(ct->master, ...);
-> >
+On Wed, Jul 06, 2022 at 07:40:44PM +0100, Matthew Wilcox wrote:
+> On Wed, Jul 06, 2022 at 11:36:19AM -0700, Alexei Starovoitov wrote:
+> > On Wed, Jul 06, 2022 at 07:31:34PM +0100, Matthew Wilcox wrote:
+> > > On Wed, Jul 06, 2022 at 11:26:35AM -0700, Alexei Starovoitov wrote:
+> > > > On Wed, Jul 06, 2022 at 07:21:29PM +0100, Matthew Wilcox wrote:
+> > > > > On Wed, Jul 06, 2022 at 11:05:25AM -0700, Alexei Starovoitov wrote:
+> > > > > > On Wed, Jul 06, 2022 at 06:55:36PM +0100, Matthew Wilcox wrote:
+> > > > > > > For example, I assume that a BPF program
+> > > > > > > has a fairly tight limit on how much memory it can cause to be allocated.
+> > > > > > > Right?
+> > > > > > 
+> > > > > > No. It's constrained by memcg limits only. It can allocate gigabytes.
+> > > > > 
+> > > > > I'm confused.  A BPF program is limited to executing 4096 insns and
+> > > > > using a maximum of 512 bytes of stack space, but it can allocate an
+> > > > > unlimited amount of heap?  That seems wrong.
+> > > > 
+> > > > 4k insn limit was lifted years ago.
+> > > 
+> > > You might want to update the documentation.
+> > > https://www.kernel.org/doc/html/latest/bpf/bpf_design_QA.html
+> > > still says 4096.
+> > 
+> > No. Please read what you're quoting first.
 > 
-> A better illustration is probably bpf_xdp_ct_lookup and
-> bpf_ct_change_timeout, since here the type for ct->master won't match
-> with bpf_ct_set_timeout, but the point is the same.
+> I did read it.  It says
+> 
+> : The only limit known to the user space is BPF_MAXINSNS (4096). It’s the
+> : maximum number of instructions that the unprivileged bpf program can have.
+> 
+> It really seems pretty clear to me.  You're saying my understanding
+> is wrong.  So it must be badly written.  Even now, I don't understand
+> how I've misunderstood it.
 
-Sorry, I'm still not following.
-Didn't we make pointer walking 'untrusted' so ct->master cannot be
-passed into any kfunc?
+huh? Still missing 'unprivileged' in the above ?
+and completely ignoring the rest of the paragraph in the link above?
 
-> > Or just obtain PTR_TO_BTF_ID by pointer walking and try to pass it in
-> > to bpf_ct_set_timeout.
-> >
-> > __ref allows an argument on a non-release kfunc to have checks like a
-> > release argument, i.e. refcounted, reg->off == 0 (var_off is already
-> > checked to be 0), so use the original pointer that was obtained from
-> > an acquire kfunc. As you noted, it isn't strictly needed on release
-> > kfunc (like bpf_ct_insert_entry) because the same checks happen for it
-> > anyway. But both timeout and status helpers should use it if they
-> > "operate" on the acquired ct (from alloc, insert, or lookup).
+> > > > bpf progs are pretty close to be at parity with kernel modules.
+> > > > Except that they are safe, portable, and users have full visibility into them.
+> > > > It's not a blob of bytes unlike .ko.
+> > > 
+> > > It doesn't seem unreasonable to expect them to behave like kernel
+> > > modules, then.  If they want to allocate memory in NMI context, then
+> > > they should get to preallocate it before they go into NMI context.
+> > 
+> > You're still missing 'any context' part from the previous email.
+> 
+> Really, this is not a productive way to respond.  I want to help
+> and you're just snarling at me.
+
+To help you need to understand what bpf is while you're failing
+to read the doc.
