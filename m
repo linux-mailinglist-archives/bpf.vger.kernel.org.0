@@ -2,69 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CFFE567D5F
-	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 06:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8F8567D65
+	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 06:38:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229477AbiGFEeW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Jul 2022 00:34:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50872 "EHLO
+        id S229771AbiGFEgl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jul 2022 00:36:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbiGFEeW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Jul 2022 00:34:22 -0400
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CCAB1C109;
-        Tue,  5 Jul 2022 21:34:21 -0700 (PDT)
-Received: by mail-vs1-xe31.google.com with SMTP id k2so4354914vsc.5;
-        Tue, 05 Jul 2022 21:34:21 -0700 (PDT)
+        with ESMTP id S229598AbiGFEgk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Jul 2022 00:36:40 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 064691C112;
+        Tue,  5 Jul 2022 21:36:39 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id r6so6316547edd.7;
+        Tue, 05 Jul 2022 21:36:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=odNzXegTZ8SAvboIVBZVmaUJHo6YFqRbBWWyFG8UAHU=;
-        b=EZV6JfN0d3wIyjBz52X9nbX0eahDoYxLWr87lThxcxFCedWmv+vqi28v3ZsZp3h881
-         z8EeYYU6DHFVWvSrKRqs0utVkiBFEMOESC8MVgJ3WvRqjeIoJ/8EjdTsuFowmqui8/Qa
-         ZZcRZkGHlsqUrP5xpF+Voi5cDIgJWOeb0u88G3BxID+uaNISKwCCkrK/HbUOn7MxoMyk
-         y8xoqfUk1f1Ds7ztO+gv3neE9gRPDhTHJruO0322Q0JHMRldX40B97Z52TmnxIGNNuG8
-         /3avu/HSeTR7WDFitSW3X1AcZJEkHfkFNByfjHntiDnxZXLkqvozrZRWRUonvNuq/WMp
-         Qfeg==
+         :cc:content-transfer-encoding;
+        bh=roEa9y/JyR3AGBbWSIspFYG+c2zhm3jiZefMMjibTR8=;
+        b=dLH6AzlcYLRKTcR0W16dPPOi9n4ycZtmRoxY9MqRxgi67/LHPW8ESymWi0kF/ByS7b
+         Q6l7BMYW4UT/Gghg8a5SZGKrzuvutKQA65LLpBiX55HU9UVDONybOCmsxYI+4imtLe2H
+         aPDPnTA2rUkOIohSBccIcp6dRtueGHnbBml92jfOwYXtQFdxxSS3TQ4yjj3uRn3aYHPS
+         SDelwQg59fv090SXNd+CAtyZz5W526n8sC5lgNkpxOPtJ+na6ZmPLDJYWQCIFQEePRo0
+         fzJ7CQfK13z/ltEmKWC/qUNwgA3NOarFChPPtwta9RDjm8PscNEcqL4wQgEUh1/hiuGG
+         1O8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=odNzXegTZ8SAvboIVBZVmaUJHo6YFqRbBWWyFG8UAHU=;
-        b=W20KPSbogjc4plbcpM9UUebrqN8Fssh5kE+6sKgpTtbe1f1+vwaOB22nXtNtYreXj+
-         ceXDkVogNOTO/E9p+eQA6eYegj7eKvD2c+X8B1erQoGNWrBUEaYvwJ2W4Wj6Lz/ZPqdD
-         rzYJFMr8blWyooGp3Tn5XZag6wTN8238z6xEnYRbs6X7Do2TEqeRxPJAw1LScc74NUDA
-         N8NhR7PhbxOsHdr6hC2HbdRPkQo72JKOeRl585hvr1iMHLN6IZlj0nnDnzZQlIHT3b2c
-         nnEF/zLk8hDcYBPnmA3l+w2iOhPJXzfm5oXw+eFlBl0BZxYrvM/OnCpVEnJk8mV3ji2F
-         geog==
-X-Gm-Message-State: AJIora8hwL4CaBhW9lSliI44YUk8jF7s7dNTCOBXjZA75xCqPAO4uclR
-        2ffI9w701NeQd/yH7djKTqI9S3pJ6Dy4GzLIjQQ=
-X-Google-Smtp-Source: AGRyM1vKG3TeKI6Jmjnl3f4kwZsEhNRJ+PgYhDhbMoR1jjY9KsgZmU4TRnrB+rR8Ri36ItTnazYXaWSurlKeAxwv4D4=
-X-Received: by 2002:a67:ffc8:0:b0:357:8ec:4b42 with SMTP id
- w8-20020a67ffc8000000b0035708ec4b42mr1611294vsq.16.1657082060237; Tue, 05 Jul
- 2022 21:34:20 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=roEa9y/JyR3AGBbWSIspFYG+c2zhm3jiZefMMjibTR8=;
+        b=ai+TyA2vH4I95+CLn3HwsziHA24ekzQPXcNrsaXPo58mwoQaW/azDwhGL18NSvp0vz
+         /axZ10Q72OfxMN8wpGLIKrKDfruC1nt82/ndguqICuW+xb4M1dfd7DA2HvGbO3M2gTW2
+         112T4mZNt5+5K1xpQJZApv6ibk8rAD4+uLHQ3DFFhT0dS0udvv9HgpmfYyIwkI+PsLTj
+         mEKTr+rRkP3o1BeBCFS46rQ0DwRmuKYS4hli1hd1VdIOouFu2vQu/Fi52qFSAm4RDzNs
+         zIeNiNwlIQUpGpW6JUpq4kJ9X4C6EKX61o+5y2ojTZ9MtJFwpia3sSUa717zhPckJsxJ
+         KkeQ==
+X-Gm-Message-State: AJIora838uCv8xnSw+PXzJPsOM0YuUdCjhAArD7xlRMFpVL42mYitf+5
+        uZn6GSGj+ZO+UOV+GsKDVPmZMOOff/cIWxGAIXU=
+X-Google-Smtp-Source: AGRyM1scf0x9uXz7Fzdg3W+qR1UxRi6390+fzDX4/2w249BTS0vQcLdvdZID8wckRN9/UKHaHmHXKWhg6noFn1RAVMc=
+X-Received: by 2002:a05:6402:c92:b0:43a:7177:5be7 with SMTP id
+ cm18-20020a0564020c9200b0043a71775be7mr13269711edb.224.1657082197478; Tue, 05
+ Jul 2022 21:36:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220702033521.64630-1-roman.gushchin@linux.dev>
- <CALvZod7TGhWtcRD6HeEx90T2+Rod-yamq9i+WbEQUKwNFTi-1A@mail.gmail.com>
- <YsBmoqEBCa7ra7w2@castle> <YsMCMveSdiYX/2eH@dhcp22.suse.cz>
- <YsSj6rZmUkR8amT2@castle> <CALOAHbAb9DT6ihyxTm-4FCUiqiAzRSUHJw9erc+JTKVT9p8tow@mail.gmail.com>
- <YsUBQsTjVuXvt1Wr@castle> <CALOAHbDjRzySCHeMVHtVDe=Ji+qh=n0pT4CwiAM5Pahi2-QNCQ@mail.gmail.com>
- <YsUH7pgBVnWSkC1q@castle> <CALOAHbA+C2nM4qSj2yPfbdzbqZ-UdCpg5QP0+f5HbEtpi0ZZGQ@mail.gmail.com>
- <YsUNPS5mpvRWFWC6@castle>
-In-Reply-To: <YsUNPS5mpvRWFWC6@castle>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Wed, 6 Jul 2022 12:33:43 +0800
-Message-ID: <CALOAHbCGZ4Rjm6BKSnm6GzYFeBAb++6W2RYmk7m1f4As-r6+1w@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcontrol: do not miss MEMCG_MAX events for enforced allocations
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     Michal Hocko <mhocko@suse.com>, Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        bpf <bpf@vger.kernel.org>
+References: <20220609062412.3950380-1-james.hilliard1@gmail.com>
+ <CAEf4BzbL8ivLH=HZDFTNyCTFjhWrWLcY3K34Ef+q4Pr+oDe_Gw@mail.gmail.com>
+ <CADvTj4opMh978fMBV7cH89wbS1N_PK31AybZJ5NUacnp4kBeqg@mail.gmail.com>
+ <CAEf4BzbkckyfKuhu9CV9wofCHeYa83NnfQNeK82pXLe-s8zhxA@mail.gmail.com>
+ <CADvTj4q5BtrhUwvxdke0NFDRBh1bUzPRd4iGoGvt_HaDp2V7MQ@mail.gmail.com>
+ <CAEf4BzZkSXLqFz4Cjx4_Z_0sxBBSd-SEhT8u+3EZVccqH7qXkg@mail.gmail.com> <CADvTj4ozq_Q0m+aKhQ+yfuGdrJOeSyt=4ORt5AjtZW61Z6OosA@mail.gmail.com>
+In-Reply-To: <CADvTj4ozq_Q0m+aKhQ+yfuGdrJOeSyt=4ORt5AjtZW61Z6OosA@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 5 Jul 2022 21:36:26 -0700
+Message-ID: <CAEf4Bzap74qnzpYHbpSUS+c5JfA4Mh=sfr6rhnAm-so2qEYkRw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/1] libbpf: fix broken gcc SEC pragma macro
+To:     James Hilliard <james.hilliard1@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -75,147 +78,379 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 6, 2022 at 12:19 PM Roman Gushchin <roman.gushchin@linux.dev> wrote:
+On Fri, Jul 1, 2022 at 10:12 AM James Hilliard
+<james.hilliard1@gmail.com> wrote:
 >
-> On Wed, Jul 06, 2022 at 12:02:49PM +0800, Yafang Shao wrote:
-> > On Wed, Jul 6, 2022 at 11:56 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
+> On Thu, Jun 30, 2022 at 3:51 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Mon, Jun 27, 2022 at 9:43 PM James Hilliard
+> > <james.hilliard1@gmail.com> wrote:
 > > >
-> > > On Wed, Jul 06, 2022 at 11:42:50AM +0800, Yafang Shao wrote:
-> > > > On Wed, Jul 6, 2022 at 11:28 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
-> > > > >
-> > > > > On Wed, Jul 06, 2022 at 10:46:48AM +0800, Yafang Shao wrote:
-> > > > > > On Wed, Jul 6, 2022 at 4:49 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
-> > > > > > >
-> > > > > > > On Mon, Jul 04, 2022 at 05:07:30PM +0200, Michal Hocko wrote:
-> > > > > > > > On Sat 02-07-22 08:39:14, Roman Gushchin wrote:
-> > > > > > > > > On Fri, Jul 01, 2022 at 10:50:40PM -0700, Shakeel Butt wrote:
-> > > > > > > > > > On Fri, Jul 1, 2022 at 8:35 PM Roman Gushchin <roman.gushchin@linux.dev> wrote:
-> > > > > > > > > > >
-> > > > > > > > > > > Yafang Shao reported an issue related to the accounting of bpf
-> > > > > > > > > > > memory: if a bpf map is charged indirectly for memory consumed
-> > > > > > > > > > > from an interrupt context and allocations are enforced, MEMCG_MAX
-> > > > > > > > > > > events are not raised.
-> > > > > > > > > > >
-> > > > > > > > > > > It's not/less of an issue in a generic case because consequent
-> > > > > > > > > > > allocations from a process context will trigger the reclaim and
-> > > > > > > > > > > MEMCG_MAX events. However a bpf map can belong to a dying/abandoned
-> > > > > > > > > > > memory cgroup, so it might never happen.
-> > > > > > > > > >
-> > > > > > > > > > The patch looks good but the above sentence is confusing. What might
-> > > > > > > > > > never happen? Reclaim or MAX event on dying memcg?
-> > > > > > > > >
-> > > > > > > > > Direct reclaim and MAX events. I agree it might be not clear without
-> > > > > > > > > looking into the code. How about something like this?
-> > > > > > > > >
-> > > > > > > > > "It's not/less of an issue in a generic case because consequent
-> > > > > > > > > allocations from a process context will trigger the direct reclaim
-> > > > > > > > > and MEMCG_MAX events will be raised. However a bpf map can belong
-> > > > > > > > > to a dying/abandoned memory cgroup, so there will be no allocations
-> > > > > > > > > from a process context and no MEMCG_MAX events will be triggered."
-> > > > > > > >
-> > > > > > > > Could you expand little bit more on the situation? Can those charges to
-> > > > > > > > offline memcg happen indefinetely?
-> > > > > > >
-> > > > > > > Yes.
-> > > > > > >
-> > > > > > > > How can it ever go away then?
-> > > > > > >
-> > > > > > > Bpf map should be deleted by a user first.
-> > > > > > >
-> > > > > >
-> > > > > > It can't apply to pinned bpf maps, because the user expects the bpf
-> > > > > > maps to continue working after the user agent exits.
-> > > > > >
-> > > > > > > > Also is this something that we actually want to encourage?
-> > > > > > >
-> > > > > > > Not really. We can implement reparenting (probably objcg-based), I think it's
-> > > > > > > a good idea in general. I can take a look, but can't promise it will be fast.
-> > > > > > >
-> > > > > > > In thory we can't forbid deleting cgroups with associated bpf maps, but I don't
-> > > > > > > thinks it's a good idea.
-> > > > > > >
-> > > > > >
-> > > > > > Agreed. It is not a good idea.
-> > > > > >
-> > > > > > > > In other words shouldn't those remote charges be redirected when the
-> > > > > > > > target memcg is offline?
-> > > > > > >
-> > > > > > > Reparenting is the best answer I have.
-> > > > > > >
-> > > > > >
-> > > > > > At the cost of increasing the complexity of deployment, that may not
-> > > > > > be a good idea neither.
-> > > > >
-> > > > > What do you mean? Can you please elaborate on it?
-> > > > >
+> > > On Mon, Jun 27, 2022 at 5:16 PM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
 > > > >
-> > > >                    parent memcg
-> > > >                          |
-> > > >                     bpf memcg   <- limit the memory size of bpf
-> > > > programs
-> > > >                         /           \
-> > > >          bpf user agent     pinned bpf program
+> > > > On Thu, Jun 9, 2022 at 4:27 PM James Hilliard <james.hilliard1@gmai=
+l.com> wrote:
+> > > > >
+> > > > > On Thu, Jun 9, 2022 at 12:13 PM Andrii Nakryiko
+> > > > > <andrii.nakryiko@gmail.com> wrote:
+> > > > > >
+> > > > > > On Wed, Jun 8, 2022 at 11:24 PM James Hilliard
+> > > > > > <james.hilliard1@gmail.com> wrote:
+> > > > > > >
+> > > > > > > It seems the gcc preprocessor breaks unless pragmas are wrapp=
+ed
+> > > > > > > individually inside macros when surrounding __attribute__.
+> > > > > > >
+> > > > > > > Fixes errors like:
+> > > > > > > error: expected identifier or '(' before '#pragma'
+> > > > > > >   106 | SEC("cgroup/bind6")
+> > > > > > >       | ^~~
+> > > > > > >
+> > > > > > > error: expected '=3D', ',', ';', 'asm' or '__attribute__' bef=
+ore '#pragma'
+> > > > > > >   114 | char _license[] SEC("license") =3D "GPL";
+> > > > > > >       | ^~~
+> > > > > > >
+> > > > > > > Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+> > > > > > > ---
+> > > > > > > Changes v2 -> v3:
+> > > > > > >   - just fix SEC pragma
+> > > > > > > Changes v1 -> v2:
+> > > > > > >   - replace typeof with __typeof__ instead of changing pragma=
+ macros
+> > > > > > > ---
+> > > > > > >  tools/lib/bpf/bpf_helpers.h | 7 ++++---
+> > > > > > >  1 file changed, 4 insertions(+), 3 deletions(-)
+> > > > > > >
+> > > > > > > diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_=
+helpers.h
+> > > > > > > index fb04eaf367f1..66d23c47c206 100644
+> > > > > > > --- a/tools/lib/bpf/bpf_helpers.h
+> > > > > > > +++ b/tools/lib/bpf/bpf_helpers.h
+> > > > > > > @@ -22,11 +22,12 @@
+> > > > > > >   * To allow use of SEC() with externs (e.g., for extern .map=
+s declarations),
+> > > > > > >   * make sure __attribute__((unused)) doesn't trigger compila=
+tion warning.
+> > > > > > >   */
+> > > > > > > +#define DO_PRAGMA(x) _Pragma(#x)
+> > > > > > >  #define SEC(name) \
+> > > > > > > -       _Pragma("GCC diagnostic push")                       =
+               \
+> > > > > > > -       _Pragma("GCC diagnostic ignored \"-Wignored-attribute=
+s\"")          \
+> > > > > > > +       DO_PRAGMA("GCC diagnostic push")                     =
+               \
+> > > > > > > +       DO_PRAGMA("GCC diagnostic ignored \"-Wignored-attribu=
+tes\"")        \
+> > > > > > >         __attribute__((section(name), used))                 =
+               \
+> > > > > > > -       _Pragma("GCC diagnostic pop")                        =
+               \
+> > > > > > > +       DO_PRAGMA("GCC diagnostic pop")                      =
+               \
+> > > > > > >
+> > > > > >
+> > > > > > I'm not going to accept this unless I can repro it in the first=
+ place.
+> > > > > > Using -std=3Dc17 doesn't trigger such issue. Please provide the=
+ repro
+> > > > > > first. Building systemd is not a repro, unfortunately. Please t=
+ry to
+> > > > > > do it based on libbpf-bootstrap ([0])
+> > > > > >
+> > > > > >   [0] https://github.com/libbpf/libbpf-bootstrap
+> > > > >
+> > > > > Seems to reproduce just fine already there with:
+> > > > > https://github.com/libbpf/libbpf-bootstrap/blob/31face36d469a0e3e=
+4c4ac1cafc66747d3150930/examples/c/minimal.bpf.c
+> > > > >
+> > > > > See here:
+> > > > > $ /home/buildroot/buildroot/output/per-package/libbpf/host/bin/bp=
+f-gcc
+> > > > > -Winline -O2 -mframe-limit=3D32767 -mco-re -gbtf -std=3Dgnu17 -v
+> > > > > -D__x86_64__ -mlittle-endian -I
+> > > > > /home/buildroot/buildroot/output/per-package/libbpf/host/x86_64-b=
+uildroot-linux-gnu/sysroot/usr/include
+> > > > > minimal.bpf.c -o minimal.bpf.o
+> > > > > Using built-in specs.
+> > > > > COLLECT_GCC=3D/home/buildroot/buildroot/output/per-package/libbpf=
+/host/bin/bpf-gcc.br_real
+> > > > > COLLECT_LTO_WRAPPER=3D/home/buildroot/buildroot/output/per-packag=
+e/libbpf/host/bin/../libexec/gcc/bpf-buildroot-none/12.1.0/lto-wrapper
+> > > > > Target: bpf-buildroot-none
+> > > > > Configured with: ./configure
+> > > > > --prefix=3D/home/buildroot/buildroot/output/per-package/host-gcc-=
+bpf/host
+> > > > > --sysconfdir=3D/home/buildroot/buildroot/output/per-package/host-=
+gcc-bpf/host/etc
+> > > > > --localstatedir=3D/home/buildroot/buildroot/output/per-package/ho=
+st-gcc-bpf/host/var
+> > > > > --enable-shared --disable-static --disable-gtk-doc
+> > > > > --disable-gtk-doc-html --disable-doc --disable-docs
+> > > > > --disable-documentation --disable-debug --with-xmlto=3Dno --with-=
+fop=3Dno
+> > > > > --disable-nls --disable-dependency-tracking
+> > > > > --target=3Dbpf-buildroot-none
+> > > > > --prefix=3D/home/buildroot/buildroot/output/per-package/host-gcc-=
+bpf/host
+> > > > > --sysconfdir=3D/home/buildroot/buildroot/output/per-package/host-=
+gcc-bpf/host/etc
+> > > > > --enable-languages=3Dc --with-gnu-ld --enable-static
+> > > > > --disable-decimal-float --disable-gcov --disable-libssp
+> > > > > --disable-multilib --disable-shared
+> > > > > --with-gmp=3D/home/buildroot/buildroot/output/per-package/host-gc=
+c-bpf/host
+> > > > > --with-mpc=3D/home/buildroot/buildroot/output/per-package/host-gc=
+c-bpf/host
+> > > > > --with-mpfr=3D/home/buildroot/buildroot/output/per-package/host-g=
+cc-bpf/host
+> > > > > --with-pkgversion=3D'Buildroot 2022.05-118-ge052166011-dirty'
+> > > > > --with-bugurl=3Dhttp://bugs.buildroot.net/ --without-zstd --witho=
+ut-isl
+> > > > > --without-cloog
+> > > > > Thread model: single
+> > > > > Supported LTO compression algorithms: zlib
+> > > > > gcc version 12.1.0 (Buildroot 2022.05-118-ge052166011-dirty)
+> > > > > COLLECT_GCC_OPTIONS=3D'--sysroot=3D/home/buildroot/buildroot/outp=
+ut/per-package/libbpf/host/x86_64-buildroot-linux-gnu/sysroot'
+> > > > > '-Winline' '-O2' '-mframe-limit=3D32767' '-mco-re' '-gbtf' '-std=
+=3Dgnu17'
+> > > > > '-v' '-D' '__x86_64__' '-mlittle-endian' '-I'
+> > > > > '/home/buildroot/buildroot/output/per-package/libbpf/host/x86_64-=
+buildroot-linux-gnu/sysroot/usr/include'
+> > > > > '-o' 'minimal.bpf.o' '-dumpdir' 'minimal.bpf.o-'
+> > > > >  /home/buildroot/buildroot/output/per-package/libbpf/host/bin/../=
+libexec/gcc/bpf-buildroot-none/12.1.0/cc1
+> > > > > -quiet -v -I /home/buildroot/buildroot/output/per-package/libbpf/=
+host/x86_64-buildroot-linux-gnu/sysroot/usr/include
+> > > > > -iprefix /home/buildroot/buildroot/output/per-package/libbpf/host=
+/bin/../lib/gcc/bpf-buildroot-none/12.1.0/
+> > > > > -isysroot /home/buildroot/buildroot/output/per-package/libbpf/hos=
+t/x86_64-buildroot-linux-gnu/sysroot
+> > > > > -D __x86_64__ minimal.bpf.c -quiet -dumpdir minimal.bpf.o- -dumpb=
+ase
+> > > > > minimal.bpf.c -dumpbase-ext .c -mframe-limit=3D32767 -mco-re
+> > > > > -mlittle-endian -gbtf -O2 -Winline -std=3Dgnu17 -version -o
+> > > > > /tmp/cct4AXvg.s
+> > > > > GNU C17 (Buildroot 2022.05-118-ge052166011-dirty) version 12.1.0
+> > > > > (bpf-buildroot-none)
+> > > > >     compiled by GNU C version 12.1.0, GMP version 6.2.1, MPFR ver=
+sion
+> > > > > 4.1.0, MPC version 1.2.1, isl version none
+> > > > > GGC heuristics: --param ggc-min-expand=3D100 --param ggc-min-heap=
+size=3D131072
+> > > > > ignoring nonexistent directory
+> > > > > "/home/buildroot/buildroot/output/per-package/libbpf/host/bin/../=
+lib/gcc/bpf-buildroot-none/12.1.0/../../../../bpf-buildroot-none/sys-includ=
+e"
+> > > > > ignoring nonexistent directory
+> > > > > "/home/buildroot/buildroot/output/per-package/libbpf/host/bin/../=
+lib/gcc/bpf-buildroot-none/12.1.0/../../../../bpf-buildroot-none/include"
+> > > > > ignoring duplicate directory
+> > > > > "/home/buildroot/buildroot/output/per-package/libbpf/host/bin/../=
+lib/gcc/../../lib/gcc/bpf-buildroot-none/12.1.0/include"
+> > > > > ignoring duplicate directory
+> > > > > "/home/buildroot/buildroot/output/per-package/libbpf/host/bin/../=
+lib/gcc/../../lib/gcc/bpf-buildroot-none/12.1.0/include-fixed"
+> > > > > ignoring nonexistent directory
+> > > > > "/home/buildroot/buildroot/output/per-package/libbpf/host/bin/../=
+lib/gcc/../../lib/gcc/bpf-buildroot-none/12.1.0/../../../../bpf-buildroot-n=
+one/sys-include"
+> > > > > ignoring nonexistent directory
+> > > > > "/home/buildroot/buildroot/output/per-package/libbpf/host/bin/../=
+lib/gcc/../../lib/gcc/bpf-buildroot-none/12.1.0/../../../../bpf-buildroot-n=
+one/include"
+> > > > > #include "..." search starts here:
+> > > > > #include <...> search starts here:
+> > > > >  /home/buildroot/buildroot/output/per-package/libbpf/host/x86_64-=
+buildroot-linux-gnu/sysroot/usr/include
+> > > > >  /home/buildroot/buildroot/output/per-package/libbpf/host/bin/../=
+lib/gcc/bpf-buildroot-none/12.1.0/include
+> > > > >  /home/buildroot/buildroot/output/per-package/libbpf/host/bin/../=
+lib/gcc/bpf-buildroot-none/12.1.0/include-fixed
+> > > > > End of search list.
+> > > > > GNU C17 (Buildroot 2022.05-118-ge052166011-dirty) version 12.1.0
+> > > > > (bpf-buildroot-none)
+> > > > >     compiled by GNU C version 12.1.0, GMP version 6.2.1, MPFR ver=
+sion
+> > > > > 4.1.0, MPC version 1.2.1, isl version none
+> > > > > GGC heuristics: --param ggc-min-expand=3D100 --param ggc-min-heap=
+size=3D131072
+> > > > > Compiler executable checksum: 9bf241ca1a2dd4ffd7652c5e247c9be8
+> > > > > minimal.bpf.c:6:1: error: expected '=3D', ',', ';', 'asm' or
+> > > > > '__attribute__' before '#pragma'
+> > > > >     6 | char LICENSE[] SEC("license") =3D "Dual BSD/GPL";
+> > > > >       | ^~~
+> > > > > minimal.bpf.c:6:1: error: expected identifier or '(' before '#pra=
+gma'
+> > > > > minimal.bpf.c:10:1: error: expected identifier or '(' before '#pr=
+agma'
+> > > > >    10 | SEC("tp/syscalls/sys_enter_write")
+> > > > >       | ^~~
 > > > >
-> > > > After bpf user agents exit, the bpf memcg will be dead, and then all
-> > > > its memory will be reparented.
-> > > > That is okay for preallocated bpf maps, but not okay for
-> > > > non-preallocated bpf maps.
-> > > > Because the bpf maps will continue to charge, but as all its memory
-> > > > and objcg are reparented, so we have to limit the bpf memory size in
-> > > > the parent as follows,
+> > > > So this is a bug (hard to call this a feature) in gcc (not even
+> > > > bpf-gcc, I could repro with a simple gcc). Is there a bug reported =
+for
+> > > > this somewhere? Are GCC folks aware and working on the fix?
 > > >
-> > > So you're relying on the memory limit of a dying cgroup?
+> > > Yeah, saw a few issues that looked relevant:
+> > > https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D55578
+> > > https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D90400
+> > >
+> > > >
+> > > > What's curious is that the only thing that allows to bypass this is
+> > > > adding #x in macro, having #define DO_PRAGMA(x) _Pragma(x) doesn't
+> > > > help.
+> > > >
+> > > > So ideally GCC can fix this?
+> > >
+> > > From the reported issues...it doesn't sound like a fix is going to be
+> > > coming all that
+> > > soon in GCC.
+> > >
+> > > > But either way your patch as is
+> > > > erroneously passing extra quoted strings to _Pragma().
+> > >
+> > > I recall the extra quotes were needed to make this work, does it work=
+ for you
+> > > without them?
+> > >
+> > > >
+> > > > I'm pondering whether it's just cleaner to define SEC() without
+> > > > pragmas for GCC? It will only cause compiler warning about unnecess=
+ary
+> > > > unused attribute for extern *variable* declarations, which are very
+> > > > rare. Instead of relying on this quirky "fix" approach. Ideally,
+> > > > though, GCC just fixes _Pragma() handling, of course.
+> > >
+> > > I mean, as long as this workaround is reliable I'd say using it is th=
+e
+> > > best option
+> > > for backwards compatibility, especially since it's only needed in one=
+ place from
+> > > the looks of it.
 > >
-> > No. I didn't say it.  What I said is you can't use a dying cgroup to
-> > limit it, that's why I said that we have to use parant memcg to limit
-> > it.
+> > Is it reliable, though? Adding those quotes breaks Clang (I checked)
+> > and it doesn't work as expected with GCC as well. It stops complaining
+> > about #pragma, but it also doesn't push -Wignored-attributes. Here's
+> > the test:
+>
+> Ok, yeah, guess my hack doesn't really work then.
+>
 > >
-> > > Sorry, but I don't think we can seriously discuss such a design.
-> > > A dying cgroup is invisible for a user, a user can't change any tunables,
-> > > they have zero visibility into any stats or charges. Why would you do this?
-> > >
-> > > If you want the cgroup to be an active part of the memory management
-> > > process, don't delete it. There are exactly zero guarantees about what
-> > > happens with a memory cgroup after being deleted by a user, it's all
-> > > implementation details.
-> > >
-> > > Anyway, here is the patch for reparenting bpf maps:
-> > > https://github.com/rgushchin/linux/commit/f57df8bb35770507a4624fe52216b6c14f39c50c
-> > >
-> > > I gonna post it to bpf@ after some testing.
-> > >
+> > #define DO_PRAGMA(x) _Pragma(#x)
 > >
-> > I will take a look at it.
-> > But AFAIK the reparenting can't resolve the problem of non-preallocated maps.
+> > #define SEC(name) \
+> >        DO_PRAGMA("GCC diagnostic push")                                =
+    \
+> >        DO_PRAGMA("GCC diagnostic ignored \"-Wignored-attributes\"")    =
+    \
+> >         __attribute__((section(name), used))                           =
+    \
+> >        DO_PRAGMA("GCC diagnostic pop")                                 =
+    \
+> >
+> > extern int something SEC("whatever");
+> >
+> > int main()
+> > {
+> >         return something;
+> > }
+> >
+> >
+> > Used like this you get same warning:
+> >
+> > $ cc test.c
+> > test.c:10:1: warning: =E2=80=98used=E2=80=99 attribute ignored [-Wattri=
+butes]
+> >    10 | extern int something SEC("whatever");
+> >       | ^~~~~~
+> >
+> > Removing quotes fixes Clang (linker error is expected)
+> >
+> > $ clang test.c
+> > /opt/rh/gcc-toolset-11/root/usr/lib/gcc/x86_64-redhat-linux/11/../../..=
+/../bin/ld:
 >
-> Sorry, what's the problem then?
+> FYI I was testing with GCC 12.1.
 >
-
-The problem is, the bpf memcg or its parent memcg can't be destroyed currently.
-IOW, you have to forbid the user to rmdir.
-
-Reparenting is an improvement for the preallocated bpf map, because
-all its memory is charged, so the memg is useless any more.
-So it can be destroyed and thus the reparenting is an improvement.
-
-But for the non-preallocated bpf map, the memcg still has to do the
-limit work, that means, it can't be destroyed currently.
-If you reparent it, then the parent can't be destroyed. So why not
-forbid destroying the bpf memcg in the first place?
-The reparenting just increases the complexity for this case.
-
-> Michal asked how we can prevent an indefinite pinning of a dying memcg by an associated
-> bpf map being used by other processes, and I guess the objcg-based reparenting is
-> the best answer here. You said it will complicate the deployment? What does it mean?
+> > /tmp/test-4eec0b.o: in function `main':
+> > test.c:(.text+0xe): undefined reference to `something'
+> >
+> > But we get back to the original problem with GCC:
+> >
+> > $ cc test.c
+> > test.c:10:1: error: expected =E2=80=98=3D=E2=80=99, =E2=80=98,=E2=80=99=
+, =E2=80=98;=E2=80=99, =E2=80=98asm=E2=80=99 or =E2=80=98__attribute__=E2=
+=80=99
+> > before =E2=80=98#pragma=E2=80=99
+> >    10 | extern int something SEC("whatever");
+> >       | ^~~
+> > test.c:10:1: error: expected identifier or =E2=80=98(=E2=80=99 before =
+=E2=80=98#pragma=E2=80=99
+> > test.c: In function =E2=80=98main=E2=80=99:
+> > test.c:14:16: error: =E2=80=98something=E2=80=99 undeclared (first use =
+in this function)
+> >    14 |         return something;
+> >       |                ^~~~~~~~~
+> >
+> >
+> > So the best way forward I can propose for you is this:
 >
-
-See my reply above.
-
-> From a user's POV there is no visible difference. What am I missing here?
-> Yes, if we reparent the bpf map, memory.max of the original memory cgroup will
-> not apply, but as I said, if you want it to be effective, don't delete the cgroup.
+> Yeah, probably the best option for now.
 >
+> >
+> >
+> > #if __GNUC__ && !__clang__
+> >
+> > #define SEC(name) __attribute__((section(name), used))
+> >
+> > #else
+> >
+> > #define SEC(name) \
+> >         _Pragma("GCC diagnostic push")                                 =
+     \
+> >         _Pragma("GCC diagnostic ignored \"-Wignored-attributes\"")     =
+     \
+> >         __attribute__((section(name), used))                           =
+     \
+> >         _Pragma("GCC diagnostic pop")                                  =
+     \
+> >
+> > #endif
+> >
+> > extern int something SEC("whatever");
+> >
+> > int main()
+> > {
+> >         return something;
+> > }
+> >
+> >
+> > With some comments explaining how broken GCC is w.r.t. _Pragma. And
+> > just live with compiler warning about used if used with externs.
+>
+> Yeah, do you want to spin a patch with that? I think you probably have a =
+better
+> understanding of the issue at this point than I do.
 
--- 
-Regards
-Yafang
+I'd appreciate it if you do that and test selftests/bpf compilation
+and execution with bpf-gcc (which I don't have locally). Our CI will
+take care of testing Clang compilation. Thanks!
+
+>
+> >
+> >
+> > >
+> > > >
+> > > > >
+> > > > > >
+> > > > > > >  /* Avoid 'linux/stddef.h' definition of '__always_inline'. *=
+/
+> > > > > > >  #undef __always_inline
+> > > > > > > --
+> > > > > > > 2.25.1
+> > > > > > >
