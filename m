@@ -2,196 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1AAF5692B1
-	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 21:38:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFFBC569454
+	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 23:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233687AbiGFTit (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Jul 2022 15:38:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34386 "EHLO
+        id S233127AbiGFV3E (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jul 2022 17:29:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230029AbiGFTis (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Jul 2022 15:38:48 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3036112771;
-        Wed,  6 Jul 2022 12:38:47 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BA8A4620A3;
-        Wed,  6 Jul 2022 19:38:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B18EC341C8;
-        Wed,  6 Jul 2022 19:38:44 +0000 (UTC)
-Date:   Wed, 6 Jul 2022 15:38:43 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Song Liu <song@kernel.org>
-Cc:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <andrii@kernel.org>, <kernel-team@fb.com>,
-        <jolsa@kernel.org>, <mhiramat@kernel.org>
-Subject: Re: [PATCH v2 bpf-next 5/5] bpf: trampoline: support
- FTRACE_OPS_FL_SHARE_IPMODIFY
-Message-ID: <20220706153843.37584b5b@gandalf.local.home>
-In-Reply-To: <20220602193706.2607681-6-song@kernel.org>
-References: <20220602193706.2607681-1-song@kernel.org>
-        <20220602193706.2607681-6-song@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        with ESMTP id S231384AbiGFV3E (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Jul 2022 17:29:04 -0400
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D501EADA
+        for <bpf@vger.kernel.org>; Wed,  6 Jul 2022 14:28:59 -0700 (PDT)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout01.posteo.de (Postfix) with ESMTPS id AB454240029
+        for <bpf@vger.kernel.org>; Wed,  6 Jul 2022 23:28:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1657142937; bh=SeBg86NAwSY3FrGJNKC0samC58A1WFwR4OjhiPQWBFs=;
+        h=From:To:Subject:Date:From;
+        b=JZrBWZ2JA8cKZZAc0+Z/koygz9RRZfCVKJ2EiZIKBa3N/zJY1Aypvj/crlZdhGAbf
+         F6L/f8qX5PqqzAAJ7qkshz/h2iRmjyoeoIvrZUAoJCbzCUUKWqruvvJuuO0xoP4TT6
+         3G3OIyeDYuCCD5o3HcXIG6DV/SumA1Nxu6aijNU3aITHN6crI/aK8I+zAZgL0K/gQG
+         g3MSWkSoHD4mCg0eKbGdbO8vpem4rDFVGNWnSXVqrO2/s90lJ5y/8TmBxebgL50rj6
+         jAZf+G8nNkVbmblPozk1DTWjfDrsEOu0w4ftz9B5kM5LzAkGCaZNb9dbi7UHk7EYDb
+         fmteOIcyjrQgg==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4LdXjN6922z6tmQ;
+        Wed,  6 Jul 2022 23:28:56 +0200 (CEST)
+From:   =?UTF-8?q?Daniel=20M=C3=BCller?= <deso@posteo.net>
+To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, quentin@isovalent.com, kernel-team@fb.com
+Subject: [PATCH bpf-next 0/2] Add KIND_RESTRICT support to bpftool
+Date:   Wed,  6 Jul 2022 21:28:53 +0000
+Message-Id: <20220706212855.1700615-1-deso@posteo.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 2 Jun 2022 12:37:06 -0700
-Song Liu <song@kernel.org> wrote:
+As pointed out in an earlier discussion [0] not all paths in bpftool's
+minimization logic handle the restrict type qualifier properly. Specifically,
+the gen min_core_btf command fails when encountering the corresponding BTF kind
+for a TYPE_EXISTS relocation (TYPE_MATCHES support was added earlier):
+  > Error: unsupported kind: restrict (26)
 
+This patch set fixes this short coming.
 
-> --- a/kernel/bpf/trampoline.c
-> +++ b/kernel/bpf/trampoline.c
-> @@ -27,6 +27,44 @@ static struct hlist_head trampoline_table[TRAMPOLINE_TABLE_SIZE];
->  /* serializes access to trampoline_table */
->  static DEFINE_MUTEX(trampoline_mutex);
->  
-> +#ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
-> +static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mutex);
-> +
-> +static int bpf_tramp_ftrace_ops_func(struct ftrace_ops *ops, enum ftrace_ops_cmd cmd)
-> +{
-> +	struct bpf_trampoline *tr = ops->private;
-> +	int ret;
-> +
-> +	/*
-> +	 * The normal locking order is
-> +	 *    tr->mutex => direct_mutex (ftrace.c) => ftrace_lock (ftrace.c)
-> +	 *
-> +	 * This is called from prepare_direct_functions_for_ipmodify, with
-> +	 * direct_mutex locked. Use mutex_trylock() to avoid dead lock.
-> +	 * Also, bpf_trampoline_update here should not lock direct_mutex.
-> +	 */
-> +	if (!mutex_trylock(&tr->mutex))
+[0]: https://lore.kernel.org/bpf/20220623212205.2805002-1-deso@posteo.net/T/#m4c75205145701762a4b398e0cdb911d5b5305ffc
 
-Can you comment here that returning -EAGAIN will not cause this to repeat.
-That it will change things where the next try will not return -EGAIN?
+Daniel Müller (2):
+  bpftool: Add support for KIND_RESTRICT to gen min_core_btf command
+  selftests/bpf: Add test involving restrict type qualifier
 
-> +		return -EAGAIN;
-> +
-> +	switch (cmd) {
-> +	case FTRACE_OPS_CMD_ENABLE_SHARE_IPMODIFY:
-> +		tr->indirect_call = true;
-> +		ret = bpf_trampoline_update(tr, false /* lock_direct_mutex */);
-> +		break;
-> +	case FTRACE_OPS_CMD_DISABLE_SHARE_IPMODIFY:
-> +		tr->indirect_call = false;
-> +		tr->fops->flags &= ~FTRACE_OPS_FL_SHARE_IPMODIFY;
-> +		ret = bpf_trampoline_update(tr, false /* lock_direct_mutex */);
-> +		break;
-> +	default:
-> +		ret = -EINVAL;
-> +		break;
-> +	};
-> +	mutex_unlock(&tr->mutex);
-> +	return ret;
-> +}
-> +#endif
-> +
-> 
+ tools/bpf/bpftool/gen.c                                   | 1 +
+ tools/testing/selftests/bpf/prog_tests/core_reloc.c       | 2 ++
+ tools/testing/selftests/bpf/progs/core_reloc_types.h      | 8 ++++++--
+ .../selftests/bpf/progs/test_core_reloc_type_based.c      | 5 +++++
+ 4 files changed, 14 insertions(+), 2 deletions(-)
 
-
-> @@ -330,7 +387,7 @@ static struct bpf_tramp_image *bpf_tramp_image_alloc(u64 key, u32 idx)
->  	return ERR_PTR(err);
->  }
->  
-> -static int bpf_trampoline_update(struct bpf_trampoline *tr)
-> +static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mutex)
->  {
->  	struct bpf_tramp_image *im;
->  	struct bpf_tramp_links *tlinks;
-> @@ -363,20 +420,45 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr)
->  	if (ip_arg)
->  		flags |= BPF_TRAMP_F_IP_ARG;
->  
-> +#ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
-> +again:
-> +	if (tr->indirect_call)
-> +		flags |= BPF_TRAMP_F_ORIG_STACK;
-> +#endif
-> +
->  	err = arch_prepare_bpf_trampoline(im, im->image, im->image + PAGE_SIZE,
->  					  &tr->func.model, flags, tlinks,
->  					  tr->func.addr);
->  	if (err < 0)
->  		goto out;
->  
-> +#ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
-> +	if (tr->indirect_call)
-> +		tr->fops->flags |= FTRACE_OPS_FL_SHARE_IPMODIFY;
-> +#endif
-> +
->  	WARN_ON(tr->cur_image && tr->selector == 0);
->  	WARN_ON(!tr->cur_image && tr->selector);
->  	if (tr->cur_image)
->  		/* progs already running at this address */
-> -		err = modify_fentry(tr, tr->cur_image->image, im->image);
-> +		err = modify_fentry(tr, tr->cur_image->image, im->image, lock_direct_mutex);
->  	else
->  		/* first time registering */
->  		err = register_fentry(tr, im->image);
-> +
-> +#ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
-> +	if (err == -EAGAIN) {
-> +		if (WARN_ON_ONCE(tr->indirect_call))
-> +			goto out;
-> +		/* should only retry on the first register */
-> +		if (WARN_ON_ONCE(tr->cur_image))
-> +			goto out;
-> +		tr->indirect_call = true;
-> +		tr->fops->func = NULL;
-> +		tr->fops->trampoline = 0;
-> +		goto again;
-
-I'm assuming that the above will prevent a return of -EAGAIN again. As if
-it can, then this could turn into a dead lock.
-
-Can you please comment that?
-
-Thanks,
-
--- Steve
-
-> +	}
-> +#endif
->  	if (err)
->  		goto out;
->  	if (tr->cur_image)
-> @@ -460,7 +542,7 @@ int bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_trampoline
->  
->  	hlist_add_head(&link->tramp_hlist, &tr->progs_hlist[kind]);
->  	tr->progs_cnt[kind]++;
-> -	err = bpf_trampoline_update(tr);
-> +	err = bpf_trampoline_update(tr, true /* lock_direct_mutex */);
->  	if (err) {
->  		hlist_del_init(&link->tramp_hlist);
->  		tr->progs_cnt[kind]--;
-> @@ -487,7 +569,7 @@ int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_trampolin
->  	}
->  	hlist_del_init(&link->tramp_hlist);
->  	tr->progs_cnt[kind]--;
-> -	err = bpf_trampoline_update(tr);
-> +	err = bpf_trampoline_update(tr, true /* lock_direct_mutex */);
->  out:
->  	mutex_unlock(&tr->mutex);
->  	return err;
-> @@ -535,6 +617,7 @@ void bpf_trampoline_put(struct bpf_trampoline *tr)
->  	 * multiple rcu callbacks.
->  	 */
->  	hlist_del(&tr->hlist);
-> +	kfree(tr->fops);
->  	kfree(tr);
->  out:
->  	mutex_unlock(&trampoline_mutex);
+-- 
+2.30.2
 
