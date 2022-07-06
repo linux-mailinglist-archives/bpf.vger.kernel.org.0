@@ -2,103 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E700568EB7
-	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 18:11:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED12B568F94
+	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 18:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234281AbiGFQLi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Jul 2022 12:11:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38676 "EHLO
+        id S233512AbiGFQrr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jul 2022 12:47:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234175AbiGFQLh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Jul 2022 12:11:37 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58FFC26AF3;
-        Wed,  6 Jul 2022 09:11:36 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DEA79612C5;
-        Wed,  6 Jul 2022 16:11:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B206CC3411C;
-        Wed,  6 Jul 2022 16:11:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1657123895;
-        bh=oVr93BpxNpu1BAKASsj86szhtwhDGgfUv5IjX/G4dqM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qfGJ+ojOMjfnyXRjzRBVHODbpUa24TQvwCjS8k1I3482njdi242j7o0OaM2awwPqq
-         fiqef44vCU21sVlCDF2AbEBM0vGx9LgKofSzS42OO5vGfsDcNgyKYG+QNFJ6yMWBl6
-         j3ZPXQXJ1FAnV//XGv1ZEb1Xb9v78TrnoMDVS4mvB8MNTSJ7ZYtRhLUsaBHMKr1GrR
-         f8T4sj8x/Sf5/135eSKteIaD1qmX1/VGpO4VHQ72TxlCfVOyc2Cfw2BS6GPD9oT4IG
-         UMisyC1I2ChSOZD16jYOE/04P++2rlDupjMeW8OyqtWuuzZ5y3TlcNmRgOC6ce5AcX
-         PwEypWf+G1omg==
-Date:   Wed, 6 Jul 2022 17:11:25 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Jean-Philippe Brucker <jean-philippe.brucker@arm.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Xu Kuohai <xukuohai@huawei.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Catalin Marinas <Catalin.Marinas@arm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
+        with ESMTP id S230413AbiGFQrr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Jul 2022 12:47:47 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D27286C0
+        for <bpf@vger.kernel.org>; Wed,  6 Jul 2022 09:47:46 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id m16so4532434edb.11
+        for <bpf@vger.kernel.org>; Wed, 06 Jul 2022 09:47:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oxZ1uVRXPYMhnqF7XQQhd8OulBR+8nYW/g9JzEVE+2A=;
+        b=k84o+gSYpbG00hZ0Mg7hBS89md6qUTbgQvj0lOchOx0QXCQ2VRSPyiVY722TcScGwT
+         Rbre9J+hNmDz93rIeAfbyaXvcuUq/uOnxQbRwTxWMlQMAHnEbd+Uc30vzcXZ4YT1zDvu
+         mPz5+WtSbyJQIOQR8pSErdztxpXWa6I1CBlIURs3PqouCI9BbR0Mn5uq/GFBVplTDse2
+         k0jSGeESbJVSfspWxCZWng/KL4bXagp9S537es5h81Z64LWa0Ac1nEn08BewMBbbjI7t
+         bsE32uOWuYiPWaVa+0go11kPanGTtMXw/48B8v6xTCO+XppsM3mdxmYmYdzHRbx2mY+k
+         tV9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oxZ1uVRXPYMhnqF7XQQhd8OulBR+8nYW/g9JzEVE+2A=;
+        b=bh4tAlS0PNFFwUzfjeDid0Y9xIGimkuyB4jjMfBvUfGwAYVz5Qh++c2DkbxiZzFMsy
+         MxdbJNo6Pi/wWkeoUNVVEFqCOjzFsnG+GZOqp9pYaLrhcmcQhTf3itjieBdCyumutav2
+         HBwYeZi6Zt2n08UbF+1s04TqMpAdH8NMIfvsXJktyZ5DrB/Khjxujhs6kuwSVj5ZHfAr
+         qgOb1A9Ae+7Wz6sYfSlK7Ls5rdX9VQVuA9U4ir8tg2c513kaO0sOw/137CrIIArEu8Ad
+         hX3mT/Bwm7MCiM+gGEsqfwvlfw3vHR+kfUqBUTcC6/E96qTX4S84xC/+dBkytMAKStw8
+         p23g==
+X-Gm-Message-State: AJIora9GGD6FAgxiR/PpY88Iug/VRKk3RPbEnPepGkperD9wupUfReGw
+        mwU0/Hnuw8FugEH/dHLysasjRkEPMXixj6zZakM=
+X-Google-Smtp-Source: AGRyM1uifLnZXFC7DxjlD78F9165GHQ8KEcrLdeXZl+UM2dlqrrC6sbikjqBdb0xh37CNTXQHwD9i0bAsPPcTnn3hWQ=
+X-Received: by 2002:a05:6402:51ce:b0:436:7dfc:4840 with SMTP id
+ r14-20020a05640251ce00b004367dfc4840mr56163241edd.338.1657126064703; Wed, 06
+ Jul 2022 09:47:44 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220706155848.4939-1-laoar.shao@gmail.com> <20220706155848.4939-2-laoar.shao@gmail.com>
+In-Reply-To: <20220706155848.4939-2-laoar.shao@gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 6 Jul 2022 09:47:32 -0700
+Message-ID: <CAADnVQJEK+Puyz8b4eUV3H7Z+OtrvHd4MU42OsPiBodMQxEw-g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Make non-preallocated allocation low priority
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        James Morse <James.Morse@arm.com>,
-        Hou Tao <houtao1@huawei.com>,
-        Jason Wang <wangborong@cdjrlc.com>
-Subject: Re: [PATCH bpf-next v6 0/4] bpf trampoline for arm64
-Message-ID: <20220706161125.GB3204@willie-the-truck>
-References: <20220625161255.547944-1-xukuohai@huawei.com>
- <d3c1f1ed-353a-6af2-140d-c7051125d023@iogearbox.net>
- <20220705160045.GA1240@willie-the-truck>
- <YsWzfPUmgtRZi/ny@myrica>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YsWzfPUmgtRZi/ny@myrica>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Quentin Monnet <quentin@isovalent.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hao Luo <haoluo@google.com>, bpf <bpf@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 06, 2022 at 05:08:49PM +0100, Jean-Philippe Brucker wrote:
-> On Tue, Jul 05, 2022 at 05:00:46PM +0100, Will Deacon wrote:
-> > > Given you've been taking a look and had objections in v5, would be great if
-> > you
-> > > can find some cycles for this v6.
-> > 
-> > Mark's out at the moment, so I wouldn't hold this series up pending his ack.
-> > However, I agree that it would be good if _somebody_ from the Arm side can
-> > give it the once over, so I've added Jean-Philippe to cc in case he has time
-> > for a quick review.
-> 
-> I'll take a look. Sorry for not catching this earlier, all versions of the
-> series somehow ended up in my spams :/
+On Wed, Jul 6, 2022 at 8:59 AM Yafang Shao <laoar.shao@gmail.com> wrote:
+>
+> GFP_ATOMIC doesn't cooperate well with memcg pressure so far, especially
+> if we allocate too much GFP_ATOMIC memory. For example, when we set the
+> memcg limit to limit a non-preallocated bpf memory, the GFP_ATOMIC can
+> easily break the memcg limit by force charge. So it is very dangerous to
+> use GFP_ATOMIC in non-preallocated case. One way to make it safe is to
+> remove __GFP_HIGH from GFP_ATOMIC, IOW, use (__GFP_ATOMIC |
+> __GFP_KSWAPD_RECLAIM) instead, then it will be limited if we allocate
+> too much memory.
+>
+> We introduced BPF_F_NO_PREALLOC is because full map pre-allocation is
+> too memory expensive for some cases. That means removing __GFP_HIGH
+> doesn't break the rule of BPF_F_NO_PREALLOC, but has the same goal with
+> it-avoiding issues caused by too much memory. So let's remove it.
+>
+> The force charge of GFP_ATOMIC was introduced in
+> commit 869712fd3de5 ("mm: memcontrol: fix network errors from failing
+> __GFP_ATOMIC charges") by checking __GFP_ATOMIC, then got improved in
+> commit 1461e8c2b6af ("memcg: unify force charging conditions") by
+> checking __GFP_HIGH (that is no problem because both __GFP_HIGH and
+> __GFP_ATOMIC are set in GFP_AOMIC). So, if we want to fix it in memcg,
+> we have to carefully verify all the callsites. Now that we can fix it in
+> BPF, we'd better not modify the memcg code.
+>
+> This fix can also apply to other run-time allocations, for example, the
+> allocation in lpm trie, local storage and devmap. So let fix it
+> consistently over the bpf code
+>
+> __GFP_KSWAPD_RECLAIM doesn't cooperate well with memcg pressure neither
+> currently. But the memcg code can be improved to make
+> __GFP_KSWAPD_RECLAIM work well under memcg pressure if desired.
 
-Yeah, same here. It was only Daniel's mail that hit my inbox!
+Could you elaborate ?
 
-Will
+> It also fixes a typo in the comment.
+>
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
+
+Roman, do you agree with this change ?
