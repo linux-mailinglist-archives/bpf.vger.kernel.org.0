@@ -2,84 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD12A5690FF
-	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 19:45:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCAE2569109
+	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 19:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234337AbiGFRoL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Jul 2022 13:44:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33190 "EHLO
+        id S233957AbiGFRtB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jul 2022 13:49:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234108AbiGFRnu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Jul 2022 13:43:50 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 104FB2B196
-        for <bpf@vger.kernel.org>; Wed,  6 Jul 2022 10:43:33 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id i17so5458480pfk.1
-        for <bpf@vger.kernel.org>; Wed, 06 Jul 2022 10:43:33 -0700 (PDT)
+        with ESMTP id S233690AbiGFRtA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Jul 2022 13:49:00 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AD746459
+        for <bpf@vger.kernel.org>; Wed,  6 Jul 2022 10:49:00 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-2eb7d137101so112123447b3.12
+        for <bpf@vger.kernel.org>; Wed, 06 Jul 2022 10:49:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=U8RDIjaz0+fXEx3uqi/jOmLPcygV9XMbpDJVew9ijlg=;
-        b=SwsKV8KtbCrcOUNyLknyYbvuvPKCxhptX92Pih/BS3o+yOj4UdLpLlQLW+N3rC236T
-         Lsxp6ZW+zdNIUCj6ZBO3jsAG+61zVBj4oCLqMkCKrJUm7aqNTXVfl484QufU8AWnGdPR
-         zQSSCm2icWznFGi+nBu683nwfhD6f9Jk6yr1/+QownsA49Fe8AVUjWAtObYd7JHmdxDa
-         zyb4eLQsHkhN58dEzIEJHRUPo6usYmpj23K0KvEGw77TVthq4OHsBsvfSo4XMJ5S24nB
-         b069B7rvTBwuteoXMfcAzGRHS1emSQdNLPWvV/ujFw1uB/dFeXSbPEHl4GjlV+gMRxAL
-         nfDw==
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=+0ywNl+UzKy+Oirvqy2rLPX36d1n4NMn4QqX2Zbrjs8=;
+        b=F3XwHp7oJOd48fqRCn+oPcHHvBbBujhLtK74QTzBq9Gs6HW1BLa19pP0P2v0AJB2Es
+         BrmZyMCMwufOgbEcxXHZrg5p8TfFtRjbuTvPWCpAIDoC4GBl5lpTPkmHFZstvHgt0WlR
+         6iGyMlC2jYPfZEP4587rTSIAOOCjfhNhHpfaOTKbyrCCjXnPyswoIzL8dZrDuQGrxWm/
+         yNkhC6dQ3UDS5x5g9tePbsZCAWV0v+oOnhtlZn029CIw6JhVbQwECtWdlMU70VtGiBBJ
+         5Gkj7Zp+uIntDe8uBHZJ3QjYMb770Hft/dPEXLhgTyJx9RQ1dRTZNE9zJZfS2BNL9nLf
+         shlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=U8RDIjaz0+fXEx3uqi/jOmLPcygV9XMbpDJVew9ijlg=;
-        b=vQMzvdD5uPgeMwPBpJEmwaE+58JFBhpe4cqDSUEgKFSmHWmp/UIgmo4y36zY7pXy7H
-         RGv4mpBMTPQDh3K7d+0YEljaMlat3wQgNnOS5ykqsCP90GbAR9dxOWiP7D3C3D2glmBx
-         VEL3mKGbgN1CYhGPKgH712bGOxgf1a1YiLoHKNonzU2e16kO/IAY9wYqkRRau6ERzg1q
-         //62fJ+wiuEk0lnkuBcE0RKkE/0wwKeYCZbtqsSofM39vskHUhi2tYrS8HDUd8SuSmK2
-         nf/QjAItQ64woJQAyns+3maRQ1oECpHbqTHcLOaMJD+b7isPZRt4d5Na1eRzLOID1FiH
-         vtNw==
-X-Gm-Message-State: AJIora9LfjN3tS2pMLnMTolMljvRwqNi7geWjoFjdie3KyAEZTqDoPR+
-        4v2bG5EetX3oDti1ua0uCZ0=
-X-Google-Smtp-Source: AGRyM1vKoa2DmuabAmTZ2hPr/9xAAB4oiaToQhSSqpIW6Xdq5sj4R43bnvlHd0GZzG4/BYQgJM7mhw==
-X-Received: by 2002:a63:1921:0:b0:412:407f:f012 with SMTP id z33-20020a631921000000b00412407ff012mr15301509pgl.125.1657129411876;
-        Wed, 06 Jul 2022 10:43:31 -0700 (PDT)
-Received: from MacBook-Pro-3.local ([2620:10d:c090:500::2:8597])
-        by smtp.gmail.com with ESMTPSA id a8-20020aa78e88000000b0052534ade61dsm25124018pfr.185.2022.07.06.10.43.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Jul 2022 10:43:31 -0700 (PDT)
-Date:   Wed, 6 Jul 2022 10:43:28 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Christoph Lameter <cl@gentwo.de>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Miller <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        linux-mm <linux-mm@kvack.org>, Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>
-Subject: Re: [PATCH bpf-next 0/5] bpf: BPF specific memory allocator.
-Message-ID: <20220706174328.xqfyu4ikjvutnpr4@MacBook-Pro-3.local>
-References: <YrlWLLDdvDlH0C6J@infradead.org>
- <alpine.DEB.2.22.394.2206280213510.280764@gentwo.de>
- <CAADnVQKfLE6mwh8BrijgJeLL60DNaGgVy9b133vZ6edZmugong@mail.gmail.com>
- <alpine.DEB.2.22.394.2206281550210.328950@gentwo.de>
- <20220628170343.ng46xfwi32vefiyp@MacBook-Pro-3.local>
- <alpine.DEB.2.22.394.2206290431540.371188@gentwo.de>
- <CAADnVQ+6BQsunu+ipDJpEuikUU402bZPevK9+MuaBoNC_rAu_A@mail.gmail.com>
- <8a160205-99fe-a632-aeed-6b59eadc2aa2@suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8a160205-99fe-a632-aeed-6b59eadc2aa2@suse.cz>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=+0ywNl+UzKy+Oirvqy2rLPX36d1n4NMn4QqX2Zbrjs8=;
+        b=m+npp54tUPIf6QFq230kyucyYFxe0igdIRK9BSIJyfRIODOF2vFfA4zb3FcDFA77De
+         a/lXpKFtE/af5qTaDhDSx8YR2TuV7UrAk4PMWbcIEcd2CEQn7/+D3EArjjamtVYkRa9P
+         5IdvPPJeEOGvsnXjizjEXnsKVoZc1N8If/p1AtcrA84g+/aPocykBamI40BXzrW1zoBv
+         QGizUEq217rIN6Mzmm41dgiS6zUbTq8KZ+GL+wWCoJ2IV7Tq4YbYYVztaMgvx49ZNjeA
+         OJSlH6Tyi37+OXnX6MgsBAnxfGC7cIgS7ofe7DxzcnpAL1LG54Y2dcg/HQpv1BOseGfA
+         GAAA==
+X-Gm-Message-State: AJIora831VuuESQ+dUC+X+0SvVveQrDGHLr5sR62FQy4U8MMy5uYDqyD
+        hKL/pMg+3PtpnLPG4453fn201bGhDeM4HHf+dBc9oMYaIA3kEDg18nlc5WZk8SH+eagpUaOveBf
+        5qQmvSJuxMe5mInbnrR/ZpFnd2X3Ye7YqW0uvZ7SrYVpk6+J41A==
+X-Google-Smtp-Source: AGRyM1szy3FZAyth2Pe+ilwe9iDGXIL6RRYHhxg8omS276PdZa6Z5loc3ugKynbfZze2n8spRoRh5eU=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a81:9147:0:b0:31c:7a11:bcf3 with SMTP id
+ i68-20020a819147000000b0031c7a11bcf3mr27851203ywg.310.1657129739293; Wed, 06
+ Jul 2022 10:48:59 -0700 (PDT)
+Date:   Wed,  6 Jul 2022 10:48:57 -0700
+Message-Id: <20220706174857.3799351-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.37.0.rc0.161.g10f37bed90-goog
+Subject: [PATCH bpf-next] bpf: check attach_func_proto return type more carefully
+From:   Stanislav Fomichev <sdf@google.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org,
+        syzbot+5cc0730bd4b4d2c5f152@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,64 +67,101 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 04, 2022 at 06:13:17PM +0200, Vlastimil Babka wrote:
-> On 6/29/22 04:49, Alexei Starovoitov wrote:
-> > On Tue, Jun 28, 2022 at 7:35 PM Christoph Lameter <cl@gentwo.de> wrote:
-> >>
-> >> On Tue, 28 Jun 2022, Alexei Starovoitov wrote:
-> >>
-> >> > > That is a relatively new feature due to RT logic support. without RT this
-> >> > > would be a simple irq disable.
-> >> >
-> >> > Not just RT.
-> >> > It's a slow path:
-> >> >         if (IS_ENABLED(CONFIG_PREEMPT_RT) ||
-> >> >             unlikely(!object || !slab || !node_match(slab, node))) {
-> >> >               local_unlock_irqrestore(&s->cpu_slab->lock,...);
-> >> > and that's not the only lock in there.
-> >> > new_slab->allocate_slab... alloc_pages grabbing more locks.
-> >>
-> >>
-> >> Its not a lock for !RT.
-> >>
-> >> The fastpath is lockless if hardware allows that but then we go into more
-> >> and more serialiation needs as the allocation gets more into the page
-> >> allocator logic.
-> 
-> Yeah I don't think the recent RT-related changes made this much worse than
-> it already was. In alloc side you could perhaps try the really lockless
-> fastpaths only and fail if e.g. the per-cpu slabs were empty (but would BPF
-> be happy with that?). On the free side though you could end up having to
-> move a slab from partial to free list as a result, and now a spin lock is
-> needed (even before the RT changes), and you can't really fail a free...
-> 
-> > On RT fast path == slow path with a lock.
-> > On !RT fast path is lock less.
-> > That's all correct.
-> > bpf side has to make sure safety in all possible paths
-> > therefore RT or !RT makes no difference.
-> 
-> So AFAIK we don't right now have what BFP needs - an extra-constrained kind
-> of GFP_ATOMIC. I don't object you adding it privately. But it's another
-> reason to think about if these things can be generalized. For example we had
-> a discussion about the Maple tree having kinda similar kinds of requirements
-> to avoid its tree node preallocations always for the worst possible case.
+Syzkaller reports the following crash:
+RIP: 0010:check_return_code kernel/bpf/verifier.c:10575 [inline]
+RIP: 0010:do_check kernel/bpf/verifier.c:12346 [inline]
+RIP: 0010:do_check_common+0xb3d2/0xd250 kernel/bpf/verifier.c:14610
 
-What kind of maple tree needs? Does it need to be fully reentrant and nmi safe?
-Not really. The caller knows the context and can choose appropriate flags.
-While bpf alloc doesn't know the context. The bpf prog can be called from
-places where slab/page/kasan specific locks are held which makes all these
-pieces non-reentrable.
-The full prealloc of bpf maps (read: waste a lot of memory) was our solution until now.
-This is specific to tracing bpf programs, of course.
-bpf networking, bpf security, sleepable bpf are completely different.
+With the following reproducer:
+bpf$PROG_LOAD_XDP(0x5, &(0x7f00000004c0)={0xd, 0x3, &(0x7f0000000000)=ANY=[@ANYBLOB="1800000000000019000000000000000095"], &(0x7f0000000300)='GPL\x00', 0x0, 0x0, 0x0, 0x0, 0x0, '\x00', 0x0, 0x2b, 0xffffffffffffffff, 0x8, 0x0, 0x0, 0x10, 0x0}, 0x80)
 
-> I'm not sure we can sanely implement this within each of SLAB/SLUB/SLOB, or
-> rather provide a generic cache on top...
+Because we don't enforce expected_attach_type for XDP programs,
+we end up in hitting 'if (prog->expected_attach_type == BPF_LSM_CGROUP'
+part in check_return_code and follow up with testing
+`prog->aux->attach_func_proto->type`, but `prog->aux->attach_func_proto`
+is NULL.
 
-Notice that all of bpf cache functions are notrace/nokprobe/no locks.
-The main difference vs all other allocators is bpf_mem_alloc from cache
-and refill of the cache are two asynchronous operations. It allows the former
-to be reentrant and nmi safe.
-All in tree allocators sooner or later synchornously call into page_alloc,
-kasan, memleak and other debugging facilites that grab locks.
+Let's add a new btf_func_returns_void() wrapper which is more defensive
+and use it in the places where we currently do '!->type' check.
+
+Fixes: 69fd337a975c ("bpf: per-cgroup lsm flavor")
+Reported-by: syzbot+5cc0730bd4b4d2c5f152@syzkaller.appspotmail.com
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ include/linux/btf.h     | 5 +++++
+ kernel/bpf/trampoline.c | 2 +-
+ kernel/bpf/verifier.c   | 8 ++++----
+ 3 files changed, 10 insertions(+), 5 deletions(-)
+
+diff --git a/include/linux/btf.h b/include/linux/btf.h
+index 1bfed7fa0428..17ba7d27a8ad 100644
+--- a/include/linux/btf.h
++++ b/include/linux/btf.h
+@@ -302,6 +302,11 @@ static inline u16 btf_func_linkage(const struct btf_type *t)
+ 	return BTF_INFO_VLEN(t->info);
+ }
+ 
++static inline bool btf_func_returns_void(const struct btf_type *t)
++{
++	return t && !t->type;
++}
++
+ static inline bool btf_type_kflag(const struct btf_type *t)
+ {
+ 	return BTF_INFO_KFLAG(t->info);
+diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+index 6cd226584c33..9c4cb4c8a5fa 100644
+--- a/kernel/bpf/trampoline.c
++++ b/kernel/bpf/trampoline.c
+@@ -400,7 +400,7 @@ static enum bpf_tramp_prog_type bpf_attach_type_to_tramp(struct bpf_prog *prog)
+ 	case BPF_TRACE_FEXIT:
+ 		return BPF_TRAMP_FEXIT;
+ 	case BPF_LSM_MAC:
+-		if (!prog->aux->attach_func_proto->type)
++		if (btf_func_returns_void(prog->aux->attach_func_proto))
+ 			/* The function returns void, we cannot modify its
+ 			 * return value.
+ 			 */
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index df3ec6b05f05..e3ee6f70939b 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -7325,7 +7325,7 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+ 		break;
+ 	case BPF_FUNC_set_retval:
+ 		if (env->prog->expected_attach_type == BPF_LSM_CGROUP) {
+-			if (!env->prog->aux->attach_func_proto->type) {
++			if (btf_func_returns_void(env->prog->aux->attach_func_proto)) {
+ 				/* Make sure programs that attach to void
+ 				 * hooks don't try to modify return value.
+ 				 */
+@@ -10447,7 +10447,7 @@ static int check_return_code(struct bpf_verifier_env *env)
+ 	if (!is_subprog &&
+ 	    (prog_type == BPF_PROG_TYPE_STRUCT_OPS ||
+ 	     prog_type == BPF_PROG_TYPE_LSM) &&
+-	    !prog->aux->attach_func_proto->type)
++	    btf_func_returns_void(prog->aux->attach_func_proto))
+ 		return 0;
+ 
+ 	/* eBPF calling convention is such that R0 is used
+@@ -10547,7 +10547,7 @@ static int check_return_code(struct bpf_verifier_env *env)
+ 			 */
+ 			return 0;
+ 		}
+-		if (!env->prog->aux->attach_func_proto->type) {
++		if (btf_func_returns_void(env->prog->aux->attach_func_proto)) {
+ 			/* Make sure programs that attach to void
+ 			 * hooks don't try to modify return value.
+ 			 */
+@@ -10572,7 +10572,7 @@ static int check_return_code(struct bpf_verifier_env *env)
+ 	if (!tnum_in(range, reg->var_off)) {
+ 		verbose_invalid_scalar(env, reg, &range, "program exit", "R0");
+ 		if (prog->expected_attach_type == BPF_LSM_CGROUP &&
+-		    !prog->aux->attach_func_proto->type)
++		    btf_func_returns_void(prog->aux->attach_func_proto))
+ 			verbose(env, "Note, BPF_LSM_CGROUP that attach to void LSM hooks can't modify return value!\n");
+ 		return -EINVAL;
+ 	}
+-- 
+2.37.0.rc0.161.g10f37bed90-goog
+
