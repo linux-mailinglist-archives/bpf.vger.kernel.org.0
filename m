@@ -2,61 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38339567D00
-	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 06:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FD43567D02
+	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 06:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230022AbiGFEQm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Jul 2022 00:16:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41014 "EHLO
+        id S230245AbiGFERE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jul 2022 00:17:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229779AbiGFEQl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Jul 2022 00:16:41 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 201181F2CD
-        for <bpf@vger.kernel.org>; Tue,  5 Jul 2022 21:16:40 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id u15so478520ejx.9
-        for <bpf@vger.kernel.org>; Tue, 05 Jul 2022 21:16:40 -0700 (PDT)
+        with ESMTP id S229779AbiGFERD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Jul 2022 00:17:03 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 522C11F2CD
+        for <bpf@vger.kernel.org>; Tue,  5 Jul 2022 21:17:02 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id q6so24858724eji.13
+        for <bpf@vger.kernel.org>; Tue, 05 Jul 2022 21:17:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=j2CNyCIU5yme4GGXCgTLOI0l2q+FMIMk4Hk6zq9SaXw=;
-        b=BZrapYSDq+uJbzIjK6a4nzrgG/TieXXtHmcWwPykdVqGAwGSFN7RvwJgHBZOiEkoVS
-         fCiIhvr6U6jyBRWNL60TJABKXPE3cGd+1p3uBirOx6oTN3yVIx0PU7MukQbpi2m4OPum
-         H6TRT/m++oXYq8aPaU/+nYgbCxvWFr63ta2TN8rxOFDUaP3dAkfxio4dv7Y8rrCHt5Ca
-         no6HHTSVry+smHspy5xrb/v527Zj917wj0cm1oWqPOiA7Whx34e5jceVbKfgwbzRDmQo
-         TyV+/rh+2VBrUlxqVmkZE5HhpJVxPEmgP095r+vCs5LO2jF1lhP6rYwrQaBGyh3KrRsm
-         9g7Q==
+        bh=S6BC3ik4w2vl1Y6MeALLXABJk2DUS523iaPqHu0V4BE=;
+        b=SBvLopoQYfzopBcMQQZTaCX7TQ4PH31tebjlJYPr/yafuAQq1CzqgVUnZzMgBthiSq
+         fdLTJvqZU69/N8/0RwIUjpdpcANYQiYzuXj09sZZiWGjw1WcZOablnZA7/4y3Acz7KSI
+         SaMQXtHIkg0o+Ypidb8TTia3m9h0uqGKredUEHQ0aag4WNAIdpPMX00bZr7wVzKXeQhQ
+         ebN6oMVnP/2FGUNJEaS9Iul4GyoHMmndN1cJWCUGtUtLO1O/M6X36oxYjBOwPxvdknpb
+         g+yI+zF36DU9VU2IlpV7xk5VedfEC79+J/pRcvJqtRui/xcPdzMArXH0aHtkUncBnkDB
+         cj4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=j2CNyCIU5yme4GGXCgTLOI0l2q+FMIMk4Hk6zq9SaXw=;
-        b=XgoM2m5+//Do8eu+NvPl3uclaT3dFGbv1qJaDNJxCRh5h+6vx+n3SfXnRHJzMdtw5M
-         opGGbFZ7UfX4eYoclaCAA8DP0Yfnw+eWLgUnNh6JUy+9zoHooYBM1heqHoEuILCbYVrG
-         tAMEswJp2Kc1/6mZImGZ58MDonihJp1AUH01OpRGmjLGbrMqsqlkFusU7j7HIjETzBO7
-         F0vOxqFPuENOWcJ5RR9N+fluu1XUKdcCxc/mPMc9nd1H2yAqcOgsd//xj6ICqt04pxYK
-         25InHNOJsDnhhRZAW7Woxtxqi0yHvzrBikucYVZBgZU/74cUWF3uvkFU5cX+iYRS/VQC
-         nfuA==
-X-Gm-Message-State: AJIora8sX+jnCGnPKv6pC7xmraxeT7hRnYsKK9BxZtkbMeimwJ1BgB48
-        DqCVDn+hd3j2o061HDkiWt+YV9uWPCVZPZ2ZKAw=
-X-Google-Smtp-Source: AGRyM1tUzZtLJ2VqPzhWzC85Y7FMhi4+o8swVN7ll7WPBh1DDW5z2k3xr5WaASXZ9bXpUw+0x2hVN8NgqX1O1BpZGvQ=
-X-Received: by 2002:a17:906:6a11:b0:726:97b8:51e9 with SMTP id
- qw17-20020a1709066a1100b0072697b851e9mr38122639ejc.115.1657080998622; Tue, 05
- Jul 2022 21:16:38 -0700 (PDT)
+        bh=S6BC3ik4w2vl1Y6MeALLXABJk2DUS523iaPqHu0V4BE=;
+        b=D09Ghkh8d9CcdSMYkTc/3/BER5j8sqwDL1Z3mXcjvS5yNl3pXoGu3OvOA4gMOrXl8b
+         BFhUMp+aWx0Hczr4SbVt/3USBMJIR2EvVevjD+ujatefTpEukegxRUkKbznUpDNnKieL
+         uDore4vsGx6nnIqPM8Qoa27pObnxZoUuNzurTgZo031hOfpYOe0jtyDyv2BilcX4NMsa
+         a5vL7aAFQSaZ8Km19kL2sw67QBc/V9FjTObjdVhiv7JjMaM0LyGGO+bv2ZopKQzscNQv
+         XnmUAEVgup2Dflz9Dhu6IwZs44VywLDVZlwGXn6ceM7YFCHvUkWSHZOgxTQFdCBywIVn
+         4mNA==
+X-Gm-Message-State: AJIora/V47Sjie0NM1gsawalXB0oi8BMe2Kjq4iFRY0ZGxFXLSAMJt0F
+        1kdbf9Z3hi8U9oiERvvZpSQiVML6Kzf6LW86AY4=
+X-Google-Smtp-Source: AGRyM1vVX6xuEemt6smwWJYz8jpFXASc84E1bBzuQKLJ0C07KTinXUSmTkqD08KnxVJ6zxmOihbblKep32sI5jIW8kk=
+X-Received: by 2002:a17:906:8447:b0:72a:f120:50cd with SMTP id
+ e7-20020a170906844700b0072af12050cdmr3340649ejy.114.1657081020927; Tue, 05
+ Jul 2022 21:17:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220628160127.607834-1-deso@posteo.net> <20220705210700.fpyw4msqy7tkiuub@muellerd-fedora-MJ0AC3F3>
-In-Reply-To: <20220705210700.fpyw4msqy7tkiuub@muellerd-fedora-MJ0AC3F3>
+References: <20220628160127.607834-1-deso@posteo.net> <20220628160127.607834-3-deso@posteo.net>
+In-Reply-To: <20220628160127.607834-3-deso@posteo.net>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 5 Jul 2022 21:16:27 -0700
-Message-ID: <CAEf4Bzb=2QnL_oUYTLZ9T_poDGcQ0_WB_ZJs8LQNuC3Dp0Qfng@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 00/10] Introduce type match support
+Date:   Tue, 5 Jul 2022 21:16:50 -0700
+Message-ID: <CAEf4BzbpnaQRuMRjKJwdCiVUDrEWOXKTuu0-xG2zs4hxjd7jCA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 02/10] bpftool: Honor BPF_CORE_TYPE_MATCHES relocation
 To:     =?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Kernel Team <kernel-team@fb.com>,
-        Joanne Koong <joannelkoong@gmail.com>
+        Joanne Koong <joannelkoong@gmail.com>,
+        Quentin Monnet <quentin@isovalent.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -69,91 +70,116 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 5, 2022 at 2:07 PM Daniel M=C3=BCller <deso@posteo.net> wrote:
+On Tue, Jun 28, 2022 at 9:01 AM Daniel M=C3=BCller <deso@posteo.net> wrote:
 >
-> On Tue, Jun 28, 2022 at 04:01:17PM +0000, Daniel M=C3=BCller wrote:
-> > This patch set proposes the addition of a new way for performing type q=
-ueries to
-> > BPF. It introduces the "type matches" relation, similar to what is alre=
-ady
-> > present with "type exists" (in the form of bpf_core_type_exists).
-> >
-> > "type exists" performs fairly superficial checking, mostly concerned wi=
-th
-> > whether a type exists in the kernel and is of the same kind (enum/struc=
-t/...).
-> > Notably, compatibility checks for members of composite types is lacking=
-.
-> >
-> > The newly introduced "type matches" (bpf_core_type_matches) fills this =
-gap in
-> > that it performs stricter checks: compatibility of members and existenc=
-e of
-> > similarly named enum variants is checked as well. E.g., given these def=
-initions:
-> >
-> >       struct task_struct___og { int pid; int tgid; };
-> >
-> >       struct task_struct___foo { int foo; }
-> >
-> > 'task_struct___og' would "match" the kernel type 'task_struct', because=
- the
-> > members match up, while 'task_struct___foo' would not match, because th=
-e
-> > kernel's 'task_struct' has no member named 'foo'.
-> >
-> > More precisely, the "type match" relation is defined as follows (copied=
- from
-> > source):
-> > - modifiers and typedefs are stripped (and, hence, effectively ignored)
-> > - generally speaking types need to be of same kind (struct vs. struct, =
-union
-> >   vs. union, etc.)
-> >   - exceptions are struct/union behind a pointer which could also match=
- a
-> >     forward declaration of a struct or union, respectively, and enum vs=
-.
-> >     enum64 (see below)
-> > Then, depending on type:
-> > - integers:
-> >   - match if size and signedness match
-> > - arrays & pointers:
-> >   - target types are recursively matched
-> > - structs & unions:
-> >   - local members need to exist in target with the same name
-> >   - for each member we recursively check match unless it is already beh=
-ind a
-> >     pointer, in which case we only check matching names and compatible =
-kind
-> > - enums:
-> >   - local variants have to have a match in target by symbolic name (but=
- not
-> >     numeric value)
-> >   - size has to match (but enum may match enum64 and vice versa)
-> > - function pointers:
-> >   - number and position of arguments in local type has to match target
-> >   - for each argument and the return value we recursively check match
-> >
-> > Enabling this feature requires a new relocation to be made known to the
-> > compiler. This is being taken care of for LLVM as part of
-> > https://reviews.llvm.org/D126838.
+> bpftool needs to know about the newly introduced BPF_CORE_TYPE_MATCHES
+> relocation for its 'gen min_core_btf' command to work properly in the
+> present of this relocation.
+> Specifically, we need to make sure to mark types and fields so that they
+> are present in the minimized BTF for "type match" checks to work out.
+> However, contrary to the existing btfgen_record_field_relo, we need to
+> rely on the BTF -- and not the spec -- to find fields. With this change
+> we handle this new variant correctly. The functionality will be tested
+> with follow on changes to BPF selftests, which already run against a
+> minimized BTF created with bpftool.
 >
-> To give an update here, LLVM changes have been merged and, to the best of=
- my
-> knowledge, are being used by BPF CI (tests that failed earlier are now pa=
-ssing).
+> Cc: Quentin Monnet <quentin@isovalent.com>
+> Signed-off-by: Daniel M=C3=BCller <deso@posteo.net>
+> ---
+>  tools/bpf/bpftool/gen.c | 108 ++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 108 insertions(+)
 >
+> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+> index 480cbd8..a30328c 100644
+> --- a/tools/bpf/bpftool/gen.c
+> +++ b/tools/bpf/bpftool/gen.c
+> @@ -1856,6 +1856,112 @@ static int btfgen_record_field_relo(struct btfgen=
+_info *info, struct bpf_core_sp
+>         return 0;
+>  }
+>
+> +/* Mark types, members, and member types. Compared to btfgen_record_fiel=
+d_relo,
+> + * this function does not rely on the target spec for inferring members,=
+ but
+> + * uses the associated BTF.
+> + *
+> + * The `behind_ptr` argument is used to stop marking of composite types =
+reached
+> + * through a pointer. This way, we can keep BTF size in check while prov=
+iding
+> + * reasonable match semantics.
+> + */
+> +static int btfgen_mark_type_match(struct btfgen_info *info, __u32 type_i=
+d, bool behind_ptr)
+> +{
+> +       const struct btf_type *btf_type;
+> +       struct btf *btf =3D info->src_btf;
+> +       struct btf_type *cloned_type;
+> +       int i, err;
+> +
+> +       if (type_id =3D=3D 0)
+> +               return 0;
+> +
+> +       btf_type =3D btf__type_by_id(btf, type_id);
+> +       /* mark type on cloned BTF as used */
+> +       cloned_type =3D (struct btf_type *)btf__type_by_id(info->marked_b=
+tf, type_id);
+> +       cloned_type->name_off =3D MARKED;
+> +
+> +       switch (btf_kind(btf_type)) {
+> +       case BTF_KIND_UNKN:
+> +       case BTF_KIND_INT:
+> +       case BTF_KIND_FLOAT:
+> +       case BTF_KIND_ENUM:
+> +       case BTF_KIND_ENUM64:
+> +               break;
+> +       case BTF_KIND_STRUCT:
+> +       case BTF_KIND_UNION: {
+> +               struct btf_member *m =3D btf_members(btf_type);
+> +               __u16 vlen =3D btf_vlen(btf_type);
+> +
+> +               if (behind_ptr)
+> +                       break;
+> +
+> +               for (i =3D 0; i < vlen; i++, m++) {
+> +                       /* mark member */
+> +                       btfgen_mark_member(info, type_id, i);
+> +
+> +                       /* mark member's type */
+> +                       err =3D btfgen_mark_type_match(info, m->type, fal=
+se);
+> +                       if (err)
+> +                               return err;
+> +               }
+> +               break;
+> +       }
+> +       case BTF_KIND_CONST:
+> +       case BTF_KIND_FWD:
+> +       case BTF_KIND_RESTRICT:
+> +       case BTF_KIND_TYPEDEF:
+> +       case BTF_KIND_VOLATILE:
+> +               return btfgen_mark_type_match(info, btf_type->type, false=
+);
 
-I did a few small changes and combined patches 4-6 together (because
-they add the same functionality to both libbpf and kernel
-simultaneously, there were compilation warnings about non-static
-functions not having a proper prototype defined). But I've split out
-the bpf_core_type_matches() macro in bpf_core_read.h into a separate
-patch. I also dropped patch #3 as it wasn't needed anymore.
+this should have preserved behind_ptr instead of resetting it to false
+(i.e. `const struct blah *` should be treated similarly to `struct
+blah *`). I've fixed it up while applying.
 
-Please see comments I left for two further follow ups.
+> +       case BTF_KIND_PTR:
+> +               return btfgen_mark_type_match(info, btf_type->type, true)=
+;
+> +       case BTF_KIND_ARRAY: {
+> +               struct btf_array *array;
+> +
+> +               array =3D btf_array(btf_type);
+> +               /* mark array type */
+> +               err =3D btfgen_mark_type_match(info, array->type, false);
+> +               /* mark array's index type */
+> +               err =3D err ? : btfgen_mark_type_match(info, array->index=
+_type, false);
+> +               if (err)
+> +                       return err;
+> +               break;
 
-> Thanks,
-> Daniel
->
-> [...]
+[...]
