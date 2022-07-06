@@ -2,34 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6122F567F2C
-	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 09:00:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6770567F36
+	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 09:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231142AbiGFHAW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Jul 2022 03:00:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53432 "EHLO
+        id S231130AbiGFHCB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jul 2022 03:02:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230420AbiGFHAS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Jul 2022 03:00:18 -0400
+        with ESMTP id S229592AbiGFHCA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Jul 2022 03:02:00 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5D021F2DC;
-        Wed,  6 Jul 2022 00:00:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D324D1F2C2;
+        Wed,  6 Jul 2022 00:01:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
         :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=R46HUaC7dh3ENW3T9JD/LPCN0Q73/N8vSw6Q2zMi/zs=; b=vOm/O/oIezRVCyIO8pt7RST9FS
-        c0ALDfi9HMbz8Vxvmsju3KsbI2eUJASfRzM4wlPSLViIZ2jp5PRhygeJUzgVObOSIkUA818QIL6hv
-        7VIjlRE+GoqmMDDguZDLAKkOHSXH1rS5lfUiRQkoWEykBEpe8/1T7r0wGqNRtefDwq0OYdx4p99vW
-        XvAJZPD5k5+KjlJWgqthaCHi1G2ngvYWMK7HFsZ8SaIcD9xnsidmEW81T7CX3BeIAKbRmJr1cdemD
-        cxfyt0z128b5NXZj95mP2YrSMk1zswZ681CgAorn3aHZ07qd++0Wr7WCShFW+i4dzdAIuIHFKeQ1X
-        1uzohvaA==;
+        bh=/1B8eXbzsym5vD7WEQKQVJKQdxQ5KaDuSszuUOxu30E=; b=JgY9CaH1XkdAyfaKVa3yL6lLfO
+        mnczioUxVHk8S1zjflPUMY/wMV3QKFfGH932P1TfDHvdnzQhwU0TRhaxIUak8DEdZxNbywyw3A1zJ
+        0/COwpX7kwcB4Xfl5AOfCDfM8aI04sIYA0YpChI8HHpypd7Kfgsz+++mqdIK+rF2Ewrlq+JoArbFO
+        yDk+vyJcsverWoWn7oQRIF59fM6/wbhSIfe8p20psQwrxD4RPCMwZ0JA8Tz0yPC5f6qBLIo7BWLSl
+        ZVr55GCwpcULf02yMZPrsQNColwrTmnb9HnXf9zMQ+RW0WhWG20Uaw1QwY+nSYGZtPAVuoQCN0wyy
+        CA+mmU9A==;
 Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1o8z10-006tU3-EX; Wed, 06 Jul 2022 07:00:03 +0000
-Date:   Wed, 6 Jul 2022 00:00:02 -0700
+        id 1o8z2l-006uK0-Ir; Wed, 06 Jul 2022 07:01:51 +0000
+Date:   Wed, 6 Jul 2022 00:01:51 -0700
 From:   Christoph Hellwig <hch@infradead.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
         Alan Maguire <alan.maguire@oracle.com>,
         Yixun Lan <dlan@gentoo.org>,
         Palmer Dabbelt <palmer@dabbelt.com>,
@@ -40,20 +41,21 @@ Cc:     Christoph Hellwig <hch@infradead.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Song Liu <songliubraving@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         open list <linux-kernel@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Subject: Re: [PATCH] RISC-V/bpf: Enable bpf_probe_read{, str}()
-Message-ID: <YsUy8jBpt11zoc5E@infradead.org>
+Message-ID: <YsUzX2IeNb/u9VmN@infradead.org>
 References: <20220703130924.57240-1-dlan@gentoo.org>
  <YsKAZUJRo5cjtZ3n@infradead.org>
  <CAEf4BzbCswMd6KU7f9SEU6xHBBPu_rTL5f+KE0OkYj63e-h-bA@mail.gmail.com>
+ <712c8fac-6784-2acd-66ca-d1fd393aef23@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzbCswMd6KU7f9SEU6xHBBPu_rTL5f+KE0OkYj63e-h-bA@mail.gmail.com>
+In-Reply-To: <712c8fac-6784-2acd-66ca-d1fd393aef23@fb.com>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
@@ -65,9 +67,32 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 05, 2022 at 10:00:42PM -0700, Andrii Nakryiko wrote:
-> riscv existed as of [0], so I'd argue it is a proper bug fix, as
-> corresponding select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE should
-> have been added back then.
+On Tue, Jul 05, 2022 at 11:41:30PM -0700, Yonghong Song wrote:
+> 
+> 
+> On 7/5/22 10:00 PM, Andrii Nakryiko wrote:
+> > On Sun, Jul 3, 2022 at 10:53 PM Christoph Hellwig <hch@infradead.org> wrote:
+> > > 
+> > > On Sun, Jul 03, 2022 at 09:09:24PM +0800, Yixun Lan wrote:
+> > > > Enable this option to fix a bcc error in RISC-V platform
+> > > > 
+> > > > And, the error shows as follows:
+> > > 
+> > > These should not be enabled on new platforms.  Use the proper helpers
+> > > to probe kernel vs user pointers instead.
+> > 
+> > riscv existed as of [0], so I'd argue it is a proper bug fix, as
+> > corresponding select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE should
+> > have been added back then.
+> > 
+> > But I also agree that BCC tools should be updated to use proper
+> > bpf_probe_read_{kernel,user}[_str()] helpers, please contribute such
+> > fixes to BCC tools and BCC itself as well. Cc'ed Alan as his ksnoop in
+> > libbpf-tools seems to be using bpf_probe_read() as well and needs to
+> > be fixed.
+> 
+> Yixun, the bcc change looks like below:
 
-How much of an eBPF ecosystem was there on RISC-V at the point?
+No, this is broken.  bcc needs to stop using bpf_probe_read entirely
+for user addresses and unconditionally use bpf_probe_read_user first
+and only fall back to bpf_probe_read if not supported.
