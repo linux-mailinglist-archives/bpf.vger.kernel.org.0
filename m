@@ -2,68 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98FC8567CF0
-	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 06:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38339567D00
+	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 06:16:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231126AbiGFED3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Jul 2022 00:03:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34782 "EHLO
+        id S230022AbiGFEQm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jul 2022 00:16:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230080AbiGFED2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Jul 2022 00:03:28 -0400
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B8A9DE1;
-        Tue,  5 Jul 2022 21:03:27 -0700 (PDT)
-Received: by mail-vs1-xe2a.google.com with SMTP id 189so13961419vsh.2;
-        Tue, 05 Jul 2022 21:03:27 -0700 (PDT)
+        with ESMTP id S229779AbiGFEQl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Jul 2022 00:16:41 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 201181F2CD
+        for <bpf@vger.kernel.org>; Tue,  5 Jul 2022 21:16:40 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id u15so478520ejx.9
+        for <bpf@vger.kernel.org>; Tue, 05 Jul 2022 21:16:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hMOXU9KWNm3j8iYiYGllvra8fWrHwp8WY0VXFRlbzgk=;
-        b=jixxLQE46gl5vVIhvX1Y6PvczVME2POiT22AeGVsZ54M4C7ru8ga21OpHfmLGi545I
-         QNq9iYQ5tuGMMzAe4ybmIRglzba5nuW67V1AVkczeKjUPU0uudeCTbo4an5OZh0cnXfq
-         QN4BJwIGiMVLyiQ8jeL7DrfQy7VshQgFrZ9XCOcJVQoNgW06w+9YYyU5z5W2SWBU66F6
-         dUeEsOnHDadhYHDC/PLMQVJ2yDrzyhrMJ3Io9zeUPvgG6mMXJ23Ek19ANTv7Bn2cGpzm
-         xl40SFD1GfFX/Dk7RT3tcugbpB7AwEUtzlN5cxYei5HehrgWJJ5BeeR9FQlRHOpg4YmO
-         bmIw==
+         :cc:content-transfer-encoding;
+        bh=j2CNyCIU5yme4GGXCgTLOI0l2q+FMIMk4Hk6zq9SaXw=;
+        b=BZrapYSDq+uJbzIjK6a4nzrgG/TieXXtHmcWwPykdVqGAwGSFN7RvwJgHBZOiEkoVS
+         fCiIhvr6U6jyBRWNL60TJABKXPE3cGd+1p3uBirOx6oTN3yVIx0PU7MukQbpi2m4OPum
+         H6TRT/m++oXYq8aPaU/+nYgbCxvWFr63ta2TN8rxOFDUaP3dAkfxio4dv7Y8rrCHt5Ca
+         no6HHTSVry+smHspy5xrb/v527Zj917wj0cm1oWqPOiA7Whx34e5jceVbKfgwbzRDmQo
+         TyV+/rh+2VBrUlxqVmkZE5HhpJVxPEmgP095r+vCs5LO2jF1lhP6rYwrQaBGyh3KrRsm
+         9g7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hMOXU9KWNm3j8iYiYGllvra8fWrHwp8WY0VXFRlbzgk=;
-        b=yWT2pZn8QTRvzkcTf4/MzBqlik+cxQzmwn4htIGgeWpxloNFBwo4ZCRyAamD8LPeaG
-         So5XFJYBvkLhSjA0+88gHz0kri3llT3eDqzqrN4kvjT6aptp2WQ2dV8Y+aeaD107DlnF
-         cHXBuzPjaNu8/EVohgRly26dFZ+oPf4g64yrwUomKuP/v07tQm13VyYeAWIsLfVRKisX
-         lAsWkJZfBDI/GMh1HGCeQjHLjQj1UEUtK8z31jOVQW4mm5kTSJPQKEosB2YFcFVXMQ9q
-         7DdyZ6viXEwS+f5Ou6ve5cLfGtbM3hqFQdul2LhmenEvk9XyGqumUfsypAeMoxmwKYLQ
-         Nxbg==
-X-Gm-Message-State: AJIora/NUF4rFPodfEyPbhR7J9eyNDlCrXl46RPO5zifOtqbwJ0FKa7E
-        OTkPqh/CFA13PlXVqI1ej9ZFS35zIF+87q8xBQk=
-X-Google-Smtp-Source: AGRyM1vZX8KVbnxd1aaz6SUN8zHARsVwIVAagJtSGENonH3i8iR9bvGXJGJe+lHcRC9JTfptGkwO7bk4e2jYt/RCiwU=
-X-Received: by 2002:a05:6102:cc6:b0:356:3c5c:beb5 with SMTP id
- g6-20020a0561020cc600b003563c5cbeb5mr21216824vst.80.1657080206548; Tue, 05
- Jul 2022 21:03:26 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=j2CNyCIU5yme4GGXCgTLOI0l2q+FMIMk4Hk6zq9SaXw=;
+        b=XgoM2m5+//Do8eu+NvPl3uclaT3dFGbv1qJaDNJxCRh5h+6vx+n3SfXnRHJzMdtw5M
+         opGGbFZ7UfX4eYoclaCAA8DP0Yfnw+eWLgUnNh6JUy+9zoHooYBM1heqHoEuILCbYVrG
+         tAMEswJp2Kc1/6mZImGZ58MDonihJp1AUH01OpRGmjLGbrMqsqlkFusU7j7HIjETzBO7
+         F0vOxqFPuENOWcJ5RR9N+fluu1XUKdcCxc/mPMc9nd1H2yAqcOgsd//xj6ICqt04pxYK
+         25InHNOJsDnhhRZAW7Woxtxqi0yHvzrBikucYVZBgZU/74cUWF3uvkFU5cX+iYRS/VQC
+         nfuA==
+X-Gm-Message-State: AJIora8sX+jnCGnPKv6pC7xmraxeT7hRnYsKK9BxZtkbMeimwJ1BgB48
+        DqCVDn+hd3j2o061HDkiWt+YV9uWPCVZPZ2ZKAw=
+X-Google-Smtp-Source: AGRyM1tUzZtLJ2VqPzhWzC85Y7FMhi4+o8swVN7ll7WPBh1DDW5z2k3xr5WaASXZ9bXpUw+0x2hVN8NgqX1O1BpZGvQ=
+X-Received: by 2002:a17:906:6a11:b0:726:97b8:51e9 with SMTP id
+ qw17-20020a1709066a1100b0072697b851e9mr38122639ejc.115.1657080998622; Tue, 05
+ Jul 2022 21:16:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220702033521.64630-1-roman.gushchin@linux.dev>
- <CALvZod7TGhWtcRD6HeEx90T2+Rod-yamq9i+WbEQUKwNFTi-1A@mail.gmail.com>
- <YsBmoqEBCa7ra7w2@castle> <YsMCMveSdiYX/2eH@dhcp22.suse.cz>
- <YsSj6rZmUkR8amT2@castle> <CALOAHbAb9DT6ihyxTm-4FCUiqiAzRSUHJw9erc+JTKVT9p8tow@mail.gmail.com>
- <YsUBQsTjVuXvt1Wr@castle> <CALOAHbDjRzySCHeMVHtVDe=Ji+qh=n0pT4CwiAM5Pahi2-QNCQ@mail.gmail.com>
- <YsUH7pgBVnWSkC1q@castle>
-In-Reply-To: <YsUH7pgBVnWSkC1q@castle>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Wed, 6 Jul 2022 12:02:49 +0800
-Message-ID: <CALOAHbA+C2nM4qSj2yPfbdzbqZ-UdCpg5QP0+f5HbEtpi0ZZGQ@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcontrol: do not miss MEMCG_MAX events for enforced allocations
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     Michal Hocko <mhocko@suse.com>, Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        bpf <bpf@vger.kernel.org>
+References: <20220628160127.607834-1-deso@posteo.net> <20220705210700.fpyw4msqy7tkiuub@muellerd-fedora-MJ0AC3F3>
+In-Reply-To: <20220705210700.fpyw4msqy7tkiuub@muellerd-fedora-MJ0AC3F3>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 5 Jul 2022 21:16:27 -0700
+Message-ID: <CAEf4Bzb=2QnL_oUYTLZ9T_poDGcQ0_WB_ZJs8LQNuC3Dp0Qfng@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 00/10] Introduce type match support
+To:     =?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Joanne Koong <joannelkoong@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -74,117 +69,91 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 6, 2022 at 11:56 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
+On Tue, Jul 5, 2022 at 2:07 PM Daniel M=C3=BCller <deso@posteo.net> wrote:
 >
-> On Wed, Jul 06, 2022 at 11:42:50AM +0800, Yafang Shao wrote:
-> > On Wed, Jul 6, 2022 at 11:28 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
-> > >
-> > > On Wed, Jul 06, 2022 at 10:46:48AM +0800, Yafang Shao wrote:
-> > > > On Wed, Jul 6, 2022 at 4:49 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
-> > > > >
-> > > > > On Mon, Jul 04, 2022 at 05:07:30PM +0200, Michal Hocko wrote:
-> > > > > > On Sat 02-07-22 08:39:14, Roman Gushchin wrote:
-> > > > > > > On Fri, Jul 01, 2022 at 10:50:40PM -0700, Shakeel Butt wrote:
-> > > > > > > > On Fri, Jul 1, 2022 at 8:35 PM Roman Gushchin <roman.gushchin@linux.dev> wrote:
-> > > > > > > > >
-> > > > > > > > > Yafang Shao reported an issue related to the accounting of bpf
-> > > > > > > > > memory: if a bpf map is charged indirectly for memory consumed
-> > > > > > > > > from an interrupt context and allocations are enforced, MEMCG_MAX
-> > > > > > > > > events are not raised.
-> > > > > > > > >
-> > > > > > > > > It's not/less of an issue in a generic case because consequent
-> > > > > > > > > allocations from a process context will trigger the reclaim and
-> > > > > > > > > MEMCG_MAX events. However a bpf map can belong to a dying/abandoned
-> > > > > > > > > memory cgroup, so it might never happen.
-> > > > > > > >
-> > > > > > > > The patch looks good but the above sentence is confusing. What might
-> > > > > > > > never happen? Reclaim or MAX event on dying memcg?
-> > > > > > >
-> > > > > > > Direct reclaim and MAX events. I agree it might be not clear without
-> > > > > > > looking into the code. How about something like this?
-> > > > > > >
-> > > > > > > "It's not/less of an issue in a generic case because consequent
-> > > > > > > allocations from a process context will trigger the direct reclaim
-> > > > > > > and MEMCG_MAX events will be raised. However a bpf map can belong
-> > > > > > > to a dying/abandoned memory cgroup, so there will be no allocations
-> > > > > > > from a process context and no MEMCG_MAX events will be triggered."
-> > > > > >
-> > > > > > Could you expand little bit more on the situation? Can those charges to
-> > > > > > offline memcg happen indefinetely?
-> > > > >
-> > > > > Yes.
-> > > > >
-> > > > > > How can it ever go away then?
-> > > > >
-> > > > > Bpf map should be deleted by a user first.
-> > > > >
-> > > >
-> > > > It can't apply to pinned bpf maps, because the user expects the bpf
-> > > > maps to continue working after the user agent exits.
-> > > >
-> > > > > > Also is this something that we actually want to encourage?
-> > > > >
-> > > > > Not really. We can implement reparenting (probably objcg-based), I think it's
-> > > > > a good idea in general. I can take a look, but can't promise it will be fast.
-> > > > >
-> > > > > In thory we can't forbid deleting cgroups with associated bpf maps, but I don't
-> > > > > thinks it's a good idea.
-> > > > >
-> > > >
-> > > > Agreed. It is not a good idea.
-> > > >
-> > > > > > In other words shouldn't those remote charges be redirected when the
-> > > > > > target memcg is offline?
-> > > > >
-> > > > > Reparenting is the best answer I have.
-> > > > >
-> > > >
-> > > > At the cost of increasing the complexity of deployment, that may not
-> > > > be a good idea neither.
-> > >
-> > > What do you mean? Can you please elaborate on it?
-> > >
+> On Tue, Jun 28, 2022 at 04:01:17PM +0000, Daniel M=C3=BCller wrote:
+> > This patch set proposes the addition of a new way for performing type q=
+ueries to
+> > BPF. It introduces the "type matches" relation, similar to what is alre=
+ady
+> > present with "type exists" (in the form of bpf_core_type_exists).
 > >
-> >                    parent memcg
-> >                          |
-> >                     bpf memcg   <- limit the memory size of bpf
-> > programs
-> >                         /           \
-> >          bpf user agent     pinned bpf program
+> > "type exists" performs fairly superficial checking, mostly concerned wi=
+th
+> > whether a type exists in the kernel and is of the same kind (enum/struc=
+t/...).
+> > Notably, compatibility checks for members of composite types is lacking=
+.
 > >
-> > After bpf user agents exit, the bpf memcg will be dead, and then all
-> > its memory will be reparented.
-> > That is okay for preallocated bpf maps, but not okay for
-> > non-preallocated bpf maps.
-> > Because the bpf maps will continue to charge, but as all its memory
-> > and objcg are reparented, so we have to limit the bpf memory size in
-> > the parent as follows,
+> > The newly introduced "type matches" (bpf_core_type_matches) fills this =
+gap in
+> > that it performs stricter checks: compatibility of members and existenc=
+e of
+> > similarly named enum variants is checked as well. E.g., given these def=
+initions:
+> >
+> >       struct task_struct___og { int pid; int tgid; };
+> >
+> >       struct task_struct___foo { int foo; }
+> >
+> > 'task_struct___og' would "match" the kernel type 'task_struct', because=
+ the
+> > members match up, while 'task_struct___foo' would not match, because th=
+e
+> > kernel's 'task_struct' has no member named 'foo'.
+> >
+> > More precisely, the "type match" relation is defined as follows (copied=
+ from
+> > source):
+> > - modifiers and typedefs are stripped (and, hence, effectively ignored)
+> > - generally speaking types need to be of same kind (struct vs. struct, =
+union
+> >   vs. union, etc.)
+> >   - exceptions are struct/union behind a pointer which could also match=
+ a
+> >     forward declaration of a struct or union, respectively, and enum vs=
+.
+> >     enum64 (see below)
+> > Then, depending on type:
+> > - integers:
+> >   - match if size and signedness match
+> > - arrays & pointers:
+> >   - target types are recursively matched
+> > - structs & unions:
+> >   - local members need to exist in target with the same name
+> >   - for each member we recursively check match unless it is already beh=
+ind a
+> >     pointer, in which case we only check matching names and compatible =
+kind
+> > - enums:
+> >   - local variants have to have a match in target by symbolic name (but=
+ not
+> >     numeric value)
+> >   - size has to match (but enum may match enum64 and vice versa)
+> > - function pointers:
+> >   - number and position of arguments in local type has to match target
+> >   - for each argument and the return value we recursively check match
+> >
+> > Enabling this feature requires a new relocation to be made known to the
+> > compiler. This is being taken care of for LLVM as part of
+> > https://reviews.llvm.org/D126838.
 >
-> So you're relying on the memory limit of a dying cgroup?
-
-No. I didn't say it.  What I said is you can't use a dying cgroup to
-limit it, that's why I said that we have to use parant memcg to limit
-it.
-
-> Sorry, but I don't think we can seriously discuss such a design.
-> A dying cgroup is invisible for a user, a user can't change any tunables,
-> they have zero visibility into any stats or charges. Why would you do this?
->
-> If you want the cgroup to be an active part of the memory management
-> process, don't delete it. There are exactly zero guarantees about what
-> happens with a memory cgroup after being deleted by a user, it's all
-> implementation details.
->
-> Anyway, here is the patch for reparenting bpf maps:
-> https://github.com/rgushchin/linux/commit/f57df8bb35770507a4624fe52216b6c14f39c50c
->
-> I gonna post it to bpf@ after some testing.
+> To give an update here, LLVM changes have been merged and, to the best of=
+ my
+> knowledge, are being used by BPF CI (tests that failed earlier are now pa=
+ssing).
 >
 
-I will take a look at it.
-But AFAIK the reparenting can't resolve the problem of non-preallocated maps.
+I did a few small changes and combined patches 4-6 together (because
+they add the same functionality to both libbpf and kernel
+simultaneously, there were compilation warnings about non-static
+functions not having a proper prototype defined). But I've split out
+the bpf_core_type_matches() macro in bpf_core_read.h into a separate
+patch. I also dropped patch #3 as it wasn't needed anymore.
 
+Please see comments I left for two further follow ups.
 
--- 
-Regards
-Yafang
+> Thanks,
+> Daniel
+>
+> [...]
