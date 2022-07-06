@@ -2,303 +2,259 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5D455695C2
-	for <lists+bpf@lfdr.de>; Thu,  7 Jul 2022 01:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC03A5695D8
+	for <lists+bpf@lfdr.de>; Thu,  7 Jul 2022 01:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232056AbiGFXXD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Jul 2022 19:23:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37338 "EHLO
+        id S232370AbiGFX0N (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jul 2022 19:26:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231602AbiGFXXD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Jul 2022 19:23:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 96E2F2BB1C
-        for <bpf@vger.kernel.org>; Wed,  6 Jul 2022 16:23:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1657149780;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BOwyqfyXCGaZLm/NYG/xDFnwRI3ekzoanClZ8gigevg=;
-        b=BDo4Hcmu7GK3QHwblWALg2AFbboMkdfkbGOM8XAU4SjaS9U2ogBJWwGSttDN5UG0DzenVs
-        HZtpbH2J+NtKCg8ACyXY6Uobnu62x2CXtJwROAYhGV5UfQpD0z8J/hGxHliAk2UghNK/wb
-        /nvTFWGieT5+qvwnfIy6QcsfvMe7cxE=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-369-aft87Cn1OCWCV4nQkZjnjA-1; Wed, 06 Jul 2022 19:22:59 -0400
-X-MC-Unique: aft87Cn1OCWCV4nQkZjnjA-1
-Received: by mail-ed1-f69.google.com with SMTP id x21-20020a05640226d500b00435bd7f9367so12565692edd.8
-        for <bpf@vger.kernel.org>; Wed, 06 Jul 2022 16:22:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=BOwyqfyXCGaZLm/NYG/xDFnwRI3ekzoanClZ8gigevg=;
-        b=OD2K+VKpZQzjkKfBbn0Uv/SnN0SKrkXiiLB2Rm7Xoljy4wPEIJHdQbUYD41Lt9UfUx
-         aHR8xLrqc2r3fqxgrlLPan1ydlFBLv/fzIn+dYAkRQyQidegDzZkxWFligU/BMMSOV/U
-         0MBw2uycu2K8iv/lBhwjEi7jI/xnpHAjoLO5wpHpDi+F6djFgIDbZmhs1pUJ3V0YCBNO
-         pls1wNCdqaLVrAZRjGdTWjMENbZAdsfHhYiM1kKLJd2qBgD0g0Mz5qQ7UHK1T9JHISHQ
-         q7rFsqC6zMRoWaW8cF0gbGavDY85qjNrd+XttsAnYGRT2h5Mgrblq8yuvJu5wCJSDayr
-         cOwg==
-X-Gm-Message-State: AJIora9VH/DZNZpj0iIh6YstmAE1ApGcgxmVpirpSO7CtaDTf6K+pPQV
-        4aV9SqS/YhbFsMYue0MAqGjZPflPenM51HTcEqaunRBkwxHceC+TEDfB17bcjLKlWnlYiHifnJz
-        sGVGlisJXOu/t
-X-Received: by 2002:a17:906:5512:b0:726:be2c:a2e5 with SMTP id r18-20020a170906551200b00726be2ca2e5mr41546544ejp.88.1657149777563;
-        Wed, 06 Jul 2022 16:22:57 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1uSG4zUzhePcSlYVWM8vT42gwF7wOFTx2QihYXUDSQAzcrxzkkXmexJ9eElcWCYYxoAEc9Ypw==
-X-Received: by 2002:a17:906:5512:b0:726:be2c:a2e5 with SMTP id r18-20020a170906551200b00726be2ca2e5mr41546469ejp.88.1657149776719;
-        Wed, 06 Jul 2022 16:22:56 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id y21-20020a170906559500b00726dbb16b8dsm12355793ejp.65.2022.07.06.16.22.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Jul 2022 16:22:55 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 354274AAF97; Thu,  7 Jul 2022 01:22:55 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexander Lobakin <alexandr.lobakin@intel.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Larysa Zaremba <larysa.zaremba@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Yajun Deng <yajun.deng@linux.dev>,
-        Willem de Bruijn <willemb@google.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xdp-hints@xdp-project.net
-Subject: Re: [xdp-hints] Re: [PATCH RFC bpf-next 00/52] bpf, xdp: introduce
- and use Generic Hints/metadata
-In-Reply-To: <20220706135023.1464979-1-alexandr.lobakin@intel.com>
-References: <20220628194812.1453059-1-alexandr.lobakin@intel.com>
- <62bbedf07f44a_2181420830@john.notmuch> <87iloja8ly.fsf@toke.dk>
- <20220704154440.7567-1-alexandr.lobakin@intel.com>
- <87a69o94wz.fsf@toke.dk>
- <20220705154120.22497-1-alexandr.lobakin@intel.com>
- <87pmij75r1.fsf@toke.dk>
- <20220706135023.1464979-1-alexandr.lobakin@intel.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 07 Jul 2022 01:22:55 +0200
-Message-ID: <87edyxaks0.fsf@toke.dk>
+        with ESMTP id S234278AbiGFX0L (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Jul 2022 19:26:11 -0400
+Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA5772C644
+        for <bpf@vger.kernel.org>; Wed,  6 Jul 2022 16:26:10 -0700 (PDT)
+Received: by devbig010.atn6.facebook.com (Postfix, from userid 115148)
+        id B34CCE977FC4; Wed,  6 Jul 2022 16:25:56 -0700 (PDT)
+From:   Joanne Koong <joannelkoong@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     andrii@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        Joanne Koong <joannelkoong@gmail.com>
+Subject: [PATCH bpf-next v1] bpf: Add flags arg to bpf_dynptr_read and bpf_dynptr_write APIs
+Date:   Wed,  6 Jul 2022 16:25:47 -0700
+Message-Id: <20220706232547.4016651-1-joannelkoong@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=3.0 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+        FORGED_GMAIL_RCVD,FREEMAIL_FROM,NML_ADSP_CUSTOM_MED,RDNS_DYNAMIC,
+        SPF_HELO_PASS,SPF_SOFTFAIL,SPOOFED_FREEMAIL,SPOOF_GMAIL_MID,
+        TVD_RCVD_IP,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexander Lobakin <alexandr.lobakin@intel.com> writes:
+Commit 13bbbfbea759 ("bpf: Add bpf_dynptr_read and bpf_dynptr_write")
+added the bpf_dynptr_write and bpf_dynptr_read APIs.
 
-> From: Toke H??iland-J??rgensen <toke@redhat.com>
-> Date: Tue, 05 Jul 2022 20:51:14 +0200
->
->> Alexander Lobakin <alexandr.lobakin@intel.com> writes:
->> 
->> [... snipping a bit of context here ...]
->> 
->> >> >> Yeah, I'd agree this kind of configuration is something that can be
->> >> >> added later, and also it's sort of orthogonal to the consumption of the
->> >> >> metadata itself.
->> >> >> 
->> >> >> Also, tying this configuration into the loading of an XDP program is a
->> >> >> terrible interface: these are hardware configuration options, let's just
->> >> >> put them into ethtool or 'ip link' like any other piece of device
->> >> >> configuration.
->> >> >
->> >> > I don't believe it fits there, especially Ethtool. Ethtool is for
->> >> > hardware configuration, XDP/AF_XDP is 95% software stuff (apart from
->> >> > offload bits which is purely NFP's for now).
->> >> 
->> >> But XDP-hints is about consuming hardware features. When you're
->> >> configuring which metadata items you want, you're saying "please provide
->> >> me with these (hardware) features". So ethtool is an excellent place to
->> >> do that :)
->> >
->> > With Ethtool you configure the hardware, e.g. it won't strip VLAN
->> > tags if you disable rx-cvlan-stripping. With configuring metadata
->> > you only tell what you want to see there, don't you?
->> 
->> Ah, I think we may be getting closer to identifying the disconnect
->> between our way of thinking about this!
->> 
->> In my mind, there's no separate "configuration of the metadata" step.
->> You simply tell the hardware what features you want (say, "enable
->> timestamps and VLAN offload"), and the driver will then provide the
->> information related to these features in the metadata area
->> unconditionally. All XDP hints is about, then, is a way for the driver
->> to inform the rest of the system how that information is actually laid
->> out in the metadata area.
->> 
->> Having a separate configuration knob to tell the driver "please lay out
->> these particular bits of metadata this way" seems like a totally
->> unnecessary (and quite complicated) feature to have when we can just let
->> the driver decide and use CO-RE to consume it?
->
-> Magnus (he's currently on vacation) told me it would be useful for
-> AF_XDP to enable/disable particular metadata, at least from perf
-> perspective. Let's say, just fetching of one "checksum ok" bit in
-> the driver is faster than walking through all the descriptor words
-> and driver logics (i.e. there's several hundred locs in ice which
-> just parse descriptor data and build an skb or metadata from it).
-> But if we would just enable/disable corresponding features through
-> Ethtool, that would hurt XDP_PASS. Maybe it's a bad example, but
-> what if I want to have only RSS hash in the metadata (and don't
-> want to spend cycles on parsing the rest), but at the same time
-> still want skb path to have checksum status to not die at CPU
-> checksum calculation?
+However, it will be useful for some dynptr types to pass in flags as
+well (eg when writing to a skb, the user may like to invalidate the
+hash or recompute the checksum).
 
-Hmm, so this feels a little like a driver-specific optimisation? I.e.,
-my guess is that not all drivers have a measurable overhead for pulling
-out the metadata. Also, once the XDP metadata bits are in place, we can
-move in the direction of building SKBs from the same source, so I'm not
-sure it's a good idea to assume that the XDP metadata is separate from
-what the stack consumes...
+This patch adds a "u64 flags" arg to the bpf_dynptr_read and
+bpf_dynptr_write APIs.
 
-In any case, if such an optimisation does turn out to be useful, we can
-add it later (backed by rigorous benchmarks, of course), so I think we
-can still start with the simple case and iterate from there?
+Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+Fixes: 13bbbfbea759 ("bpf: Add bpf_dynptr_read and bpf_dynptr_write")
+---
+ include/uapi/linux/bpf.h                           | 11 +++++++----
+ kernel/bpf/helpers.c                               | 12 ++++++++----
+ tools/include/uapi/linux/bpf.h                     | 11 +++++++----
+ tools/testing/selftests/bpf/progs/dynptr_fail.c    | 10 +++++-----
+ tools/testing/selftests/bpf/progs/dynptr_success.c |  4 ++--
+ 5 files changed, 29 insertions(+), 19 deletions(-)
 
->> >> > I follow that way:
->> >> >
->> >> > 1) you pick a program you want to attach;
->> >> > 2) usually they are written for special needs and usecases;
->> >> > 3) so most likely that program will be tied with metadata/driver/etc
->> >> >    in some way;
->> >> > 4) so you want to enable Hints of a particular format primarily for
->> >> >    this program and usecase, same with threshold and everything
->> >> >    else.
->> >> >
->> >> > Pls explain how you see it, I might be wrong for sure.
->> >> 
->> >> As above: XDP hints is about giving XDP programs (and AF_XDP consumers)
->> >> access to metadata that is not currently available. Tying the lifetime
->> >> of that hardware configuration (i.e., which information to provide) to
->> >> the lifetime of an XDP program is not a good interface: for one thing,
->> >> how will it handle multiple programs? What about when XDP is not used at
->> >
->> > Multiple progs is stuff I didn't cover, but will do later (as you
->> > all say to me, "let's start with something simple" :)). Aaaand
->> > multiple XDP progs (I'm not talking about attaching progs in
->> > differeng modes) is not a kernel feature, rather a libpf feature,
->> > so I believe it should be handled there later...
->> 
->> Right, but even if we don't *implement* it straight away we still need
->> to take it into consideration in the design. And expecting libxdp to
->> arbitrate between different XDP programs' metadata formats sounds like a
->> royal PITA :)
->> 
->> >> all but you still want to configure the same features?
->> >
->> > What's the point of configuring metadata when there are no progs
->> > attached? To configure it once and not on every prog attach? I'm
->> > not saying I don't like it, just want to clarify.
->> 
->> See above: you turn on the features because you want the stack to
->> consume them.
->> 
->> > Maybe I need opinions from some more people, just to have an
->> > overview of how most of folks see it and would like to configure
->> > it. 'Cause I heard from at least one of the consumers that
->> > libpf API is a perfect place for Hints to him :)
->> 
->> Well, as a program author who wants to consume hints, you'd use
->> lib{bpf,xdp} APIs to do so (probably in the form of suitable CO-RE
->> macros)...
->> 
->> >> In addition, in every other case where we do dynamic data access (with
->> >> CO-RE) the BPF program is a consumer that modifies itself to access the
->> >> data provided by the kernel. I get that this is harder to achieve for
->> >> AF_XDP, but then let's solve that instead of making a totally
->> >> inconsistent interface for XDP.
->> >
->> > I also see CO-RE more fitting and convenient way to use them, but
->> > didn't manage to solve two things:
->> >
->> > 1) AF_XDP programs, so what to do with them? Prepare patches for
->> >    LLVM to make it able to do CO-RE on AF_XDP program load? Or
->> >    just hardcode them for particular usecases and NICs? What about
->> >    "general-purpose" programs?
->> 
->> You provide a library to read the fields. Jesper actually already
->> implemented this, did you look at his code?
->> 
->> https://github.com/xdp-project/bpf-examples/tree/master/AF_XDP-interaction
->> 
->> It basically builds a lookup table at load-time using BTF information
->> from the kernel, keyed on BTF ID and field name, resolving them into
->> offsets. It's not quite the zero-overhead of CO-RE, but it's fairly
->> close and can be improved upon (CO-RE for userspace being one way of
->> doing that).
->
-> Aaaah, sorry, I completely missed that. I thought of something
-> similar as well, but then thought "variable field offsets, that
-> would annihilate optimization and performance", and our Xsk team
-> is super concerned about performance hits when using Hints.
->
->> 
->> >    And if hardcode, what's the point then to do Generic Hints at
->> >    all? Then all it needs is making driver building some meta in
->> >    front of frames via on-off button and that's it? Why BTF ID in
->> >    the meta then if consumers will access meta hardcoded (via CO-RE
->> >    or literally hardcoded, doesn't matter)?
->> 
->> You're quite right, we could probably implement all the access to
->> existing (fixed) metadata without using any BTF at all - just define a
->> common struct and some flags to designate which fields are set. In my
->> mind, there are a couple of reasons for going the BTF route instead:
->> 
->> - We can leverage CO-RE to get close to optimal efficiency in field
->>   access.
->> 
->> and, more importantly:
->> 
->> - It's infinitely extensible. With the infrastructure in place to make
->>   it really easy to consume metadata described by BTF, we lower the bar
->>   for future innovation in hardware offloads. Both for just adding new
->>   fixed-function stuff to hardware, but especially for fully
->>   programmable hardware.
->
-> Agree :) That libxdp lookup translator fixed lots of stuff in my
-> mind.
-
-Great! Looks like we're slowly converging towards a shared
-understanding, then! :)
-
->> > 2) In-kernel metadata consumers? Also do CO-RE? Otherwise, with no
->> >    generic metadata structure they won't be able to benefit from
->> >    Hints. But I guess we still need to provide kernel with meta?
->> >    Or no?
->> 
->> In the short term, I think the "generic structure" approach is fine for
->> leveraging this in the stack. Both your and Jesper's series include
->> this, and I think that's totally fine. Longer term, if it turns out to
->> be useful to have something more dynamic for the stack consumption as
->> well, we could extend it to be CO-RE based as well (most likely by
->> having the stack load a "translator" BPF program or something along
->> those lines).
->
-> Oh, that translator prog sounds nice BTW!
-
-Yeah, it's only a rough idea Jesper and I discussed at some point, but I
-think it could have potential (see also point above re: making XDP hints
-*the* source of metadata for the whole stack; wouldn't it be nice if
-drivers didn't have to deal with the intricacies of assembling SKBs?).
-
--Toke
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 379e68fb866f..3dd13fe738b9 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -5226,22 +5226,25 @@ union bpf_attr {
+  *	Return
+  *		Nothing. Always succeeds.
+  *
+- * long bpf_dynptr_read(void *dst, u32 len, struct bpf_dynptr *src, u32 =
+offset)
++ * long bpf_dynptr_read(void *dst, u32 len, struct bpf_dynptr *src, u32 =
+offset, u64 flags)
+  *	Description
+  *		Read *len* bytes from *src* into *dst*, starting from *offset*
+  *		into *src*.
++ *		*flags* is currently unused.
+  *	Return
+  *		0 on success, -E2BIG if *offset* + *len* exceeds the length
+- *		of *src*'s data, -EINVAL if *src* is an invalid dynptr.
++ *		of *src*'s data, -EINVAL if *src* is an invalid dynptr or if
++ *		*flags* is not 0.
+  *
+- * long bpf_dynptr_write(struct bpf_dynptr *dst, u32 offset, void *src, =
+u32 len)
++ * long bpf_dynptr_write(struct bpf_dynptr *dst, u32 offset, void *src, =
+u32 len, u64 flags)
+  *	Description
+  *		Write *len* bytes from *src* into *dst*, starting from *offset*
+  *		into *dst*.
++ *		*flags* is currently unused.
+  *	Return
+  *		0 on success, -E2BIG if *offset* + *len* exceeds the length
+  *		of *dst*'s data, -EINVAL if *dst* is an invalid dynptr or if *dst*
+- *		is a read-only dynptr.
++ *		is a read-only dynptr or if *flags* is not 0.
+  *
+  * void *bpf_dynptr_data(struct bpf_dynptr *ptr, u32 offset, u32 len)
+  *	Description
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index a1c84d256f83..1f961f9982d2 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -1497,11 +1497,12 @@ static const struct bpf_func_proto bpf_dynptr_fro=
+m_mem_proto =3D {
+ 	.arg4_type	=3D ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_LOCAL | MEM_UNINIT,
+ };
+=20
+-BPF_CALL_4(bpf_dynptr_read, void *, dst, u32, len, struct bpf_dynptr_ker=
+n *, src, u32, offset)
++BPF_CALL_5(bpf_dynptr_read, void *, dst, u32, len, struct bpf_dynptr_ker=
+n *, src,
++	   u32, offset, u64, flags)
+ {
+ 	int err;
+=20
+-	if (!src->data)
++	if (!src->data || flags)
+ 		return -EINVAL;
+=20
+ 	err =3D bpf_dynptr_check_off_len(src, offset, len);
+@@ -1521,13 +1522,15 @@ static const struct bpf_func_proto bpf_dynptr_rea=
+d_proto =3D {
+ 	.arg2_type	=3D ARG_CONST_SIZE_OR_ZERO,
+ 	.arg3_type	=3D ARG_PTR_TO_DYNPTR,
+ 	.arg4_type	=3D ARG_ANYTHING,
++	.arg5_type	=3D ARG_ANYTHING,
+ };
+=20
+-BPF_CALL_4(bpf_dynptr_write, struct bpf_dynptr_kern *, dst, u32, offset,=
+ void *, src, u32, len)
++BPF_CALL_5(bpf_dynptr_write, struct bpf_dynptr_kern *, dst, u32, offset,=
+ void *, src,
++	   u32, len, u64, flags)
+ {
+ 	int err;
+=20
+-	if (!dst->data || bpf_dynptr_is_rdonly(dst))
++	if (!dst->data || flags || bpf_dynptr_is_rdonly(dst))
+ 		return -EINVAL;
+=20
+ 	err =3D bpf_dynptr_check_off_len(dst, offset, len);
+@@ -1547,6 +1550,7 @@ static const struct bpf_func_proto bpf_dynptr_write=
+_proto =3D {
+ 	.arg2_type	=3D ARG_ANYTHING,
+ 	.arg3_type	=3D ARG_PTR_TO_MEM | MEM_RDONLY,
+ 	.arg4_type	=3D ARG_CONST_SIZE_OR_ZERO,
++	.arg5_type	=3D ARG_ANYTHING,
+ };
+=20
+ BPF_CALL_3(bpf_dynptr_data, struct bpf_dynptr_kern *, ptr, u32, offset, =
+u32, len)
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
+f.h
+index 379e68fb866f..3dd13fe738b9 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -5226,22 +5226,25 @@ union bpf_attr {
+  *	Return
+  *		Nothing. Always succeeds.
+  *
+- * long bpf_dynptr_read(void *dst, u32 len, struct bpf_dynptr *src, u32 =
+offset)
++ * long bpf_dynptr_read(void *dst, u32 len, struct bpf_dynptr *src, u32 =
+offset, u64 flags)
+  *	Description
+  *		Read *len* bytes from *src* into *dst*, starting from *offset*
+  *		into *src*.
++ *		*flags* is currently unused.
+  *	Return
+  *		0 on success, -E2BIG if *offset* + *len* exceeds the length
+- *		of *src*'s data, -EINVAL if *src* is an invalid dynptr.
++ *		of *src*'s data, -EINVAL if *src* is an invalid dynptr or if
++ *		*flags* is not 0.
+  *
+- * long bpf_dynptr_write(struct bpf_dynptr *dst, u32 offset, void *src, =
+u32 len)
++ * long bpf_dynptr_write(struct bpf_dynptr *dst, u32 offset, void *src, =
+u32 len, u64 flags)
+  *	Description
+  *		Write *len* bytes from *src* into *dst*, starting from *offset*
+  *		into *dst*.
++ *		*flags* is currently unused.
+  *	Return
+  *		0 on success, -E2BIG if *offset* + *len* exceeds the length
+  *		of *dst*'s data, -EINVAL if *dst* is an invalid dynptr or if *dst*
+- *		is a read-only dynptr.
++ *		is a read-only dynptr or if *flags* is not 0.
+  *
+  * void *bpf_dynptr_data(struct bpf_dynptr *ptr, u32 offset, u32 len)
+  *	Description
+diff --git a/tools/testing/selftests/bpf/progs/dynptr_fail.c b/tools/test=
+ing/selftests/bpf/progs/dynptr_fail.c
+index d811cff73597..0a26c243e6e9 100644
+--- a/tools/testing/selftests/bpf/progs/dynptr_fail.c
++++ b/tools/testing/selftests/bpf/progs/dynptr_fail.c
+@@ -140,12 +140,12 @@ int use_after_invalid(void *ctx)
+=20
+ 	bpf_ringbuf_reserve_dynptr(&ringbuf, sizeof(read_data), 0, &ptr);
+=20
+-	bpf_dynptr_read(read_data, sizeof(read_data), &ptr, 0);
++	bpf_dynptr_read(read_data, sizeof(read_data), &ptr, 0, 0);
+=20
+ 	bpf_ringbuf_submit_dynptr(&ptr, 0);
+=20
+ 	/* this should fail */
+-	bpf_dynptr_read(read_data, sizeof(read_data), &ptr, 0);
++	bpf_dynptr_read(read_data, sizeof(read_data), &ptr, 0, 0);
+=20
+ 	return 0;
+ }
+@@ -338,7 +338,7 @@ int invalid_helper2(void *ctx)
+ 	get_map_val_dynptr(&ptr);
+=20
+ 	/* this should fail */
+-	bpf_dynptr_read(read_data, sizeof(read_data), (void *)&ptr + 8, 0);
++	bpf_dynptr_read(read_data, sizeof(read_data), (void *)&ptr + 8, 0, 0);
+=20
+ 	return 0;
+ }
+@@ -377,7 +377,7 @@ int invalid_write2(void *ctx)
+ 	memcpy((void *)&ptr + 8, &x, sizeof(x));
+=20
+ 	/* this should fail */
+-	bpf_dynptr_read(read_data, sizeof(read_data), &ptr, 0);
++	bpf_dynptr_read(read_data, sizeof(read_data), &ptr, 0, 0);
+=20
+ 	bpf_ringbuf_submit_dynptr(&ptr, 0);
+=20
+@@ -473,7 +473,7 @@ int invalid_read2(void *ctx)
+ 	get_map_val_dynptr(&ptr);
+=20
+ 	/* this should fail */
+-	bpf_dynptr_read(read_data, sizeof(read_data), (void *)&ptr + 1, 0);
++	bpf_dynptr_read(read_data, sizeof(read_data), (void *)&ptr + 1, 0, 0);
+=20
+ 	return 0;
+ }
+diff --git a/tools/testing/selftests/bpf/progs/dynptr_success.c b/tools/t=
+esting/selftests/bpf/progs/dynptr_success.c
+index d67be48df4b2..a3a6103c8569 100644
+--- a/tools/testing/selftests/bpf/progs/dynptr_success.c
++++ b/tools/testing/selftests/bpf/progs/dynptr_success.c
+@@ -43,10 +43,10 @@ int test_read_write(void *ctx)
+ 	bpf_ringbuf_reserve_dynptr(&ringbuf, sizeof(write_data), 0, &ptr);
+=20
+ 	/* Write data into the dynptr */
+-	err =3D err ?: bpf_dynptr_write(&ptr, 0, write_data, sizeof(write_data)=
+);
++	err =3D bpf_dynptr_write(&ptr, 0, write_data, sizeof(write_data), 0);
+=20
+ 	/* Read the data that was written into the dynptr */
+-	err =3D err ?: bpf_dynptr_read(read_data, sizeof(read_data), &ptr, 0);
++	err =3D err ?: bpf_dynptr_read(read_data, sizeof(read_data), &ptr, 0, 0=
+);
+=20
+ 	/* Ensure the data we read matches the data we wrote */
+ 	for (i =3D 0; i < sizeof(read_data); i++) {
+--=20
+2.30.2
 
