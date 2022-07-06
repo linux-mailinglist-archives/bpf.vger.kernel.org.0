@@ -2,131 +2,190 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D5A9569513
-	for <lists+bpf@lfdr.de>; Thu,  7 Jul 2022 00:12:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94C6C569521
+	for <lists+bpf@lfdr.de>; Thu,  7 Jul 2022 00:15:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231510AbiGFWMC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Jul 2022 18:12:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52378 "EHLO
+        id S233133AbiGFWPw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jul 2022 18:15:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230481AbiGFWMB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Jul 2022 18:12:01 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AE3C2A430
-        for <bpf@vger.kernel.org>; Wed,  6 Jul 2022 15:11:59 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id h23so29308696ejj.12
-        for <bpf@vger.kernel.org>; Wed, 06 Jul 2022 15:11:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+2seMBdUCNd9lkwUpWfSizm/4BlRcABqRSozYyXF50E=;
-        b=ZfwpTK03Wo4ML6HpI6A3X8CcNFeMmO4AEmA4QWmrwEHZ0VoyWyLjjbCRUNSlDn8vPl
-         NVsI3KYRKbhBx0fPkrTQC4g7eZSh8QGubOH1H8cta/ogwn2NeggVrsnBu9sv+9Qi5Sms
-         w3sS6L53aF1VXpUKHOOpcbv1+gd0zFp8+p5QCNIk3GOre1mX+BuTKAMbVo7DQeq8e+Bd
-         ZD3u7Yf0YNeM3nGs57IH+bvK7GyHSzPgrWS+HHyBDvN/9R1tbKArX3ClV8TAMXiEbFsX
-         cKcS5YQJ63zamuiuO8UelLro30FvQA94LT9L/qw1h6uf8CC9vZU/2dG4VwThTsy5d/e5
-         XzTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+2seMBdUCNd9lkwUpWfSizm/4BlRcABqRSozYyXF50E=;
-        b=NRiBNNfBjsR+sV/Wdqik+ggApoxumx4f9AK/NZ4ZoeiAnT4DftMSqOpZ/9OEbgA0XF
-         1OWQjaRwGc0LN7D8aTC0bECkyvgvszVtASxywo0MZsUDsaKoOBNln4WCOTDhe7ge9JHG
-         ISQbxSkA6elIRjdfyhGAynj48TcDCZQ4J2EYXy72/zmHfdmO7i16Lo0GJfE/APDZXHq+
-         +9L68egOGGP48lZRnxxNYPeB90jf7JWa7HSEpJyr+T3Zv3jBln+YmxgN/UbvYZqI6/Wp
-         wXfM+R9PkVBN8WP+y2t1e9vlGWxGV3z0suKQgAvmWG1atc9orP0pamFW/z2XQ5cBmMBU
-         q2FQ==
-X-Gm-Message-State: AJIora9mU5TuG6ogzrLQ60RyX5ILMMnAN9IUnYs+LJmnE72eXZLNvtyy
-        fbJkHlLscsSsaohpVcmUDVah9zxNQfSavPR/3aI=
-X-Google-Smtp-Source: AGRyM1uuHUKmzMHU/3+birBCRNj94wTTZv/olVbyjxU+t348hHCDIcHEzGXwXDCd0+FDcT1chOQNADVsyL/3lGicqIA=
-X-Received: by 2002:a17:906:6146:b0:722:f8c4:ec9b with SMTP id
- p6-20020a170906614600b00722f8c4ec9bmr43656408ejl.708.1657145517968; Wed, 06
- Jul 2022 15:11:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220706155848.4939-1-laoar.shao@gmail.com> <20220706155848.4939-2-laoar.shao@gmail.com>
- <CAADnVQJEK+Puyz8b4eUV3H7Z+OtrvHd4MU42OsPiBodMQxEw-g@mail.gmail.com> <YsXd2Tah+irhth9t@castle>
-In-Reply-To: <YsXd2Tah+irhth9t@castle>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 6 Jul 2022 15:11:46 -0700
-Message-ID: <CAADnVQ+c_2Q6GxH3E0iD0RkOy2H2-UhuYL4V3v2BTQ6sZNxQAA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: Make non-preallocated allocation low priority
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     Yafang Shao <laoar.shao@gmail.com>,
+        with ESMTP id S230320AbiGFWPv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Jul 2022 18:15:51 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 690D62AC73;
+        Wed,  6 Jul 2022 15:15:51 -0700 (PDT)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 266L6vpJ029040;
+        Wed, 6 Jul 2022 15:15:50 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : mime-version; s=facebook;
+ bh=nq673jiLCGKxqMKlPDssdruLVsV8nhHlX4TakCvLI6E=;
+ b=ny1j86eAOd2mQqJ/CRFethNByWNXIWOrH1pwVTHPV2Q07P8g5I5TYRl9l6odyhWGB4Sf
+ Qk19PyZr5bYtvrw7rgw9y0qso6tGaiirvyhh9wIGhdmyn1jGDgdaKs61JgpjoSIDVjpR
+ q3ENuufo6zdcDab0nU+lGx7tOZaligQgx44= 
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2045.outbound.protection.outlook.com [104.47.66.45])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3h4ucm98cn-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 Jul 2022 15:15:50 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JaPt4sRJlm7EMFFwQVqGShIMSovuY5K8k6KgeVY/sape5/HnohicKivh1v4c4xVl0FKN1mBFls1fq7Z1QPfn44Ng5yxdoD0D/iUbJrkFlEHu5qcwkF9GSAHr3MirJ7BCEOZI8i7eLh/vyDDUJ6ZoF+G1Dv4mgYYRQjekWYDKKy94k1aAa8iHf7rIGrCIoTLr3nqSJhojciFQZFsF8VUcF1DwrJuQbNHXaM+V3b+oWpbp5WccxDoMnuclo8ncmE4MSNFm/pi3ucnQo/ip4QydhrbEBT/u3fUFhNB5F3U1nv34LDx3zfTbrio4rEHdTr5jCbRmGn6abgZvAHgde6ZHAA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nq673jiLCGKxqMKlPDssdruLVsV8nhHlX4TakCvLI6E=;
+ b=kX3OhnKqL7FYnM6J8FkwLm8W38VVWdH6Rv658sCye0JKEfd0S16hgfrqZNaLPjdd5j9Y82MamqH2AIjkKtzDeftl3a0NVHc235rQf3sWaIsXsMIlFSgvsdLbzAVf9DtuKPVcbj/QOGXHUD3gO/7/0J9/nyApg4X6L6SpTubG3WPyM1AmNDYrtVSqjW/zd25V1CO0B2XklP8SftCVmKj7L240CSJ9jKEAmULihP6COvkPb1cLp5qxi4VEmVg5BJmHfkugTJynVAxdP7TlzNn8gGRsmGhwpYx1redpu+YSQaLDfCaWzdLATlee79L8Tbq3UfkzTwfPrYgzncImx25Uog==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
+ by CH2PR15MB3621.namprd15.prod.outlook.com (2603:10b6:610:11::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5395.21; Wed, 6 Jul
+ 2022 22:15:47 +0000
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::e8cd:89e9:95b6:e19a]) by SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::e8cd:89e9:95b6:e19a%7]) with mapi id 15.20.5417.016; Wed, 6 Jul 2022
+ 22:15:47 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+CC:     Song Liu <song@kernel.org>, Networking <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Hao Luo <haoluo@google.com>, bpf <bpf@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Kernel Team <Kernel-team@fb.com>,
+        "jolsa@kernel.org" <jolsa@kernel.org>,
+        "mhiramat@kernel.org" <mhiramat@kernel.org>
+Subject: Re: [PATCH v2 bpf-next 5/5] bpf: trampoline: support
+ FTRACE_OPS_FL_SHARE_IPMODIFY
+Thread-Topic: [PATCH v2 bpf-next 5/5] bpf: trampoline: support
+ FTRACE_OPS_FL_SHARE_IPMODIFY
+Thread-Index: AQHYdrj21zA3ifq/PEC7Yw0zyJbSw61x8o6AgAAhSYCAAADUgIAACcQA
+Date:   Wed, 6 Jul 2022 22:15:47 +0000
+Message-ID: <ECD336F1-A130-47BA-8FBB-E3573445380F@fb.com>
+References: <20220602193706.2607681-1-song@kernel.org>
+ <20220602193706.2607681-6-song@kernel.org>
+ <20220706153843.37584b5b@gandalf.local.home>
+ <DC04E081-8320-4A39-A058-D0E33F202625@fb.com>
+ <20220706174049.6c60250f@gandalf.local.home>
+In-Reply-To: <20220706174049.6c60250f@gandalf.local.home>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3696.100.31)
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 22d7418e-111f-4571-9d48-08da5f9d13ad
+x-ms-traffictypediagnostic: CH2PR15MB3621:EE_
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: uRawHwnzmSphBWBLP1fxk7g1NAT+1V2rbw/1E0BmvayGyPvjCSzxvxqJOF1wNZBz3guEEUC6Ki6W3vgrSnvvz5wc+VEWO+8x+81uaSlLZgT1gru9PjL/rZhYMcsLiGedmUjmDKcdmVdR3z+PdRQCBLW7zrPVd7UOZFJYU4bA2X+OSz2WrwrKM3r67il1n/9Ylv5FRJeMcwWk9NNKMidkyfrF8guqGYeiTti+3zBUS0TO5dtUdhv2Cqb1au5E53j7WHMuVOecGoVsVgdeK6lngwOl2BPfyW3t2yoHqJwarfncDIFvR52ewklrpSwPPnHbXUOocBQTI6odbUbI8cJ+pTiufEN1c9oGo37lYRDL18VlMHFmvhU0dctDzO3BbY3FoXhsLRS9TseLdvOcwcqOz2abQ56krKoiR2yC2G75OcZ36R4rzKonQ/98Ooq23jlgwwVQF1qfhgm86hY0xukHYOYxsrSWs7iGucKAWN2hkPyt6Kt/8h1zev8KBHsiaXjo9Tv1ueUPhjdX0e7gs93tGKNbfSzVJzV3TJ6z5y9qWHCRIFxHd76ViaMXEbHav8FH3AFpdPs0KVTg44CI86tBK3PezEIbTis6p3ge7vAsjV0Q8doD6F42pF2Env8v3h8ptOnP78IzD8tlErg+RNzNY3oy1+yqqzwBiRUs84PABQz0O8NgtNwntgdwZZZPVhFpJIly6gbtw8eLtuYLpLew2BcnpHoDV7sVVXhX93hGswrcG+7ea5Zgi6S+vxOnDsdFxBmkT+bBY6ZFEFo2zOA4eYfMsEfa3UKjZgoTueWzIIoe+sOnUJllSG2hf0Q6sbPeuWa0t109TQK0oZE9ed8q434OjhPjdEHjL/4+t/kwjOk=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(346002)(366004)(396003)(376002)(39860400002)(136003)(71200400001)(36756003)(8936002)(2616005)(5660300002)(86362001)(478600001)(186003)(54906003)(6916009)(2906002)(6512007)(7416002)(122000001)(6486002)(316002)(53546011)(8676002)(91956017)(66476007)(76116006)(66556008)(66946007)(41300700001)(64756008)(4326008)(38100700002)(33656002)(38070700005)(6506007)(66446008)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?EjUl/Y+7Ynifbs4fNNIX09Ov5xMvep6T5x4x7MrlnWhp5JJq1fdxkG7kgnwo?=
+ =?us-ascii?Q?u9SurUlVLa7HgOqPup3ZHpfzdo8qhUS2M+GABbPdSjugRJBRN6DZMm5pYBaX?=
+ =?us-ascii?Q?OhE4twmt65HsaVarEZkgUjMDl8ZIOF5Z/N34ZBTcibvXW7iOL7+nEw5ubMU+?=
+ =?us-ascii?Q?1ib/N9FkwjAYRcqIdeDWHG3CaenDonH3TDefvbrXBEXcSbnRSixdpRIy8kaw?=
+ =?us-ascii?Q?32waNLdyS/LXWvqOS2JItccxTqBLGpg8Fk26bBGHX+s+baA1PkkI/mq9TBBb?=
+ =?us-ascii?Q?eKFa1ZIv2l0tytLQ/x7LIJe5f03fZCfPg7HzgQ25zY55t7561R1LJh1erBEq?=
+ =?us-ascii?Q?R3fdCh8V42tW8jKs003sg9Fc44erPqPV5UHvzep3hj9qM08W7N6Xo2yhGia3?=
+ =?us-ascii?Q?wuY4CQitSJN8SWBULxQtHM81GXenolg9BayODLUt6/WACowfODKO4FeZTOu0?=
+ =?us-ascii?Q?EZN080XAASqIohIWdbUtK1ZjiezsuWLp8++OySrowfhOeR9rtYIO2BKSSS1x?=
+ =?us-ascii?Q?dKNsH9Dy/hvlLvfFXy8he7b5fjKcbDmf0X8DS7/qM31XpTZZRW42/pMyEVsF?=
+ =?us-ascii?Q?kvNnx2eXKK7Km8kZhFb5r+QYZH9o3noWSvE9S/qSAodsrrqLCdTGAxwN9cz9?=
+ =?us-ascii?Q?mNb36KJoevQfZI+3ZST+OswtvtO/KEuFIJJsD2geWwQoyp90PB2OWcTGVFR9?=
+ =?us-ascii?Q?/0tIpfOcVdCOpv4I4jqOMZZRxEDzkCyxfqYz4ySxvUWDtXXmVCdF+px2ZppT?=
+ =?us-ascii?Q?N5GzoFjo3qLSD1CKGCEBe01BQ/QZTLjo1nc7UGcFkTBG5f1M8VC7pOZ/O3/p?=
+ =?us-ascii?Q?V0j1Rc0WgIOhDijmrEkW5Fi1cxm60TZtySnDL38ciKzZDH2rDI4+hmzAwhVf?=
+ =?us-ascii?Q?bsfO2JZkyLrR3ZWSKCG00ud6FR2zto+fKTXiQMwW6HSLC6AIIJFQxkHrHgfR?=
+ =?us-ascii?Q?Gr4BfYKWa+jPLyj8KuHwvW4tmTjDv4OWms2bmceqnJTi8DLm0NK5iQppyJDn?=
+ =?us-ascii?Q?MQJ80bSWS9T1Is3xGh6a1x8euW/+H0nIyRXXgP/JuFv2KlsumH3zrBtuMZLX?=
+ =?us-ascii?Q?ZckeRgPutbK54kmrneM3GLPYA0DB763B592WivPoNZC8nDlY8yf3XN2NPDox?=
+ =?us-ascii?Q?uAY2Y0svSJ17UJ3GpCEEEFHYg7ki3Wy2mtK6DjEmAVRMaMbyup2bsBAK75XT?=
+ =?us-ascii?Q?lPSRlUg1RaPoa+1294jrtlJdCYXMrQiQ/juip5xkbXdbUqIR4V7SJnTg5kGL?=
+ =?us-ascii?Q?f5KBh/Qh8q5DveIAjVOBG3On6+qxIVJso8K65/onslGoWiK+e+cBc/RkCw+t?=
+ =?us-ascii?Q?VAkzz/srd+/9m9ef/B+2i8f76A7j97NykuRtolgsnkHZOUFNt4Ld1NyLlozO?=
+ =?us-ascii?Q?nSjTpe9SEG3NlD0bNP15k7q1m0++kVNm37+NMFMon/aoMf9tT52pWMJHfTgW?=
+ =?us-ascii?Q?Dms7XC7NRnzXBJlwZfjSzILq2Dc5+c20Iy8uKjWafTa04WOi+t1pZJwJzVLM?=
+ =?us-ascii?Q?n9MvCFQRBpHwtUcZJ40SBuu8fhFWyrC+fzm1ay1jRtqOBx10PxtxJSOGcLfi?=
+ =?us-ascii?Q?LUBNh2IBBYklEOwReErBr5ood6ZKM6ZPUMdPfrCZ1SoyaRUqFSBhSabu1de5?=
+ =?us-ascii?Q?QE1QtkrW7XDQxuiiv/KFdgg=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1137F313C5ACA6449731E12E63700FD9@namprd15.prod.outlook.com>
+MIME-Version: 1.0
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 22d7418e-111f-4571-9d48-08da5f9d13ad
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jul 2022 22:15:47.0526
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ynCvYGVqBvOj6r5BczO0/GU2vT1gI+IKVeSXnjo5hHghP+CR6mFCVzLT6hzCTnQdI04te/+PIrHxvE5T02N3qA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR15MB3621
+X-Proofpoint-GUID: tbwnVVbSelYWqiorSYooPnGYS6UskxAd
+X-Proofpoint-ORIG-GUID: tbwnVVbSelYWqiorSYooPnGYS6UskxAd
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-07-06_12,2022-06-28_01,2022-06-22_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 6, 2022 at 12:09 PM Roman Gushchin <roman.gushchin@linux.dev> wrote:
->
-> On Wed, Jul 06, 2022 at 09:47:32AM -0700, Alexei Starovoitov wrote:
-> > On Wed, Jul 6, 2022 at 8:59 AM Yafang Shao <laoar.shao@gmail.com> wrote:
-> > >
-> > > GFP_ATOMIC doesn't cooperate well with memcg pressure so far, especially
-> > > if we allocate too much GFP_ATOMIC memory. For example, when we set the
-> > > memcg limit to limit a non-preallocated bpf memory, the GFP_ATOMIC can
-> > > easily break the memcg limit by force charge. So it is very dangerous to
-> > > use GFP_ATOMIC in non-preallocated case. One way to make it safe is to
-> > > remove __GFP_HIGH from GFP_ATOMIC, IOW, use (__GFP_ATOMIC |
-> > > __GFP_KSWAPD_RECLAIM) instead, then it will be limited if we allocate
-> > > too much memory.
-> > >
-> > > We introduced BPF_F_NO_PREALLOC is because full map pre-allocation is
-> > > too memory expensive for some cases. That means removing __GFP_HIGH
-> > > doesn't break the rule of BPF_F_NO_PREALLOC, but has the same goal with
-> > > it-avoiding issues caused by too much memory. So let's remove it.
-> > >
-> > > The force charge of GFP_ATOMIC was introduced in
-> > > commit 869712fd3de5 ("mm: memcontrol: fix network errors from failing
-> > > __GFP_ATOMIC charges") by checking __GFP_ATOMIC, then got improved in
-> > > commit 1461e8c2b6af ("memcg: unify force charging conditions") by
-> > > checking __GFP_HIGH (that is no problem because both __GFP_HIGH and
-> > > __GFP_ATOMIC are set in GFP_AOMIC). So, if we want to fix it in memcg,
-> > > we have to carefully verify all the callsites. Now that we can fix it in
-> > > BPF, we'd better not modify the memcg code.
-> > >
-> > > This fix can also apply to other run-time allocations, for example, the
-> > > allocation in lpm trie, local storage and devmap. So let fix it
-> > > consistently over the bpf code
-> > >
-> > > __GFP_KSWAPD_RECLAIM doesn't cooperate well with memcg pressure neither
-> > > currently. But the memcg code can be improved to make
-> > > __GFP_KSWAPD_RECLAIM work well under memcg pressure if desired.
-> >
-> > Could you elaborate ?
-> >
-> > > It also fixes a typo in the comment.
-> > >
-> > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > > Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
-> >
-> > Roman, do you agree with this change ?
->
-> Yes, removing __GFP_HIGH makes sense to me. I can imagine we might want
-> it for *some* bpf allocations, but applying it unconditionally looks wrong.
 
-Yeah. It's a difficult trade-off to make without having the data
-to decide whether removing __GFP_HIGH can cause issues or not,
-but do you agree that __GFP_HIGH doesn't cooperate well with memcg ?
-If so it's a bug on memcg side, right? but we should probably
-apply this band-aid on bpf side to fix the bleeding.
-Later we can add a knob to allow __GFP_HIGH usage on demand from
-bpf prog.
+
+> On Jul 6, 2022, at 2:40 PM, Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+> On Wed, 6 Jul 2022 21:37:52 +0000
+> Song Liu <songliubraving@fb.com> wrote:
+> 
+>>> Can you comment here that returning -EAGAIN will not cause this to repeat.
+>>> That it will change things where the next try will not return -EGAIN?  
+>> 
+>> Hmm.. this is not the guarantee here. This conflict is a real race condition 
+>> that an IPMODIFY function (i.e. livepatch) is being registered at the same time 
+>> when something else, for example bpftrace, is updating the BPF trampoline. 
+>> 
+>> This EAGAIN will propagate to the user of the IPMODIFY function (i.e. livepatch),
+>> and we need to retry there. In the case of livepatch, the retry is initiated 
+>> from user space. 
+> 
+> We need to be careful here then. If there's a userspace application that
+> runs at real-time and does a:
+> 
+> 	do {
+> 		errno = 0;
+> 		regsiter_bpf();
+> 	} while (errno != -EAGAIN);
+
+Actually, do you mean:
+
+	do {
+		errno = 0;
+		regsiter_bpf();
+	} while (errno == -EAGAIN);
+
+(== -EAGAIN) here?
+
+In this specific race condition, register_bpf() will succeed, as it already
+got tr->mutex. But the IPMODIFY (livepatch) side will fail and retry. 
+
+Since both livepatch and bpf trampoline changes are rare operations, I think 
+the chance of the race condition is low enough. 
+
+Does this make sense?
+
+Thanks,
+Song
+
+
