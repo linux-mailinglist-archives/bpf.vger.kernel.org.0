@@ -2,186 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B38056928C
-	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 21:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1AAF5692B1
+	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 21:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233927AbiGFTWI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Jul 2022 15:22:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52920 "EHLO
+        id S233687AbiGFTit (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jul 2022 15:38:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233878AbiGFTWH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Jul 2022 15:22:07 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 402FD2714C
-        for <bpf@vger.kernel.org>; Wed,  6 Jul 2022 12:22:06 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id z12-20020a17090a7b8c00b001ef84000b8bso11029628pjc.1
-        for <bpf@vger.kernel.org>; Wed, 06 Jul 2022 12:22:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QcQNmxkcI9EMj9hDweGbBfdiQd3ftldVUVn7l/FWeis=;
-        b=ozmUmZvjqvaUi/YAeIbLodZo9wc+NkYmZUCBnYCDuUBpK9ZWTpa0bnOJBcmZzByt4N
-         GMu92xoUCYT6/GCBu8vjctbunGjSWOBLpYNXcn55I1o7YR3rZfc5Rlpt4NbYpcuo78qD
-         mIPHurMSCmh9HlpjcfiD4RaS10UKV5WAgjgf8UuaPknl9Fm+NxFzT+/lTOOO9tNtEr5z
-         2R9upVndQU98y4J0ZMvvEJhikxDcgSmKWB942euqIL5BC5MPXnuyQ5hv8eSOLg/ak+0F
-         ym45M7fsMpPZiF76IfxtwOSRQrvYjRnT/Rtc3HDGZLrWXc5vHq+bt/d+Wtc3blMZ0+KM
-         6fNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QcQNmxkcI9EMj9hDweGbBfdiQd3ftldVUVn7l/FWeis=;
-        b=NACipiaQooMqXefIspI2UWcSU31f9VSACbOOFjlr+eceUNUKrcsg+iGf9Xzkg2p/2C
-         GeOzxmJGEM+Zk7GVQbxRlJGyIs807LK3CGgwVwGxrrypFnZH3uDgtpXf+wPiwmB+pKup
-         mU/emWdH0sdo3mHYtBOt1qJY7o7CnMU9JkW3bjvoJxF4TTEoqNKDeIhWTVWkXAvsu8o2
-         KJXzTzKb55mC3moeiMW5PRrTQeQ3lhhwqNVHEEI7QIyzET8uOu7BDYmZWVI0wYjdg5j0
-         DUy3+u88IvRbsUgB+fbl0BDdqx0ba9F556JtFz3LvPxxOQzQH8/9QeqPLYVdpvMFdINX
-         X8WA==
-X-Gm-Message-State: AJIora/qssTD3O/0mCgkosIuAS5H/5jk1+QmwidmGT9CrK48JOnoQTD5
-        Q13OnFJ7KmiZeBjJ6+qGe5R+0sKq5DKeBX/jMFVHCA==
-X-Google-Smtp-Source: AGRyM1trSSGwgPSF1qm9ggo7uWlV8REZMLB2y6jeouLzyWdyF1975nw/yN1u2E5yphcwydUcGBecMN+svPwJewxix4c=
-X-Received: by 2002:a17:902:cecc:b0:16a:416c:3d14 with SMTP id
- d12-20020a170902cecc00b0016a416c3d14mr47664313plg.73.1657135325554; Wed, 06
- Jul 2022 12:22:05 -0700 (PDT)
+        with ESMTP id S230029AbiGFTis (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Jul 2022 15:38:48 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3036112771;
+        Wed,  6 Jul 2022 12:38:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BA8A4620A3;
+        Wed,  6 Jul 2022 19:38:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B18EC341C8;
+        Wed,  6 Jul 2022 19:38:44 +0000 (UTC)
+Date:   Wed, 6 Jul 2022 15:38:43 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Song Liu <song@kernel.org>
+Cc:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <andrii@kernel.org>, <kernel-team@fb.com>,
+        <jolsa@kernel.org>, <mhiramat@kernel.org>
+Subject: Re: [PATCH v2 bpf-next 5/5] bpf: trampoline: support
+ FTRACE_OPS_FL_SHARE_IPMODIFY
+Message-ID: <20220706153843.37584b5b@gandalf.local.home>
+In-Reply-To: <20220602193706.2607681-6-song@kernel.org>
+References: <20220602193706.2607681-1-song@kernel.org>
+        <20220602193706.2607681-6-song@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20220706174857.3799351-1-sdf@google.com> <20220706191143.n42gembkotglgzu4@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20220706191143.n42gembkotglgzu4@kafai-mbp.dhcp.thefacebook.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Wed, 6 Jul 2022 12:21:54 -0700
-Message-ID: <CAKH8qBswvo4aovSXNgkJokwyFcU2jZ3i=OYtTGp4nb62V7uF_w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: check attach_func_proto return type more carefully
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org,
-        syzbot+5cc0730bd4b4d2c5f152@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 6, 2022 at 12:11 PM Martin KaFai Lau <kafai@fb.com> wrote:
->
-> On Wed, Jul 06, 2022 at 10:48:57AM -0700, Stanislav Fomichev wrote:
-> > Syzkaller reports the following crash:
-> > RIP: 0010:check_return_code kernel/bpf/verifier.c:10575 [inline]
-> > RIP: 0010:do_check kernel/bpf/verifier.c:12346 [inline]
-> > RIP: 0010:do_check_common+0xb3d2/0xd250 kernel/bpf/verifier.c:14610
-> >
-> > With the following reproducer:
-> > bpf$PROG_LOAD_XDP(0x5, &(0x7f00000004c0)={0xd, 0x3, &(0x7f0000000000)=ANY=[@ANYBLOB="1800000000000019000000000000000095"], &(0x7f0000000300)='GPL\x00', 0x0, 0x0, 0x0, 0x0, 0x0, '\x00', 0x0, 0x2b, 0xffffffffffffffff, 0x8, 0x0, 0x0, 0x10, 0x0}, 0x80)
-> >
-> > Because we don't enforce expected_attach_type for XDP programs,
-> > we end up in hitting 'if (prog->expected_attach_type == BPF_LSM_CGROUP'
-> > part in check_return_code and follow up with testing
-> > `prog->aux->attach_func_proto->type`, but `prog->aux->attach_func_proto`
-> > is NULL.
-> >
-> > Let's add a new btf_func_returns_void() wrapper which is more defensive
-> > and use it in the places where we currently do '!->type' check.
-> >
-> > Fixes: 69fd337a975c ("bpf: per-cgroup lsm flavor")
-> > Reported-by: syzbot+5cc0730bd4b4d2c5f152@syzkaller.appspotmail.com
-> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > ---
-> >  include/linux/btf.h     | 5 +++++
-> >  kernel/bpf/trampoline.c | 2 +-
-> >  kernel/bpf/verifier.c   | 8 ++++----
-> >  3 files changed, 10 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/include/linux/btf.h b/include/linux/btf.h
-> > index 1bfed7fa0428..17ba7d27a8ad 100644
-> > --- a/include/linux/btf.h
-> > +++ b/include/linux/btf.h
-> > @@ -302,6 +302,11 @@ static inline u16 btf_func_linkage(const struct btf_type *t)
-> >       return BTF_INFO_VLEN(t->info);
-> >  }
-> >
-> > +static inline bool btf_func_returns_void(const struct btf_type *t)
-> > +{
-> > +     return t && !t->type;
-> > +}
-> > +
-> >  static inline bool btf_type_kflag(const struct btf_type *t)
-> >  {
-> >       return BTF_INFO_KFLAG(t->info);
-> > diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-> > index 6cd226584c33..9c4cb4c8a5fa 100644
-> > --- a/kernel/bpf/trampoline.c
-> > +++ b/kernel/bpf/trampoline.c
-> > @@ -400,7 +400,7 @@ static enum bpf_tramp_prog_type bpf_attach_type_to_tramp(struct bpf_prog *prog)
-> >       case BPF_TRACE_FEXIT:
-> >               return BPF_TRAMP_FEXIT;
-> >       case BPF_LSM_MAC:
-> > -             if (!prog->aux->attach_func_proto->type)
-> > +             if (btf_func_returns_void(prog->aux->attach_func_proto))
-> >                       /* The function returns void, we cannot modify its
-> >                        * return value.
-> >                        */
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index df3ec6b05f05..e3ee6f70939b 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -7325,7 +7325,7 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
-> >               break;
-> >       case BPF_FUNC_set_retval:
-> >               if (env->prog->expected_attach_type == BPF_LSM_CGROUP) {
-> > -                     if (!env->prog->aux->attach_func_proto->type) {
-> > +                     if (btf_func_returns_void(env->prog->aux->attach_func_proto)) {
-> >                               /* Make sure programs that attach to void
-> >                                * hooks don't try to modify return value.
-> >                                */
-> > @@ -10447,7 +10447,7 @@ static int check_return_code(struct bpf_verifier_env *env)
-> >       if (!is_subprog &&
-> >           (prog_type == BPF_PROG_TYPE_STRUCT_OPS ||
-> >            prog_type == BPF_PROG_TYPE_LSM) &&
-> > -         !prog->aux->attach_func_proto->type)
-> > +         btf_func_returns_void(prog->aux->attach_func_proto))
-> >               return 0;
-> It seems there is another problem here.
-> It returns early here for prog_type == BPF_PROG_TYPE_LSM.
-> It should only do that for expected_attach_type != BPF_LSM_CGROUP.
->
-> Otherwise, the later verbose(env, "Note, BPF_LSM_CGROUP...") will
-> not get a chance.
+On Thu, 2 Jun 2022 12:37:06 -0700
+Song Liu <song@kernel.org> wrote:
 
-Ah, true, will add expected_attach_type check here as well, thanks!
 
-> >
-> >       /* eBPF calling convention is such that R0 is used
-> > @@ -10547,7 +10547,7 @@ static int check_return_code(struct bpf_verifier_env *env)
-> >                        */
-> >                       return 0;
-> >               }
-> > -             if (!env->prog->aux->attach_func_proto->type) {
-> > +             if (btf_func_returns_void(env->prog->aux->attach_func_proto)) {
-> >                       /* Make sure programs that attach to void
-> >                        * hooks don't try to modify return value.
-> >                        */
-> > @@ -10572,7 +10572,7 @@ static int check_return_code(struct bpf_verifier_env *env)
-> >       if (!tnum_in(range, reg->var_off)) {
-> >               verbose_invalid_scalar(env, reg, &range, "program exit", "R0");
-> >               if (prog->expected_attach_type == BPF_LSM_CGROUP &&
-> I think the problem is more like missing
-> prog_type == BPF_PROG_TYPE_LSM [&& expected_attach_type == BPF_LSM_CGROUP] here
-> instead of testing !attach_func_proto in all places.
+> --- a/kernel/bpf/trampoline.c
+> +++ b/kernel/bpf/trampoline.c
+> @@ -27,6 +27,44 @@ static struct hlist_head trampoline_table[TRAMPOLINE_TABLE_SIZE];
+>  /* serializes access to trampoline_table */
+>  static DEFINE_MUTEX(trampoline_mutex);
+>  
+> +#ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+> +static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mutex);
+> +
+> +static int bpf_tramp_ftrace_ops_func(struct ftrace_ops *ops, enum ftrace_ops_cmd cmd)
+> +{
+> +	struct bpf_trampoline *tr = ops->private;
+> +	int ret;
+> +
+> +	/*
+> +	 * The normal locking order is
+> +	 *    tr->mutex => direct_mutex (ftrace.c) => ftrace_lock (ftrace.c)
+> +	 *
+> +	 * This is called from prepare_direct_functions_for_ipmodify, with
+> +	 * direct_mutex locked. Use mutex_trylock() to avoid dead lock.
+> +	 * Also, bpf_trampoline_update here should not lock direct_mutex.
+> +	 */
+> +	if (!mutex_trylock(&tr->mutex))
 
-SG!
+Can you comment here that returning -EAGAIN will not cause this to repeat.
+That it will change things where the next try will not return -EGAIN?
 
-> > -                 !prog->aux->attach_func_proto->type)
-> > +                 btf_func_returns_void(prog->aux->attach_func_proto))
-> >                       verbose(env, "Note, BPF_LSM_CGROUP that attach to void LSM hooks can't modify return value!\n");
-> >               return -EINVAL;
-> >       }
-> > --
-> > 2.37.0.rc0.161.g10f37bed90-goog
-> >
+> +		return -EAGAIN;
+> +
+> +	switch (cmd) {
+> +	case FTRACE_OPS_CMD_ENABLE_SHARE_IPMODIFY:
+> +		tr->indirect_call = true;
+> +		ret = bpf_trampoline_update(tr, false /* lock_direct_mutex */);
+> +		break;
+> +	case FTRACE_OPS_CMD_DISABLE_SHARE_IPMODIFY:
+> +		tr->indirect_call = false;
+> +		tr->fops->flags &= ~FTRACE_OPS_FL_SHARE_IPMODIFY;
+> +		ret = bpf_trampoline_update(tr, false /* lock_direct_mutex */);
+> +		break;
+> +	default:
+> +		ret = -EINVAL;
+> +		break;
+> +	};
+> +	mutex_unlock(&tr->mutex);
+> +	return ret;
+> +}
+> +#endif
+> +
+> 
+
+
+> @@ -330,7 +387,7 @@ static struct bpf_tramp_image *bpf_tramp_image_alloc(u64 key, u32 idx)
+>  	return ERR_PTR(err);
+>  }
+>  
+> -static int bpf_trampoline_update(struct bpf_trampoline *tr)
+> +static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mutex)
+>  {
+>  	struct bpf_tramp_image *im;
+>  	struct bpf_tramp_links *tlinks;
+> @@ -363,20 +420,45 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr)
+>  	if (ip_arg)
+>  		flags |= BPF_TRAMP_F_IP_ARG;
+>  
+> +#ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+> +again:
+> +	if (tr->indirect_call)
+> +		flags |= BPF_TRAMP_F_ORIG_STACK;
+> +#endif
+> +
+>  	err = arch_prepare_bpf_trampoline(im, im->image, im->image + PAGE_SIZE,
+>  					  &tr->func.model, flags, tlinks,
+>  					  tr->func.addr);
+>  	if (err < 0)
+>  		goto out;
+>  
+> +#ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+> +	if (tr->indirect_call)
+> +		tr->fops->flags |= FTRACE_OPS_FL_SHARE_IPMODIFY;
+> +#endif
+> +
+>  	WARN_ON(tr->cur_image && tr->selector == 0);
+>  	WARN_ON(!tr->cur_image && tr->selector);
+>  	if (tr->cur_image)
+>  		/* progs already running at this address */
+> -		err = modify_fentry(tr, tr->cur_image->image, im->image);
+> +		err = modify_fentry(tr, tr->cur_image->image, im->image, lock_direct_mutex);
+>  	else
+>  		/* first time registering */
+>  		err = register_fentry(tr, im->image);
+> +
+> +#ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+> +	if (err == -EAGAIN) {
+> +		if (WARN_ON_ONCE(tr->indirect_call))
+> +			goto out;
+> +		/* should only retry on the first register */
+> +		if (WARN_ON_ONCE(tr->cur_image))
+> +			goto out;
+> +		tr->indirect_call = true;
+> +		tr->fops->func = NULL;
+> +		tr->fops->trampoline = 0;
+> +		goto again;
+
+I'm assuming that the above will prevent a return of -EAGAIN again. As if
+it can, then this could turn into a dead lock.
+
+Can you please comment that?
+
+Thanks,
+
+-- Steve
+
+> +	}
+> +#endif
+>  	if (err)
+>  		goto out;
+>  	if (tr->cur_image)
+> @@ -460,7 +542,7 @@ int bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_trampoline
+>  
+>  	hlist_add_head(&link->tramp_hlist, &tr->progs_hlist[kind]);
+>  	tr->progs_cnt[kind]++;
+> -	err = bpf_trampoline_update(tr);
+> +	err = bpf_trampoline_update(tr, true /* lock_direct_mutex */);
+>  	if (err) {
+>  		hlist_del_init(&link->tramp_hlist);
+>  		tr->progs_cnt[kind]--;
+> @@ -487,7 +569,7 @@ int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_trampolin
+>  	}
+>  	hlist_del_init(&link->tramp_hlist);
+>  	tr->progs_cnt[kind]--;
+> -	err = bpf_trampoline_update(tr);
+> +	err = bpf_trampoline_update(tr, true /* lock_direct_mutex */);
+>  out:
+>  	mutex_unlock(&tr->mutex);
+>  	return err;
+> @@ -535,6 +617,7 @@ void bpf_trampoline_put(struct bpf_trampoline *tr)
+>  	 * multiple rcu callbacks.
+>  	 */
+>  	hlist_del(&tr->hlist);
+> +	kfree(tr->fops);
+>  	kfree(tr);
+>  out:
+>  	mutex_unlock(&trampoline_mutex);
+
