@@ -2,232 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF99568E9C
-	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 18:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04496568EA5
+	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 18:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233892AbiGFQEX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Jul 2022 12:04:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60742 "EHLO
+        id S233786AbiGFQGj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jul 2022 12:06:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233786AbiGFQEW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Jul 2022 12:04:22 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37D7A17586;
-        Wed,  6 Jul 2022 09:04:20 -0700 (PDT)
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1o97VG-0003Og-IK; Wed, 06 Jul 2022 18:03:50 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1o97VG-000V92-4d; Wed, 06 Jul 2022 18:03:50 +0200
-Subject: Re: [PATCH v6 4/5] bpf: Add bpf_verify_pkcs7_signature() helper
-To:     Roberto Sassu <roberto.sassu@huawei.com>, ast@kernel.org,
-        andrii@kernel.org, kpsingh@kernel.org, john.fastabend@gmail.com,
-        songliubraving@fb.com, kafai@fb.com, yhs@fb.com,
-        dhowells@redhat.com
-Cc:     keyrings@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20220628122750.1895107-1-roberto.sassu@huawei.com>
- <20220628122750.1895107-5-roberto.sassu@huawei.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <903b1b6c-b0fd-d624-a24b-5983d8d661b7@iogearbox.net>
-Date:   Wed, 6 Jul 2022 18:03:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S232239AbiGFQGj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Jul 2022 12:06:39 -0400
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66DE125EB3
+        for <bpf@vger.kernel.org>; Wed,  6 Jul 2022 09:06:37 -0700 (PDT)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout01.posteo.de (Postfix) with ESMTPS id 3EF4C24002A
+        for <bpf@vger.kernel.org>; Wed,  6 Jul 2022 18:06:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1657123595; bh=DLib4DaFLxbHP4zBSItq6bMqdHnKnvGvuxyPghHDe7k=;
+        h=Date:From:To:Cc:Subject:From;
+        b=m4A5qGuEleColyYLqNhulq5IB91q0HHVIoYHNLN8e83SCWZISDfG87e4JfYR4TAFa
+         RIZjGlrzTdkdwNika2JDOiSdKPcte4VxcmdCXczCgf7jWEjD2WtIYBjJgYnSQa42gs
+         y0INHeEhFXCiIKyL7XzudUk16yAUSgVI/cCuL18/cWsu6FRRShrrHBRoTJybcDIgbA
+         iVSfs6uY07KAqaJQ03+4MifGUpR4CaSbCzEyPgZnUl+g+1KEHfZ4zGNo10EZqqPUsm
+         kDWxzh6d3Ckpcun5b7jgwi9uN+ZHwcsMkMR5oTjgbEat4CXmSE16b4KPVU/WrJG3qh
+         G8RDK0sIdUcPg==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4LdPYN3R8Vz9rxF;
+        Wed,  6 Jul 2022 18:06:32 +0200 (CEST)
+Date:   Wed,  6 Jul 2022 16:06:28 +0000
+From:   Daniel =?utf-8?Q?M=C3=BCller?= <deso@posteo.net>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Joanne Koong <joannelkoong@gmail.com>
+Subject: Re: [PATCH bpf-next v3 00/10] Introduce type match support
+Message-ID: <20220706160628.z3lyfzzz5s4fzual@muellerd-fedora-MJ0AC3F3>
+References: <20220628160127.607834-1-deso@posteo.net>
+ <20220705210700.fpyw4msqy7tkiuub@muellerd-fedora-MJ0AC3F3>
+ <CAEf4Bzb=2QnL_oUYTLZ9T_poDGcQ0_WB_ZJs8LQNuC3Dp0Qfng@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20220628122750.1895107-5-roberto.sassu@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26595/Wed Jul  6 09:53:23 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4Bzb=2QnL_oUYTLZ9T_poDGcQ0_WB_ZJs8LQNuC3Dp0Qfng@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/28/22 2:27 PM, Roberto Sassu wrote:
-> Add the bpf_verify_pkcs7_signature() helper, to give eBPF security modules
-> the ability to check the validity of a signature against supplied data, by
-> using user-provided or system-provided keys as trust anchor.
+On Tue, Jul 05, 2022 at 09:16:27PM -0700, Andrii Nakryiko wrote:
+> On Tue, Jul 5, 2022 at 2:07 PM Daniel Müller <deso@posteo.net> wrote:
+> >
+> > On Tue, Jun 28, 2022 at 04:01:17PM +0000, Daniel Müller wrote:
+> > > This patch set proposes the addition of a new way for performing type queries to
+> > > BPF. It introduces the "type matches" relation, similar to what is already
+> > > present with "type exists" (in the form of bpf_core_type_exists).
+> > >
+> > > "type exists" performs fairly superficial checking, mostly concerned with
+> > > whether a type exists in the kernel and is of the same kind (enum/struct/...).
+> > > Notably, compatibility checks for members of composite types is lacking.
+> > >
+> > > The newly introduced "type matches" (bpf_core_type_matches) fills this gap in
+> > > that it performs stricter checks: compatibility of members and existence of
+> > > similarly named enum variants is checked as well. E.g., given these definitions:
+> > >
+> > >       struct task_struct___og { int pid; int tgid; };
+> > >
+> > >       struct task_struct___foo { int foo; }
+> > >
+> > > 'task_struct___og' would "match" the kernel type 'task_struct', because the
+> > > members match up, while 'task_struct___foo' would not match, because the
+> > > kernel's 'task_struct' has no member named 'foo'.
+> > >
+> > > More precisely, the "type match" relation is defined as follows (copied from
+> > > source):
+> > > - modifiers and typedefs are stripped (and, hence, effectively ignored)
+> > > - generally speaking types need to be of same kind (struct vs. struct, union
+> > >   vs. union, etc.)
+> > >   - exceptions are struct/union behind a pointer which could also match a
+> > >     forward declaration of a struct or union, respectively, and enum vs.
+> > >     enum64 (see below)
+> > > Then, depending on type:
+> > > - integers:
+> > >   - match if size and signedness match
+> > > - arrays & pointers:
+> > >   - target types are recursively matched
+> > > - structs & unions:
+> > >   - local members need to exist in target with the same name
+> > >   - for each member we recursively check match unless it is already behind a
+> > >     pointer, in which case we only check matching names and compatible kind
+> > > - enums:
+> > >   - local variants have to have a match in target by symbolic name (but not
+> > >     numeric value)
+> > >   - size has to match (but enum may match enum64 and vice versa)
+> > > - function pointers:
+> > >   - number and position of arguments in local type has to match target
+> > >   - for each argument and the return value we recursively check match
+> > >
+> > > Enabling this feature requires a new relocation to be made known to the
+> > > compiler. This is being taken care of for LLVM as part of
+> > > https://reviews.llvm.org/D126838.
+> >
+> > To give an update here, LLVM changes have been merged and, to the best of my
+> > knowledge, are being used by BPF CI (tests that failed earlier are now passing).
+> >
 > 
-> The new helper makes it possible to enforce mandatory policies, as eBPF
-> programs might be allowed to make security decisions only based on data
-> sources the system administrator approves.
+> I did a few small changes and combined patches 4-6 together (because
+> they add the same functionality to both libbpf and kernel
+> simultaneously, there were compilation warnings about non-static
+> functions not having a proper prototype defined). But I've split out
+> the bpf_core_type_matches() macro in bpf_core_read.h into a separate
+> patch. I also dropped patch #3 as it wasn't needed anymore.
 > 
-> The caller should provide both the data to be verified and the signature as
-> eBPF dynamic pointers (to minimize the number of parameters).
-> 
-> The caller should also provide a trusted keyring serial, together with key
-> lookup-specific flags, to determine which keys can be used for signature
-> verification. Alternatively, the caller could specify zero as serial value
-> (not valid, serials must be positive), and provide instead a special
-> keyring ID.
-> 
-> Key lookup flags are defined in include/linux/key.h and can be: 1, to
-> request that special keyrings be created if referred to directly; 2 to
-> permit partially constructed keys to be found.
-> 
-> Special IDs are defined in include/linux/verification.h and can be: 0 for
-> the primary keyring (immutable keyring of system keys); 1 for both the
-> primary and secondary keyring (where keys can be added only if they are
-> vouched for by existing keys in those keyrings); 2 for the platform keyring
-> (primarily used by the integrity subsystem to verify a kexec'ed kerned
-> image and, possibly, the initramfs signature).
-> 
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> Reported-by: kernel test robot <lkp@intel.com> (cast warning)
+> Please see comments I left for two further follow ups.
 
-nit: Given this a new feature not a fix to existing code, there is no need to
-      add the above reported-by from kbuild bot.
+Sounds good. Will address your comments soon. Thanks for merging!
 
-> ---
->   include/uapi/linux/bpf.h       | 24 +++++++++++++
->   kernel/bpf/bpf_lsm.c           | 63 ++++++++++++++++++++++++++++++++++
->   tools/include/uapi/linux/bpf.h | 24 +++++++++++++
->   3 files changed, 111 insertions(+)
-> 
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index e81362891596..b4f5ad863281 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -5325,6 +5325,29 @@ union bpf_attr {
->    *		**-EACCES** if the SYN cookie is not valid.
->    *
->    *		**-EPROTONOSUPPORT** if CONFIG_IPV6 is not builtin.
-> + *
-> + * long bpf_verify_pkcs7_signature(struct bpf_dynptr *data_ptr, struct bpf_dynptr *sig_ptr, u32 trusted_keyring_serial, unsigned long lookup_flags, unsigned long trusted_keyring_id)
-
-nit: for the args instead of ulong, just do u64
-
-> + *	Description
-> + *		Verify the PKCS#7 signature *sig_ptr* against the supplied
-> + *		*data_ptr* with keys in a keyring with serial
-> + *		*trusted_keyring_serial*, searched with *lookup_flags*, if the
-> + *		parameter value is positive, or alternatively in a keyring with
-> + *		special ID *trusted_keyring_id* if *trusted_keyring_serial* is
-> + *		zero.
-> + *
-> + *		*lookup_flags* are defined in include/linux/key.h and can be: 1,
-> + *		to request that special keyrings be created if referred to
-> + *		directly; 2 to permit partially constructed keys to be found.
-> + *
-> + *		Special IDs are defined in include/linux/verification.h and can
-> + *		be: 0 for the primary keyring (immutable keyring of system
-> + *		keys); 1 for both the primary and secondary keyring (where keys
-> + *		can be added only if they are vouched for by existing keys in
-> + *		those keyrings); 2 for the platform keyring (primarily used by
-> + *		the integrity subsystem to verify a kexec'ed kerned image and,
-> + *		possibly, the initramfs signature).
-> + *	Return
-> + *		0 on success, a negative value on error.
->    */
->   #define __BPF_FUNC_MAPPER(FN)		\
->   	FN(unspec),			\
-> @@ -5535,6 +5558,7 @@ union bpf_attr {
->   	FN(tcp_raw_gen_syncookie_ipv6),	\
->   	FN(tcp_raw_check_syncookie_ipv4),	\
->   	FN(tcp_raw_check_syncookie_ipv6),	\
-> +	FN(verify_pkcs7_signature),	\
-
-(Needs rebase)
-
->   	/* */
->   
->   /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-> diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
-> index c1351df9f7ee..401bda01ad84 100644
-> --- a/kernel/bpf/bpf_lsm.c
-> +++ b/kernel/bpf/bpf_lsm.c
-> @@ -16,6 +16,8 @@
->   #include <linux/bpf_local_storage.h>
->   #include <linux/btf_ids.h>
->   #include <linux/ima.h>
-> +#include <linux/verification.h>
-> +#include <linux/key.h>
->   
->   /* For every LSM hook that allows attachment of BPF programs, declare a nop
->    * function where a BPF program can be attached.
-> @@ -132,6 +134,62 @@ static const struct bpf_func_proto bpf_get_attach_cookie_proto = {
->   	.arg1_type	= ARG_PTR_TO_CTX,
->   };
->   
-> +#ifdef CONFIG_SYSTEM_DATA_VERIFICATION
-> +BPF_CALL_5(bpf_verify_pkcs7_signature, struct bpf_dynptr_kern *, data_ptr,
-> +	   struct bpf_dynptr_kern *, sig_ptr, u32, trusted_keyring_serial,
-> +	   unsigned long, lookup_flags, unsigned long, trusted_keyring_id)
-> +{
-> +	key_ref_t trusted_keyring_ref;
-> +	struct key *trusted_keyring;
-> +	int ret;
-> +
-> +	/* Keep in sync with defs in include/linux/key.h. */
-> +	if (lookup_flags > KEY_LOOKUP_PARTIAL)
-> +		return -EINVAL;
-
-iiuc, the KEY_LOOKUP_* is a mask, so you could also combine the two, e.g.
-KEY_LOOKUP_CREATE | KEY_LOOKUP_PARTIAL. I haven't seen you mentioning anything
-specific on why it is not allowed. What's the rationale, if it's intentional
-if should probably be documented?
-
-At minimum I also think the helper description needs to be improved for people
-to understand enough w/o reading through the kernel source, e.g. wrt lookup_flags
-since I haven't seen it in your selftests either ... when does a user need to
-use the given flags.
-
-nit: when both trusted_keyring_serial and trusted_keyring_id are passed to the
-helper, then this should be rejected as invalid argument? (Kind of feels a bit
-like we're cramming two things in one helper.. KP, thoughts? :))
-
-> +	/* Keep in sync with defs in include/linux/verification.h. */
-> +	if (trusted_keyring_id > (unsigned long)VERIFY_USE_PLATFORM_KEYRING)
-> +		return -EINVAL;
-> +
-> +	if (trusted_keyring_serial) {
-> +		trusted_keyring_ref = lookup_user_key(trusted_keyring_serial,
-> +						      lookup_flags,
-> +						      KEY_NEED_SEARCH);
-> +		if (IS_ERR(trusted_keyring_ref))
-> +			return PTR_ERR(trusted_keyring_ref);
-> +
-> +		trusted_keyring = key_ref_to_ptr(trusted_keyring_ref);
-> +		goto verify;
-> +	}
-> +
-> +	trusted_keyring = (struct key *)trusted_keyring_id;
-> +verify:
-> +	ret = verify_pkcs7_signature(data_ptr->data,
-> +				     bpf_dynptr_get_size(data_ptr),
-> +				     sig_ptr->data,
-> +				     bpf_dynptr_get_size(sig_ptr),
-> +				     trusted_keyring,
-> +				     VERIFYING_UNSPECIFIED_SIGNATURE, NULL,
-> +				     NULL);
-> +	if (trusted_keyring_serial)
-> +		key_put(trusted_keyring);
-> +
-> +	return ret;
-> +}
-> +
-> +static const struct bpf_func_proto bpf_verify_pkcs7_signature_proto = {
-> +	.func		= bpf_verify_pkcs7_signature,
-> +	.gpl_only	= false,
-> +	.ret_type	= RET_INTEGER,
-> +	.arg1_type	= ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_LOCAL,
-> +	.arg2_type	= ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_LOCAL,
-> +	.arg3_type	= ARG_ANYTHING,
-> +	.arg4_type	= ARG_ANYTHING,
-> +	.arg5_type	= ARG_ANYTHING,
-> +	.allowed	= bpf_ima_inode_hash_allowed,
-> +};
-> +#endif /* CONFIG_SYSTEM_DATA_VERIFICATION */
-> +
+Daniel
