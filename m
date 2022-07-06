@@ -2,70 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94062567D91
-	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 07:01:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB711567D95
+	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 07:05:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230059AbiGFFA5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Jul 2022 01:00:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34510 "EHLO
+        id S229575AbiGFFFu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jul 2022 01:05:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbiGFFA4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Jul 2022 01:00:56 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 101A31BE91;
-        Tue,  5 Jul 2022 22:00:55 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id g26so25037069ejb.5;
-        Tue, 05 Jul 2022 22:00:54 -0700 (PDT)
+        with ESMTP id S229454AbiGFFFu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Jul 2022 01:05:50 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58E13192A6
+        for <bpf@vger.kernel.org>; Tue,  5 Jul 2022 22:05:49 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id lg18so5255196ejb.0
+        for <bpf@vger.kernel.org>; Tue, 05 Jul 2022 22:05:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vawKJQXmsefWF4gLD71WEblECZZ9kLxHvZ5C6nvYmiI=;
-        b=ckZuNTHyUmXtAw+lhiU29cOyNgXqttUGQcxP5edTEyjMqf4XGnyfIeLyhoZnEOLZN/
-         nVd+U6OruliAuhAZe6R/u1mJzVgVIxYqrISwA/D3rNjpshP+4G2aQkdV7Lo13NpzSfXk
-         Yl3WqOsmWUbkDok2a4WHD6OKStvrPAxeXS5R6jRysniwOh3AiLpbDAVPvBKFY5MaZHTp
-         chSeZRUwAmrxLlU+bjOzHL+QX6y+0nbDDJh4ZXXG5fB6IL2V8A5wlAQd+Mkz/Uf5K7lz
-         1vEL/gTcR9dO+BbQ+JYt4F/Yop8Ur763Q7YkhmJd51FJpoGG1zcNJdiXtZLfzwaoitmk
-         5YPA==
+        bh=Gpk8AVT2xRi5t3jKe08PVPmP7WlyKw3+itmLPtRM7Kw=;
+        b=jDqF/3kiDJ9rk6zg2V2jfh6Pov2eyuw+E9PTozME2RqEp4prra9JTR6Uhpyhy776GH
+         mpLLPOE3T5Noi8EzAgWm07A9KAnpF8a0Xk5txa3BcZ/7NwUPIxgqu2LXjiBpvl4Xh5bR
+         OpNlwG5u2GjkNV5iWHLly/rvH6FrxLZJV0+ucvthqxPpxllGur2O4nFRlxPjyz935Jja
+         5q/tBxSy7b0Ds+OADS+pPCDtGazwUOh+QWsx6LuFcqmKWMeZZCqGnNSqFljV7PEDi5J/
+         vSnalwWLvyeuBUR+cWbj/QZpvP8YcSRjntvUEIo6KDQlyVZ3fDA/QdSB2jN6DAuC8Z7J
+         dwQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vawKJQXmsefWF4gLD71WEblECZZ9kLxHvZ5C6nvYmiI=;
-        b=P/ApRWscL+C85CO2PTAspwUECSa0J6I3e9MDPzVUTm6FBGRGARowigbFxfr9m9d64I
-         PoeIkbtr20IFqJJC4g0TK1tkbZTy3TijhRltScZDWNmUpk/0TF+JjpofjbROiIBZ8LLq
-         8NzmzxhRaKKis3El38VNoZdNBvGA5QmbH918n2oYTILWn1qYyinJMvoEa6Rp82fyS7qr
-         u0ulhawY8SsOcyfMYS86x547iiKyhGNk0yOoezehrH7t6yobC8mrAuFamO16CJI/2bjk
-         qxChRNbjvFg8pFYpR3jhiZbsCLiXiXRYDJLSuS52e+Boo419bWB9g/X4RJEY7sQDDl91
-         tvNg==
-X-Gm-Message-State: AJIora/G6/RIZ/vSmqcro84jaS5P9sI1aeB+aTVm0ZC8V9HEHi2r4o8g
-        /gBqIh19+XqPEwgIeMZaB8fk8ReM9CwPgWBiwKQ=
-X-Google-Smtp-Source: AGRyM1tnC7xEukUs2A0VoewEY2CoIfV7aCqGo0G38aLeVq+D6tBDe5KKFSQhFuBWTDBmF+DkqCrq7G46Mnc6e/XGRPo=
-X-Received: by 2002:a17:906:6a11:b0:726:97b8:51e9 with SMTP id
- qw17-20020a1709066a1100b0072697b851e9mr38260616ejc.115.1657083653634; Tue, 05
- Jul 2022 22:00:53 -0700 (PDT)
+        bh=Gpk8AVT2xRi5t3jKe08PVPmP7WlyKw3+itmLPtRM7Kw=;
+        b=MqNb2zw5sLmfREUczifF9I+6IZ2gPjdhkMqA+yLCCNkPk7vhlHIKGDoOmOo/V49iTB
+         zaXuOr29ECFC0e7NhZYqO/QkvvYZz/C4VbVxL4nI0EXs/V5iF9xGYj0RiEHmvCZUn+dR
+         zaMXkA+WUBKWHpCV0aJc6wYupAl8qzik2LXqcfeRi2ik117aoNK5rNdUvRTAAOENJSk7
+         14uJ1IlZh5dINnWoa9WUsV1AnfFDc509OKwHHudb0WOGUTcLIJ5PPTFk/3E27rX1TnP7
+         M84uOwlJq2IV4R4na6xq/xetJecJIOHUtGYZFtoSXKzF5utMEmmSUPyapoOmg3eEbFJw
+         mouw==
+X-Gm-Message-State: AJIora+Z57nPDRmuxJMloZwyQG+tCGwXXcAmcKEQvgZ3xvyrWqY7mkc5
+        9f2g8b8cpjFVZ1xS9/8PibXqyggLATt27qcc08c=
+X-Google-Smtp-Source: AGRyM1sd5IPKxozBn6Fnaq6t7Jtrhi53T+nPQBRsx0aA3R8ofsJKaEh1yRY/opDAjNDh0xX85eBD2dk2ZCcOH4ebloM=
+X-Received: by 2002:a17:906:8447:b0:72a:f120:50cd with SMTP id
+ e7-20020a170906844700b0072af12050cdmr3492384ejy.114.1657083947927; Tue, 05
+ Jul 2022 22:05:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220703130924.57240-1-dlan@gentoo.org> <YsKAZUJRo5cjtZ3n@infradead.org>
-In-Reply-To: <YsKAZUJRo5cjtZ3n@infradead.org>
+References: <20220704140850.1106119-1-hengqi.chen@gmail.com>
+In-Reply-To: <20220704140850.1106119-1-hengqi.chen@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 5 Jul 2022 22:00:42 -0700
-Message-ID: <CAEf4BzbCswMd6KU7f9SEU6xHBBPu_rTL5f+KE0OkYj63e-h-bA@mail.gmail.com>
-Subject: Re: [PATCH] RISC-V/bpf: Enable bpf_probe_read{, str}()
-To:     Christoph Hellwig <hch@infradead.org>,
-        Alan Maguire <alan.maguire@oracle.com>
-Cc:     Yixun Lan <dlan@gentoo.org>, Palmer Dabbelt <palmer@dabbelt.com>,
-        linux-riscv@lists.infradead.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Date:   Tue, 5 Jul 2022 22:05:37 -0700
+Message-ID: <CAEf4Bzbo0GbLv0YdyLLZq8myGK=eGz_GgYbifw1LMu2Adxhjvg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: Error out when missing binary_path for
+ USDT attach
+To:     Hengqi Chen <hengqi.chen@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -77,25 +65,40 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jul 3, 2022 at 10:53 PM Christoph Hellwig <hch@infradead.org> wrote:
+On Mon, Jul 4, 2022 at 7:09 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
 >
-> On Sun, Jul 03, 2022 at 09:09:24PM +0800, Yixun Lan wrote:
-> > Enable this option to fix a bcc error in RISC-V platform
-> >
-> > And, the error shows as follows:
+> The binary_path parameter is required for bpf_program__attach_usdt().
+> Error out when user attach USDT probe without specifying a binary_path.
 >
-> These should not be enabled on new platforms.  Use the proper helpers
-> to probe kernel vs user pointers instead.
 
-riscv existed as of [0], so I'd argue it is a proper bug fix, as
-corresponding select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE should
-have been added back then.
+This is a required parameter, libbpf doesn't add pr_warn() for every
+`const char *` parameter that the user incorrectly passes NULL for
+(e.g., bpf_program__attach_kprobe's func_name). If you think
+bpf_program__attach_usdt() doc comment about this is not clear enough,
+let's improve the documentation instead of littering libbpf source
+code with Java-like NULL checks everywhere.
 
-But I also agree that BCC tools should be updated to use proper
-bpf_probe_read_{kernel,user}[_str()] helpers, please contribute such
-fixes to BCC tools and BCC itself as well. Cc'ed Alan as his ksnoop in
-libbpf-tools seems to be using bpf_probe_read() as well and needs to
-be fixed.
-
-  [0] 0ebeea8ca8a4 ("bpf: Restrict bpf_probe_read{, str}() only to
-archs where they work")
+> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+> ---
+>  tools/lib/bpf/libbpf.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 8a45a84eb9b2..5e4153c5b0a6 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -10686,6 +10686,12 @@ struct bpf_link *bpf_program__attach_usdt(const struct bpf_program *prog,
+>                 return libbpf_err_ptr(-EINVAL);
+>         }
+>
+> +       if (!binary_path) {
+> +               pr_warn("prog '%s': USDT attach requires binary_path\n",
+> +                       prog->name);
+> +               return libbpf_err_ptr(-EINVAL);
+> +       }
+> +
+>         if (!strchr(binary_path, '/')) {
+>                 err = resolve_full_path(binary_path, resolved_path, sizeof(resolved_path));
+>                 if (err) {
+> --
+> 2.30.2
