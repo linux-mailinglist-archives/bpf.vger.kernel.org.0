@@ -2,477 +2,190 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12C385686A8
-	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 13:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0418568929
+	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 15:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232190AbiGFLW2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Jul 2022 07:22:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57526 "EHLO
+        id S233645AbiGFNRH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jul 2022 09:17:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232126AbiGFLW1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Jul 2022 07:22:27 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6386127CED;
-        Wed,  6 Jul 2022 04:22:26 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id n66so10443266oia.11;
-        Wed, 06 Jul 2022 04:22:26 -0700 (PDT)
+        with ESMTP id S232155AbiGFNRG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Jul 2022 09:17:06 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56F9025F1;
+        Wed,  6 Jul 2022 06:17:04 -0700 (PDT)
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 266Cn4O8005437;
+        Wed, 6 Jul 2022 13:16:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-type : mime-version;
+ s=corp-2021-07-09; bh=GdKH0k4TRT/sd5H2bq7kll58kFfSVHHwemhpJGo/qzY=;
+ b=NKYL0knNgGTpIM81uz7bx8kf86vnSz6VLjlZIQLpx8L1XMVPwZQ4pOqKd6bM+yKJu6lR
+ UDOwld2vq+5ejGtVaRhSB0iH9JQnlFlmyBdkweG+HAuB5gmHAGZLAaJutj+/HdgZKwxy
+ pUAeBYvjH8XiQWmJ4hEQhhZlioElA56A4uG+WTwZNpRKFbINv8gUs2TfEc1GmR3rKD1A
+ KzmBSn+bMvpNK7qi2pTHAqT8ckRFOWlJmD2CuCotxR4v7pLQGUI2Ge7v2h6ZCucsLeVk
+ 3XGPmJZlb3mPbSpkC/nIVs/dPWs1NRd8E+v1qzxpGHCsgUFLuHPTT+3IANTPOSDPuDH9 6g== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3h4ubyswuq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 Jul 2022 13:16:40 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.16.1.2/8.16.1.2) with SMTP id 266DBM5a038688;
+        Wed, 6 Jul 2022 13:16:39 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2170.outbound.protection.outlook.com [104.47.56.170])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com with ESMTP id 3h4ud62uk5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 Jul 2022 13:16:39 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MgKlZY9MxPgK99k+3XC59N7PPeoR+WKhf/1DYFyYAMJV9nbKmqBM0RKCZICsBMeVnwUz+x+P4AlFEZOxyhywVIRzrKwKuaMy05jMXjBnlQ29iOGGvWWMzr4QyIijuJqk0yBRCxndv6Sfo7z61oedSsLN9yl1q3xakqaTLXBdZubtQiGCom18I8wRdnd2dPDelgMIfrpwSrWWSJf8f6S4kCYXEL+OVcLA9uf+40I7MsFOFfcr62utQ/2n+R0GBsRh3NZha4m+arKdVOcs7Rp4TirvUHQNz7CmEsv3dPVFogknCdNADXPjGNw5H/yxCq4erV8RvoAj5Mx2S1+Je+GM+w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GdKH0k4TRT/sd5H2bq7kll58kFfSVHHwemhpJGo/qzY=;
+ b=e6eHDoCGfD+p5mGIsEo9lIi5ZSkpRcw8OYftU2ekJDaq+EjN8hApc6a6rpPDI84oZch5wbiLyxR5q9uM2XRQHUBtNRMUGgdRHvuBmbZUfpk5lMg3gmGDUfqnQhgeWOrLTscPZ9JY542CCuNreK0GdNDCCcUj0PMizZpp2ACeci6NQkqALsE1sAa0M0gsUmsFGU6MrUdnLMtHosSNBOj3ng/j89yLz6kK06DcMZSSz3Z2Y6qmslX0Dhel1+9ScywRWFMymG/zA5+qnFSxquOrqPhgpU4hzdZhMFBZpMw40oeJmiidmxHYsXsh0317dSDdM0D8iHmoSMTiqiuLa0D4vA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=YekO46tbtJzRFaP2YOn6Rj/E+8ya/LKQcanPVB9yOV4=;
-        b=es+uoLvAIYFFYhfALLE5RHDJLzbtie/w3b3nrigNFVIEAFbNMJiUVke1udb1rV9lq8
-         o859S88Ovi8bInZvWZoyea29d2/BzHC7rgevfWoNKNy/gx2bbpT5Ol1ODMAtLdLCjqKg
-         +ZERgndk39BEYRIhhFZcvEXZIp+bZpeQeGi7DYzPlJVK3tGo5hsLl1+QO4B7dO6hCgww
-         bCTaGaG5WkF3mV2ye/sDvLloUNcriPLsZUHtSl77rApcsdHRq+EMh/nCbypKOy9pZr9A
-         fEGECYuyQq68/1otouz71p/xIGvD0gwYCLVfPWFLSI6G+/VwdT3f1gSD6pgbLQOKpTJw
-         CPzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=YekO46tbtJzRFaP2YOn6Rj/E+8ya/LKQcanPVB9yOV4=;
-        b=08igtRT5bN56fHiN8BRzdA0OHhQN8GNOHgKtqrqjMWoYLHtTurn29okhNUeOzmiTfx
-         6H20eWUkQujr2tA4zzxHmAhp02zriHLZs+igrumFYadbl88o+06jbpj8zLHEcVSD6Hff
-         IO/mD+tWgCv+XIJo1T24cIKBspqcX5KRtG/wzkPDaYRIyTu0uvHbqMmUr/oD7xbJDbUw
-         +EauKwb2MR9a1stHGXSkDX4W0wsHZ651kUeyD8v69xiY5wA/13w7reZ5fZLubIEvIqqb
-         tw9D0XF0m64xwieWkJiXaOE3VCCKzhxQeOyNSGxS73XCgQsSBNaILNHc5lxpUk08Dzo8
-         Z1CA==
-X-Gm-Message-State: AJIora/wd9MWfuTcMbU5P9G6TVApcosk4LF+DOBmToS9olsl6UiPCX/V
-        fdAUGirbcEZnDIMd38sL3Tdt9X9brBfyK8FrjQKBAVm27LSPeA==
-X-Google-Smtp-Source: AGRyM1tv2wUy/WvS4iuT25W3n0/bP8XRFJgstFXGgaRWEe/YHnDi3ifn6wFgThs5d3ygjwtIgjsu3+dhIUxgK0YQxMc=
-X-Received: by 2002:a05:6808:492:b0:335:2340:b055 with SMTP id
- z18-20020a056808049200b003352340b055mr22599234oid.99.1657106545606; Wed, 06
- Jul 2022 04:22:25 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GdKH0k4TRT/sd5H2bq7kll58kFfSVHHwemhpJGo/qzY=;
+ b=DN+LogC1ZJM63ATRBSO0dLs+1uCZpJ/rvyW2QQgZsqkMqEqPkiPQSJCsxrqHwrYF24WFpna38GYBnrncbgVe2pW5t2IgeQV4aEacgHU1nZ3D/QJelim3n708drThPbxR2bjD7gYyoZu4ishfH5yqLZTS1LP9tz3YikNVbt5qVrQ=
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
+ by BN6PR1001MB2163.namprd10.prod.outlook.com (2603:10b6:405:2e::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5395.14; Wed, 6 Jul
+ 2022 13:16:37 +0000
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::ec7b:27cb:a958:e05e]) by BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::ec7b:27cb:a958:e05e%7]) with mapi id 15.20.5395.022; Wed, 6 Jul 2022
+ 13:16:37 +0000
+From:   Alan Maguire <alan.maguire@oracle.com>
+To:     ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net
+Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
+        mhiramat@kernel.org, akpm@linux-foundation.org, void@manifault.com,
+        swboyd@chromium.org, ndesaulniers@google.com,
+        9erthalion6@gmail.com, kennyyu@fb.com, geliang.tang@suse.com,
+        kuniyu@amazon.co.jp, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 bpf-next 0/2] bpf: add a ksym BPF iterator
+Date:   Wed,  6 Jul 2022 14:16:29 +0100
+Message-Id: <1657113391-5624-1-git-send-email-alan.maguire@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+Content-Type: text/plain
+X-ClientProxiedBy: AS4P190CA0027.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:20b:5d0::16) To BLAPR10MB5267.namprd10.prod.outlook.com
+ (2603:10b6:208:30e::22)
 MIME-Version: 1.0
-References: <20220609062412.3950380-1-james.hilliard1@gmail.com>
- <CAEf4BzbL8ivLH=HZDFTNyCTFjhWrWLcY3K34Ef+q4Pr+oDe_Gw@mail.gmail.com>
- <CADvTj4opMh978fMBV7cH89wbS1N_PK31AybZJ5NUacnp4kBeqg@mail.gmail.com>
- <CAEf4BzbkckyfKuhu9CV9wofCHeYa83NnfQNeK82pXLe-s8zhxA@mail.gmail.com>
- <CADvTj4q5BtrhUwvxdke0NFDRBh1bUzPRd4iGoGvt_HaDp2V7MQ@mail.gmail.com>
- <CAEf4BzZkSXLqFz4Cjx4_Z_0sxBBSd-SEhT8u+3EZVccqH7qXkg@mail.gmail.com>
- <CADvTj4ozq_Q0m+aKhQ+yfuGdrJOeSyt=4ORt5AjtZW61Z6OosA@mail.gmail.com> <CAEf4Bzap74qnzpYHbpSUS+c5JfA4Mh=sfr6rhnAm-so2qEYkRw@mail.gmail.com>
-In-Reply-To: <CAEf4Bzap74qnzpYHbpSUS+c5JfA4Mh=sfr6rhnAm-so2qEYkRw@mail.gmail.com>
-From:   James Hilliard <james.hilliard1@gmail.com>
-Date:   Wed, 6 Jul 2022 05:22:14 -0600
-Message-ID: <CADvTj4oCOBGY1Ow4UHQNRaVPkOE1G4C1BFzBkOWbTUETFS7Q3A@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] libbpf: fix broken gcc SEC pragma macro
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: fe8bfb84-47d3-4ee0-35af-08da5f51c17f
+X-MS-TrafficTypeDiagnostic: BN6PR1001MB2163:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ymMVoaiykxVawsOQ9/hCksZOifeziI5lZpNHr9wrs8DooLYeam5sQVBXbcHZtBL8sIsCfJ+duwkmucowV+W6vQn5l5YyMJ3dw0rnojNQefF1SokQuc19Bcpgp1kTJcZWxUiUYg78JvB9t5GosRlO53FHWsN7ZiWUB/TSIJuFYr+PEXOOPBBSAZ25qYVW56XizbSmEoxGhx1TzzjtEcW3un3QpcjZFWSe8q3YrCh/ndkl/a1xvl+xJ7b/W/Tsm9b67obuAzasX87TOdVL4hrhjPIfr9P/X4BxdqcLrUljDEQqxhnLkmtQPbSARDvk7SfqdozJ2+OXkt0bbf6iRP7x04HRdOV3ySyxsMyqL5ppY+K3ElIlCgfbvwNRkdfq/dQ0vLgTL+A3fV4z8DqmkdmLkYV8n+2Py6zjXEy53zzdgLeMWy2ygAuJNtjcWNJRwd77BhpYmdcN5J77mVawGKbQkSHy7i86CxipPJu0eV5lg+YyO3UHeR8Lsbr1uOBfSyqE5/AIHHiDQ2E4qw43yiGYojPzjsYBJKThrXgiNBjLD28EV574aE3kmwENppjumGbu2K6gObPIHVmIdOeu2gltjtihsjQBqf7e3eSNjyciJk+ku1GQxte6x/XA8BgpQH7XIkvj8imKr8SK1OG/NCw4Gtyfp8NGR57dY+iqZnpdj0PTFbNRciKqpVWDwk5K6D+rQmzS20Em4zjegN30cmpIA9tWXMoRjnJiPuCoKJVaK4SGKRVcvv/J/ASE1Z/m/V4Y67vqFM4xDPh5KNQdov/mk/Z/OS/FPFB1RS8QWnAmslYgEG86N10aOQYJM2Y7OLrW+yzYCk5xO9eFKZJ3GsmMGdl1oPyrE2LXG0nwLICTyCmoUdZcTNDo5F0jWjMR8mga
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(346002)(136003)(376002)(366004)(39860400002)(396003)(2906002)(38100700002)(6512007)(26005)(6666004)(2616005)(41300700001)(6506007)(38350700002)(86362001)(186003)(8936002)(52116002)(5660300002)(8676002)(36756003)(44832011)(316002)(4326008)(66946007)(66476007)(7416002)(66556008)(6486002)(966005)(478600001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?RaDKAMyrqm+qwfNHqRlBHpPcERLSt21DfVK7i635Br4cIzr3hv8UIcnkn09g?=
+ =?us-ascii?Q?QhLyDltTVgwz6auVDRYENIUaRnq1ABGjYl4mo3JrE2OokLTi3QDQcqiAW2Gn?=
+ =?us-ascii?Q?qWU8iQKYrHqBq2EehZUuMOVolcWLD/68UcGARiI49Ks1iAD+oe0mNBkmhvVR?=
+ =?us-ascii?Q?Zx3Z9/jhQgxkOR9BWyb9L8QJjDaC2aG7lOVqnCpPRzsT89HHzoKFoN7c1uXl?=
+ =?us-ascii?Q?7mKF5HA+rpKZSo9D1TDJMIrf6RZlHYyUBPH9tzFmoZ1l3zzkvyCN8tzTkQgi?=
+ =?us-ascii?Q?CrWHX/Q9j8EskVCdzHv68mIfbbOhITu44c+BcD0FXK2Pxse7qnHWc4Okx5jc?=
+ =?us-ascii?Q?udFxE5mObEGuq39JHZf2lEqsfCJ7+IDcNEBf2XwXrOiSGXwkuVutJUFcUOps?=
+ =?us-ascii?Q?HMcd7JXhgpGSAYqzJzO2UyzoJ6rAI/Xu+wWBdGEdBbnfshTM8StYlx+5b9Fz?=
+ =?us-ascii?Q?GAgmXgky9/ZNWC4J3B28HAiXtJy3GxhOIVijICrU71I5deXSr44aUCh8Talp?=
+ =?us-ascii?Q?M5K6x3v038qEC4FeYyvEmH9m/JgrCALUGv1E6F81LyYEjQuSoNJR9cIW7HnD?=
+ =?us-ascii?Q?JjGSU4AieMfG6YYfi25rF5VsAxD7TZ+4vZ92V7ZOVM6Rs6XseKaSQM+amJvx?=
+ =?us-ascii?Q?tIwYGnZ1IuiTdJO+62WgmgA80GHT0B1SCfR7/7o+ZexT06n31aRItEJ0yVZI?=
+ =?us-ascii?Q?zOwP21uvl6sO4qQcxrcAIow2g21TVcWyL8Gvwv0D+YK3t3SBN8XZjmpENg4c?=
+ =?us-ascii?Q?6+Xbg2ysW4DBC5IL7CJaL++q6hF32+g/nryi0DwcR/eGRtn3DX+MPLUjIivU?=
+ =?us-ascii?Q?KuIRhjqiE0Idj58L74pLdWz5gcZUwVwxnEY0OXkmxwf3kQ7p7iwA6zfku+Zc?=
+ =?us-ascii?Q?EBJ0klbDKPgoCcKmS/k7EAITFFWsHyO3vLIQNFP4GqkBYsVNNJP5L4r+IYfy?=
+ =?us-ascii?Q?+mdR5YCTyMOFSeTyszA4ESKqPtMsx4XOgiVAdTFtfH0C8kiS8WiCqdyuf6Z/?=
+ =?us-ascii?Q?ibFJ+xPWcvoWnZbCFRV3W/B8W3xWYLiDyYWP+L9XJD8ZL6GrXCWOF9P6V5yp?=
+ =?us-ascii?Q?4XVK4KQCjLNpBnI2m1pyaMaszoMPr4UHi318RR24lZaPUMEZJyh4Oa7UpfSg?=
+ =?us-ascii?Q?z8Q4Z2Fd0JloxqpBrZPiN1BNHvWYeHWnejbegvTJVFQ//Ih0qgyCYku6d4vj?=
+ =?us-ascii?Q?Ee2B+fxLrUc2fCV4J/kAXwuKUXxwZgtIKESuk+8TPTLe2vEfwK9FzD+9tNqD?=
+ =?us-ascii?Q?IIpZyPV+af7CziSKevIouv3FBD7Qx1lKjC3vgxU8HiyzJqZvQxzuBqthkdcq?=
+ =?us-ascii?Q?sfZUXOjVrOuYLtW7WElOU/MsewtB2Rr95rc5/BBGeZPbvAWFLDDZZcomQ4pS?=
+ =?us-ascii?Q?oUtCwoT+AXjAGa6fuV7+UcwrIkjDXM9UCWYhZgV/aMbAJGopF4fhuEYb+0X2?=
+ =?us-ascii?Q?/VFjWWqCMC63DpqwQxRxinZwB7jKkYQEr6QfpoDlIisDHh8tMWVSPFrCUKCp?=
+ =?us-ascii?Q?PRNG1/XRUwukdeggw6nAtLRivwR2LlfYF8QN52/qaR9GWEuSJ258bnbgvT1e?=
+ =?us-ascii?Q?r0FLsHVoaomq3cbtGyHPltO6T8aOC6Cb6bfLEQfZ?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fe8bfb84-47d3-4ee0-35af-08da5f51c17f
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jul 2022 13:16:37.2487
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ldI6HV/+UspNUDiLVZajxvqIC8VoDCW3nirKNdZPgTb403fiRwZOyyVtCZpRtyFLQP2ngn4Kcd1f7ZMJ98BMKA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1001MB2163
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.517,18.0.883
+ definitions=2022-07-06_08:2022-06-28,2022-07-06 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 phishscore=0
+ adultscore=0 malwarescore=0 mlxscore=0 spamscore=0 mlxlogscore=904
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2206140000
+ definitions=main-2207060052
+X-Proofpoint-ORIG-GUID: xdK5r0cwZKZ5XTiGcDX3plfjn3NejOkx
+X-Proofpoint-GUID: xdK5r0cwZKZ5XTiGcDX3plfjn3NejOkx
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 5, 2022 at 10:36 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Fri, Jul 1, 2022 at 10:12 AM James Hilliard
-> <james.hilliard1@gmail.com> wrote:
-> >
-> > On Thu, Jun 30, 2022 at 3:51 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Mon, Jun 27, 2022 at 9:43 PM James Hilliard
-> > > <james.hilliard1@gmail.com> wrote:
-> > > >
-> > > > On Mon, Jun 27, 2022 at 5:16 PM Andrii Nakryiko
-> > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > >
-> > > > > On Thu, Jun 9, 2022 at 4:27 PM James Hilliard <james.hilliard1@gm=
-ail.com> wrote:
-> > > > > >
-> > > > > > On Thu, Jun 9, 2022 at 12:13 PM Andrii Nakryiko
-> > > > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > > > >
-> > > > > > > On Wed, Jun 8, 2022 at 11:24 PM James Hilliard
-> > > > > > > <james.hilliard1@gmail.com> wrote:
-> > > > > > > >
-> > > > > > > > It seems the gcc preprocessor breaks unless pragmas are wra=
-pped
-> > > > > > > > individually inside macros when surrounding __attribute__.
-> > > > > > > >
-> > > > > > > > Fixes errors like:
-> > > > > > > > error: expected identifier or '(' before '#pragma'
-> > > > > > > >   106 | SEC("cgroup/bind6")
-> > > > > > > >       | ^~~
-> > > > > > > >
-> > > > > > > > error: expected '=3D', ',', ';', 'asm' or '__attribute__' b=
-efore '#pragma'
-> > > > > > > >   114 | char _license[] SEC("license") =3D "GPL";
-> > > > > > > >       | ^~~
-> > > > > > > >
-> > > > > > > > Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
-> > > > > > > > ---
-> > > > > > > > Changes v2 -> v3:
-> > > > > > > >   - just fix SEC pragma
-> > > > > > > > Changes v1 -> v2:
-> > > > > > > >   - replace typeof with __typeof__ instead of changing prag=
-ma macros
-> > > > > > > > ---
-> > > > > > > >  tools/lib/bpf/bpf_helpers.h | 7 ++++---
-> > > > > > > >  1 file changed, 4 insertions(+), 3 deletions(-)
-> > > > > > > >
-> > > > > > > > diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bp=
-f_helpers.h
-> > > > > > > > index fb04eaf367f1..66d23c47c206 100644
-> > > > > > > > --- a/tools/lib/bpf/bpf_helpers.h
-> > > > > > > > +++ b/tools/lib/bpf/bpf_helpers.h
-> > > > > > > > @@ -22,11 +22,12 @@
-> > > > > > > >   * To allow use of SEC() with externs (e.g., for extern .m=
-aps declarations),
-> > > > > > > >   * make sure __attribute__((unused)) doesn't trigger compi=
-lation warning.
-> > > > > > > >   */
-> > > > > > > > +#define DO_PRAGMA(x) _Pragma(#x)
-> > > > > > > >  #define SEC(name) \
-> > > > > > > > -       _Pragma("GCC diagnostic push")                     =
-                 \
-> > > > > > > > -       _Pragma("GCC diagnostic ignored \"-Wignored-attribu=
-tes\"")          \
-> > > > > > > > +       DO_PRAGMA("GCC diagnostic push")                   =
-                 \
-> > > > > > > > +       DO_PRAGMA("GCC diagnostic ignored \"-Wignored-attri=
-butes\"")        \
-> > > > > > > >         __attribute__((section(name), used))               =
-                 \
-> > > > > > > > -       _Pragma("GCC diagnostic pop")                      =
-                 \
-> > > > > > > > +       DO_PRAGMA("GCC diagnostic pop")                    =
-                 \
-> > > > > > > >
-> > > > > > >
-> > > > > > > I'm not going to accept this unless I can repro it in the fir=
-st place.
-> > > > > > > Using -std=3Dc17 doesn't trigger such issue. Please provide t=
-he repro
-> > > > > > > first. Building systemd is not a repro, unfortunately. Please=
- try to
-> > > > > > > do it based on libbpf-bootstrap ([0])
-> > > > > > >
-> > > > > > >   [0] https://github.com/libbpf/libbpf-bootstrap
-> > > > > >
-> > > > > > Seems to reproduce just fine already there with:
-> > > > > > https://github.com/libbpf/libbpf-bootstrap/blob/31face36d469a0e=
-3e4c4ac1cafc66747d3150930/examples/c/minimal.bpf.c
-> > > > > >
-> > > > > > See here:
-> > > > > > $ /home/buildroot/buildroot/output/per-package/libbpf/host/bin/=
-bpf-gcc
-> > > > > > -Winline -O2 -mframe-limit=3D32767 -mco-re -gbtf -std=3Dgnu17 -=
-v
-> > > > > > -D__x86_64__ -mlittle-endian -I
-> > > > > > /home/buildroot/buildroot/output/per-package/libbpf/host/x86_64=
--buildroot-linux-gnu/sysroot/usr/include
-> > > > > > minimal.bpf.c -o minimal.bpf.o
-> > > > > > Using built-in specs.
-> > > > > > COLLECT_GCC=3D/home/buildroot/buildroot/output/per-package/libb=
-pf/host/bin/bpf-gcc.br_real
-> > > > > > COLLECT_LTO_WRAPPER=3D/home/buildroot/buildroot/output/per-pack=
-age/libbpf/host/bin/../libexec/gcc/bpf-buildroot-none/12.1.0/lto-wrapper
-> > > > > > Target: bpf-buildroot-none
-> > > > > > Configured with: ./configure
-> > > > > > --prefix=3D/home/buildroot/buildroot/output/per-package/host-gc=
-c-bpf/host
-> > > > > > --sysconfdir=3D/home/buildroot/buildroot/output/per-package/hos=
-t-gcc-bpf/host/etc
-> > > > > > --localstatedir=3D/home/buildroot/buildroot/output/per-package/=
-host-gcc-bpf/host/var
-> > > > > > --enable-shared --disable-static --disable-gtk-doc
-> > > > > > --disable-gtk-doc-html --disable-doc --disable-docs
-> > > > > > --disable-documentation --disable-debug --with-xmlto=3Dno --wit=
-h-fop=3Dno
-> > > > > > --disable-nls --disable-dependency-tracking
-> > > > > > --target=3Dbpf-buildroot-none
-> > > > > > --prefix=3D/home/buildroot/buildroot/output/per-package/host-gc=
-c-bpf/host
-> > > > > > --sysconfdir=3D/home/buildroot/buildroot/output/per-package/hos=
-t-gcc-bpf/host/etc
-> > > > > > --enable-languages=3Dc --with-gnu-ld --enable-static
-> > > > > > --disable-decimal-float --disable-gcov --disable-libssp
-> > > > > > --disable-multilib --disable-shared
-> > > > > > --with-gmp=3D/home/buildroot/buildroot/output/per-package/host-=
-gcc-bpf/host
-> > > > > > --with-mpc=3D/home/buildroot/buildroot/output/per-package/host-=
-gcc-bpf/host
-> > > > > > --with-mpfr=3D/home/buildroot/buildroot/output/per-package/host=
--gcc-bpf/host
-> > > > > > --with-pkgversion=3D'Buildroot 2022.05-118-ge052166011-dirty'
-> > > > > > --with-bugurl=3Dhttp://bugs.buildroot.net/ --without-zstd --wit=
-hout-isl
-> > > > > > --without-cloog
-> > > > > > Thread model: single
-> > > > > > Supported LTO compression algorithms: zlib
-> > > > > > gcc version 12.1.0 (Buildroot 2022.05-118-ge052166011-dirty)
-> > > > > > COLLECT_GCC_OPTIONS=3D'--sysroot=3D/home/buildroot/buildroot/ou=
-tput/per-package/libbpf/host/x86_64-buildroot-linux-gnu/sysroot'
-> > > > > > '-Winline' '-O2' '-mframe-limit=3D32767' '-mco-re' '-gbtf' '-st=
-d=3Dgnu17'
-> > > > > > '-v' '-D' '__x86_64__' '-mlittle-endian' '-I'
-> > > > > > '/home/buildroot/buildroot/output/per-package/libbpf/host/x86_6=
-4-buildroot-linux-gnu/sysroot/usr/include'
-> > > > > > '-o' 'minimal.bpf.o' '-dumpdir' 'minimal.bpf.o-'
-> > > > > >  /home/buildroot/buildroot/output/per-package/libbpf/host/bin/.=
-./libexec/gcc/bpf-buildroot-none/12.1.0/cc1
-> > > > > > -quiet -v -I /home/buildroot/buildroot/output/per-package/libbp=
-f/host/x86_64-buildroot-linux-gnu/sysroot/usr/include
-> > > > > > -iprefix /home/buildroot/buildroot/output/per-package/libbpf/ho=
-st/bin/../lib/gcc/bpf-buildroot-none/12.1.0/
-> > > > > > -isysroot /home/buildroot/buildroot/output/per-package/libbpf/h=
-ost/x86_64-buildroot-linux-gnu/sysroot
-> > > > > > -D __x86_64__ minimal.bpf.c -quiet -dumpdir minimal.bpf.o- -dum=
-pbase
-> > > > > > minimal.bpf.c -dumpbase-ext .c -mframe-limit=3D32767 -mco-re
-> > > > > > -mlittle-endian -gbtf -O2 -Winline -std=3Dgnu17 -version -o
-> > > > > > /tmp/cct4AXvg.s
-> > > > > > GNU C17 (Buildroot 2022.05-118-ge052166011-dirty) version 12.1.=
-0
-> > > > > > (bpf-buildroot-none)
-> > > > > >     compiled by GNU C version 12.1.0, GMP version 6.2.1, MPFR v=
-ersion
-> > > > > > 4.1.0, MPC version 1.2.1, isl version none
-> > > > > > GGC heuristics: --param ggc-min-expand=3D100 --param ggc-min-he=
-apsize=3D131072
-> > > > > > ignoring nonexistent directory
-> > > > > > "/home/buildroot/buildroot/output/per-package/libbpf/host/bin/.=
-./lib/gcc/bpf-buildroot-none/12.1.0/../../../../bpf-buildroot-none/sys-incl=
-ude"
-> > > > > > ignoring nonexistent directory
-> > > > > > "/home/buildroot/buildroot/output/per-package/libbpf/host/bin/.=
-./lib/gcc/bpf-buildroot-none/12.1.0/../../../../bpf-buildroot-none/include"
-> > > > > > ignoring duplicate directory
-> > > > > > "/home/buildroot/buildroot/output/per-package/libbpf/host/bin/.=
-./lib/gcc/../../lib/gcc/bpf-buildroot-none/12.1.0/include"
-> > > > > > ignoring duplicate directory
-> > > > > > "/home/buildroot/buildroot/output/per-package/libbpf/host/bin/.=
-./lib/gcc/../../lib/gcc/bpf-buildroot-none/12.1.0/include-fixed"
-> > > > > > ignoring nonexistent directory
-> > > > > > "/home/buildroot/buildroot/output/per-package/libbpf/host/bin/.=
-./lib/gcc/../../lib/gcc/bpf-buildroot-none/12.1.0/../../../../bpf-buildroot=
--none/sys-include"
-> > > > > > ignoring nonexistent directory
-> > > > > > "/home/buildroot/buildroot/output/per-package/libbpf/host/bin/.=
-./lib/gcc/../../lib/gcc/bpf-buildroot-none/12.1.0/../../../../bpf-buildroot=
--none/include"
-> > > > > > #include "..." search starts here:
-> > > > > > #include <...> search starts here:
-> > > > > >  /home/buildroot/buildroot/output/per-package/libbpf/host/x86_6=
-4-buildroot-linux-gnu/sysroot/usr/include
-> > > > > >  /home/buildroot/buildroot/output/per-package/libbpf/host/bin/.=
-./lib/gcc/bpf-buildroot-none/12.1.0/include
-> > > > > >  /home/buildroot/buildroot/output/per-package/libbpf/host/bin/.=
-./lib/gcc/bpf-buildroot-none/12.1.0/include-fixed
-> > > > > > End of search list.
-> > > > > > GNU C17 (Buildroot 2022.05-118-ge052166011-dirty) version 12.1.=
-0
-> > > > > > (bpf-buildroot-none)
-> > > > > >     compiled by GNU C version 12.1.0, GMP version 6.2.1, MPFR v=
-ersion
-> > > > > > 4.1.0, MPC version 1.2.1, isl version none
-> > > > > > GGC heuristics: --param ggc-min-expand=3D100 --param ggc-min-he=
-apsize=3D131072
-> > > > > > Compiler executable checksum: 9bf241ca1a2dd4ffd7652c5e247c9be8
-> > > > > > minimal.bpf.c:6:1: error: expected '=3D', ',', ';', 'asm' or
-> > > > > > '__attribute__' before '#pragma'
-> > > > > >     6 | char LICENSE[] SEC("license") =3D "Dual BSD/GPL";
-> > > > > >       | ^~~
-> > > > > > minimal.bpf.c:6:1: error: expected identifier or '(' before '#p=
-ragma'
-> > > > > > minimal.bpf.c:10:1: error: expected identifier or '(' before '#=
-pragma'
-> > > > > >    10 | SEC("tp/syscalls/sys_enter_write")
-> > > > > >       | ^~~
-> > > > >
-> > > > > So this is a bug (hard to call this a feature) in gcc (not even
-> > > > > bpf-gcc, I could repro with a simple gcc). Is there a bug reporte=
-d for
-> > > > > this somewhere? Are GCC folks aware and working on the fix?
-> > > >
-> > > > Yeah, saw a few issues that looked relevant:
-> > > > https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D55578
-> > > > https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D90400
-> > > >
-> > > > >
-> > > > > What's curious is that the only thing that allows to bypass this =
-is
-> > > > > adding #x in macro, having #define DO_PRAGMA(x) _Pragma(x) doesn'=
-t
-> > > > > help.
-> > > > >
-> > > > > So ideally GCC can fix this?
-> > > >
-> > > > From the reported issues...it doesn't sound like a fix is going to =
-be
-> > > > coming all that
-> > > > soon in GCC.
-> > > >
-> > > > > But either way your patch as is
-> > > > > erroneously passing extra quoted strings to _Pragma().
-> > > >
-> > > > I recall the extra quotes were needed to make this work, does it wo=
-rk for you
-> > > > without them?
-> > > >
-> > > > >
-> > > > > I'm pondering whether it's just cleaner to define SEC() without
-> > > > > pragmas for GCC? It will only cause compiler warning about unnece=
-ssary
-> > > > > unused attribute for extern *variable* declarations, which are ve=
-ry
-> > > > > rare. Instead of relying on this quirky "fix" approach. Ideally,
-> > > > > though, GCC just fixes _Pragma() handling, of course.
-> > > >
-> > > > I mean, as long as this workaround is reliable I'd say using it is =
-the
-> > > > best option
-> > > > for backwards compatibility, especially since it's only needed in o=
-ne place from
-> > > > the looks of it.
-> > >
-> > > Is it reliable, though? Adding those quotes breaks Clang (I checked)
-> > > and it doesn't work as expected with GCC as well. It stops complainin=
-g
-> > > about #pragma, but it also doesn't push -Wignored-attributes. Here's
-> > > the test:
-> >
-> > Ok, yeah, guess my hack doesn't really work then.
-> >
-> > >
-> > > #define DO_PRAGMA(x) _Pragma(#x)
-> > >
-> > > #define SEC(name) \
-> > >        DO_PRAGMA("GCC diagnostic push")                              =
-      \
-> > >        DO_PRAGMA("GCC diagnostic ignored \"-Wignored-attributes\"")  =
-      \
-> > >         __attribute__((section(name), used))                         =
-      \
-> > >        DO_PRAGMA("GCC diagnostic pop")                               =
-      \
-> > >
-> > > extern int something SEC("whatever");
-> > >
-> > > int main()
-> > > {
-> > >         return something;
-> > > }
-> > >
-> > >
-> > > Used like this you get same warning:
-> > >
-> > > $ cc test.c
-> > > test.c:10:1: warning: =E2=80=98used=E2=80=99 attribute ignored [-Watt=
-ributes]
-> > >    10 | extern int something SEC("whatever");
-> > >       | ^~~~~~
-> > >
-> > > Removing quotes fixes Clang (linker error is expected)
-> > >
-> > > $ clang test.c
-> > > /opt/rh/gcc-toolset-11/root/usr/lib/gcc/x86_64-redhat-linux/11/../../=
-../../bin/ld:
-> >
-> > FYI I was testing with GCC 12.1.
-> >
-> > > /tmp/test-4eec0b.o: in function `main':
-> > > test.c:(.text+0xe): undefined reference to `something'
-> > >
-> > > But we get back to the original problem with GCC:
-> > >
-> > > $ cc test.c
-> > > test.c:10:1: error: expected =E2=80=98=3D=E2=80=99, =E2=80=98,=E2=80=
-=99, =E2=80=98;=E2=80=99, =E2=80=98asm=E2=80=99 or =E2=80=98__attribute__=
-=E2=80=99
-> > > before =E2=80=98#pragma=E2=80=99
-> > >    10 | extern int something SEC("whatever");
-> > >       | ^~~
-> > > test.c:10:1: error: expected identifier or =E2=80=98(=E2=80=99 before=
- =E2=80=98#pragma=E2=80=99
-> > > test.c: In function =E2=80=98main=E2=80=99:
-> > > test.c:14:16: error: =E2=80=98something=E2=80=99 undeclared (first us=
-e in this function)
-> > >    14 |         return something;
-> > >       |                ^~~~~~~~~
-> > >
-> > >
-> > > So the best way forward I can propose for you is this:
-> >
-> > Yeah, probably the best option for now.
-> >
-> > >
-> > >
-> > > #if __GNUC__ && !__clang__
-> > >
-> > > #define SEC(name) __attribute__((section(name), used))
-> > >
-> > > #else
-> > >
-> > > #define SEC(name) \
-> > >         _Pragma("GCC diagnostic push")                               =
-       \
-> > >         _Pragma("GCC diagnostic ignored \"-Wignored-attributes\"")   =
-       \
-> > >         __attribute__((section(name), used))                         =
-       \
-> > >         _Pragma("GCC diagnostic pop")                                =
-       \
-> > >
-> > > #endif
-> > >
-> > > extern int something SEC("whatever");
-> > >
-> > > int main()
-> > > {
-> > >         return something;
-> > > }
-> > >
-> > >
-> > > With some comments explaining how broken GCC is w.r.t. _Pragma. And
-> > > just live with compiler warning about used if used with externs.
-> >
-> > Yeah, do you want to spin a patch with that? I think you probably have =
-a better
-> > understanding of the issue at this point than I do.
->
-> I'd appreciate it if you do that and test selftests/bpf compilation
-> and execution with bpf-gcc (which I don't have locally). Our CI will
-> take care of testing Clang compilation. Thanks!
+a ksym BPF iterator would be useful as it would allow more flexible
+interactions with kernel symbols than are currently supported; it could
+for example create more efficient map representations for lookup,
+speed up symbol resolution etc.
 
-Tested as best I can, I don't have full runtime execution testing working y=
-et
-with my cross compile environment but it does fix that build issue I was hi=
-tting
-at least.
+The idea was initially discussed here [1].
 
-https://lore.kernel.org/bpf/20220706111839.1247911-1-james.hilliard1@gmail.=
-com/
+Changes since v3 [2]:
 
->
-> >
-> > >
-> > >
-> > > >
-> > > > >
-> > > > > >
-> > > > > > >
-> > > > > > > >  /* Avoid 'linux/stddef.h' definition of '__always_inline'.=
- */
-> > > > > > > >  #undef __always_inline
-> > > > > > > > --
-> > > > > > > > 2.25.1
-> > > > > > > >
+- use late_initcall() to register iter; means we are both consistent
+  with other iters and can encapsulate all iter-specific code in
+  kallsyms.c in CONFIG_BPF_SYSCALL (Alexei, Yonghong, patch 1).
+
+Changes since v2 [3]:
+
+- set iter->show_value on initialization based on current creds
+  and use it in selftest to determine if we show values
+  (Yonghong, patches 1/2)
+- inline iter registration into kallsyms_init (Yonghong, patch 1)
+
+Changes since RFC [4]:
+
+- change name of iterator (and associated structures/fields) to "ksym"
+  (Andrii, patches 1, 2)
+- remove dependency on CONFIG_PROC_FS; it was used for other BPF
+  iterators, and I assumed it was needed because of seq ops but I
+  don't think it is required on digging futher (Andrii, patch 1)
+
+[1] https://lore.kernel.org/all/YjRPZj6Z8vuLeEZo@krava/
+[2] https://lore.kernel.org/bpf/1656942916-13491-1-git-send-email-alan.maguire@oracle.com
+[3] https://lore.kernel.org/bpf/1656667620-18718-1-git-send-email-alan.maguire@oracle.com/
+[4] https://lore.kernel.org/all/1656089118-577-1-git-send-email-alan.maguire@oracle.com/
+
+Alan Maguire (2):
+  bpf: add a ksym BPF iterator
+  selftests/bpf: add a ksym iter subtest
+
+ kernel/kallsyms.c                                 | 95 +++++++++++++++++++++++
+ tools/testing/selftests/bpf/prog_tests/bpf_iter.c | 16 ++++
+ tools/testing/selftests/bpf/progs/bpf_iter_ksym.c | 74 ++++++++++++++++++
+ 3 files changed, 185 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_ksym.c
+
+-- 
+1.8.3.1
+
