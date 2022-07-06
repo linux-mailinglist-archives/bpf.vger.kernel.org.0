@@ -2,166 +2,301 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCAE2569109
-	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 19:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D2A56910A
+	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 19:49:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233957AbiGFRtB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Jul 2022 13:49:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37992 "EHLO
+        id S233637AbiGFRtR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jul 2022 13:49:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233690AbiGFRtA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Jul 2022 13:49:00 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AD746459
-        for <bpf@vger.kernel.org>; Wed,  6 Jul 2022 10:49:00 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-2eb7d137101so112123447b3.12
-        for <bpf@vger.kernel.org>; Wed, 06 Jul 2022 10:49:00 -0700 (PDT)
+        with ESMTP id S233690AbiGFRtO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Jul 2022 13:49:14 -0400
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B514186CD
+        for <bpf@vger.kernel.org>; Wed,  6 Jul 2022 10:49:13 -0700 (PDT)
+Received: by mail-oo1-xc31.google.com with SMTP id h12-20020a4aa28c000000b00425ab778155so3061545ool.2
+        for <bpf@vger.kernel.org>; Wed, 06 Jul 2022 10:49:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=+0ywNl+UzKy+Oirvqy2rLPX36d1n4NMn4QqX2Zbrjs8=;
-        b=F3XwHp7oJOd48fqRCn+oPcHHvBbBujhLtK74QTzBq9Gs6HW1BLa19pP0P2v0AJB2Es
-         BrmZyMCMwufOgbEcxXHZrg5p8TfFtRjbuTvPWCpAIDoC4GBl5lpTPkmHFZstvHgt0WlR
-         6iGyMlC2jYPfZEP4587rTSIAOOCjfhNhHpfaOTKbyrCCjXnPyswoIzL8dZrDuQGrxWm/
-         yNkhC6dQ3UDS5x5g9tePbsZCAWV0v+oOnhtlZn029CIw6JhVbQwECtWdlMU70VtGiBBJ
-         5Gkj7Zp+uIntDe8uBHZJ3QjYMb770Hft/dPEXLhgTyJx9RQ1dRTZNE9zJZfS2BNL9nLf
-         shlw==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Qwzr6RdYU//xLuBreLQZXrC8MQ3JtHqpVyGM44tWfHM=;
+        b=ZS9lzEuZA2JK/Uo9Rkcm3oSLXpLg6Nz5fQmbY24IkL2svQafWAEN4szzECKtoHUvng
+         q9CVH5e1H8vEu7dmlq7jVIzPa7GlWSYrHtrpmbJ4HYpv6yG/zVsKHzjJ6fjQEGhlX0ob
+         0wacxLud2O/FBNHqGi/2hn4Pg/uW+Tnp1f6J0DKh6IZy3sHziG8oi4G7Tn2V5u2qZxuc
+         8gSJnvuBmALW9OuVob9qQQrVd+MSH2qsd6I+Ntm4sUrmwF0962Js16QWSvJh4ParPcat
+         BdVuzi8BWnc/yDoTRiDIZmlMIdnOCZrvMCpNx/D+hgBjq6/I+W7A45ZQaODHDEwH+gs9
+         ohCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=+0ywNl+UzKy+Oirvqy2rLPX36d1n4NMn4QqX2Zbrjs8=;
-        b=m+npp54tUPIf6QFq230kyucyYFxe0igdIRK9BSIJyfRIODOF2vFfA4zb3FcDFA77De
-         a/lXpKFtE/af5qTaDhDSx8YR2TuV7UrAk4PMWbcIEcd2CEQn7/+D3EArjjamtVYkRa9P
-         5IdvPPJeEOGvsnXjizjEXnsKVoZc1N8If/p1AtcrA84g+/aPocykBamI40BXzrW1zoBv
-         QGizUEq217rIN6Mzmm41dgiS6zUbTq8KZ+GL+wWCoJ2IV7Tq4YbYYVztaMgvx49ZNjeA
-         OJSlH6Tyi37+OXnX6MgsBAnxfGC7cIgS7ofe7DxzcnpAL1LG54Y2dcg/HQpv1BOseGfA
-         GAAA==
-X-Gm-Message-State: AJIora831VuuESQ+dUC+X+0SvVveQrDGHLr5sR62FQy4U8MMy5uYDqyD
-        hKL/pMg+3PtpnLPG4453fn201bGhDeM4HHf+dBc9oMYaIA3kEDg18nlc5WZk8SH+eagpUaOveBf
-        5qQmvSJuxMe5mInbnrR/ZpFnd2X3Ye7YqW0uvZ7SrYVpk6+J41A==
-X-Google-Smtp-Source: AGRyM1szy3FZAyth2Pe+ilwe9iDGXIL6RRYHhxg8omS276PdZa6Z5loc3ugKynbfZze2n8spRoRh5eU=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a81:9147:0:b0:31c:7a11:bcf3 with SMTP id
- i68-20020a819147000000b0031c7a11bcf3mr27851203ywg.310.1657129739293; Wed, 06
- Jul 2022 10:48:59 -0700 (PDT)
-Date:   Wed,  6 Jul 2022 10:48:57 -0700
-Message-Id: <20220706174857.3799351-1-sdf@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.37.0.rc0.161.g10f37bed90-goog
-Subject: [PATCH bpf-next] bpf: check attach_func_proto return type more carefully
-From:   Stanislav Fomichev <sdf@google.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org,
-        syzbot+5cc0730bd4b4d2c5f152@syzkaller.appspotmail.com
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Qwzr6RdYU//xLuBreLQZXrC8MQ3JtHqpVyGM44tWfHM=;
+        b=UMhbAASJi8qvA/E/uhVPs/ttao/YEPQZwsjadYv0ZBQkM4/aVHfCakrGwl2OfqdKh3
+         Ujw6OxVlPePGwmOrjSRrwH3NosF6DpGAr9cmvHW79rOctrIkJ3Cl9W4Js69TbfiU84x/
+         aOQS3S+2W80359SRcGsQObVxfXkHOH0/D5Y7Yu7T3TmT4kdLBMuiBzNGRQ2UF5C/2FoB
+         SCQQiTxKb7tCJKviXywioIlBnHocO4VpLIQVTArHM5irBn61cfYAe0F04l0JKuhsogTj
+         PSZvEfJJCyUWFkCnz1XX9mtPx/+wHZzFknEQHJrTtKzUVOZhFqa+ONfhlPR+UAx1H5PT
+         g0IA==
+X-Gm-Message-State: AJIora8jx+7QH3VZO/X1nxtr9EQiCPmZoAhKycXypgmj1d1nWUFe/ZZV
+        IK8nk0CZl42cyKgo5vU8s9JxbmcI0A7tSgJQkXWaY7+U+VQ=
+X-Google-Smtp-Source: AGRyM1uAF0ohRx+qmDe7cQyMJu3Q8S7fLJByZ8oIQeyK9Yh6DOhDxOjcDbCv+y3geJ8dzEBE8dGNfDWZvKvK+WWI7b0=
+X-Received: by 2002:a4a:5107:0:b0:41b:873e:895f with SMTP id
+ s7-20020a4a5107000000b0041b873e895fmr17035167ooa.22.1657129752745; Wed, 06
+ Jul 2022 10:49:12 -0700 (PDT)
+MIME-Version: 1.0
+References: <CADvTj4rytB_RDemr4CXO08waaEJGXRC6kt2y_SO0SKN3FgWg0g@mail.gmail.com>
+ <CAEf4BzZVq2VZg=S2xZinfth2-f50zxhMm-fPVQGUoeYPC5J4XA@mail.gmail.com>
+In-Reply-To: <CAEf4BzZVq2VZg=S2xZinfth2-f50zxhMm-fPVQGUoeYPC5J4XA@mail.gmail.com>
+From:   James Hilliard <james.hilliard1@gmail.com>
+Date:   Wed, 6 Jul 2022 11:49:01 -0600
+Message-ID: <CADvTj4rfDAFj0MAVyo=jaBG85MTgHcXi75_cRsby1LXTk7FgfQ@mail.gmail.com>
+Subject: Re: bpftool gen object doesn't handle GCC built BPF ELF files
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Syzkaller reports the following crash:
-RIP: 0010:check_return_code kernel/bpf/verifier.c:10575 [inline]
-RIP: 0010:do_check kernel/bpf/verifier.c:12346 [inline]
-RIP: 0010:do_check_common+0xb3d2/0xd250 kernel/bpf/verifier.c:14610
+On Wed, Jul 6, 2022 at 11:20 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Jul 6, 2022 at 10:13 AM James Hilliard
+> <james.hilliard1@gmail.com> wrote:
+> >
+> > Note I'm testing with the following patches:
+> > https://lore.kernel.org/bpf/20220706111839.1247911-1-james.hilliard1@gmail.com/
+> > https://lore.kernel.org/bpf/20220706140623.2917858-1-james.hilliard1@gmail.com/
+> >
+> > It would appear there's some compatibility issues with bpftool gen and
+> > GCC, not sure what side though is wrong here:
+> > /home/buildroot/buildroot/output/per-package/systemd/host/sbin/bpftool
+> > gen object src/core/bpf/restrict_ifaces/restrict-ifaces.bpf.o
+> > src/core/bpf/restrict_ifaces/restrict-ifaces.bpf.unstripped.o
+> > libbpf: failed to find BTF info for global/extern symbol 'sd_restrictif_i'
+> > Error: failed to link
+> > 'src/core/bpf/restrict_ifaces/restrict-ifaces.bpf.unstripped.o':
+> > Unknown error -2 (-2)
+> >
+> > Relevant difference seems to be this:
+> > GCC:
+> > [55] FUNC 'sd_restrictif_i' type_id=47 linkage=static
+> > Clang:
+> > [27] FUNC 'sd_restrictif_i' type_id=26 linkage=global
+> >
+>
+> GCC is wrong, clearly. This function is global ([0]) and libbpf
+> expects it to be marked as such in BTF.
 
-With the following reproducer:
-bpf$PROG_LOAD_XDP(0x5, &(0x7f00000004c0)={0xd, 0x3, &(0x7f0000000000)=ANY=[@ANYBLOB="1800000000000019000000000000000095"], &(0x7f0000000300)='GPL\x00', 0x0, 0x0, 0x0, 0x0, 0x0, '\x00', 0x0, 0x2b, 0xffffffffffffffff, 0x8, 0x0, 0x0, 0x10, 0x0}, 0x80)
+Does this invocation look correct?
+/home/buildroot/buildroot/output/per-package/systemd/host/bin/bpf-gcc
+-O2 -mkernel=5.2 -mcpu=v3 -mco-re -gbtf -r -std=gnu11 -D__x86_64__
+-mlittle-endian -I. -idirafter
+/home/buildroot/buildroot/output/per-package/systemd/host/x86_64-buildroot-linux-gnu/sysroot/usr/include
+../src/core/bpf/restrict_fs/restrict-fs.bpf.c -o
+src/core/bpf/restrict_fs/restrict-fs.bpf.unstripped.o
 
-Because we don't enforce expected_attach_type for XDP programs,
-we end up in hitting 'if (prog->expected_attach_type == BPF_LSM_CGROUP'
-part in check_return_code and follow up with testing
-`prog->aux->attach_func_proto->type`, but `prog->aux->attach_func_proto`
-is NULL.
+I've also tried without the -r(relocatable object) flag but that gives
+a different error:
+/home/buildroot/buildroot/output/per-package/systemd/host/sbin/bpftool
+gen object src/core/bpf/restrict_ifaces/restrict-ifaces.bpf.o
+src/core/bpf/restrict_ifaces/restrict-ifaces.bpf.unstripped.o
+libbpf: unsupported kind of ELF file
+src/core/bpf/restrict_ifaces/restrict-ifaces.bpf.unstripped.o: no
+error
+Error: failed to link
+'src/core/bpf/restrict_ifaces/restrict-ifaces.bpf.unstripped.o':
+Unknown error -95 (-95)
 
-Let's add a new btf_func_returns_void() wrapper which is more defensive
-and use it in the places where we currently do '!->type' check.
+GCC without relocatable flag:
+[1] INT 'signed char' size=1 bits_offset=0 nr_bits=8 encoding=UNKN
+[2] INT 'unsigned char' size=1 bits_offset=0 nr_bits=8 encoding=CHAR
+[3] TYPEDEF '__u8' type_id=2
+[4] CONST '(anon)' type_id=3
+[5] VOLATILE '(anon)' type_id=4
+[6] INT 'short int' size=2 bits_offset=0 nr_bits=16 encoding=SIGNED
+[7] INT 'short unsigned int' size=2 bits_offset=0 nr_bits=16 encoding=(none)
+[8] TYPEDEF '__u16' type_id=7
+[9] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
+[10] TYPEDEF '__s32' type_id=9
+[11] INT 'unsigned int' size=4 bits_offset=0 nr_bits=32 encoding=(none)
+[12] TYPEDEF '__u32' type_id=11
+[13] INT 'long long int' size=8 bits_offset=0 nr_bits=64 encoding=SIGNED
+[14] INT 'long long unsigned int' size=8 bits_offset=0 nr_bits=64
+encoding=(none)
+[15] TYPEDEF '__u64' type_id=14
+[16] INT 'long unsigned int' size=8 bits_offset=0 nr_bits=64 encoding=(none)
+[17] INT 'long int' size=8 bits_offset=0 nr_bits=64 encoding=SIGNED
+[18] INT 'char' size=1 bits_offset=0 nr_bits=8 encoding=UNKN
+[19] CONST '(anon)' type_id=18
+[20] TYPEDEF '__be16' type_id=8
+[21] TYPEDEF '__be32' type_id=12
+[22] ENUM 'bpf_map_type' encoding=UNSIGNED size=4 vlen=31
+    'BPF_MAP_TYPE_UNSPEC' val=0
+    'BPF_MAP_TYPE_HASH' val=1
+    'BPF_MAP_TYPE_ARRAY' val=2
+    'BPF_MAP_TYPE_PROG_ARRAY' val=3
+    'BPF_MAP_TYPE_PERF_EVENT_ARRAY' val=4
+    'BPF_MAP_TYPE_PERCPU_HASH' val=5
+    'BPF_MAP_TYPE_PERCPU_ARRAY' val=6
+    'BPF_MAP_TYPE_STACK_TRACE' val=7
+    'BPF_MAP_TYPE_CGROUP_ARRAY' val=8
+    'BPF_MAP_TYPE_LRU_HASH' val=9
+    'BPF_MAP_TYPE_LRU_PERCPU_HASH' val=10
+    'BPF_MAP_TYPE_LPM_TRIE' val=11
+    'BPF_MAP_TYPE_ARRAY_OF_MAPS' val=12
+    'BPF_MAP_TYPE_HASH_OF_MAPS' val=13
+    'BPF_MAP_TYPE_DEVMAP' val=14
+    'BPF_MAP_TYPE_SOCKMAP' val=15
+    'BPF_MAP_TYPE_CPUMAP' val=16
+    'BPF_MAP_TYPE_XSKMAP' val=17
+    'BPF_MAP_TYPE_SOCKHASH' val=18
+    'BPF_MAP_TYPE_CGROUP_STORAGE' val=19
+    'BPF_MAP_TYPE_REUSEPORT_SOCKARRAY' val=20
+    'BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE' val=21
+    'BPF_MAP_TYPE_QUEUE' val=22
+    'BPF_MAP_TYPE_STACK' val=23
+    'BPF_MAP_TYPE_SK_STORAGE' val=24
+    'BPF_MAP_TYPE_DEVMAP_HASH' val=25
+    'BPF_MAP_TYPE_STRUCT_OPS' val=26
+    'BPF_MAP_TYPE_RINGBUF' val=27
+    'BPF_MAP_TYPE_INODE_STORAGE' val=28
+    'BPF_MAP_TYPE_TASK_STORAGE' val=29
+    'BPF_MAP_TYPE_BLOOM_FILTER' val=30
+[23] UNION '(anon)' size=8 vlen=1
+    'flow_keys' type_id=29 bits_offset=0
+[24] STRUCT 'bpf_flow_keys' size=56 vlen=13
+    'nhoff' type_id=8 bits_offset=0
+    'thoff' type_id=8 bits_offset=16
+    'addr_proto' type_id=8 bits_offset=32
+    'is_frag' type_id=3 bits_offset=48
+    'is_first_frag' type_id=3 bits_offset=56
+    'is_encap' type_id=3 bits_offset=64
+    'ip_proto' type_id=3 bits_offset=72
+    'n_proto' type_id=20 bits_offset=80
+    'sport' type_id=20 bits_offset=96
+    'dport' type_id=20 bits_offset=112
+    '(anon)' type_id=25 bits_offset=128
+    'flags' type_id=12 bits_offset=384
+    'flow_label' type_id=21 bits_offset=416
+[25] UNION '(anon)' size=32 vlen=2
+    '(anon)' type_id=26 bits_offset=0
+    '(anon)' type_id=27 bits_offset=0
+[26] STRUCT '(anon)' size=8 vlen=2
+    'ipv4_src' type_id=21 bits_offset=0
+    'ipv4_dst' type_id=21 bits_offset=32
+[27] STRUCT '(anon)' size=32 vlen=2
+    'ipv6_src' type_id=28 bits_offset=0
+    'ipv6_dst' type_id=28 bits_offset=128
+[28] ARRAY '(anon)' type_id=12 index_type_id=16 nr_elems=4
+[29] PTR '(anon)' type_id=24
+[30] UNION '(anon)' size=8 vlen=1
+    'sk' type_id=32 bits_offset=0
+[31] STRUCT 'bpf_sock' size=80 vlen=14
+    'bound_dev_if' type_id=12 bits_offset=0
+    'family' type_id=12 bits_offset=32
+    'type' type_id=12 bits_offset=64
+    'protocol' type_id=12 bits_offset=96
+    'mark' type_id=12 bits_offset=128
+    'priority' type_id=12 bits_offset=160
+    'src_ip4' type_id=12 bits_offset=192
+    'src_ip6' type_id=28 bits_offset=224
+    'src_port' type_id=12 bits_offset=352
+    'dst_port' type_id=20 bits_offset=384
+    'dst_ip4' type_id=12 bits_offset=416
+    'dst_ip6' type_id=28 bits_offset=448
+    'state' type_id=12 bits_offset=576
+    'rx_queue_mapping' type_id=10 bits_offset=608
+[32] PTR '(anon)' type_id=31
+[33] STRUCT '__sk_buff' size=192 vlen=33
+    'len' type_id=12 bits_offset=0
+    'pkt_type' type_id=12 bits_offset=32
+    'mark' type_id=12 bits_offset=64
+    'queue_mapping' type_id=12 bits_offset=96
+    'protocol' type_id=12 bits_offset=128
+    'vlan_present' type_id=12 bits_offset=160
+    'vlan_tci' type_id=12 bits_offset=192
+    'vlan_proto' type_id=12 bits_offset=224
+    'priority' type_id=12 bits_offset=256
+    'ingress_ifindex' type_id=12 bits_offset=288
+    'ifindex' type_id=12 bits_offset=320
+    'tc_index' type_id=12 bits_offset=352
+    'cb' type_id=34 bits_offset=384
+    'hash' type_id=12 bits_offset=544
+    'tc_classid' type_id=12 bits_offset=576
+    'data' type_id=12 bits_offset=608
+    'data_end' type_id=12 bits_offset=640
+    'napi_id' type_id=12 bits_offset=672
+    'family' type_id=12 bits_offset=704
+    'remote_ip4' type_id=12 bits_offset=736
+    'local_ip4' type_id=12 bits_offset=768
+    'remote_ip6' type_id=28 bits_offset=800
+    'local_ip6' type_id=28 bits_offset=928
+    'remote_port' type_id=12 bits_offset=1056
+    'local_port' type_id=12 bits_offset=1088
+    'data_meta' type_id=12 bits_offset=1120
+    '(anon)' type_id=23 bits_offset=1152
+    'tstamp' type_id=15 bits_offset=1216
+    'wire_len' type_id=12 bits_offset=1280
+    'gso_segs' type_id=12 bits_offset=1312
+    '(anon)' type_id=30 bits_offset=1344
+    'gso_size' type_id=12 bits_offset=1408
+    'hwtstamp' type_id=15 bits_offset=1472
+[34] ARRAY '(anon)' type_id=12 index_type_id=16 nr_elems=5
+[35] CONST '(anon)' type_id=33
+[36] PTR '(anon)' type_id=0
+[37] STRUCT '(anon)' size=24 vlen=3
+    'type' type_id=39 bits_offset=0
+    'key' type_id=40 bits_offset=64
+    'value' type_id=41 bits_offset=128
+[38] ARRAY '(anon)' type_id=9 index_type_id=16 nr_elems=1
+[39] PTR '(anon)' type_id=38
+[40] PTR '(anon)' type_id=12
+[41] PTR '(anon)' type_id=3
+[42] ARRAY '(anon)' type_id=19 index_type_id=16 nr_elems=18
+[43] CONST '(anon)' type_id=42
+[44] FUNC_PROTO '(anon)' ret_type_id=36 vlen=2
+    '(anon)' type_id=36
+    '(anon)' type_id=46
+[45] CONST '(anon)' type_id=0
+[46] PTR '(anon)' type_id=45
+[47] FUNC_PROTO '(anon)' ret_type_id=9 vlen=1
+    'sk' type_id=48
+[48] PTR '(anon)' type_id=35
+[49] FUNC_PROTO '(anon)' ret_type_id=9 vlen=1
+    'sk' type_id=48
+[50] FUNC_PROTO '(anon)' ret_type_id=9 vlen=1
+    'sk' type_id=48
+[51] VAR 'is_allow_list' type_id=5, linkage=global
+[52] VAR '_license' type_id=43, linkage=static
+[53] VAR 'sd_restrictif' type_id=37, linkage=global
+[54] FUNC 'bpf_map_lookup_elem' type_id=44 linkage=static
+[55] FUNC 'sd_restrictif_i' type_id=47 linkage=static
+[56] FUNC 'sd_restrictif_e' type_id=49 linkage=static
+[57] FUNC 'restrict_network_interfaces_impl' type_id=50 linkage=static
+[58] DATASEC 'license' size=0 vlen=1
+    type_id=52 offset=0 size=18 (VAR '_license')
+[59] DATASEC '.maps' size=0 vlen=1
+    type_id=53 offset=0 size=24 (VAR 'sd_restrictif')
+[60] DATASEC '.data' size=0 vlen=1
+    type_id=51 offset=0 size=1 (VAR 'is_allow_list')
 
-Fixes: 69fd337a975c ("bpf: per-cgroup lsm flavor")
-Reported-by: syzbot+5cc0730bd4b4d2c5f152@syzkaller.appspotmail.com
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- include/linux/btf.h     | 5 +++++
- kernel/bpf/trampoline.c | 2 +-
- kernel/bpf/verifier.c   | 8 ++++----
- 3 files changed, 10 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/btf.h b/include/linux/btf.h
-index 1bfed7fa0428..17ba7d27a8ad 100644
---- a/include/linux/btf.h
-+++ b/include/linux/btf.h
-@@ -302,6 +302,11 @@ static inline u16 btf_func_linkage(const struct btf_type *t)
- 	return BTF_INFO_VLEN(t->info);
- }
- 
-+static inline bool btf_func_returns_void(const struct btf_type *t)
-+{
-+	return t && !t->type;
-+}
-+
- static inline bool btf_type_kflag(const struct btf_type *t)
- {
- 	return BTF_INFO_KFLAG(t->info);
-diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index 6cd226584c33..9c4cb4c8a5fa 100644
---- a/kernel/bpf/trampoline.c
-+++ b/kernel/bpf/trampoline.c
-@@ -400,7 +400,7 @@ static enum bpf_tramp_prog_type bpf_attach_type_to_tramp(struct bpf_prog *prog)
- 	case BPF_TRACE_FEXIT:
- 		return BPF_TRAMP_FEXIT;
- 	case BPF_LSM_MAC:
--		if (!prog->aux->attach_func_proto->type)
-+		if (btf_func_returns_void(prog->aux->attach_func_proto))
- 			/* The function returns void, we cannot modify its
- 			 * return value.
- 			 */
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index df3ec6b05f05..e3ee6f70939b 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -7325,7 +7325,7 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
- 		break;
- 	case BPF_FUNC_set_retval:
- 		if (env->prog->expected_attach_type == BPF_LSM_CGROUP) {
--			if (!env->prog->aux->attach_func_proto->type) {
-+			if (btf_func_returns_void(env->prog->aux->attach_func_proto)) {
- 				/* Make sure programs that attach to void
- 				 * hooks don't try to modify return value.
- 				 */
-@@ -10447,7 +10447,7 @@ static int check_return_code(struct bpf_verifier_env *env)
- 	if (!is_subprog &&
- 	    (prog_type == BPF_PROG_TYPE_STRUCT_OPS ||
- 	     prog_type == BPF_PROG_TYPE_LSM) &&
--	    !prog->aux->attach_func_proto->type)
-+	    btf_func_returns_void(prog->aux->attach_func_proto))
- 		return 0;
- 
- 	/* eBPF calling convention is such that R0 is used
-@@ -10547,7 +10547,7 @@ static int check_return_code(struct bpf_verifier_env *env)
- 			 */
- 			return 0;
- 		}
--		if (!env->prog->aux->attach_func_proto->type) {
-+		if (btf_func_returns_void(env->prog->aux->attach_func_proto)) {
- 			/* Make sure programs that attach to void
- 			 * hooks don't try to modify return value.
- 			 */
-@@ -10572,7 +10572,7 @@ static int check_return_code(struct bpf_verifier_env *env)
- 	if (!tnum_in(range, reg->var_off)) {
- 		verbose_invalid_scalar(env, reg, &range, "program exit", "R0");
- 		if (prog->expected_attach_type == BPF_LSM_CGROUP &&
--		    !prog->aux->attach_func_proto->type)
-+		    btf_func_returns_void(prog->aux->attach_func_proto))
- 			verbose(env, "Note, BPF_LSM_CGROUP that attach to void LSM hooks can't modify return value!\n");
- 		return -EINVAL;
- 	}
--- 
-2.37.0.rc0.161.g10f37bed90-goog
-
+>
+> https://github.com/systemd/systemd/blob/main/src/core/bpf/restrict_ifaces/restrict-ifaces.bpf.c#L42-L50
+>
+>
+> > GCC:
+> >
+> > [1] INT 'signed char' size=1 bits_offset=0 nr_bits=8 encoding=UNKN
+> > [2] INT 'unsigned char' size=1 bits_offset=0 nr_bits=8 encoding=CHAR
+> > [3] TYPEDEF '__u8' type_id=2
+> > [4] CONST '(anon)' type_id=3
+>
+> [...]
