@@ -2,169 +2,180 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D143569458
-	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 23:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE090569455
+	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 23:29:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234383AbiGFV3R (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Jul 2022 17:29:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52488 "EHLO
+        id S233578AbiGFV3I (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jul 2022 17:29:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234379AbiGFV3Q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Jul 2022 17:29:16 -0400
-Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C2BF240A5
-        for <bpf@vger.kernel.org>; Wed,  6 Jul 2022 14:29:15 -0700 (PDT)
-Received: from submission (posteo.de [185.67.36.169]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id 4A65C240029
-        for <bpf@vger.kernel.org>; Wed,  6 Jul 2022 23:29:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1657142954; bh=fOROytmrENan2OZ0M69OH7iB9oM378I5kMVtZq68EPw=;
-        h=From:To:Subject:Date:From;
-        b=N8pmSuk7l24t0FD8sbxCWt2GoDHkobZyC1lVVnJRKlOJVUszjy7ElPW9NtNcThv1I
-         Y86PAnefXoK2+KRyldJdGRv6O1HU0YOgfeuflnnjljkXx/4qqrlBjUmzOcjOBa3FNh
-         oEE2CJDzHQt3xUc8bvH2X8K4x1yz7x3Wz2HME7MEpC0mXQh9Hhe+/t4Jq8NoH+oOYb
-         fIhDjjjFiSzEG5N4TqayS0lGdA1/zzM5HlIkTE8TNc20hCbZrPH/YNUx+nwavQ/wlQ
-         x/QSBx0NulE5kG4zY/UccibJkyQn8lyOpxLHX1XCs9JfMlPKEnPdHgHPmgymUCeZu1
-         7feCCLPW7B9lg==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4LdXjj3fk1z9rxM;
-        Wed,  6 Jul 2022 23:29:13 +0200 (CEST)
-From:   =?UTF-8?q?Daniel=20M=C3=BCller?= <deso@posteo.net>
-To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, quentin@isovalent.com, kernel-team@fb.com
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Add test involving restrict type qualifier
-Date:   Wed,  6 Jul 2022 21:28:55 +0000
-Message-Id: <20220706212855.1700615-3-deso@posteo.net>
-In-Reply-To: <20220706212855.1700615-1-deso@posteo.net>
-References: <20220706212855.1700615-1-deso@posteo.net>
+        with ESMTP id S231384AbiGFV3H (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Jul 2022 17:29:07 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B4AA1EADA;
+        Wed,  6 Jul 2022 14:29:07 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id o15so11864906pjh.1;
+        Wed, 06 Jul 2022 14:29:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=udhuCkPitOH3CHDU61QUBRRayHKW8eKwG2SoQ0+rvF0=;
+        b=QdkCLyqPAO67cOfE0yyn6qAcov18uuSq4SPI8+KW4RfTWPQwMaIpT4OfreGoVHai0N
+         KuQJc+28fsA1uU6VJyEXtEFFQiLTCefHiB5hM3FLGNOQyQiCCZI8LlGtiWRhNKbqxbBD
+         z1yonSRVS09aa5XboYP3zjeLR9BEDbRn/SnqSYMUa8YdtT6AvJ3DUW32YiUZ5VtP2p/C
+         5W2JnWnDH2+k2j0h5Vb+F/1460ZUm0BdFaFtWQ///isY74Dh8Jxm4m51mAiRTkZFuuID
+         etkr+852cBdXQ4Fd06GVOps7wP7IfFhLRfBS1QMO7rZfQelqeqsDPkZq+XFX1kxoapwP
+         T3+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=udhuCkPitOH3CHDU61QUBRRayHKW8eKwG2SoQ0+rvF0=;
+        b=tesoK/9HjOrdFQjP2b4XduNK4EF3GfrZIAWgC/Cp6ZHF0b7Utf/K5J9o8GjPW6fkq0
+         uPBBZ6Y+khjPu0e/V+XDkXH+hzGHE7bZZ+6AWQkkeoigoPi8ImJ5GD9g2iIh6WfLvnBb
+         EWRDMsqXsP2d+5HQyin01EIpqPbS2A2s5xxi44aIKuDmy+8CV0rDOrJsq4xpo7rU6pe8
+         6LLsUQxxyKhn6byPi5hacT4gM2Ne6Zw7B1UK//gvdGJcUbNHD1EWIqT1sLJx7Pbhs3Ht
+         OemO9Ag4DlTK8sG89C2JuA1CdOWG2Fuf8ij2Ow839SsmgUC8naEqj7/Dmddr8sW6liWG
+         auIQ==
+X-Gm-Message-State: AJIora/c5vVZlrFKSkdLbqGngpSkdo25sCdK5Zai7saxijZnX9y+4oeF
+        eeLxcAzp/iMRFT+2ln02rfU=
+X-Google-Smtp-Source: AGRyM1ufykB0P1yFUIA5SiKBLy/Kp4hUKCRSzBQTMXvWjrJ4NwjJLQUKt9cbgPJAyPeQgmk/JWoLsQ==
+X-Received: by 2002:a17:90b:4fc1:b0:1ef:bd2c:696e with SMTP id qa1-20020a17090b4fc100b001efbd2c696emr830924pjb.45.1657142946503;
+        Wed, 06 Jul 2022 14:29:06 -0700 (PDT)
+Received: from MacBook-Pro-3.local ([2620:10d:c090:500::2:8597])
+        by smtp.gmail.com with ESMTPSA id n7-20020aa79847000000b00528aad783dcsm2037574pfq.15.2022.07.06.14.29.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Jul 2022 14:29:05 -0700 (PDT)
+Date:   Wed, 6 Jul 2022 14:29:03 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v5 1/8] bpf: Add support for forcing kfunc args
+ to be referenced
+Message-ID: <20220706212903.az2mtqodtzmn2gwq@MacBook-Pro-3.local>
+References: <20220623192637.3866852-1-memxor@gmail.com>
+ <20220623192637.3866852-2-memxor@gmail.com>
+ <20220629032304.h5ck7tizbfehiwut@macbook-pro-3.dhcp.thefacebook.com>
+ <CAP01T77fsU8u6GP+HXfQQ_gdu+kp3Am1+Ao-mNYULjDazHs38Q@mail.gmail.com>
+ <CAP01T75cVLehQbkE3LLwSG5wVecNz0FH9QZpmzoqs-e8YKpGtg@mail.gmail.com>
+ <20220706184436.mf7oeexxfwswgdqf@MacBook-Pro-3.local>
+ <CAP01T75-EZfdBx+W+6pV0vDDD3Qi07KVLsFTupPfptTyAFxx1Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP01T75-EZfdBx+W+6pV0vDDD3Qi07KVLsFTupPfptTyAFxx1Q@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This change adds a type based test involving the restrict type qualifier
-to the BPF selftests. On the btfgen path, this will verify that bpftool
-correctly handles the corresponding RESTRICT BTF kind.
+On Thu, Jul 07, 2022 at 12:51:15AM +0530, Kumar Kartikeya Dwivedi wrote:
+> On Thu, 7 Jul 2022 at 00:14, Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Sun, Jul 03, 2022 at 11:04:22AM +0530, Kumar Kartikeya Dwivedi wrote:
+> > > On Sun, 3 Jul 2022 at 10:54, Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+> > > >
+> > > > On Wed, 29 Jun 2022 at 08:53, Alexei Starovoitov
+> > > > <alexei.starovoitov@gmail.com> wrote:
+> > > > >
+> > > > > On Fri, Jun 24, 2022 at 12:56:30AM +0530, Kumar Kartikeya Dwivedi wrote:
+> > > > > > Similar to how we detect mem, size pairs in kfunc, teach verifier to
+> > > > > > treat __ref suffix on argument name to imply that it must be a
+> > > > > > referenced pointer when passed to kfunc. This is required to ensure that
+> > > > > > kfunc that operate on some object only work on acquired pointers and not
+> > > > > > normal PTR_TO_BTF_ID with same type which can be obtained by pointer
+> > > > > > walking. Release functions need not specify such suffix on release
+> > > > > > arguments as they are already expected to receive one referenced
+> > > > > > argument.
+> > > > > >
+> > > > > > Note that we use strict type matching when a __ref suffix is present on
+> > > > > > the argument.
+> > > > > ...
+> > > > > > +             /* Check if argument must be a referenced pointer, args + i has
+> > > > > > +              * been verified to be a pointer (after skipping modifiers).
+> > > > > > +              */
+> > > > > > +             arg_ref = is_kfunc_arg_ref(btf, args + i);
+> > > > > > +             if (is_kfunc && arg_ref && !reg->ref_obj_id) {
+> > > > > > +                     bpf_log(log, "R%d must be referenced\n", regno);
+> > > > > > +                     return -EINVAL;
+> > > > > > +             }
+> > > > > > +
+> > > > >
+> > > > > imo this suffix will be confusing to use.
+> > > > > If I understand the intent the __ref should only be used
+> > > > > in acquire (and other) kfuncs that also do release.
+> > > > > Adding __ref to actual release kfunc will be a nop.
+> > > > > It will be checked, but it's not necessary.
+> > > > >
+> > > > > At the end
+> > > > > +struct nf_conn *bpf_ct_insert_entry(struct nf_conn___init *nfct__ref)
+> > > > > will behave like kptr_xchg with exception that kptr_xchg takes any btf_id
+> > > > > while here it's fixed.
+> > > > >
+> > > > > The code:
+> > > > >  if (rel && reg->ref_obj_id)
+> > > > >         arg_type |= OBJ_RELEASE;
+> > > > > should probably be updated with '|| arg_ref'
+> > > > > to make sure reg->off == 0 ?
+> > > > > That looks like a small bug.
+> > > > >
+> > > >
+> > > > Indeed, I missed that. Thanks for catching it.
+> > > >
+> > > > > But stepping back... why __ref is needed ?
+> > > > > We can add bpf_ct_insert_entry to acq and rel sets and it should work?
+> > > > > I'm assuming you're doing the orthogonal cleanup of resolve_btfid,
+> > > > > so we will have a single kfunc set where bpf_ct_insert_entry will
+> > > > > have both acq and rel flags.
+> > > > > I'm surely missing something.
+> > > >
+> > > > It is needed to prevent the case where someone might do:
+> > > > ct = bpf_xdp_ct_alloc(...);
+> > > > bpf_ct_set_timeout(ct->master, ...);
+> > > >
+> > >
+> > > A better illustration is probably bpf_xdp_ct_lookup and
+> > > bpf_ct_change_timeout, since here the type for ct->master won't match
+> > > with bpf_ct_set_timeout, but the point is the same.
+> >
+> > Sorry, I'm still not following.
+> > Didn't we make pointer walking 'untrusted' so ct->master cannot be
+> > passed into any kfunc?
+> >
+> 
+> I don't believe that is the case, it is only true for kptrs loaded
+> from BPF maps (that too those with BPF_LDX, not the ones with
+> kptr_xchg). There we had a chance to do things differently. For normal
+> PTR_TO_BTF_ID obtained from kfuncs/BPF helpers, there is no untrusted
+> flag set on them, nor is it set when walking them.
+> 
+> I also think we discussed switching to this mode, by making many cases
+> untrusted by default, and using annotation to allow cases, making
+> pointers trusted at one level (like args for tracing/lsm progs, but
+> next deref becomes untrusted), but admittedly it may not cover enough
+> ground, and you didn't like it much either, so I stopped pursuing it.
 
-Signed-off-by: Daniel Müller <deso@posteo.net>
----
- tools/testing/selftests/bpf/prog_tests/core_reloc.c       | 2 ++
- tools/testing/selftests/bpf/progs/core_reloc_types.h      | 8 ++++++--
- .../selftests/bpf/progs/test_core_reloc_type_based.c      | 5 +++++
- 3 files changed, 13 insertions(+), 2 deletions(-)
+Ahh. Now I remember. Thanks for reminding :)
+Could you please summarize this thread and add all of it as a big comment
+in the source code next to __ref handling to explain the motivation
+and an example on when and how this __ref suffix should be used.
+Otherwise somebody, like me, will forget the context soon.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-index a6f65e2..c8655ba 100644
---- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-+++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-@@ -764,6 +764,7 @@ static const struct core_reloc_test_case test_cases[] = {
- 		.typedef_int_exists = 1,
- 		.typedef_enum_exists = 1,
- 		.typedef_void_ptr_exists = 1,
-+		.typedef_restrict_ptr_exists = 1,
- 		.typedef_func_proto_exists = 1,
- 		.typedef_arr_exists = 1,
- 
-@@ -777,6 +778,7 @@ static const struct core_reloc_test_case test_cases[] = {
- 		.typedef_int_matches = 1,
- 		.typedef_enum_matches = 1,
- 		.typedef_void_ptr_matches = 1,
-+		.typedef_restrict_ptr_matches = 1,
- 		.typedef_func_proto_matches = 1,
- 		.typedef_arr_matches = 1,
- 
-diff --git a/tools/testing/selftests/bpf/progs/core_reloc_types.h b/tools/testing/selftests/bpf/progs/core_reloc_types.h
-index 7ef91d..fd8e1b 100644
---- a/tools/testing/selftests/bpf/progs/core_reloc_types.h
-+++ b/tools/testing/selftests/bpf/progs/core_reloc_types.h
-@@ -874,6 +874,7 @@ struct core_reloc_type_based_output {
- 	bool typedef_int_exists;
- 	bool typedef_enum_exists;
- 	bool typedef_void_ptr_exists;
-+	bool typedef_restrict_ptr_exists;
- 	bool typedef_func_proto_exists;
- 	bool typedef_arr_exists;
- 
-@@ -887,6 +888,7 @@ struct core_reloc_type_based_output {
- 	bool typedef_int_matches;
- 	bool typedef_enum_matches;
- 	bool typedef_void_ptr_matches;
-+	bool typedef_restrict_ptr_matches;
- 	bool typedef_func_proto_matches;
- 	bool typedef_arr_matches;
- 
-@@ -939,6 +941,7 @@ typedef int int_typedef;
- typedef enum { TYPEDEF_ENUM_VAL1, TYPEDEF_ENUM_VAL2 } enum_typedef;
- 
- typedef void *void_ptr_typedef;
-+typedef int *restrict restrict_ptr_typedef;
- 
- typedef int (*func_proto_typedef)(long);
- 
-@@ -955,8 +958,9 @@ struct core_reloc_type_based {
- 	int_typedef f8;
- 	enum_typedef f9;
- 	void_ptr_typedef f10;
--	func_proto_typedef f11;
--	arr_typedef f12;
-+	restrict_ptr_typedef f11;
-+	func_proto_typedef f12;
-+	arr_typedef f13;
- };
- 
- /* no types in target */
-diff --git a/tools/testing/selftests/bpf/progs/test_core_reloc_type_based.c b/tools/testing/selftests/bpf/progs/test_core_reloc_type_based.c
-index d95bc08..2edb4d 100644
---- a/tools/testing/selftests/bpf/progs/test_core_reloc_type_based.c
-+++ b/tools/testing/selftests/bpf/progs/test_core_reloc_type_based.c
-@@ -51,6 +51,7 @@ typedef int int_typedef;
- typedef enum { TYPEDEF_ENUM_VAL1, TYPEDEF_ENUM_VAL2 } enum_typedef;
- 
- typedef void *void_ptr_typedef;
-+typedef int *restrict restrict_ptr_typedef;
- 
- typedef int (*func_proto_typedef)(long);
- 
-@@ -67,6 +68,7 @@ struct core_reloc_type_based_output {
- 	bool typedef_int_exists;
- 	bool typedef_enum_exists;
- 	bool typedef_void_ptr_exists;
-+	bool typedef_restrict_ptr_exists;
- 	bool typedef_func_proto_exists;
- 	bool typedef_arr_exists;
- 
-@@ -80,6 +82,7 @@ struct core_reloc_type_based_output {
- 	bool typedef_int_matches;
- 	bool typedef_enum_matches;
- 	bool typedef_void_ptr_matches;
-+	bool typedef_restrict_ptr_matches;
- 	bool typedef_func_proto_matches;
- 	bool typedef_arr_matches;
- 
-@@ -118,6 +121,7 @@ int test_core_type_based(void *ctx)
- 	out->typedef_int_exists = bpf_core_type_exists(int_typedef);
- 	out->typedef_enum_exists = bpf_core_type_exists(enum_typedef);
- 	out->typedef_void_ptr_exists = bpf_core_type_exists(void_ptr_typedef);
-+	out->typedef_restrict_ptr_exists = bpf_core_type_exists(restrict_ptr_typedef);
- 	out->typedef_func_proto_exists = bpf_core_type_exists(func_proto_typedef);
- 	out->typedef_arr_exists = bpf_core_type_exists(arr_typedef);
- 
-@@ -131,6 +135,7 @@ int test_core_type_based(void *ctx)
- 	out->typedef_int_matches = bpf_core_type_matches(int_typedef);
- 	out->typedef_enum_matches = bpf_core_type_matches(enum_typedef);
- 	out->typedef_void_ptr_matches = bpf_core_type_matches(void_ptr_typedef);
-+	out->typedef_restrict_ptr_matches = bpf_core_type_matches(restrict_ptr_typedef);
- 	out->typedef_func_proto_matches = bpf_core_type_matches(func_proto_typedef);
- 	out->typedef_arr_matches = bpf_core_type_matches(arr_typedef);
- 
--- 
-2.30.2
-
+I was thinking of better name than __ref, but couldn't come up with one.
+__ref fits this use case the best.
