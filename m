@@ -2,73 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1F75694FF
-	for <lists+bpf@lfdr.de>; Thu,  7 Jul 2022 00:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D5A9569513
+	for <lists+bpf@lfdr.de>; Thu,  7 Jul 2022 00:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231312AbiGFWEh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Jul 2022 18:04:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48496 "EHLO
+        id S231510AbiGFWMC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jul 2022 18:12:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231168AbiGFWEg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Jul 2022 18:04:36 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4639F313;
-        Wed,  6 Jul 2022 15:04:35 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id r18so20906293edb.9;
-        Wed, 06 Jul 2022 15:04:35 -0700 (PDT)
+        with ESMTP id S230481AbiGFWMB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Jul 2022 18:12:01 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AE3C2A430
+        for <bpf@vger.kernel.org>; Wed,  6 Jul 2022 15:11:59 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id h23so29308696ejj.12
+        for <bpf@vger.kernel.org>; Wed, 06 Jul 2022 15:11:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0pjXsxvLXJt+LczILSuc8kU8VcrSNLSdV+Rd2QZM5OQ=;
-        b=GIEwVfojKqzA+1f2K4ZPZw1u+zJ3Jt9weYZQmVyITDvrU2DUT22qo9VTWzbyzQuxB5
-         +zdB4awjGcqzbxGw88I2xYMsF89axmsYfdfkNuolCa/IE5Q3pg4a27u0EwxVCnCquYBe
-         x96wSC+D02ADQLkAhwaNi0Q76eQhYVIX7bUo9SVD8yO+i2rUDZoEwbt5hUd3O+l3qL1g
-         iF5+OkjXjsGKuBuvLUF4VA+DDpVsDp/hX+p5Y6p92HHlkG/GjWJnI0HPdv7VSTRqh0L0
-         71j8VquTl03RcjChBigYnTav842qp40AMijBvAC36Jpyufx4cgXseSL8GYpBlmJiXCKa
-         27hQ==
+        bh=+2seMBdUCNd9lkwUpWfSizm/4BlRcABqRSozYyXF50E=;
+        b=ZfwpTK03Wo4ML6HpI6A3X8CcNFeMmO4AEmA4QWmrwEHZ0VoyWyLjjbCRUNSlDn8vPl
+         NVsI3KYRKbhBx0fPkrTQC4g7eZSh8QGubOH1H8cta/ogwn2NeggVrsnBu9sv+9Qi5Sms
+         w3sS6L53aF1VXpUKHOOpcbv1+gd0zFp8+p5QCNIk3GOre1mX+BuTKAMbVo7DQeq8e+Bd
+         ZD3u7Yf0YNeM3nGs57IH+bvK7GyHSzPgrWS+HHyBDvN/9R1tbKArX3ClV8TAMXiEbFsX
+         cKcS5YQJ63zamuiuO8UelLro30FvQA94LT9L/qw1h6uf8CC9vZU/2dG4VwThTsy5d/e5
+         XzTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0pjXsxvLXJt+LczILSuc8kU8VcrSNLSdV+Rd2QZM5OQ=;
-        b=KhVjjwSB3qEoqKkNDu4F9b3Jhb/BkK3CSHlqmCHPW7STVCcPEGvK/vis/63XleC1Gh
-         of+5OeLDLha94iVOosJTtQeQQxD5fVqu9s2JyqsYyKeuvMT88MjHgDoT5YYeb9nN4Rx1
-         iFooSFaQD0PNNCMrxgPTyUqJj0Nw81JNqonQpoJKNog7DhM1I9yPbk1TAneCZMdeQ3Px
-         Kz6//WnyW2I1siEpEBsqp6aVKtz05TjkY9Lg1U+9qWcxUKHP74/nMfI/iPEqF6lAvwA+
-         lSKSC9tiQXXMWVk4w8FIh/HMKPgirVtRjtwM1ctKBZYE3V0hNPgtzLzgnlDajGEzbpsD
-         P4Iw==
-X-Gm-Message-State: AJIora9e4iJdyUgamajGjNtdm7mlxDgVYVEC6Sus0zmTZ2PRc8rvnxfg
-        /qyU4fSLU/AjcxWC3i4wbRnssuxb0UlT8g81UwA=
-X-Google-Smtp-Source: AGRyM1uQnqEkBbigqrn3tC3CaactZ/5IxP7JiFu10XXKH8OviJwPszxWuCftJsUNxRy63LxTVtWRw3WdxXHRD1U4oC0=
-X-Received: by 2002:a05:6402:2398:b0:435:9685:1581 with SMTP id
- j24-20020a056402239800b0043596851581mr57275419eda.333.1657145073767; Wed, 06
- Jul 2022 15:04:33 -0700 (PDT)
+        bh=+2seMBdUCNd9lkwUpWfSizm/4BlRcABqRSozYyXF50E=;
+        b=NRiBNNfBjsR+sV/Wdqik+ggApoxumx4f9AK/NZ4ZoeiAnT4DftMSqOpZ/9OEbgA0XF
+         1OWQjaRwGc0LN7D8aTC0bECkyvgvszVtASxywo0MZsUDsaKoOBNln4WCOTDhe7ge9JHG
+         ISQbxSkA6elIRjdfyhGAynj48TcDCZQ4J2EYXy72/zmHfdmO7i16Lo0GJfE/APDZXHq+
+         +9L68egOGGP48lZRnxxNYPeB90jf7JWa7HSEpJyr+T3Zv3jBln+YmxgN/UbvYZqI6/Wp
+         wXfM+R9PkVBN8WP+y2t1e9vlGWxGV3z0suKQgAvmWG1atc9orP0pamFW/z2XQ5cBmMBU
+         q2FQ==
+X-Gm-Message-State: AJIora9mU5TuG6ogzrLQ60RyX5ILMMnAN9IUnYs+LJmnE72eXZLNvtyy
+        fbJkHlLscsSsaohpVcmUDVah9zxNQfSavPR/3aI=
+X-Google-Smtp-Source: AGRyM1uuHUKmzMHU/3+birBCRNj94wTTZv/olVbyjxU+t348hHCDIcHEzGXwXDCd0+FDcT1chOQNADVsyL/3lGicqIA=
+X-Received: by 2002:a17:906:6146:b0:722:f8c4:ec9b with SMTP id
+ p6-20020a170906614600b00722f8c4ec9bmr43656408ejl.708.1657145517968; Wed, 06
+ Jul 2022 15:11:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220623192637.3866852-1-memxor@gmail.com> <20220623192637.3866852-2-memxor@gmail.com>
- <20220629032304.h5ck7tizbfehiwut@macbook-pro-3.dhcp.thefacebook.com>
- <CAP01T77fsU8u6GP+HXfQQ_gdu+kp3Am1+Ao-mNYULjDazHs38Q@mail.gmail.com>
- <CAP01T75cVLehQbkE3LLwSG5wVecNz0FH9QZpmzoqs-e8YKpGtg@mail.gmail.com>
- <20220706184436.mf7oeexxfwswgdqf@MacBook-Pro-3.local> <CAP01T75-EZfdBx+W+6pV0vDDD3Qi07KVLsFTupPfptTyAFxx1Q@mail.gmail.com>
- <20220706212903.az2mtqodtzmn2gwq@MacBook-Pro-3.local>
-In-Reply-To: <20220706212903.az2mtqodtzmn2gwq@MacBook-Pro-3.local>
+References: <20220706155848.4939-1-laoar.shao@gmail.com> <20220706155848.4939-2-laoar.shao@gmail.com>
+ <CAADnVQJEK+Puyz8b4eUV3H7Z+OtrvHd4MU42OsPiBodMQxEw-g@mail.gmail.com> <YsXd2Tah+irhth9t@castle>
+In-Reply-To: <YsXd2Tah+irhth9t@castle>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 6 Jul 2022 15:04:22 -0700
-Message-ID: <CAADnVQJsAfjFwgoiWdsmuWBi9BX7eaCw8Tpe7sd=HPG4QQck1A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 1/8] bpf: Add support for forcing kfunc args
- to be referenced
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Yonghong Song <yhs@fb.com>,
+Date:   Wed, 6 Jul 2022 15:11:46 -0700
+Message-ID: <CAADnVQ+c_2Q6GxH3E0iD0RkOy2H2-UhuYL4V3v2BTQ6sZNxQAA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Make non-preallocated allocation low priority
+To:     Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     Yafang Shao <laoar.shao@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Hao Luo <haoluo@google.com>, bpf <bpf@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -80,123 +75,58 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 6, 2022 at 2:29 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Wed, Jul 6, 2022 at 12:09 PM Roman Gushchin <roman.gushchin@linux.dev> wrote:
 >
-> On Thu, Jul 07, 2022 at 12:51:15AM +0530, Kumar Kartikeya Dwivedi wrote:
-> > On Thu, 7 Jul 2022 at 00:14, Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
+> On Wed, Jul 06, 2022 at 09:47:32AM -0700, Alexei Starovoitov wrote:
+> > On Wed, Jul 6, 2022 at 8:59 AM Yafang Shao <laoar.shao@gmail.com> wrote:
 > > >
-> > > On Sun, Jul 03, 2022 at 11:04:22AM +0530, Kumar Kartikeya Dwivedi wrote:
-> > > > On Sun, 3 Jul 2022 at 10:54, Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
-> > > > >
-> > > > > On Wed, 29 Jun 2022 at 08:53, Alexei Starovoitov
-> > > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > > >
-> > > > > > On Fri, Jun 24, 2022 at 12:56:30AM +0530, Kumar Kartikeya Dwivedi wrote:
-> > > > > > > Similar to how we detect mem, size pairs in kfunc, teach verifier to
-> > > > > > > treat __ref suffix on argument name to imply that it must be a
-> > > > > > > referenced pointer when passed to kfunc. This is required to ensure that
-> > > > > > > kfunc that operate on some object only work on acquired pointers and not
-> > > > > > > normal PTR_TO_BTF_ID with same type which can be obtained by pointer
-> > > > > > > walking. Release functions need not specify such suffix on release
-> > > > > > > arguments as they are already expected to receive one referenced
-> > > > > > > argument.
-> > > > > > >
-> > > > > > > Note that we use strict type matching when a __ref suffix is present on
-> > > > > > > the argument.
-> > > > > > ...
-> > > > > > > +             /* Check if argument must be a referenced pointer, args + i has
-> > > > > > > +              * been verified to be a pointer (after skipping modifiers).
-> > > > > > > +              */
-> > > > > > > +             arg_ref = is_kfunc_arg_ref(btf, args + i);
-> > > > > > > +             if (is_kfunc && arg_ref && !reg->ref_obj_id) {
-> > > > > > > +                     bpf_log(log, "R%d must be referenced\n", regno);
-> > > > > > > +                     return -EINVAL;
-> > > > > > > +             }
-> > > > > > > +
-> > > > > >
-> > > > > > imo this suffix will be confusing to use.
-> > > > > > If I understand the intent the __ref should only be used
-> > > > > > in acquire (and other) kfuncs that also do release.
-> > > > > > Adding __ref to actual release kfunc will be a nop.
-> > > > > > It will be checked, but it's not necessary.
-> > > > > >
-> > > > > > At the end
-> > > > > > +struct nf_conn *bpf_ct_insert_entry(struct nf_conn___init *nfct__ref)
-> > > > > > will behave like kptr_xchg with exception that kptr_xchg takes any btf_id
-> > > > > > while here it's fixed.
-> > > > > >
-> > > > > > The code:
-> > > > > >  if (rel && reg->ref_obj_id)
-> > > > > >         arg_type |= OBJ_RELEASE;
-> > > > > > should probably be updated with '|| arg_ref'
-> > > > > > to make sure reg->off == 0 ?
-> > > > > > That looks like a small bug.
-> > > > > >
-> > > > >
-> > > > > Indeed, I missed that. Thanks for catching it.
-> > > > >
-> > > > > > But stepping back... why __ref is needed ?
-> > > > > > We can add bpf_ct_insert_entry to acq and rel sets and it should work?
-> > > > > > I'm assuming you're doing the orthogonal cleanup of resolve_btfid,
-> > > > > > so we will have a single kfunc set where bpf_ct_insert_entry will
-> > > > > > have both acq and rel flags.
-> > > > > > I'm surely missing something.
-> > > > >
-> > > > > It is needed to prevent the case where someone might do:
-> > > > > ct = bpf_xdp_ct_alloc(...);
-> > > > > bpf_ct_set_timeout(ct->master, ...);
-> > > > >
-> > > >
-> > > > A better illustration is probably bpf_xdp_ct_lookup and
-> > > > bpf_ct_change_timeout, since here the type for ct->master won't match
-> > > > with bpf_ct_set_timeout, but the point is the same.
+> > > GFP_ATOMIC doesn't cooperate well with memcg pressure so far, especially
+> > > if we allocate too much GFP_ATOMIC memory. For example, when we set the
+> > > memcg limit to limit a non-preallocated bpf memory, the GFP_ATOMIC can
+> > > easily break the memcg limit by force charge. So it is very dangerous to
+> > > use GFP_ATOMIC in non-preallocated case. One way to make it safe is to
+> > > remove __GFP_HIGH from GFP_ATOMIC, IOW, use (__GFP_ATOMIC |
+> > > __GFP_KSWAPD_RECLAIM) instead, then it will be limited if we allocate
+> > > too much memory.
 > > >
-> > > Sorry, I'm still not following.
-> > > Didn't we make pointer walking 'untrusted' so ct->master cannot be
-> > > passed into any kfunc?
+> > > We introduced BPF_F_NO_PREALLOC is because full map pre-allocation is
+> > > too memory expensive for some cases. That means removing __GFP_HIGH
+> > > doesn't break the rule of BPF_F_NO_PREALLOC, but has the same goal with
+> > > it-avoiding issues caused by too much memory. So let's remove it.
 > > >
+> > > The force charge of GFP_ATOMIC was introduced in
+> > > commit 869712fd3de5 ("mm: memcontrol: fix network errors from failing
+> > > __GFP_ATOMIC charges") by checking __GFP_ATOMIC, then got improved in
+> > > commit 1461e8c2b6af ("memcg: unify force charging conditions") by
+> > > checking __GFP_HIGH (that is no problem because both __GFP_HIGH and
+> > > __GFP_ATOMIC are set in GFP_AOMIC). So, if we want to fix it in memcg,
+> > > we have to carefully verify all the callsites. Now that we can fix it in
+> > > BPF, we'd better not modify the memcg code.
+> > >
+> > > This fix can also apply to other run-time allocations, for example, the
+> > > allocation in lpm trie, local storage and devmap. So let fix it
+> > > consistently over the bpf code
+> > >
+> > > __GFP_KSWAPD_RECLAIM doesn't cooperate well with memcg pressure neither
+> > > currently. But the memcg code can be improved to make
+> > > __GFP_KSWAPD_RECLAIM work well under memcg pressure if desired.
 > >
-> > I don't believe that is the case, it is only true for kptrs loaded
-> > from BPF maps (that too those with BPF_LDX, not the ones with
-> > kptr_xchg). There we had a chance to do things differently. For normal
-> > PTR_TO_BTF_ID obtained from kfuncs/BPF helpers, there is no untrusted
-> > flag set on them, nor is it set when walking them.
+> > Could you elaborate ?
 > >
-> > I also think we discussed switching to this mode, by making many cases
-> > untrusted by default, and using annotation to allow cases, making
-> > pointers trusted at one level (like args for tracing/lsm progs, but
-> > next deref becomes untrusted), but admittedly it may not cover enough
-> > ground, and you didn't like it much either, so I stopped pursuing it.
+> > > It also fixes a typo in the comment.
+> > >
+> > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > > Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
+> >
+> > Roman, do you agree with this change ?
 >
-> Ahh. Now I remember. Thanks for reminding :)
-> Could you please summarize this thread and add all of it as a big comment
-> in the source code next to __ref handling to explain the motivation
-> and an example on when and how this __ref suffix should be used.
-> Otherwise somebody, like me, will forget the context soon.
->
-> I was thinking of better name than __ref, but couldn't come up with one.
-> __ref fits this use case the best.
+> Yes, removing __GFP_HIGH makes sense to me. I can imagine we might want
+> it for *some* bpf allocations, but applying it unconditionally looks wrong.
 
-Actually, maybe a kfunc flag will be better?
-Like REF_ARGS
-that would apply to all arguments of the kfunc
-(not only those with __ref suffix).
-
-We have three types of ptr_btf_id:
-- ref counted
-- untrusted
-- old legacy that we cannot be break due to backward compat
-
-In the future we'll probably be adding new kfuncs where we'd want
-every argument to be trusted. In our naming convention these are
-the refcounted ptr_to_btf_id that come from lookup-like kfuncs.
-To consume them in the release kfunc they have to be refcounted,
-but non-release kfunc (like set_timeout) also want a trusted ptr.
-So the simple way of describe the intent would be:
-BTF_ID(func, bpf_ct_release, RELEASE)
-BTF_ID(func, bpf_ct_set_timeout, REF_ARGS)
-
-or maybe TRUSTED_ARGS would be a better flag name.
-wdyt?
+Yeah. It's a difficult trade-off to make without having the data
+to decide whether removing __GFP_HIGH can cause issues or not,
+but do you agree that __GFP_HIGH doesn't cooperate well with memcg ?
+If so it's a bug on memcg side, right? but we should probably
+apply this band-aid on bpf side to fix the bleeding.
+Later we can add a knob to allow __GFP_HIGH usage on demand from
+bpf prog.
