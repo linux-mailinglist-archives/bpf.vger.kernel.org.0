@@ -2,71 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E587567BA0
-	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 03:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9F3567C0F
+	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 04:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbiGFBnj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Jul 2022 21:43:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41466 "EHLO
+        id S229884AbiGFCl1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Jul 2022 22:41:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbiGFBnh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Jul 2022 21:43:37 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2DA718B06;
-        Tue,  5 Jul 2022 18:43:36 -0700 (PDT)
-Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Ld2Lr5gnxzhYyF;
-        Wed,  6 Jul 2022 09:41:08 +0800 (CST)
-Received: from [10.67.111.192] (10.67.111.192) by
- kwepemi500013.china.huawei.com (7.221.188.120) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Wed, 6 Jul 2022 09:43:33 +0800
-Message-ID: <2194026a-c958-039e-7b26-b84cfa30a3d0@huawei.com>
-Date:   Wed, 6 Jul 2022 09:43:32 +0800
+        with ESMTP id S229843AbiGFCl1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Jul 2022 22:41:27 -0400
+Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C1EE19036;
+        Tue,  5 Jul 2022 19:41:26 -0700 (PDT)
+Received: by mail-vk1-xa2f.google.com with SMTP id j15so727203vkn.7;
+        Tue, 05 Jul 2022 19:41:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MlZR8uPETmlGuwXZgUVOik+H9LRiX+UHdzorFOkInsI=;
+        b=Z5PXWmnGlzUEIH57fT5kT06fxp4S2kHBR0FcR1vhjDY/b8jBSwpUxSitj+VNjxGiQM
+         yrlv9mAvDoIQ0pSB38Vq/T4EqqasWVzb1Ra8npLC1uF/tyy5d+GOq0EsucwhZsUueAYE
+         +DiDHRiqkl+CJS2YFipFg7uo1i63XZ2/3cWXYcfPoTV0vdpwWjS0aKAmN+iqzLrTO7NJ
+         d0AhrXLjYsZ4Hwniqc8vJVsR/UBPsk+ogUMx/APjOWdzTp02dKS0C/5or4Y4C/la4XS6
+         PeuNYoYF/VTJu9W47CUmkEhjyn4XSIqxS4gGza3/RiAxYD8XvlmOwpLwKlzu65KgnF1B
+         6QmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MlZR8uPETmlGuwXZgUVOik+H9LRiX+UHdzorFOkInsI=;
+        b=viYic1ETEipWSKonkqKpaYJReHABvhAe8ArnGjly+lSJ36ngoPVidbOnThFP11SoRi
+         yFL2svvxFLwN5Rq/VN9sor/6LIZObBcBlk24YXM34lmmoiaeu3UfU7nnALYSyBGtDzH0
+         SoJWRoo0dJiFxyy0ndc9qnI/yy9dLNS5+1u2TIW5sXlaZvH3xCeiw8eC75ztcPKFqPx5
+         FFTzrbL0qGAmp4QQmDAHtXhmDxQwRQzxP6Zz63ev9ibO4mNXS02daTjtTvKDDOtzKJDM
+         NTrGkVz3QR7wgDP8mnmc2ptM9FvDEKLkE1t5aOFcf3ov0ukGSoHuW8YTD0ktrC+E1EaQ
+         qIrw==
+X-Gm-Message-State: AJIora+lKIzG7LxNWMw07YV7lRB6uUtFmnaqeCNjdBJ0RujaZ7UhGJlx
+        4mo/7BvNbGIC7Q4UskujMMST6YqABJ7Zn+ItGPE=
+X-Google-Smtp-Source: AGRyM1vFrYsD8dxIlyMDKCDvUqc32NKEJvwJUfUdGYbkZf9GNPkNqxN4lONGSboyog1ULbP2etk+CzOoa7ynMI88K/8=
+X-Received: by 2002:ac5:cb6f:0:b0:36c:424b:6d79 with SMTP id
+ l15-20020ac5cb6f000000b0036c424b6d79mr21724327vkn.14.1657075285164; Tue, 05
+ Jul 2022 19:41:25 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH bpf-next v6 2/4] arm64: Add LDR (literal) instruction
-Content-Language: en-US
-To:     Will Deacon <will@kernel.org>
-CC:     <bpf@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        James Morse <james.morse@arm.com>,
-        Hou Tao <houtao1@huawei.com>,
-        Jason Wang <wangborong@cdjrlc.com>
-References: <20220625161255.547944-1-xukuohai@huawei.com>
- <20220625161255.547944-3-xukuohai@huawei.com>
- <20220705163941.GA1339@willie-the-truck>
-From:   Xu Kuohai <xukuohai@huawei.com>
-In-Reply-To: <20220705163941.GA1339@willie-the-truck>
+References: <20220702033521.64630-1-roman.gushchin@linux.dev>
+ <CALvZod7TGhWtcRD6HeEx90T2+Rod-yamq9i+WbEQUKwNFTi-1A@mail.gmail.com>
+ <YsBmoqEBCa7ra7w2@castle> <YsMCMveSdiYX/2eH@dhcp22.suse.cz>
+ <YsMHkXJ0vAPG0lyM@dhcp22.suse.cz> <YsSkaiL00Jk45zNd@castle>
+In-Reply-To: <YsSkaiL00Jk45zNd@castle>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Wed, 6 Jul 2022 10:40:48 +0800
+Message-ID: <CALOAHbBrctf_wOiAxUvXD0JSjgEV46YdDQh9QnUK0XZ+Jsapnw@mail.gmail.com>
+Subject: Re: [PATCH] mm: memcontrol: do not miss MEMCG_MAX events for enforced allocations
+To:     Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     Michal Hocko <mhocko@suse.com>, Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.111.192]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemi500013.china.huawei.com (7.221.188.120)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,41 +72,52 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/6/2022 12:39 AM, Will Deacon wrote:
-> On Sat, Jun 25, 2022 at 12:12:53PM -0400, Xu Kuohai wrote:
->> Add LDR (literal) instruction to load data from address relative to PC.
->> This instruction will be used to implement long jump from bpf prog to
->> bpf rampoline in the follow-up patch.
-> 
-> typo: trampoline
+On Wed, Jul 6, 2022 at 4:52 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
+>
+> On Mon, Jul 04, 2022 at 05:30:25PM +0200, Michal Hocko wrote:
+> > On Mon 04-07-22 17:07:32, Michal Hocko wrote:
+> > > On Sat 02-07-22 08:39:14, Roman Gushchin wrote:
+> > > > On Fri, Jul 01, 2022 at 10:50:40PM -0700, Shakeel Butt wrote:
+> > > > > On Fri, Jul 1, 2022 at 8:35 PM Roman Gushchin <roman.gushchin@linux.dev> wrote:
+> > > > > >
+> > > > > > Yafang Shao reported an issue related to the accounting of bpf
+> > > > > > memory: if a bpf map is charged indirectly for memory consumed
+> > > > > > from an interrupt context and allocations are enforced, MEMCG_MAX
+> > > > > > events are not raised.
+> > > > > >
+> > > > > > It's not/less of an issue in a generic case because consequent
+> > > > > > allocations from a process context will trigger the reclaim and
+> > > > > > MEMCG_MAX events. However a bpf map can belong to a dying/abandoned
+> > > > > > memory cgroup, so it might never happen.
+> > > > >
+> > > > > The patch looks good but the above sentence is confusing. What might
+> > > > > never happen? Reclaim or MAX event on dying memcg?
+> > > >
+> > > > Direct reclaim and MAX events. I agree it might be not clear without
+> > > > looking into the code. How about something like this?
+> > > >
+> > > > "It's not/less of an issue in a generic case because consequent
+> > > > allocations from a process context will trigger the direct reclaim
+> > > > and MEMCG_MAX events will be raised. However a bpf map can belong
+> > > > to a dying/abandoned memory cgroup, so there will be no allocations
+> > > > from a process context and no MEMCG_MAX events will be triggered."
+> > >
+> > > Could you expand little bit more on the situation? Can those charges to
+> > > offline memcg happen indefinetely? How can it ever go away then? Also is
+> > > this something that we actually want to encourage?
+> >
+> > One more question. Mostly out of curiosity. How is userspace actually
+> > acting on those events? Are watchers still active on those dead memcgs?
+>
+> Idk, the whole problem was reported by Yafang, so he probably has a better
+> answer. But in general events are recursive and the cgroup doesn't have
+> to be dying, it can be simple abandoned.
 >
 
-will fix
+Regarding the pinned bpf programs, it can run without a user agent.
+That means the cgroup may not be dead, but just not populated.
+(But in our case, the cgroup will be deleted after the user agent exits.)
 
->>
->> The instruction encoding:
->>
->>     3       2   2     2                                     0        0
->>     0       7   6     4                                     5        0
->> +-----+-------+---+-----+-------------------------------------+--------+
->> | 0 x | 0 1 1 | 0 | 0 0 |                imm19                |   Rt   |
->> +-----+-------+---+-----+-------------------------------------+--------+
->>
->> for 32-bit, variant x == 0; for 64-bit, x == 1.
->>
->> branch_imm_common() is used to check the distance between pc and target
->> address, since it's reused by this patch and LDR (literal) is not a branch
->> instruction, rename it to aarch64_imm_common().
-> 
-> nit, but I think "label_imm_common()" would be a better name.
-> 
-
-will rename
-
-> Anyway, I checked the encodings and the code looks good, so:
-> 
-> Acked-by: Will Deacon <will@kernel.org>
-> 
-> Will
-> .
-
+-- 
+Regards
+Yafang
