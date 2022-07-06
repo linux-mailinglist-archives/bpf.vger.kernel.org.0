@@ -2,289 +2,279 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21A01568935
-	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 15:18:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA04C568970
+	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 15:30:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233759AbiGFNRm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Jul 2022 09:17:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47186 "EHLO
+        id S233737AbiGFN3N (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jul 2022 09:29:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233870AbiGFNRf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Jul 2022 09:17:35 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0226ADF0A;
-        Wed,  6 Jul 2022 06:17:31 -0700 (PDT)
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 266Cmx1J017970;
-        Wed, 6 Jul 2022 13:16:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : content-type :
- mime-version; s=corp-2021-07-09;
- bh=IiQIJN69PD5IJ10FmgQqijE0q3+yD1jjO2zKNLsotHo=;
- b=l+xyy4PGWb0Tok0k1M3md5ZQxaK5WRXLL57KilREbpHVRAgXoKfyNQMFvLKeU6MzmHfR
- uBu6IfiJMMKgqRIm6Gv1uYOqPAs2AdjHX+T23pJsDOshEIQG5icwZ4d9amZnJu2HCZ4O
- DWJoU/w5hZtBgTZcLfG17lvu5XzLwk6uF2WOWWyyzFqVk55oV3M35vkZnalTesD0zl6D
- UFJUH2za9wNpdAxRt2Cxnfhp2z8akhp2c22HDKk/s+RGpo9w9pHTpR4N1goFjvny3Icx
- N3b26D5n6vI7YdEM1VLMsJQCdtCvb0EzQzQp/roEpJfnZkci7OE9OwWyZAFZLBluoEXl ng== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3h4uby1xrj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 06 Jul 2022 13:16:49 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.16.1.2/8.16.1.2) with SMTP id 266DB1Ks023774;
-        Wed, 6 Jul 2022 13:16:48 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com with ESMTP id 3h4ud0tj2y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 06 Jul 2022 13:16:48 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Yg7XaO4+BTntMsJnm/CQr2N/BSpOsu7gy1QdVLxXtVatjIb5kQ1VxdkUAvlQCWexxQhQk2Wv8a4bnm5K8ryA3nMK9mCCjHdRDEO2ABKJXPqQpHOn+0WVBSoSV11mWK/4/v1ojOZRD59zWz2g6MZAHqVrn45BVcFUE6sP81n5XlSdm+V3ZUGp4jJKoAh+sgSRJpi0rB2V4IlpbwDolb2OWt4T5grrSBOlzzxUY6O22C053nHVELFCvzTD15MH03iXaSHOh50AKkvJ0qRKxbaDeqmWnmz3U/iLNRDSllJPJ37nvtWMzhVhv1Y+6O03H9BlRJ/fMijux+dr7rciF5TTCw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IiQIJN69PD5IJ10FmgQqijE0q3+yD1jjO2zKNLsotHo=;
- b=H2zGFKO5q7l2NWK6FMC86mDpQCQEMMyYAeHsspA5RDHY0XTvCMcL1VuRJG9KXhw3GYAcvBgsKXStzUA5w7lG28bcoG351RzMX17KmRQEHrjaWg5FZ7MfkWGlw7v/QukRCW1HMhLrTzenybG0DJfOtAYpZOp4hK3S6JOrYyi7YCAotQHPYZ5at8Ul7HPvwdIA0RmumPyMavnKqJW243Dqc/3ZV0NDj+ylrl0Lx09onLRfV6k2adQpRakJkbF5d5//9gCkZdBZOxmqS+ThhA/myjfB2GrXjeZQBHXfzP1uaC6q3QlwxadM9RJVNs0OzY2wZv+FrTxfN+iQ8oLoHi1XGQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IiQIJN69PD5IJ10FmgQqijE0q3+yD1jjO2zKNLsotHo=;
- b=njOZ4Z9tsoTgSRBMu4/+rxcDOC2DhpWw7W/agB49yXWHrEdFYyrVhHWhsYwYXRv39X7HBbXiMnLNwfhstHQN0SM2HNvGYyThOuIgoBoL7eMu360rrtZHDWBphjTmokpmdRYKQZtLCUK3ceTbQXuHaBqicBWXBooIvM7HiBUl4yw=
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
- by MWHPR10MB1421.namprd10.prod.outlook.com (2603:10b6:300:24::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5395.17; Wed, 6 Jul
- 2022 13:16:46 +0000
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::ec7b:27cb:a958:e05e]) by BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::ec7b:27cb:a958:e05e%7]) with mapi id 15.20.5395.022; Wed, 6 Jul 2022
- 13:16:46 +0000
-From:   Alan Maguire <alan.maguire@oracle.com>
-To:     ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net
-Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
-        mhiramat@kernel.org, akpm@linux-foundation.org, void@manifault.com,
-        swboyd@chromium.org, ndesaulniers@google.com,
-        9erthalion6@gmail.com, kennyyu@fb.com, geliang.tang@suse.com,
-        kuniyu@amazon.co.jp, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 bpf-next 2/2] selftests/bpf: add a ksym iter subtest
-Date:   Wed,  6 Jul 2022 14:16:31 +0100
-Message-Id: <1657113391-5624-3-git-send-email-alan.maguire@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1657113391-5624-1-git-send-email-alan.maguire@oracle.com>
-References: <1657113391-5624-1-git-send-email-alan.maguire@oracle.com>
-Content-Type: text/plain
-X-ClientProxiedBy: AS4P190CA0027.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:20b:5d0::16) To BLAPR10MB5267.namprd10.prod.outlook.com
- (2603:10b6:208:30e::22)
+        with ESMTP id S233665AbiGFN3M (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Jul 2022 09:29:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 03FF71ADB4
+        for <bpf@vger.kernel.org>; Wed,  6 Jul 2022 06:29:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1657114150;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XYgzxfluOfIIjClWUU6GcJbauN/JHiH7jO9rrVTt3Po=;
+        b=cLcmt7s04xsAzU95gH7Yrxn4gA42E2wrofGy6eySMNHdCLWCy9vRWLMT9X07T9R8nnZAZ1
+        LlP77upyMriCUYLsifnY7Lq5WLgQqr22FbIqLUrIQrfJfO7pztdR7GKAivB9BezxTVRaCQ
+        EaTOOfs/dgFovIqvpjEFUaISzcomceI=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-507-CWq0zJo4O6KXEmvpySxLoA-1; Wed, 06 Jul 2022 09:29:06 -0400
+X-MC-Unique: CWq0zJo4O6KXEmvpySxLoA-1
+Received: by mail-lj1-f197.google.com with SMTP id m16-20020a2e8710000000b0025d46f0cfb1so633570lji.16
+        for <bpf@vger.kernel.org>; Wed, 06 Jul 2022 06:29:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:message-id:date:mime-version:user-agent:cc
+         :subject:content-language:to:references:in-reply-to
+         :content-transfer-encoding;
+        bh=XYgzxfluOfIIjClWUU6GcJbauN/JHiH7jO9rrVTt3Po=;
+        b=DUaLZ+31HxysXWc9jXzLGplNmTvW7u3zDoKLi5mzz3Qmp7s5maHn4LKy5u837frXXx
+         FNj+vq1bYKy0RHCZznRJhxKXhNvni4Pq+pAMJ8dMKvLmJC24ZEfO2aY8D15E/eGsJBJf
+         UNIQevt0H43i+QYDaZctg1ElmkOxFbxOjXUwafqtyeoYTiT6ssg02Dhk/SEuQ7mC5U61
+         86VedbCj3q8jVVl++AgMyOfVz3w3Hbq7A27THH9FpDHECaPHtGSSM/aC1XR2gVpfNSSN
+         IHLILNOWjQBUPO7gdKnmPT2H14n+SQCDGKgq76J2szywM3Dovaoh++O84biI+MCO+Fa5
+         8jgg==
+X-Gm-Message-State: AJIora+Gz+BgV15++fwEvxpQebHJoGq3cNqGEGb2TYyMZITUGnkSUSQR
+        3FGO/OEgF0EJemWFsSs1+oNCPqAtZWR0How4sQhBmWlA4CIXr/c9AF53L665ZP+5b6ZWU4/NISW
+        OkHyThW1ERGwj
+X-Received: by 2002:ac2:4c52:0:b0:481:ce2:1802 with SMTP id o18-20020ac24c52000000b004810ce21802mr25984172lfk.586.1657114145267;
+        Wed, 06 Jul 2022 06:29:05 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1uJR12B+FxKgLoUGKMl/E+JKmbsDpjDHnPf8qNy7nyhWtSkNY4BJ97zeI8TEyYf3FoQ6ng/2Q==
+X-Received: by 2002:ac2:4c52:0:b0:481:ce2:1802 with SMTP id o18-20020ac24c52000000b004810ce21802mr25984143lfk.586.1657114144928;
+        Wed, 06 Jul 2022 06:29:04 -0700 (PDT)
+Received: from [192.168.0.50] (87-59-106-155-cable.dk.customer.tdc.net. [87.59.106.155])
+        by smtp.gmail.com with ESMTPSA id a26-20020ac25e7a000000b0047dd412c4dbsm6268640lfr.283.2022.07.06.06.29.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Jul 2022 06:29:04 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <db07b6af-af12-5913-4b9c-b768d7476e5b@redhat.com>
+Date:   Wed, 6 Jul 2022 15:29:03 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 80450b46-6080-4f6a-2dc1-08da5f51c4c3
-X-MS-TrafficTypeDiagnostic: MWHPR10MB1421:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lOvnjRXedUo9FMwSvjyWi9GAhxs4gg4CrEk0uByCeBd/zOoxMbG/fiSMpPKDSKpkMXutmjmFJtDYzerf6u1H3QSQ1fWjsgwI4TtkpqO9m3iM9hCgKhs+S0laS2+wLUKv7kllEorPIkC2qNznx8HYGZL4S8xyAx8/0eWW/JHih/8+0IK37yIzn4lNPTk2ZTJZUR9GG27GzHw9+bvMwHq7TFcGadKPSasa3rO1oGVs1hJkDV5V27N0uq2XuEqZW1KHkTt6HrYwcrJx1pFtgEDLlRsSQc/e0nGCYISpnkoyfllsfgzVGFiambCnaU2/DPmZZcfPLUujdCep/6JmyCbQ/dERGWQ+Z5S4MOGnIP28lqTZogV+OO66Q41WdAryQXvw4ZLB27YLMpKTIn2D+g/UKc5SibGoGjzkfqEf1U3BJmjNCfG+Jidpf7wbumSu9xNInjSn9CwyjABxc9YqK5EnZ2TlxZofzb40riYqs+Uvqt1JVosoPmVNyz1ErPJXb2Nyxvt6TMhTd1bEVfW8cnB/zBoXGwC+y+nUkhiCNR4gEY/k65xbOdkUGTvzMqKxPPqLV7/01lqLnrO5Lify2xIkZQf/M6sl8xyMg9VSD5sKBMXE5PLubLzzqfxN1uQmaol7Kya72NHHKOPXffK90EIRecU/dKpOVosKW/vEI3jHok6Q470gAXmB1vvO9xYA7u3vFvrZ/rYRhhIwf2TGf/ABiazZNrK0bqyfRlyuveS4rLGYnqrUONFngL97TAb8xy4KEoPgHFHzxu3Zm+QO/5x+Y+jL0WkOeJbZ+E45+2AyhyFyOSWEhv1EV76+cM6AKMhC
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(366004)(376002)(346002)(396003)(136003)(39860400002)(316002)(83380400001)(36756003)(6512007)(26005)(186003)(6506007)(86362001)(5660300002)(7416002)(44832011)(2906002)(38350700002)(66556008)(66476007)(38100700002)(66946007)(8676002)(4326008)(6666004)(478600001)(6486002)(41300700001)(52116002)(2616005)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?uEynSxJ11LO+4L6isQXZo8Ff58uC2liugSBhqVUafwm6Q2SYR/xqyVZtcvY6?=
- =?us-ascii?Q?2yFVEl5REzItir80RNVPTEY51GTwRXXq7Hzr9n2KoZY28HfBxivUAgybPK0b?=
- =?us-ascii?Q?H29NeAdG7+ITWDsZkHmF0eTFOr/ConJMH96KF7dA8XryMQ+VBJGYm30Fwjn4?=
- =?us-ascii?Q?v1gp0bJMF5Tw7rjTjH2tst9cD0rjDx4ZLfVTpSVv8qD8DhHfJPmWo+8/Q6gO?=
- =?us-ascii?Q?DAPRPH/H+kDMBr5ysX0ReSwceO+w0OqhRDw2iCbhULC5Nme8jMUkb6Uirr9m?=
- =?us-ascii?Q?lASILTj/6pvABGYKrRI3/25ajqVkss8tbI1BOhuJewWlzk0hOlTxjZniS+DG?=
- =?us-ascii?Q?6g3Cwcg28IOG1ytAufVwiZHSWHRaT9iy5N2340lUfF6E1jrGwQRVALLdJHO3?=
- =?us-ascii?Q?fBKx4m+pLfmt5TlPbNkFsX22KMUEUj9RTp5Nl8dDK1QY10Hj3hMFHdGowMjc?=
- =?us-ascii?Q?9z5s6ZKfw1uYSs3XRKm7rXkyVuOtTy/07IlrOBBP2069JIxv0gx5GQcUjTEK?=
- =?us-ascii?Q?HctxLYTpw5JxxGmXfoW24FUq4HmdWcoSBlxxDdH0k/H3+J7ZjpX9gmawUvXj?=
- =?us-ascii?Q?X0t9vdmuFyfUVh/Q0bDOXigErWm6vqO6n7XudIgKw6xojvU6vgclGNKGwckR?=
- =?us-ascii?Q?kdAqL7qIqwt9vl7hdhjE6kNv9qGPrAidosiuhPzlAdHAGaXmG/FnYKXC5d1T?=
- =?us-ascii?Q?ST72uTGvnfDnSbXU1auoAQklHDGlMQGLIn/YjiDgHxF9UQvecVs8GxdfL3hJ?=
- =?us-ascii?Q?7QDtrPsXtGVzlavGbHU9jMHVAX/uCU6bK1yZvPObPyCPi9KLVwwWdpUHPo/g?=
- =?us-ascii?Q?tuOOY4NMhBKTQudDY2tpwF2NX5t8QsJtS+tx17/F64wnQjjJE6OY6JQMdsc1?=
- =?us-ascii?Q?MWNV/l7WdmAY1VuNM7kqDS41LfTpoA509Hfu+L3sTqQwXOyoq4eBpB6HJ4zo?=
- =?us-ascii?Q?nIhoDTDCJ3iV5oE1zMMkH8T0cb8lxxg2ozF92CptiqZ3/iGYeJxFk22NDHXJ?=
- =?us-ascii?Q?yUpBwHGBx59ACx3/CY6kxuW804vMzJWWYJSI7ZXlxPtwPgaTi7kiAhTYRW/m?=
- =?us-ascii?Q?/cBAFbIwj4M92vr49mPhKX8hs7EZFLR6bBQ4sTnae+YB4jGieffVcwxAgcAp?=
- =?us-ascii?Q?84ETlvRh0ts9x9dZgrg5AsM2l7uSsX67iA9xCzWlBpcMgOXQh48GoOLBdgMD?=
- =?us-ascii?Q?+H/I+cE7UOIu+GAehjNLcGMa6w3V+RjdT3PNlta5kPzmBo1swREPrBuSJGwD?=
- =?us-ascii?Q?zSb+KGa/dxBVh9QjJxBppgl7X+Sqq05YsArcdxdaC2tVqV2JwrLCLLe8bcry?=
- =?us-ascii?Q?U+CWXVE3BkKrK72Ul9bDj+sjtxUGxQiQv0Hn0oZa/0mBg8p/VVzJE63YV75w?=
- =?us-ascii?Q?W7SC3H2hO+3bQZ2qqMoS3N9yUUgcgjYHLfRGgPvVomdPly/F9y5kXmSvaK9X?=
- =?us-ascii?Q?8LNh2p30LLPT6mPhZEECgZQhLJOj0B53KDE6RyNhP8E1vFtAxFgqXqeaFjvT?=
- =?us-ascii?Q?l+e63Xmi/9oVZ05aJJ7ieMR8j4NTilSnuJw10AhLq/cr1bZr29c4A+pQx+B9?=
- =?us-ascii?Q?6S8ClkyClKJS4hQisQ/1hJltEjrMdr0P7HE6ESmu?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 80450b46-6080-4f6a-2dc1-08da5f51c4c3
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jul 2022 13:16:42.6805
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: L7JI0+2hEDsROrOYyLE1hQVjKiKMn2U3X44YzJVFntS0cvc0wWO2SImFpDAZfWPSpZQo9gND2yTLCahh1M8DfQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1421
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.517,18.0.883
- definitions=2022-07-06_08:2022-06-28,2022-07-06 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 spamscore=0
- phishscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2206140000
- definitions=main-2207060052
-X-Proofpoint-ORIG-GUID: EFxXgvfKh5Q0b61qvNmaU5GjebcWWUTq
-X-Proofpoint-GUID: EFxXgvfKh5Q0b61qvNmaU5GjebcWWUTq
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Cc:     brouer@redhat.com, Toke Hoiland-Jorgensen <toke@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>,
+        "Lobakin, Alexandr" <alexandr.lobakin@intel.com>,
+        Netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH RFC bpf-next 5/9] xdp: controlling XDP-hints from BPF-prog
+ via helper
+Content-Language: en-US
+To:     Larysa Zaremba <larysa.zaremba@intel.com>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+References: <DM4PR11MB54718267242004151337602F97BE9@DM4PR11MB5471.namprd11.prod.outlook.com>
+ <b8085a4d-5ede-3cc0-a177-ad97fe08ce25@redhat.com> <YsRvzu4/cTmz8xmm@lincoln>
+In-Reply-To: <YsRvzu4/cTmz8xmm@lincoln>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-add subtest verifying BPF ksym iter behaviour.  The BPF ksym
-iter program shows an example of dumping a format different to
-/proc/kallsyms.  It adds KIND and MAX_SIZE fields which represent the
-kind of symbol (core kernel, module, ftrace, bpf, or kprobe) and
-the maximum size the symbol can be.  The latter is calculated from
-the difference between current symbol value and the next symbol
-value.
 
-The key benefit for this iterator will likely be supporting in-kernel
-data-gathering rather than dumping symbol details to userspace and
-parsing the results.
 
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-Acked-by: Yonghong Song <yhs@fb.com>
----
- tools/testing/selftests/bpf/prog_tests/bpf_iter.c | 16 +++++
- tools/testing/selftests/bpf/progs/bpf_iter_ksym.c | 74 +++++++++++++++++++++++
- 2 files changed, 90 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_ksym.c
+On 05/07/2022 19.07, Larysa Zaremba wrote:
+> On Mon, Jul 04, 2022 at 08:26:15PM +0200, Jesper Dangaard Brouer wrote:
+>>
+>>
+>> On 04/07/2022 13.00, Zaremba, Larysa wrote:
+>>> Toke Høiland-Jørgensen <toke@redhat.com> writes:
+>>>>
+>>>> Jesper Dangaard Brouer <jbrouer@redhat.com> writes:
+>>>>
+>>>>> On 29/06/2022 16.20, Toke Høiland-Jørgensen wrote:
+>>>>>> Jesper Dangaard Brouer <brouer@redhat.com> writes:
+>>>>>>
+>>>>>>> XDP BPF-prog's need a way to interact with the XDP-hints. This
+>>>>>>> patch introduces a BPF-helper function, that allow XDP BPF-prog's
+>>>>>>> to interact with the XDP-hints.
+>>>>>>>
+>>>>>>> BPF-prog can query if any XDP-hints have been setup and if this is
+>>>>>>> compatible with the xdp_hints_common struct. If XDP-hints are
+>>>>>>> available the BPF "origin" is returned (see enum
+>>>>>>> xdp_hints_btf_origin) as BTF can come from different sources or
+>>>>>>> origins e.g. vmlinux, module or local.
+>>>>>>
+>>>>>> I'm not sure I quite understand what this origin is supposed to be
+>>>>>> good for?
+>>>>>
+>>>>> Some background info on BTF is needed here: BTF_ID numbers are not
+>>>>> globally unique identifiers, thus we need to know where it originate
+>>>>> from, to make it unique (as we store this BTF_ID in XDP-hints).
+>>>>>
+>>>>> There is a connection between origin "vmlinux" and "module", which
+>>>>> is that vmlinux will start at ID=1 and end at a max ID number.
+>>>>> Modules refer to ID's in "vmlinux", and for this to work, they will
+>>>>> shift their own numbering to start after ID=max-vmlinux-id.
+>>>>>
+>>>>> Origin "local" is for BTF information stored in the BPF-ELF object file.
+>>>>> Their numbering starts at ID=1.  The use-case is that a BPF-prog
+>>>>> want to extend the kernel drivers BTF-layout, and e.g. add a
+>>>>> RX-timestamp like [1].  Then BPF-prog can check if it knows module's
+>>>>> BTF_ID and then extend via bpf_xdp_adjust_meta, and update BTF_ID in
+>>>>> XDP-hints and call the helper (I introduced) marking this as origin
+>>>>> "local" for kernel to know this is no-longer origin "module".
+>>>>
+>>>> Right, I realise that :)
+>>>>
+>>>> My point was that just knowing "this is a BTF ID coming from a module"
+>>>> is not terribly useful; you could already figure that out by just
+>>>> looking at the ID and seeing if it's larger than the maximum ID in vmlinux BTF.
+>>>>
+>>>> Rather, what we need is a way to identify *which* module the BTF ID
+>>>> comes from; and luckily, the kernel assigns a unique ID to every BTF
+>>>> *object* as well as to each type ID within that object. These can be
+>>>> dumped by bpftool:
+>>>>
+>>>> # bpftool btf
+>>>> bpftool btf
+>>>> [sudo] password for alrua:
+>>>> 1: name [vmlinux]  size 4800187B
+>>>> 2: name [serio]  size 2588B
+>>>> 3: name [i8042]  size 11786B
+>>>> 4: name [rng_core]  size 8184B
+>>>> [...]
+>>>> 2062: name <anon>  size 36965B
+>>>> 	pids bpftool(547298)
+>>>>
+>>>> IDs 2-4 are module BTF objects, and that last one is the ID of a BTF
+>>>> object loaded along with a BPF program by bpftool itself... So we *do*
+>>>> in fact have a unique ID, by combining the BTF object ID with the type
+>>>> ID; this is what Alexander is proposing to put into the xdp-hints
+>>>> struct as well (combining the two IDs into a single u64).
+>>
+>> Thanks for the explanation. I think I understand it now, and I agree
+>> that we should extend/combining the two IDs into a single u64.
+>>
+>> To Andrii, what is the right terminology when talking about these two
+>> different BTF-ID's:
+>>
+>> - BTF object ID and BTF type ID?
+>>
+>> - Where BTF *object* ID are the IDs we see above from 'bpftool btf',
+>>    where vmlinux=1 and module's IDs will start after 1.
+>>
+>> - Where BTF *type* ID are the IDs the individual data "types" within a
+>>    BTF "object" (e.g. struct xdp_hints_common that BPF-prog's can get
+>>    via calling bpf_core_type_id_kernel()).
+>>
+> 
+> AFAIK, that's the most correct way of distinguish one from another in
+> conversation.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-index 7ff5fa9..a33874b 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-@@ -27,6 +27,7 @@
- #include "bpf_iter_test_kern5.skel.h"
- #include "bpf_iter_test_kern6.skel.h"
- #include "bpf_iter_bpf_link.skel.h"
-+#include "bpf_iter_ksym.skel.h"
- 
- static int duration;
- 
-@@ -1120,6 +1121,19 @@ static void test_link_iter(void)
- 	bpf_iter_bpf_link__destroy(skel);
- }
- 
-+static void test_ksym_iter(void)
-+{
-+	struct bpf_iter_ksym *skel;
-+
-+	skel = bpf_iter_ksym__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "bpf_iter_ksym__open_and_load"))
-+		return;
-+
-+	do_dummy_read(skel->progs.dump_ksym);
-+
-+	bpf_iter_ksym__destroy(skel);
-+}
-+
- #define CMP_BUFFER_SIZE 1024
- static char task_vma_output[CMP_BUFFER_SIZE];
- static char proc_maps_output[CMP_BUFFER_SIZE];
-@@ -1267,4 +1281,6 @@ void test_bpf_iter(void)
- 		test_buf_neg_offset();
- 	if (test__start_subtest("link-iter"))
- 		test_link_iter();
-+	if (test__start_subtest("ksym"))
-+		test_ksym_iter();
- }
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_ksym.c b/tools/testing/selftests/bpf/progs/bpf_iter_ksym.c
-new file mode 100644
-index 0000000..285c008
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_ksym.c
-@@ -0,0 +1,74 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022, Oracle and/or its affiliates. */
-+#include "bpf_iter.h"
-+#include <bpf/bpf_helpers.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+unsigned long last_sym_value = 0;
-+
-+static inline char tolower(char c)
-+{
-+	if (c >= 'A' && c <= 'Z')
-+		c += ('a' - 'A');
-+	return c;
-+}
-+
-+static inline char toupper(char c)
-+{
-+	if (c >= 'a' && c <= 'z')
-+		c -= ('a' - 'A');
-+	return c;
-+}
-+
-+/* Dump symbols with max size; the latter is calculated by caching symbol N value
-+ * and when iterating on symbol N+1, we can print max size of symbol N via
-+ * address of N+1 - address of N.
-+ */
-+SEC("iter/ksym")
-+int dump_ksym(struct bpf_iter__ksym *ctx)
-+{
-+	struct seq_file *seq = ctx->meta->seq;
-+	struct kallsym_iter *iter = ctx->ksym;
-+	__u32 seq_num = ctx->meta->seq_num;
-+	unsigned long value;
-+	char type;
-+	int ret;
-+
-+	if (!iter)
-+		return 0;
-+
-+	if (seq_num == 0) {
-+		BPF_SEQ_PRINTF(seq, "ADDR TYPE NAME MODULE_NAME KIND MAX_SIZE\n");
-+		return 0;
-+	}
-+	if (last_sym_value)
-+		BPF_SEQ_PRINTF(seq, "0x%x\n", iter->value - last_sym_value);
-+	else
-+		BPF_SEQ_PRINTF(seq, "\n");
-+
-+	value = iter->show_value ? iter->value : 0;
-+
-+	last_sym_value = value;
-+
-+	type = iter->type;
-+
-+	if (iter->module_name[0]) {
-+		type = iter->exported ? toupper(type) : tolower(type);
-+		BPF_SEQ_PRINTF(seq, "0x%llx %c %s [ %s ] ",
-+			       value, type, iter->name, iter->module_name);
-+	} else {
-+		BPF_SEQ_PRINTF(seq, "0x%llx %c %s ", value, type, iter->name);
-+	}
-+	if (!iter->pos_arch_end || iter->pos_arch_end > iter->pos)
-+		BPF_SEQ_PRINTF(seq, "CORE ");
-+	else if (!iter->pos_mod_end || iter->pos_mod_end > iter->pos)
-+		BPF_SEQ_PRINTF(seq, "MOD ");
-+	else if (!iter->pos_ftrace_mod_end || iter->pos_ftrace_mod_end > iter->pos)
-+		BPF_SEQ_PRINTF(seq, "FTRACE_MOD ");
-+	else if (!iter->pos_bpf_end || iter->pos_bpf_end > iter->pos)
-+		BPF_SEQ_PRINTF(seq, "BPF ");
-+	else
-+		BPF_SEQ_PRINTF(seq, "KPROBE ");
-+	return 0;
-+}
--- 
-1.8.3.1
+Good to get confirmed that you agree with these terms.
+
+> 
+> Would be still great, if Andrii could confirm that.
+
+Yes, it would :-)
+
+> I should mention that out patch makes bpf_core_type_id_kernel() return
+> u64 (BTF obj ID + BTF type ID), but your statement is true for current
+> libbpf version.
+
+It sounds useful that your patched bpf_core_type_id_kernel() returns u64
+(BTF obj ID + BTF type ID).
+
+I wonder if/how we need to deal with libbpf versions that only returns
+the u32 BTF type ID ?
+
+> 
+>>
+>>> That's correct, concept was previously discussed [1]. The ID of BTF object wasn't
+>>> exposed in CO-RE allocations though, we've changed it in the first 4 patches.
+>>> The main logic is in "libbpf: factor out BTF loading from load_module_btfs()"
+>>> and "libbpf: patch module BTF ID into BPF insns".
+>>>
+>>> We have a sample that wasn't included eventually, but can possibly
+>>> give a general understanding of our approach [2].
+>>>
+>>> [1] https://lore.kernel.org/all/CAEf4BzZO=7MKWfx2OCwEc+sKkfPZYzaELuobi4q5p1bOKk4AQQ@mail.gmail.com/
+>>> [2] https://github.com/alobakin/linux/pull/16/files#diff-c5983904cbe0c280453d59e8a1eefb56c67018c38d5da0c1122abc86225fc7c9
+>>>
+>> (appreciate the links)
+>>
+>> I wonder how these BTF object IDs gets resolved for my "local" category?
+>> (Origin "local" is for BTF information stored in the BPF-ELF object file)
+>>
+>> Note: For "local" BTF type IDs BPF-prog resolve these via
+>> bpf_core_type_id_local() (why I choose the term "local").
+>>
+> 
+> Every program during CO-RE relocs sees a single local BTF obj, in which
+> BTF type IDs start from 1 and correspond to all data types used in
+> program. So local BTF obj and type IDs inside are valid only in single
+> program, therefore u32 type ID returned by bpf_core_type_id_local() is
+> enough.
+
+Sure it makes sense if only a single XDP-prog is running.
+
+For the use-case of multiple XDP-progs (e.g. via libxdp) are running,
+where they send info to each-other via metadata area. There it would be
+valuable to get a BTF *object* ID associated with these "local" types.
+
+Note that I believe that a TC ingress BPF-prog can also read the
+metadata area.
+
+> Local IDs are not resolved, they are just assigned during compilation.
+> After program load with CO-RE each local type gets a resolved
+> vmlinux/module BTF obj pointer and an ID of a type inside this BTF obj
+> that is similar enough.
+
+Yes, but only if __attribute__((preserve_access_index)) is defined on
+the "local" BPF-prog struct will libbpf do this matching to kernel
+structs, see[1].
+
+  [1] 
+https://github.com/xdp-project/bpf-examples/blob/18908873a7f48483ed8bab2d949e8760cff30810/AF_XDP-interaction/af_xdp_kern.c#L37-L40
+  [2] 
+https://github.com/xdp-project/bpf-examples/tree/master/AF_XDP-interaction
+
+
+> 
+> Both local and target type IDs are mainly needed just for comfortable
+> iteration inside libbpf, so they are just a side product that is only
+> patched in, if we use bpf_core_type_id_local/target() inside a program
+> for testing purposes.
+
+In my use-case[2] I want to extract the "local" BTF ID and update the
+BTF ID in metadata area, such that my AF_XDP program can see it.
+
+The use-case is that I have a BPF-prog that want to extend the
+kernel-module provided XDP-hints, with an XDP-software RX timestamp, but
+only for packets containing HW timestamps. It will (load/setup time)
+know BTF obj+type ID via
+bpf_core_type_id_kernel(xdp_hints_i40e_timestamp) to match on, and then
+extend metadata area, type-cast to "local" struct and record
+bpf_ktime_get_ns().  It now need to update BTF ID in XDP-hints metadata
+area, to tell AF_XDP userspace prog (or chained XDP/TC BPF-prog) that
+layout format have changed.
+
+- My question is: What BTF *object* ID should I use for my "local" u32
+BTF type ID ? (returned by bpf_core_type_id_local())
+
+--Jesper
+
+>>
+>> p.s. For unknown reasons lore.kernel.org did match Larysa's reply with the
+>> patchset thread here[3].
+>>
+>>   [3] https://lore.kernel.org/bpf/165643378969.449467.13237011812569188299.stgit@firesoul/#r
 
