@@ -2,61 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC22D567DA0
-	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 07:14:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FEC0567DD6
+	for <lists+bpf@lfdr.de>; Wed,  6 Jul 2022 07:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229849AbiGFFO1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Jul 2022 01:14:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41350 "EHLO
+        id S230045AbiGFF3b (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jul 2022 01:29:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229598AbiGFFO0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Jul 2022 01:14:26 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 202D71F632
-        for <bpf@vger.kernel.org>; Tue,  5 Jul 2022 22:14:25 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id d2so25122786ejy.1
-        for <bpf@vger.kernel.org>; Tue, 05 Jul 2022 22:14:25 -0700 (PDT)
+        with ESMTP id S229598AbiGFF3a (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Jul 2022 01:29:30 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D6D1201AF;
+        Tue,  5 Jul 2022 22:29:29 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id e40so17847588eda.2;
+        Tue, 05 Jul 2022 22:29:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=A21QWqCeopOwDguxG3z7yjXPx4ps0zJoF0UvrchxLRU=;
-        b=Sxk2eVPsCCBHjDH4WZyqKpg77nAEtysasc909TQrnDf/p8cLtbYT6PEHnEWrm16/zq
-         IP4hQoCMD3FMMCRJcslZioYuyDHjtxI3eMAo/JS/6VbL/wUWsKTDtJaKW7tcttUZ4bRQ
-         +rH5XE1uYiZ1P1UIBFVFZpQiTTtgJuveHVIYEPucOUznrzfLSGU58bFjsRdABYECJdMo
-         LXNf5a5dc9FMRHQVW6H3Rd8YSXnthCbXVLkhkIYyvSJIWflZfSuPzUNtfVFJDtRj6yrd
-         S4Z9ZOwCeQ1+Bl71bYjWi9IGI0Ouvi0rJtX6J3fMtHBmEILOXH7qqltSA1XHekBayyfc
-         GnCQ==
+        bh=fCkJCNYCae0Nr8T/7dsc+2ZBwVlwI3ArcfHZRKK0gJI=;
+        b=pJrKdtUT0TTlSEpvmyF5KY1eimVuL6bujf0z7P5vcZDcK3OA6djc4xVCXLORZYg5RC
+         ET57NyolKHrr/vRZXS+S0TrJbKl4Tav0qqxsG5L1QYeRujuo1rNizfETw+MFE/2btl3L
+         5JH1f9xVcLAp/DyAinx9eUw+Poz6bdkQtrmFhK4fueL6tK1TOFpWr2Licyu7+3jlOk+A
+         bYFFBaraiGPn08JlOPD4n4DhZlDNeNrfbZfjLQulvRrQdlrOBEFwLkW1BI6HpTmENkSh
+         A60cpMkVpaajPw4nuf6EiIGBlCVsAah4B1coMSQZTkEMiXYUlctnpXtm8tJWv8fkjS1v
+         jo3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=A21QWqCeopOwDguxG3z7yjXPx4ps0zJoF0UvrchxLRU=;
-        b=P4Xzi5QuTa/aSy1rGJn+6fYJmYTHC/Ib3VEvhPG4WrSZsndDMy/TWScXxqRMVn/Y4L
-         HB5qiG3HWk8n1R+UOsJMiSA4m7L9iGJ/N3AKafCRJRuvltyEyOppsgs4BCRaUt5aBQWa
-         5uh2rprcjl6Wc9c2NzYXZlctWnyp0SwAu6w37MrY5ytpOXgzfbmIuANu+2gqsQYU1ccb
-         n1uW/cQO6s5Uc/D9WbO2j5N3sasyK+aNr4WtRILBrpULn9UTwird9G3ggDfnkSNs1TwV
-         JwXdALYkB7jbdr29MaV+m9CJm1SKDHZePVb/rGrpL5uV4OBW9b4HBE1PkIiMkF5DzF/g
-         YW7Q==
-X-Gm-Message-State: AJIora9rA176Z0TNHXJd/DL9MmcYU0OH2Jj8DFiKlYfecPgEZP4o2R7q
-        gMtdQR2nToimhdtqpW8vxtQrRqeMuyD+sbexJx8=
-X-Google-Smtp-Source: AGRyM1tTBkz1Mo8qVbf4CBJ+gr2+Ajs6BQUxpHO2weQiMlYDhTJy/S6oKEHsKqupIFDfUyJHfngh2kXZmtRj/WIgrsY=
-X-Received: by 2002:a17:906:a3ca:b0:726:2bd2:87bc with SMTP id
- ca10-20020a170906a3ca00b007262bd287bcmr37320624ejb.226.1657084463635; Tue, 05
- Jul 2022 22:14:23 -0700 (PDT)
+        bh=fCkJCNYCae0Nr8T/7dsc+2ZBwVlwI3ArcfHZRKK0gJI=;
+        b=RyVp4LevUa2b2I1fn14lbMGzPBex6yomuSVeuh0zHClx4f7lIok925nGrtzHzPQGF4
+         1BXULzrDSkMzmeicqpEy14nxvjCrIoUZ162AnjTK7AVMXH4VFri7wUAK3xipCW/Hcoxc
+         ZuyRV225cM7Dc4ilZPWOOqPSB0nBiDwZi1OuapQxfNtQqA5QgO+PfVlvGWGRaDX0KnWQ
+         uthxYerfJyMODzISLn3WgNTccou7+YPGdV+y95nbcl45gVnUamYZ7yhl36OE+cvemtvH
+         qtBP23grGbcoWDcxzY6nrI5Y/Bn1FCIElVr22Gs1ywWNsjn4qLpaf104TMPe+vzAIDse
+         gePg==
+X-Gm-Message-State: AJIora/pwcKLKn3s31j9LYgNJYgoAxBD4O8cr47AKdwkhIeJMNESR6yw
+        GpuqjKWyk670L7KxiQ8zUmP/rm1je6Yd46EMZ/o=
+X-Google-Smtp-Source: AGRyM1twIaendsBxd/Qym28X3r1TubrzX9nANy3wak8MkCJy4Cx/z6m7JUlETPc10DMS3wrHOTfTakvjtXu21tUx/Fg=
+X-Received: by 2002:a05:6402:510b:b0:437:28b0:8988 with SMTP id
+ m11-20020a056402510b00b0043728b08988mr52493508edd.260.1657085368107; Tue, 05
+ Jul 2022 22:29:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <aa98e9e1a7f440779d509046021d0c1c@huawei.com> <CA+khW7i39MXy4aTFCGeu+85Shyd47A+0w5EAA5qL7v+n4S74dA@mail.gmail.com>
- <6f501b451d4a4f3882ee9aa662964310@huawei.com> <ae8feec0-3c0f-d4f4-64e9-588df2d02d24@isovalent.com>
-In-Reply-To: <ae8feec0-3c0f-d4f4-64e9-588df2d02d24@isovalent.com>
+References: <20220705190308.1063813-1-jolsa@kernel.org> <20220705190308.1063813-5-jolsa@kernel.org>
+In-Reply-To: <20220705190308.1063813-5-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 5 Jul 2022 22:14:12 -0700
-Message-ID: <CAEf4BzbPdXgDiTTpw1F79ym=k=Y6GS8EoW_Vtgu30Lv9PaV4kg@mail.gmail.com>
-Subject: Re: libbfd feature autodetection
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Roberto Sassu <roberto.sassu@huawei.com>,
-        Hao Luo <haoluo@google.com>,
+Date:   Tue, 5 Jul 2022 22:29:17 -0700
+Message-ID: <CAEf4BzapX_C16O9woDSXOpbzVsxjYudXW36woRCqU3u75uYiFA@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next 4/4] selftests/bpf: Fix kprobe get_func_ip
+ tests for CONFIG_X86_KERNEL_IBT
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Martynas Pumputis <m@lambda.lt>,
+        Yutaro Hayakawa <yutaro.hayakawa@isovalent.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -68,89 +75,66 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 5, 2022 at 7:46 AM Quentin Monnet <quentin@isovalent.com> wrote:
+On Tue, Jul 5, 2022 at 12:04 PM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> On 01/07/2022 08:10, Roberto Sassu wrote:
-> >> From: Hao Luo [mailto:haoluo@google.com]
-> >> Sent: Thursday, June 30, 2022 7:29 PM
-> >> Hi Roberto,
-> >>
-> >> On Thu, Jun 30, 2022 at 6:55 AM Roberto Sassu <roberto.sassu@huawei.com>
-> >> wrote:
-> >>>
-> >>> Hi everyone
-> >>>
-> >>> I'm testing a modified version of bpftool with the CI.
-> >>>
-> >>> Unfortunately, it does not work due to autodetection
-> >>> of libbfd in the build environment, but not in the virtual
-> >>> machine that actually executes the tests.
-> >>>
-> >>> What the proper solution should be?
-> >>
-> >> Can you elaborate by not working? do you mean bpftool doesn't build?
-> >> or bpftool builds, but doesn't behave as you expect when it runs. On
-> >> my side, when I built bpftool, libbfd was not detected, but I can
-> >> still bpftool successfully.
-> >
-> > Hi Hao
-> >
-> > in Github Actions, the build environment has support for
-> > libbfd. When bpftool is compiled, libbfd is linked to it.
-> >
-> > However, the run-time environment is different, is an ad hoc
-> > image made by the eBPF maintainers, which does not have
-> > libbfd.
-> >
-> > When a test executes bpftool, I get the following message:
-> >
-> > 2022-06-28T16:15:14.8548432Z ./bpftool_nobootstrap: error while loading shared libraries: libbfd-2.34-system.so: cannot open shared object file: No such file or directory
-> >
-> > I solved with this:
-> >
-> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> > index e32a28fe8bc1..d44f4d34f046 100644
-> > --- a/tools/testing/selftests/bpf/Makefile
-> > +++ b/tools/testing/selftests/bpf/Makefile
-> > @@ -242,7 +242,9 @@ $(DEFAULT_BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile)    \
-> >                   OUTPUT=$(HOST_BUILD_DIR)/bpftool/                          \
-> >                   LIBBPF_OUTPUT=$(HOST_BUILD_DIR)/libbpf/                    \
-> >                   LIBBPF_DESTDIR=$(HOST_SCRATCH_DIR)/                        \
-> > -                 prefix= DESTDIR=$(HOST_SCRATCH_DIR)/ install-bin
-> > +                 prefix= DESTDIR=$(HOST_SCRATCH_DIR)/ install-bin           \
-> > +                 FEATURE_TESTS='disassembler-four-args zlib libcap clang-bpf-co-re'  \
+> The kprobe can be placed anywhere and user must be aware
+> of the underlying instructions. Therefore fixing just
+> the bpf program to 'fix' the address to match the actual
+> function address when CONFIG_X86_KERNEL_IBT is enabled.
 >
-> (disassembler-four-args can probably be removed too, the file using it
-> shouldn't be compiled if libbfd support if not present.)
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  tools/testing/selftests/bpf/progs/get_func_ip_test.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
 >
-> > +                 FEATURE_DISPLAY='disassembler-four-args zlib libcap clang-bpf-co-re'
-> >
-> > but I'm not sure it is the right approach.
+> diff --git a/tools/testing/selftests/bpf/progs/get_func_ip_test.c b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
+> index a587aeca5ae0..220d56b7c1dc 100644
+> --- a/tools/testing/selftests/bpf/progs/get_func_ip_test.c
+> +++ b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
+> @@ -2,6 +2,7 @@
+>  #include <linux/bpf.h>
+>  #include <bpf/bpf_helpers.h>
+>  #include <bpf/bpf_tracing.h>
+> +#include <stdbool.h>
 >
-> Hi Roberto,
+>  char _license[] SEC("license") = "GPL";
 >
-> I don't think we have another solution for intentionally disabling
-> bpftool's feature at build time at the moment. For the context: I
-> submitted a patch last week to do just this [0], but in the end we
-> preferred to avoid encouraging distributions to remove features.
+> @@ -13,6 +14,8 @@ extern const void bpf_modify_return_test __ksym;
+>  extern const void bpf_fentry_test6 __ksym;
+>  extern const void bpf_fentry_test7 __ksym;
 >
-> But I agree it's not ideal. We shouldn't have to pass all existing
-> bpftool's features to the selftests Makefile.
->
-> Daniel, what would you think of an alternative approach: instead of
-> having variables with obvious names like BPFTOOL_FEATURE_NO_LIBCAP, we
-> could maybe have a FEATURE_IGNORE in bpftool's Makefile and filter out
-> its contents from FEATURE_TESTS/FEATURE_DISPLAY before running the
-> tests? Given that features can already be edited as in the above patch,
-> it wouldn't change much what we can do but would be cleaner here?
->
+> +extern bool CONFIG_X86_KERNEL_IBT __kconfig __weak;
+> +
+>  __u64 test1_result = 0;
+>  SEC("fentry/bpf_fentry_test1")
+>  int BPF_PROG(test1, int a)
+> @@ -37,7 +40,7 @@ __u64 test3_result = 0;
+>  SEC("kprobe/bpf_fentry_test3")
+>  int test3(struct pt_regs *ctx)
+>  {
+> -       __u64 addr = bpf_get_func_ip(ctx);
+> +       __u64 addr = bpf_get_func_ip(ctx) - (CONFIG_X86_KERNEL_IBT ? 4 : 0);
 
-Is statically linking all such dependencies into bpftool an option? If
-build environment has libbfd, we compile and statically link against
-it. Then no matter what environment bpftool runs in, we have libbfd
-inside.
+so for kprobe bpf_get_func_ip() gets an address with 5 byte
+compensation for `call __fentry__`, but not for endr? Why can't we
+compensate for endbr inside the kernel code as well? I'd imagine we
+either do no compensation (and thus we get &bpf_fentry_test3+5 or
+&bpf_fentry_test3+9, depending on CONFIG_X86_KERNEL_IBT) or full
+compensation (and thus always get &bpf_fentry_test3), but this
+in-between solution seems to be the worst of both worlds?...
 
-> Quentin
 >
-> [0]
-> https://lore.kernel.org/bpf/CACdoK4LTgpcuS9Sgk6F-9=cP09aACxJN4iTXJ=39OohPcBKXAg@mail.gmail.com/T/#t
+>         test3_result = (const void *) addr == &bpf_fentry_test3;
+>         return 0;
+> @@ -47,7 +50,7 @@ __u64 test4_result = 0;
+>  SEC("kretprobe/bpf_fentry_test4")
+>  int BPF_KRETPROBE(test4)
+>  {
+> -       __u64 addr = bpf_get_func_ip(ctx);
+> +       __u64 addr = bpf_get_func_ip(ctx) - (CONFIG_X86_KERNEL_IBT ? 4 : 0);
+>
+>         test4_result = (const void *) addr == &bpf_fentry_test4;
+>         return 0;
+> --
+> 2.35.3
+>
