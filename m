@@ -2,72 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC77A56AEB0
-	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 00:41:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC3956AEC8
+	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 00:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236590AbiGGWl0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Jul 2022 18:41:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39680 "EHLO
+        id S236448AbiGGW7q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Jul 2022 18:59:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236628AbiGGWl0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Jul 2022 18:41:26 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9FA727CF5;
-        Thu,  7 Jul 2022 15:41:24 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id os14so4603789ejb.4;
-        Thu, 07 Jul 2022 15:41:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x0hTg3svlPkX7yjZEejAqipfWlRrXxPxf4EQelGBTvo=;
-        b=JjLDLcNl//HbIrbRbWAfVo8D/EHxetYwwUclgU4IpzJTW1aVvb76jqCKqg3pQTeotv
-         uI+pfXcAlpsxTDhK2XQU/X0vIHaOXSJoKWs9rkTxjxYJ9wiOflV/IzcsJSUlO04l7cjS
-         uDSH6tP2pdODKwl8VBAPJ715+J05mEiLpIH5b5kK+VQoCEQfpNJ0Wgyh9SG3orG3Hx+P
-         enbo2ru4HaAYtaJKwPwZTV8Jc0rTwxb1Y6qPZDBw7LzK7qLy0N+3fslDNlZWbTnvnTyi
-         x2LlCTlGHuTrJscVe/nGn5oSQABB6NQTA2FMSsEn5XXQ1rUyE9gMoiUWHUSGTufjkeXo
-         DxBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x0hTg3svlPkX7yjZEejAqipfWlRrXxPxf4EQelGBTvo=;
-        b=4AWGY3OKSs6+kGVhaDTY95q8MLPbtPfS9S/xMHhkUxai5Yg5bPRTDAAmyHSQ0mbBwJ
-         WLxb1eHKhWjPT5eTxIxLjMA+CejRoayhogacyntnB5QJOBkYB66HHXo7XsEp8OoxmmSP
-         Gp6ByYDNQoAMfHkfJqpy2DX0ftH/JZE9GgQxsJvmpnqSLnDhdAPd607y2Q+qc8Z37t55
-         dhhpE3sbBn4qD/v0Gz/PyRSV6xgrDlCj9ZgNjmgJwdH0Th9O090vsKQJ3Sf3p+xnJGCZ
-         IWSG4kOby0EeE35B063h6gxrCKtKgTuUgyNkIlQVJX2GSdGUbP+XzxcYjdYDCScFsKdQ
-         0uoQ==
-X-Gm-Message-State: AJIora/pDjJPNE1uQBSBWhwq1jSD7yr+A/DioFKao+JIhbCzdMxOaPg7
-        ENfibBtaHlD3yNJez03hf9nuloIsUACHMYZXG2s=
-X-Google-Smtp-Source: AGRyM1s0deLui/79j5hjBtPHHhjWJfeoyGA22i+D5HMSMsSL5RUY87JhVevlzB1bvYW08banAks08/NbPsWpeOf/OlM=
-X-Received: by 2002:a17:906:8444:b0:72a:7dda:5d71 with SMTP id
- e4-20020a170906844400b0072a7dda5d71mr425919ejy.94.1657233683381; Thu, 07 Jul
- 2022 15:41:23 -0700 (PDT)
+        with ESMTP id S236604AbiGGW7q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Jul 2022 18:59:46 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B356F61D58;
+        Thu,  7 Jul 2022 15:59:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2LGPQBbmLZAhGLpuEXGKEbyXOETkHsQcpN3+BdruGK4=; b=EeUBbAP3OPV24ab05MtW6remFT
+        4DOHjOKbpU2PHwDd3fsI5aTosvkKFOVbO/ghzOlWrFV/RDHOwYs3WMZVOu/AX/6uMOP95NOp19k/W
+        wkFRHRAyk+yFSIcbC+BgxUCx2wx8svMbZhyHfb+RiPTkccYDpIed8E0FmLeiYGukRDv4cwGXdp8v8
+        /S3KWwvQa19EAQBrOltUR6NpQCGnTTak3reuNlnvnHywfJdkrDdSZSgwgdipoTskg/S1+m9elGmAz
+        a338gVt6OXZVDSvYV3eVEvxUokq/0y6nRAFojjOLyZKoc7YaXD+sHeQES6geSle3HbsWWwAQWpUkF
+        DEyH50rA==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1o9aTG-000dFe-6L; Thu, 07 Jul 2022 22:59:42 +0000
+Date:   Thu, 7 Jul 2022 15:59:42 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Song Liu <song@kernel.org>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, daniel@iogearbox.net, kernel-team@fb.com,
+        x86@kernel.org, dave.hansen@linux.intel.com,
+        rick.p.edgecombe@intel.com
+Subject: Re: [PATCH v6 bpf-next 0/5] bpf_prog_pack followup
+Message-ID: <YsdlXjpRrlE9Z+Jq@bombadil.infradead.org>
+References: <20220707223546.4124919-1-song@kernel.org>
 MIME-Version: 1.0
-References: <20220702033521.64630-1-roman.gushchin@linux.dev>
- <CALvZod7TGhWtcRD6HeEx90T2+Rod-yamq9i+WbEQUKwNFTi-1A@mail.gmail.com>
- <YsBmoqEBCa7ra7w2@castle> <YsMCMveSdiYX/2eH@dhcp22.suse.cz>
- <YsSj6rZmUkR8amT2@castle> <CALOAHbAb9DT6ihyxTm-4FCUiqiAzRSUHJw9erc+JTKVT9p8tow@mail.gmail.com>
- <YsUBQsTjVuXvt1Wr@castle> <CALOAHbDjRzySCHeMVHtVDe=Ji+qh=n0pT4CwiAM5Pahi2-QNCQ@mail.gmail.com>
- <YsUH7pgBVnWSkC1q@castle>
-In-Reply-To: <YsUH7pgBVnWSkC1q@castle>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 7 Jul 2022 15:41:11 -0700
-Message-ID: <CAADnVQ+qqeAVvtDYox4xj85Qxt79EV1Hn+HDEMuzHrwZv14X4Q@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcontrol: do not miss MEMCG_MAX events for enforced allocations
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     Yafang Shao <laoar.shao@gmail.com>, Michal Hocko <mhocko@suse.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220707223546.4124919-1-song@kernel.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,21 +51,15 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 5, 2022 at 9:24 PM Roman Gushchin <roman.gushchin@linux.dev> wrote:
->
-> Anyway, here is the patch for reparenting bpf maps:
-> https://github.com/rgushchin/linux/commit/f57df8bb35770507a4624fe52216b6c14f39c50c
->
-> I gonna post it to bpf@ after some testing.
+On Thu, Jul 07, 2022 at 03:35:41PM -0700, Song Liu wrote:
+> This set is the second half of v4 [1].
+> 
+> Changes v5 => v6:
+> 1. Rebase and extend CC list.
 
-Please do. It looks good.
-It needs #ifdef CONFIG_MEMCG_KMEM
-because get_obj_cgroup_from_current() is undefined otherwise.
-Ideally just adding a static inline to a .h ?
+Why post a new iteration so soon without completing the discussion we
+had? It seems like we were at least going somewhere. If it's just
+to include mm as I requested, sure, that's fine, but this does not
+provide context as to what we last were talking about.
 
-and
-if (map->objcg)
-   memcg = get_mem_cgroup_from_objcg(map->objcg);
-
-or !NULL check inside get_mem_cgroup_from_objcg()
-which would be better.
+  Luis
