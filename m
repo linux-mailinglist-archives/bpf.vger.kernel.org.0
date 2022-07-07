@@ -2,206 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96237569EC4
-	for <lists+bpf@lfdr.de>; Thu,  7 Jul 2022 11:43:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6DDF569FE7
+	for <lists+bpf@lfdr.de>; Thu,  7 Jul 2022 12:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234508AbiGGJmo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Jul 2022 05:42:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45610 "EHLO
+        id S235275AbiGGK2k (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Jul 2022 06:28:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232625AbiGGJmm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Jul 2022 05:42:42 -0400
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D641A4D140
-        for <bpf@vger.kernel.org>; Thu,  7 Jul 2022 02:42:41 -0700 (PDT)
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id B61E040A91
-        for <bpf@vger.kernel.org>; Thu,  7 Jul 2022 09:42:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1657186959;
-        bh=pZynCaPh+TnSiopib07+yX9vDI3B5AI5xmb++t4Qb9A=;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version;
-        b=KN8kdXW6d09yM2V8ktdCMTrL3fIuOqYkxDV/+qOTtCC/qHoE5drmQMPD4A/oBzyDY
-         OX1aXQQBC/XdM87Ty81i314dcp55F8WD5QNpXP/7Udo8DjnwQhEuP7nGF6BfI0a2/L
-         WRtQssgHI4wj0/Ze7beelWqwh7KgPsyfGI0SkdkEHdwuRALJ9Sdc2cjKMeSZp1QV4+
-         ZL8mWA1od2T189JnPri82xf0OsMJBNVQPPd2lSxVuegpSqqxmW6GXhwUPjqrWhqDl4
-         uELMMmh4MWL1KIR1EkH77JMBf66O2wnelpAaj6AfrsXe68iZMc/rT1juWCgW46toqK
-         A2zG66oedmInA==
-Received: by mail-pg1-f198.google.com with SMTP id d66-20020a636845000000b0040a88edd9c1so7984480pgc.13
-        for <bpf@vger.kernel.org>; Thu, 07 Jul 2022 02:42:37 -0700 (PDT)
+        with ESMTP id S235165AbiGGK2g (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Jul 2022 06:28:36 -0400
+Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B554F2F64E
+        for <bpf@vger.kernel.org>; Thu,  7 Jul 2022 03:28:35 -0700 (PDT)
+Received: by mail-vk1-xa2b.google.com with SMTP id r184so1856163vkg.9
+        for <bpf@vger.kernel.org>; Thu, 07 Jul 2022 03:28:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1jEVdpbvqQRSNIv0th7cTYiMXpo4mnpeXk5Jx9vXc6A=;
+        b=c6SGCzZUWXWpcQ/dc2iZFuXm7QnCRInKAoYhk4Xln25UlRThSvkhHl2OogHcqXcmsF
+         uZdcXwd8rn7qqgA9A6XbbEGFnhj9q6jwYx2NKWHYMVVnDQ+igRyzV1o1JuxQxkbWSyUp
+         jCg5W5nnDUM5J/LF/v09sKXfwIjaRk7L4AzfQsoXhv2JqU1XO/qOpT9uhnJkFijdJrZf
+         tmsvwL4mDGjUIALs/jyhbr2MvrZrhF+SC7drgWztn2hMCOAlCp4exYDUbpEZGTFXYXw5
+         s/6/WI8QjelD/w9Ja0DoiCzZXkfWIcZ0d7ezmt1auPev1BTRI5Tl3FxbxyinPKg/iq/i
+         e26g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=pZynCaPh+TnSiopib07+yX9vDI3B5AI5xmb++t4Qb9A=;
-        b=s2vX7ntJlct9B9kUXNcMlz3xifzYju+clFFmdxM1fWV6YWlko+yw8lnNplPQggkC3f
-         SVjLlmnUItXeYhET+nDPe8cGQy3Ag+ZN+LxT6MPv+B57mfqNi4p/KGTm3sWz3IsTTKxg
-         3T0UzYjF4AOW8MR03Wj93GOxA7drjHWwGCQf6360gyxS2SXlNrufK9AnZ+xDM+14jYcn
-         /tehWnL2LUuBifYi3JWZaf1dWwU2yz+vqLhwJ95cmMucIygGHBbuQKqNjR9Eh+RdDT/7
-         YD7LaYIBW781qwc/Pc1cDa3gF+jW8xojn2/X4T13I2JLOmRnAA5PpquFzNShlFpPgP/g
-         dZyA==
-X-Gm-Message-State: AJIora9PTHqz6s2lHyyaWgdGcTJab/okU7VT2n97UHS2wHiURsK4H0F+
-        +dok1TZ6wPkJnT4A5UAatgK8Cg7lBViQd/ZezyRjF9ygk4wxkRsbb1Cf6cUtq5leJf3upIdgxTe
-        dEokHGWIGU86qe3+hmByYGV7KAFkB
-X-Received: by 2002:a17:90b:2249:b0:1ef:2097:8448 with SMTP id hk9-20020a17090b224900b001ef20978448mr4162964pjb.97.1657186956242;
-        Thu, 07 Jul 2022 02:42:36 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1vx385uLz6R6MIjDaU9j35k7VtJZpvs3rQMyTvkYkckrOkY/88nPGQnMd6CZpWdAovnFVFn6g==
-X-Received: by 2002:a17:90b:2249:b0:1ef:2097:8448 with SMTP id hk9-20020a17090b224900b001ef20978448mr4162941pjb.97.1657186956013;
-        Thu, 07 Jul 2022 02:42:36 -0700 (PDT)
-Received: from localhost.localdomain (223-137-51-72.emome-ip.hinet.net. [223.137.51.72])
-        by smtp.gmail.com with ESMTPSA id w15-20020a1709027b8f00b0016230703ca3sm27085064pll.231.2022.07.07.02.42.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jul 2022 02:42:35 -0700 (PDT)
-From:   Po-Hsu Lin <po-hsu.lin@canonical.com>
-To:     stable@vger.kernel.org, gregkh@linuxfoundation.org
-Cc:     memxor@gmail.com, linux-kernel@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, shuah@kernel.org, bpf@vger.kernel.org,
-        po-hsu.lin@canonical.com
-Subject: [PATCH stable 5.15 1/1] Revert "selftests/bpf: Add test for bpf_timer overwriting crash"
-Date:   Thu,  7 Jul 2022 17:42:07 +0800
-Message-Id: <20220707094207.229875-2-po-hsu.lin@canonical.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220707094207.229875-1-po-hsu.lin@canonical.com>
-References: <20220707094207.229875-1-po-hsu.lin@canonical.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1jEVdpbvqQRSNIv0th7cTYiMXpo4mnpeXk5Jx9vXc6A=;
+        b=10C60OlK6CnLxHMUFgECGmnJbtTCm8yGRuEW5pLMpUmDcyHZwKVF9Y0zd/1Iy6rzY2
+         7UZcS9NsTZgeD7fGhXDeZUpakkAaspU1oSRGu9y8tpgwHqAppjtn3hiKK/TBN8ZDbcmR
+         m22bSv+0wzTwkeiIKfyeb1K0badJ9+6EIeTrGJuLNMuHuy9qwTS8RvAQXWYx/tdFCDxh
+         9AOdCAIC9uWuTZvMnIJvFr0hgw7AYh9CHctqoILeGtPUfxqBah3v7XkFILXgtBYYJS1I
+         H2Fx2CKW661OBYm7ZbdLH9Oo6NvL9pqXsBKstWutDwkD4eSQ9eDTdrKHX7LfFpv1VCy2
+         n0cg==
+X-Gm-Message-State: AJIora+LBezih1jUBzBAvWS0KOZMElnVEFJdlhMtE4m3e6QHGAbxZD74
+        9sZ6VhBlbQt0zs4UxAgo9xSMAsh0v5uUTpVGvlQ=
+X-Google-Smtp-Source: AGRyM1tBtowXYd5lLM+Pntndrj091k2gteG2hyYSLebqnYBWJJFmiE+1vjRbe6ECBC7bfQjZ554a+jYwNnZaRPsUjYA=
+X-Received: by 2002:ac5:ccc1:0:b0:374:61a7:e99f with SMTP id
+ j1-20020ac5ccc1000000b0037461a7e99fmr307279vkn.14.1657189714511; Thu, 07 Jul
+ 2022 03:28:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20220706155848.4939-1-laoar.shao@gmail.com> <20220706155848.4939-2-laoar.shao@gmail.com>
+ <20220707000721.dtl356trspb23ctp@google.com>
+In-Reply-To: <20220707000721.dtl356trspb23ctp@google.com>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Thu, 7 Jul 2022 18:27:57 +0800
+Message-ID: <CALOAHbC4RG_G2wjU0Nj_A9MhrHiQ7GXR7Yp7BCr+7dDmXwR-4w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Make non-preallocated allocation low priority
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hao Luo <haoluo@google.com>, bpf <bpf@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This reverts commit b0028e1cc1faf2e5d88ad4065590aca90d650182 which is
-commit a7e75016a0753c24d6c995bc02501ae35368e333 upstream.
+On Thu, Jul 7, 2022 at 8:07 AM Shakeel Butt <shakeelb@google.com> wrote:
+>
+> On Wed, Jul 06, 2022 at 03:58:47PM +0000, Yafang Shao wrote:
+> > GFP_ATOMIC doesn't cooperate well with memcg pressure so far, especially
+> > if we allocate too much GFP_ATOMIC memory. For example, when we set the
+> > memcg limit to limit a non-preallocated bpf memory, the GFP_ATOMIC can
+> > easily break the memcg limit by force charge. So it is very dangerous to
+> > use GFP_ATOMIC in non-preallocated case. One way to make it safe is to
+> > remove __GFP_HIGH from GFP_ATOMIC, IOW, use (__GFP_ATOMIC |
+> > __GFP_KSWAPD_RECLAIM) instead, then it will be limited if we allocate
+> > too much memory.
+>
+> Please use GFP_NOWAIT instead of (__GFP_ATOMIC | __GFP_KSWAPD_RECLAIM).
+> There is already a plan to completely remove __GFP_ATOMIC and mm-tree
+> already have a patch for that.
+>
 
-It will break the bpf self-tests build with:
-progs/timer_crash.c:8:19: error: field has incomplete type 'struct bpf_timer'
-        struct bpf_timer timer;
-                         ^
-/home/ubuntu/linux/tools/testing/selftests/bpf/tools/include/bpf/bpf_helper_defs.h:39:8:
-note: forward declaration of 'struct bpf_timer'
-struct bpf_timer;
-       ^
-1 error generated.
+After reading the discussion[1], it looks good to me to use GFP_NOWAIT
+instead. I will update it.
 
-This test can only be built with 5.17 and newer kernels.
+[1]. https://lore.kernel.org/linux-mm/163712397076.13692.4727608274002939094@noble.neil.brown.name/
 
-Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
----
- .../testing/selftests/bpf/prog_tests/timer_crash.c | 32 -------------
- tools/testing/selftests/bpf/progs/timer_crash.c    | 54 ----------------------
- 2 files changed, 86 deletions(-)
- delete mode 100644 tools/testing/selftests/bpf/prog_tests/timer_crash.c
- delete mode 100644 tools/testing/selftests/bpf/progs/timer_crash.c
+> >
+> > We introduced BPF_F_NO_PREALLOC is because full map pre-allocation is
+> > too memory expensive for some cases. That means removing __GFP_HIGH
+> > doesn't break the rule of BPF_F_NO_PREALLOC, but has the same goal with
+> > it-avoiding issues caused by too much memory. So let's remove it.
+> >
+> > The force charge of GFP_ATOMIC was introduced in
+> > commit 869712fd3de5 ("mm: memcontrol: fix network errors from failing
+> > __GFP_ATOMIC charges") by checking __GFP_ATOMIC, then got improved in
+> > commit 1461e8c2b6af ("memcg: unify force charging conditions") by
+> > checking __GFP_HIGH (that is no problem because both __GFP_HIGH and
+> > __GFP_ATOMIC are set in GFP_AOMIC). So, if we want to fix it in memcg,
+> > we have to carefully verify all the callsites. Now that we can fix it in
+> > BPF, we'd better not modify the memcg code.
+> >
+> > This fix can also apply to other run-time allocations, for example, the
+> > allocation in lpm trie, local storage and devmap. So let fix it
+> > consistently over the bpf code
+> >
+> > __GFP_KSWAPD_RECLAIM doesn't cooperate well with memcg pressure neither
+> > currently. But the memcg code can be improved to make
+> > __GFP_KSWAPD_RECLAIM work well under memcg pressure if desired.
+> >
+>
+> IMO there is no need to give all this detail and background on
+> GFP_ATOMIC and __GFP_KSWAPD_RECLAIM. Just say kernel allows GFP_ATOMIC
+> allocations to exceed memcg limits which we don't want in this case. So,
+> replace with GFP_NOWAIT which obey memcg limits. Both of these flags
+> tell kernel that the caller can not sleep.
+>
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/timer_crash.c b/tools/testing/selftests/bpf/prog_tests/timer_crash.c
-deleted file mode 100644
-index f74b823..00000000
---- a/tools/testing/selftests/bpf/prog_tests/timer_crash.c
-+++ /dev/null
-@@ -1,32 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--#include <test_progs.h>
--#include "timer_crash.skel.h"
--
--enum {
--	MODE_ARRAY,
--	MODE_HASH,
--};
--
--static void test_timer_crash_mode(int mode)
--{
--	struct timer_crash *skel;
--
--	skel = timer_crash__open_and_load();
--	if (!ASSERT_OK_PTR(skel, "timer_crash__open_and_load"))
--		return;
--	skel->bss->pid = getpid();
--	skel->bss->crash_map = mode;
--	if (!ASSERT_OK(timer_crash__attach(skel), "timer_crash__attach"))
--		goto end;
--	usleep(1);
--end:
--	timer_crash__destroy(skel);
--}
--
--void test_timer_crash(void)
--{
--	if (test__start_subtest("array"))
--		test_timer_crash_mode(MODE_ARRAY);
--	if (test__start_subtest("hash"))
--		test_timer_crash_mode(MODE_HASH);
--}
-diff --git a/tools/testing/selftests/bpf/progs/timer_crash.c b/tools/testing/selftests/bpf/progs/timer_crash.c
-deleted file mode 100644
-index f8f7944..00000000
---- a/tools/testing/selftests/bpf/progs/timer_crash.c
-+++ /dev/null
-@@ -1,54 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--
--#include <vmlinux.h>
--#include <bpf/bpf_tracing.h>
--#include <bpf/bpf_helpers.h>
--
--struct map_elem {
--	struct bpf_timer timer;
--	struct bpf_spin_lock lock;
--};
--
--struct {
--	__uint(type, BPF_MAP_TYPE_ARRAY);
--	__uint(max_entries, 1);
--	__type(key, int);
--	__type(value, struct map_elem);
--} amap SEC(".maps");
--
--struct {
--	__uint(type, BPF_MAP_TYPE_HASH);
--	__uint(max_entries, 1);
--	__type(key, int);
--	__type(value, struct map_elem);
--} hmap SEC(".maps");
--
--int pid = 0;
--int crash_map = 0; /* 0 for amap, 1 for hmap */
--
--SEC("fentry/do_nanosleep")
--int sys_enter(void *ctx)
--{
--	struct map_elem *e, value = {};
--	void *map = crash_map ? (void *)&hmap : (void *)&amap;
--
--	if (bpf_get_current_task_btf()->tgid != pid)
--		return 0;
--
--	*(void **)&value = (void *)0xdeadcaf3;
--
--	bpf_map_update_elem(map, &(int){0}, &value, 0);
--	/* For array map, doing bpf_map_update_elem will do a
--	 * check_and_free_timer_in_array, which will trigger the crash if timer
--	 * pointer was overwritten, for hmap we need to use bpf_timer_cancel.
--	 */
--	if (crash_map == 1) {
--		e = bpf_map_lookup_elem(map, &(int){0});
--		if (!e)
--			return 0;
--		bpf_timer_cancel(&e->timer);
--	}
--	return 0;
--}
--
--char _license[] SEC("license") = "GPL";
+Sure, thanks.
+
 -- 
-2.7.4
-
+Regards
+Yafang
