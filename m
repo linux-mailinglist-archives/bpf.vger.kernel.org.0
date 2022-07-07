@@ -2,220 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9034F56A75A
-	for <lists+bpf@lfdr.de>; Thu,  7 Jul 2022 18:03:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67A1456A7BC
+	for <lists+bpf@lfdr.de>; Thu,  7 Jul 2022 18:13:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230313AbiGGQCh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Jul 2022 12:02:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42064 "EHLO
+        id S235638AbiGGQMj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Jul 2022 12:12:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235437AbiGGQCg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Jul 2022 12:02:36 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 384DF28E34
-        for <bpf@vger.kernel.org>; Thu,  7 Jul 2022 09:02:35 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id f9-20020a636a09000000b00401b6bc63beso8810644pgc.23
-        for <bpf@vger.kernel.org>; Thu, 07 Jul 2022 09:02:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=5rG1Lib/zGVpNfpbS/Aj4qZe8ei8MICbFB7WX19/VLQ=;
-        b=pAZI6d6k6hisxOmjVfTmTqS0bmK+27pmhiL0tOPzCNQgOrgN+Cv7UIEz+otyMuT7Hl
-         6GuH6uwAUjIuG2GmKpr3lo1A4Sdq3vOfkZMY4kNbTekxDP6u4iZMkuHfetWAUTz10hgk
-         IXH0+jkirtGreOZgmXFn9vAIKGHf+tWDPM3N5PPUN0VI7dmuSnEqCOpWMcpLcKjYsnzY
-         P030K2WWEJWcXNam+XTAFp/v/Jy9rPM2IuVeQn0mUzb2gM9RDMkXMgJtrQ5DBlmFyY7e
-         lGrP1TGjOJ3+6OKJTG37xioZrkjEwiIAatC00eo2Futk3wjJzxg8IxzLDumqFXtwS6En
-         QcJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=5rG1Lib/zGVpNfpbS/Aj4qZe8ei8MICbFB7WX19/VLQ=;
-        b=U+FjUPX7tg7Qd0pqG7XyK6NsZ/FxPBwwjp5u5f9S+xml/vnJ/wEhXQXdKkFT21xIrD
-         0Dh/XJAFszVZLxQs4tdw5a0lEX9JV7kLndyUddgdoONtIOqApLipERm+lFin66Y4FAzi
-         /L2tWRmuiu/3xFjKFwv823GSubVtAzNiJgSaqX8lXZC4Y3b7ykFpPRWTktOz0ukNgUHD
-         PlrDrkNe1lfx6LFXkJRxIW4uvNgHZrVfqugYkJXrj69nOzHabwQ0iNdpdfei/fnlhIkw
-         Y5Ez/LbkIml7hjZXjUFTKX6naFgtwZ/ygmHgjbjGodyJMwCmkDUZIc1feYySc4YvkhDH
-         rdJQ==
-X-Gm-Message-State: AJIora9Mae9lL5gDZyhNb0koaDoCIg5718eBA21285zeFAEn05XX9mb0
-        r8zAiR/bUtd2hGaVWqNX3iIYnbHYV5vRg/IatRkiyoitLFdyuABZztTE7rhfIW3posGj8N+jxtf
-        tjrIKfrSZK9pOHVLbiDsBCnB1a2GDSFuaT3M4sLZ8fZI1V5sr5A==
-X-Google-Smtp-Source: AGRyM1vRCgcO8yogn6SQORt/Cl54Ic56J7S4dP9pFPiCI0Rr1m2+d7b+wxT/k/jSeyT78tk64/o39To=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a63:618d:0:b0:412:9362:9603 with SMTP id
- v135-20020a63618d000000b0041293629603mr9419689pgb.478.1657209754560; Thu, 07
- Jul 2022 09:02:34 -0700 (PDT)
-Date:   Thu,  7 Jul 2022 09:02:33 -0700
-Message-Id: <20220707160233.2078550-1-sdf@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.37.0.rc0.161.g10f37bed90-goog
-Subject: [PATCH bpf-next v2] bpf: check attach_func_proto more carefully in check_return_code
-From:   Stanislav Fomichev <sdf@google.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org,
-        syzbot+5cc0730bd4b4d2c5f152@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S236035AbiGGQMC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Jul 2022 12:12:02 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D801F4D173;
+        Thu,  7 Jul 2022 09:11:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1657210296; x=1688746296;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=vesXtGlDmOsjMCJXAf5YAftKju8+FHR1Lh+U8lCzIoU=;
+  b=QJIJh4eZcv/NRof01cf6boByjYzjms1hW9qBN8/Jeo1+wdVot83kwAvA
+   NX9RCuYycyHOCiBCaw1mFOvAzt6wYU1+jv44uMxO4oJOAGmWBYoWCWcUy
+   avn+53yoCDpNGUlyqaWeibBJNsx+6lp50Td+S0qhmeELWMmuWQQSZdg+3
+   XfZtAWAOrUveXblvCDg3Crc4DJ8rLhdWFsV0MNkJzgfd9p399uoqHOhTW
+   oUL6oNhGzLlpneU1J4J7YgVQNztYsyeErZktXkUImE/W1whenaVEF0vyN
+   4MUHV5/fkaJRvmzgS+9hAOh4dlX7b2vP9PwUtwnBTAYzB17JdEcBhpDUa
+   g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10401"; a="284803787"
+X-IronPort-AV: E=Sophos;i="5.92,253,1650956400"; 
+   d="scan'208";a="284803787"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2022 09:11:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.92,253,1650956400"; 
+   d="scan'208";a="839971579"
+Received: from boxer.igk.intel.com ([10.102.20.173])
+  by fmsmga006.fm.intel.com with ESMTP; 07 Jul 2022 09:11:34 -0700
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     intel-wired-lan@lists.osuosl.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        anthony.l.nguyen@intel.com, kuba@kernel.org, davem@davemloft.net,
+        magnus.karlsson@intel.com,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: [PATCH intel-net] ice: xsk: use Rx ring when picking NAPI context
+Date:   Thu,  7 Jul 2022 18:11:28 +0200
+Message-Id: <20220707161128.54215-1-maciej.fijalkowski@intel.com>
+X-Mailer: git-send-email 2.33.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Syzkaller reports the following crash:
-RIP: 0010:check_return_code kernel/bpf/verifier.c:10575 [inline]
-RIP: 0010:do_check kernel/bpf/verifier.c:12346 [inline]
-RIP: 0010:do_check_common+0xb3d2/0xd250 kernel/bpf/verifier.c:14610
+Ice driver allocates per cpu XDP queues so that redirect path can safely
+use smp_processor_id() as an index to the array. At the same time
+though, XDP rings are used to pick NAPI context to call napi_schedule()
+or set NAPIF_STATE_MISSED. When user reduces queue count, say to 8, and
+num_possible_cpus() of underlying platform is 44, then this means queue
+vectors with correlated NAPI contexts will carry several XDP queues.
 
-With the following reproducer:
-bpf$PROG_LOAD_XDP(0x5, &(0x7f00000004c0)={0xd, 0x3, &(0x7f0000000000)=ANY=[@ANYBLOB="1800000000000019000000000000000095"], &(0x7f0000000300)='GPL\x00', 0x0, 0x0, 0x0, 0x0, 0x0, '\x00', 0x0, 0x2b, 0xffffffffffffffff, 0x8, 0x0, 0x0, 0x10, 0x0}, 0x80)
+This in turn can result in a broken behavior where NAPI context of
+interest will never be scheduled and AF_XDP socket will not process any
+traffic.
 
-Because we don't enforce expected_attach_type for XDP programs,
-we end up in hitting 'if (prog->expected_attach_type == BPF_LSM_CGROUP'
-part in check_return_code and follow up with testing
-`prog->aux->attach_func_proto->type`, but `prog->aux->attach_func_proto`
-is NULL.
+To fix this issue, use Rx ring to pull out the NAPI context.
 
-Add explicit prog_type check for the "Note, BPF_LSM_CGROUP that
-attach ..." condition. Also, don't skip return code check for
-LSM/STRUCT_OPS.
-
-The above actually brings an issue with existing selftest which
-tries to return EPERM from void inet_csk_clone. Fix the
-test (and move called_socket_clone to make sure it's not
-incremented in case of an error) and add a new one to explicitly
-verify this condition.
-
-v2:
-- Martin: don't add new helper, check prog_type instead
-- Martin: check expected_attach_type as well at the function entry
-- Update selftest to verify this condition
-
-Fixes: 69fd337a975c ("bpf: per-cgroup lsm flavor")
-Reported-by: syzbot+5cc0730bd4b4d2c5f152@syzkaller.appspotmail.com
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
+Fixes: 2d4238f55697 ("ice: Add support for AF_XDP")
+Fixes: 22bf877e528f ("ice: introduce XDP_TX fallback path")
+Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 ---
- kernel/bpf/verifier.c                              |  2 ++
- .../testing/selftests/bpf/prog_tests/lsm_cgroup.c  | 12 ++++++++++++
- tools/testing/selftests/bpf/progs/lsm_cgroup.c     | 12 ++++++------
- .../selftests/bpf/progs/lsm_cgroup_nonvoid.c       | 14 ++++++++++++++
- 4 files changed, 34 insertions(+), 6 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/lsm_cgroup_nonvoid.c
+ drivers/net/ethernet/intel/ice/ice_xsk.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index df3ec6b05f05..2bc1e7252778 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -10445,6 +10445,7 @@ static int check_return_code(struct bpf_verifier_env *env)
+diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
+index 49ba8bfdbf04..34d851d3e767 100644
+--- a/drivers/net/ethernet/intel/ice/ice_xsk.c
++++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
+@@ -353,7 +353,7 @@ int ice_xsk_pool_setup(struct ice_vsi *vsi, struct xsk_buff_pool *pool, u16 qid)
+ 	if (if_running) {
+ 		ret = ice_qp_ena(vsi, qid);
+ 		if (!ret && pool_present)
+-			napi_schedule(&vsi->xdp_rings[qid]->q_vector->napi);
++			napi_schedule(&vsi->rx_rings[qid]->q_vector->napi);
+ 		else if (ret)
+ 			netdev_err(vsi->netdev, "ice_qp_ena error = %d\n", ret);
+ 	}
+@@ -936,7 +936,7 @@ ice_xsk_wakeup(struct net_device *netdev, u32 queue_id,
+ 	struct ice_netdev_priv *np = netdev_priv(netdev);
+ 	struct ice_q_vector *q_vector;
+ 	struct ice_vsi *vsi = np->vsi;
+-	struct ice_tx_ring *ring;
++	struct ice_rx_ring *ring;
  
- 	/* LSM and struct_ops func-ptr's return type could be "void" */
- 	if (!is_subprog &&
-+	    prog->expected_attach_type != BPF_LSM_CGROUP &&
- 	    (prog_type == BPF_PROG_TYPE_STRUCT_OPS ||
- 	     prog_type == BPF_PROG_TYPE_LSM) &&
- 	    !prog->aux->attach_func_proto->type)
-@@ -10572,6 +10573,7 @@ static int check_return_code(struct bpf_verifier_env *env)
- 	if (!tnum_in(range, reg->var_off)) {
- 		verbose_invalid_scalar(env, reg, &range, "program exit", "R0");
- 		if (prog->expected_attach_type == BPF_LSM_CGROUP &&
-+		    prog_type == BPF_PROG_TYPE_LSM &&
- 		    !prog->aux->attach_func_proto->type)
- 			verbose(env, "Note, BPF_LSM_CGROUP that attach to void LSM hooks can't modify return value!\n");
+ 	if (test_bit(ICE_VSI_DOWN, vsi->state))
+ 		return -ENETDOWN;
+@@ -944,13 +944,13 @@ ice_xsk_wakeup(struct net_device *netdev, u32 queue_id,
+ 	if (!ice_is_xdp_ena_vsi(vsi))
  		return -EINVAL;
-diff --git a/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
-index c542d7e80a5b..1102e4f42d2d 100644
---- a/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
-+++ b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
-@@ -6,6 +6,7 @@
- #include <bpf/btf.h>
  
- #include "lsm_cgroup.skel.h"
-+#include "lsm_cgroup_nonvoid.skel.h"
- #include "cgroup_helpers.h"
- #include "network_helpers.h"
+-	if (queue_id >= vsi->num_txq)
++	if (queue_id >= vsi->num_txq || queue_id >= vsi->num_rxq)
+ 		return -EINVAL;
  
-@@ -293,9 +294,20 @@ static void test_lsm_cgroup_functional(void)
- 	lsm_cgroup__destroy(skel);
- }
+ 	if (!vsi->xdp_rings[queue_id]->xsk_pool)
+ 		return -EINVAL;
  
-+static void test_lsm_cgroup_nonvoid(void)
-+{
-+	struct lsm_cgroup_nonvoid *skel = NULL;
-+
-+	skel = lsm_cgroup_nonvoid__open_and_load();
-+	ASSERT_NULL(skel, "open succeeds");
-+	lsm_cgroup_nonvoid__destroy(skel);
-+}
-+
- void test_lsm_cgroup(void)
- {
- 	if (test__start_subtest("functional"))
- 		test_lsm_cgroup_functional();
-+	if (test__start_subtest("nonvoid"))
-+		test_lsm_cgroup_nonvoid();
- 	btf__free(btf);
- }
-diff --git a/tools/testing/selftests/bpf/progs/lsm_cgroup.c b/tools/testing/selftests/bpf/progs/lsm_cgroup.c
-index 89f3b1e961a8..4f2d60b87b75 100644
---- a/tools/testing/selftests/bpf/progs/lsm_cgroup.c
-+++ b/tools/testing/selftests/bpf/progs/lsm_cgroup.c
-@@ -156,25 +156,25 @@ int BPF_PROG(socket_clone, struct sock *newsk, const struct request_sock *req)
- {
- 	int prio = 234;
+-	ring = vsi->xdp_rings[queue_id];
++	ring = vsi->rx_rings[queue_id];
  
--	called_socket_clone++;
--
- 	if (!newsk)
- 		return 1;
- 
- 	/* Accepted request sockets get a different priority. */
- 	if (bpf_setsockopt(newsk, SOL_SOCKET, SO_PRIORITY, &prio, sizeof(prio)))
--		return 0; /* EPERM */
-+		return 1;
- 
- 	/* Make sure bpf_getsockopt is allowed and works. */
- 	prio = 0;
- 	if (bpf_getsockopt(newsk, SOL_SOCKET, SO_PRIORITY, &prio, sizeof(prio)))
--		return 0; /* EPERM */
-+		return 1;
- 	if (prio != 234)
--		return 0; /* EPERM */
-+		return 1;
- 
- 	/* Can access cgroup local storage. */
- 	if (!test_local_storage())
--		return 0; /* EPERM */
-+		return 1;
-+
-+	called_socket_clone++;
- 
- 	return 1;
- }
-diff --git a/tools/testing/selftests/bpf/progs/lsm_cgroup_nonvoid.c b/tools/testing/selftests/bpf/progs/lsm_cgroup_nonvoid.c
-new file mode 100644
-index 000000000000..6cb0f161f417
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/lsm_cgroup_nonvoid.c
-@@ -0,0 +1,14 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+SEC("lsm_cgroup/inet_csk_clone")
-+int BPF_PROG(nonvoid_socket_clone, struct sock *newsk, const struct request_sock *req)
-+{
-+	/* Can not return any errors from void LSM hooks. */
-+	return 0;
-+}
+ 	/* The idea here is that if NAPI is running, mark a miss, so
+ 	 * it will run again. If not, trigger an interrupt and
 -- 
-2.37.0.rc0.161.g10f37bed90-goog
+2.27.0
 
