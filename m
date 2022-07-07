@@ -2,137 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B45F656A22F
-	for <lists+bpf@lfdr.de>; Thu,  7 Jul 2022 14:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3504356A323
+	for <lists+bpf@lfdr.de>; Thu,  7 Jul 2022 15:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235307AbiGGMjE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Jul 2022 08:39:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38568 "EHLO
+        id S232161AbiGGNIy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Jul 2022 09:08:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235202AbiGGMjE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Jul 2022 08:39:04 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D8B2B184
-        for <bpf@vger.kernel.org>; Thu,  7 Jul 2022 05:39:02 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id l6-20020a25bf86000000b00668c915a3f2so13513152ybk.4
-        for <bpf@vger.kernel.org>; Thu, 07 Jul 2022 05:39:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=PSs8GSF9fKtK3coD71Wm1KuzoLxRaCJtUBFp2eC8ArE=;
-        b=QkB6fzLHgsc7WQ//VSio3p7Y23v6palwLeswYO9qz6howMhvMhXh+9oD6Hqo1Z6r0f
-         t4lEqlrc82QWcdFcAN9yqchRITg3eLjZAabIFpphOpf46xUAoGSCsfHgd9JWGinJVbDA
-         EWKwyrdQUyQGufKQRbBX0Dz0Z700H6uezK6x0yMpudZ02Lut4RNmy+pCDvTvx0Ef4+L4
-         iYA+5F75T0EwBQ7vnOBZiQ5Ju7xDNGoz0Gk3em/TzXjWsOQukpEJUONuORThYiV6k5HZ
-         +3ZjX/fk7dh45aSBDIi7izp3X73VFpVhL/ORJdeZQROR2xESpS07EobSXjlLtsykbjAX
-         3deg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=PSs8GSF9fKtK3coD71Wm1KuzoLxRaCJtUBFp2eC8ArE=;
-        b=LLS0Pt+j3I+PWAN613D9oUY3VHeDZExycNKEI+cyPSuSgMKRBKwal/KqTc+kRqtlnW
-         1Iga4BqrG6s8JmoDScIlyl5ImtaS6MJ5foDcUXDsdKar8g49L4IKxWrMuxrS8r7EMS5K
-         PyHhy4dKum6JoR05gJV1zJ8N4/3jsklxnY/fxm4q2cqE2mnryT7Ns9wCBKBlEQ0rXv42
-         diKG+73wbR7b1rlaTHRoCIHbiXUgKOm/hpGhkwRuUmm/aprhusFK9HwIwlFTNmCfk2hk
-         2V8o0JciLKwDlSdLT0pBJ5GyLMs8rwyM92VbqFnqhtm23aGg5CuY1FfbLFhSGrkxbCV/
-         Sj+w==
-X-Gm-Message-State: AJIora91dH4vOsivhyI4M12L6ydWAQrnumvkNDuNRMKPxg6hjexKpKK5
-        yKf0yDXaSigHJuuXObRMqkvLzqh/xCK1Ug==
-X-Google-Smtp-Source: AGRyM1sVm0UdUjAoQ21LBY7o0Hir+gzmClLXfYMVGdSKKgp7WRwrF90Uo0lV5ryQZZgVhyNgsCSD5gJk6k5p7Q==
-X-Received: from edumazet1.c.googlers.com ([fda3:e722:ac3:cc00:2b:7d90:c0a8:395a])
- (user=edumazet job=sendgmr) by 2002:a05:6902:154e:b0:66e:6718:f6f2 with SMTP
- id r14-20020a056902154e00b0066e6718f6f2mr17903305ybu.228.1657197541914; Thu,
- 07 Jul 2022 05:39:01 -0700 (PDT)
-Date:   Thu,  7 Jul 2022 12:39:00 +0000
-Message-Id: <20220707123900.945305-1-edumazet@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.37.0.rc0.161.g10f37bed90-goog
-Subject: [PATCH] bpf: make sure mac_header was set before using it
-From:   Eric Dumazet <edumazet@google.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        eric.dumazet@gmail.com, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S234163AbiGGNIx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Jul 2022 09:08:53 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F169C2AD1;
+        Thu,  7 Jul 2022 06:08:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1657199332; x=1688735332;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=CRQwTIU46Zf+tRTgOEouZdo6fiCXwghgpIo4sXDIGQM=;
+  b=OSgbIudo7evzdl0g2EdQCnltcROYeTu1DdgoqtEhSOTeHFTMw+2D1uEJ
+   ANRraI3G4NKFeESffnW/9hnqWbltEo6At6aiNddHC8hCjYYizVF/isnnv
+   QohZl8ajtSamnZLZtUVR7082yZWEcWYnsWh5DU4oOBjM5gxRdLrgQmY17
+   pAD2DiSRggoy6wnPBQKZezTNhB2w1nnblRlqFA+6kkzA7pqbRAk9WW/wz
+   aLXaoqjchYR6wZftdh5CsoYf9Ebgm2oP4NdT3mXjs4Z82B+Xw60Jc+nUP
+   /RtPT6puJbPhlenMgmzC7G1oYPSPTd/RFsMW1FU7S2h6LiCGC+vJdvGZ8
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10400"; a="284044239"
+X-IronPort-AV: E=Sophos;i="5.92,253,1650956400"; 
+   d="scan'208";a="284044239"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2022 06:08:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.92,253,1650956400"; 
+   d="scan'208";a="683304324"
+Received: from boxer.igk.intel.com ([10.102.20.173])
+  by FMSMGA003.fm.intel.com with ESMTP; 07 Jul 2022 06:08:50 -0700
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org
+Cc:     netdev@vger.kernel.org, magnus.karlsson@intel.com,
+        bjorn@kernel.org, kuba@kernel.org,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: [PATCH v2 bpf-next] xsk: mark napi_id on sendmsg()
+Date:   Thu,  7 Jul 2022 15:08:42 +0200
+Message-Id: <20220707130842.49408-1-maciej.fijalkowski@intel.com>
+X-Mailer: git-send-email 2.33.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Classic BPF has a way to load bytes starting from the mac header.
+When application runs in busy poll mode and does not receive a single
+packet but only sends them, it is currently
+impossible to get into napi_busy_loop() as napi_id is only marked on Rx
+side in xsk_rcv_check(). In there, napi_id is being taken from
+xdp_rxq_info carried by xdp_buff. From Tx perspective, we do not have
+access to it. What we have handy is the xsk pool.
 
-Some skbs do not have a mac header, and skb_mac_header()
-in this case is returning a pointer that 65535 bytes after
-skb->head.
+Xsk pool works on a pool of internal xdp_buff wrappers called
+xdp_buff_xsk. AF_XDP ZC enabled drivers call xp_set_rxq_info() so each
+of xdp_buff_xsk has a valid pointer to xdp_rxq_info of underlying queue.
+Therefore, on Tx side, napi_id can be pulled from
+xs->pool->heads[0].xdp.rxq->napi_id. Hide this pointer chase under
+helper function, xsk_pool_get_napi_id().
 
-Existing range check in bpf_internal_load_pointer_neg_helper()
-was properly kicking and no illegal access was happening.
+Do this only for sockets working in ZC mode as otherwise rxq pointers
+would not be initialized.
 
-New sanity check in skb_mac_header() is firing, so we need
-to avoid it.
-
-WARNING: CPU: 1 PID: 28990 at include/linux/skbuff.h:2785 skb_mac_header include/linux/skbuff.h:2785 [inline]
-WARNING: CPU: 1 PID: 28990 at include/linux/skbuff.h:2785 bpf_internal_load_pointer_neg_helper+0x1b1/0x1c0 kernel/bpf/core.c:74
-Modules linked in:
-CPU: 1 PID: 28990 Comm: syz-executor.0 Not tainted 5.19.0-rc4-syzkaller-00865-g4874fb9484be #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/29/2022
-RIP: 0010:skb_mac_header include/linux/skbuff.h:2785 [inline]
-RIP: 0010:bpf_internal_load_pointer_neg_helper+0x1b1/0x1c0 kernel/bpf/core.c:74
-Code: ff ff 45 31 f6 e9 5a ff ff ff e8 aa 27 40 00 e9 3b ff ff ff e8 90 27 40 00 e9 df fe ff ff e8 86 27 40 00 eb 9e e8 2f 2c f3 ff <0f> 0b eb b1 e8 96 27 40 00 e9 79 fe ff ff 90 41 57 41 56 41 55 41
-RSP: 0018:ffffc9000309f668 EFLAGS: 00010216
-RAX: 0000000000000118 RBX: ffffffffffeff00c RCX: ffffc9000e417000
-RDX: 0000000000040000 RSI: ffffffff81873f21 RDI: 0000000000000003
-RBP: ffff8880842878c0 R08: 0000000000000003 R09: 000000000000ffff
-R10: 000000000000ffff R11: 0000000000000001 R12: 0000000000000004
-R13: ffff88803ac56c00 R14: 000000000000ffff R15: dffffc0000000000
-FS: 00007f5c88a16700(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
-CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fdaa9f6c058 CR3: 000000003a82c000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
-<TASK>
-____bpf_skb_load_helper_32 net/core/filter.c:276 [inline]
-bpf_skb_load_helper_32+0x191/0x220 net/core/filter.c:264
-
-Fixes: f9aefd6b2aa3 ("net: warn if mac header was not set")
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Signed-off-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 ---
- kernel/bpf/core.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index b5ffebcce6ccae22ad3d252c823b7a61d7bfd206..9d17baac1144227f61bdbd69294a3ad70bf26389 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -68,11 +68,13 @@ void *bpf_internal_load_pointer_neg_helper(const struct sk_buff *skb, int k, uns
+v2:
+* target bpf-next instead of bpf and don't treat it as fix (Bjorn)
+* hide pointer chasing under helper function (Bjorn)
+
+ include/net/xdp_sock_drv.h | 14 ++++++++++++++
+ net/xdp/xsk.c              |  5 ++++-
+ 2 files changed, 18 insertions(+), 1 deletion(-)
+
+diff --git a/include/net/xdp_sock_drv.h b/include/net/xdp_sock_drv.h
+index 4aa031849668..4277b0dcee05 100644
+--- a/include/net/xdp_sock_drv.h
++++ b/include/net/xdp_sock_drv.h
+@@ -44,6 +44,15 @@ static inline void xsk_pool_set_rxq_info(struct xsk_buff_pool *pool,
+ 	xp_set_rxq_info(pool, rxq);
+ }
+ 
++static inline unsigned int xsk_pool_get_napi_id(struct xsk_buff_pool *pool)
++{
++#ifdef CONFIG_NET_RX_BUSY_POLL
++	return pool->heads[0].xdp.rxq->napi_id;
++#else
++	return 0;
++#endif
++}
++
+ static inline void xsk_pool_dma_unmap(struct xsk_buff_pool *pool,
+ 				      unsigned long attrs)
  {
- 	u8 *ptr = NULL;
+@@ -198,6 +207,11 @@ static inline void xsk_pool_set_rxq_info(struct xsk_buff_pool *pool,
+ {
+ }
  
--	if (k >= SKF_NET_OFF)
-+	if (k >= SKF_NET_OFF) {
- 		ptr = skb_network_header(skb) + k - SKF_NET_OFF;
--	else if (k >= SKF_LL_OFF)
-+	} else if (k >= SKF_LL_OFF) {
-+		if (unlikely(!skb_mac_header_was_set(skb)))
-+			return NULL;
- 		ptr = skb_mac_header(skb) + k - SKF_LL_OFF;
--
++static inline unsigned int xsk_pool_get_napi_id(struct xsk_buff_pool *pool)
++{
++	return 0;
++}
++
+ static inline void xsk_pool_dma_unmap(struct xsk_buff_pool *pool,
+ 				      unsigned long attrs)
+ {
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 19ac872a6624..86a97da7e50b 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -637,8 +637,11 @@ static int __xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len
+ 	if (unlikely(need_wait))
+ 		return -EOPNOTSUPP;
+ 
+-	if (sk_can_busy_loop(sk))
++	if (sk_can_busy_loop(sk)) {
++		if (xs->zc)
++			__sk_mark_napi_id_once(sk, xsk_pool_get_napi_id(xs->pool));
+ 		sk_busy_loop(sk, 1); /* only support non-blocking sockets */
 +	}
- 	if (ptr >= skb->head && ptr + size <= skb_tail_pointer(skb))
- 		return ptr;
  
+ 	if (xs->zc && xsk_no_wakeup(sk))
+ 		return 0;
 -- 
-2.37.0.rc0.161.g10f37bed90-goog
+2.27.0
 
