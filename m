@@ -2,121 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A1456A7BC
-	for <lists+bpf@lfdr.de>; Thu,  7 Jul 2022 18:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A82D56A7E3
+	for <lists+bpf@lfdr.de>; Thu,  7 Jul 2022 18:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235638AbiGGQMj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Jul 2022 12:12:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46852 "EHLO
+        id S235967AbiGGQUf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Jul 2022 12:20:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236035AbiGGQMC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Jul 2022 12:12:02 -0400
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D801F4D173;
-        Thu,  7 Jul 2022 09:11:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1657210296; x=1688746296;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=vesXtGlDmOsjMCJXAf5YAftKju8+FHR1Lh+U8lCzIoU=;
-  b=QJIJh4eZcv/NRof01cf6boByjYzjms1hW9qBN8/Jeo1+wdVot83kwAvA
-   NX9RCuYycyHOCiBCaw1mFOvAzt6wYU1+jv44uMxO4oJOAGmWBYoWCWcUy
-   avn+53yoCDpNGUlyqaWeibBJNsx+6lp50Td+S0qhmeELWMmuWQQSZdg+3
-   XfZtAWAOrUveXblvCDg3Crc4DJ8rLhdWFsV0MNkJzgfd9p399uoqHOhTW
-   oUL6oNhGzLlpneU1J4J7YgVQNztYsyeErZktXkUImE/W1whenaVEF0vyN
-   4MUHV5/fkaJRvmzgS+9hAOh4dlX7b2vP9PwUtwnBTAYzB17JdEcBhpDUa
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10401"; a="284803787"
-X-IronPort-AV: E=Sophos;i="5.92,253,1650956400"; 
-   d="scan'208";a="284803787"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jul 2022 09:11:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,253,1650956400"; 
-   d="scan'208";a="839971579"
-Received: from boxer.igk.intel.com ([10.102.20.173])
-  by fmsmga006.fm.intel.com with ESMTP; 07 Jul 2022 09:11:34 -0700
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     intel-wired-lan@lists.osuosl.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        anthony.l.nguyen@intel.com, kuba@kernel.org, davem@davemloft.net,
-        magnus.karlsson@intel.com,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Subject: [PATCH intel-net] ice: xsk: use Rx ring when picking NAPI context
-Date:   Thu,  7 Jul 2022 18:11:28 +0200
-Message-Id: <20220707161128.54215-1-maciej.fijalkowski@intel.com>
-X-Mailer: git-send-email 2.33.1
+        with ESMTP id S235881AbiGGQUe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Jul 2022 12:20:34 -0400
+Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 043EB25EAF
+        for <bpf@vger.kernel.org>; Thu,  7 Jul 2022 09:20:34 -0700 (PDT)
+Received: by mail-vs1-xe2c.google.com with SMTP id 189so18794164vsh.2
+        for <bpf@vger.kernel.org>; Thu, 07 Jul 2022 09:20:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ci6aP7nKVQUaHARVmSRnYm57qnA3hBbkbfQkbvG0XxM=;
+        b=bn2LAVeJrnwPGUJTR23aVQd2z1NTOuHTvpU/tYSYxdlwQuROcEQ3mFWTjFuR/eT9bz
+         kOmuNckX3qdC7gTX86kUSMLc6ba6opfm5k4s8kIQPVFordq1Y8xDfPcR/yIE4vdjn1di
+         nsxdWsPC0KBppiVaq34zd4k25zNJtoGIi/zZlu+PcrYCHpnMeLxpFHYFmM7BTP/0DFl5
+         Wef945ienMtpNZsusurRYwMMfHESj7SYZ2z1J1QHb2k7ijZGQmdiT8o0IHVAFaBQtbM5
+         AcZCaF1YddU4OgOsUBFxmCL9FGzfb7czqj4kPJ4MD/nQ1VJmCg9WZcUZrTDbkX4qf3+F
+         4b8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ci6aP7nKVQUaHARVmSRnYm57qnA3hBbkbfQkbvG0XxM=;
+        b=8JxU0nb/SLsmOz7KoUuD9AzcdHS0R09L9PWHAXp9VWIB/Lneym6zShewWO8sEWk0nh
+         vJbUbAy+7mWpz437E2lTtMzxpC41egPnYywTrad3m9NkbrXBH8bCgA/YRc2N2KaNbJGW
+         4CXQvnN1Xl834rm7foeg5fT5zGU2JXqhqvM3bzEwF9HQ/b00bbqZW7luMVZGUPcfc8+i
+         u3FKrFQIdrl1PZGGpYiUcc/0LCjTH2Dc4N2clsPaACfdR4nu+XEx+Kyc3zEcS5cgOhi7
+         0sZ3dbub7OdedLcJc0e2zXjk2fMnof/2ylLkq+Vgyqc4R+hZfO0L3vw+o9nSZITUxHX3
+         vlmA==
+X-Gm-Message-State: AJIora8doFV/WELO/xFV/ktfsB758Ujt48/7f90DlkQCDcVrO6eHLzLx
+        WB/KOm3Pd3Ezy+q5XbuWUnxQwG1ONiUHCeenqxU=
+X-Google-Smtp-Source: AGRyM1vEEck/CSTfqPPPCywcusjE/F0df+gWYrSoMQDaMK9O8h1v3u4YxUY9WEwcXcYOwfz537RsgK/t4A36exmbZYA=
+X-Received: by 2002:a67:1945:0:b0:355:ab65:9db3 with SMTP id
+ 66-20020a671945000000b00355ab659db3mr27849908vsz.22.1657210833074; Thu, 07
+ Jul 2022 09:20:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220706155848.4939-1-laoar.shao@gmail.com> <20220706155848.4939-2-laoar.shao@gmail.com>
+ <20220707000721.dtl356trspb23ctp@google.com> <CALOAHbC4RG_G2wjU0Nj_A9MhrHiQ7GXR7Yp7BCr+7dDmXwR-4w@mail.gmail.com>
+ <CAADnVQKJ44nmxzUDAkckXJ2mzJAshvzzGFP-oPT=NO3rGW7pQA@mail.gmail.com>
+In-Reply-To: <CAADnVQKJ44nmxzUDAkckXJ2mzJAshvzzGFP-oPT=NO3rGW7pQA@mail.gmail.com>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Fri, 8 Jul 2022 00:19:56 +0800
+Message-ID: <CALOAHbBu=GwPCYqJVe98EOdO6ts6keZpA5uNtosbJJ0jwg5pDg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Make non-preallocated allocation low priority
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hao Luo <haoluo@google.com>, bpf <bpf@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Ice driver allocates per cpu XDP queues so that redirect path can safely
-use smp_processor_id() as an index to the array. At the same time
-though, XDP rings are used to pick NAPI context to call napi_schedule()
-or set NAPIF_STATE_MISSED. When user reduces queue count, say to 8, and
-num_possible_cpus() of underlying platform is 44, then this means queue
-vectors with correlated NAPI contexts will carry several XDP queues.
+On Thu, Jul 7, 2022 at 11:44 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Thu, Jul 7, 2022 at 3:28 AM Yafang Shao <laoar.shao@gmail.com> wrote:
+> >
+> > On Thu, Jul 7, 2022 at 8:07 AM Shakeel Butt <shakeelb@google.com> wrote:
+> > >
+> > > On Wed, Jul 06, 2022 at 03:58:47PM +0000, Yafang Shao wrote:
+> > > > GFP_ATOMIC doesn't cooperate well with memcg pressure so far, especially
+> > > > if we allocate too much GFP_ATOMIC memory. For example, when we set the
+> > > > memcg limit to limit a non-preallocated bpf memory, the GFP_ATOMIC can
+> > > > easily break the memcg limit by force charge. So it is very dangerous to
+> > > > use GFP_ATOMIC in non-preallocated case. One way to make it safe is to
+> > > > remove __GFP_HIGH from GFP_ATOMIC, IOW, use (__GFP_ATOMIC |
+> > > > __GFP_KSWAPD_RECLAIM) instead, then it will be limited if we allocate
+> > > > too much memory.
+> > >
+> > > Please use GFP_NOWAIT instead of (__GFP_ATOMIC | __GFP_KSWAPD_RECLAIM).
+> > > There is already a plan to completely remove __GFP_ATOMIC and mm-tree
+> > > already have a patch for that.
+> > >
+> >
+> > After reading the discussion[1], it looks good to me to use GFP_NOWAIT
+> > instead. I will update it.
+>
+> Should we use GFP_ATOMIC | __GFP_NOMEMALLOC instead
+> to align with its usage in the networking stack?
 
-This in turn can result in a broken behavior where NAPI context of
-interest will never be scheduled and AF_XDP socket will not process any
-traffic.
+GFP_ATOMIC | __GFP_NOMEMALLOC will continue to break the memcg limit,
+so we have to modify the try_charge_memcg() code to make sure
+__GFP_NOMEMALLOC takes precedence over the __GFP_HIGH flag, IOW, if
+both of them are set we won't allow it to break memcg limit.  That
+will need more verification.
 
-To fix this issue, use Rx ring to pull out the NAPI context.
-
-Fixes: 2d4238f55697 ("ice: Add support for AF_XDP")
-Fixes: 22bf877e528f ("ice: introduce XDP_TX fallback path")
-Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
----
- drivers/net/ethernet/intel/ice/ice_xsk.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-index 49ba8bfdbf04..34d851d3e767 100644
---- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-+++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-@@ -353,7 +353,7 @@ int ice_xsk_pool_setup(struct ice_vsi *vsi, struct xsk_buff_pool *pool, u16 qid)
- 	if (if_running) {
- 		ret = ice_qp_ena(vsi, qid);
- 		if (!ret && pool_present)
--			napi_schedule(&vsi->xdp_rings[qid]->q_vector->napi);
-+			napi_schedule(&vsi->rx_rings[qid]->q_vector->napi);
- 		else if (ret)
- 			netdev_err(vsi->netdev, "ice_qp_ena error = %d\n", ret);
- 	}
-@@ -936,7 +936,7 @@ ice_xsk_wakeup(struct net_device *netdev, u32 queue_id,
- 	struct ice_netdev_priv *np = netdev_priv(netdev);
- 	struct ice_q_vector *q_vector;
- 	struct ice_vsi *vsi = np->vsi;
--	struct ice_tx_ring *ring;
-+	struct ice_rx_ring *ring;
- 
- 	if (test_bit(ICE_VSI_DOWN, vsi->state))
- 		return -ENETDOWN;
-@@ -944,13 +944,13 @@ ice_xsk_wakeup(struct net_device *netdev, u32 queue_id,
- 	if (!ice_is_xdp_ena_vsi(vsi))
- 		return -EINVAL;
- 
--	if (queue_id >= vsi->num_txq)
-+	if (queue_id >= vsi->num_txq || queue_id >= vsi->num_rxq)
- 		return -EINVAL;
- 
- 	if (!vsi->xdp_rings[queue_id]->xsk_pool)
- 		return -EINVAL;
- 
--	ring = vsi->xdp_rings[queue_id];
-+	ring = vsi->rx_rings[queue_id];
- 
- 	/* The idea here is that if NAPI is running, mark a miss, so
- 	 * it will run again. If not, trigger an interrupt and
 -- 
-2.27.0
-
+Regards
+Yafang
