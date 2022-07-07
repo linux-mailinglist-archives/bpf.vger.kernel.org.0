@@ -2,162 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 673CA569755
-	for <lists+bpf@lfdr.de>; Thu,  7 Jul 2022 03:19:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 233F15697CB
+	for <lists+bpf@lfdr.de>; Thu,  7 Jul 2022 04:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234051AbiGGBTH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Jul 2022 21:19:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54518 "EHLO
+        id S234748AbiGGCJh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jul 2022 22:09:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231345AbiGGBTH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Jul 2022 21:19:07 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D03EE2E69D;
-        Wed,  6 Jul 2022 18:19:04 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 85C6FB81CF4;
-        Thu,  7 Jul 2022 01:19:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA16EC341C6;
-        Thu,  7 Jul 2022 01:19:00 +0000 (UTC)
-Date:   Wed, 6 Jul 2022 21:18:58 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Song Liu <song@kernel.org>, Networking <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        with ESMTP id S231826AbiGGCJg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Jul 2022 22:09:36 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91CFD2F012
+        for <bpf@vger.kernel.org>; Wed,  6 Jul 2022 19:09:35 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id u15so5565737ejx.9
+        for <bpf@vger.kernel.org>; Wed, 06 Jul 2022 19:09:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kGIHS1Q8whoejLOanjZ8Dl2VaVkwGN34JapXBn0P4vU=;
+        b=jI2x4p7wqFu5HJhU18RIQrMJqQVMGJ2X9iUSfFfj9TgIlFMb1RVkRJm9XFc8+q33S0
+         Q6bnHYhiuCYUz/r0+RNHMBBPslxZFFnlllFeYQkdoZ+dMeolRdFCfcXMv0yYHJCTku4W
+         oDN1xsvTUro5Ws/jIvYGKBnLkxb+evFNAYTdQ+mH8yPnzzHIPsVMjQBkgxmH7nUcKFj/
+         QfAIkFVSVGkjUuavLHu+apA5Ev/O3qt2yRv53q3LA9z01pEpt7vipRF4LwcNRsD/j7Ry
+         XYtnXcg/iBFbPUS/yVW6EkyY7zd/c7DsM6OM16KX4zPaIhVbz4xze5Rm4ROuIedsf6C3
+         eIGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kGIHS1Q8whoejLOanjZ8Dl2VaVkwGN34JapXBn0P4vU=;
+        b=SifTYULVeL4V6wxTlMzzZ5rnmQejKzaoKsIqkZwYZKq2sR04HfnGYSx2d7vdEKL1m8
+         PVgISsAi/ieI8PV59bOTAr8M8BzVLLuy17+G0zSr+08weyBjHL/lrP8F+4m3UKGAuJYB
+         udj1o+sstfrXTivmirjuZbKDK6j6pB5UahKVvUH0UdUtrdAq6mpie2Kxv2S//usXtKlu
+         YPI0CMkpRYjtYBYe1Iantr1Qo5ymxbel98qmxOLTZAS+vQrqDZ79oyqQc0wYUatPRFm6
+         rigUgu37L5f3j91NQInarl3mQ1SgBECcGkDQ1TUmC7+e9fe7LWf3uD+hju82IfoekAPT
+         FSMQ==
+X-Gm-Message-State: AJIora+3ic6TGDRpvliwFa65rw7iDUCr74aVvvT9cAF1voOtRdgupQVy
+        ODAh4Mc8AUdvLrfTDJ7/HZlijMpyd1wFuE5/Ik0=
+X-Google-Smtp-Source: AGRyM1toQrfGgxgYAAOJJEN/r72o9z8KCv/glel0a8cviUSb0Ia6uU0QHWwyPXPkcvZjNPII0bloMksUJ7EgKP6VY8U=
+X-Received: by 2002:a17:907:9725:b0:726:c820:7653 with SMTP id
+ jg37-20020a170907972500b00726c8207653mr43515771ejc.633.1657159774014; Wed, 06
+ Jul 2022 19:09:34 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220706155848.4939-1-laoar.shao@gmail.com> <20220706155848.4939-2-laoar.shao@gmail.com>
+ <20220707000721.dtl356trspb23ctp@google.com> <YsYn3HoqQ4JtTaO6@castle>
+In-Reply-To: <YsYn3HoqQ4JtTaO6@castle>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 6 Jul 2022 19:09:22 -0700
+Message-ID: <CAADnVQKxKMcXcVra-+A8UVEUmp2h8GWotbLRi65-gBfAzJ37Ew@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Make non-preallocated allocation low priority
+To:     Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        "jolsa@kernel.org" <jolsa@kernel.org>,
-        "mhiramat@kernel.org" <mhiramat@kernel.org>
-Subject: Re: [PATCH v2 bpf-next 5/5] bpf: trampoline: support
- FTRACE_OPS_FL_SHARE_IPMODIFY
-Message-ID: <20220706211858.67f9254d@rorschach.local.home>
-In-Reply-To: <9E7BD8AD-483A-4960-B4C6-223CC715D2AF@fb.com>
-References: <20220602193706.2607681-1-song@kernel.org>
-        <20220602193706.2607681-6-song@kernel.org>
-        <20220706153843.37584b5b@gandalf.local.home>
-        <DC04E081-8320-4A39-A058-D0E33F202625@fb.com>
-        <20220706174049.6c60250f@gandalf.local.home>
-        <ECD336F1-A130-47BA-8FBB-E3573445380F@fb.com>
-        <20220706182931.06cb0e20@gandalf.local.home>
-        <9E7BD8AD-483A-4960-B4C6-223CC715D2AF@fb.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Hao Luo <haoluo@google.com>, bpf <bpf@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 7 Jul 2022 00:19:07 +0000
-Song Liu <songliubraving@fb.com> wrote:
+On Wed, Jul 6, 2022 at 5:25 PM Roman Gushchin <roman.gushchin@linux.dev> wrote:
+>
+> On Thu, Jul 07, 2022 at 12:07:21AM +0000, Shakeel Butt wrote:
+> > On Wed, Jul 06, 2022 at 03:58:47PM +0000, Yafang Shao wrote:
+> > > GFP_ATOMIC doesn't cooperate well with memcg pressure so far, especially
+> > > if we allocate too much GFP_ATOMIC memory. For example, when we set the
+> > > memcg limit to limit a non-preallocated bpf memory, the GFP_ATOMIC can
+> > > easily break the memcg limit by force charge. So it is very dangerous to
+> > > use GFP_ATOMIC in non-preallocated case. One way to make it safe is to
+> > > remove __GFP_HIGH from GFP_ATOMIC, IOW, use (__GFP_ATOMIC |
+> > > __GFP_KSWAPD_RECLAIM) instead, then it will be limited if we allocate
+> > > too much memory.
+> >
+> > Please use GFP_NOWAIT instead of (__GFP_ATOMIC | __GFP_KSWAPD_RECLAIM).
+> > There is already a plan to completely remove __GFP_ATOMIC and mm-tree
+> > already have a patch for that.
+>
+> Oh, I didn't know this, thanks for heads up!
+> I agree that GFP_NOWAIT is the best choice then.
+>
+> Btw, we probably shouldn't even add GFP_NOWAIT if the allocation is performed
+> from the bpf syscall context. Why would we fail to pre-allocate a map if
+> we can easily go into the reclaim? But probably better to leave it for
+> a separate change.
 
-> >> In this specific race condition, register_bpf() will succeed, as it already
-> >> got tr->mutex. But the IPMODIFY (livepatch) side will fail and retry.   
-> > 
-> > What else takes the tr->mutex ?  
-> 
-> tr->mutex is the local mutex for a single BPF trampoline, we only need to take
-> it when we make changes to the trampoline (add/remove fentry/fexit programs). 
-> 
-> > 
-> > If it preempts anything else taking that mutex, when this runs, then it
-> > needs to be careful.
-> > 
-> > You said this can happen when the live patch came first. This isn't racing
-> > against live patch, it's racing against anything that takes the tr->mutex
-> > and then adds a bpf trampoline to a location that has a live patch.  
-> 
-> There are a few scenarios here:
-> 1. Live patch is already applied, then a BPF trampoline is being registered 
-> to the same function. In bpf_trampoline_update(), register_fentry returns
-> -EAGAIN, and this will be resolved. 
-
-Where will it be resolved?
-
-> 
-> 2. BPF trampoline is already registered, then a live patch is being applied 
-> to the same function. The live patch code need to ask the bpf trampoline to
-> prepare the trampoline before live patch. This is done by calling 
-> bpf_tramp_ftrace_ops_func. 
-> 
-> 2.1 If nothing else is modifying the trampoline at the same time, 
-> bpf_tramp_ftrace_ops_func will succeed. 
-> 
-> 2.2 In rare cases, if something else is holding tr->mutex to make changes to 
-> the trampoline (add/remove fentry functions, etc.), mutex_trylock in 
-> bpf_tramp_ftrace_ops_func will fail, and live patch will fail. However, the 
-> change to BPF trampoline will still succeed. It is common for live patch to
-> retry, so we just need to try live patch again when no one is making changes 
-> to the BPF trampoline in parallel. 
-
-If the live patch is going to try again, and the task doing the live
-patch is SCHED_FIFO, and the task holding the tr->mutex is SCHED_OTHER
-(or just a lower priority), then there is a chance that the live patch
-task preempted the tr->mutex owner, and let's say the tr->mutex owner
-is pinned to the CPU (by the user or whatever), then because the live
-patch task is in a loop trying to take that mutex, it will never let
-the owner continue.
-
-Yes, this is a real scenario with trylock on mutexes. We hit it all the
-time in RT.
-
-> 
-> >   
-> >> 
-> >> Since both livepatch and bpf trampoline changes are rare operations, I think 
-> >> the chance of the race condition is low enough. 
-
-
-A low race condition in a world that does this a billion times a day,
-ends up being not so rare.
-
-I like to say, "I live in a world where the unlikely is very much likely!"
-
-
-> >> 
-> >> Does this make sense?
-> >>   
-> > 
-> > It's low, and if it is also a privileged operation then there's less to be
-> > concern about.  
-> 
-> Both live patch and BPF trampoline are privileged operations. 
-
-This makes the issue less of an issue, but if there's an application
-that does this with setuid or something, there's a chance that it can
-be used by an attacker as well.
-
-> 
-> > As if it is not, then we could have a way to deadlock the
-> > system. I'm more concerned that this will lead to a CVE than it just
-> > happening randomly. In other words, it only takes something that can run at
-> > a real-time priority to connect to a live patch location, and something
-> > that runs at a low priority to take a tr->mutex. If an attacker has both,
-> > then it can pin both to a CPU and then cause the deadlock to the system.
-> > 
-> > One hack to fix this is to add a msleep(1) in the failed case of the
-> > trylock. This will at least give the owner of the lock a millisecond to
-> > release it. This was what the RT patch use to do with spin_trylock() that
-> > was converted to a mutex (and we worked hard to remove all of them).  
-> 
-> The fix is really simple. But I still think we don't need it. We only hit
-> the trylock case for something with IPMODIFY. The non-privileged user 
-> should not be able to do that, right?
-
-For now, perhaps. But what useful applications are there going to be in
-the future that performs these privileged operations on behalf of a
-non-privileged user?
-
-In other words, if we can fix it now, we should, and avoid debugging
-this issue 5 years from now where it may take months to figure out.
-
--- Steve
+The places affected by this patch are in atomic context.
+Prealloc path from syscall is using GFP_USER.
