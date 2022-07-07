@@ -2,102 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B93056AE9F
-	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 00:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC77A56AEB0
+	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 00:41:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237003AbiGGWge convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 7 Jul 2022 18:36:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35696 "EHLO
+        id S236590AbiGGWl0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Jul 2022 18:41:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237008AbiGGWgc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Jul 2022 18:36:32 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C102AE8B
-        for <bpf@vger.kernel.org>; Thu,  7 Jul 2022 15:36:31 -0700 (PDT)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 267KPxCC000753
-        for <bpf@vger.kernel.org>; Thu, 7 Jul 2022 15:36:31 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3h5kgpqxk0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 07 Jul 2022 15:36:31 -0700
-Received: from twshared0725.22.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Thu, 7 Jul 2022 15:36:30 -0700
-Received: by devbig932.frc1.facebook.com (Postfix, from userid 4523)
-        id 4AFEB9D349C5; Thu,  7 Jul 2022 15:36:10 -0700 (PDT)
-From:   Song Liu <song@kernel.org>
-To:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>
-CC:     <daniel@iogearbox.net>, <kernel-team@fb.com>, <x86@kernel.org>,
-        <dave.hansen@linux.intel.com>, <rick.p.edgecombe@intel.com>,
-        <mcgrof@kernel.org>, Song Liu <song@kernel.org>
-Subject: [PATCH v6 bpf-next 5/5] bpf: simplify select_bpf_prog_pack_size
-Date:   Thu, 7 Jul 2022 15:35:46 -0700
-Message-ID: <20220707223546.4124919-6-song@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220707223546.4124919-1-song@kernel.org>
-References: <20220707223546.4124919-1-song@kernel.org>
+        with ESMTP id S236628AbiGGWl0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Jul 2022 18:41:26 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9FA727CF5;
+        Thu,  7 Jul 2022 15:41:24 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id os14so4603789ejb.4;
+        Thu, 07 Jul 2022 15:41:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x0hTg3svlPkX7yjZEejAqipfWlRrXxPxf4EQelGBTvo=;
+        b=JjLDLcNl//HbIrbRbWAfVo8D/EHxetYwwUclgU4IpzJTW1aVvb76jqCKqg3pQTeotv
+         uI+pfXcAlpsxTDhK2XQU/X0vIHaOXSJoKWs9rkTxjxYJ9wiOflV/IzcsJSUlO04l7cjS
+         uDSH6tP2pdODKwl8VBAPJ715+J05mEiLpIH5b5kK+VQoCEQfpNJ0Wgyh9SG3orG3Hx+P
+         enbo2ru4HaAYtaJKwPwZTV8Jc0rTwxb1Y6qPZDBw7LzK7qLy0N+3fslDNlZWbTnvnTyi
+         x2LlCTlGHuTrJscVe/nGn5oSQABB6NQTA2FMSsEn5XXQ1rUyE9gMoiUWHUSGTufjkeXo
+         DxBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x0hTg3svlPkX7yjZEejAqipfWlRrXxPxf4EQelGBTvo=;
+        b=4AWGY3OKSs6+kGVhaDTY95q8MLPbtPfS9S/xMHhkUxai5Yg5bPRTDAAmyHSQ0mbBwJ
+         WLxb1eHKhWjPT5eTxIxLjMA+CejRoayhogacyntnB5QJOBkYB66HHXo7XsEp8OoxmmSP
+         Gp6ByYDNQoAMfHkfJqpy2DX0ftH/JZE9GgQxsJvmpnqSLnDhdAPd607y2Q+qc8Z37t55
+         dhhpE3sbBn4qD/v0Gz/PyRSV6xgrDlCj9ZgNjmgJwdH0Th9O090vsKQJ3Sf3p+xnJGCZ
+         IWSG4kOby0EeE35B063h6gxrCKtKgTuUgyNkIlQVJX2GSdGUbP+XzxcYjdYDCScFsKdQ
+         0uoQ==
+X-Gm-Message-State: AJIora/pDjJPNE1uQBSBWhwq1jSD7yr+A/DioFKao+JIhbCzdMxOaPg7
+        ENfibBtaHlD3yNJez03hf9nuloIsUACHMYZXG2s=
+X-Google-Smtp-Source: AGRyM1s0deLui/79j5hjBtPHHhjWJfeoyGA22i+D5HMSMsSL5RUY87JhVevlzB1bvYW08banAks08/NbPsWpeOf/OlM=
+X-Received: by 2002:a17:906:8444:b0:72a:7dda:5d71 with SMTP id
+ e4-20020a170906844400b0072a7dda5d71mr425919ejy.94.1657233683381; Thu, 07 Jul
+ 2022 15:41:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: e2DinLnuuuKmS9JxtjresLyXPCrI2FCf
-X-Proofpoint-GUID: e2DinLnuuuKmS9JxtjresLyXPCrI2FCf
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-07-07_17,2022-06-28_01,2022-06-22_01
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20220702033521.64630-1-roman.gushchin@linux.dev>
+ <CALvZod7TGhWtcRD6HeEx90T2+Rod-yamq9i+WbEQUKwNFTi-1A@mail.gmail.com>
+ <YsBmoqEBCa7ra7w2@castle> <YsMCMveSdiYX/2eH@dhcp22.suse.cz>
+ <YsSj6rZmUkR8amT2@castle> <CALOAHbAb9DT6ihyxTm-4FCUiqiAzRSUHJw9erc+JTKVT9p8tow@mail.gmail.com>
+ <YsUBQsTjVuXvt1Wr@castle> <CALOAHbDjRzySCHeMVHtVDe=Ji+qh=n0pT4CwiAM5Pahi2-QNCQ@mail.gmail.com>
+ <YsUH7pgBVnWSkC1q@castle>
+In-Reply-To: <YsUH7pgBVnWSkC1q@castle>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 7 Jul 2022 15:41:11 -0700
+Message-ID: <CAADnVQ+qqeAVvtDYox4xj85Qxt79EV1Hn+HDEMuzHrwZv14X4Q@mail.gmail.com>
+Subject: Re: [PATCH] mm: memcontrol: do not miss MEMCG_MAX events for enforced allocations
+To:     Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     Yafang Shao <laoar.shao@gmail.com>, Michal Hocko <mhocko@suse.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Use huge_vmalloc_supported to simplify select_bpf_prog_pack_size, so that
-we don't allocate some huge pages and free them immediately.
+On Tue, Jul 5, 2022 at 9:24 PM Roman Gushchin <roman.gushchin@linux.dev> wrote:
+>
+> Anyway, here is the patch for reparenting bpf maps:
+> https://github.com/rgushchin/linux/commit/f57df8bb35770507a4624fe52216b6c14f39c50c
+>
+> I gonna post it to bpf@ after some testing.
 
-Suggested-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
-Signed-off-by: Song Liu <song@kernel.org>
----
- kernel/bpf/core.c | 15 ++++-----------
- 1 file changed, 4 insertions(+), 11 deletions(-)
+Please do. It looks good.
+It needs #ifdef CONFIG_MEMCG_KMEM
+because get_obj_cgroup_from_current() is undefined otherwise.
+Ideally just adding a static inline to a .h ?
 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index d1f32ac354d3..e1f8d36fb95c 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -857,22 +857,15 @@ static LIST_HEAD(pack_list);
- static size_t select_bpf_prog_pack_size(void)
- {
- 	size_t size;
--	void *ptr;
--
--	size = BPF_HPAGE_SIZE * num_online_nodes();
--	ptr = module_alloc_huge(size);
- 
--	/* Test whether we can get huge pages. If not just use PAGE_SIZE
--	 * packs.
--	 */
--	if (!ptr || !is_vm_area_hugepages(ptr)) {
-+	if (huge_vmalloc_supported()) {
-+		size = BPF_HPAGE_SIZE * num_online_nodes();
-+		bpf_prog_pack_mask = BPF_HPAGE_MASK;
-+	} else {
- 		size = PAGE_SIZE;
- 		bpf_prog_pack_mask = PAGE_MASK;
--	} else {
--		bpf_prog_pack_mask = BPF_HPAGE_MASK;
- 	}
- 
--	vfree(ptr);
- 	return size;
- }
- 
--- 
-2.30.2
+and
+if (map->objcg)
+   memcg = get_mem_cgroup_from_objcg(map->objcg);
 
+or !NULL check inside get_mem_cgroup_from_objcg()
+which would be better.
