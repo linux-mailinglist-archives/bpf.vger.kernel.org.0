@@ -2,50 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AAFC56AE99
-	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 00:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7E1056AE9E
+	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 00:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236665AbiGGWg3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 7 Jul 2022 18:36:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35614 "EHLO
+        id S236988AbiGGWga convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 7 Jul 2022 18:36:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236797AbiGGWg2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Jul 2022 18:36:28 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B02D6D86
-        for <bpf@vger.kernel.org>; Thu,  7 Jul 2022 15:36:27 -0700 (PDT)
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 267KPkcQ013753
-        for <bpf@vger.kernel.org>; Thu, 7 Jul 2022 15:36:27 -0700
+        with ESMTP id S236824AbiGGWg3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Jul 2022 18:36:29 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1285DFB
+        for <bpf@vger.kernel.org>; Thu,  7 Jul 2022 15:36:28 -0700 (PDT)
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 267KPhSC030988
+        for <bpf@vger.kernel.org>; Thu, 7 Jul 2022 15:36:28 -0700
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3h4uaqsjpa-5
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3h5nw2f4te-8
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
         for <bpf@vger.kernel.org>; Thu, 07 Jul 2022 15:36:27 -0700
-Received: from twshared30313.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+Received: from twshared0725.22.frc3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2375.28; Thu, 7 Jul 2022 15:36:24 -0700
 Received: by devbig932.frc1.facebook.com (Postfix, from userid 4523)
-        id 79C5B9D349C1; Thu,  7 Jul 2022 15:36:04 -0700 (PDT)
+        id 8C1649D349C2; Thu,  7 Jul 2022 15:36:06 -0700 (PDT)
 From:   Song Liu <song@kernel.org>
 To:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-mm@kvack.org>
 CC:     <daniel@iogearbox.net>, <kernel-team@fb.com>, <x86@kernel.org>,
         <dave.hansen@linux.intel.com>, <rick.p.edgecombe@intel.com>,
         <mcgrof@kernel.org>, Song Liu <song@kernel.org>
-Subject: [PATCH v6 bpf-next 2/5] bpf: use module_alloc_huge for bpf_prog_pack
-Date:   Thu, 7 Jul 2022 15:35:43 -0700
-Message-ID: <20220707223546.4124919-3-song@kernel.org>
+Subject: [PATCH v6 bpf-next 3/5] vmalloc: WARN for set_vm_flush_reset_perms() on huge pages
+Date:   Thu, 7 Jul 2022 15:35:44 -0700
+Message-ID: <20220707223546.4124919-4-song@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220707223546.4124919-1-song@kernel.org>
 References: <20220707223546.4124919-1-song@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: TMtU17Gf5bBUxhH3eEvQOPOP2z9wM1PF
-X-Proofpoint-ORIG-GUID: TMtU17Gf5bBUxhH3eEvQOPOP2z9wM1PF
-Content-Transfer-Encoding: 8BIT
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
+X-Proofpoint-GUID: f9-7NUeE_fDNVTHmDHb3pOCgR_2Q63Vf
+X-Proofpoint-ORIG-GUID: f9-7NUeE_fDNVTHmDHb3pOCgR_2Q63Vf
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
  definitions=2022-07-07_17,2022-06-28_01,2022-06-22_01
@@ -59,83 +58,27 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Use module_alloc_huge for bpf_prog_pack so that BPF programs sit on
-PMD_SIZE pages. This benefits system performance by reducing iTLB miss
-rate. Benchmark of a real web service workload shows this change gives
-another ~0.2% performance boost on top of PAGE_SIZE bpf_prog_pack
-(which improve system throughput by ~0.5%).
+VM_FLUSH_RESET_PERMS is not yet ready for huge pages, add a WARN to
+catch misuse soon.
 
-Also, remove set_vm_flush_reset_perms() from alloc_new_pack() and use
-set_memory_[nx|rw] in bpf_prog_pack_free(). This is because
-VM_FLUSH_RESET_PERMS does not work with huge pages yet. [1]
-
-[1] https://lore.kernel.org/bpf/aeeeaf0b7ec63fdba55d4834d2f524d8bf05b71b.camel@intel.com/
 Suggested-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
 Signed-off-by: Song Liu <song@kernel.org>
 ---
- kernel/bpf/core.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ include/linux/vmalloc.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 805c2ad5c793..d1f32ac354d3 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -860,7 +860,7 @@ static size_t select_bpf_prog_pack_size(void)
- 	void *ptr;
+diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+index 096d48aa3437..59d3e1f3e108 100644
+--- a/include/linux/vmalloc.h
++++ b/include/linux/vmalloc.h
+@@ -239,6 +239,7 @@ static inline void set_vm_flush_reset_perms(void *addr)
+ {
+ 	struct vm_struct *vm = find_vm_area(addr);
  
- 	size = BPF_HPAGE_SIZE * num_online_nodes();
--	ptr = module_alloc(size);
-+	ptr = module_alloc_huge(size);
- 
- 	/* Test whether we can get huge pages. If not just use PAGE_SIZE
- 	 * packs.
-@@ -884,7 +884,7 @@ static struct bpf_prog_pack *alloc_new_pack(bpf_jit_fill_hole_t bpf_fill_ill_ins
- 		       GFP_KERNEL);
- 	if (!pack)
- 		return NULL;
--	pack->ptr = module_alloc(bpf_prog_pack_size);
-+	pack->ptr = module_alloc_huge(bpf_prog_pack_size);
- 	if (!pack->ptr) {
- 		kfree(pack);
- 		return NULL;
-@@ -893,7 +893,6 @@ static struct bpf_prog_pack *alloc_new_pack(bpf_jit_fill_hole_t bpf_fill_ill_ins
- 	bitmap_zero(pack->bitmap, bpf_prog_pack_size / BPF_PROG_CHUNK_SIZE);
- 	list_add_tail(&pack->list, &pack_list);
- 
--	set_vm_flush_reset_perms(pack->ptr);
- 	set_memory_ro((unsigned long)pack->ptr, bpf_prog_pack_size / PAGE_SIZE);
- 	set_memory_x((unsigned long)pack->ptr, bpf_prog_pack_size / PAGE_SIZE);
- 	return pack;
-@@ -912,10 +911,9 @@ static void *bpf_prog_pack_alloc(u32 size, bpf_jit_fill_hole_t bpf_fill_ill_insn
- 
- 	if (size > bpf_prog_pack_size) {
- 		size = round_up(size, PAGE_SIZE);
--		ptr = module_alloc(size);
-+		ptr = module_alloc_huge(size);
- 		if (ptr) {
- 			bpf_fill_ill_insns(ptr, size);
--			set_vm_flush_reset_perms(ptr);
- 			set_memory_ro((unsigned long)ptr, size / PAGE_SIZE);
- 			set_memory_x((unsigned long)ptr, size / PAGE_SIZE);
- 		}
-@@ -952,6 +950,8 @@ static void bpf_prog_pack_free(struct bpf_binary_header *hdr)
- 
- 	mutex_lock(&pack_mutex);
- 	if (hdr->size > bpf_prog_pack_size) {
-+		set_memory_nx((unsigned long)hdr, hdr->size / PAGE_SIZE);
-+		set_memory_rw((unsigned long)hdr, hdr->size / PAGE_SIZE);
- 		module_memfree(hdr);
- 		goto out;
- 	}
-@@ -978,6 +978,8 @@ static void bpf_prog_pack_free(struct bpf_binary_header *hdr)
- 	if (bitmap_find_next_zero_area(pack->bitmap, bpf_prog_chunk_count(), 0,
- 				       bpf_prog_chunk_count(), 0) == 0) {
- 		list_del(&pack->list);
-+		set_memory_nx((unsigned long)pack->ptr, bpf_prog_pack_size / PAGE_SIZE);
-+		set_memory_rw((unsigned long)pack->ptr, bpf_prog_pack_size / PAGE_SIZE);
- 		module_memfree(pack->ptr);
- 		kfree(pack);
- 	}
++	WARN_ON_ONCE(is_vm_area_hugepages(addr));
+ 	if (vm)
+ 		vm->flags |= VM_FLUSH_RESET_PERMS;
+ }
 -- 
 2.30.2
 
