@@ -2,86 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B938456A5A9
-	for <lists+bpf@lfdr.de>; Thu,  7 Jul 2022 16:40:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F0A756A738
+	for <lists+bpf@lfdr.de>; Thu,  7 Jul 2022 17:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235938AbiGGOkS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Jul 2022 10:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33646 "EHLO
+        id S235474AbiGGPox (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Jul 2022 11:44:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235920AbiGGOkR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Jul 2022 10:40:17 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 734AC3137F;
-        Thu,  7 Jul 2022 07:40:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 25F94B8223D;
-        Thu,  7 Jul 2022 14:40:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id BBFB4C341C8;
-        Thu,  7 Jul 2022 14:40:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1657204813;
-        bh=34u7DPSKmpE5fX07+/IcUMCSp/wl3YlsOsPTKAV+eWY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=psAHJ2oofxLByDMXZljGLCV7ngRX1rsHcz0fr3J2D8w5iH+i55aWTENQUvgEp1K49
-         faFDP5/Tg+ZnGlxT7T2WaTelM9qH1peEKRsEOYvB3Nq3OnyiJ2mnog/43rYpu55D5g
-         m8O4CDmD9a6ZoVHgbz1zmxQ84usNm3i1vb8cvrdBtdhLgsbhMDZOJAbKhjxLZ7jLTH
-         ZddWnXPk1nPScLeK39EXc5nM50taRQiDca3vTUj/s1aWDQBMoAsv/jLlc1pabvMUJC
-         4p2Pkk0TzhNJIwqfhf1ZPKJXFB+2RgNvzdTDsRzlofCinqISNVDqTeU3XUPJTjhloR
-         zeHAFDh6cs/dg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 95B66E45BDA;
-        Thu,  7 Jul 2022 14:40:13 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229926AbiGGPow (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Jul 2022 11:44:52 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DB272F3B1
+        for <bpf@vger.kernel.org>; Thu,  7 Jul 2022 08:44:51 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id ez10so2977851ejc.13
+        for <bpf@vger.kernel.org>; Thu, 07 Jul 2022 08:44:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=f0eWi5rDiGajbml66KrzPb2nGOrm6POqtc3uDDIFjbk=;
+        b=iu+LZTBSEVdIzeb9mqfNlxRtlCoYA4IG7/Q5b8psqXj6tDkdpMbvSQBnqNxXH8SjC6
+         8rraeh5SOsa66+LKowst4IOj31zNZodKRQG69Fb6BUHPxuBLVCwOpO697NFD93tLXBJC
+         3KavEFUbALgqXER7OnhbVRVSQxhE92p9wRJeAv/et55ArAjvy7P99XNUBMcvRreAhh8t
+         3IxOGeBWV8jUpkL1qpPDD6CBvMFX4FhSmKKLq5CYR0vomya7CnlWgErl0T45tx9VwMy4
+         aJ8N5fI0vxRdBHSgLFMo7S8ts5asuvWnMYcrcTPxJV+/KCs7I6/1y8AGoa5aBp3buHV4
+         SWSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=f0eWi5rDiGajbml66KrzPb2nGOrm6POqtc3uDDIFjbk=;
+        b=NV1sFTo6TeEqu2kwYYQWDOQm2t21t44eZv+2aZgSj6EVM6PAziTepdcmyo4iNuQcUP
+         sHxwwN7kXZZbAeNsvL6Lkx/77ITOXY+PMTSy5eDhd3sg2LD/KbB4hVbwWl3+wFi7ULcr
+         aMK/1RyHCWygYZ39uU/UxvOxClBB7k8ceYMJO0bdotYlh/vSre7/WHcjC7J9hEORx4oT
+         R2haQeTIC0yYc3Bcr4sSQQ7Z6oLRCATXs2j/mmrlFCtIjUdMcJ2GkMKK5uBuR3GSBJoV
+         Fi2yUphohKaqKyqpNFulW0LRurt88G0syjmUSooaoPQp9fxFg8Y/9L/ESS+GRresepJb
+         cw6g==
+X-Gm-Message-State: AJIora/R2bOUrkBJW+xPPt3ckcQJShOheQmxz6WYZSG3xiPCs2JD0woT
+        M9XhqeBD61L6nT+nsBL9iyioYBv8dTsz0Az/DMc=
+X-Google-Smtp-Source: AGRyM1t4J4haU/zZ9jX80t7qew5Jw2LVRgD5AfmwROthSGmYGKnNGikKo7g8zEz161C/cPDdJORVSifLF5b3koHN0X4=
+X-Received: by 2002:a17:906:6146:b0:722:f8c4:ec9b with SMTP id
+ p6-20020a170906614600b00722f8c4ec9bmr47691713ejl.708.1657208689506; Thu, 07
+ Jul 2022 08:44:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v4 bpf-next] selftests/bpf: Add benchmark for local_storage
- RCU Tasks Trace usage
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165720481360.13867.14770965317150614583.git-patchwork-notify@kernel.org>
-Date:   Thu, 07 Jul 2022 14:40:13 +0000
-References: <20220705190018.3239050-1-davemarchevsky@fb.com>
-In-Reply-To: <20220705190018.3239050-1-davemarchevsky@fb.com>
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     bpf@vger.kernel.org, rcu@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, paulmck@kernel.org,
-        kafai@fb.com, edumazet@google.com, kernel-team@fb.com
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220706155848.4939-1-laoar.shao@gmail.com> <20220706155848.4939-2-laoar.shao@gmail.com>
+ <20220707000721.dtl356trspb23ctp@google.com> <CALOAHbC4RG_G2wjU0Nj_A9MhrHiQ7GXR7Yp7BCr+7dDmXwR-4w@mail.gmail.com>
+In-Reply-To: <CALOAHbC4RG_G2wjU0Nj_A9MhrHiQ7GXR7Yp7BCr+7dDmXwR-4w@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 7 Jul 2022 08:44:37 -0700
+Message-ID: <CAADnVQKJ44nmxzUDAkckXJ2mzJAshvzzGFP-oPT=NO3rGW7pQA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Make non-preallocated allocation low priority
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hao Luo <haoluo@google.com>, bpf <bpf@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Thu, Jul 7, 2022 at 3:28 AM Yafang Shao <laoar.shao@gmail.com> wrote:
+>
+> On Thu, Jul 7, 2022 at 8:07 AM Shakeel Butt <shakeelb@google.com> wrote:
+> >
+> > On Wed, Jul 06, 2022 at 03:58:47PM +0000, Yafang Shao wrote:
+> > > GFP_ATOMIC doesn't cooperate well with memcg pressure so far, especially
+> > > if we allocate too much GFP_ATOMIC memory. For example, when we set the
+> > > memcg limit to limit a non-preallocated bpf memory, the GFP_ATOMIC can
+> > > easily break the memcg limit by force charge. So it is very dangerous to
+> > > use GFP_ATOMIC in non-preallocated case. One way to make it safe is to
+> > > remove __GFP_HIGH from GFP_ATOMIC, IOW, use (__GFP_ATOMIC |
+> > > __GFP_KSWAPD_RECLAIM) instead, then it will be limited if we allocate
+> > > too much memory.
+> >
+> > Please use GFP_NOWAIT instead of (__GFP_ATOMIC | __GFP_KSWAPD_RECLAIM).
+> > There is already a plan to completely remove __GFP_ATOMIC and mm-tree
+> > already have a patch for that.
+> >
+>
+> After reading the discussion[1], it looks good to me to use GFP_NOWAIT
+> instead. I will update it.
 
-This patch was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Tue, 5 Jul 2022 12:00:18 -0700 you wrote:
-> This benchmark measures grace period latency and kthread cpu usage of
-> RCU Tasks Trace when many processes are creating/deleting BPF
-> local_storage. Intent here is to quantify improvement on these metrics
-> after Paul's recent RCU Tasks patches [0].
-> 
-> Specifically, fork 15k tasks which call a bpf prog that creates/destroys
-> task local_storage and sleep in a loop, resulting in many
-> call_rcu_tasks_trace calls.
-> 
-> [...]
-
-Here is the summary with links:
-  - [v4,bpf-next] selftests/bpf: Add benchmark for local_storage RCU Tasks Trace usage
-    https://git.kernel.org/bpf/bpf-next/c/2b4b2621fd64
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Should we use GFP_ATOMIC | __GFP_NOMEMALLOC instead
+to align with its usage in the networking stack?
