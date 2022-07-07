@@ -2,63 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70B2E56AED4
-	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 01:07:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99D7956AF0B
+	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 01:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236435AbiGGXH0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Jul 2022 19:07:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52862 "EHLO
+        id S236899AbiGGXdi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Jul 2022 19:33:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236294AbiGGXH0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Jul 2022 19:07:26 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D128610FFB
-        for <bpf@vger.kernel.org>; Thu,  7 Jul 2022 16:07:24 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id o31-20020a17090a0a2200b001ef7bd037bbso235245pjo.0
-        for <bpf@vger.kernel.org>; Thu, 07 Jul 2022 16:07:24 -0700 (PDT)
+        with ESMTP id S236022AbiGGXdh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Jul 2022 19:33:37 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59AFA1FD
+        for <bpf@vger.kernel.org>; Thu,  7 Jul 2022 16:33:35 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id z13so25094757qts.12
+        for <bpf@vger.kernel.org>; Thu, 07 Jul 2022 16:33:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=P80ntBkVpAcsj2MWPd0PznGt2UbGJIAet138D5TXy4M=;
-        b=WmGbZOObEKUsa+PvGTFfRdqSqk0gu36sEhij46xSehzsWaBrIt6EttQNG8N0tLTQS6
-         KAQzGUBAOMJzFiP3QWCbCqfFY984qFHp3Qke1rpHtOfR6U/mVl6CUODvcJEXx5NM7M6l
-         yxWWAKTLELaUNAzU1GNt0qL4BrJuyjdjqPPGUTHaf90hHX9HPOK5t+kA0slzblZ5ijCO
-         r1rgw4VZFgBqqgWNB12bDDrQy1fFzwjtq3jTyKHW2yCd8IzmmdkPPOYZ62nRk8ZL7fBY
-         B+mB/SigQbbbOhcK9F6IWtR9WGKiZzLUKaZbWFyxNnOiVKlahp4psko2uM8JFIxtnHxq
-         GKcg==
+        bh=C3mGVzkNGFQOGZ/y27ZbQkMVyVRvFTFo9AVDkxPU3Qs=;
+        b=jI3G3nw3SkAqpzPaUgQF22T9Ic6RqP7p4lMxcErcOD7LNwKHd9PhRD3jRjB5LpdRas
+         Y5NSMurtCWidZFToFy1cwL/XBxIfNw8pRD1q5Tkl+DjQU82h4wug5DMjjkpFX5N/DorO
+         SwsedXFgGBd+s1tGJbH90/3YrEFEevIGRkGo0KerFHlOynd+zFhmCXD6wOxegx+qKcI7
+         whx6NUJOU7zlSU/AwEkpEWHVAccpRcvhOXltX62YPY1hchP+LZnGgdRpe/U837IrWH3D
+         dz5dOl6K+w5srsimqMB2BRtRhqEml7mfZ8+BDapksn3GwHM8o2gHQoLWP2Z3Uu5lfvw3
+         v75A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=P80ntBkVpAcsj2MWPd0PznGt2UbGJIAet138D5TXy4M=;
-        b=W4TH5VZznXZoSuhXCeGaawj3R1acFJncXKxzU8Z/kJKO2m6pbh3NcRw2IEvXAycOIp
-         W/qD/xWpth41t3jU5zO9lNWKRt9RqDKUpntZJvy7bNVposwLtAsv+6RcAhinfjgPUvPW
-         HXgZS7bH4VVgJDUnI+pcwn9cATT3+mF7LO8Cyny/KG7pBFBXPGOFJHPm0CmEU87AJJjL
-         sG04eD4lD6ov6f1+MBPXu0PRIBuVEOO6bmZ+7o5zoSHzh0nUs6L5dzKfoYmsJoVmbaSk
-         l3EI17nI0rQjYaRKB2NzDEZFcUCRZFh8qIP4hQUHqh90qAwMfRpSvIVoxfGUaJrH0Myr
-         BIqg==
-X-Gm-Message-State: AJIora9jH+j906FMDZwK7WthBYeQRdGVoPf7irAQLVO9uMOeRQ2LD5CG
-        Ggjynnx5eF05k6v77ZnD/I+MpYKFyXVDcz0GwisFUw==
-X-Google-Smtp-Source: AGRyM1v3RhdzRU2Giu0Uq1JwgnhTw+jeqxzl4LMnVlFLsUMIytKfWqjFGvUa1VsthwCIYIRIg/XC3U96cI6NxsaPCxA=
-X-Received: by 2002:a17:90b:388b:b0:1ed:406:492c with SMTP id
- mu11-20020a17090b388b00b001ed0406492cmr304236pjb.31.1657235244123; Thu, 07
- Jul 2022 16:07:24 -0700 (PDT)
+        bh=C3mGVzkNGFQOGZ/y27ZbQkMVyVRvFTFo9AVDkxPU3Qs=;
+        b=uhTnKqSpKP4MN/WLhmArj/rcGXhyoBHxjDQVsydEMUXQtOY2CzAWeJOem4pJWj4jI4
+         HqmsxOl9h3pTUliu1bovtkXG30tQW518v46whKhj0x3cY1bPk3fAAq4dGUUc4EM/skML
+         3f61QM/VuwrKiSUKgnd2Rbi+FlLCRuecEWxvEfSkukWmelS8NeraYHIF8jZPTqqxMW9N
+         l97Z4oqlP7ez72VyESZOr486CVvY06OIUVXtPGqrYklXUhHHtY0v6Oqk+ffjwQMHjFWy
+         mo2pwjHTONYqIf8TPFwKvvmgo0GvvADa2vGFmJfqxW1igK8UgE9fc7qf+9+Uxkqkfsgs
+         xZkQ==
+X-Gm-Message-State: AJIora/AoxSxOKfLWEqSxaX1kV60zS/XMpl8F97KubbpoKu3PTgsvphZ
+        8BRkT2ThqNVwKZM8niW/nTetABJDoBgZAhCAKbHDVg==
+X-Google-Smtp-Source: AGRyM1vEAd1x2UNB33pdXaPWBs45WXrfdgTefCVvtafX/mSzrQX5KL9nA7apiMh9koyl9ZSeRjRPZ2w8IZQ0Rvdb+DA=
+X-Received: by 2002:a0c:b30e:0:b0:470:a567:edf6 with SMTP id
+ s14-20020a0cb30e000000b00470a567edf6mr326564qve.44.1657236814309; Thu, 07 Jul
+ 2022 16:33:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220707160233.2078550-1-sdf@google.com> <20220707181451.6xdtdesokuetj4ud@kafai-mbp.dhcp.thefacebook.com>
- <YscxieVQayT2cVgi@google.com> <20220707220854.cbbydamsasjctxos@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20220707220854.cbbydamsasjctxos@kafai-mbp.dhcp.thefacebook.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Thu, 7 Jul 2022 16:07:13 -0700
-Message-ID: <CAKH8qBtM=oaZey8s5aTumK77OtSJtxSi1gU7P8vqsuyUj7Mvrw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpf: check attach_func_proto more carefully
- in check_return_code
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org,
-        syzbot+5cc0730bd4b4d2c5f152@syzkaller.appspotmail.com
+References: <20220610194435.2268290-1-yosryahmed@google.com>
+ <20220610194435.2268290-5-yosryahmed@google.com> <f6c0274d-73c4-e05b-6405-4062230c4a14@fb.com>
+In-Reply-To: <f6c0274d-73c4-e05b-6405-4062230c4a14@fb.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Thu, 7 Jul 2022 16:33:23 -0700
+Message-ID: <CA+khW7h05O1zg90tkK_7G9u0dhi8jN8WFZ_V_58obSLR4n1iBQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 4/8] bpf: Introduce cgroup iter
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, cgroups@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -71,130 +84,112 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 7, 2022 at 3:09 PM Martin KaFai Lau <kafai@fb.com> wrote:
+On Mon, Jun 27, 2022 at 9:09 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> On Thu, Jul 07, 2022 at 12:18:33PM -0700, sdf@google.com wrote:
-> > On 07/07, Martin KaFai Lau wrote:
-> > > On Thu, Jul 07, 2022 at 09:02:33AM -0700, Stanislav Fomichev wrote:
-> > > > Syzkaller reports the following crash:
-> > > > RIP: 0010:check_return_code kernel/bpf/verifier.c:10575 [inline]
-> > > > RIP: 0010:do_check kernel/bpf/verifier.c:12346 [inline]
-> > > > RIP: 0010:do_check_common+0xb3d2/0xd250 kernel/bpf/verifier.c:14610
-> > > >
-> > > > With the following reproducer:
-> > > > bpf$PROG_LOAD_XDP(0x5, &(0x7f00000004c0)={0xd, 0x3,
-> > > &(0x7f0000000000)=ANY=[@ANYBLOB="1800000000000019000000000000000095"],
-> > > &(0x7f0000000300)='GPL\x00', 0x0, 0x0, 0x0, 0x0, 0x0, '\x00', 0x0, 0x2b,
-> > > 0xffffffffffffffff, 0x8, 0x0, 0x0, 0x10, 0x0}, 0x80)
-> > > >
-> > > > Because we don't enforce expected_attach_type for XDP programs,
-> > > > we end up in hitting 'if (prog->expected_attach_type == BPF_LSM_CGROUP'
-> > > > part in check_return_code and follow up with testing
-> > > > `prog->aux->attach_func_proto->type`, but `prog->aux->attach_func_proto`
-> > > > is NULL.
-> > > >
-> > > > Add explicit prog_type check for the "Note, BPF_LSM_CGROUP that
-> > > > attach ..." condition. Also, don't skip return code check for
-> > > > LSM/STRUCT_OPS.
-> > > >
-> > > > The above actually brings an issue with existing selftest which
-> > > > tries to return EPERM from void inet_csk_clone. Fix the
-> > > > test (and move called_socket_clone to make sure it's not
-> > > > incremented in case of an error) and add a new one to explicitly
-> > > > verify this condition.
-> > > >
-> > > > v2:
-> > > > - Martin: don't add new helper, check prog_type instead
-> > > > - Martin: check expected_attach_type as well at the function entry
-> > > > - Update selftest to verify this condition
-> > > >
-> > > > Fixes: 69fd337a975c ("bpf: per-cgroup lsm flavor")
-> > > > Reported-by: syzbot+5cc0730bd4b4d2c5f152@syzkaller.appspotmail.com
-> > > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > > > ---
-> > > >  kernel/bpf/verifier.c                              |  2 ++
-> > > >  .../testing/selftests/bpf/prog_tests/lsm_cgroup.c  | 12 ++++++++++++
-> > > >  tools/testing/selftests/bpf/progs/lsm_cgroup.c     | 12 ++++++------
-> > > >  .../selftests/bpf/progs/lsm_cgroup_nonvoid.c       | 14 ++++++++++++++
-> > > >  4 files changed, 34 insertions(+), 6 deletions(-)
-> > > >  create mode 100644
-> > > tools/testing/selftests/bpf/progs/lsm_cgroup_nonvoid.c
-> > > >
-> > > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > > index df3ec6b05f05..2bc1e7252778 100644
-> > > > --- a/kernel/bpf/verifier.c
-> > > > +++ b/kernel/bpf/verifier.c
-> > > > @@ -10445,6 +10445,7 @@ static int check_return_code(struct
-> > > bpf_verifier_env *env)
-> > > >
-> > > >   /* LSM and struct_ops func-ptr's return type could be "void" */
-> > > >   if (!is_subprog &&
-> > > > +     prog->expected_attach_type != BPF_LSM_CGROUP &&
-> > > BPF_PROG_TYPE_STRUCT_OPS also uses the expected_attach_type,
-> > > so the expected_attach_type check should only be done for LSM prog alone.
-> > > Others lgtm.
-> >
-> > In this case, something like the following should be sufficient?
-> >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 2bc1e7252778..6702a5fc12e6 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -10445,11 +10445,13 @@ static int check_return_code(struct
-> > bpf_verifier_env *env)
-> >
-> >       /* LSM and struct_ops func-ptr's return type could be "void" */
-> >       if (!is_subprog &&
-> > -         prog->expected_attach_type != BPF_LSM_CGROUP &&
-> > -         (prog_type == BPF_PROG_TYPE_STRUCT_OPS ||
-> > -          prog_type == BPF_PROG_TYPE_LSM) &&
-> > -         !prog->aux->attach_func_proto->type)
-> > -             return 0;
-> > +         !prog->aux->attach_func_proto->type) {
-> prog_type check has to be done first since prog->aux->attach_func_proto
-> depends on the prog_type.
 >
-> How about a small tweak on top of yours ?
+>
+> On 6/10/22 12:44 PM, Yosry Ahmed wrote:
+> > From: Hao Luo <haoluo@google.com>
+> >
+> > Cgroup_iter is a type of bpf_iter. It walks over cgroups in two modes:
+> >
+> >   - walking a cgroup's descendants.
+> >   - walking a cgroup's ancestors.
+>
+> The implementation has another choice, BPF_ITER_CGROUP_PARENT_UP.
+> We should add it here as well.
+>
 
-Looks good, thanks! Will test and resend sometime tomorrow.
+Sorry about the late reply. I meant to write two modes: walking up and
+walking down. And two sub-modes when walking down: pre-order and
+post-order.
 
->         /* LSM and struct_ops func-ptr's return type could be "void" */
->         if (!is_subprog) {
->                 switch (prog_type) {
->                 case BPF_PROG_TYPE_LSM:
->                         if (prog->expected_attach_type == BPF_LSM_CGROUP)
->                                 /* cgroup prog needs to return 0 or 1 */
->                                 break;
->                         fallthrough;
->                 case BPF_PROG_TYPE_STRUCT_OPS:
->                         if (!prog->aux->attach_func_proto->type)
->                                 return 0;
->                         break;
->                 default:
->                         break;
->                 }
->         }
+But it seems this is confusing. I'm going to use three modes in the
+next version: UP, PRE and POST.
+
+Besides, since this patch modifies the bpf_iter_link_info, and that
+breaks the btf_dump selftest, I need to include the fix of the
+selftest in this patch.
+
+> >
+> > When attaching cgroup_iter, one can set a cgroup to the iter_link
+> > created from attaching. This cgroup is passed as a file descriptor and
+> > serves as the starting point of the walk. If no cgroup is specified,
+> > the starting point will be the root cgroup.
+> >
+> > For walking descendants, one can specify the order: either pre-order or
+> > post-order. For walking ancestors, the walk starts at the specified
+> > cgroup and ends at the root.
+> >
+> > One can also terminate the walk early by returning 1 from the iter
+> > program.
+> >
+> > Note that because walking cgroup hierarchy holds cgroup_mutex, the iter
+> > program is called with cgroup_mutex held.
 >
-> > +             if (prog_type == BPF_PROG_TYPE_STRUCT_OPS)
-> > +                     return 0;
-> > +             if (prog_type == BPF_PROG_TYPE_LSM &&
-> > +                 prog->expected_attach_type != BPF_LSM_CGROUP)
-> > +                     return 0;
-> > +     }
+> Overall looks good to me with a few nits below.
+>
+> Acked-by: Yonghong Song <yhs@fb.com>
+>
 > >
-> >       /* eBPF calling convention is such that R0 is used
-> >        * to return the value from eBPF program.
-> >
-> > > >       (prog_type == BPF_PROG_TYPE_STRUCT_OPS ||
-> > > >        prog_type == BPF_PROG_TYPE_LSM) &&
-> > > >       !prog->aux->attach_func_proto->type)
-> > > > @@ -10572,6 +10573,7 @@ static int check_return_code(struct
-> > > bpf_verifier_env *env)
-> > > >   if (!tnum_in(range, reg->var_off)) {
-> > > >           verbose_invalid_scalar(env, reg, &range, "program exit", "R0");
-> > > >           if (prog->expected_attach_type == BPF_LSM_CGROUP &&
-> > > > +             prog_type == BPF_PROG_TYPE_LSM &&
-> > > >               !prog->aux->attach_func_proto->type)
-> > > >                   verbose(env, "Note, BPF_LSM_CGROUP that attach to void LSM hooks
-> > > can't modify return value!\n");
-> > > >           return -EINVAL;
+> > Signed-off-by: Hao Luo <haoluo@google.com>
+> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> > ---
+[...]
+> > +
+> > +/* cgroup_iter provides two modes of traversal to the cgroup hierarchy.
+> > + *
+> > + *  1. Walk the descendants of a cgroup.
+> > + *  2. Walk the ancestors of a cgroup.
+>
+> three modes here?
+>
+
+Same here. Will use 'three modes' in the next version.
+
+> > + *
+[...]
+> > +
+> > +static int bpf_iter_attach_cgroup(struct bpf_prog *prog,
+> > +                               union bpf_iter_link_info *linfo,
+> > +                               struct bpf_iter_aux_info *aux)
+> > +{
+> > +     int fd = linfo->cgroup.cgroup_fd;
+> > +     struct cgroup *cgrp;
+> > +
+> > +     if (fd)
+> > +             cgrp = cgroup_get_from_fd(fd);
+> > +     else /* walk the entire hierarchy by default. */
+> > +             cgrp = cgroup_get_from_path("/");
+> > +
+> > +     if (IS_ERR(cgrp))
+> > +             return PTR_ERR(cgrp);
+> > +
+> > +     aux->cgroup.start = cgrp;
+> > +     aux->cgroup.order = linfo->cgroup.traversal_order;
+>
+> The legality of traversal_order should be checked.
+>
+
+Sounds good. Will do.
+
+> > +     return 0;
+> > +}
+> > +
+[...]
+> > +static void bpf_iter_cgroup_show_fdinfo(const struct bpf_iter_aux_info *aux,
+> > +                                     struct seq_file *seq)
+> > +{
+> > +     char *buf;
+> > +
+> > +     buf = kzalloc(PATH_MAX, GFP_KERNEL);
+> > +     if (!buf) {
+> > +             seq_puts(seq, "cgroup_path:\n");
+>
+> This is a really unlikely case. maybe "cgroup_path:<unknown>"?
+>
+
+Sure, no problem. This is a path that is unlikely to hit.
+
+> > +             goto show_order;
+[...]
