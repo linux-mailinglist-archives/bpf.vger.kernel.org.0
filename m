@@ -2,65 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D62056ABE8
-	for <lists+bpf@lfdr.de>; Thu,  7 Jul 2022 21:36:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C554756AC3F
+	for <lists+bpf@lfdr.de>; Thu,  7 Jul 2022 21:52:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234551AbiGGTgr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Jul 2022 15:36:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50764 "EHLO
+        id S232262AbiGGTwR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Jul 2022 15:52:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231875AbiGGTgr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Jul 2022 15:36:47 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 443972A70A
-        for <bpf@vger.kernel.org>; Thu,  7 Jul 2022 12:36:46 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id o25so34188911ejm.3
-        for <bpf@vger.kernel.org>; Thu, 07 Jul 2022 12:36:46 -0700 (PDT)
+        with ESMTP id S235918AbiGGTwR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Jul 2022 15:52:17 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F01AA564DB
+        for <bpf@vger.kernel.org>; Thu,  7 Jul 2022 12:52:15 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id m16so8973497edb.11
+        for <bpf@vger.kernel.org>; Thu, 07 Jul 2022 12:52:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9WGrWtDudmv3y15aDeYlBeLs1U2H51/HG+l4ujW/bI4=;
-        b=Wp+twJZIFxw4lD9AUs07nF/Tnp+OYvq6MlJbvHsF90yWUgXRMUia49oj3tO9tb37R1
-         6aAzujmihqwyx0lQOcZ4LURpqP3IswDKeqpJ2E9+4vnCMxdAs+Y2t6wtrKTSskD8DiYe
-         UFh+GoF9EMel4FzVgQXrbWdGoryiNcH050oAqe8qaYTiJZVdRLqLlFDHOXm1bb+1khYV
-         5FtW0zQB6phgxJ+A4g20HMnSYdPcfLFwXH4XeSeIOKdq/toDjnAHBTT5Pumdz+83hFDy
-         FVgle5IflAw1xUQrmez9HInr+i8UcV+7Ilz1HBLm6xY615snnKcgoTQ3EvDsTVDiul50
-         DnIw==
+        bh=D5uMeJwWigwX7nArU3NFgeKbmwZTaSJ+b7KA1UdN4EA=;
+        b=BWJJupXvt+BXwisBo7ujy+t73p2GMlscRF3cWLHZWqOoXYS5dGy0gYj/lVPAMpew3B
+         nsrGTCCiNBp+/y+Ofb4Y5ZVWtjpqlgs9PB9gbWG1MfnecZKl1FsGsP9daky5TcON9F4j
+         xPm/H5Hos46WqTHGo6NQYYjPQdolW0BMuSuGvOkmJcBwJWnmRH5G0KFO3gMGkaEM7tzL
+         E5Q7dWLle3yXXt6krBHXDsHRHk50KSUU3q9SLO5EkW3/F8+YnVzBkcRsI9dkvRxWKdgb
+         CIZw45Z0r3ltIS2kd1lsqiif0PNBOhm3SNSn3DGTi13apgOCTbM+DHMNxYHa83RscwKv
+         SafQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9WGrWtDudmv3y15aDeYlBeLs1U2H51/HG+l4ujW/bI4=;
-        b=a4XkQR8g6bglaoc+213myGPLS9HPoiNF2n8sOKOkCGnDFlrwDu3Tu5Mmzf0PbsA7I8
-         emNrmbyOOQUCxr6Lv5LJeQhJl/LUtp69FiDZdvJiOPZu9BuNBLqwfeotcHuOLZ6/pmxC
-         vNucEr19WRkSNVh8RzdRA5Qgls1acjc7KFj+io3gQmOE3AKT4DTcqCIewScReVKxDpfE
-         1+zPydeeFjhFo0dwwIoHxe+Q794Vy2CZ32d1lmZxfBgsZ2w4CKrXaSTnxZVu/jpugsCy
-         P2scSTbqBbQtC0Nf36V8uVBEMHJdM+W9j8kvKXlSjnm8NSQOuU5wUtzNI+BV99RFGF4z
-         +Amg==
-X-Gm-Message-State: AJIora8GrnOilm95zK5m7JEVqp1aon/3HtmjC6ernRtvQSxtOIZFazoH
-        jkoKLCAklR+jZ/BHJfQW6kirUf6APFg0Y03ijbEKqDSP
-X-Google-Smtp-Source: AGRyM1s47iWn+rgO7FvAyW7X91e9ZLAQXF3LPY5IceT0VDObQ7p49ir8VR4437GLK44qVv14r/SkqJPLR/IDpr7uDUI=
-X-Received: by 2002:a17:906:8444:b0:72a:7dda:5d71 with SMTP id
- e4-20020a170906844400b0072a7dda5d71mr36191560ejy.94.1657222604683; Thu, 07
- Jul 2022 12:36:44 -0700 (PDT)
+        bh=D5uMeJwWigwX7nArU3NFgeKbmwZTaSJ+b7KA1UdN4EA=;
+        b=zLPec5zHILT1+d/TmX6OUvpAoSyyFZTjmFVtFkijQmRO+hMoZY+QQDJJdM2KbzKXPl
+         q14E63qcRrdTKRZct4jC4kLw++WPcdcbpMFyn1MYsOEFMiise7UljfpRbDv1wD4oxOQM
+         mHw2rjisMtwofEanDzsWR511EKIdO7NVJ9ZjChkWz+yeg7W3hyYpBfNVykbROj2PJmh1
+         EPl7gFVEsoeR++Yw647lu9t2xIV6Npw4W6/uYE3bKMKH43zhHVd7xbQnl9nZa5mR5wWI
+         M4DjlDmEq6NO+dcjzxQvezzZ7zfruN9+KEJ/YmG7bpH3C5P4rO1mlAjcZS/w5LsF0eRb
+         rEnw==
+X-Gm-Message-State: AJIora8jKV+5O6xytV38tENWEQeWX56EkfaDL+BqpI0Uy8NlWDGvc+aE
+        kdjjLfvHlCOaXZmu1rTR/r0lgIHt/GfKtfXL+JdsYneMSiQ=
+X-Google-Smtp-Source: AGRyM1sMDFt13BSh2CcefP3zNVdv5rMJVDhFuB2b9k63Dr50FX4uADEg4QjIt/BECkpa9hhpODKS8GUyhDgHfui4POw=
+X-Received: by 2002:aa7:c9d3:0:b0:43a:67b9:6eea with SMTP id
+ i19-20020aa7c9d3000000b0043a67b96eeamr29384535edt.94.1657223534550; Thu, 07
+ Jul 2022 12:52:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220707004118.298323-1-andrii@kernel.org> <20220707004118.298323-3-andrii@kernel.org>
- <CAADnVQLxWDD3AAp73BcXW4ArWMgJ-fSUzSjw=-gzq=azBrXdqA@mail.gmail.com> <CAEf4BzaXBD86k8BYv7q4fFeyHALHcVUCbSpSG4=kfC0orydrCQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzaXBD86k8BYv7q4fFeyHALHcVUCbSpSG4=kfC0orydrCQ@mail.gmail.com>
+References: <20220706232547.4016651-1-joannelkoong@gmail.com>
+In-Reply-To: <20220706232547.4016651-1-joannelkoong@gmail.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 7 Jul 2022 12:36:33 -0700
-Message-ID: <CAADnVQKm5otAmeoseC9=x7Co91CgY1oYpHFR1R+pRSB+X_mYFQ@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next 2/3] libbpf: add ksyscall/kretsyscall
- sections support for syscall kprobes
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Thu, 7 Jul 2022 12:52:03 -0700
+Message-ID: <CAADnVQ+cOfMAvz69yjmkvhEA0kZRhGZxGQDAzV-0E+BtmrK71g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1] bpf: Add flags arg to bpf_dynptr_read and
+ bpf_dynptr_write APIs
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Kenta Tada <kenta.tada@sony.com>,
-        Hengqi Chen <hengqi.chen@gmail.com>
+        Alexei Starovoitov <ast@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -72,158 +67,42 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 7, 2022 at 12:10 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Wed, Jul 6, 2022 at 4:26 PM Joanne Koong <joannelkoong@gmail.com> wrote:
 >
-> On Thu, Jul 7, 2022 at 10:23 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Wed, Jul 6, 2022 at 5:41 PM Andrii Nakryiko <andrii@kernel.org> wrote:
-> > >
-> > > Add SEC("ksyscall")/SEC("ksyscall/<syscall_name>") and corresponding
-> > > kretsyscall variants (for return kprobes) to allow users to kprobe
-> > > syscall functions in kernel. These special sections allow to ignore
-> > > complexities and differences between kernel versions and host
-> > > architectures when it comes to syscall wrapper and corresponding
-> > > __<arch>_sys_<syscall> vs __se_sys_<syscall> differences, depending on
-> > > CONFIG_ARCH_HAS_SYSCALL_WRAPPER.
-> > >
-> > > Combined with the use of BPF_KSYSCALL() macro, this allows to just
-> > > specify intended syscall name and expected input arguments and leave
-> > > dealing with all the variations to libbpf.
-> > >
-> > > In addition to SEC("ksyscall+") and SEC("kretsyscall+") add
-> > > bpf_program__attach_ksyscall() API which allows to specify syscall name
-> > > at runtime and provide associated BPF cookie value.
-> > >
-> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > > ---
-> > >  tools/lib/bpf/libbpf.c          | 109 ++++++++++++++++++++++++++++++++
-> > >  tools/lib/bpf/libbpf.h          |  16 +++++
-> > >  tools/lib/bpf/libbpf.map        |   1 +
-> > >  tools/lib/bpf/libbpf_internal.h |   2 +
-> > >  4 files changed, 128 insertions(+)
-> > >
-> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > > index cb49408eb298..4749fb84e33d 100644
-> > > --- a/tools/lib/bpf/libbpf.c
-> > > +++ b/tools/lib/bpf/libbpf.c
-> > > @@ -4654,6 +4654,65 @@ static int probe_kern_btf_enum64(void)
-> > >                                              strs, sizeof(strs)));
-> > >  }
-> > >
-> > > +static const char *arch_specific_syscall_pfx(void)
-> > > +{
-> > > +#if defined(__x86_64__)
-> > > +       return "x64";
-> > > +#elif defined(__i386__)
-> > > +       return "ia32";
-> > > +#elif defined(__s390x__)
-> > > +       return "s390x";
-> > > +#elif defined(__s390__)
-> > > +       return "s390";
-> > > +#elif defined(__arm__)
-> > > +       return "arm";
-> > > +#elif defined(__aarch64__)
-> > > +       return "arm64";
-> > > +#elif defined(__mips__)
-> > > +       return "mips";
-> > > +#elif defined(__riscv)
-> > > +       return "riscv";
-> > > +#else
-> > > +       return NULL;
-> > > +#endif
-> > > +}
-> > > +
-> > > +static int probe_kern_syscall_wrapper(void)
-> > > +{
-> > > +       /* available_filter_functions is a few times smaller than
-> > > +        * /proc/kallsyms and has simpler format, so we use it as a faster way
-> > > +        * to check that __<arch>_sys_bpf symbol exists, which is a sign that
-> > > +        * kernel was built with CONFIG_ARCH_HAS_SYSCALL_WRAPPER and uses
-> > > +        * syscall wrappers
-> > > +        */
-> > > +       static const char *kprobes_file = "/sys/kernel/tracing/available_filter_functions";
-> > > +       char func_name[128], syscall_name[128];
-> > > +       const char *ksys_pfx;
-> > > +       FILE *f;
-> > > +       int cnt;
-> > > +
-> > > +       ksys_pfx = arch_specific_syscall_pfx();
-> > > +       if (!ksys_pfx)
-> > > +               return 0;
-> > > +
-> > > +       f = fopen(kprobes_file, "r");
-> > > +       if (!f)
-> > > +               return 0;
-> > > +
-> > > +       snprintf(syscall_name, sizeof(syscall_name), "__%s_sys_bpf", ksys_pfx);
-> > > +
-> > > +       /* check if bpf() syscall wrapper is listed as possible kprobe */
-> > > +       while ((cnt = fscanf(f, "%127s%*[^\n]\n", func_name)) == 1) {
-> > > +               if (strcmp(func_name, syscall_name) == 0) {
-> > > +                       fclose(f);
-> > > +                       return 1;
-> > > +               }
-> > > +       }
-> >
-> > Maybe we should do the other way around ?
-> > cat /proc/kallsyms |grep sys_bpf
-> >
-> > and figure out the prefix from there?
-> > Then we won't need to do giant
-> > #if defined(__x86_64__)
-> > ...
-> >
+> Commit 13bbbfbea759 ("bpf: Add bpf_dynptr_read and bpf_dynptr_write")
+> added the bpf_dynptr_write and bpf_dynptr_read APIs.
 >
-> Unfortunately this won't work well due to compat and 32-bit APIs (and
-> bpf() syscall is particularly bad with also bpf_sys_bpf):
+> However, it will be useful for some dynptr types to pass in flags as
+> well (eg when writing to a skb, the user may like to invalidate the
+> hash or recompute the checksum).
 >
-> $ sudo cat /proc/kallsyms| rg '_sys_bpf$'
-> ffffffff811cb100 t __sys_bpf
-> ffffffff811cd380 T bpf_sys_bpf
-> ffffffff811cd520 T __x64_sys_bpf
-> ffffffff811cd540 T __ia32_sys_bpf
-> ffffffff8256fce0 r __ksymtab_bpf_sys_bpf
-> ffffffff8259b5a2 r __kstrtabns_bpf_sys_bpf
-> ffffffff8259bab9 r __kstrtab_bpf_sys_bpf
-> ffffffff83abc400 t _eil_addr___ia32_sys_bpf
-> ffffffff83abc410 t _eil_addr___x64_sys_bpf
+> This patch adds a "u64 flags" arg to the bpf_dynptr_read and
+> bpf_dynptr_write APIs.
+>
+> Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+> Fixes: 13bbbfbea759 ("bpf: Add bpf_dynptr_read and bpf_dynptr_write")
 
-That actually means that the current and proposed approaches
-are both somewhat wrong, since they don't attach to both.
-Meaning all syscalls done by 32-bit userspace will not be seen
-by bpf prog.
+Ouch. It's an uapi change in the released kernel :(
+It has to go via bpf tree instead of bpf-next.
 
-Probably libbpf should attach to both:
-__x64_sys_bpf and __ia32_sys_bpf.
+We have to add support for bpf_dynptr to kfunc and the verifier,
+so we can use kfunc-s for all future extensions in dynptr area.
 
-__ksym and __kstr are easy to filter out, since they are
-standard prefixes.
-No idea what eil_addr is.
-
-> $ sudo cat /proc/kallsyms| rg '_sys_mmap$'
-> ffffffff81024480 T __x64_sys_mmap
-> ffffffff810244c0 T __ia32_sys_mmap
-> ffffffff83abae30 t _eil_addr___ia32_sys_mmap
-> ffffffff83abae40 t _eil_addr___x64_sys_mmap
+> ---
+>  include/uapi/linux/bpf.h                           | 11 +++++++----
+>  kernel/bpf/helpers.c                               | 12 ++++++++----
+>  tools/include/uapi/linux/bpf.h                     | 11 +++++++----
+>  tools/testing/selftests/bpf/progs/dynptr_fail.c    | 10 +++++-----
+>  tools/testing/selftests/bpf/progs/dynptr_success.c |  4 ++--
+>  5 files changed, 29 insertions(+), 19 deletions(-)
 >
-> We have similar arch-specific switches in few other places (USDT and
-> lib path detection, for example), so it's not a new precedent (for
-> better or worse).
->
->
-> > /proc/kallsyms has world read permissions:
-> > proc_create("kallsyms", 0444, NULL, &kallsyms_proc_ops);
-> > unlike available_filter_functions.
-> >
-> > Also tracefs might be mounted in a different dir than
-> > /sys/kernel/tracing/
-> > like
-> > /sys/kernel/debug/tracing/
->
-> Yeah, good point, was trying to avoid parsing more expensive kallsyms,
-> but given it's done once, it might not be a big deal.
-
-Soon we'll have an iterator for them so doing in-kernel
-search of sys_bpf would be fast.
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 379e68fb866f..3dd13fe738b9 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -5226,22 +5226,25 @@ union bpf_attr {
+>   *     Return
+>   *             Nothing. Always succeeds.
+>   *
+> - * long bpf_dynptr_read(void *dst, u32 len, struct bpf_dynptr *src, u32 offset)
+> + * long bpf_dynptr_read(void *dst, u32 len, struct bpf_dynptr *src, u32 offset, u64 flags)
