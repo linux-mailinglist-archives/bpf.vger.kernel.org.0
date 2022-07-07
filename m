@@ -2,154 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6142C56AE39
-	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 00:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E09DC56AE8A
+	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 00:34:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236801AbiGGWQt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Jul 2022 18:16:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45814 "EHLO
+        id S236553AbiGGWcj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Jul 2022 18:32:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236216AbiGGWQt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Jul 2022 18:16:49 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EED660687;
-        Thu,  7 Jul 2022 15:16:48 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id y8so19089980eda.3;
-        Thu, 07 Jul 2022 15:16:48 -0700 (PDT)
+        with ESMTP id S236764AbiGGWci (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Jul 2022 18:32:38 -0400
+Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com [IPv6:2001:4860:4864:20::35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8FE365D7E
+        for <bpf@vger.kernel.org>; Thu,  7 Jul 2022 15:32:36 -0700 (PDT)
+Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-10bf634bc50so18082741fac.3
+        for <bpf@vger.kernel.org>; Thu, 07 Jul 2022 15:32:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YO2NZfGOZcYK9gMgoGCZO4NOF4ACb+pYXAD3heFWMCM=;
-        b=lbir2vDv5+9Dn4Fj+xYcvRhLKFeVACpu2LPSWUYE4dmqLfFwydJ8zsE0x8lZMZL557
-         QbCAcXoBbOKB6tYlVqj154JiyTHFRL2PBz8zpa0SNxd0YM8OoQdQZ6cyfznvxeiAwnoe
-         TRkOcC0fQqDkaieKtgItUYFkdGF2PvQiOTaroDv+q7Cw4eq9Brj5uiGe8LyKd80PxkIn
-         8fYq5pD58koBnfE9c6X+l/XwanodrTpz4H3iLqIlOSkvvuU+yGSrq6rrpP3+o740jozU
-         Gv1LHK1r2bOBTx9SclOax0cTlmBfEIkzxFEmJvh9VtRGIqry54n/5sAA5f+CKSfADjyY
-         WRtg==
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w5ngIuUcsL6V72N4sBi1nVKjzL39vm3/CQze7FH+2hA=;
+        b=YnZCQafPM5prD6/n+Fb5qat9jQy+eMYSObcvtGYlOA7HZtw4hrgj5iKVvG/KF/lwid
+         FW+SUFxTPlYJodi+C5GQdnzT/E2LyvPJ3qJ8JvDmW5gZ+cB+wDuXel/62IPfMynLw11d
+         92w1iWcm9u4S7M9C6Bl/r9VYJOJTIygJlHTes=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YO2NZfGOZcYK9gMgoGCZO4NOF4ACb+pYXAD3heFWMCM=;
-        b=4vL7L/8zSTMlzVkH2mp697HXtYtmWcAHfjc2ct2kssabVDMSFGKjuPgiLZGfQjvOpJ
-         dXPVtVqycXxHvmw4KjWeiFUGdW7ek+7cj0vCWnLJEt8bx/+7Yy0rnMW/jOXgrcbOabJh
-         bdzRUr3r2IUwzYW+i6aZ+Lo/HD90v4V4Fi9YcS6GCi6oYJkxXDcuOM/S5UOoX3AZNpSU
-         Etb2XLo0zatiP30Ur7eNI5hmQwltF9iguD41Y7C5Ny9r0CVpL4TMBzDCzmNgRzWpfEni
-         ANmnCS3r3moqA6yBF+hOBgQa8WKff6KHoE0g1wCK68ccuQ8+VVFWzOevhIOxT3fHwB3P
-         iNpw==
-X-Gm-Message-State: AJIora8oClkOGzBTfJIUVwbGpDboMRzVSiVSGjg3c1IXTTlKbkxzc6UC
-        vnmNv1ePeR3W3UAi6Fo5hUxVG4yD9yqJcGDY
-X-Google-Smtp-Source: AGRyM1tXoBBOT+lDTY0PtF0mtq04tmbIrMC4YFIHI+1uPCCW8lhhE7p8llUo/QLXejrbry7huB3Rlw==
-X-Received: by 2002:a05:6402:448e:b0:43a:9d20:a4ec with SMTP id er14-20020a056402448e00b0043a9d20a4ecmr413226edb.269.1657232206585;
-        Thu, 07 Jul 2022 15:16:46 -0700 (PDT)
-Received: from krava ([151.14.22.253])
-        by smtp.gmail.com with ESMTPSA id ee34-20020a056402292200b0043a554818afsm10509820edb.42.2022.07.07.15.16.44
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w5ngIuUcsL6V72N4sBi1nVKjzL39vm3/CQze7FH+2hA=;
+        b=wxRLLGPTOE0erYmImGjmkAuXSWJZXSaxYxDhrcGQDXxU3y0juQjJ69cZzbJm5g4VQV
+         wI8EUG3i6hy+FTYadf2vrRNmRwJ+rbCCZDUI5BdsN0atZgoTHkQV6k1wfWAcE2SZnzGN
+         m50Ru35lcftlhmXd7eHFmL10KBoPfrxr+IEtC7IiywYLqvADg24csaxh3s0D7OY7QJPV
+         LUNHuBvnXjfbPNzPbc0cPcc5KcJh5bAOOByxFZWoKO4xUwzYL0E0neLIbR0HVnpmnBv9
+         O4cyHTMKbQdcYw/nXGWHKRy6mHhUR9abHY/1/3yonD8tm+c7SZtVJU7E+NDzuX1eY4NC
+         oAjg==
+X-Gm-Message-State: AJIora9Y5vC035U3XUvDtLcJRXJJ7EUSuw+tqNBkwePc8gIwUCVtBENO
+        OUffEdPsFNpSUXJCSdT0kAQbmg==
+X-Google-Smtp-Source: AGRyM1vIqtnT6lw5R/fcEfoiZ5MwUbb7toc3P9udUrr7HIOVUFz0P7kJ2u/nLlL3mSC8VGz+3bVwpA==
+X-Received: by 2002:a05:6870:2049:b0:101:1df6:8fc with SMTP id l9-20020a056870204900b001011df608fcmr111637oad.125.1657233156130;
+        Thu, 07 Jul 2022 15:32:36 -0700 (PDT)
+Received: from localhost.localdomain ([184.4.90.121])
+        by smtp.gmail.com with ESMTPSA id i16-20020a05683033f000b00616b835f5e7sm16246222otu.43.2022.07.07.15.32.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jul 2022 15:16:45 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Fri, 8 Jul 2022 00:16:35 +0200
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Martynas Pumputis <m@lambda.lt>,
-        Yutaro Hayakawa <yutaro.hayakawa@isovalent.com>
-Subject: Re: [PATCH RFC bpf-next 4/4] selftests/bpf: Fix kprobe get_func_ip
- tests for CONFIG_X86_KERNEL_IBT
-Message-ID: <YsdbQ4vJheLWOa0a@krava>
-References: <20220705190308.1063813-1-jolsa@kernel.org>
- <20220705190308.1063813-5-jolsa@kernel.org>
- <CAEf4BzapX_C16O9woDSXOpbzVsxjYudXW36woRCqU3u75uYiFA@mail.gmail.com>
+        Thu, 07 Jul 2022 15:32:35 -0700 (PDT)
+From:   Frederick Lawler <fred@cloudflare.com>
+To:     kpsingh@kernel.org, revest@chromium.org, jackmanb@chromium.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        paul@paul-moore.com, stephen.smalley.work@gmail.com,
+        eparis@parisplace.org, shuah@kernel.org, brauner@kernel.org,
+        casey@schaufler-ca.com, ebiederm@xmission.com, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-team@cloudflare.com, Frederick Lawler <fred@cloudflare.com>
+Subject: [PATCH v2 0/4] Introduce security_create_user_ns()
+Date:   Thu,  7 Jul 2022 17:32:24 -0500
+Message-Id: <20220707223228.1940249-1-fred@cloudflare.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzapX_C16O9woDSXOpbzVsxjYudXW36woRCqU3u75uYiFA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 05, 2022 at 10:29:17PM -0700, Andrii Nakryiko wrote:
-> On Tue, Jul 5, 2022 at 12:04 PM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > The kprobe can be placed anywhere and user must be aware
-> > of the underlying instructions. Therefore fixing just
-> > the bpf program to 'fix' the address to match the actual
-> > function address when CONFIG_X86_KERNEL_IBT is enabled.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  tools/testing/selftests/bpf/progs/get_func_ip_test.c | 7 +++++--
-> >  1 file changed, 5 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/progs/get_func_ip_test.c b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-> > index a587aeca5ae0..220d56b7c1dc 100644
-> > --- a/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-> > +++ b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-> > @@ -2,6 +2,7 @@
-> >  #include <linux/bpf.h>
-> >  #include <bpf/bpf_helpers.h>
-> >  #include <bpf/bpf_tracing.h>
-> > +#include <stdbool.h>
-> >
-> >  char _license[] SEC("license") = "GPL";
-> >
-> > @@ -13,6 +14,8 @@ extern const void bpf_modify_return_test __ksym;
-> >  extern const void bpf_fentry_test6 __ksym;
-> >  extern const void bpf_fentry_test7 __ksym;
-> >
-> > +extern bool CONFIG_X86_KERNEL_IBT __kconfig __weak;
-> > +
-> >  __u64 test1_result = 0;
-> >  SEC("fentry/bpf_fentry_test1")
-> >  int BPF_PROG(test1, int a)
-> > @@ -37,7 +40,7 @@ __u64 test3_result = 0;
-> >  SEC("kprobe/bpf_fentry_test3")
-> >  int test3(struct pt_regs *ctx)
-> >  {
-> > -       __u64 addr = bpf_get_func_ip(ctx);
-> > +       __u64 addr = bpf_get_func_ip(ctx) - (CONFIG_X86_KERNEL_IBT ? 4 : 0);
-> 
-> so for kprobe bpf_get_func_ip() gets an address with 5 byte
-> compensation for `call __fentry__`, but not for endr? Why can't we
-> compensate for endbr inside the kernel code as well? I'd imagine we
-> either do no compensation (and thus we get &bpf_fentry_test3+5 or
-> &bpf_fentry_test3+9, depending on CONFIG_X86_KERNEL_IBT) or full
-> compensation (and thus always get &bpf_fentry_test3), but this
-> in-between solution seems to be the worst of both worlds?...
+While creating a LSM BPF MAC policy to block user namespace creation, we
+used the LSM cred_prepare hook because that is the closest hook to prevent
+a call to create_user_ns().
 
-hm rigth, I guess we should be able to do that in bpf_get_func_ip,
-I'll check
+The calls look something like this:
 
-thanks,
-jirka
+    cred = prepare_creds()
+        security_prepare_creds()
+            call_int_hook(cred_prepare, ...
+    if (cred)
+        create_user_ns(cred)
 
-> 
-> >
-> >         test3_result = (const void *) addr == &bpf_fentry_test3;
-> >         return 0;
-> > @@ -47,7 +50,7 @@ __u64 test4_result = 0;
-> >  SEC("kretprobe/bpf_fentry_test4")
-> >  int BPF_KRETPROBE(test4)
-> >  {
-> > -       __u64 addr = bpf_get_func_ip(ctx);
-> > +       __u64 addr = bpf_get_func_ip(ctx) - (CONFIG_X86_KERNEL_IBT ? 4 : 0);
-> >
-> >         test4_result = (const void *) addr == &bpf_fentry_test4;
-> >         return 0;
-> > --
-> > 2.35.3
-> >
+We noticed that error codes were not propagated from this hook and
+introduced a patch [1] to propagate those errors.
+
+The discussion notes that security_prepare_creds()
+is not appropriate for MAC policies, and instead the hook is
+meant for LSM authors to prepare credentials for mutation. [2]
+
+Ultimately, we concluded that a better course of action is to introduce
+a new security hook for LSM authors. [3]
+
+This patch set first introduces a new security_create_user_ns() function
+and create_user_ns LSM hook, then marks the hook as sleepable in BPF.
+
+Links:
+1. https://lore.kernel.org/all/20220608150942.776446-1-fred@cloudflare.com/
+2. https://lore.kernel.org/all/87y1xzyhub.fsf@email.froward.int.ebiederm.org/
+3. https://lore.kernel.org/all/9fe9cd9f-1ded-a179-8ded-5fde8960a586@cloudflare.com/
+
+Changes since v1:
+- Add selftests/bpf: Add tests verifying bpf lsm create_user_ns hook patch
+- Add selinux: Implement create_user_ns hook patch
+- Change function signature of security_create_user_ns() to only take
+  struct cred
+- Move security_create_user_ns() call after id mapping check in
+  create_user_ns()
+- Update documentation to reflect changes
+
+Frederick Lawler (4):
+  security, lsm: Introduce security_create_user_ns()
+  bpf-lsm: Make bpf_lsm_create_user_ns() sleepable
+  selftests/bpf: Add tests verifying bpf lsm create_user_ns hook
+  selinux: Implement create_user_ns hook
+
+ include/linux/lsm_hook_defs.h                 |  1 +
+ include/linux/lsm_hooks.h                     |  4 +
+ include/linux/security.h                      |  6 ++
+ kernel/bpf/bpf_lsm.c                          |  1 +
+ kernel/user_namespace.c                       |  5 ++
+ security/security.c                           |  5 ++
+ security/selinux/hooks.c                      |  9 ++
+ security/selinux/include/classmap.h           |  2 +
+ .../selftests/bpf/prog_tests/deny_namespace.c | 88 +++++++++++++++++++
+ .../selftests/bpf/progs/test_deny_namespace.c | 39 ++++++++
+ 10 files changed, 160 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/deny_namespace.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_deny_namespace.c
+
+-- 
+2.30.2
+
