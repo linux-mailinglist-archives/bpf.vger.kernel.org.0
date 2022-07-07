@@ -2,67 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1848A56ABB5
-	for <lists+bpf@lfdr.de>; Thu,  7 Jul 2022 21:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D62056ABE8
+	for <lists+bpf@lfdr.de>; Thu,  7 Jul 2022 21:36:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236719AbiGGTSp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Jul 2022 15:18:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39430 "EHLO
+        id S234551AbiGGTgr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Jul 2022 15:36:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236787AbiGGTSg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Jul 2022 15:18:36 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E771E62FB
-        for <bpf@vger.kernel.org>; Thu,  7 Jul 2022 12:18:34 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id 5-20020a620605000000b00527ca01f8a3so7841345pfg.19
-        for <bpf@vger.kernel.org>; Thu, 07 Jul 2022 12:18:34 -0700 (PDT)
+        with ESMTP id S231875AbiGGTgr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Jul 2022 15:36:47 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 443972A70A
+        for <bpf@vger.kernel.org>; Thu,  7 Jul 2022 12:36:46 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id o25so34188911ejm.3
+        for <bpf@vger.kernel.org>; Thu, 07 Jul 2022 12:36:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=di/3X7K0Eq6JzY/+jIQgDDcERKrK8FXqpHC5V0V9MCQ=;
-        b=pmNDuzB2H8UbtaxgLzpt77jYnYwqtXjNVwmPhbyduipCDbvKhmr9ELAqt0tbqP3DoH
-         55UZtVKicj33VqH7DhT9z72+SBoA1NuwQpFW4jiqWwuL+04Z32skL+gASLl3c/ykKR1Y
-         J58z5f6FgKTt1f54pcBQvSBAk5TbRCyy+u+qYe0DIb6AdRMBKjJQJfEI+1tU3gS8lJd4
-         5UKfhhduaYoPL0vGNkZXuhAp6USRBme0LjDG4R7WBJHr1c1BW6+XoYIt6VWUfRvQ62MO
-         syzPN4SQ0g4AOqBNFXf7hGXpIoMwS0ciuD+HDRjpS+NeIuEd/DZ7NVunK0Maibkn7cWg
-         YdJw==
+        bh=9WGrWtDudmv3y15aDeYlBeLs1U2H51/HG+l4ujW/bI4=;
+        b=Wp+twJZIFxw4lD9AUs07nF/Tnp+OYvq6MlJbvHsF90yWUgXRMUia49oj3tO9tb37R1
+         6aAzujmihqwyx0lQOcZ4LURpqP3IswDKeqpJ2E9+4vnCMxdAs+Y2t6wtrKTSskD8DiYe
+         UFh+GoF9EMel4FzVgQXrbWdGoryiNcH050oAqe8qaYTiJZVdRLqLlFDHOXm1bb+1khYV
+         5FtW0zQB6phgxJ+A4g20HMnSYdPcfLFwXH4XeSeIOKdq/toDjnAHBTT5Pumdz+83hFDy
+         FVgle5IflAw1xUQrmez9HInr+i8UcV+7Ilz1HBLm6xY615snnKcgoTQ3EvDsTVDiul50
+         DnIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=di/3X7K0Eq6JzY/+jIQgDDcERKrK8FXqpHC5V0V9MCQ=;
-        b=54HZ5xee8Zp/Dy/YxToVNc7ySIMcnE+eC0BSJRuKInsdS1q8n3LTp8pYzllg+L1daA
-         EWDtP6t/eG/er7CS8xfMFrkNQ5ptHUcjJZUTij/8YRPTqvv+/yCM6JGAZszrDaEAbSln
-         FErVkhPYhvFstdNnDwYuqkQlAaLK3ZXAlCMoOr8V+OGzZYhiIZwPqokF+TDq4E42QCiB
-         iVpKBP1bunB6AfMlOzWGnOkOT4S3eTQTv/cbnGHIeXyUyokFE8EWsgzG0GpG2vpPiEv7
-         RZ+QM2rvv95RC+odNrgEQwV55bhkKUNWpR6W8RfHlaUWtRxxs36Etb3Jsc1O8kEdi700
-         ZrAA==
-X-Gm-Message-State: AJIora+wb6JF3UcpHoTqMrTqFeLPD7Cjc7SB3IKpMJ6rPi/oYdZ/uU4i
-        PMKFjzqSslFuZID4CeAdl1XFC5s=
-X-Google-Smtp-Source: AGRyM1tHUXHe239Z2VxhSu9MbW85v3mHc7jNRl951cavc1TnyWQld19rlnsk1vVd3gb2iZlqakceh+Q=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:902:cec4:b0:16a:16d6:f67f with SMTP id
- d4-20020a170902cec400b0016a16d6f67fmr52128633plg.139.1657221514413; Thu, 07
- Jul 2022 12:18:34 -0700 (PDT)
-Date:   Thu, 7 Jul 2022 12:18:33 -0700
-In-Reply-To: <20220707181451.6xdtdesokuetj4ud@kafai-mbp.dhcp.thefacebook.com>
-Message-Id: <YscxieVQayT2cVgi@google.com>
-Mime-Version: 1.0
-References: <20220707160233.2078550-1-sdf@google.com> <20220707181451.6xdtdesokuetj4ud@kafai-mbp.dhcp.thefacebook.com>
-Subject: Re: [PATCH bpf-next v2] bpf: check attach_func_proto more carefully
- in check_return_code
-From:   sdf@google.com
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org,
-        syzbot+5cc0730bd4b4d2c5f152@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9WGrWtDudmv3y15aDeYlBeLs1U2H51/HG+l4ujW/bI4=;
+        b=a4XkQR8g6bglaoc+213myGPLS9HPoiNF2n8sOKOkCGnDFlrwDu3Tu5Mmzf0PbsA7I8
+         emNrmbyOOQUCxr6Lv5LJeQhJl/LUtp69FiDZdvJiOPZu9BuNBLqwfeotcHuOLZ6/pmxC
+         vNucEr19WRkSNVh8RzdRA5Qgls1acjc7KFj+io3gQmOE3AKT4DTcqCIewScReVKxDpfE
+         1+zPydeeFjhFo0dwwIoHxe+Q794Vy2CZ32d1lmZxfBgsZ2w4CKrXaSTnxZVu/jpugsCy
+         P2scSTbqBbQtC0Nf36V8uVBEMHJdM+W9j8kvKXlSjnm8NSQOuU5wUtzNI+BV99RFGF4z
+         +Amg==
+X-Gm-Message-State: AJIora8GrnOilm95zK5m7JEVqp1aon/3HtmjC6ernRtvQSxtOIZFazoH
+        jkoKLCAklR+jZ/BHJfQW6kirUf6APFg0Y03ijbEKqDSP
+X-Google-Smtp-Source: AGRyM1s47iWn+rgO7FvAyW7X91e9ZLAQXF3LPY5IceT0VDObQ7p49ir8VR4437GLK44qVv14r/SkqJPLR/IDpr7uDUI=
+X-Received: by 2002:a17:906:8444:b0:72a:7dda:5d71 with SMTP id
+ e4-20020a170906844400b0072a7dda5d71mr36191560ejy.94.1657222604683; Thu, 07
+ Jul 2022 12:36:44 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220707004118.298323-1-andrii@kernel.org> <20220707004118.298323-3-andrii@kernel.org>
+ <CAADnVQLxWDD3AAp73BcXW4ArWMgJ-fSUzSjw=-gzq=azBrXdqA@mail.gmail.com> <CAEf4BzaXBD86k8BYv7q4fFeyHALHcVUCbSpSG4=kfC0orydrCQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzaXBD86k8BYv7q4fFeyHALHcVUCbSpSG4=kfC0orydrCQ@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 7 Jul 2022 12:36:33 -0700
+Message-ID: <CAADnVQKm5otAmeoseC9=x7Co91CgY1oYpHFR1R+pRSB+X_mYFQ@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next 2/3] libbpf: add ksyscall/kretsyscall
+ sections support for syscall kprobes
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Kenta Tada <kenta.tada@sony.com>,
+        Hengqi Chen <hengqi.chen@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,103 +72,158 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 07/07, Martin KaFai Lau wrote:
-> On Thu, Jul 07, 2022 at 09:02:33AM -0700, Stanislav Fomichev wrote:
-> > Syzkaller reports the following crash:
-> > RIP: 0010:check_return_code kernel/bpf/verifier.c:10575 [inline]
-> > RIP: 0010:do_check kernel/bpf/verifier.c:12346 [inline]
-> > RIP: 0010:do_check_common+0xb3d2/0xd250 kernel/bpf/verifier.c:14610
+On Thu, Jul 7, 2022 at 12:10 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, Jul 7, 2022 at 10:23 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
-> > With the following reproducer:
-> > bpf$PROG_LOAD_XDP(0x5, &(0x7f00000004c0)={0xd, 0x3,  
-> &(0x7f0000000000)=ANY=[@ANYBLOB="1800000000000019000000000000000095"],  
-> &(0x7f0000000300)='GPL\x00', 0x0, 0x0, 0x0, 0x0, 0x0, '\x00', 0x0, 0x2b,  
-> 0xffffffffffffffff, 0x8, 0x0, 0x0, 0x10, 0x0}, 0x80)
+> > On Wed, Jul 6, 2022 at 5:41 PM Andrii Nakryiko <andrii@kernel.org> wrote:
+> > >
+> > > Add SEC("ksyscall")/SEC("ksyscall/<syscall_name>") and corresponding
+> > > kretsyscall variants (for return kprobes) to allow users to kprobe
+> > > syscall functions in kernel. These special sections allow to ignore
+> > > complexities and differences between kernel versions and host
+> > > architectures when it comes to syscall wrapper and corresponding
+> > > __<arch>_sys_<syscall> vs __se_sys_<syscall> differences, depending on
+> > > CONFIG_ARCH_HAS_SYSCALL_WRAPPER.
+> > >
+> > > Combined with the use of BPF_KSYSCALL() macro, this allows to just
+> > > specify intended syscall name and expected input arguments and leave
+> > > dealing with all the variations to libbpf.
+> > >
+> > > In addition to SEC("ksyscall+") and SEC("kretsyscall+") add
+> > > bpf_program__attach_ksyscall() API which allows to specify syscall name
+> > > at runtime and provide associated BPF cookie value.
+> > >
+> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > > ---
+> > >  tools/lib/bpf/libbpf.c          | 109 ++++++++++++++++++++++++++++++++
+> > >  tools/lib/bpf/libbpf.h          |  16 +++++
+> > >  tools/lib/bpf/libbpf.map        |   1 +
+> > >  tools/lib/bpf/libbpf_internal.h |   2 +
+> > >  4 files changed, 128 insertions(+)
+> > >
+> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > > index cb49408eb298..4749fb84e33d 100644
+> > > --- a/tools/lib/bpf/libbpf.c
+> > > +++ b/tools/lib/bpf/libbpf.c
+> > > @@ -4654,6 +4654,65 @@ static int probe_kern_btf_enum64(void)
+> > >                                              strs, sizeof(strs)));
+> > >  }
+> > >
+> > > +static const char *arch_specific_syscall_pfx(void)
+> > > +{
+> > > +#if defined(__x86_64__)
+> > > +       return "x64";
+> > > +#elif defined(__i386__)
+> > > +       return "ia32";
+> > > +#elif defined(__s390x__)
+> > > +       return "s390x";
+> > > +#elif defined(__s390__)
+> > > +       return "s390";
+> > > +#elif defined(__arm__)
+> > > +       return "arm";
+> > > +#elif defined(__aarch64__)
+> > > +       return "arm64";
+> > > +#elif defined(__mips__)
+> > > +       return "mips";
+> > > +#elif defined(__riscv)
+> > > +       return "riscv";
+> > > +#else
+> > > +       return NULL;
+> > > +#endif
+> > > +}
+> > > +
+> > > +static int probe_kern_syscall_wrapper(void)
+> > > +{
+> > > +       /* available_filter_functions is a few times smaller than
+> > > +        * /proc/kallsyms and has simpler format, so we use it as a faster way
+> > > +        * to check that __<arch>_sys_bpf symbol exists, which is a sign that
+> > > +        * kernel was built with CONFIG_ARCH_HAS_SYSCALL_WRAPPER and uses
+> > > +        * syscall wrappers
+> > > +        */
+> > > +       static const char *kprobes_file = "/sys/kernel/tracing/available_filter_functions";
+> > > +       char func_name[128], syscall_name[128];
+> > > +       const char *ksys_pfx;
+> > > +       FILE *f;
+> > > +       int cnt;
+> > > +
+> > > +       ksys_pfx = arch_specific_syscall_pfx();
+> > > +       if (!ksys_pfx)
+> > > +               return 0;
+> > > +
+> > > +       f = fopen(kprobes_file, "r");
+> > > +       if (!f)
+> > > +               return 0;
+> > > +
+> > > +       snprintf(syscall_name, sizeof(syscall_name), "__%s_sys_bpf", ksys_pfx);
+> > > +
+> > > +       /* check if bpf() syscall wrapper is listed as possible kprobe */
+> > > +       while ((cnt = fscanf(f, "%127s%*[^\n]\n", func_name)) == 1) {
+> > > +               if (strcmp(func_name, syscall_name) == 0) {
+> > > +                       fclose(f);
+> > > +                       return 1;
+> > > +               }
+> > > +       }
 > >
-> > Because we don't enforce expected_attach_type for XDP programs,
-> > we end up in hitting 'if (prog->expected_attach_type == BPF_LSM_CGROUP'
-> > part in check_return_code and follow up with testing
-> > `prog->aux->attach_func_proto->type`, but `prog->aux->attach_func_proto`
-> > is NULL.
+> > Maybe we should do the other way around ?
+> > cat /proc/kallsyms |grep sys_bpf
 > >
-> > Add explicit prog_type check for the "Note, BPF_LSM_CGROUP that
-> > attach ..." condition. Also, don't skip return code check for
-> > LSM/STRUCT_OPS.
+> > and figure out the prefix from there?
+> > Then we won't need to do giant
+> > #if defined(__x86_64__)
+> > ...
 > >
-> > The above actually brings an issue with existing selftest which
-> > tries to return EPERM from void inet_csk_clone. Fix the
-> > test (and move called_socket_clone to make sure it's not
-> > incremented in case of an error) and add a new one to explicitly
-> > verify this condition.
-> >
-> > v2:
-> > - Martin: don't add new helper, check prog_type instead
-> > - Martin: check expected_attach_type as well at the function entry
-> > - Update selftest to verify this condition
-> >
-> > Fixes: 69fd337a975c ("bpf: per-cgroup lsm flavor")
-> > Reported-by: syzbot+5cc0730bd4b4d2c5f152@syzkaller.appspotmail.com
-> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > ---
-> >  kernel/bpf/verifier.c                              |  2 ++
-> >  .../testing/selftests/bpf/prog_tests/lsm_cgroup.c  | 12 ++++++++++++
-> >  tools/testing/selftests/bpf/progs/lsm_cgroup.c     | 12 ++++++------
-> >  .../selftests/bpf/progs/lsm_cgroup_nonvoid.c       | 14 ++++++++++++++
-> >  4 files changed, 34 insertions(+), 6 deletions(-)
-> >  create mode 100644  
-> tools/testing/selftests/bpf/progs/lsm_cgroup_nonvoid.c
-> >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index df3ec6b05f05..2bc1e7252778 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -10445,6 +10445,7 @@ static int check_return_code(struct  
-> bpf_verifier_env *env)
-> >
-> >  	/* LSM and struct_ops func-ptr's return type could be "void" */
-> >  	if (!is_subprog &&
-> > +	    prog->expected_attach_type != BPF_LSM_CGROUP &&
-> BPF_PROG_TYPE_STRUCT_OPS also uses the expected_attach_type,
-> so the expected_attach_type check should only be done for LSM prog alone.
-> Others lgtm.
+>
+> Unfortunately this won't work well due to compat and 32-bit APIs (and
+> bpf() syscall is particularly bad with also bpf_sys_bpf):
+>
+> $ sudo cat /proc/kallsyms| rg '_sys_bpf$'
+> ffffffff811cb100 t __sys_bpf
+> ffffffff811cd380 T bpf_sys_bpf
+> ffffffff811cd520 T __x64_sys_bpf
+> ffffffff811cd540 T __ia32_sys_bpf
+> ffffffff8256fce0 r __ksymtab_bpf_sys_bpf
+> ffffffff8259b5a2 r __kstrtabns_bpf_sys_bpf
+> ffffffff8259bab9 r __kstrtab_bpf_sys_bpf
+> ffffffff83abc400 t _eil_addr___ia32_sys_bpf
+> ffffffff83abc410 t _eil_addr___x64_sys_bpf
 
-In this case, something like the following should be sufficient?
+That actually means that the current and proposed approaches
+are both somewhat wrong, since they don't attach to both.
+Meaning all syscalls done by 32-bit userspace will not be seen
+by bpf prog.
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 2bc1e7252778..6702a5fc12e6 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -10445,11 +10445,13 @@ static int check_return_code(struct  
-bpf_verifier_env *env)
+Probably libbpf should attach to both:
+__x64_sys_bpf and __ia32_sys_bpf.
 
-  	/* LSM and struct_ops func-ptr's return type could be "void" */
-  	if (!is_subprog &&
--	    prog->expected_attach_type != BPF_LSM_CGROUP &&
--	    (prog_type == BPF_PROG_TYPE_STRUCT_OPS ||
--	     prog_type == BPF_PROG_TYPE_LSM) &&
--	    !prog->aux->attach_func_proto->type)
--		return 0;
-+	    !prog->aux->attach_func_proto->type) {
-+		if (prog_type == BPF_PROG_TYPE_STRUCT_OPS)
-+			return 0;
-+		if (prog_type == BPF_PROG_TYPE_LSM &&
-+		    prog->expected_attach_type != BPF_LSM_CGROUP)
-+			return 0;
-+	}
+__ksym and __kstr are easy to filter out, since they are
+standard prefixes.
+No idea what eil_addr is.
 
-  	/* eBPF calling convention is such that R0 is used
-  	 * to return the value from eBPF program.
+> $ sudo cat /proc/kallsyms| rg '_sys_mmap$'
+> ffffffff81024480 T __x64_sys_mmap
+> ffffffff810244c0 T __ia32_sys_mmap
+> ffffffff83abae30 t _eil_addr___ia32_sys_mmap
+> ffffffff83abae40 t _eil_addr___x64_sys_mmap
+>
+> We have similar arch-specific switches in few other places (USDT and
+> lib path detection, for example), so it's not a new precedent (for
+> better or worse).
+>
+>
+> > /proc/kallsyms has world read permissions:
+> > proc_create("kallsyms", 0444, NULL, &kallsyms_proc_ops);
+> > unlike available_filter_functions.
+> >
+> > Also tracefs might be mounted in a different dir than
+> > /sys/kernel/tracing/
+> > like
+> > /sys/kernel/debug/tracing/
+>
+> Yeah, good point, was trying to avoid parsing more expensive kallsyms,
+> but given it's done once, it might not be a big deal.
 
-> >  	    (prog_type == BPF_PROG_TYPE_STRUCT_OPS ||
-> >  	     prog_type == BPF_PROG_TYPE_LSM) &&
-> >  	    !prog->aux->attach_func_proto->type)
-> > @@ -10572,6 +10573,7 @@ static int check_return_code(struct  
-> bpf_verifier_env *env)
-> >  	if (!tnum_in(range, reg->var_off)) {
-> >  		verbose_invalid_scalar(env, reg, &range, "program exit", "R0");
-> >  		if (prog->expected_attach_type == BPF_LSM_CGROUP &&
-> > +		    prog_type == BPF_PROG_TYPE_LSM &&
-> >  		    !prog->aux->attach_func_proto->type)
-> >  			verbose(env, "Note, BPF_LSM_CGROUP that attach to void LSM hooks  
-> can't modify return value!\n");
-> >  		return -EINVAL;
+Soon we'll have an iterator for them so doing in-kernel
+search of sys_bpf would be fast.
