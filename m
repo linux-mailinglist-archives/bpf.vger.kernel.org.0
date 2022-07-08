@@ -2,70 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 525E756BDD9
-	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 18:08:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84DA056BD97
+	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 18:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238602AbiGHP4j (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Jul 2022 11:56:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40436 "EHLO
+        id S238915AbiGHP6Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Jul 2022 11:58:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238231AbiGHP4i (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Jul 2022 11:56:38 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A09A70E51
-        for <bpf@vger.kernel.org>; Fri,  8 Jul 2022 08:56:38 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id e5so4333683iof.2
-        for <bpf@vger.kernel.org>; Fri, 08 Jul 2022 08:56:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=vrQS/LlIulyYlkXBBH9HRrD0LEcs8mMtInf14LMYorQ=;
-        b=J3JvPIGR3kQxX/z2lCKf9egSPyz5pQ9i0NMnOKZ6Jk5dSqvSYPXuRggTwoqJFuk1Ke
-         HVz/5Cple/81DHzjIZHviET6J89BG53CrQEsA2CAwXiPuUZ+QWe1vLh0bX3tCaDuQsEE
-         qHumMevW49Nm8LCMft51PYwDvupQhqtHd0qU5I7xM+vs333hDVq/wNznijLbJvQOSGbU
-         GIPh1F34fpbYwhDMxDb2CnK1mnPhU/Bb+NNIFADVWZwpnSDa78jWNXR2L8uMDIUuS0vw
-         q1Ic3BZFrdGrsWfhB3HYa+MgWRtJrbehtrvtLPoibSR6QMoMubLLsyPLHIhN2EreOdOE
-         sthw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=vrQS/LlIulyYlkXBBH9HRrD0LEcs8mMtInf14LMYorQ=;
-        b=8Lc/YCrROznQS2612K88HA88OK4i+DQjhyZBH3L3uMpnvACzgFcXH9YjpgGUmoSI1z
-         6QBP+QzOxJTb+QIpW5KnYf3SAS01Km52GfOOhHQOIcj6splHCN00m1DbYzJY6waf1+Gz
-         JU3/Z4LPNIzHmQ1t3A3ACyUTcrVDGluDfAv8pT78JpwyuXQFR/x99UDmR2AFn7Cin8v6
-         lyyDH7AqDGBKy2V1mYRAl+UyyRMplOSl8PCC0g1dEKb1duZDN0P/oJ8HsnaxNmdOGjui
-         QKTlul9kqaimrF5acNEgu4Oqj3j1hIkopByMsJ7l+twQh35xBcP8reBeLgaluZUi8amc
-         5i7w==
-X-Gm-Message-State: AJIora/pg0Dst2m4eVVZ/i2wXoMFs8qEarWTyczNBx4a/GRitNqMlPNo
-        EBGYuk9gfr2GIyVXnQ1+h83Q2oeE5Pshwg3Du4A=
-X-Google-Smtp-Source: AGRyM1txeuEudnfQe8iynsN6dpJbFGY3Q5B1/h/aHrA0IOTsw1rUp3VAmNULmOKB86nXSe9oGLo0Z4di4ZX9Dtb4a2Y=
-X-Received: by 2002:a02:9709:0:b0:339:ef87:c30b with SMTP id
- x9-20020a029709000000b00339ef87c30bmr2513947jai.214.1657295797615; Fri, 08
- Jul 2022 08:56:37 -0700 (PDT)
+        with ESMTP id S238878AbiGHP6P (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Jul 2022 11:58:15 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 442A573922;
+        Fri,  8 Jul 2022 08:58:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6RqQ8+XNVDVObMJIyPeKINSrkjPLTw+0lvhGuSc1mv4=; b=U/181vdzVYQuUne6r4DSfvY+yg
+        Qp6rXidC6C9LEBdozRcX7xo/qlo8qm4YTHwa+5tM++bKx1vSdPeNWBhbhmZNnefGmT6KhhVc09xee
+        +A7G9itA8blRQMvCB4Vo5CgudikDfZrNXVUeFZ0sMtJsGxpxdyh3ZGnNYMXL/jSwMyLo3MsT6T9T2
+        wIAPsGLZup7bDPOqfjynoKwYV7hiO43NC8p8DQVShXMX6WIl97tAk9dPcWhcN4yvfSUO/XGf3XtVr
+        7Ierci+IrPeQU2BuSRPE5zp1AlgTMI7aqsG4Kj5RnglyRUdpbd2TOZUkI2feTeyeA0CZEUZTIXdtb
+        mwZm7L2Q==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1o9qMq-004UMR-T3; Fri, 08 Jul 2022 15:58:08 +0000
+Date:   Fri, 8 Jul 2022 08:58:08 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "rick.p.edgecombe@intel.com" <rick.p.edgecombe@intel.com>
+Subject: Re: [PATCH v6 bpf-next 0/5] bpf_prog_pack followup
+Message-ID: <YshUEEQ0lk1ON7H6@bombadil.infradead.org>
+References: <20220707223546.4124919-1-song@kernel.org>
+ <YsdlXjpRrlE9Z+Jq@bombadil.infradead.org>
+ <F000FF60-CF95-4E6B-85BD-45FC668AAE0A@fb.com>
+ <YseAEsjE49AZDp8c@bombadil.infradead.org>
+ <C96F5607-6FFE-4B45-9A9D-B89E3F67A79A@fb.com>
 MIME-Version: 1.0
-Sender: tinaevan101@gmail.com
-Received: by 2002:a05:6e02:1605:0:0:0:0 with HTTP; Fri, 8 Jul 2022 08:56:37
- -0700 (PDT)
-From:   Mira Thompson <mirathompson1010@gmail.com>
-Date:   Fri, 8 Jul 2022 15:56:37 +0000
-X-Google-Sender-Auth: BxkneX5sOHtxagOl2JLZwW5EhZw
-Message-ID: <CALL7qtwmOkr+w4G2jVLU31fV1D4=65GkexVmTEKsXfNs96QXKw@mail.gmail.com>
-Subject: Please reply to me as soon as possible okay.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <C96F5607-6FFE-4B45-9A9D-B89E3F67A79A@fb.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
--- 
-Hello sir.
-Please I sent you a message and I have been waiting for your reply and
-I could not see any. I want to know if you get any of my message to
-you, kindly reply to me to notify me okay.
+On Fri, Jul 08, 2022 at 01:36:25AM +0000, Song Liu wrote:
+> 
+> 
+> > On Jul 7, 2022, at 5:53 PM, Luis Chamberlain <mcgrof@kernel.org> wrote:
+> > 
+> > On Thu, Jul 07, 2022 at 11:52:58PM +0000, Song Liu wrote:
+> >>> On Jul 7, 2022, at 3:59 PM, Luis Chamberlain <mcgrof@kernel.org> wrote:
+> >>> 
+> >>> On Thu, Jul 07, 2022 at 03:35:41PM -0700, Song Liu wrote:
+> >>>> This set is the second half of v4 [1].
+> >>>> 
+> >>>> Changes v5 => v6:
+> >>>> 1. Rebase and extend CC list.
+> >>> 
+> >>> Why post a new iteration so soon without completing the discussion we
+> >>> had? It seems like we were at least going somewhere. If it's just
+> >>> to include mm as I requested, sure, that's fine, but this does not
+> >>> provide context as to what we last were talking about.
+> >> 
+> >> Sorry for sending v6 too soon. The primary reason was to extend the CC
+> >> list and add it back to patchwork (v5 somehow got archived). 
+> >> 
+> >> Also, I think vmalloc_exec_ work would be a separate project, while this 
+> >> set is the followup work of bpf_prog_pack. Does this make sense? 
+> >> 
+> >> Btw, vmalloc_exec_ work could be a good topic for LPC. It will be much
+> >> more efficient to discuss this in person. 
+> > 
+> > What we need is input from mm / arch folks. What is not done here is
+> > what that stuff we're talking about is and so mm folks can't guess. My
+> > preference is to address that.
+> > 
+> > I don't think in person discussion is needed if the only folks
+> > discussing this topic so far is just you and me.
+> 
+> How about we start a thread with mm / arch folks for the vmalloc_exec_*
+> topic? I will summarize previous discussions and include pointers to 
+> these discussions. If necessary, we can continue the discussion at LPC.
+
+This sounds like a nice thread to use as this is why we are talking
+about that topic.
+
+> OTOH, I guess the outcome of that discussion should not change this set? 
+
+If the above is done right then actually I think it would show similar
+considerations for a respective free for module_alloc_huge().
+
+> If we have concern about module_alloc_huge(), maybe we can have bpf code 
+> call vmalloc directly (until we have vmalloc_exec_)? 
+
+You'd need to then still open code in a similar way the same things
+which we are trying to reach consensus on.
+
+> What do you think about this plan?
+
+I think we should strive to not be lazy and sloppy, and prevent growth
+of sloppy code. So long as we do that I think this is all reasoanble.
+
+  Luis
