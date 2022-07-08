@@ -2,98 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7717356B105
-	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 05:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D97B656B12A
+	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 05:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237062AbiGHDTE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Jul 2022 23:19:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53310 "EHLO
+        id S237049AbiGHD5L (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Jul 2022 23:57:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237059AbiGHDTE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Jul 2022 23:19:04 -0400
-Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3785D747AD;
-        Thu,  7 Jul 2022 20:19:00 -0700 (PDT)
-Date:   Thu, 7 Jul 2022 20:18:52 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1657250338;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZzXf77ZnSEJIjuevx+EB4GpaxQjdHtz9/POLfph/nBE=;
-        b=Qy4O0B3TXJnXaPohoJlWl3VViPm/HiAjQYjCu92SV5MLaTSvFAV+asc6HCYkyU8p29uqsK
-        PkUyYZY6tI8B3J1zEbsMAdtKcYG8wSnd5IjAKW9MMeB6HBjelCfaH6lEOd/IoUOOQGqtdu
-        qmer4OS87yqwZODPooty6DN/RPX+W9E=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Yafang Shao <laoar.shao@gmail.com>, Michal Hocko <mhocko@suse.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH] mm: memcontrol: do not miss MEMCG_MAX events for
- enforced allocations
-Message-ID: <YseiHOgqLapJPiyC@castle>
-References: <20220702033521.64630-1-roman.gushchin@linux.dev>
- <CALvZod7TGhWtcRD6HeEx90T2+Rod-yamq9i+WbEQUKwNFTi-1A@mail.gmail.com>
- <YsBmoqEBCa7ra7w2@castle>
- <YsMCMveSdiYX/2eH@dhcp22.suse.cz>
- <YsSj6rZmUkR8amT2@castle>
- <CALOAHbAb9DT6ihyxTm-4FCUiqiAzRSUHJw9erc+JTKVT9p8tow@mail.gmail.com>
- <YsUBQsTjVuXvt1Wr@castle>
- <CALOAHbDjRzySCHeMVHtVDe=Ji+qh=n0pT4CwiAM5Pahi2-QNCQ@mail.gmail.com>
- <YsUH7pgBVnWSkC1q@castle>
- <CAADnVQ+qqeAVvtDYox4xj85Qxt79EV1Hn+HDEMuzHrwZv14X4Q@mail.gmail.com>
+        with ESMTP id S236950AbiGHD5F (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Jul 2022 23:57:05 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 020DD74DED;
+        Thu,  7 Jul 2022 20:57:03 -0700 (PDT)
+Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4LfKDK5RWyzkXGC;
+        Fri,  8 Jul 2022 11:54:57 +0800 (CST)
+Received: from dggpemm500019.china.huawei.com (7.185.36.180) by
+ dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Fri, 8 Jul 2022 11:57:02 +0800
+Received: from k04.huawei.com (10.67.174.115) by
+ dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Fri, 8 Jul 2022 11:57:01 +0800
+From:   Pu Lehui <pulehui@huawei.com>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Grant Seltzer <grantseltzer@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Pu Lehui <pulehui@huawei.com>
+Subject: [PATCH bpf-next] bpf, docs: Remove deprecated xsk libbpf APIs description
+Date:   Fri, 8 Jul 2022 12:27:36 +0800
+Message-ID: <20220708042736.669132-1-pulehui@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQ+qqeAVvtDYox4xj85Qxt79EV1Hn+HDEMuzHrwZv14X4Q@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.115]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500019.china.huawei.com (7.185.36.180)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 07, 2022 at 03:41:11PM -0700, Alexei Starovoitov wrote:
-> On Tue, Jul 5, 2022 at 9:24 PM Roman Gushchin <roman.gushchin@linux.dev> wrote:
-> >
-> > Anyway, here is the patch for reparenting bpf maps:
-> > https://github.com/rgushchin/linux/commit/f57df8bb35770507a4624fe52216b6c14f39c50c
-> >
-> > I gonna post it to bpf@ after some testing.
-> 
-> Please do. It looks good.
-> It needs #ifdef CONFIG_MEMCG_KMEM
-> because get_obj_cgroup_from_current() is undefined otherwise.
-> Ideally just adding a static inline to a .h ?
+Since xsk APIs has been removed from libbpf, let's clean
+up the bpf docs simutaneously.
 
-Actually all call sites are already under CONFIG_MEMCG_KMEM.
+Signed-off-by: Pu Lehui <pulehui@huawei.com>
+---
+ .../bpf/libbpf/libbpf_naming_convention.rst         | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
 
-> 
-> and
-> if (map->objcg)
->    memcg = get_mem_cgroup_from_objcg(map->objcg);
-> 
-> or !NULL check inside get_mem_cgroup_from_objcg()
-> which would be better.
+diff --git a/Documentation/bpf/libbpf/libbpf_naming_convention.rst b/Documentation/bpf/libbpf/libbpf_naming_convention.rst
+index f86360f734a8..c5ac97f3d4c4 100644
+--- a/Documentation/bpf/libbpf/libbpf_naming_convention.rst
++++ b/Documentation/bpf/libbpf/libbpf_naming_convention.rst
+@@ -9,8 +9,8 @@ described here. It's recommended to follow these conventions whenever a
+ new function or type is added to keep libbpf API clean and consistent.
+ 
+ All types and functions provided by libbpf API should have one of the
+-following prefixes: ``bpf_``, ``btf_``, ``libbpf_``, ``xsk_``,
+-``btf_dump_``, ``ring_buffer_``, ``perf_buffer_``.
++following prefixes: ``bpf_``, ``btf_``, ``libbpf_``, ``btf_dump_``,
++``ring_buffer_``, ``perf_buffer_``.
+ 
+ System call wrappers
+ --------------------
+@@ -59,15 +59,6 @@ Auxiliary functions and types that don't fit well in any of categories
+ described above should have ``libbpf_`` prefix, e.g.
+ ``libbpf_get_error`` or ``libbpf_prog_type_by_name``.
+ 
+-AF_XDP functions
+--------------------
+-
+-AF_XDP functions should have an ``xsk_`` prefix, e.g.
+-``xsk_umem__get_data`` or ``xsk_umem__create``. The interface consists
+-of both low-level ring access functions and high-level configuration
+-functions. These can be mixed and matched. Note that these functions
+-are not reentrant for performance reasons.
+-
+ ABI
+ ---
+ 
+-- 
+2.25.1
 
-Yes, you're right, as now we need to handle it specially.
-
-In the near future it won't be necessary. There are patches in
-mm-unstable which make objcg API useful outside of CONFIG_MEMCG_KMEM.
-In particular it means that objcg will be created for the root_mem_cgroup.
-So map->objcg can always point at a valid objcg and we will be able
-to drop this check.
-
-Will post an updated version shortly.
-
-Thanks!
