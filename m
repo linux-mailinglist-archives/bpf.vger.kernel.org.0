@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 200B256C349
-	for <lists+bpf@lfdr.de>; Sat,  9 Jul 2022 01:14:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3F2656C438
+	for <lists+bpf@lfdr.de>; Sat,  9 Jul 2022 01:15:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238044AbiGHW0W (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Jul 2022 18:26:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49902 "EHLO
+        id S239294AbiGHW1z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Jul 2022 18:27:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238089AbiGHW0V (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Jul 2022 18:26:21 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D82CDA2E72;
-        Fri,  8 Jul 2022 15:26:20 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id j22so13631741ejs.2;
-        Fri, 08 Jul 2022 15:26:20 -0700 (PDT)
+        with ESMTP id S238673AbiGHW1s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Jul 2022 18:27:48 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8139313B448;
+        Fri,  8 Jul 2022 15:27:47 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id dn9so34605605ejc.7;
+        Fri, 08 Jul 2022 15:27:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=HWlKpaLv2VR3Vok4iSI8gNXJv7MjF7LayWn7Z5iN4Q0=;
-        b=U8aaplgioalA7mIrEOI6BxlQFR6mErtWpV+io2v+ksxQVg+k9lnEYU+zCdHIv2Ac6X
-         I9nsORy3aehZXRS3syRxg3scRJHMdJXhMzT2fJSi0GF9wsbNnJvSyLVpmePzCGt0IQJ7
-         OCw9XBtGA0AkSM0ja5tk5M2vHFUfYb+LjreZu7aYLEJOUqBbOaRjrAiOSlWJ//C+NpUs
-         zKJjR2a0kIDhYaeGNWABr2hacMVUnvi1PXcvtUTFA6rpPko+hKaw4j2QaqL4/9PbHPLF
-         znos7RHZmL1Kkfh3B/JugMS0HkdzEjPP9nQd6wY61WglfVfM8pTvOx5qa2SMUrpM2aWq
-         i4ng==
+        bh=/jWEX2CAxd2pxItuLqmMwJVi6a+9EYVwihXMCh0ihgo=;
+        b=U3iDzdgXfVzjGXD+G2rfy3gKypcJs18kw1GTLONv2MDm8G0RrUrg1dKCVtAvXfLfVV
+         Us5QzXMAaG9z7C+VdtuVO3iRmoHRBJolqSPUnp6hFNUB2OmZNCzIRHeIRuSTqjUPRww8
+         C71PuBR7F5Dxs2ZcRSItBp8kUwsR27OtkDga6FBNk6QNaBndWI38RqgpZwQWhCGUGYtl
+         h8+XT4mVWSbRWXKxLCSBn0pbldS2+CL/iCa/os/PzuCvqcxdo67E7lM+Kxpu6D+TZFBg
+         dEOrp6LtxKWaNlORMasmO3uE8ZSAuR230NBs0jKtacRPi+LkgqSG7I9TVIbR66UJJeea
+         UDgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HWlKpaLv2VR3Vok4iSI8gNXJv7MjF7LayWn7Z5iN4Q0=;
-        b=tZcPfj/sMNJfxphZPSo5YpFciFnZp3B6FinbGNhO/l3QMHBnLew/3wgPp6RAYggxft
-         o4DrmQe5HFSP0VV56jbuIQYYU9w8+Up0CaMcUG9Pm6Hn8C2agNy869w0m6pB5jxD6NdL
-         NX9KP9J3QIJxWGLj9DVdiezx+dnf8QggVXQXZCn5ahXLWrlSVDtEFpRQ6e/o7dDlno2n
-         pGIFQzyQcdm3YZb+FtGN/mY0Na7MMHzxW0XApgH8GDH+YqbWSd1I6HyZ6IIekB7ZJ3XY
-         WwI/AAy/iqqxjW/7F/ksRw9nCJhkxD8mHezv0wfqk1sw2LdiYQgXVe3GQP4aWECxL47r
-         aHnw==
-X-Gm-Message-State: AJIora9J0cuL5+E06UlOAcN98wwCn44PS5U9ui+6o/EVXuq5XVxVJnhH
-        Mhu3Jmb6W/3JORx4RKBawEhLnBCttAxFF3Yt+Jk=
-X-Google-Smtp-Source: AGRyM1vgBr55LanK+nzR7AP78QmdrVahMi/alnIxc+HkET+hfgQ3FznBjGTDryn7qk9TY0BGng2tusZNvHb0lcBNuE8=
-X-Received: by 2002:a17:906:a3ca:b0:726:2bd2:87bc with SMTP id
- ca10-20020a170906a3ca00b007262bd287bcmr5782990ejb.226.1657319179460; Fri, 08
- Jul 2022 15:26:19 -0700 (PDT)
+        bh=/jWEX2CAxd2pxItuLqmMwJVi6a+9EYVwihXMCh0ihgo=;
+        b=SAySfGEtayiyC9IxUeMGm0VrFqVT7UQswuLEfjkjKZ43RtYd3mUNOwHE6QrHU26F++
+         ysfYELH80A58ZaT1/evq9uP4wSH4zEtgYooi/g3cSYzF7x1yzRcjkn1XYgCfQvmPoK1q
+         DB4y7DLw32vD1+91B2WSAKwjTzYX+VEdTBZqOcNQ33GivxSojLq2cXjNA8CEdXHDaeri
+         RKlKny/99WKXkCE0YPDkzBZJyho5KBn72LjyXzuhwgDd6ZXJN7M3oDHb7HOKxi40K5EW
+         ASev3s4QT6K9zoJa1OtHPGgDx2FgSgA1Zo/iqMPw+qTVw82rjTm2uyJMZTOczu739fCQ
+         MspQ==
+X-Gm-Message-State: AJIora9/wtbapM8d8zZBJ5hVoNRCset0MAjrehxMKqJ7BLQBNkci4rtN
+        Gsd8cxyjlvid1neuVvPgSeU8OD4fPGepzYcFgEY=
+X-Google-Smtp-Source: AGRyM1uM7iTMCcrXnyKJjpWe5665SWlObmqF2sh59dLgUlFOwpTMXAodJBPRhB1IYcZNf8UkdjqfEpoqCYFWFzfv+h4=
+X-Received: by 2002:a17:907:6e05:b0:72a:a141:962 with SMTP id
+ sd5-20020a1709076e0500b0072aa1410962mr5832229ejc.545.1657319266147; Fri, 08
+ Jul 2022 15:27:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <1657113391-5624-1-git-send-email-alan.maguire@oracle.com> <1657113391-5624-2-git-send-email-alan.maguire@oracle.com>
-In-Reply-To: <1657113391-5624-2-git-send-email-alan.maguire@oracle.com>
+References: <1657113391-5624-1-git-send-email-alan.maguire@oracle.com> <1657113391-5624-3-git-send-email-alan.maguire@oracle.com>
+In-Reply-To: <1657113391-5624-3-git-send-email-alan.maguire@oracle.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 8 Jul 2022 15:26:08 -0700
-Message-ID: <CAEf4Bzbfi8Zx=riv5GOz0NqB18yvjixT02YtmowCd7ZSSggDfQ@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 1/2] bpf: add a ksym BPF iterator
+Date:   Fri, 8 Jul 2022 15:27:35 -0700
+Message-ID: <CAEf4BzYMggGGti_w+_V=2ZULHztnUBEJyGvFeG=q5=7UMtJeQg@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 2/2] selftests/bpf: add a ksym iter subtest
 To:     Alan Maguire <alan.maguire@oracle.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -82,52 +82,29 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Wed, Jul 6, 2022 at 6:17 AM Alan Maguire <alan.maguire@oracle.com> wrote:
 >
-> add a "ksym" iterator which provides access to a "struct kallsym_iter"
-> for each symbol.  Intent is to support more flexible symbol parsing
-> as discussed in [1].
+> add subtest verifying BPF ksym iter behaviour.  The BPF ksym
+> iter program shows an example of dumping a format different to
+> /proc/kallsyms.  It adds KIND and MAX_SIZE fields which represent the
+> kind of symbol (core kernel, module, ftrace, bpf, or kprobe) and
+> the maximum size the symbol can be.  The latter is calculated from
+> the difference between current symbol value and the next symbol
+> value.
 >
-> [1] https://lore.kernel.org/all/YjRPZj6Z8vuLeEZo@krava/
+> The key benefit for this iterator will likely be supporting in-kernel
+> data-gathering rather than dumping symbol details to userspace and
+> parsing the results.
 >
-> Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 > Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 > Acked-by: Yonghong Song <yhs@fb.com>
 > ---
->  kernel/kallsyms.c | 95 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 95 insertions(+)
+
+Please see progs/bpf_iter.h and add ksym iterator types there. Thanks!
+
+
+>  tools/testing/selftests/bpf/prog_tests/bpf_iter.c | 16 +++++
+>  tools/testing/selftests/bpf/progs/bpf_iter_ksym.c | 74 +++++++++++++++++++++++
+>  2 files changed, 90 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_ksym.c
 >
-
-LGTM, except for unnecessary pr_warn(), see below
-
 
 [...]
-
-> +
-> +BTF_ID_LIST(btf_ksym_iter_id)
-> +BTF_ID(struct, kallsym_iter)
-> +
-> +static int __init bpf_ksym_iter_register(void)
-> +{
-> +       int ret;
-> +
-> +       ksym_iter_reg_info.ctx_arg_info[0].btf_id = *btf_ksym_iter_id;
-> +       ret = bpf_iter_reg_target(&ksym_iter_reg_info);
-> +       if (ret)
-> +               pr_warn("Warning: could not register bpf ksym iterator: %d\n", ret);
-
-we don't emit such warnings for some other iterators I checked (map,
-link, etc). Do we really need this? It's very unlikely to happen
-anyways.
-
-> +       return ret;
-> +}
-> +
-> +late_initcall(bpf_ksym_iter_register);
-> +
-> +#endif /* CONFIG_BPF_SYSCALL */
-> +
->  static inline int kallsyms_for_perf(void)
->  {
->  #ifdef CONFIG_PERF_EVENTS
-> --
-> 1.8.3.1
->
