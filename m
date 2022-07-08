@@ -2,84 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC99E56C429
-	for <lists+bpf@lfdr.de>; Sat,  9 Jul 2022 01:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EE9156C3F0
+	for <lists+bpf@lfdr.de>; Sat,  9 Jul 2022 01:15:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237953AbiGHWUV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Jul 2022 18:20:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45538 "EHLO
+        id S237091AbiGHWVD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Jul 2022 18:21:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238044AbiGHWUT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Jul 2022 18:20:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 286F6A2E71;
-        Fri,  8 Jul 2022 15:20:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A990661D61;
-        Fri,  8 Jul 2022 22:20:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 060BEC341CF;
-        Fri,  8 Jul 2022 22:20:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1657318814;
-        bh=lTA0WWhEZrId7RYYncgLhzhNFNW68XcONj+L6Uzzhvw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=S4ME+0phcFE39OiBvdBrMndoh0IwdPLABS32M69XyujArhLAimGAQ5EQmW3aJ+jr+
-         LYRtP/B5hPaTKizffSyGjTwAEvTDnoE02FBf6rd/G3hmxsCzMFv5x9DWj5KD+KVVZq
-         jESWBieNm6fIPqeeYilAHMVFo4xCcFbKCGjEQTLhqOZND1JxMr8e2pM9slmwTXBdIw
-         6HXIDnTsu9nA/Lm8vp4GDfeJ92+OmilCH/3ovCi55TAFp0fKrcQ+EPvcmaH4rDsRZn
-         RXBZidra82IOv2L0hC4BAAm7EDf7XqmBEaL/PFGY9NC3wcimhRtWUA1RAjfqoz8Ri6
-         lst/V1OKGuhrA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DCB78E45BDB;
-        Fri,  8 Jul 2022 22:20:13 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S237684AbiGHWU7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Jul 2022 18:20:59 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD042A2E61
+        for <bpf@vger.kernel.org>; Fri,  8 Jul 2022 15:20:58 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id e15so170306edj.2
+        for <bpf@vger.kernel.org>; Fri, 08 Jul 2022 15:20:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+ZOuIw50PiUE4fvxUFx4PNXHitJXDQa6UVMY8YoBCRg=;
+        b=XRDnBwmpulJ4oXbgTGdNSVfhX5dxToQaIXq8baMOvbOchb2EQ4b2OlKMvmAMujAwr4
+         1WvBzicQHKCpgTLoGVA+puQWrR1bchygpUaZkvzeA5ydZeSPU/1uRY2By1gaZWPiyVLy
+         P3vCl+HkCyGqHvkUfSJaAHUjc5i63XgSI9pwhe8AnrAGCvBrR/wfgF3HwEIiKfHx/OqH
+         GszR2HfP7XX8OsU3blhqpaqnItT4qHGdxsMPtyslE1DPqIrGt3QiffPG34xvGl7HF6xm
+         m/lfSJ+xbiyptNEFi12jddrgL7T4ZDMNzzhqyo0xpJeKWWrt9N+4vKKF5Z/f2OuXDv5O
+         TPRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+ZOuIw50PiUE4fvxUFx4PNXHitJXDQa6UVMY8YoBCRg=;
+        b=5w/537qjOmxd3Qw6+7eRsFp3ZWCXDrAOVmgokTOUnW6ooBB69JBAnv2SJ1S2LUziMA
+         ZuecsctPIDaDUlRlTBfBoYFiFs3dz1T09Bg+bsBuWdLKyJbX5O7d065mFeCo5QlP45TH
+         N3DBBJqIleo1muxueA9cC0QqCR8J02Cin4ejFS9Y4aIUs5Qw2IRpTfmGF9CdqOQmN6LH
+         JUWnKfYNT5VAW2fuzSZJHDfhvaXcbnPexezHPG+ZCGtAyvfN8bZGDaEBITFgK8kFS9Hs
+         SHY4lAuu/0L6xzB67ACmcBAeBHxWvLwHI7vaR0CRH63GG5YShN4MryvKVmWPOdMiutaw
+         +KYQ==
+X-Gm-Message-State: AJIora85W4K6WijUMYyOTeLrkrBPfOwOV6Tb0iVk/WM452cjCxoi8Vta
+        RXR/kWnQttEcNRVUIOHNmJkSGP/MubVaxAnS7+HWx28oRYA=
+X-Google-Smtp-Source: AGRyM1v29c8ebogjtpMOY3+Qxj+qrTBBJsFS9zhVzJsPUOOj3rADFfLprgoVGXhXnQgcK1B/q12cySSfKK0XJqIn1l0=
+X-Received: by 2002:a05:6402:510b:b0:437:28b0:8988 with SMTP id
+ m11-20020a056402510b00b0043728b08988mr7769061edd.260.1657318857322; Fri, 08
+ Jul 2022 15:20:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v4] libbpf: disable SEC pragma macro on GCC
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165731881389.3468.1090861086732416921.git-patchwork-notify@kernel.org>
-Date:   Fri, 08 Jul 2022 22:20:13 +0000
-References: <20220706111839.1247911-1-james.hilliard1@gmail.com>
-In-Reply-To: <20220706111839.1247911-1-james.hilliard1@gmail.com>
-To:     James Hilliard <james.hilliard1@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220704140850.1106119-1-hengqi.chen@gmail.com>
+ <CAEf4Bzbo0GbLv0YdyLLZq8myGK=eGz_GgYbifw1LMu2Adxhjvg@mail.gmail.com> <111d4f5b-f174-128b-166b-65f91ce965fa@gmail.com>
+In-Reply-To: <111d4f5b-f174-128b-166b-65f91ce965fa@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 8 Jul 2022 15:20:46 -0700
+Message-ID: <CAEf4BzYrpMXOVTF+JKuEjiLkr=F5XOeRsEhMOtW5nNcuqtmXzA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: Error out when missing binary_path for
+ USDT attach
+To:     Hengqi Chen <hengqi.chen@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Wed, Jul 6, 2022 at 12:08 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
+>
+> Hi, Andrii
+>
+> On 2022/7/6 13:05, Andrii Nakryiko wrote:
+> > On Mon, Jul 4, 2022 at 7:09 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
+> >>
+> >> The binary_path parameter is required for bpf_program__attach_usdt().
+> >> Error out when user attach USDT probe without specifying a binary_path.
+> >>
+> >
+> > This is a required parameter, libbpf doesn't add pr_warn() for every
+> > `const char *` parameter that the user incorrectly passes NULL for
+> > (e.g., bpf_program__attach_kprobe's func_name). If you think
+>
+> I understand this is a required parameter. The intention of this patch is
+> to avoid coredump if user passes NULL for binary_path argument, not just
+> emit a warning. The uprobe handling code of libbpf already did this.
+>
+> BTW, most of libbpf APIs do NULL check for their const char * parameters
+> and return -EINVAL.
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+Even some of pretty old APIs like bpf_program__pin() don't do that for
+path. But ok, given bpf_program__attach_uprobe_opts() checks
+binary_path for NULL, let's add check and return -EINVAL. But let's
+skip pr_warn(). And while you are at it, can you move the binary_path
+check in attach_uprobe_opts up, it's weirdly nested in func_name
+check, not sure why is that, tbh. I'm not sure uprobe attach can even
+succeed with NULL binary_path, so it's weird that we don't always
+reject it.
 
-On Wed,  6 Jul 2022 05:18:38 -0600 you wrote:
-> It seems the gcc preprocessor breaks with pragmas when surrounding
-> __attribute__.
-> 
-> Disable these pragmas on GCC due to upstream bugs see:
-> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=55578
-> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=90400
-> 
-> [...]
-
-Here is the summary with links:
-  - [v4] libbpf: disable SEC pragma macro on GCC
-    https://git.kernel.org/bpf/bpf-next/c/18410251f66a
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+>
+> > bpf_program__attach_usdt() doc comment about this is not clear enough,
+> > let's improve the documentation instead of littering libbpf source
+> > code with Java-like NULL checks everywhere.
+> >
+> >> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+> >> ---
+> >>  tools/lib/bpf/libbpf.c | 6 ++++++
+> >>  1 file changed, 6 insertions(+)
+> >>
+> >> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> >> index 8a45a84eb9b2..5e4153c5b0a6 100644
+> >> --- a/tools/lib/bpf/libbpf.c
+> >> +++ b/tools/lib/bpf/libbpf.c
+> >> @@ -10686,6 +10686,12 @@ struct bpf_link *bpf_program__attach_usdt(const struct bpf_program *prog,
+> >>                 return libbpf_err_ptr(-EINVAL);
+> >>         }
+> >>
+> >> +       if (!binary_path) {
+> >> +               pr_warn("prog '%s': USDT attach requires binary_path\n",
+> >> +                       prog->name);
+> >> +               return libbpf_err_ptr(-EINVAL);
+> >> +       }
+> >> +
+> >>         if (!strchr(binary_path, '/')) {
+> >>                 err = resolve_full_path(binary_path, resolved_path, sizeof(resolved_path));
+> >>                 if (err) {
+> >> --
+> >> 2.30.2
+>
+>
+> --
+> Hengqi
