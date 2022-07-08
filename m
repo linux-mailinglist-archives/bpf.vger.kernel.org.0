@@ -2,59 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EE9156C3F0
-	for <lists+bpf@lfdr.de>; Sat,  9 Jul 2022 01:15:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB07756C3EF
+	for <lists+bpf@lfdr.de>; Sat,  9 Jul 2022 01:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237091AbiGHWVD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Jul 2022 18:21:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46224 "EHLO
+        id S238336AbiGHWXH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Jul 2022 18:23:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237684AbiGHWU7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Jul 2022 18:20:59 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD042A2E61
-        for <bpf@vger.kernel.org>; Fri,  8 Jul 2022 15:20:58 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id e15so170306edj.2
-        for <bpf@vger.kernel.org>; Fri, 08 Jul 2022 15:20:58 -0700 (PDT)
+        with ESMTP id S238170AbiGHWXG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Jul 2022 18:23:06 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46253A2E73;
+        Fri,  8 Jul 2022 15:23:04 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id r18so142176edb.9;
+        Fri, 08 Jul 2022 15:23:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=+ZOuIw50PiUE4fvxUFx4PNXHitJXDQa6UVMY8YoBCRg=;
-        b=XRDnBwmpulJ4oXbgTGdNSVfhX5dxToQaIXq8baMOvbOchb2EQ4b2OlKMvmAMujAwr4
-         1WvBzicQHKCpgTLoGVA+puQWrR1bchygpUaZkvzeA5ydZeSPU/1uRY2By1gaZWPiyVLy
-         P3vCl+HkCyGqHvkUfSJaAHUjc5i63XgSI9pwhe8AnrAGCvBrR/wfgF3HwEIiKfHx/OqH
-         GszR2HfP7XX8OsU3blhqpaqnItT4qHGdxsMPtyslE1DPqIrGt3QiffPG34xvGl7HF6xm
-         m/lfSJ+xbiyptNEFi12jddrgL7T4ZDMNzzhqyo0xpJeKWWrt9N+4vKKF5Z/f2OuXDv5O
-         TPRA==
+        bh=yBdvBTe3g+WoWKyR2cO1ADMFniLHi7aD7N14QfJmN44=;
+        b=U7LtpCI6Et+ZUqPOwI7r1KOG9LRVjRO7f1c4kL0531lewHHh9QjqKjQcAHW8knDWzw
+         z73ez2NzxOWumdTs0B+BCHhvvM9dxWx86TkIYUNcIzrsyC8q5kjidXciPy0HMN19m/kE
+         flvme3cuK73mxM7PMMkL3lmulqAksdjMTlj8baWX7qfqcvDTi3+uhoK1GToJ9mh0uzLP
+         WVaN6MxWGI2e6MJ5CL8xAt4kKst2ifyXiczourRO+nvn0ZBXlmTgjlHh4G40LZHMl3tk
+         1RL58VIR2/Uq7XB6Z8P2akBKPo17vtaz7T/8SRZcCSkNxvZ66HkM/rzCP1jj6hfteyOw
+         FVRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=+ZOuIw50PiUE4fvxUFx4PNXHitJXDQa6UVMY8YoBCRg=;
-        b=5w/537qjOmxd3Qw6+7eRsFp3ZWCXDrAOVmgokTOUnW6ooBB69JBAnv2SJ1S2LUziMA
-         ZuecsctPIDaDUlRlTBfBoYFiFs3dz1T09Bg+bsBuWdLKyJbX5O7d065mFeCo5QlP45TH
-         N3DBBJqIleo1muxueA9cC0QqCR8J02Cin4ejFS9Y4aIUs5Qw2IRpTfmGF9CdqOQmN6LH
-         JUWnKfYNT5VAW2fuzSZJHDfhvaXcbnPexezHPG+ZCGtAyvfN8bZGDaEBITFgK8kFS9Hs
-         SHY4lAuu/0L6xzB67ACmcBAeBHxWvLwHI7vaR0CRH63GG5YShN4MryvKVmWPOdMiutaw
-         +KYQ==
-X-Gm-Message-State: AJIora85W4K6WijUMYyOTeLrkrBPfOwOV6Tb0iVk/WM452cjCxoi8Vta
-        RXR/kWnQttEcNRVUIOHNmJkSGP/MubVaxAnS7+HWx28oRYA=
-X-Google-Smtp-Source: AGRyM1v29c8ebogjtpMOY3+Qxj+qrTBBJsFS9zhVzJsPUOOj3rADFfLprgoVGXhXnQgcK1B/q12cySSfKK0XJqIn1l0=
-X-Received: by 2002:a05:6402:510b:b0:437:28b0:8988 with SMTP id
- m11-20020a056402510b00b0043728b08988mr7769061edd.260.1657318857322; Fri, 08
- Jul 2022 15:20:57 -0700 (PDT)
+        bh=yBdvBTe3g+WoWKyR2cO1ADMFniLHi7aD7N14QfJmN44=;
+        b=3ujGw6h0CTwhWHddQGlTyYL54zH4HomM+H3+6fJVV1X2Lq9jjGVsOwS6FIvW++GInK
+         bBBIEx9C0mgVwyI2spRkJjuaKtHR9qDSykUybxYG0E1uDFUd4MobWVE9BkTb1FN7wq2u
+         sL0YhjZAVrOYhqZ6GQJGAmGyJuqm5syqmJYdkZjA4H92U1+zA0RxCIwcXeVzApFFgeiB
+         n8IqARTlRkD/v6YZ844Df1AacrUBKkDwe4cKDw31jzTPj00N6F4+lOQ5LWvbJU0avie6
+         uSRAAwABrjj2yGEj9EdG0OWyUGpfszLD2H3CeSApXpu3Z5PJn73d/tdp8LRtyyHeYtgA
+         ffqQ==
+X-Gm-Message-State: AJIora+tEgbMP2gLxzqlIBlNTn0z8jpgSQzhaEFgaAHB10gvO1zCoIAH
+        a00By8XXxLQu9X8T/WvLtGk0By0IPyy3ynig9Q8=
+X-Google-Smtp-Source: AGRyM1tiUsd7f6UAjFxaGOKMCFQWdEHIWpjx8lm0dM4npIINocOYFvbbYuCc1fEkvWycP/6zDtaD1wDwsObcNke4aAQ=
+X-Received: by 2002:a05:6402:c92:b0:43a:7177:5be7 with SMTP id
+ cm18-20020a0564020c9200b0043a71775be7mr7796141edb.224.1657318982890; Fri, 08
+ Jul 2022 15:23:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220704140850.1106119-1-hengqi.chen@gmail.com>
- <CAEf4Bzbo0GbLv0YdyLLZq8myGK=eGz_GgYbifw1LMu2Adxhjvg@mail.gmail.com> <111d4f5b-f174-128b-166b-65f91ce965fa@gmail.com>
-In-Reply-To: <111d4f5b-f174-128b-166b-65f91ce965fa@gmail.com>
+References: <20220703130924.57240-1-dlan@gentoo.org> <YsKAZUJRo5cjtZ3n@infradead.org>
+ <CAEf4BzbCswMd6KU7f9SEU6xHBBPu_rTL5f+KE0OkYj63e-h-bA@mail.gmail.com> <YsUy8jBpt11zoc5E@infradead.org>
+In-Reply-To: <YsUy8jBpt11zoc5E@infradead.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 8 Jul 2022 15:20:46 -0700
-Message-ID: <CAEf4BzYrpMXOVTF+JKuEjiLkr=F5XOeRsEhMOtW5nNcuqtmXzA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: Error out when missing binary_path for
- USDT attach
-To:     Hengqi Chen <hengqi.chen@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+Date:   Fri, 8 Jul 2022 15:22:51 -0700
+Message-ID: <CAEf4BzZrvOyYxmJpw=azZ59adeEqnHYqnUXKQProyUKBP5NaUA@mail.gmail.com>
+Subject: Re: [PATCH] RISC-V/bpf: Enable bpf_probe_read{, str}()
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Alan Maguire <alan.maguire@oracle.com>,
+        Yixun Lan <dlan@gentoo.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-riscv@lists.infradead.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -66,67 +79,14 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 6, 2022 at 12:08 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
+On Wed, Jul 6, 2022 at 12:00 AM Christoph Hellwig <hch@infradead.org> wrote:
 >
-> Hi, Andrii
+> On Tue, Jul 05, 2022 at 10:00:42PM -0700, Andrii Nakryiko wrote:
+> > riscv existed as of [0], so I'd argue it is a proper bug fix, as
+> > corresponding select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE should
+> > have been added back then.
 >
-> On 2022/7/6 13:05, Andrii Nakryiko wrote:
-> > On Mon, Jul 4, 2022 at 7:09 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
-> >>
-> >> The binary_path parameter is required for bpf_program__attach_usdt().
-> >> Error out when user attach USDT probe without specifying a binary_path.
-> >>
-> >
-> > This is a required parameter, libbpf doesn't add pr_warn() for every
-> > `const char *` parameter that the user incorrectly passes NULL for
-> > (e.g., bpf_program__attach_kprobe's func_name). If you think
->
-> I understand this is a required parameter. The intention of this patch is
-> to avoid coredump if user passes NULL for binary_path argument, not just
-> emit a warning. The uprobe handling code of libbpf already did this.
->
-> BTW, most of libbpf APIs do NULL check for their const char * parameters
-> and return -EINVAL.
+> How much of an eBPF ecosystem was there on RISC-V at the point?
 
-Even some of pretty old APIs like bpf_program__pin() don't do that for
-path. But ok, given bpf_program__attach_uprobe_opts() checks
-binary_path for NULL, let's add check and return -EINVAL. But let's
-skip pr_warn(). And while you are at it, can you move the binary_path
-check in attach_uprobe_opts up, it's weirdly nested in func_name
-check, not sure why is that, tbh. I'm not sure uprobe attach can even
-succeed with NULL binary_path, so it's weird that we don't always
-reject it.
-
->
-> > bpf_program__attach_usdt() doc comment about this is not clear enough,
-> > let's improve the documentation instead of littering libbpf source
-> > code with Java-like NULL checks everywhere.
-> >
-> >> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
-> >> ---
-> >>  tools/lib/bpf/libbpf.c | 6 ++++++
-> >>  1 file changed, 6 insertions(+)
-> >>
-> >> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> >> index 8a45a84eb9b2..5e4153c5b0a6 100644
-> >> --- a/tools/lib/bpf/libbpf.c
-> >> +++ b/tools/lib/bpf/libbpf.c
-> >> @@ -10686,6 +10686,12 @@ struct bpf_link *bpf_program__attach_usdt(const struct bpf_program *prog,
-> >>                 return libbpf_err_ptr(-EINVAL);
-> >>         }
-> >>
-> >> +       if (!binary_path) {
-> >> +               pr_warn("prog '%s': USDT attach requires binary_path\n",
-> >> +                       prog->name);
-> >> +               return libbpf_err_ptr(-EINVAL);
-> >> +       }
-> >> +
-> >>         if (!strchr(binary_path, '/')) {
-> >>                 err = resolve_full_path(binary_path, resolved_path, sizeof(resolved_path));
-> >>                 if (err) {
-> >> --
-> >> 2.30.2
->
->
-> --
-> Hengqi
+No idea, never used RISC-V and didn't pay much attention. But why does
+it matter?
