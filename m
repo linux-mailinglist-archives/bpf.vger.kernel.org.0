@@ -2,54 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70B7F56AF51
-	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 02:12:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A4E56AF5F
+	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 02:32:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237034AbiGHAKh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Jul 2022 20:10:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59726 "EHLO
+        id S236756AbiGHAUR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Jul 2022 20:20:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236448AbiGHAKg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Jul 2022 20:10:36 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3AD76EE93;
-        Thu,  7 Jul 2022 17:10:35 -0700 (PDT)
+        with ESMTP id S236022AbiGHAUQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Jul 2022 20:20:16 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C19A6EEA1
+        for <bpf@vger.kernel.org>; Thu,  7 Jul 2022 17:20:16 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id EC4D2CE2714;
-        Fri,  8 Jul 2022 00:10:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 01D75C3411E;
-        Fri,  8 Jul 2022 00:10:31 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id EC558B824A6
+        for <bpf@vger.kernel.org>; Fri,  8 Jul 2022 00:20:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B00C1C341C0;
+        Fri,  8 Jul 2022 00:20:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1657239032;
-        bh=9xpIeTxwhcZ5EtEAoq6+mS6pFAVaStUpuHHwrd8/nno=;
+        s=k20201202; t=1657239613;
+        bh=dtp+OlmQ++gTz5TG/JLZTy2A9Rp/uDVLS2T4UFVFSH8=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Z0paYA5JhJxDCVdE3hfAZ8m8gqzchfElEvh2xFG81Afcfg9OZkFKp3+3Uw0Kc5l7o
-         BfIdEhsOOTXWrGCVdtRcolfoRCp0QcX10Qy7F6M5y+GokNF7OR6oAzwOhrWtwzb85X
-         ZpimPHBZQF2GDicIlHcFk0LnOiHU2qJ3RFhCm9JgpLPNcTUm7vSuopW8vautbn5Dys
-         8UvtamDgK4CGwgNXA83VTpwgE5vmTA3lmKnAvJLIel9BhYg28Z+gtikI23b2l278MD
-         +LVkoNOvjUW49Mj9XNzLcp9CB2gWxi9B7MRnhbMiEYaUC1GN639N21eIjEgEL7+YVp
-         4yovgTnrPFssA==
+        b=uoVcjI6lJMYBBlzscWMNGDUUCHcz9w03Av1Wg3bxj1HU7Sb7ocGvSZ9mq5GP5qoPR
+         l09e8znJmkcS1yLZBjSpae/6dsEgbcoR3grDljL9dKxOiq1EkQ89rzKeizsM/hUZ6x
+         /gV1FJ0T8JtoZhWi/1y9lHL+x8lvcyPcGR9uRDfCU7jdbzD8C8zaC6lehkEJSmJ5sk
+         vEqc1Bzo4f1xaG+4qCIpAZ1H+/cRtohAo9Hgy20d0UkL+pKlX4+ATlrMJ/7V13oS1Z
+         I0gYzAaznOpy4vnXRY/4YqkEGgcwAS9c9U+5+Jl38aVoAFaU/9tAWo1Xyy/jFuyMYl
+         He3VRonLMXPmg==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D85F8E45BD9;
-        Fri,  8 Jul 2022 00:10:31 +0000 (UTC)
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9413AE45BDC;
+        Fri,  8 Jul 2022 00:20:13 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v3] net: page_pool: optimize page pool page
- allocation in NUMA scenario
+Subject: Re: [PATCH bpf-next v1] bpf: Add flags arg to bpf_dynptr_read and
+ bpf_dynptr_write APIs
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165723903188.3388.12895024005964684911.git-patchwork-notify@kernel.org>
-Date:   Fri, 08 Jul 2022 00:10:31 +0000
-References: <20220705113515.54342-1-huangguangbin2@huawei.com>
-In-Reply-To: <20220705113515.54342-1-huangguangbin2@huawei.com>
-To:     Guangbin Huang <huangguangbin2@huawei.com>
-Cc:     jbrouer@redhat.com, hawk@kernel.org, brouer@redhat.com,
-        ilias.apalodimas@linaro.org, davem@davemloft.net, kuba@kernel.org,
-        edumazet@google.com, pabeni@redhat.com, lorenzo@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, lipeng321@huawei.com, chenhao288@hisilicon.com
+Message-Id: <165723961360.9316.6321891348330915795.git-patchwork-notify@kernel.org>
+Date:   Fri, 08 Jul 2022 00:20:13 +0000
+References: <20220706232547.4016651-1-joannelkoong@gmail.com>
+In-Reply-To: <20220706232547.4016651-1-joannelkoong@gmail.com>
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+        ast@kernel.org
 X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -62,34 +59,22 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net-next.git (master)
-by Jakub Kicinski <kuba@kernel.org>:
+This patch was applied to bpf/bpf.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-On Tue, 5 Jul 2022 19:35:15 +0800 you wrote:
-> From: Jie Wang <wangjie125@huawei.com>
+On Wed,  6 Jul 2022 16:25:47 -0700 you wrote:
+> Commit 13bbbfbea759 ("bpf: Add bpf_dynptr_read and bpf_dynptr_write")
+> added the bpf_dynptr_write and bpf_dynptr_read APIs.
 > 
-> Currently NIC packet receiving performance based on page pool deteriorates
-> occasionally. To analysis the causes of this problem page allocation stats
-> are collected. Here are the stats when NIC rx performance deteriorates:
-> 
-> bandwidth(Gbits/s)		16.8		6.91
-> rx_pp_alloc_fast		13794308	21141869
-> rx_pp_alloc_slow		108625		166481
-> rx_pp_alloc_slow_h		0		0
-> rx_pp_alloc_empty		8192		8192
-> rx_pp_alloc_refill		0		0
-> rx_pp_alloc_waive		100433		158289
-> rx_pp_recycle_cached		0		0
-> rx_pp_recycle_cache_full	0		0
-> rx_pp_recycle_ring		362400		420281
-> rx_pp_recycle_ring_full		6064893		9709724
-> rx_pp_recycle_released_ref	0		0
+> However, it will be useful for some dynptr types to pass in flags as
+> well (eg when writing to a skb, the user may like to invalidate the
+> hash or recompute the checksum).
 > 
 > [...]
 
 Here is the summary with links:
-  - [net-next,v3] net: page_pool: optimize page pool page allocation in NUMA scenario
-    https://git.kernel.org/netdev/net-next/c/d810d367ec40
+  - [bpf-next,v1] bpf: Add flags arg to bpf_dynptr_read and bpf_dynptr_write APIs
+    https://git.kernel.org/bpf/bpf/c/59018468b631
 
 You are awesome, thank you!
 -- 
