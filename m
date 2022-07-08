@@ -2,103 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B37856B2BE
-	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 08:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4938656B46E
+	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 10:25:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237310AbiGHGYQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Jul 2022 02:24:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53124 "EHLO
+        id S237594AbiGHIYy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Jul 2022 04:24:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237298AbiGHGYQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Jul 2022 02:24:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 62AB22B1AF
-        for <bpf@vger.kernel.org>; Thu,  7 Jul 2022 23:24:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1657261454;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MuCsAQqcP9jRhnofNGlkag+3lFIM4NlF43nORVr9O9Q=;
-        b=JiPKHAbXDIS89ar7ZF1+TW68z8+Dti80wKv6mCEdmKm0D4XjtLNBFO3Y5TG2VVAM4P5oeO
-        snUaweIHbmnkri7pOar3+WviE9+4rIA5h2vIcf59DamjrOeqwBSLTWSEF0xu3jp7zUxX0u
-        I5kKNYaOd/Y8Axx5NGQiUjiP9Ksz5gs=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-383-s2F82xqgMM6srYMmbu5NhA-1; Fri, 08 Jul 2022 02:24:10 -0400
-X-MC-Unique: s2F82xqgMM6srYMmbu5NhA-1
-Received: by mail-lf1-f69.google.com with SMTP id f40-20020a0565123b2800b0048454c5aec2so3675595lfv.1
-        for <bpf@vger.kernel.org>; Thu, 07 Jul 2022 23:24:09 -0700 (PDT)
+        with ESMTP id S237648AbiGHIYv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Jul 2022 04:24:51 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADB2B81498
+        for <bpf@vger.kernel.org>; Fri,  8 Jul 2022 01:24:48 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id z12so19897693wrq.7
+        for <bpf@vger.kernel.org>; Fri, 08 Jul 2022 01:24:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mIwFg075RvwVYz9+/Y+xL9IEwu5sJHlYJ/YyVZSg0lY=;
+        b=Hb9QsIsy3zrdkNF7D7KWN7V9xWmBnlnqukEu8VQO760EvPnCTgR7YaaANXCVvHFhG8
+         azGVU8v/yUeYegEIgmmaKflxUqaohJdfHBD0rtW/STrfWOLiHNQTL2u3xQe8ziPn37Tp
+         KperCCH8+Rsgixu8wrN/mbJVA3rhSsKGl2aOlADbg6XXnewNcscnnFvz+pqLe4iqnJHA
+         zq3s15m3tNnJHcbuScXgMIPMUNpfZjSdtaTKbGQrtAGToOwTcSyiz9akBnE8KKn7Cahy
+         sS9hB+7l1qMZEn7F61+CTCeYnNdL/RgeTOMXypf4x/Gnu8ySOpRtLqY0aWNZCHpwATqH
+         tn0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=MuCsAQqcP9jRhnofNGlkag+3lFIM4NlF43nORVr9O9Q=;
-        b=zGbK27hvsV8dzAO1VsOxwXJvID8CYlM7bU6ugpHTtQMR7DqnJHm0hTXpSDm7fhIIPx
-         1IGQ6zClopy2OsJ/ovHKL4nHfpt7ofZMildyuYj5t9fcLaPa3ifZ818sQ2eX57IpHNcP
-         2csTwZlKoQDmVnQVgJg+AN+5G8+WF0m9UyCdv1Ia3hDkSuNXUI38+PUh14EEJdkXQifG
-         ZHn6/0mLTkqDSCrMr3v8+JKIhQ8AcxzYQxLaDbtf6Oh87Yom0MZzhFQ5JpzTl2uFTVSq
-         RmP/wzQKfNgf7pb65J7xZzpyFt2LWhwrEBHchJvmLakQccI7ZKwRmDA11gu43DcFazwC
-         JlnQ==
-X-Gm-Message-State: AJIora+EQUCm+ibK6XXtVjhP5O7iAJikyafCeaZIhaOjmaSdsntcRcPB
-        D2K593I5KAUI3HAnRbFmGylBm7k2ossQ8Ku4evxjgLDe/pEcAsF5wpjXkB7vCKXnr7wVWAzYpR1
-        qZd4thsEVMYWcfiYGZR6wFpl9AtIq
-X-Received: by 2002:a2e:b703:0:b0:25a:93d0:8a57 with SMTP id j3-20020a2eb703000000b0025a93d08a57mr1045823ljo.487.1657261448480;
-        Thu, 07 Jul 2022 23:24:08 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1tzPsP1k2g24mQnHNz5CBL+LS/XojwCfoJppvOK3luPVsAL9MMOxyPmQUAGDT4ZWM4iccKWwEJaWyc8djFVrqw=
-X-Received: by 2002:a2e:b703:0:b0:25a:93d0:8a57 with SMTP id
- j3-20020a2eb703000000b0025a93d08a57mr1045787ljo.487.1657261448283; Thu, 07
- Jul 2022 23:24:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
- <20220629065656.54420-40-xuanzhuo@linux.alibaba.com> <102d3b83-1ae9-a59a-16ce-251c22b7afb0@redhat.com>
- <1656986432.1164997-2-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <1656986432.1164997-2-xuanzhuo@linux.alibaba.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Fri, 8 Jul 2022 14:23:57 +0800
-Message-ID: <CACGkMEt8MSS=tcn=Hd6WF9+btT0ccocxEd1ighRgK-V1uiWmCQ@mail.gmail.com>
-Subject: Re: [PATCH v11 39/40] virtio_net: support tx queue resize
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Vadim Pasternak <vadimp@nvidia.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mIwFg075RvwVYz9+/Y+xL9IEwu5sJHlYJ/YyVZSg0lY=;
+        b=cQBX8Q/wQbTSh+4o//hb0mrWWNTBV8V8LHqHpJ2vtYziIll8h8Qy1UHr3Lhmc9xyFY
+         5ke5pDtcj+R4iutiYUXVQwXwzJ5jIJCuXYldxuyVjHXL/0J3Amy44UQ8Hq/xkaZcXNgf
+         FVD/PXLI1W0S2zQvb2Z3mUHiEa+QLHzdgC1yPVrYY9UVUoKOeFNRphA0f4eOtmFuSoj7
+         XoBdxDQW2j8mJTPROIffRFzFHERhIHIymEYl7lBm5hM0PKk6MrNgfbrO/lWueuEo1JiE
+         t38ipLwboIL3BqNvQzD8I75C0iS9CnhPdp5/ijwmJ4lAQ+e4Ffdtkiki0gFyQE1OnhJ6
+         iG2g==
+X-Gm-Message-State: AJIora+GwfdIdyviiGIJu0EUPa0Yb2J03+Y5kNRKdCaD6XLVq7wtLdHv
+        eB8sjhgvJVoLynY8klqrY3VFAg==
+X-Google-Smtp-Source: AGRyM1viKjtVrmUoxTanFr1pV6d7LMrE7leuT0XIliXYQcDoe0Ro78y5UhOmXgHGos2nagi880AGAA==
+X-Received: by 2002:a5d:588d:0:b0:21d:865c:54e9 with SMTP id n13-20020a5d588d000000b0021d865c54e9mr2109574wrf.3.1657268687247;
+        Fri, 08 Jul 2022 01:24:47 -0700 (PDT)
+Received: from myrica (cpc92880-cmbg19-2-0-cust679.5-4.cable.virginm.net. [82.27.106.168])
+        by smtp.gmail.com with ESMTPSA id h15-20020a1ccc0f000000b0039749b01ea7sm1670902wmb.32.2022.07.08.01.24.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Jul 2022 01:24:46 -0700 (PDT)
+Date:   Fri, 8 Jul 2022 09:24:22 +0100
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Xu Kuohai <xukuohai@huawei.com>
+Cc:     bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        linux-um@lists.infradead.org, netdev <netdev@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
-        kvm <kvm@vger.kernel.org>,
-        "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>,
-        kangjie.xu@linux.alibaba.com,
-        virtualization <virtualization@lists.linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        James Morse <james.morse@arm.com>,
+        Hou Tao <houtao1@huawei.com>,
+        Jason Wang <wangborong@cdjrlc.com>
+Subject: Re: [PATCH bpf-next v6 4/4] bpf, arm64: bpf trampoline for arm64
+Message-ID: <YsfptiexC0wFABFL@myrica>
+References: <20220625161255.547944-1-xukuohai@huawei.com>
+ <20220625161255.547944-5-xukuohai@huawei.com>
+ <YscL4t1pYHYApIiK@larix>
+ <a24109d5-b79a-99de-0fd5-66b0ec34e5ed@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a24109d5-b79a-99de-0fd5-66b0ec34e5ed@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -106,132 +96,75 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 5, 2022 at 10:01 AM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrot=
-e:
->
-> On Mon, 4 Jul 2022 11:45:52 +0800, Jason Wang <jasowang@redhat.com> wrote=
-:
-> >
-> > =E5=9C=A8 2022/6/29 14:56, Xuan Zhuo =E5=86=99=E9=81=93:
-> > > This patch implements the resize function of the tx queues.
-> > > Based on this function, it is possible to modify the ring num of the
-> > > queue.
-> > >
-> > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > > ---
-> > >   drivers/net/virtio_net.c | 48 +++++++++++++++++++++++++++++++++++++=
-+++
-> > >   1 file changed, 48 insertions(+)
-> > >
-> > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > > index 6ab16fd193e5..fd358462f802 100644
-> > > --- a/drivers/net/virtio_net.c
-> > > +++ b/drivers/net/virtio_net.c
-> > > @@ -135,6 +135,9 @@ struct send_queue {
-> > >     struct virtnet_sq_stats stats;
-> > >
-> > >     struct napi_struct napi;
-> > > +
-> > > +   /* Record whether sq is in reset state. */
-> > > +   bool reset;
-> > >   };
-> > >
-> > >   /* Internal representation of a receive virtqueue */
-> > > @@ -279,6 +282,7 @@ struct padded_vnet_hdr {
-> > >   };
-> > >
-> > >   static void virtnet_rq_free_unused_buf(struct virtqueue *vq, void *=
-buf);
-> > > +static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *b=
-uf);
-> > >
-> > >   static bool is_xdp_frame(void *ptr)
-> > >   {
-> > > @@ -1603,6 +1607,11 @@ static void virtnet_poll_cleantx(struct receiv=
-e_queue *rq)
-> > >             return;
-> > >
-> > >     if (__netif_tx_trylock(txq)) {
-> > > +           if (READ_ONCE(sq->reset)) {
-> > > +                   __netif_tx_unlock(txq);
-> > > +                   return;
-> > > +           }
-> > > +
-> > >             do {
-> > >                     virtqueue_disable_cb(sq->vq);
-> > >                     free_old_xmit_skbs(sq, true);
-> > > @@ -1868,6 +1877,45 @@ static int virtnet_rx_resize(struct virtnet_in=
-fo *vi,
-> > >     return err;
-> > >   }
-> > >
-> > > +static int virtnet_tx_resize(struct virtnet_info *vi,
-> > > +                        struct send_queue *sq, u32 ring_num)
-> > > +{
-> > > +   struct netdev_queue *txq;
-> > > +   int err, qindex;
-> > > +
-> > > +   qindex =3D sq - vi->sq;
-> > > +
-> > > +   virtnet_napi_tx_disable(&sq->napi);
-> > > +
-> > > +   txq =3D netdev_get_tx_queue(vi->dev, qindex);
-> > > +
-> > > +   /* 1. wait all ximt complete
-> > > +    * 2. fix the race of netif_stop_subqueue() vs netif_start_subque=
-ue()
-> > > +    */
-> > > +   __netif_tx_lock_bh(txq);
-> > > +
-> > > +   /* Prevent rx poll from accessing sq. */
-> > > +   WRITE_ONCE(sq->reset, true);
-> >
-> >
-> > Can we simply disable RX NAPI here?
->
-> Disable rx napi is indeed a simple solution. But I hope that when dealing=
- with
-> tx, it will not affect rx.
+On Fri, Jul 08, 2022 at 12:35:33PM +0800, Xu Kuohai wrote:
+> >> +
+> >> +	emit(A64_ADD_I(1, A64_R(0), A64_SP, args_off), ctx);
+> >> +	if (!p->jited)
+> >> +		emit_addr_mov_i64(A64_R(1), (const u64)p->insnsi, ctx);
+> >> +
+> >> +	emit_call((const u64)p->bpf_func, ctx);
+> >> +
+> >> +	/* store return value */
+> >> +	if (save_ret)
+> >> +		emit(A64_STR64I(r0, A64_SP, retval_off), ctx);
+> > 
+> > Here too I think it should be x0. I'm guessing r0 may work for jitted
+> > functions but not interpreted ones
+> > 
+> 
+> Yes, r0 is only correct for jitted code, will fix it to:
+> 
+> if (save_ret)
+>         emit(A64_STR64I(p->jited ? r0 : A64_R(0), A64_SP, retval_off),
+>              ctx);
 
-Ok, but I think we've already synchronized with tx lock here, isn't it?
+I don't think we need this test because x0 should be correct in all cases.
+x7 happens to equal x0 when jitted due to the way build_epilogue() builds
+the function at the moment, but we shouldn't rely on that.
 
-Thanks
 
->
-> Thanks.
->
->
-> >
-> > Thanks
-> >
-> >
-> > > +
-> > > +   /* Prevent the upper layer from trying to send packets. */
-> > > +   netif_stop_subqueue(vi->dev, qindex);
-> > > +
-> > > +   __netif_tx_unlock_bh(txq);
-> > > +
-> > > +   err =3D virtqueue_resize(sq->vq, ring_num, virtnet_sq_free_unused=
-_buf);
-> > > +   if (err)
-> > > +           netdev_err(vi->dev, "resize tx fail: tx queue index: %d e=
-rr: %d\n", qindex, err);
-> > > +
-> > > +   /* Memory barrier before set reset and start subqueue. */
-> > > +   smp_mb();
-> > > +
-> > > +   WRITE_ONCE(sq->reset, false);
-> > > +   netif_tx_wake_queue(txq);
-> > > +
-> > > +   virtnet_napi_tx_enable(vi, sq->vq, &sq->napi);
-> > > +   return err;
-> > > +}
-> > > +
-> > >   /*
-> > >    * Send command via the control virtqueue and check status.  Comman=
-ds
-> > >    * supported by the hypervisor, as indicated by feature bits, shoul=
-d
-> >
->
+> >> +	if (flags & BPF_TRAMP_F_CALL_ORIG) {
+> >> +		restore_args(ctx, args_off, nargs);
+> >> +		/* call original func */
+> >> +		emit(A64_LDR64I(A64_R(10), A64_SP, retaddr_off), ctx);
+> >> +		emit(A64_BLR(A64_R(10)), ctx);
+> > 
+> > I don't think we can do this when BTI is enabled because we're not jumping
+> > to a BTI instruction. We could introduce one in a patched BPF function
+> > (there currently is one if CONFIG_ARM64_PTR_AUTH_KERNEL), but probably not
+> > in a kernel function.
+> > 
+> > We could fo like FUNCTION_GRAPH_TRACER does and return to the patched
+> > function after modifying its LR. Not sure whether that works with pointer
+> > auth though.
+> > 
+> 
+> Yes, the blr instruction should be replaced with ret instruction, thanks!
+> 
+> The layout for bpf prog and regular kernel function is as follows, with
+> bti always coming first and paciasp immediately after patchsite, so the
+> ret instruction should work in all cases.
+> 
+> bpf prog or kernel function:
+>         bti c // if BTI
+>         mov x9, lr
+>         bl <trampoline>    ------> trampoline:
+>                                            ...
+>                                            mov lr, <return_entry>
+>                                            mov x10, <ORIG_CALL_entry>
+> ORIG_CALL_entry:           <-------        ret x10
+>                                    return_entry:
+>                                            ...
+>         paciasp // if PA
+>         ...
+
+Actually I just noticed that CONFIG_ARM64_BTI_KERNEL depends on
+CONFIG_ARM64_PTR_AUTH_KERNEL, so we should be able to rely on there always
+being a PACIASP at ORIG_CALL_entry, and since it's a landing pad for BLR
+we don't need to make this a RET
+
+ 92e2294d870b ("arm64: bti: Support building kernel C code using BTI")
+
+Thanks,
+Jean
 
