@@ -2,146 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A91F56B0E0
-	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 05:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7717356B105
+	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 05:42:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237024AbiGHDMj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Jul 2022 23:12:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48202 "EHLO
+        id S237062AbiGHDTE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Jul 2022 23:19:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236180AbiGHDMi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Jul 2022 23:12:38 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79FCA7393D;
-        Thu,  7 Jul 2022 20:12:36 -0700 (PDT)
-Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4LfJGS4FtRzpW6X;
-        Fri,  8 Jul 2022 11:11:44 +0800 (CST)
-Received: from dggpemm500019.china.huawei.com (7.185.36.180) by
- dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 8 Jul 2022 11:12:34 +0800
-Received: from [10.67.109.184] (10.67.109.184) by
- dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 8 Jul 2022 11:12:34 +0800
-Subject: Re: [PATCH bpf-next] samples: bpf: Fix cross-compiling error about
- bpftool
-From:   Pu Lehui <pulehui@huawei.com>
-To:     Song Liu <songliubraving@fb.com>
-CC:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "Martin Lau" <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-References: <20220707140811.603590-1-pulehui@huawei.com>
- <FDFF5B78-F555-4C55-96D3-B7B3FAA8E84F@fb.com>
- <c357fa1a-5160-ed85-19bf-51f3c188d56e@huawei.com>
-Message-ID: <d44f8faf-06df-6fdf-0adf-2abbdf9c9a49@huawei.com>
-Date:   Fri, 8 Jul 2022 11:12:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        with ESMTP id S237059AbiGHDTE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Jul 2022 23:19:04 -0400
+Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3785D747AD;
+        Thu,  7 Jul 2022 20:19:00 -0700 (PDT)
+Date:   Thu, 7 Jul 2022 20:18:52 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1657250338;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZzXf77ZnSEJIjuevx+EB4GpaxQjdHtz9/POLfph/nBE=;
+        b=Qy4O0B3TXJnXaPohoJlWl3VViPm/HiAjQYjCu92SV5MLaTSvFAV+asc6HCYkyU8p29uqsK
+        PkUyYZY6tI8B3J1zEbsMAdtKcYG8wSnd5IjAKW9MMeB6HBjelCfaH6lEOd/IoUOOQGqtdu
+        qmer4OS87yqwZODPooty6DN/RPX+W9E=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Roman Gushchin <roman.gushchin@linux.dev>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Yafang Shao <laoar.shao@gmail.com>, Michal Hocko <mhocko@suse.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH] mm: memcontrol: do not miss MEMCG_MAX events for
+ enforced allocations
+Message-ID: <YseiHOgqLapJPiyC@castle>
+References: <20220702033521.64630-1-roman.gushchin@linux.dev>
+ <CALvZod7TGhWtcRD6HeEx90T2+Rod-yamq9i+WbEQUKwNFTi-1A@mail.gmail.com>
+ <YsBmoqEBCa7ra7w2@castle>
+ <YsMCMveSdiYX/2eH@dhcp22.suse.cz>
+ <YsSj6rZmUkR8amT2@castle>
+ <CALOAHbAb9DT6ihyxTm-4FCUiqiAzRSUHJw9erc+JTKVT9p8tow@mail.gmail.com>
+ <YsUBQsTjVuXvt1Wr@castle>
+ <CALOAHbDjRzySCHeMVHtVDe=Ji+qh=n0pT4CwiAM5Pahi2-QNCQ@mail.gmail.com>
+ <YsUH7pgBVnWSkC1q@castle>
+ <CAADnVQ+qqeAVvtDYox4xj85Qxt79EV1Hn+HDEMuzHrwZv14X4Q@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <c357fa1a-5160-ed85-19bf-51f3c188d56e@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.109.184]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500019.china.huawei.com (7.185.36.180)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQ+qqeAVvtDYox4xj85Qxt79EV1Hn+HDEMuzHrwZv14X4Q@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, Jul 07, 2022 at 03:41:11PM -0700, Alexei Starovoitov wrote:
+> On Tue, Jul 5, 2022 at 9:24 PM Roman Gushchin <roman.gushchin@linux.dev> wrote:
+> >
+> > Anyway, here is the patch for reparenting bpf maps:
+> > https://github.com/rgushchin/linux/commit/f57df8bb35770507a4624fe52216b6c14f39c50c
+> >
+> > I gonna post it to bpf@ after some testing.
+> 
+> Please do. It looks good.
+> It needs #ifdef CONFIG_MEMCG_KMEM
+> because get_obj_cgroup_from_current() is undefined otherwise.
+> Ideally just adding a static inline to a .h ?
 
-
-On 2022/7/8 10:46, Pu Lehui wrote:
-> 
-> 
-> On 2022/7/8 3:12, Song Liu wrote:
->>
->>
->>> On Jul 7, 2022, at 7:08 AM, Pu Lehui <pulehui@huawei.com> wrote:
->>>
->>> Currently, when cross compiling bpf samples, the host side
->>> cannot use arch-specific bpftool to generate vmlinux.h or
->>> skeleton. We need to compile the bpftool with the host
->>> compiler.
->>>
->>> Signed-off-by: Pu Lehui <pulehui@huawei.com>
->>> ---
->>> samples/bpf/Makefile | 8 ++++----
->>> 1 file changed, 4 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
->>> index 5002a5b9a7da..fe54a8c8f312 100644
->>> --- a/samples/bpf/Makefile
->>> +++ b/samples/bpf/Makefile
->>> @@ -1,4 +1,5 @@
->>> # SPDX-License-Identifier: GPL-2.0
->>> +-include tools/scripts/Makefile.include
->>
->> Why do we need the -include here?
->>
-> 
-> HOSTLD is defined in tools/scripts/Makefile.include, we need to add it.
-> 
-> And for -include, mainly to resolve some conflicts:
-> 1. If workdir is kernel_src, then 'include 
-> tools/scripts/Makefile.include' is fine when 'make M=samples/bpf'.
-> 2. Since the trick in samples/bpf/Makefile:
-> 
-> # Trick to allow make to be run from this directory
-> all:
->      $(MAKE) -C ../../ M=$(CURDIR) BPF_SAMPLES_PATH=$(CURDIR)
-> 
-> If workdir is samples/bpf, the compile process will first load the 
-> Makefile in samples/bpf, then change workdir to kernel_src and load the 
-> kernel_src's Makefile. So if we just add 'include 
-> tools/scripts/Makefile.include', then the first load will occur error 
-> for not found the file, so we add -include to skip the first load.
-
-sorry, correct the reply, so we add -include to skip the 
-'tools/scripts/Makefile.include' file on the fisrt load.
+Actually all call sites are already under CONFIG_MEMCG_KMEM.
 
 > 
->> Thanks,
->> Song
->>
->>>
->>> BPF_SAMPLES_PATH ?= $(abspath $(srctree)/$(src))
->>> TOOLS_PATH := $(BPF_SAMPLES_PATH)/../../tools
->>> @@ -283,11 +284,10 @@ $(LIBBPF): $(wildcard $(LIBBPF_SRC)/*.[ch] 
->>> $(LIBBPF_SRC)/Makefile) | $(LIBBPF_OU
->>> BPFTOOLDIR := $(TOOLS_PATH)/bpf/bpftool
->>> BPFTOOL_OUTPUT := $(abspath $(BPF_SAMPLES_PATH))/bpftool
->>> BPFTOOL := $(BPFTOOL_OUTPUT)/bpftool
->>> -$(BPFTOOL): $(LIBBPF) $(wildcard $(BPFTOOLDIR)/*.[ch] 
->>> $(BPFTOOLDIR)/Makefile) | $(BPFTOOL_OUTPUT)
->>> +$(BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile) 
->>> | $(BPFTOOL_OUTPUT)
->>>         $(MAKE) -C $(BPFTOOLDIR) srctree=$(BPF_SAMPLES_PATH)/../../ \
->>> -        OUTPUT=$(BPFTOOL_OUTPUT)/ \
->>> -        LIBBPF_OUTPUT=$(LIBBPF_OUTPUT)/ \
->>> -        LIBBPF_DESTDIR=$(LIBBPF_DESTDIR)/
->>> +        ARCH= CROSS_COMPILE= CC=$(HOSTCC) LD=$(HOSTLD) \
->>> +        OUTPUT=$(BPFTOOL_OUTPUT)/
->>>
->>> $(LIBBPF_OUTPUT) $(BPFTOOL_OUTPUT):
->>>     $(call msg,MKDIR,$@)
->>> -- 
->>> 2.25.1
->>>
->>
->> .
->>
-> .
+> and
+> if (map->objcg)
+>    memcg = get_mem_cgroup_from_objcg(map->objcg);
+> 
+> or !NULL check inside get_mem_cgroup_from_objcg()
+> which would be better.
+
+Yes, you're right, as now we need to handle it specially.
+
+In the near future it won't be necessary. There are patches in
+mm-unstable which make objcg API useful outside of CONFIG_MEMCG_KMEM.
+In particular it means that objcg will be created for the root_mem_cgroup.
+So map->objcg can always point at a valid objcg and we will be able
+to drop this check.
+
+Will post an updated version shortly.
+
+Thanks!
