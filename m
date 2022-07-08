@@ -2,161 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91FAA56BF4E
-	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 20:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DBAB56BFF0
+	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 20:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238380AbiGHQtO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Jul 2022 12:49:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33724 "EHLO
+        id S238687AbiGHRtI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Jul 2022 13:49:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238099AbiGHQtO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Jul 2022 12:49:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5081E3FB;
-        Fri,  8 Jul 2022 09:49:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2A358622EC;
-        Fri,  8 Jul 2022 16:49:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86E27C341C6;
-        Fri,  8 Jul 2022 16:49:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1657298952;
-        bh=71/D2igWE3HfEGRsBW79k6KVzfnzn8KlVshYAOVpp1w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Ztldf7MyyImuaRJkuyhBY7RCgf6a0gUniJPZtDeZSVJB6nHiDXdbj1m7gGNEJm+FD
-         +YZLZ8XAHXJe73vhTCVSaze43bsB8jXNngMugYK9bcm+MOWViJ8HQAAS5ZI192GILR
-         dvdBKq/LM384ph00D4XA7YYDmlP2KJjbCrvJpMPls3qwkNJzUrZ3zA3kKMsVvAq9sI
-         abgIMp3G1B83GNEyLUrmTEGi675m1B2yAMLCo1PQydeeQGsIi9LjIHOuWJAxJ3++zC
-         IJ9SOM7yj0VQxRp89dUd7HDHEfB+UP9N8NOzrRAz+65s8CRX/ENikUVHSIDUu4yfX2
-         ipxVhRzOHfULQ==
-Received: by mail-yb1-f173.google.com with SMTP id 64so29469815ybt.12;
-        Fri, 08 Jul 2022 09:49:12 -0700 (PDT)
-X-Gm-Message-State: AJIora/j2FeecnO9g8e72v4amg2EHIV5POyP8NB0clUnqUXrR7c3EPDH
-        V35WGwhx3Fs9UB/CggHSUn5+zZ5m3Jd2lF6/++Q=
-X-Google-Smtp-Source: AGRyM1uyUE+qmmEK1J9qDHRLaz+EGwSfNDas5Z7iUChEpqzrBvnAUE6FyULJzuP3QLwEhcyMqym9Zo48wGF1Rq2aGa8=
-X-Received: by 2002:a25:9c09:0:b0:66e:4d5c:8cbc with SMTP id
- c9-20020a259c09000000b0066e4d5c8cbcmr4356435ybo.449.1657298951592; Fri, 08
- Jul 2022 09:49:11 -0700 (PDT)
+        with ESMTP id S239058AbiGHRtH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Jul 2022 13:49:07 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DA51167EF
+        for <bpf@vger.kernel.org>; Fri,  8 Jul 2022 10:49:03 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id w24so18644275pjg.5
+        for <bpf@vger.kernel.org>; Fri, 08 Jul 2022 10:49:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=q9MViSedHlA+k9VSfjNemmyjdYyOVd1PGvic/0JdrSE=;
+        b=p5npJkMfPAJOCljV/T6NxUmVcGRswNCyD5RdmtAN0sb7ek7Ate1kuaEuHIU6G2hNAc
+         5UsQ4im5RIJ9hQ6asiWBbCD0rBzn1pIZt0KbJNzQ/1SskC9U5d7FcVT1n2wkZeeJIkH5
+         WkK9XLtsVtkoZ0B2yz/k+yRZ0AMn2Rg53GqYp1xphwNLN58+KWBhc43xNRkvU+8mZEqM
+         mjyCTbhTmJUbp4IKDZKweV66ehHfWuU/fpAkuF0Yzyjm0Zm6ow3wDqaDQe8guj2Urowf
+         A/icjgavFUGBoaKiWXJaZq0A7dBHiVAKXA+UGzsVQgWgUQVRj5/F/ZWS5e8RGCs3AVdu
+         ecCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=q9MViSedHlA+k9VSfjNemmyjdYyOVd1PGvic/0JdrSE=;
+        b=p+neOSlgnWcTrXXk8zspRxbMcu+/CFldWs/axyxKa+x0eNW0nUb3N260R5wNFOMUbL
+         pTnQ4d9xkqWamfFtpjv6ScZcj6/Q6ClRN88N09QpAIPv7uMow1NHNW1zn7lpaIHE4HLD
+         hJr4FmeXjuhaItZ4ivi7gDWAcPyxMfRZWHMJBd3xA1hLKieZFIdhRwoovzKlg26T6970
+         ePyCwMgKiesLNvo+vk1HhN0X5bHwpZY68KjrxdCEhVR4BKuh8Dxter4AZ5/xeHR+M75i
+         vl2ty5is82WHKqyohwseBKIfVuyWYP2TJvJ4Zg4TzH8JBrkum1dtmXc9lTL9cNSSdS7p
+         Ns+Q==
+X-Gm-Message-State: AJIora/B5QOExh9Do4SZ771qUDUgb+FneQmeBYrpzgxHMprVidyKyDif
+        Sax37KU1n7FF3Rwzmkht7OtRtOx+xqk=
+X-Google-Smtp-Source: AGRyM1uNW3tXlqbbiEvVmAh6QSxh+IQjJHiAWJlDj0MBMkGctoJuQzfkRhbw6ljLOWpcu1rRCWC06g==
+X-Received: by 2002:a17:902:ce09:b0:16b:ec52:760b with SMTP id k9-20020a170902ce0900b0016bec52760bmr4664110plg.155.1657302542920;
+        Fri, 08 Jul 2022 10:49:02 -0700 (PDT)
+Received: from macbook-pro-3.dhcp.thefacebook.com ([2620:10d:c090:400::5:46f2])
+        by smtp.gmail.com with ESMTPSA id f4-20020a655504000000b0040de29f847asm23260799pgr.52.2022.07.08.10.49.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Jul 2022 10:49:02 -0700 (PDT)
+Date:   Fri, 8 Jul 2022 10:48:58 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>, davem@davemloft.net,
+        daniel@iogearbox.net, andrii@kernel.org, tj@kernel.org,
+        kafai@fb.com, bpf@vger.kernel.org, kernel-team@fb.com,
+        linux-mm@kvack.org, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH bpf-next 0/5] bpf: BPF specific memory allocator.
+Message-ID: <20220708174858.6gl2ag3asmoimpoe@macbook-pro-3.dhcp.thefacebook.com>
+References: <20220623003230.37497-1-alexei.starovoitov@gmail.com>
+ <YrlWLLDdvDlH0C6J@infradead.org>
+ <YsNOzwNztBsBcv7Q@casper.infradead.org>
+ <20220706175034.y4hw5gfbswxya36z@MacBook-Pro-3.local>
+ <YsXMmBf9Xsp61I0m@casper.infradead.org>
+ <20220706180525.ozkxnbifgd4vzxym@MacBook-Pro-3.local.dhcp.thefacebook.com>
+ <Ysg0GyvqUe0od2NN@dhcp22.suse.cz>
 MIME-Version: 1.0
-References: <20220708130319.1016294-1-maximmi@nvidia.com>
-In-Reply-To: <20220708130319.1016294-1-maximmi@nvidia.com>
-From:   Song Liu <song@kernel.org>
-Date:   Fri, 8 Jul 2022 09:49:00 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW5oGiXy27wyYXkzXCgYo+PD50paOvT1qKDwNjGsxGuWzQ@mail.gmail.com>
-Message-ID: <CAPhsuW5oGiXy27wyYXkzXCgYo+PD50paOvT1qKDwNjGsxGuWzQ@mail.gmail.com>
-Subject: Re: [PATCH bpf] selftests/bpf: Fix xdp_synproxy build failure if CONFIG_NF_CONNTRACK=m/n
-To:     Maxim Mikityanskiy <maximmi@nvidia.com>
-Cc:     Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        Yauheni Kaliuta <ykaliuta@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Ysg0GyvqUe0od2NN@dhcp22.suse.cz>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 8, 2022 at 6:03 AM Maxim Mikityanskiy <maximmi@nvidia.com> wrote:
->
-> When CONFIG_NF_CONNTRACK=m, struct bpf_ct_opts and enum member
-> BPF_F_CURRENT_NETNS are not exposed. This commit allows building the
-> xdp_synproxy selftest in such cases. Note that nf_conntrack must be
-> loaded before running the test if it's compiled as a module.
->
-> This commit also allows this selftest to be successfully compiled when
-> CONFIG_NF_CONNTRACK is disabled.
->
-> One unused local variable of type struct bpf_ct_opts is also removed.
->
-> Reported-by: Yauheni Kaliuta <ykaliuta@redhat.com>
-> Signed-off-by: Maxim Mikityanskiy <maximmi@nvidia.com>
-> Fixes: fb5cd0ce70d4 ("selftests/bpf: Add selftests for raw syncookie helpers")
+On Fri, Jul 08, 2022 at 03:41:47PM +0200, Michal Hocko wrote:
+> On Wed 06-07-22 11:05:25, Alexei Starovoitov wrote:
+> > On Wed, Jul 06, 2022 at 06:55:36PM +0100, Matthew Wilcox wrote:
+> [...]
+> > > For example, I assume that a BPF program
+> > > has a fairly tight limit on how much memory it can cause to be allocated.
+> > > Right?
+> > 
+> > No. It's constrained by memcg limits only. It can allocate gigabytes.
+>  
+> I have very briefly had a look at the core allocator parts (please note
+> that my understanding of BPF is really close to zero so I might be
+> missing a lot of implicit stuff). So by constrained by memcg you mean
+> __GFP_ACCOUNT done from the allocation context (irq_work). The complete
+> gfp mask is GFP_ATOMIC | __GFP_NOMEMALLOC | __GFP_NOWARN | __GFP_ACCOUNT
+> which means this allocation is not allowed to sleep and GFP_ATOMIC
+> implies __GFP_HIGH to say that access to memory reserves is allowed.
+> Memcg charging code interprets this that the hard limit can be breached
+> under assumption that these are rare and will be compensated in some
+> way. The bulk allocator implemented here, however, doesn't reflect that
+> and continues allocating as it sees a success so the breach of the limit
+> is only bound by the number of objects to be allocated. If those can be
+> really large then this is a clear problem and __GFP_HIGH usage is not
+> really appropriate.
 
-Given tools/testing/selftests/bpf/config specifies CONFIG_NF_CONNTRACK=y,
-I don't think this is really necessary.
+That was a copy paste from the networking stack. See kmalloc_reserve().
+Not sure whether it's a bug there or not.
+In a separate thread we've agreed to convert all of bpf allocations
+to GFP_NOWAIT. For this patch set I've already fixed it in my branch.
 
-Thanks,
-Song
+> Also, I do not see any tracking of the overall memory sitting in these
+> pools and I think this would be really appropriate. As there doesn't
+> seem to be any reclaim mechanism implemented this can hide quite some
+> unreachable memory.
+> 
+> Finally it is not really clear to what kind of entity is the life time
+> of these caches bound to. Let's say the system goes OOM, is any process
+> responsible for it and a clean up would be done if it gets killed?
 
-
-> ---
->  .../selftests/bpf/progs/xdp_synproxy_kern.c   | 24 +++++++++++++------
->  1 file changed, 17 insertions(+), 7 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c b/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c
-> index 9fd62e94b5e6..736686e903f6 100644
-> --- a/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c
-> +++ b/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c
-> @@ -77,16 +77,30 @@ struct {
->         __uint(max_entries, MAX_ALLOWED_PORTS);
->  } allowed_ports SEC(".maps");
->
-> +/* Some symbols defined in net/netfilter/nf_conntrack_bpf.c are unavailable in
-> + * vmlinux.h if CONFIG_NF_CONNTRACK=m, so they are redefined locally.
-> + */
-> +
-> +struct bpf_ct_opts___local {
-> +       s32 netns_id;
-> +       s32 error;
-> +       u8 l4proto;
-> +       u8 dir;
-> +       u8 reserved[2];
-> +} __attribute__((preserve_access_index));
-> +
-> +#define BPF_F_CURRENT_NETNS (-1)
-> +
->  extern struct nf_conn *bpf_xdp_ct_lookup(struct xdp_md *xdp_ctx,
->                                          struct bpf_sock_tuple *bpf_tuple,
->                                          __u32 len_tuple,
-> -                                        struct bpf_ct_opts *opts,
-> +                                        struct bpf_ct_opts___local *opts,
->                                          __u32 len_opts) __ksym;
->
->  extern struct nf_conn *bpf_skb_ct_lookup(struct __sk_buff *skb_ctx,
->                                          struct bpf_sock_tuple *bpf_tuple,
->                                          u32 len_tuple,
-> -                                        struct bpf_ct_opts *opts,
-> +                                        struct bpf_ct_opts___local *opts,
->                                          u32 len_opts) __ksym;
->
->  extern void bpf_ct_release(struct nf_conn *ct) __ksym;
-> @@ -393,7 +407,7 @@ static __always_inline int tcp_dissect(void *data, void *data_end,
->
->  static __always_inline int tcp_lookup(void *ctx, struct header_pointers *hdr, bool xdp)
->  {
-> -       struct bpf_ct_opts ct_lookup_opts = {
-> +       struct bpf_ct_opts___local ct_lookup_opts = {
->                 .netns_id = BPF_F_CURRENT_NETNS,
->                 .l4proto = IPPROTO_TCP,
->         };
-> @@ -714,10 +728,6 @@ static __always_inline int syncookie_handle_ack(struct header_pointers *hdr)
->  static __always_inline int syncookie_part1(void *ctx, void *data, void *data_end,
->                                            struct header_pointers *hdr, bool xdp)
->  {
-> -       struct bpf_ct_opts ct_lookup_opts = {
-> -               .netns_id = BPF_F_CURRENT_NETNS,
-> -               .l4proto = IPPROTO_TCP,
-> -       };
->         int ret;
->
->         ret = tcp_dissect(data, data_end, hdr);
-> --
-> 2.30.2
->
+We've been asking these questions for years and have been trying to
+come up with a solution.
+bpf progs are not analogous to user space processes. 
+There are bpf progs that function completely without user space component.
+bpf progs are pretty close to be full featured kernel modules with
+the difference that bpf progs are safe, portable and users have
+full visibility into them (source code, line info, type info, etc)
+They are not binary blobs unlike kernel modules.
+But from OOM perspective they're pretty much like .ko-s.
+Which kernel module would you force unload when system is OOMing ?
+Force unloading ko-s will likely crash the system.
+Force unloading bpf progs maybe equally bad. The system won't crash,
+but it may be a sorrow state. The bpf could have been doing security
+enforcement or network firewall or providing key insights to critical
+user space components like systemd or health check daemon.
+We've been discussing ideas on how to rank and auto cleanup
+the system state when progs have to be unloaded. Some sort of
+destructor mechanism. Fingers crossed we will have it eventually.
+bpf infra keeps track of everything, of course.
+Technically we can detach, unpin and unload everything and all memory
+will be returned back to the system.
+Anyhow not a new problem. Orthogonal to this patch set.
+bpf progs have been doing memory allocation from day one. 8 years ago.
+This patch set is trying to make it 100% safe.
+Currently it's 99% safe.
