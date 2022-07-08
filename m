@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4938656B46E
-	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 10:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1857B56B476
+	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 10:29:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237594AbiGHIYy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Jul 2022 04:24:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57578 "EHLO
+        id S237637AbiGHI01 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Jul 2022 04:26:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237648AbiGHIYv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Jul 2022 04:24:51 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADB2B81498
-        for <bpf@vger.kernel.org>; Fri,  8 Jul 2022 01:24:48 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id z12so19897693wrq.7
-        for <bpf@vger.kernel.org>; Fri, 08 Jul 2022 01:24:48 -0700 (PDT)
+        with ESMTP id S237586AbiGHI00 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Jul 2022 04:26:26 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39871814A7
+        for <bpf@vger.kernel.org>; Fri,  8 Jul 2022 01:26:25 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id h131-20020a1c2189000000b003a2cc290135so705849wmh.2
+        for <bpf@vger.kernel.org>; Fri, 08 Jul 2022 01:26:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=mIwFg075RvwVYz9+/Y+xL9IEwu5sJHlYJ/YyVZSg0lY=;
-        b=Hb9QsIsy3zrdkNF7D7KWN7V9xWmBnlnqukEu8VQO760EvPnCTgR7YaaANXCVvHFhG8
-         azGVU8v/yUeYegEIgmmaKflxUqaohJdfHBD0rtW/STrfWOLiHNQTL2u3xQe8ziPn37Tp
-         KperCCH8+Rsgixu8wrN/mbJVA3rhSsKGl2aOlADbg6XXnewNcscnnFvz+pqLe4iqnJHA
-         zq3s15m3tNnJHcbuScXgMIPMUNpfZjSdtaTKbGQrtAGToOwTcSyiz9akBnE8KKn7Cahy
-         sS9hB+7l1qMZEn7F61+CTCeYnNdL/RgeTOMXypf4x/Gnu8ySOpRtLqY0aWNZCHpwATqH
-         tn0w==
+        bh=/OVTFWFueCRPCSOvGcnm5qhmYMmcAYT2qYgKyKk2GrU=;
+        b=QayVImNEczOhK0XOfo/Un1TkE91WIaEh4vd5WGqaoap8Zp3zXyX1dE2P6RqQrpT1XS
+         oy1BzMte5WWi0qpuvNFLbedtjg2n7Za2D4EYGowA6pIDEJpZATtjx7KTCqtGGcRO+0Hm
+         w4Ot42GczZ1AqfqjZNrfsIYwRBv4+h7ReSSB9exmjeAS3NcLvVOm3Cp0vlKsBAUZLeK4
+         3U0QqPn/SGSigUG8o6BjBZ/4XRXPETHIM0smmMd84MTwqwWFc+HDBmhlrFEZT6wwwNtr
+         wRf5occqwIOBxSXFsjoS+goTKLITad0wByayOqYY9Tj1R8PO6+gn4sR8T1ZFngyCv/Yb
+         FUxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=mIwFg075RvwVYz9+/Y+xL9IEwu5sJHlYJ/YyVZSg0lY=;
-        b=cQBX8Q/wQbTSh+4o//hb0mrWWNTBV8V8LHqHpJ2vtYziIll8h8Qy1UHr3Lhmc9xyFY
-         5ke5pDtcj+R4iutiYUXVQwXwzJ5jIJCuXYldxuyVjHXL/0J3Amy44UQ8Hq/xkaZcXNgf
-         FVD/PXLI1W0S2zQvb2Z3mUHiEa+QLHzdgC1yPVrYY9UVUoKOeFNRphA0f4eOtmFuSoj7
-         XoBdxDQW2j8mJTPROIffRFzFHERhIHIymEYl7lBm5hM0PKk6MrNgfbrO/lWueuEo1JiE
-         t38ipLwboIL3BqNvQzD8I75C0iS9CnhPdp5/ijwmJ4lAQ+e4Ffdtkiki0gFyQE1OnhJ6
-         iG2g==
-X-Gm-Message-State: AJIora+GwfdIdyviiGIJu0EUPa0Yb2J03+Y5kNRKdCaD6XLVq7wtLdHv
-        eB8sjhgvJVoLynY8klqrY3VFAg==
-X-Google-Smtp-Source: AGRyM1viKjtVrmUoxTanFr1pV6d7LMrE7leuT0XIliXYQcDoe0Ro78y5UhOmXgHGos2nagi880AGAA==
-X-Received: by 2002:a5d:588d:0:b0:21d:865c:54e9 with SMTP id n13-20020a5d588d000000b0021d865c54e9mr2109574wrf.3.1657268687247;
-        Fri, 08 Jul 2022 01:24:47 -0700 (PDT)
+        bh=/OVTFWFueCRPCSOvGcnm5qhmYMmcAYT2qYgKyKk2GrU=;
+        b=ArXVB/abTUlil2gc78e4Kloh8FnhkBtFqzeSV1FZs0tCTPXTKbZluBQj+Ze6gyefaf
+         DQW3VhpBWPo28vYI1h9lWL0cfIk4eIie/N+0afl66DmBVUIllU1mr6/wpR0xJR/uK3pm
+         0plpeE617D2c4WU3x0ocSiS7yNg+ele67N29Ok4Ttsp4dNnZAwZYH/LxUrzXGWPgiKKj
+         gAT9p8QB6Dmc7ADjHi/es32GSFw8xecxgjpePY+bdNlP0pzX2T/H57XH40VNTjDLYOg0
+         tio9BdF6B1WQCaaboTNTSS+cJJ+JfcpJXqnY3C6vuDNUO5Tr7H8pK5zxIrutXVPEY3eD
+         zAqQ==
+X-Gm-Message-State: AJIora9RJZ1dLmrbFHNaF/dca7TE+zwI3KKkhT/TUURiIls7rNXNnBr5
+        XxY3UN0EPbulUfzvFcvWxkSP4w==
+X-Google-Smtp-Source: AGRyM1v4J522/CsbJ15YeUOvSaWI8hyF/D8ynhoDdCisWlk5JSxaXP8LbE/H1oMLQMyP+D4lTEzv7Q==
+X-Received: by 2002:a05:600c:3491:b0:3a0:4d4a:2e2d with SMTP id a17-20020a05600c349100b003a04d4a2e2dmr9448093wmq.4.1657268783790;
+        Fri, 08 Jul 2022 01:26:23 -0700 (PDT)
 Received: from myrica (cpc92880-cmbg19-2-0-cust679.5-4.cable.virginm.net. [82.27.106.168])
-        by smtp.gmail.com with ESMTPSA id h15-20020a1ccc0f000000b0039749b01ea7sm1670902wmb.32.2022.07.08.01.24.45
+        by smtp.gmail.com with ESMTPSA id l1-20020a7bc441000000b003a2cf1535aasm1403895wmi.17.2022.07.08.01.26.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Jul 2022 01:24:46 -0700 (PDT)
-Date:   Fri, 8 Jul 2022 09:24:22 +0100
+        Fri, 08 Jul 2022 01:26:23 -0700 (PDT)
+Date:   Fri, 8 Jul 2022 09:25:58 +0100
 From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
 To:     Xu Kuohai <xukuohai@huawei.com>
 Cc:     bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
@@ -76,16 +76,17 @@ Cc:     bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         James Morse <james.morse@arm.com>,
         Hou Tao <houtao1@huawei.com>,
         Jason Wang <wangborong@cdjrlc.com>
-Subject: Re: [PATCH bpf-next v6 4/4] bpf, arm64: bpf trampoline for arm64
-Message-ID: <YsfptiexC0wFABFL@myrica>
+Subject: Re: [PATCH bpf-next v6 3/4] bpf, arm64: Impelment
+ bpf_arch_text_poke() for arm64
+Message-ID: <YsfqFp+IkhvXPoDl@myrica>
 References: <20220625161255.547944-1-xukuohai@huawei.com>
- <20220625161255.547944-5-xukuohai@huawei.com>
- <YscL4t1pYHYApIiK@larix>
- <a24109d5-b79a-99de-0fd5-66b0ec34e5ed@huawei.com>
+ <20220625161255.547944-4-xukuohai@huawei.com>
+ <YscMo+jlif44bxBP@larix>
+ <b2d21d18-2fc1-be68-f8ac-d185fcfadbbd@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a24109d5-b79a-99de-0fd5-66b0ec34e5ed@huawei.com>
+In-Reply-To: <b2d21d18-2fc1-be68-f8ac-d185fcfadbbd@huawei.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
@@ -96,75 +97,44 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 08, 2022 at 12:35:33PM +0800, Xu Kuohai wrote:
-> >> +
-> >> +	emit(A64_ADD_I(1, A64_R(0), A64_SP, args_off), ctx);
-> >> +	if (!p->jited)
-> >> +		emit_addr_mov_i64(A64_R(1), (const u64)p->insnsi, ctx);
-> >> +
-> >> +	emit_call((const u64)p->bpf_func, ctx);
-> >> +
-> >> +	/* store return value */
-> >> +	if (save_ret)
-> >> +		emit(A64_STR64I(r0, A64_SP, retval_off), ctx);
+On Fri, Jul 08, 2022 at 10:41:46AM +0800, Xu Kuohai wrote:
+> >> +/* generated prologue:
+> >> + *      bti c // if CONFIG_ARM64_BTI_KERNEL
+> >> + *      mov x9, lr
+> >> + *      nop  // POKE_OFFSET
+> >> + *      paciasp // if CONFIG_ARM64_PTR_AUTH_KERNEL
 > > 
-> > Here too I think it should be x0. I'm guessing r0 may work for jitted
-> > functions but not interpreted ones
+> > Any reason for the change regarding BTI and pointer auth?  We used to put
+> > 'bti c' at the function entry if (BTI && !PA), or 'paciasp' if (BTI && PA),
+> > because 'paciasp' is an implicit BTI.
 > > 
 > 
-> Yes, r0 is only correct for jitted code, will fix it to:
+> Assuming paciasp is the first instruction if (BTI && PA), when a
+> trampoline with BPF_TRAMP_F_CALL_ORIG flag attached, we'll encounter the
+> following scenario.
 > 
-> if (save_ret)
->         emit(A64_STR64I(p->jited ? r0 : A64_R(0), A64_SP, retval_off),
->              ctx);
-
-I don't think we need this test because x0 should be correct in all cases.
-x7 happens to equal x0 when jitted due to the way build_epilogue() builds
-the function at the moment, but we shouldn't rely on that.
-
-
-> >> +	if (flags & BPF_TRAMP_F_CALL_ORIG) {
-> >> +		restore_args(ctx, args_off, nargs);
-> >> +		/* call original func */
-> >> +		emit(A64_LDR64I(A64_R(10), A64_SP, retaddr_off), ctx);
-> >> +		emit(A64_BLR(A64_R(10)), ctx);
-> > 
-> > I don't think we can do this when BTI is enabled because we're not jumping
-> > to a BTI instruction. We could introduce one in a patched BPF function
-> > (there currently is one if CONFIG_ARM64_PTR_AUTH_KERNEL), but probably not
-> > in a kernel function.
-> > 
-> > We could fo like FUNCTION_GRAPH_TRACER does and return to the patched
-> > function after modifying its LR. Not sure whether that works with pointer
-> > auth though.
-> > 
-> 
-> Yes, the blr instruction should be replaced with ret instruction, thanks!
-> 
-> The layout for bpf prog and regular kernel function is as follows, with
-> bti always coming first and paciasp immediately after patchsite, so the
-> ret instruction should work in all cases.
-> 
-> bpf prog or kernel function:
->         bti c // if BTI
+> bpf_prog:
+>         paciasp // LR1
 >         mov x9, lr
->         bl <trampoline>    ------> trampoline:
->                                            ...
->                                            mov lr, <return_entry>
->                                            mov x10, <ORIG_CALL_entry>
-> ORIG_CALL_entry:           <-------        ret x10
->                                    return_entry:
->                                            ...
->         paciasp // if PA
+>         bl <trampoline> ----> trampoline:
+>                                       ....
+>                                       mov x10, <entry_for_CALL_ORIG>
+>                                       blr x10
+>                                         |
+> CALL_ORIG_entry:                        |
+>         bti c        <------------------|
+>         stp x29, lr, [sp, #- 16]!
 >         ...
+>         autiasp // LR2
+>         ret
+> 
+> Because LR1 and LR2 are not equal, the autiasp will fail!
+> 
+> To make this scenario work properly, the first instruction should be
+> 'bti c'.
 
-Actually I just noticed that CONFIG_ARM64_BTI_KERNEL depends on
-CONFIG_ARM64_PTR_AUTH_KERNEL, so we should be able to rely on there always
-being a PACIASP at ORIG_CALL_entry, and since it's a landing pad for BLR
-we don't need to make this a RET
-
- 92e2294d870b ("arm64: bti: Support building kernel C code using BTI")
+Right my mistake, this layout is also what GCC generates for normal kernel
+functions when (BTI && PA), so it makes sense to use the same
 
 Thanks,
 Jean
-
