@@ -2,242 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A73956BFDB
-	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 20:36:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06CAC56C0DA
+	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 20:37:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239058AbiGHRuE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Jul 2022 13:50:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51156 "EHLO
+        id S238598AbiGHR7t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Jul 2022 13:59:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238935AbiGHRuE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Jul 2022 13:50:04 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E4CB1FCCE
-        for <bpf@vger.kernel.org>; Fri,  8 Jul 2022 10:50:02 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id c67-20020a621c46000000b005251cf9feb0so9284849pfc.20
-        for <bpf@vger.kernel.org>; Fri, 08 Jul 2022 10:50:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=+3AVJtIe/X65mrRVnjQNTxPoSje3zvWBbY/si80d4iI=;
-        b=ZdUvkWbT7u6cs0981caSoI/ExL0ZPpd2y39Vn89ykXT9aTRcxRoAMH/rb1nTKKiZio
-         uK4KvIC3WpzbNCoQHIJJOJtugnx9YFjuFWJ7EIN91z09AZg7qiin9ZbzC0MGvjcU2Teh
-         I8eAXGOnF7RVAsP+2GrgH1IQzQ+5MINmPEaU9U0zU0zkVafSTkDBsGwwzwCUAITBb4t3
-         KhPyfTmgHzxZ1EUHObmjg31hBlWFkPP+AGdmUoLdTQkr2VMT5qOpbvuRAEeCRPxXEHuS
-         usCAOw7c6urDgc9XjFMI8qi8dIv8vxu3brc3JasbmwE9ltC6p/8vfFxjoh/oh3h/nDhY
-         jUTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=+3AVJtIe/X65mrRVnjQNTxPoSje3zvWBbY/si80d4iI=;
-        b=Vq260iDwQbzf6ZrX/v4jkehF2wsotN0rFynMXIo9A8u8MMxZL8vxhlep7h4MBj85pJ
-         PLon6Cypj9ajNb2cpBybaIUqNkqgNRFzPGvKJBt5SU11/h9rn6A0E+WOEEFWnC8AtUmt
-         Wocgeicpvz4nm1KuJHbU56K61AqUpXZnXTLjieEPe/5tJjGOFXJOLvTQnEc8ZwzkCmeh
-         rgNif01nPBAIK4r8x5s19tuCexg8sQvXUA5vI/Dy89f3mBQxJO+d63NfihKak28/dJ6d
-         6mrmifa4A9UWTg437eJDnOLWhfKo/yj9/M68tQHvJq+ZKov515opjWwqWY6bfs9M2+q+
-         hkZQ==
-X-Gm-Message-State: AJIora+VYjpV9Yq16HtXO8+IJO0O5p08KlWUcapWwPv+faP6GdHaq7ii
-        KmYX31PvVuC+hM6NTCR9A+kLEvv6vqAQi+pC55bhYnXDmF4Y9FElFiHo3UIl27l4C6Ik42p+mxn
-        SxMXIawOrEHwGTewndQ/7VAh10F/3HnoXSmM//zzuge+KBN+5jw==
-X-Google-Smtp-Source: AGRyM1t/XzhBtqV38WCTgYDcXeSm4S8ekLGC9bTNkpdOX1P2uNwVuDDPXwLAfNLCkudrbUqit97QgWc=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:90b:150b:b0:1ef:94f6:837 with SMTP id
- le11-20020a17090b150b00b001ef94f60837mr1132443pjb.154.1657302602021; Fri, 08
- Jul 2022 10:50:02 -0700 (PDT)
-Date:   Fri,  8 Jul 2022 10:50:00 -0700
-Message-Id: <20220708175000.2603078-1-sdf@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.37.0.rc0.161.g10f37bed90-goog
-Subject: [PATCH bpf-next v3] bpf: check attach_func_proto more carefully in check_return_code
-From:   Stanislav Fomichev <sdf@google.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        with ESMTP id S238493AbiGHR7t (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Jul 2022 13:59:49 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CADD41EC5E
+        for <bpf@vger.kernel.org>; Fri,  8 Jul 2022 10:59:47 -0700 (PDT)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 268HAXrh025065;
+        Fri, 8 Jul 2022 10:59:27 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=v5MhMPwmWNmHMSkRh3zshCIx65+buERiWgZMGTzlvRM=;
+ b=OCVkVy+kZuBk7MeXLSEm241uHpfgOX1JPmEoOFRVOv0GQr95GXwPxoDEwwPReWEAUmx1
+ MtGCXrqkN6LXk0cJZLPM6A9uBrFKbhfytMiEFtPZHkcr9Yt1eMpqp5bbG5+It4OgI4o8
+ cCXIHCE5zsUav2dL/UuHKqI8yB+Na3VftvQ= 
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2174.outbound.protection.outlook.com [104.47.55.174])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3h5y1dj32n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 Jul 2022 10:59:27 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DDueD3EFC6K29daRNA98TZn4YfiebmTkumitq4HVhL3XPbQ7LZBVWZJMO2tKY+2qV0/vJoB4X7giaSfd4lUBdNchBpqqODImaYtcB1O/ygmutkfDIEEk05Z1k/EI0Ga1AMCIrl8MkJzF9Jj5gTd9PsmmfSCrBX0ekbe4qFYsnhWN2h7cDEnBx0SGQ0RZVUaz1b0xScyygeepRDairkTiFjyfajHqZefdlYuHLEpqxIBDUc+ehxBIMVhRYq3sTPzA4+tgwxoIOhTVJ2oLAkX+SzHvQWrsfJ/XkMe00LUuW2JIzs+XxJjeenBycZHC2JDeu1EHJQH/FIGFkvqud8UeJw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=v5MhMPwmWNmHMSkRh3zshCIx65+buERiWgZMGTzlvRM=;
+ b=ZGMLfpRYdSaa/NBTZaiokqdqO4fkj5qQXVefuiBE8FlIALuuHVShrPya93fiXN0LZ6E7Rx7hoz/t4lZca76sHj+MW3d50BRanRgtpUqfT65mCICjrkx4TaeYhGHAbBGlB6qVHPztHQzkzjZvBULLtZ+2s61YyllHsr9koVEbwe81EY+6R/LGZ6j5o+ZW+YN/FuAs5bRSyBdBZ6qx5g2W55f4NzVNwq90VwuUHq7wONvtEvCKsXbiFG9On2Ooi86DxojLxc4gM1/2q/R/XEWxlDyCMEfv8LS2WlDCEGB1Ixy2T16QBQogs1V0MK5SPzpxzusSiqNB2FEGh0jigwiubQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from MW4PR15MB4475.namprd15.prod.outlook.com (2603:10b6:303:104::16)
+ by BN6PR15MB1329.namprd15.prod.outlook.com (2603:10b6:404:f2::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.16; Fri, 8 Jul
+ 2022 17:59:25 +0000
+Received: from MW4PR15MB4475.namprd15.prod.outlook.com
+ ([fe80::3941:25c6:c1cd:5762]) by MW4PR15MB4475.namprd15.prod.outlook.com
+ ([fe80::3941:25c6:c1cd:5762%6]) with mapi id 15.20.5395.021; Fri, 8 Jul 2022
+ 17:59:25 +0000
+Date:   Fri, 8 Jul 2022 10:59:22 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
         haoluo@google.com, jolsa@kernel.org,
         syzbot+5cc0730bd4b4d2c5f152@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Subject: Re: [PATCH bpf-next v3] bpf: check attach_func_proto more carefully
+ in check_return_code
+Message-ID: <20220708175922.pwk3wqbfm5l5idfv@kafai-mbp.dhcp.thefacebook.com>
+References: <20220708175000.2603078-1-sdf@google.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220708175000.2603078-1-sdf@google.com>
+X-ClientProxiedBy: BYAPR01CA0049.prod.exchangelabs.com (2603:10b6:a03:94::26)
+ To MW4PR15MB4475.namprd15.prod.outlook.com (2603:10b6:303:104::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 46741b9f-4599-4c5c-7032-08da610b97ee
+X-MS-TrafficTypeDiagnostic: BN6PR15MB1329:EE_
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Q9wOvT1fEBN42KXK2+KaKaAUJw4edVgI26KZYmzY4wC/DoHnrUSoxZ3z1eNLdPcKu/nF12ZEl3NiZq+cfC/m6NZuw2qLXNampnZt/7CQK/TrWP0/UChbNkp57h9ZvwX8sSNVltEi0fsoyaAAUlyce/BCcwsfhQ0VLEpgAIOBDCLo+arB2HoLWBLgJBiOWDmFqEo+AGCVJVCDu/pzC80oNYhVd2Ayqi1qMDmUdTaBvMkRxkwAaUfgdxJXb0D3S4enI8vIFSfXFSF95wTMVU+mqE8JAEAMfTxWWAZRmsN1RibXOPoXtRN/U/5lgAErBjBqKXoCVGXVS8rjzm/LAP1F5nyAwT1mcDWvq4hs4ujKVwYV1Nb8MlphxYS6vSJnt441MKQ7BY6VUz4jbBVcz2u0Nb3acIS1bOqX56W51/NQ9mlUyUYUxONb5yxKc0KigXCwpIB4WvOD4grnZbzFCo4NLxFdz2sUqhMAeDw4ln++/mdzxXQmLRSBjXE6qf1f2bH9G00/10YYwGliGGX+13cwYzrAwvEBiN9dxlAoJfwLNVyGutOGX1n0nVAr33m7B5RmHVh1T5oikg/asGXRj/mhOXUp1M0rjmmBFH4blS1W1BpR+6Ds/V7VaOWJri+XLuruIvAVZRuifmMLi0W5ERaJJgSdR13YNaQ0NAV3q/GDYGGMRjGrSZgRhle/BWlwU5Mwy8TuaH+P01Xj1MBKfasgGUOn+ZbZ64qj1rYMTlchqvRwjzOCW3sG835zkosQ0Fch
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4475.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(136003)(346002)(376002)(396003)(39860400002)(366004)(38100700002)(186003)(83380400001)(8676002)(66556008)(66946007)(66476007)(316002)(4326008)(6916009)(6512007)(9686003)(8936002)(2906002)(6486002)(52116002)(41300700001)(478600001)(6666004)(86362001)(6506007)(5660300002)(1076003)(7416002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?LxLRNm2857zw9HXyjUdMTOLr7scJbD7qHjs++1LnQ19ojhQwlDfvrt9wZvWi?=
+ =?us-ascii?Q?B0UmN4oXVJf2Rwmky7Clv0ODWgml+htovA+ss9tE41dYBMQDlOV4Itt1ZMF4?=
+ =?us-ascii?Q?4z+31wwfkYf56Gamx6I7Er8QGrug4UGQ7pVRqDAA9HlIqqy9dXGt/Y+nUi1a?=
+ =?us-ascii?Q?I4n85b9k9QGt4nbeBmCLHnnfaLybWnXFEH2tvrA0Q8O+DkA4CHfy/UKnI5Cs?=
+ =?us-ascii?Q?1ULcTM3Jkd9aCpJjZU7uTgFSbG2/31wwv+lzCSJ0dElfBuY5qXuxsQjhSIn5?=
+ =?us-ascii?Q?lBfqPKSfOFP5itAQVH/kf42TS+MQvcZxyxGsk6XZePdOWS4u3suKM5vb4f0G?=
+ =?us-ascii?Q?0ZTBXil6nEECvjT3fro6Og5oOvk4pajT1j98yXnnko6pg1JzZBM4Ns4boYK2?=
+ =?us-ascii?Q?RJfUObVwwi7L5pw8aQ/y7NScuCm7u0i0+Ppdx/+vFDjfMkdIDvkVp5I5jUxX?=
+ =?us-ascii?Q?tmyYDwyPq8bDHUvq9YnX86bzlu3WvsgTVjy08pWVGRO9ziVt/ZUMKxlrCLu9?=
+ =?us-ascii?Q?sy4ge+8rQu8itQ0NbVfSNnfZasX+71sX5fTR+8ZKT+PU7ZQGr7H8JixmnoGG?=
+ =?us-ascii?Q?kpr5V2RVfdWvOfFLhzeIQqcp3zb46zBB04wLzd4psr9kRkFPxZLvx8V3FvTG?=
+ =?us-ascii?Q?L/aty6WCKXczbxCjLYXokPkVoAfFwycWv15MDEjEiX5KFWtoTnTchv7HiOlR?=
+ =?us-ascii?Q?28PKvysSM+9WjTr2UzXJh59ofv5OefVhUoB1TUcBb9+0vLRVy2M0YAg1cV/+?=
+ =?us-ascii?Q?azmHpiaVFwkI9JLEUe3Aso9KEEJKUwXGsOLpnCcbJ6JXKcO8wlfRWjSI85ij?=
+ =?us-ascii?Q?AArpNkKxvZfdYdVhEltFH27jSdQBAzD1ZfK87XHRdJoy1aYIiadNlFzSrNEN?=
+ =?us-ascii?Q?89sKMOQHsXgKMaMyfrbMNFIcjIpa8EZYxdGV7pYaENvSRupB8wwbNvr4VOUw?=
+ =?us-ascii?Q?Kd4ITRuAJ8PedL0k+PwIzuIjy1V8ovW7YY/GG6nuEJc/yzUcO7rqafrjARj3?=
+ =?us-ascii?Q?lkGIIzL1dwqmy5P4xyK4ukBZ/fCNFARMy1s2NuYGFEWcwd1Wbkl2pekh7Gg0?=
+ =?us-ascii?Q?Pk5HVIQa0AJ/HQV0NUVRYeqAXeZo1+krkZ9lhThdph++xQ+VmlI9ti/bw+CL?=
+ =?us-ascii?Q?nptg/zmulOzkWoZm4EQ8cC2ZLWRlCiBNZnkYqtLHEDnFQwH58bMfEV08xHv9?=
+ =?us-ascii?Q?vIHdAJGc3XAVUGsoouAEs5EJodEyREXhqwkCkgQj6MHFQO1OA9lRCkiHVHuh?=
+ =?us-ascii?Q?bPT0pW/ZQAUeUqflkIF78qHZZgI8OPzMfzEUvP5kzGSQ/zxjCRRZcXLkGq7a?=
+ =?us-ascii?Q?uvjAfgTe/PScmAUx4MZbwGVjR3uTWnYLADcG0qw9AkR1Ifp/PaF8bpoHJIwm?=
+ =?us-ascii?Q?PYTMb1l3aHp3zD3EGLbHj/m9fP5vli4F+YvGRbAv2Jq08kdPSYtZLnpa1YOk?=
+ =?us-ascii?Q?bw7BpC97rrZQIronWlgsAIE/XrjMPSYUp+BW3Z+m01SuJ+5ro4nBp4kV1hh6?=
+ =?us-ascii?Q?9P9WloLPMyOz74FXgFzpqf7/R4ENrzY3yJq4/gCkAGggu0eebfs2TZzMASR6?=
+ =?us-ascii?Q?4+yk/IfcLNVE8qn4AgT+zqmG21J5NjAhwF+bsotkAwV9tjH7mhyTPbNes5R8?=
+ =?us-ascii?Q?Fw=3D=3D?=
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 46741b9f-4599-4c5c-7032-08da610b97ee
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4475.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jul 2022 17:59:24.9741
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sMXvdHudxlWb7GGdBHnmNUBoCcG0UI2lSAEpOQUojyTL/h7lgds1iHsd/qkQ4Zcw
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR15MB1329
+X-Proofpoint-GUID: slpuqTHCsBNoGHkLnip8K-wm26loGg-t
+X-Proofpoint-ORIG-GUID: slpuqTHCsBNoGHkLnip8K-wm26loGg-t
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-07-08_14,2022-07-08_01,2022-06-22_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Syzkaller reports the following crash:
-RIP: 0010:check_return_code kernel/bpf/verifier.c:10575 [inline]
-RIP: 0010:do_check kernel/bpf/verifier.c:12346 [inline]
-RIP: 0010:do_check_common+0xb3d2/0xd250 kernel/bpf/verifier.c:14610
-
-With the following reproducer:
-bpf$PROG_LOAD_XDP(0x5, &(0x7f00000004c0)={0xd, 0x3, &(0x7f0000000000)=ANY=[@ANYBLOB="1800000000000019000000000000000095"], &(0x7f0000000300)='GPL\x00', 0x0, 0x0, 0x0, 0x0, 0x0, '\x00', 0x0, 0x2b, 0xffffffffffffffff, 0x8, 0x0, 0x0, 0x10, 0x0}, 0x80)
-
-Because we don't enforce expected_attach_type for XDP programs,
-we end up in hitting 'if (prog->expected_attach_type == BPF_LSM_CGROUP'
-part in check_return_code and follow up with testing
-`prog->aux->attach_func_proto->type`, but `prog->aux->attach_func_proto`
-is NULL.
-
-Add explicit prog_type check for the "Note, BPF_LSM_CGROUP that
-attach ..." condition. Also, don't skip return code check for
-LSM/STRUCT_OPS.
-
-The above actually brings an issue with existing selftest which
-tries to return EPERM from void inet_csk_clone. Fix the
-test (and move called_socket_clone to make sure it's not
-incremented in case of an error) and add a new one to explicitly
-verify this condition.
-
-v3:
-- Martin: handle expected_attach_type for BPF_PROG_TYPE_STRUCT_OPS as well
-
-v2:
-- Martin: don't add new helper, check prog_type instead
-- Martin: check expected_attach_type as well at the function entry
-- Update selftest to verify this condition
-
-Fixes: 69fd337a975c ("bpf: per-cgroup lsm flavor")
-Reported-by: syzbot+5cc0730bd4b4d2c5f152@syzkaller.appspotmail.com
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- kernel/bpf/verifier.c                         | 21 ++++++++++++++-----
- .../selftests/bpf/prog_tests/lsm_cgroup.c     | 12 +++++++++++
- .../testing/selftests/bpf/progs/lsm_cgroup.c  | 12 +++++------
- .../selftests/bpf/progs/lsm_cgroup_nonvoid.c  | 14 +++++++++++++
- 4 files changed, 48 insertions(+), 11 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/lsm_cgroup_nonvoid.c
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index df3ec6b05f05..e3cf6194c24f 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -10444,11 +10444,21 @@ static int check_return_code(struct bpf_verifier_env *env)
- 	const bool is_subprog = frame->subprogno;
- 
- 	/* LSM and struct_ops func-ptr's return type could be "void" */
--	if (!is_subprog &&
--	    (prog_type == BPF_PROG_TYPE_STRUCT_OPS ||
--	     prog_type == BPF_PROG_TYPE_LSM) &&
--	    !prog->aux->attach_func_proto->type)
--		return 0;
-+	if (!is_subprog) {
-+		switch (prog_type) {
-+		case BPF_PROG_TYPE_LSM:
-+			if (prog->expected_attach_type == BPF_LSM_CGROUP)
-+				/* See below, can be 0 or 0-1 depending on hook. */
-+				break;
-+			fallthrough;
-+		case BPF_PROG_TYPE_STRUCT_OPS:
-+			if (!prog->aux->attach_func_proto->type)
-+				return 0;
-+			break;
-+		default:
-+			break;
-+		}
-+	}
- 
- 	/* eBPF calling convention is such that R0 is used
- 	 * to return the value from eBPF program.
-@@ -10572,6 +10582,7 @@ static int check_return_code(struct bpf_verifier_env *env)
- 	if (!tnum_in(range, reg->var_off)) {
- 		verbose_invalid_scalar(env, reg, &range, "program exit", "R0");
- 		if (prog->expected_attach_type == BPF_LSM_CGROUP &&
-+		    prog_type == BPF_PROG_TYPE_LSM &&
- 		    !prog->aux->attach_func_proto->type)
- 			verbose(env, "Note, BPF_LSM_CGROUP that attach to void LSM hooks can't modify return value!\n");
- 		return -EINVAL;
-diff --git a/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
-index c542d7e80a5b..1102e4f42d2d 100644
---- a/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
-+++ b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup.c
-@@ -6,6 +6,7 @@
- #include <bpf/btf.h>
- 
- #include "lsm_cgroup.skel.h"
-+#include "lsm_cgroup_nonvoid.skel.h"
- #include "cgroup_helpers.h"
- #include "network_helpers.h"
- 
-@@ -293,9 +294,20 @@ static void test_lsm_cgroup_functional(void)
- 	lsm_cgroup__destroy(skel);
- }
- 
-+static void test_lsm_cgroup_nonvoid(void)
-+{
-+	struct lsm_cgroup_nonvoid *skel = NULL;
-+
-+	skel = lsm_cgroup_nonvoid__open_and_load();
-+	ASSERT_NULL(skel, "open succeeds");
-+	lsm_cgroup_nonvoid__destroy(skel);
-+}
-+
- void test_lsm_cgroup(void)
- {
- 	if (test__start_subtest("functional"))
- 		test_lsm_cgroup_functional();
-+	if (test__start_subtest("nonvoid"))
-+		test_lsm_cgroup_nonvoid();
- 	btf__free(btf);
- }
-diff --git a/tools/testing/selftests/bpf/progs/lsm_cgroup.c b/tools/testing/selftests/bpf/progs/lsm_cgroup.c
-index 89f3b1e961a8..4f2d60b87b75 100644
---- a/tools/testing/selftests/bpf/progs/lsm_cgroup.c
-+++ b/tools/testing/selftests/bpf/progs/lsm_cgroup.c
-@@ -156,25 +156,25 @@ int BPF_PROG(socket_clone, struct sock *newsk, const struct request_sock *req)
- {
- 	int prio = 234;
- 
--	called_socket_clone++;
--
- 	if (!newsk)
- 		return 1;
- 
- 	/* Accepted request sockets get a different priority. */
- 	if (bpf_setsockopt(newsk, SOL_SOCKET, SO_PRIORITY, &prio, sizeof(prio)))
--		return 0; /* EPERM */
-+		return 1;
- 
- 	/* Make sure bpf_getsockopt is allowed and works. */
- 	prio = 0;
- 	if (bpf_getsockopt(newsk, SOL_SOCKET, SO_PRIORITY, &prio, sizeof(prio)))
--		return 0; /* EPERM */
-+		return 1;
- 	if (prio != 234)
--		return 0; /* EPERM */
-+		return 1;
- 
- 	/* Can access cgroup local storage. */
- 	if (!test_local_storage())
--		return 0; /* EPERM */
-+		return 1;
-+
-+	called_socket_clone++;
- 
- 	return 1;
- }
-diff --git a/tools/testing/selftests/bpf/progs/lsm_cgroup_nonvoid.c b/tools/testing/selftests/bpf/progs/lsm_cgroup_nonvoid.c
-new file mode 100644
-index 000000000000..6cb0f161f417
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/lsm_cgroup_nonvoid.c
-@@ -0,0 +1,14 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+SEC("lsm_cgroup/inet_csk_clone")
-+int BPF_PROG(nonvoid_socket_clone, struct sock *newsk, const struct request_sock *req)
-+{
-+	/* Can not return any errors from void LSM hooks. */
-+	return 0;
-+}
--- 
-2.37.0.rc0.161.g10f37bed90-goog
-
+On Fri, Jul 08, 2022 at 10:50:00AM -0700, Stanislav Fomichev wrote:
+> Syzkaller reports the following crash:
+> RIP: 0010:check_return_code kernel/bpf/verifier.c:10575 [inline]
+> RIP: 0010:do_check kernel/bpf/verifier.c:12346 [inline]
+> RIP: 0010:do_check_common+0xb3d2/0xd250 kernel/bpf/verifier.c:14610
+> 
+> With the following reproducer:
+> bpf$PROG_LOAD_XDP(0x5, &(0x7f00000004c0)={0xd, 0x3, &(0x7f0000000000)=ANY=[@ANYBLOB="1800000000000019000000000000000095"], &(0x7f0000000300)='GPL\x00', 0x0, 0x0, 0x0, 0x0, 0x0, '\x00', 0x0, 0x2b, 0xffffffffffffffff, 0x8, 0x0, 0x0, 0x10, 0x0}, 0x80)
+> 
+> Because we don't enforce expected_attach_type for XDP programs,
+> we end up in hitting 'if (prog->expected_attach_type == BPF_LSM_CGROUP'
+> part in check_return_code and follow up with testing
+> `prog->aux->attach_func_proto->type`, but `prog->aux->attach_func_proto`
+> is NULL.
+> 
+> Add explicit prog_type check for the "Note, BPF_LSM_CGROUP that
+> attach ..." condition. Also, don't skip return code check for
+> LSM/STRUCT_OPS.
+> 
+> The above actually brings an issue with existing selftest which
+> tries to return EPERM from void inet_csk_clone. Fix the
+> test (and move called_socket_clone to make sure it's not
+> incremented in case of an error) and add a new one to explicitly
+> verify this condition.
+Acked-by: Martin KaFai Lau <kafai@fb.com>
