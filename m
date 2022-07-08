@@ -2,116 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E84DD56C1E7
-	for <lists+bpf@lfdr.de>; Sat,  9 Jul 2022 01:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40EAE56C352
+	for <lists+bpf@lfdr.de>; Sat,  9 Jul 2022 01:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238531AbiGHWtD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Jul 2022 18:49:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37710 "EHLO
+        id S238134AbiGHXAa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Jul 2022 19:00:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238018AbiGHWtC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Jul 2022 18:49:02 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6080637195
-        for <bpf@vger.kernel.org>; Fri,  8 Jul 2022 15:49:01 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id k30so190479edk.8
-        for <bpf@vger.kernel.org>; Fri, 08 Jul 2022 15:49:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hcTjbqBGCX8LcxF4+sijp1af/+RCRq0VS67Y38akCFo=;
-        b=G6sFgZol1bOmdZPq374giZao/8yULoPhM6eJPENXDjrXGX0d2D/NGRC7hEaF34C0Aj
-         6ZJEr89HYdMOSu8SqDKMuU0jGDAHfDwIyvugqrP/FJpJDqJOSClA/xY48BYQOZjMKtPC
-         eX63t74gPofmw1zZqeOVCnRWpSzfqCEmozNHmYlU0Pz5MadqVGrjGN03qGqHOlAS1X59
-         DrfZFtPTWBrw0k+sdk4BMcnuc6SryGT9rDM0zmHwLT4e4TjQuGCtj11HMMTulhzr/iZ1
-         Nhp/2Zu7Q+Mieg4GXN/V9YlCExOJl8P8iDAFoDiNc59vYu7NamG9NkJniyzcRUhdeCkF
-         WL2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hcTjbqBGCX8LcxF4+sijp1af/+RCRq0VS67Y38akCFo=;
-        b=j0sg2P1nUJJkZHS6AmeDFvX00+2uAnktO8ufcl/M+kyh5UY23hW3maLB1FesSXY1oq
-         Bf8vbXRbGxTZQiFe7ePqfKPc0RZeMAAOLz5d2Gr3k8H7uAKC3z9assuChlYGIVeTZ64m
-         60PkMs3JnJNlGOZWTCkIyY/F6BnnRxeic4Ksta+gK8Wmh6xZApnQzbwBrSyiM4DRM+vH
-         6U7D8h9+lVk0pVHSntJ71/4CX672u3fzlyRKAOVRsQaNiQRlUwb4671W9R/t7fXB1xLq
-         foXZ0DLwPps6fVydy+UR75czfiADVCmEtTuwsB6hMK8qtoEdsAaZns7PSstOnRR2J3xQ
-         WbMQ==
-X-Gm-Message-State: AJIora8BBBWaIVt1yKC7hLUt39zZTbzicWATb6uNwYtPwGUdrOV+oJeg
-        QTLVelx27bGOo2DKLVvrBTa+Ki+tjGJM1hIRLMI=
-X-Google-Smtp-Source: AGRyM1swV6zbKZQ43Zy/vKvO1GJILWvnkOoZDqSBKvStlzFqMSESp0IPJPkMjX1a7TjAOQwd4zU2sxgPa84kj6qqz50=
-X-Received: by 2002:a05:6402:50d2:b0:43a:8487:8a09 with SMTP id
- h18-20020a05640250d200b0043a84878a09mr7866729edb.232.1657320539995; Fri, 08
- Jul 2022 15:48:59 -0700 (PDT)
+        with ESMTP id S236471AbiGHXA3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Jul 2022 19:00:29 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3CB9371B4;
+        Fri,  8 Jul 2022 16:00:28 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 6A22FB82A11;
+        Fri,  8 Jul 2022 23:00:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 013C3C341CB;
+        Fri,  8 Jul 2022 23:00:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1657321226;
+        bh=cfgz11hbDz6Yz0qnEPQRJ2nlz33mqPZwQvepHGJGv20=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=VdpQ60CYIYawwiQrtwGy0xCwxBMZr7rv4xRgMyXP6jT7pAa21kSM4NizGlZTAdZtk
+         xfv/lFZB5RdgxODHFUiR3f4Dw3WEOr+UL+k1jPEXMmi+Vw+g624zJjHmaky+gH56hU
+         8YxW4TSiCmYZRbf0WliEW4GojFRt6zW4SL/aH/n0JhtcUJq4Bda0n+vbX3S9qPIp5p
+         dc/3rz1UWsc4KLCeji+6QjDxZdihrZuC4pmtAlr0PfhB1XkkbS0gQRRxMmLwVP4k25
+         i0zJ7+jzBeG8AHeg4ieZtqabBSA5l6u/Z0eT1iu7bBw2L30LEhdoUwI0MQ3DhSkUkF
+         9bb3qQIQx7CJQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D8369E45BDB;
+        Fri,  8 Jul 2022 23:00:25 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20220708060416.1788789-1-arilou@gmail.com> <20220708060416.1788789-2-arilou@gmail.com>
-In-Reply-To: <20220708060416.1788789-2-arilou@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 8 Jul 2022 15:48:48 -0700
-Message-ID: <CAEf4BzZkfWTQppe97E1CTLKEqgtxP9gUQqbXB1EKRm5pK_ZmDA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/1] libbpf: perfbuf: allow raw access to buffers
-To:     Jon Doron <arilou@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, Jon Doron <jond@wiz.io>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: pull-request: bpf 2022-07-08
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <165732122588.21326.6932743257091611309.git-patchwork-notify@kernel.org>
+Date:   Fri, 08 Jul 2022 23:00:25 +0000
+References: <20220708213418.19626-1-daniel@iogearbox.net>
+In-Reply-To: <20220708213418.19626-1-daniel@iogearbox.net>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        edumazet@google.com, ast@kernel.org, andrii@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 7, 2022 at 11:04 PM Jon Doron <arilou@gmail.com> wrote:
->
-> From: Jon Doron <jond@wiz.io>
->
-> Add support for writing a custom event reader, by exposing the ring
-> buffer state, and allowing to set it's tail.
->
-> Few simple examples where this type of needed:
-> 1. perf_event_read_simple is allocating using malloc, perhaps you want
->    to handle the wrap-around in some other way.
-> 2. Since perf buf is per-cpu then the order of the events is not
->    guarnteed, for example:
->    Given 3 events where each event has a timestamp t0 < t1 < t2,
->    and the events are spread on more than 1 CPU, then we can end
->    up with the following state in the ring buf:
->    CPU[0] => [t0, t2]
->    CPU[1] => [t1]
->    When you consume the events from CPU[0], you could know there is
->    a t1 missing, (assuming there are no drops, and your event data
->    contains a sequential index).
->    So now one can simply do the following, for CPU[0], you can store
->    the address of t0 and t2 in an array (without moving the tail, so
->    there data is not perished) then move on the CPU[1] and set the
->    address of t1 in the same array.
->    So you end up with something like:
->    void **arr[] = [&t0, &t1, &t2], now you can consume it orderely
->    and move the tails as you process in order.
-> 3. Assuming there are multiple CPUs and we want to start draining the
->    messages from them, then we can "pick" with which one to start with
->    according to the remaining free space in the ring buffer.
->
+Hello:
 
-All the above use cases are sufficiently advanced that you as such an
-advanced user should be able to write your own perfbuf consumer code.
-There isn't a lot of code to set everything up, but then you get full
-control over all the details.
+This pull request was applied to netdev/net.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
 
-I don't see this API as a generally useful, it feels way too low-level
-and special for inclusion in libbpf.
+On Fri,  8 Jul 2022 23:34:18 +0200 you wrote:
+> Hi David, hi Jakub, hi Paolo, hi Eric,
+> 
+> The following pull-request contains BPF updates for your *net* tree.
+> 
+> We've added 3 non-merge commits during the last 2 day(s) which contain
+> a total of 7 files changed, 40 insertions(+), 24 deletions(-).
+> 
+> [...]
 
-> Signed-off-by: Jon Doron <jond@wiz.io>
-> ---
->  tools/lib/bpf/libbpf.c   | 40 ++++++++++++++++++++++++++++++++++++++++
->  tools/lib/bpf/libbpf.h   | 25 +++++++++++++++++++++++++
->  tools/lib/bpf/libbpf.map |  2 ++
->  3 files changed, 67 insertions(+)
->
+Here is the summary with links:
+  - pull-request: bpf 2022-07-08
+    https://git.kernel.org/netdev/net/c/7c895ef88403
 
-[...]
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
