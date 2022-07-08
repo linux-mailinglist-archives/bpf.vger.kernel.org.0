@@ -2,132 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B49256B1E7
-	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 07:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4977556B21B
+	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 07:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237128AbiGHExG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Jul 2022 00:53:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54398 "EHLO
+        id S236685AbiGHFCM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Jul 2022 01:02:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237134AbiGHExF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Jul 2022 00:53:05 -0400
+        with ESMTP id S229957AbiGHFCK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Jul 2022 01:02:10 -0400
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E47876E82;
-        Thu,  7 Jul 2022 21:53:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 367D879695;
+        Thu,  7 Jul 2022 22:02:10 -0700 (PDT)
 Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 267KPo8Q010705;
-        Thu, 7 Jul 2022 21:53:04 -0700
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 267KPoPx010704;
+        Thu, 7 Jul 2022 22:02:10 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : references : in-reply-to : content-type : content-id
  : mime-version; s=facebook;
- bh=DLEjmIuVS4gygwTvw3p7yxZCG3TheaX1umPVX+/UdBU=;
- b=jgRE+s0qSPlc+1BTzmXJCohuelO1tAX4A6mqSj13V+MkArhS0sbMSKXEKQBN/EuuHwSK
- prJQfXCE9Q3PNSIED8Td1ZcWvIBeJPtuuUM5h9wQ7nrua4K1FWE4etcmN6n2MfKmmA5q
- qPMdQEXPJ34YYtrrtk6mD6O5lfMuxLdVVdw= 
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2175.outbound.protection.outlook.com [104.47.55.175])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3h5ashp1ch-2
+ bh=Q5v7NPxcZNm/gj3163zlgPRaXAw8aD+WRPW1F5zzq14=;
+ b=JUogubRR5KO/E1oL4WBIW+Znm8PeIwrJrnabtKjLk+qNtiFBR5JbLnLNuv1b2LuwdbIo
+ EE1ko5l0/oJ8DKaj/D3DVt4t846yKAjtm7jY5OvK1iPL9y+KiOGLQEaZs3cJSPBrDy0b
+ ktKWPq1vxRHx+3eWfO21AVekOfqsQyhmfSg= 
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2101.outbound.protection.outlook.com [104.47.58.101])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3h5ashp2c8-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Jul 2022 21:53:03 -0700
+        Thu, 07 Jul 2022 22:02:09 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RtONAhz1SJ3rsqzkJT1lsAYuwJVi6EudWZD0zIm7/EfGwgKh7slEoMUM9w7hErr59MROPtsFUky7pDhb0BgpsbshkK410/ismSUCcvyywTCRm9S7cr1ABHfLR8WAwTrpLpRBohQbSYIBoN9CJQQQMzdy/4rbHlHlnRc/tzbd9JY3RuHfY+tKluviAakXJy3E273mEKHp0vRnxic/iW/PswiNvSJOzOy+U1z/IxkGdYQiZJ8JnMx4MbCcuTRYkmGvEZuvPTVKxAAPozX5M22Peoxqp/8VXPm4Z1xuLrqq44O1xd9J2U/5hp4nqbChauKUR4qP3hipjqFCeXBXoTYO6g==
+ b=MNjRn1Bx0/Dmd7fqex/zX8Tq4h0z7Mxj6AAjr9Ur5h+nOmi+eNanDyUm5u0DpsdYSQvgnDMc3fmwHhZXv9iEwXkp1HDJCunB8B7wvnNFVQm51pLnLZofxUuwySWXWXVKz1zb3YgjklUftV+fTgXFo9+eQ9bmDzKoUyB720JNGc+LGeQrz1ElAcJhboAZ/emyrZAsGDJ0IkkgGWCxfSU2LcRa5TuRB2m1uY9qQj5WN5oud1JK0jPjK2dFXW/JHj7XyLjx57VcSOr+TbHsOfgQdMlEFCkbMtge1X74ZNv/CUuSMEyFM8RYJWhTxeL17GYCu/QE4Jeh0g1Gsg533KQBkA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DLEjmIuVS4gygwTvw3p7yxZCG3TheaX1umPVX+/UdBU=;
- b=aSc+tTxH18hrrKEEYhwnfsOiI7W9Bx8VWUrBcikecpWs6HouPov/QzCvziSEABTUC5NLOMoHax0FYGza9uUo334iorH4S5FHhFXvPoju7ASZLqyMskgkY0BQ0FJUCqkCb3wtF0XxUHK19SdCL0RXK/EM3gs1x4IDJvFjxuxIg7g3SkTlT7X2JWuXwhIl2Tay1I2Xb453WX7OapfLOKPEww/OkyzOMzWYYULPSYnJa8pjzbSS6u8HGNM7lbT5ubilOxatbha7febehj7i0kVgJIXMMc1wDelcwHiHOleVwxAaynO6ftvRYFZemGzeq77tIf1P/TGl/uJdvVl12WcYYg==
+ bh=Q5v7NPxcZNm/gj3163zlgPRaXAw8aD+WRPW1F5zzq14=;
+ b=Wg8JGUQVWmI1IKOkp8AjCRrXbwYlw17n9pE9vJR/myqKQl0ejXlRe4nK8ix7TvhxBG4VWwwaI2Cn4YMzcqgkddTiYre+Ni7BR/e48y9MpzPrnlI8q3l9dA5eLdwVxRGwtFj1/FfZHsxKqlzeoSHc9lnziieT+08S2d1u8VINCQMpP/s9VM1Wpt6M+Wra43PnVwkfKYzRK756SFj5SkmdLEvRMolsuBNPurRMyNmJFBbYYQwu7MRnllCoXgfWovj2NMuHWcg0kGsO1XWmk8r0FvkbOZCUbl7P3gPgrJ0qEa5EswaL6lQahlBRq/OiRzSl9jh42L94QdSVGgQfcYyAaA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
- by DM6PR15MB2923.namprd15.prod.outlook.com (2603:10b6:5:138::25) with
+ by MW3PR15MB3993.namprd15.prod.outlook.com (2603:10b6:303:4e::23) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5395.21; Fri, 8 Jul
- 2022 04:53:00 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.16; Fri, 8 Jul
+ 2022 05:02:07 +0000
 Received: from SA1PR15MB5109.namprd15.prod.outlook.com
  ([fe80::e8cd:89e9:95b6:e19a]) by SA1PR15MB5109.namprd15.prod.outlook.com
  ([fe80::e8cd:89e9:95b6:e19a%7]) with mapi id 15.20.5417.016; Fri, 8 Jul 2022
- 04:53:00 +0000
+ 05:02:07 +0000
 From:   Song Liu <songliubraving@fb.com>
 To:     Pu Lehui <pulehui@huawei.com>
 CC:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         lkml <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, Martin Lau <kafai@fb.com>,
         Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-Subject: Re: [PATCH bpf-next] samples: bpf: Fix cross-compiling error about
- bpftool
-Thread-Topic: [PATCH bpf-next] samples: bpf: Fix cross-compiling error about
- bpftool
-Thread-Index: AQHYkga7HcKsl6ueBUOt13UUFx+YDK1zRwcAgAB+u4CAAAdSgIAAHBAA
-Date:   Fri, 8 Jul 2022 04:53:00 +0000
-Message-ID: <892F3434-8DB2-438B-8A1A-314F39A2B4BD@fb.com>
-References: <20220707140811.603590-1-pulehui@huawei.com>
- <FDFF5B78-F555-4C55-96D3-B7B3FAA8E84F@fb.com>
- <c357fa1a-5160-ed85-19bf-51f3c188d56e@huawei.com>
- <d44f8faf-06df-6fdf-0adf-2abbdf9c9a49@huawei.com>
-In-Reply-To: <d44f8faf-06df-6fdf-0adf-2abbdf9c9a49@huawei.com>
+        KP Singh <kpsingh@kernel.org>,
+        Grant Seltzer <grantseltzer@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH bpf-next] bpf, docs: Remove deprecated xsk libbpf APIs
+ description
+Thread-Topic: [PATCH bpf-next] bpf, docs: Remove deprecated xsk libbpf APIs
+ description
+Thread-Index: AQHYkn7L5T9/GFx4wUCdtbVyKv6cWK1z6r8A
+Date:   Fri, 8 Jul 2022 05:02:07 +0000
+Message-ID: <EC892D6C-2638-4C13-A725-536428582D63@fb.com>
+References: <20220708042736.669132-1-pulehui@huawei.com>
+In-Reply-To: <20220708042736.669132-1-pulehui@huawei.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
 x-mailer: Apple Mail (2.3696.100.31)
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 560a1a47-b29b-4826-d116-08da609dbc16
-x-ms-traffictypediagnostic: DM6PR15MB2923:EE_
+x-ms-office365-filtering-correlation-id: f3fa2332-081e-4e92-3b32-08da609f01b9
+x-ms-traffictypediagnostic: MW3PR15MB3993:EE_
 x-fb-source: Internal
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: A7OfpM8/CHs1LX6aepAc3LHd7gc+Eptnk+YjNfWjSdONRpcvF2M2pv0ugBSoHO0Sukt5wYuH7WHPiTaqR6q/kDo33GIQnCh23u83f/cq3bYTXKOxKHBntbzAVyd5tYH3DqdVT+04qmGAEf5fep+oy7gEKzq+3M7/+dk210prkrCV9+3mmjJEZRHZTjDk/urNy2hkewCznoWHiLVBDUc49ZvwR8SAYaB/6ckFUto/nxL+Q7Ozo9aqd8OrNM60/5mKMatOftE1n9zk+aJV8LcszRvjwJTNDgxz0tofyZFCnMIv8jiO4NWPUbpHZ9XKXhypNBO3o34gpw5e9YWMFxulG0n64BllisXk7jeH4D9Z5+7jswDIr48gQWwsv1aPNF885HT810LDB4v2rZm8qZpfYf3jHKgO4IsaieO9TU9F+fCIoUak/ZT6HwnCT0ucJ4YHJMbv7bMpEej5upp1Q2D8bnAeaIq+v9LWb4sKYaM+YjGA/daPPdfOKq2mRwATg+Bl9MlWU0lZppA7aANQRqOrQBEXFnrK5nKPNQ43R3bTKhnUcXfq5m/1Nb+jTq3S15+M0p+TPb8K/qime1Mfhv4ChL5wTWQsWHHEqWSYrdnnFVrF1hY4IU7Ij4ec3LbNm6t/195R1zyQtTvwS7Jk79mERvyQ/bnIYLso/9Ejr0y6YaezxnWveCp7yXCRBbWRfKHQe+w8RPJ+7+kh1PaAZq8Wq81I1pAvesxZ+9zMg0bYtOQ+9Dnvc7mmAmokYFy+gf53bZhbl4Bg6z7Vt4qdxBEhOASFd9v6GNROoamFp9Cf++AgYp3xI93Rg1GeuoIAAeXndCaRa5MYthV8ddQN2PfzXpr/RkuDD7il4IXJ2+XXF+Q=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(396003)(39860400002)(366004)(346002)(376002)(136003)(64756008)(5660300002)(6916009)(316002)(54906003)(8936002)(38070700005)(66476007)(83380400001)(66946007)(122000001)(4326008)(6512007)(91956017)(86362001)(8676002)(38100700002)(186003)(71200400001)(66446008)(6486002)(478600001)(76116006)(53546011)(2616005)(66556008)(2906002)(33656002)(6506007)(41300700001)(36756003)(45980500001);DIR:OUT;SFP:1102;
+x-microsoft-antispam-message-info: EzltRmXu8bUIj1H5woeLblS/clZptV9NOp/J4+kiQCeol9rAAYE8NmVs3z9f/C0mFvCPkEKpFlQnOpKlTzzBbd0gXuwlD99TL/0hsHuRU4k08MS+uZhawUZdOhiviNnE/qy8K1BX/MMmk/E5AKnpHxEiWBEV5PnCe6d1juiVpr+NT03qKeXwsN1LuXihNFbdgRy4KaUegJdNHpnr/MRZ+YBB59HsVm9eAqkoI7plJtw1zhGm7n6URUEUng7DN08WWHOYdFaLDtECwx3ArOsSnQdVo2a+D4pb8Dgkj9cOKPlhxCd6E/+4+KJoz2QZHPB7qxzpYdeaZ+D3VVgUDtSuq+EZtWweXJVc5FV5WcFTo2ytWEbbSkR8vr4DqTuEpsTG2bNDqGUqonGmvU/qOI19hHHkO5B3IAYMqAeyaB0LNqONWIwxCyiKJMIAzbFxmYFG1dRt1QlObpwBCaBuaUtAYNpuem2ULjKyOIK3gk/4KV6vvtq0TUL7zeOWutiowiZNCA4PTPl/01eNHV9jRWuJlZ62AXOyUfOHAX9q3oIcHOp/p5W/WUSeopKDI+fFO55gUi8ktVEIcrNR4vMrFqB/dxeYb5Ap/86ZE0AJ885e5KWqjvYtda90UfZ235wvY/p0iJjxMjzsB41Fs1o6GkAd8hwYPPPunWi0jme2KPI5g+FVG7Fat5bM3sEXuesRyVUTjYQOhoZyX7cldEceN1av2S8z7OfIDD1IFzyxi0ZBaDOkpWzfFzCekLuKFrZUMWYBybOwfqZ5fn+ervFxx0u6anx9QWnNGiGr8sVzZxpLygYVQHxgU3V8/RyO8U6wRuMXNeE5M9bQJqZQ2in+6PuVbu0vz8qCdYuR/lRkQQJZl5w=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(366004)(39860400002)(396003)(346002)(376002)(136003)(33656002)(8936002)(6486002)(478600001)(7416002)(66946007)(5660300002)(71200400001)(6512007)(66476007)(76116006)(8676002)(6506007)(66446008)(86362001)(53546011)(41300700001)(2906002)(66556008)(91956017)(64756008)(4326008)(6916009)(122000001)(316002)(38100700002)(186003)(38070700005)(54906003)(83380400001)(2616005)(36756003)(45980500001);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?vxxIEnvkQ7pVOp+wYwmJj7MRdR8xY1xuIMQKxnvwPwhVQ0psvCfozFNOVs9L?=
- =?us-ascii?Q?ZIpWeaCk0SkIW/XvgiIgyBOlvi6iNWQpFURU2SMwXEOXCl3wph6CqLqhOrcP?=
- =?us-ascii?Q?xKIimaMSPj6j3ZynAcd1H6On9nK2nebOV1omrhGTIuWIfMTfeQDkUbxwvWf1?=
- =?us-ascii?Q?i2yxC9dc9GGIOFvvA0l29AJLcKpQTxljExyacG2tK2mKy6OhYGAu6pJF7FOk?=
- =?us-ascii?Q?7YpOqw+OWYbNaejpQbTMe7iXJmfDzUyNEtRGXUclvbTfpUv0DYiBGFE/2DN7?=
- =?us-ascii?Q?IFwmcaWaEryKCi8RBjcKbwj2472eW4O8RwCebJ93Bea6n1hBkjGCREk1oMNl?=
- =?us-ascii?Q?yoKQfD8CW/tjPxdSfZS+MpKTvLFrho/E7UJK74kNPqdnlmjD9mW5r182cMTV?=
- =?us-ascii?Q?6cMSxMKIllcg71+GOzd2syvBgamS9xAQkkCv4YWGkqwxX7dFDribR2jpOsvi?=
- =?us-ascii?Q?LT0JcLzV4sSbrh2YiCZN3rOj2288uRT/+Z49JzgTeXTRkDKldTVF8vNEJ/L5?=
- =?us-ascii?Q?1S/Wop6yrn1ck21VT1XQezb6Ndat0TytNhgRMzU38DA8L+L4bfK49u/ndEPq?=
- =?us-ascii?Q?cfpncWFhBWM9tPGpXJA2NBhbvM2Ij8ljA6qjgUl8ih0JNm4eHPgPRE+tYBo3?=
- =?us-ascii?Q?AaEXGm3RKsj9L4MlqVcL/tl5cAVogQtzr/i4Wt0GaPsLsVtskbnFLrC7Uq8J?=
- =?us-ascii?Q?XBTO83165BuPUgTnsoLxV0t840ny8ZozgKUu6reuqIYBXyyXpEhO6tskbK8B?=
- =?us-ascii?Q?lMpZdYQC8B8cZLM6l/5aNPU3HD5zbetNRvGKCSQ9W2/21BA56nz9mND3QT+V?=
- =?us-ascii?Q?1z7e7YP4YkPLuIyt+oZtd+3NN3my0OlHllyUC/Jy4gYjw++LPs/mDET/lc+L?=
- =?us-ascii?Q?EGvYIzYo9WAdkcM4ftJyqst96DUzihbxtx6ovuC7DvkId57wReuV65U+y/mc?=
- =?us-ascii?Q?rWHqXoFjmBmUdl2O+af+zPAKOfoL3X3IOlPE4EH01oBTO8m/1j4BLGZogAFS?=
- =?us-ascii?Q?nza9/Q/Ev4j4RsV2p5s+s1VMppIo4diig8spRIUSajxvKXIRCK5Xl1vA47dq?=
- =?us-ascii?Q?KU4Y62G9J538m0JiSpG/NUQbYF8OvQsBEY0LwNS4XcM9XBnbD1VKTKQ7YBWy?=
- =?us-ascii?Q?D0FWXJe+BtlLZ5bAN90u66haBfIX+3iipoqkM9vsEoDAieHx+w+Ilk20IOH7?=
- =?us-ascii?Q?N7ZDV6F+tuXrGzJU082B6bmg7kpH7kUdEbL3IDMWB2LYKubczXdqPDdFRs0M?=
- =?us-ascii?Q?DAqgNkX+q/H864GKM5Xhc3yG9MvJud+ooLRmP1mUpjDdtZ1L2KAZ5Yo0eU3e?=
- =?us-ascii?Q?HRbOMSQRAZUbix3NcKjiMWdinA02FjyTVZKB+0OpypE9UWFTVxK7jrzgMFoG?=
- =?us-ascii?Q?t++J3FqMUeVK3auGvVMgh/Dln6tc3Q5WxpeSNSdfeYhbgb1DAbdfpJCa35hB?=
- =?us-ascii?Q?kvcmbmj+hg+6Ndsmv6SXK4qrUXO6NqKiY6o2EaFpQYJriyIKXxLwhDdwpoIx?=
- =?us-ascii?Q?KUlVRCV6OP5iqla/idVjXqobD7zgZ1W5zNj7CEU1y8ZaUWf+H6GxaaL4LBJ2?=
- =?us-ascii?Q?gTSO7fo+ZApoFO2c3o1jT6WPJW/WzqJf2w/nZ5W4uq/kO6sXlpRx5/tnNhC7?=
- =?us-ascii?Q?gQ+W0Asn3UQltseFOgnykbM=3D?=
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?xMQM7O7/yBFHY9WZNKi8SC9+jHdofZInbrVkX0H4wcKiOczy2KxpJJfAaj+s?=
+ =?us-ascii?Q?/ot2eZGboHnPbKDOnzRHc24Ic7SH0DWs+AzlHHdebcNX559i8n6SABLCBs7Y?=
+ =?us-ascii?Q?QBtSTqN+VjYam4gBmz68/t0eAtqWUrsUIEHl4mcebDK6C1dn1dlJV/4OIfUs?=
+ =?us-ascii?Q?Ai5sF33/axy3zr6uDZ5HqD9wfJFY2gaSowb1CV0ySHB+oJqS1Kca0Dy58pmB?=
+ =?us-ascii?Q?W+JH+n3D5Cy3aLTfO01nZZXyOZNV/vVIzyBF1LgEP4fsIEbuGXzoGBMAoMvX?=
+ =?us-ascii?Q?I2cBAlfDmYgLeNVYYBk3FDomAsGs56Q6MiyTlfzOcWVEgLpiGGuodn4CQ1tS?=
+ =?us-ascii?Q?WoRxjhDYWQukbyIfQCP2blyHaCG0aEMMCGw3poXMKw2mbFRfnyMgB6sg5QRu?=
+ =?us-ascii?Q?dPsTxZhTLNJiRqJb3Yr7IkVmRUjjDLyIBsRZojCpube28QFzXWHdUbiIRI5N?=
+ =?us-ascii?Q?H/6ZaCfwcyHdsBPx1SIUJpkjXTKtTuz6cDtOqjDGPrCSmDezfKMUDwfHOgAP?=
+ =?us-ascii?Q?H1Wqg4SsD3K1qW/6Ch9uji6tzWFUy5bV5HTjDitU79sYKC3cmdjnGNvTQcmR?=
+ =?us-ascii?Q?M2kT4JXW48GQPGskPuhE9W1trE1LNQ720cXbIUdtvaQyfHgiNkb8a6P7JPg7?=
+ =?us-ascii?Q?b85bAFJxE80DNh7jaga6Ogw4IaI4QJvKwr0cPHKvgYQL+92k3IX4bJehMfhT?=
+ =?us-ascii?Q?NsMp8GCEHxSb037ukhAytD5Vnw5J24sJrPHuM3+uFgpQJPYX8szOcG9YuH02?=
+ =?us-ascii?Q?52jn3ic1FDzrIpqH1I6RldUmxeEUXlaXpVRnCrJUKCABbEsoNyujPvQqyXYi?=
+ =?us-ascii?Q?Db1g3IfHbY8qyVl/13UzAdkS58PMUhWz+j4+g6HMH7FHTGA2ci81i0i7vjGu?=
+ =?us-ascii?Q?L6Ojfn+ZraszJFUAJvSrMTI6Bpn0AC9TPoDCE26OijZBT5bdtiJiqOoUEoIT?=
+ =?us-ascii?Q?1CG4XQUli2CrzeGtnRA/3+hP8vCnAx4yrK7pglFimRhIUfeP8NclKipvbVxB?=
+ =?us-ascii?Q?VGn8alISMD/rf7DVgbdoXcf/OFIhTLpmhRIstvrj1tYNo7uifs3BbGyRgZm7?=
+ =?us-ascii?Q?mEUZqgHvMxjq1JUfriZHpM3Y7wRpe4VCHP3z7jBDH1MMll+/+lzwUhaQ+7/K?=
+ =?us-ascii?Q?eSvC/4X0lWHELdM8PnhGAa++fuwaATbO8UZ39N3IMNEHU9NHkgJJ5YCQ4TI9?=
+ =?us-ascii?Q?6AblANX8y2ngWN0gHsNA4isqcrSztG8KbGnfLwe8Cw58bj4AaX8+mnZj9Ikc?=
+ =?us-ascii?Q?TOTpXZ5rbT1buVqs5DHCEqzROI6D6Tl+Vm1+5MBlaNtYFI4NbYnWgPnGHtS4?=
+ =?us-ascii?Q?qAxJ5pquksX+bzQGT9O8HIj073ju3vv013LGCsC+PizOF72OBWr1bfWYWj3s?=
+ =?us-ascii?Q?zein3GPwU0XRGgOyHC9AH4w967Ya/zJC0g8wSJXArKeSy427nWxAZG3jAFoo?=
+ =?us-ascii?Q?SXIfP+PQQJ8QWPIqRb7i1FRpeVkXfiYfmCs4qVwHF3LGB1oRIevoC3Mcq17/?=
+ =?us-ascii?Q?IQg0gDFgRwHIRfC0yrt4DSPAZ8z9XfrL5HNs4O0Wy7z6Lda09DdUW47tRGzk?=
+ =?us-ascii?Q?BEU/DSZVB53Zk+QPvQobfL4OVd/Eg28243ZPJXc4d9LtROfH37pvMdZLQzCu?=
+ =?us-ascii?Q?pLpjSFVBx60gOl9ZGlB4cVo=3D?=
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <105BEE8BFB98144F8837F3BCCDF21E1A@namprd15.prod.outlook.com>
+Content-ID: <6ABB0645F046F94285238B9049E111C9@namprd15.prod.outlook.com>
 MIME-Version: 1.0
 X-OriginatorOrg: fb.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 560a1a47-b29b-4826-d116-08da609dbc16
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jul 2022 04:53:00.7452
+X-MS-Exchange-CrossTenant-Network-Message-Id: f3fa2332-081e-4e92-3b32-08da609f01b9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jul 2022 05:02:07.1329
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: LpFGiF82ewlwq+7Suo2PX0rwzBm260NCyJvADNRPKhGzQD4RmxupR2jfObVfe6pvCmy3Y6PzFIiFE60LUJQL8Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB2923
-X-Proofpoint-ORIG-GUID: Mns6QwECa1Q8RmfSQaJOy771CG3XvdZR
-X-Proofpoint-GUID: Mns6QwECa1Q8RmfSQaJOy771CG3XvdZR
+X-MS-Exchange-CrossTenant-userprincipalname: ZmfY8DKk78OTOaJVEXmJuyJvCggf63DfjydjP5OXjWFx2CKhYlWGn2vbeKayCVmNzcoQMhADEwT23l2W/e1Hpg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB3993
+X-Proofpoint-ORIG-GUID: iSvopBeSlCusNr6v-zD7mYINuwcJvGNP
+X-Proofpoint-GUID: iSvopBeSlCusNr6v-zD7mYINuwcJvGNP
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
  definitions=2022-07-08_04,2022-06-28_01,2022-06-22_01
@@ -143,79 +144,51 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-> On Jul 7, 2022, at 8:12 PM, Pu Lehui <pulehui@huawei.com> wrote:
+> On Jul 7, 2022, at 9:27 PM, Pu Lehui <pulehui@huawei.com> wrote:
 > 
+> Since xsk APIs has been removed from libbpf, let's clean
+> up the bpf docs simutaneously.
 > 
-> 
-> On 2022/7/8 10:46, Pu Lehui wrote:
->> On 2022/7/8 3:12, Song Liu wrote:
->>> 
->>> 
->>>> On Jul 7, 2022, at 7:08 AM, Pu Lehui <pulehui@huawei.com> wrote:
->>>> 
->>>> Currently, when cross compiling bpf samples, the host side
->>>> cannot use arch-specific bpftool to generate vmlinux.h or
->>>> skeleton. We need to compile the bpftool with the host
->>>> compiler.
->>>> 
->>>> Signed-off-by: Pu Lehui <pulehui@huawei.com>
->>>> ---
->>>> samples/bpf/Makefile | 8 ++++----
->>>> 1 file changed, 4 insertions(+), 4 deletions(-)
->>>> 
->>>> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
->>>> index 5002a5b9a7da..fe54a8c8f312 100644
->>>> --- a/samples/bpf/Makefile
->>>> +++ b/samples/bpf/Makefile
->>>> @@ -1,4 +1,5 @@
->>>> # SPDX-License-Identifier: GPL-2.0
->>>> +-include tools/scripts/Makefile.include
->>> 
->>> Why do we need the -include here?
->>> 
->> HOSTLD is defined in tools/scripts/Makefile.include, we need to add it.
->> And for -include, mainly to resolve some conflicts:
->> 1. If workdir is kernel_src, then 'include tools/scripts/Makefile.include' is fine when 'make M=samples/bpf'.
->> 2. Since the trick in samples/bpf/Makefile:
->> # Trick to allow make to be run from this directory
->> all:
->> $(MAKE) -C ../../ M=$(CURDIR) BPF_SAMPLES_PATH=$(CURDIR)
->> If workdir is samples/bpf, the compile process will first load the Makefile in samples/bpf, then change workdir to kernel_src and load the kernel_src's Makefile. So if we just add 'include tools/scripts/Makefile.include', then the first load will occur error for not found the file, so we add -include to skip the first load.
-> 
-> sorry, correct the reply, so we add -include to skip the 'tools/scripts/Makefile.include' file on the fisrt load.
-
-
-Thanks for the explanation. 
+> Signed-off-by: Pu Lehui <pulehui@huawei.com>
 
 Acked-by: Song Liu <song@kernel.org>
 
+> ---
+> .../bpf/libbpf/libbpf_naming_convention.rst         | 13 ++-----------
+> 1 file changed, 2 insertions(+), 11 deletions(-)
 > 
->>> Thanks,
->>> Song
->>> 
->>>> 
->>>> BPF_SAMPLES_PATH ?= $(abspath $(srctree)/$(src))
->>>> TOOLS_PATH := $(BPF_SAMPLES_PATH)/../../tools
->>>> @@ -283,11 +284,10 @@ $(LIBBPF): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_OU
->>>> BPFTOOLDIR := $(TOOLS_PATH)/bpf/bpftool
->>>> BPFTOOL_OUTPUT := $(abspath $(BPF_SAMPLES_PATH))/bpftool
->>>> BPFTOOL := $(BPFTOOL_OUTPUT)/bpftool
->>>> -$(BPFTOOL): $(LIBBPF) $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile) | $(BPFTOOL_OUTPUT)
->>>> +$(BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile) | $(BPFTOOL_OUTPUT)
->>>> $(MAKE) -C $(BPFTOOLDIR) srctree=$(BPF_SAMPLES_PATH)/../../ \
->>>> -  OUTPUT=$(BPFTOOL_OUTPUT)/ \
->>>> -  LIBBPF_OUTPUT=$(LIBBPF_OUTPUT)/ \
->>>> -  LIBBPF_DESTDIR=$(LIBBPF_DESTDIR)/
->>>> +  ARCH= CROSS_COMPILE= CC=$(HOSTCC) LD=$(HOSTLD) \
->>>> +  OUTPUT=$(BPFTOOL_OUTPUT)/
->>>> 
->>>> $(LIBBPF_OUTPUT) $(BPFTOOL_OUTPUT):
->>>> $(call msg,MKDIR,$@)
->>>> -- 
->>>> 2.25.1
->>>> 
->>> 
->>> .
->>> 
->> .
+> diff --git a/Documentation/bpf/libbpf/libbpf_naming_convention.rst b/Documentation/bpf/libbpf/libbpf_naming_convention.rst
+> index f86360f734a8..c5ac97f3d4c4 100644
+> --- a/Documentation/bpf/libbpf/libbpf_naming_convention.rst
+> +++ b/Documentation/bpf/libbpf/libbpf_naming_convention.rst
+> @@ -9,8 +9,8 @@ described here. It's recommended to follow these conventions whenever a
+> new function or type is added to keep libbpf API clean and consistent.
+> 
+> All types and functions provided by libbpf API should have one of the
+> -following prefixes: ``bpf_``, ``btf_``, ``libbpf_``, ``xsk_``,
+> -``btf_dump_``, ``ring_buffer_``, ``perf_buffer_``.
+> +following prefixes: ``bpf_``, ``btf_``, ``libbpf_``, ``btf_dump_``,
+> +``ring_buffer_``, ``perf_buffer_``.
+> 
+> System call wrappers
+> --------------------
+> @@ -59,15 +59,6 @@ Auxiliary functions and types that don't fit well in any of categories
+> described above should have ``libbpf_`` prefix, e.g.
+> ``libbpf_get_error`` or ``libbpf_prog_type_by_name``.
+> 
+> -AF_XDP functions
+> --------------------
+> -
+> -AF_XDP functions should have an ``xsk_`` prefix, e.g.
+> -``xsk_umem__get_data`` or ``xsk_umem__create``. The interface consists
+> -of both low-level ring access functions and high-level configuration
+> -functions. These can be mixed and matched. Note that these functions
+> -are not reentrant for performance reasons.
+> -
+> ABI
+> ---
+> 
+> -- 
+> 2.25.1
+> 
 
