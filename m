@@ -2,646 +2,220 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C86A856B19E
-	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 06:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B49256B1E7
+	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 07:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236955AbiGHEfl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Jul 2022 00:35:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38528 "EHLO
+        id S237128AbiGHExG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Jul 2022 00:53:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237034AbiGHEfl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Jul 2022 00:35:41 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B35546B249;
-        Thu,  7 Jul 2022 21:35:38 -0700 (PDT)
-Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4LfL6G03ftzpW7X;
-        Fri,  8 Jul 2022 12:34:45 +0800 (CST)
-Received: from [10.67.111.192] (10.67.111.192) by
- kwepemi500013.china.huawei.com (7.221.188.120) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 8 Jul 2022 12:35:34 +0800
-Message-ID: <a24109d5-b79a-99de-0fd5-66b0ec34e5ed@huawei.com>
-Date:   Fri, 8 Jul 2022 12:35:33 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH bpf-next v6 4/4] bpf, arm64: bpf trampoline for arm64
-Content-Language: en-US
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-CC:     <bpf@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S237134AbiGHExF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Jul 2022 00:53:05 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E47876E82;
+        Thu,  7 Jul 2022 21:53:04 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 267KPo8Q010705;
+        Thu, 7 Jul 2022 21:53:04 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : mime-version; s=facebook;
+ bh=DLEjmIuVS4gygwTvw3p7yxZCG3TheaX1umPVX+/UdBU=;
+ b=jgRE+s0qSPlc+1BTzmXJCohuelO1tAX4A6mqSj13V+MkArhS0sbMSKXEKQBN/EuuHwSK
+ prJQfXCE9Q3PNSIED8Td1ZcWvIBeJPtuuUM5h9wQ7nrua4K1FWE4etcmN6n2MfKmmA5q
+ qPMdQEXPJ34YYtrrtk6mD6O5lfMuxLdVVdw= 
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2175.outbound.protection.outlook.com [104.47.55.175])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3h5ashp1ch-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Jul 2022 21:53:03 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RtONAhz1SJ3rsqzkJT1lsAYuwJVi6EudWZD0zIm7/EfGwgKh7slEoMUM9w7hErr59MROPtsFUky7pDhb0BgpsbshkK410/ismSUCcvyywTCRm9S7cr1ABHfLR8WAwTrpLpRBohQbSYIBoN9CJQQQMzdy/4rbHlHlnRc/tzbd9JY3RuHfY+tKluviAakXJy3E273mEKHp0vRnxic/iW/PswiNvSJOzOy+U1z/IxkGdYQiZJ8JnMx4MbCcuTRYkmGvEZuvPTVKxAAPozX5M22Peoxqp/8VXPm4Z1xuLrqq44O1xd9J2U/5hp4nqbChauKUR4qP3hipjqFCeXBXoTYO6g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DLEjmIuVS4gygwTvw3p7yxZCG3TheaX1umPVX+/UdBU=;
+ b=aSc+tTxH18hrrKEEYhwnfsOiI7W9Bx8VWUrBcikecpWs6HouPov/QzCvziSEABTUC5NLOMoHax0FYGza9uUo334iorH4S5FHhFXvPoju7ASZLqyMskgkY0BQ0FJUCqkCb3wtF0XxUHK19SdCL0RXK/EM3gs1x4IDJvFjxuxIg7g3SkTlT7X2JWuXwhIl2Tay1I2Xb453WX7OapfLOKPEww/OkyzOMzWYYULPSYnJa8pjzbSS6u8HGNM7lbT5ubilOxatbha7febehj7i0kVgJIXMMc1wDelcwHiHOleVwxAaynO6ftvRYFZemGzeq77tIf1P/TGl/uJdvVl12WcYYg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
+ by DM6PR15MB2923.namprd15.prod.outlook.com (2603:10b6:5:138::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5395.21; Fri, 8 Jul
+ 2022 04:53:00 +0000
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::e8cd:89e9:95b6:e19a]) by SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::e8cd:89e9:95b6:e19a%7]) with mapi id 15.20.5417.016; Fri, 8 Jul 2022
+ 04:53:00 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Pu Lehui <pulehui@huawei.com>
+CC:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        James Morse <james.morse@arm.com>,
-        Hou Tao <houtao1@huawei.com>,
-        Jason Wang <wangborong@cdjrlc.com>
-References: <20220625161255.547944-1-xukuohai@huawei.com>
- <20220625161255.547944-5-xukuohai@huawei.com> <YscL4t1pYHYApIiK@larix>
-From:   Xu Kuohai <xukuohai@huawei.com>
-In-Reply-To: <YscL4t1pYHYApIiK@larix>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.111.192]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemi500013.china.huawei.com (7.221.188.120)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        KP Singh <kpsingh@kernel.org>
+Subject: Re: [PATCH bpf-next] samples: bpf: Fix cross-compiling error about
+ bpftool
+Thread-Topic: [PATCH bpf-next] samples: bpf: Fix cross-compiling error about
+ bpftool
+Thread-Index: AQHYkga7HcKsl6ueBUOt13UUFx+YDK1zRwcAgAB+u4CAAAdSgIAAHBAA
+Date:   Fri, 8 Jul 2022 04:53:00 +0000
+Message-ID: <892F3434-8DB2-438B-8A1A-314F39A2B4BD@fb.com>
+References: <20220707140811.603590-1-pulehui@huawei.com>
+ <FDFF5B78-F555-4C55-96D3-B7B3FAA8E84F@fb.com>
+ <c357fa1a-5160-ed85-19bf-51f3c188d56e@huawei.com>
+ <d44f8faf-06df-6fdf-0adf-2abbdf9c9a49@huawei.com>
+In-Reply-To: <d44f8faf-06df-6fdf-0adf-2abbdf9c9a49@huawei.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3696.100.31)
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 560a1a47-b29b-4826-d116-08da609dbc16
+x-ms-traffictypediagnostic: DM6PR15MB2923:EE_
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: A7OfpM8/CHs1LX6aepAc3LHd7gc+Eptnk+YjNfWjSdONRpcvF2M2pv0ugBSoHO0Sukt5wYuH7WHPiTaqR6q/kDo33GIQnCh23u83f/cq3bYTXKOxKHBntbzAVyd5tYH3DqdVT+04qmGAEf5fep+oy7gEKzq+3M7/+dk210prkrCV9+3mmjJEZRHZTjDk/urNy2hkewCznoWHiLVBDUc49ZvwR8SAYaB/6ckFUto/nxL+Q7Ozo9aqd8OrNM60/5mKMatOftE1n9zk+aJV8LcszRvjwJTNDgxz0tofyZFCnMIv8jiO4NWPUbpHZ9XKXhypNBO3o34gpw5e9YWMFxulG0n64BllisXk7jeH4D9Z5+7jswDIr48gQWwsv1aPNF885HT810LDB4v2rZm8qZpfYf3jHKgO4IsaieO9TU9F+fCIoUak/ZT6HwnCT0ucJ4YHJMbv7bMpEej5upp1Q2D8bnAeaIq+v9LWb4sKYaM+YjGA/daPPdfOKq2mRwATg+Bl9MlWU0lZppA7aANQRqOrQBEXFnrK5nKPNQ43R3bTKhnUcXfq5m/1Nb+jTq3S15+M0p+TPb8K/qime1Mfhv4ChL5wTWQsWHHEqWSYrdnnFVrF1hY4IU7Ij4ec3LbNm6t/195R1zyQtTvwS7Jk79mERvyQ/bnIYLso/9Ejr0y6YaezxnWveCp7yXCRBbWRfKHQe+w8RPJ+7+kh1PaAZq8Wq81I1pAvesxZ+9zMg0bYtOQ+9Dnvc7mmAmokYFy+gf53bZhbl4Bg6z7Vt4qdxBEhOASFd9v6GNROoamFp9Cf++AgYp3xI93Rg1GeuoIAAeXndCaRa5MYthV8ddQN2PfzXpr/RkuDD7il4IXJ2+XXF+Q=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(396003)(39860400002)(366004)(346002)(376002)(136003)(64756008)(5660300002)(6916009)(316002)(54906003)(8936002)(38070700005)(66476007)(83380400001)(66946007)(122000001)(4326008)(6512007)(91956017)(86362001)(8676002)(38100700002)(186003)(71200400001)(66446008)(6486002)(478600001)(76116006)(53546011)(2616005)(66556008)(2906002)(33656002)(6506007)(41300700001)(36756003)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?vxxIEnvkQ7pVOp+wYwmJj7MRdR8xY1xuIMQKxnvwPwhVQ0psvCfozFNOVs9L?=
+ =?us-ascii?Q?ZIpWeaCk0SkIW/XvgiIgyBOlvi6iNWQpFURU2SMwXEOXCl3wph6CqLqhOrcP?=
+ =?us-ascii?Q?xKIimaMSPj6j3ZynAcd1H6On9nK2nebOV1omrhGTIuWIfMTfeQDkUbxwvWf1?=
+ =?us-ascii?Q?i2yxC9dc9GGIOFvvA0l29AJLcKpQTxljExyacG2tK2mKy6OhYGAu6pJF7FOk?=
+ =?us-ascii?Q?7YpOqw+OWYbNaejpQbTMe7iXJmfDzUyNEtRGXUclvbTfpUv0DYiBGFE/2DN7?=
+ =?us-ascii?Q?IFwmcaWaEryKCi8RBjcKbwj2472eW4O8RwCebJ93Bea6n1hBkjGCREk1oMNl?=
+ =?us-ascii?Q?yoKQfD8CW/tjPxdSfZS+MpKTvLFrho/E7UJK74kNPqdnlmjD9mW5r182cMTV?=
+ =?us-ascii?Q?6cMSxMKIllcg71+GOzd2syvBgamS9xAQkkCv4YWGkqwxX7dFDribR2jpOsvi?=
+ =?us-ascii?Q?LT0JcLzV4sSbrh2YiCZN3rOj2288uRT/+Z49JzgTeXTRkDKldTVF8vNEJ/L5?=
+ =?us-ascii?Q?1S/Wop6yrn1ck21VT1XQezb6Ndat0TytNhgRMzU38DA8L+L4bfK49u/ndEPq?=
+ =?us-ascii?Q?cfpncWFhBWM9tPGpXJA2NBhbvM2Ij8ljA6qjgUl8ih0JNm4eHPgPRE+tYBo3?=
+ =?us-ascii?Q?AaEXGm3RKsj9L4MlqVcL/tl5cAVogQtzr/i4Wt0GaPsLsVtskbnFLrC7Uq8J?=
+ =?us-ascii?Q?XBTO83165BuPUgTnsoLxV0t840ny8ZozgKUu6reuqIYBXyyXpEhO6tskbK8B?=
+ =?us-ascii?Q?lMpZdYQC8B8cZLM6l/5aNPU3HD5zbetNRvGKCSQ9W2/21BA56nz9mND3QT+V?=
+ =?us-ascii?Q?1z7e7YP4YkPLuIyt+oZtd+3NN3my0OlHllyUC/Jy4gYjw++LPs/mDET/lc+L?=
+ =?us-ascii?Q?EGvYIzYo9WAdkcM4ftJyqst96DUzihbxtx6ovuC7DvkId57wReuV65U+y/mc?=
+ =?us-ascii?Q?rWHqXoFjmBmUdl2O+af+zPAKOfoL3X3IOlPE4EH01oBTO8m/1j4BLGZogAFS?=
+ =?us-ascii?Q?nza9/Q/Ev4j4RsV2p5s+s1VMppIo4diig8spRIUSajxvKXIRCK5Xl1vA47dq?=
+ =?us-ascii?Q?KU4Y62G9J538m0JiSpG/NUQbYF8OvQsBEY0LwNS4XcM9XBnbD1VKTKQ7YBWy?=
+ =?us-ascii?Q?D0FWXJe+BtlLZ5bAN90u66haBfIX+3iipoqkM9vsEoDAieHx+w+Ilk20IOH7?=
+ =?us-ascii?Q?N7ZDV6F+tuXrGzJU082B6bmg7kpH7kUdEbL3IDMWB2LYKubczXdqPDdFRs0M?=
+ =?us-ascii?Q?DAqgNkX+q/H864GKM5Xhc3yG9MvJud+ooLRmP1mUpjDdtZ1L2KAZ5Yo0eU3e?=
+ =?us-ascii?Q?HRbOMSQRAZUbix3NcKjiMWdinA02FjyTVZKB+0OpypE9UWFTVxK7jrzgMFoG?=
+ =?us-ascii?Q?t++J3FqMUeVK3auGvVMgh/Dln6tc3Q5WxpeSNSdfeYhbgb1DAbdfpJCa35hB?=
+ =?us-ascii?Q?kvcmbmj+hg+6Ndsmv6SXK4qrUXO6NqKiY6o2EaFpQYJriyIKXxLwhDdwpoIx?=
+ =?us-ascii?Q?KUlVRCV6OP5iqla/idVjXqobD7zgZ1W5zNj7CEU1y8ZaUWf+H6GxaaL4LBJ2?=
+ =?us-ascii?Q?gTSO7fo+ZApoFO2c3o1jT6WPJW/WzqJf2w/nZ5W4uq/kO6sXlpRx5/tnNhC7?=
+ =?us-ascii?Q?gQ+W0Asn3UQltseFOgnykbM=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <105BEE8BFB98144F8837F3BCCDF21E1A@namprd15.prod.outlook.com>
+MIME-Version: 1.0
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 560a1a47-b29b-4826-d116-08da609dbc16
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jul 2022 04:53:00.7452
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: LpFGiF82ewlwq+7Suo2PX0rwzBm260NCyJvADNRPKhGzQD4RmxupR2jfObVfe6pvCmy3Y6PzFIiFE60LUJQL8Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB2923
+X-Proofpoint-ORIG-GUID: Mns6QwECa1Q8RmfSQaJOy771CG3XvdZR
+X-Proofpoint-GUID: Mns6QwECa1Q8RmfSQaJOy771CG3XvdZR
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-07-08_04,2022-06-28_01,2022-06-22_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/8/2022 12:37 AM, Jean-Philippe Brucker wrote:
-> Nice!  Looks good overall, I just have a few comments inline.
+
+
+> On Jul 7, 2022, at 8:12 PM, Pu Lehui <pulehui@huawei.com> wrote:
 > 
-> On Sat, Jun 25, 2022 at 12:12:55PM -0400, Xu Kuohai wrote:
->> This is arm64 version of commit fec56f5890d9 ("bpf: Introduce BPF
->> trampoline"). A bpf trampoline converts native calling convention to bpf
->> calling convention and is used to implement various bpf features, such
->> as fentry, fexit, fmod_ret and struct_ops.
->>
->> This patch does essentially the same thing that bpf trampoline does on x86.
->>
->> Tested on raspberry pi 4b and qemu:
->>
->>  #18 /1     bpf_tcp_ca/dctcp:OK
->>  #18 /2     bpf_tcp_ca/cubic:OK
->>  #18 /3     bpf_tcp_ca/invalid_license:OK
->>  #18 /4     bpf_tcp_ca/dctcp_fallback:OK
->>  #18 /5     bpf_tcp_ca/rel_setsockopt:OK
->>  #18        bpf_tcp_ca:OK
->>  #51 /1     dummy_st_ops/dummy_st_ops_attach:OK
->>  #51 /2     dummy_st_ops/dummy_init_ret_value:OK
->>  #51 /3     dummy_st_ops/dummy_init_ptr_arg:OK
->>  #51 /4     dummy_st_ops/dummy_multiple_args:OK
->>  #51        dummy_st_ops:OK
->>  #57 /1     fexit_bpf2bpf/target_no_callees:OK
->>  #57 /2     fexit_bpf2bpf/target_yes_callees:OK
->>  #57 /3     fexit_bpf2bpf/func_replace:OK
->>  #57 /4     fexit_bpf2bpf/func_replace_verify:OK
->>  #57 /5     fexit_bpf2bpf/func_sockmap_update:OK
->>  #57 /6     fexit_bpf2bpf/func_replace_return_code:OK
->>  #57 /7     fexit_bpf2bpf/func_map_prog_compatibility:OK
->>  #57 /8     fexit_bpf2bpf/func_replace_multi:OK
->>  #57 /9     fexit_bpf2bpf/fmod_ret_freplace:OK
->>  #57        fexit_bpf2bpf:OK
->>  #237       xdp_bpf2bpf:OK
->>
->> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
->> Acked-by: Song Liu <songliubraving@fb.com>
->> Acked-by: KP Singh <kpsingh@kernel.org>
->> ---
->>  arch/arm64/net/bpf_jit_comp.c | 387 +++++++++++++++++++++++++++++++++-
->>  1 file changed, 384 insertions(+), 3 deletions(-)
->>
->> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
->> index e0e9c705a2e4..dd5a843601b8 100644
->> --- a/arch/arm64/net/bpf_jit_comp.c
->> +++ b/arch/arm64/net/bpf_jit_comp.c
->> @@ -176,6 +176,14 @@ static inline void emit_addr_mov_i64(const int reg, const u64 val,
->>  	}
->>  }
->>  
->> +static inline void emit_call(u64 target, struct jit_ctx *ctx)
->> +{
->> +	u8 tmp = bpf2a64[TMP_REG_1];
->> +
->> +	emit_addr_mov_i64(tmp, target, ctx);
->> +	emit(A64_BLR(tmp), ctx);
->> +}
->> +
->>  static inline int bpf2a64_offset(int bpf_insn, int off,
->>  				 const struct jit_ctx *ctx)
->>  {
->> @@ -1073,8 +1081,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
->>  					    &func_addr, &func_addr_fixed);
->>  		if (ret < 0)
->>  			return ret;
->> -		emit_addr_mov_i64(tmp, func_addr, ctx);
->> -		emit(A64_BLR(tmp), ctx);
->> +		emit_call(func_addr, ctx);
->>  		emit(A64_MOV(1, r0, A64_R(0)), ctx);
->>  		break;
->>  	}
->> @@ -1418,6 +1425,13 @@ static int validate_code(struct jit_ctx *ctx)
->>  		if (a64_insn == AARCH64_BREAK_FAULT)
->>  			return -1;
->>  	}
->> +	return 0;
->> +}
->> +
->> +static int validate_ctx(struct jit_ctx *ctx)
->> +{
->> +	if (validate_code(ctx))
->> +		return -1;
->>  
->>  	if (WARN_ON_ONCE(ctx->exentry_idx != ctx->prog->aux->num_exentries))
->>  		return -1;
->> @@ -1547,7 +1561,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
->>  	build_plt(&ctx, true);
->>  
->>  	/* 3. Extra pass to validate JITed code. */
->> -	if (validate_code(&ctx)) {
->> +	if (validate_ctx(&ctx)) {
->>  		bpf_jit_binary_free(header);
->>  		prog = orig_prog;
->>  		goto out_off;
->> @@ -1625,6 +1639,373 @@ bool bpf_jit_supports_subprog_tailcalls(void)
->>  	return true;
->>  }
->>  
->> +static void invoke_bpf_prog(struct jit_ctx *ctx, struct bpf_tramp_link *l,
->> +			    int args_off, int retval_off, int run_ctx_off,
->> +			    bool save_ret)
->> +{
->> +	u32 *branch;
->> +	u64 enter_prog;
->> +	u64 exit_prog;
->> +	u8 tmp = bpf2a64[TMP_REG_1];
 > 
-> I wonder if we should stick with A64_R(x) rather than bpf2a64[y]. After
-> all this isn't translated BPF code but direct arm64 assembly. In any case
-> it should be consistent (below functions use A64_R(10))
 > 
-
-will replace it with A64_R, thanks.
-
->> +	u8 r0 = bpf2a64[BPF_REG_0];
->> +	struct bpf_prog *p = l->link.prog;
->> +	int cookie_off = offsetof(struct bpf_tramp_run_ctx, bpf_cookie);
->> +
->> +	if (p->aux->sleepable) {
->> +		enter_prog = (u64)__bpf_prog_enter_sleepable;
->> +		exit_prog = (u64)__bpf_prog_exit_sleepable;
->> +	} else {
->> +		enter_prog = (u64)__bpf_prog_enter;
->> +		exit_prog = (u64)__bpf_prog_exit;
->> +	}
->> +
->> +	if (l->cookie == 0) {
->> +		/* if cookie is zero, one instruction is enough to store it */
->> +		emit(A64_STR64I(A64_ZR, A64_SP, run_ctx_off + cookie_off), ctx);
->> +	} else {
->> +		emit_a64_mov_i64(tmp, l->cookie, ctx);
->> +		emit(A64_STR64I(tmp, A64_SP, run_ctx_off + cookie_off), ctx);
->> +	}
->> +
->> +	/* save p to callee saved register x19 to avoid loading p with mov_i64
->> +	 * each time.
->> +	 */
->> +	emit_addr_mov_i64(A64_R(19), (const u64)p, ctx);
->> +
->> +	/* arg1: prog */
->> +	emit(A64_MOV(1, A64_R(0), A64_R(19)), ctx);
->> +	/* arg2: &run_ctx */
->> +	emit(A64_ADD_I(1, A64_R(1), A64_SP, run_ctx_off), ctx);
->> +
->> +	emit_call(enter_prog, ctx);
->> +
->> +	/* if (__bpf_prog_enter(prog) == 0)
->> +	 *         goto skip_exec_of_prog;
->> +	 */
->> +	branch = ctx->image + ctx->idx;
->> +	emit(A64_NOP, ctx);
->> +
->> +	/* save return value to callee saved register x20 */
->> +	emit(A64_MOV(1, A64_R(20), r0), ctx);
+> On 2022/7/8 10:46, Pu Lehui wrote:
+>> On 2022/7/8 3:12, Song Liu wrote:
+>>> 
+>>> 
+>>>> On Jul 7, 2022, at 7:08 AM, Pu Lehui <pulehui@huawei.com> wrote:
+>>>> 
+>>>> Currently, when cross compiling bpf samples, the host side
+>>>> cannot use arch-specific bpftool to generate vmlinux.h or
+>>>> skeleton. We need to compile the bpftool with the host
+>>>> compiler.
+>>>> 
+>>>> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+>>>> ---
+>>>> samples/bpf/Makefile | 8 ++++----
+>>>> 1 file changed, 4 insertions(+), 4 deletions(-)
+>>>> 
+>>>> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+>>>> index 5002a5b9a7da..fe54a8c8f312 100644
+>>>> --- a/samples/bpf/Makefile
+>>>> +++ b/samples/bpf/Makefile
+>>>> @@ -1,4 +1,5 @@
+>>>> # SPDX-License-Identifier: GPL-2.0
+>>>> +-include tools/scripts/Makefile.include
+>>> 
+>>> Why do we need the -include here?
+>>> 
+>> HOSTLD is defined in tools/scripts/Makefile.include, we need to add it.
+>> And for -include, mainly to resolve some conflicts:
+>> 1. If workdir is kernel_src, then 'include tools/scripts/Makefile.include' is fine when 'make M=samples/bpf'.
+>> 2. Since the trick in samples/bpf/Makefile:
+>> # Trick to allow make to be run from this directory
+>> all:
+>> $(MAKE) -C ../../ M=$(CURDIR) BPF_SAMPLES_PATH=$(CURDIR)
+>> If workdir is samples/bpf, the compile process will first load the Makefile in samples/bpf, then change workdir to kernel_src and load the kernel_src's Makefile. So if we just add 'include tools/scripts/Makefile.include', then the first load will occur error for not found the file, so we add -include to skip the first load.
 > 
-> Shouldn't that be x0?  r0 is x7
+> sorry, correct the reply, so we add -include to skip the 'tools/scripts/Makefile.include' file on the fisrt load.
+
+
+Thanks for the explanation. 
+
+Acked-by: Song Liu <song@kernel.org>
+
 > 
-
-Yes, it should be x0, thanks.
-
->> +
->> +	emit(A64_ADD_I(1, A64_R(0), A64_SP, args_off), ctx);
->> +	if (!p->jited)
->> +		emit_addr_mov_i64(A64_R(1), (const u64)p->insnsi, ctx);
->> +
->> +	emit_call((const u64)p->bpf_func, ctx);
->> +
->> +	/* store return value */
->> +	if (save_ret)
->> +		emit(A64_STR64I(r0, A64_SP, retval_off), ctx);
-> 
-> Here too I think it should be x0. I'm guessing r0 may work for jitted
-> functions but not interpreted ones
-> 
-
-Yes, r0 is only correct for jitted code, will fix it to:
-
-if (save_ret)
-        emit(A64_STR64I(p->jited ? r0 : A64_R(0), A64_SP, retval_off),
-             ctx);
-
->> +
->> +	if (ctx->image) {
->> +		int offset = &ctx->image[ctx->idx] - branch;
->> +		*branch = A64_CBZ(1, A64_R(0), offset);
->> +	}
->> +
->> +	/* arg1: prog */
->> +	emit(A64_MOV(1, A64_R(0), A64_R(19)), ctx);
->> +	/* arg2: start time */
->> +	emit(A64_MOV(1, A64_R(1), A64_R(20)), ctx);
-> 
-> By the way, it looks like the timestamp could be moved into
-> bpf_tramp_run_ctx now?  Nothing to do with this series, just a general
-> cleanup
->
-
-It should work, but I haven't tested it.
-
->> +	/* arg3: &run_ctx */
->> +	emit(A64_ADD_I(1, A64_R(2), A64_SP, run_ctx_off), ctx);
->> +
->> +	emit_call(exit_prog, ctx);
->> +}
->> +
->> +static void invoke_bpf_mod_ret(struct jit_ctx *ctx, struct bpf_tramp_links *tl,
->> +			       int args_off, int retval_off, int run_ctx_off,
->> +			       u32 **branches)
->> +{
->> +	int i;
->> +
->> +	/* The first fmod_ret program will receive a garbage return value.
->> +	 * Set this to 0 to avoid confusing the program.
->> +	 */
->> +	emit(A64_STR64I(A64_ZR, A64_SP, retval_off), ctx);
->> +	for (i = 0; i < tl->nr_links; i++) {
->> +		invoke_bpf_prog(ctx, tl->links[i], args_off, retval_off,
->> +				run_ctx_off, true);
->> +		/* if (*(u64 *)(sp + retval_off) !=  0)
->> +		 *	goto do_fexit;
->> +		 */
->> +		emit(A64_LDR64I(A64_R(10), A64_SP, retval_off), ctx);
->> +		/* Save the location of branch, and generate a nop.
->> +		 * This nop will be replaced with a cbnz later.
->> +		 */
->> +		branches[i] = ctx->image + ctx->idx;
->> +		emit(A64_NOP, ctx);
->> +	}
->> +}
->> +
->> +static void save_args(struct jit_ctx *ctx, int args_off, int nargs)
->> +{
->> +	int i;
->> +
->> +	for (i = 0; i < nargs; i++) {
->> +		emit(A64_STR64I(i, A64_SP, args_off), ctx);
->> +		args_off += 8;
->> +	}
->> +}
->> +
->> +static void restore_args(struct jit_ctx *ctx, int args_off, int nargs)
->> +{
->> +	int i;
->> +
->> +	for (i = 0; i < nargs; i++) {
->> +		emit(A64_LDR64I(i, A64_SP, args_off), ctx);
->> +		args_off += 8;
->> +	}
->> +}
->> +
->> +/* Based on the x86's implementation of arch_prepare_bpf_trampoline().
->> + *
->> + * bpf prog and function entry before bpf trampoline hooked:
->> + *   mov x9, lr
->> + *   nop
->> + *
->> + * bpf prog and function entry after bpf trampoline hooked:
->> + *   mov x9, lr
->> + *   bl  <bpf_trampoline or plt>
->> + *
->> + */
->> +static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
->> +			      struct bpf_tramp_links *tlinks, void *orig_call,
->> +			      int nargs, u32 flags)
->> +{
->> +	int i;
->> +	int stack_size;
->> +	int retaddr_off;
->> +	int regs_off;
->> +	int retval_off;
->> +	int args_off;
->> +	int nargs_off;
->> +	int ip_off;
->> +	int run_ctx_off;
->> +	struct bpf_tramp_links *fentry = &tlinks[BPF_TRAMP_FENTRY];
->> +	struct bpf_tramp_links *fexit = &tlinks[BPF_TRAMP_FEXIT];
->> +	struct bpf_tramp_links *fmod_ret = &tlinks[BPF_TRAMP_MODIFY_RETURN];
->> +	bool save_ret;
->> +	u32 **branches = NULL;
->> +
->> +	/* trampoline stack layout:
->> +	 *                  [ parent ip         ]
-> 
-> nit: maybe s/ip/pc/ here and elsewhere
-> 
-
-It seems that "ip" is more consistent in the bpf world, e.g.:
-
-int __weak bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
-                              void *addr1, void *addr2)
-
-static int modify_fentry(struct bpf_trampoline *tr, void *old_addr, void
-                         *new_addr)
-{
-        void *ip = tr->func.addr;
-        ...
-}
-
-struct bpf_tramp_image {
-        ...
-        void *ip_after_call;
-        void *ip_epilogue;
-        ...
-};
-
->> +	 *                  [ FP                ]
->> +	 * SP + retaddr_off [ self ip           ]
->> +	 *                  [ FP                ]
->> +	 *
->> +	 *                  [ padding           ] align SP to multiples of 16
->> +	 *
->> +	 *                  [ x20               ] callee saved reg x20
->> +	 * SP + regs_off    [ x19               ] callee saved reg x19
->> +	 *
->> +	 * SP + retval_off  [ return value      ] BPF_TRAMP_F_CALL_ORIG or
->> +	 *                                        BPF_TRAMP_F_RET_FENTRY_RET
->> +	 *
->> +	 *                  [ argN              ]
->> +	 *                  [ ...               ]
->> +	 * SP + args_off    [ arg1              ]
->> +	 *
->> +	 * SP + nargs_off   [ args count        ]
->> +	 *
->> +	 * SP + ip_off      [ traced function   ] BPF_TRAMP_F_IP_ARG flag
->> +	 *
->> +	 * SP + run_ctx_off [ bpf_tramp_run_ctx ]
->> +	 */
->> +
->> +	stack_size = 0;
->> +	run_ctx_off = stack_size;
->> +	/* room for bpf_tramp_run_ctx */
->> +	stack_size += round_up(sizeof(struct bpf_tramp_run_ctx), 8);
->> +
->> +	ip_off = stack_size;
->> +	/* room for IP address argument */
->> +	if (flags & BPF_TRAMP_F_IP_ARG)
->> +		stack_size += 8;
->> +
->> +	nargs_off = stack_size;
->> +	/* room for args count */
->> +	stack_size += 8;
->> +
->> +	args_off = stack_size;
->> +	/* room for args */
->> +	stack_size += nargs * 8;
->> +
->> +	/* room for return value */
->> +	retval_off = stack_size;
->> +	save_ret = flags & (BPF_TRAMP_F_CALL_ORIG | BPF_TRAMP_F_RET_FENTRY_RET);
->> +	if (save_ret)
->> +		stack_size += 8;
->> +
->> +	/* room for callee saved registers, currently x19 and x20 are used */
->> +	regs_off = stack_size;
->> +	stack_size += 16;
->> +
->> +	/* round up to multiples of 16 to avoid SPAlignmentFault */
->> +	stack_size = round_up(stack_size, 16);
->> +
->> +	/* return address locates above FP */
->> +	retaddr_off = stack_size + 8;
->> +
->> +	/* bpf trampoline may be invoked by 3 instruction types:
->> +	 * 1. bl, attached to bpf prog or kernel function via short jump
->> +	 * 2. br, attached to bpf prog or kernel function via long jump
->> +	 * 3. blr, working as a function pointer, used by struct_ops.
->> +	 * So BTI_JC should used here to support both br and blr.
->> +	 */
->> +	emit_bti(A64_BTI_JC, ctx);
->> +
->> +	/* frame for parent function */
->> +	emit(A64_PUSH(A64_FP, A64_R(9), A64_SP), ctx);
->> +	emit(A64_MOV(1, A64_FP, A64_SP), ctx);
->> +
->> +	/* frame for patched function */
->> +	emit(A64_PUSH(A64_FP, A64_LR, A64_SP), ctx);
->> +	emit(A64_MOV(1, A64_FP, A64_SP), ctx);
->> +
->> +	/* allocate stack space */
->> +	emit(A64_SUB_I(1, A64_SP, A64_SP, stack_size), ctx);
->> +
->> +	if (flags & BPF_TRAMP_F_IP_ARG) {
->> +		/* save ip address of the traced function */
->> +		emit_addr_mov_i64(A64_R(10), (const u64)orig_call, ctx);
->> +		emit(A64_STR64I(A64_R(10), A64_SP, ip_off), ctx);
->> +	}
->> +
->> +	/* save args count*/
->> +	emit(A64_MOVZ(1, A64_R(10), nargs, 0), ctx);
->> +	emit(A64_STR64I(A64_R(10), A64_SP, nargs_off), ctx);
->> +
->> +	/* save args */
->> +	save_args(ctx, args_off, nargs);
->> +
->> +	/* save callee saved registers */
->> +	emit(A64_STR64I(A64_R(19), A64_SP, regs_off), ctx);
->> +	emit(A64_STR64I(A64_R(20), A64_SP, regs_off + 8), ctx);
->> +
->> +	if (flags & BPF_TRAMP_F_CALL_ORIG) {
->> +		emit_addr_mov_i64(A64_R(0), (const u64)im, ctx);
->> +		emit_call((const u64)__bpf_tramp_enter, ctx);
->> +	}
->> +
->> +	for (i = 0; i < fentry->nr_links; i++)
->> +		invoke_bpf_prog(ctx, fentry->links[i], args_off,
->> +				retval_off, run_ctx_off,
->> +				flags & BPF_TRAMP_F_RET_FENTRY_RET);
->> +
->> +	if (fmod_ret->nr_links) {
->> +		branches = kcalloc(fmod_ret->nr_links, sizeof(u32 *),
->> +				   GFP_KERNEL);
->> +		if (!branches)
->> +			return -ENOMEM;
->> +
->> +		invoke_bpf_mod_ret(ctx, fmod_ret, args_off, retval_off,
->> +				   run_ctx_off, branches);
->> +	}
->> +
->> +	if (flags & BPF_TRAMP_F_CALL_ORIG) {
->> +		restore_args(ctx, args_off, nargs);
->> +		/* call original func */
->> +		emit(A64_LDR64I(A64_R(10), A64_SP, retaddr_off), ctx);
->> +		emit(A64_BLR(A64_R(10)), ctx);
-> 
-> I don't think we can do this when BTI is enabled because we're not jumping
-> to a BTI instruction. We could introduce one in a patched BPF function
-> (there currently is one if CONFIG_ARM64_PTR_AUTH_KERNEL), but probably not
-> in a kernel function.
-> 
-> We could fo like FUNCTION_GRAPH_TRACER does and return to the patched
-> function after modifying its LR. Not sure whether that works with pointer
-> auth though.
-> 
-
-Yes, the blr instruction should be replaced with ret instruction, thanks!
-
-The layout for bpf prog and regular kernel function is as follows, with
-bti always coming first and paciasp immediately after patchsite, so the
-ret instruction should work in all cases.
-
-bpf prog or kernel function:
-        bti c // if BTI
-        mov x9, lr
-        bl <trampoline>    ------> trampoline:
-                                           ...
-                                           mov lr, <return_entry>
-                                           mov x10, <ORIG_CALL_entry>
-ORIG_CALL_entry:           <-------        ret x10
-                                   return_entry:
-                                           ...
-        paciasp // if PA
-        ...
-
->> +		/* store return value */
->> +		emit(A64_STR64I(A64_R(0), A64_SP, retval_off), ctx);
->> +		/* reserve a nop for bpf_tramp_image_put */
->> +		im->ip_after_call = ctx->image + ctx->idx;
->> +		emit(A64_NOP, ctx);
->> +	}
->> +
->> +	/* update the branches saved in invoke_bpf_mod_ret with cbnz */
->> +	for (i = 0; i < fmod_ret->nr_links && ctx->image != NULL; i++) {
->> +		int offset = &ctx->image[ctx->idx] - branches[i];
->> +		*branches[i] = A64_CBNZ(1, A64_R(10), offset);
->> +	}
->> +
->> +	for (i = 0; i < fexit->nr_links; i++)
->> +		invoke_bpf_prog(ctx, fexit->links[i], args_off, retval_off,
->> +				run_ctx_off, false);
->> +
->> +	if (flags & BPF_TRAMP_F_RESTORE_REGS)
->> +		restore_args(ctx, args_off, nargs);
-> 
-> I guess the combination RESTORE_REGS | CALL_ORIG doesn't make much sense,
-> but it's not disallowed by the documentation. So it might be safer to move
-> this after the next if() to avoid clobbering the regs.
-> 
-
-agree, will move it, thanks.
-
-> Thanks,
-> Jean
-> 
->> +
->> +	if (flags & BPF_TRAMP_F_CALL_ORIG) {
->> +		im->ip_epilogue = ctx->image + ctx->idx;
->> +		emit_addr_mov_i64(A64_R(0), (const u64)im, ctx);
->> +		emit_call((const u64)__bpf_tramp_exit, ctx);
->> +	}
->> +
->> +	/* restore callee saved register x19 and x20 */
->> +	emit(A64_LDR64I(A64_R(19), A64_SP, regs_off), ctx);
->> +	emit(A64_LDR64I(A64_R(20), A64_SP, regs_off + 8), ctx);
->> +
->> +	if (save_ret)
->> +		emit(A64_LDR64I(A64_R(0), A64_SP, retval_off), ctx);
->> +
->> +	/* reset SP  */
->> +	emit(A64_MOV(1, A64_SP, A64_FP), ctx);
->> +
->> +	/* pop frames  */
->> +	emit(A64_POP(A64_FP, A64_LR, A64_SP), ctx);
->> +	emit(A64_POP(A64_FP, A64_R(9), A64_SP), ctx);
->> +
->> +	if (flags & BPF_TRAMP_F_SKIP_FRAME) {
->> +		/* skip patched function, return to parent */
->> +		emit(A64_MOV(1, A64_LR, A64_R(9)), ctx);
->> +		emit(A64_RET(A64_R(9)), ctx);
->> +	} else {
->> +		/* return to patched function */
->> +		emit(A64_MOV(1, A64_R(10), A64_LR), ctx);
->> +		emit(A64_MOV(1, A64_LR, A64_R(9)), ctx);
->> +		emit(A64_RET(A64_R(10)), ctx);
->> +	}
->> +
->> +	if (ctx->image)
->> +		bpf_flush_icache(ctx->image, ctx->image + ctx->idx);
->> +
->> +	kfree(branches);
->> +
->> +	return ctx->idx;
->> +}
->> +
->> +int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,
->> +				void *image_end, const struct btf_func_model *m,
->> +				u32 flags, struct bpf_tramp_links *tlinks,
->> +				void *orig_call)
->> +{
->> +	int ret;
->> +	int nargs = m->nr_args;
->> +	int max_insns = ((long)image_end - (long)image) / AARCH64_INSN_SIZE;
->> +	struct jit_ctx ctx = {
->> +		.image = NULL,
->> +		.idx = 0,
->> +	};
->> +
->> +	/* the first 8 arguments are passed by registers */
->> +	if (nargs > 8)
->> +		return -ENOTSUPP;
->> +
->> +	ret = prepare_trampoline(&ctx, im, tlinks, orig_call, nargs, flags);
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	if (ret > max_insns)
->> +		return -EFBIG;
->> +
->> +	ctx.image = image;
->> +	ctx.idx = 0;
->> +
->> +	jit_fill_hole(image, (unsigned int)(image_end - image));
->> +	ret = prepare_trampoline(&ctx, im, tlinks, orig_call, nargs, flags);
->> +
->> +	if (ret > 0 && validate_code(&ctx) < 0)
->> +		ret = -EINVAL;
->> +
->> +	if (ret > 0)
->> +		ret *= AARCH64_INSN_SIZE;
->> +
->> +	return ret;
->> +}
->> +
->>  static bool is_long_jump(void *ip, void *target)
->>  {
->>  	long offset;
->> -- 
->> 2.30.2
->>
-> .
+>>> Thanks,
+>>> Song
+>>> 
+>>>> 
+>>>> BPF_SAMPLES_PATH ?= $(abspath $(srctree)/$(src))
+>>>> TOOLS_PATH := $(BPF_SAMPLES_PATH)/../../tools
+>>>> @@ -283,11 +284,10 @@ $(LIBBPF): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_OU
+>>>> BPFTOOLDIR := $(TOOLS_PATH)/bpf/bpftool
+>>>> BPFTOOL_OUTPUT := $(abspath $(BPF_SAMPLES_PATH))/bpftool
+>>>> BPFTOOL := $(BPFTOOL_OUTPUT)/bpftool
+>>>> -$(BPFTOOL): $(LIBBPF) $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile) | $(BPFTOOL_OUTPUT)
+>>>> +$(BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile) | $(BPFTOOL_OUTPUT)
+>>>> $(MAKE) -C $(BPFTOOLDIR) srctree=$(BPF_SAMPLES_PATH)/../../ \
+>>>> -  OUTPUT=$(BPFTOOL_OUTPUT)/ \
+>>>> -  LIBBPF_OUTPUT=$(LIBBPF_OUTPUT)/ \
+>>>> -  LIBBPF_DESTDIR=$(LIBBPF_DESTDIR)/
+>>>> +  ARCH= CROSS_COMPILE= CC=$(HOSTCC) LD=$(HOSTLD) \
+>>>> +  OUTPUT=$(BPFTOOL_OUTPUT)/
+>>>> 
+>>>> $(LIBBPF_OUTPUT) $(BPFTOOL_OUTPUT):
+>>>> $(call msg,MKDIR,$@)
+>>>> -- 
+>>>> 2.25.1
+>>>> 
+>>> 
+>>> .
+>>> 
+>> .
 
