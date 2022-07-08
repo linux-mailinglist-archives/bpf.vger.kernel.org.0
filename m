@@ -2,143 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C94BD56C2A7
-	for <lists+bpf@lfdr.de>; Sat,  9 Jul 2022 01:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEF3856C287
+	for <lists+bpf@lfdr.de>; Sat,  9 Jul 2022 01:13:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239225AbiGHWbI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Jul 2022 18:31:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53700 "EHLO
+        id S229679AbiGHWkR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Jul 2022 18:40:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238977AbiGHWbH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Jul 2022 18:31:07 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71EF713B462;
-        Fri,  8 Jul 2022 15:31:06 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id dn9so34614724ejc.7;
-        Fri, 08 Jul 2022 15:31:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vtYNlUjFPBorTja/ZZdAiqkuVJixHxyN2XSNBOycbUI=;
-        b=DM5Hj2oOBlL+l9CByJUKOaJ1vh4HJDKbEohe9/mUhrJgEyABIdmO+clfDNX8z4r0VE
-         nO3YJTw4Dj43d+Ay0VD9VuWxZn3DTEQTUbM/kbJ4S7meIbQXRsDrq4PSBKwlvTLCj8f9
-         tD8hIcQzA2JxTza2YBdsVregDQcn+tgrrmRuWeGW3NN7zkdUaRumuuPDsb2LiQ4IEpL2
-         yOB9FFMy/0wpprM4LnpZ15p3wwuLPUGpmHLxXl+xf4tVLMXyDpm0lFf8gM4V5edxrtIH
-         dT5HHV32Z9hMD4BpMZAoV+EXhfLeV/u5UTsBdsa2+Mhyg4FmR8s2R/IH4LJzCBGxetst
-         aOjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vtYNlUjFPBorTja/ZZdAiqkuVJixHxyN2XSNBOycbUI=;
-        b=2pkBIjiTDRMMB3g1QnJ8GbohCKVvdGipWFX8BajFFa1xn+cDdkOlQ/Hy8sz+zI1S8F
-         mF4Tj6E56EXa23pp81oKNoAI+8wj6WVRl6XPnK+CSN/+hnTdU3B0YugSsDjiJ1HdqpSx
-         jdKOE2bpFqSz2Do//GVGybBelByVh/ABj6wqZ0mMbIW/EDhHZA6LVvxy6lFsmrtaaVti
-         YziRUD7LcTS+taTSl9zidjiCqb8VCi8vKWIyExUjRBk6X5f0ECxgLhHq1Z+pVR1wi062
-         KxjHzDefCP3U6zsKaMtxHcbE0ZvA+niiCnfD6hXZ5F/U9wC+rwhz0/Ab7R+uu5cOO0WH
-         s3VQ==
-X-Gm-Message-State: AJIora/6k9UjF2P0Gfeb6bAUz6iUTHEo5542x0DCVqostOO7IRKn7WsX
-        ZjZsiBruBC+2p7Or7isfD9rrp49dajIMBy27apw=
-X-Google-Smtp-Source: AGRyM1vFnuzeNUeQJq3npYMM5/i0JV31krsyjIvnTW8wNxdmDm4x2jiY80Prv2hmg2FGbtZg7UXyubeeDzGWGUamxDg=
-X-Received: by 2002:a17:906:a3ca:b0:726:2bd2:87bc with SMTP id
- ca10-20020a170906a3ca00b007262bd287bcmr5799290ejb.226.1657319464980; Fri, 08
- Jul 2022 15:31:04 -0700 (PDT)
+        with ESMTP id S229448AbiGHWkQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Jul 2022 18:40:16 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C29D13B471
+        for <bpf@vger.kernel.org>; Fri,  8 Jul 2022 15:40:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A51AAB829E4
+        for <bpf@vger.kernel.org>; Fri,  8 Jul 2022 22:40:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 41D4AC341C0;
+        Fri,  8 Jul 2022 22:40:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1657320013;
+        bh=xGQUJQuKUsDoNKNcc4ZDb7AJQ2xWn536Y9YZDz238qI=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=qsUjA39pJJgwwkavzMaVV1mFibAsVGzmLAeBsaEnPyjA0mjgqtv9Te7hhcUHgyL6X
+         SSfG5A2PKQ/Mn5eQw01HtT3T3PmRJHp8I4AzMhanepfy6NbbtfJdpnuhicuqTVnIEt
+         0+oa0pP+MSB2Y4cBTfTaVl3VaCMlDAM2h7ixs9oPhNFru1FaicjCYAdo68zMxEF+Qr
+         fBKzod5c3kiXvzXxgy0LMeyZ7TCKvboj2KndI7g08gC6A5GjGp97OsCub/D3qOpoS/
+         5zsTFNrhl+fs6ygwkuuNeS9Q+wtGOXUkfAlNbOd8jOLiSGyMn1iB3S4I4yvnZwaJc7
+         4DJUbVAaO2geQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 286C5E45BDD;
+        Fri,  8 Jul 2022 22:40:13 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20220530092815.1112406-1-pulehui@huawei.com> <20220530092815.1112406-5-pulehui@huawei.com>
- <a31efed5-a436-49c9-4126-902303df9766@iogearbox.net> <CAEf4BzacrRNDDYFR_4GH40+wxff=hCiyxymig6N+NVrM537AAA@mail.gmail.com>
- <38a59b80-f64a-0913-73e4-29e4ee4149c5@huawei.com>
-In-Reply-To: <38a59b80-f64a-0913-73e4-29e4ee4149c5@huawei.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 8 Jul 2022 15:30:53 -0700
-Message-ID: <CAEf4BzaDQ+cPh8pLGqg-GSM+ryZz3vvDtUy=o2u19KM0CTrewg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 4/6] libbpf: Unify memory address casting
- operation style
-To:     Pu Lehui <pulehui@huawei.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        linux-riscv@lists.infradead.org,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] bpf: Correctly propagate errors up from
+ bpf_core_composites_match
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <165732001316.11874.6116655644375245818.git-patchwork-notify@kernel.org>
+Date:   Fri, 08 Jul 2022 22:40:13 +0000
+References: <20220707211931.3415440-1-deso@posteo.net>
+In-Reply-To: <20220707211931.3415440-1-deso@posteo.net>
+To:     =?utf-8?q?Daniel_M=C3=BCller_=3Cdeso=40posteo=2Enet=3E?=@ci.codeaurora.org
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com
+X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 7, 2022 at 5:23 AM Pu Lehui <pulehui@huawei.com> wrote:
->
->
->
-> On 2022/6/4 5:03, Andrii Nakryiko wrote:
-> > On Mon, May 30, 2022 at 2:03 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> >>
-> >> On 5/30/22 11:28 AM, Pu Lehui wrote:
-> >>> The members of bpf_prog_info, which are line_info, jited_line_info,
-> >>> jited_ksyms and jited_func_lens, store u64 address pointed to the
-> >>> corresponding memory regions. Memory addresses are conceptually
-> >>> unsigned, (unsigned long) casting makes more sense, so let's make
-> >>> a change for conceptual uniformity.
-> >>>
-> >>> Signed-off-by: Pu Lehui <pulehui@huawei.com>
-> >>> ---
-> >>>    tools/lib/bpf/bpf_prog_linfo.c | 9 +++++----
-> >>>    1 file changed, 5 insertions(+), 4 deletions(-)
-> >>>
-> >>> diff --git a/tools/lib/bpf/bpf_prog_linfo.c b/tools/lib/bpf/bpf_prog_linfo.c
-> >>> index 5c503096ef43..7beb060d0671 100644
-> >>> --- a/tools/lib/bpf/bpf_prog_linfo.c
-> >>> +++ b/tools/lib/bpf/bpf_prog_linfo.c
-> >>> @@ -127,7 +127,8 @@ struct bpf_prog_linfo *bpf_prog_linfo__new(const struct bpf_prog_info *info)
-> >>>        prog_linfo->raw_linfo = malloc(data_sz);
-> >>>        if (!prog_linfo->raw_linfo)
-> >>>                goto err_free;
-> >>> -     memcpy(prog_linfo->raw_linfo, (void *)(long)info->line_info, data_sz);
-> >>> +     memcpy(prog_linfo->raw_linfo, (void *)(unsigned long)info->line_info,
-> >>> +            data_sz);
-> >>
-> >> Took in patch 1-3, lgtm, thanks! My question around the cleanups in patch 4-6 ...
-> >> there are various other such cases e.g. in libbpf, perhaps makes sense to clean all
-> >> of them up at once and not just the 4 locations in here.
-> >
-> > if (void *)(long) pattern is wrong, then I guess the best replacement
-> > should be (void *)(uintptr_t) ?
-> >
->
-> I also think that (void *)(uintptr_t) would be the best replacement. I
-> applied the changes to kernel/bpf and samples/bpf, and it worked fine.
-> But in selftests/bpf, the following similar error occur at compile time:
->
-> progs/test_cls_redirect.c:504:11: error: cast to 'uint8_t *' (aka
-> 'unsigned char *') from smaller integer type 'uintptr_t' (aka 'unsigned
-> int') [-Werror,-Wint-to-pointer-cast]
->         .head = (uint8_t *)(uintptr_t)skb->data,
+Hello:
 
-this is BPF-side code so using system's uintptr_t definition won't
-work correctly here. Just do (unsigned long) instead?
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
->
-> I take clang to compile with the front and back end separation, like
-> samples/bpf, and it works. It seems that the all-in-one clang has
-> problems handling the uintptr_t.
->
-> >>
-> >> Thanks,
-> >> Daniel
-> > .
-> >
+On Thu,  7 Jul 2022 21:19:31 +0000 you wrote:
+> This change addresses a comment made earlier [0] about a missing return
+> of an error when __bpf_core_types_match is invoked from
+> bpf_core_composites_match, which could have let to us erroneously
+> ignoring errors.
+> 
+> Regarding the typedef name check pointed out in the same context, it is
+> not actually an issue, because callers of the function perform a name
+> check for the root type anyway. To make that more obvious, let's add
+> comments to the function (similar to what we have for
+> bpf_core_types_are_compat, which is called in pretty much the same
+> context).
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next] bpf: Correctly propagate errors up from bpf_core_composites_match
+    https://git.kernel.org/bpf/bpf-next/c/06cd4e9d5d96
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
