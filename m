@@ -2,56 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A657256C40C
-	for <lists+bpf@lfdr.de>; Sat,  9 Jul 2022 01:15:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCE6C56C338
+	for <lists+bpf@lfdr.de>; Sat,  9 Jul 2022 01:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238701AbiGHVZ4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Jul 2022 17:25:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42872 "EHLO
+        id S238209AbiGHVeY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Jul 2022 17:34:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238685AbiGHVZ4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Jul 2022 17:25:56 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F93823BF9
-        for <bpf@vger.kernel.org>; Fri,  8 Jul 2022 14:25:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B5648B82999
-        for <bpf@vger.kernel.org>; Fri,  8 Jul 2022 21:25:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6D56DC341C6;
-        Fri,  8 Jul 2022 21:25:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1657315552;
-        bh=lnf68t5P7zq2JJz352AymXVD6Aji55smg6s41kFgyRc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=KHhiodPh9GtcwH9v8h2ktcC0kn3pUMIr01Vhn/tsXmBXep3FokGt8VerLq+aSZbQ0
-         3T2ESfguyv4SmeFQcSVs8fMpQg19afFcf4byHITZ4UDwSSHIhQB8CDgIw4zKFOsZwf
-         1dJsPN07BJ4vfki2fyrdfSlv98xu8R8KAiHGoAFYXOLUpKatYrtYHwpLyGjMUXvTsT
-         5VlgZ3Zaff6IzWC9UlWcx3ICsuDNZpRx1jOipwe6Eicfp9zAVMepIOqZyOcz5jJPxa
-         iOigVy3mcf1AegiATUFgOW7eHYF5V3IwDK8yvBB1dQF5iBvWH1BagZLijbUUPg37Tu
-         BnfyAvy6p313Q==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5169FE45BDA;
-        Fri,  8 Jul 2022 21:25:52 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S239233AbiGHVeX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Jul 2022 17:34:23 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6562A026E;
+        Fri,  8 Jul 2022 14:34:21 -0700 (PDT)
+Received: from 226.206.1.85.dynamic.wline.res.cust.swisscom.ch ([85.1.206.226] helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1o9vcB-000CH5-5E; Fri, 08 Jul 2022 23:34:19 +0200
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, pabeni@redhat.com, edumazet@google.com,
+        daniel@iogearbox.net, ast@kernel.org, andrii@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: pull-request: bpf 2022-07-08
+Date:   Fri,  8 Jul 2022 23:34:18 +0200
+Message-Id: <20220708213418.19626-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v3] bpf: check attach_func_proto more carefully in
- check_return_code
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165731555232.21745.17915659016940178166.git-patchwork-notify@kernel.org>
-Date:   Fri, 08 Jul 2022 21:25:52 +0000
-References: <20220708175000.2603078-1-sdf@google.com>
-In-Reply-To: <20220708175000.2603078-1-sdf@google.com>
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org,
-        syzbot+5cc0730bd4b4d2c5f152@syzkaller.appspotmail.com
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.6/26596/Thu Jul  7 09:53:54 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,29 +41,62 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Hi David, hi Jakub, hi Paolo, hi Eric,
 
-This patch was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+The following pull-request contains BPF updates for your *net* tree.
 
-On Fri,  8 Jul 2022 10:50:00 -0700 you wrote:
-> Syzkaller reports the following crash:
-> RIP: 0010:check_return_code kernel/bpf/verifier.c:10575 [inline]
-> RIP: 0010:do_check kernel/bpf/verifier.c:12346 [inline]
-> RIP: 0010:do_check_common+0xb3d2/0xd250 kernel/bpf/verifier.c:14610
-> 
-> With the following reproducer:
-> bpf$PROG_LOAD_XDP(0x5, &(0x7f00000004c0)={0xd, 0x3, &(0x7f0000000000)=ANY=[@ANYBLOB="1800000000000019000000000000000095"], &(0x7f0000000300)='GPL\x00', 0x0, 0x0, 0x0, 0x0, 0x0, '\x00', 0x0, 0x2b, 0xffffffffffffffff, 0x8, 0x0, 0x0, 0x10, 0x0}, 0x80)
-> 
-> [...]
+We've added 3 non-merge commits during the last 2 day(s) which contain
+a total of 7 files changed, 40 insertions(+), 24 deletions(-).
 
-Here is the summary with links:
-  - [bpf-next,v3] bpf: check attach_func_proto more carefully in check_return_code
-    https://git.kernel.org/bpf/bpf-next/c/d1a6edecc1fd
+The main changes are:
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+1) Fix cBPF splat triggered by skb not having a mac header, from Eric Dumazet.
 
+2) Fix spurious packet loss in generic XDP when pushing packets out (note
+   that native XDP is not affected by the issue), from Johan Almbladh.
 
+3) Fix bpf_dynptr_{read,write}() helper signatures with flag argument before
+   its set in stone as UAPI, from Joanne Koong.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+syzbot
+
+----------------------------------------------------------------
+
+The following changes since commit ae9fdf6cb4da4265bdc3a574d06eaad02a7f669a:
+
+  Merge branch 'mptcp-path-manager-fixes' (2022-07-06 12:50:27 +0100)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
+
+for you to fetch changes up to f8d3da4ef8faf027261e06b7864583930dd7c7b9:
+
+  bpf: Add flags arg to bpf_dynptr_read and bpf_dynptr_write APIs (2022-07-08 10:55:53 +0200)
+
+----------------------------------------------------------------
+Eric Dumazet (1):
+      bpf: Make sure mac_header was set before using it
+
+Joanne Koong (1):
+      bpf: Add flags arg to bpf_dynptr_read and bpf_dynptr_write APIs
+
+Johan Almbladh (1):
+      xdp: Fix spurious packet loss in generic XDP TX path
+
+ include/uapi/linux/bpf.h                           | 11 +++++++----
+ kernel/bpf/core.c                                  |  8 +++++---
+ kernel/bpf/helpers.c                               | 12 ++++++++----
+ net/core/dev.c                                     |  8 ++++++--
+ tools/include/uapi/linux/bpf.h                     | 11 +++++++----
+ tools/testing/selftests/bpf/progs/dynptr_fail.c    | 10 +++++-----
+ tools/testing/selftests/bpf/progs/dynptr_success.c |  4 ++--
+ 7 files changed, 40 insertions(+), 24 deletions(-)
