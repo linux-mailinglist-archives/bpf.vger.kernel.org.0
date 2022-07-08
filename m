@@ -2,198 +2,198 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4F9D56B285
-	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 08:09:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B4BC56B2B4
+	for <lists+bpf@lfdr.de>; Fri,  8 Jul 2022 08:25:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237206AbiGHGIS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Jul 2022 02:08:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41890 "EHLO
+        id S237284AbiGHGVM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Jul 2022 02:21:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237193AbiGHGIS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Jul 2022 02:08:18 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 643902CC89
-        for <bpf@vger.kernel.org>; Thu,  7 Jul 2022 23:08:16 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id l40-20020a05600c1d2800b003a18adff308so505980wms.5
-        for <bpf@vger.kernel.org>; Thu, 07 Jul 2022 23:08:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=imWg30juxebp2+HgmLEcTTd8vT1XfY31E7uJrSMb3vY=;
-        b=Alv+EqeA5ynzjC23/kfYq9z4mRCm0c0zgF40ogwbRfHD0h1c0vWRGkCJ/WXs4rXMJL
-         1U2MbkdGYfXeKmzzvPldLdv9qXtcFs3zc4QcTDFaBLwVUdh4+Bd5WeEH3WyN5jxkr/d0
-         PAdXVRqlYN4QNiZd92YX1YhmeP46aAeTv9nY2IwP+/TrGe8Lwwdn0sHDnugnGzplOfFD
-         W4sXyS79E8/+p0lITwb3XXFNqacWy4YRtks4BbYQq+NWc384NJZ3w3Ma/c2f+X32uAWu
-         6zUKRQQ0sZOfDt7hcB5sZerU9T/JSTdu2PswrtRQpN0K5QuRPnABwYjImlkP9EYFi+vF
-         cx9w==
+        with ESMTP id S237269AbiGHGVK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Jul 2022 02:21:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C11392CE27
+        for <bpf@vger.kernel.org>; Thu,  7 Jul 2022 23:21:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1657261268;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vucI6v2UNiSkfdv0+LNa4VjRInUBJ0CkIXv+ERyy8hk=;
+        b=FgMDuwjXglaB1EExow9vFBO9vMdfPJZ3MinvIC8WU2ZPUxf+Ksc887StiIaoW4GufZOLdt
+        WPsJSMSDnuwQ2qJPlZmuOEPuUO7hUJUWtqAA9RwoqIGwCfWjat0aeMDZC25G8o39+Dme1V
+        zx5deSF0z4nrftNEb1ncAw0hHoO2CBI=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-155-8ujm9LbwPbq23Jv3NBwtMg-1; Fri, 08 Jul 2022 02:21:05 -0400
+X-MC-Unique: 8ujm9LbwPbq23Jv3NBwtMg-1
+Received: by mail-lf1-f69.google.com with SMTP id j12-20020a056512028c00b00482dd0d9748so4327635lfp.8
+        for <bpf@vger.kernel.org>; Thu, 07 Jul 2022 23:21:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=imWg30juxebp2+HgmLEcTTd8vT1XfY31E7uJrSMb3vY=;
-        b=j4MeILS6Qfad6Hq8Emf7EXU0MvjEy3FgBtFnb1Hbo0pbUmRDiuJxmJ/USJe8K43OA/
-         G8pClcVmsiVlijF3nkmMLyBiWSbC2R0042IY8YI4s0GP51XgAOkEDApBM6P4Mkw52GHv
-         mn6WNtcPdXVatvwYyfKwYUd+B+3YViqF2g9DnSckM8aADEeRGsfN+DHg6XMNWGNlFogt
-         zuAxyYtsVYVpHEGxXlcKmM8o+wbA5oEamu4gd0KyZwa4Zu6k3Nhd/TsdVuGilpQZM/St
-         ey7svjX22vulr1d1G2rlPidoqwg7N9TaDYMeGVrPjY3cY6KGSwtUZDp7z3QdUuZjDSSU
-         LPZQ==
-X-Gm-Message-State: AJIora93ZQhP9MmYDZRfJv+WKJU6PM2o3hr6zIhhcRtApWzP/vT+zGF4
-        xslEAFvT4Owx0ty7hzSY3PkIwZakk0E=
-X-Google-Smtp-Source: AGRyM1tfZBK7FZvS34LCFF+cScl04YbePNAc5RifhoqRxrEJFQ9dTJ0zELn+Dni8YbZHX+uPdqV4CA==
-X-Received: by 2002:a1c:a1c4:0:b0:3a0:48dc:defa with SMTP id k187-20020a1ca1c4000000b003a048dcdefamr1674866wme.59.1657260494830;
-        Thu, 07 Jul 2022 23:08:14 -0700 (PDT)
-Received: from jondnuc ([2a0d:6fc2:4af0:cc00:f99d:5d19:6e17:dc3a])
-        by smtp.gmail.com with ESMTPSA id a3-20020a1cf003000000b0039c8a22554bsm1022893wmb.27.2022.07.07.23.08.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jul 2022 23:08:14 -0700 (PDT)
-Date:   Fri, 8 Jul 2022 09:08:12 +0300
-From:   Jon Doron <arilou@gmail.com>
-To:     Song Liu <song@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, Jon Doron <jond@wiz.io>
-Subject: Re: [PATCH v1 1/1] libbpf: perfbuf: allow raw access to buffers
-Message-ID: <YsfJzASkXAFSFCAy@jondnuc>
-References: <20220707071339.1486742-1-arilou@gmail.com>
- <20220707071339.1486742-2-arilou@gmail.com>
- <CAPhsuW7k3ExOjjonL=-=sg_rx0kyrgF=k7jxb+W0ZpxgxnoeLA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=vucI6v2UNiSkfdv0+LNa4VjRInUBJ0CkIXv+ERyy8hk=;
+        b=bKf9/L4GaWV/OFoAvobWQOqDqMN/oEI6cP80ch17gTfQManvgREAKH5f8VUFLt0/C5
+         gBV4IrKkx0hzn9FemjmVUF2Opl9zakMrKbzCLwrHAVneei5jGVEvPqPQcitOQOVsA6S1
+         f6/JgtmyM6sHc/RvHRMazq80i1P7RQxx3OcrwwfcvFGYgEdLX/unA4hriYFQ0rfuxN5j
+         J4432iBHWfjyaboruCVqGNNdGgGFzyuNgVWTwQq15Q0yS4oXb6FSNCKrWJjhAbyS0hWN
+         OMmg/d5V9fsjaYEijx21Wlw6hqxObHYeJHsVEshaSLpFatz/4frun1R7yNtgSgZmkeGj
+         eqqA==
+X-Gm-Message-State: AJIora+561EdyGhyHCLW7qKMnb3E++FZlqxsNrZZ3mqLrpDtRQ9j7Tc/
+        r+D95DQb/o6FTHkKAkx750vLAnBQRluYbG+tyeU/Jzqjk6M718g5ybec1BXzWvqY2ZgU8qCnpSU
+        idXjIfTOaSNGste4vT/x7YtNzWuNl
+X-Received: by 2002:a2e:9ad0:0:b0:25a:7156:26bb with SMTP id p16-20020a2e9ad0000000b0025a715626bbmr999470ljj.141.1657261263909;
+        Thu, 07 Jul 2022 23:21:03 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1siGvuif2Z3b/qz6BV5rwXiRX4Y2KnHOm/sW0UQhHOR8L3Ua/tIp6J6o+V7iV6847cM54TvfHUP9+sN1Wog1zw=
+X-Received: by 2002:a2e:9ad0:0:b0:25a:7156:26bb with SMTP id
+ p16-20020a2e9ad0000000b0025a715626bbmr999458ljj.141.1657261263714; Thu, 07
+ Jul 2022 23:21:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CAPhsuW7k3ExOjjonL=-=sg_rx0kyrgF=k7jxb+W0ZpxgxnoeLA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
+ <20220629065656.54420-39-xuanzhuo@linux.alibaba.com> <c0747cbc-685b-85a9-1931-0124124755f2@redhat.com>
+ <1656986375.3420787-1-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <1656986375.3420787-1-xuanzhuo@linux.alibaba.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Fri, 8 Jul 2022 14:20:52 +0800
+Message-ID: <CACGkMEu80KP-ULz_CBvauRk_3XsCubMkkWv0uLnbt-wib5KOnA@mail.gmail.com>
+Subject: Re: [PATCH v11 38/40] virtio_net: support rx queue resize
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Vadim Pasternak <vadimp@nvidia.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        linux-um@lists.infradead.org, netdev <netdev@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+        kvm <kvm@vger.kernel.org>,
+        "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>,
+        kangjie.xu@linux.alibaba.com,
+        virtualization <virtualization@lists.linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 07/07/2022, Song Liu wrote:
-
-Hi Song Liu, thank you for the fast reply, I'll add comments on top
-of your original email.
-
-I will not be available through out next week, so sorry if I'll have a 
-late reply for follow ups.
-
-Thanks in advance,
--- Jon.
-
->On Thu, Jul 7, 2022 at 12:14 AM Jon Doron <arilou@gmail.com> wrote:
+On Tue, Jul 5, 2022 at 10:00 AM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrot=
+e:
 >
->Please prefix the patch with the target tree (bpf or bpf-next). For example,
->this patch should go via bpf-next.
-
-Done
-
->>
->> From: Jon Doron <jond@wiz.io>
->>
->> Add API for perfbuf to support writing a custom event reader.
+> On Mon, 4 Jul 2022 11:44:12 +0800, Jason Wang <jasowang@redhat.com> wrote=
+:
+> >
+> > =E5=9C=A8 2022/6/29 14:56, Xuan Zhuo =E5=86=99=E9=81=93:
+> > > This patch implements the resize function of the rx queues.
+> > > Based on this function, it is possible to modify the ring num of the
+> > > queue.
+> > >
+> > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > ---
+> > >   drivers/net/virtio_net.c | 22 ++++++++++++++++++++++
+> > >   1 file changed, 22 insertions(+)
+> > >
+> > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> > > index 9fe222a3663a..6ab16fd193e5 100644
+> > > --- a/drivers/net/virtio_net.c
+> > > +++ b/drivers/net/virtio_net.c
+> > > @@ -278,6 +278,8 @@ struct padded_vnet_hdr {
+> > >     char padding[12];
+> > >   };
+> > >
+> > > +static void virtnet_rq_free_unused_buf(struct virtqueue *vq, void *b=
+uf);
+> > > +
+> > >   static bool is_xdp_frame(void *ptr)
+> > >   {
+> > >     return (unsigned long)ptr & VIRTIO_XDP_FLAG;
+> > > @@ -1846,6 +1848,26 @@ static netdev_tx_t start_xmit(struct sk_buff *=
+skb, struct net_device *dev)
+> > >     return NETDEV_TX_OK;
+> > >   }
+> > >
+> > > +static int virtnet_rx_resize(struct virtnet_info *vi,
+> > > +                        struct receive_queue *rq, u32 ring_num)
+> > > +{
+> > > +   int err, qindex;
+> > > +
+> > > +   qindex =3D rq - vi->rq;
+> > > +
+> > > +   napi_disable(&rq->napi);
+> >
+> >
+> > Do we need to cancel the refill work here?
 >
->This is too brief for such change. It is ok to duplicate text from the cover
->letter.
+>
+> I think no, napi_disable is mutually exclusive, which ensures that there =
+will be
+> no conflicts between them.
+
+So this sounds similar to what I've fixed recently.
+
+1) NAPI schedule delayed work.
+2) we disable NAPI here
+3) delayed work get schedule and call NAPI again
+
+?
+
+Thanks
+
+>
+> Thanks.
+>
+> >
+> > Thanks
+> >
+> >
+> > > +
+> > > +   err =3D virtqueue_resize(rq->vq, ring_num, virtnet_rq_free_unused=
+_buf);
+> > > +   if (err)
+> > > +           netdev_err(vi->dev, "resize rx fail: rx queue index: %d e=
+rr: %d\n", qindex, err);
+> > > +
+> > > +   if (!try_fill_recv(vi, rq, GFP_KERNEL))
+> > > +           schedule_delayed_work(&vi->refill, 0);
+> > > +
+> > > +   virtnet_napi_enable(rq->vq, &rq->napi);
+> > > +   return err;
+> > > +}
+> > > +
+> > >   /*
+> > >    * Send command via the control virtqueue and check status.  Comman=
+ds
+> > >    * supported by the hypervisor, as indicated by feature bits, shoul=
+d
+> >
 >
 
-Done
-
->Please also update libbpf.map.
->
-
-Done
-
->Also, we should add a selftest to use these new APIs.
->
-
-I'm not sure I'm following here what were you had in mind, in practice I 
-could just change **bpf_perf_event_read_simple** implementation to use
-these new APIs to initialize it's variables (data_head, data_tail, 
-base, mmap_size) and it would act exactly the same.
-
->>
->> Signed-off-by: Jon Doron <jond@wiz.io>
->> ---
->>  tools/lib/bpf/libbpf.c | 40 ++++++++++++++++++++++++++++++++++++++++
->>  tools/lib/bpf/libbpf.h |  6 ++++++
->>  2 files changed, 46 insertions(+)
->>
->> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->> index e89cc9c885b3..37299aa05185 100644
->> --- a/tools/lib/bpf/libbpf.c
->> +++ b/tools/lib/bpf/libbpf.c
->> @@ -12433,6 +12433,46 @@ static int perf_buffer__process_records(struct perf_buffer *pb,
->>         return 0;
->>  }
->>
->> +int perf_buffer__raw_ring_buf(const struct perf_buffer *pb, size_t buf_idx,
->> +                             void **base, size_t *buf_size, __u64 *head,
->> +                             __u64 *tail)
->
->Please add comments to each API function.
-
-Done
-
->> +{
->> +       struct perf_cpu_buf *cpu_buf;
->> +       struct perf_event_mmap_page *header;
->> +
->> +       if (buf_idx >= pb->cpu_cnt)
->> +               return libbpf_err(-EINVAL);
->> +
->> +       cpu_buf = pb->cpu_bufs[buf_idx];
->> +       if (!cpu_buf)
->> +               return libbpf_err(-ENOENT);
->> +
->> +       header = cpu_buf->base;
->> +       *head = ring_buffer_read_head(header);
->> +       *tail = header->data_tail;
->> +       *base = ((__u8 *)header) + pb->page_size;
->> +       *buf_size = pb->mmap_size;
->> +       return 0;
->> +}
->> +
->> +int perf_buffer__set_ring_buf_tail(const struct perf_buffer *pb, size_t buf_idx,
->> +                                  __u64 tail)
->> +{
->> +       struct perf_cpu_buf *cpu_buf;
->> +       struct perf_event_mmap_page *header;
->> +
->> +       if (buf_idx >= pb->cpu_cnt)
->> +               return libbpf_err(-EINVAL);
->> +
->> +       cpu_buf = pb->cpu_bufs[buf_idx];
->> +       if (!cpu_buf)
->> +               return libbpf_err(-ENOENT);
->> +
->> +       header = cpu_buf->base;
->> +       ring_buffer_write_tail(header, tail);
->> +       return 0;
->> +}
->> +
->>  int perf_buffer__epoll_fd(const struct perf_buffer *pb)
->>  {
->>         return pb->epoll_fd;
->> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
->> index 9e9a3fd3edd8..b6f6b6a12d70 100644
->> --- a/tools/lib/bpf/libbpf.h
->> +++ b/tools/lib/bpf/libbpf.h
->> @@ -1381,6 +1381,12 @@ LIBBPF_API int perf_buffer__consume(struct perf_buffer *pb);
->>  LIBBPF_API int perf_buffer__consume_buffer(struct perf_buffer *pb, size_t buf_idx);
->>  LIBBPF_API size_t perf_buffer__buffer_cnt(const struct perf_buffer *pb);
->>  LIBBPF_API int perf_buffer__buffer_fd(const struct perf_buffer *pb, size_t buf_idx);
->> +LIBBPF_API int perf_buffer__raw_ring_buf(const struct perf_buffer *pb,
->> +                                        size_t buf_idx, void **base,
->> +                                        size_t *buf_size, __u64 *head,
->> +                                        __u64 *tail);
->> +LIBBPF_API int perf_buffer__set_ring_buf_tail(const struct perf_buffer *pb,
->> +                                             size_t buf_idx, __u64 tail);
->>
->>  typedef enum bpf_perf_event_ret
->>         (*bpf_perf_event_print_t)(struct perf_event_header *hdr,
->> --
->> 2.36.1
->>
