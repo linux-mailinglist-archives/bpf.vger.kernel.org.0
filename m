@@ -2,133 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D64956C404
-	for <lists+bpf@lfdr.de>; Sat,  9 Jul 2022 01:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC99E56C429
+	for <lists+bpf@lfdr.de>; Sat,  9 Jul 2022 01:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238990AbiGHWF6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Jul 2022 18:05:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36170 "EHLO
+        id S237953AbiGHWUV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Jul 2022 18:20:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231157AbiGHWF5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Jul 2022 18:05:57 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 725BF9CE38
-        for <bpf@vger.kernel.org>; Fri,  8 Jul 2022 15:05:55 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id n8so173585eda.0
-        for <bpf@vger.kernel.org>; Fri, 08 Jul 2022 15:05:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tXU51OK0HEudXgpS61jawtfK+ibB7PwOvPOK1QAUqnQ=;
-        b=qtcYeOtrk+uhB/m5fNZW7AtGUQCdkH6DGYDtawaQKazLP5DsZTbZwAilabM9p8X2zL
-         o7u229oUIWgO8VhzhLmIiLxiU9ZWco1jYNv9+xibZePk796QV8tiEgLA3T9VzmlDc8ZI
-         bawQQpfy+LD1eWrg2x+05bC6aU9gyERbmBalxp7MUViv5cFLaOxOvzTb63XmlD6N0wuP
-         k0FWYaO7v9WoKUSkBvyJZqWEY3lqWLU1iJfk/ryULdUdLrc5VLziYt5yDtjrLbe/hCPp
-         F4zMzUvdOlilgZZ7dPhrjkSLCHbzEEIUEXWvroDyC5Moq8W/dV9tlF4xaanJQPYB3xpu
-         gGew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tXU51OK0HEudXgpS61jawtfK+ibB7PwOvPOK1QAUqnQ=;
-        b=jYoRGD0+ZXclU9RcGGpeuRD7xCcX22eTJsqoC6AuLJiDvIkV9QEJ8cN95TnaQP7t+s
-         4rXBsoy7JzcdPILUYDlJSJkI5td3BskN44Af4cMw3aeYzFuq/eQmZFfjV29sNVlJ4Vmv
-         tdWDUQ+MDKu23To9OWNiQMO+Im6J1A5wB/5d8M7kXjgg6XSqb5cqs2Kso9eJe638ipiZ
-         bzt9hXmj+aK4NO+42QszqGSrf20/ntvAQlzUxHN3UJh3z2oPtq/DhwcZULMr2VNi/hNG
-         zl3YJuIz7Kz37EZY3ilz3ut8y2yI9IUDetJMp0/Q2fkzGdmeBTe65imBtfTQMEBh6CvF
-         F+Ig==
-X-Gm-Message-State: AJIora83uOXtEAEV3bYupiCaNZFUJgrUU8Byv+t8UXSUP7SO+VNPnnUG
-        ycM9/PtI1PYJ/jUo0f8eWdnzFU4KHe1ZFhayxkw=
-X-Google-Smtp-Source: AGRyM1uDOzX8/u2vAJkdCB5XQdIlFQyOh/QZsjEq4nhhnJsbmCCVKGFD9LOejsIZbQEyt0gknfVzj37+k7BkHm6lXGs=
-X-Received: by 2002:a05:6402:50d2:b0:43a:8487:8a09 with SMTP id
- h18-20020a05640250d200b0043a84878a09mr7691337edb.232.1657317953498; Fri, 08
- Jul 2022 15:05:53 -0700 (PDT)
+        with ESMTP id S238044AbiGHWUT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Jul 2022 18:20:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 286F6A2E71;
+        Fri,  8 Jul 2022 15:20:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A990661D61;
+        Fri,  8 Jul 2022 22:20:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 060BEC341CF;
+        Fri,  8 Jul 2022 22:20:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1657318814;
+        bh=lTA0WWhEZrId7RYYncgLhzhNFNW68XcONj+L6Uzzhvw=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=S4ME+0phcFE39OiBvdBrMndoh0IwdPLABS32M69XyujArhLAimGAQ5EQmW3aJ+jr+
+         LYRtP/B5hPaTKizffSyGjTwAEvTDnoE02FBf6rd/G3hmxsCzMFv5x9DWj5KD+KVVZq
+         jESWBieNm6fIPqeeYilAHMVFo4xCcFbKCGjEQTLhqOZND1JxMr8e2pM9slmwTXBdIw
+         6HXIDnTsu9nA/Lm8vp4GDfeJ92+OmilCH/3ovCi55TAFp0fKrcQ+EPvcmaH4rDsRZn
+         RXBZidra82IOv2L0hC4BAAm7EDf7XqmBEaL/PFGY9NC3wcimhRtWUA1RAjfqoz8Ri6
+         lst/V1OKGuhrA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DCB78E45BDB;
+        Fri,  8 Jul 2022 22:20:13 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20220707004118.298323-1-andrii@kernel.org> <20220707004118.298323-3-andrii@kernel.org>
- <CAADnVQLxWDD3AAp73BcXW4ArWMgJ-fSUzSjw=-gzq=azBrXdqA@mail.gmail.com>
- <CAEf4BzaXBD86k8BYv7q4fFeyHALHcVUCbSpSG4=kfC0orydrCQ@mail.gmail.com> <YsgU1kjVndNjJhI8@krava>
-In-Reply-To: <YsgU1kjVndNjJhI8@krava>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 8 Jul 2022 15:05:42 -0700
-Message-ID: <CAEf4BzapNiTTV18guaXz_e1nY9jbybZVTWXUM7sPNqJd=Cau+w@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next 2/3] libbpf: add ksyscall/kretsyscall
- sections support for syscall kprobes
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Kenta Tada <kenta.tada@sony.com>,
-        Hengqi Chen <hengqi.chen@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v4] libbpf: disable SEC pragma macro on GCC
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <165731881389.3468.1090861086732416921.git-patchwork-notify@kernel.org>
+Date:   Fri, 08 Jul 2022 22:20:13 +0000
+References: <20220706111839.1247911-1-james.hilliard1@gmail.com>
+In-Reply-To: <20220706111839.1247911-1-james.hilliard1@gmail.com>
+To:     James Hilliard <james.hilliard1@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 8, 2022 at 4:28 AM Jiri Olsa <olsajiri@gmail.com> wrote:
->
-> On Thu, Jul 07, 2022 at 12:10:30PM -0700, Andrii Nakryiko wrote:
->
-> SNIP
->
-> > > Maybe we should do the other way around ?
-> > > cat /proc/kallsyms |grep sys_bpf
-> > >
-> > > and figure out the prefix from there?
-> > > Then we won't need to do giant
-> > > #if defined(__x86_64__)
-> > > ...
-> > >
-> >
-> > Unfortunately this won't work well due to compat and 32-bit APIs (and
-> > bpf() syscall is particularly bad with also bpf_sys_bpf):
-> >
-> > $ sudo cat /proc/kallsyms| rg '_sys_bpf$'
-> > ffffffff811cb100 t __sys_bpf
-> > ffffffff811cd380 T bpf_sys_bpf
-> > ffffffff811cd520 T __x64_sys_bpf
-> > ffffffff811cd540 T __ia32_sys_bpf
-> > ffffffff8256fce0 r __ksymtab_bpf_sys_bpf
-> > ffffffff8259b5a2 r __kstrtabns_bpf_sys_bpf
-> > ffffffff8259bab9 r __kstrtab_bpf_sys_bpf
-> > ffffffff83abc400 t _eil_addr___ia32_sys_bpf
-> > ffffffff83abc410 t _eil_addr___x64_sys_bpf
-> >
-> > $ sudo cat /proc/kallsyms| rg '_sys_mmap$'
-> > ffffffff81024480 T __x64_sys_mmap
-> > ffffffff810244c0 T __ia32_sys_mmap
-> > ffffffff83abae30 t _eil_addr___ia32_sys_mmap
-> > ffffffff83abae40 t _eil_addr___x64_sys_mmap
-> >
-> > We have similar arch-specific switches in few other places (USDT and
-> > lib path detection, for example), so it's not a new precedent (for
-> > better or worse).
-> >
-> >
-> > > /proc/kallsyms has world read permissions:
-> > > proc_create("kallsyms", 0444, NULL, &kallsyms_proc_ops);
-> > > unlike available_filter_functions.
-> > >
-> > > Also tracefs might be mounted in a different dir than
-> > > /sys/kernel/tracing/
-> > > like
-> > > /sys/kernel/debug/tracing/
-> >
-> > Yeah, good point, was trying to avoid parsing more expensive kallsyms,
-> > but given it's done once, it might not be a big deal.
->
-> we could get that also from BTF?
+Hello:
 
-I'd rather not add dependency on BTF for this.
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
->
-> jirka
+On Wed,  6 Jul 2022 05:18:38 -0600 you wrote:
+> It seems the gcc preprocessor breaks with pragmas when surrounding
+> __attribute__.
+> 
+> Disable these pragmas on GCC due to upstream bugs see:
+> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=55578
+> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=90400
+> 
+> [...]
+
+Here is the summary with links:
+  - [v4] libbpf: disable SEC pragma macro on GCC
+    https://git.kernel.org/bpf/bpf-next/c/18410251f66a
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
