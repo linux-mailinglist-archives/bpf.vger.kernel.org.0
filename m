@@ -2,124 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FB1856C7B2
-	for <lists+bpf@lfdr.de>; Sat,  9 Jul 2022 09:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C46956C81D
+	for <lists+bpf@lfdr.de>; Sat,  9 Jul 2022 10:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229490AbiGIHbi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 9 Jul 2022 03:31:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34526 "EHLO
+        id S229518AbiGIIhG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 9 Jul 2022 04:37:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbiGIHbh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 9 Jul 2022 03:31:37 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A9AE6A9C1;
-        Sat,  9 Jul 2022 00:31:36 -0700 (PDT)
-Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Lg1yp6ZMbzFpyy;
-        Sat,  9 Jul 2022 15:30:42 +0800 (CST)
-Received: from dggpemm500019.china.huawei.com (7.185.36.180) by
- dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Sat, 9 Jul 2022 15:31:34 +0800
-Received: from [10.67.109.184] (10.67.109.184) by
- dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Sat, 9 Jul 2022 15:31:33 +0800
-Subject: Re: [PATCH bpf-next] samples: bpf: Fix cross-compiling error about
- bpftool
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "Quentin Monnet" <quentin@isovalent.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-References: <20220707140811.603590-1-pulehui@huawei.com>
- <CAEf4Bzb_re+o2zALCA+Rf_cJS-31350PjhzRg42bgW0mO-GVbg@mail.gmail.com>
-From:   Pu Lehui <pulehui@huawei.com>
-Message-ID: <502e80cc-774e-77c0-e918-3c35a2c5ec17@huawei.com>
-Date:   Sat, 9 Jul 2022 15:31:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        with ESMTP id S229516AbiGIIhF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 9 Jul 2022 04:37:05 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 842B767C84;
+        Sat,  9 Jul 2022 01:37:04 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id i190so790434pge.7;
+        Sat, 09 Jul 2022 01:37:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=s1d0xQDbiqOm4xHoNeGRYZWlXM5lvmpFGoowlPoRlBA=;
+        b=DB2/3U2eialrjaOb0mFGoJCvEh30k7ZpSf0bS/bJRkpOecubVOPJ9q6Gmo+aZMgLsm
+         7MMReC546VXEc7FLVxwcl7zJjaS5Q2ATFqbOKtXxs9nb8/eSKBwXANFMW0YM2DEpRLqh
+         /npF9+9k4u78BKkvKmOKi6V5adNoEzmpV3ET3G/uLrWjvqOuao8Dp8mhj8jKRINK0ncd
+         pwHB2rJgO7ekyIkhJUyH0JO1inoVG1JjvH/pIunUKQoZTvCltyJMPVjp3X4ttWyq88kc
+         ia+UudsmvyU210rVKaeAorx4+wfQ3CxdfqYbgnYFVMN/6+3ijbsn4bVKMJ9y9e/lXoIc
+         GQng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=s1d0xQDbiqOm4xHoNeGRYZWlXM5lvmpFGoowlPoRlBA=;
+        b=Sr0T8udRdepdq4r7NDirgNrMcEdUyv6PH88yWowrOKKqSAIl6SFKu8q9gzqO+JK+7X
+         G1AhZY4D3TC2tBMUNuyvoD00FuGJ0ZaAXgFZSW3sW8USSoDhjZiqJVmckFqnJ7hLHTMA
+         qV5oXfPuo1Pgy+KWb+kRdXsKP0mbOJSBH2n0dI+S/9EvtvDK/MU030GtOYfjDNQNa1Ul
+         Ek90r2OIW09Pcq98Q1RICTUIAD8caFArVX1kJzfpqcut0eFpVRN8PNAMbsbxquBRHVb3
+         kK2veYzwzDFG8uAYnJ8l74Hj5NxYn0xvXdMeWRfR5Og1WO9S3I78OkrTMb+0Nki/7WIt
+         PCBQ==
+X-Gm-Message-State: AJIora+uG6blDYrnSvA9MBCMDO/tA5e77wMvhBINuRXGXtRE9HyUNHWv
+        k7U5n+VwCqkaS8fBCTSQnQk=
+X-Google-Smtp-Source: AGRyM1sYkaJbnS/KJOVYg78AEzQOMDdoEzoud2ZtojUlPutt7DIF/hUo0iBBBgpH2Z28qeRz/4MR0g==
+X-Received: by 2002:a05:6a00:84d:b0:525:3ce6:9c33 with SMTP id q13-20020a056a00084d00b005253ce69c33mr7777463pfk.47.1657355823800;
+        Sat, 09 Jul 2022 01:37:03 -0700 (PDT)
+Received: from ubuntu.lan (pcd364232.netvigator.com. [203.218.154.232])
+        by smtp.gmail.com with ESMTPSA id t10-20020a65554a000000b004126f1e48f4sm685439pgr.20.2022.07.09.01.36.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Jul 2022 01:37:03 -0700 (PDT)
+From:   Hawkins Jiawei <yin31149@gmail.com>
+To:     kuba@kernel.org
+Cc:     18801353760@163.com, andrii@kernel.org, ast@kernel.org,
+        borisp@nvidia.com, bpf@vger.kernel.org, daniel@iogearbox.net,
+        davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
+        guwen@linux.alibaba.com, john.fastabend@gmail.com, kafai@fb.com,
+        kgraul@linux.ibm.com, kpsingh@kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, paskripkin@gmail.com, skhan@linuxfoundation.org,
+        songliubraving@fb.com,
+        syzbot+5f26f85569bd179c18ce@syzkaller.appspotmail.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com, yin31149@gmail.com,
+        yoshfuji@linux-ipv6.org
+Subject: Re: [PATCH] smc: fix refcount bug in sk_psock_get (2)
+Date:   Sat,  9 Jul 2022 16:36:42 +0800
+Message-Id: <20220709083641.2060-1-yin31149@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220708200602.1059bc09@kernel.org>
+References: <20220708200602.1059bc09@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAEf4Bzb_re+o2zALCA+Rf_cJS-31350PjhzRg42bgW0mO-GVbg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.109.184]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500019.china.huawei.com (7.185.36.180)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Sat, 9 Jul 2022 at 11:06, Jakub Kicinski <kuba@kernel.org> wrote:
+> On Sat,  9 Jul 2022 10:46:59 +0800 Hawkins Jiawei wrote:
+> > Reported-and-tested-by: syzbot+5f26f85569bd179c18ce@syzkaller.appspotmail.com
+> > Signed-off-by: hawk <18801353760@163.com>
+> > ---
+> >  net/ipv4/tcp.c | 13 +++++++++++++
+> >  1 file changed, 13 insertions(+)
+> >
+> > diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+> > index 9984d23a7f3e..a1e6cab2c748 100644
+> > --- a/net/ipv4/tcp.c
+> > +++ b/net/ipv4/tcp.c
+> > @@ -3395,10 +3395,23 @@ static int do_tcp_setsockopt(struct sock *sk, int level, int optname,
+> >       }
+> >       case TCP_ULP: {
+> >               char name[TCP_ULP_NAME_MAX];
+> > +             struct sock *smc_sock;
+> >
+> >               if (optlen < 1)
+> >                       return -EINVAL;
+> >
+> > +             /* SMC sk_user_data may be treated as psock,
+> > +              * which triggers a refcnt warning.
+> > +              */
+> > +             rcu_read_lock();
+> > +             smc_sock = rcu_dereference_sk_user_data(sk);
+> > +             if (level == SOL_TCP && smc_sock &&
+> > +                 smc_sock->__sk_common.skc_family == AF_SMC) {
+>
+> This should prolly be under the socket lock?
+>
+> Can we add a bit to SK_USER_DATA_PTRMASK and have ULP-compatible
+> users (sockmap) opt into ULP cooperation? Modifying TCP is backwards,
+> layer-wise.
 
+Thanks for your suggestion, I also agree that modifying TCP directly
+is not wise.
 
-On 2022/7/9 6:42, Andrii Nakryiko wrote:
-> On Thu, Jul 7, 2022 at 6:37 AM Pu Lehui <pulehui@huawei.com> wrote:
->>
->> Currently, when cross compiling bpf samples, the host side
->> cannot use arch-specific bpftool to generate vmlinux.h or
->> skeleton. We need to compile the bpftool with the host
->> compiler.
->>
->> Signed-off-by: Pu Lehui <pulehui@huawei.com>
->> ---
-> 
-> samples/bpf use bpftool for vmlinux.h, skeleton, and static linking
-> only. All that is supported by lightweight "bootstrap" bpftool
-> version, so we can build just that. It will be faster, and bootstrap
-> version should be always host-native even during cross compilation.
-> See [0] for what I did in libbpf-bootstrap.
-> 
-> Also please cc Quention for bpftool-related changes. Thanks!
-> 
->     [0] https://github.com/libbpf/libbpf-bootstrap/commit/fc28424eb3f0e39cfb5959296b070389b9a8bd8f
-> 
+I am sorry that I can't follow you on haveing ULP-compatible
+users (sockmap) opt into ULP cooperation, yet adding a bit to
+SK_USER_DATA_PTRMASK seems like a good way.
 
-so brilliant，we can take it to other places where rely on bpftool.
-thanks.
+I plan to add a mask bit, and check it during sk_psock_get(),
+in v2 patch
 
->>   samples/bpf/Makefile | 8 ++++----
->>   1 file changed, 4 insertions(+), 4 deletions(-)
->>
->> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
->> index 5002a5b9a7da..fe54a8c8f312 100644
->> --- a/samples/bpf/Makefile
->> +++ b/samples/bpf/Makefile
->> @@ -1,4 +1,5 @@
->>   # SPDX-License-Identifier: GPL-2.0
->> +-include tools/scripts/Makefile.include
->>
->>   BPF_SAMPLES_PATH ?= $(abspath $(srctree)/$(src))
->>   TOOLS_PATH := $(BPF_SAMPLES_PATH)/../../tools
->> @@ -283,11 +284,10 @@ $(LIBBPF): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_OU
->>   BPFTOOLDIR := $(TOOLS_PATH)/bpf/bpftool
->>   BPFTOOL_OUTPUT := $(abspath $(BPF_SAMPLES_PATH))/bpftool
->>   BPFTOOL := $(BPFTOOL_OUTPUT)/bpftool
->> -$(BPFTOOL): $(LIBBPF) $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile) | $(BPFTOOL_OUTPUT)
->> +$(BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile) | $(BPFTOOL_OUTPUT)
->>              $(MAKE) -C $(BPFTOOLDIR) srctree=$(BPF_SAMPLES_PATH)/../../ \
->> -               OUTPUT=$(BPFTOOL_OUTPUT)/ \
->> -               LIBBPF_OUTPUT=$(LIBBPF_OUTPUT)/ \
->> -               LIBBPF_DESTDIR=$(LIBBPF_DESTDIR)/
->> +               ARCH= CROSS_COMPILE= CC=$(HOSTCC) LD=$(HOSTLD) \
->> +               OUTPUT=$(BPFTOOL_OUTPUT)/
->>
->>   $(LIBBPF_OUTPUT) $(BPFTOOL_OUTPUT):
->>          $(call msg,MKDIR,$@)
->> --
->> 2.25.1
->>
-> .
-> 
+>
+> > +                     rcu_read_unlock();
+> > +                     return -EOPNOTSUPP;
+> > +             }
+> > +             rcu_read_unlock();
+> > +
