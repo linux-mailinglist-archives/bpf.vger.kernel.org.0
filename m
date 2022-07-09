@@ -2,69 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB93756C5BA
-	for <lists+bpf@lfdr.de>; Sat,  9 Jul 2022 03:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3B5C56C5EB
+	for <lists+bpf@lfdr.de>; Sat,  9 Jul 2022 04:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229480AbiGIBcn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Jul 2022 21:32:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46606 "EHLO
+        id S229567AbiGICEB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Jul 2022 22:04:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbiGIBcn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Jul 2022 21:32:43 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47E83709A8;
-        Fri,  8 Jul 2022 18:32:40 -0700 (PDT)
-Received: from dggpemm500023.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Lfsyn1T0kz1L8dD;
-        Sat,  9 Jul 2022 09:30:09 +0800 (CST)
-Received: from dggpemm500019.china.huawei.com (7.185.36.180) by
- dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Sat, 9 Jul 2022 09:32:38 +0800
-Received: from [10.67.109.184] (10.67.109.184) by
- dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Sat, 9 Jul 2022 09:32:37 +0800
-Subject: Re: [PATCH bpf-next v3 4/6] libbpf: Unify memory address casting
- operation style
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list" <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-References: <20220530092815.1112406-1-pulehui@huawei.com>
- <20220530092815.1112406-5-pulehui@huawei.com>
- <a31efed5-a436-49c9-4126-902303df9766@iogearbox.net>
- <CAEf4BzacrRNDDYFR_4GH40+wxff=hCiyxymig6N+NVrM537AAA@mail.gmail.com>
- <38a59b80-f64a-0913-73e4-29e4ee4149c5@huawei.com>
- <CAEf4BzaDQ+cPh8pLGqg-GSM+ryZz3vvDtUy=o2u19KM0CTrewg@mail.gmail.com>
-From:   Pu Lehui <pulehui@huawei.com>
-Message-ID: <0355b933-c47b-d3d3-587a-50b38f192d54@huawei.com>
-Date:   Sat, 9 Jul 2022 09:32:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <CAEf4BzaDQ+cPh8pLGqg-GSM+ryZz3vvDtUy=o2u19KM0CTrewg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.109.184]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500019.china.huawei.com (7.185.36.180)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        with ESMTP id S229457AbiGICEA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Jul 2022 22:04:00 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9942B5E311
+        for <bpf@vger.kernel.org>; Fri,  8 Jul 2022 19:03:58 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-31c88e36c0bso3499317b3.20
+        for <bpf@vger.kernel.org>; Fri, 08 Jul 2022 19:03:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=OezEBl0OMJJ+7Kc3NMVkOfYcKC2GvNQvDhGPvh9nLMc=;
+        b=rd625VKENraqmuoeOr/ugJ4GPax+nlYNvjwj2WIHhVyPNOvbBy3bE2dp7PpsZATt7n
+         GQK8MSyoImKoGGZAJ2eOvL0MGKDZ3GmNr+AjzmJnXoVXGH6V6ZKbk3v5n/pAW4hXwn1M
+         Lm5xTUnNazLmAaJc83lEXcs4OfFf67Hjm2qC62E/zIzVDg1k3semEqyX228QIMZ0Bu1U
+         jko1YKPhPJMRI4D5xcedNzrLYLYTPkVfBcuWtoaguuGzj6qzNUPgMI0P2api/D13Jisf
+         YsxiOA8rhd6IoMaPNnnc2hshjrgc3ZK6bEZmwZmWlQX7lm6lXSZkgyFa7g6ENgac/LRp
+         jjAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=OezEBl0OMJJ+7Kc3NMVkOfYcKC2GvNQvDhGPvh9nLMc=;
+        b=XVBY/LfUv70xsvOWb3sETNzCvCY30WfurfzlJqwfl3Sb1fbuOz5Ri+lEVVEFiGC00a
+         ArixlIz0M6yUhAC9EhLeE00IoiXKfoakwNGMMNzbOE5nxsAX6f/HkwgL4gOEJMpKUZ9E
+         JBq/z/5uemZqcdv/qLBjjfNrZ86tRBHEquM5BZ4s47YCokDXGx+tVFRUYzTtIKJiZ1+N
+         arn+DM55C450z6QHHcgm2eWZTanwoEhAFjlswWrMveBPqcZAoTLPtfe0GY6d145WrzZ2
+         QRuR7CNJiaT0bP1PI1jWd0UbnVUXOa4leSZ/N6H/yksGV2vol7Tk8Bn4X6azjPKRbzXA
+         sWNA==
+X-Gm-Message-State: AJIora82X6UFLAK16OJfxtSqhEQ6gMS4YB6pxUa7pa+KlwdjyLfvPX/f
+        TowHmj4vaQdJz2VVbbYpJlvhB6SrV7OCGA==
+X-Google-Smtp-Source: AGRyM1u3i7KcuyQkYM0KCTmxwSnUvZ+10826X2uyepp6zX8nhpS6rVvxwnkS5nLuoS4lEssz/WluJnYi9ITSHA==
+X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:28b])
+ (user=shakeelb job=sendgmr) by 2002:a0d:cbd8:0:b0:31d:a46:a1ee with SMTP id
+ n207-20020a0dcbd8000000b0031d0a46a1eemr7321378ywd.201.1657332237913; Fri, 08
+ Jul 2022 19:03:57 -0700 (PDT)
+Date:   Sat, 9 Jul 2022 02:03:55 +0000
+In-Reply-To: <20220709002858.129534-1-roman.gushchin@linux.dev>
+Message-Id: <20220709020355.bz7p4k34yw46iesp@google.com>
+Mime-Version: 1.0
+References: <20220709002858.129534-1-roman.gushchin@linux.dev>
+Subject: Re: [PATCH bpf-next] bpf: reparent bpf maps on memcg offlining
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,72 +66,29 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 2022/7/9 6:30, Andrii Nakryiko wrote:
-> On Thu, Jul 7, 2022 at 5:23 AM Pu Lehui <pulehui@huawei.com> wrote:
->>
->>
->>
->> On 2022/6/4 5:03, Andrii Nakryiko wrote:
->>> On Mon, May 30, 2022 at 2:03 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>>>
->>>> On 5/30/22 11:28 AM, Pu Lehui wrote:
->>>>> The members of bpf_prog_info, which are line_info, jited_line_info,
->>>>> jited_ksyms and jited_func_lens, store u64 address pointed to the
->>>>> corresponding memory regions. Memory addresses are conceptually
->>>>> unsigned, (unsigned long) casting makes more sense, so let's make
->>>>> a change for conceptual uniformity.
->>>>>
->>>>> Signed-off-by: Pu Lehui <pulehui@huawei.com>
->>>>> ---
->>>>>     tools/lib/bpf/bpf_prog_linfo.c | 9 +++++----
->>>>>     1 file changed, 5 insertions(+), 4 deletions(-)
->>>>>
->>>>> diff --git a/tools/lib/bpf/bpf_prog_linfo.c b/tools/lib/bpf/bpf_prog_linfo.c
->>>>> index 5c503096ef43..7beb060d0671 100644
->>>>> --- a/tools/lib/bpf/bpf_prog_linfo.c
->>>>> +++ b/tools/lib/bpf/bpf_prog_linfo.c
->>>>> @@ -127,7 +127,8 @@ struct bpf_prog_linfo *bpf_prog_linfo__new(const struct bpf_prog_info *info)
->>>>>         prog_linfo->raw_linfo = malloc(data_sz);
->>>>>         if (!prog_linfo->raw_linfo)
->>>>>                 goto err_free;
->>>>> -     memcpy(prog_linfo->raw_linfo, (void *)(long)info->line_info, data_sz);
->>>>> +     memcpy(prog_linfo->raw_linfo, (void *)(unsigned long)info->line_info,
->>>>> +            data_sz);
->>>>
->>>> Took in patch 1-3, lgtm, thanks! My question around the cleanups in patch 4-6 ...
->>>> there are various other such cases e.g. in libbpf, perhaps makes sense to clean all
->>>> of them up at once and not just the 4 locations in here.
->>>
->>> if (void *)(long) pattern is wrong, then I guess the best replacement
->>> should be (void *)(uintptr_t) ?
->>>
->>
->> I also think that (void *)(uintptr_t) would be the best replacement. I
->> applied the changes to kernel/bpf and samples/bpf, and it worked fine.
->> But in selftests/bpf, the following similar error occur at compile time:
->>
->> progs/test_cls_redirect.c:504:11: error: cast to 'uint8_t *' (aka
->> 'unsigned char *') from smaller integer type 'uintptr_t' (aka 'unsigned
->> int') [-Werror,-Wint-to-pointer-cast]
->>          .head = (uint8_t *)(uintptr_t)skb->data,
+On Fri, Jul 08, 2022 at 05:28:58PM -0700, Roman Gushchin wrote:
+> The memory consumed by a mpf map is always accounted to the memory
+> cgroup of the process which created the map. The map can outlive
+> the memory cgroup if it's used by processes in other cgroups or
+> is pinned on bpffs. In this case the map pins the original cgroup
+> in the dying state.
 > 
-> this is BPF-side code so using system's uintptr_t definition won't
-> work correctly here. Just do (unsigned long) instead?
+> For other types of objects (slab objects, non-slab kernel allocations,
+> percpu objects and recently LRU pages) there is a reparenting process
+> implemented: on cgroup offlining charged objects are getting
+> reassigned to the parent cgroup. Because all charges and statistics
+> are fully recursive it's a fairly cheap operation.
 > 
-
-It is fine by me, and for this cleanup
-
->>
->> I take clang to compile with the front and back end separation, like
->> samples/bpf, and it works. It seems that the all-in-one clang has
->> problems handling the uintptr_t.
->>
->>>>
->>>> Thanks,
->>>> Daniel
->>> .
->>>
-> .
+> For efficiency and consistency with other types of objects, let's do
+> the same for bpf maps. Fortunately thanks to the objcg API, the
+> required changes are minimal.
 > 
+> Please, note that individual allocations (slabs, percpu and large
+> kmallocs) already have the reparenting mechanism. This commit adds
+> it to the saved map->memcg pointer by replacing it to map->objcg.
+> Because dying cgroups are not visible for a user and all charges are
+> recursive, this commit doesn't bring any behavior changes for a user.
+> 
+> Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
+
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
