@@ -2,195 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 401B856C608
-	for <lists+bpf@lfdr.de>; Sat,  9 Jul 2022 04:47:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9CDE56C617
+	for <lists+bpf@lfdr.de>; Sat,  9 Jul 2022 04:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229473AbiGICrU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Jul 2022 22:47:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60928 "EHLO
+        id S229463AbiGICyC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Jul 2022 22:54:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbiGICrT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Jul 2022 22:47:19 -0400
-Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D86A78211;
-        Fri,  8 Jul 2022 19:47:17 -0700 (PDT)
-Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-10bffc214ffso883702fac.1;
-        Fri, 08 Jul 2022 19:47:17 -0700 (PDT)
+        with ESMTP id S229436AbiGICyB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Jul 2022 22:54:01 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C6EC32ED4
+        for <bpf@vger.kernel.org>; Fri,  8 Jul 2022 19:54:00 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id f2so559544wrr.6
+        for <bpf@vger.kernel.org>; Fri, 08 Jul 2022 19:54:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6BGKZlQ2XgPXargm2Wo7BrmlFidyoAhj3y0XxGiXJm0=;
-        b=JykCDruTogaWu6LLxNnu8Hd8UnhoJw4HRRvDIpLjJ3ArGe9cb7eNVrYGXxOlZhf9HH
-         pNklBJZxZ9Gy29spJTJqCHrIDxvRTBr1RSvwrqhV9UE9qvzQsf6Z4GN885ZZHNiRFmmA
-         fqLPZ4oaPvYSZINiq45OiSReXqi+isfQ/BkcqEqqNnRaFEqMj/H2x5c/dnWhmUS9UCjr
-         XxUmLujFcDkNylO/H6/dwgjdP2R3DweSb3MShtbRT6m4DfROYxmJy0w9YxTlnic5PNKc
-         C8UNMkn6QSIyAaxy9mHISrYyUojjBYxmmPBqNeMbgBpD/+Bbux/0oH011IRwfZae8dPq
-         J04Q==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hujto5ScMt8YhYM1cS91LOWyVA5XyaoKUzfA9Wu+gn8=;
+        b=Bzb6GEcAhjjBCwtynF49BnuH4WAvVPkhNOwLAmySjwwr2LehK3UAgVVZs+jpV/ERVP
+         IRirk+MhHnfJR9rcQgXKVyPiWMiYyacMzhuWFSBi4Vb2UVwnRDGS0QLYeuE6BRj5afoF
+         dZxeWY2o4J7siWdGaTh0/EcxgkpaakTry2evT9B+Ztn08HRuNRPWuwV2miHflFA+P1Ot
+         MOAT+XmAzCOwUV1/ux7Qsb3oG132jW+6LsGcYmHp6GmdooYLY2PuNWfm8Smvo8nwgvRp
+         h2nFkfL5vTmzGL1tvvtTH6x03UMibD0YGASfipzRV4roR+wSOIFfw/CLOo6oaT5fOqZO
+         ZjhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6BGKZlQ2XgPXargm2Wo7BrmlFidyoAhj3y0XxGiXJm0=;
-        b=LoNeawgfiTLmTfnjjtI7P5Gj9KqGHSR0YY5AjEJynqSTgOuiYH5MFI8N1RwwIRL2+A
-         JiBBRu0lleUnBqsRwykabJxlS6QxcvPjzz/DhpZEoVlPoRkUN+PQFEdp9i+g4x6o6LoI
-         X6km3bQ/5I8hlQJzeJt13oYl5DGVLdfv0Sb3ASwAQ7CqBb97QNgyXdoAThjPAXiZKNJT
-         nJ7H1o9naglli0aMtOz3Cmzf9EzRkVardM0hjo041QliPQM9fP6QgSpKb1RUyvXP2VTb
-         gBUhA4cfonYvBr+0pH8kpNSrDSvls+L979dKhu9RXNrtGGerMIlgUGthu8codgNjIzFV
-         DmaA==
-X-Gm-Message-State: AJIora++Q235eP20/mXjr7NQKr8tMKBnDd7WqUfnjF7aa0himvzr5Emm
-        1rQ/qgTR3zTwqDhzQ6JChDU93iqCdSbM8q1j7EFoNw==
-X-Google-Smtp-Source: AGRyM1vEOmXQ0e6DzN+O8R9g1l8g+u86gRu6KOjY6pNieru/kNk84RuiD7FmFu2uEYfiHCgH1y6KvA==
-X-Received: by 2002:a05:6870:c0ce:b0:10c:4d83:8e15 with SMTP id e14-20020a056870c0ce00b0010c4d838e15mr1624440oad.137.1657334836236;
-        Fri, 08 Jul 2022 19:47:16 -0700 (PDT)
-Received: from ubuntu.lan ([136.175.179.221])
-        by smtp.gmail.com with ESMTPSA id u65-20020acaab44000000b0032eb81e352asm274880oie.38.2022.07.08.19.47.05
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hujto5ScMt8YhYM1cS91LOWyVA5XyaoKUzfA9Wu+gn8=;
+        b=29YBWlYmRqKgQp2yeDJo/OCrMfWt7sNdkVcChlJSvVUlqZAzO1mW7aT59zIuk1//Ot
+         ZstTWKLRqquM0Sjn60ati8lweY+LWZ+61VstjFiBZ/WcZ23JJN/HiCFojhDiYVnhW2/9
+         Bp/5dQPKghI3CO3AQWc8QmiONsOBq0EsQjTpcjPbifaoEv344HWoBkTWm9d3rVMNDXhE
+         NP4+9fR1VRbRtgsvMS2X9/AHduTsfx9y5DsCKVzrX4DalOnBdP5ia0xx2aioT0Sxc0ft
+         Uxv0xUap3GC28rRtN38n3c/mQiokdteHEDldfrc8sNF1jyZMPr2QMvFrK41MbrcYUPze
+         rzAg==
+X-Gm-Message-State: AJIora+rGHRxNWoF07eHDnjXo7nY0xUYqWtC93eBZVbV5kFZj6QfGW0m
+        OBib45YBIu1PojRVTXOrTKk=
+X-Google-Smtp-Source: AGRyM1tcFagfEeAvugAY72QQpKfpGDh19lUu14iWh5ZbqXSGNsrux47OjLHRFHEKR8K6gD2dPfKPMg==
+X-Received: by 2002:adf:f348:0:b0:21d:76f0:975b with SMTP id e8-20020adff348000000b0021d76f0975bmr6093236wrp.676.1657335238599;
+        Fri, 08 Jul 2022 19:53:58 -0700 (PDT)
+Received: from jondnuc ([2a0d:6fc2:4af0:cc00:f99d:5d19:6e17:dc3a])
+        by smtp.gmail.com with ESMTPSA id g15-20020a5d488f000000b0020fe35aec4bsm383022wrq.70.2022.07.08.19.53.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Jul 2022 19:47:15 -0700 (PDT)
-From:   Hawkins Jiawei <yin31149@gmail.com>
-To:     syzbot+5f26f85569bd179c18ce@syzkaller.appspotmail.com
-Cc:     andrii@kernel.org, ast@kernel.org, borisp@nvidia.com,
-        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        edumazet@google.com, guwen@linux.alibaba.com,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kgraul@linux.ibm.com,
-        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com,
-        skhan@linuxfoundation.org, 18801353760@163.com,
-        paskripkin@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH] smc: fix refcount bug in sk_psock_get (2)
-Date:   Sat,  9 Jul 2022 10:46:59 +0800
-Message-Id: <20220709024659.6671-1-yin31149@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <00000000000026328205e08cdbeb@google.com>
-References: <00000000000026328205e08cdbeb@google.com>
+        Fri, 08 Jul 2022 19:53:57 -0700 (PDT)
+Date:   Sat, 9 Jul 2022 05:53:56 +0300
+From:   Jon Doron <arilou@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, Jon Doron <jond@wiz.io>
+Subject: Re: [PATCH bpf-next v2 1/1] libbpf: perfbuf: allow raw access to
+ buffers
+Message-ID: <YsjtxLuTvn8DWEA6@jondnuc>
+References: <20220708060416.1788789-1-arilou@gmail.com>
+ <20220708060416.1788789-2-arilou@gmail.com>
+ <CAEf4BzZkfWTQppe97E1CTLKEqgtxP9gUQqbXB1EKRm5pK_ZmDA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZkfWTQppe97E1CTLKEqgtxP9gUQqbXB1EKRm5pK_ZmDA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: hawk <18801353760@163.com>
-
-Syzkaller reportes refcount bug as follows:
-------------[ cut here ]------------
-refcount_t: saturated; leaking memory.
-WARNING: CPU: 1 PID: 3605 at lib/refcount.c:19 refcount_warn_saturate+0xf4/0x1e0 lib/refcount.c:19
-Modules linked in:
-CPU: 1 PID: 3605 Comm: syz-executor208 Not tainted 5.18.0-syzkaller-03023-g7e062cda7d90 #0
-...
-Call Trace:
- <TASK>
- __refcount_add_not_zero include/linux/refcount.h:163 [inline]
- __refcount_inc_not_zero include/linux/refcount.h:227 [inline]
- refcount_inc_not_zero include/linux/refcount.h:245 [inline]
- sk_psock_get+0x3bc/0x410 include/linux/skmsg.h:439
- tls_data_ready+0x6d/0x1b0 net/tls/tls_sw.c:2091
- tcp_data_ready+0x106/0x520 net/ipv4/tcp_input.c:4983
- tcp_data_queue+0x25f2/0x4c90 net/ipv4/tcp_input.c:5057
- tcp_rcv_state_process+0x1774/0x4e80 net/ipv4/tcp_input.c:6659
- tcp_v4_do_rcv+0x339/0x980 net/ipv4/tcp_ipv4.c:1682
- sk_backlog_rcv include/net/sock.h:1061 [inline]
- __release_sock+0x134/0x3b0 net/core/sock.c:2849
- release_sock+0x54/0x1b0 net/core/sock.c:3404
- inet_shutdown+0x1e0/0x430 net/ipv4/af_inet.c:909
- __sys_shutdown_sock net/socket.c:2331 [inline]
- __sys_shutdown_sock net/socket.c:2325 [inline]
- __sys_shutdown+0xf1/0x1b0 net/socket.c:2343
- __do_sys_shutdown net/socket.c:2351 [inline]
- __se_sys_shutdown net/socket.c:2349 [inline]
- __x64_sys_shutdown+0x50/0x70 net/socket.c:2349
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x46/0xb0
- </TASK>
-
-syzbot is try to setup TLS on a SMC socket.
-
-During SMC fallback process in connect syscall, kernel will sets the
-smc->sk.sk_socket->file->private_data to smc->clcsock
-in smc_switch_to_fallback(), and set smc->clcsock->sk_user_data
-to origin smc in smc_fback_replace_callbacks().
-
-When syzbot makes a setsockopt syscall, its argument sockfd
-actually points to smc->clcsock, which is not a smc_sock type,
-So it won't call smc_setsockopt() in setsockopt syscall,
-instead it will call do_tcp_setsockopt() to setup TLS, which
-bypasses the fixes 734942cc4ea6, its content is shown as below
-> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-> index be3e80b3e27f1..5eff7cccceffc 100644
-> --- a/net/smc/af_smc.c
-> +++ b/net/smc/af_smc.c
-> @@ -2161,6 +2161,9 @@ static int smc_setsockopt(struct socket *sock,
-> 			int level, int optname,
->  	struct smc_sock *smc;
->  	int val, rc;
+On 08/07/2022, Andrii Nakryiko wrote:
+>On Thu, Jul 7, 2022 at 11:04 PM Jon Doron <arilou@gmail.com> wrote:
+>>
+>> From: Jon Doron <jond@wiz.io>
+>>
+>> Add support for writing a custom event reader, by exposing the ring
+>> buffer state, and allowing to set it's tail.
+>>
+>> Few simple examples where this type of needed:
+>> 1. perf_event_read_simple is allocating using malloc, perhaps you want
+>>    to handle the wrap-around in some other way.
+>> 2. Since perf buf is per-cpu then the order of the events is not
+>>    guarnteed, for example:
+>>    Given 3 events where each event has a timestamp t0 < t1 < t2,
+>>    and the events are spread on more than 1 CPU, then we can end
+>>    up with the following state in the ring buf:
+>>    CPU[0] => [t0, t2]
+>>    CPU[1] => [t1]
+>>    When you consume the events from CPU[0], you could know there is
+>>    a t1 missing, (assuming there are no drops, and your event data
+>>    contains a sequential index).
+>>    So now one can simply do the following, for CPU[0], you can store
+>>    the address of t0 and t2 in an array (without moving the tail, so
+>>    there data is not perished) then move on the CPU[1] and set the
+>>    address of t1 in the same array.
+>>    So you end up with something like:
+>>    void **arr[] = [&t0, &t1, &t2], now you can consume it orderely
+>>    and move the tails as you process in order.
+>> 3. Assuming there are multiple CPUs and we want to start draining the
+>>    messages from them, then we can "pick" with which one to start with
+>>    according to the remaining free space in the ring buffer.
+>>
 >
-> +	if (level == SOL_TCP && optname == TCP_ULP)
-> +		return -EOPNOTSUPP;
-> +
->  	smc = smc_sk(sk);
+>All the above use cases are sufficiently advanced that you as such an
+>advanced user should be able to write your own perfbuf consumer code.
+>There isn't a lot of code to set everything up, but then you get full
+>control over all the details.
 >
->  	/* generic setsockopts reaching us here always apply to the
-> @@ -2185,7 +2188,6 @@ static int smc_setsockopt(struct socket *sock,
->			int level, int optname,
->  	if (rc || smc->use_fallback)
->  		goto out;
->  	switch (optname) {
-> -	case TCP_ULP:
->  	case TCP_FASTOPEN:
->  	case TCP_FASTOPEN_CONNECT:
->  	case TCP_FASTOPEN_KEY:
-> --
+>I don't see this API as a generally useful, it feels way too low-level
+>and special for inclusion in libbpf.
+>
 
-Later, sk_psock_get() will treat the smc->clcsock->sk_user_data
-as sk_psock type, which triggers the refcnt warning.
+Hi Andrii,
 
-So Just disallow this setup in do_tcp_setsockopt() is OK,
-by checking whether sk_user_data points to a SMC socket.
+I understand, but I was still hoping you will be willing to expose this 
+API.
+libbpf has very simple and nice binding to Rust and other languages, 
+implementing one of those use cases in the bindings can make things much 
+simpler than using some libc or syscall APIs, instead of enjoying all
+the simplicity that you get for free in libbpf.
 
-Reported-and-tested-by: syzbot+5f26f85569bd179c18ce@syzkaller.appspotmail.com
-Signed-off-by: hawk <18801353760@163.com>
----
- net/ipv4/tcp.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+Hope you will be willing to reconsider :)
 
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index 9984d23a7f3e..a1e6cab2c748 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -3395,10 +3395,23 @@ static int do_tcp_setsockopt(struct sock *sk, int level, int optname,
- 	}
- 	case TCP_ULP: {
- 		char name[TCP_ULP_NAME_MAX];
-+		struct sock *smc_sock;
- 
- 		if (optlen < 1)
- 			return -EINVAL;
- 
-+		/* SMC sk_user_data may be treated as psock,
-+		 * which triggers a refcnt warning.
-+		 */
-+		rcu_read_lock();
-+		smc_sock = rcu_dereference_sk_user_data(sk);
-+		if (level == SOL_TCP && smc_sock &&
-+		    smc_sock->__sk_common.skc_family == AF_SMC) {
-+			rcu_read_unlock();
-+			return -EOPNOTSUPP;
-+		}
-+		rcu_read_unlock();
-+
- 		val = strncpy_from_sockptr(name, optval,
- 					min_t(long, TCP_ULP_NAME_MAX - 1,
- 					      optlen));
--- 
-2.25.1
+Have a nice weekend,
+-- Jon.
 
+>> Signed-off-by: Jon Doron <jond@wiz.io>
+>> ---
+>>  tools/lib/bpf/libbpf.c   | 40 ++++++++++++++++++++++++++++++++++++++++
+>>  tools/lib/bpf/libbpf.h   | 25 +++++++++++++++++++++++++
+>>  tools/lib/bpf/libbpf.map |  2 ++
+>>  3 files changed, 67 insertions(+)
+>>
+>
+>[...]
