@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2898956CA63
+	by mail.lfdr.de (Postfix) with ESMTP id 70EE056CA64
 	for <lists+bpf@lfdr.de>; Sat,  9 Jul 2022 17:45:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229492AbiGIPpH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 9 Jul 2022 11:45:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36972 "EHLO
+        id S229552AbiGIPpI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 9 Jul 2022 11:45:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbiGIPpF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 9 Jul 2022 11:45:05 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21C3C1A3BB
-        for <bpf@vger.kernel.org>; Sat,  9 Jul 2022 08:45:03 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id x22so1007703qkf.13
-        for <bpf@vger.kernel.org>; Sat, 09 Jul 2022 08:45:03 -0700 (PDT)
+        with ESMTP id S229560AbiGIPpG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 9 Jul 2022 11:45:06 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 917551A820
+        for <bpf@vger.kernel.org>; Sat,  9 Jul 2022 08:45:04 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id p22so1033950qkj.4
+        for <bpf@vger.kernel.org>; Sat, 09 Jul 2022 08:45:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=bkLct7+3x09q3TPrw9hr1g7AQwWmVQubLfPgu28Dhr0=;
-        b=Q7yw0wFIPOJflUJiXHOo6vvgX5eAazVsQSyQo+3EM00n1vjxcSp0MPsktNjtXotXyb
-         SCUm1SVXetSbg2CthqfDdW9tiiO05DFrQ7Cci270NKwZx45jnez/jmMz8iXGo5yMH6ns
-         QP8p9SLRrv/9zuJ2IRfvXUBoggIehg3rBCQzNJd8e4fCoc2EiF+aFxN+A98p4M6qmWad
-         HPgtddGUzz5sAScyXjvzJHvbb8mgTVJqDLbr0pwjNSeR3zpKLDjrTPgvWm7yeojDvnIH
-         EfdXzndAdsmgSOGiFn2q7vCUx554Y9wFypQ0mpHKwERHFyhIdTBC9uipsW03M9EybnJC
-         3+CA==
+        bh=+sK84UVH2wquFXSzUUNoreC4W5iW3VQxZVW1oXFAj7M=;
+        b=K+EBOXFVQx22mAysawqPPGd6YF6te2G3ocmODstIFyaoRmScuzwpcC9duEm7VoF1Pp
+         P92mJu5GOvGrrgBsgTSJ7RU5dHhaM9gzAdcHKhQ2PZZAgH/lUwBBPydcnx0LqgVp5XEq
+         iJXxuSYQEObaYzV7IKJITVT5yUophFPIE1WaQBhaZH9VZKOcYat3AT0FAtHh6866m415
+         v/8FKRd1nfulbf0rvPp89YwQDdQP5a8UZdogIEyBSovqnRpayLAx8K5z021nHSBYxjhY
+         I05RV4vRNwvGoww0DQkCTd2LGAdYGOoR1rKcXQ2tS95sjaVWDHGgQW3Vg8Qz6FFSJlQw
+         MEfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=bkLct7+3x09q3TPrw9hr1g7AQwWmVQubLfPgu28Dhr0=;
-        b=RpcWuT2pFleuYXUSBpdFvBiJSXnn5ak/cbbwf3kkh8ZfFS/3d2MXGjQgqqZbb7Kuvn
-         y36Vhqvph8GBWW+jrP6LlLyS1PK57pNoP/ARZB1HeWaBvcIpCfNaLnuj2vLxJ2ib9HvP
-         04OrUbFAmgIwihd3sDcY/79/JppqwD5j9B2R92PGnc24DtBSFu6q1j+Ir3cHPRbeMdH2
-         Lnn0Z8PlHugRKNh8l74ubV58F5HC10F5v2fxzbeYPWIYqBnWk7MVq027ST7tr6MfkB9X
-         Yt2pO6hm45NTCzwl1aANpVjYhO+ogx3wxPxjmZ21/xdqYUh8sNGddfna3ooyx/XbJF1M
-         QV4Q==
-X-Gm-Message-State: AJIora94O8jalB/kJ0Dc1GycCYcNMhdG7WDUTS6mfbHf9JZC8kZD0Ru0
-        AYgl5eSWv3HPkeJxWtibiDM=
-X-Google-Smtp-Source: AGRyM1vM2NyKCJqvfdCCZjo75kvFKaaQ+FzJQlbCqBZZqXIDAZhZWRqSBi7BW6ePAsZ4AE6yx2IjCQ==
-X-Received: by 2002:a05:620a:258a:b0:6a7:9479:655e with SMTP id x10-20020a05620a258a00b006a79479655emr5699121qko.681.1657381502269;
-        Sat, 09 Jul 2022 08:45:02 -0700 (PDT)
+        bh=+sK84UVH2wquFXSzUUNoreC4W5iW3VQxZVW1oXFAj7M=;
+        b=zgLtxD28LtcOslkQHU7nkIN41iOKRjej1N58o67rKruLFNa/J0pn1r7J9pfOPz9y/5
+         BO6EvDF9zsAZzpw/V25tehIVFjNv1jRZcI+S+HSS2fsaCPkAB2gs/9qtwDvKiLerrt45
+         VVmieLfii5P4HT7Fn7c2sRUP5OFIz5Al9E1ou4CuK3cvO4kbZm/6uiWE06QilOSKHleu
+         enE702hR86hyGa3ISubKo8nIsu8rMC0so348RAp7NeeUUuB4DhVAd6s9KG5H3ZNfJLSv
+         rFsnlfYhxbhwbyCLijvB8i+TfJhnPeUcGTwk+h0esElBXz1z25BnkVFnLcQ2SkkYxz3F
+         xVZQ==
+X-Gm-Message-State: AJIora8YquFp8uZX465y129ThkJiKiEDYiTvuWUsPFNlJo5ZazRMhozo
+        R2tm3iYVdUBC3fsQbdoYbis=
+X-Google-Smtp-Source: AGRyM1thPlTdIi4KTSZfgwOR+dB868cIZmv/k3fKNJ8+KGIYpj7VcJN/cbdNBWTmaqgEV08IwHvvnA==
+X-Received: by 2002:a05:620a:27c6:b0:6af:3c1d:7fac with SMTP id i6-20020a05620a27c600b006af3c1d7facmr6132331qkp.516.1657381503710;
+        Sat, 09 Jul 2022 08:45:03 -0700 (PDT)
 Received: from vultr.guest ([2001:19f0:5:6e4b:5400:4ff:fe10:17bb])
-        by smtp.gmail.com with ESMTPSA id u14-20020a05620a430e00b006a6a6f148e6sm1682411qko.17.2022.07.09.08.45.00
+        by smtp.gmail.com with ESMTPSA id u14-20020a05620a430e00b006a6a6f148e6sm1682411qko.17.2022.07.09.08.45.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Jul 2022 08:45:01 -0700 (PDT)
+        Sat, 09 Jul 2022 08:45:02 -0700 (PDT)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
@@ -54,10 +54,10 @@ To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         quentin@isovalent.com, roman.gushchin@linux.dev, haoluo@google.com,
         shakeelb@google.com
 Cc:     bpf@vger.kernel.org, linux-mm@kvack.org,
-        Yafang Shao <laoar.shao@gmail.com>, NeilBrown <neilb@suse.de>
-Subject: [PATCH bpf-next v3 1/2] bpf: Make non-preallocated allocation low priority
-Date:   Sat,  9 Jul 2022 15:44:56 +0000
-Message-Id: <20220709154457.57379-2-laoar.shao@gmail.com>
+        Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH bpf-next v3 2/2] bpf: Warn on non-preallocated case for missed trace types
+Date:   Sat,  9 Jul 2022 15:44:57 +0000
+Message-Id: <20220709154457.57379-3-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20220709154457.57379-1-laoar.shao@gmail.com>
 References: <20220709154457.57379-1-laoar.shao@gmail.com>
@@ -73,110 +73,78 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-GFP_ATOMIC doesn't cooperate well with memcg pressure so far, especially
-if we allocate too much GFP_ATOMIC memory. For example, when we set the
-memcg limit to limit a non-preallocated bpf memory, the GFP_ATOMIC can
-easily break the memcg limit by force charge. So it is very dangerous to
-use GFP_ATOMIC in non-preallocated case. One way to make it safe is to
-remove __GFP_HIGH from GFP_ATOMIC, IOW, use (__GFP_ATOMIC |
-__GFP_KSWAPD_RECLAIM) instead, then it will be limited if we allocate
-too much memory. There's a plan to completely remove __GFP_ATOMIC in the
-mm side[1], so let's use GFP_NOWAIT instead.
+The raw tracepoint may cause unexpected memory allocation if we set
+BPF_F_NO_PREALLOC. So let's warn on it.
 
-We introduced BPF_F_NO_PREALLOC is because full map pre-allocation is
-too memory expensive for some cases. That means removing __GFP_HIGH
-doesn't break the rule of BPF_F_NO_PREALLOC, but has the same goal with
-it-avoiding issues caused by too much memory. So let's remove it.
-
-This fix can also apply to other run-time allocations, for example, the
-allocation in lpm trie, local storage and devmap. So let fix it
-consistently over the bpf code
-
-It also fixes a typo in the comment.
-
-[1]. https://lore.kernel.org/linux-mm/163712397076.13692.4727608274002939094@noble.neil.brown.name/
-
-Cc: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Shakeel Butt <shakeelb@google.com>
-Cc: NeilBrown <neilb@suse.de>
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- kernel/bpf/devmap.c        | 2 +-
- kernel/bpf/hashtab.c       | 6 +++---
- kernel/bpf/local_storage.c | 2 +-
- kernel/bpf/lpm_trie.c      | 2 +-
- 4 files changed, 6 insertions(+), 6 deletions(-)
+ kernel/bpf/verifier.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index c2867068e5bd..1400561efb15 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -845,7 +845,7 @@ static struct bpf_dtab_netdev *__dev_map_alloc_node(struct net *net,
- 	struct bpf_dtab_netdev *dev;
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index e3cf6194c24f..3cd8260827e0 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -12574,14 +12574,20 @@ static int check_map_prealloc(struct bpf_map *map)
+ 		!(map->map_flags & BPF_F_NO_PREALLOC);
+ }
  
- 	dev = bpf_map_kmalloc_node(&dtab->map, sizeof(*dev),
--				   GFP_ATOMIC | __GFP_NOWARN,
-+				   GFP_NOWAIT | __GFP_NOWARN,
- 				   dtab->map.numa_node);
- 	if (!dev)
- 		return ERR_PTR(-ENOMEM);
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 17fb69c0e0dc..da7578426a46 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -61,7 +61,7 @@
-  *
-  * As regular device interrupt handlers and soft interrupts are forced into
-  * thread context, the existing code which does
-- *   spin_lock*(); alloc(GPF_ATOMIC); spin_unlock*();
-+ *   spin_lock*(); alloc(GFP_ATOMIC); spin_unlock*();
-  * just works.
-  *
-  * In theory the BPF locks could be converted to regular spinlocks as well,
-@@ -978,7 +978,7 @@ static struct htab_elem *alloc_htab_elem(struct bpf_htab *htab, void *key,
- 				goto dec_count;
- 			}
- 		l_new = bpf_map_kmalloc_node(&htab->map, htab->elem_size,
--					     GFP_ATOMIC | __GFP_NOWARN,
-+					     GFP_NOWAIT | __GFP_NOWARN,
- 					     htab->map.numa_node);
- 		if (!l_new) {
- 			l_new = ERR_PTR(-ENOMEM);
-@@ -996,7 +996,7 @@ static struct htab_elem *alloc_htab_elem(struct bpf_htab *htab, void *key,
- 		} else {
- 			/* alloc_percpu zero-fills */
- 			pptr = bpf_map_alloc_percpu(&htab->map, size, 8,
--						    GFP_ATOMIC | __GFP_NOWARN);
-+						    GFP_NOWAIT | __GFP_NOWARN);
- 			if (!pptr) {
- 				kfree(l_new);
- 				l_new = ERR_PTR(-ENOMEM);
-diff --git a/kernel/bpf/local_storage.c b/kernel/bpf/local_storage.c
-index 8654fc97f5fe..49ef0ce040c7 100644
---- a/kernel/bpf/local_storage.c
-+++ b/kernel/bpf/local_storage.c
-@@ -165,7 +165,7 @@ static int cgroup_storage_update_elem(struct bpf_map *map, void *key,
+-static bool is_tracing_prog_type(enum bpf_prog_type type)
++static bool is_tracing_prog_type(enum bpf_prog_type prog_type,
++				 enum bpf_attach_type attach_type)
+ {
+-	switch (type) {
++	switch (prog_type) {
+ 	case BPF_PROG_TYPE_KPROBE:
+ 	case BPF_PROG_TYPE_TRACEPOINT:
+ 	case BPF_PROG_TYPE_PERF_EVENT:
+ 	case BPF_PROG_TYPE_RAW_TRACEPOINT:
++	case BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE:
+ 		return true;
++	case BPF_PROG_TYPE_TRACING:
++		if (attach_type == BPF_TRACE_RAW_TP)
++			return true;
++		return false;
+ 	default:
+ 		return false;
+ 	}
+@@ -12601,7 +12607,9 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
+ 					struct bpf_prog *prog)
+ 
+ {
++	enum bpf_attach_type attach_type = prog->expected_attach_type;
+ 	enum bpf_prog_type prog_type = resolve_prog_type(prog);
++
+ 	/*
+ 	 * Validate that trace type programs use preallocated hash maps.
+ 	 *
+@@ -12619,7 +12627,7 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
+ 	 * now, but warnings are emitted so developers are made aware of
+ 	 * the unsafety and can fix their programs before this is enforced.
+ 	 */
+-	if (is_tracing_prog_type(prog_type) && !is_preallocated_map(map)) {
++	if (is_tracing_prog_type(prog_type, attach_type) && !is_preallocated_map(map)) {
+ 		if (prog_type == BPF_PROG_TYPE_PERF_EVENT) {
+ 			verbose(env, "perf_event programs can only use preallocated hash map\n");
+ 			return -EINVAL;
+@@ -12638,7 +12646,7 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
+ 			return -EINVAL;
+ 		}
+ 
+-		if (is_tracing_prog_type(prog_type)) {
++		if (is_tracing_prog_type(prog_type, attach_type)) {
+ 			verbose(env, "tracing progs cannot use bpf_spin_lock yet\n");
+ 			return -EINVAL;
+ 		}
+@@ -12650,7 +12658,7 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
  	}
  
- 	new = bpf_map_kmalloc_node(map, struct_size(new, data, map->value_size),
--				   __GFP_ZERO | GFP_ATOMIC | __GFP_NOWARN,
-+				   __GFP_ZERO | GFP_NOWAIT | __GFP_NOWARN,
- 				   map->numa_node);
- 	if (!new)
- 		return -ENOMEM;
-diff --git a/kernel/bpf/lpm_trie.c b/kernel/bpf/lpm_trie.c
-index f0d05a3cc4b9..d789e3b831ad 100644
---- a/kernel/bpf/lpm_trie.c
-+++ b/kernel/bpf/lpm_trie.c
-@@ -285,7 +285,7 @@ static struct lpm_trie_node *lpm_trie_node_alloc(const struct lpm_trie *trie,
- 	if (value)
- 		size += trie->map.value_size;
- 
--	node = bpf_map_kmalloc_node(&trie->map, size, GFP_ATOMIC | __GFP_NOWARN,
-+	node = bpf_map_kmalloc_node(&trie->map, size, GFP_NOWAIT | __GFP_NOWARN,
- 				    trie->map.numa_node);
- 	if (!node)
- 		return NULL;
+ 	if (map_value_has_timer(map)) {
+-		if (is_tracing_prog_type(prog_type)) {
++		if (is_tracing_prog_type(prog_type, attach_type)) {
+ 			verbose(env, "tracing progs cannot use bpf_timer yet\n");
+ 			return -EINVAL;
+ 		}
 -- 
 2.17.1
 
