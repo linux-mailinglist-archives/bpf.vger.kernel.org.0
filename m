@@ -2,68 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F07156CC17
-	for <lists+bpf@lfdr.de>; Sun, 10 Jul 2022 02:38:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EB7256CD3A
+	for <lists+bpf@lfdr.de>; Sun, 10 Jul 2022 07:23:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229463AbiGJAi1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 9 Jul 2022 20:38:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48864 "EHLO
+        id S229456AbiGJFX2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 10 Jul 2022 01:23:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbiGJAi0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 9 Jul 2022 20:38:26 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A743712A9C
-        for <bpf@vger.kernel.org>; Sat,  9 Jul 2022 17:38:25 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id os14so3403975ejb.4
-        for <bpf@vger.kernel.org>; Sat, 09 Jul 2022 17:38:25 -0700 (PDT)
+        with ESMTP id S229488AbiGJFX2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 10 Jul 2022 01:23:28 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D40EE120B2
+        for <bpf@vger.kernel.org>; Sat,  9 Jul 2022 22:23:26 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id g1so2789794edb.12
+        for <bpf@vger.kernel.org>; Sat, 09 Jul 2022 22:23:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/8ewB62WGOKPyH3dguLCxJYshiiBjeE8pCehH/VaqiM=;
-        b=oMPKlBUk3hKD/UAe7Ns4ruY0MH9aSstGL19JrOwLS5htMxE3F9NLGfOG83xymy7pQZ
-         LvUgCwape17qcCaIY6yyJKg1ozvlMhHF4PGO25DfymRBxLXa8YMUCXCwrfjeOBgoaxAS
-         +11jruGGRA2CUP0B0/1J1yv+vSUZfYN4MOz1y6ivXJleDSUoJ2JIIXRzFQQMnFNW3PIF
-         S7MHzk/w06H3M6dz/FD0B9stJbO3qh/Cv9l8LJnTX3al5wkp955Dg4Y2tBuzhIqc34oh
-         K5OvNww6L8rshR7Wd8W3nJb5N25nsLyxo2VkMwDQ4eH7nDENJkkzAUMQr+0GXDsbn4wo
-         6Uqg==
+        bh=xbIxivya81dB9dOtWxKUjG49nCVClihiUDoOdjXiRno=;
+        b=iY/Wh87X1E4J+7otRN7YIHVcyAA+CExZGlq+1bEArMnqsyf+nvqyy3BWX1QIFHMCfO
+         jjQ2uiT7QIJ3yG6e6pG+0KTc+MhyFHYC8iTGxBPMOWcjZm1GWyQcJzXtaxv5MqGKNWzz
+         Tauz7MJuuv17yn4/ydM4bG27kwFuP4J+GxG8mzDBD4bJFPYh7fZEZlAK7nlJxzDuCM7p
+         EBo44PxHZuU7NUyb+wfrSvKpmzcVAcviCBRuGFD/Gj+3xWhbc5+nBFS+2Bw9xhYmZemn
+         /Lgac+Sm8utMYwB53RKjapCocqpBhcUQINkvSIBN3fkjyAkLksc63OCEB/ThbhmGv9DK
+         9zCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/8ewB62WGOKPyH3dguLCxJYshiiBjeE8pCehH/VaqiM=;
-        b=j9fllufw9sDOI4sC9HFzcqmFjRrAEuPgJRaQrvO7IV23/+dahjWii3rgQNkORdIL8y
-         qycXdtTe4GrYDwHL77nWvZpiQmEIKofF5e07Y/5Lpm5kK6nOdhTrrVcTViCDEbGWD3iF
-         RRv0Hw3iZu8nmfz9HC+KmVwxucOb68Q//+6xsZrOjrI0nD1ppUPQOdtaXm1jV86hehlL
-         G3a8OlC4Tp/Vh2Nr62/JLctJfeNfKoSXCG1j3FGgEv5hPFGYyPuGOxmtFy+Fdw5n4Uu6
-         IuRccD/zzTXPMb2AcW4LXxVq6WkHNILhimVZVZPpwdqVGLqm3EHHoW0fPwgOUM6P/VEI
-         sXtQ==
-X-Gm-Message-State: AJIora85xVGbIfmGka7oEEgsRdtEUMwugdIQq9fK94gMNrZ0mZ5rybw7
-        nGNONp8KS1nZNaACv+neeQ28Rh67l2VYLNYBnng=
-X-Google-Smtp-Source: AGRyM1tzrSQKEBWYsAjZ/siLnJjs3kVjTJ2X6dLMargAtpFIVqtboC2lJ94qT0r9z5vIQh9xrne4xvEAytJB9S6GWnA=
-X-Received: by 2002:a17:906:5189:b0:722:dc81:222a with SMTP id
- y9-20020a170906518900b00722dc81222amr11233742ejk.502.1657413504219; Sat, 09
- Jul 2022 17:38:24 -0700 (PDT)
+        bh=xbIxivya81dB9dOtWxKUjG49nCVClihiUDoOdjXiRno=;
+        b=VZ0IgoAi5A4m8fGehNaX1iPxN/ly111G5WzrENJ1jdatvhW2SdQeULhW880q2u8pu3
+         mkyGaXqt9beaAIdJzl62SY+bDG97yofEj/N7QEW2kFOC8sGZX6SR5vOkkS3hNezjQ9qZ
+         G8gL30rmxj6Q3FoR+hrhnwn+dEXytjVD4ym2OHqo9+UIZZeIBDc1avphRGGHQDJ8xlCd
+         z4GeAyNgwxouEJtbHZQtm62kvr0hqt9+2HSEgVrLqdfsvN2zEyR+PkEOvir9YKtOpmbv
+         sBPFHaXf1v3o8lAPsPRYd7mtU6YQZpabs6qj+HZapM3uQKUYFMz4ETuCyNZB46hAKuZt
+         otfg==
+X-Gm-Message-State: AJIora9vwIDolfveDJskhuO5ieNPi+gYo9ohrsgr0ews7zR+gGvpPGdd
+        laRCkwcLRXZWs0gifttONqneWC9tc9qGkQ6rlG/mWIf4+M0=
+X-Google-Smtp-Source: AGRyM1tNQuhHs6tTos/XbsqpravP1D2eCWW6CEgUL+k1T+Ih4lyDKdp1vzbO7U0EtlRjQjcG8FNE/p30B56xNtckVmA=
+X-Received: by 2002:aa7:c9d3:0:b0:43a:67b9:6eea with SMTP id
+ i19-20020aa7c9d3000000b0043a67b96eeamr15875352edt.94.1657430605400; Sat, 09
+ Jul 2022 22:23:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220707004118.298323-1-andrii@kernel.org> <20220707004118.298323-3-andrii@kernel.org>
- <CAADnVQLxWDD3AAp73BcXW4ArWMgJ-fSUzSjw=-gzq=azBrXdqA@mail.gmail.com>
- <CAEf4BzaXBD86k8BYv7q4fFeyHALHcVUCbSpSG4=kfC0orydrCQ@mail.gmail.com>
- <YsgU1kjVndNjJhI8@krava> <CAEf4BzapNiTTV18guaXz_e1nY9jbybZVTWXUM7sPNqJd=Cau+w@mail.gmail.com>
-In-Reply-To: <CAEf4BzapNiTTV18guaXz_e1nY9jbybZVTWXUM7sPNqJd=Cau+w@mail.gmail.com>
+References: <20220708060416.1788789-1-arilou@gmail.com> <20220708060416.1788789-2-arilou@gmail.com>
+ <CAEf4BzZkfWTQppe97E1CTLKEqgtxP9gUQqbXB1EKRm5pK_ZmDA@mail.gmail.com> <YsjtxLuTvn8DWEA6@jondnuc>
+In-Reply-To: <YsjtxLuTvn8DWEA6@jondnuc>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sat, 9 Jul 2022 17:38:12 -0700
-Message-ID: <CAADnVQLeEz8NLf9b4reOKdyrtneHcv4ExSGn7Z8ysk1nYSayYw@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next 2/3] libbpf: add ksyscall/kretsyscall
- sections support for syscall kprobes
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Kenta Tada <kenta.tada@sony.com>,
-        Hengqi Chen <hengqi.chen@gmail.com>
+Date:   Sat, 9 Jul 2022 22:23:13 -0700
+Message-ID: <CAADnVQLmAg9_StyD9_pMO0YUn-Yi1ozxfinxuQmkL0BYoTjbjw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/1] libbpf: perfbuf: allow raw access to buffers
+To:     Jon Doron <arilou@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, Jon Doron <jond@wiz.io>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -75,64 +68,62 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 8, 2022 at 3:05 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Fri, Jul 8, 2022 at 7:54 PM Jon Doron <arilou@gmail.com> wrote:
 >
-> On Fri, Jul 8, 2022 at 4:28 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+> On 08/07/2022, Andrii Nakryiko wrote:
+> >On Thu, Jul 7, 2022 at 11:04 PM Jon Doron <arilou@gmail.com> wrote:
+> >>
+> >> From: Jon Doron <jond@wiz.io>
+> >>
+> >> Add support for writing a custom event reader, by exposing the ring
+> >> buffer state, and allowing to set it's tail.
+> >>
+> >> Few simple examples where this type of needed:
+> >> 1. perf_event_read_simple is allocating using malloc, perhaps you want
+> >>    to handle the wrap-around in some other way.
+> >> 2. Since perf buf is per-cpu then the order of the events is not
+> >>    guarnteed, for example:
+> >>    Given 3 events where each event has a timestamp t0 < t1 < t2,
+> >>    and the events are spread on more than 1 CPU, then we can end
+> >>    up with the following state in the ring buf:
+> >>    CPU[0] => [t0, t2]
+> >>    CPU[1] => [t1]
+> >>    When you consume the events from CPU[0], you could know there is
+> >>    a t1 missing, (assuming there are no drops, and your event data
+> >>    contains a sequential index).
+> >>    So now one can simply do the following, for CPU[0], you can store
+> >>    the address of t0 and t2 in an array (without moving the tail, so
+> >>    there data is not perished) then move on the CPU[1] and set the
+> >>    address of t1 in the same array.
+> >>    So you end up with something like:
+> >>    void **arr[] = [&t0, &t1, &t2], now you can consume it orderely
+> >>    and move the tails as you process in order.
+> >> 3. Assuming there are multiple CPUs and we want to start draining the
+> >>    messages from them, then we can "pick" with which one to start with
+> >>    according to the remaining free space in the ring buffer.
+> >>
 > >
-> > On Thu, Jul 07, 2022 at 12:10:30PM -0700, Andrii Nakryiko wrote:
+> >All the above use cases are sufficiently advanced that you as such an
+> >advanced user should be able to write your own perfbuf consumer code.
+> >There isn't a lot of code to set everything up, but then you get full
+> >control over all the details.
 > >
-> > SNIP
+> >I don't see this API as a generally useful, it feels way too low-level
+> >and special for inclusion in libbpf.
 > >
-> > > > Maybe we should do the other way around ?
-> > > > cat /proc/kallsyms |grep sys_bpf
-> > > >
-> > > > and figure out the prefix from there?
-> > > > Then we won't need to do giant
-> > > > #if defined(__x86_64__)
-> > > > ...
-> > > >
-> > >
-> > > Unfortunately this won't work well due to compat and 32-bit APIs (and
-> > > bpf() syscall is particularly bad with also bpf_sys_bpf):
-> > >
-> > > $ sudo cat /proc/kallsyms| rg '_sys_bpf$'
-> > > ffffffff811cb100 t __sys_bpf
-> > > ffffffff811cd380 T bpf_sys_bpf
-> > > ffffffff811cd520 T __x64_sys_bpf
-> > > ffffffff811cd540 T __ia32_sys_bpf
-> > > ffffffff8256fce0 r __ksymtab_bpf_sys_bpf
-> > > ffffffff8259b5a2 r __kstrtabns_bpf_sys_bpf
-> > > ffffffff8259bab9 r __kstrtab_bpf_sys_bpf
-> > > ffffffff83abc400 t _eil_addr___ia32_sys_bpf
-> > > ffffffff83abc410 t _eil_addr___x64_sys_bpf
-> > >
-> > > $ sudo cat /proc/kallsyms| rg '_sys_mmap$'
-> > > ffffffff81024480 T __x64_sys_mmap
-> > > ffffffff810244c0 T __ia32_sys_mmap
-> > > ffffffff83abae30 t _eil_addr___ia32_sys_mmap
-> > > ffffffff83abae40 t _eil_addr___x64_sys_mmap
-> > >
-> > > We have similar arch-specific switches in few other places (USDT and
-> > > lib path detection, for example), so it's not a new precedent (for
-> > > better or worse).
-> > >
-> > >
-> > > > /proc/kallsyms has world read permissions:
-> > > > proc_create("kallsyms", 0444, NULL, &kallsyms_proc_ops);
-> > > > unlike available_filter_functions.
-> > > >
-> > > > Also tracefs might be mounted in a different dir than
-> > > > /sys/kernel/tracing/
-> > > > like
-> > > > /sys/kernel/debug/tracing/
-> > >
-> > > Yeah, good point, was trying to avoid parsing more expensive kallsyms,
-> > > but given it's done once, it might not be a big deal.
-> >
-> > we could get that also from BTF?
 >
-> I'd rather not add dependency on BTF for this.
+> Hi Andrii,
+>
+> I understand, but I was still hoping you will be willing to expose this
+> API.
+> libbpf has very simple and nice binding to Rust and other languages,
+> implementing one of those use cases in the bindings can make things much
+> simpler than using some libc or syscall APIs, instead of enjoying all
+> the simplicity that you get for free in libbpf.
+>
+> Hope you will be willing to reconsider :)
 
-A weird and non technical reason.
-Care to explain this odd excuse?
+The discussion would have been different if you mentioned that
+motivation in the commit logs.
+Please provide links to "Rust and other languages" code that
+uses this api.
