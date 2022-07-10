@@ -2,96 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 462BA56CDA5
-	for <lists+bpf@lfdr.de>; Sun, 10 Jul 2022 09:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2789256CDCB
+	for <lists+bpf@lfdr.de>; Sun, 10 Jul 2022 10:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229476AbiGJHcS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 10 Jul 2022 03:32:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55912 "EHLO
+        id S229557AbiGJIfd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 10 Jul 2022 04:35:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbiGJHcR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 10 Jul 2022 03:32:17 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 987D1192B5
-        for <bpf@vger.kernel.org>; Sun, 10 Jul 2022 00:32:16 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id y4-20020a25b9c4000000b0066e573fb0fcso1819227ybj.21
-        for <bpf@vger.kernel.org>; Sun, 10 Jul 2022 00:32:16 -0700 (PDT)
+        with ESMTP id S229545AbiGJIfc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 10 Jul 2022 04:35:32 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40FB813F20
+        for <bpf@vger.kernel.org>; Sun, 10 Jul 2022 01:35:30 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id v67-20020a1cac46000000b003a1888b9d36so3401762wme.0
+        for <bpf@vger.kernel.org>; Sun, 10 Jul 2022 01:35:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=t63gxYnqY/rj0/phOitCSls/u6CQ33pwzplOgpHsAMw=;
-        b=cTG7s5oMvKi7QSlGJ2IX8pYkdKBeptl+8VdN7wNuA3+aH37jAtdCIPOF48MzVQviLx
-         lBpu7xwlCKFit1y/WqWGsCvR9Iq3kz5GH5ZU8OQp/zzqJp8j7oEA9HuThJXpeDzhA30z
-         sBZ06gix0dShKw/MmJCd9ViXt5YdX6FwstXF0a9j3/B0LBa/J6ZNlvo3061PQkAhM29Q
-         ghRpgj6ASJsG2mFwwkr2EPVjOs1hP+eedV1hSI33dNE0TscWNp/5lkibmchC9LZt+D7S
-         p+M7qePv1h7A1vdjg4G8FZJLCzRKNdbN+p7Wv0TDnzrbr5zvWIyS9/eBhSDHtyoWpefC
-         ghvg==
+        d=tessares.net; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=orIIFdtRbt6cm/l/3AlelKzIyuzEuMYVC6VdEiG/HhE=;
+        b=xw92GhKX4WJO8whQD7utDC8+8bFUEokf6yXN1jTy1b8fK7xUW6SB6d3+HjS0DvXLln
+         bu2CcR2YFRaQZFjV19f90BQSnxs/vaoHsaybo7j3aeVfpytGIIkW/Xvu6uexB8PrE/Ge
+         XpYOfxY7hQT9u0RvKILf+GBEYrXwvGdduWd9tyDOcEztbS14h6uOF50qQmRSixwuhmaQ
+         jGpgJfWQZidxD74rkU11R6urlWEKy51jhcyDMa0ZO0DyHjFSy7mzxI64jEn52drPB0kz
+         7Ydd2tQlZibBTDjy+AbGQ3K1FhRIf5cOSzCjwF5S/q3gOwoMi+NmYGtAUf7DVfmfKZL3
+         PDWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=t63gxYnqY/rj0/phOitCSls/u6CQ33pwzplOgpHsAMw=;
-        b=nfPT1UXrZXhoyTRzkXqPZWxcNRJYRHaQbSbADjibIEIV1rel5QzBFUjRm9soFMcPnS
-         vcCih1Ryvogddsqk5T93DQrqR3Mkx3YliERmYPMv5ZMsDYIdidqAs5HCbKMGJc6YNC3k
-         U3q2VvjVzj4RYJspphUtosiGclRFzZOopqYXKbvOLeOXi6WdhPD6YTrvlcnqZ+WbQajA
-         ufnkXgq0ALkX6oAvIvKUpKjmxXyyVCzLbdZprnh3uM3z3zUBpuadzrnCNrZnPLMl+y6J
-         nZih7uJ65mYRxzncbVX5t83BF+oBiLwhzsoOWnFy1vVz5yWMNTneLnDRb9HvgZLUAI8m
-         uO3g==
-X-Gm-Message-State: AJIora+Q7YZN6iEMxCDouiTq5BfFeFv2UMRkUtTnr0BTSlsBqOdOZXPc
-        j22sNwwXrkj3MLXAwtH3jNruBeysXeTybw==
-X-Google-Smtp-Source: AGRyM1ueExjOAIzVciXYEJOOM29pcwMojuHNMU+0gy8kDJxdOmyE4lDkeXYQrZDpOfOH7E1BKHqmu7ycpy2t0A==
-X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:28b])
- (user=shakeelb job=sendgmr) by 2002:a25:3bd3:0:b0:66e:2e5c:5415 with SMTP id
- i202-20020a253bd3000000b0066e2e5c5415mr11899313yba.76.1657438335879; Sun, 10
- Jul 2022 00:32:15 -0700 (PDT)
-Date:   Sun, 10 Jul 2022 07:32:13 +0000
-In-Reply-To: <CAADnVQL5ZQDqMGULJLDwT9xRTihdDvo6GvwxdEOtSAs8EwE78A@mail.gmail.com>
-Message-Id: <20220710073213.bkkdweiqrlnr35sv@google.com>
-Mime-Version: 1.0
-References: <20220623003230.37497-1-alexei.starovoitov@gmail.com>
- <YrlWLLDdvDlH0C6J@infradead.org> <YsNOzwNztBsBcv7Q@casper.infradead.org>
- <20220706175034.y4hw5gfbswxya36z@MacBook-Pro-3.local> <YsXMmBf9Xsp61I0m@casper.infradead.org>
- <20220706180525.ozkxnbifgd4vzxym@MacBook-Pro-3.local.dhcp.thefacebook.com>
- <Ysg0GyvqUe0od2NN@dhcp22.suse.cz> <20220708174858.6gl2ag3asmoimpoe@macbook-pro-3.dhcp.thefacebook.com>
- <20220708215536.pqclxdqvtrfll2y4@google.com> <CAADnVQL5ZQDqMGULJLDwT9xRTihdDvo6GvwxdEOtSAs8EwE78A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/5] bpf: BPF specific memory allocator.
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=orIIFdtRbt6cm/l/3AlelKzIyuzEuMYVC6VdEiG/HhE=;
+        b=OMGh+tRln1r3A+wC0HIWTH7Z3+D68OxVPwTsJp6UK5juAAx+5e3aUgPJQUURL+qC7E
+         iZpqdwPDoM7pTGAyYqB4j+o8f0SOIqxtckpjKeQm0AOkZ3ngalAVIJLXj/vcVaF6FlfH
+         R3VO5WApOAFyXCrP02c+bExDswAsym713utxoQR2cIViP2M007MaOIoD4OT51QlUDdmR
+         zGnDjxWkOXzAEctsZiyfe1aU9Ks2+Uky0k7e7/a/wKhrd0uReEAaGthBRz/tTUAqHNPE
+         HYWFNsZ/1FUwfjLHhNHXf0nU2v+4Tq1bwZPqTHKPPRV4qncxEXAaRUHD9UCzR8QbER4N
+         qZvw==
+X-Gm-Message-State: AJIora/rXdNy8ICNZQ+YlFK3w7JnmQoyfnJRN5T7jIp3VpYT+iYfYSJu
+        cg/Ick0noo6STvDI0yI2FEQu4g==
+X-Google-Smtp-Source: AGRyM1tfaaudoS0WgFrUsnxUfK8M9lLdROl46O50ihd3Xfy0Amv5OvYdh8xbcdjuftlmcbSlpL7aYw==
+X-Received: by 2002:a05:600c:4e54:b0:3a0:4e07:ce with SMTP id e20-20020a05600c4e5400b003a04e0700cemr9652537wmq.37.1657442128721;
+        Sun, 10 Jul 2022 01:35:28 -0700 (PDT)
+Received: from vdi08.nix.tessares.net (static.219.156.76.144.clients.your-server.de. [144.76.156.219])
+        by smtp.gmail.com with ESMTPSA id b17-20020adff911000000b0021d819c8f6dsm3120944wrr.39.2022.07.10.01.35.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Jul 2022 01:35:28 -0700 (PDT)
+From:   Matthieu Baerts <matthieu.baerts@tessares.net>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        linux-mm <linux-mm@kvack.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Eduard Zingerman <eddyz87@gmail.com>
+Cc:     mptcp@lists.linux.dev,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next] bpf: fix 'dubious one-bit signed bitfield' warnings
+Date:   Sun, 10 Jul 2022 10:35:23 +0200
+Message-Id: <20220710083523.1620722-1-matthieu.baerts@tessares.net>
+X-Mailer: git-send-email 2.36.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jul 09, 2022 at 10:26:23PM -0700, Alexei Starovoitov wrote:
-> On Fri, Jul 8, 2022 at 2:55 PM Shakeel Butt <shakeelb@google.com> wrote:
-[...]
-> >
-> > Most probably Michal's comment was on free objects sitting in the caches
-> > (also pointed out by Yosry). Should we drain them on memory pressure /
-> > OOM or should we ignore them as the amount of memory is not significant?
-> 
-> Are you suggesting to design a shrinker for 0.01% of the memory
-> consumed by bpf?
+Our CI[1] reported these warnings when using Sparse:
 
-No, just claim that the memory sitting on such caches is insignificant.
+  $ touch net/mptcp/bpf.c
+  $ make C=1 net/mptcp/bpf.o
+  net/mptcp/bpf.c: note: in included file:
+  include/linux/bpf_verifier.h:348:26: error: dubious one-bit signed bitfield
+  include/linux/bpf_verifier.h:349:29: error: dubious one-bit signed bitfield
+
+These two fields from the new 'bpf_loop_inline_state' structure are used
+as booleans. Instead of declaring two 'unsigned int', we can declare
+them as 'bool'.
+
+While at it, also set 'state->initialized' to 'true' instead of '1' to
+make it clearer it is linked to a 'bool' type.
+
+[1] https://github.com/multipath-tcp/mptcp_net-next/actions/runs/2643588487
+
+Fixes: 1ade23711971 ("bpf: Inline calls to bpf_loop when callback is known")
+Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+---
+ include/linux/bpf_verifier.h | 8 ++++----
+ kernel/bpf/verifier.c        | 2 +-
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index 81b19669efba..2ac424641cc3 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -345,10 +345,10 @@ struct bpf_verifier_state_list {
+ };
+ 
+ struct bpf_loop_inline_state {
+-	int initialized:1; /* set to true upon first entry */
+-	int fit_for_inline:1; /* true if callback function is the same
+-			       * at each call and flags are always zero
+-			       */
++	bool initialized; /* set to true upon first entry */
++	bool fit_for_inline; /* true if callback function is the same
++			      * at each call and flags are always zero
++			      */
+ 	u32 callback_subprogno; /* valid when fit_for_inline is true */
+ };
+ 
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 328cfab3af60..4fa49d852a59 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -7144,7 +7144,7 @@ static void update_loop_inline_state(struct bpf_verifier_env *env, u32 subprogno
+ 	struct bpf_loop_inline_state *state = &cur_aux(env)->loop_inline_state;
+ 
+ 	if (!state->initialized) {
+-		state->initialized = 1;
++		state->initialized = true;
+ 		state->fit_for_inline = loop_flag_is_zero(env);
+ 		state->callback_subprogno = subprogno;
+ 		return;
+-- 
+2.36.1
+
