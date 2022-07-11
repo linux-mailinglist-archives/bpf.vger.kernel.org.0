@@ -2,98 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B2D570A60
-	for <lists+bpf@lfdr.de>; Mon, 11 Jul 2022 21:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 228FE570A92
+	for <lists+bpf@lfdr.de>; Mon, 11 Jul 2022 21:19:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229602AbiGKTKQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Jul 2022 15:10:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51218 "EHLO
+        id S229663AbiGKTT5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Jul 2022 15:19:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbiGKTKQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Jul 2022 15:10:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3FD82AE02;
-        Mon, 11 Jul 2022 12:10:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8092761557;
-        Mon, 11 Jul 2022 19:10:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C589BC341CA;
-        Mon, 11 Jul 2022 19:10:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1657566614;
-        bh=6D+2DpXoaKcspcgzrN+pNsncRNJULDzNOzPp8Ld7hoM=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=NFUmoYBnhmrc9WJYfGgXQmVg60YJU8zfdxGmpXVS8BAyhzXqV52AsUhq6dKG4E75o
-         qBC5wDnfluq+3lR1PgH8SiKwFSa2ZnikoFXLeKDvAoeaWavJzUWfGgUyjP3ukAbhF0
-         P+ZAa780luJ/AkeByfYJoZl3H/GqP59x7T9HDUibeQrTYLbHMIwFYYuM94LtK7tT0s
-         BIfbjogxVwrH5NoizVwPCWDh406pi+TnNze9ybkBLZIaeXUGRU2Ih8TQsJhUmGk3JY
-         oPrg88vcBcQNsi4Gb32JbOvqt6rVE8vN9d3gqAJzDkPIlaUHhB4W2s37jGymotWD0j
-         aBWVHeZ31iSIg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9B3C7E45223;
-        Mon, 11 Jul 2022 19:10:14 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229622AbiGKTT5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Jul 2022 15:19:57 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BBF4E0D8
+        for <bpf@vger.kernel.org>; Mon, 11 Jul 2022 12:19:56 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id l124so5563798pfl.8
+        for <bpf@vger.kernel.org>; Mon, 11 Jul 2022 12:19:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rGhsbgrOdse9F6x0ACAaLskSqS3ovFUrX7+4Tn05BBc=;
+        b=VbqQNIJ7oNm70/p7Vv2pDX3Lg1qXKcNUXJKYU85ZVBPtzdtkZTRmF5HM986wBWZ1Xr
+         +1aZYSlXK9mJr++7ZM1Y6OsjPkpeGQ7CtcXpYMc/ZBIx2hJri8E++MduFPc5cM0dxhqu
+         ZFJasQnixUKypE6z0mkUDz1n6c8Mg26VC/nwTA8PXvtlReBdbi2Sx6kS6ZucPBURq23w
+         JZ44FpxsceTXzSYoRoLujG4eVcrRlfr0DpS4DmlwQ6TbEgi3g0LaReLXUCPvFUANvK4u
+         j7BulOxJs3kfmlFQw0ZBOPyKFDxvdSBTm8N96VW7YGovw/zpkulTNbp0Ee+wZTbbJxwB
+         4Lpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rGhsbgrOdse9F6x0ACAaLskSqS3ovFUrX7+4Tn05BBc=;
+        b=GVw7iAI7ABlLMNMT/eR0aLa0mcPf4pfzGOKBhFbeOP/3gTfqmwJUo69FCdT+uma9uT
+         XH23Ui7sKnHX3VAtcfc7kZRJG2KB/xSDDw+WldH5RfgKSu2DO7Sag6SIYhqG7zOmjREE
+         bt8OigpnYej0/SGN/zTVer3eXjE1tHAyIIcX0eGKQB9jofF951wwCvfNyE4UKGXdSNdz
+         PSykWzimWK0QB6qqXWZPt50MTM8fbijiogNDd5TaDVIuBPdoVAcyDnUv0ee/pmqOx5NQ
+         iGqKpQ7/FrpOkrozd8HYhwi9zni/AOZ08L+6XkJu9hbBnCmw6pZpzuOt8nZ5oFYVAL8X
+         AE/A==
+X-Gm-Message-State: AJIora+WocxWf8DyqFwcKz8xSQ3I1jYdrhw9vcNC/Z8Voeol4altbIXp
+        1IzD/GGV2l//v4Y+W9gcScfY3yOHUVh3fjnr3UR2KA==
+X-Google-Smtp-Source: AGRyM1tdlTXiheowl7wsp9L89MHsalGcSsELsiyAmbWmEoqldeuUja2QlD+rUze/satfSH0yxJx9oT7zRN1L2KmNylg=
+X-Received: by 2002:a63:4a59:0:b0:412:8872:83dc with SMTP id
+ j25-20020a634a59000000b00412887283dcmr17374282pgl.357.1657567195957; Mon, 11
+ Jul 2022 12:19:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v9 0/4] bpf trampoline for arm64
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165756661463.27404.16087446828795658696.git-patchwork-notify@kernel.org>
-Date:   Mon, 11 Jul 2022 19:10:14 +0000
-References: <20220711150823.2128542-1-xukuohai@huawei.com>
-In-Reply-To: <20220711150823.2128542-1-xukuohai@huawei.com>
-To:     Xu Kuohai <xukuohai@huawei.com>
-Cc:     bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        jean-philippe@linaro.org, will@kernel.org, kpsingh@kernel.org,
-        mark.rutland@arm.com, catalin.marinas@arm.com,
-        daniel@iogearbox.net, ast@kernel.org, andrii@kernel.org,
-        zlim.lnx@gmail.com, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, john.fastabend@gmail.com, davem@davemloft.net,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, kuba@kernel.org, hawk@kernel.org,
-        rmk+kernel@armlinux.org.uk, james.morse@arm.com,
-        houtao1@huawei.com, wangborong@cdjrlc.com
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220709154457.57379-1-laoar.shao@gmail.com> <20220709154457.57379-2-laoar.shao@gmail.com>
+In-Reply-To: <20220709154457.57379-2-laoar.shao@gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 11 Jul 2022 12:19:45 -0700
+Message-ID: <CALvZod5GfxSpQBZ2Kcbv9afHhjWy+8oEgaNUrSPM7VTdWY464w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: Make non-preallocated allocation low priority
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
+        quentin@isovalent.com, Roman Gushchin <roman.gushchin@linux.dev>,
+        Hao Luo <haoluo@google.com>, bpf <bpf@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>, NeilBrown <neilb@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Sat, Jul 9, 2022 at 8:45 AM Yafang Shao <laoar.shao@gmail.com> wrote:
+>
+> GFP_ATOMIC doesn't cooperate well with memcg pressure so far, especially
+> if we allocate too much GFP_ATOMIC memory. For example, when we set the
+> memcg limit to limit a non-preallocated bpf memory, the GFP_ATOMIC can
+> easily break the memcg limit by force charge. So it is very dangerous to
+> use GFP_ATOMIC in non-preallocated case. One way to make it safe is to
+> remove __GFP_HIGH from GFP_ATOMIC, IOW, use (__GFP_ATOMIC |
+> __GFP_KSWAPD_RECLAIM) instead, then it will be limited if we allocate
+> too much memory. There's a plan to completely remove __GFP_ATOMIC in the
+> mm side[1], so let's use GFP_NOWAIT instead.
+>
+> We introduced BPF_F_NO_PREALLOC is because full map pre-allocation is
+> too memory expensive for some cases. That means removing __GFP_HIGH
+> doesn't break the rule of BPF_F_NO_PREALLOC, but has the same goal with
+> it-avoiding issues caused by too much memory. So let's remove it.
+>
+> This fix can also apply to other run-time allocations, for example, the
+> allocation in lpm trie, local storage and devmap. So let fix it
+> consistently over the bpf code
+>
+> It also fixes a typo in the comment.
+>
+> [1]. https://lore.kernel.org/linux-mm/163712397076.13692.4727608274002939094@noble.neil.brown.name/
+>
+> Cc: Roman Gushchin <roman.gushchin@linux.dev>
+> Cc: Shakeel Butt <shakeelb@google.com>
+> Cc: NeilBrown <neilb@suse.de>
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 
-This series was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Mon, 11 Jul 2022 11:08:19 -0400 you wrote:
-> This patchset introduces bpf trampoline on arm64. A bpf trampoline converts
-> native calling convention to bpf calling convention and is used to implement
-> various bpf features, such as fentry, fexit, fmod_ret and struct_ops.
-> 
-> The trampoline introduced does essentially the same thing as the bpf
-> trampoline does on x86.
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next,v9,1/4] bpf: Remove is_valid_bpf_tramp_flags()
-    https://git.kernel.org/bpf/bpf-next/c/535a57a7ffc0
-  - [bpf-next,v9,2/4] arm64: Add LDR (literal) instruction
-    https://git.kernel.org/bpf/bpf-next/c/f1e8a24ed2ca
-  - [bpf-next,v9,3/4] bpf, arm64: Implement bpf_arch_text_poke() for arm64
-    https://git.kernel.org/bpf/bpf-next/c/b2ad54e1533e
-  - [bpf-next,v9,4/4] bpf, arm64: bpf trampoline for arm64
-    https://git.kernel.org/bpf/bpf-next/c/efc9909fdce0
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
