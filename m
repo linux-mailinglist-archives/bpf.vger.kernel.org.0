@@ -2,538 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 154E457066A
-	for <lists+bpf@lfdr.de>; Mon, 11 Jul 2022 16:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64ADE57077C
+	for <lists+bpf@lfdr.de>; Mon, 11 Jul 2022 17:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231946AbiGKO7W (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Jul 2022 10:59:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54896 "EHLO
+        id S229579AbiGKPsZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Jul 2022 11:48:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231941AbiGKO7V (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Jul 2022 10:59:21 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F4EE5C973;
-        Mon, 11 Jul 2022 07:59:19 -0700 (PDT)
-Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4LhRnh2ZK6zlVvr;
-        Mon, 11 Jul 2022 22:57:44 +0800 (CST)
-Received: from huawei.com (10.67.174.197) by kwepemi500013.china.huawei.com
- (7.221.188.120) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Mon, 11 Jul
- 2022 22:59:16 +0800
-From:   Xu Kuohai <xukuohai@huawei.com>
-To:     <bpf@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Will Deacon <will@kernel.org>, KP Singh <kpsingh@kernel.org>
-CC:     Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S229490AbiGKPsY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Jul 2022 11:48:24 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 671EC62A7D;
+        Mon, 11 Jul 2022 08:48:23 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26AIjADu012568;
+        Mon, 11 Jul 2022 08:47:59 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=CXaT/UZrhLe+ZSNadvk/XKZcZZDkYLbU+BdhY1Nj6/Y=;
+ b=rBR43MuhxyF0i9dHg+BHmxIJyVzPe/6cX2pq8313soKDEOQiVYdX/OUECnY9TnbGG0jh
+ E1bjnhFAkBqyzp9wT2qY5EqhihEPA7tyNFrpWwWvzThY1rvIZw36FKLM0+XiVuuQHs+N
+ tqtegPj3NK+6gEUiFpMUzxpd/Z4Y+FuHPc0= 
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2170.outbound.protection.outlook.com [104.47.57.170])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3h79041fch-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Jul 2022 08:47:58 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jTmfuF4I0en7UFpN52xZECaKaepJZrh0IXsoX58oYCqbZ0Hucucl5zJC/FyPjdGPMlfVLoZF6rxXnmGSaSM49OM4NBRHBWrgizk3H9/J86JvHVGpXmAf0UWjR+Uw7BG/zLgMTgeDBs2+uVKLthmiwp7FEf/xUmbnBV3MOS6IeXJMgCyBZBH3wXEGwcHUFdwrsREGrY6E7v3CdjOL4BRWaE53HoYHSlQ/cKfcpKDL5nYu/x3pQ3hgtVxYTH7aBSM6lmAJrJHwadTC6Z8vY1rCoJQ0uxzY+TdzVjGX6+f/dYBmTXkZpUcadIyF8KgOJwhr1r5KtanmkWHNzxjNY1ByVA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=CXaT/UZrhLe+ZSNadvk/XKZcZZDkYLbU+BdhY1Nj6/Y=;
+ b=eHm2y4IDX4SJ5UW4HZGBSjESgwEyv+9/VtCjzHHHovkWklIkNErlJn9dqfxwIJKjZe+Sh0rBhTvXRLuYglKS2ifmy2eddj5KPRzYhY92RPKgM1hn+Xjk5bzS/whU3ga6MvjaTKnhDYyDEpYvpB35i7CsjYR/Cmsa7+o0UyEzRC+YNNscs9+CZNu229oZRklv15wojAEYnaj7dVr5nYfCco75qqCcErXOE60NO98RIJgGd4UWI/Vzo05BIxmDSJc4/NInAoEmfyQLHTCpqpw6a5P6IO+0APfFzGLGaMtFKH8A+U2PjKuzoPoqacgq78gwED3+rmRAStggtlsHDQngvw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by MN0PR15MB5369.namprd15.prod.outlook.com (2603:10b6:208:374::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.25; Mon, 11 Jul
+ 2022 15:47:54 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::9568:e5d9:b8ab:bb23]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::9568:e5d9:b8ab:bb23%6]) with mapi id 15.20.5417.026; Mon, 11 Jul 2022
+ 15:47:53 +0000
+Message-ID: <989e1d04-788d-57c9-9e72-7552e6adc815@fb.com>
+Date:   Mon, 11 Jul 2022 08:47:50 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.11.0
+Subject: Re: [PATCH bpf-next v2] bpf: Fix 'dubious one-bit signed bitfield'
+ warnings
+Content-Language: en-US
+To:     Matthieu Baerts <matthieu.baerts@tessares.net>,
         Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        James Morse <james.morse@arm.com>,
-        Hou Tao <houtao1@huawei.com>,
-        Jason Wang <wangborong@cdjrlc.com>
-Subject: [PATCH bpf-next v9 4/4] bpf, arm64: bpf trampoline for arm64
-Date:   Mon, 11 Jul 2022 11:08:23 -0400
-Message-ID: <20220711150823.2128542-5-xukuohai@huawei.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220711150823.2128542-1-xukuohai@huawei.com>
-References: <20220711150823.2128542-1-xukuohai@huawei.com>
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Eduard Zingerman <eddyz87@gmail.com>
+Cc:     mptcp@lists.linux.dev, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20220711081200.2081262-1-matthieu.baerts@tessares.net>
+From:   Yonghong Song <yhs@fb.com>
+In-Reply-To: <20220711081200.2081262-1-matthieu.baerts@tessares.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-ClientProxiedBy: SJ0PR03CA0219.namprd03.prod.outlook.com
+ (2603:10b6:a03:39f::14) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6b470932-a7f3-4363-b761-08da6354b786
+X-MS-TrafficTypeDiagnostic: MN0PR15MB5369:EE_
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ORBDSf4ZVAtuEGdangViu7v9QEVzdMtwNLI7An0OwcO7lJS9hfyL7nkGQASn6yjEKOB+BDyguQsEVvg35kamZPUf8AO+6kyaNr21IUnZXEwr9oeHV7W8pOXLfo91XK5ofGDG3xAen389a4EAweenhrOEeAIRVUh99FGQw+4pMYtNpsW4jULg/0XNF2+B0fQma4V7ygcNigDcTXl06cFjw5HPWtpgCfr7HJQquyXjORrKqq4sgXdAX5jkR1vTy2f3m7eR2EzLMv3nblqEEwowFbqP98czcHPgnM717N4UyrX6jNsqFO36BWWY1eLGTlDl9B0TFJTdFBZm7hMLvREci7mB9uRgoqqJQMKzgceqoM2RfOW+dAma7Z4qU8B9HxAGFodsbuVx7lNbPaDAsvvbXe0eq/IWjllWS/mSut03FjoRv0AZAj54wWX+Ygwkqdy9BG+Hzb+C7oRtfMizR0W+kGgX1ucGWbEJd0zy3Un4qbU++t+LIhfzSvvquwiFyGgwHnkFJ1MXxU2ZYqg2ofqhj1LUUfJe1+GI5PRvg1mqj4AWTqJ4jgYZN+XZh5q/NFC7mFuVkgk8M3rvU4EGxRA4pTfeJn0h8uqtaPhjkbJ0VjvRett3KhhTziSxN7ud4sFfafyXjAMGZFRDS+a4rDeBY6yBPySZokrajqhQbKvWpwPnz8KeBSKgkw+AuInkAnx/5CXwuBzxbCccG86jFVZFiaizHz88y/vcdHJmQDE4eJJIY9h45+ichw2L76VKQpsQjcS/HriTMWOzMPsBoB+na9TIZw2sB45jAOkFpBF+ex6+Q6JLpe6i563bEWJHYOZYEB/8cS1tG9saZbBwWBoHv+fNAJT9n1k3BvlfKBm5LkBc2UADiI9ZzKXoZruscorqghQqrZTmOYCWoblw+JKwHg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(39860400002)(366004)(136003)(396003)(346002)(376002)(921005)(7416002)(6486002)(4744005)(966005)(38100700002)(110136005)(8936002)(83380400001)(316002)(5660300002)(478600001)(31686004)(6512007)(31696002)(4326008)(53546011)(2906002)(8676002)(41300700001)(36756003)(6506007)(86362001)(66476007)(66556008)(66946007)(186003)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NTVwa3VkODRqNkFGb2ViUTZoRVM3Y2VRL2pTeWdHb3dzMHdEei91RzBHd1A0?=
+ =?utf-8?B?Q09MSFFCKzM4UEl0RWhSYWNhRlBURXhxRUgrMWNzc0doYlpQejlQdFVTeDNy?=
+ =?utf-8?B?YU5QZXRONSsyblVoVVE1QlFiYjFRRm5KZEx2ZXg5eXVsTGpVbDBzV3UreVB4?=
+ =?utf-8?B?VkJkcGZudFJjVWY5V2tnZ0JJVkQxdGFGMTZRWlR5Q3NhOXhyM0wvTk05SEFK?=
+ =?utf-8?B?ZnJkOTNXK0d2ZVNuWFV5UWF6Wm56TVpVTHhHSktmNjFXRnlFNjRISjJRSlVG?=
+ =?utf-8?B?c2N6Tk9hei94UDBvdGhmdVVzWXgvWlNJRm00dTZlRjNXSGhNR1lCaitseFpI?=
+ =?utf-8?B?bTVQN01zYmhweHB4NmxBZS9QMHRrdWRhMzIwVkpWcEdoUS9abzNXNkJ1azlQ?=
+ =?utf-8?B?QlJBdlRLSmtBUUMycnFMYTZhNE1kU0p5aDVrNkJienAyYkw0VDRNOGZpUDJD?=
+ =?utf-8?B?cGJJczV2WndsNmVGQzhYdXFYbU54c2xnS3YrdThaOTMvbWJTckFNN0VGTDJW?=
+ =?utf-8?B?K0NpenZRWkJaTDlPVnM0eVNydTIzUzQ5UVI0Y3dUTHMzT29tZjhsdkFJcDd1?=
+ =?utf-8?B?OUhTalJKVHVyMG9GQiszRjZYR2dRUjBhNzdDdng3cmpvVThQVEdnSk9wZ0hr?=
+ =?utf-8?B?c3dpMEh2bnErVE10UWV2NXdpUUMrT2o1eUZCTC9vL3doVWpzb3RreW1ISzA5?=
+ =?utf-8?B?Y05zYXlRR3F3ODJYNWVYVWpQU0hQZjZmeE0wcy91b25zRDVXS1N5ZmVpZGc1?=
+ =?utf-8?B?NE5nNUNxOGw4MjlvTDdBTnI0NUZLT3JkT1NaNWtCbUNScXRLRlByMnl6bFdK?=
+ =?utf-8?B?OFBSZkxJZFhrM1ExbmtheDB2WGZjSm1OUFJXZklUbnJGTk8zNlZRL1JXd0tO?=
+ =?utf-8?B?YldDOUV3YkJMTG9rL1RJNlBNMldtbW5tYWFTOWVIaWFSNHJ4TXhjYlpBQmI5?=
+ =?utf-8?B?YW9ZNHdHZlcrOUo4cnAvVkl2ZFJkK1RpRjQ2OGlyUytVTmZjY2xnY1Q0emRr?=
+ =?utf-8?B?SDB3N2dkWFRqcjBJblhBc05CRVBPb2d4MHlZTWZmNmJpR0NVQXpFaG1XcE5x?=
+ =?utf-8?B?SXFRZVpDZDkwZjhPMTArN09DdWZJeFJCRmJoZ2dLQVhpZndGTjlrS2x1cGdI?=
+ =?utf-8?B?aExDR01lR2hRTmUxa3g3TnBpWDhOd2JQVElBZ3BFVUYzZVN5OU1jQitycGRP?=
+ =?utf-8?B?U2Z3eWVLb21DVnR4aS83dXBmUEZkSnFKZkdQOHZSejFXcHhkaEtqV2wwMU5I?=
+ =?utf-8?B?K256N0IzR2xPcDhrbDV6aTBPUzhQbDl5UnJnTEQyUnZOdXVEZ0tGSkhvUW1o?=
+ =?utf-8?B?elVzR2NXclhsVU1wVDV3c3MxRzdCVXpDdkxkLzRBaWtYMjJJYVhoaXp5dlZr?=
+ =?utf-8?B?Ylh6eWxKUmduTC9jdjd1dWxsRE15Q0lrSWFPSEUyR2ZZdkxGd2xOQjl4N3hK?=
+ =?utf-8?B?c3g4M1A2SjE0UWFEOUFaRWZYODE1ejltOFNYcEttU2I5Rkp6OEdtUm44OU1r?=
+ =?utf-8?B?MTNKbUM0ck10SXgya0Vwa3lMN2dLRUYvN1I1WXVXY2s2cFRlakE1cXdsUlVJ?=
+ =?utf-8?B?bHZHbkl3QXdHL3hZTmJlL0pDRkVRY3BtaG4vYWtFdGNtaFBPVitQQ2lJREJ5?=
+ =?utf-8?B?Qm8waDBTSGZJSDhlQ2lvMXgwSFEvUDQ1RDB1aS9uVTFuZEUzTnpMQnp3eTZp?=
+ =?utf-8?B?VmlPTEQwNVc0WFpjVmkzbG0xOUl1bU5CZ01abkltUXlSMUtGVnRPM3BRTDZj?=
+ =?utf-8?B?TTU2RDk3b3pBanFyc25pZ21TelY2ZlUrOWZGd0RVZlBhbUxJVzVOdWs3Z3pS?=
+ =?utf-8?B?Z2x2akNYNkYzL0o3cm9JbW0zeHVRTmdqajExZWhubWRtYlhRUmpMelFIWnZx?=
+ =?utf-8?B?OEQxL2N5dENVREtZcmV4TkVBY1J5dW51Zjh2R1VGdmxvczE4OWZ1SjZubEJj?=
+ =?utf-8?B?Uk1GRndPcmI0RjhocWx2Mys3UXlMeFdwQ003ODFPS1lGeDJXOHE3dHJKWm1B?=
+ =?utf-8?B?bGpjTlhkaVN4TGhpMVdabUpZcm5qWFZLSFdPR2R4QnBHQkdvMmRXRjV3M3hZ?=
+ =?utf-8?B?dDZJUm9PazBlRVhZamZoajkrOXJ5OGJPNlN0VjltMlAxZS9WY1NZUDNSNzNF?=
+ =?utf-8?Q?GZYW5I5cPKJMFp53j2x7+UxNN?=
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6b470932-a7f3-4363-b761-08da6354b786
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jul 2022 15:47:53.5214
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mS01wpREpRTPUm/h5AXUSFMTi82n9iUZk9PtR82ZrPxhDL3yKvTPH9VrAMvzMELF
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR15MB5369
+X-Proofpoint-ORIG-GUID: 1j2XeDSRXZLgJFYqpWfgeV5kZJgU8Dpn
+X-Proofpoint-GUID: 1j2XeDSRXZLgJFYqpWfgeV5kZJgU8Dpn
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.174.197]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemi500013.china.huawei.com (7.221.188.120)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-07-11_20,2022-07-08_01,2022-06-22_01
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This is arm64 version of commit fec56f5890d9 ("bpf: Introduce BPF
-trampoline"). A bpf trampoline converts native calling convention to bpf
-calling convention and is used to implement various bpf features, such
-as fentry, fexit, fmod_ret and struct_ops.
 
-This patch does essentially the same thing that bpf trampoline does on x86.
 
-Tested on raspberry pi 4b and qemu:
+On 7/11/22 1:12 AM, Matthieu Baerts wrote:
+> Our CI[1] reported these warnings when using Sparse:
+> 
+>    $ touch net/mptcp/bpf.c
+>    $ make C=1 net/mptcp/bpf.o
+>    net/mptcp/bpf.c: note: in included file:
+>    include/linux/bpf_verifier.h:348:26: error: dubious one-bit signed bitfield
+>    include/linux/bpf_verifier.h:349:29: error: dubious one-bit signed bitfield
+> 
+> Set them as 'unsigned' to avoid warnings.
+> 
+> [1] https://github.com/multipath-tcp/mptcp_net-next/actions/runs/2643588487
+> 
+> Fixes: 1ade23711971 ("bpf: Inline calls to bpf_loop when callback is known")
+> Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
 
- #18 /1     bpf_tcp_ca/dctcp:OK
- #18 /2     bpf_tcp_ca/cubic:OK
- #18 /3     bpf_tcp_ca/invalid_license:OK
- #18 /4     bpf_tcp_ca/dctcp_fallback:OK
- #18 /5     bpf_tcp_ca/rel_setsockopt:OK
- #18        bpf_tcp_ca:OK
- #51 /1     dummy_st_ops/dummy_st_ops_attach:OK
- #51 /2     dummy_st_ops/dummy_init_ret_value:OK
- #51 /3     dummy_st_ops/dummy_init_ptr_arg:OK
- #51 /4     dummy_st_ops/dummy_multiple_args:OK
- #51        dummy_st_ops:OK
- #57 /1     fexit_bpf2bpf/target_no_callees:OK
- #57 /2     fexit_bpf2bpf/target_yes_callees:OK
- #57 /3     fexit_bpf2bpf/func_replace:OK
- #57 /4     fexit_bpf2bpf/func_replace_verify:OK
- #57 /5     fexit_bpf2bpf/func_sockmap_update:OK
- #57 /6     fexit_bpf2bpf/func_replace_return_code:OK
- #57 /7     fexit_bpf2bpf/func_map_prog_compatibility:OK
- #57 /8     fexit_bpf2bpf/func_replace_multi:OK
- #57 /9     fexit_bpf2bpf/fmod_ret_freplace:OK
- #57        fexit_bpf2bpf:OK
- #237       xdp_bpf2bpf:OK
-
-Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
-Acked-by: Song Liu <songliubraving@fb.com>
-Acked-by: KP Singh <kpsingh@kernel.org>
-Reviewed-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
----
- arch/arm64/net/bpf_jit_comp.c | 385 +++++++++++++++++++++++++++++++++-
- 1 file changed, 382 insertions(+), 3 deletions(-)
-
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index 0ef35ec30d4e..fd1cb0d2aaa6 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -176,6 +176,14 @@ static inline void emit_addr_mov_i64(const int reg, const u64 val,
- 	}
- }
- 
-+static inline void emit_call(u64 target, struct jit_ctx *ctx)
-+{
-+	u8 tmp = bpf2a64[TMP_REG_1];
-+
-+	emit_addr_mov_i64(tmp, target, ctx);
-+	emit(A64_BLR(tmp), ctx);
-+}
-+
- static inline int bpf2a64_offset(int bpf_insn, int off,
- 				 const struct jit_ctx *ctx)
- {
-@@ -1072,8 +1080,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
- 					    &func_addr, &func_addr_fixed);
- 		if (ret < 0)
- 			return ret;
--		emit_addr_mov_i64(tmp, func_addr, ctx);
--		emit(A64_BLR(tmp), ctx);
-+		emit_call(func_addr, ctx);
- 		emit(A64_MOV(1, r0, A64_R(0)), ctx);
- 		break;
- 	}
-@@ -1417,6 +1424,13 @@ static int validate_code(struct jit_ctx *ctx)
- 		if (a64_insn == AARCH64_BREAK_FAULT)
- 			return -1;
- 	}
-+	return 0;
-+}
-+
-+static int validate_ctx(struct jit_ctx *ctx)
-+{
-+	if (validate_code(ctx))
-+		return -1;
- 
- 	if (WARN_ON_ONCE(ctx->exentry_idx != ctx->prog->aux->num_exentries))
- 		return -1;
-@@ -1546,7 +1560,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	build_plt(&ctx);
- 
- 	/* 3. Extra pass to validate JITed code. */
--	if (validate_code(&ctx)) {
-+	if (validate_ctx(&ctx)) {
- 		bpf_jit_binary_free(header);
- 		prog = orig_prog;
- 		goto out_off;
-@@ -1624,6 +1638,371 @@ bool bpf_jit_supports_subprog_tailcalls(void)
- 	return true;
- }
- 
-+static void invoke_bpf_prog(struct jit_ctx *ctx, struct bpf_tramp_link *l,
-+			    int args_off, int retval_off, int run_ctx_off,
-+			    bool save_ret)
-+{
-+	u32 *branch;
-+	u64 enter_prog;
-+	u64 exit_prog;
-+	struct bpf_prog *p = l->link.prog;
-+	int cookie_off = offsetof(struct bpf_tramp_run_ctx, bpf_cookie);
-+
-+	if (p->aux->sleepable) {
-+		enter_prog = (u64)__bpf_prog_enter_sleepable;
-+		exit_prog = (u64)__bpf_prog_exit_sleepable;
-+	} else {
-+		enter_prog = (u64)__bpf_prog_enter;
-+		exit_prog = (u64)__bpf_prog_exit;
-+	}
-+
-+	if (l->cookie == 0) {
-+		/* if cookie is zero, one instruction is enough to store it */
-+		emit(A64_STR64I(A64_ZR, A64_SP, run_ctx_off + cookie_off), ctx);
-+	} else {
-+		emit_a64_mov_i64(A64_R(10), l->cookie, ctx);
-+		emit(A64_STR64I(A64_R(10), A64_SP, run_ctx_off + cookie_off),
-+		     ctx);
-+	}
-+
-+	/* save p to callee saved register x19 to avoid loading p with mov_i64
-+	 * each time.
-+	 */
-+	emit_addr_mov_i64(A64_R(19), (const u64)p, ctx);
-+
-+	/* arg1: prog */
-+	emit(A64_MOV(1, A64_R(0), A64_R(19)), ctx);
-+	/* arg2: &run_ctx */
-+	emit(A64_ADD_I(1, A64_R(1), A64_SP, run_ctx_off), ctx);
-+
-+	emit_call(enter_prog, ctx);
-+
-+	/* if (__bpf_prog_enter(prog) == 0)
-+	 *         goto skip_exec_of_prog;
-+	 */
-+	branch = ctx->image + ctx->idx;
-+	emit(A64_NOP, ctx);
-+
-+	/* save return value to callee saved register x20 */
-+	emit(A64_MOV(1, A64_R(20), A64_R(0)), ctx);
-+
-+	emit(A64_ADD_I(1, A64_R(0), A64_SP, args_off), ctx);
-+	if (!p->jited)
-+		emit_addr_mov_i64(A64_R(1), (const u64)p->insnsi, ctx);
-+
-+	emit_call((const u64)p->bpf_func, ctx);
-+
-+	if (save_ret)
-+		emit(A64_STR64I(A64_R(0), A64_SP, retval_off), ctx);
-+
-+	if (ctx->image) {
-+		int offset = &ctx->image[ctx->idx] - branch;
-+		*branch = A64_CBZ(1, A64_R(0), offset);
-+	}
-+
-+	/* arg1: prog */
-+	emit(A64_MOV(1, A64_R(0), A64_R(19)), ctx);
-+	/* arg2: start time */
-+	emit(A64_MOV(1, A64_R(1), A64_R(20)), ctx);
-+	/* arg3: &run_ctx */
-+	emit(A64_ADD_I(1, A64_R(2), A64_SP, run_ctx_off), ctx);
-+
-+	emit_call(exit_prog, ctx);
-+}
-+
-+static void invoke_bpf_mod_ret(struct jit_ctx *ctx, struct bpf_tramp_links *tl,
-+			       int args_off, int retval_off, int run_ctx_off,
-+			       u32 **branches)
-+{
-+	int i;
-+
-+	/* The first fmod_ret program will receive a garbage return value.
-+	 * Set this to 0 to avoid confusing the program.
-+	 */
-+	emit(A64_STR64I(A64_ZR, A64_SP, retval_off), ctx);
-+	for (i = 0; i < tl->nr_links; i++) {
-+		invoke_bpf_prog(ctx, tl->links[i], args_off, retval_off,
-+				run_ctx_off, true);
-+		/* if (*(u64 *)(sp + retval_off) !=  0)
-+		 *	goto do_fexit;
-+		 */
-+		emit(A64_LDR64I(A64_R(10), A64_SP, retval_off), ctx);
-+		/* Save the location of branch, and generate a nop.
-+		 * This nop will be replaced with a cbnz later.
-+		 */
-+		branches[i] = ctx->image + ctx->idx;
-+		emit(A64_NOP, ctx);
-+	}
-+}
-+
-+static void save_args(struct jit_ctx *ctx, int args_off, int nargs)
-+{
-+	int i;
-+
-+	for (i = 0; i < nargs; i++) {
-+		emit(A64_STR64I(i, A64_SP, args_off), ctx);
-+		args_off += 8;
-+	}
-+}
-+
-+static void restore_args(struct jit_ctx *ctx, int args_off, int nargs)
-+{
-+	int i;
-+
-+	for (i = 0; i < nargs; i++) {
-+		emit(A64_LDR64I(i, A64_SP, args_off), ctx);
-+		args_off += 8;
-+	}
-+}
-+
-+/* Based on the x86's implementation of arch_prepare_bpf_trampoline().
-+ *
-+ * bpf prog and function entry before bpf trampoline hooked:
-+ *   mov x9, lr
-+ *   nop
-+ *
-+ * bpf prog and function entry after bpf trampoline hooked:
-+ *   mov x9, lr
-+ *   bl  <bpf_trampoline or plt>
-+ *
-+ */
-+static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
-+			      struct bpf_tramp_links *tlinks, void *orig_call,
-+			      int nargs, u32 flags)
-+{
-+	int i;
-+	int stack_size;
-+	int retaddr_off;
-+	int regs_off;
-+	int retval_off;
-+	int args_off;
-+	int nargs_off;
-+	int ip_off;
-+	int run_ctx_off;
-+	struct bpf_tramp_links *fentry = &tlinks[BPF_TRAMP_FENTRY];
-+	struct bpf_tramp_links *fexit = &tlinks[BPF_TRAMP_FEXIT];
-+	struct bpf_tramp_links *fmod_ret = &tlinks[BPF_TRAMP_MODIFY_RETURN];
-+	bool save_ret;
-+	u32 **branches = NULL;
-+
-+	/* trampoline stack layout:
-+	 *                  [ parent ip         ]
-+	 *                  [ FP                ]
-+	 * SP + retaddr_off [ self ip           ]
-+	 *                  [ FP                ]
-+	 *
-+	 *                  [ padding           ] align SP to multiples of 16
-+	 *
-+	 *                  [ x20               ] callee saved reg x20
-+	 * SP + regs_off    [ x19               ] callee saved reg x19
-+	 *
-+	 * SP + retval_off  [ return value      ] BPF_TRAMP_F_CALL_ORIG or
-+	 *                                        BPF_TRAMP_F_RET_FENTRY_RET
-+	 *
-+	 *                  [ argN              ]
-+	 *                  [ ...               ]
-+	 * SP + args_off    [ arg1              ]
-+	 *
-+	 * SP + nargs_off   [ args count        ]
-+	 *
-+	 * SP + ip_off      [ traced function   ] BPF_TRAMP_F_IP_ARG flag
-+	 *
-+	 * SP + run_ctx_off [ bpf_tramp_run_ctx ]
-+	 */
-+
-+	stack_size = 0;
-+	run_ctx_off = stack_size;
-+	/* room for bpf_tramp_run_ctx */
-+	stack_size += round_up(sizeof(struct bpf_tramp_run_ctx), 8);
-+
-+	ip_off = stack_size;
-+	/* room for IP address argument */
-+	if (flags & BPF_TRAMP_F_IP_ARG)
-+		stack_size += 8;
-+
-+	nargs_off = stack_size;
-+	/* room for args count */
-+	stack_size += 8;
-+
-+	args_off = stack_size;
-+	/* room for args */
-+	stack_size += nargs * 8;
-+
-+	/* room for return value */
-+	retval_off = stack_size;
-+	save_ret = flags & (BPF_TRAMP_F_CALL_ORIG | BPF_TRAMP_F_RET_FENTRY_RET);
-+	if (save_ret)
-+		stack_size += 8;
-+
-+	/* room for callee saved registers, currently x19 and x20 are used */
-+	regs_off = stack_size;
-+	stack_size += 16;
-+
-+	/* round up to multiples of 16 to avoid SPAlignmentFault */
-+	stack_size = round_up(stack_size, 16);
-+
-+	/* return address locates above FP */
-+	retaddr_off = stack_size + 8;
-+
-+	/* bpf trampoline may be invoked by 3 instruction types:
-+	 * 1. bl, attached to bpf prog or kernel function via short jump
-+	 * 2. br, attached to bpf prog or kernel function via long jump
-+	 * 3. blr, working as a function pointer, used by struct_ops.
-+	 * So BTI_JC should used here to support both br and blr.
-+	 */
-+	emit_bti(A64_BTI_JC, ctx);
-+
-+	/* frame for parent function */
-+	emit(A64_PUSH(A64_FP, A64_R(9), A64_SP), ctx);
-+	emit(A64_MOV(1, A64_FP, A64_SP), ctx);
-+
-+	/* frame for patched function */
-+	emit(A64_PUSH(A64_FP, A64_LR, A64_SP), ctx);
-+	emit(A64_MOV(1, A64_FP, A64_SP), ctx);
-+
-+	/* allocate stack space */
-+	emit(A64_SUB_I(1, A64_SP, A64_SP, stack_size), ctx);
-+
-+	if (flags & BPF_TRAMP_F_IP_ARG) {
-+		/* save ip address of the traced function */
-+		emit_addr_mov_i64(A64_R(10), (const u64)orig_call, ctx);
-+		emit(A64_STR64I(A64_R(10), A64_SP, ip_off), ctx);
-+	}
-+
-+	/* save args count*/
-+	emit(A64_MOVZ(1, A64_R(10), nargs, 0), ctx);
-+	emit(A64_STR64I(A64_R(10), A64_SP, nargs_off), ctx);
-+
-+	/* save args */
-+	save_args(ctx, args_off, nargs);
-+
-+	/* save callee saved registers */
-+	emit(A64_STR64I(A64_R(19), A64_SP, regs_off), ctx);
-+	emit(A64_STR64I(A64_R(20), A64_SP, regs_off + 8), ctx);
-+
-+	if (flags & BPF_TRAMP_F_CALL_ORIG) {
-+		emit_addr_mov_i64(A64_R(0), (const u64)im, ctx);
-+		emit_call((const u64)__bpf_tramp_enter, ctx);
-+	}
-+
-+	for (i = 0; i < fentry->nr_links; i++)
-+		invoke_bpf_prog(ctx, fentry->links[i], args_off,
-+				retval_off, run_ctx_off,
-+				flags & BPF_TRAMP_F_RET_FENTRY_RET);
-+
-+	if (fmod_ret->nr_links) {
-+		branches = kcalloc(fmod_ret->nr_links, sizeof(u32 *),
-+				   GFP_KERNEL);
-+		if (!branches)
-+			return -ENOMEM;
-+
-+		invoke_bpf_mod_ret(ctx, fmod_ret, args_off, retval_off,
-+				   run_ctx_off, branches);
-+	}
-+
-+	if (flags & BPF_TRAMP_F_CALL_ORIG) {
-+		restore_args(ctx, args_off, nargs);
-+		/* call original func */
-+		emit(A64_LDR64I(A64_R(10), A64_SP, retaddr_off), ctx);
-+		emit(A64_BLR(A64_R(10)), ctx);
-+		/* store return value */
-+		emit(A64_STR64I(A64_R(0), A64_SP, retval_off), ctx);
-+		/* reserve a nop for bpf_tramp_image_put */
-+		im->ip_after_call = ctx->image + ctx->idx;
-+		emit(A64_NOP, ctx);
-+	}
-+
-+	/* update the branches saved in invoke_bpf_mod_ret with cbnz */
-+	for (i = 0; i < fmod_ret->nr_links && ctx->image != NULL; i++) {
-+		int offset = &ctx->image[ctx->idx] - branches[i];
-+		*branches[i] = A64_CBNZ(1, A64_R(10), offset);
-+	}
-+
-+	for (i = 0; i < fexit->nr_links; i++)
-+		invoke_bpf_prog(ctx, fexit->links[i], args_off, retval_off,
-+				run_ctx_off, false);
-+
-+	if (flags & BPF_TRAMP_F_CALL_ORIG) {
-+		im->ip_epilogue = ctx->image + ctx->idx;
-+		emit_addr_mov_i64(A64_R(0), (const u64)im, ctx);
-+		emit_call((const u64)__bpf_tramp_exit, ctx);
-+	}
-+
-+	if (flags & BPF_TRAMP_F_RESTORE_REGS)
-+		restore_args(ctx, args_off, nargs);
-+
-+	/* restore callee saved register x19 and x20 */
-+	emit(A64_LDR64I(A64_R(19), A64_SP, regs_off), ctx);
-+	emit(A64_LDR64I(A64_R(20), A64_SP, regs_off + 8), ctx);
-+
-+	if (save_ret)
-+		emit(A64_LDR64I(A64_R(0), A64_SP, retval_off), ctx);
-+
-+	/* reset SP  */
-+	emit(A64_MOV(1, A64_SP, A64_FP), ctx);
-+
-+	/* pop frames  */
-+	emit(A64_POP(A64_FP, A64_LR, A64_SP), ctx);
-+	emit(A64_POP(A64_FP, A64_R(9), A64_SP), ctx);
-+
-+	if (flags & BPF_TRAMP_F_SKIP_FRAME) {
-+		/* skip patched function, return to parent */
-+		emit(A64_MOV(1, A64_LR, A64_R(9)), ctx);
-+		emit(A64_RET(A64_R(9)), ctx);
-+	} else {
-+		/* return to patched function */
-+		emit(A64_MOV(1, A64_R(10), A64_LR), ctx);
-+		emit(A64_MOV(1, A64_LR, A64_R(9)), ctx);
-+		emit(A64_RET(A64_R(10)), ctx);
-+	}
-+
-+	if (ctx->image)
-+		bpf_flush_icache(ctx->image, ctx->image + ctx->idx);
-+
-+	kfree(branches);
-+
-+	return ctx->idx;
-+}
-+
-+int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image,
-+				void *image_end, const struct btf_func_model *m,
-+				u32 flags, struct bpf_tramp_links *tlinks,
-+				void *orig_call)
-+{
-+	int ret;
-+	int nargs = m->nr_args;
-+	int max_insns = ((long)image_end - (long)image) / AARCH64_INSN_SIZE;
-+	struct jit_ctx ctx = {
-+		.image = NULL,
-+		.idx = 0,
-+	};
-+
-+	/* the first 8 arguments are passed by registers */
-+	if (nargs > 8)
-+		return -ENOTSUPP;
-+
-+	ret = prepare_trampoline(&ctx, im, tlinks, orig_call, nargs, flags);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (ret > max_insns)
-+		return -EFBIG;
-+
-+	ctx.image = image;
-+	ctx.idx = 0;
-+
-+	jit_fill_hole(image, (unsigned int)(image_end - image));
-+	ret = prepare_trampoline(&ctx, im, tlinks, orig_call, nargs, flags);
-+
-+	if (ret > 0 && validate_code(&ctx) < 0)
-+		ret = -EINVAL;
-+
-+	if (ret > 0)
-+		ret *= AARCH64_INSN_SIZE;
-+
-+	return ret;
-+}
-+
- static bool is_long_jump(void *ip, void *target)
- {
- 	long offset;
--- 
-2.30.2
-
+Acked-by: Yonghong Song <yhs@fb.com>
