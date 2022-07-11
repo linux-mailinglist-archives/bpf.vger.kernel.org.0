@@ -2,69 +2,186 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF30C570835
-	for <lists+bpf@lfdr.de>; Mon, 11 Jul 2022 18:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C94A257083A
+	for <lists+bpf@lfdr.de>; Mon, 11 Jul 2022 18:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230038AbiGKQW5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Jul 2022 12:22:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45268 "EHLO
+        id S231229AbiGKQXs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Jul 2022 12:23:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbiGKQW4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Jul 2022 12:22:56 -0400
-Received: from mail-oa1-x42.google.com (mail-oa1-x42.google.com [IPv6:2001:4860:4864:20::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 351FE7A51A
-        for <bpf@vger.kernel.org>; Mon, 11 Jul 2022 09:22:56 -0700 (PDT)
-Received: by mail-oa1-x42.google.com with SMTP id 586e51a60fabf-10bd4812c29so7251088fac.11
-        for <bpf@vger.kernel.org>; Mon, 11 Jul 2022 09:22:56 -0700 (PDT)
+        with ESMTP id S231142AbiGKQXq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Jul 2022 12:23:46 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1806E1260C
+        for <bpf@vger.kernel.org>; Mon, 11 Jul 2022 09:23:45 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id os14so9713705ejb.4
+        for <bpf@vger.kernel.org>; Mon, 11 Jul 2022 09:23:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=LVBstvf3Gb9iH3RXO0Q9cVD/U+AveT1cuq6cD0YiKNI=;
-        b=f+hWHiRjM0G3qQM1Ty4L1Ra/K/6z8Uf3eeuC0sYhC/3jFWzjoeN1FP9x2s8ZTeX+Sb
-         a72EHkvjhfiAGW3U/Ul8lGn0loU/cJtb+sgbxLH2d1HC+RAZ8i4nWmOqiHSnZ7cit8t6
-         keR+siq0+B+o1YhnbIk5I+iko4d6KIp+/fb/qAIXJa7Yd5+Q+TKWb9F7qC8H70HnMjS8
-         GL1pc8wZOgY6FAXoca8utpQc1S77NzS2yr2ULhVC3jUIZX98ve0JCr/76XcUr/Ql3eam
-         DOEH4ubuW/l8bpcYI15540b3SBshOoGm/983CCf2zLx4ztWGLc1cnOHdz7k1LUXEldMk
-         q+PA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=GgkQVIq8WClTJPqKg5n8VWbE8bUdwXpugjY1ZREZ7aE=;
+        b=Fdq8hfc086BKGBh1RlPfs6tk2y/8DsW0+CfcD4fIxZ4ZmVM6cpT06cVa7H7xwC+B5u
+         vLw3RDWpufOOyXIcoOESF1uehDK4T+LucoclOY7SA7dkzyc9wsiM+UtiYplOV0tWu5pD
+         8oRvCLNed0P6JwvTruOQBpdRjQCzrLvRIuEn0hPCvDuXKRaqjR8sqkQv3xUOPS0l+GFT
+         rTs2IQWDpNyZN9nerhWUQOVRys6UFhnD8jPSQlbldbEfHYGHYOZ+nhpE9yy74N8CJNUX
+         H3st74qbUvHcJuD/Ar/RGCzU1AvqJKUK4E905UBtIwQQvWGnsba82IAgIVTaqj9w2zcD
+         zGwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=LVBstvf3Gb9iH3RXO0Q9cVD/U+AveT1cuq6cD0YiKNI=;
-        b=1OibLpbYwI+YvESAN6+1AGpJs/l+VGNmKc81ywtge8YtCfrMxo1wrYxUEa9cNpZpjp
-         QF5rmLmpExkPvtss6SeX/GlvWtdoHDn51RpaN4XZyf3SBuwSUYlNmTJIoELZysv6LkmI
-         qqAubXpnjeTpzKDN3FUYaU7UsXRdD5epxggTmlv3Qg/ffobI8hYvWU/lLu3CdmOO/K4W
-         jFranvyBdc8a8xWiJ8XDOqF2TVyENN3qU4KNjFcKO7CRtDqjkkeGtuKriIxviE1A9RhM
-         q/l4t7BSpBNScPPALzlsRuXg0WXF+8iJlYkq6bZYlz5HRyKeF0oUdxE7vtvDOj5gGwn9
-         eEJQ==
-X-Gm-Message-State: AJIora/j4Q5IwHngeO2WgXR8de2iB9aJJo0kfh9wQvmLWnhKQ1uGX8u9
-        SgKh5AGUtPXBAaRBdOfmySCwxc6D7nIVLww9WQ==
-X-Google-Smtp-Source: AGRyM1sK3S1RZk7XaKJWMEgK32FMNT4w7NfEXKI5OYqCOaglB5O6wKn8336ie7v/rEnkFN+mhIbHSLTDGSMl9uQectc=
-X-Received: by 2002:a05:6870:b48f:b0:10b:fa5a:71f8 with SMTP id
- y15-20020a056870b48f00b0010bfa5a71f8mr8026735oap.290.1657556575587; Mon, 11
- Jul 2022 09:22:55 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=GgkQVIq8WClTJPqKg5n8VWbE8bUdwXpugjY1ZREZ7aE=;
+        b=PBuZcVEXzGIqLYXQH0AMMvtZKVhUoDuAbTHv3XR06YsmeC1nV044QvGNumpRCRjySs
+         /0Q28LDs/Qoz8I6SiSnIA9uXYkxxQ6DN9J7Sq+VVX4ltoWWsDlfj/G7+iARwpvdMhhlw
+         ACqMhDhXS/5gBM/2JzIZUGLA80lFwLrjFDkoMzeNSpU8ZJg6sY4jT4Gtx8ZmchfRaXMg
+         /JpcXHJjGux5jydxBtPghlrSidnJqDeQkpbdWVYyUV8ebXEtKXw55C6fFX6h0BTUSc7w
+         2isWdlGLgCjWj0VcUiNMXOsqajM/VHR11EzvJ5mzrqhA2EvGsu9hgQn4sCSmq6fopdom
+         8knQ==
+X-Gm-Message-State: AJIora+2/B824rG9ajFWUpswgCHkQJDFxV+rklPmVWAuFNaB3VR4ohdI
+        enKhiXDYAeJD4lhJSZGuMrrMyKUh4kF6YLas5NgR0AkeDtg=
+X-Google-Smtp-Source: AGRyM1sTFI5u07T2X/p4/6oP/K5e7LAWTPGfW877FefSFwr/d3bpck2UsEQdDWklYInHdOBBedupYFdcg1rD+JVoNqk=
+X-Received: by 2002:a17:906:5a6c:b0:72b:561a:3458 with SMTP id
+ my44-20020a1709065a6c00b0072b561a3458mr5677280ejc.114.1657556623611; Mon, 11
+ Jul 2022 09:23:43 -0700 (PDT)
 MIME-Version: 1.0
-Sender: edwardjasmine52@gmail.com
-Received: by 2002:a05:6808:3020:0:0:0:0 with HTTP; Mon, 11 Jul 2022 09:22:55
- -0700 (PDT)
-From:   "Mrs. Rabi Affason Macus" <affasonrabi@gmail.com>
-Date:   Mon, 11 Jul 2022 16:22:55 +0000
-X-Google-Sender-Auth: uJ9Uh7EQLZPYKYHKkZsdjMNNSKI
-Message-ID: <CAN9eyjDugJZrgAx=PBatdGvg746k+R-FvpjKOwPWc0Xeq+UHOQ@mail.gmail.com>
-Subject: PLEASE CONFIRM MY PREVIOUS MY FOR MORE DETAILS.
-To:     undisclosed-recipients:;
+References: <20220707004118.298323-1-andrii@kernel.org> <CAMy7=ZWo1uvN04756dbi6c8HdOO5GajYi81EMqAQ3LWney3DoA@mail.gmail.com>
+ <CAEf4Bza97xALx4u6EiiQZ0gXQ90rQfEmbY7z0H5yC6AB=Q-91g@mail.gmail.com>
+In-Reply-To: <CAEf4Bza97xALx4u6EiiQZ0gXQ90rQfEmbY7z0H5yC6AB=Q-91g@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 11 Jul 2022 09:23:32 -0700
+Message-ID: <CAEf4Bzb2TeKJ4nSLRWpx2QrsWyXUvccWNgSxfGXpyaLxdJTEfQ@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next 0/3] libbpf: add better syscall kprobing support
+To:     Yaniv Agman <yanivagman@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Kenta Tada <kenta.tada@sony.com>,
+        Hengqi Chen <hengqi.chen@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,
-        T_HK_NAME_FM_MR_MRS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi dear how are you doing today? My name is Rabi Affason Marcus and i
-want to confirm if you received my previous mail?
+On Thu, Jul 7, 2022 at 1:56 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, Jul 7, 2022 at 1:28 AM Yaniv Agman <yanivagman@gmail.com> wrote:
+> >
+> > =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=94=
+=D7=B3, 7 =D7=91=D7=99=D7=95=D7=9C=D7=99 2022 =D7=91-3:48 =D7=9E=D7=90=D7=
+=AA =E2=80=AAAndrii Nakryiko=E2=80=AC=E2=80=8F
+> > <=E2=80=AAandrii@kernel.org=E2=80=AC=E2=80=8F>:=E2=80=AC
+> > >
+> > > This RFC patch set is to gather feedback about new
+> > > SEC("ksyscall") and SEC("kretsyscall") section definitions meant to s=
+implify
+> > > life of BPF users that want to trace Linux syscalls without having to=
+ know or
+> > > care about things like CONFIG_ARCH_HAS_SYSCALL_WRAPPER and related ar=
+ch-specific
+> > > vs arch-agnostic __<arch>_sys_xxx vs __se_sys_xxx function names, cal=
+ling
+> > > convention woes ("nested" pt_regs), etc. All this is quite annoying t=
+o
+> > > remember and care about as BPF user, especially if the goal is to wri=
+te
+> > > achitecture- and kernel version-agnostic BPF code (e.g., things like
+> > > libbpf-tools, etc).
+> > >
+> > > By using SEC("ksyscall/xxx")/SEC("kretsyscall/xxx") user clearly comm=
+unicates
+> > > the desire to kprobe/kretprobe kernel function that corresponds to th=
+e
+> > > specified syscall. Libbpf will take care of all the details of determ=
+ining
+> > > correct function name and calling conventions.
+> > >
+> > > This patch set also improves BPF_KPROBE_SYSCALL (and renames it to
+> > > BPF_KSYSCALL to match SEC("ksyscall")) macro to take into account
+> > > CONFIG_ARCH_HAS_SYSCALL_WRAPPER instead of hard-coding whether host
+> > > architecture is expected to use syscall wrapper or not (which is less=
+ reliable
+> > > and can change over time).
+> > >
+> >
+> > Hi Andrii,
+> > I would very much liked if there was such a macro, which will make
+> > things easier for syscall tracing,
+> > but I think that you can't assume that libbpf will have access to
+> > kconfig files all the time.
+> > For example, if running from a container and not mounting /boot (on
+> > environments where the config file is in /boot), libbpf will fail to
+> > load CONFIG_ARCH_HAS_SYSCALL_WRAPPER value and assume it to be not
+> > defined.
+> > Then, on any environment with a "new" kernel where the program runs
+> > from a container, it will return the wrong argument values.
+> > For this very reason we fall-back in [1] to assume
+> > CONFIG_ARCH_HAS_SYSCALL_WRAPPER is defined, as in most environments it
+> > will be.
+> >
+> > [1] https://github.com/aquasecurity/tracee/blob/0f28a2cc14b851308ebaa38=
+0d503dea9eaa67271/pkg/ebpf/initialization/kconfig.go#L37
+> >
+>
+> I see, unfortunately without relying on
+> CONFIG_ARCH_HAS_SYSCALL_WRAPPER on BPF side it's hard to make this
+> correct in all kernel versions. One way would be to keep
+> BPF_KPROBE_SYSCALL as is assuming syscall wrapper for x86, s390 and
+> arm64, and add BPF_KSYSCALL() macro as I did here, which would depend
+> on __kconfig, so in your situation it won't work. SEC("ksyscall") by
+> itself will still work, though, if you find it useful.
+>
+
+I thought some more about this. This is the second such problem (first
+being USDT detecting availability of BPF cookie support) where libbpf
+on user-space side performs feature detection and BPF-side code has to
+use slightly different feature detection for the same feature.
+
+To solve both problems a bit more generically, I'm thinking to add few
+fake __kconfig variable, just like libbpf does with
+LINUX_VERSION_CODE. I'll carve out some "namespace" for
+libbpf-provided feature detection (e.g., LINUX_HAS_BPF_COOKIE and
+LINUX_HAS_SYSCALL_WRAPPER, or something along those lines), and libbpf
+will fill them in just like we do with LINUX_VERSION_CODE. Without
+actually requiring /proc/config.gz. Thoughts?
+
+>
+> > > It would be great to get feedback about the overall feature, but also=
+ I'd
+> > > appreciate help with testing this, especially for non-x86_64 architec=
+tures.
+> > >
+> > > Cc: Ilya Leoshkevich <iii@linux.ibm.com>
+> > > Cc: Kenta Tada <kenta.tada@sony.com>
+> > > Cc: Hengqi Chen <hengqi.chen@gmail.com>
+> > >
+> > > Andrii Nakryiko (3):
+> > >   libbpf: improve and rename BPF_KPROBE_SYSCALL
+> > >   libbpf: add ksyscall/kretsyscall sections support for syscall kprob=
+es
+> > >   selftests/bpf: use BPF_KSYSCALL and SEC("ksyscall") in selftests
+> > >
+> > >  tools/lib/bpf/bpf_tracing.h                   |  44 +++++--
+> > >  tools/lib/bpf/libbpf.c                        | 109 ++++++++++++++++=
+++
+> > >  tools/lib/bpf/libbpf.h                        |  16 +++
+> > >  tools/lib/bpf/libbpf.map                      |   1 +
+> > >  tools/lib/bpf/libbpf_internal.h               |   2 +
+> > >  .../selftests/bpf/progs/bpf_syscall_macro.c   |   6 +-
+> > >  .../selftests/bpf/progs/test_attach_probe.c   |   6 +-
+> > >  .../selftests/bpf/progs/test_probe_user.c     |  27 +----
+> > >  8 files changed, 172 insertions(+), 39 deletions(-)
+> > >
+> > > --
+> > > 2.30.2
+> > >
