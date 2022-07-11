@@ -2,142 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3810E56D23C
-	for <lists+bpf@lfdr.de>; Mon, 11 Jul 2022 02:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 897C456D24B
+	for <lists+bpf@lfdr.de>; Mon, 11 Jul 2022 02:51:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229530AbiGKAjU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 10 Jul 2022 20:39:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41718 "EHLO
+        id S229685AbiGKAvv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 10 Jul 2022 20:51:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbiGKAjT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 10 Jul 2022 20:39:19 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C365A189;
-        Sun, 10 Jul 2022 17:39:19 -0700 (PDT)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26ALp9N3030672;
-        Sun, 10 Jul 2022 17:38:56 -0700
+        with ESMTP id S229566AbiGKAvu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 10 Jul 2022 20:51:50 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8360CEE21;
+        Sun, 10 Jul 2022 17:51:49 -0700 (PDT)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26AJZVnn000309;
+        Sun, 10 Jul 2022 17:51:28 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
+ subject : from : to : cc : references : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=5oIEK7Kmr9SiuSsATpxQkYAcfkjey/DWiIgYNeOBOo0=;
- b=XDflCWMGoeeal0MaPzAF6kuMxcwbdGHGrvWRZV5DbYVlv1+lbINWCPH+j+gLzw1ZjOSu
- qFRoUR0WzzWr1+CQ+C6pNkbye8SQZgZIQpwMBl6O+QU4rzP2gYsPoemD2FezW5w7Dk2P
- uBk3ijV21qpCawPPLl31FtBhdgBVZLLg0ww= 
-Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam04lp2046.outbound.protection.outlook.com [104.47.74.46])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3h76sre9bk-1
+ bh=9L+DcFxkCiQxAE8oBgkRapLUaE/ooS5kS9KF1HfYCFY=;
+ b=N0W26MaaAsgJjLIZInxLbcDJgdxzkOWjLVCDoSzkr3cgi1SzlT9qLDqgWrA7wei7D5jR
+ s9b64+bKCdNJxY8PfKzAdez7L7qkCuxRQ4M1tEsbLn3hSjUOT7yI3n6sCWYRfCXhPYsi
+ l50P5BukipFqY0cHmqMhPYwgZieegClW4JI= 
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2108.outbound.protection.outlook.com [104.47.58.108])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3h776xe4pw-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 10 Jul 2022 17:38:56 -0700
+        Sun, 10 Jul 2022 17:51:28 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QioPpy97aSsKOSQmDniPtJxWfQXYrlrmLL616qE9SXLIKXDfCctbpg5kHJDO6/qjTzVoixcddIQ+ow4n8747MnNS0nZRxsKQpTzA5VEIXiVPly2HnDKLe6sbjFNHnB9QBvCl9/ia3MZgkKCnfUs5YT+THCSWy/zJV7cmiZZaZ5GG2wYJkTcJPQEf4QR8sO97fcjOKW7OfARrPRoDR8TQ4uDdDt4qqc8XRT9ydoFK6uMcVmPkPyO3ZoYT3pVc5leh2BFnkperPN3nk3btcINXaX7IBUYYfAUqCiaMUZ/krhorGkIpkkKW8o0IsjsNTMZAbKyhPCZbvjvpuXbAlgtRYA==
+ b=MJ/7b3M0TEOfUJPm6AhDu5xYdpuU2u3SlZbD9fVhU/sNnh+ULQ11qGhF0EO5GNur7H8J+6onvwD2Gj6rQ+k8voBZISHrSAVYSpC3HjU+1F28tEkMYgVsz5XyPkfqLyQB68FsszDVXAg2p3A1SC+RNNOIIYYQ+caPLxaCjkweYrUrviknq59NfBOh9yiu/cGB1AmPSmOY63dWpRIuy7gdMyMbHwRZQmrRGa+qiVG0UySff1ilO7v9JJHKY/0/EFk1vijmLkfRK0pAU2hMJ6wMoMdUnZtiRFebuZZpMFwHQj+/kRDQymwSHAkl5jKJJsNmG94Fq/+rZz1PPorrQfF4Ng==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5oIEK7Kmr9SiuSsATpxQkYAcfkjey/DWiIgYNeOBOo0=;
- b=DsOCxWW3yQO9NnWJR1xM+fIiqqxbuQuN/IlWTXAgEVzmFgUcuLnJBSeMa+hj1fMIidLkaRH8vn9Nzf1XW2OC81KtXA5Rh4d1C2c5E8Ip+ECAH6t4XizX2D8mfH0fItHMlcMUuZKXfYwy6gZOnjN5h4N68IplnFcitSMUUwpDySTaz83g2LmGFnOiQ7tWMaDIV6DBD4zp1mpmdOPW5yFFMyyHkqA9C5MQQ/dDnpMzT7ErNra+LdbCnpls5HZlevO3BPRkLm3rFeovtf4TOnB4L+kBr1NNRU3xTvnGF0dVnZHqRM6Jb2QwnL9w+HsQoxH6cqsSDVquckGTKK5LuQPQ1A==
+ bh=9L+DcFxkCiQxAE8oBgkRapLUaE/ooS5kS9KF1HfYCFY=;
+ b=AXSJ4t+dk1WEjCoz9VzxnFUJcsvCwblINFMVwtyfZaMWc/wj5V7byoERdS7fKQbVhLKyJKfYgUSQZmqWaOO4nymxa6Va2NEpmIkiENc1ISc3wn35RXiZJ9SVU63tvAOtg8NNEZhwhGQfASWAVnNj4VcVKsCd1tfxy8pGhX0fmp1yhK4SJc12yhLrNhSmGZxhCuVViKMPnSbNtLNQjExfnaFq87wdwMzWmIUDAqzXAGMxR7agc+fpEMDqWRRPnOppK0IU+S4E1duX4no6u90wTzqLJ2uOnNvEc8O5yskZkUvcXsdmCTLjvEAQ8Y2uOugq2fXGg1oERi3L5YeJva/yoQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by BN6PR15MB1395.namprd15.prod.outlook.com (2603:10b6:404:c3::20) with
+ by MW5PR15MB5268.namprd15.prod.outlook.com (2603:10b6:303:198::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.26; Mon, 11 Jul
- 2022 00:38:53 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.20; Mon, 11 Jul
+ 2022 00:51:25 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::9568:e5d9:b8ab:bb23]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::9568:e5d9:b8ab:bb23%6]) with mapi id 15.20.5417.026; Mon, 11 Jul 2022
- 00:38:53 +0000
-Message-ID: <eafd8d7b-4aea-9ec0-6e3f-8e0afb290235@fb.com>
-Date:   Sun, 10 Jul 2022 17:38:50 -0700
+ 00:51:25 +0000
+Message-ID: <9c6a0ba3-2730-eb56-0f96-e5d236e46660@fb.com>
+Date:   Sun, 10 Jul 2022 17:51:22 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
  Gecko/20100101 Thunderbird/91.11.0
-Subject: Re: [PATCH bpf-next] bpf: fix 'dubious one-bit signed bitfield'
- warnings
+Subject: Re: [PATCH bpf-next v3 8/8] bpf: add a selftest for cgroup
+ hierarchical stats collection
 Content-Language: en-US
-To:     Matthieu Baerts <matthieu.baerts@tessares.net>,
+From:   Yonghong Song <yhs@fb.com>
+To:     Yosry Ahmed <yosryahmed@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
         KP Singh <kpsingh@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        David Rientjes <rientjes@google.com>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Eduard Zingerman <eddyz87@gmail.com>
-Cc:     mptcp@lists.linux.dev, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20220710083523.1620722-1-matthieu.baerts@tessares.net>
- <fd51d0bb-8908-ede1-6d7a-37ed82badebf@fb.com>
- <428689f2-ad91-e1b4-64c5-c1c4802e2cbe@tessares.net>
-From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <428689f2-ad91-e1b4-64c5-c1c4802e2cbe@tessares.net>
+        Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, cgroups@vger.kernel.org
+References: <20220709000439.243271-1-yosryahmed@google.com>
+ <20220709000439.243271-9-yosryahmed@google.com>
+ <b4936952-2fe7-656c-2d0d-69044265392a@fb.com>
+In-Reply-To: <b4936952-2fe7-656c-2d0d-69044265392a@fb.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SJ0PR03CA0007.namprd03.prod.outlook.com
- (2603:10b6:a03:33a::12) To SN6PR1501MB2064.namprd15.prod.outlook.com
+X-ClientProxiedBy: SJ0PR13CA0192.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c3::17) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
-MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0944b4e2-51f7-42c7-5f87-08da62d5bad4
-X-MS-TrafficTypeDiagnostic: BN6PR15MB1395:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6ec6224f-d70d-4341-53ea-08da62d77b66
+X-MS-TrafficTypeDiagnostic: MW5PR15MB5268:EE_
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xHj4jl2nJuBmZri6zl4Wqv7WXOn0gFWG3NKZlIENOKVbkH4zcK5UjQ4JPdZgEYM3x0AM+4us/Z3AHZP9IGgQnMSjl/pIu9rPYua8kHBqa8W4wMh4XJmw1jDacEvQTq+g/0eUjTcYEB7r2Zi9neG7OURtcCap6ReaimBCp4ikKmXqaQ9L4PsEKeSTqSQRQnWjd+Ucgd5iZMV3Bh8AynVKx7vo0QLFd5EZq4mHk0+JudlJY5a02FpaXFWm1vHt9MHWEbQyxUpz8MYb4ysPXGIlacNtpUG0ZeDzWETZPYmnlci6Am/7nR+QZwJa1WmF1PbUF9V9CdFz+5zs9IbUQYoRuH+WvQQtMVAI8ecGUalL/JCvLCOQdeaa7hvekjvzD7r9lrXxAW+RBxx0iAYMYkt86dibBSwW99FD81JWuvR+EvoCox622V5wKGaqeGiuwnLddhMCO61Ath780JoJeZTp+/grOeyVEDOC/+sqsWA4xvsMxU9Zezr/nZBR03gktohRttY1SSgfW42nuvZoq2OUpwime1s/R5XIOVyehIk6LgPcAv7D+qhmd+1YisLZThHgK28uzqjb+K0oNPzkjp3MRLhj9aWk/mW5oOIhRwWTyAWpGGajbuKwVCHrfxj2zBWT+Lll9swuflVYXrEwcDrkAj2DHa697kea4Qe05E6raTyZODnJf/tpkkReYSqddjnWhqI16emU1zgTk89xxVwAZ+onxFGGck8xxl6VY2xdbbrDxl9kfgxd9HU3IilW+rw3uR5yw2a0ShUrgz5SUER8e6/0qz+95XiXcXEi56umQI6pQUnEHoL7dGisxKuZb5yOKXPnSimYWBvZZT76PHUc1i3iTlW/B/MZP9l9bc9bslDH5KXjzhSiPC1EN2bqOVxg
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(136003)(376002)(366004)(346002)(396003)(39860400002)(478600001)(36756003)(110136005)(53546011)(6506007)(186003)(2616005)(6512007)(316002)(41300700001)(6486002)(31686004)(2906002)(86362001)(38100700002)(921005)(66476007)(66556008)(8676002)(66946007)(7416002)(5660300002)(31696002)(8936002)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: JwgUsj0rFJi97p6YjVIHlvP8IDsOuH08ccimVGXmeBNZ862lxgRUopk8tLXk4Tqvmrk/Gl+dhsubd9fksYfn0ev6nlq38WqCETK++rXTP3k1DY08NckzslH1FXyk5HZx40r+NFN9AchtDa+JPVUdM0xDCDerBkITtcUUYZdr0c7KbfljzIP1m51SV2hkMrXr9IyRXlICmPMb0zXhMgR4FW0SMZBlAYmyD0noziSn0C9qlqM27E9yfQNjQfHKzuIizt1lfTkw4+fjCA/8r6nz2Yb4ELVV9JFOc/tfqXCngqEiFd014X8MT4ZYIkojsp4JEqTMrIsaUBT0ghI9XjrqxPaZ4oxTAI79krNeX4P9IzkUMMg0Pt0XV1+wDwriiQ7fVsT62I+Adg9I5pFAA7dPii9dOQ9LMlAVVfiuxzmZi6q1+KOCLD6B77rI6Uc9EPmIFDHtxh3QAcI7yogFjW5cCXjE/5JO3+Gn7aMDu8m3c+D+7fts9FpY7OV83ngOuLW59vf8l16+8f4ZucSWutNuxhdM+/ZM80mbhoXA063OgIiYsTBS9kTrXb0s4UhzjKTULgfYNVQ0vFyjAwW0RSrGEYXGN4MN/d9J9w992x6oRbv+/N1Ls9CUrccNQyF7Z0avsbOvzBGcH0maK9wJCPRH+UqrTR4c1x2BgK6/MwFsEFbQjgMyhzgwdhw92a4Xi6n3kybc0fGBKo359G9hZy+2e/BR58xS4ZT/W7nmZw+YQiOmYHLxkCF8pdiCHYcFTNwl4GweS14VQ9PYvqtYLeGNMW4czmTbkO+nvmE903gQOeWaqARwZSMFuzY4qMWqVMXymicHhyMapBcv1V752PxU2U+PEz+ruvYAc3LDlJVzSYKgbg0ZOAXziZx25RBvP/gJ1gVfs3nXneJZw9UldiC2ndw72MJqfno5oQacDkJ3QDs=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(376002)(136003)(39860400002)(346002)(366004)(396003)(66556008)(8936002)(4326008)(7416002)(31686004)(5660300002)(6512007)(6486002)(110136005)(54906003)(316002)(86362001)(66476007)(2616005)(6666004)(41300700001)(8676002)(6506007)(478600001)(53546011)(966005)(66946007)(31696002)(2906002)(36756003)(83380400001)(186003)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cVM5NFlSRFNydE5OcFpKUkRFcS9zTnhUSXpDVFdscWRzMmJlNGo0MXNpeGNW?=
- =?utf-8?B?SnVObkh2Y0lXNngwU3JmWkhNbTNpT1Q5MDJJTzNzRHNOSWtocHkzUU1iSUdj?=
- =?utf-8?B?SzdyTDFzc2I1ekI4YTViS1EyYWY3T2pWY1JHRjBtVjdDR3QwR2loemxzSjI4?=
- =?utf-8?B?UHhBc1BtanpDcGNzcUd0MkxJdXVsWEtMMFJQdkJOTGpRcWN5c0NraURiQTFT?=
- =?utf-8?B?TUIyZW1lM1hKMFozQTdLNUJUdFJkdlR2a2JzOEdVUmNGRDA5bFFmR0M2VE9W?=
- =?utf-8?B?S1dlc2c4MFhnaWtVRnlNc01aQ3pnSExhWHNTY1lxcE5VMjM0aE5PL01ScVpj?=
- =?utf-8?B?MXRVZ01KVFJybFRydUJ3dkR3UDhYbHZiRzY3UnZacXFHZ3BMSDQ4NnFWb0hS?=
- =?utf-8?B?eDBsUkw5YTVqbS93d2IrUVI0S3dTLzcwdmhjek5YUUtpNHl6cjlBWENZRDBZ?=
- =?utf-8?B?SXRJSEZWY01RQW9lUTdyY2p1dmlncFJoRm53WGxUbUppNW92RGxSanJWWDJh?=
- =?utf-8?B?V0Y1S09MNU94a0txdnVmOUgyUHRVMlIySmtTS0M3RXdrWVdYTHY4d1NjS05Q?=
- =?utf-8?B?WU5uNjFCS1hITGFsOE5MY2NYOFZrTXp1Zzg2bFdORXpJaHRhRnlrM1pmNEFq?=
- =?utf-8?B?Znp5RDBOM3RsemQwemRkU2ljT1VFYmRMVWtvcmlIRzN6aVFza243ZmhzbG85?=
- =?utf-8?B?U0QwN3J1ZXB2a1Q5N0FxemZOOU1yR0VwUUgzKzFoZXh2eXgwd3lkN1g1SS9r?=
- =?utf-8?B?ZHp6MmpiWjZ1TkZsNEdoKy83UHJHTFQ0WGhJVkNnaHlTYWJHVUJMR0F1TVJK?=
- =?utf-8?B?cjdEandrMTd6NGFmajVHOVVvRm9sQVB0Y1QzVjdYbFlYNmRoaTZuckplZkxh?=
- =?utf-8?B?SzU3cjMwRDhrOVNudE1qdkxsYnAyTEdkdmtnUzMxbzYrR0w1N2J0dlc0T2lU?=
- =?utf-8?B?VTZDelpVNmNsaFBTeXBtcEQrWGZ1Q2VEUWI0YkdkM3hndzU3MjM3ZkRmVDFU?=
- =?utf-8?B?cWVoeFh3cG85R0pTR0k0OVkzU0c1dzBPY3hKU29wUUtncWF5d1ZKbUIxMDJq?=
- =?utf-8?B?Q2JGN0JqdGhDSVN2eFpZTHNVbEg2L2tzeWpTTWY4djJDZnJtcEJ0akQwRmRt?=
- =?utf-8?B?UFNSc24xQ2F4b3VVTS9VZDEzQ1JTOG9ZVERyTzRYRzdQdm4yYlZtVlhhTFBk?=
- =?utf-8?B?TVFrNC93ay9aOGJPcFVNdmkvdkNjcitqMlA4OW8wanpGbVdPNG1mK2NjajlU?=
- =?utf-8?B?ckJDRndNU1F5ZnptNEFvaHV2VWV4bTAzQ0kzTFVlYTlFOC9uTHNON1hzTUhN?=
- =?utf-8?B?MHVOR3JDRlJJYUpkYjV0KzRISnIra2k0QTE1VjVZTzVhaTB1VUwwakVGVTNk?=
- =?utf-8?B?U1pjL1AxcVJ0ZFVoN3JuZHYzZWRZYWJPTXpQMmU4RGNEQkF2RzVLL1NiRDEw?=
- =?utf-8?B?TEkzVFordFU0aHlQOTZUbndmaXlDb2lYUmpZbng0RmwyN2lPMDU1RkxBRmJw?=
- =?utf-8?B?UzNzdGZ5bzRhblp5U2ZDSHhSakN1WCtRYzhsckVFMURGaGxMSHVoNFIxdjA1?=
- =?utf-8?B?Ukh6SzgrQmJNdkZyN25Ma0tiVXNIS3dpMExsWGNuMGV2Z3FybDRVdjhBM3BH?=
- =?utf-8?B?OW1XMzNzNnZ0aEI1VmhZSFJScGdDM05yK2tCOEhJRGNjTjNKcmt5Q3g4ZVNL?=
- =?utf-8?B?TG1jL2d3eTZMWkg0eXFOTi8vNmR0TGE4UUFwWndaQng0bW53RFpTakR2b08y?=
- =?utf-8?B?MVpCcnR6WUhiNEs3aXVQNHplUG12dHptUGg3S2FmK1M0bDZkVFVRcE81THdk?=
- =?utf-8?B?TUtjTEpBYVJscHZ5ckNKcVZEbXh4VVI5YXVxeW9GSkRmd25NeE1Ja3RNTWls?=
- =?utf-8?B?NmF5a1lDdkZKKzYxc0l2N3hIWXBEUWRZclJpenFHN3hHV0l0bmw4eCtGcmY5?=
- =?utf-8?B?S0VPZUMvcmVWT2MrMEkrcmFHMzhDSjQyck5lUDVTZVQ5MExMTGhWR1NmTTIr?=
- =?utf-8?B?VjRpeGN6b1BtVUk0SXlKNU9BUTYvN3ZXaHBOR0xyZTluNDF1TklmbGVIV0d6?=
- =?utf-8?B?dGdGODJ5M0U5bkpYK01vM210ZjZON0s2NHg1TkJicXZKTzVuYlppb1FYemhU?=
- =?utf-8?B?d29uVnJ0d0xBaDh5MXR5byttMUZIS1h2UStock9zRmhVbGExdlF1WVliM3Jv?=
- =?utf-8?B?UVE9PQ==?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bUJnby84cjRBU1Z0UitBTm1WWmhKOHB0SVBDRm5haDl0Qk9nQXM1eDgybDdi?=
+ =?utf-8?B?L2FVcWtZOVhuSkoySEZNQ1d1S2dWL3FicUV2RzF1VTFyQW1EcVJaTnFqUFZl?=
+ =?utf-8?B?U2V0YXoxV3ZIRWQxRW1ORmxTb2hhelg1eFVvT2prM1R1VEhSVVB4N1RGUUJu?=
+ =?utf-8?B?RHhSb1JFUjFjTUVMa2hoNG1JQWhoQkRmSXVHMTFsbUV0b0p5UXkrdFZ4VzJM?=
+ =?utf-8?B?MExjZEdjTjQ3UTljS2toVGtrNUxTTFAzVlpiTWJha05nSjMzb0pzYlljQ2Vn?=
+ =?utf-8?B?QzFMSGNhTDB0YkNHajVjT2VGQ3dsK1AvUEJtK01OOHVScjN2b2ZaRkRWbDda?=
+ =?utf-8?B?U2plTWcyWEtBaFdtSjZlTUh6aGNWUHlveS9KWEE1R2JqUlpqNnFKSWM4LzNE?=
+ =?utf-8?B?Rm1nYUc2c2doRkJTLzlGY0lMc1RqbnU3OXVPWHMxcjdRd3REc3JCRkRCeVdY?=
+ =?utf-8?B?MFFlbHhxVmFNMzFTYUVBVjJKdEFBZzREOU82UUlUZFFsaGczc3lFWU04WkJs?=
+ =?utf-8?B?a2VKWTBpTEN4R01zQWtOZDh3OGIwbjVRaGxCM09DZGZEL2pGVTJPbC9PdDBn?=
+ =?utf-8?B?aWQ4ZXpiV1pEQXlNVjB3WSsyMG45cmNnY0EvNFZqMjRQQjFNK2djNUF5eEFl?=
+ =?utf-8?B?aGMvWXBDcmczaXFaSnBkRUpVYVpkZGlFK3R1QlAyWUIweFpOVUhKRFZZM3Av?=
+ =?utf-8?B?dU81ZEZNY3JSV2xrd3RuWTRzbDh0azhOWUVsem9IZDFhUkt0OTBCclNjK0Fn?=
+ =?utf-8?B?cStMS09JNWxTUExjUUZHL0pLRG92QzNBUUxmcEpkWjh1Y2ZIbGFKcVhjZzJz?=
+ =?utf-8?B?TTd2QkJhdFRNL012ZnZOYkdiTTdOSks5UllGTGo3L1RJaXJDdm5UVUlKMHpi?=
+ =?utf-8?B?Yk9yakUvZzdidDNNZkkza2FYVFdyUmY4K2UzNmltQjU5ZE0vcXJoSjBKUzVy?=
+ =?utf-8?B?RzZ0Q3VMZzFSTHJzaXQ5RHF4Z3YyN0YzS1BPYTlrOHZuYXgvcnBXbDNTRDhJ?=
+ =?utf-8?B?QzBiRHhpRGp4N0U4RDNVYUpMb0lmZGVRNzdWdWZpTlR4OW5veEZadllUOTV2?=
+ =?utf-8?B?SlR4Nm1ndHRvRDlZekptN01PYURRU2VHZmk1ZUV0RFhOcnFqVitJTkluVEEz?=
+ =?utf-8?B?RlQvcGtram5uZ2oxQ2tiWlBCWEpkS1Zza1lJMFpMb2ZXaEVLT0VkQVVOVzVo?=
+ =?utf-8?B?RG42L1ZEcXh2bkFua3RxUlZaaFhXMGg5emczVjN3alZqeHZMMWY2enpnY0xL?=
+ =?utf-8?B?UkhiRzhpSUlrb0ZhRUY1ZVoxUzNZeTUvL1BhSERLRExPMWh2TGgwWlRRRyt2?=
+ =?utf-8?B?L1c5ZU40TnNMNDdkWUNaU1ZpRjdDU3lWNzlIVHVmQngwZTIyNE1hT3l2UkpL?=
+ =?utf-8?B?SkRnREt5WVJScEtib0hmL2t2U0w0UDh2dEFPdm5ZMDdGWFdzbzRwSFIzdkZM?=
+ =?utf-8?B?MG5FSzRVTmhDUkNQSy9IR1hZNlJqSXk1T3FHT3FDWlN0di9wWjVSRmhDZTIy?=
+ =?utf-8?B?OUR2ZlZ6U3BsN3Jra0FGVUVkWTlBTXcwWlZ1STdBMktuZi9IMGxERU5CZmlR?=
+ =?utf-8?B?S0xUTTh5ckM5SW1SRVZRdDIwelBxdWxDN1A2clUrVUtQSUFyN2NGK1BiK28r?=
+ =?utf-8?B?MjJEZkEybThXdS9VTUdCbXlsdTYzZXAyTVRSZXVXT1lLVVVXeko1YzFRczk1?=
+ =?utf-8?B?b01EQ3B5K3RsbVZFMFRVOXBST0ZRVEdock1Nd3pCV21wSFp2WmtHeUttWGsx?=
+ =?utf-8?B?eGpOTUlpRzBWa0FSTkEvYkJHakdTS3lxbUEwY2ZZRVplTmpYZ2lPOW9rK2FJ?=
+ =?utf-8?B?RUJKOGNHUXlGTmhSTWk3eVo1aHMxR2ZicFdIM1ROWDRCd205aUhlQ3BxS1Ir?=
+ =?utf-8?B?d3ZSbEM4U0dNTzAvVlNtQVZ4b3J5UjFYc2RSc2Q4OFhwVXBzN3lncjIwVmc0?=
+ =?utf-8?B?a2I5MWlhM2xYTHVmS2dEWm1XK3p6RHBwTDl2VlM2RU9nbkg4QU14bFNqN1J5?=
+ =?utf-8?B?bVhheDFVeFlZMVZZQzBOZjhvbUdsMUpqNWpJSWZ3dTQvSms4b0F3WnlhMDY0?=
+ =?utf-8?B?Zmx5MVA5MitZbXVzdGlwWnRoUlFFc0kvN09Gdk5GRWdPMFBER2pyNHk3MytO?=
+ =?utf-8?Q?mQZr6mI19IqdvINe6FKbCjo9y?=
 X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0944b4e2-51f7-42c7-5f87-08da62d5bad4
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6ec6224f-d70d-4341-53ea-08da62d77b66
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jul 2022 00:38:52.9632
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jul 2022 00:51:25.5390
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: oHh+Js55Yw9Nfzk+tgenCcuramMd64/mUYn3RivuZbaCzgOOYFb0XHSKCr2plOvP
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR15MB1395
-X-Proofpoint-ORIG-GUID: VxQxVZDCQ5IkUljYpDjI8SIrDbIIsQzu
-X-Proofpoint-GUID: VxQxVZDCQ5IkUljYpDjI8SIrDbIIsQzu
+X-MS-Exchange-CrossTenant-UserPrincipalName: IY3vvKIbeaoD+C06utG3Z/jJNaW7wYL1ZiByKyUlRBv+AtHI1U4cUaje0BUYSIyy
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW5PR15MB5268
+X-Proofpoint-GUID: 7iUa4rr-gOspe4wAglifvKX_etckiWf0
+X-Proofpoint-ORIG-GUID: 7iUa4rr-gOspe4wAglifvKX_etckiWf0
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
  definitions=2022-07-10_18,2022-07-08_01,2022-06-22_01
@@ -154,62 +162,175 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 7/10/22 1:19 PM, Matthieu Baerts wrote:
-> Hi Yonghong,
+On 7/10/22 5:26 PM, Yonghong Song wrote:
 > 
-> Thank you for the review!
 > 
-> On 10/07/2022 18:59, Yonghong Song wrote:> On 7/10/22 1:35 AM, Matthieu
-> Baerts wrote:
->>> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
->>> index 81b19669efba..2ac424641cc3 100644
->>> --- a/include/linux/bpf_verifier.h
->>> +++ b/include/linux/bpf_verifier.h
->>> @@ -345,10 +345,10 @@ struct bpf_verifier_state_list {
->>>    };
->>>      struct bpf_loop_inline_state {
->>> -    int initialized:1; /* set to true upon first entry */
->>> -    int fit_for_inline:1; /* true if callback function is the same
->>> -                   * at each call and flags are always zero
->>> -                   */
->>> +    bool initialized; /* set to true upon first entry */
->>> +    bool fit_for_inline; /* true if callback function is the same
->>> +                  * at each call and flags are always zero
->>> +                  */
+> On 7/8/22 5:04 PM, Yosry Ahmed wrote:
+>> Add a selftest that tests the whole workflow for collecting,
+>> aggregating (flushing), and displaying cgroup hierarchical stats.
 >>
->> I think changing 'int' to 'unsigned' is a better alternative for
->> potentially adding more bitfields in the future. This is also a pattern
->> for many other kernel data structures.
+>> TL;DR:
+>> - Userspace program creates a cgroup hierarchy and induces memcg reclaim
+>>    in parts of it.
+>> - Whenever reclaim happens, vmscan_start and vmscan_end update
+>>    per-cgroup percpu readings, and tell rstat which (cgroup, cpu) pairs
+>>    have updates.
+>> - When userspace tries to read the stats, vmscan_dump calls rstat to 
+>> flush
+>>    the stats, and outputs the stats in text format to userspace (similar
+>>    to cgroupfs stats).
+>> - rstat calls vmscan_flush once for every (cgroup, cpu) pair that has
+>>    updates, vmscan_flush aggregates cpu readings and propagates updates
+>>    to parents.
+>> - Userspace program makes sure the stats are aggregated and read
+>>    correctly.
+>>
+>> Detailed explanation:
+>> - The test loads tracing bpf programs, vmscan_start and vmscan_end, to
+>>    measure the latency of cgroup reclaim. Per-cgroup readings are 
+>> stored in
+>>    percpu maps for efficiency. When a cgroup reading is updated on a cpu,
+>>    cgroup_rstat_updated(cgroup, cpu) is called to add the cgroup to the
+>>    rstat updated tree on that cpu.
+>>
+>> - A cgroup_iter program, vmscan_dump, is loaded and pinned to a file, for
+>>    each cgroup. Reading this file invokes the program, which calls
+>>    cgroup_rstat_flush(cgroup) to ask rstat to propagate the updates 
+>> for all
+>>    cpus and cgroups that have updates in this cgroup's subtree. 
+>> Afterwards,
+>>    the stats are exposed to the user. vmscan_dump returns 1 to terminate
+>>    iteration early, so that we only expose stats for one cgroup per read.
+>>
+>> - An ftrace program, vmscan_flush, is also loaded and attached to
+>>    bpf_rstat_flush. When rstat flushing is ongoing, vmscan_flush is 
+>> invoked
+>>    once for each (cgroup, cpu) pair that has updates. cgroups are popped
+>>    from the rstat tree in a bottom-up fashion, so calls will always be
+>>    made for cgroups that have updates before their parents. The program
+>>    aggregates percpu readings to a total per-cgroup reading, and also
+>>    propagates them to the parent cgroup. After rstat flushing is over, 
+>> all
+>>    cgroups will have correct updated hierarchical readings (including all
+>>    cpus and all their descendants).
+>>
+>> - Finally, the test creates a cgroup hierarchy and induces memcg reclaim
+>>    in parts of it, and makes sure that the stats collection, aggregation,
+>>    and reading workflow works as expected.
+>>
+>> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+>> ---
+>>   .../prog_tests/cgroup_hierarchical_stats.c    | 362 ++++++++++++++++++
+>>   .../bpf/progs/cgroup_hierarchical_stats.c     | 235 ++++++++++++
+>>   2 files changed, 597 insertions(+)
+>>   create mode 100644 
+>> tools/testing/selftests/bpf/prog_tests/cgroup_hierarchical_stats.c
+>>   create mode 100644 
+>> tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
+>>
+> [...]
+>> +
+>> +static unsigned long long get_cgroup_vmscan_delay(unsigned long long 
+>> cgroup_id,
+>> +                          const char *file_name)
+>> +{
+>> +    char buf[128], path[128];
+>> +    unsigned long long vmscan = 0, id = 0;
+>> +    int err;
+>> +
+>> +    /* For every cgroup, read the file generated by cgroup_iter */
+>> +    snprintf(path, 128, "%s%s", BPFFS_VMSCAN, file_name);
+>> +    err = read_from_file(path, buf, 128);
+>> +    if (!ASSERT_OK(err, "read cgroup_iter"))
+>> +        return 0;
+>> +
+>> +    /* Check the output file formatting */
+>> +    ASSERT_EQ(sscanf(buf, "cg_id: %llu, total_vmscan_delay: %llu\n",
+>> +             &id, &vmscan), 2, "output format");
+>> +
+>> +    /* Check that the cgroup_id is displayed correctly */
+>> +    ASSERT_EQ(id, cgroup_id, "cgroup_id");
+>> +    /* Check that the vmscan reading is non-zero */
+>> +    ASSERT_GT(vmscan, 0, "vmscan_reading");
+>> +    return vmscan;
+>> +}
+>> +
+>> +static void check_vmscan_stats(void)
+>> +{
+>> +    int i;
+>> +    unsigned long long vmscan_readings[N_CGROUPS], vmscan_root;
+>> +
+>> +    for (i = 0; i < N_CGROUPS; i++)
+>> +        vmscan_readings[i] = get_cgroup_vmscan_delay(cgroups[i].id,
+>> +                                 cgroups[i].name);
+>> +
+>> +    /* Read stats for root too */
+>> +    vmscan_root = get_cgroup_vmscan_delay(CG_ROOT_ID, CG_ROOT_NAME);
+>> +
+>> +    /* Check that child1 == child1_1 + child1_2 */
+>> +    ASSERT_EQ(vmscan_readings[1], vmscan_readings[3] + 
+>> vmscan_readings[4],
+>> +          "child1_vmscan");
+>> +    /* Check that child2 == child2_1 + child2_2 */
+>> +    ASSERT_EQ(vmscan_readings[2], vmscan_readings[5] + 
+>> vmscan_readings[6],
+>> +          "child2_vmscan");
+>> +    /* Check that test == child1 + child2 */
+>> +    ASSERT_EQ(vmscan_readings[0], vmscan_readings[1] + 
+>> vmscan_readings[2],
+>> +          "test_vmscan");
+>> +    /* Check that root >= test */
+>> +    ASSERT_GE(vmscan_root, vmscan_readings[1], "root_vmscan");
 > 
-> There was room, I was not sure if it would be OK but I saw 'bool' were
-> often used in structures from this bpf_verifier.h file.
+> I still get a test failure with
 > 
-> I can of course switch to an unsigned one. I would have picked 'u8' when
-> looking at the structures around but any preferences from you?
-> 'unsigned', 'unsigned int', 'u8', 'u32'?
+> get_cgroup_vmscan_delay:PASS:cgroup_id 0 nsec
+> get_cgroup_vmscan_delay:FAIL:vmscan_reading unexpected vmscan_reading: 
+> actual 0 <= expected 0
+> check_vmscan_stats:FAIL:child1_vmscan unexpected child1_vmscan: actual 0 
+> != expected -2
+> check_vmscan_stats:FAIL:child2_vmscan unexpected child2_vmscan: actual 0 
+> != expected -2
+> check_vmscan_stats:PASS:test_vmscan 0 nsec
+> check_vmscan_stats:PASS:root_vmscan 0 nsec
+> 
+> I added 'dump_stack()' in function try_to_free_mem_cgroup_pages()
+> and run this test (#33) and didn't get any stacktrace.
+> But I do get stacktraces due to other operations like
+>          try_to_free_mem_cgroup_pages+0x1fd [kernel]
+>          try_to_free_mem_cgroup_pages+0x1fd [kernel]
+>          memory_reclaim_write+0x88 [kernel]
+>          cgroup_file_write+0x88 [kernel]
+>          kernfs_fop_write_iter+0xd0 [kernel]
+>          vfs_write+0x2c4 [kernel]
+>          __x64_sys_write+0x60 [kernel]
+>          do_syscall_64+0x2d [kernel]
+>          entry_SYSCALL_64_after_hwframe+0x44 [kernel]
+> 
+> If you can show me the stacktrace about how 
+> try_to_free_mem_cgroup_pages() is triggered in your setup, I can
+> help debug this problem in my environment.
 
-The original data structure is
-   struct bpf_loop_inline_state {
-         int initialized:1; /* set to true upon first entry */
-         int fit_for_inline:1; /* true if callback function is the same
-                                * at each call and flags are always zero
-                                */
-         u32 callback_subprogno; /* valid when fit_for_inline is true */
-   };
+BTW, CI also reported the test failure.
+https://github.com/kernel-patches/bpf/pull/3284
 
-So 'initialized' and 'fit_for_inline' and additional padding will take
-4 bytes, so 'unsigned', 'unsigned int', 'u32' should be appropriate 
-here. Later, if people want to add a u8 or u16 to utilize the padding,
-the type of 'initialized' and 'fit_for_inlined' might be changed to
-u8 or u16.
+For example, with gcc built kernel,
+https://github.com/kernel-patches/bpf/runs/7272407890?check_suite_focus=true
 
-For which of 'unsigned', 'unsigned int', 'u32', checking with
-   $ [~/work/bpf-next/include/linux] grep ":1" *.h
-both 'unsigned' and 'unsigned int' are used in many places. I don't have
-a preference. I saw one instance 'unsigned int' is used in this file,
-so 'unsigned int' should be okay here.
+The error:
 
+   get_cgroup_vmscan_delay:PASS:cgroup_id 0 nsec
+   get_cgroup_vmscan_delay:PASS:vmscan_reading 0 nsec
+   check_vmscan_stats:FAIL:child1_vmscan unexpected child1_vmscan: 
+actual 28390910 != expected 28390909
+   check_vmscan_stats:FAIL:child2_vmscan unexpected child2_vmscan: 
+actual 0 != expected -2
+   check_vmscan_stats:PASS:test_vmscan 0 nsec
+   check_vmscan_stats:PASS:root_vmscan 0 nsec
 
 > 
-> Cheers,
-> Matt
+>> +}
+>> +
+>> +static int setup_cgroup_iter(struct cgroup_hierarchical_stats *obj, 
+>> int cgroup_fd,
+> [...]
