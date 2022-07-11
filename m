@@ -2,37 +2,31 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31A045705E5
-	for <lists+bpf@lfdr.de>; Mon, 11 Jul 2022 16:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA2E85705CD
+	for <lists+bpf@lfdr.de>; Mon, 11 Jul 2022 16:38:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229561AbiGKOlG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Jul 2022 10:41:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60426 "EHLO
+        id S231376AbiGKOiy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Jul 2022 10:38:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230246AbiGKOkv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Jul 2022 10:40:51 -0400
+        with ESMTP id S231417AbiGKOir (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Jul 2022 10:38:47 -0400
 Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEDDF4AD78;
-        Mon, 11 Jul 2022 07:40:49 -0700 (PDT)
-Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4LhRM80SM9zhYnh;
-        Mon, 11 Jul 2022 22:38:12 +0800 (CST)
-Received: from [10.67.111.192] (10.67.111.192) by
- kwepemi500013.china.huawei.com (7.221.188.120) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Mon, 11 Jul 2022 22:40:43 +0800
-Message-ID: <893b2d5f-16e9-0b1d-4ae6-8199e0f4ccf8@huawei.com>
-Date:   Mon, 11 Jul 2022 22:40:42 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH bpf-next v7 4/4] bpf, arm64: bpf trampoline for arm64
-Content-Language: en-US
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-CC:     <bpf@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABC892605;
+        Mon, 11 Jul 2022 07:38:45 -0700 (PDT)
+Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4LhRJm6msqzhZ81;
+        Mon, 11 Jul 2022 22:36:08 +0800 (CST)
+Received: from huawei.com (10.67.174.197) by kwepemi500013.china.huawei.com
+ (7.221.188.120) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Mon, 11 Jul
+ 2022 22:38:40 +0800
+From:   Xu Kuohai <xukuohai@huawei.com>
+To:     <bpf@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        Will Deacon <will@kernel.org>, KP Singh <kpsingh@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Will Deacon <will@kernel.org>, KP Singh <kpsingh@kernel.org>
+CC:     Mark Rutland <mark.rutland@arm.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -54,64 +48,138 @@ CC:     <bpf@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
         James Morse <james.morse@arm.com>,
         Hou Tao <houtao1@huawei.com>,
         Jason Wang <wangborong@cdjrlc.com>
-References: <20220708093032.1832755-1-xukuohai@huawei.com>
- <20220708093032.1832755-5-xukuohai@huawei.com> <YswQQG7CUoTXCbDa@myrica>
- <4852eba8-9fd0-6894-934c-ab89c0c7cea9@huawei.com> <Ysw1nSxQUghvY/eY@myrica>
-From:   Xu Kuohai <xukuohai@huawei.com>
-In-Reply-To: <Ysw1nSxQUghvY/eY@myrica>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.111.192]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+Subject: [PATCH bpf-next v8 0/4] bpf trampoline for arm64
+Date:   Mon, 11 Jul 2022 10:47:18 -0400
+Message-ID: <20220711144722.2100039-1-xukuohai@huawei.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.197]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  kwepemi500013.china.huawei.com (7.221.188.120)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/11/2022 10:37 PM, Jean-Philippe Brucker wrote:
-> On Mon, Jul 11, 2022 at 10:16:00PM +0800, Xu Kuohai wrote:
->>>> +	if (save_ret)
->>>> +		emit(A64_STR64I(p->jited ? r0 : A64_R(0), A64_SP, retval_off),
->>>> +		     ctx);
->>>
->>> This should be only A64_R(0), not r0. r0 happens to equal A64_R(0) when
->>> jitted due to the way build_epilogue() builds the function at the moment,
->>> but we shouldn't rely on that.
->>>
->>
->> looks like I misunderstood something, will change it to:
->>
->> /* store return value, which is held in x0 for interpreter and in
->>  * bpf register r0 for JIT,
-> 
-> It's simpler than that: in both cases the return value is in x0 because
-> the function follows the procedure call standard. You could drop the
-> comment to avoid confusion and only do the change to A64_R(0)
-> 
+This patchset introduces bpf trampoline on arm64. A bpf trampoline converts
+native calling convention to bpf calling convention and is used to implement
+various bpf features, such as fentry, fexit, fmod_ret and struct_ops.
 
-OK, will send v9 since v8 was just sent
+The trampoline introduced does essentially the same thing as the bpf
+trampoline does on x86.
 
-> Thanks,
-> Jean
-> 
->>
->>
->>  but r0 happens to equal x0 due to the
->>  * way build_epilogue() builds the JIT image.
->>  */
->> if (save_ret)
->>         emit(A64_STR64I(A64_R(0), A64_SP, retval_off), ctx);
->>
->>> Apart from that, for the series
->>>
->>> Reviewed-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
->>>
->>> .
-> .
+Tested on raspberry pi 4b and qemu:
+
+ #18 /1     bpf_tcp_ca/dctcp:OK
+ #18 /2     bpf_tcp_ca/cubic:OK
+ #18 /3     bpf_tcp_ca/invalid_license:OK
+ #18 /4     bpf_tcp_ca/dctcp_fallback:OK
+ #18 /5     bpf_tcp_ca/rel_setsockopt:OK
+ #18        bpf_tcp_ca:OK
+ #51 /1     dummy_st_ops/dummy_st_ops_attach:OK
+ #51 /2     dummy_st_ops/dummy_init_ret_value:OK
+ #51 /3     dummy_st_ops/dummy_init_ptr_arg:OK
+ #51 /4     dummy_st_ops/dummy_multiple_args:OK
+ #51        dummy_st_ops:OK
+ #57 /1     fexit_bpf2bpf/target_no_callees:OK
+ #57 /2     fexit_bpf2bpf/target_yes_callees:OK
+ #57 /3     fexit_bpf2bpf/func_replace:OK
+ #57 /4     fexit_bpf2bpf/func_replace_verify:OK
+ #57 /5     fexit_bpf2bpf/func_sockmap_update:OK
+ #57 /6     fexit_bpf2bpf/func_replace_return_code:OK
+ #57 /7     fexit_bpf2bpf/func_map_prog_compatibility:OK
+ #57 /8     fexit_bpf2bpf/func_replace_multi:OK
+ #57 /9     fexit_bpf2bpf/fmod_ret_freplace:OK
+ #57        fexit_bpf2bpf:OK
+ #237       xdp_bpf2bpf:OK
+
+v8:
+ - Load return value from A64_R(0) for both non-JITed and JITed bpf prog
+ - Add Jean-Philippe's Reviewed-by
+
+v7: https://lore.kernel.org/bpf/20220708093032.1832755-1-xukuohai@huawei.com/
+ - Fix return value register usage error
+ - Typo fixes, etc
+
+v6: https://lore.kernel.org/bpf/20220625161255.547944-1-xukuohai@huawei.com/
+- Since Mark is refactoring arm64 ftrace to support long jump and reduce the
+  ftrace trampoline overhead, it's not clear how we'll attach bpf trampoline
+  to regular kernel functions, so remove ftrace related patches for now.
+- Add long jump support for attaching bpf trampoline to bpf prog, since bpf
+  trampoline and bpf prog are allocated via vmalloc, there is chance the
+  distance exceeds the max branch range.
+- Collect ACK/Review-by, not sure if the ACK and Review-bys for bpf_arch_text_poke()
+  should be kept, since the changes to it is not trivial
+- Update some commit messages and comments
+
+v5: https://lore.kernel.org/bpf/20220518131638.3401509-1-xukuohai@huawei.com/
+- As Alexei suggested, remove is_valid_bpf_tramp_flags()
+
+v4: https://lore.kernel.org/bpf/20220517071838.3366093-1-xukuohai@huawei.com/
+- Run the test cases on raspberry pi 4b
+- Rebase and add cookie to trampoline
+- As Steve suggested, move trace_direct_tramp() back to entry-ftrace.S to
+  avoid messing up generic code with architecture specific code
+- As Jakub suggested, merge patch 4 and patch 5 of v3 to provide full function
+  in one patch
+- As Mark suggested, add a comment for the use of aarch64_insn_patch_text_nosync()
+- Do not generate trampoline for long jump to avoid triggering ftrace_bug
+- Round stack size to multiples of 16B to avoid SPAlignmentFault
+- Use callee saved register x20 to reduce the use of mov_i64
+- Add missing BTI J instructions
+- Trivial spelling and code style fixes
+
+v3: https://lore.kernel.org/bpf/20220424154028.1698685-1-xukuohai@huawei.com/
+- Append test results for bpf_tcp_ca, dummy_st_ops, fexit_bpf2bpf,
+  xdp_bpf2bpf
+- Support to poke bpf progs
+- Fix return value of arch_prepare_bpf_trampoline() to the total number
+  of bytes instead of number of instructions 
+- Do not check whether CONFIG_DYNAMIC_FTRACE_WITH_REGS is enabled in
+  arch_prepare_bpf_trampoline, since the trampoline may be hooked to a bpf
+  prog
+- Restrict bpf_arch_text_poke() to poke bpf text only, as kernel functions
+  are poked by ftrace
+- Rewrite trace_direct_tramp() in inline assembly in trace_selftest.c
+  to avoid messing entry-ftrace.S
+- isolate arch_ftrace_set_direct_caller() with macro
+  CONFIG_HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS to avoid compile error
+  when this macro is disabled
+- Some trivial code sytle fixes
+
+v2: https://lore.kernel.org/bpf/20220414162220.1985095-1-xukuohai@huawei.com/
+- Add Song's ACK
+- Change the multi-line comment in is_valid_bpf_tramp_flags() into net
+  style (patch 3)
+- Fix a deadloop issue in ftrace selftest (patch 2)
+- Replace pt_regs->x0 with pt_regs->orig_x0 in patch 1 commit message 
+- Replace "bpf trampoline" with "custom trampoline" in patch 1, as
+  ftrace direct call is not only used by bpf trampoline.
+
+v1: https://lore.kernel.org/bpf/20220413054959.1053668-1-xukuohai@huawei.com/
+
+Xu Kuohai (4):
+  bpf: Remove is_valid_bpf_tramp_flags()
+  arm64: Add LDR (literal) instruction
+  bpf, arm64: Implement bpf_arch_text_poke() for arm64
+  bpf, arm64: bpf trampoline for arm64
+
+ arch/arm64/include/asm/insn.h |   3 +
+ arch/arm64/lib/insn.c         |  30 +-
+ arch/arm64/net/bpf_jit.h      |   7 +
+ arch/arm64/net/bpf_jit_comp.c | 718 +++++++++++++++++++++++++++++++++-
+ arch/x86/net/bpf_jit_comp.c   |  20 -
+ kernel/bpf/bpf_struct_ops.c   |   3 +
+ kernel/bpf/trampoline.c       |   3 +
+ 7 files changed, 743 insertions(+), 41 deletions(-)
+
+-- 
+2.30.2
 
