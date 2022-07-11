@@ -2,145 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C04265704F9
-	for <lists+bpf@lfdr.de>; Mon, 11 Jul 2022 16:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 680D457052F
+	for <lists+bpf@lfdr.de>; Mon, 11 Jul 2022 16:16:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229629AbiGKOEd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Jul 2022 10:04:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57766 "EHLO
+        id S229644AbiGKOQK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Jul 2022 10:16:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229908AbiGKOEc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Jul 2022 10:04:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2642019C18
-        for <bpf@vger.kernel.org>; Mon, 11 Jul 2022 07:04:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1657548268;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=MHDwuZOBumrb0bTeaJpSEvJ+mJYtR/xSjJZhFTAmwho=;
-        b=hLEhfxA46qiHgH7cPBsmDIkq6umXp6nztCNuKGZK2/T1e6xU2frqVpcjioawqI4vnxIvtx
-        m2NRbMOMk5CRWcXFDhyo++0IB/l0Xn2IMoqVRm62X+6kII74biz2wFjuMk8sOZRv60vmuS
-        /WcJcQP3mO3ww1weKsgMuRJJIoxJFfM=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-439-0eFv_hyjPBmNxstG_IyD-Q-1; Mon, 11 Jul 2022 10:04:24 -0400
-X-MC-Unique: 0eFv_hyjPBmNxstG_IyD-Q-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 83CA1101E9B0;
-        Mon, 11 Jul 2022 14:04:24 +0000 (UTC)
-Received: from firesoul.localdomain (unknown [10.40.208.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 31CF52026D64;
-        Mon, 11 Jul 2022 14:04:24 +0000 (UTC)
-Received: from [192.168.42.3] (localhost [IPv6:::1])
-        by firesoul.localdomain (Postfix) with ESMTP id 03C2130736C78;
-        Mon, 11 Jul 2022 16:04:23 +0200 (CEST)
-Subject: [bpf-next PATCH] samples/bpf: Fix xdp_redirect_map egress devmap prog
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
-        tstellar@redhat.com
-Date:   Mon, 11 Jul 2022 16:04:22 +0200
-Message-ID: <165754826292.575614.5636444052787717159.stgit@firesoul>
-User-Agent: StGit/1.4
+        with ESMTP id S229578AbiGKOQJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Jul 2022 10:16:09 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B9C931347;
+        Mon, 11 Jul 2022 07:16:06 -0700 (PDT)
+Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4LhQnK62X3zVfcD;
+        Mon, 11 Jul 2022 22:12:21 +0800 (CST)
+Received: from [10.67.111.192] (10.67.111.192) by
+ kwepemi500013.china.huawei.com (7.221.188.120) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Mon, 11 Jul 2022 22:16:01 +0800
+Message-ID: <4852eba8-9fd0-6894-934c-ab89c0c7cea9@huawei.com>
+Date:   Mon, 11 Jul 2022 22:16:00 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH bpf-next v7 4/4] bpf, arm64: bpf trampoline for arm64
+Content-Language: en-US
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+CC:     <bpf@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        Will Deacon <will@kernel.org>, KP Singh <kpsingh@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        James Morse <james.morse@arm.com>,
+        Hou Tao <houtao1@huawei.com>,
+        Jason Wang <wangborong@cdjrlc.com>
+References: <20220708093032.1832755-1-xukuohai@huawei.com>
+ <20220708093032.1832755-5-xukuohai@huawei.com> <YswQQG7CUoTXCbDa@myrica>
+From:   Xu Kuohai <xukuohai@huawei.com>
+In-Reply-To: <YswQQG7CUoTXCbDa@myrica>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.78 on 10.11.54.4
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.67.111.192]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemi500013.china.huawei.com (7.221.188.120)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-LLVM compiler optimized out the memcpy in xdp_redirect_map_egress,
-which caused the Ethernet source MAC-addr to always be zero
-when enabling the devmap egress prog via cmdline --load-egress.
+On 7/11/2022 7:57 PM, Jean-Philippe Brucker wrote:
+> On Fri, Jul 08, 2022 at 05:30:32AM -0400, Xu Kuohai wrote:
+>> +static void invoke_bpf_prog(struct jit_ctx *ctx, struct bpf_tramp_link *l,
+>> +			    int args_off, int retval_off, int run_ctx_off,
+>> +			    bool save_ret)
+>> +{
+>> +	u32 *branch;
+>> +	u64 enter_prog;
+>> +	u64 exit_prog;
+>> +	u8 r0 = bpf2a64[BPF_REG_0];
+>> +	struct bpf_prog *p = l->link.prog;
+>> +	int cookie_off = offsetof(struct bpf_tramp_run_ctx, bpf_cookie);
+>> +
+>> +	if (p->aux->sleepable) {
+>> +		enter_prog = (u64)__bpf_prog_enter_sleepable;
+>> +		exit_prog = (u64)__bpf_prog_exit_sleepable;
+>> +	} else {
+>> +		enter_prog = (u64)__bpf_prog_enter;
+>> +		exit_prog = (u64)__bpf_prog_exit;
+>> +	}
+>> +
+>> +	if (l->cookie == 0) {
+>> +		/* if cookie is zero, one instruction is enough to store it */
+>> +		emit(A64_STR64I(A64_ZR, A64_SP, run_ctx_off + cookie_off), ctx);
+>> +	} else {
+>> +		emit_a64_mov_i64(A64_R(10), l->cookie, ctx);
+>> +		emit(A64_STR64I(A64_R(10), A64_SP, run_ctx_off + cookie_off),
+>> +		     ctx);
+>> +	}
+>> +
+>> +	/* save p to callee saved register x19 to avoid loading p with mov_i64
+>> +	 * each time.
+>> +	 */
+>> +	emit_addr_mov_i64(A64_R(19), (const u64)p, ctx);
+>> +
+>> +	/* arg1: prog */
+>> +	emit(A64_MOV(1, A64_R(0), A64_R(19)), ctx);
+>> +	/* arg2: &run_ctx */
+>> +	emit(A64_ADD_I(1, A64_R(1), A64_SP, run_ctx_off), ctx);
+>> +
+>> +	emit_call(enter_prog, ctx);
+>> +
+>> +	/* if (__bpf_prog_enter(prog) == 0)
+>> +	 *         goto skip_exec_of_prog;
+>> +	 */
+>> +	branch = ctx->image + ctx->idx;
+>> +	emit(A64_NOP, ctx);
+>> +
+>> +	/* save return value to callee saved register x20 */
+>> +	emit(A64_MOV(1, A64_R(20), A64_R(0)), ctx);
+>> +
+>> +	emit(A64_ADD_I(1, A64_R(0), A64_SP, args_off), ctx);
+>> +	if (!p->jited)
+>> +		emit_addr_mov_i64(A64_R(1), (const u64)p->insnsi, ctx);
+>> +
+>> +	emit_call((const u64)p->bpf_func, ctx);
+>> +
+>> +	/* store return value, which is held in r0 for JIT and in x0
+>> +	 * for interpreter.
+>> +	 */
+>> +	if (save_ret)
+>> +		emit(A64_STR64I(p->jited ? r0 : A64_R(0), A64_SP, retval_off),
+>> +		     ctx);
+> 
+> This should be only A64_R(0), not r0. r0 happens to equal A64_R(0) when
+> jitted due to the way build_epilogue() builds the function at the moment,
+> but we shouldn't rely on that.
+> 
 
-Issue observed with LLVM version 14.0.0
- - Shipped with Fedora 36 on target: x86_64-redhat-linux-gnu.
+looks like I misunderstood something, will change it to:
 
-In verbose mode print the source MAC-addr in case xdp_devmap_attached
-mode is used.
+/* store return value, which is held in x0 for interpreter and in
+ * bpf register r0 for JIT, but r0 happens to equal x0 due to the
+ * way build_epilogue() builds the JIT image.
+ */
+if (save_ret)
+        emit(A64_STR64I(A64_R(0), A64_SP, retval_off), ctx);
 
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
----
- samples/bpf/xdp_redirect_map.bpf.c  |    6 ++++--
- samples/bpf/xdp_redirect_map_user.c |    9 +++++++++
- 2 files changed, 13 insertions(+), 2 deletions(-)
-
-diff --git a/samples/bpf/xdp_redirect_map.bpf.c b/samples/bpf/xdp_redirect_map.bpf.c
-index 415bac1758e3..8557c278df77 100644
---- a/samples/bpf/xdp_redirect_map.bpf.c
-+++ b/samples/bpf/xdp_redirect_map.bpf.c
-@@ -33,7 +33,7 @@ struct {
- } tx_port_native SEC(".maps");
- 
- /* store egress interface mac address */
--const volatile char tx_mac_addr[ETH_ALEN];
-+const volatile __u8 tx_mac_addr[ETH_ALEN];
- 
- static __always_inline int xdp_redirect_map(struct xdp_md *ctx, void *redirect_map)
- {
-@@ -73,6 +73,7 @@ int xdp_redirect_map_egress(struct xdp_md *ctx)
- {
- 	void *data_end = (void *)(long)ctx->data_end;
- 	void *data = (void *)(long)ctx->data;
-+	u8 *mac_addr = (u8 *) tx_mac_addr;
- 	struct ethhdr *eth = data;
- 	u64 nh_off;
- 
-@@ -80,7 +81,8 @@ int xdp_redirect_map_egress(struct xdp_md *ctx)
- 	if (data + nh_off > data_end)
- 		return XDP_DROP;
- 
--	__builtin_memcpy(eth->h_source, (const char *)tx_mac_addr, ETH_ALEN);
-+	barrier_var(mac_addr); /* prevent optimizing out memcpy */
-+	__builtin_memcpy(eth->h_source, mac_addr, ETH_ALEN);
- 
- 	return XDP_PASS;
- }
-diff --git a/samples/bpf/xdp_redirect_map_user.c b/samples/bpf/xdp_redirect_map_user.c
-index b6e4fc849577..c889a1394dc1 100644
---- a/samples/bpf/xdp_redirect_map_user.c
-+++ b/samples/bpf/xdp_redirect_map_user.c
-@@ -40,6 +40,8 @@ static const struct option long_options[] = {
- 	{}
- };
- 
-+static int verbose = 0;
-+
- int main(int argc, char **argv)
- {
- 	struct bpf_devmap_val devmap_val = {};
-@@ -79,6 +81,7 @@ int main(int argc, char **argv)
- 			break;
- 		case 'v':
- 			sample_switch_mode();
-+			verbose = 1;
- 			break;
- 		case 's':
- 			mask |= SAMPLE_REDIRECT_MAP_CNT;
-@@ -134,6 +137,12 @@ int main(int argc, char **argv)
- 			ret = EXIT_FAIL;
- 			goto end_destroy;
- 		}
-+		if (verbose)
-+			printf("Egress ifindex:%d using src MAC %02x:%02x:%02x:%02x:%02x:%02x\n",
-+			       ifindex_out,
-+			       skel->rodata->tx_mac_addr[0], skel->rodata->tx_mac_addr[1],
-+			       skel->rodata->tx_mac_addr[2], skel->rodata->tx_mac_addr[3],
-+			       skel->rodata->tx_mac_addr[4], skel->rodata->tx_mac_addr[5]);
- 	}
- 
- 	skel->rodata->from_match[0] = ifindex_in;
-
-
+> Apart from that, for the series
+> 
+> Reviewed-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> 
+> .
