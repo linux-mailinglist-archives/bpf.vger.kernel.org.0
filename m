@@ -2,158 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C786571AD2
-	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 15:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 178FB571B06
+	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 15:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229568AbiGLNHD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jul 2022 09:07:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51606 "EHLO
+        id S231952AbiGLNUv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jul 2022 09:20:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232060AbiGLNHD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jul 2022 09:07:03 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B27B4BD2
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 06:07:01 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id r6so10009578edd.7
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 06:07:01 -0700 (PDT)
+        with ESMTP id S229760AbiGLNUu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jul 2022 09:20:50 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4A41422D8
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 06:20:49 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id y195so13941637yby.0
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 06:20:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares.net; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=u8l7HUNbb6T5hd+GJ4MBYUKuc1ALWgwKw98IY+lEVpI=;
-        b=x1XIDJ9vm3CAvlnarSpe7uglRwDqmE8M6stiFxOTIdwFxpdKgwHffh1b/dNbDmb249
-         hFFj6Sn6Q4HSz+jYD2xDHZDQ1iR9EGYCj7hdmr4ponqVai7IxXBqsy2ujBl9meOsRDmk
-         qNxcmAQnAnqRWE64umeVIfzV8RINc/XYuZ/h8ZMcnTlEdyJDlTwpdsIrN+29f5R3bgpv
-         G1IRdwuShnscAORDtZSJl9NE5rPA1XTr6KXynOU3Ug3GdFPlV29+7OOYgLPMN2BhOYTq
-         Mnm1HTHWj8CaMeH83hHHph26cTlXoOLNg+KpSQrASDwrpn4UHvUJmB/aiJBLJUUzlfP9
-         pXVg==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WgplIbYGZStxvy6kBPwzY7tvzlqnbWL1ukxWQkjqjxQ=;
+        b=NK+19/L2duAPWC9U9IH0+V9hMN58tqGeRNlvI9XGf0ct7PySCH1WsIR3iWdlsbHY7C
+         9zeLrrnEB22JarA9goFT6i9IgEmILtaA8/JWbowZisAHmztjCghFC6YyofEJbxSypP7P
+         7jtn9aB7oOdnVoDTeBdvoZHHRgLqC0Aki3AS6VOlVQFjEKIL16TorY1ctcjQ5jJTBUGA
+         uvXatfQRfIToebGfRmQmW6WcaCq4vZfOPBDBNSE/QLUeTl9Ow/JfktdYfPwYwoI1wGKU
+         d49vp9k/FOrGZL2wqPqQ+tSNEachb5PdYQRfa2zXDbuyU/O5QmbT805n59W88rppxnMd
+         wBbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=u8l7HUNbb6T5hd+GJ4MBYUKuc1ALWgwKw98IY+lEVpI=;
-        b=rKd7BI9ZkIf9TE513aa59H5W49agZHkqCDg/JYL5ptLyvbzyLqz0BqNpl0BrY5v1yK
-         l7Pkidsd3UmJrNfT/VnRNGm520sQlKwfEgg6aCfzA56Xvbl40Q1cWp8NEr8qbd1vP13A
-         31U+ixLvt5YLEZqk1QxtrYC9QAsd49dRLMvQtRV6ysxU2Z2OFYdqc0lyBFKSyNCkE5GA
-         ZgW4+FPq6PcWmzvW+llnImM2ftyzTnLsrGFjWzGpXGXAHbTjKVURUQbf1cJFJCYkXt9f
-         iUwdldTprHSIkI6ahv573pUE2SXTS6Jir8csV9lmRuniOEnBZv/N5WGxVbmWYasvcRwC
-         G0Dg==
-X-Gm-Message-State: AJIora/zKdxeE8fkKoSqV27qyOTnG6WU4Xk+QSar+rkE6E+7nQDStbxS
-        8dih1V5OnnDzkZzkV63RcpV0AQ==
-X-Google-Smtp-Source: AGRyM1t8RW+y6Zxso6IzSZ3nkCgU3iEFhL1cDkcOEW8Kb/4rto+4atb4ox05QRxohqhGkATqzRgT2Q==
-X-Received: by 2002:a05:6402:2395:b0:43a:6d91:106c with SMTP id j21-20020a056402239500b0043a6d91106cmr32509494eda.299.1657631219727;
-        Tue, 12 Jul 2022 06:06:59 -0700 (PDT)
-Received: from ?IPV6:2a02:578:8593:1200:ef5d:b12d:ae7c:8d1? ([2a02:578:8593:1200:ef5d:b12d:ae7c:8d1])
-        by smtp.gmail.com with ESMTPSA id n4-20020a170906164400b0072af92fa086sm3746055ejd.32.2022.07.12.06.06.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jul 2022 06:06:59 -0700 (PDT)
-Message-ID: <23fa8509-5b2d-6263-1543-443c9c896348@tessares.net>
-Date:   Tue, 12 Jul 2022 15:06:58 +0200
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WgplIbYGZStxvy6kBPwzY7tvzlqnbWL1ukxWQkjqjxQ=;
+        b=G7CfkvjG+mzaCpWvExx4qa9p1Y3VETLYNxI78+vSnVUpQt1A1YcsBy/1DfyT1llScw
+         eonJDGs9X8rshNiFR709TEQZ7mBExlFDFHSEAv27ypqoTqlqBKmf6h5LFQ5/bWpiXiO7
+         nDfmjD9KihDHQKPYUP6SPtybZ3ajhYGhpEUbap0h8G9voAV/apCVnTlcfTMWZCr0ZHpx
+         AOHLzL94ggS8n4uJrErOkv8InbYYl3Zotp0hFlFGM4EemjXFqEeGNkk2FEdNdlME70WK
+         wCIpU7yfSPXPVDWbm5k7fYvAogokYvM2fGyHx7JmQ1+UixCOcv4YRrHhAapJ3cV4TXrI
+         H4gw==
+X-Gm-Message-State: AJIora+FneZTmb8iw9+28Jl0b3AaHVew69fhNY7cQqlgIHd22SFETDNN
+        2TGP+60l/dQvRO9TwLTKWYwzyU5hKTHkHI2guHH+BA==
+X-Google-Smtp-Source: AGRyM1vDcxq0itawvT8h/jiNruNgCov2wzidRFCPIYqfIrZeghKpIysv2bL6bLJOwbcRq1cM4C9LTyRyliKOYNTcn6o=
+X-Received: by 2002:a05:6902:a:b0:65c:b38e:6d9f with SMTP id
+ l10-20020a056902000a00b0065cb38e6d9fmr22934795ybh.36.1657632048898; Tue, 12
+ Jul 2022 06:20:48 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH bpf-next] mptcp: Add struct mptcp_sock definition when
- CONFIG_MPTCP is disabled
-Content-Language: en-GB
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Geliang Tang <geliang.tang@suse.com>, mptcp@lists.linux.dev
-References: <20220711130731.3231188-1-jolsa@kernel.org>
- <6d3b3bf-2e29-d695-87d7-c23497acc81@linux.intel.com>
- <5710e8f7-6c09-538f-a636-2ea1863ab208@tessares.net> <Ys1lKqF1GL/T6mBz@krava>
-From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-In-Reply-To: <Ys1lKqF1GL/T6mBz@krava>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20220709222029.297471-1-xiyou.wangcong@gmail.com>
+In-Reply-To: <20220709222029.297471-1-xiyou.wangcong@gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 12 Jul 2022 15:20:37 +0200
+Message-ID: <CANn89iJSQh-5DAhEL4Fh5ZDrtY47y0Mo9YJbG-rnj17pdXqoXA@mail.gmail.com>
+Subject: Re: [Patch bpf-next] tcp: fix sock skb accounting in tcp_read_skb()
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Cong Wang <cong.wang@bytedance.com>,
+        syzbot <syzbot+a0e6f8738b58f7654417@syzkaller.appspotmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Jiri,
+On Sun, Jul 10, 2022 at 12:20 AM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+>
+> From: Cong Wang <cong.wang@bytedance.com>
+>
+> Before commit 965b57b469a5 ("net: Introduce a new proto_ops
+> ->read_skb()"), skb was not dequeued from receive queue hence
+> when we close TCP socket skb can be just flushed synchronously.
+>
+> After this commit, we have to uncharge skb immediately after being
+> dequeued, otherwise it is still charged in the original sock. And we
+> still need to retain skb->sk, as eBPF programs may extract sock
+> information from skb->sk. Therefore, we have to call
+> skb_set_owner_sk_safe() here.
+>
+> Fixes: 965b57b469a5 ("net: Introduce a new proto_ops ->read_skb()")
+> Reported-and-tested-by: syzbot+a0e6f8738b58f7654417@syzkaller.appspotmail.com
+> Tested-by: Stanislav Fomichev <sdf@google.com>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> ---
+>  net/ipv4/tcp.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+> index 9d2fd3ced21b..c6b1effb2afd 100644
+> --- a/net/ipv4/tcp.c
+> +++ b/net/ipv4/tcp.c
+> @@ -1749,6 +1749,7 @@ int tcp_read_skb(struct sock *sk, skb_read_actor_t recv_actor)
+>                 int used;
+>
+>                 __skb_unlink(skb, &sk->sk_receive_queue);
+> +               WARN_ON(!skb_set_owner_sk_safe(skb, sk));
+>                 used = recv_actor(sk, skb);
+>                 if (used <= 0) {
+>                         if (!copied)
+> --
+> 2.34.1
+>
 
-On 12/07/2022 14:12, Jiri Olsa wrote:
-> On Tue, Jul 12, 2022 at 11:06:38AM +0200, Matthieu Baerts wrote:
->> Hi Jiri, Mat,
->>
->> On 11/07/2022 23:21, Mat Martineau wrote:
->>> On Mon, 11 Jul 2022, Jiri Olsa wrote:
->>>
->>>> The btf_sock_ids array needs struct mptcp_sock BTF ID for
->>>> the bpf_skc_to_mptcp_sock helper.
->>>>
->>>> When CONFIG_MPTCP is disabled, the 'struct mptcp_sock' is not
->>>> defined and resolve_btfids will complain with:
->>>>
->>>>  BTFIDS  vmlinux
->>>> WARN: resolve_btfids: unresolved symbol mptcp_sock
->>>>
->>>> Adding empty difinition for struct mptcp_sock when CONFIG_MPTCP
->>>> is disabled.
->>>>
->>>> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
->>>> ---
->>>> include/net/mptcp.h | 4 ++++
->>>> 1 file changed, 4 insertions(+)
->>>>
->>>> diff --git a/include/net/mptcp.h b/include/net/mptcp.h
->>>> index ac9cf7271d46..25741a52c666 100644
->>>> --- a/include/net/mptcp.h
->>>> +++ b/include/net/mptcp.h
->>>> @@ -59,6 +59,10 @@ struct mptcp_addr_info {
->>>>     };
->>>> };
->>>>
->>>> +#if !IS_ENABLED(CONFIG_MPTCP)
->>>> +struct mptcp_sock { };
->>>> +#endif
->>>
->>> The only use of struct mptcp_sock I see with !CONFIG_MPTCP is from this
->>> stub at the end of mptcp.h:
->>>
->>> static inline struct mptcp_sock *bpf_mptcp_sock_from_subflow(struct sock
->>> *sk) { return NULL; }
->>>
->>> It's normally defined in net/mptcp/protocol.h for the MPTCP subsystem code.
->>>
->>> The conditional could be added on the line before the stub to make it
->>> clear that the empty struct is associated with that inline stub.
->>
->> If this is required only for this specific BPF function, why not
->> modifying this stub (or add a define) to return "void *" instead of
->> "struct mptcp_sock *"?
-> 
-> so btf_sock_ids array needs BTF ID for 'struct mptcp_sock' and if CONFIG_MPTCP
-> is not enabled, then resolve_btfids (which resolves and populate all BTF IDs)
-> won't find it and will complain
-> 
-> btf_sock_ids keeps all socket IDs regardles the state of their CONFIG options,
-> and relies that sock structs are defined even if related CONFIG option is disabled
+I am reading tcp_read_skb(),it seems to have other bugs.
+I wonder why syzbot has not caught up yet.
 
-Thank you for the explanation. I didn't know about that.
+It ignores the offset value from tcp_recv_skb(), this looks wrong to me.
+The reason tcp_read_sock() passes a @len parameter is that is it not
+skb->len, but (skb->len - offset)
 
-Then it is fine for me to leave it in mptcp.h. If it is not directly
-linked to bpf_mptcp_sock_from_subflow(), I guess it can stay there but
-maybe better to wait for Mat's answer about that.
-
-> if that is false assumption then maybe we need to make btf_sock_ids values optional
-> somehow
-
-Cheers,
-Matt
--- 
-Tessares | Belgium | Hybrid Access Solutions
-www.tessares.net
+Also if recv_actor(sk, skb) returns 0, we probably still need to
+advance tp->copied_seq,
+for instance if skb had a pure FIN (and thus skb->len == 0), since you
+removed the skb from sk_receive_queue ?
