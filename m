@@ -2,320 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59CA1571A06
-	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 14:32:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C786571AD2
+	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 15:07:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229810AbiGLMcb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jul 2022 08:32:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48358 "EHLO
+        id S229568AbiGLNHD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jul 2022 09:07:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232819AbiGLMc3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jul 2022 08:32:29 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3E7D32079;
-        Tue, 12 Jul 2022 05:32:28 -0700 (PDT)
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26CCDnOd009255;
-        Tue, 12 Jul 2022 12:32:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : content-type :
- mime-version; s=corp-2021-07-09;
- bh=YnYcffDk6ML4k3uLtmHf8a/FiXkNsaaPpPh8Gwy25g4=;
- b=c8vMXEx5MLry9R4OWVa/yIVw9mjU6VwNAKaiBF0Jtm90d0Jmjzg05Nyu+2hdImlVLqde
- XdGcUjYwP4RCsCJy1427TDljBt5++zQUXSbEVN8uqL55y4cBhKTNG7NNr9RIh6Wcs0JB
- 1qLQJaN6J37elrTwfXPkELlgvJyOwTkRAmC5S65fcrmS911rOH5p++V/W2CxkBhatUeA
- yCOqN4s0hr17/USyQCaxe9kX3GJHNQEx6MlkzV4ksffICAqwQrBDnLyB5sDLSviQUK1Y
- x2dOIM4i8jFqTLyAuYzbuu4/vzSoW24tr/b0deMmwWlLpNXLQ1fIYstMHXHb57rjD70u bQ== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3h71sgpb39-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Jul 2022 12:32:04 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.16.1.2/8.16.1.2) with SMTP id 26CCLJSs032296;
-        Tue, 12 Jul 2022 12:32:03 GMT
-Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2042.outbound.protection.outlook.com [104.47.56.42])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com with ESMTP id 3h7043nxj0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Jul 2022 12:32:03 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KBTMcpDemY6bTtubZ7fre4mQ/+zpf9mR6eHCdORHrzcFClasR0rfsHV5xBEZAbiVyXoZPyA9Dz3W15xXk3ciD5XSYHh2Sx2fEp0G87ImfjYEr4CnbIe3RbckHtkcyjZDHUFWB12fvCC8S2oq6N/dOYyy78mdMevFPhHd4P+kmFZidWBb9dppZ7Jh2cFZZ/qeKTy9OjBndGzfLdtac8fECIVOqmFYSYxiFzAAt5Ii+U5oj5SQuLrDsFg/7Spewb9dhO5QF0qd/WIVAJC4GLY3NGMRGpol+sMYh8JWqjqsBb45ANwQ/rU+nV4PN2ebS3hbdDtj4zIk+nkv9H4wYm5jxw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YnYcffDk6ML4k3uLtmHf8a/FiXkNsaaPpPh8Gwy25g4=;
- b=DRDS/LHWfVLDy/u6icTSOYpYT0aW58JFKh2XbZsefiPzZ3Q4wekng98SUQ9Rjm+i6nbK0zQQ1PkoFsUkJ8a7hj978bddRahlWftVAm6iqO2a6KAUqUqQI7qgB0NNN7erQqeSEp2swKev6eUCzxMXepgo/ymaiE7t/4X7qLmdZCErUrxkkkLaFqP3VRD6cFoxNbhMFPh0tPUmkeblFwarAeVvNDc48GuxeG0Xk+OSxU0RppiKWCprlXA3ALVUu75hHxIGpv9GrqjvxhuSxAa48gHAZTm+rZLQyQ3Vr7DsiB5HY6/J6BhJfhiNWt09bkXR04H8cNRgGGFf7B4DSW724A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        with ESMTP id S232060AbiGLNHD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jul 2022 09:07:03 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B27B4BD2
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 06:07:01 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id r6so10009578edd.7
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 06:07:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YnYcffDk6ML4k3uLtmHf8a/FiXkNsaaPpPh8Gwy25g4=;
- b=Q08/w0Id6bRonyxzfaFwJaFCT6j+F6Yc5nlBvrwvRjrzWHwupvCiOvFhfn8Aa8lVc/Hkjeh7ZZZKAjcjVim63Vzx5g2zy4R2yqdlEVaHlIgpDptoTsGJ7IyYjfHdt4IrdTyLo8uRE2ZKXUGXFFXJmz5uPV0eWBxWfkciV/Ys6A4=
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
- by MN2PR10MB3293.namprd10.prod.outlook.com (2603:10b6:208:12b::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.16; Tue, 12 Jul
- 2022 12:32:00 +0000
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::b1c7:933:e8c2:f84f]) by BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::b1c7:933:e8c2:f84f%7]) with mapi id 15.20.5417.026; Tue, 12 Jul 2022
- 12:32:00 +0000
-From:   Alan Maguire <alan.maguire@oracle.com>
-To:     ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net
-Cc:     kafai@fb.com, songliubraving@fb.com, haoluo@google.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
-        mhiramat@kernel.org, akpm@linux-foundation.org, void@manifault.com,
-        swboyd@chromium.org, ndesaulniers@google.com,
-        9erthalion6@gmail.com, kennyyu@fb.com, geliang.tang@suse.com,
-        kuniyu@amazon.co.jp, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v6 bpf-next 2/2] selftests/bpf: add a ksym iter subtest
-Date:   Tue, 12 Jul 2022 13:31:45 +0100
-Message-Id: <1657629105-7812-3-git-send-email-alan.maguire@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1657629105-7812-1-git-send-email-alan.maguire@oracle.com>
-References: <1657629105-7812-1-git-send-email-alan.maguire@oracle.com>
-Content-Type: text/plain
-X-ClientProxiedBy: AM4PR0902CA0006.eurprd09.prod.outlook.com
- (2603:10a6:200:9b::16) To BLAPR10MB5267.namprd10.prod.outlook.com
- (2603:10b6:208:30e::22)
+        d=tessares.net; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=u8l7HUNbb6T5hd+GJ4MBYUKuc1ALWgwKw98IY+lEVpI=;
+        b=x1XIDJ9vm3CAvlnarSpe7uglRwDqmE8M6stiFxOTIdwFxpdKgwHffh1b/dNbDmb249
+         hFFj6Sn6Q4HSz+jYD2xDHZDQ1iR9EGYCj7hdmr4ponqVai7IxXBqsy2ujBl9meOsRDmk
+         qNxcmAQnAnqRWE64umeVIfzV8RINc/XYuZ/h8ZMcnTlEdyJDlTwpdsIrN+29f5R3bgpv
+         G1IRdwuShnscAORDtZSJl9NE5rPA1XTr6KXynOU3Ug3GdFPlV29+7OOYgLPMN2BhOYTq
+         Mnm1HTHWj8CaMeH83hHHph26cTlXoOLNg+KpSQrASDwrpn4UHvUJmB/aiJBLJUUzlfP9
+         pXVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=u8l7HUNbb6T5hd+GJ4MBYUKuc1ALWgwKw98IY+lEVpI=;
+        b=rKd7BI9ZkIf9TE513aa59H5W49agZHkqCDg/JYL5ptLyvbzyLqz0BqNpl0BrY5v1yK
+         l7Pkidsd3UmJrNfT/VnRNGm520sQlKwfEgg6aCfzA56Xvbl40Q1cWp8NEr8qbd1vP13A
+         31U+ixLvt5YLEZqk1QxtrYC9QAsd49dRLMvQtRV6ysxU2Z2OFYdqc0lyBFKSyNCkE5GA
+         ZgW4+FPq6PcWmzvW+llnImM2ftyzTnLsrGFjWzGpXGXAHbTjKVURUQbf1cJFJCYkXt9f
+         iUwdldTprHSIkI6ahv573pUE2SXTS6Jir8csV9lmRuniOEnBZv/N5WGxVbmWYasvcRwC
+         G0Dg==
+X-Gm-Message-State: AJIora/zKdxeE8fkKoSqV27qyOTnG6WU4Xk+QSar+rkE6E+7nQDStbxS
+        8dih1V5OnnDzkZzkV63RcpV0AQ==
+X-Google-Smtp-Source: AGRyM1t8RW+y6Zxso6IzSZ3nkCgU3iEFhL1cDkcOEW8Kb/4rto+4atb4ox05QRxohqhGkATqzRgT2Q==
+X-Received: by 2002:a05:6402:2395:b0:43a:6d91:106c with SMTP id j21-20020a056402239500b0043a6d91106cmr32509494eda.299.1657631219727;
+        Tue, 12 Jul 2022 06:06:59 -0700 (PDT)
+Received: from ?IPV6:2a02:578:8593:1200:ef5d:b12d:ae7c:8d1? ([2a02:578:8593:1200:ef5d:b12d:ae7c:8d1])
+        by smtp.gmail.com with ESMTPSA id n4-20020a170906164400b0072af92fa086sm3746055ejd.32.2022.07.12.06.06.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Jul 2022 06:06:59 -0700 (PDT)
+Message-ID: <23fa8509-5b2d-6263-1543-443c9c896348@tessares.net>
+Date:   Tue, 12 Jul 2022 15:06:58 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 87f717a1-7ef4-42d3-2a65-08da6402849b
-X-MS-TrafficTypeDiagnostic: MN2PR10MB3293:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qnahrTxg+crZjB8MmvHqlUeNQdmOGfVYfYhgtMW3QMeru8YZ92KtHgRVP1udLPVCUn+5EizzLKF8076XKSFyS1nEDUvcwvo4/GpSVtKSPPbevgnZlf9x4CJ+b6olQiL/ldekrO2JnLHTjipgb55C7yxD4toRnnUDjbuPrWDDI3vPbyzO03m4lBtA9+gjAfoC9r4DbjsnqVrdbKTNTOOWciM/aoBEFXdCpx60wJreTJ64LtYjg9DxIKPvJu/0EqwixB/t39PPbg1bs74liRGOtGkj/Y5f6DPCyVGSIY2OaGvL9FMQ/sFdnVDTete+jGZLX2NvVUWwe7dW7CCY9TnNhtHpteFZMEG+JwnyH0x5E3avGzDTg6/lT5SmYNJTjjAJozI48Cph6kgoSE4/5XnoewFO0rWnGHUI5/HC23vWq7d6B6nBQAZ3sD3nfRNUOhxDadj+tjb+1cvrb46FL8bjJvN/wKzoBjJrvJMUSOgYkaYzgQG2PosfV8sDZsrFe0StGnZ4HUh+SHzR/9DqqCjuNkxT9DF9S8rQ1d6sESj8n0Q84ozv5yiZmJxv2yFZKkbOOQky6MVXrKNE9DAAfX6Xz2fbJJaG9AWexW6yvBWNTiLrrbBjYhtEUUUrtgRvFgG5RNQv7SV+wolo+/TeglwqvtknZd0lo29fn8i61b2wKln2iGE79q2HGkAzephJ+Yzle97PdfTMZdQtMSCY74Yf2wMdGY4Cf3iEb5rXES0OeF20oo4SQgGy+akTfsOc+HvIh5BZH6UhtWmdUL9YkvSwbvoGG1PhKQSgeSr6ixcD31wYIiAV0ibfRu6sl+nE6sTD
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(396003)(346002)(376002)(366004)(39860400002)(136003)(8936002)(66556008)(186003)(66476007)(8676002)(4326008)(5660300002)(38100700002)(66946007)(86362001)(7416002)(6506007)(2616005)(6666004)(41300700001)(316002)(6486002)(26005)(2906002)(6512007)(478600001)(38350700002)(52116002)(83380400001)(36756003)(44832011);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Uu9UwW1KKxQGdG/rUsEkwvQK2HARAvGS/IYaGIIhnks0tWAlBXSZ4B4/vhfA?=
- =?us-ascii?Q?nuRASeqEZWM6lGnZxPdlzq+Uj3cbOVXsBG3XCEAFYlL6HGZJ5bvIJks5ymU3?=
- =?us-ascii?Q?0ZGqNg+AWGWKemNXJHyDh4L9tzfLHZTEMrqz9v2Nmoj3ZqdWWXn5IJIPfjUT?=
- =?us-ascii?Q?2Y1pqShm9HbwRaYQjHgoHEcDd0LGuIWOc0SHLzEWgGp0AuUpVKlPTI2YQ9A2?=
- =?us-ascii?Q?VFNpXVNFJfIaXICqTRwNAoTz+sm9qbSf5xHdDEyhtK7dc0EiBNPN8BkVVSGg?=
- =?us-ascii?Q?zI42UROkXFhj80YxtjhLxTKsGvSr9nBXQfq+lI0yYY03+BUg/8trg69mD9mE?=
- =?us-ascii?Q?hLvGUtHqsLkic+fAj3cIdR+HiAFJSQFAIADDw2RcpdRLdPE/vmk9XWLjsHGu?=
- =?us-ascii?Q?pappMHjh45nzh440kwaGlsFuRvaS7lS5ylBBs971dos3xQD3r6Jw+rdpC4b/?=
- =?us-ascii?Q?6nECvx4CgwJnDddEQzvbZvnKNWVMEeoVUc3levMMqlHZsGToJUMPA6bUKR1Q?=
- =?us-ascii?Q?6tlRfgv+0cu2KYIPXYUx8tdXBikEYTfE8Rp8IsRaulgfh/+sl2rKxpv6kITw?=
- =?us-ascii?Q?cYe/4bc2zk3tcNc5hlbT6uTbRlWzAw0GXdCeI75yEH1jRiqwrRntPASZL+i8?=
- =?us-ascii?Q?X5Wj4O2WJpfhsSTc4FhTSKm/A0CCMgJbnBhz6kKszDESm9nxZoBARjjj8to/?=
- =?us-ascii?Q?0fdnioWQzjZWMRbeBZJX9Ucj98otZW41lyf+Z5iMuCBJ+vWkQAeDJVwMUtyq?=
- =?us-ascii?Q?bBFyktWPkFDh6LSTkXDG4vRKIdV0EXQC/HzFnJmpjnEu6+lnyupDHyh5yP/K?=
- =?us-ascii?Q?/vg9cliJNqfPDGqFqygTmcV7GEkXRD97pMC2WFDM7BbT8vLIs5hT09E3xoXf?=
- =?us-ascii?Q?XGuBTgYa3+HIxwsZFU8rv5SXwFV7QdzT/yJTOIaCP1K+0Neks0ezFu0YcQrE?=
- =?us-ascii?Q?6z0MrTDS2y6HdHNCx4omnFnGP4gqzToPW+ok2s1WHrAlDud7NdeksR5zfifI?=
- =?us-ascii?Q?Yci6XuS3/XYi8hFNrcJQE7DmkQFlOjYL86ddZCGil445kRUgN9emwHXiV2cv?=
- =?us-ascii?Q?TT5rupQVWckvzcu5MulM8RwqZsvnHeVhB6EpIP9d+x9F/Kl4vweGAvOQS7TR?=
- =?us-ascii?Q?XuzF7NqFW3ma47MaI66PreDRFSTU3z2csLE+ntAfQDBScDiv2wam5dEoFX5j?=
- =?us-ascii?Q?61h5qkJB5OyYaaP9dBCkmYEfWOLPZcfbQi64KrmhjovNBrEy8b5UQ9Mopig9?=
- =?us-ascii?Q?td5JQnRRXMGXcNDmko3+cq+jwftDRwqlq7I8xB7L8LuPcE6kN+V84+N696cR?=
- =?us-ascii?Q?GMxoCkQe9hmiP2zPk+vs6TXGdFZtCpxwA4KxZcCdC3d5+MxgIv/Wz2APaMRt?=
- =?us-ascii?Q?g0Jg3LwT+R46oWgcSOIluOOCAnj0T5PEcxeROr2fDRsejCbKyicXxSRqxsnm?=
- =?us-ascii?Q?eeBJLDBPRtk2OE9KL6aZSxE3Ac6JCCiwQYo1t6J+Wvie73mKjpOjzXA52Udq?=
- =?us-ascii?Q?wCVkuvjJrc5AJk9Mvz4bPNuXvwhjlFWYcnymmsAJo2h2B7fPZqEdRsnm58hY?=
- =?us-ascii?Q?maYOf1CCraV/gGZUJG6G6VEKN5XpRWbVQOZx2ArNU0U3HMJq1mihd8STc0tv?=
- =?us-ascii?Q?jg=3D=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 87f717a1-7ef4-42d3-2a65-08da6402849b
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jul 2022 12:32:00.6787
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: oEvBA02LhBAgIL6qofEghHFTEi1a1sxYWiD0jIxF1mP4EW/M2+iwWZcOYBCFBMNwRUaxnJ5ci8wfFTbdigFWTw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB3293
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.517,18.0.883
- definitions=2022-07-12_08:2022-07-12,2022-07-12 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0 mlxscore=0
- suspectscore=0 adultscore=0 spamscore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2206140000
- definitions=main-2207120048
-X-Proofpoint-GUID: ezaceH_9DT8x6F3jZ-oLPkWawfcX-DlD
-X-Proofpoint-ORIG-GUID: ezaceH_9DT8x6F3jZ-oLPkWawfcX-DlD
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH bpf-next] mptcp: Add struct mptcp_sock definition when
+ CONFIG_MPTCP is disabled
+Content-Language: en-GB
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Geliang Tang <geliang.tang@suse.com>, mptcp@lists.linux.dev
+References: <20220711130731.3231188-1-jolsa@kernel.org>
+ <6d3b3bf-2e29-d695-87d7-c23497acc81@linux.intel.com>
+ <5710e8f7-6c09-538f-a636-2ea1863ab208@tessares.net> <Ys1lKqF1GL/T6mBz@krava>
+From:   Matthieu Baerts <matthieu.baerts@tessares.net>
+In-Reply-To: <Ys1lKqF1GL/T6mBz@krava>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-add subtest verifying BPF ksym iter behaviour.  The BPF ksym
-iter program shows an example of dumping a format different to
-/proc/kallsyms.  It adds KIND and MAX_SIZE fields which represent the
-kind of symbol (core kernel, module, ftrace, bpf, or kprobe) and
-the maximum size the symbol can be.  The latter is calculated from
-the difference between current symbol value and the next symbol
-value.
+Hi Jiri,
 
-The key benefit for this iterator will likely be supporting in-kernel
-data-gathering rather than dumping symbol details to userspace and
-parsing the results.
+On 12/07/2022 14:12, Jiri Olsa wrote:
+> On Tue, Jul 12, 2022 at 11:06:38AM +0200, Matthieu Baerts wrote:
+>> Hi Jiri, Mat,
+>>
+>> On 11/07/2022 23:21, Mat Martineau wrote:
+>>> On Mon, 11 Jul 2022, Jiri Olsa wrote:
+>>>
+>>>> The btf_sock_ids array needs struct mptcp_sock BTF ID for
+>>>> the bpf_skc_to_mptcp_sock helper.
+>>>>
+>>>> When CONFIG_MPTCP is disabled, the 'struct mptcp_sock' is not
+>>>> defined and resolve_btfids will complain with:
+>>>>
+>>>>  BTFIDS  vmlinux
+>>>> WARN: resolve_btfids: unresolved symbol mptcp_sock
+>>>>
+>>>> Adding empty difinition for struct mptcp_sock when CONFIG_MPTCP
+>>>> is disabled.
+>>>>
+>>>> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+>>>> ---
+>>>> include/net/mptcp.h | 4 ++++
+>>>> 1 file changed, 4 insertions(+)
+>>>>
+>>>> diff --git a/include/net/mptcp.h b/include/net/mptcp.h
+>>>> index ac9cf7271d46..25741a52c666 100644
+>>>> --- a/include/net/mptcp.h
+>>>> +++ b/include/net/mptcp.h
+>>>> @@ -59,6 +59,10 @@ struct mptcp_addr_info {
+>>>>     };
+>>>> };
+>>>>
+>>>> +#if !IS_ENABLED(CONFIG_MPTCP)
+>>>> +struct mptcp_sock { };
+>>>> +#endif
+>>>
+>>> The only use of struct mptcp_sock I see with !CONFIG_MPTCP is from this
+>>> stub at the end of mptcp.h:
+>>>
+>>> static inline struct mptcp_sock *bpf_mptcp_sock_from_subflow(struct sock
+>>> *sk) { return NULL; }
+>>>
+>>> It's normally defined in net/mptcp/protocol.h for the MPTCP subsystem code.
+>>>
+>>> The conditional could be added on the line before the stub to make it
+>>> clear that the empty struct is associated with that inline stub.
+>>
+>> If this is required only for this specific BPF function, why not
+>> modifying this stub (or add a define) to return "void *" instead of
+>> "struct mptcp_sock *"?
+> 
+> so btf_sock_ids array needs BTF ID for 'struct mptcp_sock' and if CONFIG_MPTCP
+> is not enabled, then resolve_btfids (which resolves and populate all BTF IDs)
+> won't find it and will complain
+> 
+> btf_sock_ids keeps all socket IDs regardles the state of their CONFIG options,
+> and relies that sock structs are defined even if related CONFIG option is disabled
 
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-Acked-by: Yonghong Song <yhs@fb.com>
----
- tools/testing/selftests/bpf/prog_tests/bpf_iter.c | 16 +++++
- tools/testing/selftests/bpf/progs/bpf_iter.h      |  7 +++
- tools/testing/selftests/bpf/progs/bpf_iter_ksym.c | 74 +++++++++++++++++++++++
- 3 files changed, 97 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_ksym.c
+Thank you for the explanation. I didn't know about that.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-index 7ff5fa9..a33874b 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-@@ -27,6 +27,7 @@
- #include "bpf_iter_test_kern5.skel.h"
- #include "bpf_iter_test_kern6.skel.h"
- #include "bpf_iter_bpf_link.skel.h"
-+#include "bpf_iter_ksym.skel.h"
- 
- static int duration;
- 
-@@ -1120,6 +1121,19 @@ static void test_link_iter(void)
- 	bpf_iter_bpf_link__destroy(skel);
- }
- 
-+static void test_ksym_iter(void)
-+{
-+	struct bpf_iter_ksym *skel;
-+
-+	skel = bpf_iter_ksym__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "bpf_iter_ksym__open_and_load"))
-+		return;
-+
-+	do_dummy_read(skel->progs.dump_ksym);
-+
-+	bpf_iter_ksym__destroy(skel);
-+}
-+
- #define CMP_BUFFER_SIZE 1024
- static char task_vma_output[CMP_BUFFER_SIZE];
- static char proc_maps_output[CMP_BUFFER_SIZE];
-@@ -1267,4 +1281,6 @@ void test_bpf_iter(void)
- 		test_buf_neg_offset();
- 	if (test__start_subtest("link-iter"))
- 		test_link_iter();
-+	if (test__start_subtest("ksym"))
-+		test_ksym_iter();
- }
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter.h b/tools/testing/selftests/bpf/progs/bpf_iter.h
-index 97ec8bc..e984660 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter.h
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter.h
-@@ -22,6 +22,7 @@
- #define BTF_F_NONAME BTF_F_NONAME___not_used
- #define BTF_F_PTR_RAW BTF_F_PTR_RAW___not_used
- #define BTF_F_ZERO BTF_F_ZERO___not_used
-+#define bpf_iter__ksym bpf_iter__ksym___not_used
- #include "vmlinux.h"
- #undef bpf_iter_meta
- #undef bpf_iter__bpf_map
-@@ -44,6 +45,7 @@
- #undef BTF_F_NONAME
- #undef BTF_F_PTR_RAW
- #undef BTF_F_ZERO
-+#undef bpf_iter__ksym
- 
- struct bpf_iter_meta {
- 	struct seq_file *seq;
-@@ -151,3 +153,8 @@ enum {
- 	BTF_F_PTR_RAW	=	(1ULL << 2),
- 	BTF_F_ZERO	=	(1ULL << 3),
- };
-+
-+struct bpf_iter__ksym {
-+	struct bpf_iter_meta *meta;
-+	struct kallsym_iter *ksym;
-+};
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_ksym.c b/tools/testing/selftests/bpf/progs/bpf_iter_ksym.c
-new file mode 100644
-index 0000000..285c008
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_ksym.c
-@@ -0,0 +1,74 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022, Oracle and/or its affiliates. */
-+#include "bpf_iter.h"
-+#include <bpf/bpf_helpers.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+unsigned long last_sym_value = 0;
-+
-+static inline char tolower(char c)
-+{
-+	if (c >= 'A' && c <= 'Z')
-+		c += ('a' - 'A');
-+	return c;
-+}
-+
-+static inline char toupper(char c)
-+{
-+	if (c >= 'a' && c <= 'z')
-+		c -= ('a' - 'A');
-+	return c;
-+}
-+
-+/* Dump symbols with max size; the latter is calculated by caching symbol N value
-+ * and when iterating on symbol N+1, we can print max size of symbol N via
-+ * address of N+1 - address of N.
-+ */
-+SEC("iter/ksym")
-+int dump_ksym(struct bpf_iter__ksym *ctx)
-+{
-+	struct seq_file *seq = ctx->meta->seq;
-+	struct kallsym_iter *iter = ctx->ksym;
-+	__u32 seq_num = ctx->meta->seq_num;
-+	unsigned long value;
-+	char type;
-+	int ret;
-+
-+	if (!iter)
-+		return 0;
-+
-+	if (seq_num == 0) {
-+		BPF_SEQ_PRINTF(seq, "ADDR TYPE NAME MODULE_NAME KIND MAX_SIZE\n");
-+		return 0;
-+	}
-+	if (last_sym_value)
-+		BPF_SEQ_PRINTF(seq, "0x%x\n", iter->value - last_sym_value);
-+	else
-+		BPF_SEQ_PRINTF(seq, "\n");
-+
-+	value = iter->show_value ? iter->value : 0;
-+
-+	last_sym_value = value;
-+
-+	type = iter->type;
-+
-+	if (iter->module_name[0]) {
-+		type = iter->exported ? toupper(type) : tolower(type);
-+		BPF_SEQ_PRINTF(seq, "0x%llx %c %s [ %s ] ",
-+			       value, type, iter->name, iter->module_name);
-+	} else {
-+		BPF_SEQ_PRINTF(seq, "0x%llx %c %s ", value, type, iter->name);
-+	}
-+	if (!iter->pos_arch_end || iter->pos_arch_end > iter->pos)
-+		BPF_SEQ_PRINTF(seq, "CORE ");
-+	else if (!iter->pos_mod_end || iter->pos_mod_end > iter->pos)
-+		BPF_SEQ_PRINTF(seq, "MOD ");
-+	else if (!iter->pos_ftrace_mod_end || iter->pos_ftrace_mod_end > iter->pos)
-+		BPF_SEQ_PRINTF(seq, "FTRACE_MOD ");
-+	else if (!iter->pos_bpf_end || iter->pos_bpf_end > iter->pos)
-+		BPF_SEQ_PRINTF(seq, "BPF ");
-+	else
-+		BPF_SEQ_PRINTF(seq, "KPROBE ");
-+	return 0;
-+}
+Then it is fine for me to leave it in mptcp.h. If it is not directly
+linked to bpf_mptcp_sock_from_subflow(), I guess it can stay there but
+maybe better to wait for Mat's answer about that.
+
+> if that is false assumption then maybe we need to make btf_sock_ids values optional
+> somehow
+
+Cheers,
+Matt
 -- 
-1.8.3.1
-
+Tessares | Belgium | Hybrid Access Solutions
+www.tessares.net
