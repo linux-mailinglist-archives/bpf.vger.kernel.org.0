@@ -2,71 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 201DC57279D
-	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 22:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1BAA572834
+	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 23:03:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231599AbiGLUro (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jul 2022 16:47:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50616 "EHLO
+        id S229962AbiGLVDc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jul 2022 17:03:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229700AbiGLUro (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jul 2022 16:47:44 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 787CF2F664
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 13:47:42 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id a127-20020a624d85000000b00525950b1feeso2662622pfb.0
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 13:47:42 -0700 (PDT)
+        with ESMTP id S231364AbiGLVDb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jul 2022 17:03:31 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E67BCB1
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 14:03:30 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id k30so11680685edk.8
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 14:03:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=UmaN+lg1gVY00nS/FFRqdUXBbU3SwpvZPAY4iW8kINU=;
-        b=JahOGRhQjUoYH60LNMTwoBdEccmWhGvwskp4rfCVpx6hGwVorvPWF/E7+XyBzuUWYy
-         Aae2gHO54dT9ri42KU80XMdFRDcvraWnpX7VleGfAMo6DcWbXADZyPDdHv6Y7DLDmW+K
-         ti8d8wt6YR8zc9yoDpHpzewPVVOWaZgY7KifsdyYRPSk+9hSAR4mo5Yd0D1GOwjeJ5ka
-         gSDiyoXDx0mNdITZDRaTBwYhL1siKUSvqo7v/hXR+ry1w9u15WpBrpLngGuH7g0sO24q
-         gMXBqqTJYlkB4LR8QlHdRxNk7uGJFWXW+Rj4qbA7Ce+TbJQEizGslfzLpyfS0vtzpcH6
-         G5+A==
+        bh=JT1xOa34zi8Gk2Kk715piP+1p9IBKvBYZ8AQSk1MgiQ=;
+        b=PoDXdf+FngKVz7RiNHj4OGWi2aEnnBThktocNKAHPaN0VviGe/0nQtrMnXwLK6DeW1
+         F0STxb1v9xElAnGv86pbHnOnNbd3FZfn8P3FldElES6CgC7uU9HGyvYsq3VEEDZ58Wg7
+         KL+X9F2JRoqCe7nQ9IhlD31vv2G/EmLbz4nUdGjQNHEgmjAaSpI7Gwu1SG86C8NsQr1C
+         2jpbObU44zYD+qinjmfLxEU9hPORTFrj3wRtfxUhfvQx5LojHpdc3nN0f9YwqAm78zI4
+         x0rmp9Vd/RNSt8nk/WWm+6GVTdAH1RFEeA9/kBJl9e/onD2iJbUbQCnP8oLSwJuChiH7
+         9qGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=UmaN+lg1gVY00nS/FFRqdUXBbU3SwpvZPAY4iW8kINU=;
-        b=ao3jamc9cKm7rv246gIK5/nkrD9u9WsbmY8bdmL6p0riadTwLE1b5xzu6PtvBqCj0S
-         xb03e6oNM+1bt7mcUz7C4Mh7rjiHz7jckUBfXWZEjxywpy4+5fcv7pKiRPYypdH2BE39
-         KJ59g+4r0qZZ/XrJ/9sMt4+c+ursVkkhucz3gffGsv7QRLZFXttSbwsHq9d+bQKV4vja
-         2CZ+8yb5RiU86xLe73jNZJXMSEyUuFExGypBXRUCQehlXtvOTlot5q0QnlC8e6JghPd/
-         SRdd/BVyqcRG9t70xXb260Z+QsNqHkkfvrtfR1goBNGrlrzdPOkKCpx/VdL9d3i11sMw
-         S4eg==
-X-Gm-Message-State: AJIora9Fgx9eANBLp3lqlgbYXgwKaFl7E2DFWuv/sZ+vtzPx4a3Ktdk1
-        p1TT29LzR56IDkSK9aJOxOK/Evo=
-X-Google-Smtp-Source: AGRyM1vVHUMGTuqvwkQOaBRLL4govc9MSnFQyvufa1aFmhnFGVlueCTSuzGycWTeB2CgBbUZ6UPiu14=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:903:20d4:b0:16b:da9d:975a with SMTP id
- i20-20020a17090320d400b0016bda9d975amr25520398plb.119.1657658862026; Tue, 12
- Jul 2022 13:47:42 -0700 (PDT)
-Date:   Tue, 12 Jul 2022 13:47:40 -0700
-In-Reply-To: <20220712184225.52429-2-flaniel@linux.microsoft.com>
-Message-Id: <Ys3d7LCN8yATY9az@google.com>
-Mime-Version: 1.0
-References: <20220712184225.52429-1-flaniel@linux.microsoft.com> <20220712184225.52429-2-flaniel@linux.microsoft.com>
-Subject: Re: [RFC PATCH v1 1/1] bpftool: Add generating command to C dumped file.
-From:   sdf@google.com
-To:     Francis Laniel <flaniel@linux.microsoft.com>
-Cc:     bpf@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JT1xOa34zi8Gk2Kk715piP+1p9IBKvBYZ8AQSk1MgiQ=;
+        b=Q8NuhjIOghnvyFoa8u2f7UdkNUL8mwzXcPu4KaioVwX4YhsRv684GTXfqZbB4qKxoZ
+         Hqj2+tZpGi5fZzwZ7+SYDbu3PycFsajtxnd7/5vkDM2IcuVVYqmfrdhiR/wis8t0e/Rg
+         xYI+EWAsdjOFy7t35pRZ4tAnhq8hPd9GK0TYEboSitRghoM4a9aq9C5KJAFLOn0fG45F
+         N09ILScg/KPMB5PEaANwfmVW2P40H4xnNzB8TxnU+fMaTa7jRi6c3cdgC4RZqR6IJFRx
+         2CIKVzyB/y0TlCVX/pf95HvaUA5GHPRZ5F5El1VNAPhYIr8efGY6JUApHHy3BZDZzFAq
+         FOKA==
+X-Gm-Message-State: AJIora90f9YkZfbogeC60NkeV2KxHPOJJ2Kdpkn8UCBpx2WAaQPu0YPs
+        6ub+RscprAdG661GgTeHVt5HJT1rv2fJG5XehhV3HoF3AEM=
+X-Google-Smtp-Source: AGRyM1uGjlkxAojsoUnhn2tXgjbw4GxLJXoxG5U4ViGuuG8j8g2zBHBr9I4OXARmOdjTlNCBzbJaSU7ABMuGlB2ZZ8o=
+X-Received: by 2002:a05:6402:c92:b0:43a:7177:5be7 with SMTP id
+ cm18-20020a0564020c9200b0043a71775be7mr52964edb.224.1657659808870; Tue, 12
+ Jul 2022 14:03:28 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220708060416.1788789-1-arilou@gmail.com> <20220708060416.1788789-2-arilou@gmail.com>
+ <CAEf4BzZkfWTQppe97E1CTLKEqgtxP9gUQqbXB1EKRm5pK_ZmDA@mail.gmail.com>
+ <YsjtxLuTvn8DWEA6@jondnuc> <CAADnVQLmAg9_StyD9_pMO0YUn-Yi1ozxfinxuQmkL0BYoTjbjw@mail.gmail.com>
+ <CAP7QCohvoDZ0sk6sqA3112xsM4xzUc9uRHXiDNyt7M4jc3oUmg@mail.gmail.com>
+ <CAADnVQJ7RaQyaSaRJ8aE=-0b2URNQFnCLhKX4GpL0H-yQyrTiA@mail.gmail.com>
+ <CAP7QCogdYrsfGvEvhg5R8rQvWDe=o-nxgmqubZtfucH1zNc-RA@mail.gmail.com>
+ <CAEf4BzYdhOF2wbnEZsMC6+hDz74Jss2_m1DHb_S3EiPqZborUQ@mail.gmail.com>
+ <CAP7QCog2hiDsb1Z-hNNsUPTja3hXfNa-auv1yrwb0YWWrymWow@mail.gmail.com>
+ <CAEf4Bzb33bP1jajRPfQVZ6RfXxpeWHOC9bWOw9k-aaE8ve+0dw@mail.gmail.com> <CAP7QCojcQ0kGMDO2BZH+zea7tKiWQqx_qo0KZ028hfX_2WLs9A@mail.gmail.com>
+In-Reply-To: <CAP7QCojcQ0kGMDO2BZH+zea7tKiWQqx_qo0KZ028hfX_2WLs9A@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 12 Jul 2022 14:03:16 -0700
+Message-ID: <CAEf4BzameKqa8Vgc03yrhZF2RgD5SwXP30jFh-GxizfgdgWY0w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/1] libbpf: perfbuf: allow raw access to buffers
+To:     Jon Doron <arilou@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        Daniel Borkmann <daniel@iogearbox.net>, Jon Doron <jond@wiz.io>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,86 +75,140 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 07/12, Francis Laniel wrote:
-> This commit adds the following lines to file generated by dump:
-> /*
->   * File generated by bpftool using:
->   * bpftool btf dump file /sys/kernel/btf/vmlinux format c
->   * DO NOT EDIT.
->   */
-> This warns users to not edit the file and documents the command used to
-> generate the file.
+On Mon, Jul 11, 2022 at 10:47 PM Jon Doron <arilou@gmail.com> wrote:
+>
+>
+>
+> On Tue, Jul 12, 2022, 07:50 Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+>>
+>> On Mon, Jul 11, 2022 at 9:19 PM Jon Doron <arilou@gmail.com> wrote:
+>> >
+>> >
+>> >
+>> > On Tue, Jul 12, 2022, 07:01 Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+>> >>
+>> >> On Sun, Jul 10, 2022 at 10:07 AM Jon Doron <arilou@gmail.com> wrote:
+>> >> >
+>> >> >
+>> >> > On Sun, Jul 10, 2022, 18:16 Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+>> >> >>
+>> >> >> On Sat, Jul 9, 2022 at 10:43 PM Jon Doron <arilou@gmail.com> wrote:
+>> >> >> >
+>> >> >> > I was referring to the following:
+>> >> >> > https://github.com/libbpf/libbpf-rs/blob/master/libbpf-rs/src/perf_buffer.rs
+>> >> >>
+>> >> >> How does your patch help libbpf-rs?
+>> >> >>
+>> >> >> Please don't top post.
+>> >> >
+>> >> >
+>> >> > You will be able to implement a custom perf buffer consumer, as it already has good bindings with libbpf-sys which is built from the C headers
+>> >> >
+>> >> > Sorry for the top posting I'm not home and replying from my phone
+>> >> >
+>> >>
+>> >> I can see us exposing per-CPU buffers for (very) advanced users, something like:
+>> >>
+>> >> int perf_buffer__buffer(struct perf_buffer *pb, int buf_idx, void
+>> >> **buf, size_t buf_sz);
+>> >
+>> >
+>> > Not sure I'm fully following what this API does, you will get a pointer to a message in the ring buffer?
+>> > If so how do you consume without setting up a new tail?
+>> >
+>> > Or do you get a full copy of the current ring buffer (because that will mean you would have to alloc and copy which might hurt performance), but in that case you no longer a set tail or drain function.
+>>
+>> No, it returns a pointer to mmap()'ed per-CPU buffer memory, including
+>> its header page which contains head/tail positions. As I said, it's
+>> for an advanced user, you need to know the layout and how to consume
+>> data.
+>
+>
+> Oh I see well that sounds perfect to me, do you want me to send a patch? (I'm currently on vacation abroad so I don't have access to my PC but I can get to it later this week or during the weekend
 
-> Signed-off-by: Francis Laniel <flaniel@linux.microsoft.com>
-> ---
->   tools/bpf/bpftool/btf.c | 16 ++++++++++++++--
->   1 file changed, 14 insertions(+), 2 deletions(-)
+Yes, please do when you get a chance.
 
-> diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-> index 7e6accb9d9f7..eecfc27370c3 100644
-> --- a/tools/bpf/bpftool/btf.c
-> +++ b/tools/bpf/bpftool/btf.c
-> @@ -415,7 +415,8 @@ static void __printf(2, 0) btf_dump_printf(void *ctx,
->   }
-
->   static int dump_btf_c(const struct btf *btf,
-> -		      __u32 *root_type_ids, int root_type_cnt)
-> +		      __u32 *root_type_ids, int root_type_cnt,
-> +		      int argc, char **argv)
->   {
->   	struct btf_dump *d;
->   	int err = 0, i;
-> @@ -425,6 +426,14 @@ static int dump_btf_c(const struct btf *btf,
->   	if (err)
->   		return err;
-
-> +	printf("/*\n");
-> +	printf(" * File generated by bpftool using:\n");
-> +	printf(" * bpftool btf dump");
-
-[..]
-
-> +	for (i = 0; i < argc; i++)
-> +		printf(" %s", argv[i]);
-
-Do we really need that complexity to preserve the arguments?
-For skeletons we're simply doing:
-
-	/* THIS FILE IS AUTOGENERATED BY BPFTOOL! */
-
-So probably the same should be fine here?
-
-Also, while at it, might be worth adding SPDX license comment? So let's
-align with whatever we have in gen.c ?
-
-
-> +	printf("\n");
-> +	printf(" * DO NOT EDIT.\n");
-> +	printf(" */\n");
->   	printf("#ifndef __VMLINUX_H__\n");
->   	printf("#define __VMLINUX_H__\n");
->   	printf("\n");
-> @@ -507,8 +516,10 @@ static bool btf_is_kernel_module(__u32 btf_id)
->   static int do_dump(int argc, char **argv)
->   {
->   	struct btf *btf = NULL, *base = NULL;
-> +	char **orig_argv = argv;
->   	__u32 root_type_ids[2];
->   	int root_type_cnt = 0;
-> +	int orig_argc = argc;
->   	bool dump_c = false;
->   	__u32 btf_id = -1;
->   	const char *src;
-> @@ -649,7 +660,8 @@ static int do_dump(int argc, char **argv)
->   			err = -ENOTSUP;
->   			goto done;
->   		}
-> -		err = dump_btf_c(btf, root_type_ids, root_type_cnt);
-> +		err = dump_btf_c(btf, root_type_ids, root_type_cnt,
-> +				 orig_argc, orig_argv);
->   	} else {
->   		err = dump_btf_raw(btf, root_type_ids, root_type_cnt);
->   	}
-> --
-> 2.25.1
-
+>
+>>
+>> >
+>> > Also perhaps regardless if this patchset will be approved or not it would probably be nice to have something like
+>> > int perf_buffer__state(perf_buffer__buffer(struct perf_buffer *pb, int buf_idx, size_t *free_space, size_t *used_space);
+>> >
+>> > Cheers,
+>> > --Jon.
+>> >
+>> >>
+>> >> Then in combination with perf_buffer__buffer_fd() you can implement
+>> >> your own polling and processing. So you just use libbpf logic to setup
+>> >> buffers, but then don't call perf_buffer__poll() at all and read
+>> >> records and update tail on your own.
+>> >>
+>> >> But this combination of perf_buffer__raw_ring_buf() and
+>> >> perf_buffer__set_ring_buf_tail() seems like a bad API, sorry.
+>> >>
+>> >>
+>> >> >>
+>> >> >> > Thanks,
+>> >> >> > -- Jon.
+>> >> >> >
+>> >> >> > On Sun, Jul 10, 2022, 08:23 Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+>> >> >> >>
+>> >> >> >> On Fri, Jul 8, 2022 at 7:54 PM Jon Doron <arilou@gmail.com> wrote:
+>> >> >> >> >
+>> >> >> >> > On 08/07/2022, Andrii Nakryiko wrote:
+>> >> >> >> > >On Thu, Jul 7, 2022 at 11:04 PM Jon Doron <arilou@gmail.com> wrote:
+>> >> >> >> > >>
+>> >> >> >> > >> From: Jon Doron <jond@wiz.io>
+>> >> >> >> > >>
+>> >> >> >> > >> Add support for writing a custom event reader, by exposing the ring
+>> >> >> >> > >> buffer state, and allowing to set it's tail.
+>> >> >> >> > >>
+>> >> >> >> > >> Few simple examples where this type of needed:
+>> >> >> >> > >> 1. perf_event_read_simple is allocating using malloc, perhaps you want
+>> >> >> >> > >>    to handle the wrap-around in some other way.
+>> >> >> >> > >> 2. Since perf buf is per-cpu then the order of the events is not
+>> >> >> >> > >>    guarnteed, for example:
+>> >> >> >> > >>    Given 3 events where each event has a timestamp t0 < t1 < t2,
+>> >> >> >> > >>    and the events are spread on more than 1 CPU, then we can end
+>> >> >> >> > >>    up with the following state in the ring buf:
+>> >> >> >> > >>    CPU[0] => [t0, t2]
+>> >> >> >> > >>    CPU[1] => [t1]
+>> >> >> >> > >>    When you consume the events from CPU[0], you could know there is
+>> >> >> >> > >>    a t1 missing, (assuming there are no drops, and your event data
+>> >> >> >> > >>    contains a sequential index).
+>> >> >> >> > >>    So now one can simply do the following, for CPU[0], you can store
+>> >> >> >> > >>    the address of t0 and t2 in an array (without moving the tail, so
+>> >> >> >> > >>    there data is not perished) then move on the CPU[1] and set the
+>> >> >> >> > >>    address of t1 in the same array.
+>> >> >> >> > >>    So you end up with something like:
+>> >> >> >> > >>    void **arr[] = [&t0, &t1, &t2], now you can consume it orderely
+>> >> >> >> > >>    and move the tails as you process in order.
+>> >> >> >> > >> 3. Assuming there are multiple CPUs and we want to start draining the
+>> >> >> >> > >>    messages from them, then we can "pick" with which one to start with
+>> >> >> >> > >>    according to the remaining free space in the ring buffer.
+>> >> >> >> > >>
+>> >> >> >> > >
+>> >> >> >> > >All the above use cases are sufficiently advanced that you as such an
+>> >> >> >> > >advanced user should be able to write your own perfbuf consumer code.
+>> >> >> >> > >There isn't a lot of code to set everything up, but then you get full
+>> >> >> >> > >control over all the details.
+>> >> >> >> > >
+>> >> >> >> > >I don't see this API as a generally useful, it feels way too low-level
+>> >> >> >> > >and special for inclusion in libbpf.
+>> >> >> >> > >
+>> >> >> >> >
+>> >> >> >> > Hi Andrii,
+>> >> >> >> >
+>> >> >> >> > I understand, but I was still hoping you will be willing to expose this
+>> >> >> >> > API.
+>> >> >> >> > libbpf has very simple and nice binding to Rust and other languages,
+>> >> >> >> > implementing one of those use cases in the bindings can make things much
+>> >> >> >> > simpler than using some libc or syscall APIs, instead of enjoying all
+>> >> >> >> > the simplicity that you get for free in libbpf.
+>> >> >> >> >
+>> >> >> >> > Hope you will be willing to reconsider :)
+>> >> >> >>
+>> >> >> >> The discussion would have been different if you mentioned that
+>> >> >> >> motivation in the commit logs.
+>> >> >> >> Please provide links to "Rust and other languages" code that
+>> >> >> >> uses this api.
