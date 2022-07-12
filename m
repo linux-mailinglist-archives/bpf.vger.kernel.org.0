@@ -2,126 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 472B9572870
-	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 23:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCDB057289B
+	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 23:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233044AbiGLVVh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jul 2022 17:21:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56578 "EHLO
+        id S229881AbiGLV2B (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jul 2022 17:28:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232849AbiGLVVh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jul 2022 17:21:37 -0400
-Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97C75BE0FB
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 14:21:35 -0700 (PDT)
-Received: from submission (posteo.de [185.67.36.169]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id 44563240028
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 23:21:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1657660894; bh=75uv+CAVHwRQa5YiroufAwxwKrYXSIGpqf/kgRzpZ4c=;
-        h=From:To:Cc:Subject:Date:From;
-        b=nBlQQhhIJBPzK/H2rZZPUfnu6LNRQjXNMTH747XUn5FK8XUPzlKIxl1BXEXTVYOxn
-         FM7wf/mQY+jeuxIlj39EcKq2GUnl9axgXjt3CnQSa/P7313bu3Ml5djfugEUYSOzei
-         D+kKkRlLvATgKVdMaSeLMzptX+sBdzK5bbaABLxBy9gmi2cjzrpvOz/brOrV44nGut
-         gXwSH80QXWYihkE0dOUyZpkXBUEN3VVWxKDkMOh4fpMO/cDqwE7cK/OEt7dPOFe2FP
-         3Nl5GEf0zHTAdtb8CLmCU5Fpm5LjD5xNMd36456mukNqoE1Di/qQWHk4CA7Zc27gXh
-         7NgYiAD5AJYnw==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4LjDG53pm9z9rxM;
-        Tue, 12 Jul 2022 23:21:33 +0200 (CEST)
-From:   =?UTF-8?q?Daniel=20M=C3=BCller?= <deso@posteo.net>
-To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com
-Cc:     mykolal@fb.com
-Subject: [PATCH bpf-next 3/3] selftests/bpf: Adjust vmtest.sh to use local kernel configuration
-Date:   Tue, 12 Jul 2022 21:21:24 +0000
-Message-Id: <20220712212124.3180314-4-deso@posteo.net>
-In-Reply-To: <20220712212124.3180314-1-deso@posteo.net>
-References: <20220712212124.3180314-1-deso@posteo.net>
+        with ESMTP id S229697AbiGLV2B (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jul 2022 17:28:01 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C596D0E2F
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 14:28:00 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id j22so16628180ejs.2
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 14:28:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=qqe3vchI1vj06s2WyOtomNXamvDBZBJTCk3J89QZtZo=;
+        b=UZPEo3kUC1cyLYfLUiBig6BkI0vufMbG0ZAOExGjCCGZGr467fFbLvfUNSi/20kvTv
+         cVoR9iWQuWsh1j6dyuPrplXt/2uOM1c3DZWw5XC25tWmFgVkQiVKAOsc/7v+s2t0Qxfb
+         +y/fJzHC+o15mIpWyEUqqcXaAWERKjPbHyMmLqKfpiF/m/ms0soNO+XdxxC7QS8+w2UC
+         a63Pv67MH7TvaU9khgLJtaiEqlK1tZa7ywy6ocTFvXI+dtCD3FoMyO2O+SMyWmRYgH+O
+         f8MgxhA2AoSRKBvbJAx2cdgI7kxzGcbDNbsD9PASTWqpGZbGl/gx++4q1mWpgGlK5zbY
+         tw/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qqe3vchI1vj06s2WyOtomNXamvDBZBJTCk3J89QZtZo=;
+        b=gdaSDeEpH2GUP8PydIQLDvseaCYq4J/RXo5Nfv9L5C9lACTiyyCWdwKMArIih0/O78
+         Ns3mrFuy5UW1d3jmMSKNqSgwAAPpEtEVMVI1xcA/VuXsew2QR50mbFgjUiPEAX2HBJ5n
+         rYz/V8G+fu9F1bRTt3e0g1PhSGCei4sT97MGL+m39iMRNKs3Jtze3CGD1LGfC/+loSXd
+         uL7j7wI6nJ10TgPd2e9UVCL0fs0zCWj1ZLC9sDJ9edl0ApHFqH16nEYu28VnlIGZU27J
+         OIi6MHm/BuR+CHuYkEa57ireJb3bQS+0PaNetbErAWXsQdjX78s01BjKTxxJ876Xm6cC
+         XyAQ==
+X-Gm-Message-State: AJIora8wqRsSYwkigso9lxe9mOazb1gQ18NKp0jGEZsTL8pQG1JQPfL8
+        P9WQW3nMK7udyRocZPTZ6J4l+eAFjrkJTuvIbKc=
+X-Google-Smtp-Source: AGRyM1vgCCPMRMXoN2XUl2LRZnhSecDjcTPvK2rqPap75OFgId2aP4DHj4b4mVlcUmm963TCCd7eVPvLX1oeQHvVy68=
+X-Received: by 2002:a17:907:c14:b0:72b:6762:de34 with SMTP id
+ ga20-20020a1709070c1400b0072b6762de34mr147360ejc.94.1657661279081; Tue, 12
+ Jul 2022 14:27:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220712212124.3180314-1-deso@posteo.net> <20220712212124.3180314-2-deso@posteo.net>
+In-Reply-To: <20220712212124.3180314-2-deso@posteo.net>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 12 Jul 2022 14:27:47 -0700
+Message-ID: <CAADnVQLLNQHHJuqd-pKzU09Uw3N-kBsztPy0ysYEKVipP=yMqw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] selftests/bpf: Copy over libbpf configs
+To:     =?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Mykola Lysenko <mykolal@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-So far the vmtest.sh script, which can be used as a convenient way to
-run bpf selftests, has obtained the kernel config safe to use for
-testing from the libbpf/libbpf GitHub repository [0].
-Given that we now have included this configuration into this very
-repository, we can just consume it from here as well, eliminating the
-necessity of remote accesses.
-With this change we adjust the logic in the script to use the
-configuration from below tools/testing/selftests/bpf/configs/ instead of
-pulling it over the network.
+On Tue, Jul 12, 2022 at 2:21 PM Daniel M=C3=BCller <deso@posteo.net> wrote:
+>
+> This change integrates the libbpf maintained configurations and
+> black/white lists [0] into the repository, co-located with the BPF
+> selftests themselves. The only differences from the source is that we
+> replaced the terms blacklist & whitelist with denylist and allowlist,
+> respectively.
+>
+> [0] https://github.com/libbpf/libbpf/tree/20f03302350a4143825cedcbd210c4d=
+7112c1898/travis-ci/vmtest/configs
+>
+> Signed-off-by: Daniel M=C3=BCller <deso@posteo.net>
+> ---
+>  .../bpf/configs/allowlist/ALLOWLIST-4.9.0     |    8 +
+>  .../bpf/configs/allowlist/ALLOWLIST-5.5.0     |   55 +
+>  .../selftests/bpf/configs/config-latest.s390x | 2711 +++++++++++++++
+>  .../bpf/configs/config-latest.x86_64          | 3073 +++++++++++++++++
 
-[0]: https://github.com/libbpf/libbpf
-
-Signed-off-by: Daniel Müller <deso@posteo.net>
----
- tools/testing/selftests/bpf/vmtest.sh | 28 ++++++++++++---------------
- 1 file changed, 12 insertions(+), 16 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/vmtest.sh b/tools/testing/selftests/bpf/vmtest.sh
-index e0bb04a..fdab48 100755
---- a/tools/testing/selftests/bpf/vmtest.sh
-+++ b/tools/testing/selftests/bpf/vmtest.sh
-@@ -30,8 +30,7 @@ DEFAULT_COMMAND="./test_progs"
- MOUNT_DIR="mnt"
- ROOTFS_IMAGE="root.img"
- OUTPUT_DIR="$HOME/.bpf_selftests"
--KCONFIG_URL="https://raw.githubusercontent.com/libbpf/libbpf/master/travis-ci/vmtest/configs/config-latest.${ARCH}"
--KCONFIG_API_URL="https://api.github.com/repos/libbpf/libbpf/contents/travis-ci/vmtest/configs/config-latest.${ARCH}"
-+KCONFIG_REL_PATH="tools/testing/selftests/bpf/configs/config-latest.${ARCH}"
- INDEX_URL="https://raw.githubusercontent.com/libbpf/ci/master/INDEX"
- NUM_COMPILE_JOBS="$(nproc)"
- LOG_FILE_BASE="$(date +"bpf_selftests.%Y-%m-%d_%H-%M-%S")"
-@@ -271,20 +270,17 @@ is_rel_path()
- 
- update_kconfig()
- {
--	local kconfig_file="$1"
--	local update_command="curl -sLf ${KCONFIG_URL} -o ${kconfig_file}"
--	# Github does not return the "last-modified" header when retrieving the
--	# raw contents of the file. Use the API call to get the last-modified
--	# time of the kernel config and only update the config if it has been
--	# updated after the previously cached config was created. This avoids
--	# unnecessarily compiling the kernel and selftests.
-+	local kernel_checkout="$1"
-+	local kconfig_file="$2"
-+	local kconfig_src="${kernel_checkout}/${KCONFIG_REL_PATH}"
-+	local update_command="cp ${kconfig_src} ${kconfig_file}"
- 	if [[ -f "${kconfig_file}" ]]; then
--		local last_modified_date="$(curl -sL -D - "${KCONFIG_API_URL}" -o /dev/null | \
--			grep "last-modified" | awk -F ': ' '{print $2}')"
--		local remote_modified_timestamp="$(date -d "${last_modified_date}" +"%s")"
--		local local_creation_timestamp="$(stat -c %Y "${kconfig_file}")"
--
--		if [[ "${remote_modified_timestamp}" -gt "${local_creation_timestamp}" ]]; then
-+		local src_modified="$(stat -c %Y "${kconfig_src}")"
-+		local local_modified="$(stat -c %Y "${kconfig_file}")"
-+		# Only update the config if it has been updated after the
-+		# previously cached config was created. This avoids
-+		# unnecessarily compiling the kernel and selftests.
-+		if [[ "${src_modified}" -gt "${local_modified}" ]]; then
- 			${update_command}
- 		fi
- 	else
-@@ -372,7 +368,7 @@ main()
- 
- 	mkdir -p "${OUTPUT_DIR}"
- 	mkdir -p "${mount_dir}"
--	update_kconfig "${kconfig_file}"
-+	update_kconfig "${kernel_checkout}" "${kconfig_file}"
- 
- 	recompile_kernel "${kernel_checkout}" "${make_command}"
- 
--- 
-2.30.2
-
+Instead of checking in the full config please trim it to
+relevant dependencies like existing selftests/bpf/config.
+Otherwise every update/addition would trigger massive patches.
