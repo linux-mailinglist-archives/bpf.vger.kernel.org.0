@@ -2,64 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CCC557290E
-	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 00:11:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97D5E572916
+	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 00:14:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbiGLWLQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jul 2022 18:11:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60032 "EHLO
+        id S230254AbiGLWOz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jul 2022 18:14:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231276AbiGLWLO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jul 2022 18:11:14 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F2FC54AC
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 15:11:13 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id b8so7977312pjo.5
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 15:11:13 -0700 (PDT)
+        with ESMTP id S231567AbiGLWOy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jul 2022 18:14:54 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17C40B0F92
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 15:14:52 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id b11-20020aa7810b000000b0052aeb125cb3so1181935pfi.11
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 15:14:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=V5+SKXw7xQ8pOW3xLBv/UilgsLJssuxU4DHDUS6CbQc=;
-        b=M0mF9jUFX4FVreFrTePPsEIkrtpYgoEBr1di/wduOo2KoxQ0jSOypHtBVeXIllLvXn
-         yyPgcxKzbCEeqxVvRHjofm7TboLZfOFUWUCMxGANS88cuOSTX+KhXqfzkEMBJ94XciFJ
-         8kb53RPFjzoQqA1BFWZzbm63AHFLTzbrgTKJLbN6RFG/ZMI8Bt2tsQTq6EdagRCwbdRz
-         WQipvDGM+3aNXKbF7hruJgugaYTATQ0FzpGG38H1dP8ZL1GN+5LTaMHqk7+RFaHwOdx2
-         cAICVm2/WKiTIDYmlq1sIjtlvsHcztIzdsF5KzgF+24K6i/Ywiph7L+z+IytXUyXSevg
-         MPwA==
+        bh=y6t3iDm9GwNmjV2vlQyhKcUiXb93GbH2Nv8sz+9x1PM=;
+        b=L+JGxUqk+x+Rvv1+JcEOnvYuGWypPqnYlFtTwCDRfh7+XIaQder6grPJXbYeqAtZBE
+         Pv9osdMol+o8TKB8+Vr3YUJCD1oUKozPs3Xam6Dy8HQyRb/5dMrg0CeWCW7R+Qt4CXJM
+         lFZn5r+oeVG0Gu8FGv5TASPc2LVFtPrlDTOidqIj7rgm1oJjTjHet/kWj2pUtUlMtsW0
+         0BKehu2K0h0Bfhx/DqvdzmJqktJiAOb3/V8/UI2UDZBmL6uuBPTZTWFoOdNexBeKCIKH
+         8G+aplAjz1F3qSeVgDkgeYY8m3Jz7xe5mVQn2XJv8DOxSqQ6dLScs2KZozyuhATYISes
+         C7lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V5+SKXw7xQ8pOW3xLBv/UilgsLJssuxU4DHDUS6CbQc=;
-        b=pG7ELiDKiw14InbGlQjRtnqQVYphZ87k2e11wbKIydBZf4ms8cirr1dsvyeuufh9gQ
-         wqf6wX2SZ4/HgpVvoQN8Vtxu+lkLTY5hqKgv+AfigWx6KeKSPHguRKrNDhKn3z7TIrgb
-         0buULaHVipgOlxUgVX7fAq8A+TA+mvLxw4MeqjtmymJBWzYHHdG9gQUx6JXj7IXqLe7A
-         QRWGznHK+DNVMpNjdW9uiYX0EZE7Xtm9WMhlz2U7plM36UnGxOlUOdH1Uro1pMXAiV2m
-         DJBCdRq1+wAtBuDUOPW31JCUoAFECuAhtSUTFi5ennGCLGMCOcrV1Ul+xHDqn1Ie7imx
-         7Gog==
-X-Gm-Message-State: AJIora8SWFqLPvwCQe7Zt9Cyh9AxZWBAlDos0FDi2K8bHgbCYpsjIVSP
-        h/wTq/aq4zm6apBvgfEt+yg4IQFTT7chsxMJuZsg4g==
-X-Google-Smtp-Source: AGRyM1tH5qwHM1eKTMf6FAQlhOKEGgTM2L8i+n9p3AUCA/nGBRZblR3qk+QLnYGQJJv4fLafWZ1DTgQJVFrbg1IrbKE=
-X-Received: by 2002:a17:902:e746:b0:16c:4eb6:915d with SMTP id
- p6-20020a170902e74600b0016c4eb6915dmr160322plf.106.1657663873107; Tue, 12 Jul
- 2022 15:11:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220711162827.184743-1-roman.gushchin@linux.dev> <CAADnVQ+2Az23WLHj_1pQWYXdd8CbeKooCLrkT_GnzKXV7Yp8hw@mail.gmail.com>
-In-Reply-To: <CAADnVQ+2Az23WLHj_1pQWYXdd8CbeKooCLrkT_GnzKXV7Yp8hw@mail.gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 12 Jul 2022 15:11:02 -0700
-Message-ID: <CALvZod5uPV9cNKCMjs3HmadVnF--fum5BgG-Zcv1vTM_Bak8hw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpf: reparent bpf maps on memcg offlining
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=y6t3iDm9GwNmjV2vlQyhKcUiXb93GbH2Nv8sz+9x1PM=;
+        b=vSwDx1eErBjiLCd9/pC81kBsAs7NQNelG6TALHJ/h5YoY95QURfUCwq1dyEEJRVj/8
+         /ed6tLlqDoqVIgoaRXiOukIgudK3H/hcaI20U6llnWyTBtV1CZKRZuGOHDz460vCvzVg
+         Bc9VGSKwltCcVoJRqtIpA49HGS+dBpiXbZ+8c0iKINofloSOmVX1/gheqk3KOyRWxvFA
+         nrkEPkdk6u6SvqZXXTbhYP4yvMWRBm3Ehjehl953WlSI7x4dVUrR2r35RPwxS0OovWSP
+         gypJVZ/eKxQWDHivn1O1829+kw8PGC5KFO2SmfQ5FG3fyfBFPU+l65U6R1p2Ir9tDMVy
+         eLDQ==
+X-Gm-Message-State: AJIora/H8c/2ihbqIbMbPC700c/njFDclKKqkO+nSAirjWKJntXgx5x3
+        1oeHLXItRiXXdT6BWrTkN5qqQLU=
+X-Google-Smtp-Source: AGRyM1s4iuYht14q6gFZMO3RWTR0QLcs3KatATGI4cdY3BULRTru2/uKD1hdqS40x4ACgE6WxjSz52E=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:902:e80a:b0:16c:3e68:bbe1 with SMTP id
+ u10-20020a170902e80a00b0016c3e68bbe1mr148045plg.85.1657664091611; Tue, 12 Jul
+ 2022 15:14:51 -0700 (PDT)
+Date:   Tue, 12 Jul 2022 15:14:50 -0700
+In-Reply-To: <20220712175837.16267-1-andrea.mayer@uniroma2.it>
+Message-Id: <Ys3yWlQT/vEpVH+i@google.com>
+Mime-Version: 1.0
+References: <20220712175837.16267-1-andrea.mayer@uniroma2.it>
+Subject: Re: [net 0/3] seg6: fix skb checksum for SRH encapsulation/insertion
+From:   sdf@google.com
+To:     Andrea Mayer <andrea.mayer@uniroma2.it>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        David Lebrun <david.lebrun@uclouvain.be>,
+        Mathieu Xhonneux <m.xhonneux@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Stefano Salsano <stefano.salsano@uniroma2.it>,
+        Paolo Lungaroni <paolo.lungaroni@uniroma2.it>,
+        Ahmed Abdelsalam <ahabdels.dev@gmail.com>,
+        Anton Makarov <anton.makarov11235@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,105 +84,60 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 12, 2022 at 2:49 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Mon, Jul 11, 2022 at 9:28 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
-> >
-> > The memory consumed by a mpf map is always accounted to the memory
-> > cgroup of the process which created the map. The map can outlive
-> > the memory cgroup if it's used by processes in other cgroups or
-> > is pinned on bpffs. In this case the map pins the original cgroup
-> > in the dying state.
-> >
-> > For other types of objects (slab objects, non-slab kernel allocations,
-> > percpu objects and recently LRU pages) there is a reparenting process
-> > implemented: on cgroup offlining charged objects are getting
-> > reassigned to the parent cgroup. Because all charges and statistics
-> > are fully recursive it's a fairly cheap operation.
-> >
-> > For efficiency and consistency with other types of objects, let's do
-> > the same for bpf maps. Fortunately thanks to the objcg API, the
-> > required changes are minimal.
-> >
-> > Please, note that individual allocations (slabs, percpu and large
-> > kmallocs) already have the reparenting mechanism. This commit adds
-> > it to the saved map->memcg pointer by replacing it to map->objcg.
-> > Because dying cgroups are not visible for a user and all charges are
-> > recursive, this commit doesn't bring any behavior changes for a user.
-> >
-> > v2:
-> >   added a missing const qualifier
-> >
-> > Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
-> > Reviewed-by: Shakeel Butt <shakeelb@google.com>
-> > ---
-> >  include/linux/bpf.h  |  2 +-
-> >  kernel/bpf/syscall.c | 35 +++++++++++++++++++++++++++--------
-> >  2 files changed, 28 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > index 2b21f2a3452f..85a4db3e0536 100644
-> > --- a/include/linux/bpf.h
-> > +++ b/include/linux/bpf.h
-> > @@ -221,7 +221,7 @@ struct bpf_map {
-> >         u32 btf_vmlinux_value_type_id;
-> >         struct btf *btf;
-> >  #ifdef CONFIG_MEMCG_KMEM
-> > -       struct mem_cgroup *memcg;
-> > +       struct obj_cgroup *objcg;
-> >  #endif
-> >         char name[BPF_OBJ_NAME_LEN];
-> >         struct bpf_map_off_arr *off_arr;
-> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > index ab688d85b2c6..ef60dbc21b17 100644
-> > --- a/kernel/bpf/syscall.c
-> > +++ b/kernel/bpf/syscall.c
-> > @@ -419,35 +419,52 @@ void bpf_map_free_id(struct bpf_map *map, bool do_idr_lock)
-> >  #ifdef CONFIG_MEMCG_KMEM
-> >  static void bpf_map_save_memcg(struct bpf_map *map)
-> >  {
-> > -       map->memcg = get_mem_cgroup_from_mm(current->mm);
-> > +       /* Currently if a map is created by a process belonging to the root
-> > +        * memory cgroup, get_obj_cgroup_from_current() will return NULL.
-> > +        * So we have to check map->objcg for being NULL each time it's
-> > +        * being used.
-> > +        */
-> > +       map->objcg = get_obj_cgroup_from_current();
-> >  }
-> >
-> >  static void bpf_map_release_memcg(struct bpf_map *map)
-> >  {
-> > -       mem_cgroup_put(map->memcg);
-> > +       if (map->objcg)
-> > +               obj_cgroup_put(map->objcg);
-> > +}
-> > +
-> > +static struct mem_cgroup *bpf_map_get_memcg(const struct bpf_map *map) {
-> > +       if (map->objcg)
-> > +               return get_mem_cgroup_from_objcg(map->objcg);
-> > +
-> > +       return root_mem_cgroup;
-> >  }
-> >
-> >  void *bpf_map_kmalloc_node(const struct bpf_map *map, size_t size, gfp_t flags,
-> >                            int node)
-> >  {
-> > -       struct mem_cgroup *old_memcg;
-> > +       struct mem_cgroup *memcg, *old_memcg;
-> >         void *ptr;
-> >
-> > -       old_memcg = set_active_memcg(map->memcg);
-> > +       memcg = bpf_map_get_memcg(map);
-> > +       old_memcg = set_active_memcg(memcg);
-> >         ptr = kmalloc_node(size, flags | __GFP_ACCOUNT, node);
-> >         set_active_memcg(old_memcg);
-> > +       mem_cgroup_put(memcg);
->
-> Here we might css_put root_mem_cgroup.
-> Should we css_get it when returning or
-> it's marked as CSS_NO_REF ?
-> But mem_cgroup_alloc() doesn't seem to be doing that marking.
-> I'm lost at that code.
+On 07/12, Andrea Mayer wrote:
+> The Linux kernel supports Segment Routing Header (SRH)
+> encapsulation/insertion operations by providing the capability to: i)
+> encapsulate a packet in an outer IPv6 header with a specified SRH; ii)
+> insert a specified SRH directly after the IPv6 header of the packet.
+> Note that the insertion operation is also referred to as 'injection'.
 
-CSS_NO_REF is set for root_mem_cgroup in cgroup_init_subsys().
+> The two operations are respectively supported by seg6_do_srh_encap() and
+> seg6_do_srh_inline(), which operate on the skb associated to the packet as
+> needed (e.g. adding the necessary headers and initializing them, while
+> taking care to recalculate the skb checksum).
+
+> seg6_do_srh_encap() and seg6_do_srh_inline() do not initialize the payload
+> length of the IPv6 header, which is carried out by the caller functions.
+> However, this approach causes the corruption of the skb checksum which
+> needs to be updated only after initialization of headers is completed
+> (thanks to Paolo Abeni for detecting this issue).
+
+> The patchset fixes the skb checksum corruption by moving the IPv6 header
+> payload length initialization from the callers of seg6_do_srh_encap() and
+> seg6_do_srh_inline() directly into these functions.
+
+> This patchset is organized as follows:
+>   - patch 1/3, seg6: fix skb checksum evaluation in SRH
+>     encapsulation/insertion;
+>      (* SRH encapsulation/insertion available since v4.10)
+
+>   - patch 2/3, seg6: fix skb checksum in SRv6 End.B6 and End.B6.Encaps
+>     behaviors;
+>      (* SRv6 End.B6 and End.B6.Encaps behaviors available since v4.14)
+
+>   - patch 3/3, seg6: bpf: fix skb checksum in bpf_push_seg6_encap();
+>      (* bpf IPv6 Segment Routing helpers available since v4.18)
+
+BPF changes make sense. I've tested them by applying the whole series and
+running test_lwt_seg6local.sh.
+
+Reviewed-by: Stanislav Fomichev <sdf@google.com>
+Tested-by: Stanislav Fomichev <sdf@google.com>
+
+
+> Thank you all,
+> Andrea
+
+> Andrea Mayer (3):
+>    seg6: fix skb checksum evaluation in SRH encapsulation/insertion
+>    seg6: fix skb checksum in SRv6 End.B6 and End.B6.Encaps behaviors
+>    seg6: bpf: fix skb checksum in bpf_push_seg6_encap()
+
+>   net/core/filter.c        | 1 -
+>   net/ipv6/seg6_iptunnel.c | 5 ++++-
+>   net/ipv6/seg6_local.c    | 2 --
+>   3 files changed, 4 insertions(+), 4 deletions(-)
+
+> --
+> 2.20.1
+
