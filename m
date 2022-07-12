@@ -2,84 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4CC2571182
-	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 06:39:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10763571184
+	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 06:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231523AbiGLEjZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jul 2022 00:39:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51990 "EHLO
+        id S230332AbiGLEkt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jul 2022 00:40:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231690AbiGLEjU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jul 2022 00:39:20 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4C898CC96
-        for <bpf@vger.kernel.org>; Mon, 11 Jul 2022 21:39:18 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id e132so6548838pgc.5
-        for <bpf@vger.kernel.org>; Mon, 11 Jul 2022 21:39:18 -0700 (PDT)
+        with ESMTP id S229702AbiGLEks (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jul 2022 00:40:48 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 461578CCA4;
+        Mon, 11 Jul 2022 21:40:47 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id l23so12242403ejr.5;
+        Mon, 11 Jul 2022 21:40:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RbuQvW5P2B327xH9DYaPbGliNJwj/rxxYgllk0AY4L8=;
-        b=TngVdD1sMavZB1GSqPOcX/p1sPgmX0VOBXVJbKQlap5VWxF3Sr11hw6Bkl0+8QyBSX
-         +vJheTHD/QdqNpuBZr+H8dUag2zTPNq4WjZqe+jfFxQDTUKoIUJzNk744rd0DUm8aRBo
-         hgKgI7KKecymL1k/6Iy0tocXBinPMx7p3gSmK6NmFf7Sq2NIKlgRuUkdf6/y3k6b/x03
-         ZxVSEWc2R1Dgyif4u4Dfz3NeHoSlBlIn9W2L4NZH82gop4/mpmj+4ddnsyco+j19dSZt
-         UiLKEuLTwfXmhhIn3p2xIi+EwbUJHWZ5ADvgwyGcaw7KAPQzrp7qZAbtbKwOBvr9xVK2
-         iqKg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9bwM//cvZFymb4WUWDusQzRbwBn9nlsjCD79TISVsJ0=;
+        b=BlHWfQPRFKfJ61g8T/P6TuGTmb0P9ffpqao3TOROw798XwkY9vxuZfu0lO+CKXaQiG
+         d6+RYqD2XsbD4tuL0uSsjRjGTsOVyb8nctHQiTWhwqUBX423OELfHfILQR636DVDHBKI
+         FnLOAeWO5pIZNRHRThYFWUrrbPXMzoxkPIKKo1eHYfV+tgBTTwSEDPyVtCRUmO/q+Yh2
+         ae8PBjZEYvVwZ9GfqiKXfkkLvW4cNtsfm2kpb8tZvLXouY+zrZJKd7VQCSjs3BC36kQi
+         atzjqc5CJBJpoiiK0II/s1WhGlID11Na/5QluR1+87qFM+BE/6cwmlpFJrQ9yaAvvRJe
+         QYrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RbuQvW5P2B327xH9DYaPbGliNJwj/rxxYgllk0AY4L8=;
-        b=HiMwyadF/2oj/Sq+JAua+vgMZLvdgbH2TD0YDckgapmVvGu+TkSHv4ebfv24sdtLpn
-         3y4dtL9I3fuI3V4hIr33Lk6mc0RzczCitwg6Gd1DUutPvxgyddGRO7EDkP0MEXHysupL
-         66He6+OK6pih8DhEgKg6cCzKHALJRJhKYQTZm9jlQklNV6xk1zXcKxhm0Egj1kizx5hE
-         ro7O4QJgZePKCFctSStVnM78EUdwShPtVnXE9nyKCqqp6npBo89yENIa5GNui0EMBitI
-         xytYJ07Y48On+0g61wk02auRXISkhwkdSEjVjVn8Tog2coeFM4ON9U+dZvDPXvC1Dd7Z
-         DLPw==
-X-Gm-Message-State: AJIora+QPFt1DPwsqqhiadkOpR/02aAnNV6+F1iyhbvntfrrQzGMoGVm
-        cKDJUCnXxBhevNNWqISgRsc=
-X-Google-Smtp-Source: AGRyM1uAKIH8QJ3s/qucXxt5/RCQQkwQSGuJJjPC8NBl5t1rOE+Q7rXnoM2QRWxZ/G5ba86Lw0jS9g==
-X-Received: by 2002:a63:2205:0:b0:417:61fd:cd35 with SMTP id i5-20020a632205000000b0041761fdcd35mr2910008pgi.544.1657600758266;
-        Mon, 11 Jul 2022 21:39:18 -0700 (PDT)
-Received: from macbook-pro-3.dhcp.thefacebook.com ([2620:10d:c090:400::5:c47b])
-        by smtp.gmail.com with ESMTPSA id w1-20020a1709026f0100b0016bf2a4598asm5589182plk.229.2022.07.11.21.39.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jul 2022 21:39:17 -0700 (PDT)
-Date:   Mon, 11 Jul 2022 21:39:14 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        linux-mm <linux-mm@kvack.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH bpf-next 0/5] bpf: BPF specific memory allocator.
-Message-ID: <20220712043914.pxmbm7vockuvpmmh@macbook-pro-3.dhcp.thefacebook.com>
-References: <YsNOzwNztBsBcv7Q@casper.infradead.org>
- <20220706175034.y4hw5gfbswxya36z@MacBook-Pro-3.local>
- <YsXMmBf9Xsp61I0m@casper.infradead.org>
- <20220706180525.ozkxnbifgd4vzxym@MacBook-Pro-3.local.dhcp.thefacebook.com>
- <Ysg0GyvqUe0od2NN@dhcp22.suse.cz>
- <20220708174858.6gl2ag3asmoimpoe@macbook-pro-3.dhcp.thefacebook.com>
- <20220708215536.pqclxdqvtrfll2y4@google.com>
- <CAADnVQL5ZQDqMGULJLDwT9xRTihdDvo6GvwxdEOtSAs8EwE78A@mail.gmail.com>
- <20220710073213.bkkdweiqrlnr35sv@google.com>
- <YswUS/5nbYb8nt6d@dhcp22.suse.cz>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9bwM//cvZFymb4WUWDusQzRbwBn9nlsjCD79TISVsJ0=;
+        b=FS+mVrsLRenNII9J1xawOjOY0sz5n8D1AWxmjfA79T/g3eqjLtTWSgHuIvXS+RERJI
+         3Iwu4c3uitc/ACPLFtEAknnCVn0b5PnSFRKifYN4MP35SMaXRHk+iCmd/FQRvSo/iain
+         i+BgezRWJKA2A++xpL7VtJ5C1kXz1j6hiAbyphDJUq072O3iE+EJ16Oe7oKkBReKdtqC
+         jzButVbmlIuGBWDtXNqAgXffoZzJ0OTysNyf8S+d89RvokdwY054uBM6OUxWnCNrK8QA
+         FGEIGej3+1ZO2gx9nMtVTGD01h5oEPgEIA637ichoWcMhJWFYGuE9U36IemCKLdlWaip
+         rawg==
+X-Gm-Message-State: AJIora8CM1Kb0DATrvnOCO+qQPFDGNG2toLLyy4zt53bE++o9/QKtcb5
+        T5yR4PNvGPOSqaTNOrFM0eYtWZ8zfsL147Wtw80=
+X-Google-Smtp-Source: AGRyM1tPTIVzj650H/XE+ZZ8SPlMtwf7jTnRkEAvIGcGsDc4hAd7svZcAbESE0UtOfkT6dlwP4W6Oncm4IQIYJ2P9bw=
+X-Received: by 2002:a17:906:5a6c:b0:72b:561a:3458 with SMTP id
+ my44-20020a1709065a6c00b0072b561a3458mr8361763ejc.114.1657600845829; Mon, 11
+ Jul 2022 21:40:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YswUS/5nbYb8nt6d@dhcp22.suse.cz>
+References: <20220706172814.169274-1-james.hilliard1@gmail.com>
+ <a0bddf0b-e8c4-46ce-b7c6-a22809af1677@fb.com> <CADvTj4ovwExtM-bWUpJELy-OqsT=J9stmqbAXto8ds2n+G8mfw@mail.gmail.com>
+In-Reply-To: <CADvTj4ovwExtM-bWUpJELy-OqsT=J9stmqbAXto8ds2n+G8mfw@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 11 Jul 2022 21:40:34 -0700
+Message-ID: <CAEf4BzYwRyXG1zE5BK1ZXmxLh+ZPU0=yQhNhpqr0JmfNA30tdQ@mail.gmail.com>
+Subject: Re: [PATCH v2] bpf/scripts: Generate GCC compatible helpers
+To:     James Hilliard <james.hilliard1@gmail.com>,
+        Quentin Monnet <quentin@isovalent.com>
+Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -90,59 +78,80 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 11, 2022 at 02:15:07PM +0200, Michal Hocko wrote:
-> On Sun 10-07-22 07:32:13, Shakeel Butt wrote:
-> > On Sat, Jul 09, 2022 at 10:26:23PM -0700, Alexei Starovoitov wrote:
-> > > On Fri, Jul 8, 2022 at 2:55 PM Shakeel Butt <shakeelb@google.com> wrote:
+CC Quentin as well
+
+On Mon, Jul 11, 2022 at 5:11 PM James Hilliard
+<james.hilliard1@gmail.com> wrote:
+>
+> On Mon, Jul 11, 2022 at 5:36 PM Yonghong Song <yhs@fb.com> wrote:
+> >
+> >
+> >
+> > On 7/6/22 10:28 AM, James Hilliard wrote:
+> > > The current bpf_helper_defs.h helpers are llvm specific and don't work
+> > > correctly with gcc.
+> > >
+> > > GCC appears to required kernel helper funcs to have the following
+> > > attribute set: __attribute__((kernel_helper(NUM)))
+> > >
+> > > Generate gcc compatible headers based on the format in bpf-helpers.h.
+> > >
+> > > This adds conditional blocks for GCC while leaving clang codepaths
+> > > unchanged, for example:
+> > >       #if __GNUC__ && !__clang__
+> > >       void *bpf_map_lookup_elem(void *map, const void *key) __attribute__((kernel_helper(1)));
+> > >       #else
+> > >       static void *(*bpf_map_lookup_elem)(void *map, const void *key) = (void *) 1;
+> > >       #endif
+> >
+> > It does look like that gcc kernel_helper attribute is better than
+> > '(void *) 1' style. The original clang uses '(void *) 1' style is
+> > just for simplicity.
+>
+> Isn't the original style going to be needed for backwards compatibility with
+> older clang versions for a while?
+
+I'm curious, is there any added benefit to having this special
+kernel_helper attribute vs what we did in Clang for a long time? Did
+GCC do it just to be different and require workarounds like this or
+there was some technical benefit to this?
+
+This duplication of definitions with #if for each one looks really
+awful, IMO. I'd rather have a macro invocation like below (or
+something along those lines) for each helper:
+
+BPF_HELPER_DEF(2, void *, bpf_map_update_elem, void *map, const void
+*key, const void *value, __u64 flags);
+
+And then define BPF_HELPER_DEF() once based on whether it's Clang or GCC.
+
+>
+> >
+> > Do you mind to help implement similar attribute in clang so we
+> > don't need "#if" here?
+>
+> That's well outside my area of expertise unfortunately.
+>
+> >
+> > >
+> > >       #if __GNUC__ && !__clang__
+> > >       long bpf_map_update_elem(void *map, const void *key, const void *value, __u64 flags) __attribute__((kernel_helper(2)));
+> > >       #else
+> > >       static long (*bpf_map_update_elem)(void *map, const void *key, const void *value, __u64 flags) = (void *) 2;
+> > >       #endif
+> > >
+> > > See:
+> > > https://github.com/gcc-mirror/gcc/blob/releases/gcc-12.1.0/gcc/config/bpf/bpf-helpers.h#L24-L27
+> > >
+> > > This fixes the following build error:
+> > > error: indirect call in function, which are not supported by eBPF
+> > >
+> > > Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+> > > ---
+> > > Changes v1 -> v2:
+> > >    - more details in commit log
+> > > ---
+> > >   scripts/bpf_doc.py | 43 ++++++++++++++++++++++++++-----------------
+> > >   1 file changed, 26 insertions(+), 17 deletions(-)
+> > >
 > > [...]
-> > > >
-> > > > Most probably Michal's comment was on free objects sitting in the caches
-> > > > (also pointed out by Yosry). Should we drain them on memory pressure /
-> > > > OOM or should we ignore them as the amount of memory is not significant?
-> > > 
-> > > Are you suggesting to design a shrinker for 0.01% of the memory
-> > > consumed by bpf?
-> > 
-> > No, just claim that the memory sitting on such caches is insignificant.
-> 
-> yes, that is not really clear from the patch description. Earlier you
-> have said that the memory consumed might go into GBs. If that is a
-> memory that is actively used and not really reclaimable then bad luck.
-> There are other users like that in the kernel and this is not a new
-> problem. I think it would really help to add a counter to describe both
-> the overall memory claimed by the bpf allocator and actively used
-> portion of it. If you use our standard vmstat infrastructure then we can
-> easily show that information in the OOM report.
-
-OOM report can potentially be extended with info about bpf consumed
-memory, but it's not clear whether it will help OOM analysis.
-bpftool map show
-prints all map data already.
-Some devs use bpf to inspect bpf maps for finer details in run-time.
-drgn scripts pull that data from crash dumps.
-There is no need for new counters.
-The idea of bpf specific counters/limits was rejected by memcg folks.
-
-> OK, thanks for the clarification. There is still one thing that is not
-> really clear to me. Without a proper ownership bound to any process why
-> is it desired/helpful to account the memory to a memcg?
-
-The first step is to have a limit. memcg provides it.
-
-> We have discussed something similar in a different email thread and I
-> still didn't manage to find time to put all the parts together. But if
-> the initiator (or however you call the process which loads the program)
-> exits then this might be the last process in the specific cgroup and so
-> it can be offlined and mostly invisible to an admin.
-
-Roman already sent reparenting fix:
-https://patchwork.kernel.org/project/netdevbpf/patch/20220711162827.184743-1-roman.gushchin@linux.dev/
-
-> As you have explained there is nothing really actionable on this memory
-> by the OOM killer either. So does it actually buy us much to account?
-
-It will be actionable. One step at a time.
-In the other thread we've discussed an idea to make memcg selectable when
-bpf objects are created. The user might create a special memcg and use it for
-all things bpf. This might be the way to provide bpf specific accounting
-and limits.
