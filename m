@@ -2,290 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0B495710FF
-	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 05:56:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E66257110E
+	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 06:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229984AbiGLD4O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Jul 2022 23:56:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59408 "EHLO
+        id S229523AbiGLEBn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jul 2022 00:01:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229760AbiGLD4N (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Jul 2022 23:56:13 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2373631201
-        for <bpf@vger.kernel.org>; Mon, 11 Jul 2022 20:56:09 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id h17so9465259wrx.0
-        for <bpf@vger.kernel.org>; Mon, 11 Jul 2022 20:56:09 -0700 (PDT)
+        with ESMTP id S229464AbiGLEBm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jul 2022 00:01:42 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A426528A5
+        for <bpf@vger.kernel.org>; Mon, 11 Jul 2022 21:01:41 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id b11so12117414eju.10
+        for <bpf@vger.kernel.org>; Mon, 11 Jul 2022 21:01:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=DtZHEZADB3JECY47Yo409VrgFsGXjY17lsaTSbiRvl0=;
-        b=mFHOW9FavN+1RbEA0qtYGYDT3GOeLmIbC9FfKIEFWgFL0rMhHfGt1syJts7NBkTf16
-         tm9M2Glr9e/Ux/yRWXN/PUZuQrAXYk+Nd1qvH9xf0vzV8P3K1jVUHSmnmopz91cFC2RF
-         gXhtOv3ll5MHfypnm+FYriDHMPyPFZYOnKjKLkLZ1RSoWME9VKX9QLMGgF9Uk4gm//c8
-         TSCwPrlvCkyaASxFm7rpBZQdDbmxE/buFLLCMzHv4TYTNfUXjJL5pMViBIlwm4EuScsl
-         EMHctYmT+oAXDoPwLC+BhycPGkroUnIyKKbUXEk7gExXzpEb5n8uyjGaJY36arV0l+PV
-         1dzA==
+        bh=kT2r5bXyyxeN6NrpeFpl2k09VZQrQR0074qwhlmUFjk=;
+        b=IU2W7gR++ywMtiYRSMh2hsXWLRHA856l1OAjAaAZx0r5cHGQjc3o9VUKyTL08a9pNF
+         2/37iDfRRJxTKKmQSLFtndBlg+8HiwEvVTiV0X5W0fcv8F0a1ZTcak6QmyJ3hLQ0QERQ
+         K1KPavQqYNiAr6LNY+Phj76xH4fGesw8ZX9BE5F3bJ0oh1cXpBwKFEUK7pYN7z/mnlCS
+         7QkalML95auRnqino6vEPSumxX10+lBd3abpzzt+pEPaj38pjpHgbIRYSz3tJYBuwdhJ
+         j8aGO/ywIgBGjDWvGZVOcOqUBeS1oDJQ/jVp9qh00ibsmcWXS2EAEBhsRf/TqwsKvPEa
+         VvTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=DtZHEZADB3JECY47Yo409VrgFsGXjY17lsaTSbiRvl0=;
-        b=sv7RlAuVLtTFVffefe/iJgta3ym3egUT2kYYcwHIyzclAxkwjMgaVCjKIWBOPoUnXL
-         E3O9TSsIy+QXmGNPUn+sFZmiEFfhHMVf2aHslNm/2qfCY7bFVQeAW8v9R6Of3pxi0bzp
-         AQrumtKC/p86Yt1Yc25UPlI+3oApHIAzQzLv7YpdopUJEJwQSsbbjMhDQRQINPJ2jVYO
-         //9wMTPbMYCIi/KR4yWgdyxf07d6+KXlN86IFvYY8hW7D6h5yhiozGIPgHBzmxNh8NiE
-         L1n507nPREl6RzrJs/RwQ30a0VsSXGhdzabf4u7p8eW2p4LgPfZ6zLYw2dIQbFHEMwtw
-         f9Kg==
-X-Gm-Message-State: AJIora8SmqcYRfkl7KA0o0sWF+r9Q/sNCGvoqcAY1kaWSWlhljHfh36/
-        fzS/4ynAnUbqWMzsMRS0+sMVUTOl3Iycpi1HPZJAZg==
-X-Google-Smtp-Source: AGRyM1truL0F+xsVarfV3RRzQePPtKq2ND89Q/QqRMEMPbiCLLcdYzV+wndKpkoIPXpNbkYzCP30CkcH035SohjUn68=
-X-Received: by 2002:a5d:47c6:0:b0:21d:97dc:8f67 with SMTP id
- o6-20020a5d47c6000000b0021d97dc8f67mr14582631wrc.372.1657598167573; Mon, 11
- Jul 2022 20:56:07 -0700 (PDT)
+        bh=kT2r5bXyyxeN6NrpeFpl2k09VZQrQR0074qwhlmUFjk=;
+        b=7qPbIOF825tJ3XodKb2rXsO79cWV5RwlrS8OuT6bSeJHTBrEQdljuF16qAtoXYfa4V
+         XfM0WrbxvOzJ57eVKEX/ssXYWdWrtPBx0Y7wH589UgDjwGDmwTfTsXzUIKdq78Iw7H2q
+         UCAZN8SnASwbBLCs30IIvP0GmctJ9wvYZDLKaOzRrZ9yViVgHPeFB/wZQ1kAQgeKDYx0
+         WZnGNkmTLnzo0Nk5e/FjFDPoLi4zrAXGuxuoJZOS8Z84KsTnh8TQX9uuT6dKu+tmZ3D+
+         9BJzwngPTNG5hc8oSB/RMDkQpYazSPVw8D1MWUuC+8+TCC+4NjiH4y5onRbSbmnfoj2S
+         pIgA==
+X-Gm-Message-State: AJIora9XQYgXrtdCxlDrdEwn7iSH7B4M6V0sW0cdas/MRVbICkfwkqe1
+        D/XaD1DXtV/Dk3fnkottT67TDmp3yk2kLzYVJufiillbiphYTg==
+X-Google-Smtp-Source: AGRyM1v/fj2kdaeCxAnx4UmAMfT8u55MoZuz0aHtQUe5OIXF5XT0vvjZAF95k7zjVJaeNSuw0ZXCAOgtP4jKdclecj8=
+X-Received: by 2002:a17:907:2ccc:b0:72b:6907:fce6 with SMTP id
+ hg12-20020a1709072ccc00b0072b6907fce6mr5102925ejc.115.1657598499485; Mon, 11
+ Jul 2022 21:01:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220709000439.243271-1-yosryahmed@google.com>
- <20220709000439.243271-9-yosryahmed@google.com> <b4936952-2fe7-656c-2d0d-69044265392a@fb.com>
- <9c6a0ba3-2730-eb56-0f96-e5d236e46660@fb.com>
-In-Reply-To: <9c6a0ba3-2730-eb56-0f96-e5d236e46660@fb.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Mon, 11 Jul 2022 20:55:31 -0700
-Message-ID: <CAJD7tkZUfNqD8z6Cv7vi1TxpwKTXhDn_yweDHnRr++9iJs+=ew@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 8/8] bpf: add a selftest for cgroup
- hierarchical stats collection
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+References: <20220708060416.1788789-1-arilou@gmail.com> <20220708060416.1788789-2-arilou@gmail.com>
+ <CAEf4BzZkfWTQppe97E1CTLKEqgtxP9gUQqbXB1EKRm5pK_ZmDA@mail.gmail.com>
+ <YsjtxLuTvn8DWEA6@jondnuc> <CAADnVQLmAg9_StyD9_pMO0YUn-Yi1ozxfinxuQmkL0BYoTjbjw@mail.gmail.com>
+ <CAP7QCohvoDZ0sk6sqA3112xsM4xzUc9uRHXiDNyt7M4jc3oUmg@mail.gmail.com>
+ <CAADnVQJ7RaQyaSaRJ8aE=-0b2URNQFnCLhKX4GpL0H-yQyrTiA@mail.gmail.com> <CAP7QCogdYrsfGvEvhg5R8rQvWDe=o-nxgmqubZtfucH1zNc-RA@mail.gmail.com>
+In-Reply-To: <CAP7QCogdYrsfGvEvhg5R8rQvWDe=o-nxgmqubZtfucH1zNc-RA@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 11 Jul 2022 21:01:28 -0700
+Message-ID: <CAEf4BzYdhOF2wbnEZsMC6+hDz74Jss2_m1DHb_S3EiPqZborUQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/1] libbpf: perfbuf: allow raw access to buffers
+To:     Jon Doron <arilou@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>
+        Daniel Borkmann <daniel@iogearbox.net>, Jon Doron <jond@wiz.io>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jul 10, 2022 at 5:51 PM Yonghong Song <yhs@fb.com> wrote:
+On Sun, Jul 10, 2022 at 10:07 AM Jon Doron <arilou@gmail.com> wrote:
 >
 >
+> On Sun, Jul 10, 2022, 18:16 Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+>>
+>> On Sat, Jul 9, 2022 at 10:43 PM Jon Doron <arilou@gmail.com> wrote:
+>> >
+>> > I was referring to the following:
+>> > https://github.com/libbpf/libbpf-rs/blob/master/libbpf-rs/src/perf_buffer.rs
+>>
+>> How does your patch help libbpf-rs?
+>>
+>> Please don't top post.
 >
-> On 7/10/22 5:26 PM, Yonghong Song wrote:
-> >
-> >
-> > On 7/8/22 5:04 PM, Yosry Ahmed wrote:
-> >> Add a selftest that tests the whole workflow for collecting,
-> >> aggregating (flushing), and displaying cgroup hierarchical stats.
-> >>
-> >> TL;DR:
-> >> - Userspace program creates a cgroup hierarchy and induces memcg reclaim
-> >>    in parts of it.
-> >> - Whenever reclaim happens, vmscan_start and vmscan_end update
-> >>    per-cgroup percpu readings, and tell rstat which (cgroup, cpu) pairs
-> >>    have updates.
-> >> - When userspace tries to read the stats, vmscan_dump calls rstat to
-> >> flush
-> >>    the stats, and outputs the stats in text format to userspace (similar
-> >>    to cgroupfs stats).
-> >> - rstat calls vmscan_flush once for every (cgroup, cpu) pair that has
-> >>    updates, vmscan_flush aggregates cpu readings and propagates updates
-> >>    to parents.
-> >> - Userspace program makes sure the stats are aggregated and read
-> >>    correctly.
-> >>
-> >> Detailed explanation:
-> >> - The test loads tracing bpf programs, vmscan_start and vmscan_end, to
-> >>    measure the latency of cgroup reclaim. Per-cgroup readings are
-> >> stored in
-> >>    percpu maps for efficiency. When a cgroup reading is updated on a cpu,
-> >>    cgroup_rstat_updated(cgroup, cpu) is called to add the cgroup to the
-> >>    rstat updated tree on that cpu.
-> >>
-> >> - A cgroup_iter program, vmscan_dump, is loaded and pinned to a file, for
-> >>    each cgroup. Reading this file invokes the program, which calls
-> >>    cgroup_rstat_flush(cgroup) to ask rstat to propagate the updates
-> >> for all
-> >>    cpus and cgroups that have updates in this cgroup's subtree.
-> >> Afterwards,
-> >>    the stats are exposed to the user. vmscan_dump returns 1 to terminate
-> >>    iteration early, so that we only expose stats for one cgroup per read.
-> >>
-> >> - An ftrace program, vmscan_flush, is also loaded and attached to
-> >>    bpf_rstat_flush. When rstat flushing is ongoing, vmscan_flush is
-> >> invoked
-> >>    once for each (cgroup, cpu) pair that has updates. cgroups are popped
-> >>    from the rstat tree in a bottom-up fashion, so calls will always be
-> >>    made for cgroups that have updates before their parents. The program
-> >>    aggregates percpu readings to a total per-cgroup reading, and also
-> >>    propagates them to the parent cgroup. After rstat flushing is over,
-> >> all
-> >>    cgroups will have correct updated hierarchical readings (including all
-> >>    cpus and all their descendants).
-> >>
-> >> - Finally, the test creates a cgroup hierarchy and induces memcg reclaim
-> >>    in parts of it, and makes sure that the stats collection, aggregation,
-> >>    and reading workflow works as expected.
-> >>
-> >> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> >> ---
-> >>   .../prog_tests/cgroup_hierarchical_stats.c    | 362 ++++++++++++++++++
-> >>   .../bpf/progs/cgroup_hierarchical_stats.c     | 235 ++++++++++++
-> >>   2 files changed, 597 insertions(+)
-> >>   create mode 100644
-> >> tools/testing/selftests/bpf/prog_tests/cgroup_hierarchical_stats.c
-> >>   create mode 100644
-> >> tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
-> >>
-> > [...]
-> >> +
-> >> +static unsigned long long get_cgroup_vmscan_delay(unsigned long long
-> >> cgroup_id,
-> >> +                          const char *file_name)
-> >> +{
-> >> +    char buf[128], path[128];
-> >> +    unsigned long long vmscan = 0, id = 0;
-> >> +    int err;
-> >> +
-> >> +    /* For every cgroup, read the file generated by cgroup_iter */
-> >> +    snprintf(path, 128, "%s%s", BPFFS_VMSCAN, file_name);
-> >> +    err = read_from_file(path, buf, 128);
-> >> +    if (!ASSERT_OK(err, "read cgroup_iter"))
-> >> +        return 0;
-> >> +
-> >> +    /* Check the output file formatting */
-> >> +    ASSERT_EQ(sscanf(buf, "cg_id: %llu, total_vmscan_delay: %llu\n",
-> >> +             &id, &vmscan), 2, "output format");
-> >> +
-> >> +    /* Check that the cgroup_id is displayed correctly */
-> >> +    ASSERT_EQ(id, cgroup_id, "cgroup_id");
-> >> +    /* Check that the vmscan reading is non-zero */
-> >> +    ASSERT_GT(vmscan, 0, "vmscan_reading");
-> >> +    return vmscan;
-> >> +}
-> >> +
-> >> +static void check_vmscan_stats(void)
-> >> +{
-> >> +    int i;
-> >> +    unsigned long long vmscan_readings[N_CGROUPS], vmscan_root;
-> >> +
-> >> +    for (i = 0; i < N_CGROUPS; i++)
-> >> +        vmscan_readings[i] = get_cgroup_vmscan_delay(cgroups[i].id,
-> >> +                                 cgroups[i].name);
-> >> +
-> >> +    /* Read stats for root too */
-> >> +    vmscan_root = get_cgroup_vmscan_delay(CG_ROOT_ID, CG_ROOT_NAME);
-> >> +
-> >> +    /* Check that child1 == child1_1 + child1_2 */
-> >> +    ASSERT_EQ(vmscan_readings[1], vmscan_readings[3] +
-> >> vmscan_readings[4],
-> >> +          "child1_vmscan");
-> >> +    /* Check that child2 == child2_1 + child2_2 */
-> >> +    ASSERT_EQ(vmscan_readings[2], vmscan_readings[5] +
-> >> vmscan_readings[6],
-> >> +          "child2_vmscan");
-> >> +    /* Check that test == child1 + child2 */
-> >> +    ASSERT_EQ(vmscan_readings[0], vmscan_readings[1] +
-> >> vmscan_readings[2],
-> >> +          "test_vmscan");
-> >> +    /* Check that root >= test */
-> >> +    ASSERT_GE(vmscan_root, vmscan_readings[1], "root_vmscan");
-> >
-> > I still get a test failure with
-> >
-> > get_cgroup_vmscan_delay:PASS:cgroup_id 0 nsec
-> > get_cgroup_vmscan_delay:FAIL:vmscan_reading unexpected vmscan_reading:
-> > actual 0 <= expected 0
-> > check_vmscan_stats:FAIL:child1_vmscan unexpected child1_vmscan: actual 0
-> > != expected -2
-> > check_vmscan_stats:FAIL:child2_vmscan unexpected child2_vmscan: actual 0
-> > != expected -2
-> > check_vmscan_stats:PASS:test_vmscan 0 nsec
-> > check_vmscan_stats:PASS:root_vmscan 0 nsec
-> >
-> > I added 'dump_stack()' in function try_to_free_mem_cgroup_pages()
-> > and run this test (#33) and didn't get any stacktrace.
-> > But I do get stacktraces due to other operations like
-> >          try_to_free_mem_cgroup_pages+0x1fd [kernel]
-> >          try_to_free_mem_cgroup_pages+0x1fd [kernel]
-> >          memory_reclaim_write+0x88 [kernel]
-> >          cgroup_file_write+0x88 [kernel]
-> >          kernfs_fop_write_iter+0xd0 [kernel]
-> >          vfs_write+0x2c4 [kernel]
-> >          __x64_sys_write+0x60 [kernel]
-> >          do_syscall_64+0x2d [kernel]
-> >          entry_SYSCALL_64_after_hwframe+0x44 [kernel]
-> >
-> > If you can show me the stacktrace about how
-> > try_to_free_mem_cgroup_pages() is triggered in your setup, I can
-> > help debug this problem in my environment.
 >
-> BTW, CI also reported the test failure.
-> https://github.com/kernel-patches/bpf/pull/3284
+> You will be able to implement a custom perf buffer consumer, as it already has good bindings with libbpf-sys which is built from the C headers
 >
-> For example, with gcc built kernel,
-> https://github.com/kernel-patches/bpf/runs/7272407890?check_suite_focus=true
->
-> The error:
->
->    get_cgroup_vmscan_delay:PASS:cgroup_id 0 nsec
->    get_cgroup_vmscan_delay:PASS:vmscan_reading 0 nsec
->    check_vmscan_stats:FAIL:child1_vmscan unexpected child1_vmscan:
-> actual 28390910 != expected 28390909
->    check_vmscan_stats:FAIL:child2_vmscan unexpected child2_vmscan:
-> actual 0 != expected -2
->    check_vmscan_stats:PASS:test_vmscan 0 nsec
->    check_vmscan_stats:PASS:root_vmscan 0 nsec
+> Sorry for the top posting I'm not home and replying from my phone
 >
 
-Hey Yonghong,
+I can see us exposing per-CPU buffers for (very) advanced users, something like:
 
-Thanks for helping us debug this failure. I can reproduce the CI
-failure in my enviornment, but this failure is actually different from
-the failure in your environment. In your environment it looks like no
-stats are gathered for all cgroups (either no reclaim happening or bpf
-progs not being run). In the CI and in my environment, only one cgroup
-observes this behavior.
+int perf_buffer__buffer(struct perf_buffer *pb, int buf_idx, void
+**buf, size_t buf_sz);
 
-The thing is, I was able to reproduce the problem only when I ran all
-test_progs. When I run the selftest alone (test_progs -t
-cgroup_hierarchical_stats), it consistently passes, which is
-interesting.
+Then in combination with perf_buffer__buffer_fd() you can implement
+your own polling and processing. So you just use libbpf logic to setup
+buffers, but then don't call perf_buffer__poll() at all and read
+records and update tail on your own.
 
-Anyway, one failure at a time :) I am working on debugging the CI
-failure (that occurs only when all tests are run), then we'll see if
-fixing that fixes the problem in our environment as well.
+But this combination of perf_buffer__raw_ring_buf() and
+perf_buffer__set_ring_buf_tail() seems like a bad API, sorry.
 
-If you have any pointers about why a test would consistently pass
-alone and consistently fail with others that would be good. Otherwise,
-I will keep you updated with any findings I reach.
 
-Thanks again!
-
-> >
-> >> +}
-> >> +
-> >> +static int setup_cgroup_iter(struct cgroup_hierarchical_stats *obj,
-> >> int cgroup_fd,
-> > [...]
+>>
+>> > Thanks,
+>> > -- Jon.
+>> >
+>> > On Sun, Jul 10, 2022, 08:23 Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+>> >>
+>> >> On Fri, Jul 8, 2022 at 7:54 PM Jon Doron <arilou@gmail.com> wrote:
+>> >> >
+>> >> > On 08/07/2022, Andrii Nakryiko wrote:
+>> >> > >On Thu, Jul 7, 2022 at 11:04 PM Jon Doron <arilou@gmail.com> wrote:
+>> >> > >>
+>> >> > >> From: Jon Doron <jond@wiz.io>
+>> >> > >>
+>> >> > >> Add support for writing a custom event reader, by exposing the ring
+>> >> > >> buffer state, and allowing to set it's tail.
+>> >> > >>
+>> >> > >> Few simple examples where this type of needed:
+>> >> > >> 1. perf_event_read_simple is allocating using malloc, perhaps you want
+>> >> > >>    to handle the wrap-around in some other way.
+>> >> > >> 2. Since perf buf is per-cpu then the order of the events is not
+>> >> > >>    guarnteed, for example:
+>> >> > >>    Given 3 events where each event has a timestamp t0 < t1 < t2,
+>> >> > >>    and the events are spread on more than 1 CPU, then we can end
+>> >> > >>    up with the following state in the ring buf:
+>> >> > >>    CPU[0] => [t0, t2]
+>> >> > >>    CPU[1] => [t1]
+>> >> > >>    When you consume the events from CPU[0], you could know there is
+>> >> > >>    a t1 missing, (assuming there are no drops, and your event data
+>> >> > >>    contains a sequential index).
+>> >> > >>    So now one can simply do the following, for CPU[0], you can store
+>> >> > >>    the address of t0 and t2 in an array (without moving the tail, so
+>> >> > >>    there data is not perished) then move on the CPU[1] and set the
+>> >> > >>    address of t1 in the same array.
+>> >> > >>    So you end up with something like:
+>> >> > >>    void **arr[] = [&t0, &t1, &t2], now you can consume it orderely
+>> >> > >>    and move the tails as you process in order.
+>> >> > >> 3. Assuming there are multiple CPUs and we want to start draining the
+>> >> > >>    messages from them, then we can "pick" with which one to start with
+>> >> > >>    according to the remaining free space in the ring buffer.
+>> >> > >>
+>> >> > >
+>> >> > >All the above use cases are sufficiently advanced that you as such an
+>> >> > >advanced user should be able to write your own perfbuf consumer code.
+>> >> > >There isn't a lot of code to set everything up, but then you get full
+>> >> > >control over all the details.
+>> >> > >
+>> >> > >I don't see this API as a generally useful, it feels way too low-level
+>> >> > >and special for inclusion in libbpf.
+>> >> > >
+>> >> >
+>> >> > Hi Andrii,
+>> >> >
+>> >> > I understand, but I was still hoping you will be willing to expose this
+>> >> > API.
+>> >> > libbpf has very simple and nice binding to Rust and other languages,
+>> >> > implementing one of those use cases in the bindings can make things much
+>> >> > simpler than using some libc or syscall APIs, instead of enjoying all
+>> >> > the simplicity that you get for free in libbpf.
+>> >> >
+>> >> > Hope you will be willing to reconsider :)
+>> >>
+>> >> The discussion would have been different if you mentioned that
+>> >> motivation in the commit logs.
+>> >> Please provide links to "Rust and other languages" code that
+>> >> uses this api.
