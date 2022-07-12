@@ -2,64 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1793157291A
-	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 00:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C4AA57295D
+	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 00:33:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229933AbiGLWPm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jul 2022 18:15:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34614 "EHLO
+        id S232386AbiGLWdb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jul 2022 18:33:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbiGLWPl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jul 2022 18:15:41 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60DFDB0F92;
-        Tue, 12 Jul 2022 15:15:40 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id sz17so16760721ejc.9;
-        Tue, 12 Jul 2022 15:15:40 -0700 (PDT)
+        with ESMTP id S231250AbiGLWdb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jul 2022 18:33:31 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D81CBDBB2
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 15:33:29 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 79-20020a630252000000b004125da7d520so3964072pgc.11
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 15:33:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ce9EbG1/r2mPoib1PqC7ad2wqeNTOryA+tq46J/Zn/Y=;
-        b=d2U9AN/1kRnlu3pMxoWN6MrYOl39nfb6Hz/V/0RaqPeKLJJnxkT4BrvKYaivISg2Ol
-         H4roundp97p5LDgxQB8+YyY1Xz7TWmtiyaZ1x63d2KIRMDWAQ6un2Sp86+0KaGhU9Dh2
-         caXqzqyTDTC0JGb9Ia7s6+k0XgF0SPB1EBiBLahchr/ovFOLDajbARThIDrpxM6BNkw1
-         0wdMtZDAfJ/qpERnCYGyeYtHcD62NIVbltGG1H/71tekoCKJctQj02y/cbT4J3hxfh2f
-         HdOfVmucz/FREg3HWPvQcqV/AeA8ZeYauw+ot8sJ6XF+jY9VSAtbqYM3Z5Wo6JXIWj2o
-         fIaA==
+        d=google.com; s=20210112;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc:content-transfer-encoding;
+        bh=YIheDng7nbyy0tdK2WpxzBy3yGlzETebuT57B9Mju9U=;
+        b=oV2doAmV5UuAOdErRPpqloTtkU8I28HvPzUaYgRNYD6YEXX9HsIWvB/oVAk1uZv91H
+         iPHHH1w0V51GaaxIU7fhbMbP8FSA2mZAVPTUmypDfuMbpzL8itkEzIY9+M3vd1uGUQWN
+         JWwoarPbehVXtaCK3Kydr/iaDbmww/VbUlk3VUlutfKyWeTe4Bok7m+kbmrxNUP9Fv1e
+         RuWnNl1vBycjrC4zhYEePwraHg+PWVynGeCH7nbM/g9+0Gt3t5GccILnyP9D/bRMvAez
+         nNcUdeQJidA0FqP8OFeOez4cAYVBMOdcgoCUqBOOE6CnfToadbJPv9hmD/3sgvA7LP8I
+         +rBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ce9EbG1/r2mPoib1PqC7ad2wqeNTOryA+tq46J/Zn/Y=;
-        b=Czu9hvj4QxiBBy/ZYxSOJAOdY0omQPrBlgBB81ljBHzMeHWyGnbRsI1GkVcKDLP1DJ
-         8ElmQfSjN87EGJ3YXT9rTSPYH2CsY3Sms7VlXMgU+WLFxwvrJK3yxNrsCyZxoMpV6PYC
-         JOxjgpHwPB/vFKHOyDsrAzp+5Sow5AypaLmrGEVPE8yuAzcixN6ZPobx2I+TwqA50y+t
-         omDcmyTDobIOdClsaI8mJ5xmvqQJWXJVfH/PZZVRkldKIbPjFDLQ4HI8kjOyioKjToQT
-         QpRdw+12aCy0lKPxmShUN7Wm4cYqWbhvf3yBXTTj7j1zuMx4AJPWeC9Q+/cX0mDoPjzS
-         65ZA==
-X-Gm-Message-State: AJIora/s3/iTpncvyWQYvNC22z20Hm0h3FP3aTizENpEnp2sXKuvQobO
-        96x3Vxw/9m9xIR7Xcr7oew2c9vURrLRkpCSgiOs=
-X-Google-Smtp-Source: AGRyM1uC3iFdS9P/O2GTnrzey/faWWqRLs7XS8GCjaeq7gTi1aFfPe85q9TlTqB4PP+IhASqSmVfDXbVELNOtY5qQIc=
-X-Received: by 2002:a17:906:9bdd:b0:72b:3cab:eade with SMTP id
- de29-20020a1709069bdd00b0072b3cabeademr310951ejc.58.1657664138953; Tue, 12
- Jul 2022 15:15:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220711162827.184743-1-roman.gushchin@linux.dev>
- <CAADnVQ+2Az23WLHj_1pQWYXdd8CbeKooCLrkT_GnzKXV7Yp8hw@mail.gmail.com> <CALvZod5uPV9cNKCMjs3HmadVnF--fum5BgG-Zcv1vTM_Bak8hw@mail.gmail.com>
-In-Reply-To: <CALvZod5uPV9cNKCMjs3HmadVnF--fum5BgG-Zcv1vTM_Bak8hw@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 12 Jul 2022 15:15:27 -0700
-Message-ID: <CAADnVQJPm13Mu_XMyzsYk40eW-4CPKWF52LkwwJTJhA6OyJT+g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpf: reparent bpf maps on memcg offlining
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc:content-transfer-encoding;
+        bh=YIheDng7nbyy0tdK2WpxzBy3yGlzETebuT57B9Mju9U=;
+        b=mrvjfCJAJMW+8wDvQTGk93CDaCWKJwrfB01mYs7wCazvI/xBGmTCSTaN5Z4M9MKhU2
+         ZPQ+vNiMo4wQbclflblf0F++oWVnNpgqxwQZZRSf5UNkT0vOpwn+JNRlmv1XCFfwBf52
+         99ZzTfCoLByFV8Pmyv+dauwdZnC1gzZ7lSwRoZOCYnQoHdO75M/8ca8SFgMB2inV/sXM
+         BLOuP/Zt53+GapnZb8yPY0sh21Y+iPZBVahlYW+7lL/uRq9NIeOkKMH4H3LBSo2x3yil
+         uMFRXC7ZfOtBfzMKm+9n+dC4hfGEzO8BndN3HSaXMAVeFV0E6+rCXf2Zg3H8qUgYUh8I
+         QqKA==
+X-Gm-Message-State: AJIora9d00+Ju/XmdKraHFC4k/HSa4m8XBIaE1k0ZB8iOLje1Lb3KwEP
+        Kn+IbgRc9pCSNeG2t5NzMcbcTKE=
+X-Google-Smtp-Source: AGRyM1vRU4bHZb9xWqeQdoKhE1mlEe4tPS6xSr8D+oo6PEp3ePJQF5xhxSTWwoR/SgFgDdTk8KbPPKY=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:902:9a07:b0:16c:39bc:876 with SMTP id
+ v7-20020a1709029a0700b0016c39bc0876mr165900plp.42.1657665208549; Tue, 12 Jul
+ 2022 15:33:28 -0700 (PDT)
+Date:   Tue, 12 Jul 2022 15:33:26 -0700
+In-Reply-To: <20220712215322.rw3z6eoix3yagi2q@muellerd-fedora-MJ0AC3F3>
+Message-Id: <Ys32tgTtkfeECzLc@google.com>
+Mime-Version: 1.0
+References: <20220712212124.3180314-1-deso@posteo.net> <20220712212124.3180314-2-deso@posteo.net>
+ <CAADnVQLLNQHHJuqd-pKzU09Uw3N-kBsztPy0ysYEKVipP=yMqw@mail.gmail.com> <20220712215322.rw3z6eoix3yagi2q@muellerd-fedora-MJ0AC3F3>
+Subject: Re: [PATCH bpf-next 1/3] selftests/bpf: Copy over libbpf configs
+From:   sdf@google.com
+To:     "Daniel =?iso-8859-1?Q?M=FCller?=" <deso@posteo.net>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Mykola Lysenko <mykolal@fb.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,111 +72,114 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 12, 2022 at 3:11 PM Shakeel Butt <shakeelb@google.com> wrote:
->
-> On Tue, Jul 12, 2022 at 2:49 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Mon, Jul 11, 2022 at 9:28 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
-> > >
-> > > The memory consumed by a mpf map is always accounted to the memory
-> > > cgroup of the process which created the map. The map can outlive
-> > > the memory cgroup if it's used by processes in other cgroups or
-> > > is pinned on bpffs. In this case the map pins the original cgroup
-> > > in the dying state.
-> > >
-> > > For other types of objects (slab objects, non-slab kernel allocations,
-> > > percpu objects and recently LRU pages) there is a reparenting process
-> > > implemented: on cgroup offlining charged objects are getting
-> > > reassigned to the parent cgroup. Because all charges and statistics
-> > > are fully recursive it's a fairly cheap operation.
-> > >
-> > > For efficiency and consistency with other types of objects, let's do
-> > > the same for bpf maps. Fortunately thanks to the objcg API, the
-> > > required changes are minimal.
-> > >
-> > > Please, note that individual allocations (slabs, percpu and large
-> > > kmallocs) already have the reparenting mechanism. This commit adds
-> > > it to the saved map->memcg pointer by replacing it to map->objcg.
-> > > Because dying cgroups are not visible for a user and all charges are
-> > > recursive, this commit doesn't bring any behavior changes for a user.
-> > >
-> > > v2:
-> > >   added a missing const qualifier
-> > >
-> > > Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
-> > > Reviewed-by: Shakeel Butt <shakeelb@google.com>
-> > > ---
-> > >  include/linux/bpf.h  |  2 +-
-> > >  kernel/bpf/syscall.c | 35 +++++++++++++++++++++++++++--------
-> > >  2 files changed, 28 insertions(+), 9 deletions(-)
-> > >
-> > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > > index 2b21f2a3452f..85a4db3e0536 100644
-> > > --- a/include/linux/bpf.h
-> > > +++ b/include/linux/bpf.h
-> > > @@ -221,7 +221,7 @@ struct bpf_map {
-> > >         u32 btf_vmlinux_value_type_id;
-> > >         struct btf *btf;
-> > >  #ifdef CONFIG_MEMCG_KMEM
-> > > -       struct mem_cgroup *memcg;
-> > > +       struct obj_cgroup *objcg;
-> > >  #endif
-> > >         char name[BPF_OBJ_NAME_LEN];
-> > >         struct bpf_map_off_arr *off_arr;
-> > > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > > index ab688d85b2c6..ef60dbc21b17 100644
-> > > --- a/kernel/bpf/syscall.c
-> > > +++ b/kernel/bpf/syscall.c
-> > > @@ -419,35 +419,52 @@ void bpf_map_free_id(struct bpf_map *map, bool do_idr_lock)
-> > >  #ifdef CONFIG_MEMCG_KMEM
-> > >  static void bpf_map_save_memcg(struct bpf_map *map)
-> > >  {
-> > > -       map->memcg = get_mem_cgroup_from_mm(current->mm);
-> > > +       /* Currently if a map is created by a process belonging to the root
-> > > +        * memory cgroup, get_obj_cgroup_from_current() will return NULL.
-> > > +        * So we have to check map->objcg for being NULL each time it's
-> > > +        * being used.
-> > > +        */
-> > > +       map->objcg = get_obj_cgroup_from_current();
-> > >  }
-> > >
-> > >  static void bpf_map_release_memcg(struct bpf_map *map)
-> > >  {
-> > > -       mem_cgroup_put(map->memcg);
-> > > +       if (map->objcg)
-> > > +               obj_cgroup_put(map->objcg);
-> > > +}
-> > > +
-> > > +static struct mem_cgroup *bpf_map_get_memcg(const struct bpf_map *map) {
-> > > +       if (map->objcg)
-> > > +               return get_mem_cgroup_from_objcg(map->objcg);
-> > > +
-> > > +       return root_mem_cgroup;
-> > >  }
-> > >
-> > >  void *bpf_map_kmalloc_node(const struct bpf_map *map, size_t size, gfp_t flags,
-> > >                            int node)
-> > >  {
-> > > -       struct mem_cgroup *old_memcg;
-> > > +       struct mem_cgroup *memcg, *old_memcg;
-> > >         void *ptr;
-> > >
-> > > -       old_memcg = set_active_memcg(map->memcg);
-> > > +       memcg = bpf_map_get_memcg(map);
-> > > +       old_memcg = set_active_memcg(memcg);
-> > >         ptr = kmalloc_node(size, flags | __GFP_ACCOUNT, node);
-> > >         set_active_memcg(old_memcg);
-> > > +       mem_cgroup_put(memcg);
-> >
-> > Here we might css_put root_mem_cgroup.
-> > Should we css_get it when returning or
-> > it's marked as CSS_NO_REF ?
-> > But mem_cgroup_alloc() doesn't seem to be doing that marking.
-> > I'm lost at that code.
->
-> CSS_NO_REF is set for root_mem_cgroup in cgroup_init_subsys().
-
-Ahh. I see that
-css = ss->css_alloc(NULL); css->flags |= CSS_NO_REF; now.
-Thanks.
+T24gMDcvMTIsIERhbmllbCBN77+9bGxlciB3cm90ZToNCj4gT24gVHVlLCBKdWwgMTIsIDIwMjIg
+YXQgMDI6Mjc6NDdQTSAtMDcwMCwgQWxleGVpIFN0YXJvdm9pdG92IHdyb3RlOg0KPiA+IE9uIFR1
+ZSwgSnVsIDEyLCAyMDIyIGF0IDI6MjEgUE0gRGFuaWVsIE3vv71sbGVyIDxkZXNvQHBvc3Rlby5u
+ZXQ+IHdyb3RlOg0KPiA+ID4NCj4gPiA+IFRoaXMgY2hhbmdlIGludGVncmF0ZXMgdGhlIGxpYmJw
+ZiBtYWludGFpbmVkIGNvbmZpZ3VyYXRpb25zIGFuZA0KPiA+ID4gYmxhY2svd2hpdGUgbGlzdHMg
+WzBdIGludG8gdGhlIHJlcG9zaXRvcnksIGNvLWxvY2F0ZWQgd2l0aCB0aGUgQlBGDQo+ID4gPiBz
+ZWxmdGVzdHMgdGhlbXNlbHZlcy4gVGhlIG9ubHkgZGlmZmVyZW5jZXMgZnJvbSB0aGUgc291cmNl
+IGlzIHRoYXQgd2UNCj4gPiA+IHJlcGxhY2VkIHRoZSB0ZXJtcyBibGFja2xpc3QgJiB3aGl0ZWxp
+c3Qgd2l0aCBkZW55bGlzdCBhbmQgYWxsb3dsaXN0LA0KPiA+ID4gcmVzcGVjdGl2ZWx5Lg0KPiA+
+ID4NCj4gPiA+IFswXSAgDQo+IGh0dHBzOi8vZ2l0aHViLmNvbS9saWJicGYvbGliYnBmL3RyZWUv
+MjBmMDMzMDIzNTBhNDE0MzgyNWNlZGNiZDIxMGM0ZDcxMTJjMTg5OC90cmF2aXMtY2kvdm10ZXN0
+L2NvbmZpZ3MNCj4gPiA+DQo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgTe+/vWxsZXIgPGRl
+c29AcG9zdGVvLm5ldD4NCj4gPiA+IC0tLQ0KPiA+ID4gIC4uLi9icGYvY29uZmlncy9hbGxvd2xp
+c3QvQUxMT1dMSVNULTQuOS4wICAgICB8ICAgIDggKw0KPiA+ID4gIC4uLi9icGYvY29uZmlncy9h
+bGxvd2xpc3QvQUxMT1dMSVNULTUuNS4wICAgICB8ICAgNTUgKw0KPiA+ID4gIC4uLi9zZWxmdGVz
+dHMvYnBmL2NvbmZpZ3MvY29uZmlnLWxhdGVzdC5zMzkweCB8IDI3MTEgKysrKysrKysrKysrKysr
+DQo+ID4gPiAgLi4uL2JwZi9jb25maWdzL2NvbmZpZy1sYXRlc3QueDg2XzY0ICAgICAgICAgIHwg
+MzA3MyAgDQo+ICsrKysrKysrKysrKysrKysrDQo+ID4NCj4gPiBJbnN0ZWFkIG9mIGNoZWNraW5n
+IGluIHRoZSBmdWxsIGNvbmZpZyBwbGVhc2UgdHJpbSBpdCB0bw0KPiA+IHJlbGV2YW50IGRlcGVu
+ZGVuY2llcyBsaWtlIGV4aXN0aW5nIHNlbGZ0ZXN0cy9icGYvY29uZmlnLg0KPiA+IE90aGVyd2lz
+ZSBldmVyeSB1cGRhdGUvYWRkaXRpb24gd291bGQgdHJpZ2dlciBtYXNzaXZlIHBhdGNoZXMuDQoN
+Cj4gVGhhbmtzIGZvciB0YWtpbmcgYSBsb29rLiBTdXJlLiBEbyB3ZSBoYXZlIHNvbWUga2luZCBv
+ZiB0b29saW5nIGZvciB0aGF0ICANCj4gb3IgYXJlDQo+IHRoZXJlIGFueSBzdWdnZXN0aW9ucyBv
+biB0aGUgYmVzdCBhcHByb2FjaCB0byBtaW5pbWl6ZT8NCg0KSSB3b3VsZCBiZSBpbnRlcmVzdGVk
+IHRvIGtub3cgYXMgd2VsbCBpZiBzb21lYm9keSBrbm93cyBzb21lIHRyaWNrcyBvbg0KaG93IHRv
+IGRlYWwgd2l0aCBrY29uZmlnLiBJJ3ZlIHNwZW50IHNvbWUgdGltZSB5ZXN0ZXJkYXkgbWFudWFs
+bHkNCmNyYWZ0aW5nIHZhcmlvdXMgbWluaW1hbCBicGYgY29uZmlncyAoZm9yIGJ1aWxkIHRlc3Rz
+KSwgcnVubmluZyBtYWtlDQpvbGRkZWZjb25maWcgYW5kIHRoZW4gdmVyaWZ5aW5nIHRoYXQgYWxs
+IG15IG9wdGlvbnMgYXJlIHN0aWxsIHByZXNlbnQgaW4NCnRoZSBmaW5hbCBjb25maWcgZmlsZS4N
+Cg0KSXQgc2VlbXMgbGlrZSBrY29uZmlnIHRvb2wgY2FuIHJlc29sdmUgc29tZSBvZiB0aGUgZGVw
+ZW5kZW5jaWVzLA0KYnV0IHRoZXJlIGlzIGEgbG90IG9mIGlmL2VuZGlmIHRoYXQgY2FuIGJyZWFr
+IGluIG5vbi1vYnZpb3VzIHdheXMuDQpGb3IgZXhhbXBsZSwgcHV0dGluZyBDT05GSUdfVFJBQ0lO
+Rz15IGFuZCBkb2luZyAnbWFrZSBvbGRkZWZjb25maWcnDQp3b24ndCBnZXQgeW91IENPTkZJR19U
+UkFDSU5HPXkgaW4gdGhlIGZpbmFsIC5jb25maWcNCg0KU28gdGhlIG9ubHkgdGhpbmcsIGZvciBt
+ZSwgdGhhdCBoZWxwZWQsIHdhcyB0byBtYW51YWxseSBnbyB0aHJvdWdoDQp0aGUga2NvbmZpZyBm
+aWxlcyB0cnlpbmcgdG8gc2VlIHdoYXQgdGhlIGRlcGVuZGVuY2llcyBhcmUuDQpJJ3ZlIHRyaWVk
+IHNjcmlwdHMva2NvbmZpZy9tZXJnZV9jb25maWcuc2gsIGJ1dCBpdCBkb2Vzbid0DQpzZWVtIHRv
+IGJyaW5nIGFueXRoaW5nIG5ldyB0byB0aGUgdGFibGUuLg0KDQpTbyBoZXJlIGlzIHdoYXQgSSBl
+bmRlZCB1cCB3aXRoLCBJIGRvbid0IHRoaW5rIGl0IHdpbGwgaGVscCB5b3UgdGhhdA0KbXVjaCwg
+YnV0IGF0IGxlYXN0IGNhbiBoaWdobGlnaHQgdGhlIG1vdmluZyBwYXJ0cyAoSSB3YXMgdGhpbmtp
+bmcgdGhhdA0KbWF5YmUgd2UgY2FuIGV2ZW50dWFsbHkgcHV0IHRoZW0gaW4gdGhlIENJIGFzIHdl
+bGwgdG8gbWFrZSBzdXJlIGFsbCB3ZWlyZA0KY29uZmlndXJhdGlvbnMgYXJlIGJ1aWxkLXRlc3Rl
+ZD8pOg0KDQouY29uZmlnK2FsbDpDT05GSUdfTU9EVUxFUz15DQouY29uZmlnK2FsbDpDT05GSUdf
+SEFWRV9FQlBGX0pJVD15DQouY29uZmlnK2FsbDpDT05GSUdfQlBGPXkNCi5jb25maWcrYWxsOkNP
+TkZJR19CUEZfU1lTQ0FMTD15DQouY29uZmlnK2FsbDpDT05GSUdfQlBGX0pJVD15DQouY29uZmln
+K2FsbDpDT05GSUdfQlBGX0pJVF9BTFdBWVNfT049eQ0KLmNvbmZpZythbGw6Q09ORklHX0JQRl9K
+SVRfREVGQVVMVF9PTj15DQouY29uZmlnK2FsbDpDT05GSUdfQ0dST1VQUz15DQouY29uZmlnK2Fs
+bDpDT05GSUdfQ0dST1VQX0JQRj15DQouY29uZmlnK2FsbDpDT05GSUdfU0VDVVJJVFk9eQ0KLmNv
+bmZpZythbGw6Q09ORklHX0tQUk9CRVM9eQ0KLmNvbmZpZythbGw6Q09ORklHX1RSQUNJTkc9eQ0K
+LmNvbmZpZythbGw6Q09ORklHX0ZUUkFDRT15DQouY29uZmlnK2FsbDpDT05GSUdfQlBGX0tQUk9C
+RV9PVkVSUklERT15DQouY29uZmlnK2FsbDpDT05GSUdfQlBGX0VWRU5UUz15DQouY29uZmlnK2Fs
+bDpDT05GSUdfQlBGX0xTTT15DQouY29uZmlnK2FsbDpDT05GSUdfTkVUPXkNCi5jb25maWcrYWxs
+OkNPTkZJR19JTkVUPXkNCi5jb25maWcrYWxsOkNPTkZJR19ORVRfU0NIRUQ9eQ0KLmNvbmZpZyth
+bGw6Q09ORklHX05FVF9DTFNfQUNUPXkNCi5jb25maWcrYWxsOkNPTkZJR19CUEZfU1RSRUFNX1BB
+UlNFUj15DQouY29uZmlnK2FsbDpDT05GSUdfTkVUX0FDVF9CUEY9eQ0KLmNvbmZpZythbGw6Q09O
+RklHX05FVF9DTFNfQlBGPXkNCi5jb25maWcrYWxsOkNPTkZJR19URVNUX0JQRj15DQoNCi5jb25m
+aWctYWxsOkNPTkZJR19CUEZJTFRFUj1uDQouY29uZmlnLWFsbDpDT05GSUdfQlBGPW4NCi5jb25m
+aWctYWxsOkNPTkZJR19CUEZfSklUPW4NCi5jb25maWctYWxsOkNPTkZJR19CUEZfU1lTQ0FMTD1u
+DQouY29uZmlnLWFsbDpDT05GSUdfSEFWRV9FQlBGX0pJVD1uDQouY29uZmlnLWFsbDpDT05GSUdf
+TkVUX0FDVF9CUEY9bg0KLmNvbmZpZy1hbGw6Q09ORklHX05FVF9DTFNfQlBGPW4NCi5jb25maWct
+YWxsOkNPTkZJR19URVNUX0JQRj1uDQoNCi5jb25maWctbmV0OkNPTkZJR19NT0RVTEVTPXkNCi5j
+b25maWctbmV0OkNPTkZJR19IQVZFX0VCUEZfSklUPXkNCi5jb25maWctbmV0OkNPTkZJR19CUEY9
+eQ0KLmNvbmZpZy1uZXQ6Q09ORklHX0JQRl9TWVNDQUxMPXkNCi5jb25maWctbmV0OkNPTkZJR19C
+UEZfSklUPXkNCi5jb25maWctbmV0OkNPTkZJR19CUEZfSklUX0FMV0FZU19PTj15DQouY29uZmln
+LW5ldDpDT05GSUdfQlBGX0pJVF9ERUZBVUxUX09OPXkNCi5jb25maWctbmV0OkNPTkZJR19DR1JP
+VVBTPXkNCi5jb25maWctbmV0OkNPTkZJR19DR1JPVVBfQlBGPXkNCi5jb25maWctbmV0OkNPTkZJ
+R19TRUNVUklUWT15DQouY29uZmlnLW5ldDpDT05GSUdfS1BST0JFUz15DQouY29uZmlnLW5ldDpD
+T05GSUdfVFJBQ0lORz15DQouY29uZmlnLW5ldDpDT05GSUdfRlRSQUNFPXkNCi5jb25maWctbmV0
+OkNPTkZJR19CUEZfS1BST0JFX09WRVJSSURFPXkNCi5jb25maWctbmV0OkNPTkZJR19CUEZfRVZF
+TlRTPXkNCi5jb25maWctbmV0OkNPTkZJR19CUEZfTFNNPXkNCi5jb25maWctbmV0OkNPTkZJR19O
+RVQ9bg0KLmNvbmZpZy1uZXQ6Q09ORklHX0lORVQ9bg0KLmNvbmZpZy1uZXQ6Q09ORklHX05FVF9T
+Q0hFRD1uDQouY29uZmlnLW5ldDpDT05GSUdfTkVUX0NMU19BQ1Q9bg0KLmNvbmZpZy1uZXQ6Q09O
+RklHX0JQRl9TVFJFQU1fUEFSU0VSPW4NCi5jb25maWctbmV0OkNPTkZJR19ORVRfQUNUX0JQRj1u
+DQouY29uZmlnLW5ldDpDT05GSUdfTkVUX0NMU19CUEY9bg0KLmNvbmZpZy1uZXQ6Q09ORklHX1RF
+U1RfQlBGPW4NCg0KLmNvbmZpZy1jZy1sc206Q09ORklHX01PRFVMRVM9eQ0KLmNvbmZpZy1jZy1s
+c206Q09ORklHX0hBVkVfRUJQRl9KSVQ9eQ0KLmNvbmZpZy1jZy1sc206Q09ORklHX0JQRj15DQou
+Y29uZmlnLWNnLWxzbTpDT05GSUdfQlBGX1NZU0NBTEw9eQ0KLmNvbmZpZy1jZy1sc206Q09ORklH
+X0JQRl9KSVQ9eQ0KLmNvbmZpZy1jZy1sc206Q09ORklHX0JQRl9KSVRfQUxXQVlTX09OPXkNCi5j
+b25maWctY2ctbHNtOkNPTkZJR19CUEZfSklUX0RFRkFVTFRfT049eQ0KLmNvbmZpZy1jZy1sc206
+Q09ORklHX1NFQ1VSSVRZPXkNCi5jb25maWctY2ctbHNtOkNPTkZJR19LUFJPQkVTPXkNCi5jb25m
+aWctY2ctbHNtOkNPTkZJR19UUkFDSU5HPW4NCi5jb25maWctY2ctbHNtOkNPTkZJR19GVFJBQ0U9
+bg0KLmNvbmZpZy1jZy1sc206Q09ORklHX0JQRl9FVkVOVFM9bg0KLmNvbmZpZy1jZy1sc206Q09O
+RklHX0JQRl9MU009bg0KLmNvbmZpZy1jZy1sc206Q09ORklHX0NHUk9VUF9CUEY9bg0KDQouY29u
+ZmlnK2NsYXNzaWM6Q09ORklHX01PRFVMRVM9eQ0KLmNvbmZpZytjbGFzc2ljOkNPTkZJR19IQVZF
+X0VCUEZfSklUPXkNCi5jb25maWcrY2xhc3NpYzpDT05GSUdfQlBGPXkNCi5jb25maWcrY2xhc3Np
+YzpDT05GSUdfQlBGX1NZU0NBTEw9bg0KLmNvbmZpZytjbGFzc2ljOkNPTkZJR19CUEZfSklUPXkN
+Ci5jb25maWcrY2xhc3NpYzpDT05GSUdfQlBGX0pJVF9BTFdBWVNfT049bg0KLmNvbmZpZytjbGFz
+c2ljOkNPTkZJR19CUEZfSklUX0RFRkFVTFRfT049bg0KLmNvbmZpZytjbGFzc2ljOkNPTkZJR19T
+RUNVUklUWT1uDQouY29uZmlnK2NsYXNzaWM6Q09ORklHX0tQUk9CRVM9bg0KLmNvbmZpZytjbGFz
+c2ljOkNPTkZJR19UUkFDSU5HPW4NCi5jb25maWcrY2xhc3NpYzpDT05GSUdfRlRSQUNFPW4NCi5j
+b25maWcrY2xhc3NpYzpDT05GSUdfQlBGX0VWRU5UUz1uDQouY29uZmlnK2NsYXNzaWM6Q09ORklH
+X0JQRl9MU009bg0KLmNvbmZpZytjbGFzc2ljOkNPTkZJR19DR1JPVVBfQlBGPW4NCi5jb25maWcr
+Y2xhc3NpYzpDT05GSUdfTkVUPXkNCi5jb25maWcrY2xhc3NpYzpDT05GSUdfSU5FVD15DQoNCi5j
+b25maWcrc3lzY2FsbDpDT05GSUdfTU9EVUxFUz15DQouY29uZmlnK3N5c2NhbGw6Q09ORklHX0hB
+VkVfRUJQRl9KSVQ9eQ0KLmNvbmZpZytzeXNjYWxsOkNPTkZJR19CUEY9eQ0KLmNvbmZpZytzeXNj
+YWxsOkNPTkZJR19CUEZfU1lTQ0FMTD15DQouY29uZmlnK3N5c2NhbGw6Q09ORklHX0JQRl9KSVQ9
+bg0KLmNvbmZpZytzeXNjYWxsOkNPTkZJR19CUEZfSklUX0FMV0FZU19PTj1uDQouY29uZmlnK3N5
+c2NhbGw6Q09ORklHX0JQRl9KSVRfREVGQVVMVF9PTj1uDQouY29uZmlnK3N5c2NhbGw6Q09ORklH
+X1NFQ1VSSVRZPW4NCi5jb25maWcrc3lzY2FsbDpDT05GSUdfS1BST0JFUz1uDQouY29uZmlnK3N5
+c2NhbGw6Q09ORklHX1RSQUNJTkc9bg0KLmNvbmZpZytzeXNjYWxsOkNPTkZJR19GVFJBQ0U9bg0K
+LmNvbmZpZytzeXNjYWxsOkNPTkZJR19CUEZfRVZFTlRTPW4NCi5jb25maWcrc3lzY2FsbDpDT05G
+SUdfQlBGX0xTTT1uDQouY29uZmlnK3N5c2NhbGw6Q09ORklHX0NHUk9VUF9CUEY9bg0KDQouY29u
+ZmlnLWNnK2xzbTpDT05GSUdfTU9EVUxFUz15DQouY29uZmlnLWNnK2xzbTpDT05GSUdfSEFWRV9F
+QlBGX0pJVD15DQouY29uZmlnLWNnK2xzbTpDT05GSUdfQlBGPXkNCi5jb25maWctY2crbHNtOkNP
+TkZJR19CUEZfU1lTQ0FMTD15DQouY29uZmlnLWNnK2xzbTpDT05GSUdfQlBGX0pJVD15DQouY29u
+ZmlnLWNnK2xzbTpDT05GSUdfQlBGX0pJVF9BTFdBWVNfT049eQ0KLmNvbmZpZy1jZytsc206Q09O
+RklHX0JQRl9KSVRfREVGQVVMVF9PTj15DQouY29uZmlnLWNnK2xzbTpDT05GSUdfU0VDVVJJVFk9
+eQ0KLmNvbmZpZy1jZytsc206Q09ORklHX0tQUk9CRVM9eQ0KLmNvbmZpZy1jZytsc206Q09ORklH
+X1RSQUNJTkc9eQ0KLmNvbmZpZy1jZytsc206Q09ORklHX0ZUUkFDRT15DQouY29uZmlnLWNnK2xz
+bTpDT05GSUdfQlBGX0VWRU5UUz15DQouY29uZmlnLWNnK2xzbTpDT05GSUdfQlBGX0xTTT15DQou
+Y29uZmlnLWNnK2xzbTpDT05GSUdfQ0dST1VQX0JQRj1uDQo=
