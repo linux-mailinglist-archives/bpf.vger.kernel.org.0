@@ -2,121 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 638A35720DD
-	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 18:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBD31572152
+	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 18:48:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232838AbiGLQcj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jul 2022 12:32:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48204 "EHLO
+        id S232875AbiGLQsU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jul 2022 12:48:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233239AbiGLQch (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jul 2022 12:32:37 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0CBACC01B
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 09:32:36 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id s27so8019665pga.13
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 09:32:36 -0700 (PDT)
+        with ESMTP id S231547AbiGLQsU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jul 2022 12:48:20 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E984826550;
+        Tue, 12 Jul 2022 09:48:18 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id oy13so10491568ejb.1;
+        Tue, 12 Jul 2022 09:48:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=36hChXhZD7e1BU/dCd5AJq0lPf1x1NPmuTN2tiYyqjA=;
-        b=n7ZqeU7FP4t8OZIU4MjHTqGUXqcx3+vlKlvrKCLQLjt+yzW680ldGOeekZTql0alb+
-         9VkZBDwTTM84TYnklqeE1egnG0iijOn5hTss7iT8dmY1asJQ78EvwC/o8bVcwQ/NESXb
-         fp4M+orUI5M8SBluiWSlzk2OLHcEg/QdfnCRz+bQdguB6QB4ZftrjsDo5+I5TlqLanB8
-         1+CTfYNBq/EBIn2vXVI0hPQJfR4tFQZJMEbAvMGSJlAQrtRutLh1POlBif0UOGpcEuTs
-         7kTliSXb4LDnob31gooijEbqSlAagHDiI7+E7nOJgQuBrgb7C5y/NKmxPU8awEe0agWD
-         uTfQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mbcmmT+pMIMYMSXXNjbFWB+IQNvMXD49nlszvCumBmU=;
+        b=C1vtv/hzFoN+4KUlqwUzTpCbKy6osNIrSgaVsPH2ISYa96ePHQDacSsKJieasMjDbW
+         xQI+2uqQcp+HXJH4Jnpi+G1ApZQOCEsLycWTM3DqBia6powR7ttUJSwGGXT5y9tFxrsL
+         mA/fbxw9AoAeeGMXWPdEeVKS60RwLdjij3kub586mW+2jlmcVpPAReibwGwnBBcqaCrZ
+         +0fsFwlHPyxePGt3TUDYuWU/JZwniI+wJJA1Sh1OpGwWmuypq4MXTDkbA/UtNV2NGWpP
+         zXWx4GuVCBZXpX7HmrZUtEYp+HVNYN9YyERwAX29yTRiQTiTyTlZQtc56VrhsipDOsBE
+         ssPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=36hChXhZD7e1BU/dCd5AJq0lPf1x1NPmuTN2tiYyqjA=;
-        b=wp8ksj1dvtgfzD8bhh04NtoAqbK503d54fqV10uFE6X5zOAQSYVVa4EkWnoaQAn14t
-         aadnBB4fxbd1cOftC2rbrpWNywwE9+AIH2Rn5ZTSYWunbGKXGWNEzcnJkbRY+xei7vyq
-         6e+OVWAMwRMy+4u0hAg1HRWcu5yKu+ig4pHJO7/hrlrCzhvoIJgpDfEaFDfdsqykeMvy
-         c85LiRSPGsJ/7w1bmrHm0r044hCiND3v2YN/yt700jlOvUE2AQAkFuKkwlPjbiixVFR0
-         fubdXKtalsnZhs32vRToqC975uzWdLs088D0u6QJwhwrtV2GeDYCvrQpuoH1sFK+T8IF
-         jmYw==
-X-Gm-Message-State: AJIora+8/Wpz7+lSava5TNFRV14diNB+wNnXKErm8Y+IPqlIN9Z1HmKP
-        HaLpJiWYold2uHJbhrYRfMY=
-X-Google-Smtp-Source: AGRyM1uhOPbLyK+2uJv53/vsPqdhlVh6Yck3gq7c1UoyjUwufYFEuAvg5FaopQhIYlah2Rti2loT1g==
-X-Received: by 2002:a05:6a00:9a0:b0:52a:e646:d90c with SMTP id u32-20020a056a0009a000b0052ae646d90cmr4586657pfg.86.1657643555999;
-        Tue, 12 Jul 2022 09:32:35 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id 70-20020a621549000000b0050dc76281d3sm7165937pfv.173.2022.07.12.09.32.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jul 2022 09:32:35 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 12 Jul 2022 06:32:33 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mbcmmT+pMIMYMSXXNjbFWB+IQNvMXD49nlszvCumBmU=;
+        b=xD83WuZJ0cTThlE6u9DgwfEF33dlKtMJio3+/zqEAggZnaxFM64jI7SPOw042SJOm9
+         DHFVIMO5tLpPUuH/GkE0FM09LwYzouJq5ZCHAlY5rmh/xlEViWjvF8+cFWYp3lIDvgUB
+         RpegtPdEj2WIGG9Gnsi18pK6kj9kzchWDQuqkGHcoUhK9UW5y44mXrW45jFGAPpPMvjs
+         c6eFOuf6KAgLZCiskhfE2DW+xcv3q/59mQijPkaPTE+C55fEkfI7PV2TV3g0sqQ/MNnH
+         qul7ephaAY7Op/KFM3snMu8ycLJtMINYoGINCH+YCWpr1Ix1XX64601Zo9DCuQ5aqAu1
+         iXzg==
+X-Gm-Message-State: AJIora+jnlt9HKATF0sQu5yeUyaM+omLXwgTVNtRRuyPybRBv7qD3jyp
+        c6BwSBYVMSfCVpUpGt8B4pcgxdPyeyH+ToL2KvE=
+X-Google-Smtp-Source: AGRyM1ult/9veqdiVtMu6Yt+QfiYXMYM/CbHEUmsdXJfyLCmDL4cncCV1h1TX4KkfDkaeoJZksDdv+HaMlACJA7Ni9E=
+X-Received: by 2002:a17:907:6e03:b0:726:a6a3:7515 with SMTP id
+ sd3-20020a1709076e0300b00726a6a37515mr25271067ejc.676.1657644497455; Tue, 12
+ Jul 2022 09:48:17 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220706172814.169274-1-james.hilliard1@gmail.com>
+ <a0bddf0b-e8c4-46ce-b7c6-a22809af1677@fb.com> <CADvTj4ovwExtM-bWUpJELy-OqsT=J9stmqbAXto8ds2n+G8mfw@mail.gmail.com>
+ <CAEf4BzYwRyXG1zE5BK1ZXmxLh+ZPU0=yQhNhpqr0JmfNA30tdQ@mail.gmail.com> <87v8s260j1.fsf@oracle.com>
+In-Reply-To: <87v8s260j1.fsf@oracle.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 12 Jul 2022 09:48:05 -0700
+Message-ID: <CAADnVQLQGHoj_gCOvdFFw2pRxgMubPSp+bRpFeCSa5zvcK2qRQ@mail.gmail.com>
+Subject: Re: [PATCH v2] bpf/scripts: Generate GCC compatible helpers
+To:     "Jose E. Marchesi" <jose.marchesi@oracle.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        James Hilliard <james.hilliard1@gmail.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        linux-mm <linux-mm@kvack.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH bpf-next 0/5] bpf: BPF specific memory allocator.
-Message-ID: <Ys2iIVMZJNPe73MI@slm.duckdns.org>
-References: <20220708174858.6gl2ag3asmoimpoe@macbook-pro-3.dhcp.thefacebook.com>
- <20220708215536.pqclxdqvtrfll2y4@google.com>
- <CAADnVQL5ZQDqMGULJLDwT9xRTihdDvo6GvwxdEOtSAs8EwE78A@mail.gmail.com>
- <20220710073213.bkkdweiqrlnr35sv@google.com>
- <YswUS/5nbYb8nt6d@dhcp22.suse.cz>
- <20220712043914.pxmbm7vockuvpmmh@macbook-pro-3.dhcp.thefacebook.com>
- <Ys0lXfWKtwYlVrzK@dhcp22.suse.cz>
- <CALOAHbAhzNTkT9o_-PRX=n4vNjKhEK_09+-7gijrFgGjNH7iRA@mail.gmail.com>
- <Ys1ES+CygtnUvArz@dhcp22.suse.cz>
- <CALvZod460hip0mQouEVtfcOZ0M21Xmzaa-atxxrUnR3ZisDCNw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod460hip0mQouEVtfcOZ0M21Xmzaa-atxxrUnR3ZisDCNw@mail.gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Tue, Jul 12, 2022 at 4:20 AM Jose E. Marchesi
+<jose.marchesi@oracle.com> wrote:
+>
+>
+> > CC Quentin as well
+> >
+> > On Mon, Jul 11, 2022 at 5:11 PM James Hilliard
+> > <james.hilliard1@gmail.com> wrote:
+> >>
+> >> On Mon, Jul 11, 2022 at 5:36 PM Yonghong Song <yhs@fb.com> wrote:
+> >> >
+> >> >
+> >> >
+> >> > On 7/6/22 10:28 AM, James Hilliard wrote:
+> >> > > The current bpf_helper_defs.h helpers are llvm specific and don't work
+> >> > > correctly with gcc.
+> >> > >
+> >> > > GCC appears to required kernel helper funcs to have the following
+> >> > > attribute set: __attribute__((kernel_helper(NUM)))
+> >> > >
+> >> > > Generate gcc compatible headers based on the format in bpf-helpers.h.
+> >> > >
+> >> > > This adds conditional blocks for GCC while leaving clang codepaths
+> >> > > unchanged, for example:
+> >> > >       #if __GNUC__ && !__clang__
+> >> > >       void *bpf_map_lookup_elem(void *map, const void *key)
+> >> > > __attribute__((kernel_helper(1)));
+> >> > >       #else
+> >> > >       static void *(*bpf_map_lookup_elem)(void *map, const void *key) = (void *) 1;
+> >> > >       #endif
+> >> >
+> >> > It does look like that gcc kernel_helper attribute is better than
+> >> > '(void *) 1' style. The original clang uses '(void *) 1' style is
+> >> > just for simplicity.
+> >>
+> >> Isn't the original style going to be needed for backwards compatibility with
+> >> older clang versions for a while?
+> >
+> > I'm curious, is there any added benefit to having this special
+> > kernel_helper attribute vs what we did in Clang for a long time?
+> > Did GCC do it just to be different and require workarounds like this
+> > or there was some technical benefit to this?
+>
+> We did it that way so we could make trouble and piss you off.
+>
+> Nah :)
+>
+> We did it that way because technically speaking the clang construction
+> works relying on particular optimizations to happen to get correct
+> compiled programs, which is not guaranteed to happen and _may_ break in
+> the future.
+>
+> In fact, if you compile a call to such a function prototype with clang
+> with -O0 the compiler will try to load the function's address in a
+> register and then emit an invalid BPF instruction:
+>
+>   28:   8d 00 00 00 03 00 00 00         *unknown*
+>
+> On the other hand the kernel_helper attribute is bullet-proof: will work
+> with any optimization level, with any version of the compiler, and in
+> our opinion it is also more readable, more tidy and more correct.
+>
+> Note I'm not saying what you do in clang is not reasonable; it may be,
+> obviously it works well enough for you in practice.  Only that we have
+> good reasons for doing it differently in GCC.
 
-On Tue, Jul 12, 2022 at 08:25:24AM -0700, Shakeel Butt wrote:
-> Another very obvious example is the filesystem shared between multiple
-> jobs. We had a similar discussion [1] on LRU reparenting patch series.
-
-Hmm... if I'm understanding correctly, what's discussed in [1] can be solved
-with proper reparenting and nesting, right?
-
-> For this use-case internally we have a memcg= mount option where the
-> given memcg is the common ancestor (think of pod in k8s environment)
-> of the jobs who are sharing the filesystem.
-
-Can you elaborate a bit more on this? We've never really supported correctly
-accounting pages shared across cgroups because it can be very complicating
-and the use cases aren't that wide-spread. What's being shared? How big is
-the shared portion in relation to total memory usage? What's the cgroup
-topology like?
-
-Thanks.
-
--- 
-tejun
+Not questioning the validity of the reasons, but they created
+the unnecessary difference between compilers.
+We have to avoid forking.
+Meaning we're not going to work around that by ifdefs in
+bpf_helper_defs.h
+Because gcc community will not learn the lesson and will keep
+the bad practice of unnecessary forks.
+The best path forward here is to support both (void *) 1 style
+and kernel_helper attribute in both gcc and llvm.
+Moving forward the bpf_helper_defs.h will stay with (void *)1 style
+and when both compilers support both options we will start
+transitioning to the new kernel_helpers style.
