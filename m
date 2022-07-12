@@ -2,145 +2,229 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15BA45729EA
-	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 01:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E226572A0C
+	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 01:42:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230515AbiGLXaH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jul 2022 19:30:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55296 "EHLO
+        id S229939AbiGLXm5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jul 2022 19:42:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230094AbiGLXaG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jul 2022 19:30:06 -0400
-Received: from mail-oa1-x2b.google.com (mail-oa1-x2b.google.com [IPv6:2001:4860:4864:20::2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07283B8511;
-        Tue, 12 Jul 2022 16:30:05 -0700 (PDT)
-Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-10bf634bc50so12218141fac.3;
-        Tue, 12 Jul 2022 16:30:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WnTghxFtBu2OXOEU87B3AgUgfQXj7MipiT7mcrRjJ8U=;
-        b=DaJ0AyL3CWqo/8jTMhu/RWfBG6hJQkhTIo2KeGqcu3GnOKDtCw6zA22bOdYEy/kvrT
-         +pAU5YhfttQRQi81VkujUUkLc5/iS2h0eFaaZYjBzMTylS/At8cRjCLNaeFF+buaIGiS
-         AH3c9q6JYKKP56heR0KOorgcWT2V0c6PqzUNpN9YYJEyzy/3hMb0Rh0yHKVztS6+yp5J
-         h6ULPO5vfHyaOl9ipSbnQXZ3CyT8V/Rls04FfU9I5ySB5qc9SVM+7D/SrNe+CzGeJWJ0
-         h7nfZ1cCaqLy75bR6A6EVqCMYOlAmx8ASiJpowDVWt/DNqRodzQyTilz/txfabQA3Vnh
-         zdHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WnTghxFtBu2OXOEU87B3AgUgfQXj7MipiT7mcrRjJ8U=;
-        b=surMBGjfmAR9aNBv71WIxR7kHDrjQaojprA2ndWn3iSpskzunVwt/OHxS07sJ4tx9N
-         Acm6x0C4gBqe8DNUuZFgY7BiDKgozeDbRRcZRZiwCqD6z7HvxM8pr9EaWjQwYsW6PTRr
-         k+PTe18OuTC3qsoEw6mWJsgt7Je1yxX/w8M8MCNUNSnW0Awtb3jYZL8EeALZLdT8USZ5
-         VCTmswHXSffyIXdSCx8itbsZpfKUMKoz/EZyol8MPSyyRWo0sD+o2YxIjtxasuGH8UxD
-         muVxLnJJy+g2Ps9/TzMX2XvEBOZKO2BqVLOo4GNnF2bTsi0DfaR1X/eBlcGHaDl+9f5k
-         u5pw==
-X-Gm-Message-State: AJIora/NLL9TiUlUiQkTJJSXYNbsOy8lAGkXLEzrkG6gK7pPUTZaCxZT
-        KqT72aH4ilipzqhEX0zL9X2W3WdZdhOjo+H3joc=
-X-Google-Smtp-Source: AGRyM1ueMc+11lpynByTZX4WV3tgjQkbuZWMss8T/lZWNsLRUfJlb9mnAT0iEe2B39RWalsVyTTD7PA2ApxDrtn3tSM=
-X-Received: by 2002:a05:6870:d0ce:b0:f3:3856:f552 with SMTP id
- k14-20020a056870d0ce00b000f33856f552mr343201oaa.99.1657668604358; Tue, 12 Jul
- 2022 16:30:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220706172814.169274-1-james.hilliard1@gmail.com>
- <a0bddf0b-e8c4-46ce-b7c6-a22809af1677@fb.com> <CADvTj4ovwExtM-bWUpJELy-OqsT=J9stmqbAXto8ds2n+G8mfw@mail.gmail.com>
- <CAEf4BzYwRyXG1zE5BK1ZXmxLh+ZPU0=yQhNhpqr0JmfNA30tdQ@mail.gmail.com> <a443a6f9-fd6f-d283-ce00-68d72b40539d@isovalent.com>
-In-Reply-To: <a443a6f9-fd6f-d283-ce00-68d72b40539d@isovalent.com>
-From:   James Hilliard <james.hilliard1@gmail.com>
-Date:   Tue, 12 Jul 2022 17:29:53 -0600
-Message-ID: <CADvTj4qrKkyGBzxVk-Ddtv5fAs8wUD7L-cwZtqNE=7CMF+O0Eg@mail.gmail.com>
-Subject: Re: [PATCH v2] bpf/scripts: Generate GCC compatible helpers
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229514AbiGLXm4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jul 2022 19:42:56 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45166BE0C5;
+        Tue, 12 Jul 2022 16:42:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1GUN/YtQA9mT9gQIEhu74W6F99Ud11donCnvyusM+y4=; b=AA3VHE8HlUUwnmiz6EYWtMtgKZ
+        B5fsBfh4Deq0dN5C3zDOUcvPcWF7JAdYMJ7xh9T5yVwkfrf/1GDjk0kqGNqsLfEteJHlaPdUwbwAF
+        M9m0+W5Bq16vK+yHal0yjZVZTaCKclQDtEfDqfr/DvNVTG78g82a2cLeSLWYpO3EFYpMVgGvWUrA+
+        4Gj4rolRr9XoB/8mkBKfXTL6YdouEBpPMUsT4P/dl1Pyt1wINgElDzfMzmEatGqVsjVTeL+p738fH
+        Ii8Bd5fij2do+8BHaEHlSYqfO6ylr/DfJMTHqNawS6T4045IZOixTmrlgsqXkiGIpNfC0oZA2KIpr
+        yl10XtLw==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1oBPWN-00FpAm-SH; Tue, 12 Jul 2022 23:42:27 +0000
+Date:   Tue, 12 Jul 2022 16:42:27 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        Kees Cook <keescook@chromium.org>, Song Liu <song@kernel.org>,
+        bpf <bpf@vger.kernel.org>, Christoph Hellwig <hch@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Kernel Team <Kernel-team@fb.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "rick.p.edgecombe@intel.com" <rick.p.edgecombe@intel.com>,
+        "linux-modules@vger.kernel.org" <linux-modules@vger.kernel.org>
+Subject: Re: [PATCH v6 bpf-next 0/5] bpf_prog_pack followup
+Message-ID: <Ys4G4/dG6SGYV/iz@bombadil.infradead.org>
+References: <YseAEsjE49AZDp8c@bombadil.infradead.org>
+ <C96F5607-6FFE-4B45-9A9D-B89E3F67A79A@fb.com>
+ <YshUEEQ0lk1ON7H6@bombadil.infradead.org>
+ <863A2D5B-976D-4724-AEB1-B2A494AD2BDB@fb.com>
+ <YsiupnNJ8WANZiIc@bombadil.infradead.org>
+ <6214B9C9-557B-4DC0-BFDE-77EAC425E577@fb.com>
+ <Ysz2LX3q2OsaO4gM@bombadil.infradead.org>
+ <E23B6EB1-AFFA-4B65-963E-B44BA0F2142D@fb.com>
+ <Ys3FvYnASr2v9iPc@bombadil.infradead.org>
+ <6CB56563-29E2-4CE0-BF7B-360979E42429@fb.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6CB56563-29E2-4CE0-BF7B-360979E42429@fb.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 12, 2022 at 3:48 AM Quentin Monnet <quentin@isovalent.com> wrote:
->
-> On 12/07/2022 05:40, Andrii Nakryiko wrote:
-> > CC Quentin as well
-> >
-> > On Mon, Jul 11, 2022 at 5:11 PM James Hilliard
-> > <james.hilliard1@gmail.com> wrote:
-> >>
-> >> On Mon, Jul 11, 2022 at 5:36 PM Yonghong Song <yhs@fb.com> wrote:
-> >>>
-> >>>
-> >>>
-> >>> On 7/6/22 10:28 AM, James Hilliard wrote:
-> >>>> The current bpf_helper_defs.h helpers are llvm specific and don't work
-> >>>> correctly with gcc.
-> >>>>
-> >>>> GCC appears to required kernel helper funcs to have the following
-> >>>> attribute set: __attribute__((kernel_helper(NUM)))
-> >>>>
-> >>>> Generate gcc compatible headers based on the format in bpf-helpers.h.
-> >>>>
-> >>>> This adds conditional blocks for GCC while leaving clang codepaths
-> >>>> unchanged, for example:
-> >>>>       #if __GNUC__ && !__clang__
-> >>>>       void *bpf_map_lookup_elem(void *map, const void *key) __attribute__((kernel_helper(1)));
-> >>>>       #else
-> >>>>       static void *(*bpf_map_lookup_elem)(void *map, const void *key) = (void *) 1;
-> >>>>       #endif
-> >>>
-> >>> It does look like that gcc kernel_helper attribute is better than
-> >>> '(void *) 1' style. The original clang uses '(void *) 1' style is
-> >>> just for simplicity.
-> >>
-> >> Isn't the original style going to be needed for backwards compatibility with
-> >> older clang versions for a while?
-> >
-> > I'm curious, is there any added benefit to having this special
-> > kernel_helper attribute vs what we did in Clang for a long time? Did
-> > GCC do it just to be different and require workarounds like this or
-> > there was some technical benefit to this?
-> >
-> > This duplication of definitions with #if for each one looks really
-> > awful, IMO. I'd rather have a macro invocation like below (or
-> > something along those lines) for each helper:
-> >
-> > BPF_HELPER_DEF(2, void *, bpf_map_update_elem, void *map, const void
-> > *key, const void *value, __u64 flags);
-> >
-> > And then define BPF_HELPER_DEF() once based on whether it's Clang or GCC.
->
-> Hi, for what it's worth I agree with Andrii, I would rather avoid the
-> #if/else/endif and dual definition for each helper in the header, using
-> a macro should keep it more readable indeed. The existing one
-> (BPF_HELPER(return_type, name, args, id)) can likely be adapted.
+On Tue, Jul 12, 2022 at 11:12:22PM +0000, Song Liu wrote:
+> 
+> 
+> > On Jul 12, 2022, at 12:04 PM, Luis Chamberlain <mcgrof@kernel.org> wrote:
+> > 
+> > On Tue, Jul 12, 2022 at 05:49:32AM +0000, Song Liu wrote:
+> >>> On Jul 11, 2022, at 9:18 PM, Luis Chamberlain <mcgrof@kernel.org> wrote:
+> >> 
+> >>> I believe you are mentioning requiring text_poke() because the way
+> >>> eBPF code uses the module_alloc() is different. Correct me if I'm
+> >>> wrong, but from what I gather is you use the text_poke_copy() as the data
+> >>> is already RO+X, contrary module_alloc() use cases. You do this since your
+> >>> bpf_prog_pack_alloc() calls set_memory_ro() and set_memory_x() after
+> >>> module_alloc() and before you can use this memory. This is a different type
+> >>> of allocator. And, again please correct me if I'm wrong but now you want to
+> >>> share *one* 2 MiB huge-page for multiple BPF programs to help with the
+> >>> impact of TLB misses.
+> >> 
+> >> Yes, sharing 1x 2MiB huge page is the main reason to require text_poke. 
+> >> OTOH, 2MiB huge pages without sharing is not really useful. Both kprobe
+> >> and ftrace only uses a fraction of a 4kB page. Most BPF programs and 
+> >> modules cannot use 2MiB either. Therefore, vmalloc_rw_exec() doesn't add
+> >> much value on top of current module_alloc(). 
+> > 
+> > Thanks for the clarification.
+> > 
+> >>> A vmalloc_ro_exec() by definition would imply a text_poke().
+> >>> 
+> >>> Can kprobes, ftrace and modules use it too? It would be nice
+> >>> so to not have to deal with the loose semantics on the user to
+> >>> have to use set_vm_flush_reset_perms() on ro+x later, but
+> >>> I think this can be addressed separately on a case by case basis.
+> >> 
+> >> I am pretty confident that kprobe and ftrace can share huge pages with 
+> >> BPF programs.
+> > 
+> > Then wonderful, we know where to go in terms of a new API then as it
+> > can be shared in the future for sure and there are gains.
+> > 
+> >> I haven't looked into all the details with modules, but 
+> >> given CONFIG_ARCH_WANTS_MODULES_DATA_IN_VMALLOC, I think it is also 
+> >> possible.
+> > 
+> > Sure.
+> > 
+> >> Once this is done, a regular system (without huge BPF program or huge
+> >> modules) will just use 1x 2MB page for text from module, ftrace, kprobe, 
+> >> and bpf programs. 
+> > 
+> > That would be nice, if possible, however modules will require likely its
+> > own thing, on my system I see about 57 MiB used on coresize alone.
+> > 
+> > lsmod | grep -v Module | cut -f1 -d ' ' | \
+> > 	xargs sudo modinfo | grep filename | \
+> > 	grep -o '/.*' | xargs stat -c "%s - %n" | \
+> > 	awk 'BEGIN {sum=0} {sum+=$1} END {print sum}'
+> > 60001272
+> > 
+> > And so perhaps we need such a pool size to be configurable.
+> > 
+> >>> But a vmalloc_ro_exec() with a respective free can remove the
+> >>> requirement to do set_vm_flush_reset_perms().
+> >> 
+> >> Removing the requirement to set_vm_flush_reset_perms() is the other
+> >> reason to go directly to vmalloc_ro_exec(). 
+> > 
+> > Yes fantastic.
+> > 
+> >> My current version looks like this:
+> >> 
+> >> void *vmalloc_exec(unsigned long size);
+> >> void vfree_exec(void *ptr, unsigned int size);
+> >> 
+> >> ro is eliminated as there is no rw version of the API. 
+> > 
+> > Alright.
+> > 
+> > I am not sure if 2 MiB will suffice given what I mentioned above, and
+> > what to do to ensure this grows at a reasonable pace. Then, at least for
+> > usage for all architectures since not all will support text_poke() we
+> > will want to consider a way to make it easy to users to use non huge
+> > page fallbacks, but that would be up to those users, so we can wait for
+> > that.
+> 
+> We are not limited to 2MiB total. The logic is like: 
+> 
+> 1. Anything bigger than 2MiB gets its own allocation.
 
-Yeah, seems a bit cleaner, think I got it working:
-https://lore.kernel.org/bpf/20220712232556.248863-1-james.hilliard1@gmail.com/
+And does that allocation get split up into a few huge 2 MiB pages?
+When freed does that go into the pool of available list of 2 MiB pages
+to use?
 
->
-> Also I note that contrarily to clang's helpers, you don't declare GCC's
-> as "static" (although I'm not sure of the effect of declaring them
-> static in this case).
->
-> Thanks,
-> Quentin
+> 2. We maintain a list of 2MiB pages, and bitmaps showing which parts of 
+>    these pages are in use. 
+
+How many 2 MiB huge pages are allocated initially? Do we have a cap?
+
+> 3. For objects smaller than 2MiB, we will try to fit it in one of these
+>    pages. 
+>    3. a) If there isn't a page with big enough continuous free space, we
+>         will allocate a new 2MiB page. 
+> 
+> (For system with n NUMA nodes, multiple 2MiB above by n). 
+> 
+> So, if we have 100 kernel modules using 1MiB each, they will share 50x
+> 2MiB pages. 
+
+lsmod | grep -v Module | cut -f1 -d ' ' | \
+	xargs sudo modinfo | grep filename |\
+	grep -o '/.*' | xargs stat -c "%s - %n" | \
+	awk 'BEGIN {sum=0} {sum+=$1} END {print sum/NR/1024}' 
+271.273
+
+On average my system's modules are 271 KiB.
+
+Then I only have 6 out of 216 modules which are use more than 2 MiB or
+memory for coresize. So roughly 97% of my modules would be covered
+with this. Not bad.
+
+The monsters:
+
+lsmod | grep -v Module | cut -f1 -d ' ' | xargs sudo modinfo \
+	| grep filename |grep -o '/.*' | xargs stat -c "%s %n" | \
+	sort -n -k 1 -r | head -10 | \
+	awk '{print $1/1024/1024" "$2}'
+6.50775 /lib/modules/5.17.0-1-amd64/kernel/drivers/gpu/drm/i915/i915.ko
+3.6847 /lib/modules/5.17.0-1-amd64/kernel/fs/xfs/xfs.ko
+3.34252 /lib/modules/5.17.0-1-amd64/kernel/fs/btrfs/btrfs.ko
+2.37677 /lib/modules/5.17.0-1-amd64/kernel/net/mac80211/mac80211.ko
+2.2972 /lib/modules/5.17.0-1-amd64/kernel/net/wireless/cfg80211.ko
+2.05754 /lib/modules/5.17.0-1-amd64/kernel/arch/x86/kvm/kvm.ko
+1.96126 /lib/modules/5.17.0-1-amd64/kernel/net/bluetooth/bluetooth.ko
+1.83429 /lib/modules/5.17.0-1-amd64/kernel/fs/ext4/ext4.ko
+1.7724 /lib/modules/5.17.0-1-amd64/kernel/fs/nfsd/nfsd.ko
+1.60539 /lib/modules/5.17.0-1-amd64/kernel/net/sunrpc/sunrpc.ko
+
+On a big iron server I have 149 modules and the situation is better
+there:
+
+3.69791 /lib/modules/5.16.0-6-amd64/kernel/fs/xfs/xfs.ko
+3.35575 /lib/modules/5.16.0-6-amd64/kernel/fs/btrfs/btrfs.ko
+3.21056 /lib/modules/5.16.0-6-amd64/kernel/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.ko
+2.02773 /lib/modules/5.16.0-6-amd64/kernel/arch/x86/kvm/kvm.ko
+1.82574 /lib/modules/5.16.0-6-amd64/kernel/fs/ext4/ext4.ko
+1.36571 /lib/modules/5.16.0-6-amd64/kernel/net/sunrpc/sunrpc.ko
+1.32686 /lib/modules/5.16.0-6-amd64/kernel/fs/nfsd/nfsd.ko
+1.12648 /lib/modules/5.16.0-6-amd64/kernel/drivers/gpu/drm/drm.ko
+0.898623 /lib/modules/5.16.0-6-amd64/kernel/drivers/infiniband/hw/mlx5/mlx5_ib.ko
+0.86922 /lib/modules/5.16.0-6-amd64/kernel/drivers/infiniband/core/ib_core.ko
+
+So this may just work nicely.
+
+  Luis
