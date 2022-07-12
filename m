@@ -2,68 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDAC0572233
-	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 20:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67CE457223C
+	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 20:11:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231684AbiGLSJV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jul 2022 14:09:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38458 "EHLO
+        id S229800AbiGLSLj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jul 2022 14:11:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229800AbiGLSJI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jul 2022 14:09:08 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39B972A712;
-        Tue, 12 Jul 2022 11:09:07 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id k30so11135383edk.8;
-        Tue, 12 Jul 2022 11:09:07 -0700 (PDT)
+        with ESMTP id S229619AbiGLSLi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jul 2022 14:11:38 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918262AC7
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 11:11:37 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id o15so8591773pjh.1
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 11:11:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Yp1OmpY1y3vVYhTPvfPmHmX6dm6dSMFfYgW5f8nVVoA=;
-        b=V4mM+z6VTxmp1Qzn39eT5HwOIxjSgejq39mLAAp1us24aatJLMZx+txxjyQgo0imyi
-         kxFEYbZE+S0usVZnbvFjHdalXfPRZyrjPhw3FFSIk4g44jMrAbxMGf8YwMBTNDR5rayJ
-         hxM3MYlmNOk8btngFeKDLxUYmd607gTbZbaHXaQ3iSjUsv7E/MWM027W1sS/cEGn4OB0
-         mJacaAin0xAn20hBpvslY5abMexQ+QodkAc3dbw+13FOes/x3O6MZMbzo4TavZ3x6oVr
-         c4yG8Ra2baUE+5RmpqjBiKUYhagV3vHP9a+pKt5pErBz1tosJRPs78iYeosp5JKD6PlA
-         b5mw==
+        bh=tBx1pY9EtMlCrqsynZvCfTIrEDWjv6gTf74UrxEZY3g=;
+        b=XxQywCdn8RqM7IzctJY8fSm81TTjLI+j9OKbMS6SyhstOOeyzCWq82FgGBaCuAcuHt
+         TlmgoihNElsRQR6XtFv4jbFo7DwzOI1vavRgrq1ggecAWoY3cNyULssdPe4oP5E0qRpd
+         Zhd6NuiM5fDm9/yrtqXAwiy5J9nftFEVQxzteWGgj+R/8Q+RDRRdoWpFf5wp2Nw0WjTG
+         mtGb1Zayr4BcySzVySUuc+FN4xdhXu4o91t4wjWbzklRNB4fXjpqYlW4PHomcFTR6y87
+         eKxrrS1robHB1LRe5LL4NAM1SZN6caeXVT5v3B+DjRdwwVejmmAG17m3FjKopkWf4dSb
+         r1Cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Yp1OmpY1y3vVYhTPvfPmHmX6dm6dSMFfYgW5f8nVVoA=;
-        b=0tszMNvOARll8wXRybmjSUI3HdPpTqDP0ycIlVn1B5NsoSnhSTJU1toMcJOVlKlQ3O
-         xM1we5mSDAsaIcTOxvtw/jpJX4xn3UPKkO4pXNEaUkPel0iJ8WAufoVSxF0EAFJ9th5V
-         hMJ+0+uDvqMMjTC26xQKd70AzmCTA3RqxzLyEv/nksIFF1y+omPlNP+nZWKJw2EyBqzQ
-         GA8rkeNkstQQKVeMjWR6Qkq2/dxEzPfPSkhtzLMtzIS+F/GryDcPb+VBirJLv7JQuDfj
-         NXP4PBRklnFEVQz5B6wxEpwuHcOOEdriDArfHz/bmlYVltpqzRLtkISij+YKURm/Irhh
-         HC/g==
-X-Gm-Message-State: AJIora8u/3dE58kmzrSRY2mdM2jwS9389U7bSbYZHDLngkYJzGAHfolS
-        FjeCJT9/uHWIMuj8SUBetAdjvpFJqPeclwmUpuc=
-X-Google-Smtp-Source: AGRyM1saSErCrTNPa4aZDOBLpDXpTNVhuuM81/gv5HZTdRRDXX80C5hVGqz1cHsM/BZOGLgxxSyeLeHDgNxkvUzb9zI=
-X-Received: by 2002:a05:6402:350c:b0:43a:e25f:d73 with SMTP id
- b12-20020a056402350c00b0043ae25f0d73mr10720783edd.66.1657649345743; Tue, 12
- Jul 2022 11:09:05 -0700 (PDT)
+        bh=tBx1pY9EtMlCrqsynZvCfTIrEDWjv6gTf74UrxEZY3g=;
+        b=qEAs1Tp5c/9zYMhcwkt4S/fcrIZLcCKH4lqPC3SzfXiMgnRPpe7h4r5YN7OYxnbnDj
+         CSGlBXb8Wg/Wj2bUgMe1kYICRUwtFsQV4zvTQeGH9/bTnNbMvHBt/YB8ehk1qGOeeYZf
+         70Cn1hPXrM+m/1WOS0mpjpXk6bUruiD0rhS1XGtYVAljPFvmF6iAAeToMl/drzLPOLNz
+         ORFbZcclE9taYQp4KEGjjGL37bNF13CjWX0jb3tMzVjGP1SLshhIr8xKYQHK97rTOjre
+         slRFKu1pAqOTsu722aIiMrIAwZU9+9VjP1RhVJ8mquaY56kjHEBwRBGsEzET6sYx09r3
+         j+Gw==
+X-Gm-Message-State: AJIora+oP8jgayR4PQ7KoXz8/wUNdVYbWPeoscn95sz44Bw0SpuLmQbp
+        HQTG4uc9Kd4M1nO9MOwvj/ZMg2EW6+eE7uyNdmltVA==
+X-Google-Smtp-Source: AGRyM1uHTzCyVAEwaQCgt07MuKAtpwBktlsdB7zVhwi/2LgdETQvt5b+Q8RLNFBkOTDSMkk6P/3EQaKIW5AMQdCfLcU=
+X-Received: by 2002:a17:90b:1d91:b0:1f0:7824:1297 with SMTP id
+ pf17-20020a17090b1d9100b001f078241297mr242040pjb.126.1657649496958; Tue, 12
+ Jul 2022 11:11:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220711083220.2175036-1-asavkov@redhat.com> <20220711083220.2175036-4-asavkov@redhat.com>
- <CAPhsuW7xTRpLf1kyj5ejH0fV_aHCMQjUwn-uhWeNytXedh4+TQ@mail.gmail.com>
-In-Reply-To: <CAPhsuW7xTRpLf1kyj5ejH0fV_aHCMQjUwn-uhWeNytXedh4+TQ@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 12 Jul 2022 11:08:54 -0700
-Message-ID: <CAADnVQ+ju04JAqyEbA_7oVj9uBAuL-fUP1FBr_OTygGf915RfQ@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 3/4] bpf: add bpf_panic() helper
-To:     Song Liu <song@kernel.org>
-Cc:     Artem Savkov <asavkov@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <CAADnVQL5ZQDqMGULJLDwT9xRTihdDvo6GvwxdEOtSAs8EwE78A@mail.gmail.com>
+ <20220710073213.bkkdweiqrlnr35sv@google.com> <YswUS/5nbYb8nt6d@dhcp22.suse.cz>
+ <20220712043914.pxmbm7vockuvpmmh@macbook-pro-3.dhcp.thefacebook.com>
+ <Ys0lXfWKtwYlVrzK@dhcp22.suse.cz> <CALOAHbAhzNTkT9o_-PRX=n4vNjKhEK_09+-7gijrFgGjNH7iRA@mail.gmail.com>
+ <Ys1ES+CygtnUvArz@dhcp22.suse.cz> <CALvZod460hip0mQouEVtfcOZ0M21Xmzaa-atxxrUnR3ZisDCNw@mail.gmail.com>
+ <Ys2iIVMZJNPe73MI@slm.duckdns.org> <CALvZod7YKrTvh-5SkDgFvtRk=DkxQ8iEhRGhDhhRGBXmYM4sFw@mail.gmail.com>
+ <Ys2xGe+rdviCAjsC@slm.duckdns.org>
+In-Reply-To: <Ys2xGe+rdviCAjsC@slm.duckdns.org>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 12 Jul 2022 11:11:25 -0700
+Message-ID: <CALvZod6Y3p1NZwSQe6+UWpY88iaOBrZXS5c5+uzMb+9sY1ziwg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/5] bpf: BPF specific memory allocator.
+To:     Tejun Heo <tj@kernel.org>, Mina Almasry <almasrymina@google.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        linux-mm <linux-mm@kvack.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,36 +89,44 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 12, 2022 at 10:53 AM Song Liu <song@kernel.org> wrote:
+Ccing Mina who actually worked on upstreaming this. See [1] for
+previous discussion and more use-cases.
+
+[1] https://lore.kernel.org/linux-mm/20211120045011.3074840-1-almasrymina@google.com/
+
+On Tue, Jul 12, 2022 at 10:36 AM Tejun Heo <tj@kernel.org> wrote:
 >
+> Hello,
+>
+> On Tue, Jul 12, 2022 at 10:26:22AM -0700, Shakeel Butt wrote:
+> > One use-case we have is a build & test service which runs independent
+> > builds and tests but all the build utilities (compiler, linker,
+> > libraries) are shared between those builds and tests.
 > >
-> > +BPF_CALL_1(bpf_panic, const char *, msg)
-> > +{
-> > +       panic(msg);
+> > In terms of topology, the service has a top level cgroup (P) and all
+> > independent builds and tests run in their own cgroup under P. These
+> > builds/tests continuously come and go.
+> >
+> > This service continuously monitors all the builds/tests running and
+> > may kill some based on some criteria which includes memory usage.
+> > However the memory usage is nondeterministic and killing a specific
+> > build/test may not really free memory if most of the memory charged to
+> > it is from shared build utilities.
 >
-> I think we should also check
->
->    capable(CAP_SYS_BOOT) && destructive_ebpf_enabled()
->
-> here. Or at least, destructive_ebpf_enabled(). Otherwise, we
-> may trigger panic after the sysctl is disabled.
->
-> In general, I don't think sysctl is a good API, as it is global, and
-> the user can easily forget to turn it back off. If possible, I would
-> rather avoid adding new BPF related sysctls.
+> That doesn't sound too unusual. So, one saving grace here is that the memory
+> pressure in the stressed cgroup should trigger reclaim of the shared memory
+> which will be likely picked up by someone else, hopefully, under less memory
+> pressure. Can you give more concerete details? ie. describe a failing
+> scenario with actual ballpark memory numbers?
 
-+1. New syscal isn't warranted here.
-Just CAP_SYS_BOOT would be enough here.
+Mina, can you please provide details requested by Tejun?
 
-Also full blown panic() seems unnecessary.
-If the motivation is to get a memory dump then crash_kexec() helper
-would be more suitable.
-If the goal is to reboot the system then the wrapper of sys_reboot()
-is better.
-Unfortunately the cover letter lacks these details.
-Why this destructive action cannot be delegated to user space?
-
-btw, we should avoid adding new uapi helpers in most cases.
-Ideally all of them should be added as new kfunc-s, because they're
-unstable and we can rip them out later if our judgement call
-turns out to be problematic for whatever reason.
+>
+> FWIW, at least from generic resource constrol standpoint, I think it may
+> make sense to have a way to escape certain resources to an ancestor for
+> shared resources provided that we can come up with a sane interface.
+>
+> Thanks.
+>
+> --
+> tejun
