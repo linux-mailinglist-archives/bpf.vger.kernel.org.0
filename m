@@ -2,213 +2,220 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1BAA572834
-	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 23:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7C657283F
+	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 23:07:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229962AbiGLVDc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jul 2022 17:03:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43238 "EHLO
+        id S229994AbiGLVG7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jul 2022 17:06:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231364AbiGLVDb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jul 2022 17:03:31 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69E67BCB1
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 14:03:30 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id k30so11680685edk.8
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 14:03:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JT1xOa34zi8Gk2Kk715piP+1p9IBKvBYZ8AQSk1MgiQ=;
-        b=PoDXdf+FngKVz7RiNHj4OGWi2aEnnBThktocNKAHPaN0VviGe/0nQtrMnXwLK6DeW1
-         F0STxb1v9xElAnGv86pbHnOnNbd3FZfn8P3FldElES6CgC7uU9HGyvYsq3VEEDZ58Wg7
-         KL+X9F2JRoqCe7nQ9IhlD31vv2G/EmLbz4nUdGjQNHEgmjAaSpI7Gwu1SG86C8NsQr1C
-         2jpbObU44zYD+qinjmfLxEU9hPORTFrj3wRtfxUhfvQx5LojHpdc3nN0f9YwqAm78zI4
-         x0rmp9Vd/RNSt8nk/WWm+6GVTdAH1RFEeA9/kBJl9e/onD2iJbUbQCnP8oLSwJuChiH7
-         9qGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JT1xOa34zi8Gk2Kk715piP+1p9IBKvBYZ8AQSk1MgiQ=;
-        b=Q8NuhjIOghnvyFoa8u2f7UdkNUL8mwzXcPu4KaioVwX4YhsRv684GTXfqZbB4qKxoZ
-         Hqj2+tZpGi5fZzwZ7+SYDbu3PycFsajtxnd7/5vkDM2IcuVVYqmfrdhiR/wis8t0e/Rg
-         xYI+EWAsdjOFy7t35pRZ4tAnhq8hPd9GK0TYEboSitRghoM4a9aq9C5KJAFLOn0fG45F
-         N09ILScg/KPMB5PEaANwfmVW2P40H4xnNzB8TxnU+fMaTa7jRi6c3cdgC4RZqR6IJFRx
-         2CIKVzyB/y0TlCVX/pf95HvaUA5GHPRZ5F5El1VNAPhYIr8efGY6JUApHHy3BZDZzFAq
-         FOKA==
-X-Gm-Message-State: AJIora90f9YkZfbogeC60NkeV2KxHPOJJ2Kdpkn8UCBpx2WAaQPu0YPs
-        6ub+RscprAdG661GgTeHVt5HJT1rv2fJG5XehhV3HoF3AEM=
-X-Google-Smtp-Source: AGRyM1uGjlkxAojsoUnhn2tXgjbw4GxLJXoxG5U4ViGuuG8j8g2zBHBr9I4OXARmOdjTlNCBzbJaSU7ABMuGlB2ZZ8o=
-X-Received: by 2002:a05:6402:c92:b0:43a:7177:5be7 with SMTP id
- cm18-20020a0564020c9200b0043a71775be7mr52964edb.224.1657659808870; Tue, 12
- Jul 2022 14:03:28 -0700 (PDT)
+        with ESMTP id S229711AbiGLVG7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jul 2022 17:06:59 -0400
+Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52DC6CFB62
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 14:06:58 -0700 (PDT)
+Received: by devbig010.atn6.facebook.com (Postfix, from userid 115148)
+        id EE11DEDDBC15; Tue, 12 Jul 2022 14:06:45 -0700 (PDT)
+From:   Joanne Koong <joannelkoong@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     andrii@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        Joanne Koong <joannelkoong@gmail.com>
+Subject: [PATCH bpf-next v1] bpf: Tidy up verifier check_func_arg()
+Date:   Tue, 12 Jul 2022 14:06:03 -0700
+Message-Id: <20220712210603.123791-1-joannelkoong@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20220708060416.1788789-1-arilou@gmail.com> <20220708060416.1788789-2-arilou@gmail.com>
- <CAEf4BzZkfWTQppe97E1CTLKEqgtxP9gUQqbXB1EKRm5pK_ZmDA@mail.gmail.com>
- <YsjtxLuTvn8DWEA6@jondnuc> <CAADnVQLmAg9_StyD9_pMO0YUn-Yi1ozxfinxuQmkL0BYoTjbjw@mail.gmail.com>
- <CAP7QCohvoDZ0sk6sqA3112xsM4xzUc9uRHXiDNyt7M4jc3oUmg@mail.gmail.com>
- <CAADnVQJ7RaQyaSaRJ8aE=-0b2URNQFnCLhKX4GpL0H-yQyrTiA@mail.gmail.com>
- <CAP7QCogdYrsfGvEvhg5R8rQvWDe=o-nxgmqubZtfucH1zNc-RA@mail.gmail.com>
- <CAEf4BzYdhOF2wbnEZsMC6+hDz74Jss2_m1DHb_S3EiPqZborUQ@mail.gmail.com>
- <CAP7QCog2hiDsb1Z-hNNsUPTja3hXfNa-auv1yrwb0YWWrymWow@mail.gmail.com>
- <CAEf4Bzb33bP1jajRPfQVZ6RfXxpeWHOC9bWOw9k-aaE8ve+0dw@mail.gmail.com> <CAP7QCojcQ0kGMDO2BZH+zea7tKiWQqx_qo0KZ028hfX_2WLs9A@mail.gmail.com>
-In-Reply-To: <CAP7QCojcQ0kGMDO2BZH+zea7tKiWQqx_qo0KZ028hfX_2WLs9A@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 12 Jul 2022 14:03:16 -0700
-Message-ID: <CAEf4BzameKqa8Vgc03yrhZF2RgD5SwXP30jFh-GxizfgdgWY0w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/1] libbpf: perfbuf: allow raw access to buffers
-To:     Jon Doron <arilou@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, Jon Doron <jond@wiz.io>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=3.1 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+        FORGED_GMAIL_RCVD,FREEMAIL_FROM,NML_ADSP_CUSTOM_MED,RDNS_DYNAMIC,
+        SPF_HELO_PASS,SPF_SOFTFAIL,SPOOFED_FREEMAIL,SPOOF_GMAIL_MID,
+        TVD_RCVD_IP,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 11, 2022 at 10:47 PM Jon Doron <arilou@gmail.com> wrote:
->
->
->
-> On Tue, Jul 12, 2022, 07:50 Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->>
->> On Mon, Jul 11, 2022 at 9:19 PM Jon Doron <arilou@gmail.com> wrote:
->> >
->> >
->> >
->> > On Tue, Jul 12, 2022, 07:01 Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->> >>
->> >> On Sun, Jul 10, 2022 at 10:07 AM Jon Doron <arilou@gmail.com> wrote:
->> >> >
->> >> >
->> >> > On Sun, Jul 10, 2022, 18:16 Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
->> >> >>
->> >> >> On Sat, Jul 9, 2022 at 10:43 PM Jon Doron <arilou@gmail.com> wrote:
->> >> >> >
->> >> >> > I was referring to the following:
->> >> >> > https://github.com/libbpf/libbpf-rs/blob/master/libbpf-rs/src/perf_buffer.rs
->> >> >>
->> >> >> How does your patch help libbpf-rs?
->> >> >>
->> >> >> Please don't top post.
->> >> >
->> >> >
->> >> > You will be able to implement a custom perf buffer consumer, as it already has good bindings with libbpf-sys which is built from the C headers
->> >> >
->> >> > Sorry for the top posting I'm not home and replying from my phone
->> >> >
->> >>
->> >> I can see us exposing per-CPU buffers for (very) advanced users, something like:
->> >>
->> >> int perf_buffer__buffer(struct perf_buffer *pb, int buf_idx, void
->> >> **buf, size_t buf_sz);
->> >
->> >
->> > Not sure I'm fully following what this API does, you will get a pointer to a message in the ring buffer?
->> > If so how do you consume without setting up a new tail?
->> >
->> > Or do you get a full copy of the current ring buffer (because that will mean you would have to alloc and copy which might hurt performance), but in that case you no longer a set tail or drain function.
->>
->> No, it returns a pointer to mmap()'ed per-CPU buffer memory, including
->> its header page which contains head/tail positions. As I said, it's
->> for an advanced user, you need to know the layout and how to consume
->> data.
->
->
-> Oh I see well that sounds perfect to me, do you want me to send a patch? (I'm currently on vacation abroad so I don't have access to my PC but I can get to it later this week or during the weekend
+This patch does two things:
 
-Yes, please do when you get a chance.
+1. For matching against the arg type, the match should be against the
+base type of the arg type, since the arg type can have different
+bpf_type_flags set on it.
 
->
->>
->> >
->> > Also perhaps regardless if this patchset will be approved or not it would probably be nice to have something like
->> > int perf_buffer__state(perf_buffer__buffer(struct perf_buffer *pb, int buf_idx, size_t *free_space, size_t *used_space);
->> >
->> > Cheers,
->> > --Jon.
->> >
->> >>
->> >> Then in combination with perf_buffer__buffer_fd() you can implement
->> >> your own polling and processing. So you just use libbpf logic to setup
->> >> buffers, but then don't call perf_buffer__poll() at all and read
->> >> records and update tail on your own.
->> >>
->> >> But this combination of perf_buffer__raw_ring_buf() and
->> >> perf_buffer__set_ring_buf_tail() seems like a bad API, sorry.
->> >>
->> >>
->> >> >>
->> >> >> > Thanks,
->> >> >> > -- Jon.
->> >> >> >
->> >> >> > On Sun, Jul 10, 2022, 08:23 Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
->> >> >> >>
->> >> >> >> On Fri, Jul 8, 2022 at 7:54 PM Jon Doron <arilou@gmail.com> wrote:
->> >> >> >> >
->> >> >> >> > On 08/07/2022, Andrii Nakryiko wrote:
->> >> >> >> > >On Thu, Jul 7, 2022 at 11:04 PM Jon Doron <arilou@gmail.com> wrote:
->> >> >> >> > >>
->> >> >> >> > >> From: Jon Doron <jond@wiz.io>
->> >> >> >> > >>
->> >> >> >> > >> Add support for writing a custom event reader, by exposing the ring
->> >> >> >> > >> buffer state, and allowing to set it's tail.
->> >> >> >> > >>
->> >> >> >> > >> Few simple examples where this type of needed:
->> >> >> >> > >> 1. perf_event_read_simple is allocating using malloc, perhaps you want
->> >> >> >> > >>    to handle the wrap-around in some other way.
->> >> >> >> > >> 2. Since perf buf is per-cpu then the order of the events is not
->> >> >> >> > >>    guarnteed, for example:
->> >> >> >> > >>    Given 3 events where each event has a timestamp t0 < t1 < t2,
->> >> >> >> > >>    and the events are spread on more than 1 CPU, then we can end
->> >> >> >> > >>    up with the following state in the ring buf:
->> >> >> >> > >>    CPU[0] => [t0, t2]
->> >> >> >> > >>    CPU[1] => [t1]
->> >> >> >> > >>    When you consume the events from CPU[0], you could know there is
->> >> >> >> > >>    a t1 missing, (assuming there are no drops, and your event data
->> >> >> >> > >>    contains a sequential index).
->> >> >> >> > >>    So now one can simply do the following, for CPU[0], you can store
->> >> >> >> > >>    the address of t0 and t2 in an array (without moving the tail, so
->> >> >> >> > >>    there data is not perished) then move on the CPU[1] and set the
->> >> >> >> > >>    address of t1 in the same array.
->> >> >> >> > >>    So you end up with something like:
->> >> >> >> > >>    void **arr[] = [&t0, &t1, &t2], now you can consume it orderely
->> >> >> >> > >>    and move the tails as you process in order.
->> >> >> >> > >> 3. Assuming there are multiple CPUs and we want to start draining the
->> >> >> >> > >>    messages from them, then we can "pick" with which one to start with
->> >> >> >> > >>    according to the remaining free space in the ring buffer.
->> >> >> >> > >>
->> >> >> >> > >
->> >> >> >> > >All the above use cases are sufficiently advanced that you as such an
->> >> >> >> > >advanced user should be able to write your own perfbuf consumer code.
->> >> >> >> > >There isn't a lot of code to set everything up, but then you get full
->> >> >> >> > >control over all the details.
->> >> >> >> > >
->> >> >> >> > >I don't see this API as a generally useful, it feels way too low-level
->> >> >> >> > >and special for inclusion in libbpf.
->> >> >> >> > >
->> >> >> >> >
->> >> >> >> > Hi Andrii,
->> >> >> >> >
->> >> >> >> > I understand, but I was still hoping you will be willing to expose this
->> >> >> >> > API.
->> >> >> >> > libbpf has very simple and nice binding to Rust and other languages,
->> >> >> >> > implementing one of those use cases in the bindings can make things much
->> >> >> >> > simpler than using some libc or syscall APIs, instead of enjoying all
->> >> >> >> > the simplicity that you get for free in libbpf.
->> >> >> >> >
->> >> >> >> > Hope you will be willing to reconsider :)
->> >> >> >>
->> >> >> >> The discussion would have been different if you mentioned that
->> >> >> >> motivation in the commit logs.
->> >> >> >> Please provide links to "Rust and other languages" code that
->> >> >> >> uses this api.
+2. Uses switch casing to improve readability + efficiency.
+
+Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+---
+ kernel/bpf/verifier.c | 66 +++++++++++++++++++++++++------------------
+ 1 file changed, 38 insertions(+), 28 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 328cfab3af60..26e7e787c20a 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -5533,17 +5533,6 @@ static bool arg_type_is_mem_size(enum bpf_arg_type=
+ type)
+ 	       type =3D=3D ARG_CONST_SIZE_OR_ZERO;
+ }
+=20
+-static bool arg_type_is_alloc_size(enum bpf_arg_type type)
+-{
+-	return type =3D=3D ARG_CONST_ALLOC_SIZE_OR_ZERO;
+-}
+-
+-static bool arg_type_is_int_ptr(enum bpf_arg_type type)
+-{
+-	return type =3D=3D ARG_PTR_TO_INT ||
+-	       type =3D=3D ARG_PTR_TO_LONG;
+-}
+-
+ static bool arg_type_is_release(enum bpf_arg_type type)
+ {
+ 	return type & OBJ_RELEASE;
+@@ -5929,7 +5918,8 @@ static int check_func_arg(struct bpf_verifier_env *=
+env, u32 arg,
+ 		meta->ref_obj_id =3D reg->ref_obj_id;
+ 	}
+=20
+-	if (arg_type =3D=3D ARG_CONST_MAP_PTR) {
++	switch (base_type(arg_type)) {
++	case ARG_CONST_MAP_PTR:
+ 		/* bpf_map_xxx(map_ptr) call: remember that map_ptr */
+ 		if (meta->map_ptr) {
+ 			/* Use map_uid (which is unique id of inner map) to reject:
+@@ -5954,7 +5944,8 @@ static int check_func_arg(struct bpf_verifier_env *=
+env, u32 arg,
+ 		}
+ 		meta->map_ptr =3D reg->map_ptr;
+ 		meta->map_uid =3D reg->map_uid;
+-	} else if (arg_type =3D=3D ARG_PTR_TO_MAP_KEY) {
++		break;
++	case ARG_PTR_TO_MAP_KEY:
+ 		/* bpf_map_xxx(..., map_ptr, ..., key) call:
+ 		 * check that [key, key + map->key_size) are within
+ 		 * stack limits and initialized
+@@ -5971,7 +5962,8 @@ static int check_func_arg(struct bpf_verifier_env *=
+env, u32 arg,
+ 		err =3D check_helper_mem_access(env, regno,
+ 					      meta->map_ptr->key_size, false,
+ 					      NULL);
+-	} else if (base_type(arg_type) =3D=3D ARG_PTR_TO_MAP_VALUE) {
++		break;
++	case ARG_PTR_TO_MAP_VALUE:
+ 		if (type_may_be_null(arg_type) && register_is_null(reg))
+ 			return 0;
+=20
+@@ -5987,14 +5979,16 @@ static int check_func_arg(struct bpf_verifier_env=
+ *env, u32 arg,
+ 		err =3D check_helper_mem_access(env, regno,
+ 					      meta->map_ptr->value_size, false,
+ 					      meta);
+-	} else if (arg_type =3D=3D ARG_PTR_TO_PERCPU_BTF_ID) {
++		break;
++	case ARG_PTR_TO_PERCPU_BTF_ID:
+ 		if (!reg->btf_id) {
+ 			verbose(env, "Helper has invalid btf_id in R%d\n", regno);
+ 			return -EACCES;
+ 		}
+ 		meta->ret_btf =3D reg->btf;
+ 		meta->ret_btf_id =3D reg->btf_id;
+-	} else if (arg_type =3D=3D ARG_PTR_TO_SPIN_LOCK) {
++		break;
++	case ARG_PTR_TO_SPIN_LOCK:
+ 		if (meta->func_id =3D=3D BPF_FUNC_spin_lock) {
+ 			if (process_spin_lock(env, regno, true))
+ 				return -EACCES;
+@@ -6005,12 +5999,15 @@ static int check_func_arg(struct bpf_verifier_env=
+ *env, u32 arg,
+ 			verbose(env, "verifier internal error\n");
+ 			return -EFAULT;
+ 		}
+-	} else if (arg_type =3D=3D ARG_PTR_TO_TIMER) {
++		break;
++	case ARG_PTR_TO_TIMER:
+ 		if (process_timer_func(env, regno, meta))
+ 			return -EACCES;
+-	} else if (arg_type =3D=3D ARG_PTR_TO_FUNC) {
++		break;
++	case ARG_PTR_TO_FUNC:
+ 		meta->subprogno =3D reg->subprogno;
+-	} else if (base_type(arg_type) =3D=3D ARG_PTR_TO_MEM) {
++		break;
++	case ARG_PTR_TO_MEM:
+ 		/* The access to this pointer is only checked when we hit the
+ 		 * next is_mem_size argument below.
+ 		 */
+@@ -6020,11 +6017,14 @@ static int check_func_arg(struct bpf_verifier_env=
+ *env, u32 arg,
+ 						      fn->arg_size[arg], false,
+ 						      meta);
+ 		}
+-	} else if (arg_type_is_mem_size(arg_type)) {
+-		bool zero_size_allowed =3D (arg_type =3D=3D ARG_CONST_SIZE_OR_ZERO);
+-
+-		err =3D check_mem_size_reg(env, reg, regno, zero_size_allowed, meta);
+-	} else if (arg_type_is_dynptr(arg_type)) {
++		break;
++	case ARG_CONST_SIZE:
++		err =3D check_mem_size_reg(env, reg, regno, false, meta);
++		break;
++	case ARG_CONST_SIZE_OR_ZERO:
++		err =3D check_mem_size_reg(env, reg, regno, true, meta);
++		break;
++	case ARG_PTR_TO_DYNPTR:
+ 		if (arg_type & MEM_UNINIT) {
+ 			if (!is_dynptr_reg_valid_uninit(env, reg)) {
+ 				verbose(env, "Dynptr has to be an uninitialized dynptr\n");
+@@ -6058,21 +6058,28 @@ static int check_func_arg(struct bpf_verifier_env=
+ *env, u32 arg,
+ 				err_extra, arg + 1);
+ 			return -EINVAL;
+ 		}
+-	} else if (arg_type_is_alloc_size(arg_type)) {
++		break;
++	case ARG_CONST_ALLOC_SIZE_OR_ZERO:
+ 		if (!tnum_is_const(reg->var_off)) {
+ 			verbose(env, "R%d is not a known constant'\n",
+ 				regno);
+ 			return -EACCES;
+ 		}
+ 		meta->mem_size =3D reg->var_off.value;
+-	} else if (arg_type_is_int_ptr(arg_type)) {
++		break;
++	case ARG_PTR_TO_INT:
++	case ARG_PTR_TO_LONG:
++	{
+ 		int size =3D int_ptr_type_to_size(arg_type);
+=20
+ 		err =3D check_helper_mem_access(env, regno, size, false, meta);
+ 		if (err)
+ 			return err;
+ 		err =3D check_ptr_alignment(env, reg, 0, size, true);
+-	} else if (arg_type =3D=3D ARG_PTR_TO_CONST_STR) {
++		break;
++	}
++	case ARG_PTR_TO_CONST_STR:
++	{
+ 		struct bpf_map *map =3D reg->map_ptr;
+ 		int map_off;
+ 		u64 map_addr;
+@@ -6111,9 +6118,12 @@ static int check_func_arg(struct bpf_verifier_env =
+*env, u32 arg,
+ 			verbose(env, "string is not zero-terminated\n");
+ 			return -EINVAL;
+ 		}
+-	} else if (arg_type =3D=3D ARG_PTR_TO_KPTR) {
++		break;
++	}
++	case ARG_PTR_TO_KPTR:
+ 		if (process_kptr_func(env, regno, meta))
+ 			return -EACCES;
++		break;
+ 	}
+=20
+ 	return err;
+--=20
+2.30.2
+
