@@ -2,172 +2,210 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7277F5711A5
-	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 07:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7A895711C1
+	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 07:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229752AbiGLFBB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jul 2022 01:01:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33334 "EHLO
+        id S230225AbiGLFPb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jul 2022 01:15:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbiGLFBA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jul 2022 01:01:00 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA6B08C74A
-        for <bpf@vger.kernel.org>; Mon, 11 Jul 2022 22:00:58 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id dn9so12283006ejc.7
-        for <bpf@vger.kernel.org>; Mon, 11 Jul 2022 22:00:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2ClKmRoVQoWjI5dm++xn0518dsabcZQwmRaoZym9hsM=;
-        b=h58M/A90ZGIOEeEyHxKYtEGt2g4VaVp3xWARwZfEmajXKLXcgfuWqFvop1HZaBprUC
-         vjf5NNIZ6zecNO0DBaV27qPh3cZM2LJ9hVxeh8gwSwTrxePs739NdXu3kspKtlNc3zR4
-         pTD9qHdNxr9Dafmg6O0KTP9t5W3R5PtAtyF0Cz4HDh503aWiFMVOUdTb3wvpihUEK42C
-         lSviOWymI0iRiKTulUmPRIz5zcdzanQt108FLbQqkZkQ0RRign811dcPpC0eq2bisYSc
-         FR9lzgyX7KuHtt37Lk2szphiUdY+X8jEuHHA3WBfL27lWcW9uJTmS/KN9pJUV48+Lnjh
-         e1NA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2ClKmRoVQoWjI5dm++xn0518dsabcZQwmRaoZym9hsM=;
-        b=P1zqA4ZyefW71KeX4VbAYyV0gk+8phb3jV0G2HbETQolypmjqO+3O0825cBs/+ET55
-         A017U8pVg9UGJSnmVKL3XQw9lt9gQP/zhZj5/psLVUWAjb+EKK5Zo0p1MCSNX8x75uiu
-         STu1qhwKjvf1hGkdC/GJyp8Xb3MyhlB2tHt/1dYYnmS0tp3bRR+sVAOVWh6grCXf7AeG
-         /j+6CFcE2QvZ3RubkAqkp4XhjCY56XJM/smVseN5MQEN5bnxRXRk9avZMK22C5KMG6mT
-         wq0dio7r04Z+uWD7z+kfgH6Q+VYiKau2WMT6NX/du4Iauo8wYHxnE9WLP1dyulMjyt7J
-         gJ+Q==
-X-Gm-Message-State: AJIora/9pyBNsCim/yOPe/yjbeKAONj908tXIOPZRbqJL6ZWYuS+N3IT
-        5PmmeHwwKiGCpJhaFp2/OKVVrZF4o6hm1VidRsEEg7ujEANLOw==
-X-Google-Smtp-Source: AGRyM1vIA/00uBxmJpbPrsIffQdezw2fMiwQG39vGPTUi0lynPGfZGG8Nptr5cBnfTzkkhDUS0z5mqEN2ihdUj56LLY=
-X-Received: by 2002:a17:907:75ef:b0:72b:2fd:1a92 with SMTP id
- jz15-20020a17090775ef00b0072b02fd1a92mr22062948ejc.745.1657602057356; Mon, 11
- Jul 2022 22:00:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220707004118.298323-1-andrii@kernel.org> <20220707004118.298323-3-andrii@kernel.org>
- <CAADnVQLxWDD3AAp73BcXW4ArWMgJ-fSUzSjw=-gzq=azBrXdqA@mail.gmail.com>
- <CAEf4BzaXBD86k8BYv7q4fFeyHALHcVUCbSpSG4=kfC0orydrCQ@mail.gmail.com>
- <YsgU1kjVndNjJhI8@krava> <CAEf4BzapNiTTV18guaXz_e1nY9jbybZVTWXUM7sPNqJd=Cau+w@mail.gmail.com>
- <CAADnVQLeEz8NLf9b4reOKdyrtneHcv4ExSGn7Z8ysk1nYSayYw@mail.gmail.com>
- <CAEf4BzYKkf0A1LqLqbjUqO6CMWDRVqg9OBizfwuZL-0p4ioRJg@mail.gmail.com> <20220712042025.ku6mxlhk3itthzvf@macbook-pro-3.dhcp.thefacebook.com>
-In-Reply-To: <20220712042025.ku6mxlhk3itthzvf@macbook-pro-3.dhcp.thefacebook.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 11 Jul 2022 22:00:46 -0700
-Message-ID: <CAEf4BzZgA8R1Uv86XrqAuAvYg2uS+-_jJr_k2oQ_YXp2wDSM0Q@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next 2/3] libbpf: add ksyscall/kretsyscall
- sections support for syscall kprobes
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        with ESMTP id S230107AbiGLFPa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jul 2022 01:15:30 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE4D18238E;
+        Mon, 11 Jul 2022 22:15:29 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26BNCNxN009483;
+        Mon, 11 Jul 2022 22:15:29 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : mime-version; s=facebook;
+ bh=y3Da/pjKg7oVB7RthE1K+wRqmdA/jS/CL15VJkSclJc=;
+ b=mB2a11ox4hUuh/48jkZUlCrg/XJ603a02VZtqDdJqqfIh6bwS8MV0H21DqnIH3C5axDs
+ d3uViMXY1trcP0QOBYYCI1pSWjNdxXXlPPyUIGfMqSPmaJWuQ5fLj/zjXNFJyqBhxcP9
+ y0WxyIwI+jhXoGP2IxlEjJ/Io6UTHTquUck= 
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2171.outbound.protection.outlook.com [104.47.59.171])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3h79045h5v-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Jul 2022 22:15:29 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ua+EGZInU3XYRX1FiDhwscioGgxAwh/rkDjREDt8rf6Dbkk9YBGA57Z7lPGNpoxuIrTS95GFk/G1swglXdTEZaCibr+gItSkhe0kkdPbq6bisXXJe0QMgxyfd6r6xhhNTlFz80kyU42Y1YyulIKEyNIoCSNvyVYR/o7s2juP2rTpA+AqWhzFb1grD/NvQ3dg/3d8TXqLk0r9GKO8Yb9ohGeGcRmMtZ/hX51DyaOW70QO2SnoG4iYKCqAno5/yPnqEll3ZZRJoTNe6kji0ysaY00B03LGXC99OK7TkJ67VGo2koXs9MUxLukdf+mnm+PeCo+y3z+K2RH03CYWK9FNZw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=y3Da/pjKg7oVB7RthE1K+wRqmdA/jS/CL15VJkSclJc=;
+ b=iJ/QWh59Irm9YCXrsNfXY327F6EFfZNn6WBZWTVqp7vhjhhczq0kYeweg4oNGAjkEwRIHIZkgV/RJtszGXMXfTpu9FsITI7i6hoZ0/Ga2neuNTVKZpXqZVV/ImYanR1ea3jsMdf1p6ClaRwyeXfmRlhdIshS7D39361sYDtRus6j8hS8PaUnlkLQ77r2KUlPzXdOinIHfMUEtgYyHESW8rM94yETpTQ9VlfFqQP49qFeuppqdoKMJbe6kvVX/+BkEH4aYw6Y1C9wvTALFAksdGo1hZ5W/cTZhlaYLulLU+J4ZlxdEhZ7eJ2dIJhiHkkdFXtuaJzVK7LibzhdRFZiYg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
+ by SA1PR15MB4966.namprd15.prod.outlook.com (2603:10b6:806:1d5::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.26; Tue, 12 Jul
+ 2022 05:15:26 +0000
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::e8cd:89e9:95b6:e19a]) by SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::e8cd:89e9:95b6:e19a%8]) with mapi id 15.20.5417.026; Tue, 12 Jul 2022
+ 05:15:26 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+CC:     Song Liu <song@kernel.org>, Networking <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Kenta Tada <kenta.tada@sony.com>,
-        Hengqi Chen <hengqi.chen@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <Kernel-team@fb.com>, Jiri Olsa <jolsa@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        "live-patching@vger.kernel.org" <live-patching@vger.kernel.org>
+Subject: Re: [PATCH v2 bpf-next 0/5] ftrace: host klp and bpf trampoline
+ together
+Thread-Topic: [PATCH v2 bpf-next 0/5] ftrace: host klp and bpf trampoline
+ together
+Thread-Index: AQHYdrnMgR7UbO/WnEm8o1uHxIdxmK16Fg0AgABZSIA=
+Date:   Tue, 12 Jul 2022 05:15:26 +0000
+Message-ID: <8B0FCB44-6241-4220-A1AE-CF91AAA25777@fb.com>
+References: <20220602193706.2607681-1-song@kernel.org>
+ <20220711195552.22c3a4be@gandalf.local.home>
+In-Reply-To: <20220711195552.22c3a4be@gandalf.local.home>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3696.100.31)
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 12e7159b-2eba-4a4b-8733-08da63c587d8
+x-ms-traffictypediagnostic: SA1PR15MB4966:EE_
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xl0sx3gTs2lIHabOjrGMvDvX9Yy9dul2d51doQE6M827MjCMxlmOmBjO9WFgpuOc72ScGA1nyJZ+Y+fY8aWJRqrn6r7j6UAVnOQPHgnfsPOdoCxu+vbDgzgSvJsmDhpJ6ukM+5aWDAp66qBAWsSnxhyFFo2KYWlKVgWtJYBJggfPcw4luI91xAK+zHF0CjD17FoD7sxEKzTe89XdC8j3prRhyyiuNY4dHlRewTndLH897xlPy28DdKQj+zwIGHMHX2DnqhVMkuT3G4xNtsS9OzHiZNZOrcnZuIr2QQc0dico5PUQd0vWfugOKGVgJLjDS8NreT518jWoLy3SUuwhNvzEEVdort5tB5Y1cmdtbYY0oPYEYQrBhaWgcq4nRV6CKwE0ibbzWBx+LjHObruj1sjJmPYi8NW7pDHgZJEudwHGqZJWDMJxEziNkz9Q7jUDJBqSLok4OF0NI2CF3WMeJlsnowWLONC4LiiEtBgBsruTzuS+4aKegPC4fYzXBG8gYL7QeigLkK+IgJpU8uLg3LkCu66DvLd+0BPN2WaaJnMgi4hm8fx/UwPKXXe9stxnmpuHb3QPl/PCJ9egcY0YWazkYtUCWWpNrtAp5j8Of2VF/0RWzJh3E3ubWxZde3wlUZG/gzunZWUbq5iCcbp5O1YggoxPvLtKZ7XL9LromlVFx56DnRrRmqegHytOhkfiFYwrObh8XyxjV9SXOwAO/wUtNJYOB7UqNfHyrz5oCzlteE1GaM+WwbOOLoVphureBTH3xR9y3KMBdF63hf2pe9LKv9tqpgFMKcs4YLdCZWAqp4HCZ3o61sUG5bXsg6Lg+px6gjJvKlzHGrl1Z505UjecLybt7ghwkQRSSjnIsFk=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(136003)(346002)(376002)(39860400002)(366004)(396003)(71200400001)(91956017)(6486002)(6512007)(6916009)(8676002)(54906003)(2906002)(41300700001)(4326008)(64756008)(53546011)(5660300002)(8936002)(316002)(33656002)(6506007)(7416002)(83380400001)(36756003)(66556008)(186003)(86362001)(38070700005)(2616005)(76116006)(122000001)(478600001)(38100700002)(66946007)(66476007)(66446008)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?SwCYPs07m/wAnE5qhyY3M/W77aDD0O3hODk2VQghJ0KaUmhWxy7VK11fr5iW?=
+ =?us-ascii?Q?BUFUAoFH+YluDJSv/hHcQKDiCveJBFsu9Ldt0yJd6tOqv9LKo+8zTyzJvjmr?=
+ =?us-ascii?Q?Q3i9mFnht/Gwb/n5RzOXQyjJvXXMt31Q7PP3DOa19o7xKaqvx+cXb+lOgl+b?=
+ =?us-ascii?Q?8XvvCqqnPgnUi5xTRXd8/VelD9Dqs/DUfiJ/OMUfFVwozB1A5inP6Y5q/I3G?=
+ =?us-ascii?Q?WnDWp3TkmjhvQXlrCoQaUgqQkPIoq57u2GefeWpTSlVhnXZkwRIdLK8mCmoD?=
+ =?us-ascii?Q?qtvapvpBXXd2uaI0zfKz0SbvC156cegs9+xybMPJbGQ/ADu8bY6ArgLz94+9?=
+ =?us-ascii?Q?DCD7gJ9VumeMh9uodZHQ8lLGjZKvdJB+KfpXLC8iFA7U7IDr73FvHzEqNdhq?=
+ =?us-ascii?Q?/PWZ5SGFjwJdedL82RohuaATYwX9mhj4xHZrjH77BgQ7hHaUpV2uIFo2m5j0?=
+ =?us-ascii?Q?tvScstfzQRNAkoXH2gIAJ2o50r1H9pv9WSKv6H49l3/79Hgkv2TCobjPE9Y0?=
+ =?us-ascii?Q?JXnT5Ioz/byISDHbd4zTY3RPINs88WeU5XWMU+McKKHmWAy3HiRWLio8r2Zb?=
+ =?us-ascii?Q?UMPwzr4gtSVyZTbaL7iIPnVbjSc60NOlNDaJjC8PdaExGWH5NtTn20AxXX+J?=
+ =?us-ascii?Q?LhvqMXlgbjFiqVWIZ31w4JxSTiVxBgUa6xITv7Th8vjYgU13wzhvOejlbAKU?=
+ =?us-ascii?Q?KOKzFddPc/3Q+MMGwdJz2NgOupZXx83KuSD4JZZe9hVu3fvEWie6wTUdQH4P?=
+ =?us-ascii?Q?AP49QyoCPwD7bHjlhcQJxD/fuFPPDQlhWrJi+2Sx6eADTgTHVyPmqkBaRO8g?=
+ =?us-ascii?Q?+TCxPSoAdGxbAXLerfz9RLdIhhHgJ37y7l4cqsPCrXuN7bXEmHK5j+1pG6Nf?=
+ =?us-ascii?Q?kCknQXQzjY4WcsINT+ntRt34KYDSj9wkdc+C/rEm0mBuUVTbFFs7FL4YTEtL?=
+ =?us-ascii?Q?AIHcgZcbNjpsgM9VzUzA0hzJ9nAndwLJZ/P4rOgCO7GCJwLJ80pucrKPTwKv?=
+ =?us-ascii?Q?aXp+dlS73MNIBC9GxDQsvDf5WVI8Va4DuXAUWK8+U+zVQYlJl1TOThuqOYvG?=
+ =?us-ascii?Q?EI24h9VcMeM8quE1cEKNmVzWYMLkC9OgHYLrpfnmgK+eV6k3DM41A1JltXFZ?=
+ =?us-ascii?Q?9HrV8HAXLHKiV9ZsSKEls+ZwzFnb2MZByE0vI+h0M7Yh/ERaqb4JqQnfZm3V?=
+ =?us-ascii?Q?LDhe6dJmntLy9P25fguWSWoBfgxdBo9R2/aEi5mDxYbfvslSYl5PDriwl02b?=
+ =?us-ascii?Q?7T1LyHkNrkWXbmYrtbaK4vsos6sR0Cpl+vukpEEO0MN0BBkQshxmGpWHnvfe?=
+ =?us-ascii?Q?aoVXy/e0RFXJSdzxm9ptCzyyu7dhuO92eQiuHveKRtKZzstVA2BTWPtu+mfN?=
+ =?us-ascii?Q?nHc1/TMWJLhrv/RVr7DyNR5jDv8HeMte1+jec0uYIyW+IsGbLKs8tfsbc5ZA?=
+ =?us-ascii?Q?ad4j/wSfUZqoQr1MqP2ZxGeg8o4NW6gqOwEgs/3dfyzbwT04xO+xIjsRrrS4?=
+ =?us-ascii?Q?esv6FDDpxSJUD9wFU/L2hmtA8bHI5E/pgkhRRZxZ+f6WAeVPCp5ztoATiLy1?=
+ =?us-ascii?Q?KN/rLEJWczvVvFVMwes3j55RSrCc91BAS1GEc+d567vsije09v8cGZit8za7?=
+ =?us-ascii?Q?FGKy/B0g6QoAQOBLvNeQ7ko=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <0A964BC18D363A4F97E8D7CB3D832762@namprd15.prod.outlook.com>
+MIME-Version: 1.0
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 12e7159b-2eba-4a4b-8733-08da63c587d8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jul 2022 05:15:26.4856
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Lk4+5bvLngiyK9Fg0LTMgm7paGEt8GdMCr5VjQPctq5uHGPqnuUEAErVvRrurHuXLYDaW+YeizMLP1KQUTm9XQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4966
+X-Proofpoint-ORIG-GUID: M6n4Pgt7f76FeOGH5MJdPvnfBtsJT8kj
+X-Proofpoint-GUID: M6n4Pgt7f76FeOGH5MJdPvnfBtsJT8kj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-07-12_03,2022-07-08_01,2022-06-22_01
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 11, 2022 at 9:20 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Mon, Jul 11, 2022 at 09:28:29AM -0700, Andrii Nakryiko wrote:
-> > On Sat, Jul 9, 2022 at 5:38 PM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Fri, Jul 8, 2022 at 3:05 PM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > >
-> > > > On Fri, Jul 8, 2022 at 4:28 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> > > > >
-> > > > > On Thu, Jul 07, 2022 at 12:10:30PM -0700, Andrii Nakryiko wrote:
-> > > > >
-> > > > > SNIP
-> > > > >
-> > > > > > > Maybe we should do the other way around ?
-> > > > > > > cat /proc/kallsyms |grep sys_bpf
-> > > > > > >
-> > > > > > > and figure out the prefix from there?
-> > > > > > > Then we won't need to do giant
-> > > > > > > #if defined(__x86_64__)
-> > > > > > > ...
-> > > > > > >
-> > > > > >
-> > > > > > Unfortunately this won't work well due to compat and 32-bit APIs (and
-> > > > > > bpf() syscall is particularly bad with also bpf_sys_bpf):
-> > > > > >
-> > > > > > $ sudo cat /proc/kallsyms| rg '_sys_bpf$'
-> > > > > > ffffffff811cb100 t __sys_bpf
-> > > > > > ffffffff811cd380 T bpf_sys_bpf
-> > > > > > ffffffff811cd520 T __x64_sys_bpf
-> > > > > > ffffffff811cd540 T __ia32_sys_bpf
-> > > > > > ffffffff8256fce0 r __ksymtab_bpf_sys_bpf
-> > > > > > ffffffff8259b5a2 r __kstrtabns_bpf_sys_bpf
-> > > > > > ffffffff8259bab9 r __kstrtab_bpf_sys_bpf
-> > > > > > ffffffff83abc400 t _eil_addr___ia32_sys_bpf
-> > > > > > ffffffff83abc410 t _eil_addr___x64_sys_bpf
-> > > > > >
-> > > > > > $ sudo cat /proc/kallsyms| rg '_sys_mmap$'
-> > > > > > ffffffff81024480 T __x64_sys_mmap
-> > > > > > ffffffff810244c0 T __ia32_sys_mmap
-> > > > > > ffffffff83abae30 t _eil_addr___ia32_sys_mmap
-> > > > > > ffffffff83abae40 t _eil_addr___x64_sys_mmap
-> > > > > >
-> > > > > > We have similar arch-specific switches in few other places (USDT and
-> > > > > > lib path detection, for example), so it's not a new precedent (for
-> > > > > > better or worse).
-> > > > > >
-> > > > > >
-> > > > > > > /proc/kallsyms has world read permissions:
-> > > > > > > proc_create("kallsyms", 0444, NULL, &kallsyms_proc_ops);
-> > > > > > > unlike available_filter_functions.
-> > > > > > >
-> > > > > > > Also tracefs might be mounted in a different dir than
-> > > > > > > /sys/kernel/tracing/
-> > > > > > > like
-> > > > > > > /sys/kernel/debug/tracing/
-> > > > > >
-> > > > > > Yeah, good point, was trying to avoid parsing more expensive kallsyms,
-> > > > > > but given it's done once, it might not be a big deal.
-> > > > >
-> > > > > we could get that also from BTF?
-> > > >
-> > > > I'd rather not add dependency on BTF for this.
-> > >
-> > > A weird and non technical reason.
-> > > Care to explain this odd excuse?
-> >
-> > Quite technical reason: minimizing unrelated dependencies. It's not
-> > necessary to have vmlinux BTF to use kprobes (especially for kprobing
-> > syscalls), so adding dependency on vmlinux BTF just to use
-> > SEC("ksyscall") seems completely unnecessary, given we have other
-> > alternatives.
->
-> If BTF and kallsyms were alternatives then it indeed would make
-> sense to avoid implement different schemes for old kernels and recent.
-> But libbpf already loads vmlinux BTF for other reasons.
 
-Not necessarily, only if bpf_object requires vmlinux BTF, see
-obj_needs_vmlinux_btf().
 
-> It caches it and search in it is fast.
-> While libbpf also parses kallsyms it doesn't cache it.
-> Yet another search through kallsyms will slow down libbpf loading,
-> while another search in cached BTF is close to be free.
-> Also we have bpf_btf_find_by_name_kind() in-kernel helper.
-> We can prog_run it and optimize libbpf's BTF search to be even faster.
+> On Jul 11, 2022, at 4:55 PM, Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+> I just realized that none of the live kernel patching folks are Cc'd on
+> this thread. I think they will care much more about this than I do.
 
-I'm starting to actually lean towards just trying to create perf_event
-for __<arch>_sys_<syscall> as a feature detection. It will be fast and
-simple, and no need to parse kallsyms or available_filter_functions,
-take unnecessary dependency on vmlinux BTF, etc. And I have all that
-code written already.
+vger.kernel.org often drops my email when the CC list is too long. So I
+try to keep the list short. In this case, since we are not changing live
+patch code, and there isn't any negative impact for live patch side, I 
+didn't CC live patch folks. 
+
+I will at least CC live-patching@ in the next version. 
+
+Thanks,
+Song
+
+PS: I am the live patch guy at Meta. :)
+
+
+> 
+> -- Steve
+> 
+> 
+> On Thu, 2 Jun 2022 12:37:01 -0700
+> Song Liu <song@kernel.org> wrote:
+> 
+>> Changes v1 => v2:
+>> 1. Fix build errors for different config. (kernel test robot)
+>> 
+>> Kernel Live Patch (livepatch, or klp) and bpf trampoline are important
+>> features for modern systems. This set allows the two to work on the same
+>> kernel function as the same time.
+>> 
+>> live patch uses ftrace with IPMODIFY, while bpf trampoline use direct
+>> ftrace. Existing policy does not allow the two to attach to the same kernel
+>> function. This is changed by fine tuning ftrace IPMODIFY policy, and allows
+>> one non-DIRECT IPMODIFY ftrace_ops and one non-IPMODIFY DIRECT ftrace_ops
+>> on the same kernel function at the same time. Please see 3/5 for more
+>> details on this.
+>> 
+>> Note that, one of the constraint here is to let bpf trampoline use direct
+>> call when it is not working on the same function as live patch. This is
+>> achieved by allowing ftrace code to ask bpf trampoline to make changes.
+>> 
+>> Jiri Olsa (1):
+>>  bpf, x64: Allow to use caller address from stack
+>> 
+>> Song Liu (4):
+>>  ftrace: allow customized flags for ftrace_direct_multi ftrace_ops
+>>  ftrace: add modify_ftrace_direct_multi_nolock
+>>  ftrace: introduce FTRACE_OPS_FL_SHARE_IPMODIFY
+>>  bpf: trampoline: support FTRACE_OPS_FL_SHARE_IPMODIFY
+>> 
+>> arch/x86/net/bpf_jit_comp.c |  13 +-
+>> include/linux/bpf.h         |   8 ++
+>> include/linux/ftrace.h      |  79 +++++++++++
+>> kernel/bpf/trampoline.c     | 109 +++++++++++++--
+>> kernel/trace/ftrace.c       | 269 +++++++++++++++++++++++++++++++-----
+>> 5 files changed, 424 insertions(+), 54 deletions(-)
+>> 
+>> --
+>> 2.30.2
+> 
+
