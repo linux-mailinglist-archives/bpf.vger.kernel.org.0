@@ -2,87 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1A325722D6
-	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 20:41:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 397C757232D
+	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 20:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233616AbiGLSkb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jul 2022 14:40:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60192 "EHLO
+        id S234158AbiGLSnM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jul 2022 14:43:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233607AbiGLSk0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jul 2022 14:40:26 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECBF6BFAFE
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 11:40:22 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id g4so8402929pgc.1
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 11:40:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4UeeXqybc/cqL+mbk/GXnvmjdYDPUcVq4hnPD2o0mrA=;
-        b=XCN2l/7tBjfdV3ZcY6mjs0Cj1uwyI5BMT9Y9Esd63A2IfeNsQLLoBRZDt043X5aJ1t
-         9ZqlRAOPRStHfEyscOLrY/+U/GD+WmaGTVfP2ve5f8Erac/rgVmjBb8zajD0einubCdd
-         BHO53udkyyVan81Y3P1k/sCWBj10HTf3OEwQHsYnCCwgycVcMUckZsdFf020hw7gOSCO
-         sDbRgiNxEKmy8k63s4wJyacRKYJipa7XGfAOPzHCMj1PHTfIcFgtF1GNvd8J+22AJnmM
-         Y4lemm//n1trARql3Ywz0U69cd7lRpL8+upx3rEXWNnyLrWe9K3rdFbaClGslPBKFNlJ
-         8D8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4UeeXqybc/cqL+mbk/GXnvmjdYDPUcVq4hnPD2o0mrA=;
-        b=dwcCd9SuoqOScsXfDlzfWdnX4b6Ov7c1vdVjLYVAUYH/ewRFrhw4RZZ5Th/x0zQKE8
-         O2gRVwV4+ut8neM/QlSZpkzrPu6mrSIsxGIMrtGvKDq5nZPy5YE2jXDlbAHGx7mBf+xK
-         gHNcyI3qPKJXBpBLPaQw648Xxa8cthIbt4E3jQr+oglCN55bNVr/dwR7ikc0PuBz1mra
-         qOglAnJAu1Ts/uY+EJKU6V8L0tjVjlAd+jQ+eEHoZVaVYBz77rAQj0d2CLmHzXy5+YTB
-         RDjL1WEJIH8nxgetua2cuyI1JOPGWNBSwN0D32QMbc3E3IIHLgem1cdHohXeiozdHiqQ
-         Qc0Q==
-X-Gm-Message-State: AJIora/7GYnYD/65koPDYN7F2+GZGPoedjaF8Vo+KFHeLbxQTdT4kMGa
-        708NRjjeVUEqmOiT4P6Mq8M=
-X-Google-Smtp-Source: AGRyM1s/J9hhivI5wwuV0abBfA36cyDpWxsEYI5J5tzavvNkY7X+a42vUR94FWarTlz4fdqGVMB9MQ==
-X-Received: by 2002:a63:ba1d:0:b0:419:7e6e:2858 with SMTP id k29-20020a63ba1d000000b004197e6e2858mr1942549pgf.67.1657651222382;
-        Tue, 12 Jul 2022 11:40:22 -0700 (PDT)
-Received: from MacBook-Pro-3.local.dhcp.thefacebook.com ([2620:10d:c090:500::2:8800])
-        by smtp.gmail.com with ESMTPSA id n6-20020a170903110600b0016a6caacaefsm7232427plh.103.2022.07.12.11.40.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jul 2022 11:40:21 -0700 (PDT)
-Date:   Tue, 12 Jul 2022 11:40:18 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        linux-mm <linux-mm@kvack.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH bpf-next 0/5] bpf: BPF specific memory allocator.
-Message-ID: <20220712184018.i3cisffxr7k3aei7@MacBook-Pro-3.local.dhcp.thefacebook.com>
-References: <YsXMmBf9Xsp61I0m@casper.infradead.org>
- <20220706180525.ozkxnbifgd4vzxym@MacBook-Pro-3.local.dhcp.thefacebook.com>
- <Ysg0GyvqUe0od2NN@dhcp22.suse.cz>
- <20220708174858.6gl2ag3asmoimpoe@macbook-pro-3.dhcp.thefacebook.com>
- <20220708215536.pqclxdqvtrfll2y4@google.com>
- <CAADnVQL5ZQDqMGULJLDwT9xRTihdDvo6GvwxdEOtSAs8EwE78A@mail.gmail.com>
- <20220710073213.bkkdweiqrlnr35sv@google.com>
- <YswUS/5nbYb8nt6d@dhcp22.suse.cz>
- <20220712043914.pxmbm7vockuvpmmh@macbook-pro-3.dhcp.thefacebook.com>
- <Ys0lXfWKtwYlVrzK@dhcp22.suse.cz>
+        with ESMTP id S233884AbiGLSmc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jul 2022 14:42:32 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 966E0D6CE0;
+        Tue, 12 Jul 2022 11:41:45 -0700 (PDT)
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Lj8cd2YRDz67M3B;
+        Wed, 13 Jul 2022 02:37:21 +0800 (CST)
+Received: from roberto-ThinkStation-P620.huawei.com (10.204.63.22) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 12 Jul 2022 20:41:41 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     <ast@kernel.org>, <daniel@iogearbox.net>,
+        <john.fastabend@gmail.com>, <andrii@kernel.org>,
+        <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
+        <kpsingh@kernel.org>, <dhowells@redhat.com>, <jarkko@kernel.org>,
+        <shuah@kernel.org>
+CC:     <bpf@vger.kernel.org>, <keyrings@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH v7 0/7] bpf: Add bpf_verify_pkcs7_signature() helper
+Date:   Tue, 12 Jul 2022 20:41:21 +0200
+Message-ID: <20220712184128.999301-1-roberto.sassu@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Ys0lXfWKtwYlVrzK@dhcp22.suse.cz>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.204.63.22]
+X-ClientProxiedBy: lhreml754-chm.china.huawei.com (10.201.108.204) To
+ fraeml714-chm.china.huawei.com (10.206.15.33)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,73 +52,196 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 12, 2022 at 09:40:13AM +0200, Michal Hocko wrote:
-> On Mon 11-07-22 21:39:14, Alexei Starovoitov wrote:
-> > On Mon, Jul 11, 2022 at 02:15:07PM +0200, Michal Hocko wrote:
-> > > On Sun 10-07-22 07:32:13, Shakeel Butt wrote:
-> > > > On Sat, Jul 09, 2022 at 10:26:23PM -0700, Alexei Starovoitov wrote:
-> > > > > On Fri, Jul 8, 2022 at 2:55 PM Shakeel Butt <shakeelb@google.com> wrote:
-> > > > [...]
-> > > > > >
-> > > > > > Most probably Michal's comment was on free objects sitting in the caches
-> > > > > > (also pointed out by Yosry). Should we drain them on memory pressure /
-> > > > > > OOM or should we ignore them as the amount of memory is not significant?
-> > > > > 
-> > > > > Are you suggesting to design a shrinker for 0.01% of the memory
-> > > > > consumed by bpf?
-> > > > 
-> > > > No, just claim that the memory sitting on such caches is insignificant.
-> > > 
-> > > yes, that is not really clear from the patch description. Earlier you
-> > > have said that the memory consumed might go into GBs. If that is a
-> > > memory that is actively used and not really reclaimable then bad luck.
-> > > There are other users like that in the kernel and this is not a new
-> > > problem. I think it would really help to add a counter to describe both
-> > > the overall memory claimed by the bpf allocator and actively used
-> > > portion of it. If you use our standard vmstat infrastructure then we can
-> > > easily show that information in the OOM report.
-> > 
-> > OOM report can potentially be extended with info about bpf consumed
-> > memory, but it's not clear whether it will help OOM analysis.
-> 
-> If GBs of memory can be sitting there then it is surely an interesting
-> information to have when seeing OOM. One of the big shortcomings of the
-> OOM analysis is unaccounted memory.
-> 
-> > bpftool map show
-> > prints all map data already.
-> > Some devs use bpf to inspect bpf maps for finer details in run-time.
-> > drgn scripts pull that data from crash dumps.
-> > There is no need for new counters.
-> > The idea of bpf specific counters/limits was rejected by memcg folks.
-> 
-> I would argue that integration into vmstat is useful not only for oom
-> analysis but also for regular health check scripts watching /proc/vmstat
-> content. I do not think most of those generic tools are BPF aware. So
-> unless there is a good reason to not account this memory there then I
-> would vote for adding them. They are cheap and easy to integrate.
+One of the desirable features in security is the ability to restrict import
+of data to a given system based on data authenticity. If data import can be
+restricted, it would be possible to enforce a system-wide policy based on
+the signing keys the system owner trusts.
 
-We've seen enough performance issues with such counters.
-So, no, they are not cheap.
-Remember bpf has to be optimized for all cases.
-Some of them process millions of packets per second.
-Others do millions of map update/delete per second which means
-millions of alloc/free.
+This feature is widely used in the kernel. For example, if the restriction
+is enabled, kernel modules can be plugged in only if they are signed with a
+key whose public part is in the primary or secondary keyring.
 
-> > > OK, thanks for the clarification. There is still one thing that is not
-> > > really clear to me. Without a proper ownership bound to any process why
-> > > is it desired/helpful to account the memory to a memcg?
-> > 
-> > The first step is to have a limit. memcg provides it.
-> 
-> I am sorry but this doesn't really explain it. Could you elaborate
-> please? Is the limit supposed to protect against adversaries? Or is it
-> just to prevent from accidental runaways? 
+For eBPF, it can be useful as well. For example, it might be useful to
+authenticate data an eBPF program makes security decisions on.
 
-yes to above two.
+After a discussion in the eBPF mailing list, it was decided that the stated
+goal should be accomplished by introducing a new helper:
+bpf_verify_pkcs7_signature(), dedicated to verify PKCS#7 signatures.
 
-> Is it purely for accounting
-> purposes?
+Other than the data and the signature, the helper also receives two
+parameters for the keyring, which can be provided as alternatives: one is a
+key pointer returned by the new bpf_lookup_user_key() helper, called with a
+key serial possibly decided by the user; another is a pre-determined ID
+among values defined in include/linux/verification.h.
 
-also soft yes. Once the user be able to select memcg it will become
-a strong yes.
+While the first keyring-related parameter provides great flexibility, it
+seems suboptimal in terms of security guarantees, as even if the eBPF
+program is assumed to be trusted, the serial used to obtain the key pointer
+might come from untrusted user space not choosing one that the system
+administrator approves to enforce a mandatory policy.
+
+The second keyring-related parameter instead provides much stronger
+guarantees, especially if the pre-determined ID is not passed by user space
+but is hardcoded in the eBPF program, and that program is signed. In this
+case, bpf_verify_pkcs7_signature() will always perform signature
+verification with a key that the system administrator approves, i.e. the
+primary, secondary or platform keyring.
+
+bpf_lookup_user_key() comes with the corresponding release helper
+bpf_key_put(), to decrement the reference count of the key found with the
+former helper. The eBPF verifier has been enhanced to ensure that the
+release helper is always called whenever the acquire helper is called, or
+otherwise refuses to load the program.
+
+bpf_lookup_user_key() also accepts lookup-specific flags KEY_LOOKUP_CREATE
+and KEY_LOOKUP_PARTIAL. Although these are most likely not useful for the
+bpf_verify_pkcs7_signature(), newly defined flags could be.
+
+bpf_lookup_user_key() does not request a particular permission to
+lookup_user_key(), as it cannot determine it by itself. Also, it should not
+get it from the user, as the user could pass an arbitrary value and use the
+key for a different purpose. Instead, bpf_lookup_user_key() requests
+KEY_DEFER_PERM_CHECK, and defers the permission check to the helper that
+actually uses the key, in this patch set to bpf_verify_pkcs7_signature().
+
+Since key_task_permission() is called by the PKCS#7 code during signature
+verification, the only additional function bpf_verify_pkcs7_signature() has
+to call is key_validate(). With that, the permission check can be
+considered complete and equivalent, as it was done by bpf_lookup_user_key()
+with the appropriate permission (in this case KEY_NEED_SEARCH).
+
+All helpers can be called only from sleepable programs, because of memory
+allocation (with lookup flag KEY_LOOKUP_CREATE) and crypto operations. For
+example, the lsm.s/bpf attach point is suitable,
+fexit/array_map_update_elem is not.
+
+The correctness of implementation of the new helpers and of their usage is
+checked with the introduced tests.
+
+The patch set is organized as follows.
+
+Patch 1 exports bpf_dynptr_get_size(), to obtain the real size of data
+carried by a dynamic pointer. Patch 2 makes available for new eBPF helpers
+some key-related definitions. Patch 3 introduces the bpf_lookup_user_key()
+and bpf_key_put() helpers. Patch 4 introduces the
+bpf_verify_pkcs7_signature(). Finally, patches 5-7 introduce the tests.
+
+Changelog
+
+v6:
+ - Switch back to key lookup helpers + signature verification (until v5),
+   and defer permission check from bpf_lookup_user_key() to
+   bpf_verify_pkcs7_signature()
+ - Add additional key lookup test to illustrate the usage of the
+   KEY_LOOKUP_CREATE flag and validate the flags (suggested by Daniel)
+ - Make description of flags of bpf_lookup_user_key() more user-friendly
+   (suggested by Daniel)
+ - Fix validation of flags parameter in bpf_lookup_user_key() (reported by
+   Daniel)
+ - Rename bpf_verify_pkcs7_signature() keyring-related parameters to
+   user_keyring and system_keyring to make their purpose more clear
+ - Accept keyring-related parameters of bpf_verify_pkcs7_signature() as
+   alternatives (suggested by KP)
+ - Replace unsigned long type with u64 in helper declaration (suggested by
+   Daniel)
+ - Extend the bpf_verify_pkcs7_signature() test by calling the helper
+   without data, by ensuring that the helper enforces the keyring-related
+   parameters as alternatives, by ensuring that the helper rejects
+   inaccessible and expired keyrings, and by checking all system keyrings
+ - Move bpf_lookup_user_key() and bpf_key_put() usage tests to
+   ref_tracking.c (suggested by John)
+ - Call bpf_lookup_user_key() and bpf_key_put() only in sleepable programs
+
+v5:
+ - Move KEY_LOOKUP_ to include/linux/key.h
+   for validation of bpf_verify_pkcs7_signature() parameter
+ - Remove bpf_lookup_user_key() and bpf_key_put() helpers, and the
+   corresponding tests
+ - Replace struct key parameter of bpf_verify_pkcs7_signature() with the
+   keyring serial and lookup flags
+ - Call lookup_user_key() and key_put() in bpf_verify_pkcs7_signature()
+   code, to ensure that the retrieved key is used according to the
+   permission requested at lookup time
+ - Clarified keyring precedence in the description of
+   bpf_verify_pkcs7_signature() (suggested by John)
+ - Remove newline in the second argument of ASSERT_
+ - Fix helper prototype regular expression in bpf_doc.py
+
+v4:
+ - Remove bpf_request_key_by_id(), don't return an invalid pointer that
+   other helpers can use
+ - Pass the keyring ID (without ULONG_MAX, suggested by Alexei) to
+   bpf_verify_pkcs7_signature()
+ - Introduce bpf_lookup_user_key() and bpf_key_put() helpers (suggested by
+   Alexei)
+ - Add lookup_key_norelease test, to ensure that the verifier blocks eBPF
+   programs which don't decrement the key reference count
+ - Parse raw PKCS#7 signature instead of module-style signature in the
+   verify_pkcs7_signature test (suggested by Alexei)
+ - Parse kernel module in user space and pass raw PKCS#7 signature to the
+   eBPF program for signature verification
+
+v3:
+ - Rename bpf_verify_signature() back to bpf_verify_pkcs7_signature() to
+   avoid managing different parameters for each signature verification
+   function in one helper (suggested by Daniel)
+ - Use dynamic pointers and export bpf_dynptr_get_size() (suggested by
+   Alexei)
+ - Introduce bpf_request_key_by_id() to give more flexibility to the caller
+   of bpf_verify_pkcs7_signature() to retrieve the appropriate keyring
+   (suggested by Alexei)
+ - Fix test by reordering the gcc command line, always compile sign-file
+ - Improve helper support check mechanism in the test
+
+v2:
+ - Rename bpf_verify_pkcs7_signature() to a more generic
+   bpf_verify_signature() and pass the signature type (suggested by KP)
+ - Move the helper and prototype declaration under #ifdef so that user
+   space can probe for support for the helper (suggested by Daniel)
+ - Describe better the keyring types (suggested by Daniel)
+ - Include linux/bpf.h instead of vmlinux.h to avoid implicit or
+   redeclaration
+ - Make the test selfcontained (suggested by Alexei)
+
+v1:
+ - Don't define new map flag but introduce simple wrapper of
+   verify_pkcs7_signature() (suggested by Alexei and KP)
+
+Roberto Sassu (7):
+  bpf: Export bpf_dynptr_get_size()
+  KEYS: Move KEY_LOOKUP_ to include/linux/key.h
+  bpf: Add bpf_lookup_user_key() and bpf_key_put() helpers
+  bpf: Add bpf_verify_pkcs7_signature() helper
+  selftests: Add verifier tests for bpf_lookup_user_key() and
+    bpf_key_put()
+  selftests/bpf: Add additional test for bpf_lookup_user_key()
+  selftests/bpf: Add test for bpf_verify_pkcs7_signature() helper
+
+ include/linux/bpf.h                           |   1 +
+ include/linux/key.h                           |   3 +
+ include/uapi/linux/bpf.h                      |  47 ++
+ kernel/bpf/bpf_lsm.c                          | 116 +++++
+ kernel/bpf/helpers.c                          |   2 +-
+ kernel/bpf/verifier.c                         |   6 +-
+ scripts/bpf_doc.py                            |   2 +
+ security/keys/internal.h                      |   2 -
+ tools/include/uapi/linux/bpf.h                |  47 ++
+ tools/testing/selftests/bpf/Makefile          |  14 +-
+ tools/testing/selftests/bpf/config            |   2 +
+ .../bpf/prog_tests/lookup_user_key.c          |  94 ++++
+ .../bpf/prog_tests/verify_pkcs7_sig.c         | 410 ++++++++++++++++++
+ .../bpf/progs/test_lookup_user_key.c          |  35 ++
+ .../bpf/progs/test_verify_pkcs7_sig.c         |  90 ++++
+ tools/testing/selftests/bpf/test_verifier.c   |   3 +-
+ .../selftests/bpf/verifier/ref_tracking.c     |  66 +++
+ .../testing/selftests/bpf/verify_sig_setup.sh | 104 +++++
+ 18 files changed, 1035 insertions(+), 9 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/lookup_user_key.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/verify_pkcs7_sig.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_lookup_user_key.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_verify_pkcs7_sig.c
+ create mode 100755 tools/testing/selftests/bpf/verify_sig_setup.sh
+
+-- 
+2.25.1
+
