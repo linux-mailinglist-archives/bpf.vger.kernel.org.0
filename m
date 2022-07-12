@@ -2,154 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 913AF571568
-	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 11:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 086DA571616
+	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 11:48:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232060AbiGLJML (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jul 2022 05:12:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40178 "EHLO
+        id S230244AbiGLJsy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jul 2022 05:48:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbiGLJMK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jul 2022 05:12:10 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70FEC9CE29
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 02:12:06 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id m16so9250734edb.11
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 02:12:06 -0700 (PDT)
+        with ESMTP id S230503AbiGLJsu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jul 2022 05:48:50 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2DE21CB3C;
+        Tue, 12 Jul 2022 02:48:48 -0700 (PDT)
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26C84b48030511;
+        Tue, 12 Jul 2022 09:48:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2021-07-09;
+ bh=tdaHExUSjJudctnnNbnOV6jcCaLpVYdyFQx13qUZHx8=;
+ b=HwbHrZlQ03w/es/nIeIVZzbkOivbzSUk3kD3U18kn772larF5VoyQMTIiSQhaar5Teyy
+ DUlNQ9J9T1spd5D8PZLxvbNZyexk/B8PpurqOtgNFTMM3edxIBl0UOQf+d2759hL6f89
+ +No2aHfcVySTX+Z3kIUsg+ldQz0mndLOcg0xyvubgDa/PryYQXCJGJ5uxhwI7yTsuACZ
+ qUWlexAg/JXsGYSKNGib8HU+SpwcHzKMNNu1wB6pxfQBx724MkDFrnptpYzz5K7O9N9m
+ pht1q0eiEZ6RYmV0NitmcVUXhvzE/L0HLJ7YUUCLp91jiiFoi7cVrbpO0RTu3yQsPVhD sw== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3h71sgp073-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Jul 2022 09:48:08 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.16.1.2/8.16.1.2) with SMTP id 26C9fO9L008457;
+        Tue, 12 Jul 2022 09:48:06 GMT
+Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam04lp2175.outbound.protection.outlook.com [104.47.73.175])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com with ESMTP id 3h7043g33e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Jul 2022 09:48:06 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CBUTk6YgMvPcqpTxm7odMZiX2TR/+oc+dmVdpZJREE5lBz+2sIeaLL4q0GWEwfVU5dJWsZScVQvOozwCCltUGzgh7qtb/XmcsGJ6q3AU6h3dhCTGOrvPQT52Jkp5fFuwBHh+p3tJ3ukpWcU9nPFK7IA6HLU44EL/s89DEeUJhcY79z/79lcDqMrBeOWbZNYNmqfdZ6EW9u0MBBRTn9p7/QBMb9qsRCUKrWCuZJSsH7xz6jCo00KVcYUL6y5KxH+I/mZ3PYp2cnZH77n7UPib9u5eCM6gDStahWiBkVHWqh5CdK51sVsdChSlRuN4x86m47kHt1+imjcVTlLwtouM2g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tdaHExUSjJudctnnNbnOV6jcCaLpVYdyFQx13qUZHx8=;
+ b=FPaVj/Xsl7JaIHdci0aCVtI+jD1wMdqcno2Xy2Vfvn+zTBn0MHgt1yC7FevsEbGNuwn4DB/FtiQM4RbS7CNH4reCk/AYurj6Yyg2/LoMUgGK7jrrmiEn1L05w2Ah7mWkd07/ePLtfWYXnkVa1RUr8yRUtSCTJVW5s9NspI4MCPY1dampTI3IX2RvbVqXo0zvNw0jBo7n1JUzL6CUJu7dt/7cT9EzVVKnluwXHsrJ7Bsm2ai8LcUsNwvPwNJLjVeIj688EmK7Hw5BRO3GGMYOFeYpcN+xAmCe/OBpxM+UGX1si/rYFVcFofYzTNy6m2MA2jK4rKnrkq5i8ysHdaw9EA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TcU10Oc13Ma8WmzWLlaWLrS5D5s+as3wCo0nvvq46k0=;
-        b=cJZTDn2H0RfCFScGvHtGuEeHOPvQBYHknliZU3fQ1B73tfhi7pmjnFVlbkbhhUjIh1
-         sfZms2buwqSCNrIvG77EBxUoX4r/dtokoRm+LpA6cD7qTUV3b3SBxr066VXAjLfKJdIX
-         IIQO1Sw32m65mrLV6csITMatqbstsOyrIvnOQivM5kvgs+xnJkC5S0HTaFiNRTb8JVDv
-         owqdBel14LSSgJMsY6S2MVyk3QW1O+Nc5vL0XBpJk75VMpPwUi33CHRVKlrV28O9Elgl
-         hisbC/Zy5j+AJWjafCjc8PZsY7Vf9uj+RLNoXRSlqOhR48KiXckpZLjRsm9KL2XPMCHt
-         R7Cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TcU10Oc13Ma8WmzWLlaWLrS5D5s+as3wCo0nvvq46k0=;
-        b=1sw9L/A0LFfIGnJhzBFdhpiLvJAZRVN80PCh7TEDVEshUfm8KG/sz2cwyuDZ4TkMA4
-         LEXMmI4nCnLuQWP9FNEqfYXpEfPKIE2rH7js3/H+T+m8GdXQAfYVLB0TXlA19wPeHBli
-         rOlq/fRCIi+ekDCAjq0oTA682sMjMT1ADlhOtaH3PbHv+avDscAgbOIKF+PkCu7SNJpE
-         QZSnNY/OF75zotSuq1j4+HnXH+9hekEgcXdEbx6Zk+Wb0LztyflkyHHhMcIDsS2q+lao
-         6r6PUwbeDlwwpbU0hMZNeHQcgrMpX4AN3y+RsLHJmGuf91KaaRXQkhvz1eeQi0Yxx9M1
-         C9Qg==
-X-Gm-Message-State: AJIora8yRPjD4GmXR/V68jW5UPASAEt+07bD872ca5FABXctheSpy/8B
-        +rEymkzX9Y1Wx4ItY8ML/zI=
-X-Google-Smtp-Source: AGRyM1vVitQ2a1J2jhr2B9GasGXrG49nXuk3nR+M5cni0pZk2j54SiJOgRujq6XZyEKHWmotC8EYgg==
-X-Received: by 2002:a05:6402:50d0:b0:43a:df6d:6f4d with SMTP id h16-20020a05640250d000b0043adf6d6f4dmr8307257edb.72.1657617124987;
-        Tue, 12 Jul 2022 02:12:04 -0700 (PDT)
-Received: from krava ([151.14.22.253])
-        by smtp.gmail.com with ESMTPSA id r11-20020a170906a20b00b0072b2378027csm3550955ejy.26.2022.07.12.02.12.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jul 2022 02:12:04 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Tue, 12 Jul 2022 11:12:01 +0200
-To:     Donald Chan <hoiho.chan@gmail.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, bpf@vger.kernel.org,
-        daniel@iogearbox.net, ast@kernel.org
-Subject: Re: Missing .BTF section in vmlinux (x86_64) when building on Yocto
-Message-ID: <Ys064c3WpREp+Lem@krava>
-References: <CAJQ9wQ_tU-zy-f9rFk_sqiqh7y7WDz2tyYW6EJNzii6Y7AE3SQ@mail.gmail.com>
- <CAJQ9wQ_b=ssxO4RaQ4tLc723ubOXCaTUpmghebc94bYWQ+cBsg@mail.gmail.com>
- <YsvPDfSE6wflDtpA@krava>
- <YsvgmAK0LJbpCQ/G@krava>
- <CAJQ9wQ-9WR4RY-Fb-22Y-0Tcwri_v7FVRYMNiJCJMrqqiAU9Rw@mail.gmail.com>
-MIME-Version: 1.0
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tdaHExUSjJudctnnNbnOV6jcCaLpVYdyFQx13qUZHx8=;
+ b=D7BphNjoUSqO9IrvvscU0UyxhYZiVt2yMIVlCYbhw4Lfj+M+LJSfA64Gm7rCSdHKuNdZ/Dp+ndy7CwkoyONeSnjV6IPct1lbui+BC+CEF5ErQgbJ0iSXqhHZUx3H9AnRMDDu0idsBoZvcVfJ9LhiT1q3RejAgk7101AnNEfVdQI=
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by CY4PR10MB1525.namprd10.prod.outlook.com
+ (2603:10b6:903:27::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.25; Tue, 12 Jul
+ 2022 09:48:02 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5020:9b82:5917:40b]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5020:9b82:5917:40b%6]) with mapi id 15.20.5417.026; Tue, 12 Jul 2022
+ 09:48:02 +0000
+Date:   Tue, 12 Jul 2022 12:47:45 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Hawkins Jiawei <yin31149@gmail.com>
+Cc:     syzbot+5f26f85569bd179c18ce@syzkaller.appspotmail.com,
+        andrii@kernel.org, ast@kernel.org, borisp@nvidia.com,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        edumazet@google.com, guwen@linux.alibaba.com,
+        yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kgraul@linux.ibm.com,
+        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        skhan@linuxfoundation.org, 18801353760@163.com,
+        paskripkin@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH] smc: fix refcount bug in sk_psock_get (2)
+Message-ID: <20220712094745.GM2338@kadam>
+References: <00000000000026328205e08cdbeb@google.com>
+ <20220709024659.6671-1-yin31149@gmail.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJQ9wQ-9WR4RY-Fb-22Y-0Tcwri_v7FVRYMNiJCJMrqqiAU9Rw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_RED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220709024659.6671-1-yin31149@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: MR2P264CA0178.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501::17)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8e8f86f4-0b44-4989-911a-08da63eb9ca4
+X-MS-TrafficTypeDiagnostic: CY4PR10MB1525:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NmmRMrdpwP9mq70U5XEJo5qx/PDvgMDpE4/qTIaZrgs7rOb2JrTXbnndXO6D3Sv0Bl7syWKrS/iUNJwYaYBv6y+EyPelBjWCV/vPXqT8hEirPPdjKKA1PsFGmqQrIuQ/vv1KYjYPNJMIR5HlNjrkR0RIscu/7CuainT8rKbYL8kf9l+nstnYVx7rGXQEYMuRN0WVIpGVBCXSKMGSoEJP6khCfwgWoxZz8TH6tDLcjZHHrAks0m12Xrng2CTobJtKZMNGw7FLSqd+AuQfYy+ZFLS43VA3lYfbWCM+cnA47yfrRj3Pun34gLMsYffcIZF9Sedm8qM7z6tsaTPE24vmgFje7ooWa9J92xS1s99BTqIfk96uIh4SKkJWCl1MrnQji9XA4dLBy6kLSklrAIo7KhJpN2aIH5XVci9NP3H7PvLgrGGtjwKVopIrxoxyqRRRtCsvqSu14WXZU44lUGYuOJwHCnRhAr1B5bEbQbn38u3aQMn90iRXt/e/5SqNqVFRTCQIybODoifpWy6phAzoPI/LspJrI5sGn5gItXJreUFAmlq9gQVT74nT1EZ12h9NUChIMxVpEJFY6+In334wVsJASZ4kttgJfvx+rzgAS6RxR1AWjTxm30b0oNyBGyTOndRK7OVDKsiS9a6eG1h4j2Ca1Thsj5ApCiceVdmHRFgF9rrW0uXiV6AmhbbP+GuNgPXfLQEbCFbJusApVaxTX/Orp+dQgzMrwfhP4nHoA6DH2hTzJubltyN5mwG9Ej2xKGdkNEdJneRihTEtwNgsZ4AONtJyrc/JMnhyUC47VQduLl2taKzDkDcCVC0PmYj+
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(7916004)(136003)(396003)(366004)(39860400002)(346002)(376002)(83380400001)(86362001)(38100700002)(38350700002)(186003)(44832011)(6916009)(66946007)(6486002)(4326008)(33716001)(316002)(8676002)(66556008)(8936002)(7416002)(66476007)(26005)(6512007)(52116002)(9686003)(558084003)(478600001)(6506007)(6666004)(41300700001)(1076003)(33656002)(2906002)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?aQyg3juU1P8GRzfUtCv0Gf2HglbinCPrHzIgfY/m+Wx2qB+q9o6AeiG5lvSc?=
+ =?us-ascii?Q?LK26IY8a8ELLoyNTlESWi33Wx/ZA0uH59ae//EC98KJ3g26A7tx3R5mbem6e?=
+ =?us-ascii?Q?FQjIzdc/+6dTHIUcEWEBkvhyliwW2FOojpXHthRBFEr6SQ6zpkjqqHR4gZmU?=
+ =?us-ascii?Q?afWtCPMPSa/gGwxYSNA5ck4yb6gT5IPOb6wPUjbhpsRLKfGSz6eqKyCcx2+C?=
+ =?us-ascii?Q?Nz0GIxmo7kWdhzSX9VlGuO80ST3yTg6rcrLDplPTOiOUnmFWnEDzRHBRkH7H?=
+ =?us-ascii?Q?ak4qcAXdFewmZI0MC0rJitHQ9OmKQqYijn+sJnN8Dq7waIVkP9uNH9lW0w5U?=
+ =?us-ascii?Q?fsSv78kUmOXgwGTcasCQMMdxHk7BO9ycmQzeWOBP+1be27ga2EqKM08zKXYh?=
+ =?us-ascii?Q?0kzvPQx+fwmxbXkq5qk4BY2L8oWwQYq/QZL5oilZyn2lB5QgYy17FQ1r4yTP?=
+ =?us-ascii?Q?LCN35KT+m/gD9yGvUvzBxAL12uhvN/kl2yXg/iWRiXtnPS76Kj30n1f7hNkO?=
+ =?us-ascii?Q?PLpNXoDNDpUrMcDxjHUUmQ5tSNtf6NFcdDwyXDX0zc35h/HNEFzcqKfrrB5N?=
+ =?us-ascii?Q?vPrxRDp5aXb4VwfbLLlOhmmj6gV52VFWGFgvF6vct74sQV7URYnKBUh8vFlU?=
+ =?us-ascii?Q?+nA4PgioCE1UxKTXhLj3+FKwYLMoMpLKDIH2LUqsSynFhvBXT/R0gCVeocc4?=
+ =?us-ascii?Q?KhFE5cvPt6USrivIb1bFA7iRIYTQmqJxjAfv/iFZZRanK33DHhCgzmX7M6y6?=
+ =?us-ascii?Q?dlImy6ex1hXpdXekktTADfiQF1FUGQ3kblQH3jZZp5FIL7oYP6LKqgDuvJ09?=
+ =?us-ascii?Q?YQ4syWQoDfCrJynQiFSbzgYrOmr3IsAQZuCEOJyPNBL5+82lxJ6DX0qtbFnO?=
+ =?us-ascii?Q?gBcDJEQSj6Z0u7GoRa9lO5o2S90Uv7ESWA+v29RxgkC2x3wX8k0zHSqn2c4S?=
+ =?us-ascii?Q?bKKvsAmVihrsSjVocBw6eohYS/donnOVpgRkGOcDExPKvRhm5xwUkeyYTZtr?=
+ =?us-ascii?Q?UyIra0utaDuJCu+exzk+Tgfylz4bwrGQEg+ZF+/qRup0ybhey/6aJqhRV6ZR?=
+ =?us-ascii?Q?fUeZKrDoaILNCfJxfcQvv1t2MekPUTjzgyBeJN2vJ2RkwL+2BGUL16cVk4c3?=
+ =?us-ascii?Q?YY3/jZ8v2IBIxiHlQokPCeapXlzvAG8zqjOWH3QbNjyhmXnDqTJDpBn5ooUR?=
+ =?us-ascii?Q?FZ2iVsknKLKu4oZ+A2p6zZNEb4zDo6uLF5JH5bXLnfDKTon1DVSsJ/YeF39X?=
+ =?us-ascii?Q?ZMGdoXKIZwdMTLRvs+O/HoVmFryP70k0o+m8erJJV0LGjGESsa2WiG6gvcVm?=
+ =?us-ascii?Q?BGpgTDDdb9fUEFF6f+pukC6MzweS9SIiCR99q0225c6D637WGf+8bQQVgjOL?=
+ =?us-ascii?Q?S4QSz5s4oMTAKFQ/2lgHKF1B3i6kzevPvd7nQUJ2BxW6KsVpUn5hzbVCVd7K?=
+ =?us-ascii?Q?q+7jScFxucN84DBSr0sHBfOlnlrWrWO5DVIZmPgDm5NXZPVx1pdsWO/zf8eQ?=
+ =?us-ascii?Q?wdTEAbHTa6LGePX9+XgL9vaueFZlIzJhFCfaNeRyOoDJ1FlFX/5dfaLnJHAT?=
+ =?us-ascii?Q?xYQuqpKFCdyZx7zk9S5EecpA71+tJaXYqo2pi7z9Fd5PTT1ZrT+smxa9KE1V?=
+ =?us-ascii?Q?Xg=3D=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8e8f86f4-0b44-4989-911a-08da63eb9ca4
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jul 2022 09:48:02.5810
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MzTU/YZEanP5XpcguOXFWo+NzNvfjvgSnyx4UHwM+ic/nvEXJcZwaFHr3FsRlxCeeclarbCInhqlnzJJoFPgokGRdbXEfpPSLojalNQmF+k=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR10MB1525
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.517,18.0.883
+ definitions=2022-07-12_05:2022-07-08,2022-07-12 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0 mlxscore=0
+ suspectscore=0 adultscore=0 spamscore=0 mlxlogscore=973 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2206140000
+ definitions=main-2207120036
+X-Proofpoint-GUID: weWgy6M75EszfCx-IcGwbd2mpgckcYsf
+X-Proofpoint-ORIG-GUID: weWgy6M75EszfCx-IcGwbd2mpgckcYsf
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 11, 2022 at 02:53:58PM -0700, Donald Chan wrote:
-> On Mon, Jul 11, 2022 at 1:34 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> >
-> > On Mon, Jul 11, 2022 at 09:19:45AM +0200, Jiri Olsa wrote:
-> > > On Sun, Jul 10, 2022 at 10:57:01PM -0700, Donald Chan wrote:
-> > > > Hi,
-> > > >
-> > > > I am trying to enable CONFIG_DEBUG_INFO_BTF when building a
-> > > > Yocto-based Linux kernel....but it is failing with this error:
-> > > >
-> > > > |   LD      .tmp_vmlinux.btf
-> > > > |   BTF     .btf.vmlinux.bin.o
-> > > > |   LD      .tmp_vmlinux.kallsyms1
-> > > > |   KSYMS   .tmp_vmlinux.kallsyms1.S
-> > > > |   AS      .tmp_vmlinux.kallsyms1.S
-> > > > |   LD      .tmp_vmlinux.kallsyms2
-> > > > |   KSYMS   .tmp_vmlinux.kallsyms2.S
-> > > > |   AS      .tmp_vmlinux.kallsyms2.S
-> > > > |   LD      vmlinux
-> > > > |   BTFIDS  vmlinux
-> > > > | FAILED: load BTF from vmlinux: No such file or directory
-> > > >
-> > > > I dug deeper and it seems that the resolve_btfids utility is not able
-> > > > to find any relevant .BTF section (at btf__parse from function
-> > > > symbols_resolve).
-> > > >
-> > > > Dumped the vmlinux and also confirmed there is only .BTF_ids section:
-> > > >
-> > > >   [2993] .rela___ksymtab_g RELA             0000000000000000  17174de0
-> > > >        0000000000000048  0000000000000018   I      22807   2992     8
-> > > >   [2994] .BTF_ids          PROGBITS         0000000000000000  0105c504
-> > > >        00000000000000fc  0000000000000000   A       0     0     1
-> > > >
-> > > > What could be wrong? Sample config is available at
-> > > > https://gist.github.com/hoiho-amzn/964eb0cf2b4459f6775d7af1da7b4056
-> >
-> > I compiled x86_64 bpf-next/master kernel with your config with no problems,
-> > could you share more details? like:
-> >   - version of dwarves/pahole
-> 
-> $ pahole --version
-> v1.22
-> 
-> >   - clang/gcc? versions
-> >   - V=1 compile log
-> >   - command line options
-> 
-> I will need some more time to gather the logs. Hopefully the pahole
-> and kernel branch will give some initial clue.
-> 
-> >   - tree/branch you're on
-> 
-> This is from Yocto and they use 5.15 -
-> https://git.yoctoproject.org/linux-yocto/tree/?h=v5.15/standard/base&id=ebfb1822e9f9726d8c587fc0f60cfed43fa0873e
+On Sat, Jul 09, 2022 at 10:46:59AM +0800, Hawkins Jiawei wrote:
+> From: hawk <18801353760@163.com>
 
-could you test that on either bpf/master or bpf-next/master tree?
+Please use your legal name like you would for signing a legal document.
 
-jirka
+regards,
+dan carpenter
 
-> 
-> >   - anything else ;-)
-> >
-> > thanks,
-> > jirka
-> >
-> > > >
-> > > > The issue exists on x86_64, I also have tried armv7 with the same
-> > > > result so doesn't seem to be arch-specific.
-> > >
-> > > hi,
-> > > do you use any special command line options?
-> > > what tree/branch are you on?
-> > >
-> > > thanks,
-> > > jirka
-> > >
-> > > >
-> > > > Thanks
-> > > > Donald
