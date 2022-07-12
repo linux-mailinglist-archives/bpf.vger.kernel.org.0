@@ -2,136 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12F7A572177
-	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 18:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F04F457218C
+	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 19:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231437AbiGLQ6s (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jul 2022 12:58:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46340 "EHLO
+        id S229534AbiGLRFw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jul 2022 13:05:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230111AbiGLQ6r (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jul 2022 12:58:47 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB47C65C1
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 09:58:41 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id r16-20020a257610000000b0066f5239588eso3719588ybc.12
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 09:58:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=pW3VY9UCSHV/WHaAinEoEI5ziscblWk9zZZv5jrPnko=;
-        b=iGASFEYWEgahJcIK+rqOuHbIKmgCy0b/LNGQ/QjENuaU2zo+ZSVAJGLt9YdkeKrEBB
-         FQZjcuLiJzjO4YT+YqTDzoyDVaeQQ/EHXsoZ9N1R3NN9SLylgJW9pfKYiJ3XJPCgo+SV
-         LlAOss5mIOR0/aLl+/4SzQSzSlKBhuL8+wOPjs8NoF1KiWM1tT7fb0GG2xHHY7wjW/i3
-         D5bbCjfAKDrbYvUsajr1MueIW3xcqfdBRPYONWqSyL2P6mYRMY2f9T858cP8LWOaB+WX
-         x/Sdl6201wc9QErc0Vy3BYkqC431Nhc0hmvDF3YWeCIAM5qkJGV8Y/TbThqtUb4VXOaP
-         G52w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=pW3VY9UCSHV/WHaAinEoEI5ziscblWk9zZZv5jrPnko=;
-        b=iNuTbPIXw7uJhNfk+xwiX8Pcko6EDeU9RYsSeOty4w1v3VcHJpt1BoHXEh6FXh2OO+
-         jVx4JWvSN9XztGsx3C6dxdMNHjdlH8GOlGUUVH6jPkKOS9eV5icFSVFows9H+KXouxe+
-         SbAGk7gcqNxLvFkyppeBUO/ttJEQABAZm0kBlYJIdwr8U003nh1oeFevYLyCMWTAia2L
-         IBV2JkH2eDngsURDfrpNi70SAJKlMgfAfk9JX0TOp9C+ofbHQ8K3ePip3jUdFnEYa6pR
-         XBeQUfjoH33gnjSGZIo1jrD+EwkJJ47+4xEkdf9CUXgZqpm54Ck4D1LGB70gIjVXuBRA
-         ZIDQ==
-X-Gm-Message-State: AJIora9LTaELV/W7wP8KAgHPqSmqGUAwZoWLxiOlI8tNsyEECKlXQYva
-        ltOKCQDRBq6B7EaAsIBT9YZxtdQ=
-X-Google-Smtp-Source: AGRyM1vTRa1g122HIBG2Z6ETQ8rb83s+oq/Ra7q6Gnx7ofVy9Eox5zCYafhIjUoysCTl9mrhJ9cZ6Ls=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a25:b091:0:b0:66e:56f5:eae7 with SMTP id
- f17-20020a25b091000000b0066e56f5eae7mr22038689ybj.366.1657645120866; Tue, 12
- Jul 2022 09:58:40 -0700 (PDT)
-Date:   Tue, 12 Jul 2022 09:58:39 -0700
-In-Reply-To: <20220712120158.56325-1-shaozhengchao@huawei.com>
-Message-Id: <Ys2oPzt7Yn1oMou8@google.com>
-Mime-Version: 1.0
-References: <20220712120158.56325-1-shaozhengchao@huawei.com>
-Subject: Re: [PATCH bpf-next] bpf: Don't redirect packets with invalid pkt_len
-From:   sdf@google.com
-To:     Zhengchao Shao <shaozhengchao@huawei.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        hawk@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        weiyongjun1@huawei.com, yuehaibing@huawei.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        with ESMTP id S231684AbiGLRFv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jul 2022 13:05:51 -0400
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E04DBFAF1;
+        Tue, 12 Jul 2022 10:05:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1657645550; x=1689181550;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=rPxMZ+Vw5uzO4+6HpSJz1lqVx99t6Z9trYQCIx/TXKA=;
+  b=mJpu+NKIV3fcJpi5eB03XT7mn5lVUTCWDJb97ALuikap2G6s7KPDmBgm
+   S7W6FKLT8FLWYCRc2Tt77e8Xant6f/NmmOSUU+0I86iW+RkPgOxM9sq0c
+   FmwWa6Sm4gTbWBze/djyGjVHDOaM5ZeVvM/oQDWl9j4unEHXy4ugB5xkf
+   CATjjsR+R//eCgCwRnDpzZv+sKmRvAbr2gsEmWmboQKwvnnfiapB1sOUO
+   PMjl7A7TOFeUvDFMaQq8camJ1MdPCpljUhyNM4M9Og9zO2TGdYUT79I9u
+   oVsPSp0A+XdcP+soYAbuz0BcfcNkSwDYAyfdUgGl8wDu41T8h50G358Jj
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10406"; a="285733892"
+X-IronPort-AV: E=Sophos;i="5.92,266,1650956400"; 
+   d="scan'208";a="285733892"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2022 10:05:48 -0700
+X-IronPort-AV: E=Sophos;i="5.92,266,1650956400"; 
+   d="scan'208";a="663024910"
+Received: from eklong-mobl.amr.corp.intel.com ([10.209.68.103])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2022 10:05:47 -0700
+Date:   Tue, 12 Jul 2022 10:05:47 -0700 (PDT)
+From:   Mat Martineau <mathew.j.martineau@linux.intel.com>
+To:     Matthieu Baerts <matthieu.baerts@tessares.net>
+cc:     Jiri Olsa <olsajiri@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Geliang Tang <geliang.tang@suse.com>, mptcp@lists.linux.dev
+Subject: Re: [PATCH bpf-next] mptcp: Add struct mptcp_sock definition when
+ CONFIG_MPTCP is disabled
+In-Reply-To: <23fa8509-5b2d-6263-1543-443c9c896348@tessares.net>
+Message-ID: <d8cecd5-64b-5e5f-3fa-93dbbef3c2@linux.intel.com>
+References: <20220711130731.3231188-1-jolsa@kernel.org> <6d3b3bf-2e29-d695-87d7-c23497acc81@linux.intel.com> <5710e8f7-6c09-538f-a636-2ea1863ab208@tessares.net> <Ys1lKqF1GL/T6mBz@krava> <23fa8509-5b2d-6263-1543-443c9c896348@tessares.net>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="0-1561649209-1657645548=:60884"
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 07/12, Zhengchao Shao wrote:
-> Syzbot found an issue [1]: fq_codel_drop() try to drop a flow whitout any
-> skbs, that is, the flow->head is null.
-> The root cause, as the [2] says, is because that bpf_prog_test_run_skb()
-> run a bpf prog which redirects empty skbs.
-> So we should determine whether the length of the packet modified by bpf
-> prog or others like bpf_prog_test is valid before forwarding it directly.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-> LINK: [1]  
-> https://syzkaller.appspot.com/bug?id=0b84da80c2917757915afa89f7738a9d16ec96c5
-> LINK: [2] https://www.spinics.net/lists/netdev/msg777503.html
+--0-1561649209-1657645548=:60884
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8BIT
 
-> Reported-by: syzbot+7a12909485b94426aceb@syzkaller.appspotmail.com
-> Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
-> ---
->   net/core/filter.c | 9 ++++++++-
->   1 file changed, 8 insertions(+), 1 deletion(-)
+On Tue, 12 Jul 2022, Matthieu Baerts wrote:
 
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 4ef77ec5255e..27801b314960 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -2122,6 +2122,11 @@ static int __bpf_redirect_no_mac(struct sk_buff  
-> *skb, struct net_device *dev,
->   {
->   	unsigned int mlen = skb_network_offset(skb);
+> Hi Jiri,
+>
+> On 12/07/2022 14:12, Jiri Olsa wrote:
+>> On Tue, Jul 12, 2022 at 11:06:38AM +0200, Matthieu Baerts wrote:
+>>> Hi Jiri, Mat,
+>>>
+>>> On 11/07/2022 23:21, Mat Martineau wrote:
+>>>> On Mon, 11 Jul 2022, Jiri Olsa wrote:
+>>>>
+>>>>> The btf_sock_ids array needs struct mptcp_sock BTF ID for
+>>>>> the bpf_skc_to_mptcp_sock helper.
+>>>>>
+>>>>> When CONFIG_MPTCP is disabled, the 'struct mptcp_sock' is not
+>>>>> defined and resolve_btfids will complain with:
+>>>>>
+>>>>>  BTFIDS  vmlinux
+>>>>> WARN: resolve_btfids: unresolved symbol mptcp_sock
+>>>>>
+>>>>> Adding empty difinition for struct mptcp_sock when CONFIG_MPTCP
+>>>>> is disabled.
+>>>>>
+>>>>> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+>>>>> ---
+>>>>> include/net/mptcp.h | 4 ++++
+>>>>> 1 file changed, 4 insertions(+)
+>>>>>
+>>>>> diff --git a/include/net/mptcp.h b/include/net/mptcp.h
+>>>>> index ac9cf7271d46..25741a52c666 100644
+>>>>> --- a/include/net/mptcp.h
+>>>>> +++ b/include/net/mptcp.h
+>>>>> @@ -59,6 +59,10 @@ struct mptcp_addr_info {
+>>>>>     };
+>>>>> };
+>>>>>
+>>>>> +#if !IS_ENABLED(CONFIG_MPTCP)
+>>>>> +struct mptcp_sock { };
+>>>>> +#endif
+>>>>
+>>>> The only use of struct mptcp_sock I see with !CONFIG_MPTCP is from this
+>>>> stub at the end of mptcp.h:
+>>>>
+>>>> static inline struct mptcp_sock *bpf_mptcp_sock_from_subflow(struct sock
+>>>> *sk) { return NULL; }
+>>>>
+>>>> It's normally defined in net/mptcp/protocol.h for the MPTCP subsystem code.
+>>>>
+>>>> The conditional could be added on the line before the stub to make it
+>>>> clear that the empty struct is associated with that inline stub.
+>>>
+>>> If this is required only for this specific BPF function, why not
+>>> modifying this stub (or add a define) to return "void *" instead of
+>>> "struct mptcp_sock *"?
+>>
+>> so btf_sock_ids array needs BTF ID for 'struct mptcp_sock' and if CONFIG_MPTCP
+>> is not enabled, then resolve_btfids (which resolves and populate all BTF IDs)
+>> won't find it and will complain
+>>
+>> btf_sock_ids keeps all socket IDs regardles the state of their CONFIG options,
+>> and relies that sock structs are defined even if related CONFIG option is disabled
+>
+> Thank you for the explanation. I didn't know about that.
+>
+> Then it is fine for me to leave it in mptcp.h. If it is not directly
+> linked to bpf_mptcp_sock_from_subflow(), I guess it can stay there but
+> maybe better to wait for Mat's answer about that.
+>
+>> if that is false assumption then maybe we need to make btf_sock_ids values optional
+>> somehow
+>
 
-> +	if (unlikely(skb->len == 0)) {
-> +		kfree_skb(skb);
-> +		return -EINVAL;
-> +	}
-> +
->   	if (mlen) {
->   		__skb_pull(skb, mlen);
+I'd rather keep the full mptcp_sock definition in net/mptcp/protocol.h 
+since moving it would require also moving a few other structs it depends 
+on.
 
-> @@ -2143,7 +2148,9 @@ static int __bpf_redirect_common(struct sk_buff  
-> *skb, struct net_device *dev,
->   				 u32 flags)
->   {
->   	/* Verify that a link layer header is carried */
-> -	if (unlikely(skb->mac_header >= skb->network_header)) {
-> +	if (unlikely(skb->mac_header >= skb->network_header) ||
-> +	    (min_t(u32, skb_mac_header_len(skb), skb->len) <
-> +	     (u32)dev->min_header_len)) {
+Defining the empty struct in mptcp.h is fine with me and it sounds like 
+that meets the needs of btf_sock_ids - but I'd like a v2 of this patch 
+that moves the new empty struct declaration next to the inline 
+btf_mptcp_sock_from_subflow function in mptcp.h
 
-Why check skb->len != 0 above but skb->len < dev->min_header_len here?
-I guess it doesn't make sense in __bpf_redirect_no_mac because we know
-that mac is empty, but why do we care in __bpf_redirect_common?
-Why not put this check in the common __bpf_redirect?
-
-Also, it's still not clear to me whether we should bake it into the core
-stack vs having some special checks from test_prog_run only. I'm
-assuming the issue is that we can construct illegal skbs with that
-test_prog_run interface, so maybe start by fixing that?
-
-Did you have a chance to look at the reproducer more closely? What
-exactly is it doing?
-
->   		kfree_skb(skb);
->   		return -ERANGE;
->   	}
-> --
-> 2.17.1
-
+--
+Mat Martineau
+Intel
+--0-1561649209-1657645548=:60884--
