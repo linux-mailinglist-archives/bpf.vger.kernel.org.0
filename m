@@ -2,364 +2,412 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 168E5571BB2
-	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 15:50:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B67E0571C07
+	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 16:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230172AbiGLNuO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jul 2022 09:50:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39722 "EHLO
+        id S232795AbiGLOPP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jul 2022 10:15:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232918AbiGLNuO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jul 2022 09:50:14 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C832A9B1A5
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 06:50:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1657633812; x=1689169812;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-transfer-encoding:mime-version;
-  bh=1dvnhY+yCCbjYjxxmiuGVy/gTrNzRlnQ04lbkUMBjus=;
-  b=avPxXn7he35LoDjPkg3jV1usuzkDpushs/w0xJUO6Qzo8yacHDtB1p+k
-   FXydkKRSzYFyq+k0Or+TXDKVeubL0OaZzab9aMaqitaqR7fQGJHkrV5zH
-   M8c1DKkaEy55o3oaMXOutCU6O4n10nC3Ze6i07ViF3PbGXgSTW+/pHdAq
-   ucLydFWHq82RQN5XEsZkhJ/KLRbeNFxdaoXBwxgki9g8Q7jJyrtxKS8HM
-   wVWqIgdppqKL4wBr++42MvQMUe9EVmOlBm5M4fxvcxMTXffIxWJJLv7JO
-   U41WvqFnQziWRi/wEiQqgkNRiDQLZFE7tY1GR4GRvCoPapbqqdvnPKtWr
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10405"; a="310555926"
-X-IronPort-AV: E=Sophos;i="5.92,265,1650956400"; 
-   d="scan'208";a="310555926"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jul 2022 06:50:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,265,1650956400"; 
-   d="scan'208";a="652919822"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmsmga008.fm.intel.com with ESMTP; 12 Jul 2022 06:50:07 -0700
-Received: from orsmsx608.amr.corp.intel.com (10.22.229.21) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27; Tue, 12 Jul 2022 06:50:07 -0700
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX608.amr.corp.intel.com (10.22.229.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27; Tue, 12 Jul 2022 06:50:07 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27 via Frontend Transport; Tue, 12 Jul 2022 06:50:07 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2308.27; Tue, 12 Jul 2022 06:50:06 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NjxpaPd+Xz3CIqJW4tvhTgzdy9EQs85D0QjN/jZ4LnQwuUzIgBSVa+3/TTdnO2bO38Qv/91DB8/bu+1FGgng2qhXukvdTs7lIPD32NyigM/qJGTteDdRV7+1vAaypFkqYSu4VZARM47En7bpgcAnz7TdXlt1H5o9q4xlnBt1UX02OiStQIoeAbGc75oa++vlUhOEHusMVggWelvWmQrsZGxZQk7RNTjkGMpyHmNhIHDrT2Ok8zhIl5gxLB/6Uz6x/Erd5PZ1pxPjl//BQQ5zVuWz9IS4KmW1ixWT3I+8CNP0x6QCVpF/qooGaHpeMs5M3ecX6c5MQ+z7A9wSYXS8bQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=l/FR9KECm/8h7GTcRxhEb1bCRkAOssIjeg5r+TNR9KQ=;
- b=SuZioqIy03BPiilPE0P+Ov52ybLVpXuP6F5b3NoIPKtMtY9v5DSJa9RRXPMO/u4TXU/fNJSxJVNyxKdpcN0gN5oOHnwL5tchjFv96o9f+FZ/8V9NWeJpRK0uGfM8XCceUzEH29WwdsoZrR4vyugxGpP61F0U6U+Qg7lRNsw2AsnxDoDal7cjCYG/sKHwXynvsLi/W0Uz+cJmECh6xqmudBzBK60M4o3KyQ9zrFq/inAUahaMfh6oDH9dyRpyS8MQf0qush7XbVXNYo6g/6pRoRvMqWoeKGUg95PBuOc/KzD4iDL4jXVC9+Afl7ZaGxBQC4zUZlpSvAcnLaFFeZTTBg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN6PR11MB1633.namprd11.prod.outlook.com (2603:10b6:405:e::22)
- by SA2PR11MB5035.namprd11.prod.outlook.com (2603:10b6:806:116::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.16; Tue, 12 Jul
- 2022 13:50:05 +0000
-Received: from BN6PR11MB1633.namprd11.prod.outlook.com
- ([fe80::d04:1ded:6b5d:9257]) by BN6PR11MB1633.namprd11.prod.outlook.com
- ([fe80::d04:1ded:6b5d:9257%6]) with mapi id 15.20.5417.026; Tue, 12 Jul 2022
- 13:50:05 +0000
-From:   "Zeng, Oak" <oak.zeng@intel.com>
-To:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Build error of samples/bpf
-Thread-Topic: Build error of samples/bpf
-Thread-Index: AdiV9eTYhI73n+WtTH2WQRFEfo/oRgAAE/pg
-Date:   Tue, 12 Jul 2022 13:50:05 +0000
-Message-ID: <BN6PR11MB16332A018C2FAB69B479EA2B92869@BN6PR11MB1633.namprd11.prod.outlook.com>
-References: <BN6PR11MB16338E9998353C6B239CD27792869@BN6PR11MB1633.namprd11.prod.outlook.com>
-In-Reply-To: <BN6PR11MB16338E9998353C6B239CD27792869@BN6PR11MB1633.namprd11.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.6.500.17
-dlp-reaction: no-action
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3ce95c3c-c72b-4114-270f-08da640d6d4d
-x-ms-traffictypediagnostic: SA2PR11MB5035:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 9Pd1wGI1ekGMyMQo40Mi/F3exshKuyeEBCtEvBzzyyBQS7l7cpMY1XrTUn3PDyOl7ibfZtYh9IcjfGC6IJGclMGVwibI+r+02dgyh0LQI5Zfx0/Dfo6T6HBgFZvcXPf71kqnpv4xwfFJwFUR3CKG+qwMI7i9V8bQhKuNaKwXCM9Z4kbhzeQJSGrNX6YO8RH6gJz1MfsGRwRDbzn/zxnk2VIikv1xNsPUjKAOmURlKQFzslbj5TUWNSbaxpMfvst2j1xLBrntZJuhxurdzLESBlqVVt4J5nOQ2jpkspIONQVSIxbhMe65N4jyuuUfQCn2le/u/YY4YCk6TZNssHePHHGwVgKYbhNtTns2L2iHaEq6qDBdRgwm4H26kg//QsAlKmL50/fmBXE6KZjYDARGGwwFQZZtjPDgWS2DWmsNHgOJZJuAk21tIG7rdAJvxA23xpsdW3v+EfY5gb6z7laYIAu2B3TfiPGocbw50GncLWWS6QgP5lFyxa8KSE5Bi3fRzJlCOaSEocXQlgJAOSjwYIog63syVVRCO/ISpyLPsCB2sN5fPjUV+fZfOhBICkwpOWNVTLq7FKSYZpXGanz6MMS1V8hJnW+VVQZd5mUKI2mVYj1D5sN2XvSbwDa2SMxVhDwEXFKBkoVRzaEv4UeqC/DgH+x97c1Gc9B/IYbYBUtDEHUDIKvRUOqeWLjXULxtiE9ixz5Oe1PgXobaaivTXUdqN0RFVbMexmi9z1zfwHV87VRXXU7+/MJaRkVCUpG22GcdzPX/OxDAg1O4DDLMZIKst6/trvpJ8WAwjqOO/yivWL8I5tXzOQOsTDUuT4V1BQNoVE0mHkpHHYjjrCDAdA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR11MB1633.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(376002)(136003)(396003)(366004)(346002)(39860400002)(82960400001)(86362001)(122000001)(26005)(52536014)(38070700005)(33656002)(7696005)(186003)(9686003)(2940100002)(66574015)(55016003)(38100700002)(66556008)(478600001)(966005)(6916009)(66476007)(71200400001)(8676002)(41300700001)(66946007)(66446008)(64756008)(5660300002)(8936002)(76116006)(83380400001)(316002)(6506007)(2906002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?/s2Lw5/iNjXKpAb8eBlg29AziOpG6xXf06T/3FKevsdpknuf2wpLrFqMYdeg?=
- =?us-ascii?Q?fDv/Ih6DQcL+yyb9lFOmMeHXsvsCcORZuvLXl4+ekq8ayAOON6jJ97pQDBPj?=
- =?us-ascii?Q?n6IZMldFaTnk7/MXZt5UFa58mp+SOI0iFbQT4UEYw9CJCNcSX5L8HGuLzXB/?=
- =?us-ascii?Q?d9br4cKJZumoh5B7obG/o1xmnKHmDXnIYfrw3GDQyh7ALw1A0uulO9tyWJ4g?=
- =?us-ascii?Q?rfVm1Wj3fzwE9ZCBMZC2EQLlSJEgJxCq67KtD/ytUxRWXxsO/HPQIDTUYJ0M?=
- =?us-ascii?Q?+EG2Mv0XTLEbXQagdka0ntA4HqNT8JtX5vpXIxprnMVsJc2tKqOfy6KNUVkA?=
- =?us-ascii?Q?nkC8qSPezH2xk7sZ3DHM0+TQ+wrbtaigapI8nF+NiwIYEgsrQpn1y5eAV+H6?=
- =?us-ascii?Q?1pTEU8y7td6d5VNz7r/JjDMgEsHgpTpCQ0yLr8FiHBKeeBPOgjkN2C6JlqVp?=
- =?us-ascii?Q?trQ0or6IiVywt/CwT1K+FQdWHKTGGHxbd9Gj30ZtAg8sKzCjO7imGYgFImuP?=
- =?us-ascii?Q?LLnM0GLc+tCHz/ZnOtki+LkWqwB7PWrDUtDyQnL5XzlNPcK0neJxqKyrX7A4?=
- =?us-ascii?Q?Mv9kx6im/GFi7lpWtBcrYbQyAzQaJdvBYlTXlpgp5FFl4u+ouPSk28jinNxA?=
- =?us-ascii?Q?Fsi7BKGtwvsCW0E5KJJp4hTMNMdVAgRLeb6Deya4dFj77b2E9woSlk9NXD++?=
- =?us-ascii?Q?Cgt98pbGBAo1C6Tw7hjCx87O9M0v/nfYgwOF/fbgikxXky4h6oLS25eD+Cl1?=
- =?us-ascii?Q?fR3uzT0ZVa6XnwHqEzJDRsXrqXYV2XKTxMd+aVIwL5r5QG++mdEoBonvBgQy?=
- =?us-ascii?Q?1sx6ynQOPv8wCbfPKG28LqjMvrB61qtlb8WcGWfMQtkP4/hxV3mnTTGDFlOd?=
- =?us-ascii?Q?delvtkxWJ5naDOHpYW8+yeLzr4+mRKZ3Zmzb5MzANozyq3Xpthb3JGguxv0U?=
- =?us-ascii?Q?Awd7+H8EtmhlsDwaH/Zf0wJPkVhJEl8MZRkEDzJqglOIfK8X+46bRnSaBrk9?=
- =?us-ascii?Q?sjR8r2KJdNuzDkZPT1A4r+DGN/M1bNY4elbQEmvoluXhMA3FAngr7CjGv70C?=
- =?us-ascii?Q?EssZyHomeCw4xkQzjTXULyuBtcLOcosE7UJu0TykkkYwHZZHxVanUm4ixo94?=
- =?us-ascii?Q?wHy2gcVcBqARdKH6Ru4NZJTMtAktSjxZt4JaVjMsZ1k4jqxMAhzwTJdpnAiR?=
- =?us-ascii?Q?sB76pteq6UNxDgRJ13GiCyGS+0afIqMIisMv6bPT5pujjXuTg+AGhOse0cpl?=
- =?us-ascii?Q?7NoQOpzq1nvpOPIHqjJggsMBBiXeq0pfhwzL74di63aWYpl8R98eptwuYr2E?=
- =?us-ascii?Q?V1RJp5Jf124P72eXbQeSR5qQLMtaUICDaXpb3izfv5sOhFbJ4L/xwhU9NaRY?=
- =?us-ascii?Q?pfJsVy8dBNa91P6pLAoP4scLY0Av87lD75uSXaclknMrFbxRq9jQGZLu5Y/j?=
- =?us-ascii?Q?GI5Sce44nKd2tpV1uq3t0ff/uoo3eJ6PCOVA3woGMSzcuyPFfrTiL9pIuJSB?=
- =?us-ascii?Q?7Xd4YcDhERGMhgp0UGQeEzb6aRmJmHVOGhFg5CoYOqQSQMy/1oLnL0Aov0aU?=
- =?us-ascii?Q?FZIFUGHG9SxVCLTdhD7ftGBwYjJ2+rRLhRlNMmC/?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S232674AbiGLOPM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jul 2022 10:15:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2AA1464E2B
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 07:15:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1657635303;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=266GFhUCmmCN8xc8Ndw3pmarVXi3iQp2eA7vy//odYI=;
+        b=gkFcTK2yEYCpHd4dWZTpNGeMCMPAOJQE0w6FomPR1QYsaAhxoRGgb+PH99QD/+uDev6h1Z
+        C/UeJj7pyTPGFHxxBmIP6/JDxEjRl+yRV35HdvbrJ35TSF4rpEXi1vcFESfjye2ce8e4Tm
+        rXC2czL1MitQEK3G71kegCnK5N4/VGY=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-177-eVWgiXTrOgKC9DcviDMaAw-1; Tue, 12 Jul 2022 10:15:02 -0400
+X-MC-Unique: eVWgiXTrOgKC9DcviDMaAw-1
+Received: by mail-lf1-f71.google.com with SMTP id y8-20020ac24208000000b0047f9fc8f632so3685094lfh.11
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 07:15:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:message-id:date:mime-version:user-agent:cc
+         :subject:content-language:to:references:in-reply-to
+         :content-transfer-encoding;
+        bh=266GFhUCmmCN8xc8Ndw3pmarVXi3iQp2eA7vy//odYI=;
+        b=jrlt5jbjhGrSN12Iq2NBrsT7JSNN1OZUXrjn52ZDX3myz7Hu8VZJ0Kx2/JlwulcOOw
+         6s8mb4JyluvYCKfrOzFrW9gk9pGJkrdj7E91utye5HUBHElNQ0u0ettYi/2G9sAi6g89
+         UiVBsGfoYrqtG0G+pRTdyeo7VG6/1QuidUcMtt51oDHsCOcewa5/uyQWThj1yc0d3IF5
+         2pmafBpgxTxcy4vAz5FjZDz/G3DDLjgB8Ni7FwwYW7qHwxXiuk0lyllnIsAxYhCGydou
+         Ul7te9vk3h/g03wXg2DwaVuY0X9uMNCm3H6T4XRZ+2/qDkb33VthlFWcmO4s2wWexh05
+         dKlQ==
+X-Gm-Message-State: AJIora+wPjWitvDtLYULhpZhX1giGVe+zvXBTEitDqzgYW1JHqTEbOKf
+        17cscWr0xgf9YKF/8FSWHiiBZH6/vsEszENYlMaFcbDqHl5kgkyYYwczvBim4f6H1GEkLHCbOsE
+        nhzgcWsxXDe16
+X-Received: by 2002:a05:6512:68b:b0:485:f4a1:c2db with SMTP id t11-20020a056512068b00b00485f4a1c2dbmr15959877lfe.119.1657635300342;
+        Tue, 12 Jul 2022 07:15:00 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1sNfcQ+bZlAH4C3wrlLJwVUL5oiknHzbXe7KBmMTkwnayCg4aRM46N29uwvgOAa3knZGCI5pw==
+X-Received: by 2002:a05:6512:68b:b0:485:f4a1:c2db with SMTP id t11-20020a056512068b00b00485f4a1c2dbmr15959841lfe.119.1657635299873;
+        Tue, 12 Jul 2022 07:14:59 -0700 (PDT)
+Received: from [192.168.0.50] (87-59-106-155-cable.dk.customer.tdc.net. [87.59.106.155])
+        by smtp.gmail.com with ESMTPSA id h28-20020a2ea49c000000b0025d71ab224fsm1069821lji.55.2022.07.12.07.14.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Jul 2022 07:14:59 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <bea0164c-53dc-efc7-27f3-d1a1b799d880@redhat.com>
+Date:   Tue, 12 Jul 2022 16:14:57 +0200
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN6PR11MB1633.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3ce95c3c-c72b-4114-270f-08da640d6d4d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jul 2022 13:50:05.7159
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: LXirlKJ1Vbpp9WEA5j4IxCvfbRcziZNQhq7AXa+ReZwo9IlWI5354ZvqTEnhhgtC75ge4meP8fWRmajIqq4iNA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5035
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Cc:     brouer@redhat.com, Alexander Lobakin <alexandr.lobakin@intel.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Larysa Zaremba <larysa.zaremba@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Yajun Deng <yajun.deng@linux.dev>,
+        Willem de Bruijn <willemb@google.com>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        xdp-hints@xdp-project.net
+Subject: Re: [xdp-hints] Re: [PATCH RFC bpf-next 00/52] bpf, xdp: introduce
+ and use Generic Hints/metadata
+Content-Language: en-US
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
+References: <20220628194812.1453059-1-alexandr.lobakin@intel.com>
+ <62bbedf07f44a_2181420830@john.notmuch> <87iloja8ly.fsf@toke.dk>
+ <20220704154440.7567-1-alexandr.lobakin@intel.com> <87a69o94wz.fsf@toke.dk>
+ <20220705154120.22497-1-alexandr.lobakin@intel.com> <87pmij75r1.fsf@toke.dk>
+ <20220706135023.1464979-1-alexandr.lobakin@intel.com>
+ <87edyxaks0.fsf@toke.dk>
+ <CAJ8uoz1XVqVCpkKo18qbkh6jq_Lejk24OwEWCB9cWhokYLEBDQ@mail.gmail.com>
+In-Reply-To: <CAJ8uoz1XVqVCpkKo18qbkh6jq_Lejk24OwEWCB9cWhokYLEBDQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello all,
-
-I tried to build the latest samples/bpf following instructions in the READM=
-E.rst in samples/bpf folder. I ran into various issue such as:
-
-samples/bpf/Makefile:375: *** Cannot find a vmlinux for VMLINUX_BTF at any =
-of "  /home/szeng/dii-tools/linux/vmlinux", build the kernel or set VMLINUX=
-_BTF or VMLINUX_H variable
-
-I was able to fix above issue by enable CONFIG_DEBUG_INFO_BTF in kernel .co=
-nfig file.=20
-
-But I eventually ran into other errors.  I had to fix those errors by insta=
-ll dwarves, updating my clang/llvm to version 10.=20
-
-I was able to build it if I comment out all the xdp programs from Makefile.=
- It seems those xdp programs require advanced features such as data structu=
-re layout in vmlinux.h (dumped from vmlinux using bpftool) and this require=
- special kernel config support.
-
-So I thought instead of fixing those errors one by one, I should ask those =
-who are working in this area, is there any instructions on how to build sam=
-ples/bpf? The README.rst seems out-of-date, for example, it doesn't mention=
- CONFIG_DEBUG_INFO_BTF. The required llvm/clang version in README.rst is al=
-so out-of-date.
-
-More specifically, to build samples/bpf, is there an example kernel .config=
- to use? I tried those config here https://github.com/torvalds/linux/blob/m=
-aster/tools/testing/selftests/bpf/config but build errors persist.
-
-Or is there any other tools I need to install/update on my system?
-
-My whole build log is as below:
-
-szeng@linux:~/dii-tools/linux$ make M=3Dsamples/bpf
-readelf: Error: Missing knowledge of 32-bit reloc types used in DWARF secti=
-ons of machine number 247
-readelf: Warning: unable to apply unsupported reloc type 10 to section .deb=
-ug_info
-readelf: Warning: unable to apply unsupported reloc type 1 to section .debu=
-g_info
-readelf: Warning: unable to apply unsupported reloc type 10 to section .deb=
-ug_info make -C /home/szeng/dii-tools/linux/samples/bpf/../../tools/lib/bpf=
- RM=3D'rm -rf' EXTRA_CFLAGS=3D"-Wall -O2 -Wmissing-prototypes -Wstrict-prot=
-otypes -I./usr/include -I./tools/testing/selftests/bpf/ -I/home/szeng/dii-t=
-ools/linux/samples/bpf/libbpf/include -I./tools/include -I./tools/perf -DHA=
-VE_ATTR_TEST=3D0" \
-        LDFLAGS=3D srctree=3D/home/szeng/dii-tools/linux/samples/bpf/../../=
- \
-        O=3D OUTPUT=3D/home/szeng/dii-tools/linux/samples/bpf/libbpf/ DESTD=
-IR=3D/home/szeng/dii-tools/linux/samples/bpf/libbpf prefix=3D \
-        /home/szeng/dii-tools/linux/samples/bpf/libbpf/libbpf.a install_hea=
-ders
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/libbpf.=
-o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/bpf.o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/nlattr.=
-o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/btf.o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/libbpf_=
-errno.o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/str_err=
-or.o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/netlink=
-.o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/bpf_pro=
-g_linfo.o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/libbpf_=
-probes.o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/xsk.o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/hashmap=
-.o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/btf_dum=
-p.o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/ringbuf=
-.o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/strset.=
-o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/linker.=
-o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/gen_loa=
-der.o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/relo_co=
-re.o
-  LD      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/libbpf-=
-in.o
-  LINK    /home/szeng/dii-tools/linux/samples/bpf/libbpf/libbpf.a
-  INSTALL headers
-  CC  samples/bpf/test_lru_dist
-  CC  samples/bpf/sock_example
-  CC  samples/bpf/../../tools/testing/selftests/bpf/cgroup_helpers.o
-  CC  samples/bpf/../../tools/testing/selftests/bpf/trace_helpers.o
-  CC  samples/bpf/cookie_uid_helper_example.o
-  CC  samples/bpf/cpustat_user.o
-  CC  samples/bpf/fds_example.o
-  CC  samples/bpf/hbm.o
-  CC  samples/bpf/i915_latency_hist_user.o
-  CC  samples/bpf/i915_stat_user.o
-  CC  samples/bpf/ibumad_user.o
-  CC  samples/bpf/lathist_user.o
-  CC  samples/bpf/lwt_len_hist_user.o
-  CC  samples/bpf/map_perf_test_user.o
-  CC  samples/bpf/offwaketime_user.o
-  CC  samples/bpf/sampleip_user.o
-  CC  samples/bpf/sockex1_user.o
-  CC  samples/bpf/sockex2_user.o
-  CC  samples/bpf/sockex3_user.o
-  CC  samples/bpf/spintest_user.o
-  CC  samples/bpf/syscall_tp_user.o
-  CC  samples/bpf/task_fd_query_user.o
-  CC  samples/bpf/tc_l2_redirect_user.o
-  CC  samples/bpf/test_cgrp2_array_pin.o
-  CC  samples/bpf/test_cgrp2_attach.o
-  CC  samples/bpf/test_cgrp2_sock.o
-  CC  samples/bpf/test_cgrp2_sock2.o
-  CC  samples/bpf/test_current_task_under_cgroup_user.o
-  CC  samples/bpf/test_map_in_map_user.o
-  CC  samples/bpf/test_overhead_user.o
-  CC  samples/bpf/test_probe_write_user_user.o
-  CC  samples/bpf/trace_event_user.o
-  CC  samples/bpf/trace_output_user.o
-  CC  samples/bpf/tracex1_user.o
-  CC  samples/bpf/tracex2_user.o
-  CC  samples/bpf/tracex3_user.o
-  CC  samples/bpf/tracex4_user.o
-  CC  samples/bpf/tracex5_user.o
-  CC  samples/bpf/tracex6_user.o
-  CC  samples/bpf/tracex7_user.o
-  CC  samples/bpf/xdp1_user.o
-  CC  samples/bpf/xdp_adjust_tail_user.o
-  CC  samples/bpf/xdp_fwd_user.o
-make -C /home/szeng/dii-tools/linux/samples/bpf/../../tools/bpf/bpftool src=
-tree=3D/home/szeng/dii-tools/linux/samples/bpf/../../ \
-        OUTPUT=3D/home/szeng/dii-tools/linux/samples/bpf/bpftool/ \
-        LIBBPF_OUTPUT=3D/home/szeng/dii-tools/linux/samples/bpf/libbpf/ \
-        LIBBPF_DESTDIR=3D/home/szeng/dii-tools/linux/samples/bpf/libbpf/
-
-Auto-detecting system features:
-...                        libbfd: [ OFF ]
-...        disassembler-four-args: [ OFF ]
-...                          zlib: [ on  ]
-...                        libcap: [ OFF ]
-...               clang-bpf-co-re: [ on  ]
 
 
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/libbpf.=
-o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/bpf.o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/nlattr.=
-o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/btf.o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/libbpf_=
-errno.o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/str_err=
-or.o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/netlink=
-.o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/bpf_pro=
-g_linfo.o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/libbpf_=
-probes.o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/xsk.o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/hashmap=
-.o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/btf_dum=
-p.o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/ringbuf=
-.o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/strset.=
-o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/linker.=
-o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/gen_loa=
-der.o
-  CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/relo_co=
-re.o
-  LD      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/libbpf-=
-in.o
-  LINK    /home/szeng/dii-tools/linux/samples/bpf/libbpf/libbpf.a
-  CLANG   /home/szeng/dii-tools/linux/samples/bpf/bpftool/profiler.bpf.o
-  GEN     /home/szeng/dii-tools/linux/samples/bpf/bpftool/profiler.skel.h
-  CC      /home/szeng/dii-tools/linux/samples/bpf/bpftool/prog.o
-  CLANG   /home/szeng/dii-tools/linux/samples/bpf/bpftool/pid_iter.bpf.o
-  GEN     /home/szeng/dii-tools/linux/samples/bpf/bpftool/pid_iter.skel.h
-  CC      /home/szeng/dii-tools/linux/samples/bpf/bpftool/pids.o
-  LINK    /home/szeng/dii-tools/linux/samples/bpf/bpftool/bpftool
-  CC  samples/bpf/xdp_router_ipv4_user.o
-  CC  samples/bpf/xdp_rxq_info_user.o
-  CC  samples/bpf/xdp_sample_pkts_user.o
-  CC  samples/bpf/xdp_tx_iptunnel_user.o
-  CC  samples/bpf/xdpsock_ctrl_proc.o
-  CC  samples/bpf/xsk_fwd.o
-  CLANG-BPF  samples/bpf/xdp_sample.bpf.o
-  CLANG-BPF  samples/bpf/xdp_redirect_map_multi.bpf.o
-  CLANG-BPF  samples/bpf/xdp_redirect_cpu.bpf.o
-  CLANG-BPF  samples/bpf/xdp_redirect_map.bpf.o
-  CLANG-BPF  samples/bpf/xdp_monitor.bpf.o
-  CLANG-BPF  samples/bpf/xdp_redirect.bpf.o
-  BPF GEN-OBJ  samples/bpf/xdp_monitor
-  BPF GEN-SKEL samples/bpf/xdp_monitor
-libbpf: map 'rx_cnt': unexpected def kind var.
-Error: failed to open BPF object file: Invalid argument
-samples/bpf/Makefile:430: recipe for target 'samples/bpf/xdp_monitor.skel.h=
-' failed
-make[1]: *** [samples/bpf/xdp_monitor.skel.h] Error 255
-make[1]: *** Deleting file 'samples/bpf/xdp_monitor.skel.h'
-Makefile:1868: recipe for target 'samples/bpf' failed
-make: *** [samples/bpf] Error 2
+On 12/07/2022 12.33, Magnus Karlsson wrote:
+> On Thu, Jul 7, 2022 at 1:25 AM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+>>
+>> Alexander Lobakin <alexandr.lobakin@intel.com> writes:
+>>
+>>> From: Toke H??iland-J??rgensen <toke@redhat.com>
+>>> Date: Tue, 05 Jul 2022 20:51:14 +0200
+>>>
+>>>> Alexander Lobakin <alexandr.lobakin@intel.com> writes:
+>>>>
+>>>> [... snipping a bit of context here ...]
+>>>>
+>>>>>>>> Yeah, I'd agree this kind of configuration is something that can be
+>>>>>>>> added later, and also it's sort of orthogonal to the consumption of the
+>>>>>>>> metadata itself.
+>>>>>>>>
+>>>>>>>> Also, tying this configuration into the loading of an XDP program is a
+>>>>>>>> terrible interface: these are hardware configuration options, let's just
+>>>>>>>> put them into ethtool or 'ip link' like any other piece of device
+>>>>>>>> configuration.
+>>>>>>>
+>>>>>>> I don't believe it fits there, especially Ethtool. Ethtool is for
+>>>>>>> hardware configuration, XDP/AF_XDP is 95% software stuff (apart from
+>>>>>>> offload bits which is purely NFP's for now).
+>>>>>>
+>>>>>> But XDP-hints is about consuming hardware features. When you're
+>>>>>> configuring which metadata items you want, you're saying "please provide
+>>>>>> me with these (hardware) features". So ethtool is an excellent place to
+>>>>>> do that :)
+>>>>>
+>>>>> With Ethtool you configure the hardware, e.g. it won't strip VLAN
+>>>>> tags if you disable rx-cvlan-stripping. With configuring metadata
+>>>>> you only tell what you want to see there, don't you?
+>>>>
+>>>> Ah, I think we may be getting closer to identifying the disconnect
+>>>> between our way of thinking about this!
+>>>>
+>>>> In my mind, there's no separate "configuration of the metadata" step.
+>>>> You simply tell the hardware what features you want (say, "enable
+>>>> timestamps and VLAN offload"), and the driver will then provide the
+>>>> information related to these features in the metadata area
+>>>> unconditionally. All XDP hints is about, then, is a way for the driver
+>>>> to inform the rest of the system how that information is actually laid
+>>>> out in the metadata area.
+>>>>
+>>>> Having a separate configuration knob to tell the driver "please lay out
+>>>> these particular bits of metadata this way" seems like a totally
+>>>> unnecessary (and quite complicated) feature to have when we can just let
+>>>> the driver decide and use CO-RE to consume it?
+>>>
+>>> Magnus (he's currently on vacation) told me it would be useful for
+>>> AF_XDP to enable/disable particular metadata, at least from perf
+>>> perspective. Let's say, just fetching of one "checksum ok" bit in
+>>> the driver is faster than walking through all the descriptor words
+>>> and driver logics (i.e. there's several hundred locs in ice which
+>>> just parse descriptor data and build an skb or metadata from it).
+>>> But if we would just enable/disable corresponding features through
+>>> Ethtool, that would hurt XDP_PASS. Maybe it's a bad example, but
+>>> what if I want to have only RSS hash in the metadata (and don't
+>>> want to spend cycles on parsing the rest), but at the same time
+>>> still want skb path to have checksum status to not die at CPU
+>>> checksum calculation?
+>>
+>> Hmm, so this feels a little like a driver-specific optimisation? I.e.,
+>> my guess is that not all drivers have a measurable overhead for pulling
+>> out the metadata. Also, once the XDP metadata bits are in place, we can
+>> move in the direction of building SKBs from the same source, so I'm not
+>> sure it's a good idea to assume that the XDP metadata is separate from
+>> what the stack consumes...
+>>
+>> In any case, if such an optimisation does turn out to be useful, we can
+>> add it later (backed by rigorous benchmarks, of course), so I think we
+>> can still start with the simple case and iterate from there?
+> 
+> Just to check if my intuition was correct or not I ran some benchmarks
+> around this. I ported Jesper's patch set to the zero-copy driver of
+> i40e, which was really simple thanks to Jesper's refactoring. One line
+> of code added to the data path of the zc driver and making
+> i40e_process_xdp_hints() a global function so it can be reached from
+> the zc driver. 
+
+Happy to hear it was simple to extend this to AF_XDP in the driver.
+Code design wise I'm trying to keep it simple for drivers to add this.
+I have a co-worker that have already extended ixgbe.
+
+> I also moved the prefetch Jesper added to after the
+> check if xdp_hints are available since it really degrades performance
+> in the xdp_hints off case.
+
+Good to know.
+
+> First number is the throughput change with hints on, and the second
+> number is with hints off. All are compared to the performance without
+> Jesper's patch set applied. The application is xdpsock -r (which used
+> to be part of the samples/bpf directory).
+
+For reviewer to relate to these numbers we need to understand/explain
+the extreme numbers we are dealing with.  In my system with i40e and
+xdpsock --rx-drop I can AF_XDP drop packets with a rate of 33.633.761 pps.
+
+This corresponds to a processing time per packet: 29.7 ns (nanosec)
+  - Calc: (1/33633761)*10^9
+
+> Copy mode with all hints: -21% / -2%
+
+The -21% for enabling all hints does sound like an excessive overhead,
+but time-wise this is a reduction/overhead of 6.2 ns.
+
+The real question: Is this 6.2 ns overhead that gives us e.g.
+RX-checksumming lower than the gain we can obtain from avoiding doing
+RX-checksumming in software?
+  - A: My previous experiments conclude[1] that for 1500 bytes frames we
+    can save 54 ns (or increase performance with 8% for normal netstack).
 
 
-Thanks,
-Oak
+I was going for zero overhead when disabling xdp-hints, which is almost
+true as the -2% is time-wise a reduction/overhead of 0.59 ns.
+
+  [1] 
+https://github.com/xdp-project/xdp-project/blob/master/areas/core/xdp_frame01_checksum.org#measurements-compare-results--conclusion
+
+
+> Zero-copy mode with all hints: -29% / -9%
+
+I'm unsure why the percentages increase here, perhaps because zero-copy 
+is faster and thus the overhead becomes a larger percentage?
+
+
+> Copy mode rx timestamp only (the rest removed with an #if 0): -11%
+> Zero-copy mode rx timestamp only: -20%
+> 
+> So, if you only want rx timestamp, but can only enable every hint or
+> nothing, then you get a 10% performance degradation with copy mode and
+> 9% with zero-copy mode compared to if you were able just to enable rx
+> timestamp alone. With these rough numbers (a real implementation would
+> not have an #if 0) I would say it matters, but that does not mean we
+> should not start simple and just have a big switch to start with. But
+> as we add hints (to the same btfid), this will just get worse.
+
+IMHO we *do* already have individual enable/disable hints features via 
+ethtool.
+Have you tried to use the individual ethtool switches. e.g.:
+
+  ethtool -K i40e2 rx-checksumming off
+
+The i40e code uses bitfields for extracting the descriptor, which cause
+code that isn't optimal or fully optimized by the compiler.  On my setup
+I gained 4.2% (or 1.24 ns) by doing this.
+
+
+> Here are some other numbers I got, in case someone is interested. They
+> are XDP numbers from xdp_rxq_info in samples/bpf.
+> 
+> hints on / hints off
+> XDP_DROP: -18% / -1.5%
+
+My xdp_rxq_info (no-touch XDP_DROP) nanosec numbers are:
+
+           hints on / hints off
+  XDP_DROP: 35.97ns / 29.80ns  (diff 6.17 ns)
+
+Maybe interesting if I touch data (via option --read), then the overhead
+is reduced to 4.84 ns.
+
+--Jesper
+
+> XDP_TX: -10% / -2.5%
+> 
+>>>>>>> I follow that way:
+>>>>>>>
+>>>>>>> 1) you pick a program you want to attach;
+>>>>>>> 2) usually they are written for special needs and usecases;
+>>>>>>> 3) so most likely that program will be tied with metadata/driver/etc
+>>>>>>>     in some way;
+>>>>>>> 4) so you want to enable Hints of a particular format primarily for
+>>>>>>>     this program and usecase, same with threshold and everything
+>>>>>>>     else.
+>>>>>>>
+>>>>>>> Pls explain how you see it, I might be wrong for sure.
+>>>>>>
+>>>>>> As above: XDP hints is about giving XDP programs (and AF_XDP consumers)
+>>>>>> access to metadata that is not currently available. Tying the lifetime
+>>>>>> of that hardware configuration (i.e., which information to provide) to
+>>>>>> the lifetime of an XDP program is not a good interface: for one thing,
+>>>>>> how will it handle multiple programs? What about when XDP is not used at
+>>>>>
+>>>>> Multiple progs is stuff I didn't cover, but will do later (as you
+>>>>> all say to me, "let's start with something simple" :)). Aaaand
+>>>>> multiple XDP progs (I'm not talking about attaching progs in
+>>>>> differeng modes) is not a kernel feature, rather a libpf feature,
+>>>>> so I believe it should be handled there later...
+>>>>
+>>>> Right, but even if we don't *implement* it straight away we still need
+>>>> to take it into consideration in the design. And expecting libxdp to
+>>>> arbitrate between different XDP programs' metadata formats sounds like a
+>>>> royal PITA :)
+>>>>
+>>>>>> all but you still want to configure the same features?
+>>>>>
+>>>>> What's the point of configuring metadata when there are no progs
+>>>>> attached? To configure it once and not on every prog attach? I'm
+>>>>> not saying I don't like it, just want to clarify.
+>>>>
+>>>> See above: you turn on the features because you want the stack to
+>>>> consume them.
+>>>>
+>>>>> Maybe I need opinions from some more people, just to have an
+>>>>> overview of how most of folks see it and would like to configure
+>>>>> it. 'Cause I heard from at least one of the consumers that
+>>>>> libpf API is a perfect place for Hints to him :)
+>>>>
+>>>> Well, as a program author who wants to consume hints, you'd use
+>>>> lib{bpf,xdp} APIs to do so (probably in the form of suitable CO-RE
+>>>> macros)...
+>>>>
+>>>>>> In addition, in every other case where we do dynamic data access (with
+>>>>>> CO-RE) the BPF program is a consumer that modifies itself to access the
+>>>>>> data provided by the kernel. I get that this is harder to achieve for
+>>>>>> AF_XDP, but then let's solve that instead of making a totally
+>>>>>> inconsistent interface for XDP.
+>>>>>
+>>>>> I also see CO-RE more fitting and convenient way to use them, but
+>>>>> didn't manage to solve two things:
+>>>>>
+>>>>> 1) AF_XDP programs, so what to do with them? Prepare patches for
+>>>>>     LLVM to make it able to do CO-RE on AF_XDP program load? Or
+>>>>>     just hardcode them for particular usecases and NICs? What about
+>>>>>     "general-purpose" programs?
+>>>>
+>>>> You provide a library to read the fields. Jesper actually already
+>>>> implemented this, did you look at his code?
+>>>>
+>>>> https://github.com/xdp-project/bpf-examples/tree/master/AF_XDP-interaction
+>>>>
+>>>> It basically builds a lookup table at load-time using BTF information
+>>>> from the kernel, keyed on BTF ID and field name, resolving them into
+>>>> offsets. It's not quite the zero-overhead of CO-RE, but it's fairly
+>>>> close and can be improved upon (CO-RE for userspace being one way of
+>>>> doing that).
+>>>
+>>> Aaaah, sorry, I completely missed that. I thought of something
+>>> similar as well, but then thought "variable field offsets, that
+>>> would annihilate optimization and performance", and our Xsk team
+>>> is super concerned about performance hits when using Hints.
+>>>
+>>>>
+>>>>>     And if hardcode, what's the point then to do Generic Hints at
+>>>>>     all? Then all it needs is making driver building some meta in
+>>>>>     front of frames via on-off button and that's it? Why BTF ID in
+>>>>>     the meta then if consumers will access meta hardcoded (via CO-RE
+>>>>>     or literally hardcoded, doesn't matter)?
+>>>>
+>>>> You're quite right, we could probably implement all the access to
+>>>> existing (fixed) metadata without using any BTF at all - just define a
+>>>> common struct and some flags to designate which fields are set. In my
+>>>> mind, there are a couple of reasons for going the BTF route instead:
+>>>>
+>>>> - We can leverage CO-RE to get close to optimal efficiency in field
+>>>>    access.
+>>>>
+>>>> and, more importantly:
+>>>>
+>>>> - It's infinitely extensible. With the infrastructure in place to make
+>>>>    it really easy to consume metadata described by BTF, we lower the bar
+>>>>    for future innovation in hardware offloads. Both for just adding new
+>>>>    fixed-function stuff to hardware, but especially for fully
+>>>>    programmable hardware.
+>>>
+>>> Agree :) That libxdp lookup translator fixed lots of stuff in my
+>>> mind.
+>>
+>> Great! Looks like we're slowly converging towards a shared
+>> understanding, then! :)
+>>
+>>>>> 2) In-kernel metadata consumers? Also do CO-RE? Otherwise, with no
+>>>>>     generic metadata structure they won't be able to benefit from
+>>>>>     Hints. But I guess we still need to provide kernel with meta?
+>>>>>     Or no?
+>>>>
+>>>> In the short term, I think the "generic structure" approach is fine for
+>>>> leveraging this in the stack. Both your and Jesper's series include
+>>>> this, and I think that's totally fine. Longer term, if it turns out to
+>>>> be useful to have something more dynamic for the stack consumption as
+>>>> well, we could extend it to be CO-RE based as well (most likely by
+>>>> having the stack load a "translator" BPF program or something along
+>>>> those lines).
+>>>
+>>> Oh, that translator prog sounds nice BTW!
+>>
+>> Yeah, it's only a rough idea Jesper and I discussed at some point, but I
+>> think it could have potential (see also point above re: making XDP hints
+>> *the* source of metadata for the whole stack; wouldn't it be nice if
+>> drivers didn't have to deal with the intricacies of assembling SKBs?).
+>>
+>> -Toke
+>>
+> 
 
