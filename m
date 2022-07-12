@@ -2,92 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 085D0572375
-	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 20:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3884457259E
+	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 21:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234174AbiGLStA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jul 2022 14:49:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45798 "EHLO
+        id S231533AbiGLT2x (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jul 2022 15:28:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234449AbiGLSru (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jul 2022 14:47:50 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 944FCDE9CB
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 11:43:23 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id r186so1151503pgr.2
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 11:43:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=R/FYk9tPIDTawZE5OMd3QkyOPq+WSwEVrCOp+DVVU6c=;
-        b=qdX8b8ZVZFH5ZQSgkvqaTXIu70J243GRuhnr8uGQFTjkdH+BzB+BAemU5hTnweGM9L
-         uB8v59IjCjRxNJbI5Tkh4G1yE3BLombREzVoK70QB/WeQEJSgtxu8YQBp3xIkSj9C/Km
-         LfpbbxAtKCxkDk1BQdbatn7rY4cKjIIrgbE/S3riaICmK8bA8n4+IzsFRHp6xkMubDbF
-         giIkHPAXwvzjbGBUdI31FyfQakoXKh3xDbVU8T7KAviaqDX3bcPAcPA8bUB00p/fvQ6M
-         Y0pjgRZfMCrPSc7CNFKU8Zx9kXRkKqhM9Ghc8dlr0s9ZUwqOx0gpKg2tyys1YMon5h3M
-         OHyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=R/FYk9tPIDTawZE5OMd3QkyOPq+WSwEVrCOp+DVVU6c=;
-        b=DX6sD5TtSEfMjOjuQXm3xC73OPt5+r5kjfnAFkPXGqzZVY7kOADV1sRUhG/t9MwF7k
-         zKVDklPftIsMOdtcsb8Tm0OvDcwl75u3Sek4YWnxvAM3bSYQVMq98/RwCGK5VQ0jrP7+
-         QEEDPxil6kOBSLyfPDSvDQZVmgLNPMujhSWDoMkyQ9FEKQWcGQEz70qTJ4mkehDcti+5
-         3zh2/s3jJek8hzD4MJlElQ+bZ6R9NRJzTCA/duwheEwXz6MccZpTrRgIk7hso+6WwNvu
-         Ez8WuHL3G+kwnU+Lwit2hAYfpHXs8de34JB1UYfok+zC3b3s8X28xl8u7MLbfwzILXlp
-         aOmw==
-X-Gm-Message-State: AJIora/2DOmxU/PtwH/WnH+DvNzXFz3xQdIMCKnaYrhb/5jI6z/iEMLM
-        eq95aqV/eOiK0fMNUglOvUY=
-X-Google-Smtp-Source: AGRyM1vLmTbLA9Pi+aqc4f3ziiLI1ftifRlTCsgTGZoBsVYKOchZTAKd90hmAxNo+LXdxgdFRSEotQ==
-X-Received: by 2002:a63:e955:0:b0:419:66f8:e331 with SMTP id q21-20020a63e955000000b0041966f8e331mr3323638pgj.585.1657651399424;
-        Tue, 12 Jul 2022 11:43:19 -0700 (PDT)
-Received: from MacBook-Pro-3.local.dhcp.thefacebook.com ([2620:10d:c090:500::2:8800])
-        by smtp.gmail.com with ESMTPSA id y16-20020a17090322d000b001618b70dcc9sm7231815plg.101.2022.07.12.11.43.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jul 2022 11:43:18 -0700 (PDT)
-Date:   Tue, 12 Jul 2022 11:43:15 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Mina Almasry <almasrymina@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
+        with ESMTP id S230191AbiGLT2d (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jul 2022 15:28:33 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39F2CE0F5E;
+        Tue, 12 Jul 2022 12:04:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5zn6hvHj4eKtfzqRScUEHMiIgZur5MyCCs29W1zBYWo=; b=xxs5oqmrZEfO2E2kxTPGNrkRA7
+        vBxlIZp9V+hqHw7UsxneA0WB6uEnzq62HTiQMSJlzBKphdX/f13tQpG50mucKGSRLyum5pR1eqxDj
+        RFiCrTx/E6tlShgUgl6TZtHLYONAUGmmDpljk3YyL2wNRddKtfsrQFBX31dnnl4UmgIcDQn6Bhiy2
+        R1AYFBFhR1bQRM6WmKGxKr2aLGpVzm5FLCWYcpg23IdcOzHEdsHa14+A8AmKHKpyw95W/1onf4lBW
+        HyF0WFSv56iDl0v13QjsccAx2nNtGNXoTClDAz2uatbs1mqzeOgB8GGcmUtfCbvtv9ss8P+BrIeKb
+        gVzKuaVA==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1oBLBN-00E3qI-Ub; Tue, 12 Jul 2022 19:04:29 +0000
+Date:   Tue, 12 Jul 2022 12:04:29 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
         "David S. Miller" <davem@davemloft.net>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        Kees Cook <keescook@chromium.org>, Song Liu <song@kernel.org>,
+        bpf <bpf@vger.kernel.org>, Christoph Hellwig <hch@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        linux-mm <linux-mm@kvack.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH bpf-next 0/5] bpf: BPF specific memory allocator.
-Message-ID: <20220712184315.k6tteikog7pze5z2@MacBook-Pro-3.local.dhcp.thefacebook.com>
-References: <YswUS/5nbYb8nt6d@dhcp22.suse.cz>
- <20220712043914.pxmbm7vockuvpmmh@macbook-pro-3.dhcp.thefacebook.com>
- <Ys0lXfWKtwYlVrzK@dhcp22.suse.cz>
- <CALOAHbAhzNTkT9o_-PRX=n4vNjKhEK_09+-7gijrFgGjNH7iRA@mail.gmail.com>
- <Ys1ES+CygtnUvArz@dhcp22.suse.cz>
- <CALvZod460hip0mQouEVtfcOZ0M21Xmzaa-atxxrUnR3ZisDCNw@mail.gmail.com>
- <Ys2iIVMZJNPe73MI@slm.duckdns.org>
- <CALvZod7YKrTvh-5SkDgFvtRk=DkxQ8iEhRGhDhhRGBXmYM4sFw@mail.gmail.com>
- <Ys2xGe+rdviCAjsC@slm.duckdns.org>
- <CALvZod6Y3p1NZwSQe6+UWpY88iaOBrZXS5c5+uzMb+9sY1ziwg@mail.gmail.com>
+        Kernel Team <Kernel-team@fb.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "rick.p.edgecombe@intel.com" <rick.p.edgecombe@intel.com>,
+        "linux-modules@vger.kernel.org" <linux-modules@vger.kernel.org>
+Subject: Re: [PATCH v6 bpf-next 0/5] bpf_prog_pack followup
+Message-ID: <Ys3FvYnASr2v9iPc@bombadil.infradead.org>
+References: <YsdlXjpRrlE9Z+Jq@bombadil.infradead.org>
+ <F000FF60-CF95-4E6B-85BD-45FC668AAE0A@fb.com>
+ <YseAEsjE49AZDp8c@bombadil.infradead.org>
+ <C96F5607-6FFE-4B45-9A9D-B89E3F67A79A@fb.com>
+ <YshUEEQ0lk1ON7H6@bombadil.infradead.org>
+ <863A2D5B-976D-4724-AEB1-B2A494AD2BDB@fb.com>
+ <YsiupnNJ8WANZiIc@bombadil.infradead.org>
+ <6214B9C9-557B-4DC0-BFDE-77EAC425E577@fb.com>
+ <Ysz2LX3q2OsaO4gM@bombadil.infradead.org>
+ <E23B6EB1-AFFA-4B65-963E-B44BA0F2142D@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALvZod6Y3p1NZwSQe6+UWpY88iaOBrZXS5c5+uzMb+9sY1ziwg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+In-Reply-To: <E23B6EB1-AFFA-4B65-963E-B44BA0F2142D@fb.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -95,18 +75,93 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 12, 2022 at 11:11:25AM -0700, Shakeel Butt wrote:
-> Ccing Mina who actually worked on upstreaming this. See [1] for
-> previous discussion and more use-cases.
+On Tue, Jul 12, 2022 at 05:49:32AM +0000, Song Liu wrote:
+> > On Jul 11, 2022, at 9:18 PM, Luis Chamberlain <mcgrof@kernel.org> wrote:
 > 
-> [1] https://lore.kernel.org/linux-mm/20211120045011.3074840-1-almasrymina@google.com/
+> > I believe you are mentioning requiring text_poke() because the way
+> > eBPF code uses the module_alloc() is different. Correct me if I'm
+> > wrong, but from what I gather is you use the text_poke_copy() as the data
+> > is already RO+X, contrary module_alloc() use cases. You do this since your
+> > bpf_prog_pack_alloc() calls set_memory_ro() and set_memory_x() after
+> > module_alloc() and before you can use this memory. This is a different type
+> > of allocator. And, again please correct me if I'm wrong but now you want to
+> > share *one* 2 MiB huge-page for multiple BPF programs to help with the
+> > impact of TLB misses.
+> 
+> Yes, sharing 1x 2MiB huge page is the main reason to require text_poke. 
+> OTOH, 2MiB huge pages without sharing is not really useful. Both kprobe
+> and ftrace only uses a fraction of a 4kB page. Most BPF programs and 
+> modules cannot use 2MiB either. Therefore, vmalloc_rw_exec() doesn't add
+> much value on top of current module_alloc(). 
 
-Doesn't look like that it landed upstream?
+Thanks for the clarification.
 
-For bpf side we're thinking of something similar.
-We cannot do memcg= mount option, of course.
-Instead memcg path or FD will passed to bpf side to be used later.
-So the user can select a memcg instead of taking it from current.
+> > A vmalloc_ro_exec() by definition would imply a text_poke().
+> > 
+> > Can kprobes, ftrace and modules use it too? It would be nice
+> > so to not have to deal with the loose semantics on the user to
+> > have to use set_vm_flush_reset_perms() on ro+x later, but
+> > I think this can be addressed separately on a case by case basis.
+> 
+> I am pretty confident that kprobe and ftrace can share huge pages with 
+> BPF programs.
 
-Yafang,
-I'm assuming you're working on something like this?
+Then wonderful, we know where to go in terms of a new API then as it
+can be shared in the future for sure and there are gains.
+
+> I haven't looked into all the details with modules, but 
+> given CONFIG_ARCH_WANTS_MODULES_DATA_IN_VMALLOC, I think it is also 
+> possible.
+
+Sure.
+
+> Once this is done, a regular system (without huge BPF program or huge
+> modules) will just use 1x 2MB page for text from module, ftrace, kprobe, 
+> and bpf programs. 
+
+That would be nice, if possible, however modules will require likely its
+own thing, on my system I see about 57 MiB used on coresize alone.
+
+lsmod | grep -v Module | cut -f1 -d ' ' | \
+	xargs sudo modinfo | grep filename | \
+	grep -o '/.*' | xargs stat -c "%s - %n" | \
+	awk 'BEGIN {sum=0} {sum+=$1} END {print sum}'
+60001272
+
+And so perhaps we need such a pool size to be configurable.
+
+> > But a vmalloc_ro_exec() with a respective free can remove the
+> > requirement to do set_vm_flush_reset_perms().
+> 
+> Removing the requirement to set_vm_flush_reset_perms() is the other
+> reason to go directly to vmalloc_ro_exec(). 
+
+Yes fantastic.
+
+> My current version looks like this:
+> 
+> void *vmalloc_exec(unsigned long size);
+> void vfree_exec(void *ptr, unsigned int size);
+> 
+> ro is eliminated as there is no rw version of the API. 
+
+Alright.
+
+I am not sure if 2 MiB will suffice given what I mentioned above, and
+what to do to ensure this grows at a reasonable pace. Then, at least for
+usage for all architectures since not all will support text_poke() we
+will want to consider a way to make it easy to users to use non huge
+page fallbacks, but that would be up to those users, so we can wait for
+that.
+
+> The ugly part is @size for vfree_exec(). We need it to share huge 
+> pages. 
+
+I suppose this will become evident during patch review.
+
+> Under the hood, it looks similar to current bpf_prog_pack_alloc
+> and bpf_prog_pack_free. 
+
+Groovy.
+
+  Luis
