@@ -2,91 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCDB057289B
-	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 23:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B611B5728A6
+	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 23:30:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229881AbiGLV2B (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jul 2022 17:28:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33712 "EHLO
+        id S231705AbiGLVav (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jul 2022 17:30:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbiGLV2B (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jul 2022 17:28:01 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C596D0E2F
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 14:28:00 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id j22so16628180ejs.2
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 14:28:00 -0700 (PDT)
+        with ESMTP id S233153AbiGLVat (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jul 2022 17:30:49 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91577CEB9D
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 14:30:47 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id f14so7381659qkm.0
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 14:30:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=qqe3vchI1vj06s2WyOtomNXamvDBZBJTCk3J89QZtZo=;
-        b=UZPEo3kUC1cyLYfLUiBig6BkI0vufMbG0ZAOExGjCCGZGr467fFbLvfUNSi/20kvTv
-         cVoR9iWQuWsh1j6dyuPrplXt/2uOM1c3DZWw5XC25tWmFgVkQiVKAOsc/7v+s2t0Qxfb
-         +y/fJzHC+o15mIpWyEUqqcXaAWERKjPbHyMmLqKfpiF/m/ms0soNO+XdxxC7QS8+w2UC
-         a63Pv67MH7TvaU9khgLJtaiEqlK1tZa7ywy6ocTFvXI+dtCD3FoMyO2O+SMyWmRYgH+O
-         f8MgxhA2AoSRKBvbJAx2cdgI7kxzGcbDNbsD9PASTWqpGZbGl/gx++4q1mWpgGlK5zbY
-         tw/Q==
+        d=maine.edu; s=google;
+        h=from:date:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=/ov82X9kW39yvbxY1McMir/k+O2+nYDyG4xPScmDyfc=;
+        b=ay3/5lDUwcy1Hcdr2vmHaxiMQwYnvd/iCWseV3Jo2Kp2E/uDYFyEIr76QZQCwA7K+S
+         wi1beA0eG1qxbEBdN7ZT4w6+ri8TWB8pNNplK5yvswScENpVx3UZUWOZYg2+DBlj4gEf
+         YPcT+/qh0IYxNQoeADazl8GnAJqKoTR8qVEaM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qqe3vchI1vj06s2WyOtomNXamvDBZBJTCk3J89QZtZo=;
-        b=gdaSDeEpH2GUP8PydIQLDvseaCYq4J/RXo5Nfv9L5C9lACTiyyCWdwKMArIih0/O78
-         Ns3mrFuy5UW1d3jmMSKNqSgwAAPpEtEVMVI1xcA/VuXsew2QR50mbFgjUiPEAX2HBJ5n
-         rYz/V8G+fu9F1bRTt3e0g1PhSGCei4sT97MGL+m39iMRNKs3Jtze3CGD1LGfC/+loSXd
-         uL7j7wI6nJ10TgPd2e9UVCL0fs0zCWj1ZLC9sDJ9edl0ApHFqH16nEYu28VnlIGZU27J
-         OIi6MHm/BuR+CHuYkEa57ireJb3bQS+0PaNetbErAWXsQdjX78s01BjKTxxJ876Xm6cC
-         XyAQ==
-X-Gm-Message-State: AJIora8wqRsSYwkigso9lxe9mOazb1gQ18NKp0jGEZsTL8pQG1JQPfL8
-        P9WQW3nMK7udyRocZPTZ6J4l+eAFjrkJTuvIbKc=
-X-Google-Smtp-Source: AGRyM1vgCCPMRMXoN2XUl2LRZnhSecDjcTPvK2rqPap75OFgId2aP4DHj4b4mVlcUmm963TCCd7eVPvLX1oeQHvVy68=
-X-Received: by 2002:a17:907:c14:b0:72b:6762:de34 with SMTP id
- ga20-20020a1709070c1400b0072b6762de34mr147360ejc.94.1657661279081; Tue, 12
- Jul 2022 14:27:59 -0700 (PDT)
+        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=/ov82X9kW39yvbxY1McMir/k+O2+nYDyG4xPScmDyfc=;
+        b=4pNJJtfXdJ0/FSemNcczr56bBlnDwpr/fUFktR/1T34j4pAA6gW7minotWtQbqFYaU
+         9Iy/ZpHpJOWRilZpPLLPkvNnBd4R0QI5+As64SE6DPamk2XOAuE1VlRZZBw6kMPZyT6L
+         88TK2lHfRe4lIB/XSPNYPJRT+YA4lGYL7RpCap579KYxa9Ty8lNcsz9vWPcH1TkegeSQ
+         E/wVFIvEzgdUucVACGWHEBe7jheuWlsgjoFf1K+OcFqhW3mdtLIdOhOn3cv3Ka5QaAiI
+         L32nv4G+REw2jQdk+TA8HKOhx23v9ltfn7Z/3psfhcHSVQdYgoCoZSG4gItOG/eLWY9p
+         /c7A==
+X-Gm-Message-State: AJIora8smmnHAakrQaGQjrlI4ryg3T8shCTgLBALViVl7tkjPtyaILZ8
+        Pf/WRZt5bInEkq2lBwzwnIR8kcnJSimV+CRY
+X-Google-Smtp-Source: AGRyM1tPYp1vPM53Xd2cP3aF0HKDN4RijBCYmU7LSYzQBcaeKECQ9LthjfLWLntHfoh9ElULngaJQA==
+X-Received: by 2002:a05:620a:132d:b0:6b5:9575:9080 with SMTP id p13-20020a05620a132d00b006b595759080mr222850qkj.153.1657661446728;
+        Tue, 12 Jul 2022 14:30:46 -0700 (PDT)
+Received: from macbook-air.local (weaver.eece.maine.edu. [130.111.218.23])
+        by smtp.gmail.com with ESMTPSA id y13-20020a05620a44cd00b006b5a9e53105sm1931238qkp.91.2022.07.12.14.30.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jul 2022 14:30:46 -0700 (PDT)
+From:   Vince Weaver <vincent.weaver@maine.edu>
+X-Google-Original-From: Vince Weaver <vince@maine.edu>
+Date:   Tue, 12 Jul 2022 17:30:44 -0400 (EDT)
+To:     James Clark <james.clark@arm.com>
+cc:     Andrew Kilroy <andrew.kilroy@arm.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        acme@kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Tom Rix <trix@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH 2/8] perf evsel: Do not request ptrauth sample field if
+ not supported
+In-Reply-To: <8d282e87-c1c8-f7a0-631b-8d569c2154a6@arm.com>
+Message-ID: <8b6a583a-4ee0-8097-54e5-7d51a6edaa@maine.edu>
+References: <20220704145333.22557-1-andrew.kilroy@arm.com> <20220704145333.22557-3-andrew.kilroy@arm.com> <d67dff7-73c3-e5a-eb7b-f132e8f565cc@maine.edu> <8d282e87-c1c8-f7a0-631b-8d569c2154a6@arm.com>
 MIME-Version: 1.0
-References: <20220712212124.3180314-1-deso@posteo.net> <20220712212124.3180314-2-deso@posteo.net>
-In-Reply-To: <20220712212124.3180314-2-deso@posteo.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 12 Jul 2022 14:27:47 -0700
-Message-ID: <CAADnVQLLNQHHJuqd-pKzU09Uw3N-kBsztPy0ysYEKVipP=yMqw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/3] selftests/bpf: Copy over libbpf configs
-To:     =?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Mykola Lysenko <mykolal@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 12, 2022 at 2:21 PM Daniel M=C3=BCller <deso@posteo.net> wrote:
->
-> This change integrates the libbpf maintained configurations and
-> black/white lists [0] into the repository, co-located with the BPF
-> selftests themselves. The only differences from the source is that we
-> replaced the terms blacklist & whitelist with denylist and allowlist,
-> respectively.
->
-> [0] https://github.com/libbpf/libbpf/tree/20f03302350a4143825cedcbd210c4d=
-7112c1898/travis-ci/vmtest/configs
->
-> Signed-off-by: Daniel M=C3=BCller <deso@posteo.net>
-> ---
->  .../bpf/configs/allowlist/ALLOWLIST-4.9.0     |    8 +
->  .../bpf/configs/allowlist/ALLOWLIST-5.5.0     |   55 +
->  .../selftests/bpf/configs/config-latest.s390x | 2711 +++++++++++++++
->  .../bpf/configs/config-latest.x86_64          | 3073 +++++++++++++++++
+On Mon, 11 Jul 2022, James Clark wrote:
+> On 06/07/2022 17:01, Vince Weaver wrote:
+> > So in this case you are leaking ARM64-specific info into the generic 
+> > perf_event_open() call?  Is there any way the kernel could implement this 
+> > without userspace having to deal with the issue?
+> 
+> The alternative to this change is just to call it "PERF_SAMPLE_POINTER_AUTH_MASK"
+> and then it's not Arm specific, it's just that only Arm implements it for now.
+> This is definitely an option.
+> 
+> But if no platform ever implements something similar then that bit is wasted.
+> The intention of adding "PERF_SAMPLE_ARCH_1" was to prevent wasting that bit.
+> But as you say, maybe making it arch specific isn't the right way either.
 
-Instead of checking in the full config please trim it to
-relevant dependencies like existing selftests/bpf/config.
-Otherwise every update/addition would trigger massive patches.
+I don't know what the current kernel policy is on this kind of thing, but 
+in the past perf_event_open was meant to be a generic as possible.
+Having architecture-specific magic bits is best avoided.
+However I'm not the maintainer for this so really my opinion doesn't 
+really matter.
+
+I'm just speaking up as a userspace coder who is trying to write 
+cross-platform tools, and having to maintain obscure arch-specific code 
+paths in every single utility ends up being a huge pain.  And isn't the 
+whole point of an operating system to abstract this away?
+
+> > can tell there haven't been any documentation patches included for the 
+> > Makefile.
+> 
+> We plan to update the docs for the syscall, but it's in another repo, and
+> we'll wait for this change to be finalised first. I'm not sure what you
+> mean about the Makefile?
+
+sorry, that was a mis-type.  I meant "manpage" not Makefile.
+
+Vince Weaver
+vincent.weaver@maine.edu
