@@ -2,102 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E146057162A
-	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 11:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F4C75716DE
+	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 12:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232324AbiGLJwR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jul 2022 05:52:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42754 "EHLO
+        id S231571AbiGLKMk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jul 2022 06:12:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232294AbiGLJwQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jul 2022 05:52:16 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82077AA80B
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 02:52:15 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 375761F96B;
-        Tue, 12 Jul 2022 09:52:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1657619534; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pm4VPHZ7hwTErGyoQgCSf/HU8qiZ3Mug86BUwr6Vsew=;
-        b=Mh1Wn8yFVQcQ5nJ4E8dYkxnDW/OGEJV0bjE14MV8rW2DkKs5Dha8eWapckuaPZwK+scDOk
-        fzguBpWnXmFXX8bv+X7th5QqVZuZ300e3+CDugbhBDuw6PPxqdFB4CPmpp1Qx2Inroht0T
-        NWJOeGay1zVpHKaekvL3B3CrAkEtLUw=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id F351C2C141;
-        Tue, 12 Jul 2022 09:52:11 +0000 (UTC)
-Date:   Tue, 12 Jul 2022 11:52:11 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        linux-mm <linux-mm@kvack.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH bpf-next 0/5] bpf: BPF specific memory allocator.
-Message-ID: <Ys1ES+CygtnUvArz@dhcp22.suse.cz>
-References: <20220706180525.ozkxnbifgd4vzxym@MacBook-Pro-3.local.dhcp.thefacebook.com>
- <Ysg0GyvqUe0od2NN@dhcp22.suse.cz>
- <20220708174858.6gl2ag3asmoimpoe@macbook-pro-3.dhcp.thefacebook.com>
- <20220708215536.pqclxdqvtrfll2y4@google.com>
- <CAADnVQL5ZQDqMGULJLDwT9xRTihdDvo6GvwxdEOtSAs8EwE78A@mail.gmail.com>
- <20220710073213.bkkdweiqrlnr35sv@google.com>
- <YswUS/5nbYb8nt6d@dhcp22.suse.cz>
- <20220712043914.pxmbm7vockuvpmmh@macbook-pro-3.dhcp.thefacebook.com>
- <Ys0lXfWKtwYlVrzK@dhcp22.suse.cz>
- <CALOAHbAhzNTkT9o_-PRX=n4vNjKhEK_09+-7gijrFgGjNH7iRA@mail.gmail.com>
+        with ESMTP id S232330AbiGLKMV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jul 2022 06:12:21 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB839AB7D8
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 03:11:56 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id c131-20020a1c3589000000b003a2cc290135so4917800wma.2
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 03:11:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=i2XYOzCUtA8Ta1rr8OzoyXDjrIADtZBW93UGTbpRQTs=;
+        b=HuqOXEtE1Aefa8vkyqcUnK8kCIMt6cgP0dnwVak+AjhJ/OJs5cVFYIaPCgtc8AybKr
+         PM1mAszWA+rKfgVfOqv32nx5ok8Q978lXTCZlK3ze46hzvc4YYD60jBe/HLJfP00kLrX
+         bNCjxDultJYZJznYedjsjFfy0/mq/fejVM3zypto8nxiwJZ+IBvAcxf8cpBARlRSuNOA
+         lpK5F/aGSKF9RpEaZSXaWZVDH2vIfnBMoIeaMVJPDOqjwZCBOcPb+IHx7t+E9kzv/q6L
+         ojoJcJ/O5CjA++wuWCKvUpbgaN6WGsuwQgpqQkvkPFC3Qr0ueEfeV/uQw1y/AUvNAdPS
+         DkHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=i2XYOzCUtA8Ta1rr8OzoyXDjrIADtZBW93UGTbpRQTs=;
+        b=vaF9z4ABwPfNZ1qHCNaItJFf1jwJaH6aRF+hJw5leeb5x5jHTrX+6EQTryiVpF7pww
+         byWKKsJD+KjjEJM2NNtQb7bOiYQ4X3tis885pI7ICXG6e1lD1L0TURGr3EJN5u6CztJz
+         aDO2iPwuxQpsdRUw9H8Jg16QmRdibCVKI3YjP9eSkOojGj8PDec46ZrTIt9/BuF2hrDY
+         0Ct00kK98bvse0tFsRHGmPJcE9TYg3T5ypvUwuEm1a20wgrPanthrUIDOjUt6OKcYkJ8
+         M5QxqJW2LUaSAGD1tO2Kqq1ewiQoysAHVMeDdntEOnYX97AMKeroc/UL0/tTLJbHR++x
+         +t6w==
+X-Gm-Message-State: AJIora86NR7DgyQpyGi234cTOb9mip3XqtsfIbUgZDr7ky0ta/8YOqnz
+        Ge4ZPWovj3NhbkHcL1fGYeLpOA==
+X-Google-Smtp-Source: AGRyM1vDQohmXGbbjMuTB8tna0YftEx/WQsqRgPk4KBe+/NA1T7pca7ljNWjq5QzQB47mumtb7HS6g==
+X-Received: by 2002:a05:600c:3845:b0:3a2:c04d:5ff9 with SMTP id s5-20020a05600c384500b003a2c04d5ff9mr2997243wmr.74.1657620715194;
+        Tue, 12 Jul 2022 03:11:55 -0700 (PDT)
+Received: from [192.168.178.32] ([51.155.200.13])
+        by smtp.gmail.com with ESMTPSA id b2-20020adfde02000000b0021d9591c64fsm7895138wrm.33.2022.07.12.03.11.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Jul 2022 03:11:54 -0700 (PDT)
+Message-ID: <e1dd40cd-647c-10b4-53f9-a313e509474e@isovalent.com>
+Date:   Tue, 12 Jul 2022 11:11:53 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALOAHbAhzNTkT9o_-PRX=n4vNjKhEK_09+-7gijrFgGjNH7iRA@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.0.1
+Subject: Re: [PATCH bpf-next 1/3] samples: bpf: Fix cross-compiling error by
+ using bootstrap bpftool
+Content-Language: en-GB
+To:     Pu Lehui <pulehui@huawei.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+References: <20220712030813.865410-1-pulehui@huawei.com>
+ <20220712030813.865410-2-pulehui@huawei.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <20220712030813.865410-2-pulehui@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue 12-07-22 16:39:48, Yafang Shao wrote:
-> On Tue, Jul 12, 2022 at 3:40 PM Michal Hocko <mhocko@suse.com> wrote:
-[...]
-> > > Roman already sent reparenting fix:
-> > > https://patchwork.kernel.org/project/netdevbpf/patch/20220711162827.184743-1-roman.gushchin@linux.dev/
-> >
-> > Reparenting is nice but not a silver bullet. Consider a shallow
-> > hierarchy where the charging happens in the first level under the root
-> > memcg. Reparenting to the root is just pushing everything under the
-> > system resources category.
-> >
+On 12/07/2022 04:08, Pu Lehui wrote:
+> Currently, when cross compiling bpf samples, the host side cannot
+> use arch-specific bpftool to generate vmlinux.h or skeleton. Since
+> samples/bpf use bpftool for vmlinux.h, skeleton, and static linking
+> only, we can use lightweight bootstrap version of bpftool to handle
+> these, and it's always host-native.
 > 
-> Agreed. That's why I don't like reparenting.
-> Reparenting just reparent the charged pages and then redirect the new
-> charge, but can't reparents the 'limit' of the original memcg.
-> So it is a risk if the original memcg is still being charged. We have
-> to forbid the destruction of the original memcg.
+> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  samples/bpf/Makefile | 16 +++++++++++-----
+>  1 file changed, 11 insertions(+), 5 deletions(-)
+> 
+> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+> index 5002a5b9a7da..57012b8259d2 100644
+> --- a/samples/bpf/Makefile
+> +++ b/samples/bpf/Makefile
+> @@ -282,12 +282,18 @@ $(LIBBPF): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_OU
+>  
+>  BPFTOOLDIR := $(TOOLS_PATH)/bpf/bpftool
+>  BPFTOOL_OUTPUT := $(abspath $(BPF_SAMPLES_PATH))/bpftool
+> -BPFTOOL := $(BPFTOOL_OUTPUT)/bpftool
+> +BPFTOOL := $(BPFTOOL_OUTPUT)/bootstrap/bpftool
+> +ifeq ($(CROSS_COMPILE),)
+>  $(BPFTOOL): $(LIBBPF) $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile) | $(BPFTOOL_OUTPUT)
+> -	    $(MAKE) -C $(BPFTOOLDIR) srctree=$(BPF_SAMPLES_PATH)/../../ \
+> -		OUTPUT=$(BPFTOOL_OUTPUT)/ \
+> -		LIBBPF_OUTPUT=$(LIBBPF_OUTPUT)/ \
+> -		LIBBPF_DESTDIR=$(LIBBPF_DESTDIR)/
+> +	$(MAKE) -C $(BPFTOOLDIR) srctree=$(BPF_SAMPLES_PATH)/../../		\
+> +		OUTPUT=$(BPFTOOL_OUTPUT)/ 					\
+> +		LIBBPF_BOOTSTRAP_OUTPUT=$(LIBBPF_OUTPUT)/ 			\
+> +		LIBBPF_BOOTSTRAP_DESTDIR=$(LIBBPF_DESTDIR)/ bootstrap
+> +else
+> +$(BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile) | $(BPFTOOL_OUTPUT)
 
-yes, I was toying with an idea like that. I guess we really want a
-measure to keep cgroups around if they are bound to a resource which is
-sticky itself. I am not sure how many other resources like BPF (aka
-module like) we already do charge for memcg but considering the
-potential memory consumption just reparenting will not help in general
-case I am afraid.
--- 
-Michal Hocko
-SUSE Labs
+Thanks for this! Just trying to fully understand the details here. When
+cross-compiling, you leave aside the dependency on target-arch-libbpf,
+so that "make -C <bpftool-dir> bootstrap" rebuilds its own host-arch
+libbpf, is this correct?
+
+> +	$(MAKE) -C $(BPFTOOLDIR) srctree=$(BPF_SAMPLES_PATH)/../../ 		\
+> +		OUTPUT=$(BPFTOOL_OUTPUT)/ bootstrap
+> +endif
+>  
+>  $(LIBBPF_OUTPUT) $(BPFTOOL_OUTPUT):
+>  	$(call msg,MKDIR,$@)
+
