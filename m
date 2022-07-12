@@ -2,124 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC69572997
-	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 01:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E774572998
+	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 01:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbiGLXBv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jul 2022 19:01:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33502 "EHLO
+        id S232094AbiGLXCE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jul 2022 19:02:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231161AbiGLXBt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jul 2022 19:01:49 -0400
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEAEC64E22
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 16:01:47 -0700 (PDT)
-Received: from submission (posteo.de [185.67.36.169]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id 16525240108
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 01:01:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1657666905; bh=GHAESN6c9SIIZaEWxDf24lIUHt01eILDhPTORTuoln0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=p7Y5Z/TLjFYyUHdenaubK+ss0EiHRoxQIPxRivBBaYKC+0Z7OlE8TBXwkgoHc4kj7
-         CbDNIeEC/AlVeT5hgaLSKc+RQqg8FIBv0o4h4KNQkFSBXn+rU6rHGMpRAqrC+YRZcW
-         w/s2VE9VbobguoaYzks3IRrdiZEe6gH6sikX8rjTx2cNs2WRqT6DriQgy9xA5g68kM
-         s/YgnScdWtzFQ3iZcWBrAe4uE5OTo3KlM4kfODO9rrxm/WJCfOipi2xwtDU9jEP8iv
-         HA1hK/xRSM3E18lmvX3F4Js5l92uk0GerqcMi9uP9tieTSIeb72eb/uEvnkI4XlAyX
-         PSvmdKqy35Cvg==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4LjGTd6Rgqz9rxH;
-        Wed, 13 Jul 2022 01:01:41 +0200 (CEST)
-Date:   Tue, 12 Jul 2022 23:01:38 +0000
-From:   Daniel =?utf-8?Q?M=C3=BCller?= <deso@posteo.net>
-To:     sdf@google.com
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Mykola Lysenko <mykolal@fb.com>
-Subject: Re: [PATCH bpf-next 1/3] selftests/bpf: Copy over libbpf configs
-Message-ID: <20220712230138.mmdw323h5dop5abe@muellerd-fedora-MJ0AC3F3>
-References: <20220712212124.3180314-1-deso@posteo.net>
- <20220712212124.3180314-2-deso@posteo.net>
- <CAADnVQLLNQHHJuqd-pKzU09Uw3N-kBsztPy0ysYEKVipP=yMqw@mail.gmail.com>
- <20220712215322.rw3z6eoix3yagi2q@muellerd-fedora-MJ0AC3F3>
- <Ys32tgTtkfeECzLc@google.com>
+        with ESMTP id S231161AbiGLXCE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jul 2022 19:02:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 471C464E22
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 16:02:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D6937616BF
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 23:02:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F1B6C341C8
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 23:02:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1657666922;
+        bh=xRelsi68mZrrMrDmVtKMT37nT0g42mmu1glw8tq9XNI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=dItd55hjLtebp35SpaNCpHrf91oUngskXrkjGaFiWyWnF+0+MNYbNoyqUCh2dAu/D
+         yiGo2GjWp4YYYmTSPlB3fvODkCrsibiDd3fJtkLMQ18lLrsLOAhgME6j3WqSm70q7P
+         S7xZZUMcZ4yHGUpaLUJztXL5MhIas9PEQAHR0wU7HFzheRhOdmlbPUYD/vOQVSHAVq
+         6sOiDmF/5jCFkU9O0hp5GW8Jrd01dzye+ZvCSSAREQqYU4Or+376v2cUOxsdHNh2Xq
+         yqVxFDXeA70MHPwJPID0ZzMX+QF5qnylXPrWYaQgKaMXiRoJrzbgBP7jap5BaB6fCw
+         gKx+BNnXeOH+g==
+Received: by mail-yb1-f174.google.com with SMTP id i14so16525492yba.1
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 16:02:02 -0700 (PDT)
+X-Gm-Message-State: AJIora8TUP9VOb1f0O/SezcyB0LXxQCn97dXevk5fiPx3SHIVoOG8cfa
+        V2FuwJIT6pzi11ZEne/GyCETJzfMDiAyEDwHM44=
+X-Google-Smtp-Source: AGRyM1sW/0v0kDXTsygBMJgc8aLW8F92oriS9Sb1a9BiitIPslKgREcK9Sbk1XuWZ9LpbQLk9r+MMg5lecnTdmCDBfc=
+X-Received: by 2002:a25:8611:0:b0:66e:d9e7:debc with SMTP id
+ y17-20020a258611000000b0066ed9e7debcmr716558ybk.257.1657666921301; Tue, 12
+ Jul 2022 16:02:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Ys32tgTtkfeECzLc@google.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20220706002612.4013790-1-song@kernel.org> <CAADnVQ++wJcuKemLaJo9eJrvw_873LtMPidFSvgyHtWjCgG2MQ@mail.gmail.com>
+In-Reply-To: <CAADnVQ++wJcuKemLaJo9eJrvw_873LtMPidFSvgyHtWjCgG2MQ@mail.gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Tue, 12 Jul 2022 16:01:50 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6T20wJVZBs4B1d9ic0ZCf5kcA1fbQ+aWAE9p2=Jib_dg@mail.gmail.com>
+Message-ID: <CAPhsuW6T20wJVZBs4B1d9ic0ZCf5kcA1fbQ+aWAE9p2=Jib_dg@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf, x86: fix freeing of not-finalized bpf_prog_pack
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        syzbot <syzbot+2f649ec6d2eea1495a8f@syzkaller.appspotmail.com>,
+        syzbot <syzbot+87f65c75f4a72db05445@syzkaller.appspotmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 12, 2022 at 03:33:26PM -0700, sdf@google.com wrote:
-> On 07/12, Daniel M�ller wrote:
-> > On Tue, Jul 12, 2022 at 02:27:47PM -0700, Alexei Starovoitov wrote:
-> > > On Tue, Jul 12, 2022 at 2:21 PM Daniel M�ller <deso@posteo.net> wrote:
-> > > >
-> > > > This change integrates the libbpf maintained configurations and
-> > > > black/white lists [0] into the repository, co-located with the BPF
-> > > > selftests themselves. The only differences from the source is that we
-> > > > replaced the terms blacklist & whitelist with denylist and allowlist,
-> > > > respectively.
-> > > >
-> > > > [0] https://github.com/libbpf/libbpf/tree/20f03302350a4143825cedcbd210c4d7112c1898/travis-ci/vmtest/configs
-> > > >
-> > > > Signed-off-by: Daniel M�ller <deso@posteo.net>
-> > > > ---
-> > > >  .../bpf/configs/allowlist/ALLOWLIST-4.9.0     |    8 +
-> > > >  .../bpf/configs/allowlist/ALLOWLIST-5.5.0     |   55 +
-> > > >  .../selftests/bpf/configs/config-latest.s390x | 2711 +++++++++++++++
-> > > >  .../bpf/configs/config-latest.x86_64          | 3073
-> > +++++++++++++++++
-> > >
-> > > Instead of checking in the full config please trim it to
-> > > relevant dependencies like existing selftests/bpf/config.
-> > > Otherwise every update/addition would trigger massive patches.
-> 
-> > Thanks for taking a look. Sure. Do we have some kind of tooling for that
-> > or are
-> > there any suggestions on the best approach to minimize?
-> 
-> I would be interested to know as well if somebody knows some tricks on
-> how to deal with kconfig. I've spent some time yesterday manually
-> crafting various minimal bpf configs (for build tests), running make
-> olddefconfig and then verifying that all my options are still present in
-> the final config file.
-> 
-> It seems like kconfig tool can resolve some of the dependencies,
-> but there is a lot of if/endif that can break in non-obvious ways.
-> For example, putting CONFIG_TRACING=y and doing 'make olddefconfig'
-> won't get you CONFIG_TRACING=y in the final .config
-> 
-> So the only thing, for me, that helped, was to manually go through
-> the kconfig files trying to see what the dependencies are.
-> I've tried scripts/kconfig/merge_config.sh, but it doesn't
-> seem to bring anything new to the table..
-> 
-> So here is what I ended up with, I don't think it will help you that
-> much, but at least can highlight the moving parts (I was thinking that
-> maybe we can eventually put them in the CI as well to make sure all weird
-> configurations are build-tested?):
+On Tue, Jul 12, 2022 at 3:09 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Tue, Jul 5, 2022 at 5:26 PM Song Liu <song@kernel.org> wrote:
+> >
+> > syzbot reported a few issues with bpf_prog_pack [1], [2]. These are
+> > triggered when the program passed initial JIT in jit_subprogs(), but
+> > failed final pass of JIT. At this point, bpf_jit_binary_pack_free() is
+> > called before bpf_jit_binary_pack_finalize(), and the whole 2MB page is
+> > freed.
+> >
+> > Fix this with a custom bpf_jit_free() for x86_64, which calls
+> > bpf_jit_binary_pack_finalize() if necessary. Also, with custom
+> > bpf_jit_free(), bpf_prog_aux->use_bpf_prog_pack is not needed any more,
+> > remove it.
+> >
+> > Fixes: 1022a5498f6f ("bpf, x86_64: Use bpf_jit_binary_pack_alloc")
+> > [1] https://syzkaller.appspot.com/bug?extid=2f649ec6d2eea1495a8f
+> > [2] https://syzkaller.appspot.com/bug?extid=87f65c75f4a72db05445
+> > Reported-by: syzbot+2f649ec6d2eea1495a8f@syzkaller.appspotmail.com
+> > Reported-by: syzbot+87f65c75f4a72db05445@syzkaller.appspotmail.com
+> > Signed-off-by: Song Liu <song@kernel.org>
+> > ---
+> >  arch/x86/net/bpf_jit_comp.c | 25 +++++++++++++++++++++++++
+> >  include/linux/bpf.h         |  1 -
+> >  include/linux/filter.h      |  8 ++++++++
+> >  kernel/bpf/core.c           | 29 ++++++++++++-----------------
+> >  4 files changed, 45 insertions(+), 18 deletions(-)
+> >
+> > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> > index c98b8c0ed3b8..c3dca4c97e48 100644
+> > --- a/arch/x86/net/bpf_jit_comp.c
+> > +++ b/arch/x86/net/bpf_jit_comp.c
+> > @@ -2492,3 +2492,28 @@ void *bpf_arch_text_copy(void *dst, void *src, size_t len)
+> >                 return ERR_PTR(-EINVAL);
+> >         return dst;
+> >  }
+> > +
+> > +void bpf_jit_free(struct bpf_prog *prog)
+> > +{
+> > +       if (prog->jited) {
+> > +               struct x64_jit_data *jit_data = prog->aux->jit_data;
+> > +               struct bpf_binary_header *hdr;
+> > +
+> > +               /*
+> > +                * If we fail the final pass of JIT (from jit_subprogs),
+> > +                * the program may not be finalized yet. Call finalize here
+> > +                * before freeing it.
+> > +                */
+> > +               if (jit_data) {
+> > +                       bpf_jit_binary_pack_finalize(prog, jit_data->header,
+> > +                                                    jit_data->rw_header);
+> > +                       kvfree(jit_data->addrs);
+> > +                       kfree(jit_data);
+> > +               }
+>
+> It looks like a workaround for missed cleanup on the JIT side.
+> When bpf_int_jit_compile() fails it is supposed to free jit_data
+> immediately.
+>
+> > passed initial JIT in jit_subprogs(), but
+> > failed final pass of JIT. At this point, bpf_jit_binary_pack_free() is
+> > called before bpf_jit_binary_pack_finalize()
+>
+> It feels that bpf_int_jit_compile() should call
+> bpf_jit_binary_pack_finalize() instead in the path where
+> it's failing.
+> I could be missing details on what exactly
+> "failed final pass of JIT" means.
 
-[...]
+This only happens with multiple subprogs. In jit_subprogs(), we
+first call bpf_int_jit_compile() on each sub program. And then,
+we call it on each sub program again. jit_data is not freed in the
+first call of bpf_int_jit_compile(). Similarly we don't call
+bpf_jit_binary_pack_finalize() in the first call of bpf_int_jit_compile().
 
-I *think* that make savedefconfig [0] is the way to go, at least for my use
-case. That cuts down the config file to <350 lines. However, it does change some
-configurations from 'm' to 'y', which I can't say I quite understand or would
-have expected (but perhaps minimal implies no modules or similar; I haven't
-investigated).
-I am still verifying that the result is working as expected, though.
+If bpf_int_jit_compile() failed for one sub program, we will call
+bpf_jit_binary_pack_finalize() for this sub program. However,
+we don't have a chance to call it for other sub programs. Then
+we will hit "goto out_free" in jit_subprogs(), and call bpf_jit_free
+on some subprograms that haven't got bpf_jit_binary_pack_finalize()
+yet. So, I think bpf_jit_free is the best place we can add the extra
+check and call bpf_jit_binary_pack_finalize().
+
+Does this make sense?
 
 Thanks,
-Daniel
-
-[0] https://lwn.net/Articles/397363/
+Song
