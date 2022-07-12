@@ -2,136 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1488572908
-	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 00:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CCC557290E
+	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 00:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbiGLWJe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jul 2022 18:09:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59246 "EHLO
+        id S230500AbiGLWLQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jul 2022 18:11:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230515AbiGLWJd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jul 2022 18:09:33 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABCCBBD396
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 15:09:32 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id t1so1007340ejd.12
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 15:09:32 -0700 (PDT)
+        with ESMTP id S231276AbiGLWLO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jul 2022 18:11:14 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F2FC54AC
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 15:11:13 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id b8so7977312pjo.5
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 15:11:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=qiCmr8J3UkIhGJXStMvjQkgTmcxh7o0aH9TQ2csPFTY=;
-        b=HRJ1X3f/eRSTBZtbUI5ZKe/cj/BbR3y/C8gxnUiz55q1Ifdw0kAFEeeTPQOs/XBCbb
-         dBSedLOdsWnNgfoUwpugU0aT0vBI7csU1VmN7N1K6lpIbtVAhGU5UXw0wZ/cgIiUSIDR
-         XUV+9PES2BWSMEOGMwL5d4nJe4eIpAOQt1Vs9Ib08Ffe+tQsSqvwtffYtN0ldM/pFPj5
-         NWtIvUiBBbKc6JGVMqFe8DjmLrviArdi72jOWaniTyEeWb5acQ9CF2++wHwgUCZM9nVQ
-         p9fZtepHHqK23l9e5mZPCvA4y2yONlm+5SfMVQXHobFbxjehm/IErAtNC8Fb5UByZcNC
-         4MRw==
+        bh=V5+SKXw7xQ8pOW3xLBv/UilgsLJssuxU4DHDUS6CbQc=;
+        b=M0mF9jUFX4FVreFrTePPsEIkrtpYgoEBr1di/wduOo2KoxQ0jSOypHtBVeXIllLvXn
+         yyPgcxKzbCEeqxVvRHjofm7TboLZfOFUWUCMxGANS88cuOSTX+KhXqfzkEMBJ94XciFJ
+         8kb53RPFjzoQqA1BFWZzbm63AHFLTzbrgTKJLbN6RFG/ZMI8Bt2tsQTq6EdagRCwbdRz
+         WQipvDGM+3aNXKbF7hruJgugaYTATQ0FzpGG38H1dP8ZL1GN+5LTaMHqk7+RFaHwOdx2
+         cAICVm2/WKiTIDYmlq1sIjtlvsHcztIzdsF5KzgF+24K6i/Ywiph7L+z+IytXUyXSevg
+         MPwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qiCmr8J3UkIhGJXStMvjQkgTmcxh7o0aH9TQ2csPFTY=;
-        b=bCZD8+1RIPFGrQU3G1iaSP455cUULhr6wJ/otXZv3FcywbBneCYBmnZEBvz9QsGHjO
-         N9WlqcagyS9QRkq3ygJ0rvq9nl/FWgQKpAHXpRFEuzthM/3ZyxO3qwh7wNu4LYfuGvOC
-         ZnmlAtnhpDygAN9GPHG2guzX6MXOmNCyqna/UuOWX4EzCOAZvfAcXImvDspYzhe80RDr
-         jf3Po8hnFcCa4gEi3MrtOA2/KSgnsxscU/hO9H01PUTjQYPbsC6roO83PFesEYVWDmMi
-         H5slq92JvNjXc59aYQII14DYc5EmTmDTnhN8vTh8xrsij8yttc/oJ21h4q2nFSshgqhQ
-         0Bkg==
-X-Gm-Message-State: AJIora9dJaCItrizrUw9U0wye74mhGSpu4OwlepHUrLFICPwEL/Ftdq/
-        7rvyGm1yxSFl00p2EqTeMi423cH9Ku+3GwUwrCs=
-X-Google-Smtp-Source: AGRyM1s9bGy6+6LxJacXKx4/i1HKyA9aHt1pl7mg5/TcUVhq6wNwDUZNsit7fKGhQ1PH7y6Vi+OnJgD5fsnU8MzrnLM=
-X-Received: by 2002:a17:907:3f07:b0:72b:54b2:f57f with SMTP id
- hq7-20020a1709073f0700b0072b54b2f57fmr269996ejc.502.1657663771274; Tue, 12
- Jul 2022 15:09:31 -0700 (PDT)
+        bh=V5+SKXw7xQ8pOW3xLBv/UilgsLJssuxU4DHDUS6CbQc=;
+        b=pG7ELiDKiw14InbGlQjRtnqQVYphZ87k2e11wbKIydBZf4ms8cirr1dsvyeuufh9gQ
+         wqf6wX2SZ4/HgpVvoQN8Vtxu+lkLTY5hqKgv+AfigWx6KeKSPHguRKrNDhKn3z7TIrgb
+         0buULaHVipgOlxUgVX7fAq8A+TA+mvLxw4MeqjtmymJBWzYHHdG9gQUx6JXj7IXqLe7A
+         QRWGznHK+DNVMpNjdW9uiYX0EZE7Xtm9WMhlz2U7plM36UnGxOlUOdH1Uro1pMXAiV2m
+         DJBCdRq1+wAtBuDUOPW31JCUoAFECuAhtSUTFi5ennGCLGMCOcrV1Ul+xHDqn1Ie7imx
+         7Gog==
+X-Gm-Message-State: AJIora8SWFqLPvwCQe7Zt9Cyh9AxZWBAlDos0FDi2K8bHgbCYpsjIVSP
+        h/wTq/aq4zm6apBvgfEt+yg4IQFTT7chsxMJuZsg4g==
+X-Google-Smtp-Source: AGRyM1tH5qwHM1eKTMf6FAQlhOKEGgTM2L8i+n9p3AUCA/nGBRZblR3qk+QLnYGQJJv4fLafWZ1DTgQJVFrbg1IrbKE=
+X-Received: by 2002:a17:902:e746:b0:16c:4eb6:915d with SMTP id
+ p6-20020a170902e74600b0016c4eb6915dmr160322plf.106.1657663873107; Tue, 12 Jul
+ 2022 15:11:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220706002612.4013790-1-song@kernel.org>
-In-Reply-To: <20220706002612.4013790-1-song@kernel.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 12 Jul 2022 15:09:19 -0700
-Message-ID: <CAADnVQ++wJcuKemLaJo9eJrvw_873LtMPidFSvgyHtWjCgG2MQ@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf, x86: fix freeing of not-finalized bpf_prog_pack
-To:     Song Liu <song@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        syzbot+2f649ec6d2eea1495a8f@syzkaller.appspotmail.com,
-        syzbot+87f65c75f4a72db05445@syzkaller.appspotmail.com
+References: <20220711162827.184743-1-roman.gushchin@linux.dev> <CAADnVQ+2Az23WLHj_1pQWYXdd8CbeKooCLrkT_GnzKXV7Yp8hw@mail.gmail.com>
+In-Reply-To: <CAADnVQ+2Az23WLHj_1pQWYXdd8CbeKooCLrkT_GnzKXV7Yp8hw@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 12 Jul 2022 15:11:02 -0700
+Message-ID: <CALvZod5uPV9cNKCMjs3HmadVnF--fum5BgG-Zcv1vTM_Bak8hw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf: reparent bpf maps on memcg offlining
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 5, 2022 at 5:26 PM Song Liu <song@kernel.org> wrote:
+On Tue, Jul 12, 2022 at 2:49 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> syzbot reported a few issues with bpf_prog_pack [1], [2]. These are
-> triggered when the program passed initial JIT in jit_subprogs(), but
-> failed final pass of JIT. At this point, bpf_jit_binary_pack_free() is
-> called before bpf_jit_binary_pack_finalize(), and the whole 2MB page is
-> freed.
+> On Mon, Jul 11, 2022 at 9:28 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
+> >
+> > The memory consumed by a mpf map is always accounted to the memory
+> > cgroup of the process which created the map. The map can outlive
+> > the memory cgroup if it's used by processes in other cgroups or
+> > is pinned on bpffs. In this case the map pins the original cgroup
+> > in the dying state.
+> >
+> > For other types of objects (slab objects, non-slab kernel allocations,
+> > percpu objects and recently LRU pages) there is a reparenting process
+> > implemented: on cgroup offlining charged objects are getting
+> > reassigned to the parent cgroup. Because all charges and statistics
+> > are fully recursive it's a fairly cheap operation.
+> >
+> > For efficiency and consistency with other types of objects, let's do
+> > the same for bpf maps. Fortunately thanks to the objcg API, the
+> > required changes are minimal.
+> >
+> > Please, note that individual allocations (slabs, percpu and large
+> > kmallocs) already have the reparenting mechanism. This commit adds
+> > it to the saved map->memcg pointer by replacing it to map->objcg.
+> > Because dying cgroups are not visible for a user and all charges are
+> > recursive, this commit doesn't bring any behavior changes for a user.
+> >
+> > v2:
+> >   added a missing const qualifier
+> >
+> > Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
+> > Reviewed-by: Shakeel Butt <shakeelb@google.com>
+> > ---
+> >  include/linux/bpf.h  |  2 +-
+> >  kernel/bpf/syscall.c | 35 +++++++++++++++++++++++++++--------
+> >  2 files changed, 28 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index 2b21f2a3452f..85a4db3e0536 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -221,7 +221,7 @@ struct bpf_map {
+> >         u32 btf_vmlinux_value_type_id;
+> >         struct btf *btf;
+> >  #ifdef CONFIG_MEMCG_KMEM
+> > -       struct mem_cgroup *memcg;
+> > +       struct obj_cgroup *objcg;
+> >  #endif
+> >         char name[BPF_OBJ_NAME_LEN];
+> >         struct bpf_map_off_arr *off_arr;
+> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> > index ab688d85b2c6..ef60dbc21b17 100644
+> > --- a/kernel/bpf/syscall.c
+> > +++ b/kernel/bpf/syscall.c
+> > @@ -419,35 +419,52 @@ void bpf_map_free_id(struct bpf_map *map, bool do_idr_lock)
+> >  #ifdef CONFIG_MEMCG_KMEM
+> >  static void bpf_map_save_memcg(struct bpf_map *map)
+> >  {
+> > -       map->memcg = get_mem_cgroup_from_mm(current->mm);
+> > +       /* Currently if a map is created by a process belonging to the root
+> > +        * memory cgroup, get_obj_cgroup_from_current() will return NULL.
+> > +        * So we have to check map->objcg for being NULL each time it's
+> > +        * being used.
+> > +        */
+> > +       map->objcg = get_obj_cgroup_from_current();
+> >  }
+> >
+> >  static void bpf_map_release_memcg(struct bpf_map *map)
+> >  {
+> > -       mem_cgroup_put(map->memcg);
+> > +       if (map->objcg)
+> > +               obj_cgroup_put(map->objcg);
+> > +}
+> > +
+> > +static struct mem_cgroup *bpf_map_get_memcg(const struct bpf_map *map) {
+> > +       if (map->objcg)
+> > +               return get_mem_cgroup_from_objcg(map->objcg);
+> > +
+> > +       return root_mem_cgroup;
+> >  }
+> >
+> >  void *bpf_map_kmalloc_node(const struct bpf_map *map, size_t size, gfp_t flags,
+> >                            int node)
+> >  {
+> > -       struct mem_cgroup *old_memcg;
+> > +       struct mem_cgroup *memcg, *old_memcg;
+> >         void *ptr;
+> >
+> > -       old_memcg = set_active_memcg(map->memcg);
+> > +       memcg = bpf_map_get_memcg(map);
+> > +       old_memcg = set_active_memcg(memcg);
+> >         ptr = kmalloc_node(size, flags | __GFP_ACCOUNT, node);
+> >         set_active_memcg(old_memcg);
+> > +       mem_cgroup_put(memcg);
 >
-> Fix this with a custom bpf_jit_free() for x86_64, which calls
-> bpf_jit_binary_pack_finalize() if necessary. Also, with custom
-> bpf_jit_free(), bpf_prog_aux->use_bpf_prog_pack is not needed any more,
-> remove it.
->
-> Fixes: 1022a5498f6f ("bpf, x86_64: Use bpf_jit_binary_pack_alloc")
-> [1] https://syzkaller.appspot.com/bug?extid=2f649ec6d2eea1495a8f
-> [2] https://syzkaller.appspot.com/bug?extid=87f65c75f4a72db05445
-> Reported-by: syzbot+2f649ec6d2eea1495a8f@syzkaller.appspotmail.com
-> Reported-by: syzbot+87f65c75f4a72db05445@syzkaller.appspotmail.com
-> Signed-off-by: Song Liu <song@kernel.org>
-> ---
->  arch/x86/net/bpf_jit_comp.c | 25 +++++++++++++++++++++++++
->  include/linux/bpf.h         |  1 -
->  include/linux/filter.h      |  8 ++++++++
->  kernel/bpf/core.c           | 29 ++++++++++++-----------------
->  4 files changed, 45 insertions(+), 18 deletions(-)
->
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index c98b8c0ed3b8..c3dca4c97e48 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -2492,3 +2492,28 @@ void *bpf_arch_text_copy(void *dst, void *src, size_t len)
->                 return ERR_PTR(-EINVAL);
->         return dst;
->  }
-> +
-> +void bpf_jit_free(struct bpf_prog *prog)
-> +{
-> +       if (prog->jited) {
-> +               struct x64_jit_data *jit_data = prog->aux->jit_data;
-> +               struct bpf_binary_header *hdr;
-> +
-> +               /*
-> +                * If we fail the final pass of JIT (from jit_subprogs),
-> +                * the program may not be finalized yet. Call finalize here
-> +                * before freeing it.
-> +                */
-> +               if (jit_data) {
-> +                       bpf_jit_binary_pack_finalize(prog, jit_data->header,
-> +                                                    jit_data->rw_header);
-> +                       kvfree(jit_data->addrs);
-> +                       kfree(jit_data);
-> +               }
+> Here we might css_put root_mem_cgroup.
+> Should we css_get it when returning or
+> it's marked as CSS_NO_REF ?
+> But mem_cgroup_alloc() doesn't seem to be doing that marking.
+> I'm lost at that code.
 
-It looks like a workaround for missed cleanup on the JIT side.
-When bpf_int_jit_compile() fails it is supposed to free jit_data
-immediately.
-
-> passed initial JIT in jit_subprogs(), but
-> failed final pass of JIT. At this point, bpf_jit_binary_pack_free() is
-> called before bpf_jit_binary_pack_finalize()
-
-It feels that bpf_int_jit_compile() should call
-bpf_jit_binary_pack_finalize() instead in the path where
-it's failing.
-I could be missing details on what exactly
-"failed final pass of JIT" means.
+CSS_NO_REF is set for root_mem_cgroup in cgroup_init_subsys().
