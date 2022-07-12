@@ -2,133 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 824D0572046
-	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 18:05:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7916D5720B3
+	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 18:24:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234120AbiGLQE5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jul 2022 12:04:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45852 "EHLO
+        id S234030AbiGLQY2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jul 2022 12:24:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233525AbiGLQEw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jul 2022 12:04:52 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7208C766F
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 09:04:39 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id h23so15107506ejj.12
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 09:04:39 -0700 (PDT)
+        with ESMTP id S234300AbiGLQY1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jul 2022 12:24:27 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C2E6CAF34
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 09:24:23 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id s21so8144283pjq.4
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 09:24:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OROIHR5qZL9/bZqoAqvRAN1WBpFHFV5HSU9hQpiXWb8=;
-        b=Lem2qnRZHsBPFVD2wJm7XUWQccWuus1PVpFimzWkOrDE6u177WNgLnOAlG99uXOYWm
-         zFMEgBU0bRUlqZDmH5v3INau7aMmPqDfdoYbFN9BEbyTtZZrBcexVXONJwuJl7PQar25
-         CqTZzvPVQGk06vtDn/H1IODbchbG6Ktx8UmgZ2haBrNL6Ka74GCGi2IUO02YaSYOuU6b
-         zn9wN/Dril5/obQ9OY+K/2zj4NDiX4vikJ6Vim/rWQTAepZKwYYoHQeq/HVy/5zT6pMB
-         4ivWLXUdwZrK4Umj/1nE36jZpvb6e68/zOLZEguX4etEcLFm3xs7mo8bbNSjX+r3HKbE
-         qvKQ==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7sEHZnwDHngZ8PkrUxm/ATIo3aq5UKj0LAY0nMBz/yk=;
+        b=meJQ/dKf8HP6vS20zVKapOxrcORiVKzXMeR0qkrRs/dGuhkKecJaRK6r2Iss9H2K2j
+         gA5Rzq4tqzIgi5NGmZUm8OyerBZnQZxXA7i5AWTSMU7BP+IOP6RITSysiX1+GtSibOpr
+         InGYEdDZViTnBqcEj9HgVOcmo3T9o+0IFmi1CH2C+Ci+znLIvofR+Kd2RDshqo58PJff
+         aXv/DPcAVZ3x7X+27pEziAPi3yIxwI8mTdNR/WDAvu98ogUyKF8iutbuBO1KwxbqKrRp
+         3U6Vfx+iImOsbz76hKnyYLmh/Kv1bp08Coae9qoybh1lk8OgcSVY0kOb2uDZbar9du7u
+         HJqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OROIHR5qZL9/bZqoAqvRAN1WBpFHFV5HSU9hQpiXWb8=;
-        b=iSeEcKMNiEobDVlz3xCL6VoWgcjRoJ3QUj43zOxs/ekSkJdRvR9Qz5kynGwauZSLjw
-         0xMWpjKtIzxLyvBGgGpWcl7g9vMjwZTdDXVeuVqGGO2ZXccLb+p/KgJQb/dQ7ktPahb5
-         RhRv8rqGofm5dxXURxd/d4iAqV007R1ENnGrd3r4PoahxzYzyWatQTKN8An8HHnRwAjr
-         wJldlxFQ0xRpH6G5QmtJTz2DzqoF59VJGFkNmXL8qIHEgO5aSQAt1sK3zs+aH8kSXNAN
-         xkHS07cVqq3RSlcXTFw1Sfz4NErYjRi0lKDE/T5Tq+IAZgcOp3jH2/vVLPu80tQFppbt
-         Zxvg==
-X-Gm-Message-State: AJIora+Zz90H4si0AB9WSGU1nF3tzlhqsWGjNgStqCwZMn896ncReCs2
-        CC30oDzlS/xk2gaTKCFOCXV2wp/XPchBx6uHay0=
-X-Google-Smtp-Source: AGRyM1sXNuuwtQuyw7Wx/fHg4/iMLd8oO2vpUIecx78nlS2VEWLiyusJMAKnZh9+BnfvqtSq4TLkon9HKreJ3JljSjU=
-X-Received: by 2002:a17:907:c14:b0:72b:6762:de34 with SMTP id
- ga20-20020a1709070c1400b0072b6762de34mr8391772ejc.94.1657641878453; Tue, 12
- Jul 2022 09:04:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAAYibXiJTyGwXZf8h4tTJSFyP8dB5_4sjGDrr=Ag4fe4KA71rA@mail.gmail.com>
- <CAAYibXj-8jJKOFkKuFHoVbn2nux-CbNH1EF=H4NEdZ76vF1rnQ@mail.gmail.com>
- <CA+khW7gMsE1iqmzibvHUCMUvfD5Rku46GaazwyvktGnHennDxg@mail.gmail.com> <Ys02hDIYZ58kYTNf@krava>
-In-Reply-To: <Ys02hDIYZ58kYTNf@krava>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 12 Jul 2022 09:04:27 -0700
-Message-ID: <CAADnVQLBt0snxv4bKwg1WKQ9wDFbaDCtZ03v1-LjOTYtsKPckQ@mail.gmail.com>
-Subject: Re: Questions about querying map object information
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Hao Luo <haoluo@google.com>,
-        "Hao Xiang ." <hao.xiang@bytedance.com>, bpf <bpf@vger.kernel.org>,
-        Chuang <horenchuang@bytedance.com>,
-        Yifei Ma <yifeima@bytedance.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=7sEHZnwDHngZ8PkrUxm/ATIo3aq5UKj0LAY0nMBz/yk=;
+        b=vSInTp9HcziY9Y4oabN+cdslPC6K+hfa/ZVdCcRVgJ5VmjTk+X0Et3VukRJU1wgjcH
+         k7DZdlV2WuQU1Pa8tZfczEWvC2oL7JiUOhg28UDv+jcpHVI5qhft+rvn0gYdTs25e6ve
+         6ruHpFigTyfNU3WXAoAszQUx2ezXIAzQ6iToGjswHnXXClQzXkeZV/K9mFS0yYjrDItJ
+         lp6/VpWjB9NVKg8LEn9tTbfURKthfNTPfFU6CKeRfcec4KCFL4wItf+y8h1KBOXapt+Q
+         v4fvAjGi/VrF8NvseQjBdAFMR3jowfQDgZVaQN+5Co6WADO+XfGhHM3zVZRK1SSGCbJl
+         sUjA==
+X-Gm-Message-State: AJIora+9tvpW3YGDTQmmjhhXdI4jeXlog0cnBR8AcvB0TK4U+7VAuO1S
+        kfb8PMbygAe8SZv7w5YAIkk=
+X-Google-Smtp-Source: AGRyM1vPQIv97fm/20hxzm1gicPKu76SuIxxULA29ZAmF4uFJB7irtvGCWOL90Qd5lx0F5BGLLZvWA==
+X-Received: by 2002:a17:90b:1e4d:b0:1f0:462b:b573 with SMTP id pi13-20020a17090b1e4d00b001f0462bb573mr5337524pjb.164.1657643062744;
+        Tue, 12 Jul 2022 09:24:22 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
+        by smtp.gmail.com with ESMTPSA id be4-20020a656e44000000b0040caab35e5bsm6313952pgb.89.2022.07.12.09.24.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jul 2022 09:24:21 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 12 Jul 2022 06:24:20 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Yafang Shao <laoar.shao@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        linux-mm <linux-mm@kvack.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH bpf-next 0/5] bpf: BPF specific memory allocator.
+Message-ID: <Ys2gNCAyYGX3XVMm@slm.duckdns.org>
+References: <Ysg0GyvqUe0od2NN@dhcp22.suse.cz>
+ <20220708174858.6gl2ag3asmoimpoe@macbook-pro-3.dhcp.thefacebook.com>
+ <20220708215536.pqclxdqvtrfll2y4@google.com>
+ <CAADnVQL5ZQDqMGULJLDwT9xRTihdDvo6GvwxdEOtSAs8EwE78A@mail.gmail.com>
+ <20220710073213.bkkdweiqrlnr35sv@google.com>
+ <YswUS/5nbYb8nt6d@dhcp22.suse.cz>
+ <20220712043914.pxmbm7vockuvpmmh@macbook-pro-3.dhcp.thefacebook.com>
+ <Ys0lXfWKtwYlVrzK@dhcp22.suse.cz>
+ <CALOAHbAhzNTkT9o_-PRX=n4vNjKhEK_09+-7gijrFgGjNH7iRA@mail.gmail.com>
+ <Ys1ES+CygtnUvArz@dhcp22.suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Ys1ES+CygtnUvArz@dhcp22.suse.cz>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 12, 2022 at 1:53 AM Jiri Olsa <olsajiri@gmail.com> wrote:
->
-> On Mon, Jul 11, 2022 at 04:35:19PM -0700, Hao Luo wrote:
-> > Hi Hao Xiang,
-> >
-> > On Mon, Jul 11, 2022 at 3:50 PM Hao Xiang . <hao.xiang@bytedance.com> wrote:
-> > >
-> > > Ping...
-> > >
-> > > Can someone please help to shed some light on this?
-> > >
-> > > Thanks, Hao
-> > >
-> > > On Sun, Jul 3, 2022 at 3:33 PM Hao Xiang . <hao.xiang@bytedance.com> wrote:
-> > > >
-> > > > Hi everyone,
-> > > >
-> > > > I am super new to bpf and the open source community in general. Please
-> > > > bear with me asking some basic questions.
-> > > > We are working on a bpf monitoring tool to track the CPU and memory
-> > > > usage for all bpf programs loaded in the system. We were able to get
-> > > > CPU usage per bpf program with the BPF_OBJ_GET_INFO_BY_ID syscall on a
-> > > > bpf prog object. We are trying to do the same on a map object to query
-> > > > for per map memory usage. The information returned from bpf_map_info
-> > > > only contains things like max_entries, key_size, value_size, which can
-> > > > be used to calculate estimated memory allocation size. But we are also
-> > > > interested in knowing how much memory is actually being used by our
-> > > > program. For instance, one of our bpf program uses a map with type
-> > > > hashtable. The hashtable is created with a chunk of pre-allocated
-> > > > memory based on the max_entres, key_size and value size. The
-> > > > pre-allocated size is useful information to know but so is the current
-> > > > number of entries in the hashtable. We used to run into a performance
-> > > > issue where our bpf map's max_entries is set to be too small and we
-> > > > end up totally exhausting the pre-allocated memory. So knowing things
-> > > > like current entry count VS max entry count of a hashtable is useful
-> > > > information for us.
-> > > > With that being said, we have a few questions and hopefully we can get
-> > > > some help from the community.
-> > > > 1) We couldn't find anything in bpf_map_info to give us the current
-> > > > entry count of a hashtable. I read that bpf_map_info returns
-> > > > information about a map object in general. So it makes total sense to
-> > > > not have information of a particular map type. But is there an
-> > > > existing place we can get the per map type information (eg, the
-> > > > current entry count of a hashtable, the number of elements pushed to a
-> > > > stack, etc)?
-> >
-> > cc more BPF experts for their comments.
-> >
-> > I agree with you that knowing the current space usage of a map is
-> > quite helpful. In my understanding, a naive and inefficient way to
-> > estimate space usage is iterating the map and counting the map
-> > elements. That's doable, but may not be the best method though.
-> > Regarding auto-adjusting map size, I remember Andrii talked about
-> > resizable hash maps, maybe he can tell you more [1].
->
-> we keep entries count for hash map, maybe we could just add
-> 'current count' to bpf_map_info, it seems generic enough
+Hello, Michal.
 
-We actually don't keep a count for the default case of prealloc.
+On Tue, Jul 12, 2022 at 11:52:11AM +0200, Michal Hocko wrote:
+> > Agreed. That's why I don't like reparenting.
+> > Reparenting just reparent the charged pages and then redirect the new
+> > charge, but can't reparents the 'limit' of the original memcg.
+> > So it is a risk if the original memcg is still being charged. We have
+> > to forbid the destruction of the original memcg.
+> 
+> yes, I was toying with an idea like that. I guess we really want a
+> measure to keep cgroups around if they are bound to a resource which is
+> sticky itself. I am not sure how many other resources like BPF (aka
+> module like) we already do charge for memcg but considering the
+> potential memory consumption just reparenting will not help in general
+> case I am afraid.
+
+I think the solution here is an extra cgroup layering to represent
+persistent resource tracking. In systemd-speak, a service should have a
+cgroup representing a persistent service type and a cgroup representing the
+current running instance. This way, the user (or system agent) can clearly
+distinguish all resources that have ever been attributed to the service and
+the resources that are accounted to the current instance while also giving
+visibility into residual resources for services that are no longer running.
+
+This gives userspace control over what to track for how long and also fits
+what the kernel can do in terms of resource tracking. If we try to do
+something smart from kernel side, there are cases which are inherently
+insolvable. e.g. if a service instance creates tmpfs / shmem / whawtever and
+leaves it pinned one way or another and then exits, and there's no one who
+actively accessed it afterwards, there is no userland visible entity we can
+reasonably attribute that memory to other than the parent cgroup.
+
+Thanks.
+
+-- 
+tejun
