@@ -2,53 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26BAC572703
-	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 22:12:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 201DC57279D
+	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 22:47:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231205AbiGLUM1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jul 2022 16:12:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51868 "EHLO
+        id S231599AbiGLUro (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jul 2022 16:47:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231157AbiGLUM0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jul 2022 16:12:26 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD6D1BEB46;
-        Tue, 12 Jul 2022 13:12:25 -0700 (PDT)
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oBMEz-0002bi-O3; Tue, 12 Jul 2022 22:12:17 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oBMEz-000SVy-9w; Tue, 12 Jul 2022 22:12:17 +0200
-Subject: Re: [PATCH bpf-next] bpf: Don't redirect packets with invalid pkt_len
-To:     sdf@google.com, Zhengchao Shao <shaozhengchao@huawei.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        hawk@kernel.org, ast@kernel.org, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        weiyongjun1@huawei.com, yuehaibing@huawei.com
-References: <20220712120158.56325-1-shaozhengchao@huawei.com>
- <Ys2oPzt7Yn1oMou8@google.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <f0bf3e9a-15e6-f5c8-1b2a-7866acfcb71b@iogearbox.net>
-Date:   Tue, 12 Jul 2022 22:12:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <Ys2oPzt7Yn1oMou8@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26599/Tue Jul 12 10:00:48 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        with ESMTP id S229700AbiGLUro (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jul 2022 16:47:44 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 787CF2F664
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 13:47:42 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id a127-20020a624d85000000b00525950b1feeso2662622pfb.0
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 13:47:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=UmaN+lg1gVY00nS/FFRqdUXBbU3SwpvZPAY4iW8kINU=;
+        b=JahOGRhQjUoYH60LNMTwoBdEccmWhGvwskp4rfCVpx6hGwVorvPWF/E7+XyBzuUWYy
+         Aae2gHO54dT9ri42KU80XMdFRDcvraWnpX7VleGfAMo6DcWbXADZyPDdHv6Y7DLDmW+K
+         ti8d8wt6YR8zc9yoDpHpzewPVVOWaZgY7KifsdyYRPSk+9hSAR4mo5Yd0D1GOwjeJ5ka
+         gSDiyoXDx0mNdITZDRaTBwYhL1siKUSvqo7v/hXR+ry1w9u15WpBrpLngGuH7g0sO24q
+         gMXBqqTJYlkB4LR8QlHdRxNk7uGJFWXW+Rj4qbA7Ce+TbJQEizGslfzLpyfS0vtzpcH6
+         G5+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=UmaN+lg1gVY00nS/FFRqdUXBbU3SwpvZPAY4iW8kINU=;
+        b=ao3jamc9cKm7rv246gIK5/nkrD9u9WsbmY8bdmL6p0riadTwLE1b5xzu6PtvBqCj0S
+         xb03e6oNM+1bt7mcUz7C4Mh7rjiHz7jckUBfXWZEjxywpy4+5fcv7pKiRPYypdH2BE39
+         KJ59g+4r0qZZ/XrJ/9sMt4+c+ursVkkhucz3gffGsv7QRLZFXttSbwsHq9d+bQKV4vja
+         2CZ+8yb5RiU86xLe73jNZJXMSEyUuFExGypBXRUCQehlXtvOTlot5q0QnlC8e6JghPd/
+         SRdd/BVyqcRG9t70xXb260Z+QsNqHkkfvrtfR1goBNGrlrzdPOkKCpx/VdL9d3i11sMw
+         S4eg==
+X-Gm-Message-State: AJIora9Fgx9eANBLp3lqlgbYXgwKaFl7E2DFWuv/sZ+vtzPx4a3Ktdk1
+        p1TT29LzR56IDkSK9aJOxOK/Evo=
+X-Google-Smtp-Source: AGRyM1vVHUMGTuqvwkQOaBRLL4govc9MSnFQyvufa1aFmhnFGVlueCTSuzGycWTeB2CgBbUZ6UPiu14=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:903:20d4:b0:16b:da9d:975a with SMTP id
+ i20-20020a17090320d400b0016bda9d975amr25520398plb.119.1657658862026; Tue, 12
+ Jul 2022 13:47:42 -0700 (PDT)
+Date:   Tue, 12 Jul 2022 13:47:40 -0700
+In-Reply-To: <20220712184225.52429-2-flaniel@linux.microsoft.com>
+Message-Id: <Ys3d7LCN8yATY9az@google.com>
+Mime-Version: 1.0
+References: <20220712184225.52429-1-flaniel@linux.microsoft.com> <20220712184225.52429-2-flaniel@linux.microsoft.com>
+Subject: Re: [RFC PATCH v1 1/1] bpftool: Add generating command to C dumped file.
+From:   sdf@google.com
+To:     Francis Laniel <flaniel@linux.microsoft.com>
+Cc:     bpf@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,69 +74,86 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/12/22 6:58 PM, sdf@google.com wrote:
-> On 07/12, Zhengchao Shao wrote:
->> Syzbot found an issue [1]: fq_codel_drop() try to drop a flow whitout any
->> skbs, that is, the flow->head is null.
->> The root cause, as the [2] says, is because that bpf_prog_test_run_skb()
->> run a bpf prog which redirects empty skbs.
->> So we should determine whether the length of the packet modified by bpf
->> prog or others like bpf_prog_test is valid before forwarding it directly.
-> 
->> LINK: [1] https://syzkaller.appspot.com/bug?id=0b84da80c2917757915afa89f7738a9d16ec96c5
->> LINK: [2] https://www.spinics.net/lists/netdev/msg777503.html
-> 
->> Reported-by: syzbot+7a12909485b94426aceb@syzkaller.appspotmail.com
->> Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
->> ---
->>   net/core/filter.c | 9 ++++++++-
->>   1 file changed, 8 insertions(+), 1 deletion(-)
-> 
->> diff --git a/net/core/filter.c b/net/core/filter.c
->> index 4ef77ec5255e..27801b314960 100644
->> --- a/net/core/filter.c
->> +++ b/net/core/filter.c
->> @@ -2122,6 +2122,11 @@ static int __bpf_redirect_no_mac(struct sk_buff *skb, struct net_device *dev,
->>   {
->>       unsigned int mlen = skb_network_offset(skb);
-> 
->> +    if (unlikely(skb->len == 0)) {
->> +        kfree_skb(skb);
->> +        return -EINVAL;
->> +    }
->> +
->>       if (mlen) {
->>           __skb_pull(skb, mlen);
-> 
->> @@ -2143,7 +2148,9 @@ static int __bpf_redirect_common(struct sk_buff *skb, struct net_device *dev,
->>                    u32 flags)
->>   {
->>       /* Verify that a link layer header is carried */
->> -    if (unlikely(skb->mac_header >= skb->network_header)) {
->> +    if (unlikely(skb->mac_header >= skb->network_header) ||
->> +        (min_t(u32, skb_mac_header_len(skb), skb->len) <
->> +         (u32)dev->min_header_len)) {
-> 
-> Why check skb->len != 0 above but skb->len < dev->min_header_len here?
-> I guess it doesn't make sense in __bpf_redirect_no_mac because we know
-> that mac is empty, but why do we care in __bpf_redirect_common?
-> Why not put this check in the common __bpf_redirect?
-> 
-> Also, it's still not clear to me whether we should bake it into the core
-> stack vs having some special checks from test_prog_run only. I'm
-> assuming the issue is that we can construct illegal skbs with that
-> test_prog_run interface, so maybe start by fixing that?
+On 07/12, Francis Laniel wrote:
+> This commit adds the following lines to file generated by dump:
+> /*
+>   * File generated by bpftool using:
+>   * bpftool btf dump file /sys/kernel/btf/vmlinux format c
+>   * DO NOT EDIT.
+>   */
+> This warns users to not edit the file and documents the command used to
+> generate the file.
 
-Agree, ideally we can prevent it right at the source rather than adding
-more tests into the fast-path.
+> Signed-off-by: Francis Laniel <flaniel@linux.microsoft.com>
+> ---
+>   tools/bpf/bpftool/btf.c | 16 ++++++++++++++--
+>   1 file changed, 14 insertions(+), 2 deletions(-)
 
-> Did you have a chance to look at the reproducer more closely? What
-> exactly is it doing?
-> 
->>           kfree_skb(skb);
->>           return -ERANGE;
->>       }
->> -- 
->> 2.17.1
-> 
+> diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+> index 7e6accb9d9f7..eecfc27370c3 100644
+> --- a/tools/bpf/bpftool/btf.c
+> +++ b/tools/bpf/bpftool/btf.c
+> @@ -415,7 +415,8 @@ static void __printf(2, 0) btf_dump_printf(void *ctx,
+>   }
+
+>   static int dump_btf_c(const struct btf *btf,
+> -		      __u32 *root_type_ids, int root_type_cnt)
+> +		      __u32 *root_type_ids, int root_type_cnt,
+> +		      int argc, char **argv)
+>   {
+>   	struct btf_dump *d;
+>   	int err = 0, i;
+> @@ -425,6 +426,14 @@ static int dump_btf_c(const struct btf *btf,
+>   	if (err)
+>   		return err;
+
+> +	printf("/*\n");
+> +	printf(" * File generated by bpftool using:\n");
+> +	printf(" * bpftool btf dump");
+
+[..]
+
+> +	for (i = 0; i < argc; i++)
+> +		printf(" %s", argv[i]);
+
+Do we really need that complexity to preserve the arguments?
+For skeletons we're simply doing:
+
+	/* THIS FILE IS AUTOGENERATED BY BPFTOOL! */
+
+So probably the same should be fine here?
+
+Also, while at it, might be worth adding SPDX license comment? So let's
+align with whatever we have in gen.c ?
+
+
+> +	printf("\n");
+> +	printf(" * DO NOT EDIT.\n");
+> +	printf(" */\n");
+>   	printf("#ifndef __VMLINUX_H__\n");
+>   	printf("#define __VMLINUX_H__\n");
+>   	printf("\n");
+> @@ -507,8 +516,10 @@ static bool btf_is_kernel_module(__u32 btf_id)
+>   static int do_dump(int argc, char **argv)
+>   {
+>   	struct btf *btf = NULL, *base = NULL;
+> +	char **orig_argv = argv;
+>   	__u32 root_type_ids[2];
+>   	int root_type_cnt = 0;
+> +	int orig_argc = argc;
+>   	bool dump_c = false;
+>   	__u32 btf_id = -1;
+>   	const char *src;
+> @@ -649,7 +660,8 @@ static int do_dump(int argc, char **argv)
+>   			err = -ENOTSUP;
+>   			goto done;
+>   		}
+> -		err = dump_btf_c(btf, root_type_ids, root_type_cnt);
+> +		err = dump_btf_c(btf, root_type_ids, root_type_cnt,
+> +				 orig_argc, orig_argv);
+>   	} else {
+>   		err = dump_btf_raw(btf, root_type_ids, root_type_cnt);
+>   	}
+> --
+> 2.25.1
 
