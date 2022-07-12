@@ -2,129 +2,232 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 582F35721D4
-	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 19:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEBD25721FB
+	for <lists+bpf@lfdr.de>; Tue, 12 Jul 2022 19:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229491AbiGLRgb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jul 2022 13:36:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43240 "EHLO
+        id S231354AbiGLRxm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jul 2022 13:53:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbiGLRg3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jul 2022 13:36:29 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA81C4440
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 10:36:28 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id o5-20020a17090a3d4500b001ef76490983so9059007pjf.2
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 10:36:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RfyxacdG5IBfbLaiFP2j7TVDH6sp4yfvSyLKPWelm6k=;
-        b=CD/x8J0HVROAHqRiCfTs/QVrM6JiSO4KL/DiAEZBOmWr9E2Bsxl+gQy7zzOCWSogUT
-         EiNV0LsSZBzJM6agV8sin+F5q9ztsTaEAQIfjpuSQfD/B1gA5Wbp9lSo0+LtAxk11+Bl
-         J77eE//HmXsLTmr6jZauLbdhagd4GFv2TfkPwqCYy4jmoedpKC1TEbS6QLJTSEI5RvKa
-         UNLFn3wMwnVTzOsvj0OJzHNba8JMVzs7PqGp54+3MdiBA9wXlR02wJppDKd8zT+IF81K
-         7Hw08LYy4l1hl4gIFft0+X+zGXqylt7i5EIjVwnwrfUAjlDyQjGwdP3bTZR75odsxRcm
-         0LAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=RfyxacdG5IBfbLaiFP2j7TVDH6sp4yfvSyLKPWelm6k=;
-        b=rKZt2jhPFcWr7RN/vl5HUSSajjC7oF7Ky9Aoi03nW/vbzy1tS80RkritNlkvjttt9z
-         myb/clSyRMwhRibZKe+gVI6MAb6vm06NGqfK+g9828lM1dVE7AhVnaj7wVkF3VsiDCNu
-         llchTQtqWbyfAhuLkyNUrWs2n9+J1oCB8zWlVEELxsHWfW3Ps7Huz8r4ps8SE6cVF1Us
-         HIDGprVf3ajB7NfjF0A8LmppV9Lz0LHlYt6Uxs4PC4wLX417cx6HHae7O2oWR8CRUZ07
-         MbQv4DYnn7kpddaBX2XMxONEiqkbKorWrAsRFnvaNZro/B4KZATMQkifr72ht5Q2YH5W
-         6FFw==
-X-Gm-Message-State: AJIora/mzby3kaz8f833zJrlAxved+2rU7D238t62Y+95P9DuT5wY+re
-        wRuqdBBTggUiXj3VRgKRxOo=
-X-Google-Smtp-Source: AGRyM1uPiM4XB+sGsiyBgP+kGPc094jqM3zJi0w8a2Mp8psGHVrhbPHoS90xy5TK6RKQjaprsqzuEQ==
-X-Received: by 2002:a17:902:ef8f:b0:16a:463e:296c with SMTP id iz15-20020a170902ef8f00b0016a463e296cmr14090025plb.138.1657647388128;
-        Tue, 12 Jul 2022 10:36:28 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id x13-20020a17090a46cd00b001ef7c7564fdsm9309170pjg.21.2022.07.12.10.36.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jul 2022 10:36:27 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 12 Jul 2022 07:36:25 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        linux-mm <linux-mm@kvack.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH bpf-next 0/5] bpf: BPF specific memory allocator.
-Message-ID: <Ys2xGe+rdviCAjsC@slm.duckdns.org>
-References: <CAADnVQL5ZQDqMGULJLDwT9xRTihdDvo6GvwxdEOtSAs8EwE78A@mail.gmail.com>
- <20220710073213.bkkdweiqrlnr35sv@google.com>
- <YswUS/5nbYb8nt6d@dhcp22.suse.cz>
- <20220712043914.pxmbm7vockuvpmmh@macbook-pro-3.dhcp.thefacebook.com>
- <Ys0lXfWKtwYlVrzK@dhcp22.suse.cz>
- <CALOAHbAhzNTkT9o_-PRX=n4vNjKhEK_09+-7gijrFgGjNH7iRA@mail.gmail.com>
- <Ys1ES+CygtnUvArz@dhcp22.suse.cz>
- <CALvZod460hip0mQouEVtfcOZ0M21Xmzaa-atxxrUnR3ZisDCNw@mail.gmail.com>
- <Ys2iIVMZJNPe73MI@slm.duckdns.org>
- <CALvZod7YKrTvh-5SkDgFvtRk=DkxQ8iEhRGhDhhRGBXmYM4sFw@mail.gmail.com>
+        with ESMTP id S230372AbiGLRxl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jul 2022 13:53:41 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF06B38BB;
+        Tue, 12 Jul 2022 10:53:39 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4ADC1B81B88;
+        Tue, 12 Jul 2022 17:53:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFB44C341C8;
+        Tue, 12 Jul 2022 17:53:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1657648417;
+        bh=81DQ6XwV6QSGRv/Y8PZB4OF0sSCD+qz4XroqcCziNmg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=nd3/SesHarbZ9Ec5IuCJ/CxludbfYk4IrYVLcvv/AT257kIyLgURuvBaEV3Vum0hc
+         t3ME+q+Z0hh6HnQnNpocVI39x0VHdAbXJZ9V/86jTEztZOkmehbiQehlIAwcFCgI83
+         U9BpOsR0ZKhWAKjdSGzlT6DrYaE7pmgFoGif9cvR8zGasRtD6ltfQQMAbVSB6f9saU
+         3TLmtZYnugNpToW+BFontk/DHQezBdPbTbk6fQbCwesvUAnyDr0/RKq2k7vAFZWBBb
+         WdP/lyKt5KjUuMxHHamf5Ky4lpRkemMIeZe9E2UqJYhbV7ZG8pefk1JATo+e9o16pN
+         WjGLF0NGXvoRw==
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-31bf3656517so88792797b3.12;
+        Tue, 12 Jul 2022 10:53:36 -0700 (PDT)
+X-Gm-Message-State: AJIora8iYPmbbE0eOG+TMTTXaAi6QRKV6dinXcwIxlPaGP61ajpcAQyK
+        jaS92gMx+lClXV/mcB0SAYZHmayetwpqEeY8UfA=
+X-Google-Smtp-Source: AGRyM1uZFjBEihbK2YQQp/NBSOZ9Xn1WI5+IJIQYfmNEdqci5UczaZ7c5pkl25sDzH1+9TZ7vqGVhxQpLxRNKtYZXl4=
+X-Received: by 2002:a0d:f445:0:b0:31d:4f2c:a0b0 with SMTP id
+ d66-20020a0df445000000b0031d4f2ca0b0mr19507196ywf.73.1657648415966; Tue, 12
+ Jul 2022 10:53:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod7YKrTvh-5SkDgFvtRk=DkxQ8iEhRGhDhhRGBXmYM4sFw@mail.gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+References: <20220711083220.2175036-1-asavkov@redhat.com> <20220711083220.2175036-4-asavkov@redhat.com>
+In-Reply-To: <20220711083220.2175036-4-asavkov@redhat.com>
+From:   Song Liu <song@kernel.org>
+Date:   Tue, 12 Jul 2022 10:53:25 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7xTRpLf1kyj5ejH0fV_aHCMQjUwn-uhWeNytXedh4+TQ@mail.gmail.com>
+Message-ID: <CAPhsuW7xTRpLf1kyj5ejH0fV_aHCMQjUwn-uhWeNytXedh4+TQ@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 3/4] bpf: add bpf_panic() helper
+To:     Artem Savkov <asavkov@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Mon, Jul 11, 2022 at 1:32 AM Artem Savkov <asavkov@redhat.com> wrote:
+>
+> Add a helper that will make the kernel panic immediately with specified
+> message. Using this helper requires kernel.destructive_bpf_enabled sysctl
+> to be enabled, BPF_F_DESTRUCTIVE flag to be supplied on program load as
+> well as CAP_SYS_BOOT capabilities.
+>
+> Signed-off-by: Artem Savkov <asavkov@redhat.com>
+> ---
+>  include/linux/bpf.h            |  1 +
+>  include/uapi/linux/bpf.h       |  7 +++++++
+>  kernel/bpf/core.c              |  1 +
+>  kernel/bpf/helpers.c           | 13 +++++++++++++
+>  kernel/bpf/verifier.c          |  7 +++++++
+>  kernel/trace/bpf_trace.c       |  2 ++
+>  tools/include/uapi/linux/bpf.h |  7 +++++++
+>  7 files changed, 38 insertions(+)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 43c008e3587a..77c20ba9ca8e 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -2339,6 +2339,7 @@ extern const struct bpf_func_proto bpf_strtol_proto;
+>  extern const struct bpf_func_proto bpf_strtoul_proto;
+>  extern const struct bpf_func_proto bpf_tcp_sock_proto;
+>  extern const struct bpf_func_proto bpf_jiffies64_proto;
+> +extern const struct bpf_func_proto bpf_panic_proto;
+>  extern const struct bpf_func_proto bpf_get_ns_current_pid_tgid_proto;
+>  extern const struct bpf_func_proto bpf_event_output_data_proto;
+>  extern const struct bpf_func_proto bpf_ringbuf_output_proto;
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 4423874b5da4..e2e2c4de44ee 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -3927,6 +3927,12 @@ union bpf_attr {
+>   *     Return
+>   *             The 64 bit jiffies
+>   *
+> + * void bpf_panic(const char *msg)
+> + *     Description
+> + *             Make the kernel panic immediately
+> + *     Return
+> + *             void
+> + *
+>   * long bpf_read_branch_records(struct bpf_perf_event_data *ctx, void *buf, u32 size, u64 flags)
+>   *     Description
+>   *             For an eBPF program attached to a perf event, retrieve the
+> @@ -5452,6 +5458,7 @@ union bpf_attr {
+>         FN(tcp_send_ack),               \
+>         FN(send_signal_thread),         \
+>         FN(jiffies64),                  \
+> +       FN(panic),                      \
+>         FN(read_branch_records),        \
+>         FN(get_ns_current_pid_tgid),    \
+>         FN(xdp_output),                 \
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index b5ffebcce6cc..0f333a0e85a5 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -2649,6 +2649,7 @@ const struct bpf_func_proto bpf_map_lookup_percpu_elem_proto __weak;
+>  const struct bpf_func_proto bpf_spin_lock_proto __weak;
+>  const struct bpf_func_proto bpf_spin_unlock_proto __weak;
+>  const struct bpf_func_proto bpf_jiffies64_proto __weak;
+> +const struct bpf_func_proto bpf_panic_proto __weak;
+>
+>  const struct bpf_func_proto bpf_get_prandom_u32_proto __weak;
+>  const struct bpf_func_proto bpf_get_smp_processor_id_proto __weak;
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index a1c84d256f83..5cb90208a264 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -374,6 +374,19 @@ const struct bpf_func_proto bpf_jiffies64_proto = {
+>         .ret_type       = RET_INTEGER,
+>  };
+>
+> +BPF_CALL_1(bpf_panic, const char *, msg)
+> +{
+> +       panic(msg);
 
-On Tue, Jul 12, 2022 at 10:26:22AM -0700, Shakeel Butt wrote:
-> One use-case we have is a build & test service which runs independent
-> builds and tests but all the build utilities (compiler, linker,
-> libraries) are shared between those builds and tests.
-> 
-> In terms of topology, the service has a top level cgroup (P) and all
-> independent builds and tests run in their own cgroup under P. These
-> builds/tests continuously come and go.
-> 
-> This service continuously monitors all the builds/tests running and
-> may kill some based on some criteria which includes memory usage.
-> However the memory usage is nondeterministic and killing a specific
-> build/test may not really free memory if most of the memory charged to
-> it is from shared build utilities.
+I think we should also check
 
-That doesn't sound too unusual. So, one saving grace here is that the memory
-pressure in the stressed cgroup should trigger reclaim of the shared memory
-which will be likely picked up by someone else, hopefully, under less memory
-pressure. Can you give more concerete details? ie. describe a failing
-scenario with actual ballpark memory numbers?
+   capable(CAP_SYS_BOOT) && destructive_ebpf_enabled()
 
-FWIW, at least from generic resource constrol standpoint, I think it may
-make sense to have a way to escape certain resources to an ancestor for
-shared resources provided that we can come up with a sane interface.
+here. Or at least, destructive_ebpf_enabled(). Otherwise, we
+may trigger panic after the sysctl is disabled.
 
-Thanks.
+In general, I don't think sysctl is a good API, as it is global, and
+the user can easily forget to turn it back off. If possible, I would
+rather avoid adding new BPF related sysctls.
 
--- 
-tejun
+Thanks,
+Song
+
+
+> +       return 0;
+> +}
+> +
+> +const struct bpf_func_proto bpf_panic_proto = {
+> +       .func           = bpf_panic,
+> +       .gpl_only       = false,
+> +       .ret_type       = RET_VOID,
+> +       .arg1_type      = ARG_PTR_TO_CONST_STR,
+> +};
+> +
+>  #ifdef CONFIG_CGROUPS
+>  BPF_CALL_0(bpf_get_current_cgroup_id)
+>  {
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 2859901ffbe3..f49c026917c5 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -7285,6 +7285,13 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>                                 reg_type_str(env, regs[BPF_REG_1].type));
+>                         return -EACCES;
+>                 }
+> +               break;
+> +       case BPF_FUNC_panic:
+> +               struct bpf_prog_aux *aux = env->prog->aux;
+> +               if (!aux->destructive) {
+> +                       verbose(env, "bpf_panic() calls require BPF_F_DESTRUCTIVE flag\n");
+> +                       return -EACCES;
+> +               }
+>         }
+>
+>         if (err)
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 4be976cf7d63..3ee888507795 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -1304,6 +1304,8 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>                 return &bpf_find_vma_proto;
+>         case BPF_FUNC_trace_vprintk:
+>                 return bpf_get_trace_vprintk_proto();
+> +       case BPF_FUNC_panic:
+> +               return capable(CAP_SYS_BOOT) && destructive_ebpf_enabled() ? &bpf_panic_proto : NULL;
+>         default:
+>                 return bpf_base_func_proto(func_id);
+>         }
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index 4423874b5da4..e2e2c4de44ee 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -3927,6 +3927,12 @@ union bpf_attr {
+>   *     Return
+>   *             The 64 bit jiffies
+>   *
+> + * void bpf_panic(const char *msg)
+> + *     Description
+> + *             Make the kernel panic immediately
+> + *     Return
+> + *             void
+> + *
+>   * long bpf_read_branch_records(struct bpf_perf_event_data *ctx, void *buf, u32 size, u64 flags)
+>   *     Description
+>   *             For an eBPF program attached to a perf event, retrieve the
+> @@ -5452,6 +5458,7 @@ union bpf_attr {
+>         FN(tcp_send_ack),               \
+>         FN(send_signal_thread),         \
+>         FN(jiffies64),                  \
+> +       FN(panic),                      \
+>         FN(read_branch_records),        \
+>         FN(get_ns_current_pid_tgid),    \
+>         FN(xdp_output),                 \
+> --
+> 2.35.3
+>
