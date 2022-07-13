@@ -2,37 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3B5C572B16
-	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 03:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ACFA572B19
+	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 03:53:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230171AbiGMBxR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 12 Jul 2022 21:53:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53026 "EHLO
+        id S230052AbiGMBxX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 12 Jul 2022 21:53:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231852AbiGMBxQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jul 2022 21:53:16 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C359CD4BC7
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 18:53:15 -0700 (PDT)
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26CLjqoj007849
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 18:53:15 -0700
+        with ESMTP id S230017AbiGMBxV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jul 2022 21:53:21 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52067D4BDE
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 18:53:20 -0700 (PDT)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 26CLjfxD024598
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 18:53:19 -0700
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3h9h5f91m0-6
+        by m0089730.ppops.net (PPS) with ESMTPS id 3h9h5es1mv-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 18:53:15 -0700
-Received: from twshared3657.05.prn5.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 18:53:19 -0700
+Received: from twshared31479.05.prn5.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Tue, 12 Jul 2022 18:53:12 -0700
+ 15.1.2375.28; Tue, 12 Jul 2022 18:53:18 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id D5DC21C4081D8; Tue, 12 Jul 2022 18:53:07 -0700 (PDT)
+        id E44341C4081DC; Tue, 12 Jul 2022 18:53:09 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
 CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next 1/5] libbpf: generalize virtual __kconfig externs and use it for USDT
-Date:   Tue, 12 Jul 2022 18:53:00 -0700
-Message-ID: <20220713015304.3375777-2-andrii@kernel.org>
+Subject: [PATCH bpf-next 2/5] selftests/bpf: add test of __weak unknown virtual __kconfig extern
+Date:   Tue, 12 Jul 2022 18:53:01 -0700
+Message-ID: <20220713015304.3375777-3-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220713015304.3375777-1-andrii@kernel.org>
 References: <20220713015304.3375777-1-andrii@kernel.org>
@@ -40,8 +40,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: Tv9rU6l6Hqn-LwrOPbGUi1Y5JRipcZjh
-X-Proofpoint-ORIG-GUID: Tv9rU6l6Hqn-LwrOPbGUi1Y5JRipcZjh
+X-Proofpoint-ORIG-GUID: -eOV33j4Zd-A7SAW3UyKXf92RV0P-0M3
+X-Proofpoint-GUID: -eOV33j4Zd-A7SAW3UyKXf92RV0P-0M3
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
  definitions=2022-07-12_14,2022-07-12_01,2022-06-22_01
@@ -55,190 +55,100 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Libbpf supports single virtual __kconfig extern currently: LINUX_KERNEL_VERSION.
-LINUX_KERNEL_VERSION isn't coming from /proc/kconfig.gz and is intead
-customly filled out by libbpf.
-
-This patch generalizes this approach to support more such virtual
-__kconfig externs. One such extern added in this patch is
-LINUX_HAS_BPF_COOKIE which is used for BPF-side USDT supporting code in
-usdt.bpf.h instead of using CO-RE-based enum detection approach for
-detecting bpf_get_attach_cookie() BPF helper. This allows to remove
-otherwise not needed CO-RE dependency and keeps user-space and BPF-side
-parts of libbpf's USDT support strictly in sync in terms of their
-feature detection.
-
-We'll use similar approach for syscall wrapper detection for
-BPF_KSYSCALL() BPF-side macro in follow up patch.
-
-Generally, currently libbpf reserves CONFIG_ prefix for Kconfig values
-and LINUX_ for virtual libbpf-backed externs. In the future we might
-extend the set of prefixes that are supported. This can be done without
-any breaking changes, as currently any __kconfig extern with
-unrecognized name is rejected.
-
-For LINUX_xxx externs we support the normal "weak rule": if libbpf
-doesn't recognize given LINUX_xxx extern but such extern is marked as
-__weak, it is not rejected and defaults to zero.  This follows
-CONFIG_xxx handling logic and will allow BPF applications to
-opportunistically use newer libbpf virtual externs without breaking on
-older libbpf versions unnecessarily.
+Exercise libbpf's logic for unknown __weak virtual __kconfig externs.
+USDT selftests are already excercising non-weak known virtual extern
+already (LINUX_HAS_BPF_COOKIE), so no need to add explicit tests for it.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/libbpf.c   | 69 +++++++++++++++++++++++++++++-----------
- tools/lib/bpf/usdt.bpf.h | 16 ++--------
- 2 files changed, 52 insertions(+), 33 deletions(-)
+ .../selftests/bpf/prog_tests/core_extern.c      | 17 +++++++----------
+ .../selftests/bpf/progs/test_core_extern.c      |  3 +++
+ 2 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index cb49408eb298..4bae67767f82 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -1800,11 +1800,18 @@ static bool is_kcfg_value_in_range(const struct extern_desc *ext, __u64 v)
- static int set_kcfg_value_num(struct extern_desc *ext, void *ext_val,
- 			      __u64 value)
+diff --git a/tools/testing/selftests/bpf/prog_tests/core_extern.c b/tools/testing/selftests/bpf/prog_tests/core_extern.c
+index 1931a158510e..63a51e9f3630 100644
+--- a/tools/testing/selftests/bpf/prog_tests/core_extern.c
++++ b/tools/testing/selftests/bpf/prog_tests/core_extern.c
+@@ -39,6 +39,7 @@ static struct test_case {
+ 		       "CONFIG_STR=\"abracad\"\n"
+ 		       "CONFIG_MISSING=0",
+ 		.data = {
++			.unkn_virt_val = 0,
+ 			.bpf_syscall = false,
+ 			.tristate_val = TRI_MODULE,
+ 			.bool_val = true,
+@@ -121,7 +122,7 @@ static struct test_case {
+ void test_core_extern(void)
  {
--	if (ext->kcfg.type != KCFG_INT && ext->kcfg.type != KCFG_CHAR) {
--		pr_warn("extern (kcfg) %s=%llu should be integer\n",
-+	if (ext->kcfg.type != KCFG_INT && ext->kcfg.type != KCFG_CHAR &&
-+	    ext->kcfg.type != KCFG_BOOL) {
-+		pr_warn("extern (kcfg) %s=%llu should be integer, char or boolean\n",
- 			ext->name, (unsigned long long)value);
- 		return -EINVAL;
- 	}
-+	if (ext->kcfg.type == KCFG_BOOL && value > 1) {
-+		pr_warn("extern (kcfg) %s=%llu value isn't boolean\n",
-+			ext->name, (unsigned long long)value);
-+		return -EINVAL;
-+
-+	}
- 	if (!is_kcfg_value_in_range(ext, value)) {
- 		pr_warn("extern (kcfg) %s=%llu value doesn't fit in %d bytes\n",
- 			ext->name, (unsigned long long)value, ext->kcfg.sz);
-@@ -1870,10 +1877,13 @@ static int bpf_object__process_kconfig_line(struct bpf_object *obj,
- 		/* assume integer */
- 		err = parse_u64(value, &num);
- 		if (err) {
--			pr_warn("extern (kcfg) %s=%s should be integer\n",
--				ext->name, value);
-+			pr_warn("extern (kcfg) %s=%s should be integer\n", ext->name, value);
- 			return err;
+ 	const uint32_t kern_ver = get_kernel_version();
+-	int err, duration = 0, i, j;
++	int err, i, j;
+ 	struct test_core_extern *skel = NULL;
+ 	uint64_t *got, *exp;
+ 	int n = sizeof(*skel->data) / sizeof(uint64_t);
+@@ -136,19 +137,17 @@ void test_core_extern(void)
+ 			continue;
+ 
+ 		skel = test_core_extern__open_opts(&opts);
+-		if (CHECK(!skel, "skel_open", "skeleton open failed\n"))
++		if (!ASSERT_OK_PTR(skel, "skel_open"))
+ 			goto cleanup;
+ 		err = test_core_extern__load(skel);
+ 		if (t->fails) {
+-			CHECK(!err, "skel_load",
+-			      "shouldn't succeed open/load of skeleton\n");
++			ASSERT_ERR(err, "skel_load_should_fail");
+ 			goto cleanup;
+-		} else if (CHECK(err, "skel_load",
+-				 "failed to open/load skeleton\n")) {
++		} else if (!ASSERT_OK(err, "skel_load")) {
+ 			goto cleanup;
  		}
-+		if (ext->kcfg.type != KCFG_INT && ext->kcfg.type != KCFG_CHAR) {
-+			pr_warn("extern (kcfg) %s=%s should be integer\n", ext->name, value);
-+			return -EINVAL;
-+		}
- 		err = set_kcfg_value_num(ext, ext_val, num);
- 		break;
- 	}
-@@ -7493,26 +7503,47 @@ static int bpf_object__resolve_externs(struct bpf_object *obj,
- 	for (i = 0; i < obj->nr_extern; i++) {
- 		ext = &obj->externs[i];
+ 		err = test_core_extern__attach(skel);
+-		if (CHECK(err, "attach_raw_tp", "failed attach: %d\n", err))
++		if (!ASSERT_OK(err, "attach_raw_tp"))
+ 			goto cleanup;
  
--		if (ext->type == EXT_KCFG &&
--		    strcmp(ext->name, "LINUX_KERNEL_VERSION") == 0) {
--			void *ext_val = kcfg_data + ext->kcfg.data_off;
--			__u32 kver = get_kernel_version();
-+		if (ext->type == EXT_KSYM) {
-+			if (ext->ksym.type_id)
-+				need_vmlinux_btf = true;
-+			else
-+				need_kallsyms = true;
-+			continue;
-+		} else if (ext->type == EXT_KCFG) {
-+			void *ext_ptr = kcfg_data + ext->kcfg.data_off;
-+			__u64 value = 0;
-+
-+			/* Kconfig externs need actual /proc/config.gz */
-+			if (str_has_pfx(ext->name, "CONFIG_")) {
-+				need_config = true;
-+				continue;
-+			}
+ 		usleep(1);
+@@ -158,9 +157,7 @@ void test_core_extern(void)
+ 		got = (uint64_t *)skel->data;
+ 		exp = (uint64_t *)&t->data;
+ 		for (j = 0; j < n; j++) {
+-			CHECK(got[j] != exp[j], "check_res",
+-			      "result #%d: expected %llx, but got %llx\n",
+-			       j, (__u64)exp[j], (__u64)got[j]);
++			ASSERT_EQ(got[j], exp[j], "result");
+ 		}
+ cleanup:
+ 		test_core_extern__destroy(skel);
+diff --git a/tools/testing/selftests/bpf/progs/test_core_extern.c b/tools/testing/selftests/bpf/progs/test_core_extern.c
+index 3ac3603ad53d..a3c7c1042f35 100644
+--- a/tools/testing/selftests/bpf/progs/test_core_extern.c
++++ b/tools/testing/selftests/bpf/progs/test_core_extern.c
+@@ -11,6 +11,7 @@
+ static int (*bpf_missing_helper)(const void *arg1, int arg2) = (void *) 999;
  
--			if (!kver) {
--				pr_warn("failed to get kernel version\n");
-+			/* Virtual kcfg externs are customly handled by libbpf */
-+			if (strcmp(ext->name, "LINUX_KERNEL_VERSION") == 0) {
-+				value = get_kernel_version();
-+				if (!value) {
-+					pr_warn("extern (kcfg) '%s': failed to get kernel version\n", ext->name);
-+					return -EINVAL;
-+				}
-+			} else if (strcmp(ext->name, "LINUX_HAS_BPF_COOKIE") == 0) {
-+				value = kernel_supports(obj, FEAT_BPF_COOKIE);
-+			} else if (!str_has_pfx(ext->name, "LINUX_") || !ext->is_weak) {
-+				/* Currently libbpf supports only CONFIG_ and LINUX_ prefixed
-+				 * __kconfig externs, where LINUX_ ones are virtual and filled out
-+				 * customly by libbpf (their values don't come from Kconfig).
-+				 * If LINUX_xxx variable is not recognized by libbpf, but is marked
-+				 * __weak, it defaults to zero value, just like for CONFIG_xxx
-+				 * externs.
-+				 */
-+				pr_warn("extern (kcfg) '%s': unrecognized virtual extern\n", ext->name);
- 				return -EINVAL;
- 			}
--			err = set_kcfg_value_num(ext, ext_val, kver);
-+
-+			err = set_kcfg_value_num(ext, ext_ptr, value);
- 			if (err)
- 				return err;
--			pr_debug("extern (kcfg) %s=0x%x\n", ext->name, kver);
--		} else if (ext->type == EXT_KCFG && str_has_pfx(ext->name, "CONFIG_")) {
--			need_config = true;
--		} else if (ext->type == EXT_KSYM) {
--			if (ext->ksym.type_id)
--				need_vmlinux_btf = true;
--			else
--				need_kallsyms = true;
-+			pr_debug("extern (kcfg) %s=0x%llx\n", ext->name, (long long)value);
- 		} else {
- 			pr_warn("unrecognized extern '%s'\n", ext->name);
- 			return -EINVAL;
-diff --git a/tools/lib/bpf/usdt.bpf.h b/tools/lib/bpf/usdt.bpf.h
-index 4181fddb3687..4f2adc0bd6ca 100644
---- a/tools/lib/bpf/usdt.bpf.h
-+++ b/tools/lib/bpf/usdt.bpf.h
-@@ -6,7 +6,6 @@
- #include <linux/errno.h>
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
--#include <bpf/bpf_core_read.h>
+ extern int LINUX_KERNEL_VERSION __kconfig;
++extern int LINUX_UNKNOWN_VIRTUAL_EXTERN __kconfig __weak;
+ extern bool CONFIG_BPF_SYSCALL __kconfig; /* strong */
+ extern enum libbpf_tristate CONFIG_TRISTATE __kconfig __weak;
+ extern bool CONFIG_BOOL __kconfig __weak;
+@@ -22,6 +23,7 @@ extern const char CONFIG_STR[8] __kconfig __weak;
+ extern uint64_t CONFIG_MISSING __kconfig __weak;
  
- /* Below types and maps are internal implementation details of libbpf's USDT
-  * support and are subjects to change. Also, bpf_usdt_xxx() API helpers should
-@@ -30,14 +29,6 @@
- #ifndef BPF_USDT_MAX_IP_CNT
- #define BPF_USDT_MAX_IP_CNT (4 * BPF_USDT_MAX_SPEC_CNT)
- #endif
--/* We use BPF CO-RE to detect support for BPF cookie from BPF side. This is
-- * the only dependency on CO-RE, so if it's undesirable, user can override
-- * BPF_USDT_HAS_BPF_COOKIE to specify whether to BPF cookie is supported or not.
-- */
--#ifndef BPF_USDT_HAS_BPF_COOKIE
--#define BPF_USDT_HAS_BPF_COOKIE \
--	bpf_core_enum_value_exists(enum bpf_func_id___usdt, BPF_FUNC_get_attach_cookie___usdt)
--#endif
+ uint64_t kern_ver = -1;
++uint64_t unkn_virt_val = -1;
+ uint64_t bpf_syscall = -1;
+ uint64_t tristate_val = -1;
+ uint64_t bool_val = -1;
+@@ -38,6 +40,7 @@ int handle_sys_enter(struct pt_regs *ctx)
+ 	int i;
  
- enum __bpf_usdt_arg_type {
- 	BPF_USDT_ARG_CONST,
-@@ -83,15 +74,12 @@ struct {
- 	__type(value, __u32);
- } __bpf_usdt_ip_to_spec_id SEC(".maps") __weak;
- 
--/* don't rely on user's BPF code to have latest definition of bpf_func_id */
--enum bpf_func_id___usdt {
--	BPF_FUNC_get_attach_cookie___usdt = 0xBAD, /* value doesn't matter */
--};
-+extern const _Bool LINUX_HAS_BPF_COOKIE __kconfig;
- 
- static __always_inline
- int __bpf_usdt_spec_id(struct pt_regs *ctx)
- {
--	if (!BPF_USDT_HAS_BPF_COOKIE) {
-+	if (!LINUX_HAS_BPF_COOKIE) {
- 		long ip = PT_REGS_IP(ctx);
- 		int *spec_id_ptr;
- 
+ 	kern_ver = LINUX_KERNEL_VERSION;
++	unkn_virt_val = LINUX_UNKNOWN_VIRTUAL_EXTERN;
+ 	bpf_syscall = CONFIG_BPF_SYSCALL;
+ 	tristate_val = CONFIG_TRISTATE;
+ 	bool_val = CONFIG_BOOL;
 -- 
 2.30.2
 
