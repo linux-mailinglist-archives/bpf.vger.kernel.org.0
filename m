@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F6D2573535
-	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 13:18:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 581BA573533
+	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 13:18:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235958AbiGMLSe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Jul 2022 07:18:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42740 "EHLO
+        id S236048AbiGMLS3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Jul 2022 07:18:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231351AbiGMLSa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Jul 2022 07:18:30 -0400
+        with ESMTP id S231351AbiGMLS2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Jul 2022 07:18:28 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 37866100CE4
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 04:18:29 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 39992100CE4
+        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 04:18:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1657711108;
+        s=mimecast20190719; t=1657711106;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=m9jsaBAn6wtBTsWqUwNNR/1YQePbJoUZIk07ulDT2Uw=;
-        b=F+TrH/FIrSKMdctE1aDtLYDHLrqhBjTt0tm9Et53Ua+c4qhcrS2gejh53Ftgqa8SvvSDIE
-        L72J3cjejDq8PzC10VbWJzHS4wemVdgCgUscFa2Y9Rr+2kv2C4JxkBOnmRsj8WVOWPmG1+
-        YENSma4iibEZ7pwQsD4bb2MkN/4hZL0=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=FxD0L2l12FH/a0DfiV9dWaAAQqWE+U6eSaGfcg0Nk74=;
+        b=HgNnjXR6k2aVlD+FEm3gkbnmkmR6w6VghQq6U6F5gj8T63ulrA6rS512oOaycDcdGFzOyt
+        UoRecI7jHf+XmJPsksug6Ss8uFZqg4OV1ywmjFZsm7vIlHF8+KV5LZRvsjc+VZdENCmWbY
+        nXoL9QOvF/1xihiY9Vqyv18PrHzcVBc=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-613-9wPDzZg-OjGt-FYq0Q9ziw-1; Wed, 13 Jul 2022 07:18:27 -0400
-X-MC-Unique: 9wPDzZg-OjGt-FYq0Q9ziw-1
-Received: by mail-ed1-f69.google.com with SMTP id m13-20020a056402430d00b0043ac2f27d83so7895227edc.20
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 04:18:27 -0700 (PDT)
+ us-mta-399-_7OjFGH8O2SkPpLc1k9OEQ-1; Wed, 13 Jul 2022 07:18:25 -0400
+X-MC-Unique: _7OjFGH8O2SkPpLc1k9OEQ-1
+Received: by mail-ed1-f71.google.com with SMTP id x21-20020a05640226d500b0043abb7ac086so8140480edd.14
+        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 04:18:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=m9jsaBAn6wtBTsWqUwNNR/1YQePbJoUZIk07ulDT2Uw=;
-        b=6m6c1tRlZYKJTUM211um1MXE0I3VKkdaG+W32ACf1E643Sm3GSY7D6cfDwHAk4bBRD
-         e8V3LSAEdtn8L/46KHjB7sha+s4lSaKK2GmWLzUNJibsCsYQiBbm9Lxo/coL2H/VypSX
-         7z71t8jQuDD+aP2i9AfOaIKordLu1gk8mlC2OaLpJcu2XwEYBUJm3IUX/mEYC1p2usk4
-         5c14aQfyjUlQhm3jHCsPOV35+9/ehpNzWSpDV1szrtQ0yAxTbmw9L6nbuhHbLj4y5I5L
-         sKbFVdBCkN2ZhqXiToa9Ve8P+VQiwhy0H9Nvid2VMMibKQAvK2TGtkiBhKCk37TEuta5
-         TZ9g==
-X-Gm-Message-State: AJIora+rsK3omGCQCAD6Qc0auCJauSoAjGB74xFztGaASLiOtqw4s8gA
-        IeYdnIstpLYPA7F+iyMZHxS0pN76NRYzuLrvYmKwmYkB1Lm3LhBLUPSntS5kOcr5NKOR3Qg/uBt
-        BTCM9BxCNAtJ5
-X-Received: by 2002:a17:906:149:b0:712:c9:7981 with SMTP id 9-20020a170906014900b0071200c97981mr2887989ejh.218.1657711105357;
-        Wed, 13 Jul 2022 04:18:25 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1te/ajeNjxiFGlAqADULantLtM8t2h0ppxDuqVUdOm+9mP2gmmnpL+ygeIfuvRq4o5c+z1fyA==
-X-Received: by 2002:a17:906:149:b0:712:c9:7981 with SMTP id 9-20020a170906014900b0071200c97981mr2887900ejh.218.1657711104296;
-        Wed, 13 Jul 2022 04:18:24 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id fd9-20020a1709072a0900b006fed062c68esm4807773ejc.182.2022.07.13.04.18.22
+        bh=FxD0L2l12FH/a0DfiV9dWaAAQqWE+U6eSaGfcg0Nk74=;
+        b=iU298fTh6IZ7dOmdUZvqE3szTT7+nFdbLm+cfBsGz1xEPhq+wJBNWxxmgJ4VmCvPY3
+         phuBvhPSxyrFVA2IMMsYHIcY1C5Ps/9NyPPLBuhZF5sqeLazWXyih309M7+Uk/qDPYxT
+         FWX2qOXaUEvY71X/zrqMzzk2ZWx4GTlCYlzXzbwJIu5VBAB7Sf9VNaPWJg3h6FS8YzaZ
+         jo0ZU5cg3hGQbS4nnyuT89HX7pBXsQ60gpdYVcAbY8NwxlvvrZpD7LaP7wuL4Q8Xf1qs
+         SuWiM2La6hKirDKBBjL0zpkQp/7gLzQ5DnsbQx8mP9Irs3zjsRQwn+rMgNRb/VT3iJZF
+         HWBg==
+X-Gm-Message-State: AJIora++pDQk36pQKRjpIZhJupVQzye7mEf8oT+uoIYoc6LkJFWENLW7
+        yL6jtqnKloJZdnvxZ5CvHuI8ct02NNidWdmQlFusBeuvaltoz61d5a5ZfzI+W4D8rChBqpjIrJK
+        lbjTV4qcokYsz
+X-Received: by 2002:a17:906:8448:b0:72b:5659:9873 with SMTP id e8-20020a170906844800b0072b56599873mr2932624ejy.117.1657711103804;
+        Wed, 13 Jul 2022 04:18:23 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1s3NAhQCtaD2tuuQb7KOxl0OQCSd+4E01o5/hEQ2yTHvV//3Nd2VaTRKAyDHWZZSxHLCskNsw==
+X-Received: by 2002:a17:906:8448:b0:72b:5659:9873 with SMTP id e8-20020a170906844800b0072b56599873mr2932584ejy.117.1657711103429;
+        Wed, 13 Jul 2022 04:18:23 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id ks6-20020a170906f84600b0072ae8fb13e6sm4808330ejb.126.2022.07.13.04.18.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 13 Jul 2022 04:18:22 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 3E4794D990D; Wed, 13 Jul 2022 13:14:37 +0200 (CEST)
+        id BBC984D990F; Wed, 13 Jul 2022 13:14:37 +0200 (CEST)
 From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -73,10 +73,12 @@ Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, netdev@vger.kernel.org,
         bpf@vger.kernel.org,
         Freysteinn Alfredsson <freysteinn.alfredsson@kau.se>,
         Cong Wang <xiyou.wangcong@gmail.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: [RFC PATCH 09/17] bpf: Introduce pkt_uid member for PTR_TO_PACKET
-Date:   Wed, 13 Jul 2022 13:14:17 +0200
-Message-Id: <20220713111430.134810-10-toke@redhat.com>
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>
+Subject: [RFC PATCH 10/17] bpf: Implement direct packet access in dequeue progs
+Date:   Wed, 13 Jul 2022 13:14:18 +0200
+Message-Id: <20220713111430.134810-11-toke@redhat.com>
 X-Mailer: git-send-email 2.37.0
 In-Reply-To: <20220713111430.134810-1-toke@redhat.com>
 References: <20220713111430.134810-1-toke@redhat.com>
@@ -95,212 +97,396 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 
-Add a new member in PTR_TO_PACKET specific register state, namely
-pkt_uid. This is used to classify packet pointers into different sets,
-and the invariant is that any pkt pointers not belonging to the same
-set, i.e. not sharing same pkt_uid, won't be allowed for comparison with
-each other. During range propagation in __find_good_pkt_pointers, we now
-need to take care to skip packet pointers with a different pkt_uid.
+Allow user to obtain packet pointers from dequeued xdp_md BTF pointer,
+by allowing convert_ctx_access implementation for PTR_TO_BTF_ID, and
+then tagging loads as packet pointers in verifier context.
 
-This change is necessary so that we can dequeue multiple XDP frames in a
-single program, obtain packet pointers using their xdp_md fake struct,
-and prevent confusion wrt comparison of packet pointers pointing into
-different frames. Attaching a pkt_uid to the PTR_TO_PACKET type prevents
-these, and also allows user to see which frame a packet pointer belongs
-to in the verbose verifier log (by matching pkt_uid and ref_obj_id of
-the referenced xdp_md obtained from bpf_packet_dequeue).
+Previously, convert_ctx_access was limited to just PTR_TO_CTX, but now
+it will also be used to translate access into PTR_TO_BTF_ID of xdp_md
+obtained from bpf_packet_dequeue, so it works like xdp_md ctx in XDP
+programs. We must also remember that while xdp_buff backs ctx in XDP
+programs, xdp_frame backs xdp_md in dequeue programs.
 
-regsafe is updated to match non-zero pkt_uid using the idmap to ensure
-it rejects distinct pkt_uid pkt pointers.
+Next, we use pkt_uid support and transfer ref_obj_id on load data,
+data_end, and data_meta fields, to make verifier aware of provenance of
+these packet pointers, so that comparison can be rejected for unsafe
+cases.
 
-We also replace memset of reg->raw to set range to 0. In commit
-0962590e5533 ("bpf: fix partial copy of map_ptr when dst is scalar"),
-the copying was changed to use raw so that all possible members of type
-specific register state are copied, since at that point the type of
-register is not known. But inside the reg_is_pkt_pointer block, there is
-no need to memset the whole 'raw' struct, since we also have a pkt_uid
-member that we now want to preserve after copying from one register to
-another, for pkt pointers. A test for this case has been included to
-prevent regressions.
+In the end, user can reuse their code meant for XDP ctx in deqeueue
+programs as well, and don't have to do things differently.
+
+Once packet pointers are obtained, regular verifier logic kicks in where
+pointers from same xdp_frame can be compared to modify the range and
+perform access into the packet.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
 ---
- include/linux/bpf_verifier.h |  8 ++++-
- kernel/bpf/verifier.c        | 59 +++++++++++++++++++++++++++---------
- 2 files changed, 52 insertions(+), 15 deletions(-)
+ include/linux/bpf.h          |  26 +++++--
+ include/linux/bpf_verifier.h |   6 ++
+ kernel/bpf/verifier.c        |  48 +++++++++---
+ net/core/filter.c            | 143 +++++++++++++++++++++++++++++++++++
+ 4 files changed, 206 insertions(+), 17 deletions(-)
 
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 6ea5d6d188cf..a568ddc1f1ea 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -653,6 +653,12 @@ struct bpf_prog_ops {
+ 			union bpf_attr __user *uattr);
+ };
+ 
++typedef u32 (*bpf_convert_ctx_access_t)(enum bpf_access_type type,
++					const struct bpf_insn *src,
++					struct bpf_insn *dst,
++					struct bpf_prog *prog,
++					u32 *target_size);
++
+ struct bpf_verifier_ops {
+ 	/* return eBPF function prototype for verification */
+ 	const struct bpf_func_proto *
+@@ -678,6 +684,9 @@ struct bpf_verifier_ops {
+ 				 const struct btf_type *t, int off, int size,
+ 				 enum bpf_access_type atype,
+ 				 u32 *next_btf_id, enum bpf_type_flag *flag);
++	bpf_convert_ctx_access_t (*get_convert_ctx_access)(struct bpf_verifier_log *log,
++							   const struct btf *btf,
++							   u32 btf_id);
+ };
+ 
+ struct bpf_prog_offload_ops {
+@@ -1360,11 +1369,6 @@ const struct bpf_func_proto *bpf_get_trace_vprintk_proto(void);
+ 
+ typedef unsigned long (*bpf_ctx_copy_t)(void *dst, const void *src,
+ 					unsigned long off, unsigned long len);
+-typedef u32 (*bpf_convert_ctx_access_t)(enum bpf_access_type type,
+-					const struct bpf_insn *src,
+-					struct bpf_insn *dst,
+-					struct bpf_prog *prog,
+-					u32 *target_size);
+ 
+ u64 bpf_event_output(struct bpf_map *map, u64 flags, void *meta, u64 meta_size,
+ 		     void *ctx, u64 ctx_size, bpf_ctx_copy_t ctx_copy);
+@@ -2180,6 +2184,18 @@ static inline bool unprivileged_ebpf_enabled(void)
+ 	return false;
+ }
+ 
++static inline struct btf *bpf_get_btf_vmlinux(void)
++{
++	return ERR_PTR(-EINVAL);
++}
++
++static inline int btf_struct_access(struct bpf_verifier_log *log, const struct btf *btf,
++				    const struct btf_type *t, int off, int size,
++				    enum bpf_access_type atype __maybe_unused,
++				    u32 *next_btf_id, enum bpf_type_flag *flag)
++{
++	return -EINVAL;
++}
+ #endif /* CONFIG_BPF_SYSCALL */
+ 
+ void __bpf_free_used_btfs(struct bpf_prog_aux *aux,
 diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index 2e3bad8640dc..93b69dbf3d19 100644
+index 93b69dbf3d19..640f92fece12 100644
 --- a/include/linux/bpf_verifier.h
 +++ b/include/linux/bpf_verifier.h
-@@ -50,7 +50,13 @@ struct bpf_reg_state {
- 	s32 off;
- 	union {
- 		/* valid when type == PTR_TO_PACKET */
--		int range;
-+		struct {
-+			int range;
-+			/* To distinguish packet pointers backed by different
-+			 * packets, to prevent pkt pointer comparisons.
-+			 */
-+			u32 pkt_uid;
-+		};
+@@ -532,8 +532,14 @@ __printf(2, 0) void bpf_verifier_vlog(struct bpf_verifier_log *log,
+ 				      const char *fmt, va_list args);
+ __printf(2, 3) void bpf_verifier_log_write(struct bpf_verifier_env *env,
+ 					   const char *fmt, ...);
++#ifdef CONFIG_BPF_SYSCALL
+ __printf(2, 3) void bpf_log(struct bpf_verifier_log *log,
+ 			    const char *fmt, ...);
++#else
++static inline void bpf_log(struct bpf_verifier_log *log, const char *fmt, ...)
++{
++}
++#endif
  
- 		/* valid when type == CONST_PTR_TO_MAP | PTR_TO_MAP_VALUE |
- 		 *   PTR_TO_MAP_VALUE_OR_NULL
+ static inline struct bpf_func_state *cur_func(struct bpf_verifier_env *env)
+ {
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 68f98d76bc78..f319e9392587 100644
+index f319e9392587..7edc2b834d9b 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -431,6 +431,12 @@ static bool type_is_pkt_pointer(enum bpf_reg_type type)
- 	       type == PTR_TO_PACKET_META;
+@@ -1707,7 +1707,7 @@ static void mark_reg_not_init(struct bpf_verifier_env *env,
+ static void mark_btf_ld_reg(struct bpf_verifier_env *env,
+ 			    struct bpf_reg_state *regs, u32 regno,
+ 			    enum bpf_reg_type reg_type,
+-			    struct btf *btf, u32 btf_id,
++			    struct btf *btf, u32 reg_id,
+ 			    enum bpf_type_flag flag)
+ {
+ 	if (reg_type == SCALAR_VALUE) {
+@@ -1715,9 +1715,14 @@ static void mark_btf_ld_reg(struct bpf_verifier_env *env,
+ 		return;
+ 	}
+ 	mark_reg_known_zero(env, regs, regno);
+-	regs[regno].type = PTR_TO_BTF_ID | flag;
++	regs[regno].type = (int)reg_type | flag;
++	if (type_is_pkt_pointer_any(reg_type)) {
++		regs[regno].pkt_uid = reg_id;
++		return;
++	}
++	WARN_ON_ONCE(base_type(reg_type) != PTR_TO_BTF_ID);
+ 	regs[regno].btf = btf;
+-	regs[regno].btf_id = btf_id;
++	regs[regno].btf_id = reg_id;
  }
  
-+static bool type_is_pkt_pointer_any(enum bpf_reg_type type)
-+{
-+	return type_is_pkt_pointer(type) ||
-+	       type == PTR_TO_PACKET_END;
-+}
+ #define DEF_NOT_SUBREG	(0)
+@@ -4479,13 +4484,14 @@ static int check_ptr_to_btf_access(struct bpf_verifier_env *env,
+ 				   struct bpf_reg_state *regs,
+ 				   int regno, int off, int size,
+ 				   enum bpf_access_type atype,
+-				   int value_regno)
++				   int value_regno, int insn_idx)
+ {
+ 	struct bpf_reg_state *reg = regs + regno;
+ 	const struct btf_type *t = btf_type_by_id(reg->btf, reg->btf_id);
+ 	const char *tname = btf_name_by_offset(reg->btf, t->name_off);
++	struct bpf_insn_aux_data *aux = &env->insn_aux_data[insn_idx];
+ 	enum bpf_type_flag flag = 0;
+-	u32 btf_id;
++	u32 reg_id;
+ 	int ret;
+ 
+ 	if (off < 0) {
+@@ -4520,7 +4526,7 @@ static int check_ptr_to_btf_access(struct bpf_verifier_env *env,
+ 
+ 	if (env->ops->btf_struct_access) {
+ 		ret = env->ops->btf_struct_access(&env->log, reg->btf, t,
+-						  off, size, atype, &btf_id, &flag);
++						  off, size, atype, &reg_id, &flag);
+ 	} else {
+ 		if (atype != BPF_READ) {
+ 			verbose(env, "only read is supported\n");
+@@ -4528,7 +4534,7 @@ static int check_ptr_to_btf_access(struct bpf_verifier_env *env,
+ 		}
+ 
+ 		ret = btf_struct_access(&env->log, reg->btf, t, off, size,
+-					atype, &btf_id, &flag);
++					atype, &reg_id, &flag);
+ 	}
+ 
+ 	if (ret < 0)
+@@ -4540,8 +4546,19 @@ static int check_ptr_to_btf_access(struct bpf_verifier_env *env,
+ 	if (type_flag(reg->type) & PTR_UNTRUSTED)
+ 		flag |= PTR_UNTRUSTED;
+ 
+-	if (atype == BPF_READ && value_regno >= 0)
+-		mark_btf_ld_reg(env, regs, value_regno, ret, reg->btf, btf_id, flag);
++	/* Remember the BTF ID for later use in convert_ctx_accesses */
++	aux->btf_var.btf_id = reg->btf_id;
++	aux->btf_var.btf = reg->btf;
 +
- static bool type_is_sk_pointer(enum bpf_reg_type type)
- {
- 	return type == PTR_TO_SOCKET ||
-@@ -861,6 +867,8 @@ static void print_verifier_state(struct bpf_verifier_env *env,
- 				verbose_a("off=%d", reg->off);
- 			if (type_is_pkt_pointer(t))
- 				verbose_a("r=%d", reg->range);
-+			if (type_is_pkt_pointer_any(t) && reg->pkt_uid)
-+				verbose_a("pkt_uid=%d", reg->pkt_uid);
- 			else if (base_type(t) == CONST_PTR_TO_MAP ||
- 				 base_type(t) == PTR_TO_MAP_KEY ||
- 				 base_type(t) == PTR_TO_MAP_VALUE)
-@@ -1394,8 +1402,7 @@ static bool reg_is_pkt_pointer(const struct bpf_reg_state *reg)
- 
- static bool reg_is_pkt_pointer_any(const struct bpf_reg_state *reg)
- {
--	return reg_is_pkt_pointer(reg) ||
--	       reg->type == PTR_TO_PACKET_END;
-+	return type_is_pkt_pointer_any(reg->type);
- }
- 
- /* Unmodified PTR_TO_PACKET[_META,_END] register from ctx access. */
-@@ -6575,14 +6582,17 @@ static void release_reg_references(struct bpf_verifier_env *env,
- 	struct bpf_reg_state *regs = state->regs, *reg;
- 	int i;
- 
--	for (i = 0; i < MAX_BPF_REG; i++)
--		if (regs[i].ref_obj_id == ref_obj_id)
-+	for (i = 0; i < MAX_BPF_REG; i++) {
-+		if (regs[i].ref_obj_id == ref_obj_id ||
-+		    (reg_is_pkt_pointer_any(&regs[i]) && regs[i].pkt_uid == ref_obj_id))
- 			mark_reg_unknown(env, regs, i);
++	if (atype == BPF_READ && value_regno >= 0) {
++		/* For pkt pointers, reg_id is set to pkt_uid, which must be the
++		 * ref_obj_id of the referenced register from which they are
++		 * obtained, denoting different packets e.g. in dequeue progs.
++		 */
++		if (type_is_pkt_pointer_any(ret))
++			reg_id = reg->ref_obj_id;
++		mark_btf_ld_reg(env, regs, value_regno, ret, reg->btf, reg_id, flag);
 +	}
  
- 	bpf_for_each_spilled_reg(i, state, reg) {
- 		if (!reg)
- 			continue;
--		if (reg->ref_obj_id == ref_obj_id)
-+		if (reg->ref_obj_id == ref_obj_id ||
-+		    (reg_is_pkt_pointer_any(reg) && reg->pkt_uid == ref_obj_id))
- 			__mark_reg_unknown(env, reg);
- 	}
+ 	return 0;
  }
-@@ -8200,7 +8210,7 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 		if (reg_is_pkt_pointer(ptr_reg)) {
- 			dst_reg->id = ++env->id_gen;
- 			/* something was added to pkt_ptr, set range to zero */
--			memset(&dst_reg->raw, 0, sizeof(dst_reg->raw));
-+			dst_reg->range = 0;
- 		}
- 		break;
- 	case BPF_SUB:
-@@ -8260,7 +8270,7 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 			dst_reg->id = ++env->id_gen;
- 			/* something was added to pkt_ptr, set range to zero */
- 			if (smin_val < 0)
--				memset(&dst_reg->raw, 0, sizeof(dst_reg->raw));
-+				dst_reg->range = 0;
- 		}
- 		break;
- 	case BPF_AND:
-@@ -9287,7 +9297,8 @@ static void __find_good_pkt_pointers(struct bpf_func_state *state,
+@@ -4896,7 +4913,7 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+ 	} else if (base_type(reg->type) == PTR_TO_BTF_ID &&
+ 		   !type_may_be_null(reg->type)) {
+ 		err = check_ptr_to_btf_access(env, regs, regno, off, size, t,
+-					      value_regno);
++					      value_regno, insn_idx);
+ 	} else if (reg->type == CONST_PTR_TO_MAP) {
+ 		err = check_ptr_to_map_access(env, regs, regno, off, size, t,
+ 					      value_regno);
+@@ -13515,8 +13532,15 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+ 		case PTR_TO_BTF_ID:
+ 		case PTR_TO_BTF_ID | PTR_UNTRUSTED:
+ 			if (type == BPF_READ) {
+-				insn->code = BPF_LDX | BPF_PROBE_MEM |
+-					BPF_SIZE((insn)->code);
++				if (env->ops->get_convert_ctx_access) {
++					struct btf *btf = env->insn_aux_data[i + delta].btf_var.btf;
++					u32 btf_id = env->insn_aux_data[i + delta].btf_var.btf_id;
++
++					convert_ctx_access = env->ops->get_convert_ctx_access(&env->log, btf, btf_id);
++					if (convert_ctx_access)
++						break;
++				}
++				insn->code = BPF_LDX | BPF_PROBE_MEM | BPF_SIZE((insn)->code);
+ 				env->prog->aux->num_exentries++;
+ 			} else if (resolve_prog_type(env->prog) != BPF_PROG_TYPE_STRUCT_OPS) {
+ 				verbose(env, "Writes through BTF pointers are not allowed\n");
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 893b75515859..6a4881739e9b 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -79,6 +79,7 @@
+ #include <net/tls.h>
+ #include <net/xdp.h>
+ #include <net/mptcp.h>
++#include <linux/bpf_verifier.h>
  
- 	for (i = 0; i < MAX_BPF_REG; i++) {
- 		reg = &state->regs[i];
--		if (reg->type == type && reg->id == dst_reg->id)
-+		if (reg->type == type && reg->id == dst_reg->id &&
-+		    reg->pkt_uid == dst_reg->pkt_uid)
- 			/* keep the maximum range already checked */
- 			reg->range = max(reg->range, new_range);
- 	}
-@@ -9295,7 +9306,8 @@ static void __find_good_pkt_pointers(struct bpf_func_state *state,
- 	bpf_for_each_spilled_reg(i, state, reg) {
- 		if (!reg)
- 			continue;
--		if (reg->type == type && reg->id == dst_reg->id)
-+		if (reg->type == type && reg->id == dst_reg->id &&
-+		    reg->pkt_uid == dst_reg->pkt_uid)
- 			reg->range = max(reg->range, new_range);
- 	}
- }
-@@ -9910,6 +9922,14 @@ static void mark_ptr_or_null_regs(struct bpf_verifier_state *vstate, u32 regno,
- 		__mark_ptr_or_null_regs(vstate->frame[i], id, is_null);
+ static const struct bpf_func_proto *
+ bpf_sk_base_func_proto(enum bpf_func_id func_id);
+@@ -9918,6 +9919,146 @@ static u32 dequeue_convert_ctx_access(enum bpf_access_type type,
+ 	return insn - insn_buf;
  }
  
-+static bool is_bad_pkt_comparison(const struct bpf_reg_state *dst_reg,
-+				  const struct bpf_reg_state *src_reg)
++static int dequeue_btf_struct_access(struct bpf_verifier_log *log,
++				     const struct btf *btf,
++				     const struct btf_type *t, int off, int size,
++				     enum bpf_access_type atype,
++				     u32 *next_btf_id, enum bpf_type_flag *flag)
 +{
-+	if (!reg_is_pkt_pointer_any(dst_reg) || !reg_is_pkt_pointer_any(src_reg))
-+		return false;
-+	return dst_reg->pkt_uid != src_reg->pkt_uid;
++	const struct btf_type *pkt_type;
++	enum bpf_reg_type reg_type;
++	struct btf *btf_vmlinux;
++
++	btf_vmlinux = bpf_get_btf_vmlinux();
++	if (IS_ERR_OR_NULL(btf_vmlinux) || btf != btf_vmlinux)
++		return -EINVAL;
++
++	if (atype != BPF_READ)
++		return -EACCES;
++
++	pkt_type = btf_type_by_id(btf_vmlinux, xdp_md_btf_ids[0]);
++	if (!pkt_type)
++		return -EINVAL;
++	if (t != pkt_type)
++		return btf_struct_access(log, btf, t, off, size, atype,
++					 next_btf_id, flag);
++
++	switch (off) {
++	case offsetof(struct xdp_md, data):
++		reg_type = PTR_TO_PACKET;
++		break;
++	case offsetof(struct xdp_md, data_meta):
++		reg_type = PTR_TO_PACKET_META;
++		break;
++	case offsetof(struct xdp_md, data_end):
++		reg_type = PTR_TO_PACKET_END;
++		break;
++	default:
++		bpf_log(log, "no read support for xdp_md at off %d\n", off);
++		return -EACCES;
++	}
++
++	if (!__is_valid_xdp_access(off, size))
++		return -EINVAL;
++	return reg_type;
 +}
 +
- static bool try_match_pkt_pointers(const struct bpf_insn *insn,
- 				   struct bpf_reg_state *dst_reg,
- 				   struct bpf_reg_state *src_reg,
-@@ -9923,6 +9943,9 @@ static bool try_match_pkt_pointers(const struct bpf_insn *insn,
- 	if (BPF_CLASS(insn->code) == BPF_JMP32)
- 		return false;
- 
-+	if (is_bad_pkt_comparison(dst_reg, src_reg))
-+		return false;
++static u32
++dequeue_convert_xdp_md_access(enum bpf_access_type type,
++			      const struct bpf_insn *si, struct bpf_insn *insn_buf,
++			      struct bpf_prog *prog, u32 *target_size)
++{
++	struct bpf_insn *insn = insn_buf;
++	int src_reg;
 +
- 	switch (BPF_OP(insn->code)) {
- 	case BPF_JGT:
- 		if ((dst_reg->type == PTR_TO_PACKET &&
-@@ -10220,11 +10243,17 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
- 		mark_ptr_or_null_regs(other_branch, insn->dst_reg,
- 				      opcode == BPF_JEQ);
- 	} else if (!try_match_pkt_pointers(insn, dst_reg, &regs[insn->src_reg],
--					   this_branch, other_branch) &&
--		   is_pointer_value(env, insn->dst_reg)) {
--		verbose(env, "R%d pointer comparison prohibited\n",
--			insn->dst_reg);
--		return -EACCES;
-+					   this_branch, other_branch)) {
-+		if (is_pointer_value(env, insn->dst_reg)) {
-+			verbose(env, "R%d pointer comparison prohibited\n",
-+				insn->dst_reg);
-+			return -EACCES;
++	switch (si->off) {
++	case offsetof(struct xdp_md, data):
++		/* dst_reg = *(src_reg + off(xdp_frame, data)) */
++		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct xdp_frame, data),
++				      si->dst_reg, si->src_reg,
++				      offsetof(struct xdp_frame, data));
++		break;
++	case offsetof(struct xdp_md, data_meta):
++		if (si->dst_reg == si->src_reg) {
++			src_reg = BPF_REG_9;
++			if (si->dst_reg == src_reg)
++				src_reg--;
++			*insn++ = BPF_STX_MEM(BPF_DW, si->src_reg, src_reg,
++					      offsetof(struct xdp_frame, next));
++			*insn++ = BPF_MOV64_REG(src_reg, si->src_reg);
++		} else {
++			src_reg = si->src_reg;
 +		}
-+		if (is_bad_pkt_comparison(dst_reg, &regs[insn->src_reg])) {
-+			verbose(env, "R%d, R%d pkt pointer comparison prohibited\n",
-+				insn->dst_reg, insn->src_reg);
-+			return -EACCES;
++		/* AX = src_reg
++		 * dst_reg = *(src_reg + off(xdp_frame, data))
++		 * src_reg = *(src_reg + off(xdp_frame, metasize))
++		 * dst_reg -= src_reg
++		 * src_reg = AX
++		 */
++		*insn++ = BPF_MOV64_REG(BPF_REG_AX, src_reg);
++		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct xdp_frame, data),
++				      si->dst_reg, src_reg,
++				      offsetof(struct xdp_frame, data));
++		*insn++ = BPF_LDX_MEM(BPF_B, /* metasize == 8 bits */
++				      src_reg, src_reg,
++#if defined(__LITTLE_ENDIAN_BITFIELD)
++				      offsetofend(struct xdp_frame, headroom) + 3);
++#elif defined(__BIG_ENDIAN_BITFIELD)
++				      offsetofend(struct xdp_frame, headroom));
++#endif
++		*insn++ = BPF_ALU64_REG(BPF_SUB, si->dst_reg, src_reg);
++		*insn++ = BPF_MOV64_REG(src_reg, BPF_REG_AX);
++		if (si->dst_reg == si->src_reg)
++			*insn++ = BPF_LDX_MEM(BPF_DW, src_reg, si->src_reg,
++					      offsetof(struct xdp_frame, next));
++		break;
++	case offsetof(struct xdp_md, data_end):
++		if (si->dst_reg == si->src_reg) {
++			src_reg = BPF_REG_9;
++			if (si->dst_reg == src_reg)
++				src_reg--;
++			*insn++ = BPF_STX_MEM(BPF_DW, si->src_reg, src_reg,
++					      offsetof(struct xdp_frame, next));
++			*insn++ = BPF_MOV64_REG(src_reg, si->src_reg);
++		} else {
++			src_reg = si->src_reg;
 +		}
- 	}
- 	if (env->log.level & BPF_LOG_LEVEL)
- 		print_insn_state(env, this_branch->frame[this_branch->curframe]);
-@@ -11514,6 +11543,8 @@ static bool regsafe(struct bpf_verifier_env *env, struct bpf_reg_state *rold,
- 		/* id relations must be preserved */
- 		if (rold->id && !check_ids(rold->id, rcur->id, idmap))
- 			return false;
-+		if (rold->pkt_uid && !check_ids(rold->pkt_uid, rcur->pkt_uid, idmap))
-+			return false;
- 		/* new val must satisfy old val knowledge */
- 		return range_within(rold, rcur) &&
- 		       tnum_in(rold->var_off, rcur->var_off);
++		/* AX = src_reg
++		 * dst_reg = *(src_reg + off(xdp_frame, data))
++		 * src_reg = *(src_reg + off(xdp_frame, len))
++		 * dst_reg += src_reg
++		 * src_reg = AX
++		 */
++		*insn++ = BPF_MOV64_REG(BPF_REG_AX, src_reg);
++		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct xdp_frame, data),
++				      si->dst_reg, src_reg,
++				      offsetof(struct xdp_frame, data));
++		*insn++ = BPF_LDX_MEM(BPF_H, src_reg, src_reg,
++				      offsetof(struct xdp_frame, len));
++		*insn++ = BPF_ALU64_REG(BPF_ADD, si->dst_reg, src_reg);
++		*insn++ = BPF_MOV64_REG(src_reg, BPF_REG_AX);
++		if (si->dst_reg == si->src_reg)
++			*insn++ = BPF_LDX_MEM(BPF_DW, src_reg, si->src_reg,
++					      offsetof(struct xdp_frame, next));
++		break;
++	}
++	return insn - insn_buf;
++}
++
++static bpf_convert_ctx_access_t
++dequeue_get_convert_ctx_access(struct bpf_verifier_log *log,
++			       const struct btf *btf, u32 btf_id)
++{
++	struct btf *btf_vmlinux;
++
++	btf_vmlinux = bpf_get_btf_vmlinux();
++	if (IS_ERR_OR_NULL(btf_vmlinux) || btf != btf_vmlinux)
++		return NULL;
++	if (btf_id != xdp_md_btf_ids[0])
++		return NULL;
++	return dequeue_convert_xdp_md_access;
++}
++
+ /* SOCK_ADDR_LOAD_NESTED_FIELD() loads Nested Field S.F.NF where S is type of
+  * context Structure, F is Field in context structure that contains a pointer
+  * to Nested Structure of type NS that has the field NF.
+@@ -10775,6 +10916,8 @@ const struct bpf_verifier_ops dequeue_verifier_ops = {
+ 	.is_valid_access	= dequeue_is_valid_access,
+ 	.convert_ctx_access	= dequeue_convert_ctx_access,
+ 	.gen_prologue		= bpf_noop_prologue,
++	.btf_struct_access	= dequeue_btf_struct_access,
++	.get_convert_ctx_access = dequeue_get_convert_ctx_access,
+ };
+ 
+ const struct bpf_prog_ops dequeue_prog_ops = {
 -- 
 2.37.0
 
