@@ -2,143 +2,200 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30E90573B1D
-	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 18:24:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A287573B3E
+	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 18:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235383AbiGMQYx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Jul 2022 12:24:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59456 "EHLO
+        id S237196AbiGMQ33 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Jul 2022 12:29:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234652AbiGMQYw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Jul 2022 12:24:52 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5500CA9
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 09:24:51 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id y14-20020a17090a644e00b001ef775f7118so4528377pjm.2
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 09:24:51 -0700 (PDT)
+        with ESMTP id S236637AbiGMQ33 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Jul 2022 12:29:29 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0F1F22BCE
+        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 09:29:28 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id 81-20020a630054000000b0041978b2aa9eso2554830pga.9
+        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 09:29:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=I4nXvTrHWqcaRh/wbTzKGKZr7mZYOjAz89tRpbel2lU=;
-        b=SZ0OMHcl16lDAPcha/JzO8rJCaPX76K7/6/3XLhB7qHjcKUk9LXRnPy+O2nh1LSV7J
-         viBzimQ2JjqMAWA/4xCNxjwIeGW6U/W2GZtQF9iETtQN1IQ+A7HcIHFeHYjDy++onEsY
-         NcKgqxms+1XMjfqrZvS/q5cPEqn5ga6FsWJVtDYqaT+Cw894oAuqRcJ0d/SJv2hQ/mQD
-         xdMUtDr45yNNLUfXRt0QPFui5FI4MYRox046jBj8uIAoCf1TcXKHXjdSZj5nQPdWOj7E
-         IEAoYXNyf78jiexRR0FDh9Lp3YgeUVFlEgWsZXw+KyEpS0WsY93VxOWMVnS9g7jaP9k0
-         ++eg==
+        d=google.com; s=20210112;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=W2FoRQz66ZMDQW8UECCUbWo1YjHSZazJPSQqB2a5JIw=;
+        b=VcXZC3GBt2P9wKqqb5QUJ5avXB4OIVk1kVOxcX1zj/liu9QMxk2XYGhC/MBcx9Xcor
+         hysoMELji/ROsIPdU18C3gFy43SiN/WtWQIp1ob0RV0I6HIMj6Vnj1oGb7t2K7OsbVTX
+         FwLLfIicnuZQtC1nWLX8RgBOJbZ0QxPlSsqHde4Vqx3NbtJTy8pA8pJTzrLMWuEmX9wO
+         EbvZqOlsfIOXIKF8H19cxjdpnhwh7++OB5uc6WCHzgHEkM8bM4cT/pK/I0n3T22u1Dtt
+         +ElwNeKBYeI6K0RaXKZsSZjkbRhP0pkERKLT1BR00sxs2nSTAUZeoCw7JLQqdBaJui0w
+         vMzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=I4nXvTrHWqcaRh/wbTzKGKZr7mZYOjAz89tRpbel2lU=;
-        b=hs5zRA5kJiyn1qBGxl1k9XNmNBaDIGgzqR3CtSMsIajjPfwaLPM/0YmL8sxRBZGHC7
-         JEnMyHF/j+7dulYuq9Hl81WbTiFdCygJyOWRNmJQoK5/DmbbelELsGCtjzk61/IRy4HW
-         oHfgDMwPhmKrM3U9OJCJ8i97DQPW4Ec32+MrfJojbBzoeBtPv4U3skHU9iL4CsnVhNnJ
-         5qL1KNb74MLLh0Aq0U2jXGJn4zpNkC1NVi9zCrO8+eXYGwWnUPQZXp+faOa+5Mz/ok9e
-         0EMonkwNu4lvc+Ar2z4ug7dWdCRyoB/DXLxacyrmckYlJ4AI2R7DlBZgXgOJyOMacEXy
-         yVpw==
-X-Gm-Message-State: AJIora+LGGFB4lIoVz8OboCCb9a1sHZ6Jisk+b+v4lTW+TC1yxO6v3ln
-        dIkoRT7phjlpgWIqqthp0E0=
-X-Google-Smtp-Source: AGRyM1sxbJngnxCbXSmHXDaneeDVQH+0ZxZY+ACvkLdHP5FmVF3FPZr//WEBV9Di82SPEZRwy/OhkA==
-X-Received: by 2002:a17:902:d64a:b0:16c:2755:428d with SMTP id y10-20020a170902d64a00b0016c2755428dmr3860778plh.79.1657729490543;
-        Wed, 13 Jul 2022 09:24:50 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-a7fa-157f-969a-4cde.res6.spectrum.com. [2603:800c:1a02:1bae:a7fa:157f:969a:4cde])
-        by smtp.gmail.com with ESMTPSA id r7-20020aa79627000000b005289ffefe82sm9098272pfg.130.2022.07.13.09.24.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jul 2022 09:24:49 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 13 Jul 2022 06:24:47 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
-        Michal Hocko <mhocko@suse.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        linux-mm <linux-mm@kvack.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH bpf-next 0/5] bpf: BPF specific memory allocator.
-Message-ID: <Ys7xz8auWmD814tz@slm.duckdns.org>
-References: <20220708215536.pqclxdqvtrfll2y4@google.com>
- <CAADnVQL5ZQDqMGULJLDwT9xRTihdDvo6GvwxdEOtSAs8EwE78A@mail.gmail.com>
- <20220710073213.bkkdweiqrlnr35sv@google.com>
- <YswUS/5nbYb8nt6d@dhcp22.suse.cz>
- <20220712043914.pxmbm7vockuvpmmh@macbook-pro-3.dhcp.thefacebook.com>
- <Ys0lXfWKtwYlVrzK@dhcp22.suse.cz>
- <CALOAHbAhzNTkT9o_-PRX=n4vNjKhEK_09+-7gijrFgGjNH7iRA@mail.gmail.com>
- <Ys1ES+CygtnUvArz@dhcp22.suse.cz>
- <Ys4wRqCWrV1WeeWp@castle>
- <CALOAHbAyZBKRn3HpjeKsxpTP8aKnHxFiMD_kGJG22c0X8Cb9+w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALOAHbAyZBKRn3HpjeKsxpTP8aKnHxFiMD_kGJG22c0X8Cb9+w@mail.gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=W2FoRQz66ZMDQW8UECCUbWo1YjHSZazJPSQqB2a5JIw=;
+        b=sHbGT0kxTMxzhlpxhjKzHkndzhRppmWEu1LBIitscPbIYMLhXcvfAVfttzZMS2mSzQ
+         Kk4Gy1N/kq5oE+HARZUVBWcuWRaUeuUcpIylzG1uXAgaI/QwMaVea9ux8/tzrkvRlMyn
+         D1WOAfAgUPXqz8OMzH3aDqDFLosCi6yDMVe8MISAs1gMBsAALNCHhYr25Wm/grLkQGOU
+         2SZPxs7DqvppNCZQQz4lPSG3NfP+wq5dXJseiOYz1ewWTRMC1ThH+l5rpexDrrcV+PPU
+         LZnekIAhHzM6pCUA9X+X5DcmP7+1IFkN8ZUGwuoqvxYkUpcSWbALWilX02vv3o8nc21j
+         ZJtA==
+X-Gm-Message-State: AJIora/GPMy8vi44dwspV6p80KuS6sS1VtBel9E1m5HKeF6zK5yVI90g
+        xwSHgAlFp1OQIBuE8k3SVrkHVvw=
+X-Google-Smtp-Source: AGRyM1tV4WmpjmtwqLPOmIdmtMJm7jjPvauDslfROpq3eHgXPsTCXSXRU4igOiZnuMhdY8nHsPxG0ng=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:902:ef46:b0:168:bac3:2fd4 with SMTP id
+ e6-20020a170902ef4600b00168bac32fd4mr3862198plx.132.1657729768161; Wed, 13
+ Jul 2022 09:29:28 -0700 (PDT)
+Date:   Wed, 13 Jul 2022 09:29:26 -0700
+In-Reply-To: <20220713015304.3375777-6-andrii@kernel.org>
+Message-Id: <Ys7y5vCoSgiMW/p8@google.com>
+Mime-Version: 1.0
+References: <20220713015304.3375777-1-andrii@kernel.org> <20220713015304.3375777-6-andrii@kernel.org>
+Subject: Re: [PATCH bpf-next 5/5] selftests/bpf: use BPF_KSYSCALL and
+ SEC("ksyscall") in selftests
+From:   sdf@google.com
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On 07/12, Andrii Nakryiko wrote:
+> Convert few selftest that used plain SEC("kprobe") with arch-specific
+> syscall wrapper prefix to ksyscall/kretsyscall and corresponding
+> BPF_KSYSCALL macro. test_probe_user.c is especially benefiting from this
+> simplification.
 
-On Wed, Jul 13, 2022 at 10:24:05PM +0800, Yafang Shao wrote:
-> I have told you that it is not reasonable to refuse a containerized
-> process to pin bpf programs, but if you are not familiar with k8s, it
-> is not easy to explain clearly why it is a trouble for deployment.
-> But I can try to explain to you from a *systemd user's* perspective.
+That looks super nice! I'm assuming the goal is probably
+to get rid of that SYS_PREFIX everywhere eventually? And have a simple
+test that exercises fentry/etc parsing?
 
-The way systemd currently sets up cgroup hierarchy doesn't work for
-persistent per-service resource tracking. It needs to introduce an extra
-layer for that which woudl be a significant change for systemd too.
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>   .../selftests/bpf/progs/bpf_syscall_macro.c   |  6 ++---
+>   .../selftests/bpf/progs/test_attach_probe.c   | 15 +++++------
+>   .../selftests/bpf/progs/test_probe_user.c     | 27 +++++--------------
+>   3 files changed, 16 insertions(+), 32 deletions(-)
 
-> I assume the above hierarchy is what you expect.
-> But you know, in the k8s environment, everything is pod-based, that
-> means if we use the above hierarchy in the k8s environment, the k8s's
-> limiting, monitoring, debugging must be changed consequently.  That
-> means it may be a fullstack change in k8s, a great refactor.
-> 
-> So below hierarchy is a reasonable solution,
->                                           bpf-memcg
->                                                 |
->   bpf-foo pod                    bpf-foo-memcg     (limited)
->        /          \                                /
-> (charge)     (not-charged)      (charged)
-> proc-foo                     bpf-foo
-> 
-> And then keep the bpf-memgs persistent.
+> diff --git a/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c  
+> b/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
+> index 05838ed9b89c..e1e11897e99b 100644
+> --- a/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
+> +++ b/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
+> @@ -64,9 +64,9 @@ int BPF_KPROBE(handle_sys_prctl)
+>   	return 0;
+>   }
 
-It looks like you draw the diagram with variable width font and it's
-difficult to tell what you're trying to say. That said, I don't think the
-argument you're making is a good one in general. The topic at hand is future
-architectural direction in handling shared resources, which was never well
-supported before. ie. We're not talking about breaking existing behaviors.
+> -SEC("kprobe/" SYS_PREFIX "sys_prctl")
+> -int BPF_KPROBE_SYSCALL(prctl_enter, int option, unsigned long arg2,
+> -		       unsigned long arg3, unsigned long arg4, unsigned long arg5)
+> +SEC("ksyscall/prctl")
+> +int BPF_KSYSCALL(prctl_enter, int option, unsigned long arg2,
+> +		 unsigned long arg3, unsigned long arg4, unsigned long arg5)
+>   {
+>   	pid_t pid = bpf_get_current_pid_tgid() >> 32;
 
-We don't want to architect kernel features to suit the expectations of one
-particular application. It has to be longer term than that and it can't be
-an one way road. Sometimes the kernel adapts to existing applications
-because the expectations make sense. At other times, kernel takes a
-direction which may require some work from applications to use new
-capabilities because that makes more sense in the long term.
+> diff --git a/tools/testing/selftests/bpf/progs/test_attach_probe.c  
+> b/tools/testing/selftests/bpf/progs/test_attach_probe.c
+> index f1c88ad368ef..a1e45fec8938 100644
+> --- a/tools/testing/selftests/bpf/progs/test_attach_probe.c
+> +++ b/tools/testing/selftests/bpf/progs/test_attach_probe.c
+> @@ -1,11 +1,10 @@
+>   // SPDX-License-Identifier: GPL-2.0
+>   // Copyright (c) 2017 Facebook
 
-Let's keep the discussion more focused on technical merits.
+> -#include <linux/ptrace.h>
+> -#include <linux/bpf.h>
+> +#include "vmlinux.h"
+>   #include <bpf/bpf_helpers.h>
+>   #include <bpf/bpf_tracing.h>
+> -#include <stdbool.h>
+> +#include <bpf/bpf_core_read.h>
+>   #include "bpf_misc.h"
 
-Thanks.
+>   int kprobe_res = 0;
+> @@ -31,8 +30,8 @@ int handle_kprobe(struct pt_regs *ctx)
+>   	return 0;
+>   }
 
--- 
-tejun
+> -SEC("kprobe/" SYS_PREFIX "sys_nanosleep")
+> -int BPF_KPROBE(handle_kprobe_auto)
+> +SEC("ksyscall/nanosleep")
+> +int BPF_KSYSCALL(handle_kprobe_auto, struct __kernel_timespec *req,  
+> struct __kernel_timespec *rem)
+>   {
+>   	kprobe2_res = 11;
+>   	return 0;
+> @@ -56,11 +55,11 @@ int handle_kretprobe(struct pt_regs *ctx)
+>   	return 0;
+>   }
+
+> -SEC("kretprobe/" SYS_PREFIX "sys_nanosleep")
+> -int BPF_KRETPROBE(handle_kretprobe_auto)
+> +SEC("kretsyscall/nanosleep")
+> +int BPF_KRETPROBE(handle_kretprobe_auto, int ret)
+>   {
+>   	kretprobe2_res = 22;
+> -	return 0;
+> +	return ret;
+>   }
+
+>   SEC("uprobe")
+> diff --git a/tools/testing/selftests/bpf/progs/test_probe_user.c  
+> b/tools/testing/selftests/bpf/progs/test_probe_user.c
+> index 702578a5e496..8e1495008e4d 100644
+> --- a/tools/testing/selftests/bpf/progs/test_probe_user.c
+> +++ b/tools/testing/selftests/bpf/progs/test_probe_user.c
+> @@ -1,35 +1,20 @@
+>   // SPDX-License-Identifier: GPL-2.0
+> -
+> -#include <linux/ptrace.h>
+> -#include <linux/bpf.h>
+> -
+> -#include <netinet/in.h>
+> -
+> +#include "vmlinux.h"
+>   #include <bpf/bpf_helpers.h>
+>   #include <bpf/bpf_tracing.h>
+> +#include <bpf/bpf_core_read.h>
+>   #include "bpf_misc.h"
+
+>   static struct sockaddr_in old;
+
+> -SEC("kprobe/" SYS_PREFIX "sys_connect")
+> -int BPF_KPROBE(handle_sys_connect)
+> +SEC("ksyscall/connect")
+> +int BPF_KSYSCALL(handle_sys_connect, int fd, struct sockaddr_in  
+> *uservaddr, int addrlen)
+>   {
+> -#if SYSCALL_WRAPPER == 1
+> -	struct pt_regs *real_regs;
+> -#endif
+>   	struct sockaddr_in new;
+> -	void *ptr;
+> -
+> -#if SYSCALL_WRAPPER == 0
+> -	ptr = (void *)PT_REGS_PARM2(ctx);
+> -#else
+> -	real_regs = (struct pt_regs *)PT_REGS_PARM1(ctx);
+> -	bpf_probe_read_kernel(&ptr, sizeof(ptr), &PT_REGS_PARM2(real_regs));
+> -#endif
+
+> -	bpf_probe_read_user(&old, sizeof(old), ptr);
+> +	bpf_probe_read_user(&old, sizeof(old), uservaddr);
+>   	__builtin_memset(&new, 0xab, sizeof(new));
+> -	bpf_probe_write_user(ptr, &new, sizeof(new));
+> +	bpf_probe_write_user(uservaddr, &new, sizeof(new));
+
+>   	return 0;
+>   }
+> --
+> 2.30.2
+
