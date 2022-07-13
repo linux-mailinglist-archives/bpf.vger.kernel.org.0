@@ -2,106 +2,212 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 684E95735F9
-	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 14:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C11E0573623
+	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 14:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234464AbiGMMHY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Jul 2022 08:07:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55234 "EHLO
+        id S235789AbiGMMN5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Jul 2022 08:13:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231389AbiGMMHX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Jul 2022 08:07:23 -0400
-Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC3E41034F8;
-        Wed, 13 Jul 2022 05:07:22 -0700 (PDT)
-Received: by nautica.notk.org (Postfix, from userid 108)
-        id 8DE1AC022; Wed, 13 Jul 2022 14:07:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1657714040; bh=GRD1T0eSpe8mmrBIO5ShPSs/U27oLpkzr10zWXsJ+78=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cTViMyUNpB9DifHbqKo2DtbVueNEeoRefSCzGlFBlgi5ty911CTceluyfPl2ZtDbW
-         +9lsc8qOYpg/Q7Qn5uPU63QakbFS9/UvNKwxeUmiNPyVcMCy94CV0uVAAQYSNVqyQM
-         99uTYtXl8oPM0jntkRFq2PUYJD+Hy8ORFkBpMl2LpSk8owd0eXLp87ZWs/APZ+QVPs
-         HaXCOMFkcNGc167UisDrgmTm/E0aJPIT/b3Qhc+yNuWpPb/3i4rgafKDAyG3xGYFTH
-         /+GI0OdNeuEtfc/jAZAau56pK+Q1VvGyPNSZfQggpJtpeJ5XLn9ViNqikFYAIvSMwH
-         R9/ccp+FilKNg==
+        with ESMTP id S231236AbiGMMN4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Jul 2022 08:13:56 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4623286E4;
+        Wed, 13 Jul 2022 05:13:54 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id l24so10606927ion.13;
+        Wed, 13 Jul 2022 05:13:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uX4s6SH9kIRL3r8hlHVS4pJZBU9yNhZ8vlkpIT1/TDI=;
+        b=NZtdL0ID/m/l1wOVhESbnM3o0GLOBzDO/oUXPF/2ASH+HhDppsH7VdazxJkNUbPmo4
+         NJ1tQtm5bg0++tn5y8MtG+Zhbr7kN1bExxfmbnwKPFOf8kPasaGgOmB1/rRyoCXuScD9
+         vmzWix/sCjiFsv9tq+IRf8ZYQgdds4bWiVOmMav2sVzB3yGJuASK1vImlZGQ+YDb579h
+         FrU6YcqYnS7x+92jsN+LzySVK1CSqn4/f2OogRIvcQdY1ol8zmqctWflumjRH+G6KqcU
+         m1u1ixcPVppk/kQ0EBj6TPHlxFI+wRq9j8NURL7ja686lF+ILToZD9LarlRP6sWgyftX
+         gNdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uX4s6SH9kIRL3r8hlHVS4pJZBU9yNhZ8vlkpIT1/TDI=;
+        b=pnYtSH3HoBEVsOtf5YN1xhMTwUrRqSO1SHEZjY62ig95WhjdrLYPGUxRzCVi+RdxUU
+         7K0naobJL65F1QpU9dzHt2BH0fqhuUFu3DesCP9fsvyt61w0wXaRIZ+pp5tcNwg/Uru3
+         1/e528EKtVdHIZi483OeYXn5tTN0Woc9Ague1fGLsBqncwES3TLjp0G+Qc7P5BiVDXwq
+         GJQmnw45cVkKfxwNhaiPkqHFsqjWCpWwlEPW3Hev1FxYrQFxg4X7QG9HvH4JRAL1MWad
+         iIPoytuOxIoiVNEAlDfQWXT8EetE6IVp/DXBKWyd0+ha5884msxTDidvPd5MqFSRP6Pn
+         bEeA==
+X-Gm-Message-State: AJIora+EUyw4vwh2YeIk5yvietOL/qw6p07CEIUFL8TbZimwj4qZndSs
+        6pK3InKexs2F0ss91VWyLCYmJL+MksRwMHo+rZA=
+X-Google-Smtp-Source: AGRyM1vlNjEAgp4pnWVHHXwmroczpGqs6jkw2j3LXXKfgnHgqZJyR1Cr1b7Z9v673yiEmxPI2PmbBT3VhraaBnpOrdc=
+X-Received: by 2002:a05:6638:3802:b0:32e:3d9a:9817 with SMTP id
+ i2-20020a056638380200b0032e3d9a9817mr1839946jav.206.1657714434367; Wed, 13
+ Jul 2022 05:13:54 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220623192637.3866852-1-memxor@gmail.com> <20220623192637.3866852-2-memxor@gmail.com>
+ <20220629032304.h5ck7tizbfehiwut@macbook-pro-3.dhcp.thefacebook.com>
+ <CAP01T77fsU8u6GP+HXfQQ_gdu+kp3Am1+Ao-mNYULjDazHs38Q@mail.gmail.com>
+ <CAP01T75cVLehQbkE3LLwSG5wVecNz0FH9QZpmzoqs-e8YKpGtg@mail.gmail.com>
+ <20220706184436.mf7oeexxfwswgdqf@MacBook-Pro-3.local> <CAP01T75-EZfdBx+W+6pV0vDDD3Qi07KVLsFTupPfptTyAFxx1Q@mail.gmail.com>
+ <20220706212903.az2mtqodtzmn2gwq@MacBook-Pro-3.local> <CAADnVQJsAfjFwgoiWdsmuWBi9BX7eaCw8Tpe7sd=HPG4QQck1A@mail.gmail.com>
+In-Reply-To: <CAADnVQJsAfjFwgoiWdsmuWBi9BX7eaCw8Tpe7sd=HPG4QQck1A@mail.gmail.com>
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date:   Wed, 13 Jul 2022 14:13:17 +0200
+Message-ID: <CAP01T77GxdU6AQE3ADVFZ6YA89diFFAev3aQFpYNboxM76QJ6w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 1/8] bpf: Add support for forcing kfunc args
+ to be referenced
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
-Received: from odin.codewreck.org (localhost [127.0.0.1])
-        by nautica.notk.org (Postfix) with ESMTPS id 92090C009;
-        Wed, 13 Jul 2022 14:07:13 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1657714039; bh=GRD1T0eSpe8mmrBIO5ShPSs/U27oLpkzr10zWXsJ+78=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J7wBfXDU4LL6fkHO2Y/bKgOTIstCZYW3ar1SItDrbH0/DK7hZKUIfvYTP9/MmR6AN
-         vtr5C9qJgMl2BrLUJDpIa11+nGtpbKtYr3XCcNispy9DJzWMkfgHUmvFYG1QdrzhMu
-         t7VmQJ+zV4loHxBHDc70tAAhuJklntTIrDvTOuJciBd078C1GqQRgLUfK+/UzOcbIv
-         nW/WaWCDLNKt2vwpWYgotIY1J4qc4dABKjTpi7W5y3ecWwh354CTR53KvHllo5Q1gJ
-         w537AfmQBcXbyBmwzU4dEE4vrZjyWd7W6x1xX1poq4TU62h7gia1shFKOqIa6E2Sq8
-         E+ip89lsY422A==
-Received: from localhost (odin.codewreck.org [local])
-        by odin.codewreck.org (OpenSMTPD) with ESMTPA id 6ead7bcb;
-        Wed, 13 Jul 2022 12:07:08 +0000 (UTC)
-Date:   Wed, 13 Jul 2022 21:06:53 +0900
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>,
-        Tero Kristo <tero.kristo@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH bpf-next v6 21/23] samples/bpf: add new hid_mouse example
-Message-ID: <Ys61XcZL4Fh/VQu1@codewreck.org>
-References: <20220712145850.599666-1-benjamin.tissoires@redhat.com>
- <20220712145850.599666-22-benjamin.tissoires@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20220712145850.599666-22-benjamin.tissoires@redhat.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Benjamin Tissoires wrote on Tue, Jul 12, 2022 at 04:58:48PM +0200:
-> diff --git a/samples/bpf/hid_mouse.c b/samples/bpf/hid_mouse.c
-> new file mode 100644
-> index 000000000000..f6e5f09026eb
-> --- /dev/null
-> +++ b/samples/bpf/hid_mouse.c
-> @@ -0,0 +1,150 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/* Copyright (c) 2022 Benjamin Tissoires
-> + */
-> +
-> +/* not sure why but this doesn't get preoperly imported */
+On Thu, 7 Jul 2022 at 00:04, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, Jul 6, 2022 at 2:29 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Thu, Jul 07, 2022 at 12:51:15AM +0530, Kumar Kartikeya Dwivedi wrote:
+> > > On Thu, 7 Jul 2022 at 00:14, Alexei Starovoitov
+> > > <alexei.starovoitov@gmail.com> wrote:
+> > > >
+> > > > On Sun, Jul 03, 2022 at 11:04:22AM +0530, Kumar Kartikeya Dwivedi wrote:
+> > > > > On Sun, 3 Jul 2022 at 10:54, Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+> > > > > >
+> > > > > > On Wed, 29 Jun 2022 at 08:53, Alexei Starovoitov
+> > > > > > <alexei.starovoitov@gmail.com> wrote:
+> > > > > > >
+> > > > > > > On Fri, Jun 24, 2022 at 12:56:30AM +0530, Kumar Kartikeya Dwivedi wrote:
+> > > > > > > > Similar to how we detect mem, size pairs in kfunc, teach verifier to
+> > > > > > > > treat __ref suffix on argument name to imply that it must be a
+> > > > > > > > referenced pointer when passed to kfunc. This is required to ensure that
+> > > > > > > > kfunc that operate on some object only work on acquired pointers and not
+> > > > > > > > normal PTR_TO_BTF_ID with same type which can be obtained by pointer
+> > > > > > > > walking. Release functions need not specify such suffix on release
+> > > > > > > > arguments as they are already expected to receive one referenced
+> > > > > > > > argument.
+> > > > > > > >
+> > > > > > > > Note that we use strict type matching when a __ref suffix is present on
+> > > > > > > > the argument.
+> > > > > > > ...
+> > > > > > > > +             /* Check if argument must be a referenced pointer, args + i has
+> > > > > > > > +              * been verified to be a pointer (after skipping modifiers).
+> > > > > > > > +              */
+> > > > > > > > +             arg_ref = is_kfunc_arg_ref(btf, args + i);
+> > > > > > > > +             if (is_kfunc && arg_ref && !reg->ref_obj_id) {
+> > > > > > > > +                     bpf_log(log, "R%d must be referenced\n", regno);
+> > > > > > > > +                     return -EINVAL;
+> > > > > > > > +             }
+> > > > > > > > +
+> > > > > > >
+> > > > > > > imo this suffix will be confusing to use.
+> > > > > > > If I understand the intent the __ref should only be used
+> > > > > > > in acquire (and other) kfuncs that also do release.
+> > > > > > > Adding __ref to actual release kfunc will be a nop.
+> > > > > > > It will be checked, but it's not necessary.
+> > > > > > >
+> > > > > > > At the end
+> > > > > > > +struct nf_conn *bpf_ct_insert_entry(struct nf_conn___init *nfct__ref)
+> > > > > > > will behave like kptr_xchg with exception that kptr_xchg takes any btf_id
+> > > > > > > while here it's fixed.
+> > > > > > >
+> > > > > > > The code:
+> > > > > > >  if (rel && reg->ref_obj_id)
+> > > > > > >         arg_type |= OBJ_RELEASE;
+> > > > > > > should probably be updated with '|| arg_ref'
+> > > > > > > to make sure reg->off == 0 ?
+> > > > > > > That looks like a small bug.
+> > > > > > >
+> > > > > >
+> > > > > > Indeed, I missed that. Thanks for catching it.
+> > > > > >
+> > > > > > > But stepping back... why __ref is needed ?
+> > > > > > > We can add bpf_ct_insert_entry to acq and rel sets and it should work?
+> > > > > > > I'm assuming you're doing the orthogonal cleanup of resolve_btfid,
+> > > > > > > so we will have a single kfunc set where bpf_ct_insert_entry will
+> > > > > > > have both acq and rel flags.
+> > > > > > > I'm surely missing something.
+> > > > > >
+> > > > > > It is needed to prevent the case where someone might do:
+> > > > > > ct = bpf_xdp_ct_alloc(...);
+> > > > > > bpf_ct_set_timeout(ct->master, ...);
+> > > > > >
+> > > > >
+> > > > > A better illustration is probably bpf_xdp_ct_lookup and
+> > > > > bpf_ct_change_timeout, since here the type for ct->master won't match
+> > > > > with bpf_ct_set_timeout, but the point is the same.
+> > > >
+> > > > Sorry, I'm still not following.
+> > > > Didn't we make pointer walking 'untrusted' so ct->master cannot be
+> > > > passed into any kfunc?
+> > > >
+> > >
+> > > I don't believe that is the case, it is only true for kptrs loaded
+> > > from BPF maps (that too those with BPF_LDX, not the ones with
+> > > kptr_xchg). There we had a chance to do things differently. For normal
+> > > PTR_TO_BTF_ID obtained from kfuncs/BPF helpers, there is no untrusted
+> > > flag set on them, nor is it set when walking them.
+> > >
+> > > I also think we discussed switching to this mode, by making many cases
+> > > untrusted by default, and using annotation to allow cases, making
+> > > pointers trusted at one level (like args for tracing/lsm progs, but
+> > > next deref becomes untrusted), but admittedly it may not cover enough
+> > > ground, and you didn't like it much either, so I stopped pursuing it.
+> >
+> > Ahh. Now I remember. Thanks for reminding :)
+> > Could you please summarize this thread and add all of it as a big comment
+> > in the source code next to __ref handling to explain the motivation
+> > and an example on when and how this __ref suffix should be used.
+> > Otherwise somebody, like me, will forget the context soon.
+> >
+> > I was thinking of better name than __ref, but couldn't come up with one.
+> > __ref fits this use case the best.
+>
+> Actually, maybe a kfunc flag will be better?
+> Like REF_ARGS
+> that would apply to all arguments of the kfunc
+> (not only those with __ref suffix).
+>
+> We have three types of ptr_btf_id:
+> - ref counted
+> - untrusted
+> - old legacy that we cannot be break due to backward compat
+>
+> In the future we'll probably be adding new kfuncs where we'd want
+> every argument to be trusted. In our naming convention these are
+> the refcounted ptr_to_btf_id that come from lookup-like kfuncs.
+> To consume them in the release kfunc they have to be refcounted,
+> but non-release kfunc (like set_timeout) also want a trusted ptr.
+> So the simple way of describe the intent would be:
+> BTF_ID(func, bpf_ct_release, RELEASE)
+> BTF_ID(func, bpf_ct_set_timeout, REF_ARGS)
+>
+> or maybe TRUSTED_ARGS would be a better flag name.
+> wdyt?
 
-typo: properly
+Ok, I've implemented the kfunc flags and kept TRUSTED_ARGS as the
+name. Just need to do a little bit of testing and will post it
+together with this.
 
-> +#define __must_check
-
-But more usefully, I don't think it should be needed -- we don't use
-__must_check at all in uapi includes; if this is needed that means some
-of the include here uses the kernel internal includes and that shouldn't
-be needed as they're not normally installed.
-
-Didn't actually try to see but taking the compilation line that fails
-and running it with -E will probably show where that must_check comes
-from
-
---
-Dominique Martinet | Asmadeus,
-just passing by
+Just to confirm, should I still keep __ref or drop it? I think
+TRUSTED_ARGS has its use but it may be too coarse. I already have the
+patch so if you like we can add both ways now.
