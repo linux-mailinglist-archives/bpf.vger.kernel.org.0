@@ -2,76 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EF7D573AC8
-	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 18:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED34F573AD5
+	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 18:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236812AbiGMQDO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Jul 2022 12:03:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40116 "EHLO
+        id S236539AbiGMQJq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Jul 2022 12:09:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237107AbiGMQDN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Jul 2022 12:03:13 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD32A5006C
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 09:03:12 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id o21-20020a17090a9f9500b001f0574225faso1816853pjp.6
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 09:03:12 -0700 (PDT)
+        with ESMTP id S229490AbiGMQJp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Jul 2022 12:09:45 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6801C237C0;
+        Wed, 13 Jul 2022 09:09:43 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id l2so8686213qtp.11;
+        Wed, 13 Jul 2022 09:09:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc:content-transfer-encoding;
-        bh=wQFf5DtzT/85726aL6fYNeFoAW7JfAnPXxyXMxrgKiQ=;
-        b=a9/zMiTHcqWMd+J3C257IhXNuu5PxPM5fDb6TU3PHWOB1kgt3Lm39dhnU2VIu7xHgn
-         uwIP7Xa89qJOVQLs1H7NqaHGH8civvoBQ9K3MDohaRkvS1R87zi5oxCv2rXb+VCwTS18
-         MYO+kIwk1DIEKegBGOk3UIG/w9ElHvgQR0HS/0ybAIQtEx4A68l1BUOothu89sBs39cj
-         WlV9FXlzcw/8r97hVav6900fw2Syu8qYMY/68N4XOtzI22NW5ftg5Xj9A9QPfTb690AF
-         pmu3yVc8+iF/IAGSUNKn1fpqTYZSZ1+d0TfRagV12IUaJSt4H89mZvtRfzrXSC9F6FO3
-         MZpw==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l7OBy2jXoTg8s36dQ++DUXMpilAnuGrXyLSTh8rtfcQ=;
+        b=pY7+8gTXxdyxlnhuyWR1LFX8qHgwxLqYAdavHYf7FkyHm53d+Z8IJjCsHMFtgo+Yrr
+         dLtR8xTiZpxrFtLQfstJfvguFLFKwHepFHbiFur6M/bPcxYX9XNRTrAsQxCynunKF9Ii
+         FmEhqDJVYJeScbl6fL2YPwq6ZYDqYpgUtUdOvCHEQcSOUfbB/Id28mkzEqb22xMuECg5
+         XwhZ4gFzkTIYfAYyMJFJXA9WQhiafcmWeFFoZPEIb7i8mHAw89QGnYC2x8S4QB+Suwnv
+         eRMwMSzHZr6i/3TnuTRP+CebJI9psIFBkmxswiEIG5IXcJdF5FS85vgTyBB5/J/cpjad
+         R8AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc:content-transfer-encoding;
-        bh=wQFf5DtzT/85726aL6fYNeFoAW7JfAnPXxyXMxrgKiQ=;
-        b=YGvs2eQwmwZ6q4ts8BPcZosNKtztmWJXR72I9m/J9h0t1Iqsk1nYP/jDAG+qnSR+Cw
-         VEIPffiy15AC6BZxa3zP0Neua7ApD4/JDOzYeeCXzt7CvSwTV30dbxVOPqgNYvnTz8qe
-         ut1Ym5+UDodg+ZVhvmSDMfwueyEcev2a6QNbTf5vUyd7ck06sqdZptaUuQx7cKe9rN8G
-         KuMNrQObRWyFVA4FNiMU5GZ/apXql8YJifA5hb1KVmjSeuZ/z3u/xufFijBVsfZhGbGe
-         bbRERon0nn9OVoXRqJZSzq8urRyt0SZCXodn41Z5Dvm7iisL5IUTYqTC5j5K2bFUCQl+
-         3zaQ==
-X-Gm-Message-State: AJIora+HdY54BwdKX1nNFVWCby7M9UgR2cZYn9IgHVDYypsYPD/M4jBU
-        x+7qAM3c2NVmnXEfsQ7RxIvmDpE=
-X-Google-Smtp-Source: AGRyM1v1WK0jGrCJMEUKVpJExOzA2zo4Sy0PuOQgCBFakMKx7sRoLxDnrQNYqJ3WwE+GQGCvOdzvH3w=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a05:6a00:ad0:b0:4e1:2d96:2ab0 with SMTP id
- c16-20020a056a000ad000b004e12d962ab0mr4006442pfl.3.1657728192181; Wed, 13 Jul
- 2022 09:03:12 -0700 (PDT)
-Date:   Wed, 13 Jul 2022 09:03:10 -0700
-In-Reply-To: <4411407.LvFx2qVVIh@pwmachine>
-Message-Id: <Ys7svh29R5jA6QAr@google.com>
-Mime-Version: 1.0
-References: <20220713144439.19738-1-flaniel@linux.microsoft.com>
- <20220713144439.19738-2-flaniel@linux.microsoft.com> <CAADnVQLVSoetPd5d1_tf=KkGou9iUWkt3ovgi8eeCWtbJtRUiw@mail.gmail.com>
- <4411407.LvFx2qVVIh@pwmachine>
-Subject: Re: [PATCH v3 1/1] bpftool: Align dumped file generated header with skeletons.
-From:   sdf@google.com
-To:     Francis Laniel <flaniel@linux.microsoft.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l7OBy2jXoTg8s36dQ++DUXMpilAnuGrXyLSTh8rtfcQ=;
+        b=hLW/LDpuxE2NIR88lJCMWNrf4EOfMzNXL0ZmCwsGgL3GZjVELv1ZEJs7V4oUx/SS7L
+         d5gb6r7jmUBvT5iDtHaDcs9yhQxPeyxQQl9VPY6s/4JA1Qr7HqbIe/k8jXdOlH5+kNHS
+         I1Uy2NqDgZSdWVKKltP3FQZGFr3BNFrsxc1c4af/+qIVtIz3aOpPgyn6gnuApxwjxabr
+         YlJwsEb/hhGENsOHySGO+22/36WN+faizlQozWQa2Qft1iuCe59/y2MM+ytOYpzdo83e
+         FL+BrPxpbuU5BBB2jPc+7qN+Oa7Pyo3fGJxrBYSta3M5P0UMrj77BwSESSocAeEcEOMQ
+         pX5w==
+X-Gm-Message-State: AJIora8DyKWCME9wHSR30+bGxqRPSJ/rL61lTJDjfzub3R2D8JN/iO4v
+        QGf2WfhsDvrfp+GZCSpX+QI=
+X-Google-Smtp-Source: AGRyM1s9tn4jzuLscb2/HIDf6XZU+pQOvc4nY7/Qh0kdiwc2er7aI+qRXEKbkd1UsKhBLoRZ5QP7kg==
+X-Received: by 2002:a05:622a:199e:b0:31e:b14a:f2e5 with SMTP id u30-20020a05622a199e00b0031eb14af2e5mr3727291qtc.423.1657728582397;
+        Wed, 13 Jul 2022 09:09:42 -0700 (PDT)
+Received: from vultr.guest ([2001:19f0:5c00:1117:5400:4ff:fe11:4f31])
+        by smtp.gmail.com with ESMTPSA id g4-20020ac87744000000b0031eca8c88f6sm1774161qtu.51.2022.07.13.09.09.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jul 2022 09:09:41 -0700 (PDT)
+From:   Yafang Shao <laoar.shao@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH bpf-next v4] bpf: Warn on non-preallocated case for BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE
+Date:   Wed, 13 Jul 2022 16:09:36 +0000
+Message-Id: <20220713160936.57488-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,29 +69,30 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gMDcvMTMsIEZyYW5jaXMgTGFuaWVsIHdyb3RlOg0KPiBMZSBtZXJjcmVkaSAxMyBqdWlsbGV0
-IDIwMjIsIDE2OjQ3OjE3IENFU1QgQWxleGVpIFN0YXJvdm9pdG92IGEg77+9Y3JpdCA6DQo+ID4g
-T24gV2VkLCBKdWwgMTMsIDIwMjIgYXQgNzo0NSBBTSBGcmFuY2lzIExhbmllbA0KPiA+DQo+ID4g
-PGZsYW5pZWxAbGludXgubWljcm9zb2Z0LmNvbT4gd3JvdGU6DQo+ID4gPiBUaGlzIGNvbW1pdCBh
-ZGRzIHRoZSBmb2xsb3dpbmcgbGluZXMgdG8gZmlsZSBnZW5lcmF0ZWQgYnkgZHVtcDoNCj4gPiA+
-IC8qIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiAoTEdQTC0yLjEgT1IgQlNELTItQ2xhdXNlKSAq
-Lw0KPiA+ID4gLyogVEhJUyBGSUxFIElTIEFVVE9HRU5FUkFURUQgQlkgQlBGVE9PTCEgKi8NCj4g
-PiA+IEhlbmNlLCB0aGUgZHVtcGVkIGZpbGUgaGVhZGVycyBmb2xsb3dzIHRoYXQgb2Ygc2tlbGV0
-b25zLg0KPiA+ID4NCj4gPiA+IFNpZ25lZC1vZmYtYnk6IEZyYW5jaXMgTGFuaWVsIDxmbGFuaWVs
-QGxpbnV4Lm1pY3Jvc29mdC5jb20+DQo+ID4gPiAtLS0NCj4gPiA+DQo+ID4gPiAgdG9vbHMvYnBm
-L2JwZnRvb2wvYnRmLmMgfCAyICsrDQo+ID4gPiAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9u
-cygrKQ0KPiA+ID4NCj4gPiA+IGRpZmYgLS1naXQgYS90b29scy9icGYvYnBmdG9vbC9idGYuYyBi
-L3Rvb2xzL2JwZi9icGZ0b29sL2J0Zi5jDQo+ID4gPiBpbmRleCA3ZTZhY2NiOWQ5ZjcuLjA2NmEw
-YWNkMGVjZCAxMDA2NDQNCj4gPiA+IC0tLSBhL3Rvb2xzL2JwZi9icGZ0b29sL2J0Zi5jDQo+ID4g
-PiArKysgYi90b29scy9icGYvYnBmdG9vbC9idGYuYw0KPiA+ID4gQEAgLTQyNSw2ICs0MjUsOCBA
-QCBzdGF0aWMgaW50IGR1bXBfYnRmX2MoY29uc3Qgc3RydWN0IGJ0ZiAqYnRmLA0KPiA+ID4NCj4g
-PiA+ICAgICAgICAgaWYgKGVycikNCj4gPiA+DQo+ID4gPiAgICAgICAgICAgICAgICAgcmV0dXJu
-IGVycjsNCj4gPiA+DQo+ID4gPiArICAgICAgIHByaW50ZigiLyogU1BEWC1MaWNlbnNlLUlkZW50
-aWZpZXI6IChMR1BMLTIuMSBPUiBCU0QtMi1DbGF1c2UpDQo+ID4gPiAqL1xuIik7DQo+ID4gVGhp
-cyB3YXMgZGlzY3Vzc2VkIGVhcmxpZXIuIEl0J3MgaW5jb3JyZWN0IGFuZCB3ZSBjYW5ub3QgYWRk
-IGp1c3QgaGVhZGVyDQo+ID4gdG8gdm1saW51eC5oDQoNCj4gT29wcyBzb3JyeSwgSSB3aWxsIHNl
-bmQgYSB2NCBkcm9wcGluZyBpdC4NCj4gTm9uZXRoZWxlc3MgY2FuIHlvdSBwbGVhc2Ugc2VuZCBt
-ZSBhIGxpbmsgZm9yIGEgZGlzY3Vzc2lvbiBhYm91dCB0aGlzPw0KDQorMSwgR29vZ2xlIG9ubHkg
-Z2l2ZXMgbWUgdGhlIGZvbGxvd2luZzoNCg0KaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYnBmLzg3
-Y3ptd2UyNmMuZnNmQHRva2UuZGsvVC8NCg0KKHdoaWNoIGlzIHNvbWV3aGF0IGluY29uY2x1c2l2
-ZT8pDQo=
+BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE is also tracing type, which may
+cause unexpected memory allocation if we set BPF_F_NO_PREALLOC.
+Let's also warn on it.
+
+Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+
+---
+v4: warn on BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE only (Yonghong)
+---
+ kernel/bpf/verifier.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 328cfab3af60..c5b11d772663 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -12562,6 +12562,7 @@ static bool is_tracing_prog_type(enum bpf_prog_type type)
+ 	case BPF_PROG_TYPE_TRACEPOINT:
+ 	case BPF_PROG_TYPE_PERF_EVENT:
+ 	case BPF_PROG_TYPE_RAW_TRACEPOINT:
++	case BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE:
+ 		return true;
+ 	default:
+ 		return false;
+-- 
+2.17.1
+
