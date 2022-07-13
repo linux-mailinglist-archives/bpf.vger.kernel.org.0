@@ -2,66 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8607C573C31
-	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 19:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF875573C45
+	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 19:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230294AbiGMRxL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Jul 2022 13:53:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39552 "EHLO
+        id S231809AbiGMR5q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Jul 2022 13:57:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbiGMRxK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Jul 2022 13:53:10 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA0452D1C9
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 10:53:09 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id os14so21196727ejb.4
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 10:53:09 -0700 (PDT)
+        with ESMTP id S229772AbiGMR5p (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Jul 2022 13:57:45 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD8627159
+        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 10:57:43 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id os14so21217201ejb.4
+        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 10:57:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=qwKLWzG9XaDAuXDM0o1/jq4t3snTJ7GCEJNDxTCJaKM=;
-        b=C3aWm5b+jd384mTDYLGHQyJdjexjoVGn6UuKWw8t/qaAduszkR4KlDEYbHQnvIcX/7
-         Wtv7QPzzsSQ/JhFsDsGBkfv3xRXq0sqLogNuXb7eYCqS5AJZXzG016UrO1mDu5RfHCEz
-         0tPgL2XhHbNjaV3GbqntE6JD13eflxcyAr8hc8NL0R9odqV4BiiT38Tcogn5IYu8XmtC
-         jrGqIeX51FvPxmi3VaueA0jDVD9jS6tiGqwi3e0rcOKPmItzcpbu4zDIXI31y7dPU3/q
-         xwAckCBnYxEqF3LFdVMWkuYPykzrWBeJonpH6w+p91G1XqqljcHaLnFiiNqHaP7yPYNL
-         v+Gw==
+        bh=I8K0Ou8Tmr/gg2GFMNCmJXcQvjY1pDnYLB7ua9J9AAQ=;
+        b=SIJsQTJzLxku3FPI4+xfj03Y1jW6JZzaQUilVPXTojBJ6dGQVyG3ZJbbJXWJQFMSK1
+         lWxHDzrmjLh0zUiZ70z4/FCARWw0tP4adNJ/+Y2Qe7DTyjm9Jj+1krfelBrtG3NKW1Rq
+         SE4kqIk551OYn/MuHAu/6mwAH119K2wToNM9exNIh4ecBFmHO5eXdoW0js3Nm9Z7hNAV
+         +jToPpBCI/l2VBKFC/W26n9OKLpHvqSPLlApAylhOKRlr52WhOg9UA3J9TCL/Qm1BKGY
+         mGjr3PGP+vruac3Tb8SqF2wOg3WdJhJzdCRwV/WHieMQo5/IdSMZtEOva4NenQAEbxLj
+         /zKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qwKLWzG9XaDAuXDM0o1/jq4t3snTJ7GCEJNDxTCJaKM=;
-        b=3YApOIyU0Fo8n4KrG9oF5cag/qMB2T/qmRZwPgJx+X29JaM2djFD1WTGIbThxl5sJN
-         Xu89I+CC2rSDz4/FaTcqO5fz/CNK+Hpl1VndyYwBnC42T0lw5RPtbOBPqZ5Q0okM+yfs
-         EA9Y0v3ss6N9Bd4uaco4rSrNG6KNySl+TRLFCZ2JrtaJYU6wzaIBT0LrWAe4pKe0SZzR
-         bstYLzhMaY5Me/ufk4a+/7ZpI+H5Q1aEhrHJKrVcmIg60wUxYzSAyySimF/hVGeFXWEO
-         SCPVnfpttwOK/UOUsGRVltD8rWWIl47YcFH0a+ow+uXWlGZU9PSVvpZFQAPJ/QEhO1Nm
-         P2ZQ==
-X-Gm-Message-State: AJIora+WUYfVLbo3Mw3AVbSysPfwWJxAg/wnHAQqdUo30z6MYg7/0aIc
-        SBmXBktoM/PCjMgB72XcYwARQAHOAY0uU/PtSrk=
-X-Google-Smtp-Source: AGRyM1vwq48iMN+vfecEReMFbjACvnvukpeXpYi0qkfg9z2eQXuELA+lpZWynvahG9wDfxtZctml76/kuA5/oyAwfd8=
-X-Received: by 2002:a17:907:6e05:b0:72a:a141:962 with SMTP id
- sd5-20020a1709076e0500b0072aa1410962mr4499062ejc.545.1657734788268; Wed, 13
- Jul 2022 10:53:08 -0700 (PDT)
+        bh=I8K0Ou8Tmr/gg2GFMNCmJXcQvjY1pDnYLB7ua9J9AAQ=;
+        b=wM7dIvZBfAqvGHNz6ZbSNlti7jQ3Pvt1irrwXnKRR0kDE9peOh658e8qUXxmX/RA6l
+         nNs8yDf+DcoidFJ3cWyPA1OQFUAsdtcmpsH8DVE64RyVzoa2K42fziwtlRzbIX9LtAKY
+         vLhvWSME7Wk29sgfJkqCErnuIRtNSKEc8eAkZrUskIWXHTtEOJEiMpehq6w9mUmi4PUn
+         NEPH5JIvykXuwTXopeo0zSFUOUwaHFytNMjK83ugS8ANCGaErk4V6ya/abMTYHcZc8WJ
+         wpECwrwvmKaYfiEKYo6q5etsdBJppGGIgMFUC/z2LJ/bS0USTu9MvIi3sH5877MfTDAx
+         3qbw==
+X-Gm-Message-State: AJIora8RZoPYnH0FTOcXdAAOP9PiWw8FnWDp9IKv4mZgf+LzWUtMbfs9
+        PzD8yy80k12x9khcf0SPY9eO1ZdDwTROdNymnxo=
+X-Google-Smtp-Source: AGRyM1skZPsg4kBGolHkcKnQ40oSrXcQJxCbmco2iBTclNb1Wyt2/CQPeAbPArwuYJbM/xYsrp1aF42gudVCDYhFKFE=
+X-Received: by 2002:a17:907:2808:b0:72b:4d49:b2e9 with SMTP id
+ eb8-20020a170907280800b0072b4d49b2e9mr4908594ejc.176.1657735062240; Wed, 13
+ Jul 2022 10:57:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220707004118.298323-1-andrii@kernel.org> <50414987fbd393cde6d28ac9877e9f9b1527cb28.camel@linux.ibm.com>
- <CAEf4BzaocVmZrdSg4d5xiTeqK+n5ZNUuMso6BW-2x15Wj3rGmQ@mail.gmail.com>
- <cc50280e54d463d5da703e85770c87ede3f2655d.camel@linux.ibm.com>
- <CAEf4Bzb=oT5PzYjM+aDeAg76yB8KpROWcdanqLZ+G6qtdFsAqA@mail.gmail.com> <eb339ec7-9d7c-b96e-179e-b84751499808@oracle.com>
-In-Reply-To: <eb339ec7-9d7c-b96e-179e-b84751499808@oracle.com>
+References: <20220713015304.3375777-1-andrii@kernel.org> <20220713015304.3375777-6-andrii@kernel.org>
+ <Ys7y5vCoSgiMW/p8@google.com>
+In-Reply-To: <Ys7y5vCoSgiMW/p8@google.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 13 Jul 2022 10:52:56 -0700
-Message-ID: <CAEf4BzYa1EjhzOvcpVLDgCtVo1Ntf3SGSOs2Hkm6amPF5Pg4TQ@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next 0/3] libbpf: add better syscall kprobing support
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     Ilya Leoshkevich <iii@linux.ibm.com>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+Date:   Wed, 13 Jul 2022 10:57:30 -0700
+Message-ID: <CAEf4BzZsEcz+NroDFh+sEu_4wrgsJYPMjhuZS8FBuzkXC77jcg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 5/5] selftests/bpf: use BPF_KSYSCALL and
+ SEC("ksyscall") in selftests
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Kenta Tada <kenta.tada@sony.com>,
-        Hengqi Chen <hengqi.chen@gmail.com>
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -73,44 +69,46 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 13, 2022 at 12:12 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+On Wed, Jul 13, 2022 at 9:29 AM <sdf@google.com> wrote:
 >
-> On 12/07/2022 05:24, Andrii Nakryiko wrote:
+> On 07/12, Andrii Nakryiko wrote:
+> > Convert few selftest that used plain SEC("kprobe") with arch-specific
+> > syscall wrapper prefix to ksyscall/kretsyscall and corresponding
+> > BPF_KSYSCALL macro. test_probe_user.c is especially benefiting from this
+> > simplification.
 >
-> > Sounds good! I'll add that to bpf_program__attach_ksyscall() doc
-> > comment (and to commit message). I'll implement those new virtual
-> > __kconfig variables that I mentioned in another thread and post it as
-> > v1, hopefully some time this week.
-> >
+> That looks super nice! I'm assuming the goal is probably
+
+Thanks!
+
+> to get rid of that SYS_PREFIX everywhere eventually? And have a simple
+> test that exercises fentry/etc parsing?
+
+All the other uses of SYS_PREFIX in selftests right now are
+fentry/fexit. If the consensus is that this sort of higher-level
+wrapper around fentry/fexit specifically for syscalls is useful, it's
+not a lot of work to add something like SEC("fsyscall") and
+SEC("fretsyscall") with the same approach.
+
+One possible argument against this (and I need to double check my
+assumptions first), is that with SYSCALL_WRAPPER used (which is true
+for "major" platforms like x86_64), fentry doesn't provide much
+benefit because __<arch>_sys_<syscall>() function will have only one
+typed argument - struct pt_regs, and so we'll have to use
+BPF_CORE_READ() to fetch actual arguments, at which point BPF verifier
+will lose track of type information. So it's just a slightly more
+performant (in terms of invocation overhead) kprobe at that point, but
+with no added benefit of BTF types for input arguments.
+
+But curious to hear what others think about this.
+
 >
-> This is really useful, thanks for doing it! I tested on arm64,
-> only issue was the tracefs path issue that I think was already
-> mentioned, i.e. for me it took
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 4749fb84e33d..a27f21619cfc 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -4685,7 +4685,7 @@ static int probe_kern_syscall_wrapper(void)
->          * kernel was built with CONFIG_ARCH_HAS_SYSCALL_WRAPPER and uses
->          * syscall wrappers
->          */
-> -       static const char *kprobes_file = "/sys/kernel/tracing/available_filter_functions";
-> +       static const char *kprobes_file = "/sys/kernel/debug/tracing/available_filter_functions";
->         char func_name[128], syscall_name[128];
->         const char *ksys_pfx;
->         FILE *f;
->
-> ...to get the feature probing - and hence auto-attach to the
-> right arch-specific probes - to work.
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > ---
+> >   .../selftests/bpf/progs/bpf_syscall_macro.c   |  6 ++---
+> >   .../selftests/bpf/progs/test_attach_probe.c   | 15 +++++------
+> >   .../selftests/bpf/progs/test_probe_user.c     | 27 +++++--------------
+> >   3 files changed, 16 insertions(+), 32 deletions(-)
 >
 
-So I remember there were some patches generalizing this, but I can't
-remember why it hasn't landed yet. I'll dig it up a bit later, but I
-think this will be fixed separately and orthogonally. And also the
-non-RFC v1 doesn't rely on available_filter_functions anymore anyways.
-
-It would be nice if you can try v1 as well, and if it looks good give
-your ack/tested-by. Thanks!
-
-> Alan
+[...]
