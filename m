@@ -2,169 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 414575738BD
-	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 16:25:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 978B45738C6
+	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 16:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230151AbiGMOY6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Jul 2022 10:24:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58638 "EHLO
+        id S236352AbiGMO01 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Jul 2022 10:26:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236527AbiGMOYr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Jul 2022 10:24:47 -0400
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D9593342C
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 07:24:43 -0700 (PDT)
-Received: by mail-vs1-xe2a.google.com with SMTP id s1so7412546vsr.12
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 07:24:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JWXPjVie3sm72rSDN7Kiu+BHdXUWrF5jARXkQ8BtbN0=;
-        b=BxoIP5+oTXnnHRCwZ4lrpGjz+ivHT0zYtrlPzqV2LvJowZUWFwTfKOhkJW6mcmXocU
-         /x7XuBttgTBM3D2533dZaHLD99E3ttmPNc+EF2Sh8T/hOEORGrZ0A5ubSqA17uroh0Eh
-         iiol2zMqN+47bNk34lKBt6JslkfEsbGBVkjG6A8XRIbsFjg6U+Q3n370yV0Yna/BnWPc
-         /mxAqVCIFXB3DWLOnDnwVsGrE5Yun8BgZs6b3iumdawPJFZqS0FL+84oudojlYk5H2E+
-         i0GVnPWyRXr6PHVR9iuQhWXJDBlLXObY4yd0nGLL4iWyTZXpZZKBIoSgs6k4FG4vfjr4
-         Om9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JWXPjVie3sm72rSDN7Kiu+BHdXUWrF5jARXkQ8BtbN0=;
-        b=udYHQgFiL1tY0IoW+27gQ7GlJvSFCAiLCLvmCdpOoXuFDCVPnoo76HDyYkSB+nZ8g4
-         flPqKau0Ya/+1bXqFtr9PXcyV00z9MqPgSAXnaceWHqUryFo7m92+idJOLsV+tPQEmem
-         mSHbHd2XgHLzT+A7MVsR74B74eh+3tpKCub0Rz+HzwSezjUBpYDf1ZXpsmyiOuqydIb5
-         LGMmgtd6V6qWlqbBcgnc7Xm9vE3gWIt4nA4vPckvgspJvZsbTyVyLgktlxisUlDRvBnl
-         vQGU7PY+xJAcbhjiDXiu6Nt4tsFjJdqFdbzlmHzVOCe1zvQK8NIf2EaNtn4AmMmPqOoC
-         YKhw==
-X-Gm-Message-State: AJIora8YcIx8RqQjNL00/KkZX/GIEaM98F2pni2AnZ159Z4ISQniHmuP
-        n3s0nCtkby0XZ2z3yiAcn7gm0GSV1SFdEg+PDEQ=
-X-Google-Smtp-Source: AGRyM1tDKiU0EebMnrOiIsWxkxJInH8ck5QLYPgxv2VUGxnt9Ldyb/yIxvdnJxUJvz6fivGeg04TaHvSz+SxsYtjxyI=
-X-Received: by 2002:a05:6102:3d20:b0:357:7f61:6127 with SMTP id
- i32-20020a0561023d2000b003577f616127mr1246333vsv.11.1657722282306; Wed, 13
- Jul 2022 07:24:42 -0700 (PDT)
+        with ESMTP id S236195AbiGMO00 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Jul 2022 10:26:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 692FA2F390;
+        Wed, 13 Jul 2022 07:26:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0682261DBD;
+        Wed, 13 Jul 2022 14:26:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 255FCC34114;
+        Wed, 13 Jul 2022 14:26:23 +0000 (UTC)
+Subject: [PATCH v1] net: Add distinct sk_psock field
+From:   Chuck Lever <chuck.lever@oracle.com>
+To:     john.fastabend@gmail.com, daniel@iogearbox.net,
+        jakub@cloudflare.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org
+Cc:     chuck.lever@oracle.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 13 Jul 2022 10:26:21 -0400
+Message-ID: <165772238175.1757.4978340330606055982.stgit@oracle-102.nfsv4.dev>
+User-Agent: StGit/1.5
 MIME-Version: 1.0
-References: <Ysg0GyvqUe0od2NN@dhcp22.suse.cz> <20220708174858.6gl2ag3asmoimpoe@macbook-pro-3.dhcp.thefacebook.com>
- <20220708215536.pqclxdqvtrfll2y4@google.com> <CAADnVQL5ZQDqMGULJLDwT9xRTihdDvo6GvwxdEOtSAs8EwE78A@mail.gmail.com>
- <20220710073213.bkkdweiqrlnr35sv@google.com> <YswUS/5nbYb8nt6d@dhcp22.suse.cz>
- <20220712043914.pxmbm7vockuvpmmh@macbook-pro-3.dhcp.thefacebook.com>
- <Ys0lXfWKtwYlVrzK@dhcp22.suse.cz> <CALOAHbAhzNTkT9o_-PRX=n4vNjKhEK_09+-7gijrFgGjNH7iRA@mail.gmail.com>
- <Ys1ES+CygtnUvArz@dhcp22.suse.cz> <Ys4wRqCWrV1WeeWp@castle>
-In-Reply-To: <Ys4wRqCWrV1WeeWp@castle>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Wed, 13 Jul 2022 22:24:05 +0800
-Message-ID: <CALOAHbAyZBKRn3HpjeKsxpTP8aKnHxFiMD_kGJG22c0X8Cb9+w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/5] bpf: BPF specific memory allocator.
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        linux-mm <linux-mm@kvack.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 13, 2022 at 10:39 AM Roman Gushchin
-<roman.gushchin@linux.dev> wrote:
->
-> On Tue, Jul 12, 2022 at 11:52:11AM +0200, Michal Hocko wrote:
-> > On Tue 12-07-22 16:39:48, Yafang Shao wrote:
-> > > On Tue, Jul 12, 2022 at 3:40 PM Michal Hocko <mhocko@suse.com> wrote:
-> > [...]
-> > > > > Roman already sent reparenting fix:
-> > > > > https://patchwork.kernel.org/project/netdevbpf/patch/20220711162827.184743-1-roman.gushchin@linux.dev/
-> > > >
-> > > > Reparenting is nice but not a silver bullet. Consider a shallow
-> > > > hierarchy where the charging happens in the first level under the root
-> > > > memcg. Reparenting to the root is just pushing everything under the
-> > > > system resources category.
-> > > >
-> > >
-> > > Agreed. That's why I don't like reparenting.
-> > > Reparenting just reparent the charged pages and then redirect the new
-> > > charge, but can't reparents the 'limit' of the original memcg.
-> > > So it is a risk if the original memcg is still being charged. We have
-> > > to forbid the destruction of the original memcg.
->
-> I agree, I also don't like reparenting for !kmem case. For kmem (and *maybe*
-> bpf maps is an exception), I don't think there is a better choice.
->
-> > yes, I was toying with an idea like that. I guess we really want a
-> > measure to keep cgroups around if they are bound to a resource which is
-> > sticky itself. I am not sure how many other resources like BPF (aka
-> > module like) we already do charge for memcg but considering the
-> > potential memory consumption just reparenting will not help in general
-> > case I am afraid.
->
-> Well, then we have to make these objects a first-class citizens in cgroup API,
-> like processes. E.g. introduce cgroup.bpf.maps, cgroup.mounts.tmpfs etc.
-> I easily can see some value here, but it's a big API change.
->
-> With the current approach when a bpf map pins a memory cgroup of the creator
-> process (which I think is completely transparent for most bpf users), I don't
-> think preventing the deletion of a such cgroup is possible. It will break too
-> many things.
->
-> But honestly I don't see why userspace can't handle it. If there is a cgroup which
-> contains shared bpf maps, why would it delete it? It's a weird use case, I don't
-> think we have to optimize for it. Also, we do a ton of optimizations for live
-> cgroups (e.g. css refcounting being percpu) which are not working for a deleted
-> cgroup. So noone really should expect any properties from dying cgroups.
->
+The sk_psock facility populates the sk_user_data field with the
+address of an extra bit of metadata. User space sockets never
+populate the sk_user_data field, so this has worked out fine.
 
-I think we have discussed why the user can't handle it easily.
-Actually It's NOT a weird use case if you are a k8s user.  (Of course
-it may seem weird to the systemd user, but unfortunately systemd
-doesn't rule the whole world. )
-I have told you that it is not reasonable to refuse a containerized
-process to pin bpf programs, but if you are not familiar with k8s, it
-is not easy to explain clearly why it is a trouble for deployment.
-But I can try to explain to you from a *systemd user's* perspective.
+However, kernel socket consumers such as the RPC client and server
+do populate the sk_user_data field. The sk_psock() function cannot
+tell that the content of sk_user_data does not point to psock
+metadata, so it will happily return a pointer to something else,
+cast to a struct sk_psock.
 
-                   bpf-memcg                       (must be persistent)
-                  /                \
-  bpf-foo-memcg       bpf-bar-memcg   (must be persistent, and limit here)
--------------------------------------------------------
-           /                              \
-    bpf-foo pod              bpf-bar pod    (being created and
-destroyed, but not limited)
+Thus kernel socket consumers and psock currently cannot co-exist.
 
-I assume the above hierarchy is what you expect.
-But you know, in the k8s environment, everything is pod-based, that
-means if we use the above hierarchy in the k8s environment, the k8s's
-limiting, monitoring, debugging must be changed consequently.  That
-means it may be a fullstack change in k8s, a great refactor.
+We could educate sk_psock() to return NULL if sk_user_data does
+not point to a struct sk_psock. However, a more general solution
+that enables full co-existence psock and other uses of sk_user_data
+might be more interesting.
 
-So below hierarchy is a reasonable solution,
-                                          bpf-memcg
-                                                |
-  bpf-foo pod                    bpf-foo-memcg     (limited)
-       /          \                                /
-(charge)     (not-charged)      (charged)
-proc-foo                     bpf-foo
+Move the struct sk_psock address to its own pointer field so that
+the contents of the sk_user_data field is preserved.
 
-And then keep the bpf-memgs persistent.
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+---
+ include/linux/skmsg.h |    2 +-
+ include/net/sock.h    |    4 +++-
+ net/core/skmsg.c      |    6 +++---
+ 3 files changed, 7 insertions(+), 5 deletions(-)
 
--- 
-Regards
-Yafang
+diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
+index c5a2d6f50f25..5ef3a07c5b6c 100644
+--- a/include/linux/skmsg.h
++++ b/include/linux/skmsg.h
+@@ -277,7 +277,7 @@ static inline void sk_msg_sg_copy_clear(struct sk_msg *msg, u32 start)
+ 
+ static inline struct sk_psock *sk_psock(const struct sock *sk)
+ {
+-	return rcu_dereference_sk_user_data(sk);
++	return rcu_dereference(sk->sk_psock);
+ }
+ 
+ static inline void sk_psock_set_state(struct sk_psock *psock,
+diff --git a/include/net/sock.h b/include/net/sock.h
+index c4b91fc19b9c..d2a513169527 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -327,7 +327,8 @@ struct sk_filter;
+   *	@sk_tskey: counter to disambiguate concurrent tstamp requests
+   *	@sk_zckey: counter to order MSG_ZEROCOPY notifications
+   *	@sk_socket: Identd and reporting IO signals
+-  *	@sk_user_data: RPC layer private data
++  *	@sk_user_data: Upper layer private data
++  *	@sk_psock: socket policy data (bpf)
+   *	@sk_frag: cached page frag
+   *	@sk_peek_off: current peek_offset value
+   *	@sk_send_head: front of stuff to transmit
+@@ -519,6 +520,7 @@ struct sock {
+ 
+ 	struct socket		*sk_socket;
+ 	void			*sk_user_data;
++	struct sk_psock	__rcu	*sk_psock;
+ #ifdef CONFIG_SECURITY
+ 	void			*sk_security;
+ #endif
+diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+index cc381165ea08..2b3d01d92790 100644
+--- a/net/core/skmsg.c
++++ b/net/core/skmsg.c
+@@ -695,7 +695,7 @@ struct sk_psock *sk_psock_init(struct sock *sk, int node)
+ 
+ 	write_lock_bh(&sk->sk_callback_lock);
+ 
+-	if (sk->sk_user_data) {
++	if (sk->sk_psock) {
+ 		psock = ERR_PTR(-EBUSY);
+ 		goto out;
+ 	}
+@@ -726,7 +726,7 @@ struct sk_psock *sk_psock_init(struct sock *sk, int node)
+ 	sk_psock_set_state(psock, SK_PSOCK_TX_ENABLED);
+ 	refcount_set(&psock->refcnt, 1);
+ 
+-	rcu_assign_sk_user_data_nocopy(sk, psock);
++	rcu_assign_pointer(sk->sk_psock, psock);
+ 	sock_hold(sk);
+ 
+ out:
+@@ -825,7 +825,7 @@ void sk_psock_drop(struct sock *sk, struct sk_psock *psock)
+ {
+ 	write_lock_bh(&sk->sk_callback_lock);
+ 	sk_psock_restore_proto(sk, psock);
+-	rcu_assign_sk_user_data(sk, NULL);
++	rcu_assign_pointer(sk->sk_psock, NULL);
+ 	if (psock->progs.stream_parser)
+ 		sk_psock_stop_strp(sk, psock);
+ 	else if (psock->progs.stream_verdict || psock->progs.skb_verdict)
+
+
