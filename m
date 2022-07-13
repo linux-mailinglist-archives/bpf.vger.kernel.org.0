@@ -2,61 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F007573CA1
-	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 20:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C54573CBD
+	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 20:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234491AbiGMSkQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Jul 2022 14:40:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42068 "EHLO
+        id S236582AbiGMSuo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Jul 2022 14:50:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236768AbiGMSkP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Jul 2022 14:40:15 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E5F25EA8;
-        Wed, 13 Jul 2022 11:40:14 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id ez10so21372906ejc.13;
-        Wed, 13 Jul 2022 11:40:14 -0700 (PDT)
+        with ESMTP id S230479AbiGMSuo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Jul 2022 14:50:44 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA051EC45;
+        Wed, 13 Jul 2022 11:50:43 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id x91so15291462ede.1;
+        Wed, 13 Jul 2022 11:50:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=8UYxEBVQxJBWXUllpTKJe/GcN31hCKwDkmAS5fh8H2o=;
-        b=DPu1lD/yH7EsJnyAR9LOPy1YHC/+Pd0xB1pEqWnDc8dmGeoB70ysFHFjJTINXPciiH
-         6rCma/gbO9ohDqIhyWU0T29Bdom4ceT8H//ghVXRMMOOxgwbE6PpYZS9PAB2SENHAakV
-         LZCJdzZDv9ihwO8QXWFUofllWzw3jXWgGeycCDVnIETJhzOyUQIeRNXId2DWNRKWwqPS
-         5+tb2u09bk707WLmrpxAIUX9Tai9fqqhh76tua1vTND+bmHYZq31PWICs0ZM2JOvcmMF
-         d7r+3dDM6/oEObMAs1Ux8MIoRbwDnJSxrp6pUodg3dg7yag69wUNnvTvxLn+p3l/YAyg
-         4JUg==
+        bh=8E/OyqYy9txlAConCx9/kspkC33WOncOhQArDqoDeac=;
+        b=CgP91qF4FbUD94PQCFiu3MbbFwUpmn1HD5PMPQbo5UxWzmQycN6shjM+/1VXNdzE5U
+         KGOiVVX75ks1tBpZi9xr3RBhV12ELPBmcE9REUKtWZP/J0Z4X91dvYYkEm2W+ewLbnu6
+         +qDAtHs7Bf28JTNXwJ9P+wcXSY8KumDQZTbrGTS+fGMxejL7w2CgzJnhpSU5Pr5yGSCc
+         KNuwusocfVTeyV0YT6RkPpsmh7hYenHZiGphBc9TAl7MGNODT3XDS9M0REaFGxkM2QF5
+         WTcKI/yMmk3Q+KwKFC10We9qcJR3zWPVsQi1Nq0IAsqdsU6tqtv+TUcN2UNS3mvyx4Jv
+         XNNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=8UYxEBVQxJBWXUllpTKJe/GcN31hCKwDkmAS5fh8H2o=;
-        b=0w5QAY/o7WGF1WqG2x9eLr9kyXszhSHKuRYsXre+9+p71XekydhxsjkpQBNX02v5v/
-         kBTyGi7jEuuVHQJdcQ2gQ667cH7x23ltFP6SQmX5SQXQLt18DZ7NHurZUW0hvsl3YLVX
-         mvHlPnE97sfUvBiz4fpWj0HLN7q50QJktAfv36K2gxWwD95NT1FhlDUO11ce3jNziZ8b
-         LOpY/4VwLVW9pNxH9+i1kLoVbQzKrIY/oXG/gabRckaVBys6lDwX2NvsP6U8sCEhIGM/
-         BPJOlEWXhZwEgsPbTUibip8GIYQMZBGeXD8ud6mnkprAzVf+2P15AYTS3G23PbRfvzc3
-         bRKg==
-X-Gm-Message-State: AJIora/ecIx9dGfWAC3Irf9hMIccRT4n/x5t4thLizV5Q+dDHh3pLY/E
-        5wFZKUQBTsydtV+2NzXpfezbCqUG8diBrZyIAu8mMD/TgNU=
-X-Google-Smtp-Source: AGRyM1szH2mTzg24+N4xASjFTF0FOaOGFnT5yRqp0yDII1+gT5tNAqY9HASAnnC6RoxP97A41Mh8DEL58ncQea44ipg=
-X-Received: by 2002:a17:907:75ef:b0:72b:2fd:1a92 with SMTP id
- jz15-20020a17090775ef00b0072b02fd1a92mr4676294ejc.745.1657737613168; Wed, 13
- Jul 2022 11:40:13 -0700 (PDT)
+        bh=8E/OyqYy9txlAConCx9/kspkC33WOncOhQArDqoDeac=;
+        b=MzOVENTlheuBPKWkeQmjVLTs1jde/7zDkujJNTsfp2Yu3m8PeJJXUwntyqDVU2Hlbu
+         vO724vk0yj7A95K0pNFio0LmOoajpZqBVGIsXIOcZa0eRXg8ojTkGCLNJaLO3MUyLOFZ
+         cheVHGgRGd5KfHBgrNkWI99rOl0L+LDZVeAPSvGTT4jgK7ivY/3NyILIoKvaiamsIbQ0
+         kHNHY49FS13PPlDXe1MG2Q5aj7hpIFHgYM91HdtUPm0aXfkzExsVu3xvb1XrlL6gagGN
+         aKHORXtie/zqOgyJ3LtY2RMLp1R6n5ykRdMzepCrVE2OuQHMjEuxNaHe5BlZ+Gv6x+Au
+         cwIw==
+X-Gm-Message-State: AJIora8FpgbUoZ9ycexlgTg7kItu3er3layC7/O6Z4CUeX8HlLgptktZ
+        129OTXvGB/8Fhc/oFZXlHJzNPxu1SxEJm3WAiyY=
+X-Google-Smtp-Source: AGRyM1tlLrzyytvtasiQDguZ273vasVow3m/fKNRqaKiLFh7PJY2r3qqkO/aUT2bkZyPsbRaT1lvl+M1lhJGgRJKbT8=
+X-Received: by 2002:a05:6402:50d2:b0:43a:8487:8a09 with SMTP id
+ h18-20020a05640250d200b0043a84878a09mr6856437edb.232.1657738242046; Wed, 13
+ Jul 2022 11:50:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220711211317.GA1143610@laptop> <YsyZY/tFm3hi5srl@krava>
-In-Reply-To: <YsyZY/tFm3hi5srl@krava>
+References: <20220712030813.865410-1-pulehui@huawei.com> <20220712030813.865410-2-pulehui@huawei.com>
+ <e1dd40cd-647c-10b4-53f9-a313e509474e@isovalent.com> <0c8f6067-0d5b-c1f7-2048-0ed4add76e73@huawei.com>
+In-Reply-To: <0c8f6067-0d5b-c1f7-2048-0ed4add76e73@huawei.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 13 Jul 2022 11:40:01 -0700
-Message-ID: <CAEf4BzYGjNaqL4h8=4Jw7O_xxMfy=TbUg94VO6RZT5wOtV+_wQ@mail.gmail.com>
-Subject: Re: [PATCH] bpf: btf: Fix vsnprintf return value check
-To:     Jiri Olsa <olsajiri@gmail.com>,
-        Alan Maguire <alan.maguire@oracle.com>
-Cc:     Fedor Tokarev <ftokarev@gmail.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+Date:   Wed, 13 Jul 2022 11:50:30 -0700
+Message-ID: <CAEf4BzYvLZcDD0dfYWnc_FNchJ=ptxwnkvca40Xo_LF7Lr+c5g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] samples: bpf: Fix cross-compiling error by
+ using bootstrap bpftool
+To:     Pu Lehui <pulehui@huawei.com>
+Cc:     Quentin Monnet <quentin@isovalent.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -68,42 +76,71 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 11, 2022 at 2:45 PM Jiri Olsa <olsajiri@gmail.com> wrote:
+On Tue, Jul 12, 2022 at 4:32 AM Pu Lehui <pulehui@huawei.com> wrote:
 >
-> On Mon, Jul 11, 2022 at 11:13:17PM +0200, Fedor Tokarev wrote:
-> > vsnprintf returns the number of characters which would have been written if
-> > enough space had been available, excluding the terminating null byte. Thus,
-> > the return value of 'len_left' means that the last character has been
-> > dropped.
 >
-> should we have test for this in progs/test_snprintf.c ?
-
-It might be too annoying to set up such test, and given the fix is
-pretty trivial IMO it's ok without extra test. But cc Alan for ack.
-Alan, please take a look as well.
-
 >
-> jirka
->
+> On 2022/7/12 18:11, Quentin Monnet wrote:
+> > On 12/07/2022 04:08, Pu Lehui wrote:
+> >> Currently, when cross compiling bpf samples, the host side cannot
+> >> use arch-specific bpftool to generate vmlinux.h or skeleton. Since
+> >> samples/bpf use bpftool for vmlinux.h, skeleton, and static linking
+> >> only, we can use lightweight bootstrap version of bpftool to handle
+> >> these, and it's always host-native.
+> >>
+> >> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+> >> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> >> ---
+> >>   samples/bpf/Makefile | 16 +++++++++++-----
+> >>   1 file changed, 11 insertions(+), 5 deletions(-)
+> >>
+> >> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+> >> index 5002a5b9a7da..57012b8259d2 100644
+> >> --- a/samples/bpf/Makefile
+> >> +++ b/samples/bpf/Makefile
+> >> @@ -282,12 +282,18 @@ $(LIBBPF): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_OU
+> >>
+> >>   BPFTOOLDIR := $(TOOLS_PATH)/bpf/bpftool
+> >>   BPFTOOL_OUTPUT := $(abspath $(BPF_SAMPLES_PATH))/bpftool
+> >> -BPFTOOL := $(BPFTOOL_OUTPUT)/bpftool
+> >> +BPFTOOL := $(BPFTOOL_OUTPUT)/bootstrap/bpftool
+> >> +ifeq ($(CROSS_COMPILE),)
+> >>   $(BPFTOOL): $(LIBBPF) $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile) | $(BPFTOOL_OUTPUT)
+> >> -        $(MAKE) -C $(BPFTOOLDIR) srctree=$(BPF_SAMPLES_PATH)/../../ \
+> >> -            OUTPUT=$(BPFTOOL_OUTPUT)/ \
+> >> -            LIBBPF_OUTPUT=$(LIBBPF_OUTPUT)/ \
+> >> -            LIBBPF_DESTDIR=$(LIBBPF_DESTDIR)/
+> >> +    $(MAKE) -C $(BPFTOOLDIR) srctree=$(BPF_SAMPLES_PATH)/../../             \
+> >> +            OUTPUT=$(BPFTOOL_OUTPUT)/                                       \
+> >> +            LIBBPF_BOOTSTRAP_OUTPUT=$(LIBBPF_OUTPUT)/                       \
+> >> +            LIBBPF_BOOTSTRAP_DESTDIR=$(LIBBPF_DESTDIR)/ bootstrap
+> >> +else
+> >> +$(BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile) | $(BPFTOOL_OUTPUT)
 > >
-> > Signed-off-by: Fedor Tokarev <ftokarev@gmail.com>
-> > ---
-> >  kernel/bpf/btf.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > Thanks for this! Just trying to fully understand the details here. When
+> > cross-compiling, you leave aside the dependency on target-arch-libbpf,
+> > so that "make -C <bpftool-dir> bootstrap" rebuilds its own host-arch
+> > libbpf, is this correct?
 > >
-> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > index eb12d4f705cc..a9c1c98017d4 100644
-> > --- a/kernel/bpf/btf.c
-> > +++ b/kernel/bpf/btf.c
-> > @@ -6519,7 +6519,7 @@ static void btf_snprintf_show(struct btf_show *show, const char *fmt,
-> >       if (len < 0) {
-> >               ssnprintf->len_left = 0;
-> >               ssnprintf->len = len;
-> > -     } else if (len > ssnprintf->len_left) {
-> > +     } else if (len >= ssnprintf->len_left) {
-> >               /* no space, drive on to get length we would have written */
-> >               ssnprintf->len_left = 0;
-> >               ssnprintf->len += len;
-> > --
-> > 2.25.1
+>
+> You're right. libbpf may does get out-of-sync. So the best way is to
+> compile both arch-specific libbpf simultaneously, and then attach to
+> bpftool. But it will make this job more complicated. Could we just add
+> back $(LIBBPF) to handle this?
+>
+
+Maybe let's keep it simple and let bpftool's Makefile deal with
+cross-compile issue and building its own libbpf? So just request
+bootstrap, but not try to share libbpf between samples/bpf and
+bpftool? Especially that is this "samples", such complexity in
+Makefile seems like a micro-optimization.
+
+> >> +    $(MAKE) -C $(BPFTOOLDIR) srctree=$(BPF_SAMPLES_PATH)/../../             \
+> >> +            OUTPUT=$(BPFTOOL_OUTPUT)/ bootstrap
+> >> +endif
+> >>
+> >>   $(LIBBPF_OUTPUT) $(BPFTOOL_OUTPUT):
+> >>      $(call msg,MKDIR,$@)
+> >
+> > .
 > >
