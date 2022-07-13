@@ -2,85 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C077A57366A
-	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 14:32:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E66D5736AC
+	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 14:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231596AbiGMMcc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Jul 2022 08:32:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50386 "EHLO
+        id S229968AbiGMMxn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Jul 2022 08:53:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230303AbiGMMca (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Jul 2022 08:32:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BB45EEA176
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 05:32:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1657715548;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bXRPU0M/Hx+9lHfOL9LxYIk0tOoUqE9PtXfSvp6NKH4=;
-        b=PNsR41tqBVz4BhtGYaLc5bFz1cdRqhyAHv18cK+2qzLCu54TyDi0ERK5ibK8bugQ1o6zyc
-        YMfttDLeoU9H0CE/M1oPkfejx/h5Xauzkl4qyWWvoyezYqdZG01C/PKSQ31BVagnIo8sO+
-        iiqVeVnmGE8nnVGeVqy3a8aATIPLbM8=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-604-UmSBq73VPxOJRr98vXOF5Q-1; Wed, 13 Jul 2022 08:32:26 -0400
-X-MC-Unique: UmSBq73VPxOJRr98vXOF5Q-1
-Received: by mail-pj1-f70.google.com with SMTP id v19-20020a17090abb9300b001ef7bbd5a28so1524244pjr.0
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 05:32:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bXRPU0M/Hx+9lHfOL9LxYIk0tOoUqE9PtXfSvp6NKH4=;
-        b=Vp7eqquiB6eYj6wmyrINhZwL26SzV4K9t+2UvnGiZcWig+0baik32pFFfS6cPPXTfo
-         anDCSCVrUFfxTThXN1oaKI1s9/P90NqWXLRzLKH7mbUoc+40iU0r5Z6dIN2KlIzKFpSA
-         4osgI9skIoSel56BTtWzP+JCSyLSJRpCW6uThFtWKGIUyAjck401e4nWqolVepqymfOE
-         sLxohnsowoO7XC35oZabuRVFVUkm8P+0s1Qwbi0iAtZBB9h0zJr513avH/GbzKjMkIKq
-         WMVOLJsaZLPveSbVNPfVPZ1DJDU1udHDh6gLL2rSVlygThIj+MswwxQhujXei/ZoXyMp
-         FVdQ==
-X-Gm-Message-State: AJIora/jQ1u5gbnuoOFZckSDbl6XugNu+Np6CZAuKD5IGja7ScNsmJYt
-        nn/9ZYgMGz7bAYfhXOuDrZDJ7mPWlp11NLPSatDE5iirN2Kc7uVEPWF8CXo0au7eeTVbZBzL3LE
-        EE5owfW2Hb3C7NIh4vlm32lgRRwGd
-X-Received: by 2002:a63:5b16:0:b0:416:1b3b:9562 with SMTP id p22-20020a635b16000000b004161b3b9562mr2825456pgb.146.1657715544990;
-        Wed, 13 Jul 2022 05:32:24 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1t9uWNYHyTapK2q1N1e3wCrLFwPd90gcSU2/P3W7avhJlby/nfPUHw1idL6GYPgQCA5GzKprWxsedAv0ocYYfA=
-X-Received: by 2002:a63:5b16:0:b0:416:1b3b:9562 with SMTP id
- p22-20020a635b16000000b004161b3b9562mr2825431pgb.146.1657715544728; Wed, 13
- Jul 2022 05:32:24 -0700 (PDT)
+        with ESMTP id S234676AbiGMMxl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Jul 2022 08:53:41 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04AC96587;
+        Wed, 13 Jul 2022 05:53:38 -0700 (PDT)
+Received: from canpemm500007.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Ljcvj45v7zlVnv;
+        Wed, 13 Jul 2022 20:52:01 +0800 (CST)
+Received: from dggpeml500026.china.huawei.com (7.185.36.106) by
+ canpemm500007.china.huawei.com (7.192.104.62) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Wed, 13 Jul 2022 20:53:36 +0800
+Received: from dggpeml500026.china.huawei.com ([7.185.36.106]) by
+ dggpeml500026.china.huawei.com ([7.185.36.106]) with mapi id 15.01.2375.024;
+ Wed, 13 Jul 2022 20:53:36 +0800
+From:   shaozhengchao <shaozhengchao@huawei.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        "sdf@google.com" <sdf@google.com>
+CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "martin.lau@linux.dev" <martin.lau@linux.dev>,
+        "song@kernel.org" <song@kernel.org>, "yhs@fb.com" <yhs@fb.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "weiyongjun (A)" <weiyongjun1@huawei.com>,
+        yuehaibing <yuehaibing@huawei.com>
+Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0ggYnBmLW5leHRdIGJwZjogRG9uJ3QgcmVkaXJlY3Qg?=
+ =?utf-8?Q?packets_with_invalid_pkt=5Flen?=
+Thread-Topic: [PATCH bpf-next] bpf: Don't redirect packets with invalid
+ pkt_len
+Thread-Index: AQHYleaLL8MWGRM12UO/vrEEAw5EYq16b1qAgAA2GQCAAYwHcA==
+Date:   Wed, 13 Jul 2022 12:53:36 +0000
+Message-ID: <d7f22715be8d477cbc3e6e545c219048@huawei.com>
+References: <20220712120158.56325-1-shaozhengchao@huawei.com>
+ <Ys2oPzt7Yn1oMou8@google.com>
+ <f0bf3e9a-15e6-f5c8-1b2a-7866acfcb71b@iogearbox.net>
+In-Reply-To: <f0bf3e9a-15e6-f5c8-1b2a-7866acfcb71b@iogearbox.net>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.178.66]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20220712145850.599666-1-benjamin.tissoires@redhat.com>
- <20220712145850.599666-22-benjamin.tissoires@redhat.com> <Ys61XcZL4Fh/VQu1@codewreck.org>
-In-Reply-To: <Ys61XcZL4Fh/VQu1@codewreck.org>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Wed, 13 Jul 2022 14:32:13 +0200
-Message-ID: <CAO-hwJJPN=joJdQtfJ6qYxvkkgq3Ytp0yq6O=uUm4iCJCa47Ww@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 21/23] samples/bpf: add new hid_mouse example
-To:     Dominique Martinet <asmadeus@codewreck.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>,
-        Tero Kristo <tero.kristo@linux.intel.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,47 +72,78 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 13, 2022 at 2:16 PM Dominique Martinet
-<asmadeus@codewreck.org> wrote:
->
-> Benjamin Tissoires wrote on Tue, Jul 12, 2022 at 04:58:48PM +0200:
-> > diff --git a/samples/bpf/hid_mouse.c b/samples/bpf/hid_mouse.c
-> > new file mode 100644
-> > index 000000000000..f6e5f09026eb
-> > --- /dev/null
-> > +++ b/samples/bpf/hid_mouse.c
-> > @@ -0,0 +1,150 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/* Copyright (c) 2022 Benjamin Tissoires
-> > + */
-> > +
-> > +/* not sure why but this doesn't get preoperly imported */
->
-> typo: properly
->
-> > +#define __must_check
->
-> But more usefully, I don't think it should be needed -- we don't use
-> __must_check at all in uapi includes; if this is needed that means some
-> of the include here uses the kernel internal includes and that shouldn't
-> be needed as they're not normally installed.
-
-Indeed, I must have had the issue in the early days of development.
-Removing the line still makes the program compile, so I'll remove it
-in v7.
-
-Thanks a lot!
-
-Cheers,
-Benjamin
-
->
-> Didn't actually try to see but taking the compilation line that fails
-> and running it with -E will probably show where that must_check comes
-> from
->
-> --
-> Dominique Martinet | Asmadeus,
-> just passing by
->
-
+DQoNCi0tLS0t6YKu5Lu25Y6f5Lu2LS0tLS0NCuWPkeS7tuS6ujogRGFuaWVsIEJvcmttYW5uIFtt
+YWlsdG86ZGFuaWVsQGlvZ2VhcmJveC5uZXRdIA0K5Y+R6YCB5pe26Ze0OiAyMDIy5bm0N+aciDEz
+5pelIDQ6MTINCuaUtuS7tuS6ujogc2RmQGdvb2dsZS5jb207IHNoYW96aGVuZ2NoYW8gPHNoYW96
+aGVuZ2NoYW9AaHVhd2VpLmNvbT4NCuaKhOmAgTogYnBmQHZnZXIua2VybmVsLm9yZzsgbmV0ZGV2
+QHZnZXIua2VybmVsLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgZGF2ZW1AZGF2
+ZW1sb2Z0Lm5ldDsgZWR1bWF6ZXRAZ29vZ2xlLmNvbTsga3ViYUBrZXJuZWwub3JnOyBwYWJlbmlA
+cmVkaGF0LmNvbTsgaGF3a0BrZXJuZWwub3JnOyBhc3RAa2VybmVsLm9yZzsgYW5kcmlpQGtlcm5l
+bC5vcmc7IG1hcnRpbi5sYXVAbGludXguZGV2OyBzb25nQGtlcm5lbC5vcmc7IHloc0BmYi5jb207
+IGpvaG4uZmFzdGFiZW5kQGdtYWlsLmNvbTsga3BzaW5naEBrZXJuZWwub3JnOyB3ZWl5b25nanVu
+IChBKSA8d2VpeW9uZ2p1bjFAaHVhd2VpLmNvbT47IHl1ZWhhaWJpbmcgPHl1ZWhhaWJpbmdAaHVh
+d2VpLmNvbT4NCuS4u+mimDogUmU6IFtQQVRDSCBicGYtbmV4dF0gYnBmOiBEb24ndCByZWRpcmVj
+dCBwYWNrZXRzIHdpdGggaW52YWxpZCBwa3RfbGVuDQoNCk9uIDcvMTIvMjIgNjo1OCBQTSwgc2Rm
+QGdvb2dsZS5jb20gd3JvdGU6DQo+IE9uIDA3LzEyLCBaaGVuZ2NoYW8gU2hhbyB3cm90ZToNCj4+
+IFN5emJvdCBmb3VuZCBhbiBpc3N1ZSBbMV06IGZxX2NvZGVsX2Ryb3AoKSB0cnkgdG8gZHJvcCBh
+IGZsb3cgd2hpdG91dCANCj4+IGFueSBza2JzLCB0aGF0IGlzLCB0aGUgZmxvdy0+aGVhZCBpcyBu
+dWxsLg0KPj4gVGhlIHJvb3QgY2F1c2UsIGFzIHRoZSBbMl0gc2F5cywgaXMgYmVjYXVzZSB0aGF0
+IA0KPj4gYnBmX3Byb2dfdGVzdF9ydW5fc2tiKCkgcnVuIGEgYnBmIHByb2cgd2hpY2ggcmVkaXJl
+Y3RzIGVtcHR5IHNrYnMuDQo+PiBTbyB3ZSBzaG91bGQgZGV0ZXJtaW5lIHdoZXRoZXIgdGhlIGxl
+bmd0aCBvZiB0aGUgcGFja2V0IG1vZGlmaWVkIGJ5IA0KPj4gYnBmIHByb2cgb3Igb3RoZXJzIGxp
+a2UgYnBmX3Byb2dfdGVzdCBpcyB2YWxpZCBiZWZvcmUgZm9yd2FyZGluZyBpdCBkaXJlY3RseS4N
+Cj4gDQo+PiBMSU5LOiBbMV0gDQo+PiBodHRwczovL3N5emthbGxlci5hcHBzcG90LmNvbS9idWc/
+aWQ9MGI4NGRhODBjMjkxNzc1NzkxNWFmYTg5Zjc3MzhhOWQNCj4+IDE2ZWM5NmM1DQo+PiBMSU5L
+OiBbMl0gaHR0cHM6Ly93d3cuc3Bpbmljcy5uZXQvbGlzdHMvbmV0ZGV2L21zZzc3NzUwMy5odG1s
+DQo+IA0KPj4gUmVwb3J0ZWQtYnk6IHN5emJvdCs3YTEyOTA5NDg1Yjk0NDI2YWNlYkBzeXprYWxs
+ZXIuYXBwc3BvdG1haWwuY29tDQo+PiBTaWduZWQtb2ZmLWJ5OiBaaGVuZ2NoYW8gU2hhbyA8c2hh
+b3poZW5nY2hhb0BodWF3ZWkuY29tPg0KPj4gLS0tDQo+PiDCoCBuZXQvY29yZS9maWx0ZXIuYyB8
+IDkgKysrKysrKystDQo+PiDCoCAxIGZpbGUgY2hhbmdlZCwgOCBpbnNlcnRpb25zKCspLCAxIGRl
+bGV0aW9uKC0pDQo+IA0KPj4gZGlmZiAtLWdpdCBhL25ldC9jb3JlL2ZpbHRlci5jIGIvbmV0L2Nv
+cmUvZmlsdGVyLmMgaW5kZXggDQo+PiA0ZWY3N2VjNTI1NWUuLjI3ODAxYjMxNDk2MCAxMDA2NDQN
+Cj4+IC0tLSBhL25ldC9jb3JlL2ZpbHRlci5jDQo+PiArKysgYi9uZXQvY29yZS9maWx0ZXIuYw0K
+Pj4gQEAgLTIxMjIsNiArMjEyMiwxMSBAQCBzdGF0aWMgaW50IF9fYnBmX3JlZGlyZWN0X25vX21h
+YyhzdHJ1Y3QgDQo+PiBza19idWZmICpza2IsIHN0cnVjdCBuZXRfZGV2aWNlICpkZXYsDQo+PiDC
+oCB7DQo+PiDCoMKgwqDCoMKgIHVuc2lnbmVkIGludCBtbGVuID0gc2tiX25ldHdvcmtfb2Zmc2V0
+KHNrYik7DQo+IA0KPj4gK8KgwqDCoCBpZiAodW5saWtlbHkoc2tiLT5sZW4gPT0gMCkpIHsNCj4+
+ICvCoMKgwqDCoMKgwqDCoCBrZnJlZV9za2Ioc2tiKTsNCj4+ICvCoMKgwqDCoMKgwqDCoCByZXR1
+cm4gLUVJTlZBTDsNCj4+ICvCoMKgwqAgfQ0KPj4gKw0KPj4gwqDCoMKgwqDCoCBpZiAobWxlbikg
+ew0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgIF9fc2tiX3B1bGwoc2tiLCBtbGVuKTsNCj4gDQo+PiBA
+QCAtMjE0Myw3ICsyMTQ4LDkgQEAgc3RhdGljIGludCBfX2JwZl9yZWRpcmVjdF9jb21tb24oc3Ry
+dWN0IHNrX2J1ZmYgDQo+PiAqc2tiLCBzdHJ1Y3QgbmV0X2RldmljZSAqZGV2LA0KPj4gwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHUzMiBmbGFncykNCj4+IMKgIHsNCj4+IMKg
+wqDCoMKgwqAgLyogVmVyaWZ5IHRoYXQgYSBsaW5rIGxheWVyIGhlYWRlciBpcyBjYXJyaWVkICov
+DQo+PiAtwqDCoMKgIGlmICh1bmxpa2VseShza2ItPm1hY19oZWFkZXIgPj0gc2tiLT5uZXR3b3Jr
+X2hlYWRlcikpIHsNCj4+ICvCoMKgwqAgaWYgKHVubGlrZWx5KHNrYi0+bWFjX2hlYWRlciA+PSBz
+a2ItPm5ldHdvcmtfaGVhZGVyKSB8fA0KPj4gK8KgwqDCoMKgwqDCoMKgIChtaW5fdCh1MzIsIHNr
+Yl9tYWNfaGVhZGVyX2xlbihza2IpLCBza2ItPmxlbikgPA0KPj4gK8KgwqDCoMKgwqDCoMKgwqAg
+KHUzMilkZXYtPm1pbl9oZWFkZXJfbGVuKSkgew0KPiANCj4gV2h5IGNoZWNrIHNrYi0+bGVuICE9
+IDAgYWJvdmUgYnV0IHNrYi0+bGVuIDwgZGV2LT5taW5faGVhZGVyX2xlbiBoZXJlPw0KPiBJIGd1
+ZXNzIGl0IGRvZXNuJ3QgbWFrZSBzZW5zZSBpbiBfX2JwZl9yZWRpcmVjdF9ub19tYWMgYmVjYXVz
+ZSB3ZSBrbm93IA0KPiB0aGF0IG1hYyBpcyBlbXB0eSwgYnV0IHdoeSBkbyB3ZSBjYXJlIGluIF9f
+YnBmX3JlZGlyZWN0X2NvbW1vbj8NCj4gV2h5IG5vdCBwdXQgdGhpcyBjaGVjayBpbiB0aGUgY29t
+bW9uIF9fYnBmX3JlZGlyZWN0Pw0KPiANCj4gQWxzbywgaXQncyBzdGlsbCBub3QgY2xlYXIgdG8g
+bWUgd2hldGhlciB3ZSBzaG91bGQgYmFrZSBpdCBpbnRvIHRoZSANCj4gY29yZSBzdGFjayB2cyBo
+YXZpbmcgc29tZSBzcGVjaWFsIGNoZWNrcyBmcm9tIHRlc3RfcHJvZ19ydW4gb25seS4gSSdtIA0K
+PiBhc3N1bWluZyB0aGUgaXNzdWUgaXMgdGhhdCB3ZSBjYW4gY29uc3RydWN0IGlsbGVnYWwgc2ti
+cyB3aXRoIHRoYXQgDQo+IHRlc3RfcHJvZ19ydW4gaW50ZXJmYWNlLCBzbyBtYXliZSBzdGFydCBi
+eSBmaXhpbmcgdGhhdD8NCg0KQWdyZWUsIGlkZWFsbHkgd2UgY2FuIHByZXZlbnQgaXQgcmlnaHQg
+YXQgdGhlIHNvdXJjZSByYXRoZXIgdGhhbiBhZGRpbmcgbW9yZSB0ZXN0cyBpbnRvIHRoZSBmYXN0
+LXBhdGguDQoNCj4gRGlkIHlvdSBoYXZlIGEgY2hhbmNlIHRvIGxvb2sgYXQgdGhlIHJlcHJvZHVj
+ZXIgbW9yZSBjbG9zZWx5PyBXaGF0IA0KPiBleGFjdGx5IGlzIGl0IGRvaW5nPw0KPiANCj4+IMKg
+wqDCoMKgwqDCoMKgwqDCoCBrZnJlZV9za2Ioc2tiKTsNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBy
+ZXR1cm4gLUVSQU5HRTsNCj4+IMKgwqDCoMKgwqAgfQ0KPj4gLS0NCj4+IDIuMTcuMQ0KDQo+IA0K
+DQoNCkhpIERhbmllbCBhbmQgc2RmOg0KCVRoYW5rIHlvdSBmb3IgeW91ciByZXBseS4gSSByZWFk
+IHRoZSBwb2MgY29kZSBjYXJlZnVsbHksIGFuZCBJIHRoaW5rIHRoZSBjdXJyZW50IGNhbGwgc3Rh
+Y2sgaXMgbGlrZToNCnN5c19icGYoQlBGX1BST0dfVEVTVF9SVU4sICZhdHRyLCBzaXplb2YoYXR0
+cikpIC0+IGJwZl9wcm9nX3Rlc3RfcnVuLT5icGZfcHJvZ190ZXN0X3J1bl9za2IuDQoNCkluIGZ1
+bmN0aW9uIGJwZl9wcm9nX3Rlc3RfcnVuX3NrYiwgcHJvY2VkdXJlIHdpbGwgdXNlIGJ1aWxkX3Nr
+YiB0byBnZW5lcmF0ZSBhIG5ldyBza2IuIFBvYyBjb2RlIHBhc3MNCmEgMTRCeXRlIHBhY2tldCBm
+b3IgZGlyZWN0LiBGaXJzdCAsc2tiLT5sZW4gPSAxNCwgYnV0IGFmdGVyIHRyYW5zIGV0aCB0eXBl
+LCB0aGUgbGVuID0gMDsgYnV0IGlzX2wyIGlzIGZhbHNlLCANCnNvIGxlbj0wIHdoZW4gcnVuIGJw
+Zl90ZXN0X3J1bi4gSXMgaXQgcG9zc2libGUgdG8gYWRkIGNoZWNrIGluIGNvbnZlcnRfX19za2Jf
+dG9fc2tiPyBXaGVuIHNrYi0+bGVuPTAsDQp3ZSBkcm9wIHRoZSBwYWNrZXQuDQoNCkJ1dCwgaWYg
+c29tZSBvdGhlciBwYXRocyBjYWxsIGJwZiByZWRpcmVjdCB3aXRoIHNrYi0+bGVuPTAsIHRoaXMg
+aXMgbm90IGVmZmVjdGl2ZSwgc3VjaCBhcyBzb21lIGRyaXZlciBjYWxsIHJlZGlyZWN0IGZ1Y3Rp
+b24uDQpJIGRvbid0IGtub3cgaWYgSSdtIHRoaW5raW5nIHJpZ2h0Lg0KDQpUaGFuayB5b3UuDQoN
+ClpoZW5nY2hhbyBTaGFvDQoNCg0K
