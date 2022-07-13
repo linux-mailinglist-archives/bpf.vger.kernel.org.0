@@ -2,120 +2,186 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23C0B57376B
-	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 15:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E9275737AC
+	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 15:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbiGMNbj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Jul 2022 09:31:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58614 "EHLO
+        id S231872AbiGMNkv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Jul 2022 09:40:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230014AbiGMNbi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Jul 2022 09:31:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5904F1B2
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 06:31:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1657719096;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sgNHH7BFb0s4RwPxS2Qx5icxf3D9jQ1/BExnQlyRDHc=;
-        b=T4im+tJu3TZEWOEX131rgBz+P6Qgu7ibeo7bzmBqvdnLNHi2PlGh8vwaIXtS/rCDJYNoCa
-        BJO6+uEXP5x9De/40wsRR4lqG3lk8h/AZUxU5o4UMdZohm26PHWAdattr/OH2ZjMjPalr9
-        G59JNE9nwzIiOIxlpci6Dv9MPKqAe3U=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-650-m6BergIANhONx7akHrV2ng-1; Wed, 13 Jul 2022 09:31:32 -0400
-X-MC-Unique: m6BergIANhONx7akHrV2ng-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DC6EE801231;
-        Wed, 13 Jul 2022 13:31:31 +0000 (UTC)
-Received: from wtfbox.lan (unknown [10.40.192.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 375F8400DFA6;
-        Wed, 13 Jul 2022 13:31:30 +0000 (UTC)
-Date:   Wed, 13 Jul 2022 15:31:27 +0200
-From:   Artem Savkov <asavkov@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Song Liu <song@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S236219AbiGMNkc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Jul 2022 09:40:32 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 68936DFEE;
+        Wed, 13 Jul 2022 06:40:27 -0700 (PDT)
+Received: from pwmachine.localnet (240.119.92.79.rev.sfr.net [79.92.119.240])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 966D2204DE95;
+        Wed, 13 Jul 2022 06:40:24 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 966D2204DE95
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1657719627;
+        bh=zhcQR1NFu1moQf6ZTM3VRhL0045EbCU1SDAmi7ztlFw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=UmSuTozVzulQTaajsVaj3Gnjob2uKqT9SkBU96fnLL+ZaEfbLYDXoDdrrd+QONl+e
+         r1Gz9Prf087V+neK0QXmunHw8x2hH+/hSsVgjHmbJX8xJSteMjj928GEr7DSn92of3
+         pKKelj4W70WA4nfLT7ymZKjjUOt4Po4XTaPLMOe8=
+From:   Francis Laniel <flaniel@linux.microsoft.com>
+To:     sdf@google.com
+Cc:     bpf@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>, dvacek@redhat.com
-Subject: Re: [RFC PATCH bpf-next 3/4] bpf: add bpf_panic() helper
-Message-ID: <Ys7JL9Ih3546Eynf@wtfbox.lan>
-References: <20220711083220.2175036-1-asavkov@redhat.com>
- <20220711083220.2175036-4-asavkov@redhat.com>
- <CAPhsuW7xTRpLf1kyj5ejH0fV_aHCMQjUwn-uhWeNytXedh4+TQ@mail.gmail.com>
- <CAADnVQ+ju04JAqyEbA_7oVj9uBAuL-fUP1FBr_OTygGf915RfQ@mail.gmail.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH v1 1/1] bpftool: Add generating command to C dumped file.
+Date:   Wed, 13 Jul 2022 15:40:22 +0200
+Message-ID: <12015028.O9o76ZdvQC@pwmachine>
+Organization: Microsoft
+In-Reply-To: <Ys3d7LCN8yATY9az@google.com>
+References: <20220712184225.52429-1-flaniel@linux.microsoft.com> <20220712184225.52429-2-flaniel@linux.microsoft.com> <Ys3d7LCN8yATY9az@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAADnVQ+ju04JAqyEbA_7oVj9uBAuL-fUP1FBr_OTygGf915RfQ@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.11.54.1
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 12, 2022 at 11:08:54AM -0700, Alexei Starovoitov wrote:
-> On Tue, Jul 12, 2022 at 10:53 AM Song Liu <song@kernel.org> wrote:
-> >
-> > >
-> > > +BPF_CALL_1(bpf_panic, const char *, msg)
-> > > +{
-> > > +       panic(msg);
-> >
-> > I think we should also check
-> >
-> >    capable(CAP_SYS_BOOT) && destructive_ebpf_enabled()
-> >
-> > here. Or at least, destructive_ebpf_enabled(). Otherwise, we
-> > may trigger panic after the sysctl is disabled.
-> >
-> > In general, I don't think sysctl is a good API, as it is global, and
-> > the user can easily forget to turn it back off. If possible, I would
-> > rather avoid adding new BPF related sysctls.
-> 
-> +1. New syscal isn't warranted here.
-> Just CAP_SYS_BOOT would be enough here.
+Hi.
 
-Point taken, I'll remove sysctl knob in any further versions.
 
-> Also full blown panic() seems unnecessary.
-> If the motivation is to get a memory dump then crash_kexec() helper
-> would be more suitable.
-> If the goal is to reboot the system then the wrapper of sys_reboot()
-> is better.
-> Unfortunately the cover letter lacks these details.
+Le mardi 12 juillet 2022, 22:47:40 CEST sdf@google.com a =E9crit :
+> On 07/12, Francis Laniel wrote:
+> > This commit adds the following lines to file generated by dump:
+> > /*
+> >=20
+> >   * File generated by bpftool using:
+> >   * bpftool btf dump file /sys/kernel/btf/vmlinux format c
+> >   * DO NOT EDIT.
+> >   */
+> >=20
+> > This warns users to not edit the file and documents the command used to
+> > generate the file.
+> >=20
+> > Signed-off-by: Francis Laniel <flaniel@linux.microsoft.com>
+> > ---
+> >=20
+> >   tools/bpf/bpftool/btf.c | 16 ++++++++++++++--
+> >   1 file changed, 14 insertions(+), 2 deletions(-)
+> >=20
+> > diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+> > index 7e6accb9d9f7..eecfc27370c3 100644
+> > --- a/tools/bpf/bpftool/btf.c
+> > +++ b/tools/bpf/bpftool/btf.c
+> > @@ -415,7 +415,8 @@ static void __printf(2, 0) btf_dump_printf(void *ct=
+x,
+> >=20
+> >   }
+> >  =20
+> >   static int dump_btf_c(const struct btf *btf,
+> >=20
+> > -		      __u32 *root_type_ids, int root_type_cnt)
+> > +		      __u32 *root_type_ids, int root_type_cnt,
+> > +		      int argc, char **argv)
+> >=20
+> >   {
+> >  =20
+> >   	struct btf_dump *d;
+> >   	int err =3D 0, i;
+> >=20
+> > @@ -425,6 +426,14 @@ static int dump_btf_c(const struct btf *btf,
+> >=20
+> >   	if (err)
+> >   =09
+> >   		return err;
+> >=20
+> > +	printf("/*\n");
+> > +	printf(" * File generated by bpftool using:\n");
+> > +	printf(" * bpftool btf dump");
+>=20
+> [..]
+>=20
+> > +	for (i =3D 0; i < argc; i++)
+> > +		printf(" %s", argv[i]);
+>=20
+> Do we really need that complexity to preserve the arguments?
 
-The main goal is to get the memory dump, so crash_kexec() should be enough.
-However panic() is a bit more versatile and it's consequences are configurable
-to some extent. Are there any downsides to using it?
+I was also a bit sceptickal when I first wrote as I found this code a bit=20
+complex for not so much added value.
+But in my case, I do not use bpftool often, so having the command documente=
+d=20
+in the generated file would have been useful.
+I will just find another way to document (or I think now I will not forget =
+it=20
+anymore since this series).
 
-> Why this destructive action cannot be delegated to user space?
+> For skeletons we're simply doing:
+>=20
+> 	/* THIS FILE IS AUTOGENERATED BY BPFTOOL! */
+>=20
+> So probably the same should be fine here?
+>=20
+> Also, while at it, might be worth adding SPDX license comment? So let's
+> align with whatever we have in gen.c ?
 
-Going through userspace adds delays and makes it impossible to hit "exactly
-the right moment" thus making it unusable in most cases.
+I will send a v2 aligned on skeletons in no more than 15 minutes.
 
-I'll add this to the cover letter.
+> > +	printf("\n");
+> > +	printf(" * DO NOT EDIT.\n");
+> > +	printf(" */\n");
+> >=20
+> >   	printf("#ifndef __VMLINUX_H__\n");
+> >   	printf("#define __VMLINUX_H__\n");
+> >   	printf("\n");
+> >=20
+> > @@ -507,8 +516,10 @@ static bool btf_is_kernel_module(__u32 btf_id)
+> >=20
+> >   static int do_dump(int argc, char **argv)
+> >   {
+> >  =20
+> >   	struct btf *btf =3D NULL, *base =3D NULL;
+> >=20
+> > +	char **orig_argv =3D argv;
+> >=20
+> >   	__u32 root_type_ids[2];
+> >   	int root_type_cnt =3D 0;
+> >=20
+> > +	int orig_argc =3D argc;
+> >=20
+> >   	bool dump_c =3D false;
+> >   	__u32 btf_id =3D -1;
+> >   	const char *src;
+> >=20
+> > @@ -649,7 +660,8 @@ static int do_dump(int argc, char **argv)
+> >=20
+> >   			err =3D -ENOTSUP;
+> >   			goto done;
+> >   	=09
+> >   		}
+> >=20
+> > -		err =3D dump_btf_c(btf, root_type_ids, root_type_cnt);
+> > +		err =3D dump_btf_c(btf, root_type_ids, root_type_cnt,
+> > +				 orig_argc, orig_argv);
+> >=20
+> >   	} else {
+> >   =09
+> >   		err =3D dump_btf_raw(btf, root_type_ids, root_type_cnt);
+> >   =09
+> >   	}
+> >=20
+> > --
+> > 2.25.1
 
-> btw, we should avoid adding new uapi helpers in most cases.
-> Ideally all of them should be added as new kfunc-s, because they're
-> unstable and we can rip them out later if our judgement call
-> turns out to be problematic for whatever reason.
 
-Ok, I'll look into doing it this way.
+Best regards.
 
--- 
-Regards,
-  Artem
 
