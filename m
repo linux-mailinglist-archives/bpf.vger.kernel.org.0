@@ -2,149 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB134574025
-	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 01:45:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6CFE57403D
+	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 01:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229927AbiGMXpo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Jul 2022 19:45:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54854 "EHLO
+        id S231736AbiGMXw6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Jul 2022 19:52:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229598AbiGMXpn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Jul 2022 19:45:43 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E537F419BF
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 16:45:42 -0700 (PDT)
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 26DICdej029939
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 16:45:42 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=jEcv5LftNfrzApFiAGL9MVC+3Z/fAF61gGvH242t+dE=;
- b=I1DH/HIgCIXyopE4cHb16XBETovvEQjJ+cJ0ON7b4x1grFgopoYaB9Edw58z6ISFqNR9
- hn4hmjYkNq/VHLes4o3gb4iWokD0cCV67deJ6MqqmY41LGXiupKoH91tchtW/M5i5KN8
- tuXmO/ajZ3TIH/kMLwKd4W3OoDtqfeg9yi8= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net (PPS) with ESMTPS id 3h9h5eys2v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 16:45:41 -0700
-Received: from twshared34609.14.frc2.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Wed, 13 Jul 2022 16:45:40 -0700
-Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
-        id E2E24A4170C3; Wed, 13 Jul 2022 16:45:30 -0700 (PDT)
-From:   Dave Marchevsky <davemarchevsky@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Kernel Team <kernel-team@fb.com>,
-        Dave Marchevsky <davemarchevsky@fb.com>
-Subject: [PATCH bpf-next] bpf: Add kptr_xchg to may_be_acquire_function check
-Date:   Wed, 13 Jul 2022 16:45:29 -0700
-Message-ID: <20220713234529.4154673-1-davemarchevsky@fb.com>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: CE0LHY3Ke-mR2HPPeOCxXxdmOrOjdnR9
-X-Proofpoint-GUID: CE0LHY3Ke-mR2HPPeOCxXxdmOrOjdnR9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-07-13_12,2022-07-13_03,2022-06-22_01
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        with ESMTP id S231956AbiGMXwz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Jul 2022 19:52:55 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B5AF52E4A
+        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 16:52:54 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id f9-20020a636a09000000b00401b6bc63beso6076486pgc.23
+        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 16:52:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=2UX/GRvHpBDheTnEzEDYr9v3TdbrLb7lbxNDEoAl7wA=;
+        b=EUfoEqKCdMCB0XPptOmZEhVWO/To8bhAOjx1DCQbnpPTARjgpxAnodQZkFMsVmmNqD
+         s4wEPM1QCeMHAttNd8FsVvjcEJNNmZc3YP+PTGmdRwspL877gjR1BHE4Pcl27fWaD7WZ
+         y9kD4474g3Z9YD7hp6LvhFo6s5lbpvwvBZou3VITHqIv1XVyk0jBNIVO5JjxW7Fy5sV5
+         Ia33an6opjr/gxsEdqWbrmyHzj/q7IkzXaPjqRzdVWKULXtyN+r2uD/4saf4yXBz7S3E
+         9yC8zhgH9QQTE+H/FKhyiNDDIG8kup6ETQScP2WYjLAqlOUmgogPrjf6S0sdvin17iXg
+         9v5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=2UX/GRvHpBDheTnEzEDYr9v3TdbrLb7lbxNDEoAl7wA=;
+        b=ahcFbpOV62J9MtIMBLc0r9+q88YtBASjDtOczwLQjnvXWCbdfoDAwVbo6fDLAZ5sNO
+         i/KaQkecTLJQD5x7vllDL0INH+2kxYC7ELlIAc83HWJ0ivBqCSeadcvUP8Pt8pW3eqnm
+         8n/T/U6pRZNpz+IyEas/IzxbwLDGd38v4DgRwXQRWa+WLEWyhZixDOJULidw9KwrcE09
+         xb865b99PfAcjaStTzJL+O12QeI8pBaiLxJWY/iR5buZS9To9hU/GzumCV/NhQPK7QWL
+         Tnb0vNwdSQBv3nCJO4yPRbxU5045VRTc+1049jBmG7Hz2lC9PCAVrPCebkFKNYhR7bYC
+         Iqhw==
+X-Gm-Message-State: AJIora8ol0+Ndz9URiZPRSpvM+JXy0sXJnzMzvBKuvXdXlHsmVW6drpw
+        j3NCtOrP9ePNkGxdu7OoflT8xb8=
+X-Google-Smtp-Source: AGRyM1uH3mi9bUL6UBB2//XLjR4P8cokwrrEq0Fq9Q4MTXmyio4Nr/h4Coh5aJ1TH0c0ETINmpsSmEM=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:903:124c:b0:16b:a568:996d with SMTP id
+ u12-20020a170903124c00b0016ba568996dmr5465809plh.169.1657756374131; Wed, 13
+ Jul 2022 16:52:54 -0700 (PDT)
+Date:   Wed, 13 Jul 2022 16:52:52 -0700
+In-Reply-To: <20220713222544.2355143-1-indu.bhagat@oracle.com>
+Message-Id: <Ys9a1MJ3YcFqxwe4@google.com>
+Mime-Version: 1.0
+References: <20220713222544.2355143-1-indu.bhagat@oracle.com>
+Subject: Re: [PATCH bpf-next] docs/bpf: Update documentation for BTF_KIND_FUNC
+From:   sdf@google.com
+To:     Indu Bhagat <indu.bhagat@oracle.com>
+Cc:     bpf@vger.kernel.org, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The may_be_acquire_function check is a weaker version of
-is_acquire_function that only uses bpf_func_id to determine whether a
-func may be acquiring a reference. Most funcs which acquire a reference
-do so regardless of their input, so bpf_func_id is all that's necessary
-to make an accurate determination. However, map_lookup_elem only
-acquires when operating on certain MAP_TYPEs, so commit 64d85290d79c
-("bpf: Allow bpf_map_lookup_elem for SOCKMAP and SOCKHASH") added the
-may_be check.
+On 07/13, Indu Bhagat wrote:
+> The vlen bits in the BTF type of kind BTF_KIND_FUNC are used to convey the
+> linkage information for functions.
 
-Any helper which always acquires a reference should pass both
-may_be_acquire_function and is_acquire_function checks. Recently-added
-kptr_xchg passes the latter but not the former. This patch resolves this
-discrepancy and does some refactoring such that the list of functions
-which always acquire is in one place so future updates are in sync.
+> Signed-off-by: Indu Bhagat <indu.bhagat@oracle.com>
 
-Fixes: c0a5a21c25f3 ("bpf: Allow storing referenced kptr in map")
-Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
----
+Reviewed-by: Stanislav Fomichev <sdf@google.com>
 
-Sent to bpf-next instead of bpf as kptr_xchg not passing
-may_be_acquire_function isn't currently breaking anything, just
-logically inconsistent.
+Judging by:
 
- kernel/bpf/verifier.c | 33 +++++++++++++++++++++++----------
- 1 file changed, 23 insertions(+), 10 deletions(-)
+static inline u16 btf_func_linkage(const struct btf_type *t)
+{
+	return BTF_INFO_VLEN(t->info);
+}
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 26e7e787c20a..df4b923e77de 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -477,13 +477,30 @@ static bool type_may_be_null(u32 type)
- 	return type & PTR_MAYBE_NULL;
- }
-=20
-+/* These functions acquire a resource that must be later released
-+ * regardless of their input
-+ */
-+static bool __check_function_always_acquires(enum bpf_func_id func_id)
-+{
-+	switch (func_id) {
-+	case BPF_FUNC_sk_lookup_tcp:
-+	case BPF_FUNC_sk_lookup_udp:
-+	case BPF_FUNC_skc_lookup_tcp:
-+	case BPF_FUNC_ringbuf_reserve:
-+	case BPF_FUNC_kptr_xchg:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
- static bool may_be_acquire_function(enum bpf_func_id func_id)
- {
--	return func_id =3D=3D BPF_FUNC_sk_lookup_tcp ||
--		func_id =3D=3D BPF_FUNC_sk_lookup_udp ||
--		func_id =3D=3D BPF_FUNC_skc_lookup_tcp ||
--		func_id =3D=3D BPF_FUNC_map_lookup_elem ||
--	        func_id =3D=3D BPF_FUNC_ringbuf_reserve;
-+	/* See is_acquire_function for the conditions under which funcs
-+	 * not in __check_function_always_acquires acquire a resource
-+	 */
-+	return __check_function_always_acquires(func_id) ||
-+		func_id =3D=3D BPF_FUNC_map_lookup_elem;
- }
-=20
- static bool is_acquire_function(enum bpf_func_id func_id,
-@@ -491,11 +508,7 @@ static bool is_acquire_function(enum bpf_func_id fun=
-c_id,
- {
- 	enum bpf_map_type map_type =3D map ? map->map_type : BPF_MAP_TYPE_UNSPE=
-C;
-=20
--	if (func_id =3D=3D BPF_FUNC_sk_lookup_tcp ||
--	    func_id =3D=3D BPF_FUNC_sk_lookup_udp ||
--	    func_id =3D=3D BPF_FUNC_skc_lookup_tcp ||
--	    func_id =3D=3D BPF_FUNC_ringbuf_reserve ||
--	    func_id =3D=3D BPF_FUNC_kptr_xchg)
-+	if (__check_function_always_acquires(func_id))
- 		return true;
-=20
- 	if (func_id =3D=3D BPF_FUNC_map_lookup_elem &&
---=20
-2.30.2
+> ---
+>   Documentation/bpf/btf.rst | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+
+> diff --git a/Documentation/bpf/btf.rst b/Documentation/bpf/btf.rst
+> index f49aeef62d0c..b3a9d5ac882c 100644
+> --- a/Documentation/bpf/btf.rst
+> +++ b/Documentation/bpf/btf.rst
+> @@ -369,7 +369,7 @@ No additional type data follow ``btf_type``.
+>     * ``name_off``: offset to a valid C identifier
+>     * ``info.kind_flag``: 0
+>     * ``info.kind``: BTF_KIND_FUNC
+> -  * ``info.vlen``: 0
+> +  * ``info.vlen``: linkage information (static=0, global=1)
+>     * ``type``: a BTF_KIND_FUNC_PROTO type
+
+>   No additional type data follow ``btf_type``.
+> --
+> 2.31.1
 
