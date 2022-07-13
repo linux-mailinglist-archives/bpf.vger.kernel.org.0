@@ -2,74 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C2B3573F2E
-	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 23:53:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57CF1573F85
+	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 00:20:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231194AbiGMVxi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Jul 2022 17:53:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37364 "EHLO
+        id S229871AbiGMWUg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Jul 2022 18:20:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231769AbiGMVxh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Jul 2022 17:53:37 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B0DDF44;
-        Wed, 13 Jul 2022 14:53:36 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id t3so131834edd.0;
-        Wed, 13 Jul 2022 14:53:36 -0700 (PDT)
+        with ESMTP id S229601AbiGMWUg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Jul 2022 18:20:36 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D4C12A735;
+        Wed, 13 Jul 2022 15:20:35 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id x91so174321ede.1;
+        Wed, 13 Jul 2022 15:20:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=T6h8nwT3wHI/G8fWECnnlp48GjuVHmio/5V1kdbrTAg=;
-        b=fVEvcxa6Zg5/R5hgh/I2OAeCJsJ8mp5FVqJO+2kTq/pv3Toq4sV+zfDMyudGVeX4AD
-         EyHRPuPnPaDzlDntlz+SbYmeBzv8p2nu1+e2/K07YhlySg7kTo2Z24kNYn0ult7JXC7c
-         Yk3JnZoJ1RjpZjYXQ9AcA81gTa/pMf6oZLlumoIYJ5WomcqLSRaQKbLg3VBdGzCj45/y
-         OhgXPBcV+kSe/9olpU32uQdKT8AMxIpITUL8ZWqPPx/CeuLzw1JproyeQJs+oJnlalZy
-         tFpO8shm2eSHGF/mNhI+RfbuJ7eQh/bGdxbsamgWZVV4zWfwDMWYdqskq6sp/uoIVQc9
-         yDIA==
+        bh=CEHSY50dvHt/LC+VsJ7O0dPmxasVR1q6mkEcpMhGoe4=;
+        b=eUfHYzrRAckb7Ntj310nITc37nBP0SovYipb+qU5yAPYBLJCqK2FyKwmc3HEgxkjky
+         IOwt7i9RsDDdNzkPFrI/qoaoS++EgBRAmcIlMboWoflzXtMi6kYNuFIkGrlcJaemz9NO
+         C1Br1AUZfDBUeLVT/2gMph5rBb+sKIZgjpekX99tZSt3PzHYdIlBaxRB8kSRhNDO/x1h
+         6kLsu6f6SQEPfff6I57d88AGljpqi+JdS3mU4L6tb1k6iCXDXUL93aiW5Oes4QV3uk8B
+         YZnzP1fikm0yrfkSWNupo/vcFhI1OhjlEXoWdK7XSPIiLUaORtW2jD8B+PyJrJcF/5Bn
+         EmUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=T6h8nwT3wHI/G8fWECnnlp48GjuVHmio/5V1kdbrTAg=;
-        b=PhHco417ekApHrXMJxMVr1acXZwzzjdzg2owhyw+IW6hEHgMBWUCQeKZKH5gqJjY44
-         AMD6YQbuRaeGQH9owIn/mh6+7pCs+m516ismdqhvzDBhw5xKEOvzzh3xkr5Wre9l6L3J
-         HWm20LkRkpjYbCQvG+LUb2erHpszR+N+AVGs3CewDD2h8lD1t02TXptwnytgvlYH4wl+
-         enfoozycTeprQ7S7cHnivz2z0u+WxUH1BUYk4JANp5Z/Lo/70A/ZFtX1ou3ORHfYdB3o
-         5nz5dM+h+/t3MMBsLtglzf5mwe1WoxBynoiG7pzPMZ2ceFpzVej+YvGWeOV455h+kXwy
-         FYAw==
-X-Gm-Message-State: AJIora8B3OwnwTnL7SU/KG9hnXCj2/rs/Sk+oBoDJS7BVY+Ps9ZUW5JN
-        VXS0RmHPx9aAbga06PV5npn1HaSL/I9w2Gup3JA=
-X-Google-Smtp-Source: AGRyM1vBas0lLGWrTC7WLCsEbmA4FhW75fzZJVJfZ4kfchJdJ0JNKVDsHUxiirrUsdD9hzdwgoJc+Tz5kHRURQ0NQBw=
-X-Received: by 2002:a05:6402:350c:b0:43a:e25f:d73 with SMTP id
- b12-20020a056402350c00b0043ae25f0d73mr7986308edd.66.1657749214964; Wed, 13
- Jul 2022 14:53:34 -0700 (PDT)
+        bh=CEHSY50dvHt/LC+VsJ7O0dPmxasVR1q6mkEcpMhGoe4=;
+        b=aIGxm3LsGOWGrr/7s//w+F0nt/+3OgJgk9XjSl9lCh3BCpgKFeVUEjAOgmvkFUXSwP
+         pALfcd0t/1IOvlbQm9CKXCkeKEgLXmGABKmCNozDK5f8GJG75guDaiTpbJJerRLCIiJU
+         CRSBdrvSiZBuNzMYrXDEp6L+Oud0j0dXNMw8QgUP+5fv94008ExXs8mwobVQCO2SuZKr
+         lwhRcPvw0bAPJvptQrmx6LjG1l9paX7l5VQ1fjiLYF2fwVDGQxaHgHBhMoZaZVgjV//S
+         1UgCCGM4QN/VYErdizdWo7MiHmuvRm+7kZmkLieG5+6Mt12fOT9I9QRxcqNDmbnsw6vf
+         3Q4w==
+X-Gm-Message-State: AJIora+HtUjcyyIB2k3J2Ad0AqxrltcSrt6Xvmlz4qvWBh613tjsH4dV
+        6sjsc29WwahfL2AejWqVByL3pQQXNYXAjmI08M0Y4fCz
+X-Google-Smtp-Source: AGRyM1v2tW449sRr9tqYFGm74Yg+p4fyhpjTpTFbXrg2eawnWtDkfiduZxsy194fWltVSrf9IaIU6TcP4JW02GTbn3w=
+X-Received: by 2002:aa7:c9d3:0:b0:43a:67b9:6eea with SMTP id
+ i19-20020aa7c9d3000000b0043a67b96eeamr8041322edt.94.1657750833695; Wed, 13
+ Jul 2022 15:20:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220623192637.3866852-1-memxor@gmail.com> <20220623192637.3866852-2-memxor@gmail.com>
- <20220629032304.h5ck7tizbfehiwut@macbook-pro-3.dhcp.thefacebook.com>
- <CAP01T77fsU8u6GP+HXfQQ_gdu+kp3Am1+Ao-mNYULjDazHs38Q@mail.gmail.com>
- <CAP01T75cVLehQbkE3LLwSG5wVecNz0FH9QZpmzoqs-e8YKpGtg@mail.gmail.com>
- <20220706184436.mf7oeexxfwswgdqf@MacBook-Pro-3.local> <CAP01T75-EZfdBx+W+6pV0vDDD3Qi07KVLsFTupPfptTyAFxx1Q@mail.gmail.com>
- <20220706212903.az2mtqodtzmn2gwq@MacBook-Pro-3.local> <CAADnVQJsAfjFwgoiWdsmuWBi9BX7eaCw8Tpe7sd=HPG4QQck1A@mail.gmail.com>
- <CAP01T77GxdU6AQE3ADVFZ6YA89diFFAev3aQFpYNboxM76QJ6w@mail.gmail.com>
-In-Reply-To: <CAP01T77GxdU6AQE3ADVFZ6YA89diFFAev3aQFpYNboxM76QJ6w@mail.gmail.com>
+References: <20220711083220.2175036-1-asavkov@redhat.com> <20220711083220.2175036-4-asavkov@redhat.com>
+ <CAPhsuW7xTRpLf1kyj5ejH0fV_aHCMQjUwn-uhWeNytXedh4+TQ@mail.gmail.com>
+ <CAADnVQ+ju04JAqyEbA_7oVj9uBAuL-fUP1FBr_OTygGf915RfQ@mail.gmail.com> <Ys7JL9Ih3546Eynf@wtfbox.lan>
+In-Reply-To: <Ys7JL9Ih3546Eynf@wtfbox.lan>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 13 Jul 2022 14:53:23 -0700
-Message-ID: <CAADnVQL1=cxAhowFsMLDDUup10okDcRSfBwndCKx99qjCDEcnA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 1/8] bpf: Add support for forcing kfunc args
- to be referenced
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+Date:   Wed, 13 Jul 2022 15:20:22 -0700
+Message-ID: <CAADnVQ+6aN5nMwaTjoa9ddnT6rakgwb9oPhtdWSsgyaHP8kZ6Q@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 3/4] bpf: add bpf_panic() helper
+To:     Artem Savkov <asavkov@redhat.com>
+Cc:     Song Liu <song@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>, dvacek@redhat.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -81,52 +71,74 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 13, 2022 at 5:13 AM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
-> > > Ahh. Now I remember. Thanks for reminding :)
-> > > Could you please summarize this thread and add all of it as a big comment
-> > > in the source code next to __ref handling to explain the motivation
-> > > and an example on when and how this __ref suffix should be used.
-> > > Otherwise somebody, like me, will forget the context soon.
-> > >
-> > > I was thinking of better name than __ref, but couldn't come up with one.
-> > > __ref fits this use case the best.
-> >
-> > Actually, maybe a kfunc flag will be better?
-> > Like REF_ARGS
-> > that would apply to all arguments of the kfunc
-> > (not only those with __ref suffix).
-> >
-> > We have three types of ptr_btf_id:
-> > - ref counted
-> > - untrusted
-> > - old legacy that we cannot be break due to backward compat
-> >
-> > In the future we'll probably be adding new kfuncs where we'd want
-> > every argument to be trusted. In our naming convention these are
-> > the refcounted ptr_to_btf_id that come from lookup-like kfuncs.
-> > To consume them in the release kfunc they have to be refcounted,
-> > but non-release kfunc (like set_timeout) also want a trusted ptr.
-> > So the simple way of describe the intent would be:
-> > BTF_ID(func, bpf_ct_release, RELEASE)
-> > BTF_ID(func, bpf_ct_set_timeout, REF_ARGS)
-> >
-> > or maybe TRUSTED_ARGS would be a better flag name.
-> > wdyt?
+On Wed, Jul 13, 2022 at 6:31 AM Artem Savkov <asavkov@redhat.com> wrote:
 >
-> Ok, I've implemented the kfunc flags and kept TRUSTED_ARGS as the
-> name. Just need to do a little bit of testing and will post it
-> together with this.
+> On Tue, Jul 12, 2022 at 11:08:54AM -0700, Alexei Starovoitov wrote:
+> > On Tue, Jul 12, 2022 at 10:53 AM Song Liu <song@kernel.org> wrote:
+> > >
+> > > >
+> > > > +BPF_CALL_1(bpf_panic, const char *, msg)
+> > > > +{
+> > > > +       panic(msg);
+> > >
+> > > I think we should also check
+> > >
+> > >    capable(CAP_SYS_BOOT) && destructive_ebpf_enabled()
+> > >
+> > > here. Or at least, destructive_ebpf_enabled(). Otherwise, we
+> > > may trigger panic after the sysctl is disabled.
+> > >
+> > > In general, I don't think sysctl is a good API, as it is global, and
+> > > the user can easily forget to turn it back off. If possible, I would
+> > > rather avoid adding new BPF related sysctls.
+> >
+> > +1. New syscal isn't warranted here.
+> > Just CAP_SYS_BOOT would be enough here.
+>
+> Point taken, I'll remove sysctl knob in any further versions.
+>
+> > Also full blown panic() seems unnecessary.
+> > If the motivation is to get a memory dump then crash_kexec() helper
+> > would be more suitable.
+> > If the goal is to reboot the system then the wrapper of sys_reboot()
+> > is better.
+> > Unfortunately the cover letter lacks these details.
+>
+> The main goal is to get the memory dump, so crash_kexec() should be enough.
+> However panic() is a bit more versatile and it's consequences are configurable
+> to some extent. Are there any downsides to using it?
 
-Awesome!
+versatile? In what sense? That it does a lot more than kexec?
+That's a disadvantage.
+We should provide bpf with minimal building blocks and let
+bpf program decide what to do.
+If dmesg (that is part of panic) is useful it should be its
+own kfunc.
+If halt is necessary -> separate kfunc as well.
+reboot -> another kfunc.
 
-> Just to confirm, should I still keep __ref or drop it? I think
-> TRUSTED_ARGS has its use but it may be too coarse. I already have the
-> patch so if you like we can add both ways now.
+Also panic() is not guaranteed to do kexec and just
+panic is not what you stated is the goal of the helper.
 
-TRUSTED_ARGS may become too coarse, but let's cross that bridge
-when there is actual need.
-If we land __ref support right now there won't be any users
-and the code will start to bit rot. So let's delay it.
-Pls post that patch as an extra RFC patch anyway, so
-it won't get lost.
+>
+> > Why this destructive action cannot be delegated to user space?
+>
+> Going through userspace adds delays and makes it impossible to hit "exactly
+> the right moment" thus making it unusable in most cases.
+
+What would be an example of that?
+kexec is not instant either.
+
+> I'll add this to the cover letter.
+>
+> > btw, we should avoid adding new uapi helpers in most cases.
+> > Ideally all of them should be added as new kfunc-s, because they're
+> > unstable and we can rip them out later if our judgement call
+> > turns out to be problematic for whatever reason.
+>
+> Ok, I'll look into doing it this way.
+>
+> --
+> Regards,
+>   Artem
+>
