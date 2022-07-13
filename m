@@ -2,63 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F55573597
-	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 13:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 684E95735F9
+	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 14:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236250AbiGMLgj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Jul 2022 07:36:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58284 "EHLO
+        id S234464AbiGMMHY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Jul 2022 08:07:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236218AbiGMLgi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Jul 2022 07:36:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3BBB3102919
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 04:36:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1657712196;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yrCSuJaHzqqJrDzlPoHK3BCroMA+MPPreiwAH9qdrfA=;
-        b=JDcdVJFSnY3H8mKLTXNgmxEJzQ1kDPKnIpAOxkxsh4HEn/OGu+bz1Cre5/FbErriGM2fpu
-        nV0LkPs5wZj5wg4zENTvIY6RMkymPTZHkqAHwsGfiCaHW7rB6BOj59ZB6paP9H8nUMqvQP
-        SyumZ/4KerX1W63cYbngmMKCkUo7QDQ=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-339-Z7TVOPGwPzi8LRmqWiJE_A-1; Wed, 13 Jul 2022 07:36:35 -0400
-X-MC-Unique: Z7TVOPGwPzi8LRmqWiJE_A-1
-Received: by mail-pj1-f69.google.com with SMTP id v19-20020a17090abb9300b001ef7bbd5a28so1446606pjr.0
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 04:36:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yrCSuJaHzqqJrDzlPoHK3BCroMA+MPPreiwAH9qdrfA=;
-        b=MXU60S+WlJuunfWrk34J3pPjJW9vMM8imLZZ6MB7DwvI/IMdQHuPpEpTAM7mgQmyGK
-         MclHbYqi/RwyOqCnUbwh+ht8haLutcunZ16oKZStrktvhTYEXHFgcNJyWASBJ9r5yG3J
-         RiAFKlf35Lng3MfacM5z0qOebESMzG0ithYbspu0wY/CTTADJbe8oUqUKbxoPt7URvKt
-         A7lubptEXFJtl9HUNWk9UAc5+S1PkzQNu/YYtLFvlr2tZhUGcBa8HEAwuXnQZNCahAxO
-         o2a+jndItHOaN6E++qfgVyzS+JjizuEX7UUkXhHWL0sU38jAA5dUFeef+D07Uo5ztDy7
-         29cw==
-X-Gm-Message-State: AJIora+MWSU1VM3INZJn/E+snNaGKcwIFRiK+gqPEbQQxbua/BbI3ki5
-        2z9zbQGh5aF4ABNupuoS+ywMQdaTEivH2amRdBiZ17krd0TZjeACLLQK9NhPMkWWMpw6YM6sJ6y
-        LsaMh+sqL0sttwQ4/B2z8znDcRz+u
-X-Received: by 2002:a63:5b16:0:b0:416:1b3b:9562 with SMTP id p22-20020a635b16000000b004161b3b9562mr2640564pgb.146.1657712193994;
-        Wed, 13 Jul 2022 04:36:33 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1tMvNaIU5RdJs8xFRKHMRkHgZ6gojSHT6mUC3bNG1PFZd6uvWCEzPNcBAqRmFF+sgNMHsiXK2QJJwUhF0wM9ws=
-X-Received: by 2002:a63:5b16:0:b0:416:1b3b:9562 with SMTP id
- p22-20020a635b16000000b004161b3b9562mr2640529pgb.146.1657712193703; Wed, 13
- Jul 2022 04:36:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220712145850.599666-1-benjamin.tissoires@redhat.com>
- <20220712145850.599666-13-benjamin.tissoires@redhat.com> <668a2f86-9446-61de-494c-f2d2ee15f09e@isovalent.com>
-In-Reply-To: <668a2f86-9446-61de-494c-f2d2ee15f09e@isovalent.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Wed, 13 Jul 2022 13:36:22 +0200
-Message-ID: <CAO-hwJ+23HWjRHx8463uL5hA1HMYcmPD2=63Fv=J__x7zvmLjg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 12/23] HID: initial BPF implementation
-To:     Quentin Monnet <quentin@isovalent.com>
+        with ESMTP id S231389AbiGMMHX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Jul 2022 08:07:23 -0400
+Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC3E41034F8;
+        Wed, 13 Jul 2022 05:07:22 -0700 (PDT)
+Received: by nautica.notk.org (Postfix, from userid 108)
+        id 8DE1AC022; Wed, 13 Jul 2022 14:07:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1657714040; bh=GRD1T0eSpe8mmrBIO5ShPSs/U27oLpkzr10zWXsJ+78=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cTViMyUNpB9DifHbqKo2DtbVueNEeoRefSCzGlFBlgi5ty911CTceluyfPl2ZtDbW
+         +9lsc8qOYpg/Q7Qn5uPU63QakbFS9/UvNKwxeUmiNPyVcMCy94CV0uVAAQYSNVqyQM
+         99uTYtXl8oPM0jntkRFq2PUYJD+Hy8ORFkBpMl2LpSk8owd0eXLp87ZWs/APZ+QVPs
+         HaXCOMFkcNGc167UisDrgmTm/E0aJPIT/b3Qhc+yNuWpPb/3i4rgafKDAyG3xGYFTH
+         /+GI0OdNeuEtfc/jAZAau56pK+Q1VvGyPNSZfQggpJtpeJ5XLn9ViNqikFYAIvSMwH
+         R9/ccp+FilKNg==
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Received: from odin.codewreck.org (localhost [127.0.0.1])
+        by nautica.notk.org (Postfix) with ESMTPS id 92090C009;
+        Wed, 13 Jul 2022 14:07:13 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1657714039; bh=GRD1T0eSpe8mmrBIO5ShPSs/U27oLpkzr10zWXsJ+78=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=J7wBfXDU4LL6fkHO2Y/bKgOTIstCZYW3ar1SItDrbH0/DK7hZKUIfvYTP9/MmR6AN
+         vtr5C9qJgMl2BrLUJDpIa11+nGtpbKtYr3XCcNispy9DJzWMkfgHUmvFYG1QdrzhMu
+         t7VmQJ+zV4loHxBHDc70tAAhuJklntTIrDvTOuJciBd078C1GqQRgLUfK+/UzOcbIv
+         nW/WaWCDLNKt2vwpWYgotIY1J4qc4dABKjTpi7W5y3ecWwh354CTR53KvHllo5Q1gJ
+         w537AfmQBcXbyBmwzU4dEE4vrZjyWd7W6x1xX1poq4TU62h7gia1shFKOqIa6E2Sq8
+         E+ip89lsY422A==
+Received: from localhost (odin.codewreck.org [local])
+        by odin.codewreck.org (OpenSMTPD) with ESMTPA id 6ead7bcb;
+        Wed, 13 Jul 2022 12:07:08 +0000 (UTC)
+Date:   Wed, 13 Jul 2022 21:06:53 +0900
+From:   Dominique Martinet <asmadeus@codewreck.org>
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
 Cc:     Greg KH <gregkh@linuxfoundation.org>,
         Jiri Kosina <jikos@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -71,148 +61,47 @@ Cc:     Greg KH <gregkh@linuxfoundation.org>,
         Dave Marchevsky <davemarchevsky@fb.com>,
         Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>,
         Tero Kristo <tero.kristo@linux.intel.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Pu Lehui <pulehui@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH bpf-next v6 21/23] samples/bpf: add new hid_mouse example
+Message-ID: <Ys61XcZL4Fh/VQu1@codewreck.org>
+References: <20220712145850.599666-1-benjamin.tissoires@redhat.com>
+ <20220712145850.599666-22-benjamin.tissoires@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20220712145850.599666-22-benjamin.tissoires@redhat.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 13, 2022 at 10:48 AM Quentin Monnet <quentin@isovalent.com> wrote:
->
-> On 12/07/2022 15:58, Benjamin Tissoires wrote:
-[...]
-> > diff --git a/drivers/hid/bpf/entrypoints/Makefile b/drivers/hid/bpf/entrypoints/Makefile
-> > new file mode 100644
-> > index 000000000000..dd60a460c6c4
-> > --- /dev/null
-> > +++ b/drivers/hid/bpf/entrypoints/Makefile
-> > @@ -0,0 +1,88 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +OUTPUT := .output
-> > +abs_out := $(abspath $(OUTPUT))
-> > +
-> > +CLANG ?= clang
-> > +LLC ?= llc
-> > +LLVM_STRIP ?= llvm-strip
-> > +
-> > +TOOLS_PATH := $(abspath ../../../../tools)
-> > +BPFTOOL_SRC := $(TOOLS_PATH)/bpf/bpftool
-> > +BPFTOOL_OUTPUT := $(abs_out)/bpftool
-> > +DEFAULT_BPFTOOL := $(OUTPUT)/sbin/bpftool
-> > +BPFTOOL ?= $(DEFAULT_BPFTOOL)
-> > +
-> > +LIBBPF_SRC := $(TOOLS_PATH)/lib/bpf
-> > +LIBBPF_OUTPUT := $(abs_out)/libbpf
-> > +LIBBPF_DESTDIR := $(LIBBPF_OUTPUT)
-> > +LIBBPF_INCLUDE := $(LIBBPF_DESTDIR)/include
-> > +BPFOBJ := $(LIBBPF_OUTPUT)/libbpf.a
-> > +
-> > +INCLUDES := -I$(OUTPUT) -I$(LIBBPF_INCLUDE) -I$(TOOLS_PATH)/include/uapi
-> > +CFLAGS := -g -Wall
-> > +
-> > +VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)                         \
-> > +                  $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux)    \
-> > +                  ../../../../vmlinux                                \
-> > +                  /sys/kernel/btf/vmlinux                            \
-> > +                  /boot/vmlinux-$(shell uname -r)
-> > +VMLINUX_BTF ?= $(abspath $(firstword $(wildcard $(VMLINUX_BTF_PATHS))))
-> > +ifeq ($(VMLINUX_BTF),)
-> > +$(error Cannot find a vmlinux for VMLINUX_BTF at any of "$(VMLINUX_BTF_PATHS)")
-> > +endif
-> > +
-> > +ifeq ($(V),1)
-> > +Q =
-> > +msg =
-> > +else
-> > +Q = @
-> > +msg = @printf '  %-8s %s%s\n' "$(1)" "$(notdir $(2))" "$(if $(3), $(3))";
-> > +MAKEFLAGS += --no-print-directory
-> > +submake_extras := feature_display=0
-> > +endif
-> > +
-> > +.DELETE_ON_ERROR:
-> > +
-> > +.PHONY: all clean
-> > +
-> > +all: entrypoints.lskel.h
-> > +
-> > +clean:
-> > +     $(call msg,CLEAN)
-> > +     $(Q)rm -rf $(OUTPUT) entrypoints
-> > +
-> > +entrypoints.lskel.h: $(OUTPUT)/entrypoints.bpf.o | $(BPFTOOL)
-> > +     $(call msg,GEN-SKEL,$@)
-> > +     $(Q)$(BPFTOOL) gen skeleton -L $< > $@
-> > +
-> > +
-> > +$(OUTPUT)/entrypoints.bpf.o: entrypoints.bpf.c $(OUTPUT)/vmlinux.h $(BPFOBJ) | $(OUTPUT)
-> > +     $(call msg,BPF,$@)
-> > +     $(Q)$(CLANG) -g -O2 -target bpf $(INCLUDES)                           \
-> > +              -c $(filter %.c,$^) -o $@ &&                                 \
-> > +     $(LLVM_STRIP) -g $@
-> > +
-> > +$(OUTPUT)/vmlinux.h: $(VMLINUX_BTF) $(BPFTOOL) | $(INCLUDE_DIR)
-> > +ifeq ($(VMLINUX_H),)
-> > +     $(call msg,GEN,,$@)
-> > +     $(Q)$(BPFTOOL) btf dump file $(VMLINUX_BTF) format c > $@
-> > +else
-> > +     $(call msg,CP,,$@)
-> > +     $(Q)cp "$(VMLINUX_H)" $@
-> > +endif
-> > +
-> > +$(OUTPUT) $(LIBBPF_OUTPUT) $(BPFTOOL_OUTPUT):
-> > +     $(call msg,MKDIR,$@)
-> > +     $(Q)mkdir -p $@
-> > +
-> > +$(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_OUTPUT)
-> > +     $(Q)$(MAKE) $(submake_extras) -C $(LIBBPF_SRC)                         \
-> > +                 OUTPUT=$(abspath $(dir $@))/ prefix=                       \
-> > +                 DESTDIR=$(LIBBPF_DESTDIR) $(abspath $@) install_headers
-> > +
-> > +$(DEFAULT_BPFTOOL): $(BPFOBJ) | $(BPFTOOL_OUTPUT)
-> > +     $(Q)$(MAKE) $(submake_extras) -C $(BPFTOOL_SRC)                        \
-> > +                 OUTPUT=$(BPFTOOL_OUTPUT)/                                  \
-> > +                 LIBBPF_OUTPUT=$(LIBBPF_OUTPUT)/                            \
-> > +                 LIBBPF_DESTDIR=$(LIBBPF_DESTDIR)/                          \
-> > +                 prefix= DESTDIR=$(abs_out)/ install-bin
->
-> Hi Benjamin,
->
-> Note that, at other locations where bpftool is needed to generate the
-> vmlinux.h or the skeletons, there is some work in progress to use only
-> the "bootstrap" version of bpftool (the intermediary bpftool binary used
-> to generate skeletons required for the final bpftool binary) [0]. This
-> is enough to generate these objects, it makes compiling the bpftool
-> binary faster, and solves some issues related to cross-compilation. It's
-> probably worth exploring in your case (or as a follow-up) as well.
->
+Benjamin Tissoires wrote on Tue, Jul 12, 2022 at 04:58:48PM +0200:
+> diff --git a/samples/bpf/hid_mouse.c b/samples/bpf/hid_mouse.c
+> new file mode 100644
+> index 000000000000..f6e5f09026eb
+> --- /dev/null
+> +++ b/samples/bpf/hid_mouse.c
+> @@ -0,0 +1,150 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/* Copyright (c) 2022 Benjamin Tissoires
+> + */
+> +
+> +/* not sure why but this doesn't get preoperly imported */
 
-Hi Quentin,
+typo: properly
 
-Indeed, I applied a similar patch to [1] (the 3/3 in the series you
-mentioned) and I have the exact same light skeleton.
-I have stashed the changes locally for a future revision (I doubt
-everything will go through in this version ;-P ).
+> +#define __must_check
 
-Cheers,
-Benjamin
+But more usefully, I don't think it should be needed -- we don't use
+__must_check at all in uapi includes; if this is needed that means some
+of the include here uses the kernel internal includes and that shouldn't
+be needed as they're not normally installed.
 
-> Quentin
->
-> [0]
-> https://lore.kernel.org/all/20220712030813.865410-1-pulehui@huawei.com/t/#u
->
-[1] https://lore.kernel.org/all/20220712030813.865410-4-pulehui@huawei.com/
+Didn't actually try to see but taking the compilation line that fails
+and running it with -E will probably show where that must_check comes
+from
 
+--
+Dominique Martinet | Asmadeus,
+just passing by
