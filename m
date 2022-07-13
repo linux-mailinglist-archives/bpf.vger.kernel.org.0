@@ -2,134 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA04E573CD8
-	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 20:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CD02573CE2
+	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 21:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231702AbiGMS7b (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Jul 2022 14:59:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56790 "EHLO
+        id S231799AbiGMTD4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Jul 2022 15:03:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230479AbiGMS7a (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Jul 2022 14:59:30 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEE332B606
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 11:59:27 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id y8so15302699eda.3
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 11:59:27 -0700 (PDT)
+        with ESMTP id S236874AbiGMTDz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Jul 2022 15:03:55 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B161114C
+        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 12:03:53 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id v67-20020a1cac46000000b003a1888b9d36so1779908wme.0
+        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 12:03:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bo9pob7wUa7+gIR5S4uYcEPlCknUmzXXnn8/iPFP7CA=;
-        b=ie95XXLYQ5mKiZLpBIrqgT3wbLFCApToA1Pgmx4j4uxKbUr7NDgvZRz5dHuT6EoZp0
-         rUfjXNFFKNjcCogi3ie2wdlV+6rdInoltqXsmaHecbU5WE5frBEPNs6pTymC6DrJ4qTj
-         PKNgtVjqMptyOwCOEWUCifI8/hK+eRTUTgHfsEKwI8rLvGjhpYnFG86BVgcp9OD/LBZQ
-         8oAsBM93xcRV5QSvs0ezW59UFdyUnXyV4tKiAwDQRg/ISvFCqy4blO1rqx+auEw2wh68
-         It5uSB4d4TDJcA0WG5l8NN/D/2S+Ot+HcuulbCsEGk8YNcRXBy6WsqE2HmETsU+8wPU6
-         OYqw==
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=GgWRzuR7K/JM+T/DhfougYNCN+Ei/e3TSwLryof3+SU=;
+        b=xjmR4PktYkcZtxmm4Bxud6e1aFZ3icNzqrxGwpsyvSP+iki6V1kc7Rk+QMVAugghKs
+         iy7l2DXORV/J357l07me+d7VqA7/HL2x2vHWNoMi+5mYTt8WGp4FQPtVI+2pqF64cTtA
+         72/E72qCLviSjQ3n7SaazKsHHso9wazLcrSWjeyWZaRt+N37dRw0W8REriGXdGCbv3GZ
+         eDpk4Xk1iWRO/CyvBhTcSUzYtR0k1b+8SROjZcAnrCcKt+iODYoqNFmQeZA9KLa87osf
+         jrKVnFZ29iOIttvTcm0VWLFjGFE28pZR09hVfbbVPeOexxxSpfWMMiby4vFEeVmqVSTd
+         teQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bo9pob7wUa7+gIR5S4uYcEPlCknUmzXXnn8/iPFP7CA=;
-        b=CPhhISIaiVN6kXwY+q5QbsW24FJKpl9P/InTQ5NqoTPI6GkW1zq8gyUf7PmHJ6bSfW
-         OnvUoIUx0GbnaiU0FP9CscUdLLcXDI3v8iz8Ep2YrzTxpJ6hnBP/6/bUIXatLAYsDcy2
-         bUa+N3neOtHQ6btxaSlssMFxLjKLt1PmddE6BLGzQ5J51x1Zf+mZO+aS4cRC5pGSTNj0
-         AvgfFRDfAxdX0poedTCgjKDx4MnlVu05I90/z47DG/ELItbhXGqEKs25idavjPu9zpbB
-         4xaCNfbYWOZwdfj/7xrsvQkc5jILwMPwapPk0K7NoIe+Pg1RclkMsaf48FXnqcEHR+V2
-         Ahfg==
-X-Gm-Message-State: AJIora/yEDc/jYnPhU8X1g2eKCLJoPjreCmgzgpNKpvu5aaMikcsyloK
-        qQGc1TEK4C8CD2vKcvMTRKSHXiQkArzwSIjTU9M=
-X-Google-Smtp-Source: AGRyM1tmGY+rmW77F3rewDqYHKpfnrTV3+ngJJZdGOx2KvSmXr+MRnwz5vbhojs1LkjZt5nsyU5ibh6OJJlfZhmMTtQ=
-X-Received: by 2002:a05:6402:1c01:b0:43a:f714:bcbe with SMTP id
- ck1-20020a0564021c0100b0043af714bcbemr7125782edb.14.1657738766563; Wed, 13
- Jul 2022 11:59:26 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=GgWRzuR7K/JM+T/DhfougYNCN+Ei/e3TSwLryof3+SU=;
+        b=XgakL2hhzIn7LdZTEBigjr6ZguO4O8A9nXpeHyu3ea1QZ9Rj5+oRbTHRo096fPAC7t
+         jMa/pHiNuRrKp7csoQIZ/fUuUSCk0nLB4L16reeWKxQlPWLp+XdIkFRxBUwyA1AzQsX+
+         T5rVXnnPmkJr6IVZtTCA7NsGLIRZiFatdYgfczPHVfd+7vxgTYkS7FEMe3V9khbRX0+D
+         ITwKe59klRuMpHkELYtf+ypvVPm911K/p1unDJ6UiiwO0xBAsNn0xXtuZukc1boKb94c
+         X1Bd+wbGh10I0cUqbeF+F5dUwr88EhTd/ORthKm49qQ6dyQboxdAuQGzKsW9ZZkkrqU1
+         msKQ==
+X-Gm-Message-State: AJIora/ZMR8h1X/E5GVANLSmhRR2V/n8wG4flq6ZH1vumM4yWlUMtABy
+        sWq3Z0Z9bp/TmDbD+VMkVsbRhg==
+X-Google-Smtp-Source: AGRyM1v6OHDPNsuQGBaw1nVibAaCboV5t8oVecRp/qoC5aWo4oFLZyMC2kuFeNcml66hBnqpZnsTqQ==
+X-Received: by 2002:a05:600c:4f11:b0:3a1:8631:b6b4 with SMTP id l17-20020a05600c4f1100b003a18631b6b4mr4988643wmq.94.1657739031768;
+        Wed, 13 Jul 2022 12:03:51 -0700 (PDT)
+Received: from [192.168.178.32] ([51.155.200.13])
+        by smtp.gmail.com with ESMTPSA id p2-20020a1c7402000000b003a2fdde48d1sm1768396wmc.25.2022.07.13.12.03.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Jul 2022 12:03:51 -0700 (PDT)
+Message-ID: <40315ef2-e2e0-cb2b-becc-e1ba5a4826ff@isovalent.com>
+Date:   Wed, 13 Jul 2022 20:03:50 +0100
 MIME-Version: 1.0
-References: <20220712025745.2703995-1-hengqi.chen@gmail.com> <Ys0poNMCnkNUQ1VE@krava>
-In-Reply-To: <Ys0poNMCnkNUQ1VE@krava>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 13 Jul 2022 11:59:15 -0700
-Message-ID: <CAEf4Bza+9A7kYggsiWO7uG6NfxRqa28oNy5AXx90k8bFNgkcDg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: Error out when binary_path is NULL for
- uprobe and USDT
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Hengqi Chen <hengqi.chen@gmail.com>, bpf <bpf@vger.kernel.org>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.0.2
+Subject: Re: [PATCH bpf-next 3/3] bpf: iterators: build and use lightweight
+ bootstrap version of bpftool
+Content-Language: en-GB
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Pu Lehui <pulehui@huawei.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Alan Maguire <alan.maguire@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+References: <20220712030813.865410-1-pulehui@huawei.com>
+ <20220712030813.865410-4-pulehui@huawei.com>
+ <CAEf4Bza15HfVKDrA8dV+U5GJiDcPS0bnV81rmdxuFn0+_2hrXw@mail.gmail.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <CAEf4Bza15HfVKDrA8dV+U5GJiDcPS0bnV81rmdxuFn0+_2hrXw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 12, 2022 at 12:58 AM Jiri Olsa <olsajiri@gmail.com> wrote:
->
-> On Tue, Jul 12, 2022 at 10:57:45AM +0800, Hengqi Chen wrote:
-> > binary_path is a required non-null parameter for bpf_program__attach_usdt
-> > and bpf_program__attach_uprobe_opts. Check it against NULL to prevent
-> > coredump on strchr.
->
-> binary_path seems to be mandatory so LGTM, cc-ing Alan to be sure ;-)
->
+On 13/07/2022 19:55, Andrii Nakryiko wrote:
+> On Mon, Jul 11, 2022 at 7:37 PM Pu Lehui <pulehui@huawei.com> wrote:
+>>
+>> kernel/bpf/preload/iterators use bpftool for vmlinux.h, skeleton, and
+>> static linking only. So we can use lightweight bootstrap version of
+>> bpftool to handle these, and it will be faster.
+>>
+>> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+>> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+>> ---
+>>  kernel/bpf/preload/iterators/Makefile | 13 +++++++++----
+>>  1 file changed, 9 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/kernel/bpf/preload/iterators/Makefile b/kernel/bpf/preload/iterators/Makefile
+>> index bfe24f8c5a20..cf5f39f95fed 100644
+>> --- a/kernel/bpf/preload/iterators/Makefile
+>> +++ b/kernel/bpf/preload/iterators/Makefile
+>> @@ -9,7 +9,7 @@ LLVM_STRIP ?= llvm-strip
+>>  TOOLS_PATH := $(abspath ../../../../tools)
+>>  BPFTOOL_SRC := $(TOOLS_PATH)/bpf/bpftool
+>>  BPFTOOL_OUTPUT := $(abs_out)/bpftool
+>> -DEFAULT_BPFTOOL := $(OUTPUT)/sbin/bpftool
+>> +DEFAULT_BPFTOOL := $(BPFTOOL_OUTPUT)/bootstrap/bpftool
+>>  BPFTOOL ?= $(DEFAULT_BPFTOOL)
+>>
+>>  LIBBPF_SRC := $(TOOLS_PATH)/lib/bpf
+>> @@ -61,9 +61,14 @@ $(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_OU
+>>                     OUTPUT=$(abspath $(dir $@))/ prefix=                       \
+>>                     DESTDIR=$(LIBBPF_DESTDIR) $(abspath $@) install_headers
+>>
+>> +ifeq ($(CROSS_COMPILE),)
+>>  $(DEFAULT_BPFTOOL): $(BPFOBJ) | $(BPFTOOL_OUTPUT)
+>>         $(Q)$(MAKE) $(submake_extras) -C $(BPFTOOL_SRC)                        \
+>>                     OUTPUT=$(BPFTOOL_OUTPUT)/                                  \
+>> -                   LIBBPF_OUTPUT=$(LIBBPF_OUTPUT)/                            \
+>> -                   LIBBPF_DESTDIR=$(LIBBPF_DESTDIR)/                          \
+>> -                   prefix= DESTDIR=$(abs_out)/ install-bin
+>> +                   LIBBPF_BOOTSTRAP_OUTPUT=$(LIBBPF_OUTPUT)/                  \
+>> +                   LIBBPF_BOOTSTRAP_DESTDIR=$(LIBBPF_DESTDIR)/ bootstrap
+>> +else
+>> +$(DEFAULT_BPFTOOL): | $(BPFTOOL_OUTPUT)
+>> +       $(Q)$(MAKE) $(submake_extras) -C $(BPFTOOL_SRC)                        \
+>> +                   OUTPUT=$(BPFTOOL_OUTPUT)/ bootstrap
+>> +endif
+> 
+> another idea (related to my two previous comments for this patch set),
+> maybe we can teach bpftool's Makefile to reuse LIBBPF_OUTPUT as
+> LIBBPF_BOOTSTRAP_OUTPUT, if there is no CROSS_COMPILE? Then we can
+> keep iterators/Makefile, samples/bpf/Makefile and runqslower/Makefile
+> simpler and ignorant of CROSS_COMPILE, but still get the benefit of
+> not rebuilding libbpf unnecessarily in non-cross-compile mode?
 
-Right, what will happen for attach_uprobe with NULL binary_path is
-that it will be passed as zero to perf_event_create() and kernel will
-reject it with -EINVAL. So this looks all correct to me, applying to
-bpf-next.
+Could be a good idea. Seeing how the HID BPF patches add BTF/skeletons
+generation at new locations, I'm also starting to wonder if it would be
+worth having a Makefile.bpftool.include of some sort to harmonise the
+way we compile the bootstrap bpftool as a dependency, and make it easier
+to maintain. I haven't looked at how feasible that would be, yet.
 
-Thanks for the fix!
-
-> thanks,
-> jirka
->
-> >
-> > Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
-> > ---
-> >  tools/lib/bpf/libbpf.c | 13 +++++++------
-> >  1 file changed, 7 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index cb49408eb298..72548798126b 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -10545,7 +10545,10 @@ bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
-> >       ref_ctr_off = OPTS_GET(opts, ref_ctr_offset, 0);
-> >       pe_opts.bpf_cookie = OPTS_GET(opts, bpf_cookie, 0);
-> >
-> > -     if (binary_path && !strchr(binary_path, '/')) {
-> > +     if (!binary_path)
-> > +             return libbpf_err_ptr(-EINVAL);
-> > +
-> > +     if (!strchr(binary_path, '/')) {
-> >               err = resolve_full_path(binary_path, full_binary_path,
-> >                                       sizeof(full_binary_path));
-> >               if (err) {
-> > @@ -10559,11 +10562,6 @@ bpf_program__attach_uprobe_opts(const struct bpf_program *prog, pid_t pid,
-> >       if (func_name) {
-> >               long sym_off;
-> >
-> > -             if (!binary_path) {
-> > -                     pr_warn("prog '%s': name-based attach requires binary_path\n",
-> > -                             prog->name);
-> > -                     return libbpf_err_ptr(-EINVAL);
-> > -             }
-> >               sym_off = elf_find_func_offset(binary_path, func_name);
-> >               if (sym_off < 0)
-> >                       return libbpf_err_ptr(sym_off);
-> > @@ -10711,6 +10709,9 @@ struct bpf_link *bpf_program__attach_usdt(const struct bpf_program *prog,
-> >               return libbpf_err_ptr(-EINVAL);
-> >       }
-> >
-> > +     if (!binary_path)
-> > +             return libbpf_err_ptr(-EINVAL);
-> > +
-> >       if (!strchr(binary_path, '/')) {
-> >               err = resolve_full_path(binary_path, resolved_path, sizeof(resolved_path));
-> >               if (err) {
-> > --
-> > 2.30.2
