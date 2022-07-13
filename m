@@ -2,67 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C76AE573AA6
-	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 17:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7BF3573AC1
+	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 18:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236489AbiGMPzu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Jul 2022 11:55:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60774 "EHLO
+        id S237115AbiGMQCX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Jul 2022 12:02:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236277AbiGMPzt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Jul 2022 11:55:49 -0400
+        with ESMTP id S237090AbiGMQCS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Jul 2022 12:02:18 -0400
 Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 674A34F65F
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 08:55:47 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id r23-20020a17090a941700b001f04239bebdso3704843pjo.2
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 08:55:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 528C42C649
+        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 09:02:16 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id i15-20020a17090a2a0f00b001ef826b921dso1733573pjd.5
+        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 09:02:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=piRb7uQECeW9RYchBFA8MO5mKI1hZWhBSuPsCcsEFoc=;
-        b=TjHjMkxHdrjtTtLaLLkPMs792kod3mIYtSimCy6NVweAsJU75rtvhot4VpXsblBqly
-         qHRf5/L3tn7yMu364MBoudvFOE15V1qz4sWU7IX1ZmSnyAtwoN3kNYw02DuKnsDO5gjp
-         M7RQmANYsVuNDbgNtkXvd3a8DnuUQH+hZV3ikimvffMZd8joeIgwo7GaoFBX8DFrddDF
-         llsAFJQV9aU6qv7H1VvM3a3PUKiZyeNUhvRUKDT5CnUoj9OxYRKgWhY0+MNYPlyo3vp0
-         JKfjLrkj60y7DnOnKgIUy/4L8UmsN/TA25iA1sJPVSruP4sBdSbj5QDwOKoVzrQcwL4a
-         C7Kw==
+         :cc:content-transfer-encoding;
+        bh=cm98YvOI0JVwHRgtxdPzjRwoN4rAWAaFiXFBicNxcF4=;
+        b=ilweiSzegv/uYYdkRr7XqXjEsyze2YSLGsE2rjVqlgqFAKmQu2EaUKrLJ3Imfp+d1Z
+         9uJ2IqgGd1oQvKpsQJ71VhE6F5dwmYsBra8z5m9aUm+DdMRJaFPkdsd6zf42hcYA/1PC
+         tR2RxvWR8mz7vKXzoK291Pcvqn3nKRLxy+9RddJTrKl2dz7wISUjAReGD7dTkey3RtKs
+         meDsnxnTJwIhLZxKU0erEJWbPIC00zEUebAXqNowAn+rAsfJPrde00/bg5Q8Drmx6Hvz
+         l5jSeIC18J7Wy5+CbSAnrszx7lbVspFQT1VUzfbwnGs88Doqp+lPzJLU+t1QzSb+p0V1
+         hVNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=piRb7uQECeW9RYchBFA8MO5mKI1hZWhBSuPsCcsEFoc=;
-        b=BeFkTXA4COC2efcrINJ77zCjCr9x7moeXx/T86vd3My8AmQUgui7UMKOSufjLSpRNC
-         k+v8L6M5zCeRFSNcbHCp9mQ64Hi1x0j5SIY7s5j6s2rPpzxvez9f5KcRKDytsAWRTqCJ
-         3NeX1X/PB1SE6ONC669xY8RumNQ/8fcv16zR3QJGA+/Icm36EijzXI0o0Gg4K2uOzHVl
-         qUaB986kcuQ3sKEzPQF78ApTEXM9u/FRmS/xLXVTWoCf0dmsvpFJ9pLQuuPCpWZYT1dz
-         1w/JYISLhCDFsNmcN9KPS7UcdNRLUbYKEHP6kDjSpLWw6EzdGITxyReWhusG/42hpQPP
-         yWfQ==
-X-Gm-Message-State: AJIora/TO8wOlo5pof9e81gkozEr/MLO9thqg+J998bIoTAxBERkmB6E
-        j/aT/zL4HiBFeNyL5NCqYBu4bq0=
-X-Google-Smtp-Source: AGRyM1vCSrU7O6O9FOIV8kUv1lP2Lkoiv9Ln98VM/44THqm2zXjHACWzfrfMXWhmXMTgZeZAsBg2f70=
+         :references:subject:from:to:cc:content-transfer-encoding;
+        bh=cm98YvOI0JVwHRgtxdPzjRwoN4rAWAaFiXFBicNxcF4=;
+        b=Go2mxY8vfPloj0JrkX0x1+P/6mYgEzod74uRCDSEmKxEchDiTES43Ga+C0R3lxzPvk
+         2weTn8kROUEV8cR3kPIjT1OnJvGeawxZN1vMfFw6Bdn0IVUZbaloza+udpgLfRFvBAu5
+         io9LZr6WVLDAj4Pe4xe8ULXBw1/7iEa4aVnitIVGt1otzoryzKc05O3fM+8M/HHA89vr
+         6ZUkjOdkAMbtaIQMHiA/geSDhj9FQzQu5SbDfO29pm2G1dsmDRnoyceLmnNVyKH4Z3CJ
+         z4MV0EIkJSRXETtXDnuXHhae891THajtXPOf9RgcPV5ptOMIseuppYnnYOPTAvr5zg8z
+         QfQA==
+X-Gm-Message-State: AJIora/VdmrHEgp4Q0V+boR92FL8RrbC5E+JLRmwx6bZxPvO8m5nvnDp
+        6iNBM2ZzGg5K0PNqU7hI875p5BA=
+X-Google-Smtp-Source: AGRyM1ugDPMwzK2ACOlAiKiDodZOvWVYM95K9gUCEtIMT0cJTFW1/GqDtZcN5//8Vm3WwYyxMmnun10=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:902:db02:b0:16c:5568:d740 with SMTP id
- m2-20020a170902db0200b0016c5568d740mr3785558plx.100.1657727746774; Wed, 13
- Jul 2022 08:55:46 -0700 (PDT)
-Date:   Wed, 13 Jul 2022 08:55:45 -0700
-In-Reply-To: <20220713011000.29090-1-xiaolinkui@kylinos.cn>
-Message-Id: <Ys7rAaRKbTEzvjFY@google.com>
+ (user=sdf job=sendgmr) by 2002:a17:90a:ba04:b0:1ee:e6b0:edff with SMTP id
+ s4-20020a17090aba0400b001eee6b0edffmr4500522pjr.153.1657728135859; Wed, 13
+ Jul 2022 09:02:15 -0700 (PDT)
+Date:   Wed, 13 Jul 2022 09:02:14 -0700
+In-Reply-To: <d7f22715be8d477cbc3e6e545c219048@huawei.com>
+Message-Id: <Ys7shru6xUa/9XwY@google.com>
 Mime-Version: 1.0
-References: <20220713011000.29090-1-xiaolinkui@kylinos.cn>
-Subject: Re: [PATCH] selftests/bpf: Return true/false (not 1/0) from bool functions
+References: <20220712120158.56325-1-shaozhengchao@huawei.com>
+ <Ys2oPzt7Yn1oMou8@google.com> <f0bf3e9a-15e6-f5c8-1b2a-7866acfcb71b@iogearbox.net>
+ <d7f22715be8d477cbc3e6e545c219048@huawei.com>
+Subject: Re: =?utf-8?B?562U5aSNOiBbUEFUQw==?= =?utf-8?Q?H?= bpf-next] bpf:
+ Don't redirect packets with invalid pkt_len
 From:   sdf@google.com
-To:     xiaolinkui <xiaolinkui@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, kpsingh@kernel.org, haoluo@google.com,
-        jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org,
-        nathan@kernel.org, ndesaulniers@google.com, trix@redhat.com,
-        xiaolinkui@kylinos.cn, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
+To:     shaozhengchao <shaozhengchao@huawei.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "martin.lau@linux.dev" <martin.lau@linux.dev>,
+        "song@kernel.org" <song@kernel.org>, "yhs@fb.com" <yhs@fb.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "weiyongjun (A)" <weiyongjun1@huawei.com>,
+        yuehaibing <yuehaibing@huawei.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Transfer-Encoding: base64
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
@@ -73,171 +85,86 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 07/13, xiaolinkui wrote:
-> From: Linkui Xiao<xiaolinkui@kylinos.cn>
-                    ^ space here?
-
-> Return boolean values ("true" or "false") instead of 1 or 0 from bool
-> functions.  This fixes the following warnings from coccicheck:
-
-> tools/testing/selftests/bpf/progs/test_xdp_noinline.c:407:9-10: WARNING:
-> return of 0/1 in function 'decap_v4' with return type bool
-> tools/testing/selftests/bpf/progs/test_xdp_noinline.c:389:9-10: WARNING:
-> return of 0/1 in function 'decap_v6' with return type bool
-> tools/testing/selftests/bpf/progs/test_xdp_noinline.c:290:9-10: WARNING:
-> return of 0/1 in function 'encap_v6' with return type bool
-> tools/testing/selftests/bpf/progs/test_xdp_noinline.c:264:9-10: WARNING:
-> return of 0/1 in function 'parse_tcp' with return type bool
-> tools/testing/selftests/bpf/progs/test_xdp_noinline.c:242:9-10: WARNING:
-> return of 0/1 in function 'parse_udp' with return type bool
-
-> Generated by: scripts/coccinelle/misc/boolreturn.cocci
-
-> Signed-off-by: Linkui Xiao<xiaolinkui@kylinos.cn>
-
-This patch likely needs a resend with proper [PATCH bpf] or
-[PATCH bpf-next] subject to end up in patchwork and to be picked up.
-
-Take a look at Documentation/bpf/bpf_devel_QA.rst section "Q: How do I
-indicate which tree (bpf vs. bpf-next) my patch should be applied to?".
-
-Since that's a cleanup, you most likely want to target bpf-next.
-
-> ---
->   .../selftests/bpf/progs/test_xdp_noinline.c   | 30 +++++++++----------
->   1 file changed, 15 insertions(+), 15 deletions(-)
-
-> diff --git a/tools/testing/selftests/bpf/progs/test_xdp_noinline.c  
-> b/tools/testing/selftests/bpf/progs/test_xdp_noinline.c
-> index 125d872d7981..ba48fcb98ab2 100644
-> --- a/tools/testing/selftests/bpf/progs/test_xdp_noinline.c
-> +++ b/tools/testing/selftests/bpf/progs/test_xdp_noinline.c
-> @@ -239,7 +239,7 @@ bool parse_udp(void *data, void *data_end,
->   	udp = data + off;
-
->   	if (udp + 1 > data_end)
-> -		return 0;
-> +		return false;
->   	if (!is_icmp) {
->   		pckt->flow.port16[0] = udp->source;
->   		pckt->flow.port16[1] = udp->dest;
-> @@ -247,7 +247,7 @@ bool parse_udp(void *data, void *data_end,
->   		pckt->flow.port16[0] = udp->dest;
->   		pckt->flow.port16[1] = udp->source;
->   	}
-> -	return 1;
-> +	return true;
->   }
-
->   static __attribute__ ((noinline))
-> @@ -261,7 +261,7 @@ bool parse_tcp(void *data, void *data_end,
-
->   	tcp = data + off;
->   	if (tcp + 1 > data_end)
-> -		return 0;
-> +		return false;
->   	if (tcp->syn)
->   		pckt->flags |= (1 << 1);
->   	if (!is_icmp) {
-> @@ -271,7 +271,7 @@ bool parse_tcp(void *data, void *data_end,
->   		pckt->flow.port16[0] = tcp->dest;
->   		pckt->flow.port16[1] = tcp->source;
->   	}
-> -	return 1;
-> +	return true;
->   }
-
->   static __attribute__ ((noinline))
-> @@ -287,7 +287,7 @@ bool encap_v6(struct xdp_md *xdp, struct ctl_value  
-> *cval,
->   	void *data;
-
->   	if (bpf_xdp_adjust_head(xdp, 0 - (int)sizeof(struct ipv6hdr)))
-> -		return 0;
-> +		return false;
->   	data = (void *)(long)xdp->data;
->   	data_end = (void *)(long)xdp->data_end;
->   	new_eth = data;
-> @@ -295,7 +295,7 @@ bool encap_v6(struct xdp_md *xdp, struct ctl_value  
-> *cval,
->   	old_eth = data + sizeof(struct ipv6hdr);
->   	if (new_eth + 1 > data_end ||
->   	    old_eth + 1 > data_end || ip6h + 1 > data_end)
-> -		return 0;
-> +		return false;
->   	memcpy(new_eth->eth_dest, cval->mac, 6);
->   	memcpy(new_eth->eth_source, old_eth->eth_dest, 6);
->   	new_eth->eth_proto = 56710;
-> @@ -314,7 +314,7 @@ bool encap_v6(struct xdp_md *xdp, struct ctl_value  
-> *cval,
->   	ip6h->saddr.in6_u.u6_addr32[2] = 3;
->   	ip6h->saddr.in6_u.u6_addr32[3] = ip_suffix;
->   	memcpy(ip6h->daddr.in6_u.u6_addr32, dst->dstv6, 16);
-> -	return 1;
-> +	return true;
->   }
-
->   static __attribute__ ((noinline))
-> @@ -335,7 +335,7 @@ bool encap_v4(struct xdp_md *xdp, struct ctl_value  
-> *cval,
->   	ip_suffix <<= 15;
->   	ip_suffix ^= pckt->flow.src;
->   	if (bpf_xdp_adjust_head(xdp, 0 - (int)sizeof(struct iphdr)))
-> -		return 0;
-> +		return false;
->   	data = (void *)(long)xdp->data;
->   	data_end = (void *)(long)xdp->data_end;
->   	new_eth = data;
-> @@ -343,7 +343,7 @@ bool encap_v4(struct xdp_md *xdp, struct ctl_value  
-> *cval,
->   	old_eth = data + sizeof(struct iphdr);
->   	if (new_eth + 1 > data_end ||
->   	    old_eth + 1 > data_end || iph + 1 > data_end)
-> -		return 0;
-> +		return false;
->   	memcpy(new_eth->eth_dest, cval->mac, 6);
->   	memcpy(new_eth->eth_source, old_eth->eth_dest, 6);
->   	new_eth->eth_proto = 8;
-> @@ -367,8 +367,8 @@ bool encap_v4(struct xdp_md *xdp, struct ctl_value  
-> *cval,
->   		csum += *next_iph_u16++;
->   	iph->check = ~((csum & 0xffff) + (csum >> 16));
->   	if (bpf_xdp_adjust_head(xdp, (int)sizeof(struct iphdr)))
-> -		return 0;
-> -	return 1;
-> +		return false;
-> +	return true;
->   }
-
->   static __attribute__ ((noinline))
-> @@ -386,10 +386,10 @@ bool decap_v6(struct xdp_md *xdp, void **data, void  
-> **data_end, bool inner_v4)
->   	else
->   		new_eth->eth_proto = 56710;
->   	if (bpf_xdp_adjust_head(xdp, (int)sizeof(struct ipv6hdr)))
-> -		return 0;
-> +		return false;
->   	*data = (void *)(long)xdp->data;
->   	*data_end = (void *)(long)xdp->data_end;
-> -	return 1;
-> +	return true;
->   }
-
->   static __attribute__ ((noinline))
-> @@ -404,10 +404,10 @@ bool decap_v4(struct xdp_md *xdp, void **data, void  
-> **data_end)
->   	memcpy(new_eth->eth_dest, old_eth->eth_dest, 6);
->   	new_eth->eth_proto = 8;
->   	if (bpf_xdp_adjust_head(xdp, (int)sizeof(struct iphdr)))
-> -		return 0;
-> +		return false;
->   	*data = (void *)(long)xdp->data;
->   	*data_end = (void *)(long)xdp->data_end;
-> -	return 1;
-> +	return true;
->   }
-
->   static __attribute__ ((noinline))
-> --
-> 2.17.1
-
+T24gMDcvMTMsIHNoYW96aGVuZ2NoYW8gd3JvdGU6DQoNCg0KPiAtLS0tLemCruS7tuWOn+S7ti0t
+LS0tDQo+IOWPkeS7tuS6ujogRGFuaWVsIEJvcmttYW5uIFttYWlsdG86ZGFuaWVsQGlvZ2VhcmJv
+eC5uZXRdDQo+IOWPkemAgeaXtumXtDogMjAyMuW5tDfmnIgxM+aXpSA0OjEyDQo+IOaUtuS7tuS6
+ujogc2RmQGdvb2dsZS5jb207IHNoYW96aGVuZ2NoYW8gPHNoYW96aGVuZ2NoYW9AaHVhd2VpLmNv
+bT4NCj4g5oqE6YCBOiBicGZAdmdlci5rZXJuZWwub3JnOyBuZXRkZXZAdmdlci5rZXJuZWwub3Jn
+OyAgDQo+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGRhdmVtQGRhdmVtbG9mdC5uZXQ7
+IGVkdW1hemV0QGdvb2dsZS5jb207ICANCj4ga3ViYUBrZXJuZWwub3JnOyBwYWJlbmlAcmVkaGF0
+LmNvbTsgaGF3a0BrZXJuZWwub3JnOyBhc3RAa2VybmVsLm9yZzsgIA0KPiBhbmRyaWlAa2VybmVs
+Lm9yZzsgbWFydGluLmxhdUBsaW51eC5kZXY7IHNvbmdAa2VybmVsLm9yZzsgeWhzQGZiLmNvbTsg
+IA0KPiBqb2huLmZhc3RhYmVuZEBnbWFpbC5jb207IGtwc2luZ2hAa2VybmVsLm9yZzsgd2VpeW9u
+Z2p1biAoQSkgIA0KPiA8d2VpeW9uZ2p1bjFAaHVhd2VpLmNvbT47IHl1ZWhhaWJpbmcgPHl1ZWhh
+aWJpbmdAaHVhd2VpLmNvbT4NCj4g5Li76aKYOiBSZTogW1BBVENIIGJwZi1uZXh0XSBicGY6IERv
+bid0IHJlZGlyZWN0IHBhY2tldHMgd2l0aCBpbnZhbGlkICANCj4gcGt0X2xlbg0KDQo+IE9uIDcv
+MTIvMjIgNjo1OCBQTSwgc2RmQGdvb2dsZS5jb20gd3JvdGU6DQo+ID4gT24gMDcvMTIsIFpoZW5n
+Y2hhbyBTaGFvIHdyb3RlOg0KPiA+PiBTeXpib3QgZm91bmQgYW4gaXNzdWUgWzFdOiBmcV9jb2Rl
+bF9kcm9wKCkgdHJ5IHRvIGRyb3AgYSBmbG93IHdoaXRvdXQNCj4gPj4gYW55IHNrYnMsIHRoYXQg
+aXMsIHRoZSBmbG93LT5oZWFkIGlzIG51bGwuDQo+ID4+IFRoZSByb290IGNhdXNlLCBhcyB0aGUg
+WzJdIHNheXMsIGlzIGJlY2F1c2UgdGhhdA0KPiA+PiBicGZfcHJvZ190ZXN0X3J1bl9za2IoKSBy
+dW4gYSBicGYgcHJvZyB3aGljaCByZWRpcmVjdHMgZW1wdHkgc2ticy4NCj4gPj4gU28gd2Ugc2hv
+dWxkIGRldGVybWluZSB3aGV0aGVyIHRoZSBsZW5ndGggb2YgdGhlIHBhY2tldCBtb2RpZmllZCBi
+eQ0KPiA+PiBicGYgcHJvZyBvciBvdGhlcnMgbGlrZSBicGZfcHJvZ190ZXN0IGlzIHZhbGlkIGJl
+Zm9yZSBmb3J3YXJkaW5nIGl0ICANCj4gZGlyZWN0bHkuDQo+ID4NCj4gPj4gTElOSzogWzFdDQo+
+ID4+IGh0dHBzOi8vc3l6a2FsbGVyLmFwcHNwb3QuY29tL2J1Zz9pZD0wYjg0ZGE4MGMyOTE3NzU3
+OTE1YWZhODlmNzczOGE5ZA0KPiA+PiAxNmVjOTZjNQ0KPiA+PiBMSU5LOiBbMl0gaHR0cHM6Ly93
+d3cuc3Bpbmljcy5uZXQvbGlzdHMvbmV0ZGV2L21zZzc3NzUwMy5odG1sDQo+ID4NCj4gPj4gUmVw
+b3J0ZWQtYnk6IHN5emJvdCs3YTEyOTA5NDg1Yjk0NDI2YWNlYkBzeXprYWxsZXIuYXBwc3BvdG1h
+aWwuY29tDQo+ID4+IFNpZ25lZC1vZmYtYnk6IFpoZW5nY2hhbyBTaGFvIDxzaGFvemhlbmdjaGFv
+QGh1YXdlaS5jb20+DQo+ID4+IC0tLQ0KPiA+PiDCoCBuZXQvY29yZS9maWx0ZXIuYyB8IDkgKysr
+KysrKystDQo+ID4+IMKgIDEgZmlsZSBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKyksIDEgZGVsZXRp
+b24oLSkNCj4gPg0KPiA+PiBkaWZmIC0tZ2l0IGEvbmV0L2NvcmUvZmlsdGVyLmMgYi9uZXQvY29y
+ZS9maWx0ZXIuYyBpbmRleA0KPiA+PiA0ZWY3N2VjNTI1NWUuLjI3ODAxYjMxNDk2MCAxMDA2NDQN
+Cj4gPj4gLS0tIGEvbmV0L2NvcmUvZmlsdGVyLmMNCj4gPj4gKysrIGIvbmV0L2NvcmUvZmlsdGVy
+LmMNCj4gPj4gQEAgLTIxMjIsNiArMjEyMiwxMSBAQCBzdGF0aWMgaW50IF9fYnBmX3JlZGlyZWN0
+X25vX21hYyhzdHJ1Y3QNCj4gPj4gc2tfYnVmZiAqc2tiLCBzdHJ1Y3QgbmV0X2RldmljZSAqZGV2
+LA0KPiA+PiDCoCB7DQo+ID4+IMKgwqDCoMKgwqAgdW5zaWduZWQgaW50IG1sZW4gPSBza2JfbmV0
+d29ya19vZmZzZXQoc2tiKTsNCj4gPg0KPiA+PiArwqDCoMKgIGlmICh1bmxpa2VseShza2ItPmxl
+biA9PSAwKSkgew0KPiA+PiArwqDCoMKgwqDCoMKgwqAga2ZyZWVfc2tiKHNrYik7DQo+ID4+ICvC
+oMKgwqDCoMKgwqDCoCByZXR1cm4gLUVJTlZBTDsNCj4gPj4gK8KgwqDCoCB9DQo+ID4+ICsNCj4g
+Pj4gwqDCoMKgwqDCoCBpZiAobWxlbikgew0KPiA+PiDCoMKgwqDCoMKgwqDCoMKgwqAgX19za2Jf
+cHVsbChza2IsIG1sZW4pOw0KPiA+DQo+ID4+IEBAIC0yMTQzLDcgKzIxNDgsOSBAQCBzdGF0aWMg
+aW50IF9fYnBmX3JlZGlyZWN0X2NvbW1vbihzdHJ1Y3Qgc2tfYnVmZg0KPiA+PiAqc2tiLCBzdHJ1
+Y3QgbmV0X2RldmljZSAqZGV2LA0KPiA+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgdTMyIGZsYWdzKQ0KPiA+PiDCoCB7DQo+ID4+IMKgwqDCoMKgwqAgLyogVmVyaWZ5IHRo
+YXQgYSBsaW5rIGxheWVyIGhlYWRlciBpcyBjYXJyaWVkICovDQo+ID4+IC3CoMKgwqAgaWYgKHVu
+bGlrZWx5KHNrYi0+bWFjX2hlYWRlciA+PSBza2ItPm5ldHdvcmtfaGVhZGVyKSkgew0KPiA+PiAr
+wqDCoMKgIGlmICh1bmxpa2VseShza2ItPm1hY19oZWFkZXIgPj0gc2tiLT5uZXR3b3JrX2hlYWRl
+cikgfHwNCj4gPj4gK8KgwqDCoMKgwqDCoMKgIChtaW5fdCh1MzIsIHNrYl9tYWNfaGVhZGVyX2xl
+bihza2IpLCBza2ItPmxlbikgPA0KPiA+PiArwqDCoMKgwqDCoMKgwqDCoCAodTMyKWRldi0+bWlu
+X2hlYWRlcl9sZW4pKSB7DQo+ID4NCj4gPiBXaHkgY2hlY2sgc2tiLT5sZW4gIT0gMCBhYm92ZSBi
+dXQgc2tiLT5sZW4gPCBkZXYtPm1pbl9oZWFkZXJfbGVuIGhlcmU/DQo+ID4gSSBndWVzcyBpdCBk
+b2Vzbid0IG1ha2Ugc2Vuc2UgaW4gX19icGZfcmVkaXJlY3Rfbm9fbWFjIGJlY2F1c2Ugd2Uga25v
+dw0KPiA+IHRoYXQgbWFjIGlzIGVtcHR5LCBidXQgd2h5IGRvIHdlIGNhcmUgaW4gX19icGZfcmVk
+aXJlY3RfY29tbW9uPw0KPiA+IFdoeSBub3QgcHV0IHRoaXMgY2hlY2sgaW4gdGhlIGNvbW1vbiBf
+X2JwZl9yZWRpcmVjdD8NCj4gPg0KPiA+IEFsc28sIGl0J3Mgc3RpbGwgbm90IGNsZWFyIHRvIG1l
+IHdoZXRoZXIgd2Ugc2hvdWxkIGJha2UgaXQgaW50byB0aGUNCj4gPiBjb3JlIHN0YWNrIHZzIGhh
+dmluZyBzb21lIHNwZWNpYWwgY2hlY2tzIGZyb20gdGVzdF9wcm9nX3J1biBvbmx5LiBJJ20NCj4g
+PiBhc3N1bWluZyB0aGUgaXNzdWUgaXMgdGhhdCB3ZSBjYW4gY29uc3RydWN0IGlsbGVnYWwgc2ti
+cyB3aXRoIHRoYXQNCj4gPiB0ZXN0X3Byb2dfcnVuIGludGVyZmFjZSwgc28gbWF5YmUgc3RhcnQg
+YnkgZml4aW5nIHRoYXQ/DQoNCj4gQWdyZWUsIGlkZWFsbHkgd2UgY2FuIHByZXZlbnQgaXQgcmln
+aHQgYXQgdGhlIHNvdXJjZSByYXRoZXIgdGhhbiBhZGRpbmcgIA0KPiBtb3JlIHRlc3RzIGludG8g
+dGhlIGZhc3QtcGF0aC4NCg0KPiA+IERpZCB5b3UgaGF2ZSBhIGNoYW5jZSB0byBsb29rIGF0IHRo
+ZSByZXByb2R1Y2VyIG1vcmUgY2xvc2VseT8gV2hhdA0KPiA+IGV4YWN0bHkgaXMgaXQgZG9pbmc/
+DQo+ID4NCj4gPj4gwqDCoMKgwqDCoMKgwqDCoMKgIGtmcmVlX3NrYihza2IpOw0KPiA+PiDCoMKg
+wqDCoMKgwqDCoMKgwqAgcmV0dXJuIC1FUkFOR0U7DQo+ID4+IMKgwqDCoMKgwqAgfQ0KPiA+PiAt
+LQ0KPiA+PiAyLjE3LjENCg0KPiA+DQoNCg0KPiBIaSBEYW5pZWwgYW5kIHNkZjoNCj4gCVRoYW5r
+IHlvdSBmb3IgeW91ciByZXBseS4gSSByZWFkIHRoZSBwb2MgY29kZSBjYXJlZnVsbHksIGFuZCBJ
+IHRoaW5rIHRoZSAgDQo+IGN1cnJlbnQgY2FsbCBzdGFjayBpcyBsaWtlOg0KPiBzeXNfYnBmKEJQ
+Rl9QUk9HX1RFU1RfUlVOLCAmYXR0ciwgc2l6ZW9mKGF0dHIpKSAtPiAgDQo+IGJwZl9wcm9nX3Rl
+c3RfcnVuLT5icGZfcHJvZ190ZXN0X3J1bl9za2IuDQoNCj4gSW4gZnVuY3Rpb24gYnBmX3Byb2df
+dGVzdF9ydW5fc2tiLCBwcm9jZWR1cmUgd2lsbCB1c2UgYnVpbGRfc2tiIHRvICANCj4gZ2VuZXJh
+dGUgYSBuZXcgc2tiLiBQb2MgY29kZSBwYXNzDQo+IGEgMTRCeXRlIHBhY2tldCBmb3IgZGlyZWN0
+LiBGaXJzdCAsc2tiLT5sZW4gPSAxNCwgYnV0IGFmdGVyIHRyYW5zIGV0aCAgDQo+IHR5cGUsIHRo
+ZSBsZW4gPSAwOyBidXQgaXNfbDIgaXMgZmFsc2UsDQo+IHNvIGxlbj0wIHdoZW4gcnVuIGJwZl90
+ZXN0X3J1bi4gSXMgaXQgcG9zc2libGUgdG8gYWRkIGNoZWNrIGluICANCj4gY29udmVydF9fX3Nr
+Yl90b19za2I/IFdoZW4gc2tiLT5sZW49MCwNCj4gd2UgZHJvcCB0aGUgcGFja2V0Lg0KDQpOb3Qg
+c3VyZSBpdCBiZWxvbmdzIGluIGNvbnZlcnRfX19za2JfdG9fc2tiLCBidXQgY2hlY2tpbmcgc29t
+ZXdoZXJlIGJlZm9yZQ0KY29udmVydF9fX3NrYl90b19za2Igc2VlbXMgbGlrZSBhIGdvb2Qgd2F5
+IHRvIGdvPw0KDQo+IEJ1dCwgaWYgc29tZSBvdGhlciBwYXRocyBjYWxsIGJwZiByZWRpcmVjdCB3
+aXRoIHNrYi0+bGVuPTAsIHRoaXMgaXMgbm90ICANCj4gZWZmZWN0aXZlLCBzdWNoIGFzIHNvbWUg
+ZHJpdmVyIGNhbGwgcmVkaXJlY3QgZnVjdGlvbi4NCj4gSSBkb24ndCBrbm93IGlmIEknbSB0aGlu
+a2luZyByaWdodC4NCg0KSSB0aGluayB0aGUgY29uc2Vuc3VzIHNvIGZhciB0aGF0IGl0J3Mgb25s
+eSBicGZfcHJvZ190ZXN0X3J1biB0aGF0DQpnZW5lcmF0ZXMgdGhlc2UgdHlwZXMgb2YgcGFja2V0
+cywgc28gbGV0J3Mgc3RhcnQgd2l0aCBmaXhpbmcgdGhhdC4NCg==
