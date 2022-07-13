@@ -2,286 +2,319 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 443DD573C73
-	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 20:21:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34126573C95
+	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 20:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229899AbiGMSVw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Jul 2022 14:21:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57566 "EHLO
+        id S235854AbiGMSgb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Jul 2022 14:36:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231754AbiGMSVu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Jul 2022 14:21:50 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C54332CE20
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 11:21:49 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id p128so11673721iof.1
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 11:21:49 -0700 (PDT)
+        with ESMTP id S232114AbiGMSga (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Jul 2022 14:36:30 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78B0D2DA85
+        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 11:36:29 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id g16-20020a17090a7d1000b001ea9f820449so5095664pjl.5
+        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 11:36:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=q9fnYJ2pkJELBXswPOvOB9FxyFIr3ItEdw2BYNFUHCs=;
-        b=iaqWwmm1KGt30PHpqK7pFJZq7G00vdE0au5hBsMVssJeVzN5zAKt1xomZbVFC4uNpv
-         kZjX8Pqf4gHRRB0Bo/7Ent8z8jBdQLJ+MvhJxzOT0/GkGRFoHhCm2zTRzfaSwSNoVleF
-         l+JSCYzLARL24w7gDOryFX09lzdGCwCOuLdyKzHUW3FEKxQ/549svDVqi7fnQCIC3Ibi
-         B5Hdk2jaB081gahkSdNES4UqcK5nngPvncCHksjJuV724wM7/Vcaii+e6yiVINv+KV8r
-         dXhh/pHLcyAJVMZem92eW3E/Vs8wEbu9P5Kr+cyM7cIRTNwGsngJVFGHwZIzqJ+ITAYe
-         f94Q==
+        bh=cnfeU/H14AGUbM2NwCammQ0QFaEBuUZaJTL+xgbsuag=;
+        b=KT4dBNAGEi4Ybxai5LirLXQfVBoiZr115T9DhCf4Wk50DCYH2Rzokc94tTXn4rQVra
+         rUV4xbBFBVCMs7O5c9YuQdlK05QBFMpYB6L9i5eH+r7e30uSn9vxiGNiXlTwU+qeI4hK
+         Yi/1FQ3s91Cxyf+2ihyuQXsVBd+ScBmCm+a5TOcGS4thK6Nkgp2i5CYpSOsx7bAdldAz
+         aygu+7BYed+BexGraEHTGesLvroZ8Tm+RIRvin1j9+TVQGs6sknx0T54M+5b4l2fFwJJ
+         dafK5KzXfQsV89LDdK9zLGGbRlpMR84cGgzBxkQPHABl2NEwsDRaB3cCnbNImfyp5Fxo
+         28aA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=q9fnYJ2pkJELBXswPOvOB9FxyFIr3ItEdw2BYNFUHCs=;
-        b=uVp9itREC9ETY7MmcKoYb3riE8ZyR4YCmCaxytoFr3Av9YoRzmCeGEA34RjoplNgij
-         NmwcDHL8Pzpx+Uk6JCEHLxu6vm3HkjhvCip0TZhrkfEG6DYWQUuJw3suc3BsivFiOYL+
-         YdNJgbyREBuIA0Q5fCkMKLUhqZA3n7Vubcoet32sieXLx9vBgF167/RxpRBhyjrZWFdT
-         pYvp66WFx2QCJjGMXtRCrrSwY7b1HYGd498seX0uz5HAu6GuD9BzlMVsSxgbpZlaGJUi
-         MRukgPB/jMeVc5CDszAKaEM4oV2BqdRalWfpI40wLgFRT4USfl1WQvxyXWtgZOp2K+Hm
-         GXQg==
-X-Gm-Message-State: AJIora81JOToyyH2V1hiSwfhBMT7EFO67yDU/HZf7N64eEtjaHtdcCKB
-        vFNAN6iPWSzqAzDIBD+mtI8vs0KKrhtFDs8tp+Y=
-X-Google-Smtp-Source: AGRyM1ufkGi6p29p9qgnDKH9gLyg1JWFmSTYuuSqXFVHBoF9FnM+Y5ecjBlWMnZmBgCHaok3VFzF5yeeiXiFK67ppwM=
-X-Received: by 2002:a05:6602:2e8d:b0:64f:b683:c70d with SMTP id
- m13-20020a0566022e8d00b0064fb683c70dmr2359410iow.62.1657736508993; Wed, 13
- Jul 2022 11:21:48 -0700 (PDT)
+        bh=cnfeU/H14AGUbM2NwCammQ0QFaEBuUZaJTL+xgbsuag=;
+        b=5r/WIog3037dpLmXxvPlyjmAffVOHauPaB918avQhSh+vYCTBVLhvxXEsk0zMOFGwF
+         jXwjXNifcbWj3mG7Lp72D3FqOJV/PVQCg45Kg84oa3uaaP8z/xJinN8KuodyQ8DLEKrD
+         6XRJ75XqaTpx8ZOTeFD7SgnceO4CoRnsepE65GN8WnnVgDFEtTeLP8ilCOnl3RejA62w
+         RzRVDJnCQhrQPY++TWkg7AEJCInzfmyftNpfeBY4Hc9QH90/p+U8q8iHyQ9d9T+PBGNY
+         pS61zNNb01tD91uTk1+pRQRXqJ2sCD71CeNTLZpLP+yFZoO50YlVTmafGie44/OgQle4
+         0vag==
+X-Gm-Message-State: AJIora+7CEaQGvr00jX7xjCY7dOKWMjL4AmZkEXKq0m3V6m9wec7v+GZ
+        +utTnlsZrM8dCeyCEP/5FOswAZy0LM2kktVpbIieIw==
+X-Google-Smtp-Source: AGRyM1t5RanxHSeVU+0L7I9DlnqtY6KsrV6pKHfe8Sr/1d903mLarwgzd3UK4HSKvWV3a0QJzi9tBo66353Mu18Fz00=
+X-Received: by 2002:a17:90b:388e:b0:1f0:3d7f:e620 with SMTP id
+ mu14-20020a17090b388e00b001f03d7fe620mr5340919pjb.31.1657737388658; Wed, 13
+ Jul 2022 11:36:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <BN6PR11MB16338E9998353C6B239CD27792869@BN6PR11MB1633.namprd11.prod.outlook.com>
- <BN6PR11MB16332A018C2FAB69B479EA2B92869@BN6PR11MB1633.namprd11.prod.outlook.com>
-In-Reply-To: <BN6PR11MB16332A018C2FAB69B479EA2B92869@BN6PR11MB1633.namprd11.prod.outlook.com>
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Wed, 13 Jul 2022 20:21:04 +0200
-Message-ID: <CAP01T77ZDk8kHGhAy4V1tht0JHqefkmKLdKtKPHj1mJ_shDMhQ@mail.gmail.com>
-Subject: Re: Build error of samples/bpf
-To:     "Zeng, Oak" <oak.zeng@intel.com>
-Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+References: <20220713111430.134810-1-toke@redhat.com>
+In-Reply-To: <20220713111430.134810-1-toke@redhat.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Wed, 13 Jul 2022 11:36:17 -0700
+Message-ID: <CAKH8qBtdnku7StcQ-SamadvAF==DRuLLZO94yOR1WJ9Bg=uX1w@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/17] xdp: Add packet queueing and scheduling capabilities
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Freysteinn Alfredsson <freysteinn.alfredsson@kau.se>,
+        Cong Wang <xiyou.wangcong@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-15.9 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URI_DOTEDU,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 12 Jul 2022 at 16:10, Zeng, Oak <oak.zeng@intel.com> wrote:
+On Wed, Jul 13, 2022 at 4:14 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
 >
-> Hello all,
+> Packet forwarding is an important use case for XDP, which offers
+> significant performance improvements compared to forwarding using the
+> regular networking stack. However, XDP currently offers no mechanism to
+> delay, queue or schedule packets, which limits the practical uses for
+> XDP-based forwarding to those where the capacity of input and output link=
+s
+> always match each other (i.e., no rate transitions or many-to-one
+> forwarding). It also prevents an XDP-based router from doing any kind of
+> traffic shaping or reordering to enforce policy.
 >
-> I tried to build the latest samples/bpf following instructions in the REA=
-DME.rst in samples/bpf folder. I ran into various issue such as:
+> This series represents a first RFC of our attempt to remedy this lack. Th=
+e
+> code in these patches is functional, but needs additional testing and
+> polishing before being considered for merging. I'm posting it here as an
+> RFC to get some early feedback on the API and overall design of the
+> feature.
 >
-> samples/bpf/Makefile:375: *** Cannot find a vmlinux for VMLINUX_BTF at an=
-y of "  /home/szeng/dii-tools/linux/vmlinux", build the kernel or set VMLIN=
-UX_BTF or VMLINUX_H variable
+> DESIGN
 >
-> I was able to fix above issue by enable CONFIG_DEBUG_INFO_BTF in kernel .=
-config file.
+> The design consists of three components: A new map type for storing XDP
+> frames, a new 'dequeue' program type that will run in the TX softirq to
+> provide the stack with packets to transmit, and a set of helpers to deque=
+ue
+> packets from the map, optionally drop them, and to schedule an interface
+> for transmission.
 >
-> But I eventually ran into other errors.  I had to fix those errors by ins=
-tall dwarves, updating my clang/llvm to version 10.
->
-> I was able to build it if I comment out all the xdp programs from Makefil=
-e. It seems those xdp programs require advanced features such as data struc=
-ture layout in vmlinux.h (dumped from vmlinux using bpftool) and this requi=
-re special kernel config support.
->
-> So I thought instead of fixing those errors one by one, I should ask thos=
-e who are working in this area, is there any instructions on how to build s=
-amples/bpf? The README.rst seems out-of-date, for example, it doesn't menti=
-on CONFIG_DEBUG_INFO_BTF. The required llvm/clang version in README.rst is =
-also out-of-date.
->
-> More specifically, to build samples/bpf, is there an example kernel .conf=
-ig to use? I tried those config here https://github.com/torvalds/linux/blob=
-/master/tools/testing/selftests/bpf/config but build errors persist.
->
-> Or is there any other tools I need to install/update on my system?
->
-> My whole build log is as below:
->
-> szeng@linux:~/dii-tools/linux$ make M=3Dsamples/bpf
-> readelf: Error: Missing knowledge of 32-bit reloc types used in DWARF sec=
-tions of machine number 247
-> readelf: Warning: unable to apply unsupported reloc type 10 to section .d=
-ebug_info
-> readelf: Warning: unable to apply unsupported reloc type 1 to section .de=
-bug_info
-> readelf: Warning: unable to apply unsupported reloc type 10 to section .d=
-ebug_info make -C /home/szeng/dii-tools/linux/samples/bpf/../../tools/lib/b=
-pf RM=3D'rm -rf' EXTRA_CFLAGS=3D"-Wall -O2 -Wmissing-prototypes -Wstrict-pr=
-ototypes -I./usr/include -I./tools/testing/selftests/bpf/ -I/home/szeng/dii=
--tools/linux/samples/bpf/libbpf/include -I./tools/include -I./tools/perf -D=
-HAVE_ATTR_TEST=3D0" \
->         LDFLAGS=3D srctree=3D/home/szeng/dii-tools/linux/samples/bpf/../.=
-./ \
->         O=3D OUTPUT=3D/home/szeng/dii-tools/linux/samples/bpf/libbpf/ DES=
-TDIR=3D/home/szeng/dii-tools/linux/samples/bpf/libbpf prefix=3D \
->         /home/szeng/dii-tools/linux/samples/bpf/libbpf/libbpf.a install_h=
-eaders
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/libbp=
-f.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/bpf.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/nlatt=
-r.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/btf.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/libbp=
-f_errno.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/str_e=
-rror.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/netli=
-nk.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/bpf_p=
-rog_linfo.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/libbp=
-f_probes.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/xsk.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/hashm=
-ap.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/btf_d=
-ump.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/ringb=
-uf.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/strse=
-t.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/linke=
-r.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/gen_l=
-oader.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/relo_=
-core.o
->   LD      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/libbp=
-f-in.o
->   LINK    /home/szeng/dii-tools/linux/samples/bpf/libbpf/libbpf.a
->   INSTALL headers
->   CC  samples/bpf/test_lru_dist
->   CC  samples/bpf/sock_example
->   CC  samples/bpf/../../tools/testing/selftests/bpf/cgroup_helpers.o
->   CC  samples/bpf/../../tools/testing/selftests/bpf/trace_helpers.o
->   CC  samples/bpf/cookie_uid_helper_example.o
->   CC  samples/bpf/cpustat_user.o
->   CC  samples/bpf/fds_example.o
->   CC  samples/bpf/hbm.o
->   CC  samples/bpf/i915_latency_hist_user.o
->   CC  samples/bpf/i915_stat_user.o
->   CC  samples/bpf/ibumad_user.o
->   CC  samples/bpf/lathist_user.o
->   CC  samples/bpf/lwt_len_hist_user.o
->   CC  samples/bpf/map_perf_test_user.o
->   CC  samples/bpf/offwaketime_user.o
->   CC  samples/bpf/sampleip_user.o
->   CC  samples/bpf/sockex1_user.o
->   CC  samples/bpf/sockex2_user.o
->   CC  samples/bpf/sockex3_user.o
->   CC  samples/bpf/spintest_user.o
->   CC  samples/bpf/syscall_tp_user.o
->   CC  samples/bpf/task_fd_query_user.o
->   CC  samples/bpf/tc_l2_redirect_user.o
->   CC  samples/bpf/test_cgrp2_array_pin.o
->   CC  samples/bpf/test_cgrp2_attach.o
->   CC  samples/bpf/test_cgrp2_sock.o
->   CC  samples/bpf/test_cgrp2_sock2.o
->   CC  samples/bpf/test_current_task_under_cgroup_user.o
->   CC  samples/bpf/test_map_in_map_user.o
->   CC  samples/bpf/test_overhead_user.o
->   CC  samples/bpf/test_probe_write_user_user.o
->   CC  samples/bpf/trace_event_user.o
->   CC  samples/bpf/trace_output_user.o
->   CC  samples/bpf/tracex1_user.o
->   CC  samples/bpf/tracex2_user.o
->   CC  samples/bpf/tracex3_user.o
->   CC  samples/bpf/tracex4_user.o
->   CC  samples/bpf/tracex5_user.o
->   CC  samples/bpf/tracex6_user.o
->   CC  samples/bpf/tracex7_user.o
->   CC  samples/bpf/xdp1_user.o
->   CC  samples/bpf/xdp_adjust_tail_user.o
->   CC  samples/bpf/xdp_fwd_user.o
-> make -C /home/szeng/dii-tools/linux/samples/bpf/../../tools/bpf/bpftool s=
-rctree=3D/home/szeng/dii-tools/linux/samples/bpf/../../ \
->         OUTPUT=3D/home/szeng/dii-tools/linux/samples/bpf/bpftool/ \
->         LIBBPF_OUTPUT=3D/home/szeng/dii-tools/linux/samples/bpf/libbpf/ \
->         LIBBPF_DESTDIR=3D/home/szeng/dii-tools/linux/samples/bpf/libbpf/
->
-> Auto-detecting system features:
-> ...                        libbfd: [ OFF ]
-> ...        disassembler-four-args: [ OFF ]
-> ...                          zlib: [ on  ]
-> ...                        libcap: [ OFF ]
-> ...               clang-bpf-co-re: [ on  ]
->
->
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/libbp=
-f.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/bpf.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/nlatt=
-r.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/btf.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/libbp=
-f_errno.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/str_e=
-rror.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/netli=
-nk.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/bpf_p=
-rog_linfo.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/libbp=
-f_probes.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/xsk.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/hashm=
-ap.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/btf_d=
-ump.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/ringb=
-uf.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/strse=
-t.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/linke=
-r.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/gen_l=
-oader.o
->   CC      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/relo_=
-core.o
->   LD      /home/szeng/dii-tools/linux/samples/bpf/libbpf/staticobjs/libbp=
-f-in.o
->   LINK    /home/szeng/dii-tools/linux/samples/bpf/libbpf/libbpf.a
->   CLANG   /home/szeng/dii-tools/linux/samples/bpf/bpftool/profiler.bpf.o
->   GEN     /home/szeng/dii-tools/linux/samples/bpf/bpftool/profiler.skel.h
->   CC      /home/szeng/dii-tools/linux/samples/bpf/bpftool/prog.o
->   CLANG   /home/szeng/dii-tools/linux/samples/bpf/bpftool/pid_iter.bpf.o
->   GEN     /home/szeng/dii-tools/linux/samples/bpf/bpftool/pid_iter.skel.h
->   CC      /home/szeng/dii-tools/linux/samples/bpf/bpftool/pids.o
->   LINK    /home/szeng/dii-tools/linux/samples/bpf/bpftool/bpftool
->   CC  samples/bpf/xdp_router_ipv4_user.o
->   CC  samples/bpf/xdp_rxq_info_user.o
->   CC  samples/bpf/xdp_sample_pkts_user.o
->   CC  samples/bpf/xdp_tx_iptunnel_user.o
->   CC  samples/bpf/xdpsock_ctrl_proc.o
->   CC  samples/bpf/xsk_fwd.o
->   CLANG-BPF  samples/bpf/xdp_sample.bpf.o
->   CLANG-BPF  samples/bpf/xdp_redirect_map_multi.bpf.o
->   CLANG-BPF  samples/bpf/xdp_redirect_cpu.bpf.o
->   CLANG-BPF  samples/bpf/xdp_redirect_map.bpf.o
->   CLANG-BPF  samples/bpf/xdp_monitor.bpf.o
->   CLANG-BPF  samples/bpf/xdp_redirect.bpf.o
->   BPF GEN-OBJ  samples/bpf/xdp_monitor
->   BPF GEN-SKEL samples/bpf/xdp_monitor
-> libbpf: map 'rx_cnt': unexpected def kind var.
+> The new map type is modelled on the PIFO data structure proposed in the
+> literature[0][1]. It represents a priority queue where packets can be
+> enqueued in any priority, but is always dequeued from the head. From the
+> XDP side, the map is simply used as a target for the bpf_redirect_map()
+> helper, where the target index is the desired priority.
 
-IIRC, this error is due to older clang. Can you try with a newer clang
-(11 and above)?
+I have the same question I asked on the series from Cong:
+Any considerations for existing carousel/edt-like models?
+Can we make the map flexible enough to implement different qdisc policies?
 
-> Error: failed to open BPF object file: Invalid argument
-> samples/bpf/Makefile:430: recipe for target 'samples/bpf/xdp_monitor.skel=
-.h' failed
-> make[1]: *** [samples/bpf/xdp_monitor.skel.h] Error 255
-> make[1]: *** Deleting file 'samples/bpf/xdp_monitor.skel.h'
-> Makefile:1868: recipe for target 'samples/bpf' failed
-> make: *** [samples/bpf] Error 2
+> The dequeue program type is a new BPF program type that is attached to an
+> interface; when an interface is scheduled for transmission, the stack wil=
+l
+> execute the attached dequeue program and, if it returns a packet to
+> transmit, that packet will be transmitted using the existing ndo_xdp_xmit=
+()
+> driver function.
 >
+> The dequeue program can obtain packets by pulling them out of a PIFO map
+> using the new bpf_packet_dequeue() helper. This returns a pointer to an
+> xdp_md structure, which can be dereferenced to obtain packet data and
+> data_meta pointers like in an XDP program. The returned packets are also
+> reference counted, meaning the verifier enforces that the dequeue program
+> either drops the packet (with the bpf_packet_drop() helper), or returns i=
+t
+> for transmission. Finally, a helper is added that can be used to actually
+> schedule an interface for transmission using the dequeue program type; th=
+is
+> helper can be called from both XDP and dequeue programs.
 >
-> Thanks,
-> Oak
+> PERFORMANCE
+>
+> Preliminary performance tests indicate about 50ns overhead of adding
+> queueing to the xdp_fwd example (last patch), which translates to a 20% P=
+PS
+> overhead (but still 2x the forwarding performance of the netstack):
+>
+> xdp_fwd :     4.7 Mpps  (213 ns /pkt)
+> xdp_fwd -Q:   3.8 Mpps  (263 ns /pkt)
+> netstack:       2 Mpps  (500 ns /pkt)
+>
+> RELATION TO BPF QDISC
+>
+> Cong Wang's BPF qdisc patches[2] share some aspects of this series, in
+> particular the use of a map to store packets. This is no accident, as we'=
+ve
+> had ongoing discussions for a while now. I have no great hope that we can
+> completely converge the two efforts into a single BPF-based queueing
+> API (as has been discussed before[3], consolidating the SKB and XDP paths
+> is challenging). Rather, I'm hoping that we can converge the designs enou=
+gh
+> that we can share BPF code between XDP and qdisc layers using common
+> functions, like it's possible to do with XDP and TC-BPF today. This would
+> imply agreeing on the map type and API, and possibly on the set of helper=
+s
+> available to the BPF programs.
+
+What would be the big difference for the map wrt xdp_frame vs sk_buff
+excluding all obvious stuff like locking/refcnt?
+
+> PATCH STRUCTURE
+>
+> This series consists of a total of 17 patches, as follows:
+>
+> Patches 1-3 are smaller preparatory refactoring patches used by subsequen=
+t
+> patches.
+
+Seems like these can go separately without holding the rest?
+
+> Patches 4-5 introduce the PIFO map type, and patch 6 introduces the deque=
+ue
+> program type.
+
+[...]
+
+> Patches 7-10 adds the dequeue helpers and the verifier features needed to
+> recognise packet pointers, reference count them, and allow dereferencing
+> them to obtain packet data pointers.
+
+Have you considered using kfuncs for these instead of introducing new
+hooks/contexts/etc?
+
+> Patches 11 and 12 add the dequeue program hook to the TX path, and the
+> helpers to schedule an interface.
+>
+> Patches 13-16 add libbpf support for the new types, and selftests for the
+> new features.
+>
+> Finally, patch 17 adds queueing support to the xdp_fwd program in
+> samples/bpf to provide an easy-to-use way of testing the feature; this is
+> for illustrative purposes for the RFC only, and will not be included in t=
+he
+> final submission.
+>
+> SUPPLEMENTARY MATERIAL
+>
+> A (WiP) test harness for implementing and unit-testing scheduling
+> algorithms using this framework (and the bpf_prog_run() hook) is availabl=
+e
+> as part of the bpf-examples repository[4]. We plan to expand this with mo=
+re
+> test algorithms to smoke-test the API, and also add ready-to-use queueing
+> algorithms for use for forwarding (to replace the xdp_fwd patch included =
+as
+> part of this RFC submission).
+>
+> The work represented in this series was done in collaboration with severa=
+l
+> people. Thanks to Kumar Kartikeya Dwivedi for writing the verifier
+> enhancements in this series, to Frey Alfredsson for his work on the testi=
+ng
+> harness in [4], and to Jesper Brouer, Per Hurtig and Anna Brunstrom for
+> their valuable input on the design of the queueing APIs.
+>
+> This series is also available as a git tree on git.kernel.org[5].
+>
+> NOTES
+>
+> [0] http://web.mit.edu/pifo/
+> [1] https://arxiv.org/abs/1810.03060
+> [2] https://lore.kernel.org/r/20220602041028.95124-1-xiyou.wangcong@gmail=
+.com
+> [3] https://lore.kernel.org/r/b4ff6a2b-1478-89f8-ea9f-added498c59f@gmail.=
+com
+> [4] https://github.com/xdp-project/bpf-examples/pull/40
+> [5] https://git.kernel.org/pub/scm/linux/kernel/git/toke/linux.git/log/?h=
+=3Dxdp-queueing-06
+>
+> Kumar Kartikeya Dwivedi (5):
+>   bpf: Use 64-bit return value for bpf_prog_run
+>   bpf: Teach the verifier about referenced packets returned from dequeue
+>     programs
+>   bpf: Introduce pkt_uid member for PTR_TO_PACKET
+>   bpf: Implement direct packet access in dequeue progs
+>   selftests/bpf: Add verifier tests for dequeue prog
+>
+> Toke H=C3=B8iland-J=C3=B8rgensen (12):
+>   dev: Move received_rps counter next to RPS members in softnet data
+>   bpf: Expand map key argument of bpf_redirect_map to u64
+>   bpf: Add a PIFO priority queue map type
+>   pifomap: Add queue rotation for continuously increasing rank mode
+>   xdp: Add dequeue program type for getting packets from a PIFO
+>   bpf: Add helpers to dequeue from a PIFO map
+>   dev: Add XDP dequeue hook
+>   bpf: Add helper to schedule an interface for TX dequeue
+>   libbpf: Add support for dequeue program type and PIFO map type
+>   libbpf: Add support for querying dequeue programs
+>   selftests/bpf: Add test for XDP queueing through PIFO maps
+>   samples/bpf: Add queueing support to xdp_fwd sample
+>
+>  include/linux/bpf-cgroup.h                    |  12 +-
+>  include/linux/bpf.h                           |  64 +-
+>  include/linux/bpf_types.h                     |   4 +
+>  include/linux/bpf_verifier.h                  |  14 +-
+>  include/linux/filter.h                        |  63 +-
+>  include/linux/netdevice.h                     |   8 +-
+>  include/net/xdp.h                             |  16 +-
+>  include/uapi/linux/bpf.h                      |  50 +-
+>  include/uapi/linux/if_link.h                  |   4 +-
+>  kernel/bpf/Makefile                           |   2 +-
+>  kernel/bpf/cgroup.c                           |  12 +-
+>  kernel/bpf/core.c                             |  14 +-
+>  kernel/bpf/cpumap.c                           |   4 +-
+>  kernel/bpf/devmap.c                           |  92 ++-
+>  kernel/bpf/offload.c                          |   4 +-
+>  kernel/bpf/pifomap.c                          | 635 ++++++++++++++++++
+>  kernel/bpf/syscall.c                          |   3 +
+>  kernel/bpf/verifier.c                         | 148 +++-
+>  net/bpf/test_run.c                            |  54 +-
+>  net/core/dev.c                                | 109 +++
+>  net/core/dev.h                                |   2 +
+>  net/core/filter.c                             | 307 ++++++++-
+>  net/core/rtnetlink.c                          |  30 +-
+>  net/packet/af_packet.c                        |   7 +-
+>  net/xdp/xskmap.c                              |   4 +-
+>  samples/bpf/xdp_fwd_kern.c                    |  65 +-
+>  samples/bpf/xdp_fwd_user.c                    | 200 ++++--
+>  tools/include/uapi/linux/bpf.h                |  48 ++
+>  tools/include/uapi/linux/if_link.h            |   4 +-
+>  tools/lib/bpf/libbpf.c                        |   1 +
+>  tools/lib/bpf/libbpf.h                        |   1 +
+>  tools/lib/bpf/libbpf_probes.c                 |   5 +
+>  tools/lib/bpf/netlink.c                       |   8 +
+>  .../selftests/bpf/prog_tests/pifo_map.c       | 125 ++++
+>  .../bpf/prog_tests/xdp_pifo_test_run.c        | 154 +++++
+>  tools/testing/selftests/bpf/progs/pifo_map.c  |  54 ++
+>  .../selftests/bpf/progs/test_xdp_pifo.c       | 110 +++
+>  tools/testing/selftests/bpf/test_verifier.c   |  29 +-
+>  .../testing/selftests/bpf/verifier/dequeue.c  | 160 +++++
+>  39 files changed, 2426 insertions(+), 200 deletions(-)
+>  create mode 100644 kernel/bpf/pifomap.c
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/pifo_map.c
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_pifo_test_=
+run.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/pifo_map.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_pifo.c
+>  create mode 100644 tools/testing/selftests/bpf/verifier/dequeue.c
+>
+> --
+> 2.37.0
 >
