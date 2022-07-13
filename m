@@ -2,113 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D911457381C
-	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 15:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 491F757381D
+	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 15:57:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234828AbiGMN4s (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Jul 2022 09:56:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60024 "EHLO
+        id S236243AbiGMN5R (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Jul 2022 09:57:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236221AbiGMN4s (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Jul 2022 09:56:48 -0400
-Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F2142CE1B
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 06:56:47 -0700 (PDT)
-Received: by mail-vs1-xe34.google.com with SMTP id 125so4122137vsx.7
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 06:56:47 -0700 (PDT)
+        with ESMTP id S230520AbiGMN5Q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Jul 2022 09:57:16 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E959D2CE20
+        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 06:57:15 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id n185so6557529wmn.4
+        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 06:57:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KmR3zIvPRcGHZ+9uuqzqrigy1eQiGWgglnEUCHnLRTw=;
-        b=jqvCG36YrXa31HLHjFghK3hWp0U+tkXHjZdVEW4qnG45XLWlagRu0xQKCjI0TngXbX
-         AhRqFz9i5hqrgoItpzy5asLZ4OkuTJ/jv5kuLXQEStM+aRGj1tF6cPnNvlPuQaWoBNZz
-         9gSfYBUqj4CU/It7BSTtoz22Pq2NuMdU+5rrVmAUNcDmPzDe96aReqXEWfUQT+Dzt0Iv
-         2W182CxYF1CAYX+jMbgQKDM7K35d35qedLTEQjd5D/5ScAL/kAve91pXJcs5XRHBkR0Z
-         NOxmxUPeMrcd6MWG4a5/aPwYC7eiSZYZA3G96sOyEpBzr8xIpc64EHNFaExxN1cMzYTf
-         p4wQ==
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=kxqBWdiXM5WNeClMPGN89m5g9fK7yBoXSaVViiNVQ8g=;
+        b=g7sCyBZ237J9K19/0sLWl+a9stt/xgvJwPjoGXhb1JnLwI9WgOT5UER5tZx+ucO7HG
+         TUidhRNoQx+iPvX8Cgu5YLiKO+LQiydCKckRhJpvZ3WLOOvGGvPFEdLoR27DGwu4V6FC
+         zIkvixE0WB/haEqVW38dd4zgrBNkJ999UIgBDvj/EELkdCw9TTP2uxxC/AvujWJGOgkL
+         Wa0VFTm0j38hB0F08Z+72EJ9vjPAazAJ0OZ27HkdmdS/UrumBa6DjT7TOHxKNfhNd77N
+         c0IJDm7qvKme7P5/5iNKwpPqgpF4gdnSBFULZkFpjmRuC1ToMJxx3gDnMCXaxFwyYjma
+         rxWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KmR3zIvPRcGHZ+9uuqzqrigy1eQiGWgglnEUCHnLRTw=;
-        b=tRkOHWmGD+0tpJJvJwGhPI+1zOll18ZU62HoFueQrf58nbL5W4Op9ZDpjsAaw5Qhl6
-         pegMzcZ2UKCbDTlcmVVlpwpYEyNsL/FCgS76Q8VeYyHrG+9LCjx7MYBTTDJIg5bTWgF5
-         Cx5i0jijkDUQzOcrKI5Tw504G0Hw+8md0bFqU2F9086h18KkRGsfQj6gzh3EohKUHkcE
-         /YJzabGnBwday7cSWlaSna56YMK8MY7GXrYJ9g5dZ286BQpxIADmjj9YKXm3VZ0BMLsk
-         +/+xAPk4w3nNBD/W0r1hkXxYwW1g4Q7LowwbsU8CvlBjVB2skYK9xXYpvnRWzdgmjG8z
-         q6Ow==
-X-Gm-Message-State: AJIora8G1atfW794RHgeVTxaLj4Tc1PbnpwLV4yQ0hqAzHNJuwIBxGpt
-        dfxJIzpjMQmaWg/5WeUrGHnqdqAtZRTQHwtJjCw=
-X-Google-Smtp-Source: AGRyM1vjlYSXh2tsTBxNP1Xah71beC6fLMhLz1iiDXJ/EgZ1xZenJyUAOLTOoUvFkZwImz3TM/auk9bJ1jlWzbz6SbI=
-X-Received: by 2002:a05:6102:7b2:b0:357:6ab5:e1a5 with SMTP id
- x18-20020a05610207b200b003576ab5e1a5mr1432091vsg.22.1657720606255; Wed, 13
- Jul 2022 06:56:46 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=kxqBWdiXM5WNeClMPGN89m5g9fK7yBoXSaVViiNVQ8g=;
+        b=pDX4S4wMTiiFBcVXQPwr0W39Gz35C02MNZwtIZYLzXlIcGTnuMUM/SJ8UWWvhpD7ky
+         WSCLfnFlbC3jJuqhZIULJVGDOnKNlhV3YdnF7AshDvVU2ourZjTUroQQ1kGUjPsIEgiO
+         4bNVJA+dHf+N+RFwQHXs4yvM5JoB2skpV0A1SwktmoqGOIFHi21g9hngvwpTyJJmFHuV
+         53y7UxfZjdvv7+on0dRWmkqB3zJu25BEwmZbBPpcvbE1PYmahcCE77KAGURR/Ghysypj
+         ke6iz2a66WZw7ErL+2AZVx8Uv3eO/zRy2Wq+ovKjCTA+/PfsR7YoyA/dcEDWYTcYluxY
+         AHrA==
+X-Gm-Message-State: AJIora/IRAdxm++Be4ZAS4WwFOWYX+Hc+AlsyNkjo8iS3ur9vGcIwE2C
+        vskUE+57BleP4dF+R1AxcYi+5A==
+X-Google-Smtp-Source: AGRyM1uyOfqclVmQuJNbbQ1yXc9HRCf/RwP0I+Sf1skoemahVccck27LpxY8u85oblBG8emnTLxgjQ==
+X-Received: by 2002:a05:600c:2117:b0:3a2:d44f:4d9f with SMTP id u23-20020a05600c211700b003a2d44f4d9fmr9634057wml.17.1657720634459;
+        Wed, 13 Jul 2022 06:57:14 -0700 (PDT)
+Received: from [192.168.178.32] ([51.155.200.13])
+        by smtp.gmail.com with ESMTPSA id z11-20020a5d4d0b000000b0021b9f126fd3sm10946839wrt.14.2022.07.13.06.57.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Jul 2022 06:57:14 -0700 (PDT)
+Message-ID: <e1b00ebf-fb06-6eb3-2fa2-7e7155594626@isovalent.com>
+Date:   Wed, 13 Jul 2022 14:57:13 +0100
 MIME-Version: 1.0
-References: <YswUS/5nbYb8nt6d@dhcp22.suse.cz> <20220712043914.pxmbm7vockuvpmmh@macbook-pro-3.dhcp.thefacebook.com>
- <Ys0lXfWKtwYlVrzK@dhcp22.suse.cz> <CALOAHbAhzNTkT9o_-PRX=n4vNjKhEK_09+-7gijrFgGjNH7iRA@mail.gmail.com>
- <Ys1ES+CygtnUvArz@dhcp22.suse.cz> <CALvZod460hip0mQouEVtfcOZ0M21Xmzaa-atxxrUnR3ZisDCNw@mail.gmail.com>
- <Ys2iIVMZJNPe73MI@slm.duckdns.org> <CALvZod7YKrTvh-5SkDgFvtRk=DkxQ8iEhRGhDhhRGBXmYM4sFw@mail.gmail.com>
- <Ys2xGe+rdviCAjsC@slm.duckdns.org> <CALvZod6Y3p1NZwSQe6+UWpY88iaOBrZXS5c5+uzMb+9sY1ziwg@mail.gmail.com>
- <20220712184315.k6tteikog7pze5z2@MacBook-Pro-3.local.dhcp.thefacebook.com>
-In-Reply-To: <20220712184315.k6tteikog7pze5z2@MacBook-Pro-3.local.dhcp.thefacebook.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Wed, 13 Jul 2022 21:56:09 +0800
-Message-ID: <CALOAHbD9hTDy1jgE_oD1OwNC_1HnR4TxAAUVU5u0HWJ7COLoKg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/5] bpf: BPF specific memory allocator.
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Shakeel Butt <shakeelb@google.com>, Tejun Heo <tj@kernel.org>,
-        Mina Almasry <almasrymina@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.0.2
+Subject: Re: [RFC PATCH v2 1/1] bpftool: Align dumped file headers with
+ skeletons.
+Content-Language: en-GB
+To:     Francis Laniel <flaniel@linux.microsoft.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        linux-mm <linux-mm@kvack.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20220713134046.15020-1-flaniel@linux.microsoft.com>
+ <20220713134046.15020-2-flaniel@linux.microsoft.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <20220713134046.15020-2-flaniel@linux.microsoft.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 13, 2022 at 2:43 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Jul 12, 2022 at 11:11:25AM -0700, Shakeel Butt wrote:
-> > Ccing Mina who actually worked on upstreaming this. See [1] for
-> > previous discussion and more use-cases.
-> >
-> > [1] https://lore.kernel.org/linux-mm/20211120045011.3074840-1-almasrymina@google.com/
->
-> Doesn't look like that it landed upstream?
->
-> For bpf side we're thinking of something similar.
-> We cannot do memcg= mount option, of course.
-> Instead memcg path or FD will passed to bpf side to be used later.
-> So the user can select a memcg instead of taking it from current.
->
-> Yafang,
-> I'm assuming you're working on something like this?
+On 13/07/2022 14:40, Francis Laniel wrote:
+> This commit adds the following lines to file generated by dump:
+> /* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
+> /* THIS FILE IS AUTOGENERATED BY BPFTOOL! */
+> Hence, the dumped file headers follows that of skeletons.
+> 
+> Signed-off-by: Francis Laniel <flaniel@linux.microsoft.com>
+> ---
+>  tools/bpf/bpftool/btf.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+> index 7e6accb9d9f7..066a0acd0ecd 100644
+> --- a/tools/bpf/bpftool/btf.c
+> +++ b/tools/bpf/bpftool/btf.c
+> @@ -425,6 +425,8 @@ static int dump_btf_c(const struct btf *btf,
+>  	if (err)
+>  		return err;
+>  
+> +	printf("/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */\n");
+> +	printf("/* THIS FILE IS AUTOGENERATED BY BPFTOOL! */\n");
+>  	printf("#ifndef __VMLINUX_H__\n");
+>  	printf("#define __VMLINUX_H__\n");
+>  	printf("\n");
 
-Yes, I'm working on it. I will post it once it is ready, but probably
-not shortly.
+Looks good, simpler than v1, thank you!
 
--- 
-Regards
-Yafang
+Reviewed-by: Quentin Monnet <quentin@isovalent.com>
