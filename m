@@ -2,93 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC84D572BF9
-	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 05:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA2C6572C03
+	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 05:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229585AbiGMDgR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jul 2022 23:36:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56650 "EHLO
+        id S230291AbiGMDuS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jul 2022 23:50:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229915AbiGMDgQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jul 2022 23:36:16 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 340F4D7B98;
-        Tue, 12 Jul 2022 20:36:16 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id o18so9322953pgu.9;
-        Tue, 12 Jul 2022 20:36:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=yVeFSkEmO64ENxp6OwJH9yQxRclVRPX/S8GoXnifoJs=;
-        b=Jp0EIuguvIfT6nTpvibnF455o2Z/zMNJF/YU9QGMqMtctxixq8+XSHucyOjWjqQB2n
-         +zECdCdWCb+zQZSX8jz+e/vw+FTo+VrqRYmVjVszWH2e5U++Uyc5tT/ddZHYvdX8yhI6
-         IPsonz+WmHSp0VL5xz2/J53mTXgp7AQtDuatWLTmNUTevQ8iIPaAvxceyqqHEraHqFYu
-         sdbODjltqC7KaZw0Y1ZMT8y1ouyEsFMX1Xp7mGCe/hHWxB66b1/HyoCR6P0TME1HMhOw
-         ReR/1DVExuDOruoz/R95CTcbQucfR5VY4zyn3ByTFzTMICA8F/+3yPnU04W2qOVPKPRb
-         UC2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=yVeFSkEmO64ENxp6OwJH9yQxRclVRPX/S8GoXnifoJs=;
-        b=OC0LqYucS4iWe5bsrWc+mJl/So/kRhTk59i4gqa9m49ogXXi2KuKV5gCodZ1yAjYhZ
-         SKfiLMAyljUO+qd82/gThfod9ZT5KjFtvVoBkY+HOmVVA3UbdVfeL0wQD2JTqhqgx6Ar
-         ld90s9OTabV6CLa1en9oJcteIQU1hnoksOA4EJ1+WHunHQ5+Q9GhGed8KLY9JQuWuel7
-         cMS1Hm3hIkBkRAZ8lU3+jGRkPZZSMLvcRKrQdja/2c5g3ORliwP1MVTu5b/1TGQVcvHT
-         007icQ4djbLnr0X3EXH0jnI4u+JVG1PdEY1i2YV0a3Thynu5Jymuwp17jMHIWCL2BafE
-         LRkQ==
-X-Gm-Message-State: AJIora/Bnux7dMzIYvMZSYvFxpI9xro8WHcQCP0xpbdF1zv6wx9jbCBd
-        o7KZRRuA5Q5xchJ58x9pX3s=
-X-Google-Smtp-Source: AGRyM1vI+wluVcFYvR2WTFV2uiw4Hura3WhTgF/TWxJ+8Q2pOc6qb1PHNWWn2zoSTl80hHPro3mVwg==
-X-Received: by 2002:a63:d1e:0:b0:40d:379e:bff8 with SMTP id c30-20020a630d1e000000b0040d379ebff8mr1289986pgl.215.1657683375679;
-        Tue, 12 Jul 2022 20:36:15 -0700 (PDT)
-Received: from localhost.localdomain ([136.175.179.221])
-        by smtp.gmail.com with ESMTPSA id c5-20020a170902d48500b001638a171558sm7634084plg.202.2022.07.12.20.36.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jul 2022 20:36:15 -0700 (PDT)
-From:   Hawkins Jiawei <yin31149@gmail.com>
-To:     dan.carpenter@oracle.com
-Cc:     18801353760@163.com, andrii@kernel.org, ast@kernel.org,
-        borisp@nvidia.com, bpf@vger.kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
-        guwen@linux.alibaba.com, john.fastabend@gmail.com, kafai@fb.com,
-        kgraul@linux.ibm.com, kpsingh@kernel.org, kuba@kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, paskripkin@gmail.com, skhan@linuxfoundation.org,
-        songliubraving@fb.com,
-        syzbot+5f26f85569bd179c18ce@syzkaller.appspotmail.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com, yin31149@gmail.com,
-        yoshfuji@linux-ipv6.org
-Subject: Re: [PATCH] smc: fix refcount bug in sk_psock_get (2)
-Date:   Wed, 13 Jul 2022 11:35:51 +0800
-Message-Id: <20220713033551.59355-1-yin31149@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220712094745.GM2338@kadam>
-References: <20220712094745.GM2338@kadam>
+        with ESMTP id S229732AbiGMDuQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jul 2022 23:50:16 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B92D8630;
+        Tue, 12 Jul 2022 20:50:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0532AB81D04;
+        Wed, 13 Jul 2022 03:50:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 971C1C341C6;
+        Wed, 13 Jul 2022 03:50:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1657684213;
+        bh=qiPoG7Jg2ZK8XLZzWI0T5Ch1pvGJVm45/AHHC01wVj8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=fsvGACoKafuWPo/6GsT6Lwi1pi+9jjdLCSaAAgsu8Y/HNqg2y8gE4mAu8uffR0mY9
+         0ijETSgyBxMiTQo02uZpP88Sy+B8vGLONTAYN7DqNLbjjU1baNInvgOQ/z3UvG2plF
+         W79GOByaHslMV/YnDLH4TRPV3tw/o7HDLg9Nuhd1KOLxTvGS0qa1GurQJwXezbR+Lo
+         /KiF2aIKOXcUNFy4/AXqFgjn+Hn6wCorNfC1DNZ3LQBQc3RD3gvP+OHPtbZvQMMqAI
+         j9cblOMKR2M1GESS6t3fV0GkL6LWdNBhrxMR86XxrfV2eAqDosxlxvZ/ZYvOh3Cbib
+         T3hK8e8MDz63w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7A703E45223;
+        Wed, 13 Jul 2022 03:50:13 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH net-next 1/1] igb: add xdp frags support to ndo_xdp_xmit
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <165768421349.12868.5124518960518905657.git-patchwork-notify@kernel.org>
+Date:   Wed, 13 Jul 2022 03:50:13 +0000
+References: <20220711230751.3124415-1-anthony.l.nguyen@intel.com>
+In-Reply-To: <20220711230751.3124415-1-anthony.l.nguyen@intel.com>
+To:     Tony Nguyen <anthony.l.nguyen@intel.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        edumazet@google.com, maciej.fijalkowski@intel.com,
+        magnus.karlsson@intel.com, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com, bpf@vger.kernel.org,
+        lorenzo@kernel.org, netdev@vger.kernel.org, chandanx.rout@intel.com
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 12 Jul 2022 at 17:48, Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> On Sat, Jul 09, 2022 at 10:46:59AM +0800, Hawkins Jiawei wrote:
-> > From: hawk <18801353760@163.com>
->
-> Please use your legal name like you would for signing a legal document.
+Hello:
 
-Thanks, I will pay attention to it in the future.
+This patch was applied to netdev/net-next.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
 
->
-> regards,
-> dan carpenter
->
+On Mon, 11 Jul 2022 16:07:51 -0700 you wrote:
+> From: Lorenzo Bianconi <lorenzo@kernel.org>
+> 
+> Add the capability to map non-linear xdp frames in XDP_TX and
+> ndo_xdp_xmit callback.
+> 
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> Tested-by: Chandan Kumar Rout <chandanx.rout@intel.com> (A Contingent worker at Intel)
+> Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,1/1] igb: add xdp frags support to ndo_xdp_xmit
+    https://git.kernel.org/netdev/net-next/c/1aea9d87334d
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
