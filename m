@@ -2,56 +2,31 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C9EE573925
-	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 16:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4439657394A
+	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 16:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230496AbiGMOrd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Jul 2022 10:47:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50862 "EHLO
+        id S229918AbiGMOxY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Jul 2022 10:53:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231789AbiGMOrb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Jul 2022 10:47:31 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6008733A04;
-        Wed, 13 Jul 2022 07:47:30 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id fd6so14401411edb.5;
-        Wed, 13 Jul 2022 07:47:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q6z9Dl76yDttJavavZnxzS7LrELhIAc+LaPuVqCl3+o=;
-        b=cTyWu9j2qmgrxvlhxQ4je25qfu46rIVo00wue5qr8v+coYJaK3a7rtHlW8NmulliVI
-         agFZLYL50V70mySRAjERfRSnznC3eNRTd0j/0+CSYJS4V1ZP0f7IREQfGZUfELewD3lR
-         Sgjef13/hk42na4Flkl03zo+I56J/tgQTgz9Fcx0DSmJusf6ZyS6ek6M1xcrajS5LCua
-         0UX3RgHbofmg4r1LMrNibW01MtYtVT0+ZOLIWzY/QVNSKJVWY2YgB+g/PJvWPPmfbdU2
-         ytl1FS7tlu7zjkFuCC+oTYEsOwKr1pKgS8G+aE6m3WhfdE3kFuu7hNoa//UhT/bObz+W
-         VntQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q6z9Dl76yDttJavavZnxzS7LrELhIAc+LaPuVqCl3+o=;
-        b=sugNIyH+ZH42InH+8aFKznTBpKzIY7JRZfHuMZDDhwF3vcmjaj5ALRIl0Cw6zjy+yN
-         v0rfjUKEQhR+poPZe1WJ+GKTTjXFYISfBKyqHonNcXLbsYpu2DCsC3SYb13fIyrxGMx9
-         FLKibBfsGe8DkFUmQ+8lBOoiYxcM829gD3ssOA2RUCxTFhd+5vll/3VxOh4JWMm99OGF
-         twBYBdWNz0hdARDxLPiKt4VscE1xiZHJN3WzA6GMU048DLIGqIqmTpwG8A9pBIYjzEwY
-         eriMaAk2YUlq7527TISDlPv1AuVhcw0PLmvapfDtwD8Njz/Jb0BPCK6SSdX9/TgaAlr+
-         xSsQ==
-X-Gm-Message-State: AJIora8+oPvVlZcGKztpIfyIUcW3c9e9WnzdRhTWP2JJHZxF3Q9Hxewg
-        9qlPGP11bqpmPkjxzpra21GI6AEXoc63jqYm+BY=
-X-Google-Smtp-Source: AGRyM1t/XnTD/Bdc54ecLh2IM3uTyHidt1FkbLNx0oz+5KWLDGPK/phMVNDxAiiJb8ofUa7fzaAnSzbJvhZHzAa6GB8=
-X-Received: by 2002:a05:6402:378f:b0:43a:d3f5:79f2 with SMTP id
- et15-20020a056402378f00b0043ad3f579f2mr5596951edb.338.1657723648850; Wed, 13
- Jul 2022 07:47:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220713144439.19738-1-flaniel@linux.microsoft.com> <20220713144439.19738-2-flaniel@linux.microsoft.com>
-In-Reply-To: <20220713144439.19738-2-flaniel@linux.microsoft.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 13 Jul 2022 07:47:17 -0700
-Message-ID: <CAADnVQLVSoetPd5d1_tf=KkGou9iUWkt3ovgi8eeCWtbJtRUiw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] bpftool: Align dumped file generated header with skeletons.
-To:     Francis Laniel <flaniel@linux.microsoft.com>
+        with ESMTP id S229654AbiGMOxX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Jul 2022 10:53:23 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5D7783CBE7;
+        Wed, 13 Jul 2022 07:53:23 -0700 (PDT)
+Received: from pwmachine.localnet (240.119.92.79.rev.sfr.net [79.92.119.240])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 67BB8204DE97;
+        Wed, 13 Jul 2022 07:53:20 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 67BB8204DE97
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1657724003;
+        bh=4e7qkV+LKd+kLlyAhHf8ddjIHjZpGLFgX9sc7oWeITs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=pJFmLDu0lYHjSNIx+1fVGKdaP18mavRzVphgIfCBCE5vLBMGTwFU5SFEbmZQRjzBm
+         OdAzLrj3ium5JipsYucveHm87D1HhZj90gWdQrI8bJtBSWSGDFlGst+po9aEFxKzOs
+         npmTFV7D0NfS8plWdjJNMB9g5ZBD5B1NFLbtiQxU=
+From:   Francis Laniel <flaniel@linux.microsoft.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     bpf <bpf@vger.kernel.org>, Quentin Monnet <quentin@isovalent.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -63,47 +38,68 @@ Cc:     bpf <bpf@vger.kernel.org>, Quentin Monnet <quentin@isovalent.com>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
         open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v3 1/1] bpftool: Align dumped file generated header with skeletons.
+Date:   Wed, 13 Jul 2022 16:53:18 +0200
+Message-ID: <4411407.LvFx2qVVIh@pwmachine>
+Organization: Microsoft
+In-Reply-To: <CAADnVQLVSoetPd5d1_tf=KkGou9iUWkt3ovgi8eeCWtbJtRUiw@mail.gmail.com>
+References: <20220713144439.19738-1-flaniel@linux.microsoft.com> <20220713144439.19738-2-flaniel@linux.microsoft.com> <CAADnVQLVSoetPd5d1_tf=KkGou9iUWkt3ovgi8eeCWtbJtRUiw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 13, 2022 at 7:45 AM Francis Laniel
-<flaniel@linux.microsoft.com> wrote:
->
-> This commit adds the following lines to file generated by dump:
-> /* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
-> /* THIS FILE IS AUTOGENERATED BY BPFTOOL! */
-> Hence, the dumped file headers follows that of skeletons.
->
-> Signed-off-by: Francis Laniel <flaniel@linux.microsoft.com>
-> ---
->  tools/bpf/bpftool/btf.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-> index 7e6accb9d9f7..066a0acd0ecd 100644
-> --- a/tools/bpf/bpftool/btf.c
-> +++ b/tools/bpf/bpftool/btf.c
-> @@ -425,6 +425,8 @@ static int dump_btf_c(const struct btf *btf,
->         if (err)
->                 return err;
->
-> +       printf("/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */\n");
+Le mercredi 13 juillet 2022, 16:47:17 CEST Alexei Starovoitov a =E9crit :
+> On Wed, Jul 13, 2022 at 7:45 AM Francis Laniel
+>=20
+> <flaniel@linux.microsoft.com> wrote:
+> > This commit adds the following lines to file generated by dump:
+> > /* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
+> > /* THIS FILE IS AUTOGENERATED BY BPFTOOL! */
+> > Hence, the dumped file headers follows that of skeletons.
+> >=20
+> > Signed-off-by: Francis Laniel <flaniel@linux.microsoft.com>
+> > ---
+> >=20
+> >  tools/bpf/bpftool/btf.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >=20
+> > diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+> > index 7e6accb9d9f7..066a0acd0ecd 100644
+> > --- a/tools/bpf/bpftool/btf.c
+> > +++ b/tools/bpf/bpftool/btf.c
+> > @@ -425,6 +425,8 @@ static int dump_btf_c(const struct btf *btf,
+> >=20
+> >         if (err)
+> >        =20
+> >                 return err;
+> >=20
+> > +       printf("/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
+> > */\n");
+> This was discussed earlier. It's incorrect and we cannot add just header
+> to vmlinux.h
 
-This was discussed earlier. It's incorrect and we cannot add just header
-to vmlinux.h
+Oops sorry, I will send a v4 dropping it.
+Nonetheless can you please send me a link for a discussion about this?
 
-> +       printf("/* THIS FILE IS AUTOGENERATED BY BPFTOOL! */\n");
->         printf("#ifndef __VMLINUX_H__\n");
->         printf("#define __VMLINUX_H__\n");
->         printf("\n");
-> --
-> 2.25.1
->
+>=20
+> > +       printf("/* THIS FILE IS AUTOGENERATED BY BPFTOOL! */\n");
+> >=20
+> >         printf("#ifndef __VMLINUX_H__\n");
+> >         printf("#define __VMLINUX_H__\n");
+> >         printf("\n");
+> >=20
+> > --
+> > 2.25.1
+
+
+
+
