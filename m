@@ -2,212 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57A61572B06
-	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 03:45:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44080572B17
+	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 03:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229982AbiGMBpP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jul 2022 21:45:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48084 "EHLO
+        id S231852AbiGMBxR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 12 Jul 2022 21:53:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230085AbiGMBpO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jul 2022 21:45:14 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3932D214E;
-        Tue, 12 Jul 2022 18:45:12 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id l23so17364993ejr.5;
-        Tue, 12 Jul 2022 18:45:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=h7UuA6KEsEYfjXpZsGhGp6AlFn4ZF+0TKFjwMlSBksQ=;
-        b=XRtaLuqhXKtvV7sA7WgZ6qjGuWfAZd465zy8rIQCTMAL3YnS6mh4FRKUGEtMXIJMOA
-         9WxmRW00CKWv3YmuCH61O2BpJ4eFFr94WGYIvjTU/W4Zm4Ju2JC+xnVcbGoNuM447A/E
-         YZiTqreFVpCgqDjEh82rzWQ2ic8/bPCyikfNK4pbey7zKdgryafZYi5AZGskWBJFOqtH
-         AWVON7EBDzexTCsmLrAu2KyDyr5EyPC5bDlir/USbgZ3ztJKi/CKiknlpeFADFIkBgED
-         rRG+6TgbLISIk1ObkAGyMZMwBLx2kqsB8w+mqGm76m/xTEkq+SzmrykSRWeb2/IpI9Da
-         /cxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h7UuA6KEsEYfjXpZsGhGp6AlFn4ZF+0TKFjwMlSBksQ=;
-        b=mqNIo9E3OjXQfC6c8qbFUVpw5GA4871GACRX8fbvvf8rdZ/LBqjHp7S2lLMgOtmv3z
-         BFZ3AEryuI+AyyR+8IBED9oCNccfcXFbslEWAwAJ53V3d7RFzzc/3/GgXLu3l/mbu3t/
-         fHEVXZVhH+HNgoRnDulFvTqzTp/kcP1Kw9Y8w/kFoFeA2/DomBU4KIoreCYGQ6MARIKA
-         3xFvhlh2DEoHbL5FHL/ly2+h7K9g9kpy9fAhdXy5QnGtTimgcblAV3rV8RiL2ODS/RZ9
-         hCaTkqHu5ev9lWDS5fUYvKcfSiPlwpsOJl8n43AKJipoPvC2CFRppmiymbtNl4zEm4wI
-         6G/g==
-X-Gm-Message-State: AJIora/OtSVmQJKp02j4qkHyuMJJT0c8WJJeObFfCAg3wGgVLUSZ778G
-        RNJ4mO8HHcO4qrfkr04XLMpcMvQ6Y1agwHFwuyg=
-X-Google-Smtp-Source: AGRyM1vPMRPDxjEx/gzlEQBBd9eB5dgYYM6XAZT0k5wm87SbRHF6rrgXdSdi5cRySIewDisAJr4ZB1batDjpfmJgHpA=
-X-Received: by 2002:a17:906:9bdd:b0:72b:3cab:eade with SMTP id
- de29-20020a1709069bdd00b0072b3cabeademr1048727ejc.58.1657676711455; Tue, 12
- Jul 2022 18:45:11 -0700 (PDT)
+        with ESMTP id S231996AbiGMBxR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jul 2022 21:53:17 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5D3D4BD0
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 18:53:16 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26CLjqol007849
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 18:53:16 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3h9h5f91m0-8
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 18:53:16 -0700
+Received: from twshared13579.04.prn5.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28; Tue, 12 Jul 2022 18:53:13 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id C6E761C4081BF; Tue, 12 Jul 2022 18:53:05 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next 0/5] Add SEC("ksyscall") support
+Date:   Tue, 12 Jul 2022 18:52:59 -0700
+Message-ID: <20220713015304.3375777-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20220706172814.169274-1-james.hilliard1@gmail.com>
- <a0bddf0b-e8c4-46ce-b7c6-a22809af1677@fb.com> <CADvTj4ovwExtM-bWUpJELy-OqsT=J9stmqbAXto8ds2n+G8mfw@mail.gmail.com>
- <CAEf4BzYwRyXG1zE5BK1ZXmxLh+ZPU0=yQhNhpqr0JmfNA30tdQ@mail.gmail.com>
- <87v8s260j1.fsf@oracle.com> <CAADnVQLQGHoj_gCOvdFFw2pRxgMubPSp+bRpFeCSa5zvcK2qRQ@mail.gmail.com>
- <CADvTj4qqxckZmxvL=97e-2W5M4DgCCMDV8RCFDg23+cY2URjTA@mail.gmail.com>
- <20220713011851.4a2tnqhdd5f5iwak@macbook-pro-3.dhcp.thefacebook.com> <CADvTj4o7z7J=4BOtKM9dthZyfFogV6hL5zKBwiBq7vs+bNhUHA@mail.gmail.com>
-In-Reply-To: <CADvTj4o7z7J=4BOtKM9dthZyfFogV6hL5zKBwiBq7vs+bNhUHA@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 12 Jul 2022 18:44:59 -0700
-Message-ID: <CAADnVQJAz7BcZjrBwu-8MjQprh86Z_UpWGMSQtFnowZTc4d6Vw@mail.gmail.com>
-Subject: Re: [PATCH v2] bpf/scripts: Generate GCC compatible helpers
-To:     James Hilliard <james.hilliard1@gmail.com>
-Cc:     "Jose E. Marchesi" <jose.marchesi@oracle.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: C2IqDeV6lMqvrMPH5T9GoWmnko5IO-sI
+X-Proofpoint-ORIG-GUID: C2IqDeV6lMqvrMPH5T9GoWmnko5IO-sI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-07-12_14,2022-07-12_01,2022-06-22_01
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 12, 2022 at 6:29 PM James Hilliard
-<james.hilliard1@gmail.com> wrote:
->
-> On Tue, Jul 12, 2022 at 7:18 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Tue, Jul 12, 2022 at 07:10:27PM -0600, James Hilliard wrote:
-> > > On Tue, Jul 12, 2022 at 10:48 AM Alexei Starovoitov
-> > > <alexei.starovoitov@gmail.com> wrote:
-> > > >
-> > > > On Tue, Jul 12, 2022 at 4:20 AM Jose E. Marchesi
-> > > > <jose.marchesi@oracle.com> wrote:
-> > > > >
-> > > > >
-> > > > > > CC Quentin as well
-> > > > > >
-> > > > > > On Mon, Jul 11, 2022 at 5:11 PM James Hilliard
-> > > > > > <james.hilliard1@gmail.com> wrote:
-> > > > > >>
-> > > > > >> On Mon, Jul 11, 2022 at 5:36 PM Yonghong Song <yhs@fb.com> wrote:
-> > > > > >> >
-> > > > > >> >
-> > > > > >> >
-> > > > > >> > On 7/6/22 10:28 AM, James Hilliard wrote:
-> > > > > >> > > The current bpf_helper_defs.h helpers are llvm specific and don't work
-> > > > > >> > > correctly with gcc.
-> > > > > >> > >
-> > > > > >> > > GCC appears to required kernel helper funcs to have the following
-> > > > > >> > > attribute set: __attribute__((kernel_helper(NUM)))
-> > > > > >> > >
-> > > > > >> > > Generate gcc compatible headers based on the format in bpf-helpers.h.
-> > > > > >> > >
-> > > > > >> > > This adds conditional blocks for GCC while leaving clang codepaths
-> > > > > >> > > unchanged, for example:
-> > > > > >> > >       #if __GNUC__ && !__clang__
-> > > > > >> > >       void *bpf_map_lookup_elem(void *map, const void *key)
-> > > > > >> > > __attribute__((kernel_helper(1)));
-> > > > > >> > >       #else
-> > > > > >> > >       static void *(*bpf_map_lookup_elem)(void *map, const void *key) = (void *) 1;
-> > > > > >> > >       #endif
-> > > > > >> >
-> > > > > >> > It does look like that gcc kernel_helper attribute is better than
-> > > > > >> > '(void *) 1' style. The original clang uses '(void *) 1' style is
-> > > > > >> > just for simplicity.
-> > > > > >>
-> > > > > >> Isn't the original style going to be needed for backwards compatibility with
-> > > > > >> older clang versions for a while?
-> > > > > >
-> > > > > > I'm curious, is there any added benefit to having this special
-> > > > > > kernel_helper attribute vs what we did in Clang for a long time?
-> > > > > > Did GCC do it just to be different and require workarounds like this
-> > > > > > or there was some technical benefit to this?
-> > > > >
-> > > > > We did it that way so we could make trouble and piss you off.
-> > > > >
-> > > > > Nah :)
-> > > > >
-> > > > > We did it that way because technically speaking the clang construction
-> > > > > works relying on particular optimizations to happen to get correct
-> > > > > compiled programs, which is not guaranteed to happen and _may_ break in
-> > > > > the future.
-> > > > >
-> > > > > In fact, if you compile a call to such a function prototype with clang
-> > > > > with -O0 the compiler will try to load the function's address in a
-> > > > > register and then emit an invalid BPF instruction:
-> > > > >
-> > > > >   28:   8d 00 00 00 03 00 00 00         *unknown*
-> > > > >
-> > > > > On the other hand the kernel_helper attribute is bullet-proof: will work
-> > > > > with any optimization level, with any version of the compiler, and in
-> > > > > our opinion it is also more readable, more tidy and more correct.
-> > > > >
-> > > > > Note I'm not saying what you do in clang is not reasonable; it may be,
-> > > > > obviously it works well enough for you in practice.  Only that we have
-> > > > > good reasons for doing it differently in GCC.
-> > > >
-> > > > Not questioning the validity of the reasons, but they created
-> > > > the unnecessary difference between compilers.
-> > >
-> > > Sounds to me like clang is relying on an unreliable hack that may
-> > > be difficult to implement in GCC, so let's see what's the best option
-> > > moving forwards in terms of a migration path for both GCC and clang.
-> >
-> > The following is a valid C code:
-> > static long (*foo) (void) = (void *) 1234;
-> > foo();
-> >
-> > and GCC has to generate correct assembly assuming it runs at -O1 or higher.
->
-> Providing -O1 or higher with gcc-bpf does not seem to work at the moment.
+Add SEC("ksyscall")/SEC("kretsyscall") sections and corresponding
+bpf_program__attach_ksyscall() API that simplifies tracing kernel syscalls
+through kprobe mechanism. Kprobing syscalls isn't trivial due to varying
+syscall handler names in the kernel and various ways syscall argument are
+passed, depending on kernel architecture and configuration. SEC("ksyscall")
+allows user to not care about such details and just get access to syscall
+input arguments, while libbpf takes care of necessary feature detection logic.
 
-Let's fix gcc first.
+There are still more quirks that are not straightforward to hide completely
+(see comments about mmap(), clone() and compat syscalls), so in such more
+advanced scenarios user might need to fall back to plain SEC("kprobe")
+approach, but for absolute majority of users SEC("ksyscall") is a big
+improvement.
 
-> > There is no indirect call insn defined in BPF ISA yet,
-> > so the -O0 behavior is undefined.
->
-> Well GCC at least seems to be able to compile BPF programs with -O0 using
-> kernel_helper. I assume -O0 is probably just targeting the minimum BPF ISA
-> optimization level or something like that which avoids indirect calls.
+As part of this patch set libbpf adds two more virtual __kconfig externs, in
+addition to existing LINUX_KERNEL_VERSION: LINUX_HAS_BPF_COOKIE and
+LINUX_HAS_SYSCALL_WRAPPER, which let's libbpf-provided BPF-side code minimize
+external dependencies and assumptions and let's user-space part of libbpf to
+perform all the feature detection logic. This benefits USDT support code,
+which now doesn't depend on BPF CO-RE for its functionality.
 
-There are other reasons why -O0 compiled progs will
-fail in the verifier.
+rfc->v1:
+  - drop dependency on kallsyms and speed up SYSCALL_WRAPPER detection (Alexei);
+  - drop dependency on /proc/config.gz in bpf_tracing.h (Yaniv);
+  - add doc comment and ephasize mmap(), clone() and compat quirks that are
+    not supported (Ilya);
+  - use mechanism similar to LINUX_KERNEL_VERSION to also improve USDT code.
 
-> >
-> > > Or we can just feature detect kernel_helper and leave the (void *)1 style
-> > > fallback in place until we drop support for clang variants that don't support
-> > > kernel_helper. This would provide GCC compatibility and a better migration
-> > > path for clang as well as clang will then automatically use the new variant
-> > > whenever support for kernel_helper is introduced.
-> >
-> > Support for valid C code will not be dropped from clang.
->
-> That wasn't what I was suggesting, I was suggesting adding support for
-> kernel_helper to clang, and then in the future libbpf(not clang) can
-> drop support
-> for the (void *)1 style in the future if desired(or can just keep the
-> fallback). By
-> feature detecting kernel_helper and providing a fallback we get a nice clean
-> migration path.
+Andrii Nakryiko (5):
+  libbpf: generalize virtual __kconfig externs and use it for USDT
+  selftests/bpf: add test of __weak unknown virtual __kconfig extern
+  libbpf: improve BPF_KPROBE_SYSCALL macro and rename it to BPF_KSYSCALL
+  libbpf: add ksyscall/kretsyscall sections support for syscall kprobes
+  selftests/bpf: use BPF_KSYSCALL and SEC("ksyscall") in selftests
 
-Makes sense. That deprecation step is far away though.
-Assuming that kernel_helper attr is actually necessary
-we have to add its support to clang as well.
-We have to keep compilers in sync.
-gcc-bpf is a niche. If gcc devs want it to become a real
-alternative to clang they have to always aim for feature parity
-instead of inventing their own ways of doing things.
+ tools/lib/bpf/bpf_tracing.h                   |  51 +++--
+ tools/lib/bpf/libbpf.c                        | 188 +++++++++++++++---
+ tools/lib/bpf/libbpf.h                        |  46 +++++
+ tools/lib/bpf/libbpf.map                      |   1 +
+ tools/lib/bpf/libbpf_internal.h               |   2 +
+ tools/lib/bpf/usdt.bpf.h                      |  16 +-
+ .../selftests/bpf/prog_tests/core_extern.c    |  17 +-
+ .../selftests/bpf/progs/bpf_syscall_macro.c   |   6 +-
+ .../selftests/bpf/progs/test_attach_probe.c   |  15 +-
+ .../selftests/bpf/progs/test_core_extern.c    |   3 +
+ .../selftests/bpf/progs/test_probe_user.c     |  27 +--
+ 11 files changed, 275 insertions(+), 97 deletions(-)
+
+-- 
+2.30.2
+
