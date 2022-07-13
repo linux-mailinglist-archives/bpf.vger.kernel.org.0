@@ -2,195 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C9A6572AD2
-	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 03:29:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA86572AF6
+	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 03:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231322AbiGMB3x (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jul 2022 21:29:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36616 "EHLO
+        id S233853AbiGMBj3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jul 2022 21:39:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230417AbiGMB3w (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jul 2022 21:29:52 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E87B41A5;
-        Tue, 12 Jul 2022 18:29:51 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id n206so3824679oia.6;
-        Tue, 12 Jul 2022 18:29:51 -0700 (PDT)
+        with ESMTP id S233945AbiGMBjI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jul 2022 21:39:08 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E807DD217D
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 18:39:06 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id j27so308292qtv.4
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 18:39:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=GK56lB3PgJDNhfaok+bTYlsAaggXRH2qzENpya+MjIk=;
-        b=BIiHRPkfm5uUS9EINwjJTTl02ZHOw+1lWUrQgXLiFWy88JWNNSG6FOAn2GaqsG6/+i
-         Ck3hj5FYFJwUk3+vwRQbgl3Wj80YpD+4cDA7S46IstV8xoV+juwnGUbUK9MSTgSSrXsu
-         dG9H3hX4hnmZpLxArIGrPcpDgggwVLI3+ep3aoWOztLWewYLZ512ZyXsXC4v3jGQZ9sQ
-         gSb91cGpCRNPMJxfY1TmxbE9flhuuPz57f52zjVMPudYHMZI6VV1QcSvLKK5O9sN2Xs2
-         y7m1POrjIBsrdplt7Wb6kQslyXejWP7nLZVe4E1erCPNKV9M+bAcfuEgQhTUsoE2yXop
-         r5GA==
+        bh=9tGIdYlpVxnM8b3rWqBQlHbDLwVsAz+2826iRXvItdE=;
+        b=qQVsKajbOccdFVYFE5rOsCTPl0xY7YYjsJ5LYlaeAKjgUBhc7DhuRgCeLw0JE2RMl+
+         kTzZ1pK2XIVj2vsxLxXRTU2SGi15GZX0USX4AEeUOrqVrLTU0hxlmShrHd7EOFA6o4Kg
+         fClxu1mEuHjpgZRLqilXsSzhLYxFN5bP61RjxJ57MVwGSB2L8f6SUqhDnP4gnLBfIM7l
+         pZ2m2n/CB6Vl1cxe90Q3F73ymOmIYfZxSZtDO7LhnEeaCwnD3SjQ0mOj1tj8v3IBYX2G
+         r0A6wz5babietLjHOv6Zr/K/M9OZ4nXqeLV9tieQktipdwcZMcNjhWDmPWFNviV/yMKD
+         dO0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=GK56lB3PgJDNhfaok+bTYlsAaggXRH2qzENpya+MjIk=;
-        b=KdUkLfMvggn9CPNjtxf2qNsdqVi7/xMtLmAJt8ihlD9f0jmWpRG7N9d8WFRO5EzntH
-         /0i5/AMf5FFceWVWKg3HmK+oobd7y71wx64438VSWv3m3p12ZfSEEOnKrdUPGIxFaJEP
-         EkbFbYg34HAWhSuff36xX1I1Nf7RjjGY3VaiyKCElPIWFLGdO9bn7t3KVmJ3PuP3j+PN
-         aYZwUcRVQsvWdB44nsNr83gwoHYyyPsQD2OvLvxZe4tYOEoKEeTpqq6hUq+GXw550F+c
-         oOy47MLdec+puNndxWUxkl1BkLE6ggMISb9avf6dWMCYMvMwbHu2RB6jW7EBf8OfI17P
-         dm0A==
-X-Gm-Message-State: AJIora/IrtdTQ3CEHC7hEHytJQisBDpxS1hn0DbwnRCpVxzDktOiqqTq
-        zY8AdxcbztoOKGrVQvWyUnji1GImml3GkxXdqUE=
-X-Google-Smtp-Source: AGRyM1sLoklF8WRKdEsdNJ5hpTSlHf8xvFYF1n9dV7kANUWNdHd6/uGg4fdXwQCiXzrwrku+R0RFY3OPegLt/UcEO04=
-X-Received: by 2002:a05:6808:308f:b0:339:f8af:ea62 with SMTP id
- bl15-20020a056808308f00b00339f8afea62mr583274oib.99.1657675791218; Tue, 12
- Jul 2022 18:29:51 -0700 (PDT)
+        bh=9tGIdYlpVxnM8b3rWqBQlHbDLwVsAz+2826iRXvItdE=;
+        b=h8p7Cjrh48qfKo7fjB5ORpQ65kB9e24YCIUerptyXPoMaFSaZmSMTQwkaK45ZagRL/
+         bDWMMAx3yKKj024mcyPlgHMPRq/qoo58a99t8A+SVmP8Ab1K1iTCgwbuRnlekpXF5blM
+         gfpqiGQXjkm7aJj70xqq1/wCHnGbMdiEJUTErU+dp6joOzsbELUw8elo+hzCXKffUbXw
+         Ol7BpWJ0CUAngIqehVUUNpnQT+FQho5t3D8EayFTBVhU0yyu/OOwhewuioxt7WfymiGn
+         RxCpVW3Hsirqf+QVV7fCrxpaX1Vt35JhgG3CwL9FL0w98oJxzTgEx+oohp8fPdMSaaMz
+         5WoQ==
+X-Gm-Message-State: AJIora+RhyIS5Ywu2J8wJrvxpEOWugAAE0ZGhzqgBZR7OBhO7wKXddO7
+        RlrVJH7glZVBwbcWYxofd6OFQnTbQAFH0gmr1WMznw==
+X-Google-Smtp-Source: AGRyM1tuuo5OAYPhQf2exQxCw07+wFaHPBUNDpQkRh6/rK4aiMmARjQXV+wU7IVlqv7Z7kk0nGYjqdM5U0A1fwz9NeA=
+X-Received: by 2002:a05:622a:1901:b0:31e:bb55:dc44 with SMTP id
+ w1-20020a05622a190100b0031ebb55dc44mr894628qtc.168.1657676345969; Tue, 12 Jul
+ 2022 18:39:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220706172814.169274-1-james.hilliard1@gmail.com>
- <a0bddf0b-e8c4-46ce-b7c6-a22809af1677@fb.com> <CADvTj4ovwExtM-bWUpJELy-OqsT=J9stmqbAXto8ds2n+G8mfw@mail.gmail.com>
- <CAEf4BzYwRyXG1zE5BK1ZXmxLh+ZPU0=yQhNhpqr0JmfNA30tdQ@mail.gmail.com>
- <87v8s260j1.fsf@oracle.com> <CAADnVQLQGHoj_gCOvdFFw2pRxgMubPSp+bRpFeCSa5zvcK2qRQ@mail.gmail.com>
- <CADvTj4qqxckZmxvL=97e-2W5M4DgCCMDV8RCFDg23+cY2URjTA@mail.gmail.com> <20220713011851.4a2tnqhdd5f5iwak@macbook-pro-3.dhcp.thefacebook.com>
-In-Reply-To: <20220713011851.4a2tnqhdd5f5iwak@macbook-pro-3.dhcp.thefacebook.com>
-From:   James Hilliard <james.hilliard1@gmail.com>
-Date:   Tue, 12 Jul 2022 19:29:39 -0600
-Message-ID: <CADvTj4o7z7J=4BOtKM9dthZyfFogV6hL5zKBwiBq7vs+bNhUHA@mail.gmail.com>
-Subject: Re: [PATCH v2] bpf/scripts: Generate GCC compatible helpers
+References: <20220712210603.123791-1-joannelkoong@gmail.com>
+ <Ys35McCz+TZEdorp@google.com> <CAJnrk1bVEBXUUjp71+VFaYrRqsDharKRfpvb1theJQ-fP5+EKQ@mail.gmail.com>
+ <CA+khW7jL+ajYEBXO_ge5gTHZ9ga+pAAzpvHSjyh+NtK=GL3RXg@mail.gmail.com> <CAADnVQKD54uwr0H8od60BAiBDMEoNcOi3fmxYUiDp6G9dzLQNA@mail.gmail.com>
+In-Reply-To: <CAADnVQKD54uwr0H8od60BAiBDMEoNcOi3fmxYUiDp6G9dzLQNA@mail.gmail.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Tue, 12 Jul 2022 18:38:54 -0700
+Message-ID: <CA+khW7jXs3vUQeRnzikg23Bd37XoZbGxwJswbq9CtNQhjZaejA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1] bpf: Tidy up verifier check_func_arg()
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "Jose E. Marchesi" <jose.marchesi@oracle.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+Cc:     Joanne Koong <joannelkoong@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 12, 2022 at 7:18 PM Alexei Starovoitov
+On Tue, Jul 12, 2022 at 6:26 PM Alexei Starovoitov
 <alexei.starovoitov@gmail.com> wrote:
 >
-> On Tue, Jul 12, 2022 at 07:10:27PM -0600, James Hilliard wrote:
-> > On Tue, Jul 12, 2022 at 10:48 AM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Tue, Jul 12, 2022 at 4:20 AM Jose E. Marchesi
-> > > <jose.marchesi@oracle.com> wrote:
-> > > >
-> > > >
-> > > > > CC Quentin as well
-> > > > >
-> > > > > On Mon, Jul 11, 2022 at 5:11 PM James Hilliard
-> > > > > <james.hilliard1@gmail.com> wrote:
-> > > > >>
-> > > > >> On Mon, Jul 11, 2022 at 5:36 PM Yonghong Song <yhs@fb.com> wrote:
-> > > > >> >
-> > > > >> >
-> > > > >> >
-> > > > >> > On 7/6/22 10:28 AM, James Hilliard wrote:
-> > > > >> > > The current bpf_helper_defs.h helpers are llvm specific and don't work
-> > > > >> > > correctly with gcc.
-> > > > >> > >
-> > > > >> > > GCC appears to required kernel helper funcs to have the following
-> > > > >> > > attribute set: __attribute__((kernel_helper(NUM)))
-> > > > >> > >
-> > > > >> > > Generate gcc compatible headers based on the format in bpf-helpers.h.
-> > > > >> > >
-> > > > >> > > This adds conditional blocks for GCC while leaving clang codepaths
-> > > > >> > > unchanged, for example:
-> > > > >> > >       #if __GNUC__ && !__clang__
-> > > > >> > >       void *bpf_map_lookup_elem(void *map, const void *key)
-> > > > >> > > __attribute__((kernel_helper(1)));
-> > > > >> > >       #else
-> > > > >> > >       static void *(*bpf_map_lookup_elem)(void *map, const void *key) = (void *) 1;
-> > > > >> > >       #endif
-> > > > >> >
-> > > > >> > It does look like that gcc kernel_helper attribute is better than
-> > > > >> > '(void *) 1' style. The original clang uses '(void *) 1' style is
-> > > > >> > just for simplicity.
-> > > > >>
-> > > > >> Isn't the original style going to be needed for backwards compatibility with
-> > > > >> older clang versions for a while?
-> > > > >
-> > > > > I'm curious, is there any added benefit to having this special
-> > > > > kernel_helper attribute vs what we did in Clang for a long time?
-> > > > > Did GCC do it just to be different and require workarounds like this
-> > > > > or there was some technical benefit to this?
-> > > >
-> > > > We did it that way so we could make trouble and piss you off.
-> > > >
-> > > > Nah :)
-> > > >
-> > > > We did it that way because technically speaking the clang construction
-> > > > works relying on particular optimizations to happen to get correct
-> > > > compiled programs, which is not guaranteed to happen and _may_ break in
-> > > > the future.
-> > > >
-> > > > In fact, if you compile a call to such a function prototype with clang
-> > > > with -O0 the compiler will try to load the function's address in a
-> > > > register and then emit an invalid BPF instruction:
-> > > >
-> > > >   28:   8d 00 00 00 03 00 00 00         *unknown*
-> > > >
-> > > > On the other hand the kernel_helper attribute is bullet-proof: will work
-> > > > with any optimization level, with any version of the compiler, and in
-> > > > our opinion it is also more readable, more tidy and more correct.
-> > > >
-> > > > Note I'm not saying what you do in clang is not reasonable; it may be,
-> > > > obviously it works well enough for you in practice.  Only that we have
-> > > > good reasons for doing it differently in GCC.
-> > >
-> > > Not questioning the validity of the reasons, but they created
-> > > the unnecessary difference between compilers.
+> On Tue, Jul 12, 2022 at 6:20 PM Hao Luo <haoluo@google.com> wrote:
 > >
-> > Sounds to me like clang is relying on an unreliable hack that may
-> > be difficult to implement in GCC, so let's see what's the best option
-> > moving forwards in terms of a migration path for both GCC and clang.
+> > On Tue, Jul 12, 2022 at 6:10 PM Joanne Koong <joannelkoong@gmail.com> wrote:
+> > >
+> > > On Tue, Jul 12, 2022 at 3:44 PM <sdf@google.com> wrote:
+> > > >
+> > > > On 07/12, Joanne Koong wrote:
+> > > > > This patch does two things:
+> > > >
+> > > > > 1. For matching against the arg type, the match should be against the
+> > > > > base type of the arg type, since the arg type can have different
+> > > > > bpf_type_flags set on it.
+> > > >
+> > > > Does this need a fixes tag? Something around the following maybe:
+> > > >
+> > > > Fixes: d639b9d13a39 ("bpf: Introduce composable reg, ret and arg types.")
+> > > >
+> > > > ?
+> > > I will add that tag. Thanks!
+> >
+> > Joanne and Stan, IMO this is not necessary. I think this change is a
+> > cleanup rather than a fix.
 >
-> The following is a valid C code:
-> static long (*foo) (void) = (void *) 1234;
-> foo();
->
-> and GCC has to generate correct assembly assuming it runs at -O1 or higher.
+> I don't see the bug easier.
+> The helper types that are compared directly as arg_type
+> instead of base_type(arg_type) were all without flags so far.
+> So I don't think the patch changes behavior or fixes anything today.
+> It looks like a good future proofing change though.
+> Am I missing something?
 
-Providing -O1 or higher with gcc-bpf does not seem to work at the moment.
+Agree, I mean adding a fixes tag isn't necessary and the patch is
+toward a good direction. As long as the selftests pass on this patch,
+it looks good to me.
 
-> There is no indirect call insn defined in BPF ISA yet,
-> so the -O0 behavior is undefined.
-
-Well GCC at least seems to be able to compile BPF programs with -O0 using
-kernel_helper. I assume -O0 is probably just targeting the minimum BPF ISA
-optimization level or something like that which avoids indirect calls.
-
->
-> > Or we can just feature detect kernel_helper and leave the (void *)1 style
-> > fallback in place until we drop support for clang variants that don't support
-> > kernel_helper. This would provide GCC compatibility and a better migration
-> > path for clang as well as clang will then automatically use the new variant
-> > whenever support for kernel_helper is introduced.
->
-> Support for valid C code will not be dropped from clang.
-
-That wasn't what I was suggesting, I was suggesting adding support for
-kernel_helper to clang, and then in the future libbpf(not clang) can
-drop support
-for the (void *)1 style in the future if desired(or can just keep the
-fallback). By
-feature detecting kernel_helper and providing a fallback we get a nice clean
-migration path.
+Acked-by: Hao Luo <haoluo@google.com>
