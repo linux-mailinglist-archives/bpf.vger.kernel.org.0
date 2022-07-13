@@ -2,88 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D4BF572A54
-	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 02:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3779572A61
+	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 02:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229671AbiGMAkV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jul 2022 20:40:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32992 "EHLO
+        id S230461AbiGMAtk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jul 2022 20:49:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230267AbiGMAkS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jul 2022 20:40:18 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E1016EEB9
-        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 17:40:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 13CC4B81C5C
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 00:40:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A00CCC341CA;
-        Wed, 13 Jul 2022 00:40:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1657672814;
-        bh=D3EcJT8vt9EEx0/SxalKPmUzuGjy0cVf/4fI/knb/Pw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=hDJDq9zAMWltiHDSK0Lp+ww6naNZYOc3NIVC1aVL37UjMqvCCt7QlYKUs5syvc2Y3
-         G7qriZWb4tZjXtuxl3ftmJ04lNDSYltu4kcBoFyq7EZcLabfG3D6styFoUPX/50hFF
-         E5jqm4xH362lMENYUB6WuMRtHRm1Gvx49mPGoAZlj8wU1fT8S8DAPAgIdTGubGyjkh
-         92z9FhKr/aO6QEwYEk+R2VhsBRiTP5p+B6Dq4SYlLDUIU02TSZ1jV4FfiX5/L1d2+i
-         RSXd+wKKtxJ5UPaGE2+UlwAEfc+jU2VbzwDtNYE6M5zAG7UFGdpwqcHzWf4OgUWgRC
-         NnmNkvwcTdBwQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 802A4E45227;
-        Wed, 13 Jul 2022 00:40:14 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S230440AbiGMAtj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jul 2022 20:49:39 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05DE4BD6B2
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 17:49:37 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id j22so17246767ejs.2
+        for <bpf@vger.kernel.org>; Tue, 12 Jul 2022 17:49:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wEW+uTd/RBYCxiEUkE6M+XESEKJryNMphRsuANsRi4o=;
+        b=myyFuufKVJwZNZw7kHSLirDsnLjUnN5YB8+9hTGF2aJoLxFORXYgRLyclWEbs2LvFb
+         P0SWueYq5YWPESW506cEzMLMB+c+dgjhIuUXm6rsomhO6puXsBN8QEjz6zt4Gh0dMROG
+         7iMfURdRWsHn2IkoY6Po5hskkTMFOAJ88Kvu9IOk7/+4D86N3b0ffRRAj8TsbqZF9mWw
+         5ADLf5zJpAR65JetsKpUJagYz8NPQbZyjvIS2TzpryBYx63ScGGFWQnN3ucmOljBDuhd
+         0W2NRePBz0bB3may2uOtrH6vRcDMvr3k9bKn/1ZNwoZn0EA6266HiaHERg9zMUTQb2Cp
+         bZnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wEW+uTd/RBYCxiEUkE6M+XESEKJryNMphRsuANsRi4o=;
+        b=nTk7PvctYBPacBq9nwgcQcg4CsiIK5kBLqefyv5GE+zeWgEB8xHP2SfnMtNEy8N1Wq
+         1Sqnu4UWdckEVsITFkHcvdKMFLjos7UC+H+Cj3kwK4W3SVn4JGUH/G16zy7IfKdBjyvf
+         7KaXIbKFmIMy9/a6ju6/1DNxJrQqdFBiBXmEumczzwfOG9Jyelxx055ev3mJ+HcBDUXp
+         uuRV5gthFittHUQdCmL+g0mvXrsQYe9RbnLMPKqSZM3rdZ9TREJq2NxGPw0W7SNMt1eT
+         YoScnrt9snXcYQsVPhiGU8a2wTuqVrd51elrA+NBBasIoeO/TyVt7n2++jBxBoGA7hO2
+         iVyg==
+X-Gm-Message-State: AJIora8hH9w+x59SohKBfE4XbkTgRVPE7n05P8JwTY/0fEG3YfL1rznC
+        o6FQ3NcVgXS1iBrstMfNvKrJjtb9atxJ9E3d8JmUgpYf
+X-Google-Smtp-Source: AGRyM1v5sSLHRfoyycqQVnfJbg+dcC5pE2dBxhy6QW6ovYGJ6X50KT3a4kJ5cnAGbsk+9R/Q/K8SH5hby7hj9ZL5NBM=
+X-Received: by 2002:a17:906:9b86:b0:6fe:d37f:b29d with SMTP id
+ dd6-20020a1709069b8600b006fed37fb29dmr792085ejc.327.1657673375602; Tue, 12
+ Jul 2022 17:49:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] bpf, x86: fix freeing of not-finalized bpf_prog_pack
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165767281452.22277.11387727025043528584.git-patchwork-notify@kernel.org>
-Date:   Wed, 13 Jul 2022 00:40:14 +0000
-References: <20220706002612.4013790-1-song@kernel.org>
-In-Reply-To: <20220706002612.4013790-1-song@kernel.org>
-To:     Song Liu <song@kernel.org>
-Cc:     bpf@vger.kernel.org, daniel@iogearbox.net, kernel-team@fb.com,
-        ast@kernel.org, andrii@kernel.org,
-        syzbot+2f649ec6d2eea1495a8f@syzkaller.appspotmail.com,
-        syzbot+87f65c75f4a72db05445@syzkaller.appspotmail.com
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220709154457.57379-1-laoar.shao@gmail.com> <20220709154457.57379-2-laoar.shao@gmail.com>
+ <CALvZod5GfxSpQBZ2Kcbv9afHhjWy+8oEgaNUrSPM7VTdWY464w@mail.gmail.com>
+In-Reply-To: <CALvZod5GfxSpQBZ2Kcbv9afHhjWy+8oEgaNUrSPM7VTdWY464w@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 12 Jul 2022 17:49:24 -0700
+Message-ID: <CAADnVQJvxoteUZdnsoyMQ53Qx1bvyBz=ybQGrsWL9-4R=aasUw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: Make non-preallocated allocation low priority
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Yafang Shao <laoar.shao@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hao Luo <haoluo@google.com>, bpf <bpf@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>, NeilBrown <neilb@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Mon, Jul 11, 2022 at 12:19 PM Shakeel Butt <shakeelb@google.com> wrote:
+>
+> On Sat, Jul 9, 2022 at 8:45 AM Yafang Shao <laoar.shao@gmail.com> wrote:
+> >
+> > GFP_ATOMIC doesn't cooperate well with memcg pressure so far, especially
+> > if we allocate too much GFP_ATOMIC memory. For example, when we set the
+> > memcg limit to limit a non-preallocated bpf memory, the GFP_ATOMIC can
+> > easily break the memcg limit by force charge. So it is very dangerous to
+> > use GFP_ATOMIC in non-preallocated case. One way to make it safe is to
+> > remove __GFP_HIGH from GFP_ATOMIC, IOW, use (__GFP_ATOMIC |
+> > __GFP_KSWAPD_RECLAIM) instead, then it will be limited if we allocate
+> > too much memory. There's a plan to completely remove __GFP_ATOMIC in the
+> > mm side[1], so let's use GFP_NOWAIT instead.
+> >
+> > We introduced BPF_F_NO_PREALLOC is because full map pre-allocation is
+> > too memory expensive for some cases. That means removing __GFP_HIGH
+> > doesn't break the rule of BPF_F_NO_PREALLOC, but has the same goal with
+> > it-avoiding issues caused by too much memory. So let's remove it.
+> >
+> > This fix can also apply to other run-time allocations, for example, the
+> > allocation in lpm trie, local storage and devmap. So let fix it
+> > consistently over the bpf code
+> >
+> > It also fixes a typo in the comment.
+> >
+> > [1]. https://lore.kernel.org/linux-mm/163712397076.13692.4727608274002939094@noble.neil.brown.name/
+> >
+> > Cc: Roman Gushchin <roman.gushchin@linux.dev>
+> > Cc: Shakeel Butt <shakeelb@google.com>
+> > Cc: NeilBrown <neilb@suse.de>
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+>
+> Reviewed-by: Shakeel Butt <shakeelb@google.com>
 
-This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
-
-On Tue, 5 Jul 2022 17:26:12 -0700 you wrote:
-> syzbot reported a few issues with bpf_prog_pack [1], [2]. These are
-> triggered when the program passed initial JIT in jit_subprogs(), but
-> failed final pass of JIT. At this point, bpf_jit_binary_pack_free() is
-> called before bpf_jit_binary_pack_finalize(), and the whole 2MB page is
-> freed.
-> 
-> Fix this with a custom bpf_jit_free() for x86_64, which calls
-> bpf_jit_binary_pack_finalize() if necessary. Also, with custom
-> bpf_jit_free(), bpf_prog_aux->use_bpf_prog_pack is not needed any more,
-> remove it.
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf] bpf, x86: fix freeing of not-finalized bpf_prog_pack
-    https://git.kernel.org/bpf/bpf-next/c/1d5f82d9dd47
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Applied to bpf-next.
