@@ -2,83 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC8A8572D05
-	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 07:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E84E572DCE
+	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 07:59:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229662AbiGMFZs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Jul 2022 01:25:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39820 "EHLO
+        id S230237AbiGMF7r (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Jul 2022 01:59:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbiGMFZq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Jul 2022 01:25:46 -0400
-Received: from mail-oa1-x2a.google.com (mail-oa1-x2a.google.com [IPv6:2001:4860:4864:20::2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6FEEDC18D;
-        Tue, 12 Jul 2022 22:25:45 -0700 (PDT)
-Received: by mail-oa1-x2a.google.com with SMTP id 586e51a60fabf-fe023ab520so12838045fac.10;
-        Tue, 12 Jul 2022 22:25:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sPp3aq0xZox3YgcmSdjOtI+bv4N4Elhm3ft32O6ITtU=;
-        b=Ze+BeJ0tPtuKyIdK9+nYuwG82J9kkGgHxSxb3fhFQSqz/IgTCMdlj+LG4nnRFLZ+Y1
-         /Xfi49U8mCxM8UBHo+J0CbFdQGij738KNFD/RA+VOiWWtSJzXWwk2QMllMzz07S+gMfO
-         KzuO0rBmFJfcjjmsn5I65gz9PZr6kD/J4iq7LeOXZHcBsTOU0AvLJQEfb9+PcoSqOHxt
-         O8XfX2XSMTEsxVtGkitz1gvUSeSxRy5qr1Dw8z89vjerWeDuyqHag7FLZloD5UzOOLZX
-         aKwP7j60DfTLdAtWSx+zppRFh0o/fG9p5P5m8hBHzkYz8yeUzo2gCavdIgSR38HE0JXY
-         horA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sPp3aq0xZox3YgcmSdjOtI+bv4N4Elhm3ft32O6ITtU=;
-        b=A37a+9hM/BXaSBVPkDxGSw8Eo5+WgA+bOj/FFGAd1jehTp+npcAyRy+KzuGThk0Z5q
-         urd3ZoA90C0x1L5mpW5wc6qCxbuR2+JiaYZjikVQ7yYxgCBJ+Ti8Yg8uaXkJWpM5P/pQ
-         PPnSscTqvoHJmYCB3Yh5mjgIVrU3X7H8xXd9/uLKBNWktT3IgAcpMU6A64WSQLluPcKz
-         ZmjpKCJqCZ/t9J//9zZqkk76I8YhtjyiwbGi77ij21M9gEO2RIKdUGv+Fstb1wXJrcwI
-         JHL/wbhS/OOuzMGNg3tbrjBC22HjmrP/hhBhdS0UupS5/ng2U2sG9ED2XX6Xr5vgOey8
-         etew==
-X-Gm-Message-State: AJIora+YK5TjfAIL8hEDJKAEiDUfrXItEbXvLZpcFDbu1HZZrozzm2Vu
-        zr8KqLlCQ7/ej81Lc5J3LpaEUtbarjbUEzXzeOI=
-X-Google-Smtp-Source: AGRyM1vQXFje4zdFVX9Smy3FQLg2cwpHs+aHjhTMwyS0O4HCACAauNpLvl6mm/3P02dEVw66PJRLsEqG86+roxnGbJc=
-X-Received: by 2002:a05:6870:d0ce:b0:f3:3856:f552 with SMTP id
- k14-20020a056870d0ce00b000f33856f552mr914530oaa.99.1657689944976; Tue, 12 Jul
- 2022 22:25:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <a0bddf0b-e8c4-46ce-b7c6-a22809af1677@fb.com> <CADvTj4ovwExtM-bWUpJELy-OqsT=J9stmqbAXto8ds2n+G8mfw@mail.gmail.com>
- <CAEf4BzYwRyXG1zE5BK1ZXmxLh+ZPU0=yQhNhpqr0JmfNA30tdQ@mail.gmail.com>
- <87v8s260j1.fsf@oracle.com> <CAADnVQLQGHoj_gCOvdFFw2pRxgMubPSp+bRpFeCSa5zvcK2qRQ@mail.gmail.com>
- <CADvTj4qqxckZmxvL=97e-2W5M4DgCCMDV8RCFDg23+cY2URjTA@mail.gmail.com>
- <20220713011851.4a2tnqhdd5f5iwak@macbook-pro-3.dhcp.thefacebook.com>
- <CADvTj4o7z7J=4BOtKM9dthZyfFogV6hL5zKBwiBq7vs+bNhUHA@mail.gmail.com>
- <CAADnVQJAz7BcZjrBwu-8MjQprh86Z_UpWGMSQtFnowZTc4d6Vw@mail.gmail.com>
- <CADvTj4qtCfmsu=dMZx9LtaDMOSNsOxGVSa1g3USEWroA1AfTJA@mail.gmail.com> <20220713042549.uljgrp4lffianxyj@macbook-pro-3.dhcp.thefacebook.com>
-In-Reply-To: <20220713042549.uljgrp4lffianxyj@macbook-pro-3.dhcp.thefacebook.com>
-From:   James Hilliard <james.hilliard1@gmail.com>
-Date:   Tue, 12 Jul 2022 23:25:33 -0600
-Message-ID: <CADvTj4qm5MyUtbHq6iOTiqDyJX=ra=ETOEVq-iXggzzEMhXJ8g@mail.gmail.com>
-Subject: Re: [PATCH v2] bpf/scripts: Generate GCC compatible helpers
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "Jose E. Marchesi" <jose.marchesi@oracle.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        llvm@lists.linux.dev
+        with ESMTP id S233809AbiGMF7q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Jul 2022 01:59:46 -0400
+Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01olkn2057.outbound.protection.outlook.com [40.92.99.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E54045004D;
+        Tue, 12 Jul 2022 22:59:45 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NfYfIu163HRdMiYqZ+V5zcAjdwbUN2HTmMXxJOxQl43uSIBOA9MbfOdVyMibggM6dNjLMTHSfSb6/pSp+fcyucL64XuutNBC9INf2ud1hvMjE4nwmqaTvNZqKCpK69hMxSShDI9L4JivPaOuK5gNMrLk+JkvSy1jChpWMIrZnDUMsaGwdsbqOcd3zu+SVMzJYmDXBuCowqEVeyPBM+MkzKbEq8vjMemkrE5lARczgqg4MLSSp6YCeF1Dy3vlV/3Bb/NVKp44/8fZh1AUk82m/vQUXI2nrjXEeKO2NAWbzv8Iegndi3HHj35mC60WF/hon7QIqJs4VAHixi1IApyJWg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bPy3Eoy+X4lU7Kn9ow8KPehVfgPt+vVKjjaFLok9OAk=;
+ b=bqT556oAdy0IGay7jSus+/Su4fm5tOCxXqhNNeQgx7FcW0U+736RbAF4FpiJTmCEi8bsW/0x3KWIo3tZ9tQlvbt8bw9UY2kZ51ZoX/VDwQvN3avEL/JXM0003SO7Tbl/GqFpEOgcWeinetzhasLeRwUBXQNWoG1nJlJyob38l724bd525cxcbK1vp/POEzEkdvBN0e+Fh4BXJGSgSFOLFB4kO5KOPO7WLVY7UxO2w/8bL57IOgkX0L00wl/zc6XNcmrltvVus5YlH1nkE/AsCDPkPcbU3gDTOWwMYzaHpfD3wHaQSLM4D47NQS0Cfnd6qvehJROQDiCDxVmyGhw/ZQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bPy3Eoy+X4lU7Kn9ow8KPehVfgPt+vVKjjaFLok9OAk=;
+ b=NUebSj3kraGexcmeHLGRSaMUhu2Mt+S/OrVJ1Vm8I47lJC5875EYMkoOk2sIZPPC7GlR6l5GODarGKBXio51kTzzmq0hMMDKWbMjjjWYZ7wkvYIR0/fFHcZD6wQBPdj3KCy1dDTNQPrMgU7fsIxL5T1rnZb3YYbpkNyaG3q8u7von0n6GTy++TWGEixBqb+27H14MJTCuvrvJWYEOnegnVaWjEqLn00klxnfIvrxOmBmM/e+Lbxr2R0sD1mS6WKR3xjByigmWKnfJ7vw+Gs7+v2w+MFSvxZLOpUt7qpElXnSJIHoE4VfkXHTgloAV7zTlaxXiEyr931UkCb9ZkiPhw==
+Received: from OSZP286MB1725.JPNP286.PROD.OUTLOOK.COM (2603:1096:604:1b9::12)
+ by OS3P286MB1073.JPNP286.PROD.OUTLOOK.COM (2603:1096:604:109::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.16; Wed, 13 Jul
+ 2022 05:59:43 +0000
+Received: from OSZP286MB1725.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::5999:44e0:89f9:487d]) by OSZP286MB1725.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::5999:44e0:89f9:487d%9]) with mapi id 15.20.5438.012; Wed, 13 Jul 2022
+ 05:59:43 +0000
+Message-ID: <OSZP286MB1725CD3371AEC94272D9CD48B8899@OSZP286MB1725.JPNP286.PROD.OUTLOOK.COM>
+Subject: Re: [PATCH v2] libbpf: fix the name of a reused map
+From:   Anquan Wu <leiqi96@hotmail.com>
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, kpsingh@kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 13 Jul 2022 13:59:06 +0800
+In-Reply-To: <Ys0xcf2yRG4fjkBY@krava>
+References: <OSZP286MB1725CEA1C95C5CB8E7CCC53FB8869@OSZP286MB1725.JPNP286.PROD.OUTLOOK.COM>
+         <Ys0xcf2yRG4fjkBY@krava>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4-1ubuntu2 
+Content-Transfer-Encoding: 8bit
+X-TMN:  [7K2n+7YutRwhDZ+juH20htS+h2WOovjq]
+X-ClientProxiedBy: SG2PR02CA0043.apcprd02.prod.outlook.com
+ (2603:1096:3:18::31) To OSZP286MB1725.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:604:1b9::12)
+X-Microsoft-Original-Message-ID: <9f08efd54f7a2e06df1f36cd2b00657bd4b594af.camel@hotmail.com>
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ff3ab157-be84-43a2-b4b7-08da6494e11a
+X-MS-TrafficTypeDiagnostic: OS3P286MB1073:EE_
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5cmUhIeB95eR9reJM4sAUzoTBD9VbM2KrxydX2/o7vyMq3SMTNP+1rluBfRP9lrSywORWDSqIiaP0e4mbO1aKuRTvtKqaB16tr6YfYR4uh+HaTZC8DegJLrrZXzWtZgezNSOkBvjz4vp9NmGPx48M0AIi6ZBfMj0XlUPRK+vwDxNYObPRLUaK/MH7D5YMRmOQOE4D2znYeWvqny8+Wf/73DWtwPTP5OHw56ltkLIllX252R5b3xl/gsgW+NHKXoATqFZKrWol49haoOAX3PSdKvwfsWzmOCRDue7NVeRMuFMSB7rTQ0Te28uskqAYy1ILMpzp/zqeUHOCbgmCeDP+HjjtvEAtuQJPPBc2XIUlXx9HhJ1w4mmQhlvjcJdSwGKSaFRYnT/nv32dtmuZP4X7Z7upom/cdqlP5LpnifxfR8tTGRoN8SeKR7KwJpe9aLYLMLdtHbcVcW8BP1BrB8rj8BIPwBpycc8xlt+cx3yXNCQOBTYz5bq37cwNHVsgj4MOQgrUltwmQ4s2F4eZSf0AdRm68AJCqnQ8KLrKHA8jrNU9Cb0pvG7MOEzqs+qjvckp7xSN1FytWIY04aGcbjA2mmOnBcf85reD81hY3BviFpGxBOEtqpGZPiMn0mYUVi75aOQy71mVjwlg0MqEODnysSYneFt0hmkO88GTOF3CIMYZz+ZNZrxVwvuw2xBqY94aY7bMmKE25VU0toPSjE+V+T93RNRGsPaXPh+OpaM+NEmyOM12pP4F0hSzZbcVMZyFWITuSTNFUs6W3MzllcXUA==
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eDZCMXZsMFQvSlVTWHhTVGpKeTVTUnNjZ2paT0dUSUxYWkp0N3lOandiNi9n?=
+ =?utf-8?B?ZWllZ3duMGhDZERNOTNMVWV2S2JQOTlmRTFlZ2s2NmUweU9UaldrMjA2WWNL?=
+ =?utf-8?B?WWN3UHdrN1VIeG1YRUp6S2k0bFFtSEpNWll5cGl0VFY2VDFZTTZtbzNHdGZn?=
+ =?utf-8?B?eU9HYldKKzVSeGZVVjI5Zzh2QWlzQTdiSThNbEhZelFPanlNbmY1UnpSYUVH?=
+ =?utf-8?B?U2Q0WnpCRng2Zi9JZzNRd2pIeWlsYkluNjVsRjdCd0lrRFMyTnFiclI3a3Qy?=
+ =?utf-8?B?eVNSV3hjRnRYeFAzWXpzb3hGdmRsc1R1eGozczc1UWVRTmpVVTFOMFVrTmhl?=
+ =?utf-8?B?d2lLaWZiMFFpV1FKOG41blFyNUZ0RmZ6L1g1RWFnVW5TTG9obzgvcG9NRVJE?=
+ =?utf-8?B?cjNQVjVwNGtOejRUS2ZrSWRDeFRRYm1OdGJZRnduOWRqemJBdEY4RmlqVVNE?=
+ =?utf-8?B?Wk91THJ6V1RCR1FPUEVuMmJVeVVCaGR2bTJXTnBJZDdOb1pyMDNtVHJTMWFO?=
+ =?utf-8?B?M3l1QlRvTERaaGorVGkyUnRkR0VOOURQbkFKRHl2RG1kaHpLNkplTG1jWlJx?=
+ =?utf-8?B?VzdWMzIxNFBWVkh4RDJyNG5sbjNLSlV3QmRGL2NLbklJbDVqazdZMnRveFBr?=
+ =?utf-8?B?aWFXN0FseVM5aHFPZUIvVENFUGZhVzVaVGZ4eitHT2pBRndWUFhIMTM2SzhK?=
+ =?utf-8?B?ZU5aQitENERxQ1F0SnhZdTEyWDlKblZCYVBiSUZFZlMvQTBGb3B4b1lHaHFL?=
+ =?utf-8?B?R1dCcUNWWlJQcGFFUUE0aU4xRE9zNVlQSEdtYXprckQwUlFzRDV5RUpCWlZH?=
+ =?utf-8?B?K0xsbFZaU1NzUXNWM3VmVi9KSU5sN3JUWFNWcGVxbk81c25TV3h5enpTcUJz?=
+ =?utf-8?B?d3M5elAvSnpPRmViREpNdk1ZMTJ0aVJDKzJ2S0RyNlpyMGg5NTZ2Y2NES3gw?=
+ =?utf-8?B?SlRhNUVoRlYxZ1BqVkVKemgwSmUyZUtoRklwcy91YlVYYnltQ3hMclZyS0Y3?=
+ =?utf-8?B?STlwRnJXcnMxSWl3cUc2ZWZFSXZFdlZQa1psc0VYVCtsenhwcXJlWjAwY0VL?=
+ =?utf-8?B?UjhSWCszRmZSbmlvSWN3UGZQUEc0V01PUnhVaFlvd00vdll4VkM2bFJZWm1n?=
+ =?utf-8?B?eG9QMGpLRzhSR0xaTDJHZXltY0VXaVdxSFp5YjZWcitWWXhpeHY5VEEyVnJu?=
+ =?utf-8?B?a3lnZUF1MTFrVWhCZEZWZDlSLzFPK1ppaEVMMkRpMGIwZElJVkdGMVZtVjZ0?=
+ =?utf-8?B?N0xQNnJLNEx5dHN4cUo5ZEtRNXUwL2ZBOW9oeUdUT2xpVlVWSUhNSXIzL2NP?=
+ =?utf-8?B?OFcwcGpKcGNBVk4rengrK3VuZlZRVUVxdEl0UzAzZUF4V0xQNTZDdTNyRXpT?=
+ =?utf-8?B?RUYxdlU2MWdSb2trb3JabWhmU1FGeDJsaHNKMmNWMGlCOE5xNE5UYThxK1BE?=
+ =?utf-8?B?aG9CWERkZFVqOFM4cmc0ZzlvUlhvSDlrRWZvNDY3UU93SkVRWTIyck9ZSDM5?=
+ =?utf-8?B?V25CQSs4KzFRa0syTlhtRytKK3BGenZoV29RVnNxR3NjaHUxOVV0TkVnaXVs?=
+ =?utf-8?B?NElKcGdrbVZhUjF1Rlg5blRKV280d0k4WmNRZGROUFVrRldkb0ZJeXJRMTc3?=
+ =?utf-8?B?OEthcDNkaUVqREcyVGJmcWYyNGRZNTRzK204U2FtQ2ZhL0ZKZmJJcm90WitK?=
+ =?utf-8?B?bFdERGlrRFRwQWFZSkFzaEFJak81RG9uOHJ5dFgxS2FuNHRuUEpFVUhRPT0=?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-05f45.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: ff3ab157-be84-43a2-b4b7-08da6494e11a
+X-MS-Exchange-CrossTenant-AuthSource: OSZP286MB1725.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jul 2022 05:59:42.9968
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3P286MB1073
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,238 +113,102 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 12, 2022 at 10:25 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Jul 12, 2022 at 08:56:35PM -0600, James Hilliard wrote:
-> > On Tue, Jul 12, 2022 at 7:45 PM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Tue, Jul 12, 2022 at 6:29 PM James Hilliard
-> > > <james.hilliard1@gmail.com> wrote:
-> > > >
-> > > > On Tue, Jul 12, 2022 at 7:18 PM Alexei Starovoitov
-> > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > >
-> > > > > On Tue, Jul 12, 2022 at 07:10:27PM -0600, James Hilliard wrote:
-> > > > > > On Tue, Jul 12, 2022 at 10:48 AM Alexei Starovoitov
-> > > > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > > > >
-> > > > > > > On Tue, Jul 12, 2022 at 4:20 AM Jose E. Marchesi
-> > > > > > > <jose.marchesi@oracle.com> wrote:
-> > > > > > > >
-> > > > > > > >
-> > > > > > > > > CC Quentin as well
-> > > > > > > > >
-> > > > > > > > > On Mon, Jul 11, 2022 at 5:11 PM James Hilliard
-> > > > > > > > > <james.hilliard1@gmail.com> wrote:
-> > > > > > > > >>
-> > > > > > > > >> On Mon, Jul 11, 2022 at 5:36 PM Yonghong Song <yhs@fb.com> wrote:
-> > > > > > > > >> >
-> > > > > > > > >> >
-> > > > > > > > >> >
-> > > > > > > > >> > On 7/6/22 10:28 AM, James Hilliard wrote:
-> > > > > > > > >> > > The current bpf_helper_defs.h helpers are llvm specific and don't work
-> > > > > > > > >> > > correctly with gcc.
-> > > > > > > > >> > >
-> > > > > > > > >> > > GCC appears to required kernel helper funcs to have the following
-> > > > > > > > >> > > attribute set: __attribute__((kernel_helper(NUM)))
-> > > > > > > > >> > >
-> > > > > > > > >> > > Generate gcc compatible headers based on the format in bpf-helpers.h.
-> > > > > > > > >> > >
-> > > > > > > > >> > > This adds conditional blocks for GCC while leaving clang codepaths
-> > > > > > > > >> > > unchanged, for example:
-> > > > > > > > >> > >       #if __GNUC__ && !__clang__
-> > > > > > > > >> > >       void *bpf_map_lookup_elem(void *map, const void *key)
-> > > > > > > > >> > > __attribute__((kernel_helper(1)));
-> > > > > > > > >> > >       #else
-> > > > > > > > >> > >       static void *(*bpf_map_lookup_elem)(void *map, const void *key) = (void *) 1;
-> > > > > > > > >> > >       #endif
-> > > > > > > > >> >
-> > > > > > > > >> > It does look like that gcc kernel_helper attribute is better than
-> > > > > > > > >> > '(void *) 1' style. The original clang uses '(void *) 1' style is
-> > > > > > > > >> > just for simplicity.
-> > > > > > > > >>
-> > > > > > > > >> Isn't the original style going to be needed for backwards compatibility with
-> > > > > > > > >> older clang versions for a while?
-> > > > > > > > >
-> > > > > > > > > I'm curious, is there any added benefit to having this special
-> > > > > > > > > kernel_helper attribute vs what we did in Clang for a long time?
-> > > > > > > > > Did GCC do it just to be different and require workarounds like this
-> > > > > > > > > or there was some technical benefit to this?
-> > > > > > > >
-> > > > > > > > We did it that way so we could make trouble and piss you off.
-> > > > > > > >
-> > > > > > > > Nah :)
-> > > > > > > >
-> > > > > > > > We did it that way because technically speaking the clang construction
-> > > > > > > > works relying on particular optimizations to happen to get correct
-> > > > > > > > compiled programs, which is not guaranteed to happen and _may_ break in
-> > > > > > > > the future.
-> > > > > > > >
-> > > > > > > > In fact, if you compile a call to such a function prototype with clang
-> > > > > > > > with -O0 the compiler will try to load the function's address in a
-> > > > > > > > register and then emit an invalid BPF instruction:
-> > > > > > > >
-> > > > > > > >   28:   8d 00 00 00 03 00 00 00         *unknown*
-> > > > > > > >
-> > > > > > > > On the other hand the kernel_helper attribute is bullet-proof: will work
-> > > > > > > > with any optimization level, with any version of the compiler, and in
-> > > > > > > > our opinion it is also more readable, more tidy and more correct.
-> > > > > > > >
-> > > > > > > > Note I'm not saying what you do in clang is not reasonable; it may be,
-> > > > > > > > obviously it works well enough for you in practice.  Only that we have
-> > > > > > > > good reasons for doing it differently in GCC.
-> > > > > > >
-> > > > > > > Not questioning the validity of the reasons, but they created
-> > > > > > > the unnecessary difference between compilers.
-> > > > > >
-> > > > > > Sounds to me like clang is relying on an unreliable hack that may
-> > > > > > be difficult to implement in GCC, so let's see what's the best option
-> > > > > > moving forwards in terms of a migration path for both GCC and clang.
-> > > > >
-> > > > > The following is a valid C code:
-> > > > > static long (*foo) (void) = (void *) 1234;
-> > > > > foo();
-> > > > >
-> > > > > and GCC has to generate correct assembly assuming it runs at -O1 or higher.
-> > > >
-> > > > Providing -O1 or higher with gcc-bpf does not seem to work at the moment.
-> > >
-> > > Let's fix gcc first.
-> >
-> > If the intention is to migrate to kernel_helper for clang as well it
-> > seems kind of
-> > redundant, is there a real world use case for supporting the '(void *)
-> > 1' style in
-> > GCC rather than just adding feature detection+kernel_helper support to libbpf?
-> >
-> > My assumption is that kernel helpers are in practice always used via libbpf
-> > which appears to be sufficient in terms of being able to provide a compatibility
-> > layer via feature detection. Or is there some use case I'm missing here?
->
-> static long (*foo) (void) = (void *) 1234;
-> is not about calling into "kernel helpers".
-> There is no concept of "kernel" in BPF ISA.
+On Tue, 2022-07-12 at 10:31 +0200, Jiri Olsa wrote:
+> On Tue, Jul 12, 2022 at 11:15:40AM +0800, Anquan Wu wrote:
+> > BPF map name is limited to BPF_OBJ_NAME_LEN.
+> > A map name is defined as being longer than BPF_OBJ_NAME_LEN,
+> > it will be truncated to BPF_OBJ_NAME_LEN when a userspace program
+> > calls libbpf to create the map. A pinned map also generates a path
+> > in the /sys. If the previous program wanted to reuse the map，
+> > it can not get bpf_map by name, because the name of the map is only
+> > partially the same as the name which get from pinned path.
+> > 
+> > The syscall information below show that map name
+> > "process_pinned_map"
+> > is truncated to "process_pinned_".
+> > 
+> >     bpf(BPF_OBJ_GET, {pathname="/sys/fs/bpf/process_pinned_map",
+> >     bpf_fd=0, file_flags=0}, 144) = -1 ENOENT (No such file or
+> > directory)
+> > 
+> >     bpf(BPF_MAP_CREATE, {map_type=BPF_MAP_TYPE_HASH, key_size=4,
+> >     value_size=4,max_entries=1024, map_flags=0, inner_map_fd=0,
+> >     map_name="process_pinned_",map_ifindex=0, btf_fd=3,
+> > btf_key_type_id=6,
+> >     btf_value_type_id=10,btf_vmlinux_value_type_id=0}, 72) = 4
+> > 
+> > This patch check that if the name of pinned map are the same as the
+> > actual name for the first (BPF_OBJ_NAME_LEN - 1),
+> > bpf map still uses the name which is included in bpf object.
+> > 
+> > Signed-off-by: Anquan Wu <leiqi96@hotmail.com>
+> > ---
+> > 
+> > v2: compare against zero explicitly
+> > 
+> > v1:
+> > https://lore.kernel.org/linux-kernel/OSZP286MB1725A2361FA2EE8432C4D5F4B8879@OSZP286MB1725.JPNP286.PROD.OUTLOOK.COM/
+> > ---
+> >  tools/lib/bpf/libbpf.c | 8 +++++++-
+> >  1 file changed, 7 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index e89cc9c885b3..7b4d3604dfb4 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -4328,6 +4328,7 @@ int bpf_map__reuse_fd(struct bpf_map *map,
+> > int
+> > fd)
+> >  {
+> >         struct bpf_map_info info = {};
+> >         __u32 len = sizeof(info);
+> > +       __u32 name_len;
+> >         int new_fd, err;
+> >         char *new_name;
+> >  
+> > @@ -4337,7 +4338,12 @@ int bpf_map__reuse_fd(struct bpf_map *map,
+> > int
+> > fd)
+> >         if (err)
+> >                 return libbpf_err(err);
+> >  
+> > -       new_name = strdup(info.name);
+> > +       name_len = strlen(info.name);
+> > +       if (name_len == BPF_OBJ_NAME_LEN - 1 && strncmp(map->name,
+> > info.name, name_len) == 0)
+> 
+> so what if the map->name is different after 'name_len' ?
+> 
+> jirka
+> 
 
-I thought GCC at least had a somewhat kernel specific BPF ISA target,
-I presume clang's bpf target is more generalized.
+If  A map name is defined as being longer than name_len (name_len is 
+"BPF_OBJ_NAME_LEN - 1" in this context), a program will fail to get a
+reused bpf_map by bpf_object__find_map_by_name().
+   
+   fromhttps://github.com/libbpf/libbpf/blob/master/src/libbpf.c#L9295,
+   pos->name in bpf_object__find_map_by_name() is from  new_name
+in      
+   bpf_map_reuse_fd(). It can not find map by the name which is defined
+   in bpf object.
 
-> 'call 1234' insn means call a function with that absolute address.
-> The gcc named that attribute incorrectly.
-> It should be renamed to something like __attribute__((fixed_address(1234))).
->
-> It's a linux kernel abi choice to interpret 'call abs_addr' as a call to a kernel
-> provided function at that address. 1,2,3,... are addresses of functions.
+I wrote some code to verify this problem and test the solution
+mentioned above.
+Link: https://github.com/leiqi96/libbpf-fix
 
-The impression I got was that GCC's BPF support was designed for targeting
-the kernel ISA effectively, at least going off of the gcc-bpf docs gave me that
-impression, although I might be wrong about that.
+Anquan
 
->
-> > >
-> > > > > There is no indirect call insn defined in BPF ISA yet,
-> > > > > so the -O0 behavior is undefined.
-> > > >
-> > > > Well GCC at least seems to be able to compile BPF programs with -O0 using
-> > > > kernel_helper. I assume -O0 is probably just targeting the minimum BPF ISA
-> > > > optimization level or something like that which avoids indirect calls.
-> > >
-> > > There are other reasons why -O0 compiled progs will
-> > > fail in the verifier.
-> >
-> > Why would -O0 generate code that isn't compatible with the selected
-> > target BPF ISA?
->
-> llvm has no issue producing valid BPF code with -O0.
-> It's the kernel verifier that doesn't understand such code.
-> For the following code:
-> static long (*foo) (void) = (void *) 1234;
-> long bar(void)
-> {
->     return foo();
-> }
->
-> With -O[12] llvm will generate
->   call 1234
->   exit
-> With -O0
->   r1 = foo ll
->   r1 = *(u64 *)(r1 + 0)
->   callx r1
->   exit
->
-> Both codes are valid and equivalent.
-> 'callx' here is a reserved insn. The kernel verifier doesn't know about it yet,
-> but llvm was generting such code for 8+ years.
 
-Hmm, I thought GCC gates non-kernel compatible BPF behind -mxbpf(for
-use with GCC's internal test suite mostly AFAIU):
-https://gcc.gnu.org/onlinedocs/gcc/eBPF-Options.html
+> > +               new_name = strdup(map->name);
+> > +       else
+> > +               new_name = strdup(info.name);
+> > +
+> >         if (!new_name)
+> >                 return libbpf_err(-errno);
+> >  
+> > -- 
+> > 2.32.0
+> > 
 
->
-> > > Assuming that kernel_helper attr is actually necessary
-> > > we have to add its support to clang as well.
-> >
-> > I mean, I'd argue there's a difference between something being arguably a better
-> > alternative(optional) and actually being necessary(non-optional).
->
-> gcc's attribute is not better.
-> It's just a different way to tell compiler about fixed function address.
 
-I presume it's a lot simpler implementation wise than the clang
-version, but I could
-be wrong about that though. I mostly work with compiler integration testing and
-build fixes, compiler internals are a bit out of my area of expertise.
 
->
-> > > gcc-bpf is a niche. If gcc devs want it to become a real
-> > > alternative to clang they have to always aim for feature parity
-> > > instead of inventing their own ways of doing things.
-> >
-> > What's ultimately going to help the most in regards to helping gcc-bpf reach
-> > feature parity with clang is getting it minimally usable in the real
-> > world, because
-> > that's how you're going to get more people testing+fixing bugs so that all these
-> > differences/incompatibilities can be worked though/fixed.
->
-> Can gcc-bpf compile all of selftests/bpf ?
-
-Don't pretty much all of those use?:
-#include <bpf/bpf_helpers.h>
-
-Which doesn't really work without adding kernel_helper support to libbpf at the
-moment when building with gcc-bpf.
-
-> How many of compiled programs will pass the verifier ?
-
-Not really sure, still been working through toolchain/build issues...kinda
-tricky to do proper testing when those are all using clang specific headers.
-
-Would be handy to get integration testing running against them with gcc-bpf
-so that we can at least get a baseline in terms of what's working and catch
-regressions when fixing compiler/toolchain issues, right now I think gcc-bpf is
-mostly only using an internal test suite.
-
->
-> > If nobody can compile a real world BPF program with gcc-bpf it's likely going to
-> > lag further behind.
->
-> selftest/bpf is a first milestone that gcc-bpf has to pass before talking about
-> 'real world' bpf progs.
-
-A test suite designed to exercise lots of edge cases isn't exactly a great first
-milestone for something like this, something like the 3 small systemd BPF
-programs on the other hand would be a good start IMO, since they are
-widely used real world programs and relatively simple. They aren't going to
-exercise all potential edge cases but they are a good starting point when it
-comes to having say something for testing real world toolchain integrations
-against(which is in really rough shape at the moment).
-
-I mean even getting some normal-ish progs buildable without downstream
-library patches would be a big improvement as one can then iterate a lot easier.
-
-I mean, we're dealing with multiple issues here, some of which are more
-toolchain/integration issues and others are compiler issues. If we can get
-a little more integration testing going it's going to be easier to flush out the
-remaining compiler issues. Kinda tricky to fix one without fixing the other.
