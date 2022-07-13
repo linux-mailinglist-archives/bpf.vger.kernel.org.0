@@ -2,144 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD02573CE2
-	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 21:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BA8D573CFD
+	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 21:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231799AbiGMTD4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Jul 2022 15:03:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59372 "EHLO
+        id S230331AbiGMTKQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Jul 2022 15:10:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236874AbiGMTDz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Jul 2022 15:03:55 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B161114C
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 12:03:53 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id v67-20020a1cac46000000b003a1888b9d36so1779908wme.0
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 12:03:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=GgWRzuR7K/JM+T/DhfougYNCN+Ei/e3TSwLryof3+SU=;
-        b=xjmR4PktYkcZtxmm4Bxud6e1aFZ3icNzqrxGwpsyvSP+iki6V1kc7Rk+QMVAugghKs
-         iy7l2DXORV/J357l07me+d7VqA7/HL2x2vHWNoMi+5mYTt8WGp4FQPtVI+2pqF64cTtA
-         72/E72qCLviSjQ3n7SaazKsHHso9wazLcrSWjeyWZaRt+N37dRw0W8REriGXdGCbv3GZ
-         eDpk4Xk1iWRO/CyvBhTcSUzYtR0k1b+8SROjZcAnrCcKt+iODYoqNFmQeZA9KLa87osf
-         jrKVnFZ29iOIttvTcm0VWLFjGFE28pZR09hVfbbVPeOexxxSpfWMMiby4vFEeVmqVSTd
-         teQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=GgWRzuR7K/JM+T/DhfougYNCN+Ei/e3TSwLryof3+SU=;
-        b=XgakL2hhzIn7LdZTEBigjr6ZguO4O8A9nXpeHyu3ea1QZ9Rj5+oRbTHRo096fPAC7t
-         jMa/pHiNuRrKp7csoQIZ/fUuUSCk0nLB4L16reeWKxQlPWLp+XdIkFRxBUwyA1AzQsX+
-         T5rVXnnPmkJr6IVZtTCA7NsGLIRZiFatdYgfczPHVfd+7vxgTYkS7FEMe3V9khbRX0+D
-         ITwKe59klRuMpHkELYtf+ypvVPm911K/p1unDJ6UiiwO0xBAsNn0xXtuZukc1boKb94c
-         X1Bd+wbGh10I0cUqbeF+F5dUwr88EhTd/ORthKm49qQ6dyQboxdAuQGzKsW9ZZkkrqU1
-         msKQ==
-X-Gm-Message-State: AJIora/ZMR8h1X/E5GVANLSmhRR2V/n8wG4flq6ZH1vumM4yWlUMtABy
-        sWq3Z0Z9bp/TmDbD+VMkVsbRhg==
-X-Google-Smtp-Source: AGRyM1v6OHDPNsuQGBaw1nVibAaCboV5t8oVecRp/qoC5aWo4oFLZyMC2kuFeNcml66hBnqpZnsTqQ==
-X-Received: by 2002:a05:600c:4f11:b0:3a1:8631:b6b4 with SMTP id l17-20020a05600c4f1100b003a18631b6b4mr4988643wmq.94.1657739031768;
-        Wed, 13 Jul 2022 12:03:51 -0700 (PDT)
-Received: from [192.168.178.32] ([51.155.200.13])
-        by smtp.gmail.com with ESMTPSA id p2-20020a1c7402000000b003a2fdde48d1sm1768396wmc.25.2022.07.13.12.03.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Jul 2022 12:03:51 -0700 (PDT)
-Message-ID: <40315ef2-e2e0-cb2b-becc-e1ba5a4826ff@isovalent.com>
-Date:   Wed, 13 Jul 2022 20:03:50 +0100
+        with ESMTP id S231717AbiGMTKP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Jul 2022 15:10:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CB111EEEA
+        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 12:10:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2B4F061DC6
+        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 19:10:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 809FEC341C0;
+        Wed, 13 Jul 2022 19:10:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1657739413;
+        bh=9yW1AZXL0CmMFTTuSbhdXNdzL+aF4eAEt3iNx5ma2to=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=jKAvjhyWPdnHLkdUen56TsrUKn9z1QuC0pTAIY7fbMMqHcpGDL3S0Ugfy6Oo4b6GI
+         R++Ye2+Cvv/kc7x5eCch92KYbIpZl/fz0cOH9U5skh9kl6UEiceNqVAqiLps2cojYP
+         yovsixz/G3H/J/OIzURNzZfDYdmLiCEL3fgZiQXw4UD7tqnaXxXiWnsYolCmL2u8/S
+         SSqrPWE9yadPFTD1dYX+arJLRvjxkrCmSDsrpnuZUHFqbgD7pCN+wEdQzkmg55mjgd
+         c7czHSxppyIvtjNPYUE/0nhjkgTdBE702bMfyEs96nSzDNUxRTQs0JBP6wPSWjNk5C
+         bfrMdBT5yq26A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6458AE4522E;
+        Wed, 13 Jul 2022 19:10:13 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.0.2
-Subject: Re: [PATCH bpf-next 3/3] bpf: iterators: build and use lightweight
- bootstrap version of bpftool
-Content-Language: en-GB
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Pu Lehui <pulehui@huawei.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-References: <20220712030813.865410-1-pulehui@huawei.com>
- <20220712030813.865410-4-pulehui@huawei.com>
- <CAEf4Bza15HfVKDrA8dV+U5GJiDcPS0bnV81rmdxuFn0+_2hrXw@mail.gmail.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <CAEf4Bza15HfVKDrA8dV+U5GJiDcPS0bnV81rmdxuFn0+_2hrXw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] libbpf: Error out when binary_path is NULL for
+ uprobe and USDT
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <165773941340.10137.12598431657420079595.git-patchwork-notify@kernel.org>
+Date:   Wed, 13 Jul 2022 19:10:13 +0000
+References: <20220712025745.2703995-1-hengqi.chen@gmail.com>
+In-Reply-To: <20220712025745.2703995-1-hengqi.chen@gmail.com>
+To:     Hengqi Chen <hengqi.chen@gmail.com>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 13/07/2022 19:55, Andrii Nakryiko wrote:
-> On Mon, Jul 11, 2022 at 7:37 PM Pu Lehui <pulehui@huawei.com> wrote:
->>
->> kernel/bpf/preload/iterators use bpftool for vmlinux.h, skeleton, and
->> static linking only. So we can use lightweight bootstrap version of
->> bpftool to handle these, and it will be faster.
->>
->> Signed-off-by: Pu Lehui <pulehui@huawei.com>
->> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
->> ---
->>  kernel/bpf/preload/iterators/Makefile | 13 +++++++++----
->>  1 file changed, 9 insertions(+), 4 deletions(-)
->>
->> diff --git a/kernel/bpf/preload/iterators/Makefile b/kernel/bpf/preload/iterators/Makefile
->> index bfe24f8c5a20..cf5f39f95fed 100644
->> --- a/kernel/bpf/preload/iterators/Makefile
->> +++ b/kernel/bpf/preload/iterators/Makefile
->> @@ -9,7 +9,7 @@ LLVM_STRIP ?= llvm-strip
->>  TOOLS_PATH := $(abspath ../../../../tools)
->>  BPFTOOL_SRC := $(TOOLS_PATH)/bpf/bpftool
->>  BPFTOOL_OUTPUT := $(abs_out)/bpftool
->> -DEFAULT_BPFTOOL := $(OUTPUT)/sbin/bpftool
->> +DEFAULT_BPFTOOL := $(BPFTOOL_OUTPUT)/bootstrap/bpftool
->>  BPFTOOL ?= $(DEFAULT_BPFTOOL)
->>
->>  LIBBPF_SRC := $(TOOLS_PATH)/lib/bpf
->> @@ -61,9 +61,14 @@ $(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_OU
->>                     OUTPUT=$(abspath $(dir $@))/ prefix=                       \
->>                     DESTDIR=$(LIBBPF_DESTDIR) $(abspath $@) install_headers
->>
->> +ifeq ($(CROSS_COMPILE),)
->>  $(DEFAULT_BPFTOOL): $(BPFOBJ) | $(BPFTOOL_OUTPUT)
->>         $(Q)$(MAKE) $(submake_extras) -C $(BPFTOOL_SRC)                        \
->>                     OUTPUT=$(BPFTOOL_OUTPUT)/                                  \
->> -                   LIBBPF_OUTPUT=$(LIBBPF_OUTPUT)/                            \
->> -                   LIBBPF_DESTDIR=$(LIBBPF_DESTDIR)/                          \
->> -                   prefix= DESTDIR=$(abs_out)/ install-bin
->> +                   LIBBPF_BOOTSTRAP_OUTPUT=$(LIBBPF_OUTPUT)/                  \
->> +                   LIBBPF_BOOTSTRAP_DESTDIR=$(LIBBPF_DESTDIR)/ bootstrap
->> +else
->> +$(DEFAULT_BPFTOOL): | $(BPFTOOL_OUTPUT)
->> +       $(Q)$(MAKE) $(submake_extras) -C $(BPFTOOL_SRC)                        \
->> +                   OUTPUT=$(BPFTOOL_OUTPUT)/ bootstrap
->> +endif
-> 
-> another idea (related to my two previous comments for this patch set),
-> maybe we can teach bpftool's Makefile to reuse LIBBPF_OUTPUT as
-> LIBBPF_BOOTSTRAP_OUTPUT, if there is no CROSS_COMPILE? Then we can
-> keep iterators/Makefile, samples/bpf/Makefile and runqslower/Makefile
-> simpler and ignorant of CROSS_COMPILE, but still get the benefit of
-> not rebuilding libbpf unnecessarily in non-cross-compile mode?
+Hello:
 
-Could be a good idea. Seeing how the HID BPF patches add BTF/skeletons
-generation at new locations, I'm also starting to wonder if it would be
-worth having a Makefile.bpftool.include of some sort to harmonise the
-way we compile the bootstrap bpftool as a dependency, and make it easier
-to maintain. I haven't looked at how feasible that would be, yet.
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
+
+On Tue, 12 Jul 2022 10:57:45 +0800 you wrote:
+> binary_path is a required non-null parameter for bpf_program__attach_usdt
+> and bpf_program__attach_uprobe_opts. Check it against NULL to prevent
+> coredump on strchr.
+> 
+> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+> ---
+>  tools/lib/bpf/libbpf.c | 13 +++++++------
+>  1 file changed, 7 insertions(+), 6 deletions(-)
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next] libbpf: Error out when binary_path is NULL for uprobe and USDT
+    https://git.kernel.org/bpf/bpf-next/c/8ed2f5a6f385
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
