@@ -2,62 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 281D0573F28
-	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 23:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 667B9573F2A
+	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 23:52:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231941AbiGMVwQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Jul 2022 17:52:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35894 "EHLO
+        id S232101AbiGMVw1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Jul 2022 17:52:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230479AbiGMVwQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Jul 2022 17:52:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9ED0D30F6B
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 14:52:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1657749133;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=N78MFrYLRsLtgFRz+P4RGsP+AFQio+2vYruYX0qto+U=;
-        b=GwWH+2gRG/Ey16EPNTSk4Q3wr0ozVF2EaeJKmCCtydeNlpARUAD/fMHSO9AGtv2aJ0H6q1
-        7A93+IVCa9bepFKlOFmQGmELW9hhKLM3DpudBZoJP9YNTaFoKExW3xe0j9oeBXNLJJv2cD
-        MgygEscXPXByCHn4mLxEnhss2fLGghw=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-98-11S5XYIIP4WjYSZewxxTWg-1; Wed, 13 Jul 2022 17:52:12 -0400
-X-MC-Unique: 11S5XYIIP4WjYSZewxxTWg-1
-Received: by mail-ed1-f70.google.com with SMTP id c9-20020a05640227c900b0043ad14b1fa0so54389ede.1
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 14:52:12 -0700 (PDT)
+        with ESMTP id S236662AbiGMVw1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Jul 2022 17:52:27 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4316F2DA88
+        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 14:52:26 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id p9so266983pjd.3
+        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 14:52:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KCIFkLMKMpX+Y9w6k09/VmA+FsaqBvsnLjSpd/VlknQ=;
+        b=cihlpN/vfaDChG8MTo9W5WeMIOQfXXNWECGHf1HDlDXBYyCjsCAYPeelb9V5ZyOcKg
+         mTPe9mheim3oEAA8uH2+y6eYsBaSw+JMAT0/W0jVXpezPPfTA2KpvtVMWeKd8DsTa2yf
+         +Gspm9hN28/JftaE7+Au2YHp5zUpIZMXo3qsoHjQyqCtaevLrclv3GixxvwFkXUPk0fN
+         YkhgtJljyJ/gN4mMexJ3DkffpNXLsc0ktjcRL4iLC3hIdBEEUyogsW+hKJWlkI0mhNEe
+         XtvUxkqzdrqOF/gdKxbvfw//5KRops9oO6WblxZtcHiGKiqWcjU3lDAV++DoXJI6genB
+         h/TA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=N78MFrYLRsLtgFRz+P4RGsP+AFQio+2vYruYX0qto+U=;
-        b=dSzZZJ1ttTX8Z6prpmSTbwsdDyBiWQHP3uBu8fu/tuHWobCFj7OaWYHpcRMtfQyYJV
-         QjQ8I2OdeeTC4tu28AZTEke5r4Mebhfz3EhbZ7/HUHxFLQ1CP6KRIm9zaA27ZJZb76o3
-         exSRthkhYizE9gqmkp4g+YRvSpNhio8FNmwIl05E2I6Q5lIuPrxEGPmW7BQL/ALISTXd
-         8wD8x453B2O/p+qgnwG3SlgpwWgOEEyDREPJRZfUY5dfiinX2uhQchAXPkHJ1KSTWAgb
-         ZoqgIac9fiGaO+Ta8bHW4e/JfhSYicvOgsMsiHoFoFm7DFuLK+169ijvA1t2Egpstn97
-         1eEg==
-X-Gm-Message-State: AJIora9eamjfun/XTAlMLUHNFhulwyyOOWs8NMsQwfLBIg1MhmySDw+j
-        Y4Jhhhup8Mu+3ePimjtyG56HajNxX7dbW4Du62A/aNMmdDkSzpsLS7rJCH2VzqT9usaNBUHJ2d2
-        42bgQgK7D/kaw
-X-Received: by 2002:a17:907:9621:b0:72e:d9a3:3f7a with SMTP id gb33-20020a170907962100b0072ed9a33f7amr1161622ejc.260.1657749130599;
-        Wed, 13 Jul 2022 14:52:10 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1vr6viE2LemzROwzYQJ10Lr8/7j4SaobNuHLqy3cjp1Ap/ndwsxVzqGMlBkv6dGCzInc2H99g==
-X-Received: by 2002:a17:907:9621:b0:72e:d9a3:3f7a with SMTP id gb33-20020a170907962100b0072ed9a33f7amr1161566ejc.260.1657749129656;
-        Wed, 13 Jul 2022 14:52:09 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id kv20-20020a17090778d400b0072af6f166c2sm5479080ejc.82.2022.07.13.14.52.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jul 2022 14:52:08 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 083D84D99CA; Wed, 13 Jul 2022 23:52:07 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Stanislav Fomichev <sdf@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KCIFkLMKMpX+Y9w6k09/VmA+FsaqBvsnLjSpd/VlknQ=;
+        b=wZBAWIhsC0OwP5/zKjt7dR8dtgv0LVoU9txZcAobRexIbKYpIj2QkKcySkclQDoZQx
+         ste8cDGK7qhs77ysYs5JTQRJSpMjCHKLIc4gunJNCoTVK/GwmlveGXjqaW0zG1h1tS/b
+         C0qmrKKXhdsd3cYLO0Jz/eqmlAvq5gAyCcIb3A9zmgVZUrNEc0z0kh4s1jSokZ9aigOn
+         19jov6NmgiZXD2igJ3wFEwairrug0SsJ3Xsll0pIEZxdMiPQUubwpf79hkSDwjefwc+H
+         ldQNIrAhrjUUdW0laKRkB4gRXhyRrU2cxIbc5qdJCMeCOD/ouC1adVzuuvSvsU4JHE/B
+         4A3Q==
+X-Gm-Message-State: AJIora/NJuazgikQ2grU+XxQRtVL9HnTQ1KPtteg+W/krMuHskeBJ3no
+        2cST7YBsJR6My/bNrnRaguF1JauHG3Ilj1SslT/22w==
+X-Google-Smtp-Source: AGRyM1vKMYk0b+0emPkAYMmZ1ZAYRZzj99+X3wWYqskLaFDHhWx7Hz2L/kSCzWTjfX2ZvhaRQJGlVx2mJs4LWleAJhg=
+X-Received: by 2002:a17:90b:4b4d:b0:1ef:bff5:de4f with SMTP id
+ mi13-20020a17090b4b4d00b001efbff5de4fmr12341485pjb.120.1657749145553; Wed, 13
+ Jul 2022 14:52:25 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220713214246.2545204-1-jevburton.kernel@gmail.com>
+In-Reply-To: <20220713214246.2545204-1-jevburton.kernel@gmail.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Wed, 13 Jul 2022 14:52:14 -0700
+Message-ID: <CAKH8qBtkgsQ9snhno3aYnhyc8vG2a0xhgg_sCb4KFhcQt+gfqA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: Add bpf_map__set_name()
+To:     Joe Burton <jevburton.kernel@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -65,202 +59,108 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Freysteinn Alfredsson <freysteinn.alfredsson@kau.se>,
-        Cong Wang <xiyou.wangcong@gmail.com>
-Subject: Re: [RFC PATCH 00/17] xdp: Add packet queueing and scheduling
- capabilities
-In-Reply-To: <CAKH8qBtdnku7StcQ-SamadvAF==DRuLLZO94yOR1WJ9Bg=uX1w@mail.gmail.com>
-References: <20220713111430.134810-1-toke@redhat.com>
- <CAKH8qBtdnku7StcQ-SamadvAF==DRuLLZO94yOR1WJ9Bg=uX1w@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 13 Jul 2022 23:52:07 +0200
-Message-ID: <877d4gpto8.fsf@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Joe Burton <jevburton@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Stanislav Fomichev <sdf@google.com> writes:
-
-> On Wed, Jul 13, 2022 at 4:14 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->>
->> Packet forwarding is an important use case for XDP, which offers
->> significant performance improvements compared to forwarding using the
->> regular networking stack. However, XDP currently offers no mechanism to
->> delay, queue or schedule packets, which limits the practical uses for
->> XDP-based forwarding to those where the capacity of input and output lin=
-ks
->> always match each other (i.e., no rate transitions or many-to-one
->> forwarding). It also prevents an XDP-based router from doing any kind of
->> traffic shaping or reordering to enforce policy.
->>
->> This series represents a first RFC of our attempt to remedy this lack. T=
-he
->> code in these patches is functional, but needs additional testing and
->> polishing before being considered for merging. I'm posting it here as an
->> RFC to get some early feedback on the API and overall design of the
->> feature.
->>
->> DESIGN
->>
->> The design consists of three components: A new map type for storing XDP
->> frames, a new 'dequeue' program type that will run in the TX softirq to
->> provide the stack with packets to transmit, and a set of helpers to dequ=
-eue
->> packets from the map, optionally drop them, and to schedule an interface
->> for transmission.
->>
->> The new map type is modelled on the PIFO data structure proposed in the
->> literature[0][1]. It represents a priority queue where packets can be
->> enqueued in any priority, but is always dequeued from the head. From the
->> XDP side, the map is simply used as a target for the bpf_redirect_map()
->> helper, where the target index is the desired priority.
+On Wed, Jul 13, 2022 at 2:43 PM Joe Burton <jevburton.kernel@gmail.com> wrote:
 >
-> I have the same question I asked on the series from Cong:
-> Any considerations for existing carousel/edt-like models?
-
-Well, the reason for the addition in patch 5 (continuously increasing
-priorities) is exactly to be able to implement EDT-like behaviour, where
-the priority is used as time units to clock out packets.
-
-> Can we make the map flexible enough to implement different qdisc
-> policies?
-
-That's one of the things we want to be absolutely sure about. We are
-starting out with the PIFO map type because the literature makes a good
-case that it is flexible enough to implement all conceivable policies.
-The goal of the test harness linked as note [4] is to actually examine
-this; Frey is our PhD student working on this bit.
-
-Thus far we haven't hit any limitations on this, but we'll need to add
-more policies before we are done with this. Another consideration is
-performance, of course, so we're also planning to do a comparison with a
-more traditional "bunch of FIFO queues" type data structure for at least
-a subset of the algorithms. Kartikeya also had an idea for an
-alternative way to implement a priority queue using (semi-)lockless
-skiplists, which may turn out to perform better.
-
-If there's any particular policy/algorithm you'd like to see included in
-this evaluation, please do let us know, BTW! :)
-
->> The dequeue program type is a new BPF program type that is attached to an
->> interface; when an interface is scheduled for transmission, the stack wi=
-ll
->> execute the attached dequeue program and, if it returns a packet to
->> transmit, that packet will be transmitted using the existing ndo_xdp_xmi=
-t()
->> driver function.
->>
->> The dequeue program can obtain packets by pulling them out of a PIFO map
->> using the new bpf_packet_dequeue() helper. This returns a pointer to an
->> xdp_md structure, which can be dereferenced to obtain packet data and
->> data_meta pointers like in an XDP program. The returned packets are also
->> reference counted, meaning the verifier enforces that the dequeue program
->> either drops the packet (with the bpf_packet_drop() helper), or returns =
-it
->> for transmission. Finally, a helper is added that can be used to actually
->> schedule an interface for transmission using the dequeue program type; t=
-his
->> helper can be called from both XDP and dequeue programs.
->>
->> PERFORMANCE
->>
->> Preliminary performance tests indicate about 50ns overhead of adding
->> queueing to the xdp_fwd example (last patch), which translates to a 20% =
-PPS
->> overhead (but still 2x the forwarding performance of the netstack):
->>
->> xdp_fwd :     4.7 Mpps  (213 ns /pkt)
->> xdp_fwd -Q:   3.8 Mpps  (263 ns /pkt)
->> netstack:       2 Mpps  (500 ns /pkt)
->>
->> RELATION TO BPF QDISC
->>
->> Cong Wang's BPF qdisc patches[2] share some aspects of this series, in
->> particular the use of a map to store packets. This is no accident, as we=
-'ve
->> had ongoing discussions for a while now. I have no great hope that we can
->> completely converge the two efforts into a single BPF-based queueing
->> API (as has been discussed before[3], consolidating the SKB and XDP paths
->> is challenging). Rather, I'm hoping that we can converge the designs eno=
-ugh
->> that we can share BPF code between XDP and qdisc layers using common
->> functions, like it's possible to do with XDP and TC-BPF today. This would
->> imply agreeing on the map type and API, and possibly on the set of helpe=
-rs
->> available to the BPF programs.
+> From: Joe Burton <jevburton@google.com>
 >
-> What would be the big difference for the map wrt xdp_frame vs sk_buff
-> excluding all obvious stuff like locking/refcnt?
-
-I expect it would be quite straight-forward to just add a second subtype
-of the PIFO map in this series that holds skbs. In fact, I think that
-from the BPF side, the whole model implemented here would be possible to
-carry over to the qdisc layer more or less wholesale. Some other
-features of the qdisc layer, like locking, classes, and
-multi-CPU/multi-queue management may be trickier, but I'm not sure how
-much of that we should expose in a BPF qdisc anyway (as you may have
-noticed I commented on Cong's series to this effect regarding the
-classful qdiscs).
-
->> PATCH STRUCTURE
->>
->> This series consists of a total of 17 patches, as follows:
->>
->> Patches 1-3 are smaller preparatory refactoring patches used by subseque=
-nt
->> patches.
+> Add the capability to set a `struct bpf_map` name.
 >
-> Seems like these can go separately without holding the rest?
-
-Yeah, guess so? They don't really provide much benefit without the users
-alter in the series, though, so not sure there's much point in sending
-them separately?
-
->> Patches 4-5 introduce the PIFO map type, and patch 6 introduces the dequ=
-eue
->> program type.
+> bpf_map__reuse_fd(struct bpf_map *map, int fd) does the following:
 >
-> [...]
+> 1. get the bpf_map_info of the passed-in fd
+> 2. strdup the name from the bpf_map_info
+> 3. assign that name to the map
+> 4. and some other stuff
 >
->> Patches 7-10 adds the dequeue helpers and the verifier features needed to
->> recognise packet pointers, reference count them, and allow dereferencing
->> them to obtain packet data pointers.
+> While `map.name` may initially be arbitrarily long, this operation
+> truncates it after 15 characters.
 >
-> Have you considered using kfuncs for these instead of introducing new
-> hooks/contexts/etc?
+> We have some infrastructure that uses bpf_map__reuse_fd() to preserve
+> maps across upgrades. Some of our users have long map names, and are
+> seeing their maps 'disappear' after an upgrade, due to the name
+> truncation.
+>
+> By invoking `bpf_map__set_name()` after `bpf_map__reuse_fd()`, we can
+> trivially work around the issue.
 
-I did, but I'm not sure it's such a good fit? In particular, the way the
-direct packet access is implemented for dequeue programs (where you can
-get an xdp_md pointer and deref that to get data and data_end pointers)
-is done this way so programs can share utility functions between XDP and
-dequeue programs. And having a new program type for the dequeue progs
-seem like the obvious thing to do since they're doing something new?
+Asked you internally, but not sure I follow. Can you share more on why
+the following won't fix it for us:
 
-Maybe I'm missing something, though; could you elaborate on how you'd
-use kfuncs instead?
+https://lore.kernel.org/bpf/OSZP286MB1725CEA1C95C5CB8E7CCC53FB8869@OSZP286MB1725.JPNP286.PROD.OUTLOOK.COM/
 
--Toke
+?
 
+The idea seems to be to get the supplied map name (from the obj)
+instead of using pin name? So why is it not enough?
+
+> Signed-off-by: Joe Burton <jevburton@google.com>
+> ---
+>  tools/lib/bpf/libbpf.c | 22 ++++++++++++++++++++++
+>  tools/lib/bpf/libbpf.h |  3 ++-
+>  2 files changed, 24 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 72548798126b..725baf508e6f 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -9089,6 +9089,28 @@ const char *bpf_map__name(const struct bpf_map *map)
+>         return map->name;
+>  }
+>
+> +int bpf_map__set_name(struct bpf_map *map, const char *name)
+> +{
+> +       char *new_name;
+> +
+> +       if (!map)
+> +               return libbpf_err(-EINVAL);
+> +
+> +       new_name = strdup(name);
+> +       if (!new_name)
+> +               return libbpf_err(-ENOMEM);
+> +
+> +       if (map_uses_real_name(map)) {
+> +               free(map->real_name);
+> +               map->real_name = new_name;
+> +       } else {
+> +               free(map->name);
+> +               map->name = new_name;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+>  enum bpf_map_type bpf_map__type(const struct bpf_map *map)
+>  {
+>         return map->def.type;
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index e4d5353f757b..e898c4cb514a 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -731,8 +731,9 @@ LIBBPF_API bool bpf_map__autocreate(const struct bpf_map *map);
+>   */
+>  LIBBPF_API int bpf_map__fd(const struct bpf_map *map);
+>  LIBBPF_API int bpf_map__reuse_fd(struct bpf_map *map, int fd);
+> -/* get map name */
+> +/* get/set map name */
+>  LIBBPF_API const char *bpf_map__name(const struct bpf_map *map);
+> +LIBBPF_API int bpf_map__set_name(struct bpf_map *map, const char *name);
+>  /* get/set map type */
+>  LIBBPF_API enum bpf_map_type bpf_map__type(const struct bpf_map *map);
+>  LIBBPF_API int bpf_map__set_type(struct bpf_map *map, enum bpf_map_type type);
+> --
+> 2.37.0.144.g8ac04bfd2-goog
+>
