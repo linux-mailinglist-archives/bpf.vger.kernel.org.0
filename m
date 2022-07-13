@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23858573CC7
-	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 20:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22606573CCD
+	for <lists+bpf@lfdr.de>; Wed, 13 Jul 2022 20:55:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234545AbiGMSw6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Jul 2022 14:52:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50582 "EHLO
+        id S231329AbiGMSzX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Jul 2022 14:55:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbiGMSw6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Jul 2022 14:52:58 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 659942F3A0;
-        Wed, 13 Jul 2022 11:52:57 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id t1so5705661ejd.12;
-        Wed, 13 Jul 2022 11:52:57 -0700 (PDT)
+        with ESMTP id S229772AbiGMSzW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Jul 2022 14:55:22 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1497922501;
+        Wed, 13 Jul 2022 11:55:22 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id r6so15259221edd.7;
+        Wed, 13 Jul 2022 11:55:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0bgHp5GltHRu7x3p+LHbRBECphkMhi0jBJngyJToasY=;
-        b=ggeRot3BOwOSl6Mix3mhgE0RWM1j+eok5TQUCCvO2pl1qahgQfGis8fK7xZfEaTeDH
-         Zs5nP1MYEVbRDq8lGMoPyePwI0NAbgiJrzdg6JIcl/HEA48Iy8wrD5QwdwXPu7WRi12R
-         0/OKJn5Ljk3YKjjRHvfbPFqSR588dpz/rALG/feCNsxYN9bbFaWY/ijwNh4jBvbh3Uv8
-         APUJr68H6KEPp5i6kWGkJfg8RxaxXsZ5L8wt/QffrHhLoVvWx/3dVpgieAsYNRxpdCL1
-         sKrgjs54Rq5GOLXGlEioSuFlL4iDL3Oh3DyfQnrLsfq2Cjl9dotmGw/8aGEIZRL8jzCX
-         Q6Xw==
+        bh=uJ3J6U3erLSOZGmNYbqKk0ATHfm/1BrLEtgC9UcaHwo=;
+        b=Ck/CbbA3OX5lp6LJ1sZabGr2T1OfzinQavxwJznhg7ruAvLjEkPjlFH/V3pCfUo+/d
+         4oF7x5IxUBM2EXS05a5QXtJCfqN6oq1B4ZmongtVQcdc2zF9HzxoaA8aQYOxzgTpOBmQ
+         m8tBDC/s1MLH55xfue5EcLgojVhpIzXy9CcFDcsiS4k4f0Q1toJ2tPCdUyFrx/oIafDE
+         Qblnt3VX1OsIR7ahvQ1PZ7Omp4pIDFS3laEkNHqce/lfIo0+6obI5naze8eOkxvX0P/k
+         Khk4dC0GTy/SfhJiGHoOvBkew69TIVBTePT3PDzGIds2odhOqnPhE9DgRI15ZCCLfx/S
+         sumg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0bgHp5GltHRu7x3p+LHbRBECphkMhi0jBJngyJToasY=;
-        b=w1sIrMBPGYOUVX4rOpdPZybzulYQty8cb5Wx+sV8T1iZ7QQb7bt/NHtdoGv7HvdoUW
-         mhMKQ7QsG9S1FGdfoOANzJ4iF/9Eeb+45T8n3FfzSkwso8yfh5oRP8sVoOZ0Eu6mY6Xw
-         zs9PKGbe0cINhxRaaPtrCYcI/NZAnoBi7oHfxJ0Y7JQZWywqJngmLp8dcSWSGyjycyz/
-         +tONMRDwSzAr3h+U6s2iOQ3d/5d2dZH1+1dKWTyD68Kiiplg1wFOVrKzdw5GCbqPJVQb
-         WGWYyQ1Bc+5p4T4UZIB6rm5V2z9sqmUFGlPib4fKPXiXzol9yZYpgiIxkGZpBiC/nfAa
-         90GQ==
-X-Gm-Message-State: AJIora+4No9VWWHOCB8SdA/qN69z0gMM2EyfnWmb6Id5su0X/wqeQaAn
-        kqy718NSbxyWx0xPwAyYugf/wOo6tYCflZMXkvQ=
-X-Google-Smtp-Source: AGRyM1sksK1ex29u77iuCP6vw0V3I40Ta7AANfhP1ySgvZslVV4Zce6BHLB+70fA25Tn0NQdu08l+RjEtFK5fSXQ5Pg=
-X-Received: by 2002:a17:906:cc0c:b0:72b:68df:8aff with SMTP id
- ml12-20020a170906cc0c00b0072b68df8affmr4921265ejb.226.1657738376004; Wed, 13
- Jul 2022 11:52:56 -0700 (PDT)
+        bh=uJ3J6U3erLSOZGmNYbqKk0ATHfm/1BrLEtgC9UcaHwo=;
+        b=iqQMeK8XSxUJq0t5lQvd3AnbIWfFHjAsxT3uvOt6I2vZeiEDAlm/1qPYHCaDnsjtAJ
+         dKRS0/EUT+N3/ZHBskJhYcPCgzJg7+oHWh+MDKzEbm3f1cR0GsZs7j3TTmAU/VCkYR2J
+         Nx+s+t/Lx036LCtcHu83MEtqEo8/sNU94p7VFDaVywZ24HXI2ZiSrxetuojqQy1C4NV2
+         4s+l7fZidDOqaFnBgUQkmW2YSuMVbfMS2KGGNwzkozt1xj5jGZwe539HuRhPsSsMX79t
+         0+r+8IinGL8WnSSkGJ50Nh+IduYvI25w2hkcFX2WNg5ObOyssMVwRggu2QJufsrLKo2n
+         PmJg==
+X-Gm-Message-State: AJIora9SmQKalufQ3i6R7l2TsBfPMn9ev28aLMuXp1dn5ov4Vq6ZSHwN
+        rXr4t3RX+P+t/CRHobPNUb3k6pqcP0EDMRU4BYw=
+X-Google-Smtp-Source: AGRyM1uGJ5Rq/+ji5AnvmRPbCnPH5vNTAo4mUKyX374Kypr7qWhpOUP5legkS9SOVPXKUMvRjp/O0exg310NcurxyS4=
+X-Received: by 2002:a05:6402:228f:b0:43a:896:e4f0 with SMTP id
+ cw15-20020a056402228f00b0043a0896e4f0mr6767659edb.81.1657738520636; Wed, 13
+ Jul 2022 11:55:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220712030813.865410-1-pulehui@huawei.com> <20220712030813.865410-3-pulehui@huawei.com>
-In-Reply-To: <20220712030813.865410-3-pulehui@huawei.com>
+References: <20220712030813.865410-1-pulehui@huawei.com> <20220712030813.865410-4-pulehui@huawei.com>
+In-Reply-To: <20220712030813.865410-4-pulehui@huawei.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 13 Jul 2022 11:52:44 -0700
-Message-ID: <CAEf4BzYQM0RpsgUZgZpcMuDRSD2o96HzWzSeU5=GC0YfmjiXug@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] tools: runqslower: build and use lightweight
+Date:   Wed, 13 Jul 2022 11:55:09 -0700
+Message-ID: <CAEf4Bza15HfVKDrA8dV+U5GJiDcPS0bnV81rmdxuFn0+_2hrXw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/3] bpf: iterators: build and use lightweight
  bootstrap version of bpftool
 To:     Pu Lehui <pulehui@huawei.com>
 Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
@@ -77,47 +77,54 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Mon, Jul 11, 2022 at 7:37 PM Pu Lehui <pulehui@huawei.com> wrote:
 >
-> tools/runqslower use bpftool for vmlinux.h, skeleton, and static linking
-> only. So we can use lightweight bootstrap version of bpftool to handle
-> these, and it will be faster.
+> kernel/bpf/preload/iterators use bpftool for vmlinux.h, skeleton, and
+> static linking only. So we can use lightweight bootstrap version of
+> bpftool to handle these, and it will be faster.
 >
 > Signed-off-by: Pu Lehui <pulehui@huawei.com>
 > Suggested-by: Andrii Nakryiko <andrii@kernel.org>
 > ---
->  tools/bpf/runqslower/Makefile | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
+>  kernel/bpf/preload/iterators/Makefile | 13 +++++++++----
+>  1 file changed, 9 insertions(+), 4 deletions(-)
 >
-> diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefile
-> index da6de16a3dfb..8900c74f29e2 100644
-> --- a/tools/bpf/runqslower/Makefile
-> +++ b/tools/bpf/runqslower/Makefile
-> @@ -4,7 +4,7 @@ include ../../scripts/Makefile.include
->  OUTPUT ?= $(abspath .output)/
->
->  BPFTOOL_OUTPUT := $(OUTPUT)bpftool/
-> -DEFAULT_BPFTOOL := $(BPFTOOL_OUTPUT)bpftool
-> +DEFAULT_BPFTOOL := $(BPFTOOL_OUTPUT)bootstrap/bpftool
+> diff --git a/kernel/bpf/preload/iterators/Makefile b/kernel/bpf/preload/iterators/Makefile
+> index bfe24f8c5a20..cf5f39f95fed 100644
+> --- a/kernel/bpf/preload/iterators/Makefile
+> +++ b/kernel/bpf/preload/iterators/Makefile
+> @@ -9,7 +9,7 @@ LLVM_STRIP ?= llvm-strip
+>  TOOLS_PATH := $(abspath ../../../../tools)
+>  BPFTOOL_SRC := $(TOOLS_PATH)/bpf/bpftool
+>  BPFTOOL_OUTPUT := $(abs_out)/bpftool
+> -DEFAULT_BPFTOOL := $(OUTPUT)/sbin/bpftool
+> +DEFAULT_BPFTOOL := $(BPFTOOL_OUTPUT)/bootstrap/bpftool
 >  BPFTOOL ?= $(DEFAULT_BPFTOOL)
->  LIBBPF_SRC := $(abspath ../../lib/bpf)
->  BPFOBJ_OUTPUT := $(OUTPUT)libbpf/
-> @@ -86,6 +86,12 @@ $(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(BPFOBJ_OU
->         $(Q)$(MAKE) $(submake_extras) -C $(LIBBPF_SRC) OUTPUT=$(BPFOBJ_OUTPUT) \
->                     DESTDIR=$(BPFOBJ_OUTPUT) prefix= $(abspath $@) install_headers
+>
+>  LIBBPF_SRC := $(TOOLS_PATH)/lib/bpf
+> @@ -61,9 +61,14 @@ $(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_OU
+>                     OUTPUT=$(abspath $(dir $@))/ prefix=                       \
+>                     DESTDIR=$(LIBBPF_DESTDIR) $(abspath $@) install_headers
 >
 > +ifeq ($(CROSS_COMPILE),)
 >  $(DEFAULT_BPFTOOL): $(BPFOBJ) | $(BPFTOOL_OUTPUT)
->         $(Q)$(MAKE) $(submake_extras) -C ../bpftool OUTPUT=$(BPFTOOL_OUTPUT)   \
-> -                   ARCH= CROSS_COMPILE= CC=$(HOSTCC) LD=$(HOSTLD)
-> +                   LIBBPF_BOOTSTRAP_OUTPUT=$(BPFOBJ_OUTPUT)                   \
-> +                   LIBBPF_BOOTSTRAP_DESTDIR=$(BPF_DESTDIR) bootstrap
+>         $(Q)$(MAKE) $(submake_extras) -C $(BPFTOOL_SRC)                        \
+>                     OUTPUT=$(BPFTOOL_OUTPUT)/                                  \
+> -                   LIBBPF_OUTPUT=$(LIBBPF_OUTPUT)/                            \
+> -                   LIBBPF_DESTDIR=$(LIBBPF_DESTDIR)/                          \
+> -                   prefix= DESTDIR=$(abs_out)/ install-bin
+> +                   LIBBPF_BOOTSTRAP_OUTPUT=$(LIBBPF_OUTPUT)/                  \
+> +                   LIBBPF_BOOTSTRAP_DESTDIR=$(LIBBPF_DESTDIR)/ bootstrap
 > +else
 > +$(DEFAULT_BPFTOOL): | $(BPFTOOL_OUTPUT)
-> +       $(Q)$(MAKE) $(submake_extras) -C ../bpftool OUTPUT=$(BPFTOOL_OUTPUT) bootstrap
+> +       $(Q)$(MAKE) $(submake_extras) -C $(BPFTOOL_SRC)                        \
+> +                   OUTPUT=$(BPFTOOL_OUTPUT)/ bootstrap
 > +endif
 
-Same comment as on the other patch, this CROSS_COMPILE if/else seems a
-bit fragile, let's keep only the second cleaner part, maybe?
-
+another idea (related to my two previous comments for this patch set),
+maybe we can teach bpftool's Makefile to reuse LIBBPF_OUTPUT as
+LIBBPF_BOOTSTRAP_OUTPUT, if there is no CROSS_COMPILE? Then we can
+keep iterators/Makefile, samples/bpf/Makefile and runqslower/Makefile
+simpler and ignorant of CROSS_COMPILE, but still get the benefit of
+not rebuilding libbpf unnecessarily in non-cross-compile mode?
 
 > --
 > 2.25.1
