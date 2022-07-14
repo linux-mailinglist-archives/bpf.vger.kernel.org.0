@@ -2,95 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE0E55744C1
-	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 08:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6564C5744BA
+	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 08:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233737AbiGNGA0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jul 2022 02:00:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58608 "EHLO
+        id S230455AbiGNGAS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jul 2022 02:00:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232740AbiGNGAX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jul 2022 02:00:23 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4B6F1AF3C
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 23:00:22 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id v12so1031484edc.10
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 23:00:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i/a1DNPG1XpJxTmdBTuR/N+mtKXMn43pTOzy1NXZdhk=;
-        b=bhFOeobxREV3c9dSFdKTjHod3yibkT2J3tKT6K8IdU9qfcOOHwvXs3uDgm3/igJbvH
-         hLjb8z78VSlo0BY9IbAv/nS83SWSGZCi6U2j5DsPctCAX5PMB3iT7qCLOpOtIkoMqsvT
-         OTmVgSGuYkRDuUVD4xGnHly6zX5Bee8loHHwGl9dify4ch085CFQ+yR3vl5RrHfQLc/Q
-         D6hQvN7vTBSSgQfTdZqGvCklxqdbRD5shiwccZbMJFUDg1yQY/risJVZhzBfI0qIXTwf
-         QX14oyn1DZpZjARq9GT6eqzaWjjyzpRGmvjpTzRm26WhEdREMFApTVpqS8H/fvTxbSEn
-         Ex5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i/a1DNPG1XpJxTmdBTuR/N+mtKXMn43pTOzy1NXZdhk=;
-        b=BCJjOYTN6Vcub9P17zLZzZ6MxurwILhFajSnTEZ+ZAqngtPW40gGVx613MtJe+s4Et
-         eJn3UMVVt1eeE8p9UC7r5XRy2kMGPdImmqBjQ2B/Iz431dV8yuD2MIdERGic82nRKTi5
-         mjXyuxlWyFhK+qCH7OZxBAmtcjnW2C0H74sh4JrZj5Fvu4a89kJhgmpFQUW4uujAdYZY
-         5wvA6kmt0RNfSQXvXFc0/aTR590tYl8jxakGteaLvt7tFqvOejb3Mm84JOrnKCN4KZnd
-         uPAG8SwTs2TV7p03f8+zcjW5uLek+tmBPJOLiQxnyVGdJ4s1zm5reRcuofld7dVfs9Fn
-         BDoA==
-X-Gm-Message-State: AJIora82Fci2kKNCDDkyEPaQagfy/3owQX8zMECViDD65iEH3GLaGNXZ
-        lnBFyQkxYCXAVWHmJDfeaJjWG1uEjqTEwZn8mcU=
-X-Google-Smtp-Source: AGRyM1vDe+vvYmKJVs8WXqKU9hSMDi74p2CkCNZmosZyegP4LYorEAvBShmq5lpdj6eHEJ/i9m3wc2Iaw3SHAVqeaQ4=
-X-Received: by 2002:aa7:d053:0:b0:43a:a164:2c3 with SMTP id
- n19-20020aa7d053000000b0043aa16402c3mr9974977edo.333.1657778421297; Wed, 13
- Jul 2022 23:00:21 -0700 (PDT)
+        with ESMTP id S229620AbiGNGAR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jul 2022 02:00:17 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C81651AF3C;
+        Wed, 13 Jul 2022 23:00:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 79B62B82389;
+        Thu, 14 Jul 2022 06:00:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id CCC8DC34115;
+        Thu, 14 Jul 2022 06:00:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1657778413;
+        bh=2bpDyAZGlWx8XeLEUwm0hM/UOHB/dG6A4q/TSs2rE08=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=PgE7vnB91UgRp6AIlGWI2N/TpUulLg9QQhUMfz5nyEVZXaEVMInErBr5ic99812NQ
+         UR5yyJd5PyzEa+m731Ya2RfbZ6rdXU/5WoSaerfziXSMPhH0wK+OuVPqete2EuZkrS
+         1xqcZhNzXIy0EhArjSg1pFooROxTooNrxmsezUtfaexBOlt0Jw3pxcNFc9wCYsJDxz
+         2adMfm4w53i//YgKBZWAizphhAwx849+oF5Ucd8crcCvr25e9yV2ngjJONX8V5RRlX
+         czFf5Z906pCJekoJ1RiirFd76ZuWHhqXqZiRU6xvdZmHsdLJTCEa2eCERg9KDaFPdb
+         WKsUT6TN6p7oQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A77FEE45227;
+        Thu, 14 Jul 2022 06:00:13 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20220713222544.2355143-1-indu.bhagat@oracle.com>
-In-Reply-To: <20220713222544.2355143-1-indu.bhagat@oracle.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 13 Jul 2022 23:00:10 -0700
-Message-ID: <CAEf4BzYqL_p61f_2HXSNuCSXPGxWbq7+kvZvmVGGgdLY1Z1ZWA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] docs/bpf: Update documentation for BTF_KIND_FUNC
-To:     Indu Bhagat <indu.bhagat@oracle.com>
-Cc:     bpf <bpf@vger.kernel.org>, Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] libbpf: fix the name of a reused map
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <165777841368.17899.18317064610062383863.git-patchwork-notify@kernel.org>
+Date:   Thu, 14 Jul 2022 06:00:13 +0000
+References: <OSZP286MB1725CEA1C95C5CB8E7CCC53FB8869@OSZP286MB1725.JPNP286.PROD.OUTLOOK.COM>
+In-Reply-To: <OSZP286MB1725CEA1C95C5CB8E7CCC53FB8869@OSZP286MB1725.JPNP286.PROD.OUTLOOK.COM>
+To:     Anquan Wu <leiqi96@hotmail.com>
+Cc:     andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, kpsingh@kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 13, 2022 at 3:37 PM Indu Bhagat <indu.bhagat@oracle.com> wrote:
->
-> The vlen bits in the BTF type of kind BTF_KIND_FUNC are used to convey the
-> linkage information for functions.
->
-> Signed-off-by: Indu Bhagat <indu.bhagat@oracle.com>
-> ---
->  Documentation/bpf/btf.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/Documentation/bpf/btf.rst b/Documentation/bpf/btf.rst
-> index f49aeef62d0c..b3a9d5ac882c 100644
-> --- a/Documentation/bpf/btf.rst
-> +++ b/Documentation/bpf/btf.rst
-> @@ -369,7 +369,7 @@ No additional type data follow ``btf_type``.
->    * ``name_off``: offset to a valid C identifier
->    * ``info.kind_flag``: 0
->    * ``info.kind``: BTF_KIND_FUNC
-> -  * ``info.vlen``: 0
-> +  * ``info.vlen``: linkage information (static=0, global=1)
+Hello:
 
-there is also extern=2, but I think we should just refer to enum
-btf_func_linkage, defined in UAPI (include/uapi/linux/btf.h) ?
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
->    * ``type``: a BTF_KIND_FUNC_PROTO type
->
->  No additional type data follow ``btf_type``.
-> --
-> 2.31.1
->
+On Tue, 12 Jul 2022 11:15:40 +0800 you wrote:
+> BPF map name is limited to BPF_OBJ_NAME_LEN.
+> A map name is defined as being longer than BPF_OBJ_NAME_LEN,
+> it will be truncated to BPF_OBJ_NAME_LEN when a userspace program
+> calls libbpf to create the map. A pinned map also generates a path
+> in the /sys. If the previous program wanted to reuse the map，
+> it can not get bpf_map by name, because the name of the map is only
+> partially the same as the name which get from pinned path.
+> 
+> [...]
+
+Here is the summary with links:
+  - [v2] libbpf: fix the name of a reused map
+    https://git.kernel.org/bpf/bpf-next/c/bf3f00378524
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
