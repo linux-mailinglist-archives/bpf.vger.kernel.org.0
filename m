@@ -2,61 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FC81574428
-	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 07:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A8F574439
+	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 07:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232637AbiGNFGe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jul 2022 01:06:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47750 "EHLO
+        id S234453AbiGNFIV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jul 2022 01:08:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233094AbiGNFGH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jul 2022 01:06:07 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C77E1EECB
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 22:01:53 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id b17so509155iof.4
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 22:01:53 -0700 (PDT)
+        with ESMTP id S234577AbiGNFHf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jul 2022 01:07:35 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF8145F63
+        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 22:07:14 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id y8so962111eda.3
+        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 22:07:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QaxedIrPSgElF4LbnDsbKKinZNNusK1Y1uSoRNSN99Y=;
-        b=NqQGjTZsQKNUODUkd0v6C8i55zSH2vPuDN+5BPKjn+0cEDtrmmqPg7S/PV6c2W9rW1
-         Tbc3GROZvIRnoXfYmYWezTTf81s5GVmvWy2JSs0x/QUW72itJMCFQph4Chk6Mg6ULa09
-         DagF+9drvSEcmpjrEGOROt+uhH3pPyTT3StOZDOZkTkHvC/ZSB4B6m/q/bmsJJYwkcZP
-         JiviozL8xktfV272xAQQhrOJSEnVYHWwAbwI2SvNRqVmCCGhegCvMVPanixL6fpfCMUc
-         cKdE9qc+xiz1tnPPZIT3ULSqAiA+q5UYrrBXxByjVyQptf0AxfdV/lp1UowJA1TmZO9Y
-         AHiA==
+         :cc:content-transfer-encoding;
+        bh=vpk7Y+UDUwnsHzF9bGK99kDtr34OClPDDThITUcPaVw=;
+        b=ewaho8H2QM/V2jqaVsNIt9dyL8i2Lzt1U5cMp4kyzUhK5DjiYa2GUxLUxcpjeHfSMr
+         ngNEXc7WjnQUly0hn4I+/p6QlIj7s9xbBDDsOGJvoHtIicerLJNuxPNOqeVZfTBqGR2j
+         IHtzYPDvOEbMg9uwjH1Uyh7yDmxeNMvBRJ7fPP8zdHmyT2g61L4uY388estzjlX3Wvw/
+         V7rmb4Qns9QlpEaIWpJ5bwAviOV5vtznDM0xCxYljqXGb+jD6kdktWDQrrFc8rV8gU3L
+         v+ntVYeV3TgBiF9LVmf48QFgaO9DYDib63QhgQoa9Jq/2nHBAOI0lkAD0I0zvZMlewM6
+         XQcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QaxedIrPSgElF4LbnDsbKKinZNNusK1Y1uSoRNSN99Y=;
-        b=3fVKcMNtdlvMKh6/TH9zeJXsMy4C5do7c8vC+LWG26g1ieFsh+ARJzLVYBDQd7LWnP
-         cRGeJeLVuOiTAIO7Jj+EQqIWdgDviq9Zud3xfzyV7n5Cnox9CEHry1h4gxMpg0Nf4hmD
-         u7RJ+M6ef9InQY3KAsz3DYNlejnEHpWA6G3EUmDPofLkHYhQgmitulzjzNSSi8S2daxS
-         NEOXiw9bgA/xAmiSaagNlooo2nWW0UPrg2jEYRfQWu3rU/x27/GM5VzcscVrevWuBDrQ
-         ZbzvVN+UR2LU7IDJQsjtnG5L8jFFYs2KrsmjvWDzW9sbjkTb+eGzKPQuOk+ovT4PwzZ1
-         1E6g==
-X-Gm-Message-State: AJIora/Z7btfFokeT1eD8+AC1vRTrj9TDf4N/2EBX6UwBB6et0h5YrIr
-        awUM9pZdxwQDHFgkTv32WyMibumO5yEQIoEI3p63JQ60bcU=
-X-Google-Smtp-Source: AGRyM1tboBO57GOE7q2u2eDAWniX6rZUwvSCjbVX8abCfxPPfPYGG43cmIYz1FECAXw5K++NWOiXPMEGqRe7QMc46c4=
-X-Received: by 2002:a05:6638:1a89:b0:33f:7184:1eff with SMTP id
- ce9-20020a0566381a8900b0033f71841effmr4106942jab.100.1657774912830; Wed, 13
- Jul 2022 22:01:52 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=vpk7Y+UDUwnsHzF9bGK99kDtr34OClPDDThITUcPaVw=;
+        b=ok3lvjz5l44tqH3Zb+4u3Ilu2JK0YjTy6E+GO4cKMKl+zWpXzFiEhbydvNaK/HEy6V
+         9Kmdgv6wl0QRGYgwPv0tZrTGGaJrho0r40BN0ylQrbhyDfKaH8b5TrHyR0a4P9wtNk5q
+         TdLH7Pf0CeHcd1jNbmspal7q+XrZ2nz3FWbkq4IcCTQYW9t0aTgygu7tg7Ti/vvlj06A
+         B9og72KHqb80LJkXr2/ojGJfmxu05kjcU8FBSAc/zhhIMNN498HwrNA4ojX93v0Zww3X
+         4eJCp08H7bBpWf6r9E0zLSqVvXwRR2t/J2h+m07ZNcF/ruLkn8BpVv+S8h6f+XueHOKd
+         3mKQ==
+X-Gm-Message-State: AJIora9kh6zPpn9BiUepCPLjzQ08imD1KfTLVI/PInZxKSZmsWpWnJ2V
+        0T1zRMW2o6pPHspmMZ9/22dM3iR2MRax0Dx6DTsczvFk62w=
+X-Google-Smtp-Source: AGRyM1v4VoLdWXeNoUo0UownG7jE+CG4+wisHCvQnw/1wB2yE4knQj81yFV6BIzLOyQoSKoYnORskp8GcIxp/yKYzI8=
+X-Received: by 2002:aa7:c784:0:b0:43a:caa8:75b9 with SMTP id
+ n4-20020aa7c784000000b0043acaa875b9mr9608745eds.311.1657775233295; Wed, 13
+ Jul 2022 22:07:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAJQ9wQ_tU-zy-f9rFk_sqiqh7y7WDz2tyYW6EJNzii6Y7AE3SQ@mail.gmail.com>
- <CAJQ9wQ_b=ssxO4RaQ4tLc723ubOXCaTUpmghebc94bYWQ+cBsg@mail.gmail.com>
- <YsvPDfSE6wflDtpA@krava> <YsvgmAK0LJbpCQ/G@krava> <CAJQ9wQ-9WR4RY-Fb-22Y-0Tcwri_v7FVRYMNiJCJMrqqiAU9Rw@mail.gmail.com>
- <Ys064c3WpREp+Lem@krava>
-In-Reply-To: <Ys064c3WpREp+Lem@krava>
-From:   Donald Chan <hoiho.chan@gmail.com>
-Date:   Wed, 13 Jul 2022 22:01:41 -0700
-Message-ID: <CAJQ9wQ-0UUAqzyB5P9Xy_0=hpxg9m+2OEzAmk2nWnoX9es9Gnw@mail.gmail.com>
-Subject: Re: Missing .BTF section in vmlinux (x86_64) when building on Yocto
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     bpf@vger.kernel.org, daniel@iogearbox.net, ast@kernel.org
+References: <20220712212124.3180314-1-deso@posteo.net> <20220712212124.3180314-3-deso@posteo.net>
+In-Reply-To: <20220712212124.3180314-3-deso@posteo.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 13 Jul 2022 22:07:02 -0700
+Message-ID: <CAEf4BzaK0H8MPSUQY-VLHuqMJtO1EE-4RpLAh=hRMCXN=dZBVw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] selftests/bpf: Integrate vmtest configs
+To:     =?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Mykola Lysenko <mykolal@fb.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -67,92 +69,65 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 12, 2022 at 2:12 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+On Tue, Jul 12, 2022 at 2:21 PM Daniel M=C3=BCller <deso@posteo.net> wrote:
 >
-> On Mon, Jul 11, 2022 at 02:53:58PM -0700, Donald Chan wrote:
-> > On Mon, Jul 11, 2022 at 1:34 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> > >
-> > > On Mon, Jul 11, 2022 at 09:19:45AM +0200, Jiri Olsa wrote:
-> > > > On Sun, Jul 10, 2022 at 10:57:01PM -0700, Donald Chan wrote:
-> > > > > Hi,
-> > > > >
-> > > > > I am trying to enable CONFIG_DEBUG_INFO_BTF when building a
-> > > > > Yocto-based Linux kernel....but it is failing with this error:
-> > > > >
-> > > > > |   LD      .tmp_vmlinux.btf
-> > > > > |   BTF     .btf.vmlinux.bin.o
-> > > > > |   LD      .tmp_vmlinux.kallsyms1
-> > > > > |   KSYMS   .tmp_vmlinux.kallsyms1.S
-> > > > > |   AS      .tmp_vmlinux.kallsyms1.S
-> > > > > |   LD      .tmp_vmlinux.kallsyms2
-> > > > > |   KSYMS   .tmp_vmlinux.kallsyms2.S
-> > > > > |   AS      .tmp_vmlinux.kallsyms2.S
-> > > > > |   LD      vmlinux
-> > > > > |   BTFIDS  vmlinux
-> > > > > | FAILED: load BTF from vmlinux: No such file or directory
-> > > > >
-> > > > > I dug deeper and it seems that the resolve_btfids utility is not able
-> > > > > to find any relevant .BTF section (at btf__parse from function
-> > > > > symbols_resolve).
-> > > > >
-> > > > > Dumped the vmlinux and also confirmed there is only .BTF_ids section:
-> > > > >
-> > > > >   [2993] .rela___ksymtab_g RELA             0000000000000000  17174de0
-> > > > >        0000000000000048  0000000000000018   I      22807   2992     8
-> > > > >   [2994] .BTF_ids          PROGBITS         0000000000000000  0105c504
-> > > > >        00000000000000fc  0000000000000000   A       0     0     1
-> > > > >
-> > > > > What could be wrong? Sample config is available at
-> > > > > https://gist.github.com/hoiho-amzn/964eb0cf2b4459f6775d7af1da7b4056
-> > >
-> > > I compiled x86_64 bpf-next/master kernel with your config with no problems,
-> > > could you share more details? like:
-> > >   - version of dwarves/pahole
-> >
-> > $ pahole --version
-> > v1.22
-> >
-> > >   - clang/gcc? versions
-> > >   - V=1 compile log
-> > >   - command line options
-> >
-> > I will need some more time to gather the logs. Hopefully the pahole
-> > and kernel branch will give some initial clue.
-> >
-> > >   - tree/branch you're on
-> >
-> > This is from Yocto and they use 5.15 -
-> > https://git.yoctoproject.org/linux-yocto/tree/?h=v5.15/standard/base&id=ebfb1822e9f9726d8c587fc0f60cfed43fa0873e
+> This change integrates the configuration from the vmtest repository [0],
+> where it is currently used for testing kernel patches into the existing
+> configuration pulled in with an earlier patch. The result is a super set
+> of the configs from the two repositories.
 >
-> could you test that on either bpf/master or bpf-next/master tree?
+> [0]: https://github.com/kernel-patches/vmtest/tree/831ee8eb72ddb7e03babb8=
+f7e050d52a451237aa/travis-ci/vmtest/configs
 >
-> jirka
-
-Finally figured out the mystery - I was building on Ubuntu 18.04, and
-libelf/elfutils was too old (0.170).
-
-After upgrading to Ubuntu 22.04, I was able to build.
-
-Many thanks!
-
+> Signed-off-by: Daniel M=C3=BCller <deso@posteo.net>
+> ---
+>  tools/testing/selftests/bpf/configs/denylist/DENYLIST-latest | 5 +++++
+>  .../selftests/bpf/configs/denylist/DENYLIST-latest.s390x     | 1 +
+>  2 files changed, 6 insertions(+)
 >
-> >
-> > >   - anything else ;-)
-> > >
-> > > thanks,
-> > > jirka
-> > >
-> > > > >
-> > > > > The issue exists on x86_64, I also have tried armv7 with the same
-> > > > > result so doesn't seem to be arch-specific.
-> > > >
-> > > > hi,
-> > > > do you use any special command line options?
-> > > > what tree/branch are you on?
-> > > >
-> > > > thanks,
-> > > > jirka
-> > > >
-> > > > >
-> > > > > Thanks
-> > > > > Donald
+> diff --git a/tools/testing/selftests/bpf/configs/denylist/DENYLIST-latest=
+ b/tools/testing/selftests/bpf/configs/denylist/DENYLIST-latest
+> index 939de574..ddf8a0c5 100644
+> --- a/tools/testing/selftests/bpf/configs/denylist/DENYLIST-latest
+> +++ b/tools/testing/selftests/bpf/configs/denylist/DENYLIST-latest
+> @@ -4,3 +4,8 @@ stacktrace_build_id_nmi
+>  stacktrace_build_id
+>  task_fd_query_rawtp
+>  varlen
+> +btf_dump/btf_dump: syntax
+> +kprobe_multi_test/bench_attach
+> +core_reloc/enum64val
+> +core_reloc/size___diff_sz
+> +core_reloc/type_based___diff_sz
+
+I don't think any of these are necessary anymore. Some of them were
+due to nightly Clang was stale.
+
+> diff --git a/tools/testing/selftests/bpf/configs/denylist/DENYLIST-latest=
+.s390x b/tools/testing/selftests/bpf/configs/denylist/DENYLIST-latest.s390x
+> index e33cab..36574b0 100644
+> --- a/tools/testing/selftests/bpf/configs/denylist/DENYLIST-latest.s390x
+> +++ b/tools/testing/selftests/bpf/configs/denylist/DENYLIST-latest.s390x
+> @@ -63,5 +63,6 @@ bpf_cookie                               # failed to op=
+en_and_load program: -524
+>  xdp_do_redirect                          # prog_run_max_size unexpected =
+error: -22 (errno 22)
+>  send_signal                              # intermittently fails to recei=
+ve signal
+>  select_reuseport                         # intermittently fails on new s=
+390x setup
+> +tc_redirect/tc_redirect_dtime            # very flaky
+
+same for this, yes it's flaky, but this shouldn't be in this list (I'd
+rather people actually fix the flakiness, of course). These configs
+should be "known not working" test cases (e.g., like BPF
+trampoline-based for s390x, that feature is just not implemented). But
+flaky tests should go here, they should be ideally fixed and not be
+blessed officially to be ignored.
+
+>  xdp_synproxy                             # JIT does not support calling =
+kernel function                                (kfunc)
+>  unpriv_bpf_disabled                      # fentry
+> --
+> 2.30.2
+>
