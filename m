@@ -2,67 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 030C0575567
-	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 20:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7666C57556F
+	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 20:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239595AbiGNSwA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jul 2022 14:52:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37208 "EHLO
+        id S232310AbiGNSyN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jul 2022 14:54:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240857AbiGNSvy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jul 2022 14:51:54 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B6E5B064
-        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 11:51:53 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id l23so5036508ejr.5
-        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 11:51:53 -0700 (PDT)
+        with ESMTP id S240910AbiGNSyH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jul 2022 14:54:07 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9025243E66
+        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 11:54:06 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id e5-20020a636905000000b004119d180b54so1605207pgc.14
+        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 11:54:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=zkW/II/SrYuu0Vg8kqursnxmTsIfNkh3ckGBLaqMHac=;
-        b=f4QRtPHVRj6Q+eWBjstnZ+xiFe9fkmvi6pDab0ueia/NmVHBAVrlWG+KdG5qWdgFPV
-         xnmmfKcOsgSWnaHz9WaGtFmifG46t2ddRVDBwxpRiGXGDxc/hLIvc3ADZ2A9YvqlQ7Ml
-         uKwzQAGh7yzOaZt3sov/XKr+ao8uxNNVgGQm6GcZzHdcYmgL8Qhs6KxIoOn4ztyiXkT0
-         Ur9OpLTtGQGnpnNvDNn/hAYyHabwAc7ZE9d6e52eLzhdiaPl8RfT6FcIoJvA+x7XmTz0
-         pRoct53W87R/X0IuR9k77+aUAeJBWeRZD47g0CWVVhxxt6nxB4AY9Bvw2jPCDX8RoLhd
-         r8+A==
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=5YIJYLLgsjtvncuo/58QsfEcqvQ8pkD1xgwWrhU3Oyw=;
+        b=QP21sYrlO0fYeBESb3/X+r3Xgh5ZAORwgty/hMh64ewTLLUH45glw1IC+Rt1vyIWFn
+         olo2jkAdboWPsaKJGnnDRHsmQ65oZtGyioEX1a3+qZ0RWuOwKIInixrNhrJmg3m1jAH1
+         tjXYKqmioV8sn8n4dcA00gktZlQJhj3pmpcOSvz08piOlUOPZQEHR2L9dv53y5Qc9MGQ
+         oqFuqTHmyJYwY3Up7DIQcJqZ9zAULtdst9m/OGAwo80bd1Pu4WilMHF4WTOzd2DtvbAv
+         n1dk5Sl1IEnstGX2YAqCN0uVWdHqEo6Ai1rKMlrlXJR3nDl3nkxRbzO/7cWU2luwP3kA
+         eQfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=zkW/II/SrYuu0Vg8kqursnxmTsIfNkh3ckGBLaqMHac=;
-        b=iT4k69TFxPdqMU6L1K/Yxif4AFnF/HVflKT0yGw4tHzIlx1oP88t6oc+Z9MU03azy0
-         mH2cmDF7QK5g+XdUOElrEOjSzl/mylflup6I42Jwo06V0KvvQKqTl1JlYm37Onb/RdxN
-         TbvOo/9VN1bj87+PIprRV+KLZr/B9F5bvGfwPJz2qRslj10yRhvPnna6FWClmzDs8HF3
-         tWIscedzV34geFYbvTl7xT9TxTjoj4gKwKEyjjM331T11GIXZcU6goFaH07MKdjxRolF
-         T4ViI6lbSr4lu/Rr76ZPGst8qSKpdvIVcAi+bbNdapIEvVDyl6cNCPxpO2+hHasBN9A5
-         4nNA==
-X-Gm-Message-State: AJIora9U8VJxYhn8I9CK+nLAZLIJDRJzSYE6E1xaxWe8lpKcdaWyszM6
-        o6Ihub4OTNb1IYyqkR+mqLoNXvkhHHoWfdmBaLo=
-X-Google-Smtp-Source: AGRyM1vyAR7d+MD5ZTIfko+xUwseiXBoY1E2zwK/8z61kWnzyLQV6632dWQBgo+JYnwohSE7UpmZIn/gtIv1PaOK5ZI=
-X-Received: by 2002:a17:906:3f51:b0:712:3945:8c0d with SMTP id
- f17-20020a1709063f5100b0071239458c0dmr10004225ejj.302.1657824712023; Thu, 14
- Jul 2022 11:51:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220712212124.3180314-1-deso@posteo.net> <20220712212124.3180314-3-deso@posteo.net>
- <CAEf4BzaK0H8MPSUQY-VLHuqMJtO1EE-4RpLAh=hRMCXN=dZBVw@mail.gmail.com> <20220714140410.ccvmj2ib5reamdmg@nuc>
-In-Reply-To: <20220714140410.ccvmj2ib5reamdmg@nuc>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 14 Jul 2022 11:51:40 -0700
-Message-ID: <CAEf4BzYkHYH+=XUBGQ42kPCv8onTYa_MLKz4kMgJiMZTWpreWQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] selftests/bpf: Integrate vmtest configs
-To:     =?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Mykola Lysenko <mykolal@fb.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=5YIJYLLgsjtvncuo/58QsfEcqvQ8pkD1xgwWrhU3Oyw=;
+        b=BANJCqf61FK/0AxTfQIKFF9dymK7A80Mos90wuNwri+UX93B8yo5lvaYzG4MsYsuDm
+         ycmCfwMIZ1js0eBKYIaXMFcjhAy5PaSy3X2rym3oaOEyFLnojMMxC9pFvChJlVb/O+I3
+         qQzdFneAwzelnzzhos0ZOBzgF7qu9h7kGtj8sbOWk/59zuOX+aCS1ycKiwHo/BlgDvjQ
+         NO9DIprf3IsxjDLPmDXBRYiYvqDMTgme6Auvr5QSMo1KKxffvjFpCkT3OyPKfZwIqr+S
+         jkw/42XygJl5YH6b7Z+8fVkVDVIpMQkW8M9A7l75jBQq6TtSzEiyynJXKdV88IJl/mbS
+         wDEQ==
+X-Gm-Message-State: AJIora8fEhSaBR+LCWJKzsYUYtNWfR3bSCmVyMXjDH7LzWN4gxwa6J6A
+        GQ/2B70d8G8mkzWruZZSD6ME1L6pym1DSWidDhmsGi0PWmZrFQul06p5gRF4L784X+yByaoRiDq
+        7pnUzkf1nbODdlxrkyR55fTosAVlS1Ts6Hqy0xeCe5jnjzbQQxg==
+X-Google-Smtp-Source: AGRyM1vIGPDveYx+akvMNnF9OMHkH+kH+3p2lRD2L9WVrswhjDeZwJdPWiM9jRP6R6gUXAtqARq6mLc=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a62:1b57:0:b0:52a:d646:de3c with SMTP id
+ b84-20020a621b57000000b0052ad646de3cmr9816105pfb.60.1657824845955; Thu, 14
+ Jul 2022 11:54:05 -0700 (PDT)
+Date:   Thu, 14 Jul 2022 11:54:04 -0700
+Message-Id: <20220714185404.3647772-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.37.0.170.g444d1eabd0-goog
+Subject: [PATCH bpf-next] bpf: fix lsm_cgroup build errors on esoteric configs
+From:   Stanislav Fomichev <sdf@google.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org,
+        kernel test robot <lkp@intel.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,100 +67,84 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 14, 2022 at 7:04 AM Daniel M=C3=BCller <deso@posteo.net> wrote:
->
-> On Wed, Jul 13, 2022 at 10:07:02PM -0700, Andrii Nakryiko wrote:
-> > On Tue, Jul 12, 2022 at 2:21 PM Daniel M=C3=BCller <deso@posteo.net> wr=
-ote:
-> > >
-> > > This change integrates the configuration from the vmtest repository [=
-0],
-> > > where it is currently used for testing kernel patches into the existi=
-ng
-> > > configuration pulled in with an earlier patch. The result is a super =
-set
-> > > of the configs from the two repositories.
-> > >
-> > > [0]: https://github.com/kernel-patches/vmtest/tree/831ee8eb72ddb7e03b=
-abb8f7e050d52a451237aa/travis-ci/vmtest/configs
-> > >
-> > > Signed-off-by: Daniel M=C3=BCller <deso@posteo.net>
-> > > ---
-> > >  tools/testing/selftests/bpf/configs/denylist/DENYLIST-latest | 5 +++=
-++
-> > >  .../selftests/bpf/configs/denylist/DENYLIST-latest.s390x     | 1 +
-> > >  2 files changed, 6 insertions(+)
-> > >
-> > > diff --git a/tools/testing/selftests/bpf/configs/denylist/DENYLIST-la=
-test b/tools/testing/selftests/bpf/configs/denylist/DENYLIST-latest
-> > > index 939de574..ddf8a0c5 100644
-> > > --- a/tools/testing/selftests/bpf/configs/denylist/DENYLIST-latest
-> > > +++ b/tools/testing/selftests/bpf/configs/denylist/DENYLIST-latest
-> > > @@ -4,3 +4,8 @@ stacktrace_build_id_nmi
-> > >  stacktrace_build_id
-> > >  task_fd_query_rawtp
-> > >  varlen
-> > > +btf_dump/btf_dump: syntax
-> > > +kprobe_multi_test/bench_attach
-> > > +core_reloc/enum64val
-> > > +core_reloc/size___diff_sz
-> > > +core_reloc/type_based___diff_sz
-> >
-> > I don't think any of these are necessary anymore. Some of them were
-> > due to nightly Clang was stale.
-> >
-> > > diff --git a/tools/testing/selftests/bpf/configs/denylist/DENYLIST-la=
-test.s390x b/tools/testing/selftests/bpf/configs/denylist/DENYLIST-latest.s=
-390x
-> > > index e33cab..36574b0 100644
-> > > --- a/tools/testing/selftests/bpf/configs/denylist/DENYLIST-latest.s3=
-90x
-> > > +++ b/tools/testing/selftests/bpf/configs/denylist/DENYLIST-latest.s3=
-90x
-> > > @@ -63,5 +63,6 @@ bpf_cookie                               # failed t=
-o open_and_load program: -524
-> > >  xdp_do_redirect                          # prog_run_max_size unexpec=
-ted error: -22 (errno 22)
-> > >  send_signal                              # intermittently fails to r=
-eceive signal
-> > >  select_reuseport                         # intermittently fails on n=
-ew s390x setup
-> > > +tc_redirect/tc_redirect_dtime            # very flaky
-> >
-> > same for this, yes it's flaky, but this shouldn't be in this list (I'd
-> > rather people actually fix the flakiness, of course). These configs
-> > should be "known not working" test cases (e.g., like BPF
-> > trampoline-based for s390x, that feature is just not implemented). But
-> > flaky tests should go here, they should be ideally fixed and not be
-> > blessed officially to be ignored.
->
-> I can remove this change from the set. But really from my perspective
-> the entire patch set's concern is not with cleaning up any of the lists
-> -- it is about merging and integrating existing configuration from two
-> others repositories into this one, while preserving what has been done
-> and why in a way that can be followed when looking back at repository
-> histories.
-> My observation has been that at least on x86_64, none of the denied
-> tests caused actual failures when run. And yet, that is best cleaned up
-> subsequently if it were for me.
+This particular ones is about having the following:
+ CONFIG_BPF_LSM=y
+ # CONFIG_CGROUP_BPF is not set
 
-My point is that we shouldn't add them to selftests/bpf first just to
-clean up later. We can leave those custom additions as is in CI repos
-(either way we need to allow repos to augment "default" configs/lists)
-and clean that up there.
+Also, add __maybe_unused to the args for the !CONFIG_NET cases.
 
-Generally, allow/deny lists in selftests/bpf should be "authoritative"
-in the sense that we know that those tests are not supposed to work
-(right now or at all), we can even teach test_progs to ignore those by
-default (now that denylist is collocated with test_progs). Anything
-that's flaky shouldn't be added there, flakiness should be eliminated.
-With those flaky tests I added in libbpf CI I was the only one
-suffering from them, so sometimes I opted to just blacklist them for
-my own sanity.
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ kernel/bpf/bpf_lsm.c    | 8 ++++++--
+ kernel/bpf/trampoline.c | 2 +-
+ 2 files changed, 7 insertions(+), 3 deletions(-)
 
-But now we should all share this pain and work together on improving tests!=
- ;)
+diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+index d469b7f3deef..fa71d58b7ded 100644
+--- a/kernel/bpf/bpf_lsm.c
++++ b/kernel/bpf/bpf_lsm.c
+@@ -63,10 +63,11 @@ BTF_ID(func, bpf_lsm_socket_post_create)
+ BTF_ID(func, bpf_lsm_socket_socketpair)
+ BTF_SET_END(bpf_lsm_unlocked_sockopt_hooks)
+ 
++#ifdef CONFIG_CGROUP_BPF
+ void bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog,
+ 			     bpf_func_t *bpf_func)
+ {
+-	const struct btf_param *args;
++	const struct btf_param *args __maybe_unused;
+ 
+ 	if (btf_type_vlen(prog->aux->attach_func_proto) < 1 ||
+ 	    btf_id_set_contains(&bpf_lsm_current_hooks,
+@@ -75,9 +76,9 @@ void bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog,
+ 		return;
+ 	}
+ 
++#ifdef CONFIG_NET
+ 	args = btf_params(prog->aux->attach_func_proto);
+ 
+-#ifdef CONFIG_NET
+ 	if (args[0].type == btf_sock_ids[BTF_SOCK_TYPE_SOCKET])
+ 		*bpf_func = __cgroup_bpf_run_lsm_socket;
+ 	else if (args[0].type == btf_sock_ids[BTF_SOCK_TYPE_SOCK])
+@@ -86,6 +87,7 @@ void bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog,
+ #endif
+ 		*bpf_func = __cgroup_bpf_run_lsm_current;
+ }
++#endif
+ 
+ int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
+ 			const struct bpf_prog *prog)
+@@ -219,6 +221,7 @@ bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 	case BPF_FUNC_get_retval:
+ 		return prog->expected_attach_type == BPF_LSM_CGROUP ?
+ 			&bpf_get_retval_proto : NULL;
++#ifdef CONFIG_NET
+ 	case BPF_FUNC_setsockopt:
+ 		if (prog->expected_attach_type != BPF_LSM_CGROUP)
+ 			return NULL;
+@@ -239,6 +242,7 @@ bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 					prog->aux->attach_btf_id))
+ 			return &bpf_unlocked_sk_getsockopt_proto;
+ 		return NULL;
++#endif
+ 	default:
+ 		return tracing_prog_func_proto(func_id, prog);
+ 	}
+diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+index fd69812412ca..6691dbf9e467 100644
+--- a/kernel/bpf/trampoline.c
++++ b/kernel/bpf/trampoline.c
+@@ -501,7 +501,7 @@ int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_trampolin
+ 	return err;
+ }
+ 
+-#if defined(CONFIG_BPF_JIT) && defined(CONFIG_BPF_SYSCALL)
++#if defined(CONFIG_CGROUP_BPF) && defined(CONFIG_BPF_LSM)
+ static void bpf_shim_tramp_link_release(struct bpf_link *link)
+ {
+ 	struct bpf_shim_tramp_link *shim_link =
+-- 
+2.37.0.170.g444d1eabd0-goog
 
->
-> Thanks,
-> Daniel
