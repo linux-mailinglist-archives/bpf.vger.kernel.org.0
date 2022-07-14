@@ -2,61 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A81574519
-	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 08:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4357757451E
+	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 08:34:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233920AbiGNGb1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jul 2022 02:31:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50650 "EHLO
+        id S231674AbiGNGem (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jul 2022 02:34:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232896AbiGNGb0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jul 2022 02:31:26 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40BB31E3C8
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 23:31:25 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id v185so607669ioe.11
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 23:31:25 -0700 (PDT)
+        with ESMTP id S229455AbiGNGel (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jul 2022 02:34:41 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F30E59FC9;
+        Wed, 13 Jul 2022 23:34:38 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id q14so635099iod.3;
+        Wed, 13 Jul 2022 23:34:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=axbhI+vcnwCADXLORJOGRytQl2zO/ACfvqCc3ugTQ+0=;
-        b=n+z4dT0967FC1By5q78s4oBwzraCN8aqTwOJNupbprGxFhLWkZOUT3zYpcLcmVqP8f
-         fzWWeT3EYG1hgeMT8dpfSHpGzBiO+5Qa0nQgch7yitP+mRzLMqWelxs4GHZu79FjFewb
-         chDbOqqbIjcyUDaJlxcwHBO+8tW05O1bXCiLW+79QqJIwjCJlqAYDnFXIpuxnoYsTjwC
-         ylj9485txGmWcieg2z5dXPkzSx99cFNWhauU+NnpgI05D1iC+W6RNZhTaLFTyrJmZEUL
-         95RQO847w6P2hMDBPiguGAE108KvLeQq+Veub6MijLz7ORvOkHgcojwgMvJd8eYrGoeX
-         zbvg==
+         :cc:content-transfer-encoding;
+        bh=HsXLZKgExxaVrrOWzurHY9hJzjTpI3H7ZSv4NVdQcoc=;
+        b=Lm8XgDriM149barV1JmRQwqJW4zZ7qA3gaoS272mwExdpi0fn9ahWMG+zNOZfhucFL
+         euXbDzD5jEhmpW2jgjU8UUC3HCNLApayRz63AyU4I+AKC6NhTL67j1dJ0VsuITW1iLfc
+         BrBt7P2jycJM3HFykiqC7tkziFAltNZsnF/zWiAe5fEHyFsZYqCwsxjLGSLJ349zh1IJ
+         NLb2Pz1f6oXgtXmmlFzD4ZATIWvRMIU1qN4Do9fHjobGFXekybaMNbh/1NAkwvyILvBK
+         eDdNO7LX+nRvc8PmFNqddGDTl9ZUG/gyWFLVey5cjWpFFQta/isUTWGewLPzYQKj/s4T
+         VPGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=axbhI+vcnwCADXLORJOGRytQl2zO/ACfvqCc3ugTQ+0=;
-        b=mKNEzm0mRphcUdPCV9VFI5G9sFEaBzPbX8WFFHoOnA/c6w+cWnyG3rq2+UNGk0NUK8
-         ch/Llvcnysn45SdmuxdAVySpZ22kCEkkbvxw55TK8KyAwzLyddH00Z9k2nOoE+OxYtbt
-         7EGtyBAJoYnDyrOMs5VOJL5XDUcLW3FEwtA4oyLZDGa+vJI5KX54oSoV6r7PDAQ6BejV
-         jF9j7CQet+iM2mNiln+AfRoAn7iNWuiEl8xFU3KWA1tEAL7+04DW233NR2TITarMVfVB
-         zcsNK3F3AQ/DE3ZWv8dlB6MVUiS0b/7RVQs0HZX1GmflJ3NhfuAJoDBYwC9diUxmI9QS
-         Aqbw==
-X-Gm-Message-State: AJIora+S5u1C1BHu2mYfyphDXQqtcFRaxjUij7dwfFLC40wYz4I2XyV9
-        uaD2VGwtM4MnuDNA3mJu00xyvTB3SXtx1iji0Vw=
-X-Google-Smtp-Source: AGRyM1ueKdqAPGL6TNN0jwwoE2BK4wYWWpf/mLhhZ3bDJRLOIm9bpL6Rfi/aWBr8P5gxk/+Cb0fLrcJTCZAQpxPys+c=
-X-Received: by 2002:a02:c4c3:0:b0:33f:4fb4:834b with SMTP id
- h3-20020a02c4c3000000b0033f4fb4834bmr4104624jaj.231.1657780284531; Wed, 13
- Jul 2022 23:31:24 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=HsXLZKgExxaVrrOWzurHY9hJzjTpI3H7ZSv4NVdQcoc=;
+        b=xLAAzV+qTV44cbeRi0Yd1SJP2fWCqe75hgGYV6QyqaLkjorDtGJUQ7Q8LXjl9+7amG
+         jFHaYixdPL9vIpkdkFjZ+P52zZPpTcYC73HP4JkLA89hmLvTFwM6XSpsH4H8Rq9VaHjt
+         UlgX/JMa9oeES6yF8ATRAzhNc3cODAF97GjNguNl409dpmCUAHcjzhTBBnKz/su5EW3s
+         6chLj2N0yOYaajxdzi19QPEhw8Wy7pnyfuL+S3h9sdNWGFbHaniFujXJg7Ay4+er+LKf
+         BS4GS7wUOdKmMmgimWaZ+uP3AxtgvzEA0blkrj//kNVufr6Bya0mq/hZAa8dQcQuY4iL
+         aHQw==
+X-Gm-Message-State: AJIora/XL0HcdNsbdk+1O5jqR2+TMiUt8JT0pwjJK4HXE1CYf/wDKNFC
+        xWZ5qin2OrpM3nkPt/wJ1wUNDOA/RAAj1yM2qZ0=
+X-Google-Smtp-Source: AGRyM1sD/Hv8Rql5j6NdcaEMvBGTF7EAQAhDOSgUzYsj7J7UElNwm8pHxGs76CI612+D+TIgpPFXbsBzEttfuAhA2Pk=
+X-Received: by 2002:a05:6602:2e8d:b0:64f:b683:c70d with SMTP id
+ m13-20020a0566022e8d00b0064fb683c70dmr3607754iow.62.1657780478288; Wed, 13
+ Jul 2022 23:34:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220713234529.4154673-1-davemarchevsky@fb.com>
-In-Reply-To: <20220713234529.4154673-1-davemarchevsky@fb.com>
+References: <20220713111430.134810-1-toke@redhat.com> <CAKH8qBtdnku7StcQ-SamadvAF==DRuLLZO94yOR1WJ9Bg=uX1w@mail.gmail.com>
+ <877d4gpto8.fsf@toke.dk>
+In-Reply-To: <877d4gpto8.fsf@toke.dk>
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Thu, 14 Jul 2022 08:30:48 +0200
-Message-ID: <CAP01T74k86cwBk22M=YgY=Vao196_wDezvmHjk5u_Nry98A6hQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Add kptr_xchg to may_be_acquire_function check
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+Date:   Thu, 14 Jul 2022 08:34:02 +0200
+Message-ID: <CAP01T74x8qdCr=NP3fMEYeiiUd-zrM24_shzr2YNm7fWy_f5cQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/17] xdp: Add packet queueing and scheduling capabilities
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Stanislav Fomichev <sdf@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>, kafai@fb.com
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Mykola Lysenko <mykolal@fb.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org,
+        Freysteinn Alfredsson <freysteinn.alfredsson@kau.se>,
+        Cong Wang <xiyou.wangcong@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -67,102 +87,82 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 14 Jul 2022 at 01:46, Dave Marchevsky <davemarchevsky@fb.com> wrote:
+On Wed, 13 Jul 2022 at 23:52, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat=
+.com> wrote:
 >
-> The may_be_acquire_function check is a weaker version of
-> is_acquire_function that only uses bpf_func_id to determine whether a
-> func may be acquiring a reference. Most funcs which acquire a reference
-> do so regardless of their input, so bpf_func_id is all that's necessary
-> to make an accurate determination. However, map_lookup_elem only
-> acquires when operating on certain MAP_TYPEs, so commit 64d85290d79c
-> ("bpf: Allow bpf_map_lookup_elem for SOCKMAP and SOCKHASH") added the
-> may_be check.
+> Stanislav Fomichev <sdf@google.com> writes:
 >
-> Any helper which always acquires a reference should pass both
-> may_be_acquire_function and is_acquire_function checks. Recently-added
-> kptr_xchg passes the latter but not the former. This patch resolves this
-> discrepancy and does some refactoring such that the list of functions
-> which always acquire is in one place so future updates are in sync.
+> > On Wed, Jul 13, 2022 at 4:14 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
+redhat.com> wrote:
+> >>
+> >> Packet forwarding is an important use case for XDP, which offers
+> >> significant performance improvements compared to forwarding using the
+> >> regular networking stack. However, XDP currently offers no mechanism t=
+o
+> >> delay, queue or schedule packets, which limits the practical uses for
+> >> XDP-based forwarding to those where the capacity of input and output l=
+inks
+> >> always match each other (i.e., no rate transitions or many-to-one
+> >> forwarding). It also prevents an XDP-based router from doing any kind =
+of
+> >> traffic shaping or reordering to enforce policy.
+> >>
+> >> This series represents a first RFC of our attempt to remedy this lack.=
+ The
+> >> code in these patches is functional, but needs additional testing and
+> >> polishing before being considered for merging. I'm posting it here as =
+an
+> >> RFC to get some early feedback on the API and overall design of the
+> >> feature.
+> >>
+> >> DESIGN
+> >>
+> >> The design consists of three components: A new map type for storing XD=
+P
+> >> frames, a new 'dequeue' program type that will run in the TX softirq t=
+o
+> >> provide the stack with packets to transmit, and a set of helpers to de=
+queue
+> >> packets from the map, optionally drop them, and to schedule an interfa=
+ce
+> >> for transmission.
+> >>
+> >> The new map type is modelled on the PIFO data structure proposed in th=
+e
+> >> literature[0][1]. It represents a priority queue where packets can be
+> >> enqueued in any priority, but is always dequeued from the head. From t=
+he
+> >> XDP side, the map is simply used as a target for the bpf_redirect_map(=
+)
+> >> helper, where the target index is the desired priority.
+> >
+> > I have the same question I asked on the series from Cong:
+> > Any considerations for existing carousel/edt-like models?
+>
+> Well, the reason for the addition in patch 5 (continuously increasing
+> priorities) is exactly to be able to implement EDT-like behaviour, where
+> the priority is used as time units to clock out packets.
+>
+> > Can we make the map flexible enough to implement different qdisc
+> > policies?
+>
+> That's one of the things we want to be absolutely sure about. We are
+> starting out with the PIFO map type because the literature makes a good
+> case that it is flexible enough to implement all conceivable policies.
+> The goal of the test harness linked as note [4] is to actually examine
+> this; Frey is our PhD student working on this bit.
+>
+> Thus far we haven't hit any limitations on this, but we'll need to add
+> more policies before we are done with this. Another consideration is
+> performance, of course, so we're also planning to do a comparison with a
+> more traditional "bunch of FIFO queues" type data structure for at least
+> a subset of the algorithms. Kartikeya also had an idea for an
+> alternative way to implement a priority queue using (semi-)lockless
+> skiplists, which may turn out to perform better.
 >
 
-Thanks for the fix.
-I actually didn't add this on purpose, because the reason for using
-the may_be_acquire_function (in check_refcount_ok) doesn't apply to
-kptr_xchg, but maybe that was a poor choice on my part. I'm actually
-not sure of the need for may_be_acquire_function, and
-check_refcount_ok.
-
-Can we revisit why iit is needed? It only prevents
-ARG_PTR_TO_SOCK_COMMON (which is not the only arg type that may be
-refcounted) from being argument type of acquire functions. What is the
-reason behind this? Should we rename arg_type_may_be_refcounted to a
-less confusing name? It probably only applies to socket lookup
-helpers.
-
-> Fixes: c0a5a21c25f3 ("bpf: Allow storing referenced kptr in map")
-> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-> ---
->
-> Sent to bpf-next instead of bpf as kptr_xchg not passing
-> may_be_acquire_function isn't currently breaking anything, just
-> logically inconsistent.
->
->  kernel/bpf/verifier.c | 33 +++++++++++++++++++++++----------
->  1 file changed, 23 insertions(+), 10 deletions(-)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 26e7e787c20a..df4b923e77de 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -477,13 +477,30 @@ static bool type_may_be_null(u32 type)
->         return type & PTR_MAYBE_NULL;
->  }
->
-> +/* These functions acquire a resource that must be later released
-> + * regardless of their input
-> + */
-> +static bool __check_function_always_acquires(enum bpf_func_id func_id)
-> +{
-> +       switch (func_id) {
-> +       case BPF_FUNC_sk_lookup_tcp:
-> +       case BPF_FUNC_sk_lookup_udp:
-> +       case BPF_FUNC_skc_lookup_tcp:
-> +       case BPF_FUNC_ringbuf_reserve:
-> +       case BPF_FUNC_kptr_xchg:
-> +               return true;
-> +       default:
-> +               return false;
-> +       }
-> +}
-> +
->  static bool may_be_acquire_function(enum bpf_func_id func_id)
->  {
-> -       return func_id == BPF_FUNC_sk_lookup_tcp ||
-> -               func_id == BPF_FUNC_sk_lookup_udp ||
-> -               func_id == BPF_FUNC_skc_lookup_tcp ||
-> -               func_id == BPF_FUNC_map_lookup_elem ||
-> -               func_id == BPF_FUNC_ringbuf_reserve;
-> +       /* See is_acquire_function for the conditions under which funcs
-> +        * not in __check_function_always_acquires acquire a resource
-> +        */
-> +       return __check_function_always_acquires(func_id) ||
-> +               func_id == BPF_FUNC_map_lookup_elem;
->  }
->
->  static bool is_acquire_function(enum bpf_func_id func_id,
-> @@ -491,11 +508,7 @@ static bool is_acquire_function(enum bpf_func_id func_id,
->  {
->         enum bpf_map_type map_type = map ? map->map_type : BPF_MAP_TYPE_UNSPEC;
->
-> -       if (func_id == BPF_FUNC_sk_lookup_tcp ||
-> -           func_id == BPF_FUNC_sk_lookup_udp ||
-> -           func_id == BPF_FUNC_skc_lookup_tcp ||
-> -           func_id == BPF_FUNC_ringbuf_reserve ||
-> -           func_id == BPF_FUNC_kptr_xchg)
-> +       if (__check_function_always_acquires(func_id))
->                 return true;
->
->         if (func_id == BPF_FUNC_map_lookup_elem &&
-> --
-> 2.30.2
->
+There's also code to go with the idea, just to show it can work :)
+https://github.com/kkdwivedi/linux/commits/skiplist
+Lookups are fully lockless, updates only contend when the same nodes
+are preds,succs. Still needs a lot of testing though. It's meant to be
+a generic ordered map, but can be repurposed as a priority queue.
