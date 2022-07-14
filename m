@@ -2,180 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 003A157457B
-	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 09:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ACEC574589
+	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 09:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234379AbiGNHIT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 14 Jul 2022 03:08:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46072 "EHLO
+        id S231365AbiGNHK3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jul 2022 03:10:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235407AbiGNHIS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jul 2022 03:08:18 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CA352DA8D
-        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 00:08:16 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26E6xZa9012215
-        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 00:08:15 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3h9h5g1ct6-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 00:08:15 -0700
-Received: from twshared5413.23.frc3.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Thu, 14 Jul 2022 00:08:14 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 818301C50A1F5; Thu, 14 Jul 2022 00:08:07 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
-        Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH v2 bpf-next 5/5] selftests/bpf: use BPF_KSYSCALL and SEC("ksyscall") in selftests
-Date:   Thu, 14 Jul 2022 00:07:55 -0700
-Message-ID: <20220714070755.3235561-6-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220714070755.3235561-1-andrii@kernel.org>
-References: <20220714070755.3235561-1-andrii@kernel.org>
+        with ESMTP id S235638AbiGNHK1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jul 2022 03:10:27 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE5DB1D330
+        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 00:10:26 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id sz17so1739656ejc.9
+        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 00:10:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AUYqFbV0cJeIrjQ2xG+x6K0R1EWu8kMUJIy2Y43cUgM=;
+        b=HaxaEsE3J6coon/KVfBGfIPqhRcxTySZSlTAlMo85qNCt/x6yl5xyhOJhqv0GWXxnW
+         xujd00yv3sYN5HNWE1+Vbl/IZnaNVnH47KCxEVY5SQocNiUUvy+O1eoDwRSmEqp/MUvr
+         RBA41zq+ZM3F6gqt/oLvzlyIWDEwzCzV1cv/l1s4tdocbXZuwyvWWHEFm0GzUg+Tgkm5
+         dHYj7Z7e4jNxYHTEJEVOFu7CEeTxynfkqH6gnybpBjgE8wUIX1vpG3ZjFnH/+d8v0VQG
+         FlOZWigv5kuLZs41ADfZnEhnI1zTiespDIWUsAsxzIhSg/NXEOC/GBZjIloKD6sbSV1h
+         b90w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AUYqFbV0cJeIrjQ2xG+x6K0R1EWu8kMUJIy2Y43cUgM=;
+        b=AOZbT5xA3Owrd+ggD+jVP5g7XGhDALzQMvqcM35OudFpc1Z9UAIZErL6VEPxPCdflE
+         awnUVDCSvwqC7DECMVRZMCa90Noq+6KDj0S9w/M7z+pZU3/shHv4J3mP+yTh4ErbJO32
+         PCPy5dWV9Ot5a7JYjIBxOu3bG+YGIyMJGcPFfKI33t65Al4sUZ/bqmn/y3nwNiiN40AF
+         YQ28+Ou84iSACZOADXhDN0MAvJf5IX9IALGvJ8UhjPj+e6FvYPdBtP+HsoKCTnolSWgs
+         OF63DhRFswnNb4N2BW3IvXbYdOjv+TzU4z40TDiMK68LFIO7mwFhtaEsjDz0n9iu03Id
+         hc0A==
+X-Gm-Message-State: AJIora8Ey9XqLkQssk7UZQWGO611ymo4cxIVQ2E4lVJPHcqAy8sdzSUT
+        n+DK9Y97ssTmq3u98EwXhYERcFLWfXvRYo2x3Hbz6/WeNWY=
+X-Google-Smtp-Source: AGRyM1t6Osxvkk/Nl4EpdTI3vPtDNi4MqZc+NoldY5WCpIDc1BCtGiRhqRKXMuYTj7akUks27V7Bf2+Wudyb58BubRM=
+X-Received: by 2002:a17:907:75ef:b0:72b:2fd:1a92 with SMTP id
+ jz15-20020a17090775ef00b0072b02fd1a92mr7230388ejc.745.1657782625516; Thu, 14
+ Jul 2022 00:10:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: W8v7M3N9Iv8w8zWX6M8arC4Dva-ine_G
-X-Proofpoint-ORIG-GUID: W8v7M3N9Iv8w8zWX6M8arC4Dva-ine_G
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-07-14_04,2022-07-13_03,2022-06-22_01
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20220713222544.2355143-1-indu.bhagat@oracle.com>
+ <CAEf4BzYqL_p61f_2HXSNuCSXPGxWbq7+kvZvmVGGgdLY1Z1ZWA@mail.gmail.com> <70edc9d0-9dab-c5d7-7f3e-9ce6c3b700de@fb.com>
+In-Reply-To: <70edc9d0-9dab-c5d7-7f3e-9ce6c3b700de@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 14 Jul 2022 00:10:14 -0700
+Message-ID: <CAEf4BzbfQzWsF=egHutsqz4tn_4qP3bs8Jb=iX5TbfuVaB5kHg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] docs/bpf: Update documentation for BTF_KIND_FUNC
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Indu Bhagat <indu.bhagat@oracle.com>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Convert few selftest that used plain SEC("kprobe") with arch-specific
-syscall wrapper prefix to ksyscall/kretsyscall and corresponding
-BPF_KSYSCALL macro. test_probe_user.c is especially benefiting from this
-simplification.
+On Wed, Jul 13, 2022 at 11:42 PM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 7/13/22 11:00 PM, Andrii Nakryiko wrote:
+> > On Wed, Jul 13, 2022 at 3:37 PM Indu Bhagat <indu.bhagat@oracle.com> wrote:
+> >>
+> >> The vlen bits in the BTF type of kind BTF_KIND_FUNC are used to convey the
+> >> linkage information for functions.
+> >>
+> >> Signed-off-by: Indu Bhagat <indu.bhagat@oracle.com>
+> >> ---
+> >>   Documentation/bpf/btf.rst | 2 +-
+> >>   1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/Documentation/bpf/btf.rst b/Documentation/bpf/btf.rst
+> >> index f49aeef62d0c..b3a9d5ac882c 100644
+> >> --- a/Documentation/bpf/btf.rst
+> >> +++ b/Documentation/bpf/btf.rst
+> >> @@ -369,7 +369,7 @@ No additional type data follow ``btf_type``.
+> >>     * ``name_off``: offset to a valid C identifier
+> >>     * ``info.kind_flag``: 0
+> >>     * ``info.kind``: BTF_KIND_FUNC
+> >> -  * ``info.vlen``: 0
+> >> +  * ``info.vlen``: linkage information (static=0, global=1)
+> >
+> > there is also extern=2, but I think we should just refer to enum
+> > btf_func_linkage, defined in UAPI (include/uapi/linux/btf.h) ?
+>
+> Currently kernel rejects extern=2. In kernel btf.c, we have
+>
+>          if (btf_type_vlen(t) > BTF_FUNC_GLOBAL) {
+>                  btf_verifier_log_type(env, t, "Invalid func linkage");
+>                  return -EINVAL;
+>          }
+>
+> and extern=2 will cause btf loading failure.
+>
+> The BTF_FUNC_EXTERN is generated when you call an extern *global*
+> function. I suspect that during static linking, all these
+> extern globals should become true global/static functions and
+> not extern func's any more so kernel is okay.
+>
+> So looks like it is worthwhile to mention that BTF_KIND_FUNC
+> supports all three modes as specified in enum btf_func_linkage.
+> But only static/global is supported in the kernel.
+>
 
-Tested-by: Alan Maguire <alan.maguire@oracle.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../selftests/bpf/progs/bpf_syscall_macro.c   |  6 ++---
- .../selftests/bpf/progs/test_attach_probe.c   | 15 +++++------
- .../selftests/bpf/progs/test_probe_user.c     | 27 +++++--------------
- 3 files changed, 16 insertions(+), 32 deletions(-)
+Exactly. This is specification of BTF format (for clang and gcc to
+agree upon, for example), while kernel BTF verifier puts extra
+conditions on top of BTF format itself (as required by C and kernel
+semantics). So it makes sense to document all possibilities and extra
+kernel checks.
 
-diff --git a/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c b/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
-index 05838ed9b89c..e1e11897e99b 100644
---- a/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
-@@ -64,9 +64,9 @@ int BPF_KPROBE(handle_sys_prctl)
- 	return 0;
- }
- 
--SEC("kprobe/" SYS_PREFIX "sys_prctl")
--int BPF_KPROBE_SYSCALL(prctl_enter, int option, unsigned long arg2,
--		       unsigned long arg3, unsigned long arg4, unsigned long arg5)
-+SEC("ksyscall/prctl")
-+int BPF_KSYSCALL(prctl_enter, int option, unsigned long arg2,
-+		 unsigned long arg3, unsigned long arg4, unsigned long arg5)
- {
- 	pid_t pid = bpf_get_current_pid_tgid() >> 32;
- 
-diff --git a/tools/testing/selftests/bpf/progs/test_attach_probe.c b/tools/testing/selftests/bpf/progs/test_attach_probe.c
-index f1c88ad368ef..a1e45fec8938 100644
---- a/tools/testing/selftests/bpf/progs/test_attach_probe.c
-+++ b/tools/testing/selftests/bpf/progs/test_attach_probe.c
-@@ -1,11 +1,10 @@
- // SPDX-License-Identifier: GPL-2.0
- // Copyright (c) 2017 Facebook
- 
--#include <linux/ptrace.h>
--#include <linux/bpf.h>
-+#include "vmlinux.h"
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
--#include <stdbool.h>
-+#include <bpf/bpf_core_read.h>
- #include "bpf_misc.h"
- 
- int kprobe_res = 0;
-@@ -31,8 +30,8 @@ int handle_kprobe(struct pt_regs *ctx)
- 	return 0;
- }
- 
--SEC("kprobe/" SYS_PREFIX "sys_nanosleep")
--int BPF_KPROBE(handle_kprobe_auto)
-+SEC("ksyscall/nanosleep")
-+int BPF_KSYSCALL(handle_kprobe_auto, struct __kernel_timespec *req, struct __kernel_timespec *rem)
- {
- 	kprobe2_res = 11;
- 	return 0;
-@@ -56,11 +55,11 @@ int handle_kretprobe(struct pt_regs *ctx)
- 	return 0;
- }
- 
--SEC("kretprobe/" SYS_PREFIX "sys_nanosleep")
--int BPF_KRETPROBE(handle_kretprobe_auto)
-+SEC("kretsyscall/nanosleep")
-+int BPF_KRETPROBE(handle_kretprobe_auto, int ret)
- {
- 	kretprobe2_res = 22;
--	return 0;
-+	return ret;
- }
- 
- SEC("uprobe")
-diff --git a/tools/testing/selftests/bpf/progs/test_probe_user.c b/tools/testing/selftests/bpf/progs/test_probe_user.c
-index 702578a5e496..8e1495008e4d 100644
---- a/tools/testing/selftests/bpf/progs/test_probe_user.c
-+++ b/tools/testing/selftests/bpf/progs/test_probe_user.c
-@@ -1,35 +1,20 @@
- // SPDX-License-Identifier: GPL-2.0
--
--#include <linux/ptrace.h>
--#include <linux/bpf.h>
--
--#include <netinet/in.h>
--
-+#include "vmlinux.h"
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_core_read.h>
- #include "bpf_misc.h"
- 
- static struct sockaddr_in old;
- 
--SEC("kprobe/" SYS_PREFIX "sys_connect")
--int BPF_KPROBE(handle_sys_connect)
-+SEC("ksyscall/connect")
-+int BPF_KSYSCALL(handle_sys_connect, int fd, struct sockaddr_in *uservaddr, int addrlen)
- {
--#if SYSCALL_WRAPPER == 1
--	struct pt_regs *real_regs;
--#endif
- 	struct sockaddr_in new;
--	void *ptr;
--
--#if SYSCALL_WRAPPER == 0
--	ptr = (void *)PT_REGS_PARM2(ctx);
--#else
--	real_regs = (struct pt_regs *)PT_REGS_PARM1(ctx);
--	bpf_probe_read_kernel(&ptr, sizeof(ptr), &PT_REGS_PARM2(real_regs));
--#endif
- 
--	bpf_probe_read_user(&old, sizeof(old), ptr);
-+	bpf_probe_read_user(&old, sizeof(old), uservaddr);
- 	__builtin_memset(&new, 0xab, sizeof(new));
--	bpf_probe_write_user(ptr, &new, sizeof(new));
-+	bpf_probe_write_user(uservaddr, &new, sizeof(new));
- 
- 	return 0;
- }
--- 
-2.30.2
-
+> >
+> >>     * ``type``: a BTF_KIND_FUNC_PROTO type
+> >>
+> >>   No additional type data follow ``btf_type``.
+> >> --
+> >> 2.31.1
+> >>
