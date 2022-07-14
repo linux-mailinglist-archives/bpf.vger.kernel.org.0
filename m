@@ -2,71 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A72C75741F5
-	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 05:37:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 835BD5742DA
+	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 06:27:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233068AbiGNDhw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Jul 2022 23:37:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54226 "EHLO
+        id S235658AbiGNE1N (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jul 2022 00:27:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231260AbiGNDhu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Jul 2022 23:37:50 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB3C6113
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 20:37:49 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id 72so434474pge.0
-        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 20:37:49 -0700 (PDT)
+        with ESMTP id S234939AbiGNE0i (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jul 2022 00:26:38 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDDBA2AC6E
+        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 21:23:47 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id bp15so1238549ejb.6
+        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 21:23:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=lvv+2TNZ0UDHHJtA78+IPj1aaCqqH2RNt69XAZ3FeMQ=;
-        b=kGmHh59tEq+2m/EXFCaTXBuhec54r+LXVmBhv6huC9hibsPHvJJj1ys+qrE6Q+QlQB
-         DI+v8T/0C8b7exf9ujwi1xbkMLl9p7N1O5hrIZPIougaTEF8SPcDJJsowVGMzT2k/VKv
-         gugnlaGDXN3zCL1vGMPLCtpsB3dD/4KuIqLcg5BwnkVhqmliDQ44sbdgaIe741XIyZav
-         jcPYFO9cGu0bm80KPz9p4b0TIxZIyDVfVXc6+dkpNBMBLYhLK+6YwsXdLlP41e82M9vq
-         sZ2e6CjUFE21Wi9/8r83RaofWIL6rhx1sJe31XDvEWFzOxRqXnoa/WCWWcHVeWS8tzUP
-         vxwQ==
+        bh=A+FD+ZoyOFDRl+p7CKGL6xX7v32Ezc47RplJfYciA3Q=;
+        b=Qoy3+XwIicxtwNr9VHXzOD2QwNAvQH1umP3m3Lg6rn9vuo2s5E9DC6dI1zw6BKcalf
+         QIjCr0F7VV8d4HgLMtvfy1h6/oi+qk9TBYRNDidPBj+hpRKkbwdk6MVRhb3CpSEfRhXq
+         UhnXnRpx0nxkec1C0H9/8SFonRpBLGkvciza7mnRHPfn3XIRTwbb/8HmmmZGVVbQ9JiR
+         QizDdVE30ZTbmXV0iQHutvXwIY5SkIb/wvkMFq51woVK5i+uJ7I4dMDiVS6OwB//qHpr
+         tLeS7SIW2e3cKrUP/ISOoMGFb7pUu2YDyz+q6pkoZe/1N/rOkHgkRVwp8M2lLDLwoN/R
+         hGNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=lvv+2TNZ0UDHHJtA78+IPj1aaCqqH2RNt69XAZ3FeMQ=;
-        b=v1XAkuHE33uiPunCtzPb005If4niGpOE9xFuJ9Za0ip1d1vJTI9OiO4IFNiHZiXrRd
-         JftkbWRLHq6p9fO3LX3JrT4lNQA1Z9x566v2JLte8HpAGV/we6FkLKtWzcCjO0YIE0SV
-         9TNF+gTJ9u3LvjBUwSzt7DqnL6qRueIhNdU1VIbMwRFNiqGMqBxiTzkPnvM8CrU/78LH
-         4ZQsqHnINDZf+ysyCxm9XcNRFq7Gebu8fIo0ndwXm+vMa9naANbcLP8yFMK5i3vqv6lq
-         ozXYu9Hqm8BqTvlt7DydhWHJoDKZ7UsePSSHM+y9LX+EZI8aVELDExDktVYnwQBOsYYL
-         170g==
-X-Gm-Message-State: AJIora9GkDdm+u13a93iXs1dtHm7dB1FWfMEPjsVzqiuMBpUvxwzQBay
-        3dZ0qj4SK9M6AT8C39yKpFcGDshaYjDsFONgt+nNDw==
-X-Google-Smtp-Source: AGRyM1t2WNX3fdg8RDVN4sXgU8o9Eo5obTLhkOP7m80mDOjsuCxh8E/oGcw8TMyRHeHrzjaR3mcwAC6vdTYNNiVwhGk=
-X-Received: by 2002:a62:6d05:0:b0:528:99a2:b10 with SMTP id
- i5-20020a626d05000000b0052899a20b10mr6311821pfc.72.1657769869020; Wed, 13 Jul
- 2022 20:37:49 -0700 (PDT)
+        bh=A+FD+ZoyOFDRl+p7CKGL6xX7v32Ezc47RplJfYciA3Q=;
+        b=5pnMcIdpBzJXr4ZnanW+zwWgx3cqk/9tmInCWU8xeHIZ4nG2w9IfCS+kgrTOfYtVeG
+         fnlkURdKM8JlVgRVY0j31S1DenNzEpsE49hxX17yD/93htrdJzXmPZrwkNKSaNpnt7u+
+         pwnCq6sQkD2AQ1pdt1Epru8JohBzQq5EkkBPHPWIQ6DRFa16Azzg0MlrmbOk26fKbeDx
+         0659A6DFqpzR6XY4v3LzGTAPJj17hqKtKomD7OLLpcg7ORQ3MOw3keeLDzkp7ADwW0UT
+         MKnM0qM7BDWoTftSnlHR3+z0P79FZJ0p0oZ13o9FoQuBN7qYcWpAubT8qJX+B2oZVjbr
+         KogA==
+X-Gm-Message-State: AJIora9n0+vb/29YHMyLG1UKPuRFKO0OGPX+vU+/bjgH5f8QBae89VBa
+        n7hsMO+1wwGLx/An8OvmD8N/+ieFfd/46UiWDDM=
+X-Google-Smtp-Source: AGRyM1s5EocNWIhTnlfuFCB/XGWLS4hPhYDuAfQPvbKKtNIcgpWFvoRhJ9HfED6kwvz2Jum+L11jdLiH0NQjfQLLOqg=
+X-Received: by 2002:a17:907:2ccc:b0:72b:6907:fce6 with SMTP id
+ hg12-20020a1709072ccc00b0072b6907fce6mr6658787ejc.115.1657772626272; Wed, 13
+ Jul 2022 21:23:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220714015647.25074-1-xiaolinkui@kylinos.cn>
-In-Reply-To: <20220714015647.25074-1-xiaolinkui@kylinos.cn>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Wed, 13 Jul 2022 20:37:37 -0700
-Message-ID: <CAKH8qBuj=7HXF2xTRWqso9o56t5Tpg68C+r5PnHVnEyu129UmA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Return true/false (not 1/0) from
- bool functions
-To:     xiaolinkui <xiaolinkui@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, kpsingh@kernel.org, haoluo@google.com,
-        jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org,
-        nathan@kernel.org, ndesaulniers@google.com, trix@redhat.com,
-        xiaolinkui@kylinos.cn, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
+References: <cover.1657576063.git.delyank@fb.com> <37859ca03aaaba23f60288de044a3a10d52a79b4.1657576063.git.delyank@fb.com>
+In-Reply-To: <37859ca03aaaba23f60288de044a3a10d52a79b4.1657576063.git.delyank@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 13 Jul 2022 21:23:35 -0700
+Message-ID: <CAEf4BzbSVL_aQ2kBT4785Y_30NZ9gVP8zPbaY=Kpi7Q8AbvgOQ@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next 1/3] bpf: allow maps to hold bpf_delayed_work fields
+To:     Delyan Kratunov <delyank@fb.com>
+Cc:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,161 +67,264 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 13, 2022 at 6:57 PM xiaolinkui <xiaolinkui@gmail.com> wrote:
+On Mon, Jul 11, 2022 at 2:48 PM Delyan Kratunov <delyank@fb.com> wrote:
 >
-> From: Linkui Xiao <xiaolinkui@kylinos.cn>
+> Similarly to bpf_timer, bpf_delayed_work represents a callback that will
+> be executed at a later time, in a different execution context.
 >
-> Return boolean values ("true" or "false") instead of 1 or 0 from bool
-> functions.  This fixes the following warnings from coccicheck:
+> Its treatment in maps is practically the same as timers (to a degree
+> that perhaps calls for refactoring), except releasing the work does not
+> need to release any resources - we will wait for pending executions in
+> the program destruction path.
 >
-> tools/testing/selftests/bpf/progs/test_xdp_noinline.c:407:9-10: WARNING:
-> return of 0/1 in function 'decap_v4' with return type bool
-> tools/testing/selftests/bpf/progs/test_xdp_noinline.c:389:9-10: WARNING:
-> return of 0/1 in function 'decap_v6' with return type bool
-> tools/testing/selftests/bpf/progs/test_xdp_noinline.c:290:9-10: WARNING:
-> return of 0/1 in function 'encap_v6' with return type bool
-> tools/testing/selftests/bpf/progs/test_xdp_noinline.c:264:9-10: WARNING:
-> return of 0/1 in function 'parse_tcp' with return type bool
-> tools/testing/selftests/bpf/progs/test_xdp_noinline.c:242:9-10: WARNING:
-> return of 0/1 in function 'parse_udp' with return type bool
->
-> Generated by: scripts/coccinelle/misc/boolreturn.cocci
->
-> Signed-off-by: Linkui Xiao <xiaolinkui@kylinos.cn>
-Reviewed-by: Stanislav Fomichev <sdf@google.com>
-
-> Suggested-by: Stanislav Fomichev <sdf@google.com>
-That shouldn't be here :-) I didn't suggest the patch, you're
-suggesting it, I'm just suggesting to properly format it.
-Probably not worth a respin, I hope whoever gets to apply it can drop
-that line (or maybe keep it, I don't mind).
-
+> Signed-off-by: Delyan Kratunov <delyank@fb.com>
 > ---
->  .../selftests/bpf/progs/test_xdp_noinline.c   | 30 +++++++++----------
->  1 file changed, 15 insertions(+), 15 deletions(-)
+>  include/linux/bpf.h            |  9 ++++++++-
+>  include/linux/btf.h            |  1 +
+>  include/uapi/linux/bpf.h       |  8 ++++++++
+>  kernel/bpf/btf.c               | 21 +++++++++++++++++++++
+>  kernel/bpf/syscall.c           | 24 ++++++++++++++++++++++--
+>  kernel/bpf/verifier.c          |  9 +++++++++
+>  tools/include/uapi/linux/bpf.h |  8 ++++++++
+>  7 files changed, 77 insertions(+), 3 deletions(-)
 >
-> diff --git a/tools/testing/selftests/bpf/progs/test_xdp_noinline.c b/tools/testing/selftests/bpf/progs/test_xdp_noinline.c
-> index 125d872d7981..ba48fcb98ab2 100644
-> --- a/tools/testing/selftests/bpf/progs/test_xdp_noinline.c
-> +++ b/tools/testing/selftests/bpf/progs/test_xdp_noinline.c
-> @@ -239,7 +239,7 @@ bool parse_udp(void *data, void *data_end,
->         udp = data + off;
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 0edd7d2c0064..ad9d2cfb0411 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -164,7 +164,8 @@ enum {
+>         BPF_MAP_VALUE_OFF_MAX = 8,
+>         BPF_MAP_OFF_ARR_MAX   = BPF_MAP_VALUE_OFF_MAX +
+>                                 1 + /* for bpf_spin_lock */
+> -                               1,  /* for bpf_timer */
+> +                               1 + /* for bpf_timer */
+> +                               1,  /* for bpf_delayed_work */
+>  };
 >
->         if (udp + 1 > data_end)
-> -               return 0;
-> +               return false;
->         if (!is_icmp) {
->                 pckt->flow.port16[0] = udp->source;
->                 pckt->flow.port16[1] = udp->dest;
-> @@ -247,7 +247,7 @@ bool parse_udp(void *data, void *data_end,
->                 pckt->flow.port16[0] = udp->dest;
->                 pckt->flow.port16[1] = udp->source;
+>  enum bpf_kptr_type {
+> @@ -212,6 +213,7 @@ struct bpf_map {
+>         int spin_lock_off; /* >=0 valid offset, <0 error */
+>         struct bpf_map_value_off *kptr_off_tab;
+>         int timer_off; /* >=0 valid offset, <0 error */
+> +       int delayed_work_off; /* >=0 valid offset, <0 error */
+>         u32 id;
+>         int numa_node;
+>         u32 btf_key_type_id;
+> @@ -256,6 +258,11 @@ static inline bool map_value_has_timer(const struct bpf_map *map)
+>         return map->timer_off >= 0;
+>  }
+>
+> +static inline bool map_value_has_delayed_work(const struct bpf_map *map)
+> +{
+> +       return map->delayed_work_off >= 0;
+> +}
+> +
+>  static inline bool map_value_has_kptrs(const struct bpf_map *map)
+>  {
+>         return !IS_ERR_OR_NULL(map->kptr_off_tab);
+> diff --git a/include/linux/btf.h b/include/linux/btf.h
+> index 1bfed7fa0428..2b8f473a6aa0 100644
+> --- a/include/linux/btf.h
+> +++ b/include/linux/btf.h
+> @@ -132,6 +132,7 @@ bool btf_member_is_reg_int(const struct btf *btf, const struct btf_type *s,
+>                            u32 expected_offset, u32 expected_size);
+>  int btf_find_spin_lock(const struct btf *btf, const struct btf_type *t);
+>  int btf_find_timer(const struct btf *btf, const struct btf_type *t);
+> +int btf_find_delayed_work(const struct btf *btf, const struct btf_type *t);
+>  struct bpf_map_value_off *btf_parse_kptrs(const struct btf *btf,
+>                                           const struct btf_type *t);
+>  bool btf_type_is_void(const struct btf_type *t);
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index e81362891596..d68fc4f472f1 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -6691,6 +6691,14 @@ struct bpf_dynptr {
+>         __u64 :64;
+>  } __attribute__((aligned(8)));
+>
+> +struct bpf_delayed_work {
+> +       __u64 :64;
+> +       __u64 :64;
+> +       __u64 :64;
+> +       __u64 :64;
+> +       __u64 :64;
+> +} __attribute__((aligned(8)));
+> +
+>  struct bpf_sysctl {
+>         __u32   write;          /* Sysctl is being read (= 0) or written (= 1).
+>                                  * Allows 1,2,4-byte read, but no write.
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index f08037c31dd7..e4ab52cc25fe 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -3196,6 +3196,7 @@ enum btf_field_type {
+>         BTF_FIELD_SPIN_LOCK,
+>         BTF_FIELD_TIMER,
+>         BTF_FIELD_KPTR,
+> +       BTF_FIELD_DELAYED_WORK,
+>  };
+>
+>  enum {
+> @@ -3283,6 +3284,7 @@ static int btf_find_struct_field(const struct btf *btf, const struct btf_type *t
+>                 switch (field_type) {
+>                 case BTF_FIELD_SPIN_LOCK:
+>                 case BTF_FIELD_TIMER:
+> +               case BTF_FIELD_DELAYED_WORK:
+>                         ret = btf_find_struct(btf, member_type, off, sz,
+>                                               idx < info_cnt ? &info[idx] : &tmp);
+>                         if (ret < 0)
+> @@ -3333,6 +3335,7 @@ static int btf_find_datasec_var(const struct btf *btf, const struct btf_type *t,
+>                 switch (field_type) {
+>                 case BTF_FIELD_SPIN_LOCK:
+>                 case BTF_FIELD_TIMER:
+> +               case BTF_FIELD_DELAYED_WORK:
+>                         ret = btf_find_struct(btf, var_type, off, sz,
+>                                               idx < info_cnt ? &info[idx] : &tmp);
+>                         if (ret < 0)
+> @@ -3375,6 +3378,11 @@ static int btf_find_field(const struct btf *btf, const struct btf_type *t,
+>                 sz = sizeof(struct bpf_timer);
+>                 align = __alignof__(struct bpf_timer);
+>                 break;
+> +       case BTF_FIELD_DELAYED_WORK:
+> +               name = "bpf_delayed_work";
+> +               sz = sizeof(struct bpf_delayed_work);
+> +               align = __alignof__(struct bpf_delayed_work);
+> +               break;
+>         case BTF_FIELD_KPTR:
+>                 name = NULL;
+>                 sz = sizeof(u64);
+> @@ -3421,6 +3429,19 @@ int btf_find_timer(const struct btf *btf, const struct btf_type *t)
+>         return info.off;
+>  }
+>
+> +int btf_find_delayed_work(const struct btf *btf, const struct btf_type *t)
+> +{
+> +       struct btf_field_info info;
+> +       int ret;
+> +
+> +       ret = btf_find_field(btf, t, BTF_FIELD_DELAYED_WORK, &info, 1);
+> +       if (ret < 0)
+> +               return ret;
+> +       if (!ret)
+> +               return -ENOENT;
+> +       return info.off;
+> +}
+> +
+>  struct bpf_map_value_off *btf_parse_kptrs(const struct btf *btf,
+>                                           const struct btf_type *t)
+>  {
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 7d5af5b99f0d..041972305344 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -914,10 +914,11 @@ static int bpf_map_alloc_off_arr(struct bpf_map *map)
+>         bool has_spin_lock = map_value_has_spin_lock(map);
+>         bool has_timer = map_value_has_timer(map);
+>         bool has_kptrs = map_value_has_kptrs(map);
+> +       bool has_delayed_work = map_value_has_delayed_work(map);
+>         struct bpf_map_off_arr *off_arr;
+>         u32 i;
+>
+> -       if (!has_spin_lock && !has_timer && !has_kptrs) {
+> +       if (!has_spin_lock && !has_timer && !has_kptrs && !has_delayed_work) {
+>                 map->off_arr = NULL;
+>                 return 0;
 >         }
-> -       return 1;
-> +       return true;
->  }
->
->  static __attribute__ ((noinline))
-> @@ -261,7 +261,7 @@ bool parse_tcp(void *data, void *data_end,
->
->         tcp = data + off;
->         if (tcp + 1 > data_end)
-> -               return 0;
-> +               return false;
->         if (tcp->syn)
->                 pckt->flags |= (1 << 1);
->         if (!is_icmp) {
-> @@ -271,7 +271,7 @@ bool parse_tcp(void *data, void *data_end,
->                 pckt->flow.port16[0] = tcp->dest;
->                 pckt->flow.port16[1] = tcp->source;
+> @@ -953,6 +954,13 @@ static int bpf_map_alloc_off_arr(struct bpf_map *map)
+>                 }
+>                 off_arr->cnt += tab->nr_off;
 >         }
-> -       return 1;
-> +       return true;
->  }
+> +       if (has_delayed_work) {
+> +               i = off_arr->cnt;
+> +
+> +               off_arr->field_off[i] = map->delayed_work_off;
+> +               off_arr->field_sz[i] = sizeof(struct bpf_delayed_work);
+> +               off_arr->cnt++;
+> +       }
 >
->  static __attribute__ ((noinline))
-> @@ -287,7 +287,7 @@ bool encap_v6(struct xdp_md *xdp, struct ctl_value *cval,
->         void *data;
+>         if (off_arr->cnt == 1)
+>                 return 0;
+> @@ -1014,6 +1022,16 @@ static int map_check_btf(struct bpf_map *map, const struct btf *btf,
+>                         return -EOPNOTSUPP;
+>         }
 >
->         if (bpf_xdp_adjust_head(xdp, 0 - (int)sizeof(struct ipv6hdr)))
-> -               return 0;
-> +               return false;
->         data = (void *)(long)xdp->data;
->         data_end = (void *)(long)xdp->data_end;
->         new_eth = data;
-> @@ -295,7 +295,7 @@ bool encap_v6(struct xdp_md *xdp, struct ctl_value *cval,
->         old_eth = data + sizeof(struct ipv6hdr);
->         if (new_eth + 1 > data_end ||
->             old_eth + 1 > data_end || ip6h + 1 > data_end)
-> -               return 0;
-> +               return false;
->         memcpy(new_eth->eth_dest, cval->mac, 6);
->         memcpy(new_eth->eth_source, old_eth->eth_dest, 6);
->         new_eth->eth_proto = 56710;
-> @@ -314,7 +314,7 @@ bool encap_v6(struct xdp_md *xdp, struct ctl_value *cval,
->         ip6h->saddr.in6_u.u6_addr32[2] = 3;
->         ip6h->saddr.in6_u.u6_addr32[3] = ip_suffix;
->         memcpy(ip6h->daddr.in6_u.u6_addr32, dst->dstv6, 16);
-> -       return 1;
-> +       return true;
->  }
+> +       map->delayed_work_off = btf_find_delayed_work(btf, value_type);
+> +       if (map_value_has_delayed_work(map)) {
+> +               if (map->map_flags & BPF_F_RDONLY_PROG)
+> +                       return -EACCES;
+> +               if (map->map_type != BPF_MAP_TYPE_HASH &&
+> +                   map->map_type != BPF_MAP_TYPE_LRU_HASH &&
+> +                   map->map_type != BPF_MAP_TYPE_ARRAY)
+> +                       return -EOPNOTSUPP;
+> +       }
+> +
+>         map->kptr_off_tab = btf_parse_kptrs(btf, value_type);
+>         if (map_value_has_kptrs(map)) {
+>                 if (!bpf_capable()) {
+> @@ -1095,6 +1113,7 @@ static int map_create(union bpf_attr *attr)
 >
->  static __attribute__ ((noinline))
-> @@ -335,7 +335,7 @@ bool encap_v4(struct xdp_md *xdp, struct ctl_value *cval,
->         ip_suffix <<= 15;
->         ip_suffix ^= pckt->flow.src;
->         if (bpf_xdp_adjust_head(xdp, 0 - (int)sizeof(struct iphdr)))
-> -               return 0;
-> +               return false;
->         data = (void *)(long)xdp->data;
->         data_end = (void *)(long)xdp->data_end;
->         new_eth = data;
-> @@ -343,7 +343,7 @@ bool encap_v4(struct xdp_md *xdp, struct ctl_value *cval,
->         old_eth = data + sizeof(struct iphdr);
->         if (new_eth + 1 > data_end ||
->             old_eth + 1 > data_end || iph + 1 > data_end)
-> -               return 0;
-> +               return false;
->         memcpy(new_eth->eth_dest, cval->mac, 6);
->         memcpy(new_eth->eth_source, old_eth->eth_dest, 6);
->         new_eth->eth_proto = 8;
-> @@ -367,8 +367,8 @@ bool encap_v4(struct xdp_md *xdp, struct ctl_value *cval,
->                 csum += *next_iph_u16++;
->         iph->check = ~((csum & 0xffff) + (csum >> 16));
->         if (bpf_xdp_adjust_head(xdp, (int)sizeof(struct iphdr)))
-> -               return 0;
-> -       return 1;
-> +               return false;
-> +       return true;
->  }
+>         map->spin_lock_off = -EINVAL;
+>         map->timer_off = -EINVAL;
+> +       map->delayed_work_off = -EINVAL;
+>         if (attr->btf_key_type_id || attr->btf_value_type_id ||
+>             /* Even the map's value is a kernel's struct,
+>              * the bpf_prog.o must have BTF to begin with
+> @@ -1863,7 +1882,8 @@ static int map_freeze(const union bpf_attr *attr)
+>                 return PTR_ERR(map);
 >
->  static __attribute__ ((noinline))
-> @@ -386,10 +386,10 @@ bool decap_v6(struct xdp_md *xdp, void **data, void **data_end, bool inner_v4)
->         else
->                 new_eth->eth_proto = 56710;
->         if (bpf_xdp_adjust_head(xdp, (int)sizeof(struct ipv6hdr)))
-> -               return 0;
-> +               return false;
->         *data = (void *)(long)xdp->data;
->         *data_end = (void *)(long)xdp->data_end;
-> -       return 1;
-> +       return true;
->  }
+>         if (map->map_type == BPF_MAP_TYPE_STRUCT_OPS ||
+> -           map_value_has_timer(map) || map_value_has_kptrs(map)) {
+> +           map_value_has_timer(map) || map_value_has_kptrs(map) ||
+> +           map_value_has_delayed_work(map)) {
+
+not introduced by you, but shouldn't this check also check
+map_value_has_spinlock()?
+
+>                 fdput(f);
+>                 return -ENOTSUPP;
+>         }
+
+Also check if you need to modify bpf_map_mmap?
+
+
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 2859901ffbe3..9fd311b7a1ff 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -3817,6 +3817,15 @@ static int check_map_access(struct bpf_verifier_env *env, u32 regno,
+>                         return -EACCES;
+>                 }
+>         }
+> +       if (map_value_has_delayed_work(map) && src == ACCESS_DIRECT) {
+> +               u32 t = map->delayed_work_off;
+> +
+> +               if (reg->smin_value + off < t + sizeof(struct bpf_delayed_work) &&
+> +                    t < reg->umax_value + off + size) {
+> +                       verbose(env, "bpf_delayed_work cannot be accessed directly by load/store regno=%d off=%d\n", regno, off);
+> +                       return -EACCES;
+> +               }
+> +       }
+>         if (map_value_has_kptrs(map)) {
+>                 struct bpf_map_value_off *tab = map->kptr_off_tab;
+>                 int i;
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index e81362891596..d68fc4f472f1 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -6691,6 +6691,14 @@ struct bpf_dynptr {
+>         __u64 :64;
+>  } __attribute__((aligned(8)));
 >
->  static __attribute__ ((noinline))
-> @@ -404,10 +404,10 @@ bool decap_v4(struct xdp_md *xdp, void **data, void **data_end)
->         memcpy(new_eth->eth_dest, old_eth->eth_dest, 6);
->         new_eth->eth_proto = 8;
->         if (bpf_xdp_adjust_head(xdp, (int)sizeof(struct iphdr)))
-> -               return 0;
-> +               return false;
->         *data = (void *)(long)xdp->data;
->         *data_end = (void *)(long)xdp->data_end;
-> -       return 1;
-> +       return true;
->  }
->
->  static __attribute__ ((noinline))
+> +struct bpf_delayed_work {
+> +       __u64 :64;
+> +       __u64 :64;
+> +       __u64 :64;
+> +       __u64 :64;
+> +       __u64 :64;
+> +} __attribute__((aligned(8)));
+> +
+>  struct bpf_sysctl {
+>         __u32   write;          /* Sysctl is being read (= 0) or written (= 1).
+>                                  * Allows 1,2,4-byte read, but no write.
 > --
-> 2.17.1
->
+> 2.36.1
