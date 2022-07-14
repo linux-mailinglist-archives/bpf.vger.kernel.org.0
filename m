@@ -2,59 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7F445751D9
-	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 17:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AC1C5752A5
+	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 18:21:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240355AbiGNPeQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jul 2022 11:34:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39488 "EHLO
+        id S229493AbiGNQVN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jul 2022 12:21:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240189AbiGNPeI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jul 2022 11:34:08 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D752215FF8
-        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 08:34:06 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id r191so2792115oie.7
-        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 08:34:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l1s02NmT06ZtbH7uKtLSfhho+IMosk3J9PhK8LUL6jE=;
-        b=vnrHsVvSxYoC3+qZ9wCruM/9Y5ABTDHR/mh3vIs2pjkLObQh2+4Afr2DW9Q2/akUb5
-         VogVH4yZAmCnW0VgLQZYi5ZQF7Y0lan2QdXDGenPmsCc6wQvg/U568dNjygGFAQIv/JL
-         GjdIOiBJG0LCR4bfWHx0kG4snLdU7/vyZgwWnO+DhaPenyIzJQgU++6fpBNMco0TViCP
-         A0cYeGRBItYoomx625QyuBETc+HyO55GcxxQRHcwfs6rs2Vuvr5aQU6Xmxwf3+pN2r1L
-         CsIzgwfxDKrHVMhzgzp9QvkoYKff+U5L5geHfd51FCoubR/5JKaPlfYWu6dCDA8pkdl3
-         1pFg==
+        with ESMTP id S231150AbiGNQVM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jul 2022 12:21:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A579E624B2
+        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 09:21:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1657815670;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mZrd88vA65IAM29+EyEva7WRDVagjfNyLnQBYjfHAAc=;
+        b=QiQhWBv0s9Ivuv4l0xCUzIAoVyI0IHepIeFDpnO6Si8O2Uar8gKpyFOiOpfpUBFJ5VRLGu
+        cYyVFUHZ8M3nsZoeizAHrcIPhUiIpYBZSZFySmP3A7VhRvoPzd28Rs5iRSy6PGQHAXAopM
+        y32psQI3E9/IrhN9cL/kruTIs//x1uc=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-122-hAr0_8UwNjGOctkr79smbA-1; Thu, 14 Jul 2022 12:21:03 -0400
+X-MC-Unique: hAr0_8UwNjGOctkr79smbA-1
+Received: by mail-ed1-f72.google.com with SMTP id w13-20020a05640234cd00b0043a991fb3f3so1798974edc.3
+        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 09:21:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l1s02NmT06ZtbH7uKtLSfhho+IMosk3J9PhK8LUL6jE=;
-        b=n4YgvuNfGhOtysd5svEPNZPNW862WfpnjlA3zG5wAL4gSHiNX6BV05X2iuh0qCo+9a
-         pz010dzJ0hFqPpnJyKND7XWCazMtkpNWZMEfQWpv0wuvseW8fN+AyRLOD79gDbCQdH6P
-         I/5d8mvI0mHdk2baYJjMLO7m59+q8qwdb1T+3bErwWrH+5K2Yi1QvqbTtxI9BfBiXwN3
-         IOOF+LoLekph6JkWwuCVtxfKO4rkHAMRWAsXiJOinQ4Lzo4xStwOEzeEi6nizm8kPz4s
-         OMjt9fw4ptnb0GzdNhFX+BzpiFok/OkkdSnOgwPX1hexfDPBisF4rV77OmbjTSiIkyOV
-         yk+g==
-X-Gm-Message-State: AJIora+3EU9fHJI0yBHzb/3x3I78Y5mePIMWvrkcRUha6sMZl2ygOcFN
-        GXVlgPGWcejELz6FmQTNS69kLG53LGbJk+K7LyZj0Q==
-X-Google-Smtp-Source: AGRyM1uRUv5nQZEv6jykoozOiPFmebzZNmQuoTPC+AlLy8MD2AQ9HOD8s1HFJf1EOBj78Wo84FMoC9oRWB96R9gxDhA=
-X-Received: by 2002:a54:4618:0:b0:326:9f6e:edc6 with SMTP id
- p24-20020a544618000000b003269f6eedc6mr4474919oip.2.1657812846279; Thu, 14 Jul
- 2022 08:34:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220713111430.134810-1-toke@redhat.com> <CAM0EoM=Pz_EWHsWzVZkZfojoRyUgLPVhGRHq6aGVhdcLC2YvHw@mail.gmail.com>
- <CAA93jw7SsxOqOE8YJOLikkzSsNQuBqdkGLreoD-DDgQM4n-9sg@mail.gmail.com>
-In-Reply-To: <CAA93jw7SsxOqOE8YJOLikkzSsNQuBqdkGLreoD-DDgQM4n-9sg@mail.gmail.com>
-From:   Jamal Hadi Salim <jhs@mojatatu.com>
-Date:   Thu, 14 Jul 2022 11:33:55 -0400
-Message-ID: <CAM0EoMmHi=R2bwGQC9aUh+xjpCHWGu3oXhE_1BVvcZbOfx7bSA@mail.gmail.com>
-Subject: Re: [RFC PATCH 00/17] xdp: Add packet queueing and scheduling capabilities
-To:     Dave Taht <dave.taht@gmail.com>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=mZrd88vA65IAM29+EyEva7WRDVagjfNyLnQBYjfHAAc=;
+        b=IszGid+TOLB2EdsaxbU1rynjgevv9PWJTUJecK74C7je5rNoy0F/FTgL8+hB4fYUpd
+         IETyNg1pVoaZ7rcfDtrbAU9DDUn6L+tYxXO1dSYeHnAPvTzcsYyYPuMT8pQfqfFRWuyw
+         CeuxVBRCfTs6Jc4Zh7OMr0z6bIzKfF2vG+5S9cPaBtnLSqEn+ykWVnXFyCfqvq/YJSoY
+         jot0Cdnz79gEgsfo888P4cjPtzYSAy6mpIO0aP0HvSR96BITYqysM6ysRwItVTM0ghBR
+         aC3UuokoSEljAV7ELSNAtdWwCCqP2B0L5Zdy21YCTNv17rzrCKMSyrMBQuUsVWZ+vVl3
+         p9uQ==
+X-Gm-Message-State: AJIora8OuL+omWtCipsNQ+4wHUMkNCkm7Zmxy6SKuYXC3KZKBTilyyY0
+        NWu5DMGS/LqE+7MTVtj/Go97LF7C18jeGzg2Tqv2EaRIYrrYx8kl8Un/TqDASwHx9B84e71AIeA
+        Cu6oB2UiOLfWM
+X-Received: by 2002:a17:907:1b03:b0:6ff:78d4:c140 with SMTP id mp3-20020a1709071b0300b006ff78d4c140mr9798181ejc.554.1657815662179;
+        Thu, 14 Jul 2022 09:21:02 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1suZy3eyfgIgGnufIGbSJyZzwXtSM3/fp0F8BczXQFtHwmk/uLXmanS3Tc6S/xx69LkMl3j5w==
+X-Received: by 2002:a17:907:1b03:b0:6ff:78d4:c140 with SMTP id mp3-20020a1709071b0300b006ff78d4c140mr9798146ejc.554.1657815661832;
+        Thu, 14 Jul 2022 09:21:01 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id cq16-20020a056402221000b0043a4a5813d8sm1283249edb.2.2022.07.14.09.21.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jul 2022 09:21:01 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id A6A9D4D9B7C; Thu, 14 Jul 2022 18:21:00 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Jamal Hadi Salim <jhs@mojatatu.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
@@ -68,7 +71,7 @@ Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
         Magnus Karlsson <magnus.karlsson@intel.com>,
         Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
         Jonathan Lemon <jonathan.lemon@gmail.com>,
@@ -78,38 +81,56 @@ Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
         bpf <bpf@vger.kernel.org>,
         Freysteinn Alfredsson <freysteinn.alfredsson@kau.se>,
         Cong Wang <xiyou.wangcong@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [RFC PATCH 00/17] xdp: Add packet queueing and scheduling
+ capabilities
+In-Reply-To: <CAM0EoM=Pz_EWHsWzVZkZfojoRyUgLPVhGRHq6aGVhdcLC2YvHw@mail.gmail.com>
+References: <20220713111430.134810-1-toke@redhat.com>
+ <CAM0EoM=Pz_EWHsWzVZkZfojoRyUgLPVhGRHq6aGVhdcLC2YvHw@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 14 Jul 2022 18:21:00 +0200
+Message-ID: <87sfn3oec3.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 14, 2022 at 10:56 AM Dave Taht <dave.taht@gmail.com> wrote:
->
-> In general I feel a programmable packet pacing approach is the right
-> way forward for the internet as a whole.
->
-> It lends itself more easily and accurately to offloading in an age
-> where it is difficult to do anything sane within a ms on the host
-> cpu, especially in virtualized environments, in the enormous dynamic
-> range of kbits/ms to gbits/ms between host an potential recipient [1]
->
-> So considerations about what is easier to offload moving forward vs
-> central cpu costs should be in this conversation.
->
+Jamal Hadi Salim <jhs@mojatatu.com> writes:
 
-If you know your hardware can offload - there is a lot less to worry about.
-You can let the synchronization be handled by hardware. For example,
-if your hardware can do strict priority scheduling/queueing you really
-should bypass the kernel layer, set appropriate metadata (skb prio)
-and let the hw handle it. See the HTB offload from Nvidia.
-OTOH, EDT based approaches are the best for some lightweight
-approach which takes advantage of simple hardware
-features (like timestamps, etc).
+> I think what would be really interesting is to see the performance numbers when
+> you have multiple producers/consumers(translation multiple
+> threads/softirqs) in play
+> targeting the same queues. Does PIFO alleviate the synchronization challenge
+> when you have multiple concurrent readers/writers? Or maybe for your use case
+> this would not be a common occurrence or not something you care about?
 
-cheers,
-jamal
+Right, this is definitely one of the areas we want to flesh out some
+more and benchmark. I think a PIFO-based algorithm *can* be an
+improvement here because you can compute the priority without holding
+any lock and only grab a lock for inserting the packet; which can be
+made even better with a (partially) lockless data structure and/or
+batching.
+
+In any case we *have* to do a certain amount of re-inventing for XDP
+because we can't reuse the qdisc infrastructure anyway. Ultimately, I
+expect it will be possible to write both really well-performing
+algorithms, and really badly-performing ones. Such is the power of BPF,
+after all, and as long as we can provide an existence proof of the
+former, that's fine with me :)
+
+> As I mentioned previously, I think this is what Cong's approach gets
+> for free.
+
+Yes, but it also retains the global qdisc lock; my (naive, perhaps?)
+hope is that since we have to do things differently in XDP land anyway,
+that work can translate into something that is amenable to being
+lockless in qdisc land as well...
+
+-Toke
+
