@@ -2,137 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6FAA5753CA
-	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 19:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B86665753FB
+	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 19:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240443AbiGNRM4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jul 2022 13:12:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42230 "EHLO
+        id S237856AbiGNRZJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jul 2022 13:25:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240090AbiGNRM4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jul 2022 13:12:56 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C69A84BD28
-        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 10:12:53 -0700 (PDT)
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26EGDQ2B026666;
-        Thu, 14 Jul 2022 17:12:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2021-07-09;
- bh=6Qcsc53dAA30h2Rc2mggv0lUH7Mkoa80MmjCy99r3fY=;
- b=epnhleKwNDue4960rIbKDxzf6FInUPUiSrCjq2hIOmk4e9158fTUvB6OQw1VqOnlq5S/
- AYKLwDmacZQvAxB7iZQHxtVYW1kzgJKihHLjtO3mDylXtRmi8dYBJ2n2HuzQe3kAbu/s
- zWJd8rQcvjSxcR1jRQTkksGH7HbkHvePmCji7Obw+ucNXcG8z+bniX5iuO/H3p1ttcnN
- /qcVMCm4tRvrBXgK8+jUygpMQIwk0UJ0iCpHmXpKLzs9cQ6vWPr9LxvbVSXNYV3x+h+C
- 29vcxdsDUqodYy74hiu5E3v5tYGKaoQvQaF9xTxSf8mlOB+nGeezEqkYj/cy5alGrTtK cQ== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3h71r1dbxq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Jul 2022 17:12:51 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.16.1.2/8.16.1.2) with SMTP id 26EHAhlm009363;
-        Thu, 14 Jul 2022 17:12:51 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2042.outbound.protection.outlook.com [104.47.66.42])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com with ESMTP id 3h7045sghw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Jul 2022 17:12:51 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O2jO0tLNaviyWGVAIFu0wDhwPGBZhJauy6mifWfnjBkhdWbCs0Gij26v1bbB+2/lDYp+z67DHpW8ComKoYR/8YJ27DbTYmkmRtzgCyxvlwdSCU5vK14uSHCGUfKxjSEVpvJS6YUMo8sb+6Gd/TCot966SHD5csX4yfWlPzHYJOjpYgxd6YbdFc/D51vK2k6mIpCTXHOpNh1MmgoO+sWjiQH+/fnYIA9fV8PMbPdUGcWe4hYOxpayTeuFI//cySpPpG7kn5Vl3nwVAG/ftNIUowdWrHU9NT/MAkGUA7Hf/uGetOV50WDHfpwILV+HjVhAl/T2rkA9Dc2KYpfT0dKVHQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6Qcsc53dAA30h2Rc2mggv0lUH7Mkoa80MmjCy99r3fY=;
- b=YalJd9g/W0g7RGZv9I2uD9v0xwNPZ7sbAZE69oEpDnA29yffhIPc/dJxdnVftP4SvcVoOtmleZwBXd5f9hOZHXizAwUg+aR4ZmopIrKCsKAJpfMpHamJtkIncutgHw59wO5RR7cToxgvvdyNzTTHl+SX0SqW664Ojw7pn+25ExrsaC8rGsC8buueckQj+jdyhDXV4OUhzTbSKS9FDBMDs+A5hsVrdfSaaQQZMIY6FwR8t1Caf15la5BBKdpZhD5sYuvKVImoCA4Hv7Q1ma5h2q4o7OsyTYzFSychXJAMoiZtfLydmNKGgXFSv/RlXwr4c54dhjIEoOZUSLCnJ10B/g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        with ESMTP id S237837AbiGNRZI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jul 2022 13:25:08 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAE0D599E5
+        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 10:25:06 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id j12so1008603plj.8
+        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 10:25:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6Qcsc53dAA30h2Rc2mggv0lUH7Mkoa80MmjCy99r3fY=;
- b=zf3txTnMztoidliUp0rFcVx9gKQK2zqsqupvoPzZ+pYBq0TQNISiGh22VvOer47AeXVzQM3c09T/9mpcIWihwL0Z5upa65bLA8UwbM98l9HafCVCTf197iz3oMXBBvoYvtGKAZj6XNjfpip62O1VMnr+/3A5tHxdNiijEIV89hs=
-Received: from MWHPR1001MB2158.namprd10.prod.outlook.com
- (2603:10b6:301:2d::17) by CY4PR10MB1671.namprd10.prod.outlook.com
- (2603:10b6:910:8::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5438.14; Thu, 14 Jul
- 2022 17:12:49 +0000
-Received: from MWHPR1001MB2158.namprd10.prod.outlook.com
- ([fe80::65fb:fa92:9a15:f89b]) by MWHPR1001MB2158.namprd10.prod.outlook.com
- ([fe80::65fb:fa92:9a15:f89b%6]) with mapi id 15.20.5417.025; Thu, 14 Jul 2022
- 17:12:49 +0000
-From:   Indu Bhagat <indu.bhagat@oracle.com>
-To:     bpf@vger.kernel.org
-Cc:     yhs@fb.com, andrii.nakryiko@gmail.com,
-        Indu Bhagat <indu.bhagat@oracle.com>
-Subject: [PATCH bpf-next v2] docs/bpf: Update documentation for BTF_KIND_FUNC
-Date:   Thu, 14 Jul 2022 10:12:20 -0700
-Message-Id: <20220714171220.1108229-1-indu.bhagat@oracle.com>
-X-Mailer: git-send-email 2.31.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: MW4PR03CA0312.namprd03.prod.outlook.com
- (2603:10b6:303:dd::17) To MWHPR1001MB2158.namprd10.prod.outlook.com
- (2603:10b6:301:2d::17)
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=luNkTChAscIIt43BEbkh9kPKxaw5z6djoXOZpLmxUP4=;
+        b=G2AX2KEqQLAaVaxPYkldqpyljQsi/HnzT+QXTIethgvfwZR8ts7udGZcLYgUUm9uH4
+         feeN97A/+fT1hkJGZtf4VoVrV5s6woh+9Id9dDOqkOHr9uGn5cqVnfATr+Bx0FaF1O8w
+         jNx03KO2IM6Kvvi4FeH+RUYYjTUKc3hYz87bpJKApqmxmuCTk4sWmxUoMKSRP13t5T8+
+         dDh9CtWzRVEYLuttIPwsYI8awHdrmFvkdAqd9Ud9+jujmfUwjlpcLoWv0OuTmD2VHXjo
+         vBAH6vAJzq8mQKM1GecyuqKYvy4ljQL0oA3IDFy7DGzsaBRBqUwWeHMIC8SN3317hXjb
+         gz7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=luNkTChAscIIt43BEbkh9kPKxaw5z6djoXOZpLmxUP4=;
+        b=GedO+mlOebW6M29OjgaYGKrHg7NZayYBa5YcF4PSP9AmkKVlSTnCzADgNlt0T+Ashl
+         6l4OwVFmeoB+btPqoXuzIHul7qGEz1BxgZuRJ2s9z7S9qn414Dpk0Gxo7tjYcB744M8i
+         kDtowbpR521noHAQ3ImuWzzQVtbCBqogJz/m/e2DdK+B9tPD4XM+5BZxuVH7pxGA2yEN
+         5CnvQ0N98GC0ibcWEx/QLxHSXyVgFkNHyfgv1e2lQ7LXyNT6u5oh8wToXrfEsCpcR7UM
+         TfVm6K93CSygmHRfIPipu8JahO3v7pz9V4QchjHzhJl8fhz3/dv+sZ2aaSk9LJQuWnw4
+         0fQw==
+X-Gm-Message-State: AJIora+98ced5uqVftFHzWO4sxmLmhqBmJdLlZRGI0eYdC8uN05pXWX0
+        5I+LaR42k+0Er0NrTIQNOtCSBZ+W9vg8+ntp532AOw==
+X-Google-Smtp-Source: AGRyM1vid9ky7VWXl+2X2TYH+xeH6ywn0Jz9aSBntK+2St5tgf/y8YRbBDT3A4ftrznr5i5rz2T0HLs3TtAlVvmg8b0=
+X-Received: by 2002:a17:903:244d:b0:16c:5bfe:2e87 with SMTP id
+ l13-20020a170903244d00b0016c5bfe2e87mr9412751pls.148.1657819506022; Thu, 14
+ Jul 2022 10:25:06 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8c6b50e9-c7bd-49ad-29d5-08da65bc13d3
-X-MS-TrafficTypeDiagnostic: CY4PR10MB1671:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KEjn8uhAYuJ8rehWUe2Y6REPbGh7kuccdS8ZDDbhSfg4xWvgOoLjLYdiprxdv8Kxh+n8fWJFJhm0fwUHo4PduY+RaI4syjx6hWjibPPXSGybTLgryLHsgkRyBKNGxhSIar7kN70WrpIUZ7643ttqfujwlt9ZOFyPyMajS94mdXEvZCdNati/lu6RTMK2Ng9mmyTeVfE3Rt2mNZXwPxVgRLc7Fedc8EK5zWEFIeUaFY946IqeixxmkW2Zfe7CkvwBPgTnV/PcuhC124HKrxHHotTadYGdiZYE/u4UnJ0T72TGpelf6/wkZXdUVOl2TmXxLANkiGl0Pf0b5t2Lewpljjdq4Xp8FVL9wni+3Np+BFS7Bhc4S7ff6jsytk9ZpYnfkB64thZyXOuXchIFgR+Gj34iOni+yvViLTjhz2CRwCpV4/OrWsZdM0ufXspp4Z8JNdC4l/Be0OzjDmLEA6Jg4LGqOF7el3vfI4bn7xxggg8QtMfZnIoZX1hdeYIS2vcQdbCS0ZPpupOVHnFWaFEdL95ggmUMnUSVUojlYqWcxRhArwfvby+5Qa2ZCrYB0/JJtuxLvbeP5gCgjUVRQqY5NowOLQjLaVIvrY0q0q4WdnBRP5MK7CMfJlqA439+/eyti1eOhCh4HfVR+sOwHKdTTEpPEXgt3PgeNgTctAmjFoEFojNwlPNtk5eslKxe+QziVdSqUZzfklN/3RgG0ZVDgHc6H7rEBz8ISEEGKSsc7ybgr7u2aDxjrOH3mBYTctUe2e3xU7Dm6IgEYlmKNeErCHjJprlC2fetwL1Zbgh4GK5cQIX1uw3vSjyduFDAELKa
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2158.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(396003)(346002)(39860400002)(136003)(376002)(366004)(478600001)(41300700001)(6666004)(107886003)(6486002)(6506007)(1076003)(2616005)(6512007)(186003)(52116002)(26005)(38100700002)(38350700002)(83380400001)(86362001)(44832011)(2906002)(5660300002)(8936002)(36756003)(6916009)(66946007)(316002)(8676002)(4326008)(66476007)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mmNmmVGPOCPzY4pGX1RXxoPasS8JZh1DWMyiuTpFdLKSbAiYWgO3v1XWiB2w?=
- =?us-ascii?Q?hZ9P5MzAoHI35HMLGvOhNvnHFsPUm5EymUbgezQG5Vw6vTaPCiKx3j9km1R3?=
- =?us-ascii?Q?1ixfvHztTnFqBXAj1gXsGlQMxLtA45mePzjrsuLCoGvPV86X+T1vbwYgoOQ1?=
- =?us-ascii?Q?V5oU7NS132NSFROdt9wcGS70p5mim/5aauRxPXRbYyMHk/tLeWj5Ih+qXVr2?=
- =?us-ascii?Q?sVy8mHd/IrVLJiJ3K0Z0AZXPnpcUsPf6a6HMKYNTdNfBmUGFowBdbJ4F+ctJ?=
- =?us-ascii?Q?rjP+rg69ssizvieabhrh7QWyfWlARFStvDKhSWiB6/Z3i1Ku4ECdnkgy48Cf?=
- =?us-ascii?Q?1S5f+geHUbAfT7OyI2lrbR/qbwaXmDdHU9vNk152X9lOkXzaKNjTdACMTYT+?=
- =?us-ascii?Q?+njpm06EoEICc7gepvBYuOc9gnsyh6UoRGtdaYSPGTX/w+TKKNsRoRjAj2lZ?=
- =?us-ascii?Q?jtAhv/ztWOzvdhCSM19o20hX+juKbrLozJG5ous4YCdK6RWLPDx+2Vpe1ksG?=
- =?us-ascii?Q?w9XS/JzXY5UWidx5BhohBK8dfnDUxSaw5sfEmYVWlT5gtw7QVwwY0YZhiW03?=
- =?us-ascii?Q?E2XghNXBiz4Cl5KC8/jaWFYvzHIbvmaaW78WIJhPNTJmYelLY/SifRDFlzFx?=
- =?us-ascii?Q?xx5vSru0am103/bQLE+ecdxPj2pyCGZtfLNVKAcbJkO0uaUi5hPpoghcHAZs?=
- =?us-ascii?Q?7JSKKoW8sGyleLYAVQVTZGRNT5RKxejl9PFevWqIfpR5le1MMFy4FgnoXagU?=
- =?us-ascii?Q?mO7J/wT59mxdcW3uMR3o20stmxX9x+4E8AB/NgoQjOOAQZDnMypi6jD5Zy9O?=
- =?us-ascii?Q?pb4MZnhV6Rjijs+8k842S7aDClL/55MIEPZOVkv8Dd+Dw4VXYk+JC4IA4xih?=
- =?us-ascii?Q?7CKUdFvAoIveHcS/cLwfw+aCh2c3QoVyLUEcjk67nt7xARVxc4Q/VG34gae9?=
- =?us-ascii?Q?5jYVLjqYZlD0HDsoUQEgTfPMbxBa1haTD1RudhYMmie1+I6mG1y4+EsqDlqT?=
- =?us-ascii?Q?I4ZZZ3hmDxguXof4zlxtWFbwR0vUhF6yXXJHKcBBsF3mlWHjxzdfLTEDJ2T1?=
- =?us-ascii?Q?Ag15djPtt4w0UBu2+k4HGtVpLZ8HagZK1MD1pyk53dlfT5IRSPmVlmiQlGS4?=
- =?us-ascii?Q?rpSKDqOeGvN4HZaempwOgK1XyULhU2BLXDNyJjQqRwHFs07ONOprTMdarTxl?=
- =?us-ascii?Q?9hvhVtRgbzsbCCUMIM+UJRRA9CWvUFB6+46hdX9IjpC2MmBNBgsPhxK7f8lN?=
- =?us-ascii?Q?h4zoFYG2KtQKFlGu4l6KEC9neNxZpOT4mMjnhf5nS5e5J3l5kj2LaVTkxBpO?=
- =?us-ascii?Q?RG/8S5wHQAF/DptQUUUoToqW8gQzaQAh6aX7isDQRMciU+7R4ycsRlIaqYyF?=
- =?us-ascii?Q?CC6nOsE0+ZLHNvlCmdUilP3QxKjeSpDeP+rVEMFpkBJ3+/bDni593SvkacGC?=
- =?us-ascii?Q?VGe0/kb9S204Ca6wN5R0jbdtAvr6/KCDpTYW/zUzmCKbXgWKb8cYOUld0a0o?=
- =?us-ascii?Q?OECEuH0KZj4Ye+QzRk1HhhqhFnQSJKFlhQ6lpezC25dZrmGhTAWMQNXAnAAx?=
- =?us-ascii?Q?gjJlhnFggfSfWDnElHsDjoBkF1uJLLMgzTYftagn?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8c6b50e9-c7bd-49ad-29d5-08da65bc13d3
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2158.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jul 2022 17:12:49.0021
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: eYs54qc4gy3K4+zIq5rnq22roanLHtxHy+k4TrFaYSoziQvTtyGU6fHG6v3WYntgfN2kFHd4BuuwGaddUHWzFg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR10MB1671
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.517,18.0.883
- definitions=2022-07-14_14:2022-07-14,2022-07-14 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0
- mlxlogscore=999 suspectscore=0 adultscore=0 mlxscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2206140000 definitions=main-2207140075
-X-Proofpoint-ORIG-GUID: 9cZ2nNg1FrxQeH_Ftz7zwaXoKCn7_1Vc
-X-Proofpoint-GUID: 9cZ2nNg1FrxQeH_Ftz7zwaXoKCn7_1Vc
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+References: <20220713111430.134810-1-toke@redhat.com> <CAKH8qBtdnku7StcQ-SamadvAF==DRuLLZO94yOR1WJ9Bg=uX1w@mail.gmail.com>
+ <877d4gpto8.fsf@toke.dk> <CAKH8qBvODehxeGrqyY6+9TJPePe_KLb6vX9P1rKDgbQhuLpSSQ@mail.gmail.com>
+ <87v8s0nf8h.fsf@toke.dk>
+In-Reply-To: <87v8s0nf8h.fsf@toke.dk>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Thu, 14 Jul 2022 10:24:54 -0700
+Message-ID: <CAKH8qBuLKfye8=jSrQPv_YLr7x8p-TTPmgB+eWUhM7H70hZ=aQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/17] xdp: Add packet queueing and scheduling capabilities
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Freysteinn Alfredsson <freysteinn.alfredsson@kau.se>,
+        Cong Wang <xiyou.wangcong@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -140,38 +89,306 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The vlen bits in the BTF type of kind BTF_KIND_FUNC are used to convey the
-linkage information for functions. The Linux kernel only supports
-linkage values of static (=0), and global (=1) at this time.
+On Thu, Jul 14, 2022 at 3:46 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> Stanislav Fomichev <sdf@google.com> writes:
+>
+> > On Wed, Jul 13, 2022 at 2:52 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
+redhat.com> wrote:
+> >>
+> >> Stanislav Fomichev <sdf@google.com> writes:
+> >>
+> >> > On Wed, Jul 13, 2022 at 4:14 AM Toke H=C3=B8iland-J=C3=B8rgensen <to=
+ke@redhat.com> wrote:
+> >> >>
+> >> >> Packet forwarding is an important use case for XDP, which offers
+> >> >> significant performance improvements compared to forwarding using t=
+he
+> >> >> regular networking stack. However, XDP currently offers no mechanis=
+m to
+> >> >> delay, queue or schedule packets, which limits the practical uses f=
+or
+> >> >> XDP-based forwarding to those where the capacity of input and outpu=
+t links
+> >> >> always match each other (i.e., no rate transitions or many-to-one
+> >> >> forwarding). It also prevents an XDP-based router from doing any ki=
+nd of
+> >> >> traffic shaping or reordering to enforce policy.
+> >> >>
+> >> >> This series represents a first RFC of our attempt to remedy this la=
+ck. The
+> >> >> code in these patches is functional, but needs additional testing a=
+nd
+> >> >> polishing before being considered for merging. I'm posting it here =
+as an
+> >> >> RFC to get some early feedback on the API and overall design of the
+> >> >> feature.
+> >> >>
+> >> >> DESIGN
+> >> >>
+> >> >> The design consists of three components: A new map type for storing=
+ XDP
+> >> >> frames, a new 'dequeue' program type that will run in the TX softir=
+q to
+> >> >> provide the stack with packets to transmit, and a set of helpers to=
+ dequeue
+> >> >> packets from the map, optionally drop them, and to schedule an inte=
+rface
+> >> >> for transmission.
+> >> >>
+> >> >> The new map type is modelled on the PIFO data structure proposed in=
+ the
+> >> >> literature[0][1]. It represents a priority queue where packets can =
+be
+> >> >> enqueued in any priority, but is always dequeued from the head. Fro=
+m the
+> >> >> XDP side, the map is simply used as a target for the bpf_redirect_m=
+ap()
+> >> >> helper, where the target index is the desired priority.
+> >> >
+> >> > I have the same question I asked on the series from Cong:
+> >> > Any considerations for existing carousel/edt-like models?
+> >>
+> >> Well, the reason for the addition in patch 5 (continuously increasing
+> >> priorities) is exactly to be able to implement EDT-like behaviour, whe=
+re
+> >> the priority is used as time units to clock out packets.
+> >
+> > Ah, ok, I didn't read the patches closely enough. I saw some limits
+> > for the ranges and assumed that it wasn't capable of efficiently
+> > storing 64-bit timestamps..
+>
+> The goal is definitely to support full 64-bit priorities. Right now you
+> have to start out at 0 but can go on for a full 64 bits, but that's a
+> bit of an API wart that I'd like to get rid of eventually...
+>
+> >> > Can we make the map flexible enough to implement different qdisc
+> >> > policies?
+> >>
+> >> That's one of the things we want to be absolutely sure about. We are
+> >> starting out with the PIFO map type because the literature makes a goo=
+d
+> >> case that it is flexible enough to implement all conceivable policies.
+> >> The goal of the test harness linked as note [4] is to actually examine
+> >> this; Frey is our PhD student working on this bit.
+> >>
+> >> Thus far we haven't hit any limitations on this, but we'll need to add
+> >> more policies before we are done with this. Another consideration is
+> >> performance, of course, so we're also planning to do a comparison with=
+ a
+> >> more traditional "bunch of FIFO queues" type data structure for at lea=
+st
+> >> a subset of the algorithms. Kartikeya also had an idea for an
+> >> alternative way to implement a priority queue using (semi-)lockless
+> >> skiplists, which may turn out to perform better.
+> >>
+> >> If there's any particular policy/algorithm you'd like to see included =
+in
+> >> this evaluation, please do let us know, BTW! :)
+> >
+> > I honestly am not sure what the bar for accepting this should be. But
+> > on the Cong's series I mentioned Martin's CC bpf work as a great
+> > example of what we should be trying to do for qdisc-like maps. Having
+> > a bpf version of fq/fq_codel/whatever_other_complex_qdisc might be
+> > very convincing :-)
+>
+> Just doing flow queueing is quite straight forward with PIFOs. We're
+> working on fq_codel. Personally I also want to implement something that
+> has feature parity with sch_cake (which includes every feature and the
+> kitchen sink already) :)
 
-Signed-off-by: Indu Bhagat <indu.bhagat@oracle.com>
----
- Documentation/bpf/btf.rst | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Yeah, sch_cake works too =F0=9F=91=8D
 
-diff --git a/Documentation/bpf/btf.rst b/Documentation/bpf/btf.rst
-index f49aeef62d0c..3f9cc9150c89 100644
---- a/Documentation/bpf/btf.rst
-+++ b/Documentation/bpf/btf.rst
-@@ -369,7 +369,7 @@ No additional type data follow ``btf_type``.
-   * ``name_off``: offset to a valid C identifier
-   * ``info.kind_flag``: 0
-   * ``info.kind``: BTF_KIND_FUNC
--  * ``info.vlen``: 0
-+  * ``info.vlen``: linkage information (static=0, global=1, extern=2)
-   * ``type``: a BTF_KIND_FUNC_PROTO type
- 
- No additional type data follow ``btf_type``.
-@@ -380,6 +380,9 @@ type. The BTF_KIND_FUNC may in turn be referenced by a func_info in the
- :ref:`BTF_Ext_Section` (ELF) or in the arguments to :ref:`BPF_Prog_Load`
- (ABI).
- 
-+Currently, only linkage values of static and global are supported in the
-+kernel.
-+
- 2.2.13 BTF_KIND_FUNC_PROTO
- ~~~~~~~~~~~~~~~~~~~~~~~~~~
- 
--- 
-2.31.1
+> >> >> The dequeue program type is a new BPF program type that is attached=
+ to an
+> >> >> interface; when an interface is scheduled for transmission, the sta=
+ck will
+> >> >> execute the attached dequeue program and, if it returns a packet to
+> >> >> transmit, that packet will be transmitted using the existing ndo_xd=
+p_xmit()
+> >> >> driver function.
+> >> >>
+> >> >> The dequeue program can obtain packets by pulling them out of a PIF=
+O map
+> >> >> using the new bpf_packet_dequeue() helper. This returns a pointer t=
+o an
+> >> >> xdp_md structure, which can be dereferenced to obtain packet data a=
+nd
+> >> >> data_meta pointers like in an XDP program. The returned packets are=
+ also
+> >> >> reference counted, meaning the verifier enforces that the dequeue p=
+rogram
+> >> >> either drops the packet (with the bpf_packet_drop() helper), or ret=
+urns it
+> >> >> for transmission. Finally, a helper is added that can be used to ac=
+tually
+> >> >> schedule an interface for transmission using the dequeue program ty=
+pe; this
+> >> >> helper can be called from both XDP and dequeue programs.
+> >> >>
+> >> >> PERFORMANCE
+> >> >>
+> >> >> Preliminary performance tests indicate about 50ns overhead of addin=
+g
+> >> >> queueing to the xdp_fwd example (last patch), which translates to a=
+ 20% PPS
+> >> >> overhead (but still 2x the forwarding performance of the netstack):
+> >> >>
+> >> >> xdp_fwd :     4.7 Mpps  (213 ns /pkt)
+> >> >> xdp_fwd -Q:   3.8 Mpps  (263 ns /pkt)
+> >> >> netstack:       2 Mpps  (500 ns /pkt)
+> >> >>
+> >> >> RELATION TO BPF QDISC
+> >> >>
+> >> >> Cong Wang's BPF qdisc patches[2] share some aspects of this series,=
+ in
+> >> >> particular the use of a map to store packets. This is no accident, =
+as we've
+> >> >> had ongoing discussions for a while now. I have no great hope that =
+we can
+> >> >> completely converge the two efforts into a single BPF-based queuein=
+g
+> >> >> API (as has been discussed before[3], consolidating the SKB and XDP=
+ paths
+> >> >> is challenging). Rather, I'm hoping that we can converge the design=
+s enough
+> >> >> that we can share BPF code between XDP and qdisc layers using commo=
+n
+> >> >> functions, like it's possible to do with XDP and TC-BPF today. This=
+ would
+> >> >> imply agreeing on the map type and API, and possibly on the set of =
+helpers
+> >> >> available to the BPF programs.
+> >> >
+> >> > What would be the big difference for the map wrt xdp_frame vs sk_buf=
+f
+> >> > excluding all obvious stuff like locking/refcnt?
+> >>
+> >> I expect it would be quite straight-forward to just add a second subty=
+pe
+> >> of the PIFO map in this series that holds skbs. In fact, I think that
+> >> from the BPF side, the whole model implemented here would be possible =
+to
+> >> carry over to the qdisc layer more or less wholesale. Some other
+> >> features of the qdisc layer, like locking, classes, and
+> >> multi-CPU/multi-queue management may be trickier, but I'm not sure how
+> >> much of that we should expose in a BPF qdisc anyway (as you may have
+> >> noticed I commented on Cong's series to this effect regarding the
+> >> classful qdiscs).
+> >
+> > Maybe a related question here: with the way you do
+> > BPF_MAP_TYPE_PIFO_GENERIC vs BPF_MAP_TYPE_PIFO_XDP, how hard it would
+> > be have support for storing xdp_frames/skb in any map? Let's say we
+> > have generic BPF_MAP_TYPE_RBTREE, where the key is
+> > priority/timestamp/whatever, can we, based on the value's btf_id,
+> > figure out the rest? (that the value is kernel structure and needs
+> > special care and more constraints - can't be looked up from user space
+> > and so on)
+> >
+> > Seems like we really need to have two special cases: where we transfer
+> > ownership of xdp_frame/skb to/from the map, any other big
+> > complications?
+> >
+> > That way we can maybe untangle the series a bit: we can talk about
+> > efficient data structures for storing frames/skbs independently of
+> > some generic support for storing them in the maps. Any major
+> > complications with that approach?
+>
+> I've had discussions with Kartikeya on this already (based on his 'kptr
+> in map' work). That may well end up being feasible, which would be
+> fantastic. The reason we didn't use it for this series is that there's
+> still some work to do on the generic verifier/infrastructure support
+> side of this (the PIFO map is the oldest part of this series), and I
+> didn't want to hold up the rest of the queueing work until that landed.
 
+Yes, exactly, kptr seems like a very promising thing that you can leverage.
+I'm looking forward to it!
+
+> Now that we have a functional prototype I expect that iterating on the
+> data structure will be the next step. One complication with XDP is that
+> we probably want to keep using XDP_REDIRECT to place packets into the
+> map because that gets us bulking which is important for performance;
+> however, in general I like the idea of using BTF to designate the map
+> value type, and if we can figure out a way to make it completely generic
+> even for packets I'm all for that! :)
+
+As long as we have generic kptr-based-skb-capable-maps and can
+add/remove/lookup skbs using existing helpers it seems fine to have
+XDP_REDIRECT as some kind of xdp-specific optimization.
+
+> >> >> PATCH STRUCTURE
+> >> >>
+> >> >> This series consists of a total of 17 patches, as follows:
+> >> >>
+> >> >> Patches 1-3 are smaller preparatory refactoring patches used by sub=
+sequent
+> >> >> patches.
+> >> >
+> >> > Seems like these can go separately without holding the rest?
+> >>
+> >> Yeah, guess so? They don't really provide much benefit without the use=
+rs
+> >> alter in the series, though, so not sure there's much point in sending
+> >> them separately?
+> >>
+> >> >> Patches 4-5 introduce the PIFO map type, and patch 6 introduces the=
+ dequeue
+> >> >> program type.
+> >> >
+> >> > [...]
+> >> >
+> >> >> Patches 7-10 adds the dequeue helpers and the verifier features nee=
+ded to
+> >> >> recognise packet pointers, reference count them, and allow derefere=
+ncing
+> >> >> them to obtain packet data pointers.
+> >> >
+> >> > Have you considered using kfuncs for these instead of introducing ne=
+w
+> >> > hooks/contexts/etc?
+> >>
+> >> I did, but I'm not sure it's such a good fit? In particular, the way t=
+he
+> >> direct packet access is implemented for dequeue programs (where you ca=
+n
+> >> get an xdp_md pointer and deref that to get data and data_end pointers=
+)
+> >> is done this way so programs can share utility functions between XDP a=
+nd
+> >> dequeue programs. And having a new program type for the dequeue progs
+> >> seem like the obvious thing to do since they're doing something new?
+> >>
+> >> Maybe I'm missing something, though; could you elaborate on how you'd
+> >> use kfuncs instead?
+> >
+> > I was thinking about the approach in general. In networking bpf, we've
+> > been adding new program types, new contexts and new explicit hooks.
+> > This all requires a ton of boiler plate (converting from uapi ctx to
+> > the kernel, exposing hook points, etc, etc). And looking at Benjamin's
+> > HID series, it's so much more elegant: there is no uapi, just kernel
+> > function that allows it to be overridden and a bunch of kfuncs
+> > exposed. No uapi, no helpers, no fake contexts.
+> >
+> > For networking and xdp the ship might have sailed, but I was wondering
+> > whether we should be still stuck in that 'old' boilerplate world or we
+> > have a chance to use new nice shiny things :-)
+> >
+> > (but it might be all moot if we'd like to have stable upis?)
+>
+> Right, I see what you mean. My immediate feeling is that having an
+> explicit stable UAPI for XDP has served us well. We do all kinds of
+> rewrite tricks behind the scenes (things like switching between xdp_buff
+> and xdp_frame, bulking, direct packet access, reading ifindexes by
+> pointer walking txq->dev, etc) which are important ways to improve
+> performance without exposing too many nitty-gritty details into the API.
+>
+> There's also consistency to consider: I think the addition of queueing
+> should work as a natural extension of the existing programming model for
+> XDP. So I feel like this is more a case of "if we were starting from
+> scratch today we might do things differently (like the HID series), but
+> when extending things let's keep it consistent"?
+
+Agreed. If we want to have the ability to inspect/change xdp/skb in
+your new dequeue hooks, we might need to keep that fake xdp_buff for
+consistency :-(
