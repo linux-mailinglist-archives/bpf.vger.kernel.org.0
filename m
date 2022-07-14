@@ -2,371 +2,403 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7070574B11
-	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 12:47:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00CCB574DC2
+	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 14:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237045AbiGNKrG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jul 2022 06:47:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55860 "EHLO
+        id S231720AbiGNMfy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jul 2022 08:35:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238472AbiGNKrB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jul 2022 06:47:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0C49C54C9B
-        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 03:46:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1657795619;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QDEpv/nd3ThZpP+3Vj5BLpAOoRGWUT5570LW5fkHEXA=;
-        b=iWVIErTUX3cSl7K+KLeBLet1llpsnv+C23v9fw2t98uRGxS7yn/Xrt1gfaINxkvW3+Di48
-        MqQBP4oU2KdXTByEa6oj88RUybcXRrOJF0jdDG/fTezyvunOLdYMrdTu/tt3M8TnAT6Sbx
-        6grj6mNjEHBCCjqmyk8s4CQn4v0HCFQ=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-93-IfLdwnCaOBawLk-Ze3Er2A-1; Thu, 14 Jul 2022 06:46:58 -0400
-X-MC-Unique: IfLdwnCaOBawLk-Ze3Er2A-1
-Received: by mail-ej1-f69.google.com with SMTP id qw8-20020a1709066a0800b0072abb95c0caso621991ejc.15
-        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 03:46:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=QDEpv/nd3ThZpP+3Vj5BLpAOoRGWUT5570LW5fkHEXA=;
-        b=5nJ8aHXQ9S9rsIhP/DqHANPuPlJI+741V/2aVdzLPKEjSdgdFwpJdD8AI2ieYI9SWE
-         3wn3RBDxglnW8QpxMhXVsSuzSyiFNlAQr0expi0Go6COjAfpXzhbVGlN0cHYsksj5mKO
-         wNNRswJj8cgrAMIzY85BhM8/Vj2dGO1bdLE883Y8n9tZJ/WM/A6cDNwOxHxaa3Ot6mbb
-         gI4YgQmiPVacUWqnBDVxOlcVa/sofj1Q4uzH3BxSvTntwZv+gtdKDAlLhW0E+51ZaO7q
-         7w1E8Lp/ff2Kwuk9EKjXhXyi3aJDS6iStlecEkGY8JRaKq1Vue1mMbVpHsA+YobDTJiK
-         Z49A==
-X-Gm-Message-State: AJIora+9RRkT61KiGMhE+he0Mto34NzSfgPrKifzUeR/M5NqKVFvDc6R
-        Wwqjol/JcMwwEXV9MRUfemAsiZ5SnHGvsm4KfghsrrXz6pmPKGzS9DNVp+NW+BHEmL/GiC+vpjF
-        lx//1f6ejlT4G
-X-Received: by 2002:a17:907:7388:b0:72b:9be1:e32d with SMTP id er8-20020a170907738800b0072b9be1e32dmr7653017ejc.611.1657795616641;
-        Thu, 14 Jul 2022 03:46:56 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1u9OOcNIIJScRiVqXDGnhKuBd2gDS7vr7IcFGG82F4ntixmfV/Hg7CrJmh+ZCaByCBIIwjrEg==
-X-Received: by 2002:a17:907:7388:b0:72b:9be1:e32d with SMTP id er8-20020a170907738800b0072b9be1e32dmr7652979ejc.611.1657795616209;
-        Thu, 14 Jul 2022 03:46:56 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id sz20-20020a1709078b1400b0072b31307a79sm550672ejc.60.2022.07.14.03.46.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jul 2022 03:46:55 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id AF6334D9B28; Thu, 14 Jul 2022 12:46:54 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Freysteinn Alfredsson <freysteinn.alfredsson@kau.se>,
-        Cong Wang <xiyou.wangcong@gmail.com>
-Subject: Re: [RFC PATCH 00/17] xdp: Add packet queueing and scheduling
- capabilities
-In-Reply-To: <CAKH8qBvODehxeGrqyY6+9TJPePe_KLb6vX9P1rKDgbQhuLpSSQ@mail.gmail.com>
-References: <20220713111430.134810-1-toke@redhat.com>
- <CAKH8qBtdnku7StcQ-SamadvAF==DRuLLZO94yOR1WJ9Bg=uX1w@mail.gmail.com>
- <877d4gpto8.fsf@toke.dk>
- <CAKH8qBvODehxeGrqyY6+9TJPePe_KLb6vX9P1rKDgbQhuLpSSQ@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 14 Jul 2022 12:46:54 +0200
-Message-ID: <87v8s0nf8h.fsf@toke.dk>
+        with ESMTP id S239362AbiGNMfx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jul 2022 08:35:53 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DADB5C9E5;
+        Thu, 14 Jul 2022 05:35:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=4k1ldArcoTS6RSeVEvm24JVcEdg10/9Weake0+ytUA8=; b=M661QKiCHCB9q4ANJDvBEn3kIz
+        UfM1Q+Youp4ZjwerUz2LTSVXSKp27EzdsIGYhIMONcX3/xGByoh0zyylo4eEJ+dlpi73nnGmZD1vU
+        N195A09D6MmL9mPxJKBz/1MNKWA2Fyw857q6j9jMOXIRBxXsPyBbu+QJl2O1SCaEYiqMLBKxi9S4K
+        5K1L4xU1JIh9NGi9FL354w35JG9gJU7iEsndUgVnFXUerrG6EWDfPw+PjY7FBFfX5fXAxZOuzMMM5
+        HqFpzG+Amwkh7iSS1qqh8Dtnui4pu+aG2k317/6qE/9zh3s51kcmrsVvGKDzfPixcuBaCgG7+sbMk
+        k/7LzlPQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33336)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1oBy4A-0005mk-Dt; Thu, 14 Jul 2022 13:35:38 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1oBy47-0006bl-IK; Thu, 14 Jul 2022 13:35:35 +0100
+Date:   Thu, 14 Jul 2022 13:35:35 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, ntfs3@lists.linux.dev,
+        linux-pci@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-aspeed@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, bpf@vger.kernel.org
+Subject: Re: [linux-next:master] BUILD REGRESSION
+ 4662b7adea50bb62e993a67f611f3be625d3df0d
+Message-ID: <YtANl3Y5YRhOM0zH@shell.armlinux.org.uk>
+References: <62cf77c3.3T/sxYUjJq0ImGp4%lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <62cf77c3.3T/sxYUjJq0ImGp4%lkp@intel.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Stanislav Fomichev <sdf@google.com> writes:
+Hi,
 
-> On Wed, Jul 13, 2022 at 2:52 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->>
->> Stanislav Fomichev <sdf@google.com> writes:
->>
->> > On Wed, Jul 13, 2022 at 4:14 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke=
-@redhat.com> wrote:
->> >>
->> >> Packet forwarding is an important use case for XDP, which offers
->> >> significant performance improvements compared to forwarding using the
->> >> regular networking stack. However, XDP currently offers no mechanism =
-to
->> >> delay, queue or schedule packets, which limits the practical uses for
->> >> XDP-based forwarding to those where the capacity of input and output =
-links
->> >> always match each other (i.e., no rate transitions or many-to-one
->> >> forwarding). It also prevents an XDP-based router from doing any kind=
- of
->> >> traffic shaping or reordering to enforce policy.
->> >>
->> >> This series represents a first RFC of our attempt to remedy this lack=
-. The
->> >> code in these patches is functional, but needs additional testing and
->> >> polishing before being considered for merging. I'm posting it here as=
- an
->> >> RFC to get some early feedback on the API and overall design of the
->> >> feature.
->> >>
->> >> DESIGN
->> >>
->> >> The design consists of three components: A new map type for storing X=
-DP
->> >> frames, a new 'dequeue' program type that will run in the TX softirq =
-to
->> >> provide the stack with packets to transmit, and a set of helpers to d=
-equeue
->> >> packets from the map, optionally drop them, and to schedule an interf=
-ace
->> >> for transmission.
->> >>
->> >> The new map type is modelled on the PIFO data structure proposed in t=
-he
->> >> literature[0][1]. It represents a priority queue where packets can be
->> >> enqueued in any priority, but is always dequeued from the head. From =
-the
->> >> XDP side, the map is simply used as a target for the bpf_redirect_map=
-()
->> >> helper, where the target index is the desired priority.
->> >
->> > I have the same question I asked on the series from Cong:
->> > Any considerations for existing carousel/edt-like models?
->>
->> Well, the reason for the addition in patch 5 (continuously increasing
->> priorities) is exactly to be able to implement EDT-like behaviour, where
->> the priority is used as time units to clock out packets.
->
-> Ah, ok, I didn't read the patches closely enough. I saw some limits
-> for the ranges and assumed that it wasn't capable of efficiently
-> storing 64-bit timestamps..
+I don't mean to discourge test systems, but looking at this, I just go
+"meh" and delete it - it doesn't seem to contain obviously useful
+information. One has to read every damn line to see if there's something
+of relevence, which I for one am not going to do.
 
-The goal is definitely to support full 64-bit priorities. Right now you
-have to start out at 0 but can go on for a full 64 bits, but that's a
-bit of an API wart that I'd like to get rid of eventually...
+Is there some kind of improvement that could be done to this to make it
+more useful - such as only sending the warnings/errors to the
+appropriate mailing lists for those - rather than grouping everything
+together into one email. At least that should make the stuff (a) more
+relevant and (b) easier to parse.
 
->> > Can we make the map flexible enough to implement different qdisc
->> > policies?
->>
->> That's one of the things we want to be absolutely sure about. We are
->> starting out with the PIFO map type because the literature makes a good
->> case that it is flexible enough to implement all conceivable policies.
->> The goal of the test harness linked as note [4] is to actually examine
->> this; Frey is our PhD student working on this bit.
->>
->> Thus far we haven't hit any limitations on this, but we'll need to add
->> more policies before we are done with this. Another consideration is
->> performance, of course, so we're also planning to do a comparison with a
->> more traditional "bunch of FIFO queues" type data structure for at least
->> a subset of the algorithms. Kartikeya also had an idea for an
->> alternative way to implement a priority queue using (semi-)lockless
->> skiplists, which may turn out to perform better.
->>
->> If there's any particular policy/algorithm you'd like to see included in
->> this evaluation, please do let us know, BTW! :)
->
-> I honestly am not sure what the bar for accepting this should be. But
-> on the Cong's series I mentioned Martin's CC bpf work as a great
-> example of what we should be trying to do for qdisc-like maps. Having
-> a bpf version of fq/fq_codel/whatever_other_complex_qdisc might be
-> very convincing :-)
+Russell.
 
-Just doing flow queueing is quite straight forward with PIFOs. We're
-working on fq_codel. Personally I also want to implement something that
-has feature parity with sch_cake (which includes every feature and the
-kitchen sink already) :)
+On Thu, Jul 14, 2022 at 09:56:19AM +0800, kernel test robot wrote:
+> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+> branch HEAD: 4662b7adea50bb62e993a67f611f3be625d3df0d  Add linux-next specific files for 20220713
+> 
+> Error/Warning reports:
+> 
+> https://lore.kernel.org/linux-doc/202207021352.PpKTUY8V-lkp@intel.com
+> https://lore.kernel.org/linux-doc/202207031437.qIh6LFcx-lkp@intel.com
+> https://lore.kernel.org/linux-doc/202207051821.3f0eRIsL-lkp@intel.com
+> https://lore.kernel.org/linux-doc/202207140742.GTPk4U8i-lkp@intel.com
+> https://lore.kernel.org/linux-mm/202206292052.LsFui3zO-lkp@intel.com
+> https://lore.kernel.org/linux-mm/202207140042.cK3tlk6j-lkp@intel.com
+> https://lore.kernel.org/llvm/202207090100.acXdJ79H-lkp@intel.com
+> 
+> Error/Warning: (recently discovered and may have been fixed)
+> 
+> Documentation/PCI/endpoint/pci-vntb-function.rst:82: WARNING: Unexpected indentation.
+> Documentation/PCI/endpoint/pci-vntb-howto.rst:131: WARNING: Title underline too short.
+> Documentation/filesystems/netfs_library.rst:384: WARNING: Inline emphasis start-string without end-string.
+> Documentation/filesystems/netfs_library:609: fs/netfs/buffered_read.c:318: WARNING: Inline emphasis start-string without end-string.
+> Documentation/virt/kvm/api.rst:8256: WARNING: Title underline too short.
+> Documentation/virt/kvm/api.rst:8263: WARNING: Unexpected indentation.
+> drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc.c:2837:6: warning: no previous prototype for function 'dc_reset_state' [-Wmissing-prototypes]
+> drivers/mmc/host/sdhci-of-aspeed-test.c:10: undefined reference to `kunit_binary_assert_format'
+> drivers/pci/endpoint/functions/pci-epf-vntb.c:975:5: warning: no previous prototype for 'pci_read' [-Wmissing-prototypes]
+> drivers/pci/endpoint/functions/pci-epf-vntb.c:984:5: warning: no previous prototype for 'pci_write' [-Wmissing-prototypes]
+> drivers/vfio/vfio_iommu_type1.c:2141:35: warning: cast to smaller integer type 'enum iommu_cap' from 'void *' [-Wvoid-pointer-to-enum-cast]
+> fs/ntfs/attrib.c:705:18: warning: Either the condition '!al' is redundant or there is pointer arithmetic with NULL pointer. [nullPointerArithmeticRedundantCheck]
+> fs/ntfs/layout.h:126:43: warning: Parameter 'p' can be declared with const [constParameter]
+> fs/ntfs/ntfs.h:144:3: warning: Assignment of function parameter has no effect outside the function. [uselessAssignmentArg]
+> fs/super.c:1310:57: warning: Parameter 'data' can be declared with const [constParameter]
+> fs/super.c:750:52: warning: Parameter 'bdev' can be declared with const [constParameter]
+> ipc/shm.c:158:0: warning: failed to expand 'ipc_init_proc_interface', it is invalid to use a preprocessor directive as macro parameter [preprocessorErrorDirective]
+> kernel/bpf/task_iter.c:152:11: warning: Redundant initialization for 'curr_fd'. The initialized value is overwritten before it is read. [redundantInitialization]
+> kernel/bpf/task_iter.c:498:59: warning: Parameter 'v' can be declared with const [constParameter]
+> kernel/fork.c:3256:42: warning: Parameter 'table' can be declared with const [constParameter]
+> kernel/fork.c:942:33: warning: Parameter 'src' can be declared with const [constParameter]
+> kernel/sched/fair.c:5081:25: warning: Uninitialized variables: cfs_rq.load, cfs_rq.nr_running, cfs_rq.h_nr_running, cfs_rq.idle_nr_running, cfs_rq.idle_h_nr_running, cfs_rq.exec_clock, cfs_rq.min_vruntime, cfs_rq.min_vruntime_copy, cfs_rq.tasks_timeline, cfs_rq.curr, cfs_rq.next, cfs_rq.last, cfs_rq.skip [uninitvar]
+> kernel/sched/fair.c:6967:7: warning: Local variable 'min_vruntime' shadows outer function [shadowFunction]
+> lib/maple_tree.c:1522:52: warning: Parameter 'gaps' can be declared with const [constParameter]
+> lib/maple_tree.c:1871:21: warning: Array index 'split' is used before limits check. [arrayIndexThenCheck]
+> lib/maple_tree.c:2033:55: warning: Parameter 'mas' can be declared with const [constParameter]
+> lib/maple_tree.c:2426:8: warning: Redundant initialization for 'r_tmp'. The initialized value is overwritten before it is read. [redundantInitialization]
+> lib/maple_tree.c:2427:8: warning: Redundant initialization for 'l_tmp'. The initialized value is overwritten before it is read. [redundantInitialization]
+> lib/maple_tree.c:3160:22: warning: Found suspicious operator ',' [constStatement]
+> lib/maple_tree.c:3208:11: warning: Size of pointer 'pivs' used instead of size of its data. [pointerSize]
+> lib/maple_tree.c:326:2: warning: Assignment of function parameter has no effect outside the function. Did you forget dereferencing it? [uselessAssignmentPtrArg]
+> lib/maple_tree.c:4266:15: warning: The if condition is the same as the previous if condition [duplicateCondition]
+> lib/maple_tree.c:4302:23: warning: Boolean result is used in bitwise operation. Clarify expression with parentheses. [clarifyCondition]
+> lib/maple_tree.c:694:59: warning: Parameter 'pivots' can be declared with const [constParameter]
+> lib/test_printf.c:415:11: warning: Local variable 'addr' shadows outer function [shadowFunction]
+> mm/highmem.c:737:13: warning: Uninitialized variable: pam->page [uninitvar]
+> mm/migrate.c:355:53: warning: Parameter 'mapping' can be declared with const [constParameter]
+> mm/migrate.c:875:7: warning: Redundant initialization for 'rc'. The initialized value is overwritten before it is read. [redundantInitialization]
+> mm/mlock.c:230:20: warning: Using pointer that is a temporary. [danglingTemporaryLifetime]
+> mm/slab.c:1635:24: warning: Uninitialized variables: slab.__page_flags, slab.__unused_1, slab.freelist, slab.units, slab.__unused_2, slab.__page_refcount [uninitvar]
+> mm/slab.c:3289:7: warning: Redundant assignment of 'objp' to itself. [selfAssignment]
+> mm/slab.c:3509:8: warning: Redundant assignment of 'p[i]' to itself. [selfAssignment]
+> mm/slab.c:405:9: warning: Local variable 'slab_size' shadows outer function [shadowFunction]
+> mm/vmstat.c:1409:53: warning: Parameter 'pos' can be declared with const [constParameter]
+> mm/vmstat.c:1650:68: warning: Parameter 'zone' can be declared with const [constParameter]
+> mm/zsmalloc.c:2019:15: warning: Uninitialized variables: zspage.huge, zspage.fullness, zspage.class, zspage.isolated, zspage.magic, zspage.inuse, zspage.freeobj, zspage.first_page, zspage.lock [uninitvar]
+> mm/zsmalloc.c:2060:16: warning: Local variable 'obj_allocated' shadows outer function [shadowFunction]
+> or1k-linux-ld: drivers/mmc/host/sdhci-of-aspeed-test.c:10: undefined reference to `kunit_binary_assert_format'
+> or1k-linux-ld: drivers/mmc/host/sdhci-of-aspeed-test.c:10: undefined reference to `kunit_do_failed_assertion'
+> 
+> Unverified Error/Warning (likely false positive, please contact us if interested):
+> 
+> arch/x86/kernel/cpu/rdrand.c:36 x86_init_rdrand() error: uninitialized symbol 'prev'.
+> drivers/firmware/arm_scmi/clock.c:394:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/firmware/arm_scmi/powercap.c:376:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_powertune.c:1214:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/gpu/drm/bridge/ite-it66121.c:1398:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/gpu/drm/tests/drm_buddy_test.c:197:26-31: ERROR: invalid reference to the index variable of the iterator on line 152
+> drivers/infiniband/hw/irdma/hw.c:1484:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/md/dm-mpath.c:1681:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/media/dvb-frontends/mxl692.c:49:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/media/i2c/ov5647.c:636:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/media/i2c/st-mipid02.c:295:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/media/platform/qcom/venus/vdec.c:1505:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/media/platform/st/sti/delta/delta-v4l2.c:719:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/media/tuners/msi001.c:81:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/mfd/sec-core.c:429:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/mmc/host/sh_mmcif.c:1318:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/net/bonding/bond_main.c:4647:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/net/can/slcan/slcan-core.c:601:14: sparse:    void *
+> drivers/net/can/slcan/slcan-core.c:601:14: sparse:    void [noderef] __rcu *
+> drivers/net/can/slcan/slcan-core.c:601:14: sparse: sparse: incompatible types in comparison expression (different address spaces):
+> drivers/net/dsa/microchip/ksz9477.c:501:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/net/ethernet/chelsio/cxgb3/cxgb3_main.c:1388:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/net/ethernet/faraday/ftgmac100.c:854:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/net/ethernet/hisilicon/hns/hnae.c:436:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/net/ethernet/intel/i40e/i40e_main.c:9347:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/net/ethernet/intel/ice/ice_base.c:1003:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/net/ethernet/intel/ice/ice_dcb_lib.c:520:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/net/ethernet/intel/ice/ice_vlan_mode.c:379:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/net/ethernet/intel/igb/e1000_phy.c:1185:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/net/ethernet/microchip/encx24j600.c:827:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/net/ethernet/microchip/lan743x_main.c:1238:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/net/ethernet/smsc/smsc9420.c:451:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/net/ethernet/vertexcom/mse102x.c:422:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/net/phy/dp83640.c:890:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/net/usb/cdc_ncm.c:195:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/net/usb/rtl8150.c:176:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/parport/ieee1284_ops.c:615:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/scsi/elx/efct/efct_unsol.c:297:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/scsi/elx/libefc/efc_domain.c:692:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/scsi/megaraid/megaraid_sas_fp.c:297:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/soc/mediatek/mtk-mutex.c:793:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/staging/media/zoran/zr36016.c:430:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/staging/media/zoran/zr36050.c:829:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/staging/media/zoran/zr36060.c:869:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/target/iscsi/iscsi_target.c:2348:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/target/target_core_device.c:1013:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/thunderbolt/tmu.c:758:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/thunderbolt/tunnel.c:1264:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/tty/serial/atmel_serial.c:1442:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/usb/host/uhci-q.c:1367:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/usb/serial/digi_acceleport.c:1167:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> drivers/video/backlight/qcom-wled.c:871:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> fs/ext4/mballoc.c:3618:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> fs/kernel_read_file.c:61 kernel_read_file() warn: impossible condition '(i_size > (((~0) >> 1))) => (s64min-s64max > s64max)'
+> fs/ubifs/recovery.c:1062:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> include/linux/bits.h:9:41: warning: shift by negative count ('-1') [-Wanalyzer-shift-count-negative]
+> mm/filemap.c:1354:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> mm/khugepaged.c:2410 madvise_collapse() warn: possible memory leak of 'cc'
+> mm/madvise.c:1174:66: warning: Parameter 'task' can be declared with const [constParameter]
+> mm/page_alloc.c:1181:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> mm/page_alloc.c:7744:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> mm/slub.c:5434:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> net/bluetooth/hci_event.c:5926:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> net/qrtr/mhi.c:102:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> net/wireless/reg.c:205:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> sound/pci/lola/lola.c:178:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> sound/pci/pcxhr/pcxhr_core.c:134:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> sound/pci/rme9652/hdsp.c:666:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> sound/soc/fsl/fsl_spdif.c:1508:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> sound/soc/sh/rcar/core.c:1602:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> sound/soc/sof/intel/mtl.c:553:1: internal compiler error: in arc_ifcvt, at config/arc/arc.c:9637
+> {standard input}:2311: Error: expecting )
+> 
+> Error/Warning ids grouped by kconfigs:
+> 
+> gcc_recent_errors
+> |-- alpha-allyesconfig
+> |   |-- drivers-pci-endpoint-functions-pci-epf-vntb.c:warning:no-previous-prototype-for-pci_read
+> |   `-- drivers-pci-endpoint-functions-pci-epf-vntb.c:warning:no-previous-prototype-for-pci_write
+> |-- alpha-randconfig-r004-20220712
+> |   |-- drivers-pci-endpoint-functions-pci-epf-vntb.c:warning:no-previous-prototype-for-pci_read
+> |   `-- drivers-pci-endpoint-functions-pci-epf-vntb.c:warning:no-previous-prototype-for-pci_write
+> |-- arc-allyesconfig
+> |   |-- block-partitions-efi.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- block-sed-opal.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- crypto-asymmetric_keys-pkcs7_verify.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-ata-libata-core.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-ata-libata-eh.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-ata-sata_dwc_460ex.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-base-power-runtime.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-block-rbd.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-bluetooth-hci_ll.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-bluetooth-hci_qca.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-cdrom-cdrom.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-char-ipmi-ipmi_ssif.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-char-pcmcia-cm4000_cs.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-char-random.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-char-tpm-tpm_tis_core.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-clk-bcm-clk-iproc-armpll.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-clk-clk-bd718x7.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-clk-clk-lochnagar.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-crypto-ccree-cc_request_mgr.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-crypto-qce-sha.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-crypto-qce-skcipher.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-cxl-core-hdm.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-cxl-core-pci.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-dma-buf-dma-buf.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-firmware-arm_scmi-bus.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-firmware-arm_scmi-clock.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-firmware-arm_scmi-powercap.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-firmware-arm_scmi-sensors.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-firmware-arm_scmi-voltage.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-fpga-dfl-fme-mgr.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-gnss-usb.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc_debug.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc_link_dp.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dce110-dce110_resource.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dce112-dce112_resource.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-gpu-drm-amd-amdgpu-..-pm-powerplay-hwmgr-smu7_hwmgr.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-gpu-drm-amd-amdgpu-..-pm-powerplay-hwmgr-smu8_hwmgr.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-gpu-drm-amd-amdgpu-..-pm-powerplay-hwmgr-vega10_powertune.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-gpu-drm-amd-amdgpu-..-pm-powerplay-smumgr-smu7_smumgr.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-gpu-drm-amd-amdgpu-..-pm-swsmu-smu13-smu_v13_0.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_ttm.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-gpu-drm-bridge-cadence-cdns-mhdp8546-hdcp.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> |   |-- drivers-gpu-drm-bridge-ite-it66121.c:internal-compiler-error:in-arc_ifcvt-at-config-arc-arc.c
+> clang_recent_errors
+> |-- arm-randconfig-r024-20220712
+> |   `-- drivers-gpu-drm-tests-drm_mm_test.c:warning:stack-frame-size-()-exceeds-limit-()-in-__igt_reserve
+> |-- s390-randconfig-r044-20220713
+> |   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc.c:warning:no-previous-prototype-for-function-dc_reset_state
+> |-- x86_64-randconfig-a001
+> |   `-- drivers-vfio-vfio_iommu_type1.c:warning:cast-to-smaller-integer-type-enum-iommu_cap-from-void
+> |-- x86_64-randconfig-a005
+> |   `-- drivers-vfio-vfio_iommu_type1.c:warning:cast-to-smaller-integer-type-enum-iommu_cap-from-void
+> |-- x86_64-randconfig-a012
+> |   `-- drivers-vfio-vfio_iommu_type1.c:warning:cast-to-smaller-integer-type-enum-iommu_cap-from-void
+> `-- x86_64-randconfig-k001
+>     `-- drivers-vfio-vfio_iommu_type1.c:warning:cast-to-smaller-integer-type-enum-iommu_cap-from-void
+> 
+> elapsed time: 723m
+> 
+> configs tested: 95
+> configs skipped: 2
+> 
+> gcc tested configs:
+> arm                                 defconfig
+> arm                              allyesconfig
+> arm64                            allyesconfig
+> i386                          randconfig-c001
+> nios2                         3c120_defconfig
+> arm64                            alldefconfig
+> powerpc                      makalu_defconfig
+> sh                          r7785rp_defconfig
+> arm                      footbridge_defconfig
+> arm                            lart_defconfig
+> arm                            hisi_defconfig
+> sh                          urquell_defconfig
+> microblaze                      mmu_defconfig
+> sparc                               defconfig
+> sh                          r7780mp_defconfig
+> m68k                           virt_defconfig
+> arc                              alldefconfig
+> sh                           se7721_defconfig
+> mips                            gpr_defconfig
+> arc                 nsimosci_hs_smp_defconfig
+> sparc                       sparc32_defconfig
+> csky                                defconfig
+> x86_64                                  kexec
+> sparc                            allyesconfig
+> xtensa                           allyesconfig
+> riscv                             allnoconfig
+> riscv                    nommu_k210_defconfig
+> i386                   debian-10.3-kselftests
+> riscv                          rv32_defconfig
+> riscv                    nommu_virt_defconfig
+> i386                              debian-10.3
+> arm                  randconfig-c002-20220712
+> x86_64                        randconfig-c001
+> ia64                             allmodconfig
+> alpha                            allyesconfig
+> m68k                             allmodconfig
+> arc                              allyesconfig
+> m68k                             allyesconfig
+> powerpc                           allnoconfig
+> mips                             allyesconfig
+> powerpc                          allmodconfig
+> sh                               allmodconfig
+> i386                                defconfig
+> i386                             allyesconfig
+> x86_64                        randconfig-a006
+> i386                          randconfig-a001
+> i386                          randconfig-a003
+> i386                          randconfig-a005
+> x86_64                        randconfig-a013
+> x86_64                        randconfig-a011
+> x86_64                        randconfig-a015
+> i386                          randconfig-a012
+> i386                          randconfig-a016
+> i386                          randconfig-a014
+> arc                  randconfig-r043-20220712
+> riscv                randconfig-r042-20220712
+> s390                 randconfig-r044-20220712
+> arc                  randconfig-r043-20220713
+> x86_64                        randconfig-a002
+> x86_64                        randconfig-a004
+> um                             i386_defconfig
+> um                           x86_64_defconfig
+> x86_64                              defconfig
+> x86_64                               rhel-8.3
+> x86_64                           allyesconfig
+> x86_64                          rhel-8.3-func
+> x86_64                         rhel-8.3-kunit
+> x86_64                    rhel-8.3-kselftests
+> x86_64                           rhel-8.3-syz
+> 
+> clang tested configs:
+> powerpc                     akebono_defconfig
+> mips                           ip27_defconfig
+> riscv                            alldefconfig
+> arm                       imx_v4_v5_defconfig
+> arm                        mvebu_v5_defconfig
+> mips                          ath79_defconfig
+> arm                        magician_defconfig
+> x86_64                        randconfig-k001
+> x86_64                        randconfig-a005
+> i386                          randconfig-a002
+> i386                          randconfig-a006
+> i386                          randconfig-a004
+> x86_64                        randconfig-a012
+> x86_64                        randconfig-a014
+> x86_64                        randconfig-a016
+> i386                          randconfig-a013
+> i386                          randconfig-a011
+> i386                          randconfig-a015
+> hexagon              randconfig-r041-20220712
+> hexagon              randconfig-r045-20220712
+> hexagon              randconfig-r045-20220713
+> riscv                randconfig-r042-20220713
+> hexagon              randconfig-r041-20220713
+> s390                 randconfig-r044-20220713
+> x86_64                        randconfig-a001
+> x86_64                        randconfig-a003
+> 
+> -- 
+> 0-DAY CI Kernel Test Service
+> https://01.org/lkp
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
 
->> >> The dequeue program type is a new BPF program type that is attached t=
-o an
->> >> interface; when an interface is scheduled for transmission, the stack=
- will
->> >> execute the attached dequeue program and, if it returns a packet to
->> >> transmit, that packet will be transmitted using the existing ndo_xdp_=
-xmit()
->> >> driver function.
->> >>
->> >> The dequeue program can obtain packets by pulling them out of a PIFO =
-map
->> >> using the new bpf_packet_dequeue() helper. This returns a pointer to =
-an
->> >> xdp_md structure, which can be dereferenced to obtain packet data and
->> >> data_meta pointers like in an XDP program. The returned packets are a=
-lso
->> >> reference counted, meaning the verifier enforces that the dequeue pro=
-gram
->> >> either drops the packet (with the bpf_packet_drop() helper), or retur=
-ns it
->> >> for transmission. Finally, a helper is added that can be used to actu=
-ally
->> >> schedule an interface for transmission using the dequeue program type=
-; this
->> >> helper can be called from both XDP and dequeue programs.
->> >>
->> >> PERFORMANCE
->> >>
->> >> Preliminary performance tests indicate about 50ns overhead of adding
->> >> queueing to the xdp_fwd example (last patch), which translates to a 2=
-0% PPS
->> >> overhead (but still 2x the forwarding performance of the netstack):
->> >>
->> >> xdp_fwd :     4.7 Mpps  (213 ns /pkt)
->> >> xdp_fwd -Q:   3.8 Mpps  (263 ns /pkt)
->> >> netstack:       2 Mpps  (500 ns /pkt)
->> >>
->> >> RELATION TO BPF QDISC
->> >>
->> >> Cong Wang's BPF qdisc patches[2] share some aspects of this series, in
->> >> particular the use of a map to store packets. This is no accident, as=
- we've
->> >> had ongoing discussions for a while now. I have no great hope that we=
- can
->> >> completely converge the two efforts into a single BPF-based queueing
->> >> API (as has been discussed before[3], consolidating the SKB and XDP p=
-aths
->> >> is challenging). Rather, I'm hoping that we can converge the designs =
-enough
->> >> that we can share BPF code between XDP and qdisc layers using common
->> >> functions, like it's possible to do with XDP and TC-BPF today. This w=
-ould
->> >> imply agreeing on the map type and API, and possibly on the set of he=
-lpers
->> >> available to the BPF programs.
->> >
->> > What would be the big difference for the map wrt xdp_frame vs sk_buff
->> > excluding all obvious stuff like locking/refcnt?
->>
->> I expect it would be quite straight-forward to just add a second subtype
->> of the PIFO map in this series that holds skbs. In fact, I think that
->> from the BPF side, the whole model implemented here would be possible to
->> carry over to the qdisc layer more or less wholesale. Some other
->> features of the qdisc layer, like locking, classes, and
->> multi-CPU/multi-queue management may be trickier, but I'm not sure how
->> much of that we should expose in a BPF qdisc anyway (as you may have
->> noticed I commented on Cong's series to this effect regarding the
->> classful qdiscs).
->
-> Maybe a related question here: with the way you do
-> BPF_MAP_TYPE_PIFO_GENERIC vs BPF_MAP_TYPE_PIFO_XDP, how hard it would
-> be have support for storing xdp_frames/skb in any map? Let's say we
-> have generic BPF_MAP_TYPE_RBTREE, where the key is
-> priority/timestamp/whatever, can we, based on the value's btf_id,
-> figure out the rest? (that the value is kernel structure and needs
-> special care and more constraints - can't be looked up from user space
-> and so on)
->
-> Seems like we really need to have two special cases: where we transfer
-> ownership of xdp_frame/skb to/from the map, any other big
-> complications?
->
-> That way we can maybe untangle the series a bit: we can talk about
-> efficient data structures for storing frames/skbs independently of
-> some generic support for storing them in the maps. Any major
-> complications with that approach?
-
-I've had discussions with Kartikeya on this already (based on his 'kptr
-in map' work). That may well end up being feasible, which would be
-fantastic. The reason we didn't use it for this series is that there's
-still some work to do on the generic verifier/infrastructure support
-side of this (the PIFO map is the oldest part of this series), and I
-didn't want to hold up the rest of the queueing work until that landed.
-
-Now that we have a functional prototype I expect that iterating on the
-data structure will be the next step. One complication with XDP is that
-we probably want to keep using XDP_REDIRECT to place packets into the
-map because that gets us bulking which is important for performance;
-however, in general I like the idea of using BTF to designate the map
-value type, and if we can figure out a way to make it completely generic
-even for packets I'm all for that! :)
-
->> >> PATCH STRUCTURE
->> >>
->> >> This series consists of a total of 17 patches, as follows:
->> >>
->> >> Patches 1-3 are smaller preparatory refactoring patches used by subse=
-quent
->> >> patches.
->> >
->> > Seems like these can go separately without holding the rest?
->>
->> Yeah, guess so? They don't really provide much benefit without the users
->> alter in the series, though, so not sure there's much point in sending
->> them separately?
->>
->> >> Patches 4-5 introduce the PIFO map type, and patch 6 introduces the d=
-equeue
->> >> program type.
->> >
->> > [...]
->> >
->> >> Patches 7-10 adds the dequeue helpers and the verifier features neede=
-d to
->> >> recognise packet pointers, reference count them, and allow dereferenc=
-ing
->> >> them to obtain packet data pointers.
->> >
->> > Have you considered using kfuncs for these instead of introducing new
->> > hooks/contexts/etc?
->>
->> I did, but I'm not sure it's such a good fit? In particular, the way the
->> direct packet access is implemented for dequeue programs (where you can
->> get an xdp_md pointer and deref that to get data and data_end pointers)
->> is done this way so programs can share utility functions between XDP and
->> dequeue programs. And having a new program type for the dequeue progs
->> seem like the obvious thing to do since they're doing something new?
->>
->> Maybe I'm missing something, though; could you elaborate on how you'd
->> use kfuncs instead?
->
-> I was thinking about the approach in general. In networking bpf, we've
-> been adding new program types, new contexts and new explicit hooks.
-> This all requires a ton of boiler plate (converting from uapi ctx to
-> the kernel, exposing hook points, etc, etc). And looking at Benjamin's
-> HID series, it's so much more elegant: there is no uapi, just kernel
-> function that allows it to be overridden and a bunch of kfuncs
-> exposed. No uapi, no helpers, no fake contexts.
->
-> For networking and xdp the ship might have sailed, but I was wondering
-> whether we should be still stuck in that 'old' boilerplate world or we
-> have a chance to use new nice shiny things :-)
->
-> (but it might be all moot if we'd like to have stable upis?)
-
-Right, I see what you mean. My immediate feeling is that having an
-explicit stable UAPI for XDP has served us well. We do all kinds of
-rewrite tricks behind the scenes (things like switching between xdp_buff
-and xdp_frame, bulking, direct packet access, reading ifindexes by
-pointer walking txq->dev, etc) which are important ways to improve
-performance without exposing too many nitty-gritty details into the API.
-
-There's also consistency to consider: I think the addition of queueing
-should work as a natural extension of the existing programming model for
-XDP. So I feel like this is more a case of "if we were starting from
-scratch today we might do things differently (like the HID series), but
-when extending things let's keep it consistent"?
-
--Toke
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
