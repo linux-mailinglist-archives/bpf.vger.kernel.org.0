@@ -2,111 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A79665757E6
-	for <lists+bpf@lfdr.de>; Fri, 15 Jul 2022 01:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B985757FB
+	for <lists+bpf@lfdr.de>; Fri, 15 Jul 2022 01:21:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232319AbiGNXPJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jul 2022 19:15:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39172 "EHLO
+        id S232822AbiGNXVw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 14 Jul 2022 19:21:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbiGNXPI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jul 2022 19:15:08 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADEB470E49
-        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 16:15:07 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id va17so6153859ejb.0
-        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 16:15:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vFT0gtQ5Fhe3bkychWRacJcdfGvp1Y8aCikkIll1xsw=;
-        b=Wlx8nGbJz65HtUP+Yhy1hQZjGQBj4xf88Uv6fVM3IQITeZ7Btfw9bs/1TIT8XFa8be
-         QVvDpbxobuZaPwm3IwFik4SH6xFZKwbFYvvaxERp3KEqJRcMWCPYl0q6u+67l4ulgVWr
-         5f1bwN2D9gKNMv9Ej1Rc+QYoG/QtN5XneiH+XwflC4anQOD5tqzqDQmgUDA8yJrkh3HQ
-         PEt/fdy/QU1BbY+wJWoFBGwtUTm0uc6cMTmnrxQDp6WojDSH++wh4vXa6k3GRsmUjMMd
-         jkwGq3pdYfBC79J2h7FB0qhLRh3ColkXBNLzvii/la2NNY1sx0sJPK1h1rXwKm1CvOf8
-         ALGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vFT0gtQ5Fhe3bkychWRacJcdfGvp1Y8aCikkIll1xsw=;
-        b=aGHVjRzdVVt6MON6ZZeI1SgmBvYlAglycMHsmkkwyLQmyoYW736O+ui/DZT5mcsP/j
-         tYNY9tBi+mJ5Jbyt/jZZjn5uqlMtMimlJ4Q7n7KPuOATJtYlBvYi/rvEooEK9JhoSZhJ
-         jQtYqNR4hSZQYfBtf6Uw4D9CDtagw4/0boYZd7VRCPQ2G/sHhBcllo+LKOwavFsI4Ak/
-         aM9U1TDUMxaDq0hV/v68dh3vzXzHl5r2W2fmvrfzx+kces9PGDkhY/KRXCzEwmce/3iN
-         4sssCfwv36vcOdt0YJeMjUYGb/af0kS+LeNYhZ+QghEvZHww6dgp4ws/UEkuUXQ/RpF+
-         qAmA==
-X-Gm-Message-State: AJIora/fy+sj3CRXqhQp7yR6atco2nbL7/JKi1pfYMf976dpZ4X7aZ2p
-        vcyBJ9TRizDDOzZg3BroNYbEJsWNRPPfaiUPunpC4XGH
-X-Google-Smtp-Source: AGRyM1uvifZuLETSGMqgvfJ2sllVs+21l+EyXjTQNvk85ZzlSirFvTGiMVJxrGZawLkGnRuziUDClH9AYMuGvwTY79A=
-X-Received: by 2002:a17:906:6c82:b0:709:f868:97f6 with SMTP id
- s2-20020a1709066c8200b00709f86897f6mr10836093ejr.555.1657840506100; Thu, 14
- Jul 2022 16:15:06 -0700 (PDT)
+        with ESMTP id S232546AbiGNXVv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jul 2022 19:21:51 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E04F265D0
+        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 16:21:50 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26END7dm023809
+        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 16:21:50 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hat59rwk8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 16:21:50 -0700
+Received: from snc-exhub201.TheFacebook.com (2620:10d:c085:21d::7) by
+ snc-exhub202.TheFacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28; Thu, 14 Jul 2022 16:21:49 -0700
+Received: from twshared31479.05.prn5.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28; Thu, 14 Jul 2022 16:21:49 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id C00EE1C5925C6; Thu, 14 Jul 2022 16:21:44 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
+        Connor O'Brien <connoro@google.com>
+Subject: [PATCH bpf-next] libbpf: fallback to tracefs mount point if debugfs is not mounted
+Date:   Thu, 14 Jul 2022 16:21:43 -0700
+Message-ID: <20220714232143.3728834-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20220714224721.2615592-1-joannelkoong@gmail.com>
-In-Reply-To: <20220714224721.2615592-1-joannelkoong@gmail.com>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Thu, 14 Jul 2022 16:14:55 -0700
-Message-ID: <CAJnrk1ZcDjMVPgf2QSfmjJDjmWEGp0h0ZXuUEPByv9w542txmw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1] bpf: fix bpf_skb_pull_data documentation
-To:     bpf <bpf@vger.kernel.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, quentin@isovalent.com,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: A7NvS0BHRMJp7Z9MUvTN4tqQK7DT0HIb
+X-Proofpoint-ORIG-GUID: A7NvS0BHRMJp7Z9MUvTN4tqQK7DT0HIb
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-07-14_19,2022-07-14_01,2022-06-22_01
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 14, 2022 at 3:48 PM Joanne Koong <joannelkoong@gmail.com> wrote:
->
-> Fix documentation for bpf_skb_pull_data() helper for
-> when flags == 0.
-sorry, this commit message should be "when len == 0" (not flags).
->
-> Fixes: fa15601ab31e ("bpf: add documentation for eBPF helpers (33-41)")
-> Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
-> ---
->  include/uapi/linux/bpf.h       | 3 ++-
->  tools/include/uapi/linux/bpf.h | 3 ++-
->  2 files changed, 4 insertions(+), 2 deletions(-)
->
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 379e68fb866f..a80c1f6bbe25 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -2361,7 +2361,8 @@ union bpf_attr {
->   *             Pull in non-linear data in case the *skb* is non-linear and not
->   *             all of *len* are part of the linear section. Make *len* bytes
->   *             from *skb* readable and writable. If a zero value is passed for
-> - *             *len*, then the whole length of the *skb* is pulled.
-> + *             *len*, then all bytes in the head of the skb will be made readable
-> + *             and writable.
->   *
->   *             This helper is only needed for reading and writing with direct
->   *             packet access.
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-> index 379e68fb866f..a80c1f6bbe25 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -2361,7 +2361,8 @@ union bpf_attr {
->   *             Pull in non-linear data in case the *skb* is non-linear and not
->   *             all of *len* are part of the linear section. Make *len* bytes
->   *             from *skb* readable and writable. If a zero value is passed for
-> - *             *len*, then the whole length of the *skb* is pulled.
-> + *             *len*, then all bytes in the head of the skb will be made readable
-> + *             and writable.
->   *
->   *             This helper is only needed for reading and writing with direct
->   *             packet access.
-> --
-> 2.30.2
->
+Teach libbpf to fallback to tracefs mount point (/sys/kernel/tracing) if
+debugfs (/sys/kernel/debug/tracing) isn't mounted.
+
+Suggested-by: Connor O'Brien <connoro@google.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ tools/lib/bpf/libbpf.c | 33 +++++++++++++++++++++++----------
+ 1 file changed, 23 insertions(+), 10 deletions(-)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 68da1aca406c..4acdc174cc73 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -9828,6 +9828,19 @@ static int append_to_file(const char *file, const char *fmt, ...)
+ 	return err;
+ }
+ 
++#define DEBUGFS "/sys/kernel/debug/tracing"
++#define TRACEFS "/sys/kernel/tracing"
++
++static bool use_debugfs(void)
++{
++	static int has_debugfs = -1;
++
++	if (has_debugfs < 0)
++		has_debugfs = access(DEBUGFS, F_OK) == 0;
++
++	return has_debugfs == 1;
++}
++
+ static void gen_kprobe_legacy_event_name(char *buf, size_t buf_sz,
+ 					 const char *kfunc_name, size_t offset)
+ {
+@@ -9840,7 +9853,7 @@ static void gen_kprobe_legacy_event_name(char *buf, size_t buf_sz,
+ static int add_kprobe_event_legacy(const char *probe_name, bool retprobe,
+ 				   const char *kfunc_name, size_t offset)
+ {
+-	const char *file = "/sys/kernel/debug/tracing/kprobe_events";
++	const char *file = use_debugfs() ? DEBUGFS"/kprobe_events" : TRACEFS"/kprobe_events";
+ 
+ 	return append_to_file(file, "%c:%s/%s %s+0x%zx",
+ 			      retprobe ? 'r' : 'p',
+@@ -9850,7 +9863,7 @@ static int add_kprobe_event_legacy(const char *probe_name, bool retprobe,
+ 
+ static int remove_kprobe_event_legacy(const char *probe_name, bool retprobe)
+ {
+-	const char *file = "/sys/kernel/debug/tracing/kprobe_events";
++	const char *file = use_debugfs() ? DEBUGFS"/kprobe_events" : TRACEFS"/kprobe_events";
+ 
+ 	return append_to_file(file, "-:%s/%s", retprobe ? "kretprobes" : "kprobes", probe_name);
+ }
+@@ -9859,8 +9872,8 @@ static int determine_kprobe_perf_type_legacy(const char *probe_name, bool retpro
+ {
+ 	char file[256];
+ 
+-	snprintf(file, sizeof(file),
+-		 "/sys/kernel/debug/tracing/events/%s/%s/id",
++	snprintf(file, sizeof(file), "%s/events/%s/%s/id",
++		 use_debugfs() ? DEBUGFS : TRACEFS,
+ 		 retprobe ? "kretprobes" : "kprobes", probe_name);
+ 
+ 	return parse_uint_from_file(file, "%d\n");
+@@ -10213,7 +10226,7 @@ static void gen_uprobe_legacy_event_name(char *buf, size_t buf_sz,
+ static inline int add_uprobe_event_legacy(const char *probe_name, bool retprobe,
+ 					  const char *binary_path, size_t offset)
+ {
+-	const char *file = "/sys/kernel/debug/tracing/uprobe_events";
++	const char *file = use_debugfs() ? DEBUGFS"/uprobe_events" : TRACEFS"/uprobe_events";
+ 
+ 	return append_to_file(file, "%c:%s/%s %s:0x%zx",
+ 			      retprobe ? 'r' : 'p',
+@@ -10223,7 +10236,7 @@ static inline int add_uprobe_event_legacy(const char *probe_name, bool retprobe,
+ 
+ static inline int remove_uprobe_event_legacy(const char *probe_name, bool retprobe)
+ {
+-	const char *file = "/sys/kernel/debug/tracing/uprobe_events";
++	const char *file = use_debugfs() ? DEBUGFS"/uprobe_events" : TRACEFS"/uprobe_events";
+ 
+ 	return append_to_file(file, "-:%s/%s", retprobe ? "uretprobes" : "uprobes", probe_name);
+ }
+@@ -10232,8 +10245,8 @@ static int determine_uprobe_perf_type_legacy(const char *probe_name, bool retpro
+ {
+ 	char file[512];
+ 
+-	snprintf(file, sizeof(file),
+-		 "/sys/kernel/debug/tracing/events/%s/%s/id",
++	snprintf(file, sizeof(file), "%s/events/%s/%s/id",
++		 use_debugfs() ? DEBUGFS : TRACEFS,
+ 		 retprobe ? "uretprobes" : "uprobes", probe_name);
+ 
+ 	return parse_uint_from_file(file, "%d\n");
+@@ -10782,8 +10795,8 @@ static int determine_tracepoint_id(const char *tp_category,
+ 	char file[PATH_MAX];
+ 	int ret;
+ 
+-	ret = snprintf(file, sizeof(file),
+-		       "/sys/kernel/debug/tracing/events/%s/%s/id",
++	ret = snprintf(file, sizeof(file), "%s/events/%s/%s/id",
++		       use_debugfs() ? DEBUGFS : TRACEFS,
+ 		       tp_category, tp_name);
+ 	if (ret < 0)
+ 		return -errno;
+-- 
+2.30.2
+
