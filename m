@@ -2,105 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B12357465C
-	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 10:11:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 028865746A5
+	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 10:23:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229977AbiGNILF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jul 2022 04:11:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36282 "EHLO
+        id S229506AbiGNIX1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jul 2022 04:23:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbiGNILE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jul 2022 04:11:04 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E24622B190;
-        Thu, 14 Jul 2022 01:11:03 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id v4-20020a17090abb8400b001ef966652a3so7752254pjr.4;
-        Thu, 14 Jul 2022 01:11:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=bIXAVB8I8ROQODsmmKeLMFK2VbCiCoPk46ijuVpDRLE=;
-        b=bX/PvdK0iWhA+6NrxXrInHRc+qvbiEfelilGWWqwQjgQzMUnoF6NDAl5D807Ve77B8
-         vNlv6KbmzTRLAFCI8E02lbSESfHJ2dkY3+/S3bhdJTSLwUh7tCD5q81AxFnUlPlRySgn
-         hb0wYd7/WjGXskym9dizQ6VGYBjjEqUn+5XrfQx6lGgVlwY0DGGCdFv/hdRoc0mQUl4N
-         Reo+afrxFqVT5fWgPrzXUxWZmYWqrvxTaKnmciqYcBh422pbBU9mvV4ULVmXpDSTii3h
-         qjGWuwwYwmDAbU8/Icd7v/qYvl7oHmvO8w5g9+JYqatli5vpkfkMlhFI6WoMWQ/hWyoZ
-         EIpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=bIXAVB8I8ROQODsmmKeLMFK2VbCiCoPk46ijuVpDRLE=;
-        b=Vq9p8XryEtX3Z3bI0e6HwFmGl3skhALvCBwCbMAw6r6fYNSZJyLmG0fCkQ5Ef19ES+
-         /t4OGwek5zxvQKyN2MfdhBzNiN2Tf7Lfck1sdJRQQeyKCmdOTVJipNp73cww2Y8ipycl
-         yz/EroOXKsAItEoXcqeOxMT5oAEK3nsBx1ltoafpKbdmunkVqS+JSvaIEd4+06V8v4dJ
-         uP8Aer7N6LefPJHk2zayWoYzCGVebLlMSNH1iao1rHr4rFv2oqcRqGyd7mPl6oVVvLr3
-         sAOuH9WDo5mZvaP/tFSyUK4AYngErtLc62VQ/7e3P1wiSiv1o9AlvU8Lpe/GCGGtB8qw
-         ZNRA==
-X-Gm-Message-State: AJIora9XsSVINirX8xbiKJrV3Mnc6R3tCfKok0DFXlJpYw6e3wAn0q/J
-        lkRw4agIn32ihSkqQYUfbkg=
-X-Google-Smtp-Source: AGRyM1uMe9azVMy5q0a4JiCqLwq96lNXH8Ahpxp6f6cPLXc5EIeN0yWDUF3bPx9Bi0Pw8M3yIt1/aw==
-X-Received: by 2002:a17:903:40cf:b0:16c:6c93:9734 with SMTP id t15-20020a17090340cf00b0016c6c939734mr7720124pld.98.1657786263436;
-        Thu, 14 Jul 2022 01:11:03 -0700 (PDT)
-Received: from [192.168.43.80] (subs02-180-214-232-29.three.co.id. [180.214.232.29])
-        by smtp.gmail.com with ESMTPSA id y5-20020a17090a784500b001ef84cd54b2sm2988734pjl.19.2022.07.14.01.11.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Jul 2022 01:11:02 -0700 (PDT)
-Message-ID: <5fd3bc40-61f5-e7bc-6178-cb50b3af4042@gmail.com>
-Date:   Thu, 14 Jul 2022 15:10:56 +0700
+        with ESMTP id S232034AbiGNIX0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jul 2022 04:23:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81BA73AE41
+        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 01:23:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1AC8061D9F
+        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 08:23:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C47ACC34114;
+        Thu, 14 Jul 2022 08:23:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1657787003;
+        bh=BQO5Jrxh7cFFNKSWmzfQ2yt5J3UsKdxaTFqtKa1ll7s=;
+        h=From:To:Cc:Subject:Date:From;
+        b=U4LFvsC76+K1s3VO35c9b2mizBLeKc8c0dwr3QUub8y+Xy30tH5tGLnv/+lDHBagf
+         M987BCfs7u/HwM/RyHFUgMsrcATZXZ2Go9tcQBBRFSXkIOZblZpfpu6XaJclLtynP/
+         1RUw7uBySHnRjxi9XIsKV3MvkTgQXy6cP7TmIUdh4mT9nMWiKyuVH0tuffkoWNg6pd
+         DhX+pNTQnvmyNnE0Ksjf8DaLEl1RNub+2+P7CuqzMcETxJ/Al1eBvjAeDzxDDKYGg3
+         l7xRwilCMpcYUDJlbGh0ffqtWZWYd4UDt6lau+z4F76otVWrtbVKppQB7O9LwKxLwk
+         thIOkxvhJnQjw==
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>
+Subject: [PATCH bpf] selftests/bpf: Do not attach kprobe_multi bench to bpf_dispatcher_xdp_func
+Date:   Thu, 14 Jul 2022 10:23:16 +0200
+Message-Id: <20220714082316.479181-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH] bpf, docs: document BPF_MAP_TYPE_HASH and variants
-Content-Language: en-US
-To:     =?UTF-8?Q?Daniel_M=c3=bcller?= <deso@posteo.net>
-Cc:     Donald Hunter <donald.hunter@gmail.com>, bpf@vger.kernel.org,
-        linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-References: <20220713211612.84782-1-donald.hunter@gmail.com>
- <99351eee-17b4-66e0-1b9e-7f798756780a@gmail.com>
- <20220714055137.dsatpuyrwdlel2ck@vaio>
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-In-Reply-To: <20220714055137.dsatpuyrwdlel2ck@vaio>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/14/22 12:51, Daniel Müller wrote:
-> On Thu, Jul 14, 2022 at 08:12:57AM +0700, Bagas Sanjaya wrote:
->> On 7/14/22 04:16, Donald Hunter wrote:
->>> This commit adds documentation for BPF_MAP_TYPE_HASH including kernel
->>> version introduced, usage and examples. It also documents
->>> BPF_MAP_TYPE_PERCPU_HASH, BPF_MAP_TYPE_LRU_HASH and
->>> BPF_MAP_TYPE_LRU_PERCPU_HASH which are similar.
->>>
->>
->> Please, please use imperative mood instead for patch description
->> (that is, better write like "document BPF_MAP_TYPE_* types").
-> 
-> Can you elaborate why you make that recommendation, please?
-> 
+Alexei reported crash by running test_progs -j on system
+with 32 cpus.
 
-From Documentation/process/submitting-patches.rst:
+It turned out the kprobe_multi bench test that attaches all
+ftrace-able functions will race with bpf_dispatcher_update,
+that calls bpf_arch_text_poke on bpf_dispatcher_xdp_func,
+which is ftrace-able function.
 
-> Describe your changes in imperative mood, e.g. "make xyzzy do frotz"
-> instead of "[This patch] makes xyzzy do frotz" or "[I] changed xyzzy
-> to do frotz", as if you are giving orders to the codebase to change
-> its behaviour.
+Ftrace is not aware of this update so this will cause
+ftrace_bug with:
 
-The recommendation above is from commit 74a475acea4945
-("SubmittingPatches: add style recommendation to use imperative descriptions")
+  WARNING: CPU: 6 PID: 1985 at
+  arch/x86/kernel/ftrace.c:94 ftrace_verify_code+0x27/0x50
+  ...
+  ftrace_replace_code+0xa3/0x170
+  ftrace_modify_all_code+0xbd/0x150
+  ftrace_startup_enable+0x3f/0x50
+  ftrace_startup+0x98/0xf0
+  register_ftrace_function+0x20/0x60
+  register_fprobe_ips+0xbb/0xd0
+  bpf_kprobe_multi_link_attach+0x179/0x430
+  __sys_bpf+0x18a1/0x2440
+  ...
+  ------------[ ftrace bug ]------------
+  ftrace failed to modify
+  [<ffffffff818d9380>] bpf_dispatcher_xdp_func+0x0/0x10
+   actual:   ffffffe9:7b:ffffff9c:77:1e
+  Setting ftrace call site to call ftrace function
 
-Thanks.
+It looks like we need some way to way to hide some functions
+from ftrace, but meanwhile we workaround this by skipping
+bpf_dispatcher_xdp_func from kprobe_multi bench test.
 
+Reported-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+ tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+index 5b93d5d0bd93..8c442051f312 100644
+--- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
++++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+@@ -364,6 +364,8 @@ static int get_syms(char ***symsp, size_t *cntp)
+ 			continue;
+ 		if (!strncmp(name, "rcu_", 4))
+ 			continue;
++		if (!strncmp(name, "bpf_dispatcher_xdp_func", 23))
++			continue;
+ 		if (!strncmp(name, "__ftrace_invalid_address__",
+ 			     sizeof("__ftrace_invalid_address__") - 1))
+ 			continue;
 -- 
-An old man doll... just what I always wanted! - Clara
+2.35.3
+
