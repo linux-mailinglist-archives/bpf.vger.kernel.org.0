@@ -2,51 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED151575697
-	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 22:50:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3605756AD
+	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 23:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232659AbiGNUuR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jul 2022 16:50:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33042 "EHLO
+        id S232582AbiGNVAP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jul 2022 17:00:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240580AbiGNUuQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jul 2022 16:50:16 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8BA143E47;
-        Thu, 14 Jul 2022 13:50:15 -0700 (PDT)
+        with ESMTP id S229458AbiGNVAO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jul 2022 17:00:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E1716C109;
+        Thu, 14 Jul 2022 14:00:14 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 77757B828D7;
-        Thu, 14 Jul 2022 20:50:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 0627FC341C8;
-        Thu, 14 Jul 2022 20:50:13 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id ABCBA61A46;
+        Thu, 14 Jul 2022 21:00:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 07BD7C34115;
+        Thu, 14 Jul 2022 21:00:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1657831813;
-        bh=Gc7hd6A0rhnTNPpANrwASZ9kZF6yH5dYEfdNQYaKWos=;
+        s=k20201202; t=1657832413;
+        bh=dND1VBu3o/295ifQKIWvv78xvo1DIs2Aw01upfwFQ7w=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=O+F2nc1oGccGHGrqtuaX7hzSV/RPRaDQJqOQiyqy2W2EyMEHWZ4O2RuS31zk239Tt
-         DIzHB7NY+sP/fVUcl8Rl/lsKIbG46no75wrTUVIDgRqVpUr+zgvcKwGfV0jRPRSFTr
-         F3/F8pZoqUiYWA0D+cfvTaCSPC9NEnTrcelxhTwIDvULI6UoNjFdoALfvQGbJp2VOX
-         4qZqT/qU+yQrARxruT8xSuKWxAYBDS6XuaJui6OPTfO7SHRTxiPVwJWSD9Orputzzk
-         5Xy5UEex0OLhqDsWcjJxVEwnIab9/Qkjm3iyhK0pdD3NZF7Pi1g7CkkYrEMnwsoNIv
-         8UBGxKbaEVv2g==
+        b=dfuZ+Tulzl8Cmq5pqXlcizO9g67r12orLOfU8GKC3bzb3TTmHTx8DDVfQldO0Xn4b
+         EDMW3LRMy4sgdc9IX0BxSBXOHnGPVY6tY0kkyunvoCxJIBOh+tCUeQDgp1sImfcAnB
+         qR5cd6uMJqkGNuKsLtl5LXtxdwFRJtdUUiwn6q5KpOFf9K1KrUiN/djuYVRM8pC80e
+         g2qMpl3A2FjdXx2pRVpwJx/w/s9VM7o2tnrM5hYuMb/CmbBHGGpjn1M9H2dtuJsuAi
+         sheA83VVONlzJvUj7kdGfdSF36vI3rZ7bPjHXDdWEWfdONce6xDp3XxJCyvYNMWxyf
+         ud7QhhCSM+waQ==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E03A3E45225;
-        Thu, 14 Jul 2022 20:50:12 +0000 (UTC)
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DEA1DE45227;
+        Thu, 14 Jul 2022 21:00:12 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 bpf-next] xsk: mark napi_id on sendmsg()
+Subject: Re: [PATCH bpf-next v4] bpf: Warn on non-preallocated case for
+ BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165783181291.19017.2673215649469013294.git-patchwork-notify@kernel.org>
-Date:   Thu, 14 Jul 2022 20:50:12 +0000
-References: <20220707130842.49408-1-maciej.fijalkowski@intel.com>
-In-Reply-To: <20220707130842.49408-1-maciej.fijalkowski@intel.com>
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, netdev@vger.kernel.org,
-        magnus.karlsson@intel.com, bjorn@kernel.org, kuba@kernel.org
+Message-Id: <165783241290.23397.11784407850612704539.git-patchwork-notify@kernel.org>
+Date:   Thu, 14 Jul 2022 21:00:12 +0000
+References: <20220713160936.57488-1-laoar.shao@gmail.com>
+In-Reply-To: <20220713160936.57488-1-laoar.shao@gmail.com>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -62,19 +64,19 @@ Hello:
 This patch was applied to bpf/bpf-next.git (master)
 by Daniel Borkmann <daniel@iogearbox.net>:
 
-On Thu,  7 Jul 2022 15:08:42 +0200 you wrote:
-> When application runs in busy poll mode and does not receive a single
-> packet but only sends them, it is currently
-> impossible to get into napi_busy_loop() as napi_id is only marked on Rx
-> side in xsk_rcv_check(). In there, napi_id is being taken from
-> xdp_rxq_info carried by xdp_buff. From Tx perspective, we do not have
-> access to it. What we have handy is the xsk pool.
+On Wed, 13 Jul 2022 16:09:36 +0000 you wrote:
+> BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE is also tracing type, which may
+> cause unexpected memory allocation if we set BPF_F_NO_PREALLOC.
+> Let's also warn on it.
+> 
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> 
 > 
 > [...]
 
 Here is the summary with links:
-  - [v2,bpf-next] xsk: mark napi_id on sendmsg()
-    https://git.kernel.org/bpf/bpf-next/c/ca2e1a627035
+  - [bpf-next,v4] bpf: Warn on non-preallocated case for BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE
+    https://git.kernel.org/bpf/bpf-next/c/5002615a37b1
 
 You are awesome, thank you!
 -- 
