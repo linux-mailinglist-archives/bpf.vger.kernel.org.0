@@ -2,64 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7666C57556F
-	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 20:54:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 452B0575576
+	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 20:55:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232310AbiGNSyN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jul 2022 14:54:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39702 "EHLO
+        id S237499AbiGNSzQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jul 2022 14:55:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240910AbiGNSyH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jul 2022 14:54:07 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9025243E66
-        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 11:54:06 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id e5-20020a636905000000b004119d180b54so1605207pgc.14
-        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 11:54:06 -0700 (PDT)
+        with ESMTP id S232411AbiGNSyx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jul 2022 14:54:53 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C000D4A824;
+        Thu, 14 Jul 2022 11:54:52 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id mf4so5053737ejc.3;
+        Thu, 14 Jul 2022 11:54:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=5YIJYLLgsjtvncuo/58QsfEcqvQ8pkD1xgwWrhU3Oyw=;
-        b=QP21sYrlO0fYeBESb3/X+r3Xgh5ZAORwgty/hMh64ewTLLUH45glw1IC+Rt1vyIWFn
-         olo2jkAdboWPsaKJGnnDRHsmQ65oZtGyioEX1a3+qZ0RWuOwKIInixrNhrJmg3m1jAH1
-         tjXYKqmioV8sn8n4dcA00gktZlQJhj3pmpcOSvz08piOlUOPZQEHR2L9dv53y5Qc9MGQ
-         oqFuqTHmyJYwY3Up7DIQcJqZ9zAULtdst9m/OGAwo80bd1Pu4WilMHF4WTOzd2DtvbAv
-         n1dk5Sl1IEnstGX2YAqCN0uVWdHqEo6Ai1rKMlrlXJR3nDl3nkxRbzO/7cWU2luwP3kA
-         eQfA==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=deTtm47MXsECJaZBIB67QDLBauF0Vt4wm5KsLb4SAgk=;
+        b=qvN2AOcLfChB5JEP4ANrN58jEyVcbsMB/01Epc7MIT0ywZG4Gc/wvpEVW4V8QFHRKQ
+         C3zYG+tnsqzC3IS9ZMhr0MA3uedWZ72okdF8kqtrIepzBQXp1+gPRWxLyoTLyz/95ybh
+         fz85Sow/8BT+L253EgvTwRzQ09z50up6RYzpcz3FAEwOGlVE9jx9o/SKXRQS18UJu+t9
+         MdMC0Q0xJxQEseH0Fbz3yGUbPPCeT/NtmD3jRDTFSqpUvIM+faaK0iyckdpmnalyHU+Z
+         OM8CHnVIDqwaEXtjJR/zrX4ZHFP50IV4zYrmq6ymcMv7OyVa7mIupkAekqnj+buPVkKT
+         Vq2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=5YIJYLLgsjtvncuo/58QsfEcqvQ8pkD1xgwWrhU3Oyw=;
-        b=BANJCqf61FK/0AxTfQIKFF9dymK7A80Mos90wuNwri+UX93B8yo5lvaYzG4MsYsuDm
-         ycmCfwMIZ1js0eBKYIaXMFcjhAy5PaSy3X2rym3oaOEyFLnojMMxC9pFvChJlVb/O+I3
-         qQzdFneAwzelnzzhos0ZOBzgF7qu9h7kGtj8sbOWk/59zuOX+aCS1ycKiwHo/BlgDvjQ
-         NO9DIprf3IsxjDLPmDXBRYiYvqDMTgme6Auvr5QSMo1KKxffvjFpCkT3OyPKfZwIqr+S
-         jkw/42XygJl5YH6b7Z+8fVkVDVIpMQkW8M9A7l75jBQq6TtSzEiyynJXKdV88IJl/mbS
-         wDEQ==
-X-Gm-Message-State: AJIora8fEhSaBR+LCWJKzsYUYtNWfR3bSCmVyMXjDH7LzWN4gxwa6J6A
-        GQ/2B70d8G8mkzWruZZSD6ME1L6pym1DSWidDhmsGi0PWmZrFQul06p5gRF4L784X+yByaoRiDq
-        7pnUzkf1nbODdlxrkyR55fTosAVlS1Ts6Hqy0xeCe5jnjzbQQxg==
-X-Google-Smtp-Source: AGRyM1vIGPDveYx+akvMNnF9OMHkH+kH+3p2lRD2L9WVrswhjDeZwJdPWiM9jRP6R6gUXAtqARq6mLc=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a62:1b57:0:b0:52a:d646:de3c with SMTP id
- b84-20020a621b57000000b0052ad646de3cmr9816105pfb.60.1657824845955; Thu, 14
- Jul 2022 11:54:05 -0700 (PDT)
-Date:   Thu, 14 Jul 2022 11:54:04 -0700
-Message-Id: <20220714185404.3647772-1-sdf@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.37.0.170.g444d1eabd0-goog
-Subject: [PATCH bpf-next] bpf: fix lsm_cgroup build errors on esoteric configs
-From:   Stanislav Fomichev <sdf@google.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org,
-        kernel test robot <lkp@intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=deTtm47MXsECJaZBIB67QDLBauF0Vt4wm5KsLb4SAgk=;
+        b=QiqYn+yAnd7S06U0CI9p7WvsHL24P5vVXdGL6vxAlYOEIjqJPMRY9Tm3a5eGv3zGJt
+         ZYeoCO11iJQ0jLuS+Q8xWvRLPmQtNaFIaOv4jB2k207ubi0XRhbYyuoT9vf+rlKfjSXM
+         mt8CaRDQ73klWbTfWgRKuNSAB4eyV/7reJ5SdSBdeB0MqlZmxun9O4atl2qXsvzAJtV6
+         jwLmV2CBoIpG+1dTbiLmK3+nMLUI4+J/SC0ImwGRg9nUx81wYPXr3Yy9njne3YfzwfaX
+         t8bLHQGBCcvkHog42mawTBBcjpijLi6iJQzA+OENi6aTnRLvsjkX6jpA0+8D9o3WhYsh
+         f3lQ==
+X-Gm-Message-State: AJIora+vSL4hF9vTtAlbOl5bXWoOGr5lHeo+wYuNXchDRqJU9IGrgBzI
+        LAfnCnybMXzMG9af3x49kJjIrWgPJk0OFC0K9qg=
+X-Google-Smtp-Source: AGRyM1sm/L4yzm9IZYrbSeZxKhG8BeVp8VCzAgsq8aJ2D/l/5JisnnjLDovgH9CBLUwAAdIVqjql8baolBmXgIJ1XLE=
+X-Received: by 2002:a17:907:6e05:b0:72a:a141:962 with SMTP id
+ sd5-20020a1709076e0500b0072aa1410962mr9969077ejc.545.1657824891349; Thu, 14
+ Jul 2022 11:54:51 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220713111430.134810-1-toke@redhat.com> <20220713111430.134810-16-toke@redhat.com>
+ <CAEf4BzYUbwqKit9QY6zyq8Pkxa8+8SOiejGzuTGARVyXr8KdcA@mail.gmail.com> <CAP01T760my2iTzM5qsYvsZb6wvJP02k7BGOEOP-pHPPHEbH5Rg@mail.gmail.com>
+In-Reply-To: <CAP01T760my2iTzM5qsYvsZb6wvJP02k7BGOEOP-pHPPHEbH5Rg@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 14 Jul 2022 11:54:39 -0700
+Message-ID: <CAEf4BzZJvr+vcO57TK94GM7B5=k2wPgAub4BBJf1Uz0xNpCPVg@mail.gmail.com>
+Subject: Re: [RFC PATCH 15/17] selftests/bpf: Add verifier tests for dequeue prog
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Freysteinn Alfredsson <freysteinn.alfredsson@kau.se>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Shuah Khan <shuah@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,84 +83,56 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This particular ones is about having the following:
- CONFIG_BPF_LSM=y
- # CONFIG_CGROUP_BPF is not set
+On Wed, Jul 13, 2022 at 11:45 PM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> On Thu, 14 Jul 2022 at 07:38, Andrii Nakryiko <andrii.nakryiko@gmail.com>=
+ wrote:
+> >
+> > On Wed, Jul 13, 2022 at 4:15 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
+redhat.com> wrote:
+> > >
+> > > From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > >
+> > > Test various cases of direct packet access (proper range propagation,
+> > > comparison of packet pointers pointing into separate xdp_frames, and
+> > > correct invalidation on packet drop (so that multiple packet pointers
+> > > are usable safely in a dequeue program)).
+> > >
+> > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > > Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> > > ---
+> >
+> > Consider writing these tests as plain C BPF code and put them in
+> > test_progs, is there anything you can't express in C and thus requires
+> > test_verifier?
+>
+> Not really, but in general I like test_verifier because it stays
+> immune to compiler shenanigans.
 
-Also, add __maybe_unused to the args for the !CONFIG_NET cases.
+In general I dislike them because they are almost incomprehensible. So
+unless there is a very particular sequence of low-level BPF assembly
+instructions one needs to test, I'd always opt for test_progs as more
+maintainable solution.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- kernel/bpf/bpf_lsm.c    | 8 ++++++--
- kernel/bpf/trampoline.c | 2 +-
- 2 files changed, 7 insertions(+), 3 deletions(-)
+Things like making sure that verifier rejects invalid use of
+particular objects or helpers doesn't seem to rely much on particular
+assembly sequence and can and should be expressed with plain C.
 
-diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
-index d469b7f3deef..fa71d58b7ded 100644
---- a/kernel/bpf/bpf_lsm.c
-+++ b/kernel/bpf/bpf_lsm.c
-@@ -63,10 +63,11 @@ BTF_ID(func, bpf_lsm_socket_post_create)
- BTF_ID(func, bpf_lsm_socket_socketpair)
- BTF_SET_END(bpf_lsm_unlocked_sockopt_hooks)
- 
-+#ifdef CONFIG_CGROUP_BPF
- void bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog,
- 			     bpf_func_t *bpf_func)
- {
--	const struct btf_param *args;
-+	const struct btf_param *args __maybe_unused;
- 
- 	if (btf_type_vlen(prog->aux->attach_func_proto) < 1 ||
- 	    btf_id_set_contains(&bpf_lsm_current_hooks,
-@@ -75,9 +76,9 @@ void bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog,
- 		return;
- 	}
- 
-+#ifdef CONFIG_NET
- 	args = btf_params(prog->aux->attach_func_proto);
- 
--#ifdef CONFIG_NET
- 	if (args[0].type == btf_sock_ids[BTF_SOCK_TYPE_SOCKET])
- 		*bpf_func = __cgroup_bpf_run_lsm_socket;
- 	else if (args[0].type == btf_sock_ids[BTF_SOCK_TYPE_SOCK])
-@@ -86,6 +87,7 @@ void bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog,
- #endif
- 		*bpf_func = __cgroup_bpf_run_lsm_current;
- }
-+#endif
- 
- int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
- 			const struct bpf_prog *prog)
-@@ -219,6 +221,7 @@ bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 	case BPF_FUNC_get_retval:
- 		return prog->expected_attach_type == BPF_LSM_CGROUP ?
- 			&bpf_get_retval_proto : NULL;
-+#ifdef CONFIG_NET
- 	case BPF_FUNC_setsockopt:
- 		if (prog->expected_attach_type != BPF_LSM_CGROUP)
- 			return NULL;
-@@ -239,6 +242,7 @@ bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 					prog->aux->attach_btf_id))
- 			return &bpf_unlocked_sk_getsockopt_proto;
- 		return NULL;
-+#endif
- 	default:
- 		return tracing_prog_func_proto(func_id, prog);
- 	}
-diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index fd69812412ca..6691dbf9e467 100644
---- a/kernel/bpf/trampoline.c
-+++ b/kernel/bpf/trampoline.c
-@@ -501,7 +501,7 @@ int bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_trampolin
- 	return err;
- }
- 
--#if defined(CONFIG_BPF_JIT) && defined(CONFIG_BPF_SYSCALL)
-+#if defined(CONFIG_CGROUP_BPF) && defined(CONFIG_BPF_LSM)
- static void bpf_shim_tramp_link_release(struct bpf_link *link)
- {
- 	struct bpf_shim_tramp_link *shim_link =
--- 
-2.37.0.170.g444d1eabd0-goog
 
+> So going forward should test_verifier tests be avoided, and normal C
+> tests (using SEC("?...")) be preferred for these cases?
+
+In my opinion, yes, unless absolutely requiring low-level assembly to
+express conditions which are otherwise hard to express reliably in C.
+
+>
+> >
+> > >  tools/testing/selftests/bpf/test_verifier.c   |  29 +++-
+> > >  .../testing/selftests/bpf/verifier/dequeue.c  | 160 ++++++++++++++++=
+++
+> > >  2 files changed, 180 insertions(+), 9 deletions(-)
+> > >  create mode 100644 tools/testing/selftests/bpf/verifier/dequeue.c
+> > >
+> >
+> > [...]
