@@ -2,53 +2,46 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6564C5744BA
-	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 08:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C66C5744CD
+	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 08:05:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230455AbiGNGAS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jul 2022 02:00:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58522 "EHLO
+        id S231311AbiGNGFr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jul 2022 02:05:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbiGNGAR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jul 2022 02:00:17 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C81651AF3C;
-        Wed, 13 Jul 2022 23:00:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 79B62B82389;
-        Thu, 14 Jul 2022 06:00:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id CCC8DC34115;
-        Thu, 14 Jul 2022 06:00:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1657778413;
-        bh=2bpDyAZGlWx8XeLEUwm0hM/UOHB/dG6A4q/TSs2rE08=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=PgE7vnB91UgRp6AIlGWI2N/TpUulLg9QQhUMfz5nyEVZXaEVMInErBr5ic99812NQ
-         UR5yyJd5PyzEa+m731Ya2RfbZ6rdXU/5WoSaerfziXSMPhH0wK+OuVPqete2EuZkrS
-         1xqcZhNzXIy0EhArjSg1pFooROxTooNrxmsezUtfaexBOlt0Jw3pxcNFc9wCYsJDxz
-         2adMfm4w53i//YgKBZWAizphhAwx849+oF5Ucd8crcCvr25e9yV2ngjJONX8V5RRlX
-         czFf5Z906pCJekoJ1RiirFd76ZuWHhqXqZiRU6xvdZmHsdLJTCEa2eCERg9KDaFPdb
-         WKsUT6TN6p7oQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A77FEE45227;
-        Thu, 14 Jul 2022 06:00:13 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S230061AbiGNGFq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jul 2022 02:05:46 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D7A42F001;
+        Wed, 13 Jul 2022 23:05:44 -0700 (PDT)
+Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Lk3nl0b2bzkX1F;
+        Thu, 14 Jul 2022 14:03:23 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by dggpeml500026.china.huawei.com
+ (7.185.36.106) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 14 Jul
+ 2022 14:05:27 +0800
+From:   Zhengchao Shao <shaozhengchao@huawei.com>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <hawk@kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
+        <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
+        <shaozhengchao@huawei.com>
+Subject: [PATCH v2,bpf-next] bpf: Don't redirect packets with invalid pkt_len
+Date:   Thu, 14 Jul 2022 14:09:59 +0800
+Message-ID: <20220714060959.25232-1-shaozhengchao@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] libbpf: fix the name of a reused map
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165777841368.17899.18317064610062383863.git-patchwork-notify@kernel.org>
-Date:   Thu, 14 Jul 2022 06:00:13 +0000
-References: <OSZP286MB1725CEA1C95C5CB8E7CCC53FB8869@OSZP286MB1725.JPNP286.PROD.OUTLOOK.COM>
-In-Reply-To: <OSZP286MB1725CEA1C95C5CB8E7CCC53FB8869@OSZP286MB1725.JPNP286.PROD.OUTLOOK.COM>
-To:     Anquan Wu <leiqi96@hotmail.com>
-Cc:     andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, kpsingh@kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Content-Type: text/plain
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500026.china.huawei.com (7.185.36.106)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,29 +50,41 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Syzbot found an issue [1]: fq_codel_drop() try to drop a flow whitout any
+skbs, that is, the flow->head is null.
+The root cause, as the [2] says, is because that bpf_prog_test_run_skb()
+run a bpf prog which redirects empty skbs.
+So we should determine whether the length of the packet modified by bpf
+prog is valid before forwarding it directly.
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+LINK: [1] https://syzkaller.appspot.com/bug?id=0b84da80c2917757915afa89f7738a9d16ec96c5
+LINK: [2] https://www.spinics.net/lists/netdev/msg777503.html
 
-On Tue, 12 Jul 2022 11:15:40 +0800 you wrote:
-> BPF map name is limited to BPF_OBJ_NAME_LEN.
-> A map name is defined as being longer than BPF_OBJ_NAME_LEN,
-> it will be truncated to BPF_OBJ_NAME_LEN when a userspace program
-> calls libbpf to create the map. A pinned map also generates a path
-> in the /sys. If the previous program wanted to reuse the map，
-> it can not get bpf_map by name, because the name of the map is only
-> partially the same as the name which get from pinned path.
-> 
-> [...]
+Reported-by: syzbot+7a12909485b94426aceb@syzkaller.appspotmail.com
+Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
+---
+v1: should not check len in fast path
 
-Here is the summary with links:
-  - [v2] libbpf: fix the name of a reused map
-    https://git.kernel.org/bpf/bpf-next/c/bf3f00378524
+ net/bpf/test_run.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-You are awesome, thank you!
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index 2ca96acbc50a..750d7d173a20 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -1152,6 +1152,12 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
+ 	ret = convert___skb_to_skb(skb, ctx);
+ 	if (ret)
+ 		goto out;
++
++	if (skb->len == 0) {
++		ret = -EINVAL;
++		goto out;
++	}
++
+ 	ret = bpf_test_run(prog, skb, repeat, &retval, &duration, false);
+ 	if (ret)
+ 		goto out;
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.17.1
 
