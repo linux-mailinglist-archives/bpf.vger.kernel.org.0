@@ -2,103 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EDD3575130
-	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 16:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05AD157514B
+	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 17:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239555AbiGNO4W (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jul 2022 10:56:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33870 "EHLO
+        id S238780AbiGNPAR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jul 2022 11:00:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239117AbiGNO4V (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jul 2022 10:56:21 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62E44558C6;
-        Thu, 14 Jul 2022 07:56:20 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id v16so2883011wrd.13;
-        Thu, 14 Jul 2022 07:56:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YiFGeAkkoyUDBbqYS+lTvRX8RLtgLJYYOG6AuD0v2Sg=;
-        b=XbZQ3LynpgAInXGE5CMF61nFeboY4yiYUQ0NkqwoJqHVEqvzl6AolAPurcpSMgDXo9
-         oSHd6FhAQjTTa66NxBrKijiDGUz3Ij8a2eYY75tWHx9VZOxwvb/R7XYMYQp3DoHBQ405
-         g0wXT8qcLic57Hf/pqER+BHOPoVeyUjPreaQFJHj9NsaO0lM/nd99Us1HK8rHDtUC5wX
-         E9jHNnbV9Y7NNTxDXwm9i59DbrI+6juCKrTnWueDIM+sHKwj7BpOXJMgywrjruU6ukSG
-         DhlGhSRvIRv06a196necui55od59V2tADH7KrmzfpkXzpnX2hzbDMCbKWibgzz4jfMjb
-         XgGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YiFGeAkkoyUDBbqYS+lTvRX8RLtgLJYYOG6AuD0v2Sg=;
-        b=KZjhSy6ot/6I4Gh44AUxiaj1xvqI/JtYwQ7kABO2KgsX90idXadMr07OyEpe0FOg27
-         glG9VeJH5TaQr+OG0No+ud5DVuIhJtkaQtb+mTbGJxuMPllncdFVGiPWmwRaotcD96Dw
-         /4yF4Ti3NvmQLHj2IW5+bmU3RjTOdbbYyHk65hfcmpqpzwqqnvdfsqPNZm7Yh34qrG7r
-         j2YgBnxaK3IF3VxntrszFMrkGsKuFTi4CJR1I2hMcMBmsKBUsqE2eyBgdpnRsD5IB5Gi
-         gId0nyWM/MLC35sapyMEBAUq0kh1Oct9LdVVHPHA4DVtro89898ou0JgwLnjcnY0gMsg
-         ivMg==
-X-Gm-Message-State: AJIora+f9pgZ32nzJ/FW1gGvqqxydC5CmOoA0jxj/FptUpWKNaf4ZEzL
-        4kcmDGS048phqb587VppoUjahO7vGAGTGjjR9MY=
-X-Google-Smtp-Source: AGRyM1tlg/h0WsBI56pr2Kq4o7tacTNpaW6a2zJYr+sERc+hfUkU9zvYj2NMABMiSADbXcgHIbhOq5d6a3JKJORVQB0=
-X-Received: by 2002:a5d:4f0b:0:b0:21d:705c:caf with SMTP id
- c11-20020a5d4f0b000000b0021d705c0cafmr8782265wru.55.1657810578734; Thu, 14
- Jul 2022 07:56:18 -0700 (PDT)
+        with ESMTP id S238568AbiGNPAQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jul 2022 11:00:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30AAD2AE13;
+        Thu, 14 Jul 2022 08:00:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C143761EB6;
+        Thu, 14 Jul 2022 15:00:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1A1C2C385A2;
+        Thu, 14 Jul 2022 15:00:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1657810815;
+        bh=R+qJYsXeO4VPKnKzbC6ePW1RszlSU5kzXy/j+1wtGL8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=pBbPobjqiHhMQErWCWv/hnEuLAcveWa9R/8G0gYHwc30+25M7DqDQf6oXJP4U7ApZ
+         Hr5M3dHscly6S+7EbduaXAxIul2kQPxX0wGDQzcsLu6PwlGS5xIviuQfS5cSBU21YS
+         BHC8S9lborX6i1Lw/jvOYY1VTNn8YevN8M6OfDfsoYr59iTUB6ifhl2Kt9jzOHe4lU
+         TqscNzet2fcyAT/RtaxsxuvNSl1f0iOo5whLzyjIh7Mb0Ke+Jhq4jgWWLNfkw6VUFI
+         a2HBsRtJMOUHkMdGwWtM1pBHMndtd0R944xSfjGDus52GP2bXIkWr2zuW01qQeQFKD
+         Th2eiDQUEHw+w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DC13EE45228;
+        Thu, 14 Jul 2022 15:00:14 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20220713111430.134810-1-toke@redhat.com> <CAM0EoM=Pz_EWHsWzVZkZfojoRyUgLPVhGRHq6aGVhdcLC2YvHw@mail.gmail.com>
-In-Reply-To: <CAM0EoM=Pz_EWHsWzVZkZfojoRyUgLPVhGRHq6aGVhdcLC2YvHw@mail.gmail.com>
-From:   Dave Taht <dave.taht@gmail.com>
-Date:   Thu, 14 Jul 2022 07:56:05 -0700
-Message-ID: <CAA93jw7SsxOqOE8YJOLikkzSsNQuBqdkGLreoD-DDgQM4n-9sg@mail.gmail.com>
-Subject: Re: [RFC PATCH 00/17] xdp: Add packet queueing and scheduling capabilities
-To:     Jamal Hadi Salim <jhs@mojatatu.com>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Freysteinn Alfredsson <freysteinn.alfredsson@kau.se>,
-        Cong Wang <xiyou.wangcong@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] bpf, arm64: Mark dummy_tramp as global
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <165781081489.29992.6920779338134686620.git-patchwork-notify@kernel.org>
+Date:   Thu, 14 Jul 2022 15:00:14 +0000
+References: <20220713173503.3889486-1-nathan@kernel.org>
+In-Reply-To: <20220713173503.3889486-1-nathan@kernel.org>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, zlim.lnx@gmail.com,
+        xukuohai@huawei.com, ndesaulniers@google.com, trix@redhat.com,
+        bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        patches@lists.linux.dev, samitolvanen@google.com
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In general I feel a programmable packet pacing approach is the right
-way forward for the internet as a whole.
+Hello:
 
-It lends itself more easily and accurately to offloading in an age
-where it is difficult to do anything sane within a ms on the host
-cpu, especially in virtualized environments, in the enormous dynamic
-range of kbits/ms to gbits/ms between host an potential recipient [1]
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-So considerations about what is easier to offload moving forward vs
-central cpu costs should be in this conversation.
+On Wed, 13 Jul 2022 10:35:03 -0700 you wrote:
+> When building with clang + CONFIG_CFI_CLANG=y, the following error
+> occurs at link time:
+> 
+>   ld.lld: error: undefined symbol: dummy_tramp
+> 
+> dummy_tramp is declared globally in C but its definition in inline
+> assembly does not use .global, which prevents clang from properly
+> resolving the references to it when creating the CFI jump tables.
+> 
+> [...]
 
-[1] I'm kind of on a campaign to get people to stop thinking about
-mbits/sec and about intervals well below human perception, thus,
-gbits/ms - or packets/ns!
+Here is the summary with links:
+  - bpf, arm64: Mark dummy_tramp as global
+    https://git.kernel.org/bpf/bpf-next/c/33f32e5072b6
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
