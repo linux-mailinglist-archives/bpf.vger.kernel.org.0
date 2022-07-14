@@ -2,72 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DFF557448F
-	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 07:37:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E453574498
+	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 07:38:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233391AbiGNFhB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jul 2022 01:37:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43826 "EHLO
+        id S231757AbiGNFib (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jul 2022 01:38:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbiGNFhA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jul 2022 01:37:00 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A41EB22B05;
-        Wed, 13 Jul 2022 22:36:58 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id t3so1063561edd.0;
-        Wed, 13 Jul 2022 22:36:58 -0700 (PDT)
+        with ESMTP id S234844AbiGNFi2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jul 2022 01:38:28 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D9EE23BDB;
+        Wed, 13 Jul 2022 22:38:26 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id va17so1529789ejb.0;
+        Wed, 13 Jul 2022 22:38:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=CWS2/pkKxWXJS8wyltb9pzyjJfiWopl4FGSuwFA8WpI=;
-        b=PI0SwpRgEBu2khJUo/eGU6pJVb91ib41gjE141aSfOyQklggdqFlslwdUbkjHtSu/m
-         Deacg1xvD9i1SsOftZvCyLLXc3mq8BR5SnZQJubdLSXOgO5jUnsNF00UushEwaWFCiny
-         iPIW/6hpl/g5ccmwtPn8xAvUhgzQGk4qkU5Wy5vb+7WZApxhblDJy89UJ0slwzewy1mp
-         j0cB8Ir8DfPVDLtYFny8yL9yInYglBNqlveeMeT4gR3A49Jr+QSXQh82ObBdfj1zXf/z
-         UtZ3lfV4RsLfI8Lpha3/exUMXYRvU5MDHGJfrvb+BKBOQ83pX5qVsMBwRIASpzJ7yI4W
-         vufg==
+        bh=LN+1uoqcR3KE6d2ub05nM0U9flW1gWOpOYcp0ljPW/c=;
+        b=NJE4zBKGnY3Av+rcwLIeejYfMkcXaV5aumDpt+2ZWbe0Sa8J72c3d4Alhz+Qu9N4me
+         51p4gctNDG2AVCsxbLERiDmlSYQWK1kfiTQB3389ESGJamF8q5prcfmpOOpaU6yMh9bc
+         hvb8e6dhk8QoZjFAWtFs1DiGnLrb5BxodiqOzLBBrYencDSyBL6bhnYknWj+MgD5Lfq/
+         BuERsFX+8afZ7Sj9InoNZ+DOL6ugjwACN5r7PJQiuMviupBAKLkNgPwyTUtV1tZiVC0U
+         kj7r33608TYRZP+FHhw44xejP0StjvfUn5evrjYlc5jrBpFMvcWhWLmVGGTXut9QN/DQ
+         KwLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=CWS2/pkKxWXJS8wyltb9pzyjJfiWopl4FGSuwFA8WpI=;
-        b=LqVh41JqnvnPCg2rPNQB+mhn+AKEgjnMjsTUiU2AtTnG1pdMcuFWf/WUz99YnRAZ4Z
-         yiEVOy133CVbBMkgOOcEfDcZ4HEe19bwIoUCYiTMCvgq+NDYEBjMVvH5MVFoeooMagl4
-         TRhsRlpovHVy9FpSFJnz9IzAxt0urQmHc6rIbxtZCGPftEgQcSQJUI4g6tsSmhsaT7Df
-         aoD3GWidbXR9WE+lnSLEWbOecavAKhctXOYolbkOiAB2M0hkkWBST0slukp4+GfTq6eb
-         u0GXe3r+K4U1qaxA9vSe5Kt0cQLKrWz56z6LRNwRfMbhF0qJPh1qBXbz/5zZhKixesXh
-         eYqg==
-X-Gm-Message-State: AJIora/Ll5D3Rtv2tUmuh4AgGRmTJVBBUHME+Zta+abwV/ofT638sjZK
-        RmSCGN3Fes2PcH60/yLWjCQoWSP93LCK4W8xkK0=
-X-Google-Smtp-Source: AGRyM1uWCccFXBvQ5knaC29I4jIC5XhZ4n4moTXqZ/A/u7kQM8aDMfG2BMf/kJgugp19EloN5bQkq2s/XoStJ6AsQHk=
-X-Received: by 2002:a05:6402:50d2:b0:43a:8487:8a09 with SMTP id
- h18-20020a05640250d200b0043a84878a09mr9979195edb.232.1657777017256; Wed, 13
- Jul 2022 22:36:57 -0700 (PDT)
+        bh=LN+1uoqcR3KE6d2ub05nM0U9flW1gWOpOYcp0ljPW/c=;
+        b=svOkkTmc7UCJBEo5IRb3ExYCB6LnQSjDkk/aknvyTBREpshFiGgpRyiRU7TEAC2txY
+         qesWBiZC8ter5eD2uR1pBENeVjeRuaUrQBIb6OWwR9/ppwzmnXX13PZEMxtYZpZl0qPj
+         7rvHQ3UFI1tuCsiR6odmOudIBYyS/eoJVaSUJ2CjQhO5yQLyTmt0GdrpnmKdFmIFAFDM
+         FjADDG5f2yuUnNDzvYpmJW0hB5hYkJ80EiIsM7C/GfGaOQKwxor54QjXlMWAsZrUZD2J
+         +w54nu7k4Bic82Uoc5PmkwiP3+NVfwF5XD70k0KEM+BDfEICD0c+nxM+ByLGJa92JruI
+         OBGQ==
+X-Gm-Message-State: AJIora/1koqAW42w8fZWR41XgbYK1D4UsDQOBu+3Yno/iIEeB5mpvou9
+        0rOTTED932UTgUnXR3I8WRhdtqqp1nzsZGbZGz4=
+X-Google-Smtp-Source: AGRyM1vH3Xx79OVC0UwU25nsLG/XOu5LrvqtDWa5T9t3ZADfXWe/MUud5IMiSl0ejt9nj4SmnOTfT/9672m6v2dnTII=
+X-Received: by 2002:a17:906:5a6c:b0:72b:561a:3458 with SMTP id
+ my44-20020a1709065a6c00b0072b561a3458mr7127966ejc.114.1657777105039; Wed, 13
+ Jul 2022 22:38:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220713111430.134810-1-toke@redhat.com> <20220713111430.134810-15-toke@redhat.com>
-In-Reply-To: <20220713111430.134810-15-toke@redhat.com>
+References: <20220713111430.134810-1-toke@redhat.com> <20220713111430.134810-16-toke@redhat.com>
+In-Reply-To: <20220713111430.134810-16-toke@redhat.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 13 Jul 2022 22:36:46 -0700
-Message-ID: <CAEf4BzZN2kBafJPQKaM4Pakf=PSYGiVzq53ED0NCRZ+DkaZHKA@mail.gmail.com>
-Subject: Re: [RFC PATCH 14/17] libbpf: Add support for querying dequeue programs
+Date:   Wed, 13 Jul 2022 22:38:13 -0700
+Message-ID: <CAEf4BzYUbwqKit9QY6zyq8Pkxa8+8SOiejGzuTGARVyXr8KdcA@mail.gmail.com>
+Subject: Re: [RFC PATCH 15/17] selftests/bpf: Add verifier tests for dequeue prog
 To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
         Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Freysteinn Alfredsson <freysteinn.alfredsson@kau.se>,
-        Cong Wang <xiyou.wangcong@gmail.com>
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Shuah Khan <shuah@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -83,77 +85,25 @@ X-Mailing-List: bpf@vger.kernel.org
 On Wed, Jul 13, 2022 at 4:15 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
 at.com> wrote:
 >
-> Add support to libbpf for reading the dequeue program ID from netlink whe=
-n
-> querying for installed XDP programs. No additional support is needed to
-> install dequeue programs, as they are just using a new mode flag for the
-> regular XDP program installation mechanism.
+> From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 >
+> Test various cases of direct packet access (proper range propagation,
+> comparison of packet pointers pointing into separate xdp_frames, and
+> correct invalidation on packet drop (so that multiple packet pointers
+> are usable safely in a dequeue program)).
+>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 > Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 > ---
->  tools/lib/bpf/libbpf.h  | 1 +
->  tools/lib/bpf/netlink.c | 8 ++++++++
->  2 files changed, 9 insertions(+)
->
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index e4d5353f757b..b15ff90279cb 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -906,6 +906,7 @@ struct bpf_xdp_query_opts {
->         __u32 drv_prog_id;      /* output */
->         __u32 hw_prog_id;       /* output */
->         __u32 skb_prog_id;      /* output */
-> +       __u32 dequeue_prog_id;  /* output */
 
-can't do that, you have to put it after attach_mode to preserve
-backwards/forward compat
+Consider writing these tests as plain C BPF code and put them in
+test_progs, is there anything you can't express in C and thus requires
+test_verifier?
 
->         __u8 attach_mode;       /* output */
->         size_t :0;
->  };
-> diff --git a/tools/lib/bpf/netlink.c b/tools/lib/bpf/netlink.c
-> index 6c013168032d..64a9aceb9c9c 100644
-> --- a/tools/lib/bpf/netlink.c
-> +++ b/tools/lib/bpf/netlink.c
-> @@ -32,6 +32,7 @@ struct xdp_link_info {
->         __u32 drv_prog_id;
->         __u32 hw_prog_id;
->         __u32 skb_prog_id;
-> +       __u32 dequeue_prog_id;
->         __u8 attach_mode;
->  };
+>  tools/testing/selftests/bpf/test_verifier.c   |  29 +++-
+>  .../testing/selftests/bpf/verifier/dequeue.c  | 160 ++++++++++++++++++
+>  2 files changed, 180 insertions(+), 9 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/verifier/dequeue.c
 >
-> @@ -354,6 +355,10 @@ static int get_xdp_info(void *cookie, void *msg, str=
-uct nlattr **tb)
->                 xdp_id->info.hw_prog_id =3D libbpf_nla_getattr_u32(
->                         xdp_tb[IFLA_XDP_HW_PROG_ID]);
->
-> +       if (xdp_tb[IFLA_XDP_DEQUEUE_PROG_ID])
-> +               xdp_id->info.dequeue_prog_id =3D libbpf_nla_getattr_u32(
-> +                       xdp_tb[IFLA_XDP_DEQUEUE_PROG_ID]);
-> +
->         return 0;
->  }
->
-> @@ -391,6 +396,7 @@ int bpf_xdp_query(int ifindex, int xdp_flags, struct =
-bpf_xdp_query_opts *opts)
->         OPTS_SET(opts, drv_prog_id, xdp_id.info.drv_prog_id);
->         OPTS_SET(opts, hw_prog_id, xdp_id.info.hw_prog_id);
->         OPTS_SET(opts, skb_prog_id, xdp_id.info.skb_prog_id);
-> +       OPTS_SET(opts, dequeue_prog_id, xdp_id.info.dequeue_prog_id);
->         OPTS_SET(opts, attach_mode, xdp_id.info.attach_mode);
->
->         return 0;
-> @@ -415,6 +421,8 @@ int bpf_xdp_query_id(int ifindex, int flags, __u32 *p=
-rog_id)
->                 *prog_id =3D opts.hw_prog_id;
->         else if (flags & XDP_FLAGS_SKB_MODE)
->                 *prog_id =3D opts.skb_prog_id;
-> +       else if (flags & XDP_FLAGS_DEQUEUE_MODE)
-> +               *prog_id =3D opts.dequeue_prog_id;
->         else
->                 *prog_id =3D 0;
->
-> --
-> 2.37.0
->
+
+[...]
