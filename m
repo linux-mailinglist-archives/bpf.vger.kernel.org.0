@@ -2,85 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCBE857504A
-	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 16:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2D625750C1
+	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 16:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238952AbiGNOF2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jul 2022 10:05:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43244 "EHLO
+        id S240418AbiGNO1s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jul 2022 10:27:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232289AbiGNOF0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jul 2022 10:05:26 -0400
-Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A62D6A
-        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 07:05:22 -0700 (PDT)
-Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-10bffc214ffso2559491fac.1
-        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 07:05:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=JfRxTplyI2lwcDYa7TQ/LwlPYc7ao8mlAURfNnoAxIo=;
-        b=rBTrosycLvk+1V4f2mxhgpTvUG58x89AhdZb2kAiIsF/Ia5l15xYX6MmU5pskwNaCZ
-         uzF+uuVtzmxbm0RuhJCt3bC6GgGxVz1l+u6FIRuDCPHDOCERQd3Be+SNwBY+RJObKxof
-         XPngSO3ka7RQdCMB4lnjLcPCNJ7kzRijxWTfS49+CNPRGGVM5nVLu/8nXyrNBLdwPqDb
-         cyyrGnniTe2dMlJhRmvhna4Bj8B2Jm9UtrfcCyyCbt8ROAOb2KcxGpHmgNIPFILK91Le
-         h/zNvRiq11/CmvNh0/7UlPhM/ZgXI6HPPacmCOFXt5N9n2Z+vx9MvsRvKMV+xn4k+66a
-         CKzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=JfRxTplyI2lwcDYa7TQ/LwlPYc7ao8mlAURfNnoAxIo=;
-        b=PueN2c/KMHIWK1ClQFtd6vG+ao+GyDuYVn9Yf+zyeezdb/TTmMMqdrVZvPB2PLpNbF
-         VHRjkyEKkPOQ3lkYikkqBGU0SOQcalh7CDWO/eVK9PbnoX8XvW4j4XCnTqvBswp50GiA
-         UEa6B2O7h3elKfs5Dle7fnRyFsM9oVjwn8aUfUVagrcAGxH4Dpx0ocBC8X2Tmytah0Gm
-         vOXQG7lx3whaFVH6Cm9gxRSXM9TsVQvMmjJ1AMS6ye0mAuGh+2RJlFneofuPZGa6eZRi
-         BMcltOMd+AmIjhK3LFEKrho3KdYhfYBhFgbG/LOK6D9gsdyISVfgTP95Gv/oLznVyOkG
-         VmGA==
-X-Gm-Message-State: AJIora/ahb/vTfa+QFFyECquBXwprTp+pl8ZWaDJkHE6wBytFJZ8eTTj
-        On4Q4OBBQqHNSm3oh9TE9zbupDaTB7utrfnrybjCHw==
-X-Google-Smtp-Source: AGRyM1vzrhcbSQV0vt9ujV6aOUD8gsa84NETCdOZ1UoZqgyUdT9IjkD1J+doRyLQMes74F1zGQeOydXql8zYJPcCOhw=
-X-Received: by 2002:a05:6870:a191:b0:10b:f366:8d1b with SMTP id
- a17-20020a056870a19100b0010bf3668d1bmr4472273oaf.2.1657807520679; Thu, 14 Jul
- 2022 07:05:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220713111430.134810-1-toke@redhat.com>
-In-Reply-To: <20220713111430.134810-1-toke@redhat.com>
-From:   Jamal Hadi Salim <jhs@mojatatu.com>
-Date:   Thu, 14 Jul 2022 10:05:09 -0400
-Message-ID: <CAM0EoM=Pz_EWHsWzVZkZfojoRyUgLPVhGRHq6aGVhdcLC2YvHw@mail.gmail.com>
-Subject: Re: [RFC PATCH 00/17] xdp: Add packet queueing and scheduling capabilities
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S240400AbiGNO1o (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jul 2022 10:27:44 -0400
+Received: from mail.hallyn.com (mail.hallyn.com [178.63.66.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD5B95F126;
+        Thu, 14 Jul 2022 07:27:42 -0700 (PDT)
+Received: by mail.hallyn.com (Postfix, from userid 1001)
+        id E128966C; Thu, 14 Jul 2022 09:27:40 -0500 (CDT)
+Date:   Thu, 14 Jul 2022 09:27:40 -0500
+From:   "Serge E. Hallyn" <serge@hallyn.com>
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Frederick Lawler <fred@cloudflare.com>,
+        Christian =?iso-8859-1?Q?G=F6ttsche?= <cgzones@googlemail.com>,
+        KP Singh <kpsingh@kernel.org>, revest@chromium.org,
+        jackmanb@chromium.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Freysteinn Alfredsson <freysteinn.alfredsson@kau.se>,
-        Cong Wang <xiyou.wangcong@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URI_DOTEDU autolearn=no autolearn_force=no
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>, shuah@kernel.org,
+        Christian Brauner <brauner@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        SElinux list <selinux@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, kernel-team@cloudflare.com
+Subject: Re: [PATCH v2 0/4] Introduce security_create_user_ns()
+Message-ID: <20220714142740.GA10621@mail.hallyn.com>
+References: <20220707223228.1940249-1-fred@cloudflare.com>
+ <CAJ2a_DezgSpc28jvJuU_stT7V7et-gD7qjy409oy=ZFaUxJneg@mail.gmail.com>
+ <3dbd5b30-f869-b284-1383-309ca6994557@cloudflare.com>
+ <84fbd508-65da-1930-9ed3-f53f16679043@schaufler-ca.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <84fbd508-65da-1930-9ed3-f53f16679043@schaufler-ca.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,240 +61,172 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-I think what would be really interesting is to see the performance numbers =
-when
-you have multiple producers/consumers(translation multiple
-threads/softirqs) in play
-targeting the same queues. Does PIFO alleviate the synchronization challeng=
-e
-when you have multiple concurrent readers/writers? Or maybe for your use ca=
-se
-this would not be a common occurrence or not something you care about?
+On Fri, Jul 08, 2022 at 09:11:15AM -0700, Casey Schaufler wrote:
+> On 7/8/2022 7:01 AM, Frederick Lawler wrote:
+> > On 7/8/22 7:10 AM, Christian Göttsche wrote:
+> >> ,On Fri, 8 Jul 2022 at 00:32, Frederick Lawler <fred@cloudflare.com>
+> >> wrote:
+> >>>
+> >>> While creating a LSM BPF MAC policy to block user namespace
+> >>> creation, we
+> >>> used the LSM cred_prepare hook because that is the closest hook to
+> >>> prevent
+> >>> a call to create_user_ns().
+> >>>
+> >>> The calls look something like this:
+> >>>
+> >>>      cred = prepare_creds()
+> >>>          security_prepare_creds()
+> >>>              call_int_hook(cred_prepare, ...
+> >>>      if (cred)
+> >>>          create_user_ns(cred)
+> >>>
+> >>> We noticed that error codes were not propagated from this hook and
+> >>> introduced a patch [1] to propagate those errors.
+> >>>
+> >>> The discussion notes that security_prepare_creds()
+> >>> is not appropriate for MAC policies, and instead the hook is
+> >>> meant for LSM authors to prepare credentials for mutation. [2]
+> >>>
+> >>> Ultimately, we concluded that a better course of action is to introduce
+> >>> a new security hook for LSM authors. [3]
+> >>>
+> >>> This patch set first introduces a new security_create_user_ns()
+> >>> function
+> >>> and create_user_ns LSM hook, then marks the hook as sleepable in BPF.
+> >>
+> >> Some thoughts:
+> >>
+> >> I.
+> >>
+> >> Why not make the hook more generic, e.g. support all other existing
+> >> and potential future namespaces?
+> >
+> > The main issue with a generic hook is that different namespaces have
+> > different calling contexts. We decided in a previous discussion to
+> > opt-out of a generic hook for this reason. [1]
+> >
+> >> Also I think the naming scheme is <object>_<verb>.
+> >
+> > That's a good call out. I was originally hoping to keep the
+> > security_*() match with the hook name matched with the caller function
+> > to keep things all aligned. If no one objects to renaming the hook, I
+> > can rename the hook for v3.
+> >
+> >>
+> >>      LSM_HOOK(int, 0, namespace_create, const struct cred *cred,
+> >> unsigned int flags)
+> >>
+> >> where flags is a bitmap of CLONE flags from include/uapi/linux/sched.h
+> >> (like CLONE_NEWUSER).
+> >>
+> >> II.
+> >>
+> >> While adding policing for namespaces maybe also add a new hook for
+> >> setns(2)
+> >>
+> >>      LSM_HOOK(int, 0, namespace_join, const struct cred *subj,  const
+> >> struct cred *obj, unsigned int flags)
+> >>
+> >
+> > IIUC, setns() will create a new namespace for the other namespaces
+> > except for user namespace. If we add a security hook for the other
+> > create_*_ns() functions, then we can catch setns() at that point.
+> >
+> >> III.
+> >>
+> >> Maybe even attach a security context to namespaces so they can be
+> >> further governed?
+> 
+> That would likely add confusion to the existing security module namespace
+> efforts. SELinux, Smack and AppArmor have all developed namespace models.
+> That, or it could replace the various independent efforts with a single,
 
-As I mentioned previously, I think this is what Cong's approach gets for fr=
-ee.
+I feel like you're attaching more meaning to this than there needs to be.
+I *think* he's just talking about a user_namespace->u_security void*.
+So that for instance while deciding whether to allow some transition,
+selinux could check whether the caller's user namespace was created by
+a task in an selinux context authorized to create user namespaces.
 
-cheers,
-jamal
+The "user namespaces are DAC and orthogonal to MAC" is of course true
+(where the LSM does not itself tie them together), except that we all
+know that a process running as root in a user namespace gains access to
+often-less-trustworthy code gated under CAP_SYS_ADMIN.
 
+> unified security module namespace effort. There's more work to that than
+> adding a context to a namespace. Treating namespaces as objects is almost,
+> but not quite, solidifying containers as a kernel construct. We know we
+> can't do that.
 
-cheers,
-jamal
+What we "can't do" (imo) is to create a "full container" construct which
+ties together the various namespaces and other concepts in a restrictive
+way.
 
-On Wed, Jul 13, 2022 at 7:14 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> Packet forwarding is an important use case for XDP, which offers
-> significant performance improvements compared to forwarding using the
-> regular networking stack. However, XDP currently offers no mechanism to
-> delay, queue or schedule packets, which limits the practical uses for
-> XDP-based forwarding to those where the capacity of input and output link=
-s
-> always match each other (i.e., no rate transitions or many-to-one
-> forwarding). It also prevents an XDP-based router from doing any kind of
-> traffic shaping or reordering to enforce policy.
->
-> This series represents a first RFC of our attempt to remedy this lack. Th=
-e
-> code in these patches is functional, but needs additional testing and
-> polishing before being considered for merging. I'm posting it here as an
-> RFC to get some early feedback on the API and overall design of the
-> feature.
->
-> DESIGN
->
-> The design consists of three components: A new map type for storing XDP
-> frames, a new 'dequeue' program type that will run in the TX softirq to
-> provide the stack with packets to transmit, and a set of helpers to deque=
-ue
-> packets from the map, optionally drop them, and to schedule an interface
-> for transmission.
->
-> The new map type is modelled on the PIFO data structure proposed in the
-> literature[0][1]. It represents a priority queue where packets can be
-> enqueued in any priority, but is always dequeued from the head. From the
-> XDP side, the map is simply used as a target for the bpf_redirect_map()
-> helper, where the target index is the desired priority.
->
-> The dequeue program type is a new BPF program type that is attached to an
-> interface; when an interface is scheduled for transmission, the stack wil=
-l
-> execute the attached dequeue program and, if it returns a packet to
-> transmit, that packet will be transmitted using the existing ndo_xdp_xmit=
-()
-> driver function.
->
-> The dequeue program can obtain packets by pulling them out of a PIFO map
-> using the new bpf_packet_dequeue() helper. This returns a pointer to an
-> xdp_md structure, which can be dereferenced to obtain packet data and
-> data_meta pointers like in an XDP program. The returned packets are also
-> reference counted, meaning the verifier enforces that the dequeue program
-> either drops the packet (with the bpf_packet_drop() helper), or returns i=
-t
-> for transmission. Finally, a helper is added that can be used to actually
-> schedule an interface for transmission using the dequeue program type; th=
-is
-> helper can be called from both XDP and dequeue programs.
->
-> PERFORMANCE
->
-> Preliminary performance tests indicate about 50ns overhead of adding
-> queueing to the xdp_fwd example (last patch), which translates to a 20% P=
-PS
-> overhead (but still 2x the forwarding performance of the netstack):
->
-> xdp_fwd :     4.7 Mpps  (213 ns /pkt)
-> xdp_fwd -Q:   3.8 Mpps  (263 ns /pkt)
-> netstack:       2 Mpps  (500 ns /pkt)
->
-> RELATION TO BPF QDISC
->
-> Cong Wang's BPF qdisc patches[2] share some aspects of this series, in
-> particular the use of a map to store packets. This is no accident, as we'=
-ve
-> had ongoing discussions for a while now. I have no great hope that we can
-> completely converge the two efforts into a single BPF-based queueing
-> API (as has been discussed before[3], consolidating the SKB and XDP paths
-> is challenging). Rather, I'm hoping that we can converge the designs enou=
-gh
-> that we can share BPF code between XDP and qdisc layers using common
-> functions, like it's possible to do with XDP and TC-BPF today. This would
-> imply agreeing on the map type and API, and possibly on the set of helper=
-s
-> available to the BPF programs.
->
-> PATCH STRUCTURE
->
-> This series consists of a total of 17 patches, as follows:
->
-> Patches 1-3 are smaller preparatory refactoring patches used by subsequen=
-t
-> patches.
->
-> Patches 4-5 introduce the PIFO map type, and patch 6 introduces the deque=
-ue
-> program type.
->
-> Patches 7-10 adds the dequeue helpers and the verifier features needed to
-> recognise packet pointers, reference count them, and allow dereferencing
-> them to obtain packet data pointers.
->
-> Patches 11 and 12 add the dequeue program hook to the TX path, and the
-> helpers to schedule an interface.
->
-> Patches 13-16 add libbpf support for the new types, and selftests for the
-> new features.
->
-> Finally, patch 17 adds queueing support to the xdp_fwd program in
-> samples/bpf to provide an easy-to-use way of testing the feature; this is
-> for illustrative purposes for the RFC only, and will not be included in t=
-he
-> final submission.
->
-> SUPPLEMENTARY MATERIAL
->
-> A (WiP) test harness for implementing and unit-testing scheduling
-> algorithms using this framework (and the bpf_prog_run() hook) is availabl=
-e
-> as part of the bpf-examples repository[4]. We plan to expand this with mo=
-re
-> test algorithms to smoke-test the API, and also add ready-to-use queueing
-> algorithms for use for forwarding (to replace the xdp_fwd patch included =
-as
-> part of this RFC submission).
->
-> The work represented in this series was done in collaboration with severa=
-l
-> people. Thanks to Kumar Kartikeya Dwivedi for writing the verifier
-> enhancements in this series, to Frey Alfredsson for his work on the testi=
-ng
-> harness in [4], and to Jesper Brouer, Per Hurtig and Anna Brunstrom for
-> their valuable input on the design of the queueing APIs.
->
-> This series is also available as a git tree on git.kernel.org[5].
->
-> NOTES
->
-> [0] http://web.mit.edu/pifo/
-> [1] https://arxiv.org/abs/1810.03060
-> [2] https://lore.kernel.org/r/20220602041028.95124-1-xiyou.wangcong@gmail=
-.com
-> [3] https://lore.kernel.org/r/b4ff6a2b-1478-89f8-ea9f-added498c59f@gmail.=
-com
-> [4] https://github.com/xdp-project/bpf-examples/pull/40
-> [5] https://git.kernel.org/pub/scm/linux/kernel/git/toke/linux.git/log/?h=
-=3Dxdp-queueing-06
->
-> Kumar Kartikeya Dwivedi (5):
->   bpf: Use 64-bit return value for bpf_prog_run
->   bpf: Teach the verifier about referenced packets returned from dequeue
->     programs
->   bpf: Introduce pkt_uid member for PTR_TO_PACKET
->   bpf: Implement direct packet access in dequeue progs
->   selftests/bpf: Add verifier tests for dequeue prog
->
-> Toke H=C3=B8iland-J=C3=B8rgensen (12):
->   dev: Move received_rps counter next to RPS members in softnet data
->   bpf: Expand map key argument of bpf_redirect_map to u64
->   bpf: Add a PIFO priority queue map type
->   pifomap: Add queue rotation for continuously increasing rank mode
->   xdp: Add dequeue program type for getting packets from a PIFO
->   bpf: Add helpers to dequeue from a PIFO map
->   dev: Add XDP dequeue hook
->   bpf: Add helper to schedule an interface for TX dequeue
->   libbpf: Add support for dequeue program type and PIFO map type
->   libbpf: Add support for querying dequeue programs
->   selftests/bpf: Add test for XDP queueing through PIFO maps
->   samples/bpf: Add queueing support to xdp_fwd sample
->
->  include/linux/bpf-cgroup.h                    |  12 +-
->  include/linux/bpf.h                           |  64 +-
->  include/linux/bpf_types.h                     |   4 +
->  include/linux/bpf_verifier.h                  |  14 +-
->  include/linux/filter.h                        |  63 +-
->  include/linux/netdevice.h                     |   8 +-
->  include/net/xdp.h                             |  16 +-
->  include/uapi/linux/bpf.h                      |  50 +-
->  include/uapi/linux/if_link.h                  |   4 +-
->  kernel/bpf/Makefile                           |   2 +-
->  kernel/bpf/cgroup.c                           |  12 +-
->  kernel/bpf/core.c                             |  14 +-
->  kernel/bpf/cpumap.c                           |   4 +-
->  kernel/bpf/devmap.c                           |  92 ++-
->  kernel/bpf/offload.c                          |   4 +-
->  kernel/bpf/pifomap.c                          | 635 ++++++++++++++++++
->  kernel/bpf/syscall.c                          |   3 +
->  kernel/bpf/verifier.c                         | 148 +++-
->  net/bpf/test_run.c                            |  54 +-
->  net/core/dev.c                                | 109 +++
->  net/core/dev.h                                |   2 +
->  net/core/filter.c                             | 307 ++++++++-
->  net/core/rtnetlink.c                          |  30 +-
->  net/packet/af_packet.c                        |   7 +-
->  net/xdp/xskmap.c                              |   4 +-
->  samples/bpf/xdp_fwd_kern.c                    |  65 +-
->  samples/bpf/xdp_fwd_user.c                    | 200 ++++--
->  tools/include/uapi/linux/bpf.h                |  48 ++
->  tools/include/uapi/linux/if_link.h            |   4 +-
->  tools/lib/bpf/libbpf.c                        |   1 +
->  tools/lib/bpf/libbpf.h                        |   1 +
->  tools/lib/bpf/libbpf_probes.c                 |   5 +
->  tools/lib/bpf/netlink.c                       |   8 +
->  .../selftests/bpf/prog_tests/pifo_map.c       | 125 ++++
->  .../bpf/prog_tests/xdp_pifo_test_run.c        | 154 +++++
->  tools/testing/selftests/bpf/progs/pifo_map.c  |  54 ++
->  .../selftests/bpf/progs/test_xdp_pifo.c       | 110 +++
->  tools/testing/selftests/bpf/test_verifier.c   |  29 +-
->  .../testing/selftests/bpf/verifier/dequeue.c  | 160 +++++
->  39 files changed, 2426 insertions(+), 200 deletions(-)
->  create mode 100644 kernel/bpf/pifomap.c
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/pifo_map.c
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_pifo_test_=
-run.c
->  create mode 100644 tools/testing/selftests/bpf/progs/pifo_map.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_pifo.c
->  create mode 100644 tools/testing/selftests/bpf/verifier/dequeue.c
->
-> --
-> 2.37.0
->
+> >> SELinux example:
+> >>
+> >>      type domainA_userns_t;
+> >>      type_transition domainA_t domainA_t : namespace domainA_userns_t
+> >> "user";
+> >>      allow domainA_t domainA_userns_t:namespace create;
+> >>
+> >>      # domainB calling setns(2) with domainA as target
+> >>      allow domainB_t domainA_userns_t:namespace join;
+> 
+> While I'm not an expert on SELinux policy, I'd bet a refreshing beverage
+> that there's already a way to achieve this with existing constructs.
+> Smack, which is subject+object MAC couldn't care less about the user
+> namespace configuration. User namespaces are DAC constructs.
+> 
+> >>
+> >
+> > Links:
+> > 1.
+> > https://lore.kernel.org/all/CAHC9VhSTkEMT90Tk+=iTyp3npWEm+3imrkFVX2qb=XsOPp9F=A@mail.gmail.com/
+> >
+> >>>
+> >>> Links:
+> >>> 1.
+> >>> https://lore.kernel.org/all/20220608150942.776446-1-fred@cloudflare.com/
+> >>>
+> >>> 2.
+> >>> https://lore.kernel.org/all/87y1xzyhub.fsf@email.froward.int.ebiederm.org/
+> >>> 3.
+> >>> https://lore.kernel.org/all/9fe9cd9f-1ded-a179-8ded-5fde8960a586@cloudflare.com/
+> >>>
+> >>> Changes since v1:
+> >>> - Add selftests/bpf: Add tests verifying bpf lsm create_user_ns hook
+> >>> patch
+> >>> - Add selinux: Implement create_user_ns hook patch
+> >>> - Change function signature of security_create_user_ns() to only take
+> >>>    struct cred
+> >>> - Move security_create_user_ns() call after id mapping check in
+> >>>    create_user_ns()
+> >>> - Update documentation to reflect changes
+> >>>
+> >>> Frederick Lawler (4):
+> >>>    security, lsm: Introduce security_create_user_ns()
+> >>>    bpf-lsm: Make bpf_lsm_create_user_ns() sleepable
+> >>>    selftests/bpf: Add tests verifying bpf lsm create_user_ns hook
+> >>>    selinux: Implement create_user_ns hook
+> >>>
+> >>>   include/linux/lsm_hook_defs.h                 |  1 +
+> >>>   include/linux/lsm_hooks.h                     |  4 +
+> >>>   include/linux/security.h                      |  6 ++
+> >>>   kernel/bpf/bpf_lsm.c                          |  1 +
+> >>>   kernel/user_namespace.c                       |  5 ++
+> >>>   security/security.c                           |  5 ++
+> >>>   security/selinux/hooks.c                      |  9 ++
+> >>>   security/selinux/include/classmap.h           |  2 +
+> >>>   .../selftests/bpf/prog_tests/deny_namespace.c | 88
+> >>> +++++++++++++++++++
+> >>>   .../selftests/bpf/progs/test_deny_namespace.c | 39 ++++++++
+> >>>   10 files changed, 160 insertions(+)
+> >>>   create mode 100644
+> >>> tools/testing/selftests/bpf/prog_tests/deny_namespace.c
+> >>>   create mode 100644
+> >>> tools/testing/selftests/bpf/progs/test_deny_namespace.c
+> >>>
+> >>> -- 
+> >>> 2.30.2
+> >>>
+> >
