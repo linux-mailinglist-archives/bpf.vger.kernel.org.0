@@ -2,37 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65FD8575720
-	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 23:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91FD7575721
+	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 23:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232480AbiGNVnT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 14 Jul 2022 17:43:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40636 "EHLO
+        id S240475AbiGNVn2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 14 Jul 2022 17:43:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240364AbiGNVnS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jul 2022 17:43:18 -0400
+        with ESMTP id S240282AbiGNVn1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jul 2022 17:43:27 -0400
 Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B48796EEB6
-        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 14:43:17 -0700 (PDT)
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 26ELZgHs007525
-        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 14:43:17 -0700
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A37F06EEB9
+        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 14:43:25 -0700 (PDT)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 26ELZifL009013
+        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 14:43:25 -0700
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net (PPS) with ESMTPS id 3hamy3k3wj-1
+        by m0089730.ppops.net (PPS) with ESMTPS id 3hak153waq-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 14:43:16 -0700
-Received: from twshared13579.04.prn5.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 14:43:24 -0700
+Received: from twshared3657.05.prn5.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Thu, 14 Jul 2022 14:43:15 -0700
+ 15.1.2375.28; Thu, 14 Jul 2022 14:43:23 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id CD3F01C583BCA; Thu, 14 Jul 2022 14:43:13 -0700 (PDT)
+        id D98B01C583C05; Thu, 14 Jul 2022 14:43:15 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
 CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next 3/4] bpf: remove obsolete KMALLOC_MAX_SIZE restriction on array map value size
-Date:   Thu, 14 Jul 2022 14:43:04 -0700
-Message-ID: <20220714214305.3189551-4-andrii@kernel.org>
+Subject: [PATCH bpf-next 4/4] selftests/bpf: validate .bss section bigger than 8MB is possible now
+Date:   Thu, 14 Jul 2022 14:43:05 -0700
+Message-ID: <20220714214305.3189551-5-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220714214305.3189551-1-andrii@kernel.org>
 References: <20220714214305.3189551-1-andrii@kernel.org>
@@ -40,8 +40,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: pEJ4Kh3w_8niZpchYajM8NiM8ozmDCuJ
-X-Proofpoint-ORIG-GUID: pEJ4Kh3w_8niZpchYajM8NiM8ozmDCuJ
+X-Proofpoint-ORIG-GUID: i67FN5yefAXxqEi3rFskq6SNsiq19EsU
+X-Proofpoint-GUID: i67FN5yefAXxqEi3rFskq6SNsiq19EsU
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
  definitions=2022-07-14_17,2022-07-14_01,2022-06-22_01
@@ -55,40 +55,51 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Syscall-side map_lookup_elem() and map_update_elem() used to use
-kmalloc() to allocate temporary buffers of value_size, so
-KMALLOC_MAX_SIZE limit on value_size made sense to prevent creation of
-array map that won't be accessible through syscall interface.
-
-But this limitation since has been lifted by relying on kvmalloc() in
-syscall handling code. So remove KMALLOC_MAX_SIZE, which among other
-things means that it's possible to have BPF global variable sections
-(.bss, .data, .rodata) bigger than 8MB now. Keep the sanity check to
-prevent trivial overflows like round_up(map->value_size, 8) and restrict
-value size to <= INT_MAX (2GB).
+Add a simple big 16MB array and validate access to the very last byte of
+it to make sure that kernel supports > KMALLOC_MAX_SIZE value_size for
+BPF array maps (which are backing .bss in this case).
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- kernel/bpf/arraymap.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ tools/testing/selftests/bpf/prog_tests/skeleton.c | 2 ++
+ tools/testing/selftests/bpf/progs/test_skeleton.c | 4 ++++
+ 2 files changed, 6 insertions(+)
 
-diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index af6b1b528239..ef3d9ec510a5 100644
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -70,10 +70,8 @@ int array_map_alloc_check(union bpf_attr *attr)
- 	    attr->map_flags & BPF_F_PRESERVE_ELEMS)
- 		return -EINVAL;
+diff --git a/tools/testing/selftests/bpf/prog_tests/skeleton.c b/tools/testing/selftests/bpf/prog_tests/skeleton.c
+index 180afd632f4c..99dac5292b41 100644
+--- a/tools/testing/selftests/bpf/prog_tests/skeleton.c
++++ b/tools/testing/selftests/bpf/prog_tests/skeleton.c
+@@ -122,6 +122,8 @@ void test_skeleton(void)
  
--	if (attr->value_size > KMALLOC_MAX_SIZE)
--		/* if value_size is bigger, the user space won't be able to
--		 * access the elements.
--		 */
-+	/* avoid overflow on round_up(map->value_size) */
-+	if (attr->value_size > INT_MAX)
- 		return -E2BIG;
+ 	ASSERT_EQ(skel->bss->out_mostly_var, 123, "out_mostly_var");
  
++	ASSERT_EQ(bss->huge_arr[ARRAY_SIZE(bss->huge_arr) - 1], 123, "huge_arr");
++
+ 	elf_bytes = test_skeleton__elf_bytes(&elf_bytes_sz);
+ 	ASSERT_OK_PTR(elf_bytes, "elf_bytes");
+ 	ASSERT_GE(elf_bytes_sz, 0, "elf_bytes_sz");
+diff --git a/tools/testing/selftests/bpf/progs/test_skeleton.c b/tools/testing/selftests/bpf/progs/test_skeleton.c
+index 1b1187d2967b..1a4e93f6d9df 100644
+--- a/tools/testing/selftests/bpf/progs/test_skeleton.c
++++ b/tools/testing/selftests/bpf/progs/test_skeleton.c
+@@ -51,6 +51,8 @@ int out_dynarr[4] SEC(".data.dyn") = { 1, 2, 3, 4 };
+ int read_mostly_var __read_mostly;
+ int out_mostly_var;
+ 
++char huge_arr[16 * 1024 * 1024];
++
+ SEC("raw_tp/sys_enter")
+ int handler(const void *ctx)
+ {
+@@ -71,6 +73,8 @@ int handler(const void *ctx)
+ 
+ 	out_mostly_var = read_mostly_var;
+ 
++	huge_arr[sizeof(huge_arr) - 1] = 123;
++
  	return 0;
+ }
+ 
 -- 
 2.30.2
 
