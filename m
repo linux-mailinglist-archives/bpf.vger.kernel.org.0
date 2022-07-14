@@ -2,97 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAF2F574704
-	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 10:37:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6502D57487D
+	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 11:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235868AbiGNIhE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jul 2022 04:37:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60374 "EHLO
+        id S238000AbiGNJUr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jul 2022 05:20:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235825AbiGNIg5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jul 2022 04:36:57 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 826DF3ED7A
-        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 01:36:50 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id t25so1631533lfg.7
-        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 01:36:50 -0700 (PDT)
+        with ESMTP id S237995AbiGNJUd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jul 2022 05:20:33 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E02B253D16;
+        Thu, 14 Jul 2022 02:17:31 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id bb16so1634820oib.11;
+        Thu, 14 Jul 2022 02:17:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=H3bGT1ZyGPu3PRQJlJHyQI9TvTjBPuNSyHjFOzNfiP0=;
-        b=XrPG1uZaQRn1UCA0WJJ2pmJQ1csZW3HabgB7E+QXuACfRhko5FjAocWwoGAFMQM+4K
-         maoBv4gTZQXqu9EJzYUg27HWYGn7H4ps8X1YfFKAamIhhLSUESO1F6QG9mJgGHe0KMpr
-         yS6EmWRT7znGhWAi5CHDysnG1OxosqIxRYFf098GB0Xs4T6zMcBwQ+Ijt6ciUPeVVUwm
-         NwEO+Wz1v4Oa+mBtHNRupxuLErGpDho6oqFPRIm2MU+57eHEreDtv9TWX6BBq17KbV3w
-         UCTpqQeOnk576xhvUmMdcgTy5b4PgstjqS11/4Py/0diTc9tD3MngzVuJ3uMtq9Qr/CL
-         qkvw==
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=F3oRxfi4iYMnvW/pvcTNQHegzRL7rC68EPwBmJ/EtTY=;
+        b=P1NIzebve93CTfnu8RPpEKKo6CCqteR1umi8kgJ+5Lh6Jf7vF8QB6zicPZXXMm5M8j
+         U9PrKCXMOhH1sbwiuNEZApnjAyy2mKp/76Adng/mCFNJ4KE3lzLFUaU2Vf8nLYif1WAw
+         rUtpue1Tk7j5X0pDlcQDyueyl2Wbxxsimg1Z9fjWBGr/730d+q9mRQ7P93J+/wj4ei6U
+         5GzXWXE407OK+irJDw89hbNNHeED3h/wwlRXUoRkaOGLnChsr5Y7SwhNPCpzu7UIP6KQ
+         mcI6QkEnYMR9hPkuI7oQajILbisc4qvBMoFaVyHB4CduqncBEgO0h6O+5BX5w8aozLEi
+         aYDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=H3bGT1ZyGPu3PRQJlJHyQI9TvTjBPuNSyHjFOzNfiP0=;
-        b=SiHzxhho+Hn0x8bFEZPifTwHLGnAUCm2u5rBfO6IPlsE3xNz39oAhPq6ou7lUsckaH
-         O97jUDKJwhkXPa9d969r1a5m3TnDSjR5O9DQBK8pujoOTbw2gcJCEyg90HcSNBMy9K3w
-         VyxgJRbOFYHDgm3egxDduksCHRpvxXjBOb74WUhdICDWA0YY1JCL4SzaP8sT4+SJc/bq
-         WlJhwnSlVOLq9ND9168xn6/ZmUy9drFlCV6tSmNPWuCnk6PAd2chbA576f7NUfq12ekr
-         DyJF97tQgN8VRkNV4z2kpF0UjTN6r0FMk6hKerO69sirhlcu2Wmb/3J9ZpfLH+nKWyV+
-         KQhw==
-X-Gm-Message-State: AJIora/+ukfIToDVJrmIZ7dMeC0DiRQ9ngE96BWmNVw/rKmCkLd1qf33
-        apINEEOp7oSGgcWPbxup6Lcqxq5KngUjz8xCpMo=
-X-Google-Smtp-Source: AGRyM1u3j4Kh8ROf600mZ9n+2mzPHZx1NFVtrSntlSiwIK2NP6HVto6IIpM3hlWxyt39lgmrdSwWdCXGiGrSzCPb6JE=
-X-Received: by 2002:a05:6512:3d27:b0:489:e623:f244 with SMTP id
- d39-20020a0565123d2700b00489e623f244mr4930609lfv.236.1657787809582; Thu, 14
- Jul 2022 01:36:49 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=F3oRxfi4iYMnvW/pvcTNQHegzRL7rC68EPwBmJ/EtTY=;
+        b=Biael0ySsp5O5xX5ylR5yew+StznwB2tltp1s6tghsaJ/hpaXc4XWqH0VojVC3nFhO
+         VLdTmFcsiTKbkojWBusQZqpt+xGYKFjae49NNbBBOwBu1QmwE73c7FLJvteZZxrU3112
+         RYDdCZbbDzVZFd0u/gPUfxRx5mw7XIBKuyJmW4VZtRwrKZUQR4b4qLBHNm14exwEB4Uz
+         PnG6wFXB6tT5He3ggBKwVvEljBOhEm8oenhr88Emk2W90H9jS9W01z781DLwVaHHZLxr
+         DhoViY2Hk/wQGDh9LcCxaDuTzN7M6d0WJ64S0MBX2gtRNHACXXZk1e0fc623E1rHGhHj
+         z2dg==
+X-Gm-Message-State: AJIora/DdrZi/ufTWxquyqbj8ZdtSBhgeUFxYEWuKr6LxAiYB7OFuCLV
+        X0UZgytFoTCi69UERxO4m0xA9XSBj4PE9PX9L9kU2lm2nPrGkQ==
+X-Google-Smtp-Source: AGRyM1voiPTRka4g6Tnhu67eX8MZfU/eH/SH2VVj9wzVWfBpH5NmvSkOa9qWywonJgFad2apZ06CdSUKqXONeHUvoDI=
+X-Received: by 2002:a05:6808:bce:b0:337:aaf6:8398 with SMTP id
+ o14-20020a0568080bce00b00337aaf68398mr4111400oik.252.1657790250658; Thu, 14
+ Jul 2022 02:17:30 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a2e:9041:0:0:0:0:0 with HTTP; Thu, 14 Jul 2022 01:36:48
- -0700 (PDT)
-Reply-To: abdwabbomaddahm@gmail.com
-From:   Abdwabbo Maddah <abdwabbomaddah746@gmail.com>
-Date:   Thu, 14 Jul 2022 09:36:48 +0100
-Message-ID: <CAFC-3ifKFkAVLmD=8z4VAKFLX0pV+_h5OJ=Ks62m+0uk+DimKQ@mail.gmail.com>
-Subject: Get back to me... URGENT
-To:     undisclosed-recipients:;
+References: <20220622231624.t63bkmkzphqvh3kx@alap3.anarazel.de> <20220703212551.1114923-1-andres@anarazel.de>
+In-Reply-To: <20220703212551.1114923-1-andres@anarazel.de>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Thu, 14 Jul 2022 11:16:54 +0200
+Message-ID: <CA+icZUVDzogiyG=8sCuxdW4aaby_kRwToit2tg-A4D3VorVKnA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] tools: fix compilation failure caused by
+ init_disassemble_info API changes
+To:     Andres Freund <andres@anarazel.de>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Ben Hutchings <ben@decadent.org.uk>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.0 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4796]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [abdwabbomaddah746[at]gmail.com]
-        * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:135 listed in]
-        [list.dnswl.org]
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [abdwabbomaddah746[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  3.2 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
--- 
-Dear,
-I had sent you a mail but i don't think you received it that's why am
-writing you again.It is important you get back to me as soon as you
-can.
-Abd-Wabbo Maddah
+On Sun, Jul 3, 2022 at 11:25 PM Andres Freund <andres@anarazel.de> wrote:
+>
+> binutils changed the signature of init_disassemble_info(), which now causes
+> compilation failures for tools/{perf,bpf} on e.g. debian unstable. Relevant
+> binutils commit:
+> https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=60a3da00bd5407f07
+>
+> I first fixed this without introducing the compat header, as suggested by
+> Quentin, but I thought the amount of repeated boilerplate was a bit too
+> much. So instead I introduced a compat header to wrap the API changes. Even
+> tools/bpf/bpftool/jit_disasm.c, which needs its own callbacks for json, imo
+> looks nicer this way.
+>
+> I'm not regular contributor, so it very well might be my procedures are a
+> bit off...
+>
+> I am not sure I added the right [number of] people to CC?
+>
+> WRT the feature test: Not sure what the point of the -DPACKAGE='"perf"' is,
+> nor why tools/perf/Makefile.config sets some LDFLAGS/CFLAGS that are also
+> in feature/Makefile and why -ldl isn't needed in the other places. But...
+>
+> V2:
+> - split patches further, so that tools/bpf and tools/perf part are entirely
+>   separate
+> - included a bit more information about tests I did in commit messages
+> - add a maybe_unused to fprintf_json_styled's style argument
+>
+
+[ CC Ben ]
+
+The Debian kernel-team has integrated your patchset v2.
+
+In case you build without libbfd support there is [1].
+So, feel free to take this for v3.
+
+-Sedat-
+
+[1] https://salsa.debian.org/kernel-team/linux/-/blob/sid/debian/patches/bugfix/all/tools-perf-fix-build-without-libbfd.patch
+
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Cc: Sedat Dilek <sedat.dilek@gmail.com>
+> Cc: Quentin Monnet <quentin@isovalent.com>
+> To: bpf@vger.kernel.org
+> To: linux-kernel@vger.kernel.org
+> Link: https://lore.kernel.org/lkml/20220622181918.ykrs5rsnmx3og4sv@alap3.anarazel.de
+> Link: https://lore.kernel.org/lkml/CA+icZUVpr8ZeOKCj4zMMqbFT013KJz2T1csvXg+VSkdvJH1Ubw@mail.gmail.com
+>
+> Andres Freund (5):
+>   tools build: add feature test for init_disassemble_info API changes
+>   tools include: add dis-asm-compat.h to handle version differences
+>   tools perf: Fix compilation error with new binutils
+>   tools bpf_jit_disasm: Fix compilation error with new binutils
+>   tools bpftool: Fix compilation error with new binutils
+>
+>  tools/bpf/Makefile                            |  7 ++-
+>  tools/bpf/bpf_jit_disasm.c                    |  5 +-
+>  tools/bpf/bpftool/Makefile                    |  7 ++-
+>  tools/bpf/bpftool/jit_disasm.c                | 42 ++++++++++++---
+>  tools/build/Makefile.feature                  |  4 +-
+>  tools/build/feature/Makefile                  |  4 ++
+>  tools/build/feature/test-all.c                |  4 ++
+>  .../feature/test-disassembler-init-styled.c   | 13 +++++
+>  tools/include/tools/dis-asm-compat.h          | 53 +++++++++++++++++++
+>  tools/perf/Makefile.config                    |  8 +++
+>  tools/perf/util/annotate.c                    |  7 +--
+>  11 files changed, 137 insertions(+), 17 deletions(-)
+>  create mode 100644 tools/build/feature/test-disassembler-init-styled.c
+>  create mode 100644 tools/include/tools/dis-asm-compat.h
+>
+> --
+> 2.37.0.3.g30cc8d0f14
+>
