@@ -2,85 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC1F574096
-	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 02:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B02E45740DF
+	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 03:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229735AbiGNAis (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Jul 2022 20:38:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59216 "EHLO
+        id S231260AbiGNBND (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Jul 2022 21:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbiGNAir (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Jul 2022 20:38:47 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2195A115E;
-        Wed, 13 Jul 2022 17:38:45 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B0C1661B65;
-        Thu, 14 Jul 2022 00:38:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF86AC34114;
-        Thu, 14 Jul 2022 00:38:42 +0000 (UTC)
-Date:   Wed, 13 Jul 2022 20:38:41 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Song Liu <song@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        "jolsa@kernel.org" <jolsa@kernel.org>,
-        "mhiramat@kernel.org" <mhiramat@kernel.org>
-Subject: Re: [PATCH v2 bpf-next 1/5] ftrace: allow customized flags for
- ftrace_direct_multi ftrace_ops
-Message-ID: <20220713203841.76d66245@rorschach.local.home>
-In-Reply-To: <0029EF24-6508-4011-B365-3E2175F9FEAB@fb.com>
-References: <20220602193706.2607681-1-song@kernel.org>
-        <20220602193706.2607681-2-song@kernel.org>
-        <20220713191846.18b05b43@gandalf.local.home>
-        <0029EF24-6508-4011-B365-3E2175F9FEAB@fb.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        with ESMTP id S231214AbiGNBNB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Jul 2022 21:13:01 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D0A2019B;
+        Wed, 13 Jul 2022 18:13:01 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id o5-20020a17090a3d4500b001ef76490983so895354pjf.2;
+        Wed, 13 Jul 2022 18:13:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=qY/L3esgP/6wlVOByUaM8eY0CWOL//SIEpk6GRGXg9Y=;
+        b=OZ4VnFWsd7Gf9jtquuwL4gdatAZcRgoISs4e26darmOLhenPYwMMHtgnS0g/qv/K0U
+         kvspN2qPnS5NhAiKRkT6TI5fZp/nWgP1GHG71qk55PP870YzbUcGgEV18Tg6cktJHCmu
+         JNZOrLbqJQbFoUong7efgK/kpv1qgcr1zVJKuXWa5WqlVRxd7lXUijT8lnYlNUpn+EKY
+         JB3nM3C6sft9Jj6Shq9jpZ3h5qPd1nsIh+0VcYxdfGK6O6UDdKy769ZWpDr0veIoAeDD
+         NWsGY3yACeTvEFuSyHf/nE4jRpKxdvzRKQi/XuhYWaas6goMr9r4fanq+WtC8h580Awi
+         60kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=qY/L3esgP/6wlVOByUaM8eY0CWOL//SIEpk6GRGXg9Y=;
+        b=GEde9C7lNlJQqFsm0JnlZBoWIgGheoJnxZ85XuWhz3wAoFpduWUjsSnJB0Ke5hssrQ
+         xbWGLZrbnwLXushOgBptouhqyq57Sx1idd5SrYAJq2isi4h/Fg+j0fAoMA0mJpb4wq3S
+         A8+RERLh9SDA33zo4QXQx7ggqE9coQvvuSScUCVhHBQYai/n74oPSQo+UApufo26+F+Y
+         nevwweRqfFp1saCEgN9+ofqqzt38X24aOdt8tF7BhLJmtR/Bjekve3dsNYezfGCBLxrx
+         3QpQiK6JgXUjrq/UHOu49f2h+EhXqrLju8t54h7Mwt+lIEeIj4IuL9lk+Spoy49jFycw
+         Gbaw==
+X-Gm-Message-State: AJIora+CMj4/ingYQxQL2zAxFGRE0lTVJED6L5/TSANY/GhGyuv7N5Bj
+        itSDYMRqigJkwMM8lQa3bb7LonPFYLw=
+X-Google-Smtp-Source: AGRyM1siopMFPWzPD/3Ra9FhjM1HPHnzCgZj4EIkYv6grSpPZAOU1k/m0GssqkjkbQvZUcYRBaambg==
+X-Received: by 2002:a17:90a:f0c8:b0:1f0:671b:f594 with SMTP id fa8-20020a17090af0c800b001f0671bf594mr11675122pjb.238.1657761180515;
+        Wed, 13 Jul 2022 18:13:00 -0700 (PDT)
+Received: from [192.168.43.80] (subs02-180-214-232-3.three.co.id. [180.214.232.3])
+        by smtp.gmail.com with ESMTPSA id o1-20020a170902d4c100b0016a565f3f34sm57311plg.168.2022.07.13.18.12.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Jul 2022 18:12:59 -0700 (PDT)
+Message-ID: <99351eee-17b4-66e0-1b9e-7f798756780a@gmail.com>
+Date:   Thu, 14 Jul 2022 08:12:57 +0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH] bpf, docs: document BPF_MAP_TYPE_HASH and variants
+Content-Language: en-US
+To:     Donald Hunter <donald.hunter@gmail.com>, bpf@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Cc:     Jonathan Corbet <corbet@lwn.net>
+References: <20220713211612.84782-1-donald.hunter@gmail.com>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+In-Reply-To: <20220713211612.84782-1-donald.hunter@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 14 Jul 2022 00:11:53 +0000
-Song Liu <songliubraving@fb.com> wrote:
-
-> > That is, can we register a direct function with this function and pick a
-> > function with IPMODIFY already attached?  
+On 7/14/22 04:16, Donald Hunter wrote:
+> This commit adds documentation for BPF_MAP_TYPE_HASH including kernel
+> version introduced, usage and examples. It also documents
+> BPF_MAP_TYPE_PERCPU_HASH, BPF_MAP_TYPE_LRU_HASH and
+> BPF_MAP_TYPE_LRU_PERCPU_HASH which are similar.
 > 
-> Yes, if the direct function follows regs->ip, it works. 
-> 
-> For example, BPF trampoline with only fentry calls will just work with only this patch.
 
-I replied with my thoughts on this to patch 3, but I disagree with this.
+Please, please use imperative mood instead for patch description
+(that is, better write like "document BPF_MAP_TYPE_* types").
 
-ftrace has no idea if the direct trampoline modifies the IP or not.
-ftrace must assume that it does, and the management should be done in
-the infrastructure.
-
-As I replied to patch 3, here's my thoughts.
-
-DIRECT is treated as though it changes the IP. If you register it to a
-function that has an IPMODIFY already set to it, it will call the
-ops->ops_func() asking if the ops can use SHARED_IPMODIFY (which means
-a DIRECT can be shared with IPMODIFY). If it can, then it returns true,
-and the SHARED_IPMODIFY is set *by ftrace*. The user of the ftrace APIs
-should not have to manage this. It should be managed by the ftrace
-infrastructure.
-
-Make sense?
-
--- Steve
+-- 
+An old man doll... just what I always wanted! - Clara
