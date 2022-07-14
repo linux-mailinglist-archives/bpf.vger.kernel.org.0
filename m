@@ -2,158 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE52574DDE
-	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 14:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC415574F0F
+	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 15:23:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239437AbiGNMjt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jul 2022 08:39:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59930 "EHLO
+        id S239637AbiGNNXI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jul 2022 09:23:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239438AbiGNMjp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jul 2022 08:39:45 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D5045D58D;
-        Thu, 14 Jul 2022 05:39:43 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id f11so1427884pgj.7;
-        Thu, 14 Jul 2022 05:39:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=geWGB4qL+9406ISSoQRHApgTYUJeEyYKooNgFIGp6Gs=;
-        b=qsemR54SFEwg2cjUWcUh4tC9rNUtUpqMSduXwQK5X7dioT5nL8sWlYXYQRY+VCmvo6
-         hFjr5rnezJyIAcQYhH9MPSHmUkAV/mjjq6c8XGAAIxmxHTeZ7Qfy/tyvYtbRBiMRMAP2
-         d9YV+Y3EP8jzqMFqYvTZTJGliYOtynMwQ7vj4eEX+t2UnR54Ps2Y8g+hKwwo3iZgQtyz
-         14s0OjhHo/qpdn9/XrA6CCeVip5QkduYtOEhsQyIfMLeDcUDFs/dRMLnTQX7AsBOPHp+
-         aouI8/01pBeo/cQr9XuJmq5w+v4f8tYu7Xwtf9TPtrhFKejq86zjSCKz+Q0AV8MLrd57
-         Inhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=geWGB4qL+9406ISSoQRHApgTYUJeEyYKooNgFIGp6Gs=;
-        b=yVqapS03+ZhxNwONBpUH8a/JEAZhQjmkCSx5sFVQQdbKNsBthL4ZV1ikCnM0jaOfAz
-         zBmlrNor2V8KYaHXNutuAQx+EjgtQvtY3IR9HjcaVfNfpByo6jQwSETwzbVi9UHl6sPG
-         hqbyNt5Mvjd1y4tD7G1TWEBvTYQWPwsCMkTHztCW7cnfm/AGLSAZDtFZLmulFmXOwRkw
-         VzzneInKI4fv6+CXQ06pRYEgJr1LKBQhy731rfDeB5sQhFcA4c98IvnbBWxrGZpcdJxN
-         J6yZdSz3AOL4JHIkoWJd8p2Ol3SNANw9J/qT70VVGOeMWtiM/9jubTcZYS7zZH2q/CaG
-         8ywg==
-X-Gm-Message-State: AJIora+uER8Sfwdh09TKLJ4ZIJ0t9sKTvRX2nJzmP5cFl97nVWb3RycH
-        5eJr5f4kAraiyAkJfZpHZE8Tz139uVR4N1Eyd5g=
-X-Google-Smtp-Source: AGRyM1saLLVXjDkY9V9Wt3EDo4xf0+jyawRt5cU722x2AjkIScjFvNqeXZIuZ7rXlqnDcKxie74dlIiud0oEIhww2a4=
-X-Received: by 2002:a65:6e95:0:b0:412:6f20:5f74 with SMTP id
- bm21-20020a656e95000000b004126f205f74mr7694302pgb.156.1657802382756; Thu, 14
- Jul 2022 05:39:42 -0700 (PDT)
+        with ESMTP id S239760AbiGNNWs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jul 2022 09:22:48 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0840C61D5E;
+        Thu, 14 Jul 2022 06:22:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 30D8362063;
+        Thu, 14 Jul 2022 13:22:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74BF2C34114;
+        Thu, 14 Jul 2022 13:22:17 +0000 (UTC)
+Date:   Thu, 14 Jul 2022 09:22:15 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Song Liu <song@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "jolsa@kernel.org" <jolsa@kernel.org>,
+        "mhiramat@kernel.org" <mhiramat@kernel.org>
+Subject: Re: [PATCH v2 bpf-next 1/5] ftrace: allow customized flags for
+ ftrace_direct_multi ftrace_ops
+Message-ID: <20220714092215.149d4823@gandalf.local.home>
+In-Reply-To: <BDED3B27-B42F-44AD-904E-010752462A67@fb.com>
+References: <20220602193706.2607681-1-song@kernel.org>
+        <20220602193706.2607681-2-song@kernel.org>
+        <20220713191846.18b05b43@gandalf.local.home>
+        <0029EF24-6508-4011-B365-3E2175F9FEAB@fb.com>
+        <20220713203841.76d66245@rorschach.local.home>
+        <C2FCCC9B-5F7D-4BBF-8410-67EA79166909@fb.com>
+        <20220713225511.70d03fc6@gandalf.local.home>
+        <BDED3B27-B42F-44AD-904E-010752462A67@fb.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20220707130842.49408-1-maciej.fijalkowski@intel.com>
-In-Reply-To: <20220707130842.49408-1-maciej.fijalkowski@intel.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Thu, 14 Jul 2022 14:39:31 +0200
-Message-ID: <CAJ8uoz0uaztjQ7dBrrnzJw5ghXV4uZ8GWjMaTd9GOR_FCKjo0g@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next] xsk: mark napi_id on sendmsg()
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 7, 2022 at 3:20 PM Maciej Fijalkowski
-<maciej.fijalkowski@intel.com> wrote:
->
-> When application runs in busy poll mode and does not receive a single
-> packet but only sends them, it is currently
-> impossible to get into napi_busy_loop() as napi_id is only marked on Rx
-> side in xsk_rcv_check(). In there, napi_id is being taken from
-> xdp_rxq_info carried by xdp_buff. From Tx perspective, we do not have
-> access to it. What we have handy is the xsk pool.
->
-> Xsk pool works on a pool of internal xdp_buff wrappers called
-> xdp_buff_xsk. AF_XDP ZC enabled drivers call xp_set_rxq_info() so each
-> of xdp_buff_xsk has a valid pointer to xdp_rxq_info of underlying queue.
-> Therefore, on Tx side, napi_id can be pulled from
-> xs->pool->heads[0].xdp.rxq->napi_id. Hide this pointer chase under
-> helper function, xsk_pool_get_napi_id().
->
-> Do this only for sockets working in ZC mode as otherwise rxq pointers
-> would not be initialized.
+On Thu, 14 Jul 2022 04:37:43 +0000
+Song Liu <songliubraving@fb.com> wrote:
 
-Thanks Maciej.
+> >   
+> >> 
+> >> non-direct ops without IPMODIFY can already share with IPMODIFY ops.  
+> > 
+> > It can? ftrace sets IPMODIFY for all DIRECT callers to prevent that. Except
+> > for this patch that removes that restriction (which I believe is broken).  
+> 
+> I mean "non-direct" ftrace ops, not direct ftrace ops. 
 
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+Ah, sorry misunderstood that.
 
-> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> ---
+
+> > Let me start from the beginning.  
+> 
+> I got your point now. We replace the flag on direct trampoline with a 
+> callback check. So yes, this works. 
+
+I'm glad we are on the same page :-)
+
+
+> > 9. ftrace sees the lkp IPMODIFY ops has SHARED_IPMODIFY on it, and knows
+> >   that there's a direct call here too. It removes the IPMODIFY ops, and
+> >   then calls the direct ops->ops_func(STOP_SHARE_WITH_IPMODIFY) to let the
+> >   direct code know that it is no longer sharing with an IPMODIFY such that
+> >   it can change to call the function directly and not use the stack.  
+> 
+> I wonder whether we still need this flag. Alternatively, we can always
+> find direct calls on the function and calls ops_func(STOP_SHARE_WITH_IPMODIFY). 
+
+Actually we don't need the new flag and we don't need to always search. When
+a direct is attached to the function then the rec->flags will have
+FTRACE_FL_DIRECT attached to it.
+
+Then if an IPMODIFY is being removed and the rec->flags has
+FTRACE_FL_DIRECT set, then we know to search the ops for the one that has a
+DIRECT flag attached and we can call the ops_func() on that one.
+
+We should also add a FTRACE_WARN_ON() if a direct is not found but the flag
+was set.
+
+> 
+> What do you think about this? 
 >
-> v2:
-> * target bpf-next instead of bpf and don't treat it as fix (Bjorn)
-> * hide pointer chasing under helper function (Bjorn)
->
->  include/net/xdp_sock_drv.h | 14 ++++++++++++++
->  net/xdp/xsk.c              |  5 ++++-
->  2 files changed, 18 insertions(+), 1 deletion(-)
->
-> diff --git a/include/net/xdp_sock_drv.h b/include/net/xdp_sock_drv.h
-> index 4aa031849668..4277b0dcee05 100644
-> --- a/include/net/xdp_sock_drv.h
-> +++ b/include/net/xdp_sock_drv.h
-> @@ -44,6 +44,15 @@ static inline void xsk_pool_set_rxq_info(struct xsk_buff_pool *pool,
->         xp_set_rxq_info(pool, rxq);
->  }
->
-> +static inline unsigned int xsk_pool_get_napi_id(struct xsk_buff_pool *pool)
-> +{
-> +#ifdef CONFIG_NET_RX_BUSY_POLL
-> +       return pool->heads[0].xdp.rxq->napi_id;
-> +#else
-> +       return 0;
-> +#endif
-> +}
-> +
->  static inline void xsk_pool_dma_unmap(struct xsk_buff_pool *pool,
->                                       unsigned long attrs)
->  {
-> @@ -198,6 +207,11 @@ static inline void xsk_pool_set_rxq_info(struct xsk_buff_pool *pool,
->  {
->  }
->
-> +static inline unsigned int xsk_pool_get_napi_id(struct xsk_buff_pool *pool)
-> +{
-> +       return 0;
-> +}
-> +
->  static inline void xsk_pool_dma_unmap(struct xsk_buff_pool *pool,
->                                       unsigned long attrs)
->  {
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index 19ac872a6624..86a97da7e50b 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -637,8 +637,11 @@ static int __xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len
->         if (unlikely(need_wait))
->                 return -EOPNOTSUPP;
->
-> -       if (sk_can_busy_loop(sk))
-> +       if (sk_can_busy_loop(sk)) {
-> +               if (xs->zc)
-> +                       __sk_mark_napi_id_once(sk, xsk_pool_get_napi_id(xs->pool));
->                 sk_busy_loop(sk, 1); /* only support non-blocking sockets */
-> +       }
->
->         if (xs->zc && xsk_no_wakeup(sk))
->                 return 0;
-> --
-> 2.27.0
->
+
+I think this works.
+
+Also, on the patch that implements this in the next version, please add to
+the change log:
+
+Link: https://lore.kernel.org/all/20220602193706.2607681-2-song@kernel.org/
+
+so that we have a link to this discussion.
+
+Thanks,
+
+-- Steve
