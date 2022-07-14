@@ -2,79 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1C025744A7
-	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 07:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D76005744B3
+	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 07:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234910AbiGNFlY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jul 2022 01:41:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48084 "EHLO
+        id S232500AbiGNFxK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jul 2022 01:53:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234007AbiGNFlX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jul 2022 01:41:23 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 225C229813;
-        Wed, 13 Jul 2022 22:41:22 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id w12so978579edd.13;
-        Wed, 13 Jul 2022 22:41:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=c1kF/TTLzT5LzCmiBcnfEvMrM2UU9ioJZbXOtvw7Ngc=;
-        b=PLVg4YJD4D3tHJ5fpq7tNukiI0osz7Qe72gSm1urdtnVpYTXQbLqn6a6CP1FKwQ7hQ
-         clmYmMd4X805VfVyMj+Y4cIsH5dVpH5a2872kIFLpiUe072ybNvCJTjJWc4+zpfLqoro
-         jhFaoYOzmNxHdlJnXiuhrqvMYp/NRvQWYWCz5D8II9HRA9wKR1Y8LuT5MPbSlD6BQeym
-         GneSRY4R0KiZpK9A5RM0U2D/AbcJfyg3TPuZs0t16vrV+/sEipZEIF1wPqDLAxJnWDUm
-         nQvW8X4fBnDqv7fi5mcxzOmhzAdIK+AkvDjRRgcMv+k+GKwMrXzVpkIw9LjzfTuvkPC2
-         B7Qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=c1kF/TTLzT5LzCmiBcnfEvMrM2UU9ioJZbXOtvw7Ngc=;
-        b=CpgwEQ/9B5U1r/5TO0AECK0H4Ate5PlUc/4O5P6EaV2SJYeLKpiclin5K/VL7YBGaQ
-         OSx1iFBjBFILJtDIyHqeiDJnP9CRZu+3wUU130SergAgGAJlBDSPAtCP1Bj4ZM0Leobf
-         CwfR2RdGSNG5IVlMDVMdyT1RM03JVJCrOkaqD5e3qn4fkjjkJeiVgLq3xfLWzOPscYj0
-         qlECoqsOcXjoMPAIjCcuZ8tArm63gXUXUDauAVCuNnsKA+rHbtXamNCohYgQ4vDhe7+3
-         82db9SMTVSuJFesPbplyoq2Jhl4fmsUisaTjh7CSJmkyv1pwZBgG4yGszuVUFdAvcR35
-         qAyQ==
-X-Gm-Message-State: AJIora9HYbAkkBLRmfjY761s8bJkjVUbLhEb0HtJ3AzgeH1IwuoDVieo
-        88BHj7d5f/jlnmnxnj86aCfKASgL5drP3v+lt3E=
-X-Google-Smtp-Source: AGRyM1vAXDdKvjb8sJp1xa5mxGIfmd6G+L6cSYpLMyv8twxQwRlGTzBfjkqgfwpKajjeemX4LL/LlY2lz6Nu8BjDvSA=
-X-Received: by 2002:aa7:c784:0:b0:43a:caa8:75b9 with SMTP id
- n4-20020aa7c784000000b0043acaa875b9mr9750703eds.311.1657777280737; Wed, 13
- Jul 2022 22:41:20 -0700 (PDT)
+        with ESMTP id S231630AbiGNFxK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jul 2022 01:53:10 -0400
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 594A62C65B
+        for <bpf@vger.kernel.org>; Wed, 13 Jul 2022 22:53:08 -0700 (PDT)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id 8E870240108
+        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 07:53:06 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1657777986; bh=6eudJm1GBl6Wx/QDoQZhChO+reUzLPytn8GobX9RbCI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=F7byWUNJz8TGJFtcRGqGsTrvo8mWI9S3PVuMmcCaP5NKsBC38FcUGqLveIqT8fDKY
+         yY5LQkcEXtwfHui+j6RNzZxvULnWSiw6h+EZTqWYUDPHyJBzHda5dH41VOo5o7bIJS
+         0XJ9v1CsvTUiU6P4ZW8UN5shRHRmHdWWpyQD1La7C1hivFI6xf1PpIV+w2so19FIeM
+         BYVNWWzsjy3uqpL+oNkUjHnewfa52ahGKQM84JkRwpk++xwNqLPQ5zMR4UuljH0W0k
+         w9Vcg4hKtlWCucT4e7JBUWRDu1axvJh4reHnfu5VnW8QNrKk+h+wdstcPAep4LTX/4
+         XFVfw0rr/6/6A==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4Lk3Yr4S5Kz9rxV;
+        Thu, 14 Jul 2022 07:53:04 +0200 (CEST)
+Date:   Thu, 14 Jul 2022 05:51:37 +0000
+From:   Daniel =?utf-8?Q?M=C3=BCller?= <deso@posteo.net>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     Donald Hunter <donald.hunter@gmail.com>, bpf@vger.kernel.org,
+        linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH] bpf, docs: document BPF_MAP_TYPE_HASH and variants
+Message-ID: <20220714055137.dsatpuyrwdlel2ck@vaio>
+References: <20220713211612.84782-1-donald.hunter@gmail.com>
+ <99351eee-17b4-66e0-1b9e-7f798756780a@gmail.com>
 MIME-Version: 1.0
-References: <20220713111430.134810-1-toke@redhat.com> <20220713111430.134810-17-toke@redhat.com>
-In-Reply-To: <20220713111430.134810-17-toke@redhat.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 13 Jul 2022 22:41:09 -0700
-Message-ID: <CAEf4BzaZL=fQrvPDGg+VVoWqRRLD0g-3jfeAbAb6M_zEa4nFMg@mail.gmail.com>
-Subject: Re: [RFC PATCH 16/17] selftests/bpf: Add test for XDP queueing
- through PIFO maps
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Freysteinn Alfredsson <freysteinn.alfredsson@kau.se>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <99351eee-17b4-66e0-1b9e-7f798756780a@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,49 +52,18 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 13, 2022 at 4:15 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> This adds selftests for both variants of the generic PIFO map type, and f=
-or
-> the dequeue program type. The XDP test uses bpf_prog_run() to run an XDP
-> program that puts packets into a PIFO map, and then adds tests that pull
-> them back out again through bpf_prog_run() of a dequeue program, as well =
-as
-> by attaching a dequeue program to a veth device and scheduling transmissi=
-on
-> there.
->
-> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> ---
->  .../selftests/bpf/prog_tests/pifo_map.c       | 125 ++++++++++++++
->  .../bpf/prog_tests/xdp_pifo_test_run.c        | 154 ++++++++++++++++++
->  tools/testing/selftests/bpf/progs/pifo_map.c  |  54 ++++++
->  .../selftests/bpf/progs/test_xdp_pifo.c       | 110 +++++++++++++
->  4 files changed, 443 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/pifo_map.c
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_pifo_test_=
-run.c
->  create mode 100644 tools/testing/selftests/bpf/progs/pifo_map.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_pifo.c
->
+On Thu, Jul 14, 2022 at 08:12:57AM +0700, Bagas Sanjaya wrote:
+> On 7/14/22 04:16, Donald Hunter wrote:
+> > This commit adds documentation for BPF_MAP_TYPE_HASH including kernel
+> > version introduced, usage and examples. It also documents
+> > BPF_MAP_TYPE_PERCPU_HASH, BPF_MAP_TYPE_LRU_HASH and
+> > BPF_MAP_TYPE_LRU_PERCPU_HASH which are similar.
+> > 
+> 
+> Please, please use imperative mood instead for patch description
+> (that is, better write like "document BPF_MAP_TYPE_* types").
 
-[...]
+Can you elaborate why you make that recommendation, please?
 
-> +__u16 pkt_count =3D 0;
-> +__u16 drop_above =3D 2;
-> +
-> +SEC("dequeue")
-
-"dequeue" seems like a way too generic term, why not "xdp_dequeue" or
-something like that? Isn't this XDP specific program?
-
-> +void *dequeue_pifo(struct dequeue_ctx *ctx)
-> +{
-> +       __u64 prio =3D 0, pkt_prio =3D 0;
-> +       void *data, *data_end;
-> +       struct xdp_md *pkt;
-> +       struct ethhdr *eth;
-> +
-
-[...]
+Thanks,
+Daniel
