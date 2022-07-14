@@ -2,90 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 343B7574549
-	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 08:51:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A11EF574576
+	for <lists+bpf@lfdr.de>; Thu, 14 Jul 2022 09:08:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232847AbiGNGv0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jul 2022 02:51:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34558 "EHLO
+        id S233255AbiGNHIC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 14 Jul 2022 03:08:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbiGNGvZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jul 2022 02:51:25 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 770282871F;
-        Wed, 13 Jul 2022 23:51:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1657781484; x=1689317484;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=IgFWBJhx8O61e3eZsPUNChi+KMCQ8uSmCcKx5rnwkXU=;
-  b=P9w5pc4mMclIQrRyLhRDH0Z8wSBVdHGaUN/pCOOmAzzLcTHUHNgDbD3l
-   dMzcBW6WMZl75c+6yPLbntx81cMukvX1w6XG4dlDwht+o11e6A7rf0KFw
-   lEhpCK0pG0E4QsDzIIdlrh11LyjziqOs9ZRFKymqQOJaS03H6cS14pXsu
-   m/p8oW2gDtwSxoQFnFQNWLRTJAu1JgXkIVwXikldOU6/qicpyM7d0vSjI
-   Ahe+dvnioI7QhI3loYZZ1YqJwb3HQR3wmjKVpoJpsoYMTl/MoZAWEGBTc
-   hivYKxm5BHJ4uOEZW7bdqaLzq8h9py0jE5dnIgEzJDnRPa4rlAzQyfaka
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10407"; a="268463995"
-X-IronPort-AV: E=Sophos;i="5.92,269,1650956400"; 
-   d="scan'208";a="268463995"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2022 23:51:23 -0700
-X-IronPort-AV: E=Sophos;i="5.92,269,1650956400"; 
-   d="scan'208";a="922953841"
-Received: from unknown (HELO jiezho4x-mobl1.ccr.corp.intel.com) ([10.255.29.31])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jul 2022 23:51:19 -0700
-From:   Jie2x Zhou <jie2x.zhou@intel.com>
-To:     jie2x.zhou@intel.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, shuah@kernel.org,
-        nathan@kernel.org, ndesaulniers@google.com, trix@redhat.com,
-        netdev@vger.kernel.org
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, llvm@lists.linux.dev,
-        Philip Li <philip.li@intel.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] tools/testing/selftests/net/bpf/Makefile: fix fatal error: 'bpf/bpf_helpers.h' file not found
-Date:   Thu, 14 Jul 2022 14:50:03 +0800
-Message-Id: <20220714065003.8388-1-jie2x.zhou@intel.com>
-X-Mailer: git-send-email 2.20.1
+        with ESMTP id S229817AbiGNHIB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jul 2022 03:08:01 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D17A82CDDA
+        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 00:08:00 -0700 (PDT)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26E6xB5r003570
+        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 00:08:00 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3h9h5c99xv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 00:08:00 -0700
+Received: from twshared5413.23.frc3.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28; Thu, 14 Jul 2022 00:07:59 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id 6BC181C50A18F; Thu, 14 Jul 2022 00:07:56 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH v2 bpf-next 0/5] Add SEC("ksyscall") support
+Date:   Thu, 14 Jul 2022 00:07:50 -0700
+Message-ID: <20220714070755.3235561-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: cdD8hYTzyVDqSKpEkMwIdFRAYF38SJP0
+X-Proofpoint-ORIG-GUID: cdD8hYTzyVDqSKpEkMwIdFRAYF38SJP0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-07-14_04,2022-07-13_03,2022-06-22_01
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In tools/testing/selftests run:
-make -C bpf
-make -C net
-fatal error: 'bpf/bpf_helpers.h' file not found
+Add SEC("ksyscall")/SEC("kretsyscall") sections and corresponding
+bpf_program__attach_ksyscall() API that simplifies tracing kernel syscalls
+through kprobe mechanism. Kprobing syscalls isn't trivial due to varying
+syscall handler names in the kernel and various ways syscall argument are
+passed, depending on kernel architecture and configuration. SEC("ksyscall")
+allows user to not care about such details and just get access to syscall
+input arguments, while libbpf takes care of necessary feature detection logic.
 
-Add bpf/bpf_helpers.h include path in net/bpf/Makefile.
+There are still more quirks that are not straightforward to hide completely
+(see comments about mmap(), clone() and compat syscalls), so in such more
+advanced scenarios user might need to fall back to plain SEC("kprobe")
+approach, but for absolute majority of users SEC("ksyscall") is a big
+improvement.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Jie2x Zhou <jie2x.zhou@intel.com>
----
- tools/testing/selftests/net/bpf/Makefile | 1 +
- 1 file changed, 1 insertion(+)
+As part of this patch set libbpf adds two more virtual __kconfig externs, in
+addition to existing LINUX_KERNEL_VERSION: LINUX_HAS_BPF_COOKIE and
+LINUX_HAS_SYSCALL_WRAPPER, which let's libbpf-provided BPF-side code minimize
+external dependencies and assumptions and let's user-space part of libbpf to
+perform all the feature detection logic. This benefits USDT support code,
+which now doesn't depend on BPF CO-RE for its functionality.
 
-diff --git a/tools/testing/selftests/net/bpf/Makefile b/tools/testing/selftests/net/bpf/Makefile
-index 8ccaf8732eb2..07d56d446358 100644
---- a/tools/testing/selftests/net/bpf/Makefile
-+++ b/tools/testing/selftests/net/bpf/Makefile
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- 
- CLANG ?= clang
-+CCINCLUDE += -I../bpf/tools/include
- CCINCLUDE += -I../../bpf
- CCINCLUDE += -I../../../../lib
- CCINCLUDE += -I../../../../../usr/include/
+v1->v2:
+  - normalize extern variable-related warn and debug message formats (Alan);
+rfc->v1:
+  - drop dependency on kallsyms and speed up SYSCALL_WRAPPER detection (Alexei);
+  - drop dependency on /proc/config.gz in bpf_tracing.h (Yaniv);
+  - add doc comment and ephasize mmap(), clone() and compat quirks that are
+    not supported (Ilya);
+  - use mechanism similar to LINUX_KERNEL_VERSION to also improve USDT code.
+
+Andrii Nakryiko (5):
+  libbpf: generalize virtual __kconfig externs and use it for USDT
+  selftests/bpf: add test of __weak unknown virtual __kconfig extern
+  libbpf: improve BPF_KPROBE_SYSCALL macro and rename it to BPF_KSYSCALL
+  libbpf: add ksyscall/kretsyscall sections support for syscall kprobes
+  selftests/bpf: use BPF_KSYSCALL and SEC("ksyscall") in selftests
+
+ tools/lib/bpf/bpf_tracing.h                   |  51 +++--
+ tools/lib/bpf/libbpf.c                        | 214 ++++++++++++++----
+ tools/lib/bpf/libbpf.h                        |  46 ++++
+ tools/lib/bpf/libbpf.map                      |   1 +
+ tools/lib/bpf/libbpf_internal.h               |   2 +
+ tools/lib/bpf/usdt.bpf.h                      |  16 +-
+ .../selftests/bpf/prog_tests/core_extern.c    |  17 +-
+ .../selftests/bpf/progs/bpf_syscall_macro.c   |   6 +-
+ .../selftests/bpf/progs/test_attach_probe.c   |  15 +-
+ .../selftests/bpf/progs/test_core_extern.c    |   3 +
+ .../selftests/bpf/progs/test_probe_user.c     |  27 +--
+ 11 files changed, 289 insertions(+), 109 deletions(-)
+
 -- 
-2.36.1
+2.30.2
 
