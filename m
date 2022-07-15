@@ -2,187 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 711F2576700
-	for <lists+bpf@lfdr.de>; Fri, 15 Jul 2022 20:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C19D576728
+	for <lists+bpf@lfdr.de>; Fri, 15 Jul 2022 21:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229845AbiGOS6E convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 15 Jul 2022 14:58:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38090 "EHLO
+        id S229626AbiGOTKT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Jul 2022 15:10:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230050AbiGOS54 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Jul 2022 14:57:56 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 172F157209
-        for <bpf@vger.kernel.org>; Fri, 15 Jul 2022 11:57:54 -0700 (PDT)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26FGH8FL005538
-        for <bpf@vger.kernel.org>; Fri, 15 Jul 2022 11:57:53 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hae0waxw7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 15 Jul 2022 11:57:53 -0700
-Received: from twshared3657.05.prn5.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Fri, 15 Jul 2022 11:57:52 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 940AC1C635E6A; Fri, 15 Jul 2022 11:57:38 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
-        Yonghong Song <yhs@fb.com>, Connor O'Brien <connoro@google.com>
-Subject: [PATCH v2 bpf-next] libbpf: fallback to tracefs mount point if debugfs is not mounted
-Date:   Fri, 15 Jul 2022 11:57:36 -0700
-Message-ID: <20220715185736.898848-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S230505AbiGOTKS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Jul 2022 15:10:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E488E3CBD3;
+        Fri, 15 Jul 2022 12:10:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8AFA360A54;
+        Fri, 15 Jul 2022 19:10:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D52E5C3411E;
+        Fri, 15 Jul 2022 19:10:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1657912215;
+        bh=9L63cBTgXa+KsEQqG1D/NEZqIihhpwJ9sTIMALvPoFU=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=l8PIW8asO8HNtRdM0+6aTNa44bhpDaE4I6Dv+RoM7FvzyI8vAvRKULdqrLR7kKUTJ
+         erpBCFrzQeX1CKP37jhhLOmWXvf5IqwuwpcLDO/+4ikhUE89QKPLNK+0Niv1lc0r0x
+         0sWwKCael7lVoS4YL+ocFMjKWi941iTzum9oYjvxQFYI2OJpsn9A0aRX+ZMzfW1zfS
+         hA2my5vbMtduWLLdKRxo96/ea+kPlLkuRQoVRyoNxnY7kmddiorGVgBOP4wSiBLp0r
+         WwHysl6+LpQBUJ+RL7Zxk/37pGpAG0nehVKxGknqLYLF+onFht5wPx4zwmDeuo719W
+         zJFXn5fJnp/pg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B247AE4521F;
+        Fri, 15 Jul 2022 19:10:15 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: S4gK41AXPnOni7uJPLXSGE5OaCR1n3-v
-X-Proofpoint-ORIG-GUID: S4gK41AXPnOni7uJPLXSGE5OaCR1n3-v
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-07-15_10,2022-07-15_01,2022-06-22_01
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v2 0/3] Use lightweigt version of bpftool
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <165791221572.3895.16901953403677326761.git-patchwork-notify@kernel.org>
+Date:   Fri, 15 Jul 2022 19:10:15 +0000
+References: <20220714024612.944071-1-pulehui@huawei.com>
+In-Reply-To: <20220714024612.944071-1-pulehui@huawei.com>
+To:     Pu Lehui <pulehui@huawei.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, quentin@isovalent.com, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, jean-philippe@linaro.org
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Teach libbpf to fallback to tracefs mount point (/sys/kernel/tracing) if
-debugfs (/sys/kernel/debug/tracing) isn't mounted.
+Hello:
 
-Acked-by: Yonghong Song <yhs@fb.com>
-Suggested-by: Connor O'Brien <connoro@google.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/lib/bpf/libbpf.c | 61 +++++++++++++++++++++++++++---------------
- 1 file changed, 40 insertions(+), 21 deletions(-)
+This series was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 68da1aca406c..92a775c11e3e 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -9828,6 +9828,34 @@ static int append_to_file(const char *file, const char *fmt, ...)
- 	return err;
- }
- 
-+#define DEBUGFS "/sys/kernel/debug/tracing"
-+#define TRACEFS "/sys/kernel/tracing"
-+
-+static bool use_debugfs(void)
-+{
-+	static int has_debugfs = -1;
-+
-+	if (has_debugfs < 0)
-+		has_debugfs = access(DEBUGFS, F_OK) == 0;
-+
-+	return has_debugfs == 1;
-+}
-+
-+static const char *tracefs_path(void)
-+{
-+	return use_debugfs() ? DEBUGFS : TRACEFS;
-+}
-+
-+static const char *tracefs_kprobe_events(void)
-+{
-+	return use_debugfs() ? DEBUGFS"/kprobe_events" : TRACEFS"/kprobe_events";
-+}
-+
-+static const char *tracefs_uprobe_events(void)
-+{
-+	return use_debugfs() ? DEBUGFS"/uprobe_events" : TRACEFS"/uprobe_events";
-+}
-+
- static void gen_kprobe_legacy_event_name(char *buf, size_t buf_sz,
- 					 const char *kfunc_name, size_t offset)
- {
-@@ -9840,9 +9868,7 @@ static void gen_kprobe_legacy_event_name(char *buf, size_t buf_sz,
- static int add_kprobe_event_legacy(const char *probe_name, bool retprobe,
- 				   const char *kfunc_name, size_t offset)
- {
--	const char *file = "/sys/kernel/debug/tracing/kprobe_events";
--
--	return append_to_file(file, "%c:%s/%s %s+0x%zx",
-+	return append_to_file(tracefs_kprobe_events(), "%c:%s/%s %s+0x%zx",
- 			      retprobe ? 'r' : 'p',
- 			      retprobe ? "kretprobes" : "kprobes",
- 			      probe_name, kfunc_name, offset);
-@@ -9850,18 +9876,16 @@ static int add_kprobe_event_legacy(const char *probe_name, bool retprobe,
- 
- static int remove_kprobe_event_legacy(const char *probe_name, bool retprobe)
- {
--	const char *file = "/sys/kernel/debug/tracing/kprobe_events";
--
--	return append_to_file(file, "-:%s/%s", retprobe ? "kretprobes" : "kprobes", probe_name);
-+	return append_to_file(tracefs_kprobe_events(), "-:%s/%s",
-+			      retprobe ? "kretprobes" : "kprobes", probe_name);
- }
- 
- static int determine_kprobe_perf_type_legacy(const char *probe_name, bool retprobe)
- {
- 	char file[256];
- 
--	snprintf(file, sizeof(file),
--		 "/sys/kernel/debug/tracing/events/%s/%s/id",
--		 retprobe ? "kretprobes" : "kprobes", probe_name);
-+	snprintf(file, sizeof(file), "%s/events/%s/%s/id",
-+		 tracefs_path(), retprobe ? "kretprobes" : "kprobes", probe_name);
- 
- 	return parse_uint_from_file(file, "%d\n");
- }
-@@ -10213,9 +10237,7 @@ static void gen_uprobe_legacy_event_name(char *buf, size_t buf_sz,
- static inline int add_uprobe_event_legacy(const char *probe_name, bool retprobe,
- 					  const char *binary_path, size_t offset)
- {
--	const char *file = "/sys/kernel/debug/tracing/uprobe_events";
--
--	return append_to_file(file, "%c:%s/%s %s:0x%zx",
-+	return append_to_file(tracefs_uprobe_events(), "%c:%s/%s %s:0x%zx",
- 			      retprobe ? 'r' : 'p',
- 			      retprobe ? "uretprobes" : "uprobes",
- 			      probe_name, binary_path, offset);
-@@ -10223,18 +10245,16 @@ static inline int add_uprobe_event_legacy(const char *probe_name, bool retprobe,
- 
- static inline int remove_uprobe_event_legacy(const char *probe_name, bool retprobe)
- {
--	const char *file = "/sys/kernel/debug/tracing/uprobe_events";
--
--	return append_to_file(file, "-:%s/%s", retprobe ? "uretprobes" : "uprobes", probe_name);
-+	return append_to_file(tracefs_uprobe_events(), "-:%s/%s",
-+			      retprobe ? "uretprobes" : "uprobes", probe_name);
- }
- 
- static int determine_uprobe_perf_type_legacy(const char *probe_name, bool retprobe)
- {
- 	char file[512];
- 
--	snprintf(file, sizeof(file),
--		 "/sys/kernel/debug/tracing/events/%s/%s/id",
--		 retprobe ? "uretprobes" : "uprobes", probe_name);
-+	snprintf(file, sizeof(file), "%s/events/%s/%s/id",
-+		 tracefs_path(), retprobe ? "uretprobes" : "uprobes", probe_name);
- 
- 	return parse_uint_from_file(file, "%d\n");
- }
-@@ -10782,9 +10802,8 @@ static int determine_tracepoint_id(const char *tp_category,
- 	char file[PATH_MAX];
- 	int ret;
- 
--	ret = snprintf(file, sizeof(file),
--		       "/sys/kernel/debug/tracing/events/%s/%s/id",
--		       tp_category, tp_name);
-+	ret = snprintf(file, sizeof(file), "%s/events/%s/%s/id",
-+		       tracefs_path(), tp_category, tp_name);
- 	if (ret < 0)
- 		return -errno;
- 	if (ret >= sizeof(file)) {
+On Thu, 14 Jul 2022 10:46:09 +0800 you wrote:
+> Currently, samples/bpf, tools/runqslower and bpf/iterators use bpftool
+> for vmlinux.h, skeleton, and static linking only. We can uselightweight
+> bootstrap version of bpftool to handle these, and it will be faster.
+> 
+> v2:
+> - make libbpf and bootstrap bpftool independent. and make it simple.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,v2,1/3] samples: bpf: Fix cross-compiling error by using bootstrap bpftool
+    https://git.kernel.org/bpf/bpf-next/c/2e4966288c16
+  - [bpf-next,v2,2/3] tools: runqslower: build and use lightweight bootstrap version of bpftool
+    https://git.kernel.org/bpf/bpf-next/c/3a2a58c4479a
+  - [bpf-next,v2,3/3] bpf: iterators: build and use lightweight bootstrap version of bpftool
+    https://git.kernel.org/bpf/bpf-next/c/3848636b4a88
+
+You are awesome, thank you!
 -- 
-2.30.2
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
