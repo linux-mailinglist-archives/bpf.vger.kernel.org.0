@@ -2,155 +2,470 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2DE575EE0
-	for <lists+bpf@lfdr.de>; Fri, 15 Jul 2022 11:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E1AB575FCD
+	for <lists+bpf@lfdr.de>; Fri, 15 Jul 2022 13:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232458AbiGOJ5E (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Jul 2022 05:57:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38414 "EHLO
+        id S229436AbiGOLLR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Jul 2022 07:11:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232491AbiGOJ5D (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Jul 2022 05:57:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D19C97B78A
-        for <bpf@vger.kernel.org>; Fri, 15 Jul 2022 02:57:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1657879020;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8Hrnh4xSI/kevtIOtrai4yHB4Q/NHMbskcGk41P5Ttk=;
-        b=PsH6Jp4gDgWEO2c6O5T8slh9gayjaLIKx7B3sXJqc1ZliDKia4tYlaxgdMmKghcLBdAT63
-        gompULAD7cQQMxgWv4hNE8l8s1BzQpM8vayKzm4gcEsSdkCEpTkEhWFaoWXJpRqY6LrOGw
-        VxZdpqA4X4mV5hOrxoDtWCCkfyiWtbg=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-657--HUzbqTsO7iu3pFrlJdzmQ-1; Fri, 15 Jul 2022 05:56:59 -0400
-X-MC-Unique: -HUzbqTsO7iu3pFrlJdzmQ-1
-Received: by mail-pj1-f71.google.com with SMTP id o21-20020a17090aac1500b001ef977190efso5067294pjq.7
-        for <bpf@vger.kernel.org>; Fri, 15 Jul 2022 02:56:59 -0700 (PDT)
+        with ESMTP id S229579AbiGOLLQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Jul 2022 07:11:16 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F6987209;
+        Fri, 15 Jul 2022 04:11:15 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id 89-20020a17090a09e200b001ef7638e536so11239539pjo.3;
+        Fri, 15 Jul 2022 04:11:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=BG9YvC3BwrTAgLXPXrej1WPHud5fipPH0Cx+IwE2jfA=;
+        b=i6Px+ViOnCMP9eUExdKaz8dt2Zig5nTm0ixHQLEyGg9Lz77UO2wzZzs6fTCER4Kcnz
+         i5U9TVTssrtd9qGpvFScIEZ8i14w8iUzD3Rnz9O040xVTlDTdqKQVtKMEQ4SiW9LJGTF
+         mxzYXLwxF8JNw6S41JtYmESd7BO+jwEJpsOhMveMNvLTa1akrK+XhkGikqZMCtMR5Bt4
+         4pQNcU0M+XAAbiD5vzTOFgs++eVGbnBFvy/Mwt4Sv3AseHAJQcY+5WsnOdN5/WzbQnx/
+         AWeKg29w1ng1EqYxhRNTMzYZ1/rl9X1mZS5UdJbV2Ow/sW7hUrlPmQ2ItMPGVliki+cH
+         28Yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8Hrnh4xSI/kevtIOtrai4yHB4Q/NHMbskcGk41P5Ttk=;
-        b=4K2HC/27sX61wYsT0cRXFxKKmh+ZzsLwE7b4BE57Fw7e4k1Xkpdn995PVG5ouQvOaL
-         eZ9RzTo1vaeOix3YW3OSXWBYThoA0lm/Z6x0NcLkB5mCoVextAtrf7bW0LnYJ5n9gLln
-         P2IH6bp30JxqmJZI5gr7hKxQsQ8R1uf3e4rbbeEgMXzspGrs9jXQ5aT/7X5KaNblrfP9
-         qa2QKA9Pdn8JfD5I5Jt6qixJGQUDv1MqRgD+A7nqOgdsarjJptT0y69OfhDGq6gkNeV3
-         vyNnwf4G173gLYCJl8IDRx/2o7bwtM4RUJh58V1Kvu5irolwL/RNFYZdGreEfI1pabRL
-         dD5Q==
-X-Gm-Message-State: AJIora+qAmd7ZaynEv7nNNOGHhFjLtMqmxaeMFxsWJH7k/vm8Ge/2TXz
-        bRpk5AC31nKASgIkkitbOgx8VvFrmG3YKvMrJ+j4xnTM6ImXhy221TlLgLCUtCvfcSHGSP4W/o+
-        01CvrZ+BTqPil+iPqjUX8LWq1saUZ
-X-Received: by 2002:a17:90a:be0c:b0:1ef:accb:23a5 with SMTP id a12-20020a17090abe0c00b001efaccb23a5mr14728449pjs.113.1657879018490;
-        Fri, 15 Jul 2022 02:56:58 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1vH3VKnUSifYcKOV2DL1yCJLfK4VppjP4mBn1OJIP42LQAI4oYiGA7TAcUy7OJJe7owCfc/M0euZYcsf4hCj2s=
-X-Received: by 2002:a17:90a:be0c:b0:1ef:accb:23a5 with SMTP id
- a12-20020a17090abe0c00b001efaccb23a5mr14728406pjs.113.1657879018230; Fri, 15
- Jul 2022 02:56:58 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=BG9YvC3BwrTAgLXPXrej1WPHud5fipPH0Cx+IwE2jfA=;
+        b=frOraTuYnhAbK/K196jQ90JRiPjxpDWnkvjaJP01c3u2j7rRPJ3kyWxBs7e6uc+KhC
+         efGdlc7J/S5Y6IMQRZUzJab6NP8CIJKKQrkwlGctZKFXOQKJmCGMKcHvjspCHGCkYrJb
+         eVLyaMt1cfd8DMJppzaF8Q/tt1+33CBL8+1XuszLyIckPNmjqK9sgQEy2l8ehLdZ73hs
+         rWPDBwKTdFLguaoiDJr1BN/qWlSX0pGq0uOCUXDgcy8F+Dmt+r8ZE3tbun9jz5VvTuxi
+         zrw9ZrF028fbBr+PVuG0O4exgCmzMUOz9Ep/XWe8xCG7PWKzk7Xk1pR+rf+qAgQ2AZ2z
+         JTHg==
+X-Gm-Message-State: AJIora8QdLcFotq2WgqCGdRSVU/5GLCF5EZZd04c8aIw0k1UDBj2YDJt
+        PyX7Kpi8Yy/RmwUL/5ZFZKPeE4dm/lJvazFofAs=
+X-Google-Smtp-Source: AGRyM1vwCDdYfNbWsvXniDg+41xlT8lT9N0CC5p9jm8DkzI+RL6GvYFcdtAqW5W3wRkPSjrn+Xyw7lfEeHdhtZ75+9A=
+X-Received: by 2002:a17:902:8508:b0:16c:46ff:53cb with SMTP id
+ bj8-20020a170902850800b0016c46ff53cbmr13017271plb.168.1657883474509; Fri, 15
+ Jul 2022 04:11:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220712145850.599666-1-benjamin.tissoires@redhat.com>
- <20220712145850.599666-13-benjamin.tissoires@redhat.com> <YtD09KwkxvJAbgCy@kroah.com>
-In-Reply-To: <YtD09KwkxvJAbgCy@kroah.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Fri, 15 Jul 2022 11:56:46 +0200
-Message-ID: <CAO-hwJ+d6mNO2L5kZtOC6QVrDy+LZ6ECoY2f83C93GFPKbSx7g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 12/23] HID: initial BPF implementation
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Jiri Kosina <jikos@kernel.org>,
+References: <20220628194812.1453059-1-alexandr.lobakin@intel.com>
+ <62bbedf07f44a_2181420830@john.notmuch> <87iloja8ly.fsf@toke.dk>
+ <20220704154440.7567-1-alexandr.lobakin@intel.com> <87a69o94wz.fsf@toke.dk>
+ <20220705154120.22497-1-alexandr.lobakin@intel.com> <87pmij75r1.fsf@toke.dk>
+ <20220706135023.1464979-1-alexandr.lobakin@intel.com> <87edyxaks0.fsf@toke.dk>
+ <CAJ8uoz1XVqVCpkKo18qbkh6jq_Lejk24OwEWCB9cWhokYLEBDQ@mail.gmail.com> <bea0164c-53dc-efc7-27f3-d1a1b799d880@redhat.com>
+In-Reply-To: <bea0164c-53dc-efc7-27f3-d1a1b799d880@redhat.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Fri, 15 Jul 2022 13:11:03 +0200
+Message-ID: <CAJ8uoz0yZm_b0BW5dR=yMh9m1oXR-qEQ+5LDMoN2NEXu_sXPFg@mail.gmail.com>
+Subject: Re: [xdp-hints] Re: [PATCH RFC bpf-next 00/52] bpf, xdp: introduce
+ and use Generic Hints/metadata
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>,
-        Tero Kristo <tero.kristo@linux.intel.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+        Larysa Zaremba <larysa.zaremba@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Yajun Deng <yajun.deng@linux.dev>,
+        Willem de Bruijn <willemb@google.com>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        xdp-hints@xdp-project.net
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 15, 2022 at 7:02 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+On Tue, Jul 12, 2022 at 4:15 PM Jesper Dangaard Brouer
+<jbrouer@redhat.com> wrote:
 >
-> On Tue, Jul 12, 2022 at 04:58:39PM +0200, Benjamin Tissoires wrote:
-> > --- /dev/null
-> > +++ b/drivers/hid/bpf/Kconfig
-> > @@ -0,0 +1,19 @@
-> > +# SPDX-License-Identifier: GPL-2.0-only
-> > +menu "HID-BPF support"
-> > +     #depends on x86_64
-> > +
-> > +config HID_BPF
-> > +     bool "HID-BPF support"
-> > +     default y
 >
-> Things are only default y if you can't boot your machine without it.
-> Perhaps just mirror what HID is to start with and do not select HID?
 >
-> > +     depends on BPF && BPF_SYSCALL
-> > +     select HID
+> On 12/07/2022 12.33, Magnus Karlsson wrote:
+> > On Thu, Jul 7, 2022 at 1:25 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@r=
+edhat.com> wrote:
+> >>
+> >> Alexander Lobakin <alexandr.lobakin@intel.com> writes:
+> >>
+> >>> From: Toke H??iland-J??rgensen <toke@redhat.com>
+> >>> Date: Tue, 05 Jul 2022 20:51:14 +0200
+> >>>
+> >>>> Alexander Lobakin <alexandr.lobakin@intel.com> writes:
+> >>>>
+> >>>> [... snipping a bit of context here ...]
+> >>>>
+> >>>>>>>> Yeah, I'd agree this kind of configuration is something that can=
+ be
+> >>>>>>>> added later, and also it's sort of orthogonal to the consumption=
+ of the
+> >>>>>>>> metadata itself.
+> >>>>>>>>
+> >>>>>>>> Also, tying this configuration into the loading of an XDP progra=
+m is a
+> >>>>>>>> terrible interface: these are hardware configuration options, le=
+t's just
+> >>>>>>>> put them into ethtool or 'ip link' like any other piece of devic=
+e
+> >>>>>>>> configuration.
+> >>>>>>>
+> >>>>>>> I don't believe it fits there, especially Ethtool. Ethtool is for
+> >>>>>>> hardware configuration, XDP/AF_XDP is 95% software stuff (apart f=
+rom
+> >>>>>>> offload bits which is purely NFP's for now).
+> >>>>>>
+> >>>>>> But XDP-hints is about consuming hardware features. When you're
+> >>>>>> configuring which metadata items you want, you're saying "please p=
+rovide
+> >>>>>> me with these (hardware) features". So ethtool is an excellent pla=
+ce to
+> >>>>>> do that :)
+> >>>>>
+> >>>>> With Ethtool you configure the hardware, e.g. it won't strip VLAN
+> >>>>> tags if you disable rx-cvlan-stripping. With configuring metadata
+> >>>>> you only tell what you want to see there, don't you?
+> >>>>
+> >>>> Ah, I think we may be getting closer to identifying the disconnect
+> >>>> between our way of thinking about this!
+> >>>>
+> >>>> In my mind, there's no separate "configuration of the metadata" step=
+.
+> >>>> You simply tell the hardware what features you want (say, "enable
+> >>>> timestamps and VLAN offload"), and the driver will then provide the
+> >>>> information related to these features in the metadata area
+> >>>> unconditionally. All XDP hints is about, then, is a way for the driv=
+er
+> >>>> to inform the rest of the system how that information is actually la=
+id
+> >>>> out in the metadata area.
+> >>>>
+> >>>> Having a separate configuration knob to tell the driver "please lay =
+out
+> >>>> these particular bits of metadata this way" seems like a totally
+> >>>> unnecessary (and quite complicated) feature to have when we can just=
+ let
+> >>>> the driver decide and use CO-RE to consume it?
+> >>>
+> >>> Magnus (he's currently on vacation) told me it would be useful for
+> >>> AF_XDP to enable/disable particular metadata, at least from perf
+> >>> perspective. Let's say, just fetching of one "checksum ok" bit in
+> >>> the driver is faster than walking through all the descriptor words
+> >>> and driver logics (i.e. there's several hundred locs in ice which
+> >>> just parse descriptor data and build an skb or metadata from it).
+> >>> But if we would just enable/disable corresponding features through
+> >>> Ethtool, that would hurt XDP_PASS. Maybe it's a bad example, but
+> >>> what if I want to have only RSS hash in the metadata (and don't
+> >>> want to spend cycles on parsing the rest), but at the same time
+> >>> still want skb path to have checksum status to not die at CPU
+> >>> checksum calculation?
+> >>
+> >> Hmm, so this feels a little like a driver-specific optimisation? I.e.,
+> >> my guess is that not all drivers have a measurable overhead for pullin=
+g
+> >> out the metadata. Also, once the XDP metadata bits are in place, we ca=
+n
+> >> move in the direction of building SKBs from the same source, so I'm no=
+t
+> >> sure it's a good idea to assume that the XDP metadata is separate from
+> >> what the stack consumes...
+> >>
+> >> In any case, if such an optimisation does turn out to be useful, we ca=
+n
+> >> add it later (backed by rigorous benchmarks, of course), so I think we
+> >> can still start with the simple case and iterate from there?
+> >
+> > Just to check if my intuition was correct or not I ran some benchmarks
+> > around this. I ported Jesper's patch set to the zero-copy driver of
+> > i40e, which was really simple thanks to Jesper's refactoring. One line
+> > of code added to the data path of the zc driver and making
+> > i40e_process_xdp_hints() a global function so it can be reached from
+> > the zc driver.
 >
-> select is rough, why not depend?
+> Happy to hear it was simple to extend this to AF_XDP in the driver.
+> Code design wise I'm trying to keep it simple for drivers to add this.
+> I have a co-worker that have already extended ixgbe.
+>
+> > I also moved the prefetch Jesper added to after the
+> > check if xdp_hints are available since it really degrades performance
+> > in the xdp_hints off case.
+>
+> Good to know.
+>
+> > First number is the throughput change with hints on, and the second
+> > number is with hints off. All are compared to the performance without
+> > Jesper's patch set applied. The application is xdpsock -r (which used
+> > to be part of the samples/bpf directory).
+>
+> For reviewer to relate to these numbers we need to understand/explain
+> the extreme numbers we are dealing with.  In my system with i40e and
+> xdpsock --rx-drop I can AF_XDP drop packets with a rate of 33.633.761 pps=
+.
+>
+> This corresponds to a processing time per packet: 29.7 ns (nanosec)
+>   - Calc: (1/33633761)*10^9
+>
+> > Copy mode with all hints: -21% / -2%
 
-Let me try to explain this mess, maybe you can give me the piece that
-I am missing:
+On my system, the overhead is 66 cycles/packet or 31 ns/packet (2.1
+GHz CPU with TurboBoost disabled). Copy-mode only drops packets at a
+rate of 8.5 Mpps or 118 ns/packet on my system. The rate you quote
+must be for zero-copy as I see something similar there if I enable
+TurboBoost on my system.
 
-The requirements I have (or want) are:
-- HID-BPF should be "part" of HID-core (or something similar of "part"):
-  I intend to have device fixes as part of the regular HID flow, so
-allowing distros to opt out seems a little bit dangerous
-- the HID tree is not as clean as some other trees:
-  drivers/hid/ sees both core elements and leaf drivers
-  transport layers are slightly better, they are in their own
-subdirectories, but some transport layers are everywhere in the kernel
-code or directly in drivers/hid (uhid and hid-logitech-dj for
-instance)
-- HID can be loaded as a module (only ubuntu is using that), and this
-is less and less relevant because of all of the various transport
-layers we have basically prevent a clean unloading of the module
+> The -21% for enabling all hints does sound like an excessive overhead,
+> but time-wise this is a reduction/overhead of 6.2 ns.
+>
+> The real question: Is this 6.2 ns overhead that gives us e.g.
+> RX-checksumming lower than the gain we can obtain from avoiding doin.
+> RX-checksumming in software?
+>   - A: My previous experiments conclude[1] that for 1500 bytes frames we
+>     can save 54 ns (or increase performance with 8% for normal netstack).
 
-These made me think that I should have a separate bpf subdir for
-HID-BPF, to keep things separated, which means I can not include
-HID-BPF in hid.ko directly, it goes into a separate driver. And then I
-have a chicken and egg problem:
-- HID-core needs to call functions from HID-BPF (to hook into it)
-- but HID-BPF needs to also call functions from HID-core (for
-accessing HID internals)
+If you use Rx-checksumming alone, it is a good idea for packets that
+are bigger than something around 500 bytes, if you use copy mode. This
+is a very rough estimation since I cannot mix your numbers with mine.
+But there is a substantial window where it pays off for sure. For ZC,
+this window is even larger, see below.
 
-I have solved that situation with struct hid_bpf_ops but it is not the
-cleanest possible way.
+>
+> I was going for zero overhead when disabling xdp-hints, which is almost
+> true as the -2% is time-wise a reduction/overhead of 0.59 ns.
+>
+>   [1]
+> https://github.com/xdp-project/xdp-project/blob/master/areas/core/xdp_fra=
+me01_checksum.org#measurements-compare-results--conclusion
+>
+>
+> > Zero-copy mode with all hints: -29% / -9%
+>
+> I'm unsure why the percentages increase here, perhaps because zero-copy
+> is faster and thus the overhead becomes a larger percentage?
 
-And that's also why I did "select HID", because HID-BPF without HID is
-pointless.
+For zero-copy, the overhead is 31 cycles/packet or 15 ns/packet on my
+system. I would have expected the cycles/packet overhead for copy-mode
+and zero-copy mode to be about the same since they use the same hints
+code, but it is roughly half for zero-copy. Have not examined why. The
+packet processing time without your patches on my system is 36
+ns/packet or 27.65 Mpps for zero-copy.
 
-One last bit I should add. hid-bpf.ko should be allowed to be compiled
-in as a module, but I had issues at boot because kfuncs were not
-getting registered properly (though it works for the net test driver).
-So I decided to make hid-bpf a boolean instead of a tristate.
+>
+> > Copy mode rx timestamp only (the rest removed with an #if 0): -11%
+> > Zero-copy mode rx timestamp only: -20%
+> >
+> > So, if you only want rx timestamp, but can only enable every hint or
+> > nothing, then you get a 10% performance degradation with copy mode and
+> > 9% with zero-copy mode compared to if you were able just to enable rx
+> > timestamp alone. With these rough numbers (a real implementation would
+> > not have an #if 0) I would say it matters, but that does not mean we
+> > should not start simple and just have a big switch to start with. But
+> > as we add hints (to the same btfid), this will just get worse.
+>
+> IMHO we *do* already have individual enable/disable hints features via
+> ethtool.
+> Have you tried to use the individual ethtool switches. e.g.:
+>
+>   ethtool -K i40e2 rx-checksumming off
+>
+> The i40e code uses bitfields for extracting the descriptor, which cause
+> code that isn't optimal or fully optimized by the compiler.  On my setup
+> I gained 4.2% (or 1.24 ns) by doing this.
 
-As I type all of this, I am starting to wonder if I should not tackle
-the very first point and separate hid-core in its own subdir. This way
-I can have a directory with only the core part, and having hid-bpf in
-here wouldn't be too much of an issue.
+Forgot about that one. Will replace the bitfields and rerun the
+experiments to get the overhead down.
 
-Thoughts?
+>
+> > Here are some other numbers I got, in case someone is interested. They
+> > are XDP numbers from xdp_rxq_info in samples/bpf.
+> >
+> > hints on / hints off
+> > XDP_DROP: -18% / -1.5%
+>
+> My xdp_rxq_info (no-touch XDP_DROP) nanosec numbers are:
+>
+>            hints on / hints off
+>   XDP_DROP: 35.97ns / 29.80ns  (diff 6.17 ns)
+>
+> Maybe interesting if I touch data (via option --read), then the overhead
+> is reduced to 4.84 ns.
 
-Cheers,
-Benjamin
+Good point. We should always touch the data. Will include that in the
+next set of experiments.
 
+> --Jesper
+>
+> > XDP_TX: -10% / -2.5%
+> >
+> >>>>>>> I follow that way:
+> >>>>>>>
+> >>>>>>> 1) you pick a program you want to attach;
+> >>>>>>> 2) usually they are written for special needs and usecases;
+> >>>>>>> 3) so most likely that program will be tied with metadata/driver/=
+etc
+> >>>>>>>     in some way;
+> >>>>>>> 4) so you want to enable Hints of a particular format primarily f=
+or
+> >>>>>>>     this program and usecase, same with threshold and everything
+> >>>>>>>     else.
+> >>>>>>>
+> >>>>>>> Pls explain how you see it, I might be wrong for sure.
+> >>>>>>
+> >>>>>> As above: XDP hints is about giving XDP programs (and AF_XDP consu=
+mers)
+> >>>>>> access to metadata that is not currently available. Tying the life=
+time
+> >>>>>> of that hardware configuration (i.e., which information to provide=
+) to
+> >>>>>> the lifetime of an XDP program is not a good interface: for one th=
+ing,
+> >>>>>> how will it handle multiple programs? What about when XDP is not u=
+sed at
+> >>>>>
+> >>>>> Multiple progs is stuff I didn't cover, but will do later (as you
+> >>>>> all say to me, "let's start with something simple" :)). Aaaand
+> >>>>> multiple XDP progs (I'm not talking about attaching progs in
+> >>>>> differeng modes) is not a kernel feature, rather a libpf feature,
+> >>>>> so I believe it should be handled there later...
+> >>>>
+> >>>> Right, but even if we don't *implement* it straight away we still ne=
+ed
+> >>>> to take it into consideration in the design. And expecting libxdp to
+> >>>> arbitrate between different XDP programs' metadata formats sounds li=
+ke a
+> >>>> royal PITA :)
+> >>>>
+> >>>>>> all but you still want to configure the same features?
+> >>>>>
+> >>>>> What's the point of configuring metadata when there are no progs
+> >>>>> attached? To configure it once and not on every prog attach? I'm
+> >>>>> not saying I don't like it, just want to clarify.
+> >>>>
+> >>>> See above: you turn on the features because you want the stack to
+> >>>> consume them.
+> >>>>
+> >>>>> Maybe I need opinions from some more people, just to have an
+> >>>>> overview of how most of folks see it and would like to configure
+> >>>>> it. 'Cause I heard from at least one of the consumers that
+> >>>>> libpf API is a perfect place for Hints to him :)
+> >>>>
+> >>>> Well, as a program author who wants to consume hints, you'd use
+> >>>> lib{bpf,xdp} APIs to do so (probably in the form of suitable CO-RE
+> >>>> macros)...
+> >>>>
+> >>>>>> In addition, in every other case where we do dynamic data access (=
+with
+> >>>>>> CO-RE) the BPF program is a consumer that modifies itself to acces=
+s the
+> >>>>>> data provided by the kernel. I get that this is harder to achieve =
+for
+> >>>>>> AF_XDP, but then let's solve that instead of making a totally
+> >>>>>> inconsistent interface for XDP.
+> >>>>>
+> >>>>> I also see CO-RE more fitting and convenient way to use them, but
+> >>>>> didn't manage to solve two things:
+> >>>>>
+> >>>>> 1) AF_XDP programs, so what to do with them? Prepare patches for
+> >>>>>     LLVM to make it able to do CO-RE on AF_XDP program load? Or
+> >>>>>     just hardcode them for particular usecases and NICs? What about
+> >>>>>     "general-purpose" programs?
+> >>>>
+> >>>> You provide a library to read the fields. Jesper actually already
+> >>>> implemented this, did you look at his code?
+> >>>>
+> >>>> https://github.com/xdp-project/bpf-examples/tree/master/AF_XDP-inter=
+action
+> >>>>
+> >>>> It basically builds a lookup table at load-time using BTF informatio=
+n
+> >>>> from the kernel, keyed on BTF ID and field name, resolving them into
+> >>>> offsets. It's not quite the zero-overhead of CO-RE, but it's fairly
+> >>>> close and can be improved upon (CO-RE for userspace being one way of
+> >>>> doing that).
+> >>>
+> >>> Aaaah, sorry, I completely missed that. I thought of something
+> >>> similar as well, but then thought "variable field offsets, that
+> >>> would annihilate optimization and performance", and our Xsk team
+> >>> is super concerned about performance hits when using Hints.
+> >>>
+> >>>>
+> >>>>>     And if hardcode, what's the point then to do Generic Hints at
+> >>>>>     all? Then all it needs is making driver building some meta in
+> >>>>>     front of frames via on-off button and that's it? Why BTF ID in
+> >>>>>     the meta then if consumers will access meta hardcoded (via CO-R=
+E
+> >>>>>     or literally hardcoded, doesn't matter)?
+> >>>>
+> >>>> You're quite right, we could probably implement all the access to
+> >>>> existing (fixed) metadata without using any BTF at all - just define=
+ a
+> >>>> common struct and some flags to designate which fields are set. In m=
+y
+> >>>> mind, there are a couple of reasons for going the BTF route instead:
+> >>>>
+> >>>> - We can leverage CO-RE to get close to optimal efficiency in field
+> >>>>    access.
+> >>>>
+> >>>> and, more importantly:
+> >>>>
+> >>>> - It's infinitely extensible. With the infrastructure in place to ma=
+ke
+> >>>>    it really easy to consume metadata described by BTF, we lower the=
+ bar
+> >>>>    for future innovation in hardware offloads. Both for just adding =
+new
+> >>>>    fixed-function stuff to hardware, but especially for fully
+> >>>>    programmable hardware.
+> >>>
+> >>> Agree :) That libxdp lookup translator fixed lots of stuff in my
+> >>> mind.
+> >>
+> >> Great! Looks like we're slowly converging towards a shared
+> >> understanding, then! :)
+> >>
+> >>>>> 2) In-kernel metadata consumers? Also do CO-RE? Otherwise, with no
+> >>>>>     generic metadata structure they won't be able to benefit from
+> >>>>>     Hints. But I guess we still need to provide kernel with meta?
+> >>>>>     Or no?
+> >>>>
+> >>>> In the short term, I think the "generic structure" approach is fine =
+for
+> >>>> leveraging this in the stack. Both your and Jesper's series include
+> >>>> this, and I think that's totally fine. Longer term, if it turns out =
+to
+> >>>> be useful to have something more dynamic for the stack consumption a=
+s
+> >>>> well, we could extend it to be CO-RE based as well (most likely by
+> >>>> having the stack load a "translator" BPF program or something along
+> >>>> those lines).
+> >>>
+> >>> Oh, that translator prog sounds nice BTW!
+> >>
+> >> Yeah, it's only a rough idea Jesper and I discussed at some point, but=
+ I
+> >> think it could have potential (see also point above re: making XDP hin=
+ts
+> >> *the* source of metadata for the whole stack; wouldn't it be nice if
+> >> drivers didn't have to deal with the intricacies of assembling SKBs?).
+> >>
+> >> -Toke
+> >>
+> >
+>
