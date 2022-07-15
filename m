@@ -2,91 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E982D575E2B
-	for <lists+bpf@lfdr.de>; Fri, 15 Jul 2022 11:02:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27B97575E55
+	for <lists+bpf@lfdr.de>; Fri, 15 Jul 2022 11:18:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233546AbiGOIxM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Jul 2022 04:53:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43264 "EHLO
+        id S230028AbiGOJSN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Jul 2022 05:18:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233522AbiGOIwv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Jul 2022 04:52:51 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D08485D6A
-        for <bpf@vger.kernel.org>; Fri, 15 Jul 2022 01:51:50 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id l22-20020a05600c4f1600b003a2e10c8cdeso4430902wmq.1
-        for <bpf@vger.kernel.org>; Fri, 15 Jul 2022 01:51:50 -0700 (PDT)
+        with ESMTP id S230245AbiGOJSM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Jul 2022 05:18:12 -0400
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5107F2AE8
+        for <bpf@vger.kernel.org>; Fri, 15 Jul 2022 02:18:11 -0700 (PDT)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-31c89653790so41187517b3.13
+        for <bpf@vger.kernel.org>; Fri, 15 Jul 2022 02:18:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=GgkRzO21rhAu9aYlbhzR1FqLgieRHzSARHA5Kmff5MI=;
-        b=pCdUnbaGoZz3+NT6huHO7yWsQYtdJKN3rWlj9Cwf0+mAHAs1gv6KU0fQ67iOlGkyIL
-         n3tVW2uRG7CYlSx6sGvyXTp+HTnTd+VvLGAMR1hYidb8avx8caTaSCv9NhC2Whds66h4
-         U6oLQQA2TyezLE3Bp2BZfMW787qSo9s7TZGx1+1EYPi43NQb/CVUWb6XLap92bsT9tHr
-         M/uPLE+kbMyE0FvQE0D2pzK7k1bYDkyJS5dNNtRDbMkj4dDqVmT4RTAcYrpYWj/O+KsH
-         dOr53zdH5SAhHxXaqpjLcKtUo5M+Bc2rtmGnmjeIQ0ojn46nGEZX4r5Ew4DyxyMRZPXN
-         +cpw==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=k3C0wIojyulqJOc3gqPPTvNhV+eA7FObSuZqLBbdRPM=;
+        b=pOogBYE+C6kqGGUAfEUij9yax6uLLM1R/aVT53WeTPmxIYZFWu6IWa2WPjga4I/MNH
+         P4HlXB3K/l4UpcvdlOrtecwmGdwA2MUh+2OePYYn/Y4ea/EqxDJTYaOotoyfIrPOLdc/
+         oWWQkFZjgD51+iObnDFwo/7bUIIxqTYnXHAaj7DZCOvVXkBaTSsH0VdaSwZs/hlpXC4K
+         7lBmLHoy1pLi9k98lUEObNmpfiFwWxKnovSOb+FuADITS42NiyabI8TSYOyGDR+tW7bA
+         68YbPJQAYaPmkx1mQmtYnngXnbMQL2FG7jqtw239GNfsJLCBbIsYP4Jsd8SAnBbFR4Am
+         YHbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=GgkRzO21rhAu9aYlbhzR1FqLgieRHzSARHA5Kmff5MI=;
-        b=WN7HAg41s4GbdSSyXLKtD2fifpbNa1WXm1c/Ho6nwTYcVLFPvB5IULpG5fx556TSLK
-         tZTjsSy5Oul5RMh7CMRY0G5iE6SJYnAkiD49dpQn2ZrTD1Za4OD8I4mdBHbrMQ9zNkPd
-         gOED1clzEeRm0BTY6Rdn2lJyd3yjqN80THj1+LEAG7kdXs5aq2t5tsAnqqEeYsnB9gZ3
-         9Eeh2JbNRdy/LzqhiPzoV0qNWRDK4Lz6cAwQY3bl4e+wfxbFGql37vyB4cWIOjltW5bU
-         zLaSWOHl+DNQNOI1sVoPz/4suntu3cPnMcFMiFrbQuGtctwDYJxODP5WrM38H+sEc+k+
-         ZsQw==
-X-Gm-Message-State: AJIora+72ezZG01iOvkTHUK7mJQmYm9461Gj5W0q1JFtfVsLMegnAnZX
-        N1rb/JVSFYCVt1uTv7MPcovXsw==
-X-Google-Smtp-Source: AGRyM1vcEkYiYG88MFItmaDLW68WJWnQNk5cx7A0NDGQS1DVH1Nroa1AACOuJGIvlmu4Oidx2if3YA==
-X-Received: by 2002:a05:600c:4e53:b0:3a2:fb49:ca67 with SMTP id e19-20020a05600c4e5300b003a2fb49ca67mr12536190wmq.167.1657875109105;
-        Fri, 15 Jul 2022 01:51:49 -0700 (PDT)
-Received: from [192.168.178.32] ([51.155.200.13])
-        by smtp.gmail.com with ESMTPSA id l2-20020adff482000000b0021b9585276dsm3377556wro.101.2022.07.15.01.51.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Jul 2022 01:51:48 -0700 (PDT)
-Message-ID: <6e138fa5-ec8a-bf34-f243-4c82188b2af3@isovalent.com>
-Date:   Fri, 15 Jul 2022 09:51:47 +0100
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=k3C0wIojyulqJOc3gqPPTvNhV+eA7FObSuZqLBbdRPM=;
+        b=2FjEM59For1BRzqaDmqcO9NZDMqrZBB4pOlYNka5hgOc7WUJMyKMMw274bV3a+r2rm
+         n3+D3J3DiM4yUdSqknp1rhyCH4j4PFFsyOKauMyalhccjcnX0ep9tbSc8yVgp/Ou6HRE
+         kIRpTmjh6WJRT0H0GFtrkyzSoqdOslKDDzEti9Ns4i9J+KO2m/loMchCisXwl7I1cs+/
+         iTtjQU6koOPKxyzwymKgfo5LyY8gI98Fo7h2AWzgBcOeyCO/bg2g0FP511JgsDFfTz1y
+         7hg8foRjTM5omO9zKFgN8Kv/T4ujbxq572xlYAeP1b67KRaR67E4eLabYDOD29gZxAwd
+         gsJw==
+X-Gm-Message-State: AJIora//mLIMFa36DxNCuGgtTpYImSYasb63wFJsGa7jeKfdoCJeY0ML
+        v2g1EABYiw3/tAACncWZWVUjRoCmyhn7DRvwGGMNfg==
+X-Google-Smtp-Source: AGRyM1vG8/RlhJDU4+yZQLBM+ZndwV5DjU4EYfGa6tSpfbbGXItXheAJxeNNY805A4KiKuOF3zqWH6FVEA50bsNrh9Y=
+X-Received: by 2002:a81:5045:0:b0:31c:9f67:a611 with SMTP id
+ e66-20020a815045000000b0031c9f67a611mr15041103ywb.55.1657876690309; Fri, 15
+ Jul 2022 02:18:10 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.0.2
-Subject: Re: [PATCH bpf-next v1] bpf: fix bpf_skb_pull_data documentation
-Content-Language: en-GB
-To:     Joanne Koong <joannelkoong@gmail.com>, bpf <bpf@vger.kernel.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
+References: <20220715032233.230507-1-shaozhengchao@huawei.com> <20220714213025.448faf8c@kernel.org>
+In-Reply-To: <20220714213025.448faf8c@kernel.org>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Fri, 15 Jul 2022 11:17:59 +0200
+Message-ID: <CANn89iLS6rhm_N6g-x0JQC8s2Kx2yVO7+r89BdBZNrzr9473WQ@mail.gmail.com>
+Subject: Re: [PATCH v3,bpf-next] bpf: Don't redirect packets with invalid pkt_len
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Zhengchao Shao <shaozhengchao@huawei.com>,
+        bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Rumen Telbizov <telbizov@gmail.com>
-References: <20220714224721.2615592-1-joannelkoong@gmail.com>
- <CAJnrk1ZcDjMVPgf2QSfmjJDjmWEGp0h0ZXuUEPByv9w542txmw@mail.gmail.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <CAJnrk1ZcDjMVPgf2QSfmjJDjmWEGp0h0ZXuUEPByv9w542txmw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, martin.lau@linux.dev,
+        song@kernel.org, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Menglong Dong <imagedong@tencent.com>,
+        Petr Machata <petrm@nvidia.com>, Arnd Bergmann <arnd@arndb.de>,
+        David Ahern <dsahern@kernel.org>,
+        Talal Ahmad <talalahmad@google.com>,
+        Kees Cook <keescook@chromium.org>, Hao Luo <haoluo@google.com>,
+        jolsa@kernel.org, weiyongjun1@huawei.com,
+        YueHaibing <yuehaibing@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 15/07/2022 00:14, Joanne Koong wrote:
-> On Thu, Jul 14, 2022 at 3:48 PM Joanne Koong <joannelkoong@gmail.com> wrote:
->>
->> Fix documentation for bpf_skb_pull_data() helper for
->> when flags == 0.
-> sorry, this commit message should be "when len == 0" (not flags).
->>
->> Fixes: fa15601ab31e ("bpf: add documentation for eBPF helpers (33-41)")
->> Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+On Fri, Jul 15, 2022 at 6:30 AM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Fri, 15 Jul 2022 11:22:33 +0800 Zhengchao Shao wrote:
+> > +#ifdef CONFIG_DEBUG_NET
+> > +     if (unlikely(!skb->len)) {
+> > +             pr_err("%s\n", __func__);
+> > +             skb_dump(KERN_ERR, skb, false);
+> > +             WARN_ON_ONCE(1);
+> > +     }
+>
+> Is there a reason to open code WARN_ONCE() like that?
+>
+> #ifdef CONFIG_DEBUG_NET
+>         if (WARN_ONCE(!skb->len, "%s\n", __func__))
+>                 skb_dump(KERN_ERR, skb, false);
+>
+> or
+>
+>         if (IS_ENABLED(CONFIG_DEBUG_NET) &&
+>             WARN_ONCE(!skb->len, "%s\n", __func__))
+>                 skb_dump(KERN_ERR, skb, false);
 
-Yes, Rumen reported this to me some time ago but I never took the time
-to send a fix. Thanks a lot!
 
-Acked-by: Quentin Monnet <quentin@isovalent.com>
+Also the skb_dump() needs to be done once.
 
+DO_ONCE_LITE(skb_dump, KERN_ERR, skb, false);
