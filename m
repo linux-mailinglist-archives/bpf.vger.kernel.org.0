@@ -2,107 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A32A576737
-	for <lists+bpf@lfdr.de>; Fri, 15 Jul 2022 21:13:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7675D57673C
+	for <lists+bpf@lfdr.de>; Fri, 15 Jul 2022 21:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229957AbiGOTMZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Jul 2022 15:12:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50118 "EHLO
+        id S230341AbiGOTQr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Jul 2022 15:16:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbiGOTMX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Jul 2022 15:12:23 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EECC040BF7;
-        Fri, 15 Jul 2022 12:12:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9E7EBB82E16;
-        Fri, 15 Jul 2022 19:12:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30CBCC34115;
-        Fri, 15 Jul 2022 19:12:19 +0000 (UTC)
-Date:   Fri, 15 Jul 2022 15:12:17 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Song Liu <song@kernel.org>, Networking <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        "jolsa@kernel.org" <jolsa@kernel.org>,
-        "mhiramat@kernel.org" <mhiramat@kernel.org>
-Subject: Re: [PATCH v2 bpf-next 3/5] ftrace: introduce
- FTRACE_OPS_FL_SHARE_IPMODIFY
-Message-ID: <20220715151217.141dc98f@gandalf.local.home>
-In-Reply-To: <0CE9BF90-B8CE-40F6-A431-459936157B78@fb.com>
-References: <20220602193706.2607681-1-song@kernel.org>
-        <20220602193706.2607681-4-song@kernel.org>
-        <20220713203343.4997eb71@rorschach.local.home>
-        <AA1D9833-DF67-4AFD-815C-DD89AB57B3A2@fb.com>
-        <20220714204817.2889e280@rorschach.local.home>
-        <6A7EF1C7-471B-4652-99C1-87C72C223C59@fb.com>
-        <20220714224646.62d49e36@rorschach.local.home>
-        <170BE89A-101C-4B25-A664-5E47A902DB83@fb.com>
-        <0CE9BF90-B8CE-40F6-A431-459936157B78@fb.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        with ESMTP id S229538AbiGOTQr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Jul 2022 15:16:47 -0400
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5030360506;
+        Fri, 15 Jul 2022 12:16:46 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 1537D3200CEE;
+        Fri, 15 Jul 2022 15:16:42 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Fri, 15 Jul 2022 15:16:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
+        cc:cc:content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to; s=fm3; t=1657912602; x=1657999002; bh=8d5NIeZOvl
+        yJTIRnNerFjURGzDw8cShuTtmrWswISE0=; b=fMEn9dzbtsiJA+zsiLeNM4v5VD
+        aqaXuqNQVFhZxa0FO0w3bfMcsjJfBCRW6XrME1J1EqNzwF6ZHajwfuhOIkdBHwAn
+        ahSeNrQGdyU2xZ5juR5LACgwsvFoAmF+MwO6KN5znYW+OrbLc9nXrdhrdp9416KG
+        ZsxoCHhOZXR17AveLdJ72lU2RPhL0O1r7pMtQrLtJbRG8+jvVa1125oR4tkiDd48
+        4fZfF2cYTJL7bu8oVUzcjB+S8+vRuQxTeqQsNDK/xKODmixt2325y28pQtlYfiL9
+        fgqMvkyBm1dsq0HYb50ziZL/XV0HD+Z3Ow9outqhdHLdaf3vHdugigvq8/Bg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+        :feedback-id:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; t=1657912602; x=1657999002; bh=8d5NIeZOvlyJTIRnNerFjURGzDw8
+        cShuTtmrWswISE0=; b=Si+RjZBrYL1xeaI7H+W0r2FD8jw22kthG9Xp8kzIIpUg
+        qI7O+CQEfusFF/3NWUtgf2K7sorMSeGpgcAlBKyGLjzzoxBF33wokGm6X/AVozm8
+        RADg8KkbeMeVLU9icFTkVfQUudGytkR20ORPEZFyKRKtSNBBtNQTmtdwN+N/lLQe
+        L9Zn+gB7rO1mqCsQbqHGy/dUiulKLaqfAG58SwGUox4q3a2Ol0+8UkEkn1j7zpOu
+        BW6ekVi4tKDqY+oUL7uHQt87UIAr3rurYVTUtsvfPBbnVGVJsPiR0yAEAWm92lkn
+        CnsjhQgRoKXLmJP9KzjZZ84f7fUxCGEkluu4r0GMjg==
+X-ME-Sender: <xms:Gr3RYubbRwY5gmtQKKlHFHeC27NKKsc90pk8Dti8Z2MqLzruyCvClw>
+    <xme:Gr3RYhZhJ7DiT-yMzBzzv2QecYLCDm-5FCGhqhPpfNh5_w3o0cwdWft146zzcNXn3
+    OZEC5WzZjz_5IefQw>
+X-ME-Received: <xmr:Gr3RYo9ypu1EY0FHVC-7eL7ywjG2r-jasIn3-DtROT_7nJik61eDrfdPl9Shw9sVQtsPsTUaYV2PEcGQZ-7ol5FbYNhywnZuyZbWDArw1f1HTJwOc2GFN9aQxRuA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudekuddgudefjecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeetnhgu
+    rhgvshcuhfhrvghunhguuceorghnughrvghssegrnhgrrhgriigvlhdruggvqeenucggtf
+    frrghtthgvrhhnpedvffefvefhteevffegieetfefhtddvffejvefhueetgeeludehteev
+    udeitedtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpegrnhgurhgvshesrghnrghrrgiivghlrdguvg
+X-ME-Proxy: <xmx:Gr3RYgqtgp3WhrDoVCjWd-zrsdl5rBDnAwb4TYh4VfmBAVCpKgy9Tw>
+    <xmx:Gr3RYpptluWNZFG1c6teU-4mvqUf0rwRL3OO0iDEgh83RzzH3k4vmQ>
+    <xmx:Gr3RYuSiY_6wC-0Vspz7hB-OkOrn0NzuEYPuS-8GMk3zLt3f3Cbh1g>
+    <xmx:Gr3RYqcGnLcZV-s5spf5WViC6YuIcmO4lGcBPdZqBeEMiQNlNPpi3Q>
+Feedback-ID: id4a34324:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 15 Jul 2022 15:16:42 -0400 (EDT)
+Date:   Fri, 15 Jul 2022 12:16:41 -0700
+From:   Andres Freund <andres@anarazel.de>
+To:     Ben Hutchings <ben@decadent.org.uk>
+Cc:     sedat.dilek@gmail.com, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>
+Subject: Re: [PATCH v2 0/5] tools: fix compilation failure caused by
+ init_disassemble_info API changes
+Message-ID: <20220715191641.go6xbmhic3kafcsc@awork3.anarazel.de>
+References: <20220622231624.t63bkmkzphqvh3kx@alap3.anarazel.de>
+ <20220703212551.1114923-1-andres@anarazel.de>
+ <CA+icZUVDzogiyG=8sCuxdW4aaby_kRwToit2tg-A4D3VorVKnA@mail.gmail.com>
+ <5afd3b45e9b95fa5023790c24f8a1b0b4ce1ca7c.camel@decadent.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5afd3b45e9b95fa5023790c24f8a1b0b4ce1ca7c.camel@decadent.org.uk>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 15 Jul 2022 17:42:55 +0000
-Song Liu <songliubraving@fb.com> wrote:
+Hi,
 
+On 2022-07-14 15:25:44 +0200, Ben Hutchings wrote:
+> Thanks, I meant to send that fix upstream but got distracted.  It
+> should really be folded into "tools perf: Fix compilation error with
+> new binutils".
 
-> A quick update and ask for feedback/clarification.
-> 
-> Based on my understanding, you recommended calling ops_func() from 
-> __ftrace_hash_update_ipmodify() and in ops_func() the direct trampoline
-> may make changes to the trampoline. Did I get this right?
-> 
-> 
-> I am going towards this direction, but hit some issue. Specifically, in 
-> __ftrace_hash_update_ipmodify(), ftrace_lock is already locked, so the 
-> direct trampoline cannot easily make changes with 
-> modify_ftrace_direct_multi(), which locks both direct_mutex and 
-> ftrace_mutex. 
-> 
-> One solution would be have no-lock version of all the functions called
-> by modify_ftrace_direct_multi(), but that's a lot of functions and the
-> code will be pretty ugly. The alternative would be the logic in v2: 
-> __ftrace_hash_update_ipmodify() returns -EAGAIN, and we make changes to 
-> the direct trampoline in other places: 
-> 
-> 1) if DIRECT ops attached first, the trampoline is updated in 
->    prepare_direct_functions_for_ipmodify(), see 3/5 of v2;
-> 
-> 2) if IPMODIFY ops attached first, the trampoline is updated in
->    bpf_trampoline_update(), see "goto again" path in 5/5 of v2. 
-> 
-> Overall, I think this way is still cleaner. What do you think about this?
+I'll try to send a new version out soon. I think the right process is to add
+Signed-off-by: Ben Hutchings <benh@debian.org>
+to the patch I squash it with?
 
-What about if we release the lock when doing the callback?
+Greetings,
 
-Then we just need to make sure things are the same after reacquiring the
-lock, and if they are different, we release the lock again and do the
-callback with the new update. Wash, rinse, repeat, until the state is the
-same before and after the callback with locks acquired?
-
-This is a common way to handle callbacks that need to do something that
-takes the lock held before doing a callback.
-
-The reason I say this, is because the more we can keep the accounting
-inside of ftrace the better.
-
-Wouldn't this need to be done anyway if BPF was first and live kernel
-patching needed the update? An -EAGAIN would not suffice.
-
--- Steve
+Andres Freund
