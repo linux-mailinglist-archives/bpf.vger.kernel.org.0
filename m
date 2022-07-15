@@ -2,117 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1062B57590E
-	for <lists+bpf@lfdr.de>; Fri, 15 Jul 2022 03:19:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAE3957592F
+	for <lists+bpf@lfdr.de>; Fri, 15 Jul 2022 03:46:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240816AbiGOBS7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jul 2022 21:18:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54916 "EHLO
+        id S231293AbiGOBqA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jul 2022 21:46:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232313AbiGOBS7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jul 2022 21:18:59 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFC2424F37;
-        Thu, 14 Jul 2022 18:18:57 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id b11so6398419eju.10;
-        Thu, 14 Jul 2022 18:18:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z4ZOmBhvG/vrBEAiyPKvO+yeijURQ0Ebcnr6F+80vp0=;
-        b=GejBMuRGtjxQZ33xcKp48Z968DaneQvcthquhegMII1eRjQtmUQgSfH3dLmTH9ysMt
-         +TU2TORYJbUIWYnMBV/5oP3DGia36LFVLbDejExd8h255CuPlocW/o3jmcz+83sPHln0
-         J0zGwUfX63g3Gx2Z4rshknIzes4coYdhxG8LAM3dY9FqkrOZjHaUshLktXXu/+ID+nz/
-         DDsKxLVMQmUA/fGtBf1NIPyuSeUs/N2okQ+1Bo1Xsj3w1bcTgpq73Vu6Jwe/xnzgXzPl
-         iATzdCVVKEGAMpWV8HJdndTID52Ir4HEIrNcjJDLFIhGQ6uT1ZcDIdgVvLDs3pZa2lhu
-         SUHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z4ZOmBhvG/vrBEAiyPKvO+yeijURQ0Ebcnr6F+80vp0=;
-        b=ALpxN4dJAHatntgd6XNYNKhsaqEfIghJrMAJdke+k4rXJGiO4DyB83Se7khWyKe269
-         vLKk7mQNczn/vmhcj+b6/Tm5mBHxxSJREvER/p1fUTdkUN8MVN1300g5jSLXVbqhpEKb
-         z+6PM/MIkcZQ641u0sVFU6QPQgGMDYSlfwtiphFyQ9AiPTOx4nw4Ojn/mAVgh3x8pSzf
-         U8CoAm6nZwym4dTrQYEOLxLHLSNdNXzPdfLSRCp2ut9R+yEZUbx1vydlWgjebgCUxdwj
-         QNSukVWOhvtF0+s24DDdKMz8BRwn5LRHfrpX1QIQHNd8pHQMYWXw885X2HkyGqDVLklb
-         dJYg==
-X-Gm-Message-State: AJIora+bc7eVJJqnavbOUCmHXh1XOWyDw0a+n71ZFh2I05jyaW+q8AVu
-        yvgicLGQcLQLCvP5D6L5NEhflp3tAhY7i5oxyAhFtCFz
-X-Google-Smtp-Source: AGRyM1sOr3zkegrI3IfczOPBxPKCJXUwdjT5Cx3D27kp9KHPVDEukQHkWa8VkRVMxNWsQx3V2FiwCY1wmzXJngu72Yo=
-X-Received: by 2002:a17:907:971c:b0:72b:83d2:aa7a with SMTP id
- jg28-20020a170907971c00b0072b83d2aa7amr11393369ejc.633.1657847936279; Thu, 14
- Jul 2022 18:18:56 -0700 (PDT)
+        with ESMTP id S230407AbiGOBp7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jul 2022 21:45:59 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D105066B9D
+        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 18:45:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1657849558; x=1689385558;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=jABQIOan97PuCz6TYq7UySfStAP5bn8x3sAh0Owa8aM=;
+  b=Tcr1wTWozhncOn9nRZLaIJVq+sbI41QSmua8tc/s3w6JS1o/KG00sZ9i
+   ZOUpUsagLIGQ/d3qH/+APqlaVxZzdYBYGE8Be1B/EqQp9eJGntQz+oMAd
+   RnbdgVBY2syNRca4BU4UozkBA19uIrgYmt1+4zJ1lv5bvNFjrpMk/d5zo
+   OvSgWMX/Vwdx6pNmHMz1xHsWJUX4XZ7prmGTlQMdTxwbw1dOqPDGLYzF2
+   XxwCCv1jel6gkix74RJrB7gt1M2zRr5F+g3GkGo7RR+zelLEDa5+jGJzo
+   rTvORFqjILXgs4ncJx+vMpO6LBBD6qa+blD9hxiH5ODntRkPFpElynfbP
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10408"; a="266089076"
+X-IronPort-AV: E=Sophos;i="5.92,272,1650956400"; 
+   d="scan'208";a="266089076"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jul 2022 18:45:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.92,272,1650956400"; 
+   d="scan'208";a="546487428"
+Received: from lkp-server01.sh.intel.com (HELO fd2c14d642b4) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 14 Jul 2022 18:45:56 -0700
+Received: from kbuild by fd2c14d642b4 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1oCAOx-0001P9-V1;
+        Fri, 15 Jul 2022 01:45:55 +0000
+Date:   Fri, 15 Jul 2022 09:44:55 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org, andrii@kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH bpf-next 1/4] bpf: fix potential 32-bit overflow when
+ accessing ARRAY map element
+Message-ID: <202207150918.GuUgOFHd-lkp@intel.com>
+References: <20220714214305.3189551-2-andrii@kernel.org>
 MIME-Version: 1.0
-References: <20220709211849.210850-1-ebiggers@kernel.org> <20220709211849.210850-3-ebiggers@kernel.org>
- <20220711110348.4c951fff@kernel.org>
-In-Reply-To: <20220711110348.4c951fff@kernel.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 14 Jul 2022 18:18:45 -0700
-Message-ID: <CAADnVQ+qS2ooA_LVndHfwm5AngRqQFceHPwYi=0WwXd350ePcg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] crypto: make the sha1 library optional
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        "Jason A . Donenfeld" <Jason@zx2c4.com>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220714214305.3189551-2-andrii@kernel.org>
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 11, 2022 at 11:22 AM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Sat,  9 Jul 2022 14:18:49 -0700 Eric Biggers wrote:
-> > Since the Linux RNG no longer uses sha1_transform(), the SHA-1 library
-> > is no longer needed unconditionally.  Make it possible to build the
-> > Linux kernel without the SHA-1 library by putting it behind a kconfig
-> > option, and selecting this new option from the kconfig options that gate
-> > the remaining users: CRYPTO_SHA1 for crypto/sha1_generic.c, BPF for
-> > kernel/bpf/core.c, and IPV6 for net/ipv6/addrconf.c.
-> >
-> > Unfortunately, since BPF is selected by NET, for now this can only make
-> > a difference for kernels built without networking support.
->
-> > diff --git a/init/Kconfig b/init/Kconfig
-> > index c984afc489dead..d8d0b4bdfe4195 100644
-> > --- a/init/Kconfig
-> > +++ b/init/Kconfig
-> > @@ -1472,6 +1472,7 @@ config HAVE_PCSPKR_PLATFORM
-> >  # interpreter that classic socket filters depend on
-> >  config BPF
-> >       bool
-> > +     select CRYPTO_LIB_SHA1
-> >
->
-> Let's give it an explicit CC: bpf@
->
-> > diff --git a/net/ipv6/Kconfig b/net/ipv6/Kconfig
-> > index bf2e5e5fe14273..658bfed1df8b17 100644
-> > --- a/net/ipv6/Kconfig
-> > +++ b/net/ipv6/Kconfig
-> > @@ -7,6 +7,7 @@
-> >  menuconfig IPV6
-> >       tristate "The IPv6 protocol"
-> >       default y
-> > +     select CRYPTO_LIB_SHA1
-> >       help
-> >         Support for IP version 6 (IPv6).
->
-> FWIW:
-> Acked-by: Jakub Kicinski <kuba@kernel.org>
+Hi Andrii,
 
-Acked-by: Alexei Starovoitov <ast@kernel.org>
+I love your patch! Yet something to improve:
 
-I believe I found the right full patch set in lore.
-In the future (if there are follow ups)
-please cc the full patchset to us.
-Thanks!
+[auto build test ERROR on bpf-next/master]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Andrii-Nakryiko/BPF-array-map-fixes-and-improvements/20220715-054514
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+config: hexagon-randconfig-r045-20220714 (https://download.01.org/0day-ci/archive/20220715/202207150918.GuUgOFHd-lkp@intel.com/config)
+compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project 2da550140aa98cf6a3e96417c87f1e89e3a26047)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/c740c9bcbe3ab67a921ace0d988bd45214c41bef
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Andrii-Nakryiko/BPF-array-map-fixes-and-improvements/20220715-054514
+        git checkout c740c9bcbe3ab67a921ace0d988bd45214c41bef
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=hexagon SHELL=/bin/bash kernel/bpf/
+
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+>> kernel/bpf/arraymap.c:173:75: error: expected ';' after return statement
+           return array->value + (u64)array->elem_size * (index & array->index_mask)
+                                                                                    ^
+                                                                                    ;
+   1 error generated.
+
+
+vim +173 kernel/bpf/arraymap.c
+
+   163	
+   164	/* Called from syscall or from eBPF program */
+   165	static void *array_map_lookup_elem(struct bpf_map *map, void *key)
+   166	{
+   167		struct bpf_array *array = container_of(map, struct bpf_array, map);
+   168		u32 index = *(u32 *)key;
+   169	
+   170		if (unlikely(index >= array->map.max_entries))
+   171			return NULL;
+   172	
+ > 173		return array->value + (u64)array->elem_size * (index & array->index_mask)
+   174	}
+   175	
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
