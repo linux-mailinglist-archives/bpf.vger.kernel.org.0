@@ -2,37 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E821E575AFF
-	for <lists+bpf@lfdr.de>; Fri, 15 Jul 2022 07:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAE49575B01
+	for <lists+bpf@lfdr.de>; Fri, 15 Jul 2022 07:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229560AbiGOFb5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 15 Jul 2022 01:31:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33306 "EHLO
+        id S229733AbiGOFcA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 15 Jul 2022 01:32:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbiGOFb4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Jul 2022 01:31:56 -0400
+        with ESMTP id S229468AbiGOFb7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Jul 2022 01:31:59 -0400
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61F4F79EE5
-        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 22:31:55 -0700 (PDT)
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26ENcYRu000829
-        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 22:31:55 -0700
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECA2279EE5
+        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 22:31:58 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26ENcXD4026829
+        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 22:31:58 -0700
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3haktc594a-2
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hat59t7c0-6
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 22:31:55 -0700
-Received: from twshared35153.14.frc2.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Thu, 14 Jul 2022 22:31:58 -0700
+Received: from twshared13315.14.prn3.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Thu, 14 Jul 2022 22:31:52 -0700
+ 15.1.2375.28; Thu, 14 Jul 2022 22:31:57 -0700
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 682E41C5C58EE; Thu, 14 Jul 2022 22:31:49 -0700 (PDT)
+        id 769831C5C58F4; Thu, 14 Jul 2022 22:31:51 -0700 (PDT)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
 CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH v2 bpf-next 1/4] bpf: fix potential 32-bit overflow when accessing ARRAY map element
-Date:   Thu, 14 Jul 2022 22:31:43 -0700
-Message-ID: <20220715053146.1291891-2-andrii@kernel.org>
+Subject: [PATCH v2 bpf-next 2/4] bpf: make uniform use of array->elem_size everywhere in arraymap.c
+Date:   Thu, 14 Jul 2022 22:31:44 -0700
+Message-ID: <20220715053146.1291891-3-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220715053146.1291891-1-andrii@kernel.org>
 References: <20220715053146.1291891-1-andrii@kernel.org>
@@ -40,8 +40,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: CGAo_rkIMojaXNsVmmsyFDKvi85jOyAN
-X-Proofpoint-ORIG-GUID: CGAo_rkIMojaXNsVmmsyFDKvi85jOyAN
+X-Proofpoint-GUID: mc8N_pHaiOIDI7-8rOEnmsw70mxu1t5e
+X-Proofpoint-ORIG-GUID: mc8N_pHaiOIDI7-8rOEnmsw70mxu1t5e
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
  definitions=2022-07-15_02,2022-07-14_01,2022-06-22_01
@@ -55,100 +55,91 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-If BPF array map is bigger than 4GB, element pointer calculation can
-overflow because both index and elem_size are u32. Fix this everywhere
-by forcing 64-bit multiplication. Extract this formula into separate
-small helper and use it consistently in various places.
+BPF_MAP_TYPE_ARRAY is rounding value_size to closest multiple of 8 and
+stores that as array->elem_size for various memory allocations and
+accesses.
 
-Speculative-preventing formula utilizing index_mask trick is left as is,
-but explicit u64 casts are added in both places.
+But the code tends to re-calculate round_up(map->value_size, 8) in
+multiple places instead of using array->elem_size. Cleaning this up and
+making sure we always use array->size to avoid duplication of this
+(admittedly simple) logic for consistency.
 
-Fixes: c85d69135a91 ("bpf: move memory size checks to bpf_map_charge_init()")
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- kernel/bpf/arraymap.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ kernel/bpf/arraymap.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
 diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index fe40d3b9458f..1d05d63e6fa5 100644
+index 1d05d63e6fa5..98ee09155151 100644
 --- a/kernel/bpf/arraymap.c
 +++ b/kernel/bpf/arraymap.c
-@@ -156,6 +156,11 @@ static struct bpf_map *array_map_alloc(union bpf_attr *attr)
- 	return &array->map;
- }
- 
-+static void *array_map_elem_ptr(struct bpf_array* array, u32 index)
-+{
-+	return array->value + (u64)array->elem_size * index;
-+}
-+
- /* Called from syscall or from eBPF program */
- static void *array_map_lookup_elem(struct bpf_map *map, void *key)
+@@ -208,7 +208,7 @@ static int array_map_gen_lookup(struct bpf_map *map, struct bpf_insn *insn_buf)
  {
-@@ -165,7 +170,7 @@ static void *array_map_lookup_elem(struct bpf_map *map, void *key)
- 	if (unlikely(index >= array->map.max_entries))
- 		return NULL;
+ 	struct bpf_array *array = container_of(map, struct bpf_array, map);
+ 	struct bpf_insn *insn = insn_buf;
+-	u32 elem_size = round_up(map->value_size, 8);
++	u32 elem_size = array->elem_size;
+ 	const int ret = BPF_REG_0;
+ 	const int map_ptr = BPF_REG_1;
+ 	const int index = BPF_REG_2;
+@@ -277,7 +277,7 @@ int bpf_percpu_array_copy(struct bpf_map *map, void *key, void *value)
+ 	 * access 'value_size' of them, so copying rounded areas
+ 	 * will not leak any kernel data
+ 	 */
+-	size = round_up(map->value_size, 8);
++	size = array->elem_size;
+ 	rcu_read_lock();
+ 	pptr = array->pptrs[index & array->index_mask];
+ 	for_each_possible_cpu(cpu) {
+@@ -381,7 +381,7 @@ int bpf_percpu_array_update(struct bpf_map *map, void *key, void *value,
+ 	 * returned or zeros which were zero-filled by percpu_alloc,
+ 	 * so no kernel data leaks possible
+ 	 */
+-	size = round_up(map->value_size, 8);
++	size = array->elem_size;
+ 	rcu_read_lock();
+ 	pptr = array->pptrs[index & array->index_mask];
+ 	for_each_possible_cpu(cpu) {
+@@ -587,6 +587,7 @@ static int __bpf_array_map_seq_show(struct seq_file *seq, void *v)
+ 	struct bpf_iter_seq_array_map_info *info = seq->private;
+ 	struct bpf_iter__bpf_map_elem ctx = {};
+ 	struct bpf_map *map = info->map;
++	struct bpf_array *array = container_of(map, struct bpf_array, map);
+ 	struct bpf_iter_meta meta;
+ 	struct bpf_prog *prog;
+ 	int off = 0, cpu = 0;
+@@ -607,7 +608,7 @@ static int __bpf_array_map_seq_show(struct seq_file *seq, void *v)
+ 			ctx.value = v;
+ 		} else {
+ 			pptr = v;
+-			size = round_up(map->value_size, 8);
++			size = array->elem_size;
+ 			for_each_possible_cpu(cpu) {
+ 				bpf_long_memcpy(info->percpu_value_buf + off,
+ 						per_cpu_ptr(pptr, cpu),
+@@ -637,11 +638,12 @@ static int bpf_iter_init_array_map(void *priv_data,
+ {
+ 	struct bpf_iter_seq_array_map_info *seq_info = priv_data;
+ 	struct bpf_map *map = aux->map;
++	struct bpf_array *array = container_of(map, struct bpf_array, map);
+ 	void *value_buf;
+ 	u32 buf_size;
  
--	return array->value + array->elem_size * (index & array->index_mask);
-+	return array->value + (u64)array->elem_size * (index & array->index_mask);
- }
- 
- static int array_map_direct_value_addr(const struct bpf_map *map, u64 *imm,
-@@ -339,7 +344,7 @@ static int array_map_update_elem(struct bpf_map *map, void *key, void *value,
- 		       value, map->value_size);
- 	} else {
- 		val = array->value +
--			array->elem_size * (index & array->index_mask);
-+			(u64)array->elem_size * (index & array->index_mask);
- 		if (map_flags & BPF_F_LOCK)
- 			copy_map_value_locked(map, val, value, false);
- 		else
-@@ -408,8 +413,7 @@ static void array_map_free_timers(struct bpf_map *map)
- 		return;
- 
- 	for (i = 0; i < array->map.max_entries; i++)
--		bpf_timer_cancel_and_free(array->value + array->elem_size * i +
--					  map->timer_off);
-+		bpf_timer_cancel_and_free(array_map_elem_ptr(array, i) + map->timer_off);
- }
- 
- /* Called when map->refcnt goes to zero, either from workqueue or from syscall */
-@@ -420,7 +424,7 @@ static void array_map_free(struct bpf_map *map)
- 
- 	if (map_value_has_kptrs(map)) {
- 		for (i = 0; i < array->map.max_entries; i++)
--			bpf_map_free_kptrs(map, array->value + array->elem_size * i);
-+			bpf_map_free_kptrs(map, array_map_elem_ptr(array, i));
- 		bpf_map_free_kptr_off_tab(map);
- 	}
- 
-@@ -556,7 +560,7 @@ static void *bpf_array_map_seq_start(struct seq_file *seq, loff_t *pos)
- 	index = info->index & array->index_mask;
- 	if (info->percpu_value_buf)
- 	       return array->pptrs[index];
--	return array->value + array->elem_size * index;
-+	return array_map_elem_ptr(array, index);
- }
- 
- static void *bpf_array_map_seq_next(struct seq_file *seq, void *v, loff_t *pos)
-@@ -575,7 +579,7 @@ static void *bpf_array_map_seq_next(struct seq_file *seq, void *v, loff_t *pos)
- 	index = info->index & array->index_mask;
- 	if (info->percpu_value_buf)
- 	       return array->pptrs[index];
--	return array->value + array->elem_size * index;
-+	return array_map_elem_ptr(array, index);
- }
- 
- static int __bpf_array_map_seq_show(struct seq_file *seq, void *v)
-@@ -690,7 +694,7 @@ static int bpf_for_each_array_elem(struct bpf_map *map, bpf_callback_t callback_
- 		if (is_percpu)
- 			val = this_cpu_ptr(array->pptrs[i]);
- 		else
--			val = array->value + array->elem_size * i;
-+			val = array_map_elem_ptr(array, i);
- 		num_elems++;
- 		key = i;
- 		ret = callback_fn((u64)(long)map, (u64)(long)&key,
+ 	if (map->map_type == BPF_MAP_TYPE_PERCPU_ARRAY) {
+-		buf_size = round_up(map->value_size, 8) * num_possible_cpus();
++		buf_size = array->elem_size * num_possible_cpus();
+ 		value_buf = kmalloc(buf_size, GFP_USER | __GFP_NOWARN);
+ 		if (!value_buf)
+ 			return -ENOMEM;
+@@ -1326,7 +1328,7 @@ static int array_of_map_gen_lookup(struct bpf_map *map,
+ 				   struct bpf_insn *insn_buf)
+ {
+ 	struct bpf_array *array = container_of(map, struct bpf_array, map);
+-	u32 elem_size = round_up(map->value_size, 8);
++	u32 elem_size = array->elem_size;
+ 	struct bpf_insn *insn = insn_buf;
+ 	const int ret = BPF_REG_0;
+ 	const int map_ptr = BPF_REG_1;
 -- 
 2.30.2
 
