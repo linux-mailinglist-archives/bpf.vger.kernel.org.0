@@ -2,151 +2,318 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C85B3576ACE
-	for <lists+bpf@lfdr.de>; Sat, 16 Jul 2022 01:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA8C576ADF
+	for <lists+bpf@lfdr.de>; Sat, 16 Jul 2022 01:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbiGOXjg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Jul 2022 19:39:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35532 "EHLO
+        id S229571AbiGOXzH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Jul 2022 19:55:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbiGOXjf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Jul 2022 19:39:35 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A3B813E14
-        for <bpf@vger.kernel.org>; Fri, 15 Jul 2022 16:39:33 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26FKnQto016798;
-        Fri, 15 Jul 2022 16:39:21 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=0n/AzooK9e00w9jSQtqvfYLNqOt69rfmGi4PxDljpeM=;
- b=m4EchdD19m7N6VevultzofWc0r82f08h4EZhIe2BA/z+6iGcova+Va9vzWdo9MEmuTk5
- m/RZkEKocPis3DLBajPVu7ZZ+Lx/myvEvdgzxqqo9XMFy37przI7vSkERD8Zbkp7EiDA
- qq/qn8CJiMR8Fq6zHri/085s/LuZoNE/idY= 
-Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam07lp2045.outbound.protection.outlook.com [104.47.51.45])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hb892uy7x-1
+        with ESMTP id S229586AbiGOXzE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Jul 2022 19:55:04 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F0A1904DA
+        for <bpf@vger.kernel.org>; Fri, 15 Jul 2022 16:55:03 -0700 (PDT)
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26FKOHdA009661;
+        Fri, 15 Jul 2022 23:54:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=FTd7oFzWvwtgDkfIHDWML6l6gs0Sz1k4koz20YlvmMQ=;
+ b=RUWnKZSX4EuQi9Lcibcmujx9Tn1ncdjf0skG6WjHK0XS9pJQE4YMZKIDLycbUopR5b4y
+ Peq1KPHgLL6KxgvxvREJY94Bm/88Zf7vXcuzS57YqLI8eFiIFhG6Wma8NYT8SM3sNBce
+ W4/hvMZ6uuAP9IhW9cVNga3NevPld+4fhsHutQrYTvKzRsZZHp3BAqLUyuvnaVnLyz5n
+ AWkXKWmeCDKXUcD47aFG0iMVLl/RBP2m0siT1GdAkqXJaTg+4kteJdqJJdOTuS6bCOis
+ tzLvfvHKFMbz5PhIeC41JssYOE3COWLCd/SnFg8tbleWN47HXIK0kcjRfeIGFdmDHl6d lw== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3hbes6kw0g-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Jul 2022 16:39:20 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WIoRHEFsvq8L4KINsbAHwNmRi+gLxIIsMs6yXYERCEHwmzcJUjDjRqVu58qi3vVdcLw9U2DMB93tsKUk73nYmcwe0WlcONnAQqXQbMqyuys1XNMrboicM+ozXUpJbSupWCaKFrWYYYACA5ZDSTILIbk2AAOrY6S6/8CPEG/o9XdqTVygQ5c7OvSXaUOE7Ky2KzsUUtsZTchd0aCc2gQ0hc+oqvbpL8wLqzy/1+vsEonaadElYU/K+RvzcN2sX1iTZL/96ksBr8345XrfWcYZgXzye+k/pOKA9gy9vB73OnXkkCY7BkBD4EEizArCJXSvWFaWsr8T9yWdFaCnWQ9EkQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0n/AzooK9e00w9jSQtqvfYLNqOt69rfmGi4PxDljpeM=;
- b=KkKRwimnEwDsqQc5wNhuB4xr2MiBrIZfd1vv01DH7bHXG4J3ePYfwNVy2ShyDT2nLz8bcjq/v4rYsUOGO+TTOaZe7BOSulfBWdk6byc4i2IvI84aa2OD3Za/vlAMM+DCsHUpV64luuXu7MurKxz7YisSTR68y2duSBI4jg9aQEpQb+ryFrHDjOJuvxJ9YgTqz8O++482cHAuK+bRj5NZ3H4ZUHyHKbKQBiKhB1tD8AeThOJkKJlPEMlXgJ6NMJ8rtz41H6tKCRvx8v1btNM/0KKkOVraJhAVPaj88NANPnC3oS0TQOHMGgyG9DHdz8vdoNB1cAjwl+jysvxS4t4+VA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SA1PR15MB4401.namprd15.prod.outlook.com (2603:10b6:806:190::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5438.19; Fri, 15 Jul
- 2022 23:39:19 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::9568:e5d9:b8ab:bb23]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::9568:e5d9:b8ab:bb23%6]) with mapi id 15.20.5438.017; Fri, 15 Jul 2022
- 23:39:19 +0000
-Message-ID: <c3121d2d-8453-18de-3cc6-a01f6b131940@fb.com>
-Date:   Fri, 15 Jul 2022 16:39:17 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.11.0
-Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: test eager BPF ringbuf
- size adjustment logic
-Content-Language: en-US
+        Fri, 15 Jul 2022 23:54:47 +0000
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 26FNp2WH021338;
+        Fri, 15 Jul 2022 23:54:45 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06ams.nl.ibm.com with ESMTP id 3h70xj0xu3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 15 Jul 2022 23:54:44 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 26FNsgTB24117690
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 Jul 2022 23:54:42 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4B7F64C044;
+        Fri, 15 Jul 2022 23:54:42 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E69D24C040;
+        Fri, 15 Jul 2022 23:54:41 +0000 (GMT)
+Received: from [9.171.44.177] (unknown [9.171.44.177])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 15 Jul 2022 23:54:41 +0000 (GMT)
+Message-ID: <523a6ebc348221ae4e1a34f017899da863a68cbd.camel@linux.ibm.com>
+Subject: Re: [PATCH v2 bpf-next 5/5] selftests/bpf: use BPF_KSYSCALL and
+ SEC("ksyscall") in selftests
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
 To:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
         ast@kernel.org, daniel@iogearbox.net
-Cc:     kernel-team@fb.com
-References: <20220715230952.2219271-1-andrii@kernel.org>
- <20220715230952.2219271-2-andrii@kernel.org>
-From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <20220715230952.2219271-2-andrii@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR13CA0090.namprd13.prod.outlook.com
- (2603:10b6:a03:2c4::35) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+Cc:     kernel-team@fb.com, Alan Maguire <alan.maguire@oracle.com>
+Date:   Sat, 16 Jul 2022 01:54:41 +0200
+In-Reply-To: <06631b122b9bd6258139a36b971bba3e79543503.camel@linux.ibm.com>
+References: <20220714070755.3235561-1-andrii@kernel.org>
+         <20220714070755.3235561-6-andrii@kernel.org>
+         <06631b122b9bd6258139a36b971bba3e79543503.camel@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 (3.42.4-2.fc35) 
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7a1545a1-618f-44ba-2438-08da66bb3cb2
-X-MS-TrafficTypeDiagnostic: SA1PR15MB4401:EE_
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IOvWavfhkPesrED+EI1t1N48ZL50mtVTrbD+Yhb8xYfsREavuBatBZ9X85KCBV7xtvF1ex6jXJIEcY4JY5qC28Ow8dISj+0BTazqOUU4kAWEzdxY6eVxuRaGdlBKeU7Iol1WvXvg0uFHpwZ3geo65UJkoRESqQ6pyh/Ous/1WTVawPtofKAkqVtvEpcZL9Fw4aktENMRQ/jFJS+x3zIwt3j/LFj9dUYS27MMh2+g4Xk9xdHBwWwlx7TN16bOZRGDvgLia00ZXqw25S6XeaGAkK9GADFbGqPxnOpV9w5R5Tltm4VAdHy+lo/XWQhkeC9qpmlkrZDdfqrSpdsN0FZWQvmYYqGILLMFcnNhkqjHfUGXySUS2SsNPj6EkDTfcZmLXSCdFAkVDQnaiOR+RSNUU8+42vOZ9guFT3OTECoahGFdEgwJhzbIbCurowUXLwUF5hBJcd9Qg05CwMb2sPiREMYXNf3WoWOjCc6hw9FT6s3Io7tH6VHboB0dubYKdZHY06xCgZKrodH9nmWIJb9kcwjYM4/ftH2WvGoppj6nn24Q2MPi4Ec2Kg2VEiNGeZBaVwEqAUM8n5TsCmXBxa25Ku3PejzpdyrYPHlHAabaAyYe7iwXhj4OYGS72CRbCQ2gXY4ctvYcjB6kutq3awikn00soXIJbJ7IHRhDvN+Yx1Rs6PuhR5OnpOAnUTF+CrRxAEl4qKFbosVUWYZsf516pzaeg755BSv/0EGLmAZ2olyBHdsC+3sZVirlrkvWQ3XTkIfFIb/V/Kfe6xq1LA/2R0GR1jb5tL0HxnS62xicDBDsqNZ5uxAIhb/3nY10czXb4PUwBptIXJZGiaaawfwKG419eDzeVrAAK+FUOWzxMrs=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(396003)(346002)(366004)(376002)(136003)(39860400002)(478600001)(6506007)(6486002)(41300700001)(2616005)(53546011)(66946007)(66556008)(6512007)(186003)(38100700002)(36756003)(2906002)(4744005)(5660300002)(31686004)(8936002)(66476007)(316002)(86362001)(4326008)(8676002)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VEFjOVF1Y25oeE40N3RHVjZMb2szWWR2c0ZqMVNNazlpTWx0TlltalExRUYr?=
- =?utf-8?B?bnNFQ2VKZXc4eFpGUWJENlFURVdsM3YzbnNjQ21rbUhzSVVpcGkxZzRRWS9l?=
- =?utf-8?B?UDVEUlNobXd1RTdiK0dFT3VGekJkamgwdXhBd2lwZW5jS1dmb2RlbC90WTl2?=
- =?utf-8?B?andJWDRLZjF2YktLY2Y1UW91cmpsbk8vck1RRTNiTUxIY3FBT0hySFBqQUMy?=
- =?utf-8?B?bE5qVngvZDJLV1pjSG1SWG9idjQvanFTRVZGMmhZMUpERWFvNEtTTTFjcnpD?=
- =?utf-8?B?Q0djTDk0SDNQOStRTEx5QUxwbHJhSkwvQ2c5NGpUS0V3R1h0NzhhTitaUFJ1?=
- =?utf-8?B?eWpHWkltVmxYdGZ4eWgyV3VIM1pYWGdlOXpteUE5VnFQZ1NzdTF3NC9mTlcw?=
- =?utf-8?B?dTdRR2pYZk1rQU40TVh0Y2dVdWFQYy9Ed2M1T1lyQm8vYnVMcVZxalV1eHlm?=
- =?utf-8?B?QzMzaXJGRzRXSmNMTVlDMkYxYnZuZzd2bUw3TXNyOENYL1drRWRYdlNNR0VQ?=
- =?utf-8?B?QmpmRVA3cXlXM21NK3c5ZGZySkN4RXVBb2JYTUVVL2xkSVB2M29YdEhTdHIr?=
- =?utf-8?B?WDVJNWQ1cU5GMDdyL3N0Wm5laFRhN0VrWFB0dE11UlJyQXNGWDMvK1h1V05N?=
- =?utf-8?B?enppanRMUkFsemlINnd2K0szMnRWUVpicjFsUUNSdHNEQjdhT0VBcm03NWl1?=
- =?utf-8?B?amdWYkpldjFENmRnZ1V6RFRWMjVTS0ZJWnVHVWVucFdoazFvMzRXZW1YL0Zx?=
- =?utf-8?B?RHhiU3I3K1ljMHZMeVFyeEt5a05jV056OVZ5bThXU1JydXRBQk5jUWRLUVM1?=
- =?utf-8?B?ZVFtQ1RubTcvQ0RnVkhwVDNaQTN6cFhFdVpSOE9wR3JEb2EyMjFpemNEdFFI?=
- =?utf-8?B?aytOSlpKMzNrcVErckErL3lLQjhjanRsRW5iMlZGbURjVWtYZ2hsZkVablFr?=
- =?utf-8?B?aW9vdXlPZ0V3dTBzWVpDbFRlSCtpZnorclY3R0hEL3JtMndPbk9zaGNHbzlL?=
- =?utf-8?B?WlRtS1ZyV2R1NUR1Z3doTFJTekNVWUFHdHJnWWwxdnVMTVd3OG5STm9iVXU0?=
- =?utf-8?B?U1RIaWNteXBpQnNkdkkvZW8xSDFlajlCOG9oOHZoOEVDTldqL0NESk4rUzhL?=
- =?utf-8?B?Q2NuNHlPc1ZzWDM2YlFaVzZaYUExV0RCamRYS3RqYURjQUp6QkhoVUg2am9Z?=
- =?utf-8?B?YVIza0t5RTdsSlo1d0trSS9oY3FhMGJZQWU3VVdaZzhxN1NHbzFPckRoMk82?=
- =?utf-8?B?dDRGbjJJeHoxek1KR2x4UlpZeE9JcjBZUHVSU1BSM3BsVFA3QVdFN2ZTYmd4?=
- =?utf-8?B?N1lHSkVZR2tMM25LWStRMUh3ZjRWd2t4ampXZnVJTURPUEViWXhrSWh5UVJi?=
- =?utf-8?B?RFk4WUZ1Y3F2eVRmZ1hEZzZiY1hkWEtBaHJxQ05VNFRkb1lzbzlhMzNaNkFv?=
- =?utf-8?B?ZE5FUXZINi9TcVIrRGhBaGdTTkVMK3g3UWhpQzl0NEliUUlhZWhya01jWHVD?=
- =?utf-8?B?cDhPc2d5bzFTbTJUVG9wOHVPNzBsOXkrZ3lkWkR0dG5TREJ5UGtLUjk0aHJY?=
- =?utf-8?B?eUJ0dEtCRk91S1pLWVM5d1djc3RqWDU5d0drb25IZEJOWDhKRDJHK1hNV29D?=
- =?utf-8?B?bUZUOE1TVjFVZ0dCQlBKL3N0dTA5a28vOVVsVDNqeW5xRStDRExPTVhDOHVw?=
- =?utf-8?B?dk1KdytRdVFOR3RERG5sd1R4cWpxRTdrR3FWU3NqdmNiVzhsTDR2R0Z2TVgx?=
- =?utf-8?B?MlBHdnQ0YXFVMm5ZQlZvMmRMQk04NjUrNEJxWEM2R0NaMGhza2Zxam5vUXdV?=
- =?utf-8?B?ZTZaWjYzSUJrdnFhRS9TV3BKUzFTamdjeWVsbzZBMDFrbXMvSlQzTk9aSmlK?=
- =?utf-8?B?ai8wbW91WFNDQVMrQUJFbHR0dFlvN3U2RmplMEhxOFJmRVlYWnpla0QvSGpk?=
- =?utf-8?B?QkloU01FQ0p2M1BxYzFTcUpUb2pCTHhHZERjWHUvMlhMMHdNR2FmWlFCWkk0?=
- =?utf-8?B?UFU1MGFuRllxV2ZyNTlOVlVHckdzbkhUVUNDRkdDRVVML2d0UWxremY1Z2kv?=
- =?utf-8?B?eEgyd2RRMGhadlh6TEJZMkFMU3BxZ3hGalBNMHhUdWxBRmNNNEtFbW5qY3I4?=
- =?utf-8?B?WUVYV2JlNE1GWEhlSDZZUVFIMG9iUERKU2ZhR1pvbnluQ0FQMWxrTnN0bURS?=
- =?utf-8?B?UHc9PQ==?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7a1545a1-618f-44ba-2438-08da66bb3cb2
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2022 23:39:19.1290
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Dwg5UBcs+S9kisp1rqfAksBwvLPXsQU38gv0s8xr2vOck5GbjxKcGZke1T86979E
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4401
-X-Proofpoint-ORIG-GUID: D9U69YLoJyTDy5DGuPlFREtHhbH75w5a
-X-Proofpoint-GUID: D9U69YLoJyTDy5DGuPlFREtHhbH75w5a
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: MwreLXtrv11C_4a5Nquru8iiTpcbnRUW
+X-Proofpoint-ORIG-GUID: MwreLXtrv11C_4a5Nquru8iiTpcbnRUW
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
  definitions=2022-07-15_15,2022-07-15_01,2022-06-22_01
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxlogscore=999
+ phishscore=0 priorityscore=1501 impostorscore=0 spamscore=0 bulkscore=0
+ suspectscore=0 adultscore=0 mlxscore=0 malwarescore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2206140000
+ definitions=main-2207150102
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 7/15/22 4:09 PM, Andrii Nakryiko wrote:
-> Add test validating that libbpf adjusts (and reflects adjusted) ringbuf
-> size early, before bpf_object is loaded. Also make sure we can't
-> successfully resize ringbuf map after bpf_object is loaded.
+On Sat, 2022-07-16 at 01:28 +0200, Ilya Leoshkevich wrote:
+> On Thu, 2022-07-14 at 00:07 -0700, Andrii Nakryiko wrote:
+> > Convert few selftest that used plain SEC("kprobe") with arch-
+> > specific
+> > syscall wrapper prefix to ksyscall/kretsyscall and corresponding
+> > BPF_KSYSCALL macro. test_probe_user.c is especially benefiting from
+> > this
+> > simplification.
+> > 
+> > Tested-by: Alan Maguire <alan.maguire@oracle.com>
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > ---
+> >  .../selftests/bpf/progs/bpf_syscall_macro.c   |  6 ++---
+> >  .../selftests/bpf/progs/test_attach_probe.c   | 15 +++++------
+> >  .../selftests/bpf/progs/test_probe_user.c     | 27 +++++----------
+> > --
+> > --
+> >  3 files changed, 16 insertions(+), 32 deletions(-)
+> > 
+> > diff --git a/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
+> > b/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
+> > index 05838ed9b89c..e1e11897e99b 100644
+> > --- a/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
+> > +++ b/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
+> > @@ -64,9 +64,9 @@ int BPF_KPROBE(handle_sys_prctl)
+> >         return 0;
+> >  }
+> >  
+> > -SEC("kprobe/" SYS_PREFIX "sys_prctl")
+> > -int BPF_KPROBE_SYSCALL(prctl_enter, int option, unsigned long
+> > arg2,
+> > -                      unsigned long arg3, unsigned long arg4,
+> > unsigned long arg5)
+> > +SEC("ksyscall/prctl")
+> > +int BPF_KSYSCALL(prctl_enter, int option, unsigned long arg2,
+> > +                unsigned long arg3, unsigned long arg4, unsigned
+> > long arg5)
+> >  {
+> >         pid_t pid = bpf_get_current_pid_tgid() >> 32;
+> >  
+> > diff --git a/tools/testing/selftests/bpf/progs/test_attach_probe.c
+> > b/tools/testing/selftests/bpf/progs/test_attach_probe.c
+> > index f1c88ad368ef..a1e45fec8938 100644
+> > --- a/tools/testing/selftests/bpf/progs/test_attach_probe.c
+> > +++ b/tools/testing/selftests/bpf/progs/test_attach_probe.c
+> > @@ -1,11 +1,10 @@
+> >  // SPDX-License-Identifier: GPL-2.0
+> >  // Copyright (c) 2017 Facebook
+> >  
+> > -#include <linux/ptrace.h>
+> > -#include <linux/bpf.h>
+> > +#include "vmlinux.h"
+> >  #include <bpf/bpf_helpers.h>
+> >  #include <bpf/bpf_tracing.h>
+> > -#include <stdbool.h>
+> > +#include <bpf/bpf_core_read.h>
+> >  #include "bpf_misc.h"
+> >  
+> >  int kprobe_res = 0;
+> > @@ -31,8 +30,8 @@ int handle_kprobe(struct pt_regs *ctx)
+> >         return 0;
+> >  }
+> >  
+> > -SEC("kprobe/" SYS_PREFIX "sys_nanosleep")
+> > -int BPF_KPROBE(handle_kprobe_auto)
+> > +SEC("ksyscall/nanosleep")
+> > +int BPF_KSYSCALL(handle_kprobe_auto, struct __kernel_timespec
+> > *req,
+> > struct __kernel_timespec *rem)
+> >  {
+> >         kprobe2_res = 11;
+> >         return 0;
+> > @@ -56,11 +55,11 @@ int handle_kretprobe(struct pt_regs *ctx)
+> >         return 0;
+> >  }
+> >  
+> > -SEC("kretprobe/" SYS_PREFIX "sys_nanosleep")
+> > -int BPF_KRETPROBE(handle_kretprobe_auto)
+> > +SEC("kretsyscall/nanosleep")
+> > +int BPF_KRETPROBE(handle_kretprobe_auto, int ret)
+> >  {
+> >         kretprobe2_res = 22;
+> > -       return 0;
+> > +       return ret;
+> >  }
+> >  
+> >  SEC("uprobe")
+> > diff --git a/tools/testing/selftests/bpf/progs/test_probe_user.c
+> > b/tools/testing/selftests/bpf/progs/test_probe_user.c
+> > index 702578a5e496..8e1495008e4d 100644
+> > --- a/tools/testing/selftests/bpf/progs/test_probe_user.c
+> > +++ b/tools/testing/selftests/bpf/progs/test_probe_user.c
+> > @@ -1,35 +1,20 @@
+> >  // SPDX-License-Identifier: GPL-2.0
+> > -
+> > -#include <linux/ptrace.h>
+> > -#include <linux/bpf.h>
+> > -
+> > -#include <netinet/in.h>
+> > -
+> > +#include "vmlinux.h"
+> >  #include <bpf/bpf_helpers.h>
+> >  #include <bpf/bpf_tracing.h>
+> > +#include <bpf/bpf_core_read.h>
+> >  #include "bpf_misc.h"
+> >  
+> >  static struct sockaddr_in old;
+> >  
+> > -SEC("kprobe/" SYS_PREFIX "sys_connect")
+> > -int BPF_KPROBE(handle_sys_connect)
+> > +SEC("ksyscall/connect")
+> > +int BPF_KSYSCALL(handle_sys_connect, int fd, struct sockaddr_in
+> > *uservaddr, int addrlen)
+> >  {
+> > -#if SYSCALL_WRAPPER == 1
+> > -       struct pt_regs *real_regs;
+> > -#endif
+> >         struct sockaddr_in new;
+> > -       void *ptr;
+> > -
+> > -#if SYSCALL_WRAPPER == 0
+> > -       ptr = (void *)PT_REGS_PARM2(ctx);
+> > -#else
+> > -       real_regs = (struct pt_regs *)PT_REGS_PARM1(ctx);
+> > -       bpf_probe_read_kernel(&ptr, sizeof(ptr),
+> > &PT_REGS_PARM2(real_regs));
+> > -#endif
+> >  
+> > -       bpf_probe_read_user(&old, sizeof(old), ptr);
+> > +       bpf_probe_read_user(&old, sizeof(old), uservaddr);
+> >         __builtin_memset(&new, 0xab, sizeof(new));
+> > -       bpf_probe_write_user(ptr, &new, sizeof(new));
+> > +       bpf_probe_write_user(uservaddr, &new, sizeof(new));
+> >  
+> >         return 0;
+> >  }
 > 
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> Hi,
+> 
+> The first two tests succeed, but test_probe_user fails on s390x with:
+> 
+>     serial_test_probe_user:FAIL:check_kprobe_res
+>     wrong kprobe res from probe read: 0.0.0.0:0
+> 
+> I'm not sure what is causing this, but at least the loaded BPF code
+> looks sane:
+> 
+> # bpftool prog dump xlated id 81
+> int handle_sys_connect(struct pt_regs * ctx):
+>    0: (bf) r6 = r1                      ; kernel pt_regs
+>    1: (18) r1 = map[id:33][0]+0
+>    3: (71) r1 = *(u8 *)(r1 +0)
+>    4: (79) r6 = *(u64 *)(r6 +40)        ; kernel gpr2
+>                                         ; PT_REGS_PARM1
+>    5: (b7) r1 = 152
+>    6: (bf) r3 = r6
+>    7: (0f) r3 += r1                     ; user orig_gpr2
+>                                         ; PT_REGS_PARM1_CORE_SYSCALL
+>                                         ; fd
+>    8: (bf) r1 = r10
+>    9: (07) r1 += -16
+>   10: (b4) w2 = 8
+>   11: (bc) w2 = w2
+>   12: (85) call bpf_probe_read_kernel#-76640 ; (&tmp, 8, &fd)
+>   13: (b7) r1 = 48
+>   14: (bf) r3 = r6
+>   15: (0f) r3 += r1                     ; user gpr3
+>                                         ; __PT_PARM2_REG
+>                                         ; uservaddr
+>   16: (bf) r1 = r10
+>   17: (07) r1 += -16
+>   18: (b4) w2 = 8
+>   19: (bc) w2 = w2
+>   20: (85) call bpf_probe_read_kernel#-76640 (&tmp, 8, &uservaddr)
+>   21: (b7) r1 = 56
+>   22: (0f) r6 += r1                     ; user gpr4 
+>                                         ; __PT_PARM3_REG
+>                                         ; addrlen
+>   23: (79) r7 = *(u64 *)(r10 -16)       ; uservaddr
+>   24: (bf) r1 = r10
+>   25: (07) r1 += -16
+>   26: (b4) w2 = 8
+>   27: (bc) w2 = w2
+>   28: (bf) r3 = r6
+>   29: (85) call bpf_probe_read_kernel#-76640 (&tmp, 8, &addrlen)
+>   30: (18) r1 = map[id:32][0]+0         ; &old
+>   32: (b4) w2 = 16
+>   33: (bc) w2 = w2
+>   34: (bf) r3 = r7
+>   35: (85) call bpf_probe_read_user#-76928 (&old, 16, uservaddr)
+>   36: (18) r1 = 0xabababababababab
+>   38: (7b) *(u64 *)(r10 -16) = r1       ; memset(&new, 0xab, 16)
+>   39: (7b) *(u64 *)(r10 -8) = r1
+>   40: (bf) r2 = r10
+>   41: (07) r2 += -16
+>   42: (bf) r1 = r7
+>   43: (b4) w3 = 16
+>   44: (bc) w3 = w3
+>   45: (85) call bpf_probe_write_user#-76352 (uservaddr, &new, 16)
+>   46: (b4) w0 = 0
+>   47: (bc) w0 = w0
+>   48: (95) exit
+> 
+> Best regards,
+> Ilya
 
-Acked-by: Yonghong Song <yhs@fb.com>
+I haven't noticed that this test was already in the s390x blacklist, so
+the failure has nothing to do with this series.
+
+The problem is that the BPF code is not called at all, since s390x uses
+socketcall multiplexer. I addressed a similar issue in samples/bpf a
+while ago:
+
+commit f55f4c349a03d820c27145bdf457013b42e4b487
+Author: Ilya Leoshkevich <iii@linux.ibm.com>
+Date:   Tue Sep 15 13:55:19 2020 +0200
+
+    samples/bpf: Fix test_map_in_map on s390
+    
+    s390 uses socketcall multiplexer instead of individual socket
+    syscalls.
+    Therefore, "kprobe/" SYSCALL(sys_connect) does not trigger and
+    test_map_in_map fails. Fix by using "kprobe/__sys_connect" instead.
+
+Would it make sense to add two probes here: one for connect() and
+another for socketcall(SYS_CONNECT)?
+
+I also think that this deserves a mention in the list of quirks.
+
+Best regards,
+Ilya
