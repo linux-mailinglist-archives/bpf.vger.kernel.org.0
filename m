@@ -2,88 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C19D576728
-	for <lists+bpf@lfdr.de>; Fri, 15 Jul 2022 21:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A32A576737
+	for <lists+bpf@lfdr.de>; Fri, 15 Jul 2022 21:13:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229626AbiGOTKT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Jul 2022 15:10:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47846 "EHLO
+        id S229957AbiGOTMZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Jul 2022 15:12:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230505AbiGOTKS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Jul 2022 15:10:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E488E3CBD3;
-        Fri, 15 Jul 2022 12:10:16 -0700 (PDT)
+        with ESMTP id S229538AbiGOTMX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Jul 2022 15:12:23 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EECC040BF7;
+        Fri, 15 Jul 2022 12:12:22 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8AFA360A54;
-        Fri, 15 Jul 2022 19:10:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D52E5C3411E;
-        Fri, 15 Jul 2022 19:10:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1657912215;
-        bh=9L63cBTgXa+KsEQqG1D/NEZqIihhpwJ9sTIMALvPoFU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=l8PIW8asO8HNtRdM0+6aTNa44bhpDaE4I6Dv+RoM7FvzyI8vAvRKULdqrLR7kKUTJ
-         erpBCFrzQeX1CKP37jhhLOmWXvf5IqwuwpcLDO/+4ikhUE89QKPLNK+0Niv1lc0r0x
-         0sWwKCael7lVoS4YL+ocFMjKWi941iTzum9oYjvxQFYI2OJpsn9A0aRX+ZMzfW1zfS
-         hA2my5vbMtduWLLdKRxo96/ea+kPlLkuRQoVRyoNxnY7kmddiorGVgBOP4wSiBLp0r
-         WwHysl6+LpQBUJ+RL7Zxk/37pGpAG0nehVKxGknqLYLF+onFht5wPx4zwmDeuo719W
-         zJFXn5fJnp/pg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B247AE4521F;
-        Fri, 15 Jul 2022 19:10:15 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9E7EBB82E16;
+        Fri, 15 Jul 2022 19:12:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30CBCC34115;
+        Fri, 15 Jul 2022 19:12:19 +0000 (UTC)
+Date:   Fri, 15 Jul 2022 15:12:17 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Song Liu <song@kernel.org>, Networking <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "jolsa@kernel.org" <jolsa@kernel.org>,
+        "mhiramat@kernel.org" <mhiramat@kernel.org>
+Subject: Re: [PATCH v2 bpf-next 3/5] ftrace: introduce
+ FTRACE_OPS_FL_SHARE_IPMODIFY
+Message-ID: <20220715151217.141dc98f@gandalf.local.home>
+In-Reply-To: <0CE9BF90-B8CE-40F6-A431-459936157B78@fb.com>
+References: <20220602193706.2607681-1-song@kernel.org>
+        <20220602193706.2607681-4-song@kernel.org>
+        <20220713203343.4997eb71@rorschach.local.home>
+        <AA1D9833-DF67-4AFD-815C-DD89AB57B3A2@fb.com>
+        <20220714204817.2889e280@rorschach.local.home>
+        <6A7EF1C7-471B-4652-99C1-87C72C223C59@fb.com>
+        <20220714224646.62d49e36@rorschach.local.home>
+        <170BE89A-101C-4B25-A664-5E47A902DB83@fb.com>
+        <0CE9BF90-B8CE-40F6-A431-459936157B78@fb.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2 0/3] Use lightweigt version of bpftool
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165791221572.3895.16901953403677326761.git-patchwork-notify@kernel.org>
-Date:   Fri, 15 Jul 2022 19:10:15 +0000
-References: <20220714024612.944071-1-pulehui@huawei.com>
-In-Reply-To: <20220714024612.944071-1-pulehui@huawei.com>
-To:     Pu Lehui <pulehui@huawei.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, quentin@isovalent.com, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, jean-philippe@linaro.org
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Fri, 15 Jul 2022 17:42:55 +0000
+Song Liu <songliubraving@fb.com> wrote:
 
-This series was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
 
-On Thu, 14 Jul 2022 10:46:09 +0800 you wrote:
-> Currently, samples/bpf, tools/runqslower and bpf/iterators use bpftool
-> for vmlinux.h, skeleton, and static linking only. We can uselightweight
-> bootstrap version of bpftool to handle these, and it will be faster.
+> A quick update and ask for feedback/clarification.
 > 
-> v2:
-> - make libbpf and bootstrap bpftool independent. and make it simple.
+> Based on my understanding, you recommended calling ops_func() from 
+> __ftrace_hash_update_ipmodify() and in ops_func() the direct trampoline
+> may make changes to the trampoline. Did I get this right?
 > 
-> [...]
+> 
+> I am going towards this direction, but hit some issue. Specifically, in 
+> __ftrace_hash_update_ipmodify(), ftrace_lock is already locked, so the 
+> direct trampoline cannot easily make changes with 
+> modify_ftrace_direct_multi(), which locks both direct_mutex and 
+> ftrace_mutex. 
+> 
+> One solution would be have no-lock version of all the functions called
+> by modify_ftrace_direct_multi(), but that's a lot of functions and the
+> code will be pretty ugly. The alternative would be the logic in v2: 
+> __ftrace_hash_update_ipmodify() returns -EAGAIN, and we make changes to 
+> the direct trampoline in other places: 
+> 
+> 1) if DIRECT ops attached first, the trampoline is updated in 
+>    prepare_direct_functions_for_ipmodify(), see 3/5 of v2;
+> 
+> 2) if IPMODIFY ops attached first, the trampoline is updated in
+>    bpf_trampoline_update(), see "goto again" path in 5/5 of v2. 
+> 
+> Overall, I think this way is still cleaner. What do you think about this?
 
-Here is the summary with links:
-  - [bpf-next,v2,1/3] samples: bpf: Fix cross-compiling error by using bootstrap bpftool
-    https://git.kernel.org/bpf/bpf-next/c/2e4966288c16
-  - [bpf-next,v2,2/3] tools: runqslower: build and use lightweight bootstrap version of bpftool
-    https://git.kernel.org/bpf/bpf-next/c/3a2a58c4479a
-  - [bpf-next,v2,3/3] bpf: iterators: build and use lightweight bootstrap version of bpftool
-    https://git.kernel.org/bpf/bpf-next/c/3848636b4a88
+What about if we release the lock when doing the callback?
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Then we just need to make sure things are the same after reacquiring the
+lock, and if they are different, we release the lock again and do the
+callback with the new update. Wash, rinse, repeat, until the state is the
+same before and after the callback with locks acquired?
 
+This is a common way to handle callbacks that need to do something that
+takes the lock held before doing a callback.
 
+The reason I say this, is because the more we can keep the accounting
+inside of ftrace the better.
+
+Wouldn't this need to be done anyway if BPF was first and live kernel
+patching needed the update? An -EAGAIN would not suffice.
+
+-- Steve
