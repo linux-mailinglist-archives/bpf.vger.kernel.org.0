@@ -2,129 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 846FD57662B
-	for <lists+bpf@lfdr.de>; Fri, 15 Jul 2022 19:37:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4E54576636
+	for <lists+bpf@lfdr.de>; Fri, 15 Jul 2022 19:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229594AbiGORhl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Jul 2022 13:37:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42604 "EHLO
+        id S229543AbiGORky (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Jul 2022 13:40:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbiGORhj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Jul 2022 13:37:39 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A293A52FF8;
-        Fri, 15 Jul 2022 10:37:38 -0700 (PDT)
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 26FGH603021919;
-        Fri, 15 Jul 2022 10:37:35 -0700
+        with ESMTP id S229463AbiGORkx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Jul 2022 13:40:53 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 106777AB3C
+        for <bpf@vger.kernel.org>; Fri, 15 Jul 2022 10:40:53 -0700 (PDT)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26FGGuoD020206;
+        Fri, 15 Jul 2022 10:40:38 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
  subject : to : cc : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=L4e3VevE8NibRbFdWM0UnFk/MTSVG+9r+DMlwq0lj+8=;
- b=IHnVGnBySn1XTw67LTrlCr/apstVKIR4CWlihmE1hz2o6FHtqZ5Zo5A/YKM7wbdqBo2v
- 9JDvBZ0qbXqwqJn6CcZxV6toiIjCphTou/jJ4FMMNex+eHh6lGD8zT/c7AI2j7did/2O
- 0EGmwg1Ty0KtJmgIHhaGeu8LSNObbH/X1+8= 
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2104.outbound.protection.outlook.com [104.47.58.104])
-        by m0001303.ppops.net (PPS) with ESMTPS id 3hamy3rc6d-1
+ bh=je9qVao9BIvY/tax9a0gLLNRNr+x3a50WhtGzvXUKys=;
+ b=MBCh+PxQVLB/5h5Z/zguhUVU0E5/X5RBDGzGPqv4W6RY/QTwbF65WB8rauchkGdbgXrm
+ 0omvJV9HPO3JYgsb1aXBE12CD9L+2inXpow4D1TcpORnZ7lM0cqca6WLC1H83o6FPQmk
+ tfdTlak5chZn7nBfX0zdtXFtd538VO14TXk= 
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3havksmups-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Jul 2022 10:37:35 -0700
+        Fri, 15 Jul 2022 10:40:38 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NvC6kkrJleevv3vziRe3hRN1iVFHYI7sjumbFabt8bMKQphgJ2RTMoJvR7edUg4ZIWy2CJXdytY0fiCOXK7gv5rpQg+tImv34ClXIGEFgzju3jD7itbpZlecGbT7NJ6kmCyCZYGrRONIXgOyhLPRWJE8MUCS2WIjm398lJJtMuXG0nLjmWDClcuV8V5VEBrIz6EM+u2hprMntcAxNttnleZIduXmkuiHiT2RLNFRIIBj5Q0DwnmrHks1w7NSzKxuLwAnh5LoLUQnpFIgYsZc197gNbXcSnZZZmuVWZGlSS+VjyZ02pXfx1Wa4pS2lIQQVPrBxSRJxIAOwrMb7vShyw==
+ b=TbfJqDlDD+gOdkIriUmWf7sL/8OGBaOC2MqpgSgZucLFvPQqOIOWwULNw+JRmrxG0zA0YMS3FmdXm2VL0AEPxtmx9Me1xmlGnOUo4yJcJTBX+bRADdX3+IipybG9Vk0rPJ2v+GZVkNw0AIwteLt1XdbeKyiLX8JreLido1eCChsH57dopQEx7znNfvSCbmzNvP/kgUSt1sPdPRMMARgjIvxRmNKeFB5ty7tdV6hPtFXPv/OGyIww6kCNhZvLniEIjwRf3yD/6+b5nW+uzDFsj63OKC/qhF21iSk+4EzdZEtNY5R91zNRjHtTQ+yUMvi29ZbR0gKuQULBIQQmHGEEWw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=L4e3VevE8NibRbFdWM0UnFk/MTSVG+9r+DMlwq0lj+8=;
- b=XV8RoqsROORub1EfH2k7xBT33p6b6CrrjynOMi3eYwUV5/YRM1wBFL9tWXsd7I9GJ+DsG64uv9kyGGY01sk+w+AUKwE/O3d95pMSTk1fvjapyJinON5medYYJP91eSOMbVbLz3dV8pr2B3/AeGK60Ey/OVFFx3X0W6gStHHlwBsadrYU0CcNpbWsmMBOhnPmFvQ0Tw9jNCmBXfURNjpnlL/ADg8dijN5zIHi5yCaxiLIkG3nsCdnRKLXhLEr+ln4HNjyr0hPQ/N2s+Ts0yVX7QbAKhRN3Df9U44+TbLa2uEpFaHiR8q9W9ZSVtCe9q4tp9hqZdZrYYCZ1gB48/nrTQ==
+ bh=je9qVao9BIvY/tax9a0gLLNRNr+x3a50WhtGzvXUKys=;
+ b=RH5B2OOi/mLImbt3Ekp8G3wyjlFY8cuCWzvWK9GfNBhpl4MVOCfNKrT8K/baO+vxSFf08r0l9W+JgI4+Fq0hpwPiVK3VLywbw66DG2BkT6YqANm9PFfEE1IGI1X5K3m6IeSnSGXXOKvEMnnssdCDyeekv3/vtAWLY0DY+PZwTQ6ifksT+ESwZwc3T6j4oh2rvSCslwCvpLIMZqyHAmrGuOyuTMdmiUcN+3v6ZMQlWSUbMY6I68oQjC18CN2GUb4GG+VKJxyBaHLykLsDAH90LS5BtfwXeEup55yrwOOE36Qa6War7sGTXxiB7XBQAP7BfSCmPUjJFto23FhibRA6bg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by DM5PR15MB1243.namprd15.prod.outlook.com (2603:10b6:3:b3::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5438.14; Fri, 15 Jul 2022 17:37:33 +0000
+ by SA1PR15MB5258.namprd15.prod.outlook.com (2603:10b6:806:22a::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5438.14; Fri, 15 Jul
+ 2022 17:40:36 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::9568:e5d9:b8ab:bb23]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::9568:e5d9:b8ab:bb23%6]) with mapi id 15.20.5438.017; Fri, 15 Jul 2022
- 17:37:33 +0000
-Message-ID: <17b8d22f-dc23-a383-321e-3adf5117d9c0@fb.com>
-Date:   Fri, 15 Jul 2022 10:37:30 -0700
+ 17:40:36 +0000
+Message-ID: <23ee86bc-c4f2-0a05-120b-555f7c1a02fa@fb.com>
+Date:   Fri, 15 Jul 2022 10:40:33 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
  Gecko/20100101 Thunderbird/91.11.0
-Subject: Re: [PATCH v2] bpf, docs: document BPF_MAP_TYPE_HASH and variants
+Subject: Re: [PATCH bpf-next v4] libbpf: perfbuf: Add API to get the ring
+ buffer
 Content-Language: en-US
-To:     Donald Hunter <donald.hunter@gmail.com>, bpf@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Cc:     Jonathan Corbet <corbet@lwn.net>, sdf@google.com
-References: <20220715130826.31632-1-donald.hunter@gmail.com>
+To:     Jon Doron <arilou@gmail.com>, bpf@vger.kernel.org, ast@kernel.org,
+        andrii@kernel.org, daniel@iogearbox.net
+Cc:     Jon Doron <jond@wiz.io>
+References: <20220715171540.134813-1-arilou@gmail.com>
 From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <20220715130826.31632-1-donald.hunter@gmail.com>
+In-Reply-To: <20220715171540.134813-1-arilou@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-X-ClientProxiedBy: BYAPR21CA0017.namprd21.prod.outlook.com
- (2603:10b6:a03:114::27) To SN6PR1501MB2064.namprd15.prod.outlook.com
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BY5PR16CA0024.namprd16.prod.outlook.com
+ (2603:10b6:a03:1a0::37) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
+MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 90a5a005-45fe-4a38-fe1a-08da6688b2ec
-X-MS-TrafficTypeDiagnostic: DM5PR15MB1243:EE_
+X-MS-Office365-Filtering-Correlation-Id: aa5fb295-a257-48b7-e2b8-08da66891fe6
+X-MS-TrafficTypeDiagnostic: SA1PR15MB5258:EE_
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: S6+QXYvj/0YBeC02+APH9pxw6HQZ2m9Rcj6+271kJp6EfE6Yj1tD6SkCCq37qet92B4vhPMdQnRIh0nHNIUDeih6E6t+XBr2K/PKKjdxT3UR6F9S/D2xim3w1eFBHNQkFX+rSna9w2B6MdBaR0NrZ9m/4GMhXdrkkaUiqv0m67HxhgmCgfsyrtnMXbNJJsc1VwQbWV95IJRPc0yYoJWcLkSzQeIbufh6940A8IW+2Aqk5r92NXBhhAzRtQxBybTSQ5g4jNDwW1HJjvx+e5mBzO4X4gxpkSq3+XKCG8TVDTqssS/lKFP8emXZP9CX1GRSWkyvXljNKWOHVwashtM4AZ5CTxxpxPngrcd2DQQ9TnOj3IeTevVzrVRueBroQ8AlNcHJJeDYSEEWVMtHm5WIeQHhIzJrgA9RMLvkfpRCwataQ286BfdOe2MtDr3xGCvpFwK4R8vokEJ0suxXfmCUpB2jLlNrIQy2apGVufAc48l3/K1DZ0UdCHI6x4Pr/PjBg6HRhnzN2dt8A5tDyZaF+FCKH7Db6BadAhLkqSlZV17MHANLWm5yTx685raxkqUehYn00ZQaHJdzN34vpUzkdhbKUxBYhDwQ85WrdQtYLtnAFY2oo8a01xXkhjdNnX/KpWVo4rHv+YBlHT2kmag6rJ8S5/1HOoOmaPk77lFQqkdYPnTPtWq8mMeYEStFqWS+YsNpXuU7gutW0v1sN9OQKYKHJ0O6aOIhAC7X4LAKq/xCLuOQk2OaDAVeCpvQcHrazCCeQ4x5TDweMzg0VwzIGY99d7JBQsAkO3rtiOo/IHSQRq87w2wctDDL4lhi2WEZ2NyBGuYwaRUFgyJFsvuoOstsJ2EpwXTObR1brDJsCcWS6jwNNZtxntegxoQTpHE5
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(376002)(39860400002)(136003)(396003)(366004)(346002)(8936002)(38100700002)(966005)(6486002)(31686004)(53546011)(31696002)(478600001)(86362001)(186003)(6512007)(36756003)(83380400001)(316002)(66946007)(66476007)(41300700001)(66556008)(8676002)(4326008)(5660300002)(2616005)(6506007)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: 4UlPkgg+LRaqGVnRoMrojYgkz4Rj1ymONNvXDrObccQ1b4PoVgnNcsU1nImX5pdpnOOGz9+i2Yv1Y4Yn7N7NViLB6BIsBVn1VaD57cse9cUqgF1wDfjn4rbTP8eZxVCUPz9Zt0sMxpOJKYjgBAAWHYHGZV1ZeEL3Rjc9+fNd+oZEQ8O6pwWJlbY1U5vvcK0PQOUmbhEFon2QHTGU2biv1yQviGSYnpa+rOyThQi2U9l5ktCjehdSi+m+A1mF/Nbt3V4YUwaSCaQFDIVtjT7bZwMjR6swIT4vwmmOxE+0dLiNyHXYwZXk939TE7jIWGCuthj6QCrBbaMUF4YCWtsEY8pkyE/5EtxddlBPVf3Nh+ECOEW/Kyf0w3om6SxzYYWS4E1lqYDSD+wd1T/mpmrCmWEFAEh2tU9wvaIh/6FlhdPWnUWcat3XRsQOXKbOYBEx1CfQd3hBVbNbAtTpQzj/W2iBb5EgfL/vGVA6KS4TqO9EIEVBbGERwV2s/a30sQGkhZRCufkSLyPT2my3/tdv/Z+3Hy1ugQfNMsQZ/kvB4qrhvK2M/fB18w+rqvI/8Qst7N3lcOurftUS/OVixIcFwE8tXV9BmrCD3oYoT5B7qZ6Kc9UyEAjZl6trP9KmzxpwU/ShmdQHwjyFjn5W6xxk/xLZfjBvDxm45yYIB6VQ9pDQN01ewGmqbgaBchZUitAhKbFosAveBrfXuHqv6A5lgjp0+JFL/3KaDbypzvYuI2UYB9tn1zw0j7SQPnYbZXkaIa8a838rK9amhgYIr2+ftbzRtGj1TcKU6LuAmhvgX3O3XS3ZylGb9SZqRdPj5TeAjGusEQox4q2t8eLWD35UJU0pFq2tpBqa4hJLRlF+7WjCivhTHPeofQDygCaTzHkJ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(136003)(346002)(376002)(39860400002)(366004)(396003)(5660300002)(478600001)(8676002)(8936002)(86362001)(316002)(6486002)(66946007)(66556008)(31696002)(66476007)(4326008)(53546011)(2616005)(6512007)(41300700001)(38100700002)(83380400001)(6666004)(2906002)(31686004)(6506007)(36756003)(186003)(15583001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dFdtVnBrbnZJVXVKYjUxaGZ2ZkNGUkJ5L3Q1endKWndKNjNvT0p0SFlhWjJM?=
- =?utf-8?B?QllDalNmQzJtYXlYcGdiSk1DUWhteFBwSTZuQkdUaDEvOEk2K3NiMVZROXZ6?=
- =?utf-8?B?aStaMzZDWGZ1K2NwL1paN0ppWGN5Qkd0OGpjU0pneG4rK3ZRNWpQNGxreSs3?=
- =?utf-8?B?YU5qUjBnY1o1KzV4QzhGZHhoMkgrNExEWTNidk1nZDZZeGlTYWMxQ1NXQ2xB?=
- =?utf-8?B?MExZanVNUW0wQTU0OGFWejFKUlZLQ1FVS0MvMDUzQmNuN3JlVHhITnpvZUEw?=
- =?utf-8?B?VndHdHhnRFdGVzFhcWpkYm9JZy9JMW9RakxkLzNLeXVkczhad1dtWnBsR2Q4?=
- =?utf-8?B?L0xuNGh6Um5HMFBwYWdHZXg2cGNvN2QweGI4M3AwOHJlUkh6TGRsRzRxbDYv?=
- =?utf-8?B?cUNGRkI5cmlPWVhXUnE5U05BMEl6WjBMMEFVR2M0anRFTHZvc2dlZExGUS91?=
- =?utf-8?B?dFYwWjUwOWs0UFJtdlpORW95eGorbW1Md3VCYUptR1RFdzBLem1wS3UyQTZQ?=
- =?utf-8?B?VTM5QUpQem56M1p0aGtQMVlXYnJGTEN1Q2dLMFo1RENnOTBUeHpUc2tBU0RB?=
- =?utf-8?B?dHhEeGxLVjVzdlZKZDlkd3VrTDhCTjZFZm05MUc0NU9LOW1SUnAzZjI0cG03?=
- =?utf-8?B?UEFXYTVhblhzWERvaXVMTkpCcDdoZGF2V2xVQ3hUWEFRVnRMOGxFQTVVdVlB?=
- =?utf-8?B?Tmh0ZUR5UzRXOFowbGJxTU9pWVFZTDVIRm83VHlHRnFXSXNSUUVnL2tIRk94?=
- =?utf-8?B?bm0yd1VycGlLaFZ0R2t3RHpRNW5Ca284VFpwbmRlQk93MER2eG83MUdKd2tG?=
- =?utf-8?B?Rkc0UVpEWnZXTlhqeVZwYys3Q0RJbldQT2prOWhtcEtORkF3SVplcXJPcTNP?=
- =?utf-8?B?d01TNFpGeUFhVzVSNXdIMVAyd0ZTZWxaVlZWc3ZKdUpmT0FMcExodVlvcDkx?=
- =?utf-8?B?SmlsMEtXZEQ2b1J3OWdMOTY0RklPcUFVUzNza2tEdjkxR05xck56WWFXQUVR?=
- =?utf-8?B?L3ZMbUhleEZGV2FtVGlsMnhKODlHUmo0OEhTT2dpVWxpSUpSUTA3eVZJbnNa?=
- =?utf-8?B?R3FYYm0yRkx5RzNhNHBDR3dqNmtVcjVIYk93L1JycWpiM0FWdXd5VG1ja1c5?=
- =?utf-8?B?N2xHUithWUhyT2dCREdJalJpOGNtSGp3RlA5WUkxR2lUWmpGaGJ0OHVZK2lX?=
- =?utf-8?B?bUlTdWRPYy9NSFhzcFNFYVU5TDhaVy9SZ1NYazh5VE4rUDBWelRRMitlbGts?=
- =?utf-8?B?V1Buc0R4L1BleTVicElDWXVabUQzcTMzRlhuTDF6bG9DUGt1YlFYWHFBY2Jp?=
- =?utf-8?B?Ykw0N0ZnWHFXUG51Qy9MSkpaZU1ybC9LSGs3RmFSSnI2VGVUUzNaeXR1d0J2?=
- =?utf-8?B?VE53eGJXbk1GaGR0NzcySWxodEdpejR0NHIrQWVIcS8zMnlYMTFtWUc1bmNU?=
- =?utf-8?B?NDB5NmZUdlhuMFBOdHEyMGk4OXJMWXUzcTNReFdDYy90ZzJkdm1IT0lnc0d0?=
- =?utf-8?B?VVpZOHJ3eDN5dWx4WC9tV0huZ3k3WGNJSHJBbzgrVkpyUm9IcVBvNW0xandw?=
- =?utf-8?B?KzBuWlQ2aFRTUmZBcGlLdXhJUEJIZHB6UWFiRHRPWlJQc2h6cjF1RTVDTFBj?=
- =?utf-8?B?bzZYUGo2cWp6dFFpOTVXUVRtenpsQUJUN1Z3L2FoeDh1anVndjdnL05OTkhR?=
- =?utf-8?B?dTlOWURSZmRvSW9YZmZFUHpMczg0Nm5CKzkxOU1NWEd0cXArRlE5YnNDbTQ4?=
- =?utf-8?B?cVF0RTBGcjFVV3hTWXl5bmZuVTJ6c2MzaFRhQytCYjlSR2Q4MGFSNEV5L00w?=
- =?utf-8?B?MDhoZFFjQ01YeTNpelEzZHdSdnZaZEdwMVlCTXhsWFpzUFdTUnU1Z05DMDRM?=
- =?utf-8?B?RFBMNDgxWjFCRFdyL2swcHVDc1JTditzQWhmNFA2NEl5YUNNQ0U3eWY1MTJx?=
- =?utf-8?B?YmxMZDJrM0N4Z24wZnZUU2VwQmVocUJVZ3JBYjNtOHZBOW1pY21kejBlNzUr?=
- =?utf-8?B?MEF5VmdMRkRod0NqeWptaVdMbG5DdUJRZGo0eDdhWWhOckdwaElEcVdtSWJa?=
- =?utf-8?B?NnI2U1ArZWV0Sys4R1dITTExaDEyNlFCUmpyQzlrc2N5eitpS3FmYkFmaTB3?=
- =?utf-8?B?M3VHZ01XYk9kOFF2NE41ZXZxQUdWTzVQdGdaaTF2VTh5Qk5OdUF5d0RrWVNE?=
- =?utf-8?B?dkE9PQ==?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WlNvVDBwWUFqaTJEUVFkNU1nQkxha2Myc3ZKakYySTZ5Rjcwc1ltOTdydEg2?=
+ =?utf-8?B?UTVqQ25MV2xNUHV4OU5hSWxvTW5xSnlPTi8zM215bVNvVndFQmlXdFBWQlpq?=
+ =?utf-8?B?QndaMzB6cVpHV2NGOUNYbGNoS1JRaWt2RnNvWW1XK0U5bFZNTUdaOW5MVmNa?=
+ =?utf-8?B?YS9OTHNuNlhpYk45OHA4N3BEUUs5Rm10OHVFOWZ4dkthMDd3SE83QWdYYkVi?=
+ =?utf-8?B?ck1kRTFoT1JEQnd2NkdFdEFHVHFxZ202Tno4NjRWL1dFK0V0K3lzVTQ2bVNq?=
+ =?utf-8?B?RnBzNDhiM3JmVGNyVEFuVmJUVk4xd0N6U1JPdGhCV0M4NDFMYUVBVWlLeWwr?=
+ =?utf-8?B?MnhndkhRQXhubkhHa2JlUGt2UEczMUo4aXZCODRMako5bHJTbjdYV2lvZUlD?=
+ =?utf-8?B?bmZJWnNvRzllM21nb25oTmp0YlUzTkNtNDNlZEtOM29uQkxMY1U3ZnFmSTI3?=
+ =?utf-8?B?Z3lpa0RDMFVJZE5nakRWUE0wTkVGM3BMUUJubGRBMXNYUTh4WWtWSWVNZG81?=
+ =?utf-8?B?R2VGTldOYm1sZHNtL2pFT2h3NFBNT3Myc04yU1ZOZ0lYRWFibHZRUWxPQVJv?=
+ =?utf-8?B?a2NZc2hOY29OZFpIUis5dU1kdTE0SjRHRmhxbFg1Tzc0K1UxQnErNTA3Um9P?=
+ =?utf-8?B?eXFHVndBUyt3V0dCMUlPZytXWTcxSmEwR1AwQlB3VFJuWWtja2tMZi9acnNz?=
+ =?utf-8?B?VU5IR0pxQUgrUDk4MVUwYkNJYVkvamV2VmFqZHg3OXRJNEtEV1lOVXh1ckNr?=
+ =?utf-8?B?R1d4a3V2YXZ0WnhVeVNpeHI1R0E2RG5mT0JMOUxObnpPVk9LaWxHdTkwczg5?=
+ =?utf-8?B?Q3ZVejd1TUJmME1YKzhxekxVekRieTBXK3h6U2owUnFDTVBPeXlmZkZVNC9p?=
+ =?utf-8?B?V05YVEJHK3lIRUxWM0pBTE84OHpjUGZPVFN5cGR5VjRuSzE4Yk1jeFhxVWx4?=
+ =?utf-8?B?MlE4bkRTUFY4SUhmdUdNbU5QeC9vUk5meWFLZTFqWjBvcGF5MFZ4YjdVTVB5?=
+ =?utf-8?B?SVZSYUdnYXZGMDNCd2xyZmEweDI3OThFQndqZDBsZTh0bGloUlBzZUpQSjd5?=
+ =?utf-8?B?eUgvY2NGNmhSVFBudHQ0Y0tiQkFhdWJHNGczUWpUcENaT1BIVXBseEUrb1Nw?=
+ =?utf-8?B?V0YxMHZ5d1VnR2RGMlVDcEVIREpBeVc5ODRZVFExRGZaT1JmWndSUHJwVUF3?=
+ =?utf-8?B?OThOcWZ3a3lGRUZaTlBCSEdhaHBNUVhEQUhYTDcvZ3FIOStiNTY0VkZaNExk?=
+ =?utf-8?B?ZDRPd2JNRUhkdVNQaXdsamxYSzlPTURXM2p5dGcwcCtKZWVDdkpYb1Q3c2lF?=
+ =?utf-8?B?RWpmZmJYQUpCWVhzNDE4UFhNUEFzUzJvRUdDOWJOWUx0MGJGRFd2bkErUWJY?=
+ =?utf-8?B?ZU1WbUlUR0JzY2ZwYUJCejZCSXh5aDVjMmhsWU9kbDFyNWlhVFBsT3RTMkRh?=
+ =?utf-8?B?Q3ArWDRORkZwdVZWdjNRek8rYnAvWEtwS053WEEyTENMU0JiZzBjdFJSL3lv?=
+ =?utf-8?B?cEdXRXVxYUJ4YXFxNThBZzl6OFptdU01YUZpcnVJUFNsK1d3WnBJOXkrZEFP?=
+ =?utf-8?B?SThxL0dWU3l2enhFYVF4UFQ5WlpLKzJjQnIybGJlcDFZSThTN1dQZlV2OUhn?=
+ =?utf-8?B?OW9IdGdNZmFNVmkvRmlVSkRMakUvT05IWTRlK0JldUlTSFIvbnNvRmdkbFpa?=
+ =?utf-8?B?NkRrUjRPREtYYTJLb1grenFlUFBWTTlkcmd3ejk2RnBEbnRTNUc3bU83bjNH?=
+ =?utf-8?B?ZmM3dzRJT25NeVVXeWhyYVF2N2lJVnhrRzNvS051YTdKb2Ztc0VWRkZEalUy?=
+ =?utf-8?B?QVFWVUZIMFU2WWY0SkVoUTJ6TllNT3ZzdC9OYjFMRjBMREZJWDhXNXJrQkJR?=
+ =?utf-8?B?ZTVaRGtaR05RR0hsTDNWTk5kaXA1MHIzWWNaQlpWSVpHaW53NEFyY0dHRzBT?=
+ =?utf-8?B?d2k0a1FETWkvcnpJQ2EzVmlTSkRLcTlwMGh5ck5HTlhUQmFhRjhQUFZoYTlE?=
+ =?utf-8?B?TVZVSjk0TktLMmNsLzk1SEsyS3VIRU1qTVlWUnhvTy9HR1Z4V3ZRQ2FnNWsy?=
+ =?utf-8?B?VGFUeC9DWGNGUkF0QUEzaFhHNExVZXlXQkRQb3pOOWFEbVk3eTliVkI1UjBH?=
+ =?utf-8?B?dEVnSTZOdXpGaFRpQ21CWUZKbFRTM0xFbktUOWhJRi9KVGJLd0ZSSmxYMWtC?=
+ =?utf-8?B?N2c9PQ==?=
 X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 90a5a005-45fe-4a38-fe1a-08da6688b2ec
+X-MS-Exchange-CrossTenant-Network-Message-Id: aa5fb295-a257-48b7-e2b8-08da66891fe6
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2022 17:37:33.0901
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2022 17:40:35.9061
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0sVMpL2fTGBnsmTSc2SJLe7Cl2ujAhPDif7eScrSDOZ5Zo9xTKqtQzWmKN84X+kk
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR15MB1243
-X-Proofpoint-GUID: Anu1Aus9FUdxaceG-Vge2_BmfGX-80vZ
-X-Proofpoint-ORIG-GUID: Anu1Aus9FUdxaceG-Vge2_BmfGX-80vZ
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-UserPrincipalName: tt2w/W5Xwzul3QtI7MbVGjqhe4gyIzZ5Y1NKtzXF1ocJjbYT+bA2OpRrAHsZJ+l3
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB5258
+X-Proofpoint-ORIG-GUID: s8HmnGzAcZ0WTJX82c_pVc36XwfTNOMh
+X-Proofpoint-GUID: s8HmnGzAcZ0WTJX82c_pVc36XwfTNOMh
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
  definitions=2022-07-15_09,2022-07-15_01,2022-06-22_01
@@ -140,144 +141,133 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 7/15/22 6:08 AM, Donald Hunter wrote:
-> Add documentation for BPF_MAP_TYPE_HASH including kernel version
-> introduced, usage and examples. Document BPF_MAP_TYPE_PERCPU_HASH,
-> BPF_MAP_TYPE_LRU_HASH and BPF_MAP_TYPE_LRU_PERCPU_HASH variations.
+On 7/15/22 10:15 AM, Jon Doron wrote:
+> From: Jon Doron <jond@wiz.io>
 > 
-> Note that this file is included in the BPF documentation by the glob in
-> Documentation/bpf/maps.rst
+> Add support for writing a custom event reader, by exposing the ring
+> buffer.
 > 
-> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
+> With the new API perf_buffer__buffer() you will get access to the
+> raw mmaped()'ed per-cpu underlying memory of the ring buffer.
+> 
+> This region contains both the perf buffer data and header
+> (struct perf_event_mmap_page), which manages the ring buffer
+> state (head/tail positions, when accessing the head/tail position
+> it's important to take into consideration SMP).
+> With this type of low level access one can implement different types of
+> consumers here are few simple examples where this API helps with:
+> 
+> 1. perf_event_read_simple is allocating using malloc, perhaps you want
+>     to handle the wrap-around in some other way.
+> 2. Since perf buf is per-cpu then the order of the events is not
+>     guarnteed, for example:
+>     Given 3 events where each event has a timestamp t0 < t1 < t2,
+>     and the events are spread on more than 1 CPU, then we can end
+>     up with the following state in the ring buf:
+>     CPU[0] => [t0, t2]
+>     CPU[1] => [t1]
+>     When you consume the events from CPU[0], you could know there is
+>     a t1 missing, (assuming there are no drops, and your event data
+>     contains a sequential index).
+>     So now one can simply do the following, for CPU[0], you can store
+>     the address of t0 and t2 in an array (without moving the tail, so
+>     there data is not perished) then move on the CPU[1] and set the
+>     address of t1 in the same array.
+>     So you end up with something like:
+>     void **arr[] = [&t0, &t1, &t2], now you can consume it orderely
+>     and move the tails as you process in order.
+> 3. Assuming there are multiple CPUs and we want to start draining the
+>     messages from them, then we can "pick" with which one to start with
+>     according to the remaining free space in the ring buffer.
+> 
+> Signed-off-by: Jon Doron <jond@wiz.io>
 > ---
->   Documentation/bpf/map_hash.rst | 181 +++++++++++++++++++++++++++++++++
->   1 file changed, 181 insertions(+)
->   create mode 100644 Documentation/bpf/map_hash.rst
+>   tools/lib/bpf/libbpf.c   | 16 ++++++++++++++++
+>   tools/lib/bpf/libbpf.h   | 16 ++++++++++++++++
+>   tools/lib/bpf/libbpf.map |  2 ++
+>   3 files changed, 34 insertions(+)
 > 
-> diff --git a/Documentation/bpf/map_hash.rst b/Documentation/bpf/map_hash.rst
-> new file mode 100644
-> index 000000000000..d9e33152dae5
-> --- /dev/null
-> +++ b/Documentation/bpf/map_hash.rst
-> @@ -0,0 +1,181 @@
-> +.. SPDX-License-Identifier: GPL-2.0-only
-> +.. Copyright (C) 2022 Red Hat, Inc.
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index e89cc9c885b3..c18bdb9b6e85 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -12485,6 +12485,22 @@ int perf_buffer__buffer_fd(const struct perf_buffer *pb, size_t buf_idx)
+>   	return cpu_buf->fd;
+>   }
+>   
+> +int perf_buffer__buffer(struct perf_buffer *pb, int buf_idx, void **buf, size_t *buf_size)
+> +{
+> +	struct perf_cpu_buf *cpu_buf;
 > +
-> +===============================================
-> +BPF_MAP_TYPE_HASH, with PERCPU and LRU Variants
-> +===============================================
+> +	if (buf_idx >= pb->cpu_cnt)
+> +		return libbpf_err(-EINVAL);
 > +
-> +.. note::
-> +   - ``BPF_MAP_TYPE_HASH`` was introduced in kernel version 3.19
-> +   - ``BPF_MAP_TYPE_PERCPU_HASH`` was introduced in version 4.6
-> +   - Both ``BPF_MAP_TYPE_LRU_HASH`` and ``BPF_MAP_TYPE_LRU_PERCPU_HASH``
-> +     were introduced in version 4.10
+> +	cpu_buf = pb->cpu_bufs[buf_idx];
+> +	if (!cpu_buf)
+> +		return libbpf_err(-ENOENT);
 > +
-> +``BPF_MAP_TYPE_HASH`` and ``BPF_MAP_TYPE_PERCPU_HASH`` provide general
-> +purpose hash map storage. Both the key and the value can be structs,
-> +allowing for composite keys and values.
+> +	*buf = cpu_buf->base;
+> +	*buf_size = pb->mmap_size;
+> +	return 0;
+> +}
 > +
-> +The kernel is responsible for allocating and freeing key/value pairs, up
-> +to the max_entries limit that you specify. Hash maps use pre-allocation
-> +of hash table elements by default. The ``BPF_F_NO_PREALLOC`` flag can be
-> +used to disable pre-allocation when it is to memory expensive.
-> +
-> +``BPF_MAP_TYPE_PERCPU_HASH`` provides a separate value slot per
-> +CPU. The per-cpu values are stored internally in an array.
-> +
-> +The ``BPF_MAP_TYPE_LRU_HASH`` and ``BPF_MAP_TYPE_LRU_PERCPU_HASH``
-> +variants add LRU semantics to their respective hash tables. An LRU hash
-> +will automatically evict the least recently used entries when the hash
-> +table reaches capacity. An LRU hash maintains an internal LRU list that
-> +is used to select elements for eviction. This internal LRU list is
-> +shared across CPUs but it is possible to request a per CPU LRU list with
-> +the ``BPF_F_NO_COMMON_LRU`` flag when calling ``bpf_map_create``.
-> +
-> +Usage
-> +=====
-> +
-> +.. c:function::
-> +   long bpf_map_update_elem(struct bpf_map *map, const void *key, const void *value, u64 flags)
-> +
-> +Hash entries can be added or updated using the ``bpf_map_update_elem()``
-> +helper. This helper replaces existing elements atomically. The ``flags``
-> +parameter can be used to control the update behaviour:
-> +
-> +- ``BPF_ANY`` will create a new element or update an existing element
-> +- ``BPF_NOTEXIST`` will create a new element only if one did not already
-> +  exist
-> +- ``BPF_EXIST`` will update an existing element
-> +
-> +``bpf_map_update_elem()`` returns 0 on success, or negative error in
-> +case of failure.
-> +
-> +.. c:function::
-> +   void *bpf_map_lookup_elem(struct bpf_map *map, const void *key)
-> +
-> +Hash entries can be retrieved using the ``bpf_map_lookup_elem()``
-> +helper. This helper returns a pointer to the value associated with
-> +``key``, or ``NULL`` if no entry was found.
-> +
-> +.. c:function::
-> +   long bpf_map_delete_elem(struct bpf_map *map, const void *key)
-> +
-> +Hash entries can be deleted using the ``bpf_map_delete_elem()``
-> +helper. This helper will return 0 on success, or negative error in case
-> +of failure.
-> +
-> +Per CPU Hashes
-> +--------------
-> +
-> +For ``BPF_MAP_TYPE_PERCPU_HASH`` and ``BPF_MAP_TYPE_LRU_PERCPU_HASH``
-> +the ``bpf_map_update_elem()`` and ``bpf_map_lookup_elem()`` helpers
-> +automatically access the hash slot for the current CPU.
-> +
-> +.. c:function::
-> +   void *bpf_map_lookup_percpu_elem(struct bpf_map *map, const void *key, u32 cpu)
-> +
-> +The ``bpf_map_lookup_percpu_elem()`` helper can be used to lookup the
-> +value in the hash slot for a specific CPU. Returns value associated with
-> +``key`` on ``cpu`` , or ``NULL`` if no entry was found or ``cpu`` is
-> +invalid.
-> +
-> +Concurrency
-> +-----------
-> +
-> +Values stored in ``BPF_MAP_TYPE_HASH`` can be accessed concurrently by
-> +programs running on different CPUs.  Since Kernel version 5.1, the BPF
-> +infrastructure provides ``struct bpf_spin_lock`` to synchronize access.
-> +See ``tools/testing/selftests/bpf/progs/test_spin_lock.c``.
-> +
-> +Userspace
-> +---------
-> +
-> +.. c:function::
-> +   int bpf_map_get_next_key (int fd, const void *cur_key, void *next_key)
-> +
-> +In userspace, is possible to iterate through the keys of a hash using
+>   /*
+>    * Consume data from perf ring buffer corresponding to slot *buf_idx* in
+>    * PERF_EVENT_ARRAY BPF map without waiting/polling. If there is no data to
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index 9e9a3fd3edd8..9cd9fc1a16d2 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -1381,6 +1381,22 @@ LIBBPF_API int perf_buffer__consume(struct perf_buffer *pb);
+>   LIBBPF_API int perf_buffer__consume_buffer(struct perf_buffer *pb, size_t buf_idx);
+>   LIBBPF_API size_t perf_buffer__buffer_cnt(const struct perf_buffer *pb);
+>   LIBBPF_API int perf_buffer__buffer_fd(const struct perf_buffer *pb, size_t buf_idx);
+> +/**
+> + * @brief **perf_buffer__buffer()** returns the per-cpu raw mmap()'ed underlying
+> + * memory region of the ring buffer.
+> + * This ring buffer can be used to implement a custom events consumer.
+> + * The ring buffer starts with the *struct perf_event_mmap_page*, which
+> + * holds the ring buffer managment fields, when accessing the header
+> + * structure it's important to be SMP aware.
+> + * You can refer to *perf_event_read_simple* for a simple example.
+> + * @param pb the perf buffer structure
+> + * @param buf_idx the buffer index to retreive
+> + * @param buf (out) gets the base pointer of the mmap()'ed memory
+> + * @param buf_size (out) gets the size of the mmap()'ed region
+> + * @return 0 on success, negative error code for failure
+> + */
+> +LIBBPF_API int perf_buffer__buffer(struct perf_buffer *pb, int buf_idx, void **buf,
+> +				   size_t *buf_size);
+>   
+>   typedef enum bpf_perf_event_ret
+>   	(*bpf_perf_event_print_t)(struct perf_event_header *hdr,
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index 52973cffc20c..75cf9d4c871b 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -461,5 +461,7 @@ LIBBPF_0.8.0 {
+>   } LIBBPF_0.7.0;
+>   
+>   LIBBPF_1.0.0 {
+> +	global:
+> +		perf_buffer__buffer;
 
-'is possible' -> 'it is possible'
+You probably use a old version of bpf-next?
+The latest bpf-next has
 
-> +the ``bpf_map_get_next_key()`` function. The first key can be fetched by
-> +calling ``bpf_map_get_next_key()`` with ``cur_key`` set to
-> +``NULL``. Subsequent calls will fetch the next key that follows the
-> +current key. ``bpf_map_get_next_key()`` returns 0 on success, -ENOENT if
-> +cur_key is the last key in the hash, or negative error in case of
-> +failure.
+LIBBPF_1.0.0 {
+         global:
+                 bpf_prog_query_opts;
+                 btf__add_enum64;
+                 btf__add_enum64_value;
+                 libbpf_bpf_attach_type_str;
+                 libbpf_bpf_link_type_str;
+                 libbpf_bpf_map_type_str;
+                 libbpf_bpf_prog_type_str;
+};
 
-There are some potential issues related to bpf_map_get_next_key() where
-if it happened the *cur_key* in bpf_map_get_next_key() is deleted, the 
-returned next_key will be the *first* key in the hash table. This is
-an undesired behavior. So we should mention this and recommend users
-to use batch-based lookup if their setup involves key deletion 
-intermixed with bpf_map_get_next_key(). The details can be found here:
-   https://lore.kernel.org/bpf/20200115184308.162644-6-brianvv@google.com
+You need to add perf_buffer__buffer after libbpf_bpf_prog_type_str 
+(alphabet order).
 
-> +
-> +Examples
-> +========
-> +
-> +Please see the ``tools/testing/selftests/bpf`` directory for functional
-> +examples.  The sample code below demonstrates API usage.
-> +
-[...]
+>   	local: *;
+>   };
