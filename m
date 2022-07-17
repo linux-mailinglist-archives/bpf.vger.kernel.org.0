@@ -2,90 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9DC5777F3
-	for <lists+bpf@lfdr.de>; Sun, 17 Jul 2022 21:23:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE46D577877
+	for <lists+bpf@lfdr.de>; Sun, 17 Jul 2022 23:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231819AbiGQTXa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 17 Jul 2022 15:23:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33392 "EHLO
+        id S231753AbiGQVnU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 17 Jul 2022 17:43:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229873AbiGQTX3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 17 Jul 2022 15:23:29 -0400
-Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C59CA446;
-        Sun, 17 Jul 2022 12:23:29 -0700 (PDT)
-Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-10c0430e27dso19087091fac.4;
-        Sun, 17 Jul 2022 12:23:29 -0700 (PDT)
+        with ESMTP id S230185AbiGQVnT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 17 Jul 2022 17:43:19 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35373BC9E;
+        Sun, 17 Jul 2022 14:43:18 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id z23so18222736eju.8;
+        Sun, 17 Jul 2022 14:43:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=1mjGqetET/mkjAgPnd3d/Sgftw1p+N+UXVDuByzJX78=;
-        b=dw2I5vA4fF1SIFGAxZ5z4EYd6Mq7k1FXjHM9mmCIW7UpxVSUnVkgJCNrBeXpBDrWR1
-         zXMt669HOD6/9aZe01CUD5OT3eMbhOYMAyd6OEJ+NnuJAxealv7KoXDGKFtul768PJRC
-         66SqQIXNAJwVx94CHHFkqrbklHNaN82sBxB8JBU6VSQP0qlevALVM4qF8Ub/hZarm1RK
-         LLwlgYr50udTDi+XJLlJ2aRSXPclXhT2NgtHyEIZtElkUFQU/AjQbYIM3PrVBgN/c1Jq
-         kLkYTjnZ7WMomDi1gYkTc2qpH4FYldo9W0YEKWYbK+rEX9bC38o/rIB09nqyDbTJaTNu
-         1jRw==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JW1OfylC66Hp9nA9HQaGYHfkZ+Nw3LPS1bSYaq4nMP0=;
+        b=M0d3xJ5Czbs9IA5+40C9BHKdH0HXEfgJDtwZ6Y1SloXOWcm0kpI7q9qD83hjvsgwk6
+         pA0Xmcn42RGhFzZ1nn2aHyPhiIs2tCuE82wiqq/6DWV7WtgIm4CNkBhKDyIoBB3OqTb8
+         7w/6gxdR5UQdzNiK/veI6aSX9qTUZk0PYhLJxUJFNlRR6Wh++CKvTDCP9mXlWtsFc75E
+         3/d/nvWYVjF3UnOipsgcKUKVZjVOzKxlnRviQJQl/dvkJJpA10qYY4u4z0YzN7x1gnL4
+         vvA00Te+QOXlZskfYzIsNgLE++0NnAjcnhJ/IOINqqSGkgg9Nnmc+SLDAUa6uamozeZj
+         1crA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=1mjGqetET/mkjAgPnd3d/Sgftw1p+N+UXVDuByzJX78=;
-        b=N7Ie7eOzJiViTQSk8+QQDRsfRMtmk0ZyJ0CZwuX6+POBn/YcWCiqgdYlcxTnk+au+L
-         GvIzNcZKGKyMUqHGcZ0bmdVosG67XK8mGhZzRE/xFJuHp/oHTP2/IKBRhyaSDtLbgvm7
-         Mq4YKTF5B8H0Uv37z5bqMBxEwK5acWR0rKNqQzN81V1wn64KUtNNp1kZgIgJ3JxKt4Hd
-         if3A25l7yF/I2dvqSoePDllU5rah0TRvHjglLtrzrY7wB4clSKgtm0B4oR++OWk4mqJe
-         WqA3nwXBEPdVpm+ui0lkYliUIw2YvVj5i4AxwgTS/6aW9DtCyZQhtuhBjKiTiwe9+weh
-         OKsQ==
-X-Gm-Message-State: AJIora9j1MHB2G6k5La+mCT1MrAeoGk2mxFdoNtZ/9AvdJTCLd/1PWFD
-        JX7V/CffVU2fTEkwpIF9PXcmv71yebiqaA==
-X-Google-Smtp-Source: AGRyM1sIaPY6YfqG0B8SS7WSvfQefoXsMIvYdaNCWNJTLxyE29A3WNWgfSoSNs74292r9pdIxz+7XQ==
-X-Received: by 2002:a05:6808:201c:b0:335:8112:dd85 with SMTP id q28-20020a056808201c00b003358112dd85mr11342056oiw.150.1658085808357;
-        Sun, 17 Jul 2022 12:23:28 -0700 (PDT)
-Received: from localhost ([2600:1700:65a0:ab60:3835:48ec:66bb:33a6])
-        by smtp.gmail.com with ESMTPSA id d7-20020a9d5e07000000b0061c862ac067sm2719481oti.62.2022.07.17.12.23.27
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JW1OfylC66Hp9nA9HQaGYHfkZ+Nw3LPS1bSYaq4nMP0=;
+        b=cO2vXDDtTiBZYAd8g3I5DHej3rzsD5OhfDhNdPtUPweVVKhIpH6Bt+6W24F5LBgkjx
+         rMAiLlh08wo/5POJK/1kM/Iwv6GEeRoFE6SnFe7iUPRvWs6k5wfBQ4cL7rMaGOH1tv0O
+         gQmU34JQGxP4hm99rTe8kt5yg1tWK+sQUWV16fI9GLb8y2VGe7foE8gmcC56s39s9kkF
+         qzJpzwM8OqyKWDz+CKDGrcUa3DhgCeXvI/YRq3+hZbibaFX/k1PknCWvEeuEJHmTq11y
+         3yQp4VAreqKyUSpY6RiaOA+sr0lqPmV9LqjQunLkvbSyYzTxKozfRna222b35vX0rIK3
+         aTwQ==
+X-Gm-Message-State: AJIora/Adjw4Ro+IvAj2ihkPlRFAvmaM3SCAHW9cCL4Ioc+wJjcieQiU
+        9cEaCe8sGRzkblds0eYtKm0=
+X-Google-Smtp-Source: AGRyM1tZcj9DBcDkMitCC14fjrMGK0pAtQzbt1WO6zdpn9cXiyuWGQSiYQlBgFcmAzr8u+C2tKoz8A==
+X-Received: by 2002:a17:906:9b14:b0:72b:97ac:c30c with SMTP id eo20-20020a1709069b1400b0072b97acc30cmr23500919ejc.588.1658094196613;
+        Sun, 17 Jul 2022 14:43:16 -0700 (PDT)
+Received: from krava ([83.240.63.148])
+        by smtp.gmail.com with ESMTPSA id eq22-20020a056402299600b0043a7134b381sm7254823edb.11.2022.07.17.14.43.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Jul 2022 12:23:27 -0700 (PDT)
-Date:   Sun, 17 Jul 2022 12:23:26 -0700
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Stanislav Fomichev <sdf@google.com>,
+        Sun, 17 Jul 2022 14:43:12 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Sun, 17 Jul 2022 23:43:08 +0200
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Mykola Lysenko <mykolal@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org,
-        Freysteinn Alfredsson <freysteinn.alfredsson@kau.se>
-Subject: Re: [RFC PATCH 00/17] xdp: Add packet queueing and scheduling
- capabilities
-Message-ID: <YtRhrvt6wUPWTvWU@pop-os.localdomain>
-References: <20220713111430.134810-1-toke@redhat.com>
- <CAKH8qBtdnku7StcQ-SamadvAF==DRuLLZO94yOR1WJ9Bg=uX1w@mail.gmail.com>
- <877d4gpto8.fsf@toke.dk>
- <YtRSOaCtujBfzHUS@pop-os.localdomain>
- <CAP01T77ov2ARuR+on+D-8cgYSsndF9JKTuYMT9dc1Qu8wuG5sQ@mail.gmail.com>
+        KP Singh <kpsingh@chromium.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Martynas Pumputis <m@lambda.lt>,
+        Yutaro Hayakawa <yutaro.hayakawa@isovalent.com>
+Subject: Re: [PATCH RFC bpf-next 4/4] selftests/bpf: Fix kprobe get_func_ip
+ tests for CONFIG_X86_KERNEL_IBT
+Message-ID: <YtSCbIA+6JtRF/Ch@krava>
+References: <20220705190308.1063813-1-jolsa@kernel.org>
+ <20220705190308.1063813-5-jolsa@kernel.org>
+ <CAEf4BzapX_C16O9woDSXOpbzVsxjYudXW36woRCqU3u75uYiFA@mail.gmail.com>
+ <YsdbQ4vJheLWOa0a@krava>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP01T77ov2ARuR+on+D-8cgYSsndF9JKTuYMT9dc1Qu8wuG5sQ@mail.gmail.com>
+In-Reply-To: <YsdbQ4vJheLWOa0a@krava>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -96,106 +84,84 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jul 17, 2022 at 08:41:10PM +0200, Kumar Kartikeya Dwivedi wrote:
-> On Sun, 17 Jul 2022 at 20:17, Cong Wang <xiyou.wangcong@gmail.com> wrote:
-> >
-> > On Wed, Jul 13, 2022 at 11:52:07PM +0200, Toke Høiland-Jørgensen wrote:
-> > > Stanislav Fomichev <sdf@google.com> writes:
+On Fri, Jul 08, 2022 at 12:16:35AM +0200, Jiri Olsa wrote:
+> On Tue, Jul 05, 2022 at 10:29:17PM -0700, Andrii Nakryiko wrote:
+> > On Tue, Jul 5, 2022 at 12:04 PM Jiri Olsa <jolsa@kernel.org> wrote:
 > > >
-> > > > On Wed, Jul 13, 2022 at 4:14 AM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
-> > > >>
-> > > >> Packet forwarding is an important use case for XDP, which offers
-> > > >> significant performance improvements compared to forwarding using the
-> > > >> regular networking stack. However, XDP currently offers no mechanism to
-> > > >> delay, queue or schedule packets, which limits the practical uses for
-> > > >> XDP-based forwarding to those where the capacity of input and output links
-> > > >> always match each other (i.e., no rate transitions or many-to-one
-> > > >> forwarding). It also prevents an XDP-based router from doing any kind of
-> > > >> traffic shaping or reordering to enforce policy.
-> > > >>
-> > > >> This series represents a first RFC of our attempt to remedy this lack. The
-> > > >> code in these patches is functional, but needs additional testing and
-> > > >> polishing before being considered for merging. I'm posting it here as an
-> > > >> RFC to get some early feedback on the API and overall design of the
-> > > >> feature.
-> > > >>
-> > > >> DESIGN
-> > > >>
-> > > >> The design consists of three components: A new map type for storing XDP
-> > > >> frames, a new 'dequeue' program type that will run in the TX softirq to
-> > > >> provide the stack with packets to transmit, and a set of helpers to dequeue
-> > > >> packets from the map, optionally drop them, and to schedule an interface
-> > > >> for transmission.
-> > > >>
-> > > >> The new map type is modelled on the PIFO data structure proposed in the
-> > > >> literature[0][1]. It represents a priority queue where packets can be
-> > > >> enqueued in any priority, but is always dequeued from the head. From the
-> > > >> XDP side, the map is simply used as a target for the bpf_redirect_map()
-> > > >> helper, where the target index is the desired priority.
-> > > >
-> > > > I have the same question I asked on the series from Cong:
-> > > > Any considerations for existing carousel/edt-like models?
+> > > The kprobe can be placed anywhere and user must be aware
+> > > of the underlying instructions. Therefore fixing just
+> > > the bpf program to 'fix' the address to match the actual
+> > > function address when CONFIG_X86_KERNEL_IBT is enabled.
 > > >
-> > > Well, the reason for the addition in patch 5 (continuously increasing
-> > > priorities) is exactly to be able to implement EDT-like behaviour, where
-> > > the priority is used as time units to clock out packets.
-> >
-> > Are you sure? I seriouly doubt your patch can do this at all...
-> >
-> > Since your patch relies on bpf_map_push_elem(), which has no room for
-> > 'key' hence you reuse 'flags' but you also reserve 4 bits there... How
-> > could tstamp be packed with 4 reserved bits??
-> >
-> > To answer Stanislav's question, this is how my code could handle EDT:
-> >
-> > // BPF_CALL_3(bpf_skb_map_push, struct bpf_map *, map, struct sk_buff *, skb, u64, key)
-> > skb->tstamp = XXX;
-> > bpf_skb_map_push(map, skb, skb->tstamp);
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >  tools/testing/selftests/bpf/progs/get_func_ip_test.c | 7 +++++--
+> > >  1 file changed, 5 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/tools/testing/selftests/bpf/progs/get_func_ip_test.c b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
+> > > index a587aeca5ae0..220d56b7c1dc 100644
+> > > --- a/tools/testing/selftests/bpf/progs/get_func_ip_test.c
+> > > +++ b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
+> > > @@ -2,6 +2,7 @@
+> > >  #include <linux/bpf.h>
+> > >  #include <bpf/bpf_helpers.h>
+> > >  #include <bpf/bpf_tracing.h>
+> > > +#include <stdbool.h>
+> > >
+> > >  char _license[] SEC("license") = "GPL";
+> > >
+> > > @@ -13,6 +14,8 @@ extern const void bpf_modify_return_test __ksym;
+> > >  extern const void bpf_fentry_test6 __ksym;
+> > >  extern const void bpf_fentry_test7 __ksym;
+> > >
+> > > +extern bool CONFIG_X86_KERNEL_IBT __kconfig __weak;
+> > > +
+> > >  __u64 test1_result = 0;
+> > >  SEC("fentry/bpf_fentry_test1")
+> > >  int BPF_PROG(test1, int a)
+> > > @@ -37,7 +40,7 @@ __u64 test3_result = 0;
+> > >  SEC("kprobe/bpf_fentry_test3")
+> > >  int test3(struct pt_regs *ctx)
+> > >  {
+> > > -       __u64 addr = bpf_get_func_ip(ctx);
+> > > +       __u64 addr = bpf_get_func_ip(ctx) - (CONFIG_X86_KERNEL_IBT ? 4 : 0);
+> > 
+> > so for kprobe bpf_get_func_ip() gets an address with 5 byte
+> > compensation for `call __fentry__`, but not for endr? Why can't we
+> > compensate for endbr inside the kernel code as well? I'd imagine we
+> > either do no compensation (and thus we get &bpf_fentry_test3+5 or
+> > &bpf_fentry_test3+9, depending on CONFIG_X86_KERNEL_IBT) or full
+> > compensation (and thus always get &bpf_fentry_test3), but this
+> > in-between solution seems to be the worst of both worlds?...
 > 
-> It is also possible here, if we could not push into the map with a
-> certain key it wouldn't be a PIFO.
-> Please look at patch 16/17 for an example (test_xdp_pifo.c), it's just
-> that the interface is different (bpf_redirect_map),
+> hm rigth, I guess we should be able to do that in bpf_get_func_ip,
+> I'll check
 
+sorry for late follow up..
 
-Sorry for mentioning that I don't care about XDP case at all. Please let me
-know how this works for eBPF Qdisc. This is what I found in 16/17:
+so the problem is that you can place kprobe anywhere in the function
+(on instruction boundary) but the IBT adjustment of kprobe address is
+made only if it's at the function entry and there's endbr instruction
 
-+ ret = bpf_map_push_elem(&pifo_map, &val, flags);
+and that kprobe address is what we return in helper:
 
+  BPF_CALL_1(bpf_get_func_ip_kprobe, struct pt_regs *, regs)
+  {
+        struct kprobe *kp = kprobe_running();
 
-> the key has been expanded to 64 bits to accommodate such use cases. It
-> is also possible in a future version of the patch to amortize the cost
-> of taking the lock for each enqueue by doing batching, similar to what
-> cpumap/devmap implementations do.
+        return kp ? (uintptr_t)kp->addr : 0;
+  }
 
-How about the 4 reserved bits?
+so the adjustment would work only for address at function entry, but
+would be wrong for address within the function
 
- ret = bpf_map_push_elem(&pifo_map, &val, flags);
+perhaps we could add flag to kprobe to indicate the addr adjustment
+was done and use it in helper
 
-which leads to:
+but that's why I thought I'd keep bpf_get_func_ip_kprobe as it and
+leave it up to user
 
-+#define BPF_PIFO_PRIO_MASK	(~0ULL >> 4)
-...
-+static int pifo_map_push_elem(struct bpf_map *map, void *value, u64 flags)
-+{
-+	struct bpf_pifo_map *pifo = container_of(map, struct bpf_pifo_map, map);
-+	struct bpf_pifo_element *dst;
-+	unsigned long irq_flags;
-+	u64 prio;
-+	int ret;
-+
-+	/* Check if any of the actual flag bits are set */
-+	if (flags & ~BPF_PIFO_PRIO_MASK)
-+		return -EINVAL;
-+
-+	prio = flags & BPF_PIFO_PRIO_MASK;
+kprobe_multi and trampolines are different, because they can be
+only at the function entry, so we can adjust the ip properly
 
-
-Please let me know how you calculate 64 bits while I only calculate 60
-bits (for skb case, obviously)?
-
-Wait for a second, as BPF_EXIST is already a bit, I think you have 59
-bits here actually...
-
-Thanks!
+jirka
