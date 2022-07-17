@@ -2,67 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F8B357775D
-	for <lists+bpf@lfdr.de>; Sun, 17 Jul 2022 18:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41216577794
+	for <lists+bpf@lfdr.de>; Sun, 17 Jul 2022 19:46:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231164AbiGQQ4Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 17 Jul 2022 12:56:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34726 "EHLO
+        id S229629AbiGQRq4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 17 Jul 2022 13:46:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229892AbiGQQ4Y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 17 Jul 2022 12:56:24 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C341813FA6;
-        Sun, 17 Jul 2022 09:56:22 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id o26so7246129qkl.6;
-        Sun, 17 Jul 2022 09:56:22 -0700 (PDT)
+        with ESMTP id S229536AbiGQRqz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 17 Jul 2022 13:46:55 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F517DF89;
+        Sun, 17 Jul 2022 10:46:54 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id r12so7369144qvm.3;
+        Sun, 17 Jul 2022 10:46:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wvctxbE7AX0aP5YUM45JP6LkP+57Bz6KK7nOycNQst8=;
-        b=EMK6m15BuwHEJMxE9cRKgVio0vqeTEi8JLhy8/XYyk5mRbqET0cyoIOi5JFxZHh1HC
-         WtrLKsajJwfZSSZtC+GEseBDOewisUn5oKPkx/x+PyZs8MsQOY/dki9h8wA1iOaNjL5p
-         TRr6uC7fUeCCg+y5lcdXKyl6u954MC60WnTxd6Tcx89zBOTiuiWptgOqSK7/vKj8nrFX
-         LqTZnvh+K/z6iwGJkpNzCp4usg5LRzmMtEQ6sSM0VeD1t+UZ42HsIr2aqtkEvGhc246r
-         80HeTcgg/tTN1wM6MEWs+WuoVcRWQ0y6siAjJlLHR0qXK53F7HscrrGaj9qhqjimFRRz
-         1ndg==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=uISDuglJUEP8Tg9eISZfCi43e5GRXXZx7JtPVHWEDuw=;
+        b=Hz00FMLb+3m8GoLx75yn2Bywr9Fy+w2SOR2U1gKks+4nApkWPmlmN0Geq1Wi8+eY8z
+         dM51mu9f2AxGGaj7H4QOHN2D/Zu/l/CfZG3AY3usWfpMqbkuMEoGUB7XGOEhSCU1qw9q
+         Lv9oycpD4D7aqPJQCs417oAMfc9NCAiJDXrwu91RRXPM/WT16VA3BMbiKPXe5DaS2PYw
+         YheDutCdA/mf9Hlj6h+ZmLdUw1P4lSJqYiyE670tTmS0iQs0GipardPmLBfij5+qvrcc
+         7B3uUZIyTFk1nPubSAtAyLk58tTFnG0rK84mfh8IxqwDaVgZU2LdeXEcNAnZF9BP8F7p
+         DQNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wvctxbE7AX0aP5YUM45JP6LkP+57Bz6KK7nOycNQst8=;
-        b=SOhvrXvbCvw6EEdA49D1yqH7qfFnBRDj/GSyHDczP+LY4suqCI0hXNvgGbDM+qbFwz
-         iOxq7k5Sr+7BP7gLICafJGVoZ5vt3aXuGNX/IWh2QoXE6+Np9Zbns8HpdXfXf3Q5/hOO
-         o1HL1Mrf3aja6p3Pw0a6i3mPmpGRD68Wbzx4DEhH1LApZaDBPoitb7DBm+CQVudMAwa0
-         MAORdYrZk69BEQucpml2I8TwMKiH8B9V8tM+AZLCPWzeS3g6eRCajm5EzeSRHFRCv9u0
-         Caggm9WTTmQ8GzkTqVqrz9Sdkdy/vbJzvyoCeA49xIVmHdoHkcoY4Kt7SlkuvoiykQex
-         ijKA==
-X-Gm-Message-State: AJIora/w102O7ryrGttiKltGkoNeI0LYu8fQMto83scxZPhbyF39vmXc
-        Sw+gmrpCshNpLTZGoBG5GcQ=
-X-Google-Smtp-Source: AGRyM1u2r3ihr3dFz0xOY0Faxar3HctKntuptrt5yAuyXFRax9rFgHKbSRZIkGh7CvCoXDpjBTqGQg==
-X-Received: by 2002:a05:620a:408e:b0:6b5:67b4:fbf9 with SMTP id f14-20020a05620a408e00b006b567b4fbf9mr15090890qko.278.1658076981847;
-        Sun, 17 Jul 2022 09:56:21 -0700 (PDT)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=uISDuglJUEP8Tg9eISZfCi43e5GRXXZx7JtPVHWEDuw=;
+        b=mM6sqxHHI/qm7YtH8Oc0EmE7aRV/MUP3vCgCtN8FdWBZjMHqO4AeM/S3pqqMywDu4u
+         OXb0kXqKEjuXN7GFAkG0OAamu7Q5xsfYliVKcah8cSF7XqkBaXsqljG8MnLPNDvChah/
+         HwPf/6wHIFU76MWKflpteWHl6fAd3qooFcrpcve0u5L1OZrKQyNiuSVCHdyKyIHzRvVV
+         zUub3wWk/wACoZ043SGJyKMA6/BHmI1v5ymF19MEZ4nc2x0+eMh/B71NcIqR177+oT/2
+         oh4jIJSBz2X7Pi9LQZg3mOHz66hO0ZZeNbK+tuMloj7wH0KAkGp5rz0ZEocSqNFAI79Z
+         E7rA==
+X-Gm-Message-State: AJIora/deXH2M+xWfUabJPQyTJ0tbvIXR8rX+WmDEizPb2PuA7bmE2kC
+        Hyok2qCoaajmnZep5tdvikW7P7GQYMzsNQ==
+X-Google-Smtp-Source: AGRyM1tUwqjWB2uToaP44zSNVtg5NkHY3sFVAq+Me0/qjW34Yhslkc1mi15DusAL53QM1J9xSbXTsA==
+X-Received: by 2002:ad4:5949:0:b0:473:75ec:9f6e with SMTP id eo9-20020ad45949000000b0047375ec9f6emr18416557qvb.17.1658080013304;
+        Sun, 17 Jul 2022 10:46:53 -0700 (PDT)
 Received: from localhost ([2600:1700:65a0:ab60:db10:283b:b16c:9691])
-        by smtp.gmail.com with ESMTPSA id t13-20020a37ea0d000000b006af147d4876sm9020690qkj.30.2022.07.17.09.56.20
+        by smtp.gmail.com with ESMTPSA id s10-20020a05620a254a00b006a6d74f8fc9sm10792781qko.127.2022.07.17.10.46.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Jul 2022 09:56:21 -0700 (PDT)
-Date:   Sun, 17 Jul 2022 09:56:22 -0700
+        Sun, 17 Jul 2022 10:46:52 -0700 (PDT)
+Date:   Sun, 17 Jul 2022 10:46:51 -0700
 From:   Cong Wang <xiyou.wangcong@gmail.com>
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Cong Wang <cong.wang@bytedance.com>,
-        syzbot <syzbot+a0e6f8738b58f7654417@syzkaller.appspotmail.com>,
+To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Subject: Re: [Patch bpf-next] tcp: fix sock skb accounting in tcp_read_skb()
-Message-ID: <YtQ/Np8DZBJVFO3l@pop-os.localdomain>
-References: <20220709222029.297471-1-xiyou.wangcong@gmail.com>
- <CANn89iJSQh-5DAhEL4Fh5ZDrtY47y0Mo9YJbG-rnj17pdXqoXA@mail.gmail.com>
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Freysteinn Alfredsson <freysteinn.alfredsson@kau.se>
+Subject: Re: [RFC PATCH 00/17] xdp: Add packet queueing and scheduling
+ capabilities
+Message-ID: <YtRLC5ILXZOre8D7@pop-os.localdomain>
+References: <20220713111430.134810-1-toke@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CANn89iJSQh-5DAhEL4Fh5ZDrtY47y0Mo9YJbG-rnj17pdXqoXA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20220713111430.134810-1-toke@redhat.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -73,77 +92,64 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 12, 2022 at 03:20:37PM +0200, Eric Dumazet wrote:
-> On Sun, Jul 10, 2022 at 12:20 AM Cong Wang <xiyou.wangcong@gmail.com> wrote:
-> >
-> > From: Cong Wang <cong.wang@bytedance.com>
-> >
-> > Before commit 965b57b469a5 ("net: Introduce a new proto_ops
-> > ->read_skb()"), skb was not dequeued from receive queue hence
-> > when we close TCP socket skb can be just flushed synchronously.
-> >
-> > After this commit, we have to uncharge skb immediately after being
-> > dequeued, otherwise it is still charged in the original sock. And we
-> > still need to retain skb->sk, as eBPF programs may extract sock
-> > information from skb->sk. Therefore, we have to call
-> > skb_set_owner_sk_safe() here.
-> >
-> > Fixes: 965b57b469a5 ("net: Introduce a new proto_ops ->read_skb()")
-> > Reported-and-tested-by: syzbot+a0e6f8738b58f7654417@syzkaller.appspotmail.com
-> > Tested-by: Stanislav Fomichev <sdf@google.com>
-> > Cc: Eric Dumazet <edumazet@google.com>
-> > Cc: John Fastabend <john.fastabend@gmail.com>
-> > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-> > ---
-> >  net/ipv4/tcp.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-> > index 9d2fd3ced21b..c6b1effb2afd 100644
-> > --- a/net/ipv4/tcp.c
-> > +++ b/net/ipv4/tcp.c
-> > @@ -1749,6 +1749,7 @@ int tcp_read_skb(struct sock *sk, skb_read_actor_t recv_actor)
-> >                 int used;
-> >
-> >                 __skb_unlink(skb, &sk->sk_receive_queue);
-> > +               WARN_ON(!skb_set_owner_sk_safe(skb, sk));
-> >                 used = recv_actor(sk, skb);
-> >                 if (used <= 0) {
-> >                         if (!copied)
-> > --
-> > 2.34.1
-> >
+On Wed, Jul 13, 2022 at 01:14:08PM +0200, Toke Høiland-Jørgensen wrote:
+> Packet forwarding is an important use case for XDP, which offers
+> significant performance improvements compared to forwarding using the
+> regular networking stack. However, XDP currently offers no mechanism to
+> delay, queue or schedule packets, which limits the practical uses for
+> XDP-based forwarding to those where the capacity of input and output links
+> always match each other (i.e., no rate transitions or many-to-one
+> forwarding). It also prevents an XDP-based router from doing any kind of
+> traffic shaping or reordering to enforce policy.
 > 
-> I am reading tcp_read_skb(),it seems to have other bugs.
-> I wonder why syzbot has not caught up yet.
 
-As you mentioned this here I assume you suggest I should fix all bugs in
-one patch? (I am fine either way in this case, only slightly prefer to fix
-one bug in each patch for readability.)
+Sorry for forgetting to respond to your email to my patchset.
 
-> 
-> It ignores the offset value from tcp_recv_skb(), this looks wrong to me.
-> The reason tcp_read_sock() passes a @len parameter is that is it not
-> skb->len, but (skb->len - offset)
+The most important question from you is actually why I give up on PIFO.
+Actually its limitation is already in its name, its name Push In First
+Out already says clearly that it only allows to dequeue the first one.
+Still confusing?
 
-If I understand tcp_recv_skb() correctly it only returns an offset for a
-partial read of an skb. IOW, if we always read an entire skb at a time,
-offset makes no sense here, right?
+You can take a look at your pifo_map_pop_elem(), which is the
+implementation for bpf_map_pop_elem(), which is:
 
-> 
-> Also if recv_actor(sk, skb) returns 0, we probably still need to
-> advance tp->copied_seq,
-> for instance if skb had a pure FIN (and thus skb->len == 0), since you
-> removed the skb from sk_receive_queue ?
+       long bpf_map_pop_elem(struct bpf_map *map, void *value)
 
-Doesn't the following code handle this case?
+Clearly, there is no even 'key' in its parameter list. If you just
+compare it to mine:
 
-        if (TCP_SKB_CB(skb)->tcp_flags & TCPHDR_FIN) {
-                consume_skb(skb);
-                ++seq;
-                break;
-        }
+	BPF_CALL_2(bpf_skb_map_pop, struct bpf_map *, map, u64, key)
 
-which is copied from tcp_read_sock()...
+Is their difference now 100% clear? :)
+
+The next question is why this is important (actually it is the most
+important)? Because we (I mean for eBPF Qdisc users, not sure about you)
+want the programmability, which I have been emphasizing since V1...
+
+Clearly it is already too late to fix bpf_map_pop_elem(), we don't want
+to repeat that mistake again.
+
+More importantly, the latter can easily implement the former, as shown below:
+
+bpf_stack_for_min; // Just BPF_MAP_TYPE_STACK
+
+push(map, key, value)
+{
+  bpf_stack_for_min.push(min(key, bpf_stack_for_min.top()));
+  // Insert key value pair here
+}
+
+pop_the_first(map, value)
+{
+   val = pop_any(map, bpf_stack_for_min.top());
+   *value = val;
+   bpf_stack_for_min.pop();
+}
+
+
+BTW, what is _your_ use case for skb map and user-space PIFO map? I am
+sure you have uses case for XDP, it is unclear what you have for other
+cases. Please don't piggy back use cases you don't have, we all have to
+justify all use cases. :)
 
 Thanks.
