@@ -2,412 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 680C8578AF5
-	for <lists+bpf@lfdr.de>; Mon, 18 Jul 2022 21:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8457F578B47
+	for <lists+bpf@lfdr.de>; Mon, 18 Jul 2022 21:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234009AbiGRTfU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jul 2022 15:35:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55524 "EHLO
+        id S233944AbiGRTzR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jul 2022 15:55:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236126AbiGRTez (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Jul 2022 15:34:55 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A514F2C118
-        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 12:34:48 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id c187-20020a1c35c4000000b003a30d88fe8eso6413294wma.2
-        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 12:34:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bCXO7jLaP7q7SAX58eiWinp4okViuMXlnXt6ZtGO6sI=;
-        b=ZudZB4oprJBruUgObA00/Io5gesQ8NAZqMnW/6BM5G5JUVNpMJpCgDc3YaISdci7fV
-         sV0qdseZ9IKFGi6yCDJqDp/NMhJOto4AsCkRL50B9bjeVspDL16u2YjNshBFTQAJIZpO
-         RNahAVfnV7oJ1coHAN+ZCMNgc4OYcX90/m5AmbviyQfA/+P4XsEd8W1p1v3I2IJHwEoa
-         rJLETLq2hKmxI7WL1N8WMd+iQb1uHM5k9itiWKa0jClAnqyZ98R2+qmlkjzvBlpWsxfu
-         nZ2WdafKEYwrtwDN5QMmRy2m6qzkbrxtQjYOALIpwDntjgpJ91RsGHXiSv0zHiFgLcRW
-         aiFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bCXO7jLaP7q7SAX58eiWinp4okViuMXlnXt6ZtGO6sI=;
-        b=ZZQoT7XE3oeIWVxduhEYax0MGeCf9Xlh+OeVudja8HDBkHZmJ9Q8kSMJfdJl0ZADCx
-         b6UF8CYtxpYW72lpealHRFBadxUxiVwO5k+8jU3CVtEZjd/7NTavP55X1fo1MbnM0PO5
-         dPloLN+iETAeBgPJ4ubprwFvhG+r83DMUVVmsihPiOaIk6IiZHyEzSf5bJddLmL+Ti3p
-         K4XTtM83FD+WZB+7D33eGEG/foG/D46vNw7COuWCr4IruZzxuV42Iitl2vN4QWj0C752
-         DqF5U48V2LBpdHtNTEif5A+ygxoZSN/fAa90buxp0UbdHSpuFkUxw4vvzJ3Y+kMT2Rci
-         AHvw==
-X-Gm-Message-State: AJIora8BvpJnvra2oVyhfOksJ8GWmQFG3bCTkay2EufU6BiCt1h7qcKR
-        USWDKlULDvtr/82otQ7u0rfvUyPBL7GKrsVwMV5PMA==
-X-Google-Smtp-Source: AGRyM1smD0KV10SRViSrEgcg3XtjPScGCVBtM2RIlQxQu6L136i8/j3q/R4kq/50bPwVpcvugur+BzkJ04SzhxWdMSg=
-X-Received: by 2002:a05:600c:1e8e:b0:3a2:c1b4:922c with SMTP id
- be14-20020a05600c1e8e00b003a2c1b4922cmr27883098wmb.24.1658172887020; Mon, 18
- Jul 2022 12:34:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220709000439.243271-1-yosryahmed@google.com>
- <20220709000439.243271-9-yosryahmed@google.com> <b4936952-2fe7-656c-2d0d-69044265392a@fb.com>
- <9c6a0ba3-2730-eb56-0f96-e5d236e46660@fb.com> <CAJD7tkZUfNqD8z6Cv7vi1TxpwKTXhDn_yweDHnRr++9iJs+=ew@mail.gmail.com>
-In-Reply-To: <CAJD7tkZUfNqD8z6Cv7vi1TxpwKTXhDn_yweDHnRr++9iJs+=ew@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Mon, 18 Jul 2022 12:34:10 -0700
-Message-ID: <CAJD7tkb8-scb1sstre0LRhY3dgfUJhGvSR=DgEqfwcVtBwb+5w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 8/8] bpf: add a selftest for cgroup
- hierarchical stats collection
-To:     Yonghong Song <yhs@fb.com>
+        with ESMTP id S234997AbiGRTzL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Jul 2022 15:55:11 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDB6D2B250;
+        Mon, 18 Jul 2022 12:55:10 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26IGi4fL005109;
+        Mon, 18 Jul 2022 12:54:50 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=EGj5aWn2xKRlCo4+vlVJnK82t1lpkCA0wBPqXK583Ak=;
+ b=pUvjkng4cavw53EsovouzJAA637tP2x6Attt+ozeAI1+K+TyfY+3u75UJHDSED8MMCAx
+ qlIQ/Gf7J+qKjghkvA4YJMVZEQHuEV6WjYuzZ2BCTaChzakb+91/XZ6RAVHaK6BEHfBA
+ MtiSwCxsVWm0+XHfwNYX84B3zWALnblwah8= 
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hcpn66wu4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 18 Jul 2022 12:54:50 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lH8aMoUt+3qlX/8980DQVI8TxD6L4fiLN5PQVO1tS52B3YCtB6VdVB8O8MbC9xWYALSAsIqEDIvUFXK8HVAppzAiyZPLnWDXYa/r4fCkMGgQzQDoj0RuiirJMDotGbWl/gsGA60ksPOs/7ZVBYqsrUfZgzDT10Tpz1USvtBi8ORmEhSlNzyYdAuGEuCRwzS61NX/0kAhKQklO5q98m8L+DaffrZu65vlr0e2iIJfrph4aYvtoX0uorN+JM+0gUbhPmgjo8WNtDAW5mLIQkC9CQhXcMvWU08t/S65tjX6TzmL7hc/omX7oG8s1S3VWYIBQdrCvyA1j33opJRBAw3V9g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EGj5aWn2xKRlCo4+vlVJnK82t1lpkCA0wBPqXK583Ak=;
+ b=k59o2cH3jr+AjT4VLjj+49lOA0fQEHZmN399wOe9BADH8pK7r5sRHY+V1e/Hc9bpg/APfcz8Au0WKir8Gjr0uDeFxHM2vLWxWOjLo2lfJjYTfSU6r73eRlC8adrMSdCCuRz+fx9eM5Gf9P1cy91aVO2RKxp+pSjkP4FhtpuY7fa+XpN6sQ+mJrHLh32e4zO9RbINzj+5VtHIUcgUa/ZAQL3NwzZUY6q2+0qtf+RzAz3zVtpvPwYlb6nA/7x7uLm6hHfAibrJa0t2/3Mx8AoEP40BK4gElJ9dI5QAmzkcK7HjzXbyfcGhegcSz7B2TRTOPKv/zFE8n9VHPFpwCQ0wcw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from MW4PR15MB4475.namprd15.prod.outlook.com (2603:10b6:303:104::16)
+ by SA1PR15MB4657.namprd15.prod.outlook.com (2603:10b6:806:19c::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5438.23; Mon, 18 Jul
+ 2022 19:54:48 +0000
+Received: from MW4PR15MB4475.namprd15.prod.outlook.com
+ ([fe80::a88e:613f:76a7:a5a2]) by MW4PR15MB4475.namprd15.prod.outlook.com
+ ([fe80::a88e:613f:76a7:a5a2%9]) with mapi id 15.20.5438.023; Mon, 18 Jul 2022
+ 19:54:48 +0000
+Date:   Mon, 18 Jul 2022 12:54:43 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Paul Chaignon <paul@isovalent.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
         John Fastabend <john.fastabend@gmail.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>
-Content-Type: multipart/mixed; boundary="000000000000e8d8db05e41975e6"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Kaixi Fan <fankaixi.li@bytedance.com>,
+        Nikolay Aleksandrov <razor@blackwall.org>,
+        Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH bpf v2 0/5] bpf: Allow any source IP in
+ bpf_skb_set_tunnel_key
+Message-ID: <20220718195443.igbutchwxu55z46d@kafai-mbp.dhcp.thefacebook.com>
+References: <cover.1658159533.git.paul@isovalent.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1658159533.git.paul@isovalent.com>
+X-ClientProxiedBy: BL1PR13CA0180.namprd13.prod.outlook.com
+ (2603:10b6:208:2bd::35) To MW4PR15MB4475.namprd15.prod.outlook.com
+ (2603:10b6:303:104::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b6985d40-013b-4835-55aa-08da68f75ec7
+X-MS-TrafficTypeDiagnostic: SA1PR15MB4657:EE_
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2uerVqtA3S3xWIsIVSTXIDxZCG5NLu0qwPWitZRh51f5fwIp7RlbhOqTBewajgh+/5qs4m6VVAx/LmoFq40IMXRFR6vu0AY56aIibY8K/bag3zj8EBy51lEV/1gei0Jh5Q2j+C4HDKwD9Sl9/qtMAfwsEHheU3V7TcR2Av2/i+EFd/HCKT3F42+EAG9iWHLP9cVEDTcMnefpaJnj1Lwb4fFS5RYGug9YiP+v21EmWna55HY0WpsLw2DEUchYn7W0dhgX2Zjpk6ehNTEIWMxayVyGEm008gCMkM9AcKuFqs33E5EamNQ8bspo5m3/Y8zOOd1JxRIOP9SpfLE+XD+qOAdyi23N9b0U5b3X93CvAlZ1OXdxSQm+OkBQl3GWggjaBVLwK4FNkUOSCyg+ao9flENoUTBdKVOVqidgdMh/wvfkxyRfQYnWepP2LL0Fd+vG7XS0UxGHnd7X4dlm6YMDvJ9AMivO91mh/9zLpKNA4SPcyJonRYDTSy8etzyLn4Bth7yaz6hUCJAysGQGTFSG2X9n68R1hSkvO4Jw5e0CrmmWa6Zw9WDrkzPT5o4jVpxpaqiqu+A1h2Z800bf9VCZyPwi3vjxtHvm7sv9SwiL3PVP9+zxP75hDUjqjc/yrK/5LIcOV7bHLOorJ5njPDMfT9QkafZSA38L2RiyI63nRgLXC+0XFT5tAQmHvFaxUYz1RZLsWQiVBc76YmcyhHGFiKCo089m+QTWBXW9qRPVjnY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4475.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(396003)(366004)(136003)(346002)(39860400002)(376002)(4744005)(9686003)(6512007)(2906002)(186003)(6666004)(41300700001)(52116002)(6506007)(8936002)(6486002)(5660300002)(7416002)(478600001)(86362001)(54906003)(6916009)(316002)(38100700002)(66556008)(66476007)(66946007)(1076003)(4326008)(8676002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Oz+7yevEv5/HdiLiNb7SvMsczIXNqJZM/LZXZybzj8kBiz3ukYnTUycwPetx?=
+ =?us-ascii?Q?IOwIoiF9UpFrY/v/ZVGxHOm1hqLChQzoUzsUCou1E5gMirift+lk9XtJ4NAB?=
+ =?us-ascii?Q?HZdUEjis4DDGlC/OOjvaz1OQbx+dmjqgeg5V9U+vKymDF44W6p7yp0hl8gA6?=
+ =?us-ascii?Q?f7evjOTxkrqmIz1UD0ceqe5ONoReeul4IICYk2Q5RZnK2uVw907nYtlJh9XI?=
+ =?us-ascii?Q?iF67FimZ6+9cj5EJfdshNH6SDSs+38GquY5lfpDMA1KcGI1Z+kBASMBTTF41?=
+ =?us-ascii?Q?/WgwzhA4HCmP1UpnQQhUYqBvvq7TCWMrk+sE0uvYh47RtJtKlSJBwXiswNi3?=
+ =?us-ascii?Q?NRgyGNoz0EubeURwB5J0PL4usBKnlShyhxrGvSPlqfsUNkAa0fNKMDR26Z6f?=
+ =?us-ascii?Q?rQA3iUOBk5lcRqYFFFT7grSbEBKuVCnp1nWvXWE2PeGtSVQwkJGbWtMNmvkc?=
+ =?us-ascii?Q?6TF25NhukppEvZOFjRjNqkNlSq2I5DUckWATP02YO80lALAoUjt6RBjbSqKl?=
+ =?us-ascii?Q?7cTmpOoOqdU0i0tnHM52qNZ17bk6OHfgywV0IWYgcbFmqhOld+XbRv9/rlRo?=
+ =?us-ascii?Q?t9S16igapXraXZFnOTEFbCZ16KsCyoyhjVp5hYMKqvC5XDmGUh8A/7XY1acu?=
+ =?us-ascii?Q?B7jDcrfeKTV/9Zt2yVyWauSqcbc3Em/UQdEpduNLf2I0eClpqPyWHYOT1Qmq?=
+ =?us-ascii?Q?zMM8ukcyk+qhEtRlrLethH5ACENKpbCl2hDdnibEZaS5Ry2+TjJF49xagX8N?=
+ =?us-ascii?Q?IcjBBT8+QCFKNoQ3SdhVTfHUcxt5LVCjvxbgAgR3a5//BBg53MGwXxvx1YL1?=
+ =?us-ascii?Q?Q1zwuGAmRV6tqfK/tl+t3WBF/6JbN/0r0O6LZTT1arWq8jQLZo+hJd7y7bnD?=
+ =?us-ascii?Q?K0mRlZV/c508NAjLqNSx8Z0Br+UniLNe+sWGGAPEQHXYUIHScFu7V+0AFiXM?=
+ =?us-ascii?Q?pK3tusKlSXrueY7XzDEx95SPkHSq/AL3305U7U4hQDf880jsUKb+2Qr0WebQ?=
+ =?us-ascii?Q?7VpScUF3zHkSCjXMmWPvNdq8BRU2nBj2kZ7NfMzEE/eU5mmGtJXXE9RC5wc6?=
+ =?us-ascii?Q?ef+E1q4ektFGCrhEp2B37PJ8XlIRxUhemb5G7793fxHHG1V8W50IZ7wJ9Pgh?=
+ =?us-ascii?Q?x1c0A0W2usVY5jamdaFauZ664HwMl0ONtoHb4D0bvVaJHYQ9pUQyES32Aptx?=
+ =?us-ascii?Q?n+dIgxGKRlOH6gE1sjs1/3x4KbGLd2OJosoPv1BJlh35GTE2Vx5zgY2CgAJI?=
+ =?us-ascii?Q?qTKX4f8K//6cusqH6wC0A4lCFD50w47NagfOkpk+49iAGK71yGsMOaGMz3Ia?=
+ =?us-ascii?Q?H7zHovobEwW/Ha7ok/C1Rn0ntwdmZY4Ij0s+FuT8SL2Q8lCwPjaj4p7RT7dY?=
+ =?us-ascii?Q?5Jfduy0+FMxHYnzW9nynU0RV13tm2rKabYPuWF+SgLqk/ooDm96ax0Z6Is2W?=
+ =?us-ascii?Q?cVS9NtjdDla+Iv8qRh3TS8GEcc+RwfSLSfSG8wSZazjzE/GYoLzScu9g5dKI?=
+ =?us-ascii?Q?ygcNw7KrFvXZlGk1bmReWU41Ox7gZuIf65jk6yMxkVnNyv89IW+ahe5Fudjf?=
+ =?us-ascii?Q?TZ2/41iQvvPjf4o0QxppYkqPHZVyUR9gJ1g5i0TSeYBC4k8eZ4RT91VFTLIx?=
+ =?us-ascii?Q?lQ=3D=3D?=
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b6985d40-013b-4835-55aa-08da68f75ec7
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4475.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jul 2022 19:54:48.4397
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nqntPtDvmGzLsiNS59azBPHC49wHNc1/IijIrve7L2q849YXgezJv/xPMlHzwO7d
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4657
+X-Proofpoint-GUID: NqWOaTuXoKUEfyIH8dzM3KBilEhB5B2f
+X-Proofpoint-ORIG-GUID: NqWOaTuXoKUEfyIH8dzM3KBilEhB5B2f
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-07-18_18,2022-07-18_01,2022-06-22_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---000000000000e8d8db05e41975e6
-Content-Type: text/plain; charset="UTF-8"
-
-On Mon, Jul 11, 2022 at 8:55 PM Yosry Ahmed <yosryahmed@google.com> wrote:
->
-> On Sun, Jul 10, 2022 at 5:51 PM Yonghong Song <yhs@fb.com> wrote:
-> >
-> >
-> >
-> > On 7/10/22 5:26 PM, Yonghong Song wrote:
-> > >
-> > >
-> > > On 7/8/22 5:04 PM, Yosry Ahmed wrote:
-> > >> Add a selftest that tests the whole workflow for collecting,
-> > >> aggregating (flushing), and displaying cgroup hierarchical stats.
-> > >>
-> > >> TL;DR:
-> > >> - Userspace program creates a cgroup hierarchy and induces memcg reclaim
-> > >>    in parts of it.
-> > >> - Whenever reclaim happens, vmscan_start and vmscan_end update
-> > >>    per-cgroup percpu readings, and tell rstat which (cgroup, cpu) pairs
-> > >>    have updates.
-> > >> - When userspace tries to read the stats, vmscan_dump calls rstat to
-> > >> flush
-> > >>    the stats, and outputs the stats in text format to userspace (similar
-> > >>    to cgroupfs stats).
-> > >> - rstat calls vmscan_flush once for every (cgroup, cpu) pair that has
-> > >>    updates, vmscan_flush aggregates cpu readings and propagates updates
-> > >>    to parents.
-> > >> - Userspace program makes sure the stats are aggregated and read
-> > >>    correctly.
-> > >>
-> > >> Detailed explanation:
-> > >> - The test loads tracing bpf programs, vmscan_start and vmscan_end, to
-> > >>    measure the latency of cgroup reclaim. Per-cgroup readings are
-> > >> stored in
-> > >>    percpu maps for efficiency. When a cgroup reading is updated on a cpu,
-> > >>    cgroup_rstat_updated(cgroup, cpu) is called to add the cgroup to the
-> > >>    rstat updated tree on that cpu.
-> > >>
-> > >> - A cgroup_iter program, vmscan_dump, is loaded and pinned to a file, for
-> > >>    each cgroup. Reading this file invokes the program, which calls
-> > >>    cgroup_rstat_flush(cgroup) to ask rstat to propagate the updates
-> > >> for all
-> > >>    cpus and cgroups that have updates in this cgroup's subtree.
-> > >> Afterwards,
-> > >>    the stats are exposed to the user. vmscan_dump returns 1 to terminate
-> > >>    iteration early, so that we only expose stats for one cgroup per read.
-> > >>
-> > >> - An ftrace program, vmscan_flush, is also loaded and attached to
-> > >>    bpf_rstat_flush. When rstat flushing is ongoing, vmscan_flush is
-> > >> invoked
-> > >>    once for each (cgroup, cpu) pair that has updates. cgroups are popped
-> > >>    from the rstat tree in a bottom-up fashion, so calls will always be
-> > >>    made for cgroups that have updates before their parents. The program
-> > >>    aggregates percpu readings to a total per-cgroup reading, and also
-> > >>    propagates them to the parent cgroup. After rstat flushing is over,
-> > >> all
-> > >>    cgroups will have correct updated hierarchical readings (including all
-> > >>    cpus and all their descendants).
-> > >>
-> > >> - Finally, the test creates a cgroup hierarchy and induces memcg reclaim
-> > >>    in parts of it, and makes sure that the stats collection, aggregation,
-> > >>    and reading workflow works as expected.
-> > >>
-> > >> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> > >> ---
-> > >>   .../prog_tests/cgroup_hierarchical_stats.c    | 362 ++++++++++++++++++
-> > >>   .../bpf/progs/cgroup_hierarchical_stats.c     | 235 ++++++++++++
-> > >>   2 files changed, 597 insertions(+)
-> > >>   create mode 100644
-> > >> tools/testing/selftests/bpf/prog_tests/cgroup_hierarchical_stats.c
-> > >>   create mode 100644
-> > >> tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
-> > >>
-> > > [...]
-> > >> +
-> > >> +static unsigned long long get_cgroup_vmscan_delay(unsigned long long
-> > >> cgroup_id,
-> > >> +                          const char *file_name)
-> > >> +{
-> > >> +    char buf[128], path[128];
-> > >> +    unsigned long long vmscan = 0, id = 0;
-> > >> +    int err;
-> > >> +
-> > >> +    /* For every cgroup, read the file generated by cgroup_iter */
-> > >> +    snprintf(path, 128, "%s%s", BPFFS_VMSCAN, file_name);
-> > >> +    err = read_from_file(path, buf, 128);
-> > >> +    if (!ASSERT_OK(err, "read cgroup_iter"))
-> > >> +        return 0;
-> > >> +
-> > >> +    /* Check the output file formatting */
-> > >> +    ASSERT_EQ(sscanf(buf, "cg_id: %llu, total_vmscan_delay: %llu\n",
-> > >> +             &id, &vmscan), 2, "output format");
-> > >> +
-> > >> +    /* Check that the cgroup_id is displayed correctly */
-> > >> +    ASSERT_EQ(id, cgroup_id, "cgroup_id");
-> > >> +    /* Check that the vmscan reading is non-zero */
-> > >> +    ASSERT_GT(vmscan, 0, "vmscan_reading");
-> > >> +    return vmscan;
-> > >> +}
-> > >> +
-> > >> +static void check_vmscan_stats(void)
-> > >> +{
-> > >> +    int i;
-> > >> +    unsigned long long vmscan_readings[N_CGROUPS], vmscan_root;
-> > >> +
-> > >> +    for (i = 0; i < N_CGROUPS; i++)
-> > >> +        vmscan_readings[i] = get_cgroup_vmscan_delay(cgroups[i].id,
-> > >> +                                 cgroups[i].name);
-> > >> +
-> > >> +    /* Read stats for root too */
-> > >> +    vmscan_root = get_cgroup_vmscan_delay(CG_ROOT_ID, CG_ROOT_NAME);
-> > >> +
-> > >> +    /* Check that child1 == child1_1 + child1_2 */
-> > >> +    ASSERT_EQ(vmscan_readings[1], vmscan_readings[3] +
-> > >> vmscan_readings[4],
-> > >> +          "child1_vmscan");
-> > >> +    /* Check that child2 == child2_1 + child2_2 */
-> > >> +    ASSERT_EQ(vmscan_readings[2], vmscan_readings[5] +
-> > >> vmscan_readings[6],
-> > >> +          "child2_vmscan");
-> > >> +    /* Check that test == child1 + child2 */
-> > >> +    ASSERT_EQ(vmscan_readings[0], vmscan_readings[1] +
-> > >> vmscan_readings[2],
-> > >> +          "test_vmscan");
-> > >> +    /* Check that root >= test */
-> > >> +    ASSERT_GE(vmscan_root, vmscan_readings[1], "root_vmscan");
-> > >
-> > > I still get a test failure with
-> > >
-> > > get_cgroup_vmscan_delay:PASS:cgroup_id 0 nsec
-> > > get_cgroup_vmscan_delay:FAIL:vmscan_reading unexpected vmscan_reading:
-> > > actual 0 <= expected 0
-> > > check_vmscan_stats:FAIL:child1_vmscan unexpected child1_vmscan: actual 0
-> > > != expected -2
-> > > check_vmscan_stats:FAIL:child2_vmscan unexpected child2_vmscan: actual 0
-> > > != expected -2
-> > > check_vmscan_stats:PASS:test_vmscan 0 nsec
-> > > check_vmscan_stats:PASS:root_vmscan 0 nsec
-> > >
-> > > I added 'dump_stack()' in function try_to_free_mem_cgroup_pages()
-> > > and run this test (#33) and didn't get any stacktrace.
-> > > But I do get stacktraces due to other operations like
-> > >          try_to_free_mem_cgroup_pages+0x1fd [kernel]
-> > >          try_to_free_mem_cgroup_pages+0x1fd [kernel]
-> > >          memory_reclaim_write+0x88 [kernel]
-> > >          cgroup_file_write+0x88 [kernel]
-> > >          kernfs_fop_write_iter+0xd0 [kernel]
-> > >          vfs_write+0x2c4 [kernel]
-> > >          __x64_sys_write+0x60 [kernel]
-> > >          do_syscall_64+0x2d [kernel]
-> > >          entry_SYSCALL_64_after_hwframe+0x44 [kernel]
-> > >
-> > > If you can show me the stacktrace about how
-> > > try_to_free_mem_cgroup_pages() is triggered in your setup, I can
-> > > help debug this problem in my environment.
-> >
-> > BTW, CI also reported the test failure.
-> > https://github.com/kernel-patches/bpf/pull/3284
-> >
-> > For example, with gcc built kernel,
-> > https://github.com/kernel-patches/bpf/runs/7272407890?check_suite_focus=true
-> >
-> > The error:
-> >
-> >    get_cgroup_vmscan_delay:PASS:cgroup_id 0 nsec
-> >    get_cgroup_vmscan_delay:PASS:vmscan_reading 0 nsec
-> >    check_vmscan_stats:FAIL:child1_vmscan unexpected child1_vmscan:
-> > actual 28390910 != expected 28390909
-> >    check_vmscan_stats:FAIL:child2_vmscan unexpected child2_vmscan:
-> > actual 0 != expected -2
-> >    check_vmscan_stats:PASS:test_vmscan 0 nsec
-> >    check_vmscan_stats:PASS:root_vmscan 0 nsec
-> >
->
-> Hey Yonghong,
->
-> Thanks for helping us debug this failure. I can reproduce the CI
-> failure in my enviornment, but this failure is actually different from
-> the failure in your environment. In your environment it looks like no
-> stats are gathered for all cgroups (either no reclaim happening or bpf
-> progs not being run). In the CI and in my environment, only one cgroup
-> observes this behavior.
->
-> The thing is, I was able to reproduce the problem only when I ran all
-> test_progs. When I run the selftest alone (test_progs -t
-> cgroup_hierarchical_stats), it consistently passes, which is
-> interesting.
-
-I think I figured this one out (the CI failure). I set max_entries for
-the maps in the test to 10, because I have 1 entry per-cgroup, and I
-have less than 10 cgroups. When I run the test with other tests I
-*think* there are other cgroups that are being created, so the number
-exceeds 10, and some of the entries for the test cgroups cannot be
-created. I saw a lot of "failed to create entry for cgroup.." message
-in the bpf trace produced by my test, and the error turned out to be
--E2BIG. I increased max_entries to 100 and it seems to be consistently
-passing when run with all the other tests, using both test_progs and
-test_progs-no_alu32.
-
-Please find a diff attached fixing this problem and a few other nits:
-- Return meaningful exit codes from the reclaimer() child process and
-check them in induce_vmscan().
-- Make buf and path variables static in get_cgroup_vmscan_delay()
-- Print error code in bpf trace when we fail to create a bpf map entry.
-- Print 0 instead of -1 when we can't find a map entry, to avoid
-underflowing the unsigned counters in the test.
-
-Let me know if this diff works or not, and if I need to send a new
-version with the diff or not. Also let me know if this fixes the
-failures that you have been seeing locally (which looked different
-from the CI failures).
-
-Thanks!
-
->
-> Anyway, one failure at a time :) I am working on debugging the CI
-> failure (that occurs only when all tests are run), then we'll see if
-> fixing that fixes the problem in our environment as well.
->
-> If you have any pointers about why a test would consistently pass
-> alone and consistently fail with others that would be good. Otherwise,
-> I will keep you updated with any findings I reach.
->
-> Thanks again!
->
-> > >
-> > >> +}
-> > >> +
-> > >> +static int setup_cgroup_iter(struct cgroup_hierarchical_stats *obj,
-> > >> int cgroup_fd,
-> > > [...]
-
---000000000000e8d8db05e41975e6
-Content-Type: application/octet-stream; name="selftest_fix.patch"
-Content-Disposition: attachment; filename="selftest_fix.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_l5r59syo0>
-X-Attachment-Id: f_l5r59syo0
-
-ZGlmZiAtLWdpdCBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9nX3Rlc3RzL2Nncm91
-cF9oaWVyYXJjaGljYWxfc3RhdHMuYyBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9n
-X3Rlc3RzL2Nncm91cF9oaWVyYXJjaGljYWxfc3RhdHMuYwppbmRleCA1ZDBhOGJiMTEwYTQuLmUw
-MWZhYzQwMWVjNSAxMDA2NDQKLS0tIGEvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2df
-dGVzdHMvY2dyb3VwX2hpZXJhcmNoaWNhbF9zdGF0cy5jCisrKyBiL3Rvb2xzL3Rlc3Rpbmcvc2Vs
-ZnRlc3RzL2JwZi9wcm9nX3Rlc3RzL2Nncm91cF9oaWVyYXJjaGljYWxfc3RhdHMuYwpAQCAtMTU1
-LDI4ICsxNTUsMzAgQEAgc3RhdGljIHZvaWQgcmVjbGFpbWVyKGNvbnN0IGNoYXIgKmNncm91cF9w
-YXRoLCBzaXplX3Qgc2l6ZSkKIAlpbnQgZXJyOwogCiAJLyogSm9pbiBjZ3JvdXAgaW4gdGhlIHBh
-cmVudCBwcm9jZXNzIHdvcmtkaXIgKi8KLQlqb2luX3BhcmVudF9jZ3JvdXAoY2dyb3VwX3BhdGgp
-OworCWlmIChqb2luX3BhcmVudF9jZ3JvdXAoY2dyb3VwX3BhdGgpKQorCQlleGl0KEVBQ0NFUyk7
-CiAKIAkvKiBBbGxvY2F0ZSBtZW1vcnkgKi8KIAlidWYgPSBtYWxsb2Moc2l6ZSk7CisJaWYoIWJ1
-ZikKKwkJZXhpdChFTk9NRU0pOworCisJLyogV3JpdGUgdG8gbWVtb3J5IHRvIG1ha2Ugc3VyZSBp
-dCdzIGFjdHVhbGx5IGFsbG9jYXRlZCAqLwogCWZvciAocHRyID0gYnVmOyBwdHIgPCBidWYgKyBz
-aXplOyBwdHIgKz0gUEFHRV9TSVpFKQogCQkqcHRyID0gMTsKIAotCS8qCi0JICogVHJ5IHRvIHJl
-Y2xhaW0gbWVtb3J5LgotCSAqIG1lbW9yeS5yZWNsYWltIGNhbiByZXR1cm4gRUFHQUlOIGlmIHRo
-ZSBhbW91bnQgaXMgbm90Ci0JICogZnVsbHkgcmVjbGFpbWVkLgotCSAqLworCS8qIFRyeSB0byBy
-ZWNsYWltIG1lbW9yeSAqLwogCXNucHJpbnRmKHNpemVfYnVmLCAxMjgsICIlbHUiLCBzaXplKTsK
-IAllcnIgPSB3cml0ZV9jZ3JvdXBfZmlsZV9wYXJlbnQoY2dyb3VwX3BhdGgsICJtZW1vcnkucmVj
-bGFpbSIsIHNpemVfYnVmKTsKIAogCWZyZWUoYnVmKTsKLQlleGl0KGVyciAmJiBlcnJubyAhPSBF
-QUdBSU4pOworCS8qIG1lbW9yeS5yZWNsYWltIHJldHVybnMgRUFHQUlOIGlmIHRoZSBhbW91bnQg
-aXMgbm90IGZ1bGx5IHJlY2xhaW1lZCAqLworCWV4aXQoZXJyICYmIGVycm5vICE9IEVBR0FJTiA/
-IGVycm5vIDogMCk7CiB9CiAKIHN0YXRpYyBpbnQgaW5kdWNlX3Ztc2Nhbih2b2lkKQogewotCWlu
-dCBpLCBzdGF0dXMsIGVyciA9IDA7CisJaW50IGksIHN0YXR1czsKIAogCS8qCiAJICogSW4gZXZl
-cnkgbGVhZiBjZ3JvdXAsIHJ1biBhIGNoaWxkIHByb2Nlc3MgdGhhdCBhbGxvY2F0ZXMgc29tZSBt
-ZW1vcnkKQEAgLTE4OSwxMyArMTkxLDEzIEBAIHN0YXRpYyBpbnQgaW5kdWNlX3Ztc2Nhbih2b2lk
-KQogCQlwaWQgPSBmb3JrKCk7CiAJCWlmIChwaWQgPT0gMCkKIAkJCXJlY2xhaW1lcihjZ3JvdXBz
-W2ldLnBhdGgsIE1CKDUpKTsKLQkJaWYgKCFBU1NFUlRfR1QocGlkLCAwLCAiZm9yayByZWNsYWlt
-ZXIgY2hpbGQiKSkKKwkJaWYgKCFBU1NFUlRfR1QocGlkLCAwLCAiZm9yayByZWNsYWltZXIiKSkK
-IAkJCXJldHVybiBwaWQ7CiAKIAkJLyogQ2xlYW51cCByZWNsYWltZXIgY2hpbGQgKi8KIAkJd2Fp
-dHBpZChwaWQsICZzdGF0dXMsIDApOwotCQllcnIgPSAhV0lGRVhJVEVEKHN0YXR1cykgfHwgV0VY
-SVRTVEFUVVMoc3RhdHVzKTsKLQkJQVNTRVJUX09LKGVyciwgInJlY2xhaW1lciBjaGlsZCBleGl0
-IHN0YXR1cyIpOworCQlBU1NFUlRfVFJVRShXSUZFWElURUQoc3RhdHVzKSwgInJlY2xhaW1lciBl
-eGl0ZWQiKTsKKwkJQVNTRVJUX0VRKFdFWElUU1RBVFVTKHN0YXR1cyksIDAsICJyZWNsYWltIGV4
-aXQgY29kZSIpOwogCX0KIAlyZXR1cm4gMDsKIH0KQEAgLTIwMyw3ICsyMDUsNyBAQCBzdGF0aWMg
-aW50IGluZHVjZV92bXNjYW4odm9pZCkKIHN0YXRpYyB1bnNpZ25lZCBsb25nIGxvbmcgZ2V0X2Nn
-cm91cF92bXNjYW5fZGVsYXkodW5zaWduZWQgbG9uZyBsb25nIGNncm91cF9pZCwKIAkJCQkJCSAg
-Y29uc3QgY2hhciAqZmlsZV9uYW1lKQogewotCWNoYXIgYnVmWzEyOF0sIHBhdGhbMTI4XTsKKwlz
-dGF0aWMgY2hhciBidWZbMTI4XSwgcGF0aFsxMjhdOwogCXVuc2lnbmVkIGxvbmcgbG9uZyB2bXNj
-YW4gPSAwLCBpZCA9IDA7CiAJaW50IGVycjsKIApkaWZmIC0tZ2l0IGEvdG9vbHMvdGVzdGluZy9z
-ZWxmdGVzdHMvYnBmL3Byb2dzL2Nncm91cF9oaWVyYXJjaGljYWxfc3RhdHMuYyBiL3Rvb2xzL3Rl
-c3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9ncy9jZ3JvdXBfaGllcmFyY2hpY2FsX3N0YXRzLmMKaW5k
-ZXggMGExYTNiZWJkZjRjLi44NWE2NWE3MjQ4MmUgMTAwNjQ0Ci0tLSBhL3Rvb2xzL3Rlc3Rpbmcv
-c2VsZnRlc3RzL2JwZi9wcm9ncy9jZ3JvdXBfaGllcmFyY2hpY2FsX3N0YXRzLmMKKysrIGIvdG9v
-bHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dzL2Nncm91cF9oaWVyYXJjaGljYWxfc3RhdHMu
-YwpAQCAtMzcsMTQgKzM3LDE0IEBAIHN0cnVjdCB2bXNjYW4gewogCiBzdHJ1Y3QgewogCV9fdWlu
-dCh0eXBlLCBCUEZfTUFQX1RZUEVfUEVSQ1BVX0hBU0gpOwotCV9fdWludChtYXhfZW50cmllcywg
-MTApOworCV9fdWludChtYXhfZW50cmllcywgMTAwKTsKIAlfX3R5cGUoa2V5LCBfX3U2NCk7CiAJ
-X190eXBlKHZhbHVlLCBzdHJ1Y3Qgdm1zY2FuX3BlcmNwdSk7CiB9IHBjcHVfY2dyb3VwX3Ztc2Nh
-bl9lbGFwc2VkIFNFQygiLm1hcHMiKTsKIAogc3RydWN0IHsKIAlfX3VpbnQodHlwZSwgQlBGX01B
-UF9UWVBFX0hBU0gpOwotCV9fdWludChtYXhfZW50cmllcywgMTApOworCV9fdWludChtYXhfZW50
-cmllcywgMTAwKTsKIAlfX3R5cGUoa2V5LCBfX3U2NCk7CiAJX190eXBlKHZhbHVlLCBzdHJ1Y3Qg
-dm1zY2FuKTsKIH0gY2dyb3VwX3Ztc2Nhbl9lbGFwc2VkIFNFQygiLm1hcHMiKTsKQEAgLTY1LDEx
-ICs2NSwxMyBAQCBzdGF0aWMgaW5saW5lIHVpbnQ2NF90IGNncm91cF9pZChzdHJ1Y3QgY2dyb3Vw
-ICpjZ3JwKQogc3RhdGljIGlubGluZSBpbnQgY3JlYXRlX3Ztc2Nhbl9wZXJjcHVfZWxlbShfX3U2
-NCBjZ19pZCwgX191NjQgc3RhdGUpCiB7CiAJc3RydWN0IHZtc2Nhbl9wZXJjcHUgcGNwdV9pbml0
-ID0gey5zdGF0ZSA9IHN0YXRlLCAucHJldiA9IDB9OworCWludCBlcnI7CiAKLQlpZiAoYnBmX21h
-cF91cGRhdGVfZWxlbSgmcGNwdV9jZ3JvdXBfdm1zY2FuX2VsYXBzZWQsICZjZ19pZCwKLQkJCQkm
-cGNwdV9pbml0LCBCUEZfTk9FWElTVCkpIHsKLQkJYnBmX3ByaW50aygiZmFpbGVkIHRvIGNyZWF0
-ZSBwY3B1IGVudHJ5IGZvciBjZ3JvdXAgJWxsdVxuIgotCQkJICAgLCBjZ19pZCk7CisJZXJyID0g
-YnBmX21hcF91cGRhdGVfZWxlbSgmcGNwdV9jZ3JvdXBfdm1zY2FuX2VsYXBzZWQsICZjZ19pZCwK
-KwkJCQkgICZwY3B1X2luaXQsIEJQRl9OT0VYSVNUKTsKKwlpZiAoZXJyKSB7CisJCWJwZl9wcmlu
-dGsoImZhaWxlZCB0byBjcmVhdGUgcGNwdSBlbnRyeSBmb3IgY2dyb3VwICVsbHU6ICVkXG4iCisJ
-CQkgICAsIGNnX2lkLCBlcnIpOwogCQlyZXR1cm4gMTsKIAl9CiAJcmV0dXJuIDA7CkBAIC03OCwx
-MSArODAsMTMgQEAgc3RhdGljIGlubGluZSBpbnQgY3JlYXRlX3Ztc2Nhbl9wZXJjcHVfZWxlbShf
-X3U2NCBjZ19pZCwgX191NjQgc3RhdGUpCiBzdGF0aWMgaW5saW5lIGludCBjcmVhdGVfdm1zY2Fu
-X2VsZW0oX191NjQgY2dfaWQsIF9fdTY0IHN0YXRlLCBfX3U2NCBwZW5kaW5nKQogewogCXN0cnVj
-dCB2bXNjYW4gaW5pdCA9IHsuc3RhdGUgPSBzdGF0ZSwgLnBlbmRpbmcgPSBwZW5kaW5nfTsKKwlp
-bnQgZXJyOwogCi0JaWYgKGJwZl9tYXBfdXBkYXRlX2VsZW0oJmNncm91cF92bXNjYW5fZWxhcHNl
-ZCwgJmNnX2lkLAotCQkJCSZpbml0LCBCUEZfTk9FWElTVCkpIHsKLQkJYnBmX3ByaW50aygiZmFp
-bGVkIHRvIGNyZWF0ZSBlbnRyeSBmb3IgY2dyb3VwICVsbHVcbiIKLQkJCSAgICwgY2dfaWQpOwor
-CWVyciA9IGJwZl9tYXBfdXBkYXRlX2VsZW0oJmNncm91cF92bXNjYW5fZWxhcHNlZCwgJmNnX2lk
-LAorCQkJCSAgJmluaXQsIEJQRl9OT0VYSVNUKTsKKwlpZiAoZXJyKSB7CisJCWJwZl9wcmludGso
-ImZhaWxlZCB0byBjcmVhdGUgZW50cnkgZm9yIGNncm91cCAlbGx1OiAlZFxuIgorCQkJICAgLCBj
-Z19pZCwgZXJyKTsKIAkJcmV0dXJuIDE7CiAJfQogCXJldHVybiAwOwpAQCAtMjIwLDcgKzIyNCw3
-IEBAIGludCBCUEZfUFJPRyhkdW1wX3Ztc2Nhbiwgc3RydWN0IGJwZl9pdGVyX21ldGEgKm1ldGEs
-IHN0cnVjdCBjZ3JvdXAgKmNncnApCiAJdG90YWxfc3RhdCA9IGJwZl9tYXBfbG9va3VwX2VsZW0o
-JmNncm91cF92bXNjYW5fZWxhcHNlZCwgJmNnX2lkKTsKIAlpZiAoIXRvdGFsX3N0YXQpIHsKIAkJ
-YnBmX3ByaW50aygiZXJyb3IgZmluZGluZyBzdGF0cyBmb3IgY2dyb3VwICVsbHVcbiIsIGNnX2lk
-KTsKLQkJQlBGX1NFUV9QUklOVEYoc2VxLCAiY2dfaWQ6ICVsbHUsIHRvdGFsX3Ztc2Nhbl9kZWxh
-eTogLTFcbiIsCisJCUJQRl9TRVFfUFJJTlRGKHNlcSwgImNnX2lkOiAlbGx1LCB0b3RhbF92bXNj
-YW5fZGVsYXk6IDBcbiIsCiAJCQkgICAgICAgY2dfaWQpOwogCQlyZXR1cm4gMTsKIAl9Cg==
---000000000000e8d8db05e41975e6--
+On Mon, Jul 18, 2022 at 05:53:48PM +0200, Paul Chaignon wrote:
+> Commit 26101f5ab6bd ("bpf: Add source ip in "struct bpf_tunnel_key"")
+> added support for getting and setting the outer source IP of encapsulated
+> packets via the bpf_skb_{get,set}_tunnel_key BPF helper. This change
+> allows BPF programs to set any IP address as the source, including for
+> example the IP address of a container running on the same host.
+> 
+> In that last case, however, the encapsulated packets are dropped when
+> looking up the route because the source IP address isn't assigned to any
+> interface on the host. To avoid this, we need to set the
+> FLOWI_FLAG_ANYSRC flag.
+Acked-by: Martin KaFai Lau <kafai@fb.com>
