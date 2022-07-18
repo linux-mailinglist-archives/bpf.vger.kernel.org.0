@@ -2,222 +2,229 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB8D7578468
-	for <lists+bpf@lfdr.de>; Mon, 18 Jul 2022 15:54:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5AD4578478
+	for <lists+bpf@lfdr.de>; Mon, 18 Jul 2022 15:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235576AbiGRNy1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jul 2022 09:54:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52294 "EHLO
+        id S235594AbiGRN4E (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jul 2022 09:56:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235619AbiGRNyS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Jul 2022 09:54:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D4C5A1089
-        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 06:54:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1658152455;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Pc2COzK5DZ3zqU+q9ucYylkxH5lyMmFL6dLIwCvbYD4=;
-        b=MSbSP6rRD7uAvChP5Cast9+55jgWHeadQmP3LuML+k9arVw+KzQHdLPWUQvnjIr4SOZKRN
-        tufYAvGusgALdEGC27pmEOsHc2uR5Rz3r6IHWQIR9MoNroPX6rb/3Y756NEdMCllUt4C4h
-        pmRdC25jolGkwJnuUgndM/ktkKm8cuo=
-Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
- [209.85.210.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-182-xLiLcRutMYuXjNI1PL_IBg-1; Mon, 18 Jul 2022 09:54:07 -0400
-X-MC-Unique: xLiLcRutMYuXjNI1PL_IBg-1
-Received: by mail-pf1-f199.google.com with SMTP id u14-20020a056a00098e00b0052b433b04d6so1194950pfg.12
-        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 06:54:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Pc2COzK5DZ3zqU+q9ucYylkxH5lyMmFL6dLIwCvbYD4=;
-        b=4lKdGLnVCkS7AlEpTogebC5cTnNoZMR3tj+HKskbBSq5zkmM2DTUoDZkQ7qeDOMP2a
-         J2fwoux/EaDonJaJheE/hi54PZg/72Q5in2RRAb5ihKOSJKY9rSoQuqCrdtlxj/3sMt1
-         +JKBvVMZ55rrN9kjjOAjKEHRZsLhWk4a3K4AouxSgY+4DmkR3QLyHS6usuD+e0yKCTuw
-         V4rAJZLk17Rpjm+UnJiCavIRalOelDfi3Ucbk53paxJDGwLSlNZnbvMMQWTJyfPq9MuL
-         bcxV7k2l2cSCIPn1P2palz529oKEdCjkJoNqlKkZDK4fvojbjeu6aVAbHV5jdEEpALRM
-         fCQw==
-X-Gm-Message-State: AJIora+BqmJT3GijcTuT6iJW2yTSconNbXYCPaK8QYBOUC4XGGW/LWbi
-        ujy5Kn+IeSC/3idvd+sl749KdWxyBRSTNZ3Xs49wJbZc8FmA5YrNdyLpPejroX2Nrfw7TRp4pkm
-        JyWoL/nTd1fweh0eSjM3Xon5g2L+l
-X-Received: by 2002:a17:90b:3c0c:b0:1ef:e647:ff48 with SMTP id pb12-20020a17090b3c0c00b001efe647ff48mr38420235pjb.173.1658152446338;
-        Mon, 18 Jul 2022 06:54:06 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1tYWWG5+dHj3RDcKvwCfnQ6XdC8dUoOKHbWxuHGS02OBFyhEdIY4FE1XeYYySiizoSxEBwA/mzE4iBKSc2KOic=
-X-Received: by 2002:a17:90b:3c0c:b0:1ef:e647:ff48 with SMTP id
- pb12-20020a17090b3c0c00b001efe647ff48mr38420212pjb.173.1658152446035; Mon, 18
- Jul 2022 06:54:06 -0700 (PDT)
+        with ESMTP id S235376AbiGRN4D (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Jul 2022 09:56:03 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC72E2613E;
+        Mon, 18 Jul 2022 06:56:00 -0700 (PDT)
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26IDZbqL002346;
+        Mon, 18 Jul 2022 13:55:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2022-7-12;
+ bh=RvS5hul98tCd4mNgpOJTIfV3bzlup0M44UU+HZy24CE=;
+ b=DFDq36sEK0QD+vDBO21VljnF0i7ivIDNZRML5Qx7EZZgqkJzep+YhIQTZwIzSDcvBYnk
+ 2w8qX2Q6pZZIDGgUO4yUQn7aGtk2vI1cbiSos5c6nM9HDnla01WnajE8Rv76DYlipEgq
+ ujxtgXqJ3VCPm0YLMQr4pYT9ZcVz0wnvwldUmgJJbfO3O4E2rBuWuA/TQoef9jWmz0uh
+ bTi01/k0mJV/6ecqnBIbxLb5Mztu/woWqs4SWx7olW3ZcIcFhdjcnBoVwZr8z/vSsxlx
+ oRgSvzbZC7AgC437fP7vmnKChIiEfeON7Eb8lUruLWOVURKZCkiJbKo4r4WTCEmc7ul1 8A== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3hbmxs3amn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 18 Jul 2022 13:55:25 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 26ICOOtZ007940;
+        Mon, 18 Jul 2022 13:55:24 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3hc1ekm6f8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 18 Jul 2022 13:55:24 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WxKut76m3plFvlS6drllRczO1M2lcnun5LFpnPpiOltsaReJeWHP6xgj6lRB+v5lmjzX6IYxi+GXmsbR0bH+56cmpq6alNIbZFIohjSHkH8LV9fxmnYtLSyh6rYV7vReou8nF/P0kK8olj47D2pkImMEUy2hg4BWxwnD7MkzsQqxBtESCwPNJnqQpNynCsUsM8v0uaXX4GLUWG9knZsI4K3ixYcL7kuXMzyWexATNH7oiKa14SARDEp2WUYKRJxmm07qgHxl3HZNi58xfAQD5VkdmhPyKa/huD4ZVQwf25U4VcJBGvKf8IbOaYBI0PDw4lbmE+1giPOzG8P6eTsi8Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RvS5hul98tCd4mNgpOJTIfV3bzlup0M44UU+HZy24CE=;
+ b=Qe65DxXYo6QnRCM6xHi4t9gqgMFAxblQk/T9DQmk6w/r/rbVw89sqQQ6yirjTJEFq7FXZrD4S/WU5dWg7f0XnGdXUFhgTXsehX1omVSMm8TAI6+Pi4PSPOFjvLW0rKsoJUM5VhVyz+6zVetm3D4fXDuOUU6LxYRc2HKtOOxuDzxiBKYnEod5LRgzKUA6IaG4g46HAQ7Ob2gdTjztrkDiffEjTeIhGlycwcNrgpVO8ctzRXAOXwhvb+0efN6VZH71GJ5LiqTib11pVwmNylHo7xukGws/3N0IW2/BTOTOG33c/lyfYc0Z9a8F4/JpY2DugZYjbLK8U7maEofAneKG5Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RvS5hul98tCd4mNgpOJTIfV3bzlup0M44UU+HZy24CE=;
+ b=zMlZihTtobeETVN2cFYLNZyxkW+12KkuLn1K6WlN/SpiqBG4reASRbRqRZVSuC+fjhPEdKyyrDJc+WFFQfVyI1rVpfEUJm69J48P0WIelAx0UY5ecuZdcOw060SbIxA2fYNV3buCZjKTIafnxGo+5kFSgVqpGzBb2MaL63KV4vE=
+Received: from SN6PR10MB3022.namprd10.prod.outlook.com (2603:10b6:805:d8::25)
+ by MN2PR10MB3581.namprd10.prod.outlook.com (2603:10b6:208:11c::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5438.17; Mon, 18 Jul
+ 2022 13:55:22 +0000
+Received: from SN6PR10MB3022.namprd10.prod.outlook.com
+ ([fe80::c4d1:edc3:7d21:7c68]) by SN6PR10MB3022.namprd10.prod.outlook.com
+ ([fe80::c4d1:edc3:7d21:7c68%6]) with mapi id 15.20.5438.023; Mon, 18 Jul 2022
+ 13:55:22 +0000
+From:   Liam Howlett <liam.howlett@oracle.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     kernel test robot <lkp@intel.com>,
+        "ntfs3@lists.linux.dev" <ntfs3@lists.linux.dev>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-ntfs-dev@lists.sourceforge.net" 
+        <linux-ntfs-dev@lists.sourceforge.net>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [linux-next:master] BUILD REGRESSION
+ 4662b7adea50bb62e993a67f611f3be625d3df0d
+Thread-Topic: [linux-next:master] BUILD REGRESSION
+ 4662b7adea50bb62e993a67f611f3be625d3df0d
+Thread-Index: AQHYlyUDdSiWUfumoUGI7ehqsq7Up62Bw7eAgAJqAoA=
+Date:   Mon, 18 Jul 2022 13:55:22 +0000
+Message-ID: <20220718135515.vyuy6rozchf755hq@revolver>
+References: <62cf77c3.3T/sxYUjJq0ImGp4%lkp@intel.com>
+ <20220716180319.dcb09d8ce9519368695c1108@linux-foundation.org>
+In-Reply-To: <20220716180319.dcb09d8ce9519368695c1108@linux-foundation.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 4211cfab-e53d-47e8-6c87-08da68c5288b
+x-ms-traffictypediagnostic: MN2PR10MB3581:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: A0eeakOT8BXcpEA9l07jS+zUSpcwP/R2ECBmNZyoqb0L5Dyy2YGk/5fwH3d2fKPj+l0HhnLaNW7M9uyhWtF0JveRXCC1ShAf7nLSAZzZM2wvG6OPZOSlzK0JpsovN9puOyk7Btj6YIpRJ6Q5+SPFHoZCuTMFJIbtNqh9RyNBUjmVdNEzutDOMFDr4MqwWSjuWewz1hcMrY6DhLqkDJRQx2TSfv02qyzSdkY5WuNg1XGf7nTrpxoL+ghNZMiJ+chLGR62sCwGo8gskDb81gZhcctEhsV6goCYriw7WWpWdr72skH81ab0ojIq3KOw/KUG6ayMpcesBRlJHEWnn7e0MPeT9/T1cTUYJWUytv6BmvbvRvHaK4Ry0GuQ30vd2iMaPn/8Np0ZiiJDv8ZTrN0wMPsxmo0V30lNcevWE7mcPkHVTzIzOAcyfnf7us1G3SvSTdFi9HZGAtV9Qhuz7cn1SwdBhtNs7BMd5ibIWKmGiTDmd2fCznly4VWbJuMfeRk4tuMSJc+gu9i9d6fKawMedhNfU6EpGa8cOTTscg5w2PfTYGNZaKFgwEoUzW4Yo4YPFEn/ALi4dyzLa0ZvSHCsOf1OnPed/DagMWgL1SskcQG1QAJuruvlh5lY7hdv6LeBSc8rW2F+IJqG/TBTXO9hjE/9Y/EKw7sbgjy8SkhXyTvMOiBhJ6+ncHI4W6B6kYpehttQbdarBTW+8W2iNFvteGrBB55dh3IYjWbZhrm9roDmdolysAfBHGt0AVazXIiHEBQAO8k5IsI3abhiWBopsAOp1ynHHSH3a1OVr5ONltnFw4dd7ZdGxW1exRkFPxz4HxQEQjHv4wqyfLKv3dMb0g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR10MB3022.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(7916004)(396003)(346002)(366004)(136003)(376002)(39860400002)(86362001)(8936002)(8676002)(38100700002)(66476007)(4326008)(64756008)(66946007)(66446008)(66556008)(76116006)(91956017)(6506007)(6916009)(54906003)(316002)(38070700005)(26005)(6512007)(44832011)(83380400001)(41300700001)(33716001)(9686003)(1076003)(186003)(478600001)(71200400001)(7416002)(6486002)(2906002)(5660300002)(122000001)(98903001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?t6WGEh5HneKUaN5BrFM2Wr1HAs5PZCD/bO0HjhXNoql5+WrrjT3KskRgBMNP?=
+ =?us-ascii?Q?zgVCcJwxleU1HSmC0pPeJZZ4oTP6eIi1bU9TqibseqclkM8dkMae8kLjZvic?=
+ =?us-ascii?Q?k+37RC6lhknU8l+yCAZDF2GBllQUcofXtnXtYL3qbiz8u7/hzkKCb83iBewE?=
+ =?us-ascii?Q?eydtdRvdOgBJUcHWq3ZTQ7GaaCMPs+5lvA6PZZsbSM2G0Dt4qeRWpSgxmr5T?=
+ =?us-ascii?Q?z+NLmtSRGSUtb52KIhD5xJKcAKxXwHUTZOtLqoUtmj4/6Fg4SkMtz0f3nuPw?=
+ =?us-ascii?Q?ALCdVnwGObMEpWtxjlfB5jQcXoKbko4HtvxqMWzk5F6GeSZ5Mq8MpBuNcsdc?=
+ =?us-ascii?Q?ovZBQ5sIsXhiHrtJOeyLGwCx+YsE+8BOsKUg+Ybr6ZPSBm1DdqHw/BRJ/0d5?=
+ =?us-ascii?Q?t+D07YJjXrqgChYBcU4JdEhuFx+ueWPmpqYVYXeIsqWyj4DzGQrmf5IXaGtm?=
+ =?us-ascii?Q?xQatyYd74q9TawOiAivlet/lx59cladOzW6UZnCeAZ2NmYd09wvZhdwKdPUs?=
+ =?us-ascii?Q?DY9KF1W6Qd9dhtZ64/ayCTPRz5qPeTaxHko14DBbXsPKv2tc7p20W9X5XK7d?=
+ =?us-ascii?Q?nPyRRn1HNn2B4j0toAmdmeS9wLa21o+McyGv8hvA7zeCFPSLPsraradCR1z0?=
+ =?us-ascii?Q?QmKq/4vBPSE9XHhXUGQHgsuY4nR0IvKtPkvC5YhGvjeL6nCHftHuxa9e67g2?=
+ =?us-ascii?Q?l8caDC+/zU2Z7vAqWbCzTNp/iEx/aVHoGXXEkH6Fyy6fqGuUbD4W/ktSsCBn?=
+ =?us-ascii?Q?moFcQiDZ/O89eBGMie/2MPDvPfRc3gcRT8L72RMOniKrOrynzd+aVIilXSHE?=
+ =?us-ascii?Q?N3ogJ3hGOzZgSWhXoJZ3zW1UKP167oBlC0r8Qw/EsPEBb079HQYCBCy+wSpQ?=
+ =?us-ascii?Q?OsWg47EIGSz4DmoarFMIZLZSnOAPXmCVkxTZi/ix0fE0jWd+QXKRf4KM+ZF6?=
+ =?us-ascii?Q?/Okp8/wRsAa5pCicFILanTDf9oBmg1jHDqJzaflzNAXaKDg1qsWVn2YKP8X8?=
+ =?us-ascii?Q?La5DyPTR24W3lPDGjyOGEZtakQxwZlf6CCo4qhdpk2v/MeXA/ZCKMq4Fl5N3?=
+ =?us-ascii?Q?9jp/dMhNmoMeHZYfME4vatruZlfnH44otHKLZIaY9ZeTM4dqMfbA4+rE5hLp?=
+ =?us-ascii?Q?t44tVmuIgvkbZwbGU4aCAP1J6f4MDGpT/SjEfJseI3xXYZK4J/YXU6jmLFq3?=
+ =?us-ascii?Q?xuZp7HWjPgUa58t9OGDpiIyBLATa89Q8qnvJ+ptvnfL3gXw/XGR0NCmJv1zN?=
+ =?us-ascii?Q?vOzmhcjpIGXV2OX4X+pQ0QiAK2bwjP19YLw/BfHV63BId2vVwGb4LOrqqg1S?=
+ =?us-ascii?Q?Bnr3S4CC3Xrljw/lTJSeaCBLhQW/oJseA/gu9+r1I3+rDyMiP24e2ciC5xm3?=
+ =?us-ascii?Q?jT6U32+GmRCBfoNa0fWUcY06Q8RvFviTDQzAQ/WGQcyL64edKT/PK1eEwQY9?=
+ =?us-ascii?Q?CZ+oF1yPTl7tHnj9VFGJZXAACC47GREUqZTnOfUdoCPeDMED+jndE4lwPTKi?=
+ =?us-ascii?Q?KBkbg8sgwaiXPm1Oaw6tf8+XjRq36zExhx/bmkCGckKIiAGRRxpUWNx7bVR6?=
+ =?us-ascii?Q?sU/P9ZufL0Pwj6/bggRjalD7u18aYmkzgh2/QPkS5NdKwC3IrhCxR0S9YGX9?=
+ =?us-ascii?Q?lA=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <B31AC944B775F44BA58FDEE1E7CA339D@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20220712145850.599666-1-benjamin.tissoires@redhat.com>
- <20220712145850.599666-3-benjamin.tissoires@redhat.com> <CAP01T766-JGd=6twHYhWDmjVBk7wuuvWMLFyDZ656fka6GW8Cw@mail.gmail.com>
-In-Reply-To: <CAP01T766-JGd=6twHYhWDmjVBk7wuuvWMLFyDZ656fka6GW8Cw@mail.gmail.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Mon, 18 Jul 2022 15:53:55 +0200
-Message-ID: <CAO-hwJ+RU89t=w5RgJNG=G46veHHF6NiR1zAsec9YuYrX=FF8A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 02/23] bpf/verifier: allow kfunc to read user
- provided context
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>,
-        Tero Kristo <tero.kristo@linux.intel.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR10MB3022.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4211cfab-e53d-47e8-6c87-08da68c5288b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Jul 2022 13:55:22.3949
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: XlZwmy65Jkutb8OGo1ZyN9CgPFm4EiXee1SOWUNhWOYzSc1HJXXtYt0FMEBJQJ/2V3kf+4JakjwF2bCzcNrRUQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB3581
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-07-18_13,2022-07-18_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 mlxlogscore=999
+ suspectscore=0 phishscore=0 adultscore=0 spamscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2206140000
+ definitions=main-2207180060
+X-Proofpoint-GUID: 1cVo0n8fMlqeseSSBnE6rIrlqU4J4-8p
+X-Proofpoint-ORIG-GUID: 1cVo0n8fMlqeseSSBnE6rIrlqU4J4-8p
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jul 16, 2022 at 9:48 PM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> On Tue, 12 Jul 2022 at 17:02, Benjamin Tissoires
-> <benjamin.tissoires@redhat.com> wrote:
-> >
-> > When a kfunc was trying to access data from context in a syscall eBPF
-> > program, the verifier was rejecting the call.
-> > This is because the syscall context is not known at compile time, and
-> > so we need to check this when actually accessing it.
-> >
-> > Check for the valid memory access and allow such situation to happen.
-> >
-> > Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> >
-> > ---
-> >
-> > new in v6
-> > ---
-> >  kernel/bpf/verifier.c | 16 ++++++++++++++++
-> >  1 file changed, 16 insertions(+)
-> >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 328cfab3af60..f6af57a84247 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -248,6 +248,7 @@ struct bpf_call_arg_meta {
-> >         struct bpf_map *map_ptr;
-> >         bool raw_mode;
-> >         bool pkt_access;
-> > +       bool is_kfunc;
-> >         u8 release_regno;
-> >         int regno;
-> >         int access_size;
-> > @@ -5170,6 +5171,7 @@ static int check_helper_mem_access(struct bpf_verifier_env *env, int regno,
-> >                                    struct bpf_call_arg_meta *meta)
-> >  {
-> >         struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
-> > +       enum bpf_prog_type prog_type = resolve_prog_type(env->prog);
-> >         u32 *max_access;
-> >
-> >         switch (base_type(reg->type)) {
-> > @@ -5223,6 +5225,19 @@ static int check_helper_mem_access(struct bpf_verifier_env *env, int regno,
-> >                                 env,
-> >                                 regno, reg->off, access_size,
-> >                                 zero_size_allowed, ACCESS_HELPER, meta);
-> > +       case PTR_TO_CTX:
-> > +               /* in case of a kfunc called in a program of type SYSCALL, the context is
-> > +                * user supplied, so not computed statically.
-> > +                * Dynamically check it now
-> > +                */
-> > +               if (prog_type == BPF_PROG_TYPE_SYSCALL && meta && meta->is_kfunc) {
-> > +                       enum bpf_access_type access_t = meta->raw_mode ? BPF_WRITE : BPF_READ;
->
-> small nit: _t suffix is used for types, so you could probably rename
-> this. maybe atype?
+* Andrew Morton <akpm@linux-foundation.org> [220716 21:03]:
+> On Thu, 14 Jul 2022 09:56:19 +0800 kernel test robot <lkp@intel.com> wrot=
+e:
+>=20
+> > lib/maple_tree.c:1522:52: warning: Parameter 'gaps' can be declared wit=
+h const [constParameter]
+> > lib/maple_tree.c:1871:21: warning: Array index 'split' is used before l=
+imits check. [arrayIndexThenCheck]
+> > lib/maple_tree.c:2033:55: warning: Parameter 'mas' can be declared with=
+ const [constParameter]
+> > lib/maple_tree.c:2426:8: warning: Redundant initialization for 'r_tmp'.=
+ The initialized value is overwritten before it is read. [redundantInitiali=
+zation]
+> > lib/maple_tree.c:2427:8: warning: Redundant initialization for 'l_tmp'.=
+ The initialized value is overwritten before it is read. [redundantInitiali=
+zation]
+> > lib/maple_tree.c:3160:22: warning: Found suspicious operator ',' [const=
+Statement]
+> > lib/maple_tree.c:3208:11: warning: Size of pointer 'pivs' used instead =
+of size of its data. [pointerSize]
+> > lib/maple_tree.c:326:2: warning: Assignment of function parameter has n=
+o effect outside the function. Did you forget dereferencing it? [uselessAss=
+ignmentPtrArg]
+> > lib/maple_tree.c:4266:15: warning: The if condition is the same as the =
+previous if condition [duplicateCondition]
+> > lib/maple_tree.c:4302:23: warning: Boolean result is used in bitwise op=
+eration. Clarify expression with parentheses. [clarifyCondition]
+> > lib/maple_tree.c:694:59: warning: Parameter 'pivots' can be declared wi=
+th const [constParameter]
+> > lib/test_printf.c:415:11: warning: Local variable 'addr' shadows outer =
+function [shadowFunction]
+> > mm/highmem.c:737:13: warning: Uninitialized variable: pam->page [uninit=
+var]
+> > mm/migrate.c:355:53: warning: Parameter 'mapping' can be declared with =
+const [constParameter]
+> > mm/migrate.c:875:7: warning: Redundant initialization for 'rc'. The ini=
+tialized value is overwritten before it is read. [redundantInitialization]
+> > mm/mlock.c:230:20: warning: Using pointer that is a temporary. [danglin=
+gTemporaryLifetime]
+> > mm/slab.c:1635:24: warning: Uninitialized variables: slab.__page_flags,=
+ slab.__unused_1, slab.freelist, slab.units, slab.__unused_2, slab.__page_r=
+efcount [uninitvar]
+> > mm/slab.c:3289:7: warning: Redundant assignment of 'objp' to itself. [s=
+elfAssignment]
+> > mm/slab.c:3509:8: warning: Redundant assignment of 'p[i]' to itself. [s=
+elfAssignment]
+> > mm/slab.c:405:9: warning: Local variable 'slab_size' shadows outer func=
+tion [shadowFunction]
+> > mm/vmstat.c:1409:53: warning: Parameter 'pos' can be declared with cons=
+t [constParameter]
+> > mm/vmstat.c:1650:68: warning: Parameter 'zone' can be declared with con=
+st [constParameter]
+> > mm/zsmalloc.c:2019:15: warning: Uninitialized variables: zspage.huge, z=
+spage.fullness, zspage.class, zspage.isolated, zspage.magic, zspage.inuse, =
+zspage.freeobj, zspage.first_page, zspage.lock [uninitvar]
+> > mm/zsmalloc.c:2060:16: warning: Local variable 'obj_allocated' shadows =
+outer function [shadowFunction]
+>=20
+> urgh, thanks, lots of stuff to go through here.
+>=20
+> Liam, I suggest we worry about the mapletree things at a later time ;)
 
-Ack, fixed locally.
-
->
-> > +
-> > +                       return check_mem_access(env, env->insn_idx, regno, access_size, BPF_B,
-> > +                                               access_t, -1, false);
->
-> If I read the code correctly, this makes the max_ctx_offset of prog
-> access_size + 1 (off + size_to_bytes(BPF_B)), which is 1 more than the
-> actual size being accessed.
-
-Oh, correct. I am mixing offset and access_size, which creates this :(
-
->
-> This also messes up check_helper_mem_access when it allows NULL, 0
-> pair to pass (because check is against actual size + 1). We do allow
-> passing NULL when size is 0 for kfuncs (see zero_size_allowed is true
-
-I am a little bit confused by how check_mem_size_reg() treats the case
-when reg->umin_value == 0.
-
-What does it mean to call check_helper_mem_access() with a 0 size if
-we have zero_size_allowed?
-
-Can I just have in the PTR_TO_CTX case: "if (access_size == 0) return
-zero_size_allowed ? 0 : -EINVAL;" or should I only allow the call if
-the ptr in the register is null?
-
-> in check_mem_size_reg), so your hid_hw_request function is missing
-> that NULL check for buf too.
-
-Actually, in hid_hw_request() we ensure buf__sz is greater than 1, so
-buf can not be null. But I agree it doesn't hurt to have that extra
-check to be sure (we are called from a syscall program, so not time
-sensitive).
-
->
-> In the selftest that checks for failure in loading
-> + bpf_kfunc_call_test_mem_len_pass1(&args->data, sizeof(*args) + 1);
-> so it will still fail with just sizeof(*args).
-
-Good point.
-
->
-> Also please add coverage for this case in the next version.
-
-I added both (NULL, 0) and (&args->data, sizeof(*args)) as passing
-tests locally.
-
-And thanks for the review!
-
-Cheers,
-Benjamin
-
-
->
-> > +               }
-> > +
-> > +               fallthrough;
-> >         default: /* scalar_value or invalid ptr */
-> >                 /* Allow zero-byte read from NULL, regardless of pointer type */
-> >                 if (zero_size_allowed && access_size == 0 &&
-> > @@ -5335,6 +5350,7 @@ int check_kfunc_mem_size_reg(struct bpf_verifier_env *env, struct bpf_reg_state
-> >         WARN_ON_ONCE(regno < BPF_REG_2 || regno > BPF_REG_5);
-> >
-> >         memset(&meta, 0, sizeof(meta));
-> > +       meta.is_kfunc = true;
-> >
-> >         if (may_be_null) {
-> >                 saved_reg = *mem_reg;
-> > --
-> > 2.36.1
-> >
->
-
+I'm not sure where we stand with all that goings on here with an rc8 and
+the concerns raised by Hugh, but I can produce a fix for these issues if
+you'd like?
