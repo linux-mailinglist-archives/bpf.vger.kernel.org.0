@@ -2,148 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A420E578386
-	for <lists+bpf@lfdr.de>; Mon, 18 Jul 2022 15:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79AB15782E5
+	for <lists+bpf@lfdr.de>; Mon, 18 Jul 2022 14:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235156AbiGRNTe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jul 2022 09:19:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45202 "EHLO
+        id S234722AbiGRM70 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jul 2022 08:59:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234706AbiGRNTc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Jul 2022 09:19:32 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 711336272;
-        Mon, 18 Jul 2022 06:19:31 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 1FD4933CC5;
-        Mon, 18 Jul 2022 13:19:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1658150370; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uHzot1g1ilmbChTYESLhhB1Zrae8HwVQwzEp3wCsJXk=;
-        b=lnWOEk4se/IsyvUweRMvgKaR/pQWqalfvf85pRJ0DNQDGIAU46+O+9xhKwWiTXMpld3fS8
-        7LFPdd5K/x/7b8873r4rqObj2+dt2NhcwWTlMSQoDtvjaX7uWEBFhyuG7EtK+n+2wb9kRn
-        M6GqPr5vVg2U6boAvslw0dxBWlXoLvY=
-Received: from suse.cz (unknown [10.100.201.202])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 265362C142;
-        Mon, 18 Jul 2022 13:19:29 +0000 (UTC)
-Date:   Mon, 18 Jul 2022 15:19:28 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Song Liu <song@kernel.org>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, live-patching@vger.kernel.org,
-        kbuild-all@lists.01.org, daniel@iogearbox.net, kernel-team@fb.com,
-        jolsa@kernel.org, rostedt@goodmis.org
-Subject: Re: [PATCH v4 bpf-next 2/4] ftrace: allow IPMODIFY and DIRECT ops on
- the same function
-Message-ID: <YtVd4FKOcEmGfubm@alley>
-References: <20220718055449.3960512-3-song@kernel.org>
- <202207181552.VuKfz9zg-lkp@intel.com>
+        with ESMTP id S233894AbiGRM7Y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Jul 2022 08:59:24 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59DD010A2;
+        Mon, 18 Jul 2022 05:59:22 -0700 (PDT)
+Received: from dggpemm500020.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4LmhlT5bmbzVftZ;
+        Mon, 18 Jul 2022 20:55:33 +0800 (CST)
+Received: from dggpemm500019.china.huawei.com (7.185.36.180) by
+ dggpemm500020.china.huawei.com (7.185.36.49) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Mon, 18 Jul 2022 20:59:20 +0800
+Received: from k04.huawei.com (10.67.174.115) by
+ dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Mon, 18 Jul 2022 20:59:20 +0800
+From:   Pu Lehui <pulehui@huawei.com>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "Jean-Philippe Brucker" <jean-philippe@linaro.org>,
+        Pu Lehui <pulehui@huawei.com>
+Subject: [PATCH bpf-next v2 0/5] cleanup for data casting
+Date:   Mon, 18 Jul 2022 21:29:33 +0800
+Message-ID: <20220718132938.1031864-1-pulehui@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202207181552.VuKfz9zg-lkp@intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.115]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500019.china.huawei.com (7.185.36.180)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon 2022-07-18 15:42:25, kernel test robot wrote:
-> Hi Song,
-> 
-> I love your patch! Perhaps something to improve:
-> 
-> [auto build test WARNING on bpf-next/master]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Song-Liu/ftrace-host-klp-and-bpf-trampoline-together/20220718-135652
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-> config: x86_64-randconfig-a004 (https://download.01.org/0day-ci/archive/20220718/202207181552.VuKfz9zg-lkp@intel.com/config)
-> compiler: gcc-11 (Debian 11.3.0-3) 11.3.0
-> reproduce (this is a W=1 build):
->         # https://github.com/intel-lab-lkp/linux/commit/9ef1ec8cb818d8ca70887c8c123f2d579384a6c6
->         git remote add linux-review https://github.com/intel-lab-lkp/linux
->         git fetch --no-tags linux-review Song-Liu/ftrace-host-klp-and-bpf-trampoline-together/20220718-135652
->         git checkout 9ef1ec8cb818d8ca70887c8c123f2d579384a6c6
->         # save the config file
->         mkdir build_dir && cp config build_dir/.config
->         make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash kernel/trace/
-> 
-> If you fix the issue, kindly add following tag where applicable
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
-> 
->    kernel/trace/ftrace.c: In function 'register_ftrace_function':
-> >> kernel/trace/ftrace.c:8197:14: warning: variable 'direct_mutex_locked' set but not used [-Wunused-but-set-variable]
->     8197 |         bool direct_mutex_locked = false;
->          |              ^~~~~~~~~~~~~~~~~~~
-> 
-> 
-> vim +/direct_mutex_locked +8197 kernel/trace/ftrace.c
-> 
->   8182	
->   8183	/**
->   8184	 * register_ftrace_function - register a function for profiling
->   8185	 * @ops:	ops structure that holds the function for profiling.
->   8186	 *
->   8187	 * Register a function to be called by all functions in the
->   8188	 * kernel.
->   8189	 *
->   8190	 * Note: @ops->func and all the functions it calls must be labeled
->   8191	 *       with "notrace", otherwise it will go into a
->   8192	 *       recursive loop.
->   8193	 */
->   8194	int register_ftrace_function(struct ftrace_ops *ops)
->   8195		__releases(&direct_mutex)
->   8196	{
-> > 8197		bool direct_mutex_locked = false;
->   8198		int ret;
->   8199	
->   8200		ftrace_ops_init(ops);
->   8201	
->   8202		ret = prepare_direct_functions_for_ipmodify(ops);
->   8203		if (ret < 0)
->   8204			return ret;
->   8205		else if (ret == 1)
->   8206			direct_mutex_locked = true;
+Previously, we found that memory address casting in libbpf
+was not appropriate [0]. Memory addresses are conceptually
+unsigned, (unsigned long) casting makes more sense. With the
+suggestion of Daniel, we applied this cleanup to the entire
+bpf, and there is no functional change.
 
-Honestly, this is another horrible trick. Would it be possible to
-call prepare_direct_functions_for_ipmodify() with direct_mutex
-already taken?
+[0] https://lore.kernel.org/bpf/a31efed5-a436-49c9-4126-902303df9766@iogearbox.net/
 
-I mean something like:
+v2:
+- update subject and commit msg of patch 5.
+- attach ack of Yonghong.
 
-	mutex_lock(&direct_mutex);
+v1: https://lore.kernel.org/bpf/20220716125108.1011206-1-pulehui@huawei.com/
 
-	ret = prepare_direct_functions_for_ipmodify(ops);
-	if (ret)
-		goto out:
+Pu Lehui (5):
+  bpf: Unify memory address casting operation style
+  libbpf: Unify memory address casting operation style
+  selftests: bpf: Unify memory address casting operation style
+  samples: bpf: Unify memory address casting operation style
+  selftests/bpf: Change the casting about jited_ksyms and jited_linfo
 
-	mutex_lock(&ftrace_lock);
-	ret = ftrace_startup(ops, 0);
-	mutex_unlock(&ftrace_lock);
+ kernel/bpf/core.c                             |  2 +-
+ kernel/bpf/helpers.c                          |  6 +--
+ kernel/bpf/syscall.c                          |  2 +-
+ kernel/bpf/verifier.c                         |  6 +--
+ samples/bpf/parse_simple.c                    |  4 +-
+ samples/bpf/parse_varlen.c                    |  4 +-
+ samples/bpf/tc_l2_redirect_kern.c             | 16 +++----
+ samples/bpf/test_cgrp2_tc_kern.c              |  4 +-
+ samples/bpf/test_lwt_bpf.c                    |  4 +-
+ samples/bpf/xdp_adjust_tail_kern.c            | 12 ++---
+ samples/bpf/xdp_fwd_kern.c                    |  4 +-
+ samples/bpf/xdp_redirect.bpf.c                |  4 +-
+ samples/bpf/xdp_redirect_cpu.bpf.c            | 48 +++++++++----------
+ samples/bpf/xdp_redirect_map.bpf.c            |  8 ++--
+ samples/bpf/xdp_redirect_map_multi.bpf.c      |  4 +-
+ samples/bpf/xdp_router_ipv4.bpf.c             |  4 +-
+ samples/bpf/xdp_rxq_info_kern.c               |  4 +-
+ samples/bpf/xdp_sample_pkts_kern.c            |  4 +-
+ samples/bpf/xdp_tx_iptunnel_kern.c            | 20 ++++----
+ tools/lib/bpf/bpf_prog_linfo.c                |  8 ++--
+ tools/lib/bpf/btf.c                           |  7 +--
+ tools/lib/bpf/skel_internal.h                 |  4 +-
+ tools/lib/bpf/usdt.c                          |  4 +-
+ tools/testing/selftests/bpf/bench.c           |  4 +-
+ .../selftests/bpf/prog_tests/bpf_obj_id.c     | 10 ++--
+ .../selftests/bpf/prog_tests/bpf_tcp_ca.c     |  2 +-
+ tools/testing/selftests/bpf/prog_tests/btf.c  | 20 ++++----
+ .../bpf/prog_tests/core_read_macros.c         |  8 ++--
+ .../selftests/bpf/prog_tests/hashmap.c        |  8 ++--
+ .../selftests/bpf/prog_tests/ringbuf.c        |  4 +-
+ .../selftests/bpf/prog_tests/ringbuf_multi.c  |  4 +-
+ .../bpf/prog_tests/sockopt_inherit.c          |  2 +-
+ tools/testing/selftests/bpf/progs/bpf_flow.c  | 10 ++--
+ tools/testing/selftests/bpf/progs/core_kern.c |  4 +-
+ .../selftests/bpf/progs/fexit_bpf2bpf.c       |  8 ++--
+ tools/testing/selftests/bpf/progs/pyperf.h    |  4 +-
+ .../testing/selftests/bpf/progs/skb_pkt_end.c |  4 +-
+ .../selftests/bpf/progs/sockmap_parse_prog.c  |  8 ++--
+ .../bpf/progs/sockmap_verdict_prog.c          |  4 +-
+ .../bpf/progs/test_btf_skc_cls_ingress.c      |  8 ++--
+ .../selftests/bpf/progs/test_check_mtu.c      | 16 +++----
+ .../selftests/bpf/progs/test_cls_redirect.c   |  8 ++--
+ tools/testing/selftests/bpf/progs/test_l4lb.c |  6 +--
+ .../selftests/bpf/progs/test_l4lb_noinline.c  |  6 +--
+ .../selftests/bpf/progs/test_lwt_seg6local.c  | 10 ++--
+ .../bpf/progs/test_migrate_reuseport.c        |  4 +-
+ .../selftests/bpf/progs/test_pkt_access.c     |  8 ++--
+ .../bpf/progs/test_queue_stack_map.h          |  4 +-
+ .../selftests/bpf/progs/test_seg6_loop.c      |  8 ++--
+ .../selftests/bpf/progs/test_sk_assign.c      |  8 ++--
+ .../selftests/bpf/progs/test_sk_lookup_kern.c |  4 +-
+ .../selftests/bpf/progs/test_sockmap_kern.h   | 12 ++---
+ .../selftests/bpf/progs/test_tc_dtime.c       |  2 +-
+ .../testing/selftests/bpf/progs/test_tc_edt.c |  6 +--
+ .../selftests/bpf/progs/test_tc_neigh.c       |  2 +-
+ .../selftests/bpf/progs/test_tc_neigh_fib.c   |  2 +-
+ .../bpf/progs/test_tcp_check_syncookie_kern.c |  8 ++--
+ .../selftests/bpf/progs/test_tunnel_kern.c    | 12 ++---
+ .../selftests/bpf/progs/test_verif_scale1.c   |  4 +-
+ .../selftests/bpf/progs/test_verif_scale2.c   |  4 +-
+ .../selftests/bpf/progs/test_verif_scale3.c   |  4 +-
+ tools/testing/selftests/bpf/progs/test_xdp.c  | 20 ++++----
+ .../bpf/progs/test_xdp_adjust_tail_grow.c     |  4 +-
+ .../bpf/progs/test_xdp_adjust_tail_shrink.c   |  4 +-
+ .../selftests/bpf/progs/test_xdp_bpf2bpf.c    |  4 +-
+ .../bpf/progs/test_xdp_context_test_run.c     |  4 +-
+ .../bpf/progs/test_xdp_devmap_helpers.c       |  4 +-
+ .../bpf/progs/test_xdp_do_redirect.c          | 14 +++---
+ .../selftests/bpf/progs/test_xdp_loop.c       | 20 ++++----
+ .../selftests/bpf/progs/test_xdp_noinline.c   | 28 +++++------
+ .../bpf/progs/test_xdp_update_frags.c         |  4 +-
+ .../selftests/bpf/progs/test_xdp_vlan.c       | 16 +++----
+ .../bpf/progs/test_xdp_with_devmap_helpers.c  |  4 +-
+ .../bpf/progs/xdp_redirect_multi_kern.c       |  8 ++--
+ .../selftests/bpf/progs/xdp_synproxy_kern.c   | 16 +++----
+ .../testing/selftests/bpf/progs/xdping_kern.c | 12 ++---
+ tools/testing/selftests/bpf/progs/xdpwall.c   |  4 +-
+ 77 files changed, 301 insertions(+), 298 deletions(-)
 
-out:
-	mutex_unlock(&direct_mutex);
-	return ret;
+-- 
+2.25.1
 
-
->   8208		mutex_lock(&ftrace_lock);
->   8209	
->   8210		ret = ftrace_startup(ops, 0);
->   8211	
->   8212		mutex_unlock(&ftrace_lock);
->   8213	
-
-Would be possible to handle tr->mutex the same way to avoid
-the trylock? I mean to take it in advance before direct_mutex?
-
-Best Regards,
-Petr
