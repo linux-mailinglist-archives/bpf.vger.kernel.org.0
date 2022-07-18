@@ -2,121 +2,275 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D16577E23
-	for <lists+bpf@lfdr.de>; Mon, 18 Jul 2022 10:58:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D53A9577E70
+	for <lists+bpf@lfdr.de>; Mon, 18 Jul 2022 11:14:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233882AbiGRI6v (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jul 2022 04:58:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33490 "EHLO
+        id S234084AbiGRJOi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jul 2022 05:14:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233820AbiGRI6r (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Jul 2022 04:58:47 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4941EE12
-        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 01:58:44 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id e15so10778446wro.5
-        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 01:58:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=E5qdVtAhGRk9dSRPIpuKvbfIP1OxLhlEWe0abgwTtSA=;
-        b=4nxDEs2aiLrsLpvWR3HrH4FNVSVRUnjBFLcpzM52zETeC5jvrDgxU61orz8kH6U0cQ
-         tGoULePrb1J9FS+z0psoRnbYjXF0cHN1s6Q6/7ckh/Q3iuzXAzYo1zuLZhdyLBEK+DrN
-         H3YNEFnn+YcumstvNVbVZA8bifj7W/DaUUE/MYo+HP72LvPf8Wv6VDUhkFRuDU5fDLOW
-         0LJKbHDOpUDREOY73BbHNmkqou8WMFsMZc/VQYPR6CrZ+RjHnrV97JDv+D46SO1+2Ayb
-         4dEZw++GWyOwx1T7yjNjLoPoMv3mq2YMFT9l+BVk+8aNW0gP2CXZD45Gk4tBY7s2za+e
-         p2Eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=E5qdVtAhGRk9dSRPIpuKvbfIP1OxLhlEWe0abgwTtSA=;
-        b=WTmCCpYJ5lOfd6RuTtuZWHcCy7hh7n44pZ6FsTGylg0w3I+Ct+AMjccDv2j+2qxCec
-         n7IeaEh4NmeUkCLbhSoEuKEsShUeFMhFxcoqD7deELFVMj7Vw0aWR+e/U7Hm1rVDk2QE
-         YxDZQ4XQbh8vYhfsJgofNmF4hzrJvq7fjazVVTdjEBTqTQUOuauz2kGYUUXioXk5n318
-         UF437M/Rn9yngkxObE9KKNtqvTbpnahMnopSgokLyFQ5jvk0LpA9m4t2hL90HnMYZTpM
-         8UghIvhdY4TErYkVzF4oQ4ZTai0HGS7TxBv5wW5jjWvgz1Sl0I7/ASjspjM+9DGcOzFG
-         HXdA==
-X-Gm-Message-State: AJIora/tSTABMQwNUn3fq2+QtW/e/Rxp5oMlY4BzG0g2VU2aqgdZnPse
-        u62oJYGukbABjM7N+U8IFiqa9Q==
-X-Google-Smtp-Source: AGRyM1vc8DxxCp7n8iwjDgenX88lzvKjHTVcXeqNlOd7CHRhQwQPdM0ASkYMRKPA3NBNbLsmA6bhlw==
-X-Received: by 2002:a5d:414b:0:b0:21d:6e93:59c8 with SMTP id c11-20020a5d414b000000b0021d6e9359c8mr22359056wrq.290.1658134723332;
-        Mon, 18 Jul 2022 01:58:43 -0700 (PDT)
-Received: from [192.168.178.32] ([51.155.200.13])
-        by smtp.gmail.com with ESMTPSA id a13-20020a05600c348d00b003a31d200a7dsm1750376wmq.9.2022.07.18.01.58.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Jul 2022 01:58:42 -0700 (PDT)
-Message-ID: <2d2e60d9-f340-4c2d-e123-a858c46fae16@isovalent.com>
-Date:   Mon, 18 Jul 2022 09:58:42 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.0.2
-Subject: Re: [PATCH v2 2/5] tools include: add dis-asm-compat.h to handle
- version differences
-Content-Language: en-GB
-To:     Andres Freund <andres@anarazel.de>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        with ESMTP id S233353AbiGRJOh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Jul 2022 05:14:37 -0400
+Received: from out30-57.freemail.mail.aliyun.com (out30-57.freemail.mail.aliyun.com [115.124.30.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1B92F5B9;
+        Mon, 18 Jul 2022 02:14:34 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R811e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=36;SR=0;TI=SMTPD_---0VJhAxgV_1658135667;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VJhAxgV_1658135667)
+          by smtp.aliyun-inc.com;
+          Mon, 18 Jul 2022 17:14:29 +0800
+Message-ID: <1658135504.1522465-2-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH v11 39/40] virtio_net: support tx queue resize
+Date:   Mon, 18 Jul 2022 17:11:44 +0800
+From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Vadim Pasternak <vadimp@nvidia.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>
-References: <20220622231624.t63bkmkzphqvh3kx@alap3.anarazel.de>
- <20220703212551.1114923-1-andres@anarazel.de>
- <20220703212551.1114923-3-andres@anarazel.de>
- <fc1be6d4-446b-2b34-21cb-5e364742c3a2@isovalent.com>
- <20220715193927.x6xy4h7n5rrh2ndc@awork3.anarazel.de>
-From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <20220715193927.x6xy4h7n5rrh2ndc@awork3.anarazel.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        linux-um@lists.infradead.org, netdev <netdev@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+        kvm <kvm@vger.kernel.org>,
+        "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>,
+        kangjie.xu@linux.alibaba.com,
+        virtualization <virtualization@lists.linux-foundation.org>
+References: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
+ <20220629065656.54420-40-xuanzhuo@linux.alibaba.com>
+ <102d3b83-1ae9-a59a-16ce-251c22b7afb0@redhat.com>
+ <1656986432.1164997-2-xuanzhuo@linux.alibaba.com>
+ <CACGkMEt8MSS=tcn=Hd6WF9+btT0ccocxEd1ighRgK-V1uiWmCQ@mail.gmail.com>
+ <1657873703.9301925-1-xuanzhuo@linux.alibaba.com>
+ <CACGkMEvgjX+67NxwrUym7CnbNFU2-=CbAXPN_UmtvDOTS1LrHA@mail.gmail.com>
+In-Reply-To: <CACGkMEvgjX+67NxwrUym7CnbNFU2-=CbAXPN_UmtvDOTS1LrHA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 15/07/2022 20:39, Andres Freund wrote:
-> Hi,
-> 
-> On 2022-07-05 14:44:07 +0100, Quentin Monnet wrote:
->>> diff --git a/tools/include/tools/dis-asm-compat.h b/tools/include/tools/dis-asm-compat.h
->>> new file mode 100644
->>> index 000000000000..d1d003ee3e2f
->>> --- /dev/null
->>> +++ b/tools/include/tools/dis-asm-compat.h
->>> @@ -0,0 +1,53 @@
->>> +/* SPDX-License-Identifier: GPL-2.0 */
->>
->> Any chance you could contribute this wrapper as dual-licenced
->> (GPL-2.0-only OR BSD-2-Clause), for better compatibility with the rest
->> of bpftool's code?
-> 
-> Happy to do that from my end - however, right now it includes
-> linux/compiler.h, which is GPL-2.0. I don't know what the policy around that
-> is - is it just a statement about the licence of the header itself, or does it
-> effectively include its dependencies?
+On Mon, 18 Jul 2022 16:57:53 +0800, Jason Wang <jasowang@redhat.com> wrote:
+> On Fri, Jul 15, 2022 at 4:32 PM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wr=
+ote:
+> >
+> > On Fri, 8 Jul 2022 14:23:57 +0800, Jason Wang <jasowang@redhat.com> wro=
+te:
+> > > On Tue, Jul 5, 2022 at 10:01 AM Xuan Zhuo <xuanzhuo@linux.alibaba.com=
+> wrote:
+> > > >
+> > > > On Mon, 4 Jul 2022 11:45:52 +0800, Jason Wang <jasowang@redhat.com>=
+ wrote:
+> > > > >
+> > > > > =E5=9C=A8 2022/6/29 14:56, Xuan Zhuo =E5=86=99=E9=81=93:
+> > > > > > This patch implements the resize function of the tx queues.
+> > > > > > Based on this function, it is possible to modify the ring num o=
+f the
+> > > > > > queue.
+> > > > > >
+> > > > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > > > > ---
+> > > > > >   drivers/net/virtio_net.c | 48 +++++++++++++++++++++++++++++++=
++++++++++
+> > > > > >   1 file changed, 48 insertions(+)
+> > > > > >
+> > > > > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> > > > > > index 6ab16fd193e5..fd358462f802 100644
+> > > > > > --- a/drivers/net/virtio_net.c
+> > > > > > +++ b/drivers/net/virtio_net.c
+> > > > > > @@ -135,6 +135,9 @@ struct send_queue {
+> > > > > >     struct virtnet_sq_stats stats;
+> > > > > >
+> > > > > >     struct napi_struct napi;
+> > > > > > +
+> > > > > > +   /* Record whether sq is in reset state. */
+> > > > > > +   bool reset;
+> > > > > >   };
+> > > > > >
+> > > > > >   /* Internal representation of a receive virtqueue */
+> > > > > > @@ -279,6 +282,7 @@ struct padded_vnet_hdr {
+> > > > > >   };
+> > > > > >
+> > > > > >   static void virtnet_rq_free_unused_buf(struct virtqueue *vq, =
+void *buf);
+> > > > > > +static void virtnet_sq_free_unused_buf(struct virtqueue *vq, v=
+oid *buf);
+> > > > > >
+> > > > > >   static bool is_xdp_frame(void *ptr)
+> > > > > >   {
+> > > > > > @@ -1603,6 +1607,11 @@ static void virtnet_poll_cleantx(struct =
+receive_queue *rq)
+> > > > > >             return;
+> > > > > >
+> > > > > >     if (__netif_tx_trylock(txq)) {
+> > > > > > +           if (READ_ONCE(sq->reset)) {
+> > > > > > +                   __netif_tx_unlock(txq);
+> > > > > > +                   return;
+> > > > > > +           }
+> > > > > > +
+> > > > > >             do {
+> > > > > >                     virtqueue_disable_cb(sq->vq);
+> > > > > >                     free_old_xmit_skbs(sq, true);
+> > > > > > @@ -1868,6 +1877,45 @@ static int virtnet_rx_resize(struct virt=
+net_info *vi,
+> > > > > >     return err;
+> > > > > >   }
+> > > > > >
+> > > > > > +static int virtnet_tx_resize(struct virtnet_info *vi,
+> > > > > > +                        struct send_queue *sq, u32 ring_num)
+> > > > > > +{
+> > > > > > +   struct netdev_queue *txq;
+> > > > > > +   int err, qindex;
+> > > > > > +
+> > > > > > +   qindex =3D sq - vi->sq;
+> > > > > > +
+> > > > > > +   virtnet_napi_tx_disable(&sq->napi);
+> > > > > > +
+> > > > > > +   txq =3D netdev_get_tx_queue(vi->dev, qindex);
+> > > > > > +
+> > > > > > +   /* 1. wait all ximt complete
+> > > > > > +    * 2. fix the race of netif_stop_subqueue() vs netif_start_=
+subqueue()
+> > > > > > +    */
+> > > > > > +   __netif_tx_lock_bh(txq);
+> > > > > > +
+> > > > > > +   /* Prevent rx poll from accessing sq. */
+> > > > > > +   WRITE_ONCE(sq->reset, true);
+> > > > >
+> > > > >
+> > > > > Can we simply disable RX NAPI here?
+> > > >
+> > > > Disable rx napi is indeed a simple solution. But I hope that when d=
+ealing with
+> > > > tx, it will not affect rx.
+> > >
+> > > Ok, but I think we've already synchronized with tx lock here, isn't i=
+t?
+> >
+> > Yes, do you have any questions about WRITE_ONCE()? There is a set false=
+ operation
+> > later, I did not use lock there, so I used WRITE/READ_ONCE
+> > uniformly.
+>
+> I mean, since we've already used tx locks somewhere, we'd better use
+> them here as well at least as a start.
 
-My understanding is that programs using a GPL header need to be released
-as GPL, but I don't believe they have to be only GPL, the dual-license
-should cover the requirements. If someone wanted to redistribute the
-code from the new header dis-asm-compat.h as BSD only, they would
-probably have to get rid of the GPL-only dependencies though. But again,
-this is only my understanding, and “I am not a lawyer”.
 
-> 
-> FWIW, linux/compiler.h is also included from bpftool.
-> 
-> If preferrable, I can replace the linux/compiler.h include by just using
-> __attribute__((__unused__)) directly or by using a (void) cast to avoid the
-> unused-parameter pedantry.
+OK. next version will fix.
 
-If compiler.h is just needed for the “unused” attribute, I wouldn't mind
-doing that.
+Thanks.
 
-Thanks,
-Quentin
++static int virtnet_tx_resize(struct virtnet_info *vi,
++			     struct send_queue *sq, u32 ring_num)
++{
++	struct netdev_queue *txq;
++	int err, qindex;
++
++	qindex =3D sq - vi->sq;
++
++	virtnet_napi_tx_disable(&sq->napi);
++
++	txq =3D netdev_get_tx_queue(vi->dev, qindex);
++
++	/* 1. wait all ximt complete
++	 * 2. fix the race of netif_stop_subqueue() vs netif_start_subqueue()
++	 */
++	__netif_tx_lock_bh(txq);
++
++	sq->reset =3D true;
++
++	/* Prevent the upper layer from trying to send packets. */
++	netif_stop_subqueue(vi->dev, qindex);
++
++	__netif_tx_unlock_bh(txq);
++
++	err =3D virtqueue_resize(sq->vq, ring_num, virtnet_sq_free_unused_buf);
++	if (err)
++		netdev_err(vi->dev, "resize tx fail: tx queue index: %d err: %d\n", qind=
+ex, err);
++
++	__netif_tx_lock_bh(txq);
++	sq->reset =3D false;
++	netif_tx_wake_queue(txq);
++	__netif_tx_unlock_bh(txq);
++
++	virtnet_napi_tx_enable(vi, sq->vq, &sq->napi);
++	return err;
++}
+
+
+>
+> Thanks
+>
+> >
+> > Thanks.
+> >
+> > >
+> > > Thanks
+> > >
+> > > >
+> > > > Thanks.
+> > > >
+> > > >
+> > > > >
+> > > > > Thanks
+> > > > >
+> > > > >
+> > > > > > +
+> > > > > > +   /* Prevent the upper layer from trying to send packets. */
+> > > > > > +   netif_stop_subqueue(vi->dev, qindex);
+> > > > > > +
+> > > > > > +   __netif_tx_unlock_bh(txq);
+> > > > > > +
+> > > > > > +   err =3D virtqueue_resize(sq->vq, ring_num, virtnet_sq_free_=
+unused_buf);
+> > > > > > +   if (err)
+> > > > > > +           netdev_err(vi->dev, "resize tx fail: tx queue index=
+: %d err: %d\n", qindex, err);
+> > > > > > +
+> > > > > > +   /* Memory barrier before set reset and start subqueue. */
+> > > > > > +   smp_mb();
+> > > > > > +
+> > > > > > +   WRITE_ONCE(sq->reset, false);
+> > > > > > +   netif_tx_wake_queue(txq);
+> > > > > > +
+> > > > > > +   virtnet_napi_tx_enable(vi, sq->vq, &sq->napi);
+> > > > > > +   return err;
+> > > > > > +}
+> > > > > > +
+> > > > > >   /*
+> > > > > >    * Send command via the control virtqueue and check status.  =
+Commands
+> > > > > >    * supported by the hypervisor, as indicated by feature bits,=
+ should
+> > > > >
+> > > >
+> > >
+> >
+>
