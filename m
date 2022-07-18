@@ -2,190 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF93B5781CA
-	for <lists+bpf@lfdr.de>; Mon, 18 Jul 2022 14:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4CA7578220
+	for <lists+bpf@lfdr.de>; Mon, 18 Jul 2022 14:22:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234831AbiGRMMX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jul 2022 08:12:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60284 "EHLO
+        id S234171AbiGRMWG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jul 2022 08:22:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234874AbiGRMMR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Jul 2022 08:12:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3012124BFE
-        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 05:12:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1658146332;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wAYQQbHQO7oQPzR7CI+0jC3+vkqv9xnoYvkFQj8b6Lw=;
-        b=jHQ/TfYu8gFD7tuIi3oA4kpY2GXUs+ecSopvoz8G94i3I8ZXKuu+LjkxtH4zjWdV0u1bCT
-        shs1FEcNjkolpsWiJPub6JLi7HdeZcVQ6K60QjspJxuM657P5UnfH7pHX5cNdc3kr8L6uB
-        e8KmOUbDeBofPcZLvNR2N9CyP2+8ctQ=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-57-rdOCFalfPc68J43sy7grdg-1; Mon, 18 Jul 2022 08:12:10 -0400
-X-MC-Unique: rdOCFalfPc68J43sy7grdg-1
-Received: by mail-ej1-f71.google.com with SMTP id jg29-20020a170907971d00b0072b5acf30e7so2215012ejc.8
-        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 05:12:10 -0700 (PDT)
+        with ESMTP id S233533AbiGRMWF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Jul 2022 08:22:05 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F69A24F1A
+        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 05:22:03 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id n185so7005973wmn.4
+        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 05:22:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nS8BrUJlcx3O0As5RCswdI/Y0VaO9P6aCOLOUYcd/Lk=;
+        b=QpN8Q09BBY5ivZKeE7bdhbJ0fOmepyuOm6jmBC6iOthuOqa2Ki+1yPY9qDPv7sapsZ
+         VELrkXzvprg2yAPGOIToN5pkZ+iL57cYILuFCi9Au0U1mzw0nbH6XqJVNLwvUcgbuqng
+         /aQqV0QmmWeiA0Q4qtpECrpvLkTnE1cLd88UTY0Zn2Q620JsUgv4LXwhzpG1xmCajUoT
+         IIc24R1I+Nsv8LyJ2tVnFpFOciDaN7SkgWMuev44l+PSV0/qjHxd2zkLnkWIdjVCPS/O
+         ckgGJK/H4TgdOSpeAnFFG2GsxzKBDJebaj6HMq4Ri44rpcpgIcWR3HX833wp3LBy9dIS
+         gaiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=wAYQQbHQO7oQPzR7CI+0jC3+vkqv9xnoYvkFQj8b6Lw=;
-        b=xQZNzoQqlwcNEYJc8kJ6oe7Uuxw6tmV425SEkDFPcGvgq7s/L+WcV4pjr7JI65jOh4
-         GWZXpe2hfeB49ryaMJ4XXOp5V02aOyfsWKQuxsacwDOXx2PXihHAdLu7ZllEsRRgJrVl
-         TrnqzgjWwjfBI9fgtJb/MtlmwYRKQ+Ujmnz8Z8CKFR9rX6wYt2jLc1dg0YvQhBdD5rRb
-         oQGmzbUdn78wdSk5VYk27bH67skoslhP9+tSlYb6i/OmxVEPsWABDAbJ+kQDltoo7zgw
-         xV5ASRntyQSBPhWk9Ofzb9GjWHEsmS+bMwQNJBHqiaMZV2OUEDre9U0FM4oDkuVAGbOh
-         DbGQ==
-X-Gm-Message-State: AJIora/4F3i3V7fRLt2wAL/jF5O3dj91K/SxYclYkF/Rz0GXFbGZfqem
-        5YgRmGoiIF5Yc5EHuPhUJhLxqXNpJl49NWZnP7gdzY/Zq+JivbdNE9NVFEzxAO/t5LA56QdoSHI
-        VZn4EQt0hPjOM
-X-Received: by 2002:a05:6402:414b:b0:43b:6b1a:c230 with SMTP id x11-20020a056402414b00b0043b6b1ac230mr3953386eda.42.1658146328780;
-        Mon, 18 Jul 2022 05:12:08 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1s/MYdSKQdNwxXX7yoBKWYXaN6D6LMs9kxszmnpEGxo8SlLPXw6hvv+oH3o0kqPWH1weCseMQ==
-X-Received: by 2002:a05:6402:414b:b0:43b:6b1a:c230 with SMTP id x11-20020a056402414b00b0043b6b1ac230mr3953254eda.42.1658146327654;
-        Mon, 18 Jul 2022 05:12:07 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id d2-20020a056402000200b0043a61f6c389sm8539895edu.4.2022.07.18.05.12.06
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nS8BrUJlcx3O0As5RCswdI/Y0VaO9P6aCOLOUYcd/Lk=;
+        b=Pgqi+e91D7rq6qeQvGQ+LbNujVAMi/uxoOrnrdthsAODWPZ2QAANSo8ZUFTrjiDC6B
+         LzLLnvZQUb5wiTlza8f0L8YeUUXJsa7IfySlxlYfUp0iJLac8wrGrlaEQaxy8Psw7gnM
+         yt0pZ0LSNc/vOgQdOlMpZhKaiiylhluFAQWjHTCnbbn925TPnpsK6+Sym9xHdZIQG2CI
+         s5ZPklZWn7P+3wVum3MZknfhN+BHvrfC1BLgBZIxz2QvaY1qLNNfy6kgrZcFeenVdUEp
+         6WTVZf7TI3PmDCikwJFKoBbWnNdET8vvOHLFAJ/MOJTOBBwUg4AIGsSCrlfthJbRdWr1
+         VVNg==
+X-Gm-Message-State: AJIora8zduCULI3mNu9fOkAU/VtDf6ewY902kjIXQ/Xv9amMw2uAL1yk
+        Xa+IMpx0RhWPiaPS2Wbzexg5
+X-Google-Smtp-Source: AGRyM1sDn3Z6YN+O+7XYWRrScGZPCdNJdJ/7p4OtJHde5Kyq2TqBMDNAq2WMsssLlctuFwKHgazjuA==
+X-Received: by 2002:a05:600c:1e83:b0:3a2:f96b:6c48 with SMTP id be3-20020a05600c1e8300b003a2f96b6c48mr25993563wmb.198.1658146921600;
+        Mon, 18 Jul 2022 05:22:01 -0700 (PDT)
+Received: from Mem (2a01cb088160fc006422ad4f4c265774.ipv6.abo.wanadoo.fr. [2a01:cb08:8160:fc00:6422:ad4f:4c26:5774])
+        by smtp.gmail.com with ESMTPSA id q17-20020a5d6591000000b0021b829d111csm10541025wru.112.2022.07.18.05.22.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jul 2022 05:12:06 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 7A4464D9EE6; Mon, 18 Jul 2022 14:12:05 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     Stanislav Fomichev <sdf@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        Mon, 18 Jul 2022 05:22:01 -0700 (PDT)
+Date:   Mon, 18 Jul 2022 14:21:59 +0200
+From:   Paul Chaignon <paul@isovalent.com>
+To:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Freysteinn Alfredsson <freysteinn.alfredsson@kau.se>
-Subject: Re: [RFC PATCH 00/17] xdp: Add packet queueing and scheduling
- capabilities
-In-Reply-To: <YtRSOaCtujBfzHUS@pop-os.localdomain>
-References: <20220713111430.134810-1-toke@redhat.com>
- <CAKH8qBtdnku7StcQ-SamadvAF==DRuLLZO94yOR1WJ9Bg=uX1w@mail.gmail.com>
- <877d4gpto8.fsf@toke.dk> <YtRSOaCtujBfzHUS@pop-os.localdomain>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 18 Jul 2022 14:12:05 +0200
-Message-ID: <87y1wqliwa.fsf@toke.dk>
+        Kaixi Fan <fankaixi.li@bytedance.com>,
+        Nikolay Aleksandrov <razor@blackwall.org>
+Subject: Re: [PATCH bpf 4/5] bpf: Set flow flag to allow any source IP in
+ bpf_tunnel_key
+Message-ID: <20220718122159.GA23451@Mem>
+References: <cover.1657895526.git.paul@isovalent.com>
+ <627e34e78283b84c79db8945b05930b70eeaa925.1657895526.git.paul@isovalent.com>
+ <fe77bef0-bbfa-261d-6419-548160c986e5@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fe77bef0-bbfa-261d-6419-548160c986e5@fb.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Cong Wang <xiyou.wangcong@gmail.com> writes:
+On Fri, Jul 15, 2022 at 11:21:08AM -0700, Yonghong Song wrote:
+> On 7/15/22 8:02 AM, Paul Chaignon wrote:
+> > Commit 26101f5ab6bd ("bpf: Add source ip in "struct bpf_tunnel_key"")
+> > added support for getting and setting the outer source IP of encapsulated
+> > packets via the bpf_skb_{get,set}_tunnel_key BPF helper. This change
+> > allows BPF programs to set any IP address as the source, including for
+> > example the IP address of a container running on the same host.
+> > 
+> > In that last case, however, the encapsulated packets are dropped when
+> > looking up the route because the source IP address isn't assigned to any
+> > interface on the host. To avoid this, we need to set the
+> > FLOWI_FLAG_ANYSRC flag.
+> > 
+> > Fixes: 26101f5ab6bd ("bpf: Add source ip in "struct bpf_tunnel_key"")
+> > Signed-off-by: Paul Chaignon <paul@isovalent.com>
+> > ---
+> >   net/core/filter.c | 1 +
+> >   1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> > index 5d16d66727fc..6d9c800cdab9 100644
+> > --- a/net/core/filter.c
+> > +++ b/net/core/filter.c
+> > @@ -4641,6 +4641,7 @@ BPF_CALL_4(bpf_skb_set_tunnel_key, struct sk_buff *, skb,
+> >   	info->key.tun_id = cpu_to_be64(from->tunnel_id);
+> >   	info->key.tos = from->tunnel_tos;
+> >   	info->key.ttl = from->tunnel_ttl;
+> > +	info->key.flow_flags = FLOWI_FLAG_ANYSRC;
+> 
+> Can we set FLOWI_FLAG_ANYSRC in all conditions?
+> In lwt_bpf.c, func bpf_lwt_xmit_reroute(), FLOWI_FLAG_ANYSRC
+> is set for ipv4 but not for ipv6. I am wondering whether
+> FLOWI_FLAG_ANYSRC needs to be set for ipv6 packet or not
+> in bpf_skb_set_tunnel_key().
 
-> On Wed, Jul 13, 2022 at 11:52:07PM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
->> Stanislav Fomichev <sdf@google.com> writes:
->>=20
->> > On Wed, Jul 13, 2022 at 4:14 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke=
-@redhat.com> wrote:
->> >>
->> >> Packet forwarding is an important use case for XDP, which offers
->> >> significant performance improvements compared to forwarding using the
->> >> regular networking stack. However, XDP currently offers no mechanism =
-to
->> >> delay, queue or schedule packets, which limits the practical uses for
->> >> XDP-based forwarding to those where the capacity of input and output =
-links
->> >> always match each other (i.e., no rate transitions or many-to-one
->> >> forwarding). It also prevents an XDP-based router from doing any kind=
- of
->> >> traffic shaping or reordering to enforce policy.
->> >>
->> >> This series represents a first RFC of our attempt to remedy this lack=
-. The
->> >> code in these patches is functional, but needs additional testing and
->> >> polishing before being considered for merging. I'm posting it here as=
- an
->> >> RFC to get some early feedback on the API and overall design of the
->> >> feature.
->> >>
->> >> DESIGN
->> >>
->> >> The design consists of three components: A new map type for storing X=
-DP
->> >> frames, a new 'dequeue' program type that will run in the TX softirq =
-to
->> >> provide the stack with packets to transmit, and a set of helpers to d=
-equeue
->> >> packets from the map, optionally drop them, and to schedule an interf=
-ace
->> >> for transmission.
->> >>
->> >> The new map type is modelled on the PIFO data structure proposed in t=
-he
->> >> literature[0][1]. It represents a priority queue where packets can be
->> >> enqueued in any priority, but is always dequeued from the head. From =
-the
->> >> XDP side, the map is simply used as a target for the bpf_redirect_map=
-()
->> >> helper, where the target index is the desired priority.
->> >
->> > I have the same question I asked on the series from Cong:
->> > Any considerations for existing carousel/edt-like models?
->>=20
->> Well, the reason for the addition in patch 5 (continuously increasing
->> priorities) is exactly to be able to implement EDT-like behaviour, where
->> the priority is used as time units to clock out packets.
->
-> Are you sure? I seriouly doubt your patch can do this at all...
->
-> Since your patch relies on bpf_map_push_elem(), which has no room for
-> 'key' hence you reuse 'flags' but you also reserve 4 bits there... How
-> could tstamp be packed with 4 reserved bits??
+That's a good point; I didn't know about bpf_lwt_xmit_reroute. I set the
+flag for IPv6 as the same check seemed to exist, but didn't test it.
+I'll check if it's actually needed.
 
-Well, my point was that the *data structure* itself supports 64-bit
-priorities, and that's what we use from bpf_map_redirect() in XDP. The
-choice of reserving four bits was a bit of an arbitrary choice on my
-part. I actually figured 60 bits would be plenty to represent timestamps
-in themselves, but I guess I miscalculated a bit for nanosecond
-timestamps (60 bits only gets you 36 years of range there).
-
-We could lower that to 2 reserved bits, which gets you a range of 146
-years using 62 bits; or users could just right-shift the value by a
-couple of bits before putting them in the map (scheduling with
-single-nanosecond precision is not possible anyway, so losing a few bits
-of precision is no big deal); or we could add a new helper instead of
-reusing the existing one.
-
-> Actually, if we look into the in-kernel EDT implementation
-> (net/sched/sch_etf.c), it is also based on rbtree rather than PIFO.
-
-The main reason I eschewed the existing rbtree code is that I don't
-believe it's sufficiently performant, mainly due to the rebalancing.
-This is a hunch, though, and as I mentioned in a different reply I'm
-planning to go back and revisit the data structure, including
-benchmarking different implementations against each other.
-
--Toke
-
+> 
+> >   	if (flags & BPF_F_TUNINFO_IPV6) {
+> >   		info->mode |= IP_TUNNEL_INFO_IPV6;
