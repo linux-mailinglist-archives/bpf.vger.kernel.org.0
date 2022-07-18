@@ -2,34 +2,34 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 995B0578CBC
-	for <lists+bpf@lfdr.de>; Mon, 18 Jul 2022 23:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EC4A578CCB
+	for <lists+bpf@lfdr.de>; Mon, 18 Jul 2022 23:34:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234784AbiGRVbQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jul 2022 17:31:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53262 "EHLO
+        id S235462AbiGRVey (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jul 2022 17:34:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232002AbiGRVbP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Jul 2022 17:31:15 -0400
+        with ESMTP id S235533AbiGRVes (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Jul 2022 17:34:48 -0400
 Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2D4E29CA5;
-        Mon, 18 Jul 2022 14:31:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B04629816;
+        Mon, 18 Jul 2022 14:34:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Vc3qso9ymLtA66nsgaSk3Fy1snAD6uHt7i9HTlSHNiE=; b=EkBE3hq6xruIeTN5pEWtycoPia
-        nTHhukDaToLTtOiyz5ifrYaL/pk2PEsOqtxeu/aJZ2V2cSPXMTmolnSS8WPs5A2KV5yTVPnrrZ1EN
-        vOw0TUxhvDeRjpE1mx/2K3fMGW84q5XAjOK5+M7rdK7bROK809nD43PZ3epjvCcNnwPTVXcvbsDu8
-        u1S71EsomcWjaM9RrRzbyUezQioixsfbADKuWHNK1IwJGl3YizTAxUeifKpU6slDevnkbBMuu5SHS
-        RQ6jCJo4M1vU85mqk4SFqv/uBiBRg8NE95nkeb0lHBIjEFKa1XB5sqocejkiCQ5PzK8hi8vOtZxSi
-        PBFnLfzQ==;
+        bh=4kJIbH62hRR2GU6oL7niOpMGvgJbkAuiAh8TauODeGM=; b=K9gd2aVQ80EFQckNHQ6cK380ZK
+        HVgrEGAtEYMwNDZLuKmmQevAkIDX/Rq1tSG0sLKaWBx7R9CDlGFTrC8APy1nIgyjXqaVFhWJtcVoH
+        6yNsLCNGec2r3gXm/c96Py1bHyc31J+alclZLvDbvGMZOIHp/5dOuaI3WVWP2F/aGih0poylZ07aS
+        Nzd+bQ7i+rIXOf7cATAI8KFiWUr59wvMA0RfUXCITXgpygi1ngP55PglzHDfN/17HiNwChIFz3w5r
+        5DXTj4z7OJuhu2uXxWsdvCVMCNu8MBj2/bTERB/1QqMCaS7vQjsJBG8n759a5rH45OzOSkqX0UrRr
+        K9L0Iu0Q==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=worktop.programming.kicks-ass.net)
         by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oDYJz-004uBp-SO; Mon, 18 Jul 2022 21:30:32 +0000
+        id 1oDYNV-004uET-Nz; Mon, 18 Jul 2022 21:34:10 +0000
 Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 783B49802A7; Mon, 18 Jul 2022 23:30:31 +0200 (CEST)
-Date:   Mon, 18 Jul 2022 23:30:31 +0200
+        id DBCF39802A7; Mon, 18 Jul 2022 23:34:08 +0200 (CEST)
+Date:   Mon, 18 Jul 2022 23:34:08 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     Yury Norov <yury.norov@gmail.com>
 Cc:     linux-kernel@vger.kernel.org,
@@ -72,15 +72,14 @@ Cc:     linux-kernel@vger.kernel.org,
         Vincent Guittot <vincent.guittot@linaro.org>,
         Vlastimil Babka <vbabka@suse.cz>, Yonghong Song <yhs@fb.com>,
         linux-mm@kvack.org, netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH 09/16] irq: don't copy cpu affinity mask if source is
- equal to destination
-Message-ID: <YtXQ96UAA4GINTNU@worktop.programming.kicks-ass.net>
+Subject: Re: [PATCH 10/16] sched: optimize __set_cpus_allowed_ptr_locked()
+Message-ID: <YtXR0D07MwoKN1ii@worktop.programming.kicks-ass.net>
 References: <20220718192844.1805158-1-yury.norov@gmail.com>
- <20220718192844.1805158-10-yury.norov@gmail.com>
+ <20220718192844.1805158-11-yury.norov@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220718192844.1805158-10-yury.norov@gmail.com>
+In-Reply-To: <20220718192844.1805158-11-yury.norov@gmail.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
@@ -90,29 +89,28 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 18, 2022 at 12:28:37PM -0700, Yury Norov wrote:
-
->  kernel/irq/manage.c | 3 ++-
+On Mon, Jul 18, 2022 at 12:28:38PM -0700, Yury Norov wrote:
+> ---
+>  kernel/sched/core.c | 3 ++-
 >  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-> index 8c396319d5ac..f9c1b21584ec 100644
-> --- a/kernel/irq/manage.c
-> +++ b/kernel/irq/manage.c
-> @@ -284,7 +284,8 @@ int irq_do_set_affinity(struct irq_data *data, const struct cpumask *mask,
->  	switch (ret) {
->  	case IRQ_SET_MASK_OK:
->  	case IRQ_SET_MASK_OK_DONE:
-> -		cpumask_copy(desc->irq_common_data.affinity, mask);
-> +		if (desc->irq_common_data.affinity != mask)
-> +			cpumask_copy(desc->irq_common_data.affinity, mask);
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index da0bf6fe9ecd..d6424336ef2d 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -2874,7 +2874,8 @@ static int __set_cpus_allowed_ptr_locked(struct task_struct *p,
+>  		cpu_valid_mask = cpu_online_mask;
+>  	}
+>  
+> -	if (!kthread && !cpumask_subset(new_mask, cpu_allowed_mask)) {
+> +	if (!kthread && new_mask != cpu_allowed_mask &&
+> +			!cpumask_subset(new_mask, cpu_allowed_mask)) {
 
-Seems like mostly pointless logic at this point. This is not a
-performance senstive operation afaik.
+Optimize cpumask_subset() for src1p == src2p instead?
 
->  		fallthrough;
->  	case IRQ_SET_MASK_OK_NOCOPY:
->  		irq_validate_effective_affinity(data);
+>  		ret = -EINVAL;
+>  		goto out;
+>  	}
 > -- 
 > 2.34.1
 > 
