@@ -2,181 +2,198 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9C775782AF
-	for <lists+bpf@lfdr.de>; Mon, 18 Jul 2022 14:48:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A8B5782BB
+	for <lists+bpf@lfdr.de>; Mon, 18 Jul 2022 14:50:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233921AbiGRMsx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jul 2022 08:48:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39416 "EHLO
+        id S234435AbiGRMum (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jul 2022 08:50:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230193AbiGRMsx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Jul 2022 08:48:53 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A13CE274;
-        Mon, 18 Jul 2022 05:48:51 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id bp15so21020462ejb.6;
-        Mon, 18 Jul 2022 05:48:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TeGVCUHeLxV7GRevtfvM+qomfGbRC+tXZ9uiMLV6+TY=;
-        b=njIbtwRABHwo1EuVlDmBZl5/FfMEVieI0PWSxOowMr14u+vgbwUdzACh1FX0Z5QT3I
-         NwlS4Wvt3WPDSo5+c90fkGtVn4fxYFvOoTGGw7mIVewnJvOZndlPGb6yUx/4qwDBmtvc
-         FflvOm+utwIey+OP2PLkl90+gv4M/nievVIhkYfVNQFfwaQyG+ATBsmOxPtfGqshXRe+
-         Ass+P5pjmix/lZf0A7RnNHFyVYPGm+al2LZKZfcAr6BwogORogjpVRjte0NdvjBtWl2G
-         bqcvCu+jgtOnXnl2kj5HFnBiJqhWYE2CvQZFeXqB6JK0b3wy7p8xYDAdR7tWHL6HVKye
-         7/GQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TeGVCUHeLxV7GRevtfvM+qomfGbRC+tXZ9uiMLV6+TY=;
-        b=bXZMlvS+5eGxJT2F4qa1YzdJupP/UCfTesTNW9qyHh6MSPmXCsKhLqr1QkY6Q4Lz7r
-         2r72wslnO80P68pCbZWV4zcCePp+eS7mBuKy/sBn7JlPcHlSpzb0YOt1bV8LZE67SwPd
-         aNq2mopT9NxFkdT9CNTelG2OjlqeEC60fweLs5iIMH5yXH0GPATGJObqbPRBnQX/UGVE
-         xQLsLiFqf4UT97Emw9qEONGlK6YzJHrrfZutFGL4w67RfyWHgEkvgkadHnwiXSzBMjM0
-         OaJZsCc7uDbAUDRgq+hOm/GHJRqZZEcOtCXdXYIknCDRYPHbElgw14SQHL7yw4wYr5BD
-         dyug==
-X-Gm-Message-State: AJIora8dtXLQ3/fwdkujGFIlsYqTRpLTWF0zR6H9bx8UlPRT0p5OWwgT
-        W/PtbRESJmK9BFbA0qyrPkc=
-X-Google-Smtp-Source: AGRyM1v5W3XVAP+3An41B0subOY/ynUHBsIavZ/hmJ7cpd6pECSZfwhJE5T7jKBSQ6hbg4w6JUffTg==
-X-Received: by 2002:a17:906:4785:b0:72e:dd6c:1ba1 with SMTP id cw5-20020a170906478500b0072edd6c1ba1mr20369468ejc.712.1658148529973;
-        Mon, 18 Jul 2022 05:48:49 -0700 (PDT)
-Received: from krava ([193.85.244.190])
-        by smtp.gmail.com with ESMTPSA id t18-20020a1709067c1200b006febce7081bsm5436352ejo.163.2022.07.18.05.48.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jul 2022 05:48:48 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Mon, 18 Jul 2022 14:48:46 +0200
-To:     Martynas Pumputis <m@lambda.lt>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Yutaro Hayakawa <yutaro.hayakawa@isovalent.com>
-Subject: Re: [PATCH RFC bpf-next 4/4] selftests/bpf: Fix kprobe get_func_ip
- tests for CONFIG_X86_KERNEL_IBT
-Message-ID: <YtVWruugC9LHtah2@krava>
-References: <20220705190308.1063813-1-jolsa@kernel.org>
- <20220705190308.1063813-5-jolsa@kernel.org>
- <CAEf4BzapX_C16O9woDSXOpbzVsxjYudXW36woRCqU3u75uYiFA@mail.gmail.com>
- <YsdbQ4vJheLWOa0a@krava>
- <YtSCbIA+6JtRF/Ch@krava>
- <f6b5dc36-3dbb-433d-01d2-aad8959d0546@lambda.lt>
+        with ESMTP id S233493AbiGRMum (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Jul 2022 08:50:42 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 719DD6397;
+        Mon, 18 Jul 2022 05:50:40 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 1F56033BE8;
+        Mon, 18 Jul 2022 12:50:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1658148639; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9QeNU7i1Z8jOANG2Muly2d9TTzEZo5jKEBQhnd4Wbho=;
+        b=aXCE0L5kmo7kN4TNty5IXSebf6+/gMTsHbMU8UHhLiD5s6Q/GymEAj8WT2fCYooe+u+H3E
+        8nzTlsJbn7jQhxaPDdbi1pWLoddkmSVa0BJt6HMf381Wq3CsFTB4fA5yx7Pe5rFABuYmRx
+        s4bd2JA1tX19hRCZ+8nHXLxtMpYt9yQ=
+Received: from suse.cz (unknown [10.100.201.202])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id BD6AD2C141;
+        Mon, 18 Jul 2022 12:50:38 +0000 (UTC)
+Date:   Mon, 18 Jul 2022 14:50:36 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Song Liu <song@kernel.org>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        live-patching@vger.kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com, jolsa@kernel.org, rostedt@goodmis.org
+Subject: Re: [PATCH v3 bpf-next 1/4] ftrace: add
+ modify_ftrace_direct_multi_nolock
+Message-ID: <YtVXHDfV8HDwAm6G@alley>
+References: <20220718001405.2236811-1-song@kernel.org>
+ <20220718001405.2236811-2-song@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f6b5dc36-3dbb-433d-01d2-aad8959d0546@lambda.lt>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20220718001405.2236811-2-song@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 18, 2022 at 02:09:54PM +0300, Martynas Pumputis wrote:
+On Sun 2022-07-17 17:14:02, Song Liu wrote:
+> This is similar to modify_ftrace_direct_multi, but does not acquire
+> direct_mutex. This is useful when direct_mutex is already locked by the
+> user.
 > 
-> 
-> On 7/18/22 00:43, Jiri Olsa wrote:
-> > On Fri, Jul 08, 2022 at 12:16:35AM +0200, Jiri Olsa wrote:
-> > > On Tue, Jul 05, 2022 at 10:29:17PM -0700, Andrii Nakryiko wrote:
-> > > > On Tue, Jul 5, 2022 at 12:04 PM Jiri Olsa <jolsa@kernel.org> wrote:
-> > > > > 
-> > > > > The kprobe can be placed anywhere and user must be aware
-> > > > > of the underlying instructions. Therefore fixing just
-> > > > > the bpf program to 'fix' the address to match the actual
-> > > > > function address when CONFIG_X86_KERNEL_IBT is enabled.
-> > > > > 
-> > > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > > > ---
-> > > > >   tools/testing/selftests/bpf/progs/get_func_ip_test.c | 7 +++++--
-> > > > >   1 file changed, 5 insertions(+), 2 deletions(-)
-> > > > > 
-> > > > > diff --git a/tools/testing/selftests/bpf/progs/get_func_ip_test.c b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-> > > > > index a587aeca5ae0..220d56b7c1dc 100644
-> > > > > --- a/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-> > > > > +++ b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-> > > > > @@ -2,6 +2,7 @@
-> > > > >   #include <linux/bpf.h>
-> > > > >   #include <bpf/bpf_helpers.h>
-> > > > >   #include <bpf/bpf_tracing.h>
-> > > > > +#include <stdbool.h>
-> > > > > 
-> > > > >   char _license[] SEC("license") = "GPL";
-> > > > > 
-> > > > > @@ -13,6 +14,8 @@ extern const void bpf_modify_return_test __ksym;
-> > > > >   extern const void bpf_fentry_test6 __ksym;
-> > > > >   extern const void bpf_fentry_test7 __ksym;
-> > > > > 
-> > > > > +extern bool CONFIG_X86_KERNEL_IBT __kconfig __weak;
-> > > > > +
-> > > > >   __u64 test1_result = 0;
-> > > > >   SEC("fentry/bpf_fentry_test1")
-> > > > >   int BPF_PROG(test1, int a)
-> > > > > @@ -37,7 +40,7 @@ __u64 test3_result = 0;
-> > > > >   SEC("kprobe/bpf_fentry_test3")
-> > > > >   int test3(struct pt_regs *ctx)
-> > > > >   {
-> > > > > -       __u64 addr = bpf_get_func_ip(ctx);
-> > > > > +       __u64 addr = bpf_get_func_ip(ctx) - (CONFIG_X86_KERNEL_IBT ? 4 : 0);
-> > > > 
-> > > > so for kprobe bpf_get_func_ip() gets an address with 5 byte
-> > > > compensation for `call __fentry__`, but not for endr? Why can't we
-> > > > compensate for endbr inside the kernel code as well? I'd imagine we
-> > > > either do no compensation (and thus we get &bpf_fentry_test3+5 or
-> > > > &bpf_fentry_test3+9, depending on CONFIG_X86_KERNEL_IBT) or full
-> > > > compensation (and thus always get &bpf_fentry_test3), but this
-> > > > in-between solution seems to be the worst of both worlds?...
-> > > 
-> > > hm rigth, I guess we should be able to do that in bpf_get_func_ip,
-> > > I'll check
-> > 
-> > sorry for late follow up..
-> > 
-> > so the problem is that you can place kprobe anywhere in the function
-> > (on instruction boundary) but the IBT adjustment of kprobe address is
-> > made only if it's at the function entry and there's endbr instruction
-> 
-> To add more fun to the issue, not all non-inlined functions get endbr64. For
-> example "skb_release_head_state()" does, while "skb_free_head()" doesn't.
+> --- a/kernel/trace/ftrace.c
+> +++ b/kernel/trace/ftrace.c
+> @@ -5691,22 +5691,8 @@ int unregister_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
+> @@ -5717,12 +5703,8 @@ int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
+>  	int i, size;
+>  	int err;
+>  
+> -	if (check_direct_multi(ops))
+> +	if (WARN_ON_ONCE(!mutex_is_locked(&direct_mutex)))
+>  		return -EINVAL;
 
-ah great.. thanks for info, will check
+IMHO, it is better to use:
 
-jirka
+	lockdep_assert_held_once(&direct_mutex);
 
-> 
-> > 
-> > and that kprobe address is what we return in helper:
-> > 
-> >    BPF_CALL_1(bpf_get_func_ip_kprobe, struct pt_regs *, regs)
-> >    {
-> >          struct kprobe *kp = kprobe_running();
-> > 
-> >          return kp ? (uintptr_t)kp->addr : 0;
-> >    }
-> > 
-> > so the adjustment would work only for address at function entry, but
-> > would be wrong for address within the function
-> > 
-> > perhaps we could add flag to kprobe to indicate the addr adjustment
-> > was done and use it in helper
-> > 
-> > but that's why I thought I'd keep bpf_get_func_ip_kprobe as it and
-> > leave it up to user
-> > 
-> > kprobe_multi and trampolines are different, because they can be
-> > only at the function entry, so we can adjust the ip properly
-> > 
-> > jirka
+It will always catch the problem when called without the lock and
+lockdep is enabled.
+
+> -	if (!(ops->flags & FTRACE_OPS_FL_ENABLED))
+> -		return -EINVAL;
+> -
+> -	mutex_lock(&direct_mutex);
+>  
+>  	/* Enable the tmp_ops to have the same functions as the direct ops */
+>  	ftrace_ops_init(&tmp_ops);
+> @@ -5730,7 +5712,7 @@ int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
+>  
+>  	err = register_ftrace_function(&tmp_ops);
+>  	if (err)
+> -		goto out_direct;
+> +		return err;
+>  
+>  	/*
+>  	 * Now the ftrace_ops_list_func() is called to do the direct callers.
+> @@ -5754,7 +5736,64 @@ int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
+>  	/* Removing the tmp_ops will add the updated direct callers to the functions */
+>  	unregister_ftrace_function(&tmp_ops);
+>  
+> - out_direct:
+> +	return err;
+> +}
+> +
+> +/**
+> + * modify_ftrace_direct_multi_nolock - Modify an existing direct 'multi' call
+> + * to call something else
+> + * @ops: The address of the struct ftrace_ops object
+> + * @addr: The address of the new trampoline to call at @ops functions
+> + *
+> + * This is used to unregister currently registered direct caller and
+> + * register new one @addr on functions registered in @ops object.
+> + *
+> + * Note there's window between ftrace_shutdown and ftrace_startup calls
+> + * where there will be no callbacks called.
+> + *
+> + * Caller should already have direct_mutex locked, so we don't lock
+> + * direct_mutex here.
+> + *
+> + * Returns: zero on success. Non zero on error, which includes:
+> + *  -EINVAL - The @ops object was not properly registered.
+> + */
+> +int modify_ftrace_direct_multi_nolock(struct ftrace_ops *ops, unsigned long addr)
+> +{
+> +	if (check_direct_multi(ops))
+> +		return -EINVAL;
+> +	if (!(ops->flags & FTRACE_OPS_FL_ENABLED))
+> +		return -EINVAL;
+> +
+> +	return __modify_ftrace_direct_multi(ops, addr);
+> +}
+> +EXPORT_SYMBOL_GPL(modify_ftrace_direct_multi_nolock);
+> +
+> +/**
+> + * modify_ftrace_direct_multi - Modify an existing direct 'multi' call
+> + * to call something else
+> + * @ops: The address of the struct ftrace_ops object
+> + * @addr: The address of the new trampoline to call at @ops functions
+> + *
+> + * This is used to unregister currently registered direct caller and
+> + * register new one @addr on functions registered in @ops object.
+> + *
+> + * Note there's window between ftrace_shutdown and ftrace_startup calls
+> + * where there will be no callbacks called.
+> + *
+> + * Returns: zero on success. Non zero on error, which includes:
+> + *  -EINVAL - The @ops object was not properly registered.
+> + */
+> +int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
+> +{
+> +	int err;
+> +
+> +	if (check_direct_multi(ops))
+> +		return -EINVAL;
+> +	if (!(ops->flags & FTRACE_OPS_FL_ENABLED))
+> +		return -EINVAL;
+> +
+> +	mutex_lock(&direct_mutex);
+> +	err = __modify_ftrace_direct_multi(ops, addr);
+>  	mutex_unlock(&direct_mutex);
+>  	return err;
+>  }
+
+I would personally do:
+
+int __modify_ftrace_direct_multi(struct ftrace_ops *ops,
+			unsigned long addr, bool lock)
+{
+	int err;
+
+	if (check_direct_multi(ops))
+		return -EINVAL;
+	if (!(ops->flags & FTRACE_OPS_FL_ENABLED))
+		return -EINVAL;
+
+	if (lock)
+		mutex_lock(&direct_mutex);
+
+	err = __modify_ftrace_direct_multi(ops, addr);
+
+	if (lock)
+		mutex_unlock(&direct_mutex);
+
+	return err;
+}
+
+int modify_ftrace_direct_multi(struct ftrace_ops *ops, unsigned long addr)
+{
+	__modify_ftrace_direct_multi(ops, addr, true);
+}
+
+int modify_ftrace_direct_multi_nolock(struct ftrace_ops *ops, unsigned long addr)
+{
+	__modify_ftrace_direct_multi(ops, addr, false);
+}
+
+To avoid duplication of the checks. But it is a matter of taste.
+
+Best Regards,
+Petr
