@@ -2,120 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAAAB578C4C
-	for <lists+bpf@lfdr.de>; Mon, 18 Jul 2022 23:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4181E578C4D
+	for <lists+bpf@lfdr.de>; Mon, 18 Jul 2022 23:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233943AbiGRVAP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jul 2022 17:00:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59752 "EHLO
+        id S234593AbiGRVBQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jul 2022 17:01:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbiGRVAO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Jul 2022 17:00:14 -0400
-Received: from mail-0201.mail-europe.com (mail-0201.mail-europe.com [51.77.79.158])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34BC131228
-        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 14:00:13 -0700 (PDT)
-Date:   Mon, 18 Jul 2022 21:00:02 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
-        s=protonmail3; t=1658178008; x=1658437208;
-        bh=22fCo9Ol6krQR4PVVJkemZsps6aK4jWf/9iGf4avj04=;
-        h=Date:To:From:Cc:Reply-To:Subject:Message-ID:In-Reply-To:
-         References:Feedback-ID:From:To:Cc:Date:Subject:Reply-To:
-         Feedback-ID:Message-ID;
-        b=VARkgDl39lKwAwt2oquVs0bzoPsDT+6WOQOIeqwpeksygTwQ5O87W2nPsLHxe5Rx4
-         nMW0cLn4H1Eu0nxx+YVRn+3jl96FD0dhcW++GBa7KWSDigK+8GCK7aA/EG9obwTaqs
-         3zN59oLF/4DOODIVXreFcC19aIi0JWbq5G68AVIVvDavn/Nykg2dPbVYkaBPh30DEk
-         SZl8S2TXJgS2ZgwQwZy+FskOujR34yKHA8vvaYpecVITjUGozQ0aUY51+XCvCIsf7r
-         kFQ4ExJ3GZ05Ap0DVXYMYIvLdevJbrMWaDLTxvMNmv3FB53EDc49H+na4ffTyrAy71
-         +RquESa3yHh4A==
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-From:   Yadunandan Pillai <thesw4rm@pm.me>
-Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Reply-To: Yadunandan Pillai <thesw4rm@pm.me>
-Subject: Re: What happens to a uprobe if it links to a library within a container, and that container gets deleted?
-Message-ID: <1yMmLyw6DIUWbp5FKL9iEyXrHURGP486VDX7zOgdTsJ5MG75eRMV6-MapdXAqut0HmLu3Fm26a0R2IH3UawocwlzsBCGVpvZXVuw1WIssCc=@pm.me>
-In-Reply-To: <CAEf4Bzb=-gRPao8cTj3iJs0fGaXT_F1AzYNn8A5apuHCGZJPpw@mail.gmail.com>
-References: <OBzRUbPFxraCqyqKJG4wxt16KtWfSZuzR1_huzK30nTPOyc2_oKjBYylXc9fr0CL_oOi0SbH8P67jujAXcI8rMT_wZQwfcAblzuteWLv5fg=@pm.me> <CAEf4Bzb=-gRPao8cTj3iJs0fGaXT_F1AzYNn8A5apuHCGZJPpw@mail.gmail.com>
-Feedback-ID: 11923722:user:proton
+        with ESMTP id S229799AbiGRVBQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Jul 2022 17:01:16 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29BDA31DCB;
+        Mon, 18 Jul 2022 14:01:15 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id j22so23598658ejs.2;
+        Mon, 18 Jul 2022 14:01:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=9JKC69ZgKxvEAiR9jfUcMboRX5UUbUaTHt8/AYNH2iU=;
+        b=Q5ZX+0Ir7yfQayyrfLWCW5z3mC5EADyfcN6MvQHrLtz6K8IOfWCa0yhWTskhALWXZP
+         F7bM+gPPi/t1FIcIrJZe3jDuXfvDBKSdJUrOSx3SZCh6yVaLlpepVhkH63dJha/npcGv
+         hxprjSIMJqOuhJBANig6mSBhrnFfZl/xjJ9EVnllwpN/rNHAYoBeNmtwTFrkNJq4oed8
+         gzsvsVKunCep6nbY6PYJPHSRfpb/sdhxqDEpOJyKko1BXkTlnw5GcpGZfnl4HWwiykPh
+         JT9Fa3ToYzIDRuOb3NQmJZQAT1CfR43SPvzWXuIvVUmc/778xE10FjW9gF5acOE8KF7o
+         shIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=9JKC69ZgKxvEAiR9jfUcMboRX5UUbUaTHt8/AYNH2iU=;
+        b=hMzQyTJUCz/s9iUSOnY/4a1bgA5SrW9FhaB34aW+j3OQiCxIKyemcRbKzBrUHlt1bE
+         SMNfL5v/+tdIh1LmK82MynZUeJd6TlzUKuQdSioDcMY1nfBKGyFf0MJBlF41oHDQ5x9/
+         9lwnEKhp2HdqsFbPS9hVulyttK9u1Vob6W4Sc4k+dJ+MPENiqKcdIv23Ls9G6iBt8NBZ
+         OQHsPEbRatiLXFMnKCRueA3RO64sEDxocCo+UhnY8OqmOIjYpQoCT02kvDowlVAE3ER0
+         +fRilkqiWQgIKe+dhU8cvrpsgRG62LdSvDU/yjuIDbvoHlLx1P9MM6Am0mGhx779IRiX
+         s67A==
+X-Gm-Message-State: AJIora+3sNAIWJrHDQ1scj7bAGhp1/UCWMMrpCbLC+9CRzLfvyXuPFrj
+        3Yqy2LaAATqxhSjNl/JVvTh6VOSZ7COKdYJ1tsE=
+X-Google-Smtp-Source: AGRyM1s9jd0rj28RTzjMiTDsu+XS7RpA+HYRxtnjZa49iDkWruhQJP4cy0PkxwOAeF6i6B+rqrlCWO5wcq3a3zHUmkQ=
+X-Received: by 2002:a17:907:3f07:b0:72b:54b2:f57f with SMTP id
+ hq7-20020a1709073f0700b0072b54b2f57fmr26915014ejc.502.1658178073581; Mon, 18
+ Jul 2022 14:01:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20220711083220.2175036-1-asavkov@redhat.com> <20220711083220.2175036-4-asavkov@redhat.com>
+ <CAPhsuW7xTRpLf1kyj5ejH0fV_aHCMQjUwn-uhWeNytXedh4+TQ@mail.gmail.com>
+ <CAADnVQ+ju04JAqyEbA_7oVj9uBAuL-fUP1FBr_OTygGf915RfQ@mail.gmail.com>
+ <Ys7JL9Ih3546Eynf@wtfbox.lan> <CAADnVQ+6aN5nMwaTjoa9ddnT6rakgwb9oPhtdWSsgyaHP8kZ6Q@mail.gmail.com>
+ <YtFjCSR8YiK8E13J@samus.usersys.redhat.com>
+In-Reply-To: <YtFjCSR8YiK8E13J@samus.usersys.redhat.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 18 Jul 2022 14:01:02 -0700
+Message-ID: <CAADnVQLjJK+9Jf+14WNp4O9q+s88eB-FF8pA_5TRziYVKoJxUQ@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 3/4] bpf: add bpf_panic() helper
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Song Liu <song@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>, dvacek@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> uprobe BPF program attached to perf_event object; this attachment
-(link) also has associated FD (for older kernels you'll have only
-perf_event FD, though);
-
-Will there be two FDs in the newer kernel, in that case? One for the perf_e=
-vent object itself and one for the link between the uprobe to the perf even=
-t object.
-
-And how exactly does the uprobe attach to a specific symbol (like a functio=
-n) within a shared library? Does it basically hook itself into a pre-calcul=
-ated offset? What happens if the code at that offset is edited while the up=
-robe is attached?
-
-
-
-
-
-
-
-
-
-Yadunandan Pillai
-
-
-------- Original Message -------
-On Monday, July 11th, 2022 at 11:27 PM, Andrii Nakryiko <andrii.nakryiko@gm=
-ail.com> wrote:
-
-
-> On Thu, Jul 7, 2022 at 12:05 PM
+On Fri, Jul 15, 2022 at 5:52 AM Artem Savkov <asavkov@redhat.com> wrote:
 >
-> Yadunandan Pillai
->
-> thesw4rm@pm.me wrote:
->
-> > How are uprobes "remembered" in the kernel from a conceptual standpoint=
-? Where is the attach point stored? Is it basically a hashmap with JMP inst=
-ructions for each function that is being attached to? What exactly does the=
- cleanup process look like if the attach point disappears?
+> On Wed, Jul 13, 2022 at 03:20:22PM -0700, Alexei Starovoitov wrote:
+> > On Wed, Jul 13, 2022 at 6:31 AM Artem Savkov <asavkov@redhat.com> wrote:
+> > >
+> > > On Tue, Jul 12, 2022 at 11:08:54AM -0700, Alexei Starovoitov wrote:
+> > > > On Tue, Jul 12, 2022 at 10:53 AM Song Liu <song@kernel.org> wrote:
+> > > > >
+> > > > > >
+> > > > > > +BPF_CALL_1(bpf_panic, const char *, msg)
+> > > > > > +{
+> > > > > > +       panic(msg);
+> > > > >
+> > > > > I think we should also check
+> > > > >
+> > > > >    capable(CAP_SYS_BOOT) && destructive_ebpf_enabled()
+> > > > >
+> > > > > here. Or at least, destructive_ebpf_enabled(). Otherwise, we
+> > > > > may trigger panic after the sysctl is disabled.
+> > > > >
+> > > > > In general, I don't think sysctl is a good API, as it is global, and
+> > > > > the user can easily forget to turn it back off. If possible, I would
+> > > > > rather avoid adding new BPF related sysctls.
+> > > >
+> > > > +1. New syscal isn't warranted here.
+> > > > Just CAP_SYS_BOOT would be enough here.
+> > >
+> > > Point taken, I'll remove sysctl knob in any further versions.
+> > >
+> > > > Also full blown panic() seems unnecessary.
+> > > > If the motivation is to get a memory dump then crash_kexec() helper
+> > > > would be more suitable.
+> > > > If the goal is to reboot the system then the wrapper of sys_reboot()
+> > > > is better.
+> > > > Unfortunately the cover letter lacks these details.
+> > >
+> > > The main goal is to get the memory dump, so crash_kexec() should be enough.
+> > > However panic() is a bit more versatile and it's consequences are configurable
+> > > to some extent. Are there any downsides to using it?
 > >
-> > Example of a use case: let's say a uprobe is to "SSL_read" in /proc/[ro=
-ot_pid]/root/.../libssl.so where [root_pid] is the root process of a contai=
-ner. If the container dies, then does that uprobe hang around attaching to =
-empty air or gets deleted as well?
+> > versatile? In what sense? That it does a lot more than kexec?
+> > That's a disadvantage.
+> > We should provide bpf with minimal building blocks and let
+> > bpf program decide what to do.
+> > If dmesg (that is part of panic) is useful it should be its
+> > own kfunc.
+> > If halt is necessary -> separate kfunc as well.
+> > reboot -> another kfunc.
+> >
+> > Also panic() is not guaranteed to do kexec and just
+> > panic is not what you stated is the goal of the helper.
 >
+> Alright, if the aim is to provide the smallest building blocks then
+> crash_kexec() is a better choice.
 >
-> In BPF world, uprobe is a combination of two objects, each having
-> their FD and associated lifetimes:
-> - perf_event_open() syscall creates perf_event kernel object that
-> represents uprobe itself (you specify target binary, which kernel
-> resolves into inode internally; optionally you also specify PID
-> filter, so uprobe can be triggered only for specific process or for
-> all processes that run code from specified binary);
-> - uprobe BPF program attached to perf_event object; this attachment
-> (link) also has associated FD (for older kernels you'll have only
-> perf_event FD, though);
+> > >
+> > > > Why this destructive action cannot be delegated to user space?
+> > >
+> > > Going through userspace adds delays and makes it impossible to hit "exactly
+> > > the right moment" thus making it unusable in most cases.
+> >
+> > What would be an example of that?
+> > kexec is not instant either.
 >
-> As long as at least one of those FDs are not closed, your uprobe+BPF
-> program will be active. They might not be triggered ever because file
-> was deleted from file system (I think file's inode will be kept around
-> until perf_event is destroyed, but I haven't checked the code).
->
-> So direct answer to your last question depends on what happens with
-> perf_event that was created during attachment. If its FD survives the
-> container (because you transferred FD, or the process is outside of
-> container, or you pinned BPF link representing that attachment), then
-> no, uprobe is still there. But if the process that attached BPF
-> program exits and nothing else keeps FD alive, then BPF program and
-> perf_event will be detached and destroyed.
->
-> > Yadunandan Pillai
+> With kexec at least the thread it got called in is in a proper state. I
+> guess it is possible to achieve this by signalling userspace to do
+> kexec/panic and then block the thread somehow but that won't work in a
+> single-cpu case. Or am I missing something?
+
+Something like this.
+We can extend bpf_send_signal to send a signal to pid 1
+or another user agent.
+It's still not clear to me why you want that memory dump.
