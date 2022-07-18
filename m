@@ -2,145 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F694578D18
-	for <lists+bpf@lfdr.de>; Mon, 18 Jul 2022 23:50:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74BB3578DD2
+	for <lists+bpf@lfdr.de>; Tue, 19 Jul 2022 00:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236251AbiGRVuk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jul 2022 17:50:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41930 "EHLO
+        id S233616AbiGRW61 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jul 2022 18:58:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233484AbiGRVui (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Jul 2022 17:50:38 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1998FDA
-        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 14:50:37 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id c3so10937681pfb.13
-        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 14:50:37 -0700 (PDT)
+        with ESMTP id S232002AbiGRW61 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Jul 2022 18:58:27 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C0171C920
+        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 15:58:26 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id g4-20020a17090a290400b001f1f2b7379dso762988pjd.0
+        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 15:58:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=u27wz2PCMuVYYB7HICVQ28Lin1veQrrJpBv68Mte6sw=;
-        b=pAHT/4wQsN1037mdKqH7SN5eIImP9H7JRUFzZk0usOzy7EyhEqSdAq3FdYP0CKGk9O
-         PzZZI1eqUkRw98kEjDWtZ8PlnBGXc0uAMeOjt9RwhyFdXXPWHI6SrKjLlY8F1/UZAj73
-         BIC3PJzt5KgRRffqUio2MipR4fON7lsjaV3Z+/J6x73skVJo76PnF3KRsm881BwVrVuC
-         lgWUNIoq++vT+vpzMiIIGnq4zme7LRjKEYtPXh2n2BSI2DlSeSurJobLpmKmmvjGIP09
-         opxEkY5g+9TucHWoKYqC2JwmiDlcvSbUHWtXtHTMMwdTIfd97DV2bXA3YzV4Num8Wc7h
-         p0qw==
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=2ER2WW01ET2wH1WV2jGlyhputEhjwKA2tNpxchjmONE=;
+        b=BL1n55haiIU6dcML3MmvSTXeTN1OAGG425M/8QaIT9O6EOGtFz8aTJLt5y5lfM37Gw
+         f40JxetwRpn3rzyDUYmWxiPgr7Sp61D6YK5FkPA0G/yiVJAx9phQL1cAkhOZgB9dlTj5
+         VjYoChGs3qPrN6mD/fN5tZXC1kHaaBLs21SYjCaGuFcAjG783T9Frt1vvlGdxFj7cdDR
+         3KULs3qbnDx+O7Skm/U2TNFQZPVKfXIp2/7cLJSiSQGdj+tAzug74i3usPSOZ8lfzkwM
+         fp/cE1bYrM2go13i1xHWFHiynTBsk4rsutugQiZ18rdOVVu9KpPNx/LbRzEK+66caYtA
+         GsFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u27wz2PCMuVYYB7HICVQ28Lin1veQrrJpBv68Mte6sw=;
-        b=TzC5VDoMI+cz4Ymd+byNLRIVix+Q8BWQz1ICN8QKgSE8ECEcHzWFt27XvkHCyw0c6j
-         PfOKi0DPWg1VfoYTYQG71TG9+LWaWeCwsnJO/RQoXbzYaVa8vnUOzyjbvGlMe8wGqbDX
-         XOkaxwMrCITDbh/ghoI7/kNLacZqD+vP/gT8bZ6TsP/3lSsyEaFvow0ZlBUA6mibgwAj
-         3JwouvNFtx7uurC3hz43F/iFz8JaFU/6MDo6LaUX6q7mVDKvndHTSNu0cDIzWeGUr5h8
-         DawmhsE96GKjPCOEhvgI4fJIoCGf28cwegGlrPb+GXFJiGbwqfrqVDBDjQPzmUY16+iz
-         qLSg==
-X-Gm-Message-State: AJIora++ghQiRb+cfcyxREtPt16OEWih/x2+Zx8PkhoCEIUvctzk/bOm
-        zLNeRkCovN4HuoI/DY2FBzj6i7emLK0XUWOdJO1+3g==
-X-Google-Smtp-Source: AGRyM1tlTCM/JJii+zM5EszvzDhrl5iKnWO79jqEL8k8xRiUlrm/pBfOTtdspOniakM/eRek/7LlMk+VK50EyjYx/PY=
-X-Received: by 2002:a63:85c6:0:b0:412:a94c:16d0 with SMTP id
- u189-20020a6385c6000000b00412a94c16d0mr26759268pgd.253.1658181037079; Mon, 18
- Jul 2022 14:50:37 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=2ER2WW01ET2wH1WV2jGlyhputEhjwKA2tNpxchjmONE=;
+        b=fINs+r4ViLrlPBUzuwl5ZTsHAisNKdiDbJ/dnPzdC1KGBYWRUbVRqauy/SxrxVK1U7
+         rSCuPRJoc1rHCP+mtRSqG2o80zRO9L9VRu2+jEk06Dmr8UO3hnAprNzhtr5yxtnblZ7F
+         nT0SR7Y4mnJRPLSJz5eK7wrIZJPHZBcWLRGfnnRitcbwQEJ3tJJW6ciN+ggg4UPJLY5t
+         3OaZECNCEJVVOSYVqf3DrBImI4MAIeoLD3cvoMwSoMbWIrf4HKtVEtf0I1wwRyE68Vj4
+         fFE9DoeK1QJPY1+O+NecEoxmaQ4afK+jXRGcd+9XIC3plT7xtdfsBYPmoxXSNj/y6Gb4
+         LpYw==
+X-Gm-Message-State: AJIora82OyHB84orYFd4nn3slIRnJ1wmKkS4iNuJgbW1ELv3NH0uQCK0
+        36pR8AKd/vWUwRUfQYoAYBOfQ64uCxIDaMlWbkc=
+X-Google-Smtp-Source: AGRyM1vurYnVc9DfqE6iu3wFxKeDocMRcqAWLIrtgsyWYMa58rdzeKuwgfcV7m5AwIMtcQQvR0y1NprmtEjofSFx7sY=
+X-Received: by 2002:a17:902:cf4a:b0:16c:1b21:a3ae with SMTP id
+ e10-20020a170902cf4a00b0016c1b21a3aemr31213401plg.38.1658185106067; Mon, 18
+ Jul 2022 15:58:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220718214633.3951533-1-jevburton.kernel@gmail.com>
-In-Reply-To: <20220718214633.3951533-1-jevburton.kernel@gmail.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Mon, 18 Jul 2022 14:50:26 -0700
-Message-ID: <CAKH8qBuAR2A4wyL7Xe_OY-pq_VaRRrP_e-P5py=rwf22mfr1VA@mail.gmail.com>
-Subject: Re: [PATCH] [PATCH bpf-next] libbpf: Add bpf_obj_get_opts()
-To:     Joe Burton <jevburton.kernel@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Joe Burton <jevburton@google.com>
+Received: by 2002:a05:6a10:f350:b0:2b8:cd69:cc39 with HTTP; Mon, 18 Jul 2022
+ 15:58:25 -0700 (PDT)
+Reply-To: drlisa985@gmail.com
+From:   Lisa <carolinahashim828@gmail.com>
+Date:   Tue, 19 Jul 2022 00:58:25 +0200
+Message-ID: <CA+V2SsBCK51szVtQNQ6kgF37wg3dyZTQprEuJicGF78tHcVPNQ@mail.gmail.com>
+Subject: With Love
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: Yes, score=5.2 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:1041 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [drlisa985[at]gmail.com]
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [carolinahashim828[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [carolinahashim828[at]gmail.com]
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        *  3.1 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 18, 2022 at 2:46 PM Joe Burton <jevburton.kernel@gmail.com> wrote:
->
-> From: Joe Burton <jevburton@google.com>
->
-> Add an extensible variant of bpf_obj_get() capable of setting the
-> `file_flags` parameter.
->
-> This parameter is needed to enable unprivileged access to BPF maps.
-> Without a method like this, users must manually make the syscall.
->
-> Signed-off-by: Joe Burton <jevburton@google.com>
-> ---
->  tools/lib/bpf/bpf.c | 10 ++++++++++
->  tools/lib/bpf/bpf.h |  9 +++++++++
+Hi Dear,
 
-Needs a libbpf.map change as well?
+My name is Dr Lisa Williams from the United States.I am a French and
+American nationality (dual) living in the U.S and sometimes in France
+for Work Purpose.
 
->  2 files changed, 19 insertions(+)
->
-> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> index 5eb0df90eb2b..5acb0e8bd13c 100644
-> --- a/tools/lib/bpf/bpf.c
-> +++ b/tools/lib/bpf/bpf.c
-> @@ -578,12 +578,22 @@ int bpf_obj_pin(int fd, const char *pathname)
->  }
->
->  int bpf_obj_get(const char *pathname)
-> +{
-> +       LIBBPF_OPTS(bpf_obj_get_opts, opts);
-> +       return bpf_obj_get_opts(pathname, &opts);
-> +}
-> +
-> +int bpf_obj_get_opts(const char *pathname, const struct bpf_obj_get_opts *opts)
->  {
->         union bpf_attr attr;
->         int fd;
->
-> +       if (!OPTS_VALID(opts, bpf_obj_get_opts))
-> +               return libbpf_err(-EINVAL);
-> +
->         memset(&attr, 0, sizeof(attr));
->         attr.pathname = ptr_to_u64((void *)pathname);
-> +       attr.file_flags = OPTS_GET(opts, file_flags, 0);
->
->         fd = sys_bpf_fd(BPF_OBJ_GET, &attr, sizeof(attr));
->         return libbpf_err_errno(fd);
-> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-> index 88a7cc4bd76f..f31b493b5f9a 100644
-> --- a/tools/lib/bpf/bpf.h
-> +++ b/tools/lib/bpf/bpf.h
-> @@ -270,8 +270,17 @@ LIBBPF_API int bpf_map_update_batch(int fd, const void *keys, const void *values
->                                     __u32 *count,
->                                     const struct bpf_map_batch_opts *opts);
->
-> +struct bpf_obj_get_opts {
-> +       size_t sz; /* size of this struct for forward/backward compatibility */
-> +
-> +       __u32 file_flags;
-> +};
-> +#define bpf_obj_get_opts__last_field file_flags
-> +
->  LIBBPF_API int bpf_obj_pin(int fd, const char *pathname);
->  LIBBPF_API int bpf_obj_get(const char *pathname);
-> +LIBBPF_API int bpf_obj_get_opts(const char *pathname,
-> +                               const struct bpf_obj_get_opts *opts);
->
->  struct bpf_prog_attach_opts {
->         size_t sz; /* size of this struct for forward/backward compatibility */
-> --
-> 2.37.0.170.g444d1eabd0-goog
->
+I hope you consider my friend request. I will share some of my pics
+and more details about myself when I get your response.
+
+Thanks
+With love
+Lisa
