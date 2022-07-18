@@ -2,200 +2,217 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45312577DC6
-	for <lists+bpf@lfdr.de>; Mon, 18 Jul 2022 10:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3E5577E12
+	for <lists+bpf@lfdr.de>; Mon, 18 Jul 2022 10:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234007AbiGRImg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jul 2022 04:42:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48064 "EHLO
+        id S233407AbiGRI4r (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jul 2022 04:56:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233896AbiGRIme (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Jul 2022 04:42:34 -0400
+        with ESMTP id S233410AbiGRI4m (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Jul 2022 04:56:42 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 279E7193F9
-        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 01:42:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 55752EE12
+        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 01:56:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1658133751;
+        s=mimecast20190719; t=1658134600;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=jGouTsNv1lisIVuwecS9yzguYrksQ4eFIjfFj4TU4q0=;
-        b=HkOC5Wjm0k2mkMZ8kZG5t9Oi5+xitL4iK7wAovGrBY6K50/I8uR5l+Ct0dg+imAQ3yrene
-        yqfedgXEk2ZMiAlzPqF9PmtOv5utzwY6TG975CbyFuIICgn/lHF3Bj5F7rcoe4j5T9U7bL
-        8BEzkwoBQN6tuQJZBW9jzLmEEkBMpgI=
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
- [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=OWEVZ0lWemvnjJGr1KMJVEu33/f4lcOHck1LBmLT0x4=;
+        b=UFKCqPMRqlKU6maki4i505+1YW6HkM2/VaCogKPkgZEmtclhYMBnjg+D/789Dbd78bti6F
+        3ixntv7KHAv2Ovn3V9Odf0lfWyZyRoRfGkeGzEneQQr9RM89zVJYQg+JT/DfD9bwB1sXg9
+        PHagmXqDR8LCzoDfj8GrPx+CcQigRdE=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-447-GIIWCOxiM2m5zLZt1q0-hg-1; Mon, 18 Jul 2022 04:42:25 -0400
-X-MC-Unique: GIIWCOxiM2m5zLZt1q0-hg-1
-Received: by mail-pl1-f197.google.com with SMTP id h21-20020a170902f7d500b0016ce3d68c3fso3004132plw.23
-        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 01:42:25 -0700 (PDT)
+ us-mta-283-3B4Osfl5PmCJ8bi2r0lN8w-1; Mon, 18 Jul 2022 04:56:37 -0400
+X-MC-Unique: 3B4Osfl5PmCJ8bi2r0lN8w-1
+Received: by mail-lf1-f72.google.com with SMTP id z1-20020a195041000000b00489cc321e11so4069616lfj.23
+        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 01:56:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jGouTsNv1lisIVuwecS9yzguYrksQ4eFIjfFj4TU4q0=;
-        b=v8ssFfoXcQ1blZxoPhCgktvhzM59r5ga7pJUBrqsvSMX60pc4KyfxaYykF+NmlJ06F
-         YIJ3+RxQIac7ODjKZvLbtbsvStVbXr/VDTJWGNWWim/ysr9nteJs8XPOxCAPrXn7p+II
-         7xA4a87sKbtk9hhqsicciaJx7ENQLqG26b4RDA6N0aZXRCvZE1FZoCVkAWlagFbiUN4S
-         wq8qODQjsnM2lUoLY0osBytriZtAeqhuZB1R71sFjq1GCcazRpcXJ1wrtPv9TRq/LOQB
-         xINYD8bJAXU5WTFOQLUmSEAZnFKUSncNRYkabeXchCgfEpEfD2/aLUiwckpJNS0JSrWY
-         GM7Q==
-X-Gm-Message-State: AJIora9xq0ZcjxkiR0bbmQGERF3RodVNYVyYBxl+4MI9ysH6qBucTi71
-        tdyDJONMvxmBEqnFAIeKAl3MWcV6eP8WzpFntBmrBw1bM4/ci6qvU6owBJx3RErOv7GBGREJxhx
-        dtrHI3l1jSqtl04IJ+0/5VSk1c7PK
-X-Received: by 2002:a17:90b:3c0c:b0:1ef:e647:ff48 with SMTP id pb12-20020a17090b3c0c00b001efe647ff48mr37022214pjb.173.1658133744856;
-        Mon, 18 Jul 2022 01:42:24 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1uQCNjvoDfxIqziZqYdDHzUlMEZYuKMP4alAW7pp2XL/lSwJYhrCgB6FbdmGe7ipEOiFq4GD15BG6v9tre5yow=
-X-Received: by 2002:a17:90b:3c0c:b0:1ef:e647:ff48 with SMTP id
- pb12-20020a17090b3c0c00b001efe647ff48mr37022193pjb.173.1658133744537; Mon, 18
- Jul 2022 01:42:24 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=OWEVZ0lWemvnjJGr1KMJVEu33/f4lcOHck1LBmLT0x4=;
+        b=uMgm68ous51dW7wTtjZHH8BW96+3SQjEPEqwyyNPnvJA5B0p1ypAO4ny9Kq+DVSPAT
+         OBOGuKU1fKmJlE6a/9Z3qudtAY0EqPT+9y8YCnkEmgXZ9Y2RfJ/HE+v8BOCRqJiYJgdZ
+         PSavVY5Tvqhp2oJKKh+Tsg3rF5rrJzJZKX3Iy6PepFPruSYq/sGyy95DDR867ysH2I2A
+         E2rpilyGlxZFBfHVgco8P9g9X5Z02XV97ADViSoqzMMQLHGl48x34PPp+kBIwf/SP8vB
+         EdOx+q/pp1k4eXwI0YcGwXuRLhEQnNXdg6JgwzNX7a7v6R8zc/Sw8C5fTAYZZE4a2f6k
+         uc/A==
+X-Gm-Message-State: AJIora/zSDs/RfenzmF4Fo48gBEBM5uis8OZ9hznqyYUx0MxamQOyOIT
+        S2q0XHmvNp1rfybH91n/xxbFeT7uHw1nhCzRoiv5O5Ar8hs+X8CCbZVe+WWcZy7i/vJZWOYqL+u
+        KAyFd94sZ3nE4RwHMPvMksHprUbxK
+X-Received: by 2002:ac2:4c4c:0:b0:489:fe2c:c877 with SMTP id o12-20020ac24c4c000000b00489fe2cc877mr15771578lfk.238.1658134595383;
+        Mon, 18 Jul 2022 01:56:35 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1uT17stmgD/4/ICa/9NkCqW44+T43NZzTbYZlFnn5f6GksCmVOwfYnKSj/DtJ2DugQNpv1qMO4BpXj9dv3Brrw=
+X-Received: by 2002:ac2:4c4c:0:b0:489:fe2c:c877 with SMTP id
+ o12-20020ac24c4c000000b00489fe2cc877mr15771561lfk.238.1658134595164; Mon, 18
+ Jul 2022 01:56:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220712145850.599666-1-benjamin.tissoires@redhat.com>
- <20220712145850.599666-7-benjamin.tissoires@redhat.com> <bf56b01d-4c05-0d0b-e85b-219e55606803@fb.com>
-In-Reply-To: <bf56b01d-4c05-0d0b-e85b-219e55606803@fb.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Mon, 18 Jul 2022 10:42:13 +0200
-Message-ID: <CAO-hwJJirS9S8TU9NMXhjmaTeL9PNxeQBg0oT3zLdd63uDp74g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 06/23] selftests/bpf: Add tests for kfunc
- returning a memory pointer
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
+References: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
+ <20220629065656.54420-39-xuanzhuo@linux.alibaba.com> <c0747cbc-685b-85a9-1931-0124124755f2@redhat.com>
+ <1656986375.3420787-1-xuanzhuo@linux.alibaba.com> <CACGkMEu80KP-ULz_CBvauRk_3XsCubMkkWv0uLnbt-wib5KOnA@mail.gmail.com>
+ <1657874178.9766078-2-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <1657874178.9766078-2-xuanzhuo@linux.alibaba.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Mon, 18 Jul 2022 16:56:24 +0800
+Message-ID: <CACGkMEtF5NSXh-=nnsniLqy0pX2Tpyh413S5Bu5vZ6h=d+aHTA@mail.gmail.com>
+Subject: Re: [PATCH v11 38/40] virtio_net: support rx queue resize
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Vadim Pasternak <vadimp@nvidia.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>,
-        Tero Kristo <tero.kristo@linux.intel.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        linux-um@lists.infradead.org, netdev <netdev@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+        kvm <kvm@vger.kernel.org>,
+        "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>,
+        kangjie.xu@linux.alibaba.com,
+        virtualization <virtualization@lists.linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jul 16, 2022 at 6:34 AM Yonghong Song <yhs@fb.com> wrote:
+On Fri, Jul 15, 2022 at 4:37 PM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrot=
+e:
 >
+> On Fri, 8 Jul 2022 14:20:52 +0800, Jason Wang <jasowang@redhat.com> wrote=
+:
+> > On Tue, Jul 5, 2022 at 10:00 AM Xuan Zhuo <xuanzhuo@linux.alibaba.com> =
+wrote:
+> > >
+> > > On Mon, 4 Jul 2022 11:44:12 +0800, Jason Wang <jasowang@redhat.com> w=
+rote:
+> > > >
+> > > > =E5=9C=A8 2022/6/29 14:56, Xuan Zhuo =E5=86=99=E9=81=93:
+> > > > > This patch implements the resize function of the rx queues.
+> > > > > Based on this function, it is possible to modify the ring num of =
+the
+> > > > > queue.
+> > > > >
+> > > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > > > ---
+> > > > >   drivers/net/virtio_net.c | 22 ++++++++++++++++++++++
+> > > > >   1 file changed, 22 insertions(+)
+> > > > >
+> > > > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> > > > > index 9fe222a3663a..6ab16fd193e5 100644
+> > > > > --- a/drivers/net/virtio_net.c
+> > > > > +++ b/drivers/net/virtio_net.c
+> > > > > @@ -278,6 +278,8 @@ struct padded_vnet_hdr {
+> > > > >     char padding[12];
+> > > > >   };
+> > > > >
+> > > > > +static void virtnet_rq_free_unused_buf(struct virtqueue *vq, voi=
+d *buf);
+> > > > > +
+> > > > >   static bool is_xdp_frame(void *ptr)
+> > > > >   {
+> > > > >     return (unsigned long)ptr & VIRTIO_XDP_FLAG;
+> > > > > @@ -1846,6 +1848,26 @@ static netdev_tx_t start_xmit(struct sk_bu=
+ff *skb, struct net_device *dev)
+> > > > >     return NETDEV_TX_OK;
+> > > > >   }
+> > > > >
+> > > > > +static int virtnet_rx_resize(struct virtnet_info *vi,
+> > > > > +                        struct receive_queue *rq, u32 ring_num)
+> > > > > +{
+> > > > > +   int err, qindex;
+> > > > > +
+> > > > > +   qindex =3D rq - vi->rq;
+> > > > > +
+> > > > > +   napi_disable(&rq->napi);
+> > > >
+> > > >
+> > > > Do we need to cancel the refill work here?
+> > >
+> > >
+> > > I think no, napi_disable is mutually exclusive, which ensures that th=
+ere will be
+> > > no conflicts between them.
+> >
+> > So this sounds similar to what I've fixed recently.
+> >
+> > 1) NAPI schedule delayed work.
+> > 2) we disable NAPI here
+> > 3) delayed work get schedule and call NAPI again
+> >
+> > ?
 >
->
-> On 7/12/22 7:58 AM, Benjamin Tissoires wrote:
-> > We add 2 new kfuncs that are following the RET_PTR_TO_MEM
-> > capability from the previous commit.
-> > Then we test them in selftests:
-> > the first tests are testing valid case, and are not failing,
-> > and the later ones are actually preventing the program to be loaded
-> > because they are wrong.
-> >
-> > To work around that, we mark the failing ones as not autoloaded
-> > (with SEC("?tc")), and we manually enable them one by one, ensuring
-> > the verifier rejects them.
-> >
-> > To be able to use bpf_program__set_autoload() from libbpf, we need
-> > to use a plain skeleton, not a light-skeleton, and this is why we
-> > also change the Makefile to generate both for kfunc_call_test.c
-> >
-> > Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> >
-> > ---
-> >
-> > new in v6
-> > ---
-> >   include/linux/btf.h                           |  4 +-
-> >   net/bpf/test_run.c                            | 22 +++++
-> >   tools/testing/selftests/bpf/Makefile          |  5 +-
-> >   .../selftests/bpf/prog_tests/kfunc_call.c     | 48 ++++++++++
-> >   .../selftests/bpf/progs/kfunc_call_test.c     | 89 +++++++++++++++++++
-> >   5 files changed, 165 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/include/linux/btf.h b/include/linux/btf.h
-> > index 31da4273c2ec..6f46ff2128ae 100644
-> > --- a/include/linux/btf.h
-> > +++ b/include/linux/btf.h
-> > @@ -422,7 +422,9 @@ static inline int register_btf_id_dtor_kfuncs(const struct btf_id_dtor_kfunc *dt
-> >
-> >   static inline bool btf_type_is_struct_ptr(struct btf *btf, const struct btf_type *t)
-> >   {
-> > -     /* t comes in already as a pointer */
-> > +     if (!btf_type_is_ptr(t))
-> > +             return false;
->
-> Why we have a change here?
+> Yes, but I don't think there are any negative effects.
 
-Definitely a mistake while fixing/rebasing the series.
+An infinite wait on the napi_disable()?
 
-Will bring this hunk in the previous patch in the next revision.
-
-Thanks for the review!
-
-Cheers,
-Benjamin
+Thanks
 
 >
-> > +
-> >       t = btf_type_by_id(btf, t->type);
+> Thanks.
+>
 > >
-> >       /* allow const */
-> > diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-> > index 9da2a42811e8..0b4026ea4652 100644
-> > --- a/net/bpf/test_run.c
-> > +++ b/net/bpf/test_run.c
-> > @@ -606,6 +606,24 @@ noinline void bpf_kfunc_call_memb1_release(struct prog_test_member1 *p)
-> >       WARN_ON_ONCE(1);
-> >   }
+> > Thanks
 > >
-> > +static int *__bpf_kfunc_call_test_get_mem(struct prog_test_ref_kfunc *p, const int size)
-> > +{
-> > +     if (size > 2 * sizeof(int))
-> > +             return NULL;
-> > +
-> > +     return (int *)p;
-> > +}
-> > +
-> > +noinline int *bpf_kfunc_call_test_get_rdwr_mem(struct prog_test_ref_kfunc *p, const int rdwr_buf_size)
-> > +{
-> > +     return __bpf_kfunc_call_test_get_mem(p, rdwr_buf_size);
-> > +}
-> > +
-> > +noinline int *bpf_kfunc_call_test_get_rdonly_mem(struct prog_test_ref_kfunc *p, const int rdonly_buf_size)
-> > +{
-> > +     return __bpf_kfunc_call_test_get_mem(p, rdonly_buf_size);
-> > +}
-> > +
-> >   noinline struct prog_test_ref_kfunc *
-> >   bpf_kfunc_call_test_kptr_get(struct prog_test_ref_kfunc **pp, int a, int b)
-> >   {
-> > @@ -704,6 +722,8 @@ BTF_ID(func, bpf_kfunc_call_memb_acquire)
-> >   BTF_ID(func, bpf_kfunc_call_test_release)
-> >   BTF_ID(func, bpf_kfunc_call_memb_release)
-> >   BTF_ID(func, bpf_kfunc_call_memb1_release)
-> > +BTF_ID(func, bpf_kfunc_call_test_get_rdwr_mem)
-> > +BTF_ID(func, bpf_kfunc_call_test_get_rdonly_mem)
-> >   BTF_ID(func, bpf_kfunc_call_test_kptr_get)
-> >   BTF_ID(func, bpf_kfunc_call_test_pass_ctx)
-> >   BTF_ID(func, bpf_kfunc_call_test_pass1)
-> > @@ -731,6 +751,8 @@ BTF_SET_END(test_sk_release_kfunc_ids)
-> >   BTF_SET_START(test_sk_ret_null_kfunc_ids)
-> >   BTF_ID(func, bpf_kfunc_call_test_acquire)
-> >   BTF_ID(func, bpf_kfunc_call_memb_acquire)
-> > +BTF_ID(func, bpf_kfunc_call_test_get_rdwr_mem)
-> > +BTF_ID(func, bpf_kfunc_call_test_get_rdonly_mem)
-> >   BTF_ID(func, bpf_kfunc_call_test_kptr_get)
-> >   BTF_SET_END(test_sk_ret_null_kfunc_ids)
+> > >
+> > > Thanks.
+> > >
+> > > >
+> > > > Thanks
+> > > >
+> > > >
+> > > > > +
+> > > > > +   err =3D virtqueue_resize(rq->vq, ring_num, virtnet_rq_free_un=
+used_buf);
+> > > > > +   if (err)
+> > > > > +           netdev_err(vi->dev, "resize rx fail: rx queue index: =
+%d err: %d\n", qindex, err);
+> > > > > +
+> > > > > +   if (!try_fill_recv(vi, rq, GFP_KERNEL))
+> > > > > +           schedule_delayed_work(&vi->refill, 0);
+> > > > > +
+> > > > > +   virtnet_napi_enable(rq->vq, &rq->napi);
+> > > > > +   return err;
+> > > > > +}
+> > > > > +
+> > > > >   /*
+> > > > >    * Send command via the control virtqueue and check status.  Co=
+mmands
+> > > > >    * supported by the hypervisor, as indicated by feature bits, s=
+hould
+> > > >
+> > >
 > >
-> [...]
 >
 
