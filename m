@@ -2,123 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 046C15786E8
-	for <lists+bpf@lfdr.de>; Mon, 18 Jul 2022 18:04:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1BB1578752
+	for <lists+bpf@lfdr.de>; Mon, 18 Jul 2022 18:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234008AbiGRQEN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jul 2022 12:04:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40542 "EHLO
+        id S229585AbiGRQZm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jul 2022 12:25:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231137AbiGRQEI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Jul 2022 12:04:08 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C138260D1
-        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 09:04:07 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id v16so17704296wrd.13
-        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 09:04:07 -0700 (PDT)
+        with ESMTP id S235853AbiGRQZc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Jul 2022 12:25:32 -0400
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1186A2AE08
+        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 09:25:30 -0700 (PDT)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-31bf3656517so112784327b3.12
+        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 09:25:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BLQKlhIDTPBwzVBGPq9qp9erdvGfKtRolD9aeKLSQT4=;
-        b=zJ2pMQ6vsCE693gONX6Y8n5AbjmpEWbaNyXPo/Pha7ek0LIOCJokVgfSEYU6NbRRTy
-         2bSrMWT/Rwt1tUguROqLMnkgM0vv2RBLebcQwIn4qbOHYE21wZguck2SznMUIZ3wveje
-         zYKpxhVOHytSjOBOAdA3Q86A4zOnMwrzrkWevwQIIqI5TshJSQlqI721xqjVUEAdoBkl
-         c56dOvKEy0eG31gvlwO8N7FXLM0xHeu0c4yJ7CnITgcMipv8PRgR0e65mvjizvFwJ4Cg
-         CCLKqwKZitCbjJmO209DJmqR5PBEZ/r8hbcAf90RVlA1KYmEVQzyD0cW6opYFQ3F/d3v
-         FdbQ==
+        d=cloudflare.com; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=VpWGg1Z0ItsY17Q4CdwHYBm/NTXahJiG/W0stWad/2Q=;
+        b=n5EUgG9sYycF9rx9k+w17mzIJ3Pj6DrYXTIL5aEPlPpTtjjOdf1l8Igp1lz1jIDJ5u
+         cA2DPALvySRgupdWKOc0onDRiwTQpFXEKgqJDhyTwzaVpWAXlAfpjVEueUBZTNKFyJy4
+         6Nf1q/swRCZ7WE6Z5w3uLnq41J/Q8eviEAMCc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BLQKlhIDTPBwzVBGPq9qp9erdvGfKtRolD9aeKLSQT4=;
-        b=2FS8AMIPbh8dmxg6ezQLWhUxLTiegyjz8gZ5amMA2G3gUZgunMXnOd63Zz27b5Ic7U
-         dOE2oinQCh1ZkCGWjl5eSwxj0czBnj7ccARDVrWZrC5Bx7uxbm0wOJrI7k6qiklFj8QS
-         w+o0HH4s7XmzDc51FpTWpIwx6onor1i/U/8KvKa/xd4PnxrWjynVFeUIYQVj3rA72BxZ
-         mPgl02Vg45A/bJ5ocj8yGjHqfzqyM2y0NskG0mjnOERtjAW8Bzgy1kFbFqMZzFehuJOy
-         L1ZoQ1JuKTAF0tow+4AJnm09AFRRycZSX/srY6+hNAYoLLqhaRWU1c5+3pIZxfvGF+uw
-         0/6w==
-X-Gm-Message-State: AJIora/y3RQkr1cHtbSXsdiAGHyg+dVU6Fr9/25kM9cYlHAhEitTUNX3
-        Vye1CEoKKHGRwz/t2TIsNb+L
-X-Google-Smtp-Source: AGRyM1vvhfztTiOKC7FnuaAhKckAWTI/SKXTyNRzYeieBMZywBMrc8EFFGuxriqfR0xFyJQQu7QcBg==
-X-Received: by 2002:adf:f0c1:0:b0:21d:ed10:5811 with SMTP id x1-20020adff0c1000000b0021ded105811mr10296701wro.656.1658160246295;
-        Mon, 18 Jul 2022 09:04:06 -0700 (PDT)
-Received: from Mem (2a01cb088160fc006422ad4f4c265774.ipv6.abo.wanadoo.fr. [2a01:cb08:8160:fc00:6422:ad4f:4c26:5774])
-        by smtp.gmail.com with ESMTPSA id h18-20020a05600c351200b003a3199c243bsm7085639wmq.0.2022.07.18.09.04.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jul 2022 09:04:05 -0700 (PDT)
-Date:   Mon, 18 Jul 2022 18:04:03 +0200
-From:   Paul Chaignon <paul@isovalent.com>
-To:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Kaixi Fan <fankaixi.li@bytedance.com>,
-        Nikolay Aleksandrov <razor@blackwall.org>
-Subject: Re: [PATCH bpf 4/5] bpf: Set flow flag to allow any source IP in
- bpf_tunnel_key
-Message-ID: <20220718160403.GA233852@Mem>
-References: <cover.1657895526.git.paul@isovalent.com>
- <627e34e78283b84c79db8945b05930b70eeaa925.1657895526.git.paul@isovalent.com>
- <fe77bef0-bbfa-261d-6419-548160c986e5@fb.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=VpWGg1Z0ItsY17Q4CdwHYBm/NTXahJiG/W0stWad/2Q=;
+        b=BVH49XWHOX9Kz1bajLzwtFOpl9CM0kb7Y5GZ75bi7V/JxZL+n7RPsfxcanKKZA0JEA
+         9fv0aec5+9ZxnhnoNsVhxqHy6lMxQIWsvFyvtr6sNMiJbZOt9003Xn/DNNB/Yd+XxxcC
+         R9RMeVfF/cA1OEGzQdaRJxTy9wSipxfSFnLEJPCILgaNvYegtF+vgTj8V7Jzuw0btXtn
+         iN9SpZDiigHvPYYqgu1TwSaINibbWyaS/lSDLp2muthN4A8ochFwOdjNRM1DhI2A6j7L
+         sUL+lX7naa9YZ3H2ryTqvJsXFAE2WWotnBWkryZW9vgqsb4YJIkslUn5TGPVgjNMB+mH
+         maiA==
+X-Gm-Message-State: AJIora/Y8Gkb21JFuqCHhwu2cJCYpO6g1lbSI/qgH9IE4YUQdSSjmRkD
+        9JObp87DGlb36MoHnJK2w3mgzTWrGqgUnKj00kYTGQ==
+X-Google-Smtp-Source: AGRyM1vuHM0SfTPb0F/nlCzubE/m1n8j9K1rxYega5fLB3kYc9RJ9h5UWn69E2l7QS82ZzuOj6oMP6Brl3rTdOaLqQM=
+X-Received: by 2002:a81:1b15:0:b0:31d:f87f:7ab5 with SMTP id
+ b21-20020a811b15000000b0031df87f7ab5mr17976514ywb.104.1658161529300; Mon, 18
+ Jul 2022 09:25:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fe77bef0-bbfa-261d-6419-548160c986e5@fb.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+From:   Ivan Babrou <ivan@cloudflare.com>
+Date:   Mon, 18 Jul 2022 09:25:18 -0700
+Message-ID: <CABWYdi2NBSv8sUdFONrYyACa60+W6O3+r5D44OXjftxPySKTXQ@mail.gmail.com>
+Subject: Removal of 128MB limit for BPF JIT programs broke perf symbolication
+ on aarch64
+To:     Russell King <russell.king@oracle.com>
+Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        kernel-team <kernel-team@cloudflare.com>,
+        bpf <bpf@vger.kernel.org>, linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 15, 2022 at 11:21:08AM -0700, Yonghong Song wrote:
-> On 7/15/22 8:02 AM, Paul Chaignon wrote:
-> > Commit 26101f5ab6bd ("bpf: Add source ip in "struct bpf_tunnel_key"")
-> > added support for getting and setting the outer source IP of encapsulated
-> > packets via the bpf_skb_{get,set}_tunnel_key BPF helper. This change
-> > allows BPF programs to set any IP address as the source, including for
-> > example the IP address of a container running on the same host.
-> > 
-> > In that last case, however, the encapsulated packets are dropped when
-> > looking up the route because the source IP address isn't assigned to any
-> > interface on the host. To avoid this, we need to set the
-> > FLOWI_FLAG_ANYSRC flag.
-> > 
-> > Fixes: 26101f5ab6bd ("bpf: Add source ip in "struct bpf_tunnel_key"")
-> > Signed-off-by: Paul Chaignon <paul@isovalent.com>
-> > ---
-> >   net/core/filter.c | 1 +
-> >   1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/net/core/filter.c b/net/core/filter.c
-> > index 5d16d66727fc..6d9c800cdab9 100644
-> > --- a/net/core/filter.c
-> > +++ b/net/core/filter.c
-> > @@ -4641,6 +4641,7 @@ BPF_CALL_4(bpf_skb_set_tunnel_key, struct sk_buff *, skb,
-> >   	info->key.tun_id = cpu_to_be64(from->tunnel_id);
-> >   	info->key.tos = from->tunnel_tos;
-> >   	info->key.ttl = from->tunnel_ttl;
-> > +	info->key.flow_flags = FLOWI_FLAG_ANYSRC;
-> 
-> Can we set FLOWI_FLAG_ANYSRC in all conditions?
-> In lwt_bpf.c, func bpf_lwt_xmit_reroute(), FLOWI_FLAG_ANYSRC
-> is set for ipv4 but not for ipv6. I am wondering whether
-> FLOWI_FLAG_ANYSRC needs to be set for ipv6 packet or not
-> in bpf_skb_set_tunnel_key().
+Hello,
 
-I've confirmed that IPv6-encapsulated packets are not dropped even if
-the flag is not set and the outer source IP address is not assigned to
-the host. This is also expected given we never check for
-FLOWI_FLAG_ANYSRC on the IPv6 path. I must have been confused by the
-fact we sometimes still set FLOWI_FLAG_ANYSRC for IPv6.
+We noticed that perf symbolication is broken on aarch64:
 
-I've sent a v2 without the changes to IPv6 code paths.
+ivan@vm:~$ sudo perf_5.10 record -e cpu-clock --cpu 3 -g --call-graph
+dwarf -F 11 -- sleep 0.1
+ivan@vm:~$ sudo perf_5.10 script
+swapper     0 [003]    75.516009:   90909090 cpu-clock:
+        ffffffe7fe311808 [unknown] ([unknown])
+        ffffffe7fdaf0a60 [unknown] ([unknown])
+        ffffffe7fdaf0bdc [unknown] ([unknown])
+        ffffffe7fda29538 [unknown] ([unknown])
+        ffffffe7fe3253b8 [unknown] ([unknown])
 
-> 
-> >   	if (flags & BPF_F_TUNINFO_IPV6) {
-> >   		info->mode |= IP_TUNNEL_INFO_IPV6;
+On Linux 5.15 I was able to bisect this to 5.15.18, where this commit
+was responsible (b89ddf4cca43 upstream):
+
+* 9c82ce593626 arm64/bpf: Remove 128MB limit for BPF JIT programs
+
+Reverting this commit in 5.15.18 resolves the issue. The issue is also
+present in 5.19-rc6.
+
+In addition to that, I noticed that on my personal kernel build this
+doesn't happen on any kernel version. After many attempts at config
+reconciliation, I narrowed it down to CONFIG_PROC_KCORE. When the
+option is enabled and the commit b89ddf4cca43 is present, the stacks
+have no kernel symbols.
+
+This seems like a regression.
