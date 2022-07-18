@@ -2,127 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8381D5788B3
-	for <lists+bpf@lfdr.de>; Mon, 18 Jul 2022 19:45:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BE5C5788FA
+	for <lists+bpf@lfdr.de>; Mon, 18 Jul 2022 19:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235617AbiGRRpo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jul 2022 13:45:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60646 "EHLO
+        id S233435AbiGRR4j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jul 2022 13:56:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231274AbiGRRpn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Jul 2022 13:45:43 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BAF92C648
-        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 10:45:42 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id va17so22726019ejb.0
-        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 10:45:42 -0700 (PDT)
+        with ESMTP id S229888AbiGRR4i (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Jul 2022 13:56:38 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6776527B31
+        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 10:56:37 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id v16so2363058wrr.6
+        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 10:56:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=MRdrFo28TR4LurP4lCnHGHEaC3rEK7GdUO57c59o6mc=;
-        b=lDYEQWntwda38G0bDQ5PLOKUPAPlBTIyFms+20v6Og8QfkCLkNrwIWSGS+GCowkHAK
-         x58KzNb9UdPMafxWfoa4gSqsfxHPdM4lFgycGsU6X+q7d9oLOmG3xY4yoY7aubeb4qN1
-         MJ0Qon5GVYVqOYsMAyT18N3WdMU0pFto0Bg7KHzc4SdBzvTUWBzVhRycJtzDZ9X/fkn8
-         4AxR247fxX8+4JeJa9EJnueFdC9zLmT/9yy3WA1DQFhn//gGH2FCaBUxl5B3dNbYtV3G
-         lz2kiELutyx0Bim1xpmopCfMLHFoU2aItWf9J1bHW2qLf6BKkUGBWG8VbSfdfBg2Mv+0
-         Cwjg==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xUYa4FvEr0j+muM1OSqff8K+8eK7M8BpGNz6BG478ro=;
+        b=k98T3SAbLzj/t6LT5j/X+Einj1T/WV5zhOrcX1I7klpDgDYv+2eh7xyfx/eJhD/27G
+         3E3EFhfOvJVuh9/opS0p9VEP26y3EC8GzBHNpbgA5erVEOkMaVlN1moSINnTJjwfxySF
+         nTAkGI25XvrBgDiNN8N/8mVp15yVTU14+eyTojC/5N99P77P+og+eG+voeue0EcGJjxa
+         91c6Trqajcm/bO+3WXN6vpI3QLz5EQwKsvBgTfpmXtTGGGEFzE9Niq3ZRsheA66AA8+Z
+         cvU1BM1o8Lgys2Fu4eY9r0lnikST8AIjuZCnlnXUALQUB9DjqN9nta2ZAllNh7+Qrib5
+         L3kA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=MRdrFo28TR4LurP4lCnHGHEaC3rEK7GdUO57c59o6mc=;
-        b=MpfcJkHFDgFyVuudIVRUMCgLM4WKrmNONC+v1eYwqdhN+DaOspEwOI2jIzKnr/mM+G
-         j1Fi1pZFB/LgJYFaogOAg+Kfrxu2/q4vRVDMA+eawTbI+FfKJs7FD3J+c2Qk2Mk1YxYL
-         D5uTlrepYBbp/jPiW/VylYrNaTo1GErVJuFsqmpzc62C4MOE1OT3Oql05VO1jFxZuped
-         vOuliNi5ptyXW6c/TNZDlLnkG12P2p4ozWaFjcIhUr1+h6haRpUEgJITQHfmt3qjxySK
-         +cK42WYR+F6MwEqWc2xZdtJUDMo+F4HZQMfrYzrjorLORhawDxLb3cwLWnKraboNyj3S
-         kGTQ==
-X-Gm-Message-State: AJIora/NIXdfjhKNdXCLSlNwB/F+vVKK6nG7WRArTdMlNiBxeQgM/6pY
-        9msU2K0F/YKyD5kewbmnnzLnYb2Rz4x8cL/yhC5E6Q==
-X-Google-Smtp-Source: AGRyM1ufo1/+2GlWO4KYoUagjLmU+QJzXSuwkGBRKgJOM5E+60YifKWhe4z0nYYdJnzEChww1WA4OX4b5tez33J5zXo=
-X-Received: by 2002:a17:907:b0a:b0:72b:3176:3fe5 with SMTP id
- h10-20020a1709070b0a00b0072b31763fe5mr26034326ejl.48.1658166341017; Mon, 18
- Jul 2022 10:45:41 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xUYa4FvEr0j+muM1OSqff8K+8eK7M8BpGNz6BG478ro=;
+        b=kk6ArlcS8HOfH/kZ1Ig69WUAceOAyq/z4HEPYUkYvxOKqxg7+kV5HX4ImVDz78ngFP
+         bD9jI/o742yqtj6kVD0HU1ILiyWs9cEt0CHak6eM5ajxSsZVL74zLxN9edG6iYwgA09J
+         hvA4e1v/3MgEwT6wqqBiM2Nr3ec8eTcb0YPOqKEatiG4bAVwn9xGe5c8RyXIGWY0SLnz
+         c19xjt9xbP3U0IwK0UcsBJD3zEWfj4v4pOQC7vXWvPU2JI/Taf0pOnKw0wsTHOojFBFF
+         h8RBiH+aexXhmCKDSGsWXI5mMZN/eYO3YMkC45QPsPq/dkG067mIE3936wBoEirUYil4
+         Qlgg==
+X-Gm-Message-State: AJIora8PbmnkqGHZNCWMpUT2Mku5wGQZL1yNyD8v/oF7/E4wjLOMMInn
+        jhHbWzcC7OfD5ns9ruWwPJ5VJWIrc0pCPt4u7vVP+g==
+X-Google-Smtp-Source: AGRyM1vDD0owJd7Go+UdK8dVZWCYHhPlbH9InqRBMMfSWW3kNQVP7If92+7nld/97anTGJka6f3ZBvtMP9RmIn11mBU=
+X-Received: by 2002:a5d:47c6:0:b0:21d:97dc:8f67 with SMTP id
+ o6-20020a5d47c6000000b0021d97dc8f67mr24403312wrc.372.1658166995767; Mon, 18
+ Jul 2022 10:56:35 -0700 (PDT)
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 18 Jul 2022 23:15:29 +0530
-Message-ID: <CA+G9fYsd0DaBtWk5cFxPhfM_cZRMQk3MbaxMRN3WJ-yNjAkp7Q@mail.gmail.com>
-Subject: perf: util/annotate.c:1752:9: error: too few arguments to function 'init_disassemble_info'
-To:     linux-stable <stable@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        perf-users <perf-users@linaro.org>, bpf <bpf@vger.kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kubakici@wp.pl,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Ian Rogers <irogers@google.com>,
-        Namhyung Kim <namhyung@kernel.org>
+References: <Ysg0GyvqUe0od2NN@dhcp22.suse.cz> <20220708174858.6gl2ag3asmoimpoe@macbook-pro-3.dhcp.thefacebook.com>
+ <20220708215536.pqclxdqvtrfll2y4@google.com> <CAADnVQL5ZQDqMGULJLDwT9xRTihdDvo6GvwxdEOtSAs8EwE78A@mail.gmail.com>
+ <20220710073213.bkkdweiqrlnr35sv@google.com> <YswUS/5nbYb8nt6d@dhcp22.suse.cz>
+ <20220712043914.pxmbm7vockuvpmmh@macbook-pro-3.dhcp.thefacebook.com>
+ <Ys0lXfWKtwYlVrzK@dhcp22.suse.cz> <CALOAHbAhzNTkT9o_-PRX=n4vNjKhEK_09+-7gijrFgGjNH7iRA@mail.gmail.com>
+ <Ys1ES+CygtnUvArz@dhcp22.suse.cz> <Ys4wRqCWrV1WeeWp@castle>
+In-Reply-To: <Ys4wRqCWrV1WeeWp@castle>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Mon, 18 Jul 2022 10:55:59 -0700
+Message-ID: <CAJD7tkb0OcVbUMxsEH-QyF08OabK5pQ-8RxW_Apy1HaHQtN0VQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/5] bpf: BPF specific memory allocator.
+To:     Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     Michal Hocko <mhocko@suse.com>, Yafang Shao <laoar.shao@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        linux-mm <linux-mm@kvack.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-with reference to other email thread on perf build failure on Linus mainline
-https://lore.kernel.org/bpf/20220715191641.go6xbmhic3kafcsc@awork3.anarazel.de/T/
+On Tue, Jul 12, 2022 at 7:39 PM Roman Gushchin <roman.gushchin@linux.dev> wrote:
+>
+> On Tue, Jul 12, 2022 at 11:52:11AM +0200, Michal Hocko wrote:
+> > On Tue 12-07-22 16:39:48, Yafang Shao wrote:
+> > > On Tue, Jul 12, 2022 at 3:40 PM Michal Hocko <mhocko@suse.com> wrote:
+> > [...]
+> > > > > Roman already sent reparenting fix:
+> > > > > https://patchwork.kernel.org/project/netdevbpf/patch/20220711162827.184743-1-roman.gushchin@linux.dev/
+> > > >
+> > > > Reparenting is nice but not a silver bullet. Consider a shallow
+> > > > hierarchy where the charging happens in the first level under the root
+> > > > memcg. Reparenting to the root is just pushing everything under the
+> > > > system resources category.
+> > > >
+> > >
+> > > Agreed. That's why I don't like reparenting.
+> > > Reparenting just reparent the charged pages and then redirect the new
+> > > charge, but can't reparents the 'limit' of the original memcg.
+> > > So it is a risk if the original memcg is still being charged. We have
+> > > to forbid the destruction of the original memcg.
+>
+> I agree, I also don't like reparenting for !kmem case. For kmem (and *maybe*
+> bpf maps is an exception), I don't think there is a better choice.
+>
+> > yes, I was toying with an idea like that. I guess we really want a
+> > measure to keep cgroups around if they are bound to a resource which is
+> > sticky itself. I am not sure how many other resources like BPF (aka
+> > module like) we already do charge for memcg but considering the
+> > potential memory consumption just reparenting will not help in general
+> > case I am afraid.
+>
+> Well, then we have to make these objects a first-class citizens in cgroup API,
+> like processes. E.g. introduce cgroup.bpf.maps, cgroup.mounts.tmpfs etc.
+> I easily can see some value here, but it's a big API change.
+>
+> With the current approach when a bpf map pins a memory cgroup of the creator
+> process (which I think is completely transparent for most bpf users), I don't
+> think preventing the deletion of a such cgroup is possible. It will break too
+> many things.
+>
+> But honestly I don't see why userspace can't handle it. If there is a cgroup which
+> contains shared bpf maps, why would it delete it? It's a weird use case, I don't
+> think we have to optimize for it. Also, we do a ton of optimizations for live
+> cgroups (e.g. css refcounting being percpu) which are not working for a deleted
+> cgroup. So noone really should expect any properties from dying cgroups.
+>
 
-I see perf build failures on stable-rc 5.18 .. 5.4 with this error [1]
-and also noticed on today's linus mainline tree.
+Just a random thought here, and I can easily be wrong (and this can
+easily be the wrong thread for this), but if we introduce a more
+generic concept to generally tie a resource explicitly to a cgroup
+(tmpfs, bpf maps, etc) using cgroupfs interfaces, and then prevent the
+cgroup from being deleted unless the resource is freed or moved to a
+different cgroup?
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+This would be optional, so the current status quo is maintainable, but
+also gives flexibility to admins to assign resources to cgroups to
+make sure nothing is ( unaccounted / accounted to a zombie memcg /
+reparented to an unrelated parent ). This might be too fine-grained to
+be practical but I just thought it might be useful. We will also need
+to define an OOM behavior for such resources. Things like bpf maps
+will be unreclaimable, but tmpfs memory can be swapped out.
 
-steps to reproduce:
---------------------
+I think this also partially addresses Johannes's concerns that the
+memcg= mount option uses file system mounts to create shareable
+resource domains outside of the cgroup hierarchy.
 
-tuxmake --runtime podman \
-        --target-arch x86_64 \
-        --toolchain gcc-11 \
-        --kconfig
-https://builds.tuxbuild.com/2C7oWWWYOYGFtqq4SWX1yG4a2Ne/config \
-        debugkernel headers kernel modules perf
-
-Error log:
------------
-  CC       event-parse-api.o
-  CC       staticobjs/btf_dump.o
-find: 'x86_64-linux-gnu-gcc/arch': No such file or directory
-error: Found argument '-I' which wasn't expected, or isn't valid in this context
-
-USAGE:
-    sccache [FLAGS] [OPTIONS] [cmd]...
-
-For more information try --help
-
-and
-
-  CC       util/annotate.o
-  MKDIR    util/
-  CC       util/block-range.o
-  MKDIR    bench/
-  CC       bench/sched-pipe.o
-util/annotate.c: In function 'symbol__disassemble_bpf':
-util/annotate.c:1752:9: error: too few arguments to function
-'init_disassemble_info'
- 1752 |         init_disassemble_info(&info, s,
-      |         ^~~~~~~~~~~~~~~~~~~~~
-In file included from util/annotate.c:1709:
-/usr/include/dis-asm.h:472:13: note: declared here
-  472 | extern void init_disassemble_info (struct disassemble_info
-*dinfo, void *stream,
-      |             ^~~~~~~~~~~~~~~~~~~~~
-
-[1] https://builds.tuxbuild.com/2C7oWWWYOYGFtqq4SWX1yG4a2Ne/
-
-Best regards
-Naresh Kamboju
-
-
---
-Linaro LKFT
-https://lkft.linaro.org
+> Thanks!
+>
