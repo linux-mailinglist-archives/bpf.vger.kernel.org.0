@@ -2,81 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE46D577877
-	for <lists+bpf@lfdr.de>; Sun, 17 Jul 2022 23:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 124FC5778F5
+	for <lists+bpf@lfdr.de>; Mon, 18 Jul 2022 02:14:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231753AbiGQVnU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 17 Jul 2022 17:43:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57748 "EHLO
+        id S231370AbiGRAOa convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Sun, 17 Jul 2022 20:14:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230185AbiGQVnT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 17 Jul 2022 17:43:19 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35373BC9E;
-        Sun, 17 Jul 2022 14:43:18 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id z23so18222736eju.8;
-        Sun, 17 Jul 2022 14:43:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JW1OfylC66Hp9nA9HQaGYHfkZ+Nw3LPS1bSYaq4nMP0=;
-        b=M0d3xJ5Czbs9IA5+40C9BHKdH0HXEfgJDtwZ6Y1SloXOWcm0kpI7q9qD83hjvsgwk6
-         pA0Xmcn42RGhFzZ1nn2aHyPhiIs2tCuE82wiqq/6DWV7WtgIm4CNkBhKDyIoBB3OqTb8
-         7w/6gxdR5UQdzNiK/veI6aSX9qTUZk0PYhLJxUJFNlRR6Wh++CKvTDCP9mXlWtsFc75E
-         3/d/nvWYVjF3UnOipsgcKUKVZjVOzKxlnRviQJQl/dvkJJpA10qYY4u4z0YzN7x1gnL4
-         vvA00Te+QOXlZskfYzIsNgLE++0NnAjcnhJ/IOINqqSGkgg9Nnmc+SLDAUa6uamozeZj
-         1crA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JW1OfylC66Hp9nA9HQaGYHfkZ+Nw3LPS1bSYaq4nMP0=;
-        b=cO2vXDDtTiBZYAd8g3I5DHej3rzsD5OhfDhNdPtUPweVVKhIpH6Bt+6W24F5LBgkjx
-         rMAiLlh08wo/5POJK/1kM/Iwv6GEeRoFE6SnFe7iUPRvWs6k5wfBQ4cL7rMaGOH1tv0O
-         gQmU34JQGxP4hm99rTe8kt5yg1tWK+sQUWV16fI9GLb8y2VGe7foE8gmcC56s39s9kkF
-         qzJpzwM8OqyKWDz+CKDGrcUa3DhgCeXvI/YRq3+hZbibaFX/k1PknCWvEeuEJHmTq11y
-         3yQp4VAreqKyUSpY6RiaOA+sr0lqPmV9LqjQunLkvbSyYzTxKozfRna222b35vX0rIK3
-         aTwQ==
-X-Gm-Message-State: AJIora/Adjw4Ro+IvAj2ihkPlRFAvmaM3SCAHW9cCL4Ioc+wJjcieQiU
-        9cEaCe8sGRzkblds0eYtKm0=
-X-Google-Smtp-Source: AGRyM1tZcj9DBcDkMitCC14fjrMGK0pAtQzbt1WO6zdpn9cXiyuWGQSiYQlBgFcmAzr8u+C2tKoz8A==
-X-Received: by 2002:a17:906:9b14:b0:72b:97ac:c30c with SMTP id eo20-20020a1709069b1400b0072b97acc30cmr23500919ejc.588.1658094196613;
-        Sun, 17 Jul 2022 14:43:16 -0700 (PDT)
-Received: from krava ([83.240.63.148])
-        by smtp.gmail.com with ESMTPSA id eq22-20020a056402299600b0043a7134b381sm7254823edb.11.2022.07.17.14.43.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Jul 2022 14:43:12 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Sun, 17 Jul 2022 23:43:08 +0200
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Martynas Pumputis <m@lambda.lt>,
-        Yutaro Hayakawa <yutaro.hayakawa@isovalent.com>
-Subject: Re: [PATCH RFC bpf-next 4/4] selftests/bpf: Fix kprobe get_func_ip
- tests for CONFIG_X86_KERNEL_IBT
-Message-ID: <YtSCbIA+6JtRF/Ch@krava>
-References: <20220705190308.1063813-1-jolsa@kernel.org>
- <20220705190308.1063813-5-jolsa@kernel.org>
- <CAEf4BzapX_C16O9woDSXOpbzVsxjYudXW36woRCqU3u75uYiFA@mail.gmail.com>
- <YsdbQ4vJheLWOa0a@krava>
+        with ESMTP id S229621AbiGRAOa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 17 Jul 2022 20:14:30 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A025B7652
+        for <bpf@vger.kernel.org>; Sun, 17 Jul 2022 17:14:29 -0700 (PDT)
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 26HIHZdb002308
+        for <bpf@vger.kernel.org>; Sun, 17 Jul 2022 17:14:29 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net (PPS) with ESMTPS id 3hbxbg55ev-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Sun, 17 Jul 2022 17:14:28 -0700
+Received: from twshared10560.18.frc3.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28; Sun, 17 Jul 2022 17:14:27 -0700
+Received: by devbig932.frc1.facebook.com (Postfix, from userid 4523)
+        id 7B084A495CE3; Sun, 17 Jul 2022 17:14:17 -0700 (PDT)
+From:   Song Liu <song@kernel.org>
+To:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <live-patching@vger.kernel.org>
+CC:     <daniel@iogearbox.net>, <kernel-team@fb.com>, <jolsa@kernel.org>,
+        <rostedt@goodmis.org>, Song Liu <song@kernel.org>
+Subject: [PATCH v3 bpf-next 0/4] ftrace: host klp and bpf trampoline together
+Date:   Sun, 17 Jul 2022 17:14:01 -0700
+Message-ID: <20220718001405.2236811-1-song@kernel.org>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: GI-GBX4I9q1cNxpVJgqwzZ0X5u3l1ooG
+X-Proofpoint-GUID: GI-GBX4I9q1cNxpVJgqwzZ0X5u3l1ooG
+Content-Transfer-Encoding: 8BIT
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YsdbQ4vJheLWOa0a@krava>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-07-17_17,2022-07-15_01,2022-06-22_01
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,84 +56,47 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 08, 2022 at 12:16:35AM +0200, Jiri Olsa wrote:
-> On Tue, Jul 05, 2022 at 10:29:17PM -0700, Andrii Nakryiko wrote:
-> > On Tue, Jul 5, 2022 at 12:04 PM Jiri Olsa <jolsa@kernel.org> wrote:
-> > >
-> > > The kprobe can be placed anywhere and user must be aware
-> > > of the underlying instructions. Therefore fixing just
-> > > the bpf program to 'fix' the address to match the actual
-> > > function address when CONFIG_X86_KERNEL_IBT is enabled.
-> > >
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > >  tools/testing/selftests/bpf/progs/get_func_ip_test.c | 7 +++++--
-> > >  1 file changed, 5 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/tools/testing/selftests/bpf/progs/get_func_ip_test.c b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-> > > index a587aeca5ae0..220d56b7c1dc 100644
-> > > --- a/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-> > > +++ b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-> > > @@ -2,6 +2,7 @@
-> > >  #include <linux/bpf.h>
-> > >  #include <bpf/bpf_helpers.h>
-> > >  #include <bpf/bpf_tracing.h>
-> > > +#include <stdbool.h>
-> > >
-> > >  char _license[] SEC("license") = "GPL";
-> > >
-> > > @@ -13,6 +14,8 @@ extern const void bpf_modify_return_test __ksym;
-> > >  extern const void bpf_fentry_test6 __ksym;
-> > >  extern const void bpf_fentry_test7 __ksym;
-> > >
-> > > +extern bool CONFIG_X86_KERNEL_IBT __kconfig __weak;
-> > > +
-> > >  __u64 test1_result = 0;
-> > >  SEC("fentry/bpf_fentry_test1")
-> > >  int BPF_PROG(test1, int a)
-> > > @@ -37,7 +40,7 @@ __u64 test3_result = 0;
-> > >  SEC("kprobe/bpf_fentry_test3")
-> > >  int test3(struct pt_regs *ctx)
-> > >  {
-> > > -       __u64 addr = bpf_get_func_ip(ctx);
-> > > +       __u64 addr = bpf_get_func_ip(ctx) - (CONFIG_X86_KERNEL_IBT ? 4 : 0);
-> > 
-> > so for kprobe bpf_get_func_ip() gets an address with 5 byte
-> > compensation for `call __fentry__`, but not for endr? Why can't we
-> > compensate for endbr inside the kernel code as well? I'd imagine we
-> > either do no compensation (and thus we get &bpf_fentry_test3+5 or
-> > &bpf_fentry_test3+9, depending on CONFIG_X86_KERNEL_IBT) or full
-> > compensation (and thus always get &bpf_fentry_test3), but this
-> > in-between solution seems to be the worst of both worlds?...
-> 
-> hm rigth, I guess we should be able to do that in bpf_get_func_ip,
-> I'll check
+Changes v2 => v3:
+1. Major rewrite after discussions with Steven Rostedt. [1]
+2. Remove SHARE_IPMODIFY flag from ftrace code. Instead use the callback
+   function to communicate this information. (Steven)
+3. Add cleanup_direct_functions_after_ipmodify() to clear SHARE_IPMODIFY
+   on the DIRECT ops when the IPMODIFY ops is removed.
 
-sorry for late follow up..
+Changes v1 => v2:
+1. Fix build errors for different config. (kernel test robot)
 
-so the problem is that you can place kprobe anywhere in the function
-(on instruction boundary) but the IBT adjustment of kprobe address is
-made only if it's at the function entry and there's endbr instruction
+Kernel Live Patch (livepatch, or klp) and bpf trampoline are important
+features for modern systems. This set allows the two to work on the same
+kernel function as the same time.
 
-and that kprobe address is what we return in helper:
+live patch uses ftrace with IPMODIFY, while bpf trampoline use direct
+ftrace. Existing policy does not allow the two to attach to the same kernel
+function. This is changed by fine tuning ftrace IPMODIFY policy, and allows
+one IPMODIFY ftrace_ops and one DIRECT ftrace_ops on the same kernel
+function at the same time. Please see patch 2 and 4 for more details.
 
-  BPF_CALL_1(bpf_get_func_ip_kprobe, struct pt_regs *, regs)
-  {
-        struct kprobe *kp = kprobe_running();
+Note that, one of the constraint here is to let bpf trampoline use direct
+call when it is not working on the same function as live patch. This is
+achieved by allowing ftrace code to ask bpf trampoline to make changes.
 
-        return kp ? (uintptr_t)kp->addr : 0;
-  }
+[1] https://lore.kernel.org/all/20220602193706.2607681-2-song@kernel.org/
 
-so the adjustment would work only for address at function entry, but
-would be wrong for address within the function
+Jiri Olsa (1):
+  bpf, x64: Allow to use caller address from stack
 
-perhaps we could add flag to kprobe to indicate the addr adjustment
-was done and use it in helper
+Song Liu (3):
+  ftrace: add modify_ftrace_direct_multi_nolock
+  ftrace: allow IPMODIFY and DIRECT ops on the same function
+  bpf: support bpf_trampoline on functions with IPMODIFY (e.g.
+    livepatch)
 
-but that's why I thought I'd keep bpf_get_func_ip_kprobe as it and
-leave it up to user
+ arch/x86/net/bpf_jit_comp.c |  13 +-
+ include/linux/bpf.h         |  13 ++
+ include/linux/ftrace.h      |  43 ++++++
+ kernel/bpf/trampoline.c     | 158 +++++++++++++++++---
+ kernel/trace/ftrace.c       | 288 +++++++++++++++++++++++++++++++-----
+ 5 files changed, 455 insertions(+), 60 deletions(-)
 
-kprobe_multi and trampolines are different, because they can be
-only at the function entry, so we can adjust the ip properly
-
-jirka
+--
+2.30.2
