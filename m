@@ -2,73 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22DC657867E
-	for <lists+bpf@lfdr.de>; Mon, 18 Jul 2022 17:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C46AD5786C5
+	for <lists+bpf@lfdr.de>; Mon, 18 Jul 2022 17:53:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235428AbiGRPhN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jul 2022 11:37:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49684 "EHLO
+        id S233195AbiGRPx5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jul 2022 11:53:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234134AbiGRPhM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Jul 2022 11:37:12 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CBADBC81;
-        Mon, 18 Jul 2022 08:37:10 -0700 (PDT)
-Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4LmmHt66YzzlW4M;
-        Mon, 18 Jul 2022 23:35:22 +0800 (CST)
-Received: from [10.67.111.192] (10.67.111.192) by
- kwepemi500013.china.huawei.com (7.221.188.120) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Mon, 18 Jul 2022 23:37:02 +0800
-Message-ID: <b0e740c4-9630-c539-e811-a4ad93fcca5c@huawei.com>
-Date:   Mon, 18 Jul 2022 23:37:01 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH bpf-next v9 3/4] bpf, arm64: Implement
- bpf_arch_text_poke() for arm64
-Content-Language: en-US
-To:     Jon Hunter <jonathanh@nvidia.com>, <bpf@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Will Deacon <will@kernel.org>, KP Singh <kpsingh@kernel.org>
-CC:     Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+        with ESMTP id S231625AbiGRPx4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Jul 2022 11:53:56 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F00492602
+        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 08:53:51 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id b6so6872336wmq.5
+        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 08:53:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=6Q1RAnyAxwLjG00r5y2VCpMSmEQovk1Zj9+ilrsOxdE=;
+        b=7eMTPGp9S2ynWUngPjXvg/584bl+OFyZNXFRwPKegz8BO1CBZU16/VcWrOnDGus8Lp
+         JrH3yWerWrK/KO13BFXjbY42aVCA9mIy54I/gEPdvrzZ+5YUJOI61xnX6JE8Fglmvg9f
+         HOl5YKSqbSwtkrYyxKVWszeJHdzGNv+Dh/T3SBfAaAgrY736PDaXNDj2uF2hNIPYN0zp
+         Q8dR3VPNU7AVVJ2jreOkbxovsQX9T4LSHtN+AwcfeGM1gsNEIxLyL7HaMiUTQuJeUMwf
+         UmWfEi8XGHuJaEN+3cDUwhhuY3C1DE4p9ZCY6fHuz4gMXFr9omMrXnw28zzEcgKb+1bk
+         CtdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=6Q1RAnyAxwLjG00r5y2VCpMSmEQovk1Zj9+ilrsOxdE=;
+        b=QQwWdjUKhjsr079/6UkZN8In5s/VZzQqtPx2AVhX+e+bX3z/iB9WoQMI/xcGrukOHk
+         DpRWiRgICJ7sZDJUBg3eQLgAUtOtDrCq79UEuJA/pVjRmrXmbLggRHN/t/FNTsdl/e9e
+         QUcu4ZQcXxfP4Z94i6+w3h3me5w0vxSaY8UnHfNjGqdGmdLZw4MNwcKka9QqV4Wzh3Rr
+         8SgnabT5u1g/T03EitBQAV9yYtK6CcgZ0preHOClkmF4PKnTQXvEC+MlBM5ZpksWR7ye
+         cVEk5I0shVtTbdUJHb/RpNGQTGr26RtA6dT6BZfUjR2pp5IyP1jg6sjklyFblOGPr/vd
+         6lug==
+X-Gm-Message-State: AJIora/KwjdIWPvsXEIqvlgl22yKyqBOBSLbTr1WXln4rXi3W+l1rjhd
+        14EIesoi0Tt8ylAFnSPvBy9B
+X-Google-Smtp-Source: AGRyM1t+Y/Ql2ODu8Q+pRN463xBoeNGWsYMXH6kgELqNXXq0jJ1wR6pHuGQ7+ynq6PXZvQr+Nytl/Q==
+X-Received: by 2002:a7b:ca57:0:b0:3a3:205d:2533 with SMTP id m23-20020a7bca57000000b003a3205d2533mr1938001wml.67.1658159630492;
+        Mon, 18 Jul 2022 08:53:50 -0700 (PDT)
+Received: from Mem (2a01cb088160fc006422ad4f4c265774.ipv6.abo.wanadoo.fr. [2a01:cb08:8160:fc00:6422:ad4f:4c26:5774])
+        by smtp.gmail.com with ESMTPSA id q18-20020adfdfd2000000b0021bbdc3375fsm11058603wrn.68.2022.07.18.08.53.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Jul 2022 08:53:50 -0700 (PDT)
+Date:   Mon, 18 Jul 2022 17:53:48 +0200
+From:   Paul Chaignon <paul@isovalent.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Martin KaFai Lau <martin.lau@linux.dev>,
         John Fastabend <john.fastabend@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        James Morse <james.morse@arm.com>,
-        Hou Tao <houtao1@huawei.com>,
-        Jason Wang <wangborong@cdjrlc.com>
-References: <20220711150823.2128542-1-xukuohai@huawei.com>
- <20220711150823.2128542-4-xukuohai@huawei.com>
- <8de014c1-aa63-5783-e5fd-53b7fdece805@nvidia.com>
-From:   Xu Kuohai <xukuohai@huawei.com>
-In-Reply-To: <8de014c1-aa63-5783-e5fd-53b7fdece805@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.111.192]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemi500013.china.huawei.com (7.221.188.120)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Kaixi Fan <fankaixi.li@bytedance.com>,
+        Nikolay Aleksandrov <razor@blackwall.org>,
+        Yonghong Song <yhs@fb.com>
+Subject: [PATCH bpf v2 0/5] bpf: Allow any source IP in bpf_skb_set_tunnel_key
+Message-ID: <cover.1658159533.git.paul@isovalent.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,42 +71,34 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/18/2022 9:52 PM, Jon Hunter wrote:
+Commit 26101f5ab6bd ("bpf: Add source ip in "struct bpf_tunnel_key"")
+added support for getting and setting the outer source IP of encapsulated
+packets via the bpf_skb_{get,set}_tunnel_key BPF helper. This change
+allows BPF programs to set any IP address as the source, including for
+example the IP address of a container running on the same host.
 
-[..]
-> 
-> This change appears to be causing the build to fail ...
-> 
-> /tmp/cc52xO0c.s: Assembler messages:
-> /tmp/cc52xO0c.s:8: Error: operand 1 should be an integer register --
-> `mov lr,x9'
-> /tmp/cc52xO0c.s:7: Error: undefined symbol lr used as an immediate value
-> make[2]: *** [scripts/Makefile.build:250: arch/arm64/net/bpf_jit_comp.o]
-> Error 1
-> make[1]: *** [scripts/Makefile.build:525: arch/arm64/net] Error 2
-> 
-> Let me know if you have any thoughts.
-> 
+In that last case, however, the encapsulated packets are dropped when
+looking up the route because the source IP address isn't assigned to any
+interface on the host. To avoid this, we need to set the
+FLOWI_FLAG_ANYSRC flag.
 
-Sorry for this failure, but I can't reproduce it.
+Changes in v2:
+  - Removed changes to IPv6 code paths as they are unnecessary.
 
-I guess maybe your assembler doesn't recognize "lr". Could you give a
-try to replace "lr" with "x30"?
+Paul Chaignon (5):
+  ip_tunnels: Add new flow flags field to ip_tunnel_key
+  vxlan: Use ip_tunnel_key flow flags in route lookups
+  geneve: Use ip_tunnel_key flow flags in route lookups
+  bpf: Set flow flag to allow any source IP in bpf_tunnel_key
+  selftests/bpf: Don't assign outer source IP to host
 
- #if IS_ENABLED(CONFIG_ARM64_BTI_KERNEL)
- "      bti j\n" /* dummy_tramp is called via "br x10" */
- #endif
--"      mov x10, lr\n"
--"      mov lr, x9\n"
-+"      mov x10, x30\n"
-+"      mov x30, x9\n"
- "      ret x10\n"
- "      .size dummy_tramp, .-dummy_tramp\n"
- "      .popsection\n
+ drivers/net/geneve.c                                 |  1 +
+ drivers/net/vxlan/vxlan_core.c                       | 11 +++++++----
+ include/net/ip_tunnels.h                             |  1 +
+ net/core/filter.c                                    |  1 +
+ tools/testing/selftests/bpf/prog_tests/test_tunnel.c |  1 -
+ 5 files changed, 10 insertions(+), 5 deletions(-)
 
-Thanks.
-
-> Cheers
-> Jon
-> 
+-- 
+2.25.1
 
