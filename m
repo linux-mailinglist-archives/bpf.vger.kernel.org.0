@@ -2,104 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 262CA5786D0
-	for <lists+bpf@lfdr.de>; Mon, 18 Jul 2022 17:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 166945786E5
+	for <lists+bpf@lfdr.de>; Mon, 18 Jul 2022 18:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbiGRPzd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jul 2022 11:55:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35722 "EHLO
+        id S235486AbiGRQB3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jul 2022 12:01:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231567AbiGRPzd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Jul 2022 11:55:33 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A17D2A25C
-        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 08:55:32 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id bu1so17687660wrb.9
-        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 08:55:32 -0700 (PDT)
+        with ESMTP id S235551AbiGRQBY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Jul 2022 12:01:24 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 451EA25E86
+        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 09:01:22 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id va17so22172096ejb.0
+        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 09:01:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XUUk00/TjPArZ0mXnxJW0zloRPmWlYco9FTFKH+pLFQ=;
-        b=EXxkakBYHHMmV1resyEvWwZDbmjWsWVlSMwrmJMu+fyaOY1DJWzFfwrcxGt7evNn8T
-         TkZYQPcBY4yXz6LWrNgh/tctKwzhj9EOrq2o58NA+f7fPwH/IAYkmw8uFCbRLLmqC36L
-         afBwLwG9CTtHVVS6eG46ogvGj4yYjIcG/Wv4vddlurYvfEvM2v0MiLXoAj71GHjfPIqv
-         ZDDGYrK1PGil1TBCkdYnFADTu7+opZpKg+aEKjFRSPynGkG+8zjpw7pm+jc54/73g5CS
-         b0tvbSGoTslNE8gcOvqAMhYpLs1Igmml6RJEv6pm1utpg7tn8xROxqr5eWSLWRBDyEwE
-         BElg==
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=2X8HXtEcU/ZehxuPCgIPz4aOGr6MXTRGr5kvCe3jveI=;
+        b=Mu3qC8/ZG6eHc2t/BCs0zZo3apl4tnMOBxVO+xJVXWGEPED5rh9EL4HZXeUbcMKTAl
+         9mrizSwl+zaZdjTPduV8uG+zOhiU4ugvQlTWNE4MKVSwOPIq3yvNlg8aFz+8iB/jwVrW
+         A4W6YMWALzZzuzswVEeX1IoNp8dsyLs9EflSYweiaTTVdH8fbTs8FMLxM+pdt7z/pTnr
+         N/k6lqXr2jyMebsGxHebzWS7SC0wd3LU0okV04IhstFrqzctnMgAzuA4KqCfecMwTSAk
+         5vNCJQjl3oEkvzF2ExcdnHv9ACUBntPgcSy9jmyFH2slNh+fKganDqacULrcBHCIrJpM
+         K8WA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XUUk00/TjPArZ0mXnxJW0zloRPmWlYco9FTFKH+pLFQ=;
-        b=Fe2tURzh/OXhq/SAtCnGxq+HuNZeUiylnPACRaM1uiDBqhdfnQGVPTQJlpH4Acrmbl
-         VCktoHpytO6QOIIhYb8McdzHkhv+yr3WWiXAMadHcg9d0ALNMt+eG35jyC6PeZStn76f
-         PR+zTPj1iSheArTrytJLqgiNVoqbsYtQseOsN+TbZM2AnyAwvyBR4/ECqK9DMa1lmLRD
-         GoCWoW9F/JTH8i3kvKUzT3DawImYya7lm36tKKeqfIpZCvNb9zwFx8XUFmO4B/YJnEDt
-         utvUdr2B/0a8qQtRnZ87pwVri/MOoRkY9a3W2OkddQtCp3kOGkmYsKUafXd37UOaJj+f
-         +OOQ==
-X-Gm-Message-State: AJIora9VTqbAzNyOCSUBIB5/LGYopOuIfYW5IqZwZV8RtIgISgyRhbdQ
-        nWJ9yM2rQwTLBdGkkSunKD1u
-X-Google-Smtp-Source: AGRyM1vwtfQ8ITTvIIUj9bCMNXMi61TsMC6zmPCQEUqTOUydZvpfUpu6N3bpglzrpzFDX+fvgOdHsA==
-X-Received: by 2002:adf:e6c1:0:b0:21d:6497:f819 with SMTP id y1-20020adfe6c1000000b0021d6497f819mr22250931wrm.243.1658159730971;
-        Mon, 18 Jul 2022 08:55:30 -0700 (PDT)
-Received: from Mem (2a01cb088160fc006422ad4f4c265774.ipv6.abo.wanadoo.fr. [2a01:cb08:8160:fc00:6422:ad4f:4c26:5774])
-        by smtp.gmail.com with ESMTPSA id d14-20020adffd8e000000b0021d6a23fdf3sm11214824wrr.15.2022.07.18.08.55.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jul 2022 08:55:30 -0700 (PDT)
-Date:   Mon, 18 Jul 2022 17:55:28 +0200
-From:   Paul Chaignon <paul@isovalent.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Kaixi Fan <fankaixi.li@bytedance.com>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        Yonghong Song <yhs@fb.com>
-Subject: [PATCH bpf v2 5/5] selftests/bpf: Don't assign outer source IP to
- host
-Message-ID: <3509b3fb239bdb56d420f49f0abf8343d0063f83.1658159533.git.paul@isovalent.com>
-References: <cover.1658159533.git.paul@isovalent.com>
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=2X8HXtEcU/ZehxuPCgIPz4aOGr6MXTRGr5kvCe3jveI=;
+        b=UD1IuPjdEJRJoIZ5xSGV3sh3QAaqVTEsqxKznSvNxshjwwJDDTXgV/T9OGyoqM//1+
+         7N06apVb5MbjNyxcQLktiI/5a87WjePTQLdnB4HXHuwrga+4kcbQG8rkJn6IwjQXOGwS
+         YzJRAiKHSsVqDEYwWzFC6z5/JNfreNNnXLPkq0WUcK3DVoDMTlUTNNTTfG7ho04AZo2p
+         +WO5hSRs6ZDlF5taa1LZG3WTgz3NU6l/6Z6Jc1Og1d6puspwPWTQtEX6/Vj1cKJHuLHD
+         lwyCKZE3fZYDm/kaVJc622sawuB5v3deqpc09FXpr9OH6hZ0K9jQWtv0+TGHcMqvLGUQ
+         Sknw==
+X-Gm-Message-State: AJIora/bW3xMKvLbVFjNxOB27WIwT7Y9OXDbUSgx9Gt0iB2GRchfzt7B
+        2v38kBkCrssBnNYsuvR8iclbQd5MhRxkH3DvEQM=
+X-Google-Smtp-Source: AGRyM1txY24+Sdc2MK0NXOySsIiXMakdNIIVEHSfOZwjAj7OYX5VJIM/hNWf9ApOZvAZD6PH4e1AvOqZjWt4T+MBepI=
+X-Received: by 2002:a17:907:970d:b0:72b:3589:a22c with SMTP id
+ jg13-20020a170907970d00b0072b3589a22cmr27123363ejc.621.1658160080882; Mon, 18
+ Jul 2022 09:01:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1658159533.git.paul@isovalent.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Reply-To: sgtkaylama@gmail.com
+Sender: oudounassirou@gmail.com
+Received: by 2002:a17:906:c08c:0:0:0:0 with HTTP; Mon, 18 Jul 2022 09:01:20
+ -0700 (PDT)
+From:   sgtkaylama <sgtkaylama@gmail.com>
+Date:   Mon, 18 Jul 2022 16:01:20 +0000
+X-Google-Sender-Auth: jCaha363L6eSOCbvR4-7ulut4Gc
+Message-ID: <CAHxo4-uOeuwtvSow=jW-DR=WT6d5u3TWgOfrGESRgfE0+bPaYA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The previous commit fixed a bug in the bpf_skb_set_tunnel_key helper to
-avoid dropping packets whose outer source IP address isn't assigned to a
-host interface. This commit changes the corresponding selftest to not
-assign the outer source IP address to an interface.
-
-With this change and without the bugfix, the ICMP echo packets sent as
-part of the test are dropped.
-
-Signed-off-by: Paul Chaignon <paul@isovalent.com>
----
- tools/testing/selftests/bpf/prog_tests/test_tunnel.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-index 3bba4a2a0530..14ccb41a9f59 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-@@ -111,7 +111,6 @@ static int config_device(void)
- 	SYS("ip link add veth0 type veth peer name veth1");
- 	SYS("ip link set veth0 netns at_ns0");
- 	SYS("ip addr add " IP4_ADDR1_VETH1 "/24 dev veth1");
--	SYS("ip addr add " IP4_ADDR2_VETH1 "/24 dev veth1");
- 	SYS("ip link set dev veth1 up mtu 1500");
- 	SYS("ip netns exec at_ns0 ip addr add " IP4_ADDR_VETH0 "/24 dev veth0");
- 	SYS("ip netns exec at_ns0 ip link set dev veth0 up mtu 1500");
--- 
-2.25.1
-
+5L2g5aW977yM5L2g5pS25Yiw5oiR5LmL5YmN55qE5Lik5p2h5raI5oGv5LqG5ZCX77yfDQo=
