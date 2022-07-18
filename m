@@ -2,46 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A49578C81
-	for <lists+bpf@lfdr.de>; Mon, 18 Jul 2022 23:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77BC0578CB4
+	for <lists+bpf@lfdr.de>; Mon, 18 Jul 2022 23:28:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233838AbiGRVMA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jul 2022 17:12:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41364 "EHLO
+        id S233216AbiGRV17 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jul 2022 17:27:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233817AbiGRVL7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Jul 2022 17:11:59 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C88A31DD8;
-        Mon, 18 Jul 2022 14:11:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1658178718; x=1689714718;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=B8FiBLFp5csoUvFgk1WR/dfs+8dLITXSfuetGEHiUoY=;
-  b=CEB2EwYfH7GxYV40MJKQETf1mxGKLaW4O4FSayfCf4MjpDgqKE8PEbBQ
-   JbqOhvVEE+XlI1LlkL5EJdN+QDk+m2IefH3FLjPTsaR17pFFXy/8x3phX
-   gK2YV3Dx1o07PGEujgvmEc5a1b4csz9BzdI75ynV4E2KLhenpocdIswFK
-   bAg0VB3Ox4/ITmnU0l0kqzVkgbRTi9ZE5rUW5OreH2HBza3Q5EoujWNRc
-   XZrAHrsKO8KoajaQarJqBv+6LOdlFnLVahsC4ZKahA1UzmrdWoI4xIoiw
-   fT0q5+dWHJvIWDctfpxulclt/U+DKWKJStk/UzvkanyoYO5tm3J3wEFxH
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10412"; a="350284486"
-X-IronPort-AV: E=Sophos;i="5.92,282,1650956400"; 
-   d="scan'208";a="350284486"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2022 14:11:58 -0700
-X-IronPort-AV: E=Sophos;i="5.92,282,1650956400"; 
-   d="scan'208";a="739614852"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2022 14:11:48 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1oDY1n-001OYv-2P;
-        Tue, 19 Jul 2022 00:11:43 +0300
-Date:   Tue, 19 Jul 2022 00:11:43 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+        with ESMTP id S233730AbiGRV1n (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Jul 2022 17:27:43 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C67832FFC2;
+        Mon, 18 Jul 2022 14:27:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=lSkv8nOF7z0qY9Il4gJSah6aT0EynXIpnmz3r7Nd3zY=; b=VzUCoQthtH6+JWXI+qC6/dm9sU
+        e9VkL400c12o9AcDiovabduBPJZzKqkLZfdimO/F4yIEr5iP89pOkuBws2+TTwCI0XA9S+ri2MYOH
+        iQwsce1cEC0SfvgKLAKdxvzsC4oQZXpxVP2qjS6q2qE5idAMTbIUR+e4XeR2d3HwUE0Gpoffjc7lE
+        biZ0mnyUt9Ca8FMMtPr1yyOFp1njQv+GJCg+7ZJwuG3vBAyGq2yL8mza2zXnWaK7WBLHrcW+YwJsX
+        yIAjSpKZtSRI5Z6E5VhdDvn34wNl1HtLT3EsgE4NYbyy1OfZK5vxvMygXZvng7SNR4QjP0msQdMtk
+        1fMHlWwg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1oDYGQ-004u7h-1o; Mon, 18 Jul 2022 21:26:50 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D5CEA9802A7; Mon, 18 Jul 2022 23:26:48 +0200 (CEST)
+Date:   Mon, 18 Jul 2022 23:26:48 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
 To:     Yury Norov <yury.norov@gmail.com>
 Cc:     linux-kernel@vger.kernel.org,
         Alexander Lobakin <alexandr.lobakin@intel.com>,
@@ -49,6 +38,7 @@ Cc:     linux-kernel@vger.kernel.org,
         Alexey Klimov <aklimov@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Andrii Nakryiko <andrii@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Ben Segall <bsegall@google.com>,
         Christoph Lameter <cl@linux.com>,
         Dan Williams <dan.j.williams@intel.com>,
@@ -71,7 +61,6 @@ Cc:     linux-kernel@vger.kernel.org,
         Mel Gorman <mgorman@suse.de>, Miroslav Benes <mbenes@suse.cz>,
         Nathan Chancellor <nathan@kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
         Randy Dunlap <rdunlap@infradead.org>,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
@@ -83,18 +72,16 @@ Cc:     linux-kernel@vger.kernel.org,
         Vincent Guittot <vincent.guittot@linaro.org>,
         Vlastimil Babka <vbabka@suse.cz>, Yonghong Song <yhs@fb.com>,
         linux-mm@kvack.org, netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH 06/16] lib/test_bitmap: delete meaningless test for
- bitmap_cut
-Message-ID: <YtXMjwXnRIT+YHg7@smile.fi.intel.com>
+Subject: Re: [PATCH 07/16] smp: optimize smp_call_function_many_cond()
+Message-ID: <YtXQGMijINmEoiVi@worktop.programming.kicks-ass.net>
 References: <20220718192844.1805158-1-yury.norov@gmail.com>
- <20220718192844.1805158-7-yury.norov@gmail.com>
+ <20220718192844.1805158-8-yury.norov@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220718192844.1805158-7-yury.norov@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+In-Reply-To: <20220718192844.1805158-8-yury.norov@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -102,29 +89,54 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 18, 2022 at 12:28:34PM -0700, Yury Norov wrote:
-> One of bitmap_cut() tests passed it with:
-> 	nbits = BITS_PER_LONG;
-> 	first = BITS_PER_LONG;
-> 	cut = BITS_PER_LONG;
-> 
-> This test is useless because the range to cut is not inside the
-> bitmap. This should normally raise an error, but bitmap_cut() is
-> void and returns nothing.
-> 
-> To check if the test is passed, it just tests that the memory is
-> not touched by bitmap_cut(), which is probably not correct, because
-> if a function is passed with wrong parameters, it's too optimistic 
-> to expect a correct, or even sane behavior.
-> 
-> Now that we have bitmap_check_params(), there's a tool to detect such
-> things in real code, and we can drop the test.
+On Mon, Jul 18, 2022 at 12:28:35PM -0700, Yury Norov wrote:
 
-There are no "useless" tests. Same comments as per a couple of previous
-patches.
+> diff --git a/kernel/smp.c b/kernel/smp.c
+> index dd215f439426..7ed2b9b12f74 100644
+> --- a/kernel/smp.c
+> +++ b/kernel/smp.c
+> @@ -880,6 +880,28 @@ EXPORT_SYMBOL_GPL(smp_call_function_any);
+>  #define SCF_WAIT	(1U << 0)
+>  #define SCF_RUN_LOCAL	(1U << 1)
+>  
+> +/* Check if we need remote execution, i.e., any CPU excluding this one. */
+> +static inline bool __need_remote_exec(const struct cpumask *mask, unsigned int this_cpu)
+> +{
+> +	unsigned int cpu;
+> +
+> +	switch (num_online_cpus()) {
+> +	case 0:
+> +		return false;
+> +	case 1:
+> +		return cpu_online(this_cpu) ? false : true;
+> +	default:
+> +		if (mask == cpu_online_mask)
+> +			return true;
+> +	}
+> +
+> +	cpu = cpumask_first_and(mask, cpu_online_mask);
+> +	if (cpu == this_cpu)
+> +		cpu = cpumask_next_and(cpu, mask, cpu_online_mask);
+> +
+> +	return cpu < nr_cpu_ids;
+> +}
+> +
+>  static void smp_call_function_many_cond(const struct cpumask *mask,
+>  					smp_call_func_t func, void *info,
+>  					unsigned int scf_flags,
+> @@ -916,12 +938,7 @@ static void smp_call_function_many_cond(const struct cpumask *mask,
+>  	if ((scf_flags & SCF_RUN_LOCAL) && cpumask_test_cpu(this_cpu, mask))
+>  		run_local = true;
+>  
+> -	/* Check if we need remote execution, i.e., any CPU excluding this one. */
+> -	cpu = cpumask_first_and(mask, cpu_online_mask);
+> -	if (cpu == this_cpu)
+> -		cpu = cpumask_next_and(cpu, mask, cpu_online_mask);
+> -	if (cpu < nr_cpu_ids)
+> -		run_remote = true;
+> +	run_remote = __need_remote_exec(mask, this_cpu);
+>  
+>  	if (run_remote) {
+>  		cfd = this_cpu_ptr(&cfd_data);
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+This is more complex code for, very little to no gain. Why ?!
