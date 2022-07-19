@@ -2,221 +2,245 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EBDF57A9D3
-	for <lists+bpf@lfdr.de>; Wed, 20 Jul 2022 00:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A677257A9DA
+	for <lists+bpf@lfdr.de>; Wed, 20 Jul 2022 00:32:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235201AbiGSW2g (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Jul 2022 18:28:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60788 "EHLO
+        id S239546AbiGSWcG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Jul 2022 18:32:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240489AbiGSW2e (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Jul 2022 18:28:34 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A24C15143D;
-        Tue, 19 Jul 2022 15:28:33 -0700 (PDT)
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26JI5Ev9007439;
-        Tue, 19 Jul 2022 15:28:33 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : mime-version; s=facebook;
- bh=W5YC78LcAfVeK7rYiROmNXR6t8GNqpmGS37KZnqcWRk=;
- b=dSpz6D4udMFCz+ckEMVlpF4uqnCsl0LMRQxxJyw0k8UmOV+tbnibb0WI+9RbntbsNg6/
- pkIBuxpyojzdmMA5KoUPeEitl0sv45/k5Ru80n9wnGbykAoRIQuvWxePHgATwLzgY5Cu
- l8TA+D7F2KqeDkuIy3tNCGsW1TpdFIb+QlI= 
-Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2046.outbound.protection.outlook.com [104.47.56.46])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hd7exk786-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 19 Jul 2022 15:28:33 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AZCg+QCMoSGj2hzPqCSqeIDmH0LjMm/rh2VapfeeBXS1dOy5V4oWnZaWqP9dLK9v2WbsbV6OGQPvIC/74dT12QV/D5+fCY4IjLdKNinehUYiKn4rAq0MzgfyT5UlouiVutxT/huE98n1R6SzfcBTW0mXe3tXHu2VBxC7MBJW7RRivNNNExiOMf1kSSaXW634e+OUbawzemW3boeFD/eG8B3EdJ8Opd5YMY4Hs0DepBEiRZcD2eYoKSrQe8t+54z7du+ZKO6dvu+cITfBZePbAeGXBbQBTlZiyQ8j87FEwJyEYdbLDq7EbwCixQOYnby2toMGM4+EP9tal6aU3rVcPw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=W5YC78LcAfVeK7rYiROmNXR6t8GNqpmGS37KZnqcWRk=;
- b=mZW3ov/K3lyVtkucxydU/RPpJ5NkxaEWrds7jzdSCwT2Sk1Wxg3eYsamAGwHZuTpFiOx4fLdRu8vLj4YusWO0nEIN1orySIx6fzXTKuQhwc5838an9yZdwo+3FDQzn439k4jANfk3wYq/mff3GeiOPxn9bzpVjaS1g5FUWwqN1ycbZzIyqRWAEEmI5CamE/5hT0IK/DLuL07comBtOANzUaej4Jtv2zoBNDhpsHEh8nYJGkesZ1JKb31xtERXBZ2mtRDRHGlEKXafG+YRAiBhyf4GushlWcuvYDhxXr0lZCJTmdKxWcKDRW8ezcTtSGA2ideqmaE4/0rZ1la2pXUPQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
- by MWHPR15MB1549.namprd15.prod.outlook.com (2603:10b6:300:be::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5438.24; Tue, 19 Jul
- 2022 22:28:30 +0000
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::5de3:3999:66df:42d1]) by SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::5de3:3999:66df:42d1%4]) with mapi id 15.20.5438.023; Tue, 19 Jul 2022
- 22:28:30 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-CC:     Petr Mladek <pmladek@suse.com>, kernel test robot <lkp@intel.com>,
-        Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "live-patching@vger.kernel.org" <live-patching@vger.kernel.org>,
-        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        "jolsa@kernel.org" <jolsa@kernel.org>
-Subject: Re: [PATCH v4 bpf-next 2/4] ftrace: allow IPMODIFY and DIRECT ops on
- the same function
-Thread-Topic: [PATCH v4 bpf-next 2/4] ftrace: allow IPMODIFY and DIRECT ops on
- the same function
-Thread-Index: AQHYmmrwWVTrDYAzL0G5ckglE1ecDq2DvwKAgABeKwCAAD2SAIABrCEAgABCBgA=
-Date:   Tue, 19 Jul 2022 22:28:30 +0000
-Message-ID: <8A0701E5-E110-4DAD-9560-88FF87214286@fb.com>
-References: <20220718055449.3960512-3-song@kernel.org>
- <202207181552.VuKfz9zg-lkp@intel.com> <YtVd4FKOcEmGfubm@alley>
- <9DAB0710-7D60-46AC-8A2F-ED4B8A1A4BC0@fb.com>
- <20220719143210.08f9922b@gandalf.local.home>
-In-Reply-To: <20220719143210.08f9922b@gandalf.local.home>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3696.100.31)
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3785dc6a-d8f9-41c6-5bc5-08da69d601ed
-x-ms-traffictypediagnostic: MWHPR15MB1549:EE_
-x-fb-source: Internal
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: kxrMhjID1fgaVJsUI4mViDHJpBageEdPdL/p4vjNGNAQqJv5iqZsqed4Non5wSDtRTeeD1fqGCFhsvet3OmgpW1816ytaPT5dGNw9iSNZxmnFArmvXo3kBtBnfs/I6K9xz48cfv2zIwAsRZMnIDPezQc5V2GYZCOEX0Yl6isW0biZkYgxCUn2aIcfz+m5glR5GD6q9JxRr+/NK5c1sCdyZh47EKBE6KylXw0ywsi3oTMCdJX6D6fxxl8A4bkgftWZEkjQmEV3q7GSpm169Z7OwTxsTblTeB8rYJRclv+UOuJw2nQ6GdJKcNn8S9l9Bn/hMpaKrZ+8in/UTO4QxjR/pI09yx6NBrGwOQjsyXxbeqniDO2VeZ6BSDE6DHen4a5UdrD3dDi2GNqpOuqWN8+xhARDnqVN4EE7kBCVVtu10pFUpm5blYnpsCSQlbcgayfhwzo0wwBLKO0hKBp5Wy3OQ+Zs816sUJhWDWafMXkIYjv/tINs+1IGBirD6UXeP3/MmVim+PQ+bdfOo+RgmTvS/TazmxzDvirJ2jpj6HKqULGxJzpxvHwCf6n1Detca7xm15pnJa+VWT4s9ryR2eaI3t9Q5ghUzAw6GF5CjRSnXmtEbRPqiuGWUTQSRdJEDYINgpIo7tNVV3RfwCv21helUMZPzyx64tjqt72FzgPPueEjiUgxx4VT4tUcBTiMOBZLBN8QVMnn5LSK7d9pNwN1bip/sx6O5mWE4sWKYloPLCakJuGzMDF1pDQtQZL6zVcXeGCpwXMXrTBEg9b7WudePSo/MI9P4DATaDpEfE7++q9GMnWtahgo4Gy+IiMpN+1LDM3MUOJLugpMC+QypGskg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(346002)(376002)(366004)(39860400002)(396003)(136003)(6486002)(71200400001)(478600001)(38100700002)(38070700005)(53546011)(316002)(6506007)(86362001)(6512007)(54906003)(186003)(91956017)(6916009)(83380400001)(41300700001)(2616005)(8676002)(5660300002)(7416002)(66556008)(76116006)(64756008)(66446008)(8936002)(66946007)(66476007)(2906002)(122000001)(36756003)(33656002)(4326008)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?q62fPjwRWItS76Q8H45IrNRwbsSSIPctvJjacxf/4ERloIwqo/Tv68MDEhCn?=
- =?us-ascii?Q?rUaCszkda5jBw9hmSxMuEGn6KDDvfKN0gndVBQOKiO20o4oAGrn/GW7frp//?=
- =?us-ascii?Q?/llXdhDBquZrSsV7olIAvlfcOnMjnZwHQBbuAQGKZYelbqdhP8qXuv5zOB2B?=
- =?us-ascii?Q?3ZhIF7HP3fi7pfLILa6hnI1pu9a6ok0WkUKCnlEzJBy1tu3igNbS+V1N2XGd?=
- =?us-ascii?Q?+JPigLkgx+1yWFhXJPsb2iipOLMBI93XCvLSpwfuGTKme5AnFzIyFva+s0pd?=
- =?us-ascii?Q?R+cNEU3rJYdYXyb2hUHN1t4pW7OUbcmVr6B1z9VqzU+ElaaBEQpTkEtbZWc9?=
- =?us-ascii?Q?sOZ3FnKEBCe76mfMKkMjXLXmLKuJte196v8cgqD4cL/zFQt0Iihnutyix5dO?=
- =?us-ascii?Q?HtKq4L8vVW0ywudfYJ+PLFwYyHiivW3TyjEFZjBMYb/nmrDSnIH033SbTfaM?=
- =?us-ascii?Q?HAJSx7WInMdjuAc8TjfE/4SgVeaD0ZFlpxvXqXvmoV/d+umkyJ7EXko9Xwm6?=
- =?us-ascii?Q?aIJ8C/kITzxZTe3HZ6nF4KwAQluy9zlkviwdhW1dynpidPVJQXUs/n4ev+g/?=
- =?us-ascii?Q?FSCfZpGcc2PNVkXHDWj/FO6LoKKOsPZMIam9tPWNmrDsHvAF1bbXODg5X2nr?=
- =?us-ascii?Q?jpU9+LB7gCt4LqGamQNwTbfNqB6B00LtDSeF877PRqOyk+ACe58h/zMHzy3/?=
- =?us-ascii?Q?4AHcjTuicP0MQKy3ldSxfeNgQjxbcFWVTdeeYrgqSHzM0Kid3c4j2aeJKg3J?=
- =?us-ascii?Q?7pKfe+YXMDe/T5fUibahbzYLDgSvHa1953u5rghdK+1JSVJrigo2C3e38Z4a?=
- =?us-ascii?Q?NQ11ydfjdDbs23hjIK5ykA/bb9KHlfHWQ5X2WaGps7ANncWZwMj/BK4bXfyb?=
- =?us-ascii?Q?wdaS3ulFKfpFcDLkUI3L4YUgXBgJCTF4rNV12kkpSUZXNtyiPoZlyfQ2im3j?=
- =?us-ascii?Q?xvwqFMjxQPUJ+4+eVm89Y8zk/+xiIbkxjovg9ESpt/qV5TzQ71mYi2MC0lSx?=
- =?us-ascii?Q?xI8l8PSr1B7baxWMQ1xoIdBRWM8UxnS4GpwB0PEGtsemBi3t4kVEVDURMHZk?=
- =?us-ascii?Q?lJoTSv2IhmL3OC2Nbp0RcsDsEL5RjhHAkMsLhya5nQCkJcl40OrMIVC/eoMf?=
- =?us-ascii?Q?uODq+1SIOPcJuyIyPpaQL/zMCfDD+zXEhJOAgEa81176UmPKqzvskQHwr0v+?=
- =?us-ascii?Q?HxEzR0ggALdHu+v/ifCyoikq/JW/D4mhxPUF+I0eQJD/V7MUJxiCed8sqFOs?=
- =?us-ascii?Q?m7g13TL4pzeQ1r/0FeRGqz4Po1rIWbdKWKI7GJkANarVBEH+PtqyLlYbbIqy?=
- =?us-ascii?Q?cl9UMZsx7GShbiTRh5IVMARXTbyibUmvqP8Mm+OdeAEW4FPfv6pNQ7xGb+a9?=
- =?us-ascii?Q?JoCkpgG24NnveRYdGwZSOxHRFDrvZ6jKGXqHo7pSzpWBW0oQCGmvU1p/Dvdr?=
- =?us-ascii?Q?FW2N7PjMM+hPptI4y52XFtJhh7AEIm+1HvCvfF29nJsa3EGXxyOpdp1a9WTD?=
- =?us-ascii?Q?1Qj97Xy20MRgqnP2/LH5Uu/Gwh9AV3vLhyAFTcglCdJtL9wJ/ZrAdKlQtB9B?=
- =?us-ascii?Q?TP+OtCPXH7IJmbckZ2G3BSusLHewMRTd8gkkraGA6bOIG0muH1aGhMpghe+A?=
- =?us-ascii?Q?1/qBQVIoX1cApFUW+82zqoI=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <6635582B67FD7443A8D341E41B3F7D55@namprd15.prod.outlook.com>
+        with ESMTP id S232480AbiGSWcF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Jul 2022 18:32:05 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A50C44F68F
+        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 15:32:04 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id oy13so29788452ejb.1
+        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 15:32:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VWjhM8lMVkY4AOyb/Rxc7hAqnlouK+BwqQhqy2XA2Nc=;
+        b=WhSSPG4LfKyG3t6pnChXfA9kaIHGH0bDX+87POpYXSQpkydy8ZJfIVLYmp9b5ibgCE
+         GwqfRCfJk7yC5oKLgkNQM37ZGDgZ/F8gJnF5N1vkPOAwyiAc6iYYNPlnVO4Aj+Qvo03i
+         e5gEf+KMnov9dVkwlYEJYWNU42so/YvBCfkSlwJDXqPh2/ihLCjJCn33OM5hJGsRHAw8
+         N/qfeXthv58cRO6rsXpVflM3Ks7xO3u8WNGBkoDEipokBhrNzJhJNi2rLkty+FHk8lXT
+         eSQT5WaYVyCMokxXXkVjCbPW6Hy1+kItTci3VsyaRsBHALgyeJAiWox6gxQYXJbYean2
+         Z29g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VWjhM8lMVkY4AOyb/Rxc7hAqnlouK+BwqQhqy2XA2Nc=;
+        b=3RbxqxS2CbphVzvch+41szoR9PqV7aVJ61yPKF6SgtelTcVOF4P09aDDGz9hJ4tdCc
+         QSFz2r4dQkrvbNtJukhLq5z3Cj2GAst6REIQ4yFb0L/ifWz12N4bl1egmpeX2EJjdmP7
+         rxsqb30Gxhdo+VSRoF44Q82aTHHNsig4OrUVxKk0XJfPOxRpuRr/fYzEudv/TMhrx7X5
+         BKS4yJF7/nKsetiqX95Rbt5xbz58QeUjs5vFLdFt8OFi3TWpgRMAcW7EySyp9u27I6zV
+         7hObu9fH72WL3zlGJd23zKK/0puM3iYHm7qRmMje/eA8tbmu/I1nev2zPIjYtVdmooHH
+         Q8vg==
+X-Gm-Message-State: AJIora+mByzYjrODNiAfZCsBiubp1nzitKH2UM5o/hk7FImsRaJB2ALp
+        nbxV1MpXmGXi17fKAQVINCcMmFPSR9nGtvF842s=
+X-Google-Smtp-Source: AGRyM1tcXU9ymmYjq+1rwrlLqDHxDvgQlqHCaYLnuWefpW9XY745++6SOIsDqRfgw+jrMsvtYY0qHPsB6dV5DMN4738=
+X-Received: by 2002:a17:907:a40f:b0:72b:64ee:5b2f with SMTP id
+ sg15-20020a170907a40f00b0072b64ee5b2fmr34168567ejc.268.1658269923122; Tue, 19
+ Jul 2022 15:32:03 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3785dc6a-d8f9-41c6-5bc5-08da69d601ed
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jul 2022 22:28:30.2284
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: MsGGXG90lwGA5BDdq44uhT4lHmZpA4DIARIIOt/Ev42uvK5Fb3vvCfFprRG0L9gXRVcWWJaoAyRR6Ezpz0v7YA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1549
-X-Proofpoint-ORIG-GUID: ZgVQf-gbvpAO586glCl6aEkY3v3X90Iy
-X-Proofpoint-GUID: ZgVQf-gbvpAO586glCl6aEkY3v3X90Iy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-07-19_08,2022-07-19_01,2022-06-22_01
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20220719215536.2787530-1-davemarchevsky@fb.com>
+In-Reply-To: <20220719215536.2787530-1-davemarchevsky@fb.com>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Tue, 19 Jul 2022 15:31:51 -0700
+Message-ID: <CAJnrk1ZWZ3MAG5S1A5xwYspGcpMkL5SW-LpS_4j5cr5Ze+Fa7A@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] bpf: Cleanup check_refcount_ok
+To:     Dave Marchevsky <davemarchevsky@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, Jul 19, 2022 at 2:55 PM Dave Marchevsky <davemarchevsky@fb.com> wrote:
+>
+> Discussion around a recently-submitted patch provided historical
+> context for check_refcount_ok [0]. Specifically, the function and its
+> helpers - may_be_acquire_function and arg_type_may_be_refcounted -
+> predate the OBJ_RELEASE type flag and the addition of many more helpers
+> with acquire/release semantics.
+>
+> The purpose of check_refcount_ok is to ensure:
+>   1) Helper doesn't have multiple uses of return reg's ref_obj_id
+>   2) Helper with release semantics only has one arg needing to be
+>   released, since that's tracked using meta->ref_obj_id
+>
+> With current verifier, it's safe to remove check_refcount_ok and its
+> helpers. Since addition of OBJ_RELEASE type flag, case 2) has been
+> handled by the arg_type_is_release check in check_func_arg. To ensure
+> case 1) won't result in verifier silently prioritizing one use of
+> ref_obj_id, this patch adds a helper_multiple_ref_obj_use check which
+> fails loudly if a helper passes > 1 test for use of ref_obj_id.
+>
+>   [0]: lore.kernel.org/bpf/20220713234529.4154673-1-davemarchevsky@fb.com
+>
+> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+> Acked-by: Martin KaFai Lau <kafai@fb.com>
 
+Thanks for cleaning up this logic, Dave!
 
-> On Jul 19, 2022, at 11:32 AM, Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
-> On Mon, 18 Jul 2022 16:59:51 +0000
-> Song Liu <songliubraving@fb.com> wrote:
-> 
->>>> vim +/direct_mutex_locked +8197 kernel/trace/ftrace.c
->>>> 
->>>> 8182	
->>>> 8183	/**
->>>> 8184	 * register_ftrace_function - register a function for profiling
->>>> 8185	 * @ops:	ops structure that holds the function for profiling.
->>>> 8186	 *
->>>> 8187	 * Register a function to be called by all functions in the
->>>> 8188	 * kernel.
->>>> 8189	 *
->>>> 8190	 * Note: @ops->func and all the functions it calls must be labeled
->>>> 8191	 *       with "notrace", otherwise it will go into a
->>>> 8192	 *       recursive loop.
->>>> 8193	 */
->>>> 8194	int register_ftrace_function(struct ftrace_ops *ops)
->>>> 8195		__releases(&direct_mutex)
->>>> 8196	{  
->>>>> 8197		bool direct_mutex_locked = false;  
->>>> 8198		int ret;
->>>> 8199	
->>>> 8200		ftrace_ops_init(ops);
->>>> 8201	
->>>> 8202		ret = prepare_direct_functions_for_ipmodify(ops);
->>>> 8203		if (ret < 0)
->>>> 8204			return ret;
->>>> 8205		else if (ret == 1)
->>>> 8206			direct_mutex_locked = true;  
->>> 
->>> Honestly, this is another horrible trick. Would it be possible to
->>> call prepare_direct_functions_for_ipmodify() with direct_mutex
->>> already taken?
-> 
-> Agreed. I'm not sure why I didn't notice this in the other versions.
-> Probably was looking too much at the other logic. :-/
-> 
->>> 
->>> I mean something like:
->>> 
->>> 	mutex_lock(&direct_mutex);
->>> 
->>> 	ret = prepare_direct_functions_for_ipmodify(ops);
->>> 	if (ret)
->>> 		goto out:
->>> 
->>> 	mutex_lock(&ftrace_lock);
->>> 	ret = ftrace_startup(ops, 0);
->>> 	mutex_unlock(&ftrace_lock);
->>> 
->>> out:
->>> 	mutex_unlock(&direct_mutex);
->>> 	return ret;  
->> 
->> Yeah, we can actually do something like this. We can also move the
->> ops->flags & FTRACE_OPS_FL_IPMODIFY check to 
->> register_ftrace_function(), so we only lock direct_mutex when when
->> it is necessary. 
-> 
-> No need. Just take the direct_mutex, and perhaps add a:
-> 
-> 	lockdep_assert_held(&direct_mutex);
-> 
-> in the prepare_direct_functions_for_ipmodify().
-> 
-> This is far from a fast path to do any tricks in trying to optimize it.
-
-Got it. I will fix these and send v5. 
-
-Thanks,
-Song
-
-
-
+Acked-by: Joanne Koong <joannelkoong@gmail.com>
+> ---
+> No extant helpers fail the helper_multiple_ref_obj_use check (as
+> expected). I validated this by adding BPF_FUNC_dynptr_data to
+> is_acquire_function check and observing that dynptr selftests failed
+> with expected error, then doing the same for is_ptr_cast_function.
+>
+> v1 -> v2: lore.kernel.org/bpf/20220719185853.1650806-1-davemarchevsky@fb.com
+>   * EFAULT instead of EINVAL, minor edit to dynptr acquire comment (Joanne)
+>   * Add Martin Acked-by
+>
+>  kernel/bpf/verifier.c | 74 +++++++++++++++++--------------------------
+>  1 file changed, 29 insertions(+), 45 deletions(-)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index c59c3df0fea6..0bc35fbd78d9 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -467,25 +467,11 @@ static bool type_is_rdonly_mem(u32 type)
+>         return type & MEM_RDONLY;
+>  }
+>
+> -static bool arg_type_may_be_refcounted(enum bpf_arg_type type)
+> -{
+> -       return type == ARG_PTR_TO_SOCK_COMMON;
+> -}
+> -
+>  static bool type_may_be_null(u32 type)
+>  {
+>         return type & PTR_MAYBE_NULL;
+>  }
+>
+> -static bool may_be_acquire_function(enum bpf_func_id func_id)
+> -{
+> -       return func_id == BPF_FUNC_sk_lookup_tcp ||
+> -               func_id == BPF_FUNC_sk_lookup_udp ||
+> -               func_id == BPF_FUNC_skc_lookup_tcp ||
+> -               func_id == BPF_FUNC_map_lookup_elem ||
+> -               func_id == BPF_FUNC_ringbuf_reserve;
+> -}
+> -
+>  static bool is_acquire_function(enum bpf_func_id func_id,
+>                                 const struct bpf_map *map)
+>  {
+> @@ -518,6 +504,26 @@ static bool is_ptr_cast_function(enum bpf_func_id func_id)
+>                 func_id == BPF_FUNC_skc_to_tcp_request_sock;
+>  }
+>
+> +static bool is_dynptr_acquire_function(enum bpf_func_id func_id)
+nit: I think this should be renamed to something like
+"is_dynptr_ref_tracking" because bpf_dynptr_data doesn't acquire a
+reference state. Using "acquire" in the name might be a bit confusing
+here.
+> +{
+> +       return func_id == BPF_FUNC_dynptr_data;
+> +}
+> +
+> +static bool helper_multiple_ref_obj_use(enum bpf_func_id func_id,
+> +                                       const struct bpf_map *map)
+> +{
+> +       int ref_obj_uses = 0;
+> +
+> +       if (is_ptr_cast_function(func_id))
+> +               ref_obj_uses++;
+> +       if (is_acquire_function(func_id, map))
+> +               ref_obj_uses++;
+> +       if (is_dynptr_acquire_function(func_id))
+> +               ref_obj_uses++;
+> +
+> +       return ref_obj_uses > 1;
+> +}
+> +
+>  static bool is_cmpxchg_insn(const struct bpf_insn *insn)
+>  {
+>         return BPF_CLASS(insn->code) == BPF_STX &&
+> @@ -6453,33 +6459,6 @@ static bool check_arg_pair_ok(const struct bpf_func_proto *fn)
+>         return true;
+>  }
+>
+> -static bool check_refcount_ok(const struct bpf_func_proto *fn, int func_id)
+> -{
+> -       int count = 0;
+> -
+> -       if (arg_type_may_be_refcounted(fn->arg1_type))
+> -               count++;
+> -       if (arg_type_may_be_refcounted(fn->arg2_type))
+> -               count++;
+> -       if (arg_type_may_be_refcounted(fn->arg3_type))
+> -               count++;
+> -       if (arg_type_may_be_refcounted(fn->arg4_type))
+> -               count++;
+> -       if (arg_type_may_be_refcounted(fn->arg5_type))
+> -               count++;
+> -
+> -       /* A reference acquiring function cannot acquire
+> -        * another refcounted ptr.
+> -        */
+> -       if (may_be_acquire_function(func_id) && count)
+> -               return false;
+> -
+> -       /* We only support one arg being unreferenced at the moment,
+> -        * which is sufficient for the helper functions we have right now.
+> -        */
+> -       return count <= 1;
+> -}
+> -
+>  static bool check_btf_id_ok(const struct bpf_func_proto *fn)
+>  {
+>         int i;
+> @@ -6503,8 +6482,7 @@ static int check_func_proto(const struct bpf_func_proto *fn, int func_id,
+>  {
+>         return check_raw_mode_ok(fn) &&
+>                check_arg_pair_ok(fn) &&
+> -              check_btf_id_ok(fn) &&
+> -              check_refcount_ok(fn, func_id) ? 0 : -EINVAL;
+> +              check_btf_id_ok(fn) ? 0 : -EINVAL;
+>  }
+>
+>  /* Packet data might have moved, any old PTR_TO_PACKET[_META,_END]
+> @@ -7457,6 +7435,12 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>         if (type_may_be_null(regs[BPF_REG_0].type))
+>                 regs[BPF_REG_0].id = ++env->id_gen;
+>
+> +       if (helper_multiple_ref_obj_use(func_id, meta.map_ptr)) {
+> +               verbose(env, "verifier internal error: func %s#%d sets ref_obj_id more than once\n",
+> +                       func_id_name(func_id), func_id);
+> +               return -EFAULT;
+> +       }
+> +
+>         if (is_ptr_cast_function(func_id)) {
+>                 /* For release_reference() */
+>                 regs[BPF_REG_0].ref_obj_id = meta.ref_obj_id;
+> @@ -7469,10 +7453,10 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>                 regs[BPF_REG_0].id = id;
+>                 /* For release_reference() */
+>                 regs[BPF_REG_0].ref_obj_id = id;
+> -       } else if (func_id == BPF_FUNC_dynptr_data) {
+> +       } else if (is_dynptr_acquire_function(func_id)) {
+>                 int dynptr_id = 0, i;
+>
+> -               /* Find the id of the dynptr we're acquiring a reference to */
+> +               /* Find the id of the dynptr we're tracking the reference of */
+>                 for (i = 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
+>                         if (arg_type_is_dynptr(fn->arg_type[i])) {
+>                                 if (dynptr_id) {
+> --
+> 2.30.2
+>
