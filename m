@@ -2,244 +2,230 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34DCD57A6AF
-	for <lists+bpf@lfdr.de>; Tue, 19 Jul 2022 20:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8FFF57A6DB
+	for <lists+bpf@lfdr.de>; Tue, 19 Jul 2022 20:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236403AbiGSSqz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Jul 2022 14:46:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43400 "EHLO
+        id S229451AbiGSS7K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Jul 2022 14:59:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbiGSSqy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Jul 2022 14:46:54 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E486C550CF
-        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 11:46:53 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id v1so4512440ilg.4
-        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 11:46:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=69FXrXQwxKEauo0AUeoug7HO3wzOpeiUTZOc6VLYjtI=;
-        b=mfQruTEb8MohjfQM7OHiIM8E5eqmDGCvP5tnLuvLTVhGovXlnaGopE+MbSopcjbNbr
-         t8Myhh0PLIyCAE3RWTiS1mY1KruRLgBvt5U29PG6AA5kPP+NcqB7WWstgCIEVPlyiDtm
-         fQ/mrmhiHd3pQySI4HXRQ8Ad+7uGbmXOQA9UCKSjOpxHyubl0Yp3w3kxrn8qSjyhgiQl
-         Q8jXbqW/IeUJc56k2ViGNWiQeCWFDFo+rLIao9ioGIfFnwSVfvSce9JLnLD/sWzaZPJ8
-         l4A9amuwVJwZ4/ItF73V5J/hlUeBRwa8DVLvFzGYwtaXQTfpo8hUxPqkxb+xgTwUZbrA
-         fLcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=69FXrXQwxKEauo0AUeoug7HO3wzOpeiUTZOc6VLYjtI=;
-        b=nj+kJORHcc+DAQn3ISy7BYAzjWHIQ9XsCDe/GLsLb22RZ3Ji95LtnBWXMd2hQAjJFU
-         xxucgt7VJfa1VsXfLdz0lLlDGcc0pITrpxFQHSs/LD+gFfXSHjVDhNA2PUKoI3ybxdhC
-         SnR4BGA2jV+DV2KFIJnEUL/JyAq/f4Nj2ovjW5JvdXj1vSkNE6yo8dKYLshpYfs4rVAe
-         RKpG+eknM02DDpWGlOd7uCH3blE3t1LdjrhOW+0Bh1+UaJON3iSh0roYRPXeb1Ob4Zgb
-         fEQQxiw2XzBm+4QWuvikwUTuNyxuhEHJQjvIG/mcp5FNe//uo1wBns8mOPXxaD4E2QMf
-         RsVg==
-X-Gm-Message-State: AJIora98mb75a9lqZLiTw7DOUtKltnW0ZhsD8HemOjYE8CPS9hDFFCM1
-        /fdHkYk7NMnOY1VeVlqCYaTba+6bH2f5HnTSKoGUUA==
-X-Google-Smtp-Source: AGRyM1tyk4gF9sm+hVSlNmweyF/49/40CvH8P4qXxKvtHs97apifQldCKuS0w9lvXGYKs1aeWJIG2MyxomHIrSI7bQ8=
-X-Received: by 2002:a92:c24e:0:b0:2dc:428f:9f3a with SMTP id
- k14-20020a92c24e000000b002dc428f9f3amr16844598ilo.146.1658256413133; Tue, 19
- Jul 2022 11:46:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220708215536.pqclxdqvtrfll2y4@google.com> <CAADnVQL5ZQDqMGULJLDwT9xRTihdDvo6GvwxdEOtSAs8EwE78A@mail.gmail.com>
- <20220710073213.bkkdweiqrlnr35sv@google.com> <YswUS/5nbYb8nt6d@dhcp22.suse.cz>
- <20220712043914.pxmbm7vockuvpmmh@macbook-pro-3.dhcp.thefacebook.com>
- <Ys0lXfWKtwYlVrzK@dhcp22.suse.cz> <CALOAHbAhzNTkT9o_-PRX=n4vNjKhEK_09+-7gijrFgGjNH7iRA@mail.gmail.com>
- <Ys1ES+CygtnUvArz@dhcp22.suse.cz> <Ys4wRqCWrV1WeeWp@castle>
- <CAJD7tkb0OcVbUMxsEH-QyF08OabK5pQ-8RxW_Apy1HaHQtN0VQ@mail.gmail.com>
- <YtaV6byXRFB6QG6t@dhcp22.suse.cz> <CAJD7tkbieq_vDxwnkk_jTYz9Fe1t5AMY6b3Q=8O-ag9YLo9uZg@mail.gmail.com>
-In-Reply-To: <CAJD7tkbieq_vDxwnkk_jTYz9Fe1t5AMY6b3Q=8O-ag9YLo9uZg@mail.gmail.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Tue, 19 Jul 2022 11:46:41 -0700
-Message-ID: <CAHS8izP-Ao7pYgHOuQ-8oE2f_xe1+tP6TQivDYovEOt+=_QC7Q@mail.gmail.com>
-Subject: Re: cgroup specific sticky resources (was: Re: [PATCH bpf-next 0/5]
- bpf: BPF specific memory allocator.)
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        with ESMTP id S237815AbiGSS7C (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Jul 2022 14:59:02 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06D483AB3E
+        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 11:59:01 -0700 (PDT)
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 26JI4xN2010284
+        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 11:59:01 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=iyJcgX8GWqiMPq0wCx/FN7nedyFJIa1k0vmgHgO2kYQ=;
+ b=T0yOgCiPUNq4HjfmmVFfv7DbIe1uAR7lEYv4HnMMXdMNpJcN5fdYWDH6nWfEcGLSwmh+
+ ZVo4vFL/yiGdeAWBw/sbBKq2FvLiH9MuNs3U2AnDB0RoxTLBJH1mM2KKzXCMmt4hOGjp
+ L7N+tML1b3nBQcN8eumfFld/KWe8eO4Pwaw= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net (PPS) with ESMTPS id 3he0ry8sr3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 11:59:01 -0700
+Received: from twshared30313.14.frc2.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28; Tue, 19 Jul 2022 11:58:59 -0700
+Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
+        id AF3C8A8D8B21; Tue, 19 Jul 2022 11:58:54 -0700 (PDT)
+From:   Dave Marchevsky <davemarchevsky@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
         Kernel Team <kernel-team@fb.com>,
-        linux-mm <linux-mm@kvack.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        Dave Marchevsky <davemarchevsky@fb.com>
+Subject: [PATCH bpf-next] bpf: Cleanup check_refcount_ok
+Date:   Tue, 19 Jul 2022 11:58:53 -0700
+Message-ID: <20220719185853.1650806-1-davemarchevsky@fb.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: -Cg7mF2me-0C8Nf76GOBYOt7N1QIoTnw
+X-Proofpoint-ORIG-GUID: -Cg7mF2me-0C8Nf76GOBYOt7N1QIoTnw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-07-19_06,2022-07-19_01,2022-06-22_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 19, 2022 at 11:01 AM Yosry Ahmed <yosryahmed@google.com> wrote:
->
-> On Tue, Jul 19, 2022 at 4:30 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Mon 18-07-22 10:55:59, Yosry Ahmed wrote:
-> > > On Tue, Jul 12, 2022 at 7:39 PM Roman Gushchin <roman.gushchin@linux.dev> wrote:
-> > > >
-> > > > On Tue, Jul 12, 2022 at 11:52:11AM +0200, Michal Hocko wrote:
-> > > > > On Tue 12-07-22 16:39:48, Yafang Shao wrote:
-> > > > > > On Tue, Jul 12, 2022 at 3:40 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > > > [...]
-> > > > > > > > Roman already sent reparenting fix:
-> > > > > > > > https://patchwork.kernel.org/project/netdevbpf/patch/20220711162827.184743-1-roman.gushchin@linux.dev/
-> > > > > > >
-> > > > > > > Reparenting is nice but not a silver bullet. Consider a shallow
-> > > > > > > hierarchy where the charging happens in the first level under the root
-> > > > > > > memcg. Reparenting to the root is just pushing everything under the
-> > > > > > > system resources category.
-> > > > > > >
-> > > > > >
-> > > > > > Agreed. That's why I don't like reparenting.
-> > > > > > Reparenting just reparent the charged pages and then redirect the new
-> > > > > > charge, but can't reparents the 'limit' of the original memcg.
-> > > > > > So it is a risk if the original memcg is still being charged. We have
-> > > > > > to forbid the destruction of the original memcg.
-> > > >
-> > > > I agree, I also don't like reparenting for !kmem case. For kmem (and *maybe*
-> > > > bpf maps is an exception), I don't think there is a better choice.
-> > > >
-> > > > > yes, I was toying with an idea like that. I guess we really want a
-> > > > > measure to keep cgroups around if they are bound to a resource which is
-> > > > > sticky itself. I am not sure how many other resources like BPF (aka
-> > > > > module like) we already do charge for memcg but considering the
-> > > > > potential memory consumption just reparenting will not help in general
-> > > > > case I am afraid.
-> > > >
-> > > > Well, then we have to make these objects a first-class citizens in cgroup API,
-> > > > like processes. E.g. introduce cgroup.bpf.maps, cgroup.mounts.tmpfs etc.
-> > > > I easily can see some value here, but it's a big API change.
-> > > >
-> > > > With the current approach when a bpf map pins a memory cgroup of the creator
-> > > > process (which I think is completely transparent for most bpf users), I don't
-> > > > think preventing the deletion of a such cgroup is possible. It will break too
-> > > > many things.
-> > > >
-> > > > But honestly I don't see why userspace can't handle it. If there is a cgroup which
-> > > > contains shared bpf maps, why would it delete it? It's a weird use case, I don't
-> > > > think we have to optimize for it. Also, we do a ton of optimizations for live
-> > > > cgroups (e.g. css refcounting being percpu) which are not working for a deleted
-> > > > cgroup. So noone really should expect any properties from dying cgroups.
-> > > >
-> > >
-> > > Just a random thought here, and I can easily be wrong (and this can
-> > > easily be the wrong thread for this), but if we introduce a more
-> > > generic concept to generally tie a resource explicitly to a cgroup
-> > > (tmpfs, bpf maps, etc) using cgroupfs interfaces, and then prevent the
-> > > cgroup from being deleted unless the resource is freed or moved to a
-> > > different cgroup?
-> >
-> > My understanding is that Tejun would prefer a user space defined policy
-> > by a proper layering. And I would tend to agree that this is less prone
-> > to corner cases.
-> >
-> > Anyway, how would you envision such an interface?
->
-> I imagine something like cgroup.sticky.[bpf/tmpfs/..] (I suck at naming things).
->
-> The file can contain a list of bpf map ids or tmpfs inode ids or mount
-> paths. You can write a new id/path to the file to add one, or read the
-> file to see a list of them. Basically very similar semantics to
-> cgroup.procs. Instead of processes, we have different types of sticky
-> resources here that usually outlive processes. The charging of such
-> resources would be deterministically attributed to this cgroup
-> (instead of the cgroup of the process that created the map or touched
-> the tmpfs file first).
->
-> Since the system admin has explicitly attributed these resources to
-> this cgroup, it makes sense that the cgroup cannot be deleted as long
-> as these resources exist and are charged to it, similar to
-> cgroup.procs. This also addresses some of the zombie cgroups problems.
->
-> The obvious question is: to maintain the current behavior, bpf maps
-> and tmpfs mounts will be by default initially charged the same way as
-> today. bpf maps for the cgroup of the process that created them, and
-> tmpfs pages on first touch basis. How do we move their charging after
-> their creation in the current way to a cgroup.sticky file?
->
-> For things like bpf maps, it should be relatively simple to move
-> charges the same way we do when we move processes, because the bpf map
-> is by default charged to one memcg. For tmpfs, it would be challenging
-> to move the charges because pages could be individually attributed to
-> different cgroups already. For this, we can impose a (imo reasonable)
-> restriction that for tmpfs (and similar resources that are currently
-> not attributed to a single cgroup), that you can only add a tmpfs
-> mount to cgroup.sticky.tmpfs for the first time if no pages have been
-> charged yet (no files created). Once the tmpfs mount lives in any
-> cgroup.sticky.tmpfs file, we know that it is charged to one cgroup,
-> and we can move the charges more easily.
->
-> The system admin would basically mount the tmpfs directory and then
-> directly write it to a cgroup.sticky.tmpfs file. For that point
-> onwards, all tmpfs pages will be charged to that cgroup, and they need
-> to be freed or moved before the cgroup can be removed.
->
-> I could be missing something here, but I imagine such an interface(s)
-> would address both the bpf progs/maps charging concerns, and our
-> previous memcg= mount attempts. Please correct me if I am wrong.
->
-> >
-> > > This would be optional, so the current status quo is maintainable, but
-> > > also gives flexibility to admins to assign resources to cgroups to
-> > > make sure nothing is ( unaccounted / accounted to a zombie memcg /
-> > > reparented to an unrelated parent ). This might be too fine-grained to
-> > > be practical but I just thought it might be useful. We will also need
-> > > to define an OOM behavior for such resources. Things like bpf maps
-> > > will be unreclaimable, but tmpfs memory can be swapped out.
-> >
-> > Keep in mind that the swap is a shared resource in itself. So tmpfs is
-> > essentially a sticky resource as well. A tmpfs file is not bound to any
-> > proces life time the same way BPF program is. You might need less
-> > priviledges to remove a file but in principle they are consuming
-> > resources without any explicit owner.
->
-> I fully agree, which is exactly why I am suggesting having a defined
-> way to handle such "sticky" resources that outlive processes.
-> Currently cgroups operate in terms of processes and this can be a
-> limitation for such resources.
->
-> > --
-> > Michal Hocko
-> > SUSE Labs
->
+Discussion around a recently-submitted patch provided historical
+context for check_refcount_ok [0]. Specifically, the function and its
+helpers - may_be_acquire_function and arg_type_may_be_refcounted -
+predate the OBJ_RELEASE type flag and the addition of many more helpers
+with acquire/release semantics.
 
-An interface like cgroup.sticky.[bpf/tmpfs/..] would work for us
-similar to tmpfs memcg= mount option. I would maybe rename it to
-cgroup.charge_for.[bpf/tmpfs/etc] or something.
+The purpose of check_refcount_ok is to ensure:
+  1) Helper doesn't have multiple uses of return reg's ref_obj_id
+  2) Helper with release semantics only has one arg needing to be
+  released, since that's tracked using meta->ref_obj_id
 
-With regards to OOM, my proposal on this patchset is to return ENOSPC
-to the caller if we hit the limit of the remote memcg and there is
-nothing to kill:
-https://lore.kernel.org/linux-mm/20211120045011.3074840-1-almasrymina@google.com/
+With current verifier, it's safe to remove check_refcount_ok and its
+helpers. Since addition of OBJ_RELEASE type flag, case 2) has been
+handled by the arg_type_is_release check in check_func_arg. To ensure
+case 1) won't result in verifier silently prioritizing one use of
+ref_obj_id, this patch adds a helper_multiple_ref_obj_use check which
+fails loudly if a helper passes > 1 test for use of ref_obj_id.
 
-There is some precedent to doing this in the kernel. If a hugetlb
-allocation hits the hugetlb_cgroup limit, we return ENOSPC to the
-caller (and SIGBUS in the charge path). The reason there being that we
-don't support oom-kill or reclaim or swap for hugetlb pages.
+  [0]: lore.kernel.org/bpf/20220713234529.4154673-1-davemarchevsky@fb.com
 
-I think it is also reasonable to prevent removing the memcg if there
-is cgroup.charge_for.[bpf/tmpfs/etc] still alive. Currently we prevent
-removing the memcg if there are tasks attached. So we can also prevent
-removing the memcg if there are bpf/tmpfs charge sources pending.
+Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+---
+No extant helpers fail the helper_multiple_ref_obj_use check (as
+expected). I validated this by adding BPF_FUNC_dynptr_data to
+is_acquire_function check and observing that dynptr selftests failed
+with expected error, then doing the same for is_ptr_cast_function.
 
-Would love to hear from Tejun/Michal/Johannes if this is the interface
-you're looking for.
+ kernel/bpf/verifier.c | 72 +++++++++++++++++--------------------------
+ 1 file changed, 28 insertions(+), 44 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index c59c3df0fea6..b3e057a9384d 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -467,25 +467,11 @@ static bool type_is_rdonly_mem(u32 type)
+ 	return type & MEM_RDONLY;
+ }
+=20
+-static bool arg_type_may_be_refcounted(enum bpf_arg_type type)
+-{
+-	return type =3D=3D ARG_PTR_TO_SOCK_COMMON;
+-}
+-
+ static bool type_may_be_null(u32 type)
+ {
+ 	return type & PTR_MAYBE_NULL;
+ }
+=20
+-static bool may_be_acquire_function(enum bpf_func_id func_id)
+-{
+-	return func_id =3D=3D BPF_FUNC_sk_lookup_tcp ||
+-		func_id =3D=3D BPF_FUNC_sk_lookup_udp ||
+-		func_id =3D=3D BPF_FUNC_skc_lookup_tcp ||
+-		func_id =3D=3D BPF_FUNC_map_lookup_elem ||
+-	        func_id =3D=3D BPF_FUNC_ringbuf_reserve;
+-}
+-
+ static bool is_acquire_function(enum bpf_func_id func_id,
+ 				const struct bpf_map *map)
+ {
+@@ -518,6 +504,26 @@ static bool is_ptr_cast_function(enum bpf_func_id fu=
+nc_id)
+ 		func_id =3D=3D BPF_FUNC_skc_to_tcp_request_sock;
+ }
+=20
++static bool is_dynptr_acquire_function(enum bpf_func_id func_id)
++{
++	return func_id =3D=3D BPF_FUNC_dynptr_data;
++}
++
++static bool helper_multiple_ref_obj_use(enum bpf_func_id func_id,
++					const struct bpf_map *map)
++{
++	int ref_obj_uses =3D 0;
++
++	if (is_ptr_cast_function(func_id))
++		ref_obj_uses++;
++	if (is_acquire_function(func_id, map))
++		ref_obj_uses++;
++	if (is_dynptr_acquire_function(func_id))
++		ref_obj_uses++;
++
++	return ref_obj_uses > 1;
++}
++
+ static bool is_cmpxchg_insn(const struct bpf_insn *insn)
+ {
+ 	return BPF_CLASS(insn->code) =3D=3D BPF_STX &&
+@@ -6453,33 +6459,6 @@ static bool check_arg_pair_ok(const struct bpf_fun=
+c_proto *fn)
+ 	return true;
+ }
+=20
+-static bool check_refcount_ok(const struct bpf_func_proto *fn, int func_=
+id)
+-{
+-	int count =3D 0;
+-
+-	if (arg_type_may_be_refcounted(fn->arg1_type))
+-		count++;
+-	if (arg_type_may_be_refcounted(fn->arg2_type))
+-		count++;
+-	if (arg_type_may_be_refcounted(fn->arg3_type))
+-		count++;
+-	if (arg_type_may_be_refcounted(fn->arg4_type))
+-		count++;
+-	if (arg_type_may_be_refcounted(fn->arg5_type))
+-		count++;
+-
+-	/* A reference acquiring function cannot acquire
+-	 * another refcounted ptr.
+-	 */
+-	if (may_be_acquire_function(func_id) && count)
+-		return false;
+-
+-	/* We only support one arg being unreferenced at the moment,
+-	 * which is sufficient for the helper functions we have right now.
+-	 */
+-	return count <=3D 1;
+-}
+-
+ static bool check_btf_id_ok(const struct bpf_func_proto *fn)
+ {
+ 	int i;
+@@ -6503,8 +6482,7 @@ static int check_func_proto(const struct bpf_func_p=
+roto *fn, int func_id,
+ {
+ 	return check_raw_mode_ok(fn) &&
+ 	       check_arg_pair_ok(fn) &&
+-	       check_btf_id_ok(fn) &&
+-	       check_refcount_ok(fn, func_id) ? 0 : -EINVAL;
++	       check_btf_id_ok(fn) ? 0 : -EINVAL;
+ }
+=20
+ /* Packet data might have moved, any old PTR_TO_PACKET[_META,_END]
+@@ -7457,6 +7435,12 @@ static int check_helper_call(struct bpf_verifier_e=
+nv *env, struct bpf_insn *insn
+ 	if (type_may_be_null(regs[BPF_REG_0].type))
+ 		regs[BPF_REG_0].id =3D ++env->id_gen;
+=20
++	if (helper_multiple_ref_obj_use(func_id, meta.map_ptr)) {
++		verbose(env, "verifier internal error: func %s#%d sets ref_obj_id more=
+ than once\n",
++			func_id_name(func_id), func_id);
++		return -EINVAL;
++	}
++
+ 	if (is_ptr_cast_function(func_id)) {
+ 		/* For release_reference() */
+ 		regs[BPF_REG_0].ref_obj_id =3D meta.ref_obj_id;
+@@ -7469,7 +7453,7 @@ static int check_helper_call(struct bpf_verifier_en=
+v *env, struct bpf_insn *insn
+ 		regs[BPF_REG_0].id =3D id;
+ 		/* For release_reference() */
+ 		regs[BPF_REG_0].ref_obj_id =3D id;
+-	} else if (func_id =3D=3D BPF_FUNC_dynptr_data) {
++	} else if (is_dynptr_acquire_function(func_id)) {
+ 		int dynptr_id =3D 0, i;
+=20
+ 		/* Find the id of the dynptr we're acquiring a reference to */
+--=20
+2.30.2
+
