@@ -2,142 +2,241 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 127A657A91F
-	for <lists+bpf@lfdr.de>; Tue, 19 Jul 2022 23:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF15357A988
+	for <lists+bpf@lfdr.de>; Tue, 19 Jul 2022 23:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232527AbiGSVl6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Jul 2022 17:41:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48676 "EHLO
+        id S239050AbiGSVzw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Jul 2022 17:55:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237616AbiGSVl6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Jul 2022 17:41:58 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 776194E87E
-        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 14:41:57 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id y15so8449156plp.10
-        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 14:41:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/g6GXdIPPS5OS1ET6McLrahN2C68TuBM2Z8BK5MQlCA=;
-        b=sRFvIC9j/xc0vcM06DM1PV1Zcd1sObIBVepKhGEwrUm/uzcZJCY77/3eVnawnfTcRm
-         Jmw6PT64fR8Zt0kqNp6GVeTvRbTUuU1wxRMhPtTwp6/RGsrq8eWXfq37nX2y6wbM+d6/
-         p2phauOj5+BoOABocQm2m7HnsTi5VzshZth1WGysarV6YPGPX2UlNwRBOpHZw57qnpWH
-         q1NcWfATD3qPHXihnA+X0XkmoBj7juI2HOUc2paQdbTo/T7PWVxE2Mkv8XAhuZPLV4JM
-         3Lnc5Us18o77e/zFaRy1gHul/cNzbUDcnf1pxvVLeE5y/W1l6rH3NjVVy0UkUNsluAHa
-         6btQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/g6GXdIPPS5OS1ET6McLrahN2C68TuBM2Z8BK5MQlCA=;
-        b=0Ms8d77qc6t4u12GXYilljuwiuxHP1u0tiMKdwSlcvrOZeh0njQAjZwc7gKKMXo8Wv
-         5YvnYZeix3Q7EkRqkuWnPm+ZLNFXXvXizGn8RBx8kigz0RafB9uOEjlIXN0+nf34U1gE
-         08CVb1SkEddTnqWuRUsk9RwU5r4GqPrtNnE4G+DLMwcfQEt244cJIYAYCN4ClyG64aWW
-         TI10vusosaz39khrSzVK6e25mDGFYn3n4DVAHcSd6h/ydkO2LgBye0DJRzhoIkpKrO3N
-         MBAZzr6Pffbd0TGgv0Z4vN64oP7zg9lE8/h1FJL6wv592aDlzBHxSbRiJ/qgoWpwwxm4
-         b4zQ==
-X-Gm-Message-State: AJIora8EK2SVS3/CFgPgj3HTrDzwsvqMdktGfZadeX2tTCjQ8fj9N1Hv
-        zA4WbW2HxkC9OxPS8HgvNrbxJBQnAopYtWW3hCxU/g==
-X-Google-Smtp-Source: AGRyM1vrDWVlGf0soAHJPHaSjYXjrxXK4+pLz93KgOwxldGGqySx3d75LBo9tORsXubdipK/KhNC+4UTo6wXHh1zCes=
-X-Received: by 2002:a17:902:db11:b0:16c:3e90:12e5 with SMTP id
- m17-20020a170902db1100b0016c3e9012e5mr34925383plx.73.1658266916788; Tue, 19
- Jul 2022 14:41:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220718190748.2988882-1-sdf@google.com> <CAADnVQLxh_pt8bgoo=_CS3voab7HuQautZGfHQMM=TmQmVr2pQ@mail.gmail.com>
- <CAKH8qBv9q=eXBq9XSKEN2Nce5Wf0MJEX_zbTi12p4r3WCjmBEw@mail.gmail.com>
-In-Reply-To: <CAKH8qBv9q=eXBq9XSKEN2Nce5Wf0MJEX_zbTi12p4r3WCjmBEw@mail.gmail.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Tue, 19 Jul 2022 14:41:45 -0700
-Message-ID: <CAKH8qBv66=Fdea0u-vbu-Q=P9pySo+tjy5YpPPcNo8dF0qN8bw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] RFC: libbpf: resolve rodata lookups
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S240424AbiGSVzn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Jul 2022 17:55:43 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 035D02656A
+        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 14:55:41 -0700 (PDT)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26JI5E5j020794
+        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 14:55:41 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=LX+p3brHzkJzt+MPp1UMeEl05fF0e1EJBq3kDpIbmFs=;
+ b=VpyQlyd0NrKI21aoMfxXTdj7TZNUOqDXg+H3s2ckkDlkybaDj91mxRVtQB+o2GqzYwWn
+ FdN/NQQwUjkPR1xtTW7j+sZLLw5/qRClakpQB7QCNktp8FpovnA3k4fQ3e16RpEPrn0g
+ FypppA5IXhlzIrcBANP+gXQVQwhX4j55J4M= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hd974ae9c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 14:55:41 -0700
+Received: from twshared25478.08.ash9.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28; Tue, 19 Jul 2022 14:55:40 -0700
+Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
+        id 8CAC2A8F3365; Tue, 19 Jul 2022 14:55:37 -0700 (PDT)
+From:   Dave Marchevsky <davemarchevsky@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Kernel Team <kernel-team@fb.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>
+Subject: [PATCH v2 bpf-next] bpf: Cleanup check_refcount_ok
+Date:   Tue, 19 Jul 2022 14:55:36 -0700
+Message-ID: <20220719215536.2787530-1-davemarchevsky@fb.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: 4KP3DwSnyheEIAoPSF28LwzNcVYGSkQ4
+X-Proofpoint-GUID: 4KP3DwSnyheEIAoPSF28LwzNcVYGSkQ4
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-07-19_08,2022-07-19_01,2022-06-22_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 19, 2022 at 1:33 PM Stanislav Fomichev <sdf@google.com> wrote:
->
-> On Tue, Jul 19, 2022 at 1:21 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Mon, Jul 18, 2022 at 12:07 PM Stanislav Fomichev <sdf@google.com> wrote:
-> > >
-> > > Motivation:
-> > >
-> > > Our bpf programs have a bunch of options which are set at the loading
-> > > time. After loading, they don't change. We currently use array map
-> > > to store them and bpf program does the following:
-> > >
-> > > val = bpf_map_lookup_elem(&config_map, &key);
-> > > if (likely(val && *val)) {
-> > >   // do some optional feature
-> > > }
-> > >
-> > > Since the configuration is static and we have a lot of those features,
-> > > I feel like we're wasting precious cycles doing dynamic lookups
-> > > (and stalling on memory loads).
-> > >
-> > > I was assuming that converting those to some fake kconfig options
-> > > would solve it, but it still seems like kconfig is stored in the
-> > > global map and kconfig entries are resolved dynamically.
-> > >
-> > > Proposal:
-> > >
-> > > Resolve kconfig options statically upon loading. Basically rewrite
-> > > ld+ldx to two nops and 'mov val, x'.
-> > >
-> > > I'm also trying to rewrite conditional jump when the condition is
-> > > !imm. This seems to be catching all the cases in my program, but
-> > > it's probably too hacky.
-> > >
-> > > I've attached very raw RFC patch to demonstrate the idea. Anything
-> > > I'm missing? Any potential problems with this approach?
-> >
-> > Have you considered using global variables for that?
-> > With skeleton the user space has a natural way to set
-> > all of these knobs after doing skel_open and before skel_load.
-> > Then the verifier sees them as readonly vars and
-> > automatically converts LDX into fixed constants and if the code
-> > looks like if (my_config_var) then the verifier will remove
-> > all the dead code too.
->
-> Hm, that's a good alternative, let me try it out. Thanks!
+Discussion around a recently-submitted patch provided historical
+context for check_refcount_ok [0]. Specifically, the function and its
+helpers - may_be_acquire_function and arg_type_may_be_refcounted -
+predate the OBJ_RELEASE type flag and the addition of many more helpers
+with acquire/release semantics.
 
-Turns out we already freeze kconfig map in libbpf:
-if (map_type == LIBBPF_MAP_RODATA || map_type == LIBBPF_MAP_KCONFIG) {
-        err = bpf_map_freeze(map->fd);
+The purpose of check_refcount_ok is to ensure:
+  1) Helper doesn't have multiple uses of return reg's ref_obj_id
+  2) Helper with release semantics only has one arg needing to be
+  released, since that's tracked using meta->ref_obj_id
 
-And I've verified that I do hit bpf_map_direct_read in the verifier.
+With current verifier, it's safe to remove check_refcount_ok and its
+helpers. Since addition of OBJ_RELEASE type flag, case 2) has been
+handled by the arg_type_is_release check in check_func_arg. To ensure
+case 1) won't result in verifier silently prioritizing one use of
+ref_obj_id, this patch adds a helper_multiple_ref_obj_use check which
+fails loudly if a helper passes > 1 test for use of ref_obj_id.
 
-But the code still stays the same (bpftool dump xlated):
-  72: (18) r1 = map[id:24][0]+20
-  74: (61) r1 = *(u32 *)(r1 +0)
-  75: (bf) r2 = r9
-  76: (b7) r0 = 0
-  77: (15) if r1 == 0x0 goto pc+9
+  [0]: lore.kernel.org/bpf/20220713234529.4154673-1-davemarchevsky@fb.com
 
-I guess there is nothing for sanitize_dead_code to do because my
-conditional is "if (likely(some_condition)) { do something }" and the
-branch instruction itself is '.seen' by the verifier.
+Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
+---
+No extant helpers fail the helper_multiple_ref_obj_use check (as
+expected). I validated this by adding BPF_FUNC_dynptr_data to
+is_acquire_function check and observing that dynptr selftests failed
+with expected error, then doing the same for is_ptr_cast_function.
 
-And, most annoyingly for me, 72 and 74 lookups still stay :-(
+v1 -> v2: lore.kernel.org/bpf/20220719185853.1650806-1-davemarchevsky@fb.=
+com
+  * EFAULT instead of EINVAL, minor edit to dynptr acquire comment (Joann=
+e)
+  * Add Martin Acked-by
 
-I can try to unwrap/resolve these on the verifier side instead of libbpf maybe..
+ kernel/bpf/verifier.c | 74 +++++++++++++++++--------------------------
+ 1 file changed, 29 insertions(+), 45 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index c59c3df0fea6..0bc35fbd78d9 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -467,25 +467,11 @@ static bool type_is_rdonly_mem(u32 type)
+ 	return type & MEM_RDONLY;
+ }
+=20
+-static bool arg_type_may_be_refcounted(enum bpf_arg_type type)
+-{
+-	return type =3D=3D ARG_PTR_TO_SOCK_COMMON;
+-}
+-
+ static bool type_may_be_null(u32 type)
+ {
+ 	return type & PTR_MAYBE_NULL;
+ }
+=20
+-static bool may_be_acquire_function(enum bpf_func_id func_id)
+-{
+-	return func_id =3D=3D BPF_FUNC_sk_lookup_tcp ||
+-		func_id =3D=3D BPF_FUNC_sk_lookup_udp ||
+-		func_id =3D=3D BPF_FUNC_skc_lookup_tcp ||
+-		func_id =3D=3D BPF_FUNC_map_lookup_elem ||
+-	        func_id =3D=3D BPF_FUNC_ringbuf_reserve;
+-}
+-
+ static bool is_acquire_function(enum bpf_func_id func_id,
+ 				const struct bpf_map *map)
+ {
+@@ -518,6 +504,26 @@ static bool is_ptr_cast_function(enum bpf_func_id fu=
+nc_id)
+ 		func_id =3D=3D BPF_FUNC_skc_to_tcp_request_sock;
+ }
+=20
++static bool is_dynptr_acquire_function(enum bpf_func_id func_id)
++{
++	return func_id =3D=3D BPF_FUNC_dynptr_data;
++}
++
++static bool helper_multiple_ref_obj_use(enum bpf_func_id func_id,
++					const struct bpf_map *map)
++{
++	int ref_obj_uses =3D 0;
++
++	if (is_ptr_cast_function(func_id))
++		ref_obj_uses++;
++	if (is_acquire_function(func_id, map))
++		ref_obj_uses++;
++	if (is_dynptr_acquire_function(func_id))
++		ref_obj_uses++;
++
++	return ref_obj_uses > 1;
++}
++
+ static bool is_cmpxchg_insn(const struct bpf_insn *insn)
+ {
+ 	return BPF_CLASS(insn->code) =3D=3D BPF_STX &&
+@@ -6453,33 +6459,6 @@ static bool check_arg_pair_ok(const struct bpf_fun=
+c_proto *fn)
+ 	return true;
+ }
+=20
+-static bool check_refcount_ok(const struct bpf_func_proto *fn, int func_=
+id)
+-{
+-	int count =3D 0;
+-
+-	if (arg_type_may_be_refcounted(fn->arg1_type))
+-		count++;
+-	if (arg_type_may_be_refcounted(fn->arg2_type))
+-		count++;
+-	if (arg_type_may_be_refcounted(fn->arg3_type))
+-		count++;
+-	if (arg_type_may_be_refcounted(fn->arg4_type))
+-		count++;
+-	if (arg_type_may_be_refcounted(fn->arg5_type))
+-		count++;
+-
+-	/* A reference acquiring function cannot acquire
+-	 * another refcounted ptr.
+-	 */
+-	if (may_be_acquire_function(func_id) && count)
+-		return false;
+-
+-	/* We only support one arg being unreferenced at the moment,
+-	 * which is sufficient for the helper functions we have right now.
+-	 */
+-	return count <=3D 1;
+-}
+-
+ static bool check_btf_id_ok(const struct bpf_func_proto *fn)
+ {
+ 	int i;
+@@ -6503,8 +6482,7 @@ static int check_func_proto(const struct bpf_func_p=
+roto *fn, int func_id,
+ {
+ 	return check_raw_mode_ok(fn) &&
+ 	       check_arg_pair_ok(fn) &&
+-	       check_btf_id_ok(fn) &&
+-	       check_refcount_ok(fn, func_id) ? 0 : -EINVAL;
++	       check_btf_id_ok(fn) ? 0 : -EINVAL;
+ }
+=20
+ /* Packet data might have moved, any old PTR_TO_PACKET[_META,_END]
+@@ -7457,6 +7435,12 @@ static int check_helper_call(struct bpf_verifier_e=
+nv *env, struct bpf_insn *insn
+ 	if (type_may_be_null(regs[BPF_REG_0].type))
+ 		regs[BPF_REG_0].id =3D ++env->id_gen;
+=20
++	if (helper_multiple_ref_obj_use(func_id, meta.map_ptr)) {
++		verbose(env, "verifier internal error: func %s#%d sets ref_obj_id more=
+ than once\n",
++			func_id_name(func_id), func_id);
++		return -EFAULT;
++	}
++
+ 	if (is_ptr_cast_function(func_id)) {
+ 		/* For release_reference() */
+ 		regs[BPF_REG_0].ref_obj_id =3D meta.ref_obj_id;
+@@ -7469,10 +7453,10 @@ static int check_helper_call(struct bpf_verifier_=
+env *env, struct bpf_insn *insn
+ 		regs[BPF_REG_0].id =3D id;
+ 		/* For release_reference() */
+ 		regs[BPF_REG_0].ref_obj_id =3D id;
+-	} else if (func_id =3D=3D BPF_FUNC_dynptr_data) {
++	} else if (is_dynptr_acquire_function(func_id)) {
+ 		int dynptr_id =3D 0, i;
+=20
+-		/* Find the id of the dynptr we're acquiring a reference to */
++		/* Find the id of the dynptr we're tracking the reference of */
+ 		for (i =3D 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
+ 			if (arg_type_is_dynptr(fn->arg_type[i])) {
+ 				if (dynptr_id) {
+--=20
+2.30.2
+
