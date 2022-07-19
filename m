@@ -2,199 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7830657A36B
-	for <lists+bpf@lfdr.de>; Tue, 19 Jul 2022 17:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0067957A3E7
+	for <lists+bpf@lfdr.de>; Tue, 19 Jul 2022 18:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238469AbiGSPq0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Jul 2022 11:46:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49210 "EHLO
+        id S229676AbiGSQEN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Jul 2022 12:04:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238483AbiGSPqZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Jul 2022 11:46:25 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D5B254671
-        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 08:46:24 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id y15so7588639plp.10
-        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 08:46:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rLGineCxzdUhqZ0totHv9/HyxhWkFQEif+a4cEJSDL8=;
-        b=DW0EnfRwpOw1uNv4VAVwjEIGLJYOoNSuCcD40y6h3lKcLGS+MBuBuVX/UegUgNbGel
-         +ty0PUe3Zb5MGym/CRL0C7cxczOoUDRB2VP8Z7dfuTUi4o4EzqlWCDqwMCwNw0ZqySm8
-         dGT45EkwtMUdEu1hOA4Fq6e2jBTS1CT/czPuB5AIWXV/0cy0/bwFrjwF74jEBzBgiLhA
-         zFXzOZPXeQbAVHysr3nHY0jIK04lSl1vTt7r6/RsCR+Sq7IF/S/yNCcDX1b/aF1DMQfz
-         SBLxG1AP0/K0cftPJ8Yez80ecG/GS7X5fD7ZYwk/Nzq9o9RNTDtp/ZjTBQQnUpbL3rxI
-         Ndtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rLGineCxzdUhqZ0totHv9/HyxhWkFQEif+a4cEJSDL8=;
-        b=K/DrWOFTIkWU67Vq2hp9E/m/kp7HnuQewGDukRsVoTMCdya3Y1C4tVsxHJe9sx6Cxf
-         FWoTgBlqNxIUP4l1cTcCQlpdk0TsQJT3PeMH5mi40qX5gzmD2X9+EaH07zH4W23LX9rZ
-         bczkRUMapcctVFYY1GuRdJY+80ij1nFhbMU22uZ0A7wEfA8nIwq9is51vnMz61dKKRcO
-         LU16Wo7uuyRKbjcM14OABJ755E4ebMXnGvX7AdindKI4+r6Tau0PLNeBBxWFDGr8rHZP
-         RDzzqUi+mJsTwQ2akv8+wNw2/15+6KvE5mf10pxC0gP5RgiwObJmUKp0oznlN2z2NafO
-         tr0Q==
-X-Gm-Message-State: AJIora+GVyBc41HKEH0KeL3dFxUUZcgIHJ2r2Q5u0G16CdQvNIeJDQll
-        Y9R/5mF1gALmFnxoZlL6b6hhL3a8lsYRLTCfNAh6qA==
-X-Google-Smtp-Source: AGRyM1vtvaCffnh2l4f56YAsiMoaolRPJSDOCqynhJ372P0N1qzCRKtatEZUvXr8ozYvnmieW+RNiA+CsPVXAjtJMZE=
-X-Received: by 2002:a17:902:db11:b0:16c:3e90:12e5 with SMTP id
- m17-20020a170902db1100b0016c3e9012e5mr33546576plx.73.1658245583818; Tue, 19
- Jul 2022 08:46:23 -0700 (PDT)
+        with ESMTP id S238893AbiGSQEG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Jul 2022 12:04:06 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 009C751422;
+        Tue, 19 Jul 2022 09:04:05 -0700 (PDT)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26JDRAWl030336;
+        Tue, 19 Jul 2022 09:04:02 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=l7docGpi0oXsQWAC64iBFYk20Ki65Ziy8cdgv6lAzIE=;
+ b=qAcAof63+dgmmuK+tRWxJyr80BTgg+xy1P5SI4wSobm+r19qf2YJ/AUNLfD9IgadzAPW
+ 9Z0fBqWHxMBL55QSys0Our3jiuK1pX34mfq0eCM5vUaqkTNI9YMDxsA8qEx+ahlfEbzM
+ RoqtzGBxeQL5n3EZbDav6mK574zzYKqHKR4= 
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2047.outbound.protection.outlook.com [104.47.66.47])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hdvpq1gau-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 19 Jul 2022 09:04:02 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nmf1n1StoKRt0ycz11kHkuUsyeFhKOqvCCnfTbUq0+E+NORpzR3paEF6D0SiUewLiwEBQPLq1VaznDlsgpcOkt6xo5A0iJefPHfJravb4t9SNF5aLq0WI0Zs9p1YoZa/M4hwwJWQ96gqf6wSM7ZVwQ/q9plreENPz4lJc3dhq5VbnCyc+N2VgUvdjuCbQ0bqm8lsT4BLmR2gM/JQdyNUOeBVYS5OqQfHavQJLXU1BfZKX1aAR7P8YL/LJib99eSzbzYIBtTovgsgpDWxyBFe/KC6RqM1q51goR+z3hnKEH8Qv0LvKDJ9MNmWDWQldmA7Ys/mmTWZVoFSNuoGvkCb3w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=l7docGpi0oXsQWAC64iBFYk20Ki65Ziy8cdgv6lAzIE=;
+ b=QcPMOrqdSDWeYffCxB3kxSQuBXGG4vzEumONebGtHR6fxEhWON5n8CI1DeYsLrI+N1vpVKTHdeSldmugCtmN5FueowtywT4xAgR9El8zr3GzGmnd9STnv6yKcg54tC0B2HjPogSJP0+3AChycHFdfyh1fH1ovxIeaDiL9zoBfp2EVohhCnpwZ29ZWTDtaVVRVgF0tuN+VRwNbIrLJDn+jZ+Z6py3ImRuDeUWR9kGp5HZUrXAJxvHPO3w9IU/sAeCXpk8lYFW0z0Z5S48kBWmkGW6VuhJoGoc7pDhNFJshBWDvah0ABXrxSKJjg/Vz0CVvmUk0dH4SXkqJR/RGsNKAw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by DM5PR15MB1243.namprd15.prod.outlook.com (2603:10b6:3:b3::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5438.14; Tue, 19 Jul 2022 16:03:59 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::9568:e5d9:b8ab:bb23]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::9568:e5d9:b8ab:bb23%6]) with mapi id 15.20.5438.023; Tue, 19 Jul 2022
+ 16:03:59 +0000
+Message-ID: <5500f935-f598-7ef1-c80f-6da7f12ef778@fb.com>
+Date:   Tue, 19 Jul 2022 09:03:55 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.11.0
+Subject: Re: [PATCH v3] bpf, docs: document BPF_MAP_TYPE_HASH and variants
+Content-Language: en-US
+To:     Donald Hunter <donald.hunter@gmail.com>, bpf@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Cc:     Jonathan Corbet <corbet@lwn.net>, sdf@google.com
+References: <20220718125847.1390-1-donald.hunter@gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+In-Reply-To: <20220718125847.1390-1-donald.hunter@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR04CA0334.namprd04.prod.outlook.com
+ (2603:10b6:303:8a::9) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
-References: <1658221305-35718-1-git-send-email-xujia39@huawei.com>
-In-Reply-To: <1658221305-35718-1-git-send-email-xujia39@huawei.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Tue, 19 Jul 2022 08:46:12 -0700
-Message-ID: <CAKH8qBuwm75KirLSrTh1jeYqDAn78Ki5sgiAY8y2G2OCsDJP5w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: fix bpf compile error caused by CONFIG_CGROUP_BPF
-To:     Xu Jia <xujia39@huawei.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 21bcac36-09cf-444e-5c67-08da69a04aa3
+X-MS-TrafficTypeDiagnostic: DM5PR15MB1243:EE_
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Lhobm4oqQy1vcGph6lyWvWSLDPgUh62nEdeMelqbPRfmBQ9gQrnBERkhwoy/kAUUSn4TjKVNooXpCqsefG/uTdASD7lPxiMsgrZJ4UriUFLp4l9Neyp4d44CUhXQNdn5m4AUIVO3G7VVEXTa4ILa+Vz+SVtaCktLKZRWGRkcD5EBDXEJ1om+RYxd7RkzKefJL8bc9mwohVb1Wxg72xvI5gry0gCAugN1W+dJjLMlegovygOTpcA/ENiW1x/rsdhDrcGqD96NFvMUpO9cRQrnbHZMdyiY5tlkqaYSn0u/VPApqqGWv3zZ+AWPFC+Etug/MSvHQdy622NlaldUBfwdXgy5dSJF3RnyOSDi0bGmEYI1A+HXhCtEv5274LBSnpcUKwF6yqDSksoqoM4N3BklOtAE0gneTieex18J7lvABNqusjKGqLQH4TaLe48ItMom+TwIyWUClOLE5Wug3KCAncsm3lQ9VtCtdncUFxZb7jTn56giBQUnQp2PcfvgxVNC/ETs5tV7nfGF8H5fTEI+BPj4OebISEcVDbqCQlakOzLHM4WGl0VEW/5S6TmEzfUbQ7YhYmT2R4QtgRKwo2Eu5C0cbWnpy8pc95lpNYDPt5SNqqp/gU1PvY2ymEs/HDr/rSxO2aPJXCZ0QhdF8/lpJtF6t+MuDM3QSWuArHlRyH2dccvgEdIfHkeFauIfwW+Dhiwkr6cON+eGM38cez4jj5L0uXTDMTM/ssQB9Q6E0jEQVZdSken/8LI6GFD4yfQOOojwKynJJjwldXyWIwmDxOmZ4iDXXolNnWgh6V2ubzI5Trd/weulTMhMfkKDpiSRfS+VXdDk88MckcznGi+S9A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(136003)(346002)(39860400002)(366004)(376002)(396003)(31696002)(8936002)(66556008)(38100700002)(86362001)(6506007)(6486002)(53546011)(4744005)(31686004)(478600001)(186003)(6512007)(36756003)(83380400001)(316002)(2616005)(4326008)(66946007)(66476007)(8676002)(6666004)(5660300002)(41300700001)(2906002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OUl0ZENGSGdHMEkzam1HbHFnVzNBZHhpNEx2UG5wS1RCV0hHanJDZHo0VU8r?=
+ =?utf-8?B?REI3a3pvY0tQUGM5T2drb0tyUVZGT1g1YnFLY21nMDBDajZVZ3JOck9BR2dU?=
+ =?utf-8?B?Z3RBRkMyQ2k0SUFtN1lHRU5UbEVFYTFNMVBnS0dKeFZMdU4wVHJoaHI0TkZ6?=
+ =?utf-8?B?Y1IvSG5jeGRsRWZxb1pvajFWZit6Y3hMTTR3UTg1ci8vV2dNWXZvdHM3Q1Js?=
+ =?utf-8?B?eU94N3pGTnlwMWRSODFzK1MybGpNYzN2MXlCdUIwUFcxRzlkY1oxa282aEdv?=
+ =?utf-8?B?ZS9LZGZDU0VxMDcyV0FoamdBRkxaRXk1WEpBZ1VRbVYzc2l2L3NobHVqQS9H?=
+ =?utf-8?B?WjdyTTMvUE1tR210blpHczdrakpTM1dmSGJRMFZTem8ySXlsTUo5ZDhLU0s4?=
+ =?utf-8?B?dThnOHRPM3BjdzV2bHFBK21RRG5VUGY2R1pKRVZvWnJkc3hqK3grRmpmYjEz?=
+ =?utf-8?B?Mk1KdWZLSzBISkdPOWpXWlQ2UnFZVWl3SWZ0cVNQQTM1emc4eUFPTUNoVW01?=
+ =?utf-8?B?aTZ6TzRZS3JNYkNubnFXUmcwSlYzRmpjZU5KUytpNURrbWpENXk4elVPZFFh?=
+ =?utf-8?B?ckZSVzd3aUV4ZitCSUJFdlB1cWNhdlo4dU1SbnRZWWZoNVpXWUNSM2xpSERW?=
+ =?utf-8?B?WkdCQWZuTUJRTVJlaVgyWEJJZ2JTQ3pmNklodUZIU3psOEYvbTVPanBUR3NV?=
+ =?utf-8?B?WDgvVGZhcWlZbWVrYjBqb3dZK1RKQ0pNY0dSWld4TVV0OHltekZpSlFBYWdJ?=
+ =?utf-8?B?MkN4MURtUk9IM24zYlBmbWpSWDc5R3JCN0MzRFcvbVFiMTZ1QmJFb25Vai9L?=
+ =?utf-8?B?SjNlb0JWTGNyZS8vLzJxaFNpMEJVa3BHeGp0L1RDbG5NREVFektBQlFac1Z1?=
+ =?utf-8?B?YlBWTHJIRTdhTEwyT3ZHeXRyRko4MURTSWJubXVLdUZtWERKK0RUcFFydk1Y?=
+ =?utf-8?B?MVBiTHBvcmdxWDZKWWNaOTJ5ejgybkZtMzFhUGQ3NUxqcEI2YjdpQlp4U1M0?=
+ =?utf-8?B?blhuM1JFNWxlMDgzRzhHL001LzdZQU1EcTBJK2lsNlNmeVVmS01mTUJBTnJO?=
+ =?utf-8?B?VW0vQ2FiczdRc3JoTks2YTJYRlFXNUJPZmRSV2RneUVXNi9nN1hKUWtPS3J5?=
+ =?utf-8?B?MVFVRjJ6UG9lamRiSGpsUXNCQm81dXBLRzJSUGVSSmp3S3pKY2dvUXdzMHhO?=
+ =?utf-8?B?alh1d01rTFAwMnIvb0dPUzhFb1ZnVUxyOHJOekMzZnNPd1M5QTRpMHV1M1NI?=
+ =?utf-8?B?UXVXVUY4b3hRbEVNZks3WkprOVo4YjI3Um5KZHVXNDNPampjTUlhQy9iemxo?=
+ =?utf-8?B?V3JBVnNIMGIwd21JQ1ozNU1DRnJUSDdTSVR4TnV0YzFRRDFWc1BFeUFnMVVH?=
+ =?utf-8?B?ZDVVRUNpMnZINE9Zb2VRYUtmWEZqVHZsQ0VPQ3NhbERxZ3JTNHJYZEY0VllG?=
+ =?utf-8?B?K2RyazdscUhKSWUyeHBSZzkxNlFWOUNTQjBoQXFFWUNtUzN4cldiWU51cksz?=
+ =?utf-8?B?QXFTR21mbmhuaFJkaTAyYmVqR2FWMlJwSjJiaHBrdlB4Y1dsSW14SjRYOFpp?=
+ =?utf-8?B?cjFWeDgzM0hYZ0tOOGlpdTVpYmZHQjhMYjA4dFJVeDUvellEVVJkcldUUStu?=
+ =?utf-8?B?RXE4bFVrcWhZNnZnWmM4WXFaOFd6eW1qQ2RQWG5QTitjSGl5bW5zUHVoNFZH?=
+ =?utf-8?B?T3cvSU1JLzNlZmxRTWdjU29FOWhCK0RTdmZYRG1wYzQ2L3pVaWdMNDBvV0JX?=
+ =?utf-8?B?ZEJkWmZqQ05MSnNBaTczTHRham5kZUd4Vk15TkZrdWtyOVZ2NkJNQk9OOEZ0?=
+ =?utf-8?B?K1cxOCtxeFVucURNM2JaSHhiSjlKWjZrMktFTVhYaXNMWnlra3l3MW9kZG5i?=
+ =?utf-8?B?SXBIQ1RuZ3FOcjZNa0pFMWNiclZyeWNlT01OWFpqV21xUE1WTll3bWdaT1Ix?=
+ =?utf-8?B?UldjTFNObERTQ2VsQmF3SlJvdHJhdWp0RFUvTGVJSWUyd1NIbmNETjFheGlo?=
+ =?utf-8?B?OS9WYWx5MXpWRng3SHdqTGoybE5QallMa29HWjVNMWZaR3dQam9mb1dCUFlo?=
+ =?utf-8?B?M2tKVkZOY2JUaE5KLzdkRjlVR1JmQjlIem44K1pyWitFb2syaDJHUHNxMStF?=
+ =?utf-8?Q?HpP77eI9Kf1x4nqaaioiFvhBO?=
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 21bcac36-09cf-444e-5c67-08da69a04aa3
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2022 16:03:59.5656
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: it5ckk02a44uQicg7wvhpRT3KHnxwc7C1Dwi8pWsEaoUo4OqIkiD/YCWS8xo/pD4
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR15MB1243
+X-Proofpoint-ORIG-GUID: _7IHGBUJEGjEOrV3JH3ZeR51xmHLzeqV
+X-Proofpoint-GUID: _7IHGBUJEGjEOrV3JH3ZeR51xmHLzeqV
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-07-19_04,2022-07-19_01,2022-06-22_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 19, 2022 at 1:49 AM Xu Jia <xujia39@huawei.com> wrote:
->
-> We failed to compile when CONFIG_BPF_LSM is enabled but CONFIG_CGROUP_BPF
-> is not set. The failings are shown as below:
->
-> kernel/bpf/trampoline.o: in function `bpf_trampoline_link_cgroup_shim'
-> trampoline.c: undefined reference to `bpf_cgroup_atype_get'
-> kernel/bpf/bpf_lsm.o: In function `bpf_lsm_find_cgroup_shim':
-> bpf_lsm.c: undefined reference to `__cgroup_bpf_run_lsm_current'
-> bpf_lsm.c: undefined reference to `__cgroup_bpf_run_lsm_sock'
-> bpf_lsm.c: undefined reference to `__cgroup_bpf_run_lsm_socket'
->
-> Fix them by protecting these functions with CONFIG_CGROUP_BPF.
 
-Should be fixed by the following?
 
-https://lore.kernel.org/bpf/20220714185404.3647772-1-sdf@google.com/
+On 7/18/22 5:58 AM, Donald Hunter wrote:
+> Add documentation for BPF_MAP_TYPE_HASH including kernel version
+> introduced, usage and examples. Document BPF_MAP_TYPE_PERCPU_HASH,
+> BPF_MAP_TYPE_LRU_HASH and BPF_MAP_TYPE_LRU_PERCPU_HASH variations.
+> 
+> Note that this file is included in the BPF documentation by the glob in
+> Documentation/bpf/maps.rst
+> 
+> v3:
+> Fix typos reported by Stanislav Fomichev and Yonghong Song.
+> Add note about iteration and deletion as requested by Yonghong Song.
+> 
+> v2:
+> Describe memory allocation semantics as suggested by Stanislav Fomichev.
+> Fix u64 typo reported by Stanislav Fomichev.
+> Cut down usage examples to only show usage in context.
+> Updated patch description to follow style recommendation, reported by
+> Bagas Sanjaya.
+> 
+> Signed-off-by: Donald Hunter <donald.hunter@gmail.com>
 
-> Fixes: 69fd337a975c ("bpf: per-cgroup lsm flavor")
-> Signed-off-by: Xu Jia <xujia39@huawei.com>
-> ---
->  include/linux/bpf.h     | 12 +++++++++---
->  include/linux/bpf_lsm.h | 10 ++++++----
->  kernel/bpf/bpf_lsm.c    |  2 ++
->  kernel/bpf/trampoline.c |  2 ++
->  4 files changed, 19 insertions(+), 7 deletions(-)
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 2b21f2a3452f..add8895c02cc 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1255,9 +1255,7 @@ struct bpf_dummy_ops {
->  int bpf_struct_ops_test_run(struct bpf_prog *prog, const union bpf_attr *kattr,
->                             union bpf_attr __user *uattr);
->  #endif
-> -int bpf_trampoline_link_cgroup_shim(struct bpf_prog *prog,
-> -                                   int cgroup_atype);
-> -void bpf_trampoline_unlink_cgroup_shim(struct bpf_prog *prog);
-> +
->  #else
->  static inline const struct bpf_struct_ops *bpf_struct_ops_find(u32 type_id)
->  {
-> @@ -1281,6 +1279,14 @@ static inline int bpf_struct_ops_map_sys_lookup_elem(struct bpf_map *map,
->  {
->         return -EINVAL;
->  }
-> +#endif
-> +
-> +#if defined(CONFIG_BPF_JIT) && defined(CONFIG_BPF_SYSCALL) && \
-> +    defined(CONFIG_CGROUP_BPF)
-> +int bpf_trampoline_link_cgroup_shim(struct bpf_prog *prog,
-> +                                   int cgroup_atype);
-> +void bpf_trampoline_unlink_cgroup_shim(struct bpf_prog *prog);
-> +#else
->  static inline int bpf_trampoline_link_cgroup_shim(struct bpf_prog *prog,
->                                                   int cgroup_atype)
->  {
-> diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
-> index 4bcf76a9bb06..bed45a0c8a9c 100644
-> --- a/include/linux/bpf_lsm.h
-> +++ b/include/linux/bpf_lsm.h
-> @@ -42,8 +42,6 @@ extern const struct bpf_func_proto bpf_inode_storage_get_proto;
->  extern const struct bpf_func_proto bpf_inode_storage_delete_proto;
->  void bpf_inode_storage_free(struct inode *inode);
->
-> -void bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog, bpf_func_t *bpf_func);
-> -
->  #else /* !CONFIG_BPF_LSM */
->
->  static inline bool bpf_lsm_is_sleepable_hook(u32 btf_id)
-> @@ -67,11 +65,15 @@ static inline void bpf_inode_storage_free(struct inode *inode)
->  {
->  }
->
-> +#endif /* CONFIG_BPF_LSM */
-> +
-> +#if defined(CONFIG_BPF_LSM) && defined(CONFIG_BPF_CGROUP)
-> +void bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog, bpf_func_t *bpf_func);
-> +#else
->  static inline void bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog,
->                                            bpf_func_t *bpf_func)
->  {
->  }
-> -
-> -#endif /* CONFIG_BPF_LSM */
-> +#endif
->
->  #endif /* _LINUX_BPF_LSM_H */
-> diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
-> index d469b7f3deef..29527828b38b 100644
-> --- a/kernel/bpf/bpf_lsm.c
-> +++ b/kernel/bpf/bpf_lsm.c
-> @@ -63,6 +63,7 @@ BTF_ID(func, bpf_lsm_socket_post_create)
->  BTF_ID(func, bpf_lsm_socket_socketpair)
->  BTF_SET_END(bpf_lsm_unlocked_sockopt_hooks)
->
-> +#ifdef CONFIG_BPF_CGROUP
->  void bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog,
->                              bpf_func_t *bpf_func)
->  {
-> @@ -86,6 +87,7 @@ void bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog,
->  #endif
->                 *bpf_func = __cgroup_bpf_run_lsm_current;
->  }
-> +#endif /* CONFIG_BPF_CGROUP */
->
->  int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
->                         const struct bpf_prog *prog)
-> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-> index 6cd226584c33..127924711935 100644
-> --- a/kernel/bpf/trampoline.c
-> +++ b/kernel/bpf/trampoline.c
-> @@ -525,6 +525,7 @@ static const struct bpf_link_ops bpf_shim_tramp_link_lops = {
->         .dealloc = bpf_shim_tramp_link_dealloc,
->  };
->
-> +#ifdef CONFIG_CGROUP_BPF
->  static struct bpf_shim_tramp_link *cgroup_shim_alloc(const struct bpf_prog *prog,
->                                                      bpf_func_t bpf_func,
->                                                      int cgroup_atype)
-> @@ -668,6 +669,7 @@ void bpf_trampoline_unlink_cgroup_shim(struct bpf_prog *prog)
->
->         bpf_trampoline_put(tr); /* bpf_trampoline_lookup above */
->  }
-> +#endif /* CONFIG_CGROUP_BPF */
->  #endif
->
->  struct bpf_trampoline *bpf_trampoline_get(u64 key,
-> --
-> 2.25.1
->
+Acked-by: Yonghong Song <yhs@fb.com>
