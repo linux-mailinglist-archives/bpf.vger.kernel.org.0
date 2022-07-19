@@ -2,72 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDBED57A756
-	for <lists+bpf@lfdr.de>; Tue, 19 Jul 2022 21:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEAAF57A75C
+	for <lists+bpf@lfdr.de>; Tue, 19 Jul 2022 21:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239545AbiGSTkg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Jul 2022 15:40:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58496 "EHLO
+        id S239637AbiGSTli (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Jul 2022 15:41:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239183AbiGSTkg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Jul 2022 15:40:36 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 432B51A04B;
-        Tue, 19 Jul 2022 12:40:35 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id o18so1563866pjs.2;
-        Tue, 19 Jul 2022 12:40:35 -0700 (PDT)
+        with ESMTP id S229379AbiGSTlh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Jul 2022 15:41:37 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94FB152DEB
+        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 12:41:36 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id bu1so23113390wrb.9
+        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 12:41:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3j8jhweYwfAvlYpAUSAk3G7ksfaZwinAbU12iCmSRoo=;
-        b=eSl7srVvYwHrA26gkTgWwAe21ZF48gtN0pXC7oKy9US4TqxIetn+6BnA/4S+4i9wb2
-         FUUDg3IidPrMGJGCLDZXUeexfID3VCKmP045N5wbKUOpga5InctORVfZE9iHRfH8oFQP
-         u1RlEVtNkCR6r8QLTlcSscDWC0T/WPmWSkPUkITjB70wIzbncitCQDiNgiC2UA5R/ZMp
-         yKN+rAQxJggJLaiXBRpgdDDQEf5TNtsoiyfmUgunGfEWnucEtDzbt1Fqq4PjTisCtA+o
-         znSUxPSKz75z7hmjp5vu44DOZW0Ngq8LQ1dLP+DVBcYwIJfPbxGG0WR1xUzuvLIVsMaA
-         qVJQ==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aqMPXU/hy5J5UT9zpbIzXR+SmaMEDpe2x0xawCu4+Xc=;
+        b=OA15sUKR2X0chr/bQ+n2GmiKnfDbGXZm3GeDMLbos4nNcOj1PvYehwq3gxyn5O9AC/
+         J5nXTROb0GVX4AqQFlSuJKKDxYfWCkiYzql5P3a8EnLhM/H97610BoFlL2T9XLT1pejr
+         gpcoaMuVuSswKkRM0VTC4ZYCNU54Rzju9G1+I/9ieqeuQe6ZWvy0RtQSM0CWmp7u9ded
+         wecICYnWAx8a1S8LE1qQ5yLmFikwuVW54WQ9SicxhJN0L1GhY4ZuCdskOYD26r62zLiW
+         o3vhSM638MmTELWAqJl9jjRQeuuqX/to94roy29ZmdVDSDeVoT9ZC7LBCQY2fg0QBzh8
+         IG/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3j8jhweYwfAvlYpAUSAk3G7ksfaZwinAbU12iCmSRoo=;
-        b=UNZ+g+IRG7RlH997Z4ii1qOxYI1KuRpctHPitmeTJIDxP4pUwHN7IFBTVu8w1C2czw
-         npvK+3S4gd+lh7xJLok1JZvQtqlW/hSAb+cpP6CWcy3N7YfZwjeuubVfhr66rWc7SyX6
-         r5CeFwLpVfRjiFoWbYOOPvDeXxpv3B9XyKyUTI3Yw3wXPClXzLrBKabc+I04R5o61Yhj
-         DVZ8NQ43pCQM3tT8SgWfH7CgWpZvGmBjVarLomSGHBaFYOcUjMgKIEqdi9DMpTarcm3V
-         a6+j0Yhub5KbLQK+TRxngpJWOx0RU7Szj5MaTiBrNQXj8mH5Os4TUUgb+NtyfPRxBQIt
-         4RfQ==
-X-Gm-Message-State: AJIora/3/UEMiBtJTWiiOzWu+3U4eD4JHkoWl+f3XozTiSlM2R4/F/6p
-        kIhj1uHnoQBbeCTN3gF6Gg==
-X-Google-Smtp-Source: AGRyM1sNje6ORtgN0esEbjm0cCFzNF6SkYBH/IuZkqpozem8axBtnrPD4HiT9dYlqetFUJl0xu0amw==
-X-Received: by 2002:a17:90b:4ad0:b0:1f0:28c6:9493 with SMTP id mh16-20020a17090b4ad000b001f028c69493mr1041519pjb.142.1658259634604;
-        Tue, 19 Jul 2022 12:40:34 -0700 (PDT)
-Received: from jevburton3.c.googlers.com.com (223.103.125.34.bc.googleusercontent.com. [34.125.103.223])
-        by smtp.gmail.com with ESMTPSA id f80-20020a623853000000b00528d620eb58sm12192927pfa.17.2022.07.19.12.40.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jul 2022 12:40:33 -0700 (PDT)
-From:   Joe Burton <jevburton.kernel@gmail.com>
-To:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Joe Burton <jevburton@google.com>
-Subject: [PATCH v2 bpf-next] libbpf: Add bpf_obj_get_opts()
-Date:   Tue, 19 Jul 2022 19:40:28 +0000
-Message-Id: <20220719194028.4180569-1-jevburton.kernel@gmail.com>
-X-Mailer: git-send-email 2.37.0.170.g444d1eabd0-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aqMPXU/hy5J5UT9zpbIzXR+SmaMEDpe2x0xawCu4+Xc=;
+        b=f5Ux82J//QLgG6L5R4Jm4LU+iwEMyZt6+Crug3GPi8LCi0riDrUveJE49534VYBSvS
+         VuW9Yi7gM0eHbKZVjW9DVnVTD6cmjaVFRihYmEkttUW0lBv5+7DMgphzsvXsP1REdzRI
+         hC1alvQi8MYTvL7CmqFJVkqVTpYJwt4i967Su7885bZZYsZkkrbMmSiHxWUekMVA/Rma
+         8cyYLESV+OcGJc2nvTRymHRKhXYdthvgTLF1L66vqXfprjxZhnnxhjSy78vdD9Y1v9ff
+         d48Be69nqfJ0gyxcRfdRZAp6LIGdU1oXQAKKZPrbkGvDBqWEtlxVouzTvVR03Gw64Ua/
+         bxiw==
+X-Gm-Message-State: AJIora/uYdKsvFOfSt1cfZUUb/moKwcAJ7PPX9f/Bp1a8QHpPDtDSFEr
+        Yf/EYNdCiR3fJR7oK30+n7zPntbEhOSmIy9RNEQnsg==
+X-Google-Smtp-Source: AGRyM1tdK6kWeAvNgfrVukdO99uXAAcU32CuU/nCYYUEoGbmfovUwPyylkBwB9waw8bPKdYlNnUKkDceMWFODZUX8P0=
+X-Received: by 2002:a5d:588b:0:b0:21d:a918:65a5 with SMTP id
+ n11-20020a5d588b000000b0021da91865a5mr28572759wrf.210.1658259694984; Tue, 19
+ Jul 2022 12:41:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <Ys0lXfWKtwYlVrzK@dhcp22.suse.cz> <CALOAHbAhzNTkT9o_-PRX=n4vNjKhEK_09+-7gijrFgGjNH7iRA@mail.gmail.com>
+ <Ys1ES+CygtnUvArz@dhcp22.suse.cz> <Ys4wRqCWrV1WeeWp@castle>
+ <CAJD7tkb0OcVbUMxsEH-QyF08OabK5pQ-8RxW_Apy1HaHQtN0VQ@mail.gmail.com>
+ <YtaV6byXRFB6QG6t@dhcp22.suse.cz> <CAJD7tkbieq_vDxwnkk_jTYz9Fe1t5AMY6b3Q=8O-ag9YLo9uZg@mail.gmail.com>
+ <CAHS8izP-Ao7pYgHOuQ-8oE2f_xe1+tP6TQivDYovEOt+=_QC7Q@mail.gmail.com>
+ <YtcDEpaHniDeN7fP@slm.duckdns.org> <CAJD7tkZkFnVqjkdOK3Wf8f1o3XmMWCmWkzHNQKh8Znh5dDF27w@mail.gmail.com>
+ <YtcIJClKxUPntdM9@slm.duckdns.org>
+In-Reply-To: <YtcIJClKxUPntdM9@slm.duckdns.org>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 19 Jul 2022 12:40:58 -0700
+Message-ID: <CAJD7tkZGpsYLB_rhbZUMyiKEzV+FYhyzFdNBtKrFzaRLi=p9Gw@mail.gmail.com>
+Subject: Re: cgroup specific sticky resources (was: Re: [PATCH bpf-next 0/5]
+ bpf: BPF specific memory allocator.)
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Mina Almasry <almasrymina@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        linux-mm <linux-mm@kvack.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,82 +90,43 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Joe Burton <jevburton@google.com>
+On Tue, Jul 19, 2022 at 12:38 PM Tejun Heo <tj@kernel.org> wrote:
+>
+> On Tue, Jul 19, 2022 at 12:30:17PM -0700, Yosry Ahmed wrote:
+> > Is there a reason why these resources cannot be moved across cgroups
+> > dynamically? The only scenario I imagine is if you already have tmpfs
+> > mounted and files charged to different cgroups, but once you attribute
+> > tmpfs to one cgroup.charge_for.tmpfs (or sticky,..), I assume that we
+> > can dynamically move the resources, right?
+> >
+> > In fact, is there a reason why we can't move the tmpfs charges in that
+> > scenario as well? When we move processes we loop their pages tables
+> > and move pages and their stats, is there a reason why we wouldn't be
+> > able to do this with tmpfs mounts or bpf maps as well?
+>
+> Nothing is impossible but nothing is free as well. Moving charges around
+> traditionally caused a lot of headaches in the past and never became
+> reliable. There are inherent trade-offs here. You can make things more
+> dynamic usually by making hot paths more expensive or doing some
+> synchronization dancing which tends to be pretty hairy. People generally
+> don't wanna make hot paths slower, so we tend to end up with something
+> twisted which unfortunately turns out to be a headache in the long term.
+>
+> In general, I'd rather keep resource associations as static as possible.
+> It's okay if we do something neat inside the kernel but if we create
+> userspace expectation that resources can be moved around dynamically, we'll
+> be stuck with that for a long time likely forfeiting future simplification /
+> optimization opportunities.
+>
+> So, that's gonna be a fairly strong nack from my end.
 
-Add an extensible variant of bpf_obj_get() capable of setting the
-`file_flags` parameter.
+Fair enough :)
 
-This parameter is needed to enable unprivileged access to BPF maps.
-Without a method like this, users must manually make the syscall.
+Thanks for elaborating your point of view and the challenges that come
+with this!
 
-Signed-off-by: Joe Burton <jevburton@google.com>
----
- tools/lib/bpf/bpf.c      | 10 ++++++++++
- tools/lib/bpf/bpf.h      |  9 +++++++++
- tools/lib/bpf/libbpf.map |  1 +
- 3 files changed, 20 insertions(+)
-
-diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index 5eb0df90eb2b..5acb0e8bd13c 100644
---- a/tools/lib/bpf/bpf.c
-+++ b/tools/lib/bpf/bpf.c
-@@ -578,12 +578,22 @@ int bpf_obj_pin(int fd, const char *pathname)
- }
- 
- int bpf_obj_get(const char *pathname)
-+{
-+	LIBBPF_OPTS(bpf_obj_get_opts, opts);
-+	return bpf_obj_get_opts(pathname, &opts);
-+}
-+
-+int bpf_obj_get_opts(const char *pathname, const struct bpf_obj_get_opts *opts)
- {
- 	union bpf_attr attr;
- 	int fd;
- 
-+	if (!OPTS_VALID(opts, bpf_obj_get_opts))
-+		return libbpf_err(-EINVAL);
-+
- 	memset(&attr, 0, sizeof(attr));
- 	attr.pathname = ptr_to_u64((void *)pathname);
-+	attr.file_flags = OPTS_GET(opts, file_flags, 0);
- 
- 	fd = sys_bpf_fd(BPF_OBJ_GET, &attr, sizeof(attr));
- 	return libbpf_err_errno(fd);
-diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index 88a7cc4bd76f..f31b493b5f9a 100644
---- a/tools/lib/bpf/bpf.h
-+++ b/tools/lib/bpf/bpf.h
-@@ -270,8 +270,17 @@ LIBBPF_API int bpf_map_update_batch(int fd, const void *keys, const void *values
- 				    __u32 *count,
- 				    const struct bpf_map_batch_opts *opts);
- 
-+struct bpf_obj_get_opts {
-+	size_t sz; /* size of this struct for forward/backward compatibility */
-+
-+	__u32 file_flags;
-+};
-+#define bpf_obj_get_opts__last_field file_flags
-+
- LIBBPF_API int bpf_obj_pin(int fd, const char *pathname);
- LIBBPF_API int bpf_obj_get(const char *pathname);
-+LIBBPF_API int bpf_obj_get_opts(const char *pathname,
-+				const struct bpf_obj_get_opts *opts);
- 
- struct bpf_prog_attach_opts {
- 	size_t sz; /* size of this struct for forward/backward compatibility */
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 0625adb9e888..119e6e1ea7f1 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -355,6 +355,7 @@ LIBBPF_0.8.0 {
- 
- LIBBPF_1.0.0 {
- 	global:
-+		bpf_obj_get_opts;
- 		bpf_prog_query_opts;
- 		bpf_program__attach_ksyscall;
- 		btf__add_enum64;
--- 
-2.37.0.170.g444d1eabd0-goog
-
+>
+> Thanks.
+>
+> --
+> tejun
