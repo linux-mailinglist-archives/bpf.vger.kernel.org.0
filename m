@@ -2,74 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7859257A0B8
-	for <lists+bpf@lfdr.de>; Tue, 19 Jul 2022 16:09:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 895A657A10E
+	for <lists+bpf@lfdr.de>; Tue, 19 Jul 2022 16:17:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234397AbiGSOJP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Jul 2022 10:09:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44192 "EHLO
+        id S238870AbiGSORP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Jul 2022 10:17:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238559AbiGSOIK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Jul 2022 10:08:10 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B01754644;
-        Tue, 19 Jul 2022 06:24:50 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id ez10so27108542ejc.13;
-        Tue, 19 Jul 2022 06:24:50 -0700 (PDT)
+        with ESMTP id S238838AbiGSOQ7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Jul 2022 10:16:59 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ABA361D78;
+        Tue, 19 Jul 2022 06:48:25 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id m8so6220328edd.9;
+        Tue, 19 Jul 2022 06:48:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4cFR1T4lbutWstXHmbM2dbPlJKpl1mp7S3Dg2sFTtXY=;
-        b=bbvbU9/VIBfx8nTpUA08RgMOwLrYN9HNlmwCvNPx3ADsuPEraxeXetEdoNY6GFL6EY
-         s6vdpPwfgPxk9mla4Adjxc+ggy4+svDCCpRk4s8QRSMCOOYAzv8hvxYCCAPb31jTCZZA
-         0JQXOWx7lnB7l0GvXBwc15wNzlgtZNZvihvXK1gZcDRS6dOxWwLeC4bVlRr3ALuHDVCY
-         m2LJB9rq+bl6cLvE9xi4WvjFnEPFsjOESzKACF7w+phWjF4XY2BRhQjzhmyBlC3+b6b+
-         /ekAkGhtxF4euSC4usgkZigfoLb7ktf/51TKeE4xICpooZliJ0e0HrbMSP8puWz2SDKx
-         hjpQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=H/QcNljsBbmdjrwrwjwtjEvq2HQmGFprhuK7NiBbLCY=;
+        b=hLYimp8Okd9vJhnWXpRDdSRvTL1boG2q8EvYEEyc85GQ9lkfLa6YdBtEzDouHm6rJ+
+         LPWjEXaeqGh/rVPplyIzvJDel4t8LcmKGAtG78Kuhv4Q+NQlFoZTJ1//dzvsgrJNS/Hf
+         n4eBPbw0WinGSHbJowo1VrRODCGSGvxZIVj3wEaRAcZQNTlqJwmbluqSTM5dOxavCC+0
+         UY5BXyZlLW3sXUstjgaWm+0C59Hsp/4YszXJIeygPrAGWUqvjqJSX4hvZlehk2arTjkM
+         TA4htYczsZU7t+q0wWIfTUsaNlsy0LPo5WSARGMWS88sJXfMMalRLLXhUogpc+5amebS
+         jnRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4cFR1T4lbutWstXHmbM2dbPlJKpl1mp7S3Dg2sFTtXY=;
-        b=qurnwsfa081EX/LaGZmcC5jwQGVxpDYGnIRtw5Y1AqHCVezisVBtXpj12TwLwY9A+F
-         Fi3VWhVym8M4TlO1wQLE2yvuyKFq5TO2HpuGSA580njMvWtjXGoAd4HTvOKeazdQdXVq
-         CWxxyBUERadAlpItLr+93xoOJ/pn3SIOEYr5to5Rzn8BkxHm/mMyQKn5pYfPUDBUV7M7
-         22NAz3HxhoPfIwo5VeGCu2TjY1/AXFEUpnJwWcaWBdzm7eP8aS/R8gSQ1zTprCaaiF6o
-         TL9JmGfO0HHUKZDfmFzOPaYfx1RuWlS/gxuMM+Mfqrs0EqJTMTd5raJ4DaA4Kd34zsRF
-         DM4Q==
-X-Gm-Message-State: AJIora/aaaMJNQUqYh9VOW1LySYlcOrAgTXA8Fck5MO/xEdIUzdgJNFt
-        RRYgObiLjicMpUAWAgyZXUJss7+994eepQ==
-X-Google-Smtp-Source: AGRyM1vG4GsrYNk4GaXnjMHks9prfDbdxx0xwxUPmUidxm41ZHQsI7i0HioiZdrrGaxqlF5aXzKOEw==
-X-Received: by 2002:a17:907:a0c6:b0:72e:ea7d:6a98 with SMTP id hw6-20020a170907a0c600b0072eea7d6a98mr21068836ejc.140.1658237088740;
-        Tue, 19 Jul 2022 06:24:48 -0700 (PDT)
-Received: from localhost (icdhcp-1-189.epfl.ch. [128.178.116.189])
-        by smtp.gmail.com with ESMTPSA id gt2-20020a170906f20200b0072b342ad997sm6619764ejb.199.2022.07.19.06.24.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jul 2022 06:24:48 -0700 (PDT)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org
-Subject: [PATCH bpf-next v6 13/13] selftests/bpf: Fix test_verifier failed test in unprivileged mode
-Date:   Tue, 19 Jul 2022 15:24:30 +0200
-Message-Id: <20220719132430.19993-14-memxor@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220719132430.19993-1-memxor@gmail.com>
-References: <20220719132430.19993-1-memxor@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=H/QcNljsBbmdjrwrwjwtjEvq2HQmGFprhuK7NiBbLCY=;
+        b=P3clVFcq1w0gaf6k0Gy/TJcGRJJyRTFrpspP18inO5NGOpv8qdW7LbttN5Ci2cijly
+         g9xrWFyaegAaqHqtG8Z8EvL/KY5wY9QfrDh0ZR9D62/p381tjUU8ldMGMNLO7Ng9aTId
+         DViCQvqjIrgZdv/Rl3CER6KJi8jZEuh/K/BhqVABJLmpldQ3a13YCcqzq9xqp9hYjfg5
+         1PvJ7SYW6zIDRGwUBrtAH9tFruK5x3HO7XkO9Heq3Hf3+eIJDn1TgzsAQp01ljKUgNVD
+         DAmB+azZgC1rTwVf6zu/yy0heEahQmIk5mHrniCedM6F4gh12CUQXyTYSBZQ1mR+WnSv
+         rU8Q==
+X-Gm-Message-State: AJIora+7ETgv3FNMFD6A/Hi+ozSZvkwtC1aeZPwhRNYHACGKkcYySSlQ
+        HglekL9CqwBwKbAyRAnqWnu+R7ZRXXM=
+X-Google-Smtp-Source: AGRyM1vfB8m0S9L87u7x8sMnidtJ7ms8KbYxF6JCQWGFj227DYAusFol270rKqeVp2RsdAd7Nzr2Dg==
+X-Received: by 2002:a05:6402:c0b:b0:43a:25ff:ff08 with SMTP id co11-20020a0564020c0b00b0043a25ffff08mr44462159edb.148.1658238504156;
+        Tue, 19 Jul 2022 06:48:24 -0700 (PDT)
+Received: from [192.168.1.122] (cpc159313-cmbg20-2-0-cust161.5-4.cable.virginm.net. [82.0.78.162])
+        by smtp.gmail.com with ESMTPSA id v18-20020a170906293200b00721d8e5bf0bsm6758112ejd.6.2022.07.19.06.48.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Jul 2022 06:48:23 -0700 (PDT)
+Subject: Re: [PATCH bpf-next v2 0/5] cleanup for data casting
+To:     Pu Lehui <pulehui@huawei.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20220718132938.1031864-1-pulehui@huawei.com>
+ <CAADnVQJQ_WU6wfyaAkk3f9DaawDtsDT4BLZeBp2aPEZ4TMaYVQ@mail.gmail.com>
+ <b5c03458-7fd8-3739-63b1-11618f4b8a6a@huawei.com>
+From:   Edward Cree <ecree.xilinx@gmail.com>
+Message-ID: <df76c412-d9e4-b89d-1bd3-eefb50280f57@gmail.com>
+Date:   Tue, 19 Jul 2022 14:48:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1029; i=memxor@gmail.com; h=from:subject; bh=avUxAzVXxTSlvvIczCgkt5Bck8b2xRF1My3q7b4wHho=; b=owEBbQKS/ZANAwAKAUzgyIZIvxHKAcsmYgBi1rBmQgxaln2kgyqBnUL/mSLBYQq2oZzyQ+9iPSWL 0uAGw62JAjMEAAEKAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYtawZgAKCRBM4MiGSL8RynoeEA CoG6hQ7m9ddUrYrkaVr449xHtXW2oF1Uip9faZAIF8vjZUaonnLZ8zdr6A9SnpK2YbOQbLxg3p1Uo/ EBIGiIYNB8faI1xi6DAmLkGsr59JcKzMULymFpXH3zhG63W/MaRjJYJcfilx6Tx0Qj8EFEvUNzmkaP S93WupfXvvf8VF/OXZCD182SN5tpnN7z1DVKIVJjppfv3AcFdqvE9FfJrvMwDUUY7CbSerHvHbJxrD 7YDjtNE5bYqTCmeMfli+R7mn9yG56ZAcgLJ0giqXbYh44NBGakzwdW5VE0AhYsi0AU19estFcQH2g6 8eqHqTm/QFhEiAewcS8JDy/RRRYgUGQjKOqGpJTMDVINtuEM4EJXS1qLS4nzN1iZa7KROus8R04YIT IE6yWiXQsgdpal+JhJxIFFdGkyQjMHQ6CgP6TdssFyJKoBjbAJLvGa/CmWiVB3SUOgnTJbv0wZlHkT cRMEOX6ADpm3XWLTR7U8zmtGS3UTblqq83uSc4A7DfQGRhwddvLgQeIs/Su8/SOwaV/qeklgt9Ey8C fRzFTPkTeK8k5PHtxuK3D3WVCI/PSUN+ogwrD52lkNNLGIvJ2LGRYTrTRW+e6zvh1knooxKpJtOcdi DPL0NzvhNaySzZBkBF1z8DNPJLdnVagZPntus7elq2Q8FkqDAT9A4GDOSjnw==
-X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
+In-Reply-To: <b5c03458-7fd8-3739-63b1-11618f4b8a6a@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -78,28 +77,18 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Loading the BTF won't be permitted without privileges, hence only test
-for privileged mode by setting the prog type. This makes the
-test_verifier show 0 failures when unprivileged BPF is enabled.
+>> On Mon, Jul 18, 2022 at 5:59 AM Pu Lehui <pulehui@huawei.com> wrote:
+>>> Previously, we found that memory address casting in libbpf
+>>> was not appropriate [0]. Memory addresses are conceptually
+>>> unsigned, (unsigned long) casting makes more sense. With the
+>>> suggestion of Daniel, we applied this cleanup to the entire
+>>> bpf, and there is no functional change.
+Fwiw, pointers in C aren't necessarily unsigned; some versions of
+ gcc have treated them as signed and — if no object can straddle
+ the sign boundary — it's even allowed by the standard. [1]
+(And at a hardware level, a memory address is just a pattern of
+ bits on an address bus, which isn't arithmetic at all.)
 
-Fixes: 4118e9e9def ("selftest/bpf: Test for use-after-free bug fix in inline_bpf_loop")
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- tools/testing/selftests/bpf/verifier/bpf_loop_inline.c | 1 +
- 1 file changed, 1 insertion(+)
+-ed
 
-diff --git a/tools/testing/selftests/bpf/verifier/bpf_loop_inline.c b/tools/testing/selftests/bpf/verifier/bpf_loop_inline.c
-index 2d0023659d88..a535d41dc20d 100644
---- a/tools/testing/selftests/bpf/verifier/bpf_loop_inline.c
-+++ b/tools/testing/selftests/bpf/verifier/bpf_loop_inline.c
-@@ -251,6 +251,7 @@
- 	.expected_insns = { PSEUDO_CALL_INSN() },
- 	.unexpected_insns = { HELPER_CALL_INSN() },
- 	.result = ACCEPT,
-+	.prog_type = BPF_PROG_TYPE_TRACEPOINT,
- 	.func_info = { { 0, MAIN_TYPE }, { 16, CALLBACK_TYPE } },
- 	.func_info_cnt = 2,
- 	BTF_TYPES
--- 
-2.34.1
-
+[1]: https://yarchive.net/comp/linux/signed_pointers.html
