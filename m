@@ -2,86 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5CED57A481
-	for <lists+bpf@lfdr.de>; Tue, 19 Jul 2022 19:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3055657A490
+	for <lists+bpf@lfdr.de>; Tue, 19 Jul 2022 19:06:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237634AbiGSRDg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Jul 2022 13:03:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56144 "EHLO
+        id S237587AbiGSRGW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Jul 2022 13:06:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237621AbiGSRDf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Jul 2022 13:03:35 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4411657E30
-        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 10:03:34 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id x23-20020a05600c179700b003a30e3e7989so7373483wmo.0
-        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 10:03:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=r+MbLhPEbPzZZ383BNC4o+ODjSZn2IOZ1+cvc+pl4H8=;
-        b=a3Pe1XQbYx4v0ysbU2fins6nDxNM7U4kuLhj9RSeL/EkKwAF8daaoB7UezqS9i3KuO
-         rNHvattavcGxvSGoePl0nOY1gKYGIfMIXYFjFAxk9J1slbYoVTgmw7NZxxlJwSFwM2Ry
-         q/p4F9ewrlLOGveYwUKOb3X51FqPB1R3OAOZcU3CKpvm4Uc+gpuxOTFWKJ0PEK9Sbdca
-         pbFxH/lQyw6PFTR2UiWcIQ/DBUagVMwYNbtpAnYXG0/BVtLuQWqKX2QgHPUPoRJLW88q
-         lSlj4HYbRNOggbUJqRCm1qBcr8ZkPjLKJP02d25uY30Xge0sSJl166OAT6Qm/r1SvQTL
-         VHtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r+MbLhPEbPzZZ383BNC4o+ODjSZn2IOZ1+cvc+pl4H8=;
-        b=65L2kDpk6ZwhNvX0b6C5h9fY/vrlE7thHxVm3V4b+JlnsB3l8PnyJ1Uo94Oa6p0LFa
-         6FqUJ6xQ7PGYuohNXA2iwT3Guh0VGkK+QHf8qPUUfrJTJ+OWf7RVEYzbN2FxmJQNfA+s
-         RyLgl2VOwXY76txUtS8ros+wHVroTn9e0YWS9n5UmnO14PQKZ6eRBe8VRhspnbLIV41e
-         VImAqXLuwCv7CSHkk/bTUPej4wr35A4u51ikyByVIaOIKGXNv2/6BgDXrsgdKA3Zadmz
-         pdIfJgeJc4bBV5KNFkHuoLk2bYV24dAP9SB2XN8gqnBq5/sIUlzz1xQBW6oowt1qUseC
-         CW0A==
-X-Gm-Message-State: AJIora9xbFDhNoLwAViPlDeTKPJyNy3z65Eol4fWiGozTYvJUFUTOqJQ
-        8/zxPZklhhC7MM1zCjD/MqdWewPUevqA4DhCQDCbGQ==
-X-Google-Smtp-Source: AGRyM1vd1+rBdNfn8tuguglOENmVfRaOAZrJgwi0LYaLUqp7lsC+pP921CtjBT7TTsXzALjH90gY5fkgGqAUBaVpqIc=
-X-Received: by 2002:a05:600c:601b:b0:3a3:21a2:8bcd with SMTP id
- az27-20020a05600c601b00b003a321a28bcdmr272992wmb.80.1658250212522; Tue, 19
- Jul 2022 10:03:32 -0700 (PDT)
+        with ESMTP id S235892AbiGSRGV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Jul 2022 13:06:21 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB4724D817;
+        Tue, 19 Jul 2022 10:06:20 -0700 (PDT)
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4LnQBR2z29z689Mf;
+        Wed, 20 Jul 2022 01:02:55 +0800 (CST)
+Received: from roberto-ThinkStation-P620.huawei.com (10.204.63.22) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 19 Jul 2022 19:06:17 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     <quentin@isovalent.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andrii@kernel.org>, <martin.lau@linux.dev>, <song@kernel.org>,
+        <john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
+        <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <terrelln@fb.com>, <nathan@kernel.org>, <ndesaulniers@google.com>
+CC:     <bpf@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
+        <llvm@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH 1/4] tools, build: Retry detection of bfd-related features
+Date:   Tue, 19 Jul 2022 19:05:52 +0200
+Message-ID: <20220719170555.2576993-1-roberto.sassu@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20220709000439.243271-1-yosryahmed@google.com>
- <20220709000439.243271-9-yosryahmed@google.com> <b4936952-2fe7-656c-2d0d-69044265392a@fb.com>
- <9c6a0ba3-2730-eb56-0f96-e5d236e46660@fb.com> <CAJD7tkZUfNqD8z6Cv7vi1TxpwKTXhDn_yweDHnRr++9iJs+=ew@mail.gmail.com>
- <CAJD7tkb8-scb1sstre0LRhY3dgfUJhGvSR=DgEqfwcVtBwb+5w@mail.gmail.com> <670999ab-69c8-9692-4d73-da4f96c63e64@fb.com>
-In-Reply-To: <670999ab-69c8-9692-4d73-da4f96c63e64@fb.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 19 Jul 2022 10:02:55 -0700
-Message-ID: <CAJD7tkYv2rcLQ1FyOThEpOHK0HFjY6kKBYL_ovuxWecKY_qcpw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 8/8] bpf: add a selftest for cgroup
- hierarchical stats collection
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.204.63.22]
+X-ClientProxiedBy: lhreml754-chm.china.huawei.com (10.201.108.204) To
+ fraeml714-chm.china.huawei.com (10.206.15.33)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,247 +50,75 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 19, 2022 at 9:17 AM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 7/18/22 12:34 PM, Yosry Ahmed wrote:
-> > On Mon, Jul 11, 2022 at 8:55 PM Yosry Ahmed <yosryahmed@google.com> wrote:
-> >>
-> >> On Sun, Jul 10, 2022 at 5:51 PM Yonghong Song <yhs@fb.com> wrote:
-> >>>
-> >>>
-> >>>
-> >>> On 7/10/22 5:26 PM, Yonghong Song wrote:
-> >>>>
-> >>>>
-> >>>> On 7/8/22 5:04 PM, Yosry Ahmed wrote:
-> >>>>> Add a selftest that tests the whole workflow for collecting,
-> >>>>> aggregating (flushing), and displaying cgroup hierarchical stats.
-> >>>>>
-> >>>>> TL;DR:
-> >>>>> - Userspace program creates a cgroup hierarchy and induces memcg reclaim
-> >>>>>     in parts of it.
-> >>>>> - Whenever reclaim happens, vmscan_start and vmscan_end update
-> >>>>>     per-cgroup percpu readings, and tell rstat which (cgroup, cpu) pairs
-> >>>>>     have updates.
-> >>>>> - When userspace tries to read the stats, vmscan_dump calls rstat to
-> >>>>> flush
-> >>>>>     the stats, and outputs the stats in text format to userspace (similar
-> >>>>>     to cgroupfs stats).
-> >>>>> - rstat calls vmscan_flush once for every (cgroup, cpu) pair that has
-> >>>>>     updates, vmscan_flush aggregates cpu readings and propagates updates
-> >>>>>     to parents.
-> >>>>> - Userspace program makes sure the stats are aggregated and read
-> >>>>>     correctly.
-> >>>>>
-> >>>>> Detailed explanation:
-> >>>>> - The test loads tracing bpf programs, vmscan_start and vmscan_end, to
-> >>>>>     measure the latency of cgroup reclaim. Per-cgroup readings are
-> >>>>> stored in
-> >>>>>     percpu maps for efficiency. When a cgroup reading is updated on a cpu,
-> >>>>>     cgroup_rstat_updated(cgroup, cpu) is called to add the cgroup to the
-> >>>>>     rstat updated tree on that cpu.
-> >>>>>
-> >>>>> - A cgroup_iter program, vmscan_dump, is loaded and pinned to a file, for
-> >>>>>     each cgroup. Reading this file invokes the program, which calls
-> >>>>>     cgroup_rstat_flush(cgroup) to ask rstat to propagate the updates
-> >>>>> for all
-> >>>>>     cpus and cgroups that have updates in this cgroup's subtree.
-> >>>>> Afterwards,
-> >>>>>     the stats are exposed to the user. vmscan_dump returns 1 to terminate
-> >>>>>     iteration early, so that we only expose stats for one cgroup per read.
-> >>>>>
-> >>>>> - An ftrace program, vmscan_flush, is also loaded and attached to
-> >>>>>     bpf_rstat_flush. When rstat flushing is ongoing, vmscan_flush is
-> >>>>> invoked
-> >>>>>     once for each (cgroup, cpu) pair that has updates. cgroups are popped
-> >>>>>     from the rstat tree in a bottom-up fashion, so calls will always be
-> >>>>>     made for cgroups that have updates before their parents. The program
-> >>>>>     aggregates percpu readings to a total per-cgroup reading, and also
-> >>>>>     propagates them to the parent cgroup. After rstat flushing is over,
-> >>>>> all
-> >>>>>     cgroups will have correct updated hierarchical readings (including all
-> >>>>>     cpus and all their descendants).
-> >>>>>
-> >>>>> - Finally, the test creates a cgroup hierarchy and induces memcg reclaim
-> >>>>>     in parts of it, and makes sure that the stats collection, aggregation,
-> >>>>>     and reading workflow works as expected.
-> >>>>>
-> >>>>> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> >>>>> ---
-> >>>>>    .../prog_tests/cgroup_hierarchical_stats.c    | 362 ++++++++++++++++++
-> >>>>>    .../bpf/progs/cgroup_hierarchical_stats.c     | 235 ++++++++++++
-> >>>>>    2 files changed, 597 insertions(+)
-> >>>>>    create mode 100644
-> >>>>> tools/testing/selftests/bpf/prog_tests/cgroup_hierarchical_stats.c
-> >>>>>    create mode 100644
-> >>>>> tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
-> >>>>>
-> >>>> [...]
-> >>>>> +
-> >>>>> +static unsigned long long get_cgroup_vmscan_delay(unsigned long long
-> >>>>> cgroup_id,
-> >>>>> +                          const char *file_name)
-> >>>>> +{
-> >>>>> +    char buf[128], path[128];
-> >>>>> +    unsigned long long vmscan = 0, id = 0;
-> >>>>> +    int err;
-> >>>>> +
-> >>>>> +    /* For every cgroup, read the file generated by cgroup_iter */
-> >>>>> +    snprintf(path, 128, "%s%s", BPFFS_VMSCAN, file_name);
-> >>>>> +    err = read_from_file(path, buf, 128);
-> >>>>> +    if (!ASSERT_OK(err, "read cgroup_iter"))
-> >>>>> +        return 0;
-> >>>>> +
-> >>>>> +    /* Check the output file formatting */
-> >>>>> +    ASSERT_EQ(sscanf(buf, "cg_id: %llu, total_vmscan_delay: %llu\n",
-> >>>>> +             &id, &vmscan), 2, "output format");
-> >>>>> +
-> >>>>> +    /* Check that the cgroup_id is displayed correctly */
-> >>>>> +    ASSERT_EQ(id, cgroup_id, "cgroup_id");
-> >>>>> +    /* Check that the vmscan reading is non-zero */
-> >>>>> +    ASSERT_GT(vmscan, 0, "vmscan_reading");
-> >>>>> +    return vmscan;
-> >>>>> +}
-> >>>>> +
-> >>>>> +static void check_vmscan_stats(void)
-> >>>>> +{
-> >>>>> +    int i;
-> >>>>> +    unsigned long long vmscan_readings[N_CGROUPS], vmscan_root;
-> >>>>> +
-> >>>>> +    for (i = 0; i < N_CGROUPS; i++)
-> >>>>> +        vmscan_readings[i] = get_cgroup_vmscan_delay(cgroups[i].id,
-> >>>>> +                                 cgroups[i].name);
-> >>>>> +
-> >>>>> +    /* Read stats for root too */
-> >>>>> +    vmscan_root = get_cgroup_vmscan_delay(CG_ROOT_ID, CG_ROOT_NAME);
-> >>>>> +
-> >>>>> +    /* Check that child1 == child1_1 + child1_2 */
-> >>>>> +    ASSERT_EQ(vmscan_readings[1], vmscan_readings[3] +
-> >>>>> vmscan_readings[4],
-> >>>>> +          "child1_vmscan");
-> >>>>> +    /* Check that child2 == child2_1 + child2_2 */
-> >>>>> +    ASSERT_EQ(vmscan_readings[2], vmscan_readings[5] +
-> >>>>> vmscan_readings[6],
-> >>>>> +          "child2_vmscan");
-> >>>>> +    /* Check that test == child1 + child2 */
-> >>>>> +    ASSERT_EQ(vmscan_readings[0], vmscan_readings[1] +
-> >>>>> vmscan_readings[2],
-> >>>>> +          "test_vmscan");
-> >>>>> +    /* Check that root >= test */
-> >>>>> +    ASSERT_GE(vmscan_root, vmscan_readings[1], "root_vmscan");
-> >>>>
-> >>>> I still get a test failure with
-> >>>>
-> >>>> get_cgroup_vmscan_delay:PASS:cgroup_id 0 nsec
-> >>>> get_cgroup_vmscan_delay:FAIL:vmscan_reading unexpected vmscan_reading:
-> >>>> actual 0 <= expected 0
-> >>>> check_vmscan_stats:FAIL:child1_vmscan unexpected child1_vmscan: actual 0
-> >>>> != expected -2
-> >>>> check_vmscan_stats:FAIL:child2_vmscan unexpected child2_vmscan: actual 0
-> >>>> != expected -2
-> >>>> check_vmscan_stats:PASS:test_vmscan 0 nsec
-> >>>> check_vmscan_stats:PASS:root_vmscan 0 nsec
-> >>>>
-> >>>> I added 'dump_stack()' in function try_to_free_mem_cgroup_pages()
-> >>>> and run this test (#33) and didn't get any stacktrace.
-> >>>> But I do get stacktraces due to other operations like
-> >>>>           try_to_free_mem_cgroup_pages+0x1fd [kernel]
-> >>>>           try_to_free_mem_cgroup_pages+0x1fd [kernel]
-> >>>>           memory_reclaim_write+0x88 [kernel]
-> >>>>           cgroup_file_write+0x88 [kernel]
-> >>>>           kernfs_fop_write_iter+0xd0 [kernel]
-> >>>>           vfs_write+0x2c4 [kernel]
-> >>>>           __x64_sys_write+0x60 [kernel]
-> >>>>           do_syscall_64+0x2d [kernel]
-> >>>>           entry_SYSCALL_64_after_hwframe+0x44 [kernel]
-> >>>>
-> >>>> If you can show me the stacktrace about how
-> >>>> try_to_free_mem_cgroup_pages() is triggered in your setup, I can
-> >>>> help debug this problem in my environment.
-> >>>
-> >>> BTW, CI also reported the test failure.
-> >>> https://github.com/kernel-patches/bpf/pull/3284
-> >>>
-> >>> For example, with gcc built kernel,
-> >>> https://github.com/kernel-patches/bpf/runs/7272407890?check_suite_focus=true
-> >>>
-> >>> The error:
-> >>>
-> >>>     get_cgroup_vmscan_delay:PASS:cgroup_id 0 nsec
-> >>>     get_cgroup_vmscan_delay:PASS:vmscan_reading 0 nsec
-> >>>     check_vmscan_stats:FAIL:child1_vmscan unexpected child1_vmscan:
-> >>> actual 28390910 != expected 28390909
-> >>>     check_vmscan_stats:FAIL:child2_vmscan unexpected child2_vmscan:
-> >>> actual 0 != expected -2
-> >>>     check_vmscan_stats:PASS:test_vmscan 0 nsec
-> >>>     check_vmscan_stats:PASS:root_vmscan 0 nsec
-> >>>
-> >>
-> >> Hey Yonghong,
-> >>
-> >> Thanks for helping us debug this failure. I can reproduce the CI
-> >> failure in my enviornment, but this failure is actually different from
-> >> the failure in your environment. In your environment it looks like no
-> >> stats are gathered for all cgroups (either no reclaim happening or bpf
-> >> progs not being run). In the CI and in my environment, only one cgroup
-> >> observes this behavior.
-> >>
-> >> The thing is, I was able to reproduce the problem only when I ran all
-> >> test_progs. When I run the selftest alone (test_progs -t
-> >> cgroup_hierarchical_stats), it consistently passes, which is
-> >> interesting.
-> >
-> > I think I figured this one out (the CI failure). I set max_entries for
-> > the maps in the test to 10, because I have 1 entry per-cgroup, and I
-> > have less than 10 cgroups. When I run the test with other tests I
-> > *think* there are other cgroups that are being created, so the number
-> > exceeds 10, and some of the entries for the test cgroups cannot be
-> > created. I saw a lot of "failed to create entry for cgroup.." message
-> > in the bpf trace produced by my test, and the error turned out to be
-> > -E2BIG. I increased max_entries to 100 and it seems to be consistently
-> > passing when run with all the other tests, using both test_progs and
-> > test_progs-no_alu32.
-> >
-> > Please find a diff attached fixing this problem and a few other nits:
-> > - Return meaningful exit codes from the reclaimer() child process and
-> > check them in induce_vmscan().
-> > - Make buf and path variables static in get_cgroup_vmscan_delay()
-> > - Print error code in bpf trace when we fail to create a bpf map entry.
-> > - Print 0 instead of -1 when we can't find a map entry, to avoid
-> > underflowing the unsigned counters in the test.
-> >
-> > Let me know if this diff works or not, and if I need to send a new
-> > version with the diff or not. Also let me know if this fixes the
-> > failures that you have been seeing locally (which looked different
-> > from the CI failures).
->
-> I tried this patch and the test passed in my local environment
-> so the diff sounds good to me.
->
+While separate features have been defined to determine which linking flags
+are required to use libbfd depending on the distribution (libbfd,
+libbfd-liberty and libbfd-liberty-z), the same has not been done for other
+features requiring linking to libbfd.
 
-Awesome! Thanks so much for helping debugging this!
+For example, disassembler-four-args requires linking to libbfd too, but it
+should use the right linking flags. If not all the required ones are
+specified, e.g. -liberty, detection will always fail even if the feature is
+available.
 
-I will bundle this diff with Hao's cgroup_iter changes and send a v4 soon.
+Instead of creating new features, similarly to libbfd, simply retry
+detection with the different set of flags until detection succeeds (or
+fails, if the libraries are missing). In this way, feature detection is
+transparent for the users of this building mechanism (e.g. perf), and those
+users don't have for example to set an appropriate value for the
+FEATURE_CHECK_LDFLAGS-disassembler-four-args variable.
 
-> >
-> > Thanks!
-> >
-> >>
-> >> Anyway, one failure at a time :) I am working on debugging the CI
-> >> failure (that occurs only when all tests are run), then we'll see if
-> >> fixing that fixes the problem in our environment as well.
-> >>
-> >> If you have any pointers about why a test would consistently pass
-> >> alone and consistently fail with others that would be good. Otherwise,
-> >> I will keep you updated with any findings I reach.
-> >>
-> >> Thanks again!
-> >>
-> >>>>
-> >>>>> +}
-> >>>>> +
-> >>>>> +static int setup_cgroup_iter(struct cgroup_hierarchical_stats *obj,
-> >>>>> int cgroup_fd,
-> >>>> [...]
+The number of retries and features for which the retry mechanism is
+implemented is low enough to make the increase in the complexity of
+Makefile negligible.
+
+Tested with perf and bpftool on Ubuntu 20.04.4 LTS, Fedora 36 and openSUSE
+Tumbleweed.
+
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+---
+ tools/build/feature/Makefile | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
+index 7c2a17e23c30..063dab19148c 100644
+--- a/tools/build/feature/Makefile
++++ b/tools/build/feature/Makefile
+@@ -89,6 +89,8 @@ all: $(FILES)
+ 
+ __BUILD = $(CC) $(CFLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.c,$(@F)) $(LDFLAGS)
+   BUILD = $(__BUILD) > $(@:.bin=.make.output) 2>&1
++  BUILD_BFD = $(BUILD) -DPACKAGE='"perf"' -lbfd -ldl
++  BUILD_ALL = $(BUILD) -fstack-protector-all -O2 -D_FORTIFY_SOURCE=2 -ldw -lelf -lnuma -lelf -lslang $(FLAGS_PERL_EMBED) $(FLAGS_PYTHON_EMBED) -DPACKAGE='"perf"' -lbfd -ldl -lz -llzma -lzstd -lcap
+ 
+ __BUILDXX = $(CXX) $(CXXFLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.cpp,$(@F)) $(LDFLAGS)
+   BUILDXX = $(__BUILDXX) > $(@:.bin=.make.output) 2>&1
+@@ -96,7 +98,7 @@ __BUILDXX = $(CXX) $(CXXFLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.cpp,$(
+ ###############################
+ 
+ $(OUTPUT)test-all.bin:
+-	$(BUILD) -fstack-protector-all -O2 -D_FORTIFY_SOURCE=2 -ldw -lelf -lnuma -lelf -lslang $(FLAGS_PERL_EMBED) $(FLAGS_PYTHON_EMBED) -DPACKAGE='"perf"' -lbfd -ldl -lz -llzma -lzstd -lcap
++	$(BUILD_ALL) || $(BUILD_ALL) -lopcodes -liberty
+ 
+ $(OUTPUT)test-hello.bin:
+ 	$(BUILD)
+@@ -240,13 +242,14 @@ $(OUTPUT)test-libpython.bin:
+ 	$(BUILD) $(FLAGS_PYTHON_EMBED)
+ 
+ $(OUTPUT)test-libbfd.bin:
+-	$(BUILD) -DPACKAGE='"perf"' -lbfd -ldl
++	$(BUILD_BFD)
+ 
+ $(OUTPUT)test-libbfd-buildid.bin:
+-	$(BUILD) -DPACKAGE='"perf"' -lbfd -ldl
++	$(BUILD_BFD) || $(BUILD_BFD) -liberty || $(BUILD_BFD) -liberty -lz
+ 
+ $(OUTPUT)test-disassembler-four-args.bin:
+-	$(BUILD) -DPACKAGE='"perf"' -lbfd -lopcodes
++	$(BUILD_BFD) -lopcodes || $(BUILD_BFD) -lopcodes -liberty || \
++	$(BUILD_BFD) -lopcodes -liberty -lz
+ 
+ $(OUTPUT)test-reallocarray.bin:
+ 	$(BUILD)
+-- 
+2.25.1
+
