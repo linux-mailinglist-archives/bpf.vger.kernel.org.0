@@ -2,105 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74BB3578DD2
-	for <lists+bpf@lfdr.de>; Tue, 19 Jul 2022 00:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B970578F2B
+	for <lists+bpf@lfdr.de>; Tue, 19 Jul 2022 02:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233616AbiGRW61 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jul 2022 18:58:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54486 "EHLO
+        id S233993AbiGSATq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jul 2022 20:19:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232002AbiGRW61 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Jul 2022 18:58:27 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C0171C920
-        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 15:58:26 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id g4-20020a17090a290400b001f1f2b7379dso762988pjd.0
-        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 15:58:26 -0700 (PDT)
+        with ESMTP id S236278AbiGSATp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Jul 2022 20:19:45 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D635233E3B
+        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 17:19:43 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id d16so19300775wrv.10
+        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 17:19:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=2ER2WW01ET2wH1WV2jGlyhputEhjwKA2tNpxchjmONE=;
-        b=BL1n55haiIU6dcML3MmvSTXeTN1OAGG425M/8QaIT9O6EOGtFz8aTJLt5y5lfM37Gw
-         f40JxetwRpn3rzyDUYmWxiPgr7Sp61D6YK5FkPA0G/yiVJAx9phQL1cAkhOZgB9dlTj5
-         VjYoChGs3qPrN6mD/fN5tZXC1kHaaBLs21SYjCaGuFcAjG783T9Frt1vvlGdxFj7cdDR
-         3KULs3qbnDx+O7Skm/U2TNFQZPVKfXIp2/7cLJSiSQGdj+tAzug74i3usPSOZ8lfzkwM
-         fp/cE1bYrM2go13i1xHWFHiynTBsk4rsutugQiZ18rdOVVu9KpPNx/LbRzEK+66caYtA
-         GsFQ==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A/tfmTl8rXDFpYRGXN4+L+UsANM+7IsYT4VqGSMDHfM=;
+        b=YsSa6GugGINKY6fPTPL9pliswrcB1UYTnSQSyvHufKXAKsnNqjgbZf/MrzBAVFkpkV
+         3efUWwnPZNgyam4zbFiZvkF6DwmWKFdS4gCpQebSh57I/6VOBjSSfsjowVXVPiw71gNH
+         de+i+jDRoJXPnuWcTFjPOCu7w5EYVFWAUjK8xRxu3vg0KbHaPYzSIuS0CLG8vyC+lneJ
+         h4Ng6A/IL8PySfzmZtqDJZ+vkSLiZB+gEobBhwgUXPRZxEZxNCQ3mkTA+krKy7w5UpLY
+         vLso/ZSSkedxwIUPkoCsvkpFvozIoqB8yMpsstKN1pibqE18Si1uau6Mu0kK3kRsror3
+         2GFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=2ER2WW01ET2wH1WV2jGlyhputEhjwKA2tNpxchjmONE=;
-        b=fINs+r4ViLrlPBUzuwl5ZTsHAisNKdiDbJ/dnPzdC1KGBYWRUbVRqauy/SxrxVK1U7
-         rSCuPRJoc1rHCP+mtRSqG2o80zRO9L9VRu2+jEk06Dmr8UO3hnAprNzhtr5yxtnblZ7F
-         nT0SR7Y4mnJRPLSJz5eK7wrIZJPHZBcWLRGfnnRitcbwQEJ3tJJW6ciN+ggg4UPJLY5t
-         3OaZECNCEJVVOSYVqf3DrBImI4MAIeoLD3cvoMwSoMbWIrf4HKtVEtf0I1wwRyE68Vj4
-         fFE9DoeK1QJPY1+O+NecEoxmaQ4afK+jXRGcd+9XIC3plT7xtdfsBYPmoxXSNj/y6Gb4
-         LpYw==
-X-Gm-Message-State: AJIora82OyHB84orYFd4nn3slIRnJ1wmKkS4iNuJgbW1ELv3NH0uQCK0
-        36pR8AKd/vWUwRUfQYoAYBOfQ64uCxIDaMlWbkc=
-X-Google-Smtp-Source: AGRyM1vurYnVc9DfqE6iu3wFxKeDocMRcqAWLIrtgsyWYMa58rdzeKuwgfcV7m5AwIMtcQQvR0y1NprmtEjofSFx7sY=
-X-Received: by 2002:a17:902:cf4a:b0:16c:1b21:a3ae with SMTP id
- e10-20020a170902cf4a00b0016c1b21a3aemr31213401plg.38.1658185106067; Mon, 18
- Jul 2022 15:58:26 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A/tfmTl8rXDFpYRGXN4+L+UsANM+7IsYT4VqGSMDHfM=;
+        b=3X3wiyDsekLJyj7fnGjUU+3g8X3naw41CR04TbVLvP4n4m/T2s0i7tqxWJ/4iDzOBs
+         uP4QOCPiTwLFMTytzm1h3CpGpMY+PboIRAAOni8eJKdhjyssCPcFxKkqOQoQk3MzYMnE
+         9gLf0uastksyQJTsPEdNSSNNFVUAFalN/sMrQKGqKqgK/HLZBYRMRM+dn5+mkp3CqYX5
+         ip18tPEk0Ikri/qbfDGkgZzOskW4pgZGsy6YBmptpwCLFGSqvf6BGHVCWXfykowq2Wue
+         YXegYByjLPglrRGe1vVuc4ShBcnIWkPZAF8tkww3dr0DoqD4JrWt1ZCrZ/Bfm2g9g+Gt
+         2bYA==
+X-Gm-Message-State: AJIora8uNmBKttQ2NCQ7H3J8+oV+bkDqgVUHF7AVMQmNEhwMIzWcmrNY
+        U7eez1MGH+1svbyMyiTjlvYY0tpOOZI40GXXJo68Bg==
+X-Google-Smtp-Source: AGRyM1u7d1r2Bbb6nhCQBRvfKeZJGVEGRNOp/QpyZlEJg/hAAoSmdJGRxsGTEeAkJzI4ZjA4LDyHE6jEsWuJDXBvTtM=
+X-Received: by 2002:a5d:64a3:0:b0:21d:adaa:ce4c with SMTP id
+ m3-20020a5d64a3000000b0021dadaace4cmr24585254wrp.161.1658189982235; Mon, 18
+ Jul 2022 17:19:42 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:f350:b0:2b8:cd69:cc39 with HTTP; Mon, 18 Jul 2022
- 15:58:25 -0700 (PDT)
-Reply-To: drlisa985@gmail.com
-From:   Lisa <carolinahashim828@gmail.com>
-Date:   Tue, 19 Jul 2022 00:58:25 +0200
-Message-ID: <CA+V2SsBCK51szVtQNQ6kgF37wg3dyZTQprEuJicGF78tHcVPNQ@mail.gmail.com>
-Subject: With Love
-To:     undisclosed-recipients:;
+References: <20220709000439.243271-1-yosryahmed@google.com>
+ <20220709000439.243271-9-yosryahmed@google.com> <b4936952-2fe7-656c-2d0d-69044265392a@fb.com>
+ <9c6a0ba3-2730-eb56-0f96-e5d236e46660@fb.com> <CAJD7tkZUfNqD8z6Cv7vi1TxpwKTXhDn_yweDHnRr++9iJs+=ew@mail.gmail.com>
+ <CAJD7tkb8-scb1sstre0LRhY3dgfUJhGvSR=DgEqfwcVtBwb+5w@mail.gmail.com>
+In-Reply-To: <CAJD7tkb8-scb1sstre0LRhY3dgfUJhGvSR=DgEqfwcVtBwb+5w@mail.gmail.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Mon, 18 Jul 2022 17:19:30 -0700
+Message-ID: <CA+khW7i_SCDoMgtVWw=E5RkJBmSvqo+KFjVp3_X+LZ9wyfqO7g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 8/8] bpf: add a selftest for cgroup
+ hierarchical stats collection
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.2 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:1041 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [drlisa985[at]gmail.com]
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [carolinahashim828[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [carolinahashim828[at]gmail.com]
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        *  3.1 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Dear,
+On Mon, Jul 18, 2022 at 12:34 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+>
+[...]
+>
+> I think I figured this one out (the CI failure). I set max_entries for
+> the maps in the test to 10, because I have 1 entry per-cgroup, and I
+> have less than 10 cgroups. When I run the test with other tests I
+> *think* there are other cgroups that are being created, so the number
+> exceeds 10, and some of the entries for the test cgroups cannot be
+> created.
 
-My name is Dr Lisa Williams from the United States.I am a French and
-American nationality (dual) living in the U.S and sometimes in France
-for Work Purpose.
+Using hashmap to store per-cgroup data is only a short-term solution.
+We should work on extending cgroup-local storage to tracing programs.
+Maybe as a follow-up change once cgroup_iter is merged.
 
-I hope you consider my friend request. I will share some of my pics
-and more details about myself when I get your response.
+> in the bpf trace produced by my test, and the error turned out to be
+> -E2BIG. I increased max_entries to 100 and it seems to be consistently
+> passing when run with all the other tests, using both test_progs and
+> test_progs-no_alu32.
+>
+> Please find a diff attached fixing this problem and a few other nits:
+> - Return meaningful exit codes from the reclaimer() child process and
+> check them in induce_vmscan().
+> - Make buf and path variables static in get_cgroup_vmscan_delay()
+> - Print error code in bpf trace when we fail to create a bpf map entry.
+> - Print 0 instead of -1 when we can't find a map entry, to avoid
+> underflowing the unsigned counters in the test.
+>
+> Let me know if this diff works or not, and if I need to send a new
+> version with the diff or not. Also let me know if this fixes the
+> failures that you have been seeing locally (which looked different
+> from the CI failures).
+>
 
-Thanks
-With love
-Lisa
+Yosry, I also need to address Yonghong's comments in the cgroup_iter
+patch, so we need to send v4 anyway.
+
+Hao
+
+> Thanks!
+>
+[...]
