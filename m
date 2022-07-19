@@ -2,108 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9087579531
-	for <lists+bpf@lfdr.de>; Tue, 19 Jul 2022 10:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D71A2579588
+	for <lists+bpf@lfdr.de>; Tue, 19 Jul 2022 10:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234007AbiGSIZz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Jul 2022 04:25:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37990 "EHLO
+        id S237095AbiGSIuO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Jul 2022 04:50:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231645AbiGSIZy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Jul 2022 04:25:54 -0400
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A86865A2;
-        Tue, 19 Jul 2022 01:25:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1658219153; x=1689755153;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=CAAeOGWYGAB27VN2UmCW2WgUwGTXzndU5ncbrTlDjyU=;
-  b=P390k6f2/Jctxs+/YX9s4OIBHd7zhPSt53DKL5AKfXdmQDqFFGsGE2FZ
-   txq6AQHeczVVKmhC3u5eb1LajVR45XGBpr67IrpSknSiAWyYHnu/3F6yt
-   oeOp+zRMoT1YlgRzGeW2nz21tzIqg5248/oieSbaiXCXR12e+AgVAiEKf
-   lBNCJ0sZqr8TfLjnBuMF8I+uG4BktZa4jHw9Rit5lyrcT1XUJ4uuGCqQX
-   OolbDAHyQjjqTsiJHDChRf+UMOMjH3DfURkN382W0fteflfKDDeGwhPgs
-   1bgsGqJ/rpM7dvuwRV/rJuujp+ZrQH3/xmnfVwXlKmV1w29TeVts5l3ej
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10412"; a="348122972"
-X-IronPort-AV: E=Sophos;i="5.92,283,1650956400"; 
-   d="scan'208";a="348122972"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2022 01:25:53 -0700
-X-IronPort-AV: E=Sophos;i="5.92,283,1650956400"; 
-   d="scan'208";a="924685104"
-Received: from zhenzhu-mobl1.ccr.corp.intel.com (HELO jiezho4x-mobl1.ccr.corp.intel.com) ([10.255.31.69])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jul 2022 01:25:47 -0700
-From:   Jie2x Zhou <jie2x.zhou@intel.com>
-To:     jie2x.zhou@intel.com, ast@kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
-        john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
-        shuah@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Philip Li <philip.li@intel.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] tools/testing/selftests/bpf/test_xdp_veth.sh: fix Couldn't retrieve pinned program
-Date:   Tue, 19 Jul 2022 16:24:30 +0800
-Message-Id: <20220719082430.9916-1-jie2x.zhou@intel.com>
-X-Mailer: git-send-email 2.20.1
+        with ESMTP id S235378AbiGSIuL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Jul 2022 04:50:11 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C32B101D;
+        Tue, 19 Jul 2022 01:50:07 -0700 (PDT)
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4LnC9P4XPTzVgHp;
+        Tue, 19 Jul 2022 16:46:17 +0800 (CST)
+Received: from kwepemm600017.china.huawei.com (7.193.23.234) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 19 Jul 2022 16:49:45 +0800
+Received: from localhost.localdomain (10.175.112.70) by
+ kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 19 Jul 2022 16:49:45 +0800
+From:   Xu Jia <xujia39@huawei.com>
+To:     <sdf@google.com>, <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <andrii@kernel.org>, <xujia39@huawei.com>
+Subject: [PATCH bpf-next] bpf: fix bpf compile error caused by CONFIG_CGROUP_BPF
+Date:   Tue, 19 Jul 2022 17:01:45 +0800
+Message-ID: <1658221305-35718-1-git-send-email-xujia39@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.175.112.70]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600017.china.huawei.com (7.193.23.234)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Before change:
- selftests: bpf: test_xdp_veth.sh
- Couldn't retrieve pinned program '/sys/fs/bpf/test_xdp_veth/progs/redirect_map_0': No such file or directory
- selftests: xdp_veth [SKIP]
-ok 20 selftests: bpf: test_xdp_veth.sh # SKIP
+We failed to compile when CONFIG_BPF_LSM is enabled but CONFIG_CGROUP_BPF
+is not set. The failings are shown as below:
 
-After change:
-PING 10.1.1.33 (10.1.1.33) 56(84) bytes of data.
-64 bytes from 10.1.1.33: icmp_seq=1 ttl=64 time=0.320 ms--- 10.1.1.33 ping statistics ---
-1 packets transmitted, 1 received, 0% packet loss, time 0ms
-rtt min/avg/max/mdev = 0.320/0.320/0.320/0.000 ms
-selftests: xdp_veth [PASS]
+kernel/bpf/trampoline.o: in function `bpf_trampoline_link_cgroup_shim'
+trampoline.c: undefined reference to `bpf_cgroup_atype_get'
+kernel/bpf/bpf_lsm.o: In function `bpf_lsm_find_cgroup_shim':
+bpf_lsm.c: undefined reference to `__cgroup_bpf_run_lsm_current'
+bpf_lsm.c: undefined reference to `__cgroup_bpf_run_lsm_sock'
+bpf_lsm.c: undefined reference to `__cgroup_bpf_run_lsm_socket'
 
-In test:
-ls /sys/fs/bpf/test_xdp_veth/progs/redirect_map_0
-ls: cannot access '/sys/fs/bpf/test_xdp_veth/progs/redirect_map_0': No such file or directory
-ls /sys/fs/bpf/test_xdp_veth/progs/
-xdp_redirect_map_0  xdp_redirect_map_1  xdp_redirect_map_2
+Fix them by protecting these functions with CONFIG_CGROUP_BPF.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Jie2x Zhou <jie2x.zhou@intel.com>
+Fixes: 69fd337a975c ("bpf: per-cgroup lsm flavor")
+Signed-off-by: Xu Jia <xujia39@huawei.com>
 ---
- tools/testing/selftests/bpf/test_xdp_veth.sh | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ include/linux/bpf.h     | 12 +++++++++---
+ include/linux/bpf_lsm.h | 10 ++++++----
+ kernel/bpf/bpf_lsm.c    |  2 ++
+ kernel/bpf/trampoline.c |  2 ++
+ 4 files changed, 19 insertions(+), 7 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/test_xdp_veth.sh b/tools/testing/selftests/bpf/test_xdp_veth.sh
-index 392d28cc4e58..49936c4c8567 100755
---- a/tools/testing/selftests/bpf/test_xdp_veth.sh
-+++ b/tools/testing/selftests/bpf/test_xdp_veth.sh
-@@ -106,9 +106,9 @@ bpftool prog loadall \
- bpftool map update pinned $BPF_DIR/maps/tx_port key 0 0 0 0 value 122 0 0 0
- bpftool map update pinned $BPF_DIR/maps/tx_port key 1 0 0 0 value 133 0 0 0
- bpftool map update pinned $BPF_DIR/maps/tx_port key 2 0 0 0 value 111 0 0 0
--ip link set dev veth1 xdp pinned $BPF_DIR/progs/redirect_map_0
--ip link set dev veth2 xdp pinned $BPF_DIR/progs/redirect_map_1
--ip link set dev veth3 xdp pinned $BPF_DIR/progs/redirect_map_2
-+ip link set dev veth1 xdp pinned $BPF_DIR/progs/xdp_redirect_map_0
-+ip link set dev veth2 xdp pinned $BPF_DIR/progs/xdp_redirect_map_1
-+ip link set dev veth3 xdp pinned $BPF_DIR/progs/xdp_redirect_map_2
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 2b21f2a3452f..add8895c02cc 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1255,9 +1255,7 @@ struct bpf_dummy_ops {
+ int bpf_struct_ops_test_run(struct bpf_prog *prog, const union bpf_attr *kattr,
+ 			    union bpf_attr __user *uattr);
+ #endif
+-int bpf_trampoline_link_cgroup_shim(struct bpf_prog *prog,
+-				    int cgroup_atype);
+-void bpf_trampoline_unlink_cgroup_shim(struct bpf_prog *prog);
++
+ #else
+ static inline const struct bpf_struct_ops *bpf_struct_ops_find(u32 type_id)
+ {
+@@ -1281,6 +1279,14 @@ static inline int bpf_struct_ops_map_sys_lookup_elem(struct bpf_map *map,
+ {
+ 	return -EINVAL;
+ }
++#endif
++
++#if defined(CONFIG_BPF_JIT) && defined(CONFIG_BPF_SYSCALL) && \
++    defined(CONFIG_CGROUP_BPF)
++int bpf_trampoline_link_cgroup_shim(struct bpf_prog *prog,
++				    int cgroup_atype);
++void bpf_trampoline_unlink_cgroup_shim(struct bpf_prog *prog);
++#else
+ static inline int bpf_trampoline_link_cgroup_shim(struct bpf_prog *prog,
+ 						  int cgroup_atype)
+ {
+diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
+index 4bcf76a9bb06..bed45a0c8a9c 100644
+--- a/include/linux/bpf_lsm.h
++++ b/include/linux/bpf_lsm.h
+@@ -42,8 +42,6 @@ extern const struct bpf_func_proto bpf_inode_storage_get_proto;
+ extern const struct bpf_func_proto bpf_inode_storage_delete_proto;
+ void bpf_inode_storage_free(struct inode *inode);
  
- ip -n ${NS1} link set dev veth11 xdp obj xdp_dummy.o sec xdp
- ip -n ${NS2} link set dev veth22 xdp obj xdp_tx.o sec xdp
+-void bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog, bpf_func_t *bpf_func);
+-
+ #else /* !CONFIG_BPF_LSM */
+ 
+ static inline bool bpf_lsm_is_sleepable_hook(u32 btf_id)
+@@ -67,11 +65,15 @@ static inline void bpf_inode_storage_free(struct inode *inode)
+ {
+ }
+ 
++#endif /* CONFIG_BPF_LSM */
++
++#if defined(CONFIG_BPF_LSM) && defined(CONFIG_BPF_CGROUP)
++void bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog, bpf_func_t *bpf_func);
++#else
+ static inline void bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog,
+ 					   bpf_func_t *bpf_func)
+ {
+ }
+-
+-#endif /* CONFIG_BPF_LSM */
++#endif
+ 
+ #endif /* _LINUX_BPF_LSM_H */
+diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+index d469b7f3deef..29527828b38b 100644
+--- a/kernel/bpf/bpf_lsm.c
++++ b/kernel/bpf/bpf_lsm.c
+@@ -63,6 +63,7 @@ BTF_ID(func, bpf_lsm_socket_post_create)
+ BTF_ID(func, bpf_lsm_socket_socketpair)
+ BTF_SET_END(bpf_lsm_unlocked_sockopt_hooks)
+ 
++#ifdef CONFIG_BPF_CGROUP
+ void bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog,
+ 			     bpf_func_t *bpf_func)
+ {
+@@ -86,6 +87,7 @@ void bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog,
+ #endif
+ 		*bpf_func = __cgroup_bpf_run_lsm_current;
+ }
++#endif /* CONFIG_BPF_CGROUP */
+ 
+ int bpf_lsm_verify_prog(struct bpf_verifier_log *vlog,
+ 			const struct bpf_prog *prog)
+diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+index 6cd226584c33..127924711935 100644
+--- a/kernel/bpf/trampoline.c
++++ b/kernel/bpf/trampoline.c
+@@ -525,6 +525,7 @@ static const struct bpf_link_ops bpf_shim_tramp_link_lops = {
+ 	.dealloc = bpf_shim_tramp_link_dealloc,
+ };
+ 
++#ifdef CONFIG_CGROUP_BPF
+ static struct bpf_shim_tramp_link *cgroup_shim_alloc(const struct bpf_prog *prog,
+ 						     bpf_func_t bpf_func,
+ 						     int cgroup_atype)
+@@ -668,6 +669,7 @@ void bpf_trampoline_unlink_cgroup_shim(struct bpf_prog *prog)
+ 
+ 	bpf_trampoline_put(tr); /* bpf_trampoline_lookup above */
+ }
++#endif /* CONFIG_CGROUP_BPF */
+ #endif
+ 
+ struct bpf_trampoline *bpf_trampoline_get(u64 key,
 -- 
-2.36.1
+2.25.1
 
