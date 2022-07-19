@@ -2,152 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8E78579283
-	for <lists+bpf@lfdr.de>; Tue, 19 Jul 2022 07:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C21F95793A4
+	for <lists+bpf@lfdr.de>; Tue, 19 Jul 2022 08:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235236AbiGSFen (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Jul 2022 01:34:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42332 "EHLO
+        id S231809AbiGSG6K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Jul 2022 02:58:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235242AbiGSFea (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Jul 2022 01:34:30 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CA1D20BC9
-        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 22:34:28 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id bu1so19935388wrb.9
-        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 22:34:28 -0700 (PDT)
+        with ESMTP id S229969AbiGSG6J (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Jul 2022 02:58:09 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15AEA275D8
+        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 23:58:08 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id oy13so25350675ejb.1
+        for <bpf@vger.kernel.org>; Mon, 18 Jul 2022 23:58:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HZpvt/nDVkZNx/by2rqCcokxCcDrSaABgHJjiKPWe04=;
-        b=UKIDUZ8n3SlCbEXFhHRnFzGE7USwYMpo7BRL8fDU2+hoEDWRWNU8BBm3h4WIdy7MNm
-         knvxTFg/tVPi4D+dWPEctfKilEeI9bql6bmv+D46GWTl1cOX9y/TCiH81p8zHUgpn1ta
-         BwfH7pfqqIfYFR9vgvokguR/zXt4UheVi64Qn4IjeycigbJYuNf3vwI/5yIyT7djxRP1
-         oKcCED/Eidjnqds6P871ma8ccP0rMwH0oryYiIixhYOHreB3o5caRci8qDybQ5jX03FN
-         TIFeXI/8BcwX9PelCOlM1I54jLq18ZDqhhdUUEtnmZaqEt7uSYSIppWX4ce/FCRX0+zV
-         zg6g==
+        d=blackwall-org.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=pgMrFU+qEImV5jvhZKnhdxLHcWLuqCE+OAyoxG4pme8=;
+        b=YbZYcppP9dA+6qz+j3MJQDbvZEOZiAHmbp42CjpwSYXGU0EoCZK1EKmmjObzd4dSjM
+         3oWn2wIO7QVDAh4ROsod6+UfAHnX/VoIOBSYqqHZTf5BuQAxPUFvugznLVe8G/Z6Qija
+         0Xmz/nKzdYJrwiHV3zLQmEAH/FUXIIeJaUoldEWbpK4/E4FG57WSEBTW2/7OQA3ITao3
+         iOyVh3Zn9Ei8YAKMbb2tE/+4NdLJNdUhjUXdWBbVnTsT9FbDPhMmRG04UQFVFDIdQAu7
+         dUiMlwp873B5xUCNZQOMoEgYkaUqgK6OJI5TSOwB9X00HdEwNVxPTTAJ9BEbZJ5Qz9VB
+         l1/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HZpvt/nDVkZNx/by2rqCcokxCcDrSaABgHJjiKPWe04=;
-        b=UJO0uW+D7Nd8maGJr5JS6VvkEwENJcemqY6C499IpkkYoag5E2KPmVMfMGwlO87/8z
-         S0SmDSjdbJxR8Ns9QhiYPJkgbY5oUMsH0PvRPQazGFSCjEThtOrYXmnS6S28ixKBQElk
-         O13+WIJSS7QLOhp2wet1WDGqgA+UrFc26cP7nODrJ13OxB92HJjp+X1RniMzlmbh0F4Z
-         E6vNMHRpavbOztMOGATYOtf9JLSL7NNaayyFJRWIJ5/qkkVvLc+EABli1lItZq17sn3t
-         QPD+fKXeltnyT/L9W8E1tZ5dreGWjoYLUD7j78kGb07lJOmAMKHnuGy0hAAKviP3W4kF
-         c5dw==
-X-Gm-Message-State: AJIora+PcUuqrLGoyVfFC29YfCTPBrZLAjWskLej9OFx2yQUQ6wTSk10
-        ElqYenHcL3Ql//sTm0FXXVppOVJNCBzxs1PeVQJMpA==
-X-Google-Smtp-Source: AGRyM1sGYqcJjifeqZclEnEFGEOeCtPHs5KpfV6He2nsjr2qXhCXqSil0twnsrVPSqh+YPAnDH49ZQO8wlw6XLGEo8Y=
-X-Received: by 2002:a05:6000:1a8e:b0:21d:a7a8:54f4 with SMTP id
- f14-20020a0560001a8e00b0021da7a854f4mr25981039wry.654.1658208866803; Mon, 18
- Jul 2022 22:34:26 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=pgMrFU+qEImV5jvhZKnhdxLHcWLuqCE+OAyoxG4pme8=;
+        b=XPZ7Z/9dZpFIf5nVhHaPYkenK4YUPpMwrMaaffSx00Wjkxq9QNSSVmsiz/omWzo6MA
+         Ys7sxDVodtzOsEf9q3RxTdytr9WRBWWeL0EHOr/aWh+Li3DBENMmz89qF9lZqeSu5aY5
+         xRVZlseadHURrODHbdUvX4rKlirjaX+qD5I33PnStMJ3v9CJ66BYrnFw0FwsKXi9Zjue
+         ghGpyNZPGwUSK9yI2zcLgGVjG/ri+eFJle+wGfzUzJd4KB/uDGQA218Aj3OQXQCnRbq0
+         8JrTLnUc+15lxIm7O102ipZXCiIAmp9kaxwE18B5Azno4Mc3JACYU6XcPDxazQNxVFp7
+         u3SQ==
+X-Gm-Message-State: AJIora8XWCdHDSTvyMeDgPM69HxlfPu1dFkVB67CcnaQZyTRMjKCmQlE
+        z9eq0383y14vP9S1Ar+dbR06vQ==
+X-Google-Smtp-Source: AGRyM1sNzzERn6owpOTMShEzVYzNg/n5kCxLDXLcQTwEu1yNAn2Ba1efmwHv6gwPSuECam1564pBsw==
+X-Received: by 2002:a17:907:a061:b0:72f:1dde:fac0 with SMTP id ia1-20020a170907a06100b0072f1ddefac0mr11956591ejc.310.1658213886393;
+        Mon, 18 Jul 2022 23:58:06 -0700 (PDT)
+Received: from [192.168.0.111] (87-243-81-1.ip.btc-net.bg. [87.243.81.1])
+        by smtp.gmail.com with ESMTPSA id 2-20020a170906218200b0072f441a04a6sm1348851eju.5.2022.07.18.23.58.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Jul 2022 23:58:05 -0700 (PDT)
+Message-ID: <75d3ee98-a73c-16c5-2bb3-f61180115b29@blackwall.org>
+Date:   Tue, 19 Jul 2022 09:58:04 +0300
 MIME-Version: 1.0
-References: <CA+G9fYsd0DaBtWk5cFxPhfM_cZRMQk3MbaxMRN3WJ-yNjAkp7Q@mail.gmail.com>
-In-Reply-To: <CA+G9fYsd0DaBtWk5cFxPhfM_cZRMQk3MbaxMRN3WJ-yNjAkp7Q@mail.gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 18 Jul 2022 22:34:13 -0700
-Message-ID: <CAP-5=fU+58WdCpAT5nc138AdQ31Pm=iuWt9Wh+WLmPk-kb+=Dg@mail.gmail.com>
-Subject: Re: perf: util/annotate.c:1752:9: error: too few arguments to
- function 'init_disassemble_info'
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     linux-stable <stable@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        perf-users <perf-users@linaro.org>, bpf <bpf@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH bpf v2 0/5] bpf: Allow any source IP in
+ bpf_skb_set_tunnel_key
+Content-Language: en-US
+To:     Paul Chaignon <paul@isovalent.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kubakici@wp.pl,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Namhyung Kim <namhyung@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Kaixi Fan <fankaixi.li@bytedance.com>,
+        Yonghong Song <yhs@fb.com>
+References: <cover.1658159533.git.paul@isovalent.com>
+From:   Nikolay Aleksandrov <razor@blackwall.org>
+In-Reply-To: <cover.1658159533.git.paul@isovalent.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 18, 2022 at 10:45 AM Naresh Kamboju
-<naresh.kamboju@linaro.org> wrote:
->
-> with reference to other email thread on perf build failure on Linus mainline
-> https://lore.kernel.org/bpf/20220715191641.go6xbmhic3kafcsc@awork3.anarazel.de/T/
->
-> I see perf build failures on stable-rc 5.18 .. 5.4 with this error [1]
-> and also noticed on today's linus mainline tree.
->
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->
-> steps to reproduce:
-> --------------------
->
-> tuxmake --runtime podman \
->         --target-arch x86_64 \
->         --toolchain gcc-11 \
->         --kconfig
-> https://builds.tuxbuild.com/2C7oWWWYOYGFtqq4SWX1yG4a2Ne/config \
->         debugkernel headers kernel modules perf
->
-> Error log:
-> -----------
->   CC       event-parse-api.o
->   CC       staticobjs/btf_dump.o
-> find: 'x86_64-linux-gnu-gcc/arch': No such file or directory
-> error: Found argument '-I' which wasn't expected, or isn't valid in this context
->
-> USAGE:
->     sccache [FLAGS] [OPTIONS] [cmd]...
->
-> For more information try --help
->
-> and
->
->   CC       util/annotate.o
->   MKDIR    util/
->   CC       util/block-range.o
->   MKDIR    bench/
->   CC       bench/sched-pipe.o
-> util/annotate.c: In function 'symbol__disassemble_bpf':
-> util/annotate.c:1752:9: error: too few arguments to function
-> 'init_disassemble_info'
->  1752 |         init_disassemble_info(&info, s,
->       |         ^~~~~~~~~~~~~~~~~~~~~
-> In file included from util/annotate.c:1709:
-> /usr/include/dis-asm.h:472:13: note: declared here
->   472 | extern void init_disassemble_info (struct disassemble_info
-> *dinfo, void *stream,
->       |             ^~~~~~~~~~~~~~~~~~~~~
+On 18/07/2022 18:53, Paul Chaignon wrote:
+> Commit 26101f5ab6bd ("bpf: Add source ip in "struct bpf_tunnel_key"")
+> added support for getting and setting the outer source IP of encapsulated
+> packets via the bpf_skb_{get,set}_tunnel_key BPF helper. This change
+> allows BPF programs to set any IP address as the source, including for
+> example the IP address of a container running on the same host.
+> 
+> In that last case, however, the encapsulated packets are dropped when
+> looking up the route because the source IP address isn't assigned to any
+> interface on the host. To avoid this, we need to set the
+> FLOWI_FLAG_ANYSRC flag.
+> 
+> Changes in v2:
+>   - Removed changes to IPv6 code paths as they are unnecessary.
+> 
+> Paul Chaignon (5):
+>   ip_tunnels: Add new flow flags field to ip_tunnel_key
+>   vxlan: Use ip_tunnel_key flow flags in route lookups
+>   geneve: Use ip_tunnel_key flow flags in route lookups
+>   bpf: Set flow flag to allow any source IP in bpf_tunnel_key
+>   selftests/bpf: Don't assign outer source IP to host
+> 
+>  drivers/net/geneve.c                                 |  1 +
+>  drivers/net/vxlan/vxlan_core.c                       | 11 +++++++----
+>  include/net/ip_tunnels.h                             |  1 +
+>  net/core/filter.c                                    |  1 +
+>  tools/testing/selftests/bpf/prog_tests/test_tunnel.c |  1 -
+>  5 files changed, 10 insertions(+), 5 deletions(-)
+> 
 
-This include is guarded by:
-#if defined(HAVE_LIBBFD_SUPPORT) && defined(HAVE_LIBBPF_SUPPORT)
-
-and from the header path in the failure you are getting an installed
-version of libbfd from /usr/include. Using libbfd (GPLv3) with perf
-(GPLv2) is becoming an under tested combination due to:
-https://www.gnu.org/licenses/gpl-faq.en.html#v2v3Compatibility
-Add the make flag NO_LIBBFD=1 to test without libbfd, which will most
-accurately match what distributions build.
-
-Testing on my own machine with libbfd version 2.38 didn't show any failures.
-
-Thanks,
-Ian
-
-> [1] https://builds.tuxbuild.com/2C7oWWWYOYGFtqq4SWX1yG4a2Ne/
->
-> Best regards
-> Naresh Kamboju
->
->
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
+Looks good, for the set:
+Reviewed-by: Nikolay Aleksandrov <razor@blackwall.org>
