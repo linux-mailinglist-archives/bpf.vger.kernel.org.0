@@ -2,57 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61D0857A5CD
-	for <lists+bpf@lfdr.de>; Tue, 19 Jul 2022 19:52:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F33D957A5D8
+	for <lists+bpf@lfdr.de>; Tue, 19 Jul 2022 19:54:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238778AbiGSRwJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Jul 2022 13:52:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50580 "EHLO
+        id S239216AbiGSRy2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Jul 2022 13:54:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232315AbiGSRwI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Jul 2022 13:52:08 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA6EB558CB;
-        Tue, 19 Jul 2022 10:52:07 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id m8so7216766edd.9;
-        Tue, 19 Jul 2022 10:52:07 -0700 (PDT)
+        with ESMTP id S239230AbiGSRy1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Jul 2022 13:54:27 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 963685A8BB;
+        Tue, 19 Jul 2022 10:54:26 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id v12so20672896edc.10;
+        Tue, 19 Jul 2022 10:54:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=6YTpiaB6PMXo4jWAVbVLhgHIuKspbeQjTrg1R1Mmeyw=;
-        b=Mc/gq8UXvCmdzHHHtgJEpbnKacMt2vUKrrS5u8mhACTcWR/qWqoMkCRWg2cSLmYs6O
-         uysqOAfr4fBrshukoGkKzpY5H9zguRihPLCYRVvBNg2pld2/y/3rXT32r/bKb2keS+JH
-         6Jlov4KQNWtSg6fG8eGwan2Xp7Xg7LvWqjFF8ngJMzOyIz0NYIDgerGBCa8VCaDSOzZg
-         KfR+9CBxdRTdap3VdMmBHl7Ol2bFSFSYqTzRB6t0WZQ83RQwLP2Atp5YZNBDl0gDS0h/
-         G1/7Ovj4zOdtRwSnDqRvwNz3ByvKc53e/e17MZrh2UfzHLL8mkEqxBny6zePCI6O3DBT
-         wzfg==
+        bh=hbhAyum864ZsqvRFFzzZX6MZDRiwpPfpSoSOAU6htaU=;
+        b=HNjxdorYxYxUKMfD9lktj4vJp2EhVLAmSzIwtorhRm7FXVIzIsk3yZuw8Poyx1UQ+a
+         VW4VJRM+wwCdGfYS28mjNcxk/WfDOxlz+6VHLzPzcY6th2pV4lutnIj7vtp1O242VvRe
+         eS7c5KD05cYAebqNdilKAcjFX4vxISH3A0hIMmnlBEGl5aYQ+QZTGdF6ZSvmw/LboU5Y
+         zexjdmKTpV3Ln6qEoXdifC76+gkMKM/hgVj0G4SSSK0xQyx4JBAgzYgKtipx0XFKgSdi
+         k0jKWR2kkodXovqAcntpQWfjGKcQtexQue5QTKJFDuuEo0L+rck9F/SQsHphBqBAhHPV
+         r1og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=6YTpiaB6PMXo4jWAVbVLhgHIuKspbeQjTrg1R1Mmeyw=;
-        b=HpAqfdaz1Tj8QkxGYP8K3RPJPkIKPmwxlzjNgBMvZWZO9B26Cj3LDhGLkT7gpXALjl
-         5G2wVNjWfNrqoB1ruooTuXIsKIg/Gz9h4AurQc6g6mWcg5gXbrnwMHpUWmnwwkg8MJ4P
-         WLUufBWiUtZdecF+AHoWyL/J9w0wt2JbfH1MJKfYMlasl9WqimsN6repcyT9q9yTfAnH
-         dJ9kU1pnIIB41Mw85ZcBNadrSQl2eNiinMUviIaiOmhsKJL13RwOVAuo0B9HB9efQ8Xk
-         Q+jAg8+rdqQmwqF2+B4Vgg4MGMcGkNbyG2MVQouS2pS//bMlzacg7YLk8eOT6bIbWcyU
-         AUkw==
-X-Gm-Message-State: AJIora9i0MDsmaZjaoKxrGOv8H2KODYGJNsB6g9/BMs7MLTstWG2CxCv
-        I+JwmacH7414xX4PUMMGzqNkNDckpmyl6K6w4PE=
-X-Google-Smtp-Source: AGRyM1uzIXKaiFYz0mz7dVXIk2tsx1cpHwsu8w22nhgaI7DxpYV9RXvrg2E8SzL65gsSgmscOte/SFEhJRQqjkv8gU0=
-X-Received: by 2002:aa7:d053:0:b0:43a:a164:2c3 with SMTP id
- n19-20020aa7d053000000b0043aa16402c3mr45316119edo.333.1658253126330; Tue, 19
- Jul 2022 10:52:06 -0700 (PDT)
+        bh=hbhAyum864ZsqvRFFzzZX6MZDRiwpPfpSoSOAU6htaU=;
+        b=qIIP8m/0uDAFurk61x7DPcamhtlfDiNt1OEm8UCmL5Zq0Pt+z8wMT6aKKD/hhfocPE
+         hFT/6ntDNo5NUhOtRqmFn4GlaDWmrtj+fPc4zCxPD3O03JEC+NzKbmQS1yuRyJ1KpNDU
+         Z9jaTqnT3heSFUzaABXqzEzgJ4ssPVUtVv73yo1OqFr/n6SzEU6W/ShV51gNonMZ9OFN
+         1NL+Fm/9LrsGKvdqcfJNcGY/VM92XV5LK/yGHOdlhDQXULJ94f46UBghTQEglBDPNNEO
+         8E5hKcagiTo44upntvH2kM5rWYTDWCmf7eY/w3c7eFL5T86nOID4aaPmKq95lBlGA1LI
+         480w==
+X-Gm-Message-State: AJIora/0HAnJVovwG/mf79okT1VIkbmxciKkmEDP1FRwUuxokEXWvnVi
+        5x2TcTeZIxK/w0l4CuY+6byrlYUM+w/aMFQmVW7PsyS1
+X-Google-Smtp-Source: AGRyM1tqIixeN8yeh6EOjkIU/JSf0arGAQjp23g98UYabKPnK5PY+8Gi0M1SoNRQXHmOzk1upOkmza3jPh0g+n7s6Ic=
+X-Received: by 2002:aa7:c9d3:0:b0:43a:67b9:6eea with SMTP id
+ i19-20020aa7c9d3000000b0043a67b96eeamr44770045edt.94.1658253265197; Tue, 19
+ Jul 2022 10:54:25 -0700 (PDT)
 MIME-Version: 1.0
 References: <YtZ+/dAA195d99ak@kili> <20220719171902.37gvquchuwf5e4gh@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20220719171902.37gvquchuwf5e4gh@kafai-mbp.dhcp.thefacebook.com>
+ <20220719175048.GC2316@kadam>
+In-Reply-To: <20220719175048.GC2316@kadam>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 19 Jul 2022 10:51:55 -0700
-Message-ID: <CAADnVQLS=asNdrmdK-jgW4AZmJih00OTvXZg_RA55wLY=bHMZg@mail.gmail.com>
+Date:   Tue, 19 Jul 2022 10:54:13 -0700
+Message-ID: <CAADnVQ+5rZv4ZeuXuMwiXBmnPkbM4qXTx3-otheErDY971kgfA@mail.gmail.com>
 Subject: Re: [PATCH] libbpf: fix str_has_sfx()
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Martin KaFai Lau <kafai@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Alan Maguire <alan.maguire@oracle.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -74,44 +75,34 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 19, 2022 at 10:19 AM Martin KaFai Lau <kafai@fb.com> wrote:
+On Tue, Jul 19, 2022 at 10:51 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
 >
-> On Tue, Jul 19, 2022 at 12:53:01PM +0300, Dan Carpenter wrote:
-> > The return from strcmp() is inverted so the it returns true instead
-> > of false and vise versa.
-> >
-> > Fixes: a1c9d61b19cb ("libbpf: Improve library identification for uprobe binary path resolution")
-> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > ---
-> > Spotted during review.  *cmp() functions should always have a comparison
-> > to zero.
-> >       if (strcmp(a, b) < 0) {  <-- means a < b
-> >       if (strcmp(a, b) >= 0) { <-- means a >= b
-> >       if (strcmp(a, b) != 0) { <-- means a != b
-> > etc.
-> >
-> >  tools/lib/bpf/libbpf_internal.h | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-> > index 9cd7829cbe41..008485296a29 100644
-> > --- a/tools/lib/bpf/libbpf_internal.h
-> > +++ b/tools/lib/bpf/libbpf_internal.h
-> > @@ -108,9 +108,9 @@ static inline bool str_has_sfx(const char *str, const char *sfx)
-> >       size_t str_len = strlen(str);
-> >       size_t sfx_len = strlen(sfx);
-> >
-> > -     if (sfx_len <= str_len)
-> > -             return strcmp(str + str_len - sfx_len, sfx);
-> > -     return false;
-> > +     if (sfx_len > str_len)
-> > +             return false;
-> > +     return strcmp(str + str_len - sfx_len, sfx) == 0;
-> Please tag the subject with "bpf" next time.
+> On Tue, Jul 19, 2022 at 10:19:02AM -0700, Martin KaFai Lau wrote:
+> > > @@ -108,9 +108,9 @@ static inline bool str_has_sfx(const char *str, const char *sfx)
+> > >     size_t str_len = strlen(str);
+> > >     size_t sfx_len = strlen(sfx);
+> > >
+> > > -   if (sfx_len <= str_len)
+> > > -           return strcmp(str + str_len - sfx_len, sfx);
+> > > -   return false;
+> > > +   if (sfx_len > str_len)
+> > > +           return false;
+> > > +   return strcmp(str + str_len - sfx_len, sfx) == 0;
+> > Please tag the subject with "bpf" next time.
 >
-> Acked-by: Martin KaFai Lau <kafai@fb.com>
+> I always work against linux-next.  Would it help if I put that in the
+> subject?
+>
+> Otherwise I don't have a way to figure this stuff out.  I kind of know
+> networking tree but not 100% and that is a massive pain in the butt.
+> Until there is an automated way that then those kind of requests are
+> not reasonable.
 
-Alan,
+Dan,
 
-If it was so broken how did it work earlier?
-Do we have a test for this?
+you were told multiple times to follow the rules.
+bpf patches should target bpf of bpf-next trees only.
+If you send against linux-next you're taking a random chance
+that they will pass CI.
+In turn making everyone waste time.
+Please follow the simple rules.
