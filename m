@@ -2,70 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0082457A862
-	for <lists+bpf@lfdr.de>; Tue, 19 Jul 2022 22:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 652BC57A863
+	for <lists+bpf@lfdr.de>; Tue, 19 Jul 2022 22:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239642AbiGSUkS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Jul 2022 16:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54868 "EHLO
+        id S237206AbiGSUkV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Jul 2022 16:40:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240144AbiGSUkQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Jul 2022 16:40:16 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CD43B1D1
-        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 13:40:14 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id q13-20020a17090a304d00b001f1af9a18a2so81194pjl.5
-        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 13:40:14 -0700 (PDT)
+        with ESMTP id S240144AbiGSUkT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Jul 2022 16:40:19 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2481C1F2C3
+        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 13:40:18 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id b26so23336429wrc.2
+        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 13:40:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OC6NSncubbo54zJwS4jqbRy+27bSdBUqKTObeoC6G/s=;
-        b=f5Rnr19BgdjeCuPPX5SztiBl+D20YhCj8LLpNJhGusCW1CsxlAbgOeeY5ILg4cCN0d
-         wbcIONy5qm95eyXkg6CezAgmXLtpMkSHRDnC3KYse9lW+aomXBePTd46+xmh+AB8HWE8
-         mXE/Me1v9/AAxfJLIfwUTqHHC3SxctKcLA3YWdGWvUh3KIJtNu6grhYdhnoFciLd/X7Q
-         9UYQD4XYzRkwFHHXh1EF8//r1JwSYNmQH4rCTvmE0sJ1IRRm47mj1zERkl4L6wMhKW/h
-         KTbydvaduodEYSgCmA9G8AWv8/p0o1M3uoieULcgl2Xu/h0ewCsrfOaC5E7eT0KmJNq7
-         I3Sw==
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JdPg8PwLJ4scewlXe1S2XGQEoVuVmzE9bCFnDeQCIK4=;
+        b=bB6eKvcGtQyvp2gkywdhf4t0OsWG55pK+5M8CtEyHuw+pGlJ7pl2SwrrYx8wcu/kTi
+         7u5f/k2qeZqS7yIuedGDANVzsTFYA+8CodeUT/Pz9CP9aPTzvoDXTwwkx2f0h64pM0rh
+         u/ULiNpLNydBY4gFACcOkfv1O9WshTY/TX2raBSNPWYewHgWKFryZcGyq+MdswITWS+T
+         KoflBhNUiVrsRsDnhBQ/FxP/jNUKy7N1gIQAuYJPuJWX/h3xCFjSJeUOIdgD86szQmyA
+         KlcixorJDp3cRjPsJ4NJknHni1+UyVeL3+QjxMnfnXwAuEfDOAPg1FNBqFXM1LM0IjjZ
+         tFiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OC6NSncubbo54zJwS4jqbRy+27bSdBUqKTObeoC6G/s=;
-        b=34EaePd3XahPnPeQLUFs1d/I0IjaMjPP5jPj6FCl3pg0w1t03YpNA3/GFRJif6/ker
-         R4XyHS0sQ97EcoaCbnhS3GR4/w2o3KKEAhuHB0X5ZLVOC6XGdgYrFG3sGdAH/YlSisnp
-         Ik8mChz4Fc25/GnfsEiO7uOSjOno1CkKeYPM/oJtVoItQONEYOHl9+b2e8vHcA9rS4KV
-         RCG7/FCxsiLMPnZvOk/ZNBlqBZqNZ1Dhrlh+kE4zVfb3E9hFe8j5FNoUcVxzkLaajcDA
-         6DY2vU8V8zBKp9TWCvcgZdUTLGPtwy6b4T8xjhBzT4Z9XQM5mjps9sAeohj7zF+1DxHb
-         o7fQ==
-X-Gm-Message-State: AJIora+ZXrNzOFISG+G4faiABWV4WBsLcEAXVk6IMuyfSr50HSME9cIh
-        ANA6TmDaPyMX7vwFt3OLRO5EH5JOzgdhD+pcfIIZbw==
-X-Google-Smtp-Source: AGRyM1uLtQY2Guu1CcxG7wrE2WtJcC+VP2deAiAOkkuOHmJ30YHQnxMCaYLdUf+McUMo6Mz6HOmTEE/R5opYBHFl0Tw=
-X-Received: by 2002:a17:903:244d:b0:16c:5bfe:2e87 with SMTP id
- l13-20020a170903244d00b0016c5bfe2e87mr34944034pls.148.1658263213708; Tue, 19
- Jul 2022 13:40:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220719194028.4180569-1-jevburton.kernel@gmail.com>
-In-Reply-To: <20220719194028.4180569-1-jevburton.kernel@gmail.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Tue, 19 Jul 2022 13:40:02 -0700
-Message-ID: <CAKH8qBsm0QqE-7Pmhhz=tRYAfgpirbu6K1deQ6cQTU+GTykLNA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next] libbpf: Add bpf_obj_get_opts()
-To:     Joe Burton <jevburton.kernel@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JdPg8PwLJ4scewlXe1S2XGQEoVuVmzE9bCFnDeQCIK4=;
+        b=BaDAD1EjmMpUOemJQ9MUZ2316dyxS/nx7pzvcVZN+3sExVq7hBe6U3pSINO4gGqhpN
+         cAx182tMhTH4O+V8fPjL17BgW0ctRMFD2BclA+IRIdsxGxbb//TRVbtVf+GMHfiQeIJa
+         U6WGwCUkt2XiDuEr46Ck+jKinfsC3zlWHVfwBQng9VBfUYsbl9i4Bl3A19jCYyOB3z4Y
+         jWS77xViW5IhsigRTBu3Avz1Il8A5TxJvPPZmbImx7iuNmZ2J6p2PM3tOnaZjCDR9XMi
+         cj1C3CLSC/5A4Zgq/CKbwTQLeOlV6RlQ9Afzq0DnICFVwYBdHLBe6UnYrvEOOdCjb7f/
+         GQUg==
+X-Gm-Message-State: AJIora8/8+JzNobdLaAqkmMXU+LBug+oigR9F4uwZlHkyT4CkCA8LA4X
+        a3PeDpwIddjG/ofW1ODWbiYd
+X-Google-Smtp-Source: AGRyM1t03bw69c3/iCuX0kmyzrNE0mXK3hOrX/Id1fT8sX4jqzu5kbOOuRkhzgxy0K7oW/sJqSqUhw==
+X-Received: by 2002:adf:e310:0:b0:21e:3e46:81f8 with SMTP id b16-20020adfe310000000b0021e3e4681f8mr3192688wrj.188.1658263216722;
+        Tue, 19 Jul 2022 13:40:16 -0700 (PDT)
+Received: from Mem (2a01cb089094b7009c79f2cfd97c0e48.ipv6.abo.wanadoo.fr. [2a01:cb08:9094:b700:9c79:f2cf:d97c:e48])
+        by smtp.gmail.com with ESMTPSA id d10-20020adfa34a000000b00210bac248c8sm14769266wrb.11.2022.07.19.13.40.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jul 2022 13:40:15 -0700 (PDT)
+Date:   Tue, 19 Jul 2022 22:40:13 +0200
+From:   Paul Chaignon <paul@isovalent.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Nikolay Aleksandrov <razor@blackwall.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Joe Burton <jevburton@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        Kaixi Fan <fankaixi.li@bytedance.com>,
+        Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH bpf v2 0/5] bpf: Allow any source IP in
+ bpf_skb_set_tunnel_key
+Message-ID: <20220719204013.GA90459@Mem>
+References: <cover.1658159533.git.paul@isovalent.com>
+ <75d3ee98-a73c-16c5-2bb3-f61180115b29@blackwall.org>
+ <CAADnVQLV-Tkyo+jJtLB6MYr7kR8k4Q9_T0La7MPEUXzcRE7EZg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQLV-Tkyo+jJtLB6MYr7kR8k4Q9_T0La7MPEUXzcRE7EZg@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,92 +79,59 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 19, 2022 at 12:40 PM Joe Burton <jevburton.kernel@gmail.com> wrote:
->
-> From: Joe Burton <jevburton@google.com>
->
-> Add an extensible variant of bpf_obj_get() capable of setting the
-> `file_flags` parameter.
->
-> This parameter is needed to enable unprivileged access to BPF maps.
-> Without a method like this, users must manually make the syscall.
->
-> Signed-off-by: Joe Burton <jevburton@google.com>
+On Tue, Jul 19, 2022 at 10:44:52AM -0700, Alexei Starovoitov wrote:
+> On Mon, Jul 18, 2022 at 11:58 PM Nikolay Aleksandrov
+> <razor@blackwall.org> wrote:
+> >
+> > On 18/07/2022 18:53, Paul Chaignon wrote:
+> > > Commit 26101f5ab6bd ("bpf: Add source ip in "struct bpf_tunnel_key"")
+> > > added support for getting and setting the outer source IP of encapsulated
+> > > packets via the bpf_skb_{get,set}_tunnel_key BPF helper. This change
+> > > allows BPF programs to set any IP address as the source, including for
+> > > example the IP address of a container running on the same host.
+> > >
+> > > In that last case, however, the encapsulated packets are dropped when
+> > > looking up the route because the source IP address isn't assigned to any
+> > > interface on the host. To avoid this, we need to set the
+> > > FLOWI_FLAG_ANYSRC flag.
+> > >
+> > > Changes in v2:
+> > >   - Removed changes to IPv6 code paths as they are unnecessary.
+> > >
+> > > Paul Chaignon (5):
+> > >   ip_tunnels: Add new flow flags field to ip_tunnel_key
+> > >   vxlan: Use ip_tunnel_key flow flags in route lookups
+> > >   geneve: Use ip_tunnel_key flow flags in route lookups
+> > >   bpf: Set flow flag to allow any source IP in bpf_tunnel_key
+> > >   selftests/bpf: Don't assign outer source IP to host
+> > >
+> > >  drivers/net/geneve.c                                 |  1 +
+> > >  drivers/net/vxlan/vxlan_core.c                       | 11 +++++++----
+> > >  include/net/ip_tunnels.h                             |  1 +
+> > >  net/core/filter.c                                    |  1 +
+> > >  tools/testing/selftests/bpf/prog_tests/test_tunnel.c |  1 -
+> > >  5 files changed, 10 insertions(+), 5 deletions(-)
+> > >
+> >
+> > Looks good, for the set:
+> > Reviewed-by: Nikolay Aleksandrov <razor@blackwall.org>
+> 
+> vxlan_test is failing.
+> See BPF CI link in patchwork.
 
-Reviewed-by: Stanislav Fomichev <sdf@google.com>
+I've seen that today and was able to reproduce. It's most likely because
+the reply packet is dropped by the stack given the destination address
+is not local. The easiest way to update the test is probably to rewrite
+the destination address with another BPF program on ingress. Anyway,
+thanks for the heads up!
 
-For context:
-We've found this out while we were trying to add support for unpriv
-processes to open pinned r-x maps.
-Maybe this deserves a test as well? Not sure.
+I'm also trying to figure out how I got a passing test before, but most
+likely explanation is that my test changes were overwritten because of
+the workflow bug [1]
 
-> ---
->  tools/lib/bpf/bpf.c      | 10 ++++++++++
->  tools/lib/bpf/bpf.h      |  9 +++++++++
->  tools/lib/bpf/libbpf.map |  1 +
->  3 files changed, 20 insertions(+)
->
-> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> index 5eb0df90eb2b..5acb0e8bd13c 100644
-> --- a/tools/lib/bpf/bpf.c
-> +++ b/tools/lib/bpf/bpf.c
-> @@ -578,12 +578,22 @@ int bpf_obj_pin(int fd, const char *pathname)
->  }
->
->  int bpf_obj_get(const char *pathname)
-> +{
-> +       LIBBPF_OPTS(bpf_obj_get_opts, opts);
-> +       return bpf_obj_get_opts(pathname, &opts);
-> +}
-> +
-> +int bpf_obj_get_opts(const char *pathname, const struct bpf_obj_get_opts *opts)
->  {
->         union bpf_attr attr;
->         int fd;
->
-> +       if (!OPTS_VALID(opts, bpf_obj_get_opts))
-> +               return libbpf_err(-EINVAL);
-> +
->         memset(&attr, 0, sizeof(attr));
->         attr.pathname = ptr_to_u64((void *)pathname);
-> +       attr.file_flags = OPTS_GET(opts, file_flags, 0);
->
->         fd = sys_bpf_fd(BPF_OBJ_GET, &attr, sizeof(attr));
->         return libbpf_err_errno(fd);
-> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-> index 88a7cc4bd76f..f31b493b5f9a 100644
-> --- a/tools/lib/bpf/bpf.h
-> +++ b/tools/lib/bpf/bpf.h
-> @@ -270,8 +270,17 @@ LIBBPF_API int bpf_map_update_batch(int fd, const void *keys, const void *values
->                                     __u32 *count,
->                                     const struct bpf_map_batch_opts *opts);
->
-> +struct bpf_obj_get_opts {
-> +       size_t sz; /* size of this struct for forward/backward compatibility */
-> +
-> +       __u32 file_flags;
-> +};
-> +#define bpf_obj_get_opts__last_field file_flags
-> +
->  LIBBPF_API int bpf_obj_pin(int fd, const char *pathname);
->  LIBBPF_API int bpf_obj_get(const char *pathname);
-> +LIBBPF_API int bpf_obj_get_opts(const char *pathname,
-> +                               const struct bpf_obj_get_opts *opts);
->
->  struct bpf_prog_attach_opts {
->         size_t sz; /* size of this struct for forward/backward compatibility */
-> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index 0625adb9e888..119e6e1ea7f1 100644
-> --- a/tools/lib/bpf/libbpf.map
-> +++ b/tools/lib/bpf/libbpf.map
-> @@ -355,6 +355,7 @@ LIBBPF_0.8.0 {
->
->  LIBBPF_1.0.0 {
->         global:
-> +               bpf_obj_get_opts;
->                 bpf_prog_query_opts;
->                 bpf_program__attach_ksyscall;
->                 btf__add_enum64;
-> --
-> 2.37.0.170.g444d1eabd0-goog
->
+1 - https://github.com/kernel-patches/vmtest/pull/95
+
+> 
+> Also it's too late for 'bpf' tree. Pls tag bpf-next on respin.
+
+Will do.
