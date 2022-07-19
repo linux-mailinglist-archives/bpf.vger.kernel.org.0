@@ -2,48 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEAAF57A75C
-	for <lists+bpf@lfdr.de>; Tue, 19 Jul 2022 21:41:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95FCC57A765
+	for <lists+bpf@lfdr.de>; Tue, 19 Jul 2022 21:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239637AbiGSTli (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Jul 2022 15:41:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59364 "EHLO
+        id S239653AbiGSTry (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Jul 2022 15:47:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbiGSTlh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Jul 2022 15:41:37 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94FB152DEB
-        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 12:41:36 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id bu1so23113390wrb.9
-        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 12:41:36 -0700 (PDT)
+        with ESMTP id S229379AbiGSTrx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Jul 2022 15:47:53 -0400
+Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD8E8491DC
+        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 12:47:52 -0700 (PDT)
+Received: by mail-vs1-xe2b.google.com with SMTP id w188so14271051vsb.6
+        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 12:47:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=aqMPXU/hy5J5UT9zpbIzXR+SmaMEDpe2x0xawCu4+Xc=;
-        b=OA15sUKR2X0chr/bQ+n2GmiKnfDbGXZm3GeDMLbos4nNcOj1PvYehwq3gxyn5O9AC/
-         J5nXTROb0GVX4AqQFlSuJKKDxYfWCkiYzql5P3a8EnLhM/H97610BoFlL2T9XLT1pejr
-         gpcoaMuVuSswKkRM0VTC4ZYCNU54Rzju9G1+I/9ieqeuQe6ZWvy0RtQSM0CWmp7u9ded
-         wecICYnWAx8a1S8LE1qQ5yLmFikwuVW54WQ9SicxhJN0L1GhY4ZuCdskOYD26r62zLiW
-         o3vhSM638MmTELWAqJl9jjRQeuuqX/to94roy29ZmdVDSDeVoT9ZC7LBCQY2fg0QBzh8
-         IG/w==
+        bh=nboYEa7rJCR7CNGdTDaXIoV9fIPi91CmCuY7BiHHgHo=;
+        b=BAfyUT9RiCWibO94CefV3FwsBy1jICTyq07/tU+6Vx39pg3dFWlCq5ndJXgr+QF7eK
+         ORoA+nYLgOBFYUsVMWu4iDcR9dgc6EtHuBG7x+gOayvA4Ror3Wk3H5fdgmdY712uJ9UJ
+         H8Lma3pfF6Ntl18zGZgo8KhM3nQXOd2S4M2OBlfc0XvXVQaXs0kYyEa3D5jkdLK3xNwc
+         5reXSMBGQjTc7UBTblY2e9OgqlV84PhnpO/hPLmMYD5Lus10MLjEDB6C6p2NJFUqQNOM
+         o+C2oRwbs4fwJnylPoBNxJjQYq1CqZlSdE9DKyQQkGLp65vdJ8xR/0MT+z9fK5YLWKHI
+         dRjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=aqMPXU/hy5J5UT9zpbIzXR+SmaMEDpe2x0xawCu4+Xc=;
-        b=f5Ux82J//QLgG6L5R4Jm4LU+iwEMyZt6+Crug3GPi8LCi0riDrUveJE49534VYBSvS
-         VuW9Yi7gM0eHbKZVjW9DVnVTD6cmjaVFRihYmEkttUW0lBv5+7DMgphzsvXsP1REdzRI
-         hC1alvQi8MYTvL7CmqFJVkqVTpYJwt4i967Su7885bZZYsZkkrbMmSiHxWUekMVA/Rma
-         8cyYLESV+OcGJc2nvTRymHRKhXYdthvgTLF1L66vqXfprjxZhnnxhjSy78vdD9Y1v9ff
-         d48Be69nqfJ0gyxcRfdRZAp6LIGdU1oXQAKKZPrbkGvDBqWEtlxVouzTvVR03Gw64Ua/
-         bxiw==
-X-Gm-Message-State: AJIora/uYdKsvFOfSt1cfZUUb/moKwcAJ7PPX9f/Bp1a8QHpPDtDSFEr
-        Yf/EYNdCiR3fJR7oK30+n7zPntbEhOSmIy9RNEQnsg==
-X-Google-Smtp-Source: AGRyM1tdK6kWeAvNgfrVukdO99uXAAcU32CuU/nCYYUEoGbmfovUwPyylkBwB9waw8bPKdYlNnUKkDceMWFODZUX8P0=
-X-Received: by 2002:a5d:588b:0:b0:21d:a918:65a5 with SMTP id
- n11-20020a5d588b000000b0021da91865a5mr28572759wrf.210.1658259694984; Tue, 19
- Jul 2022 12:41:34 -0700 (PDT)
+        bh=nboYEa7rJCR7CNGdTDaXIoV9fIPi91CmCuY7BiHHgHo=;
+        b=iafSJNicGTWHo//LF592hQ/TXVk0bx36NK44VQieYtwN2cm4p47LWXgxhYdzQuJAY2
+         S68+A8OKHXAeAQ+APkdeSxl+ahWMTMi58iPBrSkRTXeJe2Wrw10Lcskxnu/riV7qt13M
+         k7j1mBS0D+YXSVws5MM5K4jZ3k148zr4NvvFtXkbPJSqqmIRfEtkekyxfXctnX4MneB4
+         Za7QUhGjgSog8lkNoFVvx7vi7sYCNpu0B5kp1NOyN49viutK2q2dxVlXtzW/dyxhQgvK
+         jiPNX/rWUalcIauFt9hzbesmQGCDVJxCWOBwUXrWExBBV1vDf2pP6n0Tw/ZT9H7yqNOR
+         s17A==
+X-Gm-Message-State: AJIora8gD4nyS/w0BqIFelFsa+reQanahUofpDeznDQQ8SkDwbscC8sd
+        lNEq2W0f0rHsUT1kboaX3mYGcepuieFjoIptwOKZ1g==
+X-Google-Smtp-Source: AGRyM1uk/F30eIWrOe+KR3j7evKm1u8f1CIe/rrQaFGwkhYiXPVA41KSu5BCM3I19yu9N8Vu7znxwHsI+IGLnuYctfM=
+X-Received: by 2002:a05:6102:30a4:b0:357:ae78:c415 with SMTP id
+ y4-20020a05610230a400b00357ae78c415mr6961650vsd.72.1658260071710; Tue, 19 Jul
+ 2022 12:47:51 -0700 (PDT)
 MIME-Version: 1.0
 References: <Ys0lXfWKtwYlVrzK@dhcp22.suse.cz> <CALOAHbAhzNTkT9o_-PRX=n4vNjKhEK_09+-7gijrFgGjNH7iRA@mail.gmail.com>
  <Ys1ES+CygtnUvArz@dhcp22.suse.cz> <Ys4wRqCWrV1WeeWp@castle>
@@ -53,13 +53,13 @@ References: <Ys0lXfWKtwYlVrzK@dhcp22.suse.cz> <CALOAHbAhzNTkT9o_-PRX=n4vNjKhEK_0
  <YtcDEpaHniDeN7fP@slm.duckdns.org> <CAJD7tkZkFnVqjkdOK3Wf8f1o3XmMWCmWkzHNQKh8Znh5dDF27w@mail.gmail.com>
  <YtcIJClKxUPntdM9@slm.duckdns.org>
 In-Reply-To: <YtcIJClKxUPntdM9@slm.duckdns.org>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 19 Jul 2022 12:40:58 -0700
-Message-ID: <CAJD7tkZGpsYLB_rhbZUMyiKEzV+FYhyzFdNBtKrFzaRLi=p9Gw@mail.gmail.com>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Tue, 19 Jul 2022 12:47:39 -0700
+Message-ID: <CAHS8izOrGBLUGDAo0_7Y0_7y4+2BusFeqOMkxwbXUSvMTvTGDQ@mail.gmail.com>
 Subject: Re: cgroup specific sticky resources (was: Re: [PATCH bpf-next 0/5]
  bpf: BPF specific memory allocator.)
 To:     Tejun Heo <tj@kernel.org>
-Cc:     Mina Almasry <almasrymina@google.com>,
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
         Michal Hocko <mhocko@suse.com>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Yafang Shao <laoar.shao@gmail.com>,
@@ -119,14 +119,43 @@ On Tue, Jul 19, 2022 at 12:38 PM Tejun Heo <tj@kernel.org> wrote:
 > optimization opportunities.
 >
 > So, that's gonna be a fairly strong nack from my end.
-
-Fair enough :)
-
-Thanks for elaborating your point of view and the challenges that come
-with this!
-
 >
+
+Hmm, sorry I might be missing something but I don't think we have the
+same thing in mind?
+
+My understanding is that the sysadmin can do something like this which
+is relatively inexpensive to implement in the kernel:
+
+
+mount -t tmpfs /mnt/mymountpoint
+echo "/mnt/mymountpoint" > /path/to/cgroup/cgroup.charge_for.tmpfs
+
+
+At that point all tmpfs charges for this tmpfs are directed to
+/path/to/cgroup/memory.current.
+
+Then the sysadmin can do something like:
+
+
+echo "/mnt/mymountpoint" > /path/to/cgroup2/cgroup.charge_for.tmpfs
+
+
+At that point all _future_ charges of that tmpfs will go to
+cgroup2/memory.current. All existing charges remain at
+cgroup/memory.current and get uncharged from there. Per my
+understanding there is no need to move all the _existing_ charges from
+cgroup/memory.current to cgroup2/memory.current.
+
+Sorry, I don't mean to be insistent, just wanted to make sure we have
+the same thing in mind. Speaking for ourselves we have a very similar
+implementation locally and is perfectly usable (and in fact addresses
+a number of pain points related to shared memory charging) without
+dynamically moving existing charges on reassignment (the second echo
+in my example).
+
 > Thanks.
+
 >
 > --
 > tejun
