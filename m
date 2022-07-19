@@ -2,25 +2,25 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3055657A490
-	for <lists+bpf@lfdr.de>; Tue, 19 Jul 2022 19:06:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 585AF57A491
+	for <lists+bpf@lfdr.de>; Tue, 19 Jul 2022 19:06:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237587AbiGSRGW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Jul 2022 13:06:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59336 "EHLO
+        id S235587AbiGSRGY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Jul 2022 13:06:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235892AbiGSRGV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Jul 2022 13:06:21 -0400
+        with ESMTP id S237779AbiGSRGW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Jul 2022 13:06:22 -0400
 Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB4724D817;
-        Tue, 19 Jul 2022 10:06:20 -0700 (PDT)
-Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4LnQBR2z29z689Mf;
-        Wed, 20 Jul 2022 01:02:55 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E495A3B941;
+        Tue, 19 Jul 2022 10:06:21 -0700 (PDT)
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4LnQDP0Wy5z682Y2;
+        Wed, 20 Jul 2022 01:04:37 +0800 (CST)
 Received: from roberto-ThinkStation-P620.huawei.com (10.204.63.22) by
  fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 19 Jul 2022 19:06:17 +0200
+ 15.1.2375.24; Tue, 19 Jul 2022 19:06:19 +0200
 From:   Roberto Sassu <roberto.sassu@huawei.com>
 To:     <quentin@isovalent.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <andrii@kernel.org>, <martin.lau@linux.dev>, <song@kernel.org>,
@@ -30,10 +30,12 @@ To:     <quentin@isovalent.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
 CC:     <bpf@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
         <llvm@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
         Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [PATCH 1/4] tools, build: Retry detection of bfd-related features
-Date:   Tue, 19 Jul 2022 19:05:52 +0200
-Message-ID: <20220719170555.2576993-1-roberto.sassu@huawei.com>
+Subject: [PATCH 2/4] bpftool: Complete libbfd feature detection
+Date:   Tue, 19 Jul 2022 19:05:53 +0200
+Message-ID: <20220719170555.2576993-2-roberto.sassu@huawei.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220719170555.2576993-1-roberto.sassu@huawei.com>
+References: <20220719170555.2576993-1-roberto.sassu@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -50,75 +52,39 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-While separate features have been defined to determine which linking flags
-are required to use libbfd depending on the distribution (libbfd,
-libbfd-liberty and libbfd-liberty-z), the same has not been done for other
-features requiring linking to libbfd.
+Commit 6e8ccb4f624a7 ("tools/bpf: properly account for libbfd variations")
+sets the linking flags depending on which flavor of the libbfd feature was
+detected.
 
-For example, disassembler-four-args requires linking to libbfd too, but it
-should use the right linking flags. If not all the required ones are
-specified, e.g. -liberty, detection will always fail even if the feature is
-available.
+However, the flavors except libbfd cannot be detected, as they are not in
+the feature list.
 
-Instead of creating new features, similarly to libbfd, simply retry
-detection with the different set of flags until detection succeeds (or
-fails, if the libraries are missing). In this way, feature detection is
-transparent for the users of this building mechanism (e.g. perf), and those
-users don't have for example to set an appropriate value for the
-FEATURE_CHECK_LDFLAGS-disassembler-four-args variable.
+Complete the list of features to detect by adding libbfd-liberty and
+libbfd-liberty-z.
 
-The number of retries and features for which the retry mechanism is
-implemented is low enough to make the increase in the complexity of
-Makefile negligible.
-
-Tested with perf and bpftool on Ubuntu 20.04.4 LTS, Fedora 36 and openSUSE
-Tumbleweed.
-
+Fixes: 6e8ccb4f624a7 ("tools/bpf: properly account for libbfd variations")
 Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 ---
- tools/build/feature/Makefile | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ tools/bpf/bpftool/Makefile | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
-index 7c2a17e23c30..063dab19148c 100644
---- a/tools/build/feature/Makefile
-+++ b/tools/build/feature/Makefile
-@@ -89,6 +89,8 @@ all: $(FILES)
+diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+index 6b5b3a99f79d..4b09a5c3b9f1 100644
+--- a/tools/bpf/bpftool/Makefile
++++ b/tools/bpf/bpftool/Makefile
+@@ -93,8 +93,10 @@ INSTALL ?= install
+ RM ?= rm -f
  
- __BUILD = $(CC) $(CFLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.c,$(@F)) $(LDFLAGS)
-   BUILD = $(__BUILD) > $(@:.bin=.make.output) 2>&1
-+  BUILD_BFD = $(BUILD) -DPACKAGE='"perf"' -lbfd -ldl
-+  BUILD_ALL = $(BUILD) -fstack-protector-all -O2 -D_FORTIFY_SOURCE=2 -ldw -lelf -lnuma -lelf -lslang $(FLAGS_PERL_EMBED) $(FLAGS_PYTHON_EMBED) -DPACKAGE='"perf"' -lbfd -ldl -lz -llzma -lzstd -lcap
+ FEATURE_USER = .bpftool
+-FEATURE_TESTS = libbfd disassembler-four-args libcap clang-bpf-co-re
+-FEATURE_DISPLAY = libbfd disassembler-four-args libcap clang-bpf-co-re
++FEATURE_TESTS = libbfd libbfd-liberty libbfd-liberty-z \
++		disassembler-four-args libcap clang-bpf-co-re
++FEATURE_DISPLAY = libbfd libbfd-liberty libbfd-liberty-z \
++		  disassembler-four-args libcap clang-bpf-co-re
  
- __BUILDXX = $(CXX) $(CXXFLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.cpp,$(@F)) $(LDFLAGS)
-   BUILDXX = $(__BUILDXX) > $(@:.bin=.make.output) 2>&1
-@@ -96,7 +98,7 @@ __BUILDXX = $(CXX) $(CXXFLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.cpp,$(
- ###############################
- 
- $(OUTPUT)test-all.bin:
--	$(BUILD) -fstack-protector-all -O2 -D_FORTIFY_SOURCE=2 -ldw -lelf -lnuma -lelf -lslang $(FLAGS_PERL_EMBED) $(FLAGS_PYTHON_EMBED) -DPACKAGE='"perf"' -lbfd -ldl -lz -llzma -lzstd -lcap
-+	$(BUILD_ALL) || $(BUILD_ALL) -lopcodes -liberty
- 
- $(OUTPUT)test-hello.bin:
- 	$(BUILD)
-@@ -240,13 +242,14 @@ $(OUTPUT)test-libpython.bin:
- 	$(BUILD) $(FLAGS_PYTHON_EMBED)
- 
- $(OUTPUT)test-libbfd.bin:
--	$(BUILD) -DPACKAGE='"perf"' -lbfd -ldl
-+	$(BUILD_BFD)
- 
- $(OUTPUT)test-libbfd-buildid.bin:
--	$(BUILD) -DPACKAGE='"perf"' -lbfd -ldl
-+	$(BUILD_BFD) || $(BUILD_BFD) -liberty || $(BUILD_BFD) -liberty -lz
- 
- $(OUTPUT)test-disassembler-four-args.bin:
--	$(BUILD) -DPACKAGE='"perf"' -lbfd -lopcodes
-+	$(BUILD_BFD) -lopcodes || $(BUILD_BFD) -lopcodes -liberty || \
-+	$(BUILD_BFD) -lopcodes -liberty -lz
- 
- $(OUTPUT)test-reallocarray.bin:
- 	$(BUILD)
+ check_feat := 1
+ NON_CHECK_FEAT_TARGETS := clean uninstall doc doc-clean doc-install doc-uninstall
 -- 
 2.25.1
 
