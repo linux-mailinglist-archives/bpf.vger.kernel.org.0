@@ -2,81 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A2D57AD43
-	for <lists+bpf@lfdr.de>; Wed, 20 Jul 2022 03:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B9457AD73
+	for <lists+bpf@lfdr.de>; Wed, 20 Jul 2022 04:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240039AbiGTBlS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Jul 2022 21:41:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33566 "EHLO
+        id S240695AbiGTCAE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Jul 2022 22:00:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240036AbiGTBlE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Jul 2022 21:41:04 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 095367AC17
-        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 18:32:44 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id c187-20020a1c35c4000000b003a30d88fe8eso398969wma.2
-        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 18:32:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=tQp/N6Uk+UKd7eDu5UmzGuGhmF0Y+ibaoFPpIegLF+Y=;
-        b=by6T/E8VkX8oFtD8dnsR64IT7UFDcrTPCAIRCgOPa/LJUI8JOCFbfiz7J364/bCOeH
-         rd2SkAx8XnmkmyymE0WIWkYVOzMHAWDtTOM7/pu4iS/Fe00JFXhg564o71FrfrqpBCLX
-         kNQx4x/jPUrpwvMLbAB7FQyDSSJU5xbxfQ3JJ8oycJgKPUTeAw2TRAoGo85orXqi0A8u
-         Xs58+Hntk7L9VAArrtF/7CD3yaGAuk+/qXl0aNv10D0zU/SEvOHRpjy0Q2PZ1bdEhEgl
-         88w2QZanxV32ADu69Bwbh0ecfaxCfSbzFZyoWEIAXF445J3pol4ru5Qh5EMeLZvIwOIM
-         TLcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=tQp/N6Uk+UKd7eDu5UmzGuGhmF0Y+ibaoFPpIegLF+Y=;
-        b=MnqgFZieHYeyRH/xQO5D6//ZiPc6hrurmrIhuyDxm8Ripazc4o0tAGjbyJTWeQL+mz
-         v7eO/7d9aOv5R04Btn16PRbbw+BK8QQMd56EQf8wpzJ7HBvKS8biJay9MBjN8E2g8Hbv
-         xqKIuii61IWFuUf+1IXDVG7t1pptE+79ixNjC1YpaJxetmlIhhgpDtw9ozCAUaVuk7/6
-         ErANCrm2ndKvCQhxE4NQKoMtXdJrymxTcyHAsZr1OmvMkyvlPIyypCaN+hvJIPxlEY05
-         v566KT/8SEFmGdbWPKP7nBvCzmSNJwF9+5+ien9pIfY+rTzRhYFh5O+raEcOfpmhdxSG
-         GKJQ==
-X-Gm-Message-State: AJIora83FBBN3mqqRHpPeB+IoHLaWPaqobOijbZNxzqiXu4sqAm8/tHt
-        N52tnWQIdwDt8P7q2xkY+I6brp/IZlfePXeRVBTB
-X-Google-Smtp-Source: AGRyM1ubeyz5pphxIFoknkif5zSYvGormRenvsTvDWi7UK6OclfHHNS+LtozRpPhZOyHN270g6dMP5377DarcQ4fJ5w=
-X-Received: by 2002:a7b:ce8f:0:b0:3a2:ff2d:915f with SMTP id
- q15-20020a7bce8f000000b003a2ff2d915fmr1512608wmj.165.1658280762556; Tue, 19
- Jul 2022 18:32:42 -0700 (PDT)
+        with ESMTP id S240831AbiGTCAD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Jul 2022 22:00:03 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A981509CC;
+        Tue, 19 Jul 2022 19:00:01 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Lnf664W6Wz4x1T;
+        Wed, 20 Jul 2022 11:59:58 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1658282399;
+        bh=bhdoEw1uXwDmJ3zb0O4cMwVb6jyiL7N3GRG/QYEShtw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=j9b4R22bso+FdS4VOJxxEVkVaV0GMZw0Had6/899iQFPSVHq7YQCWctP/1kq4meJW
+         DOMpuPR3wf8ZCgSD4Zel6CrzDErTkrgHuIJMfl/50BD+1+v2v78UlJFGm+rdAY6djg
+         S/uxmCEbPP70SMPACjTMjrTEgNK+ATWPh53HZ4/pxiCD9NbZ9UJDRKe/nq1OuN5XPr
+         jNnag1EycWXxVfvI4MDRL8Mq5kiH3h6tbqYTD584Zt7SrvmhWLJVWIJybsS/o9zJZa
+         nVmdAuLQZe0QUr6ZDyd0XIgfc88tbe6xJh6MzCcT7DAnLaU3JGkhekJTusHrToPt4z
+         cDjx/wdF+ttwg==
+Date:   Wed, 20 Jul 2022 11:59:56 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the bpf-next tree
+Message-ID: <20220720115956.3c27492f@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20220707223228.1940249-1-fred@cloudflare.com> <CAJ2a_DezgSpc28jvJuU_stT7V7et-gD7qjy409oy=ZFaUxJneg@mail.gmail.com>
- <3dbd5b30-f869-b284-1383-309ca6994557@cloudflare.com> <84fbd508-65da-1930-9ed3-f53f16679043@schaufler-ca.com>
-In-Reply-To: <84fbd508-65da-1930-9ed3-f53f16679043@schaufler-ca.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 19 Jul 2022 21:32:31 -0400
-Message-ID: <CAHC9VhQ-mBYH-GwSULDyyQ6mNC6K8GNB4fra0pJ+s0ZnEpCgcg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] Introduce security_create_user_ns()
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Frederick Lawler <fred@cloudflare.com>,
-        =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>,
-        KP Singh <kpsingh@kernel.org>, revest@chromium.org,
-        jackmanb@chromium.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>, shuah@kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        SElinux list <selinux@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, kernel-team@cloudflare.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: multipart/signed; boundary="Sig_/Fv5//JLIpbwn5VwgxshyjFE";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,55 +53,53 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 8, 2022 at 12:11 PM Casey Schaufler <casey@schaufler-ca.com> wr=
-ote:
-> On 7/8/2022 7:01 AM, Frederick Lawler wrote:
-> > On 7/8/22 7:10 AM, Christian G=C3=B6ttsche wrote:
-> >> ,On Fri, 8 Jul 2022 at 00:32, Frederick Lawler <fred@cloudflare.com>
-> >> wrote:
+--Sig_/Fv5//JLIpbwn5VwgxshyjFE
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-...
+Hi all,
 
-> >> Also I think the naming scheme is <object>_<verb>.
-> >
-> > That's a good call out. I was originally hoping to keep the
-> > security_*() match with the hook name matched with the caller function
-> > to keep things all aligned. If no one objects to renaming the hook, I
-> > can rename the hook for v3.
+After merging the bpf-next tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
 
-No objection from me.
+ld: warning: discarding dynamic section .glink
+ld: warning: discarding dynamic section .plt
+ld: linkage table error against `bpf_trampoline_unlink_cgroup_shim'
+ld: stubs don't match calculated size
+ld: can not build stubs: bad value
+ld: kernel/bpf/cgroup.o: in function `.bpf_cgroup_link_release.part.0':
+cgroup.c:(.text+0x2fc4): undefined reference to `.bpf_trampoline_unlink_cgr=
+oup_shim'
+ld: kernel/bpf/cgroup.o: in function `.cgroup_bpf_release':
+cgroup.c:(.text+0x33b0): undefined reference to `.bpf_trampoline_unlink_cgr=
+oup_shim'
+ld: cgroup.c:(.text+0x33c0): undefined reference to `.bpf_trampoline_unlink=
+_cgroup_shim'
 
-[Sorry for the delay, the last week or two has been pretty busy.]
+Caused by commit
 
-> >> III.
-> >>
-> >> Maybe even attach a security context to namespaces so they can be
-> >> further governed?
->
-> That would likely add confusion to the existing security module namespace
-> efforts. SELinux, Smack and AppArmor have all developed namespace models.
+  3908fcddc65d ("bpf: fix lsm_cgroup build errors on esoteric configs")
 
-I'm not sure I fully understand what Casey is saying here as SELinux
-does not yet have an established namespace model to the best of my
-understanding, but perhaps we are talking about different concepts for
-the word "namespace"?
+I have reverted that commit for today.
 
-From a SELinux perspective, if we are going to control access to a
-namespace beyond simple creation, we would need to assign the
-namespace a label (inherited from the creating process).  Although
-that would need some discussion among the SELinux folks as this would
-mean treating a userns as a proper system entity from a policy
-perspective which is ... interesting.
+--=20
+Cheers,
+Stephen Rothwell
 
-> That, or it could replace the various independent efforts with a single,
-> unified security module namespace effort.
+--Sig_/Fv5//JLIpbwn5VwgxshyjFE
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-We've talked about this before and I just don't see how that could
-ever work, the LSM implementations are just too different to do
-namespacing at the LSM layer.  If a LSM is going to namespace
-themselves, they need the ability to define what that means without
-having to worry about what other LSMs want to do.
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmLXYZwACgkQAVBC80lX
+0GzSFQgAnaA2eOiMKp5wZmiIGDSXhtME62YtWbUflrm1QC+qZEpe+GxRevu795R0
+VKEl/qmAd2HuBmbL0CX/LiEp1IO4SQQ9u21qxcDyV/F18i8AYkgILz5jr0nV7kDN
+CdNhKwjjSTNNkOamEOUO39lz3jyv6nQfD5HDcQ+SDSIBoy+glrNTJKjDN8BXPD3Z
+0pEQrTEfbikPE6gEubcfJ1IPA5As2cxJWcFjbv3qRrq445kABxnOD5SymKWkBWAk
+qaqK1QOP0rUpZkRQyqMtQV6WFy4fgPRk/fe7SAPzSncJqyc5uJDpt0BVm/u+DGcc
+KtwBZJ14lfYb6T0fNFb13svtMfU5Jw==
+=AyPS
+-----END PGP SIGNATURE-----
 
---
-paul-moore.com
+--Sig_/Fv5//JLIpbwn5VwgxshyjFE--
