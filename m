@@ -2,214 +2,175 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4436B57C020
-	for <lists+bpf@lfdr.de>; Thu, 21 Jul 2022 00:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C152E57C025
+	for <lists+bpf@lfdr.de>; Thu, 21 Jul 2022 00:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229743AbiGTWi1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Jul 2022 18:38:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36774 "EHLO
+        id S230490AbiGTWjV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Jul 2022 18:39:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbiGTWi0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Jul 2022 18:38:26 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB02A20BCA
-        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 15:38:25 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id c6so124028pla.6
-        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 15:38:25 -0700 (PDT)
+        with ESMTP id S230502AbiGTWjT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Jul 2022 18:39:19 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB692F659
+        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 15:39:17 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id z13so8487561wro.13
+        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 15:39:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qKundeLwLE8yHDmVC5J90MC57u7WttoWzC9FUcDruuA=;
-        b=teu9Ow/yaZVavTFIRBfdZhx5omBHQ/R1a+0wEZEdWXDuh4SFLngIh/dkQhevzdIAw9
-         wN9if+zAcfY35HB4jzS9uInlSXQzELXqE41bHh/AjHa+O2v2AGnM48wB9piAxJkHElrG
-         i3PaXat4FmqoDkRMrglMzGqg/q5d6h+bXP7t3/Cu47JOa1xUOU5ed/UuCqKIyxx82Otn
-         XQ1ZTwBRWsjt0i8WD/HgPDx7o6sLUuetf79m9fFiWmZy6QX7QIKQwVmja7DIfPokUKmA
-         M6fqfCHoxU6xD9GNbgdWsvRZBO+NoyQcOcEKyS/T+j+Xxnl5BLnaXE0/myauUi3LlpkF
-         KIpA==
+         :cc:content-transfer-encoding;
+        bh=gjQxo0hKIVF1YVkSJ8Tt3ejloLl3VpIsO9hirXnFH+U=;
+        b=zI4b6Z/wGUUgwWeOD3pQ7dMozzrzLOSSr5UB4/ki36H/h/zC0Qb1NCR/RhxeQdHB+Z
+         3FCKUbPYT5+bU3pmhLvpKxSDvhXulocHKjQJIK9p2OWuINXr0ivOwxxFVq8r2AsYJL0k
+         h2jIEJlNGTvnLKbR2B1DBtIZIcqD7gzg4o3ocXh3FpoC1frMzUOTzgFrhv924XvD3qy6
+         bGkXIyFJEC3lxyxyiCQL50o2Lakud4qBn1yd2/Ofteeaj17Q+3Q2Y9JWICUkKp2nG3tu
+         nmWKI3COxvtxiKvkkyvYG9tb5TN1DQ3EJhT9fkaryBkGsfd6tZY/Q5QUvQapNTufNH1C
+         bPlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qKundeLwLE8yHDmVC5J90MC57u7WttoWzC9FUcDruuA=;
-        b=1TAg9ImrgbLllJEx5yStlEJRyIfgasvCNInJlcKyXfdiVbql8fm/7/LqtMhPUet5ln
-         3ov/ZAzAvHezQCTm8ZZo5CmjFUDf4UGpaMKaLC9BH3g1d2ZkO8NTErPBllo6I4krAEug
-         PPQfDA0hgfYLqjM6QlL58toKTjmUIj6/OIKJNDU7wM/B2vpXynE30vL5WQknsG8lzZb2
-         UqSbxZcHEaZ+9t1lF9GouA0mQhlJLlRhYIajsFiLxjMpS04anqUZPsaiDEs/+MiWZqpV
-         iEbWhDA/qTdPyaqjhKJ2d0uKpVVezWNS6spr0skA3x/5QfvtojGjrOE2Awa6Tnmj0Pp8
-         ISlA==
-X-Gm-Message-State: AJIora8NHMiVJE4PsMaS6qTdQAHe+A7MD9XVdXt2reRL7HK+BymjhzkO
-        5YZvCBiR+J00SNu1l39xOISHQwVOgCtcFcCiAsHqLQ==
-X-Google-Smtp-Source: AGRyM1sT0VjwrAlAy19Hev842jcsdcPceuFOqBKzFLrWQP0Y1syi+ScUaLbMtA1ceUCC9L3oIZ5bRsF73lTpCfLiRao=
-X-Received: by 2002:a17:90b:4b4d:b0:1ef:bff5:de4f with SMTP id
- mi13-20020a17090b4b4d00b001efbff5de4fmr7931216pjb.120.1658356704967; Wed, 20
- Jul 2022 15:38:24 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=gjQxo0hKIVF1YVkSJ8Tt3ejloLl3VpIsO9hirXnFH+U=;
+        b=yzANcG3Y7Veyxp+HxibxGYS49egJ9g+YYyNfavq6EJ8HPyK1a3wvcRXb6cEFsc0bcW
+         nnUrg8BgZN/7VmnBwTPZBTMWPnMZ3OIJgQC1tpXoDx6ZoT9Ck0/3/es6VWLp/od2kJq7
+         fJceKaWdJV79npGV3t5ly+moFs6NMUK4qD7EL3hGEV/mNPku+c0b4GGo6ktvQsFN2jqn
+         hmDEd0g7o7meZ1VMHFi3br+gRse3+wubSkHfrvYSJ1nbHRzTHydT5QZcuPaQQDu3QdR0
+         l6F5FeHJxycMsZQZ1mm6/r4G/JegxaYtHo7QJ+Dw6qVAr+JC8LYvTZrXIUSYbpw8dQi+
+         Je7w==
+X-Gm-Message-State: AJIora/GtNV/PonhQsc79Qxnw7nmpRl36nkErvhyhHgzUjr0qqS7K4BN
+        QlW6T/Q+y2e1tx4TRC6q3fPtzp3ZIs2ewGIlspOI
+X-Google-Smtp-Source: AGRyM1tdrjUF8cXJwhaIP6PHYKjrB2YVUyMErv5SbIcoUCr7yadS90weIQu40rllAkj9qSRNkrh4MkilhnWcTexYRQo=
+X-Received: by 2002:adf:e492:0:b0:21e:45af:5070 with SMTP id
+ i18-20020adfe492000000b0021e45af5070mr5887107wrm.483.1658356756213; Wed, 20
+ Jul 2022 15:39:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220719194028.4180569-1-jevburton.kernel@gmail.com>
- <CAKH8qBsm0QqE-7Pmhhz=tRYAfgpirbu6K1deQ6cQTU+GTykLNA@mail.gmail.com>
- <179cfb89be0e4f928a55d049fe62aa9e@huawei.com> <CAKH8qBt0yR+mtCjAp=8jQL4M6apWQk0wH7Zf4tPDCf3=m+gAKA@mail.gmail.com>
- <31473ddf364f4f16becfd5cd4b9cd7d2@huawei.com>
-In-Reply-To: <31473ddf364f4f16becfd5cd4b9cd7d2@huawei.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Wed, 20 Jul 2022 15:38:13 -0700
-Message-ID: <CAKH8qBsFg5gQ0bqpVtYhiQx=TqJG31c8kfsbCG4X57QGLOhXvw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next] libbpf: Add bpf_obj_get_opts()
-To:     Roberto Sassu <roberto.sassu@huawei.com>
-Cc:     Joe Burton <jevburton.kernel@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <20220707223228.1940249-1-fred@cloudflare.com> <CAJ2a_DezgSpc28jvJuU_stT7V7et-gD7qjy409oy=ZFaUxJneg@mail.gmail.com>
+ <3dbd5b30-f869-b284-1383-309ca6994557@cloudflare.com> <84fbd508-65da-1930-9ed3-f53f16679043@schaufler-ca.com>
+ <CAHC9VhQ-mBYH-GwSULDyyQ6mNC6K8GNB4fra0pJ+s0ZnEpCgcg@mail.gmail.com> <f1f8b350-4dc5-b975-3854-ecbf9f4e54ba@schaufler-ca.com>
+In-Reply-To: <f1f8b350-4dc5-b975-3854-ecbf9f4e54ba@schaufler-ca.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 20 Jul 2022 18:39:05 -0400
+Message-ID: <CAHC9VhTFb7=FUyq4oM8ULtnZpZYj3ztpNhASy3WtHnn6QWwZig@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] Introduce security_create_user_ns()
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Frederick Lawler <fred@cloudflare.com>,
+        =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>,
+        KP Singh <kpsingh@kernel.org>, revest@chromium.org,
+        jackmanb@chromium.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Joe Burton <jevburton@google.com>
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>, shuah@kernel.org,
+        Christian Brauner <brauner@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        SElinux list <selinux@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, kernel-team@cloudflare.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 20, 2022 at 3:30 PM Roberto Sassu <roberto.sassu@huawei.com> wrote:
->
-> > From: Stanislav Fomichev [mailto:sdf@google.com]
-> > Sent: Wednesday, July 20, 2022 5:57 PM
-> > On Wed, Jul 20, 2022 at 1:02 AM Roberto Sassu <roberto.sassu@huawei.com>
-> > wrote:
-> > >
-> > > > From: Stanislav Fomichev [mailto:sdf@google.com]
-> > > > Sent: Tuesday, July 19, 2022 10:40 PM
-> > > > On Tue, Jul 19, 2022 at 12:40 PM Joe Burton <jevburton.kernel@gmail.com>
-> > > > wrote:
-> > > > >
-> > > > > From: Joe Burton <jevburton@google.com>
-> > > > >
-> > > > > Add an extensible variant of bpf_obj_get() capable of setting the
-> > > > > `file_flags` parameter.
-> > > > >
-> > > > > This parameter is needed to enable unprivileged access to BPF maps.
-> > > > > Without a method like this, users must manually make the syscall.
-> > > > >
-> > > > > Signed-off-by: Joe Burton <jevburton@google.com>
-> > > >
-> > > > Reviewed-by: Stanislav Fomichev <sdf@google.com>
-> > > >
-> > > > For context:
-> > > > We've found this out while we were trying to add support for unpriv
-> > > > processes to open pinned r-x maps.
-> > > > Maybe this deserves a test as well? Not sure.
-> > >
-> > > Hi Stanislav, Joe
-> > >
-> > > I noticed now this patch. I'm doing a broader work to add opts
-> > > to bpf_*_get_fd_by_id(). I also adjusted permissions of bpftool
-> > > depending on the operation type (e.g. show, dump: BPF_F_RDONLY).
-> > >
-> > > Will send it soon (I'm trying to solve an issue with the CI, where
-> > > libbfd is not available in the VM doing actual tests).
+On Wed, Jul 20, 2022 at 5:42 PM Casey Schaufler <casey@schaufler-ca.com> wr=
+ote:
+> On 7/19/2022 6:32 PM, Paul Moore wrote:
+> > On Fri, Jul 8, 2022 at 12:11 PM Casey Schaufler <casey@schaufler-ca.com=
+> wrote:
+> >> On 7/8/2022 7:01 AM, Frederick Lawler wrote:
+> >>> On 7/8/22 7:10 AM, Christian G=C3=B6ttsche wrote:
+> >>>> ,On Fri, 8 Jul 2022 at 00:32, Frederick Lawler <fred@cloudflare.com>
+> >>>> wrote:
+
+...
+
+> >>>> III.
+> >>>>
+> >>>> Maybe even attach a security context to namespaces so they can be
+> >>>> further governed?
+> >> That would likely add confusion to the existing security module namesp=
+ace
+> >> efforts. SELinux, Smack and AppArmor have all developed namespace mode=
+ls.
 > >
-> > Is something like this patch included in your series as well? Can you
-> > use this new interface or do you need something different?
+> > I'm not sure I fully understand what Casey is saying here as SELinux
+> > does not yet have an established namespace model to the best of my
+> > understanding, but perhaps we are talking about different concepts for
+> > the word "namespace"?
 >
-> It is very similar. Except that I called it bpf_get_fd_opts, as it
-> is shared with the bpf_*_get_fd_by_id() functions. The member
-> name is just flags, plus an extra u32 for alignment.
+> Stephen Smalley proposed a SELinux namespace model, with patches,
+> some time back. It hasn't been adopted, but I've seen at least one
+> attempt to revive it. You're right that there isn't an established
+> model.
 
-We can bikeshed the naming, but we've been using existing conventions
-where opts fields match syscall fields, that seems like a sensible
-thing to do?
+If it isn't in the mainline kernel, it isn't an established namespace model=
+.
 
-> It needs to be shared, as there are functions in bpftool calling
-> both. Since the meaning of flags is the same, seems ok sharing.
+I ported Stephen's initial namespace patches to new kernels for quite
+some time, look at the working-selinuxns branch in the main SELinux
+repository, but that doesn't mean they are ready for upstreaming.
+Aside from some pretty critical implementation holes, there is the
+much larger conceptual issue of how to deal with persistent filesystem
+objects.  We've discussed that quite a bit among the SELinux
+developers but have yet to arrive at a good-enough solution.  I have
+some thoughts on how we might be able to make forward progress on
+that, but it's wildly off-topic for this patchset discussion.  I
+mostly wanted to make sure I was understanding what you were
+referencing when you talked about a "SELinux namespace model", and it
+is what I suspected ... which I believe is unrelated to the patches
+being discussed here.
 
-So I guess there are no objections to the current patch? If it gets
-accepted, you should be able to drop some of your code and use this
-new bpf_obj_get_opts..
-
-> Roberto
+> >> That, or it could replace the various independent efforts with a singl=
+e,
+> >> unified security module namespace effort.
+> >
+> > We've talked about this before and I just don't see how that could
+> > ever work, the LSM implementations are just too different to do
+> > namespacing at the LSM layer.
 >
-> > > Roberto
-> > >
-> > > > > ---
-> > > > >  tools/lib/bpf/bpf.c      | 10 ++++++++++
-> > > > >  tools/lib/bpf/bpf.h      |  9 +++++++++
-> > > > >  tools/lib/bpf/libbpf.map |  1 +
-> > > > >  3 files changed, 20 insertions(+)
-> > > > >
-> > > > > diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> > > > > index 5eb0df90eb2b..5acb0e8bd13c 100644
-> > > > > --- a/tools/lib/bpf/bpf.c
-> > > > > +++ b/tools/lib/bpf/bpf.c
-> > > > > @@ -578,12 +578,22 @@ int bpf_obj_pin(int fd, const char *pathname)
-> > > > >  }
-> > > > >
-> > > > >  int bpf_obj_get(const char *pathname)
-> > > > > +{
-> > > > > +       LIBBPF_OPTS(bpf_obj_get_opts, opts);
-> > > > > +       return bpf_obj_get_opts(pathname, &opts);
-> > > > > +}
-> > > > > +
-> > > > > +int bpf_obj_get_opts(const char *pathname, const struct
-> > bpf_obj_get_opts
-> > > > *opts)
-> > > > >  {
-> > > > >         union bpf_attr attr;
-> > > > >         int fd;
-> > > > >
-> > > > > +       if (!OPTS_VALID(opts, bpf_obj_get_opts))
-> > > > > +               return libbpf_err(-EINVAL);
-> > > > > +
-> > > > >         memset(&attr, 0, sizeof(attr));
-> > > > >         attr.pathname = ptr_to_u64((void *)pathname);
-> > > > > +       attr.file_flags = OPTS_GET(opts, file_flags, 0);
-> > > > >
-> > > > >         fd = sys_bpf_fd(BPF_OBJ_GET, &attr, sizeof(attr));
-> > > > >         return libbpf_err_errno(fd);
-> > > > > diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-> > > > > index 88a7cc4bd76f..f31b493b5f9a 100644
-> > > > > --- a/tools/lib/bpf/bpf.h
-> > > > > +++ b/tools/lib/bpf/bpf.h
-> > > > > @@ -270,8 +270,17 @@ LIBBPF_API int bpf_map_update_batch(int fd,
-> > const
-> > > > void *keys, const void *values
-> > > > >                                     __u32 *count,
-> > > > >                                     const struct bpf_map_batch_opts *opts);
-> > > > >
-> > > > > +struct bpf_obj_get_opts {
-> > > > > +       size_t sz; /* size of this struct for forward/backward compatibility */
-> > > > > +
-> > > > > +       __u32 file_flags;
-> > > > > +};
-> > > > > +#define bpf_obj_get_opts__last_field file_flags
-> > > > > +
-> > > > >  LIBBPF_API int bpf_obj_pin(int fd, const char *pathname);
-> > > > >  LIBBPF_API int bpf_obj_get(const char *pathname);
-> > > > > +LIBBPF_API int bpf_obj_get_opts(const char *pathname,
-> > > > > +                               const struct bpf_obj_get_opts *opts);
-> > > > >
-> > > > >  struct bpf_prog_attach_opts {
-> > > > >         size_t sz; /* size of this struct for forward/backward compatibility */
-> > > > > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> > > > > index 0625adb9e888..119e6e1ea7f1 100644
-> > > > > --- a/tools/lib/bpf/libbpf.map
-> > > > > +++ b/tools/lib/bpf/libbpf.map
-> > > > > @@ -355,6 +355,7 @@ LIBBPF_0.8.0 {
-> > > > >
-> > > > >  LIBBPF_1.0.0 {
-> > > > >         global:
-> > > > > +               bpf_obj_get_opts;
-> > > > >                 bpf_prog_query_opts;
-> > > > >                 bpf_program__attach_ksyscall;
-> > > > >                 btf__add_enum64;
-> > > > > --
-> > > > > 2.37.0.170.g444d1eabd0-goog
-> > > > >
+> It's possible that fresh eyes might see options that those who have
+> been staring at the current state and historical proposals may have
+> missed.
+
+That's always a possibility, and I'm definitely open to a clever
+approach that would resolve all the current issues and not paint us
+into a corner in the future, but I haven't seen anything close (or any
+serious effort for that matter).
+
+... and this still remains way off-topic for a discussion around
+adding a hook to allow LSMs to enforce access controls on user
+namespace creation.
+
+> >   If a LSM is going to namespace
+> > themselves, they need the ability to define what that means without
+> > having to worry about what other LSMs want to do.
+>
+> Possibly. On the other hand, if someone came up with a rational scheme
+> for general xattr namespacing I don't see that anyone would pass it up.
+
+Oh geez ...
+
+Namespacing xattrs is not the same thing as namespacing LSMs.  LSMs
+may make use of xattrs, and namespacing xattrs may make it easier to
+namespace a given LSM, but I'm not aware of an in-tree LSM that would
+be magically namespaced if xattrs were namespaced.
+
+This patchset has nothing to do with xattrs, it deals with adding a
+LSM hook to implement LSM-based access controls for user namespace
+creation.
+
+--=20
+paul-moore.com
