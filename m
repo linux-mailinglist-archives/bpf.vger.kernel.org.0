@@ -2,112 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7809157BC3E
-	for <lists+bpf@lfdr.de>; Wed, 20 Jul 2022 19:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3D4057BC4A
+	for <lists+bpf@lfdr.de>; Wed, 20 Jul 2022 19:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236277AbiGTREI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Jul 2022 13:04:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60862 "EHLO
+        id S234495AbiGTRG3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Jul 2022 13:06:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236905AbiGTREB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Jul 2022 13:04:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 802FD6BC27
-        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 10:03:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1658336637;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xuZtPMEGTJUPyCThBRbp89TRLDnOnODjmUD0CEahbP8=;
-        b=Q6XktXoXa4nUgQUi4jupDYltJQ/YfWai51mn5joW/4d8iSHpBUHqs2p9w5JzaPC1VdUbH5
-        On8OgO5y3rzR/eK23Vuav5sX58NtPY4ATRR7r8Uf3hag68aXm4Wx/BzuxgxUy6b/3ty9MP
-        K9R/SCyW6BBOdm423xCeauHoHRk5ABE=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-570-Wigm-e-oP2m3JXQvXV0BJA-1; Wed, 20 Jul 2022 13:03:56 -0400
-X-MC-Unique: Wigm-e-oP2m3JXQvXV0BJA-1
-Received: by mail-ed1-f70.google.com with SMTP id s17-20020a056402521100b0043ade613038so12538762edd.17
-        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 10:03:56 -0700 (PDT)
+        with ESMTP id S237864AbiGTRG1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Jul 2022 13:06:27 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E3A6BC1A;
+        Wed, 20 Jul 2022 10:06:26 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id g1so13343452qki.7;
+        Wed, 20 Jul 2022 10:06:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=c5dtfvo8X5iwM555XYGNyX8BDWpR76NHDGfyCA16UfI=;
+        b=gXnjZIAPvttLh4w+Ab05XIAYC8D5DFsAcn3ijUuLc+GSaiv8d+uPgFpGnvwgzTS/B3
+         rk2QbOkRfYBeLjblewcyl0Vb+S5PgQDkx3FIdSvkuq9BA0tsTAZGZM4defJCc6/5eI0l
+         G4ECM2998z3lFf5BU+LDBrtFc51bW3sjaGP+oqBRHoO7lFKGHq4j80vF9X43peS43iqa
+         FUBHW0bYtFMPCIRWJIpJpLIpWdOTHNEIfAA+fQwwUnPPqzuuIvUxzM0I9vzqRRgF3ei0
+         vzhw+Xp5jt42ygTQE7MFdspXgtuGzh2oSrTfPAI37A0raDJWGQsjyDo2k1a1jM9Hbw2h
+         Sdgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=xuZtPMEGTJUPyCThBRbp89TRLDnOnODjmUD0CEahbP8=;
-        b=x3wFSywXLvYHne6R4D0yI01BzBPwKp156PJq8mu1tEoxqa5T4p9goRuL+msFIsluTz
-         +I8wWNdYxnRm61PXWXdyDg8DDa0cO8j1DBNtSc0IYUXJU2B6cYJUthYH4Sk+hQFBV2di
-         omqj2XWMS4kvEFeHWuXmQJajIyx8Hvb3vfo+Mdv17vSQANyeuKxfsWgVF0jjf4vnJ1bt
-         WIdjMoiSc0cFjukw7B7r0PCSjVxtFlr4fCbBNrtMNXYKir72iKf4Y8IW9PkF/1olIVq6
-         8RIgi7ypWmTNeJSUe5Db6E/+g1mdxDdBXm299uyBcY/rKMcfGC5JuSVEk7eVHTeNUZZk
-         NPrw==
-X-Gm-Message-State: AJIora8YYPH0rcWUS5/aNHVpdLA5tHfYXRV9TV0JXlaZjTwBdot9ZSnX
-        UWJTAx4LyubMCQcAUCkEPCkbGjyscc84GrkwPzRkuP64v0UysKaCCIixnhHcwDz5D51bh9U9K7m
-        uyg+3v7WH1Wkz
-X-Received: by 2002:a17:907:7d8b:b0:72f:2306:329a with SMTP id oz11-20020a1709077d8b00b0072f2306329amr16924723ejc.369.1658336634572;
-        Wed, 20 Jul 2022 10:03:54 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1v8HK3Vlfjf43MlHI1Fad5ztpTBq9UeLWcrb3eFi6pmR6+PN79I0J3ji7iEf9BXw4FEHd/yNQ==
-X-Received: by 2002:a17:907:7d8b:b0:72f:2306:329a with SMTP id oz11-20020a1709077d8b00b0072f2306329amr16924697ejc.369.1658336634208;
-        Wed, 20 Jul 2022 10:03:54 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id w6-20020a50fa86000000b0043ba0cf5dbasm2875285edr.2.2022.07.20.10.03.53
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=c5dtfvo8X5iwM555XYGNyX8BDWpR76NHDGfyCA16UfI=;
+        b=oqBqUzsJbfKuSC1mXeMnrd0EIQWe3vX8NLWYNDPFPL6pzv7iiBB2G2p6hBg0elyG80
+         enw1Lna4Adg27Jnm5zi8sRdwlSYSXD/gGIhBqTuMkygOTSkgK+wbpAvsaQlYQZ8AXkC9
+         ztrf1rjtnFGc0bZetuVZWjRiVP4SyEJZpwL3HSok91Sb3L8sW/4/Ue1sw7pOcsx0R8KB
+         jKCznIYPjPBwbOwBvjFir4a5aRcmclLTu+iMRhS1S7u+WmsWqLeRBCm4wJj41Suvh95v
+         259BEZpMNtbvwaeJGPk73f2wScZXi/FFozghYb1cGSXv1kOVMXuSpp3++gLgeOiQh0jA
+         Hxfg==
+X-Gm-Message-State: AJIora+VhkK8tzENF4lcsZkY8tMPxwRC5tUuGDx4CDN3rMq5kCgrnLKh
+        7W4VdEvyIWT1K/WwIWx/x+U=
+X-Google-Smtp-Source: AGRyM1uF7lm4SkCoCmiO9CDgTxUf5JkUnMZTBFaY3XD4jl+P4Tu0b4B+1O9aO2TfDEiT41gMmb4a7A==
+X-Received: by 2002:a37:b802:0:b0:6b5:8330:55a with SMTP id i2-20020a37b802000000b006b58330055amr25801868qkf.778.1658336785340;
+        Wed, 20 Jul 2022 10:06:25 -0700 (PDT)
+Received: from localhost ([2601:4c1:c100:1230:8a38:8fe4:50f8:8b83])
+        by smtp.gmail.com with ESMTPSA id u11-20020a05620a0c4b00b006b4689e3425sm16467626qki.129.2022.07.20.10.06.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jul 2022 10:03:53 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 38BC34DA0BE; Wed, 20 Jul 2022 19:03:52 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
-Cc:     KP Singh <kpsingh@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Wed, 20 Jul 2022 10:06:25 -0700 (PDT)
+Date:   Wed, 20 Jul 2022 10:06:24 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
         Alexei Starovoitov <ast@kernel.org>,
+        Alexey Klimov <aklimov@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Andrii Nakryiko <andrii@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ben Segall <bsegall@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v6 05/13] bpf: Add documentation for kfuncs
-In-Reply-To: <20220719132430.19993-6-memxor@gmail.com>
-References: <20220719132430.19993-1-memxor@gmail.com>
- <20220719132430.19993-6-memxor@gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 20 Jul 2022 19:03:52 +0200
-Message-ID: <878ronu35z.fsf@toke.dk>
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Isabella Basso <isabbasso@riseup.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Juergen Gross <jgross@suse.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Mel Gorman <mgorman@suse.de>, Miroslav Benes <mbenes@suse.cz>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Song Liu <songliubraving@fb.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tejun Heo <tj@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yonghong Song <yhs@fb.com>,
+        linux-mm@kvack.org, netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH 08/16] smp: optimize smp_call_function_many_cond() for
+ more
+Message-ID: <Ytg2EA+2XtzPiyBE@yury-laptop>
+References: <20220718192844.1805158-1-yury.norov@gmail.com>
+ <20220718192844.1805158-9-yury.norov@gmail.com>
+ <YtXQom+a5C+iXSvm@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YtXQom+a5C+iXSvm@worktop.programming.kicks-ass.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
+On Mon, Jul 18, 2022 at 11:29:06PM +0200, Peter Zijlstra wrote:
+> On Mon, Jul 18, 2022 at 12:28:36PM -0700, Yury Norov wrote:
+> 
+> > ---
+> >  kernel/smp.c | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/smp.c b/kernel/smp.c
+> > index 7ed2b9b12f74..f96fdf944b4a 100644
+> > --- a/kernel/smp.c
+> > +++ b/kernel/smp.c
+> > @@ -942,7 +942,11 @@ static void smp_call_function_many_cond(const struct cpumask *mask,
+> >  
+> >  	if (run_remote) {
+> >  		cfd = this_cpu_ptr(&cfd_data);
+> > -		cpumask_and(cfd->cpumask, mask, cpu_online_mask);
+> > +		if (mask == cpu_online_mask)
+> > +			cpumask_copy(cfd->cpumask, cpu_online_mask);
+> > +		else
+> > +			cpumask_and(cfd->cpumask, mask, cpu_online_mask);
+> > +
+> 
+> Or... you could optimize cpumask_and() to detect the src1p == src2p case?
 
-> As the usage of kfuncs grows, we are starting to form consensus on the
-> kinds of attributes and annotations that kfuncs can have. To better help
-> developers make sense of the various options available at their disposal
-> to present an unstable API to the BPF users, document the various kfunc
-> flags and annotations, their expected usage, and explain the process of
-> defining and registering a kfunc set.
+This is not what I would consider as optimization. For vast majority
+of users this check is useless because they know for sure that
+cpumasks are different.
 
-[...]
+For this case I can invent something like cpumask_and_check_eq(), so
+that there'll be minimal impact on user code. (Suggestions for a better
+name are very welcome.)
 
-> +2.4.2 KF_RET_NULL flag
-> +----------------------
-> +
-> +The KF_RET_NULL flag is used to indicate that the pointer returned by the kfunc
-> +may be NULL. Hence, it forces the user to do a NULL check on the pointer
-> +returned from the kfunc before making use of it (dereferencing or passing to
-> +another helper). This flag is often used in pairing with KF_ACQUIRE flag, but
-> +both are mutually exclusive.
-
-That last sentence is contradicting itself. "Mutually exclusive" means
-"can't be used together". I think you mean "orthogonal" or something to
-that effect?
-
--Toke
-
+Thanks,
+Yury
