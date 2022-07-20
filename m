@@ -2,63 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DBB457C013
-	for <lists+bpf@lfdr.de>; Thu, 21 Jul 2022 00:30:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF1D57C018
+	for <lists+bpf@lfdr.de>; Thu, 21 Jul 2022 00:33:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229449AbiGTWan (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Jul 2022 18:30:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32960 "EHLO
+        id S229803AbiGTWdb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Jul 2022 18:33:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbiGTWal (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Jul 2022 18:30:41 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4705013DF5;
-        Wed, 20 Jul 2022 15:30:40 -0700 (PDT)
-Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Lp9N32qzxz67yQq;
-        Thu, 21 Jul 2022 06:28:51 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Thu, 21 Jul 2022 00:30:37 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2375.024;
- Thu, 21 Jul 2022 00:30:37 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Stanislav Fomichev <sdf@google.com>
-CC:     Joe Burton <jevburton.kernel@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229441AbiGTWda (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Jul 2022 18:33:30 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9EF44B0FE
+        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 15:33:28 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id 72so17751612pge.0
+        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 15:33:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fnFvY81FE2Ah3FzfTUo61tFAQT5jDyco1mEjPVQD4/Q=;
+        b=ZmlU+sHkv6Bjlrw+I35i5476I5TyOOQixcZU+JO3uufjUMjSrnhnFanco+VrWu9x7d
+         tg4lbP3HXaQfOsjQc6yaUf3ApYFqWsVgzVY1F2hgi4bTBHSYutkf4ytskzoozmCDxuJl
+         TBkCqjHO91bXmEYFmMLwJzWe+flyGZjU9/96N8X22mmPvwZF32pwm11iTF1/OszSdgrr
+         whcGWuLTss0bD/x1VDa7XaZvCtiy1nxnj2SG5Rc/8yv85F49jIMEellAzRNIH/q7AY4X
+         09YLwDmAoi4g43djw5a/Ja6UO7k/mzeIxN0L2Z8EFc+1BlbI5bwiQvEKQf9f3xEVygoi
+         EIXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fnFvY81FE2Ah3FzfTUo61tFAQT5jDyco1mEjPVQD4/Q=;
+        b=zAToX+a8v/JB1R4Hdkhr2vXeiLn9gIjcfvYXpdgJfM+d5N7kQoH6z8dV+gogP7g8IF
+         Zg2Cg7CcRgqA8qh57d8iuGwoQckCR5SljP+s6U6xN5v7vWKbBFam5VsKlCMlwK2RC0qu
+         9xloCLL3c5oPtgaFqw/Fo3eOXIKHEtyXuJlKvWS6+RnaiAAgY2Y14a6tnjE1xVqkLHv1
+         Z27g84iwhMFjSyyk6utKhlxasBrt1CjBhNXOFxuJH/nmymL7QPjaR/OHQltoXQ5gzo5U
+         3klbQwkY4KG5TB/4UWx2MMkG1jgH09y1yMpbGuDv3hDNsuvR8bc3enbAq6f4KWQPWCSd
+         W7xQ==
+X-Gm-Message-State: AJIora+WcVH9Hmu6p85B7FOVgjree6sh0sO3vrvFYzjPSBZwV/byfZpb
+        Cy+QTVK1gkOHZsuCTTfMufxyxgcC8woMgW1K2JuXbg==
+X-Google-Smtp-Source: AGRyM1tE73fYGmySjeJvA28Aplb7dltxwNXg5ooqTvBnykuAD/Qlo18Hqvl0bC9qPradgIVJQa0oizuUfe6iPDZZP3M=
+X-Received: by 2002:a65:4c0b:0:b0:415:d3a4:44d1 with SMTP id
+ u11-20020a654c0b000000b00415d3a444d1mr36180142pgq.191.1658356408165; Wed, 20
+ Jul 2022 15:33:28 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220718190748.2988882-1-sdf@google.com> <CAADnVQLxh_pt8bgoo=_CS3voab7HuQautZGfHQMM=TmQmVr2pQ@mail.gmail.com>
+ <CAKH8qBv9q=eXBq9XSKEN2Nce5Wf0MJEX_zbTi12p4r3WCjmBEw@mail.gmail.com>
+ <CAKH8qBv66=Fdea0u-vbu-Q=P9pySo+tjy5YpPPcNo8dF0qN8bw@mail.gmail.com>
+ <CAADnVQ+Gmo=B=NpXofq=LmFq6HsJZ-X9D1a4MwSLK3k_F9SEqg@mail.gmail.com>
+ <Ytc8RvDTpEmC0pQD@google.com> <YthDy8uhE2ky0rBr@google.com> <20220720205255.4v3y3a4xttesfkn6@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20220720205255.4v3y3a4xttesfkn6@kafai-mbp.dhcp.thefacebook.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Wed, 20 Jul 2022 15:33:16 -0700
+Message-ID: <CAKH8qBsnXnTYJ7e2v8qLOmWcp5j96LKwTuMLQaTzHsxhDdZ-dQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] RFC: libbpf: resolve rodata lookups
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Joe Burton <jevburton@google.com>
-Subject: RE: [PATCH v2 bpf-next] libbpf: Add bpf_obj_get_opts()
-Thread-Topic: [PATCH v2 bpf-next] libbpf: Add bpf_obj_get_opts()
-Thread-Index: AQHYm6d/RXaIdRF8qEmfFsB1DNrrP62GBpoAgADe8JCAAGROAIAAjdQg
-Date:   Wed, 20 Jul 2022 22:30:37 +0000
-Message-ID: <31473ddf364f4f16becfd5cd4b9cd7d2@huawei.com>
-References: <20220719194028.4180569-1-jevburton.kernel@gmail.com>
- <CAKH8qBsm0QqE-7Pmhhz=tRYAfgpirbu6K1deQ6cQTU+GTykLNA@mail.gmail.com>
- <179cfb89be0e4f928a55d049fe62aa9e@huawei.com>
- <CAKH8qBt0yR+mtCjAp=8jQL4M6apWQk0wH7Zf4tPDCf3=m+gAKA@mail.gmail.com>
-In-Reply-To: <CAKH8qBt0yR+mtCjAp=8jQL4M6apWQk0wH7Zf4tPDCf3=m+gAKA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.81.206.250]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,89 +77,302 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-PiBGcm9tOiBTdGFuaXNsYXYgRm9taWNoZXYgW21haWx0bzpzZGZAZ29vZ2xlLmNvbV0NCj4gU2Vu
-dDogV2VkbmVzZGF5LCBKdWx5IDIwLCAyMDIyIDU6NTcgUE0NCj4gT24gV2VkLCBKdWwgMjAsIDIw
-MjIgYXQgMTowMiBBTSBSb2JlcnRvIFNhc3N1IDxyb2JlcnRvLnNhc3N1QGh1YXdlaS5jb20+DQo+
-IHdyb3RlOg0KPiA+DQo+ID4gPiBGcm9tOiBTdGFuaXNsYXYgRm9taWNoZXYgW21haWx0bzpzZGZA
-Z29vZ2xlLmNvbV0NCj4gPiA+IFNlbnQ6IFR1ZXNkYXksIEp1bHkgMTksIDIwMjIgMTA6NDAgUE0N
-Cj4gPiA+IE9uIFR1ZSwgSnVsIDE5LCAyMDIyIGF0IDEyOjQwIFBNIEpvZSBCdXJ0b24gPGpldmJ1
-cnRvbi5rZXJuZWxAZ21haWwuY29tPg0KPiA+ID4gd3JvdGU6DQo+ID4gPiA+DQo+ID4gPiA+IEZy
-b206IEpvZSBCdXJ0b24gPGpldmJ1cnRvbkBnb29nbGUuY29tPg0KPiA+ID4gPg0KPiA+ID4gPiBB
-ZGQgYW4gZXh0ZW5zaWJsZSB2YXJpYW50IG9mIGJwZl9vYmpfZ2V0KCkgY2FwYWJsZSBvZiBzZXR0
-aW5nIHRoZQ0KPiA+ID4gPiBgZmlsZV9mbGFnc2AgcGFyYW1ldGVyLg0KPiA+ID4gPg0KPiA+ID4g
-PiBUaGlzIHBhcmFtZXRlciBpcyBuZWVkZWQgdG8gZW5hYmxlIHVucHJpdmlsZWdlZCBhY2Nlc3Mg
-dG8gQlBGIG1hcHMuDQo+ID4gPiA+IFdpdGhvdXQgYSBtZXRob2QgbGlrZSB0aGlzLCB1c2VycyBt
-dXN0IG1hbnVhbGx5IG1ha2UgdGhlIHN5c2NhbGwuDQo+ID4gPiA+DQo+ID4gPiA+IFNpZ25lZC1v
-ZmYtYnk6IEpvZSBCdXJ0b24gPGpldmJ1cnRvbkBnb29nbGUuY29tPg0KPiA+ID4NCj4gPiA+IFJl
-dmlld2VkLWJ5OiBTdGFuaXNsYXYgRm9taWNoZXYgPHNkZkBnb29nbGUuY29tPg0KPiA+ID4NCj4g
-PiA+IEZvciBjb250ZXh0Og0KPiA+ID4gV2UndmUgZm91bmQgdGhpcyBvdXQgd2hpbGUgd2Ugd2Vy
-ZSB0cnlpbmcgdG8gYWRkIHN1cHBvcnQgZm9yIHVucHJpdg0KPiA+ID4gcHJvY2Vzc2VzIHRvIG9w
-ZW4gcGlubmVkIHIteCBtYXBzLg0KPiA+ID4gTWF5YmUgdGhpcyBkZXNlcnZlcyBhIHRlc3QgYXMg
-d2VsbD8gTm90IHN1cmUuDQo+ID4NCj4gPiBIaSBTdGFuaXNsYXYsIEpvZQ0KPiA+DQo+ID4gSSBu
-b3RpY2VkIG5vdyB0aGlzIHBhdGNoLiBJJ20gZG9pbmcgYSBicm9hZGVyIHdvcmsgdG8gYWRkIG9w
-dHMNCj4gPiB0byBicGZfKl9nZXRfZmRfYnlfaWQoKS4gSSBhbHNvIGFkanVzdGVkIHBlcm1pc3Np
-b25zIG9mIGJwZnRvb2wNCj4gPiBkZXBlbmRpbmcgb24gdGhlIG9wZXJhdGlvbiB0eXBlIChlLmcu
-IHNob3csIGR1bXA6IEJQRl9GX1JET05MWSkuDQo+ID4NCj4gPiBXaWxsIHNlbmQgaXQgc29vbiAo
-SSdtIHRyeWluZyB0byBzb2x2ZSBhbiBpc3N1ZSB3aXRoIHRoZSBDSSwgd2hlcmUNCj4gPiBsaWJi
-ZmQgaXMgbm90IGF2YWlsYWJsZSBpbiB0aGUgVk0gZG9pbmcgYWN0dWFsIHRlc3RzKS4NCj4gDQo+
-IElzIHNvbWV0aGluZyBsaWtlIHRoaXMgcGF0Y2ggaW5jbHVkZWQgaW4geW91ciBzZXJpZXMgYXMg
-d2VsbD8gQ2FuIHlvdQ0KPiB1c2UgdGhpcyBuZXcgaW50ZXJmYWNlIG9yIGRvIHlvdSBuZWVkIHNv
-bWV0aGluZyBkaWZmZXJlbnQ/DQoNCkl0IGlzIHZlcnkgc2ltaWxhci4gRXhjZXB0IHRoYXQgSSBj
-YWxsZWQgaXQgYnBmX2dldF9mZF9vcHRzLCBhcyBpdA0KaXMgc2hhcmVkIHdpdGggdGhlIGJwZl8q
-X2dldF9mZF9ieV9pZCgpIGZ1bmN0aW9ucy4gVGhlIG1lbWJlcg0KbmFtZSBpcyBqdXN0IGZsYWdz
-LCBwbHVzIGFuIGV4dHJhIHUzMiBmb3IgYWxpZ25tZW50Lg0KDQpJdCBuZWVkcyB0byBiZSBzaGFy
-ZWQsIGFzIHRoZXJlIGFyZSBmdW5jdGlvbnMgaW4gYnBmdG9vbCBjYWxsaW5nDQpib3RoLiBTaW5j
-ZSB0aGUgbWVhbmluZyBvZiBmbGFncyBpcyB0aGUgc2FtZSwgc2VlbXMgb2sgc2hhcmluZy4NCg0K
-Um9iZXJ0bw0KDQo+ID4gUm9iZXJ0bw0KPiA+DQo+ID4gPiA+IC0tLQ0KPiA+ID4gPiAgdG9vbHMv
-bGliL2JwZi9icGYuYyAgICAgIHwgMTAgKysrKysrKysrKw0KPiA+ID4gPiAgdG9vbHMvbGliL2Jw
-Zi9icGYuaCAgICAgIHwgIDkgKysrKysrKysrDQo+ID4gPiA+ICB0b29scy9saWIvYnBmL2xpYmJw
-Zi5tYXAgfCAgMSArDQo+ID4gPiA+ICAzIGZpbGVzIGNoYW5nZWQsIDIwIGluc2VydGlvbnMoKykN
-Cj4gPiA+ID4NCj4gPiA+ID4gZGlmZiAtLWdpdCBhL3Rvb2xzL2xpYi9icGYvYnBmLmMgYi90b29s
-cy9saWIvYnBmL2JwZi5jDQo+ID4gPiA+IGluZGV4IDVlYjBkZjkwZWIyYi4uNWFjYjBlOGJkMTNj
-IDEwMDY0NA0KPiA+ID4gPiAtLS0gYS90b29scy9saWIvYnBmL2JwZi5jDQo+ID4gPiA+ICsrKyBi
-L3Rvb2xzL2xpYi9icGYvYnBmLmMNCj4gPiA+ID4gQEAgLTU3OCwxMiArNTc4LDIyIEBAIGludCBi
-cGZfb2JqX3BpbihpbnQgZmQsIGNvbnN0IGNoYXIgKnBhdGhuYW1lKQ0KPiA+ID4gPiAgfQ0KPiA+
-ID4gPg0KPiA+ID4gPiAgaW50IGJwZl9vYmpfZ2V0KGNvbnN0IGNoYXIgKnBhdGhuYW1lKQ0KPiA+
-ID4gPiArew0KPiA+ID4gPiArICAgICAgIExJQkJQRl9PUFRTKGJwZl9vYmpfZ2V0X29wdHMsIG9w
-dHMpOw0KPiA+ID4gPiArICAgICAgIHJldHVybiBicGZfb2JqX2dldF9vcHRzKHBhdGhuYW1lLCAm
-b3B0cyk7DQo+ID4gPiA+ICt9DQo+ID4gPiA+ICsNCj4gPiA+ID4gK2ludCBicGZfb2JqX2dldF9v
-cHRzKGNvbnN0IGNoYXIgKnBhdGhuYW1lLCBjb25zdCBzdHJ1Y3QNCj4gYnBmX29ial9nZXRfb3B0
-cw0KPiA+ID4gKm9wdHMpDQo+ID4gPiA+ICB7DQo+ID4gPiA+ICAgICAgICAgdW5pb24gYnBmX2F0
-dHIgYXR0cjsNCj4gPiA+ID4gICAgICAgICBpbnQgZmQ7DQo+ID4gPiA+DQo+ID4gPiA+ICsgICAg
-ICAgaWYgKCFPUFRTX1ZBTElEKG9wdHMsIGJwZl9vYmpfZ2V0X29wdHMpKQ0KPiA+ID4gPiArICAg
-ICAgICAgICAgICAgcmV0dXJuIGxpYmJwZl9lcnIoLUVJTlZBTCk7DQo+ID4gPiA+ICsNCj4gPiA+
-ID4gICAgICAgICBtZW1zZXQoJmF0dHIsIDAsIHNpemVvZihhdHRyKSk7DQo+ID4gPiA+ICAgICAg
-ICAgYXR0ci5wYXRobmFtZSA9IHB0cl90b191NjQoKHZvaWQgKilwYXRobmFtZSk7DQo+ID4gPiA+
-ICsgICAgICAgYXR0ci5maWxlX2ZsYWdzID0gT1BUU19HRVQob3B0cywgZmlsZV9mbGFncywgMCk7
-DQo+ID4gPiA+DQo+ID4gPiA+ICAgICAgICAgZmQgPSBzeXNfYnBmX2ZkKEJQRl9PQkpfR0VULCAm
-YXR0ciwgc2l6ZW9mKGF0dHIpKTsNCj4gPiA+ID4gICAgICAgICByZXR1cm4gbGliYnBmX2Vycl9l
-cnJubyhmZCk7DQo+ID4gPiA+IGRpZmYgLS1naXQgYS90b29scy9saWIvYnBmL2JwZi5oIGIvdG9v
-bHMvbGliL2JwZi9icGYuaA0KPiA+ID4gPiBpbmRleCA4OGE3Y2M0YmQ3NmYuLmYzMWI0OTNiNWY5
-YSAxMDA2NDQNCj4gPiA+ID4gLS0tIGEvdG9vbHMvbGliL2JwZi9icGYuaA0KPiA+ID4gPiArKysg
-Yi90b29scy9saWIvYnBmL2JwZi5oDQo+ID4gPiA+IEBAIC0yNzAsOCArMjcwLDE3IEBAIExJQkJQ
-Rl9BUEkgaW50IGJwZl9tYXBfdXBkYXRlX2JhdGNoKGludCBmZCwNCj4gY29uc3QNCj4gPiA+IHZv
-aWQgKmtleXMsIGNvbnN0IHZvaWQgKnZhbHVlcw0KPiA+ID4gPiAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICBfX3UzMiAqY291bnQsDQo+ID4gPiA+ICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIGNvbnN0IHN0cnVjdCBicGZfbWFwX2JhdGNoX29wdHMgKm9wdHMp
-Ow0KPiA+ID4gPg0KPiA+ID4gPiArc3RydWN0IGJwZl9vYmpfZ2V0X29wdHMgew0KPiA+ID4gPiAr
-ICAgICAgIHNpemVfdCBzejsgLyogc2l6ZSBvZiB0aGlzIHN0cnVjdCBmb3IgZm9yd2FyZC9iYWNr
-d2FyZCBjb21wYXRpYmlsaXR5ICovDQo+ID4gPiA+ICsNCj4gPiA+ID4gKyAgICAgICBfX3UzMiBm
-aWxlX2ZsYWdzOw0KPiA+ID4gPiArfTsNCj4gPiA+ID4gKyNkZWZpbmUgYnBmX29ial9nZXRfb3B0
-c19fbGFzdF9maWVsZCBmaWxlX2ZsYWdzDQo+ID4gPiA+ICsNCj4gPiA+ID4gIExJQkJQRl9BUEkg
-aW50IGJwZl9vYmpfcGluKGludCBmZCwgY29uc3QgY2hhciAqcGF0aG5hbWUpOw0KPiA+ID4gPiAg
-TElCQlBGX0FQSSBpbnQgYnBmX29ial9nZXQoY29uc3QgY2hhciAqcGF0aG5hbWUpOw0KPiA+ID4g
-PiArTElCQlBGX0FQSSBpbnQgYnBmX29ial9nZXRfb3B0cyhjb25zdCBjaGFyICpwYXRobmFtZSwN
-Cj4gPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb25zdCBzdHJ1Y3QgYnBm
-X29ial9nZXRfb3B0cyAqb3B0cyk7DQo+ID4gPiA+DQo+ID4gPiA+ICBzdHJ1Y3QgYnBmX3Byb2df
-YXR0YWNoX29wdHMgew0KPiA+ID4gPiAgICAgICAgIHNpemVfdCBzejsgLyogc2l6ZSBvZiB0aGlz
-IHN0cnVjdCBmb3IgZm9yd2FyZC9iYWNrd2FyZCBjb21wYXRpYmlsaXR5ICovDQo+ID4gPiA+IGRp
-ZmYgLS1naXQgYS90b29scy9saWIvYnBmL2xpYmJwZi5tYXAgYi90b29scy9saWIvYnBmL2xpYmJw
-Zi5tYXANCj4gPiA+ID4gaW5kZXggMDYyNWFkYjllODg4Li4xMTllNmUxZWE3ZjEgMTAwNjQ0DQo+
-ID4gPiA+IC0tLSBhL3Rvb2xzL2xpYi9icGYvbGliYnBmLm1hcA0KPiA+ID4gPiArKysgYi90b29s
-cy9saWIvYnBmL2xpYmJwZi5tYXANCj4gPiA+ID4gQEAgLTM1NSw2ICszNTUsNyBAQCBMSUJCUEZf
-MC44LjAgew0KPiA+ID4gPg0KPiA+ID4gPiAgTElCQlBGXzEuMC4wIHsNCj4gPiA+ID4gICAgICAg
-ICBnbG9iYWw6DQo+ID4gPiA+ICsgICAgICAgICAgICAgICBicGZfb2JqX2dldF9vcHRzOw0KPiA+
-ID4gPiAgICAgICAgICAgICAgICAgYnBmX3Byb2dfcXVlcnlfb3B0czsNCj4gPiA+ID4gICAgICAg
-ICAgICAgICAgIGJwZl9wcm9ncmFtX19hdHRhY2hfa3N5c2NhbGw7DQo+ID4gPiA+ICAgICAgICAg
-ICAgICAgICBidGZfX2FkZF9lbnVtNjQ7DQo+ID4gPiA+IC0tDQo+ID4gPiA+IDIuMzcuMC4xNzAu
-ZzQ0NGQxZWFiZDAtZ29vZw0KPiA+ID4gPg0K
+On Wed, Jul 20, 2022 at 1:53 PM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> On Wed, Jul 20, 2022 at 11:04:59AM -0700, sdf@google.com wrote:
+> > On 07/19, sdf@google.com wrote:
+> > > On 07/19, Alexei Starovoitov wrote:
+> > > > On Tue, Jul 19, 2022 at 2:41 PM Stanislav Fomichev <sdf@google.com>
+> > > wrote:
+> > > > >
+> > > > > On Tue, Jul 19, 2022 at 1:33 PM Stanislav Fomichev <sdf@google.com>
+> > > > wrote:
+> > > > > >
+> > > > > > On Tue, Jul 19, 2022 at 1:21 PM Alexei Starovoitov
+> > > > > > <alexei.starovoitov@gmail.com> wrote:
+> > > > > > >
+> > > > > > > On Mon, Jul 18, 2022 at 12:07 PM Stanislav Fomichev
+> > > > <sdf@google.com> wrote:
+> > > > > > > >
+> > > > > > > > Motivation:
+> > > > > > > >
+> > > > > > > > Our bpf programs have a bunch of options which are set at the
+> > > > loading
+> > > > > > > > time. After loading, they don't change. We currently use array
+> > > map
+> > > > > > > > to store them and bpf program does the following:
+> > > > > > > >
+> > > > > > > > val = bpf_map_lookup_elem(&config_map, &key);
+> > > > > > > > if (likely(val && *val)) {
+> > > > > > > >   // do some optional feature
+> > > > > > > > }
+> > > > > > > >
+> > > > > > > > Since the configuration is static and we have a lot of those
+> > > > features,
+> > > > > > > > I feel like we're wasting precious cycles doing dynamic lookups
+> > > > > > > > (and stalling on memory loads).
+> > > > > > > >
+> > > > > > > > I was assuming that converting those to some fake kconfig
+> > > options
+> > > > > > > > would solve it, but it still seems like kconfig is stored in the
+> > > > > > > > global map and kconfig entries are resolved dynamically.
+> > > > > > > >
+> > > > > > > > Proposal:
+> > > > > > > >
+> > > > > > > > Resolve kconfig options statically upon loading. Basically
+> > > rewrite
+> > > > > > > > ld+ldx to two nops and 'mov val, x'.
+> > > > > > > >
+> > > > > > > > I'm also trying to rewrite conditional jump when the condition
+> > > is
+> > > > > > > > !imm. This seems to be catching all the cases in my program, but
+> > > > > > > > it's probably too hacky.
+> > > > > > > >
+> > > > > > > > I've attached very raw RFC patch to demonstrate the idea.
+> > > Anything
+> > > > > > > > I'm missing? Any potential problems with this approach?
+> > > > > > >
+> > > > > > > Have you considered using global variables for that?
+> > > > > > > With skeleton the user space has a natural way to set
+> > > > > > > all of these knobs after doing skel_open and before skel_load.
+> > > > > > > Then the verifier sees them as readonly vars and
+> > > > > > > automatically converts LDX into fixed constants and if the code
+> > > > > > > looks like if (my_config_var) then the verifier will remove
+> > > > > > > all the dead code too.
+> > > > > >
+> > > > > > Hm, that's a good alternative, let me try it out. Thanks!
+> > > > >
+> > > > > Turns out we already freeze kconfig map in libbpf:
+> > > > > if (map_type == LIBBPF_MAP_RODATA || map_type == LIBBPF_MAP_KCONFIG) {
+> > > > >         err = bpf_map_freeze(map->fd);
+> > > > >
+> > > > > And I've verified that I do hit bpf_map_direct_read in the verifier.
+> > > > >
+> > > > > But the code still stays the same (bpftool dump xlated):
+> > > > >   72: (18) r1 = map[id:24][0]+20
+> > > > >   74: (61) r1 = *(u32 *)(r1 +0)
+> > > > >   75: (bf) r2 = r9
+> > > > >   76: (b7) r0 = 0
+> > > > >   77: (15) if r1 == 0x0 goto pc+9
+> > > > >
+> > > > > I guess there is nothing for sanitize_dead_code to do because my
+> > > > > conditional is "if (likely(some_condition)) { do something }" and the
+> > > > > branch instruction itself is '.seen' by the verifier.
+> >
+> > > > I bet your variable is not 'const'.
+> > > > Please see any of the progs in selftests that do:
+> > > > const volatile int var = 123;
+> > > > to express configs.
+> >
+> > > Yeah, I was testing against the following:
+> >
+> > >     extern int CONFIG_XYZ __kconfig __weak;
+> >
+> > > But ended up writing this small reproducer:
+> >
+> > >     struct __sk_buff;
+> >
+> > >     const volatile int CONFIG_DROP = 1; // volatile so it's not
+> > >                                         // clang-optimized
+> >
+> > >     __attribute__((section("tc"), used))
+> > >     int my_config(struct __sk_buff *skb)
+> > >     {
+> > >             int ret = 0; /*TC_ACT_OK*/
+> >
+> > >             if (CONFIG_DROP)
+> > >                     ret = 2 /*TC_ACT_SHOT*/;
+> >
+> > >             return ret;
+> > >     }
+> >
+> > > $ bpftool map dump name my_confi.rodata
+> >
+> > > [{
+> > >          "value": {
+> > >              ".rodata": [{
+> > >                      "CONFIG_DROP": 1
+> > >                  }
+> > >              ]
+> > >          }
+> > >      }
+> > > ]
+> >
+> > > $ bpftool prog dump xlated name my_config
+> >
+> > > int my_config(struct __sk_buff * skb):
+> > > ; if (CONFIG_DROP)
+> > >     0: (18) r1 = map[id:3][0]+0
+> > >     2: (61) r1 = *(u32 *)(r1 +0)
+> > >     3: (b4) w0 = 1
+> > > ; if (CONFIG_DROP)
+> > >     4: (64) w0 <<= 1
+> > > ; return ret;
+> > >     5: (95) exit
+> >
+> > > The branch is gone, but the map lookup is still there :-(
+> >
+> > Attached another RFC below which is doing the same but from the verifier
+> > side. It seems we should be able to resolve LD+LDX if their dst_reg
+> > is the same? If they are different, we should be able to pre-lookup
+> > LDX value at least. Would something like this work (haven't run full
+> > verifier/test_progs yet)?
+> >
+> > (note, in this case, with kconfig, I still see the branch)
+> >
+> >  test_fold_ro_ldx:PASS:open 0 nsec
+> >  test_fold_ro_ldx:PASS:load 0 nsec
+> >  test_fold_ro_ldx:PASS:bpf_obj_get_info_by_fd 0 nsec
+> >  int fold_ro_ldx(struct __sk_buff * skb):
+> >  ; if (CONFIG_DROP)
+> >     0: (b7) r1 = 1
+> >     1: (b4) w0 = 1
+> >  ; if (CONFIG_DROP)
+> >     2: (16) if w1 == 0x0 goto pc+1
+> >     3: (b4) w0 = 2
+> >  ; return ret;
+> >     4: (95) exit
+> >  test_fold_ro_ldx:PASS:found BPF_LD 0 nsec
+> >  test_fold_ro_ldx:PASS:found BPF_LDX 0 nsec
+> >  test_fold_ro_ldx:PASS:found BPF_LD 0 nsec
+> >  test_fold_ro_ldx:PASS:found BPF_LDX 0 nsec
+> >  test_fold_ro_ldx:PASS:found BPF_LD 0 nsec
+> >  test_fold_ro_ldx:PASS:found BPF_LDX 0 nsec
+> >  test_fold_ro_ldx:PASS:found BPF_LD 0 nsec
+> >  test_fold_ro_ldx:PASS:found BPF_LDX 0 nsec
+> >  test_fold_ro_ldx:PASS:found BPF_LD 0 nsec
+> >  test_fold_ro_ldx:PASS:found BPF_LDX 0 nsec
+> >  #66      fold_ro_ldx:OK
+> >
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
+> >  kernel/bpf/verifier.c                         | 74 ++++++++++++++++++-
+> >  .../selftests/bpf/prog_tests/fold_ro_ldx.c    | 52 +++++++++++++
+> >  .../testing/selftests/bpf/progs/fold_ro_ldx.c | 20 +++++
+> >  3 files changed, 144 insertions(+), 2 deletions(-)
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/fold_ro_ldx.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/fold_ro_ldx.c
+> >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index c59c3df0fea6..ffedd8234288 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -12695,6 +12695,69 @@ static bool bpf_map_is_cgroup_storage(struct
+> > bpf_map *map)
+> >               map->map_type == BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE);
+> >  }
+> >
+> > +/* if the map is read-only, we can try to fully resolve the load */
+> > +static bool fold_ro_pseudo_ldimm64(struct bpf_verifier_env *env,
+> > +                                struct bpf_map *map,
+> > +                                struct bpf_insn *insn)
+> > +{
+> > +     struct bpf_insn *ldx_insn = insn + 2;
+> > +     int dst_reg = ldx_insn->dst_reg;
+> > +     u64 val = 0;
+> > +     int size;
+> > +     int err;
+> > +
+> > +     if (!bpf_map_is_rdonly(map) || !map->ops->map_direct_value_addr)
+> > +             return false;
+> > +
+> > +     /* 0: BPF_LD  r=MAP
+> > +      * 1: BPF_LD  r=MAP
+> > +      * 2: BPF_LDX r=MAP->VAL
+> > +      */
+> > +
+> > +     if (BPF_CLASS((insn+0)->code) != BPF_LD ||
+> > +         BPF_CLASS((insn+1)->code) != BPF_LD ||
+> > +         BPF_CLASS((insn+2)->code) != BPF_LDX)
+> > +             return false;
+> > +
+> > +     if (BPF_MODE((insn+0)->code) != BPF_IMM ||
+> > +         BPF_MODE((insn+1)->code) != BPF_IMM ||
+> > +         BPF_MODE((insn+2)->code) != BPF_MEM)
+> > +             return false;
+> > +
+> > +     if (insn->src_reg != BPF_PSEUDO_MAP_VALUE &&
+> > +         insn->src_reg != BPF_PSEUDO_MAP_IDX_VALUE)
+> > +             return false;
+> > +
+> > +     if (insn->dst_reg != ldx_insn->src_reg)
+> > +             return false;
+> > +
+> > +     if (ldx_insn->off != 0)
+> > +             return false;
+> > +
+> > +     size = bpf_size_to_bytes(BPF_SIZE(ldx_insn->code));
+> > +     if (size < 0 || size > 4)
+> > +             return false;
+> > +
+> > +     err = bpf_map_direct_read(map, (insn+1)->imm, size, &val);
+> > +     if (err)
+> > +             return false;
+> > +
+> > +     if (insn->dst_reg == ldx_insn->dst_reg) {
+> > +             /* LDX is using the same destination register as LD.
+> > +              * This means we are not interested in the map
+> > +              * pointer itself and can remove it.
+> > +              */
+> > +             *(insn + 0) = BPF_JMP_A(0);
+> > +             *(insn + 1) = BPF_JMP_A(0);
+> > +             *(insn + 2) = BPF_ALU64_IMM(BPF_MOV, dst_reg, val);
+> Have you figured out why the branch is not removed
+> with BPF_ALU64_IMM(BPF_MOV) ?
+
+I do have an idea, yes, but I'm not 100% certain. The rewrite has
+nothing to do with it.
+If I change the default ret from 1 to 0, I get a different bytecode
+where this branch is eventually removed by the verifier.
+
+I think it comes down to the following snippet:
+r1 = 0 ll
+r1 = *(u32 *)(r1 + 0) <<< rodata, verifier is able to resolve to r1 = 1
+w0 = 1
+if w1 == 0 goto +1
+w0 = 2
+exit
+Here, 'if w1 == 0' is never taken, but it has been 'seen' by the
+verifier. There is no 'dead' code, it just jumps around 'w0 = 2' which
+has seen=true.
+
+VS this one:
+r1 = 0 ll
+r1 = *(u32 *)(r1 + 0) <<< rodata, verifier is able to resolve to r1 = 1
+w0 = 1
+if w1 != 0 goto +1
+w0 = 0
+w0 <<= 1
+exit
+Here, 'if w1 != 0' is seen, but the next insn has 'seen=false', so
+this whole thing is ripped out.
+
+So basically, from my quick look, it seems like there should be some
+real dead code to trigger the removal. If you simply have 'if
+condition_that_never_happens goto +1' which doesn't lead to some dead
+code, this single jump-over-some-seen-code is never gonna be removed.
+So, IMO, that's something that should be addressed independently.
+
+> Can it also support 8 bytes (BPF_DW) ?  Is it because there
+> is not enough space for ld_imm64?  so wonder if this
+> patching can be done in do_misc_fixups() instead.
+
+Yeah, I've limited it to 4 bytes because of sizeof(imm) for now.
+I think one complication might be that at do_misc_fixups point, the
+immediate args of bpf_ld have been rewritten which might make it
+harder to get the data offset.
+
+But I guess I'm still at the point where I'm trying to understand
+whether what I'm doing makes sense or not :-) And whether we should do
+it at the verifier level, in libbpf or if at all..
+
+
+
+
+> > +             return true;
+> > +     }
+> > +
+> > +     *(insn + 2) = BPF_ALU64_IMM(BPF_MOV, dst_reg, val);
+> > +     /* Only LDX can be resolved, we still have to resolve LD address. */
+> > +     return false;
+> > +}
