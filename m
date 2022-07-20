@@ -2,67 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15B8F57BBC5
-	for <lists+bpf@lfdr.de>; Wed, 20 Jul 2022 18:47:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFF6057BBD2
+	for <lists+bpf@lfdr.de>; Wed, 20 Jul 2022 18:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234446AbiGTQrc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Jul 2022 12:47:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45712 "EHLO
+        id S234514AbiGTQtc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Jul 2022 12:49:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234444AbiGTQrb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Jul 2022 12:47:31 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6491D3B979
-        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 09:47:31 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id i9-20020a170902cf0900b0016d1e277547so1689473plg.0
-        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 09:47:31 -0700 (PDT)
+        with ESMTP id S231560AbiGTQtc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Jul 2022 12:49:32 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8156043E6B;
+        Wed, 20 Jul 2022 09:49:31 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id v28so12530753qkg.13;
+        Wed, 20 Jul 2022 09:49:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc
-         :content-transfer-encoding;
-        bh=CuyZwFu1Zt52A3Wtsx8i/O5tRA8Koa3iDRGqsfxSIpI=;
-        b=BhE9GERZNtcNyOedKgwn8oLoKN2Twptaodr09mNB69A5qCPyCxw63fkS38+3Za+GLA
-         jzUKl0K4xtNAkxHP1EgHoNYFpGrc+8JT7l2pjHUTMI3xaVFsCHcjGZe5EFHzz4ar5MSK
-         sEUpobzwYBfM+V9fCupXCAtt0aJjoPRgKKoFetgURIVCq2lVWWn22GhCRAuugXhytPpe
-         xqUHmjTrY6efYcAv1Om47GwGehHJAj5jAFS+dEKJ4AuIm2kT4kA6/RlRwpONdLiap2bv
-         6nIHKVl3M5oBjt3/om0i8Y6jUzdMLbpYl7vHsQ3N/dGhhhAFd7FybJJmFPv4j6srDBj4
-         imNw==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IdX8x8KuGDrmo8OdGWM+s2IhO+yiRKLdL7Zo2PMSFN4=;
+        b=fA5ACjYebGmyEbnpk02ZADGgZyXfWD24l6R1c/JewiQtUFSI+d/VO9w9T9n2DLJCQL
+         uDHO6rwgTDLos9QvjWc6uIFsSu2vb5u2IkHWlFs8aJhQFN905lEkcykvEsUEg7CFx1la
+         paGTn68cRr5oM9979v5iJMWGeYVFK48gHFQYJgGqX34fdeYgMtseWc3hbipbm46vtoyf
+         t/nVdVBlhdE/sYfEJWwn21va2JYE9h3LwLkJQv+s9PszAUimQvBLaAOikOs6KkgnyGnm
+         4Rdc8QIncAZkw37fTFY3vGGoGGWsjBHbV4NlO7IcfMAMJVRtdkE8lvHUm65n7q5zkobl
+         slhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc
-         :content-transfer-encoding;
-        bh=CuyZwFu1Zt52A3Wtsx8i/O5tRA8Koa3iDRGqsfxSIpI=;
-        b=R0fPVdH3irE+0uVJb64kwJuuakJpX5UnswC4s+ouDYjV7lPoslxPMO8a58+X1c2PME
-         otwGjoRI7Jce2qNBn6+MrAnyxOjOtQ6ejXJCJEV8PO4JRv30LF1us4ldSrIr2+ZsrGAh
-         uwx9b0wsuelU3dqUjXhJ1Turqf4sTvQyJuQHdeYCAH6zbrvHfSyGaMUavUOHUknkDI5U
-         CNRq/8dTVARljqbaCehLx5woAKFhJgpF9tRPWlVu5SI8hE1F5nTKSkXZS0rNPDSXqkkN
-         DCprJEyxo0yboBqmFpRBSLplGk0Pg8dcn2ZAlMjjlnNKH0BOBuW1xukRBLJ8dWPwzAfB
-         PKIQ==
-X-Gm-Message-State: AJIora+7czN2pH1VGdM1JcfcYhtMrozHf75/LbllhyX+ikwdpwyKj3Oy
-        6zAbfVeOAxTI4rIBnAv027KShhYAicu71ZyIH3AF5RrJL4l3fiY6IXm9a/LPJwtzZVwFqIrRXsm
-        dcEKvAtd/DjBoD/B+pm+ypG9vuTqlxN+3HsKFAktng1wvfzKIIg==
-X-Google-Smtp-Source: AGRyM1uNgIbZO2ClIxpdtnZQcCbqVwBIcAR4vGqnkM2A2F5UaBYoc5h6407XU3FR0mfzmWQoZx2q6DI=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a05:6a00:1a8c:b0:52b:3eed:13d8 with SMTP id
- e12-20020a056a001a8c00b0052b3eed13d8mr28985692pfv.74.1658335650820; Wed, 20
- Jul 2022 09:47:30 -0700 (PDT)
-Date:   Wed, 20 Jul 2022 09:47:29 -0700
-Message-Id: <20220720164729.147544-1-sdf@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.37.0.170.g444d1eabd0-goog
-Subject: [PATCH bpf-next] bpf: Check attach_func_proto more carefully in check_helper_call
-From:   Stanislav Fomichev <sdf@google.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org,
-        syzbot+0f8d989b1fba1addc5e0@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IdX8x8KuGDrmo8OdGWM+s2IhO+yiRKLdL7Zo2PMSFN4=;
+        b=1ti+/FNnJgNZHSQuUhDcsqIc1XOlitvkuDRIGFewGkT6a//GeuV6ZNPWbljQ8yzYf8
+         H32PPNcnVlMlZ7mU/yOrIHc5+3yzlcY/jWux28C3UXx2NW6r0W9KfRZjxuj7JLUz7w7x
+         rDsLfWIi/NtFQlPkbiXPL42XXVlIz7OQL86eitfJHiNx3RjAu4Pqi1c6iOFUV1hgA6oC
+         TUw0zsXwVUSP0mBYz9uZv4zv5g7/byZXPDXB26jAlX4te/rR0U1t5fy+b9GAS1ctho7Z
+         aNEn1DxHtKKjBMe3Zjn6A1xgOXwvSx0L2bnPZkOEVjO0ZFjLkHM2QqkPg1/3KKjTFS5l
+         efsQ==
+X-Gm-Message-State: AJIora9wkarYGq5phZjvTB/gRWGzlTBvX/d75x+3GVsAW0mQoD29iilM
+        27VVyu+ug7zCgpg1FQA3KKg=
+X-Google-Smtp-Source: AGRyM1vCLnpaxRkOkmGAaj5Gy/KHt7mi0Q8MAJNokH4bRQpyU8kddgCKya3XL7eTcmHXXFWfReqHnA==
+X-Received: by 2002:a05:620a:4090:b0:6b6:14ec:b6c6 with SMTP id f16-20020a05620a409000b006b614ecb6c6mr1897228qko.733.1658335770556;
+        Wed, 20 Jul 2022 09:49:30 -0700 (PDT)
+Received: from localhost ([2601:4c1:c100:1230:8a38:8fe4:50f8:8b83])
+        by smtp.gmail.com with ESMTPSA id r11-20020ac8794b000000b0031ee918e9f9sm7579839qtt.39.2022.07.20.09.49.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jul 2022 09:49:30 -0700 (PDT)
+Date:   Wed, 20 Jul 2022 09:49:30 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Alexey Klimov <aklimov@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Ben Segall <bsegall@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Isabella Basso <isabbasso@riseup.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Juergen Gross <jgross@suse.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Mel Gorman <mgorman@suse.de>, Miroslav Benes <mbenes@suse.cz>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Song Liu <songliubraving@fb.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tejun Heo <tj@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yonghong Song <yhs@fb.com>,
+        linux-mm@kvack.org, netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH 16/16] lib: create CONFIG_DEBUG_BITMAP parameter
+Message-ID: <YtgyGvlhHsVMyXcv@yury-laptop>
+References: <20220718192844.1805158-1-yury.norov@gmail.com>
+ <20220718192844.1805158-17-yury.norov@gmail.com>
+ <YtXS9hySEY+BokvI@smile.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YtXS9hySEY+BokvI@smile.fi.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,59 +109,16 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Syzkaller found a problem similar to d1a6edecc1fd ("bpf: Check
-attach_func_proto more carefully in check_return_code") where
-attach_func_proto might be NULL:
+On Tue, Jul 19, 2022 at 12:39:02AM +0300, Andy Shevchenko wrote:
+> On Mon, Jul 18, 2022 at 12:28:44PM -0700, Yury Norov wrote:
+> > Create CONFIG_DEBUG_BITMAP parameter to let people use
+> > new option. Default is N.
+> 
+> Even if a separate, it should follow immediately the implementation.
 
-RIP: 0010:check_helper_call+0x3dcb/0x8d50 kernel/bpf/verifier.c:7330
- do_check kernel/bpf/verifier.c:12302 [inline]
- do_check_common+0x6e1e/0xb980 kernel/bpf/verifier.c:14610
- do_check_main kernel/bpf/verifier.c:14673 [inline]
- bpf_check+0x661e/0xc520 kernel/bpf/verifier.c:15243
- bpf_prog_load+0x11ae/0x1f80 kernel/bpf/syscall.c:2620
+If it follows the 1st patch immediately, and becomes enabled, it will
+generate a lot of noise for those who bisect and occasionally jumps
+into a mid of the series.
 
-With the following reproducer:
-
-  bpf$BPF_PROG_RAW_TRACEPOINT_LOAD(0x5, &(0x7f0000000780)=3D{0xf, 0x4, &(0x=
-7f0000000040)=3D@framed=3D{{}, [@call=3D{0x85, 0x0, 0x0, 0xbb}]}, &(0x7f000=
-0000000)=3D'GPL\x00', 0x0, 0x0, 0x0, 0x0, 0x0, '\x00', 0x0, 0x2b, 0xfffffff=
-fffffffff, 0x8, 0x0, 0x0, 0x10, 0x0}, 0x80)
-
-Let's do the same here, only check attach_func_proto for the prog types
-where we are certain that attach_func_proto is defined.
-
-Fixes: 69fd337a975c ("bpf: per-cgroup lsm flavor")
-Reported-by: syzbot+0f8d989b1fba1addc5e0@syzkaller.appspotmail.com
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- kernel/bpf/verifier.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index c59c3df0fea6..7c1e056624f9 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -7170,6 +7170,7 @@ static void update_loop_inline_state(struct bpf_verif=
-ier_env *env, u32 subprogno
- static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn=
- *insn,
- 			     int *insn_idx_p)
- {
-+	enum bpf_prog_type prog_type =3D resolve_prog_type(env->prog);
- 	const struct bpf_func_proto *fn =3D NULL;
- 	enum bpf_return_type ret_type;
- 	enum bpf_type_flag ret_flag;
-@@ -7331,7 +7332,8 @@ static int check_helper_call(struct bpf_verifier_env =
-*env, struct bpf_insn *insn
- 		}
- 		break;
- 	case BPF_FUNC_set_retval:
--		if (env->prog->expected_attach_type =3D=3D BPF_LSM_CGROUP) {
-+		if (prog_type =3D=3D BPF_PROG_TYPE_LSM &&
-+		    env->prog->expected_attach_type =3D=3D BPF_LSM_CGROUP) {
- 			if (!env->prog->aux->attach_func_proto->type) {
- 				/* Make sure programs that attach to void
- 				 * hooks don't try to modify return value.
---=20
-2.37.0.170.g444d1eabd0-goog
-
+There are quite a lot of patchsets that create a feature in many
+patches, and explicitly enable it in the very last patch.
