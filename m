@@ -2,441 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C3CF57BD5B
-	for <lists+bpf@lfdr.de>; Wed, 20 Jul 2022 20:05:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82BAD57BD8E
+	for <lists+bpf@lfdr.de>; Wed, 20 Jul 2022 20:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbiGTSFD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Jul 2022 14:05:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56220 "EHLO
+        id S229813AbiGTSQe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Jul 2022 14:16:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229917AbiGTSFC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Jul 2022 14:05:02 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D165FAC2
-        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 11:05:01 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id o21-20020a17090a9f9500b001f0574225faso1547319pjp.6
-        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 11:05:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=p6/8mKcWNBl5IObH8PgGheB6Tot/ibET+8kFX/SOl9s=;
-        b=Qxrx5yLM0CzDzJD9eGqFgCi6vAJN59vIY9A8txsVb4T9t/c5YAp9IyAUQeCelkpfFS
-         IbvlP/U4WdF569l6/RwGQOZON6hgmDx+Xcn3ERX5OgiXRASnOvMLldDjFnR31YkdE4a4
-         O8CAsk+q5CiyI/9mw5Il46Wf6T/wX/waoiaW0ujHZRPotDhpv8yUt6AK2O2jflQGnPLO
-         ck+pw9p94YyDQBJYEVYy5x5kLZOfcQ5W41YvSa5wpwmeJfpuhDVzBT1iKehgFoANoLv0
-         HgDGYBcybOn85+VToHy+dL4qzITCmyuMl2O2DXNGVn043ztkUaO9Um5fmDsKf40Oqyop
-         twng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=p6/8mKcWNBl5IObH8PgGheB6Tot/ibET+8kFX/SOl9s=;
-        b=Z8bY0XMNm+dk+cHjirWpcVlm/e+v6yP9CN6BYN9dCXjHLi+UXnpw4AFmPJKRx+tsjg
-         73eaNcDoesBORyb05xCgx+SsuI/IAVMCCCmfRI6sV/GM9Eo2pm7aVubw3g1zJl0W2DTo
-         jG8fM59I+uCwbVY7+HbOZ3pB5GKtkhboe3ZjYx0XRzaBYCu/my1LwfQdHZOsqFwSOgz9
-         39zTDsbzFChksAX6L+oQeJY0veD9NFlmEqhMFIquRVVcnb5l67nD7QZvXDfyQhQdroMj
-         zsAwa64xs89RfcjVPsESJSyWcXklFj89wjh8RQsZreIUB44oPx+MMrxv4jKwBzw986OD
-         ryiA==
-X-Gm-Message-State: AJIora8m7AfMzChaj5MRCfeSIWiotBXzp9ag77JGDYB5Oyt6yAvTd+Ii
-        0qQ42b0wMS5kjEntDGzJWIsuT9s=
-X-Google-Smtp-Source: AGRyM1ujKdk44d19ChSUNc0tiRjXeP0Nc/ijPPfLzBkYLRLaYW7NL1mGQxJ6ZxC4DBZGLUlguTmtDCw=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:90b:10e:b0:1f1:f3b0:9304 with SMTP id
- p14-20020a17090b010e00b001f1f3b09304mr517102pjz.1.1658340300514; Wed, 20 Jul
- 2022 11:05:00 -0700 (PDT)
-Date:   Wed, 20 Jul 2022 11:04:59 -0700
-In-Reply-To: <Ytc8RvDTpEmC0pQD@google.com>
-Message-Id: <YthDy8uhE2ky0rBr@google.com>
-Mime-Version: 1.0
-References: <20220718190748.2988882-1-sdf@google.com> <CAADnVQLxh_pt8bgoo=_CS3voab7HuQautZGfHQMM=TmQmVr2pQ@mail.gmail.com>
- <CAKH8qBv9q=eXBq9XSKEN2Nce5Wf0MJEX_zbTi12p4r3WCjmBEw@mail.gmail.com>
- <CAKH8qBv66=Fdea0u-vbu-Q=P9pySo+tjy5YpPPcNo8dF0qN8bw@mail.gmail.com>
- <CAADnVQ+Gmo=B=NpXofq=LmFq6HsJZ-X9D1a4MwSLK3k_F9SEqg@mail.gmail.com> <Ytc8RvDTpEmC0pQD@google.com>
-Subject: Re: [PATCH bpf-next] RFC: libbpf: resolve rodata lookups
-From:   sdf@google.com
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        with ESMTP id S229673AbiGTSQd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Jul 2022 14:16:33 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 721F14E60B
+        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 11:16:32 -0700 (PDT)
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26KHiokV015035;
+        Wed, 20 Jul 2022 11:16:15 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=Ii8BzBmdsCgpxeoVYIioI+sQtIBCqBeDhJY1Jz67HXs=;
+ b=dv7WXZfiyTqQ+pTfCX2+0G7Dz+XFwROfJcXOI4oGUZiwwrgEAdTfSubnP8VudKcd40Is
+ sy8EC4BRgSPlhJRBeCIVHxluvhkbqUUm1cltowsARFzAHUfIsQ8sQBPvyCuQo+9oc5UM
+ 3tHa9poqXqvlk/PNAKvfy4+alNTh7zUrinw= 
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2109.outbound.protection.outlook.com [104.47.55.109])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hej1vj9qa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 20 Jul 2022 11:16:14 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Aey8mSEKLSrdW6TLvF/kLaNfGTjWP8B0fd5BWVWLMcwJg8sJcUfJ+qmTxmkGjgv5z4NUbRRr7HCRUtp7gWeTPCnm4SXN2ToqhKvcaGXDLmiRsvH6lafZEbTHFmyTIUUM+RrLtgpRpFr37y7Rv7tRSI5UMPJrHFF7P9PyH7GlVlUSk9Rp/wMge2WqbgBnukmV3sczXQNHvLBwsQWapCBPcDPYrrzWyAyl+hVXK4kc6jCMNzBrwNO2FiRwvsRdwfuOWE0anRszwfgASbEzr2kpr/Vw5pK1pSl6rQk4St9iigtXTSzLNFjyj4Lol6KFsEieCUczrXqjZKy6I7aQ3pagDg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Ii8BzBmdsCgpxeoVYIioI+sQtIBCqBeDhJY1Jz67HXs=;
+ b=IJBz0w2iwkxWs7kzOhZtrVADvD81pafWH8DAC8Hoz+Ume5XUM1YyHbV6qmvIOQshpLfGmqRrzQlRduSErFElAUaVF9VVMH2V+ND/ydnoMOfD0mocuxfDlL8rVuGjEyGE9e/ViDrHY3guSkv6fWZvxDGKaoroQ/DV8KLhdDug3Yd1Nv113Uz4lH2VaM+E3JAzN4kLmW2R5xSkuJV9idGTEzVjYccX/G9p1p5zSzwWpGcpWlQloNtu6+6grpKFW8Ms+0XlTvwQ8mfn5F/OaeBSVVpCX8Jrj+O0HhKa0MbFP2knoTO7RLcZPdrNj6iaD97vo93dFUPya7urEoL3vAXWIg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from MW4PR15MB4475.namprd15.prod.outlook.com (2603:10b6:303:104::16)
+ by MW2PR1501MB2137.namprd15.prod.outlook.com (2603:10b6:302:c::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5458.18; Wed, 20 Jul
+ 2022 18:16:12 +0000
+Received: from MW4PR15MB4475.namprd15.prod.outlook.com
+ ([fe80::a88e:613f:76a7:a5a2]) by MW4PR15MB4475.namprd15.prod.outlook.com
+ ([fe80::a88e:613f:76a7:a5a2%8]) with mapi id 15.20.5458.018; Wed, 20 Jul 2022
+ 18:16:12 +0000
+Date:   Wed, 20 Jul 2022 11:16:09 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org,
+        syzbot+0f8d989b1fba1addc5e0@syzkaller.appspotmail.com
+Subject: Re: [PATCH bpf-next] bpf: Check attach_func_proto more carefully in
+ check_helper_call
+Message-ID: <20220720181609.eopn2k6ryif7wlr6@kafai-mbp.dhcp.thefacebook.com>
+References: <20220720164729.147544-1-sdf@google.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220720164729.147544-1-sdf@google.com>
+X-ClientProxiedBy: SJ0PR03CA0286.namprd03.prod.outlook.com
+ (2603:10b6:a03:39e::21) To MW4PR15MB4475.namprd15.prod.outlook.com
+ (2603:10b6:303:104::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f63161d6-013a-49f5-cce6-08da6a7bed26
+X-MS-TrafficTypeDiagnostic: MW2PR1501MB2137:EE_
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 87iD8HwUG0xde7/+pLWI8QyJd1CCQ/u3tmvvfjcMeEFRGUGF9UNlUqP6GT3PV1e3hhi7Lf91jjXOE/PVPZ0PKsgKW+xTqWWesVvCTgIKzWTvNqETK/QJz0LeYEIPaPIDjjYi06ADev5qvYMAm9xznGnyiY4/sK/MC7ZYbt/EcLgeDoNdQmOwm106Uga6KidWaoq+03LspPvEBGzzRpjcJdL4NzL8tJ761P9BUMEZoGI/3QQoFLu9Ehi37KhneX8r544oeXAXGxMKOAj0J9hz0mjm7YaRO2E8wJrQeMk2iP2Iw1MXTYvEMOcZ9u1Zc3t8Zpch2SycRxsF13OKmzIZntlbr78LLGgZxEHf/+TqasOIw1HNj4HerCnYYgI9DN5UKR3YiobJxqbarwo7SreBYje5X2sXV6ij0Xd2V4OrU8kKsmfj6kyLM+CDJl+JxGuHB4lr8N8U7uBmQ4m3AGAQ+TZpNOOyJ2w5AFfrN1Ww5NgN5gva2vQTAaXEH8lQ0udRm14tNOEzJoYEJWKwkytDBnkiZsJ9xrZi0+xlPaEIDTSKJ3gRxB4LfV6mWGGUhtmKQP22ydKj5+kQ4aB5+mM0FLW/7QWCoX+o7PK1+vVtLorob33A7B23883B/fUw9IjTwE5FbGmWA5Qf4oZUU1zisI84yn6PVNnV1b1W4lNUj9FzgoMfSK0f9KvK0RMHZNJAz7qhjKvurF4H1IE0VURd2KFrLxLCyy+/iO1NM6VrWN00QIz4Bdru36kYM3oVoudX
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4475.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(136003)(396003)(346002)(39860400002)(366004)(376002)(316002)(41300700001)(6916009)(478600001)(6666004)(6486002)(38100700002)(52116002)(6506007)(9686003)(6512007)(7416002)(5660300002)(186003)(8936002)(2906002)(4326008)(1076003)(66556008)(8676002)(86362001)(66946007)(66476007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?P5w5nnnf9T1VwrfFqTIs3eD550iz6Se4+6DQIQzPEZZE7jA4P9zGksMJphRP?=
+ =?us-ascii?Q?TwYHExn/kH3z+FmV8E5Yi7d8ksU0Kptcm//+Rywh7yrWAOMJxb03e2gxJO1Z?=
+ =?us-ascii?Q?6uUNdgrQvFj+9VOoXhJXultqreSwUGCKEfjIdQPVCkYS4iVh0V6lv3ej/fVm?=
+ =?us-ascii?Q?K2a72spFWk/Xd9fKlcD7zGU2ca0dYcrYXUwRXfIEujOOXVCVGZVB1MF2LPm8?=
+ =?us-ascii?Q?5fttgLlJ8jxm4A+6zoQuHkORzbHWFM4TfVEhu15eW5/Xa39IHXz/Y6Arc8bb?=
+ =?us-ascii?Q?omIxYQy4JXG/dul/fUGU0QpujiyYRKQl/YD4foxPtEueDsd0Qpc5t2o5oj6u?=
+ =?us-ascii?Q?RUYTBulnqalbr0PmF058d3HedH9+xTqX1yqU9iSbjLeWUnpceAC/FEN8szXj?=
+ =?us-ascii?Q?BrrcqYyJQPZ8gH7L4Etzs3tVAOpj6Xu5aEE6LH36XodToHL9DTgQM7D8G7v/?=
+ =?us-ascii?Q?wsYPXbrxpdANTEnE3CH5E+VDN+xz1OBkA1CXqzpLfcB40VkB2w6dY4OChuch?=
+ =?us-ascii?Q?IW7kI1f0hlohyQZvUE5bek61z8eNgDau2y3Rq2A8x34JLIP+EMAgVbEMclA+?=
+ =?us-ascii?Q?Ogm9ke28hIPDEH+ml0INM3p8z9ywpc67d9oSldzI7HN5usGvhncGkhDb+yxy?=
+ =?us-ascii?Q?HMyrNiPN0n1JXBeMfr0xXCmJzBt8I3LnG0B+LYwpo8yp2dL5q6TBRegOII9s?=
+ =?us-ascii?Q?Aw5xdv39oZ9Sh/lQ/4fiVi+HhmS4oo9EWhOh14JDV/PNeghukL0WA+jhuTf+?=
+ =?us-ascii?Q?OKM/IUJz//ZsZTg5RT7anD/i/f1nRp1NzQhBqHan3PH+P2ia7BxuXdoLb0Rb?=
+ =?us-ascii?Q?CPSLOUlbyMBrW+Qcw2CQLkI4QaTNST4Ydb0chDIXPtnpQyY/VF6nalyF7yVD?=
+ =?us-ascii?Q?ejKNXNGGQt1hAnseKEjPHk31fl6SxD5GXzij/Ad46JDQ2GpKgLUfWwUXgNwa?=
+ =?us-ascii?Q?YgVnqUbQ+E+Z7a6WxjL8CEhM7/jo8zor7rpsj8/Mym/l9paiYaYWkr1NpiYx?=
+ =?us-ascii?Q?q5/IWcmPA/+h/t6I8J2oWRLEsrUerM4mVDFZWwqcK3hAd6p3aq7XuHZvkwON?=
+ =?us-ascii?Q?wFNQdzm4F9Y2UalYN/AqwHVUmPtiTvbsjVaxgvfOslqkdUiuXFd2kQ22VeuX?=
+ =?us-ascii?Q?3CwM8dxf+f/JcrugEs5VaryBrjjB8ohcO1SFsCEF5OYfA1CGmZy5Up/GeiHF?=
+ =?us-ascii?Q?o998QJPfnTXGGlPZNow514Lob2w7GqlMDq0hKhAT+KEdCcZq7qmHhcM1XGq0?=
+ =?us-ascii?Q?M3PUkUfWDJx95RzP6HhurBr7Sn+3eYfF5K/4TFffzqkRkhPO09xqZxYRBqKg?=
+ =?us-ascii?Q?hX6LtgH//sLus+f7vRFK6YNIwENP+QGqH7gOEdeB0BB8qFuwcTQpCNyVQIW9?=
+ =?us-ascii?Q?/VJaI6rNYO6Ks5X1UiHsewPFK34aQBcwQAvwgYUVYxmNUuDEzszD2H5fYMur?=
+ =?us-ascii?Q?90xeLUcPLLbUnuYzofSspXP00w0Iy+OSmwNZVedM3LF1j0xUqvrZ5ZoDU7Bf?=
+ =?us-ascii?Q?E01QMKocWlS3LRZTrWk8RjvmBZ7FJEQP97CjnnVokS8uh8nSC2Qk61hlk4Iq?=
+ =?us-ascii?Q?J91yOCZzRZ6d/W+4QZhA4jF/p7oGBhwG4xhkgvpUymaECmwXGaGxi74VsVM3?=
+ =?us-ascii?Q?eQ=3D=3D?=
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f63161d6-013a-49f5-cce6-08da6a7bed26
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4475.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jul 2022 18:16:12.1735
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CF8cORNc6PWRileZUXQ6caOC1DBB/8BWdcHLvHUsKUx8sU1DCdZk4W9rLKq5BNc+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR1501MB2137
+X-Proofpoint-GUID: ePPtSeree5Rg6aAM0d4kT07SEmuRlwqW
+X-Proofpoint-ORIG-GUID: ePPtSeree5Rg6aAM0d4kT07SEmuRlwqW
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-07-20_12,2022-07-20_01,2022-06-22_01
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 07/19, sdf@google.com wrote:
-> On 07/19, Alexei Starovoitov wrote:
-> > On Tue, Jul 19, 2022 at 2:41 PM Stanislav Fomichev <sdf@google.com>  
-> wrote:
-> > >
-> > > On Tue, Jul 19, 2022 at 1:33 PM Stanislav Fomichev <sdf@google.com>
-> > wrote:
-> > > >
-> > > > On Tue, Jul 19, 2022 at 1:21 PM Alexei Starovoitov
-> > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > >
-> > > > > On Mon, Jul 18, 2022 at 12:07 PM Stanislav Fomichev
-> > <sdf@google.com> wrote:
-> > > > > >
-> > > > > > Motivation:
-> > > > > >
-> > > > > > Our bpf programs have a bunch of options which are set at the
-> > loading
-> > > > > > time. After loading, they don't change. We currently use array  
-> map
-> > > > > > to store them and bpf program does the following:
-> > > > > >
-> > > > > > val = bpf_map_lookup_elem(&config_map, &key);
-> > > > > > if (likely(val && *val)) {
-> > > > > >   // do some optional feature
-> > > > > > }
-> > > > > >
-> > > > > > Since the configuration is static and we have a lot of those
-> > features,
-> > > > > > I feel like we're wasting precious cycles doing dynamic lookups
-> > > > > > (and stalling on memory loads).
-> > > > > >
-> > > > > > I was assuming that converting those to some fake kconfig  
-> options
-> > > > > > would solve it, but it still seems like kconfig is stored in the
-> > > > > > global map and kconfig entries are resolved dynamically.
-> > > > > >
-> > > > > > Proposal:
-> > > > > >
-> > > > > > Resolve kconfig options statically upon loading. Basically  
-> rewrite
-> > > > > > ld+ldx to two nops and 'mov val, x'.
-> > > > > >
-> > > > > > I'm also trying to rewrite conditional jump when the condition  
-> is
-> > > > > > !imm. This seems to be catching all the cases in my program, but
-> > > > > > it's probably too hacky.
-> > > > > >
-> > > > > > I've attached very raw RFC patch to demonstrate the idea.  
-> Anything
-> > > > > > I'm missing? Any potential problems with this approach?
-> > > > >
-> > > > > Have you considered using global variables for that?
-> > > > > With skeleton the user space has a natural way to set
-> > > > > all of these knobs after doing skel_open and before skel_load.
-> > > > > Then the verifier sees them as readonly vars and
-> > > > > automatically converts LDX into fixed constants and if the code
-> > > > > looks like if (my_config_var) then the verifier will remove
-> > > > > all the dead code too.
-> > > >
-> > > > Hm, that's a good alternative, let me try it out. Thanks!
-> > >
-> > > Turns out we already freeze kconfig map in libbpf:
-> > > if (map_type == LIBBPF_MAP_RODATA || map_type == LIBBPF_MAP_KCONFIG) {
-> > >         err = bpf_map_freeze(map->fd);
-> > >
-> > > And I've verified that I do hit bpf_map_direct_read in the verifier.
-> > >
-> > > But the code still stays the same (bpftool dump xlated):
-> > >   72: (18) r1 = map[id:24][0]+20
-> > >   74: (61) r1 = *(u32 *)(r1 +0)
-> > >   75: (bf) r2 = r9
-> > >   76: (b7) r0 = 0
-> > >   77: (15) if r1 == 0x0 goto pc+9
-> > >
-> > > I guess there is nothing for sanitize_dead_code to do because my
-> > > conditional is "if (likely(some_condition)) { do something }" and the
-> > > branch instruction itself is '.seen' by the verifier.
+On Wed, Jul 20, 2022 at 09:47:29AM -0700, Stanislav Fomichev wrote:
+> Syzkaller found a problem similar to d1a6edecc1fd ("bpf: Check
+> attach_func_proto more carefully in check_return_code") where
+> attach_func_proto might be NULL:
+> 
+> RIP: 0010:check_helper_call+0x3dcb/0x8d50 kernel/bpf/verifier.c:7330
+>  do_check kernel/bpf/verifier.c:12302 [inline]
+>  do_check_common+0x6e1e/0xb980 kernel/bpf/verifier.c:14610
+>  do_check_main kernel/bpf/verifier.c:14673 [inline]
+>  bpf_check+0x661e/0xc520 kernel/bpf/verifier.c:15243
+>  bpf_prog_load+0x11ae/0x1f80 kernel/bpf/syscall.c:2620
+> 
+> With the following reproducer:
+> 
+>   bpf$BPF_PROG_RAW_TRACEPOINT_LOAD(0x5, &(0x7f0000000780)={0xf, 0x4, &(0x7f0000000040)=@framed={{}, [@call={0x85, 0x0, 0x0, 0xbb}]}, &(0x7f0000000000)='GPL\x00', 0x0, 0x0, 0x0, 0x0, 0x0, '\x00', 0x0, 0x2b, 0xffffffffffffffff, 0x8, 0x0, 0x0, 0x10, 0x0}, 0x80)
+Only BPF_PROG_TYPE_CGROUP_* (and the new lsm_cgroup) can get to
+the set_retval func proto.  I thought all BPF_PROG_TYPE_CGROUP_* has enforced
+expected_attach_type.  It turns out not true for BPF_PROG_TYPE_CGROUP_DEVICE and
+BPF_PROG_TYPE_CGROUP_SYSCTL.
 
-> > I bet your variable is not 'const'.
-> > Please see any of the progs in selftests that do:
-> > const volatile int var = 123;
-> > to express configs.
-
-> Yeah, I was testing against the following:
-
-> 	extern int CONFIG_XYZ __kconfig __weak;
-
-> But ended up writing this small reproducer:
-
-> 	struct __sk_buff;
-
-> 	const volatile int CONFIG_DROP = 1; // volatile so it's not
-> 					    // clang-optimized
-
-> 	__attribute__((section("tc"), used))
-> 	int my_config(struct __sk_buff *skb)
-> 	{
-> 		int ret = 0; /*TC_ACT_OK*/
-
-> 		if (CONFIG_DROP)
-> 			ret = 2 /*TC_ACT_SHOT*/;
-
-> 		return ret;
-> 	}
-
-> $ bpftool map dump name my_confi.rodata
-
-> [{
->          "value": {
->              ".rodata": [{
->                      "CONFIG_DROP": 1
->                  }
->              ]
->          }
->      }
-> ]
-
-> $ bpftool prog dump xlated name my_config
-
-> int my_config(struct __sk_buff * skb):
-> ; if (CONFIG_DROP)
->     0: (18) r1 = map[id:3][0]+0
->     2: (61) r1 = *(u32 *)(r1 +0)
->     3: (b4) w0 = 1
-> ; if (CONFIG_DROP)
->     4: (64) w0 <<= 1
-> ; return ret;
->     5: (95) exit
-
-> The branch is gone, but the map lookup is still there :-(
-
-Attached another RFC below which is doing the same but from the verifier
-side. It seems we should be able to resolve LD+LDX if their dst_reg
-is the same? If they are different, we should be able to pre-lookup
-LDX value at least. Would something like this work (haven't run full
-verifier/test_progs yet)?
-
-(note, in this case, with kconfig, I still see the branch)
-
-  test_fold_ro_ldx:PASS:open 0 nsec
-  test_fold_ro_ldx:PASS:load 0 nsec
-  test_fold_ro_ldx:PASS:bpf_obj_get_info_by_fd 0 nsec
-  int fold_ro_ldx(struct __sk_buff * skb):
-  ; if (CONFIG_DROP)
-     0: (b7) r1 = 1
-     1: (b4) w0 = 1
-  ; if (CONFIG_DROP)
-     2: (16) if w1 == 0x0 goto pc+1
-     3: (b4) w0 = 2
-  ; return ret;
-     4: (95) exit
-  test_fold_ro_ldx:PASS:found BPF_LD 0 nsec
-  test_fold_ro_ldx:PASS:found BPF_LDX 0 nsec
-  test_fold_ro_ldx:PASS:found BPF_LD 0 nsec
-  test_fold_ro_ldx:PASS:found BPF_LDX 0 nsec
-  test_fold_ro_ldx:PASS:found BPF_LD 0 nsec
-  test_fold_ro_ldx:PASS:found BPF_LDX 0 nsec
-  test_fold_ro_ldx:PASS:found BPF_LD 0 nsec
-  test_fold_ro_ldx:PASS:found BPF_LDX 0 nsec
-  test_fold_ro_ldx:PASS:found BPF_LD 0 nsec
-  test_fold_ro_ldx:PASS:found BPF_LDX 0 nsec
-  #66      fold_ro_ldx:OK
-
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
-  kernel/bpf/verifier.c                         | 74 ++++++++++++++++++-
-  .../selftests/bpf/prog_tests/fold_ro_ldx.c    | 52 +++++++++++++
-  .../testing/selftests/bpf/progs/fold_ro_ldx.c | 20 +++++
-  3 files changed, 144 insertions(+), 2 deletions(-)
-  create mode 100644 tools/testing/selftests/bpf/prog_tests/fold_ro_ldx.c
-  create mode 100644 tools/testing/selftests/bpf/progs/fold_ro_ldx.c
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index c59c3df0fea6..ffedd8234288 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -12695,6 +12695,69 @@ static bool bpf_map_is_cgroup_storage(struct  
-bpf_map *map)
-  		map->map_type == BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE);
-  }
-
-+/* if the map is read-only, we can try to fully resolve the load */
-+static bool fold_ro_pseudo_ldimm64(struct bpf_verifier_env *env,
-+				   struct bpf_map *map,
-+				   struct bpf_insn *insn)
-+{
-+	struct bpf_insn *ldx_insn = insn + 2;
-+	int dst_reg = ldx_insn->dst_reg;
-+	u64 val = 0;
-+	int size;
-+	int err;
-+
-+	if (!bpf_map_is_rdonly(map) || !map->ops->map_direct_value_addr)
-+		return false;
-+
-+	/* 0: BPF_LD  r=MAP
-+	 * 1: BPF_LD  r=MAP
-+	 * 2: BPF_LDX r=MAP->VAL
-+	 */
-+
-+	if (BPF_CLASS((insn+0)->code) != BPF_LD ||
-+	    BPF_CLASS((insn+1)->code) != BPF_LD ||
-+	    BPF_CLASS((insn+2)->code) != BPF_LDX)
-+		return false;
-+
-+	if (BPF_MODE((insn+0)->code) != BPF_IMM ||
-+	    BPF_MODE((insn+1)->code) != BPF_IMM ||
-+	    BPF_MODE((insn+2)->code) != BPF_MEM)
-+		return false;
-+
-+	if (insn->src_reg != BPF_PSEUDO_MAP_VALUE &&
-+	    insn->src_reg != BPF_PSEUDO_MAP_IDX_VALUE)
-+		return false;
-+
-+	if (insn->dst_reg != ldx_insn->src_reg)
-+		return false;
-+
-+	if (ldx_insn->off != 0)
-+		return false;
-+
-+	size = bpf_size_to_bytes(BPF_SIZE(ldx_insn->code));
-+	if (size < 0 || size > 4)
-+		return false;
-+
-+	err = bpf_map_direct_read(map, (insn+1)->imm, size, &val);
-+	if (err)
-+		return false;
-+
-+	if (insn->dst_reg == ldx_insn->dst_reg) {
-+		/* LDX is using the same destination register as LD.
-+		 * This means we are not interested in the map
-+		 * pointer itself and can remove it.
-+		 */
-+		*(insn + 0) = BPF_JMP_A(0);
-+		*(insn + 1) = BPF_JMP_A(0);
-+		*(insn + 2) = BPF_ALU64_IMM(BPF_MOV, dst_reg, val);
-+		return true;
-+	}
-+
-+	*(insn + 2) = BPF_ALU64_IMM(BPF_MOV, dst_reg, val);
-+	/* Only LDX can be resolved, we still have to resolve LD address. */
-+	return false;
-+}
-+
-  /* find and rewrite pseudo imm in ld_imm64 instructions:
-   *
-   * 1. if it accesses map FD, replace it with actual map pointer.
-@@ -12713,6 +12776,8 @@ static int resolve_pseudo_ldimm64(struct  
-bpf_verifier_env *env)
-  		return err;
-
-  	for (i = 0; i < insn_cnt; i++, insn++) {
-+		bool folded = false;
-+
-  		if (BPF_CLASS(insn->code) == BPF_LDX &&
-  		    (BPF_MODE(insn->code) != BPF_MEM || insn->imm != 0)) {
-  			verbose(env, "BPF_LDX uses reserved fields\n");
-@@ -12830,8 +12895,13 @@ static int resolve_pseudo_ldimm64(struct  
-bpf_verifier_env *env)
-  				addr += off;
-  			}
-
--			insn[0].imm = (u32)addr;
--			insn[1].imm = addr >> 32;
-+			if (i + 2 < insn_cnt)
-+				folded = fold_ro_pseudo_ldimm64(env, map, insn);
-+
-+			if (!folded) {
-+				insn[0].imm = (u32)addr;
-+				insn[1].imm = addr >> 32;
-+			}
-
-  			/* check whether we recorded this map already */
-  			for (j = 0; j < env->used_map_cnt; j++) {
-diff --git a/tools/testing/selftests/bpf/prog_tests/fold_ro_ldx.c  
-b/tools/testing/selftests/bpf/prog_tests/fold_ro_ldx.c
-new file mode 100644
-index 000000000000..faaf8423ebca
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/fold_ro_ldx.c
-@@ -0,0 +1,52 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+#include <test_progs.h>
-+#include <bpf/btf.h>
-+
-+#include "fold_ro_ldx.skel.h"
-+
-+void test_fold_ro_ldx(void)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, skel_opts,
-+		.kconfig = "CONFIG_DROP=1",
-+	);
-+	struct fold_ro_ldx *skel = NULL;
-+	struct bpf_prog_info info = {};
-+	struct bpf_insn insn[16];
-+	__u32 info_len;
-+	FILE *bpftool;
-+	char buf[256];
-+	int err;
-+	int i;
-+
-+	skel = fold_ro_ldx__open_opts(&skel_opts);
-+	if (!ASSERT_OK_PTR(skel, "open"))
-+		goto close_skel;
-+
-+	if (!ASSERT_OK(fold_ro_ldx__load(skel), "load"))
-+		goto close_skel;
-+
-+	info.xlated_prog_len = sizeof(insn);
-+	info.xlated_prog_insns = ptr_to_u64(insn);
-+
-+	info_len = sizeof(struct bpf_prog_info);
-+	err = bpf_obj_get_info_by_fd(bpf_program__fd(skel->progs.fold_ro_ldx),
-+				     &info, &info_len);
-+	if (!ASSERT_GE(err, 0, "bpf_obj_get_info_by_fd"))
-+		goto close_skel;
-+
-+	// Put xlated output into stdout in case verification below fails.
-+	bpftool = popen("bpftool prog dump xlated name fold_ro_ldx", "r");
-+	while (fread(buf, 1, sizeof(buf), bpftool) > 0)
-+		fwrite(buf, 1, strlen(buf), stdout);
-+	pclose(bpftool);
-+
-+	for (i = 0; i < info.xlated_prog_len / sizeof(struct bpf_insn); i++) {
-+		ASSERT_NEQ(BPF_CLASS(insn[i].code), BPF_LD, "found BPF_LD");
-+		ASSERT_NEQ(BPF_CLASS(insn[i].code), BPF_LDX, "found BPF_LDX");
-+	}
-+
-+close_skel:
-+	fold_ro_ldx__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/fold_ro_ldx.c  
-b/tools/testing/selftests/bpf/progs/fold_ro_ldx.c
-new file mode 100644
-index 000000000000..c83ac65e2dee
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/fold_ro_ldx.c
-@@ -0,0 +1,20 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+extern const int CONFIG_DROP __kconfig __weak;
-+
-+struct __sk_buff;
-+
-+SEC("tc")
-+int fold_ro_ldx(struct __sk_buff *skb)
-+{
-+	int ret = 1;
-+
-+	if (CONFIG_DROP)
-+		ret = 2;
-+
-+	return ret;
-+}
--- 
-2.37.0.170.g444d1eabd0-goog
-
-
+Acked-by: Martin KaFai Lau <kafai@fb.com>
