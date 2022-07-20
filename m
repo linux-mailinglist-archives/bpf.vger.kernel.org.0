@@ -2,55 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A773657AAF0
-	for <lists+bpf@lfdr.de>; Wed, 20 Jul 2022 02:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97BF957AB36
+	for <lists+bpf@lfdr.de>; Wed, 20 Jul 2022 02:54:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237189AbiGTAWF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 19 Jul 2022 20:22:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55238 "EHLO
+        id S230229AbiGTAy1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Jul 2022 20:54:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237447AbiGTAV6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Jul 2022 20:21:58 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 663895E808
-        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 17:21:56 -0700 (PDT)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26JI4v2A018825
-        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 17:21:56 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hdvdrvq5t-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 17:21:55 -0700
-Received: from twshared5413.23.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Tue, 19 Jul 2022 17:21:53 -0700
-Received: by devbig932.frc1.facebook.com (Postfix, from userid 4523)
-        id 3D542A629907; Tue, 19 Jul 2022 17:21:45 -0700 (PDT)
-From:   Song Liu <song@kernel.org>
-To:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <live-patching@vger.kernel.org>
-CC:     <daniel@iogearbox.net>, <kernel-team@fb.com>, <jolsa@kernel.org>,
-        <rostedt@goodmis.org>, Song Liu <song@kernel.org>
-Subject: [PATCH v5 bpf-next 4/4] bpf: Support bpf_trampoline on functions with IPMODIFY (e.g. livepatch)
-Date:   Tue, 19 Jul 2022 17:21:26 -0700
-Message-ID: <20220720002126.803253-5-song@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220720002126.803253-1-song@kernel.org>
-References: <20220720002126.803253-1-song@kernel.org>
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: NRI2wt-UmSZCCsyHB-O-2NCdAIDB6jAB
-X-Proofpoint-ORIG-GUID: NRI2wt-UmSZCCsyHB-O-2NCdAIDB6jAB
-Content-Transfer-Encoding: 8BIT
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S229556AbiGTAy1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Jul 2022 20:54:27 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D0F4AD7C
+        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 17:54:25 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id 17so4816881pfy.0
+        for <bpf@vger.kernel.org>; Tue, 19 Jul 2022 17:54:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=cyOnTwAp7Ir7QkgxAgqJi8I0C6Q1mrRCDZGyfrrSuww=;
+        b=nCeg9D+iVWvwT6+iBZev+RRzi5VEF2J/HI7RE1Tw21J4eDefoxTeXvSRr7vvWDVdK3
+         15fncZQc+uaxBOfWj82ZX/3kLMAgNpzaF6P0JRRIssxRZbr3lh7ka3j5XhoFJm87UWH8
+         nhCInqYKgah5cysjLPvn5YzVcaYrYyPiXN9AviaT4jh2VKEh25IHgYjw6+Mhn51A/dE2
+         Xqeap6p8QhtsrU6GSq9WVc9ZPnAVvbuWOKzyhqAwlCIs8cALkdWP39/+Qa+HR5zV3mUU
+         YPIsnIozzh4zEVNw2RzqyR6eMiORPQxToysfAb5kbCXBhBVvZdLZD4hc6oHbKxGU29SX
+         kifg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=cyOnTwAp7Ir7QkgxAgqJi8I0C6Q1mrRCDZGyfrrSuww=;
+        b=l8Iif0MubJ5rNxVcUpyT7mLmBNVrgA+2dvA7fNNX4/jJn0cnS8p6dQGmCXpni2BeNM
+         2uGX40IlRy4BGV2TXzfX1pAWvKQS5/WXfQkmAsoGJWrjHv/hpnKFElS3BziaOTUA5y38
+         oSAh44bjqaOUrMOILNZkLw4X/09hgetH757DJkzPMrwF9gcl4C5xeFIzBzmBpQt6G2ha
+         pFQERV//oALhfy3GBFvSEhgTkId6sHjG6461joJc/atOyyQbv9Xyv+O33bP3HdCIuUB5
+         gQGRW8q1KsKYZd6fdrj8KsR3O7ZDxNfUDc/AdbOdnYiLMZjuay1ZnWxeylh+HOl1Vlmm
+         RRfw==
+X-Gm-Message-State: AJIora8Pcibpu//Ej/hTBA5mSDe5a6n9LSy9U32s8TM1u6m/qUK7Ckqg
+        SNvdh/BoOo/mbUKpGp/eppk=
+X-Google-Smtp-Source: AGRyM1u7xgxrMEWi0HhRxlvmOp6wOPDYr7vSBkJgRmJpQVaWtsWKrQs5b80HvHoAMVECX2uJw6aStg==
+X-Received: by 2002:a63:455a:0:b0:412:9855:64eb with SMTP id u26-20020a63455a000000b00412985564ebmr32137991pgk.131.1658278465281;
+        Tue, 19 Jul 2022 17:54:25 -0700 (PDT)
+Received: from macbook-pro-3.dhcp.thefacebook.com ([2620:10d:c090:400::5:d702])
+        by smtp.gmail.com with ESMTPSA id o186-20020a62cdc3000000b0050dc7628171sm12171073pfg.75.2022.07.19.17.54.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jul 2022 17:54:24 -0700 (PDT)
+Date:   Tue, 19 Jul 2022 17:54:22 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Delyan Kratunov <delyank@fb.com>
+Cc:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "sdf@google.com" <sdf@google.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [PATCH RFC bpf-next 0/3] Execution context callbacks
+Message-ID: <20220720005422.bfjw6yb6ofr37o4f@macbook-pro-3.dhcp.thefacebook.com>
+References: <cover.1657576063.git.delyank@fb.com>
+ <Ys24W4RJS0BAfKzP@google.com>
+ <3a6294a44dfec84b3efbdebed6a0d8d9c5874815.camel@fb.com>
+ <20220715015100.p7fwr7dbjyfbjjad@MacBook-Pro-3.local>
+ <8ee9f9d1a5218ab23655d3f0d754aa5634a71d89.camel@fb.com>
+ <20220719190204.vzkrfzsfkup6olfr@MacBook-Pro-3.local>
+ <1ef3938729a61f2caa4cda9fe5784ea1d707f544.camel@fb.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-07-19_10,2022-07-19_01,2022-06-22_01
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=no
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1ef3938729a61f2caa4cda9fe5784ea1d707f544.camel@fb.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,331 +80,199 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When tracing a function with IPMODIFY ftrace_ops (livepatch), the bpf
-trampoline must follow the instruction pointer saved on stack. This needs
-extra handling for bpf trampolines with BPF_TRAMP_F_CALL_ORIG flag.
+On Tue, Jul 19, 2022 at 10:12:57PM +0000, Delyan Kratunov wrote:
+> On Tue, 2022-07-19 at 12:02 -0700, Alexei Starovoitov wrote:
+> > On Fri, Jul 15, 2022 at 06:28:20PM +0000, Delyan Kratunov wrote:
+> > > On Thu, 2022-07-14 at 18:51 -0700, Alexei Starovoitov wrote:
+> > > > On Tue, Jul 12, 2022 at 06:42:52PM +0000, Delyan Kratunov wrote:
+> > > > > 
+> > > > > > but have you though of maybe initially supporting something like:
+> > > > > > 
+> > > > > > bpf_timer_init(&timer, map, SOME_NEW_DEFERRED_NMI_ONLY_FLAG);
+> > > > > > bpf_timer_set_callback(&timer, cg);
+> > > > > > bpf_timer_start(&timer, 0, 0);
+> > > > > > 
+> > > > > > If you init a timer with that special flag, I'm assuming you can have
+> > > > > > special cases in the existing helpers to simulate the delayed work?
+> > > > > 
+> > > > > Potentially but I have some reservations about drawing this equivalence.
+> > > > 
+> > > > hrtimer api has various: flags. soft vs hard irq, pinned and not.
+> > > > So the suggestion to treat irq_work callback as special timer flag
+> > > > actually fits well.
+> > > > 
+> > > > bpf_timer_init + set_callback + start can be a static inline function
+> > > > named bpf_work_submit() in bpf_helpers.h
+> > > > (or some new file that will mark the beginning libc-bpf library).
+> > > > Reusing struct bpf_timer and adding zero-delay callback could probably be
+> > > > easier for users to learn and consume.
+> > > 
+> > > To clarify, we're talking about 1) making bpf_timer nmi-safe for _some_ but not all
+> > > combinations of parameters and 2) adding new flags to specify an execution context?
+> > > It's achievable but it's hard to see how it's the superior solution here.
+> > > 
+> > > > 
+> > > > Separately:
+> > > > +struct bpf_delayed_work {
+> > > > +       __u64 :64;
+> > > > +       __u64 :64;
+> > > > +       __u64 :64;
+> > > > +       __u64 :64;
+> > > > +       __u64 :64;
+> > > > +} __attribute__((aligned(8)));
+> > > > is not extensible.
+> > > > It would be better to add indirection to allow kernel side to grow
+> > > > independently from amount of space consumed in a map value.
+> > > 
+> > > Fair point, I was wondering what to do with it - storing just a pointer sounds
+> > > reasonable.
+> > > 
+> > > > Can you think of a way to make irq_work/sleepable callback independent of maps?
+> > > > Assume bpf_mem_alloc is already available and NMI prog can allocate a typed object.
+> > > > The usage could be:
+> > > > struct my_work {
+> > > >   int a;
+> > > >   struct task_struct __kptr_ref *t;
+> > > > };
+> > > > void my_cb(struct my_work *w);
+> > > > 
+> > > > struct my_work *w = bpf_mem_alloc(allocator, bpf_core_type_id_local(*w));
+> > > > w->t = ..;
+> > > > bpf_submit_work(w, my_cb, SLEEPABLE | IRQ_WORK);
+> > > > 
+> > > > Am I day dreaming? :)
+> > > 
+> > > Nothing wrong with dreaming of a better future :) 
+> > > 
+> > > (I'm assuming you're thinking of bpf_mem_alloc being fronted by the allocator you
+> > > recently sent to the list.)
+> > > 
+> > > On a first pass, here are my concerns:
+> > > 
+> > > A program and its maps can guarantee a certain amount of storage for work items.
+> > > Sizing that storage is difficult but it is yours alone to use. The freelist allocator
+> > > can be transiently drained by other programs and starve you of this utility. This is
+> > > a new failure mode, so it's worth talking about.
+> > 
+> > That would be the issue only when progs deliberately share the allocator.
+> > In this stmt:
+> > struct my_work *w = bpf_mem_alloc(allocator, bpf_core_type_id_local(*w));
+> > The 'allocator' can be unique for each prog or shared across few progs in the same .c file.
+> > I wasn't planning to support one global allocator.
+> > Just like one global hash map doesn't quite make sense.
+> > The user has to create an allocator first, get it connected with memcg,
+> > and use the explicit one in their bpf progs/maps.
+> > 
+> > > With a generic allocator mechanism, we'll have a hard time enforcing the can't-load-
+> > > or-store-into-special-fields logic. I like that guardrail and I'm not sure how we'd
+> > > achieve the same guarantees. (In your snippet, we don't have the llist_node on the
+> > > work item - do we wrap my_work into something else internally? That would hide the
+> > > fields that need protecting at the expense of an extra bpf_mem_alloc allocation.)
+> > 
+> > bpf_mem_alloc will return referenced PTR_TO_BTF_ID.
+> > Every field in this structure is typed. So it's trivial for the verifier to make
+> > some of them read only or not accesible at all.
+> > 'struct my_work' can have an explicit struct bpf_delayed_work field. Example:
+> > struct my_work {
+> >   struct bpf_delayed_work work; // not accessible by prog
+> >   int a; // scalar read/write
+> >   struct task_struct __kptr_ref *t;  // kptr semantics
+> > };
+> 
+> Sure, anything is possible, it's just more complexity and these checks are not
+> exactly easy to follow right now. 
+> 
+> Alternatively, we could do the classic allocator thing and allocate accounting space
+> before the pointer we return. Some magic flag could then expand the space enough to
+> use for submit_work. Some allocations would be bumped to a higher bucket but that's
+> okay because it would be conststent overhead for those allocation sites.
 
-Implement bpf_tramp_ftrace_ops_func and use it for the ftrace_ops used
-by BPF trampoline. This enables tracing functions with livepatch.
+Technically we can, but that would be a departure from what we already do.
+bpf_spin_lock, bpf_timer, __kptr are normal part of struct-s with different access
+restrictions. 'struct bpf_delayed_work' shouldn't be any different.
 
-This also requires moving bpf trampoline to *_ftrace_direct_mult APIs.
+Another approach would be to let bpf prog allocate 'struct my_work' without
+any special fields. Then use nmi-safe allocator inside bpf_submit_work, hide
+it completely from bpf side and auto-free after callback is done.
+But extra alloc is a performance hit and overall it will be an unusual hack.
 
-Link: https://lore.kernel.org/all/20220602193706.2607681-2-song@kernel.org/
-Signed-off-by: Song Liu <song@kernel.org>
----
- include/linux/bpf.h     |   8 ++
- kernel/bpf/trampoline.c | 158 +++++++++++++++++++++++++++++++++++-----
- 2 files changed, 149 insertions(+), 17 deletions(-)
+May be we can allow bpf_submit_work() to work with referenced ptr_to_btf_id
+like above and with normal map value similar to what you've implemented?
+We would need to somehow make sure that container_of() operation to cast from
+&work either to allocated ptr_to_btf_id or to map value works in both cases.
+That would be the most flexible solution and will resemble kernel programming
+style the best.
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 7496842a4671..f35c59e0b742 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -47,6 +47,7 @@ struct kobject;
- struct mem_cgroup;
- struct module;
- struct bpf_func_state;
-+struct ftrace_ops;
- 
- extern struct idr btf_idr;
- extern spinlock_t btf_idr_lock;
-@@ -756,6 +757,11 @@ struct btf_func_model {
-  */
- #define BPF_TRAMP_F_ORIG_STACK		BIT(5)
- 
-+/* This trampoline is on a function with another ftrace_ops with IPMODIFY,
-+ * e.g., a live patch. This flag is set and cleared by ftrace call backs,
-+ */
-+#define BPF_TRAMP_F_SHARE_IPMODIFY	BIT(6)
-+
- /* Each call __bpf_prog_enter + call bpf_func + call __bpf_prog_exit is ~50
-  * bytes on x86.
-  */
-@@ -838,9 +844,11 @@ struct bpf_tramp_image {
- struct bpf_trampoline {
- 	/* hlist for trampoline_table */
- 	struct hlist_node hlist;
-+	struct ftrace_ops *fops;
- 	/* serializes access to fields of this trampoline */
- 	struct mutex mutex;
- 	refcount_t refcnt;
-+	u32 flags;
- 	u64 key;
- 	struct {
- 		struct btf_func_model model;
-diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index 6691dbf9e467..42e387a12694 100644
---- a/kernel/bpf/trampoline.c
-+++ b/kernel/bpf/trampoline.c
-@@ -13,6 +13,7 @@
- #include <linux/static_call.h>
- #include <linux/bpf_verifier.h>
- #include <linux/bpf_lsm.h>
-+#include <linux/delay.h>
- 
- /* dummy _ops. The verifier will operate on target program's ops. */
- const struct bpf_verifier_ops bpf_extension_verifier_ops = {
-@@ -29,6 +30,81 @@ static struct hlist_head trampoline_table[TRAMPOLINE_TABLE_SIZE];
- /* serializes access to trampoline_table */
- static DEFINE_MUTEX(trampoline_mutex);
- 
-+#ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
-+static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mutex);
-+
-+static int bpf_tramp_ftrace_ops_func(struct ftrace_ops *ops, enum ftrace_ops_cmd cmd)
-+{
-+	struct bpf_trampoline *tr = ops->private;
-+	int ret = 0;
-+
-+	if (cmd == FTRACE_OPS_CMD_ENABLE_SHARE_IPMODIFY_SELF) {
-+		/* This is called inside register_ftrace_direct_multi(), so
-+		 * tr->mutex is already locked.
-+		 */
-+		lockdep_assert_held_once(&tr->mutex);
-+
-+		/* Instead of updating the trampoline here, we propagate
-+		 * -EAGAIN to register_ftrace_direct_multi(). Then we can
-+		 * retry register_ftrace_direct_multi() after updating the
-+		 * trampoline.
-+		 */
-+		if ((tr->flags & BPF_TRAMP_F_CALL_ORIG) &&
-+		    !(tr->flags & BPF_TRAMP_F_ORIG_STACK)) {
-+			if (WARN_ON_ONCE(tr->flags & BPF_TRAMP_F_SHARE_IPMODIFY))
-+				return -EBUSY;
-+
-+			tr->flags |= BPF_TRAMP_F_SHARE_IPMODIFY;
-+			return -EAGAIN;
-+		}
-+
-+		return 0;
-+	}
-+
-+	/* The normal locking order is
-+	 *    tr->mutex => direct_mutex (ftrace.c) => ftrace_lock (ftrace.c)
-+	 *
-+	 * The following two commands are called from
-+	 *
-+	 *   prepare_direct_functions_for_ipmodify
-+	 *   cleanup_direct_functions_after_ipmodify
-+	 *
-+	 * In both cases, direct_mutex is already locked. Use
-+	 * mutex_trylock(&tr->mutex) to avoid deadlock in race condition
-+	 * (something else is making changes to this same trampoline).
-+	 */
-+	if (!mutex_trylock(&tr->mutex)) {
-+		/* sleep 1 ms to make sure whatever holding tr->mutex makes
-+		 * some progress.
-+		 */
-+		msleep(1);
-+		return -EAGAIN;
-+	}
-+
-+	switch (cmd) {
-+	case FTRACE_OPS_CMD_ENABLE_SHARE_IPMODIFY_PEER:
-+		tr->flags |= BPF_TRAMP_F_SHARE_IPMODIFY;
-+
-+		if ((tr->flags & BPF_TRAMP_F_CALL_ORIG) &&
-+		    !(tr->flags & BPF_TRAMP_F_ORIG_STACK))
-+			ret = bpf_trampoline_update(tr, false /* lock_direct_mutex */);
-+		break;
-+	case FTRACE_OPS_CMD_DISABLE_SHARE_IPMODIFY_PEER:
-+		tr->flags &= ~BPF_TRAMP_F_SHARE_IPMODIFY;
-+
-+		if (tr->flags & BPF_TRAMP_F_ORIG_STACK)
-+			ret = bpf_trampoline_update(tr, false /* lock_direct_mutex */);
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	};
-+
-+	mutex_unlock(&tr->mutex);
-+	return ret;
-+}
-+#endif
-+
- bool bpf_prog_has_trampoline(const struct bpf_prog *prog)
- {
- 	enum bpf_attach_type eatype = prog->expected_attach_type;
-@@ -89,6 +165,16 @@ static struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
- 	tr = kzalloc(sizeof(*tr), GFP_KERNEL);
- 	if (!tr)
- 		goto out;
-+#ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
-+	tr->fops = kzalloc(sizeof(struct ftrace_ops), GFP_KERNEL);
-+	if (!tr->fops) {
-+		kfree(tr);
-+		tr = NULL;
-+		goto out;
-+	}
-+	tr->fops->private = tr;
-+	tr->fops->ops_func = bpf_tramp_ftrace_ops_func;
-+#endif
- 
- 	tr->key = key;
- 	INIT_HLIST_NODE(&tr->hlist);
-@@ -128,7 +214,7 @@ static int unregister_fentry(struct bpf_trampoline *tr, void *old_addr)
- 	int ret;
- 
- 	if (tr->func.ftrace_managed)
--		ret = unregister_ftrace_direct((long)ip, (long)old_addr);
-+		ret = unregister_ftrace_direct_multi(tr->fops, (long)old_addr);
- 	else
- 		ret = bpf_arch_text_poke(ip, BPF_MOD_CALL, old_addr, NULL);
- 
-@@ -137,15 +223,20 @@ static int unregister_fentry(struct bpf_trampoline *tr, void *old_addr)
- 	return ret;
- }
- 
--static int modify_fentry(struct bpf_trampoline *tr, void *old_addr, void *new_addr)
-+static int modify_fentry(struct bpf_trampoline *tr, void *old_addr, void *new_addr,
-+			 bool lock_direct_mutex)
- {
- 	void *ip = tr->func.addr;
- 	int ret;
- 
--	if (tr->func.ftrace_managed)
--		ret = modify_ftrace_direct((long)ip, (long)old_addr, (long)new_addr);
--	else
-+	if (tr->func.ftrace_managed) {
-+		if (lock_direct_mutex)
-+			ret = modify_ftrace_direct_multi(tr->fops, (long)new_addr);
-+		else
-+			ret = modify_ftrace_direct_multi_nolock(tr->fops, (long)new_addr);
-+	} else {
- 		ret = bpf_arch_text_poke(ip, BPF_MOD_CALL, old_addr, new_addr);
-+	}
- 	return ret;
- }
- 
-@@ -163,10 +254,12 @@ static int register_fentry(struct bpf_trampoline *tr, void *new_addr)
- 	if (bpf_trampoline_module_get(tr))
- 		return -ENOENT;
- 
--	if (tr->func.ftrace_managed)
--		ret = register_ftrace_direct((long)ip, (long)new_addr);
--	else
-+	if (tr->func.ftrace_managed) {
-+		ftrace_set_filter_ip(tr->fops, (unsigned long)ip, 0, 0);
-+		ret = register_ftrace_direct_multi(tr->fops, (long)new_addr);
-+	} else {
- 		ret = bpf_arch_text_poke(ip, BPF_MOD_CALL, NULL, new_addr);
-+	}
- 
- 	if (ret)
- 		bpf_trampoline_module_put(tr);
-@@ -332,11 +425,11 @@ static struct bpf_tramp_image *bpf_tramp_image_alloc(u64 key, u32 idx)
- 	return ERR_PTR(err);
- }
- 
--static int bpf_trampoline_update(struct bpf_trampoline *tr)
-+static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mutex)
- {
- 	struct bpf_tramp_image *im;
- 	struct bpf_tramp_links *tlinks;
--	u32 flags = BPF_TRAMP_F_RESTORE_REGS;
-+	u32 orig_flags = tr->flags;
- 	bool ip_arg = false;
- 	int err, total;
- 
-@@ -358,18 +451,31 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr)
- 		goto out;
- 	}
- 
-+	/* clear all bits except SHARE_IPMODIFY */
-+	tr->flags &= BPF_TRAMP_F_SHARE_IPMODIFY;
-+
- 	if (tlinks[BPF_TRAMP_FEXIT].nr_links ||
--	    tlinks[BPF_TRAMP_MODIFY_RETURN].nr_links)
-+	    tlinks[BPF_TRAMP_MODIFY_RETURN].nr_links) {
- 		/* NOTE: BPF_TRAMP_F_RESTORE_REGS and BPF_TRAMP_F_SKIP_FRAME
- 		 * should not be set together.
- 		 */
--		flags = BPF_TRAMP_F_CALL_ORIG | BPF_TRAMP_F_SKIP_FRAME;
-+		tr->flags |= BPF_TRAMP_F_CALL_ORIG | BPF_TRAMP_F_SKIP_FRAME;
-+	} else {
-+		tr->flags |= BPF_TRAMP_F_RESTORE_REGS;
-+	}
- 
- 	if (ip_arg)
--		flags |= BPF_TRAMP_F_IP_ARG;
-+		tr->flags |= BPF_TRAMP_F_IP_ARG;
-+
-+#ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
-+again:
-+	if ((tr->flags & BPF_TRAMP_F_SHARE_IPMODIFY) &&
-+	    (tr->flags & BPF_TRAMP_F_CALL_ORIG))
-+		tr->flags |= BPF_TRAMP_F_ORIG_STACK;
-+#endif
- 
- 	err = arch_prepare_bpf_trampoline(im, im->image, im->image + PAGE_SIZE,
--					  &tr->func.model, flags, tlinks,
-+					  &tr->func.model, tr->flags, tlinks,
- 					  tr->func.addr);
- 	if (err < 0)
- 		goto out;
-@@ -378,17 +484,34 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr)
- 	WARN_ON(!tr->cur_image && tr->selector);
- 	if (tr->cur_image)
- 		/* progs already running at this address */
--		err = modify_fentry(tr, tr->cur_image->image, im->image);
-+		err = modify_fentry(tr, tr->cur_image->image, im->image, lock_direct_mutex);
- 	else
- 		/* first time registering */
- 		err = register_fentry(tr, im->image);
-+
-+#ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
-+	if (err == -EAGAIN) {
-+		/* -EAGAIN from bpf_tramp_ftrace_ops_func. Now
-+		 * BPF_TRAMP_F_SHARE_IPMODIFY is set, we can generate the
-+		 * trampoline again, and retry register.
-+		 */
-+		/* reset fops->func and fops->trampoline for re-register */
-+		tr->fops->func = NULL;
-+		tr->fops->trampoline = 0;
-+		goto again;
-+	}
-+#endif
- 	if (err)
- 		goto out;
-+
- 	if (tr->cur_image)
- 		bpf_tramp_image_put(tr->cur_image);
- 	tr->cur_image = im;
- 	tr->selector++;
- out:
-+	/* If any error happens, restore previous flags */
-+	if (err)
-+		tr->flags = orig_flags;
- 	kfree(tlinks);
- 	return err;
- }
-@@ -454,7 +577,7 @@ static int __bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_tr
- 
- 	hlist_add_head(&link->tramp_hlist, &tr->progs_hlist[kind]);
- 	tr->progs_cnt[kind]++;
--	err = bpf_trampoline_update(tr);
-+	err = bpf_trampoline_update(tr, true /* lock_direct_mutex */);
- 	if (err) {
- 		hlist_del_init(&link->tramp_hlist);
- 		tr->progs_cnt[kind]--;
-@@ -487,7 +610,7 @@ static int __bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_
- 	}
- 	hlist_del_init(&link->tramp_hlist);
- 	tr->progs_cnt[kind]--;
--	return bpf_trampoline_update(tr);
-+	return bpf_trampoline_update(tr, true /* lock_direct_mutex */);
- }
- 
- /* bpf_trampoline_unlink_prog() should never fail. */
-@@ -715,6 +838,7 @@ void bpf_trampoline_put(struct bpf_trampoline *tr)
- 	 * multiple rcu callbacks.
- 	 */
- 	hlist_del(&tr->hlist);
-+	kfree(tr->fops);
- 	kfree(tr);
- out:
- 	mutex_unlock(&trampoline_mutex);
--- 
-2.30.2
+> > 
+> > > Managing the storage returned from bpf_mem_alloc is of course also a concern. We'd
+> > > need to treat bpf_submit_work as "releasing" it (really, taking ownership). This path
+> > > means more lifecycle analysis in the verifier and explicit and implicit free()s.
+> > 
+> > What is the actual concern?
+> > bpf_submit_work will have clear "release" semantics. The verifier already supports it.
+> > The 'my_cb' callback will receive reference PTR_TO_BTF_ID as well and would
+> > have to release it with bpf_mem_free(ma, w).
+> > Here is more complete proposal:
+> > 
+> > struct {
+> >         __uint(type, BPF_MEM_ALLOC);
+> > } allocator SEC(".maps");
+> 
+> I like this, so long as we pre-allocate enough to submit more sleepable work
+> immediately - the first work item the program submits could then prefill more items.
+> 
+> For an even better experience, it would be great if we could specify in the map
+> definition the number of items of size X we'll need. If we give that lever to the
+> developer, they can then use it so they never have to orchestrate sleepable work to
+> call bpf_mem_prealloc explicitly.
 
+Agree. That's the idea. Will work on it.
+
+> 
+> > 
+> > struct my_work {
+> >   struct bpf_delayed_work work;
+> >   int a;
+> >   struct task_struct __kptr_ref *t;
+> > };
+> > 
+> > void my_cb(struct my_work *w)
+> > {
+> >   // access w
+> >   bpf_mem_free(&allocator, w);
+> > }
+> > 
+> > void bpf_prog(...)
+> > {
+> >   struct my_work *w = bpf_mem_alloc(&allocator, bpf_core_type_id_local(*w));
+> >   w->t = ..;
+> >   bpf_submit_work(w, my_cb, USE_IRQ_WORK);
+> > }
+> > 
+> > > I'm not opposed to it overall - the developer experience is very familiar - but I am
+> > > primarily worried that allocator failures will be in the same category of issues as
+> > > the hash map collisions for stacks. If you want reliability, you just don't use that
+> > > type of map - what's the alternative in this hypothetical bpf_mem_alloc future?
+> > 
+> > Reliability of allocation is certianly necessary.
+> > bpf_mem_alloc will have an ability to _synchronously_ preallocate into freelist
+> > from sleepable context, so bpf prog will have full control of that free list.
+> 
+> I think having the map initialized and prefilled on load and having sleepable work
+> from the first version of this mechanism becomes a requirement of this design. Having
+> the prefill requirements (number of items and size) on the map definition removes the
+> requirement to have sleepable work from day one.
+
+I'm not sure why 'sleepable' is a requirement. irq_work will be able to do
+synchronous prefill with GFP_NOWAIT. sleepable callback will be able to do
+synchronous prefill with GFP_KERNEL. There is a difference, of course,
+but it's not a blocker.
+
+> How do you want to sequence this? Do you plan to do the work to expose bpf_mem_alloc
+> to programs as part of the initial series or as a later followup? 
+
+Currently thinking as a follow up.
+If you have cycles maybe you can help ?
+bpf_mem_alloc/free internals are tested and usable already. prefill is not implemented yet.
+But the work to do bpf_mem_alloc helper and to expose allocator as a special kind of map
+can start already.
