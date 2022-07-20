@@ -2,74 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8773357BAF3
-	for <lists+bpf@lfdr.de>; Wed, 20 Jul 2022 17:57:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B8F57BBC5
+	for <lists+bpf@lfdr.de>; Wed, 20 Jul 2022 18:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234029AbiGTP5L (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Jul 2022 11:57:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33712 "EHLO
+        id S234446AbiGTQrc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Jul 2022 12:47:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232685AbiGTP5K (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Jul 2022 11:57:10 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0E364B0E3
-        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 08:57:09 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id o18so16760059pgu.9
-        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 08:57:09 -0700 (PDT)
+        with ESMTP id S234444AbiGTQrb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Jul 2022 12:47:31 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6491D3B979
+        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 09:47:31 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id i9-20020a170902cf0900b0016d1e277547so1689473plg.0
+        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 09:47:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ce/0l8zZFSWxrvXqTD1rFm6VFoYD2QFsbPDkuHHkwaY=;
-        b=RoKxGblmnegdrP1c0em3AoK5G4jeKtLnt4i2jnxOgsuI+WbC12ClEOCv9Ip327DSg7
-         u7OnrzBCQmTAwD+iIRo4E0bBUAtsQwk/sSFIcHyfCPfi4m6TuSAM0WjJ+8aBs9oEx8DK
-         DD3Cu1D+VkUuCfBitqFMXA33WbLqlm+RNcifcOjjqb4S6n9UvPsvHWxolZCqjcMHq3KW
-         4x3ZPxHAb5LAAy7nyabAsOBA78W5D+RxyePrw8YyXj9FhxpOkkpCWKP26QFKzl4f7bYl
-         /oxLuZtpYcd4TB0ACz9ww0YZgW93ZjrcR4e4Imq/iHY5wC+wQ+Hbckqw7+BV/+LCQ5jV
-         /3kQ==
+        h=date:message-id:mime-version:subject:from:to:cc
+         :content-transfer-encoding;
+        bh=CuyZwFu1Zt52A3Wtsx8i/O5tRA8Koa3iDRGqsfxSIpI=;
+        b=BhE9GERZNtcNyOedKgwn8oLoKN2Twptaodr09mNB69A5qCPyCxw63fkS38+3Za+GLA
+         jzUKl0K4xtNAkxHP1EgHoNYFpGrc+8JT7l2pjHUTMI3xaVFsCHcjGZe5EFHzz4ar5MSK
+         sEUpobzwYBfM+V9fCupXCAtt0aJjoPRgKKoFetgURIVCq2lVWWn22GhCRAuugXhytPpe
+         xqUHmjTrY6efYcAv1Om47GwGehHJAj5jAFS+dEKJ4AuIm2kT4kA6/RlRwpONdLiap2bv
+         6nIHKVl3M5oBjt3/om0i8Y6jUzdMLbpYl7vHsQ3N/dGhhhAFd7FybJJmFPv4j6srDBj4
+         imNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ce/0l8zZFSWxrvXqTD1rFm6VFoYD2QFsbPDkuHHkwaY=;
-        b=BOcUQBIIMq0Sjuv4jn59Xx/j88Qj/xxcCwaCPEiwdIXlTo3z5ANNUoZuTahDMJFSXN
-         ogWLFvLVSn1UWZouJs06sa0dsjxu/25ctiyOwCv/8SKtT+S1JPKyDDdBSBCJMjKpETGE
-         XPgihYs27MbUTKOyqzRIKZqvxmCYMDclN1xl7EpwCqpMe5O3y/seP53av1DJTDJ6fRwk
-         5vvpM0H17V+jusq+PPfNVUSjxBmCQfXOU+7CdbRWZUYVHDBsF82gQuACtJXY+CHRmr52
-         7V40vgTPO9aUIfY/CBF52udWf8d4+5XGqvbqPYNfZspVq+t1ucd1Ooaepu2Lqjgls7S1
-         M/YQ==
-X-Gm-Message-State: AJIora9GtPfb9KytzBW1WPTLkeCM6vKKc1258csQ8UfTrz64Lt9iZ0A1
-        YhCyR/HsSlGCL0PXMirGk17S48RYXEq8Yng+JxjaVg==
-X-Google-Smtp-Source: AGRyM1tINSVkMuM4eb4gm1xru+KFwEKZU3QyNxXe0sGn0kBmUMtttpngaMrGv+eJAVxEtd7/6O0iezB0rkrAM1sODLE=
-X-Received: by 2002:a65:4c0b:0:b0:415:d3a4:44d1 with SMTP id
- u11-20020a654c0b000000b00415d3a444d1mr34871068pgq.191.1658332629110; Wed, 20
- Jul 2022 08:57:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220719194028.4180569-1-jevburton.kernel@gmail.com>
- <CAKH8qBsm0QqE-7Pmhhz=tRYAfgpirbu6K1deQ6cQTU+GTykLNA@mail.gmail.com> <179cfb89be0e4f928a55d049fe62aa9e@huawei.com>
-In-Reply-To: <179cfb89be0e4f928a55d049fe62aa9e@huawei.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc
+         :content-transfer-encoding;
+        bh=CuyZwFu1Zt52A3Wtsx8i/O5tRA8Koa3iDRGqsfxSIpI=;
+        b=R0fPVdH3irE+0uVJb64kwJuuakJpX5UnswC4s+ouDYjV7lPoslxPMO8a58+X1c2PME
+         otwGjoRI7Jce2qNBn6+MrAnyxOjOtQ6ejXJCJEV8PO4JRv30LF1us4ldSrIr2+ZsrGAh
+         uwx9b0wsuelU3dqUjXhJ1Turqf4sTvQyJuQHdeYCAH6zbrvHfSyGaMUavUOHUknkDI5U
+         CNRq/8dTVARljqbaCehLx5woAKFhJgpF9tRPWlVu5SI8hE1F5nTKSkXZS0rNPDSXqkkN
+         DCprJEyxo0yboBqmFpRBSLplGk0Pg8dcn2ZAlMjjlnNKH0BOBuW1xukRBLJ8dWPwzAfB
+         PKIQ==
+X-Gm-Message-State: AJIora+7czN2pH1VGdM1JcfcYhtMrozHf75/LbllhyX+ikwdpwyKj3Oy
+        6zAbfVeOAxTI4rIBnAv027KShhYAicu71ZyIH3AF5RrJL4l3fiY6IXm9a/LPJwtzZVwFqIrRXsm
+        dcEKvAtd/DjBoD/B+pm+ypG9vuTqlxN+3HsKFAktng1wvfzKIIg==
+X-Google-Smtp-Source: AGRyM1uNgIbZO2ClIxpdtnZQcCbqVwBIcAR4vGqnkM2A2F5UaBYoc5h6407XU3FR0mfzmWQoZx2q6DI=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a05:6a00:1a8c:b0:52b:3eed:13d8 with SMTP id
+ e12-20020a056a001a8c00b0052b3eed13d8mr28985692pfv.74.1658335650820; Wed, 20
+ Jul 2022 09:47:30 -0700 (PDT)
+Date:   Wed, 20 Jul 2022 09:47:29 -0700
+Message-Id: <20220720164729.147544-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.37.0.170.g444d1eabd0-goog
+Subject: [PATCH bpf-next] bpf: Check attach_func_proto more carefully in check_helper_call
 From:   Stanislav Fomichev <sdf@google.com>
-Date:   Wed, 20 Jul 2022 08:56:58 -0700
-Message-ID: <CAKH8qBt0yR+mtCjAp=8jQL4M6apWQk0wH7Zf4tPDCf3=m+gAKA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next] libbpf: Add bpf_obj_get_opts()
-To:     Roberto Sassu <roberto.sassu@huawei.com>
-Cc:     Joe Burton <jevburton.kernel@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Joe Burton <jevburton@google.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org,
+        syzbot+0f8d989b1fba1addc5e0@syzkaller.appspotmail.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,113 +70,59 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 20, 2022 at 1:02 AM Roberto Sassu <roberto.sassu@huawei.com> wrote:
->
-> > From: Stanislav Fomichev [mailto:sdf@google.com]
-> > Sent: Tuesday, July 19, 2022 10:40 PM
-> > On Tue, Jul 19, 2022 at 12:40 PM Joe Burton <jevburton.kernel@gmail.com>
-> > wrote:
-> > >
-> > > From: Joe Burton <jevburton@google.com>
-> > >
-> > > Add an extensible variant of bpf_obj_get() capable of setting the
-> > > `file_flags` parameter.
-> > >
-> > > This parameter is needed to enable unprivileged access to BPF maps.
-> > > Without a method like this, users must manually make the syscall.
-> > >
-> > > Signed-off-by: Joe Burton <jevburton@google.com>
-> >
-> > Reviewed-by: Stanislav Fomichev <sdf@google.com>
-> >
-> > For context:
-> > We've found this out while we were trying to add support for unpriv
-> > processes to open pinned r-x maps.
-> > Maybe this deserves a test as well? Not sure.
->
-> Hi Stanislav, Joe
->
-> I noticed now this patch. I'm doing a broader work to add opts
-> to bpf_*_get_fd_by_id(). I also adjusted permissions of bpftool
-> depending on the operation type (e.g. show, dump: BPF_F_RDONLY).
->
-> Will send it soon (I'm trying to solve an issue with the CI, where
-> libbfd is not available in the VM doing actual tests).
+Syzkaller found a problem similar to d1a6edecc1fd ("bpf: Check
+attach_func_proto more carefully in check_return_code") where
+attach_func_proto might be NULL:
 
-Is something like this patch included in your series as well? Can you
-use this new interface or do you need something different?
+RIP: 0010:check_helper_call+0x3dcb/0x8d50 kernel/bpf/verifier.c:7330
+ do_check kernel/bpf/verifier.c:12302 [inline]
+ do_check_common+0x6e1e/0xb980 kernel/bpf/verifier.c:14610
+ do_check_main kernel/bpf/verifier.c:14673 [inline]
+ bpf_check+0x661e/0xc520 kernel/bpf/verifier.c:15243
+ bpf_prog_load+0x11ae/0x1f80 kernel/bpf/syscall.c:2620
 
-> Roberto
->
-> > > ---
-> > >  tools/lib/bpf/bpf.c      | 10 ++++++++++
-> > >  tools/lib/bpf/bpf.h      |  9 +++++++++
-> > >  tools/lib/bpf/libbpf.map |  1 +
-> > >  3 files changed, 20 insertions(+)
-> > >
-> > > diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> > > index 5eb0df90eb2b..5acb0e8bd13c 100644
-> > > --- a/tools/lib/bpf/bpf.c
-> > > +++ b/tools/lib/bpf/bpf.c
-> > > @@ -578,12 +578,22 @@ int bpf_obj_pin(int fd, const char *pathname)
-> > >  }
-> > >
-> > >  int bpf_obj_get(const char *pathname)
-> > > +{
-> > > +       LIBBPF_OPTS(bpf_obj_get_opts, opts);
-> > > +       return bpf_obj_get_opts(pathname, &opts);
-> > > +}
-> > > +
-> > > +int bpf_obj_get_opts(const char *pathname, const struct bpf_obj_get_opts
-> > *opts)
-> > >  {
-> > >         union bpf_attr attr;
-> > >         int fd;
-> > >
-> > > +       if (!OPTS_VALID(opts, bpf_obj_get_opts))
-> > > +               return libbpf_err(-EINVAL);
-> > > +
-> > >         memset(&attr, 0, sizeof(attr));
-> > >         attr.pathname = ptr_to_u64((void *)pathname);
-> > > +       attr.file_flags = OPTS_GET(opts, file_flags, 0);
-> > >
-> > >         fd = sys_bpf_fd(BPF_OBJ_GET, &attr, sizeof(attr));
-> > >         return libbpf_err_errno(fd);
-> > > diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-> > > index 88a7cc4bd76f..f31b493b5f9a 100644
-> > > --- a/tools/lib/bpf/bpf.h
-> > > +++ b/tools/lib/bpf/bpf.h
-> > > @@ -270,8 +270,17 @@ LIBBPF_API int bpf_map_update_batch(int fd, const
-> > void *keys, const void *values
-> > >                                     __u32 *count,
-> > >                                     const struct bpf_map_batch_opts *opts);
-> > >
-> > > +struct bpf_obj_get_opts {
-> > > +       size_t sz; /* size of this struct for forward/backward compatibility */
-> > > +
-> > > +       __u32 file_flags;
-> > > +};
-> > > +#define bpf_obj_get_opts__last_field file_flags
-> > > +
-> > >  LIBBPF_API int bpf_obj_pin(int fd, const char *pathname);
-> > >  LIBBPF_API int bpf_obj_get(const char *pathname);
-> > > +LIBBPF_API int bpf_obj_get_opts(const char *pathname,
-> > > +                               const struct bpf_obj_get_opts *opts);
-> > >
-> > >  struct bpf_prog_attach_opts {
-> > >         size_t sz; /* size of this struct for forward/backward compatibility */
-> > > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> > > index 0625adb9e888..119e6e1ea7f1 100644
-> > > --- a/tools/lib/bpf/libbpf.map
-> > > +++ b/tools/lib/bpf/libbpf.map
-> > > @@ -355,6 +355,7 @@ LIBBPF_0.8.0 {
-> > >
-> > >  LIBBPF_1.0.0 {
-> > >         global:
-> > > +               bpf_obj_get_opts;
-> > >                 bpf_prog_query_opts;
-> > >                 bpf_program__attach_ksyscall;
-> > >                 btf__add_enum64;
-> > > --
-> > > 2.37.0.170.g444d1eabd0-goog
-> > >
+With the following reproducer:
+
+  bpf$BPF_PROG_RAW_TRACEPOINT_LOAD(0x5, &(0x7f0000000780)=3D{0xf, 0x4, &(0x=
+7f0000000040)=3D@framed=3D{{}, [@call=3D{0x85, 0x0, 0x0, 0xbb}]}, &(0x7f000=
+0000000)=3D'GPL\x00', 0x0, 0x0, 0x0, 0x0, 0x0, '\x00', 0x0, 0x2b, 0xfffffff=
+fffffffff, 0x8, 0x0, 0x0, 0x10, 0x0}, 0x80)
+
+Let's do the same here, only check attach_func_proto for the prog types
+where we are certain that attach_func_proto is defined.
+
+Fixes: 69fd337a975c ("bpf: per-cgroup lsm flavor")
+Reported-by: syzbot+0f8d989b1fba1addc5e0@syzkaller.appspotmail.com
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ kernel/bpf/verifier.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index c59c3df0fea6..7c1e056624f9 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -7170,6 +7170,7 @@ static void update_loop_inline_state(struct bpf_verif=
+ier_env *env, u32 subprogno
+ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn=
+ *insn,
+ 			     int *insn_idx_p)
+ {
++	enum bpf_prog_type prog_type =3D resolve_prog_type(env->prog);
+ 	const struct bpf_func_proto *fn =3D NULL;
+ 	enum bpf_return_type ret_type;
+ 	enum bpf_type_flag ret_flag;
+@@ -7331,7 +7332,8 @@ static int check_helper_call(struct bpf_verifier_env =
+*env, struct bpf_insn *insn
+ 		}
+ 		break;
+ 	case BPF_FUNC_set_retval:
+-		if (env->prog->expected_attach_type =3D=3D BPF_LSM_CGROUP) {
++		if (prog_type =3D=3D BPF_PROG_TYPE_LSM &&
++		    env->prog->expected_attach_type =3D=3D BPF_LSM_CGROUP) {
+ 			if (!env->prog->aux->attach_func_proto->type) {
+ 				/* Make sure programs that attach to void
+ 				 * hooks don't try to modify return value.
+--=20
+2.37.0.170.g444d1eabd0-goog
+
