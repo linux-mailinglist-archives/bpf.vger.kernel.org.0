@@ -2,159 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2FF357B904
-	for <lists+bpf@lfdr.de>; Wed, 20 Jul 2022 16:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74FD457BAA3
+	for <lists+bpf@lfdr.de>; Wed, 20 Jul 2022 17:41:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233881AbiGTO6F (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Jul 2022 10:58:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35688 "EHLO
+        id S232620AbiGTPlF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Jul 2022 11:41:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241076AbiGTO6A (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Jul 2022 10:58:00 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0F7846D85
-        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 07:57:56 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id s204so11162228oif.5
-        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 07:57:56 -0700 (PDT)
+        with ESMTP id S232804AbiGTPlE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Jul 2022 11:41:04 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA8AB54
+        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 08:41:01 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id bp15so33795585ejb.6
+        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 08:41:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=XSU2WUPOvF0fUCTGSGRZkl8WCZhfSChGKTGTEOsuYNI=;
-        b=iGIpbP2d3UEwVFWw5G9dZlMqJx4o8UCPvRj6piZLN7Qixwv38zIteUBoiwtf11TzoJ
-         8pcI1FzJmEI8s8Z8r4wNd/P56A7AMD40p0ifu6Z8wqaycmhnxl9M7kNdXzB8SXogNKD/
-         YVqd80JtH2cgsBKx3SUf9wdgi1qit4j7Py/II=
+        h=references:user-agent:from:to:cc:subject:date:in-reply-to
+         :message-id:mime-version;
+        bh=p0lRHRqdjzrBFsJBAX2IvF3rVb5j3VLAB3YHRQZcNAM=;
+        b=AMVP8qorKVtH9fwUj0riS2VU3OCnmZQb5mm9CeHeSMjgg0DBddoufxIgvWxhGIza+O
+         7MCT8Z/OAa4XysrJqi8OEQWmyTc5aU5ZJw2aS2fcAd07kpGXXFAMw40Uwc1z8+M11xFR
+         RbFXxnP/fbINFppaltw/XsYUZ48+7lGsKY+pw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=XSU2WUPOvF0fUCTGSGRZkl8WCZhfSChGKTGTEOsuYNI=;
-        b=ZLvvVjLGUkHl1qVyh5ctKlu4eBglzZCJZ22cg2zmxozT3lNRmINRe7meIbTx/6Zs9B
-         mrXrwvALhnnJKbVgkkmPZOiknMQqCnZ9V+dqFa0NGKWdooo/jVZUTtSO/8k29rPAXOg6
-         +Mf/sfLLT3t9VYQRInX8/Mb7G7+AZzl20BOwQoNJ42JTYoAytZNMm69zYDu47QeZvvE8
-         oKVENqIOk9QLYl1oCaUobk+7PfRSSkpyvurR/IEhsjqZmutZ7ftt/4AzGYnrwN91rLV4
-         31nshtwhB1VSQAq/WYui1h3y+DUM8MPQbg3E+sEKNyUvAIrQ4p1kfq3+kMm035AKbur8
-         XSIw==
-X-Gm-Message-State: AJIora+7gILTD6pCBII+Fq2IhfuqLJU+v2CTYMGVPMPardnFKxNEOtU5
-        PPoR5rmCVwTJuDgzARmdbZp35g==
-X-Google-Smtp-Source: AGRyM1v5UNxUPAVexBnv65PVVqbWvE8t6MWf9AqqczcauOBSa7XBiaehpgEh3k3h5n6IkYivB27NLA==
-X-Received: by 2002:a05:6808:170c:b0:335:1d14:f99d with SMTP id bc12-20020a056808170c00b003351d14f99dmr2435919oib.243.1658329076048;
-        Wed, 20 Jul 2022 07:57:56 -0700 (PDT)
-Received: from [192.168.0.41] ([184.4.90.121])
-        by smtp.gmail.com with ESMTPSA id z14-20020a9d62ce000000b0061c7a5691f2sm7425058otk.47.2022.07.20.07.57.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Jul 2022 07:57:55 -0700 (PDT)
-Message-ID: <42069251-3ea7-b0c7-4efb-e144c52ebf51@cloudflare.com>
-Date:   Wed, 20 Jul 2022 09:57:53 -0500
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
+         :in-reply-to:message-id:mime-version;
+        bh=p0lRHRqdjzrBFsJBAX2IvF3rVb5j3VLAB3YHRQZcNAM=;
+        b=ocAGAfgdQ1CpOUFmhhJd/PczDeQ8mwA97y77TcjGvXwljiwGONp/iS31EJ7q8N0atu
+         XMBCVbwtQ8q/0gWWYCBUHxg+qYnl1hcaIVJnA06ywrpT29loclm5vAv2bJqwOand5nF7
+         qtSJVLQXQjf8dUgbQjANKeluIST7y7iDtz8erTF4e9/UrSRihhrH7Zboah/daoLnmCVT
+         R/0FsdbOMEVFab5O5WN4BUd3ne4aLoRqR9oBaG0Hwup4QxiHwc9udOv2SqeOMYrcpqrO
+         zLfadRk7bBfZzVPJdNcnWniUQLc5G4o/IkTt2jFtfbt92F5371wEHVgKEmcv8cPXg0mh
+         /WtA==
+X-Gm-Message-State: AJIora/Z7RE9k3BkH+85aL6nefPWSJHhmx3kLcuFpQwC4nz6g8Rk2egy
+        GipFSER0oN9cqbYMAP6oTQ9iIg==
+X-Google-Smtp-Source: AGRyM1uGdF8nP0NctodGXfYfpKgnnbEgr09az+TNbUmNN2D6KOiGZ1Ls1wFQRszWawycJp+J2XXtNQ==
+X-Received: by 2002:a17:907:94cf:b0:72f:1c2a:d475 with SMTP id dn15-20020a17090794cf00b0072f1c2ad475mr19634188ejc.237.1658331659631;
+        Wed, 20 Jul 2022 08:40:59 -0700 (PDT)
+Received: from cloudflare.com (79.184.200.53.ipv4.supernova.orange.pl. [79.184.200.53])
+        by smtp.gmail.com with ESMTPSA id f17-20020a056402151100b0043b986751a7sm2846150edw.41.2022.07.20.08.40.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jul 2022 08:40:59 -0700 (PDT)
+References: <20220616055543.3285835-1-andrii@kernel.org>
+User-agent: mu4e 1.6.10; emacs 27.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com, kernel-team@cloudflare.com
+Subject: Re: [PATCH bpf-next] libbpf: fix internal USDT address translation
+ logic for shared libraries
+Date:   Wed, 20 Jul 2022 17:32:23 +0200
+In-reply-to: <20220616055543.3285835-1-andrii@kernel.org>
+Message-ID: <87lesnyeph.fsf@cloudflare.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH v2 4/4] selinux: Implement create_user_ns hook
-Content-Language: en-US
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     kpsingh@kernel.org, revest@chromium.org, jackmanb@chromium.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        shuah@kernel.org, brauner@kernel.org, casey@schaufler-ca.com,
-        ebiederm@xmission.com, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, kernel-team@cloudflare.com
-References: <20220707223228.1940249-1-fred@cloudflare.com>
- <20220707223228.1940249-5-fred@cloudflare.com>
- <CAHC9VhTkvPvqGQjyEKbi2pkKBtRQE=Uat34aoKsxjWU0qkF6CA@mail.gmail.com>
-From:   Frederick Lawler <fred@cloudflare.com>
-In-Reply-To: <CAHC9VhTkvPvqGQjyEKbi2pkKBtRQE=Uat34aoKsxjWU0qkF6CA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/19/22 8:32 PM, Paul Moore wrote:
-> On Thu, Jul 7, 2022 at 6:32 PM Frederick Lawler <fred@cloudflare.com> wrote:
->>
->> Unprivileged user namespace creation is an intended feature to enable
->> sandboxing, however this feature is often used to as an initial step to
->> perform a privilege escalation attack.
->>
->> This patch implements a new namespace { userns_create } access control
->> permission to restrict which domains allow or deny user namespace
->> creation. This is necessary for system administrators to quickly protect
->> their systems while waiting for vulnerability patches to be applied.
->>
->> This permission can be used in the following way:
->>
->>          allow domA_t domB_t : namespace { userns_create };
->>
->> Signed-off-by: Frederick Lawler <fred@cloudflare.com>
->>
->> ---
->> Changes since v1:
->> - Introduce this patch
->> ---
->>   security/selinux/hooks.c            | 9 +++++++++
->>   security/selinux/include/classmap.h | 2 ++
->>   2 files changed, 11 insertions(+)
->>
->> diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
->> index beceb89f68d9..73fbcb434fe0 100644
->> --- a/security/selinux/hooks.c
->> +++ b/security/selinux/hooks.c
->> @@ -4227,6 +4227,14 @@ static void selinux_task_to_inode(struct task_struct *p,
->>          spin_unlock(&isec->lock);
->>   }
->>
->> +static int selinux_userns_create(const struct cred *cred)
->> +{
->> +       u32 sid = current_sid();
->> +
->> +       return avc_has_perm(&selinux_state, sid, sid, SECCLASS_NAMESPACE,
->> +                                               NAMESPACE__USERNS_CREATE, NULL);
->> +}
-> 
-> As we continue to discuss this, I'm beginning to think that having a
-> dedicated object class for the userns might be a good idea.  I believe
-> I was the one who gave you these code snippets, so feel free to blame
-> me for the respin ;)
-> 
+Hi Andrii,
 
-No worries, I'll make this change for v3.
+On Wed, Jun 15, 2022 at 10:55 PM -07, Andrii Nakryiko wrote:
 
-> This is what I'm thinking:
-> 
->    static int selinux_userns_create(const struct cred *cred)
->    {
->      u32 sid = current_sid();
-> 
->      return avc_has_perm(&selinux_state, sid, sid,
->                          SECCLASS_USER_NAMESPACE,
->                          USER_NAMESPACE__CREATE, NULL);
->    }
-> 
->> diff --git a/security/selinux/include/classmap.h b/security/selinux/include/classmap.h
->> index ff757ae5f253..9943e85c6b3e 100644
->> --- a/security/selinux/include/classmap.h
->> +++ b/security/selinux/include/classmap.h
->> @@ -254,6 +254,8 @@ const struct security_class_mapping secclass_map[] = {
->>            { COMMON_FILE_PERMS, NULL } },
->>          { "io_uring",
->>            { "override_creds", "sqpoll", NULL } },
->> +       { "namespace",
->> +         { "userns_create", NULL } },
-> 
-> The above would need to change to:
-> 
->    { "user_namespace",
->      { "create", NULL } }
-> 
+[...]
 
+> This patch also changes selftests/bpf Makefile to force urand_read and
+> liburand_read.so to be built with Clang and LLVM's lld (and explicitly
+> request this ELF file size optimization through -znoseparate-code linker
+> parameter) to validate libbpf logic and ensure regressions don't happen
+> in the future. I've bundled these selftests changes together with libbpf
+> changes to keep the above description tied with both libbpf and
+> selftests changes.
+>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+
+[...]
+
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index 8ad7a733a505..e08e8e34e793 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -172,13 +172,15 @@ $(OUTPUT)/%:%.c
+>  # do not fail. Static builds leave urandom_read relying on system-wide shared libraries.
+>  $(OUTPUT)/liburandom_read.so: urandom_read_lib1.c urandom_read_lib2.c
+>  	$(call msg,LIB,,$@)
+> -	$(Q)$(CC) $(filter-out -static,$(CFLAGS) $(LDFLAGS)) $^ $(LDLIBS) -fPIC -shared -o $@
+> +	$(Q)$(CLANG) $(filter-out -static,$(CFLAGS) $(LDFLAGS)) $^ $(LDLIBS)   \
+> +		     -fuse-ld=lld -Wl,-znoseparate-code -fPIC -shared -o $@
+>  
+>  $(OUTPUT)/urandom_read: urandom_read.c urandom_read_aux.c $(OUTPUT)/liburandom_read.so
+>  	$(call msg,BINARY,,$@)
+> -	$(Q)$(CC) $(filter-out -static,$(CFLAGS) $(LDFLAGS)) $(filter %.c,$^)  \
+> -		  liburandom_read.so $(LDLIBS)	       			       \
+> -		  -Wl,-rpath=. -Wl,--build-id=sha1 -o $@
+> +	$(Q)$(CLANG) $(filter-out -static,$(CFLAGS) $(LDFLAGS)) $(filter %.c,$^) \
+> +		     liburandom_read.so $(LDLIBS)			       \
+> +		     -fuse-ld=lld -Wl,-znoseparate-code	       		       \
+> +		     -Wl,-rpath=. -Wl,--build-id=sha1 -o $@
+
+[...]
+
+Not sure if this was considered - adding a dependency on Clang for the
+target platform makes cross-compiling bpf selftests much harder than it
+was.
+
+Maybe we could use $(CLANG) only when not cross-compiling, and execute
+$(CC) like before otherwise?
