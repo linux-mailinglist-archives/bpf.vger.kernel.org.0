@@ -2,115 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52BC757BE04
-	for <lists+bpf@lfdr.de>; Wed, 20 Jul 2022 20:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8F257BEF4
+	for <lists+bpf@lfdr.de>; Wed, 20 Jul 2022 22:08:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230338AbiGTSqB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Jul 2022 14:46:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33282 "EHLO
+        id S229715AbiGTUIH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Jul 2022 16:08:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbiGTSqA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Jul 2022 14:46:00 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEA8ED12F;
-        Wed, 20 Jul 2022 11:45:59 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id e69so7473909iof.5;
-        Wed, 20 Jul 2022 11:45:59 -0700 (PDT)
+        with ESMTP id S229515AbiGTUIG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Jul 2022 16:08:06 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72FF047BBE
+        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 13:08:05 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id t7so4102519qvz.6
+        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 13:08:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=2LK8F5ZSsPnBcm/4jB4pma/7mcqTjmwHh+wdqzoUzzg=;
-        b=ZYskmkp8G6g54cRNXo+nJkNAMDyvNzRm9SNiqr3hDz/CSIGZtgkOaTEwqpKvj0ZLsz
-         mRMZ07I4v8FCG2lqlJemyZildX2xKShjeBMTYEUz72GEPcldfuOebVOCsSeTqWGv0UjK
-         1oRb7Beb+TJK1Otg35hUNcigLxFUmZG0p9Pv/sDtUEzo8is1Yk2s2J1EmIWExv/CHum6
-         ACXKzokYxmEbL6XzE0FooOIRLMwa6NLxWXhTl6W7BErf9PVSr2HzY9YkOvxI7aTnnHdv
-         XLR7XAPRsRPMvmaCVnO0LdfVE8OB98zk6yLEdjHf1myupfFxB7r+gLRVnTRcEmzupuTH
-         5CjQ==
+         :cc;
+        bh=bBt2aXduXrk3yTFTMljU9bjqy/gjhF70VjHkOj8ezJQ=;
+        b=fpOe6RRt86snubDzij/nij4d7nEXqB7gZ5vUfuXDSb4mEXI7wFsTEUnHWkadGGT+SV
+         qS+CfCoE5Ak9EtNzmTrS+G1bH3Ag74/yRC8BQjNdDixQOlm9cufa8URUF5fsbgKUUeKo
+         WDJw+qHQONYANM93QWG1sw9uf+4Rdn1X+Kjg0VMn+KupawJfnkDA0o8lSk+xWs5+PzUm
+         JwcBAeybMS+er8/b3SvFrgoCVIBIw0mlK80q/LlmAd0ULWTRwDSOkKNN0tqZZdGiGt68
+         Ord3doXJBGbROeZfkwFVjDZhAwsM/enKr7kzThzTHfLsghQ96ifMMzWPIuSxxRMq/kFa
+         DHYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=2LK8F5ZSsPnBcm/4jB4pma/7mcqTjmwHh+wdqzoUzzg=;
-        b=FmZe+ADMUb1PTLmyNnNR3y4hd7TbltR80d8J3P1geFCzIT2BaET88oehcmG8MbxEZ8
-         UIVRSjckLPNpjxLlBqBdt4Z07zZlfIzuTIx73jXOBjcXjNI5xI6AUWBwcRU/NPwe5OZU
-         Ozgf6IwdVcsS3W5FuK8+ZJjLEgWwEKclh6NrjeNiutEhK45wH2tfJppAIpbr3BpiF7Ms
-         MMM+Ymi/Rw3CpI2JjtQwKCtpLApl9qRPF/eut42RGjKd/mgq/lcxUb9u2Z2ZdKGrzcs3
-         oKlaqxqeQU207zTwJMfluu089cxeGD6M68ZuQSi898GjW3HbDKj4EN1FWpkP96lVwbab
-         gTZA==
-X-Gm-Message-State: AJIora+aTzeUp7GgWkaDFYiCSrOT0Gm2tS4ixkQNV2UphRLFp7ri5gH5
-        FbsNPAzlTf1orvwqLC7I6U7lJYTg7DUCZlsnqgM=
-X-Google-Smtp-Source: AGRyM1tPLOik40B2XMaikpgoLKIvDQbQMLVJdaaHPVcFrSW8KatIfHNapYYuttC1//FXHe6x1a7KTOTI7ABXvJTITtI=
-X-Received: by 2002:a05:6602:150c:b0:67c:149b:a349 with SMTP id
- g12-20020a056602150c00b0067c149ba349mr7261371iow.168.1658342759251; Wed, 20
- Jul 2022 11:45:59 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=bBt2aXduXrk3yTFTMljU9bjqy/gjhF70VjHkOj8ezJQ=;
+        b=r/j2MxKNBCe1SeFMjxsSpMpMBaSbLkgot8ipe9uysO8cwIViBQoiY2jCXlx+JFUjD1
+         XuV9KGBN2ZpjhjQ27VSNVTLCRU4h8VZYpm+2rAR/eeB3BXXHZC3nKawAjDymtp9NwtnF
+         MyHhhoLqQv2+EoGK52LLlq0knfnDg76gMjEI9w2pFOvDRYDbcSOZNllGrJBiMis8n2lL
+         2kV4o8NmLK7BZvl+LfACA1lOuXigZPw92ZaGuP8WSSmxrqo1NNC6B0C7XV9ZmH9hNqG1
+         VRucRHAMkJz4jEjZYJXbDX1nO2CJjYXVZ+au9Ai7eQrBIjjCXt2QUs5sM1ERhPIWptN3
+         h+Gg==
+X-Gm-Message-State: AJIora9CFnwNS1IiZkpBFF4CGe7d8MZ6ivmEZC0TW43vljZQBgprXkf9
+        UILJ77NTJJNsUDnwUGovQyfXOmHBKVM+0juPfJaIlQ==
+X-Google-Smtp-Source: AGRyM1vyf1j8XqVCErCglA0UEjOSGZrnbuaSbmW1xdUCg7HF23L5loulxZKywUcdPsvfRbBWorrP7qBY6KYLgxte8fk=
+X-Received: by 2002:a05:6214:761:b0:470:8558:d1c3 with SMTP id
+ f1-20020a056214076100b004708558d1c3mr31210261qvz.107.1658347684520; Wed, 20
+ Jul 2022 13:08:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220719132430.19993-1-memxor@gmail.com> <20220719132430.19993-6-memxor@gmail.com>
- <878ronu35z.fsf@toke.dk>
-In-Reply-To: <878ronu35z.fsf@toke.dk>
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Wed, 20 Jul 2022 20:45:23 +0200
-Message-ID: <CAP01T77j2Lm7RgKoi0XwgpX_vLgoO1Lfr1E9mxYMVxCGM9L9Cg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 05/13] bpf: Add documentation for kfuncs
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     bpf@vger.kernel.org, KP Singh <kpsingh@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+References: <20220719170555.2576993-1-roberto.sassu@huawei.com> <20220719170555.2576993-2-roberto.sassu@huawei.com>
+In-Reply-To: <20220719170555.2576993-2-roberto.sassu@huawei.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+Date:   Wed, 20 Jul 2022 21:07:53 +0100
+Message-ID: <CACdoK4LMvLyV2z5quN1BE4VrxGJK-f1YfuHWoQrJaH_eKyHZog@mail.gmail.com>
+Subject: Re: [PATCH 2/4] bpftool: Complete libbfd feature detection
+To:     Roberto Sassu <roberto.sassu@huawei.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        terrelln@fb.com, Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        llvm@lists.linux.dev, open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 20 Jul 2022 at 19:03, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat=
-.com> wrote:
+On Tue, 19 Jul 2022 at 18:06, Roberto Sassu <roberto.sassu@huawei.com> wrote:
 >
-> Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
+> Commit 6e8ccb4f624a7 ("tools/bpf: properly account for libbfd variations")
+> sets the linking flags depending on which flavor of the libbfd feature was
+> detected.
 >
-> > As the usage of kfuncs grows, we are starting to form consensus on the
-> > kinds of attributes and annotations that kfuncs can have. To better hel=
-p
-> > developers make sense of the various options available at their disposa=
-l
-> > to present an unstable API to the BPF users, document the various kfunc
-> > flags and annotations, their expected usage, and explain the process of
-> > defining and registering a kfunc set.
+> However, the flavors except libbfd cannot be detected, as they are not in
+> the feature list.
 >
-> [...]
+> Complete the list of features to detect by adding libbfd-liberty and
+> libbfd-liberty-z.
 >
-> > +2.4.2 KF_RET_NULL flag
-> > +----------------------
-> > +
-> > +The KF_RET_NULL flag is used to indicate that the pointer returned by =
-the kfunc
-> > +may be NULL. Hence, it forces the user to do a NULL check on the point=
-er
-> > +returned from the kfunc before making use of it (dereferencing or pass=
-ing to
-> > +another helper). This flag is often used in pairing with KF_ACQUIRE fl=
-ag, but
-> > +both are mutually exclusive.
+> Fixes: 6e8ccb4f624a7 ("tools/bpf: properly account for libbfd variations")
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> ---
+>  tools/bpf/bpftool/Makefile | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 >
-> That last sentence is contradicting itself. "Mutually exclusive" means
-> "can't be used together". I think you mean "orthogonal" or something to
-> that effect?
+> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+> index 6b5b3a99f79d..4b09a5c3b9f1 100644
+> --- a/tools/bpf/bpftool/Makefile
+> +++ b/tools/bpf/bpftool/Makefile
+> @@ -93,8 +93,10 @@ INSTALL ?= install
+>  RM ?= rm -f
+>
+>  FEATURE_USER = .bpftool
+> -FEATURE_TESTS = libbfd disassembler-four-args libcap clang-bpf-co-re
+> -FEATURE_DISPLAY = libbfd disassembler-four-args libcap clang-bpf-co-re
+> +FEATURE_TESTS = libbfd libbfd-liberty libbfd-liberty-z \
+> +               disassembler-four-args libcap clang-bpf-co-re
+> +FEATURE_DISPLAY = libbfd libbfd-liberty libbfd-liberty-z \
+> +                 disassembler-four-args libcap clang-bpf-co-re
 
-Right, my bad. Mutually exclusive is totally incorrect here. I will
-use 'orthogonal' instead.
-
->
-> -Toke
->
+Do you know if there is a way to fold the different feature-libbfd-*
+features into a single one for FEATURE_DISPLAY? Or should the various
+features be all moved under feature-libbfd with multiple attempts,
+like you did for disassembler-four-args in patch 1? My concern is that
+users may think some features could be missing when they compile and
+see that detection fails for some items.
