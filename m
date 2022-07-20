@@ -2,123 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFF6057BBD2
-	for <lists+bpf@lfdr.de>; Wed, 20 Jul 2022 18:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7809157BC3E
+	for <lists+bpf@lfdr.de>; Wed, 20 Jul 2022 19:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234514AbiGTQtc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Jul 2022 12:49:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46870 "EHLO
+        id S236277AbiGTREI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Jul 2022 13:04:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231560AbiGTQtc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Jul 2022 12:49:32 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8156043E6B;
-        Wed, 20 Jul 2022 09:49:31 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id v28so12530753qkg.13;
-        Wed, 20 Jul 2022 09:49:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IdX8x8KuGDrmo8OdGWM+s2IhO+yiRKLdL7Zo2PMSFN4=;
-        b=fA5ACjYebGmyEbnpk02ZADGgZyXfWD24l6R1c/JewiQtUFSI+d/VO9w9T9n2DLJCQL
-         uDHO6rwgTDLos9QvjWc6uIFsSu2vb5u2IkHWlFs8aJhQFN905lEkcykvEsUEg7CFx1la
-         paGTn68cRr5oM9979v5iJMWGeYVFK48gHFQYJgGqX34fdeYgMtseWc3hbipbm46vtoyf
-         t/nVdVBlhdE/sYfEJWwn21va2JYE9h3LwLkJQv+s9PszAUimQvBLaAOikOs6KkgnyGnm
-         4Rdc8QIncAZkw37fTFY3vGGoGGWsjBHbV4NlO7IcfMAMJVRtdkE8lvHUm65n7q5zkobl
-         slhQ==
+        with ESMTP id S236905AbiGTREB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Jul 2022 13:04:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 802FD6BC27
+        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 10:03:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1658336637;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xuZtPMEGTJUPyCThBRbp89TRLDnOnODjmUD0CEahbP8=;
+        b=Q6XktXoXa4nUgQUi4jupDYltJQ/YfWai51mn5joW/4d8iSHpBUHqs2p9w5JzaPC1VdUbH5
+        On8OgO5y3rzR/eK23Vuav5sX58NtPY4ATRR7r8Uf3hag68aXm4Wx/BzuxgxUy6b/3ty9MP
+        K9R/SCyW6BBOdm423xCeauHoHRk5ABE=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-570-Wigm-e-oP2m3JXQvXV0BJA-1; Wed, 20 Jul 2022 13:03:56 -0400
+X-MC-Unique: Wigm-e-oP2m3JXQvXV0BJA-1
+Received: by mail-ed1-f70.google.com with SMTP id s17-20020a056402521100b0043ade613038so12538762edd.17
+        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 10:03:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IdX8x8KuGDrmo8OdGWM+s2IhO+yiRKLdL7Zo2PMSFN4=;
-        b=1ti+/FNnJgNZHSQuUhDcsqIc1XOlitvkuDRIGFewGkT6a//GeuV6ZNPWbljQ8yzYf8
-         H32PPNcnVlMlZ7mU/yOrIHc5+3yzlcY/jWux28C3UXx2NW6r0W9KfRZjxuj7JLUz7w7x
-         rDsLfWIi/NtFQlPkbiXPL42XXVlIz7OQL86eitfJHiNx3RjAu4Pqi1c6iOFUV1hgA6oC
-         TUw0zsXwVUSP0mBYz9uZv4zv5g7/byZXPDXB26jAlX4te/rR0U1t5fy+b9GAS1ctho7Z
-         aNEn1DxHtKKjBMe3Zjn6A1xgOXwvSx0L2bnPZkOEVjO0ZFjLkHM2QqkPg1/3KKjTFS5l
-         efsQ==
-X-Gm-Message-State: AJIora9wkarYGq5phZjvTB/gRWGzlTBvX/d75x+3GVsAW0mQoD29iilM
-        27VVyu+ug7zCgpg1FQA3KKg=
-X-Google-Smtp-Source: AGRyM1vCLnpaxRkOkmGAaj5Gy/KHt7mi0Q8MAJNokH4bRQpyU8kddgCKya3XL7eTcmHXXFWfReqHnA==
-X-Received: by 2002:a05:620a:4090:b0:6b6:14ec:b6c6 with SMTP id f16-20020a05620a409000b006b614ecb6c6mr1897228qko.733.1658335770556;
-        Wed, 20 Jul 2022 09:49:30 -0700 (PDT)
-Received: from localhost ([2601:4c1:c100:1230:8a38:8fe4:50f8:8b83])
-        by smtp.gmail.com with ESMTPSA id r11-20020ac8794b000000b0031ee918e9f9sm7579839qtt.39.2022.07.20.09.49.29
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=xuZtPMEGTJUPyCThBRbp89TRLDnOnODjmUD0CEahbP8=;
+        b=x3wFSywXLvYHne6R4D0yI01BzBPwKp156PJq8mu1tEoxqa5T4p9goRuL+msFIsluTz
+         +I8wWNdYxnRm61PXWXdyDg8DDa0cO8j1DBNtSc0IYUXJU2B6cYJUthYH4Sk+hQFBV2di
+         omqj2XWMS4kvEFeHWuXmQJajIyx8Hvb3vfo+Mdv17vSQANyeuKxfsWgVF0jjf4vnJ1bt
+         WIdjMoiSc0cFjukw7B7r0PCSjVxtFlr4fCbBNrtMNXYKir72iKf4Y8IW9PkF/1olIVq6
+         8RIgi7ypWmTNeJSUe5Db6E/+g1mdxDdBXm299uyBcY/rKMcfGC5JuSVEk7eVHTeNUZZk
+         NPrw==
+X-Gm-Message-State: AJIora8YYPH0rcWUS5/aNHVpdLA5tHfYXRV9TV0JXlaZjTwBdot9ZSnX
+        UWJTAx4LyubMCQcAUCkEPCkbGjyscc84GrkwPzRkuP64v0UysKaCCIixnhHcwDz5D51bh9U9K7m
+        uyg+3v7WH1Wkz
+X-Received: by 2002:a17:907:7d8b:b0:72f:2306:329a with SMTP id oz11-20020a1709077d8b00b0072f2306329amr16924723ejc.369.1658336634572;
+        Wed, 20 Jul 2022 10:03:54 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1v8HK3Vlfjf43MlHI1Fad5ztpTBq9UeLWcrb3eFi6pmR6+PN79I0J3ji7iEf9BXw4FEHd/yNQ==
+X-Received: by 2002:a17:907:7d8b:b0:72f:2306:329a with SMTP id oz11-20020a1709077d8b00b0072f2306329amr16924697ejc.369.1658336634208;
+        Wed, 20 Jul 2022 10:03:54 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id w6-20020a50fa86000000b0043ba0cf5dbasm2875285edr.2.2022.07.20.10.03.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jul 2022 09:49:30 -0700 (PDT)
-Date:   Wed, 20 Jul 2022 09:49:30 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Wed, 20 Jul 2022 10:03:53 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 38BC34DA0BE; Wed, 20 Jul 2022 19:03:52 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
+Cc:     KP Singh <kpsingh@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Alexey Klimov <aklimov@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Ben Segall <bsegall@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Isabella Basso <isabbasso@riseup.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Juergen Gross <jgross@suse.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Mel Gorman <mgorman@suse.de>, Miroslav Benes <mbenes@suse.cz>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Song Liu <songliubraving@fb.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tejun Heo <tj@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yonghong Song <yhs@fb.com>,
-        linux-mm@kvack.org, netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH 16/16] lib: create CONFIG_DEBUG_BITMAP parameter
-Message-ID: <YtgyGvlhHsVMyXcv@yury-laptop>
-References: <20220718192844.1805158-1-yury.norov@gmail.com>
- <20220718192844.1805158-17-yury.norov@gmail.com>
- <YtXS9hySEY+BokvI@smile.fi.intel.com>
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v6 05/13] bpf: Add documentation for kfuncs
+In-Reply-To: <20220719132430.19993-6-memxor@gmail.com>
+References: <20220719132430.19993-1-memxor@gmail.com>
+ <20220719132430.19993-6-memxor@gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 20 Jul 2022 19:03:52 +0200
+Message-ID: <878ronu35z.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YtXS9hySEY+BokvI@smile.fi.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 19, 2022 at 12:39:02AM +0300, Andy Shevchenko wrote:
-> On Mon, Jul 18, 2022 at 12:28:44PM -0700, Yury Norov wrote:
-> > Create CONFIG_DEBUG_BITMAP parameter to let people use
-> > new option. Default is N.
-> 
-> Even if a separate, it should follow immediately the implementation.
+Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
 
-If it follows the 1st patch immediately, and becomes enabled, it will
-generate a lot of noise for those who bisect and occasionally jumps
-into a mid of the series.
+> As the usage of kfuncs grows, we are starting to form consensus on the
+> kinds of attributes and annotations that kfuncs can have. To better help
+> developers make sense of the various options available at their disposal
+> to present an unstable API to the BPF users, document the various kfunc
+> flags and annotations, their expected usage, and explain the process of
+> defining and registering a kfunc set.
 
-There are quite a lot of patchsets that create a feature in many
-patches, and explicitly enable it in the very last patch.
+[...]
+
+> +2.4.2 KF_RET_NULL flag
+> +----------------------
+> +
+> +The KF_RET_NULL flag is used to indicate that the pointer returned by the kfunc
+> +may be NULL. Hence, it forces the user to do a NULL check on the pointer
+> +returned from the kfunc before making use of it (dereferencing or passing to
+> +another helper). This flag is often used in pairing with KF_ACQUIRE flag, but
+> +both are mutually exclusive.
+
+That last sentence is contradicting itself. "Mutually exclusive" means
+"can't be used together". I think you mean "orthogonal" or something to
+that effect?
+
+-Toke
+
