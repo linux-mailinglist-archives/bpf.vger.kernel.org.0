@@ -2,100 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF33057B828
-	for <lists+bpf@lfdr.de>; Wed, 20 Jul 2022 16:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08A5457B8EB
+	for <lists+bpf@lfdr.de>; Wed, 20 Jul 2022 16:52:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240624AbiGTOIB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Jul 2022 10:08:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55390 "EHLO
+        id S240833AbiGTOwi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Jul 2022 10:52:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240756AbiGTOHx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Jul 2022 10:07:53 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A854C32464;
-        Wed, 20 Jul 2022 07:07:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6PI6oKjncaeSgZdoo1KKImqRT1hx/X10UQeSaaVVn7o=; b=Z3iIfX4rxk/k6ZBDox0GiYaoaN
-        ssjccwkghqIAdo2UAzk9TqFJXYN7hZSqdJERTrGQzGz8OOzqW81Fx4RdGBwbKKohD51w0cJ7frDJF
-        EJU32PQ7ghgtFjx0fhRfZttmk5uAeVTWYIkPbc2dcAjzKL8/VTX8NkE8dpPXLIeA2X1vD5iurZRld
-        9jbmRtqAyKXgREF3KNag1on2PeaaN8nN2+l/LwuYBBtgEolRCoc71c6eTggKFh33mH1zPrvgzUyXd
-        LfjuZRoJ/dNDsvXzhIZi7vWmBjvuxu8YGYJpoe4QW4JL8le7122J8m+eWN9yL64vCiKlRTH4Y7e5l
-        P/4dUt9w==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oEAMT-00EWPO-7A; Wed, 20 Jul 2022 14:07:37 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D0EED980BBE; Wed, 20 Jul 2022 16:07:36 +0200 (CEST)
-Date:   Wed, 20 Jul 2022 16:07:36 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Dmitry Dolgov <9erthalion6@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        songliubraving@fb.com, rostedt@goodmis.org, mingo@redhat.com,
-        mhiramat@kernel.org, alexei.starovoitov@gmail.com
-Subject: Re: [PATCH v4 1/1] perf/kprobe: maxactive for fd-based kprobe
-Message-ID: <YtgMKDgNLnMIkHLI@worktop.programming.kicks-ass.net>
-References: <20220714193403.13211-1-9erthalion6@gmail.com>
- <YtB1PK+NUF5RL9Er@worktop.programming.kicks-ass.net>
- <20220715095236.ywv37a556ktl5oif@ddolgov.remote.csb>
+        with ESMTP id S240484AbiGTOwh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Jul 2022 10:52:37 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA7381ADAF
+        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 07:52:35 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id z12so26495954wrq.7
+        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 07:52:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=PUMNzOcke9F/E6l0+nSlaEl2q/BLzsi49G5O8oR/nQk=;
+        b=05e5XLBmfccOHOTn5Xi23vWg8lqNJPD/R1R0dBx9OAM6rEtAjGyDb7fFMs3y3i/7oD
+         /Ok5WoBVNnLuPSv+vaxNoWo7ozHczx628+bmwDooSBy4Ell7vhkiyYtko7XwBb+kbr/R
+         BAjORV2J0Is7Zf5la7TDJ8tdimEtSTjqnhLmTWTo+VkhDV2SDH+8N+fLRE2KY7wZfezY
+         T+8JyFzZ6P9hW/0ZmdZZ/B/Uv/FqGJI9SKb0Tf0iLP0d+exKHiujMl9frRdeNNWZHTAH
+         i9rgvXBSrNV3XeYyu2mF/sA2JpA/OlBjHP/f6HQ3JwqaawYdWHZ7Uly6ofxMlSylDhlx
+         Vy5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=PUMNzOcke9F/E6l0+nSlaEl2q/BLzsi49G5O8oR/nQk=;
+        b=SdO4rLfmDjA3p6pPY6OSYAwrvkRrVx6cKrb0Vnx/ZNoN3gH1aTgS9w5S56JUwPhUPR
+         NZ5OFoTMWZKo6VGzGur2s04ShWXiQfcFoFvkjnh/l5Lssf6Zo0bjT1ym0O058pwdQzUB
+         i1zqa6u7XriDvI4R669EcfcTGF2Zvdkmh07naESZ1RIiY7nDEuOlqgjlZfodHzRmHmsd
+         OSlWRdXZUu72/OxgNjkPtVFZs1pzhwaPP7Uopy+aSTg5rx4obai35fkR+cc+Nxg5JN1E
+         kjpSrGURGCsqSZNnQ6RtC2F0wCyO/CL7IAg2LqM1af58KeDG0Br/Zs6PQv/JJcTSDayN
+         579w==
+X-Gm-Message-State: AJIora8GDks3HgzbvNdlhpVUZ87I+NDyTICgfsEOBIzKAiADzqVpxe1c
+        dRoC+qjDygdwrJf1K9owjZlG4Dlkswyhwt1hsxIp
+X-Google-Smtp-Source: AGRyM1vRgjFuWdos6HfR4YAkcb84ehTx76Uq4a7TaHyarDjXm0pNXoiIf0CYV/zUZqhGSCYFaueGHUufPPeJ3RbZVR0=
+X-Received: by 2002:a5d:4f8f:0:b0:21e:4f09:9e15 with SMTP id
+ d15-20020a5d4f8f000000b0021e4f099e15mr1313451wru.55.1658328754216; Wed, 20
+ Jul 2022 07:52:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220715095236.ywv37a556ktl5oif@ddolgov.remote.csb>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220707223228.1940249-1-fred@cloudflare.com> <20220707223228.1940249-5-fred@cloudflare.com>
+ <CA+EEuAhfMrg=goGhWxVW2=i4Z7mVN4GvfzettvX8T+tFcOPKCw@mail.gmail.com>
+In-Reply-To: <CA+EEuAhfMrg=goGhWxVW2=i4Z7mVN4GvfzettvX8T+tFcOPKCw@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 20 Jul 2022 10:52:23 -0400
+Message-ID: <CAHC9VhSbKct_hY4UNS0oyqsov9ELxXeQc4rqpRO7AuLKfWrGDA@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] selinux: Implement create_user_ns hook
+To:     Karl MacMillan <karl@bigbadwolfsecurity.com>
+Cc:     Frederick Lawler <fred@cloudflare.com>, andrii@kernel.org,
+        ast@kernel.org, bpf@vger.kernel.org, brauner@kernel.org,
+        casey@schaufler-ca.com, daniel@iogearbox.net,
+        ebiederm@xmission.com, eparis@parisplace.org,
+        jackmanb@chromium.org, jmorris@namei.org, john.fastabend@gmail.com,
+        kafai@fb.com, kernel-team@cloudflare.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
+        revest@chromium.org, selinux@vger.kernel.org, serge@hallyn.com,
+        shuah@kernel.org, songliubraving@fb.com,
+        stephen.smalley.work@gmail.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 15, 2022 at 11:52:36AM +0200, Dmitry Dolgov wrote:
-> > On Thu, Jul 14, 2022 at 09:57:48PM +0200, Peter Zijlstra wrote:
-> > On Thu, Jul 14, 2022 at 09:34:03PM +0200, Dmitrii Dolgov wrote:
-> > > From: Song Liu <songliubraving@fb.com>
-> > >
-> > > Enable specifying maxactive for fd based kretprobe. This will be useful
-> > > for tracing tools like bcc and bpftrace (see for example discussion [1]).
-> > > Use highest 4 bit (bit 59-63) to allow specifying maxactive by log2.
-> >
-> > What's maxactive? This doesn't really tell me much.
-> 
-> Maxactive allows specifying how many instances of the specified function
-> can be probed simultaneously, it would indeed make sense to mention this
-> in the commit message.
+On Tue, Jul 19, 2022 at 10:42 PM Karl MacMillan
+<karl@bigbadwolfsecurity.com> wrote:
+> On Thu, Jul 7, 2022 at 6:34 PM Frederick Lawler <fred@cloudflare.com> wro=
+te:
+>>
+>> Unprivileged user namespace creation is an intended feature to enable
+>> sandboxing, however this feature is often used to as an initial step to
+>> perform a privilege escalation attack.
+>>
+>> This patch implements a new namespace { userns_create } access control
+>> permission to restrict which domains allow or deny user namespace
+>> creation. This is necessary for system administrators to quickly protect
+>> their systems while waiting for vulnerability patches to be applied.
+>>
+>> This permission can be used in the following way:
+>>
+>>         allow domA_t domB_t : namespace { userns_create };
+>
+>
+> Isn=E2=80=99t this actually domA_t domA_t : namespace . . .
+>
+> I got confused reading this initially trying to figure out what the secon=
+d domain type would be, but looking at the code cleared that up.
 
-But why would we need per-fd configurability? Isn't a global sysctrl
-good enough?
+Ah, good catch, thanks Karl!
 
-> > Why are the top 4 bits the best to use?
-> 
-> This format exists mostly on proposal rights. Per previous discussions,
-> 4 bits seem to be enough to cover reasonable range of maxactive values.
-> Top bits seems like a natural place to me following perf_probe_config
-> enum, but I would love to hear if there are any alternative suggestions?
-
-I think the precedent you're referring to is UPROBE_REF_CTR, which is a
-full 32bit. That lives in the upper half of the word because bit0 is
-already taken and using the upper half makes the thing naturally
-aligned.
-
-If we only need 4 bits it's must simpler to simply stick it at the
-bottom or so.
-
-> 
-> > > Note that changes in rethook implementation may render maxactive
-> > > obsolete.
-> >
-> > Then why bother creating an ABI for it?
-> 
-> If I got Masami right, those potential changes mentioned above are only
-> on the planning stage. At the same time the issue is annoying enough to
-> try to solve it already now.
-
-Masami; how hard would it be to do this? Creating an ABI for something
-that's already planned to be removed seems unfortunate, it would be best
-to see if we can find someone to accelerate this work.
+--=20
+paul-moore.com
