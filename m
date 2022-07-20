@@ -2,114 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D3457B5D6
-	for <lists+bpf@lfdr.de>; Wed, 20 Jul 2022 13:47:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95FA957B64B
+	for <lists+bpf@lfdr.de>; Wed, 20 Jul 2022 14:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240692AbiGTLrH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Jul 2022 07:47:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57144 "EHLO
+        id S234570AbiGTM1C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Jul 2022 08:27:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240511AbiGTLrB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Jul 2022 07:47:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5566B72ECF
-        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 04:47:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1658317619;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
+        with ESMTP id S229514AbiGTM1B (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Jul 2022 08:27:01 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA9CA474EB
+        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 05:27:00 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 501F12073D;
+        Wed, 20 Jul 2022 12:26:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1658320019; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Xmw0qJN/J7YRsfD4NK6d4JdhY2WGiXTb+5lcFAP4Rtw=;
-        b=W223zgZFV3kQfES1DCQfmPKzeUOTguIIE2DoHG87xZC8ct+gFTujdxawM7pMsR6AqPzddj
-        mLLWIdYJD54ZYP8Zovldk7Vi8gJVxQbRmvmrRckbTFFpHvoMCAa4KiGTRaIhtffHc/XqV4
-        /6ncnQF+YAkAAsTlJAQfvAnDiI58VZ0=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-379-myivAjZ3NSicRo3ogUQlrg-1; Wed, 20 Jul 2022 07:46:56 -0400
-X-MC-Unique: myivAjZ3NSicRo3ogUQlrg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        bh=ZCjM+U4btn2hFbEhlDJAN0XtxAvoC02J52EYR1r3quA=;
+        b=Fa2MtZ39CZxDiZriXHGmS2WGkOLuQjz2pfbG20IeYYKejTIRGC+lbGxkrpzNqtel1RUux0
+        FcHMxzZ3sv/eAr1y/nWT7EG7G3YQCg4wCg1G+lQtwR6G1pzL2Q3guv6pvwo4yDYbpAbUMh
+        mhufBOCOcd6ziidndxCd7WCw21Vk9Uc=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 694631C0514E;
-        Wed, 20 Jul 2022 11:46:55 +0000 (UTC)
-Received: from shodan.usersys.redhat.com (unknown [10.43.17.22])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id EFEC22166B29;
-        Wed, 20 Jul 2022 11:46:54 +0000 (UTC)
-Received: by shodan.usersys.redhat.com (Postfix, from userid 1000)
-        id 0B7061C03BC; Wed, 20 Jul 2022 13:46:54 +0200 (CEST)
-From:   Artem Savkov <asavkov@redhat.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        by relay2.suse.de (Postfix) with ESMTPS id 6B9F42C141;
+        Wed, 20 Jul 2022 12:26:55 +0000 (UTC)
+Date:   Wed, 20 Jul 2022 14:26:51 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Daniel Vacek <dvacek@redhat.com>,
-        Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
-        Artem Savkov <asavkov@redhat.com>
-Subject: [PATCH bpf-next 4/4] bpf: export crash_kexec() as destructive kfunc
-Date:   Wed, 20 Jul 2022 13:46:52 +0200
-Message-Id: <20220720114652.3020467-5-asavkov@redhat.com>
-In-Reply-To: <20220720114652.3020467-1-asavkov@redhat.com>
-References: <20220720114652.3020467-1-asavkov@redhat.com>
+        Andrii Nakryiko <andrii@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        linux-mm <linux-mm@kvack.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: cgroup specific sticky resources (was: Re: [PATCH bpf-next 0/5]
+ bpf: BPF specific memory allocator.)
+Message-ID: <Ytf0i5ZRdUyxE+NY@dhcp22.suse.cz>
+References: <YswUS/5nbYb8nt6d@dhcp22.suse.cz>
+ <20220712043914.pxmbm7vockuvpmmh@macbook-pro-3.dhcp.thefacebook.com>
+ <Ys0lXfWKtwYlVrzK@dhcp22.suse.cz>
+ <CALOAHbAhzNTkT9o_-PRX=n4vNjKhEK_09+-7gijrFgGjNH7iRA@mail.gmail.com>
+ <Ys1ES+CygtnUvArz@dhcp22.suse.cz>
+ <Ys4wRqCWrV1WeeWp@castle>
+ <CAJD7tkb0OcVbUMxsEH-QyF08OabK5pQ-8RxW_Apy1HaHQtN0VQ@mail.gmail.com>
+ <YtaV6byXRFB6QG6t@dhcp22.suse.cz>
+ <CAJD7tkbieq_vDxwnkk_jTYz9Fe1t5AMY6b3Q=8O-ag9YLo9uZg@mail.gmail.com>
+ <CAHS8izP-Ao7pYgHOuQ-8oE2f_xe1+tP6TQivDYovEOt+=_QC7Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.78 on 10.11.54.6
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHS8izP-Ao7pYgHOuQ-8oE2f_xe1+tP6TQivDYovEOt+=_QC7Q@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Allow properly marked bpf programs to call crash_kexec().
+On Tue 19-07-22 11:46:41, Mina Almasry wrote:
+[...]
+> An interface like cgroup.sticky.[bpf/tmpfs/..] would work for us
+> similar to tmpfs memcg= mount option. I would maybe rename it to
+> cgroup.charge_for.[bpf/tmpfs/etc] or something.
+> 
+> With regards to OOM, my proposal on this patchset is to return ENOSPC
+> to the caller if we hit the limit of the remote memcg and there is
+> nothing to kill:
+> https://lore.kernel.org/linux-mm/20211120045011.3074840-1-almasrymina@google.com/
 
-Signed-off-by: Artem Savkov <asavkov@redhat.com>
----
- kernel/kexec_core.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+That would imply SIGBUS on the #PF path. Is this really the way how we
+want to tell userspace that something they are not aware of like a limit
+in a completely different resource domain has triggered?
 
-diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
-index 4d34c78334ce4..a21fe8d326a8e 100644
---- a/kernel/kexec_core.c
-+++ b/kernel/kexec_core.c
-@@ -39,6 +39,8 @@
- #include <linux/hugetlb.h>
- #include <linux/objtool.h>
- #include <linux/kmsg_dump.h>
-+#include <linux/btf.h>
-+#include <linux/btf_ids.h>
+> There is some precedent to doing this in the kernel. If a hugetlb
+> allocation hits the hugetlb_cgroup limit, we return ENOSPC to the
+> caller (and SIGBUS in the charge path). The reason there being that we
+> don't support oom-kill or reclaim or swap for hugetlb pages.
+
+Following hugetlb is not really a great idea because hugetlb has always
+been quite special and its users are aware of that. The same doesn't
+really apply to other resources like tmpfs.
  
- #include <asm/page.h>
- #include <asm/sections.h>
-@@ -1238,3 +1240,23 @@ void __weak arch_kexec_protect_crashkres(void)
- 
- void __weak arch_kexec_unprotect_crashkres(void)
- {}
-+
-+#ifdef CONFIG_DEBUG_INFO_BTF_MODULES
-+BTF_SET_START(kexec_btf_ids)
-+BTF_ID(func, crash_kexec)
-+BTF_SET_END(kexec_btf_ids)
-+
-+static const struct btf_kfunc_id_set kexec_kfunc_set = {
-+	.owner			= THIS_MODULE,
-+	.check_set		= &kexec_btf_ids,
-+	.destructive_set	= &kexec_btf_ids,
-+};
-+
-+static int __init crash_kfunc_init(void)
-+{
-+	register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &kexec_kfunc_set);
-+	return 0;
-+}
-+
-+subsys_initcall(crash_kfunc_init);
-+#endif
+> I think it is also reasonable to prevent removing the memcg if there
+> is cgroup.charge_for.[bpf/tmpfs/etc] still alive. Currently we prevent
+> removing the memcg if there are tasks attached. So we can also prevent
+> removing the memcg if there are bpf/tmpfs charge sources pending.
+
+I can imagine some way of keeping cgroups active even without tasks but
+so far I haven't really seen a good way how to achieve that.
+
+cgroup.sticky.[bpf/tmpfs/..] interface is really weird if you ask me.
+For one thing I have hard time imagine how to identify those resources.
+tmpfs by path is really strange because the same mount point can be
+referenced through many paths. Not the mention the path can be
+remounted/redirected to anything after the configurion which would just
+lead to a lot of confusion.
+
+Exposing internal ids is also far from great. It would also put an
+additional burden on the kernel implementation to ensure there is no
+overlap in resources among different cgroups.  Also how many of those
+sticky resources do we want to grow?
+
+To me this have way too many red flags that it sounds like an interface
+which would break really easily.
+
+The more I think about that the more I agree with Tejun that corner
+cases are just waiting to jump out at us. 
 -- 
-2.35.3
-
+Michal Hocko
+SUSE Labs
