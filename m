@@ -2,108 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 471DB57C796
-	for <lists+bpf@lfdr.de>; Thu, 21 Jul 2022 11:30:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1FB057C993
+	for <lists+bpf@lfdr.de>; Thu, 21 Jul 2022 13:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231902AbiGUJag (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jul 2022 05:30:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60666 "EHLO
+        id S233105AbiGULIt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jul 2022 07:08:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230149AbiGUJaf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jul 2022 05:30:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 699C17A527
-        for <bpf@vger.kernel.org>; Thu, 21 Jul 2022 02:30:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1658395832;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cE2msxk6QPw86zAV3haYmpL0Ot9f5ZCy5ykRLxOKnec=;
-        b=GlQjpbr7E+McOWJVbcQk3HbL++9lYEsdLLPe232nBwS20VCQ8UVr88APvkNZShIZ2bdUE3
-        gwnC908AMcEdw/MeRywV3jTADaCBKeqhXJ9mcvuMUNuUdt9yKjl5IBljgOubmAlnwIL4cO
-        8mNKyrrEmOeFGML90r5dJy1vHkuBN6E=
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
- [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-13-NOYlRRkRPTaD7fbRSe6AVA-1; Thu, 21 Jul 2022 05:30:31 -0400
-X-MC-Unique: NOYlRRkRPTaD7fbRSe6AVA-1
-Received: by mail-pg1-f198.google.com with SMTP id s129-20020a632c87000000b00411564fe1feso676601pgs.7
-        for <bpf@vger.kernel.org>; Thu, 21 Jul 2022 02:30:31 -0700 (PDT)
+        with ESMTP id S233083AbiGULIo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Jul 2022 07:08:44 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB73583216
+        for <bpf@vger.kernel.org>; Thu, 21 Jul 2022 04:08:42 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id c22so836631wmr.2
+        for <bpf@vger.kernel.org>; Thu, 21 Jul 2022 04:08:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VPyCtgRVoTmDWTFs8MG+ONwpKPH6awHCi/PQRJcKghc=;
+        b=I/3+0MJaNbhmdRRKbged2pha3lCMwVT7UWPaN4vm1L978xZE/XS+fr3pR/HIWns0wX
+         m5bS8zEIVKQxMleS8bg/hVrez7ZJWbnGUXCtA8/XrSlQmFfmsNLddFeS2+xQwQCMqe4a
+         k3SnpoW3fauN+1mXSHi/9cOPWOqhRIRRfP9bJBZksNdjJ91H9pG8AeaLxG+Ynv5cxUEF
+         WbbuZhSfnleoEqjvx3r9x9fzHXWz1jOuZJV2M2HslmykiWCbB+c4lw+JK5VrRytwUKCw
+         mu8Bjt5c9hBGrnZLSW9yLbaXNyGcilA7IkKHsYBhatimmtcDPkZlnvrJnQMT3VoDPwgE
+         bPyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=cE2msxk6QPw86zAV3haYmpL0Ot9f5ZCy5ykRLxOKnec=;
-        b=McPXLYTjOV0DbDFXCifGz6nGwDP6Wix0kKmf9bNHb5FQ613BrsCDHtgZw44/wFj7Me
-         nNIHnHDv3eN5A9AgcTNcccLQYu++UWaiUf4Uj5/uTJsl11ClJJMC5SMPN7CORnX3Qq5K
-         kwFKzfqErucEuhBEKPSbcsXdlfAIoUjqzGoF9FzYAfopvUm1yGNZGhoFSlIQe/4v/xwX
-         FASjtdzu/TKAoHx9Se9kMNI6fzMAxI4oge5hHq1NO+/C2zz6fULM0tbA6L74qZQJavFn
-         tvEX/4tERiOEvH9rYGkd8M/5Om8qOdc3jB6zhe9HbibLvJXGPRJoyLFb6QjlM28M6Tag
-         pL0w==
-X-Gm-Message-State: AJIora+PWuko/+VHnRzR0CxsK4+OpsEPvwi2tDKFW48KGT2tjE4KPRkZ
-        CBDMLdkY8GiWSgvu+fu5CH+//vx+1gGPKjEP9xBeazdcXSFSFmw7iDcabdcTndCzg0RIAXZya9n
-        57fP/ZXzTXRuD
-X-Received: by 2002:a05:6a00:1308:b0:528:2ed8:7e3d with SMTP id j8-20020a056a00130800b005282ed87e3dmr44101348pfu.82.1658395830231;
-        Thu, 21 Jul 2022 02:30:30 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1sZJ2tQPOK504th0WDmmE1eCdXGAgBe+DPqkW4Ch1xqd/jvYFMXQX10YnFglctjFz+BMq1srg==
-X-Received: by 2002:a05:6a00:1308:b0:528:2ed8:7e3d with SMTP id j8-20020a056a00130800b005282ed87e3dmr44101301pfu.82.1658395829765;
-        Thu, 21 Jul 2022 02:30:29 -0700 (PDT)
-Received: from [10.72.12.47] ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id b14-20020a17090a6ace00b001f061359023sm988456pjm.21.2022.07.21.02.30.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Jul 2022 02:30:29 -0700 (PDT)
-Message-ID: <cbc59d60-f3b3-465d-185b-5b83f893be63@redhat.com>
-Date:   Thu, 21 Jul 2022 17:30:18 +0800
+        bh=VPyCtgRVoTmDWTFs8MG+ONwpKPH6awHCi/PQRJcKghc=;
+        b=L95H3HCyjHhkB+izI9jmg+tQQkC98VqBLELVmOvA4ZzKtDYacWOzQAzFplcaDiuUpT
+         VdlAU8hmNSsjcYKa5JPQAgCedKUzCYd8eQVFdgp2RPpO711Yxg8tBzFzISFrkvKJh3P3
+         /SOSi3zMRrNXTGTzGa3OxrgNTljPvi6fikynEBfDPasJZxvR6/YHx2wj+YInth4WwWo6
+         yuSJuXW7m8F1ly6jdaurQnUQoEebRbmLT01ar2HZd98nDsYzIkQwHdw/2IgJ5gmZzr4H
+         7Vev4m/K+PpA1iqeNkUxogvtnENXn8yQzKSb2V/kIvoUzcb8OFbp0NF/WWEQA9e0Whad
+         8uiA==
+X-Gm-Message-State: AJIora8RjnmL8frVmG1BPX+7/JATue+HUKpV+EXvmgYHjfApHzTs2znH
+        G35OCFpsuCzrn2AgPJXf/W1Bwi0rfiE=
+X-Google-Smtp-Source: AGRyM1sYMwOrYK0W0cQbyHe3rrbyH1QvhcZsvt/ScJ2BvY7BnMCx7Yg4TLDy+Cw6pAhi4fwGnep4tg==
+X-Received: by 2002:a7b:c310:0:b0:38c:f07a:e10d with SMTP id k16-20020a7bc310000000b0038cf07ae10dmr8062668wmj.110.1658401721201;
+        Thu, 21 Jul 2022 04:08:41 -0700 (PDT)
+Received: from asus5775.alejandro-colomar.es ([170.253.36.171])
+        by smtp.googlemail.com with ESMTPSA id bg42-20020a05600c3caa00b003a31b79dc0esm16071297wmb.1.2022.07.21.04.08.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jul 2022 04:08:40 -0700 (PDT)
+From:   Alejandro Colomar <alx.manpages@gmail.com>
+To:     Quentin Monnet <quentin@isovalent.com>, bpf@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Alejandro Colomar <alx.manpages@gmail.com>
+Subject: [PATCH] bpf_doc.py: Use SPDX-License-Identifier
+Date:   Thu, 21 Jul 2022 13:08:22 +0200
+Message-Id: <20220721110821.8240-1-alx.manpages@gmail.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.11.0
-Subject: Re: [PATCH v12 39/40] virtio_net: support tx queue resize
-Content-Language: en-US
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        virtualization@lists.linux-foundation.org
-Cc:     Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Vadim Pasternak <vadimp@nvidia.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        linux-um@lists.infradead.org, netdev@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
-        kvm@vger.kernel.org, bpf@vger.kernel.org,
-        kangjie.xu@linux.alibaba.com
-References: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
- <20220720030436.79520-40-xuanzhuo@linux.alibaba.com>
-From:   Jason Wang <jasowang@redhat.com>
-In-Reply-To: <20220720030436.79520-40-xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1936; h=from:subject; bh=D2bXBH70rABY7dFAtaVoCs3uQytdOaoEirmUK69/psA=; b=owEBbQKS/ZANAwAKAZ6MGvu+/9syAcsmYgBi2TOYjL2ilxnko+h0dRNAQ1S/uVY4c+5e4LsQoVbQ myAAaOOJAjMEAAEKAB0WIQTqOofwpOugMORd8kCejBr7vv/bMgUCYtkzmAAKCRCejBr7vv/bMoPYD/ 400KGjGVghO1IkOX+YgFCWJiRrOA2dDERmrC5YFZqqrOrNBIFjKhmmNk/pdSzAwWOFXECWaOKzwhLt I3qB//0zlM8GxQK/vx/Q6UFT0OjBaH15glZzJrJbNeYb+6rX1EQPVjBgY5sPQ+tZpKNX8lqfXMPyiv R2d6WbKaIC509xP0S2mezyOnUttrJ5OKvuhITlQpjwS8tqyI6qgHquhHbpV8+dMUe0Ji7z98hHo+nk z3vAW83DcxQsu1+WqSuOmKQdrh2xyRNLHSa77cdI2gavOezJaTui4ABCXt1EvEDLEMiDMf2qP49Dog aHM7nBUb8rK1xkJuqBCI7gQ/+yXR+g3vWiWIyqf8TcBLOBRNJeU0LQQRQsM9D9raZL4nC1TY1rCa9V 4Y1uycgUUf69ybn5dYmolGxqXdbyQPIE4VOkA5/DoOT6ZvcW2xvFRpxgABYPoZlom3iGZWW+U/UiT3 Ep7kd0nbImyQPy+CllifCEGM9eXcaddxoLGQad7aVZPREO5p/hEJMG4GCmIpQI4HR40Mdc8R31zRop zOhFcqmP9TCMlpDxXnuOTnwNINkUmfbYuRGFvIgFzmmRLEaL0tfY/T50roz1VFyR3BhlGBVxMs01Af m5MNyIygrg7273PHRlIY4JiA/cZEgTPc4pmgRxS8RHu1Vu7hr7T+Qg6qhQJA==
+X-Developer-Key: i=alx.manpages@gmail.com; a=openpgp; fpr=A9348594CE31283A826FBDD8D57633D441E25BB5
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -111,99 +69,47 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+The Linux man-pages project now uses SPDX tags,
+instead of the full license text.
 
-在 2022/7/20 11:04, Xuan Zhuo 写道:
-> This patch implements the resize function of the tx queues.
-> Based on this function, it is possible to modify the ring num of the
-> queue.
->
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
+---
+ scripts/bpf_doc.py | 22 +---------------------
+ 1 file changed, 1 insertion(+), 21 deletions(-)
 
-
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-
-> ---
->   drivers/net/virtio_net.c | 47 ++++++++++++++++++++++++++++++++++++++++
->   1 file changed, 47 insertions(+)
->
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 1115a8b59a08..d1e6940b46d8 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -135,6 +135,9 @@ struct send_queue {
->   	struct virtnet_sq_stats stats;
->   
->   	struct napi_struct napi;
-> +
-> +	/* Record whether sq is in reset state. */
-> +	bool reset;
->   };
->   
->   /* Internal representation of a receive virtqueue */
-> @@ -279,6 +282,7 @@ struct padded_vnet_hdr {
->   };
->   
->   static void virtnet_rq_free_unused_buf(struct virtqueue *vq, void *buf);
-> +static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf);
->   
->   static bool is_xdp_frame(void *ptr)
->   {
-> @@ -1603,6 +1607,11 @@ static void virtnet_poll_cleantx(struct receive_queue *rq)
->   		return;
->   
->   	if (__netif_tx_trylock(txq)) {
-> +		if (sq->reset) {
-> +			__netif_tx_unlock(txq);
-> +			return;
-> +		}
-> +
->   		do {
->   			virtqueue_disable_cb(sq->vq);
->   			free_old_xmit_skbs(sq, true);
-> @@ -1868,6 +1877,44 @@ static int virtnet_rx_resize(struct virtnet_info *vi,
->   	return err;
->   }
->   
-> +static int virtnet_tx_resize(struct virtnet_info *vi,
-> +			     struct send_queue *sq, u32 ring_num)
-> +{
-> +	struct netdev_queue *txq;
-> +	int err, qindex;
-> +
-> +	qindex = sq - vi->sq;
-> +
-> +	virtnet_napi_tx_disable(&sq->napi);
-> +
-> +	txq = netdev_get_tx_queue(vi->dev, qindex);
-> +
-> +	/* 1. wait all ximt complete
-> +	 * 2. fix the race of netif_stop_subqueue() vs netif_start_subqueue()
-> +	 */
-> +	__netif_tx_lock_bh(txq);
-> +
-> +	/* Prevent rx poll from accessing sq. */
-> +	sq->reset = true;
-> +
-> +	/* Prevent the upper layer from trying to send packets. */
-> +	netif_stop_subqueue(vi->dev, qindex);
-> +
-> +	__netif_tx_unlock_bh(txq);
-> +
-> +	err = virtqueue_resize(sq->vq, ring_num, virtnet_sq_free_unused_buf);
-> +	if (err)
-> +		netdev_err(vi->dev, "resize tx fail: tx queue index: %d err: %d\n", qindex, err);
-> +
-> +	__netif_tx_lock_bh(txq);
-> +	sq->reset = false;
-> +	netif_tx_wake_queue(txq);
-> +	__netif_tx_unlock_bh(txq);
-> +
-> +	virtnet_napi_tx_enable(vi, sq->vq, &sq->napi);
-> +	return err;
-> +}
-> +
->   /*
->    * Send command via the control virtqueue and check status.  Commands
->    * supported by the hypervisor, as indicated by feature bits, should
+diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
+index 096625242475..74df2955737a 100755
+--- a/scripts/bpf_doc.py
++++ b/scripts/bpf_doc.py
+@@ -333,27 +333,7 @@ class PrinterRST(Printer):
+ .. Copyright (C) All BPF authors and contributors from 2014 to present.
+ .. See git log include/uapi/linux/bpf.h in kernel tree for details.
+ .. 
+-.. %%%LICENSE_START(VERBATIM)
+-.. Permission is granted to make and distribute verbatim copies of this
+-.. manual provided the copyright notice and this permission notice are
+-.. preserved on all copies.
+-.. 
+-.. Permission is granted to copy and distribute modified versions of this
+-.. manual under the conditions for verbatim copying, provided that the
+-.. entire resulting derived work is distributed under the terms of a
+-.. permission notice identical to this one.
+-.. 
+-.. Since the Linux kernel and libraries are constantly changing, this
+-.. manual page may be incorrect or out-of-date.  The author(s) assume no
+-.. responsibility for errors or omissions, or for damages resulting from
+-.. the use of the information contained herein.  The author(s) may not
+-.. have taken the same level of care in the production of this manual,
+-.. which is licensed free of charge, as they might when working
+-.. professionally.
+-.. 
+-.. Formatted or processed versions of this manual, if unaccompanied by
+-.. the source, must acknowledge the copyright and authors of this work.
+-.. %%%LICENSE_END
++.. SPDX-License-Identifier:  Linux-man-pages-copyleft
+ .. 
+ .. Please do not edit this file. It was generated from the documentation
+ .. located in file include/uapi/linux/bpf.h of the Linux kernel sources
+-- 
+2.36.1
 
