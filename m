@@ -2,65 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 307FB57C789
-	for <lists+bpf@lfdr.de>; Thu, 21 Jul 2022 11:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 471DB57C796
+	for <lists+bpf@lfdr.de>; Thu, 21 Jul 2022 11:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232341AbiGUJ0X (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jul 2022 05:26:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57896 "EHLO
+        id S231902AbiGUJag (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jul 2022 05:30:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229813AbiGUJ0W (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jul 2022 05:26:22 -0400
+        with ESMTP id S230149AbiGUJaf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Jul 2022 05:30:35 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7E9FB79EE4
-        for <bpf@vger.kernel.org>; Thu, 21 Jul 2022 02:26:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 699C17A527
+        for <bpf@vger.kernel.org>; Thu, 21 Jul 2022 02:30:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1658395580;
+        s=mimecast20190719; t=1658395832;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=pxqVBZnZmkgOHYwiYGXPDu4uhyKliCc2cAcObS0C01w=;
-        b=bb7fqamyHS9GFmq8uDAqWQwb3iJWNvxV9yoq01Smrxkx/x6QUiQDKZ7fHM9p+QCb82ouby
-        9KFPRl6THFvmGU9gCQ2KedVChMpYy2Nu4mIVAfHqY9nBG1GCKzmM7QJ0CYeqFF12jIs6xj
-        efsJ5tdAHnrnH7/6H1vKQ1QijtDM84k=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=cE2msxk6QPw86zAV3haYmpL0Ot9f5ZCy5ykRLxOKnec=;
+        b=GlQjpbr7E+McOWJVbcQk3HbL++9lYEsdLLPe232nBwS20VCQ8UVr88APvkNZShIZ2bdUE3
+        gwnC908AMcEdw/MeRywV3jTADaCBKeqhXJ9mcvuMUNuUdt9yKjl5IBljgOubmAlnwIL4cO
+        8mNKyrrEmOeFGML90r5dJy1vHkuBN6E=
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
+ [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-479-DPdMVHHPNRehuqeaIF6YbA-1; Thu, 21 Jul 2022 05:26:19 -0400
-X-MC-Unique: DPdMVHHPNRehuqeaIF6YbA-1
-Received: by mail-pj1-f70.google.com with SMTP id o3-20020a17090aac0300b001f210a5e47aso2560657pjq.7
-        for <bpf@vger.kernel.org>; Thu, 21 Jul 2022 02:26:19 -0700 (PDT)
+ us-mta-13-NOYlRRkRPTaD7fbRSe6AVA-1; Thu, 21 Jul 2022 05:30:31 -0400
+X-MC-Unique: NOYlRRkRPTaD7fbRSe6AVA-1
+Received: by mail-pg1-f198.google.com with SMTP id s129-20020a632c87000000b00411564fe1feso676601pgs.7
+        for <bpf@vger.kernel.org>; Thu, 21 Jul 2022 02:30:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=pxqVBZnZmkgOHYwiYGXPDu4uhyKliCc2cAcObS0C01w=;
-        b=DeGwPbhfIJ1LlE9sl45Vsw8b1G6He4GpMqQRsHZIF1rL8vX/w2W5FhicazLEa87aJV
-         wJLkZsaesAWpshd4nYOMxku8uyXsLc3naTcgIh5dskO+46bV+7PwtiTW1c6auRl75EGr
-         X++hw8RuCNZdcrqiwGW9kcPODUv8ZEXmZEFIjkHmwy+TlnDL1lr+mlhfpz7bG2yyZsao
-         AMHt4Zto/qO92PtT0EeVLWvkH0lUfMwRKYuKA9dALN4LAtC2Zua0GdtY76N6Y01+jLzg
-         bnIcnplJnNcy/u1vuiEMatlFa+jf0BQsph6AV4X6egq2K7r5xGv301LKdWzaF1RlVXE/
-         fzLw==
-X-Gm-Message-State: AJIora9n+ALdSKmertXshMipVezTK4lQauK0VoAk0yUwGkMipYjOP/Ro
-        iR8YxKa3EbHfFiv0ZIcXxsGLcU67Gq6WvgJ3DC9tgZhCAyfAyJKZBZZx/dfFR1HFOKjwd3bU+rc
-        wfVvxuYytHjK0
-X-Received: by 2002:a17:90a:f481:b0:1f2:43c:a61 with SMTP id bx1-20020a17090af48100b001f2043c0a61mr10625079pjb.134.1658395578171;
-        Thu, 21 Jul 2022 02:26:18 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1sVEm7Oz/22bKmKW2lh3GmJtdU5mssFIrGu+0Tisk4DP+fMNvbSDHGVBHUYgonKpLqTeG+uag==
-X-Received: by 2002:a17:90a:f481:b0:1f2:43c:a61 with SMTP id bx1-20020a17090af48100b001f2043c0a61mr10625043pjb.134.1658395577872;
-        Thu, 21 Jul 2022 02:26:17 -0700 (PDT)
+        bh=cE2msxk6QPw86zAV3haYmpL0Ot9f5ZCy5ykRLxOKnec=;
+        b=McPXLYTjOV0DbDFXCifGz6nGwDP6Wix0kKmf9bNHb5FQ613BrsCDHtgZw44/wFj7Me
+         nNIHnHDv3eN5A9AgcTNcccLQYu++UWaiUf4Uj5/uTJsl11ClJJMC5SMPN7CORnX3Qq5K
+         kwFKzfqErucEuhBEKPSbcsXdlfAIoUjqzGoF9FzYAfopvUm1yGNZGhoFSlIQe/4v/xwX
+         FASjtdzu/TKAoHx9Se9kMNI6fzMAxI4oge5hHq1NO+/C2zz6fULM0tbA6L74qZQJavFn
+         tvEX/4tERiOEvH9rYGkd8M/5Om8qOdc3jB6zhe9HbibLvJXGPRJoyLFb6QjlM28M6Tag
+         pL0w==
+X-Gm-Message-State: AJIora+PWuko/+VHnRzR0CxsK4+OpsEPvwi2tDKFW48KGT2tjE4KPRkZ
+        CBDMLdkY8GiWSgvu+fu5CH+//vx+1gGPKjEP9xBeazdcXSFSFmw7iDcabdcTndCzg0RIAXZya9n
+        57fP/ZXzTXRuD
+X-Received: by 2002:a05:6a00:1308:b0:528:2ed8:7e3d with SMTP id j8-20020a056a00130800b005282ed87e3dmr44101348pfu.82.1658395830231;
+        Thu, 21 Jul 2022 02:30:30 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1sZJ2tQPOK504th0WDmmE1eCdXGAgBe+DPqkW4Ch1xqd/jvYFMXQX10YnFglctjFz+BMq1srg==
+X-Received: by 2002:a05:6a00:1308:b0:528:2ed8:7e3d with SMTP id j8-20020a056a00130800b005282ed87e3dmr44101301pfu.82.1658395829765;
+        Thu, 21 Jul 2022 02:30:29 -0700 (PDT)
 Received: from [10.72.12.47] ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id l28-20020a635b5c000000b0041a411823d4sm1036080pgm.22.2022.07.21.02.26.04
+        by smtp.gmail.com with ESMTPSA id b14-20020a17090a6ace00b001f061359023sm988456pjm.21.2022.07.21.02.30.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Jul 2022 02:26:17 -0700 (PDT)
-Message-ID: <726a5056-789a-b445-a2c6-879008ad270a@redhat.com>
-Date:   Thu, 21 Jul 2022 17:25:59 +0800
+        Thu, 21 Jul 2022 02:30:29 -0700 (PDT)
+Message-ID: <cbc59d60-f3b3-465d-185b-5b83f893be63@redhat.com>
+Date:   Thu, 21 Jul 2022 17:30:18 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
  Gecko/20100101 Thunderbird/91.11.0
-Subject: Re: [PATCH v12 38/40] virtio_net: support rx queue resize
+Subject: Re: [PATCH v12 39/40] virtio_net: support tx queue resize
 Content-Language: en-US
 To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
         virtualization@lists.linux-foundation.org
@@ -96,14 +96,14 @@ Cc:     Richard Weinberger <richard@nod.at>,
         kvm@vger.kernel.org, bpf@vger.kernel.org,
         kangjie.xu@linux.alibaba.com
 References: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
- <20220720030436.79520-39-xuanzhuo@linux.alibaba.com>
+ <20220720030436.79520-40-xuanzhuo@linux.alibaba.com>
 From:   Jason Wang <jasowang@redhat.com>
-In-Reply-To: <20220720030436.79520-39-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220720030436.79520-40-xuanzhuo@linux.alibaba.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -113,61 +113,93 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 在 2022/7/20 11:04, Xuan Zhuo 写道:
-> This patch implements the resize function of the rx queues.
+> This patch implements the resize function of the tx queues.
 > Based on this function, it is possible to modify the ring num of the
 > queue.
 >
 > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+
+
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+
 > ---
->   drivers/net/virtio_net.c | 22 ++++++++++++++++++++++
->   1 file changed, 22 insertions(+)
+>   drivers/net/virtio_net.c | 47 ++++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 47 insertions(+)
 >
 > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index fe4dc43c05a1..1115a8b59a08 100644
+> index 1115a8b59a08..d1e6940b46d8 100644
 > --- a/drivers/net/virtio_net.c
 > +++ b/drivers/net/virtio_net.c
-> @@ -278,6 +278,8 @@ struct padded_vnet_hdr {
->   	char padding[12];
+> @@ -135,6 +135,9 @@ struct send_queue {
+>   	struct virtnet_sq_stats stats;
+>   
+>   	struct napi_struct napi;
+> +
+> +	/* Record whether sq is in reset state. */
+> +	bool reset;
 >   };
 >   
-> +static void virtnet_rq_free_unused_buf(struct virtqueue *vq, void *buf);
-> +
+>   /* Internal representation of a receive virtqueue */
+> @@ -279,6 +282,7 @@ struct padded_vnet_hdr {
+>   };
+>   
+>   static void virtnet_rq_free_unused_buf(struct virtqueue *vq, void *buf);
+> +static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf);
+>   
 >   static bool is_xdp_frame(void *ptr)
 >   {
->   	return (unsigned long)ptr & VIRTIO_XDP_FLAG;
-> @@ -1846,6 +1848,26 @@ static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *dev)
->   	return NETDEV_TX_OK;
+> @@ -1603,6 +1607,11 @@ static void virtnet_poll_cleantx(struct receive_queue *rq)
+>   		return;
+>   
+>   	if (__netif_tx_trylock(txq)) {
+> +		if (sq->reset) {
+> +			__netif_tx_unlock(txq);
+> +			return;
+> +		}
+> +
+>   		do {
+>   			virtqueue_disable_cb(sq->vq);
+>   			free_old_xmit_skbs(sq, true);
+> @@ -1868,6 +1877,44 @@ static int virtnet_rx_resize(struct virtnet_info *vi,
+>   	return err;
 >   }
 >   
-> +static int virtnet_rx_resize(struct virtnet_info *vi,
-> +			     struct receive_queue *rq, u32 ring_num)
+> +static int virtnet_tx_resize(struct virtnet_info *vi,
+> +			     struct send_queue *sq, u32 ring_num)
 > +{
+> +	struct netdev_queue *txq;
 > +	int err, qindex;
 > +
-> +	qindex = rq - vi->rq;
+> +	qindex = sq - vi->sq;
 > +
-> +	napi_disable(&rq->napi);
-
-
-We need to disable refill work as well. So this series might need 
-rebasing on top of
-
-https://lore.kernel.org/netdev/20220704074859.16912-1-jasowang@redhat.com/
-
-I will send a new version (probably tomorrow).
-
-Thanks
-
-
+> +	virtnet_napi_tx_disable(&sq->napi);
 > +
-> +	err = virtqueue_resize(rq->vq, ring_num, virtnet_rq_free_unused_buf);
+> +	txq = netdev_get_tx_queue(vi->dev, qindex);
+> +
+> +	/* 1. wait all ximt complete
+> +	 * 2. fix the race of netif_stop_subqueue() vs netif_start_subqueue()
+> +	 */
+> +	__netif_tx_lock_bh(txq);
+> +
+> +	/* Prevent rx poll from accessing sq. */
+> +	sq->reset = true;
+> +
+> +	/* Prevent the upper layer from trying to send packets. */
+> +	netif_stop_subqueue(vi->dev, qindex);
+> +
+> +	__netif_tx_unlock_bh(txq);
+> +
+> +	err = virtqueue_resize(sq->vq, ring_num, virtnet_sq_free_unused_buf);
 > +	if (err)
-> +		netdev_err(vi->dev, "resize rx fail: rx queue index: %d err: %d\n", qindex, err);
+> +		netdev_err(vi->dev, "resize tx fail: tx queue index: %d err: %d\n", qindex, err);
 > +
-> +	if (!try_fill_recv(vi, rq, GFP_KERNEL))
-> +		schedule_delayed_work(&vi->refill, 0);
+> +	__netif_tx_lock_bh(txq);
+> +	sq->reset = false;
+> +	netif_tx_wake_queue(txq);
+> +	__netif_tx_unlock_bh(txq);
 > +
-> +	virtnet_napi_enable(rq->vq, &rq->napi);
+> +	virtnet_napi_tx_enable(vi, sq->vq, &sq->napi);
 > +	return err;
 > +}
 > +
