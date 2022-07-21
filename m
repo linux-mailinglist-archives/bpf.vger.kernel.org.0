@@ -2,112 +2,165 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 601FC57CABE
-	for <lists+bpf@lfdr.de>; Thu, 21 Jul 2022 14:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3FFA57CA7A
+	for <lists+bpf@lfdr.de>; Thu, 21 Jul 2022 14:15:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233630AbiGUMji (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jul 2022 08:39:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44290 "EHLO
+        id S230047AbiGUMPA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jul 2022 08:15:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232164AbiGUMjh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jul 2022 08:39:37 -0400
-X-Greylist: delayed 1200 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 21 Jul 2022 05:39:35 PDT
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1CB07538E;
-        Thu, 21 Jul 2022 05:39:35 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4LpWRs64fYz6S3Md;
-        Thu, 21 Jul 2022 20:03:21 +0800 (CST)
-Received: from k01.huawei.com (unknown [10.67.174.197])
-        by APP1 (Coremail) with SMTP id cCh0CgAnLWHKQNliUh8JBA--.48026S2;
-        Thu, 21 Jul 2022 20:04:27 +0800 (CST)
-From:   Xu Kuohai <xukuohai@huaweicloud.com>
-To:     bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+        with ESMTP id S229497AbiGUMO7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Jul 2022 08:14:59 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79CEA863F4;
+        Thu, 21 Jul 2022 05:14:58 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id m8so1887068edd.9;
+        Thu, 21 Jul 2022 05:14:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=VSbWBr2PqZxxIcgEaWX5b/CKC10J1bxUMK1hG4Jb/vc=;
+        b=NGpJOVfwssqjngg2xYTFLZrZBj/N8tDxK1KV8Ddk6vAjmjQBTwUtLzC+UgGiY9WO9X
+         XccwZUffn8Vf53j0La4f05uzhgM7UBJ+/bV0tu5F6tAt4iegfs+2PAppV1fxV9lBfbyn
+         vuPi56tV/3xg5tVp1u6Ch2TqX8ErgBvHAJEaJPrnZ4qnvveI4TC5REiAoJDqUwWXK6U4
+         HBuavEfhc2b75fQ57IKbg9hrJUxb5RR5pshno53klRULSV1RTirbyuCBYpSCpURHqEll
+         Od3eaFXHdHBn5PTQr5R4m10GdOd+8B3V7ZbqLY5+K0KFyRsaLG4EXSIer0EDig0UfGst
+         zJmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=VSbWBr2PqZxxIcgEaWX5b/CKC10J1bxUMK1hG4Jb/vc=;
+        b=j7HwctSvlT0exgr414DhF1NmI/KvNSRfPextccJ1To/ck1Wkt9sVhRJ9YSSWiShplw
+         ZlHMpjfA9be7G7ivIYOz6KHlK3gmyWRKLxHAoQqg8UcQqyPr0xi0mWtnw0ABcHi7WuBH
+         bi8pWnRJnqMUtzFQ+lTsmiDKdGRf9DoaIZH7AqshtCa53ARGnV6IKOTe1QDteGzTJswJ
+         N7ucNtaTJaeCaitrDUGAvZRd88BQCV0zngOyXei9fo7lDoUQO3CGR4lHHVKr6gLMg8e9
+         JMh87nmCx+PG5ZWsmoqaezgUM1XiPbj3hZGpyeXzNGrp14YW3hneSx1XvVMqJjqVFvGL
+         RRGw==
+X-Gm-Message-State: AJIora8+IQioW4Lfnr50jQ8BS2CWlnQcBeZLXa9LUW0nMqAECqn0cnXh
+        KD3JEhxrTQV6RAaTFVwXuvc=
+X-Google-Smtp-Source: AGRyM1vild5GzH+uGoclyDv0swbm3SShGCYbdIa8XwTOLqm8EYX2jhkQZkrvG6L1KMDPV6OSk29Mqw==
+X-Received: by 2002:a05:6402:518b:b0:43a:dc65:35f8 with SMTP id q11-20020a056402518b00b0043adc6535f8mr57668291edd.185.1658405697000;
+        Thu, 21 Jul 2022 05:14:57 -0700 (PDT)
+Received: from krava ([193.85.244.190])
+        by smtp.gmail.com with ESMTPSA id kw26-20020a170907771a00b0072124df085bsm817249ejc.15.2022.07.21.05.14.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jul 2022 05:14:56 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 21 Jul 2022 14:14:53 +0200
+To:     Lee Jones <lee@kernel.org>
+Cc:     Jiri Olsa <olsajiri@gmail.com>, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Hao Luo <haoluo@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jiri Olsa <jolsa@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        KP Singh <kpsingh@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Will Deacon <will@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Zi Shen Lim <zlim.lnx@gmail.com>
-Subject: [PATCH bpf-next] bpf, arm64: Fix compile error in dummy_tramp()
-Date:   Thu, 21 Jul 2022 08:13:19 -0400
-Message-Id: <20220721121319.2999259-1-xukuohai@huaweicloud.com>
-X-Mailer: git-send-email 2.30.2
+        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
+Subject: Re: [PATCH 1/1] bpf: Drop unprotected find_vpid() in favour of
+ find_get_pid()
+Message-ID: <YtlDPYQWDcORbP0o@krava>
+References: <20220721111430.416305-1-lee@kernel.org>
+ <Ytk+/npvvDGg9pBP@krava>
+ <Ytk/jT+zyNZpafgn@google.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgAnLWHKQNliUh8JBA--.48026S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7uFyxCF15uw18tFWfAF45trb_yoW8GF1kpw
-        1UCrnxC3yqgF4DGa4rXa1fXF15tF4qqFWa9rW2grW5tF9FvryUGr4fKw1kWrZxJr1Fva1r
-        AFWjkwn5A3Wvv3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r106r1rM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
-        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
-        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI
-        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
-        IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
-        z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU13rcDUUUUU==
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <Ytk/jT+zyNZpafgn@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Xu Kuohai <xukuohai@huawei.com>
+On Thu, Jul 21, 2022 at 12:59:09PM +0100, Lee Jones wrote:
+> On Thu, 21 Jul 2022, Jiri Olsa wrote:
+> 
+> > On Thu, Jul 21, 2022 at 12:14:30PM +0100, Lee Jones wrote:
+> > > The documentation for find_pid() clearly states:
 
-dummy_tramp() uses "lr" to refer to the x30 register, but some assembler
-does not recognize "lr" and reports a build failure:
+typo find_vpid
 
-/tmp/cc52xO0c.s: Assembler messages:
-/tmp/cc52xO0c.s:8: Error: operand 1 should be an integer register -- `mov lr,x9'
-/tmp/cc52xO0c.s:7: Error: undefined symbol lr used as an immediate value
-make[2]: *** [scripts/Makefile.build:250: arch/arm64/net/bpf_jit_comp.o] Error 1
-make[1]: *** [scripts/Makefile.build:525: arch/arm64/net] Error 2
+> > > 
+> > >   "Must be called with the tasklist_lock or rcu_read_lock() held."
+> > > 
+> > > Presently we do neither.
 
-So replace "lr" with "x30" to fix it.
+just curious, did you see crash related to this or you just spot that
 
-Fixes: b2ad54e1533e ("bpf, arm64: Implement bpf_arch_text_poke() for arm64")
-Reported-by: Jon Hunter <jonathanh@nvidia.com>
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
-Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
----
- arch/arm64/net/bpf_jit_comp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> > > 
+> > > In an ideal world we would wrap the in-lined call to find_vpid() along
+> > > with get_pid_task() in the suggested rcu_read_lock() and have done.
+> > > However, looking at get_pid_task()'s internals, it already does that
+> > > independently, so this would lead to deadlock.
+> > 
+> > hm, we can have nested rcu_read_lock calls, right?
+> 
+> I assumed not, but that might be an oversight on my part.
+> 
+> Would that be your preference?
 
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index dcc572b7d4da..7ca8779ae34f 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -610,8 +610,8 @@ asm (
- #if IS_ENABLED(CONFIG_ARM64_BTI_KERNEL)
- "	bti j\n" /* dummy_tramp is called via "br x10" */
- #endif
--"	mov x10, lr\n"
--"	mov lr, x9\n"
-+"	mov x10, x30\n"
-+"	mov x30, x9\n"
- "	ret x10\n"
- "	.size dummy_tramp, .-dummy_tramp\n"
- "	.popsection\n"
--- 
-2.30.2
+seems simpler than calling get/put for ppid
 
+jirka
+
+> 
+> > > Instead, we'll use find_get_pid() which searches for the vpid, then
+> > > takes a reference to it preventing early free, all within the safety
+> > > of rcu_read_lock().  Once we have our reference we can safely make use
+> > > of it up until the point it is put.
+> > > 
+> > > Cc: Alexei Starovoitov <ast@kernel.org>
+> > > Cc: Daniel Borkmann <daniel@iogearbox.net>
+> > > Cc: John Fastabend <john.fastabend@gmail.com>
+> > > Cc: Andrii Nakryiko <andrii@kernel.org>
+> > > Cc: Martin KaFai Lau <martin.lau@linux.dev>
+> > > Cc: Song Liu <song@kernel.org>
+> > > Cc: Yonghong Song <yhs@fb.com>
+> > > Cc: KP Singh <kpsingh@kernel.org>
+> > > Cc: Stanislav Fomichev <sdf@google.com>
+> > > Cc: Hao Luo <haoluo@google.com>
+> > > Cc: Jiri Olsa <jolsa@kernel.org>
+> > > Cc: bpf@vger.kernel.org
+> > > Fixes: 41bdc4b40ed6f ("bpf: introduce bpf subcommand BPF_TASK_FD_QUERY")
+> > > Signed-off-by: Lee Jones <lee@kernel.org>
+> > > ---
+> > >  kernel/bpf/syscall.c | 5 ++++-
+> > >  1 file changed, 4 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> > > index 83c7136c5788d..c20cff30581c4 100644
+> > > --- a/kernel/bpf/syscall.c
+> > > +++ b/kernel/bpf/syscall.c
+> > > @@ -4385,6 +4385,7 @@ static int bpf_task_fd_query(const union bpf_attr *attr,
+> > >  	const struct perf_event *event;
+> > >  	struct task_struct *task;
+> > >  	struct file *file;
+> > > +	struct pid *ppid;
+> > >  	int err;
+> > >  
+> > >  	if (CHECK_ATTR(BPF_TASK_FD_QUERY))
+> > > @@ -4396,7 +4397,9 @@ static int bpf_task_fd_query(const union bpf_attr *attr,
+> > >  	if (attr->task_fd_query.flags != 0)
+> > >  		return -EINVAL;
+> > >  
+> > > -	task = get_pid_task(find_vpid(pid), PIDTYPE_PID);
+> > > +	ppid = find_get_pid(pid);
+> > > +	task = get_pid_task(ppid, PIDTYPE_PID);
+> > > +	put_pid(ppid);
+> > >  	if (!task)
+> > >  		return -ENOENT;
+> > >  
+> 
+> -- 
+> Lee Jones [李琼斯]
