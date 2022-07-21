@@ -2,56 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB5B57CBF0
-	for <lists+bpf@lfdr.de>; Thu, 21 Jul 2022 15:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 621CD57CC1E
+	for <lists+bpf@lfdr.de>; Thu, 21 Jul 2022 15:41:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229624AbiGUNaS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jul 2022 09:30:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39028 "EHLO
+        id S229446AbiGUNlp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jul 2022 09:41:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbiGUNaS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jul 2022 09:30:18 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2687F3D
-        for <bpf@vger.kernel.org>; Thu, 21 Jul 2022 06:30:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 95FE9B82504
-        for <bpf@vger.kernel.org>; Thu, 21 Jul 2022 13:30:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 0C88BC341C6;
-        Thu, 21 Jul 2022 13:30:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658410214;
-        bh=b92j8HDe+Hmqgm8S8ZnV5dFDFRNMTfhf7IadUJC1rKQ=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=p28UGCa8hHf7GLb5lDp/yiLq0+wIYZ2wHH50h1aaweoN1ZtysELPznOZnXIDLAhGJ
-         OpnZoFBQlV2UWj4wO9CzYpH6IKRoe6RNVK00mc/mZBsu1LhGO43npjdsmvo4JSqHgl
-         1bkM1ikxSSx6dHzCDmKNf1iyPA2u2Nrz+5mYJ1dHZ5r80W1DeBWJL+Byx3cqbcx8tg
-         4Ast5XeLDjmo31B5WhAnvRiAoFOujH7baiojdoga+l2bHqhf0n0n519fsgcFCCGQ4v
-         rNZyYjQwRGJw5rNZ3hg0tqOkVLCC2xbh1S9CAoZaLpLSOrK/tNCbdPgw5dn0zIpbuv
-         2wOI/VnpFWQJg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EA5CDE451B0;
-        Thu, 21 Jul 2022 13:30:13 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229463AbiGUNlo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Jul 2022 09:41:44 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C7CD6112E
+        for <bpf@vger.kernel.org>; Thu, 21 Jul 2022 06:41:43 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id b21-20020a05600c4e1500b003a32bc8612fso846625wmq.3
+        for <bpf@vger.kernel.org>; Thu, 21 Jul 2022 06:41:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1ZOd/Gq++6P9/egrjfq0hLbqfmWCQrpYvj+T6OMIRcA=;
+        b=XePPEM4RRwanEDLwjDstnSZCVj1tto3cW5NKsAzKSn1mccMSMC/Kuk1+bODT32j6ro
+         lU0EQLFZO/jmM0fADBWn/HBeLcOHrmKOpxS51Bdj+Mo9u2PfEGdD05msKOxw09yc5/fJ
+         +14EaD9uzzG2/OGgSkWSBGhgbSbIy3sa2pBORDupvOHcLrvzjHFwEGPSAqL/WLkoBBkB
+         3cEIGnGKxCX/iNlsspBW+UJmxQidu1C2WcAw4k8jSaqnV2D32xwSXeGcZH8BPxiVdaOA
+         kiZZQ7alXk5g7dtU0VcGXBk/z9MwXQry8wno1WiMdGaz5+9rOmgAj8QJuwc0X3Wu7t/X
+         7OrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1ZOd/Gq++6P9/egrjfq0hLbqfmWCQrpYvj+T6OMIRcA=;
+        b=uAeaT2cUE4ib85H7GWGN+wCMwSlzHNVMtpPS8s85H1DrOATdZMtj0O85PKeZWxWm73
+         9o0pyy9BGNZmuwEQ5a1EOANSXKDKqNgs29jir3JatpEqCV/1NWXshsCEHjpmIwKi6KPw
+         TsLLrqrua6bdJ7WaXHbyBKS1dpsS3iCWml85ch9HG4jfXOeHRM2l7xSUDxLSJjPBQ3Cm
+         jwNk841QPXFg83qg+5oOHn9WmVaiXfpAG6DdFCF48GWi/C2YodhFNLdyzdJSiRqIhpjd
+         hFcgalZMEHShfOKdXphjuMiCIaBtl4NPTfQmDPqOVzRPJmdNlUAxH62Bn3DIZ/IGCShd
+         ue4Q==
+X-Gm-Message-State: AJIora/PDXZT0ZnUX394aHY32FkrwthB8Uzt8FUU+T5SpufFL32HX5ZR
+        UMqf7YMKCMU/j1efYPn976WrAw==
+X-Google-Smtp-Source: AGRyM1tyiSs+bsKfSaH2hJxxA8JS1C7ucliDlZGzwNOh7X+0SsXr+sRq5xXvqIfCkBSEEyZx4FYHqg==
+X-Received: by 2002:a05:600c:35d5:b0:3a3:2490:c984 with SMTP id r21-20020a05600c35d500b003a32490c984mr8823738wmq.162.1658410901611;
+        Thu, 21 Jul 2022 06:41:41 -0700 (PDT)
+Received: from myrica (cpc92880-cmbg19-2-0-cust679.5-4.cable.virginm.net. [82.27.106.168])
+        by smtp.gmail.com with ESMTPSA id i13-20020adff30d000000b0021e4982270asm2078759wro.13.2022.07.21.06.41.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jul 2022 06:41:41 -0700 (PDT)
+Date:   Thu, 21 Jul 2022 14:41:15 +0100
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Xu Kuohai <xukuohai@huaweicloud.com>
+Cc:     bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Hao Luo <haoluo@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Will Deacon <will@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Zi Shen Lim <zlim.lnx@gmail.com>
+Subject: Re: [PATCH bpf-next] bpf, arm64: Fix compile error in dummy_tramp()
+Message-ID: <YtlXe3OKS9u+3jFx@myrica>
+References: <20220721121319.2999259-1-xukuohai@huaweicloud.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] bpf: Check attach_func_proto more carefully in
- check_helper_call
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165841021395.31007.4261003933380275884.git-patchwork-notify@kernel.org>
-Date:   Thu, 21 Jul 2022 13:30:13 +0000
-References: <20220720164729.147544-1-sdf@google.com>
-In-Reply-To: <20220720164729.147544-1-sdf@google.com>
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org,
-        syzbot+0f8d989b1fba1addc5e0@syzkaller.appspotmail.com
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220721121319.2999259-1-xukuohai@huaweicloud.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,32 +82,49 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Wed, 20 Jul 2022 09:47:29 -0700 you wrote:
-> Syzkaller found a problem similar to d1a6edecc1fd ("bpf: Check
-> attach_func_proto more carefully in check_return_code") where
-> attach_func_proto might be NULL:
+On Thu, Jul 21, 2022 at 08:13:19AM -0400, Xu Kuohai wrote:
+> From: Xu Kuohai <xukuohai@huawei.com>
 > 
-> RIP: 0010:check_helper_call+0x3dcb/0x8d50 kernel/bpf/verifier.c:7330
->  do_check kernel/bpf/verifier.c:12302 [inline]
->  do_check_common+0x6e1e/0xb980 kernel/bpf/verifier.c:14610
->  do_check_main kernel/bpf/verifier.c:14673 [inline]
->  bpf_check+0x661e/0xc520 kernel/bpf/verifier.c:15243
->  bpf_prog_load+0x11ae/0x1f80 kernel/bpf/syscall.c:2620
+> dummy_tramp() uses "lr" to refer to the x30 register, but some assembler
+> does not recognize "lr" and reports a build failure:
 > 
-> [...]
+> /tmp/cc52xO0c.s: Assembler messages:
+> /tmp/cc52xO0c.s:8: Error: operand 1 should be an integer register -- `mov lr,x9'
+> /tmp/cc52xO0c.s:7: Error: undefined symbol lr used as an immediate value
+> make[2]: *** [scripts/Makefile.build:250: arch/arm64/net/bpf_jit_comp.o] Error 1
+> make[1]: *** [scripts/Makefile.build:525: arch/arm64/net] Error 2
+> 
+> So replace "lr" with "x30" to fix it.
+> 
+> Fixes: b2ad54e1533e ("bpf, arm64: Implement bpf_arch_text_poke() for arm64")
+> Reported-by: Jon Hunter <jonathanh@nvidia.com>
+> Tested-by: Jon Hunter <jonathanh@nvidia.com>
+> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
 
-Here is the summary with links:
-  - [bpf-next] bpf: Check attach_func_proto more carefully in check_helper_call
-    https://git.kernel.org/bpf/bpf-next/c/aef9d4a34a51
+Right, it looks like the lr alias was only added to binutils 2.30, and
+Linux supports 2.23+
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Reviewed-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
 
-
+> ---
+>  arch/arm64/net/bpf_jit_comp.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+> index dcc572b7d4da..7ca8779ae34f 100644
+> --- a/arch/arm64/net/bpf_jit_comp.c
+> +++ b/arch/arm64/net/bpf_jit_comp.c
+> @@ -610,8 +610,8 @@ asm (
+>  #if IS_ENABLED(CONFIG_ARM64_BTI_KERNEL)
+>  "	bti j\n" /* dummy_tramp is called via "br x10" */
+>  #endif
+> -"	mov x10, lr\n"
+> -"	mov lr, x9\n"
+> +"	mov x10, x30\n"
+> +"	mov x30, x9\n"
+>  "	ret x10\n"
+>  "	.size dummy_tramp, .-dummy_tramp\n"
+>  "	.popsection\n"
+> -- 
+> 2.30.2
+> 
