@@ -2,90 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C962457CB0F
-	for <lists+bpf@lfdr.de>; Thu, 21 Jul 2022 15:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E624957CB11
+	for <lists+bpf@lfdr.de>; Thu, 21 Jul 2022 15:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233743AbiGUNA2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jul 2022 09:00:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60248 "EHLO
+        id S231777AbiGUNBJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jul 2022 09:01:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233674AbiGUNAW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jul 2022 09:00:22 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8038C26AD0;
-        Thu, 21 Jul 2022 06:00:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 8F17DB824D1;
-        Thu, 21 Jul 2022 13:00:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 08EC5C341D2;
-        Thu, 21 Jul 2022 13:00:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658408414;
-        bh=SSIOkiVATINKESblwFrP/lP8zlxGhJckPLUFuO2J4mg=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=JKpQ9/F95mRS0hxT2DvPSmhETio99mSVlAmv9GokIqIZig20s7PP1oqKHqBK2HjL/
-         /h1djsiOHr1UiOe7yZbQwoFraJjPgLjENBjqDD3xMZ/ReWC8uwbhYu7SPxd/bL81T3
-         rDwV0V6cecz6FxlF5ooFiPFrnoPDKD5cBKrFFHL7Pdkcv4yKY8R+1C/i+GqrIP6SBd
-         QAkN7E3QLEdmjuzIEXgJM6Umey44tY0jfvwv8gzTIKJelHAGv6WivFJqzBhcGGWfII
-         XyMzGyt1g+uS2PFmhE5lYyYbdF2abhPuoM42ls8NYGPFa+l+9kULTb22+A2oGmyGEs
-         /tg2dXEh9Gtsg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E1BE6E451B9;
-        Thu, 21 Jul 2022 13:00:13 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S231154AbiGUNBI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Jul 2022 09:01:08 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A18DEF6A;
+        Thu, 21 Jul 2022 06:01:06 -0700 (PDT)
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1oEVnW-0000Ad-8A; Thu, 21 Jul 2022 15:00:58 +0200
+Received: from [2a01:118f:505:3400:57f9:d43a:5622:24a8] (helo=linux-3.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1oEVnV-000UrP-QQ; Thu, 21 Jul 2022 15:00:57 +0200
+Subject: Re: [PATCH bpf-next 0/4] destructive bpf kfuncs (was: bpf_panic)
+To:     Artem Savkov <asavkov@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Daniel Vacek <dvacek@redhat.com>,
+        Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>
+References: <20220720114652.3020467-1-asavkov@redhat.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <d6a19eb9-92ca-eeda-ff72-8f9250d754b8@iogearbox.net>
+Date:   Thu, 21 Jul 2022 15:00:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] libbpf: fix str_has_sfx()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165840841392.13235.13594925502325927326.git-patchwork-notify@kernel.org>
-Date:   Thu, 21 Jul 2022 13:00:13 +0000
-References: <YtZ+/dAA195d99ak@kili>
-In-Reply-To: <YtZ+/dAA195d99ak@kili>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     ast@kernel.org, alan.maguire@oracle.com, daniel@iogearbox.net,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220720114652.3020467-1-asavkov@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.6/26608/Thu Jul 21 09:57:36 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Tue, 19 Jul 2022 12:53:01 +0300 you wrote:
-> The return from strcmp() is inverted so the it returns true instead
-> of false and vise versa.
+On 7/20/22 1:46 PM, Artem Savkov wrote:
+> eBPF is often used for kernel debugging, and one of the widely used and
+> powerful debugging techniques is post-mortem debugging with a full memory dump.
+> Triggering a panic at exactly the right moment allows the user to get such a
+> dump and thus a better view at the system's state. Right now the only way to
+> do this in BPF is to signal userspace to trigger kexec/panic. This is
+> suboptimal as going through userspace requires context changes and adds
+> significant delays taking system further away from "the right moment". On a
+> single-cpu system the situation is even worse because BPF program won't even be
+> able to block the thread of interest.
 > 
-> Fixes: a1c9d61b19cb ("libbpf: Improve library identification for uprobe binary path resolution")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
-> Spotted during review.  *cmp() functions should always have a comparison
-> to zero.
-> 	if (strcmp(a, b) < 0) {  <-- means a < b
-> 	if (strcmp(a, b) >= 0) { <-- means a >= b
-> 	if (strcmp(a, b) != 0) { <-- means a != b
-> etc.
+> This patchset tries to solve this problem by allowing properly marked tracing
+> bpf programs to call crash_kexec() kernel function.
 > 
-> [...]
+> This is a continuation of bpf_panic patchset with initial feedback taken into
+> account.
+> 
+> Changes from RFC:
+>   - sysctl knob dropped
+>   - using crash_kexec() instead of panic()
+>   - using kfuncs instead of adding a new helper
+> 
+> Artem Savkov (4):
+>    bpf: add BPF_F_DESTRUCTIVE flag for BPF_PROG_LOAD
+>    bpf: add destructive kfunc set
+>    selftests/bpf: add destructive kfunc tests
+>    bpf: export crash_kexec() as destructive kfunc
 
-Here is the summary with links:
-  - libbpf: fix str_has_sfx()
-    https://git.kernel.org/bpf/bpf-next/c/14229b8153a3
+First and second patch ccould be folded together into one. The selftest
+should be last in series so that if people bisect the test won't fail due
+to missing functionality. First one also has a stale comment wrt bpf_panic()
+helper.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+>   include/linux/bpf.h                           |  1 +
+>   include/linux/btf.h                           |  2 +
+>   include/uapi/linux/bpf.h                      |  6 +++
+>   kernel/bpf/syscall.c                          |  4 +-
+>   kernel/bpf/verifier.c                         | 12 ++++++
+>   kernel/kexec_core.c                           | 22 ++++++++++
+>   net/bpf/test_run.c                            | 12 +++++-
+>   tools/include/uapi/linux/bpf.h                |  6 +++
+>   .../selftests/bpf/prog_tests/kfunc_call.c     | 41 +++++++++++++++++++
+>   .../bpf/progs/kfunc_call_destructive.c        | 14 +++++++
+>   10 files changed, 118 insertions(+), 2 deletions(-)
+>   create mode 100644 tools/testing/selftests/bpf/progs/kfunc_call_destructive.c
+> 
 
