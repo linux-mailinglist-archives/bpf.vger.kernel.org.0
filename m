@@ -2,206 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E16357D51F
-	for <lists+bpf@lfdr.de>; Thu, 21 Jul 2022 22:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D92D57D550
+	for <lists+bpf@lfdr.de>; Thu, 21 Jul 2022 22:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229547AbiGUUvc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jul 2022 16:51:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44382 "EHLO
+        id S233298AbiGUU6X (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jul 2022 16:58:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbiGUUva (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jul 2022 16:51:30 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A09298F52C;
-        Thu, 21 Jul 2022 13:51:29 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id y4so3639890edc.4;
-        Thu, 21 Jul 2022 13:51:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6vGrA0nNuCMZeyTertcq3i3Pav7G1W9MuISFp9Y13/E=;
-        b=Q5tLlnqSkJp2N9i8gaTXHwGSFc8mgaRW2jaI948gVDzJn33enWzEyYNKK/qnek96G7
-         Clj/TK5p3RYF0rsp8LUGVapH5Gdg9Dm/hS2Bb6OS/SaX+Z9/8B3E6kbEHeT+iTFBCLyV
-         otLw4TYi+nkkGJxIEjQo5pEfEfidYUZoOJ+mgd4ezuvZQ2osf7mZmE213jeK61Gs346d
-         lDX+GpczwDY5mTqP4FX1lgKD3gHteBcytsudyI/9tiTL+kPtfY025qGYs0qfo6pAwwx2
-         rZ257wl41ckTxCLUMLwR98CYFeTL2zMupDdRWC0frb44/9ZP8//Oz5DtYXsih9bUEMuq
-         kDNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6vGrA0nNuCMZeyTertcq3i3Pav7G1W9MuISFp9Y13/E=;
-        b=6Ca79X9fw/DUm2nd6DgU9HrkMrypt+9Mcd5+4ig5zm0SaQqxzpG9ES32k4xuLdIkbR
-         ZPu85Tk39aU5uAleSEmi2vJhkNRpfyZOdAN3+mbcMzvh0D+XlFYRQipIqiIOLcpzTpEZ
-         S0VXsT0/m8cebtT6247W1f/u58pw5wCK6YOF0hUP2QowpztXS/fM3bvR7xXE8Su2wacd
-         VrnBSV23sjMTFEY6s89UREV6UON6rskAU76/FqBwFz2hD0ATKPOpUEo+lbeKOYCVBhkI
-         aQI7CmzDgx0OoYLM3N1aL7NRmIetH2cegm3pcY+cIfiZXwoOiPKCQjlmKN7rckkZwoBy
-         LEBQ==
-X-Gm-Message-State: AJIora8E0WOM0Jab4d7+TfSwdub0fRtwXmGVYUArniIZapIYZj+HT2aE
-        kKJyEr2Cwo/6qiohuc+ziU4=
-X-Google-Smtp-Source: AGRyM1sejFx2dIvgh7pJ2wm4ypgEIBeC/PBjq+5YRwLWBGz/qmyT4pWgbajntb6KxSE9TgNo7OVv8A==
-X-Received: by 2002:a05:6402:1546:b0:43b:bc2a:36ad with SMTP id p6-20020a056402154600b0043bbc2a36admr203308edx.330.1658436688135;
-        Thu, 21 Jul 2022 13:51:28 -0700 (PDT)
-Received: from krava ([83.240.60.135])
-        by smtp.gmail.com with ESMTPSA id n2-20020a056402060200b0043a87e6196esm1576295edv.6.2022.07.21.13.51.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jul 2022 13:51:27 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Thu, 21 Jul 2022 22:51:24 +0200
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        with ESMTP id S233072AbiGUU6U (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Jul 2022 16:58:20 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ACB3904F0;
+        Thu, 21 Jul 2022 13:58:10 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id DF54EB82680;
+        Thu, 21 Jul 2022 20:58:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42E5AC3411E;
+        Thu, 21 Jul 2022 20:58:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1658437087;
+        bh=TJy6oV2ClpHeP1ehFHQPSiyhoWHgHghft6FoozMWqQg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=V99tJWDcRv1RzXemv+3Vfvjgenyc7nS3ZG+WWdTqQDeQNbj6aXRLWYgpTiwz0Z2Th
+         oXRgO11iP5ibVAECA3ZgfhEHCq2HDspzoJ3U0iGzaqavJCbD4Q60MJdC1X18MnBZzS
+         LOw5oU4GcZoQlSYQXNAAW+ygYc9HKz13l7nRwIuBRf7pFCeaYQLEFDjKNGmWCQ4HlK
+         zHwlMEB9zCY18bn6/gm2Fw4HW368+3Uwfluz520FeEWc1RTezjHCNu1YGM33TUUXqS
+         xiMPotDdrO/nwkkeMyi6bFKI42F7bsr1Ukft7ausiyE02yso2TPYxVRl1ZyJWexIp2
+         1oFymV61XI/sA==
+Date:   Thu, 21 Jul 2022 21:58:00 +0100
+From:   Lee Jones <lee@kernel.org>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Jiri Olsa <olsajiri@gmail.com>, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v7 02/13] tools/resolve_btfids: Add support for
- 8-byte BTF sets
-Message-ID: <Ytm8TCggRg6xJe/q@krava>
-References: <20220721134245.2450-1-memxor@gmail.com>
- <20220721134245.2450-3-memxor@gmail.com>
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
+Subject: Re: [PATCH 1/1] bpf: Drop unprotected find_vpid() in favour of
+ find_get_pid()
+Message-ID: <Ytm92NYx4SyKN4Nm@google.com>
+References: <20220721111430.416305-1-lee@kernel.org>
+ <Ytk+/npvvDGg9pBP@krava>
+ <Ytk/jT+zyNZpafgn@google.com>
+ <YtlDPYQWDcORbP0o@krava>
+ <fbc98bb0-a2d6-a450-e6fc-878701e5906d@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20220721134245.2450-3-memxor@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fbc98bb0-a2d6-a450-e6fc-878701e5906d@fb.com>
+X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 21, 2022 at 03:42:34PM +0200, Kumar Kartikeya Dwivedi wrote:
-> A flag is a 4-byte symbol that may follow a BTF ID in a set8. This is
-> used in the kernel to tag kfuncs in BTF sets with certain flags. Add
-> support to adjust the sorting code so that it passes size as 8 bytes
-> for 8-byte BTF sets.
-> 
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+On Thu, 21 Jul 2022, Yonghong Song wrote:
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-
-jirka
-
-> ---
->  tools/bpf/resolve_btfids/main.c | 40 ++++++++++++++++++++++++++++-----
->  1 file changed, 34 insertions(+), 6 deletions(-)
 > 
-> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
-> index 5d26f3c6f918..80cd7843c677 100644
-> --- a/tools/bpf/resolve_btfids/main.c
-> +++ b/tools/bpf/resolve_btfids/main.c
-> @@ -45,6 +45,19 @@
->   *             .zero 4
->   *             __BTF_ID__func__vfs_fallocate__4:
->   *             .zero 4
-> + *
-> + *   set8    - store symbol size into first 4 bytes and sort following
-> + *             ID list
-> + *
-> + *             __BTF_ID__set8__list:
-> + *             .zero 8
-> + *             list:
-> + *             __BTF_ID__func__vfs_getattr__3:
-> + *             .zero 4
-> + *	       .word (1 << 0) | (1 << 2)
-> + *             __BTF_ID__func__vfs_fallocate__5:
-> + *             .zero 4
-> + *	       .word (1 << 3) | (1 << 1) | (1 << 2)
->   */
->  
->  #define  _GNU_SOURCE
-> @@ -72,6 +85,7 @@
->  #define BTF_TYPEDEF	"typedef"
->  #define BTF_FUNC	"func"
->  #define BTF_SET		"set"
-> +#define BTF_SET8	"set8"
->  
->  #define ADDR_CNT	100
->  
-> @@ -84,6 +98,7 @@ struct btf_id {
->  	};
->  	int		 addr_cnt;
->  	bool		 is_set;
-> +	bool		 is_set8;
->  	Elf64_Addr	 addr[ADDR_CNT];
->  };
->  
-> @@ -231,14 +246,14 @@ static char *get_id(const char *prefix_end)
->  	return id;
->  }
->  
-> -static struct btf_id *add_set(struct object *obj, char *name)
-> +static struct btf_id *add_set(struct object *obj, char *name, bool is_set8)
->  {
->  	/*
->  	 * __BTF_ID__set__name
->  	 * name =    ^
->  	 * id   =         ^
->  	 */
-> -	char *id = name + sizeof(BTF_SET "__") - 1;
-> +	char *id = name + (is_set8 ? sizeof(BTF_SET8 "__") : sizeof(BTF_SET "__")) - 1;
->  	int len = strlen(name);
->  
->  	if (id >= name + len) {
-> @@ -444,9 +459,21 @@ static int symbols_collect(struct object *obj)
->  		} else if (!strncmp(prefix, BTF_FUNC, sizeof(BTF_FUNC) - 1)) {
->  			obj->nr_funcs++;
->  			id = add_symbol(&obj->funcs, prefix, sizeof(BTF_FUNC) - 1);
-> +		/* set8 */
-> +		} else if (!strncmp(prefix, BTF_SET8, sizeof(BTF_SET8) - 1)) {
-> +			id = add_set(obj, prefix, true);
-> +			/*
-> +			 * SET8 objects store list's count, which is encoded
-> +			 * in symbol's size, together with 'cnt' field hence
-> +			 * that - 1.
-> +			 */
-> +			if (id) {
-> +				id->cnt = sym.st_size / sizeof(uint64_t) - 1;
-> +				id->is_set8 = true;
-> +			}
->  		/* set */
->  		} else if (!strncmp(prefix, BTF_SET, sizeof(BTF_SET) - 1)) {
-> -			id = add_set(obj, prefix);
-> +			id = add_set(obj, prefix, false);
->  			/*
->  			 * SET objects store list's count, which is encoded
->  			 * in symbol's size, together with 'cnt' field hence
-> @@ -571,7 +598,8 @@ static int id_patch(struct object *obj, struct btf_id *id)
->  	int *ptr = data->d_buf;
->  	int i;
->  
-> -	if (!id->id && !id->is_set)
-> +	/* For set, set8, id->id may be 0 */
-> +	if (!id->id && !id->is_set && !id->is_set8)
->  		pr_err("WARN: resolve_btfids: unresolved symbol %s\n", id->name);
->  
->  	for (i = 0; i < id->addr_cnt; i++) {
-> @@ -643,13 +671,13 @@ static int sets_patch(struct object *obj)
->  		}
->  
->  		idx = idx / sizeof(int);
-> -		base = &ptr[idx] + 1;
-> +		base = &ptr[idx] + (id->is_set8 ? 2 : 1);
->  		cnt = ptr[idx];
->  
->  		pr_debug("sorting  addr %5lu: cnt %6d [%s]\n",
->  			 (idx + 1) * sizeof(int), cnt, id->name);
->  
-> -		qsort(base, cnt, sizeof(int), cmp_id);
-> +		qsort(base, cnt, id->is_set8 ? sizeof(uint64_t) : sizeof(int), cmp_id);
->  
->  		next = rb_next(next);
->  	}
-> -- 
-> 2.34.1
 > 
+> On 7/21/22 5:14 AM, Jiri Olsa wrote:
+> > On Thu, Jul 21, 2022 at 12:59:09PM +0100, Lee Jones wrote:
+> > > On Thu, 21 Jul 2022, Jiri Olsa wrote:
+> > > 
+> > > > On Thu, Jul 21, 2022 at 12:14:30PM +0100, Lee Jones wrote:
+> > > > > The documentation for find_pid() clearly states:
+> > 
+> > typo find_vpid
+> > 
+> > > > > 
+> > > > >    "Must be called with the tasklist_lock or rcu_read_lock() held."
+> > > > > 
+> > > > > Presently we do neither.
+> > 
+> > just curious, did you see crash related to this or you just spot that
+> > 
+> > > > > 
+> > > > > In an ideal world we would wrap the in-lined call to find_vpid() along
+> > > > > with get_pid_task() in the suggested rcu_read_lock() and have done.
+> > > > > However, looking at get_pid_task()'s internals, it already does that
+> > > > > independently, so this would lead to deadlock.
+> > > > 
+> > > > hm, we can have nested rcu_read_lock calls, right?
+> > > 
+> > > I assumed not, but that might be an oversight on my part.
+> 
+> From kernel documentation, nested rcu_read_lock is allowed.
+> https://www.kernel.org/doc/Documentation/RCU/Design/Requirements/Requirements.html
+> 
+> RCU's grace-period guarantee allows updaters to wait for the completion of
+> all pre-existing RCU read-side critical sections. An RCU read-side critical
+> section begins with the marker rcu_read_lock() and ends with the marker
+> rcu_read_unlock(). These markers may be nested, and RCU treats a nested set
+> as one big RCU read-side critical section. Production-quality
+> implementations of rcu_read_lock() and rcu_read_unlock() are extremely
+> lightweight, and in fact have exactly zero overhead in Linux kernels built
+> for production use with CONFIG_PREEMPT=n.
+> 
+> > > 
+> > > Would that be your preference?
+> > 
+> > seems simpler than calling get/put for ppid
+> 
+> The current implementation seems okay since we can hide
+> rcu_read_lock() inside find_get_pid(). We can also avoid
+> nested rcu_read_lock(), which is although allowed but
+> not pretty.
+
+Right, this was my thinking.
+
+Happy to go with whatever you guys decide though.
+
+Make the call and I'll rework, or not.
+
+-- 
+Lee Jones [李琼斯]
