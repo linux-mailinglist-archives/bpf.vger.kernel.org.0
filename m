@@ -2,439 +2,538 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B50F57D74E
-	for <lists+bpf@lfdr.de>; Fri, 22 Jul 2022 01:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DAE657D76C
+	for <lists+bpf@lfdr.de>; Fri, 22 Jul 2022 01:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233773AbiGUXQe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jul 2022 19:16:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40812 "EHLO
+        id S229761AbiGUXpb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jul 2022 19:45:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233744AbiGUXQ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jul 2022 19:16:29 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD33C8E6C0
-        for <bpf@vger.kernel.org>; Thu, 21 Jul 2022 16:16:27 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id d7-20020a17090a564700b001f209736b89so6722546pji.0
-        for <bpf@vger.kernel.org>; Thu, 21 Jul 2022 16:16:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MYd+yDTXY/RMXhWY60u1x2BortQg+iqstP9YfhbF79E=;
-        b=SiMg2c3KnVa8uqf3UCT3Va1wsNap2vaXJADMrgwVM/btZvc55yXedISPk/Zc9Fx2zF
-         QOSOszGAIBXyDotJtCKK3mGmDx/8b8iHdfv9bZAzv+mhsT1NhbS/wzqhEH4WWowv5haQ
-         Q4JaNpCR5fgsgVkG4QOqT5YH6cQ+QfsVg7XRp1jkYdzAARNpoPMzPb8zQ0j3IpwXg0Cb
-         gJHS22m5aqMXz1XOzV1ovdIOgcC74hoBO++dR7EpFU5fD0TQ0HEFZtNLtJWAybzk/ThO
-         1m3K8uWsiIowrZmvLkoKMMpfwTY/ZWLG97CT3IkjhCiYFUAtRvQbCfwUARgxBKR5ZQKY
-         QPaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MYd+yDTXY/RMXhWY60u1x2BortQg+iqstP9YfhbF79E=;
-        b=0DI1CebpHm3kX9BjFQf4isd5OH8goZOpy5I44UdjntEygFfru0irAy33CSFaAkTxoK
-         7t5BVNFvZGOul2U/aj3eZgNENCeUCGGTO3Hqh2KcXv4TK0ntUDgIkcAA8yDFvvZxjYbd
-         EfQxcMT3at3I9znjSY/00Xl5GQ4CpYLs9l4votDZOmppYc4bEXaxFWwoDozvtVoauUkD
-         WAyb6cSR0fQfVAsTllxEKd5iKT7C8vgFUd0f9ZKDnv1ANnC8M+g/GLx9D6NUxCsCH39X
-         aRtUTShraJxEzrLBIOGtbmSUkPIaOKr2ZpgyNaYFkQ4djggeJqy0xb0WTlLqQhxeoM3H
-         Ew1w==
-X-Gm-Message-State: AJIora9P7RdQD9ImHMeoD/HG1sVlfJ/z1wJQyVZPhj7Zv7YkjNg8zS+S
-        NV3WZEybc9Ryw49/CLu1Pc5RgLOE7oG2BEc8IjJ5h/4EzdR9hw==
-X-Google-Smtp-Source: AGRyM1v7R/hpJFH7mQ9RmNq+zAb/vNd3NVD3UpRxeA5jpob9luG8iBSzGluE7C6cDNeSWhFyo1FNgXxKXYZiVDFeoHw=
-X-Received: by 2002:a17:903:1111:b0:16a:acf4:e951 with SMTP id
- n17-20020a170903111100b0016aacf4e951mr615707plh.72.1658445386952; Thu, 21 Jul
- 2022 16:16:26 -0700 (PDT)
+        with ESMTP id S229640AbiGUXpa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Jul 2022 19:45:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8939C10FE8
+        for <bpf@vger.kernel.org>; Thu, 21 Jul 2022 16:45:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1658447127;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AC2n/A82yx01Ti1I3w8496rsnt6uMK4t3X+Vt7cja9w=;
+        b=BLgSYBVVtOdXY3TS9Z9WnLwsEv4Cq8xCsMG3AzNdXOfD7unBiZCVh9qqVaH9Wgh7JFp9A2
+        uV4+BYtbqklOXCcZqn2LzohEqQ/73KJ/n2ak+r0i8khOxwj/pjYBY0ZgflLCJA3svSoWId
+        CjTkFiEXnWXhTuPN0U9x9cg88syovh8=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-494-2mOxJ8tkPZG8X31SMxOeoQ-1; Thu, 21 Jul 2022 19:45:13 -0400
+X-MC-Unique: 2mOxJ8tkPZG8X31SMxOeoQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 61BF5185A7A4;
+        Thu, 21 Jul 2022 23:45:11 +0000 (UTC)
+Received: from localhost (ovpn-12-60.pek2.redhat.com [10.72.12.60])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9D91D2166B26;
+        Thu, 21 Jul 2022 23:45:09 +0000 (UTC)
+Date:   Fri, 22 Jul 2022 07:45:06 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Slark Xiao <slark_xiao@163.com>
+Cc:     kafai <kafai@fb.com>, vgoyal <vgoyal@redhat.com>,
+        dyoung <dyoung@redhat.com>, ast <ast@kernel.org>,
+        daniel <daniel@iogearbox.net>, andrii <andrii@kernel.org>,
+        "martin.lau" <martin.lau@linux.dev>, song <song@kernel.org>,
+        yhs <yhs@fb.com>, "john.fastabend" <john.fastabend@gmail.com>,
+        kpsingh <kpsingh@kernel.org>, sdf <sdf@google.com>,
+        haoluo <haoluo@google.com>, jolsa <jolsa@kernel.org>,
+        "william.gray" <william.gray@linaro.org>,
+        dhowells <dhowells@redhat.com>, peterz <peterz@infradead.org>,
+        mingo <mingo@redhat.com>, will <will@kernel.org>,
+        longman <longman@redhat.com>,
+        "boqun.feng" <boqun.feng@gmail.com>, tglx <tglx@linutronix.de>,
+        bigeasy <bigeasy@linutronix.de>,
+        kexec <kexec@lists.infradead.org>,
+        linux-doc <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        linux-cachefs <linux-cachefs@redhat.com>
+Subject: Re: [PATCH v2] docs: Fix typo in comment
+Message-ID: <YtnlAg6Qhf7fwXXW@MiWiFi-R3L-srv>
+References: <20220721015605.20651-1-slark_xiao@163.com>
+ <20220721154110.fqp7n6f7ij22vayp@kafai-mbp.dhcp.thefacebook.com>
+ <21cac0ea.18f.182218041f7.Coremail.slark_xiao@163.com>
+ <874jzamhxe.fsf@meer.lwn.net>
+ <6ca59494-cc64-d85c-98e8-e9bef2a04c15@infradead.org>
 MIME-Version: 1.0
-References: <20220718190748.2988882-1-sdf@google.com> <CAADnVQLxh_pt8bgoo=_CS3voab7HuQautZGfHQMM=TmQmVr2pQ@mail.gmail.com>
- <CAKH8qBv9q=eXBq9XSKEN2Nce5Wf0MJEX_zbTi12p4r3WCjmBEw@mail.gmail.com>
- <CAKH8qBv66=Fdea0u-vbu-Q=P9pySo+tjy5YpPPcNo8dF0qN8bw@mail.gmail.com>
- <CAADnVQ+Gmo=B=NpXofq=LmFq6HsJZ-X9D1a4MwSLK3k_F9SEqg@mail.gmail.com>
- <Ytc8RvDTpEmC0pQD@google.com> <YthDy8uhE2ky0rBr@google.com>
- <20220720205255.4v3y3a4xttesfkn6@kafai-mbp.dhcp.thefacebook.com>
- <CAKH8qBsnXnTYJ7e2v8qLOmWcp5j96LKwTuMLQaTzHsxhDdZ-dQ@mail.gmail.com> <7b2e6553-5bcc-1c70-2c4b-78e95593755b@fb.com>
-In-Reply-To: <7b2e6553-5bcc-1c70-2c4b-78e95593755b@fb.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Thu, 21 Jul 2022 16:16:15 -0700
-Message-ID: <CAKH8qBvbhDkrmoKEk8OWSndFwmuEPEXp9ULW249JSu7O0kn0NQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] RFC: libbpf: resolve rodata lookups
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Martin KaFai Lau <kafai@fb.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6ca59494-cc64-d85c-98e8-e9bef2a04c15@infradead.org>
+X-Scanned-By: MIMEDefang 2.78 on 10.11.54.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 21, 2022 at 3:30 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 7/20/22 3:33 PM, Stanislav Fomichev wrote:
-> > On Wed, Jul 20, 2022 at 1:53 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> >>
-> >> On Wed, Jul 20, 2022 at 11:04:59AM -0700, sdf@google.com wrote:
-> >>> On 07/19, sdf@google.com wrote:
-> >>>> On 07/19, Alexei Starovoitov wrote:
-> >>>>> On Tue, Jul 19, 2022 at 2:41 PM Stanislav Fomichev <sdf@google.com>
-> >>>> wrote:
-> >>>>>>
-> >>>>>> On Tue, Jul 19, 2022 at 1:33 PM Stanislav Fomichev <sdf@google.com>
-> >>>>> wrote:
-> >>>>>>>
-> >>>>>>> On Tue, Jul 19, 2022 at 1:21 PM Alexei Starovoitov
-> >>>>>>> <alexei.starovoitov@gmail.com> wrote:
-> >>>>>>>>
-> >>>>>>>> On Mon, Jul 18, 2022 at 12:07 PM Stanislav Fomichev
-> >>>>> <sdf@google.com> wrote:
-> >>>>>>>>>
-> >>>>>>>>> Motivation:
-> >>>>>>>>>
-> >>>>>>>>> Our bpf programs have a bunch of options which are set at the
-> >>>>> loading
-> >>>>>>>>> time. After loading, they don't change. We currently use array
-> >>>> map
-> >>>>>>>>> to store them and bpf program does the following:
-> >>>>>>>>>
-> >>>>>>>>> val = bpf_map_lookup_elem(&config_map, &key);
-> >>>>>>>>> if (likely(val && *val)) {
-> >>>>>>>>>    // do some optional feature
-> >>>>>>>>> }
-> >>>>>>>>>
-> >>>>>>>>> Since the configuration is static and we have a lot of those
-> >>>>> features,
-> >>>>>>>>> I feel like we're wasting precious cycles doing dynamic lookups
-> >>>>>>>>> (and stalling on memory loads).
-> >>>>>>>>>
-> >>>>>>>>> I was assuming that converting those to some fake kconfig
-> >>>> options
-> >>>>>>>>> would solve it, but it still seems like kconfig is stored in the
-> >>>>>>>>> global map and kconfig entries are resolved dynamically.
-> >>>>>>>>>
-> >>>>>>>>> Proposal:
-> >>>>>>>>>
-> >>>>>>>>> Resolve kconfig options statically upon loading. Basically
-> >>>> rewrite
-> >>>>>>>>> ld+ldx to two nops and 'mov val, x'.
-> >>>>>>>>>
-> >>>>>>>>> I'm also trying to rewrite conditional jump when the condition
-> >>>> is
-> >>>>>>>>> !imm. This seems to be catching all the cases in my program, but
-> >>>>>>>>> it's probably too hacky.
-> >>>>>>>>>
-> >>>>>>>>> I've attached very raw RFC patch to demonstrate the idea.
-> >>>> Anything
-> >>>>>>>>> I'm missing? Any potential problems with this approach?
-> >>>>>>>>
-> >>>>>>>> Have you considered using global variables for that?
-> >>>>>>>> With skeleton the user space has a natural way to set
-> >>>>>>>> all of these knobs after doing skel_open and before skel_load.
-> >>>>>>>> Then the verifier sees them as readonly vars and
-> >>>>>>>> automatically converts LDX into fixed constants and if the code
-> >>>>>>>> looks like if (my_config_var) then the verifier will remove
-> >>>>>>>> all the dead code too.
-> >>>>>>>
-> >>>>>>> Hm, that's a good alternative, let me try it out. Thanks!
-> >>>>>>
-> >>>>>> Turns out we already freeze kconfig map in libbpf:
-> >>>>>> if (map_type == LIBBPF_MAP_RODATA || map_type == LIBBPF_MAP_KCONFIG) {
-> >>>>>>          err = bpf_map_freeze(map->fd);
-> >>>>>>
-> >>>>>> And I've verified that I do hit bpf_map_direct_read in the verifier.
-> >>>>>>
-> >>>>>> But the code still stays the same (bpftool dump xlated):
-> >>>>>>    72: (18) r1 = map[id:24][0]+20
-> >>>>>>    74: (61) r1 = *(u32 *)(r1 +0)
-> >>>>>>    75: (bf) r2 = r9
-> >>>>>>    76: (b7) r0 = 0
-> >>>>>>    77: (15) if r1 == 0x0 goto pc+9
-> >>>>>>
-> >>>>>> I guess there is nothing for sanitize_dead_code to do because my
-> >>>>>> conditional is "if (likely(some_condition)) { do something }" and the
-> >>>>>> branch instruction itself is '.seen' by the verifier.
-> >>>
-> >>>>> I bet your variable is not 'const'.
-> >>>>> Please see any of the progs in selftests that do:
-> >>>>> const volatile int var = 123;
-> >>>>> to express configs.
-> >>>
-> >>>> Yeah, I was testing against the following:
-> >>>
-> >>>>      extern int CONFIG_XYZ __kconfig __weak;
-> >>>
-> >>>> But ended up writing this small reproducer:
-> >>>
-> >>>>      struct __sk_buff;
-> >>>
-> >>>>      const volatile int CONFIG_DROP = 1; // volatile so it's not
-> >>>>                                          // clang-optimized
-> >>>
-> >>>>      __attribute__((section("tc"), used))
-> >>>>      int my_config(struct __sk_buff *skb)
-> >>>>      {
-> >>>>              int ret = 0; /*TC_ACT_OK*/
-> >>>
-> >>>>              if (CONFIG_DROP)
-> >>>>                      ret = 2 /*TC_ACT_SHOT*/;
-> >>>
-> >>>>              return ret;
-> >>>>      }
-> >>>
-> >>>> $ bpftool map dump name my_confi.rodata
-> >>>
-> >>>> [{
-> >>>>           "value": {
-> >>>>               ".rodata": [{
-> >>>>                       "CONFIG_DROP": 1
-> >>>>                   }
-> >>>>               ]
-> >>>>           }
-> >>>>       }
-> >>>> ]
-> >>>
-> >>>> $ bpftool prog dump xlated name my_config
-> >>>
-> >>>> int my_config(struct __sk_buff * skb):
-> >>>> ; if (CONFIG_DROP)
-> >>>>      0: (18) r1 = map[id:3][0]+0
-> >>>>      2: (61) r1 = *(u32 *)(r1 +0)
-> >>>>      3: (b4) w0 = 1
-> >>>> ; if (CONFIG_DROP)
-> >>>>      4: (64) w0 <<= 1
-> >>>> ; return ret;
-> >>>>      5: (95) exit
-> >>>
-> >>>> The branch is gone, but the map lookup is still there :-(
-> >>>
-> >>> Attached another RFC below which is doing the same but from the verifier
-> >>> side. It seems we should be able to resolve LD+LDX if their dst_reg
-> >>> is the same? If they are different, we should be able to pre-lookup
-> >>> LDX value at least. Would something like this work (haven't run full
-> >>> verifier/test_progs yet)?
-> >>>
-> >>> (note, in this case, with kconfig, I still see the branch)
-> >>>
-> >>>   test_fold_ro_ldx:PASS:open 0 nsec
-> >>>   test_fold_ro_ldx:PASS:load 0 nsec
-> >>>   test_fold_ro_ldx:PASS:bpf_obj_get_info_by_fd 0 nsec
-> >>>   int fold_ro_ldx(struct __sk_buff * skb):
-> >>>   ; if (CONFIG_DROP)
-> >>>      0: (b7) r1 = 1
-> >>>      1: (b4) w0 = 1
-> >>>   ; if (CONFIG_DROP)
-> >>>      2: (16) if w1 == 0x0 goto pc+1
-> >>>      3: (b4) w0 = 2
-> >>>   ; return ret;
-> >>>      4: (95) exit
-> >>>   test_fold_ro_ldx:PASS:found BPF_LD 0 nsec
-> >>>   test_fold_ro_ldx:PASS:found BPF_LDX 0 nsec
-> >>>   test_fold_ro_ldx:PASS:found BPF_LD 0 nsec
-> >>>   test_fold_ro_ldx:PASS:found BPF_LDX 0 nsec
-> >>>   test_fold_ro_ldx:PASS:found BPF_LD 0 nsec
-> >>>   test_fold_ro_ldx:PASS:found BPF_LDX 0 nsec
-> >>>   test_fold_ro_ldx:PASS:found BPF_LD 0 nsec
-> >>>   test_fold_ro_ldx:PASS:found BPF_LDX 0 nsec
-> >>>   test_fold_ro_ldx:PASS:found BPF_LD 0 nsec
-> >>>   test_fold_ro_ldx:PASS:found BPF_LDX 0 nsec
-> >>>   #66      fold_ro_ldx:OK
-> >>>
-> >>> Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> >>> ---
-> >>>   kernel/bpf/verifier.c                         | 74 ++++++++++++++++++-
-> >>>   .../selftests/bpf/prog_tests/fold_ro_ldx.c    | 52 +++++++++++++
-> >>>   .../testing/selftests/bpf/progs/fold_ro_ldx.c | 20 +++++
-> >>>   3 files changed, 144 insertions(+), 2 deletions(-)
-> >>>   create mode 100644 tools/testing/selftests/bpf/prog_tests/fold_ro_ldx.c
-> >>>   create mode 100644 tools/testing/selftests/bpf/progs/fold_ro_ldx.c
-> >>>
-> >>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> >>> index c59c3df0fea6..ffedd8234288 100644
-> >>> --- a/kernel/bpf/verifier.c
-> >>> +++ b/kernel/bpf/verifier.c
-> >>> @@ -12695,6 +12695,69 @@ static bool bpf_map_is_cgroup_storage(struct
-> >>> bpf_map *map)
-> >>>                map->map_type == BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE);
-> >>>   }
-> >>>
-> >>> +/* if the map is read-only, we can try to fully resolve the load */
-> >>> +static bool fold_ro_pseudo_ldimm64(struct bpf_verifier_env *env,
-> >>> +                                struct bpf_map *map,
-> >>> +                                struct bpf_insn *insn)
-> >>> +{
-> >>> +     struct bpf_insn *ldx_insn = insn + 2;
-> >>> +     int dst_reg = ldx_insn->dst_reg;
-> >>> +     u64 val = 0;
-> >>> +     int size;
-> >>> +     int err;
-> >>> +
-> >>> +     if (!bpf_map_is_rdonly(map) || !map->ops->map_direct_value_addr)
-> >>> +             return false;
-> >>> +
-> >>> +     /* 0: BPF_LD  r=MAP
-> >>> +      * 1: BPF_LD  r=MAP
-> >>> +      * 2: BPF_LDX r=MAP->VAL
-> >>> +      */
-> >>> +
-> >>> +     if (BPF_CLASS((insn+0)->code) != BPF_LD ||
-> >>> +         BPF_CLASS((insn+1)->code) != BPF_LD ||
-> >>> +         BPF_CLASS((insn+2)->code) != BPF_LDX)
-> >>> +             return false;
-> >>> +
-> >>> +     if (BPF_MODE((insn+0)->code) != BPF_IMM ||
-> >>> +         BPF_MODE((insn+1)->code) != BPF_IMM ||
-> >>> +         BPF_MODE((insn+2)->code) != BPF_MEM)
-> >>> +             return false;
-> >>> +
-> >>> +     if (insn->src_reg != BPF_PSEUDO_MAP_VALUE &&
-> >>> +         insn->src_reg != BPF_PSEUDO_MAP_IDX_VALUE)
-> >>> +             return false;
-> >>> +
-> >>> +     if (insn->dst_reg != ldx_insn->src_reg)
-> >>> +             return false;
-> >>> +
-> >>> +     if (ldx_insn->off != 0)
-> >>> +             return false;
-> >>> +
-> >>> +     size = bpf_size_to_bytes(BPF_SIZE(ldx_insn->code));
-> >>> +     if (size < 0 || size > 4)
-> >>> +             return false;
-> >>> +
-> >>> +     err = bpf_map_direct_read(map, (insn+1)->imm, size, &val);
-> >>> +     if (err)
-> >>> +             return false;
-> >>> +
-> >>> +     if (insn->dst_reg == ldx_insn->dst_reg) {
-> >>> +             /* LDX is using the same destination register as LD.
-> >>> +              * This means we are not interested in the map
-> >>> +              * pointer itself and can remove it.
-> >>> +              */
-> >>> +             *(insn + 0) = BPF_JMP_A(0);
-> >>> +             *(insn + 1) = BPF_JMP_A(0);
-> >>> +             *(insn + 2) = BPF_ALU64_IMM(BPF_MOV, dst_reg, val);
-> >> Have you figured out why the branch is not removed
-> >> with BPF_ALU64_IMM(BPF_MOV) ?
-> >
-> > I do have an idea, yes, but I'm not 100% certain. The rewrite has
-> > nothing to do with it.
-> > If I change the default ret from 1 to 0, I get a different bytecode
-> > where this branch is eventually removed by the verifier.
-> >
-> > I think it comes down to the following snippet:
-> > r1 = 0 ll
-> > r1 = *(u32 *)(r1 + 0) <<< rodata, verifier is able to resolve to r1 = 1
-> > w0 = 1
-> > if w1 == 0 goto +1
-> > w0 = 2
-> > exit
-> > Here, 'if w1 == 0' is never taken, but it has been 'seen' by the
-> > verifier. There is no 'dead' code, it just jumps around 'w0 = 2' which
-> > has seen=true.
-> >
-> > VS this one:
-> > r1 = 0 ll
-> > r1 = *(u32 *)(r1 + 0) <<< rodata, verifier is able to resolve to r1 = 1
-> > w0 = 1
-> > if w1 != 0 goto +1
-> > w0 = 0
-> > w0 <<= 1
-> > exit
-> > Here, 'if w1 != 0' is seen, but the next insn has 'seen=false', so
-> > this whole thing is ripped out.
-> >
-> > So basically, from my quick look, it seems like there should be some
-> > real dead code to trigger the removal. If you simply have 'if
-> > condition_that_never_happens goto +1' which doesn't lead to some dead
-> > code, this single jump-over-some-seen-code is never gonna be removed.
-> > So, IMO, that's something that should be addressed independently.
-> >
-> >> Can it also support 8 bytes (BPF_DW) ?  Is it because there
-> >> is not enough space for ld_imm64?  so wonder if this
-> >> patching can be done in do_misc_fixups() instead.
-> >
-> > Yeah, I've limited it to 4 bytes because of sizeof(imm) for now.
-> > I think one complication might be that at do_misc_fixups point, the
-> > immediate args of bpf_ld have been rewritten which might make it
-> > harder to get the data offset.
-> >
-> > But I guess I'm still at the point where I'm trying to understand
-> > whether what I'm doing makes sense or not :-) And whether we should do
-> > it at the verifier level, in libbpf or if at all..
->
-> I think the approach above is a little bit fragile.
-> There is no guarantee that ldx immediately after ld.
-> Also, after rewrite, some redundant instructions still
-> left (e.g., map pointer load) although it can be rewritten
-> as a nop.
+On 07/21/22 at 11:40am, Randy Dunlap wrote:
+> 
+> 
+> On 7/21/22 11:36, Jonathan Corbet wrote:
+> > "Slark Xiao" <slark_xiao@163.com> writes:
+> > 
+> >> May I know the maintainer of one subsystem could merge the changes
+> >> contains lots of subsystem?  I also know this could be filtered by
+> >> grep and sed command, but that patch would have dozens of maintainers
+> >> and reviewers.
+> > 
+> > Certainly I don't think I can merge a patch touching 166 files across
+> > the tree.  This will need to be broken down by subsystem, and you may
+> > well find that there are some maintainers who don't want to deal with
+> > this type of minor fix.
+> 
+> We have also seen cases where "the the" should be replaced by "then the"
+> or some other pair of words, so some of these changes could fall into
+> that category.
 
-Yeah, it's possible there is no ldx, or it's possible that map's ptr
-in ld is used by some other instruction later on. I agree that all
-this rewriting is still best case and might be a bit ugly :-(
+It's possible. I searched in Documentation and went through each place,
+seems no typo of "then the". Below patch should clean up all the 'the the'
+typo under Documentation.
 
-> In general, 'const volatile int var' should be good enough
-> although it still have one extra load instruction. How much
-> did you see performance hit with this extra load?
+From 60cacd213ab24981d16c292667283cf7e74f86b1 Mon Sep 17 00:00:00 2001
+From: Baoquan He <bhe@redhat.com>
+Date: Fri, 22 Jul 2022 07:26:48 +0800
+Subject: [PATCH] Documentation: Fix all occurences of the 'the the' typo
+Content-type: text/plain
 
-I haven't tested anything yet. I think I'll try to convert my prog to
-kconfig and then have:
+The fix is done with below command:
+sed -i "s/the the /the /g" `git grep -l "the the " Documentation`
 
-#ifdef STATIC_CONFIG
-const int CONFIG_XYZ = 1;
-#else
-extern const int CONFIG_XYZ __kconfig __weak;
-#endif
+Signed-off-by: Baoquan He <bhe@redhat.com>
+---
+ Documentation/ABI/stable/sysfs-module                         | 2 +-
+ Documentation/ABI/testing/sysfs-class-rtrs-client             | 2 +-
+ Documentation/ABI/testing/sysfs-class-rtrs-server             | 2 +-
+ Documentation/ABI/testing/sysfs-devices-platform-ACPI-TAD     | 2 +-
+ Documentation/ABI/testing/sysfs-devices-power                 | 2 +-
+ Documentation/admin-guide/kdump/vmcoreinfo.rst                | 2 +-
+ Documentation/bpf/map_cgroup_storage.rst                      | 4 ++--
+ Documentation/core-api/cpu_hotplug.rst                        | 2 +-
+ Documentation/devicetree/bindings/arm/msm/qcom,saw2.txt       | 2 +-
+ Documentation/devicetree/bindings/clock/ti/davinci/pll.txt    | 2 +-
+ Documentation/devicetree/bindings/fpga/fpga-region.txt        | 2 +-
+ Documentation/devicetree/bindings/gpio/gpio-pisosr.txt        | 2 +-
+ Documentation/devicetree/bindings/net/qcom-emac.txt           | 2 +-
+ .../bindings/phy/amlogic,meson-axg-mipi-pcie-analog.yaml      | 2 +-
+ .../devicetree/bindings/pinctrl/aspeed,ast2400-pinctrl.yaml   | 2 +-
+ .../devicetree/bindings/pinctrl/aspeed,ast2500-pinctrl.yaml   | 2 +-
+ .../devicetree/bindings/pinctrl/aspeed,ast2600-pinctrl.yaml   | 2 +-
+ .../devicetree/bindings/power/amlogic,meson-ee-pwrc.yaml      | 2 +-
+ Documentation/devicetree/bindings/powerpc/fsl/cpus.txt        | 2 +-
+ Documentation/devicetree/bindings/powerpc/opal/power-mgt.txt  | 2 +-
+ Documentation/devicetree/bindings/remoteproc/qcom,q6v5.txt    | 2 +-
+ Documentation/devicetree/bindings/sound/tlv320adcx140.yaml    | 4 ++--
+ .../devicetree/bindings/thermal/brcm,avs-ro-thermal.yaml      | 2 +-
+ .../devicetree/bindings/thermal/nvidia,tegra124-soctherm.txt  | 2 +-
+ Documentation/devicetree/bindings/thermal/rcar-thermal.yaml   | 2 +-
+ Documentation/driver-api/isa.rst                              | 2 +-
+ Documentation/filesystems/caching/backend-api.rst             | 2 +-
+ Documentation/locking/seqlock.rst                             | 2 +-
+ Documentation/sphinx/cdomain.py                               | 2 +-
+ 29 files changed, 31 insertions(+), 31 deletions(-)
 
-And maybe roll that STATIC_CONFIG=true version somewhere for a week or
-two to see whether there is any effect.
+diff --git a/Documentation/ABI/stable/sysfs-module b/Documentation/ABI/stable/sysfs-module
+index 560b4a3278df..41b1f16e8795 100644
+--- a/Documentation/ABI/stable/sysfs-module
++++ b/Documentation/ABI/stable/sysfs-module
+@@ -38,7 +38,7 @@ What:		/sys/module/<MODULENAME>/srcversion
+ Date:		Jun 2005
+ Description:
+ 		If the module source has MODULE_VERSION, this file will contain
+-		the checksum of the the source code.
++		the checksum of the source code.
+ 
+ What:		/sys/module/<MODULENAME>/version
+ Date:		Jun 2005
+diff --git a/Documentation/ABI/testing/sysfs-class-rtrs-client b/Documentation/ABI/testing/sysfs-class-rtrs-client
+index 49a4157c7bf1..fecc59d1b96f 100644
+--- a/Documentation/ABI/testing/sysfs-class-rtrs-client
++++ b/Documentation/ABI/testing/sysfs-class-rtrs-client
+@@ -78,7 +78,7 @@ What:		/sys/class/rtrs-client/<session-name>/paths/<src@dst>/hca_name
+ Date:		Feb 2020
+ KernelVersion:	5.7
+ Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
+-Description:	RO, Contains the the name of HCA the connection established on.
++Description:	RO, Contains the name of HCA the connection established on.
+ 
+ What:		/sys/class/rtrs-client/<session-name>/paths/<src@dst>/hca_port
+ Date:		Feb 2020
+diff --git a/Documentation/ABI/testing/sysfs-class-rtrs-server b/Documentation/ABI/testing/sysfs-class-rtrs-server
+index 3b6d5b067df0..b08601d80409 100644
+--- a/Documentation/ABI/testing/sysfs-class-rtrs-server
++++ b/Documentation/ABI/testing/sysfs-class-rtrs-server
+@@ -24,7 +24,7 @@ What:		/sys/class/rtrs-server/<session-name>/paths/<src@dst>/hca_name
+ Date:		Feb 2020
+ KernelVersion:	5.7
+ Contact:	Jack Wang <jinpu.wang@cloud.ionos.com> Danil Kipnis <danil.kipnis@cloud.ionos.com>
+-Description:	RO, Contains the the name of HCA the connection established on.
++Description:	RO, Contains the name of HCA the connection established on.
+ 
+ What:		/sys/class/rtrs-server/<session-name>/paths/<src@dst>/hca_port
+ Date:		Feb 2020
+diff --git a/Documentation/ABI/testing/sysfs-devices-platform-ACPI-TAD b/Documentation/ABI/testing/sysfs-devices-platform-ACPI-TAD
+index f7b360a61b21..bc44bc903bc8 100644
+--- a/Documentation/ABI/testing/sysfs-devices-platform-ACPI-TAD
++++ b/Documentation/ABI/testing/sysfs-devices-platform-ACPI-TAD
+@@ -74,7 +74,7 @@ Description:
+ 
+ 		Reads also cause the AC alarm timer status to be reset.
+ 
+-		Another way to reset the the status of the AC alarm timer is to
++		Another way to reset the status of the AC alarm timer is to
+ 		write (the number) 0 to this file.
+ 
+ 		If the status return value indicates that the timer has expired,
+diff --git a/Documentation/ABI/testing/sysfs-devices-power b/Documentation/ABI/testing/sysfs-devices-power
+index 1b2a2d41ff80..54195530e97a 100644
+--- a/Documentation/ABI/testing/sysfs-devices-power
++++ b/Documentation/ABI/testing/sysfs-devices-power
+@@ -303,5 +303,5 @@ Date:		Apr 2010
+ Contact:	Dominik Brodowski <linux@dominikbrodowski.net>
+ Description:
+ 		Reports the runtime PM children usage count of a device, or
+-		0 if the the children will be ignored.
++		0 if the children will be ignored.
+ 
+diff --git a/Documentation/admin-guide/kdump/vmcoreinfo.rst b/Documentation/admin-guide/kdump/vmcoreinfo.rst
+index 8419019b6a88..6726f439958c 100644
+--- a/Documentation/admin-guide/kdump/vmcoreinfo.rst
++++ b/Documentation/admin-guide/kdump/vmcoreinfo.rst
+@@ -200,7 +200,7 @@ prb
+ 
+ A pointer to the printk ringbuffer (struct printk_ringbuffer). This
+ may be pointing to the static boot ringbuffer or the dynamically
+-allocated ringbuffer, depending on when the the core dump occurred.
++allocated ringbuffer, depending on when the core dump occurred.
+ Used by user-space tools to read the active kernel log buffer.
+ 
+ printk_rb_static
+diff --git a/Documentation/bpf/map_cgroup_storage.rst b/Documentation/bpf/map_cgroup_storage.rst
+index cab9543017bf..8e5fe532c07e 100644
+--- a/Documentation/bpf/map_cgroup_storage.rst
++++ b/Documentation/bpf/map_cgroup_storage.rst
+@@ -31,7 +31,7 @@ The map uses key of type of either ``__u64 cgroup_inode_id`` or
+     };
+ 
+ ``cgroup_inode_id`` is the inode id of the cgroup directory.
+-``attach_type`` is the the program's attach type.
++``attach_type`` is the program's attach type.
+ 
+ Linux 5.9 added support for type ``__u64 cgroup_inode_id`` as the key type.
+ When this key type is used, then all attach types of the particular cgroup and
+@@ -155,7 +155,7 @@ However, the BPF program can still only associate with one map of each type
+ ``BPF_MAP_TYPE_CGROUP_STORAGE`` or more than one
+ ``BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE``.
+ 
+-In all versions, userspace may use the the attach parameters of cgroup and
++In all versions, userspace may use the attach parameters of cgroup and
+ attach type pair in ``struct bpf_cgroup_storage_key`` as the key to the BPF map
+ APIs to read or update the storage for a given attachment. For Linux 5.9
+ attach type shared storages, only the first value in the struct, cgroup inode
+diff --git a/Documentation/core-api/cpu_hotplug.rst b/Documentation/core-api/cpu_hotplug.rst
+index c6f4ba2fb32d..f75778d37488 100644
+--- a/Documentation/core-api/cpu_hotplug.rst
++++ b/Documentation/core-api/cpu_hotplug.rst
+@@ -560,7 +560,7 @@ available:
+   * cpuhp_state_remove_instance(state, node)
+   * cpuhp_state_remove_instance_nocalls(state, node)
+ 
+-The arguments are the same as for the the cpuhp_state_add_instance*()
++The arguments are the same as for the cpuhp_state_add_instance*()
+ variants above.
+ 
+ The functions differ in the way how the installed callbacks are treated:
+diff --git a/Documentation/devicetree/bindings/arm/msm/qcom,saw2.txt b/Documentation/devicetree/bindings/arm/msm/qcom,saw2.txt
+index 94d50a949be1..c0e3c3a42bea 100644
+--- a/Documentation/devicetree/bindings/arm/msm/qcom,saw2.txt
++++ b/Documentation/devicetree/bindings/arm/msm/qcom,saw2.txt
+@@ -10,7 +10,7 @@ system, notifying them when a low power state is entered or exited.
+ Multiple revisions of the SAW hardware are supported using these Device Nodes.
+ SAW2 revisions differ in the register offset and configuration data. Also, the
+ same revision of the SAW in different SoCs may have different configuration
+-data due the the differences in hardware capabilities. Hence the SoC name, the
++data due the differences in hardware capabilities. Hence the SoC name, the
+ version of the SAW hardware in that SoC and the distinction between cpu (big
+ or Little) or cache, may be needed to uniquely identify the SAW register
+ configuration and initialization data. The compatible string is used to
+diff --git a/Documentation/devicetree/bindings/clock/ti/davinci/pll.txt b/Documentation/devicetree/bindings/clock/ti/davinci/pll.txt
+index 36998e184821..c9894538315b 100644
+--- a/Documentation/devicetree/bindings/clock/ti/davinci/pll.txt
++++ b/Documentation/devicetree/bindings/clock/ti/davinci/pll.txt
+@@ -15,7 +15,7 @@ Required properties:
+ 	- for "ti,da850-pll1", shall be "clksrc"
+ 
+ Optional properties:
+-- ti,clkmode-square-wave: Indicates that the the board is supplying a square
++- ti,clkmode-square-wave: Indicates that the board is supplying a square
+ 	wave input on the OSCIN pin instead of using a crystal oscillator.
+ 	This property is only valid when compatible = "ti,da850-pll0".
+ 
+diff --git a/Documentation/devicetree/bindings/fpga/fpga-region.txt b/Documentation/devicetree/bindings/fpga/fpga-region.txt
+index 7d3515264838..6694ef29a267 100644
+--- a/Documentation/devicetree/bindings/fpga/fpga-region.txt
++++ b/Documentation/devicetree/bindings/fpga/fpga-region.txt
+@@ -330,7 +330,7 @@ succeeded.
+ 
+ The Device Tree Overlay will contain:
+  * "target-path" or "target"
+-   The insertion point where the the contents of the overlay will go into the
++   The insertion point where the contents of the overlay will go into the
+    live tree.  target-path is a full path, while target is a phandle.
+  * "ranges"
+     The address space mapping from processor to FPGA bus(ses).
+diff --git a/Documentation/devicetree/bindings/gpio/gpio-pisosr.txt b/Documentation/devicetree/bindings/gpio/gpio-pisosr.txt
+index 414a01cdf715..fba3c61f6a5b 100644
+--- a/Documentation/devicetree/bindings/gpio/gpio-pisosr.txt
++++ b/Documentation/devicetree/bindings/gpio/gpio-pisosr.txt
+@@ -14,7 +14,7 @@ Optional properties:
+  - ngpios		: Number of used GPIO lines (0..n-1), default is 8.
+  - load-gpios		: GPIO pin specifier attached to load enable, this
+ 			  pin is pulsed before reading from the device to
+-			  load input pin values into the the device.
++			  load input pin values into the device.
+ 
+ For other required and optional properties of SPI slave
+ nodes please refer to ../spi/spi-bus.txt.
+diff --git a/Documentation/devicetree/bindings/net/qcom-emac.txt b/Documentation/devicetree/bindings/net/qcom-emac.txt
+index 346e6c7f47b7..e6cb2291471c 100644
+--- a/Documentation/devicetree/bindings/net/qcom-emac.txt
++++ b/Documentation/devicetree/bindings/net/qcom-emac.txt
+@@ -14,7 +14,7 @@ MAC node:
+ - mac-address : The 6-byte MAC address. If present, it is the default
+ 	MAC address.
+ - internal-phy : phandle to the internal PHY node
+-- phy-handle : phandle the the external PHY node
++- phy-handle : phandle the external PHY node
+ 
+ Internal PHY node:
+ - compatible : Should be "qcom,fsm9900-emac-sgmii" or "qcom,qdf2432-emac-sgmii".
+diff --git a/Documentation/devicetree/bindings/phy/amlogic,meson-axg-mipi-pcie-analog.yaml b/Documentation/devicetree/bindings/phy/amlogic,meson-axg-mipi-pcie-analog.yaml
+index 4d01f3124e1c..a90fa1baadab 100644
+--- a/Documentation/devicetree/bindings/phy/amlogic,meson-axg-mipi-pcie-analog.yaml
++++ b/Documentation/devicetree/bindings/phy/amlogic,meson-axg-mipi-pcie-analog.yaml
+@@ -16,7 +16,7 @@ description: |+
+   - compatible: Should be the following:
+                 "amlogic,meson-gx-hhi-sysctrl", "simple-mfd", "syscon"
+ 
+-  Refer to the the bindings described in
++  Refer to the bindings described in
+   Documentation/devicetree/bindings/mfd/syscon.yaml
+ 
+ properties:
+diff --git a/Documentation/devicetree/bindings/pinctrl/aspeed,ast2400-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/aspeed,ast2400-pinctrl.yaml
+index c689bea7ce6e..d3a8911728d0 100644
+--- a/Documentation/devicetree/bindings/pinctrl/aspeed,ast2400-pinctrl.yaml
++++ b/Documentation/devicetree/bindings/pinctrl/aspeed,ast2400-pinctrl.yaml
+@@ -16,7 +16,7 @@ description: |+
+   - compatible:     Should be one of the following:
+                     "aspeed,ast2400-scu", "syscon", "simple-mfd"
+ 
+-  Refer to the the bindings described in
++  Refer to the bindings described in
+   Documentation/devicetree/bindings/mfd/syscon.yaml
+ 
+ properties:
+diff --git a/Documentation/devicetree/bindings/pinctrl/aspeed,ast2500-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/aspeed,ast2500-pinctrl.yaml
+index 9db904a528ee..5d2c1b1fb7fd 100644
+--- a/Documentation/devicetree/bindings/pinctrl/aspeed,ast2500-pinctrl.yaml
++++ b/Documentation/devicetree/bindings/pinctrl/aspeed,ast2500-pinctrl.yaml
+@@ -17,7 +17,7 @@ description: |+
+   			"aspeed,ast2500-scu", "syscon", "simple-mfd"
+   			"aspeed,g5-scu", "syscon", "simple-mfd"
+ 
+-  Refer to the the bindings described in
++  Refer to the bindings described in
+   Documentation/devicetree/bindings/mfd/syscon.yaml
+ 
+ properties:
+diff --git a/Documentation/devicetree/bindings/pinctrl/aspeed,ast2600-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/aspeed,ast2600-pinctrl.yaml
+index 3666ac5b6518..e92686d2f062 100644
+--- a/Documentation/devicetree/bindings/pinctrl/aspeed,ast2600-pinctrl.yaml
++++ b/Documentation/devicetree/bindings/pinctrl/aspeed,ast2600-pinctrl.yaml
+@@ -16,7 +16,7 @@ description: |+
+   - compatible: Should be one of the following:
+                 "aspeed,ast2600-scu", "syscon", "simple-mfd"
+ 
+-  Refer to the the bindings described in
++  Refer to the bindings described in
+   Documentation/devicetree/bindings/mfd/syscon.yaml
+ 
+ properties:
+diff --git a/Documentation/devicetree/bindings/power/amlogic,meson-ee-pwrc.yaml b/Documentation/devicetree/bindings/power/amlogic,meson-ee-pwrc.yaml
+index f005abac7079..4e52ef33a986 100644
+--- a/Documentation/devicetree/bindings/power/amlogic,meson-ee-pwrc.yaml
++++ b/Documentation/devicetree/bindings/power/amlogic,meson-ee-pwrc.yaml
+@@ -17,7 +17,7 @@ description: |+
+   - compatible: Should be the following:
+                 "amlogic,meson-gx-hhi-sysctrl", "simple-mfd", "syscon"
+ 
+-  Refer to the the bindings described in
++  Refer to the bindings described in
+   Documentation/devicetree/bindings/mfd/syscon.yaml
+ 
+ properties:
+diff --git a/Documentation/devicetree/bindings/powerpc/fsl/cpus.txt b/Documentation/devicetree/bindings/powerpc/fsl/cpus.txt
+index d63ab1dec16d..801c66069121 100644
+--- a/Documentation/devicetree/bindings/powerpc/fsl/cpus.txt
++++ b/Documentation/devicetree/bindings/powerpc/fsl/cpus.txt
+@@ -5,7 +5,7 @@ Copyright 2013 Freescale Semiconductor Inc.
+ Power Architecture CPUs in Freescale SOCs are represented in device trees as
+ per the definition in the Devicetree Specification.
+ 
+-In addition to the the Devicetree Specification definitions, the properties
++In addition to the Devicetree Specification definitions, the properties
+ defined below may be present on CPU nodes.
+ 
+ PROPERTIES
+diff --git a/Documentation/devicetree/bindings/powerpc/opal/power-mgt.txt b/Documentation/devicetree/bindings/powerpc/opal/power-mgt.txt
+index 9d619e955576..d6658d3dd15e 100644
+--- a/Documentation/devicetree/bindings/powerpc/opal/power-mgt.txt
++++ b/Documentation/devicetree/bindings/powerpc/opal/power-mgt.txt
+@@ -39,7 +39,7 @@ otherwise. The length of all the property arrays must be the same.
+ 
+ - ibm,cpu-idle-state-flags:
+ 	Array of unsigned 32-bit values containing the values of the
+-	flags associated with the the aforementioned idle-states. The
++	flags associated with the aforementioned idle-states. The
+ 	flag bits are as follows:
+ 		0x00000001 /* Decrementer would stop */
+ 		0x00000002 /* Needs timebase restore */
+diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,q6v5.txt b/Documentation/devicetree/bindings/remoteproc/qcom,q6v5.txt
+index b677900b3aae..658f96fbc4fe 100644
+--- a/Documentation/devicetree/bindings/remoteproc/qcom,q6v5.txt
++++ b/Documentation/devicetree/bindings/remoteproc/qcom,q6v5.txt
+@@ -37,7 +37,7 @@ on the Qualcomm Hexagon core.
+ - interrupt-names:
+ 	Usage: required
+ 	Value type: <stringlist>
+-	Definition: The interrupts needed depends on the the compatible
++	Definition: The interrupts needed depends on the compatible
+ 		    string:
+ 	qcom,q6v5-pil:
+ 	qcom,ipq8074-wcss-pil:
+diff --git a/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
+index 2ad17b361db0..bc2fb1a80ed7 100644
+--- a/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
++++ b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
+@@ -68,9 +68,9 @@ properties:
+        array is defined as <PDMIN1 PDMIN2 PDMIN3 PDMIN4>.
+ 
+        0 - (default) Odd channel is latched on the negative edge and even
+-       channel is latched on the the positive edge.
++       channel is latched on the positive edge.
+        1 - Odd channel is latched on the positive edge and even channel is
+-       latched on the the negative edge.
++       latched on the negative edge.
+ 
+        PDMIN1 - PDMCLK latching edge used for channel 1 and 2 data
+        PDMIN2 - PDMCLK latching edge used for channel 3 and 4 data
+diff --git a/Documentation/devicetree/bindings/thermal/brcm,avs-ro-thermal.yaml b/Documentation/devicetree/bindings/thermal/brcm,avs-ro-thermal.yaml
+index 1ab5070c751d..89a2c32c0ab2 100644
+--- a/Documentation/devicetree/bindings/thermal/brcm,avs-ro-thermal.yaml
++++ b/Documentation/devicetree/bindings/thermal/brcm,avs-ro-thermal.yaml
+@@ -16,7 +16,7 @@ description: |+
+   - compatible: Should be one of the following:
+                 "brcm,bcm2711-avs-monitor", "syscon", "simple-mfd"
+ 
+-  Refer to the the bindings described in
++  Refer to the bindings described in
+   Documentation/devicetree/bindings/mfd/syscon.yaml
+ 
+ properties:
+diff --git a/Documentation/devicetree/bindings/thermal/nvidia,tegra124-soctherm.txt b/Documentation/devicetree/bindings/thermal/nvidia,tegra124-soctherm.txt
+index db880e7ed713..aea4a2a178b9 100644
+--- a/Documentation/devicetree/bindings/thermal/nvidia,tegra124-soctherm.txt
++++ b/Documentation/devicetree/bindings/thermal/nvidia,tegra124-soctherm.txt
+@@ -96,7 +96,7 @@ critical trip point is reported back to the thermal framework to implement
+ software shutdown.
+ 
+ - the "hot" type trip points will be set to SOC_THERM hardware as the throttle
+-temperature. Once the the temperature of this thermal zone is higher
++temperature. Once the temperature of this thermal zone is higher
+ than it, it will trigger the HW throttle event.
+ 
+ Example :
+diff --git a/Documentation/devicetree/bindings/thermal/rcar-thermal.yaml b/Documentation/devicetree/bindings/thermal/rcar-thermal.yaml
+index 927de79ab4b5..00dcbdd36144 100644
+--- a/Documentation/devicetree/bindings/thermal/rcar-thermal.yaml
++++ b/Documentation/devicetree/bindings/thermal/rcar-thermal.yaml
+@@ -42,7 +42,7 @@ properties:
+     description:
+       Address ranges of the thermal registers. If more then one range is given
+       the first one must be the common registers followed by each sensor
+-      according the the datasheet.
++      according the datasheet.
+     minItems: 1
+     maxItems: 4
+ 
+diff --git a/Documentation/driver-api/isa.rst b/Documentation/driver-api/isa.rst
+index def4a7b690b5..3df1b1696524 100644
+--- a/Documentation/driver-api/isa.rst
++++ b/Documentation/driver-api/isa.rst
+@@ -100,7 +100,7 @@ I believe platform_data is available for this, but if rather not, moving
+ the isa_driver pointer to the private struct isa_dev is ofcourse fine as
+ well.
+ 
+-Then, if the the driver did not provide a .match, it matches. If it did,
++Then, if the driver did not provide a .match, it matches. If it did,
+ the driver match() method is called to determine a match.
+ 
+ If it did **not** match, dev->platform_data is reset to indicate this to
+diff --git a/Documentation/filesystems/caching/backend-api.rst b/Documentation/filesystems/caching/backend-api.rst
+index d7507becf674..3a199fc50828 100644
+--- a/Documentation/filesystems/caching/backend-api.rst
++++ b/Documentation/filesystems/caching/backend-api.rst
+@@ -122,7 +122,7 @@ volumes, calling::
+ to tell fscache that a volume has been withdrawn.  This waits for all
+ outstanding accesses on the volume to complete before returning.
+ 
+-When the the cache is completely withdrawn, fscache should be notified by
++When the cache is completely withdrawn, fscache should be notified by
+ calling::
+ 
+ 	void fscache_relinquish_cache(struct fscache_cache *cache);
+diff --git a/Documentation/locking/seqlock.rst b/Documentation/locking/seqlock.rst
+index 64405e5da63e..bfda1a5fecad 100644
+--- a/Documentation/locking/seqlock.rst
++++ b/Documentation/locking/seqlock.rst
+@@ -39,7 +39,7 @@ as the writer can invalidate a pointer that the reader is following.
+ Sequence counters (``seqcount_t``)
+ ==================================
+ 
+-This is the the raw counting mechanism, which does not protect against
++This is the raw counting mechanism, which does not protect against
+ multiple writers.  Write side critical sections must thus be serialized
+ by an external lock.
+ 
+diff --git a/Documentation/sphinx/cdomain.py b/Documentation/sphinx/cdomain.py
+index ca8ac9e59ded..a7d1866e72ff 100644
+--- a/Documentation/sphinx/cdomain.py
++++ b/Documentation/sphinx/cdomain.py
+@@ -151,7 +151,7 @@ class CObject(Base_CObject):
+     def handle_func_like_macro(self, sig, signode):
+         u"""Handles signatures of function-like macros.
+ 
+-        If the objtype is 'function' and the the signature ``sig`` is a
++        If the objtype is 'function' and the signature ``sig`` is a
+         function-like macro, the name of the macro is returned. Otherwise
+         ``False`` is returned.  """
+ 
+-- 
+2.34.1
 
-> If we truely want to generate best code (no libbpf/verifier
-> rewrite with nop's) robustly, we can implement this in llvm as
-> a CO-RE relocation. In such cases, compiler will be
-> able to generate
->       r = <patchable_value>
->       ... using r ...
->
-> So in the above code, the CO-RE based approach will generate:
->    r1 = <patchable value>  // we can make it always 64bit value
->    w0 = 1
->    if w1 != 0 goto +1
->    w0 = 0
->    w0 <<= 1
->    exit
->
-> This will only work for upto 64bit int types.
-> The kconfig itself supports array as well for which
-> CO-RE won't work.
-
-What is the criteria for emitting a relocation in this case? Something
-like a __kconfig tag?
-In my initial attempt, I've been doing these rewrites on the libbpf
-side, so maybe that's the way to go if we can emit proper relocations
-for ld+ldx?
-
-[1] https://lore.kernel.org/bpf/7b2e6553-5bcc-1c70-2c4b-78e95593755b@fb.com/T/#m5efdc6672ff3da98f806375381d5e055060cbe54
-
-> >
-> >
-> >
-> >
-> >>> +             return true;
-> >>> +     }
-> >>> +
-> >>> +     *(insn + 2) = BPF_ALU64_IMM(BPF_MOV, dst_reg, val);
-> >>> +     /* Only LDX can be resolved, we still have to resolve LD address. */
-> >>> +     return false;
-> >>> +}
