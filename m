@@ -2,43 +2,31 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8D3A57C273
-	for <lists+bpf@lfdr.de>; Thu, 21 Jul 2022 04:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FB5F57C2A7
+	for <lists+bpf@lfdr.de>; Thu, 21 Jul 2022 05:26:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbiGUCty (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Jul 2022 22:49:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54912 "EHLO
+        id S229787AbiGUD0B (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Jul 2022 23:26:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229740AbiGUCtw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Jul 2022 22:49:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A0F7F4F1A6
-        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 19:49:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1658371789;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=z6hDKYquK0RWOwBXuZpsj17I8aU98q+WZfO0MGTd+kY=;
-        b=d1m74V6TqYOjc8DCqfuSRwIaBmbEwPJYkVrGDalmqItVBKqv7r+R1yW6nKPbVbR8hU7Dv+
-        q9hi3uAfd71UlTb0f0i2KvH8q9/FJ1BO8k60sRMbXDIY3R0XHHCPoS43UPPZ+cclJCRD3i
-        i1s0BQkIUoUkXaZCSrbgXFpswBwuCRU=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-497-EMGYVkNqPvCnoluoS9oQAw-1; Wed, 20 Jul 2022 22:49:46 -0400
-X-MC-Unique: EMGYVkNqPvCnoluoS9oQAw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 21EB885A585;
-        Thu, 21 Jul 2022 02:49:45 +0000 (UTC)
-Received: from localhost (ovpn-12-68.pek2.redhat.com [10.72.12.68])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id EE2FD2166B26;
-        Thu, 21 Jul 2022 02:49:43 +0000 (UTC)
-Date:   Thu, 21 Jul 2022 10:49:40 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Slark Xiao <slark_xiao@163.com>
+        with ESMTP id S229461AbiGUD0B (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Jul 2022 23:26:01 -0400
+X-Greylist: delayed 934 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 20 Jul 2022 20:25:58 PDT
+Received: from m13114.mail.163.com (m13114.mail.163.com [220.181.13.114])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D61A2B1F6;
+        Wed, 20 Jul 2022 20:25:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=uI0Gf
+        q38zZFPLYaDZUJSppt5MdVIwb3DAWhs92WcF70=; b=bpClueia+kFMdQ38hrYB/
+        gog51SE62ZWlY+3iRtVVZWqStr2ho05ANibDJyQTApqrcPEF0v5scm/Xfl1sv49h
+        lf7Yfg7BQvAesKxN08WIWzLys2M7HCkn5TXMj6esi7eCIkfqXgSCRRvJMUsQ1nK0
+        sFQq+4PQ81vdfTAZ1jpxiM=
+Received: from slark_xiao$163.com ( [112.97.57.47] ) by
+ ajax-webmail-wmsvr114 (Coremail) ; Thu, 21 Jul 2022 11:08:22 +0800 (CST)
+X-Originating-IP: [112.97.57.47]
+Date:   Thu, 21 Jul 2022 11:08:22 +0800 (CST)
+From:   "Slark Xiao" <slark_xiao@163.com>
+To:     "Baoquan He" <bhe@redhat.com>
 Cc:     corbet@lwn.net, vgoyal@redhat.com, dyoung@redhat.com,
         ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
@@ -50,155 +38,141 @@ Cc:     corbet@lwn.net, vgoyal@redhat.com, dyoung@redhat.com,
         kexec@lists.infradead.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
         linux-cachefs@redhat.com
-Subject: Re: [PATCH v2] docs: Fix typo in comment
-Message-ID: <Yti+xEJIWeTSqD8n@MiWiFi-R3L-srv>
+Subject: Re:Re: [PATCH v2] docs: Fix typo in comment
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20220113(9671e152)
+ Copyright (c) 2002-2022 www.mailtech.cn 163com
+In-Reply-To: <Yti+xEJIWeTSqD8n@MiWiFi-R3L-srv>
 References: <20220721015605.20651-1-slark_xiao@163.com>
+ <Yti+xEJIWeTSqD8n@MiWiFi-R3L-srv>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=GBK
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220721015605.20651-1-slark_xiao@163.com>
-X-Scanned-By: MIMEDefang 2.78 on 10.11.54.6
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <25e36ec1.12ce.1821eba4cab.Coremail.slark_xiao@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: csGowAC379Imw9hiposjAA--.58861W
+X-CM-SenderInfo: xvod2y5b0lt0i6rwjhhfrp/1tbiRxdFZFc7YwAkRwABsc
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 07/21/22 at 09:56am, Slark Xiao wrote:
-> Fix typo in the comment
-
-Better tell what's fixed to save reviewers' time:
-
-Fix typo 'the the' in several places of document.
-
-Other then this nitpick, looks good to me.
-
-Reviewed-by: Baoquan He <bhe@redhat.com>
-
-> 
-> Signed-off-by: Slark Xiao <slark_xiao@163.com>
-> ---
-> v2: Add all .rst changes in Documents into 1 single patch
-> ---
->  Documentation/admin-guide/kdump/vmcoreinfo.rst    | 2 +-
->  Documentation/bpf/map_cgroup_storage.rst          | 4 ++--
->  Documentation/core-api/cpu_hotplug.rst            | 2 +-
->  Documentation/driver-api/isa.rst                  | 2 +-
->  Documentation/filesystems/caching/backend-api.rst | 2 +-
->  Documentation/locking/seqlock.rst                 | 2 +-
->  Documentation/sphinx/cdomain.py                   | 2 +-
->  7 files changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/kdump/vmcoreinfo.rst b/Documentation/admin-guide/kdump/vmcoreinfo.rst
-> index 8419019b6a88..6726f439958c 100644
-> --- a/Documentation/admin-guide/kdump/vmcoreinfo.rst
-> +++ b/Documentation/admin-guide/kdump/vmcoreinfo.rst
-> @@ -200,7 +200,7 @@ prb
->  
->  A pointer to the printk ringbuffer (struct printk_ringbuffer). This
->  may be pointing to the static boot ringbuffer or the dynamically
-> -allocated ringbuffer, depending on when the the core dump occurred.
-> +allocated ringbuffer, depending on when the core dump occurred.
->  Used by user-space tools to read the active kernel log buffer.
->  
->  printk_rb_static
-> diff --git a/Documentation/bpf/map_cgroup_storage.rst b/Documentation/bpf/map_cgroup_storage.rst
-> index cab9543017bf..8e5fe532c07e 100644
-> --- a/Documentation/bpf/map_cgroup_storage.rst
-> +++ b/Documentation/bpf/map_cgroup_storage.rst
-> @@ -31,7 +31,7 @@ The map uses key of type of either ``__u64 cgroup_inode_id`` or
->      };
->  
->  ``cgroup_inode_id`` is the inode id of the cgroup directory.
-> -``attach_type`` is the the program's attach type.
-> +``attach_type`` is the program's attach type.
->  
->  Linux 5.9 added support for type ``__u64 cgroup_inode_id`` as the key type.
->  When this key type is used, then all attach types of the particular cgroup and
-> @@ -155,7 +155,7 @@ However, the BPF program can still only associate with one map of each type
->  ``BPF_MAP_TYPE_CGROUP_STORAGE`` or more than one
->  ``BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE``.
->  
-> -In all versions, userspace may use the the attach parameters of cgroup and
-> +In all versions, userspace may use the attach parameters of cgroup and
->  attach type pair in ``struct bpf_cgroup_storage_key`` as the key to the BPF map
->  APIs to read or update the storage for a given attachment. For Linux 5.9
->  attach type shared storages, only the first value in the struct, cgroup inode
-> diff --git a/Documentation/core-api/cpu_hotplug.rst b/Documentation/core-api/cpu_hotplug.rst
-> index c6f4ba2fb32d..f75778d37488 100644
-> --- a/Documentation/core-api/cpu_hotplug.rst
-> +++ b/Documentation/core-api/cpu_hotplug.rst
-> @@ -560,7 +560,7 @@ available:
->    * cpuhp_state_remove_instance(state, node)
->    * cpuhp_state_remove_instance_nocalls(state, node)
->  
-> -The arguments are the same as for the the cpuhp_state_add_instance*()
-> +The arguments are the same as for the cpuhp_state_add_instance*()
->  variants above.
->  
->  The functions differ in the way how the installed callbacks are treated:
-> diff --git a/Documentation/driver-api/isa.rst b/Documentation/driver-api/isa.rst
-> index def4a7b690b5..3df1b1696524 100644
-> --- a/Documentation/driver-api/isa.rst
-> +++ b/Documentation/driver-api/isa.rst
-> @@ -100,7 +100,7 @@ I believe platform_data is available for this, but if rather not, moving
->  the isa_driver pointer to the private struct isa_dev is ofcourse fine as
->  well.
->  
-> -Then, if the the driver did not provide a .match, it matches. If it did,
-> +Then, if the driver did not provide a .match, it matches. If it did,
->  the driver match() method is called to determine a match.
->  
->  If it did **not** match, dev->platform_data is reset to indicate this to
-> diff --git a/Documentation/filesystems/caching/backend-api.rst b/Documentation/filesystems/caching/backend-api.rst
-> index d7507becf674..3a199fc50828 100644
-> --- a/Documentation/filesystems/caching/backend-api.rst
-> +++ b/Documentation/filesystems/caching/backend-api.rst
-> @@ -122,7 +122,7 @@ volumes, calling::
->  to tell fscache that a volume has been withdrawn.  This waits for all
->  outstanding accesses on the volume to complete before returning.
->  
-> -When the the cache is completely withdrawn, fscache should be notified by
-> +When the cache is completely withdrawn, fscache should be notified by
->  calling::
->  
->  	void fscache_relinquish_cache(struct fscache_cache *cache);
-> diff --git a/Documentation/locking/seqlock.rst b/Documentation/locking/seqlock.rst
-> index 64405e5da63e..bfda1a5fecad 100644
-> --- a/Documentation/locking/seqlock.rst
-> +++ b/Documentation/locking/seqlock.rst
-> @@ -39,7 +39,7 @@ as the writer can invalidate a pointer that the reader is following.
->  Sequence counters (``seqcount_t``)
->  ==================================
->  
-> -This is the the raw counting mechanism, which does not protect against
-> +This is the raw counting mechanism, which does not protect against
->  multiple writers.  Write side critical sections must thus be serialized
->  by an external lock.
->  
-> diff --git a/Documentation/sphinx/cdomain.py b/Documentation/sphinx/cdomain.py
-> index ca8ac9e59ded..a7d1866e72ff 100644
-> --- a/Documentation/sphinx/cdomain.py
-> +++ b/Documentation/sphinx/cdomain.py
-> @@ -151,7 +151,7 @@ class CObject(Base_CObject):
->      def handle_func_like_macro(self, sig, signode):
->          u"""Handles signatures of function-like macros.
->  
-> -        If the objtype is 'function' and the the signature ``sig`` is a
-> +        If the objtype is 'function' and the signature ``sig`` is a
->          function-like macro, the name of the macro is returned. Otherwise
->          ``False`` is returned.  """
->  
-> -- 
-> 2.25.1
-> 
-> 
-> _______________________________________________
-> kexec mailing list
-> kexec@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/kexec
-> 
-
+CgoKCkF0IDIwMjItMDctMjEgMTA6NDk6NDAsICJCYW9xdWFuIEhlIiA8YmhlQHJlZGhhdC5jb20+
+IHdyb3RlOgo+T24gMDcvMjEvMjIgYXQgMDk6NTZhbSwgU2xhcmsgWGlhbyB3cm90ZToKPj4gRml4
+IHR5cG8gaW4gdGhlIGNvbW1lbnQKPgo+QmV0dGVyIHRlbGwgd2hhdCdzIGZpeGVkIHRvIHNhdmUg
+cmV2aWV3ZXJzJyB0aW1lOgo+Cj5GaXggdHlwbyAndGhlIHRoZScgaW4gc2V2ZXJhbCBwbGFjZXMg
+b2YgZG9jdW1lbnQuCj4KPk90aGVyIHRoZW4gdGhpcyBuaXRwaWNrLCBsb29rcyBnb29kIHRvIG1l
+Lgo+Cj5SZXZpZXdlZC1ieTogQmFvcXVhbiBIZSA8YmhlQHJlZGhhdC5jb20+Cj4KVGhhbmtzIGZv
+ciB5b3VyIGFkdmljZS4KSSB3aWxsIHVwZGF0ZSBpdCB0byAgb3RoZXIgY29tbWl0cyBsYXRlci4K
+Cj4+IAo+PiBTaWduZWQtb2ZmLWJ5OiBTbGFyayBYaWFvIDxzbGFya194aWFvQDE2My5jb20+Cj4+
+IC0tLQo+PiB2MjogQWRkIGFsbCAucnN0IGNoYW5nZXMgaW4gRG9jdW1lbnRzIGludG8gMSBzaW5n
+bGUgcGF0Y2gKPj4gLS0tCj4+ICBEb2N1bWVudGF0aW9uL2FkbWluLWd1aWRlL2tkdW1wL3ZtY29y
+ZWluZm8ucnN0ICAgIHwgMiArLQo+PiAgRG9jdW1lbnRhdGlvbi9icGYvbWFwX2Nncm91cF9zdG9y
+YWdlLnJzdCAgICAgICAgICB8IDQgKystLQo+PiAgRG9jdW1lbnRhdGlvbi9jb3JlLWFwaS9jcHVf
+aG90cGx1Zy5yc3QgICAgICAgICAgICB8IDIgKy0KPj4gIERvY3VtZW50YXRpb24vZHJpdmVyLWFw
+aS9pc2EucnN0ICAgICAgICAgICAgICAgICAgfCAyICstCj4+ICBEb2N1bWVudGF0aW9uL2ZpbGVz
+eXN0ZW1zL2NhY2hpbmcvYmFja2VuZC1hcGkucnN0IHwgMiArLQo+PiAgRG9jdW1lbnRhdGlvbi9s
+b2NraW5nL3NlcWxvY2sucnN0ICAgICAgICAgICAgICAgICB8IDIgKy0KPj4gIERvY3VtZW50YXRp
+b24vc3BoaW54L2Nkb21haW4ucHkgICAgICAgICAgICAgICAgICAgfCAyICstCj4+ICA3IGZpbGVz
+IGNoYW5nZWQsIDggaW5zZXJ0aW9ucygrKSwgOCBkZWxldGlvbnMoLSkKPj4gCj4+IGRpZmYgLS1n
+aXQgYS9Eb2N1bWVudGF0aW9uL2FkbWluLWd1aWRlL2tkdW1wL3ZtY29yZWluZm8ucnN0IGIvRG9j
+dW1lbnRhdGlvbi9hZG1pbi1ndWlkZS9rZHVtcC92bWNvcmVpbmZvLnJzdAo+PiBpbmRleCA4NDE5
+MDE5YjZhODguLjY3MjZmNDM5OTU4YyAxMDA2NDQKPj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9hZG1p
+bi1ndWlkZS9rZHVtcC92bWNvcmVpbmZvLnJzdAo+PiArKysgYi9Eb2N1bWVudGF0aW9uL2FkbWlu
+LWd1aWRlL2tkdW1wL3ZtY29yZWluZm8ucnN0Cj4+IEBAIC0yMDAsNyArMjAwLDcgQEAgcHJiCj4+
+ICAKPj4gIEEgcG9pbnRlciB0byB0aGUgcHJpbnRrIHJpbmdidWZmZXIgKHN0cnVjdCBwcmludGtf
+cmluZ2J1ZmZlcikuIFRoaXMKPj4gIG1heSBiZSBwb2ludGluZyB0byB0aGUgc3RhdGljIGJvb3Qg
+cmluZ2J1ZmZlciBvciB0aGUgZHluYW1pY2FsbHkKPj4gLWFsbG9jYXRlZCByaW5nYnVmZmVyLCBk
+ZXBlbmRpbmcgb24gd2hlbiB0aGUgdGhlIGNvcmUgZHVtcCBvY2N1cnJlZC4KPj4gK2FsbG9jYXRl
+ZCByaW5nYnVmZmVyLCBkZXBlbmRpbmcgb24gd2hlbiB0aGUgY29yZSBkdW1wIG9jY3VycmVkLgo+
+PiAgVXNlZCBieSB1c2VyLXNwYWNlIHRvb2xzIHRvIHJlYWQgdGhlIGFjdGl2ZSBrZXJuZWwgbG9n
+IGJ1ZmZlci4KPj4gIAo+PiAgcHJpbnRrX3JiX3N0YXRpYwo+PiBkaWZmIC0tZ2l0IGEvRG9jdW1l
+bnRhdGlvbi9icGYvbWFwX2Nncm91cF9zdG9yYWdlLnJzdCBiL0RvY3VtZW50YXRpb24vYnBmL21h
+cF9jZ3JvdXBfc3RvcmFnZS5yc3QKPj4gaW5kZXggY2FiOTU0MzAxN2JmLi44ZTVmZTUzMmMwN2Ug
+MTAwNjQ0Cj4+IC0tLSBhL0RvY3VtZW50YXRpb24vYnBmL21hcF9jZ3JvdXBfc3RvcmFnZS5yc3QK
+Pj4gKysrIGIvRG9jdW1lbnRhdGlvbi9icGYvbWFwX2Nncm91cF9zdG9yYWdlLnJzdAo+PiBAQCAt
+MzEsNyArMzEsNyBAQCBUaGUgbWFwIHVzZXMga2V5IG9mIHR5cGUgb2YgZWl0aGVyIGBgX191NjQg
+Y2dyb3VwX2lub2RlX2lkYGAgb3IKPj4gICAgICB9Owo+PiAgCj4+ICBgYGNncm91cF9pbm9kZV9p
+ZGBgIGlzIHRoZSBpbm9kZSBpZCBvZiB0aGUgY2dyb3VwIGRpcmVjdG9yeS4KPj4gLWBgYXR0YWNo
+X3R5cGVgYCBpcyB0aGUgdGhlIHByb2dyYW0ncyBhdHRhY2ggdHlwZS4KPj4gK2BgYXR0YWNoX3R5
+cGVgYCBpcyB0aGUgcHJvZ3JhbSdzIGF0dGFjaCB0eXBlLgo+PiAgCj4+ICBMaW51eCA1LjkgYWRk
+ZWQgc3VwcG9ydCBmb3IgdHlwZSBgYF9fdTY0IGNncm91cF9pbm9kZV9pZGBgIGFzIHRoZSBrZXkg
+dHlwZS4KPj4gIFdoZW4gdGhpcyBrZXkgdHlwZSBpcyB1c2VkLCB0aGVuIGFsbCBhdHRhY2ggdHlw
+ZXMgb2YgdGhlIHBhcnRpY3VsYXIgY2dyb3VwIGFuZAo+PiBAQCAtMTU1LDcgKzE1NSw3IEBAIEhv
+d2V2ZXIsIHRoZSBCUEYgcHJvZ3JhbSBjYW4gc3RpbGwgb25seSBhc3NvY2lhdGUgd2l0aCBvbmUg
+bWFwIG9mIGVhY2ggdHlwZQo+PiAgYGBCUEZfTUFQX1RZUEVfQ0dST1VQX1NUT1JBR0VgYCBvciBt
+b3JlIHRoYW4gb25lCj4+ICBgYEJQRl9NQVBfVFlQRV9QRVJDUFVfQ0dST1VQX1NUT1JBR0VgYC4K
+Pj4gIAo+PiAtSW4gYWxsIHZlcnNpb25zLCB1c2Vyc3BhY2UgbWF5IHVzZSB0aGUgdGhlIGF0dGFj
+aCBwYXJhbWV0ZXJzIG9mIGNncm91cCBhbmQKPj4gK0luIGFsbCB2ZXJzaW9ucywgdXNlcnNwYWNl
+IG1heSB1c2UgdGhlIGF0dGFjaCBwYXJhbWV0ZXJzIG9mIGNncm91cCBhbmQKPj4gIGF0dGFjaCB0
+eXBlIHBhaXIgaW4gYGBzdHJ1Y3QgYnBmX2Nncm91cF9zdG9yYWdlX2tleWBgIGFzIHRoZSBrZXkg
+dG8gdGhlIEJQRiBtYXAKPj4gIEFQSXMgdG8gcmVhZCBvciB1cGRhdGUgdGhlIHN0b3JhZ2UgZm9y
+IGEgZ2l2ZW4gYXR0YWNobWVudC4gRm9yIExpbnV4IDUuOQo+PiAgYXR0YWNoIHR5cGUgc2hhcmVk
+IHN0b3JhZ2VzLCBvbmx5IHRoZSBmaXJzdCB2YWx1ZSBpbiB0aGUgc3RydWN0LCBjZ3JvdXAgaW5v
+ZGUKPj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vY29yZS1hcGkvY3B1X2hvdHBsdWcucnN0
+IGIvRG9jdW1lbnRhdGlvbi9jb3JlLWFwaS9jcHVfaG90cGx1Zy5yc3QKPj4gaW5kZXggYzZmNGJh
+MmZiMzJkLi5mNzU3NzhkMzc0ODggMTAwNjQ0Cj4+IC0tLSBhL0RvY3VtZW50YXRpb24vY29yZS1h
+cGkvY3B1X2hvdHBsdWcucnN0Cj4+ICsrKyBiL0RvY3VtZW50YXRpb24vY29yZS1hcGkvY3B1X2hv
+dHBsdWcucnN0Cj4+IEBAIC01NjAsNyArNTYwLDcgQEAgYXZhaWxhYmxlOgo+PiAgICAqIGNwdWhw
+X3N0YXRlX3JlbW92ZV9pbnN0YW5jZShzdGF0ZSwgbm9kZSkKPj4gICAgKiBjcHVocF9zdGF0ZV9y
+ZW1vdmVfaW5zdGFuY2Vfbm9jYWxscyhzdGF0ZSwgbm9kZSkKPj4gIAo+PiAtVGhlIGFyZ3VtZW50
+cyBhcmUgdGhlIHNhbWUgYXMgZm9yIHRoZSB0aGUgY3B1aHBfc3RhdGVfYWRkX2luc3RhbmNlKigp
+Cj4+ICtUaGUgYXJndW1lbnRzIGFyZSB0aGUgc2FtZSBhcyBmb3IgdGhlIGNwdWhwX3N0YXRlX2Fk
+ZF9pbnN0YW5jZSooKQo+PiAgdmFyaWFudHMgYWJvdmUuCj4+ICAKPj4gIFRoZSBmdW5jdGlvbnMg
+ZGlmZmVyIGluIHRoZSB3YXkgaG93IHRoZSBpbnN0YWxsZWQgY2FsbGJhY2tzIGFyZSB0cmVhdGVk
+Ogo+PiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kcml2ZXItYXBpL2lzYS5yc3QgYi9Eb2N1
+bWVudGF0aW9uL2RyaXZlci1hcGkvaXNhLnJzdAo+PiBpbmRleCBkZWY0YTdiNjkwYjUuLjNkZjFi
+MTY5NjUyNCAxMDA2NDQKPj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kcml2ZXItYXBpL2lzYS5yc3QK
+Pj4gKysrIGIvRG9jdW1lbnRhdGlvbi9kcml2ZXItYXBpL2lzYS5yc3QKPj4gQEAgLTEwMCw3ICsx
+MDAsNyBAQCBJIGJlbGlldmUgcGxhdGZvcm1fZGF0YSBpcyBhdmFpbGFibGUgZm9yIHRoaXMsIGJ1
+dCBpZiByYXRoZXIgbm90LCBtb3ZpbmcKPj4gIHRoZSBpc2FfZHJpdmVyIHBvaW50ZXIgdG8gdGhl
+IHByaXZhdGUgc3RydWN0IGlzYV9kZXYgaXMgb2Zjb3Vyc2UgZmluZSBhcwo+PiAgd2VsbC4KPj4g
+IAo+PiAtVGhlbiwgaWYgdGhlIHRoZSBkcml2ZXIgZGlkIG5vdCBwcm92aWRlIGEgLm1hdGNoLCBp
+dCBtYXRjaGVzLiBJZiBpdCBkaWQsCj4+ICtUaGVuLCBpZiB0aGUgZHJpdmVyIGRpZCBub3QgcHJv
+dmlkZSBhIC5tYXRjaCwgaXQgbWF0Y2hlcy4gSWYgaXQgZGlkLAo+PiAgdGhlIGRyaXZlciBtYXRj
+aCgpIG1ldGhvZCBpcyBjYWxsZWQgdG8gZGV0ZXJtaW5lIGEgbWF0Y2guCj4+ICAKPj4gIElmIGl0
+IGRpZCAqKm5vdCoqIG1hdGNoLCBkZXYtPnBsYXRmb3JtX2RhdGEgaXMgcmVzZXQgdG8gaW5kaWNh
+dGUgdGhpcyB0bwo+PiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9maWxlc3lzdGVtcy9jYWNo
+aW5nL2JhY2tlbmQtYXBpLnJzdCBiL0RvY3VtZW50YXRpb24vZmlsZXN5c3RlbXMvY2FjaGluZy9i
+YWNrZW5kLWFwaS5yc3QKPj4gaW5kZXggZDc1MDdiZWNmNjc0Li4zYTE5OWZjNTA4MjggMTAwNjQ0
+Cj4+IC0tLSBhL0RvY3VtZW50YXRpb24vZmlsZXN5c3RlbXMvY2FjaGluZy9iYWNrZW5kLWFwaS5y
+c3QKPj4gKysrIGIvRG9jdW1lbnRhdGlvbi9maWxlc3lzdGVtcy9jYWNoaW5nL2JhY2tlbmQtYXBp
+LnJzdAo+PiBAQCAtMTIyLDcgKzEyMiw3IEBAIHZvbHVtZXMsIGNhbGxpbmc6Ogo+PiAgdG8gdGVs
+bCBmc2NhY2hlIHRoYXQgYSB2b2x1bWUgaGFzIGJlZW4gd2l0aGRyYXduLiAgVGhpcyB3YWl0cyBm
+b3IgYWxsCj4+ICBvdXRzdGFuZGluZyBhY2Nlc3NlcyBvbiB0aGUgdm9sdW1lIHRvIGNvbXBsZXRl
+IGJlZm9yZSByZXR1cm5pbmcuCj4+ICAKPj4gLVdoZW4gdGhlIHRoZSBjYWNoZSBpcyBjb21wbGV0
+ZWx5IHdpdGhkcmF3biwgZnNjYWNoZSBzaG91bGQgYmUgbm90aWZpZWQgYnkKPj4gK1doZW4gdGhl
+IGNhY2hlIGlzIGNvbXBsZXRlbHkgd2l0aGRyYXduLCBmc2NhY2hlIHNob3VsZCBiZSBub3RpZmll
+ZCBieQo+PiAgY2FsbGluZzo6Cj4+ICAKPj4gIAl2b2lkIGZzY2FjaGVfcmVsaW5xdWlzaF9jYWNo
+ZShzdHJ1Y3QgZnNjYWNoZV9jYWNoZSAqY2FjaGUpOwo+PiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRh
+dGlvbi9sb2NraW5nL3NlcWxvY2sucnN0IGIvRG9jdW1lbnRhdGlvbi9sb2NraW5nL3NlcWxvY2su
+cnN0Cj4+IGluZGV4IDY0NDA1ZTVkYTYzZS4uYmZkYTFhNWZlY2FkIDEwMDY0NAo+PiAtLS0gYS9E
+b2N1bWVudGF0aW9uL2xvY2tpbmcvc2VxbG9jay5yc3QKPj4gKysrIGIvRG9jdW1lbnRhdGlvbi9s
+b2NraW5nL3NlcWxvY2sucnN0Cj4+IEBAIC0zOSw3ICszOSw3IEBAIGFzIHRoZSB3cml0ZXIgY2Fu
+IGludmFsaWRhdGUgYSBwb2ludGVyIHRoYXQgdGhlIHJlYWRlciBpcyBmb2xsb3dpbmcuCj4+ICBT
+ZXF1ZW5jZSBjb3VudGVycyAoYGBzZXFjb3VudF90YGApCj4+ICA9PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09Cj4+ICAKPj4gLVRoaXMgaXMgdGhlIHRoZSByYXcgY291bnRpbmcgbWVj
+aGFuaXNtLCB3aGljaCBkb2VzIG5vdCBwcm90ZWN0IGFnYWluc3QKPj4gK1RoaXMgaXMgdGhlIHJh
+dyBjb3VudGluZyBtZWNoYW5pc20sIHdoaWNoIGRvZXMgbm90IHByb3RlY3QgYWdhaW5zdAo+PiAg
+bXVsdGlwbGUgd3JpdGVycy4gIFdyaXRlIHNpZGUgY3JpdGljYWwgc2VjdGlvbnMgbXVzdCB0aHVz
+IGJlIHNlcmlhbGl6ZWQKPj4gIGJ5IGFuIGV4dGVybmFsIGxvY2suCj4+ICAKPj4gZGlmZiAtLWdp
+dCBhL0RvY3VtZW50YXRpb24vc3BoaW54L2Nkb21haW4ucHkgYi9Eb2N1bWVudGF0aW9uL3NwaGlu
+eC9jZG9tYWluLnB5Cj4+IGluZGV4IGNhOGFjOWU1OWRlZC4uYTdkMTg2NmU3MmZmIDEwMDY0NAo+
+PiAtLS0gYS9Eb2N1bWVudGF0aW9uL3NwaGlueC9jZG9tYWluLnB5Cj4+ICsrKyBiL0RvY3VtZW50
+YXRpb24vc3BoaW54L2Nkb21haW4ucHkKPj4gQEAgLTE1MSw3ICsxNTEsNyBAQCBjbGFzcyBDT2Jq
+ZWN0KEJhc2VfQ09iamVjdCk6Cj4+ICAgICAgZGVmIGhhbmRsZV9mdW5jX2xpa2VfbWFjcm8oc2Vs
+Ziwgc2lnLCBzaWdub2RlKToKPj4gICAgICAgICAgdSIiIkhhbmRsZXMgc2lnbmF0dXJlcyBvZiBm
+dW5jdGlvbi1saWtlIG1hY3Jvcy4KPj4gIAo+PiAtICAgICAgICBJZiB0aGUgb2JqdHlwZSBpcyAn
+ZnVuY3Rpb24nIGFuZCB0aGUgdGhlIHNpZ25hdHVyZSBgYHNpZ2BgIGlzIGEKPj4gKyAgICAgICAg
+SWYgdGhlIG9ianR5cGUgaXMgJ2Z1bmN0aW9uJyBhbmQgdGhlIHNpZ25hdHVyZSBgYHNpZ2BgIGlz
+IGEKPj4gICAgICAgICAgZnVuY3Rpb24tbGlrZSBtYWNybywgdGhlIG5hbWUgb2YgdGhlIG1hY3Jv
+IGlzIHJldHVybmVkLiBPdGhlcndpc2UKPj4gICAgICAgICAgYGBGYWxzZWBgIGlzIHJldHVybmVk
+LiAgIiIiCj4+ICAKPj4gLS0gCj4+IDIuMjUuMQo+PiAKPj4gCj4+IF9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+IGtleGVjIG1haWxpbmcgbGlzdAo+PiBr
+ZXhlY0BsaXN0cy5pbmZyYWRlYWQub3JnCj4+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8va2V4ZWMKPj4gCg==
