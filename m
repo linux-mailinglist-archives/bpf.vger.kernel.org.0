@@ -2,527 +2,200 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4066E57CEA7
-	for <lists+bpf@lfdr.de>; Thu, 21 Jul 2022 17:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D029357CF5D
+	for <lists+bpf@lfdr.de>; Thu, 21 Jul 2022 17:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230363AbiGUPKv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jul 2022 11:10:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57240 "EHLO
+        id S232650AbiGUPhE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jul 2022 11:37:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230014AbiGUPKu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jul 2022 11:10:50 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BA2274DFA
-        for <bpf@vger.kernel.org>; Thu, 21 Jul 2022 08:10:49 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id m9so2169551ljp.9
-        for <bpf@vger.kernel.org>; Thu, 21 Jul 2022 08:10:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=q8VELQa/pUpDIiwLPiLKRRsWu/8sz6yqqgZDUkzRq6k=;
-        b=EImdYwuoPdRWcF10eSdsP6GzFlzFQzmWZ8T8GQiP2uAPBD+uX3ByveF8TRybwDym1y
-         p//pc875UiOIGyaNMWlHFSRsWFqc6cXb0uIBQyhIOrFCMsho7GDQkuVkv1iJFF4I8ejf
-         L7BmQsDYVnflssRsbyfxjxb+5PSL+nYYRjj8o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=q8VELQa/pUpDIiwLPiLKRRsWu/8sz6yqqgZDUkzRq6k=;
-        b=GpOFaJ04UT+KcFxulzBMp7W6c+Qy2EhYZp4ZCnR9HVVBMmJvtjyu9a8IrvckJzaHcf
-         Csucm51c4NjOg5ktYppuwh9Dqg17wlJvivjSMWZndPTM9+HfK+7Ht1RXVaiMTDw7FbVX
-         2k2NyUzrE3jJJ2/HvTG71Pio7WuGH5dByuwNrN7ArsHi8vV+u1EINjg8URsFNDC5eY3+
-         hdDmKU9Xgg31Mj2MUga1i9PmZ0AsLZCz2joWLFhqCIdnlEOa8VY2gsAJd2rEbimjIVvs
-         ZWRMHmxFRfj4oswMBKI/+vlXGqqiCLt0tfLlC81FfL/XKczeeUy8f9xedAo7iivBwtOO
-         ZkMw==
-X-Gm-Message-State: AJIora+nGEeT7hLStGjoghnqMl8Q3nltQuEn3tc/dSK2TJmeaGjaKW8+
-        aw/m9oD23q58WVDw32zqDRjXhw==
-X-Google-Smtp-Source: AGRyM1u+AyWTTzcPVcGXkzOzCdAal5BTkpPGB9oSSb0UzNAKHqgpHaTKsmrgFu4uYUNgmTsfim2L/A==
-X-Received: by 2002:a05:651c:158e:b0:25d:babd:46f0 with SMTP id h14-20020a05651c158e00b0025dbabd46f0mr8637100ljq.497.1658416246095;
-        Thu, 21 Jul 2022 08:10:46 -0700 (PDT)
-Received: from mrprec.home (2a01-110f-4304-1700-37e6-7a9a-2637-d666.aa.ipv6.supernova.orange.pl. [2a01:110f:4304:1700:37e6:7a9a:2637:d666])
-        by smtp.gmail.com with ESMTPSA id f3-20020a056512228300b00489dbecbd0csm205508lfu.189.2022.07.21.08.10.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jul 2022 08:10:45 -0700 (PDT)
-From:   Marek Majkowski <marek@cloudflare.com>
-To:     netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, kernel-team@cloudflare.com,
-        ivan@cloudflare.com, edumazet@google.com, davem@davemloft.net,
-        kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org,
-        Marek Majkowski <marek@cloudflare.com>
-Subject: [PATCH net-next 2/2] Tests for RTAX_INITRWND
-Date:   Thu, 21 Jul 2022 17:10:41 +0200
-Message-Id: <20220721151041.1215017-3-marek@cloudflare.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220721151041.1215017-1-marek@cloudflare.com>
-References: <20220721151041.1215017-1-marek@cloudflare.com>
+        with ESMTP id S232529AbiGUPgm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Jul 2022 11:36:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 06B761CFEE
+        for <bpf@vger.kernel.org>; Thu, 21 Jul 2022 08:36:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1658417796;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=E9vNgely/RNeXoTi/6KXKEKS3Vm4HrmO6DZ21V4RiOg=;
+        b=SkxTaCGJP5nkoCaxcouCFAWIhO7INSfXbcfMsitpUyu/lEpw7GT+RxrSXABcqFId33Quj5
+        NBgm2ZrmZafcqXgqPegf3f12lKd0K7j4sUEWF5z8Iy3YNCDN/jjRBKUoB7Xndyx2JN5TUM
+        DFSh0jFMfImCy86MLiAB5Iy7KVVq8LA=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-443-yU1vkqs-P36TDaFyBVoQAw-1; Thu, 21 Jul 2022 11:36:32 -0400
+X-MC-Unique: yU1vkqs-P36TDaFyBVoQAw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7B00B1019C8D;
+        Thu, 21 Jul 2022 15:36:31 +0000 (UTC)
+Received: from plouf.redhat.com (unknown [10.39.194.200])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5DCC42166B26;
+        Thu, 21 Jul 2022 15:36:28 +0000 (UTC)
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>
+Cc:     Tero Kristo <tero.kristo@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Subject: [PATCH bpf-next v7 00/24] Introduce eBPF support for HID devices
+Date:   Thu, 21 Jul 2022 17:36:01 +0200
+Message-Id: <20220721153625.1282007-1-benjamin.tissoires@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 2.78 on 10.11.54.6
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Accompanying tests. We open skops program, hooking on
-BPF_SOCK_OPS_RWND_INIT event, where we return updated value of
-initrwnd route path attribute.
+Hi,
 
-In tests we see if values above 64KiB indeed are advertised correctly
-to the remote peer.
+here comes the v7 of the HID-BPF series.
 
-Signed-off-by: Marek Majkowski <marek@cloudflare.com>
----
- .../selftests/bpf/prog_tests/tcp_initrwnd.c   | 398 ++++++++++++++++++
- .../selftests/bpf/progs/test_tcp_initrwnd.c   |  30 ++
- 2 files changed, 428 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/tcp_initrwnd.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_tcp_initrwnd.c
+Again, for a full explanation of HID-BPF, please refer to the last patch
+in this series (24/24).
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/tcp_initrwnd.c b/tools/testing/selftests/bpf/prog_tests/tcp_initrwnd.c
-new file mode 100644
-index 000000000000..0276fe9c8ce6
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/tcp_initrwnd.c
-@@ -0,0 +1,398 @@
-+// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
-+// Copyright (c) 2022 Cloudflare
-+
-+#include "test_progs.h"
-+#include "bpf_util.h"
-+#include "network_helpers.h"
-+
-+#include "test_tcp_initrwnd.skel.h"
-+
-+#define CG_NAME "/tcpbpf-user-test"
-+
-+/* It's easier to hardcode offsets than to fight with headers
-+ *
-+ * $ pahole tcp_info
-+ * struct tcp_info {
-+ *	__u32                      tcpi_rcv_ssthresh;   *    64     4 *
-+ *	__u32                      tcpi_snd_wnd;        *   228     4 *
-+ */
-+
-+#define TCPI_RCV_SSTHRESH(info) info[64 / 4]
-+#define TCPI_SND_WND(info) info[228 / 4]
-+
-+static int read_int_sysctl(const char *sysctl)
-+{
-+	char buf[16];
-+	int fd, ret;
-+
-+	fd = open(sysctl, 0);
-+	if (CHECK_FAIL(fd == -1))
-+		goto err;
-+
-+	ret = read(fd, buf, sizeof(buf));
-+	if (CHECK_FAIL(ret <= 0))
-+		goto err;
-+
-+	close(fd);
-+	return atoi(buf);
-+err:
-+	if (fd < 0)
-+		close(fd);
-+	return -1;
-+}
-+
-+static int write_int_sysctl(const char *sysctl, int v)
-+{
-+	int fd, ret, size;
-+	char buf[16];
-+
-+	fd = open(sysctl, O_RDWR);
-+	if (CHECK_FAIL(fd < 0))
-+		goto err;
-+
-+	size = snprintf(buf, sizeof(buf), "%d", v);
-+	ret = write(fd, buf, size);
-+	if (CHECK_FAIL(ret < 0))
-+		goto err;
-+
-+	close(fd);
-+	return 0;
-+err:
-+	if (fd < 0)
-+		close(fd);
-+	return -1;
-+}
-+
-+static int tcp_timestamps;
-+static int tcp_window_scaling;
-+static int tcp_workaround_signed_windows;
-+
-+static void do_test_server(int server_fd, struct test_tcp_initrwnd *skel,
-+			   int initrwnd, unsigned int tcpi_snd_wnd_on_connect,
-+			   unsigned int rcv_ssthresh_on_recv,
-+			   unsigned int tcpi_snd_wnd_on_recv)
-+{
-+	int client_fd = -1, sd = -1, r;
-+	__u32 info[256 / 4];
-+	socklen_t optlen = sizeof(info);
-+	char b[1] = { 0x55 };
-+
-+	fprintf(stderr,
-+		"[*] server initrwnd=%d tcp_timestamps=%d tcp_window_scaling=%d tcp_workaround_signed_windows=%d\n",
-+		initrwnd, tcp_timestamps, tcp_window_scaling,
-+		tcp_workaround_signed_windows);
-+
-+	skel->bss->initrwnd = initrwnd; // in full MSS packets
-+
-+	client_fd = connect_to_fd(server_fd, 0);
-+	if (CHECK_FAIL(client_fd < 0))
-+		goto err;
-+
-+	sd = accept(server_fd, NULL, NULL);
-+	if (CHECK_FAIL(sd < 0))
-+		goto err;
-+
-+	/* There are three moments where we check the window/rcv_ssthresh.
-+	 *
-+	 * (1) First, after socket creation, TCP handshake, we expect
-+	 * the client to see only SYN+ACK which is without window
-+	 * scaling. That is: from client/sender point of view we see
-+	 * at most 64KiB open receive window.
-+	 */
-+	r = getsockopt(client_fd, SOL_TCP, TCP_INFO, &info, &optlen);
-+	if (CHECK_FAIL(r < 0))
-+		goto err;
-+
-+	ASSERT_EQ(TCPI_SND_WND(info), tcpi_snd_wnd_on_connect,
-+		  "getsockopt(TCP_INFO.tcpi_snd_wnd) on connect");
-+
-+	/* (2) At the same time, from the server/receiver point of
-+	 * view, we already initiated socket, so rcv_ssthresh is set
-+	 * to high value, potentially larger than 64KiB.
-+	 */
-+	r = getsockopt(sd, SOL_TCP, TCP_INFO, &info, &optlen);
-+	if (CHECK_FAIL(r < 0))
-+		goto err;
-+
-+	ASSERT_EQ(TCPI_RCV_SSTHRESH(info), rcv_ssthresh_on_recv,
-+		  "getsockopt(TCP_INFO.rcv_ssthresh) on recv");
-+
-+	/* (3) Finally, after receiving some ACK from client, the
-+	 * client/sender should also see wider open window, larger
-+	 * than 64KiB.
-+	 */
-+	if (CHECK_FAIL(write(client_fd, &b, sizeof(b)) != 1))
-+		perror("Failed to send single byte");
-+
-+	if (CHECK_FAIL(read(sd, &b, sizeof(b)) != 1))
-+		perror("Failed to send single byte");
-+
-+	r = getsockopt(client_fd, SOL_TCP, TCP_INFO, &info, &optlen);
-+	if (CHECK_FAIL(r < 0))
-+		goto err;
-+
-+	ASSERT_EQ(TCPI_SND_WND(info), tcpi_snd_wnd_on_recv,
-+		  "getsockopt(TCP_INFO.tcpi_snd_wnd) after recv");
-+
-+err:
-+	if (sd != -1)
-+		close(sd);
-+	if (client_fd != -1)
-+		close(client_fd);
-+}
-+
-+static int socket_client(int server_fd)
-+{
-+	socklen_t optlen;
-+	int family, type, protocol, r;
-+
-+	optlen = sizeof(family);
-+	r = getsockopt(server_fd, SOL_SOCKET, SO_DOMAIN, &family, &optlen);
-+	if (CHECK_FAIL(r < 0))
-+		return -1;
-+
-+	optlen = sizeof(type);
-+	r = getsockopt(server_fd, SOL_SOCKET, SO_TYPE, &type, &optlen);
-+	if (CHECK_FAIL(r < 0))
-+		return -1;
-+
-+	optlen = sizeof(protocol);
-+	r = getsockopt(server_fd, SOL_SOCKET, SO_PROTOCOL, &protocol, &optlen);
-+	if (CHECK_FAIL(r < 0))
-+		return -1;
-+
-+	return socket(family, type, protocol);
-+}
-+
-+static void do_test_client(int server_fd, struct test_tcp_initrwnd *skel,
-+			   int initrwnd, unsigned int rcv_ssthresh,
-+			   unsigned int tcpi_snd_wnd)
-+{
-+	int client_fd = -1, sd = -1, r, maxseg;
-+	__u32 info[256 / 4];
-+	socklen_t optlen = sizeof(info);
-+	size_t rcvbuf;
-+	char b[1] = { 0x55 };
-+
-+	fprintf(stderr,
-+		"[*] client initrwnd=%d tcp_timestamps=%d tcp_window_scaling=%d tcp_workaround_signed_windows=%d\n",
-+		initrwnd, tcp_timestamps, tcp_window_scaling,
-+		tcp_workaround_signed_windows);
-+
-+	skel->bss->initrwnd = initrwnd; // in full MSS packets
-+
-+	client_fd = socket_client(server_fd);
-+	if (CHECK_FAIL(client_fd < 0))
-+		goto err;
-+
-+	/* With MSS=64KiB on loopback it's hard to argue about init
-+	 * rwnd. Let's set MSS to something that will make our life
-+	 * easier, like 1024 + timestamps.
-+	 */
-+	maxseg = 1024;
-+
-+	r = setsockopt(client_fd, SOL_TCP, TCP_MAXSEG, &maxseg, sizeof(maxseg));
-+	if (CHECK_FAIL(r < 0))
-+		goto err;
-+
-+	rcvbuf = 208 * 1024;
-+	r = setsockopt(client_fd, SOL_SOCKET, SO_RCVBUF, &rcvbuf,
-+		       sizeof(rcvbuf));
-+	if (CHECK_FAIL(r < 0))
-+		goto err;
-+
-+	r = connect_fd_to_fd(client_fd, server_fd, 0);
-+	if (CHECK_FAIL(r < 0))
-+		goto err;
-+
-+	sd = accept(server_fd, NULL, NULL);
-+	if (CHECK_FAIL(sd < 0))
-+		goto err;
-+
-+	if (CHECK_FAIL(write(sd, &b, sizeof(b)) != 1))
-+		perror("Failed to send single byte");
-+
-+	if (CHECK_FAIL(read(client_fd, &b, sizeof(b)) != 1))
-+		perror("Failed to send single byte");
-+
-+	/* There is only one moment to check - the server should know
-+	 * about client window just after accept. First check client
-+	 * rcv_ssthresh.
-+	 */
-+	r = getsockopt(client_fd, SOL_TCP, TCP_INFO, &info, &optlen);
-+	if (CHECK_FAIL(r < 0))
-+		goto err;
-+
-+	ASSERT_EQ(TCPI_RCV_SSTHRESH(info), rcv_ssthresh,
-+		  "getsockopt(TCP_INFO.tcpi_rcv_ssthresh) on client");
-+
-+	/* And the recevie window size as seen from the server.
-+	 */
-+	r = getsockopt(sd, SOL_TCP, TCP_INFO, &info, &optlen);
-+	if (CHECK_FAIL(r < 0))
-+		goto err;
-+
-+	ASSERT_EQ(TCPI_SND_WND(info), tcpi_snd_wnd,
-+		  "getsockopt(TCP_INFO.tcpi_snd_wnd)");
-+
-+err:
-+	if (sd != -1)
-+		close(sd);
-+	if (client_fd != -1)
-+		close(client_fd);
-+}
-+
-+static void run_tests(int cg_fd, struct test_tcp_initrwnd *skel)
-+{
-+	int server_fd = -1, r, rcvbuf, maxseg;
-+	unsigned int max_wnd, buf;
-+
-+	skel->links.bpf_testcb =
-+		bpf_program__attach_cgroup(skel->progs.bpf_testcb, cg_fd);
-+	if (!ASSERT_OK_PTR(skel->links.bpf_testcb, "attach_cgroup(bpf_testcb)"))
-+		goto err;
-+
-+	server_fd = start_server(AF_INET, SOCK_STREAM, NULL, 0, 0);
-+	if (CHECK_FAIL(server_fd < 0))
-+		goto err;
-+
-+	maxseg = 1024;
-+	if (tcp_timestamps)
-+		maxseg += 12;
-+
-+	/* With MSS=64KiB on loopback it's hard to argue about init
-+	 * rwnd. Let's set MSS to something that will make our life
-+	 * easier, like 1024 + timestamps.
-+	 */
-+	r = setsockopt(server_fd, SOL_TCP, TCP_MAXSEG, &maxseg, sizeof(maxseg));
-+	if (CHECK_FAIL(r < 0))
-+		goto err;
-+
-+	/* Obviously, rcvbuffer must be large at the start for the
-+	 * initrwnd to make any dent in rcv_ssthresh (assuming default
-+	 * tcp_rmem of 128KiB)
-+	 */
-+	rcvbuf = 208 * 1024;
-+	r = setsockopt(server_fd, SOL_SOCKET, SO_RCVBUF, &rcvbuf,
-+		       sizeof(rcvbuf));
-+	if (CHECK_FAIL(r < 0))
-+		goto err;
-+
-+	max_wnd = tcp_workaround_signed_windows ? 32767 : 65535;
-+
-+	/* [*] server advertising large window ** */
-+
-+	/* Small initrwnd. Not exceeding 64KiB */
-+	do_test_server(server_fd, skel, 1, 1024, 1024, 1024);
-+
-+	if (tcp_window_scaling) {
-+		/* Borderline. Not exceeding 64KiB */
-+		do_test_server(server_fd, skel, 63, MIN(max_wnd, 63 * 1024),
-+			       63 * 1024, 63 * 1024);
-+	} else {
-+		do_test_server(server_fd, skel, 63, MIN(max_wnd, 63 * 1024),
-+			       63 * 1024, MIN(max_wnd, 63 * 1024));
-+	}
-+
-+	if (tcp_window_scaling) {
-+		/* The interesting case. Crossing 64KiB */
-+		do_test_server(server_fd, skel, 128, max_wnd, 128 * 1024,
-+			       128 * 1024);
-+	} else {
-+		do_test_server(server_fd, skel, 128, max_wnd, 65535,
-+			       MIN(max_wnd, 65535));
-+	}
-+
-+	if (tcp_window_scaling) {
-+		/* Super large. The buffer is 208*2 */
-+		do_test_server(server_fd, skel, 206, max_wnd, 206 * 1024U,
-+			       206 * 1024U);
-+		buf = 207 * 1024U - (tcp_timestamps ? 12 : 0);
-+		do_test_server(server_fd, skel, 512, max_wnd, buf, buf);
-+	}
-+
-+	/* [*] client advertising large window ** */
-+
-+	/* Test if client advertises small rcv window */
-+	do_test_client(server_fd, skel, 1, 1024, 1024);
-+
-+	if (tcp_window_scaling) {
-+		/* Medium size */
-+		do_test_client(server_fd, skel, 63, 63 * 1024, 63 * 1024);
-+	} else {
-+		do_test_client(server_fd, skel, 63, 63 * 1024,
-+			       MIN(max_wnd, 63 * 1024));
-+	}
-+
-+	if (tcp_window_scaling) {
-+		/* And large window */
-+		do_test_client(server_fd, skel, 128, 128 * 1024, 128 * 1024);
-+	} else {
-+		do_test_client(server_fd, skel, 128, 65535,
-+			       MIN(max_wnd, 65535));
-+	}
-+
-+	if (tcp_window_scaling) {
-+		/* Super large. */
-+		do_test_client(server_fd, skel, 206, 206 * 1024U, 206 * 1024U);
-+		buf = 207 * 1024U + (tcp_timestamps ? 12 : 0);
-+		do_test_client(server_fd, skel, 512, buf, buf);
-+	}
-+err:
-+	if (server_fd != -1)
-+		close(server_fd);
-+}
-+
-+#define PROC_TCP_TIMESTAMPS "/proc/sys/net/ipv4/tcp_timestamps"
-+#define PROC_TCP_WINDOW_SCALING "/proc/sys/net/ipv4/tcp_window_scaling"
-+#define PROC_TCP_WORKAROUND_SIGNED_WINDOWS \
-+	"/proc/sys/net/ipv4/tcp_workaround_signed_windows"
-+
-+void test_tcp_initrwnd(void)
-+{
-+	struct test_tcp_initrwnd *skel;
-+	unsigned int i;
-+	int cg_fd;
-+
-+	int saved_tcp_timestamps = read_int_sysctl(PROC_TCP_TIMESTAMPS);
-+	int saved_tcp_window_scaling = read_int_sysctl(PROC_TCP_WINDOW_SCALING);
-+	int saved_tcp_workaround_signed_windows =
-+		read_int_sysctl(PROC_TCP_WORKAROUND_SIGNED_WINDOWS);
-+
-+	if (CHECK_FAIL(saved_tcp_timestamps == -1 ||
-+		       saved_tcp_window_scaling == -1 ||
-+		       saved_tcp_workaround_signed_windows == -1))
-+		return;
-+
-+	cg_fd = test__join_cgroup(CG_NAME);
-+	if (CHECK_FAIL(cg_fd < 0))
-+		return;
-+
-+	skel = test_tcp_initrwnd__open_and_load();
-+	if (CHECK_FAIL(!skel)) {
-+		close(cg_fd);
-+		return;
-+	}
-+
-+	for (i = 0; i < 8; i++) {
-+		tcp_timestamps = !!(i & 0x1);
-+		tcp_window_scaling = !!(i & 0x2);
-+		tcp_workaround_signed_windows = !!(i & 0x4);
-+
-+		write_int_sysctl(PROC_TCP_TIMESTAMPS, tcp_timestamps);
-+		write_int_sysctl(PROC_TCP_WINDOW_SCALING, tcp_window_scaling);
-+		write_int_sysctl(PROC_TCP_WORKAROUND_SIGNED_WINDOWS,
-+				 tcp_workaround_signed_windows);
-+
-+		run_tests(cg_fd, skel);
-+	}
-+
-+	write_int_sysctl(PROC_TCP_TIMESTAMPS, saved_tcp_timestamps);
-+	write_int_sysctl(PROC_TCP_WINDOW_SCALING, saved_tcp_window_scaling);
-+	write_int_sysctl(PROC_TCP_WORKAROUND_SIGNED_WINDOWS,
-+			 saved_tcp_workaround_signed_windows);
-+
-+	test_tcp_initrwnd__destroy(skel);
-+
-+	close(cg_fd);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_tcp_initrwnd.c b/tools/testing/selftests/bpf/progs/test_tcp_initrwnd.c
-new file mode 100644
-index 000000000000..d532e9e2d344
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_tcp_initrwnd.c
-@@ -0,0 +1,30 @@
-+// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
-+// Copyright (c) 2022 Cloudflare
-+
-+#include <linux/bpf.h>
-+
-+#include <bpf/bpf_helpers.h>
-+
-+int initrwnd;
-+
-+SEC("sockops")
-+int bpf_testcb(struct bpf_sock_ops *skops)
-+{
-+	int rv = -1;
-+	int op;
-+
-+	op = (int)skops->op;
-+
-+	switch (op) {
-+	case BPF_SOCK_OPS_RWND_INIT:
-+		rv = initrwnd;
-+		break;
-+
-+	default:
-+		rv = -1;
-+	}
-+	skops->reply = rv;
-+	return 1;
-+}
-+
-+char _license[] SEC("license") = "Dual BSD/GPL";
+This version sees some minor improvements compared to v6, only
+focusing on the reviews I got.
+
+I also wanted to mention that I have started working on the userspace
+side to "see" how the BPF programs would look when automatically loaded.
+See the udev-hid-bpf project[0] for the code.
+
+The idea is to define the HID-BPF userspace programs so we can reuse
+the same semantic in the kernel.
+I am quite happy with the results: this looks pretty similar to a kernel
+module in term of design. The .bpf.c file is a standalone compilation
+unit, and instead of having a table of ids, the filename is used (based
+on the modalias). This allows to have a "probe" like function that we
+can run to decide if the program needs to be attached or not.
+
+All in all, the end result is that we can write the bpf program, compile
+it locally, and send the result to the user. The user needs to drop the
+.bpf.o in a local folder, and udev-hid-bpf will pick it up the next time
+the device is plugged in. No other operations is required.
+
+Next step will be to drop the same source file in the kernel source
+tree, and have some magic to automatically load the compiled program
+when the device is loaded.
+
+Cheers,
+Benjamin
+
+[0] https://gitlab.freedesktop.org/bentiss/udev-hid-bpf (warning: probably
+not the best rust code ever)
+
+Benjamin Tissoires (24):
+  selftests/bpf: fix config for CLS_BPF
+  bpf/verifier: allow kfunc to read user provided context
+  bpf/verifier: do not clear meta in check_mem_size
+  selftests/bpf: add test for accessing ctx from syscall program type
+  bpf/verifier: allow kfunc to return an allocated mem
+  selftests/bpf: Add tests for kfunc returning a memory pointer
+  bpf: prepare for more bpf syscall to be used from kernel and user
+    space.
+  libbpf: add map_get_fd_by_id and map_delete_elem in light skeleton
+  HID: core: store the unique system identifier in hid_device
+  HID: export hid_report_type to uapi
+  HID: convert defines of HID class requests into a proper enum
+  HID: Kconfig: split HID support and hid-core compilation
+  HID: initial BPF implementation
+  selftests/bpf: add tests for the HID-bpf initial implementation
+  HID: bpf: allocate data memory for device_event BPF programs
+  selftests/bpf/hid: add test to change the report size
+  HID: bpf: introduce hid_hw_request()
+  selftests/bpf: add tests for bpf_hid_hw_request
+  HID: bpf: allow to change the report descriptor
+  selftests/bpf: add report descriptor fixup tests
+  selftests/bpf: Add a test for BPF_F_INSERT_HEAD
+  samples/bpf: add new hid_mouse example
+  HID: bpf: add Surface Dial example
+  Documentation: add HID-BPF docs
+
+ Documentation/hid/hid-bpf.rst                 | 512 +++++++++
+ Documentation/hid/index.rst                   |   1 +
+ drivers/Makefile                              |   2 +-
+ drivers/hid/Kconfig                           |  20 +-
+ drivers/hid/Makefile                          |   2 +
+ drivers/hid/bpf/Kconfig                       |  18 +
+ drivers/hid/bpf/Makefile                      |  11 +
+ drivers/hid/bpf/entrypoints/Makefile          |  93 ++
+ drivers/hid/bpf/entrypoints/README            |   4 +
+ drivers/hid/bpf/entrypoints/entrypoints.bpf.c |  66 ++
+ .../hid/bpf/entrypoints/entrypoints.lskel.h   | 682 ++++++++++++
+ drivers/hid/bpf/hid_bpf_dispatch.c            | 553 ++++++++++
+ drivers/hid/bpf/hid_bpf_dispatch.h            |  28 +
+ drivers/hid/bpf/hid_bpf_jmp_table.c           | 577 ++++++++++
+ drivers/hid/hid-core.c                        |  49 +-
+ include/linux/bpf.h                           |   9 +-
+ include/linux/btf.h                           |  10 +
+ include/linux/hid.h                           |  38 +-
+ include/linux/hid_bpf.h                       | 148 +++
+ include/uapi/linux/hid.h                      |  26 +-
+ include/uapi/linux/hid_bpf.h                  |  25 +
+ kernel/bpf/btf.c                              |  91 +-
+ kernel/bpf/syscall.c                          |  10 +-
+ kernel/bpf/verifier.c                         |  65 +-
+ net/bpf/test_run.c                            |  23 +
+ samples/bpf/.gitignore                        |   2 +
+ samples/bpf/Makefile                          |  27 +
+ samples/bpf/hid_mouse.bpf.c                   | 134 +++
+ samples/bpf/hid_mouse.c                       | 147 +++
+ samples/bpf/hid_surface_dial.bpf.c            | 161 +++
+ samples/bpf/hid_surface_dial.c                | 212 ++++
+ tools/include/uapi/linux/hid.h                |  62 ++
+ tools/include/uapi/linux/hid_bpf.h            |  25 +
+ tools/lib/bpf/skel_internal.h                 |  23 +
+ tools/testing/selftests/bpf/Makefile          |   5 +-
+ tools/testing/selftests/bpf/config            |   5 +-
+ tools/testing/selftests/bpf/prog_tests/hid.c  | 990 ++++++++++++++++++
+ .../selftests/bpf/prog_tests/kfunc_call.c     |  76 ++
+ tools/testing/selftests/bpf/progs/hid.c       | 206 ++++
+ .../selftests/bpf/progs/kfunc_call_test.c     | 125 +++
+ 40 files changed, 5184 insertions(+), 79 deletions(-)
+ create mode 100644 Documentation/hid/hid-bpf.rst
+ create mode 100644 drivers/hid/bpf/Kconfig
+ create mode 100644 drivers/hid/bpf/Makefile
+ create mode 100644 drivers/hid/bpf/entrypoints/Makefile
+ create mode 100644 drivers/hid/bpf/entrypoints/README
+ create mode 100644 drivers/hid/bpf/entrypoints/entrypoints.bpf.c
+ create mode 100644 drivers/hid/bpf/entrypoints/entrypoints.lskel.h
+ create mode 100644 drivers/hid/bpf/hid_bpf_dispatch.c
+ create mode 100644 drivers/hid/bpf/hid_bpf_dispatch.h
+ create mode 100644 drivers/hid/bpf/hid_bpf_jmp_table.c
+ create mode 100644 include/linux/hid_bpf.h
+ create mode 100644 include/uapi/linux/hid_bpf.h
+ create mode 100644 samples/bpf/hid_mouse.bpf.c
+ create mode 100644 samples/bpf/hid_mouse.c
+ create mode 100644 samples/bpf/hid_surface_dial.bpf.c
+ create mode 100644 samples/bpf/hid_surface_dial.c
+ create mode 100644 tools/include/uapi/linux/hid.h
+ create mode 100644 tools/include/uapi/linux/hid_bpf.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/hid.c
+ create mode 100644 tools/testing/selftests/bpf/progs/hid.c
+
 -- 
-2.25.1
+2.36.1
 
