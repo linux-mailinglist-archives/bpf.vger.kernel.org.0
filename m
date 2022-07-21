@@ -2,177 +2,263 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FB5F57C2A7
-	for <lists+bpf@lfdr.de>; Thu, 21 Jul 2022 05:26:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B63357C2D1
+	for <lists+bpf@lfdr.de>; Thu, 21 Jul 2022 05:36:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbiGUD0B (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Jul 2022 23:26:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48704 "EHLO
+        id S230332AbiGUDgr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Jul 2022 23:36:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbiGUD0B (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Jul 2022 23:26:01 -0400
-X-Greylist: delayed 934 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 20 Jul 2022 20:25:58 PDT
-Received: from m13114.mail.163.com (m13114.mail.163.com [220.181.13.114])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D61A2B1F6;
-        Wed, 20 Jul 2022 20:25:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=uI0Gf
-        q38zZFPLYaDZUJSppt5MdVIwb3DAWhs92WcF70=; b=bpClueia+kFMdQ38hrYB/
-        gog51SE62ZWlY+3iRtVVZWqStr2ho05ANibDJyQTApqrcPEF0v5scm/Xfl1sv49h
-        lf7Yfg7BQvAesKxN08WIWzLys2M7HCkn5TXMj6esi7eCIkfqXgSCRRvJMUsQ1nK0
-        sFQq+4PQ81vdfTAZ1jpxiM=
-Received: from slark_xiao$163.com ( [112.97.57.47] ) by
- ajax-webmail-wmsvr114 (Coremail) ; Thu, 21 Jul 2022 11:08:22 +0800 (CST)
-X-Originating-IP: [112.97.57.47]
-Date:   Thu, 21 Jul 2022 11:08:22 +0800 (CST)
-From:   "Slark Xiao" <slark_xiao@163.com>
-To:     "Baoquan He" <bhe@redhat.com>
-Cc:     corbet@lwn.net, vgoyal@redhat.com, dyoung@redhat.com,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, william.gray@linaro.org,
-        dhowells@redhat.com, peterz@infradead.org, mingo@redhat.com,
-        will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
-        tglx@linutronix.de, bigeasy@linutronix.de,
-        kexec@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-cachefs@redhat.com
-Subject: Re:Re: [PATCH v2] docs: Fix typo in comment
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20220113(9671e152)
- Copyright (c) 2002-2022 www.mailtech.cn 163com
-In-Reply-To: <Yti+xEJIWeTSqD8n@MiWiFi-R3L-srv>
-References: <20220721015605.20651-1-slark_xiao@163.com>
- <Yti+xEJIWeTSqD8n@MiWiFi-R3L-srv>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=GBK
+        with ESMTP id S230428AbiGUDgn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Jul 2022 23:36:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 50E7778234
+        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 20:36:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1658374598;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XZs2MTtPJCgrF13MTLP6HwaK4P20s9o4BWWN0llGmLc=;
+        b=ZjjlklKOprzUcLcMwI0kdX0GfEwuN9oeyLBFpO2LkBoSK8xN372EoL5IFC2dtBQ7GOtyP2
+        X0bLDNh1W4VuejvPhBfPCPpOgYTkCXg0XzYWDA8+UwDK4uFVHR/7CkUJEshWeaFQeQtsxd
+        rmWRbAoZiEvGnQxjqCo1AuGZgTF/0aY=
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
+ [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-183-qBplsQ9-MESUv1V_nftLvg-1; Wed, 20 Jul 2022 23:36:36 -0400
+X-MC-Unique: qBplsQ9-MESUv1V_nftLvg-1
+Received: by mail-pg1-f198.google.com with SMTP id p35-20020a631e63000000b0041992866de0so273479pgm.19
+        for <bpf@vger.kernel.org>; Wed, 20 Jul 2022 20:36:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=XZs2MTtPJCgrF13MTLP6HwaK4P20s9o4BWWN0llGmLc=;
+        b=UmYxIrthp50nKSmx4Cql7fTlzUQHiVevHhjcXBPCXYiH5gwgobJ0OvnZK8WO1Btotj
+         wbWYxBUd+PygqLTrTVCxGUwIaKUoxtB1vPX30Ejv2tvQv1uSts70DtbWZaxcvyDGwRH3
+         vLWV8mU+dorQxDqlD2M+I0OdXE4rj6Yrm91ybtI6aTj4zFi8CvyvRQLaLnZJoDPGeWgJ
+         wzcne7jTw5lD3BnZHomnW3j+fwusUhHuPzP9eEOPKI/ncP0kdvOveXXfJPX2bmN1Ba0D
+         UDcveD6K6oFLEU6oNznIuuS+2kuRmwEhGdtgAA9R9cL9Izhn0ROdC/cA53qZe9jfD/h7
+         eX3w==
+X-Gm-Message-State: AJIora8tJb0YbCaTQ5ROkTkp0QqSb6QtYOiNv/hElBOQn5JQKpWNp1/d
+        GdFKE79ONBgE9wvKTeo4VhOndmXpZ5c3IRirY963RHTdBlvsaGTfHmBByb989mh+CNQSo8oN6kj
+        DlEnzHzQYvx8E
+X-Received: by 2002:a17:903:230c:b0:16c:4c65:18be with SMTP id d12-20020a170903230c00b0016c4c6518bemr41221931plh.138.1658374595111;
+        Wed, 20 Jul 2022 20:36:35 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1tr2BE9d26jAFZ7UzmaXmDCEYEs27OTIGhFU26HuMl2rkNob1MeYihMEZsIvqYHGU+JOzJneA==
+X-Received: by 2002:a17:903:230c:b0:16c:4c65:18be with SMTP id d12-20020a170903230c00b0016c4c6518bemr41221903plh.138.1658374594755;
+        Wed, 20 Jul 2022 20:36:34 -0700 (PDT)
+Received: from [10.72.12.47] ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id x22-20020aa79416000000b005289fad1bbesm424278pfo.94.2022.07.20.20.36.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Jul 2022 20:36:34 -0700 (PDT)
+Message-ID: <ba2ae3e4-a950-6b7f-8748-c45a685bb6b0@redhat.com>
+Date:   Thu, 21 Jul 2022 11:36:19 +0800
 MIME-Version: 1.0
-Message-ID: <25e36ec1.12ce.1821eba4cab.Coremail.slark_xiao@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: csGowAC379Imw9hiposjAA--.58861W
-X-CM-SenderInfo: xvod2y5b0lt0i6rwjhhfrp/1tbiRxdFZFc7YwAkRwABsc
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.11.0
+Subject: Re: [PATCH v12 01/40] virtio: record the maximum queue num supported
+ by the device.
+Content-Language: en-US
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        virtualization@lists.linux-foundation.org
+Cc:     Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Vadim Pasternak <vadimp@nvidia.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        linux-um@lists.infradead.org, netdev@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+        kvm@vger.kernel.org, bpf@vger.kernel.org,
+        kangjie.xu@linux.alibaba.com
+References: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
+ <20220720030436.79520-2-xuanzhuo@linux.alibaba.com>
+From:   Jason Wang <jasowang@redhat.com>
+In-Reply-To: <20220720030436.79520-2-xuanzhuo@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-CgoKCkF0IDIwMjItMDctMjEgMTA6NDk6NDAsICJCYW9xdWFuIEhlIiA8YmhlQHJlZGhhdC5jb20+
-IHdyb3RlOgo+T24gMDcvMjEvMjIgYXQgMDk6NTZhbSwgU2xhcmsgWGlhbyB3cm90ZToKPj4gRml4
-IHR5cG8gaW4gdGhlIGNvbW1lbnQKPgo+QmV0dGVyIHRlbGwgd2hhdCdzIGZpeGVkIHRvIHNhdmUg
-cmV2aWV3ZXJzJyB0aW1lOgo+Cj5GaXggdHlwbyAndGhlIHRoZScgaW4gc2V2ZXJhbCBwbGFjZXMg
-b2YgZG9jdW1lbnQuCj4KPk90aGVyIHRoZW4gdGhpcyBuaXRwaWNrLCBsb29rcyBnb29kIHRvIG1l
-Lgo+Cj5SZXZpZXdlZC1ieTogQmFvcXVhbiBIZSA8YmhlQHJlZGhhdC5jb20+Cj4KVGhhbmtzIGZv
-ciB5b3VyIGFkdmljZS4KSSB3aWxsIHVwZGF0ZSBpdCB0byAgb3RoZXIgY29tbWl0cyBsYXRlci4K
-Cj4+IAo+PiBTaWduZWQtb2ZmLWJ5OiBTbGFyayBYaWFvIDxzbGFya194aWFvQDE2My5jb20+Cj4+
-IC0tLQo+PiB2MjogQWRkIGFsbCAucnN0IGNoYW5nZXMgaW4gRG9jdW1lbnRzIGludG8gMSBzaW5n
-bGUgcGF0Y2gKPj4gLS0tCj4+ICBEb2N1bWVudGF0aW9uL2FkbWluLWd1aWRlL2tkdW1wL3ZtY29y
-ZWluZm8ucnN0ICAgIHwgMiArLQo+PiAgRG9jdW1lbnRhdGlvbi9icGYvbWFwX2Nncm91cF9zdG9y
-YWdlLnJzdCAgICAgICAgICB8IDQgKystLQo+PiAgRG9jdW1lbnRhdGlvbi9jb3JlLWFwaS9jcHVf
-aG90cGx1Zy5yc3QgICAgICAgICAgICB8IDIgKy0KPj4gIERvY3VtZW50YXRpb24vZHJpdmVyLWFw
-aS9pc2EucnN0ICAgICAgICAgICAgICAgICAgfCAyICstCj4+ICBEb2N1bWVudGF0aW9uL2ZpbGVz
-eXN0ZW1zL2NhY2hpbmcvYmFja2VuZC1hcGkucnN0IHwgMiArLQo+PiAgRG9jdW1lbnRhdGlvbi9s
-b2NraW5nL3NlcWxvY2sucnN0ICAgICAgICAgICAgICAgICB8IDIgKy0KPj4gIERvY3VtZW50YXRp
-b24vc3BoaW54L2Nkb21haW4ucHkgICAgICAgICAgICAgICAgICAgfCAyICstCj4+ICA3IGZpbGVz
-IGNoYW5nZWQsIDggaW5zZXJ0aW9ucygrKSwgOCBkZWxldGlvbnMoLSkKPj4gCj4+IGRpZmYgLS1n
-aXQgYS9Eb2N1bWVudGF0aW9uL2FkbWluLWd1aWRlL2tkdW1wL3ZtY29yZWluZm8ucnN0IGIvRG9j
-dW1lbnRhdGlvbi9hZG1pbi1ndWlkZS9rZHVtcC92bWNvcmVpbmZvLnJzdAo+PiBpbmRleCA4NDE5
-MDE5YjZhODguLjY3MjZmNDM5OTU4YyAxMDA2NDQKPj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9hZG1p
-bi1ndWlkZS9rZHVtcC92bWNvcmVpbmZvLnJzdAo+PiArKysgYi9Eb2N1bWVudGF0aW9uL2FkbWlu
-LWd1aWRlL2tkdW1wL3ZtY29yZWluZm8ucnN0Cj4+IEBAIC0yMDAsNyArMjAwLDcgQEAgcHJiCj4+
-ICAKPj4gIEEgcG9pbnRlciB0byB0aGUgcHJpbnRrIHJpbmdidWZmZXIgKHN0cnVjdCBwcmludGtf
-cmluZ2J1ZmZlcikuIFRoaXMKPj4gIG1heSBiZSBwb2ludGluZyB0byB0aGUgc3RhdGljIGJvb3Qg
-cmluZ2J1ZmZlciBvciB0aGUgZHluYW1pY2FsbHkKPj4gLWFsbG9jYXRlZCByaW5nYnVmZmVyLCBk
-ZXBlbmRpbmcgb24gd2hlbiB0aGUgdGhlIGNvcmUgZHVtcCBvY2N1cnJlZC4KPj4gK2FsbG9jYXRl
-ZCByaW5nYnVmZmVyLCBkZXBlbmRpbmcgb24gd2hlbiB0aGUgY29yZSBkdW1wIG9jY3VycmVkLgo+
-PiAgVXNlZCBieSB1c2VyLXNwYWNlIHRvb2xzIHRvIHJlYWQgdGhlIGFjdGl2ZSBrZXJuZWwgbG9n
-IGJ1ZmZlci4KPj4gIAo+PiAgcHJpbnRrX3JiX3N0YXRpYwo+PiBkaWZmIC0tZ2l0IGEvRG9jdW1l
-bnRhdGlvbi9icGYvbWFwX2Nncm91cF9zdG9yYWdlLnJzdCBiL0RvY3VtZW50YXRpb24vYnBmL21h
-cF9jZ3JvdXBfc3RvcmFnZS5yc3QKPj4gaW5kZXggY2FiOTU0MzAxN2JmLi44ZTVmZTUzMmMwN2Ug
-MTAwNjQ0Cj4+IC0tLSBhL0RvY3VtZW50YXRpb24vYnBmL21hcF9jZ3JvdXBfc3RvcmFnZS5yc3QK
-Pj4gKysrIGIvRG9jdW1lbnRhdGlvbi9icGYvbWFwX2Nncm91cF9zdG9yYWdlLnJzdAo+PiBAQCAt
-MzEsNyArMzEsNyBAQCBUaGUgbWFwIHVzZXMga2V5IG9mIHR5cGUgb2YgZWl0aGVyIGBgX191NjQg
-Y2dyb3VwX2lub2RlX2lkYGAgb3IKPj4gICAgICB9Owo+PiAgCj4+ICBgYGNncm91cF9pbm9kZV9p
-ZGBgIGlzIHRoZSBpbm9kZSBpZCBvZiB0aGUgY2dyb3VwIGRpcmVjdG9yeS4KPj4gLWBgYXR0YWNo
-X3R5cGVgYCBpcyB0aGUgdGhlIHByb2dyYW0ncyBhdHRhY2ggdHlwZS4KPj4gK2BgYXR0YWNoX3R5
-cGVgYCBpcyB0aGUgcHJvZ3JhbSdzIGF0dGFjaCB0eXBlLgo+PiAgCj4+ICBMaW51eCA1LjkgYWRk
-ZWQgc3VwcG9ydCBmb3IgdHlwZSBgYF9fdTY0IGNncm91cF9pbm9kZV9pZGBgIGFzIHRoZSBrZXkg
-dHlwZS4KPj4gIFdoZW4gdGhpcyBrZXkgdHlwZSBpcyB1c2VkLCB0aGVuIGFsbCBhdHRhY2ggdHlw
-ZXMgb2YgdGhlIHBhcnRpY3VsYXIgY2dyb3VwIGFuZAo+PiBAQCAtMTU1LDcgKzE1NSw3IEBAIEhv
-d2V2ZXIsIHRoZSBCUEYgcHJvZ3JhbSBjYW4gc3RpbGwgb25seSBhc3NvY2lhdGUgd2l0aCBvbmUg
-bWFwIG9mIGVhY2ggdHlwZQo+PiAgYGBCUEZfTUFQX1RZUEVfQ0dST1VQX1NUT1JBR0VgYCBvciBt
-b3JlIHRoYW4gb25lCj4+ICBgYEJQRl9NQVBfVFlQRV9QRVJDUFVfQ0dST1VQX1NUT1JBR0VgYC4K
-Pj4gIAo+PiAtSW4gYWxsIHZlcnNpb25zLCB1c2Vyc3BhY2UgbWF5IHVzZSB0aGUgdGhlIGF0dGFj
-aCBwYXJhbWV0ZXJzIG9mIGNncm91cCBhbmQKPj4gK0luIGFsbCB2ZXJzaW9ucywgdXNlcnNwYWNl
-IG1heSB1c2UgdGhlIGF0dGFjaCBwYXJhbWV0ZXJzIG9mIGNncm91cCBhbmQKPj4gIGF0dGFjaCB0
-eXBlIHBhaXIgaW4gYGBzdHJ1Y3QgYnBmX2Nncm91cF9zdG9yYWdlX2tleWBgIGFzIHRoZSBrZXkg
-dG8gdGhlIEJQRiBtYXAKPj4gIEFQSXMgdG8gcmVhZCBvciB1cGRhdGUgdGhlIHN0b3JhZ2UgZm9y
-IGEgZ2l2ZW4gYXR0YWNobWVudC4gRm9yIExpbnV4IDUuOQo+PiAgYXR0YWNoIHR5cGUgc2hhcmVk
-IHN0b3JhZ2VzLCBvbmx5IHRoZSBmaXJzdCB2YWx1ZSBpbiB0aGUgc3RydWN0LCBjZ3JvdXAgaW5v
-ZGUKPj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vY29yZS1hcGkvY3B1X2hvdHBsdWcucnN0
-IGIvRG9jdW1lbnRhdGlvbi9jb3JlLWFwaS9jcHVfaG90cGx1Zy5yc3QKPj4gaW5kZXggYzZmNGJh
-MmZiMzJkLi5mNzU3NzhkMzc0ODggMTAwNjQ0Cj4+IC0tLSBhL0RvY3VtZW50YXRpb24vY29yZS1h
-cGkvY3B1X2hvdHBsdWcucnN0Cj4+ICsrKyBiL0RvY3VtZW50YXRpb24vY29yZS1hcGkvY3B1X2hv
-dHBsdWcucnN0Cj4+IEBAIC01NjAsNyArNTYwLDcgQEAgYXZhaWxhYmxlOgo+PiAgICAqIGNwdWhw
-X3N0YXRlX3JlbW92ZV9pbnN0YW5jZShzdGF0ZSwgbm9kZSkKPj4gICAgKiBjcHVocF9zdGF0ZV9y
-ZW1vdmVfaW5zdGFuY2Vfbm9jYWxscyhzdGF0ZSwgbm9kZSkKPj4gIAo+PiAtVGhlIGFyZ3VtZW50
-cyBhcmUgdGhlIHNhbWUgYXMgZm9yIHRoZSB0aGUgY3B1aHBfc3RhdGVfYWRkX2luc3RhbmNlKigp
-Cj4+ICtUaGUgYXJndW1lbnRzIGFyZSB0aGUgc2FtZSBhcyBmb3IgdGhlIGNwdWhwX3N0YXRlX2Fk
-ZF9pbnN0YW5jZSooKQo+PiAgdmFyaWFudHMgYWJvdmUuCj4+ICAKPj4gIFRoZSBmdW5jdGlvbnMg
-ZGlmZmVyIGluIHRoZSB3YXkgaG93IHRoZSBpbnN0YWxsZWQgY2FsbGJhY2tzIGFyZSB0cmVhdGVk
-Ogo+PiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kcml2ZXItYXBpL2lzYS5yc3QgYi9Eb2N1
-bWVudGF0aW9uL2RyaXZlci1hcGkvaXNhLnJzdAo+PiBpbmRleCBkZWY0YTdiNjkwYjUuLjNkZjFi
-MTY5NjUyNCAxMDA2NDQKPj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kcml2ZXItYXBpL2lzYS5yc3QK
-Pj4gKysrIGIvRG9jdW1lbnRhdGlvbi9kcml2ZXItYXBpL2lzYS5yc3QKPj4gQEAgLTEwMCw3ICsx
-MDAsNyBAQCBJIGJlbGlldmUgcGxhdGZvcm1fZGF0YSBpcyBhdmFpbGFibGUgZm9yIHRoaXMsIGJ1
-dCBpZiByYXRoZXIgbm90LCBtb3ZpbmcKPj4gIHRoZSBpc2FfZHJpdmVyIHBvaW50ZXIgdG8gdGhl
-IHByaXZhdGUgc3RydWN0IGlzYV9kZXYgaXMgb2Zjb3Vyc2UgZmluZSBhcwo+PiAgd2VsbC4KPj4g
-IAo+PiAtVGhlbiwgaWYgdGhlIHRoZSBkcml2ZXIgZGlkIG5vdCBwcm92aWRlIGEgLm1hdGNoLCBp
-dCBtYXRjaGVzLiBJZiBpdCBkaWQsCj4+ICtUaGVuLCBpZiB0aGUgZHJpdmVyIGRpZCBub3QgcHJv
-dmlkZSBhIC5tYXRjaCwgaXQgbWF0Y2hlcy4gSWYgaXQgZGlkLAo+PiAgdGhlIGRyaXZlciBtYXRj
-aCgpIG1ldGhvZCBpcyBjYWxsZWQgdG8gZGV0ZXJtaW5lIGEgbWF0Y2guCj4+ICAKPj4gIElmIGl0
-IGRpZCAqKm5vdCoqIG1hdGNoLCBkZXYtPnBsYXRmb3JtX2RhdGEgaXMgcmVzZXQgdG8gaW5kaWNh
-dGUgdGhpcyB0bwo+PiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9maWxlc3lzdGVtcy9jYWNo
-aW5nL2JhY2tlbmQtYXBpLnJzdCBiL0RvY3VtZW50YXRpb24vZmlsZXN5c3RlbXMvY2FjaGluZy9i
-YWNrZW5kLWFwaS5yc3QKPj4gaW5kZXggZDc1MDdiZWNmNjc0Li4zYTE5OWZjNTA4MjggMTAwNjQ0
-Cj4+IC0tLSBhL0RvY3VtZW50YXRpb24vZmlsZXN5c3RlbXMvY2FjaGluZy9iYWNrZW5kLWFwaS5y
-c3QKPj4gKysrIGIvRG9jdW1lbnRhdGlvbi9maWxlc3lzdGVtcy9jYWNoaW5nL2JhY2tlbmQtYXBp
-LnJzdAo+PiBAQCAtMTIyLDcgKzEyMiw3IEBAIHZvbHVtZXMsIGNhbGxpbmc6Ogo+PiAgdG8gdGVs
-bCBmc2NhY2hlIHRoYXQgYSB2b2x1bWUgaGFzIGJlZW4gd2l0aGRyYXduLiAgVGhpcyB3YWl0cyBm
-b3IgYWxsCj4+ICBvdXRzdGFuZGluZyBhY2Nlc3NlcyBvbiB0aGUgdm9sdW1lIHRvIGNvbXBsZXRl
-IGJlZm9yZSByZXR1cm5pbmcuCj4+ICAKPj4gLVdoZW4gdGhlIHRoZSBjYWNoZSBpcyBjb21wbGV0
-ZWx5IHdpdGhkcmF3biwgZnNjYWNoZSBzaG91bGQgYmUgbm90aWZpZWQgYnkKPj4gK1doZW4gdGhl
-IGNhY2hlIGlzIGNvbXBsZXRlbHkgd2l0aGRyYXduLCBmc2NhY2hlIHNob3VsZCBiZSBub3RpZmll
-ZCBieQo+PiAgY2FsbGluZzo6Cj4+ICAKPj4gIAl2b2lkIGZzY2FjaGVfcmVsaW5xdWlzaF9jYWNo
-ZShzdHJ1Y3QgZnNjYWNoZV9jYWNoZSAqY2FjaGUpOwo+PiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRh
-dGlvbi9sb2NraW5nL3NlcWxvY2sucnN0IGIvRG9jdW1lbnRhdGlvbi9sb2NraW5nL3NlcWxvY2su
-cnN0Cj4+IGluZGV4IDY0NDA1ZTVkYTYzZS4uYmZkYTFhNWZlY2FkIDEwMDY0NAo+PiAtLS0gYS9E
-b2N1bWVudGF0aW9uL2xvY2tpbmcvc2VxbG9jay5yc3QKPj4gKysrIGIvRG9jdW1lbnRhdGlvbi9s
-b2NraW5nL3NlcWxvY2sucnN0Cj4+IEBAIC0zOSw3ICszOSw3IEBAIGFzIHRoZSB3cml0ZXIgY2Fu
-IGludmFsaWRhdGUgYSBwb2ludGVyIHRoYXQgdGhlIHJlYWRlciBpcyBmb2xsb3dpbmcuCj4+ICBT
-ZXF1ZW5jZSBjb3VudGVycyAoYGBzZXFjb3VudF90YGApCj4+ICA9PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09Cj4+ICAKPj4gLVRoaXMgaXMgdGhlIHRoZSByYXcgY291bnRpbmcgbWVj
-aGFuaXNtLCB3aGljaCBkb2VzIG5vdCBwcm90ZWN0IGFnYWluc3QKPj4gK1RoaXMgaXMgdGhlIHJh
-dyBjb3VudGluZyBtZWNoYW5pc20sIHdoaWNoIGRvZXMgbm90IHByb3RlY3QgYWdhaW5zdAo+PiAg
-bXVsdGlwbGUgd3JpdGVycy4gIFdyaXRlIHNpZGUgY3JpdGljYWwgc2VjdGlvbnMgbXVzdCB0aHVz
-IGJlIHNlcmlhbGl6ZWQKPj4gIGJ5IGFuIGV4dGVybmFsIGxvY2suCj4+ICAKPj4gZGlmZiAtLWdp
-dCBhL0RvY3VtZW50YXRpb24vc3BoaW54L2Nkb21haW4ucHkgYi9Eb2N1bWVudGF0aW9uL3NwaGlu
-eC9jZG9tYWluLnB5Cj4+IGluZGV4IGNhOGFjOWU1OWRlZC4uYTdkMTg2NmU3MmZmIDEwMDY0NAo+
-PiAtLS0gYS9Eb2N1bWVudGF0aW9uL3NwaGlueC9jZG9tYWluLnB5Cj4+ICsrKyBiL0RvY3VtZW50
-YXRpb24vc3BoaW54L2Nkb21haW4ucHkKPj4gQEAgLTE1MSw3ICsxNTEsNyBAQCBjbGFzcyBDT2Jq
-ZWN0KEJhc2VfQ09iamVjdCk6Cj4+ICAgICAgZGVmIGhhbmRsZV9mdW5jX2xpa2VfbWFjcm8oc2Vs
-Ziwgc2lnLCBzaWdub2RlKToKPj4gICAgICAgICAgdSIiIkhhbmRsZXMgc2lnbmF0dXJlcyBvZiBm
-dW5jdGlvbi1saWtlIG1hY3Jvcy4KPj4gIAo+PiAtICAgICAgICBJZiB0aGUgb2JqdHlwZSBpcyAn
-ZnVuY3Rpb24nIGFuZCB0aGUgdGhlIHNpZ25hdHVyZSBgYHNpZ2BgIGlzIGEKPj4gKyAgICAgICAg
-SWYgdGhlIG9ianR5cGUgaXMgJ2Z1bmN0aW9uJyBhbmQgdGhlIHNpZ25hdHVyZSBgYHNpZ2BgIGlz
-IGEKPj4gICAgICAgICAgZnVuY3Rpb24tbGlrZSBtYWNybywgdGhlIG5hbWUgb2YgdGhlIG1hY3Jv
-IGlzIHJldHVybmVkLiBPdGhlcndpc2UKPj4gICAgICAgICAgYGBGYWxzZWBgIGlzIHJldHVybmVk
-LiAgIiIiCj4+ICAKPj4gLS0gCj4+IDIuMjUuMQo+PiAKPj4gCj4+IF9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+IGtleGVjIG1haWxpbmcgbGlzdAo+PiBr
-ZXhlY0BsaXN0cy5pbmZyYWRlYWQub3JnCj4+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8va2V4ZWMKPj4gCg==
+
+在 2022/7/20 11:03, Xuan Zhuo 写道:
+> virtio-net can display the maximum (supported by hardware) ring size in
+> ethtool -g eth0.
+>
+> When the subsequent patch implements vring reset, it can judge whether
+> the ring size passed by the driver is legal based on this.
+>
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+
+> ---
+>   arch/um/drivers/virtio_uml.c             | 1 +
+>   drivers/platform/mellanox/mlxbf-tmfifo.c | 2 ++
+>   drivers/remoteproc/remoteproc_virtio.c   | 2 ++
+>   drivers/s390/virtio/virtio_ccw.c         | 3 +++
+>   drivers/virtio/virtio_mmio.c             | 2 ++
+>   drivers/virtio/virtio_pci_legacy.c       | 2 ++
+>   drivers/virtio/virtio_pci_modern.c       | 2 ++
+>   drivers/virtio/virtio_vdpa.c             | 2 ++
+>   include/linux/virtio.h                   | 2 ++
+>   9 files changed, 18 insertions(+)
+>
+> diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
+> index 82ff3785bf69..e719af8bdf56 100644
+> --- a/arch/um/drivers/virtio_uml.c
+> +++ b/arch/um/drivers/virtio_uml.c
+> @@ -958,6 +958,7 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
+>   		goto error_create;
+>   	}
+>   	vq->priv = info;
+> +	vq->num_max = num;
+>   	num = virtqueue_get_vring_size(vq);
+>   
+>   	if (vu_dev->protocol_features &
+> diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
+> index 38800e86ed8a..1ae3c56b66b0 100644
+> --- a/drivers/platform/mellanox/mlxbf-tmfifo.c
+> +++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
+> @@ -959,6 +959,8 @@ static int mlxbf_tmfifo_virtio_find_vqs(struct virtio_device *vdev,
+>   			goto error;
+>   		}
+>   
+> +		vq->num_max = vring->num;
+> +
+>   		vqs[i] = vq;
+>   		vring->vq = vq;
+>   		vq->priv = vring;
+> diff --git a/drivers/remoteproc/remoteproc_virtio.c b/drivers/remoteproc/remoteproc_virtio.c
+> index d43d74733f0a..0f7706e23eb9 100644
+> --- a/drivers/remoteproc/remoteproc_virtio.c
+> +++ b/drivers/remoteproc/remoteproc_virtio.c
+> @@ -125,6 +125,8 @@ static struct virtqueue *rp_find_vq(struct virtio_device *vdev,
+>   		return ERR_PTR(-ENOMEM);
+>   	}
+>   
+> +	vq->num_max = num;
+> +
+>   	rvring->vq = vq;
+>   	vq->priv = rvring;
+>   
+> diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/virtio_ccw.c
+> index 161d3b141f0d..6b86d0280d6b 100644
+> --- a/drivers/s390/virtio/virtio_ccw.c
+> +++ b/drivers/s390/virtio/virtio_ccw.c
+> @@ -530,6 +530,9 @@ static struct virtqueue *virtio_ccw_setup_vq(struct virtio_device *vdev,
+>   		err = -ENOMEM;
+>   		goto out_err;
+>   	}
+> +
+> +	vq->num_max = info->num;
+> +
+>   	/* it may have been reduced */
+>   	info->num = virtqueue_get_vring_size(vq);
+>   
+> diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
+> index 083ff1eb743d..a20d5a6b5819 100644
+> --- a/drivers/virtio/virtio_mmio.c
+> +++ b/drivers/virtio/virtio_mmio.c
+> @@ -403,6 +403,8 @@ static struct virtqueue *vm_setup_vq(struct virtio_device *vdev, unsigned int in
+>   		goto error_new_virtqueue;
+>   	}
+>   
+> +	vq->num_max = num;
+> +
+>   	/* Activate the queue */
+>   	writel(virtqueue_get_vring_size(vq), vm_dev->base + VIRTIO_MMIO_QUEUE_NUM);
+>   	if (vm_dev->version == 1) {
+> diff --git a/drivers/virtio/virtio_pci_legacy.c b/drivers/virtio/virtio_pci_legacy.c
+> index a5e5721145c7..2257f1b3d8ae 100644
+> --- a/drivers/virtio/virtio_pci_legacy.c
+> +++ b/drivers/virtio/virtio_pci_legacy.c
+> @@ -135,6 +135,8 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
+>   	if (!vq)
+>   		return ERR_PTR(-ENOMEM);
+>   
+> +	vq->num_max = num;
+> +
+>   	q_pfn = virtqueue_get_desc_addr(vq) >> VIRTIO_PCI_QUEUE_ADDR_SHIFT;
+>   	if (q_pfn >> 32) {
+>   		dev_err(&vp_dev->pci_dev->dev,
+> diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
+> index 623906b4996c..e7e0b8c850f6 100644
+> --- a/drivers/virtio/virtio_pci_modern.c
+> +++ b/drivers/virtio/virtio_pci_modern.c
+> @@ -218,6 +218,8 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
+>   	if (!vq)
+>   		return ERR_PTR(-ENOMEM);
+>   
+> +	vq->num_max = num;
+> +
+>   	/* activate the queue */
+>   	vp_modern_set_queue_size(mdev, index, virtqueue_get_vring_size(vq));
+>   	vp_modern_queue_address(mdev, index, virtqueue_get_desc_addr(vq),
+> diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
+> index c40f7deb6b5a..9670cc79371d 100644
+> --- a/drivers/virtio/virtio_vdpa.c
+> +++ b/drivers/virtio/virtio_vdpa.c
+> @@ -183,6 +183,8 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
+>   		goto error_new_virtqueue;
+>   	}
+>   
+> +	vq->num_max = max_num;
+> +
+>   	/* Setup virtqueue callback */
+>   	cb.callback = callback ? virtio_vdpa_virtqueue_cb : NULL;
+>   	cb.private = info;
+> diff --git a/include/linux/virtio.h b/include/linux/virtio.h
+> index d8fdf170637c..129bde7521e3 100644
+> --- a/include/linux/virtio.h
+> +++ b/include/linux/virtio.h
+> @@ -19,6 +19,7 @@
+>    * @priv: a pointer for the virtqueue implementation to use.
+>    * @index: the zero-based ordinal number for this queue.
+>    * @num_free: number of elements we expect to be able to fit.
+> + * @num_max: the maximum number of elements supported by the device.
+>    *
+>    * A note on @num_free: with indirect buffers, each buffer needs one
+>    * element in the queue, otherwise a buffer will need one element per
+> @@ -31,6 +32,7 @@ struct virtqueue {
+>   	struct virtio_device *vdev;
+>   	unsigned int index;
+>   	unsigned int num_free;
+> +	unsigned int num_max;
+>   	void *priv;
+>   };
+>   
+
