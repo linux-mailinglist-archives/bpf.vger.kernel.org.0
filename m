@@ -2,87 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DFD057D590
-	for <lists+bpf@lfdr.de>; Thu, 21 Jul 2022 23:07:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 466C157D6D3
+	for <lists+bpf@lfdr.de>; Fri, 22 Jul 2022 00:22:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233441AbiGUVHu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jul 2022 17:07:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57520 "EHLO
+        id S234123AbiGUWWL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jul 2022 18:22:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233300AbiGUVHu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jul 2022 17:07:50 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E2490D89
-        for <bpf@vger.kernel.org>; Thu, 21 Jul 2022 14:07:47 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id h9so4019753wrm.0
-        for <bpf@vger.kernel.org>; Thu, 21 Jul 2022 14:07:47 -0700 (PDT)
+        with ESMTP id S234120AbiGUWWK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Jul 2022 18:22:10 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A3B818B2C
+        for <bpf@vger.kernel.org>; Thu, 21 Jul 2022 15:22:06 -0700 (PDT)
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26LJg6tv015365;
+        Thu, 21 Jul 2022 22:21:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : references : date : in-reply-to : message-id : content-type :
+ mime-version; s=corp-2022-7-12;
+ bh=yiOwWAJgK6oC75JOAOrL7gdtAhEmWRJZQDxyVTpc+Ns=;
+ b=MyNdXqqcq5+h/6638d5kKUcEfYvfZ/H4cYCnSg5gKYk8irXhZRf2DG5Mqvf69gbe5ayc
+ /MMwLe+j6XOQsoHXy0IsBzUq6or5pP/ZFTejd62MVqzbLqQkOmh6wlQJnv364x7If2HA
+ TBNVpOY9dAxmALQiuCypfSsY4dR+G1DHHNh3pizN4rojXp5R0FlKAzooRgS3HwTtdEqb
+ e9v304NQkqpR5QnarHf8KUK6RyWDvNlXVpZPuAh0KmjtBQDiQrMg5N/OWQ5kpjBdTpMO
+ BPZBdUmHWhf5H6HqL6k25p9qYTs8Mhv0Npra/8U3UeC6uVTcKk+ymxa7C4fNpV66dWVq qg== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3hbn7admuj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Jul 2022 22:21:59 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.5/8.17.1.5) with ESMTP id 26LJqbIr002810;
+        Thu, 21 Jul 2022 22:21:58 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2107.outbound.protection.outlook.com [104.47.70.107])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3hc1mdpg10-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 21 Jul 2022 22:21:58 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jiDiR2eb0le6lrXuXLxoSWbM4GhNoMeiADLedhQ8ey08IEisaqnfnOVLJyjECXsjubNa1lIAgBK9y6OejNMMJX2LicIOYgjBeIuO0ralpVl0rzcJMsQf55Oc2bEJ+Ohj63TaQD8BNt/3xv8zsA8BYOoLO5ekqpxTfaJkpWXGOO7AfFcfslCISyGqSAvhmoG3FSyLc6HpfEd2F0zBGoTZxG/FTQpjxjyf5huMu+9AbPDvUBEBid4mEuhcEzFytgOYRUVemUgwiOyu8taELKH4E9lkZcis8M6qOE+7d8QYGnr56pFrPuBiRIf3MljcVHaJBAzXsnGykqglTSVxHJTGvQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yiOwWAJgK6oC75JOAOrL7gdtAhEmWRJZQDxyVTpc+Ns=;
+ b=HHIbvNzsBKRT1YFopqBymobuVc6MVih+Ou53bw8Tye5bKaIjkvn1SfvL1NNUj9mLH9INS/K0jMilAn2gFCLn4IQGsXrLlYz7q/xSPcqNxLyAWZJT5LKDwPxOFsFRcuexIx7flKro8thL1fzSID8omfwfhn4JlGCE7oWlco8KbojdJWcQDXMUH5ngGYVjQGZNz4PoBdJ/Br93/mJIw9b2tMPxtrwbocKLvBSN/C9bAHqZvJPL3i6cVQKtBFV0Yl4IUM8V7BPo5rn9VacFKY271/Cj3gFTNwQlvq+OkcnCWPRlOmIzVvp2hxsbKAv4S3lLrtgx1xr638W4wHYBGLlgfQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pMfZCsY+RirO5OLnqzh+GY3ZBlu6lJvxWrW4CDlXPAs=;
-        b=XjvYjUjjL+6A061o5dJ8vErORcpCKYEqoHwslZ7YKKEe5bkK4+qfGvEle7o1HUXbUd
-         8Wd46M63TQR2S13ZsEhCSNAyMYgkF5PFSoa0xRLZv89h2JN5K258BjOxUex9IfYmqF0p
-         EBfhbqERQD71sHnE9H3u9lddY+AO4wuatlTdEyDXBPsZ+JwJPJVeNH0IBr7j4n9fwyA+
-         bJkop7tATRkLri7ePJakpqSTwf6T3sSut852KbyJwONkle0EAxpdtoit8x2oLxMnt7/A
-         8ogXE3oNUfpexLa4nQcjkt8PesJwLtUZ3Ng+hYKoxPWJXoAZ1slz8l1+DTy/McV2CCyb
-         KB6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pMfZCsY+RirO5OLnqzh+GY3ZBlu6lJvxWrW4CDlXPAs=;
-        b=h9S3n8bMkrVYCkI2yR64SAzBSChMh8i4IWMZSO7c4lETMyuaGvp61B0FH4STjWs4BH
-         s93kCWYWV0I94Fcg2h1Zno3KgVszQZ2dyaEvRE88LwovMq9mSCV3g3BOX8eFgyOjQdtx
-         qNBu7m0LmQzpDYKg/CTu3x01C7xnidDnk+ix9+W8sQjkxdVzjMRX1RAz8UNQhsdL289E
-         3CtTZI0PLanKeWRZVLNNcc/3oWW/AG5V0MCVtsCmgzh9yYFYYjQ8NlaHoYUgyuDvlJIe
-         9FojdQX7fAYbLpnaBFkjIAUQm3ctXHtxrnI1qQ/grIt9kVrfTwz1WaOyWFKWarcOK/r8
-         cJVw==
-X-Gm-Message-State: AJIora+WJrNN3VjILQLDMyJfDuCACZhJJKRgHMiNSsv3q1vs7t46XOTJ
-        B36sIKhRJtWAHiLEZqS0YF98hK9hJuEhQBihV8YObw==
-X-Google-Smtp-Source: AGRyM1tClbn2v/bHjA8XFJi16CBAEqayN61ki+fVIPWRqBXqSip7rGr8s5UYalBAP69QcGbsI3p/a06J4b+Sc3WZiN8=
-X-Received: by 2002:a5d:64a3:0:b0:21d:adaa:ce4c with SMTP id
- m3-20020a5d64a3000000b0021dadaace4cmr197053wrp.161.1658437665909; Thu, 21 Jul
- 2022 14:07:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220709000439.243271-1-yosryahmed@google.com>
- <20220709000439.243271-5-yosryahmed@google.com> <370cb480-a427-4d93-37d9-3c6acd73b967@fb.com>
- <a6d048b8-d017-ea7e-36f0-1c4f88fc4399@fb.com> <CA+khW7gmVmXMg4YP4fxTtgqNyAr4mQqnXbP=z0nUeQ8=hfGC3g@mail.gmail.com>
- <2a26b45d-6fab-b2a2-786e-5cb4572219ea@fb.com> <CA+khW7jp+0AadVagqCcV8ELNRphP47vJ6=jGyuMJGnTtYynF+Q@mail.gmail.com>
- <3f3ffe0e-d2ac-c868-a1bf-cdf1b58fd666@fb.com> <CA+khW7ihQmjwGuVPCEuZ5EXMiMWWaxiAatmjpo1xiaWokUNRGw@mail.gmail.com>
- <6935de9f-49da-7703-55ae-241a8b838c6c@fb.com>
-In-Reply-To: <6935de9f-49da-7703-55ae-241a8b838c6c@fb.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Thu, 21 Jul 2022 14:07:34 -0700
-Message-ID: <CA+khW7iYcXMEnSaSjRtSeesTmPyDDngp2STb-aLg_OoKE=9hLA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 4/8] bpf: Introduce cgroup iter
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yiOwWAJgK6oC75JOAOrL7gdtAhEmWRJZQDxyVTpc+Ns=;
+ b=DfQJYkyRIFFdZ99/CA5CiczcEBVc/z37yZ6hd//To2k4H/3KC/NiX9lVKDqgWM58iPpGXwDb2UwUEu4iMTKmtSIdFR2EHoVXCCKWgyc1RUnUQRvtWvYK/T62blLgJ9eq7qrVfevpQKVDHh2/nmiQaEED0NZmoSRB/N4SHQQ/xv0=
+Received: from BYAPR10MB2888.namprd10.prod.outlook.com (2603:10b6:a03:88::32)
+ by BN6PR1001MB2099.namprd10.prod.outlook.com (2603:10b6:405:2c::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5458.18; Thu, 21 Jul
+ 2022 22:21:55 +0000
+Received: from BYAPR10MB2888.namprd10.prod.outlook.com
+ ([fe80::b5ee:262a:b151:2fdd]) by BYAPR10MB2888.namprd10.prod.outlook.com
+ ([fe80::b5ee:262a:b151:2fdd%4]) with mapi id 15.20.5438.024; Thu, 21 Jul 2022
+ 22:21:55 +0000
+From:   "Jose E. Marchesi" <jose.marchesi@oracle.com>
 To:     Yonghong Song <yhs@fb.com>
-Cc:     Yosry Ahmed <yosryahmed@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+Cc:     Lorenz Bauer <oss@lmb.io>, andrii@kernel.org, bpf@vger.kernel.org,
+        david.faust@oracle.com
+Subject: Re: Signedness of char in BTF
+References: <3fcf2cb7-8d27-4649-b943-7c58e838664a@www.fastmail.com>
+        <87wnc6bjny.fsf@oracle.com>
+        <e636b480-8d53-a628-bacf-bac2b1506a47@fb.com>
+Date:   Fri, 22 Jul 2022 00:21:40 +0200
+In-Reply-To: <e636b480-8d53-a628-bacf-bac2b1506a47@fb.com> (Yonghong Song's
+        message of "Thu, 21 Jul 2022 11:44:33 -0700")
+Message-ID: <875yjqayyz.fsf@oracle.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+Content-Type: text/plain
+X-ClientProxiedBy: AM0PR02CA0034.eurprd02.prod.outlook.com
+ (2603:10a6:208:3e::47) To BYAPR10MB2888.namprd10.prod.outlook.com
+ (2603:10b6:a03:88::32)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1ec37290-cc30-4414-aec5-08da6b676b75
+X-MS-TrafficTypeDiagnostic: BN6PR1001MB2099:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jAYE45xT2FiJxMUUq8/DVhUyOOW7ZSkWkiOL5E/w86iWpxUV3Fcg6bXw5t9V0qLdwmz4lrM6UwHJGoaEiQSwBuD+XOg2D2j5bP+dyxrMRK9iEsq/OgArXxM2g+5lZk+oaLWh5L/sAEB7l8xLrxHpf7A+VgfyrIofTWExyd7EGrCbO6rJ1cW0WQNWlpNEafTRQ3LmxHBCLXSzK8zKguOznRV1t1qopE5LMpzJ63qCOeq5I8r4kMPhIqJvhpsB0vqgwI2Ey9fa9jIjzZQ38vNuRjmCRKe5Tns64oOzqYqtlu4iWHSrODyp3KxszZzWTJJIRzZ7QyT+A7VZyeNX2Q7IgOvicjyf2M0GbzN+zdwJ9Dw9+JpfGmqavC4HuukxB58yt5Puu3SyFVXp7DfMnmQQ7ETy6MOaIbFyjD95NrQM4Wm2ernEPRqJKAkIGjIFpdp3kolp2dHuTvqgXDUUo1hcAtBcgmaWRK2YZX7pY9wMdcrBXRGW9wDbRTNWfizcdWIF5f4C17lWef9VuYrh0ACpm+zHAcrvtOYNfBvzeZXDNmUaZ64nVmDn1KpLev06ryxPtg72AbnTZl0UusebQidtNivzrxJNJMmAnJgCzud+Vj6lzaNMjkke93nqLcfr8NfcDqMbbMWIaYZNarg8Rawj30YB4jcx4DRbRdnUyWfht009AR+2zTJAU4SsTX0jaVwDySX0HwtPO4tZD2ukYHLjXymBV78RU1eRnaSRlXwLGHnf1ttBFIKXeJ3y7Je0Pem0xry0RpDr1EEJt7nTCz2JHB0h0HcAOUXXuRXIZzKdZd2AptzQh7hvCLwC2GEEB3yGtNFDmHHOU54FheuT6vWAcr04gPnAsNDKesAdzBTJImJ5GLTnnRmCgm6aZbkaPsSn
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2888.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(376002)(366004)(39860400002)(346002)(136003)(396003)(2616005)(38350700002)(66946007)(38100700002)(4326008)(41300700001)(66556008)(52116002)(66476007)(6506007)(8676002)(6486002)(966005)(86362001)(36756003)(53546011)(478600001)(6666004)(107886003)(5660300002)(6512007)(2906002)(26005)(6916009)(186003)(316002)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?VjWnZKL1vTUPGjEM5gTa77j8c8VMlT4ew3H0Ofxv80ZZAPbVACXHXhWjgxSD?=
+ =?us-ascii?Q?vlzBrL6YQ4Q8Kf/hMM4LuJQ1neI0elNnRfcdFIEMTxkqR1f/ljnWTK+kz6FZ?=
+ =?us-ascii?Q?G+FhsKb9XPGj/rLATo3HAVJRfHSgZEo1QUxaGYe2zgWXzOya16Nld8XcHQjr?=
+ =?us-ascii?Q?PmePf+7Quip1vtNqPCfy2gqo4XACRWy58BRY3/VpqCTwo8OsRg5+Lr0WTY++?=
+ =?us-ascii?Q?xB6uEtCjdMhBGCzZHgSkLxKlYUC69EzHbR08V2wDN7fO+3arZmzebamAxNsE?=
+ =?us-ascii?Q?qDx9iNMqK0DLQ95lecanG3zGzobocAJHsVhcZiUvLN9BZ7EaOJPu+gXHhRam?=
+ =?us-ascii?Q?zLj+zIWov8n4eofObGjaCd2QpNsiXhYeqyJsbninWH0dmYnccpCSKwC2+Z8y?=
+ =?us-ascii?Q?3zYdMfkEjrIqO2QK/LF9mWzIKViE8SPEHPe3bnByR1CllI7WjSe5CQK5KEig?=
+ =?us-ascii?Q?0XxCobIPRR88jOTf9XvSM8D5NnTp5kGnemr0C5cSrle2siHqeT3ENtY+KH0c?=
+ =?us-ascii?Q?8V/nIGiI2oyaiWfgHhJCX3EIYJOLoZGwLYYHt3N69Q86ku9NDsfINtuPREof?=
+ =?us-ascii?Q?7IxSF2u10atIEjKMqaFPx2X/nCcw0Iupl/TXYMa2S6OyZbigxCHXWFH05ncZ?=
+ =?us-ascii?Q?EJuqoQbC/CbHPTd0ObkvJBrsPhwXUzlYfLIBOgJTQipSBSWZ1zSTZZoeCn71?=
+ =?us-ascii?Q?JaXu9eZIARZpgitq/ktb57Ws9bOOzhy5ET7J7SpIcrGqF9S0IOt252cwDeKA?=
+ =?us-ascii?Q?AisP9Z6zt6OoxcdNxV1eG8e1pL6ubZbLMZg2CdtfhXQ4I3psHU4F/rLnI30P?=
+ =?us-ascii?Q?VlCdmXkjDc6Na4qZUoap1GFyynJy/JhtlmVTmRLKve4wKamN1xvbOaktUK+b?=
+ =?us-ascii?Q?g0XoZyIu5qOwCU2iCMixtgZOKH+IosGIDRDtMt0bq74YPEyKY9zdZ1RFch4y?=
+ =?us-ascii?Q?Q42gRCDibpzUxXxjfUMNCL7T6eYL2H4qoLU4GXLn9MYWnOlzjY+IPM9iUI2s?=
+ =?us-ascii?Q?Mw0s+aJjLJogtJ4iVco0q1MM6QEHgk0NaiGiBpXu3AeETcmtCbgi48hi9sM8?=
+ =?us-ascii?Q?x/WufoTjLNlYsy2pKMm/g/sX72UgAWbRYqf7uZAkpr+uR3dJhry/WY3s7HWs?=
+ =?us-ascii?Q?yUzlYh6GY4K++U8vtr+m5B6M7Ug2Xf+kpqh5FrnGfOPdOvvcrfJmqWkEnA1f?=
+ =?us-ascii?Q?mSAkQGj35VXuJnWMVS02KcLpoVEsUCg2iLOzPiEimZNlBL531EHSFmE049nr?=
+ =?us-ascii?Q?UZNJzQGUftuIUwcPSbz6Qxrxy0UzhFi/Z362gZ4UKnQ4H4NBCuxt1noChnhO?=
+ =?us-ascii?Q?VbBp8HZEA4vRAxGjiGUDmwqqB6i9MmysNbEeScTz4rZCucW2uIuE1mjmvoqs?=
+ =?us-ascii?Q?LxR5c35B/HaovblD/GmNIqXBafQrnVOo4VoLQCuiMAkHaEcR9Rq0tY7yvxj+?=
+ =?us-ascii?Q?UG8fq9gt4CYZBSnurJq6ax77t/x+aJJE99uGSGP5b7XwRQcIwtM7y/C6hco8?=
+ =?us-ascii?Q?IzSB1rNDMT710rbjXkw2o95XfE8UJT80dsNmTS3vDY6xGJYqEjKeFVZk7Mqn?=
+ =?us-ascii?Q?uLrmS7GXJHcxTWhzNfLcUIZSSbLSPp2+g2twq1CcJ562kljhG0NEjDnxVKio?=
+ =?us-ascii?Q?bQ=3D=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1ec37290-cc30-4414-aec5-08da6b676b75
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2888.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2022 22:21:55.7368
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QCMRHQHCrWtJS/Zo20Mq1JsvwwcrOezqOaUnPrEXaqj/y6S+6cNeKMT8YOc4KDi7nqZc2Y4bZYg43wluJUmEBQYMtbXWtkExgpBoLH9RbCs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1001MB2099
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-07-21_28,2022-07-21_02,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 phishscore=0
+ suspectscore=0 mlxlogscore=999 adultscore=0 spamscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2206140000
+ definitions=main-2207210091
+X-Proofpoint-ORIG-GUID: eQSsN5js8lNKHBracW5tgP43e_DL8G-p
+X-Proofpoint-GUID: eQSsN5js8lNKHBracW5tgP43e_DL8G-p
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,T_SPF_TEMPERROR autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,160 +146,68 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 21, 2022 at 11:16 AM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 7/21/22 10:21 AM, Hao Luo wrote:
-> > On Thu, Jul 21, 2022 at 9:15 AM Yonghong Song <yhs@fb.com> wrote:
-> >>
-> >>
-> >>
-> >> On 7/20/22 5:40 PM, Hao Luo wrote:
-> >>> On Mon, Jul 11, 2022 at 8:45 PM Yonghong Song <yhs@fb.com> wrote:
-> >>>>
-> >>>> On 7/11/22 5:42 PM, Hao Luo wrote:
-> >>> [...]
-> >>>>>>>> +
-> >>>>>>>> +static void *cgroup_iter_seq_start(struct seq_file *seq, loff_t *pos)
-> >>>>>>>> +{
-> >>>>>>>> +    struct cgroup_iter_priv *p = seq->private;
-> >>>>>>>> +
-> >>>>>>>> +    mutex_lock(&cgroup_mutex);
-> >>>>>>>> +
-> >>>>>>>> +    /* support only one session */
-> >>>>>>>> +    if (*pos > 0)
-> >>>>>>>> +        return NULL;
-> >>>>>>>
-> >>>>>>> This might be okay. But want to check what is
-> >>>>>>> the practical upper limit for cgroups in a system
-> >>>>>>> and whether we may miss some cgroups. If this
-> >>>>>>> happens, it will be a surprise to the user.
-> >>>>>>>
-> >>>>>
-> >>>>> Ok. What's the max number of items supported in a single session?
-> >>>>
-> >>>> The max number of items (cgroups) in a single session is determined
-> >>>> by kernel_buffer_size which equals to 8 * PAGE_SIZE. So it really
-> >>>> depends on how much data bpf program intends to send to user space.
-> >>>> If each bpf program run intends to send 64B to user space, e.g., for
-> >>>> cpu, memory, cpu pressure, mem pressure, io pressure, read rate, write
-> >>>> rate, read/write rate. Then each session can support 512 cgroups.
-> >>>>
-> >>>
-> >>> Hi Yonghong,
-> >>>
-> >>> Sorry about the late reply. It's possible that the number of cgroup
-> >>> can be large, 1000+, in our production environment. But that may not
-> >>> be common. Would it be good to leave handling large number of cgroups
-> >>> as follow up for this patch? If it turns out to be a problem, to
-> >>> alleviate it, we could:
-> >>>
-> >>> 1. tell users to write program to skip a certain uninteresting cgroups.
-> >>> 2. support requesting large kernel_buffer_size for bpf_iter, maybe as
-> >>> a new bpf_iter flag.
-> >>
-> >> Currently if we intend to support multiple read() for cgroup_iter,
-> >> the following is a very inefficient approach:
-> >>
-> >> in seq_file private data structure, remember the last cgroup visited
-> >> and for the second read() syscall, do the traversal again (but not
-> >> calling bpf program) until the last cgroup and proceed from there.
-> >> This is inefficient and probably works. But if the last cgroup is
-> >> gone from the hierarchy, that the above approach won't work. One
-> >> possibility is to remember the last two cgroups. If the last cgroup
-> >> is gone, check the 'next' cgroup based on the one before the last
-> >> cgroup. If both are gone, we return NULL.
-> >>
-> >
-> > I suspect in reality, just remembering the last cgroup (or two
-> > cgroups) may not be sufficient. First, I don't want to hold
-> > cgroup_mutex across multiple sessions. I assume it's also not safe to
-> > release cgroup_mutex in the middle of walking cgroup hierarchy.
-> > Supporting multiple read() can be nasty for cgroup_iter.
->
-> Right, holding cgroup_mutex across sessions is not bad idea
-> and I didn't recommend it either.
->
-> I am aware of remembering last (one or two) cgroups are not
-> 100% reliable. All other iters have similar issues w.r.t.
-> across multiple sessions. But the idea is to find a
-> *reasonable* start for the second and later session.
-> For example, for task related iter, the previous session
-> last tid can be remember and the next session starts
-> with next tid after last tid based on idr. Some old
-> processes might be gone, but we got a reasonable
-> approximation. But cgroup is different, holding
-> the cgroup pointer with an additional reference
-> across sessions is not good. but holding cgroup
-> id requires to traverse the cgroup hierarchy
-> again and this is not efficient. Maybe other people
-> has a better idea how to do this.
->
 
-Makes sense.
+Hi Yonghong.
 
-> >
-> >> But in any case, if there are additional cgroups not visited,
-> >> in the second read(), we should not return NULL which indicates
-> >> done with all cgroups. We may return EOPNOTSUPP to indicate there
-> >> are missing cgroups due to not supported.
-> >>
-> >> Once users see EOPNOTSUPP which indicates there are missing
-> >> cgroups, they can do more filtering in bpf program to avoid
-> >> large data volume to user space.
-> >>
-> >
-> > Makes sense. Yonghong, one question to confirm, if the first read()
-> > overflows, does the user still get partial data?
+> On 7/21/22 7:54 AM, Jose E. Marchesi wrote:
+>> 
+>>> Hi Yonghong and Andrii,
+>>>
+>>> I have some questions re: signedness of chars in BTF. According to [1]
+>>> BTF_INT_ENCODING() may be one of SIGNED, CHAR or BOOL.
+>> I have always assumed that the bits in `encoding' are non-exclusive
+>> i.e. it is a bitmap, not an enumerated.
 >
-> Yes, the first read() and subsequent read()'s will be okay
-> until user space receives all 8KB data where 8KB is the
-> kernel buffer size. For example, if user provides 1KB buffer
-> size, the first 8 read() syscalls will return proper data
-> to user space.
->
-> After that, read() should return
-> EOPNOTSUPP instead of return 0 where '0' indicates
-> no more data.
->
+> Based on current BTF design, it is enumerated. So signed char
+> is 'signed 1-byte int', unsigned char is 'unsigned 1-byte int'
+> and 'char' could be BTF_INT_CHAR but since in debuginfo
+> any 'char' has a signedness bit, so it is folded into
+> 'signed 1-byte int' or 'unsigned 1-byte int'.
 
-Sounds good. Will do that.
+Ok, we will change GCC so it does the same thing.
 
->
-> >
-> > I'll change the return code to EOPNOTSUPP in v4 of this patchset.
-> >
-> >> To provide a way to truely visit *all* cgroups,
-> >> we can either use bpf_iter link_create->flags
-> >> to increase the buffer size as your suggested in the above so
-> >> user can try to allocate more kernel buffer size. Or implement
-> >> proper second read() traversal which I don't have a good idea
-> >> how to do it efficiently.
-> >
-> > I will try the buffer size increase first. Looks more doable. Do you
-> > mind putting this support as a follow-up?
->
-> If we cannot finalize the solution to completely support
-> arbitrary user output for cgroup_iter, we need to support
-> EOPNOTSUPP so user knows it should adjust the bpf program
-> to have less data to user space through seq_file. For example,
-> they can put data into mmap-ed array map. Please explain
-> such a limitation and how to workaround this in commit
-> message clearly.
->
+What about BOOL?  I don't think we ever use that bit.  Does LLVM
+generate it for any case?
 
-Acknowledged. I will put a comment in the code and also explain in the
-commit message. Thanks!
-
-> So yes, to support buffer size increase through link_create
-> flags or to support a better way to start iteration after 8KB
-> user data can be a followup.
+>>> If I read [2] correctly the signedness of char is implementation
+>>> defined. Does this mean that I need to know which implementation
+>>> generated the BTF to interpret CHAR correctly?
+>>>
+>>> Somewhat related, how to I make clang emit BTF_INT_CHAR in the first
+>>> place? I've tried with clang-14, but only ever get
+>>>
+>>>      [6] INT 'unsigned char' size=1 bits_offset=0 nr_bits=8 encoding=(none)
+>>>      [6] INT 'char' size=1 bits_offset=0 nr_bits=8 encoding=SIGNED
+>> Hm, in GCC we currently generate:
+>> [1] int 'unsigned char'(0x00000001U#B) size=0x00000001U#B
+>> offset=0x00UB#b bits=0x08UB#b CHAR
+>> [2] int 'char'(0x00000001U#B) size=0x00000001U#B offset=0x00UB#b bits=0x08UB#b SIGNED CHAR
+>> Which turns out is not correct?
+>> We used a signed type for `char' because that was what the LLVM BPF
+>> toolchain uses, but then we assumed we had to emit the CHAR bit as
+>> well... wrong assumption apparently (I just tried with clang 15 and it
+>> doesn't set the CHAR bits for neither `char' nor `unsigned char').
+>> But then what is the CHAR bit for?
 >
-> >
-> >>>
-> >>> Hao
-> >>>
-> >>>>>
-> >>> [...]
-> >>>>>>> [...]
+> This is not generated by llvm or pahole but apparently it may still
+> have some meaning when printing the value, a 'char c' may have
+> a dump like 'c' instead of '0x63'. In kernel/bpf/btf.c, we have
+>
+>                 /*
+>                  * BTF_INT_CHAR encoding never seems to be set for
+>                  * char arrays, so if size is 1 and element is
+>                  * printable as a char, we'll do that.
+>                  */
+>                 if (elem_size == 1)
+>                         encoding = BTF_INT_CHAR;
+>
+>> 
+>>> The kernel seems to agree that CHAR isn't a thing [3].
+>>>
+>>> Thanks!
+>>> Lorenz
+>>>
+>>> 1: https://www.kernel.org/doc/html/latest/bpf/btf.html#btf-kind-int
+>>> 2: https://stackoverflow.com/a/2054941/19544965
+>>> 3:
+>>> https://sourcegraph.com/github.com/torvalds/linux@353f7988dd8413c47718f7ca79c030b6fb62cfe5/-/blob/kernel/bpf/btf.c?L2928-2934
