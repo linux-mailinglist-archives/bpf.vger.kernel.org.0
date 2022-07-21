@@ -2,249 +2,181 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9283757D717
-	for <lists+bpf@lfdr.de>; Fri, 22 Jul 2022 00:52:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D45D257D727
+	for <lists+bpf@lfdr.de>; Fri, 22 Jul 2022 00:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229693AbiGUWww (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jul 2022 18:52:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54124 "EHLO
+        id S229552AbiGUW7f (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jul 2022 18:59:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229684AbiGUWww (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jul 2022 18:52:52 -0400
+        with ESMTP id S229485AbiGUW7e (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Jul 2022 18:59:34 -0400
 Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC892A265
-        for <bpf@vger.kernel.org>; Thu, 21 Jul 2022 15:52:50 -0700 (PDT)
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26LJkeXL022636;
-        Thu, 21 Jul 2022 15:52:44 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=NCKxU3H3vE4mDmhYNzYRWOEeqAidSXBT+z0dpcQpk+M=;
- b=kGV/Qar0gtP8fQyR3ttzFhVZ18zZ0kqVSBZwSD6Ed1b9LXuuPJ0i2jeZcbwFZuiXTweB
- kRZCIP3uQjoAB10ScZB53P4z9X6BhGUCf9mG7knD+moqYPNMrjKBZ/dsyEJEBC3JqcBX
- 9FP6Vj07mCaYJCVRkdbjSpFfj/xY8EfLzgs= 
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hf7fbur9u-1
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0A718E1CB;
+        Thu, 21 Jul 2022 15:59:33 -0700 (PDT)
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26LJkjZb009435;
+        Thu, 21 Jul 2022 15:59:33 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : mime-version; s=facebook;
+ bh=FZqtuzS0NK3paWbr17RfQsT/qRAuwdnRXdTcLi5fiNE=;
+ b=N2tuUvkEuI9OcxHZwh7mICMQJp4wjBbv5M7OfmxRwVxDEzuNEYsYE4vG4azNtm4gX457
+ toD8wfcOySWd63nLaTxfyeqjfTgPVRt06j70hcX9NdaKK/dFcOyJlM63MORoR3uOmk7/
+ gyuCoMZY8DeS44RvxQzxmiDbVzvyhBcUb6U= 
+Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2041.outbound.protection.outlook.com [104.47.56.41])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hej1vu2sf-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 21 Jul 2022 15:52:44 -0700
+        Thu, 21 Jul 2022 15:59:33 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FJjaUHyCD64hrdomesVLh8cfq9J1t8BPPDDY/tt5OQcZdFrtd2c/1GMklY/E2ZDSXiGg+Hdx82Nm5S9CkBXqK7QDcfSNVMyq9Pe4xkNDi0WYaHfg24fvS+z2FzOploktoxqqfWe4XHs91EgSG1hFkcnowO8FaKo8HHdEVJASr1NTO3P5Y466VFKM1rY135fIgsQAfDJDEtMwhWJqXy0yHqf5N5UFEkNz7MfAxjf0pEeKJzd9d14fohyH+0Iul5ETuYV3NeOL+sKssRWioBAYcEYEH6SyPuOO/SImofZustrwGqgK5taoz2886sMx4EykhTHmoRzdcr5zIdR1F4iZ3g==
+ b=UJG7soFyTAcJSmtz1dR0ChX2y6s5CJVoz9wVlNPTgiXQ6Guvw6X/q4Zeuk49zX5Kg5LP8uxc+yLsYF977dmS6BuVGb5afY+z2GamMoZIUL+VdD3rfOuy0gijynxliUxMx836SFQGzr0Cu5eCbtus/k20xLLxMVjCaA4oLpzW5BB790fBwArUXf0ZCzPQafCmPfA+1qC5MIbCos6+8IB++RMwm8ofiZlUYGs4mBNIf4CoUbnAgqsIivruvpfmPk2GwPAyDnecyfzAgXx9989UhyXzWuHNRjZXWAE68y1IhsaPO5usl6CpWHbWs4jT/teD5HZl30ELCMV5qrhSNAihAw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ADaNnfiy4pXYOyr08T0EbtFMX1LwBqhi8ORqqyRrC8k=;
- b=YiUlhDy+n/sUurYtCPdHuRP8EKoPMK5Z8CMfSbLSwInLvqyznqbgkraWpPwPyGMD+kvRaXfZuIZZnU0Ja0ppUVyL6iD7+tagH7I/lKcAej0DC95Yt0tHYufrYZjMzOooTAtPoXklcoD8z9b/fBVTWtnWeOEqpSqzW6v0fqHtcW2a56UuUwyUtavvqIx7YdB8yNtatN/DE7OQdVNZMvPTol+unbKS6QTZK5EgQmZ7ted/82jiZue97CBopzbbl1+B4fsylnxXP6wRXdrUXzpzlD5qzJPrxO6jQNYen7rVK/9BhPo6/aqaOE98iPogw2e6amtYF5PkqEbQEWzkjkQb/w==
+ bh=FZqtuzS0NK3paWbr17RfQsT/qRAuwdnRXdTcLi5fiNE=;
+ b=VxYqyNhpAM5zFe1lDKN1ELVSCTecqaKTkDyNHkYEoDILwiwVu/PrN791S9FuFSdhK4LxfGsaixi0IhCIXBkp8/qwhWjTqFf1ARHKArwl1r4vxijphNyWT/pgGhWssiqF8RY4awXBhzBgKmolQPClrIar0YEj4Fa2IHo/H+DsW0q9dCYO9SSDaylNFlsnzvfQSKGB7I2qJ6wSTy/6xg85zJT8nl/xr/26ezFldVOPIIE4HIi90QtGlzu67IbHqtDrS3n76O5kEouXOljaYVWlYX4Z0y9ncoEu7nl/wlnC/l/4ZDW5NLqWwZIbM5VRqhOPlVOMzZq6+J8VfWuYV80k8A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by PH0PR15MB5293.namprd15.prod.outlook.com (2603:10b6:510:14b::12) with
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
+ by CY4PR15MB1782.namprd15.prod.outlook.com (2603:10b6:910:23::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5458.18; Thu, 21 Jul
- 2022 22:52:43 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::9568:e5d9:b8ab:bb23]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::9568:e5d9:b8ab:bb23%6]) with mapi id 15.20.5458.019; Thu, 21 Jul 2022
- 22:52:43 +0000
-Message-ID: <d56865b1-30dd-8761-2c12-ae5f66778de1@fb.com>
-Date:   Thu, 21 Jul 2022 15:52:40 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.11.0
-Subject: Re: Signedness of char in BTF
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5458.19; Thu, 21 Jul
+ 2022 22:59:30 +0000
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::5de3:3999:66df:42d1]) by SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::5de3:3999:66df:42d1%4]) with mapi id 15.20.5458.019; Thu, 21 Jul 2022
+ 22:59:30 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+CC:     bpf <bpf@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        "live-patching@vger.kernel.org" <live-patching@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>, Jiri Olsa <jolsa@kernel.org>,
+        Song Liu <song@kernel.org>
+Subject: Re: [PATCH v5 bpf-next 0/4] ftrace: host klp and bpf trampoline
+ together
+Thread-Topic: [PATCH v5 bpf-next 0/4] ftrace: host klp and bpf trampoline
+ together
+Thread-Index: AQHYm86zhN8thRtC40unIKKXXAqaq62Jc3CA
+Date:   Thu, 21 Jul 2022 22:59:30 +0000
+Message-ID: <257B5D9A-7A52-4396-82F5-9895782952BC@fb.com>
+References: <20220720002126.803253-1-song@kernel.org>
+In-Reply-To: <20220720002126.803253-1-song@kernel.org>
+Accept-Language: en-US
 Content-Language: en-US
-To:     "Jose E. Marchesi" <jose.marchesi@oracle.com>
-Cc:     Lorenz Bauer <oss@lmb.io>, andrii@kernel.org, bpf@vger.kernel.org,
-        david.faust@oracle.com
-References: <3fcf2cb7-8d27-4649-b943-7c58e838664a@www.fastmail.com>
- <87wnc6bjny.fsf@oracle.com> <e636b480-8d53-a628-bacf-bac2b1506a47@fb.com>
- <875yjqayyz.fsf@oracle.com>
-From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <875yjqayyz.fsf@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-ClientProxiedBy: BYAPR05CA0095.namprd05.prod.outlook.com
- (2603:10b6:a03:e0::36) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: aba1af41-0fd4-4051-2819-08da6b6bb898
-X-MS-TrafficTypeDiagnostic: PH0PR15MB5293:EE_
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: peVYLmxCA1vTWkHhW86Jyuq5osNUb8yuZ9pYfylHt5bNbgkRcSXTQTw3URM20Mc6xx4wGBWFaZbD2NvEUefdMSACfyEHL38VdaNJKrVlH86loan1KMVAztobPn1A5Chra+Z8guQ6L6Al0VcuNpZemf9EAB6OP09mqxVs7e58NOBeRAWbJcOqnPNkF61V3iRmhLwcQ6W9cELUDnVuy62uc7GsqeOR1/OoknM5TQKpbWR3JgTOAcdPIViRRP4ndCTz4MbqmYoi7LYqfw/0AvsLogUYU8mEQnYHdH8RaZZCirzWynARPbBIn7x00LZakO30L4b5un/fA3JyEkN3bYkyuN0O9SM/lvQNaEgQSUaGieDs6Od5yTabPfG1rF+BviVOZFmUlkmlvk03Y67RD63dJEabRVPMRxK4Z7iYK/ozieXPUOlvAuHYNUiwVehj4S4RU5j2DTo3e8tAGMhTy/pUBhwAcUhNAPtTT69QWsDHFaw2jXw7plIW6Y2I+NU8rdhs6jp2aRCQrip0uu711C8d07L6T6a7ncz3eCna06CUXW/gxG8YJHgBbFvDAqTNu2doRwlzPBOPry55xbPaDg4+/ZjUdMyqgj/2acNzdR8XMZ64OfYtH3UvF17Ow6VNQwu9YwN0Gyl4ff3XcD6syFCymKjjege5Mw/UcuB/HfU2ghBIBTS5w0ddCcj9GPfFeK2eZELrCDnutosk330ppOX7seyZrVwsKvwRYciJZ3d6hR1pyORRVCMvVnD3mdZzbcOCCp/mfHSxLBiKUvmf5BFWqovsc6RP1ugF1HjwEpejeSkDvec3rOUBrUNTrQEXhH14WK7+PmkytzxL2OKBcGu+b5/GYSpqnnzh3W+1o6hwgQOcO8V5pglMz5pwxVlsOSg6
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(39860400002)(136003)(376002)(366004)(346002)(396003)(316002)(36756003)(53546011)(31686004)(5660300002)(38100700002)(6916009)(41300700001)(2906002)(186003)(966005)(4326008)(86362001)(6512007)(66556008)(8676002)(66476007)(6486002)(478600001)(6506007)(8936002)(2616005)(31696002)(66946007)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?czVoZ2F2SzVmMWxxL0JoMWp3UWgvVkhXMlJpeWUxY25zK29sNm8yM1lxWkVU?=
- =?utf-8?B?YmlMYmtubXYybHl4UzNQVXRiaHdkSFU1NXpkREtRUmYzSENEVWdnanRkcHpP?=
- =?utf-8?B?KzhZaGFBM3A0UWNyTzZpWEZBcW1sZ0prQVdYaVR4bCswY3NPY0NRYS9RVG9p?=
- =?utf-8?B?OGZCTS9xYjY4bitIN05TVmFGRUhQb2ZHNzZKZXNMV3BYS0JZTWE2UkducSt6?=
- =?utf-8?B?bzJ0bXplWC9yRHd3Z3M4UVI4VFZ0Z2UycDhHN0VaUXRVaUdSREt3SXNZbHA1?=
- =?utf-8?B?V056NzNRS1l6czVnck5MWlhuZDJmMzd2RXBjNVRIcEwybkxvSDZ2TFprV1dV?=
- =?utf-8?B?V3pKTHE0Q3o4UWNMQ2xnaldaMHlrQ2MvYmJmaWNkV3R3dVk2aUx5MzBFTGE4?=
- =?utf-8?B?RWtMRHdxZlEweHIrZHdpMjZqWHVnbUlqSVIrYUVkbkJzajR6MmhwMGxzTksr?=
- =?utf-8?B?NFlncjh4V1RFZ01ORTkxRkZiL29heUQyNStNOE1jb084NmhIYlN4Rk1ldVhp?=
- =?utf-8?B?ckg0YStwMEtSMFlwRnNzWG05SURCMnhvZWJlRGc1WkU4dFJLekp1RXBHRnJC?=
- =?utf-8?B?c2ZjbGZSOWljdmY4U2VtaXl2NzIzU3dKd2h2Rk1lbmxuc2ppSjQrRUhGRzZJ?=
- =?utf-8?B?dTNFQVJvL01FZU8vNzZ1aVZVSUJjZGVmaW1iNis5VHdoeHdjeEFBSFBhOWlm?=
- =?utf-8?B?VTE1L2QzWTd6a3ZzYlVzYllsOVVEWTQvdnlYVzVTWmtmem13U3h2TmV5SVFt?=
- =?utf-8?B?M2xVY05zVGx0Ym9Zdzl4YkJrTjNnZlhCcHgzM2Q1SlhZNWFWc3F2NFliN3pV?=
- =?utf-8?B?aENIaXljbGpjSzZ0UHZSY2RnMTFnZjFDVmhsL25xN2FxRlFnT1ptcG1oenY2?=
- =?utf-8?B?SU1jQnQwMXhsVHZubmxMK25aSE5yRGpxYklzdkVWMHhxeFMzUW1nWkdKT29X?=
- =?utf-8?B?Ni90NVY0MGRaWHR0QU5hTkl4L3h3enpvZUM1ekZPZGNGWkIwZU82S3lEeGFT?=
- =?utf-8?B?cnFucHE2d2VNeWN0U0lJVXJvN0hrQlF0Z2hZWUd5YjZQN1JWY3grT3BrN000?=
- =?utf-8?B?b1U3V2dqWkRyQnhiOXA0RGo2dVVPcmE0bFhYVzBSOXBMR283KzBXSlRwemZ5?=
- =?utf-8?B?TXRLRlpuSzJLVUZoY0FYb2xMeDYvTDJsRmxMVWZONzBqdTlpN2pJMXUzRjVB?=
- =?utf-8?B?SHFlS3RzOHBtblJkMXF4elpzYWJHYmdQbGtNNWpucHhxcEZ0a21nYVV2SUlZ?=
- =?utf-8?B?Wi9tYk9hN1E5K2ROZWppL0FiRWlkNVhldGhRT2lDTWhuckFLczFHQXVYcEpl?=
- =?utf-8?B?UXYyaGhDMXI5MklsY1ZzMXF3ejlSRlNRTlpBanRxK3Q0L0s5blIraHYxbi80?=
- =?utf-8?B?d05tOFZWRG1wSWlERVhRTWE2bnY3VmRiUE9zc0xnQXczTFpnd1BuQTAxcUtk?=
- =?utf-8?B?RDU0bGFXRHYvKy82K0xJUHc4bGpPWlRxcisxbmI0ZXRxQ3hIc2VVMi90RS82?=
- =?utf-8?B?MzkwVVVHOHk5aElmZDJ5N1VHWWlXaDlFeEoxL2N2eHh0U2FhcnFoSXJzZG9p?=
- =?utf-8?B?MDNRL21yV01DR1JOY3RCWk5tTFpQTXkxSTIwZVZ0bllLSVJxTEEyNEhxUVpR?=
- =?utf-8?B?d2REbktHOXE1YVRzMHcraDhwd2NjM0pBaTNWUktNR1A3ajF0dk10T0JhNFp2?=
- =?utf-8?B?cGo2a2F3bjJ0Sk4rNDhqN0lSMzZOQzFMYUZKc0lhRE1MMDc2dWFpaGRaU09h?=
- =?utf-8?B?UWpjdit4WG94YS93T1I5OWNNdXlrYlNnZi9JU2J1L2RqNlhnWXRmZlArVEQ1?=
- =?utf-8?B?OTJhWGxHUTNzbHVDc1R4NmowWEhlWGJzajJkcUpWTE5SajRNSmVXRit2UEI5?=
- =?utf-8?B?Ni9VLzJwcHA5eXVUOFp3SDlMK2RXTnVTZXJiNmVQRVNkY21kYWhTSVJaajVk?=
- =?utf-8?B?SXF1cU5Ib0Vsc2tkN3ZaRjNTUE1Qb0RmeThwTWNIYnRiM1pBZ2RDNnlmOE9Z?=
- =?utf-8?B?aEk4SjJoeDB5KzR3aDNSalBmYkNxZk1XMld5Q2syb0RmU050bXh6TWcyR0sv?=
- =?utf-8?B?aUR5Y2JRaEF6cy9vVW5OVk9CL0Vqb3BxZ0l2WU9nOHZ1akkvMDUrYTg3d2Ew?=
- =?utf-8?B?QU1PRmo4QWhiQkZveFBwRjdKTjNnQzUwcWdGeGhmV1hRNDdJNEFMeEYzSE5J?=
- =?utf-8?B?UFE9PQ==?=
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3696.100.31)
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2a84ce8f-4dfb-4941-c31d-08da6b6cab76
+x-ms-traffictypediagnostic: CY4PR15MB1782:EE_
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: U3Rw/0mYhKm33eqUzMB4T4s+bp+RrkzqdscrdqGq+nAdgMEz2Fpxs9wtbRwN8B+GJl3EuJW7u/JXbY4FwZ5O3U63sgT7V3WiSb/eUpZ20PBAxcXQptTSLtsaxGRsj2w1wLYZrbT96BOe0dCREIwxVAyx0szCU2bpSB5PJr5b/BsBqn0G0PMmbmVXu2iJuIIO1AVmAvfutcu6NOf+gm+Re+pk3D60hZcdATPCfSTn0Lv6HBVBoyMKUtDq0aej8wp3tOCM68656ahu6bu2RO/M7qDjO3eDehduhz/6peAldgxdgo+JKbXb/bS9eEJL8uB5WIyp3Ayrg8GONfSmcOURXHLWgGHmWx3t0OL51GV00thTAGCKicfcd53itaoyS7petL5HmCJqOa/B7UGxcXITOe6LUd9rjHv6jX+nK/4UPl5EAoWJiDXjSB8jzkNrlv5VJcs8GlP5HKAxd9EKUNwwnmYLqCesKkZidmS3VTItPmR4NBfRY/PkXltGm7WSok4D1S9xaufXMOCqaZmUFZDUOYa5MgkZbHbaP00QMxJi1BIafP261Ba9mAWvHhJMFBrCDnMNZcHSnr8SdLwYB0FhwjyqxdHvOKdNtsJi2yy8+nSaqp5UtTqrDARtVGMAZLX6Fe0N5ncmGU7oRstv10itMNR2j7KX3XOy/GSuAAtJUloj2EEKcG/7goUt+BM1FymxY4baFCFEQFnNCbhe8xJpNNij1Ez3zXrR1oS4ICj4Bo4Xt99vM0Vrnd7mTPm9EEy/9+3XzkBzDXyW97+46Xmfk/hJzzD9HppT1u4gW6Lr1DNsXbm+vBDniaz3Rje1uEEMFqH1MEhlbOYeuoszZ5cFRm4dc+Lio50IMUBi3TydV8RTGa0E3+Zet5ccxtYhgeBV
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(376002)(346002)(136003)(39860400002)(366004)(396003)(6506007)(2906002)(53546011)(5660300002)(8936002)(76116006)(36756003)(6512007)(478600001)(122000001)(6486002)(71200400001)(966005)(41300700001)(2616005)(186003)(38100700002)(38070700005)(8676002)(86362001)(316002)(4326008)(6916009)(66446008)(66946007)(91956017)(54906003)(66556008)(66476007)(33656002)(64756008)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?sBwee8LAwRtCIql4Pz2E7EvH+Y29QzP2P0fc+EcX/VheZ2IqTckla7R3NZDH?=
+ =?us-ascii?Q?0hbyYFF/j5D8zV7C5pPK9yxPU2Lx36bcYqXLGulyExscxK3zpnYXD5qc1E5S?=
+ =?us-ascii?Q?T8196O2LVzmliioCTb6Ev4wqdp8qtWkOk9o4m9dJNWaqRPWolJFekcsCLix3?=
+ =?us-ascii?Q?TcBaDkQVM0HRS345dSIRegbfCsaFH2IjwTsg0Hxkezv6a0vy7TxFwbV0ZNUx?=
+ =?us-ascii?Q?dsTSeXzABW/Rf5T2wvZj6umt487h/rbZPiKKKb4ei/b9uVr0vXEkVgfY3RhK?=
+ =?us-ascii?Q?aY1KSjh5uIJfpz+frLU0Btvd/yfUI3rmvX6wBsNODlwxBacDK9FckPBEYR+k?=
+ =?us-ascii?Q?ahcwu/56t2Mbb7/riHTVpzpO2/y+HQ7o9fzA1NTnbGEXh19PBBv+PYfLqy8F?=
+ =?us-ascii?Q?YoUTvSkqVgjAxTURCx9Kdf12XVUgO3PNAatkxKIH9ol+sGfoOQ3Ao/gYPlhL?=
+ =?us-ascii?Q?1qxJBJb1i9MjKztb+p/+vNvzX1pFSuApsBjfD7BnuFpiv5SbAe4Wnf+t/ON4?=
+ =?us-ascii?Q?AYVT6C3du+1wiJs4Grun+hfr+fdrfdhQwrRGHNrZldo05VhT16INQRJVYzcF?=
+ =?us-ascii?Q?c/a4KR1cbWdfmkoK+7LO0JWknuj+35iKDgW/3Dwn4vnIyUAIThqa4EM4pcaH?=
+ =?us-ascii?Q?dMIxEy7X0Tz6GrYncQ4zZvkMjoZ+q05ikaEFF76WqdsfUhWimTYOvfZndd/S?=
+ =?us-ascii?Q?IVP6qYg+gDdVaBi3YocedTUHhaSkKNuhUN3noPGmbkE0YhSHMSJBm8Fl+gT9?=
+ =?us-ascii?Q?YNsfo8i6JTmAt6oZ9+s68AwZMETY5mqcIMkKWCcVcjwYlXRJ9FX0u3Cm9qTV?=
+ =?us-ascii?Q?87MJIINXRU1vm9/o6kGQqW4MynJ+7s89WAbIrJsycz69xDN6pfRAsIbIiSE/?=
+ =?us-ascii?Q?JtRn3zh9OFcsXIi2hX1OR5tyhUHhmXzGz8mAQUk6MxnDalK7DxU6yElf8wyv?=
+ =?us-ascii?Q?6grYk6jLF5tY3l5ayiPTBX+vsDaB7mey0o2iyyTc5ogYlVGcIaRUTRMDJ8lF?=
+ =?us-ascii?Q?xF0v2ANcCRlP9fFOAwObW5OwPqKBdX+cc7YFYDaANFqaPXOItDIemSYwO40L?=
+ =?us-ascii?Q?wqgAzUKgOgrh5hpqdquu2WVyMlpWR6du3Dn/LutAbktlR1QBrYP0qdcZGKZG?=
+ =?us-ascii?Q?SaKQFyG16arDogXoAVUvj3PrDCrkXEHrGOdOoQyGlaFkLmadujR1cvrmSHXR?=
+ =?us-ascii?Q?z5yF8UO56zirmoZi1r2lV8EunjiCvf00cWUWHeNVVyBHhbwgAQfc6hgurInb?=
+ =?us-ascii?Q?/QKXi3XY8KloLalygipNYG++WSJ7g7xB/Rq3GO7onVOBi1ac1+jCieZRrahk?=
+ =?us-ascii?Q?ZgE98qU3tbJZEDhubna1JzEbyZhDyiOGzwd4JygbdJhzoiCOLhdcoO3cThWs?=
+ =?us-ascii?Q?9PEIriTWk2zJ3KlT8gbQoKm0+kGFHbjFk3PME+VCtUMnabYNKZKibsvlMsKv?=
+ =?us-ascii?Q?30yUI015KQL8drFyjCg2QdOy59wDntfOWOmVyTtHTMQcI3NRfIhZWwhkBuac?=
+ =?us-ascii?Q?ZSfZlKguz1UBD7nmFvq3zIAFFlDinPIK/mZDem4Uxu5GghqTWrS55mjgsvy5?=
+ =?us-ascii?Q?UDWVYDeEEt3LiR2Q8K5zDUIEchBR8o9bOkRZF3H/tefQXk5cEmOWnBRsky/R?=
+ =?us-ascii?Q?KQx5557dwrI9T/mUVYTx/7I=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <C155F1632455074B9455E9212275F996@namprd15.prod.outlook.com>
 X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: aba1af41-0fd4-4051-2819-08da6b6bb898
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jul 2022 22:52:43.0248
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2a84ce8f-4dfb-4941-c31d-08da6b6cab76
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jul 2022 22:59:30.3517
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pFH7x5Wim8IOL1thEso1v0YbCd1KCv8uSZySIGJNxw1h42GGJEOSNEZjwP25EW+m
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR15MB5293
-X-Proofpoint-GUID: iNH-lsC8ETgCqykP3GGUfz8_DOwiKYFD
-X-Proofpoint-ORIG-GUID: iNH-lsC8ETgCqykP3GGUfz8_DOwiKYFD
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 2 URL's were un-rewritten
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: rwkSUSw0DWuRP7hCNHbJg7mFTPCuU3HFs+M0rVNOehmOliPYvq4rvCzWullg2kyVcRLQmaruofSi977iro/JYQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR15MB1782
+X-Proofpoint-GUID: BO-e5jeSJhcnAVYL7I4VkCNKs9-njhpr
+X-Proofpoint-ORIG-GUID: BO-e5jeSJhcnAVYL7I4VkCNKs9-njhpr
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
  definitions=2022-07-21_28,2022-07-21_02,2022-06-22_01
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hi Steven, 
 
-
-On 7/21/22 3:21 PM, Jose E. Marchesi wrote:
+> On Jul 19, 2022, at 5:21 PM, Song Liu <song@kernel.org> wrote:
 > 
-> Hi Yonghong.
+> Changes v4 => v5:
+> 1. Cleanup direct_mutex handling in register_ftrace_function.
+>   (Steven Rostedt, Petr Mladek).
+> 2. Various smallish fixes. (Steven Rostedt, Petr Mladek).
 > 
->> On 7/21/22 7:54 AM, Jose E. Marchesi wrote:
->>>
->>>> Hi Yonghong and Andrii,
->>>>
->>>> I have some questions re: signedness of chars in BTF. According to [1]
->>>> BTF_INT_ENCODING() may be one of SIGNED, CHAR or BOOL.
->>> I have always assumed that the bits in `encoding' are non-exclusive
->>> i.e. it is a bitmap, not an enumerated.
->>
->> Based on current BTF design, it is enumerated. So signed char
->> is 'signed 1-byte int', unsigned char is 'unsigned 1-byte int'
->> and 'char' could be BTF_INT_CHAR but since in debuginfo
->> any 'char' has a signedness bit, so it is folded into
->> 'signed 1-byte int' or 'unsigned 1-byte int'.
+> Changes v3 => v4:
+> 1. Fix build errors for different config. (kernel test robot)
 > 
-> Ok, we will change GCC so it does the same thing.
+> Changes v2 => v3:
+> 1. Major rewrite after discussions with Steven Rostedt. [1]
+> 2. Remove SHARE_IPMODIFY flag from ftrace code. Instead use the callback
+>   function to communicate this information. (Steven)
+> 3. Add cleanup_direct_functions_after_ipmodify() to clear SHARE_IPMODIFY
+>   on the DIRECT ops when the IPMODIFY ops is removed.
 > 
-> What about BOOL?  I don't think we ever use that bit.  Does LLVM
-> generate it for any case?
-
-The llvm and pahole generate BTF_INT_BOOL when the dwarf type has
-attribute DW_ATE_boolean.
-But BTF_INT_BOOL is actually used in libbpf to differentiate
-configuration values (CONFIG_* = 'y' vs. CONFIG_* = <value>)
-
-In llvm,
-   uint8_t BTFEncoding;
-   switch (Encoding) {
-   case dwarf::DW_ATE_boolean:
-     BTFEncoding = BTF::INT_BOOL;
-     break;
-   case dwarf::DW_ATE_signed:
-   case dwarf::DW_ATE_signed_char:
-     BTFEncoding = BTF::INT_SIGNED;
-     break;
-   case dwarf::DW_ATE_unsigned:
-   case dwarf::DW_ATE_unsigned_char:
-     BTFEncoding = 0;
-     break;
-   default:
-     llvm_unreachable("Unknown BTFTypeInt Encoding");
-   }
-
-For a concrete example,
-
-[$ ~/tmp1] cat t.c
-int test(_Bool g) {
-    return g;
-}
-[$ ~/tmp1] clang -target bpf -O2 -g -c t.c
-[$ ~/tmp1] bpftool btf dump file t.o
-[1] INT '_Bool' size=1 bits_offset=0 nr_bits=8 encoding=BOOL
-[2] FUNC_PROTO '(anon)' ret_type_id=3 vlen=1
-         'g' type_id=1
-[3] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
-[4] FUNC 'test' type_id=2 linkage=global
-[$ ~/tmp1]
-
+> Changes v1 => v2:
+> 1. Fix build errors for different config. (kernel test robot)
 > 
->>>> If I read [2] correctly the signedness of char is implementation
->>>> defined. Does this mean that I need to know which implementation
->>>> generated the BTF to interpret CHAR correctly?
->>>>
->>>> Somewhat related, how to I make clang emit BTF_INT_CHAR in the first
->>>> place? I've tried with clang-14, but only ever get
->>>>
->>>>       [6] INT 'unsigned char' size=1 bits_offset=0 nr_bits=8 encoding=(none)
->>>>       [6] INT 'char' size=1 bits_offset=0 nr_bits=8 encoding=SIGNED
->>> Hm, in GCC we currently generate:
->>> [1] int 'unsigned char'(0x00000001U#B) size=0x00000001U#B
->>> offset=0x00UB#b bits=0x08UB#b CHAR
->>> [2] int 'char'(0x00000001U#B) size=0x00000001U#B offset=0x00UB#b bits=0x08UB#b SIGNED CHAR
->>> Which turns out is not correct?
->>> We used a signed type for `char' because that was what the LLVM BPF
->>> toolchain uses, but then we assumed we had to emit the CHAR bit as
->>> well... wrong assumption apparently (I just tried with clang 15 and it
->>> doesn't set the CHAR bits for neither `char' nor `unsigned char').
->>> But then what is the CHAR bit for?
->>
->> This is not generated by llvm or pahole but apparently it may still
->> have some meaning when printing the value, a 'char c' may have
->> a dump like 'c' instead of '0x63'. In kernel/bpf/btf.c, we have
->>
->>                  /*
->>                   * BTF_INT_CHAR encoding never seems to be set for
->>                   * char arrays, so if size is 1 and element is
->>                   * printable as a char, we'll do that.
->>                   */
->>                  if (elem_size == 1)
->>                          encoding = BTF_INT_CHAR;
->>
->>>
->>>> The kernel seems to agree that CHAR isn't a thing [3].
->>>>
->>>> Thanks!
->>>> Lorenz
->>>>
->>>> 1: https://www.kernel.org/doc/html/latest/bpf/btf.html#btf-kind-int
->>>> 2: https://stackoverflow.com/a/2054941/19544965
->>>> 3:
->>>> https://sourcegraph.com/github.com/torvalds/linux@353f7988dd8413c47718f7ca79c030b6fb62cfe5/-/blob/kernel/bpf/btf.c?L2928-2934
+> Kernel Live Patch (livepatch, or klp) and bpf trampoline are important
+> features for modern systems. This set allows the two to work on the same
+> kernel function as the same time.
+> 
+> live patch uses ftrace with IPMODIFY, while bpf trampoline use direct
+> ftrace. Existing policy does not allow the two to attach to the same kernel
+> function. This is changed by fine tuning ftrace IPMODIFY policy, and allows
+> one IPMODIFY ftrace_ops and one DIRECT ftrace_ops on the same kernel
+> function at the same time. Please see patch 2 and 4 for more details.
+> 
+> Note that, one of the constraint here is to let bpf trampoline use direct
+> call when it is not working on the same function as live patch. This is
+> achieved by allowing ftrace code to ask bpf trampoline to make changes.
+> 
+> [1] https://lore.kernel.org/all/20220602193706.2607681-2-song@kernel.org/
+
+How does this version look to you? 
+
+Thanks,
+Song
+
+
