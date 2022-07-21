@@ -2,68 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84DB657C589
-	for <lists+bpf@lfdr.de>; Thu, 21 Jul 2022 09:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23CBB57C729
+	for <lists+bpf@lfdr.de>; Thu, 21 Jul 2022 11:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230086AbiGUHvD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jul 2022 03:51:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57724 "EHLO
+        id S232822AbiGUJOM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jul 2022 05:14:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbiGUHvC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jul 2022 03:51:02 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8337166BBA
-        for <bpf@vger.kernel.org>; Thu, 21 Jul 2022 00:51:01 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id oy13so1774511ejb.1
-        for <bpf@vger.kernel.org>; Thu, 21 Jul 2022 00:51:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=b9GU8dI9JjSvJNh8GYyo6nJy0sYt5AWIiKCovWh5cO8=;
-        b=d45M4Oszek93NKAqykToU16aPcZx3TW4M16Cs1DGfj8FLWdHPGEJ/4zHs7BhPGobzs
-         1VAmiaUpi4aXJO44FCF8m/9snoYdeDstCkvXWG5Q6EyE/EpyB4bkJewhMRqrRWcrhl2w
-         hkQOO74gE4GMi3TPKTeMW2d4XRz78r4DAzZzwUdDcM+Lfp3Mfk2vzDEMDl13YOFyKr1M
-         +yYTgMAsHbP8Ui154OuIlhNPGsRLUHewxQXbDJ9wjWd2OJ9q3MPUr5CsGmYzRc9GLctW
-         NCm7lkg277V+4Nm1U5wQ6PfTkv2qXoBhbwVYjFWeyTaF+STUvzHofCNy+qlztxqV1mag
-         0ryg==
+        with ESMTP id S232816AbiGUJOG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Jul 2022 05:14:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1DB433C16D
+        for <bpf@vger.kernel.org>; Thu, 21 Jul 2022 02:14:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1658394844;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=evkly4mzwl0OWnSDguyVCSXP+iuc3cHesZCTCuELO9c=;
+        b=fwPCim4dSMnIA4MV0NWq3vqg7bkSSUaXaktAbdfgNMZsDFHE86z9BK4QkaNFn4WP0kdB7t
+        e2IlzSgtAR3JgL57r7KaI+WDBl+EZmyzPMNy+OGaU8frd/S8fUHupC0sTAA9WAuZwCJzgS
+        crCk3aYUWdFc/3yO7vgou5VwEJCochU=
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
+ [209.85.215.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-564-folItUSKOv2yN97KG8WZQw-1; Thu, 21 Jul 2022 05:14:03 -0400
+X-MC-Unique: folItUSKOv2yN97KG8WZQw-1
+Received: by mail-pg1-f199.google.com with SMTP id d66-20020a636845000000b0040a88edd9c1so656281pgc.13
+        for <bpf@vger.kernel.org>; Thu, 21 Jul 2022 02:14:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=b9GU8dI9JjSvJNh8GYyo6nJy0sYt5AWIiKCovWh5cO8=;
-        b=5hHvm47mw9k3KBUEWtFEN6AuSLfbn9M/Lgi7CQ2Js7fAcew6epRtkh6CVFfn+rPQwm
-         AeEMziLzX7pn4THZo2bX8iFHSGx7tjMFnk2QX/rSA8fEA8bFZqSG/97DAaBhAhQoC9iV
-         339yHakI1qzKKpx/6dj7sEfZ05Dd38HXiYwdVgibMXQhKJ2E/V0rLFbcSq6nr3hFEKMz
-         3eVfWmwGiNBQDThOXTErwqB+QG0ZtJD94xnDDyBwCkKqI6VOnTk8jzg59bamIjkjnMwu
-         Uz0FKB0G23Mhy2zFqtBEMPndXyUXeUBrlUnqNdhO928cjIaNirUXXtJiK0gsk/T8xX+x
-         vWBw==
-X-Gm-Message-State: AJIora80BTyTXbCkBwYHptouMqCY9q9b+bj+97ulXqIxwaLe4Lj8YTcx
-        RS6UT29y2hVrCGr+iBN5bXM=
-X-Google-Smtp-Source: AGRyM1tC+TA3i2VDT0FCfZUNu1PN5en9WTa+6FlZIJIA3ZQsCgZKRel2hVVuXmzOcJtdKXJsni1xsA==
-X-Received: by 2002:a17:907:d28:b0:72b:5cc9:99c with SMTP id gn40-20020a1709070d2800b0072b5cc9099cmr39480035ejc.228.1658389860022;
-        Thu, 21 Jul 2022 00:51:00 -0700 (PDT)
-Received: from krava ([193.85.244.190])
-        by smtp.gmail.com with ESMTPSA id q6-20020a056402040600b0043bc33530ddsm569186edv.32.2022.07.21.00.50.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jul 2022 00:50:59 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Thu, 21 Jul 2022 09:50:57 +0200
-To:     Joanne Koong <joannelkoong@gmail.com>
-Cc:     bpf@vger.kernel.org, andrii@kernel.org, daniel@iogearbox.net,
-        ast@kernel.org
-Subject: Re: [PATCH bpf-next v1 1/2] bpf: Fix ref_obj_id for dynptr data
- slices in verifier
-Message-ID: <YtkFYeQwjqSZ2GOW@krava>
-References: <20220721024821.251231-1-joannelkoong@gmail.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=evkly4mzwl0OWnSDguyVCSXP+iuc3cHesZCTCuELO9c=;
+        b=MEQByb8lcIr9wNGoqYfDi6QAnGwV07pmojhPyUXx6gqEc8HaAJHntfybARLp92pmwt
+         khxSUG72exc2QZj726vp3UvuKMoNjfrc8Yk8g0x1muQFIqxsVLN2KUQp2Q6Ob0MqPzhF
+         wBG7UBDEho+MyVN6zdF2Q6xh42HRBjcBuZKXgvIgnoNbLf+ZGNJbgidb3pAZCSLyeomu
+         3e1EEgUWeoWMrt2NaX3K1jtUJlMaat4KFBcDwW5re+uFBjhd5DdC21lo0Km/fV4dGAoS
+         sjESFsgUHdBFc8HiGL9Nmn3dKirR70gBJopPuTUcX5uyMGG9O7i0KUBopJYqlf1/dZtT
+         yCPg==
+X-Gm-Message-State: AJIora94OTZK/HcjOAzBvVZck+nPlSXmdTnWqoBMBnbKJmA7gNQhvo1a
+        Bo1E9yIh+RWuophe5ohfFzhOI9Mb8Aswcv2gE1BxeUuorZ7KoWY3o7KPclmeO0vXo7iC6Tukq/A
+        EZjBngP4asy2l
+X-Received: by 2002:a17:90b:681:b0:1f2:147a:5e55 with SMTP id m1-20020a17090b068100b001f2147a5e55mr10137459pjz.159.1658394841815;
+        Thu, 21 Jul 2022 02:14:01 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1vZd1H6ktLLHxg0oQu5yg8T5pv3EpQ1CpRpfXswCqn2eqimIJKu3rbioASMftx5YraJgvSUnw==
+X-Received: by 2002:a17:90b:681:b0:1f2:147a:5e55 with SMTP id m1-20020a17090b068100b001f2147a5e55mr10137436pjz.159.1658394841532;
+        Thu, 21 Jul 2022 02:14:01 -0700 (PDT)
+Received: from [10.72.12.47] ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id z28-20020aa7949c000000b0052516db7123sm1181543pfk.35.2022.07.21.02.13.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Jul 2022 02:14:00 -0700 (PDT)
+Message-ID: <0b3c985d-d479-a554-4fe2-bfe94fc74070@redhat.com>
+Date:   Thu, 21 Jul 2022 17:13:49 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220721024821.251231-1-joannelkoong@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.11.0
+Subject: Re: [PATCH v12 08/40] virtio_ring: split: extract the logic of alloc
+ queue
+Content-Language: en-US
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        virtualization@lists.linux-foundation.org
+Cc:     Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Vadim Pasternak <vadimp@nvidia.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        linux-um@lists.infradead.org, netdev@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+        kvm@vger.kernel.org, bpf@vger.kernel.org,
+        kangjie.xu@linux.alibaba.com
+References: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
+ <20220720030436.79520-9-xuanzhuo@linux.alibaba.com>
+From:   Jason Wang <jasowang@redhat.com>
+In-Reply-To: <20220720030436.79520-9-xuanzhuo@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,81 +112,155 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 20, 2022 at 07:48:20PM -0700, Joanne Koong wrote:
-> When a data slice is obtained from a dynptr (through the bpf_dynptr_data API),
-> the ref obj id of the dynptr must be found and then associated with the data
-> slice.
-> 
-> The ref obj id of the dynptr must be found *before* the caller saved regs are
-> reset. Without this fix, the ref obj id tracking is not correct for
-> dynptrs that are at an offset from the frame pointer.
-> 
-> Please also note that the data slice's ref obj id must be assigned after the
-> ret types are parsed, since RET_PTR_TO_ALLOC_MEM-type return regs get
-> zero-marked.
-> 
-> Fixes: 34d4ef5775f7("bpf: Add dynptr data slices");
-> Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
 
-LGTM
-
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-
-jirka
-
+在 2022/7/20 11:04, Xuan Zhuo 写道:
+> Separate the logic of split to create vring queue.
+>
+> This feature is required for subsequent virtuqueue reset vring.
+>
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 > ---
->  kernel/bpf/verifier.c | 30 +++++++++++++++++-------------
->  1 file changed, 17 insertions(+), 13 deletions(-)
-> 
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index c59c3df0fea6..00f9b5a77734 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -7341,6 +7341,22 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
->  			}
->  		}
->  		break;
-> +	case BPF_FUNC_dynptr_data:
-> +		/* Find the id of the dynptr we're tracking the reference of.
-> +		 * We must do this before we reset caller saved regs.
-> +		 *
-> +		 * Please note as well that meta.ref_obj_id after the check_func_arg() calls doesn't
-> +		 * already contain the dynptr ref obj id, since dynptrs are stored on the stack.
-> +		 */
-> +		for (i = 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
-> +			if (arg_type_is_dynptr(fn->arg_type[i])) {
-> +				if (meta.ref_obj_id) {
-> +					verbose(env, "verifier internal error: multiple refcounted args in func\n");
-> +					return -EFAULT;
-> +				}
-> +				meta.ref_obj_id = stack_slot_get_id(env, &regs[BPF_REG_1 + i]);
-> +			}
-> +		}
->  	}
->  
->  	if (err)
-> @@ -7470,20 +7486,8 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
->  		/* For release_reference() */
->  		regs[BPF_REG_0].ref_obj_id = id;
->  	} else if (func_id == BPF_FUNC_dynptr_data) {
-> -		int dynptr_id = 0, i;
-> -
-> -		/* Find the id of the dynptr we're acquiring a reference to */
-> -		for (i = 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
-> -			if (arg_type_is_dynptr(fn->arg_type[i])) {
-> -				if (dynptr_id) {
-> -					verbose(env, "verifier internal error: multiple dynptr args in func\n");
-> -					return -EFAULT;
-> -				}
-> -				dynptr_id = stack_slot_get_id(env, &regs[BPF_REG_1 + i]);
-> -			}
-> -		}
->  		/* For release_reference() */
-> -		regs[BPF_REG_0].ref_obj_id = dynptr_id;
-> +		regs[BPF_REG_0].ref_obj_id = meta.ref_obj_id;
->  	}
->  
->  	do_refine_retval_range(regs, fn->ret_type, func_id, &meta);
-> -- 
-> 2.30.2
-> 
+>   drivers/virtio/virtio_ring.c | 68 ++++++++++++++++++++++--------------
+>   1 file changed, 42 insertions(+), 26 deletions(-)
+>
+> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> index c94c5461e702..c7971438bb2c 100644
+> --- a/drivers/virtio/virtio_ring.c
+> +++ b/drivers/virtio/virtio_ring.c
+> @@ -950,28 +950,19 @@ static void vring_free_split(struct vring_virtqueue_split *vring_split,
+>   	kfree(vring_split->desc_extra);
+>   }
+>   
+> -static struct virtqueue *vring_create_virtqueue_split(
+> -	unsigned int index,
+> -	unsigned int num,
+> -	unsigned int vring_align,
+> -	struct virtio_device *vdev,
+> -	bool weak_barriers,
+> -	bool may_reduce_num,
+> -	bool context,
+> -	bool (*notify)(struct virtqueue *),
+> -	void (*callback)(struct virtqueue *),
+> -	const char *name)
+> +static int vring_alloc_queue_split(struct vring_virtqueue_split *vring_split,
+> +				   struct virtio_device *vdev,
+> +				   u32 num,
+> +				   unsigned int vring_align,
+> +				   bool may_reduce_num)
+>   {
+> -	struct virtqueue *vq;
+>   	void *queue = NULL;
+>   	dma_addr_t dma_addr;
+> -	size_t queue_size_in_bytes;
+> -	struct vring vring;
+>   
+>   	/* We assume num is a power of 2. */
+>   	if (num & (num - 1)) {
+>   		dev_warn(&vdev->dev, "Bad virtqueue length %u\n", num);
+> -		return NULL;
+> +		return -EINVAL;
+>   	}
+>   
+>   	/* TODO: allocate each queue chunk individually */
+> @@ -982,11 +973,11 @@ static struct virtqueue *vring_create_virtqueue_split(
+>   		if (queue)
+>   			break;
+>   		if (!may_reduce_num)
+> -			return NULL;
+> +			return -ENOMEM;
+>   	}
+>   
+>   	if (!num)
+> -		return NULL;
+> +		return -ENOMEM;
+>   
+>   	if (!queue) {
+>   		/* Try to get a single page. You are my only hope! */
+> @@ -994,21 +985,46 @@ static struct virtqueue *vring_create_virtqueue_split(
+>   					  &dma_addr, GFP_KERNEL|__GFP_ZERO);
+>   	}
+>   	if (!queue)
+> -		return NULL;
+> +		return -ENOMEM;
+> +
+> +	vring_init(&vring_split->vring, num, queue, vring_align);
+>   
+> -	queue_size_in_bytes = vring_size(num, vring_align);
+> -	vring_init(&vring, num, queue, vring_align);
+> +	vring_split->queue_dma_addr = dma_addr;
+> +	vring_split->queue_size_in_bytes = vring_size(num, vring_align);
+> +
+> +	return 0;
+> +}
+> +
+> +static struct virtqueue *vring_create_virtqueue_split(
+> +	unsigned int index,
+> +	unsigned int num,
+> +	unsigned int vring_align,
+> +	struct virtio_device *vdev,
+> +	bool weak_barriers,
+> +	bool may_reduce_num,
+> +	bool context,
+> +	bool (*notify)(struct virtqueue *),
+> +	void (*callback)(struct virtqueue *),
+> +	const char *name)
+> +{
+> +	struct vring_virtqueue_split vring_split = {};
+> +	struct virtqueue *vq;
+> +	int err;
+> +
+> +	err = vring_alloc_queue_split(&vring_split, vdev, num, vring_align,
+> +				      may_reduce_num);
+> +	if (err)
+> +		return NULL;
+>   
+> -	vq = __vring_new_virtqueue(index, vring, vdev, weak_barriers, context,
+> -				   notify, callback, name);
+> +	vq = __vring_new_virtqueue(index, vring_split.vring, vdev, weak_barriers,
+> +				   context, notify, callback, name);
+>   	if (!vq) {
+> -		vring_free_queue(vdev, queue_size_in_bytes, queue,
+> -				 dma_addr);
+> +		vring_free_split(&vring_split, vdev);
+>   		return NULL;
+>   	}
+>   
+> -	to_vvq(vq)->split.queue_dma_addr = dma_addr;
+> -	to_vvq(vq)->split.queue_size_in_bytes = queue_size_in_bytes;
+> +	to_vvq(vq)->split.queue_dma_addr = vring_split.queue_dma_addr;
+> +	to_vvq(vq)->split.queue_size_in_bytes = vring_split.queue_size_in_bytes;
+
+
+This still seems a little bit redundant since the current logic is a 
+little bit complicated since the vq->split is not initialized in a 
+single place.
+
+I wonder if it's better to:
+
+vring_alloc_queue_split()
+vring_alloc_desc_extra() (reorder to make patch 9 come first)
+
+then we can simply assign vring_split to vq->split in 
+__vring_new_virtqueue() since it has:
+
+     vq->split.queue_dma_addr = 0;
+     vq->split.queue_size_in_bytes = 0;
+
+     vq->split.vring = vring;
+     vq->split.avail_flags_shadow = 0;
+     vq->split.avail_idx_shadow = 0;
+
+This seems to simplify the logic and task of e.g 
+virtqueue_vring_attach_split() to a simple:
+
+vq->split= vring_split;
+
+And if this makes sense, we can do something similar to packed ring.
+
+Thanks
+
+
+>   	to_vvq(vq)->we_own_ring = true;
+>   
+>   	return vq;
+
