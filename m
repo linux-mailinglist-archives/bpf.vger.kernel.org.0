@@ -2,118 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7ADE57E43F
-	for <lists+bpf@lfdr.de>; Fri, 22 Jul 2022 18:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E52C57E453
+	for <lists+bpf@lfdr.de>; Fri, 22 Jul 2022 18:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235110AbiGVQUx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Jul 2022 12:20:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52360 "EHLO
+        id S230501AbiGVQZ4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Jul 2022 12:25:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbiGVQUw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Jul 2022 12:20:52 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E217F87228;
-        Fri, 22 Jul 2022 09:20:50 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id z22so6452218edd.6;
-        Fri, 22 Jul 2022 09:20:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cVC7VH4dan2A6lIJvHCy/zypzAUG5xpdNLmt95eeeH0=;
-        b=Q1d+Pjppof/gqv0B7nIuyeAH00eiJSaKutpIB2CZ/+EK1FONt/1ST2s+gYIOMqs5lq
-         e99rqflAaCuYMucMnb2LavMYUkIVzd6Knm4mvn35pGM2uEUuYLEv39lYAyTR/KCF1J3k
-         K0nDSsL6/7nfcBMeecaXQzhaKdyGxEiYlPV1fwl0AUBYXYlrPIenQBNO7NzotEo0oJmk
-         7mon5tTLOnFSLAsHYRgueRTjmir9uSaFCNWhNNooiw6lmV/fl/C8fKqfqVWk/96FX0Bl
-         N5qbgF983FkNt1YzwmVUZt+2BLjjvZHBZ+BE77IemHcvDwkVawmzkDdKJDp9PqVaOZpl
-         EamQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cVC7VH4dan2A6lIJvHCy/zypzAUG5xpdNLmt95eeeH0=;
-        b=sUCpPLRuDP5MQY7xj0RSdYxnAY0qViZMBg4yhuBuK4Bq2hOVlNpYlJl0La3fZ+xLo6
-         xx27lXFKE/AeykTMjO9B+Szy1I/8bMMjHGUOVEEzy4bx3LPe8kIjpZ9d0PKp9on65jwl
-         GXjxouDtrVMjLDD1iwtn5SF8d7eAp5yG1ToO0ZoVpZtqUJMLAbeCy/4onDKZy3ieS/Fs
-         TuC/zg4dsZLbQZTuyLnO0zSmIh1bkgykl/wB3OQoYsStH4aJY96S8IepwfLbCUCxc7fH
-         GGTMoEze/55etiw9eA9dq3bSa9RioBv/+iTwmSQlxKfxw2nFZU7vdwajvVNdrDkjAldq
-         MLwg==
-X-Gm-Message-State: AJIora+r15rm/yLo9U3YO+165WA+QR/hyhWaS30DNCy2YVuzoth2xjT4
-        7Pr8mGJWGNN1vecWEtsRWoGaACXXvlzLOajYu9g=
-X-Google-Smtp-Source: AGRyM1v8tX9AlPjaUUQNq6sWzJYaGf5FllTis+XOUgeI5WKLL4UcG0LqykqgOOfxD5pSj/RLtAmDFMoEaYztTEZfog8=
-X-Received: by 2002:a05:6402:350c:b0:43a:e25f:d73 with SMTP id
- b12-20020a056402350c00b0043ae25f0d73mr680596edd.66.1658506849261; Fri, 22 Jul
- 2022 09:20:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220722021313.3150035-1-yosryahmed@google.com> <20220722021313.3150035-2-yosryahmed@google.com>
-In-Reply-To: <20220722021313.3150035-2-yosryahmed@google.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 22 Jul 2022 09:20:38 -0700
-Message-ID: <CAADnVQ+c7uuVXukguvy9x2HjM9K8rj6LOa_QJ_n+MVB-bOx3uQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 1/8] btf: Add a new kfunc set which allows to
- mark a function to be sleepable
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S233887AbiGVQZy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Jul 2022 12:25:54 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 309C9904DC
+        for <bpf@vger.kernel.org>; Fri, 22 Jul 2022 09:25:54 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E2A90B8293F
+        for <bpf@vger.kernel.org>; Fri, 22 Jul 2022 16:25:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15810C341C6;
+        Fri, 22 Jul 2022 16:25:49 +0000 (UTC)
+Date:   Fri, 22 Jul 2022 12:25:48 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, bpf <bpf@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Hao Luo <haoluo@google.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
+        KP Singh <kpsingh@chromium.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Hao Luo <haoluo@google.com>
+Subject: Re: [RFC] ftrace: Add support to keep some functions out of ftrace
+Message-ID: <20220722122548.2db543ca@gandalf.local.home>
+In-Reply-To: <20220722120854.3cc6ec4b@gandalf.local.home>
+References: <20220722110811.124515-1-jolsa@kernel.org>
+        <20220722072608.17ef543f@rorschach.local.home>
+        <CAADnVQ+hLnyztCi9aqpptjQk-P+ByAkyj2pjbdD45dsXwpZ0bw@mail.gmail.com>
+        <20220722120854.3cc6ec4b@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 21, 2022 at 7:13 PM Yosry Ahmed <yosryahmed@google.com> wrote:
->
-> From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
->
-> This allows to declare a kfunc as sleepable and prevents its use in
-> a non sleepable program.
->
-> Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> ---
->  include/linux/btf.h |  2 ++
->  kernel/bpf/btf.c    | 13 +++++++++++--
->  2 files changed, 13 insertions(+), 2 deletions(-)
->
-> diff --git a/include/linux/btf.h b/include/linux/btf.h
-> index 1bfed7fa0428..6e7517573d9e 100644
-> --- a/include/linux/btf.h
-> +++ b/include/linux/btf.h
-> @@ -18,6 +18,7 @@ enum btf_kfunc_type {
->         BTF_KFUNC_TYPE_RELEASE,
->         BTF_KFUNC_TYPE_RET_NULL,
->         BTF_KFUNC_TYPE_KPTR_ACQUIRE,
-> +       BTF_KFUNC_TYPE_SLEEPABLE,
->         BTF_KFUNC_TYPE_MAX,
->  };
+On Fri, 22 Jul 2022 12:08:54 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-This patch needs refactoring using the new BTF_ID_FLAGS scheme.
-When you do that please update the Documentation/bpf/kfuncs.rst as well.
+> On Fri, 22 Jul 2022 09:04:29 -0700
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> 
+> > ftrace must not peek into bpf specific functions.
+> > Currently ftrace is causing the kernel to crash.
+> > What Jiri is proposing is to fix ftrace bug.
+> > And you're saying nack? let ftrace be broken ?
 
-Thanks!
+Sounds like a BPF bug to me. Ftrace did nothing to cause this breakage. It
+was something BPF must have done. What exactly is BPF doing to ftrace
+locations anyway?
+
+> > 
+> > If you don't like Jiri's approach please propose something else.  
+> 
+> So, why not mark it as notrace? That will prevent ftrace from looking at it.
+> 
+
+And if for some strange reason you need the mcount/fentry on some internal
+BPF infrastructure, the work around is to register two ftrace_ops() that
+have filters to that function. In which case ftrace will force the call to
+the ftrace iterator loop, and any more ops attached will simply be added to
+that loop, and ftrace will no longer touch that location.
+
+Then you can do whatever you want to it without fear of racing with ftrace.
+
+But other than that, we don't need infrastructure to hide any mcount/fentry
+locations from ftrace. Those were add *for* ftrace.
+
+-- Steve
