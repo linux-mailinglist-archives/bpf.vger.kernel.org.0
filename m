@@ -2,156 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB76557DCB9
-	for <lists+bpf@lfdr.de>; Fri, 22 Jul 2022 10:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DEC657DCFB
+	for <lists+bpf@lfdr.de>; Fri, 22 Jul 2022 10:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234652AbiGVIql (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Jul 2022 04:46:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42574 "EHLO
+        id S234453AbiGVIzG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Jul 2022 04:55:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235063AbiGVIqY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Jul 2022 04:46:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 39B5B9FE3A
-        for <bpf@vger.kernel.org>; Fri, 22 Jul 2022 01:46:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1658479568;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RSXimuUd+71j8JzSdjJ27yBRxj8T4NPAJaqSzLdyIx8=;
-        b=ervQggX8RmeXwjNpIAEdL8g2XO5kgleRTlZO8Zj736K543Ii+qC/uzIZHQO66dK5mCGHhm
-        BcLpxTr5CoUSxNR+PCQRlrWd26bED7MaDctQXgilxXQVU1sRGNJJQKTQ4DaXxvWl4dCDvT
-        1DSaZPXqmFfp4EF9jOuMThtGN5Cr4fk=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-657-QBEJYLHdNXuKeJd-ALmdnQ-1; Fri, 22 Jul 2022 04:46:03 -0400
-X-MC-Unique: QBEJYLHdNXuKeJd-ALmdnQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B101A3C1014E;
-        Fri, 22 Jul 2022 08:46:02 +0000 (UTC)
-Received: from plouf.redhat.com (unknown [10.39.194.200])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 420A340CFD0A;
-        Fri, 22 Jul 2022 08:45:59 +0000 (UTC)
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>
-Cc:     Tero Kristo <tero.kristo@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Subject: [PATCH bpf-next v8 02/24] bpf/verifier: allow kfunc to read user provided context
-Date:   Fri, 22 Jul 2022 10:45:56 +0200
-Message-Id: <20220722084556.1342406-1-benjamin.tissoires@redhat.com>
-In-Reply-To: <20220721153625.1282007-3-benjamin.tissoires@redhat.com>
-References: <20220721153625.1282007-3-benjamin.tissoires@redhat.com>
+        with ESMTP id S235125AbiGVIyC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Jul 2022 04:54:02 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2117.outbound.protection.outlook.com [40.107.223.117])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D199FA0B80;
+        Fri, 22 Jul 2022 01:53:40 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bUT4P7/7GAhzNPvYajhMGiLj4XXUPOgJ/o7ZlKCLaVSdG0pZV3VBFZswIjZMAGJbjuOkEenDHRRAyN3vtbOq7JSKLj4coMmcrWlSCZugiAT5AguRNMaoOcy2zWmEKU3aFwGfiOpTTiz827Tkhz6c2Udj/juKyuWYGZ2u4BWRfSfI6Cao9eTt4TU2OXdjxzv1x7+YlexnpIBVycYUDW8W7BNS3wrSY0QoP64JvTXO3DcGZrWA6psa80RMZ/nyGnyGnwip8fDQa3FOUs5SEZEoOI7MrhbpyEtVJoOqCCHnxhIr7w4F2v93xho02VnQTZZae4cmzTvfauf6SeV17ZqQYQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gVwRpbipWuWX8pljeQzZQrRNdqFLoWAYvGc/vW1we4U=;
+ b=I7FepW0g/8AeWELhv0dd08JQI594/gIniY4KHceMn34rV8u1AKA6S/kjExHpb96qIrR23HRQj0HVlmsIT9OcWI0dOpoZUVMEI6eops1X8YJ0OP5lw1+bxkKVqizbE2HfGWR/PVwVSwRChGg7KFAEjUhgTJKiYePSffTZMeMoy/AOI+aYO8/gCZkwGVDtovHkgndfxB93ybiFMp/dNdD8u1vt7Bqeu86RlMFMj+arFGrv4oebMh+fuS8CMb+9FGdn4qUWYgLDKsq3dqi5iRME0PIaKeBQ1X29p79oALQ/cVRYnbCBHhWZ5J4xBVS8AezMu0+fzV6PFrq5X1jFKXXzug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gVwRpbipWuWX8pljeQzZQrRNdqFLoWAYvGc/vW1we4U=;
+ b=l40/X6xEgKdhCjzgMP1ETAJmmux6HLJhUzTOUaJmZCpTl1rHwuWZQmrDFtOkGVL9fQHXmrKEacG9vW56aDNAAnepRoC8ZY8uTIpzuvMwYlWeuftWJgsRYz9kYBq0O7fXJUk9VoFtYrHYgOXxkWWf3cBi5KSXg0RUni1RyGV/2jE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+ by CO1PR13MB5046.namprd13.prod.outlook.com (2603:10b6:303:f4::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5482.1; Fri, 22 Jul
+ 2022 08:53:38 +0000
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::a1e6:3e37:b3f3:7576]) by PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::a1e6:3e37:b3f3:7576%9]) with mapi id 15.20.5482.001; Fri, 22 Jul 2022
+ 08:53:38 +0000
+Date:   Fri, 22 Jul 2022 10:53:31 +0200
+From:   Simon Horman <simon.horman@corigine.com>
+To:     Slark Xiao <slark_xiao@163.com>
+Cc:     davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        oss-drivers@corigine.com, netdev@vger.kernel.org
+Subject: Re: [PATCH] nfp: bpf: Fix typo 'the the' in comment
+Message-ID: <Ytpli3DNkg1HlJJ1@corigine.com>
+References: <20220722082027.74046-1-slark_xiao@163.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220722082027.74046-1-slark_xiao@163.com>
+X-ClientProxiedBy: AM0PR02CA0102.eurprd02.prod.outlook.com
+ (2603:10a6:208:154::43) To PH0PR13MB4842.namprd13.prod.outlook.com
+ (2603:10b6:510:78::6)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.11.54.1
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b5d5a489-ae83-44e8-5663-08da6bbfaac7
+X-MS-TrafficTypeDiagnostic: CO1PR13MB5046:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: liqj1lfQQvC4j8YN+N7RAd6eRSilZIh551Sd5oDRyj7+M/QjjyzeG2Z80bAlIsGdt1KH9FFhVJkvOkXtx7RGef0WyYu2pc3AS+/ExodyXBhLovYPFIB3GftVA+411Hcqg4KbfXuY+jEHbiBYflacAa8rjqzakLv0aRCKf6KJNiDP8m8fnnJfnqN2o1r8fFetZmzC6hbDhphpfsjm5wpmPc8do89VAs+k33VD8sUkAx6txQXN2YY/b2rzYbX6Esw6rFH7VAD+IHv0AdlEwOResE1zefMOi+1P+E1ymSnO+hQSYbzkbJI0XOWJvFuJpQEZPp5NnBND+tkbBqX7Se+zYlI4zAU3kYDLigLc6cy8q5FfGJlh8SW+TAxtgG71kT0/WEPlwE6gPDlvfBYSPxc+OBpGYrag8mFDkyq9x4JTz/hs6jzcMtF1QTZRD4Ti5iCTSJo6M1MqL5mPBsAzj8k8HQXtteBKWKMT19jJLWBzfyn15WEFI97abpHAV/5Am8qci76VKqDVXwaHV+WisnjP3lWekPJGY/0ew2tzsDGgL7gKd2UikW+/z/2WOvRFOsnn+WraVDQfCGw1YbF77RI+tBi569Cr1ZmdS97tkUpqpTyv+QaGNo+ZtWyMK3EK1igsLkesNB7GrA3ONWELR1NAjCkgEqaCuFnK1z8R19olXM39+kMvQgk4iNsDyobo5hSKr+IkMqkzIBgEnELVumTI9upNDBJEbkXIF0NvtapAe/80mx1XxU1DvPpJzk7YexCo
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(39830400003)(346002)(376002)(396003)(366004)(136003)(66476007)(186003)(66556008)(4326008)(8676002)(36756003)(52116002)(66946007)(6666004)(41300700001)(2906002)(2616005)(6506007)(6512007)(6916009)(6486002)(558084003)(86362001)(8936002)(44832011)(316002)(5660300002)(38100700002)(478600001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?3ChEa5G3C2j1ilNXtU5hlE8+j1YaIifRrBZn3Pdu/Amr+/ci+qzsYL4O+eQK?=
+ =?us-ascii?Q?iP+KtrOR42thNFb2MWjyRq7uGq6jNIblMTlA7uFWZJOqTGVQElMqu+UQ1Ttq?=
+ =?us-ascii?Q?Wmrz7V1m7O+RRpUJ5+DyznD/JvjLZPVimc0abZeud8iFyczKhYhANhdQy1Da?=
+ =?us-ascii?Q?NhAGx4no2ojIWI1sWsaUPANmN+OnwbzdO4YcZ/KPG5AvhfxOj6U26n3G3PNI?=
+ =?us-ascii?Q?W8VR1jJCLQJZzlrKj73zuPj76AT8CV6DP4T9DIK5RdwQvfWcBpWnf2e2Aa84?=
+ =?us-ascii?Q?T6NiBgQkA/tEQFOALzXjP8jM2xjZiezCoC3w2ID9KZe0tWoCmBDc9cByaOfE?=
+ =?us-ascii?Q?jkHG4rdWyLtquVd5EaGKxsjcAY2ZVnznhPH1AK1oJFFYG2UTGqnERjIzJfyF?=
+ =?us-ascii?Q?+O/yvOyYbd98jiEM2o2RPBrMPGKWygLG7PnC19zgkA6WFSStcDGP0vJa8YYQ?=
+ =?us-ascii?Q?AYdBvLx2ZNO+2wcH2AmJjc+c3MGXkFivpNT9emkS6df8aq/Jn1E7ZnjH1HwS?=
+ =?us-ascii?Q?t/Mz6AKr+fgTYhSDgWkU5DKhhSF6k8jhYxdugr9Ooo3gZxsKvuWBUC0kwjUn?=
+ =?us-ascii?Q?gcAa0U2QjyqO6IRv7T05GNSuy3DDYkc2IYdetfgN1sZTZBdLZmSAcMGUnCNA?=
+ =?us-ascii?Q?AnGE0Rtnc33si3uuyVZCpohl03TdWZnKtH/QhlBc7cCg0msn4OS0DMSv2r8X?=
+ =?us-ascii?Q?u1heNvXtjccGv8tqIC0yrU8qxx7Ao7YpJLmqxUOIt+aY2xKaZDGlsMoCAVoB?=
+ =?us-ascii?Q?2vcKIai+aVV6faPgsrIP2EufDMqagmPO6BNrWeObGMs7xfkOADKrBsJK/qI/?=
+ =?us-ascii?Q?6MekPXSMNKf6CcMRqZGOlVCPi+nNU7U0ZWBcvhnxrBJ8NQyfCn7I2cWipCau?=
+ =?us-ascii?Q?PO8wZxlk7D2x//6dsk4PJh8a2R8uv35TyNDDreQWva9IZmAftTVh8QwUkzE3?=
+ =?us-ascii?Q?0djBf8umjXzbHJYXnGbUoXAlcL7yeCC/85AjMQvvW6wI85mvKkRkehKvw3q6?=
+ =?us-ascii?Q?oANY40PLjv603qwnGkOrTRDk8JHinCbnG2KaRvG+5kbfh16ayK7P8banvxct?=
+ =?us-ascii?Q?hSe9HFI9/wi+/kHvbpooshTNZ7mdbt6i9YC/pij1hBTMp4XQn/eF7wYToVQ6?=
+ =?us-ascii?Q?dV4K8t4aGzE9KyuD05PEkQeznZpBzDL3L8SJlyAw5RZI5gEdHDOY5mfzABLX?=
+ =?us-ascii?Q?b+BR7PKUtMK7OU3rOCH6sBS/vTIY3CBMhxhcSIsVT7S6XxMyhmxYtl1X5VLO?=
+ =?us-ascii?Q?EGUzoH41/nuISkpy98nQpCHrLjFEmVsVseFqQNDIQ/FJk1i2Shtv6+s/vYwC?=
+ =?us-ascii?Q?GNJimQPqgx6MCx15xB8K5YIGFlzSW9IaNzxCdqQ39CGaOwpMXkpktAAta1yr?=
+ =?us-ascii?Q?c37a8Qd8ArpsmjOWXEzSCexSJXe3/DPuut1w2Ir2D0bTIr5cnIdr9PBbfISi?=
+ =?us-ascii?Q?TBIRhWMn10OhkJiWzC27Cvoy8RJGXfcs5bMWumKfm8+69uGso5i2Fi7Ye/RQ?=
+ =?us-ascii?Q?NzwA6kMiZmUf9EjPj6Ir3/OeztXYYSXr/WW+EYhHZKZspxTN2G0/IRl9bPlf?=
+ =?us-ascii?Q?ui7eUL9SRNSBzlSrSBCWTFBcx5+7i2e4PLTPBzpuwPI6DFsSo5IBkf6qgN+5?=
+ =?us-ascii?Q?FzpFEsQJKc0+0lHOkitMoTRWbtRzmX6ieJpt42OrkgXXo0NdHYeUvPRX7s2p?=
+ =?us-ascii?Q?H3O2qw=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b5d5a489-ae83-44e8-5663-08da6bbfaac7
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jul 2022 08:53:37.9305
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HGyEY8AyL9Z6/QlpntnNTDR0NLeqzSh/+CAQy6pPUdgMpOipNr2FLGYrVh1VyK6mUnVf8Q2ERzQyJ09ILlp4Ag/oOwpAhowRvjgfNy+JCXA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR13MB5046
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When a kfunc was trying to access data from context in a syscall eBPF
-program, the verifier was rejecting the call.
-This is because the syscall context is not known at compile time, and
-so we need to check this when actually accessing it.
+On Fri, Jul 22, 2022 at 04:20:27PM +0800, Slark Xiao wrote:
+> Replace 'the the' with 'the' in the comment.
+> 
+> Signed-off-by: Slark Xiao <slark_xiao@163.com>
 
-Check for the valid memory access and allow such situation to happen.
+Thanks for noticing this and helping to improve the NFP driver.
 
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-
----
-
-changes in v8:
-- fixup comment
-- return -EACCESS instead of -EINVAL for consistency
-
-changes in v7:
-- renamed access_t into atype
-- allow zero-byte read
-- check_mem_access() to the correct offset/size
-
-new in v6
----
- kernel/bpf/verifier.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 7c1e056624f9..c807c5d7085a 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -248,6 +248,7 @@ struct bpf_call_arg_meta {
- 	struct bpf_map *map_ptr;
- 	bool raw_mode;
- 	bool pkt_access;
-+	bool is_kfunc;
- 	u8 release_regno;
- 	int regno;
- 	int access_size;
-@@ -5170,6 +5171,7 @@ static int check_helper_mem_access(struct bpf_verifier_env *env, int regno,
- 				   struct bpf_call_arg_meta *meta)
- {
- 	struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
-+	enum bpf_prog_type prog_type = resolve_prog_type(env->prog);
- 	u32 *max_access;
- 
- 	switch (base_type(reg->type)) {
-@@ -5223,6 +5225,24 @@ static int check_helper_mem_access(struct bpf_verifier_env *env, int regno,
- 				env,
- 				regno, reg->off, access_size,
- 				zero_size_allowed, ACCESS_HELPER, meta);
-+	case PTR_TO_CTX:
-+		/* in case of a kfunc called in a program of type SYSCALL, the context is
-+		 * user supplied, so not computed statically.
-+		 * Dynamically check it now
-+		 */
-+		if (prog_type == BPF_PROG_TYPE_SYSCALL && meta && meta->is_kfunc) {
-+			enum bpf_access_type atype = meta->raw_mode ? BPF_WRITE : BPF_READ;
-+			int offset = access_size - 1;
-+
-+			/* Allow zero-byte read from PTR_TO_CTX */
-+			if (access_size == 0)
-+				return zero_size_allowed ? 0 : -EACCES;
-+
-+			return check_mem_access(env, env->insn_idx, regno, offset, BPF_B,
-+						atype, -1, false);
-+		}
-+
-+		fallthrough;
- 	default: /* scalar_value or invalid ptr */
- 		/* Allow zero-byte read from NULL, regardless of pointer type */
- 		if (zero_size_allowed && access_size == 0 &&
-@@ -5335,6 +5355,7 @@ int check_kfunc_mem_size_reg(struct bpf_verifier_env *env, struct bpf_reg_state
- 	WARN_ON_ONCE(regno < BPF_REG_2 || regno > BPF_REG_5);
- 
- 	memset(&meta, 0, sizeof(meta));
-+	meta.is_kfunc = true;
- 
- 	if (may_be_null) {
- 		saved_reg = *mem_reg;
--- 
-2.36.1
-
+Acked-by: Simon Horman <simon.horman@corigine.com>
