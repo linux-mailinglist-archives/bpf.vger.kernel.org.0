@@ -2,34 +2,34 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C3A57E557
-	for <lists+bpf@lfdr.de>; Fri, 22 Jul 2022 19:21:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EAEF57E56F
+	for <lists+bpf@lfdr.de>; Fri, 22 Jul 2022 19:23:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236099AbiGVRVx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Jul 2022 13:21:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43506 "EHLO
+        id S236174AbiGVRXk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Jul 2022 13:23:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235943AbiGVRVv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Jul 2022 13:21:51 -0400
+        with ESMTP id S236123AbiGVRXZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Jul 2022 13:23:25 -0400
 Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 027E16716A
-        for <bpf@vger.kernel.org>; Fri, 22 Jul 2022 10:21:49 -0700 (PDT)
-Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4LqGNk6pfQz67MtT;
-        Sat, 23 Jul 2022 01:18:14 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DDAB9DECE
+        for <bpf@vger.kernel.org>; Fri, 22 Jul 2022 10:23:11 -0700 (PDT)
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4LqGSF6sBDz67fK4;
+        Sat, 23 Jul 2022 01:21:17 +0800 (CST)
 Received: from roberto-ThinkStation-P620.huawei.com (10.204.63.22) by
  fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 22 Jul 2022 19:21:47 +0200
+ 15.1.2375.24; Fri, 22 Jul 2022 19:23:08 +0200
 From:   Roberto Sassu <roberto.sassu@huawei.com>
 To:     <quentin@isovalent.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <andrii@kernel.org>, <martin.lau@linux.dev>, <song@kernel.org>,
         <john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
         <jevburton.kernel@gmail.com>
 CC:     <bpf@vger.kernel.org>, Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [RFC][PATCH v3 14/15] bpftool: Adjust map permissions
-Date:   Fri, 22 Jul 2022 19:18:35 +0200
-Message-ID: <20220722171836.2852247-15-roberto.sassu@huawei.com>
+Subject: [RFC][PATCH v3 15/15] selftests/bpf: Add map access tests
+Date:   Fri, 22 Jul 2022 19:18:36 +0200
+Message-ID: <20220722171836.2852247-16-roberto.sassu@huawei.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220722171836.2852247-1-roberto.sassu@huawei.com>
 References: <20220722171836.2852247-1-roberto.sassu@huawei.com>
@@ -49,465 +49,361 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Request a read-only file descriptor for:
-- btf subcommand: dump, show (build_btf_type_table for maps);
-- do_build_table_cb(), to show the path of a pinned map;
-- map search by name;
-- iter subcommands: pin (maps);
-- map subcommands: show_subset, show, dump, lookup, getnext and pin;
-- prog subcommand: show (metadata);
-- struct_ops subcommands: show and dump;
-- retrieve fd of inner map for update of outer map.
+Check the correctness of permission requests on two maps, one with
+read-only access, and one with read-write access. Accesses are enforced
+with a small eBPF program implementing the bpf_map security hook.
 
-Request a write-only file descriptor for:
-- map subcommands: update, delete, event_pipe.
+Ensure that read-like operations can be still executed on a read-only map,
+unlike before where they were denied due to the requestor unnecessarily
+specifying read-write permissions.
 
-Other permissions requests remain unchanged.
+Also ensure that the read-write map can be still accessed when requesting
+a write-like operation, unlike before where the search would stop at the
+read-only map due to not having sufficient permissions.
+
+Do the tests programmatically, with the new functions added to libbpf
+accepting the opts parameter, and with the bpftool binary.
 
 Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 ---
- tools/bpf/bpftool/btf.c           | 12 ++++++--
- tools/bpf/bpftool/common.c        | 30 +++++++++++++++++--
- tools/bpf/bpftool/iter.c          |  6 +++-
- tools/bpf/bpftool/map.c           | 48 +++++++++++++++++++++++++------
- tools/bpf/bpftool/map_perf_ring.c |  6 +++-
- tools/bpf/bpftool/prog.c          |  6 +++-
- tools/bpf/bpftool/struct_ops.c    | 32 +++++++++++++++++++--
- 7 files changed, 121 insertions(+), 19 deletions(-)
+ tools/testing/selftests/bpf/Makefile          |   3 +-
+ .../bpf/prog_tests/map_check_access.c         | 186 ++++++++++++++++++
+ .../bpf/progs/test_map_check_access.c         | 112 +++++++++++
+ 3 files changed, 300 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/map_check_access.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_map_check_access.c
 
-diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-index 2cbc777f1520..4666a59d5fc6 100644
---- a/tools/bpf/bpftool/btf.c
-+++ b/tools/bpf/bpftool/btf.c
-@@ -566,6 +566,10 @@ static int do_dump(int argc, char **argv)
- 	int fd = -1;
- 	int err;
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 8d59ec7f4c2d..a4f0b6f5c9f1 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -501,6 +501,7 @@ $(OUTPUT)/$(TRUNNER_BINARY): $(TRUNNER_TEST_OBJS)			\
+ 	$(Q)$$(CC) $$(CFLAGS) $$(filter %.a %.o,$$^) $$(LDLIBS) -o $$@
+ 	$(Q)$(RESOLVE_BTFIDS) --btf $(TRUNNER_OUTPUT)/btf_data.o $$@
+ 	$(Q)ln -sf $(if $2,..,.)/tools/build/bpftool/bootstrap/bpftool $(if $2,$2/)bpftool
++	$(Q)ln -sf $(if $2,..,.)/tools/build/bpftool/bpftool $(if $2,$2/)bpftool_nobootstrap
  
-+	DECLARE_LIBBPF_OPTS(bpf_get_fd_opts, opts,
+ endef
+ 
+@@ -595,7 +596,7 @@ $(OUTPUT)/bench: $(OUTPUT)/bench.o \
+ 
+ EXTRA_CLEAN := $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)	\
+ 	prog_tests/tests.h map_tests/tests.h verifier/tests.h		\
+-	feature bpftool							\
++	feature bpftool bpftool_nobootstrap				\
+ 	$(addprefix $(OUTPUT)/,*.o *.skel.h *.lskel.h *.subskel.h	\
+ 			       no_alu32 bpf_gcc bpf_testmod.ko		\
+ 			       liburandom_read.so)
+diff --git a/tools/testing/selftests/bpf/prog_tests/map_check_access.c b/tools/testing/selftests/bpf/prog_tests/map_check_access.c
+new file mode 100644
+index 000000000000..c2d801503a87
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/map_check_access.c
+@@ -0,0 +1,186 @@
++// SPDX-License-Identifier: GPL-2.0
++
++/*
++ * Copyright (C) 2022 Huawei Technologies Duesseldorf GmbH
++ *
++ * Author: Roberto Sassu <roberto.sassu@huawei.com>
++ */
++
++#include <sys/stat.h>
++#include <test_progs.h>
++
++#include "test_map_check_access.skel.h"
++
++#define PINNED_MAP_PATH "/sys/fs/bpf/test_map_check_access_map"
++#define PINNED_ITER_PATH "/sys/fs/bpf/test_map_check_access_iter"
++#define BPFTOOL_PATH "./bpftool_nobootstrap"
++#define MAX_CMD_SIZE 1024
++
++enum check_types { CHECK_NONE, CHECK_PINNED, CHECK_METADATA, CHECK_PERF };
++
++struct bpftool_command {
++	char str[MAX_CMD_SIZE];
++	enum check_types check;
++	bool failure;
++};
++
++struct bpftool_command bpftool_commands[] = {
++	{ .str = BPFTOOL_PATH " map list" },
++	{ .str = BPFTOOL_PATH " map show name data_input" },
++	{ .str = BPFTOOL_PATH " map -f show pinned " PINNED_MAP_PATH,
++	  .check = CHECK_PINNED },
++	{ .str = "rm -f " PINNED_MAP_PATH },
++	{ .str = BPFTOOL_PATH " map dump name data_input" },
++	{ .str = BPFTOOL_PATH " map lookup name data_input key 0 0 0 0" },
++	{ .str = BPFTOOL_PATH
++	  " map update name data_input key 0 0 0 0 value 0 0 0 0 2> /dev/null",
++	  .failure = true },
++	{ .str = BPFTOOL_PATH
++	  " map update name data_input_mim key 0 0 0 0 value name data_input" },
++	{ .str = BPFTOOL_PATH
++	  " map update name data_input_w key 0 0 0 0 value 0 0 0 0" },
++	{ .str = BPFTOOL_PATH " iter pin test_map_check_access.o "
++		 PINNED_ITER_PATH " map name data_input" },
++	{ .str = "cat " PINNED_ITER_PATH },
++	{ .str = "rm -f " PINNED_ITER_PATH },
++	{ .str = BPFTOOL_PATH " prog show name check_access",
++	  .check = CHECK_METADATA },
++	{ .str = BPFTOOL_PATH " btf show" },
++	{ .str = BPFTOOL_PATH " btf dump map name data_input" },
++	{ .str = BPFTOOL_PATH " map pin name data_input " PINNED_MAP_PATH },
++	{ .str = BPFTOOL_PATH " struct_ops show name dummy_2" },
++	{ .str = BPFTOOL_PATH " struct_ops dump name dummy_2" },
++	{ .str = BPFTOOL_PATH " map event_pipe name data_input_perf",
++	  .check = CHECK_PERF },
++};
++
++static int _run_bpftool(struct bpftool_command *command)
++{
++	char output[1024] = { 0 };
++	FILE *fp;
++	int ret;
++
++	fp = popen(command->str, "r");
++	if (!fp)
++		return -errno;
++
++	fread(output, sizeof(output) - 1, sizeof(*output), fp);
++
++	ret = pclose(fp);
++	if (WEXITSTATUS(ret) && !command->failure)
++		return WEXITSTATUS(ret);
++
++	ret = 0;
++
++	switch (command->check) {
++	case CHECK_PINNED:
++		if (!strstr(output, PINNED_MAP_PATH))
++			ret = -ENOENT;
++		break;
++	case CHECK_METADATA:
++		if (!strstr(output, "test_var"))
++			ret = -ENOENT;
++		break;
++	case CHECK_PERF:
++		if (strncmp(output, "==", 2))
++			ret = -ENOENT;
++		break;
++	default:
++		break;
++	}
++
++	return ret;
++}
++
++void test_map_check_access(void)
++{
++	struct test_map_check_access *skel;
++	struct bpf_map_info info_m = { 0 };
++	struct bpf_map *map;
++	__u32 len = sizeof(info_m);
++	int ret, zero = 0, fd, i;
++
++	DECLARE_LIBBPF_OPTS(bpf_get_fd_opts, opts_rdonly,
 +		.flags = BPF_F_RDONLY,
 +	);
 +
- 	if (!REQ_ARGS(2)) {
- 		usage();
- 		return -1;
-@@ -580,7 +584,7 @@ static int do_dump(int argc, char **argv)
- 			return -1;
- 		}
- 
--		fd = map_parse_fd_and_info(&argc, &argv, &info, &len, NULL);
-+		fd = map_parse_fd_and_info(&argc, &argv, &info, &len, &opts);
- 		if (fd < 0)
- 			return -1;
- 
-@@ -753,6 +757,10 @@ build_btf_type_table(struct hashmap *tab, enum bpf_obj_type type,
- 	int err;
- 	int fd;
- 
-+	DECLARE_LIBBPF_OPTS(bpf_get_fd_opts, opts,
-+		.flags = BPF_F_RDONLY,
-+	);
++	skel = test_map_check_access__open();
++	if (!ASSERT_OK_PTR(skel, "test_map_check_access__open"))
++		return;
 +
- 	while (true) {
- 		switch (type) {
- 		case BPF_OBJ_PROG:
-@@ -782,7 +790,7 @@ build_btf_type_table(struct hashmap *tab, enum bpf_obj_type type,
- 			fd = bpf_prog_get_fd_by_id_opts(id, NULL);
- 			break;
- 		case BPF_OBJ_MAP:
--			fd = bpf_map_get_fd_by_id_opts(id, NULL);
-+			fd = bpf_map_get_fd_by_id_opts(id, &opts);
- 			break;
- 		default:
- 			err = -1;
-diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
-index 8a2412fc4410..dd58054bcce7 100644
---- a/tools/bpf/bpftool/common.c
-+++ b/tools/bpf/bpftool/common.c
-@@ -28,6 +28,7 @@
- #include <bpf/hashmap.h>
- #include <bpf/libbpf.h> /* libbpf_num_possible_cpus */
- #include <bpf/btf.h>
-+#include <bpf/libbpf_internal.h> /* OPTS_GET */
- 
- #include "main.h"
- 
-@@ -303,7 +304,11 @@ int do_pin_any(int argc, char **argv,
- 	int err;
- 	int fd;
- 
--	fd = get_fd(&argc, &argv, NULL);
-+	DECLARE_LIBBPF_OPTS(bpf_get_fd_opts, opts,
-+		.flags = BPF_F_RDONLY,
-+	);
++	bpf_program__set_autoload(skel->progs.dump_bpf_hash_map, false);
 +
-+	fd = get_fd(&argc, &argv, &opts);
- 	if (fd < 0)
- 		return fd;
- 
-@@ -474,10 +479,14 @@ static int do_build_table_cb(const char *fpath, const struct stat *sb,
- 	int fd, err = 0;
- 	char *path;
- 
-+	DECLARE_LIBBPF_OPTS(bpf_get_fd_opts, opts,
-+		.flags = BPF_F_RDONLY,
-+	);
++	ret = test_map_check_access__load(skel);
++	if (!ASSERT_OK(ret, "test_map_check_access__load"))
++		goto close_prog;
 +
- 	if (typeflag != FTW_F)
- 		goto out_ret;
- 
--	fd = open_obj_pinned(fpath, true, NULL);
-+	fd = open_obj_pinned(fpath, true, &opts);
- 	if (fd < 0)
- 		goto out_ret;
- 
-@@ -886,6 +895,10 @@ static int map_fd_by_name(char *name, int **fds,
- 	void *tmp;
- 	int err;
- 
-+	DECLARE_LIBBPF_OPTS(bpf_get_fd_opts, search_opts,
-+		.flags = BPF_F_RDONLY,
-+	);
++	if (!ASSERT_OK_PTR(link, "bpf_program__attach_iter"))
++		goto close_prog;
 +
- 	while (true) {
- 		struct bpf_map_info info = {};
- 		__u32 len = sizeof(info);
-@@ -899,7 +912,7 @@ static int map_fd_by_name(char *name, int **fds,
- 			return nb_fds;
- 		}
- 
--		fd = bpf_map_get_fd_by_id_opts(id, opts);
-+		fd = bpf_map_get_fd_by_id_opts(id, &search_opts);
- 		if (fd < 0) {
- 			p_err("can't get map by id (%u): %s",
- 			      id, strerror(errno));
-@@ -918,6 +931,17 @@ static int map_fd_by_name(char *name, int **fds,
- 			continue;
- 		}
- 
-+		if (OPTS_GET(opts, flags, 0) != BPF_F_RDONLY) {
-+			close(fd);
++	ret = test_map_check_access__attach(skel);
++	if (!ASSERT_OK(ret, "test_map_check_access__attach"))
++		goto close_prog;
 +
-+			fd = bpf_map_get_fd_by_id_opts(id, opts);
-+			if (fd < 0) {
-+				p_err("can't get map by id (%u): %s",
-+				      id, strerror(errno));
-+				goto err_close_fds;
-+			}
-+		}
++	map = bpf_object__find_map_by_name(skel->obj, "data_input");
++	if (!ASSERT_OK_PTR(map, "bpf_object__find_map_by_name"))
++		goto close_prog;
 +
- 		if (nb_fds > 0) {
- 			tmp = realloc(*fds, (nb_fds + 1) * sizeof(int));
- 			if (!tmp) {
-diff --git a/tools/bpf/bpftool/iter.c b/tools/bpf/bpftool/iter.c
-index 1412be9eb298..40b3f8fddd90 100644
---- a/tools/bpf/bpftool/iter.c
-+++ b/tools/bpf/bpftool/iter.c
-@@ -18,6 +18,10 @@ static int do_pin(int argc, char **argv)
- 	struct bpf_link *link;
- 	int err = -1, map_fd = -1;
- 
-+	DECLARE_LIBBPF_OPTS(bpf_get_fd_opts, opts,
-+		.flags = BPF_F_RDONLY,
-+	);
++	ret = bpf_obj_get_info_by_fd(bpf_map__fd(map), &info_m, &len);
++	if (!ASSERT_OK(ret, "bpf_obj_get_info_by_fd"))
++		goto close_prog;
 +
- 	if (!REQ_ARGS(2))
- 		usage();
- 
-@@ -34,7 +38,7 @@ static int do_pin(int argc, char **argv)
- 				return -1;
- 			}
- 
--			map_fd = map_parse_fd(&argc, &argv, NULL);
-+			map_fd = map_parse_fd(&argc, &argv, &opts);
- 			if (map_fd < 0)
- 				return -1;
- 
-diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
-index 103bd44cd851..e2936b0046ba 100644
---- a/tools/bpf/bpftool/map.c
-+++ b/tools/bpf/bpftool/map.c
-@@ -334,6 +334,10 @@ static int parse_elem(char **argv, struct bpf_map_info *info,
- 		      void *key, void *value, __u32 key_size, __u32 value_size,
- 		      __u32 *flags, __u32 **value_fd)
- {
-+	DECLARE_LIBBPF_OPTS(bpf_get_fd_opts, opts,
-+		.flags = BPF_F_RDONLY,
-+	);
++	fd = bpf_map_get_fd_by_id(info_m.id);
++	if (!ASSERT_LT(fd, 0, "bpf_map_get_fd_by_id"))
++		goto close_prog;
 +
- 	if (!*argv) {
- 		if (!key && !value)
- 			return 0;
-@@ -381,7 +385,7 @@ static int parse_elem(char **argv, struct bpf_map_info *info,
- 				return -1;
- 			}
- 
--			fd = map_parse_fd(&argc, &argv, NULL);
-+			fd = map_parse_fd(&argc, &argv, &opts);
- 			if (fd < 0)
- 				return -1;
- 
-@@ -629,12 +633,16 @@ static int do_show_subset(int argc, char **argv)
- 	int nb_fds, i;
- 	int err = -1;
- 
-+	DECLARE_LIBBPF_OPTS(bpf_get_fd_opts, opts,
-+		.flags = BPF_F_RDONLY,
-+	);
++	fd = bpf_map_get_fd_by_id_opts(info_m.id, NULL);
++	if (!ASSERT_LT(fd, 0, "bpf_map_get_fd_by_id_opts"))
++		goto close_prog;
 +
- 	fds = malloc(sizeof(int));
- 	if (!fds) {
- 		p_err("mem alloc failed");
- 		return -1;
- 	}
--	nb_fds = map_parse_fds(&argc, &argv, &fds, NULL);
-+	nb_fds = map_parse_fds(&argc, &argv, &fds, &opts);
- 	if (nb_fds < 1)
- 		goto exit_free;
- 
-@@ -673,6 +681,10 @@ static int do_show(int argc, char **argv)
- 	int err;
- 	int fd;
- 
-+	DECLARE_LIBBPF_OPTS(bpf_get_fd_opts, opts,
-+		.flags = BPF_F_RDONLY,
-+	);
++	fd = bpf_map_get_fd_by_id_opts(info_m.id, &opts_rdonly);
++	if (!ASSERT_GE(fd, 0, "bpf_map_get_fd_by_id_opts"))
++		goto close_prog;
 +
- 	if (show_pinned) {
- 		map_table = hashmap__new(hash_fn_for_key_as_id,
- 					 equal_fn_for_key_as_id, NULL);
-@@ -702,7 +714,7 @@ static int do_show(int argc, char **argv)
- 			break;
- 		}
- 
--		fd = bpf_map_get_fd_by_id_opts(id, NULL);
-+		fd = bpf_map_get_fd_by_id_opts(id, &opts);
- 		if (fd < 0) {
- 			if (errno == ENOENT)
- 				continue;
-@@ -902,6 +914,10 @@ static int do_dump(int argc, char **argv)
- 	int *fds = NULL;
- 	int err = -1;
- 
-+	DECLARE_LIBBPF_OPTS(bpf_get_fd_opts, opts,
-+		.flags = BPF_F_RDONLY,
-+	);
++	ret = bpf_map_lookup_elem(fd, &zero, &len);
++	if (!ASSERT_OK(ret, "bpf_map_lookup_elem")) {
++		close(fd);
++		goto close_prog;
++	}
 +
- 	if (argc != 2)
- 		usage();
- 
-@@ -910,7 +926,7 @@ static int do_dump(int argc, char **argv)
- 		p_err("mem alloc failed");
- 		return -1;
- 	}
--	nb_fds = map_parse_fds(&argc, &argv, &fds, NULL);
-+	nb_fds = map_parse_fds(&argc, &argv, &fds, &opts);
- 	if (nb_fds < 1)
- 		goto exit_free;
- 
-@@ -995,10 +1011,14 @@ static int do_update(int argc, char **argv)
- 	void *key, *value;
- 	int fd, err;
- 
-+	DECLARE_LIBBPF_OPTS(bpf_get_fd_opts, opts,
-+		.flags = BPF_F_WRONLY,
-+	);
++	ret = bpf_map_update_elem(fd, &zero, &len, BPF_ANY);
 +
- 	if (argc < 2)
- 		usage();
- 
--	fd = map_parse_fd_and_info(&argc, &argv, &info, &len, NULL);
-+	fd = map_parse_fd_and_info(&argc, &argv, &info, &len, &opts);
- 	if (fd < 0)
- 		return -1;
- 
-@@ -1074,10 +1094,14 @@ static int do_lookup(int argc, char **argv)
- 	int err;
- 	int fd;
- 
-+	DECLARE_LIBBPF_OPTS(bpf_get_fd_opts, opts,
-+		.flags = BPF_F_RDONLY,
-+	);
++	close(fd);
 +
- 	if (argc < 2)
- 		usage();
- 
--	fd = map_parse_fd_and_info(&argc, &argv, &info, &len, NULL);
-+	fd = map_parse_fd_and_info(&argc, &argv, &info, &len, &opts);
- 	if (fd < 0)
- 		return -1;
- 
-@@ -1125,10 +1149,14 @@ static int do_getnext(int argc, char **argv)
- 	int err;
- 	int fd;
- 
-+	DECLARE_LIBBPF_OPTS(bpf_get_fd_opts, opts,
-+		.flags = BPF_F_RDONLY,
-+	);
++	if (!ASSERT_LT(ret, 0, "bpf_map_update_elem"))
++		goto close_prog;
 +
- 	if (argc < 2)
- 		usage();
- 
--	fd = map_parse_fd_and_info(&argc, &argv, &info, &len, NULL);
-+	fd = map_parse_fd_and_info(&argc, &argv, &info, &len, &opts);
- 	if (fd < 0)
- 		return -1;
- 
-@@ -1196,10 +1224,14 @@ static int do_delete(int argc, char **argv)
- 	int err;
- 	int fd;
- 
-+	DECLARE_LIBBPF_OPTS(bpf_get_fd_opts, opts,
-+		.flags = BPF_F_WRONLY,
-+	);
++	ret = bpf_map_update_elem(bpf_map__fd(map), &zero, &len, BPF_ANY);
++	if (!ASSERT_OK(ret, "bpf_map_update_elem"))
++		goto close_prog;
 +
- 	if (argc < 2)
- 		usage();
- 
--	fd = map_parse_fd_and_info(&argc, &argv, &info, &len, NULL);
-+	fd = map_parse_fd_and_info(&argc, &argv, &info, &len, &opts);
- 	if (fd < 0)
- 		return -1;
- 
-diff --git a/tools/bpf/bpftool/map_perf_ring.c b/tools/bpf/bpftool/map_perf_ring.c
-index fa062db08c87..8bc513d6eb55 100644
---- a/tools/bpf/bpftool/map_perf_ring.c
-+++ b/tools/bpf/bpftool/map_perf_ring.c
-@@ -125,6 +125,10 @@ int do_event_pipe(int argc, char **argv)
- 	};
- 	struct bpf_map_info map_info = {};
- 	LIBBPF_OPTS(perf_buffer_raw_opts, opts);
-+	DECLARE_LIBBPF_OPTS(bpf_get_fd_opts, map_opts,
-+		.flags = BPF_F_WRONLY,
-+	);
++	ret = bpf_map__pin(map, PINNED_MAP_PATH);
++	if (!ASSERT_OK(ret, "bpf_map__pin"))
++		goto close_prog;
 +
- 	struct event_pipe_ctx ctx = {
- 		.all_cpus = true,
- 		.cpu = -1,
-@@ -136,7 +140,7 @@ int do_event_pipe(int argc, char **argv)
- 
- 	map_info_len = sizeof(map_info);
- 	map_fd = map_parse_fd_and_info(&argc, &argv, &map_info, &map_info_len,
--				       NULL);
-+				       &map_opts);
- 	if (map_fd < 0)
- 		return -1;
- 
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index 648546342988..371a6510b2ed 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -227,6 +227,10 @@ static void *find_metadata(int prog_fd, struct bpf_map_info *map_info)
- 	int ret;
- 	__u32 i;
- 
-+	DECLARE_LIBBPF_OPTS(bpf_get_fd_opts, opts,
-+		.flags = BPF_F_RDONLY,
-+	);
++	fd = bpf_obj_get_opts(PINNED_MAP_PATH, &opts_rdonly);
++	if (!ASSERT_GE(fd, 0, "bpf_obj_get_opts"))
++		goto close_prog;
 +
- 	memset(&prog_info, 0, sizeof(prog_info));
- 	prog_info_len = sizeof(prog_info);
- 	ret = bpf_obj_get_info_by_fd(prog_fd, &prog_info, &prog_info_len);
-@@ -251,7 +255,7 @@ static void *find_metadata(int prog_fd, struct bpf_map_info *map_info)
- 		goto free_map_ids;
- 
- 	for (i = 0; i < prog_info.nr_map_ids; i++) {
--		map_fd = bpf_map_get_fd_by_id_opts(map_ids[i], NULL);
-+		map_fd = bpf_map_get_fd_by_id_opts(map_ids[i], &opts);
- 		if (map_fd < 0)
- 			goto free_map_ids;
- 
-diff --git a/tools/bpf/bpftool/struct_ops.c b/tools/bpf/bpftool/struct_ops.c
-index 51667db3f55f..5a93f14e2b6a 100644
---- a/tools/bpf/bpftool/struct_ops.c
-+++ b/tools/bpf/bpftool/struct_ops.c
-@@ -10,6 +10,7 @@
- #include <bpf/bpf.h>
- #include <bpf/btf.h>
- #include <bpf/libbpf.h>
-+#include <bpf/libbpf_internal.h> /* OPTS_GET */
- 
- #include "json_writer.h"
- #include "main.h"
-@@ -136,6 +137,10 @@ static int get_next_struct_ops_map(const char *name, int *res_fd,
- 	__u32 id = info->id;
- 	int err, fd;
- 
-+	DECLARE_LIBBPF_OPTS(bpf_get_fd_opts, search_opts,
-+		.flags = BPF_F_RDONLY,
-+	);
++	close(fd);
 +
- 	while (true) {
- 		err = bpf_map_get_next_id(id, &id);
- 		if (err) {
-@@ -145,7 +150,7 @@ static int get_next_struct_ops_map(const char *name, int *res_fd,
- 			return -1;
- 		}
- 
--		fd = bpf_map_get_fd_by_id_opts(id, opts);
-+		fd = bpf_map_get_fd_by_id_opts(id, &search_opts);
- 		if (fd < 0) {
- 			if (errno == ENOENT)
- 				continue;
-@@ -163,6 +168,19 @@ static int get_next_struct_ops_map(const char *name, int *res_fd,
- 
- 		if (info->type == BPF_MAP_TYPE_STRUCT_OPS &&
- 		    (!name || !strcmp(name, info->name))) {
-+			if (OPTS_GET(opts, flags, 0) != BPF_F_RDONLY) {
-+				close(fd);
++	fd = bpf_obj_get_opts(PINNED_MAP_PATH, NULL);
++	if (!ASSERT_LT(fd, 0, "bpf_obj_get_opts")) {
++		close(fd);
++		goto close_prog;
++	}
 +
-+				fd = bpf_map_get_fd_by_id_opts(id, opts);
-+				if (fd < 0) {
-+					if (errno == ENOENT)
-+						continue;
-+					p_err("can't get map by id (%u): %s",
-+					      id, strerror(errno));
-+					return -1;
-+				}
-+			}
++	for (i = 0; i < ARRAY_SIZE(bpftool_commands); i++) {
++		ret = _run_bpftool(&bpftool_commands[i]);
++		if (!ASSERT_OK(ret, bpftool_commands[i].str))
++			goto close_prog;
++	}
 +
- 			*res_fd = fd;
- 			return 1;
- 		}
-@@ -340,6 +358,10 @@ static int do_show(int argc, char **argv)
- 	const char *search_type = NULL, *search_term = NULL;
- 	struct res res;
- 
-+	DECLARE_LIBBPF_OPTS(bpf_get_fd_opts, opts,
-+		.flags = BPF_F_RDONLY,
-+	);
++close_prog:
++	test_map_check_access__destroy(skel);
++	unlink(PINNED_MAP_PATH);
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_map_check_access.c b/tools/testing/selftests/bpf/progs/test_map_check_access.c
+new file mode 100644
+index 000000000000..6b8f0bf8f77e
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_map_check_access.c
+@@ -0,0 +1,112 @@
++// SPDX-License-Identifier: GPL-2.0
 +
- 	if (argc && argc != 2)
- 		usage();
- 
-@@ -349,7 +371,7 @@ static int do_show(int argc, char **argv)
- 	}
- 
- 	res = do_work_on_struct_ops(search_type, search_term, __do_show,
--				    NULL, json_wtr, NULL);
-+				    NULL, json_wtr, &opts);
- 
- 	return cmd_retval(&res, !!search_term);
- }
-@@ -411,6 +433,10 @@ static int do_dump(int argc, char **argv)
- 	struct btf_dumper d = {};
- 	struct res res;
- 
-+	DECLARE_LIBBPF_OPTS(bpf_get_fd_opts, opts,
-+		.flags = BPF_F_RDONLY,
-+	);
++/*
++ * Copyright (C) 2021. Huawei Technologies Co., Ltd
++ * Copyright (C) 2022 Huawei Technologies Duesseldorf GmbH
++ *
++ * Author: Roberto Sassu <roberto.sassu@huawei.com>
++ */
 +
- 	if (argc && argc != 2)
- 		usage();
- 
-@@ -438,7 +464,7 @@ static int do_dump(int argc, char **argv)
- 	d.prog_id_as_func_ptr = true;
- 
- 	res = do_work_on_struct_ops(search_type, search_term, __do_dump, &d,
--				    wtr, NULL);
-+				    wtr, &opts);
- 
- 	if (!json_output)
- 		jsonw_destroy(&wtr);
++#include "vmlinux.h"
++#include <errno.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++/* From include/linux/mm.h. */
++#define FMODE_WRITE	0x2
++
++const char bpf_metadata_test_var[] SEC(".rodata") = "test_var";
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__uint(max_entries, 1);
++	__type(key, __u32);
++	__type(value, __u32);
++} data_input SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__uint(max_entries, 1);
++	__type(key, __u32);
++	__type(value, __u32);
++} data_input_w SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
++	__uint(max_entries, 1);
++	__uint(map_flags, 0);
++	__type(key, __u32);
++	__type(value, __u32);
++	__array(values, struct {
++		__uint(type, BPF_MAP_TYPE_ARRAY);
++		__uint(max_entries, 1);
++		__type(key, int);
++		__type(value, int);
++	});
++} data_input_mim SEC(".maps") = {
++	.values = { (void *)&data_input },
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
++	__type(key, int);
++	__type(value, int);
++} data_input_perf SEC(".maps");
++
++char _license[] SEC("license") = "GPL";
++
++SEC("iter/bpf_map_elem")
++int dump_bpf_hash_map(struct bpf_iter__bpf_map_elem *ctx)
++{
++	struct seq_file *seq = ctx->meta->seq;
++	struct bpf_map *map = ctx->map;
++	u32 *key = ctx->key;
++	u32 *val = ctx->value;
++
++	if (key == (void *)0 || val == (void *)0)
++		return 0;
++
++	BPF_SEQ_PRINTF(seq, "%d: (%x) (%llx)\n", map->id, *key, *val);
++	return 0;
++}
++
++SEC("lsm/bpf_map")
++int BPF_PROG(check_access, struct bpf_map *map, fmode_t fmode)
++{
++	if (map != (struct bpf_map *)&data_input)
++		return 0;
++
++	if (fmode & FMODE_WRITE)
++		return -EACCES;
++
++	return 0;
++}
++
++SEC("struct_ops/test_1")
++int BPF_PROG(test_1, struct bpf_dummy_ops_state *state)
++{
++	return 0;
++}
++
++SEC("struct_ops/test_2")
++int BPF_PROG(test_2, struct bpf_dummy_ops_state *state, int a1,
++	     unsigned short a2, char a3, unsigned long a4)
++{
++	return 0;
++}
++
++SEC(".struct_ops")
++struct bpf_dummy_ops dummy_2 = {
++	.test_1 = (void *)test_1,
++	.test_2 = (void *)test_2,
++};
++
++SEC("tp/raw_syscalls/sys_enter")
++int handle_sys_enter(void *ctx)
++{
++	int cpu = bpf_get_smp_processor_id();
++
++	bpf_perf_event_output(ctx, &data_input_perf, BPF_F_CURRENT_CPU,
++			      &cpu, sizeof(cpu));
++	return 0;
++}
 -- 
 2.25.1
 
