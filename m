@@ -2,95 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5448657E8F8
-	for <lists+bpf@lfdr.de>; Fri, 22 Jul 2022 23:41:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F40257E973
+	for <lists+bpf@lfdr.de>; Sat, 23 Jul 2022 00:01:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233195AbiGVVl0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Jul 2022 17:41:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43830 "EHLO
+        id S236488AbiGVWB4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Jul 2022 18:01:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229986AbiGVVlZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Jul 2022 17:41:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EC9AB5CAF
-        for <bpf@vger.kernel.org>; Fri, 22 Jul 2022 14:41:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CF97D62154
-        for <bpf@vger.kernel.org>; Fri, 22 Jul 2022 21:41:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC077C341C6;
-        Fri, 22 Jul 2022 21:41:22 +0000 (UTC)
-Date:   Fri, 22 Jul 2022 17:41:20 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>
-Subject: Re: [RFC] ftrace: Add support to keep some functions out of ftrace
-Message-ID: <20220722174120.688768a3@gandalf.local.home>
-In-Reply-To: <YtsRD1Po3qJy3w3t@krava>
-References: <20220722110811.124515-1-jolsa@kernel.org>
-        <20220722072608.17ef543f@rorschach.local.home>
-        <CAADnVQ+hLnyztCi9aqpptjQk-P+ByAkyj2pjbdD45dsXwpZ0bw@mail.gmail.com>
-        <20220722120854.3cc6ec4b@gandalf.local.home>
-        <20220722122548.2db543ca@gandalf.local.home>
-        <YtsRD1Po3qJy3w3t@krava>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        with ESMTP id S229667AbiGVWB4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Jul 2022 18:01:56 -0400
+Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35FC5175B7
+        for <bpf@vger.kernel.org>; Fri, 22 Jul 2022 15:01:53 -0700 (PDT)
+Received: by devbig010.atn6.facebook.com (Postfix, from userid 115148)
+        id 9720FF54D37B; Fri, 22 Jul 2022 15:01:40 -0700 (PDT)
+From:   Joanne Koong <joannelkoong@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     lorenzo@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+        ast@kernel.org, Joanne Koong <joannelkoong@gmail.com>
+Subject: [PATCH bpf-next v1 1/1] bpf: Fix bpf_xdp_pointer return pointer
+Date:   Fri, 22 Jul 2022 15:01:05 -0700
+Message-Id: <20220722220105.2065466-1-joannelkoong@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=3.3 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+        FORGED_GMAIL_RCVD,FREEMAIL_FROM,NML_ADSP_CUSTOM_MED,RDNS_DYNAMIC,
+        SPF_HELO_PASS,SPF_SOFTFAIL,SPOOFED_FREEMAIL,SPOOF_GMAIL_MID,
+        TVD_RCVD_IP autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 22 Jul 2022 23:05:19 +0200
-Jiri Olsa <olsajiri@gmail.com> wrote:
+For the case where offset + len =3D=3D size, bpf_xdp_pointer should retur=
+n a
+valid pointer to the addr because that access is permitted. We should
+only return NULL in the case where offset + len exceeds size.
 
-> ok, I think we could use that, I'll check
-> 
-> > 
-> > But other than that, we don't need infrastructure to hide any mcount/fentry
-> > locations from ftrace. Those were add *for* ftrace.  
-> 
-> I think I understand the fentry/ftrace equivalence you see, I remember
-> the perl mcount script ;-)
+Fixes: 3f364222d032 ("net: xdp: introduce bpf_xdp_pointer utility routine=
+")
+Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+---
+ net/core/filter.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-It's even more than that. We worked with the compiler folks to get fentry
-for ftrace purposes (namely to speed it up, and not rely on frame
-pointers, which mcount did). fentry never existed until then. Like I said.
-fentry was created *for* ftrace. And currently it's x86 specific, as it
-relies on the calling convention that a call does both, push the return
-address onto the  stack, and jump to a function. The blr
-(branch-link-register) method is more complex, which is where the
-"patchable" work comes from.
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 289614887ed5..4307a75eeb4c 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -3918,7 +3918,7 @@ static void *bpf_xdp_pointer(struct xdp_buff *xdp, =
+u32 offset, u32 len)
+ 		offset -=3D frag_size;
+ 	}
+ out:
+-	return offset + len < size ? addr + offset : NULL;
++	return offset + len <=3D size ? addr + offset : NULL;
+ }
+=20
+ BPF_CALL_4(bpf_xdp_load_bytes, struct xdp_buff *, xdp, u32, offset,
+--=20
+2.30.2
 
-> 
-> still I think we should be able to define function that has fentry
-> profile call and be able to manage it without ftrace
-> 
-> one other thought.. how about adding function that would allow to disable
-> function in ftrace, with existing FTRACE_FL_DISABLED or some new flag
-> 
-> that way ftrace still keeps track of it, but won't allow to use it in
-> ftrace infra
-
-Another way is to remove it at compile time from the mcount_loc table, and
-add it to your own table. I take it, this is for bpf infrastructure code
-and not for any code that's in the day to day processing of the kernel,
-right?
-
--- Steve
