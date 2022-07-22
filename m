@@ -2,82 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0949957E42D
-	for <lists+bpf@lfdr.de>; Fri, 22 Jul 2022 18:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86BBA57E435
+	for <lists+bpf@lfdr.de>; Fri, 22 Jul 2022 18:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234251AbiGVQKS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Jul 2022 12:10:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45826 "EHLO
+        id S235282AbiGVQQt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Jul 2022 12:16:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234012AbiGVQKR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Jul 2022 12:10:17 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C3912AF9
-        for <bpf@vger.kernel.org>; Fri, 22 Jul 2022 09:10:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 98A74B8296C
-        for <bpf@vger.kernel.org>; Fri, 22 Jul 2022 16:10:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 41A0BC341CA;
-        Fri, 22 Jul 2022 16:10:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658506213;
-        bh=g7NoW9RkJjVElPX9fhT38rJdszbamPMF6I0cSskzYQA=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=RIHBoCTLWGeWv8koYE7v8VMV5pCOw6iNp6BjJbh/yCNSHLpBYlOqSpo8Q29/Nh0hm
-         5oqhmlvJFB05/SKMVNno0tM4TxKo6WyXx8aufXyttBk54eFA1Y+KvzPk83SZ8fj9eo
-         /si5jjmm2k1lEnMXvFGGT9Yl9rophWGPG2T80BWN7kSNWTxxAu0CcoikYOFDuhRqDb
-         m7ZcOhJ0sMjN+CaH0452l763Mil1Em7IyI2reW/rXE8BYfHupBOEa1deijBY7kU8K3
-         F8fAbmL76O0zBkdJBdDiyV4emcqU1P3ABtMxZnYhhscwhRohckQwmSDiIhXrvSOhUC
-         JoYJHGjt7eF3Q==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1F902E451B3;
-        Fri, 22 Jul 2022 16:10:13 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S232511AbiGVQQs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Jul 2022 12:16:48 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88B97140F1;
+        Fri, 22 Jul 2022 09:16:47 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id j22so9416460ejs.2;
+        Fri, 22 Jul 2022 09:16:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=97WFVBFeJ/mP7POIyyy1UP0JWOMgZ/bOiCTe1ETU5XI=;
+        b=DPr5GbzJ9gljq8DfC08aakia49SnfaLxsujJZQI7oAQIHdY1grFo4OcBO4dxciU+Qa
+         Or/8tRV8tnIpJ6L8w0iBpM939aGWIBdUIb2ZNSxQzwAj0uIZ6XE13dGUGQzsNipcg9ms
+         tNsO/k+a8prGjijrm4qyOaNWV7VDKznCJNtZD37vsxaAynSdg9lFsqrMGb91IKAuu6tt
+         THrcBbNLQrN2V6v1jn3kyOpm7/cv7uoR3GgfFs9r9BnqO4bX4WeoF4WjEVmGvH3fW1Is
+         jL+u6LyLUyyWEepxJfwOJF/sXhEbu3kloQstYAVH+wMbj89Qwd4H8WyGvPErw6PHUx0/
+         Lbog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=97WFVBFeJ/mP7POIyyy1UP0JWOMgZ/bOiCTe1ETU5XI=;
+        b=k889UcTzbHcOn3s2Tk+dZ7AMEX08HpvqjQdbFp6PTYSjU+RrELOc1PCyZBM1hCd6Dm
+         s2oisZKynsN8nYNUYka002cZIAf0FD4g1mDpGRECllmmh0NMmd3Sm12jx+PzhPPxQSb2
+         u4Qm4pgMPth7wnHkZ3p8wHqNqTxr8UF9uX62QqD8BjP7C9uL1AxQMLVD+m7yEqZimQW5
+         gSrDKHwTHrO1KkyTb3tNqP/5w2YZINZLzIq9x3g0V1ym2UIKNpzi7VQow1BLNLlk8Oa1
+         KtuZISiFZ0IHHleRYHQppuH2MwbI8gyWMGMPJ+HqVXW+K0ffFow78Xq2X1FofSHHlCuZ
+         D03A==
+X-Gm-Message-State: AJIora+6orXxjz7G992ffRTKj9zy4L9Tzx5QpVKydG2xBMA967RA/X2d
+        rl+51D2u1CrQqYJQkt4Oq25CGPETsJ5wc9LnpOOVjWO7TH4=
+X-Google-Smtp-Source: AGRyM1v1fHCwpN/hlsbBmFOHa0gm/aGOOZHGLRZMX0jdSmOSXL/mCoYZb8NkvX8F2/xv5DnONwmLJbh9lwhOEJ1Cqrg=
+X-Received: by 2002:a17:906:9b86:b0:6fe:d37f:b29d with SMTP id
+ dd6-20020a1709069b8600b006fed37fb29dmr488369ejc.327.1658506605946; Fri, 22
+ Jul 2022 09:16:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] bpf: Fix build error in case of
- !CONFIG_DEBUG_INFO_BTF
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165850621312.4113.2075596582687623102.git-patchwork-notify@kernel.org>
-Date:   Fri, 22 Jul 2022 16:10:13 +0000
-References: <20220722113605.6513-1-memxor@gmail.com>
-In-Reply-To: <20220722113605.6513-1-memxor@gmail.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org, lkp@intel.com, ast@kernel.org,
-        andrii@kernel.org, daniel@iogearbox.net
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20220721153625.1282007-3-benjamin.tissoires@redhat.com> <20220722084556.1342406-1-benjamin.tissoires@redhat.com>
+In-Reply-To: <20220722084556.1342406-1-benjamin.tissoires@redhat.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 22 Jul 2022 09:16:34 -0700
+Message-ID: <CAADnVQLypx8Yd7L4GByGNEJaWgg0R6ukNV9hz0ge1+ZdW4mdgQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v8 02/24] bpf/verifier: allow kfunc to read user
+ provided context
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>,
+        Tero Kristo <tero.kristo@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Fri, Jul 22, 2022 at 1:46 AM Benjamin Tissoires
+<benjamin.tissoires@redhat.com> wrote:
+>
+> When a kfunc was trying to access data from context in a syscall eBPF
+> program, the verifier was rejecting the call.
+> This is because the syscall context is not known at compile time, and
+> so we need to check this when actually accessing it.
+>
+> Check for the valid memory access and allow such situation to happen.
+>
+> Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+>
+> ---
+>
+> changes in v8:
+> - fixup comment
+> - return -EACCESS instead of -EINVAL for consistency
+>
+> changes in v7:
+> - renamed access_t into atype
+> - allow zero-byte read
+> - check_mem_access() to the correct offset/size
+>
+> new in v6
+> ---
+>  kernel/bpf/verifier.c | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 7c1e056624f9..c807c5d7085a 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -248,6 +248,7 @@ struct bpf_call_arg_meta {
+>         struct bpf_map *map_ptr;
+>         bool raw_mode;
+>         bool pkt_access;
+> +       bool is_kfunc;
+>         u8 release_regno;
+>         int regno;
+>         int access_size;
+> @@ -5170,6 +5171,7 @@ static int check_helper_mem_access(struct bpf_verifier_env *env, int regno,
+>                                    struct bpf_call_arg_meta *meta)
+>  {
+>         struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
+> +       enum bpf_prog_type prog_type = resolve_prog_type(env->prog);
+>         u32 *max_access;
+>
+>         switch (base_type(reg->type)) {
+> @@ -5223,6 +5225,24 @@ static int check_helper_mem_access(struct bpf_verifier_env *env, int regno,
+>                                 env,
+>                                 regno, reg->off, access_size,
+>                                 zero_size_allowed, ACCESS_HELPER, meta);
+> +       case PTR_TO_CTX:
+> +               /* in case of a kfunc called in a program of type SYSCALL, the context is
+> +                * user supplied, so not computed statically.
+> +                * Dynamically check it now
+> +                */
+> +               if (prog_type == BPF_PROG_TYPE_SYSCALL && meta && meta->is_kfunc) {
 
-This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+prog_type check looks a bit odd here.
+Can we generalize with
+if (!env->ops->convert_ctx_access
 
-On Fri, 22 Jul 2022 13:36:05 +0200 you wrote:
-> BTF_ID_FLAGS macro needs to be able to take 0 or 1 args, so make it a
-> variable argument. BTF_SET8_END is incorrect, it should just be empty.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Fixes: ab21d6063c01 ("bpf: Introduce 8-byte BTF set")
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> 
-> [...]
+In other words any program type that doesn't have ctx rewrites can
+use helpers to access ctx fields ?
 
-Here is the summary with links:
-  - [bpf-next] bpf: Fix build error in case of !CONFIG_DEBUG_INFO_BTF
-    https://git.kernel.org/bpf/bpf-next/c/e42341437586
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Also why kfunc only?
+It looks safe to allow normal helpers as well.
