@@ -2,116 +2,241 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F3A157DFF4
-	for <lists+bpf@lfdr.de>; Fri, 22 Jul 2022 12:33:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFC6657E0A6
+	for <lists+bpf@lfdr.de>; Fri, 22 Jul 2022 13:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235116AbiGVK2N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Jul 2022 06:28:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57464 "EHLO
+        id S232125AbiGVLIb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Jul 2022 07:08:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235243AbiGVK1m (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Jul 2022 06:27:42 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA0F7B5C9C;
-        Fri, 22 Jul 2022 03:26:48 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id q14so3324215iod.3;
-        Fri, 22 Jul 2022 03:26:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=++ZOFlOZxMjrOsr2efl/yr+NEpCsW/HIcT4Q3CtS1EA=;
-        b=h0FeYf4usPtRPDWKkAXmKGyuKsyZDBNxj65yEkSBH87oEq5m9ADC2r8UZyeo8robS0
-         PqT684mRn+fJb8PpiOxsBCTODXQ3VU+owR7jj1ELG4QSmRs4OiDX7lOlMwION71AciVq
-         h2842VtVKSGlN8nq9nPkWsvZQk9G8GmLfH5ekuaUFt4aqhRCfYKEZR63A1ep8akYJSVS
-         yQ0Q4ssZzvL+gGyCLigwIgp+L0inHimgwrLJnMqy2v+iiQzk6dFCwV1PMN7D6CRoynqf
-         m8Dpc3TTQ1F3lQ9MpvxS+recTxDue27hx9BkQuZ35sLhyDLC+29oN3e2Ub6Jke3d3dlC
-         iWfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=++ZOFlOZxMjrOsr2efl/yr+NEpCsW/HIcT4Q3CtS1EA=;
-        b=Lxk4Ey6bnV1RetpWZCT90KtbHaTWxzd/Pvik1AjziS3QjPnkvRM0afbwO2LyA6J5Mt
-         nmG1KJD6Occ4c00pewwamXP05vh2Ote0UlmVr6MI3jAQ03CbyALCCILjRLWKIja2Inyi
-         NjH1Vyybr561tHvqiPmNOZT6CofjSxoXI9GZ5fz5YTIQCcH0Ty4MeavaOW770cgrM43V
-         xIBhCnYLFkNvH/dIKEFImREPDNdzReQal6kSgxhAHsDuLzcSSlMdebZR8d+PIcSZFYzk
-         lp58xGuNq8jWKBAQ6jHybDRlTw6EhyVWsoU1/SEa77GloIJo+cN/Ze39FZXCCJlAF2PQ
-         y+Sg==
-X-Gm-Message-State: AJIora+bzzSa4OL9/9RtM2LC9bMMin5GIcESnVCt1Qtqj2BFINoiiaa1
-        lbt6VJ1aKJS2U3Cf2MW4fE50okzBvA1ZCC0Kc04=
-X-Google-Smtp-Source: AGRyM1uE3dnjcjkHa9ZDYr6Pi2e/HLy1hn85fMSmA7vDXmZ6J9uPot1KYZ4SLW+O+JKzWO69H3e53X5SlrQsChafoEU=
-X-Received: by 2002:a02:c4c3:0:b0:33f:4fb4:834b with SMTP id
- h3-20020a02c4c3000000b0033f4fb4834bmr1237811jaj.231.1658485608235; Fri, 22
- Jul 2022 03:26:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220721134245.2450-1-memxor@gmail.com> <20220721134245.2450-5-memxor@gmail.com>
- <20220722041056.r2ozhs4p3s7mt7go@macbook-pro-3.dhcp.thefacebook.com>
-In-Reply-To: <20220722041056.r2ozhs4p3s7mt7go@macbook-pro-3.dhcp.thefacebook.com>
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Fri, 22 Jul 2022 12:26:11 +0200
-Message-ID: <CAP01T77M27ZxZ-_oMujCCpCkSYJ9iMnm4EHTNgTe2odbCfPt2w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v7 04/13] bpf: Add support for forcing kfunc args
- to be trusted
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        with ESMTP id S230308AbiGVLI3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Jul 2022 07:08:29 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61244BE9DF
+        for <bpf@vger.kernel.org>; Fri, 22 Jul 2022 04:08:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 192F7B827CF
+        for <bpf@vger.kernel.org>; Fri, 22 Jul 2022 11:08:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B35BFC341C6;
+        Fri, 22 Jul 2022 11:08:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1658488098;
+        bh=dsfRWLLMR4+ptEj3SyuQFRFYHxAyM4SviO1lBe1wUNM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FLaVfjfyNt5MPe5RmLdvNZVNd53m3EatesLoFmBSc24+wYySNtxOx32ao/ZkrAOuG
+         dDQYPygQuEiz97/7QdkXLc41DD3uTbSXCHsqMp67jXwXFZugP8OHaotvNe/xf8LDMp
+         IAhKtLg52hYDSmdlvij/XAL3PuqfGjZrvp7vdNHx1CNJf7jBo0sGaOVqb50LsJO4+L
+         lfPkN4502avo4UigPEwLLJLqwyNdYdcsvkhmJilF3Qj4ysh+QYfrqqop/7c0HtMgRK
+         ks7KAfL19az3nUjyI2FDxKWOxAtYTYFvcvOyNHfmuWVilRxiApn6jGZXHefvoRbi/G
+         TO/Xr40mdI8hA==
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Andrii Nakryiko <andrii@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>
+Subject: [RFC] ftrace: Add support to keep some functions out of ftrace
+Date:   Fri, 22 Jul 2022 13:08:11 +0200
+Message-Id: <20220722110811.124515-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.35.3
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 22 Jul 2022 at 06:11, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, Jul 21, 2022 at 03:42:36PM +0200, Kumar Kartikeya Dwivedi wrote:
-> > +/* Trusted arguments are those which are meant to be referenced arguments with
-> > + * unchanged offset. It is used to enforce that pointers obtained from acquire
-> > + * kfuncs remain unmodified when being passed to helpers taking trusted args.
-> > + *
-> > + * Consider
-> > + *   struct foo {
-> > + *           int data;
-> > + *           struct foo *next;
-> > + *   };
-> > + *
-> > + *   struct bar {
-> > + *           int data;
-> > + *           struct foo f;
-> > + *   };
-> > + *
-> > + *   struct foo *f = alloc_foo(); // Acquire kfunc
-> > + *   struct bar *b = alloc_bar(); // Acquire kfunc
-> > + *
-> > + * If a kfunc set_foo_data() wants to operate only on the allocated object, it
-> > + * will set the KF_TRUSTED_ARGS flag, which will prevent unsafe usage like:
-> > + *
-> > + *   set_foo_data(f, 42);       // Allowed
-> > + *   set_foo_data(f->next, 42); // Rejected, non-referenced pointer
-> > + *   set_foo_data(&f->next, 42);// Rejected, referenced, but bad offset
-> > + *   set_foo_data(&b->f, 42);   // Rejected, referenced, but wrong type
->
-> I think you meant to swap above two comments ?
-> That's what I did while applying.
->
-> Also fixed typo in Fixes tag in patch 13. It was missing a letter in sha.
->
-> Since there are 3 other pending patchsets in patchwork that add new kfuncs
-> this cleanup of kfunc registration couldn't have come at better time.
->
-> Thank you for doing this work.
+hi,
+we recently hit bug where ftrace update raced with bpf_dispatcher_update
+that calls directly bpf_arch_text_poke [1].
 
-Thank you for doing the fixups!
+The bpf_dispatcher_update creates special trampoline and attaches it to
+designated bpf_dispatcher_xdp_func function, which is run for xdp bpf
+programs from several places.
+
+After discussion with Alexei we'd rather keep this code update out of
+ftrace, because it's already slow and had troubles with CI because of
+that.
+
+This patch is presenting the idea to allow some functions not to be
+managed by ftrace by marking them with NOFTRACE_SYMBOL macro and
+such symbols will not be added to ftrace_pages on the kernel start.
+
+Please note it's RFC so I did not bother with some fast search for
+is_noftrace_function function.
+
+Perhaps we could use existing NOKPROBE_SYMBOL for this? but I'm not
+sure you can (or want) to run function trace on such symbols.
+
+thoughts? thanks
+jirka
+
+
+[1] https://lore.kernel.org/bpf/20220714082316.479181-1-jolsa@kernel.org/
+---
+ include/asm-generic/vmlinux.lds.h | 10 ++++++
+ include/linux/bpf.h               |  2 ++
+ include/linux/ftrace.h            | 10 ++++++
+ kernel/trace/ftrace.c             | 53 +++++++++++++++++++++++++++++++
+ 4 files changed, 75 insertions(+)
+
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index 7515a465ec03..94c3cbe82ffd 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -210,6 +210,15 @@
+ #define KPROBE_BLACKLIST()
+ #endif
+ 
++#ifdef CONFIG_FTRACE
++#define NOFTRACE()	. = ALIGN(8);			      \
++			__start_noftrace = .;		      \
++			KEEP(*(_no_ftrace))		      \
++			__stop_noftrace = .;
++#else
++#define NOFTRACE()
++#endif
++
+ #ifdef CONFIG_FUNCTION_ERROR_INJECTION
+ #define ERROR_INJECT_WHITELIST()	STRUCT_ALIGN();			      \
+ 			__start_error_injection_whitelist = .;		      \
+@@ -705,6 +714,7 @@
+ 	FTRACE_EVENTS()							\
+ 	TRACE_SYSCALLS()						\
+ 	KPROBE_BLACKLIST()						\
++	NOFTRACE()							\
+ 	ERROR_INJECT_WHITELIST()					\
+ 	MEM_DISCARD(init.rodata)					\
+ 	CLK_OF_TABLES()							\
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index a5bf00649995..1330b84eb20f 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -27,6 +27,7 @@
+ #include <linux/bpfptr.h>
+ #include <linux/btf.h>
+ #include <linux/rcupdate_trace.h>
++#include <linux/ftrace.h>
+ 
+ struct bpf_verifier_env;
+ struct bpf_verifier_log;
+@@ -919,6 +920,7 @@ int arch_prepare_bpf_dispatcher(void *image, s64 *funcs, int num_funcs);
+ 		return bpf_func(ctx, insnsi);				\
+ 	}								\
+ 	EXPORT_SYMBOL(bpf_dispatcher_##name##_func);			\
++	NOFTRACE_SYMBOL(bpf_dispatcher_##name##_func);			\
+ 	struct bpf_dispatcher bpf_dispatcher_##name =			\
+ 		BPF_DISPATCHER_INIT(bpf_dispatcher_##name);
+ #define DECLARE_BPF_DISPATCHER(name)					\
+diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+index 979f6bfa2c25..cde80cd57f2f 100644
+--- a/include/linux/ftrace.h
++++ b/include/linux/ftrace.h
+@@ -1141,4 +1141,14 @@ unsigned long arch_syscall_addr(int nr);
+ 
+ #endif /* CONFIG_FTRACE_SYSCALLS */
+ 
++#ifdef CONFIG_FUNCTION_TRACER
++#define __NOFTRACE_SYMBOL(fname)				\
++static unsigned long __used					\
++	__section("_no_ftrace")					\
++	_noftrace_addr_##fname = (unsigned long)fname;
++#define NOFTRACE_SYMBOL(fname) __NOFTRACE_SYMBOL(fname)
++#else
++#define NOFTRACE_SYMBOL(fname)
++#endif /* CONFIG_FUNCTION_TRACER */
++
+ #endif /* _LINUX_FTRACE_H */
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index 601ccf1b2f09..e0ebd71135b4 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -6575,6 +6575,51 @@ static void test_is_sorted(unsigned long *start, unsigned long count)
+ }
+ #endif
+ 
++struct noftrace_entry {
++	struct list_head list;
++	unsigned long addr;
++};
++
++static LIST_HEAD(noftrace);
++
++static int __init noftrace_add(unsigned long addr)
++{
++	struct noftrace_entry *ent;
++
++	ent = kmalloc(sizeof(*ent), GFP_KERNEL);
++	if (!ent)
++		return -ENOMEM;
++	ent->addr = addr;
++	INIT_LIST_HEAD(&ent->list);
++	list_add_tail(&ent->list, &noftrace);
++	return 0;
++}
++
++static int __init noftrace_init(void)
++{
++	extern unsigned long __start_noftrace[];
++	extern unsigned long __stop_noftrace[];
++	unsigned long *iter, entry;
++
++	for (iter = __start_noftrace; iter < __stop_noftrace; iter++) {
++		entry = (unsigned long) dereference_symbol_descriptor((void *)*iter);
++		if (noftrace_add(entry))
++			return -ENOMEM;
++	}
++	return 0;
++}
++
++static bool is_noftrace_function(unsigned long addr)
++{
++	struct noftrace_entry *ent;
++
++	list_for_each_entry(ent, &noftrace, list) {
++		if (ent->addr == addr)
++			return true;
++	}
++	return false;
++}
++
+ static int ftrace_process_locs(struct module *mod,
+ 			       unsigned long *start,
+ 			       unsigned long *end)
+@@ -6646,6 +6691,9 @@ static int ftrace_process_locs(struct module *mod,
+ 		 */
+ 		if (!addr)
+ 			continue;
++		/* applies only for kernel for now */
++		if (!mod && is_noftrace_function(addr))
++			continue;
+ 
+ 		end_offset = (pg->index+1) * sizeof(pg->records[0]);
+ 		if (end_offset > PAGE_SIZE << pg->order) {
+@@ -7300,6 +7348,11 @@ void __init ftrace_init(void)
+ 	pr_info("ftrace: allocating %ld entries in %ld pages\n",
+ 		count, count / ENTRIES_PER_PAGE + 1);
+ 
++	if (noftrace_init()) {
++		pr_warn("ftrace: failed to allocate noftrace list\n");
++		goto failed;
++	}
++
+ 	ret = ftrace_process_locs(NULL,
+ 				  __start_mcount_loc,
+ 				  __stop_mcount_loc);
+-- 
+2.35.3
+
