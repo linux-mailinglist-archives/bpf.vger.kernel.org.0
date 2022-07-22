@@ -2,71 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B807457DECA
-	for <lists+bpf@lfdr.de>; Fri, 22 Jul 2022 11:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D99157DF3F
+	for <lists+bpf@lfdr.de>; Fri, 22 Jul 2022 12:10:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236568AbiGVJe6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Jul 2022 05:34:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60360 "EHLO
+        id S234992AbiGVJpu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Jul 2022 05:45:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236576AbiGVJem (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Jul 2022 05:34:42 -0400
-Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80428E1C9E
-        for <bpf@vger.kernel.org>; Fri, 22 Jul 2022 02:23:15 -0700 (PDT)
-Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-31e560aa854so41504847b3.6
-        for <bpf@vger.kernel.org>; Fri, 22 Jul 2022 02:23:14 -0700 (PDT)
+        with ESMTP id S236651AbiGVJpc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Jul 2022 05:45:32 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3160019C35;
+        Fri, 22 Jul 2022 02:40:27 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id l24so3236306ion.13;
+        Fri, 22 Jul 2022 02:40:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Ib3W98oChuOwd1PVFyd6WToLFbPUhYfk53XWlshBtQ4=;
-        b=fV9NKUegiZPTzqh+LOnkZLW82E7NVhTI3IF4YnaaGt/o4/jEUvbjMP4SZjfGT3KlfP
-         o4pTfmTOUeA7hkS2nvkyWmOuxGZZlx51GcqK57ahgVgDO/v7zfhngFKlT68uDmtjDsec
-         FO6PIGMHLEzRsjZSm+ljRMGO49VgVZ7k2XLuRf22Md668xBZb4APtMDGm4hjoCDwjjNh
-         vXTXsc1O4sqaHUPJsqzqNofSyW1jWSLQ0ttfgMWU5ci3bpLWk55l9+OrJDmb+okSes8Z
-         KTMJ2MNJqJO6HxVgjW+jqwFv8NRTSyvqwDTYixWrpOSqDY4dvrp4nti6e5DJqDhJuqFz
-         AomA==
+        bh=2ZhwYm25g5CUkNBLcvv47aLz+4/ztjZyFmhgjwxgSH8=;
+        b=hbC65ZHTAQWOQsXUQifcWGbtkJsuRLl7DcB59re3ce8fQNNydIKrAY2SkSNesa11RL
+         taLpvGsCF4iN67ExVmdhdbCS2gcvN9ggatTq/Nupj5b9+nCCQQwnBsf8KovjNusjtS9m
+         ZGxwNKEMmykyKODe39zhzs0ldXjcZKeRdbQ4ACMPw/usPYPZXVhmGIhEP/2IUAqoKzCd
+         18wQtYNALRMJ70ij9CRKUbeu5IQ3RrENPwZ6dsBiAHZaXyqgoLkASTDtPCmmZFHE+/Ou
+         i496RXeW1IuZqVPsTdKyXmhyNMiZSn+wo9O5fzMLDHmaE0YKasXBjHNhS4tXEtNDdNfx
+         jJDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Ib3W98oChuOwd1PVFyd6WToLFbPUhYfk53XWlshBtQ4=;
-        b=xQkueW+e7SAUlmVGLjyTqZstwkONUQNdLvor8XeJ4VA1o+7+SWEKK3lzoCX4KLe+VS
-         Lju81jF9E+7z7cL0FoayYqoyT6tafnygPfvHmL3OOZci4qcMvXxhD8KHwc6Y7pFknuDI
-         81L37kQlGTEFmh6u0q532NwpLd5O6xFgFpGooiLM1l/g8xjbD1uWhDs2QmCiN8pQbtdb
-         fZfbtC0yqgLZuX/5kHQybtjjbWnQGaX6AkIZm7g5k42PPvVwCq5Pf8AtF3l1tXnyDQGp
-         ebvIXblOYclzDtSBTkyKZVExWWKf3iK/UdwQWYXvuR1OQFFXQn0sy5KHnV5COKoPMxpB
-         m8wg==
-X-Gm-Message-State: AJIora+U33dSZolTNQi4aI62Qjyb/7UaRYFY2Abg2eNPOJF3vfZFwdUn
-        J2uvSioxOZ/80lERUUZlsfurL+vkoFUgZFEFSR1fsXYMg6A=
-X-Google-Smtp-Source: AGRyM1vi6K8c0xDKW7xzbvBmwFfn4AZiS6DZ+ByR/SJJJdwSF9sfcLnbodoSy4C7nSs8R9ikUY5t+FN1gjC14iLroG8=
-X-Received: by 2002:a81:23ce:0:b0:31e:65c1:f4f with SMTP id
- j197-20020a8123ce000000b0031e65c10f4fmr2289205ywj.255.1658481793710; Fri, 22
- Jul 2022 02:23:13 -0700 (PDT)
+        bh=2ZhwYm25g5CUkNBLcvv47aLz+4/ztjZyFmhgjwxgSH8=;
+        b=1HyGU3taZ2+jsw5BqttFTVoA2viPPiuXfT7kP1L5b3PKDrF0aUF8QpANvPNDqXGNqc
+         LjZsrpzdWQKWuG7R0FoMhQYnXNN3qqLB11JKxmUrmyC3L58ZKpQcVq3Qhhuey2+jF+1v
+         ZE4x7MjLNnlw3WdFtuvsZ2QKmM1tRTi4QAd0h/cRJGyLb7yEXpI+ie397uUlUOPTLjed
+         Tnj4tnLPBSKDwaZJbExB6LP2raRQM5MxL+PukoDvlHXzeRFW7OYwu7qQayVvRjW4hJs5
+         dAgMhg+Roe6RE1qpXqHLUjyG+/1H/pa/F+zLDjFaZ/Orgjo3JYxW7GCOgH3+uXxhts2Q
+         tD0w==
+X-Gm-Message-State: AJIora8eoxWdZQ6IP8AoR/uXT1xR00K+0AhwKMR579+OhJzKTQpId6Vg
+        lCs9w9aVqR5knfM536APAyilJxOmidFTf1xgH82DYrP46ds=
+X-Google-Smtp-Source: AGRyM1vp2xc7CkDZF0d5lMKrF+CNrmT/HYLDQYfKsnTmOqamAvk7zjl4QRP/pGgVTLbNo5OQL3QcbS6dA6wi/1ltvfs=
+X-Received: by 2002:a02:c4c3:0:b0:33f:4fb4:834b with SMTP id
+ h3-20020a02c4c3000000b0033f4fb4834bmr1157685jaj.231.1658482826547; Fri, 22
+ Jul 2022 02:40:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220721151041.1215017-1-marek@cloudflare.com> <20220721151041.1215017-2-marek@cloudflare.com>
-In-Reply-To: <20220721151041.1215017-2-marek@cloudflare.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Fri, 22 Jul 2022 11:23:02 +0200
-Message-ID: <CANn89iKi2yaw=H-E8e9iet-gwr9vR6SmN9hibHF-5nT44K+e+g@mail.gmail.com>
-Subject: Re: [PATCH net-next 1/2] RTAX_INITRWND should be able to bring the
- rcv_ssthresh above 64KiB
-To:     Marek Majkowski <marek@cloudflare.com>
-Cc:     netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Ivan Babrou <ivan@cloudflare.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
+References: <20220721134245.2450-1-memxor@gmail.com> <20220721134245.2450-8-memxor@gmail.com>
+ <YtpnmI1oPOQRv3j3@salvia>
+In-Reply-To: <YtpnmI1oPOQRv3j3@salvia>
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date:   Fri, 22 Jul 2022 11:39:49 +0200
+Message-ID: <CAP01T75r6OQffvq8u3e4Srj6c1vsN_NP0PohWikYPUbdp1nDXQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v7 07/13] net: netfilter: Add kfuncs to allocate
+ and insert CT
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     bpf@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
+        Florian Westphal <fw@strlen.de>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,139 +73,33 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 21, 2022 at 5:10 PM Marek Majkowski <marek@cloudflare.com> wrote:
+On Fri, 22 Jul 2022 at 11:02, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
 >
-> We already support RTAX_INITRWND / initrwnd path attribute:
+> Hi,
 >
->  $ ip route change local 127.0.0.0/8 dev lo initrwnd 1024
+> On Thu, Jul 21, 2022 at 03:42:39PM +0200, Kumar Kartikeya Dwivedi wrote:
+> > diff --git a/include/net/netfilter/nf_conntrack_core.h b/include/net/netfilter/nf_conntrack_core.h
+> > index 37866c8386e2..83a60c684e6c 100644
+> > --- a/include/net/netfilter/nf_conntrack_core.h
+> > +++ b/include/net/netfilter/nf_conntrack_core.h
+> > @@ -84,4 +84,19 @@ void nf_conntrack_lock(spinlock_t *lock);
+> >
+> >  extern spinlock_t nf_conntrack_expect_lock;
+> >
+> > +/* ctnetlink code shared by both ctnetlink and nf_conntrack_bpf */
+> > +
+> > +#if (IS_BUILTIN(CONFIG_NF_CONNTRACK) && IS_ENABLED(CONFIG_DEBUG_INFO_BTF)) || \
+> > +    (IS_MODULE(CONFIG_NF_CONNTRACK) && IS_ENABLED(CONFIG_DEBUG_INFO_BTF_MODULES) || \
+> > +    IS_ENABLED(CONFIG_NF_CT_NETLINK))
 >
-> However normally, the initial advertised receive window is limited to
-> 64KiB by rcv_ssthresh, regardless of initrwnd. This patch changes
-> that, bumping up rcv_ssthresh to value derived from initrwnd. This
-> allows for larger initial advertised receive windows, which is useful
-> for specific types of TCP flows: big BDP ones, where there is a lot of
-> data to send immediately after the flow is established.
+> There must be a better way to do this without ifdef pollution?
 >
-> There are three places where we initialize sockets:
->  - tcp_output:tcp_connect_init
->  - tcp_minisocks:tcp_openreq_init_rwin
->  - syncookies
->
-> In the first two we already have a call to `tcp_rwnd_init_bpf` and
-> `dst_metric(RTAX_INITRWND)` which retrieve the bpf/path initrwnd
-> attribute. We use this value to bring `rcv_ssthresh` up, potentially
-> above the traditional 64KiB.
->
-> With higher initial `rcv_ssthresh` the receiver will open the receive
-> window more aggresively, which can improve large BDP flows - large
-> throughput and latency.
->
-> This patch does not cover the syncookies case.
->
-> Signed-off-by: Marek Majkowski <marek@cloudflare.com>
-> ---
->  include/net/inet_sock.h  |  1 +
->  net/ipv4/tcp_minisocks.c |  8 ++++++--
->  net/ipv4/tcp_output.c    | 10 ++++++++--
->  3 files changed, 15 insertions(+), 4 deletions(-)
->
-> diff --git a/include/net/inet_sock.h b/include/net/inet_sock.h
-> index daead5fb389a..bc68c9b70942 100644
-> --- a/include/net/inet_sock.h
-> +++ b/include/net/inet_sock.h
-> @@ -89,6 +89,7 @@ struct inet_request_sock {
->                                 no_srccheck: 1,
->                                 smc_ok     : 1;
->         u32                     ir_mark;
-> +       u32                     rcv_ssthresh;
+> Could you fix this?
 
-Why do we need to store this value in the request_sock ?
+I can just remove the ifdefs completely. The first part of the ifdef
+is the correct way to detect BPF support for nf_conntrack, the second
+is for ct netlink. These are the only two users. But it's not a lot of
+code, so until it grows too much we can compile it unconditionally.
 
-It is derived from a route attribute and MSS, all this should be
-available when the full blown socket is created.
-
-It would also work even with syncookies.
-
->         union {
->                 struct ip_options_rcu __rcu     *ireq_opt;
->  #if IS_ENABLED(CONFIG_IPV6)
-> diff --git a/net/ipv4/tcp_minisocks.c b/net/ipv4/tcp_minisocks.c
-> index 6854bb1fb32b..89ba2a30a012 100644
-> --- a/net/ipv4/tcp_minisocks.c
-> +++ b/net/ipv4/tcp_minisocks.c
-> @@ -360,6 +360,7 @@ void tcp_openreq_init_rwin(struct request_sock *req,
->         u32 window_clamp;
->         __u8 rcv_wscale;
->         u32 rcv_wnd;
-> +       int adj_mss;
->         int mss;
->
->         mss = tcp_mss_clamp(tp, dst_metric_advmss(dst));
-> @@ -378,15 +379,18 @@ void tcp_openreq_init_rwin(struct request_sock *req,
->         else if (full_space < rcv_wnd * mss)
->                 full_space = rcv_wnd * mss;
->
-> +       adj_mss = mss - (ireq->tstamp_ok ? TCPOLEN_TSTAMP_ALIGNED : 0);
-> +
->         /* tcp_full_space because it is guaranteed to be the first packet */
->         tcp_select_initial_window(sk_listener, full_space,
-> -               mss - (ireq->tstamp_ok ? TCPOLEN_TSTAMP_ALIGNED : 0),
-> +               adj_mss,
->                 &req->rsk_rcv_wnd,
->                 &req->rsk_window_clamp,
->                 ireq->wscale_ok,
->                 &rcv_wscale,
->                 rcv_wnd);
->         ireq->rcv_wscale = rcv_wscale;
-> +       ireq->rcv_ssthresh = max(req->rsk_rcv_wnd, rcv_wnd * adj_mss);
->  }
->  EXPORT_SYMBOL(tcp_openreq_init_rwin);
->
-> @@ -502,7 +506,7 @@ struct sock *tcp_create_openreq_child(const struct sock *sk,
->         newtp->rx_opt.tstamp_ok = ireq->tstamp_ok;
->         newtp->rx_opt.sack_ok = ireq->sack_ok;
->         newtp->window_clamp = req->rsk_window_clamp;
-> -       newtp->rcv_ssthresh = req->rsk_rcv_wnd;
-> +       newtp->rcv_ssthresh = ireq->rcv_ssthresh;
->         newtp->rcv_wnd = req->rsk_rcv_wnd;
->         newtp->rx_opt.wscale_ok = ireq->wscale_ok;
->         if (newtp->rx_opt.wscale_ok) {
-> diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-> index 18c913a2347a..0f2d4174ea59 100644
-> --- a/net/ipv4/tcp_output.c
-> +++ b/net/ipv4/tcp_output.c
-> @@ -3642,6 +3642,7 @@ static void tcp_connect_init(struct sock *sk)
->         struct tcp_sock *tp = tcp_sk(sk);
->         __u8 rcv_wscale;
->         u32 rcv_wnd;
-> +       u32 mss;
->
->         /* We'll fix this up when we get a response from the other end.
->          * See tcp_input.c:tcp_rcv_state_process case TCP_SYN_SENT.
-> @@ -3679,8 +3680,10 @@ static void tcp_connect_init(struct sock *sk)
->         if (rcv_wnd == 0)
->                 rcv_wnd = dst_metric(dst, RTAX_INITRWND);
->
-> +       mss = tp->advmss - (tp->rx_opt.ts_recent_stamp ?
-> +                           tp->tcp_header_len - sizeof(struct tcphdr) : 0);
->         tcp_select_initial_window(sk, tcp_full_space(sk),
-> -                                 tp->advmss - (tp->rx_opt.ts_recent_stamp ? tp->tcp_header_len - sizeof(struct tcphdr) : 0),
-> +                                 mss,
->                                   &tp->rcv_wnd,
->                                   &tp->window_clamp,
->                                   sock_net(sk)->ipv4.sysctl_tcp_window_scaling,
-> @@ -3688,7 +3691,10 @@ static void tcp_connect_init(struct sock *sk)
->                                   rcv_wnd);
->
->         tp->rx_opt.rcv_wscale = rcv_wscale;
-> -       tp->rcv_ssthresh = tp->rcv_wnd;
-> +       if (rcv_wnd)
-> +               tp->rcv_ssthresh = max(tp->rcv_wnd, rcv_wnd * mss);
-> +       else
-> +               tp->rcv_ssthresh = tp->rcv_wnd;
->
->         sk->sk_err = 0;
->         sock_reset_flag(sk, SOCK_DONE);
-> --
-> 2.25.1
->
+Or do you have anything else in mind (like defining a macro for the
+bpf one and making the ifdef look less ugly)?
