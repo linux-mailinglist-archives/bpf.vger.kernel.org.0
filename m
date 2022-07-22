@@ -2,133 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F05BD57E8AB
-	for <lists+bpf@lfdr.de>; Fri, 22 Jul 2022 23:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B2F457E8DA
+	for <lists+bpf@lfdr.de>; Fri, 22 Jul 2022 23:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233195AbiGVVF2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Jul 2022 17:05:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47954 "EHLO
+        id S232576AbiGVVXv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Jul 2022 17:23:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbiGVVF2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Jul 2022 17:05:28 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D589332456
-        for <bpf@vger.kernel.org>; Fri, 22 Jul 2022 14:05:25 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id v13so271928wru.12
-        for <bpf@vger.kernel.org>; Fri, 22 Jul 2022 14:05:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc;
-        bh=9+Zd09Eu0mSPUan3H+PXv0+9UH21VZ71PGZMbWEgQJU=;
-        b=l4eQKL/H2hhOzI39ZFDZuTijPWsMHdleXRlFmSl01C3Ed/3S9HvtXUjPpio212zHET
-         WhxLPb4JSGBlkmUA9H0gszo3Cet/cX87JCIy/C2cIWZps+T6vTzLZJbaIhT+P/TUy1tL
-         Oqv/fsgE/53qddyti9qS9hfmhhhC63fEAKuzLBF88/+AtOWbniF3s8+h/VsC2xATyNh6
-         L2e/+87dAE3Ub5EaAkW1F+acsVysJauJ3v6Z5oX5lEhz65EQ9i5/lincCvLxUah0WIya
-         JNCzZuLJrhnePIl8QSjWw0LMxK/i0h7whkja4/8CYJcO33RuCfzW155OJUtRHqZi3Jyj
-         YoZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc;
-        bh=9+Zd09Eu0mSPUan3H+PXv0+9UH21VZ71PGZMbWEgQJU=;
-        b=UIvwnI19pBXpp+GGaS6JZIH3BJawt7RqA3c8UHuG7cH8vxHXfZAaR4IADWcWfsXj4N
-         VlWPDA4YMwbmEqQPGQNq4djgVgCuyt3lJUdpc1cRGCR0aMv+7c3Bvrhv/9U8ebF3vODC
-         cIhasTBTjvk0rQhAcYtsQTjIfCxk2zsyR7d/qSSyusIESHdQjH/caXmJMRS8nUKboNXQ
-         IkepDAd/f4DQp3qmMvzklICUNWAYNwoNs5cTLLEnIQD+SnqLi2yEShaH1/QivtV8PmWV
-         kmQ8wnf55IwsJG6xm/nFU012VpwE5PH1YL6ANl48ntunWWq1BRMjqbKFhkv7JUsfToSD
-         Yskg==
-X-Gm-Message-State: AJIora+G7NVqPubX93zmQyLrQkPE3Rftqz517ZDdfGY34bly+dYMWAU+
-        oxzudZbcl+3y5Kau+lvKLSo=
-X-Google-Smtp-Source: AGRyM1srae6OAhIkwx0jmXZ5lXgoVTZV6v8Yz8JmP587SsPuEoVVdE87TC4ziUe79iWmYWry9D3e0g==
-X-Received: by 2002:adf:f98d:0:b0:21e:492a:8452 with SMTP id f13-20020adff98d000000b0021e492a8452mr1091004wrr.404.1658523924396;
-        Fri, 22 Jul 2022 14:05:24 -0700 (PDT)
-Received: from krava ([83.240.63.177])
-        by smtp.gmail.com with ESMTPSA id r13-20020a05600c35cd00b003a046549a85sm10651155wmq.37.2022.07.22.14.05.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jul 2022 14:05:23 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Fri, 22 Jul 2022 23:05:19 +0200
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>
-Subject: Re: [RFC] ftrace: Add support to keep some functions out of ftrace
-Message-ID: <YtsRD1Po3qJy3w3t@krava>
-References: <20220722110811.124515-1-jolsa@kernel.org>
- <20220722072608.17ef543f@rorschach.local.home>
- <CAADnVQ+hLnyztCi9aqpptjQk-P+ByAkyj2pjbdD45dsXwpZ0bw@mail.gmail.com>
- <20220722120854.3cc6ec4b@gandalf.local.home>
- <20220722122548.2db543ca@gandalf.local.home>
+        with ESMTP id S234227AbiGVVXu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Jul 2022 17:23:50 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA754B5C99;
+        Fri, 22 Jul 2022 14:23:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 361E5B82B1D;
+        Fri, 22 Jul 2022 21:23:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8DA3C341C6;
+        Fri, 22 Jul 2022 21:23:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1658525026;
+        bh=vVhapYzhoF5T6xapt8OGb62w8w46MvmQ5cBjHBEiDLQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Ir6w3Z4lkAUT93V3SuEcqhr9Cw22kquU/jYh1rWulAtUq5KN9B068XdmsoU7TjNIx
+         hn0tpDobMNz6BMJ8B62Qd7jDqPAMS3ySDDKIgHoD06P7hFRHTh871HFq/3JTw8PxuK
+         q4iXZd6kRPhekQeId7XQPu8iyK9qPuQV2xS2QJzSBG5JTJ/dPXv7BIeoOHJjzN5604
+         oVvD382JGRVMfJSl2c7PUyefcUAOlDC5+RDygfkWDkVJ2jOKEW7b2O8CYwbCUdBDFy
+         xCxcvrRbqhdwVK2mzxojvkOiRpNs/BBOLxf4n/IHICRq4y00zLXUGq+Xxk6ek0VHc9
+         Gf1UOaFbYSG/w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 72BC15C08EB; Fri, 22 Jul 2022 14:23:46 -0700 (PDT)
+Date:   Fri, 22 Jul 2022 14:23:46 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, corbet@lwn.net, ast@kernel.org,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH bpf 2/2] bpf: Update bpf_design_QA.rst to clarify that
+ attaching to functions is not ABI
+Message-ID: <20220722212346.GD2860372@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220722180641.2902585-1-paulmck@kernel.org>
+ <20220722180641.2902585-2-paulmck@kernel.org>
+ <d452fcee-2d15-c3b0-cc44-6b880ecc4722@iogearbox.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220722122548.2db543ca@gandalf.local.home>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <d452fcee-2d15-c3b0-cc44-6b880ecc4722@iogearbox.net>
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 22, 2022 at 12:25:48PM -0400, Steven Rostedt wrote:
-> On Fri, 22 Jul 2022 12:08:54 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
-> > On Fri, 22 Jul 2022 09:04:29 -0700
-> > Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+On Fri, Jul 22, 2022 at 10:17:57PM +0200, Daniel Borkmann wrote:
+> On 7/22/22 8:06 PM, Paul E. McKenney wrote:
+> > This patch updates bpf_design_QA.rst to clarify that the ability to
+> > attach a BPF program to a given function in the kernel does not make
+> > that function become part of the Linux kernel's ABI.
 > > 
-> > > ftrace must not peek into bpf specific functions.
-> > > Currently ftrace is causing the kernel to crash.
-> > > What Jiri is proposing is to fix ftrace bug.
-> > > And you're saying nack? let ftrace be broken ?
-> 
-> Sounds like a BPF bug to me. Ftrace did nothing to cause this breakage. It
-> was something BPF must have done. What exactly is BPF doing to ftrace
-> locations anyway?
-> 
-> > > 
-> > > If you don't like Jiri's approach please propose something else.  
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > ---
+> >   Documentation/bpf/bpf_design_QA.rst | 12 ++++++++++++
+> >   1 file changed, 12 insertions(+)
 > > 
-> > So, why not mark it as notrace? That will prevent ftrace from looking at it.
-> > 
+> > diff --git a/Documentation/bpf/bpf_design_QA.rst b/Documentation/bpf/bpf_design_QA.rst
+> > index 2ed9128cfbec8..46337a60255e9 100644
+> > --- a/Documentation/bpf/bpf_design_QA.rst
+> > +++ b/Documentation/bpf/bpf_design_QA.rst
+> > @@ -279,3 +279,15 @@ cc (congestion-control) implementations.  If any of these kernel
+> >   functions has changed, both the in-tree and out-of-tree kernel tcp cc
+> >   implementations have to be changed.  The same goes for the bpf
+> >   programs and they have to be adjusted accordingly.
+> > +
+> > +Q: Attaching to kernel functions is an ABI?
 > 
-> And if for some strange reason you need the mcount/fentry on some internal
-> BPF infrastructure, the work around is to register two ftrace_ops() that
-> have filters to that function. In which case ftrace will force the call to
-> the ftrace iterator loop, and any more ops attached will simply be added to
-> that loop, and ftrace will no longer touch that location.
+> small nit, I'd change to: Attaching to arbitrary kernel functions [...]
 > 
-> Then you can do whatever you want to it without fear of racing with ftrace.
+> Otherwise I think this could be a bit misunderstood, e.g. most of the networking
+> programs (e.g. XDP, tc, sock_addr) have a fixed framework around them where
+> attaching programs is part of ABI.
 
-ok, I think we could use that, I'll check
+Excellent point, thank you!
 
-> 
-> But other than that, we don't need infrastructure to hide any mcount/fentry
-> locations from ftrace. Those were add *for* ftrace.
+Apologies for the newbie question, but does BTF_ID() mark a function as
+ABI from the viewpoing of a BPF program calling that function, attaching
+to that function, or both?  Either way, is it worth mentioning this
+in this QA entry?
 
-I think I understand the fentry/ftrace equivalence you see, I remember
-the perl mcount script ;-)
+The updated patch below just adds the "arbitrary".
 
-still I think we should be able to define function that has fentry
-profile call and be able to manage it without ftrace
+							Thanx, Paul
 
-one other thought.. how about adding function that would allow to disable
-function in ftrace, with existing FTRACE_FL_DISABLED or some new flag
+------------------------------------------------------------------------
 
-that way ftrace still keeps track of it, but won't allow to use it in
-ftrace infra
+commit 89659e20d11fc1350f5881ff7c9687289806b2ba
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Fri Jul 22 10:52:05 2022 -0700
 
-jirka
+    bpf: Update bpf_design_QA.rst to clarify that attaching to functions is not ABI
+    
+    This patch updates bpf_design_QA.rst to clarify that the ability to
+    attach a BPF program to an arbitrary function in the kernel does not
+    make that function become part of the Linux kernel's ABI.
+    
+    [ paulmck: Apply Daniel Borkmann feedback. ]
+    
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/Documentation/bpf/bpf_design_QA.rst b/Documentation/bpf/bpf_design_QA.rst
+index 2ed9128cfbec8..a06ae8a828e3d 100644
+--- a/Documentation/bpf/bpf_design_QA.rst
++++ b/Documentation/bpf/bpf_design_QA.rst
+@@ -279,3 +279,15 @@ cc (congestion-control) implementations.  If any of these kernel
+ functions has changed, both the in-tree and out-of-tree kernel tcp cc
+ implementations have to be changed.  The same goes for the bpf
+ programs and they have to be adjusted accordingly.
++
++Q: Attaching to arbitrary kernel functions is an ABI?
++-----------------------------------------------------
++Q: BPF programs can be attached to many kernel functions.  Do these
++kernel functions become part of the ABI?
++
++A: NO.
++
++The kernel function prototypes will change, and BPF programs attaching to
++them will need to change.  The BPF compile-once-run-everywhere (CO-RE)
++should be used in order to make it easier to adapt your BPF programs to
++different versions of the kernel.
