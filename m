@@ -2,265 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD15757D91B
-	for <lists+bpf@lfdr.de>; Fri, 22 Jul 2022 05:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C44DC57D94E
+	for <lists+bpf@lfdr.de>; Fri, 22 Jul 2022 06:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231274AbiGVD56 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jul 2022 23:57:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35506 "EHLO
+        id S229646AbiGVEKW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Jul 2022 00:10:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbiGVD54 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jul 2022 23:57:56 -0400
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 136CD6C105;
-        Thu, 21 Jul 2022 20:57:52 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=36;SR=0;TI=SMTPD_---0VK3SFm4_1658462266;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VK3SFm4_1658462266)
-          by smtp.aliyun-inc.com;
-          Fri, 22 Jul 2022 11:57:47 +0800
-Message-ID: <1658461678.632858-2-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH v12 08/40] virtio_ring: split: extract the logic of alloc queue
-Date:   Fri, 22 Jul 2022 11:47:58 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Vadim Pasternak <vadimp@nvidia.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        linux-um@lists.infradead.org, netdev@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
-        kvm@vger.kernel.org, bpf@vger.kernel.org,
-        kangjie.xu@linux.alibaba.com,
-        virtualization@lists.linux-foundation.org
-References: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
- <20220720030436.79520-9-xuanzhuo@linux.alibaba.com>
- <0b3c985d-d479-a554-4fe2-bfe94fc74070@redhat.com>
-In-Reply-To: <0b3c985d-d479-a554-4fe2-bfe94fc74070@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+        with ESMTP id S229547AbiGVEKV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Jul 2022 00:10:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 979C81582E;
+        Thu, 21 Jul 2022 21:10:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2049162034;
+        Fri, 22 Jul 2022 04:10:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 66EB4C341CA;
+        Fri, 22 Jul 2022 04:10:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1658463018;
+        bh=T3OTnT6JXnGMkPLRI43V4DmcD+75jV6haXIUuqrw9q4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=l/0uGgWsL9e9xEu2UuDggNiSmCNJipVr5FIIrlBHpPEyuM+70dUDxW4ca4OyUbIwk
+         Ev6cL0sAS4XidE9AsSEXYCN/edFMx38weSXV0P1YQuqzp+rv1SKKxPNvCqgXYrzR71
+         rWz9jEpxRXjCBV7Yssrb50l1EUlJ1tpoLY+soLinCWwL9NN4Vt5teFUjpktrBL9zVG
+         jjz8L8aTRCfae4Rj0Is25/XyFfdR4CWqbOppfEFiGZj55LE1LlYe3PBXRGrUxKvE0W
+         6yXc4j2Bl9KKwlnNMf4ybxvS+uF8r0qK8ehQBorc/dAAms1xs3dBBrDErkmgCqXfSy
+         rwcER8Fcdoc3g==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 49BB5E451B8;
+        Fri, 22 Jul 2022 04:10:18 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v7 00/13] New nf_conntrack kfuncs for insertion,
+ changing timeout, status
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <165846301827.26375.18363403275263691735.git-patchwork-notify@kernel.org>
+Date:   Fri, 22 Jul 2022 04:10:18 +0000
+References: <20220721134245.2450-1-memxor@gmail.com>
+In-Reply-To: <20220721134245.2450-1-memxor@gmail.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, pablo@netfilter.org, fw@strlen.de,
+        brouer@redhat.com, toke@redhat.com, lorenzo@kernel.org,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org
+X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 21 Jul 2022 17:13:49 +0800, Jason Wang <jasowang@redhat.com> wrote:
->
-> =E5=9C=A8 2022/7/20 11:04, Xuan Zhuo =E5=86=99=E9=81=93:
-> > Separate the logic of split to create vring queue.
-> >
-> > This feature is required for subsequent virtuqueue reset vring.
-> >
-> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > ---
-> >   drivers/virtio/virtio_ring.c | 68 ++++++++++++++++++++++--------------
-> >   1 file changed, 42 insertions(+), 26 deletions(-)
-> >
-> > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-> > index c94c5461e702..c7971438bb2c 100644
-> > --- a/drivers/virtio/virtio_ring.c
-> > +++ b/drivers/virtio/virtio_ring.c
-> > @@ -950,28 +950,19 @@ static void vring_free_split(struct vring_virtque=
-ue_split *vring_split,
-> >   	kfree(vring_split->desc_extra);
-> >   }
-> >
-> > -static struct virtqueue *vring_create_virtqueue_split(
-> > -	unsigned int index,
-> > -	unsigned int num,
-> > -	unsigned int vring_align,
-> > -	struct virtio_device *vdev,
-> > -	bool weak_barriers,
-> > -	bool may_reduce_num,
-> > -	bool context,
-> > -	bool (*notify)(struct virtqueue *),
-> > -	void (*callback)(struct virtqueue *),
-> > -	const char *name)
-> > +static int vring_alloc_queue_split(struct vring_virtqueue_split *vring=
-_split,
-> > +				   struct virtio_device *vdev,
-> > +				   u32 num,
-> > +				   unsigned int vring_align,
-> > +				   bool may_reduce_num)
-> >   {
-> > -	struct virtqueue *vq;
-> >   	void *queue =3D NULL;
-> >   	dma_addr_t dma_addr;
-> > -	size_t queue_size_in_bytes;
-> > -	struct vring vring;
-> >
-> >   	/* We assume num is a power of 2. */
-> >   	if (num & (num - 1)) {
-> >   		dev_warn(&vdev->dev, "Bad virtqueue length %u\n", num);
-> > -		return NULL;
-> > +		return -EINVAL;
-> >   	}
-> >
-> >   	/* TODO: allocate each queue chunk individually */
-> > @@ -982,11 +973,11 @@ static struct virtqueue *vring_create_virtqueue_s=
-plit(
-> >   		if (queue)
-> >   			break;
-> >   		if (!may_reduce_num)
-> > -			return NULL;
-> > +			return -ENOMEM;
-> >   	}
-> >
-> >   	if (!num)
-> > -		return NULL;
-> > +		return -ENOMEM;
-> >
-> >   	if (!queue) {
-> >   		/* Try to get a single page. You are my only hope! */
-> > @@ -994,21 +985,46 @@ static struct virtqueue *vring_create_virtqueue_s=
-plit(
-> >   					  &dma_addr, GFP_KERNEL|__GFP_ZERO);
-> >   	}
-> >   	if (!queue)
-> > -		return NULL;
-> > +		return -ENOMEM;
-> > +
-> > +	vring_init(&vring_split->vring, num, queue, vring_align);
-> >
-> > -	queue_size_in_bytes =3D vring_size(num, vring_align);
-> > -	vring_init(&vring, num, queue, vring_align);
-> > +	vring_split->queue_dma_addr =3D dma_addr;
-> > +	vring_split->queue_size_in_bytes =3D vring_size(num, vring_align);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static struct virtqueue *vring_create_virtqueue_split(
-> > +	unsigned int index,
-> > +	unsigned int num,
-> > +	unsigned int vring_align,
-> > +	struct virtio_device *vdev,
-> > +	bool weak_barriers,
-> > +	bool may_reduce_num,
-> > +	bool context,
-> > +	bool (*notify)(struct virtqueue *),
-> > +	void (*callback)(struct virtqueue *),
-> > +	const char *name)
-> > +{
-> > +	struct vring_virtqueue_split vring_split =3D {};
-> > +	struct virtqueue *vq;
-> > +	int err;
-> > +
-> > +	err =3D vring_alloc_queue_split(&vring_split, vdev, num, vring_align,
-> > +				      may_reduce_num);
-> > +	if (err)
-> > +		return NULL;
-> >
-> > -	vq =3D __vring_new_virtqueue(index, vring, vdev, weak_barriers, conte=
-xt,
-> > -				   notify, callback, name);
-> > +	vq =3D __vring_new_virtqueue(index, vring_split.vring, vdev, weak_bar=
-riers,
-> > +				   context, notify, callback, name);
-> >   	if (!vq) {
-> > -		vring_free_queue(vdev, queue_size_in_bytes, queue,
-> > -				 dma_addr);
-> > +		vring_free_split(&vring_split, vdev);
-> >   		return NULL;
-> >   	}
-> >
-> > -	to_vvq(vq)->split.queue_dma_addr =3D dma_addr;
-> > -	to_vvq(vq)->split.queue_size_in_bytes =3D queue_size_in_bytes;
-> > +	to_vvq(vq)->split.queue_dma_addr =3D vring_split.queue_dma_addr;
-> > +	to_vvq(vq)->split.queue_size_in_bytes =3D vring_split.queue_size_in_b=
-ytes;
->
->
-> This still seems a little bit redundant since the current logic is a
-> little bit complicated since the vq->split is not initialized in a
-> single place.
->
-> I wonder if it's better to:
->
-> vring_alloc_queue_split()
-> vring_alloc_desc_extra() (reorder to make patch 9 come first)
->
-> then we can simply assign vring_split to vq->split in
-> __vring_new_virtqueue() since it has:
->
->  =C2=A0=C2=A0=C2=A0 vq->split.queue_dma_addr =3D 0;
->  =C2=A0=C2=A0 =C2=A0vq->split.queue_size_in_bytes =3D 0;
->
->  =C2=A0=C2=A0=C2=A0 vq->split.vring =3D vring;
->  =C2=A0=C2=A0=C2=A0 vq->split.avail_flags_shadow =3D 0;
->  =C2=A0=C2=A0=C2=A0 vq->split.avail_idx_shadow =3D 0;
->
-> This seems to simplify the logic and task of e.g
-> virtqueue_vring_attach_split() to a simple:
->
-> vq->split=3D vring_split;
+Hello:
 
-This does look simpler. The reason for not doing this is that the argument
-accepted by __vring_new_virtqueue() is "struct vring", and
-__vring_new_virtqueue() is an export symbol.
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-I took a look, and the only external direct call to __vring_new_virtqueue is
-here.
+On Thu, 21 Jul 2022 15:42:32 +0200 you wrote:
+> Introduce the following new kfuncs:
+>  - bpf_{xdp,skb}_ct_alloc
+>  - bpf_ct_insert_entry
+>  - bpf_ct_{set,change}_timeout
+>  - bpf_ct_{set,change}_status
+> 
+> The setting of timeout and status on allocated or inserted/looked up CT
+> is same as the ctnetlink interface, hence code is refactored and shared
+> with the kfuncs. It is ensured allocated CT cannot be passed to kfuncs
+> that expected inserted CT, and vice versa. Please see individual patches
+> for details.
+> 
+> [...]
 
-	tools/virtio/virtio_test.c
-	static void vq_reset(struct vq_info *info, int num, struct virtio_device *=
-vdev)
-	{
-		if (info->vq)
-			vring_del_virtqueue(info->vq);
+Here is the summary with links:
+  - [bpf-next,v7,01/13] bpf: Introduce 8-byte BTF set
+    https://git.kernel.org/bpf/bpf-next/c/ab21d6063c01
+  - [bpf-next,v7,02/13] tools/resolve_btfids: Add support for 8-byte BTF sets
+    https://git.kernel.org/bpf/bpf-next/c/ef2c6f370a63
+  - [bpf-next,v7,03/13] bpf: Switch to new kfunc flags infrastructure
+    https://git.kernel.org/bpf/bpf-next/c/a4703e318432
+  - [bpf-next,v7,04/13] bpf: Add support for forcing kfunc args to be trusted
+    https://git.kernel.org/bpf/bpf-next/c/56e948ffc098
+  - [bpf-next,v7,05/13] bpf: Add documentation for kfuncs
+    https://git.kernel.org/bpf/bpf-next/c/63e564ebd1fd
+  - [bpf-next,v7,06/13] net: netfilter: Deduplicate code in bpf_{xdp,skb}_ct_lookup
+    https://git.kernel.org/bpf/bpf-next/c/aed8ee7feb44
+  - [bpf-next,v7,07/13] net: netfilter: Add kfuncs to allocate and insert CT
+    https://git.kernel.org/bpf/bpf-next/c/d7e79c97c00c
+  - [bpf-next,v7,08/13] net: netfilter: Add kfuncs to set and change CT timeout
+    https://git.kernel.org/bpf/bpf-next/c/0b3892364431
+  - [bpf-next,v7,09/13] net: netfilter: Add kfuncs to set and change CT status
+    https://git.kernel.org/bpf/bpf-next/c/ef69aa3a986e
+  - [bpf-next,v7,10/13] selftests/bpf: Add verifier tests for trusted kfunc args
+    https://git.kernel.org/bpf/bpf-next/c/8dd5e75683f7
+  - [bpf-next,v7,11/13] selftests/bpf: Add tests for new nf_conntrack kfuncs
+    https://git.kernel.org/bpf/bpf-next/c/6eb7fba007a7
+  - [bpf-next,v7,12/13] selftests/bpf: Add negative tests for new nf_conntrack kfuncs
+    https://git.kernel.org/bpf/bpf-next/c/c6f420ac9d25
+  - [bpf-next,v7,13/13] selftests/bpf: Fix test_verifier failed test in unprivileged mode
+    https://git.kernel.org/bpf/bpf-next/c/e3fa4735f04d
 
-		memset(info->ring, 0, vring_size(num, 4096));
-		vring_init(&info->vring, num, info->ring, 4096);
-		info->vq =3D __vring_new_virtqueue(info->idx, info->vring, vdev, true,
-						 false, vq_notify, vq_callback, "test");
-		assert(info->vq);
-		info->vq->priv =3D info;
-	}
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-I think this could be replaced with vring_new_virtqueue() so that we don't =
-need
-to make __vring_new_virtqueue as an export function so we can make some
-modifications to it.
 
-nit: vring_alloc_desc_extra() should not have to be extract from
-__vring_new_virtqueue() .
-
-Thanks.
-
->
-> And if this makes sense, we can do something similar to packed ring.
->
-> Thanks
->
->
-> >   	to_vvq(vq)->we_own_ring =3D true;
-> >
-> >   	return vq;
->
