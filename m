@@ -2,58 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC9357E492
-	for <lists+bpf@lfdr.de>; Fri, 22 Jul 2022 18:40:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 640FA57E4DB
+	for <lists+bpf@lfdr.de>; Fri, 22 Jul 2022 18:52:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232454AbiGVQk1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Jul 2022 12:40:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39076 "EHLO
+        id S231895AbiGVQwk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Jul 2022 12:52:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235478AbiGVQkZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Jul 2022 12:40:25 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 998D911A2F
-        for <bpf@vger.kernel.org>; Fri, 22 Jul 2022 09:40:23 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id x91so6534570ede.1
-        for <bpf@vger.kernel.org>; Fri, 22 Jul 2022 09:40:23 -0700 (PDT)
+        with ESMTP id S231700AbiGVQwj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Jul 2022 12:52:39 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A0876454
+        for <bpf@vger.kernel.org>; Fri, 22 Jul 2022 09:52:38 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id l23so9570511ejr.5
+        for <bpf@vger.kernel.org>; Fri, 22 Jul 2022 09:52:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=DrGYYevMfHn57iXyvG11bVG0emRMWC1xcOX2K2v1YYk=;
-        b=bpABX3fya8Uhv22CB5k9Y+pp27qxVpilcZHMLBfCtvTbtflQOGd/9kqzZANsfCTsfG
-         kpKT5NGaOPrvPje9NemfSU6qo4X5R5gfTmd5pQ5meSX0Zs8H9cYdB7nT76/aURzzDQfy
-         nn3/lC10/Y+fnaHfCdQDitIxiFZ1YuUTM4/UtfSSy28w5GoYCWEGA9q8P7LQ+59pRDYa
-         K8+OgpBymahXaEzIC36N9SZkjhOLKCQDU/V8Y6YHQv1/XTUVfmPjYxHdfgJc1XqYjftT
-         fE3+mSoDclMIbW4oSUx8J9aGRa2Po/p9u2SEmlkcVCxRmrRvi3mAkgengPI9B9e8DwZc
-         p7yg==
+        bh=2ytH6jMktAXW9Vta9GnlouS/2Z3pe0lQ8OymvYO0mDo=;
+        b=QQn164ZDd6kQjOTYIBny42MS61a7il2FBIzSnBeAvRyAQRoGq/NHY4QikuE4sOxs9T
+         7aWI+qJIIVQlLHWRMtQNtHcbZSnCctNWtquzBXg5GKloT97psLz623Jy0K5EE8nYaFMj
+         BJ955hhVl1JHEcG+Bv2I+B89bqNUUYRSq2e77FmticX8NigHwmc797qs48xHKK0N18Xj
+         wZcpb/m7lFN1OdoB0yqQw40oRqWEFZ8HiQ2b3e/GPFEmSEnue2imVoEx70ZN7kbCUU6e
+         mShIV7PrA+VuJyTHfrBjFIZ0xH5HXCCdYKLTTBPnY3NYkcGtzDIpxz1WBWddUsPyI9Oc
+         JSAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=DrGYYevMfHn57iXyvG11bVG0emRMWC1xcOX2K2v1YYk=;
-        b=IpBO9AHnn++WPDiW5WeEJ08iBfnXkxVWRWV/vx79kGAR+t9mUJnFS6hgXbi/e0C+NL
-         FWpn37NWM207g0KHbLrAmb1ToeX0SEeXxL6/y219mrYhMHD10vDAargWaaqQ6Sf3N7l6
-         TWRet9+gpWpZj2dz1W5T15i3O6pPyV4FQfd6EeoWtF9ZVFcHz72TglOKP6m90aYATE6T
-         UvwZ2dVW5HkZP+E05QIBnmsQy20+Bv5JHf43Pj1PtdWUPsFAxP+IFVyb+D/P/+s7z/zJ
-         42M9DH3uXlzH3PcY1SGRNprUekSRFGzz7VDEofqjQiMLKtpkpLDi2S2bE8UEhWxqojZD
-         ULpw==
-X-Gm-Message-State: AJIora8YdKIypgvaTXHxAuKz3RllOHPJz0J4hB+9mB56IDO+ZUBjQkqA
-        2atW7WonD5/BOlpOlkLHo/OTQh7csNvh2I4fyH4=
-X-Google-Smtp-Source: AGRyM1uOEI4LWZ0iMUJPFpsAkzUYmgAo29c2QtNf3VipW2jTHm71mL5LVYXfILQcnJqfnA2Fyl3LG44KWMSYGG7BJGY=
-X-Received: by 2002:a05:6402:28c4:b0:43a:cdde:e047 with SMTP id
- ef4-20020a05640228c400b0043acddee047mr740662edb.368.1658508022024; Fri, 22
- Jul 2022 09:40:22 -0700 (PDT)
+        bh=2ytH6jMktAXW9Vta9GnlouS/2Z3pe0lQ8OymvYO0mDo=;
+        b=Lc7ufia2mn+ZUVkTRd7CHCU27Rl7+jPqIDjj+J7WenyZEBqApbPb6o8V1hS9ZfPRcx
+         PdaD77g+3jbBFnWF5tB5zNUyaecgyvmgSPL67UrD+pAcNtioqEGKktVPSJ/7xtpqVJJX
+         YGFdg/U+AwIuBvyB/2+csciYYzTsFZpRtMq1wUz2/AzDXiL99UyrPnXKFycyPF+LHAJA
+         FhXTLZFh+AZmiAH+DNeBahDhhol9CfPoePr2NnAmBJb5fnaiANxPtCn5Sx8NLWPs/5xp
+         el56LFmK7w90LkiCfs6S0E0B6iXPzKnd82UBsPA1IXW7ROmYduuCpT/IBg/5pYbRa8jW
+         6S0Q==
+X-Gm-Message-State: AJIora/pC7EdCRGV2n2xjXQM+eqqsNpzIA06Yuvsrq3xj8QlPMckjlvi
+        rCzBYyVEuyQOU4s2ZQEPvALtF7Pf1lTNuNsxoMA=
+X-Google-Smtp-Source: AGRyM1sr1I8Oac2GfpWeoFtumYxRT33J5sDFeBB40vNCACDLf8GZXFHgGxI/FrETtRav5HIC9xsHGmBedJdPTGU920g=
+X-Received: by 2002:a17:907:a40f:b0:72b:64ee:5b2f with SMTP id
+ sg15-20020a170907a40f00b0072b64ee5b2fmr664667ejc.268.1658508756801; Fri, 22
+ Jul 2022 09:52:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220721024821.251231-1-joannelkoong@gmail.com>
- <20220721024821.251231-2-joannelkoong@gmail.com> <CA+khW7haDCVbccKryWDOhejqc-7B1geHK6Htx=Qm6k2oK=e=LA@mail.gmail.com>
-In-Reply-To: <CA+khW7haDCVbccKryWDOhejqc-7B1geHK6Htx=Qm6k2oK=e=LA@mail.gmail.com>
+References: <20220721024821.251231-1-joannelkoong@gmail.com> <20220721170221.jlcvzcxfyrnrmyyc@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20220721170221.jlcvzcxfyrnrmyyc@kafai-mbp.dhcp.thefacebook.com>
 From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Fri, 22 Jul 2022 09:40:09 -0700
-Message-ID: <CAJnrk1YjNrHRh9+vXCJiU9A6UsibJiNAhE5=s==ZM-Uw6xAjVQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 2/2] selftests/bpf: add extra test for using
- dynptr data slice after release
-To:     Hao Luo <haoluo@google.com>
+Date:   Fri, 22 Jul 2022 09:52:25 -0700
+Message-ID: <CAJnrk1bkTvdHGCje_H_Bg1BWihnes1ujhWJzpKVkDL66_cOPJg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/2] bpf: Fix ref_obj_id for dynptr data
+ slices in verifier
+To:     Martin KaFai Lau <kafai@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>
@@ -68,106 +67,86 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jul 21, 2022 at 10:28 AM Hao Luo <haoluo@google.com> wrote:
+On Thu, Jul 21, 2022 at 10:02 AM Martin KaFai Lau <kafai@fb.com> wrote:
 >
-> Hi Joanne,
->
-> On Wed, Jul 20, 2022 at 7:49 PM Joanne Koong <joannelkoong@gmail.com> wrote:
+> On Wed, Jul 20, 2022 at 07:48:20PM -0700, Joanne Koong wrote:
+> > When a data slice is obtained from a dynptr (through the bpf_dynptr_data API),
+> > the ref obj id of the dynptr must be found and then associated with the data
+> > slice.
 > >
-> > Add an additional test, "data_slice_use_after_release2", for ensuring
-> > that data slices are correctly invalidated by the verifier after the
-> > dynptr whose ref obj id they track is released. In particular, this
-> > tests data slice invalidation for dynptrs located at a non-zero offset
-> > from the frame pointer.
+> > The ref obj id of the dynptr must be found *before* the caller saved regs are
+> > reset. Without this fix, the ref obj id tracking is not correct for
+> > dynptrs that are at an offset from the frame pointer.
 > >
+> > Please also note that the data slice's ref obj id must be assigned after the
+> > ret types are parsed, since RET_PTR_TO_ALLOC_MEM-type return regs get
+> > zero-marked.
+> >
+> > Fixes: 34d4ef5775f7("bpf: Add dynptr data slices");
 > > Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
 > > ---
-> >  .../testing/selftests/bpf/prog_tests/dynptr.c |  3 +-
-> >  .../testing/selftests/bpf/progs/dynptr_fail.c | 32 ++++++++++++++++++-
-> >  2 files changed, 33 insertions(+), 2 deletions(-)
+> >  kernel/bpf/verifier.c | 30 +++++++++++++++++-------------
+> >  1 file changed, 17 insertions(+), 13 deletions(-)
 > >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/dynptr.c b/tools/testing/selftests/bpf/prog_tests/dynptr.c
-> > index 3c7aa82b98e2..bcf80b9f7c27 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/dynptr.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/dynptr.c
-> > @@ -22,7 +22,8 @@ static struct {
-> >         {"add_dynptr_to_map2", "invalid indirect read from stack"},
-> >         {"data_slice_out_of_bounds_ringbuf", "value is outside of the allowed memory range"},
-> >         {"data_slice_out_of_bounds_map_value", "value is outside of the allowed memory range"},
-> > -       {"data_slice_use_after_release", "invalid mem access 'scalar'"},
-> > +       {"data_slice_use_after_release1", "invalid mem access 'scalar'"},
-> > +       {"data_slice_use_after_release2", "invalid mem access 'scalar'"},
-> >         {"data_slice_missing_null_check1", "invalid mem access 'mem_or_null'"},
-> >         {"data_slice_missing_null_check2", "invalid mem access 'mem_or_null'"},
-> >         {"invalid_helper1", "invalid indirect read from stack"},
-> > diff --git a/tools/testing/selftests/bpf/progs/dynptr_fail.c b/tools/testing/selftests/bpf/progs/dynptr_fail.c
-> > index d811cff73597..d8c4ed3ee146 100644
-> > --- a/tools/testing/selftests/bpf/progs/dynptr_fail.c
-> > +++ b/tools/testing/selftests/bpf/progs/dynptr_fail.c
-> > @@ -248,7 +248,7 @@ int data_slice_out_of_bounds_map_value(void *ctx)
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index c59c3df0fea6..00f9b5a77734 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -7341,6 +7341,22 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+> >                       }
+> >               }
+> >               break;
+> > +     case BPF_FUNC_dynptr_data:
+> > +             /* Find the id of the dynptr we're tracking the reference of.
+> > +              * We must do this before we reset caller saved regs.
+> > +              *
+> > +              * Please note as well that meta.ref_obj_id after the check_func_arg() calls doesn't
+> > +              * already contain the dynptr ref obj id, since dynptrs are stored on the stack.
+> > +              */
+> > +             for (i = 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
+> > +                     if (arg_type_is_dynptr(fn->arg_type[i])) {
+> > +                             if (meta.ref_obj_id) {
+> > +                                     verbose(env, "verifier internal error: multiple refcounted args in func\n");
+> > +                                     return -EFAULT;
+> > +                             }
+> > +                             meta.ref_obj_id = stack_slot_get_id(env, &regs[BPF_REG_1 + i]);
+> check_func_arg() is setting meta->ref_obj_id for each arg.
+> Can this meta.ref_obj_id assignment be done in check_func_arg()
+> instead of looping all args again here.
+>
+I think so! Will update for v2.
+> > +                     }
+> > +             }
+> >       }
 > >
-> >  /* A data slice can't be used after it has been released */
-> >  SEC("?raw_tp/sys_nanosleep")
-> > -int data_slice_use_after_release(void *ctx)
-> > +int data_slice_use_after_release1(void *ctx)
-> >  {
-> >         struct bpf_dynptr ptr;
-> >         struct sample *sample;
-> > @@ -272,6 +272,36 @@ int data_slice_use_after_release(void *ctx)
-> >         return 0;
-> >  }
+> >       if (err)
+> > @@ -7470,20 +7486,8 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+> >               /* For release_reference() */
+> >               regs[BPF_REG_0].ref_obj_id = id;
+> >       } else if (func_id == BPF_FUNC_dynptr_data) {
+> > -             int dynptr_id = 0, i;
+> > -
+> > -             /* Find the id of the dynptr we're acquiring a reference to */
+> > -             for (i = 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
+> > -                     if (arg_type_is_dynptr(fn->arg_type[i])) {
+> > -                             if (dynptr_id) {
+> > -                                     verbose(env, "verifier internal error: multiple dynptr args in func\n");
+> > -                                     return -EFAULT;
+> > -                             }
+> > -                             dynptr_id = stack_slot_get_id(env, &regs[BPF_REG_1 + i]);
+> > -                     }
+> > -             }
+> >               /* For release_reference() */
+> > -             regs[BPF_REG_0].ref_obj_id = dynptr_id;
+> > +             regs[BPF_REG_0].ref_obj_id = meta.ref_obj_id;
+> nit. This will be the same as the earlier is_ptr_cast_function().
+> Merge the if statements ?
+Will do for v2
+>
+> >       }
 > >
-> > +SEC("?raw_tp/sys_nanosleep")
-> > +int data_slice_use_after_release2(void *ctx)
->
-> Could you put comments explaining the reason for failure, like other test cases?
->
-Hi Hao. The explanation for the data_slice_use_after_release test
-cases is above the "data_slice_use_after_release1" case, but I can
-also copy/paste that comment to above "data_slice_use_after_release2"
-as well to make it easier to spot. I'll do that for v2.
-> > +{
-> > +       struct bpf_dynptr ptr1, ptr2;
-> > +       struct sample *sample;
-> > +
-> > +       bpf_ringbuf_reserve_dynptr(&ringbuf, 64, 0, &ptr1);
-> > +       bpf_ringbuf_reserve_dynptr(&ringbuf, sizeof(*sample), 0, &ptr2);
-> > +
-> > +       sample = bpf_dynptr_data(&ptr2, 0, sizeof(*sample));
-> > +       if (!sample)
-> > +               goto done;
-> > +
-> > +       sample->pid = 23;
-> > +
-> > +       bpf_ringbuf_submit_dynptr(&ptr2, 0);
-> > +
-> > +       /* this should fail */
-> > +       sample->pid = 23;
-> > +
-> > +       bpf_ringbuf_submit_dynptr(&ptr1, 0);
-> > +
-> > +       return 0;
-> > +
-> > +done:
-> > +       bpf_ringbuf_discard_dynptr(&ptr2, 0);
-> > +       bpf_ringbuf_discard_dynptr(&ptr1, 0);
-> > +       return 0;
-> > +}
-> > +
->
-> Joanne, I haven't been following the effort of dynptr, so I am still
-> learning dynptr. Is there any use of `ptr1` in this test case?
-
-The use of ptr1 is so that ptr2 will be at a non-zero offset from the
-frame pointer. This bug previously was unspotted because we were only
-testing invalidated data slices for ptrs that were at a zero offset.
-
-I will include a comment about this in the test to make it more clear :)
-
->
-> >  /* A data slice must be first checked for NULL */
-> >  SEC("?raw_tp/sys_nanosleep")
-> >  int data_slice_missing_null_check1(void *ctx)
+> >       do_refine_retval_range(regs, fn->ret_type, func_id, &meta);
+Thanks for taking a look at this patch, Jiri and Martin!
 > > --
 > > 2.30.2
 > >
