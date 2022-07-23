@@ -2,53 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A61E57EB3E
-	for <lists+bpf@lfdr.de>; Sat, 23 Jul 2022 04:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 820A557EB41
+	for <lists+bpf@lfdr.de>; Sat, 23 Jul 2022 04:04:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236533AbiGWCEY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Jul 2022 22:04:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50596 "EHLO
+        id S236598AbiGWCEZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Jul 2022 22:04:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234766AbiGWCET (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S232626AbiGWCET (ORCPT <rfc822;bpf@vger.kernel.org>);
         Fri, 22 Jul 2022 22:04:19 -0400
 Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA1DD97A11
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9483FA0BB1
         for <bpf@vger.kernel.org>; Fri, 22 Jul 2022 19:04:18 -0700 (PDT)
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26N1htgr017295;
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26N1gJ5h008169;
         Sat, 23 Jul 2022 02:04:05 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : content-transfer-encoding : mime-version; s=pp1;
- bh=VXP3NQkDKx9kX4ejevArcykzt49NPoMzs8nMgoiox30=;
- b=FY1ROaDSpZcexhYN1d11HqH684K13kTYJ5pFeQ9+VJHmvdf3uEdc2CgC4QENowWDFdxI
- XJ1LgmjzsOMahxs31zqzSywTVnqZqpreCAprLGOhMtWlMajM+YWB6dRicQ+cmRkuMhT0
- 5RxTa/5gDEbElMhyaNXI2wEl3hpJpWLh1bbIhpo0l6HnMb6K/QUnz+qArI42fw1NcSDW
- 3UkYLFVvCsXSyMogOn9416JxmHsa1Rf2SNXQRNf/jrA6h2StBhBPS50FUwm2/PaLgg9o
- z/XXPVyyDYIe5Av29RS2V9WEHQcVFMFYa3MXAW4qNH3a4dzXvwd9KYCxBxlW8N+vXoLQ Yg== 
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3hg7k5ravb-1
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=7M8ZAU6jhM84BMxcCE29mREjmmxsZRiFvm9g6bfSErQ=;
+ b=I5a0u1nMiwhpSuOo5rc19KahKCFFuuvZcswaqVSZXhau6N3i45xZGKkxsZosw65r67gG
+ vigHs4hR6zlurqHoP5+ScMZiW32QqN8buZ1z8hj+PPQqsvswnW43C7Wf79cwzIwTQ1eS
+ JbsulqdE/VGR1kzw8lxP35ajwHAWTdTho/+WkrIiX9UM+NeWKmFJKejxvBhth6Clt/Jw
+ WAR3+cGw1Mytqem2DdrgK3N7VBoQNXTHrZcZ73HQaDRKZa64e1g6oiur7BdCEQJ0Ue8p
+ MbAprbmm+dC4YAl0k6Ewrql/fLdZtO0bWD3dQGaPFI0vLAFBI3t+bPMmURKxDqGYyOK+ 0A== 
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3hg7j4gb4w-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Sat, 23 Jul 2022 02:04:05 +0000
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 26N1pMKE017017;
-        Sat, 23 Jul 2022 02:04:02 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04fra.de.ibm.com with ESMTP id 3hbmy8pr2y-1
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 26N1nl5h032248;
+        Sat, 23 Jul 2022 02:04:03 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma05fra.de.ibm.com with ESMTP id 3hbmy8xqn6-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 23 Jul 2022 02:04:02 +0000
+        Sat, 23 Jul 2022 02:04:03 +0000
 Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 26N23u2925231838
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 26N24Apa18088194
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 23 Jul 2022 02:03:56 GMT
+        Sat, 23 Jul 2022 02:04:10 GMT
 Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B8311AE051;
-        Sat, 23 Jul 2022 02:03:56 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id CFC8AAE04D;
+        Sat, 23 Jul 2022 02:03:57 +0000 (GMT)
 Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 511B5AE045;
-        Sat, 23 Jul 2022 02:03:56 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 71FF8AE045;
+        Sat, 23 Jul 2022 02:03:57 +0000 (GMT)
 Received: from heavy.lan (unknown [9.171.90.71])
         by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Sat, 23 Jul 2022 02:03:56 +0000 (GMT)
+        Sat, 23 Jul 2022 02:03:57 +0000 (GMT)
 From:   Ilya Leoshkevich <iii@linux.ibm.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -56,24 +57,25 @@ To:     Alexei Starovoitov <ast@kernel.org>,
 Cc:     bpf@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
         Vasily Gorbik <gor@linux.ibm.com>,
         Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf-next 0/2] Fix test_probe_user on s390x
-Date:   Sat, 23 Jul 2022 04:03:42 +0200
-Message-Id: <20220723020344.21699-1-iii@linux.ibm.com>
+Subject: [PATCH bpf-next 1/2] libbpf: Extend BPF_KSYSCALL documentation
+Date:   Sat, 23 Jul 2022 04:03:43 +0200
+Message-Id: <20220723020344.21699-2-iii@linux.ibm.com>
 X-Mailer: git-send-email 2.35.3
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: YB-N7GtTiscaHxoQcyRzasZ7cIOkiQpw
-X-Proofpoint-GUID: YB-N7GtTiscaHxoQcyRzasZ7cIOkiQpw
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+In-Reply-To: <20220723020344.21699-1-iii@linux.ibm.com>
+References: <20220723020344.21699-1-iii@linux.ibm.com>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: DZwC8m8mHL2o4IFx5dCvmVz_z1Y4ysh_
+X-Proofpoint-ORIG-GUID: DZwC8m8mHL2o4IFx5dCvmVz_z1Y4ysh_
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
  definitions=2022-07-22_06,2022-07-21_02,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- priorityscore=1501 bulkscore=0 spamscore=0 lowpriorityscore=0
- impostorscore=0 mlxscore=0 phishscore=0 clxscore=1015 mlxlogscore=999
- adultscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2206140000 definitions=main-2207230007
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ spamscore=0 mlxscore=0 malwarescore=0 impostorscore=0 mlxlogscore=999
+ adultscore=0 priorityscore=1501 clxscore=1015 lowpriorityscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2206140000 definitions=main-2207230007
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
@@ -83,28 +85,39 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+Explicitly list known quirks.
+Mention that socket-related syscalls can be invoked via socketcall().
 
-This is a fix for [1]: test_probe_user fails on s390x, because it hooks
-only connect(), but not socketcall(SYS_CONNECT).
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+---
+ tools/lib/bpf/bpf_tracing.h | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-Patch 1 adds this quirk to BPF_KSYSCALL documentation.
-Patch 2 fixes the test by attaching a prog to socketcall().
-
-Best regards,
-Ilya
-
-[1] https://lore.kernel.org/bpf/06631b122b9bd6258139a36b971bba3e79543503.camel@linux.ibm.com/
-
-Ilya Leoshkevich (2):
-  libbpf: Extend BPF_KSYSCALL documentation
-  selftests/bpf: Attach to socketcall() in test_probe_user
-
- tools/lib/bpf/bpf_tracing.h                   | 14 +++++---
- .../selftests/bpf/prog_tests/probe_user.c     | 35 +++++++++++++------
- .../selftests/bpf/progs/test_probe_user.c     | 28 +++++++++++++--
- 3 files changed, 60 insertions(+), 17 deletions(-)
-
+diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
+index f4d3e1e2abe2..9d2feab7d903 100644
+--- a/tools/lib/bpf/bpf_tracing.h
++++ b/tools/lib/bpf/bpf_tracing.h
+@@ -523,10 +523,16 @@ static __always_inline typeof(name(0)) ____##name(struct pt_regs *ctx, ##args)
+  * Original struct pt_regs * context is preserved as 'ctx' argument. This might
+  * be necessary when using BPF helpers like bpf_perf_event_output().
+  *
+- * At the moment BPF_KSYSCALL does not handle all the calling convention
+- * quirks for mmap(), clone() and compat syscalls transparrently. This may or
+- * may not change in the future. User needs to take extra measures to handle
+- * such quirks explicitly, if necessary.
++ * At the moment BPF_KSYSCALL does not transparently handle all the calling
++ * convention quirks for the following syscalls:
++ *
++ * - mmap(): __ARCH_WANT_SYS_OLD_MMAP.
++ * - clone(): CLONE_BACKWARDS, CLONE_BACKWARDS2 and CLONE_BACKWARDS3.
++ * - socket-related syscalls: __ARCH_WANT_SYS_SOCKETCALL.
++ * - compat syscalls.
++ *
++ * This may or may not change in the future. User needs to take extra measures
++ * to handle such quirks explicitly, if necessary.
+  *
+  * This macro relies on BPF CO-RE support and virtual __kconfig externs.
+  */
 -- 
 2.35.3
 
