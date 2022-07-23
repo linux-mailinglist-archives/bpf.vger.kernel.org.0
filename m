@@ -2,80 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36F0C57F1C0
-	for <lists+bpf@lfdr.de>; Sat, 23 Jul 2022 23:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E44A257F1D8
+	for <lists+bpf@lfdr.de>; Sun, 24 Jul 2022 00:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230306AbiGWVje (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 23 Jul 2022 17:39:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42952 "EHLO
+        id S235783AbiGWWHY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 23 Jul 2022 18:07:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbiGWVje (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 23 Jul 2022 17:39:34 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF9B61928A
-        for <bpf@vger.kernel.org>; Sat, 23 Jul 2022 14:39:32 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id a18-20020a05600c349200b003a30de68697so6329943wmq.0
-        for <bpf@vger.kernel.org>; Sat, 23 Jul 2022 14:39:32 -0700 (PDT)
+        with ESMTP id S229473AbiGWWHX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 23 Jul 2022 18:07:23 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68D13140C5;
+        Sat, 23 Jul 2022 15:07:22 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id c12so2272371ede.3;
+        Sat, 23 Jul 2022 15:07:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc;
-        bh=Can+tmBk+Wid7peUFFK03StsCKEQpkEmFqhp/kE6KsE=;
-        b=ipERumaARiNZsuwJDDqcplfldFnM1+XYa2m2j/5kEzsPGd45px3pbVkDnTxMOT8YXK
-         csiB7UKjMnEgh2J+DYWtgHkppIcDA36d20NHSp+ca14VuJ19C/aNk1M4sjr25Aa3brq1
-         XRzJBaEVBgMX7utwy7lb2QFvTLEI4p4uWHdLZm9Gsva0xXO4WqFw7CyluKYMScUG3mt+
-         L1676/sofUOpgLO6o8WRaa13Rl5trMYFdG82lOyFjCf7YXq4aJzz2hnZs7485DquT+Gc
-         fz2K6w5PoXeyl802lGaM/tRKQ41I1Bo1p3gih1qWETrObPCkdzeiYX3Oj+SaQKo05lLq
-         6RRQ==
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=1ud5s3lr2DV5lJPs9Tb+JHqzax7xR2iHCfmMlhijD0Q=;
+        b=g4IMw2gWQDQwxUtc2W0jdPz63rrAgJ/pVLQX18cNUzmZbkmoeqjtEqX5d0JAANOsjS
+         T1xXi3chhzfIYXTr3cm6gsOACQRmW6memdhK9MzyJ2gRcGdEl51+nmz+VHW0ddjESg4O
+         4uTIdbHI8fC5HoyM5VgbHGIBCAoy5R3lLmFkRJZYAs+GAbTORQ+3Kye6WIwifyUv0qRS
+         2ORHENPrHjnB5046CECTCDVHqqtTJIaspUgHYIpIAR9zFsUpVyFzaDD9VQgMf7z8u+e1
+         WAsksYXiJbZOPKPCgbwGWAObdDH0eBSkZcs9ElZOMQSYTIxVT+eUxC9CfKsptbSiReC3
+         YxyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc;
-        bh=Can+tmBk+Wid7peUFFK03StsCKEQpkEmFqhp/kE6KsE=;
-        b=UEGY5gNm+nKJD3MyufpCYuXRu2F9DkV5uMUkkjouF6rHN/qOvDbWjeVMTXHYgVwlhT
-         voFpOjXTq7WeszdcZyDtVdAnrsnylnHp2KVfkFMqRQCDehVFC3e5kgr7Hyhe5STwxA1q
-         7v6Gl4W+rfgwzkRYFZG30zGXo2F1IrZLKhE9jmh7z3MXbt5g2CZ3PVeBWzO5jp8HwrvX
-         VE2rlQiQLwtje8ognybw2aycQIJtcKFUSnMYolWKEghN3ybipHJ2eFQJNlM3aCgtysCf
-         5LJne8pkQeYNg/BysC9qZczE+9nhRIpmkK0DrCtM22iIvYW6VhBHAi5haCavXaQzp96I
-         BKXg==
-X-Gm-Message-State: AJIora/c1m9IntBXYTMem2J0gSJAs32851f6FCmqai/7mr5yxeLifRlo
-        cpWUoeXHavZhFuHH8om05qzpCfqz8hSoGw==
-X-Google-Smtp-Source: AGRyM1sGNCkwfLkVoaVdvf7ieAvhrIx/iXvYs6sXTHRTMWAHfXb0tsgFpgbMImMQYlMlCDstNmqX/Q==
-X-Received: by 2002:a05:600c:1c26:b0:3a3:2251:c3cb with SMTP id j38-20020a05600c1c2600b003a32251c3cbmr16534754wms.126.1658612371159;
-        Sat, 23 Jul 2022 14:39:31 -0700 (PDT)
-Received: from krava (ip-94-113-247-30.net.vodafone.cz. [94.113.247.30])
-        by smtp.gmail.com with ESMTPSA id m39-20020a05600c3b2700b003a2e1883a27sm16680062wms.18.2022.07.23.14.39.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Jul 2022 14:39:30 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Sat, 23 Jul 2022 23:39:27 +0200
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>
-Subject: Re: [RFC] ftrace: Add support to keep some functions out of ftrace
-Message-ID: <YtxqjxJVbw3RD4jt@krava>
-References: <20220722110811.124515-1-jolsa@kernel.org>
- <20220722072608.17ef543f@rorschach.local.home>
- <CAADnVQ+hLnyztCi9aqpptjQk-P+ByAkyj2pjbdD45dsXwpZ0bw@mail.gmail.com>
- <20220722120854.3cc6ec4b@gandalf.local.home>
- <20220722122548.2db543ca@gandalf.local.home>
- <YtsRD1Po3qJy3w3t@krava>
- <20220722174120.688768a3@gandalf.local.home>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=1ud5s3lr2DV5lJPs9Tb+JHqzax7xR2iHCfmMlhijD0Q=;
+        b=DsLVO+sdoUu6ZrXMhxv0C9X+7SGNr1nfZhzawsks9XQWGJ99wIxHodroDoYa1OyQSN
+         hZ1b4yqIHBO7mBbpKJea+2nu4Q4z1rvF8XYAAI7k85UQkhmsT2OFX4rIHGuqN5tsdjRB
+         sxaSNmGJrzSQ+llg68cArkYqlzX+lzqYJ5So55upJfhUcPR6nMJUx0xCSknwPrUCBPFj
+         +j7J6pzeMnExI7QOqgw1KEGawR2YO5QAvGLhvQRdPzXYFchoqKfDNOrVnBSyn5WwuxsD
+         iqmVIsffVfKaA3vUB3BITkOPInRvN44Wz4vu56koeKUZi7LsxtYw/hdgvrIqfabTOM4V
+         xapA==
+X-Gm-Message-State: AJIora/sAq72bAW5cq7TgaEBsxnBRl/MzaHldBopnQhAem2Aq0Dn5pD9
+        ManRerfXpvp3WqoMUpEQcbD6VBXqrhHT5fwPsNY=
+X-Google-Smtp-Source: AGRyM1uuDrMDBoiptsY8ACLbUpqed0qOT5qs7CacC6KucPKzUiqDHiV3nbCFVLfMsm66WrCpi6rt7lXe4dINxW0MFFw=
+X-Received: by 2002:a05:6402:5299:b0:435:61da:9bb9 with SMTP id
+ en25-20020a056402529900b0043561da9bb9mr6079472edb.21.1658614040701; Sat, 23
+ Jul 2022 15:07:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220722174120.688768a3@gandalf.local.home>
+From:   Dipanjan Das <mail.dipanjan.das@gmail.com>
+Date:   Sat, 23 Jul 2022 15:07:09 -0700
+Message-ID: <CANX2M5Yphi3JcCsMf3HgPPkk9XCfOKO85gyMdxQf3_O74yc1Hg@mail.gmail.com>
+Subject: general protection fault in sock_def_error_report
+To:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        sashal@kernel.org, edumazet@google.com, gregkh@linuxfoundation.org,
+        steffen.klassert@secunet.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Cc:     syzkaller@googlegroups.com, fleischermarius@googlemail.com,
+        its.priyanka.bose@gmail.com
+Content-Type: multipart/mixed; boundary="000000000000b76c5b05e4802c16"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -86,48 +65,132 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 22, 2022 at 05:41:20PM -0400, Steven Rostedt wrote:
-> On Fri, 22 Jul 2022 23:05:19 +0200
-> Jiri Olsa <olsajiri@gmail.com> wrote:
-> 
-> > ok, I think we could use that, I'll check
-> > 
-> > > 
-> > > But other than that, we don't need infrastructure to hide any mcount/fentry
-> > > locations from ftrace. Those were add *for* ftrace.  
-> > 
-> > I think I understand the fentry/ftrace equivalence you see, I remember
-> > the perl mcount script ;-)
-> 
-> It's even more than that. We worked with the compiler folks to get fentry
-> for ftrace purposes (namely to speed it up, and not rely on frame
-> pointers, which mcount did). fentry never existed until then. Like I said.
-> fentry was created *for* ftrace. And currently it's x86 specific, as it
-> relies on the calling convention that a call does both, push the return
-> address onto the  stack, and jump to a function. The blr
-> (branch-link-register) method is more complex, which is where the
-> "patchable" work comes from.
-> 
-> > 
-> > still I think we should be able to define function that has fentry
-> > profile call and be able to manage it without ftrace
-> > 
-> > one other thought.. how about adding function that would allow to disable
-> > function in ftrace, with existing FTRACE_FL_DISABLED or some new flag
-> > 
-> > that way ftrace still keeps track of it, but won't allow to use it in
-> > ftrace infra
-> 
-> Another way is to remove it at compile time from the mcount_loc table, and
-> add it to your own table. I take it, this is for bpf infrastructure code
+--000000000000b76c5b05e4802c16
+Content-Type: text/plain; charset="UTF-8"
 
-hm, perhaps we could move it to separate object and switch off
--mrecord-mcount for it, I'll check
+Hi,
 
-> and not for any code that's in the day to day processing of the kernel,
-> right?
+We would like to report the following bug which has been found by our
+modified version of syzkaller.
 
-yes, it's bpf specific code
+======================================================
+description: general protection fault in sock_def_error_report
+affected file: net/core/sock.c
+kernel version: 5.4.206
+kernel commit: 6584107915561f860b7b05dcca5c903dd62a308d
+git tree: upstream
+kernel config: https://syzkaller.appspot.com/text?tag=KernelConfig&x=1aab6d4187ddf667
+crash reproducer: We could only generate the syz-repro for this bug.
+The corresponding C-repro does not trigger the bug. The syz-repo can
+be run as: `syz-execprog -executor=./syz-executor -repeat=0 -procs=16
+-cover=0 repro.syz`
+======================================================
+Crash log:
+======================================================
+kasan: CONFIG_KASAN_INLINE enabled
+kasan: GPF could be caused by NULL-ptr deref or user memory access
+general protection fault: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 5480 Comm: syz-executor.2 Tainted: G           OE     5.4.206+ #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+1.13.0-1ubuntu1.1 04/01/2014
+RIP: 0010:__wake_up_common+0x198/0x650 kernel/sched/wait.c:86
+Code: 18 48 39 1c 24 0f 85 eb 01 00 00 8b 44 24 10 48 83 c4 28 5b 5d
+41 5c 41 5d 41 5e 41 5f c3 49 8d 54 24 18 48 89 d0 48 c1 e8 03 <80> 3c
+28 00 0f 85 c1 02 00 00 49 8b 44 24 18 4d 89 e0 48 83 e8 18
+RSP: 0018:ffff8880b25ff4b0 EFLAGS: 00010802
+RAX: 1bd5a00000000020 RBX: 0000000000000002 RCX: ffffc900080f5000
+RDX: dead000000000100 RSI: ffffffff81c30ef8 RDI: 0000000000000001
+RBP: dffffc0000000000 R08: ffff88809f932380 R09: ffffed101637d55d
+R10: 00000000000000a0 R11: ffff88809f932380 R12: dead0000000000e8
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000008
+FS:  00007f53462e4700(0000) GS:ffff88811a000000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f75554d1098 CR3: 00000000b1a27004 CR4: 0000000000160ef0
+Call Trace:
+ __wake_up_common_lock+0xd0/0x130 kernel/sched/wait.c:123
+ sock_def_error_report+0x16a/0x590 net/core/sock.c:2817
+ tcp_disconnect+0x14b9/0x1dc0 net/ipv4/tcp.c:2701
+ __inet_stream_connect+0xb44/0xe60 net/ipv4/af_inet.c:707
+ tcp_sendmsg_fastopen net/ipv4/tcp.c:1176 [inline]
+ tcp_sendmsg_locked+0x22b9/0x3220 net/ipv4/tcp.c:1218
+ tcp_sendmsg+0x2b/0x40 net/ipv4/tcp.c:1445
+ inet_sendmsg+0x99/0xe0 net/ipv4/af_inet.c:807
+ smc_sendmsg+0x31f/0x3f0 net/smc/af_smc.c:1566
+ sock_sendmsg_nosec net/socket.c:637 [inline]
+ sock_sendmsg+0xd3/0x130 net/socket.c:657
+ ____sys_sendmsg+0x304/0x7e0 net/socket.c:2286
+ ___sys_sendmsg+0x11d/0x1b0 net/socket.c:2340
+ __sys_sendmmsg+0x195/0x480 net/socket.c:2443
+ __do_sys_sendmmsg net/socket.c:2472 [inline]
+ __se_sys_sendmmsg net/socket.c:2469 [inline]
+ __x64_sys_sendmmsg+0x99/0x100 net/socket.c:2469
+ do_syscall_64+0xf6/0x7b0 arch/x86/entry/common.c:290
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x7f53483544ed
+Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f53462e3be8 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
+RAX: ffffffffffffffda RBX: 00007f5348473040 RCX: 00007f53483544ed
+RDX: 0000000000000001 RSI: 0000000020001a80 RDI: 0000000000000003
+RBP: 00007f53483c02e1 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000020000084 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffcd7ac395f R14: 00007f5348473040 R15: 00007f53462e3d80
+Modules linked in: uio_ivshmem(OE) uio(E)
+---[ end trace d3594c146e1822a7 ]---
+RIP: 0010:__wake_up_common+0x198/0x650 kernel/sched/wait.c:86
+Code: 18 48 39 1c 24 0f 85 eb 01 00 00 8b 44 24 10 48 83 c4 28 5b 5d
+41 5c 41 5d 41 5e 41 5f c3 49 8d 54 24 18 48 89 d0 48 c1 e8 03 <80> 3c
+28 00 0f 85 c1 02 00 00 49 8b 44 24 18 4d 89 e0 48 83 e8 18
+RSP: 0018:ffff8880b25ff4b0 EFLAGS: 00010802
+RAX: 1bd5a00000000020 RBX: 0000000000000002 RCX: ffffc900080f5000
+RDX: dead000000000100 RSI: ffffffff81c30ef8 RDI: 0000000000000001
+RBP: dffffc0000000000 R08: ffff88809f932380 R09: ffffed101637d55d
+R10: 00000000000000a0 R11: ffff88809f932380 R12: dead0000000000e8
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000008
+FS:  00007f53462e4700(0000) GS:ffff88811a000000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f75554d1098 CR3: 00000000b1a27004 CR4: 0000000000160ef0
+----------------
+Code disassembly (best guess):
+   0: 18 48 39              sbb    %cl,0x39(%rax)
+   3: 1c 24                sbb    $0x24,%al
+   5: 0f 85 eb 01 00 00    jne    0x1f6
+   b: 8b 44 24 10          mov    0x10(%rsp),%eax
+   f: 48 83 c4 28          add    $0x28,%rsp
+  13: 5b                    pop    %rbx
+  14: 5d                    pop    %rbp
+  15: 41 5c                pop    %r12
+  17: 41 5d                pop    %r13
+  19: 41 5e                pop    %r14
+  1b: 41 5f                pop    %r15
+  1d: c3                    retq
+  1e: 49 8d 54 24 18        lea    0x18(%r12),%rdx
+  23: 48 89 d0              mov    %rdx,%rax
+  26: 48 c1 e8 03          shr    $0x3,%rax
+* 2a: 80 3c 28 00          cmpb   $0x0,(%rax,%rbp,1) <-- trapping instruction
+  2e: 0f 85 c1 02 00 00    jne    0x2f5
+  34: 49 8b 44 24 18        mov    0x18(%r12),%rax
+  39: 4d 89 e0              mov    %r12,%r8
+  3c: 48 83 e8 18          sub    $0x18,%rax
 
-thanks,
-jirka
+-- 
+Thanks and Regards,
+
+Dipanjan
+
+--000000000000b76c5b05e4802c16
+Content-Type: application/octet-stream; name="repro.syz"
+Content-Disposition: attachment; filename="repro.syz"
+Content-Transfer-Encoding: base64
+Content-ID: <f_l5yfvfd70>
+X-Attachment-Id: f_l5yfvfd70
+
+cjAgPSBzb2NrZXQkaW5ldF9zbWMoMHgyYiwgMHgxLCAweDApCnBvbGwoJigweDdmMDAwMDAwMDE0
+MCk9W3tyMCwgMHgxMDA4fSwge3IwLCAweDIwfSwge3IwLCAweDIwMDB9LCB7MHhmZmZmZmZmZmZm
+ZmZmZmZmLCAweDEwMDB9LCB7cjAsIDB4MjIwfSwgezB4ZmZmZmZmZmZmZmZmZmZmZiwgMHgxMDAw
+MX0sIHsweGZmZmZmZmZmZmZmZmZmZmYsIDB4MjE0MX0sIHtyMCwgMHgyMDAwfSwge31dLCAweDks
+IDB4N2ZmZmZmZmYpCnNlbmRtbXNnJGluZXQocjAsICYoMHg3ZjAwMDAwMDFhODApPVt7eyYoMHg3
+ZjAwMDAwMDAzODApPXsweDIsIDB4MCwgQGxvY2FsfSwgMHgxMCwgMHgwfX1dLCAweDEsIDB4MjAw
+MDAwODQpCg==
+--000000000000b76c5b05e4802c16--
