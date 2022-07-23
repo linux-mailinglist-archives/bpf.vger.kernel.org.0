@@ -2,73 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD2CB57EBCA
-	for <lists+bpf@lfdr.de>; Sat, 23 Jul 2022 05:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C3DA57EC90
+	for <lists+bpf@lfdr.de>; Sat, 23 Jul 2022 09:50:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229836AbiGWD42 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Jul 2022 23:56:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55428 "EHLO
+        id S230309AbiGWHuz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 23 Jul 2022 03:50:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbiGWD41 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Jul 2022 23:56:27 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 208C274DDA
-        for <bpf@vger.kernel.org>; Fri, 22 Jul 2022 20:56:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C91B4B82BC3
-        for <bpf@vger.kernel.org>; Sat, 23 Jul 2022 03:56:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79574C341C0;
-        Sat, 23 Jul 2022 03:56:21 +0000 (UTC)
-Date:   Fri, 22 Jul 2022 23:56:19 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        with ESMTP id S230240AbiGWHuy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 23 Jul 2022 03:50:54 -0400
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 975321580F;
+        Sat, 23 Jul 2022 00:50:53 -0700 (PDT)
+Date:   Sat, 23 Jul 2022 09:50:50 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>
-Subject: Re: [RFC] ftrace: Add support to keep some functions out of ftrace
-Message-ID: <20220722235619.4bd4a0e1@rorschach.local.home>
-In-Reply-To: <20220722235358.0eaa62d0@rorschach.local.home>
-References: <20220722110811.124515-1-jolsa@kernel.org>
-        <20220722072608.17ef543f@rorschach.local.home>
-        <CAADnVQ+hLnyztCi9aqpptjQk-P+ByAkyj2pjbdD45dsXwpZ0bw@mail.gmail.com>
-        <20220722120854.3cc6ec4b@gandalf.local.home>
-        <20220722122548.2db543ca@gandalf.local.home>
-        <YtsRD1Po3qJy3w3t@krava>
-        <20220722174120.688768a3@gandalf.local.home>
-        <20220722235358.0eaa62d0@rorschach.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Florian Westphal <fw@strlen.de>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v7 07/13] net: netfilter: Add kfuncs to allocate
+ and insert CT
+Message-ID: <YtuoWpOJmfcb/3Yu@salvia>
+References: <20220721134245.2450-1-memxor@gmail.com>
+ <20220721134245.2450-8-memxor@gmail.com>
+ <YtpnmI1oPOQRv3j3@salvia>
+ <CAP01T75r6OQffvq8u3e4Srj6c1vsN_NP0PohWikYPUbdp1nDXQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAP01T75r6OQffvq8u3e4Srj6c1vsN_NP0PohWikYPUbdp1nDXQ@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 22 Jul 2022 23:53:58 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> If you are interested in more details about the birth of fentry, here's
-> the email that started it all:
+On Fri, Jul 22, 2022 at 11:39:49AM +0200, Kumar Kartikeya Dwivedi wrote:
+> On Fri, 22 Jul 2022 at 11:02, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+> >
+> > Hi,
+> >
+> > On Thu, Jul 21, 2022 at 03:42:39PM +0200, Kumar Kartikeya Dwivedi wrote:
+> > > diff --git a/include/net/netfilter/nf_conntrack_core.h b/include/net/netfilter/nf_conntrack_core.h
+> > > index 37866c8386e2..83a60c684e6c 100644
+> > > --- a/include/net/netfilter/nf_conntrack_core.h
+> > > +++ b/include/net/netfilter/nf_conntrack_core.h
+> > > @@ -84,4 +84,19 @@ void nf_conntrack_lock(spinlock_t *lock);
+> > >
+> > >  extern spinlock_t nf_conntrack_expect_lock;
+> > >
+> > > +/* ctnetlink code shared by both ctnetlink and nf_conntrack_bpf */
+> > > +
+> > > +#if (IS_BUILTIN(CONFIG_NF_CONNTRACK) && IS_ENABLED(CONFIG_DEBUG_INFO_BTF)) || \
+> > > +    (IS_MODULE(CONFIG_NF_CONNTRACK) && IS_ENABLED(CONFIG_DEBUG_INFO_BTF_MODULES) || \
+> > > +    IS_ENABLED(CONFIG_NF_CT_NETLINK))
+> >
+> > There must be a better way to do this without ifdef pollution?
+> >
+> > Could you fix this?
 > 
->  https://lore.kernel.org/lkml/1258657614.22249.824.camel@gandalf.stny.rr.com/
+> I can just remove the ifdefs completely. The first part of the ifdef
+> is the correct way to detect BPF support for nf_conntrack, the second
+> is for ct netlink. These are the only two users. But it's not a lot of
+> code, so until it grows too much we can compile it unconditionally.
 
-And I was the one to suggest the "fentry" name as well.
+I would suggest to compile in these small functions unconditionally.
 
- https://lore.kernel.org/lkml/1258720459.22249.1018.camel@gandalf.stny.rr.com/
+> Or do you have anything else in mind (like defining a macro for the
+> bpf one and making the ifdef look less ugly)?
 
--- Steve
+it's the ifdef pollution that it would be good to avoid IMO.
