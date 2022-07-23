@@ -2,82 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2352457EB75
-	for <lists+bpf@lfdr.de>; Sat, 23 Jul 2022 04:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84D3857EBC9
+	for <lists+bpf@lfdr.de>; Sat, 23 Jul 2022 05:54:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236332AbiGWCK2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Jul 2022 22:10:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57688 "EHLO
+        id S229611AbiGWDyG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Jul 2022 23:54:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235710AbiGWCK1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Jul 2022 22:10:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A11101D7;
-        Fri, 22 Jul 2022 19:10:26 -0700 (PDT)
+        with ESMTP id S229469AbiGWDyF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Jul 2022 23:54:05 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 190B15C341
+        for <bpf@vger.kernel.org>; Fri, 22 Jul 2022 20:54:05 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8F4AE60F44;
-        Sat, 23 Jul 2022 02:10:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D8CA4C341CA;
-        Sat, 23 Jul 2022 02:10:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658542225;
-        bh=TgDVJqP4jQYvvrf07gRD3WhxPbiGonmxAGY98wXDmS4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=VxLg7QhQiJSkDNrS6gwiOrwzMdk1uSbbQKByyRIh4+swRhgO9XzdSOD+b/1HgxyS0
-         6eWUZSsNwIjqy7IFn97U/8Tk28JbUZxmMWxZkRsJbUp7jbYUYi8+hBwkN8h76vizE5
-         hEDfI2r27RXkyB3tpbOz8lNQUEXwDJDrTMTEntZF0oYKfB1wnvIL/Yx1QKFV0CQmf7
-         QgZZOSGLTzAVbBMxxU9UfIc38jOtjuvg10LGS2TyoDQlOX/LRnr563252teN9orAc/
-         +Vkoro5xsH/H9Lq+2l4cgIk4L486bvkYluHj7WIZzAyvZEDnroZtET8rPxd7cmJOTP
-         wS+8Xqt33Xbkw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BD580D9DDDD;
-        Sat, 23 Jul 2022 02:10:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        by ams.source.kernel.org (Postfix) with ESMTPS id B7719B82903
+        for <bpf@vger.kernel.org>; Sat, 23 Jul 2022 03:54:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B6B0C341C0;
+        Sat, 23 Jul 2022 03:54:00 +0000 (UTC)
+Date:   Fri, 22 Jul 2022 23:53:58 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>
+Subject: Re: [RFC] ftrace: Add support to keep some functions out of ftrace
+Message-ID: <20220722235358.0eaa62d0@rorschach.local.home>
+In-Reply-To: <20220722174120.688768a3@gandalf.local.home>
+References: <20220722110811.124515-1-jolsa@kernel.org>
+        <20220722072608.17ef543f@rorschach.local.home>
+        <CAADnVQ+hLnyztCi9aqpptjQk-P+ByAkyj2pjbdD45dsXwpZ0bw@mail.gmail.com>
+        <20220722120854.3cc6ec4b@gandalf.local.home>
+        <20220722122548.2db543ca@gandalf.local.home>
+        <YtsRD1Po3qJy3w3t@krava>
+        <20220722174120.688768a3@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: pull-request: bpf-next 2022-07-22
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165854222577.22628.10765393378341067283.git-patchwork-notify@kernel.org>
-Date:   Sat, 23 Jul 2022 02:10:25 +0000
-References: <20220722221218.29943-1-daniel@iogearbox.net>
-In-Reply-To: <20220722221218.29943-1-daniel@iogearbox.net>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        edumazet@google.com, ast@kernel.org, andrii@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Fri, 22 Jul 2022 17:41:20 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-This pull request was applied to netdev/net-next.git (master)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Sat, 23 Jul 2022 00:12:18 +0200 you wrote:
-> Hi David, hi Jakub, hi Paolo, hi Eric,
+> > I think I understand the fentry/ftrace equivalence you see, I remember
+> > the perl mcount script ;-)  
 > 
-> The following pull-request contains BPF updates for your *net-next* tree.
-> 
-> We've added 73 non-merge commits during the last 12 day(s) which contain
-> a total of 88 files changed, 3458 insertions(+), 860 deletions(-).
-> 
-> [...]
+> It's even more than that. We worked with the compiler folks to get fentry
+> for ftrace purposes (namely to speed it up, and not rely on frame
+> pointers, which mcount did). fentry never existed until then. Like I said.
+> fentry was created *for* ftrace. And currently it's x86 specific, as it
+> relies on the calling convention that a call does both, push the return
+> address onto the  stack, and jump to a function. The blr
+> (branch-link-register) method is more complex, which is where the
+> "patchable" work comes from.
 
-Here is the summary with links:
-  - pull-request: bpf-next 2022-07-22
-    https://git.kernel.org/netdev/net-next/c/b3fce974d423
+If you are interested in more details about the birth of fentry, here's
+the email that started it all:
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+ https://lore.kernel.org/lkml/1258657614.22249.824.camel@gandalf.stny.rr.com/
 
-
+-- Steve
