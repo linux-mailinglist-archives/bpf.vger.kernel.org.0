@@ -2,87 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C93F157F091
-	for <lists+bpf@lfdr.de>; Sat, 23 Jul 2022 19:17:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36F0C57F1C0
+	for <lists+bpf@lfdr.de>; Sat, 23 Jul 2022 23:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233326AbiGWRRh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 23 Jul 2022 13:17:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36024 "EHLO
+        id S230306AbiGWVje (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 23 Jul 2022 17:39:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230005AbiGWRRg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 23 Jul 2022 13:17:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CDDE1EC72;
-        Sat, 23 Jul 2022 10:17:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A4ABF60EA4;
-        Sat, 23 Jul 2022 17:17:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72240C341C0;
-        Sat, 23 Jul 2022 17:17:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658596654;
-        bh=g+frFEGYvuqJLWR0I9sf72sXVoJVX3BDPDsaXFB6A1U=;
-        h=From:To:Cc:Subject:Date:From;
-        b=CvyZxylXzhcMbiMfuUSnZI/ye2Uokji1XQNHOmGyRSa//aaqIDKroZchMKtbfCzrn
-         NrDpuPVMH/4aqSHrbM1r1AeYCeMkue+FZeCoMjp/aH35t1nYxqd6OPBA8Hu0HxhZvs
-         QtLctomuNwZifoLDrYw1wKfcO9SHM0cM9ONwNLQUpWvpiT1EnhoMOWJwBFECn1NQgi
-         QNMl/SYpkaj3K/ch5A+ZWqxN5JOuEX3dpe6UniJ+tVCccMyZ4ZbY8MR++TmKW5llms
-         3GrqtzyFq2yZRPWicBFSAt5fv2Lna9BxGsfURUgDoQ/WJeclkSvC8700UqyEFfP71P
-         WjrubvtlIahIg==
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        edumazet@google.com, pabeni@redhat.com, hawk@kernel.org,
-        john.fastabend@gmail.com, lorenzo.bianconi@redhat.com
-Subject: [PATCH bpf-next] bpf: devmap: compute proper xdp_frame len redirecting frames
-Date:   Sat, 23 Jul 2022 19:17:10 +0200
-Message-Id: <894d99c01139e921bdb6868158ff8e67f661c072.1658596075.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.36.1
+        with ESMTP id S229473AbiGWVje (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 23 Jul 2022 17:39:34 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF9B61928A
+        for <bpf@vger.kernel.org>; Sat, 23 Jul 2022 14:39:32 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id a18-20020a05600c349200b003a30de68697so6329943wmq.0
+        for <bpf@vger.kernel.org>; Sat, 23 Jul 2022 14:39:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc;
+        bh=Can+tmBk+Wid7peUFFK03StsCKEQpkEmFqhp/kE6KsE=;
+        b=ipERumaARiNZsuwJDDqcplfldFnM1+XYa2m2j/5kEzsPGd45px3pbVkDnTxMOT8YXK
+         csiB7UKjMnEgh2J+DYWtgHkppIcDA36d20NHSp+ca14VuJ19C/aNk1M4sjr25Aa3brq1
+         XRzJBaEVBgMX7utwy7lb2QFvTLEI4p4uWHdLZm9Gsva0xXO4WqFw7CyluKYMScUG3mt+
+         L1676/sofUOpgLO6o8WRaa13Rl5trMYFdG82lOyFjCf7YXq4aJzz2hnZs7485DquT+Gc
+         fz2K6w5PoXeyl802lGaM/tRKQ41I1Bo1p3gih1qWETrObPCkdzeiYX3Oj+SaQKo05lLq
+         6RRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc;
+        bh=Can+tmBk+Wid7peUFFK03StsCKEQpkEmFqhp/kE6KsE=;
+        b=UEGY5gNm+nKJD3MyufpCYuXRu2F9DkV5uMUkkjouF6rHN/qOvDbWjeVMTXHYgVwlhT
+         voFpOjXTq7WeszdcZyDtVdAnrsnylnHp2KVfkFMqRQCDehVFC3e5kgr7Hyhe5STwxA1q
+         7v6Gl4W+rfgwzkRYFZG30zGXo2F1IrZLKhE9jmh7z3MXbt5g2CZ3PVeBWzO5jp8HwrvX
+         VE2rlQiQLwtje8ognybw2aycQIJtcKFUSnMYolWKEghN3ybipHJ2eFQJNlM3aCgtysCf
+         5LJne8pkQeYNg/BysC9qZczE+9nhRIpmkK0DrCtM22iIvYW6VhBHAi5haCavXaQzp96I
+         BKXg==
+X-Gm-Message-State: AJIora/c1m9IntBXYTMem2J0gSJAs32851f6FCmqai/7mr5yxeLifRlo
+        cpWUoeXHavZhFuHH8om05qzpCfqz8hSoGw==
+X-Google-Smtp-Source: AGRyM1sGNCkwfLkVoaVdvf7ieAvhrIx/iXvYs6sXTHRTMWAHfXb0tsgFpgbMImMQYlMlCDstNmqX/Q==
+X-Received: by 2002:a05:600c:1c26:b0:3a3:2251:c3cb with SMTP id j38-20020a05600c1c2600b003a32251c3cbmr16534754wms.126.1658612371159;
+        Sat, 23 Jul 2022 14:39:31 -0700 (PDT)
+Received: from krava (ip-94-113-247-30.net.vodafone.cz. [94.113.247.30])
+        by smtp.gmail.com with ESMTPSA id m39-20020a05600c3b2700b003a2e1883a27sm16680062wms.18.2022.07.23.14.39.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 23 Jul 2022 14:39:30 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Sat, 23 Jul 2022 23:39:27 +0200
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Jiri Olsa <olsajiri@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>
+Subject: Re: [RFC] ftrace: Add support to keep some functions out of ftrace
+Message-ID: <YtxqjxJVbw3RD4jt@krava>
+References: <20220722110811.124515-1-jolsa@kernel.org>
+ <20220722072608.17ef543f@rorschach.local.home>
+ <CAADnVQ+hLnyztCi9aqpptjQk-P+ByAkyj2pjbdD45dsXwpZ0bw@mail.gmail.com>
+ <20220722120854.3cc6ec4b@gandalf.local.home>
+ <20220722122548.2db543ca@gandalf.local.home>
+ <YtsRD1Po3qJy3w3t@krava>
+ <20220722174120.688768a3@gandalf.local.home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220722174120.688768a3@gandalf.local.home>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Even if it is currently forbidden to XDP_REDIRECT a multi-frag xdp_frame
-into a devmap, compute proper xdp_frame length in __xdp_enqueue and
-is_valid_dst routines running xdp_get_frame_len().
+On Fri, Jul 22, 2022 at 05:41:20PM -0400, Steven Rostedt wrote:
+> On Fri, 22 Jul 2022 23:05:19 +0200
+> Jiri Olsa <olsajiri@gmail.com> wrote:
+> 
+> > ok, I think we could use that, I'll check
+> > 
+> > > 
+> > > But other than that, we don't need infrastructure to hide any mcount/fentry
+> > > locations from ftrace. Those were add *for* ftrace.  
+> > 
+> > I think I understand the fentry/ftrace equivalence you see, I remember
+> > the perl mcount script ;-)
+> 
+> It's even more than that. We worked with the compiler folks to get fentry
+> for ftrace purposes (namely to speed it up, and not rely on frame
+> pointers, which mcount did). fentry never existed until then. Like I said.
+> fentry was created *for* ftrace. And currently it's x86 specific, as it
+> relies on the calling convention that a call does both, push the return
+> address onto the  stack, and jump to a function. The blr
+> (branch-link-register) method is more complex, which is where the
+> "patchable" work comes from.
+> 
+> > 
+> > still I think we should be able to define function that has fentry
+> > profile call and be able to manage it without ftrace
+> > 
+> > one other thought.. how about adding function that would allow to disable
+> > function in ftrace, with existing FTRACE_FL_DISABLED or some new flag
+> > 
+> > that way ftrace still keeps track of it, but won't allow to use it in
+> > ftrace infra
+> 
+> Another way is to remove it at compile time from the mcount_loc table, and
+> add it to your own table. I take it, this is for bpf infrastructure code
 
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
----
- kernel/bpf/devmap.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+hm, perhaps we could move it to separate object and switch off
+-mrecord-mcount for it, I'll check
 
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index 1400561efb15..a0e02b009487 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -477,7 +477,7 @@ static inline int __xdp_enqueue(struct net_device *dev, struct xdp_frame *xdpf,
- 	if (!dev->netdev_ops->ndo_xdp_xmit)
- 		return -EOPNOTSUPP;
- 
--	err = xdp_ok_fwd_dev(dev, xdpf->len);
-+	err = xdp_ok_fwd_dev(dev, xdp_get_frame_len(xdpf));
- 	if (unlikely(err))
- 		return err;
- 
-@@ -536,7 +536,7 @@ static bool is_valid_dst(struct bpf_dtab_netdev *obj, struct xdp_frame *xdpf)
- 	    !obj->dev->netdev_ops->ndo_xdp_xmit)
- 		return false;
- 
--	if (xdp_ok_fwd_dev(obj->dev, xdpf->len))
-+	if (xdp_ok_fwd_dev(obj->dev, xdp_get_frame_len(xdpf)))
- 		return false;
- 
- 	return true;
--- 
-2.36.1
+> and not for any code that's in the day to day processing of the kernel,
+> right?
 
+yes, it's bpf specific code
+
+thanks,
+jirka
