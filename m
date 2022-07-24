@@ -2,68 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DC8257F3C4
-	for <lists+bpf@lfdr.de>; Sun, 24 Jul 2022 09:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8F2D57F43F
+	for <lists+bpf@lfdr.de>; Sun, 24 Jul 2022 11:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239205AbiGXHkX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 24 Jul 2022 03:40:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51834 "EHLO
+        id S229462AbiGXJDj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 24 Jul 2022 05:03:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232311AbiGXHkW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 24 Jul 2022 03:40:22 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9953862FE;
-        Sun, 24 Jul 2022 00:40:21 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id m8so10381884edd.9;
-        Sun, 24 Jul 2022 00:40:21 -0700 (PDT)
+        with ESMTP id S229450AbiGXJDi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 24 Jul 2022 05:03:38 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D01513EAC
+        for <bpf@vger.kernel.org>; Sun, 24 Jul 2022 02:03:37 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id s204so10165957oif.5
+        for <bpf@vger.kernel.org>; Sun, 24 Jul 2022 02:03:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ErnvA2IQjdYJKBN8D+WrZ3hhnVFVKrhrGOzLsDpMm3Y=;
-        b=H4qz5J6tEyXWB5b4j3E75PbDiA4RFIMmB8xyvckf6GP7E4wOFlyajdYZ7vHCAJ51z0
-         JCWL9PHiWIimBkCCRM/tarN1m9QWGjLBacttucueEZSXjM1IL6bPkmrOh4r9634foLTF
-         +v1p65ts4KtvCjkAQnsB7S2haXz1YXyn3sflvnIP4g+AAt4sQpQ+XfEUueEgivLyuQ4G
-         79GoIh91XftOjhDqYoUdOwpEUScSQNZYISzhY4ZnAfWXZg+eI9gHqrIIaOyTbFulkuUI
-         coLtfBJH6ylN1GEpglxHr1fea12jS1CGAtYuCJ2925dpWK6VxsHuG1/Zm3zkOpBpLZuD
-         7i7w==
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=QpEaDxkG2LS1RZfC/NN515eixcplndk1/81tecigYbY=;
+        b=H8+uJHEploRNua6p4DTXdPmDrNq5ECsL8aGpW9b9gJIfbGZJUZUwO28l7ZOLIA4YpE
+         8Mp8ak5AJ2YJavFmbCIYPt2ipLeZN4aXw9e7wvkswrvuHMUpyrD1jUhT2IxvAX06TIPp
+         hMOOsvV5KvlMyP6wD6l2up6e0HfrnU5ElQFtGZ/X6inji+fbo2uBlVSVogYY+/jR1EG9
+         KP6NS15h0fGnQTrQmRNuceUDrKrK0bgL2PAy+HtuitmgC0fab9z8NI0ZV+ERkYF92X+Q
+         rtee7s87RzWmK1a9NnF0VL+BlaQSQ0xSx5ubjXS9EV52CYqP5spe0kbncBXIqXr6ahCH
+         EnvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ErnvA2IQjdYJKBN8D+WrZ3hhnVFVKrhrGOzLsDpMm3Y=;
-        b=kzqasxe31zovk1v62bAaEByGHgwAJ6Ruu6Du2Vj6IM+CS8Vie7l5fAfFowTxD5iu+t
-         vU5HoHSd4K18aFdVlgmkhkzQS/0ruo87oEChRtRKHLyof1gVYUOZlLavYqhMHE4VNLyu
-         HCcLEjX798PhUSiwGCfYf4ahjqP8aC2zyngTjBD5SlKRqlZjiMzZNw9UK7u73Eyap4fS
-         MHE0NM+oLmpagArE4dWREWg5vRpUll2xDOinX0NGeGwZxiTC2MeNL3dqRd+k7H6kAkYu
-         AjI82HJgNbu1ZxnJyjv8S5O3zK4SDp70WIMt81c/HAzd1XVKcRe0pgeVbPV6EuOHvrNf
-         Wx4A==
-X-Gm-Message-State: AJIora/5xxjnYF7JVYeh57SBO7GySbaeoGH7KartjCPLSiu14c6NN5/u
-        gr+qk2x4M4Gc46ddll4tLzypqgk1C7Ewr7rbSBM=
-X-Google-Smtp-Source: AGRyM1siO5STvLpUL89q/Y4a7nrB/6SJ2OzG+9g0zd3k8VusJsoIWqFvk+oynEat1YD5fVHrzBne8dEnUU6bkVb1fwU=
-X-Received: by 2002:aa7:c403:0:b0:43b:d0a3:95f with SMTP id
- j3-20020aa7c403000000b0043bd0a3095fmr7424122edq.74.1658648420140; Sun, 24 Jul
- 2022 00:40:20 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=QpEaDxkG2LS1RZfC/NN515eixcplndk1/81tecigYbY=;
+        b=i5k5izb1Fbjw0mmoFwlGzavHM+ps+Qdait6psP93rX40FaKhJKRtqo4cVXvP+goo56
+         FkEGffkl1vG/e2KzbTB1emEfggawyPO1KaeDd4OGvLCrucLq9OQfRmqRlBRBsDTP5WmT
+         tXpRwUpSoriGj1tWP9hZRC+IpexC+R6SB67hr6fX74zSfmV/NUi478x/xiCBLkfI88Af
+         UGXnerayfATKyEG69Ia50XuBDNYAGI/q06KPcPoLm5MjMJk3frY9KDVPKNeBawDaTc8G
+         wshXL7k9d62qNqUgzw3mD4A5gI/LX6fm26urrND30p29QU4kz7bQ4XXpTWBYnK4FUZnZ
+         MoyQ==
+X-Gm-Message-State: AJIora9diL7kB2pA7JvvuoFEXvF3WkNwrE2DNrcSs7BDM6e2CDatnSFe
+        USCT84rsmoa8COpI3rR59Svd5VDLE+OUzTLs1Pk=
+X-Google-Smtp-Source: AGRyM1vZqZBcYiyKvvc+MR05IwKsVIOVJyJ1y42N50mDjrzfslMC0C4j58vcYsoVVOP5c/zW1ZsNHxhWIGsNvDcfhrU=
+X-Received: by 2002:a54:4411:0:b0:33a:6c6d:97fa with SMTP id
+ k17-20020a544411000000b0033a6c6d97famr10615150oiw.30.1658653416603; Sun, 24
+ Jul 2022 02:03:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <CANX2M5Yphi3JcCsMf3HgPPkk9XCfOKO85gyMdxQf3_O74yc1Hg@mail.gmail.com>
- <Ytzy9IjGXziLaVV0@kroah.com>
-In-Reply-To: <Ytzy9IjGXziLaVV0@kroah.com>
-From:   Dipanjan Das <mail.dipanjan.das@gmail.com>
-Date:   Sun, 24 Jul 2022 00:40:09 -0700
-Message-ID: <CANX2M5bxA5FF2Z8PFFc2p-OxkhOJQ8y=8PGF1kdLsJo+C92_gQ@mail.gmail.com>
-Subject: Re: general protection fault in sock_def_error_report
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        sashal@kernel.org, edumazet@google.com,
-        steffen.klassert@secunet.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        syzkaller@googlegroups.com, fleischermarius@googlemail.com,
-        its.priyanka.bose@gmail.com
+Reply-To: sgtkaylama@gmail.com
+Sender: yakoubougourou90@gmail.com
+Received: by 2002:a05:6358:2115:b0:ab:8d56:1c23 with HTTP; Sun, 24 Jul 2022
+ 02:03:35 -0700 (PDT)
+From:   sgtkaylama <sgtkaylama@gmail.com>
+Date:   Sun, 24 Jul 2022 09:03:35 +0000
+X-Google-Sender-Auth: UsR4Q0uoWW73brz2R9W7q2M4GWg
+Message-ID: <CANcDhOB4eYV7dhZXNRNVWmYZi3a-ocx2Wa=FLx9Mp=vC6JyhYA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,43 +67,4 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jul 24, 2022 at 12:26 AM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Sat, Jul 23, 2022 at 03:07:09PM -0700, Dipanjan Das wrote:
-> > Hi,
-> >
-> > We would like to report the following bug which has been found by our
-> > modified version of syzkaller.
->
-> Do you have a fix for this issue?  Without that, it's a bit harder as:
-
-We will try to root cause the issue and provide a fix, if possible.
-
->
-> > ======================================================
-> > description: general protection fault in sock_def_error_report
-> > affected file: net/core/sock.c
-> > kernel version: 5.4.206
->
-> You are using a very old kernel version, and we have loads of other
-> syzbot-reported issues to resolve that trigger on newer kernels.
-
-Since 5.4.206 is a longterm release kernel, we were under the
-impression that the community is still accepting fixes and patches for
-the same. I understand that adding another bug to the already pending
-queue of syzbot reported issues is not going to help the developers
-much. Therefore, we will definitely try our best to analyze the issue
-and provide a fix in the coming days. Can you please confirm that it
-is worth the effort for the longterm release kernels?
-
->
-> thanks,
->
-> greg k-h
-
-
-
--- 
-Thanks and Regards,
-
-Dipanjan
+6Zeu5YCZ77yM5L2g5pS25Yiw5oiR5LmL5YmN55qE5Lik5p2h5raI5oGv5LqG5ZCX77yfDQo=
