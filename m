@@ -2,98 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1234257F53C
-	for <lists+bpf@lfdr.de>; Sun, 24 Jul 2022 15:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3CF557F5AE
+	for <lists+bpf@lfdr.de>; Sun, 24 Jul 2022 17:16:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230040AbiGXNnJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 24 Jul 2022 09:43:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47198 "EHLO
+        id S229914AbiGXPQI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 24 Jul 2022 11:16:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbiGXNnE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 24 Jul 2022 09:43:04 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51A30E0AA;
-        Sun, 24 Jul 2022 06:43:03 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id CC27DB80D32;
-        Sun, 24 Jul 2022 13:43:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9279CC3411E;
-        Sun, 24 Jul 2022 13:42:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1658670180;
-        bh=maUBUTNvw0Eg0uVI0eTfJ37pCQzM3v+3MOLAjM/O4Dw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uhOxHNmuPO8N7ia5ENwOhWBb/UJwNbxm70SQCqg55A0iLJEuDHw86etfiTDFaGh0b
-         RR4SiAf/Df2jO6UR7KI8Jwi6qYyVuDP7c073nCU4zPffAQiuNiIYwDm05Qy4cetjL6
-         GAWflP+r3wDg1WrpfYq0NcYN4tPtSRLI60ZFfwfk=
-Date:   Sun, 24 Jul 2022 15:42:55 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Dipanjan Das <mail.dipanjan.das@gmail.com>
-Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        sashal@kernel.org, edumazet@google.com,
-        steffen.klassert@secunet.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        syzkaller@googlegroups.com, fleischermarius@googlemail.com,
-        its.priyanka.bose@gmail.com
-Subject: Re: general protection fault in sock_def_error_report
-Message-ID: <Yt1MX1Z6z0y82i1I@kroah.com>
-References: <CANX2M5Yphi3JcCsMf3HgPPkk9XCfOKO85gyMdxQf3_O74yc1Hg@mail.gmail.com>
- <Ytzy9IjGXziLaVV0@kroah.com>
- <CANX2M5bxA5FF2Z8PFFc2p-OxkhOJQ8y=8PGF1kdLsJo+C92_gQ@mail.gmail.com>
+        with ESMTP id S230451AbiGXPQH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 24 Jul 2022 11:16:07 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B09F6DF90
+        for <bpf@vger.kernel.org>; Sun, 24 Jul 2022 08:16:06 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id n185so5389206wmn.4
+        for <bpf@vger.kernel.org>; Sun, 24 Jul 2022 08:16:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=U1hEasta6NC0Fhws0/3UxCRL1y11e+6zcIcC0np0f/U=;
+        b=pr0+dly+aD6yUenqfG1g5MV6kHsAkZU2T3avAn+uw0oBzQjdQRg9u7soDq+LrDMJOb
+         PQoTbWfNyeOSUYE02yXWTQnBhrAG3Gcgqw5lOvLMjDpCIz2TB+QXpcGlj9kRrOQa93jx
+         5fNzj7GXYN5B759rCd+Ag5vF2i+9FXTwqrOIXsRzwd7dlf+9XuPlpTtaBZBZw1bS6O78
+         LTHLMrLN/B+LecrfS5a0OJx60PnnlrUeEfAFc9paSrqdxf6i0SmhM5iKcHkjxYEMgVWE
+         gqFeaP1Dc36aSeueHA9PdbYhvVpXXfuc9N0TGiAD3eoaI9qrpwKY9WruBokEj2s6rg1X
+         XUVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=U1hEasta6NC0Fhws0/3UxCRL1y11e+6zcIcC0np0f/U=;
+        b=AAjalgVGyRyXHs59lBpEviH0JhUGYQlEeZAkkTx3jlSj8IR/Z/hp3XbPRon7o8ATrJ
+         Yp914DLXkPhkkbtyAiUSAXUpdd2JPfvfjFce2LN05p2grs2CYHcQQ32A28BqYwimoNpD
+         YIIG2vuo469Z7cA+myKBXv2n8HdQgcJf8CrIjXPWof37o7bLJomGcvIWWGJr+Sw6IJKZ
+         z1Nt9sBxBLjjdSCEX0ewt1kJq2QsXd7refgFOndBwzGbbVZOBnHtGu2zSfpy5mIfF2x/
+         rE2FcROaKfvnzGeJqyzh4HoGw59vIf7BAAD2iTUQVaZ+kUyqQ15asPH1yju9pCKiA5vZ
+         2EYQ==
+X-Gm-Message-State: AJIora9jcd5jBjVAbh74aOW5rPcLVaYLU380qaG6EaJKcYt7SdkdgCMB
+        5PM57Ih44xfeEXxGEmO0Hgq88+G+bzK+KRUb//k=
+X-Google-Smtp-Source: AGRyM1uUpaPhv6buYTriG+kiy6kJem7IxffDEd7ky9Hv4w4XPZIKvVZoStMc1j9XVLQHlTny5XX0UbZ6GrgZYoKuZGw=
+X-Received: by 2002:a1c:7213:0:b0:3a3:155a:dd5d with SMTP id
+ n19-20020a1c7213000000b003a3155add5dmr5580381wmc.178.1658675765089; Sun, 24
+ Jul 2022 08:16:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANX2M5bxA5FF2Z8PFFc2p-OxkhOJQ8y=8PGF1kdLsJo+C92_gQ@mail.gmail.com>
-X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Sender: gb676779@gmail.com
+Received: by 2002:a7b:c5d5:0:0:0:0:0 with HTTP; Sun, 24 Jul 2022 08:16:04
+ -0700 (PDT)
+From:   "Mrs. Linda Harakan" <haralinda549@gmail.com>
+Date:   Sun, 24 Jul 2022 08:16:04 -0700
+X-Google-Sender-Auth: kkyyiZNdyAlw0dnBLyE1naz_uUk
+Message-ID: <CAO9H84MXq7K561ky5=UPVTAqZSZeWb0MPtAueASGBrLi=9SfTQ@mail.gmail.com>
+Subject: PLEASE CONFIRM MY PREVIOUS MAIL FOR MORE DETAILS.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,
+        T_HK_NAME_FM_MR_MRS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jul 24, 2022 at 12:40:09AM -0700, Dipanjan Das wrote:
-> On Sun, Jul 24, 2022 at 12:26 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Sat, Jul 23, 2022 at 03:07:09PM -0700, Dipanjan Das wrote:
-> > > Hi,
-> > >
-> > > We would like to report the following bug which has been found by our
-> > > modified version of syzkaller.
-> >
-> > Do you have a fix for this issue?  Without that, it's a bit harder as:
-> 
-> We will try to root cause the issue and provide a fix, if possible.
-> 
-> >
-> > > ======================================================
-> > > description: general protection fault in sock_def_error_report
-> > > affected file: net/core/sock.c
-> > > kernel version: 5.4.206
-> >
-> > You are using a very old kernel version, and we have loads of other
-> > syzbot-reported issues to resolve that trigger on newer kernels.
-> 
-> Since 5.4.206 is a longterm release kernel, we were under the
-> impression that the community is still accepting fixes and patches for
-> the same. I understand that adding another bug to the already pending
-> queue of syzbot reported issues is not going to help the developers
-> much. Therefore, we will definitely try our best to analyze the issue
-> and provide a fix in the coming days. Can you please confirm that it
-> is worth the effort for the longterm release kernels?
+Hi,
 
-It is worth the effort if the problem is still in the latest kernel
-release as that is the only place that new development happens.  If the
-issue is not reproducible on Linus's current releases, then finding the
-change that solved the problem is also good so that we can then backport
-it to the stable/long term kernel release for everyone to benefit from.
+Recently i forwarded you an important message and i have expecting
+your response, please confirm my previous message and get back to me.
 
-So does your reproducer still work on the latest 5.19-rc7 release?
-
-thanks,
-
-greg k-h
+Mrs. Linda Harakan.
