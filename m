@@ -2,110 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FCF557F4B2
-	for <lists+bpf@lfdr.de>; Sun, 24 Jul 2022 12:38:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1234257F53C
+	for <lists+bpf@lfdr.de>; Sun, 24 Jul 2022 15:43:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230516AbiGXKiF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 24 Jul 2022 06:38:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55114 "EHLO
+        id S230040AbiGXNnJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 24 Jul 2022 09:43:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbiGXKiE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 24 Jul 2022 06:38:04 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A70613E09;
-        Sun, 24 Jul 2022 03:38:03 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id b11so15566144eju.10;
-        Sun, 24 Jul 2022 03:38:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=81oGHfHrB8lVkJ+g/NkBs7PcuO85NR++hBmreY15mW0=;
-        b=HNzHYLFzUNIUu96TX16ua+bwzbCrvXIOBws5aBsFkpbOLhs78gTGuMis1qPeIWbkVW
-         hy/poLueGjdxtTsfkT9QrjOhVBp0muY5FjUmaO/RSgwGYj2cys7RzBWlPdpNwkpeW/PV
-         D9G9Y23pCS7r34/VL9OpC2YetCIXTg9Ytu1Cwfh3+ROYzdMx7DVZDnTBC6Tvap8AlCZU
-         9PG2TQFVaaETssA+PKHGoraqubitvGNeSX6OU+sbmQsUCwDeMNEEa9g1ogdqJ9ghuX1O
-         J0WTqVqaKTIteUmKMrOi6OWuvBEcKgd52DoqJHgTGrln4A0+1D588DZr1hLLua3q88PG
-         Cg2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=81oGHfHrB8lVkJ+g/NkBs7PcuO85NR++hBmreY15mW0=;
-        b=4fhnOfLQ7dge053tjCoklx1EgVMvrsiVPRIqof6OY1r7X7Pgaw/c7uQXlx/HLJReDG
-         QvHkNW3Zzx350IHhDwksWBgrQUY7OWR45Wd+zQ1gf5uZ5hlGsq2Jhvzb6uAc4NPou7Mi
-         ByujqxWquCZuQcGt+FYCOE6jOwy0xUQzXCrGbNCC8WwW6LR8bzcitmv0Y9fhEsii/cUc
-         5iREa1AO6YhrorOkeqOrOPVGMYrkPyI1wtDujn6tNy2jAxQOm7INbzTkz8sGuIYI5hOm
-         TQEtxfvGX5N3urh+JlbamnYoHnR0PrXMkTkNf8ohUwXFJncnMfI0n4yDS7Ob8nHoUco0
-         0apQ==
-X-Gm-Message-State: AJIora/lz8kp8nbFYllGg7i15ckYp4jsA2uRuGqbZxp8a0Js7v1utNSy
-        hMI/rvuDl7LvlWizzTR2lgnaaMtZdjI=
-X-Google-Smtp-Source: AGRyM1sRIuekT8/CJ1p3muFe2N56rnMeuPaMUH3VsN2lLc/+E9hYTdn1AF+ZxoTjkgX26GykJXas/A==
-X-Received: by 2002:a17:906:2ed7:b0:72f:d080:411 with SMTP id s23-20020a1709062ed700b0072fd0800411mr1522299eji.203.1658659081960;
-        Sun, 24 Jul 2022 03:38:01 -0700 (PDT)
-Received: from erthalion.local (dslb-094-222-027-106.094.222.pools.vodafone-ip.de. [94.222.27.106])
-        by smtp.gmail.com with ESMTPSA id g1-20020a17090604c100b006fe9f9d0938sm4094843eja.175.2022.07.24.03.38.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Jul 2022 03:38:01 -0700 (PDT)
-Date:   Sun, 24 Jul 2022 12:36:51 +0200
-From:   Dmitry Dolgov <9erthalion6@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        songliubraving@fb.com, rostedt@goodmis.org, mingo@redhat.com,
-        mhiramat@kernel.org, alexei.starovoitov@gmail.com
-Subject: Re: [PATCH v4 1/1] perf/kprobe: maxactive for fd-based kprobe
-Message-ID: <20220724103651.qhtqgzhfx2ftrpcx@erthalion.local>
-References: <20220714193403.13211-1-9erthalion6@gmail.com>
- <YtB1PK+NUF5RL9Er@worktop.programming.kicks-ass.net>
- <20220715095236.ywv37a556ktl5oif@ddolgov.remote.csb>
- <YtgMKDgNLnMIkHLI@worktop.programming.kicks-ass.net>
+        with ESMTP id S229570AbiGXNnE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 24 Jul 2022 09:43:04 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51A30E0AA;
+        Sun, 24 Jul 2022 06:43:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id CC27DB80D32;
+        Sun, 24 Jul 2022 13:43:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9279CC3411E;
+        Sun, 24 Jul 2022 13:42:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1658670180;
+        bh=maUBUTNvw0Eg0uVI0eTfJ37pCQzM3v+3MOLAjM/O4Dw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uhOxHNmuPO8N7ia5ENwOhWBb/UJwNbxm70SQCqg55A0iLJEuDHw86etfiTDFaGh0b
+         RR4SiAf/Df2jO6UR7KI8Jwi6qYyVuDP7c073nCU4zPffAQiuNiIYwDm05Qy4cetjL6
+         GAWflP+r3wDg1WrpfYq0NcYN4tPtSRLI60ZFfwfk=
+Date:   Sun, 24 Jul 2022 15:42:55 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Dipanjan Das <mail.dipanjan.das@gmail.com>
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        sashal@kernel.org, edumazet@google.com,
+        steffen.klassert@secunet.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        syzkaller@googlegroups.com, fleischermarius@googlemail.com,
+        its.priyanka.bose@gmail.com
+Subject: Re: general protection fault in sock_def_error_report
+Message-ID: <Yt1MX1Z6z0y82i1I@kroah.com>
+References: <CANX2M5Yphi3JcCsMf3HgPPkk9XCfOKO85gyMdxQf3_O74yc1Hg@mail.gmail.com>
+ <Ytzy9IjGXziLaVV0@kroah.com>
+ <CANX2M5bxA5FF2Z8PFFc2p-OxkhOJQ8y=8PGF1kdLsJo+C92_gQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YtgMKDgNLnMIkHLI@worktop.programming.kicks-ass.net>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CANX2M5bxA5FF2Z8PFFc2p-OxkhOJQ8y=8PGF1kdLsJo+C92_gQ@mail.gmail.com>
+X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> On Wed, Jul 20, 2022 at 04:07:36PM +0200, Peter Zijlstra wrote:
-> > > > Enable specifying maxactive for fd based kretprobe. This will be useful
-> > > > for tracing tools like bcc and bpftrace (see for example discussion [1]).
-> > > > Use highest 4 bit (bit 59-63) to allow specifying maxactive by log2.
+On Sun, Jul 24, 2022 at 12:40:09AM -0700, Dipanjan Das wrote:
+> On Sun, Jul 24, 2022 at 12:26 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Sat, Jul 23, 2022 at 03:07:09PM -0700, Dipanjan Das wrote:
+> > > Hi,
 > > >
-> > > What's maxactive? This doesn't really tell me much.
+> > > We would like to report the following bug which has been found by our
+> > > modified version of syzkaller.
 > >
-> > Maxactive allows specifying how many instances of the specified function
-> > can be probed simultaneously, it would indeed make sense to mention this
-> > in the commit message.
->
-> But why would we need per-fd configurability? Isn't a global sysctrl
-> good enough?
-
-Do you mean there is an existing sysctl option for maxactive, or propose
-to introduce one? A global option indeed could be fine for my use case I
-guess, although there will be a bit of awkward asymmetry -- one can
-specify maxactive via text-based API, but not via perf API.
-
-> > > Why are the top 4 bits the best to use?
+> > Do you have a fix for this issue?  Without that, it's a bit harder as:
+> 
+> We will try to root cause the issue and provide a fix, if possible.
+> 
 > >
-> > This format exists mostly on proposal rights. Per previous discussions,
-> > 4 bits seem to be enough to cover reasonable range of maxactive values.
-> > Top bits seems like a natural place to me following perf_probe_config
-> > enum, but I would love to hear if there are any alternative suggestions?
->
-> I think the precedent you're referring to is UPROBE_REF_CTR, which is a
-> full 32bit. That lives in the upper half of the word because bit0 is
-> already taken and using the upper half makes the thing naturally
-> aligned.
->
-> If we only need 4 bits it's must simpler to simply stick it at the
-> bottom or so.
+> > > ======================================================
+> > > description: general protection fault in sock_def_error_report
+> > > affected file: net/core/sock.c
+> > > kernel version: 5.4.206
+> >
+> > You are using a very old kernel version, and we have loads of other
+> > syzbot-reported issues to resolve that trigger on newer kernels.
+> 
+> Since 5.4.206 is a longterm release kernel, we were under the
+> impression that the community is still accepting fixes and patches for
+> the same. I understand that adding another bug to the already pending
+> queue of syzbot reported issues is not going to help the developers
+> much. Therefore, we will definitely try our best to analyze the issue
+> and provide a fix in the coming days. Can you please confirm that it
+> is worth the effort for the longterm release kernels?
 
-Yes, you're right, I was referring to UPROBE_REF_CTR. Makes sense to me,
-will change the location.
+It is worth the effort if the problem is still in the latest kernel
+release as that is the only place that new development happens.  If the
+issue is not reproducible on Linus's current releases, then finding the
+change that solved the problem is also good so that we can then backport
+it to the stable/long term kernel release for everyone to benefit from.
+
+So does your reproducer still work on the latest 5.19-rc7 release?
+
+thanks,
+
+greg k-h
