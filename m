@@ -2,143 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D5815804FF
-	for <lists+bpf@lfdr.de>; Mon, 25 Jul 2022 22:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 175F6580560
+	for <lists+bpf@lfdr.de>; Mon, 25 Jul 2022 22:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236756AbiGYUGX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Jul 2022 16:06:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41736 "EHLO
+        id S236917AbiGYURg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Jul 2022 16:17:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236595AbiGYUGW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Jul 2022 16:06:22 -0400
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63DCABC80
-        for <bpf@vger.kernel.org>; Mon, 25 Jul 2022 13:06:21 -0700 (PDT)
-Received: by mail-il1-f198.google.com with SMTP id j28-20020a056e02219c00b002dd375bb938so4505208ila.10
-        for <bpf@vger.kernel.org>; Mon, 25 Jul 2022 13:06:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=jALjLym/x8uogNDMDeD9EXR+XfiHKoWS+XNpUQ2FdbU=;
-        b=LXqz2pVdp1GwuHT+caIcuD2w/563Ws0zpiJL2R08WVtNmf52la6O+810oSSO8jkJu0
-         JQmJ7zekZqEQDSHR3llx73le+nLWWS7/RM8EK9k8cKocYehM53AE9luEnl0ncvnQO+CC
-         QRxvWb+rRvEpOXLBX/mMAY9sFk987Y8T8nPs1WbXKGdgEDolxFYLYc1k7ufCZZAvaRFF
-         Fjp/uNzoKvBCHci1hxzAnkSpsIHMnhtRpDoPL/E8EIN+OoofEY5/GUGck+iCVs1XOsBr
-         Kbf8UvySriQMtZIEVG6HR/oV6OWF/Tyqo/S683F27n9zdUAw0u+QXU+RaxH69Ml7yLXs
-         o7oQ==
-X-Gm-Message-State: AJIora/JBNP1eOkmfQP8valskwqHFRv2/6DQpk5pk2QE3spHD+EuGCSK
-        4lNxZIec/xoYE156MHWICyNS4ix8CiJF0RYTBhikFM9fJUmS
-X-Google-Smtp-Source: AGRyM1uryIB9VDMQcroA8VUz1B/u6VlGSrLflRKjzYDpZ/w9+QWutuaN9aEg65GjW2FxG79UYr5OF/B+xp8M0MID4nSsIT9V2et9
+        with ESMTP id S236873AbiGYURT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Jul 2022 16:17:19 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD4B521806
+        for <bpf@vger.kernel.org>; Mon, 25 Jul 2022 13:17:18 -0700 (PDT)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26PJWGpA030943;
+        Mon, 25 Jul 2022 13:17:03 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=cNUx9zMtVUn9Zm5uctyBdtMlAODIjLBnmMHUjr4xKgw=;
+ b=W3qe+Ei5lSBepWWAZjgzChX2U/qA/CH0M0zpfCLfmSiNAWYxeXAA3S6zkbls2oqt/KlI
+ eUhReCZKo0SJQHCZjYAGbK7S+Mjhs/O0ql4wybQRU88GeQEBdT10GWdmns/pebdng7Wk
+ aYMouSqvF20X0ifIOxwndMApvq+kxP0TGac= 
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2174.outbound.protection.outlook.com [104.47.55.174])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hgd1hv077-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 25 Jul 2022 13:17:03 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ntMFSNc/AEXs4K/HJY4489GHFiGwKSAiFZZPC1Cux5WxRJttPb0vuqUhold/9h0wbtpzGIoocxPv30CLKHg7h2YaOG1/ylyv/gK0/BvdJq7h12aeDX46pBHOM+eQg6/h1oG+hlE5SEAEl2upFU6j78baTRhg6AXHMGPeriIZy2f5ikVDYV5QMCJv5KXwug19i1Wghpgbu1jpE3ZIl+DuLXGC59/2SW6e1OYHkEhe++5IYylQpMgyLk92ARmsavjRz1JluJP+5wNPgfedNxRFfk4pFskBlDmquT0248QKbV5vHZPzK67KzQlvYFIZLzITS2/PQVefiO7yX4yOooHoNg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cNUx9zMtVUn9Zm5uctyBdtMlAODIjLBnmMHUjr4xKgw=;
+ b=dY7AxAI5DDYtbq7GdKE3BKazcjvxOmKt10v2dMNpPZquZ6DjB7m07BSFSQ1aSlv2l/VJesVqtDLDmJAiaUwl0dKJ+0qB07n+vnjnPRYUPjvMdd1xCWX2Rr3YYrMcdVu8S2P4LCFh2zPCbnE2QuUL1jAsJJ9cWlCF5OudaZxupYRKVPPTbntGVIom1BZChHpPA4K1Uw9/yb6Bq4nDyHYNWg6oQfQ+Ph+zf9jupthGFI/mOUqqfHyKigUsPmj/Pf2RcbhbT0+wAdUGhqd6jmbyd7RaPoSfRAmzTWaMr++3YUv+hcSwX9I3/bbxlGs5nZ+r4rDx0GLsncSeydxT5uHbNA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from MW4PR15MB4475.namprd15.prod.outlook.com (2603:10b6:303:104::16)
+ by MN2PR15MB3534.namprd15.prod.outlook.com (2603:10b6:208:185::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5458.24; Mon, 25 Jul
+ 2022 20:16:59 +0000
+Received: from MW4PR15MB4475.namprd15.prod.outlook.com
+ ([fe80::a88e:613f:76a7:a5a2]) by MW4PR15MB4475.namprd15.prod.outlook.com
+ ([fe80::a88e:613f:76a7:a5a2%7]) with mapi id 15.20.5458.024; Mon, 25 Jul 2022
+ 20:16:59 +0000
+Date:   Mon, 25 Jul 2022 13:16:58 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     bpf@vger.kernel.org, lorenzo@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, ast@kernel.org
+Subject: Re: [PATCH bpf-next v1 1/1] bpf: Fix bpf_xdp_pointer return pointer
+Message-ID: <20220725201658.t55raspwmj2eguek@kafai-mbp.dhcp.thefacebook.com>
+References: <20220722220105.2065466-1-joannelkoong@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220722220105.2065466-1-joannelkoong@gmail.com>
+X-ClientProxiedBy: SJ0PR03CA0244.namprd03.prod.outlook.com
+ (2603:10b6:a03:3a0::9) To MW4PR15MB4475.namprd15.prod.outlook.com
+ (2603:10b6:303:104::16)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:b44:b0:2dd:89bf:6b99 with SMTP id
- f4-20020a056e020b4400b002dd89bf6b99mr334353ilu.114.1658779580772; Mon, 25 Jul
- 2022 13:06:20 -0700 (PDT)
-Date:   Mon, 25 Jul 2022 13:06:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ac3b8305e4a6b766@google.com>
-Subject: [syzbot] WARNING in __dev_queue_xmit
-From:   syzbot <syzbot+5ea725c25d06fb9114c4@syzkaller.appspotmail.com>
-To:     ast@kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        liuhangbin@gmail.com, netdev@vger.kernel.org, pabeni@redhat.com,
-        pablo@netfilter.org, sdf@google.com, shaozhengchao@huawei.com,
-        syzkaller-bugs@googlegroups.com, willemb@google.com,
-        yajun.deng@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 93b85379-a896-40d8-5b24-08da6e7aa126
+X-MS-TrafficTypeDiagnostic: MN2PR15MB3534:EE_
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: iaGUIBptlfaZv35AsKQ2QSn804GkDfCeDF+TEDgBzymd8dU0CiHkhJ8c1XP8sg8ZMzC3zFzSfT3edZU7Gol6k7eBs+l57MYGqLkW+JYP0OXqvmu7Xu8Z3xX0ICPG+m67nyrHwfn7Toa5lM8insnTJYi+sbBZcF1MkqpwrprLmPCUi0uvHCoBtEk1gSmE2NwjEczeF+SvDm5voCqxkWVL3MGbD/1PG9JqNxQMeyuokpykoBMAV5lXHg134DlWxmtkB2fU+iUHnf55yuq+LyxtX0GCjyqqoIxXRiRD91ry8RuW1pA4ZMP53HsF76RqF5Fgy0DBUZHUvYNqfJsjVvIkCehXNRSftJjV+3dN3qLR1ecURR6pvDupH6D8VJFbkbrSdoVmu+z2SOCnEr5GdRZPr+nNmcQ5F/x9W1n7629uOj+gUFcjkNp8iAleGz8Qxdx+Ge1RtqDHNh7B+o2r7OrsRXTFg92x0rgZFum/0zG85n+TI6giqSkJDPGwlq/WTWIXQBlXrXXycW+2yi65W54LQ81pWl2aqgy+pBnvXtXlGSOwcpM/8DUAB9cXyJwdbb8BvI45XrrYiIFc6FSmajp8mVfGnMx/xGTo0V2PEBQoFoj7Y4FvOn1JGVijU217jN6ipFTL6sRjXhvNNfBqks5vI9L7nWn7g5n2s0Y2oPCtC1o7qoPfUJ4t2/vZIcppwTf1DZxvlOIwh02BoLTb2tagHRsTM6QCpjEawP+M6BHm64VA+EKExf1oOul0C8T1ApB9
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4475.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(136003)(396003)(366004)(39860400002)(346002)(376002)(38100700002)(83380400001)(4744005)(9686003)(478600001)(316002)(86362001)(6486002)(52116002)(6512007)(6506007)(8676002)(8936002)(1076003)(5660300002)(4326008)(66946007)(66476007)(66556008)(6916009)(41300700001)(2906002)(186003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?o+3gA4lz2upZBDsv64k9ZA6HTtpFGSn/kqxUeszBHChWJSSoZfjvfgQp3te4?=
+ =?us-ascii?Q?ugNf9MZzDrK4lbbNIuz4N8pkr9RtufkGc6CAjRfxt77LxrWtlTnBC6VTPZnX?=
+ =?us-ascii?Q?goHz5X6JRIVwdaxpuxo1BPYNPHERfrK+cL88OLNyj0jeNovqiHVi6GmA2IIM?=
+ =?us-ascii?Q?viJtPSTuqMIscwfo2YIKw4vxI0xWPBqXhhAw3LuRYzw6kHguwfyMsRzHvBfC?=
+ =?us-ascii?Q?1HEePQ2PbGKbL6RW7xwq/93jxg0l/AF81u91xauaPfRgcZhrTxFKLidO0RMa?=
+ =?us-ascii?Q?x8p1+3difVvlX6ypxoiPNmLNK2kYKvDMQFUGFMJXGQDux9qchyLkQ1RHdbaW?=
+ =?us-ascii?Q?N2DzfQQvWfymrN2KWkQn6Ro0iv68ZPN9spV1tcS6wGEjiX2wTuizm93dmP6V?=
+ =?us-ascii?Q?5MVEyoGvCUpRdVPsbS+i4/sgnbyH00vDnuDbEGGfwan5qNPqJAVCchyReEUE?=
+ =?us-ascii?Q?q1DgJ4FqLR6LXmXkzff2sDGnadQ8pRFF8EvdlBHgDQmJ4TBWugVavuxBdkPx?=
+ =?us-ascii?Q?FOvW380jusQG+628Avr7x0BI+32zy7FhNy712noIOfXI8t47HbI5Gk92XSuw?=
+ =?us-ascii?Q?TIEF6n7kt5LPDdX/p6BgNO03rN47l1ix82tA3iIhmDizfGi5UYq/VpB/zc0x?=
+ =?us-ascii?Q?Sk/xDB7E+L3vuk1zxepumaPwapbZYM3XL5TykK3bC8K5onmdR9C6jCv9Sb1I?=
+ =?us-ascii?Q?g18Vv3cU4w1Ldn4QunMctrNbJaq66pwwvuHD9Zj7ifXmty1uYj86/2XsRAgz?=
+ =?us-ascii?Q?QbpvxRZE5uB7FaSj50XlIKt+yYc/0+UGHeD3ptXYX2jQB24jc1GqtXA5aSl1?=
+ =?us-ascii?Q?eT33hXic84B8sKVHrILSMkmRvZaSMvsbPox9L7l2/0xsZ7Uw/GRMwlhRt4PI?=
+ =?us-ascii?Q?maGVVwL+ytLd+Cxv06P1aCnChucgUJMnIiBItUzP/dd2g30QU6X0cVBxTIxY?=
+ =?us-ascii?Q?+NazSsCZZ4KxilRqau1FRG3m0sGPxJHDSmA89rVkYbe1LPSSDim3Jj/GI6tq?=
+ =?us-ascii?Q?6jhkrHB50oMzHWrg/c3i5sQichr2R0fdk06vkoIiJgzL95D7tsR1RoiH9edl?=
+ =?us-ascii?Q?t0VERbSFR0ypLEf1W1bN3e5i186UVQPGLXT1VPg4n1evEOLrYJl54VKntXBc?=
+ =?us-ascii?Q?C7paN/6g4ZLfdCJ9guTP7HWPN0K5CFEPJc9s2vvc3UaYzxYWKZsA5+MgXBRt?=
+ =?us-ascii?Q?85zT5BIn9+MM0T4X/RzIyLkMHKNBjkYRyB0hrzYEl6zV5pzkoB3O6/A18GoN?=
+ =?us-ascii?Q?YzSDvkLWWqkqRrflASN16WOPoa9DZo4QKZNvW9VmRxFTDb43vG88vWG/FN2L?=
+ =?us-ascii?Q?agLeY/eAkbEAM1ygOSAQLDsa+wPabwd2w7WaW8SDo5vL9DhFFUo3KtEZz4ZD?=
+ =?us-ascii?Q?xAmWJJADb3v0lTc5nbr/u4Jd18zHTYWkURbZPMxBnFQFx/5O2ch0RFA3830v?=
+ =?us-ascii?Q?NFPQNyRxmLyhwhLovyW24MyDJ3YlyJSirb5ZzEh8UnvJ+nfZeRyQnHd7yMCj?=
+ =?us-ascii?Q?/cItwUyhvRgk5SHwYgxMaiYS/IT6MtmtHpuTaDrbW7gz7Rj3qdM9NHuAOBXI?=
+ =?us-ascii?Q?wCd2m8zhjbKWuW/hK1NHvPjwlOyfr71wc3Y4IrQjrUDlf0FI7+jYOZRCwOC6?=
+ =?us-ascii?Q?jw=3D=3D?=
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 93b85379-a896-40d8-5b24-08da6e7aa126
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4475.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2022 20:16:59.7088
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IV7Dl3auCH9OnxYZ6CXEM4xY7Hx7ziGX6Bi4FrD2ABRs3rleuXWTtmxOEmpox1M5
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB3534
+X-Proofpoint-ORIG-GUID: 97RcWG_nxPBC2sHXwBDLKoKCVkrMJF4p
+X-Proofpoint-GUID: 97RcWG_nxPBC2sHXwBDLKoKCVkrMJF4p
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-07-25_12,2022-07-25_03,2022-06-22_01
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Fri, Jul 22, 2022 at 03:01:05PM -0700, Joanne Koong wrote:
+> For the case where offset + len == size, bpf_xdp_pointer should return a
+> valid pointer to the addr because that access is permitted. We should
+> only return NULL in the case where offset + len exceeds size.
+> 
+> Fixes: 3f364222d032 ("net: xdp: introduce bpf_xdp_pointer utility routine")
+> Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+> ---
+>  net/core/filter.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 289614887ed5..4307a75eeb4c 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -3918,7 +3918,7 @@ static void *bpf_xdp_pointer(struct xdp_buff *xdp, u32 offset, u32 len)
+>  		offset -= frag_size;
+>  	}
+>  out:
+> -	return offset + len < size ? addr + offset : NULL;
+> +	return offset + len <= size ? addr + offset : NULL;
+This fix should be for the bpf tree.
 
-syzbot found the following issue on:
-
-HEAD commit:    b77ffb30cfc5 libbpf: fix an snprintf() overflow check
-git tree:       bpf-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=11ef3226080000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=386b986585586629
-dashboard link: https://syzkaller.appspot.com/bug?extid=5ea725c25d06fb9114c4
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11004e64080000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1009bfd0080000
-
-The issue was bisected to:
-
-commit fd1894224407c484f652ad456e1ce423e89bb3eb
-Author: Zhengchao Shao <shaozhengchao@huawei.com>
-Date:   Fri Jul 15 11:55:59 2022 +0000
-
-    bpf: Don't redirect packets with invalid pkt_len
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1749bfd0080000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=14c9bfd0080000
-console output: https://syzkaller.appspot.com/x/log.txt?x=10c9bfd0080000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5ea725c25d06fb9114c4@syzkaller.appspotmail.com
-Fixes: fd1894224407 ("bpf: Don't redirect packets with invalid pkt_len")
-
-------------[ cut here ]------------
-skb_assert_len
-WARNING: CPU: 0 PID: 3608 at include/linux/skbuff.h:2465 skb_assert_len include/linux/skbuff.h:2465 [inline]
-WARNING: CPU: 0 PID: 3608 at include/linux/skbuff.h:2465 __dev_queue_xmit+0x313c/0x3ad0 net/core/dev.c:4171
-Modules linked in:
-CPU: 0 PID: 3608 Comm: syz-executor357 Not tainted 5.19.0-rc5-syzkaller-01146-gb77ffb30cfc5 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/29/2022
-RIP: 0010:skb_assert_len include/linux/skbuff.h:2465 [inline]
-RIP: 0010:__dev_queue_xmit+0x313c/0x3ad0 net/core/dev.c:4171
-Code: 10 e8 18 6c 73 fa e9 b4 f2 ff ff e8 4e 18 26 fa 48 c7 c6 a0 81 d3 8a 48 c7 c7 a0 55 d3 8a c6 05 89 33 52 06 01 e8 45 75 de 01 <0f> 0b e9 4f f2 ff ff e8 28 18 26 fa e8 a3 17 10 fa 31 ff 89 c3 89
-RSP: 0018:ffffc900031af748 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff88801b9bbb00 RSI: ffffffff8160d618 RDI: fffff52000635edb
-RBP: ffff888020059aba R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000080000000 R11: 0000000000000001 R12: ffff888020059a00
-R13: 0000000000000000 R14: ffff888020059a10 R15: ffff888020059a00
-FS:  0000555556f80300(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000561be8192048 CR3: 0000000020721000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- packet_snd net/packet/af_packet.c:3073 [inline]
- packet_sendmsg+0x21f4/0x55d0 net/packet/af_packet.c:3104
- sock_sendmsg_nosec net/socket.c:714 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:734
- ____sys_sendmsg+0x6eb/0x810 net/socket.c:2485
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2539
- __sys_sendmsg net/socket.c:2568 [inline]
- __do_sys_sendmsg net/socket.c:2577 [inline]
- __se_sys_sendmsg net/socket.c:2575 [inline]
- __x64_sys_sendmsg+0x132/0x220 net/socket.c:2575
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x46/0xb0
-RIP: 0033:0x7f4882617369
-Code: 28 c3 e8 4a 15 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fff94d23dd8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f4882617369
-RDX: 0000000000000000 RSI: 0000000020000100 RDI: 0000000000000003
-RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007fff94d23df0
-R13: 00007fff94d23e10 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Acked-by: Martin KaFai Lau <kafai@fb.com>
