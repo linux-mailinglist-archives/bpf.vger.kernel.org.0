@@ -2,69 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05B4457FBA1
-	for <lists+bpf@lfdr.de>; Mon, 25 Jul 2022 10:46:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA23A57FBB1
+	for <lists+bpf@lfdr.de>; Mon, 25 Jul 2022 10:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232090AbiGYIqK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Jul 2022 04:46:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59450 "EHLO
+        id S234132AbiGYIvm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Jul 2022 04:51:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231527AbiGYIqK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Jul 2022 04:46:10 -0400
-Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66B01BC8A
-        for <bpf@vger.kernel.org>; Mon, 25 Jul 2022 01:46:08 -0700 (PDT)
-Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-31e67c46ba2so102017457b3.2
-        for <bpf@vger.kernel.org>; Mon, 25 Jul 2022 01:46:08 -0700 (PDT)
+        with ESMTP id S233186AbiGYIvk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Jul 2022 04:51:40 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5205514027;
+        Mon, 25 Jul 2022 01:51:39 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id z18so644666edb.10;
+        Mon, 25 Jul 2022 01:51:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EFd32yIZ2fkMTi1CwMNr4HcSjPJOHf/uYcynPXFtcuY=;
-        b=Ne88j2CXUZIBULU0OgsSYzAjQeQO8URp9PeGCqqR2rT+IkqkSPnK3EC75V0jPDiZI5
-         ojTv5u2ROUqXV0KUzl7BNrF7ZNubogrF0PMfOh/I7dz3XVIO5dXDV2TFvCkd9z9fblUE
-         xPsj4HRzkZHxM+9uXLKk44xgGMY+BTYM6Zm9jnZ7c9pDoGIFFSCYBFT7JQC78K7z4pHY
-         UZgx4argLvMIPSJXKgl8cGe/UMwOd2xwiVsMk/JQdqVTk7RtCyO2ENeU68WaV119Z9nb
-         wjl08gTRv4Z96prRrkp5BgtVuim7Yzt+PGuDjHXDHK/xfXjuv+qDnt1yN7IyA97NLLlw
-         0XaQ==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7VDIfJeDLEQjiAoLKeDhLnV53pDE54HSkUBU93kqjMs=;
+        b=RP/7JHtL4ED/RiMs6sUUdJbaXFTS+nPl6RYIzG6dLkHxDhR0GXLrvXF8MJNQk6+wzL
+         pt9KDi2iLDraRGcADN4bcWIo0n4r3CTu/V9aNRBevCzUcV6XHw9V64X/4agMPM9r2Bgg
+         ZEI87i7xbFSvMD/aUiOSuN6fXYrpPONE/h4lfKSEr0GVHpVI+dqAlRIOEnykS7KLmvDV
+         6n+3mx7UKVRfGn1zQzJGmGp6c50ga0rTMW4H/CwEPX20zszL6xnpyQefemmhQvuvZlTh
+         e2Rcgo4ANCr1UYv8V9q3bAVaLHBmPFlIAFSvcYCifRRNhU+kwJsP+io4rEDSn/Amwtg1
+         xlvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EFd32yIZ2fkMTi1CwMNr4HcSjPJOHf/uYcynPXFtcuY=;
-        b=zVgJbez198e0iuzXqdwQ4NIkUVuzOevdnUMEQiHLYh+2+5dzs/pLeGuwYVeSVt5SK9
-         8/cY3/+3AVJV1qV8ZDBQUC+pPDKGVYEPLlq6MNPqIjPMRR9dqjTXQiUVqj7orABKFLdT
-         HD85OfxwcRZo2HypiLAOS7zfUoqfXE4LLJXSttIbc1hCSLato+ZAR/EA9Qw1SgXryjxH
-         FGKmNFDGUZiubLKn998AkDlKJHTlIZhi03gn4BBCvKBR00bMnQvFY7hnhV3eRB/4FdwZ
-         uvxPDmEjNnIArVWeVsKzWlXC0DiO/u5ofufzlHUPSWlkxB2gt/WieYfxVV0+cPyJpv/Z
-         Qlag==
-X-Gm-Message-State: AJIora+wZMQlfZJ9XbCb6jX3BN1jcz6GgyqDqVCKsiaN13mSilXwxoHa
-        W7DKGKxiNFMEtB3h6tQr1tUI65iOc0cqiG3Jj4be6w==
-X-Google-Smtp-Source: AGRyM1szb7bl9YdvcVGJsi2Yic1YA5dkBKe/EdH1r8lhCXkk2ASwSeyXTfEOnjaMADHmc9xP+BTmcbaY6B/uXtCcqXQ=
-X-Received: by 2002:a0d:d305:0:b0:31e:8451:f53a with SMTP id
- v5-20020a0dd305000000b0031e8451f53amr8909239ywd.489.1658738767333; Mon, 25
- Jul 2022 01:46:07 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7VDIfJeDLEQjiAoLKeDhLnV53pDE54HSkUBU93kqjMs=;
+        b=Tb5Yx15/mAzx3kWje0Ny0LzCdB53zxWG1OkMEm7Fr96wrX7vpPcB41kNyOfVoKuurl
+         V+YjGx+nifYJlEdLbNhcroBzTCEBK94DuRYtNOY4nnS82CbfKD0wZ44wnm9pqlXLgsQ/
+         i8SCz2stGW3LXd1XR4tw9eeFcbFceNZBRJ5YaaFmpcRTXMQiKisrrfMj5qbxpTvCxbj1
+         LLqffVrN4czyBabYDPWqMzmFJfgblu1XzhcdYyrVes/VGB7cc4iucO4+onQFl9mrEg32
+         yllVl94wNPHJLvmwTi+iaYt5ZQ9puR6AhOoaAEEK9AKd8GJerjwfCtKL6iCr1hDn4m8t
+         QNKg==
+X-Gm-Message-State: AJIora9cCjYYvyOp4uGDldYUA68l9FH497NU3KYBdb/hNZb5iHUyb1NV
+        aDFm0GjvcrwR8jZI4iZ4BuXsqtfESuWujQ==
+X-Google-Smtp-Source: AGRyM1sdDwoqIrKCiJ9CA9hvp2tP3l8yF16RtWH52vlyVDgdhlg61in62cp8scrtgSQUg9qpFbB3XQ==
+X-Received: by 2002:a05:6402:371a:b0:43a:ece9:ab8e with SMTP id ek26-20020a056402371a00b0043aece9ab8emr11943370edb.126.1658739097423;
+        Mon, 25 Jul 2022 01:51:37 -0700 (PDT)
+Received: from localhost (icdhcp-1-189.epfl.ch. [128.178.116.189])
+        by smtp.gmail.com with ESMTPSA id o26-20020a170906769a00b0070e238ff66fsm5117576ejm.96.2022.07.25.01.51.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Jul 2022 01:51:37 -0700 (PDT)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org
+Subject: [PATCH bpf-next] net: netfilter: Remove ifdefs for code shared by BPF and ctnetlink
+Date:   Mon, 25 Jul 2022 10:51:30 +0200
+Message-Id: <20220725085130.11553-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20220709222029.297471-1-xiyou.wangcong@gmail.com>
- <CANn89iJSQh-5DAhEL4Fh5ZDrtY47y0Mo9YJbG-rnj17pdXqoXA@mail.gmail.com>
- <YtQ/Np8DZBJVFO3l@pop-os.localdomain> <CANn89iLLANJLHG+_uUu5Z+V64BMCsYHRgCHVHENhZiMOrVUtMw@mail.gmail.com>
- <Yt2IgGuqVi9BHc/g@pop-os.localdomain>
-In-Reply-To: <Yt2IgGuqVi9BHc/g@pop-os.localdomain>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Mon, 25 Jul 2022 10:45:56 +0200
-Message-ID: <CANn89iLHg-D3q8jPFq_87mLFPh5L7arbaF2aNeY42s4VUv_D-Q@mail.gmail.com>
-Subject: Re: [Patch bpf-next] tcp: fix sock skb accounting in tcp_read_skb()
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Cong Wang <cong.wang@bytedance.com>,
-        syzbot <syzbot+a0e6f8738b58f7654417@syzkaller.appspotmail.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,250 +70,61 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jul 24, 2022 at 7:59 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
->
-> On Mon, Jul 18, 2022 at 09:26:29AM +0200, Eric Dumazet wrote:
-> > On Sun, Jul 17, 2022 at 6:56 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
-> > >
-> > > On Tue, Jul 12, 2022 at 03:20:37PM +0200, Eric Dumazet wrote:
-> > > > On Sun, Jul 10, 2022 at 12:20 AM Cong Wang <xiyou.wangcong@gmail.com> wrote:
-> > > > >
-> > > > > From: Cong Wang <cong.wang@bytedance.com>
-> > > > >
-> > > > > Before commit 965b57b469a5 ("net: Introduce a new proto_ops
-> > > > > ->read_skb()"), skb was not dequeued from receive queue hence
-> > > > > when we close TCP socket skb can be just flushed synchronously.
-> > > > >
-> > > > > After this commit, we have to uncharge skb immediately after being
-> > > > > dequeued, otherwise it is still charged in the original sock. And we
-> > > > > still need to retain skb->sk, as eBPF programs may extract sock
-> > > > > information from skb->sk. Therefore, we have to call
-> > > > > skb_set_owner_sk_safe() here.
-> > > > >
-> > > > > Fixes: 965b57b469a5 ("net: Introduce a new proto_ops ->read_skb()")
-> > > > > Reported-and-tested-by: syzbot+a0e6f8738b58f7654417@syzkaller.appspotmail.com
-> > > > > Tested-by: Stanislav Fomichev <sdf@google.com>
-> > > > > Cc: Eric Dumazet <edumazet@google.com>
-> > > > > Cc: John Fastabend <john.fastabend@gmail.com>
-> > > > > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-> > > > > ---
-> > > > >  net/ipv4/tcp.c | 1 +
-> > > > >  1 file changed, 1 insertion(+)
-> > > > >
-> > > > > diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-> > > > > index 9d2fd3ced21b..c6b1effb2afd 100644
-> > > > > --- a/net/ipv4/tcp.c
-> > > > > +++ b/net/ipv4/tcp.c
-> > > > > @@ -1749,6 +1749,7 @@ int tcp_read_skb(struct sock *sk, skb_read_actor_t recv_actor)
-> > > > >                 int used;
-> > > > >
-> > > > >                 __skb_unlink(skb, &sk->sk_receive_queue);
-> > > > > +               WARN_ON(!skb_set_owner_sk_safe(skb, sk));
-> > > > >                 used = recv_actor(sk, skb);
-> > > > >                 if (used <= 0) {
-> > > > >                         if (!copied)
-> > > > > --
-> > > > > 2.34.1
-> > > > >
-> > > >
-> > > > I am reading tcp_read_skb(),it seems to have other bugs.
-> > > > I wonder why syzbot has not caught up yet.
-> > >
-> > > As you mentioned this here I assume you suggest I should fix all bugs in
-> > > one patch? (I am fine either way in this case, only slightly prefer to fix
-> > > one bug in each patch for readability.)
-> >
-> > I only wonder that after fixing all bugs, we might end up with  tcp_read_sk()
-> > being a clone of tcp_read_sock() :/
->
-> I really wish so, but unfortunately the partial read looks impossible to
-> merged with full skb read.
->
->
-> >
-> > syzbot has a relevant report:
-> >
->
-> Please provide a reproducer if you have, I don't see this report
-> anywhere (except here of course).
+The current ifdefry for code shared by the BPF and ctnetlink side looks
+ugly. As per Pablo's request, simplify this by unconditionally compiling
+in the code. This can be revisited when the shared code between the two
+grows further.
 
-No repro yet.
+Suggested-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+---
+ include/net/netfilter/nf_conntrack_core.h | 6 ------
+ net/netfilter/nf_conntrack_core.c         | 6 ------
+ 2 files changed, 12 deletions(-)
 
-I usually hold syzbot report until they have enough signal (repro, and
-eventually bisection) in them to be considered.
+diff --git a/include/net/netfilter/nf_conntrack_core.h b/include/net/netfilter/nf_conntrack_core.h
+index 3cd3a6e631aa..b2b9de70d9f4 100644
+--- a/include/net/netfilter/nf_conntrack_core.h
++++ b/include/net/netfilter/nf_conntrack_core.h
+@@ -86,10 +86,6 @@ extern spinlock_t nf_conntrack_expect_lock;
 
->
-> > ------------[ cut here ]------------
-> > cleanup rbuf bug: copied 301B4426 seq 301B4426 rcvnxt 302142E8
-> > WARNING: CPU: 0 PID: 3744 at net/ipv4/tcp.c:1567
-> > tcp_cleanup_rbuf+0x11d/0x5b0 net/ipv4/tcp.c:1567
-> > Modules linked in:
-> > CPU: 0 PID: 3744 Comm: kworker/0:7 Not tainted
-> > 5.19.0-rc5-syzkaller-01095-gedb2c3476db9 #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine,
-> > BIOS Google 06/29/2022
-> > Workqueue: events nsim_dev_trap_report_work
-> > RIP: 0010:tcp_cleanup_rbuf+0x11d/0x5b0 net/ipv4/tcp.c:1567
-> > Code: ea 03 0f b6 04 02 84 c0 74 08 3c 03 0f 8e d7 03 00 00 8b 8d 38
-> > 08 00 00 44 89 e2 44 89 f6 48 c7 c7 20 82 df 8a e8 94 d8 58 01 <0f> 0b
-> > e8 cc 84 a0 f9 48 8d bd 88 07 00 00 48 b8 00 00 00 00 00 fc
-> > RSP: 0018:ffffc90000007700 EFLAGS: 00010282
-> > RAX: 0000000000000000 RBX: 000000000004fef7 RCX: 0000000000000000
-> > RDX: ffff8880201abb00 RSI: ffffffff8160d438 RDI: fffff52000000ed2
-> > RBP: ffff888016819800 R08: 0000000000000005 R09: 0000000000000000
-> > R10: 0000000000000103 R11: 0000000000000001 R12: 00000000301b4426
-> > R13: 0000000000000000 R14: 00000000301b4426 R15: 00000000301b4426
-> > FS: 0000000000000000(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-> > CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 0000000020c55000 CR3: 0000000075009000 CR4: 00000000003506f0
-> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > Call Trace:
-> > <IRQ>
-> > tcp_read_skb+0x29e/0x430 net/ipv4/tcp.c:1775
-> > sk_psock_verdict_data_ready+0x9d/0xc0 net/core/skmsg.c:1209
-> > tcp_data_ready+0x106/0x520 net/ipv4/tcp_input.c:4985
-> > tcp_data_queue+0x1bb2/0x4c60 net/ipv4/tcp_input.c:5059
-> > tcp_rcv_established+0x82f/0x20e0 net/ipv4/tcp_input.c:5984
-> > tcp_v4_do_rcv+0x66c/0x9b0 net/ipv4/tcp_ipv4.c:1661
-> > tcp_v4_rcv+0x343b/0x3940 net/ipv4/tcp_ipv4.c:2078
-> > ip_protocol_deliver_rcu+0xa3/0x7c0 net/ipv4/ip_input.c:205
-> > ip_local_deliver_finish+0x2e8/0x4c0 net/ipv4/ip_input.c:233
-> > NF_HOOK include/linux/netfilter.h:307 [inline]
-> > NF_HOOK include/linux/netfilter.h:301 [inline]
-> > ip_local_deliver+0x1aa/0x200 net/ipv4/ip_input.c:254
-> > dst_input include/net/dst.h:461 [inline]
-> > ip_rcv_finish+0x1cb/0x2f0 net/ipv4/ip_input.c:437
-> > NF_HOOK include/linux/netfilter.h:307 [inline]
-> > NF_HOOK include/linux/netfilter.h:301 [inline]
-> > ip_rcv+0xaa/0xd0 net/ipv4/ip_input.c:557
-> > __netif_receive_skb_one_core+0x114/0x180 net/core/dev.c:5480
-> > __netif_receive_skb+0x24/0x1b0 net/core/dev.c:5594
-> > process_backlog+0x3a0/0x7c0 net/core/dev.c:5922
-> > __napi_poll+0xb3/0x6e0 net/core/dev.c:6506
-> > napi_poll net/core/dev.c:6573 [inline]
-> > net_rx_action+0x9c1/0xd90 net/core/dev.c:6684
-> > __do_softirq+0x29b/0x9c2 kernel/softirq.c:571
-> > do_softirq.part.0+0xde/0x130 kernel/softirq.c:472
-> > </IRQ>
-> > <TASK>
-> > do_softirq kernel/softirq.c:464 [inline]
-> > __local_bh_enable_ip+0x102/0x120 kernel/softirq.c:396
-> > spin_unlock_bh include/linux/spinlock.h:394 [inline]
-> > nsim_dev_trap_report drivers/net/netdevsim/dev.c:814 [inline]
-> > nsim_dev_trap_report_work+0x84d/0xba0 drivers/net/netdevsi
-m/dev.c:840
-> > process_one_work+0x996/0x1610 kernel/workqueue.c:2289
-> > worker_thread+0x665/0x1080 kernel/workqueue.c:2436
-> > kthread+0x2e9/0x3a0 kernel/kthread.c:376
-> > ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:302
-> > </TASK>------------[ cut here ]------------
-> > cleanup rbuf bug: copied 301B4426 seq 301B4426 rcvnxt 302142E8
-> > WARNING: CPU: 0 PID: 3744 at net/ipv4/tcp.c:1567
-> > tcp_cleanup_rbuf+0x11d/0x5b0 net/ipv4/tcp.c:1567
-> > Modules linked in:
-> > CPU: 0 PID: 3744 Comm: kworker/0:7 Not tainted
-> > 5.19.0-rc5-syzkaller-01095-gedb2c3476db9 #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine,
-> > BIOS Google 06/29/2022
-> > Workqueue: events nsim_dev_trap_report_work
-> > RIP: 0010:tcp_cleanup_rbuf+0x11d/0x5b0 net/ipv4/tcp.c:1567
-> > Code: ea 03 0f b6 04 02 84 c0 74 08 3c 03 0f 8e d7 03 00 00 8b 8d 38
-> > 08 00 00 44 89 e2 44 89 f6 48 c7 c7 20 82 df 8a e8 94 d8 58 01 <0f> 0b
-> > e8 cc 84 a0 f9 48 8d bd 88 07 00 00 48 b8 00 00 00 00 00 fc
-> > RSP: 0018:ffffc90000007700 EFLAGS: 00010282
-> > RAX: 0000000000000000 RBX: 000000000004fef7 RCX: 0000000000000000
-> > RDX: ffff8880201abb00 RSI: ffffffff8160d438 RDI: fffff52000000ed2
-> > RBP: ffff888016819800 R08: 0000000000000005 R09: 0000000000000000
-> > R10: 0000000000000103 R11: 0000000000000001 R12: 00000000301b4426
-> > R13: 0000000000000000 R14: 00000000301b4426 R15: 00000000301b4426
-> > FS: 0000000000000000(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-> > CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 0000000020c55000 CR3: 0000000075009000 CR4: 00000000003506f0
-> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > Call Trace:
-> > <IRQ>
-> > tcp_read_skb+0x29e/0x430 net/ipv4/tcp.c:1775
-> > sk_psock_verdict_data_ready+0x9d/0xc0 net/core/skmsg.c:1209
-> > tcp_data_ready+0x106/0x520 net/ipv4/tcp_input.c:4985
-> > tcp_data_queue+0x1bb2/0x4c60 net/ipv4/tcp_input.c:5059
-> > tcp_rcv_established+0x82f/0x20e0 net/ipv4/tcp_input.c:5984
-> > tcp_v4_do_rcv+0x66c/0x9b0 net/ipv4/tcp_ipv4.c:1661
-> > tcp_v4_rcv+0x343b/0x3940 net/ipv4/tcp_ipv4.c:2078
-> > ip_protocol_deliver_rcu+0xa3/0x7c0 net/ipv4/ip_input.c:205
-> > ip_local_deliver_finish+0x2e8/0x4c0 net/ipv4/ip_input.c:233
-> > NF_HOOK include/linux/netfilter.h:307 [inline]
-> > NF_HOOK include/linux/netfilter.h:301 [inline]
-> > ip_local_deliver+0x1aa/0x200 net/ipv4/ip_input.c:254
-> > dst_input include/net/dst.h:461 [inline]
-> > ip_rcv_finish+0x1cb/0x2f0 net/ipv4/ip_input.c:437
-> > NF_HOOK include/linux/netfilter.h:307 [inline]
-> > NF_HOOK include/linux/netfilter.h:301 [inline]
-> > ip_rcv+0xaa/0xd0 net/ipv4/ip_input.c:557
-> > __netif_receive_skb_one_core+0x114/0x180 net/core/dev.c:5480
-> > __netif_receive_skb+0x24/0x1b0 net/core/dev.c:5594
-> > process_backlog+0x3a0/0x7c0 net/core/dev.c:5922
-> > __napi_poll+0xb3/0x6e0 net/core/dev.c:6506
-> > napi_poll net/core/dev.c:6573 [inline]
-> > net_rx_action+0x9c1/0xd90 net/core/dev.c:6684
-> > __do_softirq+0x29b/0x9c2 kernel/softirq.c:571
-> > do_softirq.part.0+0xde/0x130 kernel/softirq.c:472
-> > </IRQ>
-> > <TASK>
-> > do_softirq kernel/softirq.c:464 [inline]
-> > __local_bh_enable_ip+0x102/0x120 kernel/softirq.c:396
-> > spin_unlock_bh include/linux/spinlock.h:394 [inline]
-> > nsim_dev_trap_report drivers/net/netdevsim/dev.c:814 [inline]
-> > nsim_dev_trap_report_work+0x84d/0xba0 drivers/net/netdevsim/dev.c:840
-> > process_one_work+0x996/0x1610 kernel/workqueue.c:2289
-> > worker_thread+0x665/0x1080 kernel/workqueue.c:2436
-> > kthread+0x2e9/0x3a0 kernel/kthread.c:376
-> > ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:302
-> > </TASK>
-> >
-> > >
-> > > >
-> > > > It ignores the offset value from tcp_recv_skb(), this looks wrong to me.
-> > > > The reason tcp_read_sock() passes a @len parameter is that is it not
-> > > > skb->len, but (skb->len - offset)
-> > >
-> > > If I understand tcp_recv_skb() correctly it only returns an offset for a
-> > > partial read of an skb. IOW, if we always read an entire skb at a time,
-> > > offset makes no sense here, right?
-> > >
-> > > >
-> > > > Also if recv_actor(sk, skb) returns 0, we probably still need to
-> > > > advance tp->copied_seq,
-> > > > for instance if skb had a pure FIN (and thus skb->len == 0), since you
-> > > > removed the skb from sk_receive_queue ?
-> > >
-> > > Doesn't the following code handle this case?
-> > >
-> > >         if (TCP_SKB_CB(skb)->tcp_flags & TCPHDR_FIN) {
-> > >                 consume_skb(skb);
-> > >                 ++seq;
-> > >                 break;
-> > >         }
-> > >
-> > > which is copied from tcp_read_sock()...
-> >
-> > I do not think this is enough, because you can break from the loop
-> > before doing this  check about TCPHDR_FIN,
->
-> The logic is same for tcp_read_sock(). :)
->
->
-> > after skb has been unlinked from sk_receive_queue. TCP won't be able
-> > to catch FIN.
->
-> So TCP does not process FIN before ->sk_data_ready()? I wonder how FIN
-> (at least a pure FIN as you mentioned above) ends up being queued in
-> ->sk_receive_queue anyway?
+ /* ctnetlink code shared by both ctnetlink and nf_conntrack_bpf */
 
-That's how TCP stores packets, including the final FIN.
+-#if (IS_BUILTIN(CONFIG_NF_CONNTRACK) && IS_ENABLED(CONFIG_DEBUG_INFO_BTF)) || \
+-    (IS_MODULE(CONFIG_NF_CONNTRACK) && IS_ENABLED(CONFIG_DEBUG_INFO_BTF_MODULES) || \
+-    IS_ENABLED(CONFIG_NF_CT_NETLINK))
+-
+ static inline void __nf_ct_set_timeout(struct nf_conn *ct, u64 timeout)
+ {
+ 	if (timeout > INT_MAX)
+@@ -101,6 +97,4 @@ int __nf_ct_change_timeout(struct nf_conn *ct, u64 cta_timeout);
+ void __nf_ct_change_status(struct nf_conn *ct, unsigned long on, unsigned long off);
+ int nf_ct_change_status_common(struct nf_conn *ct, unsigned int status);
 
-(Because this skb can also contain payload anyway)
+-#endif
+-
+ #endif /* _NF_CONNTRACK_CORE_H */
+diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
+index 66a0aa8dbc3b..afe02772c010 100644
+--- a/net/netfilter/nf_conntrack_core.c
++++ b/net/netfilter/nf_conntrack_core.c
+@@ -2787,10 +2787,6 @@ int nf_conntrack_init_net(struct net *net)
+ 	return ret;
+ }
 
->
-> Thanks!
+-#if (IS_BUILTIN(CONFIG_NF_CONNTRACK) && IS_ENABLED(CONFIG_DEBUG_INFO_BTF)) || \
+-    (IS_MODULE(CONFIG_NF_CONNTRACK) && IS_ENABLED(CONFIG_DEBUG_INFO_BTF_MODULES) || \
+-    IS_ENABLED(CONFIG_NF_CT_NETLINK))
+-
+ /* ctnetlink code shared by both ctnetlink and nf_conntrack_bpf */
+
+ int __nf_ct_change_timeout(struct nf_conn *ct, u64 timeout)
+@@ -2846,5 +2842,3 @@ int nf_ct_change_status_common(struct nf_conn *ct, unsigned int status)
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(nf_ct_change_status_common);
+-
+-#endif
+--
+2.34.1
+
