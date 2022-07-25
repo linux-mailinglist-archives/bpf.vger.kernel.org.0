@@ -2,84 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0296F57FDEC
-	for <lists+bpf@lfdr.de>; Mon, 25 Jul 2022 12:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9987C57FDF2
+	for <lists+bpf@lfdr.de>; Mon, 25 Jul 2022 12:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234761AbiGYKzT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Jul 2022 06:55:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40912 "EHLO
+        id S233321AbiGYK4b (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Jul 2022 06:56:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234748AbiGYKzR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Jul 2022 06:55:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CA8B9637D
-        for <bpf@vger.kernel.org>; Mon, 25 Jul 2022 03:55:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1658746515;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=73TJkuj66rI8i79ddEyS/Vt1Sy1WWMqNacac5Cb+Gx0=;
-        b=Qj7+bXqcyrKd+/VGlYaxEQGuN6W90DGZrk8XWo1hJ42MGNMwIY2v5DJbprovbQkRDkGfae
-        qmH/LWJLcsxNXDhfYlWwfCdzmfsx9pn6YgGd/jowRn/8tWzXvRkwA917AUQJJ+sSacZucR
-        IM1NwDXHdPhpRjcYAp5pMo46kwNINk4=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-137-qR4FMCCrNXuPS6LJvhdcnQ-1; Mon, 25 Jul 2022 06:55:11 -0400
-X-MC-Unique: qR4FMCCrNXuPS6LJvhdcnQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        with ESMTP id S231635AbiGYK4a (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Jul 2022 06:56:30 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 129A818E23;
+        Mon, 25 Jul 2022 03:56:30 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 02DDA8032FB;
-        Mon, 25 Jul 2022 10:55:10 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.10])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B6FDEC28118;
-        Mon, 25 Jul 2022 10:55:06 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <YtlyDZEsOZHt6tRs@MiWiFi-R3L-srv>
-References: <YtlyDZEsOZHt6tRs@MiWiFi-R3L-srv> <20220721015605.20651-1-slark_xiao@163.com>
-To:     Baoquan He <bhe@redhat.com>
-Cc:     dhowells@redhat.com, corbet@lwn.net,
-        Slark Xiao <slark_xiao@163.com>, vgoyal@redhat.com,
-        dyoung@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        william.gray@linaro.org, peterz@infradead.org, mingo@redhat.com,
-        will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
-        tglx@linutronix.de, bigeasy@linutronix.de,
-        kexec@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-cachefs@redhat.com
-Subject: Re: [PATCH v2] docs: Fix typo in comment
+        by ams.source.kernel.org (Postfix) with ESMTPS id B3C4AB80E4D;
+        Mon, 25 Jul 2022 10:56:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19A3BC341C8;
+        Mon, 25 Jul 2022 10:56:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1658746587;
+        bh=K5DIL+xxLusnURdb8tLNll8g6Jaq2ufLifV4EGhaUsc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=LxTJBLhCS7zGFrYRDQlycCmQdzrLsPN19al44cnaHbCqSVB68atvts4abdZY2kQv8
+         duxFIo39G8LzpwmUDRplt97Hyzjh9B8lwU/IGxnE8BzuqGnuTZhnkWyUYctCSWhwsh
+         x5FW91n4rHqV3NKrXw6O3dNTZBK9P03hnrj1JpcBeTBGYCZ3AxvFEJbXCNWCiemVNG
+         cLyYiYS9hynp1A97v04az7SkI/6eHzTMbpoH9Z5bXx1va6TOooQUrudi3TPEF37zxc
+         rE1CtUyidzKQoJbr1KQZXbDpIRhqgSaLVG2lA4YHYbKukX7+//wmsQz9VJK8vuMVE9
+         udhbpwJ7UqiIA==
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        edumazet@google.com, pabeni@redhat.com, hawk@kernel.org,
+        john.fastabend@gmail.com, lorenzo.bianconi@redhat.com
+Subject: [PATCH bpf-next] xdp: report rx queue index in xdp_frame
+Date:   Mon, 25 Jul 2022 12:56:19 +0200
+Message-Id: <181f994e13c816116fa69a1e92c2f69e6330f749.1658746417.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2778503.1658746506.1@warthog.procyon.org.uk>
-Date:   Mon, 25 Jul 2022 11:55:06 +0100
-Message-ID: <2778505.1658746506@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.85 on 10.11.54.8
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Baoquan He <bhe@redhat.com> wrote:
+Report rx queue index in xdp_frame according to the xdp_buff xdp_rxq_info
+pointer. xdp_frame queue_index is currently used in cpumap code to covert
+the xdp_frame into a xdp_buff.
+xdp_frame size is not increased adding queue_index since an alignment padding
+in the structure is used to insert queue_index field.
 
-> sed -i "s/the the /the /g" `git grep -l "the the "`
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+---
+ include/net/xdp.h   | 2 ++
+ kernel/bpf/cpumap.c | 2 +-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-You might want to clarify the first "the" with a preceding boundary marker.
-There are some English words ending in "the" that can be used as verbs, though
-I'm not sure you'd find any of them here - clothe for example.
-
-David
+diff --git a/include/net/xdp.h b/include/net/xdp.h
+index 04c852c7a77f..3567866b0af5 100644
+--- a/include/net/xdp.h
++++ b/include/net/xdp.h
+@@ -172,6 +172,7 @@ struct xdp_frame {
+ 	struct xdp_mem_info mem;
+ 	struct net_device *dev_rx; /* used by cpumap */
+ 	u32 flags; /* supported values defined in xdp_buff_flags */
++	u32 queue_index;
+ };
+ 
+ static __always_inline bool xdp_frame_has_frags(struct xdp_frame *frame)
+@@ -301,6 +302,7 @@ struct xdp_frame *xdp_convert_buff_to_frame(struct xdp_buff *xdp)
+ 
+ 	/* rxq only valid until napi_schedule ends, convert to xdp_mem_info */
+ 	xdp_frame->mem = xdp->rxq->mem;
++	xdp_frame->queue_index = xdp->rxq->queue_index;
+ 
+ 	return xdp_frame;
+ }
+diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
+index f4860ac756cd..09a792d088b3 100644
+--- a/kernel/bpf/cpumap.c
++++ b/kernel/bpf/cpumap.c
+@@ -228,7 +228,7 @@ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
+ 
+ 		rxq.dev = xdpf->dev_rx;
+ 		rxq.mem = xdpf->mem;
+-		/* TODO: report queue_index to xdp_rxq_info */
++		rxq.queue_index = xdpf->queue_index;
+ 
+ 		xdp_convert_frame_to_buff(xdpf, &xdp);
+ 
+-- 
+2.37.1
 
