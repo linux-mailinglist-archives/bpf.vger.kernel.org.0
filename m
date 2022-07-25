@@ -2,141 +2,236 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10ABC580341
-	for <lists+bpf@lfdr.de>; Mon, 25 Jul 2022 19:04:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49CA158044B
+	for <lists+bpf@lfdr.de>; Mon, 25 Jul 2022 21:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236479AbiGYREQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Jul 2022 13:04:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55452 "EHLO
+        id S232047AbiGYTKy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Jul 2022 15:10:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236106AbiGYREQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Jul 2022 13:04:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F3339DF46
-        for <bpf@vger.kernel.org>; Mon, 25 Jul 2022 10:04:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1658768654;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WJFOsbX7Y6G6QdsXNVWpRKxVeYxDV/FgyKKB3FpHFo4=;
-        b=J86hHy9rkN7414glsslG68JbCBkqRERDu/NjVGUY60GRz9wUu/F57svOuMr5H77BBWAx2C
-        gyy8WvevCApxPJyjV/Civ0UGOfMCAtqqNiGnVrKnw+iowMaub8B4aSsxrXA/4Q5xxoZKxi
-        LEr1VC4cdZJfFKLJtnUBiPJejhuHk2o=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-196-IFnLB8BoO8KIkdxEO45HKA-1; Mon, 25 Jul 2022 13:04:13 -0400
-X-MC-Unique: IFnLB8BoO8KIkdxEO45HKA-1
-Received: by mail-wm1-f72.google.com with SMTP id v18-20020a05600c215200b003a2fea66b7cso4306583wml.4
-        for <bpf@vger.kernel.org>; Mon, 25 Jul 2022 10:04:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=WJFOsbX7Y6G6QdsXNVWpRKxVeYxDV/FgyKKB3FpHFo4=;
-        b=2xJ6LZO1nc8o7Wjelu5sFmPnm8U5U7VYbTGd4xDL2rWRZCWRTsfhWJIkpO/Rq7fbcF
-         gnNaFBNBGSRZPlIyRiX8GWydr3hxJIWvkx43a8/MbZtA/l9+21P4rH/obsSCJMQxq9ft
-         x/TFGYxC035g7tdCiWfm/hD+SHbH2VbKvw4yzIPvvZZtvHd+aGPfCgEUa28UwumUW4YP
-         ClyEKBkoF0lrrKIbdG1WxVLLc4iOv4Zmtq9TV3SX3sCkJBQh9qEIF//jWwctMU7SNoZm
-         5Yc7wfNJgXvGwE0avS04sY5m1ywrwVH/dLEDfjj1nDlRYXBpypnmFFPsffNzSgTo5/kZ
-         LF2g==
-X-Gm-Message-State: AJIora96trmhuI3UpqNLUd1LvMoiyk7fM3t0wgRLQajgaEDHSkJPBLyU
-        JYzvIShFynZhfZjQP8oHv7yIzVN3ImZxaSPVHcws/wiTIVxRL6Jp75HfHvFbclCiHRVthuqFzut
-        tTvAfT4RnUrts
-X-Received: by 2002:adf:f88c:0:b0:21e:6d3a:d75c with SMTP id u12-20020adff88c000000b0021e6d3ad75cmr8004215wrp.491.1658768649054;
-        Mon, 25 Jul 2022 10:04:09 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1sX0JZrFUaWccExNmmino4nmaQ/B0dbaRWmsBvQsM+Eb1iXBEt8fzUySU0LwAxFAAMh2EwFGQ==
-X-Received: by 2002:adf:f88c:0:b0:21e:6d3a:d75c with SMTP id u12-20020adff88c000000b0021e6d3ad75cmr8004174wrp.491.1658768648443;
-        Mon, 25 Jul 2022 10:04:08 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-104-164.dyn.eolo.it. [146.241.104.164])
-        by smtp.gmail.com with ESMTPSA id h8-20020a05600c28c800b003a02f957245sm19101253wmd.26.2022.07.25.10.04.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jul 2022 10:04:07 -0700 (PDT)
-Message-ID: <25344a46ec6e8c2a7a58141dcd3a2c1ba3c4e961.camel@redhat.com>
-Subject: Re: WARNING in inet_sock_destruct
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Dipanjan Das <mail.dipanjan.das@gmail.com>, davem@davemloft.net,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org, edumazet@google.com,
-        kuba@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     syzkaller@googlegroups.com, fleischermarius@googlemail.com,
-        its.priyanka.bose@gmail.com
-Date:   Mon, 25 Jul 2022 19:04:06 +0200
-In-Reply-To: <CANX2M5YATwY79MLsKLahgv03RMGyDZsQDcnPCWkBz6ALe1VDuQ@mail.gmail.com>
-References: <CANX2M5YATwY79MLsKLahgv03RMGyDZsQDcnPCWkBz6ALe1VDuQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 (3.42.4-2.fc35) 
+        with ESMTP id S236425AbiGYTKv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Jul 2022 15:10:51 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A704DF79
+        for <bpf@vger.kernel.org>; Mon, 25 Jul 2022 12:10:45 -0700 (PDT)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26PI5Y4r009407;
+        Mon, 25 Jul 2022 12:10:29 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=l+MdJk++g4vijobE6PHIQR+i+kF2gYYPmVoi+r3VUPc=;
+ b=S7swgn7rMuEqmHPEMqavrtfmMaFSa9t5sXgK0lfGdv0ECtXVWYH5NWkdXmV1n2ZJfyjU
+ NhY/ShJ2QDaUMybithYo6lrTGwf2gM4IhmfJ+Oh71+7vbqO4C4SAp8ccLQd1eHrvyhoc
+ ge4WfxkHlZ6fw0uYWubKedk8z7pPpx7DUfw= 
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hge3qkb46-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 25 Jul 2022 12:10:29 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QPT5+adgjTfKZQVVNwKz0lS/tNJxetcBPGWiCJVZg6/T5HqDFDYfd69Y2S0IpnBIcYVeOvM41ydlPjC5N7/4PnUPV1UvVvLsQiGzXSkunQ+jx2hyno+Ggo9mlV7u0fcZnzv2g6801KvHTtEUPbtiCwxqLpGgEkbJVUr2ouNX8STI9rk56MmdYFmVv3MyrPBUPb+p/SN24/CERtRBx/s1vA1umGYJIeurbU7d4XCalsa/cpTbHN6w36VhPGemIBh1Z/L9l+UdYZewqQax54gXv0kRSGlWP+GhK3QKcEwCpOsIDTqLX2nv5p1QW92bI66v7cp9jAeDT+W7RflTBf0qVw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=l+MdJk++g4vijobE6PHIQR+i+kF2gYYPmVoi+r3VUPc=;
+ b=AtRlLXPYAgk45qRRi+b00DViXtGA3TF9KxWrZDOPV4WwQPuuAJWrapzooGvlcWEv/BzqnAfGcihAKdOTy4FV0P6IxDnuzO62kFDavNKJYdMdKykgpw0ZgwHfCuhrRwhnE18eb5Tx0/KKVlREeL6x6grqB8hX5f23vFO4m0Yu4hjYiiGgTL+TxwabYzO7hGBiA21KKVGjHurOU1RQV+VHWct7npWQb1GxdCILfv5h+TZ+ITUkQYQhS+Nn8XLSbzf/S2kgcq1X1xX4gOFBEkqnLgWZQe8HJr66OzBArXjQuMw2Gbx0qRJ2zM/KVXmnFWzbtmHkWVVQg5/F8eI3K1aibg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from MW4PR15MB4475.namprd15.prod.outlook.com (2603:10b6:303:104::16)
+ by CY4PR15MB1606.namprd15.prod.outlook.com (2603:10b6:903:13a::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5458.24; Mon, 25 Jul
+ 2022 19:10:27 +0000
+Received: from MW4PR15MB4475.namprd15.prod.outlook.com
+ ([fe80::a88e:613f:76a7:a5a2]) by MW4PR15MB4475.namprd15.prod.outlook.com
+ ([fe80::a88e:613f:76a7:a5a2%7]) with mapi id 15.20.5458.024; Mon, 25 Jul 2022
+ 19:10:27 +0000
+Date:   Mon, 25 Jul 2022 12:10:23 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     bpf@vger.kernel.org, jolsa@kernel.org, haoluo@google.com,
+        andrii@kernel.org, daniel@iogearbox.net, ast@kernel.org
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Fix ref_obj_id for dynptr data
+ slices in verifier
+Message-ID: <20220725191023.qxfna7whgllffekt@kafai-mbp.dhcp.thefacebook.com>
+References: <20220722175807.4038317-1-joannelkoong@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220722175807.4038317-1-joannelkoong@gmail.com>
+X-ClientProxiedBy: BYAPR11CA0106.namprd11.prod.outlook.com
+ (2603:10b6:a03:f4::47) To MW4PR15MB4475.namprd15.prod.outlook.com
+ (2603:10b6:303:104::16)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 781e4885-e310-4248-340b-08da6e715551
+X-MS-TrafficTypeDiagnostic: CY4PR15MB1606:EE_
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qbXZ32vQyrkJCmek2nEQ/pfxhDv1ZNyEWwJlaSvpTZ5hMofS8CZa9nW4MWmzvtUcFIdUf9IvRL1iLM0UFkvtRXi78JDyt9llgXl+49IegbeYmFP5k2n+aCnPTgcEMP0oEAqiUUaBZ3mX2GsfIyxBhmyNurHqGmWF0qwUd63opphxV7mKwf21TuE7EtrjcrTSMiG9kGiMsIkw7nmcUjsWQrGGM8U6pTKTby3/lbbLEHav44BtW4koQeIXlxLCBI7jOcTz1qzmoMHz+EFvUDSu0sbBzvP0LwDCBxWurBiakVq5ZEKSjFb3bCYpX7GLpv42NqPb8pD6V94o++Lt8CD+b4zBC438IrFeRiTm3ZAj47LOb3u1VYgVW7focKT5vekyTNv0D3/BuMf3eyFlqR1C6t8KSIykEmSFqwrOw395oV4TcP01Oprc7VLbVzDFzUgyG7nccH9LXeI4+ZJ/u8x0ETB7tYLx/3RjpDp90scvfw+15DbXz3p8rYbk8z+3ZOHwiOQU1HOAopwCbmdexCFzhm3qArai3zmrZerx/ZOE5gQTmO8jxh/tMgcKH6WjNiHnsjLe63Dy6oht6k8WZFqXEEOYh3m3b3idqBa1xpPV0bb1cWLeeW0QrZkbXoyttFmfslcg4Rpuc9TPkXg+9nMmSGt6NsqH6BKavpgIJGALn3YegoFvEO5U7NrYvqhNj88lfZa8m4HNeojnStFsSNT/9j3cd4dS+kSgowBgAR6csy4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4475.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(366004)(376002)(346002)(136003)(39860400002)(396003)(86362001)(8936002)(52116002)(9686003)(1076003)(83380400001)(186003)(6512007)(6506007)(41300700001)(316002)(6916009)(6486002)(8676002)(5660300002)(38100700002)(66946007)(4326008)(66556008)(66476007)(478600001)(6666004)(2906002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?hbh1oXid3VIryZW5wJhHBUs5UvqyVz8qOv/O45eRF0Zq8fJUM/0/PWQ7aelT?=
+ =?us-ascii?Q?5M60UuEaUApyT791T3p0xx2Ll47k82c7ssCZ78NHVHvTwe/Y9HOH6sUjvdQm?=
+ =?us-ascii?Q?XBLBNu7j9QT6ZpvhvJCPqhoFk6p1oeMup/UNcnLerKpEGt9+LAwNfnmviR8C?=
+ =?us-ascii?Q?0RGgFDI1qy/e/cGogOrGtcOSQQWT+tfi4Lo1AdF086nZe3/QY7WU6i4OOKmF?=
+ =?us-ascii?Q?SQoVSz0vf0/GcLQ+ymB+/XIZi/FEEwz1KkLDse5MTf40ssxKNTdjf/cDdLty?=
+ =?us-ascii?Q?Em8s6/CP5PrgSaq/LjE+Zwe5PIyiGIQci6tcuJ3c3a8txpfjMwrBXr7FzPBS?=
+ =?us-ascii?Q?Zns838VbuOW1zdRZIIgnHzjI5P2S8f5D6xCmj7Cyb+fU/iG/jbUsObASfG+Q?=
+ =?us-ascii?Q?KkNKi+sATrNtKwadi/9X0DJCfSGYF2D3Ry50N8as/9N/PitGzi0j5CF3Gw9r?=
+ =?us-ascii?Q?x6e7BsPRCA98re5LTCQYdmU6iCR5QC/RaRSgmXLubrSCCdYGjmlq0OoaOFYy?=
+ =?us-ascii?Q?Fzk7/YR0znEcSCQnqMyWnBG6bCE0baujYqVg7H6P4II02iiFdgXHAX0ttglS?=
+ =?us-ascii?Q?vYRE8BO8jKf4Q/O8aF7OgDJonsN88eQO7bIujqNVeTWtzPl7TaJ0+oY5Otbx?=
+ =?us-ascii?Q?iEHu/x8leqBxxAlfjnNBnziZKmP5ln1PezcanKQUhfpTPykA/h7TNCkUy000?=
+ =?us-ascii?Q?gRwimiGvTwrkcZF7lbjgF6MayTS2f2udcvlfjV6emkpmUEUgy3q5L8UqccqN?=
+ =?us-ascii?Q?uNdBYWJGmod2GMo4bo07zIuwpm8/x3LQI4eQVwHAlFPy75YbnrusD9vIc05Q?=
+ =?us-ascii?Q?gAf7U4Rh9VSC9toy1jRTn3IdDjBA2nl5JEMVMlyL9A8YCCgUVsMOXLO+yzGq?=
+ =?us-ascii?Q?vbpq4k1U9TKOUyKlnRELiOiPjzF52orxM95TKsyJ4KMEa4rvReOU6NHSJXQl?=
+ =?us-ascii?Q?uCrptr4kiTKXIi6OUK970KEAh2XQvOLdueQBEPz6kAMZkxzlFjEJPW++dGFw?=
+ =?us-ascii?Q?VqTvlME9OFL82BzCkwzdq+um29ev7sVFaJPDI/I+Bu4uD4Kd8Sf7u0fwhDBI?=
+ =?us-ascii?Q?fwdkSQa6oC41zj3mHFqepx0TonAOyJ3aaM9d7UPoXLBXaq9oOIvkYjW1Z3qW?=
+ =?us-ascii?Q?nXMTIHmuw8fAWRVdiZb5Z4vAbjWdxt8dvoITjvftxZNLZYVsL308hw3CWqrl?=
+ =?us-ascii?Q?TXuedfxVvdMqVLpuPduB/LPvlsEvDID9J0pGphDcCWvjIuwLMB/8pnO6VLem?=
+ =?us-ascii?Q?vwrwlGPnrOq0MGG2tGabRGSxqGlOIh9Iivx4Tztfc50Lq67hFnt1V1aduLf8?=
+ =?us-ascii?Q?2q0kgYGrNhVDDnUGExbDorNRScnp32Dqm6ngY+lAMa5NGP6YWg+SQXLuM20T?=
+ =?us-ascii?Q?IZzV4dvPSoKoKDz/1dJz71DkPBxZyHPT6tPghWI+xDWG0fa019OE+SUM1NDO?=
+ =?us-ascii?Q?MZ36VYBTAE1hXAR/5nPlPx4riybYzGy3+q9sunrx5QBSDjsFNQKSkEooE8BU?=
+ =?us-ascii?Q?MAuD7IsVI6Tubz+ykwr9BpcaGb1BijbQKLPunZT+MHlaG39X7mNf4heVZpI7?=
+ =?us-ascii?Q?+o9QR0jwMBU5i0khtE+IfiXwb26NXxIWyQcJenqI82gVdbPYnwqS+V2OiZwn?=
+ =?us-ascii?Q?tQ=3D=3D?=
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 781e4885-e310-4248-340b-08da6e715551
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4475.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jul 2022 19:10:27.0434
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: I/ajagPYZY4hlsSY76zWYPrWIcuegUGxlmbGIRRQ1J7b3E1/PYqHkCkF8fo6E3GD
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR15MB1606
+X-Proofpoint-GUID: J7QAASxjtHy3o-6oxpS0lfE8nBVqFCv8
+X-Proofpoint-ORIG-GUID: J7QAASxjtHy3o-6oxpS0lfE8nBVqFCv8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-07-25_12,2022-07-25_03,2022-06-22_01
 X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
-
-On Fri, 2022-07-22 at 08:22 -0700, Dipanjan Das wrote:
-> We would like to report the following bug which has been found by our
-> modified version of syzkaller.
+On Fri, Jul 22, 2022 at 10:58:06AM -0700, Joanne Koong wrote:
+> When a data slice is obtained from a dynptr (through the bpf_dynptr_data API),
+> the ref obj id of the dynptr must be found and then associated with the data
+> slice.
 > 
-> ======================================================
-> description: WARNING in inet_sock_destruct
-> affected file: net/ipv4/af_inet.c
-> kernel version: 5.19-rc6
-> kernel commit: 32346491ddf24599decca06190ebca03ff9de7f8
-> git tree: upstream
-> kernel config: https://syzkaller.appspot.com/text?tag=KernelConfig&x=cd73026ceaed1402
-> crash reproducer: attached
-> ======================================================
-> Crash log:
-> ======================================================
-> WARNING: CPU: 1 PID: 10818 at net/ipv4/af_inet.c:153
-> inet_sock_destruct+0x6d0/0x8e0 net/ipv4/af_inet.c:153
-> Modules linked in: uio_ivshmem(OE) uio(E)
-> CPU: 1 PID: 10818 Comm: kworker/1:16 Tainted: G           OE
-> 5.19.0-rc6-g2eae0556bb9d #2
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-> 1.13.0-1ubuntu1.1 04/01/2014
-> Workqueue: events mptcp_worker
-> RIP: 0010:inet_sock_destruct+0x6d0/0x8e0 net/ipv4/af_inet.c:153
-> Code: 21 02 00 00 41 8b 9c 24 28 02 00 00 e9 07 ff ff ff e8 34 4d 91
-> f9 89 ee 4c 89 e7 e8 4a 47 60 ff e9 a6 fc ff ff e8 20 4d 91 f9 <0f> 0b
-> e9 84 fe ff ff e8 14 4d 91 f9 0f 0b e9 d4 fd ff ff e8 08 4d
-> RSP: 0018:ffffc9001b35fa78 EFLAGS: 00010246
-> RAX: 0000000000000000 RBX: 00000000002879d0 RCX: ffff8881326f3b00
-> RDX: 0000000000000000 RSI: ffff8881326f3b00 RDI: 0000000000000002
-> RBP: ffff888179662674 R08: ffffffff87e983a0 R09: 0000000000000000
-> R10: 0000000000000005 R11: 00000000000004ea R12: ffff888179662400
-> R13: ffff888179662428 R14: 0000000000000001 R15: ffff88817e38e258
-> FS:  0000000000000000(0000) GS:ffff8881f5f00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000020007bc0 CR3: 0000000179592000 CR4: 0000000000150ee0
-> Call Trace:
->  <TASK>
->  __sk_destruct+0x4f/0x8e0 net/core/sock.c:2067
->  sk_destruct+0xbd/0xe0 net/core/sock.c:2112
->  __sk_free+0xef/0x3d0 net/core/sock.c:2123
->  sk_free+0x78/0xa0 net/core/sock.c:2134
->  sock_put include/net/sock.h:1927 [inline]
->  __mptcp_close_ssk+0x50f/0x780 net/mptcp/protocol.c:2351
->  __mptcp_destroy_sock+0x332/0x760 net/mptcp/protocol.c:2828
->  mptcp_worker+0x5d2/0xc90 net/mptcp/protocol.c:2586
->  process_one_work+0x9cc/0x1650 kernel/workqueue.c:2289
->  worker_thread+0x623/0x1070 kernel/workqueue.c:2436
->  kthread+0x2e9/0x3a0 kernel/kthread.c:376
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:302
->  </TASK>
+> The ref obj id of the dynptr must be found *before* the caller saved regs are
+> reset. Without this fix, the ref obj id tracking is not correct for
+> dynptrs that are at an offset from the frame pointer.
+> 
+> Please also note that the data slice's ref obj id must be assigned after the
+> ret types are parsed, since RET_PTR_TO_ALLOC_MEM-type return regs get
+> zero-marked.
+> 
+> Fixes: 34d4ef5775f776ec4b0d53a02d588bf3195cada6 ("bpf: Add dynptr data slices");
+> Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+> ---
+>  kernel/bpf/verifier.c | 62 ++++++++++++++++++++-----------------------
+>  1 file changed, 29 insertions(+), 33 deletions(-)
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index c59c3df0fea6..29987b2ea26f 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -5830,7 +5830,8 @@ static u32 stack_slot_get_id(struct bpf_verifier_env *env, struct bpf_reg_state
+>  
+>  static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>  			  struct bpf_call_arg_meta *meta,
+> -			  const struct bpf_func_proto *fn)
+> +			  const struct bpf_func_proto *fn,
+> +			  int func_id)
+>  {
+>  	u32 regno = BPF_REG_1 + arg;
+>  	struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
+> @@ -6040,23 +6041,33 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>  			}
+>  
+>  			meta->uninit_dynptr_regno = regno;
+> -		} else if (!is_dynptr_reg_valid_init(env, reg, arg_type)) {
+> -			const char *err_extra = "";
+> +		} else {
+> +			if (!is_dynptr_reg_valid_init(env, reg, arg_type)) {
+> +				const char *err_extra = "";
+>  
+> -			switch (arg_type & DYNPTR_TYPE_FLAG_MASK) {
+> -			case DYNPTR_TYPE_LOCAL:
+> -				err_extra = "local ";
+> -				break;
+> -			case DYNPTR_TYPE_RINGBUF:
+> -				err_extra = "ringbuf ";
+> -				break;
+> -			default:
+> -				break;
+> -			}
+> +				switch (arg_type & DYNPTR_TYPE_FLAG_MASK) {
+> +				case DYNPTR_TYPE_LOCAL:
+> +					err_extra = "local ";
+> +					break;
+> +				case DYNPTR_TYPE_RINGBUF:
+> +					err_extra = "ringbuf ";
+> +					break;
+> +				default:
+> +					break;
+> +				}
+>  
+> -			verbose(env, "Expected an initialized %sdynptr as arg #%d\n",
+> -				err_extra, arg + 1);
+> -			return -EINVAL;
+> +				verbose(env, "Expected an initialized %sdynptr as arg #%d\n",
+> +					err_extra, arg + 1);
+> +				return -EINVAL;
+> +			}
+> +			if (func_id == BPF_FUNC_dynptr_data) {
+> +				if (meta->ref_obj_id) {
+> +					verbose(env, "verifier internal error: multiple refcounted args in BPF_FUNC_dynptr_data");
+If 'func_id == BPF_FUNC_dynptr_data' is not checked first,
+this verbose (or the earlier one in the 'if (reg->ref_obj_id) {...}')
+may be hit for the bpf_dynptr_write helper?
 
-It looks like this is an mptcp-specific issue. I'll try to cook a
-patch. Please cc (also) the mptcp ML for this kind (you see and mptcp-
-related symbol into the stack trace) of reports, thanks!
+Overall lgtm.
 
-Paolo
+Acked-by: Martin KaFai Lau <kafai@fb.com>
 
+
+> +					return -EFAULT;
+> +				}
+> +				/* Find the id of the dynptr we're tracking the reference of */
+> +				meta->ref_obj_id = stack_slot_get_id(env, reg);
+> +			}
+>  		}
+>  		break;
+>  	case ARG_CONST_ALLOC_SIZE_OR_ZERO:
+> @@ -7227,7 +7238,7 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>  	meta.func_id = func_id;
+>  	/* check args */
+>  	for (i = 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
+> -		err = check_func_arg(env, i, &meta, fn);
+> +		err = check_func_arg(env, i, &meta, fn, func_id);
+>  		if (err)
+>  			return err;
+>  	}
+> @@ -7457,7 +7468,7 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>  	if (type_may_be_null(regs[BPF_REG_0].type))
+>  		regs[BPF_REG_0].id = ++env->id_gen;
+>  
+> -	if (is_ptr_cast_function(func_id)) {
+> +	if (is_ptr_cast_function(func_id) || func_id == BPF_FUNC_dynptr_data) {
+>  		/* For release_reference() */
+>  		regs[BPF_REG_0].ref_obj_id = meta.ref_obj_id;
+>  	} else if (is_acquire_function(func_id, meta.map_ptr)) {
