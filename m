@@ -2,295 +2,189 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB99F5800CC
-	for <lists+bpf@lfdr.de>; Mon, 25 Jul 2022 16:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 346DE5802D1
+	for <lists+bpf@lfdr.de>; Mon, 25 Jul 2022 18:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235600AbiGYOdG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Jul 2022 10:33:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60162 "EHLO
+        id S236270AbiGYQhM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Jul 2022 12:37:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235627AbiGYOc7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Jul 2022 10:32:59 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45CC9175AA
-        for <bpf@vger.kernel.org>; Mon, 25 Jul 2022 07:32:58 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id z13so16236717wro.13
-        for <bpf@vger.kernel.org>; Mon, 25 Jul 2022 07:32:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xJRtKzZh4YAASphocIV+FMs7Bp3+I3tVnHMfvS4XvB8=;
-        b=QEzXRXMq3fG3hJct4TYLUZr/WR+3yS2Fhn71EZ3vAHso2CfjKtoZ7ZVUQRLB6v0l6e
-         um1zf++CFgAcCjJ3FjMwSeJJMV7GrJzeFJwDNaLyz072xweMKzqVsFYXLRtDJ5K7ykc1
-         htJ3ImOIwmXntVVAuD4mbNEfvGv/9ZT+xCYoLF5q1ODARvdJqXGTGeGn2YkIVr9ZmPrr
-         MIB3jeuKja3+9WZ4QYwibq1c7XyHmR7QghgfLC6H6C8h+xJgiCDn3LwqG6QSrpBL/RPD
-         DCgHvZuol7PcLamOXdzcl0zIK1LCIwvMAqM0+NemaIH+bAT0y+T/Uxpjg7HZql5NtDdz
-         BlVQ==
+        with ESMTP id S236242AbiGYQhL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Jul 2022 12:37:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 368A7165B3
+        for <bpf@vger.kernel.org>; Mon, 25 Jul 2022 09:37:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1658767028;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uX/CIl3/NQjIza59k4D84Jqt8oVMF3tjMbQv7DGeXfQ=;
+        b=b1yCVj8bq8+JMZ1a5n9a0dxZNwZfxCkJzDYppi3TYb9bs15rRT8upkon+GSIRPTd3FsjrP
+        QMMXw3kWicfOuEGO0aRkXTEsdZdHlzidPM6sjeU5aS5Shwf6P3Ms4cFvCdxJtKRPHK4ic/
+        pwdKIRP3ktRnE1uo9fug9HP2SnBxPqY=
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
+ [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-572-IlPPy9-zNuyKuaPd7ise9w-1; Mon, 25 Jul 2022 12:37:06 -0400
+X-MC-Unique: IlPPy9-zNuyKuaPd7ise9w-1
+Received: by mail-pj1-f72.google.com with SMTP id r13-20020a17090a454d00b001f04dfc6195so6052559pjm.2
+        for <bpf@vger.kernel.org>; Mon, 25 Jul 2022 09:37:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xJRtKzZh4YAASphocIV+FMs7Bp3+I3tVnHMfvS4XvB8=;
-        b=fc2y3T6g7equa+fkNx1+vNSoEcLZQSd5nzu3dC/GZGfnlbtFqRCH3xwCQvhE5NF066
-         GVJbpyfrwFDsfVuJoVZ6F4Ee/+w8P/DPkAabplKtqa48Hfqv20IVSabcTLUal+4GRtf2
-         eNLxR2V3C6eOY2gWF9vYbGsaaDNVwOw8UyGsEoiVs5gL1NfU2Pl3aJfs+1V4hnwxv7HP
-         vNfbkGSC6uDeAC0xOdTd5dokd5CxBokvFVcJ7suoCTjSVdzcsau0deEtVVhszu+iltfT
-         vnHEEhnU6l/qKhewDhIje++ZNhvVOOJzUwovFGa3d/HFkQbHqIjF1uKa4fSiMXZQY2oc
-         QZ0Q==
-X-Gm-Message-State: AJIora/t9lKt9+QsF2pmiuT2PtO2WEyav6S3004aDjuzc9fSs3PN6spB
-        xKzhGgbFPRxg0xCvPigTjR3a
-X-Google-Smtp-Source: AGRyM1sfGH32Ar/UiL1CH12pzb9Bkl48yS7kmzKcmSxd8BBKa+ya9fqXO+XtXy5V/Cz3OypxRutGCw==
-X-Received: by 2002:a5d:64eb:0:b0:21d:75bb:a2f3 with SMTP id g11-20020a5d64eb000000b0021d75bba2f3mr8069597wri.118.1658759576553;
-        Mon, 25 Jul 2022 07:32:56 -0700 (PDT)
-Received: from Mem (pop.92-184-116-22.mobile.abo.orange.fr. [92.184.116.22])
-        by smtp.gmail.com with ESMTPSA id q9-20020adfaa49000000b0021e7e050404sm7291871wrd.117.2022.07.25.07.32.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jul 2022 07:32:56 -0700 (PDT)
-Date:   Mon, 25 Jul 2022 16:32:53 +0200
-From:   Paul Chaignon <paul@isovalent.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Kaixi Fan <fankaixi.li@bytedance.com>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        Yonghong Song <yhs@fb.com>
-Subject: [PATCH bpf-next v3 5/5] selftests/bpf: Don't assign outer source IP
- to host
-Message-ID: <4addde76eaf3477a58975bef15ed2788c44e5f55.1658759380.git.paul@isovalent.com>
-References: <cover.1658759380.git.paul@isovalent.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uX/CIl3/NQjIza59k4D84Jqt8oVMF3tjMbQv7DGeXfQ=;
+        b=inzVIe0R9ask7V7gvgJcQcXzUHyXoc4BQbEs3JdcDAdhTOwsKVCXklbH8E839WO9RI
+         uYJVsCYr5QR1BGaTdeaPpa2ufta+Oz2JHdeNINxDBWNVvqmI7JuiRwonGGsMDtbB7lxX
+         fKOKE4IIpH3JvHdKvUNM5L1kmfaYH0vDf7Y7s2a/6d2c7rnAw2JzSnVx9ruBTYFznT8Z
+         PnMiQfIjYJbDFBaz9FRVffp60eNK8nt9izFM0cZBFz+SxW8irIkV/UYR3HZ4G5K0KrXl
+         ksdfdafh9zAJQxABFb70xmtAnUI9qsOD4hQhrXw5A/BFYikf57/8caIX4MHDSXRAx8dg
+         LcMQ==
+X-Gm-Message-State: AJIora8LDPFF4LhYW6I/EjqF/t6GHUbD59hEJY3uBSLEn+WokN/i5qEI
+        s/oIs9tnK+HZdmjKRv0A2FIm26reCFoq7DFaIGY4s1XVunVds+o29Yd9GjimzW7zNj2Mb01PM7w
+        ptoHTiOWzZnHRnoHKSf5Bvg3ZC1rB
+X-Received: by 2002:a17:90b:4a10:b0:1f2:a45c:125 with SMTP id kk16-20020a17090b4a1000b001f2a45c0125mr8074804pjb.246.1658767025429;
+        Mon, 25 Jul 2022 09:37:05 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1sPlHp+QRO5zqoXfQQgsIJG2b+XDIphd1zSrT/UPuRkDTksexdZfM2yMaSi/BkdosJi1NznSztsDTzgOqEBrDI=
+X-Received: by 2002:a17:90b:4a10:b0:1f2:a45c:125 with SMTP id
+ kk16-20020a17090b4a1000b001f2a45c0125mr8074784pjb.246.1658767025181; Mon, 25
+ Jul 2022 09:37:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1658759380.git.paul@isovalent.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220721153625.1282007-3-benjamin.tissoires@redhat.com>
+ <20220722084556.1342406-1-benjamin.tissoires@redhat.com> <CAADnVQLypx8Yd7L4GByGNEJaWgg0R6ukNV9hz0ge1+ZdW4mdgQ@mail.gmail.com>
+In-Reply-To: <CAADnVQLypx8Yd7L4GByGNEJaWgg0R6ukNV9hz0ge1+ZdW4mdgQ@mail.gmail.com>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Mon, 25 Jul 2022 18:36:54 +0200
+Message-ID: <CAO-hwJK5v8An5W48x2TDH=iNb49iEbC8uGwMbdCak0Bjnmea+w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v8 02/24] bpf/verifier: allow kfunc to read user
+ provided context
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Joe Stringer <joe@cilium.io>, Jonathan Corbet <corbet@lwn.net>,
+        Tero Kristo <tero.kristo@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The previous commit fixed a bug in the bpf_skb_set_tunnel_key helper to
-avoid dropping packets whose outer source IP address isn't assigned to a
-host interface. This commit changes the corresponding selftest to not
-assign the outer source IP address to an interface.
+On Fri, Jul 22, 2022 at 6:16 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Fri, Jul 22, 2022 at 1:46 AM Benjamin Tissoires
+> <benjamin.tissoires@redhat.com> wrote:
+> >
+> > When a kfunc was trying to access data from context in a syscall eBPF
+> > program, the verifier was rejecting the call.
+> > This is because the syscall context is not known at compile time, and
+> > so we need to check this when actually accessing it.
+> >
+> > Check for the valid memory access and allow such situation to happen.
+> >
+> > Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+> >
+> > ---
+> >
+> > changes in v8:
+> > - fixup comment
+> > - return -EACCESS instead of -EINVAL for consistency
+> >
+> > changes in v7:
+> > - renamed access_t into atype
+> > - allow zero-byte read
+> > - check_mem_access() to the correct offset/size
+> >
+> > new in v6
+> > ---
+> >  kernel/bpf/verifier.c | 21 +++++++++++++++++++++
+> >  1 file changed, 21 insertions(+)
+> >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 7c1e056624f9..c807c5d7085a 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -248,6 +248,7 @@ struct bpf_call_arg_meta {
+> >         struct bpf_map *map_ptr;
+> >         bool raw_mode;
+> >         bool pkt_access;
+> > +       bool is_kfunc;
+> >         u8 release_regno;
+> >         int regno;
+> >         int access_size;
+> > @@ -5170,6 +5171,7 @@ static int check_helper_mem_access(struct bpf_verifier_env *env, int regno,
+> >                                    struct bpf_call_arg_meta *meta)
+> >  {
+> >         struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
+> > +       enum bpf_prog_type prog_type = resolve_prog_type(env->prog);
+> >         u32 *max_access;
+> >
+> >         switch (base_type(reg->type)) {
+> > @@ -5223,6 +5225,24 @@ static int check_helper_mem_access(struct bpf_verifier_env *env, int regno,
+> >                                 env,
+> >                                 regno, reg->off, access_size,
+> >                                 zero_size_allowed, ACCESS_HELPER, meta);
+> > +       case PTR_TO_CTX:
+> > +               /* in case of a kfunc called in a program of type SYSCALL, the context is
+> > +                * user supplied, so not computed statically.
+> > +                * Dynamically check it now
+> > +                */
+> > +               if (prog_type == BPF_PROG_TYPE_SYSCALL && meta && meta->is_kfunc) {
+>
+> prog_type check looks a bit odd here.
+> Can we generalize with
+> if (!env->ops->convert_ctx_access
 
-Not assigning the source IP to an interface causes two issues in the
-existing test:
-1. The ARP requests will fail for that IP address so we need to add the
-   ARP entry manually.
-2. The encapsulated ICMP echo reply traffic will not reach the VXLAN
-   device. It will be dropped by the stack before, because the
-   outer destination IP is unknown.
+Yep, seems to be working fine for my use case and the test cases I
+have in this series.
 
-To solve 2., we have two choices. Either we perform decapsulation
-ourselves in a BPF program attached at veth1 (the base device for the
-VXLAN device), or we switch the outer destination address when we
-receive the packet at veth1, such that the stack properly demultiplexes
-it to the VXLAN device afterward.
+>
+> In other words any program type that doesn't have ctx rewrites can
+> use helpers to access ctx fields ?
+>
+> Also why kfunc only?
+> It looks safe to allow normal helpers as well.
 
-This commit implements the second approach, where we switch the outer
-destination address from the unassigned IP address to the assigned one,
-only for VXLAN traffic ingressing veth1.
+Well, not sure what is happening here, but if I remove the check for
+kfunc, the test for PTR_TO_CTX == NULL and size == 0 gives me a
+-EINVAL.
 
-Then, at the vxlan device, the BPF program that checks the output of
-bpf_skb_get_tunnel_key needs to be updated as the expected local IP
-address is now the unassigned one.
+The original reason for kfunc only was because I wanted to scope the
+changes to something I can control, but now I am completely out of
+ideas on why the NULL test fails if it enters the if branch.
 
-Signed-off-by: Paul Chaignon <paul@isovalent.com>
----
- .../selftests/bpf/prog_tests/test_tunnel.c    | 17 +++-
- .../selftests/bpf/progs/test_tunnel_kern.c    | 80 ++++++++++++++++---
- 2 files changed, 86 insertions(+), 11 deletions(-)
+Unfortunately I won't have a lot of time this week to tackle this (I
+am on holiday with my family), and next will be tough too (at home but
+doing renovations).
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-index 3bba4a2a0530..eea274110267 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-@@ -82,6 +82,7 @@
- 
- #define MAC_TUNL_DEV0 "52:54:00:d9:01:00"
- #define MAC_TUNL_DEV1 "52:54:00:d9:02:00"
-+#define MAC_VETH1 "52:54:00:d9:03:00"
- 
- #define VXLAN_TUNL_DEV0 "vxlan00"
- #define VXLAN_TUNL_DEV1 "vxlan11"
-@@ -108,10 +109,9 @@
- static int config_device(void)
- {
- 	SYS("ip netns add at_ns0");
--	SYS("ip link add veth0 type veth peer name veth1");
-+	SYS("ip link add veth0 address " MAC_VETH1 " type veth peer name veth1");
- 	SYS("ip link set veth0 netns at_ns0");
- 	SYS("ip addr add " IP4_ADDR1_VETH1 "/24 dev veth1");
--	SYS("ip addr add " IP4_ADDR2_VETH1 "/24 dev veth1");
- 	SYS("ip link set dev veth1 up mtu 1500");
- 	SYS("ip netns exec at_ns0 ip addr add " IP4_ADDR_VETH0 "/24 dev veth0");
- 	SYS("ip netns exec at_ns0 ip link set dev veth0 up mtu 1500");
-@@ -140,6 +140,8 @@ static int add_vxlan_tunnel(void)
- 	    VXLAN_TUNL_DEV0, IP4_ADDR_TUNL_DEV0);
- 	SYS("ip netns exec at_ns0 ip neigh add %s lladdr %s dev %s",
- 	    IP4_ADDR_TUNL_DEV1, MAC_TUNL_DEV1, VXLAN_TUNL_DEV0);
-+	SYS("ip netns exec at_ns0 ip neigh add %s lladdr %s dev veth0",
-+	    IP4_ADDR2_VETH1, MAC_VETH1);
- 
- 	/* root namespace */
- 	SYS("ip link add dev %s type vxlan external gbp dstport 4789",
-@@ -277,6 +279,17 @@ static void test_vxlan_tunnel(void)
- 	if (attach_tc_prog(&tc_hook, get_src_prog_fd, set_src_prog_fd))
- 		goto done;
- 
-+	/* load and attach bpf prog to veth dev tc hook point */
-+	ifindex = if_nametoindex("veth1");
-+	if (!ASSERT_NEQ(ifindex, 0, "veth1 ifindex"))
-+		goto done;
-+	tc_hook.ifindex = ifindex;
-+	set_dst_prog_fd = bpf_program__fd(skel->progs.veth_set_outer_dst);
-+	if (!ASSERT_GE(set_dst_prog_fd, 0, "bpf_program__fd"))
-+		goto done;
-+	if (attach_tc_prog(&tc_hook, set_dst_prog_fd, -1))
-+		goto done;
-+
- 	/* load and attach prog set_md to tunnel dev tc hook point at_ns0 */
- 	nstoken = open_netns("at_ns0");
- 	if (!ASSERT_OK_PTR(nstoken, "setns src"))
-diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-index 17f2f325b3f3..df0673c4ecbe 100644
---- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-+++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-@@ -14,15 +14,24 @@
- #include <linux/if_packet.h>
- #include <linux/ip.h>
- #include <linux/ipv6.h>
-+#include <linux/icmp.h>
- #include <linux/types.h>
- #include <linux/socket.h>
- #include <linux/pkt_cls.h>
- #include <linux/erspan.h>
-+#include <linux/udp.h>
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_endian.h>
- 
- #define log_err(__ret) bpf_printk("ERROR line:%d ret:%d\n", __LINE__, __ret)
- 
-+#define VXLAN_UDP_PORT 4789
-+
-+/* Only IPv4 address assigned to veth1.
-+ * 172.16.1.200
-+ */
-+#define ASSIGNED_ADDR_VETH1 0xac1001c8
-+
- struct geneve_opt {
- 	__be16	opt_class;
- 	__u8	type;
-@@ -33,6 +42,11 @@ struct geneve_opt {
- 	__u8	opt_data[8]; /* hard-coded to 8 byte */
- };
- 
-+struct vxlanhdr {
-+	__be32 vx_flags;
-+	__be32 vx_vni;
-+} __attribute__((packed));
-+
- struct vxlan_metadata {
- 	__u32     gbp;
- };
-@@ -369,14 +383,8 @@ int vxlan_get_tunnel_src(struct __sk_buff *skb)
- 	int ret;
- 	struct bpf_tunnel_key key;
- 	struct vxlan_metadata md;
-+	__u32 orig_daddr;
- 	__u32 index = 0;
--	__u32 *local_ip = NULL;
--
--	local_ip = bpf_map_lookup_elem(&local_ip_map, &index);
--	if (!local_ip) {
--		log_err(ret);
--		return TC_ACT_SHOT;
--	}
- 
- 	ret = bpf_skb_get_tunnel_key(skb, &key, sizeof(key), 0);
- 	if (ret < 0) {
-@@ -390,11 +398,10 @@ int vxlan_get_tunnel_src(struct __sk_buff *skb)
- 		return TC_ACT_SHOT;
- 	}
- 
--	if (key.local_ipv4 != *local_ip || md.gbp != 0x800FF) {
-+	if (key.local_ipv4 != ASSIGNED_ADDR_VETH1 || md.gbp != 0x800FF) {
- 		bpf_printk("vxlan key %d local ip 0x%x remote ip 0x%x gbp 0x%x\n",
- 			   key.tunnel_id, key.local_ipv4,
- 			   key.remote_ipv4, md.gbp);
--		bpf_printk("local_ip 0x%x\n", *local_ip);
- 		log_err(ret);
- 		return TC_ACT_SHOT;
- 	}
-@@ -402,6 +409,61 @@ int vxlan_get_tunnel_src(struct __sk_buff *skb)
- 	return TC_ACT_OK;
- }
- 
-+SEC("tc")
-+int veth_set_outer_dst(struct __sk_buff *skb)
-+{
-+	struct ethhdr *eth = (struct ethhdr *)(long)skb->data;
-+	__u32 assigned_ip = bpf_htonl(ASSIGNED_ADDR_VETH1);
-+	void *data_end = (void *)(long)skb->data_end;
-+	struct udphdr *udph;
-+	struct iphdr *iph;
-+	__u32 index = 0;
-+	int ret = 0;
-+	int shrink;
-+	__s64 csum;
-+
-+	if ((void *)eth + sizeof(*eth) > data_end) {
-+		log_err(ret);
-+		return TC_ACT_SHOT;
-+	}
-+
-+	if (eth->h_proto != bpf_htons(ETH_P_IP))
-+		return TC_ACT_OK;
-+
-+	iph = (struct iphdr *)(eth + 1);
-+	if ((void *)iph + sizeof(*iph) > data_end) {
-+		log_err(ret);
-+		return TC_ACT_SHOT;
-+	}
-+	if (iph->protocol != IPPROTO_UDP)
-+		return TC_ACT_OK;
-+
-+	udph = (struct udphdr *)(iph + 1);
-+	if ((void *)udph + sizeof(*udph) > data_end) {
-+		log_err(ret);
-+		return TC_ACT_SHOT;
-+	}
-+	if (udph->dest != bpf_htons(VXLAN_UDP_PORT))
-+		return TC_ACT_OK;
-+
-+	if (iph->daddr != assigned_ip) {
-+		csum = bpf_csum_diff(&iph->daddr, sizeof(__u32), &assigned_ip,
-+				     sizeof(__u32), 0);
-+		if (bpf_skb_store_bytes(skb, ETH_HLEN + offsetof(struct iphdr, daddr),
-+					&assigned_ip, sizeof(__u32), 0) < 0) {
-+			log_err(ret);
-+			return TC_ACT_SHOT;
-+		}
-+		if (bpf_l3_csum_replace(skb, ETH_HLEN + offsetof(struct iphdr, check),
-+					0, csum, 0) < 0) {
-+			log_err(ret);
-+			return TC_ACT_SHOT;
-+		}
-+		bpf_skb_change_type(skb, PACKET_HOST);
-+	}
-+	return TC_ACT_OK;
-+}
-+
- SEC("tc")
- int ip6vxlan_set_tunnel_dst(struct __sk_buff *skb)
- {
--- 
-2.25.1
+I can send the fixup to remove the prog_type check as I just made sure
+it works with the selftests. But I won't be able to dig further why it
+fails without the kfunc check, because not enough time and
+concentration.
+
+Cheers,
+Benjamin
 
