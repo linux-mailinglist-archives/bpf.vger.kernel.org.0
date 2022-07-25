@@ -2,128 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B659A5804D8
-	for <lists+bpf@lfdr.de>; Mon, 25 Jul 2022 21:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D5815804FF
+	for <lists+bpf@lfdr.de>; Mon, 25 Jul 2022 22:06:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236631AbiGYTxB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Jul 2022 15:53:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33664 "EHLO
+        id S236756AbiGYUGX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Jul 2022 16:06:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236292AbiGYTw7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Jul 2022 15:52:59 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D85620BED;
-        Mon, 25 Jul 2022 12:52:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=xhDv8lrZ7JZzktF72+HO7I2n3HoF061cSX25xeglrIQ=; b=IhdonFyhiRYeek1iAdVHNM7qgV
-        SLvK7TXbLNUjNVYNBraWW7BNnrnh2nDadm7ssG+dCYioo1V2JQgJZ4u5j5pLDSQ1XYFpBDUVqJxNQ
-        AmLfEr7HbT25DXEx5/3+fxlustfm37IEVlF8Kmw86flU2LcQoEwBI3AhEZ43P1CqzmGKtZ/0oZcvr
-        1plqfBklFjB+TIA8Sx6loIlUUlx1oIU/1t0rO3sFoMk/Ygbn+LD8nK4bvKdVcV2rX0/M5nRdANaaU
-        MmMuU1hJiYBVdz1+uXUPtKA4OZbYi+VSAxV3RDQVd+77iXmo+AaG99OlCv1upU6eYnnjG/2xE3QVe
-        6Zs4WItg==;
-Received: from [2601:1c0:6280:3f0::a6b3]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oG47s-001ATt-W2; Mon, 25 Jul 2022 19:52:25 +0000
-Message-ID: <d146f3d6-9b2a-5b54-4ae3-733047ef210e@infradead.org>
-Date:   Mon, 25 Jul 2022 12:52:22 -0700
+        with ESMTP id S236595AbiGYUGW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Jul 2022 16:06:22 -0400
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63DCABC80
+        for <bpf@vger.kernel.org>; Mon, 25 Jul 2022 13:06:21 -0700 (PDT)
+Received: by mail-il1-f198.google.com with SMTP id j28-20020a056e02219c00b002dd375bb938so4505208ila.10
+        for <bpf@vger.kernel.org>; Mon, 25 Jul 2022 13:06:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=jALjLym/x8uogNDMDeD9EXR+XfiHKoWS+XNpUQ2FdbU=;
+        b=LXqz2pVdp1GwuHT+caIcuD2w/563Ws0zpiJL2R08WVtNmf52la6O+810oSSO8jkJu0
+         JQmJ7zekZqEQDSHR3llx73le+nLWWS7/RM8EK9k8cKocYehM53AE9luEnl0ncvnQO+CC
+         QRxvWb+rRvEpOXLBX/mMAY9sFk987Y8T8nPs1WbXKGdgEDolxFYLYc1k7ufCZZAvaRFF
+         Fjp/uNzoKvBCHci1hxzAnkSpsIHMnhtRpDoPL/E8EIN+OoofEY5/GUGck+iCVs1XOsBr
+         Kbf8UvySriQMtZIEVG6HR/oV6OWF/Tyqo/S683F27n9zdUAw0u+QXU+RaxH69Ml7yLXs
+         o7oQ==
+X-Gm-Message-State: AJIora/JBNP1eOkmfQP8valskwqHFRv2/6DQpk5pk2QE3spHD+EuGCSK
+        4lNxZIec/xoYE156MHWICyNS4ix8CiJF0RYTBhikFM9fJUmS
+X-Google-Smtp-Source: AGRyM1uryIB9VDMQcroA8VUz1B/u6VlGSrLflRKjzYDpZ/w9+QWutuaN9aEg65GjW2FxG79UYr5OF/B+xp8M0MID4nSsIT9V2et9
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH v2] docs: Fix typo in comment
-Content-Language: en-US
-To:     William Breathitt Gray <william.gray@linaro.org>,
-        Joe Perches <joe@perches.com>
-Cc:     Baoquan He <bhe@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
-        Slark Xiao <slark_xiao@163.com>, kafai <kafai@fb.com>,
-        vgoyal <vgoyal@redhat.com>, dyoung <dyoung@redhat.com>,
-        ast <ast@kernel.org>, daniel <daniel@iogearbox.net>,
-        andrii <andrii@kernel.org>, "martin.lau" <martin.lau@linux.dev>,
-        song <song@kernel.org>, yhs <yhs@fb.com>,
-        "john.fastabend" <john.fastabend@gmail.com>,
-        kpsingh <kpsingh@kernel.org>, sdf <sdf@google.com>,
-        haoluo <haoluo@google.com>, jolsa <jolsa@kernel.org>,
-        dhowells <dhowells@redhat.com>, peterz <peterz@infradead.org>,
-        mingo <mingo@redhat.com>, will <will@kernel.org>,
-        longman <longman@redhat.com>,
-        "boqun.feng" <boqun.feng@gmail.com>, tglx <tglx@linutronix.de>,
-        bigeasy <bigeasy@linutronix.de>,
-        kexec <kexec@lists.infradead.org>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        linux-cachefs <linux-cachefs@redhat.com>
-References: <20220721015605.20651-1-slark_xiao@163.com>
- <20220721154110.fqp7n6f7ij22vayp@kafai-mbp.dhcp.thefacebook.com>
- <21cac0ea.18f.182218041f7.Coremail.slark_xiao@163.com>
- <874jzamhxe.fsf@meer.lwn.net>
- <6ca59494-cc64-d85c-98e8-e9bef2a04c15@infradead.org>
- <YtnlAg6Qhf7fwXXW@MiWiFi-R3L-srv>
- <5bd85a7241e6ccac7fe5647cb9cf7ef22b228943.camel@perches.com>
- <Yt6hMD+HIaERgrqg@fedora>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <Yt6hMD+HIaERgrqg@fedora>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6e02:b44:b0:2dd:89bf:6b99 with SMTP id
+ f4-20020a056e020b4400b002dd89bf6b99mr334353ilu.114.1658779580772; Mon, 25 Jul
+ 2022 13:06:20 -0700 (PDT)
+Date:   Mon, 25 Jul 2022 13:06:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ac3b8305e4a6b766@google.com>
+Subject: [syzbot] WARNING in __dev_queue_xmit
+From:   syzbot <syzbot+5ea725c25d06fb9114c4@syzkaller.appspotmail.com>
+To:     ast@kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        liuhangbin@gmail.com, netdev@vger.kernel.org, pabeni@redhat.com,
+        pablo@netfilter.org, sdf@google.com, shaozhengchao@huawei.com,
+        syzkaller-bugs@googlegroups.com, willemb@google.com,
+        yajun.deng@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    b77ffb30cfc5 libbpf: fix an snprintf() overflow check
+git tree:       bpf-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=11ef3226080000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=386b986585586629
+dashboard link: https://syzkaller.appspot.com/bug?extid=5ea725c25d06fb9114c4
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11004e64080000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1009bfd0080000
+
+The issue was bisected to:
+
+commit fd1894224407c484f652ad456e1ce423e89bb3eb
+Author: Zhengchao Shao <shaozhengchao@huawei.com>
+Date:   Fri Jul 15 11:55:59 2022 +0000
+
+    bpf: Don't redirect packets with invalid pkt_len
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1749bfd0080000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=14c9bfd0080000
+console output: https://syzkaller.appspot.com/x/log.txt?x=10c9bfd0080000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+5ea725c25d06fb9114c4@syzkaller.appspotmail.com
+Fixes: fd1894224407 ("bpf: Don't redirect packets with invalid pkt_len")
+
+------------[ cut here ]------------
+skb_assert_len
+WARNING: CPU: 0 PID: 3608 at include/linux/skbuff.h:2465 skb_assert_len include/linux/skbuff.h:2465 [inline]
+WARNING: CPU: 0 PID: 3608 at include/linux/skbuff.h:2465 __dev_queue_xmit+0x313c/0x3ad0 net/core/dev.c:4171
+Modules linked in:
+CPU: 0 PID: 3608 Comm: syz-executor357 Not tainted 5.19.0-rc5-syzkaller-01146-gb77ffb30cfc5 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/29/2022
+RIP: 0010:skb_assert_len include/linux/skbuff.h:2465 [inline]
+RIP: 0010:__dev_queue_xmit+0x313c/0x3ad0 net/core/dev.c:4171
+Code: 10 e8 18 6c 73 fa e9 b4 f2 ff ff e8 4e 18 26 fa 48 c7 c6 a0 81 d3 8a 48 c7 c7 a0 55 d3 8a c6 05 89 33 52 06 01 e8 45 75 de 01 <0f> 0b e9 4f f2 ff ff e8 28 18 26 fa e8 a3 17 10 fa 31 ff 89 c3 89
+RSP: 0018:ffffc900031af748 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff88801b9bbb00 RSI: ffffffff8160d618 RDI: fffff52000635edb
+RBP: ffff888020059aba R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000080000000 R11: 0000000000000001 R12: ffff888020059a00
+R13: 0000000000000000 R14: ffff888020059a10 R15: ffff888020059a00
+FS:  0000555556f80300(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000561be8192048 CR3: 0000000020721000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ packet_snd net/packet/af_packet.c:3073 [inline]
+ packet_sendmsg+0x21f4/0x55d0 net/packet/af_packet.c:3104
+ sock_sendmsg_nosec net/socket.c:714 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:734
+ ____sys_sendmsg+0x6eb/0x810 net/socket.c:2485
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2539
+ __sys_sendmsg net/socket.c:2568 [inline]
+ __do_sys_sendmsg net/socket.c:2577 [inline]
+ __se_sys_sendmsg net/socket.c:2575 [inline]
+ __x64_sys_sendmsg+0x132/0x220 net/socket.c:2575
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x46/0xb0
+RIP: 0033:0x7f4882617369
+Code: 28 c3 e8 4a 15 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff94d23dd8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f4882617369
+RDX: 0000000000000000 RSI: 0000000020000100 RDI: 0000000000000003
+RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007fff94d23df0
+R13: 00007fff94d23e10 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
 
 
-On 7/25/22 06:57, William Breathitt Gray wrote:
-> On Mon, Jul 25, 2022 at 06:52:15AM -0700, Joe Perches wrote:
->> On Fri, 2022-07-22 at 07:45 +0800, Baoquan He wrote:
->>> On 07/21/22 at 11:40am, Randy Dunlap wrote:
->>>> On 7/21/22 11:36, Jonathan Corbet wrote:
->>>>> "Slark Xiao" <slark_xiao@163.com> writes:
->>>>>> May I know the maintainer of one subsystem could merge the changes
->>>>>> contains lots of subsystem?  I also know this could be filtered by
->>>>>> grep and sed command, but that patch would have dozens of maintainers
->>>>>> and reviewers.
->>>>>
->>>>> Certainly I don't think I can merge a patch touching 166 files across
->>>>> the tree.  This will need to be broken down by subsystem, and you may
->>>>> well find that there are some maintainers who don't want to deal with
->>>>> this type of minor fix.
->>>>
->>>> We have also seen cases where "the the" should be replaced by "then the"
->>>> or some other pair of words, so some of these changes could fall into
->>>> that category.
->>>
->>> It's possible. I searched in Documentation and went through each place,
->>> seems no typo of "then the". Below patch should clean up all the 'the the'
->>> typo under Documentation.
->> []
->>> The fix is done with below command:
->>> sed -i "s/the the /the /g" `git grep -l "the the " Documentation`
->>
->> This command misses entries at EOL:
->>
->> Documentation/trace/histogram.rst:  Here's an example where we use a compound key composed of the the
->>
->> Perhaps a better conversion would be 's/\bthe the\b/the/g'
-> 
-> It would be good to check for instances that cross newlines as well;
-> i.e. "the" at the end of a line followed by "the" at the start of the
-> next line. However, this would require some thought to properly account
-> for comment blocks ("*") and other similar prefixes that should be
-> ignored.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Yeah, the script that I posted last year (?) does that, but it's noisy --
-results need to be hand-checked.
-
-It's not clear how people are finding these repeated words, other than
-something like
-$ grep "the the" *
-
-
--- 
-~Randy
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
