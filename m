@@ -2,65 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0CCF5812E5
-	for <lists+bpf@lfdr.de>; Tue, 26 Jul 2022 14:13:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 191DD58133B
+	for <lists+bpf@lfdr.de>; Tue, 26 Jul 2022 14:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238767AbiGZMNZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jul 2022 08:13:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53532 "EHLO
+        id S233604AbiGZMj7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jul 2022 08:39:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233022AbiGZMNY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Jul 2022 08:13:24 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CC7C2B258
-        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 05:13:21 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id b26so19899511wrc.2
-        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 05:13:21 -0700 (PDT)
+        with ESMTP id S233594AbiGZMj6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Jul 2022 08:39:58 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93EDA2ED75
+        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 05:39:57 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id g2so11913023wru.3
+        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 05:39:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc;
-        bh=IFAx9Rc8a/SiekVW3zzrDYtqM2y65/VQNYg7O910RIk=;
-        b=WMi9tx0hkxoEcpKiWf3pPET7AocSCr9MmYOx12cnsTdEw263xyr6VlW9K8qOYyQuZp
-         ey7alBv2ojQTeV68v3GCM9ia3LKYWd6ji0Kfj3Vk8QHnl8kvH7O2J/ofJ8+qm3I1qT9I
-         CZGgfoOnn5jjieXsb4zTF3tWkLmdhIkrnH60WrUr6Pit+DOx/uAHUlHDFEwMlOnsXMlz
-         1UMXt3o9kpUSN9Srbm/xJdvdt2DxojAHSnZQf95CAq1OmYWKwzFcFt77Y3BG4nmFB9S5
-         dmgNoorSWkvXil8gIXK5jyJe9FVaoKpeVDYmQSb4TZpordB1IgbGcbqKwCnSFZQm2M3Y
-         pa9A==
+        bh=z5xcs0/ibjFl7emEF6oDUD87qcO8su765M8/TDBP+bc=;
+        b=GNPW2DT1VOy+4Mhv2Au5ne5QAsTElAXOPaFQtTQx9X1RIqX1np+2AAO+jg/OPJ42aW
+         jMV3QWoIKzPcsJR4z+URLkW8Ifhu7dyvl+6YlkSVBi7oip9zI03q6AtgsV8v26MvU/4c
+         FHxA2OBjYsOGmoWLBUdtg/LV0nBFaxe2nWd8v3f8zN/UHJPp7Q5x/D+H8NlE0UHbYpd0
+         N3lUKWnJQWlrZHRn+E060xF3EHkLbPiccOcjPg7Lv0W+dd66B1MzlO+AURlS/msnhibM
+         WBEnd6eAj/BN4iW8tPZ/V7V9XEWSV/Ugb2pYfuVKp95nDXaFUpj0p4fOI9X12pZ2jd5T
+         xxKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc;
-        bh=IFAx9Rc8a/SiekVW3zzrDYtqM2y65/VQNYg7O910RIk=;
-        b=eO6afjtSn1sNWK3m3Xgi4nbz9uGRgA6AiEMGoKO/oYg5VdoP+3aXGG8x8HU+RecEJD
-         pDe0IK4KROcpfZEKgZEVC+YFzTPWyt/EBd1NFmeOwu7MwvyjFk13MXkQriZA+HF3Qz3R
-         BYt/Krsy5No30gHvf/8EHSzzK+3psB8EP/KfwJr8pejOIK2hwlPN3iMaeYYhKWEwpk4h
-         JFxBTaM5ELUAnkwEZDrzoi4mLIkKIyqR3/446au2ekx31dNcV2x+rsoeB9w5B85HF737
-         dVrwGlhKjPhGwCsnrnOWCDSmBPOuR62OYd6txS8w602xtmPVTdGZHkpME3IMTReJ1pyS
-         hv5g==
-X-Gm-Message-State: AJIora84QrTylY47nhB/J2ZdQSp7lFSIc3pS8/QssSVkdPuMHn2KJ+ga
-        Z0Q0Uh7CMRQz2S2YGEyKTpvvbYqohTU=
-X-Google-Smtp-Source: AGRyM1thu2fgz5eh2lGRk9qvYJxE+rKhMVjkPj93avKrINM6IYSzHnp0EIpoqFRkedu1abDSTrOVnA==
-X-Received: by 2002:a5d:5889:0:b0:21d:bccd:38e3 with SMTP id n9-20020a5d5889000000b0021dbccd38e3mr10298532wrf.659.1658837599999;
-        Tue, 26 Jul 2022 05:13:19 -0700 (PDT)
+        bh=z5xcs0/ibjFl7emEF6oDUD87qcO8su765M8/TDBP+bc=;
+        b=W9Z0NydnjzyyIslZmo6tLeeVlghcTCFmWJ9Ck2p1d7oUxP3257b3rItmGVPHTGtuUi
+         X/V5zlj295LqDDGK7L0n8gVRhk2q+Gxv/JPAwtYzQH7dsJuAlfp1tupOiKCZgyokASjF
+         qAjD7LgcMCsH4yA2xbQyr3ESH8ey62dcuigEOfrhJ4A6Nuk6zRK2aPy6cs1Vj6Q7IVeC
+         eBZVLxVGshOaAFEO9803O9KgxnKe8huKSpCBFDThENtSbhbyiE7zpXStpkOtlLf8G1RQ
+         Pr0hMcVCz1C4Gl8//vHgnaeaKgABQZbmRXFTuR9WOevjj8A6MGVDK2oZqI6nIShpncYG
+         IxSw==
+X-Gm-Message-State: AJIora9Ihk36pLjmVZetax/7qyLp8wV5yynBpRACZ5c8mh3T5/Hvr/Ip
+        nJadQPGXUp9VlfO7ULTokJA=
+X-Google-Smtp-Source: AGRyM1vB3u5zKcFrc5hCPtDU9XOD6v2tmtnSBojAuBQfhCBXlUBGGDFA8ArOZr4N5RtfigpyyKynKA==
+X-Received: by 2002:a5d:6b89:0:b0:21e:b591:2b80 with SMTP id n9-20020a5d6b89000000b0021eb5912b80mr895268wrx.33.1658839195949;
+        Tue, 26 Jul 2022 05:39:55 -0700 (PDT)
 Received: from krava ([193.85.244.190])
-        by smtp.gmail.com with ESMTPSA id o2-20020a05600c510200b003a2d6f26babsm18856018wms.3.2022.07.26.05.13.19
+        by smtp.gmail.com with ESMTPSA id p15-20020a05600c358f00b003a32297598csm22828894wmq.43.2022.07.26.05.39.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jul 2022 05:13:19 -0700 (PDT)
+        Tue, 26 Jul 2022 05:39:55 -0700 (PDT)
 From:   Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Tue, 26 Jul 2022 14:13:17 +0200
-To:     Kui-Feng Lee <kuifeng@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kernel-team@fb.com, yhs@fb.com
-Subject: Re: [PATCH bpf-next 1/3] bpf: Parameterize task iterators.
-Message-ID: <Yt/aXYiVmGKP282Q@krava>
-References: <20220726051713.840431-1-kuifeng@fb.com>
- <20220726051713.840431-2-kuifeng@fb.com>
+Date:   Tue, 26 Jul 2022 14:39:53 +0200
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     andrii@kernel.org, mykolal@fb.com, ftokarev@gmail.com,
+        jolsa@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next] selftests/bpf: augment snprintf_btf tests with
+ string overflow tests
+Message-ID: <Yt/gmWx6gMIxLI5F@krava>
+References: <1658734261-4951-1-git-send-email-alan.maguire@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220726051713.840431-2-kuifeng@fb.com>
+In-Reply-To: <1658734261-4951-1-git-send-email-alan.maguire@oracle.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -71,123 +74,116 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jul 25, 2022 at 10:17:11PM -0700, Kui-Feng Lee wrote:
-> Allow creating an iterator that loops through resources of one task/thread.
+On Mon, Jul 25, 2022 at 08:31:01AM +0100, Alan Maguire wrote:
+> add tests that verify bpf_snprintf_btf() behaviour with strings that
 > 
-> People could only create iterators to loop through all resources of
-> files, vma, and tasks in the system, even though they were interested
-> in only the resources of a specific task or process.  Passing the
-> additional parameters, people can now create an iterator to go
-> through all resources or only the resources of a task.
+> - exactly fit the buffer (string size + null terminator == buffer_size)
+> - overrun the buffer (string size + null terminator == buffer size + 1)
+> - overrun the buffer (string size + null terminator == buffer size + 2)
 > 
-> Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
+> These tests require [1] ("bpf: btf: Fix vsnprintf return value check")
+> 
+> ...which has not landed yet.
+
+patch looks good, but I have the test passing even without [1],
+it should fail, right?
+
+  #151     snprintf_btf:OK
+
+jirka
+
+> 
+> [1] https://lore.kernel.org/bpf/20220711211317.GA1143610@laptop/
+> 
+> Suggested-by: Jiri Olsa <jolsa@redhat.com>
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 > ---
->  include/linux/bpf.h            |  4 ++
->  include/uapi/linux/bpf.h       | 23 ++++++++++
->  kernel/bpf/task_iter.c         | 81 +++++++++++++++++++++++++---------
->  tools/include/uapi/linux/bpf.h | 23 ++++++++++
->  4 files changed, 109 insertions(+), 22 deletions(-)
+>  .../selftests/bpf/progs/netif_receive_skb.c        | 41 ++++++++++++++++++++--
+>  1 file changed, 38 insertions(+), 3 deletions(-)
 > 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 11950029284f..c8d164404e20 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1718,6 +1718,10 @@ int bpf_obj_get_user(const char __user *pathname, int flags);
+> diff --git a/tools/testing/selftests/bpf/progs/netif_receive_skb.c b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
+> index 1d8918d..9fc48e4 100644
+> --- a/tools/testing/selftests/bpf/progs/netif_receive_skb.c
+> +++ b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
+> @@ -49,7 +49,7 @@ static int __strncmp(const void *m1, const void *m2, size_t len)
+>  }
 >  
->  struct bpf_iter_aux_info {
->  	struct bpf_map *map;
-> +	struct {
-> +		__u32	tid;
-
-should be just u32 ?
-
-> +		u8	type;
-> +	} task;
->  };
+>  #if __has_builtin(__builtin_btf_type_id)
+> -#define	TEST_BTF(_str, _type, _flags, _expected, ...)			\
+> +#define	TEST_BTF_SIZE(_str, _size, _type, _flags, _expected, ...)			\
+>  	do {								\
+>  		static const char _expectedval[EXPECTED_STRSIZE] =	\
+>  							_expected;	\
+> @@ -69,10 +69,13 @@ static int __strncmp(const void *m1, const void *m2, size_t len)
+>  			ret = -EINVAL;					\
+>  			break;						\
+>  		}							\
+> -		ret = bpf_snprintf_btf(_str, STRSIZE,			\
+> +		ret = bpf_snprintf_btf(_str, _size,			\
+>  				       &_ptr, sizeof(_ptr), _hflags);	\
+> -		if (ret)						\
+> +		if (ret	< 0) {						\
+> +			bpf_printk("bpf_snprintf_btf_failed (%s): %d\n",\
+> +				   _str, _expectedval, ret);		\
+>  			break;						\
+> +		}							\
+>  		_cmp = __strncmp(_str, _expectedval, EXPECTED_STRSIZE);	\
+>  		if (_cmp != 0) {					\
+>  			bpf_printk("(%d) got %s", _cmp, _str);		\
+> @@ -82,6 +85,10 @@ static int __strncmp(const void *m1, const void *m2, size_t len)
+>  			break;						\
+>  		}							\
+>  	} while (0)
+> +
+> +#define TEST_BTF(_str, _type, _flags, _expected, ...)			\
+> +	TEST_BTF_SIZE(_str, STRSIZE, _type, _flags, _expected,		\
+> +		      __VA_ARGS__)
+>  #endif
 >  
-
-SNIP
-
+>  /* Use where expected data string matches its stringified declaration */
+> @@ -98,7 +105,9 @@ int BPF_PROG(trace_netif_receive_skb, struct sk_buff *skb)
+>  	static __u64 flags[] = { 0, BTF_F_COMPACT, BTF_F_ZERO, BTF_F_PTR_RAW,
+>  				 BTF_F_NONAME, BTF_F_COMPACT | BTF_F_ZERO |
+>  				 BTF_F_PTR_RAW | BTF_F_NONAME };
+> +	static char _short_str[2] = {};
+>  	static struct btf_ptr p = { };
+> +	char *short_str = _short_str;
+>  	__u32 key = 0;
+>  	int i, __ret;
+>  	char *str;
+> @@ -141,6 +150,32 @@ int BPF_PROG(trace_netif_receive_skb, struct sk_buff *skb)
+>  	TEST_BTF_C(str, int, 0, -4567);
+>  	TEST_BTF(str, int, BTF_F_NONAME, "-4567", -4567);
 >  
->  /* BPF syscall commands, see bpf(2) man-page for more details. */
-> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-> index 8c921799def4..7979aacb651e 100644
-> --- a/kernel/bpf/task_iter.c
-> +++ b/kernel/bpf/task_iter.c
-> @@ -12,6 +12,8 @@
->  
->  struct bpf_iter_seq_task_common {
->  	struct pid_namespace *ns;
-> +	u32	tid;
-> +	u8	type;
->  };
->  
->  struct bpf_iter_seq_task_info {
-> @@ -22,18 +24,31 @@ struct bpf_iter_seq_task_info {
->  	u32 tid;
->  };
->  
-> -static struct task_struct *task_seq_get_next(struct pid_namespace *ns,
-> +static struct task_struct *task_seq_get_next(struct bpf_iter_seq_task_common *common,
->  					     u32 *tid,
->  					     bool skip_if_dup_files)
->  {
->  	struct task_struct *task = NULL;
->  	struct pid *pid;
->  
-> +	if (common->type == BPF_TASK_ITER_TID) {
-> +		if (*tid)
-> +			return NULL;
-
-I tested and this condition breaks it for fd iterations, not sure about
-the task and vma, because they share this function
-
-if bpf_seq_read is called with small buffer there will be multiple calls
-to task_file_seq_get_next and second one will stop in here, even if there
-are more files to be displayed for the task in filter
-
-it'd be nice to have some test for this ;-) or perhaps compare with the
-not filtered output
-
-SNIP
-
->  static const struct seq_operations task_seq_ops = {
->  	.start	= task_seq_start,
->  	.next	= task_seq_next,
-> @@ -137,8 +166,7 @@ struct bpf_iter_seq_task_file_info {
->  static struct file *
->  task_file_seq_get_next(struct bpf_iter_seq_task_file_info *info)
->  {
-> -	struct pid_namespace *ns = info->common.ns;
-> -	u32 curr_tid = info->tid;
-> +	u32 saved_tid = info->tid;
->  	struct task_struct *curr_task;
->  	unsigned int curr_fd = info->fd;
->  
-> @@ -151,21 +179,18 @@ task_file_seq_get_next(struct bpf_iter_seq_task_file_info *info)
->  		curr_task = info->task;
->  		curr_fd = info->fd;
->  	} else {
-> -                curr_task = task_seq_get_next(ns, &curr_tid, true);
-> +		curr_task = task_seq_get_next(&info->common, &info->tid, true);
->                  if (!curr_task) {
->                          info->task = NULL;
-> -                        info->tid = curr_tid;
->                          return NULL;
->                  }
-
-nit, looks like we're missing proper indent in here
-
-
->  
-> -                /* set info->task and info->tid */
-> +		/* set info->task */
->  		info->task = curr_task;
-> -		if (curr_tid == info->tid) {
-> +		if (saved_tid == info->tid)
->  			curr_fd = info->fd;
-> -		} else {
-> -			info->tid = curr_tid;
-> +		else
-
-SNIP
+> +	/* overflow tests; first string + terminator fits, others do not. */
+> +	TEST_BTF_SIZE(short_str, sizeof(_short_str), int, BTF_F_NONAME, "1", 1);
+> +	if (ret != 1) {
+> +		bpf_printk("bpf_snprintf_btf() should return 1 for '%s'/2-byte array",
+> +			   short_str);
+> +		ret = -ERANGE;
+> +	}
+> +	/* not enough space to write "10", write "1", return 2 for number of bytes we
+> +	 * should have written.
+> +	 */
+> +	TEST_BTF_SIZE(short_str, sizeof(_short_str), int, BTF_F_NONAME, "1", 10);
+> +	if (ret != 2) {
+> +		bpf_printk("bpf_snprintf_btf() should return 2 for '%s'/2-byte array",
+> +			   short_str);
+> +		ret = -ERANGE;
+> +	}
+> +	/* not enough space to write "100", write "1", return 3 for number of bytes we
+> +	 * should have written.
+> +	 */
+> +	TEST_BTF_SIZE(short_str, sizeof(_short_str), int, BTF_F_NONAME, "1", 100);
+> +	if (ret != 3) {
+> +		bpf_printk("bpf_snprintf_btf() should return 3 for '%s'/3-byte array",
+> +			   short_str);
+> +		ret = -ERANGE;
+> +	}
+> +
+>  	/* simple char */
+>  	TEST_BTF_C(str, char, 0, 100);
+>  	TEST_BTF(str, char, BTF_F_NONAME, "100", 100);
+> -- 
+> 1.8.3.1
+> 
