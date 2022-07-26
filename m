@@ -2,495 +2,231 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88FB1580AB8
-	for <lists+bpf@lfdr.de>; Tue, 26 Jul 2022 07:18:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A43A6580C5C
+	for <lists+bpf@lfdr.de>; Tue, 26 Jul 2022 09:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbiGZFSA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jul 2022 01:18:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60566 "EHLO
+        id S237631AbiGZHWi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jul 2022 03:22:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231258AbiGZFR7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Jul 2022 01:17:59 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DBC0222B4
-        for <bpf@vger.kernel.org>; Mon, 25 Jul 2022 22:17:57 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26Q0rrMg020117
-        for <bpf@vger.kernel.org>; Mon, 25 Jul 2022 22:17:57 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=d2A/RGGKklhHlzWbsx56TbwqqI4ZHQXmXCQv2ghxkws=;
- b=C2vZH3c/YJvd2wG1xpJGZv66w/cK95O986c160zsX77OC7Yl8ZBXyUn1lHWbVOXbDHxZ
- Fz6N48tbmoinPo1ypAAGw9ycGKa3Hr3aNTFnWj20H2mkbmzHajGv+xBjNc3gjN8bJuZc
- Wrf4zWyPU0RUPn/aFSv5HYj1oOCPwVANuFg= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hgetsx6m8-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 25 Jul 2022 22:17:57 -0700
-Received: from twshared22413.18.frc3.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Mon, 25 Jul 2022 22:17:54 -0700
-Received: by devbig931.frc1.facebook.com (Postfix, from userid 460691)
-        id 395905E528B1; Mon, 25 Jul 2022 22:17:44 -0700 (PDT)
-From:   Kui-Feng Lee <kuifeng@fb.com>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andrii@kernel.org>, <kernel-team@fb.com>, <yhs@fb.com>
-CC:     Kui-Feng Lee <kuifeng@fb.com>
-Subject: [PATCH bpf-next 3/3] selftests/bpf: Test parameterized task BPF iterators.
-Date:   Mon, 25 Jul 2022 22:17:13 -0700
-Message-ID: <20220726051713.840431-4-kuifeng@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220726051713.840431-1-kuifeng@fb.com>
-References: <20220726051713.840431-1-kuifeng@fb.com>
+        with ESMTP id S232371AbiGZHWh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Jul 2022 03:22:37 -0400
+Received: from out30-44.freemail.mail.aliyun.com (out30-44.freemail.mail.aliyun.com [115.124.30.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E844CB48D;
+        Tue, 26 Jul 2022 00:22:33 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R441e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=37;SR=0;TI=SMTPD_---0VKUNUh7_1658820145;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VKUNUh7_1658820145)
+          by smtp.aliyun-inc.com;
+          Tue, 26 Jul 2022 15:22:26 +0800
+From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To:     virtualization@lists.linux-foundation.org
+Cc:     Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Vadim Pasternak <vadimp@nvidia.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        linux-um@lists.infradead.org, netdev@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+        kvm@vger.kernel.org, bpf@vger.kernel.org,
+        kangjie.xu@linux.alibaba.com
+Subject: [PATCH v13 00/42] virtio pci support VIRTIO_F_RING_RESET
+Date:   Tue, 26 Jul 2022 15:21:43 +0800
+Message-Id: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: DujblsWywCIqWeZTxw-zf1HeX8mwgEPp
-X-Proofpoint-GUID: DujblsWywCIqWeZTxw-zf1HeX8mwgEPp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-07-25_13,2022-07-25_03,2022-06-22_01
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Git-Hash: 19d2a6aae0b1
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Test iterators of vma, files, and tasks of a specific task.
+The virtio spec already supports the virtio queue reset function. This patch set
+is to add this function to the kernel. The relevant virtio spec information is
+here:
 
-Ensure the API works appropriately for both going through all tasks and
-going through a particular task.
+    https://github.com/oasis-tcs/virtio-spec/issues/124
+    https://github.com/oasis-tcs/virtio-spec/issues/139
 
-Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
----
- .../selftests/bpf/prog_tests/bpf_iter.c       | 131 +++++++++++++++---
- .../selftests/bpf/prog_tests/btf_dump.c       |   2 +-
- .../selftests/bpf/progs/bpf_iter_task.c       |   9 ++
- .../selftests/bpf/progs/bpf_iter_task_file.c  |   7 +
- .../selftests/bpf/progs/bpf_iter_task_vma.c   |   6 +-
- 5 files changed, 131 insertions(+), 24 deletions(-)
+Also regarding MMIO support for queue reset, I plan to support it after this
+patch is passed.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/te=
-sting/selftests/bpf/prog_tests/bpf_iter.c
-index a33874b081b6..f1116354f982 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-@@ -42,13 +42,13 @@ static void test_btf_id_or_null(void)
- 	}
- }
-=20
--static void do_dummy_read(struct bpf_program *prog)
-+static void do_dummy_read(struct bpf_program *prog, struct bpf_iter_atta=
-ch_opts *opts)
- {
- 	struct bpf_link *link;
- 	char buf[16] =3D {};
- 	int iter_fd, len;
-=20
--	link =3D bpf_program__attach_iter(prog, NULL);
-+	link =3D bpf_program__attach_iter(prog, opts);
- 	if (!ASSERT_OK_PTR(link, "attach_iter"))
- 		return;
-=20
-@@ -91,7 +91,7 @@ static void test_ipv6_route(void)
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_ipv6_route__open_and_load"))
- 		return;
-=20
--	do_dummy_read(skel->progs.dump_ipv6_route);
-+	do_dummy_read(skel->progs.dump_ipv6_route, NULL);
-=20
- 	bpf_iter_ipv6_route__destroy(skel);
- }
-@@ -104,7 +104,7 @@ static void test_netlink(void)
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_netlink__open_and_load"))
- 		return;
-=20
--	do_dummy_read(skel->progs.dump_netlink);
-+	do_dummy_read(skel->progs.dump_netlink, NULL);
-=20
- 	bpf_iter_netlink__destroy(skel);
- }
-@@ -117,20 +117,70 @@ static void test_bpf_map(void)
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_bpf_map__open_and_load"))
- 		return;
-=20
--	do_dummy_read(skel->progs.dump_bpf_map);
-+	do_dummy_read(skel->progs.dump_bpf_map, NULL);
-=20
- 	bpf_iter_bpf_map__destroy(skel);
- }
-=20
-+static void check_bpf_link_info(const struct bpf_program *prog)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-+	union bpf_iter_link_info linfo;
-+	struct bpf_link_info info =3D {};
-+	__u32 info_len;
-+	struct bpf_link *link;
-+	int err;
-+
-+	linfo.task.tid =3D getpid();
-+	linfo.task.type =3D BPF_TASK_ITER_TID;
-+	opts.link_info =3D &linfo;
-+	opts.link_info_len =3D sizeof(linfo);
-+
-+	link =3D bpf_program__attach_iter(prog, &opts);
-+	if (!ASSERT_OK_PTR(link, "attach_iter"))
-+		return;
-+
-+	info_len =3D sizeof(info);
-+	err =3D bpf_obj_get_info_by_fd(bpf_link__fd(link), &info, &info_len);
-+	if (ASSERT_OK(err, "bpf_obj_get_info_by_fd")) {
-+		ASSERT_EQ(info.iter.task.type, BPF_TASK_ITER_TID, "check_task_type");
-+		ASSERT_EQ(info.iter.task.tid, getpid(), "check_task_tid");
-+	}
-+
-+	bpf_link__destroy(link);
-+}
-+
- static void test_task(void)
- {
- 	struct bpf_iter_task *skel;
-+	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-+	union bpf_iter_link_info linfo;
-=20
- 	skel =3D bpf_iter_task__open_and_load();
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_task__open_and_load"))
- 		return;
-=20
--	do_dummy_read(skel->progs.dump_task);
-+	linfo.task.tid =3D getpid();
-+	linfo.task.type =3D BPF_TASK_ITER_TID;
-+	opts.link_info =3D &linfo;
-+	opts.link_info_len =3D sizeof(linfo);
-+
-+	skel->bss->tid =3D getpid();
-+
-+	do_dummy_read(skel->progs.dump_task, &opts);
-+
-+	ASSERT_EQ(skel->bss->num_unknown_tid, 0, "check_num_unknown_tid");
-+	ASSERT_EQ(skel->bss->num_known_tid, 1, "check_num_known_tid");
-+
-+	skel->bss->num_unknown_tid =3D 0;
-+	skel->bss->num_known_tid =3D 0;
-+
-+	do_dummy_read(skel->progs.dump_task, NULL);
-+
-+	ASSERT_GE(skel->bss->num_unknown_tid, 0, "check_num_unknown_tid");
-+	ASSERT_EQ(skel->bss->num_known_tid, 1, "check_num_known_tid");
-+
-+	check_bpf_link_info(skel->progs.dump_task);
-=20
- 	bpf_iter_task__destroy(skel);
- }
-@@ -143,7 +193,7 @@ static void test_task_sleepable(void)
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_task__open_and_load"))
- 		return;
-=20
--	do_dummy_read(skel->progs.dump_task_sleepable);
-+	do_dummy_read(skel->progs.dump_task_sleepable, NULL);
-=20
- 	ASSERT_GT(skel->bss->num_expected_failure_copy_from_user_task, 0,
- 		  "num_expected_failure_copy_from_user_task");
-@@ -161,8 +211,8 @@ static void test_task_stack(void)
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_task_stack__open_and_load"))
- 		return;
-=20
--	do_dummy_read(skel->progs.dump_task_stack);
--	do_dummy_read(skel->progs.get_task_user_stacks);
-+	do_dummy_read(skel->progs.dump_task_stack, NULL);
-+	do_dummy_read(skel->progs.get_task_user_stacks, NULL);
-=20
- 	bpf_iter_task_stack__destroy(skel);
- }
-@@ -174,7 +224,9 @@ static void *do_nothing(void *arg)
-=20
- static void test_task_file(void)
- {
-+	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
- 	struct bpf_iter_task_file *skel;
-+	union bpf_iter_link_info linfo;
- 	pthread_t thread_id;
- 	void *ret;
-=20
-@@ -188,15 +240,31 @@ static void test_task_file(void)
- 		  "pthread_create"))
- 		goto done;
-=20
--	do_dummy_read(skel->progs.dump_task_file);
-+	linfo.task.tid =3D getpid();
-+	linfo.task.type =3D BPF_TASK_ITER_TID;
-+	opts.link_info =3D &linfo;
-+	opts.link_info_len =3D sizeof(linfo);
-+
-+	do_dummy_read(skel->progs.dump_task_file, &opts);
-=20
- 	if (!ASSERT_FALSE(pthread_join(thread_id, &ret) || ret !=3D NULL,
- 		  "pthread_join"))
- 		goto done;
-=20
- 	ASSERT_EQ(skel->bss->count, 0, "check_count");
-+	ASSERT_EQ(skel->bss->unique_tgid_count, 1, "check_unique_tgid_count");
-+
-+	skel->bss->count =3D 0;
-+	skel->bss->unique_tgid_count =3D 0;
-+
-+	do_dummy_read(skel->progs.dump_task_file, NULL);
-=20
--done:
-+	ASSERT_GE(skel->bss->count, 0, "check_count");
-+	ASSERT_GE(skel->bss->unique_tgid_count, 1, "check_unique_tgid_count");
-+
-+	check_bpf_link_info(skel->progs.dump_task_file);
-+
-+ done:
- 	bpf_iter_task_file__destroy(skel);
- }
-=20
-@@ -274,7 +342,7 @@ static void test_tcp4(void)
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_tcp4__open_and_load"))
- 		return;
-=20
--	do_dummy_read(skel->progs.dump_tcp4);
-+	do_dummy_read(skel->progs.dump_tcp4, NULL);
-=20
- 	bpf_iter_tcp4__destroy(skel);
- }
-@@ -287,7 +355,7 @@ static void test_tcp6(void)
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_tcp6__open_and_load"))
- 		return;
-=20
--	do_dummy_read(skel->progs.dump_tcp6);
-+	do_dummy_read(skel->progs.dump_tcp6, NULL);
-=20
- 	bpf_iter_tcp6__destroy(skel);
- }
-@@ -300,7 +368,7 @@ static void test_udp4(void)
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_udp4__open_and_load"))
- 		return;
-=20
--	do_dummy_read(skel->progs.dump_udp4);
-+	do_dummy_read(skel->progs.dump_udp4, NULL);
-=20
- 	bpf_iter_udp4__destroy(skel);
- }
-@@ -313,7 +381,7 @@ static void test_udp6(void)
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_udp6__open_and_load"))
- 		return;
-=20
--	do_dummy_read(skel->progs.dump_udp6);
-+	do_dummy_read(skel->progs.dump_udp6, NULL);
-=20
- 	bpf_iter_udp6__destroy(skel);
- }
-@@ -326,7 +394,7 @@ static void test_unix(void)
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_unix__open_and_load"))
- 		return;
-=20
--	do_dummy_read(skel->progs.dump_unix);
-+	do_dummy_read(skel->progs.dump_unix, NULL);
-=20
- 	bpf_iter_unix__destroy(skel);
- }
-@@ -988,7 +1056,7 @@ static void test_bpf_sk_storage_get(void)
- 	if (!ASSERT_OK(err, "bpf_map_update_elem"))
- 		goto close_socket;
-=20
--	do_dummy_read(skel->progs.fill_socket_owner);
-+	do_dummy_read(skel->progs.fill_socket_owner, NULL);
-=20
- 	err =3D bpf_map_lookup_elem(map_fd, &sock_fd, &val);
- 	if (CHECK(err || val !=3D getpid(), "bpf_map_lookup_elem",
-@@ -996,7 +1064,7 @@ static void test_bpf_sk_storage_get(void)
- 	    getpid(), val, err))
- 		goto close_socket;
-=20
--	do_dummy_read(skel->progs.negate_socket_local_storage);
-+	do_dummy_read(skel->progs.negate_socket_local_storage, NULL);
-=20
- 	err =3D bpf_map_lookup_elem(map_fd, &sock_fd, &val);
- 	CHECK(err || val !=3D -getpid(), "bpf_map_lookup_elem",
-@@ -1116,7 +1184,7 @@ static void test_link_iter(void)
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_bpf_link__open_and_load"))
- 		return;
-=20
--	do_dummy_read(skel->progs.dump_bpf_link);
-+	do_dummy_read(skel->progs.dump_bpf_link, NULL);
-=20
- 	bpf_iter_bpf_link__destroy(skel);
- }
-@@ -1129,7 +1197,7 @@ static void test_ksym_iter(void)
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_ksym__open_and_load"))
- 		return;
-=20
--	do_dummy_read(skel->progs.dump_ksym);
-+	do_dummy_read(skel->progs.dump_ksym, NULL);
-=20
- 	bpf_iter_ksym__destroy(skel);
- }
-@@ -1154,7 +1222,7 @@ static void str_strip_first_line(char *str)
- 	*dst =3D '\0';
- }
-=20
--static void test_task_vma(void)
-+static void test_task_vma_(struct bpf_iter_attach_opts *opts)
- {
- 	int err, iter_fd =3D -1, proc_maps_fd =3D -1;
- 	struct bpf_iter_task_vma *skel;
-@@ -1166,13 +1234,14 @@ static void test_task_vma(void)
- 		return;
-=20
- 	skel->bss->pid =3D getpid();
-+	skel->bss->one_task =3D opts ? 1 : 0;
-=20
- 	err =3D bpf_iter_task_vma__load(skel);
- 	if (!ASSERT_OK(err, "bpf_iter_task_vma__load"))
- 		goto out;
-=20
- 	skel->links.proc_maps =3D bpf_program__attach_iter(
--		skel->progs.proc_maps, NULL);
-+		skel->progs.proc_maps, opts);
-=20
- 	if (!ASSERT_OK_PTR(skel->links.proc_maps, "bpf_program__attach_iter")) =
-{
- 		skel->links.proc_maps =3D NULL;
-@@ -1211,12 +1280,30 @@ static void test_task_vma(void)
- 	str_strip_first_line(proc_maps_output);
-=20
- 	ASSERT_STREQ(task_vma_output, proc_maps_output, "compare_output");
-+
-+	check_bpf_link_info(skel->progs.proc_maps);
-+
- out:
- 	close(proc_maps_fd);
- 	close(iter_fd);
- 	bpf_iter_task_vma__destroy(skel);
- }
-=20
-+static void test_task_vma(void)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-+	union bpf_iter_link_info linfo;
-+
-+	memset(&linfo, 0, sizeof(linfo));
-+	linfo.task.tid =3D getpid();
-+	linfo.task.type =3D BPF_TASK_ITER_TID;
-+	opts.link_info =3D &linfo;
-+	opts.link_info_len =3D sizeof(linfo);
-+
-+	test_task_vma_(&opts);
-+	test_task_vma_(NULL);
-+}
-+
- void test_bpf_iter(void)
- {
- 	if (test__start_subtest("btf_id_or_null"))
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dump.c b/tools/te=
-sting/selftests/bpf/prog_tests/btf_dump.c
-index 5fce7008d1ff..32c34ce9cbeb 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-@@ -764,7 +764,7 @@ static void test_btf_dump_struct_data(struct btf *btf=
-, struct btf_dump *d,
-=20
- 	/* union with nested struct */
- 	TEST_BTF_DUMP_DATA(btf, d, "union", str, union bpf_iter_link_info, BTF_=
-F_COMPACT,
--			   "(union bpf_iter_link_info){.map =3D (struct){.map_fd =3D (__u32)1=
-,},}",
-+			   "(union bpf_iter_link_info){.map =3D (struct){.map_fd =3D (__u32)1=
-,},.task =3D (struct){.tid =3D (__u32)1,},}",
- 			   { .map =3D { .map_fd =3D 1 }});
-=20
- 	/* struct skb with nested structs/unions; because type output is so
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task.c b/tools/te=
-sting/selftests/bpf/progs/bpf_iter_task.c
-index d22741272692..96131b9a1caa 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_task.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_task.c
-@@ -6,6 +6,10 @@
-=20
- char _license[] SEC("license") =3D "GPL";
-=20
-+uint32_t tid =3D 0;
-+int num_unknown_tid =3D 0;
-+int num_known_tid =3D 0;
-+
- SEC("iter/task")
- int dump_task(struct bpf_iter__task *ctx)
- {
-@@ -18,6 +22,11 @@ int dump_task(struct bpf_iter__task *ctx)
- 		return 0;
- 	}
-=20
-+	if (task->pid !=3D tid)
-+		num_unknown_tid++;
-+	else
-+		num_known_tid++;
-+
- 	if (ctx->meta->seq_num =3D=3D 0)
- 		BPF_SEQ_PRINTF(seq, "    tgid      gid\n");
-=20
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task_file.c b/too=
-ls/testing/selftests/bpf/progs/bpf_iter_task_file.c
-index 6e7b400888fe..031455ed8748 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_task_file.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_task_file.c
-@@ -7,6 +7,8 @@ char _license[] SEC("license") =3D "GPL";
-=20
- int count =3D 0;
- int tgid =3D 0;
-+int last_tgid =3D -1;
-+int unique_tgid_count =3D 0;
-=20
- SEC("iter/task_file")
- int dump_task_file(struct bpf_iter__task_file *ctx)
-@@ -27,6 +29,11 @@ int dump_task_file(struct bpf_iter__task_file *ctx)
- 	if (tgid =3D=3D task->tgid && task->tgid !=3D task->pid)
- 		count++;
-=20
-+	if (last_tgid !=3D task->tgid) {
-+		last_tgid =3D task->tgid;
-+		unique_tgid_count++;
-+	}
-+
- 	BPF_SEQ_PRINTF(seq, "%8d %8d %8d %lx\n", task->tgid, task->pid, fd,
- 		       (long)file->f_op);
- 	return 0;
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task_vma.c b/tool=
-s/testing/selftests/bpf/progs/bpf_iter_task_vma.c
-index 4ea6a37d1345..44f4a31c2ddd 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_task_vma.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_task_vma.c
-@@ -20,6 +20,7 @@ char _license[] SEC("license") =3D "GPL";
- #define D_PATH_BUF_SIZE 1024
- char d_path_buf[D_PATH_BUF_SIZE] =3D {};
- __u32 pid =3D 0;
-+__u32 one_task =3D 0;
-=20
- SEC("iter/task_vma") int proc_maps(struct bpf_iter__task_vma *ctx)
- {
-@@ -33,8 +34,11 @@ SEC("iter/task_vma") int proc_maps(struct bpf_iter__ta=
-sk_vma *ctx)
- 		return 0;
-=20
- 	file =3D vma->vm_file;
--	if (task->tgid !=3D pid)
-+	if (task->tgid !=3D pid) {
-+		if (one_task)
-+			BPF_SEQ_PRINTF(seq, "unexpected task (%d !=3D %d)", task->tgid, pid);
- 		return 0;
-+	}
- 	perm_str[0] =3D (vma->vm_flags & VM_READ) ? 'r' : '-';
- 	perm_str[1] =3D (vma->vm_flags & VM_WRITE) ? 'w' : '-';
- 	perm_str[2] =3D (vma->vm_flags & VM_EXEC) ? 'x' : '-';
---=20
-2.30.2
+This patch set implements the refactoring of vring. Finally, the
+virtuque_resize() interface is provided based on the reset function of the
+transport layer.
+
+Test environment:
+    Host: 4.19.91
+    Qemu: QEMU emulator version 6.2.50 (with vq reset support)
+    Test Cmd:  ethtool -G eth1 rx $1 tx $2; ethtool -g eth1
+
+    The default is split mode, modify Qemu virtio-net to add PACKED feature to test
+    packed mode.
+
+Qemu code:
+    https://github.com/fengidri/qemu/compare/89f3bfa3265554d1d591ee4d7f1197b6e3397e84...master
+
+In order to simplify the review of this patch set, the function of reusing
+the old buffers after resize will be introduced in subsequent patch sets.
+
+Please review. Thanks.
+
+v13:
+  1. virtqueue attached by vq->split = *vring_split / vq->packed = *vring_packed
+  2. call __virtqueue_break() unconditionally
+
+v12:
+  1. access vq->num_max directly without helper
+  2. rename the vq reset callbacks:
+ 	     int (*disable_vq_and_reset)(struct virtqueue *vq);
+ 	     int (*enable_vq_after_reset)(struct virtqueue *vq);
+
+  3. rename vring to vring_split, vring_packed
+  4. protect sq->reset by tx lock
+
+v11:
+  1. struct virtio_pci_common_cfg to virtio_pci_modern.h
+  2. conflict resolution
+
+v10:
+  1. on top of the harden vring IRQ
+  2. factor out split and packed from struct vring_virtqueue
+  3. some suggest from @Jason Wang
+
+v9:
+  1. Provide a virtqueue_resize() interface directly
+  2. A patch set including vring resize, virtio pci reset, virtio-net resize
+  3. No more separate structs
+
+v8:
+  1. Provide a virtqueue_reset() interface directly
+  2. Split the two patch sets, this is the first part
+  3. Add independent allocation helper for allocating state, extra
+
+v7:
+  1. fix #6 subject typo
+  2. fix #6 ring_size_in_bytes is uninitialized
+  3. check by: make W=12
+
+v6:
+  1. virtio_pci: use synchronize_irq(irq) to sync the irq callbacks
+  2. Introduce virtqueue_reset_vring() to implement the reset of vring during
+     the reset process. May use the old vring if num of the vq not change.
+  3. find_vqs() support sizes to special the max size of each vq
+
+v5:
+  1. add virtio-net support set_ringparam
+
+v4:
+  1. just the code of virtio, without virtio-net
+  2. Performing reset on a queue is divided into these steps:
+    1. reset_vq: reset one vq
+    2. recycle the buffer from vq by virtqueue_detach_unused_buf()
+    3. release the ring of the vq by vring_release_virtqueue()
+    4. enable_reset_vq: re-enable the reset queue
+  3. Simplify the parameters of enable_reset_vq()
+  4. add container structures for virtio_pci_common_cfg
+
+v3:
+  1. keep vq, irq unreleased
+
+Xuan Zhuo (42):
+  virtio: record the maximum queue num supported by the device.
+  virtio: struct virtio_config_ops add callbacks for queue_reset
+  virtio_ring: update the document of the virtqueue_detach_unused_buf
+    for queue reset
+  virtio_ring: extract the logic of freeing vring
+  virtio_ring: split vring_virtqueue
+  virtio_ring: introduce virtqueue_init()
+  virtio_ring: split: stop __vring_new_virtqueue as export symbol
+  virtio_ring: split: __vring_new_virtqueue() accept struct
+    vring_virtqueue_split
+  virtio_ring: split: introduce vring_free_split()
+  virtio_ring: split: extract the logic of alloc queue
+  virtio_ring: split: extract the logic of alloc state and extra
+  virtio_ring: split: extract the logic of vring init
+  virtio_ring: split: extract the logic of attach vring
+  virtio_ring: split: introduce virtqueue_reinit_split()
+  virtio_ring: split: reserve vring_align, may_reduce_num
+  virtio_ring: split: introduce virtqueue_resize_split()
+  virtio_ring: packed: introduce vring_free_packed
+  virtio_ring: packed: extract the logic of alloc queue
+  virtio_ring: packed: extract the logic of alloc state and extra
+  virtio_ring: packed: extract the logic of vring init
+  virtio_ring: packed: extract the logic of attach vring
+  virtio_ring: packed: introduce virtqueue_reinit_packed()
+  virtio_ring: packed: introduce virtqueue_resize_packed()
+  virtio_ring: introduce virtqueue_resize()
+  virtio_pci: struct virtio_pci_common_cfg add queue_notify_data
+  virtio: allow to unbreak/break virtqueue individually
+  virtio: queue_reset: add VIRTIO_F_RING_RESET
+  virtio_ring: struct virtqueue introduce reset
+  virtio_pci: struct virtio_pci_common_cfg add queue_reset
+  virtio_pci: introduce helper to get/set queue reset
+  virtio_pci: extract the logic of active vq for modern pci
+  virtio_pci: support VIRTIO_F_RING_RESET
+  virtio: find_vqs() add arg sizes
+  virtio_pci: support the arg sizes of find_vqs()
+  virtio_mmio: support the arg sizes of find_vqs()
+  virtio: add helper virtio_find_vqs_ctx_size()
+  virtio_net: set the default max ring size by find_vqs()
+  virtio_net: get ringparam by virtqueue_get_vring_max_size()
+  virtio_net: split free_unused_bufs()
+  virtio_net: support rx queue resize
+  virtio_net: support tx queue resize
+  virtio_net: support set_ringparam
+
+ arch/um/drivers/virtio_uml.c             |   3 +-
+ drivers/net/virtio_net.c                 | 208 +++++-
+ drivers/platform/mellanox/mlxbf-tmfifo.c |   3 +
+ drivers/remoteproc/remoteproc_virtio.c   |   3 +
+ drivers/s390/virtio/virtio_ccw.c         |   4 +
+ drivers/virtio/virtio_mmio.c             |  11 +-
+ drivers/virtio/virtio_pci_common.c       |  32 +-
+ drivers/virtio/virtio_pci_common.h       |   3 +-
+ drivers/virtio/virtio_pci_legacy.c       |   8 +-
+ drivers/virtio/virtio_pci_modern.c       | 153 ++++-
+ drivers/virtio/virtio_pci_modern_dev.c   |  39 ++
+ drivers/virtio/virtio_ring.c             | 786 ++++++++++++++++-------
+ drivers/virtio/virtio_vdpa.c             |   3 +
+ include/linux/virtio.h                   |  10 +
+ include/linux/virtio_config.h            |  40 +-
+ include/linux/virtio_pci_modern.h        |   9 +
+ include/linux/virtio_ring.h              |  10 -
+ include/uapi/linux/virtio_config.h       |   7 +-
+ include/uapi/linux/virtio_pci.h          |   2 +
+ tools/virtio/virtio_test.c               |   4 +-
+ 20 files changed, 1037 insertions(+), 301 deletions(-)
+
+--
+2.31.0
 
