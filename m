@@ -2,87 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5836D5811C4
-	for <lists+bpf@lfdr.de>; Tue, 26 Jul 2022 13:17:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FD915811CF
+	for <lists+bpf@lfdr.de>; Tue, 26 Jul 2022 13:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232759AbiGZLRg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jul 2022 07:17:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33884 "EHLO
+        id S238851AbiGZLUN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jul 2022 07:20:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232665AbiGZLRf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Jul 2022 07:17:35 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF01630F49
-        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 04:17:33 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id a23so19793974lfm.10
-        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 04:17:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=geCVNY+flwt789c9RdieCurETz/pfYIPVuJSXzc2+N4=;
-        b=BM0rh7VbZ2xUz1j+iUJw2xgVAdLFYIH0rtwJoR38QVlGZdVdDiyBHy2/QZc7AGW11C
-         etiv/PgQbvtPb+mUiMgxYM//t2RTI+gSgodj2UZkrqj9BKDyzyYASV8QGt8CUCKySdKQ
-         qV5me8fxfy8u7bd/e6Mecr9xDICVAa+u6o7MqCsAHEn8Lk2N1kY6q1Z2XRARhlFtmcqm
-         TDoz4ePJamsL8o7wjytca8miCt5YGVywqtzOgfH7B5bJDb+4Qbi6AIE+mJB2JgAX1G0a
-         RQI/A1D8nX79wbMacygtDXpR0DoQ2UvTpng6ACC81+s6JZNxHkyGTJYOXSOHAlVg7OSi
-         dRUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=geCVNY+flwt789c9RdieCurETz/pfYIPVuJSXzc2+N4=;
-        b=0NO1rdfQxzNkYn3lAS8S9FpbGnRv1I9zff9cOy3/zt8mijGYkbPeLhvRQeB2LI5yX6
-         9iPJZVoPo66exD2gjNh1O3C2/QNEkhqb9cWHC4NQFcicw9wLeG2Xm44W0Lv4knL1JCoH
-         19Zx2MdRovx2bjAnF89B+LYpCt8lgotw1AD+LEMmfxOT7t3//IP/SBNbF8gJcJ4E/h3r
-         7gfOCxBVQUIOyEVi9yZkqBx5ocH2ViXZNy9bCGyhSsWhXLZEbPKAwlipYDGGC+AOvjI+
-         0gVt5u8VAgyex4HVmpPCmPvctlyzGkrE2eUo/gQXOH9xOiARKVyYqUpCKGUqMqrj/cMg
-         onkA==
-X-Gm-Message-State: AJIora+U+00FppceHU5plxFFX1kEtFoTNr4Ijz2xlKagrGVXS7dn8ie5
-        OHph1t7gzUmlXt7lM8QK96HnDc32HnOQMA6M53w=
-X-Google-Smtp-Source: AGRyM1uya30K4wPMzCOdHpnGZ7b6BPyMCTfgbawKHNJ8iTmf9f4e5fGnBRSI6B56g+LzLc4ptBGAtaK63uuyXh+W8hY=
-X-Received: by 2002:a05:6512:6c8:b0:486:7288:4651 with SMTP id
- u8-20020a05651206c800b0048672884651mr6074434lff.49.1658834252338; Tue, 26 Jul
- 2022 04:17:32 -0700 (PDT)
+        with ESMTP id S229759AbiGZLUE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Jul 2022 07:20:04 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EF383244A
+        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 04:20:03 -0700 (PDT)
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1oGIbY-0009Zn-IR; Tue, 26 Jul 2022 13:20:00 +0200
+Received: from [2a01:118f:505:3400:57f9:d43a:5622:24a8] (helo=linux-4.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1oGIbY-000IeF-9r; Tue, 26 Jul 2022 13:20:00 +0200
+Subject: Re: [PATCH bpf-next v1 1/1] bpf: Fix bpf_xdp_pointer return pointer
+To:     Joanne Koong <joannelkoong@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Lorenzo Bianconi <lorenzo@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>
+References: <20220722220105.2065466-1-joannelkoong@gmail.com>
+ <20220725201658.t55raspwmj2eguek@kafai-mbp.dhcp.thefacebook.com>
+ <CAJnrk1ac5GzwCL_ZSGcX9nPqokJG63K2khjKbgW5maYm66mLPw@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <d76023cb-aeb5-59fc-e987-65db550aac97@iogearbox.net>
+Date:   Tue, 26 Jul 2022 13:19:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Received: by 2002:ab3:2a1:0:b0:1d7:b824:937f with HTTP; Tue, 26 Jul 2022
- 04:17:31 -0700 (PDT)
-Reply-To: loebarryson@consultant.com
-From:   shahab Ayub <drusmanhassan19@gmail.com>
-Date:   Tue, 26 Jul 2022 12:17:31 +0100
-Message-ID: <CAMdE0PP8RQ59KAXLowg9gBYYTB4aA6XsAw3C_wndrcbfDFP-pQ@mail.gmail.com>
-Subject: Business Proposal From Dubai UAE
-To:     shahabayub <shahabayub@consultant.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=1.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+In-Reply-To: <CAJnrk1ac5GzwCL_ZSGcX9nPqokJG63K2khjKbgW5maYm66mLPw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.6/26613/Tue Jul 26 09:56:56 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
--- 
-Hello,
+On 7/25/22 11:55 PM, Joanne Koong wrote:
+> On Mon, Jul 25, 2022 at 1:17 PM Martin KaFai Lau <kafai@fb.com> wrote:
+>>
+>> On Fri, Jul 22, 2022 at 03:01:05PM -0700, Joanne Koong wrote:
+>>> For the case where offset + len == size, bpf_xdp_pointer should return a
+>>> valid pointer to the addr because that access is permitted. We should
+>>> only return NULL in the case where offset + len exceeds size.
+>>>
+>>> Fixes: 3f364222d032 ("net: xdp: introduce bpf_xdp_pointer utility routine")
+>>> Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+>>> ---
+>>>   net/core/filter.c | 2 +-
+>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/net/core/filter.c b/net/core/filter.c
+>>> index 289614887ed5..4307a75eeb4c 100644
+>>> --- a/net/core/filter.c
+>>> +++ b/net/core/filter.c
+>>> @@ -3918,7 +3918,7 @@ static void *bpf_xdp_pointer(struct xdp_buff *xdp, u32 offset, u32 len)
+>>>                offset -= frag_size;
+>>>        }
+>>>   out:
+>>> -     return offset + len < size ? addr + offset : NULL;
+>>> +     return offset + len <= size ? addr + offset : NULL;
+>> This fix should be for the bpf tree.
+> Ah I see. To confirm my understanding, fixes should always go to the
+> bpf tree (unless it's fixing a patch that only resides in the bpf-next
+> tree), correct?
 
-I am the Chief Compliance Officer of the United Arab Bank of Dubai. I
-invite you to a good business deal. I want us to work together as a
-partner and benefit from this good business. I will explain in detail in
-my next letter if you are interested in doing business with me.
-Have a nice day
+Yes, correct. Given we're really late in the cycle with rc8 my preference is to
+only queue really urgent fixes to bpf tree at this point. This one I just took
+to bpf-next given merge window is opening this Sun, thus this will go to Linus'
+tree with just few days offset anyway.
 
-I look forward to your prompt reply.
-
-   Shahab Ayub
- shahabayub@consultant.com
-
-Shahab Ayub
-Chief Compliance Officer
-https://www.uab.ae/en/Discover-Us/Senior-management
-Website:
-www.uab.ae
-Address:
-Sh Abdulla Bin Salem Al Qasimi Al Qasimia St , P.O Box 25022 Sharjah
-United Arab Emirates ( UAE )
+Thanks,
+Daniel
