@@ -2,82 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54009581579
-	for <lists+bpf@lfdr.de>; Tue, 26 Jul 2022 16:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B95D9581584
+	for <lists+bpf@lfdr.de>; Tue, 26 Jul 2022 16:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232137AbiGZOhV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jul 2022 10:37:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46764 "EHLO
+        id S230064AbiGZOkR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jul 2022 10:40:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbiGZOhU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Jul 2022 10:37:20 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1741166
-        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 07:37:17 -0700 (PDT)
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oGLgO-0003q6-Ks; Tue, 26 Jul 2022 16:37:12 +0200
-Received: from [2a01:118f:505:3400:57f9:d43a:5622:24a8] (helo=linux-4.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oGLgO-000Omw-Bz; Tue, 26 Jul 2022 16:37:12 +0200
-Subject: Re: [PATCH bpf-next v2 0/2] Fix test_probe_user on s390x
-To:     Jiri Olsa <olsajiri@gmail.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-References: <20220726134008.256968-1-iii@linux.ibm.com>
- <Yt/2yTe3CSKApQui@krava>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <b84d15d7-ba21-8b21-3338-9092ef237090@iogearbox.net>
-Date:   Tue, 26 Jul 2022 16:37:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S229757AbiGZOkQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Jul 2022 10:40:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 245AC5FB3;
+        Tue, 26 Jul 2022 07:40:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A1D3A61685;
+        Tue, 26 Jul 2022 14:40:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id F126EC433D7;
+        Tue, 26 Jul 2022 14:40:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1658846414;
+        bh=58nLY8A3acskXVMMHzm+L8+NW02xjgBW66So2sA/ZjU=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=AbCZP7JiXhx1B/Ri/IQtepSr28EzEOWCKzNJMfrHrNtrfwCEzkkJLpb08WSbiUa8p
+         GHPm0NKAt21o2q58bhaVQ4wm8HUVy42CpAR3l6MGUHopTBfJqOZEznn+L83xqU/QsX
+         lhB+j5KJ17mbXSCyjLtjt5ySv18tiqiXa2IgAjKXjRpGlQ9wKnSqbB2RZUAa3XfBJo
+         pwUEHY5FHB4MIfNYxy84rioif8+r8FlLYANlwn/qz4BSmUJ04TqSG0WAvnAFYbzH31
+         Mx8NrtZyLPWF3j5UJPD8ntIB7XB0Q6QoByuhutc93335cG2iPUoJGAHWBpijujnuTR
+         hELFKua2V7z0A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D789BC43143;
+        Tue, 26 Jul 2022 14:40:13 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <Yt/2yTe3CSKApQui@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26613/Tue Jul 26 09:56:56 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] bpf: devmap: compute proper xdp_frame len
+ redirecting frames
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <165884641387.27442.17431202446790497710.git-patchwork-notify@kernel.org>
+Date:   Tue, 26 Jul 2022 14:40:13 +0000
+References: <894d99c01139e921bdb6868158ff8e67f661c072.1658596075.git.lorenzo@kernel.org>
+In-Reply-To: <894d99c01139e921bdb6868158ff8e67f661c072.1658596075.git.lorenzo@kernel.org>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
+        kuba@kernel.org, edumazet@google.com, pabeni@redhat.com,
+        hawk@kernel.org, john.fastabend@gmail.com,
+        lorenzo.bianconi@redhat.com
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/26/22 4:14 PM, Jiri Olsa wrote:
-> On Tue, Jul 26, 2022 at 03:40:06PM +0200, Ilya Leoshkevich wrote:
->> Hi,
->>
->> This is a fix for [1]: test_probe_user fails on s390x, because it hooks
->> only connect(), but not socketcall(SYS_CONNECT).
->>
->> Patch 1 adds this quirk to BPF_KSYSCALL documentation.
->> Patch 2 fixes the test by attaching a prog to socketcall().
->>
->> Best regards,
->> Ilya
->>
->> [1] https://lore.kernel.org/bpf/06631b122b9bd6258139a36b971bba3e79543503.camel@linux.ibm.com/
->>
->> v1: https://lore.kernel.org/bpf/20220723020344.21699-1-iii@linux.ibm.com/
->> v1 -> v2: Add CONFIG_ prefix to CLONE_BACKWARDS* symbols (Jiri).
->>            Change the type of prog_names to make checkpatch happy.
->>            Use prog_count everywhere (Jiri).
->>            #ifdef out handle_sys_socketcall() on non-s390x (Jiri).
-> 
-> LGTM
-> 
-> Acked-by: Jiri Olsa <jolsa@kernel.org>
-> 
+Hello:
 
-Applied, thanks Ilya!
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
+
+On Sat, 23 Jul 2022 19:17:10 +0200 you wrote:
+> Even if it is currently forbidden to XDP_REDIRECT a multi-frag xdp_frame
+> into a devmap, compute proper xdp_frame length in __xdp_enqueue and
+> is_valid_dst routines running xdp_get_frame_len().
+> 
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+>  kernel/bpf/devmap.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+
+Here is the summary with links:
+  - [bpf-next] bpf: devmap: compute proper xdp_frame len redirecting frames
+    https://git.kernel.org/bpf/bpf-next/c/bd82ea52f0ee
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
