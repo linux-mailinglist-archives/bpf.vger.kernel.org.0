@@ -2,70 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF4458140C
-	for <lists+bpf@lfdr.de>; Tue, 26 Jul 2022 15:19:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08B01581437
+	for <lists+bpf@lfdr.de>; Tue, 26 Jul 2022 15:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233410AbiGZNTK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jul 2022 09:19:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40582 "EHLO
+        id S233180AbiGZNcm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jul 2022 09:32:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231154AbiGZNTJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Jul 2022 09:19:09 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A7B2C11B
-        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 06:19:08 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id v13so12341216wru.12
-        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 06:19:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc;
-        bh=eVDIVQCALnjlSpuz0j5veZmdagPWnkWWr0aR3qWAwCE=;
-        b=naXPo09jv/hBbPu5SBJL74qLKNp/8TOTtb8jj765YYsxr6G2PRtX8owV+vZWt1pBc+
-         kSF7t3o1aScUtRYX7D6LH4pdTnm6hGUp2OIgqcwB2sK6JpZmQtw7bbgljjnPmDPO9AkY
-         S5mqzCOQL0CjdWkybjZDf8VlZsI0K9e0CSzvUtvSJNRRffQCJJxeym2nW3w5TGzh+uCh
-         3yMJcE/oXDcXip8ruq/w88bu2ZtdBPGPCQB9uuYLqnfaDc0QKDhGbHINRpDGeCOazNl1
-         2GshpsxdqleMxDvPmtrzh8J+w8ZKDULkDkO34QEpu4LNKsOZPJ/8QuvhCrWo/wMTA5Pn
-         INWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc;
-        bh=eVDIVQCALnjlSpuz0j5veZmdagPWnkWWr0aR3qWAwCE=;
-        b=g+eqUo5GyFRRSoMCU6DfpqsfiF60oAEtkKO7fUpqLsPvhMpSckRK9AYp0Hrz4q3yhW
-         56Q6uBncfFdOO9vNULB5qGIl0+36gqnTXg0LSvJtahx/NkiT1zMx5QfhZ/HN4jLgppHu
-         rSKAMy01uIF1VU3495+ISFEyjEURBJA0VBEI6tO3ENELcWzKdyxzER+rHbku0COpmF3s
-         JWCuK0caEwcAjDVp+Bp51/DHiuAUttrR1exGvnrjvaKpMuIDARn/LFMqbemOmwzMau+H
-         xiAh5lIqUiwBYTEm4UgvaKJ/hTDn1jC3OFJMrGIhX+qoGk6bS8eTUzL4Jo9rF+f9eo4j
-         qJ+w==
-X-Gm-Message-State: AJIora9/YgXraph7W41iO6nGugf/nZmFMUVrW+VzyIFHx9tOaBvH1exS
-        83AlFwUcPGQ2g1xrmW4gLTY=
-X-Google-Smtp-Source: AGRyM1uD2eA53deo7Tyv7yna6XQFqwAqwdg2lFaG1s6eWRpTyR4LpABhRDfFyG/9rKa+Tkcbyy2/ng==
-X-Received: by 2002:a5d:4903:0:b0:21d:6d8f:a321 with SMTP id x3-20020a5d4903000000b0021d6d8fa321mr10865672wrq.59.1658841546604;
-        Tue, 26 Jul 2022 06:19:06 -0700 (PDT)
-Received: from krava ([193.85.244.190])
-        by smtp.gmail.com with ESMTPSA id c25-20020a7bc859000000b003a0375c4f73sm17701617wml.44.2022.07.26.06.19.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jul 2022 06:19:06 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Tue, 26 Jul 2022 15:19:04 +0200
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Kui-Feng Lee <kuifeng@fb.com>, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kernel-team@fb.com,
-        yhs@fb.com
-Subject: Re: [PATCH bpf-next 1/3] bpf: Parameterize task iterators.
-Message-ID: <Yt/pyDUuvS1rwlpc@krava>
-References: <20220726051713.840431-1-kuifeng@fb.com>
- <20220726051713.840431-2-kuifeng@fb.com>
- <Yt/aXYiVmGKP282Q@krava>
+        with ESMTP id S231154AbiGZNcm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Jul 2022 09:32:42 -0400
+Received: from mailrelay.tu-berlin.de (mailrelay.tu-berlin.de [130.149.7.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA205F7D
+        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 06:32:39 -0700 (PDT)
+Received: from SPMA-03.tubit.win.tu-berlin.de (localhost.localdomain [127.0.0.1])
+        by localhost (Email Security Appliance) with SMTP id 45A5B6E697_2DFECF5B;
+        Tue, 26 Jul 2022 13:32:37 +0000 (GMT)
+Received: from mail.tu-berlin.de (mail.tu-berlin.de [141.23.12.141])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "exchange.tu-berlin.de", Issuer "DFN-Verein Global Issuing CA" (verified OK))
+        by SPMA-03.tubit.win.tu-berlin.de (Sophos Email Appliance) with ESMTPS id 0356A720AF_2DFECF5F;
+        Tue, 26 Jul 2022 13:32:37 +0000 (GMT)
+From:   =?UTF-8?q?J=C3=B6rn-Thorben=20Hinz?= <jthinz@mailbox.tu-berlin.de>
+To:     <bpf@vger.kernel.org>
+CC:     =?UTF-8?q?J=C3=B6rn-Thorben=20Hinz?= <jthinz@mailbox.tu-berlin.de>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+Subject: [PATCH bpf-next] bpftool: Don't try to return value from void function in skeleton
+Date:   Tue, 26 Jul 2022 15:32:03 +0200
+Message-ID: <20220726133203.514087-1-jthinz@mailbox.tu-berlin.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Yt/aXYiVmGKP282Q@krava>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SASI-RCODE: 200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=campus.tu-berlin.de; h=from:to:cc:subject:date:message-id:mime-version:content-type:content-transfer-encoding; s=dkim-tub; bh=JXqokry+m984m/ZgrzGgbD6epMm6SUjTFPPu8aBzp3c=; b=SuUO4RLEcQAHWJZ+0IPOGas+0nuCF1eFmEX932OmUewoO3Q3dwp10loBmL/zDJIUT3wl+QOkpBQQQ2V3TM4wkaHaAY+HtnmkJqpQvmvX+UBl0yWlc3i2E5rV+iYSp5aOEYCDEb8RgV7SjGENcgmsGFRMlD7vziklw3yD3zL6J3g=
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,136 +53,30 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 26, 2022 at 02:13:17PM +0200, Jiri Olsa wrote:
-> On Mon, Jul 25, 2022 at 10:17:11PM -0700, Kui-Feng Lee wrote:
-> > Allow creating an iterator that loops through resources of one task/thread.
-> > 
-> > People could only create iterators to loop through all resources of
-> > files, vma, and tasks in the system, even though they were interested
-> > in only the resources of a specific task or process.  Passing the
-> > additional parameters, people can now create an iterator to go
-> > through all resources or only the resources of a task.
-> > 
-> > Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
-> > ---
-> >  include/linux/bpf.h            |  4 ++
-> >  include/uapi/linux/bpf.h       | 23 ++++++++++
-> >  kernel/bpf/task_iter.c         | 81 +++++++++++++++++++++++++---------
-> >  tools/include/uapi/linux/bpf.h | 23 ++++++++++
-> >  4 files changed, 109 insertions(+), 22 deletions(-)
-> > 
-> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > index 11950029284f..c8d164404e20 100644
-> > --- a/include/linux/bpf.h
-> > +++ b/include/linux/bpf.h
-> > @@ -1718,6 +1718,10 @@ int bpf_obj_get_user(const char __user *pathname, int flags);
-> >  
-> >  struct bpf_iter_aux_info {
-> >  	struct bpf_map *map;
-> > +	struct {
-> > +		__u32	tid;
-> 
-> should be just u32 ?
-> 
-> > +		u8	type;
-> > +	} task;
-> >  };
-> >  
-> 
-> SNIP
-> 
-> >  
-> >  /* BPF syscall commands, see bpf(2) man-page for more details. */
-> > diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-> > index 8c921799def4..7979aacb651e 100644
-> > --- a/kernel/bpf/task_iter.c
-> > +++ b/kernel/bpf/task_iter.c
-> > @@ -12,6 +12,8 @@
-> >  
-> >  struct bpf_iter_seq_task_common {
-> >  	struct pid_namespace *ns;
-> > +	u32	tid;
-> > +	u8	type;
-> >  };
-> >  
-> >  struct bpf_iter_seq_task_info {
-> > @@ -22,18 +24,31 @@ struct bpf_iter_seq_task_info {
-> >  	u32 tid;
-> >  };
-> >  
-> > -static struct task_struct *task_seq_get_next(struct pid_namespace *ns,
-> > +static struct task_struct *task_seq_get_next(struct bpf_iter_seq_task_common *common,
-> >  					     u32 *tid,
-> >  					     bool skip_if_dup_files)
-> >  {
-> >  	struct task_struct *task = NULL;
-> >  	struct pid *pid;
-> >  
-> > +	if (common->type == BPF_TASK_ITER_TID) {
-> > +		if (*tid)
-> > +			return NULL;
-> 
-> I tested and this condition breaks it for fd iterations, not sure about
-> the task and vma, because they share this function
-> 
-> if bpf_seq_read is called with small buffer there will be multiple calls
-> to task_file_seq_get_next and second one will stop in here, even if there
-> are more files to be displayed for the task in filter
+A skeleton generated by bpftool previously contained a return followed
+by an expression in OBJ_NAME__detach(), which has return type void. This
+did not hurt, the bpf_object__detach_skeleton() called there returns
+void itself anyway, but led to a warning when compiling with e.g.
+-pedantic.
 
-I mean there will be multiple calls of following sequence:
+Signed-off-by: Jörn-Thorben Hinz <jthinz@mailbox.tu-berlin.de>
+---
+ tools/bpf/bpftool/gen.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-  bpf_seq_read
-    task_file_seq_start
-      task_seq_get_next
+diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+index 1cf53bb01936..7070dcffa822 100644
+--- a/tools/bpf/bpftool/gen.c
++++ b/tools/bpf/bpftool/gen.c
+@@ -1175,7 +1175,7 @@ static int do_skeleton(int argc, char **argv)
+ 		static inline void					    \n\
+ 		%1$s__detach(struct %1$s *obj)				    \n\
+ 		{							    \n\
+-			return bpf_object__detach_skeleton(obj->skeleton);  \n\
++			bpf_object__detach_skeleton(obj->skeleton);	    \n\
+ 		}							    \n\
+ 		",
+ 		obj_name
+-- 
+2.30.2
 
-and 2nd one will return NULL in task_seq_get_next,
-because info->tid is already set
- 
-jirka
-
-> 
-> it'd be nice to have some test for this ;-) or perhaps compare with the
-> not filtered output
-> 
-> SNIP
-> 
-> >  static const struct seq_operations task_seq_ops = {
-> >  	.start	= task_seq_start,
-> >  	.next	= task_seq_next,
-> > @@ -137,8 +166,7 @@ struct bpf_iter_seq_task_file_info {
-> >  static struct file *
-> >  task_file_seq_get_next(struct bpf_iter_seq_task_file_info *info)
-> >  {
-> > -	struct pid_namespace *ns = info->common.ns;
-> > -	u32 curr_tid = info->tid;
-> > +	u32 saved_tid = info->tid;
-> >  	struct task_struct *curr_task;
-> >  	unsigned int curr_fd = info->fd;
-> >  
-> > @@ -151,21 +179,18 @@ task_file_seq_get_next(struct bpf_iter_seq_task_file_info *info)
-> >  		curr_task = info->task;
-> >  		curr_fd = info->fd;
-> >  	} else {
-> > -                curr_task = task_seq_get_next(ns, &curr_tid, true);
-> > +		curr_task = task_seq_get_next(&info->common, &info->tid, true);
-> >                  if (!curr_task) {
-> >                          info->task = NULL;
-> > -                        info->tid = curr_tid;
-> >                          return NULL;
-> >                  }
-> 
-> nit, looks like we're missing proper indent in here
-> 
-> 
-> >  
-> > -                /* set info->task and info->tid */
-> > +		/* set info->task */
-> >  		info->task = curr_task;
-> > -		if (curr_tid == info->tid) {
-> > +		if (saved_tid == info->tid)
-> >  			curr_fd = info->fd;
-> > -		} else {
-> > -			info->tid = curr_tid;
-> > +		else
-> 
-> SNIP
