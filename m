@@ -2,222 +2,339 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B00058158E
-	for <lists+bpf@lfdr.de>; Tue, 26 Jul 2022 16:41:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48194581715
+	for <lists+bpf@lfdr.de>; Tue, 26 Jul 2022 18:14:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239400AbiGZOlQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jul 2022 10:41:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49884 "EHLO
+        id S229949AbiGZQOq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jul 2022 12:14:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239117AbiGZOlP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Jul 2022 10:41:15 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC8427CC4
-        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 07:41:12 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id i5so7345785ila.6
-        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 07:41:12 -0700 (PDT)
+        with ESMTP id S239154AbiGZQOl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Jul 2022 12:14:41 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EE7023142;
+        Tue, 26 Jul 2022 09:14:39 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id u12so10807921qtk.0;
+        Tue, 26 Jul 2022 09:14:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e1kweWPqCc/tBFU0OU9GCkOUijk7o0nT66eaI6NMorI=;
-        b=i61EPXgwER3DOjwmcIsQTQzv6gSQbEHyGanTbNrTyaPqEOsdVh42WvKJo/9pbpcpZS
-         BTrtxcRDQidX7WCwTs/AN4uafMp/23Jz13CdoBX6OeSg2TUuEucu4pPHOmzmvn8d3YhT
-         fiKHWsaxKkT05q2IbRx1A7J2J8WDIhwTitOZI=
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=c+yM6Yo3OHw6+XkgHo8xAxLzzRRJ2W2w7UWe1wlaQ44=;
+        b=Kt/30SBDrZP4srF5BXOlbYus562EOlOyjuvPqLCQhsH6EtRaQ4lrW8zsR2d5fIZGVk
+         XQlKCkM1GSlUX0JSNfA8nw5JYELMtgosvPyESKtaVSYm5Txad1IJceinU3odCv4OOJeB
+         vRnX32Dv4Mw2qZT7giKjKnms0z5viMKRgFdwrfVV+kg9KaZow+lxWjVBJQadxNYqU268
+         7i3Mjpl4DXqqO0J7a1qoHJWol08nODP/8B65ifoXYyCQkx0aGpYs6aHAyFzoPkqUXV34
+         htt4itzo76GNYEh+yogKfaC0lzb/IeYa0ptB2yBH39TnXLAGP7C1cDUJ/1jfwzEs/RXn
+         51Gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e1kweWPqCc/tBFU0OU9GCkOUijk7o0nT66eaI6NMorI=;
-        b=w13dMtgomgfM4tb6GgPK23wPnNcPR+Na6oG4cCYJM+HTdy69wx7GAK9ceCnRGVcySb
-         KZ0tsFcx9lWBBZSJxXXa93MWQ7x1Q00EgU7uc/J41crfo4VF+yGDtORq0p4CqTUp25IG
-         k3XPBmBuQ8y6gEr5pdkH8+M9H1EGLZfdYTQBPRNRnlKDSLnEM01TjBbEtp+jF9Hx7Ewh
-         nii8Q7M49bXk8tsdruc4ap1/CVTYrpb0o6POW5snn1wqzlP7pLKkvYinQbFFtAFr5jlQ
-         qEe9WZTZ8epPN9RnhspsdhrfeB+dOo/AjBo3rqgGyDKyVRCftxQhYlhaN3EGXz5cWuiY
-         vIng==
-X-Gm-Message-State: AJIora9Auy61XjutL2d0Nl5mgt1lvmJ1ZcRJRvJ2k9cXsax5NXEyerJY
-        DfimSc3kqoDoIa2XgG/xKKLpKelCpFcyk5wax75WWw==
-X-Google-Smtp-Source: AGRyM1tkabEKEkDMdpDbQ7ttjjCuhMKuPirK9Ul1i0a8JzqLJs3vv8V82jWRnDnuYDU1b0QMTVvmq8M8FBJFf08ynDE=
-X-Received: by 2002:a05:6e02:148c:b0:2dd:a828:9382 with SMTP id
- n12-20020a056e02148c00b002dda8289382mr663795ilk.235.1658846472223; Tue, 26
- Jul 2022 07:41:12 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=c+yM6Yo3OHw6+XkgHo8xAxLzzRRJ2W2w7UWe1wlaQ44=;
+        b=wmIZTQRoQUmS3eq98eKGQpdUfw4KKdh+svu+U1pDoY3nz+i4TW7os2K4nrYvNRwJqr
+         UC27PeyeDAdHSA8+JOJmvlBABKAU3vFv8I957DocYOlL3sB/b5sgzb7SgxqjfwolNc+B
+         JqKs0rihRs6bnVqJXU74xRC1fGH3b/Tr9QLufSWobAy5fgP1sDmeaCHNEHQk4sJGgYGF
+         PAhQVp1gYnIY66nsBMoDwdLIW1xYfpy7e7Ftp8devMGBRo8eQ8zk4+xn8rpu80Ci93ZU
+         YU1uxCaBgkWL7UyXK8O4A24ohEqSValgNDbT/MGs8zLrPMz3Fo5Zic/Kkq39cWvoVKNz
+         Do2w==
+X-Gm-Message-State: AJIora/AzSUG/YU9wPJBdOC85nfmkOsO8woDUyFCzusA5++pNup5/PDK
+        8doDS5X69lZAMlppUR+4izE=
+X-Google-Smtp-Source: AGRyM1v/d/i5JtN3iXkr8jEnHT3FrTi7WomV2wQZgQ7XUu6vH6RyXqrBYwAHKbOgNcfAD/lHCxPhTg==
+X-Received: by 2002:a05:622a:201:b0:31e:e040:3754 with SMTP id b1-20020a05622a020100b0031ee0403754mr14950044qtx.538.1658852078314;
+        Tue, 26 Jul 2022 09:14:38 -0700 (PDT)
+Received: from localhost ([2600:1700:65a0:ab60:c1c0:4cc7:56a9:acf5])
+        by smtp.gmail.com with ESMTPSA id i4-20020a05620a248400b006b59ddb4bc5sm11305920qkn.84.2022.07.26.09.14.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jul 2022 09:14:37 -0700 (PDT)
+Date:   Tue, 26 Jul 2022 09:14:35 -0700
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Cong Wang <cong.wang@bytedance.com>,
+        syzbot <syzbot+a0e6f8738b58f7654417@syzkaller.appspotmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Subject: Re: [Patch bpf-next] tcp: fix sock skb accounting in tcp_read_skb()
+Message-ID: <YuAS69C22HEi87qD@pop-os.localdomain>
+References: <20220709222029.297471-1-xiyou.wangcong@gmail.com>
+ <CANn89iJSQh-5DAhEL4Fh5ZDrtY47y0Mo9YJbG-rnj17pdXqoXA@mail.gmail.com>
+ <YtQ/Np8DZBJVFO3l@pop-os.localdomain>
+ <CANn89iLLANJLHG+_uUu5Z+V64BMCsYHRgCHVHENhZiMOrVUtMw@mail.gmail.com>
+ <Yt2IgGuqVi9BHc/g@pop-os.localdomain>
+ <CANn89iLHg-D3q8jPFq_87mLFPh5L7arbaF2aNeY42s4VUv_D-Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <20220721172808.585539-1-fred@cloudflare.com> <877d45kri4.fsf@email.froward.int.ebiederm.org>
-In-Reply-To: <877d45kri4.fsf@email.froward.int.ebiederm.org>
-From:   Ignat Korchagin <ignat@cloudflare.com>
-Date:   Tue, 26 Jul 2022 15:41:01 +0100
-Message-ID: <CALrw=nGT0kcHh4wyBwUF-Q8+v8DgnyEJM55vfmABwfU67EQn=g@mail.gmail.com>
-Subject: Re: [PATCH v3 0/4] Introduce security_create_user_ns()
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Frederick Lawler <fred@cloudflare.com>, kpsingh@kernel.org,
-        revest@chromium.org, jackmanb@chromium.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        jmorris@namei.org, serge@hallyn.com,
-        Paul Moore <paul@paul-moore.com>,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        shuah@kernel.org, Christian Brauner <brauner@kernel.org>,
-        casey@schaufler-ca.com, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>, cgzones@googlemail.com,
-        karl@bigbadwolfsecurity.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANn89iLHg-D3q8jPFq_87mLFPh5L7arbaF2aNeY42s4VUv_D-Q@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 22, 2022 at 6:05 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> Frederick Lawler <fred@cloudflare.com> writes:
->
-> > While creating a LSM BPF MAC policy to block user namespace creation, we
-> > used the LSM cred_prepare hook because that is the closest hook to prevent
-> > a call to create_user_ns().
->
-> That description is wrong.  Your goal his is not to limit access to
-> the user namespace.  Your goal is to reduce the attack surface of the
-> kernel by not allowing some processes access to a user namespace.
->
-> You have already said that you don't have concerns about the
-> fundamentals of the user namespace, and what it enables only that
-> it allows access to exploitable code.
->
-> Achieving the protection you seek requires talking and thinking clearly
-> about the goal.
->
->
->
->
-> I have a couple of deep and fundamental problems with this approach,
-> to limiting access to potentially exploitable code.
->
-> 1) The first is that unless there is a high probability (say 90%) that at
->    any time the only exploitable code in the kernel can only be accessed
->    by an unprivileged user with the help of user namespaces, attackers
->    will just route around this restriction and so it will achieve
->    nothing in practice, while at the same time incur an extra
->    maintenance burden.
->
-> 2) The second is that there is a long standing problem with code that
->    gets added to the kernel.  Many times new kernel code because it has
->    the potential to confuse suid root executables that code has been
->    made root only.  Over time that results in more and more code running
->    as root to be able to make use of the useful features of the linux
->    kernel.
->
->    One of the goals of the user namespace is to avoid more and more code
->    migrating to running as root.  To achieve that goal ordinary
->    application developers need to be able to assume that typically user
->    namespaces will be available on linux.
->
->    An assumption that ordinary applications like chromium make today.
->
->    Your intentions seem to be to place a capability check so that only
->    root can use user namespaces or something of the sort.  Thus breaking
->    the general availability of user namespaces for ordinary applications
->    on your systems.
+On Mon, Jul 25, 2022 at 10:45:56AM +0200, Eric Dumazet wrote:
+> On Sun, Jul 24, 2022 at 7:59 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+> >
+> > On Mon, Jul 18, 2022 at 09:26:29AM +0200, Eric Dumazet wrote:
+> > > On Sun, Jul 17, 2022 at 6:56 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+> > > >
+> > > > On Tue, Jul 12, 2022 at 03:20:37PM +0200, Eric Dumazet wrote:
+> > > > > On Sun, Jul 10, 2022 at 12:20 AM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+> > > > > >
+> > > > > > From: Cong Wang <cong.wang@bytedance.com>
+> > > > > >
+> > > > > > Before commit 965b57b469a5 ("net: Introduce a new proto_ops
+> > > > > > ->read_skb()"), skb was not dequeued from receive queue hence
+> > > > > > when we close TCP socket skb can be just flushed synchronously.
+> > > > > >
+> > > > > > After this commit, we have to uncharge skb immediately after being
+> > > > > > dequeued, otherwise it is still charged in the original sock. And we
+> > > > > > still need to retain skb->sk, as eBPF programs may extract sock
+> > > > > > information from skb->sk. Therefore, we have to call
+> > > > > > skb_set_owner_sk_safe() here.
+> > > > > >
+> > > > > > Fixes: 965b57b469a5 ("net: Introduce a new proto_ops ->read_skb()")
+> > > > > > Reported-and-tested-by: syzbot+a0e6f8738b58f7654417@syzkaller.appspotmail.com
+> > > > > > Tested-by: Stanislav Fomichev <sdf@google.com>
+> > > > > > Cc: Eric Dumazet <edumazet@google.com>
+> > > > > > Cc: John Fastabend <john.fastabend@gmail.com>
+> > > > > > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> > > > > > ---
+> > > > > >  net/ipv4/tcp.c | 1 +
+> > > > > >  1 file changed, 1 insertion(+)
+> > > > > >
+> > > > > > diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+> > > > > > index 9d2fd3ced21b..c6b1effb2afd 100644
+> > > > > > --- a/net/ipv4/tcp.c
+> > > > > > +++ b/net/ipv4/tcp.c
+> > > > > > @@ -1749,6 +1749,7 @@ int tcp_read_skb(struct sock *sk, skb_read_actor_t recv_actor)
+> > > > > >                 int used;
+> > > > > >
+> > > > > >                 __skb_unlink(skb, &sk->sk_receive_queue);
+> > > > > > +               WARN_ON(!skb_set_owner_sk_safe(skb, sk));
+> > > > > >                 used = recv_actor(sk, skb);
+> > > > > >                 if (used <= 0) {
+> > > > > >                         if (!copied)
+> > > > > > --
+> > > > > > 2.34.1
+> > > > > >
+> > > > >
+> > > > > I am reading tcp_read_skb(),it seems to have other bugs.
+> > > > > I wonder why syzbot has not caught up yet.
+> > > >
+> > > > As you mentioned this here I assume you suggest I should fix all bugs in
+> > > > one patch? (I am fine either way in this case, only slightly prefer to fix
+> > > > one bug in each patch for readability.)
+> > >
+> > > I only wonder that after fixing all bugs, we might end up with  tcp_read_sk()
+> > > being a clone of tcp_read_sock() :/
+> >
+> > I really wish so, but unfortunately the partial read looks impossible to
+> > merged with full skb read.
+> >
+> >
+> > >
+> > > syzbot has a relevant report:
+> > >
+> >
+> > Please provide a reproducer if you have, I don't see this report
+> > anywhere (except here of course).
+> 
+> No repro yet.
+> 
+> I usually hold syzbot report until they have enough signal (repro, and
+> eventually bisection) in them to be considered.
+> 
+> >
+> > > ------------[ cut here ]------------
+> > > cleanup rbuf bug: copied 301B4426 seq 301B4426 rcvnxt 302142E8
+> > > WARNING: CPU: 0 PID: 3744 at net/ipv4/tcp.c:1567
+> > > tcp_cleanup_rbuf+0x11d/0x5b0 net/ipv4/tcp.c:1567
+> > > Modules linked in:
+> > > CPU: 0 PID: 3744 Comm: kworker/0:7 Not tainted
+> > > 5.19.0-rc5-syzkaller-01095-gedb2c3476db9 #0
+> > > Hardware name: Google Google Compute Engine/Google Compute Engine,
+> > > BIOS Google 06/29/2022
+> > > Workqueue: events nsim_dev_trap_report_work
+> > > RIP: 0010:tcp_cleanup_rbuf+0x11d/0x5b0 net/ipv4/tcp.c:1567
+> > > Code: ea 03 0f b6 04 02 84 c0 74 08 3c 03 0f 8e d7 03 00 00 8b 8d 38
+> > > 08 00 00 44 89 e2 44 89 f6 48 c7 c7 20 82 df 8a e8 94 d8 58 01 <0f> 0b
+> > > e8 cc 84 a0 f9 48 8d bd 88 07 00 00 48 b8 00 00 00 00 00 fc
+> > > RSP: 0018:ffffc90000007700 EFLAGS: 00010282
+> > > RAX: 0000000000000000 RBX: 000000000004fef7 RCX: 0000000000000000
+> > > RDX: ffff8880201abb00 RSI: ffffffff8160d438 RDI: fffff52000000ed2
+> > > RBP: ffff888016819800 R08: 0000000000000005 R09: 0000000000000000
+> > > R10: 0000000000000103 R11: 0000000000000001 R12: 00000000301b4426
+> > > R13: 0000000000000000 R14: 00000000301b4426 R15: 00000000301b4426
+> > > FS: 0000000000000000(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
+> > > CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > CR2: 0000000020c55000 CR3: 0000000075009000 CR4: 00000000003506f0
+> > > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > Call Trace:
+> > > <IRQ>
+> > > tcp_read_skb+0x29e/0x430 net/ipv4/tcp.c:1775
+> > > sk_psock_verdict_data_ready+0x9d/0xc0 net/core/skmsg.c:1209
+> > > tcp_data_ready+0x106/0x520 net/ipv4/tcp_input.c:4985
+> > > tcp_data_queue+0x1bb2/0x4c60 net/ipv4/tcp_input.c:5059
+> > > tcp_rcv_established+0x82f/0x20e0 net/ipv4/tcp_input.c:5984
+> > > tcp_v4_do_rcv+0x66c/0x9b0 net/ipv4/tcp_ipv4.c:1661
+> > > tcp_v4_rcv+0x343b/0x3940 net/ipv4/tcp_ipv4.c:2078
+> > > ip_protocol_deliver_rcu+0xa3/0x7c0 net/ipv4/ip_input.c:205
+> > > ip_local_deliver_finish+0x2e8/0x4c0 net/ipv4/ip_input.c:233
+> > > NF_HOOK include/linux/netfilter.h:307 [inline]
+> > > NF_HOOK include/linux/netfilter.h:301 [inline]
+> > > ip_local_deliver+0x1aa/0x200 net/ipv4/ip_input.c:254
+> > > dst_input include/net/dst.h:461 [inline]
+> > > ip_rcv_finish+0x1cb/0x2f0 net/ipv4/ip_input.c:437
+> > > NF_HOOK include/linux/netfilter.h:307 [inline]
+> > > NF_HOOK include/linux/netfilter.h:301 [inline]
+> > > ip_rcv+0xaa/0xd0 net/ipv4/ip_input.c:557
+> > > __netif_receive_skb_one_core+0x114/0x180 net/core/dev.c:5480
+> > > __netif_receive_skb+0x24/0x1b0 net/core/dev.c:5594
+> > > process_backlog+0x3a0/0x7c0 net/core/dev.c:5922
+> > > __napi_poll+0xb3/0x6e0 net/core/dev.c:6506
+> > > napi_poll net/core/dev.c:6573 [inline]
+> > > net_rx_action+0x9c1/0xd90 net/core/dev.c:6684
+> > > __do_softirq+0x29b/0x9c2 kernel/softirq.c:571
+> > > do_softirq.part.0+0xde/0x130 kernel/softirq.c:472
+> > > </IRQ>
+> > > <TASK>
+> > > do_softirq kernel/softirq.c:464 [inline]
+> > > __local_bh_enable_ip+0x102/0x120 kernel/softirq.c:396
+> > > spin_unlock_bh include/linux/spinlock.h:394 [inline]
+> > > nsim_dev_trap_report drivers/net/netdevsim/dev.c:814 [inline]
+> > > nsim_dev_trap_report_work+0x84d/0xba0 drivers/net/netdevsi
+> m/dev.c:840
+> > > process_one_work+0x996/0x1610 kernel/workqueue.c:2289
+> > > worker_thread+0x665/0x1080 kernel/workqueue.c:2436
+> > > kthread+0x2e9/0x3a0 kernel/kthread.c:376
+> > > ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:302
+> > > </TASK>------------[ cut here ]------------
+> > > cleanup rbuf bug: copied 301B4426 seq 301B4426 rcvnxt 302142E8
+> > > WARNING: CPU: 0 PID: 3744 at net/ipv4/tcp.c:1567
+> > > tcp_cleanup_rbuf+0x11d/0x5b0 net/ipv4/tcp.c:1567
+> > > Modules linked in:
+> > > CPU: 0 PID: 3744 Comm: kworker/0:7 Not tainted
+> > > 5.19.0-rc5-syzkaller-01095-gedb2c3476db9 #0
+> > > Hardware name: Google Google Compute Engine/Google Compute Engine,
+> > > BIOS Google 06/29/2022
+> > > Workqueue: events nsim_dev_trap_report_work
+> > > RIP: 0010:tcp_cleanup_rbuf+0x11d/0x5b0 net/ipv4/tcp.c:1567
+> > > Code: ea 03 0f b6 04 02 84 c0 74 08 3c 03 0f 8e d7 03 00 00 8b 8d 38
+> > > 08 00 00 44 89 e2 44 89 f6 48 c7 c7 20 82 df 8a e8 94 d8 58 01 <0f> 0b
+> > > e8 cc 84 a0 f9 48 8d bd 88 07 00 00 48 b8 00 00 00 00 00 fc
+> > > RSP: 0018:ffffc90000007700 EFLAGS: 00010282
+> > > RAX: 0000000000000000 RBX: 000000000004fef7 RCX: 0000000000000000
+> > > RDX: ffff8880201abb00 RSI: ffffffff8160d438 RDI: fffff52000000ed2
+> > > RBP: ffff888016819800 R08: 0000000000000005 R09: 0000000000000000
+> > > R10: 0000000000000103 R11: 0000000000000001 R12: 00000000301b4426
+> > > R13: 0000000000000000 R14: 00000000301b4426 R15: 00000000301b4426
+> > > FS: 0000000000000000(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
+> > > CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > CR2: 0000000020c55000 CR3: 0000000075009000 CR4: 00000000003506f0
+> > > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > Call Trace:
+> > > <IRQ>
+> > > tcp_read_skb+0x29e/0x430 net/ipv4/tcp.c:1775
+> > > sk_psock_verdict_data_ready+0x9d/0xc0 net/core/skmsg.c:1209
+> > > tcp_data_ready+0x106/0x520 net/ipv4/tcp_input.c:4985
+> > > tcp_data_queue+0x1bb2/0x4c60 net/ipv4/tcp_input.c:5059
+> > > tcp_rcv_established+0x82f/0x20e0 net/ipv4/tcp_input.c:5984
+> > > tcp_v4_do_rcv+0x66c/0x9b0 net/ipv4/tcp_ipv4.c:1661
+> > > tcp_v4_rcv+0x343b/0x3940 net/ipv4/tcp_ipv4.c:2078
+> > > ip_protocol_deliver_rcu+0xa3/0x7c0 net/ipv4/ip_input.c:205
+> > > ip_local_deliver_finish+0x2e8/0x4c0 net/ipv4/ip_input.c:233
+> > > NF_HOOK include/linux/netfilter.h:307 [inline]
+> > > NF_HOOK include/linux/netfilter.h:301 [inline]
+> > > ip_local_deliver+0x1aa/0x200 net/ipv4/ip_input.c:254
+> > > dst_input include/net/dst.h:461 [inline]
+> > > ip_rcv_finish+0x1cb/0x2f0 net/ipv4/ip_input.c:437
+> > > NF_HOOK include/linux/netfilter.h:307 [inline]
+> > > NF_HOOK include/linux/netfilter.h:301 [inline]
+> > > ip_rcv+0xaa/0xd0 net/ipv4/ip_input.c:557
+> > > __netif_receive_skb_one_core+0x114/0x180 net/core/dev.c:5480
+> > > __netif_receive_skb+0x24/0x1b0 net/core/dev.c:5594
+> > > process_backlog+0x3a0/0x7c0 net/core/dev.c:5922
+> > > __napi_poll+0xb3/0x6e0 net/core/dev.c:6506
+> > > napi_poll net/core/dev.c:6573 [inline]
+> > > net_rx_action+0x9c1/0xd90 net/core/dev.c:6684
+> > > __do_softirq+0x29b/0x9c2 kernel/softirq.c:571
+> > > do_softirq.part.0+0xde/0x130 kernel/softirq.c:472
+> > > </IRQ>
+> > > <TASK>
+> > > do_softirq kernel/softirq.c:464 [inline]
+> > > __local_bh_enable_ip+0x102/0x120 kernel/softirq.c:396
+> > > spin_unlock_bh include/linux/spinlock.h:394 [inline]
+> > > nsim_dev_trap_report drivers/net/netdevsim/dev.c:814 [inline]
+> > > nsim_dev_trap_report_work+0x84d/0xba0 drivers/net/netdevsim/dev.c:840
+> > > process_one_work+0x996/0x1610 kernel/workqueue.c:2289
+> > > worker_thread+0x665/0x1080 kernel/workqueue.c:2436
+> > > kthread+0x2e9/0x3a0 kernel/kthread.c:376
+> > > ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:302
+> > > </TASK>
+> > >
+> > > >
+> > > > >
+> > > > > It ignores the offset value from tcp_recv_skb(), this looks wrong to me.
+> > > > > The reason tcp_read_sock() passes a @len parameter is that is it not
+> > > > > skb->len, but (skb->len - offset)
+> > > >
+> > > > If I understand tcp_recv_skb() correctly it only returns an offset for a
+> > > > partial read of an skb. IOW, if we always read an entire skb at a time,
+> > > > offset makes no sense here, right?
+> > > >
+> > > > >
+> > > > > Also if recv_actor(sk, skb) returns 0, we probably still need to
+> > > > > advance tp->copied_seq,
+> > > > > for instance if skb had a pure FIN (and thus skb->len == 0), since you
+> > > > > removed the skb from sk_receive_queue ?
+> > > >
+> > > > Doesn't the following code handle this case?
+> > > >
+> > > >         if (TCP_SKB_CB(skb)->tcp_flags & TCPHDR_FIN) {
+> > > >                 consume_skb(skb);
+> > > >                 ++seq;
+> > > >                 break;
+> > > >         }
+> > > >
+> > > > which is copied from tcp_read_sock()...
+> > >
+> > > I do not think this is enough, because you can break from the loop
+> > > before doing this  check about TCPHDR_FIN,
+> >
+> > The logic is same for tcp_read_sock(). :)
+> >
+> >
+> > > after skb has been unlinked from sk_receive_queue. TCP won't be able
+> > > to catch FIN.
+> >
+> > So TCP does not process FIN before ->sk_data_ready()? I wonder how FIN
+> > (at least a pure FIN as you mentioned above) ends up being queued in
+> > ->sk_receive_queue anyway?
+> 
+> That's how TCP stores packets, including the final FIN.
+> 
+> (Because this skb can also contain payload anyway)
 
-I would like to comment here that our intention with the hook is quite
-the opposite:
-we do want to embrace user namespaces in our code and some of our workloads
-already depend on it. Hence we didn't agree to Debian's approach of just
-having a global sysctl. But there is "our code" and there is "third
-party" code, which
-might not even be open source due to various reasons. And while the path exists
-for that code to do something bad - we want to block it.
+If TCP really wants to queue a FIN with skb->len==0, then we have to
+adjust the return value for recv_actor(), because we currently use 0 as
+an error too (meaning no data is consumed):
 
-So in a way, I think this hook allows better adoption of user
-namespaces in the first
-place and gives distros and other system maintainers a reasonable
-alternative than
-just providing a global "kill" sysctl (which is de-facto is used by
-many, thus actually
-limiting userspace applications accessing the user namespace functionality)
+        if (sk_psock_verdict_apply(psock, skb, ret) < 0)
+                len = 0;  // here!
+out:
+        rcu_read_unlock();
+        return len;
 
->
-> My apologies if this has been addressed somewhere in the conversation
-> already.  I don't see these issues addressed in the descriptions of your
-> patches.
->
-> Until these issues are firmly addressed and you are not proposing a
-> patch that can only cause regressions in userspace applications.
->
-> Nacked-by: "Eric W. Biederman" <ebiederm@xmission.com>
->
-> >
-> > The calls look something like this:
-> >
-> >     cred = prepare_creds()
-> >         security_prepare_creds()
-> >             call_int_hook(cred_prepare, ...
-> >     if (cred)
-> >         create_user_ns(cred)
-> >
-> > We noticed that error codes were not propagated from this hook and
-> > introduced a patch [1] to propagate those errors.
-> >
-> > The discussion notes that security_prepare_creds()
-> > is not appropriate for MAC policies, and instead the hook is
-> > meant for LSM authors to prepare credentials for mutation. [2]
-> >
-> > Ultimately, we concluded that a better course of action is to introduce
-> > a new security hook for LSM authors. [3]
-> >
-> > This patch set first introduces a new security_create_user_ns() function
-> > and userns_create LSM hook, then marks the hook as sleepable in BPF.
-> >
-> > Links:
-> > 1. https://lore.kernel.org/all/20220608150942.776446-1-fred@cloudflare.com/
-> > 2. https://lore.kernel.org/all/87y1xzyhub.fsf@email.froward.int.ebiederm.org/
-> > 3. https://lore.kernel.org/all/9fe9cd9f-1ded-a179-8ded-5fde8960a586@cloudflare.com/
-> >
-> > Past discussions:
-> > V2: https://lore.kernel.org/all/20220707223228.1940249-1-fred@cloudflare.com/
-> > V1: https://lore.kernel.org/all/20220621233939.993579-1-fred@cloudflare.com/
-> >
-> > Changes since v2:
-> > - Rename create_user_ns hook to userns_create
-> > - Use user_namespace as an object opposed to a generic namespace object
-> > - s/domB_t/domA_t in commit message
-> > Changes since v1:
-> > - Add selftests/bpf: Add tests verifying bpf lsm create_user_ns hook patch
-> > - Add selinux: Implement create_user_ns hook patch
-> > - Change function signature of security_create_user_ns() to only take
-> >   struct cred
-> > - Move security_create_user_ns() call after id mapping check in
-> >   create_user_ns()
-> > - Update documentation to reflect changes
-> >
-> > Frederick Lawler (4):
-> >   security, lsm: Introduce security_create_user_ns()
-> >   bpf-lsm: Make bpf_lsm_userns_create() sleepable
-> >   selftests/bpf: Add tests verifying bpf lsm userns_create hook
-> >   selinux: Implement userns_create hook
-> >
-> >  include/linux/lsm_hook_defs.h                 |  1 +
-> >  include/linux/lsm_hooks.h                     |  4 +
-> >  include/linux/security.h                      |  6 ++
-> >  kernel/bpf/bpf_lsm.c                          |  1 +
-> >  kernel/user_namespace.c                       |  5 ++
-> >  security/security.c                           |  5 ++
-> >  security/selinux/hooks.c                      |  9 ++
-> >  security/selinux/include/classmap.h           |  2 +
-> >  .../selftests/bpf/prog_tests/deny_namespace.c | 88 +++++++++++++++++++
-> >  .../selftests/bpf/progs/test_deny_namespace.c | 39 ++++++++
-> >  10 files changed, 160 insertions(+)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/deny_namespace.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/test_deny_namespace.c
-> >
-> > --
-> > 2.30.2
->
-> Eric
+
+BTW, what is wrong if we simply drop it before queueing to
+sk_receive_queue in TCP? Is it there just for collapse?
+
+Thanks.
