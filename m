@@ -2,153 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D95B8580D1E
-	for <lists+bpf@lfdr.de>; Tue, 26 Jul 2022 09:26:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D62CB580FEA
+	for <lists+bpf@lfdr.de>; Tue, 26 Jul 2022 11:31:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238080AbiGZHZx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jul 2022 03:25:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58436 "EHLO
+        id S231492AbiGZJbC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jul 2022 05:31:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238446AbiGZHYv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Jul 2022 03:24:51 -0400
-Received: from out30-45.freemail.mail.aliyun.com (out30-45.freemail.mail.aliyun.com [115.124.30.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E83872B61F;
-        Tue, 26 Jul 2022 00:23:53 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=37;SR=0;TI=SMTPD_---0VKUIKA6_1658820225;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VKUIKA6_1658820225)
-          by smtp.aliyun-inc.com;
-          Tue, 26 Jul 2022 15:23:46 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     virtualization@lists.linux-foundation.org
-Cc:     Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Vadim Pasternak <vadimp@nvidia.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        linux-um@lists.infradead.org, netdev@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
-        kvm@vger.kernel.org, bpf@vger.kernel.org,
-        kangjie.xu@linux.alibaba.com
-Subject: [PATCH v13 42/42] virtio_net: support set_ringparam
-Date:   Tue, 26 Jul 2022 15:22:25 +0800
-Message-Id: <20220726072225.19884-43-xuanzhuo@linux.alibaba.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
-References: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
+        with ESMTP id S229746AbiGZJbA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Jul 2022 05:31:00 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B84F32408B;
+        Tue, 26 Jul 2022 02:30:59 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id r70so10766705iod.10;
+        Tue, 26 Jul 2022 02:30:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4kqawzU8YqYeREn9Zamqwq5uu/0p4HW8DmKCCGP/2nw=;
+        b=DOa65H1KvvzI06fMBXMB3HHSnhNT0nzew/WcuW5EkQARbH6504UJcitigreZDZkRnP
+         5On4VGZoEw/LL2Sv5pkdrxo65v/P/3ez7/qS95zpeNsSZQktkmuVMKQT03io3ZMmV3Ld
+         fpbQadga3H3vArSB5h2hn2lRI41cZZGoTcrN3hVtx6YHsab0vWSHEO/3uxBK8RggnHym
+         6+pgsxeXT7TmUY07RnhrJTt4EIQbSrAMTw+XuQ0hZs1uHcZiRPJQM5iBzaq+v/fHG2ZV
+         c5vz8qg3yet+RwkR2njziwcipAyPTiJpppASOCuMla/8w9EltvcVe0BjWwAmGIrWdS8+
+         /guA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4kqawzU8YqYeREn9Zamqwq5uu/0p4HW8DmKCCGP/2nw=;
+        b=2TFgjiM4boMwKNvwxnSp5KhbGxU0c+lS1b0g1dnz9GrHq+ekQHhm64ULArmPEzf+lg
+         KSXBuQy8U++uMF5LqVsVCxw4/wkY7+nUmHV/cqFtnt4mxPU0awI5V0KH4a6YC6UOMZGR
+         lvCVrkDa74a99TCHR5pOIlPRdjPLYP9XYcCy4IxFXMhPS0/ufk+n1FRnre6EbRJ0ojEp
+         4mL1pL5YbpyLgOeoqikOBKJdgWrp1rD+4UxDv7nkKKsd8Aw1Ra0rBPK/wg8ovtOIQ63C
+         rqH2UdFwVO40VIyfV0BJPjivZL8BVWJ67ItsO4Rtw9xHkABUK1iVkcu9tqn7p3dDXfPg
+         IG3g==
+X-Gm-Message-State: AJIora+ykNxxtqodLHrn44dNsz4UJzJHcDNcS0zwhNL83bbyhcxTzFTe
+        /+iWVhoGSmFRKNEOED4O4RQ9Y3L3cxzOLGxxMRE=
+X-Google-Smtp-Source: AGRyM1uTVRRrkS/Dnp+01c3OBOmM022cneGzDFzCOwWy95+NxHWeKEdvrIAdxrCFPalJ7KLaWqOTKB1OBgm06Dbhe0k=
+X-Received: by 2002:a05:6638:210b:b0:33f:5635:4c4b with SMTP id
+ n11-20020a056638210b00b0033f56354c4bmr6836090jaj.116.1658827859051; Tue, 26
+ Jul 2022 02:30:59 -0700 (PDT)
 MIME-Version: 1.0
-X-Git-Hash: 19d2a6aae0b1
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220721134245.2450-1-memxor@gmail.com> <20220721134245.2450-5-memxor@gmail.com>
+ <64f5b92546c14b69a20e9007bb31146b@huawei.com>
+In-Reply-To: <64f5b92546c14b69a20e9007bb31146b@huawei.com>
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date:   Tue, 26 Jul 2022 11:30:21 +0200
+Message-ID: <CAP01T7683DcToXdYPPZ5gQxiksuJRyrf_=k8PvQGtwNXt0+S-w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v7 04/13] bpf: Add support for forcing kfunc args
+ to be trusted
+To:     Roberto Sassu <roberto.sassu@huawei.com>
+Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Support set_ringparam based on virtio queue reset.
+On Mon, 25 Jul 2022 at 11:52, Roberto Sassu <roberto.sassu@huawei.com> wrote:
+>
+> > From: Kumar Kartikeya Dwivedi [mailto:memxor@gmail.com]
+> > Sent: Thursday, July 21, 2022 3:43 PM
+> > Teach the verifier to detect a new KF_TRUSTED_ARGS kfunc flag, which
+> > means each pointer argument must be trusted, which we define as a
+> > pointer that is referenced (has non-zero ref_obj_id) and also needs to
+> > have its offset unchanged, similar to how release functions expect their
+> > argument. This allows a kfunc to receive pointer arguments unchanged
+> > from the result of the acquire kfunc.
+> >
+> > This is required to ensure that kfunc that operate on some object only
+> > work on acquired pointers and not normal PTR_TO_BTF_ID with same type
+> > which can be obtained by pointer walking. The restrictions applied to
+> > release arguments also apply to trusted arguments. This implies that
+> > strict type matching (not deducing type by recursively following members
+> > at offset) and OBJ_RELEASE offset checks (ensuring they are zero) are
+> > used for trusted pointer arguments.
+> >
+> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > ---
+> >  include/linux/btf.h | 32 ++++++++++++++++++++++++++++++++
+> >  kernel/bpf/btf.c    | 17 ++++++++++++++---
+> >  net/bpf/test_run.c  |  5 +++++
+> >  3 files changed, 51 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/include/linux/btf.h b/include/linux/btf.h
+> > index 6dfc6eaf7f8c..cb63aa71e82f 100644
+> > --- a/include/linux/btf.h
+> > +++ b/include/linux/btf.h
+> > @@ -17,6 +17,38 @@
+> >  #define KF_RELEASE   (1 << 1) /* kfunc is a release function */
+> >  #define KF_RET_NULL  (1 << 2) /* kfunc returns a pointer that may be NULL */
+> >  #define KF_KPTR_GET  (1 << 3) /* kfunc returns reference to a kptr */
+> > +/* Trusted arguments are those which are meant to be referenced arguments
+> > with
+> > + * unchanged offset. It is used to enforce that pointers obtained from acquire
+> > + * kfuncs remain unmodified when being passed to helpers taking trusted args.
+> > + *
+> > + * Consider
+> > + *   struct foo {
+> > + *           int data;
+> > + *           struct foo *next;
+> > + *   };
+> > + *
+> > + *   struct bar {
+> > + *           int data;
+> > + *           struct foo f;
+> > + *   };
+> > + *
+> > + *   struct foo *f = alloc_foo(); // Acquire kfunc
+> > + *   struct bar *b = alloc_bar(); // Acquire kfunc
+> > + *
+> > + * If a kfunc set_foo_data() wants to operate only on the allocated object, it
+> > + * will set the KF_TRUSTED_ARGS flag, which will prevent unsafe usage like:
+> > + *
+> > + *   set_foo_data(f, 42);       // Allowed
+> > + *   set_foo_data(f->next, 42); // Rejected, non-referenced pointer
+> > + *   set_foo_data(&f->next, 42);// Rejected, referenced, but bad offset
+> > + *   set_foo_data(&b->f, 42);   // Rejected, referenced, but wrong type
+> > + *
+> > + * In the final case, usually for the purposes of type matching, it is deduced
+> > + * by looking at the type of the member at the offset, but due to the
+> > + * requirement of trusted argument, this deduction will be strict and not done
+> > + * for this case.
+> > + */
+> > +#define KF_TRUSTED_ARGS (1 << 4) /* kfunc only takes trusted pointer
+> > arguments */
+>
+> Hi Kumar
+>
+> would it make sense to introduce per-parameter flags? I have a function
+> that has several parameters, but only one is referenced.
+>
 
-Users can use ethtool -G eth0 <ring_num> to modify the ring size of
-virtio-net.
+I have a patch for that in my local branch, I can fix it up and post
+it. But first, can you give an example of where you think you need it?
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
----
- drivers/net/virtio_net.c | 48 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
-
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index d1e6940b46d8..59fc48c60403 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -2329,6 +2329,53 @@ static void virtnet_get_ringparam(struct net_device *dev,
- 	ring->tx_pending = virtqueue_get_vring_size(vi->sq[0].vq);
- }
- 
-+static int virtnet_set_ringparam(struct net_device *dev,
-+				 struct ethtool_ringparam *ring,
-+				 struct kernel_ethtool_ringparam *kernel_ring,
-+				 struct netlink_ext_ack *extack)
-+{
-+	struct virtnet_info *vi = netdev_priv(dev);
-+	u32 rx_pending, tx_pending;
-+	struct receive_queue *rq;
-+	struct send_queue *sq;
-+	int i, err;
-+
-+	if (ring->rx_mini_pending || ring->rx_jumbo_pending)
-+		return -EINVAL;
-+
-+	rx_pending = virtqueue_get_vring_size(vi->rq[0].vq);
-+	tx_pending = virtqueue_get_vring_size(vi->sq[0].vq);
-+
-+	if (ring->rx_pending == rx_pending &&
-+	    ring->tx_pending == tx_pending)
-+		return 0;
-+
-+	if (ring->rx_pending > vi->rq[0].vq->num_max)
-+		return -EINVAL;
-+
-+	if (ring->tx_pending > vi->sq[0].vq->num_max)
-+		return -EINVAL;
-+
-+	for (i = 0; i < vi->max_queue_pairs; i++) {
-+		rq = vi->rq + i;
-+		sq = vi->sq + i;
-+
-+		if (ring->tx_pending != tx_pending) {
-+			err = virtnet_tx_resize(vi, sq, ring->tx_pending);
-+			if (err)
-+				return err;
-+		}
-+
-+		if (ring->rx_pending != rx_pending) {
-+			err = virtnet_rx_resize(vi, rq, ring->rx_pending);
-+			if (err)
-+				return err;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static bool virtnet_commit_rss_command(struct virtnet_info *vi)
- {
- 	struct net_device *dev = vi->dev;
-@@ -2816,6 +2863,7 @@ static const struct ethtool_ops virtnet_ethtool_ops = {
- 	.get_drvinfo = virtnet_get_drvinfo,
- 	.get_link = ethtool_op_get_link,
- 	.get_ringparam = virtnet_get_ringparam,
-+	.set_ringparam = virtnet_set_ringparam,
- 	.get_strings = virtnet_get_strings,
- 	.get_sset_count = virtnet_get_sset_count,
- 	.get_ethtool_stats = virtnet_get_ethtool_stats,
--- 
-2.31.0
-
+> Thanks
+>
+> Roberto
