@@ -2,161 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2915A5813B0
-	for <lists+bpf@lfdr.de>; Tue, 26 Jul 2022 14:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEDBF581342
+	for <lists+bpf@lfdr.de>; Tue, 26 Jul 2022 14:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232994AbiGZM6i (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jul 2022 08:58:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54794 "EHLO
+        id S238283AbiGZMl7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jul 2022 08:41:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233038AbiGZM6h (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Jul 2022 08:58:37 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E49DB25C78;
-        Tue, 26 Jul 2022 05:58:35 -0700 (PDT)
-Received: from fraeml708-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4LscNv1f6hz6HHxp;
-        Tue, 26 Jul 2022 20:56:31 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml708-chm.china.huawei.com (10.206.15.36) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 26 Jul 2022 14:58:33 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2375.024;
- Tue, 26 Jul 2022 14:58:33 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        "Florian Westphal" <fw@strlen.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?utf-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        "Lorenzo Bianconi" <lorenzo@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>
-Subject: RE: [PATCH bpf-next v7 04/13] bpf: Add support for forcing kfunc args
- to be trusted
-Thread-Topic: [PATCH bpf-next v7 04/13] bpf: Add support for forcing kfunc
- args to be trusted
-Thread-Index: AQHYnQf5YGGK69PM90+FORw5bILjSq2O3aiggAFrZ4CAACjgMIAAEHYAgAAiMbA=
-Date:   Tue, 26 Jul 2022 12:58:33 +0000
-Message-ID: <afabc18be104482ba5464817ac4f8729@huawei.com>
-References: <20220721134245.2450-1-memxor@gmail.com>
- <20220721134245.2450-5-memxor@gmail.com>
- <64f5b92546c14b69a20e9007bb31146b@huawei.com>
- <CAP01T7683DcToXdYPPZ5gQxiksuJRyrf_=k8PvQGtwNXt0+S-w@mail.gmail.com>
- <e612d596b547456797dfee98f23bbd62@huawei.com>
- <CAP01T74s8E0-60ZtviLcTDR8sY3hUsAiTc2oTii_i4XeW3J2xw@mail.gmail.com>
-In-Reply-To: <CAP01T74s8E0-60ZtviLcTDR8sY3hUsAiTc2oTii_i4XeW3J2xw@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.221.98.153]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        with ESMTP id S233657AbiGZMl6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Jul 2022 08:41:58 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B21A4255AA
+        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 05:41:56 -0700 (PDT)
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Lsc0k4bY9z1M87k;
+        Tue, 26 Jul 2022 20:39:02 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by dggpeml500025.china.huawei.com
+ (7.185.36.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Tue, 26 Jul
+ 2022 20:41:53 +0800
+From:   Hou Tao <houtao1@huawei.com>
+To:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, <bpf@vger.kernel.org>
+CC:     Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>, <houtao1@huawei.com>
+Subject: [RFC PATCH bpf-next 0/3] Add support for qp-trie map
+Date:   Tue, 26 Jul 2022 21:00:02 +0800
+Message-ID: <20220726130005.3102470-1-houtao1@huawei.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500025.china.huawei.com (7.185.36.35)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-PiBGcm9tOiBLdW1hciBLYXJ0aWtleWEgRHdpdmVkaSBbbWFpbHRvOm1lbXhvckBnbWFpbC5jb21d
-DQo+IFNlbnQ6IFR1ZXNkYXksIEp1bHkgMjYsIDIwMjIgMjo1NiBQTQ0KPiBPbiBUdWUsIDI2IEp1
-bCAyMDIyIGF0IDEyOjAyLCBSb2JlcnRvIFNhc3N1IDxyb2JlcnRvLnNhc3N1QGh1YXdlaS5jb20+
-DQo+IHdyb3RlOg0KPiA+DQo+ID4gPiBGcm9tOiBLdW1hciBLYXJ0aWtleWEgRHdpdmVkaSBbbWFp
-bHRvOm1lbXhvckBnbWFpbC5jb21dDQo+ID4gPiBTZW50OiBUdWVzZGF5LCBKdWx5IDI2LCAyMDIy
-IDExOjMwIEFNDQo+ID4gPiBPbiBNb24sIDI1IEp1bCAyMDIyIGF0IDExOjUyLCBSb2JlcnRvIFNh
-c3N1IDxyb2JlcnRvLnNhc3N1QGh1YXdlaS5jb20+DQo+ID4gPiB3cm90ZToNCj4gPiA+ID4NCj4g
-PiA+ID4gPiBGcm9tOiBLdW1hciBLYXJ0aWtleWEgRHdpdmVkaSBbbWFpbHRvOm1lbXhvckBnbWFp
-bC5jb21dDQo+ID4gPiA+ID4gU2VudDogVGh1cnNkYXksIEp1bHkgMjEsIDIwMjIgMzo0MyBQTQ0K
-PiA+ID4gPiA+IFRlYWNoIHRoZSB2ZXJpZmllciB0byBkZXRlY3QgYSBuZXcgS0ZfVFJVU1RFRF9B
-UkdTIGtmdW5jIGZsYWcsIHdoaWNoDQo+ID4gPiA+ID4gbWVhbnMgZWFjaCBwb2ludGVyIGFyZ3Vt
-ZW50IG11c3QgYmUgdHJ1c3RlZCwgd2hpY2ggd2UgZGVmaW5lIGFzIGENCj4gPiA+ID4gPiBwb2lu
-dGVyIHRoYXQgaXMgcmVmZXJlbmNlZCAoaGFzIG5vbi16ZXJvIHJlZl9vYmpfaWQpIGFuZCBhbHNv
-IG5lZWRzIHRvDQo+ID4gPiA+ID4gaGF2ZSBpdHMgb2Zmc2V0IHVuY2hhbmdlZCwgc2ltaWxhciB0
-byBob3cgcmVsZWFzZSBmdW5jdGlvbnMgZXhwZWN0IHRoZWlyDQo+ID4gPiA+ID4gYXJndW1lbnQu
-IFRoaXMgYWxsb3dzIGEga2Z1bmMgdG8gcmVjZWl2ZSBwb2ludGVyIGFyZ3VtZW50cyB1bmNoYW5n
-ZWQNCj4gPiA+ID4gPiBmcm9tIHRoZSByZXN1bHQgb2YgdGhlIGFjcXVpcmUga2Z1bmMuDQo+ID4g
-PiA+ID4NCj4gPiA+ID4gPiBUaGlzIGlzIHJlcXVpcmVkIHRvIGVuc3VyZSB0aGF0IGtmdW5jIHRo
-YXQgb3BlcmF0ZSBvbiBzb21lIG9iamVjdCBvbmx5DQo+ID4gPiA+ID4gd29yayBvbiBhY3F1aXJl
-ZCBwb2ludGVycyBhbmQgbm90IG5vcm1hbCBQVFJfVE9fQlRGX0lEIHdpdGggc2FtZQ0KPiB0eXBl
-DQo+ID4gPiA+ID4gd2hpY2ggY2FuIGJlIG9idGFpbmVkIGJ5IHBvaW50ZXIgd2Fsa2luZy4gVGhl
-IHJlc3RyaWN0aW9ucyBhcHBsaWVkIHRvDQo+ID4gPiA+ID4gcmVsZWFzZSBhcmd1bWVudHMgYWxz
-byBhcHBseSB0byB0cnVzdGVkIGFyZ3VtZW50cy4gVGhpcyBpbXBsaWVzIHRoYXQNCj4gPiA+ID4g
-PiBzdHJpY3QgdHlwZSBtYXRjaGluZyAobm90IGRlZHVjaW5nIHR5cGUgYnkgcmVjdXJzaXZlbHkg
-Zm9sbG93aW5nIG1lbWJlcnMNCj4gPiA+ID4gPiBhdCBvZmZzZXQpIGFuZCBPQkpfUkVMRUFTRSBv
-ZmZzZXQgY2hlY2tzIChlbnN1cmluZyB0aGV5IGFyZSB6ZXJvKSBhcmUNCj4gPiA+ID4gPiB1c2Vk
-IGZvciB0cnVzdGVkIHBvaW50ZXIgYXJndW1lbnRzLg0KPiA+ID4gPiA+DQo+ID4gPiA+ID4gU2ln
-bmVkLW9mZi1ieTogS3VtYXIgS2FydGlrZXlhIER3aXZlZGkgPG1lbXhvckBnbWFpbC5jb20+DQo+
-ID4gPiA+ID4gLS0tDQo+ID4gPiA+ID4gIGluY2x1ZGUvbGludXgvYnRmLmggfCAzMiArKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKw0KPiA+ID4gPiA+ICBrZXJuZWwvYnBmL2J0Zi5jICAg
-IHwgMTcgKysrKysrKysrKysrKystLS0NCj4gPiA+ID4gPiAgbmV0L2JwZi90ZXN0X3J1bi5jICB8
-ICA1ICsrKysrDQo+ID4gPiA+ID4gIDMgZmlsZXMgY2hhbmdlZCwgNTEgaW5zZXJ0aW9ucygrKSwg
-MyBkZWxldGlvbnMoLSkNCj4gPiA+ID4gPg0KPiA+ID4gPiA+IGRpZmYgLS1naXQgYS9pbmNsdWRl
-L2xpbnV4L2J0Zi5oIGIvaW5jbHVkZS9saW51eC9idGYuaA0KPiA+ID4gPiA+IGluZGV4IDZkZmM2
-ZWFmN2Y4Yy4uY2I2M2FhNzFlODJmIDEwMDY0NA0KPiA+ID4gPiA+IC0tLSBhL2luY2x1ZGUvbGlu
-dXgvYnRmLmgNCj4gPiA+ID4gPiArKysgYi9pbmNsdWRlL2xpbnV4L2J0Zi5oDQo+ID4gPiA+ID4g
-QEAgLTE3LDYgKzE3LDM4IEBADQo+ID4gPiA+ID4gICNkZWZpbmUgS0ZfUkVMRUFTRSAgICgxIDw8
-IDEpIC8qIGtmdW5jIGlzIGEgcmVsZWFzZSBmdW5jdGlvbiAqLw0KPiA+ID4gPiA+ICAjZGVmaW5l
-IEtGX1JFVF9OVUxMICAoMSA8PCAyKSAvKiBrZnVuYyByZXR1cm5zIGEgcG9pbnRlciB0aGF0IG1h
-eSBiZQ0KPiBOVUxMDQo+ID4gPiAqLw0KPiA+ID4gPiA+ICAjZGVmaW5lIEtGX0tQVFJfR0VUICAo
-MSA8PCAzKSAvKiBrZnVuYyByZXR1cm5zIHJlZmVyZW5jZSB0byBhIGtwdHIgKi8NCj4gPiA+ID4g
-PiArLyogVHJ1c3RlZCBhcmd1bWVudHMgYXJlIHRob3NlIHdoaWNoIGFyZSBtZWFudCB0byBiZSBy
-ZWZlcmVuY2VkDQo+ID4gPiBhcmd1bWVudHMNCj4gPiA+ID4gPiB3aXRoDQo+ID4gPiA+ID4gKyAq
-IHVuY2hhbmdlZCBvZmZzZXQuIEl0IGlzIHVzZWQgdG8gZW5mb3JjZSB0aGF0IHBvaW50ZXJzIG9i
-dGFpbmVkIGZyb20NCj4gPiA+IGFjcXVpcmUNCj4gPiA+ID4gPiArICoga2Z1bmNzIHJlbWFpbiB1
-bm1vZGlmaWVkIHdoZW4gYmVpbmcgcGFzc2VkIHRvIGhlbHBlcnMgdGFraW5nDQo+IHRydXN0ZWQN
-Cj4gPiA+IGFyZ3MuDQo+ID4gPiA+ID4gKyAqDQo+ID4gPiA+ID4gKyAqIENvbnNpZGVyDQo+ID4g
-PiA+ID4gKyAqICAgc3RydWN0IGZvbyB7DQo+ID4gPiA+ID4gKyAqICAgICAgICAgICBpbnQgZGF0
-YTsNCj4gPiA+ID4gPiArICogICAgICAgICAgIHN0cnVjdCBmb28gKm5leHQ7DQo+ID4gPiA+ID4g
-KyAqICAgfTsNCj4gPiA+ID4gPiArICoNCj4gPiA+ID4gPiArICogICBzdHJ1Y3QgYmFyIHsNCj4g
-PiA+ID4gPiArICogICAgICAgICAgIGludCBkYXRhOw0KPiA+ID4gPiA+ICsgKiAgICAgICAgICAg
-c3RydWN0IGZvbyBmOw0KPiA+ID4gPiA+ICsgKiAgIH07DQo+ID4gPiA+ID4gKyAqDQo+ID4gPiA+
-ID4gKyAqICAgc3RydWN0IGZvbyAqZiA9IGFsbG9jX2ZvbygpOyAvLyBBY3F1aXJlIGtmdW5jDQo+
-ID4gPiA+ID4gKyAqICAgc3RydWN0IGJhciAqYiA9IGFsbG9jX2JhcigpOyAvLyBBY3F1aXJlIGtm
-dW5jDQo+ID4gPiA+ID4gKyAqDQo+ID4gPiA+ID4gKyAqIElmIGEga2Z1bmMgc2V0X2Zvb19kYXRh
-KCkgd2FudHMgdG8gb3BlcmF0ZSBvbmx5IG9uIHRoZSBhbGxvY2F0ZWQNCj4gb2JqZWN0LA0KPiA+
-ID4gaXQNCj4gPiA+ID4gPiArICogd2lsbCBzZXQgdGhlIEtGX1RSVVNURURfQVJHUyBmbGFnLCB3
-aGljaCB3aWxsIHByZXZlbnQgdW5zYWZlIHVzYWdlDQo+IGxpa2U6DQo+ID4gPiA+ID4gKyAqDQo+
-ID4gPiA+ID4gKyAqICAgc2V0X2Zvb19kYXRhKGYsIDQyKTsgICAgICAgLy8gQWxsb3dlZA0KPiA+
-ID4gPiA+ICsgKiAgIHNldF9mb29fZGF0YShmLT5uZXh0LCA0Mik7IC8vIFJlamVjdGVkLCBub24t
-cmVmZXJlbmNlZCBwb2ludGVyDQo+ID4gPiA+ID4gKyAqICAgc2V0X2Zvb19kYXRhKCZmLT5uZXh0
-LCA0Mik7Ly8gUmVqZWN0ZWQsIHJlZmVyZW5jZWQsIGJ1dCBiYWQgb2Zmc2V0DQo+ID4gPiA+ID4g
-KyAqICAgc2V0X2Zvb19kYXRhKCZiLT5mLCA0Mik7ICAgLy8gUmVqZWN0ZWQsIHJlZmVyZW5jZWQs
-IGJ1dCB3cm9uZyB0eXBlDQo+ID4gPiA+ID4gKyAqDQo+ID4gPiA+ID4gKyAqIEluIHRoZSBmaW5h
-bCBjYXNlLCB1c3VhbGx5IGZvciB0aGUgcHVycG9zZXMgb2YgdHlwZSBtYXRjaGluZywgaXQgaXMN
-Cj4gZGVkdWNlZA0KPiA+ID4gPiA+ICsgKiBieSBsb29raW5nIGF0IHRoZSB0eXBlIG9mIHRoZSBt
-ZW1iZXIgYXQgdGhlIG9mZnNldCwgYnV0IGR1ZSB0byB0aGUNCj4gPiA+ID4gPiArICogcmVxdWly
-ZW1lbnQgb2YgdHJ1c3RlZCBhcmd1bWVudCwgdGhpcyBkZWR1Y3Rpb24gd2lsbCBiZSBzdHJpY3Qg
-YW5kIG5vdA0KPiA+ID4gZG9uZQ0KPiA+ID4gPiA+ICsgKiBmb3IgdGhpcyBjYXNlLg0KPiA+ID4g
-PiA+ICsgKi8NCj4gPiA+ID4gPiArI2RlZmluZSBLRl9UUlVTVEVEX0FSR1MgKDEgPDwgNCkgLyog
-a2Z1bmMgb25seSB0YWtlcyB0cnVzdGVkIHBvaW50ZXINCj4gPiA+ID4gPiBhcmd1bWVudHMgKi8N
-Cj4gPiA+ID4NCj4gPiA+ID4gSGkgS3VtYXINCj4gPiA+ID4NCj4gPiA+ID4gd291bGQgaXQgbWFr
-ZSBzZW5zZSB0byBpbnRyb2R1Y2UgcGVyLXBhcmFtZXRlciBmbGFncz8gSSBoYXZlIGEgZnVuY3Rp
-b24NCj4gPiA+ID4gdGhhdCBoYXMgc2V2ZXJhbCBwYXJhbWV0ZXJzLCBidXQgb25seSBvbmUgaXMg
-cmVmZXJlbmNlZC4NCj4gPiA+ID4NCj4gPiA+DQo+ID4gPiBJIGhhdmUgYSBwYXRjaCBmb3IgdGhh
-dCBpbiBteSBsb2NhbCBicmFuY2gsIEkgY2FuIGZpeCBpdCB1cCBhbmQgcG9zdA0KPiA+ID4gaXQu
-IEJ1dCBmaXJzdCwgY2FuIHlvdSBnaXZlIGFuIGV4YW1wbGUgb2Ygd2hlcmUgeW91IHRoaW5rIHlv
-dSBuZWVkIGl0Pw0KPiA+DQo+ID4gSSBoYXZlIHB1c2hlZCB0aGUgY29tcGxldGUgcGF0Y2ggc2V0
-IGhlcmUsIGZvciB0ZXN0aW5nOg0KPiA+DQo+ID4gaHR0cHM6Ly9naXRodWIuY29tL3JvYmVydG9z
-YXNzdS92bXRlc3QvdHJlZS9icGYtdmVyaWZ5LXNpZy12OS90cmF2aXMtY2kvZGlmZnMNCj4gPg0K
-PiA+IEkgcmViYXNlZCB0byBicGYtbmV4dC9tYXN0ZXIsIGFuZCBpbnRyb2R1Y2VkIEtGX1NMRUVQ
-QUJMRSAoc2ltaWxhcg0KPiA+IGZ1bmN0aW9uYWxpdHkgb2YgIiBidGY6IEFkZCBhIG5ldyBrZnVu
-YyBzZXQgd2hpY2ggYWxsb3dzIHRvIG1hcmsNCj4gPiBhIGZ1bmN0aW9uIHRvIGJlIHNsZWVwYWJs
-ZSIgZnJvbSBCZW5qYW1pbiBUaXNzb2lyZXMpLg0KPiA+DQo+ID4gVGhlIHBhdGNoIHdoZXJlIEkg
-d291bGQgdXNlIHBlci1wYXJhbWV0ZXIgS0ZfVFJVU1RFRF9BUkdTIGlzDQo+ID4gbnVtYmVyIDgu
-IEkgYWxzbyB1c2VkIHlvdXIgbmV3IEFQSSBpbiBwYXRjaCA3IGFuZCBpdCB3b3JrcyB3ZWxsLg0K
-PiA+DQo+IA0KPiBPaywgbG9va3MgbGlrZSB5b3UnbGwgbmVlZCBpdCBmb3IgdGhlIHN0cnVjdCBr
-ZXkgKiBhcmd1bWVudCBhcyB0aGVyZQ0KPiBhcmUgbXVsdGlwbGUgcG9pbnRlcnMgaW4gdGhlIGFy
-Z3VtZW50IGxpc3QgYW5kIG5vdCBhbGwgb2YgdGhlbSBuZWVkIHRvDQo+IGJlIHRydXN0ZWQuIEkg
-d2lsbCBjbGVhbiB1cCBhbmQgcG9zdCB0aGUgcGF0Y2ggd2l0aCBhIHRlc3QgbGF0ZXIgdG9kYXkN
-Cj4gdG8gdGhlIGxpc3QuDQoNClllcywgdGhhbmtzIGEgbG90IQ0KDQpSb2JlcnRvDQo=
+Hi,
+
+The initial motivation for qp-trie map is to reduce memory usage for
+string keys special those with large differencies in length as
+discussed in [0]. And as a big-endian lexicographical ordered map, it
+can also be used for any binary data with fixed or variable length.
+
+Now the basic functionality of qp-trie is ready, so posting a RFC version
+to get more feedback or suggestions about qp-trie. Specially feedback
+about the following questions:
+
+(1) Application scenario for qp-trie
+Andrii had proposed to re-implement lpm-trie by using qp-trie. The
+advantage would be the speed up of lookup operations due to lower tree
+depth of qp-trie. Maybe the performance of update could also be improved
+although in cillium there is a big lock during lpm-trie update [1]. Is
+there any other use cases for qp-trie ? Specially those cases which need
+both ordering and memory efficiency or cases in which jhash() of htab
+creates too much collisions and qp-trie lookup performances better than
+hash-table lookup as shown below:
+
+  Randomly-generated binary data with variable length (length range=[1, 256] entries=16K)
+
+  htab lookup      (1  thread)    5.062 ± 0.004M/s (drops 0.002 ± 0.000M/s mem 8.125 MiB)
+  htab lookup      (2  thread)   10.256 ± 0.017M/s (drops 0.006 ± 0.000M/s mem 8.114 MiB)
+  htab lookup      (4  thread)   20.383 ± 0.006M/s (drops 0.009 ± 0.000M/s mem 8.117 MiB)
+  htab lookup      (8  thread)   40.727 ± 0.093M/s (drops 0.010 ± 0.000M/s mem 8.123 MiB)
+  htab lookup      (16 thread)   81.333 ± 0.311M/s (drops 0.020 ± 0.000M/s mem 8.122 MiB)
+  
+  qp-trie lookup   (1  thread)   10.161 ± 0.008M/s (drops 0.006 ± 0.000M/s mem 4.847 MiB)
+  qp-trie lookup   (2  thread)   20.287 ± 0.024M/s (drops 0.007 ± 0.000M/s mem 4.828 MiB)
+  qp-trie lookup   (4  thread)   40.784 ± 0.020M/s (drops 0.015 ± 0.000M/s mem 4.071 MiB)
+  qp-trie lookup   (8  thread)   81.165 ± 0.013M/s (drops 0.040 ± 0.000M/s mem 4.045 MiB)
+  qp-trie lookup   (16 thread)  159.955 ± 0.014M/s (drops 0.108 ± 0.000M/s mem 4.495 MiB)
+
+  * non-zero drops is due to duplicated keys in generated keys.
+
+(2) more fine-grained lock in qp-trie
+Now qp-trie is divided into 256 sub-trees by using the first character of
+key and one sub-tree is protected one spinlock. From the data below,
+although the update/delete speed of qp-trie is slower compare with hash
+table, but it scales similar with hash table. So maybe 256-locks is a
+good enough solution ?
+
+  Strings in /proc/kallsyms
+  htab update      (1  thread)    2.850 ± 0.129M/s (drops 0.000 ± 0.000M/s mem 33.564 MiB)
+  htab update      (2  thread)    4.363 ± 0.031M/s (drops 0.000 ± 0.000M/s mem 33.563 MiB)
+  htab update      (4  thread)    6.306 ± 0.096M/s (drops 0.000 ± 0.000M/s mem 33.718 MiB)
+  htab update      (8  thread)    6.611 ± 0.026M/s (drops 0.000 ± 0.000M/s mem 33.627 MiB)
+  htab update      (16 thread)    6.390 ± 0.015M/s (drops 0.000 ± 0.000M/s mem 33.564 MiB)
+  qp-trie update   (1  thread)    1.157 ± 0.099M/s (drops 0.000 ± 0.000M/s mem 18.333 MiB)
+  qp-trie update   (2  thread)    1.920 ± 0.062M/s (drops 0.000 ± 0.000M/s mem 18.293 MiB)
+  qp-trie update   (4  thread)    2.630 ± 0.050M/s (drops 0.000 ± 0.000M/s mem 18.472 MiB)
+  qp-trie update   (8  thread)    3.171 ± 0.027M/s (drops 0.000 ± 0.000M/s mem 18.301 MiB)
+  qp-trie update   (16 thread)    3.782 ± 0.036M/s (drops 0.000 ± 0.000M/s mem 19.040 MiB)
+
+(3) Improve memory efficiency further
+When using strings in BTF string section as a data set for qp-trie, the
+slab memory usage showed in cgroup memory.stats file is about 11MB for
+qp-trie and 15MB for hash table as shown below. However the theoretical
+memory usage for qp-trie is ~6.8MB (is ~4.9MB if removing "parent" & "rcu"
+fields from qp_trie_branch) and the extra memory usage (about 38% of total
+usage) mainly comes from internal fragment in slab (namely 2^n alignment
+for allocation) and overhead in kmem-cgroup accounting. We can reduce the
+internal fragment by creating separated kmem_cache for qp_trie_branch with
+different child nodes, but not sure whether it is worthy or not.
+
+And in order to prevent allocating a rcu_head for each leaf node, now only
+branch node is RCU-freed, so when replacing a leaf node, a new branch node
+and a new leaf node will be allocated instead of replacing the old leaf
+node and RCU-freed the old leaf node. Also not sure whether or not it is
+worthy.
+
+  Strings in BTF string section (entries=115980):
+  htab lookup      (1  thread)    9.889 ± 0.006M/s (drops 0.000 ± 0.000M/s mem 15.069 MiB)
+  qp-trie lookup   (1  thread)    5.132 ± 0.002M/s (drops 0.000 ± 0.000M/s mem 10.721 MiB)
+
+  All files under linux kernel source directory (entries=74359):
+  htab lookup      (1  thread)    8.418 ± 0.077M/s (drops 0.000 ± 0.000M/s mem 14.207 MiB)
+  qp-trie lookup   (1  thread)    4.966 ± 0.003M/s (drops 0.000 ± 0.000M/s mem 9.355 MiB)
+
+  Domain names for Alexa top million web site (entries=1000000):
+  htab lookup      (1  thread)    4.551 ± 0.043M/s (drops 0.000 ± 0.000M/s mem 190.761 MiB)
+  qp-trie lookup   (1  thread)    2.804 ± 0.017M/s (drops 0.000 ± 0.000M/s mem 83.194 MiB)
+
+Comments and suggestions are always welcome.
+
+Regards,
+Tao
+
+[0]: https://lore.kernel.org/bpf/CAEf4Bzb7keBS8vXgV5JZzwgNGgMV0X3_guQ_m9JW3X6fJBDpPQ@mail.gmail.com/
+[1]: https://github.com/cilium/cilium/blob/5145e31cd65db3361f6538d5f5f899440b769070/pkg/datapath/prefilter/prefilter.go#L123
+
+Hou Tao (3):
+  bpf: Add support for qp-trie map
+  selftests/bpf: add a simple test for qp-trie
+  selftests/bpf: add benchmark for qp-trie map
+
+ include/linux/bpf_types.h                     |    1 +
+ include/uapi/linux/bpf.h                      |    8 +
+ kernel/bpf/Makefile                           |    1 +
+ kernel/bpf/bpf_qp_trie.c                      | 1064 +++++++++++++++++
+ tools/include/uapi/linux/bpf.h                |    8 +
+ tools/testing/selftests/bpf/Makefile          |    5 +-
+ tools/testing/selftests/bpf/bench.c           |   10 +
+ .../selftests/bpf/benchs/bench_qp_trie.c      |  499 ++++++++
+ .../selftests/bpf/benchs/run_bench_qp_trie.sh |   55 +
+ .../selftests/bpf/prog_tests/str_key.c        |   69 ++
+ .../selftests/bpf/progs/qp_trie_bench.c       |  218 ++++
+ tools/testing/selftests/bpf/progs/str_key.c   |   85 ++
+ 12 files changed, 2022 insertions(+), 1 deletion(-)
+ create mode 100644 kernel/bpf/bpf_qp_trie.c
+ create mode 100644 tools/testing/selftests/bpf/benchs/bench_qp_trie.c
+ create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_qp_trie.sh
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/str_key.c
+ create mode 100644 tools/testing/selftests/bpf/progs/qp_trie_bench.c
+ create mode 100644 tools/testing/selftests/bpf/progs/str_key.c
+
+-- 
+2.29.2
+
