@@ -2,64 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE9865810A8
-	for <lists+bpf@lfdr.de>; Tue, 26 Jul 2022 12:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEC045810F9
+	for <lists+bpf@lfdr.de>; Tue, 26 Jul 2022 12:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230198AbiGZKCH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jul 2022 06:02:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35226 "EHLO
+        id S238444AbiGZKRT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jul 2022 06:17:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231492AbiGZKCH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Jul 2022 06:02:07 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46FFD2CDCD;
-        Tue, 26 Jul 2022 03:02:05 -0700 (PDT)
-Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4LsXQ93YV7z6893p;
-        Tue, 26 Jul 2022 17:57:21 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 26 Jul 2022 12:02:02 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2375.024;
- Tue, 26 Jul 2022 12:02:02 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        "Florian Westphal" <fw@strlen.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?utf-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        "Lorenzo Bianconi" <lorenzo@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>
-Subject: RE: [PATCH bpf-next v7 04/13] bpf: Add support for forcing kfunc args
- to be trusted
-Thread-Topic: [PATCH bpf-next v7 04/13] bpf: Add support for forcing kfunc
- args to be trusted
-Thread-Index: AQHYnQf5YGGK69PM90+FORw5bILjSq2O3aiggAFrZ4CAACjgMA==
-Date:   Tue, 26 Jul 2022 10:02:02 +0000
-Message-ID: <e612d596b547456797dfee98f23bbd62@huawei.com>
-References: <20220721134245.2450-1-memxor@gmail.com>
- <20220721134245.2450-5-memxor@gmail.com>
- <64f5b92546c14b69a20e9007bb31146b@huawei.com>
- <CAP01T7683DcToXdYPPZ5gQxiksuJRyrf_=k8PvQGtwNXt0+S-w@mail.gmail.com>
-In-Reply-To: <CAP01T7683DcToXdYPPZ5gQxiksuJRyrf_=k8PvQGtwNXt0+S-w@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.221.98.153]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        with ESMTP id S238374AbiGZKRR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Jul 2022 06:17:17 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA5A2F669;
+        Tue, 26 Jul 2022 03:17:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1658830635; x=1690366635;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=t8AjsIZjBf9/vKxqsEciflqsN/9+tXGQ9x02Llkl3SI=;
+  b=VtssfMrk0Mhc85LrwjHWz8+79SPwK4LdTaam9jpXEyv6LYKb6HR3NmcO
+   CwpaPC0AKrSgmVwXcvRaH0kt/mYxjrMy7k/uzMKzd8osfPGjZkV+nc2H1
+   +akOmLJYkQu26ULwn0W/1JHazKWik3Ehz2meWAzUVYIT9LUtgx7mVzhla
+   /w3U1XZCQ2df8BmaKRF0W+1U8IgEJXGDqp3L2339MPOgy0kZRq1X+1HBX
+   I4jaew65nnG0fv7guoAtezIws7Bi0P0vbOmfpHq0ijeZ8TvtIEUtFfree
+   mwIZvlqecm9YTyGiQagGHxWt6XrOaZ+w+SBaoXr1j4HN/vOIY7hvf9gx5
+   g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10419"; a="349618658"
+X-IronPort-AV: E=Sophos;i="5.93,193,1654585200"; 
+   d="scan'208";a="349618658"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2022 03:17:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,193,1654585200"; 
+   d="scan'208";a="742177608"
+Received: from silpixa00401350.ir.intel.com (HELO silpixav00401350..) ([10.55.128.131])
+  by fmsmga001.fm.intel.com with ESMTP; 26 Jul 2022 03:17:12 -0700
+From:   Shibin Koikkara Reeny <shibin.koikkara.reeny@intel.com>
+To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
+Cc:     netdev@vger.kernel.org, magnus.karlsson@intel.com,
+        bjorn@kernel.org, kuba@kernel.org, maciej.fijalkowski@intel.com,
+        andrii@kernel.org, ciara.loftus@intel.com,
+        Shibin Koikkara Reeny <shibin.koikkara.reeny@intel.com>
+Subject: [PATCH bpf-next v2] selftests: xsk: Update poll test cases
+Date:   Tue, 26 Jul 2022 10:17:23 +0000
+Message-Id: <20220726101723.250746-1-shibin.koikkara.reeny@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,80 +59,357 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-PiBGcm9tOiBLdW1hciBLYXJ0aWtleWEgRHdpdmVkaSBbbWFpbHRvOm1lbXhvckBnbWFpbC5jb21d
-DQo+IFNlbnQ6IFR1ZXNkYXksIEp1bHkgMjYsIDIwMjIgMTE6MzAgQU0NCj4gT24gTW9uLCAyNSBK
-dWwgMjAyMiBhdCAxMTo1MiwgUm9iZXJ0byBTYXNzdSA8cm9iZXJ0by5zYXNzdUBodWF3ZWkuY29t
-Pg0KPiB3cm90ZToNCj4gPg0KPiA+ID4gRnJvbTogS3VtYXIgS2FydGlrZXlhIER3aXZlZGkgW21h
-aWx0bzptZW14b3JAZ21haWwuY29tXQ0KPiA+ID4gU2VudDogVGh1cnNkYXksIEp1bHkgMjEsIDIw
-MjIgMzo0MyBQTQ0KPiA+ID4gVGVhY2ggdGhlIHZlcmlmaWVyIHRvIGRldGVjdCBhIG5ldyBLRl9U
-UlVTVEVEX0FSR1Mga2Z1bmMgZmxhZywgd2hpY2gNCj4gPiA+IG1lYW5zIGVhY2ggcG9pbnRlciBh
-cmd1bWVudCBtdXN0IGJlIHRydXN0ZWQsIHdoaWNoIHdlIGRlZmluZSBhcyBhDQo+ID4gPiBwb2lu
-dGVyIHRoYXQgaXMgcmVmZXJlbmNlZCAoaGFzIG5vbi16ZXJvIHJlZl9vYmpfaWQpIGFuZCBhbHNv
-IG5lZWRzIHRvDQo+ID4gPiBoYXZlIGl0cyBvZmZzZXQgdW5jaGFuZ2VkLCBzaW1pbGFyIHRvIGhv
-dyByZWxlYXNlIGZ1bmN0aW9ucyBleHBlY3QgdGhlaXINCj4gPiA+IGFyZ3VtZW50LiBUaGlzIGFs
-bG93cyBhIGtmdW5jIHRvIHJlY2VpdmUgcG9pbnRlciBhcmd1bWVudHMgdW5jaGFuZ2VkDQo+ID4g
-PiBmcm9tIHRoZSByZXN1bHQgb2YgdGhlIGFjcXVpcmUga2Z1bmMuDQo+ID4gPg0KPiA+ID4gVGhp
-cyBpcyByZXF1aXJlZCB0byBlbnN1cmUgdGhhdCBrZnVuYyB0aGF0IG9wZXJhdGUgb24gc29tZSBv
-YmplY3Qgb25seQ0KPiA+ID4gd29yayBvbiBhY3F1aXJlZCBwb2ludGVycyBhbmQgbm90IG5vcm1h
-bCBQVFJfVE9fQlRGX0lEIHdpdGggc2FtZSB0eXBlDQo+ID4gPiB3aGljaCBjYW4gYmUgb2J0YWlu
-ZWQgYnkgcG9pbnRlciB3YWxraW5nLiBUaGUgcmVzdHJpY3Rpb25zIGFwcGxpZWQgdG8NCj4gPiA+
-IHJlbGVhc2UgYXJndW1lbnRzIGFsc28gYXBwbHkgdG8gdHJ1c3RlZCBhcmd1bWVudHMuIFRoaXMg
-aW1wbGllcyB0aGF0DQo+ID4gPiBzdHJpY3QgdHlwZSBtYXRjaGluZyAobm90IGRlZHVjaW5nIHR5
-cGUgYnkgcmVjdXJzaXZlbHkgZm9sbG93aW5nIG1lbWJlcnMNCj4gPiA+IGF0IG9mZnNldCkgYW5k
-IE9CSl9SRUxFQVNFIG9mZnNldCBjaGVja3MgKGVuc3VyaW5nIHRoZXkgYXJlIHplcm8pIGFyZQ0K
-PiA+ID4gdXNlZCBmb3IgdHJ1c3RlZCBwb2ludGVyIGFyZ3VtZW50cy4NCj4gPiA+DQo+ID4gPiBT
-aWduZWQtb2ZmLWJ5OiBLdW1hciBLYXJ0aWtleWEgRHdpdmVkaSA8bWVteG9yQGdtYWlsLmNvbT4N
-Cj4gPiA+IC0tLQ0KPiA+ID4gIGluY2x1ZGUvbGludXgvYnRmLmggfCAzMiArKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKw0KPiA+ID4gIGtlcm5lbC9icGYvYnRmLmMgICAgfCAxNyArKysr
-KysrKysrKysrKy0tLQ0KPiA+ID4gIG5ldC9icGYvdGVzdF9ydW4uYyAgfCAgNSArKysrKw0KPiA+
-ID4gIDMgZmlsZXMgY2hhbmdlZCwgNTEgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkNCj4g
-PiA+DQo+ID4gPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9idGYuaCBiL2luY2x1ZGUvbGlu
-dXgvYnRmLmgNCj4gPiA+IGluZGV4IDZkZmM2ZWFmN2Y4Yy4uY2I2M2FhNzFlODJmIDEwMDY0NA0K
-PiA+ID4gLS0tIGEvaW5jbHVkZS9saW51eC9idGYuaA0KPiA+ID4gKysrIGIvaW5jbHVkZS9saW51
-eC9idGYuaA0KPiA+ID4gQEAgLTE3LDYgKzE3LDM4IEBADQo+ID4gPiAgI2RlZmluZSBLRl9SRUxF
-QVNFICAgKDEgPDwgMSkgLyoga2Z1bmMgaXMgYSByZWxlYXNlIGZ1bmN0aW9uICovDQo+ID4gPiAg
-I2RlZmluZSBLRl9SRVRfTlVMTCAgKDEgPDwgMikgLyoga2Z1bmMgcmV0dXJucyBhIHBvaW50ZXIg
-dGhhdCBtYXkgYmUgTlVMTA0KPiAqLw0KPiA+ID4gICNkZWZpbmUgS0ZfS1BUUl9HRVQgICgxIDw8
-IDMpIC8qIGtmdW5jIHJldHVybnMgcmVmZXJlbmNlIHRvIGEga3B0ciAqLw0KPiA+ID4gKy8qIFRy
-dXN0ZWQgYXJndW1lbnRzIGFyZSB0aG9zZSB3aGljaCBhcmUgbWVhbnQgdG8gYmUgcmVmZXJlbmNl
-ZA0KPiBhcmd1bWVudHMNCj4gPiA+IHdpdGgNCj4gPiA+ICsgKiB1bmNoYW5nZWQgb2Zmc2V0LiBJ
-dCBpcyB1c2VkIHRvIGVuZm9yY2UgdGhhdCBwb2ludGVycyBvYnRhaW5lZCBmcm9tDQo+IGFjcXVp
-cmUNCj4gPiA+ICsgKiBrZnVuY3MgcmVtYWluIHVubW9kaWZpZWQgd2hlbiBiZWluZyBwYXNzZWQg
-dG8gaGVscGVycyB0YWtpbmcgdHJ1c3RlZA0KPiBhcmdzLg0KPiA+ID4gKyAqDQo+ID4gPiArICog
-Q29uc2lkZXINCj4gPiA+ICsgKiAgIHN0cnVjdCBmb28gew0KPiA+ID4gKyAqICAgICAgICAgICBp
-bnQgZGF0YTsNCj4gPiA+ICsgKiAgICAgICAgICAgc3RydWN0IGZvbyAqbmV4dDsNCj4gPiA+ICsg
-KiAgIH07DQo+ID4gPiArICoNCj4gPiA+ICsgKiAgIHN0cnVjdCBiYXIgew0KPiA+ID4gKyAqICAg
-ICAgICAgICBpbnQgZGF0YTsNCj4gPiA+ICsgKiAgICAgICAgICAgc3RydWN0IGZvbyBmOw0KPiA+
-ID4gKyAqICAgfTsNCj4gPiA+ICsgKg0KPiA+ID4gKyAqICAgc3RydWN0IGZvbyAqZiA9IGFsbG9j
-X2ZvbygpOyAvLyBBY3F1aXJlIGtmdW5jDQo+ID4gPiArICogICBzdHJ1Y3QgYmFyICpiID0gYWxs
-b2NfYmFyKCk7IC8vIEFjcXVpcmUga2Z1bmMNCj4gPiA+ICsgKg0KPiA+ID4gKyAqIElmIGEga2Z1
-bmMgc2V0X2Zvb19kYXRhKCkgd2FudHMgdG8gb3BlcmF0ZSBvbmx5IG9uIHRoZSBhbGxvY2F0ZWQg
-b2JqZWN0LA0KPiBpdA0KPiA+ID4gKyAqIHdpbGwgc2V0IHRoZSBLRl9UUlVTVEVEX0FSR1MgZmxh
-Zywgd2hpY2ggd2lsbCBwcmV2ZW50IHVuc2FmZSB1c2FnZSBsaWtlOg0KPiA+ID4gKyAqDQo+ID4g
-PiArICogICBzZXRfZm9vX2RhdGEoZiwgNDIpOyAgICAgICAvLyBBbGxvd2VkDQo+ID4gPiArICog
-ICBzZXRfZm9vX2RhdGEoZi0+bmV4dCwgNDIpOyAvLyBSZWplY3RlZCwgbm9uLXJlZmVyZW5jZWQg
-cG9pbnRlcg0KPiA+ID4gKyAqICAgc2V0X2Zvb19kYXRhKCZmLT5uZXh0LCA0Mik7Ly8gUmVqZWN0
-ZWQsIHJlZmVyZW5jZWQsIGJ1dCBiYWQgb2Zmc2V0DQo+ID4gPiArICogICBzZXRfZm9vX2RhdGEo
-JmItPmYsIDQyKTsgICAvLyBSZWplY3RlZCwgcmVmZXJlbmNlZCwgYnV0IHdyb25nIHR5cGUNCj4g
-PiA+ICsgKg0KPiA+ID4gKyAqIEluIHRoZSBmaW5hbCBjYXNlLCB1c3VhbGx5IGZvciB0aGUgcHVy
-cG9zZXMgb2YgdHlwZSBtYXRjaGluZywgaXQgaXMgZGVkdWNlZA0KPiA+ID4gKyAqIGJ5IGxvb2tp
-bmcgYXQgdGhlIHR5cGUgb2YgdGhlIG1lbWJlciBhdCB0aGUgb2Zmc2V0LCBidXQgZHVlIHRvIHRo
-ZQ0KPiA+ID4gKyAqIHJlcXVpcmVtZW50IG9mIHRydXN0ZWQgYXJndW1lbnQsIHRoaXMgZGVkdWN0
-aW9uIHdpbGwgYmUgc3RyaWN0IGFuZCBub3QNCj4gZG9uZQ0KPiA+ID4gKyAqIGZvciB0aGlzIGNh
-c2UuDQo+ID4gPiArICovDQo+ID4gPiArI2RlZmluZSBLRl9UUlVTVEVEX0FSR1MgKDEgPDwgNCkg
-Lyoga2Z1bmMgb25seSB0YWtlcyB0cnVzdGVkIHBvaW50ZXINCj4gPiA+IGFyZ3VtZW50cyAqLw0K
-PiA+DQo+ID4gSGkgS3VtYXINCj4gPg0KPiA+IHdvdWxkIGl0IG1ha2Ugc2Vuc2UgdG8gaW50cm9k
-dWNlIHBlci1wYXJhbWV0ZXIgZmxhZ3M/IEkgaGF2ZSBhIGZ1bmN0aW9uDQo+ID4gdGhhdCBoYXMg
-c2V2ZXJhbCBwYXJhbWV0ZXJzLCBidXQgb25seSBvbmUgaXMgcmVmZXJlbmNlZC4NCj4gPg0KPiAN
-Cj4gSSBoYXZlIGEgcGF0Y2ggZm9yIHRoYXQgaW4gbXkgbG9jYWwgYnJhbmNoLCBJIGNhbiBmaXgg
-aXQgdXAgYW5kIHBvc3QNCj4gaXQuIEJ1dCBmaXJzdCwgY2FuIHlvdSBnaXZlIGFuIGV4YW1wbGUg
-b2Ygd2hlcmUgeW91IHRoaW5rIHlvdSBuZWVkIGl0Pw0KDQpJIGhhdmUgcHVzaGVkIHRoZSBjb21w
-bGV0ZSBwYXRjaCBzZXQgaGVyZSwgZm9yIHRlc3Rpbmc6DQoNCmh0dHBzOi8vZ2l0aHViLmNvbS9y
-b2JlcnRvc2Fzc3Uvdm10ZXN0L3RyZWUvYnBmLXZlcmlmeS1zaWctdjkvdHJhdmlzLWNpL2RpZmZz
-DQoNCkkgcmViYXNlZCB0byBicGYtbmV4dC9tYXN0ZXIsIGFuZCBpbnRyb2R1Y2VkIEtGX1NMRUVQ
-QUJMRSAoc2ltaWxhcg0KZnVuY3Rpb25hbGl0eSBvZiAiIGJ0ZjogQWRkIGEgbmV3IGtmdW5jIHNl
-dCB3aGljaCBhbGxvd3MgdG8gbWFyaw0KYSBmdW5jdGlvbiB0byBiZSBzbGVlcGFibGUiIGZyb20g
-QmVuamFtaW4gVGlzc29pcmVzKS4NCg0KVGhlIHBhdGNoIHdoZXJlIEkgd291bGQgdXNlIHBlci1w
-YXJhbWV0ZXIgS0ZfVFJVU1RFRF9BUkdTIGlzDQpudW1iZXIgOC4gSSBhbHNvIHVzZWQgeW91ciBu
-ZXcgQVBJIGluIHBhdGNoIDcgYW5kIGl0IHdvcmtzIHdlbGwuDQoNCkkgZGlkbid0IHJlcG9zdCwg
-YXMgSSdtIHdhaXRpbmcgZm9yIGNvbW1lbnRzIG9uIHY4Lg0KDQpUaGFua3MNCg0KUm9iZXJ0bw0K
+Poll test case was not testing all the functionality
+of the poll feature in the testsuite. This patch
+update the poll test case which contain 2 testcase to
+test the RX and the TX poll functionality and additional
+2 more testcases to check the timeout features of the
+poll event.
+
+Poll testsuite have 4 test cases:
+
+1. TEST_TYPE_RX_POLL:
+Check if RX path POLLIN function work as expect. TX path
+can use any method to sent the traffic.
+
+2. TEST_TYPE_TX_POLL:
+Check if TX path POLLOUT function work as expect. RX path
+can use any method to receive the traffic.
+
+3. TEST_TYPE_POLL_RXQ_EMPTY:
+Call poll function with parameter POLLIN on empty rx queue
+will cause timeout.If return timeout then test case is pass.
+
+4. TEST_TYPE_POLL_TXQ_FULL:
+When txq is filled and packets are not cleaned by the kernel
+then if we invoke the poll function with POLLOUT then it
+should trigger. Additional timer is set in the while loop
+to timeout if the TX POLLOUT timeout didn't get trigger.
+
+v1: https://lore.kernel.org/bpf/20220718095712.588513-1-shibin.koikkara.reeny@intel.com/
+
+Changes in v2:
+ * Updated the commit message
+ * fixed the while loop flow in receive_pkts function.
+
+Signed-off-by: Shibin Koikkara Reeny <shibin.koikkara.reeny@intel.com>
+---
+ tools/testing/selftests/bpf/xskxceiver.c | 172 +++++++++++++++++------
+ tools/testing/selftests/bpf/xskxceiver.h |  10 +-
+ 2 files changed, 138 insertions(+), 44 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
+index 74d56d971baf..4394788829bf 100644
+--- a/tools/testing/selftests/bpf/xskxceiver.c
++++ b/tools/testing/selftests/bpf/xskxceiver.c
+@@ -424,6 +424,8 @@ static void __test_spec_init(struct test_spec *test, struct ifobject *ifobj_tx,
+ 
+ 		ifobj->xsk = &ifobj->xsk_arr[0];
+ 		ifobj->use_poll = false;
++		ifobj->skip_rx = false;
++		ifobj->skip_tx = false;
+ 		ifobj->use_fill_ring = true;
+ 		ifobj->release_rx = true;
+ 		ifobj->pkt_stream = test->pkt_stream_default;
+@@ -589,6 +591,19 @@ static struct pkt_stream *pkt_stream_clone(struct xsk_umem_info *umem,
+ 	return pkt_stream_generate(umem, pkt_stream->nb_pkts, pkt_stream->pkts[0].len);
+ }
+ 
++static void pkt_stream_invalid(struct test_spec *test, u32 nb_pkts, u32 pkt_len)
++{
++	struct pkt_stream *pkt_stream;
++	u32 i;
++
++	pkt_stream = pkt_stream_generate(test->ifobj_tx->umem, nb_pkts, pkt_len);
++	for (i = 0; i < nb_pkts; i++)
++		pkt_stream->pkts[i].valid = false;
++
++	test->ifobj_tx->pkt_stream = pkt_stream;
++	test->ifobj_rx->pkt_stream = pkt_stream;
++}
++
+ static void pkt_stream_replace(struct test_spec *test, u32 nb_pkts, u32 pkt_len)
+ {
+ 	struct pkt_stream *pkt_stream;
+@@ -817,9 +832,9 @@ static int complete_pkts(struct xsk_socket_info *xsk, int batch_size)
+ 	return TEST_PASS;
+ }
+ 
+-static int receive_pkts(struct ifobject *ifobj, struct pollfd *fds)
++static int receive_pkts(struct ifobject *ifobj, struct pollfd *fds, bool skip_tx)
+ {
+-	struct timeval tv_end, tv_now, tv_timeout = {RECV_TMOUT, 0};
++	struct timeval tv_end, tv_now, tv_timeout = {THREAD_TMOUT, 0};
+ 	u32 idx_rx = 0, idx_fq = 0, rcvd, i, pkts_sent = 0;
+ 	struct pkt_stream *pkt_stream = ifobj->pkt_stream;
+ 	struct xsk_socket_info *xsk = ifobj->xsk;
+@@ -843,17 +858,28 @@ static int receive_pkts(struct ifobject *ifobj, struct pollfd *fds)
+ 		}
+ 
+ 		kick_rx(xsk);
++		if (ifobj->use_poll) {
++			ret = poll(fds, 1, POLL_TMOUT);
++			if (ret < 0)
++				exit_with_error(-ret);
++
++			if (!ret) {
++				if (skip_tx)
++					return TEST_PASS;
++
++				ksft_print_msg("ERROR: [%s] Poll timed out\n", __func__);
++				return TEST_FAILURE;
+ 
+-		rcvd = xsk_ring_cons__peek(&xsk->rx, BATCH_SIZE, &idx_rx);
+-		if (!rcvd) {
+-			if (xsk_ring_prod__needs_wakeup(&umem->fq)) {
+-				ret = poll(fds, 1, POLL_TMOUT);
+-				if (ret < 0)
+-					exit_with_error(-ret);
+ 			}
+-			continue;
++
++			if (!(fds->revents & POLLIN))
++				continue;
+ 		}
+ 
++		rcvd = xsk_ring_cons__peek(&xsk->rx, BATCH_SIZE, &idx_rx);
++		if (!rcvd)
++			continue;
++
+ 		if (ifobj->use_fill_ring) {
+ 			ret = xsk_ring_prod__reserve(&umem->fq, rcvd, &idx_fq);
+ 			while (ret != rcvd) {
+@@ -900,13 +926,34 @@ static int receive_pkts(struct ifobject *ifobj, struct pollfd *fds)
+ 	return TEST_PASS;
+ }
+ 
+-static int __send_pkts(struct ifobject *ifobject, u32 *pkt_nb)
++static int __send_pkts(struct ifobject *ifobject, u32 *pkt_nb, bool use_poll,
++		       struct pollfd *fds, bool timeout)
+ {
+ 	struct xsk_socket_info *xsk = ifobject->xsk;
+-	u32 i, idx, valid_pkts = 0;
++	u32 i, idx, ret, valid_pkts = 0;
++
++	while (xsk_ring_prod__reserve(&xsk->tx, BATCH_SIZE, &idx) < BATCH_SIZE) {
++		if (use_poll) {
++			ret = poll(fds, 1, POLL_TMOUT);
++			if (timeout) {
++				if (ret < 0) {
++					ksft_print_msg("DEBUG: [%s] Poll error %d\n",
++						       __func__, ret);
++					return TEST_FAILURE;
++				}
++				if (ret == 0)
++					return TEST_PASS;
++				break;
++			}
++			if (ret <= 0) {
++				ksft_print_msg("DEBUG: [%s] Poll error %d\n",
++					       __func__, ret);
++				return TEST_FAILURE;
++			}
++		}
+ 
+-	while (xsk_ring_prod__reserve(&xsk->tx, BATCH_SIZE, &idx) < BATCH_SIZE)
+ 		complete_pkts(xsk, BATCH_SIZE);
++	}
+ 
+ 	for (i = 0; i < BATCH_SIZE; i++) {
+ 		struct xdp_desc *tx_desc = xsk_ring_prod__tx_desc(&xsk->tx, idx + i);
+@@ -933,11 +980,27 @@ static int __send_pkts(struct ifobject *ifobject, u32 *pkt_nb)
+ 
+ 	xsk_ring_prod__submit(&xsk->tx, i);
+ 	xsk->outstanding_tx += valid_pkts;
+-	if (complete_pkts(xsk, i))
+-		return TEST_FAILURE;
+ 
+-	usleep(10);
+-	return TEST_PASS;
++	if (use_poll) {
++		ret = poll(fds, 1, POLL_TMOUT);
++		if (ret <= 0) {
++			if (ret == 0 && timeout)
++				return TEST_PASS;
++
++			ksft_print_msg("DEBUG: [%s] Poll error %d\n", __func__, ret);
++			return TEST_FAILURE;
++		}
++	}
++
++	if (!timeout) {
++		if (complete_pkts(xsk, i))
++			return TEST_FAILURE;
++
++		usleep(10);
++		return TEST_PASS;
++	}
++
++	return TEST_CONTINUE;
+ }
+ 
+ static void wait_for_tx_completion(struct xsk_socket_info *xsk)
+@@ -948,29 +1011,33 @@ static void wait_for_tx_completion(struct xsk_socket_info *xsk)
+ 
+ static int send_pkts(struct test_spec *test, struct ifobject *ifobject)
+ {
++	struct timeval tv_end, tv_now, tv_timeout = {THREAD_TMOUT, 0};
++	bool timeout = test->ifobj_rx->skip_rx;
+ 	struct pollfd fds = { };
+-	u32 pkt_cnt = 0;
++	u32 pkt_cnt = 0, ret;
+ 
+ 	fds.fd = xsk_socket__fd(ifobject->xsk->xsk);
+ 	fds.events = POLLOUT;
+ 
+-	while (pkt_cnt < ifobject->pkt_stream->nb_pkts) {
+-		int err;
+-
+-		if (ifobject->use_poll) {
+-			int ret;
+-
+-			ret = poll(&fds, 1, POLL_TMOUT);
+-			if (ret <= 0)
+-				continue;
++	ret = gettimeofday(&tv_now, NULL);
++	if (ret)
++		exit_with_error(errno);
++	timeradd(&tv_now, &tv_timeout, &tv_end);
+ 
+-			if (!(fds.revents & POLLOUT))
+-				continue;
++	while (pkt_cnt < ifobject->pkt_stream->nb_pkts) {
++		ret = gettimeofday(&tv_now, NULL);
++		if (ret)
++			exit_with_error(errno);
++		if (timercmp(&tv_now, &tv_end, >)) {
++			ksft_print_msg("ERROR: [%s] Send loop timed out\n", __func__);
++			return TEST_FAILURE;
+ 		}
+ 
+-		err = __send_pkts(ifobject, &pkt_cnt);
+-		if (err || test->fail)
++		ret = __send_pkts(ifobject, &pkt_cnt, ifobject->use_poll, &fds, timeout);
++		if ((ret || test->fail) && !timeout)
+ 			return TEST_FAILURE;
++		else if (ret == TEST_PASS && timeout)
++			return ret;
+ 	}
+ 
+ 	wait_for_tx_completion(ifobject->xsk);
+@@ -1235,8 +1302,7 @@ static void *worker_testapp_validate_rx(void *arg)
+ 
+ 	pthread_barrier_wait(&barr);
+ 
+-	err = receive_pkts(ifobject, &fds);
+-
++	err = receive_pkts(ifobject, &fds, test->ifobj_tx->skip_tx);
+ 	if (!err && ifobject->validation_func)
+ 		err = ifobject->validation_func(ifobject);
+ 	if (err) {
+@@ -1265,17 +1331,21 @@ static int testapp_validate_traffic(struct test_spec *test)
+ 	pkts_in_flight = 0;
+ 
+ 	/*Spawn RX thread */
+-	pthread_create(&t0, NULL, ifobj_rx->func_ptr, test);
+-
+-	pthread_barrier_wait(&barr);
+-	if (pthread_barrier_destroy(&barr))
+-		exit_with_error(errno);
++	if (!ifobj_rx->skip_rx) {
++		pthread_create(&t0, NULL, ifobj_rx->func_ptr, test);
++		pthread_barrier_wait(&barr);
++		if (pthread_barrier_destroy(&barr))
++			exit_with_error(errno);
++	}
+ 
+ 	/*Spawn TX thread */
+-	pthread_create(&t1, NULL, ifobj_tx->func_ptr, test);
++	if (!ifobj_tx->skip_tx) {
++		pthread_create(&t1, NULL, ifobj_tx->func_ptr, test);
++		pthread_join(t1, NULL);
++	}
+ 
+-	pthread_join(t1, NULL);
+-	pthread_join(t0, NULL);
++	if (!ifobj_rx->skip_rx)
++		pthread_join(t0, NULL);
+ 
+ 	return !!test->fail;
+ }
+@@ -1548,10 +1618,28 @@ static void run_pkt_test(struct test_spec *test, enum test_mode mode, enum test_
+ 
+ 		pkt_stream_restore_default(test);
+ 		break;
+-	case TEST_TYPE_POLL:
++	case TEST_TYPE_RX_POLL:
++		test->ifobj_rx->use_poll = true;
++		test_spec_set_name(test, "POLL_RX");
++		testapp_validate_traffic(test);
++		break;
++	case TEST_TYPE_TX_POLL:
+ 		test->ifobj_tx->use_poll = true;
++		test_spec_set_name(test, "POLL_TX");
++		testapp_validate_traffic(test);
++		break;
++	case TEST_TYPE_POLL_TXQ_TMOUT:
++		test_spec_set_name(test, "POLL_TXQ_FULL");
++		test->ifobj_rx->skip_rx = true;
++		test->ifobj_tx->use_poll = true;
++		pkt_stream_invalid(test, 2 * DEFAULT_PKT_CNT, PKT_SIZE);
++		testapp_validate_traffic(test);
++		pkt_stream_restore_default(test);
++		break;
++	case TEST_TYPE_POLL_RXQ_TMOUT:
++		test_spec_set_name(test, "POLL_RXQ_EMPTY");
++		test->ifobj_tx->skip_tx = true;
+ 		test->ifobj_rx->use_poll = true;
+-		test_spec_set_name(test, "POLL");
+ 		testapp_validate_traffic(test);
+ 		break;
+ 	case TEST_TYPE_ALIGNED_INV_DESC:
+diff --git a/tools/testing/selftests/bpf/xskxceiver.h b/tools/testing/selftests/bpf/xskxceiver.h
+index 3d17053f98e5..0db7e0acccb2 100644
+--- a/tools/testing/selftests/bpf/xskxceiver.h
++++ b/tools/testing/selftests/bpf/xskxceiver.h
+@@ -27,6 +27,7 @@
+ 
+ #define TEST_PASS 0
+ #define TEST_FAILURE -1
++#define TEST_CONTINUE 1
+ #define MAX_INTERFACES 2
+ #define MAX_INTERFACE_NAME_CHARS 7
+ #define MAX_INTERFACES_NAMESPACE_CHARS 10
+@@ -48,7 +49,7 @@
+ #define SOCK_RECONF_CTR 10
+ #define BATCH_SIZE 64
+ #define POLL_TMOUT 1000
+-#define RECV_TMOUT 3
++#define THREAD_TMOUT 3
+ #define DEFAULT_PKT_CNT (4 * 1024)
+ #define DEFAULT_UMEM_BUFFERS (DEFAULT_PKT_CNT / 4)
+ #define UMEM_SIZE (DEFAULT_UMEM_BUFFERS * XSK_UMEM__DEFAULT_FRAME_SIZE)
+@@ -68,7 +69,10 @@ enum test_type {
+ 	TEST_TYPE_RUN_TO_COMPLETION,
+ 	TEST_TYPE_RUN_TO_COMPLETION_2K_FRAME,
+ 	TEST_TYPE_RUN_TO_COMPLETION_SINGLE_PKT,
+-	TEST_TYPE_POLL,
++	TEST_TYPE_RX_POLL,
++	TEST_TYPE_TX_POLL,
++	TEST_TYPE_POLL_RXQ_TMOUT,
++	TEST_TYPE_POLL_TXQ_TMOUT,
+ 	TEST_TYPE_UNALIGNED,
+ 	TEST_TYPE_ALIGNED_INV_DESC,
+ 	TEST_TYPE_ALIGNED_INV_DESC_2K_FRAME,
+@@ -145,6 +149,8 @@ struct ifobject {
+ 	bool tx_on;
+ 	bool rx_on;
+ 	bool use_poll;
++	bool skip_rx;
++	bool skip_tx;
+ 	bool busy_poll;
+ 	bool use_fill_ring;
+ 	bool release_rx;
+-- 
+2.34.1
+
