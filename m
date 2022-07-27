@@ -2,65 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A95EF582242
-	for <lists+bpf@lfdr.de>; Wed, 27 Jul 2022 10:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98EC058231C
+	for <lists+bpf@lfdr.de>; Wed, 27 Jul 2022 11:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbiG0Ig0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 27 Jul 2022 04:36:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54518 "EHLO
+        id S229504AbiG0J3b (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jul 2022 05:29:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbiG0IgZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Jul 2022 04:36:25 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E7E434507F
-        for <bpf@vger.kernel.org>; Wed, 27 Jul 2022 01:36:23 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-216-G3MsD2lvP_O3H9T1lzIpBg-1; Wed, 27 Jul 2022 09:36:20 +0100
-X-MC-Unique: G3MsD2lvP_O3H9T1lzIpBg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.36; Wed, 27 Jul 2022 09:36:19 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.036; Wed, 27 Jul 2022 09:36:19 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Martin KaFai Lau' <kafai@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "kernel-team@fb.com" <kernel-team@fb.com>,
-        Paolo Abeni <pabeni@redhat.com>
-Subject: RE: [PATCH bpf-next 02/14] bpf: net: Avoid sock_setsockopt() taking
- sk lock when called from bpf
-Thread-Topic: [PATCH bpf-next 02/14] bpf: net: Avoid sock_setsockopt() taking
- sk lock when called from bpf
-Thread-Index: AQHYoX9rkSbmKz+Wykmj0IeOsCioUq2R48pw
-Date:   Wed, 27 Jul 2022 08:36:18 +0000
-Message-ID: <381439a429b54e8e8dda848e1d3d306f@AcuMS.aculab.com>
-References: <20220727060856.2370358-1-kafai@fb.com>
- <20220727060909.2371812-1-kafai@fb.com>
-In-Reply-To: <20220727060909.2371812-1-kafai@fb.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        with ESMTP id S229691AbiG0J33 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Jul 2022 05:29:29 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 928C147B89;
+        Wed, 27 Jul 2022 02:29:28 -0700 (PDT)
+Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Lt7fv273WzWfq2;
+        Wed, 27 Jul 2022 17:25:27 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by dggpeml500026.china.huawei.com
+ (7.185.36.106) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Wed, 27 Jul
+ 2022 17:29:15 +0800
+From:   Zhengchao Shao <shaozhengchao@huawei.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>
+CC:     <liuhangbin@gmail.com>, <willemb@google.com>, <baruch@tkos.co.il>,
+        <pablo@netfilter.org>, <yajun.deng@linux.dev>,
+        <weiyongjun1@huawei.com>, <yuehaibing@huawei.com>,
+        <shaozhengchao@huawei.com>
+Subject: [PATCH net-next] net/af_packet: check len when min_header_len equals to 0
+Date:   Wed, 27 Jul 2022 17:33:12 +0800
+Message-ID: <20220727093312.125116-1-shaozhengchao@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+Content-Type: text/plain
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500026.china.huawei.com (7.185.36.106)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,28 +47,32 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Martin KaFai Lau
-> Sent: 27 July 2022 07:09
-> 
-> Most of the codes in bpf_setsockopt(SOL_SOCKET) are duplicated from
-> the sock_setsockopt().  The number of supported options are
-> increasing ever and so as the duplicated codes.
-> 
-> One issue in reusing sock_setsockopt() is that the bpf prog
-> has already acquired the sk lock.  sockptr_t is useful to handle this.
-> sockptr_t already has a bit 'is_kernel' to handle the kernel-or-user
-> memory copy.  This patch adds a 'is_bpf' bit to tell if sk locking
-> has already been ensured by the bpf prog.
+User can use AF_PACKET socket to send packets with the length of 0.
+When min_header_len equals to 0, packet_snd will call __dev_queue_xmit
+to send packets, and sock->type can be any type.
 
-That is a really horrid place to hide an 'is locked' bit.
+Reported-by: syzbot+5ea725c25d06fb9114c4@syzkaller.appspotmail.com
+Fixes: fd1894224407 ("bpf: Don't redirect packets with invalid pkt_len")
+Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
+---
+ net/packet/af_packet.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-You'd be better off splitting sock_setsockopt() to add a function
-that is called with sk_lock held and the value read.
-That would also save the churn of all the callers.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
+index d08c4728523b..5cbe07116e04 100644
+--- a/net/packet/af_packet.c
++++ b/net/packet/af_packet.c
+@@ -3037,8 +3037,8 @@ static int packet_snd(struct socket *sock, struct msghdr *msg, size_t len)
+ 	if (err)
+ 		goto out_free;
+ 
+-	if (sock->type == SOCK_RAW &&
+-	    !dev_validate_header(dev, skb->data, len)) {
++	if ((sock->type == SOCK_RAW &&
++	     !dev_validate_header(dev, skb->data, len)) || !skb->len) {
+ 		err = -EINVAL;
+ 		goto out_free;
+ 	}
+-- 
+2.17.1
 
