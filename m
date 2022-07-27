@@ -2,68 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 669FA582162
-	for <lists+bpf@lfdr.de>; Wed, 27 Jul 2022 09:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 196C55821CC
+	for <lists+bpf@lfdr.de>; Wed, 27 Jul 2022 10:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230430AbiG0HoV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jul 2022 03:44:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44076 "EHLO
+        id S229812AbiG0ILe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 27 Jul 2022 04:11:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231279AbiG0HoJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Jul 2022 03:44:09 -0400
-Received: from out30-42.freemail.mail.aliyun.com (out30-42.freemail.mail.aliyun.com [115.124.30.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B0E73FA0F;
-        Wed, 27 Jul 2022 00:44:06 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=36;SR=0;TI=SMTPD_---0VKZx5Pm_1658907838;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VKZx5Pm_1658907838)
-          by smtp.aliyun-inc.com;
-          Wed, 27 Jul 2022 15:43:59 +0800
-Message-ID: <1658907413.1860468-2-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH v13 16/42] virtio_ring: split: introduce virtqueue_resize_split()
-Date:   Wed, 27 Jul 2022 15:36:53 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        with ESMTP id S229644AbiG0ILd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Jul 2022 04:11:33 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B23AF6378
+        for <bpf@vger.kernel.org>; Wed, 27 Jul 2022 01:11:31 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-239-LGqOHlenN8mdXkYQ1UkmPA-1; Wed, 27 Jul 2022 09:11:28 +0100
+X-MC-Unique: LGqOHlenN8mdXkYQ1UkmPA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.36; Wed, 27 Jul 2022 09:11:26 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.036; Wed, 27 Jul 2022 09:11:26 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Martin KaFai Lau' <kafai@fb.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Vadim Pasternak <vadimp@nvidia.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        linux-um@lists.infradead.org, netdev@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
-        kvm@vger.kernel.org, bpf@vger.kernel.org,
-        kangjie.xu@linux.alibaba.com,
-        virtualization@lists.linux-foundation.org
-References: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
- <20220726072225.19884-17-xuanzhuo@linux.alibaba.com>
- <15aa26f2-f8af-5dbd-f2b2-9270ad873412@redhat.com>
-In-Reply-To: <15aa26f2-f8af-5dbd-f2b2-9270ad873412@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        "kernel-team@fb.com" <kernel-team@fb.com>,
+        Paolo Abeni <pabeni@redhat.com>
+Subject: RE: [PATCH bpf-next 01/14] net: Change sock_setsockopt from taking
+ sock ptr to sk ptr
+Thread-Topic: [PATCH bpf-next 01/14] net: Change sock_setsockopt from taking
+ sock ptr to sk ptr
+Thread-Index: AQHYoX9n6rKpB2E9FUqjXO+qN4rZzq2R3DpA
+Date:   Wed, 27 Jul 2022 08:11:26 +0000
+Message-ID: <a9a3e00db4764ffcaf3324046d736b76@AcuMS.aculab.com>
+References: <20220727060856.2370358-1-kafai@fb.com>
+ <20220727060902.2370689-1-kafai@fb.com>
+In-Reply-To: <20220727060902.2370689-1-kafai@fb.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,98 +69,41 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 27 Jul 2022 11:12:19 +0800, Jason Wang <jasowang@redhat.com> wrote:
->
-> =E5=9C=A8 2022/7/26 15:21, Xuan Zhuo =E5=86=99=E9=81=93:
-> > virtio ring split supports resize.
-> >
-> > Only after the new vring is successfully allocated based on the new num,
-> > we will release the old vring. In any case, an error is returned,
-> > indicating that the vring still points to the old vring.
-> >
-> > In the case of an error, re-initialize(virtqueue_reinit_split()) the
-> > virtqueue to ensure that the vring can be used.
-> >
-> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > Acked-by: Jason Wang <jasowang@redhat.com>
-> > ---
-> >   drivers/virtio/virtio_ring.c | 34 ++++++++++++++++++++++++++++++++++
-> >   1 file changed, 34 insertions(+)
-> >
-> > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-> > index b6fda91c8059..58355e1ac7d7 100644
-> > --- a/drivers/virtio/virtio_ring.c
-> > +++ b/drivers/virtio/virtio_ring.c
-> > @@ -220,6 +220,7 @@ static struct virtqueue *__vring_new_virtqueue(unsi=
-gned int index,
-> >   					       void (*callback)(struct virtqueue *),
-> >   					       const char *name);
-> >   static struct vring_desc_extra *vring_alloc_desc_extra(unsigned int n=
-um);
-> > +static void vring_free(struct virtqueue *_vq);
-> >
-> >   /*
-> >    * Helpers.
-> > @@ -1117,6 +1118,39 @@ static struct virtqueue *vring_create_virtqueue_=
-split(
-> >   	return vq;
-> >   }
-> >
-> > +static int virtqueue_resize_split(struct virtqueue *_vq, u32 num)
-> > +{
-> > +	struct vring_virtqueue_split vring_split =3D {};
-> > +	struct vring_virtqueue *vq =3D to_vvq(_vq);
-> > +	struct virtio_device *vdev =3D _vq->vdev;
-> > +	int err;
-> > +
-> > +	err =3D vring_alloc_queue_split(&vring_split, vdev, num,
-> > +				      vq->split.vring_align,
-> > +				      vq->split.may_reduce_num);
-> > +	if (err)
-> > +		goto err;
->
->
-> I think we don't need to do anything here?
+From: Martin KaFai Lau
+> Sent: 27 July 2022 07:09
+> 
+> A latter patch refactors bpf_setsockopt(SOL_SOCKET) with the
+> sock_setsockopt() to avoid code duplication and code
+> drift between the two duplicates.
+> 
+> The current sock_setsockopt() takes sock ptr as the argument.
+> The very first thing of this function is to get back the sk ptr
+> by 'sk = sock->sk'.
+> 
+> bpf_setsockopt() could be called when the sk does not have
+> a userspace owner.  Meaning sk->sk_socket is NULL.  For example,
+> when a passive tcp connection has just been established.  Thus,
+> it cannot use the sock_setsockopt(sk->sk_socket) or else it will
+> pass a NULL sock ptr.
 
-Am I missing something?
+I'm intrigued, I've some code that uses sock_create_kern() to create
+sockets without a userspace owner - I'd have though bpf is doing
+much the same.
 
->
->
-> > +
-> > +	err =3D vring_alloc_state_extra_split(&vring_split);
-> > +	if (err) {
-> > +		vring_free_split(&vring_split, vdev);
-> > +		goto err;
->
->
-> I suggest to move vring_free_split() into a dedicated error label.
+I end up doing:
+        if (level == SOL_SOCKET)
+                err = sock_setsockopt(sock, level, optname, koptval, optlen);
+        else
+                err = sock->ops->setsockopt(sock, level, optname, koptval,
+                                            optlen);
+to set options.
+(This code used to use kern_setsockopt() - but that got removed.)
 
-Will change.
+I'd have though bpf would need similar code??
 
-Thanks.
+	David
 
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
->
-> Thanks
->
->
-> > +	}
-> > +
-> > +	vring_free(&vq->vq);
-> > +
-> > +	virtqueue_vring_init_split(&vring_split, vq);
-> > +
-> > +	virtqueue_init(vq, vring_split.vring.num);
-> > +	virtqueue_vring_attach_split(vq, &vring_split);
-> > +
-> > +	return 0;
-> > +
-> > +err:
-> > +	virtqueue_reinit_split(vq);
-> > +	return -ENOMEM;
-> > +}
-> > +
-> >
-> >   /*
-> >    * Packed ring specific functions - *_packed().
->
