@@ -2,72 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B0FA5834DE
-	for <lists+bpf@lfdr.de>; Wed, 27 Jul 2022 23:39:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB84958357D
+	for <lists+bpf@lfdr.de>; Thu, 28 Jul 2022 01:02:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231322AbiG0VjJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jul 2022 17:39:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59166 "EHLO
+        id S233884AbiG0XC6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jul 2022 19:02:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbiG0VjG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Jul 2022 17:39:06 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA8874F679
-        for <bpf@vger.kernel.org>; Wed, 27 Jul 2022 14:39:03 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id h21-20020a17090aa89500b001f31a61b91dso654034pjq.4
-        for <bpf@vger.kernel.org>; Wed, 27 Jul 2022 14:39:03 -0700 (PDT)
+        with ESMTP id S229532AbiG0XC5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Jul 2022 19:02:57 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A82420F56;
+        Wed, 27 Jul 2022 16:02:56 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id va17so336424ejb.0;
+        Wed, 27 Jul 2022 16:02:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9ItSF/+XU/6Bz4xr/gfqbEOOWPHTOiyfAroNPDdNsq4=;
-        b=qzphUGDnWH8nDzTpEAZ/31uJsqS8edbVHUP5fkIZwysfpcmIbc1A2VS2Dxg+Hk69mg
-         LjuLkIJMGsAJh+JQLuRxKJIEJ6JswgP8BM2zxIpHLaPwRBQ6E/cQ+R4tCGHKZPfWnP7O
-         j/+26CEuJGKORtvSBgXn+oCt6oejYyGrOvw/9If2djk4eIc2Vmj/4tUGacl0NoZZ6opN
-         qNeDgCLQARfQZ2/t64obuw1+Vz9qbawLM2yDswQwNDZcO1oyLvg5q03J0yKqWkks9gSi
-         TnMX6nUPH0Lj4NlXsgercxvHWWqIpORQmPCvSmnh/cSem8q32TR1/7dHZGtA/HOWaepu
-         4HOA==
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=UccYnvkXJ9TbV8KUpT9J6zIdbsOHqZHbizSjT0errm8=;
+        b=fd7BlUYoHTBhaInTSJ/QMQQCFgGZuJA3bxO4XT1o7hw/Zb1p6b/XHgCEJ4DZ3Kno1X
+         E382YOICjJf1/0RwQ4bQaU70OocUHcC5FwpsYerBoH7nleD2rzfG6wJ8D2Q4rqyKz3ET
+         ljnrYTVYtwDWIQcNVwhkUfbUq54sSUO7jxTz30dPjaMaU5VVw7Hbr1nMKY++NVBfke45
+         r9QLkGeCt4/pmrCYN2XCHM+0g0oJYey3hLdnk0tkanaX/65DNA875/QTPXDUgHR9kNUe
+         ALYabtNcw+7zx+w1NqHQuex4MgsNZGEoQ5OMldlnVWO8WLtuuCymj+z7nRVQmZzZ4iCL
+         Wixg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9ItSF/+XU/6Bz4xr/gfqbEOOWPHTOiyfAroNPDdNsq4=;
-        b=y8pgMD2b1w54L8dFjcYpDfYDhKDqQqFuIzyGVags1Ugd50a2fqgFI5PPP+olWLVRKW
-         VJod4MFFFEif0cUi0czDfzGhwyqXhEOJJ/KV1S3WvMyZ5t4f2PwjdnJz5MRINHV10IhO
-         1VUafLBR7XjXjT45M850hsm2pVYzpuQ99VkaWwsxswGm9Dl1TnjMZTriercbAh4LN9rU
-         GUQDyl6RbSDk2kI4YiKOAfi80xvKmGCxP5+2Ilh8BoXWRDYtE1eSpHNO8B2YwrPgp5mR
-         I3sV7nFJMUptss99PLWBsGTrnG6FZz95OSm65EQMFG7A1zaY71n5gFfiAAHXMUmyM85I
-         RMHQ==
-X-Gm-Message-State: AJIora/8DAScalLpXETRBQnCBKYhqVtQi4tMuT1/8lCpD1v0UpkNfo4k
-        DG4GnnZrClJxOTe+asFul3D4CMqYosnqYObZqaREnQ==
-X-Google-Smtp-Source: AGRyM1twDGQt0oLLpkSM8uhOCWJzANIOAfI41nA6tUFrjIYn5gYgEn97phFN0nr6JP5vwLwD3jc1N+WDL4F1iEkA+2s=
-X-Received: by 2002:a17:90b:3887:b0:1f2:bc1f:64d7 with SMTP id
- mu7-20020a17090b388700b001f2bc1f64d7mr6902465pjb.31.1658957943150; Wed, 27
- Jul 2022 14:39:03 -0700 (PDT)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=UccYnvkXJ9TbV8KUpT9J6zIdbsOHqZHbizSjT0errm8=;
+        b=Iey1VLoo6jA1GKSXY2zD39ZgRGu0fkr+V11psdhAbyDceK/t7raIClGhRqCdc15fcM
+         Tp8C1nFhRwdnexy+pLg0hU64PeAzRyGIbMcudiQiMz47/6r8sGoHatw2WD68juFcQcJA
+         JthkL4Qk27/ZCbJFyJAz9ppAuvfeMX0wpv3BtAHBsspvaFNGlW0WCptvM+nT+XLHHRll
+         CIxeM9R9e6r75wU//vlbZo+y+29KNN68tY5dMjaeNq1x9FAgM1sKX9AanNYFFh2c8uGU
+         n5zskqBfKcG+BwGqibTIiYiTieesCeY1dJqJT6QRXRt7/Dy94HaSMNGERv6Hk6kAdtEy
+         Os0g==
+X-Gm-Message-State: AJIora+QznnEfd6I0XT1+8kkHLT08Ajy3V/VSA6KQBaAwxBQi/pVqC1g
+        owGC+oUsMVxbPIsNBvLCqqqrHbXyEeVxYUIO+FY=
+X-Google-Smtp-Source: AGRyM1vsQriy8kQ4jAl+BU2ma4HvbVp50hN3UCqA7Lgjqujgb5/tymV/C6dzwIl49zGE7mZtxeYPQ4KXw/bITOBNtfU=
+X-Received: by 2002:a17:907:2808:b0:72b:4d49:b2e9 with SMTP id
+ eb8-20020a170907280800b0072b4d49b2e9mr20015090ejc.176.1658962974933; Wed, 27
+ Jul 2022 16:02:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220727060856.2370358-1-kafai@fb.com> <20220727060909.2371812-1-kafai@fb.com>
- <YuFsHaTIu7dTzotG@google.com> <20220727183700.iczavo77o6ubxbwm@kafai-mbp.dhcp.thefacebook.com>
- <CAKH8qBt5-p24p9AvuEntb=gRFsJ_UQZ_GX8mFsPZZPq7CgL_4A@mail.gmail.com> <20220727212133.3uvpew67rzha6rzp@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20220727212133.3uvpew67rzha6rzp@kafai-mbp.dhcp.thefacebook.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Wed, 27 Jul 2022 14:38:51 -0700
-Message-ID: <CAKH8qBs3jp_0gRiHyzm29HaW53ZYpGYpWbmLhwi87xWKi9g=UA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 02/14] bpf: net: Avoid sock_setsockopt() taking
- sk lock when called from bpf
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+References: <20220719194028.4180569-1-jevburton.kernel@gmail.com>
+In-Reply-To: <20220719194028.4180569-1-jevburton.kernel@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 27 Jul 2022 16:02:43 -0700
+Message-ID: <CAEf4BzbWpQS6js5LfS80PkqwDwcLc+NgzfqqUTG-CkLP16shCg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] libbpf: Add bpf_obj_get_opts()
+To:     Joe Burton <jevburton.kernel@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, kernel-team@fb.com,
-        Paolo Abeni <pabeni@redhat.com>
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Joe Burton <jevburton@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,87 +75,103 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 27, 2022 at 2:21 PM Martin KaFai Lau <kafai@fb.com> wrote:
+On Tue, Jul 19, 2022 at 12:40 PM Joe Burton <jevburton.kernel@gmail.com> wrote:
 >
-> On Wed, Jul 27, 2022 at 01:39:08PM -0700, Stanislav Fomichev wrote:
-> > On Wed, Jul 27, 2022 at 11:37 AM Martin KaFai Lau <kafai@fb.com> wrote:
-> > >
-> > > On Wed, Jul 27, 2022 at 09:47:25AM -0700, sdf@google.com wrote:
-> > > > On 07/26, Martin KaFai Lau wrote:
-> > > > > Most of the codes in bpf_setsockopt(SOL_SOCKET) are duplicated from
-> > > > > the sock_setsockopt().  The number of supported options are
-> > > > > increasing ever and so as the duplicated codes.
-> > > >
-> > > > > One issue in reusing sock_setsockopt() is that the bpf prog
-> > > > > has already acquired the sk lock.  sockptr_t is useful to handle this.
-> > > > > sockptr_t already has a bit 'is_kernel' to handle the kernel-or-user
-> > > > > memory copy.  This patch adds a 'is_bpf' bit to tell if sk locking
-> > > > > has already been ensured by the bpf prog.
-> > > >
-> > > > Why not explicitly call it is_locked/is_unlocked? I'm assuming, at some
-> > > > point,
-> > > is_locked was my initial attempt.  The bpf_setsockopt() also skips
-> > > the ns_capable() check, like in patch 3.  I ended up using
-> > > one is_bpf bit here to do both.
-> >
-> > Yeah, sorry, I haven't read the whole series before I sent my first
-> > reply. Let's discuss it here.
-> >
-> > This reminds me of ns_capable in __inet_bind where we also had to add
-> > special handling.
-> >
-> > In general, not specific to the series, I wonder if we want some new
-> > in_bpf() context indication and bypass ns_capable() from those
-> > contexts?
-> > Then we can do things like:
-> >
-> >   if (sk->sk_bound_dev_if && !in_bpf() && !ns_capable(net->user_ns,
-> > CAP_NET_RAW))
-> >     return ...;
-> Don't see a way to implement in_bpf() after some thoughts.
-> Do you have idea ?
+> From: Joe Burton <jevburton@google.com>
+>
+> Add an extensible variant of bpf_obj_get() capable of setting the
+> `file_flags` parameter.
+>
+> This parameter is needed to enable unprivileged access to BPF maps.
+> Without a method like this, users must manually make the syscall.
+>
+> Signed-off-by: Joe Burton <jevburton@google.com>
+> ---
+>  tools/lib/bpf/bpf.c      | 10 ++++++++++
+>  tools/lib/bpf/bpf.h      |  9 +++++++++
+>  tools/lib/bpf/libbpf.map |  1 +
+>  3 files changed, 20 insertions(+)
+>
 
-I wonder if we can cheat a bit with the following:
+I agree that bpf_obj_get_opts should be separate from bpf_get_fd_opts.
+Just because both currently have file_flags in them doesn't mean that
+they should/will always stay in sync. So two separate opts for two
+separate APIs makes sense to me.
 
-bool setsockopt_capable(struct user_namespace *ns, int cap)
-{
-       if (!in_task()) {
-             /* Running in irq/softirq -> setsockopt invoked by bpf program.
-              * [not sure, is it safe to assume no regular path leads
-to setsockopt from sirq?]
-              */
-             return true;
-       }
+So I'd accept this patch, but please see a few small things below and
+send v3. Thanks!
 
-       /* Running in process context, task has bpf_ctx set -> invoked
-by bpf program. */
-       if (current->bpf_ctx != NULL)
-             return true;
 
-       return ns_capable(ns, cap);
-}
+> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+> index 5eb0df90eb2b..5acb0e8bd13c 100644
+> --- a/tools/lib/bpf/bpf.c
+> +++ b/tools/lib/bpf/bpf.c
+> @@ -578,12 +578,22 @@ int bpf_obj_pin(int fd, const char *pathname)
+>  }
+>
+>  int bpf_obj_get(const char *pathname)
+> +{
+> +       LIBBPF_OPTS(bpf_obj_get_opts, opts);
 
-And then do /ns_capable/setsockopt_capable/ in net/core/sock.c
+if you were doing it this way, here should be an empty line. But
+really you can/should just pass NULL instead of opts in this case.
 
-But that might be more fragile than passing the flag, idk.
+> +       return bpf_obj_get_opts(pathname, &opts);
+> +}
+> +
+> +int bpf_obj_get_opts(const char *pathname, const struct bpf_obj_get_opts *opts)
+>  {
+>         union bpf_attr attr;
+>         int fd;
+>
+> +       if (!OPTS_VALID(opts, bpf_obj_get_opts))
+> +               return libbpf_err(-EINVAL);
+> +
+>         memset(&attr, 0, sizeof(attr));
+>         attr.pathname = ptr_to_u64((void *)pathname);
+> +       attr.file_flags = OPTS_GET(opts, file_flags, 0);
+>
+>         fd = sys_bpf_fd(BPF_OBJ_GET, &attr, sizeof(attr));
+>         return libbpf_err_errno(fd);
+> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+> index 88a7cc4bd76f..f31b493b5f9a 100644
+> --- a/tools/lib/bpf/bpf.h
+> +++ b/tools/lib/bpf/bpf.h
+> @@ -270,8 +270,17 @@ LIBBPF_API int bpf_map_update_batch(int fd, const void *keys, const void *values
+>                                     __u32 *count,
+>                                     const struct bpf_map_batch_opts *opts);
+>
+> +struct bpf_obj_get_opts {
+> +       size_t sz; /* size of this struct for forward/backward compatibility */
+> +
+> +       __u32 file_flags;
 
-> > Or would it make things more confusing?
-> >
-> >
-> >
-> > > > we can have code paths in bpf where the socket has been already locked by
-> > > > the stack?
-> > > hmm... You meant the opposite, like the bpf hook does not have the
-> > > lock pre-acquired before the bpf prog gets run and sock_setsockopt()
-> > > should do lock_sock() as usual?
-> > >
-> > > I was thinking a likely situation is a bpf 'sleepable' hook does not
-> > > have the lock pre-acquired.  In that case, the bpf_setsockopt() could
-> > > always acquire the lock first but it may turn out to be too
-> > > pessmissitic for the future bpf_[G]etsockopt() refactoring.
-> > >
-> > > or we could do this 'bit' break up (into one is_locked bit
-> > > for locked and one is_bpf to skip-capable-check).  I was waiting until a real
-> > > need comes up instead of having both bits always true now.  I don't mind to
-> > > add is_locked now since the bpf_lsm_cgroup may come to sleepable soon.
-> > > I can do this in the next spin.
+please add size_t :0; to avoid non-zero-initialized padding  (we do it
+in a lot of other opts structs)
+
+
+> +};
+> +#define bpf_obj_get_opts__last_field file_flags
+> +
+>  LIBBPF_API int bpf_obj_pin(int fd, const char *pathname);
+>  LIBBPF_API int bpf_obj_get(const char *pathname);
+> +LIBBPF_API int bpf_obj_get_opts(const char *pathname,
+> +                               const struct bpf_obj_get_opts *opts);
+>
+>  struct bpf_prog_attach_opts {
+>         size_t sz; /* size of this struct for forward/backward compatibility */
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index 0625adb9e888..119e6e1ea7f1 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -355,6 +355,7 @@ LIBBPF_0.8.0 {
+>
+>  LIBBPF_1.0.0 {
+>         global:
+> +               bpf_obj_get_opts;
+>                 bpf_prog_query_opts;
+>                 bpf_program__attach_ksyscall;
+>                 btf__add_enum64;
+> --
+> 2.37.0.170.g444d1eabd0-goog
+>
