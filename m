@@ -2,281 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FEA2581F01
-	for <lists+bpf@lfdr.de>; Wed, 27 Jul 2022 06:37:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C800581FD8
+	for <lists+bpf@lfdr.de>; Wed, 27 Jul 2022 08:09:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240359AbiG0Eho (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jul 2022 00:37:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38194 "EHLO
+        id S229760AbiG0GJM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jul 2022 02:09:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239972AbiG0Ehn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Jul 2022 00:37:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8E5113D5B3
-        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 21:37:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1658896661;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eglJXh28UWwMt7nfBux4PPlOeAEHThKdFwbJ4et/2A8=;
-        b=KDMXYbcDiB7Ovgd+MI+K7xaBbNi7yacHpY1GoMG1w1bZR9EHU3UIQwWosku1d0XlbFfEfM
-        LIclddEpErPX5YDJWz3/qNH1oLz2Qbn/JRCJLLtpeJSsPciYp/WE6LLN6dAWPi8/33hw3Q
-        E8FKgOhlzNzSNh5ZjgCtTCFaHT0UZZM=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-47-D_PTObRQNmyB-uLFWt5UwA-1; Wed, 27 Jul 2022 00:37:39 -0400
-X-MC-Unique: D_PTObRQNmyB-uLFWt5UwA-1
-Received: by mail-pf1-f200.google.com with SMTP id r7-20020aa79627000000b00528beaf82c3so5440270pfg.8
-        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 21:37:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=eglJXh28UWwMt7nfBux4PPlOeAEHThKdFwbJ4et/2A8=;
-        b=3aCCB0xErr8XDdhUrRub7MWvH5zxZyYNG2E9zdw2DrZBE8RN4SrPy5+fRdQLJKwQxp
-         2DAzkZ5EbLf7kRO+PAAM4O7xuqQ93mHRJqMuQDHVRnN0wtva3idEiePaanrNzGR9sKN1
-         6BhuEm0T5GaqFNaHH3rPlLvxXyAgzveMd7e1PfugyPDWZ3cbU4/cikYBi2tBE2r0XuFP
-         UybVvzlFAZnRdULpj+DE0Hn1znMMsILOpgdcWjhKTCJrcFb/LE6paXQz5NKE0gnCAyw8
-         QPuHMOO/VrTf+5AO4BPma8/co65Odk4RCA7VetkwMRCB8201sNS6GizG0M6F+RzvIZsV
-         GGiA==
-X-Gm-Message-State: AJIora8cHgLasuwn/R8evZPK86/xFHvSTN/iVjp3bxxI7mf0dQEuDMJv
-        WVEeekgpKxgdCHSxwOdB8JIML6OBwmAjNwe/Utb3tc8wl79z22SV18TOzQwVrM+u7EfNq7JgDue
-        pa56NLUEr/tIV
-X-Received: by 2002:a17:90b:4c51:b0:1f2:46b2:7c28 with SMTP id np17-20020a17090b4c5100b001f246b27c28mr2510295pjb.231.1658896657994;
-        Tue, 26 Jul 2022 21:37:37 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1tcSW0SH/oE3E1QIJ9xZXlmolMaePDPPfBCRfkcaVWN7oKvG/J6RPnSNe2Qq4YMnD3xbv2vjg==
-X-Received: by 2002:a17:90b:4c51:b0:1f2:46b2:7c28 with SMTP id np17-20020a17090b4c5100b001f246b27c28mr2510272pjb.231.1658896657718;
-        Tue, 26 Jul 2022 21:37:37 -0700 (PDT)
-Received: from [10.72.12.96] ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id t4-20020a170902e84400b0016a0bf0ce32sm12698532plg.70.2022.07.26.21.37.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jul 2022 21:37:30 -0700 (PDT)
-Message-ID: <980553b7-ba12-bcdf-0be0-8f3da5985441@redhat.com>
-Date:   Wed, 27 Jul 2022 12:37:12 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.11.0
-Subject: Re: [PATCH v13 32/42] virtio_pci: support VIRTIO_F_RING_RESET
-Content-Language: en-US
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        virtualization@lists.linux-foundation.org
-Cc:     Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Vadim Pasternak <vadimp@nvidia.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229924AbiG0GJG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Jul 2022 02:09:06 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 934FA3FA0B
+        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 23:09:05 -0700 (PDT)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 26QND3cS001027
+        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 23:09:04 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=/sS9tLVy0y93k2xzF9fh/c4ifa2Z9xGz3jqt21SgAxI=;
+ b=MJsJYZUdSXOfmEU0j6gJ+N++Le91AIGtLCEQH3C9Heb9EOqys3+2yibUEdvUS0vdjiZa
+ Gq3CGzcTWz/iSafSUMo00Vzyg3F+yBz7aDEDWVK0lgNpareCmHrQbIdV8sVUUQCKHSCz
+ vIB2jzzuj58GbdLWNfQX0lGF1d6/H8T3lQw= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net (PPS) with ESMTPS id 3hjj4e4wd1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 23:09:04 -0700
+Received: from twshared5413.23.frc3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28; Tue, 26 Jul 2022 23:09:03 -0700
+Received: by devbig933.frc1.facebook.com (Postfix, from userid 6611)
+        id 4B993757CB36; Tue, 26 Jul 2022 23:08:56 -0700 (PDT)
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        linux-um@lists.infradead.org, netdev@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
-        kvm@vger.kernel.org, bpf@vger.kernel.org,
-        kangjie.xu@linux.alibaba.com
-References: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
- <20220726072225.19884-33-xuanzhuo@linux.alibaba.com>
-From:   Jason Wang <jasowang@redhat.com>
-In-Reply-To: <20220726072225.19884-33-xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        David Miller <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, <kernel-team@fb.com>,
+        Paolo Abeni <pabeni@redhat.com>
+Subject: [PATCH bpf-next 00/14] bpf: net: Remove duplicated codes from bpf_setsockopt()
+Date:   Tue, 26 Jul 2022 23:08:56 -0700
+Message-ID: <20220727060856.2370358-1-kafai@fb.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: 8Q34RsVWDU4NgEKtvS5Kw4Mwx6w2XVgV
+X-Proofpoint-GUID: 8Q34RsVWDU4NgEKtvS5Kw4Mwx6w2XVgV
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-07-26_07,2022-07-26_01,2022-06-22_01
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+The codes in bpf_setsockopt() is mostly a copy-and-paste from
+the sock_setsockopt(), do_tcp_setsockopt(), do_ipv6_setsockopt(),
+and do_ip_setsockopt().  As the allowed optnames in bpf_setsockopt()
+grows, so are the duplicated codes.  The codes between the copies
+also slowly drifted.
 
-在 2022/7/26 15:22, Xuan Zhuo 写道:
-> This patch implements virtio pci support for QUEUE RESET.
->
-> Performing reset on a queue is divided into these steps:
->
->   1. notify the device to reset the queue
->   2. recycle the buffer submitted
->   3. reset the vring (may re-alloc)
->   4. mmap vring to device, and enable the queue
->
-> This patch implements virtio_reset_vq(), virtio_enable_resetq() in the
-> pci scenario.
->
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+This set is an effort to clean this up and reuse the existing
+{sock,do_tcp,do_ipv6,do_ip}_setsockopt() as much as possible.
 
+After the clean up, this set also adds a few allowed optnames
+that we need to the bpf_setsockopt().
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+The initial attempt was to clean up both bpf_setsockopt() and
+bpf_getsockopt() together.  However, the patch set was getting
+too long.  It is beneficial to leave the bpf_getsockopt()
+out for another patch set.  Thus, this set is focusing
+on the bpf_setsockopt().
 
+Martin KaFai Lau (14):
+  net: Change sock_setsockopt from taking sock ptr to sk ptr
+  bpf: net: Avoid sock_setsockopt() taking sk lock when called from bpf
+  bpf: net: Consider optval.is_bpf before capable check in
+    sock_setsockopt()
+  bpf: net: Avoid do_tcp_setsockopt() taking sk lock when called from
+    bpf
+  bpf: net: Avoid do_ip_setsockopt() taking sk lock when called from bpf
+  bpf: net: Avoid do_ipv6_setsockopt() taking sk lock when called from
+    bpf
+  bpf: Embed kernel CONFIG check into the if statement in bpf_setsockopt
+  bpf: Change bpf_setsockopt(SOL_SOCKET) to reuse sock_setsockopt()
+  bpf: Refactor bpf specific tcp optnames to a new function
+  bpf: Change bpf_setsockopt(SOL_TCP) to reuse do_tcp_setsockopt()
+  bpf: Change bpf_setsockopt(SOL_IP) to reuse do_ip_setsockopt()
+  bpf: Change bpf_setsockopt(SOL_IPV6) to reuse do_ipv6_setsockopt()
+  bpf: Add a few optnames to bpf_setsockopt
+  selftests/bpf: bpf_setsockopt tests
 
-> ---
->   drivers/virtio/virtio_pci_common.c | 12 +++-
->   drivers/virtio/virtio_pci_modern.c | 88 ++++++++++++++++++++++++++++++
->   2 files changed, 97 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
-> index ca51fcc9daab..ad258a9d3b9f 100644
-> --- a/drivers/virtio/virtio_pci_common.c
-> +++ b/drivers/virtio/virtio_pci_common.c
-> @@ -214,9 +214,15 @@ static void vp_del_vq(struct virtqueue *vq)
->   	struct virtio_pci_vq_info *info = vp_dev->vqs[vq->index];
->   	unsigned long flags;
->   
-> -	spin_lock_irqsave(&vp_dev->lock, flags);
-> -	list_del(&info->node);
-> -	spin_unlock_irqrestore(&vp_dev->lock, flags);
-> +	/*
-> +	 * If it fails during re-enable reset vq. This way we won't rejoin
-> +	 * info->node to the queue. Prevent unexpected irqs.
-> +	 */
-> +	if (!vq->reset) {
-> +		spin_lock_irqsave(&vp_dev->lock, flags);
-> +		list_del(&info->node);
-> +		spin_unlock_irqrestore(&vp_dev->lock, flags);
-> +	}
->   
->   	vp_dev->del_vq(info);
->   	kfree(info);
-> diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
-> index 9041d9a41b7d..c3b9f2761849 100644
-> --- a/drivers/virtio/virtio_pci_modern.c
-> +++ b/drivers/virtio/virtio_pci_modern.c
-> @@ -34,6 +34,9 @@ static void vp_transport_features(struct virtio_device *vdev, u64 features)
->   	if ((features & BIT_ULL(VIRTIO_F_SR_IOV)) &&
->   			pci_find_ext_capability(pci_dev, PCI_EXT_CAP_ID_SRIOV))
->   		__virtio_set_bit(vdev, VIRTIO_F_SR_IOV);
-> +
-> +	if (features & BIT_ULL(VIRTIO_F_RING_RESET))
-> +		__virtio_set_bit(vdev, VIRTIO_F_RING_RESET);
->   }
->   
->   /* virtio config->finalize_features() implementation */
-> @@ -199,6 +202,87 @@ static int vp_active_vq(struct virtqueue *vq, u16 msix_vec)
->   	return 0;
->   }
->   
-> +static int vp_modern_disable_vq_and_reset(struct virtqueue *vq)
-> +{
-> +	struct virtio_pci_device *vp_dev = to_vp_device(vq->vdev);
-> +	struct virtio_pci_modern_device *mdev = &vp_dev->mdev;
-> +	struct virtio_pci_vq_info *info;
-> +	unsigned long flags;
-> +
-> +	if (!virtio_has_feature(vq->vdev, VIRTIO_F_RING_RESET))
-> +		return -ENOENT;
-> +
-> +	vp_modern_set_queue_reset(mdev, vq->index);
-> +
-> +	info = vp_dev->vqs[vq->index];
-> +
-> +	/* delete vq from irq handler */
-> +	spin_lock_irqsave(&vp_dev->lock, flags);
-> +	list_del(&info->node);
-> +	spin_unlock_irqrestore(&vp_dev->lock, flags);
-> +
-> +	INIT_LIST_HEAD(&info->node);
-> +
-> +#ifdef CONFIG_VIRTIO_HARDEN_NOTIFICATION
-> +	__virtqueue_break(vq);
-> +#endif
-> +
-> +	/* For the case where vq has an exclusive irq, call synchronize_irq() to
-> +	 * wait for completion.
-> +	 *
-> +	 * note: We can't use disable_irq() since it conflicts with the affinity
-> +	 * managed IRQ that is used by some drivers.
-> +	 */
-> +	if (vp_dev->per_vq_vectors && info->msix_vector != VIRTIO_MSI_NO_VECTOR)
-> +		synchronize_irq(pci_irq_vector(vp_dev->pci_dev, info->msix_vector));
-> +
-> +	vq->reset = true;
-> +
-> +	return 0;
-> +}
-> +
-> +static int vp_modern_enable_vq_after_reset(struct virtqueue *vq)
-> +{
-> +	struct virtio_pci_device *vp_dev = to_vp_device(vq->vdev);
-> +	struct virtio_pci_modern_device *mdev = &vp_dev->mdev;
-> +	struct virtio_pci_vq_info *info;
-> +	unsigned long flags, index;
-> +	int err;
-> +
-> +	if (!vq->reset)
-> +		return -EBUSY;
-> +
-> +	index = vq->index;
-> +	info = vp_dev->vqs[index];
-> +
-> +	if (vp_modern_get_queue_reset(mdev, index))
-> +		return -EBUSY;
-> +
-> +	if (vp_modern_get_queue_enable(mdev, index))
-> +		return -EBUSY;
-> +
-> +	err = vp_active_vq(vq, info->msix_vector);
-> +	if (err)
-> +		return err;
-> +
-> +	if (vq->callback) {
-> +		spin_lock_irqsave(&vp_dev->lock, flags);
-> +		list_add(&info->node, &vp_dev->virtqueues);
-> +		spin_unlock_irqrestore(&vp_dev->lock, flags);
-> +	} else {
-> +		INIT_LIST_HEAD(&info->node);
-> +	}
-> +
-> +#ifdef CONFIG_VIRTIO_HARDEN_NOTIFICATION
-> +	__virtqueue_unbreak(vq);
-> +#endif
-> +
-> +	vp_modern_set_queue_enable(&vp_dev->mdev, index, true);
-> +	vq->reset = false;
-> +
-> +	return 0;
-> +}
-> +
->   static u16 vp_config_vector(struct virtio_pci_device *vp_dev, u16 vector)
->   {
->   	return vp_modern_config_vector(&vp_dev->mdev, vector);
-> @@ -413,6 +497,8 @@ static const struct virtio_config_ops virtio_pci_config_nodev_ops = {
->   	.set_vq_affinity = vp_set_vq_affinity,
->   	.get_vq_affinity = vp_get_vq_affinity,
->   	.get_shm_region  = vp_get_shm_region,
-> +	.disable_vq_and_reset = vp_modern_disable_vq_and_reset,
-> +	.enable_vq_after_reset = vp_modern_enable_vq_after_reset,
->   };
->   
->   static const struct virtio_config_ops virtio_pci_config_ops = {
-> @@ -431,6 +517,8 @@ static const struct virtio_config_ops virtio_pci_config_ops = {
->   	.set_vq_affinity = vp_set_vq_affinity,
->   	.get_vq_affinity = vp_get_vq_affinity,
->   	.get_shm_region  = vp_get_shm_region,
-> +	.disable_vq_and_reset = vp_modern_disable_vq_and_reset,
-> +	.enable_vq_after_reset = vp_modern_enable_vq_after_reset,
->   };
->   
->   /* the PCI probing function */
+ drivers/nvme/host/tcp.c                       |   2 +-
+ fs/ksmbd/transport_tcp.c                      |   2 +-
+ include/linux/sockptr.h                       |   8 +-
+ include/net/ip.h                              |   2 +
+ include/net/ipv6.h                            |   2 +
+ include/net/ipv6_stubs.h                      |   2 +
+ include/net/sock.h                            |  14 +-
+ include/net/tcp.h                             |   2 +
+ net/core/filter.c                             | 378 +++++-------
+ net/core/sock.c                               |  25 +-
+ net/ipv4/ip_sockglue.c                        |  10 +-
+ net/ipv4/tcp.c                                |  21 +-
+ net/ipv6/af_inet6.c                           |   1 +
+ net/ipv6/ipv6_sockglue.c                      |  10 +-
+ net/mptcp/sockopt.c                           |  12 +-
+ net/socket.c                                  |   2 +-
+ .../selftests/bpf/prog_tests/setget_sockopt.c | 125 ++++
+ .../selftests/bpf/progs/setget_sockopt.c      | 538 ++++++++++++++++++
+ 18 files changed, 890 insertions(+), 266 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/setget_sockopt=
+.c
+ create mode 100644 tools/testing/selftests/bpf/progs/setget_sockopt.c
+
+--=20
+2.30.2
 
