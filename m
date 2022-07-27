@@ -2,154 +2,225 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1114F581CAE
-	for <lists+bpf@lfdr.de>; Wed, 27 Jul 2022 02:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7786581DD1
+	for <lists+bpf@lfdr.de>; Wed, 27 Jul 2022 04:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230315AbiG0AML (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jul 2022 20:12:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59692 "EHLO
+        id S240139AbiG0C61 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jul 2022 22:58:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233245AbiG0AML (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Jul 2022 20:12:11 -0400
-Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A1952A40F
-        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 17:12:09 -0700 (PDT)
-Received: from submission (posteo.de [185.67.36.169]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id AF1D3240028
-        for <bpf@vger.kernel.org>; Wed, 27 Jul 2022 02:12:07 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1658880727; bh=9ACQZKOkhvUrSY9x58olahJw+M5bofljsIf5P7c5rgM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=aul496yo5CHs7pKhEEQH0G2OqWephNlzfzWQinjW+OPgzv52QP6OyaUwJcrDfA6ok
-         3mAxW7X26aJud82j7J6xFguzQ7oSB02N9OoEtCmYafOxwDXqeVuXsohhpDpqg/lsBB
-         91UCQnI9iGMVrQR7Md+0WK3bRcKnmEd9CDEaYkaXnNeonis1AOsnHL0bou9P1OvPEP
-         OI3UEXKzZdrP3LddmE8LtjXiT8/1enyZQNuLAxVFfc9X+efXVfcrMW32VsMsCLQDTg
-         Dolup37dZQkddWt9/IKLN81jsGE3Nb4/fxar18U+fucxoSh6m3owU1ReV2qgkiDNVE
-         Bfz2a0hjq11gg==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4LsvNR060Kz6tnX;
-        Wed, 27 Jul 2022 02:12:07 +0200 (CEST)
-From:   =?UTF-8?q?Daniel=20M=C3=BCller?= <deso@posteo.net>
-To:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com
-Cc:     mykolal@fb.com, Martin KaFai Lau <kafai@fb.com>
-Subject: [PATCH bpf-next v4 3/3] selftests/bpf: Adjust vmtest.sh to use local kernel configuration
-Date:   Wed, 27 Jul 2022 00:11:56 +0000
-Message-Id: <20220727001156.3553701-4-deso@posteo.net>
-In-Reply-To: <20220727001156.3553701-1-deso@posteo.net>
-References: <20220727001156.3553701-1-deso@posteo.net>
+        with ESMTP id S240181AbiG0C6Z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Jul 2022 22:58:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 61E53371B3
+        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 19:58:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1658890703;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NwgcPcXk6z7kgNTCqH1DZ8dzrfHRERNfOmiystTGRCg=;
+        b=f8AVmEMSn2hMO0DMfDROjoAtSlCNUvtorTs6giosUgag6KPmm6styuNDctA+ph2yE44YQJ
+        ja6sKjyTmquUfa+yrZPbqeW91CRt39l8KMk58q9FtzmMpqBYT77s4i/k9hgPZjpqUH5Oje
+        +oVJ6fmvJP3vmuam9C344/9QNjqfYzQ=
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
+ [209.85.215.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-237-OpoHpeNLOCCBsWd72D8c7w-1; Tue, 26 Jul 2022 22:58:20 -0400
+X-MC-Unique: OpoHpeNLOCCBsWd72D8c7w-1
+Received: by mail-pg1-f199.google.com with SMTP id d31-20020a631d1f000000b0041a5a805e26so7145796pgd.16
+        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 19:58:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=NwgcPcXk6z7kgNTCqH1DZ8dzrfHRERNfOmiystTGRCg=;
+        b=hzSfyjAjWC+gspzNs2z/b2eiiT1gWm9RhMsQU82djoB7oObA8tA5TTMp+u2TBrmIho
+         bOjRZyHanrvwapedjVFTGmSzI5XdP68tRQIdVP0o7MucxK7BPyJ+Klct0jFz3YmYFNnC
+         LWjeJXlBBt0CnMQJFLoNjtwJhugMfKuq29Mw395B9VpstxLtHip/JOU32WR4pq5qMZPX
+         aFzyEzmKNI3sTeK9ZtTcipfedrIoP9du07Q0bTBEzVmLW0nPMfmTINJP0fMgHUlMRt7D
+         2VXWZZQoKsCFCnTRBwYDwwVEJi74JsSBWtxBhcri6/eJNxukqS+mkn9nflApalKUU/xz
+         Qbnw==
+X-Gm-Message-State: AJIora/VXmyL+t6US2OU6QTklOEPZRTQ2yBbJO85BJO23z9fmXvE/BJS
+        2Hp94rLjVEja+cnTE3kJ6zfSLs5JpBoODppeyFbR7UQtj3Cx5dMiJ6Luz75uaJX5DAUtIl28dtK
+        xMgofQXGy0V0a
+X-Received: by 2002:a05:6a00:3498:b0:52a:f8f4:ca7c with SMTP id cp24-20020a056a00349800b0052af8f4ca7cmr20263317pfb.5.1658890699173;
+        Tue, 26 Jul 2022 19:58:19 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1uuhsCO0beWJTkbHykdBYq0Xbk9J6+h1S6RkU7roXWbxlzqfZMfKPxtL0BmhUqMmNTZjLJ/Gg==
+X-Received: by 2002:a05:6a00:3498:b0:52a:f8f4:ca7c with SMTP id cp24-20020a056a00349800b0052af8f4ca7cmr20263286pfb.5.1658890698768;
+        Tue, 26 Jul 2022 19:58:18 -0700 (PDT)
+Received: from [10.72.13.38] ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id u8-20020a1709026e0800b0016c29dcf1f7sm12230642plk.122.2022.07.26.19.58.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Jul 2022 19:58:18 -0700 (PDT)
+Message-ID: <a5449e49-ba38-9760-ac07-cfad048bc602@redhat.com>
+Date:   Wed, 27 Jul 2022 10:58:05 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.11.0
+Subject: Re: [PATCH v13 07/42] virtio_ring: split: stop __vring_new_virtqueue
+ as export symbol
+Content-Language: en-US
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        virtualization@lists.linux-foundation.org
+Cc:     Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Vadim Pasternak <vadimp@nvidia.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        linux-um@lists.infradead.org, netdev@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+        kvm@vger.kernel.org, bpf@vger.kernel.org,
+        kangjie.xu@linux.alibaba.com
+References: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
+ <20220726072225.19884-8-xuanzhuo@linux.alibaba.com>
+From:   Jason Wang <jasowang@redhat.com>
+In-Reply-To: <20220726072225.19884-8-xuanzhuo@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-So far the vmtest.sh script, which can be used as a convenient way to
-run bpf selftests, has obtained the kernel config safe to use for
-testing from the libbpf/libbpf GitHub repository [0].
-Given that we now have included this configuration into this very
-repository, we can just consume it from here as well, eliminating the
-necessity of remote accesses.
-With this change we adjust the logic in the script to use the
-configuration from below tools/testing/selftests/bpf/configs/ instead of
-pulling it over the network.
 
-[0]: https://github.com/libbpf/libbpf
+在 2022/7/26 15:21, Xuan Zhuo 写道:
+> There is currently only one place to reference __vring_new_virtqueue()
+> directly from the outside of virtio core. And here vring_new_virtqueue()
+> can be used instead.
+>
+> Subsequent patches will modify __vring_new_virtqueue, so stop it as an
+> export symbol for now.
+>
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> ---
+>   drivers/virtio/virtio_ring.c | 25 ++++++++++++++++---------
+>   include/linux/virtio_ring.h  | 10 ----------
+>   tools/virtio/virtio_test.c   |  4 ++--
+>   3 files changed, 18 insertions(+), 21 deletions(-)
+>
+> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> index 0ad35eca0d39..4e54ed7ee7fb 100644
+> --- a/drivers/virtio/virtio_ring.c
+> +++ b/drivers/virtio/virtio_ring.c
+> @@ -204,6 +204,14 @@ struct vring_virtqueue {
+>   #endif
+>   };
+>   
+> +static struct virtqueue *__vring_new_virtqueue(unsigned int index,
+> +					       struct vring vring,
+> +					       struct virtio_device *vdev,
+> +					       bool weak_barriers,
+> +					       bool context,
+> +					       bool (*notify)(struct virtqueue *),
+> +					       void (*callback)(struct virtqueue *),
+> +					       const char *name);
+>   
+>   /*
+>    * Helpers.
+> @@ -2197,14 +2205,14 @@ irqreturn_t vring_interrupt(int irq, void *_vq)
+>   EXPORT_SYMBOL_GPL(vring_interrupt);
+>   
+>   /* Only available for split ring */
+> -struct virtqueue *__vring_new_virtqueue(unsigned int index,
+> -					struct vring vring,
+> -					struct virtio_device *vdev,
+> -					bool weak_barriers,
+> -					bool context,
+> -					bool (*notify)(struct virtqueue *),
+> -					void (*callback)(struct virtqueue *),
+> -					const char *name)
+> +static struct virtqueue *__vring_new_virtqueue(unsigned int index,
+> +					       struct vring vring,
+> +					       struct virtio_device *vdev,
+> +					       bool weak_barriers,
+> +					       bool context,
+> +					       bool (*notify)(struct virtqueue *),
+> +					       void (*callback)(struct virtqueue *),
+> +					       const char *name)
+>   {
+>   	struct vring_virtqueue *vq;
+>   
+> @@ -2272,7 +2280,6 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
+>   	kfree(vq);
+>   	return NULL;
+>   }
+> -EXPORT_SYMBOL_GPL(__vring_new_virtqueue);
+>   
+>   struct virtqueue *vring_create_virtqueue(
+>   	unsigned int index,
+> diff --git a/include/linux/virtio_ring.h b/include/linux/virtio_ring.h
+> index b485b13fa50b..8b8af1a38991 100644
+> --- a/include/linux/virtio_ring.h
+> +++ b/include/linux/virtio_ring.h
+> @@ -76,16 +76,6 @@ struct virtqueue *vring_create_virtqueue(unsigned int index,
+>   					 void (*callback)(struct virtqueue *vq),
+>   					 const char *name);
+>   
+> -/* Creates a virtqueue with a custom layout. */
+> -struct virtqueue *__vring_new_virtqueue(unsigned int index,
+> -					struct vring vring,
+> -					struct virtio_device *vdev,
+> -					bool weak_barriers,
+> -					bool ctx,
+> -					bool (*notify)(struct virtqueue *),
+> -					void (*callback)(struct virtqueue *),
+> -					const char *name);
+> -
+>   /*
+>    * Creates a virtqueue with a standard layout but a caller-allocated
+>    * ring.
+> diff --git a/tools/virtio/virtio_test.c b/tools/virtio/virtio_test.c
+> index 23f142af544a..86a410ddcedd 100644
+> --- a/tools/virtio/virtio_test.c
+> +++ b/tools/virtio/virtio_test.c
+> @@ -102,8 +102,8 @@ static void vq_reset(struct vq_info *info, int num, struct virtio_device *vdev)
+>   
+>   	memset(info->ring, 0, vring_size(num, 4096));
+>   	vring_init(&info->vring, num, info->ring, 4096);
 
-Signed-off-by: Daniel Müller <deso@posteo.net>
-Acked-by: Martin KaFai Lau <kafai@fb.com>
-Acked-by: Mykola Lysenko <mykolal@fb.com>
----
- tools/testing/selftests/bpf/vmtest.sh | 51 +++++++++++++++++----------
- 1 file changed, 33 insertions(+), 18 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/vmtest.sh b/tools/testing/selftests/bpf/vmtest.sh
-index e0bb04a..b86ae4 100755
---- a/tools/testing/selftests/bpf/vmtest.sh
-+++ b/tools/testing/selftests/bpf/vmtest.sh
-@@ -30,8 +30,7 @@ DEFAULT_COMMAND="./test_progs"
- MOUNT_DIR="mnt"
- ROOTFS_IMAGE="root.img"
- OUTPUT_DIR="$HOME/.bpf_selftests"
--KCONFIG_URL="https://raw.githubusercontent.com/libbpf/libbpf/master/travis-ci/vmtest/configs/config-latest.${ARCH}"
--KCONFIG_API_URL="https://api.github.com/repos/libbpf/libbpf/contents/travis-ci/vmtest/configs/config-latest.${ARCH}"
-+KCONFIG_REL_PATHS=("tools/testing/selftests/bpf/config" "tools/testing/selftests/bpf/config.${ARCH}")
- INDEX_URL="https://raw.githubusercontent.com/libbpf/ci/master/INDEX"
- NUM_COMPILE_JOBS="$(nproc)"
- LOG_FILE_BASE="$(date +"bpf_selftests.%Y-%m-%d_%H-%M-%S")"
-@@ -269,26 +268,42 @@ is_rel_path()
- 	[[ ${path:0:1} != "/" ]]
- }
- 
-+do_update_kconfig()
-+{
-+	local kernel_checkout="$1"
-+	local kconfig_file="$2"
-+
-+	rm -f "$kconfig_file" 2> /dev/null
-+
-+	for config in "${KCONFIG_REL_PATHS[@]}"; do
-+		local kconfig_src="${kernel_checkout}/${config}"
-+		cat "$kconfig_src" >> "$kconfig_file"
-+	done
-+}
-+
- update_kconfig()
- {
--	local kconfig_file="$1"
--	local update_command="curl -sLf ${KCONFIG_URL} -o ${kconfig_file}"
--	# Github does not return the "last-modified" header when retrieving the
--	# raw contents of the file. Use the API call to get the last-modified
--	# time of the kernel config and only update the config if it has been
--	# updated after the previously cached config was created. This avoids
--	# unnecessarily compiling the kernel and selftests.
-+	local kernel_checkout="$1"
-+	local kconfig_file="$2"
-+
- 	if [[ -f "${kconfig_file}" ]]; then
--		local last_modified_date="$(curl -sL -D - "${KCONFIG_API_URL}" -o /dev/null | \
--			grep "last-modified" | awk -F ': ' '{print $2}')"
--		local remote_modified_timestamp="$(date -d "${last_modified_date}" +"%s")"
--		local local_creation_timestamp="$(stat -c %Y "${kconfig_file}")"
-+		local local_modified="$(stat -c %Y "${kconfig_file}")"
- 
--		if [[ "${remote_modified_timestamp}" -gt "${local_creation_timestamp}" ]]; then
--			${update_command}
--		fi
-+		for config in "${KCONFIG_REL_PATHS[@]}"; do
-+			local kconfig_src="${kernel_checkout}/${config}"
-+			local src_modified="$(stat -c %Y "${kconfig_src}")"
-+			# Only update the config if it has been updated after the
-+			# previously cached config was created. This avoids
-+			# unnecessarily compiling the kernel and selftests.
-+			if [[ "${src_modified}" -gt "${local_modified}" ]]; then
-+				do_update_kconfig "$kernel_checkout" "$kconfig_file"
-+				# Once we have found one outdated configuration
-+				# there is no need to check other ones.
-+				break
-+			fi
-+		done
- 	else
--		${update_command}
-+		do_update_kconfig "$kernel_checkout" "$kconfig_file"
- 	fi
- }
- 
-@@ -372,7 +387,7 @@ main()
- 
- 	mkdir -p "${OUTPUT_DIR}"
- 	mkdir -p "${mount_dir}"
--	update_kconfig "${kconfig_file}"
-+	update_kconfig "${kernel_checkout}" "${kconfig_file}"
- 
- 	recompile_kernel "${kernel_checkout}" "${make_command}"
- 
--- 
-2.30.2
+Let's remove the duplicated vring_init() here.
+
+With this removed:
+
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+
+> -	info->vq = __vring_new_virtqueue(info->idx, info->vring, vdev, true,
+> -					 false, vq_notify, vq_callback, "test");
+> +	info->vq = vring_new_virtqueue(info->idx, num, 4096, vdev, true, false,
+> +				       info->ring, vq_notify, vq_callback, "test");
+>   	assert(info->vq);
+>   	info->vq->priv = info;
+>   }
 
