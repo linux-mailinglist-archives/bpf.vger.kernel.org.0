@@ -2,69 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F3565821DD
-	for <lists+bpf@lfdr.de>; Wed, 27 Jul 2022 10:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0D7A5821F2
+	for <lists+bpf@lfdr.de>; Wed, 27 Jul 2022 10:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbiG0IQm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jul 2022 04:16:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38264 "EHLO
+        id S229501AbiG0IUa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jul 2022 04:20:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229690AbiG0IQl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Jul 2022 04:16:41 -0400
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84AFD5FB8
-        for <bpf@vger.kernel.org>; Wed, 27 Jul 2022 01:16:40 -0700 (PDT)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-31f56c42ab5so30973947b3.10
-        for <bpf@vger.kernel.org>; Wed, 27 Jul 2022 01:16:40 -0700 (PDT)
+        with ESMTP id S229608AbiG0IU3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Jul 2022 04:20:29 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFE5EDFF6
+        for <bpf@vger.kernel.org>; Wed, 27 Jul 2022 01:20:28 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id h16so8528070ila.2
+        for <bpf@vger.kernel.org>; Wed, 27 Jul 2022 01:20:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=TosQt7+C6WVDgeW3pqLpixZ2CG0ue4hW6mKDztF+riI=;
-        b=ewV8nzHI7JjrNhkdqJI6eEzQ0a8NHsR59OqkPqFN9gmcL2mm3GH97ruy12TfQAdeDn
-         NKkCzJmG00tptTd030QoLBbUjGh2c2rNFMq/y8tdfx2t80V1o+4x97aF4BfSEvWZzqXG
-         EoCeEJHjQp5oQI5oNuVf/hc+KxEUmKrifz8KkK+wkL0DpMfJKhCw/2kmJOP8fnEravqm
-         OCjR6/379HopAwgQk2amBUOCeeH2ilJaPfWiEKGWjFX+KNGKkXzn1JjP0izGNR0Y46Sa
-         CByJVZlILLHFgtQDR7960DES6HBEhbSEyzN3EWlqyY34YdWKJB9/rKbrv/W8O3xT1N2/
-         Sm0A==
+        bh=ubWnxBZMtleRzsIovroO38JBZF9A1N9XxiKcgjIWA7o=;
+        b=XH8bhrjVe9LOO68lO0UxmucHvw5eX9EhiGFSOiUMj1vheR4qi0tVAldtoqQoZm3PSY
+         3MeQHIyKSHAUwlpT95pmVQuC4A+avofBkSvVLzJE759d/carXvQ1rQEwpT1EFAUx54UV
+         RysPLORIElrCTcdN0aSzHlV+rJXf65gKM0h/VyVhb26g1YaJfOqLhDuXzPTkF1buvjPZ
+         1WP6qxpC4YUbd0gM/TWVUdjtB2qhGhRkIEoBqoJGto54lFpW7kFflHEti5ejKtErWmcp
+         NXteJjN0iFWpl4KhVXalJ6RfijMt+5a7pKqYdCZrRur670J4aBMpTS9viRJc5YTT9j62
+         judw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=TosQt7+C6WVDgeW3pqLpixZ2CG0ue4hW6mKDztF+riI=;
-        b=GlLfNVBivK2Vq+LLHgljcnTyclZhiKGlUHMHEssTJF2bSv8NHtmWbRTyBVk9fBjZLk
-         tzYcGcIM53gqWuD+T7Mx/ODlKYitpxLYAWtcrPgFCVLUnH7JzgheFTVitkfMTzbiI7UC
-         hlRlc/w4pHL+a2yAoOHrv6JflBZ6T8OCIkAkyYhBi+SqjVYMiyccxJ5StBCstfP1Whj4
-         c8iUws2XovCjUNXwTmEhzi/3p0jmN6XoYai6GP2X3KMPPlBr1E+Y63eS573uqYru48ga
-         rTB4NF+7e5CnCZm5DsPbfH3tEkPXqNdRoTx5Ap2IIB13Mjfb8IX7v6Jhbeb/mWK0D1B0
-         RHEA==
-X-Gm-Message-State: AJIora/z/7Dulk95LDgDPYdMkEpnXjF5lk6i6HKuyynbW8J+8C72ZsZz
-        c8WbSnEX2VE8Cr+9EeV6PrEJCHV3NeMs6UM5CITsmQ==
-X-Google-Smtp-Source: AGRyM1sCWl/4tFuOowWpHAjF91MWtDb7jpJ506rygqhFd89O61l5gDMhrej5gzjHR2W0IsAXkP0QQftkxqgAwJ1pjMg=
-X-Received: by 2002:a0d:f104:0:b0:31f:268a:43da with SMTP id
- a4-20020a0df104000000b0031f268a43damr9871228ywf.332.1658909799532; Wed, 27
- Jul 2022 01:16:39 -0700 (PDT)
+        bh=ubWnxBZMtleRzsIovroO38JBZF9A1N9XxiKcgjIWA7o=;
+        b=fmYkygB2XzwaWWebL092T1tzf2+iUE5yZfhGwQWzgenoe92B7huedhUfJCMGQrlt3R
+         E4aN0Z+lTps+Wej49+KLkex5g2iGELfuQzVUSy+//FfFxdEjK1HxQMdoIMmi/OnjoBF7
+         /QNBQ9DHVpd0+EreDhJWkGxocOZYyA7CO6v37x6pjpaz6ka66SwpHJI9TUxxZGKxONUz
+         5gh1VieyUJTjdf6GdPYq1IRwiP5JAXegEtymMN9LTEcvGLBg1iF5zeoyay1Sba3kMHF3
+         8M8pig+qVxjqrqgt4IKQ+Frtu+J98hODKUFrfbwd4eTVCuimzLso4CYqldpSpt4AxV4i
+         bg3g==
+X-Gm-Message-State: AJIora/5Y68UcTNZxpv6eYMDjxEzoIeL5OJjs7nmCcbNN9bCv/mDrALW
+        qVIJXqq0/bayOWsm1OOqVIvWegRjyemfC4ha5JMZ7YVMfBc=
+X-Google-Smtp-Source: AGRyM1uPIgpspZbZqABqc9daGB8YKDKoqMTZpnMauq3kNKel34egb67zr9QPo42Lp0qnVCcw0G4mJ5ECZjKVJJsWyfM=
+X-Received: by 2002:a05:6e02:2183:b0:2dd:aa9:1f9d with SMTP id
+ j3-20020a056e02218300b002dd0aa91f9dmr8335510ila.216.1658910028317; Wed, 27
+ Jul 2022 01:20:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220727060856.2370358-1-kafai@fb.com> <20220727060902.2370689-1-kafai@fb.com>
-In-Reply-To: <20220727060902.2370689-1-kafai@fb.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 27 Jul 2022 10:16:28 +0200
-Message-ID: <CANn89i+X-6Z=a-mYGEFTa=SWB2anDGsJYJoG_rAeo07HpBjw2g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 01/14] net: Change sock_setsockopt from taking
- sock ptr to sk ptr
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        kernel-team <kernel-team@fb.com>, Paolo Abeni <pabeni@redhat.com>
+References: <20220726051713.840431-1-kuifeng@fb.com> <20220726051713.840431-2-kuifeng@fb.com>
+ <Yt/aXYiVmGKP282Q@krava> <9e6967ec22f410edf7da3dc6e5d7c867431e3a30.camel@fb.com>
+In-Reply-To: <9e6967ec22f410edf7da3dc6e5d7c867431e3a30.camel@fb.com>
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date:   Wed, 27 Jul 2022 10:19:52 +0200
+Message-ID: <CAP01T75twVT2ea5Q74viJO+Y9kALbPFw4Yr6hbBfTdok0vAXaw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] bpf: Parameterize task iterators.
+To:     Kui-Feng Lee <kuifeng@fb.com>
+Cc:     "olsajiri@gmail.com" <olsajiri@gmail.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>, brauner@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,43 +70,61 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 27, 2022 at 8:09 AM Martin KaFai Lau <kafai@fb.com> wrote:
+On Wed, 27 Jul 2022 at 09:01, Kui-Feng Lee <kuifeng@fb.com> wrote:
 >
-> A latter patch refactors bpf_setsockopt(SOL_SOCKET) with the
-> sock_setsockopt() to avoid code duplication and code
-> drift between the two duplicates.
+> On Tue, 2022-07-26 at 14:13 +0200, Jiri Olsa wrote:
+> > On Mon, Jul 25, 2022 at 10:17:11PM -0700, Kui-Feng Lee wrote:
+> > > Allow creating an iterator that loops through resources of one
+> > > task/thread.
+> > >
+> > > People could only create iterators to loop through all resources of
+> > > files, vma, and tasks in the system, even though they were
+> > > interested
+> > > in only the resources of a specific task or process.  Passing the
+> > > additional parameters, people can now create an iterator to go
+> > > through all resources or only the resources of a task.
+> > >
+> > > Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
+> > > ---
+> > >  include/linux/bpf.h            |  4 ++
+> > >  include/uapi/linux/bpf.h       | 23 ++++++++++
+> > >  kernel/bpf/task_iter.c         | 81 +++++++++++++++++++++++++-----
+> > > ----
+> > >  tools/include/uapi/linux/bpf.h | 23 ++++++++++
+> > >  4 files changed, 109 insertions(+), 22 deletions(-)
+> > >
+> > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > > index 11950029284f..c8d164404e20 100644
+> > > --- a/include/linux/bpf.h
+> > > +++ b/include/linux/bpf.h
+> > > @@ -1718,6 +1718,10 @@ int bpf_obj_get_user(const char __user
+> > > *pathname, int flags);
+> > >
+> > >  struct bpf_iter_aux_info {
+> > >         struct bpf_map *map;
+> > > +       struct {
+> > > +               __u32   tid;
+> >
+> > should be just u32 ?
 >
-> The current sock_setsockopt() takes sock ptr as the argument.
-> The very first thing of this function is to get back the sk ptr
-> by 'sk = sock->sk'.
->
-> bpf_setsockopt() could be called when the sk does not have
-> a userspace owner.  Meaning sk->sk_socket is NULL.  For example,
-> when a passive tcp connection has just been established.  Thus,
-> it cannot use the sock_setsockopt(sk->sk_socket) or else it will
-> pass a NULL sock ptr.
->
-> All existing callers have both sock->sk and sk->sk_socket pointer.
-> Thus, this patch changes the sock_setsockopt() to take a sk ptr
-> instead of the sock ptr.  The bpf_setsockopt() only allows
-> optnames that do not require a sock ptr.
->
-> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
-> ---
+> Or, should change the following 'type' to __u8?
 
-...
+Would it be better to use a pidfd instead of a tid here? Unset pidfd
+would mean going over all tasks, and any fd > 0 implies attaching to a
+specific task (as is the convention in BPF land). Most of the new
+UAPIs working on processes are using pidfds (to work with a stable
+handle instead of a reusable ID).
+The iterator taking an fd also gives an opportunity to BPF LSMs to
+attach permissions/policies to it (once we have a file local storage
+map) e.g. whether creating a task iterator for that specific pidfd
+instance (backed by the struct file) would be allowed or not.
+You are using getpid in the selftest and keeping track of last_tgid in
+the iterator, so I guess you don't even need to extend pidfd_open to
+work on thread IDs right now for your use case (and fdtable and mm are
+shared for POSIX threads anyway, so for those two it won't make a
+difference).
 
-> diff --git a/include/net/sock.h b/include/net/sock.h
-> index f7ad1a7705e9..9e2539dcc293 100644
-> --- a/include/net/sock.h
-> +++ b/include/net/sock.h
-> @@ -1795,7 +1795,7 @@ void sock_pfree(struct sk_buff *skb);
->  #define sock_edemux sock_efree
->  #endif
->
-> -int sock_setsockopt(struct socket *sock, int level, int op,
-> +int sock_setsockopt(struct sock *sk, int level, int op,
->                     sockptr_t optval, unsigned int optlen);
->
+What is your opinion?
 
-SGTM, but I feel we should rename this to sk_setsockopt() ?
+>
+> [...]
