@@ -2,66 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C300581EED
-	for <lists+bpf@lfdr.de>; Wed, 27 Jul 2022 06:34:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68712581EF3
+	for <lists+bpf@lfdr.de>; Wed, 27 Jul 2022 06:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232896AbiG0EeK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jul 2022 00:34:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35326 "EHLO
+        id S230129AbiG0Eez (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jul 2022 00:34:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240321AbiG0EeK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Jul 2022 00:34:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8DCBD3D597
-        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 21:34:08 -0700 (PDT)
+        with ESMTP id S240106AbiG0Eex (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Jul 2022 00:34:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9F06F3DF01
+        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 21:34:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1658896447;
+        s=mimecast20190719; t=1658896489;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=zmsJFhYx/U7wRWY1QXPRuk0DZiGyI1mt4/EGEseZMos=;
-        b=O1b5tU95vioAajCzMK050gjhpfd5PViij6ZqmquqBultmZUvTBZHxZq+Knb8egJGo4YdhC
-        3A3l5qpUZ6LnBAbgd9XqwpmasJRrZPVMyJreMNhFOBji2okn3dlpec/Vmmk5o+OaA7Yl44
-        Adm1DTbE2aqGUBu+2i6Kteh8U5SBJiQ=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=ccV224xkXshDy5Rfnr1IHUz5X0tm4nlYhk3kCg3nne0=;
+        b=FBgkWJXark6qkOI/3B4NoTJSD2/QlRCtzVF6FO9t+CTzcjeCAqnGrdB9VLbPMC7MNU/PqL
+        umd9SabxjtpTU5+pPB8CwUP90RRqbSNOO1pdEna7B5pMTti0H13SpfCpJC/JEaF+imD+vx
+        X4lpnj4C+k9l49bCaXPVmP9LjyV7ZoM=
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
+ [209.85.210.198]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-665-3X2IQcRIMMejTnml2PfmFA-1; Wed, 27 Jul 2022 00:34:06 -0400
-X-MC-Unique: 3X2IQcRIMMejTnml2PfmFA-1
-Received: by mail-pl1-f198.google.com with SMTP id s6-20020a170902a50600b0016d2e77252eso9476714plq.18
-        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 21:34:05 -0700 (PDT)
+ us-mta-616-DXKDa9nZNPG2PZ78Mr1ACw-1; Wed, 27 Jul 2022 00:34:48 -0400
+X-MC-Unique: DXKDa9nZNPG2PZ78Mr1ACw-1
+Received: by mail-pf1-f198.google.com with SMTP id y37-20020a056a001ca500b00528bbf82c1eso5490515pfw.10
+        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 21:34:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=zmsJFhYx/U7wRWY1QXPRuk0DZiGyI1mt4/EGEseZMos=;
-        b=Zw1wyWoqF695+ax73lq4+BqMJSE1sRr/MacxUsPEL59Mx4Yc/JxE4maCfsoTYkSAjo
-         xdBOncRI0dhlcNOLhbZ9EgabdrShpe5neqC92lcixgFCDdG6IQYEOeeMbbDbFiqz3pKn
-         lMkUnA8VSmIxZsdGLuWxLuYtKUYF1D+btFotEt+YQZ9Kn8RwQjMaEkGPtKuXu+qjNOET
-         QVOAT5qzD7Q4dIC14ERo+u5vR4BxXVscxkAYh9BqOPGa08IuRGN2zGRrwZZHkch3kJ0I
-         q1o3ILUxH9tdgbjNpquYS/k1dYzJCJBstv6m0QcqZqOTfgCcQO4qvNfkKFAw3wJ047/B
-         LMRQ==
-X-Gm-Message-State: AJIora+faQI1BTDXaQWxh3uwNSWX0pVNSTsQUHvyUPewJg+KH6tGIlr1
-        FftNRDMEHp+u4sEWaina32gFC8JXsbArJUXCk8uYk1+DwXHYYpVBwVKczLiQZub50aCigl6gssL
-        XshgzpvnqpHZI
-X-Received: by 2002:a65:6907:0:b0:415:c9c1:eb4f with SMTP id s7-20020a656907000000b00415c9c1eb4fmr17446501pgq.193.1658896444741;
-        Tue, 26 Jul 2022 21:34:04 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1tLOTTMSwZn23J72vfWRP8aVjMiYXEHs6Q/e6N32SFoFq1t32q5shVi3/mZ0Ya8jurhHaEXXg==
-X-Received: by 2002:a65:6907:0:b0:415:c9c1:eb4f with SMTP id s7-20020a656907000000b00415c9c1eb4fmr17446476pgq.193.1658896444474;
-        Tue, 26 Jul 2022 21:34:04 -0700 (PDT)
+        bh=ccV224xkXshDy5Rfnr1IHUz5X0tm4nlYhk3kCg3nne0=;
+        b=2NzvC6BzWZx36gtieMYzFHFatLkViorN1+38oORHZSmEO1//iz2cKSA5fX4lOzxtDF
+         8RUFdtd0r8V6p67id+SkTc0S7kA3So5vlUjg14sZhiToRZG5RqTljWHwE+9ryqw73VJW
+         gyGKLQn9Wke+EptcPZhDbLzTO+LPFlOfjkT4u5gpN3wy1XtT7rZpt4p+lsAHDIUYBMMn
+         CXWfTB6tnl/OjUZGY4PkQpzxOQNPPgUfpNVmnQ7CIhMZ8iuxbr3XhG6M/WoLVFvqhR4p
+         8uN1KoMHKMqjUuP0QIyqwVD/myChXJ/9hfCcWoKHKkbdUsFspXGsMMEqV6+QjXUjb1Cf
+         gX6w==
+X-Gm-Message-State: AJIora9aaIr14jLmoJCzw/YMARU3RWEtsNk7HnL4cwBZdISJsdFi0iws
+        e+Pa3er30LIUIWpSJcPyPHla8DHFIOryS1HCecusY6MW2bqzC0JK+X+2y8+4qwDyo3zqJ49us8T
+        Wb1jRAX7qGm+v
+X-Received: by 2002:a63:d64e:0:b0:41a:b83d:1b2a with SMTP id d14-20020a63d64e000000b0041ab83d1b2amr15478492pgj.122.1658896487302;
+        Tue, 26 Jul 2022 21:34:47 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1t/FJ74Zcl7b0UCclD3iCK7AwYJZlRdXpyiM8TPXcthnYH8m/z4m9rgQ1C6aXiOk5BimF8JNw==
+X-Received: by 2002:a63:d64e:0:b0:41a:b83d:1b2a with SMTP id d14-20020a63d64e000000b0041ab83d1b2amr15478481pgj.122.1658896487011;
+        Tue, 26 Jul 2022 21:34:47 -0700 (PDT)
 Received: from [10.72.12.96] ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id y12-20020a17090322cc00b0016c9e5f291bsm9114120plg.111.2022.07.26.21.33.48
+        by smtp.gmail.com with ESMTPSA id w2-20020a1709026f0200b0016be24e3668sm12363324plk.291.2022.07.26.21.34.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jul 2022 21:34:00 -0700 (PDT)
-Message-ID: <11a17272-7318-0217-7e45-83a3b237ed7f@redhat.com>
-Date:   Wed, 27 Jul 2022 12:33:46 +0800
+        Tue, 26 Jul 2022 21:34:45 -0700 (PDT)
+Message-ID: <055a1aa0-756a-778d-3039-6eb452ccd390@redhat.com>
+Date:   Wed, 27 Jul 2022 12:34:30 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
  Gecko/20100101 Thunderbird/91.11.0
-Subject: Re: [PATCH v13 20/42] virtio_ring: packed: extract the logic of vring
- init
+Subject: Re: [PATCH v13 21/42] virtio_ring: packed: extract the logic of
+ attach vring
 Content-Language: en-US
 To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
         virtualization@lists.linux-foundation.org
@@ -97,14 +97,14 @@ Cc:     Richard Weinberger <richard@nod.at>,
         kvm@vger.kernel.org, bpf@vger.kernel.org,
         kangjie.xu@linux.alibaba.com
 References: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
- <20220726072225.19884-21-xuanzhuo@linux.alibaba.com>
+ <20220726072225.19884-22-xuanzhuo@linux.alibaba.com>
 From:   Jason Wang <jasowang@redhat.com>
-In-Reply-To: <20220726072225.19884-21-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220726072225.19884-22-xuanzhuo@linux.alibaba.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -114,12 +114,8 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 在 2022/7/26 15:22, Xuan Zhuo 写道:
-> Separate the logic of initializing vring, and subsequent patches will
-> call it separately.
->
-> This function completes the variable initialization of packed vring. It
-> together with the logic of atatch constitutes the initialization of
-> vring.
+> Separate the logic of attach vring, the subsequent patch will call it
+> separately.
 >
 > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 
@@ -128,60 +124,51 @@ Acked-by: Jason Wang <jasowang@redhat.com>
 
 
 > ---
->   drivers/virtio/virtio_ring.c | 28 +++++++++++++++++-----------
->   1 file changed, 17 insertions(+), 11 deletions(-)
+>   drivers/virtio/virtio_ring.c | 19 +++++++------------
+>   1 file changed, 7 insertions(+), 12 deletions(-)
 >
 > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-> index 32590d763c3b..fc4e3db9f93b 100644
+> index fc4e3db9f93b..00b18cf3b4d9 100644
 > --- a/drivers/virtio/virtio_ring.c
 > +++ b/drivers/virtio/virtio_ring.c
-> @@ -1935,6 +1935,22 @@ static int vring_alloc_state_extra_packed(struct vring_virtqueue_packed *vring_p
->   	return -ENOMEM;
+> @@ -1951,6 +1951,12 @@ static void virtqueue_vring_init_packed(struct vring_virtqueue_packed *vring_pac
+>   	}
 >   }
 >   
-> +static void virtqueue_vring_init_packed(struct vring_virtqueue_packed *vring_packed,
-> +					bool callback)
+> +static void virtqueue_vring_attach_packed(struct vring_virtqueue *vq,
+> +					  struct vring_virtqueue_packed *vring_packed)
 > +{
-> +	vring_packed->next_avail_idx = 0;
-> +	vring_packed->avail_wrap_counter = 1;
-> +	vring_packed->event_flags_shadow = 0;
-> +	vring_packed->avail_used_flags = 1 << VRING_PACKED_DESC_F_AVAIL;
-> +
-> +	/* No callback?  Tell other side not to bother us. */
-> +	if (!callback) {
-> +		vring_packed->event_flags_shadow = VRING_PACKED_EVENT_FLAG_DISABLE;
-> +		vring_packed->vring.driver->flags =
-> +			cpu_to_le16(vring_packed->event_flags_shadow);
-> +	}
+> +	vq->packed = *vring_packed;
 > +}
 > +
 >   static struct virtqueue *vring_create_virtqueue_packed(
 >   	unsigned int index,
 >   	unsigned int num,
-> @@ -1984,11 +2000,6 @@ static struct virtqueue *vring_create_virtqueue_packed(
+> @@ -1991,25 +1997,14 @@ static struct virtqueue *vring_create_virtqueue_packed(
+>   	vq->indirect = virtio_has_feature(vdev, VIRTIO_RING_F_INDIRECT_DESC) &&
+>   		!context;
 >   
->   	vq->packed.vring = vring_packed.vring;
->   
-> -	vq->packed.next_avail_idx = 0;
-> -	vq->packed.avail_wrap_counter = 1;
-> -	vq->packed.event_flags_shadow = 0;
-> -	vq->packed.avail_used_flags = 1 << VRING_PACKED_DESC_F_AVAIL;
+> -	vq->packed.ring_dma_addr = vring_packed.ring_dma_addr;
+> -	vq->packed.driver_event_dma_addr = vring_packed.driver_event_dma_addr;
+> -	vq->packed.device_event_dma_addr = vring_packed.device_event_dma_addr;
+> -
+> -	vq->packed.ring_size_in_bytes = vring_packed.ring_size_in_bytes;
+> -	vq->packed.event_size_in_bytes = vring_packed.event_size_in_bytes;
+> -
+> -	vq->packed.vring = vring_packed.vring;
 > -
 >   	err = vring_alloc_state_extra_packed(&vring_packed);
 >   	if (err)
 >   		goto err_state_extra;
-> @@ -1996,12 +2007,7 @@ static struct virtqueue *vring_create_virtqueue_packed(
->   	vq->packed.desc_state = vring_packed.desc_state;
->   	vq->packed.desc_extra = vring_packed.desc_extra;
 >   
-> -	/* No callback?  Tell other side not to bother us. */
-> -	if (!callback) {
-> -		vq->packed.event_flags_shadow = VRING_PACKED_EVENT_FLAG_DISABLE;
-> -		vq->packed.vring.driver->flags =
-> -			cpu_to_le16(vq->packed.event_flags_shadow);
-> -	}
-> +	virtqueue_vring_init_packed(&vring_packed, !!callback);
+> -	vq->packed.desc_state = vring_packed.desc_state;
+> -	vq->packed.desc_extra = vring_packed.desc_extra;
+> -
+>   	virtqueue_vring_init_packed(&vring_packed, !!callback);
 >   
 >   	virtqueue_init(vq, num);
+> +	virtqueue_vring_attach_packed(vq, &vring_packed);
 >   
+>   	spin_lock(&vdev->vqs_list_lock);
+>   	list_add_tail(&vq->vq.list, &vdev->vqs);
 
