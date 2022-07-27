@@ -2,218 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B61658271F
-	for <lists+bpf@lfdr.de>; Wed, 27 Jul 2022 14:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5996C5827B0
+	for <lists+bpf@lfdr.de>; Wed, 27 Jul 2022 15:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233384AbiG0MzS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jul 2022 08:55:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38122 "EHLO
+        id S233838AbiG0N3Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jul 2022 09:29:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232435AbiG0MzQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Jul 2022 08:55:16 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E17E632D
-        for <bpf@vger.kernel.org>; Wed, 27 Jul 2022 05:55:12 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id n8so10566140yba.2
-        for <bpf@vger.kernel.org>; Wed, 27 Jul 2022 05:55:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RDS4U7YZir5p4zlbI6RrrDKS2N15hBPZ4NARzWVf2YQ=;
-        b=mIoonCupdv/HrZ03ZrYqiC6N+b8MSQD3uxcwGCx4TraziWkw2ae1HZ8gwCJhlI1tNz
-         NgeQuZY7qv/pDRc7uKofJcatWvUnttbo4PBlqmYoY5XFaPGfVgdHfbSQNx8oSKHCN4ew
-         3+lHrSoTvaPPuJosLTJz81om03Bk5k8WWsqeFXsWOaWEW6FZs9kALFeqnMdM/lQkRj3F
-         TjmPkSjX82tns8PJy3ytI0/YZpCH1pmKsdUGR57zuGmHwwwBEzp3LQH83k6cLP7VYkHQ
-         tQ9809bc8YyC8pMemDaZPOZ1hcQkc/Q3lFvd/uVV9iG+iq4kHHpcHs1iTB8xVJvyAsLO
-         FkFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RDS4U7YZir5p4zlbI6RrrDKS2N15hBPZ4NARzWVf2YQ=;
-        b=BHbyUJ4cUt5Ydz3IhSDUnJZ2gS2YMqXrk9pDA+RqwVVyI/x7BAcZGsbzx61hDCFtM0
-         nhwR7Knx9mSJapE3xrC27zkdZwB1EIWcrlIqfGmz2K9Kc5w2OjAbD0lzRb14hQpx8Qfm
-         9UjHLUxweKeGGvKdnmRb8TqToSd4qqOkrjTkaJx6lpFbU2Y6BqsW3+fmTJQq76n+SK7/
-         N8iajjteqD5XIxSRqEfPhOS3zrUoPye+qhUlV36qc7VWrCGSGIUd7BRFQ+4oKXMFpy/Y
-         shqsr9eFqFfD0yptN3ymfnBFVwptkdIK4Uqn22V/WJvzHd/HDc25Tnfwpb1SQN9ppT15
-         cAqA==
-X-Gm-Message-State: AJIora87ZxfZSJqROsvb9Qnk2HWxmNNzaM7BLiYJTW9ad2Qcm06Xa2ZE
-        XnGjdR7St8N+ppPs4zzCva5B60z23Iewz902Qqt7og==
-X-Google-Smtp-Source: AGRyM1s2avB+ZTwPekjHu6X6nyLlsJcIU32qG2qoGiW4ffIRbuQaA4BC2N0FEUcOoKuO5fu2aHVhsnYnvp8WgpO5qCU=
-X-Received: by 2002:a25:ab84:0:b0:671:748b:ffab with SMTP id
- v4-20020a25ab84000000b00671748bffabmr5761866ybi.427.1658926511036; Wed, 27
- Jul 2022 05:55:11 -0700 (PDT)
+        with ESMTP id S233319AbiG0N3Y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Jul 2022 09:29:24 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 594E625586
+        for <bpf@vger.kernel.org>; Wed, 27 Jul 2022 06:29:23 -0700 (PDT)
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26RDOcjY013429;
+        Wed, 27 Jul 2022 13:29:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=lLY27aftW9IIa4KK9mmwBVT+lN4jf9hls2WhJaMvKGM=;
+ b=HTXX4jwt3pA1qpSbPsrUU4IaClYG+h4WJQNPqy1b2ISSJw9qmG0Aaef63nzOR+Q84QfA
+ V4LYmBqxgMIjprsDh+KFRAbcmN6afGPyQ6SO8+cMQ7lJSTOIbb25qlk8xNmqi0/JRhes
+ ohO/3jsNMkt25BWHHk6WrXH3xxf99bsPhnv9vdSxbM5VC6XjrY3D3HnZGvR6zEi6Qgv9
+ G/gSfB/+x6vaRPeXl0Fj/1CrAm/wcm8VUQuWzhgfwSsJeEGTnzPYBlHDBMCqjJGexD16
+ xfgshXwOGpPfkVGzNbjpY97CjxiSR4qxm7i616MiXt6Q6R54EZU3YJiUXaYuhKYAdxBA dw== 
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3hk67jr2vd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Jul 2022 13:29:11 +0000
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 26RDL9PM014153;
+        Wed, 27 Jul 2022 13:29:10 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma05wdc.us.ibm.com with ESMTP id 3hg943hd27-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 27 Jul 2022 13:29:10 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 26RDT9qF15205272
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 27 Jul 2022 13:29:09 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F2F7CAE060;
+        Wed, 27 Jul 2022 13:29:08 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 41BDDAE05C;
+        Wed, 27 Jul 2022 13:29:08 +0000 (GMT)
+Received: from fuzzy-bm.sl.cloud9.ibm.com (unknown [9.59.150.27])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 27 Jul 2022 13:29:08 +0000 (GMT)
+From:   Jinghao Jia <jinghao@linux.ibm.com>
+To:     bpf@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        mvle@us.ibm.com, jamjoom@us.ibm.com, sahmed@ibm.com,
+        Daniel.Williams2@ibm.com, Jinghao Jia <jinghao@linux.ibm.com>
+Subject: [PATCH] BPF: Fix potential bad pointer dereference in bpf_sys_bpf
+Date:   Wed, 27 Jul 2022 13:29:05 +0000
+Message-Id: <20220727132905.45166-1-jinghao@linux.ibm.com>
+X-Mailer: git-send-email 2.35.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: xncHtaObwusyqvO28UOsPDLKOIOPzwau
+X-Proofpoint-ORIG-GUID: xncHtaObwusyqvO28UOsPDLKOIOPzwau
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20220721151041.1215017-1-marek@cloudflare.com>
- <20220721151041.1215017-2-marek@cloudflare.com> <CANn89iKi2yaw=H-E8e9iet-gwr9vR6SmN9hibHF-5nT44K+e+g@mail.gmail.com>
- <CAJPywTKf1FdCRt2DZz3H+yhXqdFQ2tq9eNC4jtNHb0SgLwGfgA@mail.gmail.com>
-In-Reply-To: <CAJPywTKf1FdCRt2DZz3H+yhXqdFQ2tq9eNC4jtNHb0SgLwGfgA@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 27 Jul 2022 14:54:59 +0200
-Message-ID: <CANn89i++56L396Mhr1LxL3UN6D9uPMGsp5yaDTY5n4bhuir_BQ@mail.gmail.com>
-Subject: Re: [PATCH net-next 1/2] RTAX_INITRWND should be able to bring the
- rcv_ssthresh above 64KiB
-To:     Marek Majkowski <marek@cloudflare.com>
-Cc:     Lawrence Brakmo <brakmo@fb.com>, netdev <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Ivan Babrou <ivan@cloudflare.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-07-27_04,2022-07-27_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0 clxscore=1011
+ spamscore=0 impostorscore=0 mlxlogscore=754 adultscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2206140000 definitions=main-2207270054
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 27, 2022 at 1:19 PM Marek Majkowski <marek@cloudflare.com> wrote:
->
-> On Fri, Jul 22, 2022 at 11:23 AM Eric Dumazet <edumazet@google.com> wrote:
-> >
-> > On Thu, Jul 21, 2022 at 5:10 PM Marek Majkowski <marek@cloudflare.com> wrote:
-> > >
-> > > We already support RTAX_INITRWND / initrwnd path attribute:
-> > >
-> > >  $ ip route change local 127.0.0.0/8 dev lo initrwnd 1024
-> > >
-> > > However normally, the initial advertised receive window is limited to
-> > > 64KiB by rcv_ssthresh, regardless of initrwnd. This patch changes
-> > > that, bumping up rcv_ssthresh to value derived from initrwnd. This
-> > > allows for larger initial advertised receive windows, which is useful
-> > > for specific types of TCP flows: big BDP ones, where there is a lot of
-> > > data to send immediately after the flow is established.
-> > >
-> > > There are three places where we initialize sockets:
-> > >  - tcp_output:tcp_connect_init
-> > >  - tcp_minisocks:tcp_openreq_init_rwin
-> > >  - syncookies
-> > >
-> > > In the first two we already have a call to `tcp_rwnd_init_bpf` and
-> > > `dst_metric(RTAX_INITRWND)` which retrieve the bpf/path initrwnd
-> > > attribute. We use this value to bring `rcv_ssthresh` up, potentially
-> > > above the traditional 64KiB.
-> > >
-> > > With higher initial `rcv_ssthresh` the receiver will open the receive
-> > > window more aggresively, which can improve large BDP flows - large
-> > > throughput and latency.
-> > >
-> > > This patch does not cover the syncookies case.
-> > >
-> > > Signed-off-by: Marek Majkowski <marek@cloudflare.com>
-> > > ---
-> > >  include/net/inet_sock.h  |  1 +
-> > >  net/ipv4/tcp_minisocks.c |  8 ++++++--
-> > >  net/ipv4/tcp_output.c    | 10 ++++++++--
-> > >  3 files changed, 15 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/include/net/inet_sock.h b/include/net/inet_sock.h
-> > > index daead5fb389a..bc68c9b70942 100644
-> > > --- a/include/net/inet_sock.h
-> > > +++ b/include/net/inet_sock.h
-> > > @@ -89,6 +89,7 @@ struct inet_request_sock {
-> > >                                 no_srccheck: 1,
-> > >                                 smc_ok     : 1;
-> > >         u32                     ir_mark;
-> > > +       u32                     rcv_ssthresh;
+The bpf_sys_bpf() helper function allows an eBPF program to load another
+eBPF program from within the kernel. In this case the argument union
+bpf_attr pointer (as well as the insns and license pointers inside) is a
+kernel address instead of a userspace address (which is the case of a
+usual bpf() syscall). To make the memory copying process in the syscall
+work in both cases, bpfptr_t [1] was introduced to wrap around the
+pointer and distinguish its origin. Specifically, when copying memory
+contents from a bpfptr_t, a copy_from_user() is performed in case of a
+userspace address and a memcpy() is performed for a kernel address [2].
 
-Please move this in struct tcp_request_sock
+This can lead to problems because the in-kernel pointer is never checked
+for validity. If an eBPF syscall program tries to call bpf_sys_bpf()
+with a bad insns pointer, say 0xdeadbeef (which is supposed to point to
+the start of the instruction array) in the bpf_attr union, memcpy() is
+always happy to dereference the bad pointer to cause a un-handle-able
+page fault and in turn an oops. However, this is not supposed to happen
+because at that point the eBPF program is already verified and should
+not cause a memory error. The same issue in userspace is handled
+gracefully by copy_from_user(), which would return -EFAULT in such a
+case.
 
-> >
-> > Why do we need to store this value in the request_sock ?
-> >
-> > It is derived from a route attribute and MSS, all this should be
-> > available when the full blown socket is created.
-> >
-> > It would also work even with syncookies.
->
-> Eric,
->
-> Thanks for the feedback. For some context, I published a blog post
-> explaining this work in detail [1].
->
-> https://blog.cloudflare.com/when-the-window-is-not-fully-open-your-tcp-stack-is-doing-more-than-you-think/
->
-> I understand the suggestion is to move tcp_rwnd_init_bpf +
-> RTAX_INITRWND lookup from `tcp_openreq_init_rwin` into
-> `tcp_create_openreq_child`.
->
-> I gave it a try (patch: [2]), but I don't think this will work under
-> all circumstances. The issue is that we need to advertise *some*
-> window in the SYNACK packet, before creating the full blown socket.
->
-> With RTAX_INITRWND it is possible to move the advertised window up, or
-> down.
->
-> In the latter case, of reducing the window, at the SYNACK moment we
-> must know if the window is reduced under 64KiB. This is what happens
-> right now, we can _reduce_ window with RTAX_INITRWND to small values,
-> I guess down to 1 MSS. This smaller window is then advertised in the
-> SYNACK.
->
-> If we move RTAX_INITRWND lookup into the later
-> `tcp_create_openreq_child` then it will be too late, we won't know the
-> correct window size on SYNACK stage. We will likely end up sending
-> large window on SYNACK and then a small window on subsequent ACK,
-> violating TCP.
->
-> There are two approaches here. First, keep the semantics and allow
-> RTAX_INITRWND to _reduce_ the initial window.
->
-> In this case there are four ways out of this:
->
-> 1) Keep it as proposed, that indeed requires some new value in
-> request_sock. (perhaps maybe it could be it smaller than u32)
->
-> 2) Send the SYNACK with small/zero window, since we haven't done the
-> initrwnd lookup at this stage, but that would be at least
-> controversial, and also adds one more RTT to the common case. I don't
-> think this is acceptable.
->
-> 3) Do two initrwnd lookups. One in the `tcp_openreq_init_rwin` to
-> figure out if the window is smaller than 64KiB, second one in
-> `tcp_create_openreq_child` to figure out if the suggested window is
-> larger than 64KiB.
+Replace memcpy() with the safer copy_from_kernel_nofault() and
+strncpy_from_kernel_nofault().
 
-I think syncookies can be handled, if you look at cookie_v6_check() &
-cookie_v4_check()
-after their calls to cookie_tcp_reqsk_alloc()
+[1]: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/include/linux/bpfptr.h
+[2]: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/include/linux/sockptr.h#n44
 
->
-> 4) Abort the whole approach and recycle Ivan's
-> bpf_setsockopt(TCP_BPF_RCV_SSTHRESH) approach [3]. But I prefer the route
-> attribute approach, seems easier to use and more flexible.
->
-> But, thinking about it, I don't think we could ever support reducing
-> initial receive window in the syncookie case. Only (3) - two initrwnd
-> lookups - could be made to work, but even that is controversial.
->
-> However the intention of RTAX_INITRWND as far as I understand was to
-> _increase_ rcv_ssthresh, back in the days when it started from 10MSS
-> (so I was told).
+Signed-off-by: Jinghao Jia <jinghao@linux.ibm.com>
+---
+ include/linux/sockptr.h | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-That was before we fixed DRS and that we made initial RWIN 65535, the
-max allowed value in a SYN , SYNACK packet.
-But yes...
+diff --git a/include/linux/sockptr.h b/include/linux/sockptr.h
+index d45902fb4cad..3b8a41c82516 100644
+--- a/include/linux/sockptr.h
++++ b/include/linux/sockptr.h
+@@ -46,8 +46,7 @@ static inline int copy_from_sockptr_offset(void *dst, sockptr_t src,
+ {
+ 	if (!sockptr_is_kernel(src))
+ 		return copy_from_user(dst, src.user + offset, size);
+-	memcpy(dst, src.kernel + offset, size);
+-	return 0;
++	return copy_from_kernel_nofault(dst, src.kernel + offset, size);
+ }
+ 
+ static inline int copy_from_sockptr(void *dst, sockptr_t src, size_t size)
+@@ -93,12 +92,8 @@ static inline void *memdup_sockptr_nul(sockptr_t src, size_t len)
+ 
+ static inline long strncpy_from_sockptr(char *dst, sockptr_t src, size_t count)
+ {
+-	if (sockptr_is_kernel(src)) {
+-		size_t len = min(strnlen(src.kernel, count - 1) + 1, count);
+-
+-		memcpy(dst, src.kernel, len);
+-		return len;
+-	}
++	if (sockptr_is_kernel(src))
++		return strncpy_from_kernel_nofault(dst, src.kernel, count);
+ 	return strncpy_from_user(dst, src.user, count);
+ }
+ 
 
->
-> So, we could change the semantics of RTAX_INITRWND to allow only
-> *increasing* the window - and disallow reducing it. With such an
-> approach indeed we could make the code as you suggested, and move the
-> route attribute lookup away from minisocks into `tcp_create_openreq_child`.
->
-> Marek
->
-> [1] https://blog.cloudflare.com/when-the-window-is-not-fully-open-your-tcp-stack-is-doing-more-than-you-think/
-> [2] https://gist.github.com/majek/13848c050a3dc218ed295364ee717879
-> [3] https://lore.kernel.org/bpf/20220111192952.49040-1-ivan@cloudflare.com/t/
+base-commit: d295daf505758f9a0e4d05f4ee3bfdfb4192c18f
+-- 
+2.35.1
+
