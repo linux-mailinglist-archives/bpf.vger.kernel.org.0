@@ -2,59 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC0F6581FED
-	for <lists+bpf@lfdr.de>; Wed, 27 Jul 2022 08:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D19B7582038
+	for <lists+bpf@lfdr.de>; Wed, 27 Jul 2022 08:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230449AbiG0GKv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jul 2022 02:10:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60638 "EHLO
+        id S229504AbiG0GjP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jul 2022 02:39:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230145AbiG0GKh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Jul 2022 02:10:37 -0400
+        with ESMTP id S229524AbiG0GjO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Jul 2022 02:39:14 -0400
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 469A913DDC
-        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 23:10:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D9542A431
+        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 23:39:13 -0700 (PDT)
 Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26QNDE3r019340
-        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 23:10:36 -0700
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26QNDFV5019401
+        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 23:39:13 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=7MCOx1AoF1yOC0onMUZ2eDZTpIuAB22t2U/DWXwO2T8=;
- b=GyLb8544FimhC+z8G55qw4hBgAciRgu87L4ZKuKbT6Tldhaa8OprCnCtXk+EMTpEjfHI
- xelpDeYfsUTQOuD1LxZM31/L6zY9oc3nMULmADKc/4mi/hqGDFmcWRdPJMZLBG1uvmgF
- TWunkjlY0GzSrMkGnc/3XCDMwLQvIG/u5Q4= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hhxbwutpk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 23:10:35 -0700
-Received: from twshared14818.18.frc3.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Tue, 26 Jul 2022 23:10:35 -0700
-Received: by devbig933.frc1.facebook.com (Postfix, from userid 6611)
-        id 24605757CFD4; Tue, 26 Jul 2022 23:10:25 -0700 (PDT)
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, <kernel-team@fb.com>,
-        Paolo Abeni <pabeni@redhat.com>
-Subject: [PATCH bpf-next 14/14] selftests/bpf: bpf_setsockopt tests
-Date:   Tue, 26 Jul 2022 23:10:25 -0700
-Message-ID: <20220727061025.2380990-1-kafai@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220727060856.2370358-1-kafai@fb.com>
-References: <20220727060856.2370358-1-kafai@fb.com>
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=GdDJWbCI7AF05JNEvK7iHw8bdv51UN02T2YLev/lTrk=;
+ b=e6KkLufJ+FCeXc/gBdnlarKPM15KHuO8ePMOhoGj9RTwZyxZVWlYO9jiioo6X8RILUaP
+ otbURaTPASq2bpYtEk/h5CSWRwfG+mWlXFENz0UQdi13vYMFA3C9yEQq/c53A6wkomAP
+ cbChU9o93JxM2DGhZtHNwTkP8k3rBdA2XnM= 
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2173.outbound.protection.outlook.com [104.47.57.173])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hhxbwuwpj-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 26 Jul 2022 23:39:12 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fsAJg82MrWlevTXwTJ0i43rzkU4OiJZfpuLgrTRqq2yCRhxzmzFixBJcech3IMW/mR4BZRqhpDcZS0ZKuDitSRBO1ZMceqz5q84t9/yxUBJk9JOOn+I4IqMyAK22HEqecBKI3rdatav89THoUwJeWMXrKB9ar7mQql3opX8bv4vXleSRxflp11E/n3Jq5OyEQ1kAwVLUJKSu59t8j44W2QVXB5aFw8c05wk90HzJg3/7GcYXjz0oezxkKARFbyuP0c/qnAMrEgVSodZi4/11by3S64KXjov1Gr7F0zdl9mQ50j+qtXlVGb/PJsGNy5t6MmXBkmmrK7pi6rIoLe+w/g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GdDJWbCI7AF05JNEvK7iHw8bdv51UN02T2YLev/lTrk=;
+ b=LLtLVXLBASa1nxA1Ej/2HuPhO9Qg45YM2nmb+yZvzo49UefsA6bgPMVt6/XZJsTJDa6OggQp9iNzFcAlX9I7G0/aLx7qjP3OVS6Ozqp/NoyuUj9KLyqz3d6CIYcNVN+W7vhA4jAkBKGSET8gLpG6SrGW8s+MZTHJ8Plac6U2ULuKfFdgd/UA5lgChaLSn1yNa/ZT5r5jxaYl0iLq2SoBnGq8KVffgjDQjoY1rFS/Qlyh02ReA+111CvSfz9/ao7gQ8Fa6GjtB+3/fssQP0lWGZWTPAV6i2P4hh1ufd8+H92eheRobQYd/eR+qZVmSRVCjnKsB/IhJ0VwwpTY/wyonw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from BY5PR15MB3651.namprd15.prod.outlook.com (2603:10b6:a03:1f7::15)
+ by MW4PR15MB4748.namprd15.prod.outlook.com (2603:10b6:303:10d::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5458.25; Wed, 27 Jul
+ 2022 06:39:10 +0000
+Received: from BY5PR15MB3651.namprd15.prod.outlook.com
+ ([fe80::cdef:5d3a:710a:4959]) by BY5PR15MB3651.namprd15.prod.outlook.com
+ ([fe80::cdef:5d3a:710a:4959%6]) with mapi id 15.20.5458.025; Wed, 27 Jul 2022
+ 06:39:10 +0000
+From:   Kui-Feng Lee <kuifeng@fb.com>
+To:     "olsajiri@gmail.com" <olsajiri@gmail.com>
+CC:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 1/3] bpf: Parameterize task iterators.
+Thread-Topic: [PATCH bpf-next 1/3] bpf: Parameterize task iterators.
+Thread-Index: AQHYoK8StG1Y6n29KUSEV/VSsAjsP62QkM6AgAASYQCAASKYAA==
+Date:   Wed, 27 Jul 2022 06:39:10 +0000
+Message-ID: <31968bfd1f694439c2354f5ef3bd5117c2893dbd.camel@fb.com>
+References: <20220726051713.840431-1-kuifeng@fb.com>
+         <20220726051713.840431-2-kuifeng@fb.com> <Yt/aXYiVmGKP282Q@krava>
+         <Yt/pyDUuvS1rwlpc@krava>
+In-Reply-To: <Yt/pyDUuvS1rwlpc@krava>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a48addfa-d575-4286-4ac8-08da6f9ab656
+x-ms-traffictypediagnostic: MW4PR15MB4748:EE_
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 8p/l88ibYqL6d0cIThFH80nCCuQCEeyFHYWaguFDURJYDWPEirxQL7nZOzlJ7sJEWGaqRkc6EDzrHfA9PcBl6+cI8pAwR1YR6MuyUAE7ErkIkGFQ1JyCfBB0Fz0zjs71b0vsXXrspaPDUwWR1Xqb7JwaVGw6NiY/zgudp9/Fl+d9W+wEm43RfHs234PRc1u556tcvP4JUsBOSlfaT6Txqk3tHtwTyTouWpnZVe+jBRmyVWZcGQYb8Day8qepT8pQd5NvS1t+gvD2amUNguzXtqCdLeppMnOJqJ9LJjydLEKE0XDHgVLNWeLHgSwPldDZxeCazg0hbG/Iq2wLYbUhlvjH9pM7Uvt2G8vThKtOk+G6vZb1ZAQfkaE34RPmsnwWpNgbmsp6xZ6D4j63E9UzLUpPstEkdPExhDIWgeWkl6QwPGKrVZL+3vJn83/9vtmCvsFJAGDV7SnULVAjcLc0YrOZiLnzLKcCsgg4Hr3ihcgm4I3vhdIy5iJtJPt84+exs+a1O3+9xLvDfH4BdhfwzSCbpm5N7zDurNUufR8cVrOgaoeCMKb8vlxIz7YR7b4nIxEkdhH5p7dnPGx2OkCpjf/Kl1F1fgw0GnrWhcbtiPAIuWoV/lyYEH/JOous1EDfFUL0OcvuuKrnpRTrIRYIL2zGIXNfNHai8u4VV5QkQ5yv5gB0CvP/2l+bH/sF8lFF7t/O2Ypj7uqn47l79ZzpUQVJz4D8vBfucEeYuLKMgOlywwhl0ihFgX3JPP7Z4rWkcUcjsp5JV/A6gD1FcrjKcpi+jc/HKJXgfsmxX3Mw47Y=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3651.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(396003)(366004)(39860400002)(346002)(136003)(376002)(316002)(6916009)(41300700001)(6486002)(54906003)(478600001)(71200400001)(4326008)(8676002)(5660300002)(76116006)(66446008)(66946007)(64756008)(66556008)(91956017)(66476007)(36756003)(122000001)(2906002)(2616005)(38070700005)(86362001)(38100700002)(186003)(6506007)(6512007)(8936002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Si9WMlZJZHJyNlRmUXRjZFlBQU9BdmZFNU4yVnJjV3E2UkhNZGR2djdtSm1n?=
+ =?utf-8?B?emc1MjVuOWV4Z2tqTWRHUnFaK2k5ck5SdVFXNlJ2NjJacjV2b091WVo2ZlZH?=
+ =?utf-8?B?cUZTVkVxQUdkQ3NDamZ5TXpTMkVycUJvYXl0aXY4ZzR6MWdkT0xPRHhUYndX?=
+ =?utf-8?B?WXdpM2o2R1pHSm1xczlXV0E0OFdKZjhFVVdpWkozWlJMSWg4b1NEaWVSYWx2?=
+ =?utf-8?B?MEJMRUw1N1h0RElYMDRxTUFyd2hUZVRZOVlwQlB6bUJGczhrQU10Uk15dTcw?=
+ =?utf-8?B?bEJhWVYyTXVTdE1adjNDVGtrQUpoTWZlVzJxMmFxSHd4SFNuOTByRkVTeXZr?=
+ =?utf-8?B?Q3prVHcrMFpmMkdQSDZwVXNlTzZmOTVLRzN2bm9RUHd6aGt0anBva2hXUVpT?=
+ =?utf-8?B?aU1ub3ZWT2dtWmE3OVAxaTFtaW1SVUczSjZrZUZ2REQ2YkR0YU01T3hXZGpi?=
+ =?utf-8?B?d3FYQ0xQVEd0anRvTWRBaXVZalN4L291LzZHUjhXNHJrWnNQTkMyZ3A0dnVt?=
+ =?utf-8?B?enJLOWFwMWVlUkh6cnZwRGdMMGh6TGxzdXUzU0dvQjh1Ymh0OER1UUVGYy9T?=
+ =?utf-8?B?akFIZzdhOENVRWxDaG5IQi9QdGlYaTBFUmN0ZER5V0tiTkdNa2lueWhzWEV0?=
+ =?utf-8?B?UlJtR1g3cXZqcUdsSG52WVB2ZE1qNnFtdkRNNzhIbWxYVlNIYU9mR25VS0px?=
+ =?utf-8?B?cWZQS3hoTDJpdkQ5WERSUVNVOVNBU2xXMVQ4MXQxclZnY3JGT2FSYTdmeUVz?=
+ =?utf-8?B?VVBVZXc4U1J0M0VKRklaeWU2YWYzWDJxMWZtT0l1bTVMV0dSQ2VFeFh4QWNN?=
+ =?utf-8?B?Y3g5QUZlTlZHblNiYkJ5MzZBMGZCSEltd2hZWUkvbDZPZDVXMGlyNzYwWVJT?=
+ =?utf-8?B?eUQ2YVVYOUk5eVNoQVZUclRoWVF4aUJ3UlZVdHo3eGkrTnZRVEVWRng2Y2hU?=
+ =?utf-8?B?ajVSWkpmTElMbkZreDE1eUw1QUFpdVRCVE1iWHpUOTRiT085UVNmR0JLbkpz?=
+ =?utf-8?B?L0lkZkRqdk53WVk3NEhhR2k3T1pMMVZYR3I3cXkwS3dNWkw4VHYyaHI1UHJM?=
+ =?utf-8?B?NnQ5ZVVINXVjYmhSRmtQRytIS1hLQjI4YWpLSDQraDh5K1RqYkxnY2JHK3lY?=
+ =?utf-8?B?TVYybUdSQXY1ZDJlalRmR0h5WGJyVHd1MXZaRE9SU3gvTXZtZ25zL3RNQ0Iw?=
+ =?utf-8?B?RXdCYVpCSWxIajFvY1Foa1hYbE9pc0Q4NGpvOXBlenNKUUtGeUJWcUJ0NUdi?=
+ =?utf-8?B?Y3JPbU1xbHJCVDY0QWo0MzBqcXpGQ28vK1V1bVAvYzhDdjNndTl3ZGFBYjhp?=
+ =?utf-8?B?NmxhbmlkODJtRTRYNHFYL3F3c2Q3QUtqSUFXb3d6Y2pVMVFkejR6TFdXUVFs?=
+ =?utf-8?B?MXBqVEF1MTFZR3EwT2owdWtjZ0J0b3YxZ1VyS2FkTi9BbWpJZlZpQ01OdUxG?=
+ =?utf-8?B?SGhaK1dWd21CSVFxZzlqdHVsQlk0cG15V0FxOHVkb2ZoYkxtM25xTjVBRGk4?=
+ =?utf-8?B?NGZhSEN2aFlvUzY0b0VudGpvZzAxSkIrT2FJcGFnYlZvTnNwajhuTFNXNkxq?=
+ =?utf-8?B?QktlSmxoc1Jqak5xMzN6TmYwNHFWemhKdWVpOVhPVU0rUGl0Z2FUQzUyZnFD?=
+ =?utf-8?B?c2VpMXZzdm9DQjFlS21temZva0xzOXMvWHdwT3djQldNL0lIaUJyR0dBeUx2?=
+ =?utf-8?B?bzlKRkV2dmZSTXc4NzRFL0NzeDNBWjIwWUdma3BGVmE1dEE3OUNJMXpCQjRH?=
+ =?utf-8?B?R3lULzRCNWh3c2poZWpGdmRvYloxY2xxYkEzV0Y5clFmc04xclhmczgzY0xH?=
+ =?utf-8?B?SllUM2wrUk12RkI3QVJ1ajQzcHVTc3Q2RnFnRmhFU2IvRjZBaUZjajNsek5T?=
+ =?utf-8?B?WWtqc2JhVjNyYjBrQm5OVVhvZlJVbHppc0JSV0U5M3ZCak4zRHNJeGZ0MGhN?=
+ =?utf-8?B?ZEFDRnFRbThmVTRJZmVKcUF2bHZmd2ZNZGdydkZTaW90cmgreGlTcFd2MkYv?=
+ =?utf-8?B?MmtqQjgrcU9WOFYybE4vODg4NWsrYkovbEFvK3FMQkNFZHFZRHlZbkRIZ1Z2?=
+ =?utf-8?B?UlFqL0xkYWFoaURZdnlKZlRqQUt6RkljWHZWS2lSN1cyWjlSS0tsMkJzU1Uw?=
+ =?utf-8?B?RmhERFlIUFRvdThrNWJoUDVaN2tBVW1hSVZzMCthd0tVTHlQT3lCRG1yT1NM?=
+ =?utf-8?B?R3c9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <B058504BBC58A44F8FDC9951FB4CC4CF@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: _vUMFSmnapPTGz6Lkl8gJbQaXhQ3QUNl
-X-Proofpoint-ORIG-GUID: _vUMFSmnapPTGz6Lkl8gJbQaXhQ3QUNl
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3651.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a48addfa-d575-4286-4ac8-08da6f9ab656
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Jul 2022 06:39:10.0789
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ExWV2QObegTiwiLUhFxye+jespTmcbLk1FwEkUjVfeN3xS3M7d2epnsarCKHaqws
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR15MB4748
+X-Proofpoint-GUID: K5DXZ9nuggwo1JGqS3envmmPWof_dUxA
+X-Proofpoint-ORIG-GUID: K5DXZ9nuggwo1JGqS3envmmPWof_dUxA
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
  definitions=2022-07-26_07,2022-07-26_01,2022-06-22_01
@@ -68,711 +144,29 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds tests to exercise optnames that are allowed
-in bpf_setsockopt().
-
-Signed-off-by: Martin KaFai Lau <kafai@fb.com>
----
- .../selftests/bpf/prog_tests/setget_sockopt.c | 125 ++++
- .../selftests/bpf/progs/setget_sockopt.c      | 538 ++++++++++++++++++
- 2 files changed, 663 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/setget_sockopt=
-.c
- create mode 100644 tools/testing/selftests/bpf/progs/setget_sockopt.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/setget_sockopt.c b/to=
-ols/testing/selftests/bpf/prog_tests/setget_sockopt.c
-new file mode 100644
-index 000000000000..018611e6b248
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/setget_sockopt.c
-@@ -0,0 +1,125 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) Meta Platforms, Inc. and affiliates. */
-+
-+#define _GNU_SOURCE
-+#include <sched.h>
-+#include <linux/socket.h>
-+#include <net/if.h>
-+
-+#include "test_progs.h"
-+#include "cgroup_helpers.h"
-+#include "network_helpers.h"
-+
-+#include "setget_sockopt.skel.h"
-+
-+#define CG_NAME "/setget-sockopt-test"
-+
-+static const char addr4_str[] =3D "127.0.0.1";
-+static const char addr6_str[] =3D "::1";
-+static struct setget_sockopt *skel;
-+static int cg_fd;
-+
-+static int create_netns(void)
-+{
-+	if (!ASSERT_OK(unshare(CLONE_NEWNET), "create netns"))
-+		return -1;
-+
-+	if (!ASSERT_OK(system("ip link set dev lo up"), "set lo up"))
-+		return -1;
-+
-+	if (!ASSERT_OK(system("ip link add dev binddevtest1 type veth peer name=
- binddevtest2"),
-+		       "add veth"))
-+		return -1;
-+
-+	if (!ASSERT_OK(system("ip link set dev binddevtest1 up"),
-+		       "bring veth up"))
-+		return -1;
-+
-+	return 0;
-+}
-+
-+static void test_tcp(int family)
-+{
-+	struct setget_sockopt__bss *bss =3D skel->bss;
-+	int sfd, cfd;
-+
-+	memset(bss, 0, sizeof(*bss));
-+
-+	sfd =3D start_server(family, SOCK_STREAM,
-+			   family =3D=3D AF_INET6 ? addr6_str : addr4_str, 0, 0);
-+	if (!ASSERT_GE(sfd, 0, "start_server"))
-+		return;
-+
-+	cfd =3D connect_to_fd(sfd, 0);
-+	if (!ASSERT_GE(cfd, 0, "connect_to_fd_server")) {
-+		close(sfd);
-+		return;
-+	}
-+	close(sfd);
-+	close(cfd);
-+
-+	ASSERT_EQ(bss->nr_listen, 1, "nr_listen");
-+	ASSERT_EQ(bss->nr_connect, 1, "nr_connect");
-+	ASSERT_EQ(bss->nr_active, 1, "nr_active");
-+	ASSERT_EQ(bss->nr_passive, 1, "nr_passive");
-+	ASSERT_EQ(bss->nr_socket_post_create, 2, "nr_socket_post_create");
-+	ASSERT_EQ(bss->nr_binddev, 2, "nr_bind");
-+}
-+
-+static void test_udp(int family)
-+{
-+	struct setget_sockopt__bss *bss =3D skel->bss;
-+	int sfd;
-+
-+	memset(bss, 0, sizeof(*bss));
-+
-+	sfd =3D start_server(family, SOCK_DGRAM,
-+			   family =3D=3D AF_INET6 ? addr6_str : addr4_str, 0, 0);
-+	if (!ASSERT_GE(sfd, 0, "start_server"))
-+		return;
-+	close(sfd);
-+
-+	ASSERT_GE(bss->nr_socket_post_create, 1, "nr_socket_post_create");
-+	ASSERT_EQ(bss->nr_binddev, 1, "nr_bind");
-+}
-+
-+void test_setget_sockopt(void)
-+{
-+	cg_fd =3D test__join_cgroup(CG_NAME);
-+	if (cg_fd < 0)
-+		return;
-+
-+	if (create_netns())
-+		goto done;
-+
-+	skel =3D setget_sockopt__open();
-+	if (!ASSERT_OK_PTR(skel, "open skel"))
-+		goto done;
-+
-+	strcpy(skel->rodata->veth, "binddevtest1");
-+	skel->rodata->veth_ifindex =3D if_nametoindex("binddevtest1");
-+	if (!ASSERT_GT(skel->rodata->veth_ifindex, 0, "if_nametoindex"))
-+		goto done;
-+
-+	if (!ASSERT_OK(setget_sockopt__load(skel), "load skel"))
-+		goto done;
-+
-+	skel->links.skops_sockopt =3D
-+		bpf_program__attach_cgroup(skel->progs.skops_sockopt, cg_fd);
-+	if (!ASSERT_OK_PTR(skel->links.skops_sockopt, "attach cgroup"))
-+		goto done;
-+
-+	skel->links.socket_post_create =3D
-+		bpf_program__attach_cgroup(skel->progs.socket_post_create, cg_fd);
-+	if (!ASSERT_OK_PTR(skel->links.socket_post_create, "attach_cgroup"))
-+		goto done;
-+
-+	test_tcp(AF_INET6);
-+	test_tcp(AF_INET);
-+	test_udp(AF_INET6);
-+	test_udp(AF_INET);
-+
-+done:
-+	setget_sockopt__destroy(skel);
-+	close(cg_fd);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/setget_sockopt.c b/tools/t=
-esting/selftests/bpf/progs/setget_sockopt.c
-new file mode 100644
-index 000000000000..e52b96cf85fb
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/setget_sockopt.c
-@@ -0,0 +1,538 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) Meta Platforms, Inc. and affiliates. */
-+
-+#include <stddef.h>
-+#include <stdbool.h>
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+#include <linux/in.h>
-+#include <linux/ipv6.h>
-+#include <linux/tcp.h>
-+#include <linux/socket.h>
-+#include <linux/bpf.h>
-+#include <linux/if.h>
-+#include <linux/types.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <errno.h>
-+
-+#ifndef SO_TXREHASH
-+#define SO_TXREHASH 74
-+#endif
-+
-+#ifndef TCP_NAGLE_OFF
-+#define TCP_NAGLE_OFF 1
-+#endif
-+
-+#ifndef ARRAY_SIZE
-+#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
-+#endif
-+
-+extern unsigned long CONFIG_HZ __kconfig;
-+
-+const volatile char veth[IFNAMSIZ];
-+const volatile int veth_ifindex;
-+const char cubic_cc[] =3D "cubic";
-+const char reno_cc[] =3D "reno";
-+
-+int nr_listen;
-+int nr_passive;
-+int nr_active;
-+int nr_connect;
-+int nr_binddev;
-+int nr_socket_post_create;
-+
-+struct sockopt_test {
-+	int opt;
-+	int new;
-+	int restore;
-+	int expected;
-+	int tcp_expected;
-+	int toggle:1;
-+};
-+
-+static const struct sockopt_test sol_socket_tests[] =3D {
-+	{ .opt =3D SO_SNDBUF, .new =3D 8123, .expected =3D 8123 * 2, },
-+	{ .opt =3D SO_RCVBUF, .new =3D 8123, .expected =3D 8123 * 2, },
-+	{ .opt =3D SO_KEEPALIVE, .toggle =3D 1, },
-+	{ .opt =3D SO_PRIORITY, .new =3D 0xeb9f, .expected =3D 0xeb9f, },
-+	{ .opt =3D SO_REUSEPORT, .toggle =3D 1, },
-+	{ .opt =3D SO_RCVLOWAT, .new =3D 8123, .expected =3D 8123, },
-+	{ .opt =3D SO_MARK, .new =3D 0xeb9f, .expected =3D 0xeb9f, },
-+	{ .opt =3D SO_MAX_PACING_RATE, .new =3D 0xeb9f, .expected =3D 0xeb9f, }=
-,
-+	{ .opt =3D SO_TXREHASH, .toggle =3D 1, },
-+	{ .opt =3D 0, },
-+};
-+
-+static const struct sockopt_test sol_tcp_tests[] =3D {
-+	{ .opt =3D TCP_NODELAY, .toggle =3D 1, },
-+	{ .opt =3D TCP_MAXSEG, .new =3D 1314, .expected =3D 1314, },
-+	{ .opt =3D TCP_KEEPIDLE, .new =3D 123, .expected =3D 123, .restore =3D =
-321, },
-+	{ .opt =3D TCP_KEEPINTVL, .new =3D 123, .expected =3D 123, .restore =3D=
- 321, },
-+	{ .opt =3D TCP_KEEPCNT, .new =3D 123, .expected =3D 123, .restore =3D 1=
-24, },
-+	{ .opt =3D TCP_SYNCNT, .new =3D 123, .expected =3D 123, .restore =3D 12=
-4, },
-+	{ .opt =3D TCP_WINDOW_CLAMP, .new =3D 8123, .expected =3D 8123, .restor=
-e =3D 8124, },
-+	{ .opt =3D TCP_CONGESTION, },
-+	{ .opt =3D TCP_THIN_LINEAR_TIMEOUTS, .toggle =3D 1, },
-+	{ .opt =3D TCP_USER_TIMEOUT, .new =3D 123400, .expected =3D 123400, },
-+	{ .opt =3D TCP_NOTSENT_LOWAT, .new =3D 1314, .expected =3D 1314, },
-+	{ .opt =3D TCP_SAVE_SYN, .new =3D 1, .expected =3D 1, },
-+	{ .opt =3D 0, },
-+};
-+
-+static const struct sockopt_test sol_ip_tests[] =3D {
-+	{ .opt =3D IP_TOS, .new =3D 0xe1, .expected =3D 0xe1, .tcp_expected =3D=
- 0xe0, },
-+	{ .opt =3D 0, },
-+};
-+
-+static const struct sockopt_test sol_ipv6_tests[] =3D {
-+	{ .opt =3D IPV6_TCLASS, .new =3D 0xe1, .expected =3D 0xe1, .tcp_expecte=
-d =3D 0xe0, },
-+	{ .opt =3D IPV6_AUTOFLOWLABEL, .toggle =3D 1, },
-+	{ .opt =3D 0, },
-+};
-+
-+struct sock_common {
-+	unsigned short	skc_family;
-+	unsigned long	skc_flags;
-+} __attribute__((preserve_access_index));
-+
-+struct sock {
-+	struct sock_common	__sk_common;
-+	__u16			sk_type;
-+	__u16			sk_protocol;
-+	int			sk_rcvlowat;
-+	__u32			sk_mark;
-+	unsigned long		sk_max_pacing_rate;
-+	unsigned int		keepalive_time;
-+	unsigned int		keepalive_intvl;
-+} __attribute__((preserve_access_index));
-+
-+struct tcp_options_received {
-+	__u16 user_mss;
-+} __attribute__((preserve_access_index));
-+
-+struct ipv6_pinfo {
-+	__u16			recverr:1,
-+				sndflow:1,
-+				repflow:1,
-+				pmtudisc:3,
-+				padding:1,
-+				srcprefs:3,
-+				dontfrag:1,
-+				autoflowlabel:1,
-+				autoflowlabel_set:1,
-+				mc_all:1,
-+				recverr_rfc4884:1,
-+				rtalert_isolate:1;
-+}  __attribute__((preserve_access_index));
-+
-+struct inet_sock {
-+	/* sk and pinet6 has to be the first two members of inet_sock */
-+	struct sock		sk;
-+	struct ipv6_pinfo	*pinet6;
-+} __attribute__((preserve_access_index));
-+
-+struct inet_connection_sock {
-+	__u32			  icsk_user_timeout;
-+	__u8			  icsk_syn_retries;
-+} __attribute__((preserve_access_index));
-+
-+struct tcp_sock {
-+	struct inet_connection_sock	inet_conn;
-+	struct tcp_options_received rx_opt;
-+	__u8	save_syn:2,
-+		syn_data:1,
-+		syn_fastopen:1,
-+		syn_fastopen_exp:1,
-+		syn_fastopen_ch:1,
-+		syn_data_acked:1,
-+		is_cwnd_limited:1;
-+	__u32	window_clamp;
-+	__u8	nonagle     : 4,
-+		thin_lto    : 1,
-+		recvmsg_inq : 1,
-+		repair      : 1,
-+		frto        : 1;
-+	__u32	notsent_lowat;
-+	__u8	keepalive_probes;
-+	unsigned int		keepalive_time;
-+	unsigned int		keepalive_intvl;
-+} __attribute__((preserve_access_index));
-+
-+struct socket {
-+	struct sock *sk;
-+} __attribute__((preserve_access_index));
-+
-+struct loop_ctx {
-+	void *ctx;
-+	struct sock *sk;
-+};
-+
-+static int __bpf_getsockopt(void *ctx, struct sock *sk,
-+			    int level, int opt, int *optval,
-+			    int optlen)
-+{
-+	if (level =3D=3D SOL_SOCKET) {
-+		switch (opt) {
-+		case SO_KEEPALIVE:
-+			*optval =3D !!(sk->__sk_common.skc_flags & (1UL << 3));
-+			break;
-+		case SO_RCVLOWAT:
-+			*optval =3D sk->sk_rcvlowat;
-+			break;
-+		case SO_MARK:
-+			*optval =3D sk->sk_mark;
-+			break;
-+		case SO_MAX_PACING_RATE:
-+			*optval =3D sk->sk_max_pacing_rate;
-+			break;
-+		default:
-+			return bpf_getsockopt(ctx, level, opt, optval, optlen);
-+		}
-+		return 0;
-+	}
-+
-+	if (level =3D=3D IPPROTO_TCP) {
-+		struct tcp_sock *tp =3D bpf_skc_to_tcp_sock(sk);
-+
-+		if (!tp)
-+			return -1;
-+
-+		switch (opt) {
-+		case TCP_NODELAY:
-+			*optval =3D !!(tp->nonagle & TCP_NAGLE_OFF);
-+			break;
-+		case TCP_MAXSEG:
-+			*optval =3D tp->rx_opt.user_mss;
-+			break;
-+		case TCP_KEEPIDLE:
-+			*optval =3D tp->keepalive_time / CONFIG_HZ;
-+			break;
-+		case TCP_SYNCNT:
-+			*optval =3D tp->inet_conn.icsk_syn_retries;
-+			break;
-+		case TCP_KEEPINTVL:
-+			*optval =3D tp->keepalive_intvl / CONFIG_HZ;
-+			break;
-+		case TCP_KEEPCNT:
-+			*optval =3D tp->keepalive_probes;
-+			break;
-+		case TCP_WINDOW_CLAMP:
-+			*optval =3D tp->window_clamp;
-+			break;
-+		case TCP_THIN_LINEAR_TIMEOUTS:
-+			*optval =3D tp->thin_lto;
-+			break;
-+		case TCP_USER_TIMEOUT:
-+			*optval =3D tp->inet_conn.icsk_user_timeout;
-+			break;
-+		case TCP_NOTSENT_LOWAT:
-+			*optval =3D tp->notsent_lowat;
-+			break;
-+		case TCP_SAVE_SYN:
-+			*optval =3D tp->save_syn;
-+			break;
-+		default:
-+			return bpf_getsockopt(ctx, level, opt, optval, optlen);
-+		}
-+		return 0;
-+	}
-+
-+	if (level =3D=3D IPPROTO_IPV6) {
-+		switch (opt) {
-+		case IPV6_AUTOFLOWLABEL: {
-+			__u16 proto =3D sk->sk_protocol;
-+			struct inet_sock *inet_sk;
-+
-+			if (proto =3D=3D IPPROTO_TCP)
-+				inet_sk =3D (struct inet_sock *)bpf_skc_to_tcp_sock(sk);
-+			else
-+				inet_sk =3D (struct inet_sock *)bpf_skc_to_udp6_sock(sk);
-+
-+			if (!inet_sk)
-+				return -1;
-+
-+			*optval =3D !!inet_sk->pinet6->autoflowlabel;
-+			break;
-+		}
-+		default:
-+			return bpf_getsockopt(ctx, level, opt, optval, optlen);
-+		}
-+		return 0;
-+	}
-+
-+	return bpf_getsockopt(ctx, level, opt, optval, optlen);
-+}
-+
-+static int bpf_test_sockopt_flip(void *ctx, struct sock *sk,
-+				 const struct sockopt_test *t,
-+				 int level)
-+{
-+	int old, tmp, new, opt =3D t->opt;
-+
-+	opt =3D t->opt;
-+
-+	if (__bpf_getsockopt(ctx, sk, level, opt, &old, sizeof(old)))
-+		return 1;
-+	/* kernel initialized txrehash to 255 */
-+	if (level =3D=3D SOL_SOCKET && opt =3D=3D SO_TXREHASH && old !=3D 0 && =
-old !=3D 1)
-+		old =3D 1;
-+
-+	new =3D !old;
-+	if (bpf_setsockopt(ctx, level, opt, &new, sizeof(new)))
-+		return 1;
-+	if (__bpf_getsockopt(ctx, sk, level, opt, &tmp, sizeof(tmp)) ||
-+	    tmp !=3D new)
-+		return 1;
-+
-+	if (bpf_setsockopt(ctx, level, opt, &old, sizeof(old)))
-+		return 1;
-+
-+	return 0;
-+}
-+
-+static int bpf_test_sockopt_int(void *ctx, struct sock *sk,
-+				const struct sockopt_test *t,
-+				int level)
-+{
-+	int old, tmp, new, expected, opt;
-+
-+	opt =3D t->opt;
-+	new =3D t->new;
-+	if (sk->sk_type =3D=3D SOCK_STREAM && t->tcp_expected)
-+		expected =3D t->tcp_expected;
-+	else
-+		expected =3D t->expected;
-+
-+	if (__bpf_getsockopt(ctx, sk, level, opt, &old, sizeof(old)) ||
-+	    old =3D=3D new)
-+		return 1;
-+
-+	if (bpf_setsockopt(ctx, level, opt, &new, sizeof(new)))
-+		return 1;
-+	if (__bpf_getsockopt(ctx, sk, level, opt, &tmp, sizeof(tmp)) ||
-+	    tmp !=3D expected)
-+		return 1;
-+
-+	if (t->restore)
-+		old =3D t->restore;
-+	if (bpf_setsockopt(ctx, level, opt, &old, sizeof(old)))
-+		return 1;
-+
-+	return 0;
-+}
-+
-+static int bpf_test_socket_sockopt(__u32 i, struct loop_ctx *lc)
-+{
-+	const struct sockopt_test *t;
-+
-+	if (i >=3D ARRAY_SIZE(sol_socket_tests))
-+		return 1;
-+
-+	t =3D &sol_socket_tests[i];
-+	if (!t->opt)
-+		return 1;
-+
-+	if (t->toggle)
-+		return bpf_test_sockopt_flip(lc->ctx, lc->sk, t, SOL_SOCKET);
-+
-+	return bpf_test_sockopt_int(lc->ctx, lc->sk, t, SOL_SOCKET);
-+}
-+
-+static int bpf_test_ip_sockopt(__u32 i, struct loop_ctx *lc)
-+{
-+	const struct sockopt_test *t;
-+
-+	if (i >=3D ARRAY_SIZE(sol_ip_tests))
-+		return 1;
-+
-+	t =3D &sol_ip_tests[i];
-+	if (!t->opt)
-+		return 1;
-+
-+	if (t->toggle)
-+		return bpf_test_sockopt_flip(lc->ctx, lc->sk, t, IPPROTO_IP);
-+
-+	return bpf_test_sockopt_int(lc->ctx, lc->sk, t, IPPROTO_IP);
-+}
-+
-+static int bpf_test_ipv6_sockopt(__u32 i, struct loop_ctx *lc)
-+{
-+	const struct sockopt_test *t;
-+
-+	if (i >=3D ARRAY_SIZE(sol_ipv6_tests))
-+		return 1;
-+
-+	t =3D &sol_ipv6_tests[i];
-+	if (!t->opt)
-+		return 1;
-+
-+	if (t->toggle)
-+		return bpf_test_sockopt_flip(lc->ctx, lc->sk, t, IPPROTO_IPV6);
-+
-+	return bpf_test_sockopt_int(lc->ctx, lc->sk, t, IPPROTO_IPV6);
-+}
-+
-+static int bpf_test_tcp_sockopt(__u32 i, struct loop_ctx *lc)
-+{
-+	const struct sockopt_test *t;
-+	struct sock *sk;
-+	void *ctx;
-+
-+	if (i >=3D ARRAY_SIZE(sol_tcp_tests))
-+		return 1;
-+
-+	t =3D &sol_tcp_tests[i];
-+	if (!t->opt)
-+		return 1;
-+
-+	ctx =3D lc->ctx;
-+	sk =3D lc->sk;
-+
-+	if (t->opt =3D=3D TCP_CONGESTION) {
-+		char old_cc[16], tmp_cc[16];
-+		const char *new_cc;
-+
-+		if (bpf_getsockopt(ctx, IPPROTO_TCP, TCP_CONGESTION, old_cc, sizeof(ol=
-d_cc)))
-+			return 1;
-+		if (!bpf_strncmp(old_cc, sizeof(old_cc), cubic_cc))
-+			new_cc =3D reno_cc;
-+		else
-+			new_cc =3D cubic_cc;
-+		if (bpf_setsockopt(ctx, IPPROTO_TCP, TCP_CONGESTION, (void *)new_cc,
-+				   sizeof(new_cc)))
-+			return 1;
-+		if (bpf_getsockopt(ctx, IPPROTO_TCP, TCP_CONGESTION, tmp_cc, sizeof(tm=
-p_cc)))
-+			return 1;
-+		if (bpf_strncmp(tmp_cc, sizeof(tmp_cc), new_cc))
-+			return 1;
-+		if (bpf_setsockopt(ctx, IPPROTO_TCP, TCP_CONGESTION, old_cc, sizeof(ol=
-d_cc)))
-+			return 1;
-+		return 0;
-+	}
-+
-+	if (t->toggle)
-+		return bpf_test_sockopt_flip(ctx, sk, t, IPPROTO_TCP);
-+
-+	return bpf_test_sockopt_int(ctx, sk, t, IPPROTO_TCP);
-+}
-+
-+static int bpf_test_sockopt(void *ctx, struct sock *sk)
-+{
-+	struct loop_ctx lc =3D { .ctx =3D ctx, .sk =3D sk, };
-+	__u16 family, proto;
-+	int n;
-+
-+	family =3D sk->__sk_common.skc_family;
-+	proto =3D sk->sk_protocol;
-+
-+	n =3D bpf_loop(ARRAY_SIZE(sol_socket_tests), bpf_test_socket_sockopt, &=
-lc, 0);
-+	if (n !=3D ARRAY_SIZE(sol_socket_tests))
-+		return -1;
-+
-+	if (proto =3D=3D IPPROTO_TCP) {
-+		n =3D bpf_loop(ARRAY_SIZE(sol_tcp_tests), bpf_test_tcp_sockopt, &lc, 0=
-);
-+		if (n !=3D ARRAY_SIZE(sol_tcp_tests))
-+			return -1;
-+	}
-+
-+	if (family =3D=3D AF_INET) {
-+		n =3D bpf_loop(ARRAY_SIZE(sol_ip_tests), bpf_test_ip_sockopt, &lc, 0);
-+		if (n !=3D ARRAY_SIZE(sol_ip_tests))
-+			return -1;
-+	} else {
-+		n =3D bpf_loop(ARRAY_SIZE(sol_ipv6_tests), bpf_test_ipv6_sockopt, &lc,=
- 0);
-+		if (n !=3D ARRAY_SIZE(sol_ipv6_tests))
-+			return -1;
-+	}
-+
-+	return 0;
-+}
-+
-+static int binddev_test(void *ctx)
-+{
-+	const char empty_ifname[] =3D "";
-+	int ifindex, zero =3D 0;
-+
-+	if (bpf_setsockopt(ctx, SOL_SOCKET, SO_BINDTODEVICE,
-+			   (void *)veth, sizeof(veth)))
-+		return -1;
-+	if (bpf_getsockopt(ctx, SOL_SOCKET, SO_BINDTOIFINDEX,
-+			   &ifindex, sizeof(int)) ||
-+	    ifindex !=3D veth_ifindex)
-+		return -1;
-+
-+	if (bpf_setsockopt(ctx, SOL_SOCKET, SO_BINDTODEVICE,
-+			   (void *)empty_ifname, sizeof(empty_ifname)))
-+		return -1;
-+	if (bpf_getsockopt(ctx, SOL_SOCKET, SO_BINDTOIFINDEX,
-+			   &ifindex, sizeof(int)) ||
-+	    ifindex !=3D 0)
-+		return -1;
-+
-+	if (bpf_setsockopt(ctx, SOL_SOCKET, SO_BINDTOIFINDEX,
-+			   (void *)&veth_ifindex, sizeof(int)))
-+		return -1;
-+	if (bpf_getsockopt(ctx, SOL_SOCKET, SO_BINDTOIFINDEX,
-+			   &ifindex, sizeof(int)) ||
-+	    ifindex !=3D veth_ifindex)
-+		return -1;
-+
-+	if (bpf_setsockopt(ctx, SOL_SOCKET, SO_BINDTOIFINDEX,
-+			   &zero, sizeof(int)))
-+		return -1;
-+	if (bpf_getsockopt(ctx, SOL_SOCKET, SO_BINDTOIFINDEX,
-+			   &ifindex, sizeof(int)) ||
-+	    ifindex !=3D 0)
-+		return -1;
-+
-+	return 0;
-+}
-+
-+SEC("lsm_cgroup/socket_post_create")
-+int BPF_PROG(socket_post_create, struct socket *sock, int family,
-+	     int type, int protocol, int kern)
-+{
-+	struct sock *sk =3D sock->sk;
-+
-+	if (!sk)
-+		return 1;
-+
-+	nr_socket_post_create +=3D !bpf_test_sockopt(sk, sk);
-+	nr_binddev +=3D !binddev_test(sk);
-+
-+	return 1;
-+}
-+
-+SEC("sockops")
-+int skops_sockopt(struct bpf_sock_ops *skops)
-+{
-+	struct bpf_sock *bpf_sk =3D skops->sk;
-+	struct sock *sk;
-+
-+	if (!bpf_sk)
-+		return 1;
-+
-+	sk =3D (struct sock *)bpf_skc_to_tcp_sock(bpf_sk);
-+	if (!sk)
-+		return 1;
-+
-+	switch (skops->op) {
-+	case BPF_SOCK_OPS_TCP_LISTEN_CB:
-+		nr_listen +=3D !bpf_test_sockopt(skops, sk);
-+		break;
-+	case BPF_SOCK_OPS_TCP_CONNECT_CB:
-+		nr_connect +=3D !bpf_test_sockopt(skops, sk);
-+		break;
-+	case BPF_SOCK_OPS_ACTIVE_ESTABLISHED_CB:
-+		nr_active +=3D !bpf_test_sockopt(skops, sk);
-+		break;
-+	case BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB:
-+		nr_passive +=3D !bpf_test_sockopt(skops, sk);
-+		break;
-+	}
-+
-+	return 1;
-+}
-+
-+char _license[] SEC("license") =3D "GPL";
---=20
-2.30.2
-
+T24gVHVlLCAyMDIyLTA3LTI2IGF0IDE1OjE5ICswMjAwLCBKaXJpIE9sc2Egd3JvdGU6Cj4gT24g
+VHVlLCBKdWwgMjYsIDIwMjIgYXQgMDI6MTM6MTdQTSArMDIwMCwgSmlyaSBPbHNhIHdyb3RlOgo+
+ID4gPiAtc3RhdGljIHN0cnVjdCB0YXNrX3N0cnVjdCAqdGFza19zZXFfZ2V0X25leHQoc3RydWN0
+Cj4gPiA+IHBpZF9uYW1lc3BhY2UgKm5zLAo+ID4gPiArc3RhdGljIHN0cnVjdCB0YXNrX3N0cnVj
+dCAqdGFza19zZXFfZ2V0X25leHQoc3RydWN0Cj4gPiA+IGJwZl9pdGVyX3NlcV90YXNrX2NvbW1v
+biAqY29tbW9uLAo+ID4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHUzMiAqdGlk
+LAo+ID4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGJvb2wKPiA+ID4gc2tpcF9p
+Zl9kdXBfZmlsZXMpCj4gPiA+IMKgewo+ID4gPiDCoMKgwqDCoMKgwqDCoMKgc3RydWN0IHRhc2tf
+c3RydWN0ICp0YXNrID0gTlVMTDsKPiA+ID4gwqDCoMKgwqDCoMKgwqDCoHN0cnVjdCBwaWQgKnBp
+ZDsKPiA+ID4gwqAKPiA+ID4gK8KgwqDCoMKgwqDCoMKgaWYgKGNvbW1vbi0+dHlwZSA9PSBCUEZf
+VEFTS19JVEVSX1RJRCkgewo+ID4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgaWYg
+KCp0aWQpCj4gPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgcmV0dXJuIE5VTEw7Cj4gPiAKPiA+IEkgdGVzdGVkIGFuZCB0aGlzIGNvbmRpdGlvbiBicmVh
+a3MgaXQgZm9yIGZkIGl0ZXJhdGlvbnMsIG5vdCBzdXJlCj4gPiBhYm91dAo+ID4gdGhlIHRhc2sg
+YW5kIHZtYSwgYmVjYXVzZSB0aGV5IHNoYXJlIHRoaXMgZnVuY3Rpb24KPiA+IAo+ID4gaWYgYnBm
+X3NlcV9yZWFkIGlzIGNhbGxlZCB3aXRoIHNtYWxsIGJ1ZmZlciB0aGVyZSB3aWxsIGJlIG11bHRp
+cGxlCj4gPiBjYWxscwo+ID4gdG8gdGFza19maWxlX3NlcV9nZXRfbmV4dCBhbmQgc2Vjb25kIG9u
+ZSB3aWxsIHN0b3AgaW4gaGVyZSwgZXZlbiBpZgo+ID4gdGhlcmUKPiA+IGFyZSBtb3JlIGZpbGVz
+IHRvIGJlIGRpc3BsYXllZCBmb3IgdGhlIHRhc2sgaW4gZmlsdGVyCj4gCj4gSSBtZWFuIHRoZXJl
+IHdpbGwgYmUgbXVsdGlwbGUgY2FsbHMgb2YgZm9sbG93aW5nIHNlcXVlbmNlOgo+IAo+IMKgIGJw
+Zl9zZXFfcmVhZAo+IMKgwqDCoCB0YXNrX2ZpbGVfc2VxX3N0YXJ0Cj4gwqDCoMKgwqDCoCB0YXNr
+X3NlcV9nZXRfbmV4dAo+IAo+IGFuZCAybmQgb25lIHdpbGwgcmV0dXJuIE5VTEwgaW4gdGFza19z
+ZXFfZ2V0X25leHQsCj4gYmVjYXVzZSBpbmZvLT50aWQgaXMgYWxyZWFkeSBzZXQKCk9rISAgSSBn
+b3QgeW91ciBwb2ludC4gIEkgd2lsbCBmaXggaXQgQVNBUC4KCgoK
