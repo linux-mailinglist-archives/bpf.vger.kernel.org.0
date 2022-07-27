@@ -2,148 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5996C5827B0
-	for <lists+bpf@lfdr.de>; Wed, 27 Jul 2022 15:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE46582862
+	for <lists+bpf@lfdr.de>; Wed, 27 Jul 2022 16:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233838AbiG0N3Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jul 2022 09:29:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38096 "EHLO
+        id S232403AbiG0OQ7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jul 2022 10:16:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233319AbiG0N3Y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Jul 2022 09:29:24 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 594E625586
-        for <bpf@vger.kernel.org>; Wed, 27 Jul 2022 06:29:23 -0700 (PDT)
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26RDOcjY013429;
-        Wed, 27 Jul 2022 13:29:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : content-transfer-encoding : mime-version; s=pp1;
- bh=lLY27aftW9IIa4KK9mmwBVT+lN4jf9hls2WhJaMvKGM=;
- b=HTXX4jwt3pA1qpSbPsrUU4IaClYG+h4WJQNPqy1b2ISSJw9qmG0Aaef63nzOR+Q84QfA
- V4LYmBqxgMIjprsDh+KFRAbcmN6afGPyQ6SO8+cMQ7lJSTOIbb25qlk8xNmqi0/JRhes
- ohO/3jsNMkt25BWHHk6WrXH3xxf99bsPhnv9vdSxbM5VC6XjrY3D3HnZGvR6zEi6Qgv9
- G/gSfB/+x6vaRPeXl0Fj/1CrAm/wcm8VUQuWzhgfwSsJeEGTnzPYBlHDBMCqjJGexD16
- xfgshXwOGpPfkVGzNbjpY97CjxiSR4qxm7i616MiXt6Q6R54EZU3YJiUXaYuhKYAdxBA dw== 
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3hk67jr2vd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Jul 2022 13:29:11 +0000
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 26RDL9PM014153;
-        Wed, 27 Jul 2022 13:29:10 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma05wdc.us.ibm.com with ESMTP id 3hg943hd27-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 27 Jul 2022 13:29:10 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 26RDT9qF15205272
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 27 Jul 2022 13:29:09 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F2F7CAE060;
-        Wed, 27 Jul 2022 13:29:08 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 41BDDAE05C;
-        Wed, 27 Jul 2022 13:29:08 +0000 (GMT)
-Received: from fuzzy-bm.sl.cloud9.ibm.com (unknown [9.59.150.27])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 27 Jul 2022 13:29:08 +0000 (GMT)
-From:   Jinghao Jia <jinghao@linux.ibm.com>
-To:     bpf@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        mvle@us.ibm.com, jamjoom@us.ibm.com, sahmed@ibm.com,
-        Daniel.Williams2@ibm.com, Jinghao Jia <jinghao@linux.ibm.com>
-Subject: [PATCH] BPF: Fix potential bad pointer dereference in bpf_sys_bpf
-Date:   Wed, 27 Jul 2022 13:29:05 +0000
-Message-Id: <20220727132905.45166-1-jinghao@linux.ibm.com>
-X-Mailer: git-send-email 2.35.1
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: xncHtaObwusyqvO28UOsPDLKOIOPzwau
-X-Proofpoint-ORIG-GUID: xncHtaObwusyqvO28UOsPDLKOIOPzwau
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S231767AbiG0OQ6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Jul 2022 10:16:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0E5D26D5;
+        Wed, 27 Jul 2022 07:16:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7D21D617C0;
+        Wed, 27 Jul 2022 14:16:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B58CFC433D6;
+        Wed, 27 Jul 2022 14:16:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1658931416;
+        bh=gIDMcqNCaRR8LmuzfgBqCB914E1w1kgLj7kbJfKcQaU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SlClN9KNnNHbE2ZN05xmkOP04lErHEV5K3Vw0XT2glqnmXDbU6zF7TW54OB+aE6fn
+         xNh7xvl47F1s+NfX3SuruFcYHEJj+KE9JWl6r4yRDIPiAwhyCiChCh17lpJdKjbU2B
+         xIvRrVRfPkhwW26jjI6qzpRkAp91jGbQKAtvcD/5z1F0qayVbAGt1L0TA44k5M7s7o
+         jAIhHsXkpQMgRF1WeMfbso9m7t/z2vMAl1LBKcaFSleUT2brAkA+fIXpmGBg8zQtGd
+         /f1U6O3+aGiSPm6IQO9dNltlFvh9so0VOfAicCSZHNvVJQBNM766vTnX69OCMW9QKK
+         qVled27QP8LzQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id E77CB405DD; Wed, 27 Jul 2022 11:16:53 -0300 (-03)
+Date:   Wed, 27 Jul 2022 11:16:53 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Andrii Nakryiko <andrii@kernel.org>,
+        Christy Lee <christylee@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Miaoqian Lin <linmq006@gmail.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, llvm@lists.linux.dev,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH] perf bpf: Remove undefined behavior from
+ bpf_perf_object__next
+Message-ID: <YuFI1Thhls+dYE2I@kernel.org>
+References: <20220726220921.2567761-1-irogers@google.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-07-27_04,2022-07-27_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0 clxscore=1011
- spamscore=0 impostorscore=0 mlxlogscore=754 adultscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2206140000 definitions=main-2207270054
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220726220921.2567761-1-irogers@google.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The bpf_sys_bpf() helper function allows an eBPF program to load another
-eBPF program from within the kernel. In this case the argument union
-bpf_attr pointer (as well as the insns and license pointers inside) is a
-kernel address instead of a userspace address (which is the case of a
-usual bpf() syscall). To make the memory copying process in the syscall
-work in both cases, bpfptr_t [1] was introduced to wrap around the
-pointer and distinguish its origin. Specifically, when copying memory
-contents from a bpfptr_t, a copy_from_user() is performed in case of a
-userspace address and a memcpy() is performed for a kernel address [2].
+Em Tue, Jul 26, 2022 at 03:09:21PM -0700, Ian Rogers escreveu:
+> bpf_perf_object__next folded the last element in the list test with the
+> empty list test. However, this meant that offsets were computed against
+> null and that a struct list_head was compared against a struct
+> bpf_perf_object. Working around this with clang's undefined behavior
+> sanitizer required -fno-sanitize=null and -fno-sanitize=object-size.
+> in 
+> Remove the undefined behav(ior by using the regular Linux list APIs and
+> handling the starting case separately from the end testing case. Looking
+> at uses like bpf_perf_object__for_each, as the constant NULL or non-NULL
+> argument can be constant propagated the code is no less efficient.
 
-This can lead to problems because the in-kernel pointer is never checked
-for validity. If an eBPF syscall program tries to call bpf_sys_bpf()
-with a bad insns pointer, say 0xdeadbeef (which is supposed to point to
-the start of the instruction array) in the bpf_attr union, memcpy() is
-always happy to dereference the bad pointer to cause a un-handle-able
-page fault and in turn an oops. However, this is not supposed to happen
-because at that point the eBPF program is already verified and should
-not cause a memory error. The same issue in userspace is handled
-gracefully by copy_from_user(), which would return -EFAULT in such a
-case.
+Nicely spotted!
 
-Replace memcpy() with the safer copy_from_kernel_nofault() and
-strncpy_from_kernel_nofault().
+In some places people solve this with list_first_entry_or_null(), like
+in cs_etm__queue_aux_records().
 
-[1]: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/include/linux/bpfptr.h
-[2]: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/include/linux/sockptr.h#n44
+Applied.
 
-Signed-off-by: Jinghao Jia <jinghao@linux.ibm.com>
----
- include/linux/sockptr.h | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
-
-diff --git a/include/linux/sockptr.h b/include/linux/sockptr.h
-index d45902fb4cad..3b8a41c82516 100644
---- a/include/linux/sockptr.h
-+++ b/include/linux/sockptr.h
-@@ -46,8 +46,7 @@ static inline int copy_from_sockptr_offset(void *dst, sockptr_t src,
- {
- 	if (!sockptr_is_kernel(src))
- 		return copy_from_user(dst, src.user + offset, size);
--	memcpy(dst, src.kernel + offset, size);
--	return 0;
-+	return copy_from_kernel_nofault(dst, src.kernel + offset, size);
- }
+- Arnado
  
- static inline int copy_from_sockptr(void *dst, sockptr_t src, size_t size)
-@@ -93,12 +92,8 @@ static inline void *memdup_sockptr_nul(sockptr_t src, size_t len)
- 
- static inline long strncpy_from_sockptr(char *dst, sockptr_t src, size_t count)
- {
--	if (sockptr_is_kernel(src)) {
--		size_t len = min(strnlen(src.kernel, count - 1) + 1, count);
--
--		memcpy(dst, src.kernel, len);
--		return len;
--	}
-+	if (sockptr_is_kernel(src))
-+		return strncpy_from_kernel_nofault(dst, src.kernel, count);
- 	return strncpy_from_user(dst, src.user, count);
- }
- 
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/util/bpf-loader.c | 18 +++++++-----------
+>  1 file changed, 7 insertions(+), 11 deletions(-)
+> 
+> diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
+> indelx f8ad581ea247..cdd6463a5b68 100644
+> --- a/tools/perf/util/bpf-loader.c
+> +++ b/tools/perf/util/bpf-loader.c
+> @@ -63,20 +63,16 @@ static struct hashmap *bpf_map_hash;
+>  static struct bpf_perf_object *
+>  bpf_perf_object__next(struct bpf_perf_object *prev)
+>  {
+> -	struct bpf_perf_object *next;
+> -
+> -	if (!prev)
+> -		next = list_first_entry(&bpf_objects_list,
+> -					struct bpf_perf_object,
+> -					list);
+> -	else
+> -		next = list_next_entry(prev, list);
+> +	if (!prev) {
+> +		if (list_empty(&bpf_objects_list))
+> +			return NULL;
+>  
+> -	/* Empty list is noticed here so don't need checking on entry. */
+> -	if (&next->list == &bpf_objects_list)
+> +		return list_first_entry(&bpf_objects_list, struct bpf_perf_object, list);
+> +	}
+> +	if (list_is_last(&prev->list, &bpf_objects_list))
+>  		return NULL;
+>  
+> -	return next;
+> +	return list_next_entry(prev, list);
+>  }
+>  
+>  #define bpf_perf_object__for_each(perf_obj, tmp)	\
+> -- 
+> 2.37.1.359.gd136c6c3e2-goog
 
-base-commit: d295daf505758f9a0e4d05f4ee3bfdfb4192c18f
 -- 
-2.35.1
 
+- Arnaldo
