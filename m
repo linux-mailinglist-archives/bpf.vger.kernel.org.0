@@ -2,62 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C50583A88
-	for <lists+bpf@lfdr.de>; Thu, 28 Jul 2022 10:45:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 957EA583A96
+	for <lists+bpf@lfdr.de>; Thu, 28 Jul 2022 10:48:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234482AbiG1Ipu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Jul 2022 04:45:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55624 "EHLO
+        id S231783AbiG1Is2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Jul 2022 04:48:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234314AbiG1Ipu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Jul 2022 04:45:50 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1859B13CE0
-        for <bpf@vger.kernel.org>; Thu, 28 Jul 2022 01:45:49 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id y197so902844iof.12
-        for <bpf@vger.kernel.org>; Thu, 28 Jul 2022 01:45:49 -0700 (PDT)
+        with ESMTP id S231701AbiG1Is1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Jul 2022 04:48:27 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12CE25245D
+        for <bpf@vger.kernel.org>; Thu, 28 Jul 2022 01:48:27 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id p5so659752ilg.9
+        for <bpf@vger.kernel.org>; Thu, 28 Jul 2022 01:48:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=BNKGAU4qcIpqIPrevvUk6TKe3mhilpaa0z0/xjwERNk=;
-        b=Of7uvXsTCrd3RLlKTUBEf0TCIPgcHZNu8lB8R5He5vNrAKU8yf1WNccuEhoxSA04bB
-         Xvs4fjeWHeAGYvAtsLaQFgOZSRUb7Evl3V39v1wayp8XyBvtaRmispIV6eqXdGm26vsr
-         28V5BmkSj6J1hTkocnpCoj8EvMMYzH3D0RbMXh+sh9MpNT/gPRODQrk+AclQzWjpi1Dm
-         ePATMOf9911hn3Yded6MtsA+XljKkTTDyPFBlbQ0IYOTGLI0/Q2FXpA2JURpdfRBIB17
-         MixellCml1T4qrGf5pHoxtPBPFqf06jBSKUTtlEHMDYbayUQzw/Z5mBR3K7muKtSa5RZ
-         JmnA==
+        bh=5bCAizqjoNI8glsY+oMrjLNupid9MZT6o0HMnTV/mBs=;
+        b=d/Rosm9Z14KJebtjNaGJ1TH1IwDMGif+9y8L8witEGBeIsef2SzE5RRd/3kEZPxSYY
+         2hrFP095PDmXKoThVaQmCjuuV3W1Uvgo7k2/0at7fII7BUNMasfWElOcxix/ZwEGWdRo
+         6bp5EaBxzasWwW63XOhy3ZsD+qN9y1Wu9DeyZi23/UYTr6E6X+tuGfuExjOymmJUWR06
+         Ts3bOZazSPGdnyuQbLd6olDY4Lxw6SZAjT5pHircECRm1doJwvDtINyVMQRYZINQevlu
+         aytRrNVAk43z8KB+0HM+v3uOdVhu9fkFPLilAOZnZWmRoYkpD7FkCDa4gtc2EMQIcH5h
+         twmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BNKGAU4qcIpqIPrevvUk6TKe3mhilpaa0z0/xjwERNk=;
-        b=7pmaU9Rl/wD1rLshcteA2prWroPzV/IcB6bLocPSTDRy25Co8jT+N+pg9yxDLMDwgz
-         WYPK7YzCaMlXNCYsXS4P8/RvGG1CJxcuC2idxq0d4Y1G5/f1f6XqTMKHTnR2QWGqFe4/
-         0pv7WpVnprAdy9sebN36SB9EJmBQaaIgAXy2vOwe0pexJO+fC2R8eDaAHGi53kVWfncD
-         dSF6CfzzvTZiF4KfRrWszp40Sb3oRcnDHZYuqj6WrazZl88noqQ2Wyn5SYZFWu6umtdL
-         HJ6eFlU9PxQIhW+m3VPatGSp1oZxiLAGWUKjIbceYt3m9/zdjHToQRNvDy8IPX9RnTMw
-         ijfg==
-X-Gm-Message-State: AJIora82clYNRfwDD2KNr3+rEsMGcGuStw3l4dxdAc2y1N6SiUbEIVBV
-        +H5Ri6GL/XUFIdbNv99gnN9s6uX9Kdc+CnYmtT0=
-X-Google-Smtp-Source: AGRyM1vE+hVRJ0FHnF07Exq4MDPnuRGA1Dn4lSAVRIcKU8WJGx+DgBY+KwYR13MjL4+Y1XjvQGiQmOCUZPNi4vzK9lY=
-X-Received: by 2002:a05:6638:3807:b0:341:709f:31a7 with SMTP id
- i7-20020a056638380700b00341709f31a7mr10824763jav.206.1658997948398; Thu, 28
- Jul 2022 01:45:48 -0700 (PDT)
+        bh=5bCAizqjoNI8glsY+oMrjLNupid9MZT6o0HMnTV/mBs=;
+        b=nB98x4O98VcOjLjxtH5nSh4ZvF1kNf7Y9q1LYqP3ukkH8ikPGxY9YJ9XsBhRteiFR7
+         0pyr5PnwWYjs9pGktDNzY/Z4bZtHRsGDr2fElp/KclDxdCCmPfM0zsTfaTQPLyNF3MoX
+         skOPjZu2TpHjTJBzL2Q4SHiXBZ7DcfvSgma1vLkqUUFkHudX9Gtq7upbhWT4XjXypRr+
+         nE9n5PtZiFrb5Za8ljotox4fZyQjy2sp+p8lVnh/nlPT/npnfREp1QgGUqFqwJRbYchV
+         RzIoEuE86wbWLgX31jPnzYBzQH0MAHyPlk84Rebi1KBQquqnNDn9pQX2dj2hTSqyoNqL
+         oWlA==
+X-Gm-Message-State: AJIora883m+tlZPVq14F6oyNDhcQQDFi/PPRn9m0oTl7/go0eGmg71ho
+        NxXlTvDdzXw9kmPgir89dgVCKHHdjbwJVj5FXW8=
+X-Google-Smtp-Source: AGRyM1uosWadvZk7nGEP0S17XjxIFH5OfshZncnE7HeP5S1llvJBpln/Tx+mdlU1xk+tqK2Cey1p+V/rqeDEaFe61Eg=
+X-Received: by 2002:a05:6e02:2188:b0:2dd:f749:512d with SMTP id
+ j8-20020a056e02218800b002ddf749512dmr683345ila.216.1658998106351; Thu, 28 Jul
+ 2022 01:48:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220727081559.24571-1-memxor@gmail.com> <20220727081559.24571-2-memxor@gmail.com>
- <fd75bc5ed2564f558000284c44c89632@huawei.com> <34ee6960df604501a5348eac7b1c5768@huawei.com>
-In-Reply-To: <34ee6960df604501a5348eac7b1c5768@huawei.com>
+References: <20220726051713.840431-1-kuifeng@fb.com> <20220726051713.840431-2-kuifeng@fb.com>
+ <Yt/aXYiVmGKP282Q@krava> <9e6967ec22f410edf7da3dc6e5d7c867431e3a30.camel@fb.com>
+ <CAP01T75twVT2ea5Q74viJO+Y9kALbPFw4Yr6hbBfTdok0vAXaw@mail.gmail.com> <30a790ad499c9bb4783db91e305ee6546f497ebd.camel@fb.com>
+In-Reply-To: <30a790ad499c9bb4783db91e305ee6546f497ebd.camel@fb.com>
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Thu, 28 Jul 2022 10:45:10 +0200
-Message-ID: <CAP01T762iv6bok3K6fQ4aBisUcWg5zhjbKzbXFqX=Z+cvd5tew@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 1/2] bpf: Add support for per-parameter
- trusted args
-To:     Roberto Sassu <roberto.sassu@huawei.com>
-Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
+Date:   Thu, 28 Jul 2022 10:47:48 +0200
+Message-ID: <CAP01T75=vMUTqpDHjgb_FokmbbG4VpQCUORUavCs0Z3ujT8Obw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] bpf: Parameterize task iterators.
+To:     Kui-Feng Lee <kuifeng@fb.com>
+Cc:     "brauner@kernel.org" <brauner@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "olsajiri@gmail.com" <olsajiri@gmail.com>,
+        Kernel Team <Kernel-team@fb.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -69,214 +73,77 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 28 Jul 2022 at 10:18, Roberto Sassu <roberto.sassu@huawei.com> wrote:
+On Thu, 28 Jul 2022 at 07:25, Kui-Feng Lee <kuifeng@fb.com> wrote:
 >
-> > From: Roberto Sassu [mailto:roberto.sassu@huawei.com]
-> > Sent: Thursday, July 28, 2022 9:46 AM
-> > > From: Kumar Kartikeya Dwivedi [mailto:memxor@gmail.com]
-> > > Sent: Wednesday, July 27, 2022 10:16 AM
-> > > Similar to how we detect mem, size pairs in kfunc, teach verifier to
-> > > treat __ref suffix on argument name to imply that it must be a trusted
-> > > arg when passed to kfunc, similar to the effect of KF_TRUSTED_ARGS flag
-> > > but limited to the specific parameter. This is required to ensure that
-> > > kfunc that operate on some object only work on acquired pointers and not
-> > > normal PTR_TO_BTF_ID with same type which can be obtained by pointer
-> > > walking. Release functions need not specify such suffix on release
-> > > arguments as they are already expected to receive one referenced
-> > > argument.
+> On Wed, 2022-07-27 at 10:19 +0200, Kumar Kartikeya Dwivedi wrote:
+> > On Wed, 27 Jul 2022 at 09:01, Kui-Feng Lee <kuifeng@fb.com> wrote:
+> > >
+> > > On Tue, 2022-07-26 at 14:13 +0200, Jiri Olsa wrote:
+> > > > On Mon, Jul 25, 2022 at 10:17:11PM -0700, Kui-Feng Lee wrote:
+> > > > > Allow creating an iterator that loops through resources of one
+> > > > > task/thread.
+> > > > >
+> > > > > People could only create iterators to loop through all
+> > > > > resources of
+> > > > > files, vma, and tasks in the system, even though they were
+> > > > > interested
+> > > > > in only the resources of a specific task or process.  Passing
+> > > > > the
+> > > > > additional parameters, people can now create an iterator to go
+> > > > > through all resources or only the resources of a task.
+> > > > >
+> > > > > Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
+> > > > > ---
+> > > > >  include/linux/bpf.h            |  4 ++
+> > > > >  include/uapi/linux/bpf.h       | 23 ++++++++++
+> > > > >  kernel/bpf/task_iter.c         | 81 +++++++++++++++++++++++++-
+> > > > > ----
+> > > > > ----
+> > > > >  tools/include/uapi/linux/bpf.h | 23 ++++++++++
+> > > > >  4 files changed, 109 insertions(+), 22 deletions(-)
+> > > > >
+> > > > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > > > > index 11950029284f..c8d164404e20 100644
+> > > > > --- a/include/linux/bpf.h
+> > > > > +++ b/include/linux/bpf.h
+> > > > > @@ -1718,6 +1718,10 @@ int bpf_obj_get_user(const char __user
+> > > > > *pathname, int flags);
+> > > > >
+> > > > >  struct bpf_iter_aux_info {
+> > > > >         struct bpf_map *map;
+> > > > > +       struct {
+> > > > > +               __u32   tid;
+> > > >
+> > > > should be just u32 ?
+> > >
+> > > Or, should change the following 'type' to __u8?
 > >
-> > Thanks, Kumar. I will try it.
->
-> Uhm. I realized that I was already using another suffix,
-> __maybe_null, to indicate that a caller can pass NULL as
-> argument.
->
-> Wouldn't probably work well with two suffixes.
->
-
-Then you can maybe extend it to parse two suffixes at most (for now atleast)?
-
-> Have you considered to extend BTF_ID_FLAGS to take five
-> extra arguments, to set flags for each kfunc parameter?
->
-
-I didn't understand this. Flags parameter is an OR of the flags you
-set, why would we want to extend it to take 5 args?
-You can just or f1 | f2 | f3 | f4 | f5, as many as you want.
-
-> Thanks
->
-> Roberto
->
-> > Roberto
+> > Would it be better to use a pidfd instead of a tid here? Unset pidfd
+> > would mean going over all tasks, and any fd > 0 implies attaching to
+> > a
+> > specific task (as is the convention in BPF land). Most of the new
+> > UAPIs working on processes are using pidfds (to work with a stable
+> > handle instead of a reusable ID).
+> > The iterator taking an fd also gives an opportunity to BPF LSMs to
+> > attach permissions/policies to it (once we have a file local storage
+> > map) e.g. whether creating a task iterator for that specific pidfd
+> > instance (backed by the struct file) would be allowed or not.
+> > You are using getpid in the selftest and keeping track of last_tgid
+> > in
+> > the iterator, so I guess you don't even need to extend pidfd_open to
+> > work on thread IDs right now for your use case (and fdtable and mm
+> > are
+> > shared for POSIX threads anyway, so for those two it won't make a
+> > difference).
 > >
-> > > Cc: Roberto Sassu <roberto.sassu@huawei.com>
-> > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > > ---
-> > >  Documentation/bpf/kfuncs.rst | 18 +++++++++++++++++
-> > >  kernel/bpf/btf.c             | 39 ++++++++++++++++++++++++------------
-> > >  net/bpf/test_run.c           |  9 +++++++--
-> > >  3 files changed, 51 insertions(+), 15 deletions(-)
-> > >
-> > > diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
-> > > index c0b7dae6dbf5..41dff6337446 100644
-> > > --- a/Documentation/bpf/kfuncs.rst
-> > > +++ b/Documentation/bpf/kfuncs.rst
-> > > @@ -72,6 +72,24 @@ argument as its size. By default, without __sz
-> > annotation,
-> > > the size of the type
-> > >  of the pointer is used. Without __sz annotation, a kfunc cannot accept a void
-> > >  pointer.
-> > >
-> > > +2.2.2 __ref Annotation
-> > > +----------------------
-> > > +
-> > > +This annotation is used to indicate that the argument is trusted, i.e. it will
-> > > +be a pointer from an acquire function (defined later), and its offset will be
-> > > +zero. This annotation has the same effect as the KF_TRUSTED_ARGS kfunc
-> > flag
-> > > but
-> > > +only on the parameter it is applied to. An example is shown below::
-> > > +
-> > > +        void bpf_task_send_signal(struct task_struct *task__ref, int signal)
-> > > +        {
-> > > +        ...
-> > > +        }
-> > > +
-> > > +Here, bpf_task_send_signal will only act on trusted task_struct pointers, and
-> > > +cannot be used on pointers obtained using pointer walking. This ensures that
-> > > +caller always calls this kfunc on a task whose lifetime is guaranteed for the
-> > > +duration of the call.
-> > > +
-> > >  .. _BPF_kfunc_nodef:
-> > >
-> > >  2.3 Using an existing kernel function
-> > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > > index 7ac971ea98d1..3ce9b2deef9c 100644
-> > > --- a/kernel/bpf/btf.c
-> > > +++ b/kernel/bpf/btf.c
-> > > @@ -6141,18 +6141,13 @@ static bool __btf_type_is_scalar_struct(struct
-> > > bpf_verifier_log *log,
-> > >     return true;
-> > >  }
-> > >
-> > > -static bool is_kfunc_arg_mem_size(const struct btf *btf,
-> > > -                             const struct btf_param *arg,
-> > > -                             const struct bpf_reg_state *reg)
-> > > +static bool btf_param_match_suffix(const struct btf *btf,
-> > > +                              const struct btf_param *arg,
-> > > +                              const char *suffix)
-> > >  {
-> > > -   int len, sfx_len = sizeof("__sz") - 1;
-> > > -   const struct btf_type *t;
-> > > +   int len, sfx_len = strlen(suffix);
-> > >     const char *param_name;
-> > >
-> > > -   t = btf_type_skip_modifiers(btf, arg->type, NULL);
-> > > -   if (!btf_type_is_scalar(t) || reg->type != SCALAR_VALUE)
-> > > -           return false;
-> > > -
-> > >     /* In the future, this can be ported to use BTF tagging */
-> > >     param_name = btf_name_by_offset(btf, arg->name_off);
-> > >     if (str_is_empty(param_name))
-> > > @@ -6161,10 +6156,26 @@ static bool is_kfunc_arg_mem_size(const struct
-> > btf
-> > > *btf,
-> > >     if (len < sfx_len)
-> > >             return false;
-> > >     param_name += len - sfx_len;
-> > > -   if (strncmp(param_name, "__sz", sfx_len))
-> > > +   return !strncmp(param_name, suffix, sfx_len);
-> > > +}
-> > > +
-> > > +static bool is_kfunc_arg_ref(const struct btf *btf,
-> > > +                        const struct btf_param *arg)
-> > > +{
-> > > +   return btf_param_match_suffix(btf, arg, "__ref");
-> > > +}
-> > > +
-> > > +static bool is_kfunc_arg_mem_size(const struct btf *btf,
-> > > +                             const struct btf_param *arg,
-> > > +                             const struct bpf_reg_state *reg)
-> > > +{
-> > > +   const struct btf_type *t;
-> > > +
-> > > +   t = btf_type_skip_modifiers(btf, arg->type, NULL);
-> > > +   if (!btf_type_is_scalar(t) || reg->type != SCALAR_VALUE)
-> > >             return false;
-> > >
-> > > -   return true;
-> > > +   return btf_param_match_suffix(btf, arg, "__sz");
-> > >  }
-> > >
-> > >  static int btf_check_func_arg_match(struct bpf_verifier_env *env,
-> > > @@ -6174,7 +6185,7 @@ static int btf_check_func_arg_match(struct
-> > > bpf_verifier_env *env,
-> > >                                 u32 kfunc_flags)
-> > >  {
-> > >     enum bpf_prog_type prog_type = resolve_prog_type(env->prog);
-> > > -   bool rel = false, kptr_get = false, trusted_arg = false;
-> > > +   bool rel = false, kptr_get = false, kf_trusted_args = false;
-> > >     struct bpf_verifier_log *log = &env->log;
-> > >     u32 i, nargs, ref_id, ref_obj_id = 0;
-> > >     bool is_kfunc = btf_is_kernel(btf);
-> > > @@ -6211,7 +6222,7 @@ static int btf_check_func_arg_match(struct
-> > > bpf_verifier_env *env,
-> > >             /* Only kfunc can be release func */
-> > >             rel = kfunc_flags & KF_RELEASE;
-> > >             kptr_get = kfunc_flags & KF_KPTR_GET;
-> > > -           trusted_arg = kfunc_flags & KF_TRUSTED_ARGS;
-> > > +           kf_trusted_args = kfunc_flags & KF_TRUSTED_ARGS;
-> > >     }
-> > >
-> > >     /* check that BTF function arguments match actual types that the
-> > > @@ -6221,6 +6232,7 @@ static int btf_check_func_arg_match(struct
-> > > bpf_verifier_env *env,
-> > >             enum bpf_arg_type arg_type = ARG_DONTCARE;
-> > >             u32 regno = i + 1;
-> > >             struct bpf_reg_state *reg = &regs[regno];
-> > > +           bool trusted_arg = false;
-> > >
-> > >             t = btf_type_skip_modifiers(btf, args[i].type, NULL);
-> > >             if (btf_type_is_scalar(t)) {
-> > > @@ -6239,6 +6251,7 @@ static int btf_check_func_arg_match(struct
-> > > bpf_verifier_env *env,
-> > >             /* Check if argument must be a referenced pointer, args + i has
-> > >              * been verified to be a pointer (after skipping modifiers).
-> > >              */
-> > > +           trusted_arg = kf_trusted_args || is_kfunc_arg_ref(btf, args + i);
-> > >             if (is_kfunc && trusted_arg && !reg->ref_obj_id) {
-> > >                     bpf_log(log, "R%d must be referenced\n", regno);
-> > >                     return -EINVAL;
-> > > diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-> > > index cbc9cd5058cb..247bfe52e585 100644
-> > > --- a/net/bpf/test_run.c
-> > > +++ b/net/bpf/test_run.c
-> > > @@ -691,7 +691,11 @@ noinline void
-> > bpf_kfunc_call_test_mem_len_fail2(u64
-> > > *mem, int len)
-> > >  {
-> > >  }
-> > >
-> > > -noinline void bpf_kfunc_call_test_ref(struct prog_test_ref_kfunc *p)
-> > > +noinline void bpf_kfunc_call_test_trusted(struct prog_test_ref_kfunc *p)
-> > > +{
-> > > +}
-> > > +
-> > > +noinline void bpf_kfunc_call_test_ref(struct prog_test_ref_kfunc *p__ref)
-> > >  {
-> > >  }
-> > >
-> > > @@ -718,7 +722,8 @@ BTF_ID_FLAGS(func, bpf_kfunc_call_test_fail3)
-> > >  BTF_ID_FLAGS(func, bpf_kfunc_call_test_mem_len_pass1)
-> > >  BTF_ID_FLAGS(func, bpf_kfunc_call_test_mem_len_fail1)
-> > >  BTF_ID_FLAGS(func, bpf_kfunc_call_test_mem_len_fail2)
-> > > -BTF_ID_FLAGS(func, bpf_kfunc_call_test_ref, KF_TRUSTED_ARGS)
-> > > +BTF_ID_FLAGS(func, bpf_kfunc_call_test_trusted, KF_TRUSTED_ARGS)
-> > > +BTF_ID_FLAGS(func, bpf_kfunc_call_test_ref)
-> > >  BTF_SET8_END(test_sk_check_kfunc_ids)
-> > >
-> > >  static void *bpf_test_init(const union bpf_attr *kattr, u32 user_size,
-> > > --
-> > > 2.34.1
+> > What is your opinion?
 >
+> Do you mean removed both tid and type, and replace them with a pidfd?
+> We can do that in uapi, struct bpf_link_info.  But, the interal types,
+> ex. bpf_iter_aux_info, still need to use tid or struct file to avoid
+> getting file from the per-process fdtable.  Is that what you mean?
+>
+
+Yes, just for the UAPI, it is similar to taking map_fd for map iter.
+In bpf_link_info we should report just the tid, just like map iter
+reports map_id.
