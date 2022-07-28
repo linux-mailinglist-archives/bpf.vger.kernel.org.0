@@ -2,67 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 243C15847EE
-	for <lists+bpf@lfdr.de>; Fri, 29 Jul 2022 00:05:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E31885847FB
+	for <lists+bpf@lfdr.de>; Fri, 29 Jul 2022 00:11:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230312AbiG1WFL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Jul 2022 18:05:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46198 "EHLO
+        id S229542AbiG1WLN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Jul 2022 18:11:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbiG1WFK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Jul 2022 18:05:10 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72FE2B52
-        for <bpf@vger.kernel.org>; Thu, 28 Jul 2022 15:05:08 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id va17so5502058ejb.0
-        for <bpf@vger.kernel.org>; Thu, 28 Jul 2022 15:05:08 -0700 (PDT)
+        with ESMTP id S230357AbiG1WLM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Jul 2022 18:11:12 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A6328715;
+        Thu, 28 Jul 2022 15:11:10 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id b11so5373165eju.10;
+        Thu, 28 Jul 2022 15:11:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=RoCs+NEzlCqK8aLkJt2gBMB9EF+7Lb5BgGnx2FJ4gGM=;
-        b=K4GLNaPZFM8U+swrzypASI27bdbJ7w77Z4sAKVkjVULnqHLf9Wf9JS9mPjIvK/AL81
-         7lRwzWkNetUxPLblN/gS6awV1lcc1IMVZPVRRMA161q1ntjva89ZSin3VOa/mo0WUpfU
-         jc8w7TPx8caHdY0yHM8PTh/7Au2KPkW5fRDiv18po/3xkKqshfQdu0AnqO3EPsak6FKZ
-         s1iD6elkRtahzgaDWSSFWKnQAX9ENFKxfhO1Q7JsTivAj51Ao5ObM7v9MwC+gmCqGyNh
-         h9NVPDomzFuCzuYblNK3LDGl27N8YxnKe5UGKc4AUHKWP8hmBJJdW2MirOD3v4In5NxO
-         tDsQ==
+        bh=WHDO6VegvmCbpcvdu9GkyCSavGLPepAIPCu9N4+1D9k=;
+        b=C+AdNgpndlAqT1YWQ88biNbXLw5UVcaaMGXaetVij/eBX95My1XNx0SReUiFBjpr6K
+         6Vbuu+z7XBppeY7r+VMWOutYFQzhPk/Zh6CaFXljReyxtmgdb7q8hwtjQmhhJecbkCH3
+         XgK6u65WvYOLMU6CzotK65mHlX0Psh9zQ8dxPbAkx33LPQ1WzsGzviC5UtMPD1OzhJh2
+         q4zvsUAF3HuylO/+nei4x8TCFhjsLbpYACLYBHhoynkmCGCbSWwdpCL4eCaAUfarpz45
+         KBHv9ZvFz5wtzrEbdd6XP6JkJ+p0fGLqgdGQxIDTZlqc/0ZTU5UrywfPPV7fCdLL4Qt/
+         0q2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=RoCs+NEzlCqK8aLkJt2gBMB9EF+7Lb5BgGnx2FJ4gGM=;
-        b=LSpCRb65dSJD/W0QS6VVTOdefh0hRx6zQdFKbY6uF5pQFaHrJifPcZGpPmtBhlgJe5
-         z7AeGKryDHuNGK/y7QkL/L6GSJGwnwZ1MLrKxecaBJMdzWsDGiimqBU/so2OrQsnP2tf
-         C5S9LgeHWlNnJvR0TWQmwTzRICWDlwB7M+jbDgc1ANvILLvc/UR6SPZdSOTeiIK3Ir9n
-         GpYpNGLeN2/hTR2Q1/PA1ZUP871w7LpsHEI4nRgNy9fkDGR0IuHf+1T8KpAEK3xwIgP3
-         NbPONbwvp8VCxs2Mg34a3/hsR/VE7yd1imhIvpToMfb3Vg4aysD7LMnPD3qq0t2teZFq
-         hXAQ==
-X-Gm-Message-State: AJIora+qQfH0XVOzu2TNs6Sf5afN1kmLngqTQiJidpmZHa+DA0IyuyjC
-        ZnPGsna7vS4OJllYZeS4Dw6qhyTXyrReW5XBdJo9kIe/
-X-Google-Smtp-Source: AGRyM1vpY1coDGr7auWTNGG2cWoyQ5BPBexwFhRh+itW7/0zAuwb2d1a4svNfKp6ESeC/X9WWW/ZgnsVj+Rs1BCXRMs=
-X-Received: by 2002:a17:907:6e1d:b0:72f:20ad:e1b6 with SMTP id
- sd29-20020a1709076e1d00b0072f20ade1b6mr662142ejc.545.1659045906773; Thu, 28
- Jul 2022 15:05:06 -0700 (PDT)
+        bh=WHDO6VegvmCbpcvdu9GkyCSavGLPepAIPCu9N4+1D9k=;
+        b=BDs47Hlqm7HkpfvBcEsSb1eeJ6kAC9ZU4ykTp+4+uXH+z6q32ci/X0JjzwDQ7wjDh3
+         3S36le+It2+eSj2gBeZICFip2nuQ6dc3P11cSx7ZPm62SYSkxuFC0A62iraEc/gJ3epI
+         KWv4MTgWvr4bbsoXS1BDu9ficXCDNVUmHQAgvMmY4VxaaPl85R1zk5nd+cjxMfSiL44p
+         7g5xHjdI5SW72i1Y1Kpv/pF5Jbnh3WgVjKY4p2VYFbM6bmrjTv5e/TFlEnXsVyXFDtPz
+         G5JIwiXXOLoh+KPkLU0+O9K7JWWvny1shm3YhdFkK30haKU42GLztzoiyJT1cGOaZNVf
+         7a1g==
+X-Gm-Message-State: AJIora+foCwT3dnQMmtkwblIKL/3UNiZwK8uBCDXWsc5teaNHRRrXht5
+        IQBD5+xyZKyhV4qc8jCCz5dDJ70uVq3Wi4yAMmM=
+X-Google-Smtp-Source: AGRyM1vhJfYvaLqFgXtV4wzdkzBl35oMohiGUu7zcQUs3ZpA7w/A4eV6IRslqa0bj7XwXZAxcfLMM2vZJzFwsW57dZM=
+X-Received: by 2002:a17:907:2ccc:b0:72b:6907:fce6 with SMTP id
+ hg12-20020a1709072ccc00b0072b6907fce6mr703919ejc.115.1659046268498; Thu, 28
+ Jul 2022 15:11:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220616055543.3285835-1-andrii@kernel.org> <87lesnyeph.fsf@cloudflare.com>
- <87czdzy6k2.fsf@cloudflare.com>
-In-Reply-To: <87czdzy6k2.fsf@cloudflare.com>
+References: <YtZ+/dAA195d99ak@kili> <20220719171902.37gvquchuwf5e4gh@kafai-mbp.dhcp.thefacebook.com>
+ <CAADnVQLS=asNdrmdK-jgW4AZmJih00OTvXZg_RA55wLY=bHMZg@mail.gmail.com> <46ca78ec-17b5-3cf1-a42d-7659563c6cf7@oracle.com>
+In-Reply-To: <46ca78ec-17b5-3cf1-a42d-7659563c6cf7@oracle.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 28 Jul 2022 15:04:55 -0700
-Message-ID: <CAEf4BzZmDMb1NWcbiu0PZpU21S0C+Ozyi=tRUyHt-3D=tazwfQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: fix internal USDT address translation
- logic for shared libraries
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+Date:   Thu, 28 Jul 2022 15:10:57 -0700
+Message-ID: <CAEf4BzbmoZH_04sA5GjQfFBB9XryYJwWXAMtA3EK9CiWGQ8+rQ@mail.gmail.com>
+Subject: Re: [PATCH] libbpf: fix str_has_sfx()
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        kernel-team <kernel-team@cloudflare.com>
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf <bpf@vger.kernel.org>, kernel-janitors@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLACK autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,105 +76,80 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 20, 2022 at 11:37 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+On Wed, Jul 20, 2022 at 12:48 AM Alan Maguire <alan.maguire@oracle.com> wrote:
 >
-> On Wed, Jul 20, 2022 at 05:32 PM +02, Jakub Sitnicki wrote:
->
-> [...]
->
-> >> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> >> index 8ad7a733a505..e08e8e34e793 100644
-> >> --- a/tools/testing/selftests/bpf/Makefile
-> >> +++ b/tools/testing/selftests/bpf/Makefile
-> >> @@ -172,13 +172,15 @@ $(OUTPUT)/%:%.c
-> >>  # do not fail. Static builds leave urandom_read relying on system-wide shared libraries.
-> >>  $(OUTPUT)/liburandom_read.so: urandom_read_lib1.c urandom_read_lib2.c
-> >>      $(call msg,LIB,,$@)
-> >> -    $(Q)$(CC) $(filter-out -static,$(CFLAGS) $(LDFLAGS)) $^ $(LDLIBS) -fPIC -shared -o $@
-> >> +    $(Q)$(CLANG) $(filter-out -static,$(CFLAGS) $(LDFLAGS)) $^ $(LDLIBS)   \
-> >> +                 -fuse-ld=lld -Wl,-znoseparate-code -fPIC -shared -o $@
+> On 19/07/2022 18:51, Alexei Starovoitov wrote:
+> > On Tue, Jul 19, 2022 at 10:19 AM Martin KaFai Lau <kafai@fb.com> wrote:
 > >>
-> >>  $(OUTPUT)/urandom_read: urandom_read.c urandom_read_aux.c $(OUTPUT)/liburandom_read.so
-> >>      $(call msg,BINARY,,$@)
-> >> -    $(Q)$(CC) $(filter-out -static,$(CFLAGS) $(LDFLAGS)) $(filter %.c,$^)  \
-> >> -              liburandom_read.so $(LDLIBS)                                 \
-> >> -              -Wl,-rpath=. -Wl,--build-id=sha1 -o $@
-> >> +    $(Q)$(CLANG) $(filter-out -static,$(CFLAGS) $(LDFLAGS)) $(filter %.c,$^) \
-> >> +                 liburandom_read.so $(LDLIBS)                              \
-> >> +                 -fuse-ld=lld -Wl,-znoseparate-code                        \
-> >> +                 -Wl,-rpath=. -Wl,--build-id=sha1 -o $@
+> >> On Tue, Jul 19, 2022 at 12:53:01PM +0300, Dan Carpenter wrote:
+> >>> The return from strcmp() is inverted so the it returns true instead
+> >>> of false and vise versa.
+> >>>
+> >>> Fixes: a1c9d61b19cb ("libbpf: Improve library identification for uprobe binary path resolution")
+> >>> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> >>> ---
+> >>> Spotted during review.  *cmp() functions should always have a comparison
+> >>> to zero.
+> >>>       if (strcmp(a, b) < 0) {  <-- means a < b
+> >>>       if (strcmp(a, b) >= 0) { <-- means a >= b
+> >>>       if (strcmp(a, b) != 0) { <-- means a != b
+> >>> etc.
+> >>>
+> >>>  tools/lib/bpf/libbpf_internal.h | 6 +++---
+> >>>  1 file changed, 3 insertions(+), 3 deletions(-)
+> >>>
+> >>> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+> >>> index 9cd7829cbe41..008485296a29 100644
+> >>> --- a/tools/lib/bpf/libbpf_internal.h
+> >>> +++ b/tools/lib/bpf/libbpf_internal.h
+> >>> @@ -108,9 +108,9 @@ static inline bool str_has_sfx(const char *str, const char *sfx)
+> >>>       size_t str_len = strlen(str);
+> >>>       size_t sfx_len = strlen(sfx);
+> >>>
+> >>> -     if (sfx_len <= str_len)
+> >>> -             return strcmp(str + str_len - sfx_len, sfx);
+> >>> -     return false;
+> >>> +     if (sfx_len > str_len)
+> >>> +             return false;
+> >>> +     return strcmp(str + str_len - sfx_len, sfx) == 0;
+> >> Please tag the subject with "bpf" next time.
+> >>
+> >> Acked-by: Martin KaFai Lau <kafai@fb.com>
 > >
-> > [...]
+> > Alan,
 > >
-> > Not sure if this was considered - adding a dependency on Clang for the
-> > target platform makes cross-compiling bpf selftests much harder than it
-> > was.
+> > If it was so broken how did it work earlier?
+> > Do we have a test for this?
 > >
-> > Maybe we could use $(CLANG) only when not cross-compiling, and execute
-> > $(CC) like before otherwise?
 >
-> OTOH, there seems to be nothing Clang specific about the build
-> recipe. We just want t use LLVM lld. GCC accepts -fuse-ld as well (bfd
-> vs lld).
+> We have tests for automatic path determination, yes, but those
+> tests specify libc.so.6, so are testing the strstr(file, ".so.")
+> predicate below:
 >
-> Perhaps we could partially revert to something as below? It "fixes" the
-> cross-compilation build of bpf selftests for arm64 for me.
+>         if (str_has_sfx(file, ".so") || strstr(file, ".so.")) {
 >
-> WDYT?
+> Problem is, on many systems, libc.so is a GNU ld script rather
+> than an actual library:
 >
-> --8<--
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index 8d59ec7f4c2d..541e2b0de27a 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -170,24 +170,24 @@ $(OUTPUT)/%:%.c
+> cat /usr/lib64/libc.so
+> /* GNU ld script
+>    Use the shared library, but some functions are only in
+>    the static library, so try that secondarily.  */
+> OUTPUT_FORMAT(elf64-x86-64)
+> GROUP ( /lib64/libc.so.6 /usr/lib64/libc_nonshared.a  AS_NEEDED ( /lib64/ld-linux-x86-64.so.2 ) )
 >
->  # LLVM's ld.lld doesn't support all the architectures, so use it only on x86
->  ifeq ($(SRCARCH),x86)
-> -LLD := lld
-> +ALT_LD := lld
->  else
-> -LLD := ld
-> +ALT_LD := bfd
->  endif
+> ...so we can't rely on system library .so files actually containing
+> the library to instrument.
 >
->  # Filter out -static for liburandom_read.so and its dependent targets so that static builds
->  # do not fail. Static builds leave urandom_read relying on system-wide shared libraries.
->  $(OUTPUT)/liburandom_read.so: urandom_read_lib1.c urandom_read_lib2.c
->         $(call msg,LIB,,$@)
-> -       $(Q)$(CLANG) $(filter-out -static,$(CFLAGS) $(LDFLAGS)) $^ $(LDLIBS)   \
-> -                    -fuse-ld=$(LLD) -Wl,-znoseparate-code -fPIC -shared -o $@
-> +       $(Q)$(CC) $(filter-out -static,$(CFLAGS) $(LDFLAGS)) $^ $(LDLIBS)       \
-> +                 -fuse-ld=$(ALT_LD) -Wl,-znoseparate-code -fPIC -shared -o $@
->
->  $(OUTPUT)/urandom_read: urandom_read.c urandom_read_aux.c $(OUTPUT)/liburandom_read.so
->         $(call msg,BINARY,,$@)
-> -       $(Q)$(CLANG) $(filter-out -static,$(CFLAGS) $(LDFLAGS)) $(filter %.c,$^) \
-> -                    liburandom_read.so $(LDLIBS)                              \
-> -                    -fuse-ld=$(LLD) -Wl,-znoseparate-code                     \
-> -                    -Wl,-rpath=. -Wl,--build-id=sha1 -o $@
-> +       $(Q)$(CC) $(filter-out -static,$(CFLAGS) $(LDFLAGS)) $(filter %.c,$^)   \
-> +                 liburandom_read.so $(LDLIBS)                                  \
-> +                 -fuse-ld=$(ALT_LD) -Wl,-znoseparate-code                      \
-> +                 -Wl,-rpath=. -Wl,--build-id=sha1 -o $@
->
+> Maybe we can do something with liburandom_read.so now we have it
+> there; I was looking at extending the auto-path determination
+> to usdt too, so we could add a new test to cover this then I think.
 
-I tried building with CC locally and I still see ELF layout that would
-exercise the logic that was fixed with my original patchset:
+Library path resolution should already work for USDTs (note that I
+reuse resolve_full_path() in bpf_program__attach_usdt()), but having
+explicit tests would be great. It might be simplest to temporarily
+override LD_LIBRARY_PATH with a path to liburandom_read.so? So please
+consider sending a patch with tests, thanks!
 
-$ readelf -l liburandom_read.so | grep LOAD -A1
-  LOAD           0x0000000000000000 0x0000000000000000 0x0000000000000000
-                 0x00000000000005ec 0x00000000000005ec  R      0x1000
-  LOAD           0x00000000000005f0 0x00000000000015f0 0x00000000000015f0
-                 0x0000000000000130 0x0000000000000130  R E    0x1000
-  LOAD           0x0000000000000720 0x0000000000002720 0x0000000000002720
-                 0x0000000000000200 0x0000000000000200  RW     0x1000
-  LOAD           0x0000000000000920 0x0000000000003920 0x0000000000003920
-                 0x0000000000000028 0x0000000000000029  RW     0x1000
-
-So sure, sounds good to me, please send a patch with a change.
-
-
-
->  $(OUTPUT)/bpf_testmod.ko: $(VMLINUX_BTF) $(wildcard bpf_testmod/Makefile bpf_testmod/*.[ch])
->         $(call msg,MOD,,$@)
+>
+> Alan
