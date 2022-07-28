@@ -2,86 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5273E584475
-	for <lists+bpf@lfdr.de>; Thu, 28 Jul 2022 18:56:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CDB358447F
+	for <lists+bpf@lfdr.de>; Thu, 28 Jul 2022 18:57:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231728AbiG1Q4e (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Jul 2022 12:56:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41258 "EHLO
+        id S229747AbiG1Q5M (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Jul 2022 12:57:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbiG1Q4d (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Jul 2022 12:56:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83748550A5;
-        Thu, 28 Jul 2022 09:56:32 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        with ESMTP id S232108AbiG1Q5I (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Jul 2022 12:57:08 -0400
+Received: from mailrelay.tu-berlin.de (mailrelay.tu-berlin.de [130.149.7.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B8D85FACE
+        for <bpf@vger.kernel.org>; Thu, 28 Jul 2022 09:57:05 -0700 (PDT)
+Received: from SPMA-01.tubit.win.tu-berlin.de (localhost.localdomain [127.0.0.1])
+        by localhost (Email Security Appliance) with SMTP id C83C67DE773_2E2BFDEB;
+        Thu, 28 Jul 2022 16:57:02 +0000 (GMT)
+Received: from mail.tu-berlin.de (bulkmail.tu-berlin.de [141.23.12.143])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1BFC461D07;
-        Thu, 28 Jul 2022 16:56:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 043B2C433C1;
-        Thu, 28 Jul 2022 16:56:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1659027391;
-        bh=B6rUCeLnh3zKa/C/9iHbOCyopE6kIGU1JVaQFJIIV2k=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=cNkUW/MYkRnq+bDo3SzeItVJ8q+nei5gfKhFR2AfkiEyU1Pg+CtqykDMWYBZQpn5u
-         D7TnN/vRrk6lHZ+oot7krwjx8tRjgVg8tdbrX2RJuNfYsCmU9z2ZoL43Pqmf8RADQJ
-         y3DCN7IsaTMhVE3Npcu7PQpEEYPwlNPbOlfM4VoalWBhJgaizosly5mbky2slyX4Z/
-         yB8b/Oh4NQPnCFg5GH+uZxnkRuJF/OzEiav5KeJGQ9WEilROqzzdVcgQ/V8QW43IC/
-         7GVebDSvqWye3fqVI2mYUHUtQesI7/eOqFYg+vexlLuF+T0CmbaxtHzAOFpWx+wA3v
-         LfgN+DSB5THFQ==
-Date:   Thu, 28 Jul 2022 09:56:29 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        (Client CN "exchange.tu-berlin.de", Issuer "DFN-Verein Global Issuing CA" (verified OK))
+        by SPMA-01.tubit.win.tu-berlin.de (Sophos Email Appliance) with ESMTPS id 47A717DD6C9_2E2BFDEF;
+        Thu, 28 Jul 2022 16:57:02 +0000 (GMT)
+From:   =?UTF-8?q?J=C3=B6rn-Thorben=20Hinz?= <jthinz@mailbox.tu-berlin.de>
+To:     <bpf@vger.kernel.org>
+CC:     Quentin Monnet <quentin@isovalent.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, kernel-team@fb.com,
-        Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH bpf-next 02/14] bpf: net: Avoid sock_setsockopt() taking
- sk lock when called from bpf
-Message-ID: <20220728095629.6109f78c@kernel.org>
-In-Reply-To: <20220728163104.usdkmsxjyqwaitxu@kafai-mbp.dhcp.thefacebook.com>
-References: <20220727060856.2370358-1-kafai@fb.com>
-        <20220727060909.2371812-1-kafai@fb.com>
-        <YuFsHaTIu7dTzotG@google.com>
-        <20220727183700.iczavo77o6ubxbwm@kafai-mbp.dhcp.thefacebook.com>
-        <CAKH8qBt5-p24p9AvuEntb=gRFsJ_UQZ_GX8mFsPZZPq7CgL_4A@mail.gmail.com>
-        <20220727212133.3uvpew67rzha6rzp@kafai-mbp.dhcp.thefacebook.com>
-        <CAKH8qBs3jp_0gRiHyzm29HaW53ZYpGYpWbmLhwi87xWKi9g=UA@mail.gmail.com>
-        <20220728004546.6n42isdvyg65vuke@kafai-mbp.dhcp.thefacebook.com>
-        <20220727184903.4d24a00a@kernel.org>
-        <20220728163104.usdkmsxjyqwaitxu@kafai-mbp.dhcp.thefacebook.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        =?UTF-8?q?J=C3=B6rn-Thorben=20Hinz?= <jthinz@mailbox.tu-berlin.de>
+Subject: [RFC PATCH bpf-next] bpftool: Mark generated skeleton headers as system headers
+Date:   Thu, 28 Jul 2022 18:56:44 +0200
+Message-ID: <20220728165644.660530-1-jthinz@mailbox.tu-berlin.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SASI-RCODE: 200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=campus.tu-berlin.de; h=from:to:cc:subject:date:message-id:mime-version:content-type:content-transfer-encoding; s=dkim-tub; bh=2Yp/xQ2F0Q7htx7HDA0vRKlxJo+xuWcB7UCYFzUJZoE=; b=R2TWcjANybpbGQTkjfod9CZZMApxOZEdTNPGfqVUf8sDlFKo4oedyGtBcm+GrTQDlau/V+B1C2qFpB/qBpmAolPxu+a0+YkPWq5amz5LH8gbV9nqzb17zkhIr/BkaC6m0+UwnRr0qD5wpI+RotZxGgs8NluKvFcy9enh7AlOTr0=
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 28 Jul 2022 09:31:04 -0700 Martin KaFai Lau wrote:
-> If I understand the concern correctly, it may not be straight forward to
-> grip the reason behind the testings at in_bpf() [ the in_task() and
-> the current->bpf_ctx test ] ?  Yes, it is a valid point.
-> 
-> The optval.is_bpf bit can be directly traced back to the bpf_setsockopt
-> helper and should be easier to reason about.
+Hi,
 
-I think we're saying the opposite thing. in_bpf() the context checking
-function is fine. There is a clear parallel to in_task() and combined
-with the capability check it should be pretty obvious what the code
-is intending to achieve.
+after compiling a skeleton-using program with -pedantic once and
+stumbling across a tiniest incorrectness in skeletons with it[1], I was
+debating whether it makes sense to suppress warnings from skeleton
+headers.
 
-sockptr_t::in_bpf which randomly implies that the lock is already held
-will be hard to understand for anyone not intimately familiar with the
-BPF code. Naming that bit is_locked seems much clearer.
+Happy about comments about this. This change might be too suppressive
+towards warnings and maybe ignoring only -Woverlength-strings directly
+in OBJ_NAME__elf_bytes() be a better idea. Or keep all warnings from
+skeletons available as-is to have them more visible in and around
+bpftool’s development.
 
-Which is what I believe Stan was proposing.
+[1] https://lore.kernel.org/r/20220726133203.514087-1-jthinz@mailbox.tu-berlin.de/
+
+Commit message:
+
+A userspace program including a skeleton generated by bpftool might use
+an arbitrary set of compiler flags, including enabling various warnings.
+
+For example, with -Woverlength-strings the string constant in
+OBJ_NAME__elf_bytes() causes a warning due to its usually huge length.
+This string length is not an actual problem with GCC and clang, though,
+it’s “just” not required by the C standard to be supported.
+
+Skeleton headers are likely not placed in a system include path. To
+avoid the above warning and similar noise for the *user* of a skeleton,
+explicitly mark the header as a system header which disables almost all
+warnings for it when included.
+
+Skeleton headers generated during the build of bpftool are not marked to
+keep potential warnings available to bpftool’s developers.
+
+Signed-off-by: Jörn-Thorben Hinz <jthinz@mailbox.tu-berlin.de>
+---
+ tools/bpf/bpftool/Makefile |  2 ++
+ tools/bpf/bpftool/gen.c    | 30 +++++++++++++++++++++++++++---
+ 2 files changed, 29 insertions(+), 3 deletions(-)
+
+diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+index 6b5b3a99f79d..5f484d7929db 100644
+--- a/tools/bpf/bpftool/Makefile
++++ b/tools/bpf/bpftool/Makefile
+@@ -196,6 +196,8 @@ endif
+ 
+ CFLAGS += $(if $(BUILD_BPF_SKELS),,-DBPFTOOL_WITHOUT_SKELETONS)
+ 
++$(BOOTSTRAP_OUTPUT)%.o: CFLAGS += -DBPFTOOL_BOOTSTRAP
++
+ $(BOOTSTRAP_OUTPUT)disasm.o: $(srctree)/kernel/bpf/disasm.c
+ 	$(QUIET_CC)$(HOSTCC) $(HOST_CFLAGS) -c -MMD $< -o $@
+ 
+diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+index 1cf53bb01936..82053aceec78 100644
+--- a/tools/bpf/bpftool/gen.c
++++ b/tools/bpf/bpftool/gen.c
+@@ -1006,7 +1006,15 @@ static int do_skeleton(int argc, char **argv)
+ 		/* THIS FILE IS AUTOGENERATED BY BPFTOOL! */		    \n\
+ 		#ifndef %2$s						    \n\
+ 		#define %2$s						    \n\
+-									    \n\
++		"
++#ifndef BPFTOOL_BOOTSTRAP
++		"\
++		\n\
++		_Pragma(\"GCC system_header\")				    \n\
++		"
++#endif
++		"\
++		\n\
+ 		#include <bpf/skel_internal.h>				    \n\
+ 									    \n\
+ 		struct %1$s {						    \n\
+@@ -1022,7 +1030,15 @@ static int do_skeleton(int argc, char **argv)
+ 		/* THIS FILE IS AUTOGENERATED BY BPFTOOL! */		    \n\
+ 		#ifndef %2$s						    \n\
+ 		#define %2$s						    \n\
+-									    \n\
++		"
++#ifndef BPFTOOL_BOOTSTRAP
++		"\
++		\n\
++		_Pragma(\"GCC system_header\")				    \n\
++		"
++#endif
++		"\
++		\n\
+ 		#include <errno.h>					    \n\
+ 		#include <stdlib.h>					    \n\
+ 		#include <bpf/libbpf.h>					    \n\
+@@ -1415,7 +1431,15 @@ static int do_subskeleton(int argc, char **argv)
+ 	/* THIS FILE IS AUTOGENERATED! */				    \n\
+ 	#ifndef %2$s							    \n\
+ 	#define %2$s							    \n\
+-									    \n\
++		"
++#ifndef BPFTOOL_BOOTSTRAP
++	"\
++	\n\
++	_Pragma(\"GCC system_header\")					    \n\
++	"
++#endif
++	"\
++	\n\
+ 	#include <errno.h>						    \n\
+ 	#include <stdlib.h>						    \n\
+ 	#include <bpf/libbpf.h>						    \n\
+-- 
+2.30.2
+
