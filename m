@@ -2,155 +2,266 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB28B5836CA
-	for <lists+bpf@lfdr.de>; Thu, 28 Jul 2022 04:22:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96CC35836FB
+	for <lists+bpf@lfdr.de>; Thu, 28 Jul 2022 04:36:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232410AbiG1CWp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jul 2022 22:22:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53182 "EHLO
+        id S237616AbiG1Cgr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jul 2022 22:36:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231327AbiG1CWo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Jul 2022 22:22:44 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E6FE26AEC
-        for <bpf@vger.kernel.org>; Wed, 27 Jul 2022 19:22:42 -0700 (PDT)
-Received: from dggpemm500021.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4LtZ856gJBzWfvG;
-        Thu, 28 Jul 2022 10:18:45 +0800 (CST)
-Received: from dggpemm500013.china.huawei.com (7.185.36.172) by
- dggpemm500021.china.huawei.com (7.185.36.109) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Thu, 28 Jul 2022 10:22:40 +0800
-Received: from [127.0.0.1] (10.67.108.67) by dggpemm500013.china.huawei.com
- (7.185.36.172) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 28 Jul
- 2022 10:22:40 +0800
-Message-ID: <d8184db7-3247-c75f-7797-d3a5b0488743@huawei.com>
-Date:   Thu, 28 Jul 2022 10:22:37 +0800
+        with ESMTP id S237484AbiG1Cgp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Jul 2022 22:36:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D05095A3F2
+        for <bpf@vger.kernel.org>; Wed, 27 Jul 2022 19:36:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1658975803;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JKkkMBWIpIIe2oTOsj/mSHWBLF5WPUCRKemqNyKpd7k=;
+        b=NURDZMSyCFXHr3x2AeQMH9GqrTDZ6zVJEsYppniEtQmNtyurFbKvgOHEKcKuOhxJTtKpy3
+        GfHKHS+b6TXYZs6lvtJRYtRnsc94T7x7JY0Jyf189rYA2+31b/IQsfQ0zBW0qf6j9Be5Fq
+        FSHf0Ecg6IOv2Hr/5Db4Emr2ChXd+bM=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-644-QL6oVuMBMqOthld79WTPiw-1; Wed, 27 Jul 2022 22:36:41 -0400
+X-MC-Unique: QL6oVuMBMqOthld79WTPiw-1
+Received: by mail-ed1-f70.google.com with SMTP id v9-20020a056402348900b0043bcd680e50so317022edc.18
+        for <bpf@vger.kernel.org>; Wed, 27 Jul 2022 19:36:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=JKkkMBWIpIIe2oTOsj/mSHWBLF5WPUCRKemqNyKpd7k=;
+        b=qG4Kbqbae2scAADh/TUGFgryaM5qVVgPGrruqaIYz17EAr3+LnPrsOiOjvr6ufcOiE
+         ubi26icZfTUeLYrolZCjzB+aObWz2jqb1kfs0dc1y9hO6whdjPbRmYc7DeT5gMc8JVIC
+         MM26V0PVHDzguLpeeERSbE1Ueo5HdcbSPxFlnNHQQnkdToEsxhtB0YeMA0qUNTAWBhvq
+         TGNocCZ/fiqf7kFzHiWjYCkjq4T2TReAOp47vv7ssVlsUQFyuZH/Qof5rUZgeWwgSMps
+         LKjMGzDyzH8GQZU0xtr+03I2btalsasKWlRo3J7T2oWQrXcUOBkfIo0y8WK8vHtV92BS
+         sJXA==
+X-Gm-Message-State: AJIora8ypyAmVUSK/hbrG5a1MfwnGu6yIHxE3jOqKJhkoAkIelqIU3Vy
+        6rTSRsiRTHO6UuJAM6TLpBLUiUpdVgFMz20IFHVDVJx8g21upNJDvLKl2BMqEuiJ5UX899KZCEF
+        OzqCO1d7qzzehBmcEm6PVj/XXSUI9
+X-Received: by 2002:a17:907:a063:b0:72b:52f7:feea with SMTP id ia3-20020a170907a06300b0072b52f7feeamr20017156ejc.740.1658975799930;
+        Wed, 27 Jul 2022 19:36:39 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1uGPEobsHGsN+6u62z1/vXP5Tu4y+DTY3UAmlLElWTmVhegB4KOwUXCDIsRewcmE149sdCA2s8SYedOFlVJtFU=
+X-Received: by 2002:a17:907:a063:b0:72b:52f7:feea with SMTP id
+ ia3-20020a170907a06300b0072b52f7feeamr20017130ejc.740.1658975799433; Wed, 27
+ Jul 2022 19:36:39 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.0
-Subject: Re: [BUG] kernel NULL pointer dereference in kprobe_int3_handler
-To:     =?UTF-8?Q?Daniel_M=c3=bcller?= <deso@posteo.net>,
-        <bpf@vger.kernel.org>
-CC:     <mhiramat@kernel.org>, <kernel-team@fb.com>
-References: <20220727210136.jjgc3lpqeq42yr3m@muellerd-fedora-PC2BDTX9>
-Content-Language: en-US
-From:   Chen Zhongjin <chenzhongjin@huawei.com>
-In-Reply-To: <20220727210136.jjgc3lpqeq42yr3m@muellerd-fedora-PC2BDTX9>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.108.67]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500013.china.huawei.com (7.185.36.172)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
+ <20220726072225.19884-8-xuanzhuo@linux.alibaba.com> <a5449e49-ba38-9760-ac07-cfad048bc602@redhat.com>
+ <1658907340.34387-1-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <1658907340.34387-1-xuanzhuo@linux.alibaba.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Thu, 28 Jul 2022 10:36:28 +0800
+Message-ID: <CACGkMEuP8e3znP9ZjsoHbzTFZPRt25nHVam390yrwEsLPCH+YQ@mail.gmail.com>
+Subject: Re: [PATCH v13 07/42] virtio_ring: split: stop __vring_new_virtqueue
+ as export symbol
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Vadim Pasternak <vadimp@nvidia.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        linux-um@lists.infradead.org, netdev <netdev@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+        kvm <kvm@vger.kernel.org>,
+        "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>,
+        Kangjie Xu <kangjie.xu@linux.alibaba.com>,
+        virtualization <virtualization@lists.linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
-
-On 2022/7/28 5:01, Daniel Müller wrote:
-> Hi,
+On Wed, Jul 27, 2022 at 3:36 PM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrot=
+e:
 >
-> I've seen a NULL pointer dereference in kprobe_int3_handler, in code that seems
-> to have gotten added with 6256e668b7af9 ("x86/kprobes: Use int3 instead of debug
-> trap for single-step").
-> Specifically, our CI has reported the following (running test_progs-no_alu32):
+> On Wed, 27 Jul 2022 10:58:05 +0800, Jason Wang <jasowang@redhat.com> wrot=
+e:
+> >
+> > =E5=9C=A8 2022/7/26 15:21, Xuan Zhuo =E5=86=99=E9=81=93:
+> > > There is currently only one place to reference __vring_new_virtqueue(=
+)
+> > > directly from the outside of virtio core. And here vring_new_virtqueu=
+e()
+> > > can be used instead.
+> > >
+> > > Subsequent patches will modify __vring_new_virtqueue, so stop it as a=
+n
+> > > export symbol for now.
+> > >
+> > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > ---
+> > >   drivers/virtio/virtio_ring.c | 25 ++++++++++++++++---------
+> > >   include/linux/virtio_ring.h  | 10 ----------
+> > >   tools/virtio/virtio_test.c   |  4 ++--
+> > >   3 files changed, 18 insertions(+), 21 deletions(-)
+> > >
+> > > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_rin=
+g.c
+> > > index 0ad35eca0d39..4e54ed7ee7fb 100644
+> > > --- a/drivers/virtio/virtio_ring.c
+> > > +++ b/drivers/virtio/virtio_ring.c
+> > > @@ -204,6 +204,14 @@ struct vring_virtqueue {
+> > >   #endif
+> > >   };
+> > >
+> > > +static struct virtqueue *__vring_new_virtqueue(unsigned int index,
+> > > +                                          struct vring vring,
+> > > +                                          struct virtio_device *vdev=
+,
+> > > +                                          bool weak_barriers,
+> > > +                                          bool context,
+> > > +                                          bool (*notify)(struct virt=
+queue *),
+> > > +                                          void (*callback)(struct vi=
+rtqueue *),
+> > > +                                          const char *name);
+> > >
+> > >   /*
+> > >    * Helpers.
+> > > @@ -2197,14 +2205,14 @@ irqreturn_t vring_interrupt(int irq, void *_v=
+q)
+> > >   EXPORT_SYMBOL_GPL(vring_interrupt);
+> > >
+> > >   /* Only available for split ring */
+> > > -struct virtqueue *__vring_new_virtqueue(unsigned int index,
+> > > -                                   struct vring vring,
+> > > -                                   struct virtio_device *vdev,
+> > > -                                   bool weak_barriers,
+> > > -                                   bool context,
+> > > -                                   bool (*notify)(struct virtqueue *=
+),
+> > > -                                   void (*callback)(struct virtqueue=
+ *),
+> > > -                                   const char *name)
+> > > +static struct virtqueue *__vring_new_virtqueue(unsigned int index,
+> > > +                                          struct vring vring,
+> > > +                                          struct virtio_device *vdev=
+,
+> > > +                                          bool weak_barriers,
+> > > +                                          bool context,
+> > > +                                          bool (*notify)(struct virt=
+queue *),
+> > > +                                          void (*callback)(struct vi=
+rtqueue *),
+> > > +                                          const char *name)
+> > >   {
+> > >     struct vring_virtqueue *vq;
+> > >
+> > > @@ -2272,7 +2280,6 @@ struct virtqueue *__vring_new_virtqueue(unsigne=
+d int index,
+> > >     kfree(vq);
+> > >     return NULL;
+> > >   }
+> > > -EXPORT_SYMBOL_GPL(__vring_new_virtqueue);
+> > >
+> > >   struct virtqueue *vring_create_virtqueue(
+> > >     unsigned int index,
+> > > diff --git a/include/linux/virtio_ring.h b/include/linux/virtio_ring.=
+h
+> > > index b485b13fa50b..8b8af1a38991 100644
+> > > --- a/include/linux/virtio_ring.h
+> > > +++ b/include/linux/virtio_ring.h
+> > > @@ -76,16 +76,6 @@ struct virtqueue *vring_create_virtqueue(unsigned =
+int index,
+> > >                                      void (*callback)(struct virtqueu=
+e *vq),
+> > >                                      const char *name);
+> > >
+> > > -/* Creates a virtqueue with a custom layout. */
+> > > -struct virtqueue *__vring_new_virtqueue(unsigned int index,
+> > > -                                   struct vring vring,
+> > > -                                   struct virtio_device *vdev,
+> > > -                                   bool weak_barriers,
+> > > -                                   bool ctx,
+> > > -                                   bool (*notify)(struct virtqueue *=
+),
+> > > -                                   void (*callback)(struct virtqueue=
+ *),
+> > > -                                   const char *name);
+> > > -
+> > >   /*
+> > >    * Creates a virtqueue with a standard layout but a caller-allocate=
+d
+> > >    * ring.
+> > > diff --git a/tools/virtio/virtio_test.c b/tools/virtio/virtio_test.c
+> > > index 23f142af544a..86a410ddcedd 100644
+> > > --- a/tools/virtio/virtio_test.c
+> > > +++ b/tools/virtio/virtio_test.c
+> > > @@ -102,8 +102,8 @@ static void vq_reset(struct vq_info *info, int nu=
+m, struct virtio_device *vdev)
+> > >
+> > >     memset(info->ring, 0, vring_size(num, 4096));
+> > >     vring_init(&info->vring, num, info->ring, 4096);
+> >
+> >
+> > Let's remove the duplicated vring_init() here.
+> >
+> > With this removed:
 >
->    [ 1033.068258] test_progs-no_a[1177] is installing a program with bpf_probe_write_user helper that may corrupt user memory!
->    [ 1040.264691] BUG: kernel NULL pointer dereference, address: 0000000000000058
->    [ 1040.264856] #PF: supervisor read access in kernel mode
->    [ 1040.264890] #PF: error_code(0x0000) - not-present page
->    [ 1040.264961] PGD 0 P4D 0
->    [ 1040.265183] Oops: 0000 [#1] PREEMPT SMP NOPTI
->    [ 1040.265183] CPU: 1 PID: 0 Comm: swapper/1 Tainted: G        W  OE     5.19.0-rc7-g4129b786299d #1
->    [ 1040.265183] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
->    [ 1040.265183] RIP: 0010:kprobe_int3_handler+0xd4/0x1a0
->    [ 1040.265183] Code: 49 8b 06 48 83 e8 02 48 a9 fd ff ff ff 75 d0 48 c7 c7 32 cc 2b 82 e8 eb d5 9a 00 48 8b 95 80 00 00 00 65 48 8b 3d 74 62 fc 7e <48> 8b 47 58 48 39 d0 73 ac 48 8d 48 0f 48 39 ca 73 a3 48 8b 4f 28
->    [ 1040.265183] RSP: 0018:ffffb4140009bd40 EFLAGS: 00000092
->    [ 1040.265183] RAX: 0000000000000001 RBX: ffffffff81a04cb9 RCX: 0000000000000000
->    [ 1040.265183] RDX: ffffffff81a04cb9 RSI: ffffffff822bcc32 RDI: 0000000000000000
->    [ 1040.265183] RBP: ffffb4140009bd98 R08: 000000000003929b R09: 0000000000000000
->    [ 1040.265183] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
->    [ 1040.265183] R13: ffffffff81a04cb8 R14: ffff9490b9c5b1e0 R15: 0000000000000000
->    [ 1040.265183] FS:  0000000000000000(0000) GS:ffff9490b9c40000(0000) knlGS:0000000000000000
->    [ 1040.265183] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->    [ 1040.265183] CR2: 0000000000000058 CR3: 0000000028836000 CR4: 00000000000006e0
->    [ 1040.265183] Call Trace:
->    [ 1040.265183]  <TASK>
->    [ 1040.265183]  do_int3+0xf/0x50
->    [ 1040.265183]  exc_int3+0x87/0xd0
->    [ 1040.265183]  asm_exc_int3+0x35/0x40
->    [ 1040.265183] RIP: 0010:__schedule+0x3f9/0xbf0
->    [ 1040.265183] Code: 83 5a fe ff ff 65 ff 05 e5 61 61 7e 48 8b 05 3e cb 68 01 48 85 c0 74 16 48 8b 78 08 4c 89 f1 4c 89 ea 44 8b 45 ac 8b 75 b8 e8 <53> 6c 79 ff 65 ff 0d bc 61 61 7e 0f 85 0d fe ff ff e8 a0 cf 5f ff
->    [ 1040.265183] RSP: 0018:ffffb4140009be70 EFLAGS: 00000086
->    [ 1040.265183] RAX: ffff9490056e0b90 RBX: ffff9490002f39e8 RCX: ffff949008758000
->    [ 1040.265183] RDX: ffff9490002f3300 RSI: 0000000000000000 RDI: 0000000000000000
->    [ 1040.265183] RBP: ffffb4140009bec8 R08: 0000000000000000 R09: 1dc944f200000000
->    [ 1040.265183] R10: 0000000000000001 R11: 0000000000080000 R12: ffff9490b9c6c8c0
->    [ 1040.265183] R13: ffff9490002f3300 R14: ffff949008758000 R15: ffff9490b9c6c8d8
->    [ 1040.265183]  ? __schedule+0x3f9/0xbf0
->    [ 1040.265183]  schedule_idle+0x26/0x40
->    [ 1040.265183]  do_idle+0x177/0x250
->    [ 1040.265183]  cpu_startup_entry+0x19/0x20
->    [ 1040.265183]  start_secondary+0xed/0xf0
->    [ 1040.265183]  secondary_startup_64_no_verify+0xe0/0xeb
->    [ 1040.265183]  </TASK>
->    [ 1040.265183] Modules linked in: bpf_testmod(OE) [last unloaded: bpf_testmod]
->    [ 1040.265183] CR2: 0000000000000058
->    [ 1040.265183] ---[ end trace 0000000000000000 ]---
->    [ 1040.265183] RIP: 0010:kprobe_int3_handler+0xd4/0x1a0
->    [ 1040.265183] Code: 49 8b 06 48 83 e8 02 48 a9 fd ff ff ff 75 d0 48 c7 c7 32 cc 2b 82 e8 eb d5 9a 00 48 8b 95 80 00 00 00 65 48 8b 3d 74 62 fc 7e <48> 8b 47 58 48 39 d0 73 ac 48 8d 48 0f 48 39 ca 73 a3 48 8b 4f 28
->    [ 1040.265183] RSP: 0018:ffffb4140009bd40 EFLAGS: 00000092
->    [ 1040.265183] RAX: 0000000000000001 RBX: ffffffff81a04cb9 RCX: 0000000000000000
->    [ 1040.265183] RDX: ffffffff81a04cb9 RSI: ffffffff822bcc32 RDI: 0000000000000000
->    [ 1040.265183] RBP: ffffb4140009bd98 R08: 000000000003929b R09: 0000000000000000
->    [ 1040.265183] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
->    [ 1040.265183] R13: ffffffff81a04cb8 R14: ffff9490b9c5b1e0 R15: 0000000000000000
->    [ 1040.265183] FS:  0000000000000000(0000) GS:ffff9490b9c40000(0000) knlGS:0000000000000000
->    [ 1040.265183] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->    [ 1040.265183] CR2: 0000000000000058 CR3: 0000000028836000 CR4: 00000000000006e0
->    [ 1040.265183] Kernel panic - not syncing: Fatal exception in interrupt
->    [ 1040.265183] Kernel Offset: 0x0 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
+> The reason I didn't delete this vring_init() is because info->vring is us=
+ed
+> elsewhere. So it can't be deleted directly.
+
+Ok, so we can leave it for future refactoring.
+
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+Thanks
+
 >
-> (it was sync'ed to somewhere around 40b09653b1977 ("selftests/bpf: Adjust
-> vmtest.sh to use local kernel configuration"); I can probably piece together the
-> exact kernel configuration if needed, but the inquiry is of a more general
-> nature)
+> Thanks.
 >
-> I am wondering what is the reason for us not checking whether kprobe_running
-> returned a non-NULL pointer here (as we do elsewhere):
-> https://elixir.bootlin.com/linux/v5.18.13/source/arch/x86/kernel/kprobes/core.c#L986
-> ? Is that an oversight or should some kind of invariant be upheld at this point?
-
-I think it's kprobe_is_ss(kcb) promises this.
-
-KPROBE_HIT_SS and KPROBE_REENTER are both only set in setup_singlestep, 
-which set_current_kprobe must be run before that.
-
-And p for set_current_kprobe have been checked not NULL in 
-kprobe_int3_handle.
-
-I didn't find any path that current_kprobe can be set NULL here by 
-viewing code. Is this bug reproducible? It is not a multi threads
-
-problem I guess it can be reproduced easily.
-
-> kprobe_int3_handler+0xd4/0x1a0 maps to line 987 in the above file. Address
-> 0000000000000058 is exactly the offset that p->ainsn.insn is at, so it seems as
-> if p is NULL.
+> >
+> > Acked-by: Jason Wang <jasowang@redhat.com>
+> >
+> >
+> > > -   info->vq =3D __vring_new_virtqueue(info->idx, info->vring, vdev, =
+true,
+> > > -                                    false, vq_notify, vq_callback, "=
+test");
+> > > +   info->vq =3D vring_new_virtqueue(info->idx, num, 4096, vdev, true=
+, false,
+> > > +                                  info->ring, vq_notify, vq_callback=
+, "test");
+> > >     assert(info->vq);
+> > >     info->vq->priv =3D info;
+> > >   }
+> >
 >
-> Thanks,
-> Daniel
-
-Best,
-
-Chen
-
 
