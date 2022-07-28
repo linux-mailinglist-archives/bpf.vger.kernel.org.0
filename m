@@ -2,246 +2,738 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 588A958444C
-	for <lists+bpf@lfdr.de>; Thu, 28 Jul 2022 18:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 206CF58445A
+	for <lists+bpf@lfdr.de>; Thu, 28 Jul 2022 18:49:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229506AbiG1QkT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Jul 2022 12:40:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54046 "EHLO
+        id S229740AbiG1QtU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Jul 2022 12:49:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbiG1QkS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Jul 2022 12:40:18 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3A825F94
-        for <bpf@vger.kernel.org>; Thu, 28 Jul 2022 09:40:14 -0700 (PDT)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26SAE15x015591
-        for <bpf@vger.kernel.org>; Thu, 28 Jul 2022 09:40:14 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=CUCUFUqLXBmmDffZpr6oz6ndT5eltON/XOLuFQRp3Mw=;
- b=PJxvrMzGo9lDytAwHkf1tjh0TbZUY05muZe+L7Yh/wczaJ5lYGSiWpCgy2ZxGB2vAew4
- Lxre7Ql+3rJHwNUp+mWHV1m9O4oS0TDcTvGBtz9WgrRDHj/CTI1eRASzObeH8fIoEpg3
- eG8TF9qzWamRbMFii/UfmKpEa6yyWmZC194= 
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2048.outbound.protection.outlook.com [104.47.66.48])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hk3702p2e-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 28 Jul 2022 09:40:13 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WohXTjuWY5A1C/olYNAhX+NEu6INQR13+zesoJVo7qEDjsksww7fR/1MfCeFRfxcY1iYgor0lKAGxI7+M6E9YmktTarjVGtgQM0FtLtc/ZHxnKpZ9juu3HeHMAQFstake0tK9QqtJcQd/Q4VsC6OvrCfXp0kHoicxIUupBil5Q+DNieHA4JDkqQMJ5RsnwHSM7Sx38rOLFxkWBwcPjXk5qrdbRNmFMaWkyzry3j2XgecshopS4EzzGS2DxIWb80+DXvv4dnapWLTHEcBes59e3DzcNilI0L2VMwcqi656FxHpMHCxSN9PIkJLXYrvtI9Wmf3oOlIr80fWr/Cci0MYg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CUCUFUqLXBmmDffZpr6oz6ndT5eltON/XOLuFQRp3Mw=;
- b=kCOQaI9tu0rIdZ5T1bV83pDtUvDyrwOr4hrvauuH38Ce1rIPMNSqvkogp/jus+kt7ywceRXGPpW3jLLzxGVfb4KoeYDsGZRp6MBQIVZ+f//fKSW0yR9lVi+hGkxgcJUprCbVq4dryBoUTYQtiCc6cgUfalINrNSyFZkb/MY6NeZvJOj4rs1/P/CoR1QAgjVjTfZuCfl1SJMtkKTgbn1/qUjazbbme8AFHaBUxmKSLjh5yu3GqjjF1yCiEk1W70lBtcfJphluCvk+f0LbS76Q4dMnrZKxFMzuBD+YWrd6ikc7tG8FTc4wzg/8ZxPN49aqA0uvhdYt6VxOxSqQr8zx1Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from BY5PR15MB3651.namprd15.prod.outlook.com (2603:10b6:a03:1f7::15)
- by MWHPR15MB1151.namprd15.prod.outlook.com (2603:10b6:320:23::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5458.24; Thu, 28 Jul
- 2022 16:40:11 +0000
-Received: from BY5PR15MB3651.namprd15.prod.outlook.com
- ([fe80::14b0:8f09:488d:f55f]) by BY5PR15MB3651.namprd15.prod.outlook.com
- ([fe80::14b0:8f09:488d:f55f%6]) with mapi id 15.20.5482.011; Thu, 28 Jul 2022
- 16:40:11 +0000
-From:   Kui-Feng Lee <kuifeng@fb.com>
-To:     "memxor@gmail.com" <memxor@gmail.com>
-CC:     Yonghong Song <yhs@fb.com>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "olsajiri@gmail.com" <olsajiri@gmail.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "andrii@kernel.org" <andrii@kernel.org>
-Subject: Re: [PATCH bpf-next 1/3] bpf: Parameterize task iterators.
-Thread-Topic: [PATCH bpf-next 1/3] bpf: Parameterize task iterators.
-Thread-Index: AQHYoK8StG1Y6n29KUSEV/VSsAjsP62QkM6AgAE54wCAABc7AIABYbAAgAA4cgCAAGyEgIAAEqgAgAAEzYA=
-Date:   Thu, 28 Jul 2022 16:40:11 +0000
-Message-ID: <3805b621c511ee9bd76c6655d6ba814d1b54ee37.camel@fb.com>
-References: <20220726051713.840431-1-kuifeng@fb.com>
-         <20220726051713.840431-2-kuifeng@fb.com> <Yt/aXYiVmGKP282Q@krava>
-         <9e6967ec22f410edf7da3dc6e5d7c867431e3a30.camel@fb.com>
-         <CAP01T75twVT2ea5Q74viJO+Y9kALbPFw4Yr6hbBfTdok0vAXaw@mail.gmail.com>
-         <30a790ad499c9bb4783db91e305ee6546f497ebd.camel@fb.com>
-         <CAP01T75=vMUTqpDHjgb_FokmbbG4VpQCUORUavCs0Z3ujT8Obw@mail.gmail.com>
-         <cb91084ff7b92f06759358323c45c312da9fe029.camel@fb.com>
-         <CAP01T7579jeBY8R8wnqamYsYk810S+S2_WHPMx16daK9+AQTCw@mail.gmail.com>
-In-Reply-To: <CAP01T7579jeBY8R8wnqamYsYk810S+S2_WHPMx16daK9+AQTCw@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: cc6a9af2-b40c-4ec2-96f3-08da70b7d6dc
-x-ms-traffictypediagnostic: MWHPR15MB1151:EE_
-x-fb-source: Internal
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: zERQ3Azc1MO43I0l8kGIMxJObHDW2L/fXT1N1EI97YCX7T6cJzmDGwztDj9L/W6GYxuODE3S3ZKoo4gm4T0Qhves8FFGZGUsS05oeaEtgTZEJy3LzgcLabJKnmkGCemWKs8u9HrYEn8VY8RM5JjrYNw8Rphq9IUuX+jPlsj04+tvA3JQdwMgMjjqkw7NWOlfEF4ySvSXw6IUa7qXTwKMovcFdztTRJ71/2BEFmLTZkqP3cM9URwhEdExq4bZvfssfImLZGBkVakjAwhpGl37rFRMz8fGXNOy/U/BqERbuEfP7uzrFmL2SF4I7M1C4hlWagc63xrOYi385KJH7ITJYi+96aA2K/AWK9XIXew2hSYSv/7rP+U1YiZdAZSAlVvCU+7VF240khm1SzzLuiCxrow3KOMrLpD5v97MXvxqIARbLi0R99ft3NfZmB/dSqgygEfrv5WbSeLJSajR5z5qOAaUwhCtGiIwbxIRYal/pN4UqFdCPGp1sqSJ4IiooyM7B9J5PK9GmE8LHZzkOTwrjDE62XiZ8bF7DzCr80wGLt7u7LK82wsqv8RW0pISnpxbTGOkeUJ7gQnSbfckvKhYhwkh0FxE964pvRj3xDDO3GcQpMKzH6LlJinqGYG9AQ1VxDcKmaRCg17/0YZw/kZToixlURFpfa1YQZ1xHR7/4hbIPHLEeMyCAJS4kvvfS2cSZQX+iQT/r0WcoYdAd0kgx/gztpMNDjUljP/GJSQRkMCyDEpmYbZANYhHGXw5GQbLJu5iLIjD8P/66OX2kM5Nru+G47qIzlldllmR65UT+PaYWp/t+SAQ/fFY4/3dHDb6
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3651.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(136003)(346002)(376002)(39860400002)(366004)(396003)(38100700002)(66556008)(2616005)(6506007)(6512007)(5660300002)(122000001)(64756008)(8936002)(41300700001)(6916009)(2906002)(36756003)(478600001)(76116006)(54906003)(86362001)(71200400001)(316002)(38070700005)(6486002)(66476007)(4326008)(83380400001)(66446008)(66946007)(91956017)(186003)(8676002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?NmJWVmlSRnoxckZsclBEUXRKdHBVL29UUHdmaElIenlhaVhWTzNod1dRNDNN?=
- =?utf-8?B?Qm1seEsrRUhNZStoM3dlbTE0d204K0c0Q1d6enBTZUNtNVVXKy9XWHQ0VWd0?=
- =?utf-8?B?RzZBRW0xTHZkb01Od29BeGFsbTJXWkdoTXVrVUZHcG51NW94QWJEUVNzNm5R?=
- =?utf-8?B?Qjh5ZmNuNnF5TnRkcnBrZ2g5alFtMHlnQjZDaTg4Zy9CNGUweXovRTJWSVQ1?=
- =?utf-8?B?dElXODlvNHQrdU9vL2xjVGRINVZxR0dxTVU1ZVJscHpjUURSb3A1azBzOXBK?=
- =?utf-8?B?UVFtWU5wL1NFYmpsaXNlRkN3MTkrSlFOU2ZIYlZqR0R3YUV4Y2laeEpoc0F6?=
- =?utf-8?B?dWJMc0wvemhnV0JleGV5d0FadVVwUEFKOFp1VG9tR1Rvbmw3VTIyaU94Ym10?=
- =?utf-8?B?UGhXU2FIWlV6WnpsVmJ6SnU4QXIyOHZyYTRSZnhFNWNsU3VJNHdKcys1d29R?=
- =?utf-8?B?WUtnVi9RNU4rN1JhcmQ3U09MWlZvYi83SXFzV2pzTXYvelp6ajNlL2RyMVdy?=
- =?utf-8?B?eXZNNkdPVGpjQStpRG12cEVZOElNaUJiMSt2UFFacm5tRGxacDVZT3RINEs1?=
- =?utf-8?B?MFFLUUhzLzBFSUNIWExEWUgwMzA2WHBPaURKdlp1OWdlRXRmRzgvb1lwR0ds?=
- =?utf-8?B?bExjVW1BWXBMOW9hZmgzdjYxZ0ZIUk9aZUJ0QXA0bkU1UkR5OXZwQUNhajI1?=
- =?utf-8?B?TGZpN3B5YjNVZkVzOTRiWGVkMHAzTDk1aUQwZHZScGVEWXJ1Ympwa3hZdkxV?=
- =?utf-8?B?czA2elg3ZXJaWGVlSnkyMkxTbG1KUzkvS0N6SjJpazBUWUJSWE52TlBwRE1y?=
- =?utf-8?B?S1VKcWJtQXpuQ0I4dzNJVUtJVjh4V2tPWEVRQzR1SjlveUNxMmJoNHJJa3JU?=
- =?utf-8?B?eHIyRGJjb2tNc1JjZjhMakJaS29xTFBIa2gvWkI0bGRGYk9JM0Q4WE9tbDkr?=
- =?utf-8?B?UGphS3hQUDlEMVU4d0s2QUtLV0l2REdQWlIxYThpK2pNQmVCd2Y3bkZDNmtK?=
- =?utf-8?B?WVdWczlqbDdQaGNZYWJseWJWKzdndEFsK1BvMW1GcVhyWWxjQWRjZVNwbzUx?=
- =?utf-8?B?TW9JY0xXekhBM0s4bmZIYThreVlDYjlDZzlUM3FqMEY5ejkyR29rQWlnV1Ji?=
- =?utf-8?B?Ukg4QzdPUmVXc1BPaURDNkFqYndQTU9LbjZkd0EvamVMci94RWMrb1NaK2V1?=
- =?utf-8?B?WExFejVCTlFzdm5JS2FWTUR2N2dpeTRqbzV6RFhuM3V3TytOZzdZTTBtVExk?=
- =?utf-8?B?aDlVZ2FhdzlrWXc3WTVDSG50a1FNcFMyTEt5aWphUkVwdk5pbUQ1QlJPWDls?=
- =?utf-8?B?UnZsbWs4WDE4ejgreFA3Y2d6b29pWDJCUkh0SWljcDRBMDFvZWEzU052UzdF?=
- =?utf-8?B?UzRFdmkySDB5MG11TUE0SkhxYWFSZEdleUgwbjR4dTZaS3RzNGFKMUxEVjZ2?=
- =?utf-8?B?TG5xR0E1R3RTdS9EamxRTTByOWUrWjVTT2RLeGRBaFROTFlmRlNpbWo2TTdp?=
- =?utf-8?B?eDV4VDJaVFYzUGw3TFd2L0U5TGE2NkVnRGlPcGM2bVArMldIWmZrUms0bEd0?=
- =?utf-8?B?c3JaNjhOYktWMEY0Q0hmckhJZ2RxWDJ4b3lZZURFUXF3a3lyTFNRYld5VHdn?=
- =?utf-8?B?RW40QXIwWHk5eXJ2djZ6UHJBbGZyc3llbklTMzBSZVovZmFKa1JNakpMODZY?=
- =?utf-8?B?Ry9zNXBNTStlNUZRZzg4S2xjWUtOajZtR2J3dnk5d1U1L2NmOXhROTBrelBP?=
- =?utf-8?B?TFU0Nlo3VFJENjdRY0pJWDdkWUEzVi9LMTM4YlZhQ3VCWjNmeHp5aHA3RUI0?=
- =?utf-8?B?dmxYNTdwT3Y1b1dDOG92dWlISjR2MklnT0dxTGVVMko2M0JEUEtJWmN2Yndv?=
- =?utf-8?B?enBiSUJzUHo5bENVcktiazF2Wm02ajVsVHZYSi9udWxVOGdnTXU5YVNweXJO?=
- =?utf-8?B?Ti9pczdhVkhJM3l1TmRuSUlhVm1peUhWV3BXYWcrU3dqaVhzTXQ2RkpOeEsx?=
- =?utf-8?B?WmIzaC94Q21lL3FUSHJONE9zSi83eDc3dWk5Sm1oVzFXR1RHYnlJYVhPZThQ?=
- =?utf-8?B?eUM5YzhVZHlNaVJyN1h3SUxhYVJYaWtQdUhzSExZSzVVRnZLdVAvV29vNTkx?=
- =?utf-8?B?U25uczVDK3RFcUk0N3ZmNllBcEhmSzdLeTlMaUNIenowTy9XeGVWRWZXazRN?=
- =?utf-8?B?cVE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <5A4068B22802714F816A05AFB6C7AE91@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        with ESMTP id S229722AbiG1QtT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Jul 2022 12:49:19 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC6C061733
+        for <bpf@vger.kernel.org>; Thu, 28 Jul 2022 09:49:17 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id c12so2910159ede.3
+        for <bpf@vger.kernel.org>; Thu, 28 Jul 2022 09:49:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=g0MnMGxbwSYpppn3D5aXMwB+nj7LkyqcpI9OxSMb+hw=;
+        b=Y2aLzk+2k0kdORLW+dkCrhqMvlw7QCEMnLDWdwcrmt2J/HpYY0sWUxl37GlBObEnYv
+         Yv2lM5F1zUAFNxD9zvA/pUpBYB1Mew+AUqzDYx/yyx0VkyuX1CB5IGKNnzRSjE3V6xvE
+         kI2dx7q01B5vwXA3fICMB6Za6jpUrfhw+Q7zy35dbjhSg/F4WV3rOlRTvvYhh+oIhytr
+         8QHLLKr3cIvG0aomHgfxMWiSwaiknBCtMm91QiX95p9BEe0m+haXQCK+vh8Br/BFEOUK
+         0oyojdOoaRJ1tIjFxB9xwMrNO2sUmyv4Np5cNVGCybChKagxgvcR3lTF9GestqelGTJn
+         2Cog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=g0MnMGxbwSYpppn3D5aXMwB+nj7LkyqcpI9OxSMb+hw=;
+        b=QqryLExQ8Wqr/k2aqxMiRhgk0HHMGYxPbt6aXuA/6YQI8h1VeVUtJPv5YkHalK867P
+         EovmPh2DaV2PTh06Fjny5fgr7rFsKK19ADbIacEzzNgs8P0V2dss7CoHc+PiYS6zAUOo
+         ZXBUJ1ttK6Xm3w+AxpKuyrqz3vG/USyQO8dpsSknjHIqYSYcfoL6nm6WvrtRwY++h8em
+         RfhxVao7HrugVAjKQRXPBEZyCgF2W/w3+6l91Ca/14hjzhq2+TDsZWlbIdTEhsvvw1qn
+         6f172jUNcvt2sBc8iITbAWCAbQfjJTcnmZbxz8UMZIqBMUbLeyTSJmTPnLByBVb1P8fY
+         ZjvQ==
+X-Gm-Message-State: AJIora8lGUSnO3dLPp3AdyiXUClnXGHVeAXBpmDKEFP/prZVMvDhCmXA
+        ClnjzpH8JfXb/pb44cepofgznLUN73vkFU7dlME=
+X-Google-Smtp-Source: AGRyM1vuiXi/8FNhfTYIuVnQy6ay3NkGGm939P74KrT5Ee5Mhh2aly4vIN/VY6vQJBn2ocIwH9USVwW1rBGYvZ2OI38=
+X-Received: by 2002:a05:6402:270c:b0:43a:d5f4:c4fa with SMTP id
+ y12-20020a056402270c00b0043ad5f4c4famr28455581edd.107.1659026955665; Thu, 28
+ Jul 2022 09:49:15 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3651.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cc6a9af2-b40c-4ec2-96f3-08da70b7d6dc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jul 2022 16:40:11.1984
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: LXtjvLGWvIlZ+Y35IL0GVHZ/0jhXtUbN1HbUX4W/U9/kTlDwxDip2Wi/qOffknKJ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1151
-X-Proofpoint-GUID: LsY79MXT-hu2vWDDPABuCykFl5MdH8gH
-X-Proofpoint-ORIG-GUID: LsY79MXT-hu2vWDDPABuCykFl5MdH8gH
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-07-28_06,2022-07-28_02,2022-06-22_01
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20220726184706.954822-1-joannelkoong@gmail.com>
+ <20220726184706.954822-2-joannelkoong@gmail.com> <YuFyVwiFkrKjSmFN@google.com>
+In-Reply-To: <YuFyVwiFkrKjSmFN@google.com>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Thu, 28 Jul 2022 09:49:04 -0700
+Message-ID: <CAJnrk1YiaMg1mFzJCrnAWXRQNbdacEZWDPJKBnfHhLiz013BxA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/3] bpf: Add skb dynptrs
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gVGh1LCAyMDIyLTA3LTI4IGF0IDE4OjIyICswMjAwLCBLdW1hciBLYXJ0aWtleWEgRHdpdmVk
-aSB3cm90ZToNCj4gT24gVGh1LCAyOCBKdWwgMjAyMiBhdCAxNzoxNiwgS3VpLUZlbmcgTGVlIDxr
-dWlmZW5nQGZiLmNvbT4gd3JvdGU6DQo+ID4gDQo+ID4gT24gVGh1LCAyMDIyLTA3LTI4IGF0IDEw
-OjQ3ICswMjAwLCBLdW1hciBLYXJ0aWtleWEgRHdpdmVkaSB3cm90ZToNCj4gPiA+IE9uIFRodSwg
-MjggSnVsIDIwMjIgYXQgMDc6MjUsIEt1aS1GZW5nIExlZSA8a3VpZmVuZ0BmYi5jb20+DQo+ID4g
-PiB3cm90ZToNCj4gPiA+ID4gDQo+ID4gPiA+IE9uIFdlZCwgMjAyMi0wNy0yNyBhdCAxMDoxOSAr
-MDIwMCwgS3VtYXIgS2FydGlrZXlhIER3aXZlZGkNCj4gPiA+ID4gd3JvdGU6DQo+ID4gPiA+ID4g
-T24gV2VkLCAyNyBKdWwgMjAyMiBhdCAwOTowMSwgS3VpLUZlbmcgTGVlIDxrdWlmZW5nQGZiLmNv
-bT4NCj4gPiA+ID4gPiB3cm90ZToNCj4gPiA+ID4gPiA+IA0KPiA+ID4gPiA+ID4gT24gVHVlLCAy
-MDIyLTA3LTI2IGF0IDE0OjEzICswMjAwLCBKaXJpIE9sc2Egd3JvdGU6DQo+ID4gPiA+ID4gPiA+
-IE9uIE1vbiwgSnVsIDI1LCAyMDIyIGF0IDEwOjE3OjExUE0gLTA3MDAsIEt1aS1GZW5nIExlZQ0K
-PiA+ID4gPiA+ID4gPiB3cm90ZToNCj4gPiA+ID4gPiA+ID4gPiBBbGxvdyBjcmVhdGluZyBhbiBp
-dGVyYXRvciB0aGF0IGxvb3BzIHRocm91Z2ggcmVzb3VyY2VzDQo+ID4gPiA+ID4gPiA+ID4gb2YN
-Cj4gPiA+ID4gPiA+ID4gPiBvbmUNCj4gPiA+ID4gPiA+ID4gPiB0YXNrL3RocmVhZC4NCj4gPiA+
-ID4gPiA+ID4gPiANCj4gPiA+ID4gPiA+ID4gPiBQZW9wbGUgY291bGQgb25seSBjcmVhdGUgaXRl
-cmF0b3JzIHRvIGxvb3AgdGhyb3VnaCBhbGwNCj4gPiA+ID4gPiA+ID4gPiByZXNvdXJjZXMgb2YN
-Cj4gPiA+ID4gPiA+ID4gPiBmaWxlcywgdm1hLCBhbmQgdGFza3MgaW4gdGhlIHN5c3RlbSwgZXZl
-biB0aG91Z2ggdGhleQ0KPiA+ID4gPiA+ID4gPiA+IHdlcmUNCj4gPiA+ID4gPiA+ID4gPiBpbnRl
-cmVzdGVkDQo+ID4gPiA+ID4gPiA+ID4gaW4gb25seSB0aGUgcmVzb3VyY2VzIG9mIGEgc3BlY2lm
-aWMgdGFzayBvciBwcm9jZXNzLg0KPiA+ID4gPiA+ID4gPiA+IFBhc3NpbmcNCj4gPiA+ID4gPiA+
-ID4gPiB0aGUNCj4gPiA+ID4gPiA+ID4gPiBhZGRpdGlvbmFsIHBhcmFtZXRlcnMsIHBlb3BsZSBj
-YW4gbm93IGNyZWF0ZSBhbg0KPiA+ID4gPiA+ID4gPiA+IGl0ZXJhdG9yIHRvDQo+ID4gPiA+ID4g
-PiA+ID4gZ28NCj4gPiA+ID4gPiA+ID4gPiB0aHJvdWdoIGFsbCByZXNvdXJjZXMgb3Igb25seSB0
-aGUgcmVzb3VyY2VzIG9mIGEgdGFzay4NCj4gPiA+ID4gPiA+ID4gPiANCj4gPiA+ID4gPiA+ID4g
-PiBTaWduZWQtb2ZmLWJ5OiBLdWktRmVuZyBMZWUgPGt1aWZlbmdAZmIuY29tPg0KPiA+ID4gPiA+
-ID4gPiA+IC0tLQ0KPiA+ID4gPiA+ID4gPiA+IMKgaW5jbHVkZS9saW51eC9icGYuaMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgfMKgIDQgKysNCj4gPiA+ID4gPiA+ID4gPiDCoGluY2x1ZGUvdWFwaS9s
-aW51eC9icGYuaMKgwqDCoMKgwqDCoCB8IDIzICsrKysrKysrKysNCj4gPiA+ID4gPiA+ID4gPiDC
-oGtlcm5lbC9icGYvdGFza19pdGVyLmPCoMKgwqDCoMKgwqDCoMKgIHwgODENCj4gPiA+ID4gPiA+
-ID4gPiArKysrKysrKysrKysrKysrKysrKysrKysrLQ0KPiA+ID4gPiA+ID4gPiA+IC0tLS0NCj4g
-PiA+ID4gPiA+ID4gPiAtLS0tDQo+ID4gPiA+ID4gPiA+ID4gwqB0b29scy9pbmNsdWRlL3VhcGkv
-bGludXgvYnBmLmggfCAyMyArKysrKysrKysrDQo+ID4gPiA+ID4gPiA+ID4gwqA0IGZpbGVzIGNo
-YW5nZWQsIDEwOSBpbnNlcnRpb25zKCspLCAyMiBkZWxldGlvbnMoLSkNCj4gPiA+ID4gPiA+ID4g
-PiANCj4gPiA+ID4gPiA+ID4gPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9icGYuaCBiL2lu
-Y2x1ZGUvbGludXgvYnBmLmgNCj4gPiA+ID4gPiA+ID4gPiBpbmRleCAxMTk1MDAyOTI4NGYuLmM4
-ZDE2NDQwNGUyMCAxMDA2NDQNCj4gPiA+ID4gPiA+ID4gPiAtLS0gYS9pbmNsdWRlL2xpbnV4L2Jw
-Zi5oDQo+ID4gPiA+ID4gPiA+ID4gKysrIGIvaW5jbHVkZS9saW51eC9icGYuaA0KPiA+ID4gPiA+
-ID4gPiA+IEBAIC0xNzE4LDYgKzE3MTgsMTAgQEAgaW50IGJwZl9vYmpfZ2V0X3VzZXIoY29uc3Qg
-Y2hhcg0KPiA+ID4gPiA+ID4gPiA+IF9fdXNlcg0KPiA+ID4gPiA+ID4gPiA+ICpwYXRobmFtZSwg
-aW50IGZsYWdzKTsNCj4gPiA+ID4gPiA+ID4gPiANCj4gPiA+ID4gPiA+ID4gPiDCoHN0cnVjdCBi
-cGZfaXRlcl9hdXhfaW5mbyB7DQo+ID4gPiA+ID4gPiA+ID4gwqDCoMKgwqDCoMKgwqAgc3RydWN0
-IGJwZl9tYXAgKm1hcDsNCj4gPiA+ID4gPiA+ID4gPiArwqDCoMKgwqDCoMKgIHN0cnVjdCB7DQo+
-ID4gPiA+ID4gPiA+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgX191MzLCoMKgIHRp
-ZDsNCj4gPiA+ID4gPiA+ID4gDQo+ID4gPiA+ID4gPiA+IHNob3VsZCBiZSBqdXN0IHUzMiA/DQo+
-ID4gPiA+ID4gPiANCj4gPiA+ID4gPiA+IE9yLCBzaG91bGQgY2hhbmdlIHRoZSBmb2xsb3dpbmcg
-J3R5cGUnIHRvIF9fdTg/DQo+ID4gPiA+ID4gDQo+ID4gPiA+ID4gV291bGQgaXQgYmUgYmV0dGVy
-IHRvIHVzZSBhIHBpZGZkIGluc3RlYWQgb2YgYSB0aWQgaGVyZT8NCj4gPiA+ID4gPiBVbnNldA0K
-PiA+ID4gPiA+IHBpZGZkDQo+ID4gPiA+ID4gd291bGQgbWVhbiBnb2luZyBvdmVyIGFsbCB0YXNr
-cywgYW5kIGFueSBmZCA+IDAgaW1wbGllcw0KPiA+ID4gPiA+IGF0dGFjaGluZw0KPiA+ID4gPiA+
-IHRvDQo+ID4gPiA+ID4gYQ0KPiA+ID4gPiA+IHNwZWNpZmljIHRhc2sgKGFzIGlzIHRoZSBjb252
-ZW50aW9uIGluIEJQRiBsYW5kKS4gTW9zdCBvZiB0aGUNCj4gPiA+ID4gPiBuZXcNCj4gPiA+ID4g
-PiBVQVBJcyB3b3JraW5nIG9uIHByb2Nlc3NlcyBhcmUgdXNpbmcgcGlkZmRzICh0byB3b3JrIHdp
-dGggYQ0KPiA+ID4gPiA+IHN0YWJsZQ0KPiA+ID4gPiA+IGhhbmRsZSBpbnN0ZWFkIG9mIGEgcmV1
-c2FibGUgSUQpLg0KPiA+ID4gPiA+IFRoZSBpdGVyYXRvciB0YWtpbmcgYW4gZmQgYWxzbyBnaXZl
-cyBhbiBvcHBvcnR1bml0eSB0byBCUEYNCj4gPiA+ID4gPiBMU01zDQo+ID4gPiA+ID4gdG8NCj4g
-PiA+ID4gPiBhdHRhY2ggcGVybWlzc2lvbnMvcG9saWNpZXMgdG8gaXQgKG9uY2Ugd2UgaGF2ZSBh
-IGZpbGUgbG9jYWwNCj4gPiA+ID4gPiBzdG9yYWdlDQo+ID4gPiA+ID4gbWFwKSBlLmcuIHdoZXRo
-ZXIgY3JlYXRpbmcgYSB0YXNrIGl0ZXJhdG9yIGZvciB0aGF0IHNwZWNpZmljDQo+ID4gPiA+ID4g
-cGlkZmQNCj4gPiA+ID4gPiBpbnN0YW5jZSAoYmFja2VkIGJ5IHRoZSBzdHJ1Y3QgZmlsZSkgd291
-bGQgYmUgYWxsb3dlZCBvciBub3QuDQo+ID4gPiA+ID4gWW91IGFyZSB1c2luZyBnZXRwaWQgaW4g
-dGhlIHNlbGZ0ZXN0IGFuZCBrZWVwaW5nIHRyYWNrIG9mDQo+ID4gPiA+ID4gbGFzdF90Z2lkDQo+
-ID4gPiA+ID4gaW4NCj4gPiA+ID4gPiB0aGUgaXRlcmF0b3IsIHNvIEkgZ3Vlc3MgeW91IGRvbid0
-IGV2ZW4gbmVlZCB0byBleHRlbmQNCj4gPiA+ID4gPiBwaWRmZF9vcGVuDQo+ID4gPiA+ID4gdG8N
-Cj4gPiA+ID4gPiB3b3JrIG9uIHRocmVhZCBJRHMgcmlnaHQgbm93IGZvciB5b3VyIHVzZSBjYXNl
-IChhbmQgZmR0YWJsZQ0KPiA+ID4gPiA+IGFuZA0KPiA+ID4gPiA+IG1tDQo+ID4gPiA+ID4gYXJl
-DQo+ID4gPiA+ID4gc2hhcmVkIGZvciBQT1NJWCB0aHJlYWRzIGFueXdheSwgc28gZm9yIHRob3Nl
-IHR3byBpdCB3b24ndA0KPiA+ID4gPiA+IG1ha2UgYQ0KPiA+ID4gPiA+IGRpZmZlcmVuY2UpLg0K
-PiA+ID4gPiA+IA0KPiA+ID4gPiA+IFdoYXQgaXMgeW91ciBvcGluaW9uPw0KPiA+ID4gPiANCj4g
-PiA+ID4gRG8geW91IG1lYW4gcmVtb3ZlZCBib3RoIHRpZCBhbmQgdHlwZSwgYW5kIHJlcGxhY2Ug
-dGhlbSB3aXRoIGENCj4gPiA+ID4gcGlkZmQ/DQo+ID4gPiA+IFdlIGNhbiBkbyB0aGF0IGluIHVh
-cGksIHN0cnVjdCBicGZfbGlua19pbmZvLsKgIEJ1dCwgdGhlIGludGVyYWwNCj4gPiA+ID4gdHlw
-ZXMsDQo+ID4gPiA+IGV4LiBicGZfaXRlcl9hdXhfaW5mbywgc3RpbGwgbmVlZCB0byB1c2UgdGlk
-IG9yIHN0cnVjdCBmaWxlIHRvDQo+ID4gPiA+IGF2b2lkDQo+ID4gPiA+IGdldHRpbmcgZmlsZSBm
-cm9tIHRoZSBwZXItcHJvY2VzcyBmZHRhYmxlLsKgIElzIHRoYXQgd2hhdCB5b3UNCj4gPiA+ID4g
-bWVhbj8NCj4gPiA+ID4gDQo+ID4gPiANCj4gPiA+IFllcywganVzdCBmb3IgdGhlIFVBUEksIGl0
-IGlzIHNpbWlsYXIgdG8gdGFraW5nIG1hcF9mZCBmb3IgbWFwDQo+ID4gPiBpdGVyLg0KPiA+ID4g
-SW4gYnBmX2xpbmtfaW5mbyB3ZSBzaG91bGQgcmVwb3J0IGp1c3QgdGhlIHRpZCwganVzdCBsaWtl
-IG1hcA0KPiA+ID4gaXRlcg0KPiA+ID4gcmVwb3J0cyBtYXBfaWQuDQo+ID4gDQo+ID4gSXQgc291
-bmRzIGdvb2QgdG8gbWUuDQo+ID4gDQo+ID4gT25lIHRoaW5nIEkgbmVlZCBhIGNsYXJpZmljYXRp
-b24uIFlvdSBtZW50aW9uZWQgdGhhdCBhIGZkID4gMA0KPiA+IGltcGxpZXMNCj4gPiBhdHRhY2hp
-bmcgdG8gYSBzcGVjaWZpYyB0YXNrLCBob3dldmVyIGZkIGNhbiBiZSAwLiBTbywgaXQgc2hvdWxk
-IGJlDQo+ID4gZmQNCj4gPiA+ID0gMC4gU28sIGl0IGZvcmNlcyB0aGUgdXNlciB0byBpbml0aWFs
-aXplIHRoZSB2YWx1ZSBvZiBwaWRmZCB0byAtDQo+ID4gPiAxLg0KPiA+IFNvLCBmb3IgY29udmVu
-aWVuY2UsIHdlIHN0aWxsIG5lZWQgYSBmaWVsZCBsaWtlICd0eXBlJyB0byBtYWtlIGl0DQo+ID4g
-ZWFzeQ0KPiA+IHRvIGNyZWF0ZSBpdGVyYXRvcnMgd2l0aG91dCBhIGZpbHRlci4NCj4gPiANCj4g
-DQo+IFJpZ2h0LCBidXQgaW4gbG90cyBvZiBCUEYgVUFQSSBmaWVsZHMsIGZkIDAgbWVhbnMgZmQg
-aXMgdW5zZXQsIHNvIGl0DQo+IGlzIGZpbmUgdG8gcmVseSBvbiB0aGF0IGFzc3VtcHRpb24uIEZv
-ciBlLmcuIGV2ZW4gZm9yIG1hcF9mZCwNCj4gYnBmX21hcF9lbGVtIGl0ZXJhdG9yIGNvbnNpZGVy
-cyBmZCAwIHRvIGJlIHVuc2V0LiBUaGVuIHlvdSBkb24ndCBuZWVkDQo+IHRoZSB0eXBlIGZpZWxk
-Lg0KDQpJIGp1c3QgcmVhbGl6ZSB0aGF0IHBpZGZkIG1heSBiZSBtZWFuaW5nbGVzcyBmb3IgdGhl
-IGJwZl9saW5rX2luZm8NCnJldHVybmVkIGJ5IGJwZl9vYmpfZ2V0X2luZm9fYnlfZmQoKSBzaW5j
-ZSB0aGUgb3JpZ2luIGZkIG1pZ2h0IGJlDQpjbG9zZWQgYWxyZWFkeS4gIFNvLCBJIHdpbGwgYWx3
-YXlzIHNldCBpdCBhIHZhbHVlIG9mIDAuDQoNCg==
+On Wed, Jul 27, 2022 at 10:14 AM <sdf@google.com> wrote:
+>
+> On 07/26, Joanne Koong wrote:
+> > Add skb dynptrs, which are dynptrs whose underlying pointer points
+> > to a skb. The dynptr acts on skb data. skb dynptrs have two main
+> > benefits. One is that they allow operations on sizes that are not
+> > statically known at compile-time (eg variable-sized accesses).
+> > Another is that parsing the packet data through dynptrs (instead of
+> > through direct access of skb->data and skb->data_end) can be more
+> > ergonomic and less brittle (eg does not need manual if checking for
+> > being within bounds of data_end).
+>
+> > For bpf prog types that don't support writes on skb data, the dynptr is
+> > read-only (writes and data slices are not permitted). For reads on the
+> > dynptr, this includes reading into data in the non-linear paged buffers
+> > but for writes and data slices, if the data is in a paged buffer, the
+> > user must first call bpf_skb_pull_data to pull the data into the linear
+> > portion.
+>
+> > Additionally, any helper calls that change the underlying packet buffer
+> > (eg bpf_skb_pull_data) invalidates any data slices of the associated
+> > dynptr.
+>
+> > Right now, skb dynptrs can only be constructed from skbs that are
+> > the bpf program context - as such, there does not need to be any
+> > reference tracking or release on skb dynptrs.
+>
+> > Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+> > ---
+> >   include/linux/bpf.h            |  8 ++++-
+> >   include/linux/filter.h         |  4 +++
+> >   include/uapi/linux/bpf.h       | 42 ++++++++++++++++++++++++--
+> >   kernel/bpf/helpers.c           | 54 +++++++++++++++++++++++++++++++++-
+> >   kernel/bpf/verifier.c          | 43 +++++++++++++++++++++++----
+> >   net/core/filter.c              | 53 ++++++++++++++++++++++++++++++---
+> >   tools/include/uapi/linux/bpf.h | 42 ++++++++++++++++++++++++--
+> >   7 files changed, 229 insertions(+), 17 deletions(-)
+>
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index 20c26aed7896..7fbd4324c848 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -407,11 +407,14 @@ enum bpf_type_flag {
+> >       /* Size is known at compile time. */
+> >       MEM_FIXED_SIZE          = BIT(10 + BPF_BASE_TYPE_BITS),
+>
+> > +     /* DYNPTR points to sk_buff */
+> > +     DYNPTR_TYPE_SKB         = BIT(11 + BPF_BASE_TYPE_BITS),
+> > +
+> >       __BPF_TYPE_FLAG_MAX,
+> >       __BPF_TYPE_LAST_FLAG    = __BPF_TYPE_FLAG_MAX - 1,
+> >   };
+>
+> > -#define DYNPTR_TYPE_FLAG_MASK        (DYNPTR_TYPE_LOCAL | DYNPTR_TYPE_RINGBUF)
+> > +#define DYNPTR_TYPE_FLAG_MASK        (DYNPTR_TYPE_LOCAL | DYNPTR_TYPE_RINGBUF |
+> > DYNPTR_TYPE_SKB)
+>
+> >   /* Max number of base types. */
+> >   #define BPF_BASE_TYPE_LIMIT (1UL << BPF_BASE_TYPE_BITS)
+> > @@ -2556,12 +2559,15 @@ enum bpf_dynptr_type {
+> >       BPF_DYNPTR_TYPE_LOCAL,
+> >       /* Underlying data is a ringbuf record */
+> >       BPF_DYNPTR_TYPE_RINGBUF,
+> > +     /* Underlying data is a sk_buff */
+> > +     BPF_DYNPTR_TYPE_SKB,
+> >   };
+>
+> >   void bpf_dynptr_init(struct bpf_dynptr_kern *ptr, void *data,
+> >                    enum bpf_dynptr_type type, u32 offset, u32 size);
+> >   void bpf_dynptr_set_null(struct bpf_dynptr_kern *ptr);
+> >   int bpf_dynptr_check_size(u32 size);
+> > +void bpf_dynptr_set_rdonly(struct bpf_dynptr_kern *ptr);
+>
+> >   #ifdef CONFIG_BPF_LSM
+> >   void bpf_cgroup_atype_get(u32 attach_btf_id, int cgroup_atype);
+> > diff --git a/include/linux/filter.h b/include/linux/filter.h
+> > index a5f21dc3c432..649063d9cbfd 100644
+> > --- a/include/linux/filter.h
+> > +++ b/include/linux/filter.h
+> > @@ -1532,4 +1532,8 @@ static __always_inline int
+> > __bpf_xdp_redirect_map(struct bpf_map *map, u32 ifind
+> >       return XDP_REDIRECT;
+> >   }
+>
+> > +int __bpf_skb_load_bytes(const struct sk_buff *skb, u32 offset, void
+> > *to, u32 len);
+> > +int __bpf_skb_store_bytes(struct sk_buff *skb, u32 offset, const void
+> > *from,
+> > +                       u32 len, u64 flags);
+> > +
+> >   #endif /* __LINUX_FILTER_H__ */
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 59a217ca2dfd..0730cd198a7f 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -5241,11 +5241,22 @@ union bpf_attr {
+> >    *  Description
+> >    *          Write *len* bytes from *src* into *dst*, starting from *offset*
+> >    *          into *dst*.
+> > - *           *flags* is currently unused.
+> > + *
+> > + *           *flags* must be 0 except for skb-type dynptrs.
+> > + *
+> > + *           For skb-type dynptrs:
+> > + *               *  if *offset* + *len* extends into the skb's paged buffers, the
+> > user
+> > + *                  should manually pull the skb with bpf_skb_pull and then try
+> > again.
+> > + *
+> > + *               *  *flags* are a combination of **BPF_F_RECOMPUTE_CSUM**
+> > (automatically
+> > + *                   recompute the checksum for the packet after storing the bytes) and
+> > + *                   **BPF_F_INVALIDATE_HASH** (set *skb*\ **->hash**, *skb*\
+> > + *                   **->swhash** and *skb*\ **->l4hash** to 0).
+> >    *  Return
+> >    *          0 on success, -E2BIG if *offset* + *len* exceeds the length
+> >    *          of *dst*'s data, -EINVAL if *dst* is an invalid dynptr or if *dst*
+> > - *           is a read-only dynptr or if *flags* is not 0.
+> > + *           is a read-only dynptr or if *flags* is not correct, -EAGAIN if for
+> > + *           skb-type dynptrs the write extends into the skb's paged buffers.
+> >    *
+> >    * void *bpf_dynptr_data(struct bpf_dynptr *ptr, u32 offset, u32 len)
+> >    *  Description
+> > @@ -5253,10 +5264,19 @@ union bpf_attr {
+> >    *
+> >    *          *len* must be a statically known value. The returned data slice
+> >    *          is invalidated whenever the dynptr is invalidated.
+> > + *
+> > + *           For skb-type dynptrs:
+> > + *               * if *offset* + *len* extends into the skb's paged buffers,
+> > + *                 the user should manually pull the skb with bpf_skb_pull and
+> > then
+> > + *                 try again.
+> > + *
+> > + *               * the data slice is automatically invalidated anytime a
+> > + *                 helper call that changes the underlying packet buffer
+> > + *                 (eg bpf_skb_pull) is called.
+> >    *  Return
+> >    *          Pointer to the underlying dynptr data, NULL if the dynptr is
+> >    *          read-only, if the dynptr is invalid, or if the offset and length
+> > - *           is out of bounds.
+> > + *           is out of bounds or in a paged buffer for skb-type dynptrs.
+> >    *
+> >    * s64 bpf_tcp_raw_gen_syncookie_ipv4(struct iphdr *iph, struct tcphdr
+> > *th, u32 th_len)
+> >    *  Description
+> > @@ -5331,6 +5351,21 @@ union bpf_attr {
+> >    *          **-EACCES** if the SYN cookie is not valid.
+> >    *
+> >    *          **-EPROTONOSUPPORT** if CONFIG_IPV6 is not builtin.
+> > + *
+> > + * long bpf_dynptr_from_skb(struct sk_buff *skb, u64 flags, struct
+> > bpf_dynptr *ptr)
+> > + *   Description
+> > + *           Get a dynptr to the data in *skb*. *skb* must be the BPF program
+> > + *           context. Depending on program type, the dynptr may be read-only,
+> > + *           in which case trying to obtain a direct data slice to it through
+> > + *           bpf_dynptr_data will return an error.
+> > + *
+> > + *           Calls that change the *skb*'s underlying packet buffer
+> > + *           (eg bpf_skb_pull_data) do not invalidate the dynptr, but they do
+> > + *           invalidate any data slices associated with the dynptr.
+> > + *
+> > + *           *flags* is currently unused, it must be 0 for now.
+> > + *   Return
+> > + *           0 on success or -EINVAL if flags is not 0.
+> >    */
+> >   #define __BPF_FUNC_MAPPER(FN)               \
+> >       FN(unspec),                     \
+> > @@ -5541,6 +5576,7 @@ union bpf_attr {
+> >       FN(tcp_raw_gen_syncookie_ipv6), \
+> >       FN(tcp_raw_check_syncookie_ipv4),       \
+> >       FN(tcp_raw_check_syncookie_ipv6),       \
+> > +     FN(dynptr_from_skb),            \
+> >       /* */
+>
+> >   /* integer value in 'imm' field of BPF_CALL instruction selects which
+> > helper
+> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> > index 1f961f9982d2..21a806057e9e 100644
+> > --- a/kernel/bpf/helpers.c
+> > +++ b/kernel/bpf/helpers.c
+> > @@ -1425,11 +1425,21 @@ static bool bpf_dynptr_is_rdonly(struct
+> > bpf_dynptr_kern *ptr)
+> >       return ptr->size & DYNPTR_RDONLY_BIT;
+> >   }
+>
+> > +void bpf_dynptr_set_rdonly(struct bpf_dynptr_kern *ptr)
+> > +{
+> > +     ptr->size |= DYNPTR_RDONLY_BIT;
+> > +}
+> > +
+> >   static void bpf_dynptr_set_type(struct bpf_dynptr_kern *ptr, enum
+> > bpf_dynptr_type type)
+> >   {
+> >       ptr->size |= type << DYNPTR_TYPE_SHIFT;
+> >   }
+>
+> > +static enum bpf_dynptr_type bpf_dynptr_get_type(const struct
+> > bpf_dynptr_kern *ptr)
+> > +{
+> > +     return (ptr->size & ~(DYNPTR_RDONLY_BIT)) >> DYNPTR_TYPE_SHIFT;
+> > +}
+> > +
+> >   static u32 bpf_dynptr_get_size(struct bpf_dynptr_kern *ptr)
+> >   {
+> >       return ptr->size & DYNPTR_SIZE_MASK;
+> > @@ -1500,6 +1510,7 @@ static const struct bpf_func_proto
+> > bpf_dynptr_from_mem_proto = {
+> >   BPF_CALL_5(bpf_dynptr_read, void *, dst, u32, len, struct
+> > bpf_dynptr_kern *, src,
+> >          u32, offset, u64, flags)
+> >   {
+> > +     enum bpf_dynptr_type type;
+> >       int err;
+>
+> >       if (!src->data || flags)
+> > @@ -1509,6 +1520,11 @@ BPF_CALL_5(bpf_dynptr_read, void *, dst, u32, len,
+> > struct bpf_dynptr_kern *, src
+> >       if (err)
+> >               return err;
+>
+> > +     type = bpf_dynptr_get_type(src);
+> > +
+> > +     if (type == BPF_DYNPTR_TYPE_SKB)
+> > +             return __bpf_skb_load_bytes(src->data, src->offset + offset, dst, len);
+> > +
+> >       memcpy(dst, src->data + src->offset + offset, len);
+>
+> >       return 0;
+> > @@ -1528,15 +1544,38 @@ static const struct bpf_func_proto
+> > bpf_dynptr_read_proto = {
+> >   BPF_CALL_5(bpf_dynptr_write, struct bpf_dynptr_kern *, dst, u32, offset,
+> > void *, src,
+> >          u32, len, u64, flags)
+> >   {
+> > +     enum bpf_dynptr_type type;
+> >       int err;
+>
+> > -     if (!dst->data || flags || bpf_dynptr_is_rdonly(dst))
+> > +     if (!dst->data || bpf_dynptr_is_rdonly(dst))
+> >               return -EINVAL;
+>
+> >       err = bpf_dynptr_check_off_len(dst, offset, len);
+> >       if (err)
+> >               return err;
+>
+> > +     type = bpf_dynptr_get_type(dst);
+> > +
+> > +     if (flags) {
+> > +             if (type == BPF_DYNPTR_TYPE_SKB) {
+> > +                     if (flags & ~(BPF_F_RECOMPUTE_CSUM | BPF_F_INVALIDATE_HASH))
+> > +                             return -EINVAL;
+> > +             } else {
+> > +                     return -EINVAL;
+> > +             }
+> > +     }
+> > +
+> > +     if (type == BPF_DYNPTR_TYPE_SKB) {
+> > +             struct sk_buff *skb = dst->data;
+> > +
+> > +             /* if the data is paged, the caller needs to pull it first */
+> > +             if (dst->offset + offset + len > skb->len - skb->data_len)
+>
+> Use skb_headlen instead of 'skb->len - skb->data_len' ?
+Awesome, will replace this (and the one in bpf_dynptr_data) with
+skb_headlen() for v2. thanks!
+>
+> > +                     return -EAGAIN;
+> > +
+> > +             return __bpf_skb_store_bytes(skb, dst->offset + offset, src, len,
+> > +                                          flags);
+> > +     }
+> > +
+> >       memcpy(dst->data + dst->offset + offset, src, len);
+>
+> >       return 0;
+> > @@ -1555,6 +1594,7 @@ static const struct bpf_func_proto
+> > bpf_dynptr_write_proto = {
+>
+> >   BPF_CALL_3(bpf_dynptr_data, struct bpf_dynptr_kern *, ptr, u32, offset,
+> > u32, len)
+> >   {
+> > +     enum bpf_dynptr_type type;
+> >       int err;
+>
+> >       if (!ptr->data)
+> > @@ -1567,6 +1607,18 @@ BPF_CALL_3(bpf_dynptr_data, struct bpf_dynptr_kern
+> > *, ptr, u32, offset, u32, len
+> >       if (bpf_dynptr_is_rdonly(ptr))
+> >               return 0;
+>
+> > +     type = bpf_dynptr_get_type(ptr);
+> > +
+> > +     if (type == BPF_DYNPTR_TYPE_SKB) {
+> > +             struct sk_buff *skb = ptr->data;
+> > +
+> > +             /* if the data is paged, the caller needs to pull it first */
+> > +             if (ptr->offset + offset + len > skb->len - skb->data_len)
+> > +                     return 0;
+>
+> Same here?
+>
+> > +
+> > +             return (unsigned long)(skb->data + ptr->offset + offset);
+> > +     }
+> > +
+> >       return (unsigned long)(ptr->data + ptr->offset + offset);
+> >   }
+>
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 0d523741a543..0838653eeb4e 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -263,6 +263,7 @@ struct bpf_call_arg_meta {
+> >       u32 subprogno;
+> >       struct bpf_map_value_off_desc *kptr_off_desc;
+> >       u8 uninit_dynptr_regno;
+> > +     enum bpf_dynptr_type type;
+> >   };
+>
+> >   struct btf *btf_vmlinux;
+> > @@ -678,6 +679,8 @@ static enum bpf_dynptr_type arg_to_dynptr_type(enum
+> > bpf_arg_type arg_type)
+> >               return BPF_DYNPTR_TYPE_LOCAL;
+> >       case DYNPTR_TYPE_RINGBUF:
+> >               return BPF_DYNPTR_TYPE_RINGBUF;
+> > +     case DYNPTR_TYPE_SKB:
+> > +             return BPF_DYNPTR_TYPE_SKB;
+> >       default:
+> >               return BPF_DYNPTR_TYPE_INVALID;
+> >       }
+> > @@ -5820,12 +5823,14 @@ int check_func_arg_reg_off(struct
+> > bpf_verifier_env *env,
+> >       return __check_ptr_off_reg(env, reg, regno, fixed_off_ok);
+> >   }
+>
+> > -static u32 stack_slot_get_id(struct bpf_verifier_env *env, struct
+> > bpf_reg_state *reg)
+> > +static void stack_slot_get_dynptr_info(struct bpf_verifier_env *env,
+> > struct bpf_reg_state *reg,
+> > +                                    struct bpf_call_arg_meta *meta)
+> >   {
+> >       struct bpf_func_state *state = func(env, reg);
+> >       int spi = get_spi(reg->off);
+>
+> > -     return state->stack[spi].spilled_ptr.id;
+> > +     meta->ref_obj_id = state->stack[spi].spilled_ptr.id;
+> > +     meta->type = state->stack[spi].spilled_ptr.dynptr.type;
+> >   }
+>
+> >   static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+> > @@ -6052,6 +6057,9 @@ static int check_func_arg(struct bpf_verifier_env
+> > *env, u32 arg,
+> >                               case DYNPTR_TYPE_RINGBUF:
+> >                                       err_extra = "ringbuf ";
+> >                                       break;
+> > +                             case DYNPTR_TYPE_SKB:
+> > +                                     err_extra = "skb ";
+> > +                                     break;
+> >                               default:
+> >                                       break;
+> >                               }
+> > @@ -6065,8 +6073,10 @@ static int check_func_arg(struct bpf_verifier_env
+> > *env, u32 arg,
+> >                                       verbose(env, "verifier internal error: multiple refcounted args in
+> > BPF_FUNC_dynptr_data");
+> >                                       return -EFAULT;
+> >                               }
+> > -                             /* Find the id of the dynptr we're tracking the reference of */
+> > -                             meta->ref_obj_id = stack_slot_get_id(env, reg);
+> > +                             /* Find the id and the type of the dynptr we're tracking
+> > +                              * the reference of.
+> > +                              */
+> > +                             stack_slot_get_dynptr_info(env, reg, meta);
+> >                       }
+> >               }
+> >               break;
+> > @@ -7406,7 +7416,11 @@ static int check_helper_call(struct
+> > bpf_verifier_env *env, struct bpf_insn *insn
+> >               regs[BPF_REG_0].type = PTR_TO_TCP_SOCK | ret_flag;
+> >       } else if (base_type(ret_type) == RET_PTR_TO_ALLOC_MEM) {
+> >               mark_reg_known_zero(env, regs, BPF_REG_0);
+> > -             regs[BPF_REG_0].type = PTR_TO_MEM | ret_flag;
+> > +             if (func_id == BPF_FUNC_dynptr_data &&
+> > +                 meta.type == BPF_DYNPTR_TYPE_SKB)
+> > +                     regs[BPF_REG_0].type = PTR_TO_PACKET | ret_flag;
+> > +             else
+> > +                     regs[BPF_REG_0].type = PTR_TO_MEM | ret_flag;
+> >               regs[BPF_REG_0].mem_size = meta.mem_size;
+> >       } else if (base_type(ret_type) == RET_PTR_TO_MEM_OR_BTF_ID) {
+> >               const struct btf_type *t;
+> > @@ -14132,6 +14146,25 @@ static int do_misc_fixups(struct
+> > bpf_verifier_env *env)
+> >                       goto patch_call_imm;
+> >               }
+>
+>
+> [..]
+>
+> > +             if (insn->imm == BPF_FUNC_dynptr_from_skb) {
+> > +                     if (!may_access_direct_pkt_data(env, NULL, BPF_WRITE))
+> > +                             insn_buf[0] = BPF_MOV32_IMM(BPF_REG_4, true);
+> > +                     else
+> > +                             insn_buf[0] = BPF_MOV32_IMM(BPF_REG_4, false);
+> > +                     insn_buf[1] = *insn;
+> > +                     cnt = 2;
+> > +
+> > +                     new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
+> > +                     if (!new_prog)
+> > +                             return -ENOMEM;
+> > +
+> > +                     delta += cnt - 1;
+> > +                     env->prog = new_prog;
+> > +                     prog = new_prog;
+> > +                     insn = new_prog->insnsi + i + delta;
+> > +                     goto patch_call_imm;
+> > +             }
+>
+> Would it be easier to have two separate helpers:
+> - BPF_FUNC_dynptr_from_skb
+> - BPF_FUNC_dynptr_from_skb_readonly
+>
+> And make the verifier rewrite insn->imm to
+> BPF_FUNC_dynptr_from_skb_readonly when needed?
+>
+> if (insn->imm == BPF_FUNC_dynptr_from_skb) {
+>         if (!may_access_direct_pkt_data(env, NULL, BPF_WRITE))
+>                 insn->imm = BPF_FUNC_dynptr_from_skb_readonly;
+> }
+>
+> Or it's also ugly because we'd have to leak that new helper into UAPI?
+> (I wonder whether that hidden 4th argument is too magical, but probably
+> fine?)
+To me, having 2 separate helpers feels more cluttered and having to
+expose it in the uapi (though I think there is probably some way to
+avoid this by doing some sort of ad hoc processing) doesn't seem
+ideal. If you feel strongly about this though, I am happy to change
+this to use two separate helpers. We do this sort of manual
+instruction patching for the sleepable flags in
+bpf_task/sk/inode_storage_get and for the callback args in
+bpf_timer_set_callback as well - if we use separate helpers here, we
+should do that for the other cases as well to maintain consistency.
+>
+> > +
+> >               /* BPF_EMIT_CALL() assumptions in some of the map_gen_lookup
+> >                * and other inlining handlers are currently limited to 64 bit
+> >                * only.
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> > index 5669248aff25..312f99deb759 100644
+> > --- a/net/core/filter.c
+> > +++ b/net/core/filter.c
+> > @@ -1681,8 +1681,8 @@ static inline void bpf_pull_mac_rcsum(struct
+> > sk_buff *skb)
+> >               skb_postpull_rcsum(skb, skb_mac_header(skb), skb->mac_len);
+> >   }
+>
+> > -BPF_CALL_5(bpf_skb_store_bytes, struct sk_buff *, skb, u32, offset,
+> > -        const void *, from, u32, len, u64, flags)
+> > +int __bpf_skb_store_bytes(struct sk_buff *skb, u32 offset, const void
+> > *from,
+> > +                       u32 len, u64 flags)
+> >   {
+> >       void *ptr;
+>
+> > @@ -1707,6 +1707,12 @@ BPF_CALL_5(bpf_skb_store_bytes, struct sk_buff *,
+> > skb, u32, offset,
+> >       return 0;
+> >   }
+>
+> > +BPF_CALL_5(bpf_skb_store_bytes, struct sk_buff *, skb, u32, offset,
+> > +        const void *, from, u32, len, u64, flags)
+> > +{
+> > +     return __bpf_skb_store_bytes(skb, offset, from, len, flags);
+> > +}
+> > +
+> >   static const struct bpf_func_proto bpf_skb_store_bytes_proto = {
+> >       .func           = bpf_skb_store_bytes,
+> >       .gpl_only       = false,
+> > @@ -1718,8 +1724,7 @@ static const struct bpf_func_proto
+> > bpf_skb_store_bytes_proto = {
+> >       .arg5_type      = ARG_ANYTHING,
+> >   };
+>
+> > -BPF_CALL_4(bpf_skb_load_bytes, const struct sk_buff *, skb, u32, offset,
+> > -        void *, to, u32, len)
+> > +int __bpf_skb_load_bytes(const struct sk_buff *skb, u32 offset, void
+> > *to, u32 len)
+> >   {
+> >       void *ptr;
+>
+> > @@ -1738,6 +1743,12 @@ BPF_CALL_4(bpf_skb_load_bytes, const struct
+> > sk_buff *, skb, u32, offset,
+> >       return -EFAULT;
+> >   }
+>
+> > +BPF_CALL_4(bpf_skb_load_bytes, const struct sk_buff *, skb, u32, offset,
+> > +        void *, to, u32, len)
+> > +{
+> > +     return __bpf_skb_load_bytes(skb, offset, to, len);
+> > +}
+> > +
+> >   static const struct bpf_func_proto bpf_skb_load_bytes_proto = {
+> >       .func           = bpf_skb_load_bytes,
+> >       .gpl_only       = false,
+> > @@ -1849,6 +1860,32 @@ static const struct bpf_func_proto
+> > bpf_skb_pull_data_proto = {
+> >       .arg2_type      = ARG_ANYTHING,
+> >   };
+>
+> > +/* is_rdonly is set by the verifier */
+> > +BPF_CALL_4(bpf_dynptr_from_skb, struct sk_buff *, skb, u64, flags,
+> > +        struct bpf_dynptr_kern *, ptr, u32, is_rdonly)
+> > +{
+> > +     if (flags) {
+> > +             bpf_dynptr_set_null(ptr);
+> > +             return -EINVAL;
+> > +     }
+> > +
+> > +     bpf_dynptr_init(ptr, skb, BPF_DYNPTR_TYPE_SKB, 0, skb->len);
+> > +
+> > +     if (is_rdonly)
+> > +             bpf_dynptr_set_rdonly(ptr);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static const struct bpf_func_proto bpf_dynptr_from_skb_proto = {
+> > +     .func           = bpf_dynptr_from_skb,
+> > +     .gpl_only       = false,
+> > +     .ret_type       = RET_INTEGER,
+> > +     .arg1_type      = ARG_PTR_TO_CTX,
+> > +     .arg2_type      = ARG_ANYTHING,
+> > +     .arg3_type      = ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_SKB | MEM_UNINIT,
+> > +};
+> > +
+> >   BPF_CALL_1(bpf_sk_fullsock, struct sock *, sk)
+> >   {
+> >       return sk_fullsock(sk) ? (unsigned long)sk : (unsigned long)NULL;
+> > @@ -7808,6 +7845,8 @@ sk_filter_func_proto(enum bpf_func_id func_id,
+> > const struct bpf_prog *prog)
+> >               return &bpf_get_socket_uid_proto;
+> >       case BPF_FUNC_perf_event_output:
+> >               return &bpf_skb_event_output_proto;
+> > +     case BPF_FUNC_dynptr_from_skb:
+> > +             return &bpf_dynptr_from_skb_proto;
+> >       default:
+> >               return bpf_sk_base_func_proto(func_id);
+> >       }
+> > @@ -7991,6 +8030,8 @@ tc_cls_act_func_proto(enum bpf_func_id func_id,
+> > const struct bpf_prog *prog)
+> >               return &bpf_tcp_raw_check_syncookie_ipv6_proto;
+> >   #endif
+> >   #endif
+> > +     case BPF_FUNC_dynptr_from_skb:
+> > +             return &bpf_dynptr_from_skb_proto;
+> >       default:
+> >               return bpf_sk_base_func_proto(func_id);
+> >       }
+> > @@ -8186,6 +8227,8 @@ sk_skb_func_proto(enum bpf_func_id func_id, const
+> > struct bpf_prog *prog)
+> >       case BPF_FUNC_skc_lookup_tcp:
+> >               return &bpf_skc_lookup_tcp_proto;
+> >   #endif
+> > +     case BPF_FUNC_dynptr_from_skb:
+> > +             return &bpf_dynptr_from_skb_proto;
+> >       default:
+> >               return bpf_sk_base_func_proto(func_id);
+> >       }
+> > @@ -8224,6 +8267,8 @@ lwt_out_func_proto(enum bpf_func_id func_id, const
+> > struct bpf_prog *prog)
+> >               return &bpf_get_smp_processor_id_proto;
+> >       case BPF_FUNC_skb_under_cgroup:
+> >               return &bpf_skb_under_cgroup_proto;
+> > +     case BPF_FUNC_dynptr_from_skb:
+> > +             return &bpf_dynptr_from_skb_proto;
+> >       default:
+> >               return bpf_sk_base_func_proto(func_id);
+> >       }
+> > diff --git a/tools/include/uapi/linux/bpf.h
+> > b/tools/include/uapi/linux/bpf.h
+> > index 59a217ca2dfd..0730cd198a7f 100644
+> > --- a/tools/include/uapi/linux/bpf.h
+> > +++ b/tools/include/uapi/linux/bpf.h
+> > @@ -5241,11 +5241,22 @@ union bpf_attr {
+> >    *  Description
+> >    *          Write *len* bytes from *src* into *dst*, starting from *offset*
+> >    *          into *dst*.
+> > - *           *flags* is currently unused.
+> > + *
+> > + *           *flags* must be 0 except for skb-type dynptrs.
+> > + *
+> > + *           For skb-type dynptrs:
+> > + *               *  if *offset* + *len* extends into the skb's paged buffers, the
+> > user
+> > + *                  should manually pull the skb with bpf_skb_pull and then try
+> > again.
+> > + *
+> > + *               *  *flags* are a combination of **BPF_F_RECOMPUTE_CSUM**
+> > (automatically
+> > + *                   recompute the checksum for the packet after storing the bytes) and
+> > + *                   **BPF_F_INVALIDATE_HASH** (set *skb*\ **->hash**, *skb*\
+> > + *                   **->swhash** and *skb*\ **->l4hash** to 0).
+> >    *  Return
+> >    *          0 on success, -E2BIG if *offset* + *len* exceeds the length
+> >    *          of *dst*'s data, -EINVAL if *dst* is an invalid dynptr or if *dst*
+> > - *           is a read-only dynptr or if *flags* is not 0.
+> > + *           is a read-only dynptr or if *flags* is not correct, -EAGAIN if for
+> > + *           skb-type dynptrs the write extends into the skb's paged buffers.
+> >    *
+> >    * void *bpf_dynptr_data(struct bpf_dynptr *ptr, u32 offset, u32 len)
+> >    *  Description
+> > @@ -5253,10 +5264,19 @@ union bpf_attr {
+> >    *
+> >    *          *len* must be a statically known value. The returned data slice
+> >    *          is invalidated whenever the dynptr is invalidated.
+> > + *
+> > + *           For skb-type dynptrs:
+> > + *               * if *offset* + *len* extends into the skb's paged buffers,
+> > + *                 the user should manually pull the skb with bpf_skb_pull and
+> > then
+> > + *                 try again.
+> > + *
+> > + *               * the data slice is automatically invalidated anytime a
+> > + *                 helper call that changes the underlying packet buffer
+> > + *                 (eg bpf_skb_pull) is called.
+> >    *  Return
+> >    *          Pointer to the underlying dynptr data, NULL if the dynptr is
+> >    *          read-only, if the dynptr is invalid, or if the offset and length
+> > - *           is out of bounds.
+> > + *           is out of bounds or in a paged buffer for skb-type dynptrs.
+> >    *
+> >    * s64 bpf_tcp_raw_gen_syncookie_ipv4(struct iphdr *iph, struct tcphdr
+> > *th, u32 th_len)
+> >    *  Description
+> > @@ -5331,6 +5351,21 @@ union bpf_attr {
+> >    *          **-EACCES** if the SYN cookie is not valid.
+> >    *
+> >    *          **-EPROTONOSUPPORT** if CONFIG_IPV6 is not builtin.
+> > + *
+> > + * long bpf_dynptr_from_skb(struct sk_buff *skb, u64 flags, struct
+> > bpf_dynptr *ptr)
+> > + *   Description
+> > + *           Get a dynptr to the data in *skb*. *skb* must be the BPF program
+> > + *           context. Depending on program type, the dynptr may be read-only,
+> > + *           in which case trying to obtain a direct data slice to it through
+> > + *           bpf_dynptr_data will return an error.
+> > + *
+> > + *           Calls that change the *skb*'s underlying packet buffer
+> > + *           (eg bpf_skb_pull_data) do not invalidate the dynptr, but they do
+> > + *           invalidate any data slices associated with the dynptr.
+> > + *
+> > + *           *flags* is currently unused, it must be 0 for now.
+> > + *   Return
+> > + *           0 on success or -EINVAL if flags is not 0.
+> >    */
+> >   #define __BPF_FUNC_MAPPER(FN)               \
+> >       FN(unspec),                     \
+> > @@ -5541,6 +5576,7 @@ union bpf_attr {
+> >       FN(tcp_raw_gen_syncookie_ipv6), \
+> >       FN(tcp_raw_check_syncookie_ipv4),       \
+> >       FN(tcp_raw_check_syncookie_ipv6),       \
+> > +     FN(dynptr_from_skb),            \
+> >       /* */
+>
+> >   /* integer value in 'imm' field of BPF_CALL instruction selects which
+> > helper
+> > --
+> > 2.30.2
+>
