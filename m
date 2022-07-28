@@ -2,182 +2,202 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF51C5837BD
-	for <lists+bpf@lfdr.de>; Thu, 28 Jul 2022 05:54:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF029583821
+	for <lists+bpf@lfdr.de>; Thu, 28 Jul 2022 07:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234330AbiG1Dyc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jul 2022 23:54:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34808 "EHLO
+        id S229975AbiG1FZ6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Jul 2022 01:25:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232465AbiG1Dya (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Jul 2022 23:54:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 349C9275C2;
-        Wed, 27 Jul 2022 20:54:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9393361A05;
-        Thu, 28 Jul 2022 03:54:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07704C433D7;
-        Thu, 28 Jul 2022 03:54:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1658980468;
-        bh=qPCUnybGHOWN6cNXqfoVy/jpEzcGqzK7Cc4DzdUJjdU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=C4dmXuJeVazQQgGqkT3X5AdgAPzyJvPegcRA7HLYMrOYCldKgPDUwsBOSowkck5IA
-         YRNRXCZDDTRGfTXdinO2nUCFNwdZO+4ZRabEd4Npnu5M/e3GcFsBpDPChLdG3JyZOY
-         x/MOgimVRuJSkkS/VRF8x2m+ClSjFfmedSHRT098muVlWamLOu64U0KdWdhFEFN95i
-         2gjgCnq3IpraWtQuSxOS+5XKGjPAWXZ/pmO+V5UztZkGOEQBokqIWMi8Xm+VhOmdCd
-         HCgr4NffiR+F+zzKhGDjvArh/rzbsOMZiywqNe8ItZ3Ig8MGcfP7K8RJ85oJBXk4gD
-         OXxPen06hotdQ==
-Received: by mail-yb1-f180.google.com with SMTP id c131so1396083ybf.9;
-        Wed, 27 Jul 2022 20:54:27 -0700 (PDT)
-X-Gm-Message-State: AJIora9B5iI3sGjoVsvChH6eneD6WVFhpHPP+u+CkpJVqOoN8UlDFbk7
-        jKQfmkd9i2kf5m9VxgXLf7vwPmRdOn+IpkkkIHo=
-X-Google-Smtp-Source: AGRyM1srumxcnFkLY3o2PvMI6UIarBzuFpnBm5ikBhpc0sAxNuSNdUcu4dtfEYLrEtnjxiLjzObT/sGmbgUys30wU7Q=
-X-Received: by 2002:a25:8b92:0:b0:66d:553a:f309 with SMTP id
- j18-20020a258b92000000b0066d553af309mr19677241ybl.322.1658980466964; Wed, 27
- Jul 2022 20:54:26 -0700 (PDT)
+        with ESMTP id S229538AbiG1FZ5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Jul 2022 01:25:57 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECB604D833
+        for <bpf@vger.kernel.org>; Wed, 27 Jul 2022 22:25:56 -0700 (PDT)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26S183i1009785
+        for <bpf@vger.kernel.org>; Wed, 27 Jul 2022 22:25:56 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=BPrfRgBheASxF9z+NmOfg9Pu0uadicKHzMntewwhNao=;
+ b=mVbX1xyMUIB18BPzy5/C0K6bNs39PzDWJy/mZqILnarqE/8GvfnoYKTRHHF6nfhuWnua
+ Dcy2z308JXjQiAfpFWnYJxvTWeUxX+A1/4pLBVfjqRPRmxoqozRBCh8u1mGCfTXyq0nh
+ /8ojk/gVQn6ZqiNJOofH8NeuCGPT6wEzths= 
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2103.outbound.protection.outlook.com [104.47.55.103])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hkfsk151d-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 27 Jul 2022 22:25:56 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XV8SaN0XyzWOREPKZrIAQAVA9lbiWBrhncqeLEB+3u1iTOIxQBOo9uy9H8Me6KpY3M8VPOF/53Kj9vQJVkA6Om29gEZ5JBTIS9i/ETpwWQVjD3iz6LqURzF+jgZbqBHIRIvpVOkIuic9B/YkAbQ3GBugsBnLtAvwfWGmfHSFWmMrB5yLw1dLZ0blLlWC3grvUin5E/9373Vwd4j2cEpXX1Byy/EDLhiLDyfMriuH6AaXwxf7ARRjDTcLJVMGTfHwq4eFLehfO2DKXddoN+z65e6OXV/pZUo0ep2L2geK/w2l88OJ4JhIR465DiLSXgqXGPtKUCbO9HWxsgqzJMm73g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BPrfRgBheASxF9z+NmOfg9Pu0uadicKHzMntewwhNao=;
+ b=AQFkWhTfaTgZX3c1Ev3s+TDCUSYUKnV9SendFdq8z+7Jxu7+yb1BlkkZQ2iGFOXVZILZ37ocBba6PxfAVXvM5PvOM1h3MkEfMQCrIldzGddFeInxjvCfR28EHGCh0AIBPITQA9zPXjVQ/l1xI9sRwgK+I0cvyzUC7EJnutrVSRKZo8jbteXZdR6ljedBNmJVhn+AYhWKYgb8oacnoeVeWeB4A2jTVhNhtAv+ViTfiKVnOA4h4Dipdjmlnof56MBfTyOUlW/QBSkPWed2urzB1MHeFSkwK/wk+RYfFujzA/H0k+KynROzlQaloewVzYWj2Upt8/TCnhXasegtMqVY0g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from BY5PR15MB3651.namprd15.prod.outlook.com (2603:10b6:a03:1f7::15)
+ by DM5PR15MB1129.namprd15.prod.outlook.com (2603:10b6:3:be::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5482.6; Thu, 28 Jul
+ 2022 05:25:52 +0000
+Received: from BY5PR15MB3651.namprd15.prod.outlook.com
+ ([fe80::14b0:8f09:488d:f55f]) by BY5PR15MB3651.namprd15.prod.outlook.com
+ ([fe80::14b0:8f09:488d:f55f%6]) with mapi id 15.20.5482.011; Thu, 28 Jul 2022
+ 05:25:52 +0000
+From:   Kui-Feng Lee <kuifeng@fb.com>
+To:     "memxor@gmail.com" <memxor@gmail.com>
+CC:     "brauner@kernel.org" <brauner@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "olsajiri@gmail.com" <olsajiri@gmail.com>,
+        Kernel Team <Kernel-team@fb.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>
+Subject: Re: [PATCH bpf-next 1/3] bpf: Parameterize task iterators.
+Thread-Topic: [PATCH bpf-next 1/3] bpf: Parameterize task iterators.
+Thread-Index: AQHYoK8StG1Y6n29KUSEV/VSsAjsP62QkM6AgAE54wCAABc7AIABYbAA
+Date:   Thu, 28 Jul 2022 05:25:52 +0000
+Message-ID: <30a790ad499c9bb4783db91e305ee6546f497ebd.camel@fb.com>
+References: <20220726051713.840431-1-kuifeng@fb.com>
+         <20220726051713.840431-2-kuifeng@fb.com> <Yt/aXYiVmGKP282Q@krava>
+         <9e6967ec22f410edf7da3dc6e5d7c867431e3a30.camel@fb.com>
+         <CAP01T75twVT2ea5Q74viJO+Y9kALbPFw4Yr6hbBfTdok0vAXaw@mail.gmail.com>
+In-Reply-To: <CAP01T75twVT2ea5Q74viJO+Y9kALbPFw4Yr6hbBfTdok0vAXaw@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 3b30e1df-3939-49ef-02c3-08da7059a3ac
+x-ms-traffictypediagnostic: DM5PR15MB1129:EE_
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 1NJF2KEoKMk+bND8Vdyqpv9WP0g3mE3aoJhtNhwP0X0B9Nv2Am0YU2hWy3AarHp//QNNZawMdWYEKxKbhNhTp+4OwQFX1ODU9LL08gEc1lECktrBFEsmW8Aj9c4/r1fbxxLIMjATNju19Hcw0SS/hucKlhjIPJQk5XkAdM92k+k74y+ErJJfolYb8BQ5YBCi/79phxsLFwJtHcLltMWSD/O1+CWn89ETfQS8eJOCM9kM3jqHsi1N3xQZd5Wvzwwl1SbrMgs2hKCWdMjJpfroCeoCXp+g1qsgLtHXVCGfaSY3kwCRrPXRTz4q7hSZuhP+6+m4b5x9zYBX/nbEtLV3eUMs69iwm0554EbnnbHgZOZNhWzVzG9pl5K1K46LHWSPGMrZH1dXAP1ggFYOsoTHc3Z5OtiusBc5ooWVtPhDmsNt3gGbWgPxWQ53i9TzWfPH4iBxFpRegYfqqA+zL5ps7ZWmInDZgGDyQ3rKJ6/2lBWn5keoaFNTQNEGNB/8YlgwivU7zQgUDXHxTSeGCVsYx9aFujSBPTfwYPyn+lk5tU5COQzJtefSt12AUHlESQ8NvST/KBdA0uLDwk/pzR+JDemW19JNgR+GN8PwvFRaIRcpCATb6g0n/aUA4RbR+S+BSVrLZ814qEUWJzDhZlWCaRyIhm9w+n4fz+RJ/I/6pD735LI/MG/2QoiXkfDY1TFEpVCt8uUbdeX33hIL8khabi+8v9dakdcwAUGy759KYUgUeG7s8EnSD33jwInggtAwPsTFCa2bwAa4wWik5PFot8PLRqU8Wiukjv6lDe0U7KoFhzvwLRelwPa/8KwU7YXR
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3651.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(366004)(39860400002)(396003)(376002)(136003)(346002)(6512007)(478600001)(6916009)(41300700001)(6506007)(6486002)(54906003)(71200400001)(86362001)(316002)(38070700005)(38100700002)(122000001)(91956017)(66446008)(186003)(83380400001)(5660300002)(36756003)(66556008)(4326008)(66476007)(8936002)(66946007)(76116006)(8676002)(2616005)(64756008)(2906002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?QmdYb3RkYmR5emdLSkhYUWVNSDVWYlJjbDBOTFlFRmVzSVpNTzFwQmJLZk1W?=
+ =?utf-8?B?NkpYZW50aHltR0c4bVNDdWlNcWNkQVhsVWw1VjlCbUI3Ni9wTGJkMXh1cENx?=
+ =?utf-8?B?Y1lHTE0yNnpuWXgreEoxU2Y2TTNqR2h4amJxOG5VdE93VkdRaUtKY2dHaFZ6?=
+ =?utf-8?B?dyszZjZqRU9YdFJHZS8zYVdURjJQbmdMYmRpYVBqazdjZUsvdXlMcW9RREQ1?=
+ =?utf-8?B?QmUrOHROUEhVZWJ3WmVlWGY3cnRqcG0rc1haYkQ0QTZFWTdjK2ZFL3UvdVd6?=
+ =?utf-8?B?Y3JVdE04cjFZOGozc0pNWWE3T1o1N242WDhqTmFQRzI2dlQycXlYZ1J2Uk9R?=
+ =?utf-8?B?R1R1L0t5Y1RMeE0xa1poY0ZiaG5HK2FyLzIyL2ZJSlpYSmlaQXhNWmJySlRp?=
+ =?utf-8?B?TldvTGRBdno5RC9JaWMwRjBSQjZjTHJ0bTNLTEhWdURVaFo3RjA4c2JCd0Ir?=
+ =?utf-8?B?OStOMk9YbkZjWUNJcUVnL05VandZbU9GY3hQc0NZYTZmSW1FdmVoYmdqZitK?=
+ =?utf-8?B?OGNRZjBNMGhQcE5MZjZ1VVZDalVGNEF0NU84RVNFNzhUS3Zac3NscGFYRkJl?=
+ =?utf-8?B?WnZaZy9iZXNHZUtuZEtld2F1ZmQ3bStkK1FEVzJ5K3J2VVZnVWJ5TUdNa1N4?=
+ =?utf-8?B?UnB3QjJ0alBRL2p4eThlRStLODlEemNMNlRpMkNVenJjdk1BM0RtbHpVeEJn?=
+ =?utf-8?B?UjVDbWEvOTFRMmNiZVAydEdiV0JRTUlZQ3VPYXB5VEFvcFZuSWlTZFIrN24r?=
+ =?utf-8?B?VkpMbjZ5V0VTQzhHL2E1RlM5RW52QitBSGlYRytoZ2srM21iZkMvM2JwMGRC?=
+ =?utf-8?B?ejluQmFSTWVMNXA5K1l0cERwUzFiRkthVHZ1Z3BlaFpxMXJFWmo2ZzE2Zk9y?=
+ =?utf-8?B?YzBvRkpGQlVMd1lnVmRsYXlQbDdrNEpGNzMwTFk3RnpmUkY3c0dnekJzbHN4?=
+ =?utf-8?B?Sk9NNUtKWDFmbFBQNm1lNktpa2lmbmxoeVZSRkdoNXBhMlp1Z2hVeW1RYUlQ?=
+ =?utf-8?B?UnhWdHNZMXBDVGVueVJybDdTZkc2a3JUT3c4Y2RMTlhhbWFuRENMSERvclhM?=
+ =?utf-8?B?NmRKNjRpbG9WaVU4bkVpd3FOVXRET0hpa1J5M01EV1ViQllUN2dqb1dQYWpp?=
+ =?utf-8?B?QW1peUprZVR2ejBFZUVpczk1bk5seHU2eHdKTkNZUEFMTldYcWc0WW1kVlZF?=
+ =?utf-8?B?NlY1SC84Rnpqb1RJUzEvUlBjTWFVSG5BZkN6MEFnMGlKRkxFMk9IYksvWURr?=
+ =?utf-8?B?RXhPM1BSOFAyY2dFNGYrY24rcTFoRmNTWEorNXBETlJJRFN4d3V0bDJnOXR6?=
+ =?utf-8?B?U1JvRDhNNkdTNzAwbUxrRkRCa1A4cjBGWXkzdUFhMUd0eEFSby9DSEYrMXB4?=
+ =?utf-8?B?M1l5TzdFOTRZdEdNQ2dlaSt1US93OW1rMXQyM0UrNWtFVGkzd09oQmZUUTZW?=
+ =?utf-8?B?aWVYZGJDWWRobTJsQ2I4NVBwdUVlODc5OVptMjJxMWxJL0tRNC9NanBqdWhV?=
+ =?utf-8?B?VWNoUWJ2cktJdUlaenNZZTIvcWF3UU0wcEtlY2hkT1dQUnQ4VngzQ2tFODVW?=
+ =?utf-8?B?ZzhlbElpWnN4eFVMS0dqZ3d3dUE2bGw3M0VoOW14ZG1nbGtYMzBiaXFpWm0v?=
+ =?utf-8?B?Vm51YzhScUZhTnJUMEp5R0xaUnN3RE1aTHBWMHhoRlRoTnNGL0Jtc0FJWS8y?=
+ =?utf-8?B?WldNOHB1dkdhdFBoRjZjLzZIbytBVkJmVDB6a2ZsWTJhSFRPS1NvYjJIZzBj?=
+ =?utf-8?B?WTI3WlkrZktaTDFlZ3NYS2ppa1NNVko5UnRwcjk3N2ZqNy9zZi9sZThxcGox?=
+ =?utf-8?B?dzFpUlhlVUxCZmhjaGt3ODU3NzJzWHJhTUpIRDNYUjBVWHA0K0wxZ2w4UjBJ?=
+ =?utf-8?B?bUR1UTJ3T2M2SWUwRG5ZbDJnbDhKV3RSSGZYNjJkSExZWHBNMFl5dzlqQWpE?=
+ =?utf-8?B?TGUwNTlMRnJWVmJlNUxqbjhqbG5aUERlbkNYbHlCQnBsclZjc0RGVXFVNlRU?=
+ =?utf-8?B?VnNOL2swYzVXdXVxMThpVFBxNXZ6M0dxcDBnTHRITE0vS3Z1Y1IwbHBIWGI1?=
+ =?utf-8?B?Q0d1RllIV1FFVkdTQzBKbTZXNHB1c0pXRFZ4RjNQbEFFamVZUWZib08vdWRH?=
+ =?utf-8?B?SVZwL3lhU25uY1hOWGo5T1BiQzMxWFprOUQ3Z1RsS1h1NHcwUkxDVFBYclIx?=
+ =?utf-8?B?WGc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A94C3199BC6AF94D8ED335508D4356BA@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <CA+QYu4qw6LecuxwAESLBvzEpj9Uv4LobX0rofDgVk_3YHjY7Fw@mail.gmail.com>
- <0051a5c0-aa9f-423e-bba3-6d5732402692@huaweicloud.com>
-In-Reply-To: <0051a5c0-aa9f-423e-bba3-6d5732402692@huaweicloud.com>
-From:   Song Liu <song@kernel.org>
-Date:   Wed, 27 Jul 2022 20:54:16 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW63ms5bULxcyQroLcRABxwx=6Q0ps189S1AH5jizyzZNA@mail.gmail.com>
-Message-ID: <CAPhsuW63ms5bULxcyQroLcRABxwx=6Q0ps189S1AH5jizyzZNA@mail.gmail.com>
-Subject: Re: [aarch64] pc : ftrace_set_filter_ip+0x24/0xa0 - lr : bpf_trampoline_update.constprop.0+0x428/0x4a0
-To:     Xu Kuohai <xukuohai@huaweicloud.com>
-Cc:     Bruno Goncalves <bgoncalv@redhat.com>,
-        CKI Project <cki-project@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3651.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3b30e1df-3939-49ef-02c3-08da7059a3ac
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jul 2022 05:25:52.6393
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: piuw9uHRYCPqUEYSzvmA26nhL935uuPG6g1V0FD1XERWN0hDI1zlaYgVSJfKLZET
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR15MB1129
+X-Proofpoint-GUID: v4Q_yuBzGJV7G91MxmOItsZCBoKP4YbJ
+X-Proofpoint-ORIG-GUID: v4Q_yuBzGJV7G91MxmOItsZCBoKP4YbJ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-07-27_08,2022-07-27_01,2022-06-22_01
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 27, 2022 at 8:18 PM Xu Kuohai <xukuohai@huaweicloud.com> wrote:
->
-> On 7/27/2022 6:40 PM, Bruno Goncalves wrote:
-> > Hello,
-> >
-> > Recently we started to hit the following panic when testing the
-> > net-next tree on aarch64. The first commit that we hit this is
-> > "b3fce974d423".
-> >
-> > [   44.517109] audit: type=1334 audit(1658859870.268:59): prog-id=19 op=LOAD
-> > [   44.622031] Unable to handle kernel NULL pointer dereference at
-> > virtual address 0000000000000010
-> > [   44.624321] Mem abort info:
-> > [   44.625049]   ESR = 0x0000000096000004
-> > [   44.625935]   EC = 0x25: DABT (current EL), IL = 32 bits
-> > [   44.627182]   SET = 0, FnV = 0
-> > [   44.627930]   EA = 0, S1PTW = 0
-> > [   44.628684]   FSC = 0x04: level 0 translation fault
-> > [   44.629788] Data abort info:
-> > [   44.630474]   ISV = 0, ISS = 0x00000004
-> > [   44.631362]   CM = 0, WnR = 0
-> > [   44.632041] user pgtable: 4k pages, 48-bit VAs, pgdp=0000000100ab5000
-> > [   44.633494] [0000000000000010] pgd=0000000000000000, p4d=0000000000000000
-> > [   44.635202] Internal error: Oops: 96000004 [#1] SMP
-> > [   44.636452] Modules linked in: xfs crct10dif_ce ghash_ce virtio_blk
-> > virtio_console virtio_mmio qemu_fw_cfg
-> > [   44.638713] CPU: 2 PID: 1 Comm: systemd Not tainted 5.19.0-rc7 #1
-> > [   44.640164] Hardware name: QEMU KVM Virtual Machine, BIOS 0.0.0 02/06/2015
-> > [   44.641799] pstate: 00400005 (nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> > [   44.643404] pc : ftrace_set_filter_ip+0x24/0xa0
-> > [   44.644659] lr : bpf_trampoline_update.constprop.0+0x428/0x4a0
-> > [   44.646118] sp : ffff80000803b9f0
-> > [   44.646950] x29: ffff80000803b9f0 x28: ffff0b5d80364400 x27: ffff80000803bb48
-> > [   44.648721] x26: ffff8000085ad000 x25: ffff0b5d809d2400 x24: 0000000000000000
-> > [   44.650493] x23: 00000000ffffffed x22: ffff0b5dd7ea0900 x21: 0000000000000000
-> > [   44.652279] x20: 0000000000000000 x19: 0000000000000000 x18: ffffffffffffffff
-> > [   44.654067] x17: 0000000000000000 x16: 0000000000000000 x15: ffffffffffffffff
-> > [   44.655787] x14: ffff0b5d809d2498 x13: ffff0b5d809d2432 x12: 0000000005f5e100
-> > [   44.657535] x11: abcc77118461cefd x10: 000000000000005f x9 : ffffa7219cb5b190
-> > [   44.659254] x8 : ffffa7219c8e0000 x7 : 0000000000000000 x6 : ffffa7219db075e0
-> > [   44.661066] x5 : ffffa7219d3130e0 x4 : ffffa7219cab9da0 x3 : 0000000000000000
-> > [   44.662837] x2 : 0000000000000000 x1 : ffffa7219cb7a5c0 x0 : 0000000000000000
-> > [   44.664675] Call trace:
-> > [   44.665274]  ftrace_set_filter_ip+0x24/0xa0
-> > [   44.666327]  bpf_trampoline_update.constprop.0+0x428/0x4a0
-> > [   44.667696]  __bpf_trampoline_link_prog+0xcc/0x1c0
-> > [   44.668834]  bpf_trampoline_link_prog+0x40/0x64
-> > [   44.669919]  bpf_tracing_prog_attach+0x120/0x490
-> > [   44.671011]  link_create+0xe0/0x2b0
-> > [   44.671869]  __sys_bpf+0x484/0xd30
-> > [   44.672706]  __arm64_sys_bpf+0x30/0x40
-> > [   44.673678]  invoke_syscall+0x78/0x100
-> > [   44.674623]  el0_svc_common.constprop.0+0x4c/0xf4
-> > [   44.675783]  do_el0_svc+0x38/0x4c
-> > [   44.676624]  el0_svc+0x34/0x100
-> > [   44.677429]  el0t_64_sync_handler+0x11c/0x150
-> > [   44.678532]  el0t_64_sync+0x190/0x194
-> > [   44.679439] Code: 2a0203f4 f90013f5 2a0303f5 f9001fe1 (f9400800)
-> > [   44.680959] ---[ end trace 0000000000000000 ]---
-> > [   44.682111] Kernel panic - not syncing: Oops: Fatal exception
-> > [   44.683488] SMP: stopping secondary CPUs
-> > [   44.684551] Kernel Offset: 0x2721948e0000 from 0xffff800008000000
-> > [   44.686095] PHYS_OFFSET: 0xfffff4a380000000
-> > [   44.687144] CPU features: 0x010,00022811,19001080
-> > [   44.688308] Memory Limit: none
-> > [   44.689082] ---[ end Kernel panic - not syncing: Oops: Fatal exception ]---
-> >
-> > more logs:
-> > https://s3.us-east-1.amazonaws.com/arr-cki-prod-datawarehouse-public/datawarehouse-public/2022/07/26/redhat:597047279/build_aarch64_redhat:597047279_aarch64/tests/1/results_0001/console.log/console.log
-> >
-> > https://datawarehouse.cki-project.org/kcidb/tests/4529120
-> >
-> > CKI issue tracker: https://datawarehouse.cki-project.org/issue/1434
-> >
-
-Thanks for the report. I assume the build doesn't have
-CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS.Does the tracker have
-a link to the config file?
-
->
-> Hello,
->
-> It's caused by a NULL tr->fops passed to ftrace_set_filter_ip:
->
-> if (tr->func.ftrace_managed) {
->          ftrace_set_filter_ip(tr->fops, (unsigned long)ip, 0, 0);
->          ret = register_ftrace_direct_multi(tr->fops, (long)new_addr);
-> }
->
-> Could you test it with the following patch?
->
-> --- a/kernel/bpf/trampoline.c
-> +++ b/kernel/bpf/trampoline.c
-> @@ -255,8 +255,15 @@ static int register_fentry(struct bpf_trampoline *tr, void *new_addr)
->                  return -ENOENT;
->
->          if (tr->func.ftrace_managed) {
-> -               ftrace_set_filter_ip(tr->fops, (unsigned long)ip, 0, 0);
-> -               ret = register_ftrace_direct_multi(tr->fops,(long)new_addr);
-> +               if (tr->fops)
-> +                       ret = ftrace_set_filter_ip(tr->fops, (unsigned long)ip,
-> +                                                  0, 0);
-> +               else
-> +                       ret = -ENOTSUPP;
-> +
-> +               if (!ret)
-> +                       ret = register_ftrace_direct_multi(tr->fops,
-> +                                                          (long)new_addr);
->          } else {
->                  ret = bpf_arch_text_poke(ip, BPF_MOD_CALL, NULL, new_addr);
->          }
->
-> Thanks.
-
-The fix looks good to me. Thanks!
-Acked-by: Song Liu <songliubraving@fb.com>
-
-Song
+T24gV2VkLCAyMDIyLTA3LTI3IGF0IDEwOjE5ICswMjAwLCBLdW1hciBLYXJ0aWtleWEgRHdpdmVk
+aSB3cm90ZToNCj4gT24gV2VkLCAyNyBKdWwgMjAyMiBhdCAwOTowMSwgS3VpLUZlbmcgTGVlIDxr
+dWlmZW5nQGZiLmNvbT4gd3JvdGU6DQo+ID4gDQo+ID4gT24gVHVlLCAyMDIyLTA3LTI2IGF0IDE0
+OjEzICswMjAwLCBKaXJpIE9sc2Egd3JvdGU6DQo+ID4gPiBPbiBNb24sIEp1bCAyNSwgMjAyMiBh
+dCAxMDoxNzoxMVBNIC0wNzAwLCBLdWktRmVuZyBMZWUgd3JvdGU6DQo+ID4gPiA+IEFsbG93IGNy
+ZWF0aW5nIGFuIGl0ZXJhdG9yIHRoYXQgbG9vcHMgdGhyb3VnaCByZXNvdXJjZXMgb2Ygb25lDQo+
+ID4gPiA+IHRhc2svdGhyZWFkLg0KPiA+ID4gPiANCj4gPiA+ID4gUGVvcGxlIGNvdWxkIG9ubHkg
+Y3JlYXRlIGl0ZXJhdG9ycyB0byBsb29wIHRocm91Z2ggYWxsDQo+ID4gPiA+IHJlc291cmNlcyBv
+Zg0KPiA+ID4gPiBmaWxlcywgdm1hLCBhbmQgdGFza3MgaW4gdGhlIHN5c3RlbSwgZXZlbiB0aG91
+Z2ggdGhleSB3ZXJlDQo+ID4gPiA+IGludGVyZXN0ZWQNCj4gPiA+ID4gaW4gb25seSB0aGUgcmVz
+b3VyY2VzIG9mIGEgc3BlY2lmaWMgdGFzayBvciBwcm9jZXNzLsKgIFBhc3NpbmcNCj4gPiA+ID4g
+dGhlDQo+ID4gPiA+IGFkZGl0aW9uYWwgcGFyYW1ldGVycywgcGVvcGxlIGNhbiBub3cgY3JlYXRl
+IGFuIGl0ZXJhdG9yIHRvIGdvDQo+ID4gPiA+IHRocm91Z2ggYWxsIHJlc291cmNlcyBvciBvbmx5
+IHRoZSByZXNvdXJjZXMgb2YgYSB0YXNrLg0KPiA+ID4gPiANCj4gPiA+ID4gU2lnbmVkLW9mZi1i
+eTogS3VpLUZlbmcgTGVlIDxrdWlmZW5nQGZiLmNvbT4NCj4gPiA+ID4gLS0tDQo+ID4gPiA+IMKg
+aW5jbHVkZS9saW51eC9icGYuaMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgIDQgKysNCj4gPiA+
+ID4gwqBpbmNsdWRlL3VhcGkvbGludXgvYnBmLmjCoMKgwqDCoMKgwqAgfCAyMyArKysrKysrKysr
+DQo+ID4gPiA+IMKga2VybmVsL2JwZi90YXNrX2l0ZXIuY8KgwqDCoMKgwqDCoMKgwqAgfCA4MSAr
+KysrKysrKysrKysrKysrKysrKysrKysrLQ0KPiA+ID4gPiAtLS0tDQo+ID4gPiA+IC0tLS0NCj4g
+PiA+ID4gwqB0b29scy9pbmNsdWRlL3VhcGkvbGludXgvYnBmLmggfCAyMyArKysrKysrKysrDQo+
+ID4gPiA+IMKgNCBmaWxlcyBjaGFuZ2VkLCAxMDkgaW5zZXJ0aW9ucygrKSwgMjIgZGVsZXRpb25z
+KC0pDQo+ID4gPiA+IA0KPiA+ID4gPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9icGYuaCBi
+L2luY2x1ZGUvbGludXgvYnBmLmgNCj4gPiA+ID4gaW5kZXggMTE5NTAwMjkyODRmLi5jOGQxNjQ0
+MDRlMjAgMTAwNjQ0DQo+ID4gPiA+IC0tLSBhL2luY2x1ZGUvbGludXgvYnBmLmgNCj4gPiA+ID4g
+KysrIGIvaW5jbHVkZS9saW51eC9icGYuaA0KPiA+ID4gPiBAQCAtMTcxOCw2ICsxNzE4LDEwIEBA
+IGludCBicGZfb2JqX2dldF91c2VyKGNvbnN0IGNoYXIgX191c2VyDQo+ID4gPiA+ICpwYXRobmFt
+ZSwgaW50IGZsYWdzKTsNCj4gPiA+ID4gDQo+ID4gPiA+IMKgc3RydWN0IGJwZl9pdGVyX2F1eF9p
+bmZvIHsNCj4gPiA+ID4gwqDCoMKgwqDCoMKgwqAgc3RydWN0IGJwZl9tYXAgKm1hcDsNCj4gPiA+
+ID4gK8KgwqDCoMKgwqDCoCBzdHJ1Y3Qgew0KPiA+ID4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCBfX3UzMsKgwqAgdGlkOw0KPiA+ID4gDQo+ID4gPiBzaG91bGQgYmUganVzdCB1MzIg
+Pw0KPiA+IA0KPiA+IE9yLCBzaG91bGQgY2hhbmdlIHRoZSBmb2xsb3dpbmcgJ3R5cGUnIHRvIF9f
+dTg/DQo+IA0KPiBXb3VsZCBpdCBiZSBiZXR0ZXIgdG8gdXNlIGEgcGlkZmQgaW5zdGVhZCBvZiBh
+IHRpZCBoZXJlPyBVbnNldCBwaWRmZA0KPiB3b3VsZCBtZWFuIGdvaW5nIG92ZXIgYWxsIHRhc2tz
+LCBhbmQgYW55IGZkID4gMCBpbXBsaWVzIGF0dGFjaGluZyB0bw0KPiBhDQo+IHNwZWNpZmljIHRh
+c2sgKGFzIGlzIHRoZSBjb252ZW50aW9uIGluIEJQRiBsYW5kKS4gTW9zdCBvZiB0aGUgbmV3DQo+
+IFVBUElzIHdvcmtpbmcgb24gcHJvY2Vzc2VzIGFyZSB1c2luZyBwaWRmZHMgKHRvIHdvcmsgd2l0
+aCBhIHN0YWJsZQ0KPiBoYW5kbGUgaW5zdGVhZCBvZiBhIHJldXNhYmxlIElEKS4NCj4gVGhlIGl0
+ZXJhdG9yIHRha2luZyBhbiBmZCBhbHNvIGdpdmVzIGFuIG9wcG9ydHVuaXR5IHRvIEJQRiBMU01z
+IHRvDQo+IGF0dGFjaCBwZXJtaXNzaW9ucy9wb2xpY2llcyB0byBpdCAob25jZSB3ZSBoYXZlIGEg
+ZmlsZSBsb2NhbCBzdG9yYWdlDQo+IG1hcCkgZS5nLiB3aGV0aGVyIGNyZWF0aW5nIGEgdGFzayBp
+dGVyYXRvciBmb3IgdGhhdCBzcGVjaWZpYyBwaWRmZA0KPiBpbnN0YW5jZSAoYmFja2VkIGJ5IHRo
+ZSBzdHJ1Y3QgZmlsZSkgd291bGQgYmUgYWxsb3dlZCBvciBub3QuDQo+IFlvdSBhcmUgdXNpbmcg
+Z2V0cGlkIGluIHRoZSBzZWxmdGVzdCBhbmQga2VlcGluZyB0cmFjayBvZiBsYXN0X3RnaWQNCj4g
+aW4NCj4gdGhlIGl0ZXJhdG9yLCBzbyBJIGd1ZXNzIHlvdSBkb24ndCBldmVuIG5lZWQgdG8gZXh0
+ZW5kIHBpZGZkX29wZW4gdG8NCj4gd29yayBvbiB0aHJlYWQgSURzIHJpZ2h0IG5vdyBmb3IgeW91
+ciB1c2UgY2FzZSAoYW5kIGZkdGFibGUgYW5kIG1tDQo+IGFyZQ0KPiBzaGFyZWQgZm9yIFBPU0lY
+IHRocmVhZHMgYW55d2F5LCBzbyBmb3IgdGhvc2UgdHdvIGl0IHdvbid0IG1ha2UgYQ0KPiBkaWZm
+ZXJlbmNlKS4NCj4gDQo+IFdoYXQgaXMgeW91ciBvcGluaW9uPw0KDQpEbyB5b3UgbWVhbiByZW1v
+dmVkIGJvdGggdGlkIGFuZCB0eXBlLCBhbmQgcmVwbGFjZSB0aGVtIHdpdGggYSBwaWRmZD8NCldl
+IGNhbiBkbyB0aGF0IGluIHVhcGksIHN0cnVjdCBicGZfbGlua19pbmZvLiAgQnV0LCB0aGUgaW50
+ZXJhbCB0eXBlcywNCmV4LiBicGZfaXRlcl9hdXhfaW5mbywgc3RpbGwgbmVlZCB0byB1c2UgdGlk
+IG9yIHN0cnVjdCBmaWxlIHRvIGF2b2lkDQpnZXR0aW5nIGZpbGUgZnJvbSB0aGUgcGVyLXByb2Nl
+c3MgZmR0YWJsZS4gIElzIHRoYXQgd2hhdCB5b3UgbWVhbj8NCg0K
