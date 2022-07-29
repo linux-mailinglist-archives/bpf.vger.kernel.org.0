@@ -2,66 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15A4F5856F1
-	for <lists+bpf@lfdr.de>; Sat, 30 Jul 2022 00:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6828A58572F
+	for <lists+bpf@lfdr.de>; Sat, 30 Jul 2022 01:10:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239540AbiG2WtK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Jul 2022 18:49:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40768 "EHLO
+        id S229683AbiG2XKC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 29 Jul 2022 19:10:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239518AbiG2WtH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Jul 2022 18:49:07 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 271B683F35
-        for <bpf@vger.kernel.org>; Fri, 29 Jul 2022 15:49:06 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id e12so2102489qkl.2
-        for <bpf@vger.kernel.org>; Fri, 29 Jul 2022 15:49:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9PHjNC5/MEnwibKTgt66y4B8QHXUMZZ8F7xsD/e5vT8=;
-        b=h5vuR3bE9y86uyovtmo+yMSm360p7Vfl+m/49LSoNn6riovGoQldvmVXCT7DMuEA+M
-         IxaHvlgpbrKuzx2KC81SJNf6wnUn5SDvFoEVVZT+mYB5ZvGliFP4XHH3cVBpAOFOrFrD
-         +HlGmxArwenxwq3vCI6EkqRmtcu2JHfggoQLhMQ02F5fv3eM0WUfr+OfmUW1HqKpsrEW
-         u47RbtzG0G/WyvxcmydCuApqYXvYxUxf5TSTMstpcA5rC6TrJdpHCoTL0AWFsqU2NE4N
-         cH2+YQIN6Zw7OPF2QJ+/zrQj2UvKU33Fw8i1un0LliOyo9O6HWW/q8wJcqATrNPgKyrY
-         JcCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9PHjNC5/MEnwibKTgt66y4B8QHXUMZZ8F7xsD/e5vT8=;
-        b=tQdk8CYo73GiXuDSJ9V3DViy+5rlm5dVlrTAVDKfxqz149gFyjYeRbIvckWSYCZEl8
-         bM1XMutqRTz4az7nvKM1G4fDrT/r5siDSqSDs8fMkRseWzC/go7o/gakJiABu5mqiKhf
-         y+EHgC1I36q67+GPSi/H3jRNF/6f1NAAK3G+wQ3uLsxhqCpyonXVnErk4ozULkNafBMT
-         hK52Mbrtt4jIOcbs6m6JouOGFmpjsKwOmbpwdvv5rhOTHYz8iqKKOWZkP0m08Tks5k+v
-         qQFwlgs/gtjU3quGf6Toigi7S6seoPgF6sL0lApdWbRJqfPcdmaBfoHvk3wHny2rWYwv
-         GEpQ==
-X-Gm-Message-State: AJIora/jdlcHYTXmt2DP+AjO+BEQiyQCRrZszTJjUVzsYz8ZMOXtePd4
-        GbtNEmbA5UgWt8A4zj9lM8ElU52Kj8QD7ZABgvL5AQ==
-X-Google-Smtp-Source: AGRyM1uerL6gJ1ZFWTeneCIa8WSwBLci00q0rhU6N0/noz4neg/CzP0j0yv4ifJ1Sjs4tut+nLC5fMrK/suZn65SJSU=
-X-Received: by 2002:a05:620a:f0e:b0:6b5:48f6:91da with SMTP id
- v14-20020a05620a0f0e00b006b548f691damr4443449qkl.446.1659134945084; Fri, 29
- Jul 2022 15:49:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <CA+khW7iknv0hcn-D2tRt8HFseUnyTV7BwpohQHtEyctbA1k27w@mail.gmail.com>
- <20220729224254.1798-1-liulin063@gmail.com>
-In-Reply-To: <20220729224254.1798-1-liulin063@gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Fri, 29 Jul 2022 15:48:54 -0700
-Message-ID: <CA+khW7iLeSZPweZEz_tfP+LRtpvZbfvstZWgUbNrEDK-Ntxyxw@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: Do more tight ALU bounds tracking
-To:     Youlin Li <liulin063@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, kpsingh@kernel.org, sdf@google.com, jolsa@kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+        with ESMTP id S231311AbiG2XKB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Jul 2022 19:10:01 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFE6189E9F
+        for <bpf@vger.kernel.org>; Fri, 29 Jul 2022 16:10:00 -0700 (PDT)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26TLPm7W007494
+        for <bpf@vger.kernel.org>; Fri, 29 Jul 2022 16:10:00 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hmqeurfjk-15
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 29 Jul 2022 16:10:00 -0700
+Received: from twshared5413.23.frc3.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28; Fri, 29 Jul 2022 16:09:57 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id 496621CFD8B4E; Fri, 29 Jul 2022 16:09:48 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <davem@davemloft.net>
+CC:     <kuba@kernel.org>, <pabeni@redhat.com>, <edumazet@google.com>,
+        <daniel@iogearbox.net>, <ast@kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: pull-request: bpf-next 2022-07-29
+Date:   Fri, 29 Jul 2022 16:09:48 -0700
+Message-ID: <20220729230948.1313527-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-FB-Internal: Safe
+X-Proofpoint-GUID: j22YTCZVsSqP96ssgzdF4hjMc4VLUJKS
+X-Proofpoint-ORIG-GUID: j22YTCZVsSqP96ssgzdF4hjMc4VLUJKS
+Content-Transfer-Encoding: 8BIT
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-07-29_21,2022-07-28_02,2022-06-22_01
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,45 +56,143 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 29, 2022 at 3:43 PM Youlin Li <liulin063@gmail.com> wrote:
->
-> In adjust_scalar_min_max_vals(), let 32bit bounds learn from 64bit bounds
-> to get more tight bounds tracking. Similar operation can be found in
-> reg_set_min_max().
->
-> Also, we can now fold reg_bounds_sync() into zext_32_to_64().
->
-> Before:
->
->     func#0 @0
->     0: R1=ctx(off=0,imm=0) R10=fp0
->     0: (b7) r0 = 0                        ; R0_w=0
->     1: (b7) r1 = 0                        ; R1_w=0
->     2: (87) r1 = -r1                      ; R1_w=scalar()
->     3: (87) r1 = -r1                      ; R1_w=scalar()
->     4: (c7) r1 s>>= 63                    ; R1_w=scalar(smin=-1,smax=0)
->     5: (07) r1 += 2                       ; R1_w=scalar(umin=1,umax=2,var_off=(0x0; 0xffffffff))  <--- [*]
->     6: (95) exit
->
-> It can be seen that even if the 64bit bounds is clear here, the 32bit
-> bounds is still in the state of 'UNKNOWN'.
->
-> After:
->
->     func#0 @0
->     0: R1=ctx(off=0,imm=0) R10=fp0
->     0: (b7) r0 = 0                        ; R0_w=0
->     1: (b7) r1 = 0                        ; R1_w=0
->     2: (87) r1 = -r1                      ; R1_w=scalar()
->     3: (87) r1 = -r1                      ; R1_w=scalar()
->     4: (c7) r1 s>>= 63                    ; R1_w=scalar(smin=-1,smax=0)
->     5: (07) r1 += 2                       ; R1_w=scalar(umin=1,umax=2,var_off=(0x0; 0x3))  <--- [*]
->     6: (95) exit
->
-> Signed-off-by: Youlin Li <liulin063@gmail.com>
+Hi David, hi Jakub, hi Paolo, hi Eric,
 
-Looks good to me. Thanks Youlin.
+The following pull-request contains BPF updates for your *net-next* tree.
 
-Acked-by: Hao Luo <haoluo@google.com>
+We've added 22 non-merge commits during the last 4 day(s) which contain
+a total of 27 files changed, 763 insertions(+), 120 deletions(-).
 
-Hao
+The main changes are:
+
+1) Fixes to allow setting any source IP with bpf_skb_set_tunnel_key() helper,
+   from Paul Chaignon.
+
+2) Fix for bpf_xdp_pointer() helper when doing sanity checking, from Joanne Koong.
+
+3) Fix for XDP frame length calculation, from Lorenzo Bianconi.
+
+4) Libbpf BPF_KSYSCALL docs improvements and fixes to selftests to accommodate
+   s390x quirks with socketcall(), from Ilya Leoshkevich.
+
+5) Allow/denylist and CI configs additions to selftests/bpf to improve BPF CI,
+   from Daniel Müller.
+
+6) BPF trampoline + ftrace follow up fixes, from Song Liu and Xu Kuohai.
+
+7) Fix allocation warnings in netdevsim, from Jakub Kicinski.
+
+8) bpf_obj_get_opts() libbpf API allowing to provide file flags, from Joe Burton.
+
+9) vsnprintf usage fix in bpf_snprintf_btf(), from Fedor Tokarev.
+
+10) Various small fixes and clean ups, from Daniel Müller, Rongguang Wei,
+    Jörn-Thorben Hinz, Yang Li.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Abaci Robot, Alan Maguire, Andrii Nakryiko, Bruno Goncalves, Jiri Olsa, 
+Lorenzo Bianconi, Martin KaFai Lau, Mykola Lysenko, Nikolay Aleksandrov, 
+Quentin Monnet, Song Liu, Yonghong Song
+
+----------------------------------------------------------------
+
+The following changes since commit 8e4372e617854a16d4ec549ba821aad78fd748a6:
+
+  Merge branch 'add-mtu-change-with-stmmac-interface-running' (2022-07-25 19:39:36 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git 
+
+for you to fetch changes up to 14250fa4839b3a48c979e7faaf4cbcce619d02bd:
+
+  bpf: Remove unneeded semicolon (2022-07-29 15:34:11 -0700)
+
+----------------------------------------------------------------
+Daniel Müller (5):
+      selftests/bpf: Sort configuration
+      selftests/bpf: Copy over libbpf configs
+      selftests/bpf: Adjust vmtest.sh to use local kernel configuration
+      libbpf: Support PPC in arch_specific_syscall_pfx
+      selftests/bpf: Bump internal send_signal/send_signal_tracepoint timeout
+
+Fedor Tokarev (1):
+      bpf: btf: Fix vsnprintf return value check
+
+Ilya Leoshkevich (2):
+      libbpf: Extend BPF_KSYSCALL documentation
+      selftests/bpf: Attach to socketcall() in test_probe_user
+
+Jakub Kicinski (1):
+      netdevsim: Avoid allocation warnings triggered from user space
+
+Joanne Koong (1):
+      bpf: Fix bpf_xdp_pointer return pointer
+
+Joe Burton (1):
+      libbpf: Add bpf_obj_get_opts()
+
+Jörn-Thorben Hinz (1):
+      bpftool: Don't try to return value from void function in skeleton
+
+Lorenzo Bianconi (1):
+      bpf, devmap: Compute proper xdp_frame len redirecting frames
+
+Paul Chaignon (5):
+      ip_tunnels: Add new flow flags field to ip_tunnel_key
+      vxlan: Use ip_tunnel_key flow flags in route lookups
+      geneve: Use ip_tunnel_key flow flags in route lookups
+      bpf: Set flow flag to allow any source IP in bpf_tunnel_key
+      selftests/bpf: Don't assign outer source IP to host
+
+Rongguang Wei (1):
+      bpftool: Replace sizeof(arr)/sizeof(arr[0]) with ARRAY_SIZE macro
+
+Song Liu (1):
+      bpf: Fix test_progs -j error with fentry/fexit tests
+
+Xu Kuohai (1):
+      bpf: Fix NULL pointer dereference when registering bpf trampoline
+
+Yang Li (1):
+      bpf: Remove unneeded semicolon
+
+ drivers/net/geneve.c                               |   1 +
+ drivers/net/netdevsim/bpf.c                        |   8 +-
+ drivers/net/vxlan/vxlan_core.c                     |  11 +-
+ include/net/ip_tunnels.h                           |   1 +
+ kernel/bpf/btf.c                                   |   2 +-
+ kernel/bpf/devmap.c                                |   4 +-
+ kernel/bpf/trampoline.c                            |   9 +-
+ net/core/filter.c                                  |   3 +-
+ tools/bpf/bpftool/gen.c                            |   2 +-
+ tools/bpf/bpftool/prog.c                           |   2 +-
+ tools/lib/bpf/bpf.c                                |   9 +
+ tools/lib/bpf/bpf.h                                |  11 +
+ tools/lib/bpf/bpf_tracing.h                        |  15 +-
+ tools/lib/bpf/libbpf.c                             |  11 +-
+ tools/lib/bpf/libbpf.map                           |   1 +
+ tools/testing/selftests/bpf/DENYLIST               |   6 +
+ tools/testing/selftests/bpf/DENYLIST.s390x         |  67 ++++++
+ tools/testing/selftests/bpf/config                 |  99 ++++----
+ tools/testing/selftests/bpf/config.s390x           | 147 ++++++++++++
+ tools/testing/selftests/bpf/config.x86_64          | 251 +++++++++++++++++++++
+ .../testing/selftests/bpf/prog_tests/probe_user.c  |  35 ++-
+ .../testing/selftests/bpf/prog_tests/send_signal.c |   2 +-
+ .../testing/selftests/bpf/prog_tests/test_tunnel.c |  17 +-
+ .../testing/selftests/bpf/progs/test_probe_user.c  |  29 ++-
+ .../testing/selftests/bpf/progs/test_tunnel_kern.c |  80 ++++++-
+ tools/testing/selftests/bpf/test_progs.c           |   7 +-
+ tools/testing/selftests/bpf/vmtest.sh              |  53 +++--
+ 27 files changed, 763 insertions(+), 120 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/DENYLIST
+ create mode 100644 tools/testing/selftests/bpf/DENYLIST.s390x
+ create mode 100644 tools/testing/selftests/bpf/config.s390x
+ create mode 100644 tools/testing/selftests/bpf/config.x86_64
