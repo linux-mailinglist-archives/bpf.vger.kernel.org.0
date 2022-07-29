@@ -2,56 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BC1F585134
-	for <lists+bpf@lfdr.de>; Fri, 29 Jul 2022 15:58:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45FA55851B1
+	for <lists+bpf@lfdr.de>; Fri, 29 Jul 2022 16:40:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236547AbiG2N6v (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Jul 2022 09:58:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42386 "EHLO
+        id S236546AbiG2Oj6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Jul 2022 10:39:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236617AbiG2N6u (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Jul 2022 09:58:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8EC8971718
-        for <bpf@vger.kernel.org>; Fri, 29 Jul 2022 06:58:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1659103127;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KJ/dTGRKY5+i0pAGUfeAsafS5YcWMs3vOgIRft+7hTg=;
-        b=XoCFkWaQHTg8IXwUrD0wVC+Nbdg+NaiexdE2he2ZXc95+H1tctDeSxZkIurpvGs5HuCUJt
-        kcVscIXNgHJ/Xf1SNgYWOsShUJFzA2cZ1dPjTtQytwaQd5Gzrm91WefVxmbOYGA7F7/oA3
-        ty1aUvrvT+pLUx9yVsoDdYCFqP9V9ts=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-265-89npC9uvNP2GoxXiZhxWDg-1; Fri, 29 Jul 2022 09:58:46 -0400
-X-MC-Unique: 89npC9uvNP2GoxXiZhxWDg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 009AA8039A3;
-        Fri, 29 Jul 2022 13:58:46 +0000 (UTC)
-Received: from T590 (ovpn-8-18.pek2.redhat.com [10.72.8.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 156D22166B2D;
-        Fri, 29 Jul 2022 13:58:41 +0000 (UTC)
-Date:   Fri, 29 Jul 2022 21:58:36 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Zhang Wensheng <zhangwensheng@huaweicloud.com>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        yukuai3@huawei.com
-Subject: Re: [PATCH -next] [RFC] block: fix null-deref in percpu_ref_put
-Message-ID: <YuPnjI8oHx4dO3nr@T590>
-References: <20220729105036.2202791-1-zhangwensheng@huaweicloud.com>
+        with ESMTP id S236678AbiG2Ojz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Jul 2022 10:39:55 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44EEE7D79E
+        for <bpf@vger.kernel.org>; Fri, 29 Jul 2022 07:39:54 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id u3so4860063lfl.3
+        for <bpf@vger.kernel.org>; Fri, 29 Jul 2022 07:39:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=F7SbNKAQEXlk/zqoOCWnsvCdh1856YCA2pJnaiCNLaY=;
+        b=by4vn/ioO/ZYreTWKKiOC27EsxMcq5Stve7Ecw7Ep4YhOvP53udzXxiKLH4TWPU/ot
+         bc5uJ2dXIchNscIwNFf5joUYl/6TUMvpEKCgsJM5GGfuZgqN3nUVJUQBty61yIXkiaMh
+         Xf3vbQ/YyNViW4U4/KwldCj/wpegJlNpYVPRo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=F7SbNKAQEXlk/zqoOCWnsvCdh1856YCA2pJnaiCNLaY=;
+        b=OKUkHzNUgaJObXWqwcAhC491mX9nlccet8f4rqTmL0M34Ibnm2EGLHgCG+daHIlIJP
+         VDbp0U6CbseDDlI+RaIBfHUoyL2v9Rm77ATx2ur2/Bw75hcu1tXXmg2X43aXHqrv6vFK
+         HPqNILaFLcSffnF+xfi3KfcepAqraJ98g7+5NjXwdNp73stl3Qcp4czXu1i6gOMmfeOQ
+         okR/0RO/mwigHBhPeG7xvrmis04FWo/J3MbCP6Td+9a8DaXhWBtX88N0VMitwWRSu8Bh
+         HngYhP4VDIWySvMZwYh0PGLiOY2Y8jFgnvJIe6v+81wie0TP8qqAqmq0+GPa6mMbsN6s
+         jEkw==
+X-Gm-Message-State: AJIora8HuvcjJssTq1ETLJHbVmS5M2SVKYBlJdxMLMSBA7OZ4wP02dzb
+        nSyXznboxpvL49K1iuMVyrEDtg==
+X-Google-Smtp-Source: AGRyM1tGNH8skAl+WrpNcdyvHtJiBDQEkkAZ2EV0aqkk5wYtqpD3c45DFhXemRwnkDTv31x7T/1nig==
+X-Received: by 2002:a05:6512:150b:b0:48a:6f2a:a6dc with SMTP id bq11-20020a056512150b00b0048a6f2aa6dcmr1321400lfb.563.1659105592472;
+        Fri, 29 Jul 2022 07:39:52 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:110f:4304:1700:d82f:ac98:7032:476e])
+        by smtp.gmail.com with ESMTPSA id i2-20020a196d02000000b0048ab15f2262sm678380lfc.96.2022.07.29.07.39.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Jul 2022 07:39:52 -0700 (PDT)
+From:   Marek Majkowski <marek@cloudflare.com>
+To:     netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, kernel-team@cloudflare.com,
+        ivan@cloudflare.com, edumazet@google.com, davem@davemloft.net,
+        kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, brakmo@fb.com,
+        Marek Majkowski <marek@cloudflare.com>
+Subject: [PATCH net-next v2 0/2] RTAX_INITRWND should be able to bring the rcv_ssthresh above 64KiB
+Date:   Fri, 29 Jul 2022 16:39:33 +0200
+Message-Id: <20220729143935.2432743-1-marek@cloudflare.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220729105036.2202791-1-zhangwensheng@huaweicloud.com>
-X-Scanned-By: MIMEDefang 2.78 on 10.11.54.6
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,57 +66,72 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 29, 2022 at 06:50:36PM +0800, Zhang Wensheng wrote:
-> From: Zhang Wensheng <zhangwensheng5@huawei.com>
-> 
-> A problem was find in stable 5.10 and the root cause of it like below.
-> 
-> In the use of q_usage_counter of request_queue, blk_cleanup_queue using
-> "wait_event(q->mq_freeze_wq, percpu_ref_is_zero(&q->q_usage_counter))"
-> to wait q_usage_counter becoming zero. however, if the q_usage_counter
-> becoming zero quickly, and percpu_ref_exit will execute and ref->data
-> will be freed, maybe another process will cause a null-defef problem
-> like below:
-> 
-> 	CPU0                             CPU1
-> blk_cleanup_queue
->  blk_freeze_queue
->   blk_mq_freeze_queue_wait
-> 				scsi_end_request
-> 				 percpu_ref_get
-> 				 ...
-> 				 percpu_ref_put
-> 				  atomic_long_sub_and_test
->   percpu_ref_exit
->    ref->data -> NULL
->    				   ref->data->release(ref) -> null-deref
-> 
+Among many route options we support initrwnd/RTAX_INITRWND path
+attribute:
 
-Looks it is one generic issue in percpu_ref, I think the following patch
-should address it.
+ $ ip route change local 127.0.0.0/8 dev lo initrwnd 1024
 
+This sets the initial receive window size (in packets). However, it's
+not very useful in practice. For smaller buffers (<128KiB) it can be
+used to bring the initial receive window down, but it's hard to
+imagine when this is useful. The same effect can be achieved with
+TCP_WINDOW_CLAMP / RTAX_WINDOW option.
 
-diff --git a/include/linux/percpu-refcount.h b/include/linux/percpu-refcount.h
-index d73a1c08c3e3..07308bd36d83 100644
---- a/include/linux/percpu-refcount.h
-+++ b/include/linux/percpu-refcount.h
-@@ -331,8 +331,12 @@ static inline void percpu_ref_put_many(struct percpu_ref *ref, unsigned long nr)
- 
- 	if (__ref_is_percpu(ref, &percpu_count))
- 		this_cpu_sub(*percpu_count, nr);
--	else if (unlikely(atomic_long_sub_and_test(nr, &ref->data->count)))
--		ref->data->release(ref);
-+	else {
-+		percpu_ref_func_t	*release = ref->data->release;
-+
-+		if (unlikely(atomic_long_sub_and_test(nr, &ref->data->count)))
-+			release(ref);
-+	}
- 
- 	rcu_read_unlock();
- }
+For larger buffers (>128KiB) the initial receive window is usually
+limited by rcv_ssthresh, which starts at 64KiB. The initrwnd option
+can't bring the window above it, which limits its usefulness
 
+This patch changes that. Now, by setting RTAX_INITRWND path attribute
+we bring up the initial rcv_ssthresh in line with the initrwnd
+value. This allows to increase the initial advertised receive window
+instantly, after first TCP RTT, above 64KiB.
 
-Thanks,
-Ming
+With this change, the administrator can configure a route (or skops
+ebpf program) where the receive window is opened much faster than
+usual. This is useful on big BDP connections - large latency, high
+throughput - where it takes much time to fully open the receive
+window, due to the usual rcv_ssthresh cap.
+
+However, this feature should be used with caution. It only makes sense
+to employ it in limited circumstances:
+
+ * When using high-bandwidth TCP transfers over big-latency links.
+ * When the truesize of the flow/NIC is sensible and predictable.
+ * When the application is ready to send a lot of data immediately
+   after flow is established.
+ * When the sender has configured larger than usual `initcwnd`.
+ * When optimizing for every possible RTT.
+
+This patch is related to previous work by Ivan Babrou:
+
+  https://lore.kernel.org/bpf/CAA93jw5+LjKLcCaNr5wJGPrXhbjvLhts8hqpKPFx7JeWG4g0AA@mail.gmail.com/T/
+
+Please note that due to TCP wscale semantics, the TCP sender will need
+to receive first ACK to be informed of the large opened receive
+window. That is: the large window is advertised only in the first ACK
+from the peer. When the TCP client has large window, it is advertised
+in the third-packet (ACK) of the handshake. When the TCP sever has
+large window, it is advertised only in the first ACK after some data
+has been received.
+
+Syncookie support will be provided in subsequent patchet, since it
+requires more changes.
+
+*** BLURB HERE ***
+
+Marek Majkowski (2):
+  RTAX_INITRWND should be able to set the rcv_ssthresh above 64KiB
+  Tests for RTAX_INITRWND
+
+ include/linux/tcp.h                           |   1 +
+ net/ipv4/tcp_minisocks.c                      |   9 +-
+ net/ipv4/tcp_output.c                         |   7 +-
+ .../selftests/bpf/prog_tests/tcp_initrwnd.c   | 420 ++++++++++++++++++
+ .../selftests/bpf/progs/test_tcp_initrwnd.c   |  30 ++
+ 5 files changed, 463 insertions(+), 4 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/tcp_initrwnd.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_tcp_initrwnd.c
+
+-- 
+2.25.1
 
