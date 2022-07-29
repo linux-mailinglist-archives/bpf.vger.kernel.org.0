@@ -2,133 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B1C9584A30
-	for <lists+bpf@lfdr.de>; Fri, 29 Jul 2022 05:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB16E584A46
+	for <lists+bpf@lfdr.de>; Fri, 29 Jul 2022 05:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233912AbiG2DbJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Jul 2022 23:31:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36212 "EHLO
+        id S231570AbiG2DnE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Jul 2022 23:43:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230469AbiG2DbH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Jul 2022 23:31:07 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8E091A068;
-        Thu, 28 Jul 2022 20:31:06 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id 15-20020a17090a098f00b001f305b453feso7171590pjo.1;
-        Thu, 28 Jul 2022 20:31:06 -0700 (PDT)
+        with ESMTP id S230483AbiG2DnC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Jul 2022 23:43:02 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B1761132
+        for <bpf@vger.kernel.org>; Thu, 28 Jul 2022 20:43:01 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id bp15so6331868ejb.6
+        for <bpf@vger.kernel.org>; Thu, 28 Jul 2022 20:43:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
+        h=mime-version:reply-to:from:date:message-id:subject:to
          :content-transfer-encoding;
-        bh=MxegPP+9eR+tqzB10w9UP7S+nttT/U9nMghcqqAW8Tc=;
-        b=ZuMiPGRjx2u0bWndPQFq3JctNqzjgqzlOstPsDNefFEgX6OnLCGcnYvMLQBvj8/C1v
-         A1YSL7zuNfm3bo5s63cvTnQOW2vqXQ2QaMV2D43USVKnaLc7ORTIC8pbeECuH6nnpsex
-         nk8635x9d7X9W2NgQWvEY5YGg9O1lBvEXHnoVcIq4+OTf44oSFE+N7REcC0F/v5OoiqD
-         Q+D1e1GT0Li23yQevFmaRuQJN4BSQfMFGSJoDP8FSOC5Hf888FTaBHdXIs5lPrXaFeh6
-         mA3h10NXUMjxbDxPj3sycbndDrkWJLubedxSBDzh8YI0SvwH+2m/tMJ0vALy9LXrMPCW
-         vrKg==
+        bh=vI4HCnffdrDmImtIppEl6KGtFFJV3X77yRmXj9S8m88=;
+        b=crfcQGVlbusoW1fCPqxOGCLfxfdDImyQU9nC4kCMFKQVi1NLXs5SBn/hCrwfsHRaGo
+         xY3TYAkWaVT7cEmNIR45TELcUDPNRCAV7jBrGokijzmZPIDB5knuRC/yp+61qmVLXO68
+         ++N/hBL62mwYPwHNs61rmEidVknBWnZ/Bg5fq554QkdqNIBYLOQq+xrhe45+8jfFerCV
+         wKf5FEBLL+vRCA+C8+IzFahNBRGN1frvpAtZpribt4kQob8CUFSkvpCz3hQLUtwJMmtt
+         rvECtQglBRA4Rg4j8IHw0KPY99og9K5SOhIwHmJNuxqQLtyLOScUm0r9MX2NWPLUc2xj
+         9nkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MxegPP+9eR+tqzB10w9UP7S+nttT/U9nMghcqqAW8Tc=;
-        b=gOAyHKsEiVQXxXaPNdVCsbsVWZ9iQzNbi+RDWMvhOjvvPNvzfFCy9Gve4wWbOGwvWO
-         4fVQIpH1ljK3ga+iZqa0akKj45Ecttni8K+t1gr3I7uMnvmf2ToPnZt1RWh6mZZw91p5
-         E68MwThajdxmy0Hw0qb5mgHgILQ9bMPN1hh1io5ap71N3CMaljfmnG9yhjddilwiaqLM
-         hJYDI1WqAd4xWnWcaB6vX8zVzV8Ews3AwLp3qmqpYoAVABbbQdkC0G151f2B4eLjvm6D
-         PaVENRn023E6h/LI/Dqf7ExNgCF8QFNeKjEcv7pXitCs6Mmp7RUEtFBhw51xJ89EmonV
-         4xdg==
-X-Gm-Message-State: ACgBeo0t95UoGoGdcZ5VkCC0BWuN2admLNIqPpDsqRaqtZZgGXpQTS7n
-        eOFidsprAx7xdrUAzn4rQZ0=
-X-Google-Smtp-Source: AA6agR6xpVkKhZ8x+zIF0whAenQYv9jNsIv574ISUsr7qXKwexYM5ARUhkEF/k9AHq0yD20N/VrGTA==
-X-Received: by 2002:a17:90b:1e4f:b0:1f2:b482:bab9 with SMTP id pi15-20020a17090b1e4f00b001f2b482bab9mr1909636pjb.9.1659065466045;
-        Thu, 28 Jul 2022 20:31:06 -0700 (PDT)
-Received: from Kk1r0a.localdomain ([220.158.232.156])
-        by smtp.gmail.com with ESMTPSA id l1-20020a170902ec0100b0016d338160d6sm2145840pld.155.2022.07.28.20.30.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jul 2022 20:31:05 -0700 (PDT)
-From:   Kuee K1r0a <liulin063@gmail.com>
-To:     ast@kernel.org
-Cc:     daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kuee K1r0a <liulin063@gmail.com>
-Subject: [PATCH bpf] bpf: Do more tight ALU bounds tracking
-Date:   Fri, 29 Jul 2022 11:30:33 +0800
-Message-Id: <20220729033033.3022-1-liulin063@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=vI4HCnffdrDmImtIppEl6KGtFFJV3X77yRmXj9S8m88=;
+        b=sVjOBdXje9yhtGddmLtUJWap8tPy6eaYfu3bjmZzSsZM2JalPzmSCrT7KGxxmhgisb
+         XpUshkO70OGLtHNnpZiEsX9zJvKwXmSkX4nOTFzcnNynCjUO/nqmbT4FGs1nGEIn05ZJ
+         cqimKOag7Yfx4Z5vUWE2+WteYYGSS/DttlaiNQEIa1RkMh+pK74lTDa75Yzm2UfaZM0o
+         dF+9Uj03C9Ect4rXuXRYDn5HRammnDdDbxK+XvHu+kOktEt7pJTNkNrbAuvb2o30EuB6
+         kKUqxYsp4vDtyp1nze5usrnD72dH9hpvK3mvx4ZIRMn5v1Y/y3uAHgAE9Xqr7IqrwrId
+         IMIw==
+X-Gm-Message-State: AJIora+7Ot1E9yq2XaC2WiGLUUEbTZwZ3iYzVdHK1thp4GGXBIARSPg3
+        eLYaAMmy7DY7cmUvPec/Zt+wIjpwYOtRZ/cCfEY=
+X-Google-Smtp-Source: AGRyM1sam4LP2zAfOlHqYl4kPghNVe0rGOmU53Ym7vMTAFhAN3ABfvkZbDC/7zyEXC5q3T6C82uXzxadW6Wp6IsPgpI=
+X-Received: by 2002:a17:906:9b8e:b0:72f:c504:461 with SMTP id
+ dd14-20020a1709069b8e00b0072fc5040461mr1442246ejc.655.1659066180113; Thu, 28
+ Jul 2022 20:43:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Received: by 2002:a98:b5c1:0:b0:179:8016:7acd with HTTP; Thu, 28 Jul 2022
+ 20:42:57 -0700 (PDT)
+Reply-To: joseph_anya39@yahoo.com
+From:   DR JOSEPH ANYA <jigarpatel808080@gmail.com>
+Date:   Thu, 28 Jul 2022 15:42:57 -1200
+Message-ID: <CAOeg64R_s-vU+-SJHn3PCSuwfLyO62tPiAjp=03QFC74hDTTnw@mail.gmail.com>
+Subject: =?UTF-8?B?55u45LqS55CG6Kej?=
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+X-Spam-Status: Yes, score=7.4 required=5.0 tests=BAYES_95,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2a00:1450:4864:20:0:0:0:62a listed in]
+        [list.dnswl.org]
+        *  3.0 BAYES_95 BODY: Bayes spam probability is 95 to 99%
+        *      [score: 0.9824]
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [jigarpatel808080[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [joseph_anya39[at]yahoo.com]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [jigarpatel808080[at]gmail.com]
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  3.1 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-32bit bounds and 64bit bounds are updated separately in
-adjust_scalar_min_max_vals() currently, let them learn from each other to
-get more tight bounds tracking. Similar operation can be found in
-reg_set_min_max().
-
-Before:
-
-    func#0 @0
-    0: R1=ctx(off=0,imm=0) R10=fp0
-    0: (b7) r0 = 0                        ; R0_w=0
-    1: (b7) r1 = 0                        ; R1_w=0
-    2: (87) r1 = -r1                      ; R1_w=scalar()
-    3: (87) r1 = -r1                      ; R1_w=scalar()
-    4: (c7) r1 s>>= 63                    ; R1_w=scalar(smin=-1,smax=0)
-    5: (07) r1 += 2                       ; R1_w=scalar(umin=1,umax=2,var_off=(0x0; 0xffffffff))  <--- [*]
-    6: (95) exit
-
-It can be seen that even if the 64bit bounds is clear here, the 32bit
-bounds is still in the state of 'UNKNOWN'.
-
-After:
-
-    func#0 @0
-    0: R1=ctx(off=0,imm=0) R10=fp0
-    0: (b7) r0 = 0                        ; R0_w=0
-    1: (b7) r1 = 0                        ; R1_w=0
-    2: (87) r1 = -r1                      ; R1_w=scalar()
-    3: (87) r1 = -r1                      ; R1_w=scalar()
-    4: (c7) r1 s>>= 63                    ; R1_w=scalar(smin=-1,smax=0)
-    5: (07) r1 += 2                       ; R1_w=scalar(umin=1,umax=2,var_off=(0x0; 0x3))  <--- [*]
-    6: (95) exit
-
-Fixes: 3f50f132d840 ("bpf: Verifier, do explicit ALU32 bounds tracking")
-Signed-off-by: Kuee K1r0a <liulin063@gmail.com>
----
- kernel/bpf/verifier.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 0efbac0fd126..888aa50fbdc0 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -8934,10 +8934,13 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
- 		break;
- 	}
- 
--	/* ALU32 ops are zero extended into 64bit register */
--	if (alu32)
-+	if (alu32) {
-+		/* ALU32 ops are zero extended into 64bit register */
- 		zext_32_to_64(dst_reg);
--	reg_bounds_sync(dst_reg);
-+		__reg_combine_32_into_64(dst_reg);
-+	} else {
-+		__reg_combine_64_into_32(dst_reg);
-+	}
- 	return 0;
- }
- 
--- 
-2.25.1
-
+LS0gDQrkurLniLHnmoTmnIvlj4vvvIwNCuaIkeaYryBKb3NlcGggQW55YSDlhYjnlJ/vvIzlrqHo
+rqHlkozkvJrorqHnu4/nkIYNCuS6muihjOmTtuihjOWcqOilv+mdnuOAgiDmiJHmraPlnKjogZTn
+s7vmgqjkuI7miJHlkIjkvZwNCuWPquWPluWbnu+8iDM5NTAg5LiH576O5YWD77yJ55qE5oC75ZKM
+44CCIOWtmOasvueUsQ0K5oiR5Lus5bey5pWF55qE5a6i5oi35LmU5rK744CCIOWwj+eahOOAgiDm
+iJHlu7rorq7ljaDmgLvmlbDnmoQgNDAlDQrmiJDlip/mlLbliLDotYTph5HlkI7nu5nkvaDph5Hp
+op3vvIzmiJHlkJHkvaDkv53or4ENCuivpeS6pOaYk+aYryAxMDAlIOaXoOmjjumZqeS4lOWQiOaz
+leeahOOAgiDmiJHlr7vmsYLkvaDnmoQNCuWQiOS8meimgeaxgui/meS6m+i1hOmHkeS7pemBv+WF
+jeiiq+ayoeaUtg0K6ZO26KGM44CCIOWbnuWkjeaIkeS6huino+abtOWkmuivpuaDheOAgg0KDQrm
+iJHmnJ/lvoXmgqjnmoTntKfmgKXlm57lpI0NCg0K5q2k6Ie044CCDQrljZrlo6vjgIIg57qm55Gf
+5aSrwrflronpm4XjgIINCg==
