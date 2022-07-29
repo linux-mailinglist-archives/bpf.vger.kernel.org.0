@@ -2,54 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 862C158547E
-	for <lists+bpf@lfdr.de>; Fri, 29 Jul 2022 19:30:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43630585499
+	for <lists+bpf@lfdr.de>; Fri, 29 Jul 2022 19:36:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237880AbiG2RaB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Jul 2022 13:30:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45358 "EHLO
+        id S238278AbiG2Rgo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Jul 2022 13:36:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236725AbiG2RaA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Jul 2022 13:30:00 -0400
-Received: from mailrelay.tu-berlin.de (mailrelay.tu-berlin.de [130.149.7.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 903FB2ED64
-        for <bpf@vger.kernel.org>; Fri, 29 Jul 2022 10:29:58 -0700 (PDT)
-Received: from SPMA-01.tubit.win.tu-berlin.de (localhost.localdomain [127.0.0.1])
-        by localhost (Email Security Appliance) with SMTP id 1B39C7DEAC6_2E41915B;
-        Fri, 29 Jul 2022 17:29:57 +0000 (GMT)
-Received: from mail.tu-berlin.de (postcard.tu-berlin.de [141.23.12.142])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "exchange.tu-berlin.de", Issuer "DFN-Verein Global Issuing CA" (verified OK))
-        by SPMA-01.tubit.win.tu-berlin.de (Sophos Email Appliance) with ESMTPS id 637B57DEAC2_2E41914F;
-        Fri, 29 Jul 2022 17:29:56 +0000 (GMT)
-Message-ID: <a636d985cea1d3975062390724fdd015b0934763.camel@mailbox.tu-berlin.de>
-Subject: Re: [RFC PATCH bpf-next] bpftool: Mark generated skeleton headers
- as system headers
-From:   =?ISO-8859-1?Q?J=F6rn-Thorben?= Hinz <jthinz@mailbox.tu-berlin.de>
-To:     Quentin Monnet <quentin@isovalent.com>, Yonghong Song <yhs@fb.com>,
-        <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S234901AbiG2Rgk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Jul 2022 13:36:40 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA8CE7393B
+        for <bpf@vger.kernel.org>; Fri, 29 Jul 2022 10:36:37 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id e5so3819602qts.1
+        for <bpf@vger.kernel.org>; Fri, 29 Jul 2022 10:36:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eVMmcjZdpoYkfAfcG11mdG+DM47ViTyLlI/HvC0NVqs=;
+        b=hrGaOCnwS06hYR6y6b1XfcUUnaDFW93EvujdUgaK7Ka1oAslOsoQxI+GrU6NDwkrRm
+         Bm/Oa2nrMa2QlCUPi2rwlMhDvM8LHxk5y1toex4ln/EOra9ZW1TWaPfT1p6nfAKF7wcZ
+         IX8ksKXqVjWZSFtHzQsp2hpzy/rIRcdeCVIS5QR14U5wN7UB7U+RZZNnXplmxBT6VUeP
+         Pa/gyCFzbAhxsgL3w5kZQndZItJQAj/WT20YCzfZhILOuqdyL1iLoHIq/vN2o1DWFIp5
+         Qa6OP91GDqftH6j4Ker359n7z+m5ajtPmTPun+GXwGgSaQSpMyuCsG36Xyoo/lchRbqW
+         BBhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eVMmcjZdpoYkfAfcG11mdG+DM47ViTyLlI/HvC0NVqs=;
+        b=JFkVNs8NJTwX6QPNdb2GqkYOH1AhA7BSiWlGfFW7zpr2GcAXLaFqvB6xAHpdgG+Kod
+         g2Q/XVf7oAMHUwABypKxw5D8dV0jABlwHwjqskoBmYVCcog/z7hAbEeOp5oAtBKdpFq2
+         TFjfeZ1rDo4qx0NWyHv4a9ij7DkXNxpqC+j2bAu0jrrvKVp2vxelXGe+1PxKxY6ZA+Mz
+         LdNJ611tFPMoRFqBcHdR95wtidyGHI9Hx1Yo2MBRxAicbDH9XoiuHJu/Aq4mWkBlXZKQ
+         cdGOFi2YAXafT3E9KRy17zt/S/KdYUCzuW8hxGPkhORU43jUVJqqdNb38HCjXctVH000
+         3ing==
+X-Gm-Message-State: AJIora/0U29NJ8P3O7ncKbjMq36iBG5pyvYzxHIvx7wbu4r+F6BjbpOx
+        i5A8VQqkS3A099HL9aNZOO7nV1qINdqeQ69OUA9I6w==
+X-Google-Smtp-Source: AGRyM1slVTpXxL9pYoNgjLsi+9/WTrO27xA4AXRHV33/su5TUnhjLAt00WIq4cQj8BLtAOuBlwj1Vlry8zAIla3id60=
+X-Received: by 2002:a05:622a:190c:b0:31e:fc7b:e017 with SMTP id
+ w12-20020a05622a190c00b0031efc7be017mr4420798qtc.168.1659116196846; Fri, 29
+ Jul 2022 10:36:36 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220722174829.3422466-1-yosryahmed@google.com>
+ <20220722174829.3422466-9-yosryahmed@google.com> <CAEf4BzZQwMeJ5xfzEWWRcTf1Hick862x2qSZ3O0DX47Q++2-4w@mail.gmail.com>
+In-Reply-To: <CAEf4BzZQwMeJ5xfzEWWRcTf1Hick862x2qSZ3O0DX47Q++2-4w@mail.gmail.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Fri, 29 Jul 2022 10:36:26 -0700
+Message-ID: <CA+khW7ikSexgprouA6tpbWfsT2fDdgEd7OfXMF4qhDWkxgxf1g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 8/8] bpf: add a selftest for cgroup
+ hierarchical stats collection
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        "Martin KaFai Lau" <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
         KP Singh <kpsingh@kernel.org>,
-        "Stanislav Fomichev" <sdf@google.com>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>
-Date:   Fri, 29 Jul 2022 19:29:54 +0200
-In-Reply-To: <31673eca-ec46-35b2-9172-4156d985b621@isovalent.com>
-References: <20220728165644.660530-1-jthinz@mailbox.tu-berlin.de>
-         <7d4af6b4-f4da-f004-48a1-e408d8615ee8@fb.com>
-         <31673eca-ec46-35b2-9172-4156d985b621@isovalent.com>
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SASI-RCODE: 200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=campus.tu-berlin.de; h=message-id:subject:from:to:cc:date:in-reply-to:references:content-type:mime-version:content-transfer-encoding; s=dkim-tub; bh=4/lQ4Wfk45J1KW7FNdxYSTQDTvdGGYYyXOXOxa30lVI=; b=jNRcBGm5jXwEyL8NQBQpLl//hwvwFlsx6XJc3t0e5TgjE3D+vRFvfN0k2TIsVwIReynG7qpKQfWeOjbamvUurKFO1o2YeW/pj7T/KrY+7zDtTUaOgv69D8zXU5jJccPWxYCwYffVT5654s4JYiRL82bPMN1Jpj5UNFPIieTjGx0=
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,70 +88,249 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 2022-07-29 at 11:12 +0100, Quentin Monnet wrote:
-> On 28/07/2022 19:25, Yonghong Song wrote:
-> > 
-> > 
-> > On 7/28/22 9:56 AM, Jörn-Thorben Hinz wrote:
-> > > Hi,
-> > > 
-> > > after compiling a skeleton-using program with -pedantic once and
-> > > stumbling across a tiniest incorrectness in skeletons with it[1],
-> > > I was
-> > > debating whether it makes sense to suppress warnings from
-> > > skeleton
-> > > headers.
-> > > 
-> > > Happy about comments about this. This change might be too
-> > > suppressive
-> > > towards warnings and maybe ignoring only -Woverlength-strings
-> > > directly
-> > > in OBJ_NAME__elf_bytes() be a better idea. Or keep all warnings
-> > > from
-> > > skeletons available as-is to have them more visible in and around
-> > > bpftool’s development.
-> > 
-> > This is my 2cents. As you mentioned, skeleton file are per program
-> > and not in system header file directory. I would like not to mark
-> > these header files as system files. Since different program will
-> > generate different skeleton headers, suppressing warnings
-> > will prevent from catching potential issues in certain cases.
-> > 
-> > Also, since the warning is triggered by extra user flags like -
-> > pedantic
-> > when building bpftool, user can also add -Wno-overlength-strings
-> > in the extra user flags.
-> 
-> I agree with Yonghong, I don't think it's a good idea to mark the
-> whole
-> file as a system header. I would maybe consider the other solution
-> where
-> we can disable the warning locally in the skeleton, just around
-> OBJ_NAME__elf_bytes() as you suggested.
-That was my first attempt. But, after a second look, -Wsign-conversion,
--Wcast-qual, and -Wreserved-id-macro would also show a warning for a
-skeleton header. That’s why I switched to the `GCC system_header`.
-Ignoring these four warnings for the whole header would also be an
-alternative. Doing that for all of them only at the place where they
-are triggered might become less pretty.
+Hi Andrii,
 
-Please also see my longer answer to Yonghong.
+Thanks for taking a look.
 
-> Although I suppose we'd need
-> several pragmas if we want to silence it for GCC and clang, for
-> example?
-> It looks like your patch was only addressing GCC?
-It is only explicitly mentioned for `GCC diagnostic …` in [1], but
-clang seems to support the `GCC system_header` for compatibility, too.
-So both are covered by using GCC’s pragmas here.
+On Thu, Jul 28, 2022 at 3:40 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Fri, Jul 22, 2022 at 10:49 AM Yosry Ahmed <yosryahmed@google.com> wrote:
+> >
+[...]
+> > +
+> > +#define CGROUP_PATH(p, n) {.path = #p"/"#n, .name = #n}
+> > +
+> > +static struct {
+> > +       const char *path, *name;
+> > +       unsigned long long id;
+> > +       int fd;
+> > +} cgroups[] = {
+> > +       CGROUP_PATH(/, test),
+> > +       CGROUP_PATH(/test, child1),
+> > +       CGROUP_PATH(/test, child2),
+> > +       CGROUP_PATH(/test/child1, child1_1),
+> > +       CGROUP_PATH(/test/child1, child1_2),
+> > +       CGROUP_PATH(/test/child2, child2_1),
+> > +       CGROUP_PATH(/test/child2, child2_2),
+>
+> nit: why are these arguments not explicit string literals?...
+> CGROUP_PATH("/test/child1", "child1_1") explicitly shows that those
+> values are used as strings
+>
 
-[1]
-https://clang.llvm.org/docs/UsersManual.html#controlling-diagnostics-via-pragmas
-(also the following subsection)
+No particular reason I think. String literals are good. Will fix in v6.
 
-> 
-> Thanks for the contribution,
-Thanks for your reply!
+> > +};
+> > +
+> > +#define N_CGROUPS ARRAY_SIZE(cgroups)
+> > +#define N_NON_LEAF_CGROUPS 3
+> > +
+> > +int root_cgroup_fd;
+> > +bool mounted_bpffs;
+> > +
+>
+> static?
+>
 
-> Quentin
+Yeah, we were careless about 'static' or 'inline'. I am going to go
+over the code and mark functions/vars 'static' properly.
 
+> > +static int read_from_file(const char *path, char *buf, size_t size)
+> > +{
+> > +       int fd, len;
+> > +
+> > +       fd = open(path, O_RDONLY);
+> > +       if (fd < 0) {
+> > +               log_err("Open %s", path);
+> > +               return 1;
+> > +       }
+> > +       len = read(fd, buf, size);
+> > +       if (len < 0)
+> > +               log_err("Read %s", path);
+> > +       else
+> > +               buf[len] = 0;
+> > +       close(fd);
+> > +       return len < 0;
+> > +}
+> > +
+>
+> [...]
+>
+> > +       /* Also dump stats for root */
+> > +       err = setup_cgroup_iter(obj, root_cgroup_fd, CG_ROOT_NAME);
+> > +       if (!ASSERT_OK(err, "setup_cgroup_iter"))
+> > +               return err;
+> > +
+> > +       /* Attach rstat flusher */
+> > +       link = bpf_program__attach(obj->progs.vmscan_flush);
+> > +       if (!ASSERT_OK_PTR(link, "attach rstat"))
+> > +               return libbpf_get_error(link);
+>
+> this is dangerous, because ASSERT_OK_PTR might overwrite errno by the
+> time we get to libbpf_get_error() call. link is NULL and
+> libbpf_get_error() extracts error from errno. It's best to just return
+> fixed error code here, or otherwise you'd need to remember err before
+> ASSERT_OK_PTR() call.
+>
+
+Ack. We can just return a fixed error code here. Thanks.
+
+> > +       obj->links.vmscan_flush = link;
+> > +
+> > +       /* Attach tracing programs that will calculate vmscan delays */
+> > +       link = bpf_program__attach(obj->progs.vmscan_start);
+> > +       if (!ASSERT_OK_PTR(obj, "attach raw_tracepoint"))
+> > +               return libbpf_get_error(link);
+> > +       obj->links.vmscan_start = link;
+> > +
+> > +       link = bpf_program__attach(obj->progs.vmscan_end);
+> > +       if (!ASSERT_OK_PTR(obj, "attach raw_tracepoint"))
+> > +               return libbpf_get_error(link);
+> > +       obj->links.vmscan_end = link;
+> > +
+> > +       *skel = obj;
+> > +       return 0;
+> > +}
+> > +
+> > +void destroy_progs(struct cgroup_hierarchical_stats *skel)
+>
+> static?
+>
+
+Ack.
+
+> > +{
+> > +       char path[128];
+> > +       int i;
+> > +
+> > +       for (i = 0; i < N_CGROUPS; i++) {
+> > +               /* Delete files in bpffs that cgroup_iters are pinned in */
+> > +               snprintf(path, 128, "%s%s", BPFFS_VMSCAN,
+> > +                        cgroups[i].name);
+> > +               ASSERT_OK(remove(path), "remove cgroup_iter pin");
+> > +       }
+> > +
+> > +       /* Delete root file in bpffs */
+> > +       snprintf(path, 128, "%s%s", BPFFS_VMSCAN, CG_ROOT_NAME);
+> > +       ASSERT_OK(remove(path), "remove cgroup_iter root pin");
+> > +       cgroup_hierarchical_stats__destroy(skel);
+> > +}
+> > +
+> > +void test_cgroup_hierarchical_stats(void)
+> > +{
+> > +       struct cgroup_hierarchical_stats *skel = NULL;
+> > +
+> > +       if (setup_hierarchy())
+> > +               goto hierarchy_cleanup;
+> > +       if (setup_progs(&skel))
+> > +               goto cleanup;
+> > +       if (induce_vmscan())
+> > +               goto cleanup;
+> > +       check_vmscan_stats();
+> > +cleanup:
+> > +       destroy_progs(skel);
+> > +hierarchy_cleanup:
+> > +       destroy_hierarchy();
+> > +}
+> > diff --git a/tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c b/tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
+> > new file mode 100644
+> > index 000000000000..85a65a72482e
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
+> > @@ -0,0 +1,239 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/*
+> > + * Functions to manage eBPF programs attached to cgroup subsystems
+> > + *
+> > + * Copyright 2022 Google LLC.
+> > + */
+> > +#include "vmlinux.h"
+> > +#include <bpf/bpf_helpers.h>
+> > +#include <bpf/bpf_tracing.h>
+> > +
+> > +char _license[] SEC("license") = "GPL";
+> > +
+> > +/*
+> > + * Start times are stored per-task, not per-cgroup, as multiple tasks in one
+> > + * cgroup can perform reclain concurrently.
+>
+> typo: reclaim?
+>
+
+Ack. Will fix.
+
+> > + */
+> > +struct {
+> > +       __uint(type, BPF_MAP_TYPE_TASK_STORAGE);
+> > +       __uint(map_flags, BPF_F_NO_PREALLOC);
+> > +       __type(key, int);
+> > +       __type(value, __u64);
+> > +} vmscan_start_time SEC(".maps");
+> > +
+>
+> [...]
+>
+> > +static inline int create_vmscan_percpu_elem(__u64 cg_id, __u64 state)
+> > +{
+> > +       struct vmscan_percpu pcpu_init = {.state = state, .prev = 0};
+> > +       int err;
+> > +
+> > +       err = bpf_map_update_elem(&pcpu_cgroup_vmscan_elapsed, &cg_id,
+> > +                                 &pcpu_init, BPF_NOEXIST);
+> > +       if (err) {
+> > +               bpf_printk("failed to create pcpu entry for cgroup %llu: %d\n"
+> > +                          , cg_id, err);
+> > +               return 1;
+> > +       }
+> > +       return 0;
+> > +}
+> > +
+> > +static inline int create_vmscan_elem(__u64 cg_id, __u64 state, __u64 pending)
+>
+> all those inlines above are not necessary, they don't have to be
+> actually inlined, right?
+>
+
+No. They don't have to. Will fix this.
+
+> > +{
+> > +       struct vmscan init = {.state = state, .pending = pending};
+> > +       int err;
+> > +
+> > +       err = bpf_map_update_elem(&cgroup_vmscan_elapsed, &cg_id,
+> > +                                 &init, BPF_NOEXIST);
+> > +       if (err) {
+> > +               bpf_printk("failed to create entry for cgroup %llu: %d\n"
+> > +                          , cg_id, err);
+> > +               return 1;
+> > +       }
+> > +       return 0;
+> > +}
+> > +
+> > +SEC("tp_btf/mm_vmscan_memcg_reclaim_begin")
+> > +int BPF_PROG(vmscan_start, int order, gfp_t gfp_flags)
+> > +{
+> > +       struct task_struct *task = bpf_get_current_task_btf();
+> > +       __u64 *start_time_ptr;
+> > +
+> > +       start_time_ptr = bpf_task_storage_get(&vmscan_start_time, task, 0,
+> > +                                         BPF_LOCAL_STORAGE_GET_F_CREATE);
+> > +       if (!start_time_ptr) {
+> > +               bpf_printk("error retrieving storage\n");
+>
+> does user-space part read these trace_printk messages? If not, let's
+> remove them from the test
+>
+
+No. I will remove them in v6.
+
+> > +               return 0;
+> > +       }
+> > +
+> > +       *start_time_ptr = bpf_ktime_get_ns();
+> > +       return 0;
+> > +}
+> > +
+>
+> [...]
