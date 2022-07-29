@@ -2,175 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6813C584F3F
-	for <lists+bpf@lfdr.de>; Fri, 29 Jul 2022 12:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 960D9584F5F
+	for <lists+bpf@lfdr.de>; Fri, 29 Jul 2022 13:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232387AbiG2Kya (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Jul 2022 06:54:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49772 "EHLO
+        id S235045AbiG2LKm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Jul 2022 07:10:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230301AbiG2Ky3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Jul 2022 06:54:29 -0400
-X-Greylist: delayed 954 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 29 Jul 2022 03:54:27 PDT
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FC4186899;
-        Fri, 29 Jul 2022 03:54:27 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4LvP954M6qzkk2B;
-        Fri, 29 Jul 2022 18:37:29 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.127.227])
-        by APP3 (Coremail) with SMTP id _Ch0CgB32mmnuONiUgtOBQ--.27701S4;
-        Fri, 29 Jul 2022 18:38:31 +0800 (CST)
-From:   Zhang Wensheng <zhangwensheng@huaweicloud.com>
-To:     axboe@kernel.dk
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, yukuai3@huawei.com,
-        zhangwensheng@huaweicloud.com
-Subject: [PATCH -next] [RFC] block: fix null-deref in percpu_ref_put
-Date:   Fri, 29 Jul 2022 18:50:36 +0800
-Message-Id: <20220729105036.2202791-1-zhangwensheng@huaweicloud.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S235460AbiG2LKm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Jul 2022 07:10:42 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F8C54679
+        for <bpf@vger.kernel.org>; Fri, 29 Jul 2022 04:10:41 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id m13so1627059wrq.6
+        for <bpf@vger.kernel.org>; Fri, 29 Jul 2022 04:10:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc;
+        bh=Giw/1gk04NH25KunnIqIMkXWxed0rc1D0pJw4ex8yC8=;
+        b=PjmTjRTXIhXGjDWixoZB5nIjNwTE+B/OVhQQ2Yc7DYlCDnth2sDTT8d9tu5CFHeWmR
+         5c07QjC2JBaqmNRk92ZwWOEifhLLsE206elBkuygRBPHPNx6ZPijZorJhzb2JX9UsEuQ
+         bkqTlUQ5dDIRJRpFQlHoH6bBkLRJVHt36MhH8HO3SE1VIH9jBSAYg5S7mOlyVZ2oHQ55
+         U9XpniPt5d/EYx4Uczh0GGm2+I6CQmaZiHo9VFtUY24UYGytHfzjAjPMNRBOt6aDRl3Q
+         xxfoLrrAqvTZMpZ71e9McWL0epennp3sFOCKOok4e/jqKYpAUwlrGPX++DmAfMVvxUyQ
+         q9cQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc;
+        bh=Giw/1gk04NH25KunnIqIMkXWxed0rc1D0pJw4ex8yC8=;
+        b=uSQb0P/FDVXIBHpux0bs617VsbWuAclT/qDmZkb9CkaTJ1Sk9TkHnahwJGqX4rhtif
+         DGAKDccWVMFbL+pZlHowyOTlYSwTNq9zFx72w2n/1rTp0c3T33TwgrsTS/97bjZF8piB
+         g/VvSQY2MNaBJ+uHbEEDMbvu0aTUPDCvmDRP8u38AVNcUJDF5dHXyDJpoOzUDAva4JGx
+         I4xYHtEZFoDpMjKAeFeK/q+AeDnzvBVmov5a0tWo+o0klKdk0sefnee91rtEDyK0RD9h
+         6WJzLgPb5sWKIdfgY+rppZzMchlQqwPps9+QIgATNR5HwvsmctVELJ9GUFNiv9FD2xoG
+         /5bQ==
+X-Gm-Message-State: ACgBeo3eDOmbCFjfcqBGxHqnPwyyNPcyXyRtTyCirVuBVochBqMm+zFV
+        D8XhlDjlfau7qHTk8uslcCU=
+X-Google-Smtp-Source: AA6agR7IWLLZCkn7+93KTNjSBMUq3dHEOz0d4nRC0t+5wlCyRuplsL48n4trREfDlzg7fhJZTayqaQ==
+X-Received: by 2002:a5d:5244:0:b0:21d:866e:2409 with SMTP id k4-20020a5d5244000000b0021d866e2409mr2019603wrc.400.1659093039621;
+        Fri, 29 Jul 2022 04:10:39 -0700 (PDT)
+Received: from krava ([193.85.244.190])
+        by smtp.gmail.com with ESMTPSA id be4-20020a05600c1e8400b0039c454067ddsm4330624wmb.15.2022.07.29.04.10.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Jul 2022 04:10:39 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Fri, 29 Jul 2022 13:10:37 +0200
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
+Subject: Re: [RFC PATCH bpf-next 4/7] bpf: x86: Support in-register struct
+ arguments
+Message-ID: <YuPALUYnHcZ1drB5@krava>
+References: <20220726171129.708371-1-yhs@fb.com>
+ <20220726171151.712242-1-yhs@fb.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _Ch0CgB32mmnuONiUgtOBQ--.27701S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxArWDJrW5tFykKw1rCFyfWFg_yoWrZF4UpF
-        WDGF4akw10gr4DWry8Jw47ZasFgw4qkFy3CayfKrWYyF1qgFn2vr18Crs8XF48Cr4kArW5
-        ZrWDWwsIkryUWFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWUuVWrJwAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxG
-        rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4
-        vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IY
-        x2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26c
-        xKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7Cj
-        xVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUZa9-UUUUU=
-X-CM-SenderInfo: x2kd0wpzhq2xhhqjqx5xdzvxpfor3voofrz/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220726171151.712242-1-yhs@fb.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Zhang Wensheng <zhangwensheng5@huawei.com>
+On Tue, Jul 26, 2022 at 10:11:51AM -0700, Yonghong Song wrote:
 
-A problem was find in stable 5.10 and the root cause of it like below.
+SNIP
 
-In the use of q_usage_counter of request_queue, blk_cleanup_queue using
-"wait_event(q->mq_freeze_wq, percpu_ref_is_zero(&q->q_usage_counter))"
-to wait q_usage_counter becoming zero. however, if the q_usage_counter
-becoming zero quickly, and percpu_ref_exit will execute and ref->data
-will be freed, maybe another process will cause a null-defef problem
-like below:
+>  
+> -static void restore_regs(const struct btf_func_model *m, u8 **prog, int nr_args,
+> -			 int regs_off)
+> +static void __save_struct_arg_regs(u8 **prog, int curr_reg_idx, int nr_regs,
+> +				   int struct_val_off, int stack_start_idx)
+>  {
+> -	int i;
+> +	int i, reg_idx;
+> +
+> +	/* Save struct registers to stack.
+> +	 * For example, argument 1 (second argument) size is 16 which occupies two
+> +	 * registers, these two register values will be saved in stack.
+> +	 * mov QWORD PTR [rbp-0x40],rsi
+> +	 * mov QWORD PTR [rbp-0x38],rdx
+> +	 */
+> +	for (i = 0; i < nr_regs; i++) {
+> +		reg_idx = curr_reg_idx + i;
+> +		emit_stx(prog, bytes_to_bpf_size(8),
+> +			 BPF_REG_FP,
+> +			 reg_idx == 5 ? X86_REG_R9 : BPF_REG_1 + reg_idx,
+> +			 -(struct_val_off - stack_start_idx * 8));
+> +		stack_start_idx++;
+> +	}
+> +}
+> +
+> +static void save_regs(const struct btf_func_model *m, u8 **prog, int nr_args,
+> +		      int regs_off, int struct_val_off)
+> +{
+> +	int curr_arg_idx, curr_reg_idx, curr_s_stack_off;
+> +	int s_size, s_arg_idx, s_arg_nregs;
+> +
+> +	curr_arg_idx = curr_reg_idx = curr_s_stack_off = 0;
+> +	for (int i = 0; i < MAX_BPF_FUNC_STRUCT_ARGS; i++) {
+> +		s_size = m->struct_arg_bsize[i];
+> +		if (!s_size)
+> +			return __save_normal_arg_regs(m, prog, curr_arg_idx, nr_args - curr_arg_idx,
+> +						      curr_reg_idx, regs_off);
 
-	CPU0                             CPU1
-blk_cleanup_queue
- blk_freeze_queue
-  blk_mq_freeze_queue_wait
-				scsi_end_request
-				 percpu_ref_get
-				 ...
-				 percpu_ref_put
-				  atomic_long_sub_and_test
-  percpu_ref_exit
-   ref->data -> NULL
-   				   ref->data->release(ref) -> null-deref
+could we just do break in here instead?
 
-Fix it by setting flag(QUEUE_FLAG_USAGE_COUNT_SYNC) to add synchronization
-mechanism, when ref->data->release is called, the flag will be setted,
-and the "wait_event" in blk_mq_freeze_queue_wait must wait flag becoming
-true as well, which will limit percpu_ref_exit to execute ahead of time.
+SNIP
 
-Although the problem was not reproduced in mainline, it may also has
-problem when the passthrough IO which will go directly to
-blk_cleanup_queue and cause the problem as well.
+> +
+> +static void restore_regs(const struct btf_func_model *m, u8 **prog, int nr_args,
+> +			 int regs_off, int struct_val_off)
+> +{
+> +	int curr_arg_idx, curr_reg_idx, curr_s_stack_off;
+> +	int s_size, s_arg_idx, s_arg_nregs;
+> +
+> +	curr_arg_idx = curr_reg_idx = curr_s_stack_off = 0;
+> +	for (int i = 0; i < MAX_BPF_FUNC_STRUCT_ARGS; i++) {
+> +		s_size = m->struct_arg_bsize[i];
+> +		if (!s_size)
+> +			return __restore_normal_arg_regs(m, prog, curr_arg_idx,
+> +							 nr_args - curr_arg_idx,
+> +							 curr_reg_idx, regs_off);
 
-Signed-off-by: Zhang Wensheng <zhangwensheng5@huawei.com>
----
- block/blk-core.c       | 4 +++-
- block/blk-mq.c         | 7 +++++++
- include/linux/blk-mq.h | 1 +
- include/linux/blkdev.h | 2 ++
- 4 files changed, 13 insertions(+), 1 deletion(-)
+same here
 
-diff --git a/block/blk-core.c b/block/blk-core.c
-index 27fb1357ad4b..4b73f46e62ec 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -312,7 +312,8 @@ void blk_cleanup_queue(struct request_queue *q)
- 	 * prevent that blk_mq_run_hw_queues() accesses the hardware queues
- 	 * after draining finished.
- 	 */
--	blk_freeze_queue(q);
-+	blk_freeze_queue_start(q);
-+	blk_mq_freeze_queue_wait_sync(q);
- 
- 	blk_queue_flag_set(QUEUE_FLAG_DEAD, q);
- 
-@@ -403,6 +404,7 @@ static void blk_queue_usage_counter_release(struct percpu_ref *ref)
- 	struct request_queue *q =
- 		container_of(ref, struct request_queue, q_usage_counter);
- 
-+	blk_queue_flag_set(QUEUE_FLAG_USAGE_COUNT_SYNC, q);
- 	wake_up_all(&q->mq_freeze_wq);
- }
- 
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 93d9d60980fb..44e764257511 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -165,6 +165,7 @@ void blk_freeze_queue_start(struct request_queue *q)
- {
- 	mutex_lock(&q->mq_freeze_lock);
- 	if (++q->mq_freeze_depth == 1) {
-+		blk_queue_flag_clear(QUEUE_FLAG_USAGE_COUNT_SYNC, q);
- 		percpu_ref_kill(&q->q_usage_counter);
- 		mutex_unlock(&q->mq_freeze_lock);
- 		if (queue_is_mq(q))
-@@ -175,6 +176,12 @@ void blk_freeze_queue_start(struct request_queue *q)
- }
- EXPORT_SYMBOL_GPL(blk_freeze_queue_start);
- 
-+void blk_mq_freeze_queue_wait_sync(struct request_queue *q)
-+{
-+	wait_event(q->mq_freeze_wq, percpu_ref_is_zero(&q->q_usage_counter) &&
-+			test_bit(QUEUE_FLAG_USAGE_COUNT_SYNC, &q->queue_flags));
-+}
-+
- void blk_mq_freeze_queue_wait(struct request_queue *q)
- {
- 	wait_event(q->mq_freeze_wq, percpu_ref_is_zero(&q->q_usage_counter));
-diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
-index e2d9daf7e8dd..50fd56f85b31 100644
---- a/include/linux/blk-mq.h
-+++ b/include/linux/blk-mq.h
-@@ -868,6 +868,7 @@ void blk_mq_freeze_queue(struct request_queue *q);
- void blk_mq_unfreeze_queue(struct request_queue *q);
- void blk_freeze_queue_start(struct request_queue *q);
- void blk_mq_freeze_queue_wait(struct request_queue *q);
-+void blk_mq_freeze_queue_wait_sync(struct request_queue *q);
- int blk_mq_freeze_queue_wait_timeout(struct request_queue *q,
- 				     unsigned long timeout);
- 
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 2f7b43444c5f..93ed8b166d66 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -575,6 +575,8 @@ struct request_queue {
- #define QUEUE_FLAG_HCTX_ACTIVE	28	/* at least one blk-mq hctx is active */
- #define QUEUE_FLAG_NOWAIT       29	/* device supports NOWAIT */
- #define QUEUE_FLAG_SQ_SCHED     30	/* single queue style io dispatch */
-+/* sync for q_usage_counter */
-+#define QUEUE_FLAG_USAGE_COUNT_SYNC    31
- 
- #define QUEUE_FLAG_MQ_DEFAULT	((1 << QUEUE_FLAG_IO_STAT) |		\
- 				 (1 << QUEUE_FLAG_SAME_COMP) |		\
--- 
-2.31.1
+jirka
 
+> +
+> +		s_arg_idx = m->struct_arg_idx[i];
+> +		s_arg_nregs = (s_size + 7) / 8;
+> +
+> +		__restore_normal_arg_regs(m, prog, curr_arg_idx, s_arg_idx - curr_arg_idx,
+> +					  curr_reg_idx, regs_off);
+> +		__restore_struct_arg_regs(prog, curr_reg_idx + s_arg_idx - curr_arg_idx,
+> +					  s_arg_nregs, struct_val_off, curr_s_stack_off);
+> +		curr_reg_idx += s_arg_idx - curr_arg_idx + s_arg_nregs;
+> +		curr_s_stack_off += s_arg_nregs;
+> +		curr_arg_idx = s_arg_idx + 1;
+> +	}
+> +
+> +	__restore_normal_arg_regs(m, prog, curr_arg_idx, nr_args - curr_arg_idx, curr_reg_idx,
+> +				  regs_off);
+>  }
+>  
+
+SNIP
