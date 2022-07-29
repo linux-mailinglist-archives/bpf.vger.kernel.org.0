@@ -2,126 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A417585637
-	for <lists+bpf@lfdr.de>; Fri, 29 Jul 2022 22:37:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57CEA585691
+	for <lists+bpf@lfdr.de>; Fri, 29 Jul 2022 23:39:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239291AbiG2Uho (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Jul 2022 16:37:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40258 "EHLO
+        id S239373AbiG2Vjk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Jul 2022 17:39:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbiG2Uhm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Jul 2022 16:37:42 -0400
+        with ESMTP id S239378AbiG2Vjj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Jul 2022 17:39:39 -0400
 Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6CFC6553
-        for <bpf@vger.kernel.org>; Fri, 29 Jul 2022 13:37:38 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26THABt6020210
-        for <bpf@vger.kernel.org>; Fri, 29 Jul 2022 13:37:38 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-id : mime-version;
- s=facebook; bh=I8bPnaT4Uc4fUHN7dTMfP7nmZdZrzfmmVTsZEkBuHqc=;
- b=lecYk2TaFeOQbv9GdaT5gOkR8nhXDCQQlHtEkTovPFGNjRO+SJ4g9bq7SDePKeYuaI8n
- pp6DqvYntY42+16mfvdTII6NgKMFIRVXzokSYcDSy37EKwTd1dHwhwSPkKsWTN1K1VN4
- WT0dneKpsIu1b0UW8bIUnwc9vTgvEDpuhLo= 
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2102.outbound.protection.outlook.com [104.47.58.102])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hmc9e44w3-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 29 Jul 2022 13:37:37 -0700
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB7798C17E
+        for <bpf@vger.kernel.org>; Fri, 29 Jul 2022 14:39:37 -0700 (PDT)
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26TLPJBW023260;
+        Fri, 29 Jul 2022 14:39:23 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=tH7z87pGoyGMYjGWnVZMYSnrOXlmMSPxuJATNfjqLdc=;
+ b=IxWcFbUIl2fGyUTq5NeQTy1AWTOTp4GR75sXnc4BJGd//y79TtCUt8oo2Fum1rQ2LyZz
+ yxfR0d42t6LDDqzJ/h6EtgBjhmw7/05EeTBMiKVlFL8hC07EvgCZCsEI00Z0RaiTK2iT
+ psxrqUjQppi4xS0fcdD+Sr956cXaXSvmt90= 
+Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam04lp2045.outbound.protection.outlook.com [104.47.73.45])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hmqetr2s5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Jul 2022 14:39:23 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A1MWhpFaIy2Dw9sOc4FE/D9BI/svZ+ay2vuOxBVU3KLdpW0HeTiv2nM44oi7rIHAnw1M1yYH53ASQTMdSePoFdvtaDU08Xc4EugyKqw0eStCc+MZ9X2VOxPbJtZauTg7rg7H1uhifuqyt5qUkKHfyOWF6p7pOzL2Hc0zPKKsnnHj9slfbjh+QnQoywCAfVpNd4SXZWqMCIS66D7RHvU2QH5xyiX9GKjOkBU2IfSY5/ZAvx00KVrql9fO0911r0PJ/EFrLFq5WqVs5BgiLQ05FRYJk2xAhyoXBJvhhqcvFCUnpn7NsaAZuJHfERuXl5NE2G1HfPxZfY4rUdGgrdjcQw==
+ b=byJlmFJioCnX8DA1pdLfw+tmsL0pPdBaao9N0KVHW9hGurywUBcwl9w8cQyH72323ZJ60VY9iEhMV1U9lKHdfttQ1NjxhvPZ8dNW3snoxweRQEnKkKpNhvsDLx0mwHe/VK16EFDLnI0W2fBDpOIsgCdsVoJbrRD4b2IKXbfEXFViTNDVa9C8VYDYlR9DtTuFxSb2eRUUmzRkXGDy4NtZ/fZAx7fZxGqfa7cVh+4tYNut0yilnlk9ZNioB4JE4YVlolqlMUjkTDO4aCAoTmvspRtzZjpFOwtHbm6AMl1TXGIzHP+7FL4xqmTlKwKG3WOeWUM7cfrcMb1B8G3O6OKGPg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=I8bPnaT4Uc4fUHN7dTMfP7nmZdZrzfmmVTsZEkBuHqc=;
- b=Y4ppLD2wdGxdh13nrX0aCvor9DRClm7ellJYIglXntt5k7UpeD842IfQviUk94ZfVGBB9XpspXKJEQSEfT6KkA/ONoLVmSjuB0DQUNqoZjIECiDzeaY60qWjB255XCSp1rIaOnb/a5hT7HrSNbt+OFT+Tp9gLZAMGEr2QmDZqD6yPTCnTFMxdXhfi6o6Y5NiT/ndwLhW81cQXquKHg82zitqCdfDX5LYsOrNiF7ZxwmlgwcGg6eTa1lz662nZgidvIh9Qzp93PqixVMSlhjBi19cZdrNoLc/Q4xaohZn02/kgO97pWWO4HTxCbFuw+VfD3kydGA1juoWxxGN8kN4dw==
+ bh=tH7z87pGoyGMYjGWnVZMYSnrOXlmMSPxuJATNfjqLdc=;
+ b=AAaDc93iu4lajRGhg0aY/LcEUa408tYz0zaRjmNcTIqzlcjwq94LG35VvOkUrsTCzhwzcVGOEPBqOA4Suci7f6iS8agx1M0quLhwsC9hZ9wA8pjA2cur87T6Ul29uxWQ90GxkDyHtoNDS833IRr3uH3NmW7fBytQulLMFjg3R6hlhEF1AaLSgxLz2R4IeoDIISkXIeDu8d5YeEcjmUArm00txHci9mMzdL5uXxfIc54ZU767mYgH90lb/KdQ2Y62nVOSQBxp0hHhKbx7Zh33CGKN8DAcFqUYMfUscfygyMvMxgMj0yZ1vPFEDVYQjCnhxUvGHWcXfF2IUrdJ/jNEfw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
-Received: from PH0PR15MB5262.namprd15.prod.outlook.com (2603:10b6:510:14d::6)
- by BN7PR15MB2243.namprd15.prod.outlook.com (2603:10b6:406:8f::16) with
+Received: from MW4PR15MB4475.namprd15.prod.outlook.com (2603:10b6:303:104::16)
+ by BLAPR15MB3794.namprd15.prod.outlook.com (2603:10b6:208:271::23) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5482.12; Fri, 29 Jul
- 2022 20:37:34 +0000
-Received: from PH0PR15MB5262.namprd15.prod.outlook.com
- ([fe80::487c:66da:ff78:a6fe]) by PH0PR15MB5262.namprd15.prod.outlook.com
- ([fe80::487c:66da:ff78:a6fe%8]) with mapi id 15.20.5482.011; Fri, 29 Jul 2022
- 20:37:34 +0000
-From:   Mykola Lysenko <mykolal@fb.com>
-To:     bpf <bpf@vger.kernel.org>
-CC:     Mykola Lysenko <mykolal@fb.com>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        "harshmodi@google.com" <harshmodi@google.com>,
-        Kernel Team <Kernel-team@fb.com>,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5482.11; Fri, 29 Jul
+ 2022 21:39:21 +0000
+Received: from MW4PR15MB4475.namprd15.prod.outlook.com
+ ([fe80::4428:3a1e:4625:3a7a]) by MW4PR15MB4475.namprd15.prod.outlook.com
+ ([fe80::4428:3a1e:4625:3a7a%6]) with mapi id 15.20.5482.012; Fri, 29 Jul 2022
+ 21:39:21 +0000
+Date:   Fri, 29 Jul 2022 14:39:19 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: BPF office hours summary, July 2022
-Thread-Topic: BPF office hours summary, July 2022
-Thread-Index: AQHYo4sI2OGTRs2a5E2ndt+KCtktIA==
-Date:   Fri, 29 Jul 2022 20:37:34 +0000
-Message-ID: <E6D05AB4-6693-4081-A499-49C495C571A5@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 71e645b2-00c8-4445-3afb-08da71a22adf
-x-ms-traffictypediagnostic: BN7PR15MB2243:EE_
-x-fb-source: Internal
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ZB8DhZiCC6W8vK5ch1jTlRduwMDX8LhAvJWWexThdYYGIcvok3UwDqrv54caShAneeOK6xosd7Cpwl9Pb3X64lNzESEZCajG91nI5biEo63V+jlVe6sXiXZJEfeXihLBXV6lu7s3fK1NOHipzBB07JS+oPqlkW1lKj3cADeJg+4NfdK/opQoI3auF2JQ87YgpPPTGeGl08stUPQKgdpGpgabmko5DpQdGgzibsXgvhtQirihEKTfNemxKV/2LFo3d1WrdV5pLa/+AxzEYtb41n5PAg/lKdxkx9vOLOfVbMzciTIvmW7hwg5pSJDPi2S1AUlx6hmuApwIt3A9X3qgm0k+JKjTxmniXdNuXpxfo8lAgLGcyVX6A7dCQg+6tYQvT0M8K8kvrogkMlaQj79Kcv34cyo4yK0AlPTRlZBFEcEL+FCjkP30g4U/rKZa6AUm6gEbELsAXgCIjrfYJTK3po7YyTBK7NI+nqmu/7zQcFbr4ejuBYGcYuG3v74S9uJsuQ3mqeVSB3taTuLeJKKBPITI2jk+8ifLh1067xaQwDtrLTelgauHK44N/yNDXc7ZJv75DgxI4Bu2O54TXDr3ar++yqXPUNo89ebZM4cjoDIac4e0UEoTUasHnVWCcLUaEEYsfhtJpoHIQz2P2oumeGNX55t85Tw2amHM5QM+CG/QPo7LrhL4sMBx71IerHzpECoxhkTRMSiotBEFdMWGTRp9T332AG6U37/T5CHvsBv7sscQ/LXE1HSuA0B90iQP5geuTUhd3iMsvmnBp6HNPNSsB79wTVID5wycv6Ae0HRQvDVR3A1H3zm/H00yo/cEiAt7qw4FDxssGy4Q+lHaEPsSAtzGvZBMfbqFSD6Pw6+sy4aZA85u8jT0K1KOFe8iMEER6vV/kv8+8/Tpbe8p8g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR15MB5262.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(39860400002)(136003)(366004)(376002)(396003)(346002)(38070700005)(5660300002)(8936002)(122000001)(38100700002)(6506007)(6512007)(316002)(6916009)(54906003)(478600001)(71200400001)(6486002)(966005)(41300700001)(64756008)(66446008)(66556008)(76116006)(8676002)(91956017)(66946007)(83380400001)(186003)(2616005)(36756003)(66476007)(4326008)(33656002)(2906002)(86362001)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?A26Xd56E7hADbRM9Uj8K2jPewaLPojBNh2imCXVSpJaHsyx289ahToGEo2Ac?=
- =?us-ascii?Q?/AaFKT9ns6XOgArfk+WJJuqxZBj3AgY7aKjMbIghp6Sdvn5PKg1w2xQ2mgKo?=
- =?us-ascii?Q?ctp+wcQWaht33bHXL9omU5dLHmB5ENK4bJmYOd7K9g9vwP0gOU8zJNofV+9l?=
- =?us-ascii?Q?Z9wJk+v3hH0eoXsyHzppn+I/4/0rc5yXuP/YNgb+sFr5fFtSSYmQNLBVOHWY?=
- =?us-ascii?Q?v4ji2Ozpw6UZSsxRG4EBAA4FOPaTkOg0WqfTHQIVM4soQIVTBp64HAIQRZjh?=
- =?us-ascii?Q?dPr0Cee4VBfeb1vkURN9UlhaJeM8jJxElWVldPHrx1VLm48f5+L7lurQXt9J?=
- =?us-ascii?Q?VEZmqTRVg1Ewx/RzGcQ01c1KVBvpokWLYRTLpElVYG4JjhL6jZ2127H7aCBy?=
- =?us-ascii?Q?gcXu78Y4PDWpNJhx8YOdROpfqSMrTzhRIF2CyT9c2MZzCJI5DTB6pYt++Hro?=
- =?us-ascii?Q?o6hvbi2K2EIO6jS8J1L/4QUSO1mHtC39KZzR1L0apGzSvGrZH+cBd0vi5Vt2?=
- =?us-ascii?Q?PqmfnCO5TZ9Q4ueIGxDNE/9R9mbMlerGklUuAw61cu+ekVPvPQERVBACU+wV?=
- =?us-ascii?Q?ai08eVUZTUuztRIazK1SCwJGd6uUsLdtMk3dB6xr5Eg9tkhtS7U2RoW0rOYW?=
- =?us-ascii?Q?9/DZVmIXxjTBB57JbX8Hui0HNVW3BbPuPE5eHVLRpEdGwCYMtod+DU2fZEa3?=
- =?us-ascii?Q?2mw57cwzgAPu7D8RMo67pU5tqPAFwS6O+YrKHWqFh+lrl0r2j4tjObBdt+qb?=
- =?us-ascii?Q?oxYUO1blpzK5vAD2z+DxhVNH80Puz9TzlZZ1Iiv0GBsAth+YAyCPs21ywXYM?=
- =?us-ascii?Q?PDzWtfmeQU3tOrx0xm6xiS1dmiHcy2N+92pHtOTjAnrRu8Bx3Il3w9I/gW04?=
- =?us-ascii?Q?PgkX2zlLuduBXdC1iqV2EHtJ7mWchYwa+5rGHlYqSFuMihinuOF2uH6EgAdo?=
- =?us-ascii?Q?iZZT5SDP1awA5n2/dsu4BHL6qfXb38gGlUNRoSQyogsVLThPEwnQnMKpQ1sg?=
- =?us-ascii?Q?c7bNlTjoNmXLshgbUoWza7vchLhszu9aw1iyx0bmzJWKX/g5o4Ap4vDP4zPv?=
- =?us-ascii?Q?hEuEeIdSYCt9G0DIM1TNhq03lci6xt1qRnKIR/cnyKaxFksS/2/CmKlwEzdL?=
- =?us-ascii?Q?hjSjw0kvu6IXfGhkIq004eAYM5HH8yiiUbbEbAcx5W/IoekVkfzUNeiuGkMA?=
- =?us-ascii?Q?vFYbLq8v846Cd0QOq1MHi/Qqx20LLARphtADHB5weh53lKwMWEsNkwE/V94p?=
- =?us-ascii?Q?8vChjqvmo34BnQGkS02RLUOD1vDSxKT38QfA1Cq6K3ZzsyhO9kdxEYFlkQ33?=
- =?us-ascii?Q?KJ9IFWNNZII9GLpTulosQmEm47DXdZ+IkJkiYgshrY6NqYNNI/QoKtKtB9+8?=
- =?us-ascii?Q?twjkKP9eYfR7rnPhPwstoVi5uk2HSJ70O2Y30RVu6jAB1R075KzC6JoGaKL+?=
- =?us-ascii?Q?ndil3j1vI2faU01XILQQF5x58x800HTsYWF3jkEqaGiuV6hSpFzTcnrrSLdh?=
- =?us-ascii?Q?qXlldTqF97nP9LZVa3W5nsOu7dbrUcvSNQ6CRh8D1CXBpi6BHS8HKl9HcBy6?=
- =?us-ascii?Q?GKCFgsv1xBRH4zvVk1bpCV8Bf/Ci1ElUxFu+qXcNw2+x75x1uyvDcB2P8nKI?=
- =?us-ascii?Q?fw=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <ECCD100E6593A6498A5BDAA4284EB6E6@namprd15.prod.outlook.com>
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR15MB5262.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 71e645b2-00c8-4445-3afb-08da71a22adf
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jul 2022 20:37:34.3598
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7eQd8oBYVO2mQd4VC11z8LMupFVPAsqRCe4rI95i63rCd+f8QcoYrCr5+eH4n0FA
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR15MB2243
-X-Proofpoint-GUID: VBEf2unoKBOLirEBXGw45Lnp2d-_WRWu
-X-Proofpoint-ORIG-GUID: VBEf2unoKBOLirEBXGw45Lnp2d-_WRWu
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Alexei Starovoitov <ast@kernel.org>
+Subject: Re: [PATCH bpf-next v1 1/3] bpf: Add skb dynptrs
+Message-ID: <20220729213919.e7x6acvqnwqwfnzu@kafai-mbp.dhcp.thefacebook.com>
+References: <20220726184706.954822-1-joannelkoong@gmail.com>
+ <20220726184706.954822-2-joannelkoong@gmail.com>
+ <20220728233936.hjj2smwey447zqyy@kafai-mbp.dhcp.thefacebook.com>
+ <CAJnrk1b2WoHV=iE3j4n_4=2NBP3GaoeD=v-Zt+p-M9N=LApsuQ@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJnrk1b2WoHV=iE3j4n_4=2NBP3GaoeD=v-Zt+p-M9N=LApsuQ@mail.gmail.com>
+X-ClientProxiedBy: BY5PR03CA0002.namprd03.prod.outlook.com
+ (2603:10b6:a03:1e0::12) To MW4PR15MB4475.namprd15.prod.outlook.com
+ (2603:10b6:303:104::16)
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 88f37c6e-bc4a-4d55-03b4-08da71aacc3e
+X-MS-TrafficTypeDiagnostic: BLAPR15MB3794:EE_
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Py3qrve5rcOQ1MsuPcZaacHxhi7NPjw+pNN68chKPi9dDs5e5wNvMzDb/GBkjqUPw0iN0bWoPQTtgsvdVuPpwwve1xl914kbwKjFx3oI9gDv3VJmu4nQ+7JKfvrJ2B63qo1WcX2ghDrXkvTDaJnaSEwXUZg4i89dgWqemwmgARQ/EXHJ6Nebs0assdiiiVJiylFbSMmz0Plrt2wxRYwMxUHDHsWOgrVxCDi9qISEGVnXeLJ09AgyHKIEB5X2LYX/LPrHZKGUEXX2R3xy43ksBofHukdKQwpD5yJOAOej9uqlpCVVVazYZoMlz6WdAqv7Q3JBHF9Yc59f5wyhhRiFvRMh0RzC6NLTB/lzq1wxa5mxXRMiZrV8oCNJQ2eUlG3SP7/zs8vQ4glWz8YUIW+Rtj/CU5tYFMdzUwmgfUWMoT7pv3tNekcfpfaP9orChwQYm37olixL5ajbT3FpLk0CEeD7+qs2uhjiwVbBIBlQYERAI9j7Bt/ctjZ8DUlryKucY/NzVBbV1JvqFKD/Q+mw8a4QGNB7isVgbI7mPtMJXb3B3hhifw6F/84oKH9Ntyn9/u7/nMotcqLuPhx35XX5kphR25jwc1adSNpHkJsK8rtD/BWqDfI8OnI1UuYxCOjURNcREx6camzc99HOxmM7Kg/0ThmrKfQR2kQo/jDy9vVJkQAOYdy/R2z8i4xh7gE9UM6DtesSrWQkWQxy9jw8PNyOErX18Wb88p13RMjnyFo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4475.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(396003)(376002)(346002)(366004)(39860400002)(136003)(83380400001)(1076003)(186003)(38100700002)(54906003)(316002)(8936002)(5660300002)(66946007)(6916009)(8676002)(4326008)(66556008)(66476007)(6506007)(53546011)(41300700001)(52116002)(2906002)(478600001)(9686003)(86362001)(6486002)(6512007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?kDY6nWjqUmb3VmLR8o5jMmoTPeuHi++7BZdfBc+67n7G4KQuuox0fsS4Bter?=
+ =?us-ascii?Q?orZyRdK2TxpdYCyiPEr22Ue2rrNyE6YeHZPQIPnPn2oEp41i9IVkmyW0wcDa?=
+ =?us-ascii?Q?mGNmydhggVxhixYvrHWg6WiQ/Y3KiG98BLC4G7p+4+k8ys4EOYZ4xLbzbFlr?=
+ =?us-ascii?Q?a6WhJPnyNI9JSLvZEl7iLWi2fC0KIFwDMg+dQuIIIZrrDv2AI8I0JhosV0lD?=
+ =?us-ascii?Q?bDpS5efVqGAsweVaOIgEJPnnWwOtSaFJesFMns1evxCvW6pCgTDoT+qocR3A?=
+ =?us-ascii?Q?wy3wJCOEgF7d6xtptLk4rXMwZt/IbObwnHdLtmnmpGfqKCXRK6kkakCzMVd6?=
+ =?us-ascii?Q?DPRUvAYikPuKc0mQBFz+W9UNjP3XcyD9tQUZ0CmjoX30QYQjRixulDutU7vr?=
+ =?us-ascii?Q?9kjbhYFenAwove3dagaVwG/rbvkbO5DcpkG3yVe2XjrXGdtQtm6jj2CiOXiL?=
+ =?us-ascii?Q?zrTAaZFonTYx7JMI/pM2bgiTY9+cSF0lZx4jTLbHBdPZf7sL10U13cs4sZfD?=
+ =?us-ascii?Q?AnatxovjrF3FcvqYblYbysb5TQATI9cpBu6GzQCgFJKBcqXJHqG4PdKcSOWD?=
+ =?us-ascii?Q?h1NN2Z6deEOUmg8Sabz7fYhLwkQovst6+YsOSQvxrpxnFqDuKY7TCqe/rROf?=
+ =?us-ascii?Q?tTR6qxreDkEmNiZYtz2hRnKHVN+rR0rZiGsHx/NxXeGbVkq+9oWPIq8Xbt9J?=
+ =?us-ascii?Q?LRSeNT0A/5oYus4f5LmXvkG7Kbjkdmgs0ah/7aXDt7vU8StBJ+td1D3LZ7Ok?=
+ =?us-ascii?Q?9Nq82za6+gMC/xQdrh18q+tXP+KdbhSa51zcrDjIwgWYNo32ZQHcIlm0Xz9n?=
+ =?us-ascii?Q?6EfBunt7JiWZGRVd/E280ADAJOErSoYEux0RBv7q3FfBDKe1HeWI2TR1VhIi?=
+ =?us-ascii?Q?yExE+SJPSnDKMgFwaNtU8c6NxF7LTHyRUpJQs2Q2MltPVe69qvAiMRzpTuya?=
+ =?us-ascii?Q?4vtiaaZhS1RJS10iDvkgZESSzZnC/4d4NTUBPOtvw8LGv2ptJnq0DJ09TtSL?=
+ =?us-ascii?Q?6iB7t4lokSmw4BvcMNi5GjbQW+M0+pjjSzmoml/XKEYk1SPNa9NMufkwjhXV?=
+ =?us-ascii?Q?1/bmWBBRs2C49DKk5qNpWqNX+otgpxdKy2CAP//b/Q+iXfgLjZovzeyvbfnP?=
+ =?us-ascii?Q?TJb29ICjo/XW4Lyo2AsbVwsFzfJ5pQEXS+apt+vt+KgvJ/3woVSod03kqJe9?=
+ =?us-ascii?Q?hFDmeoHvOm1cgiH3i09OWVh2D55jOt4vH3kKA2Pl1SHNQUFZcjoH6N5AialH?=
+ =?us-ascii?Q?WnJvZfiS1Gcb2vtirPZaCcxYUy37UD157p/uEy3Vk7IpKeVm8/Rbt/gVE67P?=
+ =?us-ascii?Q?xytldYyg4n1DPUKuPm/Srwe+bkph/wu4PCg9silvPV+1oJSq+Z7O7pMfVTn4?=
+ =?us-ascii?Q?7vbqlspidAc3SugJ72tqHCkevtQZx3++pdaHBfhxW86YrXvl0VqjG23PERRo?=
+ =?us-ascii?Q?upnXJ9h3DAUOaWW7yo7mTohRjK2WMn9AQMtt5tB/jxUToY/Z50uVuPQiktjK?=
+ =?us-ascii?Q?Xf2o49Ghuq2mClLBuvo5i3crqUOeBCFrS1tBechMyOEz5B3gzQ78OF/kMSuv?=
+ =?us-ascii?Q?PvQn2oEt0gfi+2BseU4NY9/duXT9n3eNjcYk7CzanpZRvjh2g0CtM6Br1W4p?=
+ =?us-ascii?Q?sg=3D=3D?=
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 88f37c6e-bc4a-4d55-03b4-08da71aacc3e
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4475.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jul 2022 21:39:21.2903
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vEjQKS7xrKkJkXx7EGg3pr3BSEAcitnKTIh33ZYhu204PeUX9WmeTgLtD9L0DioO
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR15MB3794
+X-Proofpoint-ORIG-GUID: NZwJO-EdFJpVDjQ3zrKzrSfNg2UFy0C5
+X-Proofpoint-GUID: NZwJO-EdFJpVDjQ3zrKzrSfNg2UFy0C5
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-07-29_19,2022-07-28_02,2022-06-22_01
+ definitions=2022-07-29_20,2022-07-28_02,2022-06-22_01
 X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
@@ -132,31 +129,138 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Fri, Jul 29, 2022 at 01:26:31PM -0700, Joanne Koong wrote:
+> On Thu, Jul 28, 2022 at 4:39 PM Martin KaFai Lau <kafai@fb.com> wrote:
+> >
+> > On Tue, Jul 26, 2022 at 11:47:04AM -0700, Joanne Koong wrote:
+> > > @@ -1567,6 +1607,18 @@ BPF_CALL_3(bpf_dynptr_data, struct bpf_dynptr_kern *, ptr, u32, offset, u32, len
+> > >       if (bpf_dynptr_is_rdonly(ptr))
+> > Is it possible to allow data slice for rdonly dynptr-skb?
+> > and depends on the may_access_direct_pkt_data() check in the verifier.
+> 
+> Ooh great idea. This should be very simple to do, since the data slice
+> that gets returned is assigned as PTR_TO_PACKET. So any stx operations
+> on it will by default go through the may_access_direct_pkt_data()
+> check. I'll add this for v2.
+It will be great.  Out of all three helpers (bpf_dynptr_read/write/data),
+bpf_dynptr_data will be the useful one to parse the header data (e.g. tcp-hdr-opt)
+that has runtime variable length because bpf_dynptr_data() can take a non-cost
+'offset' argument.  It is useful to get a consistent usage across all bpf
+prog types that are either read-only or read-write of the skb.
 
-Below you can find short summary of BPF office hours that happened in July 2022. Hope it will be useful for people that were not able to attend.
+> 
+> >
+> > >               return 0;
+> > >
+> > > +     type = bpf_dynptr_get_type(ptr);
+> > > +
+> > > +     if (type == BPF_DYNPTR_TYPE_SKB) {
+> > > +             struct sk_buff *skb = ptr->data;
+> > > +
+> > > +             /* if the data is paged, the caller needs to pull it first */
+> > > +             if (ptr->offset + offset + len > skb->len - skb->data_len)
+> > > +                     return 0;
+> > > +
+> > > +             return (unsigned long)(skb->data + ptr->offset + offset);
+> > > +     }
+> > > +
+> > >       return (unsigned long)(ptr->data + ptr->offset + offset);
+> > >  }
+> >
+> > [ ... ]
+> >
+> > > -static u32 stack_slot_get_id(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
+> > > +static void stack_slot_get_dynptr_info(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
+> > > +                                    struct bpf_call_arg_meta *meta)
+> > >  {
+> > >       struct bpf_func_state *state = func(env, reg);
+> > >       int spi = get_spi(reg->off);
+> > >
+> > > -     return state->stack[spi].spilled_ptr.id;
+> > > +     meta->ref_obj_id = state->stack[spi].spilled_ptr.id;
+> > > +     meta->type = state->stack[spi].spilled_ptr.dynptr.type;
+> > >  }
+> > >
+> > >  static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+> > > @@ -6052,6 +6057,9 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+> > >                               case DYNPTR_TYPE_RINGBUF:
+> > >                                       err_extra = "ringbuf ";
+> > >                                       break;
+> > > +                             case DYNPTR_TYPE_SKB:
+> > > +                                     err_extra = "skb ";
+> > > +                                     break;
+> > >                               default:
+> > >                                       break;
+> > >                               }
+> > > @@ -6065,8 +6073,10 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+> > >                                       verbose(env, "verifier internal error: multiple refcounted args in BPF_FUNC_dynptr_data");
+> > >                                       return -EFAULT;
+> > >                               }
+> > > -                             /* Find the id of the dynptr we're tracking the reference of */
+> > > -                             meta->ref_obj_id = stack_slot_get_id(env, reg);
+> > > +                             /* Find the id and the type of the dynptr we're tracking
+> > > +                              * the reference of.
+> > > +                              */
+> > > +                             stack_slot_get_dynptr_info(env, reg, meta);
+> > >                       }
+> > >               }
+> > >               break;
+> > > @@ -7406,7 +7416,11 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+> > >               regs[BPF_REG_0].type = PTR_TO_TCP_SOCK | ret_flag;
+> > >       } else if (base_type(ret_type) == RET_PTR_TO_ALLOC_MEM) {
+> > >               mark_reg_known_zero(env, regs, BPF_REG_0);
+> > > -             regs[BPF_REG_0].type = PTR_TO_MEM | ret_flag;
+> > > +             if (func_id == BPF_FUNC_dynptr_data &&
+> > > +                 meta.type == BPF_DYNPTR_TYPE_SKB)
+> > > +                     regs[BPF_REG_0].type = PTR_TO_PACKET | ret_flag;
+> > > +             else
+> > > +                     regs[BPF_REG_0].type = PTR_TO_MEM | ret_flag;
+> > >               regs[BPF_REG_0].mem_size = meta.mem_size;
+> > check_packet_access() uses range.
+> > It took me a while to figure range and mem_size is in union.
+> > Mentioning here in case someone has similar question.
+> For v2, I'll add this as a comment in the code or I'll include
+> "regs[BPF_REG_0].range = meta.mem_size" explicitly to make it more
+> obvious :)
+'regs[BPF_REG_0].range = meta.mem_size' would be great.  No strong
+opinion here.
 
-I will try to take more detailed notes over August. Let me know if you have any feedback on how to improve these.
+> >
+> > >       } else if (base_type(ret_type) == RET_PTR_TO_MEM_OR_BTF_ID) {
+> > >               const struct btf_type *t;
+> > > @@ -14132,6 +14146,25 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+> > >                       goto patch_call_imm;
+> > >               }
+> > >
+> > > +             if (insn->imm == BPF_FUNC_dynptr_from_skb) {
+> > > +                     if (!may_access_direct_pkt_data(env, NULL, BPF_WRITE))
+> > > +                             insn_buf[0] = BPF_MOV32_IMM(BPF_REG_4, true);
+> > > +                     else
+> > > +                             insn_buf[0] = BPF_MOV32_IMM(BPF_REG_4, false);
+> > > +                     insn_buf[1] = *insn;
+> > > +                     cnt = 2;
+> > > +
+> > > +                     new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
+> > > +                     if (!new_prog)
+> > > +                             return -ENOMEM;
+> > > +
+> > > +                     delta += cnt - 1;
+> > > +                     env->prog = new_prog;
+> > > +                     prog = new_prog;
+> > > +                     insn = new_prog->insnsi + i + delta;
+> > > +                     goto patch_call_imm;
+> > > +             }
+> > Have you considered to reject bpf_dynptr_write()
+> > at prog load time?
+> It's possible to reject bpf_dynptr_write() at prog load time but would
+> require adding tracking in the verifier for whether a dynptr is
+> read-only or not. Do you think it's better to reject it at load time
+> instead of returning NULL at runtime?
+The check_helper_call above seems to know 'meta.type == BPF_DYNPTR_TYPE_SKB'.
+Together with may_access_direct_pkt_data(), would it be enough ?
+Then no need to do patching for BPF_FUNC_dynptr_from_skb here.
 
-Thanks,
-Mykola
-
-
-7/7 with Eduard Zingerman (eddyz87@gmail.com):
-
-Eduard proposed improvements to verifier.c:do_misc_fixups() function that might exhibit O(n^2) complexity for certain inputs. He did benchmarks on the selftests/bpf inputs. Agreement was that we need to do benchmarks on the Cilium production code. Daniel Borkmann will work with Eduard to provide him with object files to benchmark on.
-
-Eduard investigated on three alternative approaches:
-- a previously suggested by Jiong Wang [1] approach using BPF program representation as a linked list of instructions
-- possible representations of BPF programs as control flow graph using basic blocks proposed by Alexei [2]
-- a novel approach with patches accumulation and application at the end of the transformation passes proposed by Eduard
-
-Consensus was to implement a prototype based on a basic blocks approach as it is simpler and already used in LLVM, GCC, Cranelift and QBE.
-
-[1] https://lore.kernel.org/bpf/CAEf4BzYDAVUgajz4=dRTu5xQDddp5pi2s=T1BdFmRLZjOwGypQ@mail.gmail.com/
-[2] https://lore.kernel.org/bpf/20220624183918.qatsud6fdrtjj3qy@MacBook-Pro-3.local/
-
-7/14 with Harsh Modi (harshmodi@google.com):
-
-Harsh works on adding crc32 support to checksum sctp packets. This functionality will be integrated with Cilium. This is needed for a telecommunication project he works on in Google. His current patch was only tested on a raw string and will require rework. Alexei asked a lot of pointed questions and suggested Harsh to work closer with Daniel Borkmann. Joanne suggested implementing a generic hash function and using dyn ptrs instead of static pointers. Harsh admitted that he did not know about dyn ptrs and will investigate. After the discussion, Harsh agreed to implement a generic hashing helper as a prototype, measure performance and send it to the bpf mailing list.
-
+Since we are on bpf_dynptr_write, what is the reason
+on limiting it to the skb_headlen() ?  Not implying one
+way is better than another.  would like to undertand the reason
+behind it since it is not clear in the commit message.
