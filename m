@@ -2,376 +2,226 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 641FD5850D5
-	for <lists+bpf@lfdr.de>; Fri, 29 Jul 2022 15:23:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C845850E0
+	for <lists+bpf@lfdr.de>; Fri, 29 Jul 2022 15:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236556AbiG2NXo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Jul 2022 09:23:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45370 "EHLO
+        id S236365AbiG2N1D (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Jul 2022 09:27:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231976AbiG2NXn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Jul 2022 09:23:43 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD5567594;
-        Fri, 29 Jul 2022 06:23:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1659101021; x=1690637021;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=8F3C43ey2A1CgV0okZzoTflvDq0Ep6YjnCAtC3gCz3M=;
-  b=eiJYHT2AlehWG3ZqN3axcPfuN7jM0MTv96fp27AkhuPUoiPqs/iE9O7L
-   cZa1/0dpwT2CiCLirD5OMKPnzS3L1kL/5dKpnyfXlMhmwvCEyyt7RJSMa
-   jgXEVTNGNbzw0VboshB4hRGOxL5W5knG0SchtHi8f5Q2eBfegrb1m0y+J
-   /XT+iAkhzGxGApaSLp1jPeGM5eaBbwO8zmz9O7RZu+dfLIQtAEDp5qx5t
-   au8Od1WpZFawSF9wIsvvo+MvDMTsl8OMEp3YnWXu8hIumok1uC+TU9Pcd
-   NTuapnOIKfSzQ620sqaute+3cAHrrhdSw7hGDXVO7RV9bltyWsvvcuJhV
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10423"; a="314565634"
-X-IronPort-AV: E=Sophos;i="5.93,201,1654585200"; 
-   d="scan'208";a="314565634"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jul 2022 06:23:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,201,1654585200"; 
-   d="scan'208";a="928742628"
-Received: from silpixa00401350.ir.intel.com (HELO silpixav00401350..) ([10.55.128.131])
-  by fmsmga005.fm.intel.com with ESMTP; 29 Jul 2022 06:23:38 -0700
-From:   Shibin Koikkara Reeny <shibin.koikkara.reeny@intel.com>
-To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
-Cc:     netdev@vger.kernel.org, magnus.karlsson@intel.com,
-        bjorn@kernel.org, kuba@kernel.org, maciej.fijalkowski@intel.com,
-        andrii@kernel.org, ciara.loftus@intel.com,
-        Shibin Koikkara Reeny <shibin.koikkara.reeny@intel.com>
-Subject: [PATCH bpf-next v3] selftests: xsk: Update poll test cases
-Date:   Fri, 29 Jul 2022 13:23:37 +0000
-Message-Id: <20220729132337.211443-1-shibin.koikkara.reeny@intel.com>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
+        with ESMTP id S234954AbiG2N1C (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Jul 2022 09:27:02 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0D2B68DE5
+        for <bpf@vger.kernel.org>; Fri, 29 Jul 2022 06:27:00 -0700 (PDT)
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26TDC1pd021799;
+        Fri, 29 Jul 2022 13:26:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=x0wz5RwO3ZZU30IPYYNiZY4Wi4PbThPr0agnauCHQ7Y=;
+ b=mCj9y6wtEEJMW270f9HNtK9Uz6OvPIEYSUxd2Af1wLDUOSiR/bLpasqL1Hn2QSCIeCRy
+ enOp0pAA43Q9yeEA9gxOt2VRaJpWLeLTWINx/OM4WFRa8oKvkBNHaBjZSPcDHe7vJYNV
+ UZJM8NkYQ0sBBGXdqOPDawEuGGlGoqOHF3kBn3UyIMjbSDCS2NbnNiauVJzlWq8lWBhL
+ GWE6Ilk5Gnwvju0Qr/uPxo3LfYGfWHnB2r/ZkKZNZKycZlcVXLby/6SZymRygpb7gcdG
+ NbGUOya0sKo9JvcHyATDugm6KneiTjt/UKuMdugV52WEgcP5Ajmfk17o9mw0/kYVvoBL zA== 
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3hmg7hrgfv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Jul 2022 13:26:53 +0000
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 26TDLqcU020114;
+        Fri, 29 Jul 2022 13:26:52 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma03dal.us.ibm.com with ESMTP id 3hg97974ua-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Jul 2022 13:26:52 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 26TDQowG37880254
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 29 Jul 2022 13:26:50 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 670A0C6055;
+        Fri, 29 Jul 2022 13:26:50 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BC956C6059;
+        Fri, 29 Jul 2022 13:26:49 +0000 (GMT)
+Received: from [9.31.97.147] (unknown [9.31.97.147])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Fri, 29 Jul 2022 13:26:49 +0000 (GMT)
+Message-ID: <e94aed3c-1601-13b6-779f-917d0783b70e@linux.ibm.com>
+Date:   Fri, 29 Jul 2022 09:26:49 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.0.3
+Subject: Re: [PATCH] BPF: Fix potential bad pointer dereference in bpf_sys_bpf
+Content-Language: en-US
+To:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        mvle@us.ibm.com, jamjoom@us.ibm.com, sahmed@ibm.com,
+        Daniel.Williams2@ibm.com
+References: <20220727132905.45166-1-jinghao@linux.ibm.com>
+ <44fff416-49d5-458e-c464-e15483e2c90a@fb.com>
+ <c7763b47-19ff-b369-1006-3bca38f4f083@linux.ibm.com>
+ <7e5c0f32-7041-35d0-a18d-8d61f3cb3930@fb.com>
+From:   Jinghao Jia <jinghao@linux.ibm.com>
+In-Reply-To: <7e5c0f32-7041-35d0-a18d-8d61f3cb3930@fb.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: kvbwM-T0gN-QqAV4xqjIs-ztiCmD2q6_
+X-Proofpoint-ORIG-GUID: kvbwM-T0gN-QqAV4xqjIs-ztiCmD2q6_
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.7 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_HI,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-07-28_06,2022-07-28_02,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 adultscore=0
+ impostorscore=0 clxscore=1015 mlxscore=0 suspectscore=0 phishscore=0
+ spamscore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2206140000 definitions=main-2207290059
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Poll test case was not testing all the functionality
-of the poll feature in the testsuite. This patch
-update the poll test case which contain 2 testcases to
-test the RX and the TX poll functionality and additional
-2 more testcases to check the timeout features of the
-poll event.
 
-Poll testsuite have 4 test cases:
+On 7/28/22 7:16 PM, Yonghong Song wrote:
+>
+>
+> On 7/28/22 11:01 AM, Jinghao Jia wrote:
+>>
+>> On 7/28/22 10:52 AM, Yonghong Song wrote:
+>>>
+>>>
+>>> On 7/27/22 6:29 AM, Jinghao Jia wrote:
+>>>> The bpf_sys_bpf() helper function allows an eBPF program to load 
+>>>> another
+>>>> eBPF program from within the kernel. In this case the argument union
+>>>> bpf_attr pointer (as well as the insns and license pointers inside) 
+>>>> is a
+>>>> kernel address instead of a userspace address (which is the case of a
+>>>> usual bpf() syscall). To make the memory copying process in the 
+>>>> syscall
+>>>> work in both cases, bpfptr_t [1] was introduced to wrap around the
+>>>> pointer and distinguish its origin. Specifically, when copying memory
+>>>> contents from a bpfptr_t, a copy_from_user() is performed in case of a
+>>>> userspace address and a memcpy() is performed for a kernel address 
+>>>> [2].
+>>>>
+>>>> This can lead to problems because the in-kernel pointer is never 
+>>>> checked
+>>>> for validity. If an eBPF syscall program tries to call bpf_sys_bpf()
+>>>> with a bad insns pointer, say 0xdeadbeef (which is supposed to 
+>>>> point to
+>>>> the start of the instruction array) in the bpf_attr union, memcpy() is
+>>>> always happy to dereference the bad pointer to cause a un-handle-able
+>>>> page fault and in turn an oops. However, this is not supposed to 
+>>>> happen
+>>>> because at that point the eBPF program is already verified and should
+>>>> not cause a memory error. The same issue in userspace is handled
+>>>> gracefully by copy_from_user(), which would return -EFAULT in such a
+>>>> case.
+>>>>
+>>>> Replace memcpy() with the safer copy_from_kernel_nofault() and
+>>>> strncpy_from_kernel_nofault().
+>>>>
+>>>> [1]: 
+>>>> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/include/linux/bpfptr.h 
+>>>>
+>>>> [2]: 
+>>>> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/include/linux/sockptr.h#n44 
+>>>>
+>>>>
+>>>> Signed-off-by: Jinghao Jia <jinghao@linux.ibm.com>
+>>>> ---
+>>>>   include/linux/sockptr.h | 11 +++--------
+>>>>   1 file changed, 3 insertions(+), 8 deletions(-)
+>>>>
+>>>> diff --git a/include/linux/sockptr.h b/include/linux/sockptr.h
+>>>> index d45902fb4cad..3b8a41c82516 100644
+>>>> --- a/include/linux/sockptr.h
+>>>> +++ b/include/linux/sockptr.h
+>>>> @@ -46,8 +46,7 @@ static inline int copy_from_sockptr_offset(void 
+>>>> *dst, sockptr_t src,
+>>>>   {
+>>>>       if (!sockptr_is_kernel(src))
+>>>>           return copy_from_user(dst, src.user + offset, size);
+>>>> -    memcpy(dst, src.kernel + offset, size);
+>>>> -    return 0;
+>>>> +    return copy_from_kernel_nofault(dst, src.kernel + offset, size);
+>>>>   }
+>>>
+>>> The subject and commit message mentioned it is bpf_sys_bpf() helper
+>>> might have issues. But the patch itself tries to modify 
+>>> copy_from_sockptr_offset() and strncpy_from_sockptr(), why?
+>>>
+>>
+>> Hi Yonghong,
+>>
+>> Sorry for the confusion. The problem happens when bpf_sys_bpf() 
+>> helper is called with a bad kernel address but the dereference takes 
+>> place in the copy_from_sockptr_offset() and strncpy_from_sockptr() 
+>> functions.
+>>
+>> Let's assume we are doing a BPF_PROG_LOAD operation using 
+>> bpf_sys_bpf() and our insns pointer inside the union bpf_attr 
+>> argument is set to NULL (could be any other bad address). The helper 
+>> calls __sys_bpf() which would then call bpf_prog_load() to load the 
+>> program. bpf_prog_load() is responsible for copying the eBPF 
+>> instructions to the newly allocated memory for the program, which 
+>> uses the bpfptr_t API [1]. Internally, all bpfptr_t operations are 
+>> backed by the corresponding sockptr_t operations. In other words, the 
+>> code that performs the copy (and therefore the deref of the pointer) 
+>> is inside copy_from_sockptr_offset() and strncpy_from_sockptr().
+>
+> Thanks for explanation. It would be great if you can put the above
+> details in the commit message (esp. call stack) which leads to
+> the kernel panic(?).
+>
+>>
+>> [1]: 
+>> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/kernel/bpf/syscall.c#n2566 
+>>
+>>
+>> Best,
+>> Jinghao
+>>>>     static inline int copy_from_sockptr(void *dst, sockptr_t src, 
+>>>> size_t size)
+>>>> @@ -93,12 +92,8 @@ static inline void *memdup_sockptr_nul(sockptr_t 
+>>>> src, size_t len)
+>>>>     static inline long strncpy_from_sockptr(char *dst, sockptr_t 
+>>>> src, size_t count)
+>>>>   {
+>>>> -    if (sockptr_is_kernel(src)) {
+>>>> -        size_t len = min(strnlen(src.kernel, count - 1) + 1, count);
+>>>> -
+>>>> -        memcpy(dst, src.kernel, len);
+>>>> -        return len;
+>>>> -    }
+>>>> +    if (sockptr_is_kernel(src))
+>>>> +        return strncpy_from_kernel_nofault(dst, src.kernel, count);
+>>>>       return strncpy_from_user(dst, src.user, count);
+>>>>   }
+>
+> I think we should not modify copy_from_sockptr() and 
+> strncpy_from_sockptr(). These two functions are used by networking
+> as well and nofault version should not be called for calls in
+> networking stack.
+>
+> So I suggest you directly modify copy_from_bpfptr() and 
+> strncpy_from_bpfptr() since these two functions indeed might
+> have invalid kernel address and may cause fault.
+>
 
-1. TEST_TYPE_RX_POLL:
-Check if RX path POLLIN function work as expect. TX path
-can use any method to sent the traffic.
+Thanks a lot for the feedback! I do agree that the changes on sockptr 
+functions might be problematic. I will roll out a V2 based on your comments.
 
-2. TEST_TYPE_TX_POLL:
-Check if TX path POLLOUT function work as expect. RX path
-can use any method to receive the traffic.
-
-3. TEST_TYPE_POLL_RXQ_EMPTY:
-Call poll function with parameter POLLIN on empty rx queue
-will cause timeout.If return timeout then test case is pass.
-
-4. TEST_TYPE_POLL_TXQ_FULL:
-When txq is filled and packets are not cleaned by the kernel
-then if we invoke the poll function with POLLOUT then it
-should trigger timeout.
-
-v1: https://lore.kernel.org/bpf/20220718095712.588513-1-shibin.koikkara.reeny@intel.com/
-v2: https://lore.kernel.org/bpf/20220726101723.250746-1-shibin.koikkara.reeny@intel.com/
-
-Changes in v2:
- * Updated the commit message
- * fixed the while loop flow in receive_pkts function.
-Changes in v3:
- * Introduced single thread validation function.
- * Removed pkt_stream_invalid().
- * Updated TEST_TYPE_POLL_TXQ_FULL testcase to create invalid frame.
- * Removed timer from send_pkts().
- * Removed boolean variable skip_rx and skip_tx
-
-Signed-off-by: Shibin Koikkara Reeny <shibin.koikkara.reeny@intel.com>
----
- tools/testing/selftests/bpf/xskxceiver.c | 155 +++++++++++++++++------
- tools/testing/selftests/bpf/xskxceiver.h |   8 +-
- 2 files changed, 125 insertions(+), 38 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
-index 74d56d971baf..32ba6464f29f 100644
---- a/tools/testing/selftests/bpf/xskxceiver.c
-+++ b/tools/testing/selftests/bpf/xskxceiver.c
-@@ -817,9 +817,9 @@ static int complete_pkts(struct xsk_socket_info *xsk, int batch_size)
- 	return TEST_PASS;
- }
- 
--static int receive_pkts(struct ifobject *ifobj, struct pollfd *fds)
-+static int receive_pkts(struct test_spec *test, struct ifobject *ifobj, struct pollfd *fds)
- {
--	struct timeval tv_end, tv_now, tv_timeout = {RECV_TMOUT, 0};
-+	struct timeval tv_end, tv_now, tv_timeout = {THREAD_TMOUT, 0};
- 	u32 idx_rx = 0, idx_fq = 0, rcvd, i, pkts_sent = 0;
- 	struct pkt_stream *pkt_stream = ifobj->pkt_stream;
- 	struct xsk_socket_info *xsk = ifobj->xsk;
-@@ -843,17 +843,28 @@ static int receive_pkts(struct ifobject *ifobj, struct pollfd *fds)
- 		}
- 
- 		kick_rx(xsk);
-+		if (ifobj->use_poll) {
-+			ret = poll(fds, 1, POLL_TMOUT);
-+			if (ret < 0)
-+				exit_with_error(-ret);
-+
-+			if (!ret) {
-+				if (!test->ifobj_tx->umem->umem)
-+					return TEST_PASS;
-+
-+				ksft_print_msg("ERROR: [%s] Poll timed out\n", __func__);
-+				return TEST_FAILURE;
- 
--		rcvd = xsk_ring_cons__peek(&xsk->rx, BATCH_SIZE, &idx_rx);
--		if (!rcvd) {
--			if (xsk_ring_prod__needs_wakeup(&umem->fq)) {
--				ret = poll(fds, 1, POLL_TMOUT);
--				if (ret < 0)
--					exit_with_error(-ret);
- 			}
--			continue;
-+
-+			if (!(fds->revents & POLLIN))
-+				continue;
- 		}
- 
-+		rcvd = xsk_ring_cons__peek(&xsk->rx, BATCH_SIZE, &idx_rx);
-+		if (!rcvd)
-+			continue;
-+
- 		if (ifobj->use_fill_ring) {
- 			ret = xsk_ring_prod__reserve(&umem->fq, rcvd, &idx_fq);
- 			while (ret != rcvd) {
-@@ -900,13 +911,34 @@ static int receive_pkts(struct ifobject *ifobj, struct pollfd *fds)
- 	return TEST_PASS;
- }
- 
--static int __send_pkts(struct ifobject *ifobject, u32 *pkt_nb)
-+static int __send_pkts(struct ifobject *ifobject, u32 *pkt_nb, bool use_poll,
-+		       struct pollfd *fds, bool timeout)
- {
- 	struct xsk_socket_info *xsk = ifobject->xsk;
--	u32 i, idx, valid_pkts = 0;
-+	u32 i, idx, ret, valid_pkts = 0;
-+
-+	while (xsk_ring_prod__reserve(&xsk->tx, BATCH_SIZE, &idx) < BATCH_SIZE) {
-+		if (use_poll) {
-+			ret = poll(fds, 1, POLL_TMOUT);
-+			if (timeout) {
-+				if (ret < 0) {
-+					ksft_print_msg("ERROR: [%s] Poll error %d\n",
-+						       __func__, ret);
-+					return TEST_FAILURE;
-+				}
-+				if (ret == 0)
-+					return TEST_PASS;
-+				break;
-+			}
-+			if (ret <= 0) {
-+				ksft_print_msg("ERROR: [%s] Poll error %d\n",
-+					       __func__, ret);
-+				return TEST_FAILURE;
-+			}
-+		}
- 
--	while (xsk_ring_prod__reserve(&xsk->tx, BATCH_SIZE, &idx) < BATCH_SIZE)
- 		complete_pkts(xsk, BATCH_SIZE);
-+	}
- 
- 	for (i = 0; i < BATCH_SIZE; i++) {
- 		struct xdp_desc *tx_desc = xsk_ring_prod__tx_desc(&xsk->tx, idx + i);
-@@ -933,11 +965,27 @@ static int __send_pkts(struct ifobject *ifobject, u32 *pkt_nb)
- 
- 	xsk_ring_prod__submit(&xsk->tx, i);
- 	xsk->outstanding_tx += valid_pkts;
--	if (complete_pkts(xsk, i))
--		return TEST_FAILURE;
- 
--	usleep(10);
--	return TEST_PASS;
-+	if (use_poll) {
-+		ret = poll(fds, 1, POLL_TMOUT);
-+		if (ret <= 0) {
-+			if (ret == 0 && timeout)
-+				return TEST_PASS;
-+
-+			ksft_print_msg("ERROR: [%s] Poll error %d\n", __func__, ret);
-+			return TEST_FAILURE;
-+		}
-+	}
-+
-+	if (!timeout) {
-+		if (complete_pkts(xsk, i))
-+			return TEST_FAILURE;
-+
-+		usleep(10);
-+		return TEST_PASS;
-+	}
-+
-+	return TEST_CONTINUE;
- }
- 
- static void wait_for_tx_completion(struct xsk_socket_info *xsk)
-@@ -948,29 +996,19 @@ static void wait_for_tx_completion(struct xsk_socket_info *xsk)
- 
- static int send_pkts(struct test_spec *test, struct ifobject *ifobject)
- {
-+	bool timeout = (!test->ifobj_rx->umem->umem) ? true : false;
- 	struct pollfd fds = { };
--	u32 pkt_cnt = 0;
-+	u32 pkt_cnt = 0, ret;
- 
- 	fds.fd = xsk_socket__fd(ifobject->xsk->xsk);
- 	fds.events = POLLOUT;
- 
- 	while (pkt_cnt < ifobject->pkt_stream->nb_pkts) {
--		int err;
--
--		if (ifobject->use_poll) {
--			int ret;
--
--			ret = poll(&fds, 1, POLL_TMOUT);
--			if (ret <= 0)
--				continue;
--
--			if (!(fds.revents & POLLOUT))
--				continue;
--		}
--
--		err = __send_pkts(ifobject, &pkt_cnt);
--		if (err || test->fail)
-+		ret = __send_pkts(ifobject, &pkt_cnt, ifobject->use_poll, &fds, timeout);
-+		if ((ret || test->fail) && !timeout)
- 			return TEST_FAILURE;
-+		else if (ret == TEST_PASS && timeout)
-+			return ret;
- 	}
- 
- 	wait_for_tx_completion(ifobject->xsk);
-@@ -1235,7 +1273,7 @@ static void *worker_testapp_validate_rx(void *arg)
- 
- 	pthread_barrier_wait(&barr);
- 
--	err = receive_pkts(ifobject, &fds);
-+	err = receive_pkts(test, ifobject, &fds);
- 
- 	if (!err && ifobject->validation_func)
- 		err = ifobject->validation_func(ifobject);
-@@ -1251,6 +1289,33 @@ static void *worker_testapp_validate_rx(void *arg)
- 	pthread_exit(NULL);
- }
- 
-+static int testapp_validate_traffic_single_thread(struct test_spec *test, struct ifobject *ifobj,
-+						  enum test_type type)
-+{
-+	pthread_t t0;
-+
-+	if (pthread_barrier_init(&barr, NULL, 2))
-+		exit_with_error(errno);
-+
-+	test->current_step++;
-+	if (type  == TEST_TYPE_POLL_RXQ_TMOUT)
-+		pkt_stream_reset(ifobj->pkt_stream);
-+	pkts_in_flight = 0;
-+
-+	/*Spawn thread */
-+	pthread_create(&t0, NULL, ifobj->func_ptr, test);
-+
-+	if (type  != TEST_TYPE_POLL_TXQ_TMOUT)
-+		pthread_barrier_wait(&barr);
-+
-+	if (pthread_barrier_destroy(&barr))
-+		exit_with_error(errno);
-+
-+	pthread_join(t0, NULL);
-+
-+	return !!test->fail;
-+}
-+
- static int testapp_validate_traffic(struct test_spec *test)
- {
- 	struct ifobject *ifobj_tx = test->ifobj_tx;
-@@ -1548,12 +1613,30 @@ static void run_pkt_test(struct test_spec *test, enum test_mode mode, enum test_
- 
- 		pkt_stream_restore_default(test);
- 		break;
--	case TEST_TYPE_POLL:
--		test->ifobj_tx->use_poll = true;
-+	case TEST_TYPE_RX_POLL:
- 		test->ifobj_rx->use_poll = true;
--		test_spec_set_name(test, "POLL");
-+		test_spec_set_name(test, "POLL_RX");
-+		testapp_validate_traffic(test);
-+		break;
-+	case TEST_TYPE_TX_POLL:
-+		test->ifobj_tx->use_poll = true;
-+		test_spec_set_name(test, "POLL_TX");
- 		testapp_validate_traffic(test);
- 		break;
-+	case TEST_TYPE_POLL_TXQ_TMOUT:
-+		test_spec_set_name(test, "POLL_TXQ_FULL");
-+		test->ifobj_tx->use_poll = true;
-+		/* create invalid frame by set umem frame_size and pkt length equal to 2048 */
-+		test->ifobj_tx->umem->frame_size = 2048;
-+		pkt_stream_replace(test, 2 * DEFAULT_PKT_CNT, 2048);
-+		testapp_validate_traffic_single_thread(test, test->ifobj_tx, type);
-+		pkt_stream_restore_default(test);
-+		break;
-+	case TEST_TYPE_POLL_RXQ_TMOUT:
-+		test_spec_set_name(test, "POLL_RXQ_EMPTY");
-+		test->ifobj_rx->use_poll = true;
-+		testapp_validate_traffic_single_thread(test, test->ifobj_rx, type);
-+		break;
- 	case TEST_TYPE_ALIGNED_INV_DESC:
- 		test_spec_set_name(test, "ALIGNED_INV_DESC");
- 		testapp_invalid_desc(test);
-diff --git a/tools/testing/selftests/bpf/xskxceiver.h b/tools/testing/selftests/bpf/xskxceiver.h
-index 3d17053f98e5..ee97576757a9 100644
---- a/tools/testing/selftests/bpf/xskxceiver.h
-+++ b/tools/testing/selftests/bpf/xskxceiver.h
-@@ -27,6 +27,7 @@
- 
- #define TEST_PASS 0
- #define TEST_FAILURE -1
-+#define TEST_CONTINUE 1
- #define MAX_INTERFACES 2
- #define MAX_INTERFACE_NAME_CHARS 7
- #define MAX_INTERFACES_NAMESPACE_CHARS 10
-@@ -48,7 +49,7 @@
- #define SOCK_RECONF_CTR 10
- #define BATCH_SIZE 64
- #define POLL_TMOUT 1000
--#define RECV_TMOUT 3
-+#define THREAD_TMOUT 3
- #define DEFAULT_PKT_CNT (4 * 1024)
- #define DEFAULT_UMEM_BUFFERS (DEFAULT_PKT_CNT / 4)
- #define UMEM_SIZE (DEFAULT_UMEM_BUFFERS * XSK_UMEM__DEFAULT_FRAME_SIZE)
-@@ -68,7 +69,10 @@ enum test_type {
- 	TEST_TYPE_RUN_TO_COMPLETION,
- 	TEST_TYPE_RUN_TO_COMPLETION_2K_FRAME,
- 	TEST_TYPE_RUN_TO_COMPLETION_SINGLE_PKT,
--	TEST_TYPE_POLL,
-+	TEST_TYPE_RX_POLL,
-+	TEST_TYPE_TX_POLL,
-+	TEST_TYPE_POLL_RXQ_TMOUT,
-+	TEST_TYPE_POLL_TXQ_TMOUT,
- 	TEST_TYPE_UNALIGNED,
- 	TEST_TYPE_ALIGNED_INV_DESC,
- 	TEST_TYPE_ALIGNED_INV_DESC_2K_FRAME,
--- 
-2.34.1
-
+--Jinghao
+>>>>
+>>>> base-commit: d295daf505758f9a0e4d05f4ee3bfdfb4192c18f
