@@ -2,100 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAB405856D8
-	for <lists+bpf@lfdr.de>; Sat, 30 Jul 2022 00:27:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63CAC5856E2
+	for <lists+bpf@lfdr.de>; Sat, 30 Jul 2022 00:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239120AbiG2W10 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Jul 2022 18:27:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55686 "EHLO
+        id S231311AbiG2WkW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Jul 2022 18:40:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229950AbiG2W1Z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Jul 2022 18:27:25 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C4758AB2B;
-        Fri, 29 Jul 2022 15:27:24 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id e15so7384298edj.2;
-        Fri, 29 Jul 2022 15:27:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=iVLkBvqvxxQmzM1anS4jAEK5JqYhmqqjCIgQmNoi7rg=;
-        b=Q2Fr4ogA0UKbX/4KTDe6Ln4UfSgAt+oVpF7n1I4/L9l6vxMdaPpFof+vfnPSCX77jo
-         pY89Eg+oEc+jW9Oz+tm4taoCb1r8OwFyaCffG/1ouprQG3PAugTMXWVv8ppnDun0rKAh
-         AVC8JliqTTM8Idxu3kERXCVwa6VJj3AHoQy1SKDH23XQcZV5xCk2nvE6MAhe8XNVrOAC
-         ScedkdWaxejc7w/3QxsLs6X84+nwWWMJbxGxZWFE5XkvZNuk262hMRUyhGxknqm1+enL
-         DCJ23fXGUMZ+HNFvnBgEjA2gjWip5P2Fw8M/sFAsL4ZfiSbrlcpzhlnj8sVPt3Llxriy
-         rw3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=iVLkBvqvxxQmzM1anS4jAEK5JqYhmqqjCIgQmNoi7rg=;
-        b=xBCDDpgSxxMqsd+i7C0D2/RsGljI379QiNbdpYgs8vDdBnERvcx1XQQehcDH6gwc/h
-         5mxAbCSH0U8Yuv6Vi9SRJUGJyUaEVk5b2B8besHhSK1KPl+S+SIZqe4JuBKQmrrk+zJD
-         79Jibjq5KwHt1Wu3/m5TovYHtvr16zNm5tUTwt7KyH8TWFiN9ehVqeURmnriEricHtQX
-         DdFfhH7uqTjfXg9VfFbHriveOrPjZQYMYkhecEwHr7oYL98/8cJqYYbpijKsXLSEElMk
-         uRee9ohYiCrrfkGZZ7e6ioVwmBQmxlVQqre+WMXN0XrBOfvdD+7xrx1/CGjmM9O67uPZ
-         FI6w==
-X-Gm-Message-State: AJIora/jsIJn+mEMlRv17U+D1LVHTMJFjkjUvkh+mLbbybino6u3VVAx
-        S+Sr5hLxpV98yxXLVKIoRSDQtQSmAd5JZ6/PRaRmM6Qedfw=
-X-Google-Smtp-Source: AGRyM1tsKByFdoTIvffANQ2Z6isozBuT+TmFj3YqaWCB5qS89G1yoG/RrpMYffg2MydThKPycJF08fv7GCBV1hzvwak=
-X-Received: by 2002:a05:6402:1945:b0:43b:d456:daf8 with SMTP id
- f5-20020a056402194500b0043bd456daf8mr5338515edz.81.1659133642700; Fri, 29 Jul
- 2022 15:27:22 -0700 (PDT)
+        with ESMTP id S229918AbiG2WkP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Jul 2022 18:40:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA03D14030;
+        Fri, 29 Jul 2022 15:40:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1EF4E6206C;
+        Fri, 29 Jul 2022 22:40:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6060AC43140;
+        Fri, 29 Jul 2022 22:40:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1659134413;
+        bh=g8IspXOTTAcN1lgRiVT1J9dflPj9acBNDo5/Xv/aLas=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=N0jALmHkH8eZGQWqYHurFaYpEwinQVbWy0/fuED125juzTHrSz4DYOcljDnLO+7k4
+         IJRcef+PpY3np4UiQJwE8rw+H400dUxzKOGkKC5gPOR1DC4cr2CdlihyX8CCZLA+Lx
+         Mqp92D6/WOkjpSK0bcEcQJVX5k1SpwstzAjqHMi9ewIz2nxpn68l7LIKU/Pia7a6kx
+         Kggpghu1f8AjWvdb06qmmPhQ8Zg+kpRxpnAPTLAUQU4Sj1BgmdLXT2KtHEdh6Dip0A
+         kVEhUfg6vPpD63AYbj0z5iZuccn/u3H08xormeHBDdCca57GpTnH93HJpTpMHNWXuP
+         UTJvtwokIbXnQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 444C2C43142;
+        Fri, 29 Jul 2022 22:40:13 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <2c105a1ff3071796189093c536218e44ea3b1aa0.1659122785.git.dxu@dxuuu.xyz>
-In-Reply-To: <2c105a1ff3071796189093c536218e44ea3b1aa0.1659122785.git.dxu@dxuuu.xyz>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 29 Jul 2022 15:27:11 -0700
-Message-ID: <CAEf4BzbnQJ0cTU6NsaLSTVs6CB-JTmoXpR_aWRVO-V1GppNPKg@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: Fix oudated __bpf_skc_lookup() comment
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH -next] bpf: remove unneeded semicolon
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <165913441327.29361.1203034031458667191.git-patchwork-notify@kernel.org>
+Date:   Fri, 29 Jul 2022 22:40:13 +0000
+References: <20220725222733.55613-1-yang.lee@linux.alibaba.com>
+In-Reply-To: <20220725222733.55613-1-yang.lee@linux.alibaba.com>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, abaci@linux.alibaba.com
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 29, 2022 at 12:47 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> The function returns a pointer now.
->
-> Fixes: edbf8c01de5a ("bpf: add skc_lookup_tcp helper")
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
+
+On Tue, 26 Jul 2022 06:27:33 +0800 you wrote:
+> Eliminate the following coccicheck warning:
+> /kernel/bpf/trampoline.c:101:2-3: Unneeded semicolon
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 > ---
+>  kernel/bpf/trampoline.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-This was already done in [0] in bpf-next.
+Here is the summary with links:
+  - [-next] bpf: remove unneeded semicolon
+    https://git.kernel.org/bpf/bpf-next/c/14250fa4839b
 
-  [0] f5be22c64bd6 ("bpf: Fix bpf_skc_lookup comment wrt. return type")
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
->  net/core/filter.c | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 5d16d66727fc..866ca05f95e0 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -6463,8 +6463,6 @@ static struct sock *sk_lookup(struct net *net, struct bpf_sock_tuple *tuple,
->
->  /* bpf_skc_lookup performs the core lookup for different types of sockets,
->   * taking a reference on the socket if it doesn't have the flag SOCK_RCU_FREE.
-> - * Returns the socket as an 'unsigned long' to simplify the casting in the
-> - * callers to satisfy BPF_CALL declarations.
->   */
->  static struct sock *
->  __bpf_skc_lookup(struct sk_buff *skb, struct bpf_sock_tuple *tuple, u32 len,
-> --
-> 2.37.1
->
