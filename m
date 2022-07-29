@@ -2,54 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D1285854BD
-	for <lists+bpf@lfdr.de>; Fri, 29 Jul 2022 19:50:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3595E5854BE
+	for <lists+bpf@lfdr.de>; Fri, 29 Jul 2022 19:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233350AbiG2RuV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Jul 2022 13:50:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59864 "EHLO
+        id S238392AbiG2RuW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Jul 2022 13:50:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238385AbiG2RuS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Jul 2022 13:50:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8FA3E47
-        for <bpf@vger.kernel.org>; Fri, 29 Jul 2022 10:50:14 -0700 (PDT)
+        with ESMTP id S238383AbiG2RuV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Jul 2022 13:50:21 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 900B226CA
+        for <bpf@vger.kernel.org>; Fri, 29 Jul 2022 10:50:16 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 417D961F09
-        for <bpf@vger.kernel.org>; Fri, 29 Jul 2022 17:50:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 99903C433D7;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 06CB7B82907
+        for <bpf@vger.kernel.org>; Fri, 29 Jul 2022 17:50:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A2986C43140;
         Fri, 29 Jul 2022 17:50:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1659117013;
-        bh=iVNVR3aTt6qM+7BHkGfeFqSgHPGvMcZFvkcKzoIEPSY=;
+        bh=dHx1sZH2hpA1ZemXN097Bt5i8AnPMTTNYPj3d1aLRYk=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Xbk5Dhs/du3EIF9MCwvvWA7T0RSwf8Q12PdXnzz9BKP+DsCzaotF48WnaAOLRnD3/
-         FhQt7es47w/WGaV5MakeiU02tvahTO+LPxp2WzSuY3/D0PYFkuOn199NlaOIaoCNXR
-         JhDKZd8sPJkTsT0rMv3phmxaWLzGwPdqWBlgfszPrmKNliJz8JRvWPyYET3qNPHfYr
-         rb1MWDIHkhLj7I0Ie7Gjkfb3WGJBeU1xpI2Jq/tEH5GzGtpKuolk7MhQWbaHy/SgRY
-         ehODirHY99ZGoTWOyFX1xSZ9p8CyHCFVa8+TKF4h6JSWNP4/Z2QYIoQOu5N+fzYMQp
-         ksI/ryMgrtCbA==
+        b=ZLDIQifAUY52EvYywYYea/6S3myVW3qblP7X8uXu/w0NvcP15MOv6QS87I0hQbhdX
+         Nodmxzk+U2tCZfkxuPtF//ITePU5x5akrJkFrzfGix6mK2fSqnai0gXyu5rBTvpTIf
+         8wv76NOhrNcf85tkyCaNpPBrrB/KIP/q36fLNT6qOubDF3BaK1sKxdPjgR7oMkjZ3e
+         FQBKtJDLzzEWWcXv5f3y9eMUBlB4HW61FlB4GhOC0y2ofH8epmFG/DRWLibCwqT1MX
+         aGvxBPSzhPlLGxojiSIGrty2q4hmvZu/me4qmPcXwJRz9QLM4t4pMqYpM4pYLX1wAh
+         yECqHU1bF3y9g==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7D3B8C43143;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 859C2C43142;
         Fri, 29 Jul 2022 17:50:13 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] bpftool: Don't try to return value from void
- function in skeleton
+Subject: Re: [PATCH] bpftool: replace sizeof(arr)/sizeof(arr[0]) with ARRAY_SIZE
+ macro
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165911701350.9897.10598490718268919418.git-patchwork-notify@kernel.org>
+Message-Id: <165911701354.9897.17660683542908813821.git-patchwork-notify@kernel.org>
 Date:   Fri, 29 Jul 2022 17:50:13 +0000
-References: <20220726133203.514087-1-jthinz@mailbox.tu-berlin.de>
-In-Reply-To: <20220726133203.514087-1-jthinz@mailbox.tu-berlin.de>
-To:     =?utf-8?q?J=C3=B6rn-Thorben_Hinz_=3Cjthinz=40mailbox=2Etu-berlin=2Ede=3E?=@ci.codeaurora.org
-Cc:     bpf@vger.kernel.org, quentin@isovalent.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org
+References: <20220726093045.3374026-1-clementwei90@163.com>
+In-Reply-To: <20220726093045.3374026-1-clementwei90@163.com>
+To:     Rongguang Wei <clementwei90@163.com>
+Cc:     quentin@isovalent.com, ast@kernel.org, bpf@vger.kernel.org,
+        weirongguang@kylinos.cn
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -64,20 +61,19 @@ Hello:
 This patch was applied to bpf/bpf-next.git (master)
 by Andrii Nakryiko <andrii@kernel.org>:
 
-On Tue, 26 Jul 2022 15:32:03 +0200 you wrote:
-> A skeleton generated by bpftool previously contained a return followed
-> by an expression in OBJ_NAME__detach(), which has return type void. This
-> did not hurt, the bpf_object__detach_skeleton() called there returns
-> void itself anyway, but led to a warning when compiling with e.g.
-> -pedantic.
+On Tue, 26 Jul 2022 17:30:45 +0800 you wrote:
+> From: Rongguang Wei <weirongguang@kylinos.cn>
 > 
-> Signed-off-by: Jörn-Thorben Hinz <jthinz@mailbox.tu-berlin.de>
+> Use the ARRAY_SIZE macro and make the code more compact.
 > 
-> [...]
+> Signed-off-by: Rongguang Wei <weirongguang@kylinos.cn>
+> ---
+>  tools/bpf/bpftool/prog.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
 Here is the summary with links:
-  - [bpf-next] bpftool: Don't try to return value from void function in skeleton
-    https://git.kernel.org/bpf/bpf-next/c/a6df06744b2d
+  - bpftool: replace sizeof(arr)/sizeof(arr[0]) with ARRAY_SIZE macro
+    https://git.kernel.org/bpf/bpf-next/c/5eff8c18f124
 
 You are awesome, thank you!
 -- 
