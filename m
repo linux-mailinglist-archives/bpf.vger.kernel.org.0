@@ -2,78 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A8E7585605
-	for <lists+bpf@lfdr.de>; Fri, 29 Jul 2022 22:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF5D1585614
+	for <lists+bpf@lfdr.de>; Fri, 29 Jul 2022 22:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238557AbiG2UUO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Jul 2022 16:20:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54222 "EHLO
+        id S238561AbiG2U0q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Jul 2022 16:26:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233266AbiG2UUN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Jul 2022 16:20:13 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71E87BC3E
-        for <bpf@vger.kernel.org>; Fri, 29 Jul 2022 13:20:11 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id v18so5530904plo.8
-        for <bpf@vger.kernel.org>; Fri, 29 Jul 2022 13:20:11 -0700 (PDT)
+        with ESMTP id S230499AbiG2U0q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Jul 2022 16:26:46 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D8A46FA36
+        for <bpf@vger.kernel.org>; Fri, 29 Jul 2022 13:26:44 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id v17so7156727edc.1
+        for <bpf@vger.kernel.org>; Fri, 29 Jul 2022 13:26:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=idAIy7+0S11QYa5sGcSX6gc9lPvRo9Vp3l0WAuHQtjk=;
-        b=PMFaHTHQa+PrAa0+3LB0YE2Gw3DO46zUmMLxgR5INe3c+vUatwzrBO/Quyv7D7kKIZ
-         MiB6o3DlmAIna/epLhM8AagB7AATmiOJW5lgRVY1ldZbPfk6+ZuZOd+mWxpJRPwHmHvK
-         G5675hLDgJcFqZ6fJSBHJNdZxpDapVRjBAaxZ1TgY1nr4TuFlGNcte5o1kXBPZy1zoIU
-         pejl+FRpY27xM7h3VKQkIel6sunkXnYcguxcWOPLoX3EchVU8nrnnEHuQL73COaquSBG
-         RNU+5NOL07s0GgIaQfkMmVltngB2RAJPQaMDE/f5wk9OZg0RwF1A3XJB71AZYR6ONm2q
-         g59Q==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6usqecbZDEBijPawR7ofPwCug/h1TymgVTHvmpp52Vs=;
+        b=jfCmxqZTzFInk+o1dwJ6nqOB0ItVzqZPlZ72x+n22orZb6GNw/5QYAZ4d08JXHALXo
+         HoYMP03QTEZ8T4fXE7pPU4RkdP+FCkeY2rBrNulBdm17YfygkRojsEpziSzq2v/27rpw
+         Ivv8RGau9W+edN57WKUqThFEPHqg9u8TW9XTAAF1yv/O1lbZadTErH+F3CAWh/N0YMkj
+         6I+jLdvZAPtGEvUajgOYjU7edy2v3ZTuwowO7+zAuX2eAQE4SOKEVyhVFY15xqJ9/OM1
+         fPmYdDEMGmATta+IBzWJ37mosxZxzGN/mBd3rZsKcyl0OJFgrtDcCOrlQaAmegH0xBpl
+         Uebg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=idAIy7+0S11QYa5sGcSX6gc9lPvRo9Vp3l0WAuHQtjk=;
-        b=iVfPI6u6NrBsmRhA2QJJ6F/KEfHh3/cT5mE0q1Vgb1MG8wdd8UqmgL++ms1oBt3nf+
-         6WZ+h/Y0xkBtTISF98PGLKIA6WOWasGfrgOy91HvKH27Cgrbarq7IxfBY6XmXX2Qm0Id
-         oXmCFvI4CX2nBkyu7EO+3Q7BMj3nx2bGI1nVvYSEi9He1z0c7PteUWeIGPk/cg5CVNgK
-         kdVT/Ypx/UYOiMRftoAEyHS8y9+S9NudgGMtQOoQ3oTmmlvn5w1q73cTgr35WSx1yrXh
-         6CY2wf2oWWpprQBhRjnEoycmudI9QyzPtjra58e3LjA7lyLLMFA9h5KuNz51c8vdGjp2
-         0c6Q==
-X-Gm-Message-State: ACgBeo2a32LK2S8mfi2kfgpsJlX1r8GX4VZyDUG1CPSRFUD4txXKwmWB
-        QdCMYJEO9lcb2jzX/rvkVQqAnQ==
-X-Google-Smtp-Source: AA6agR6nHUcK/hTH9iTjPWf4bRPNRP8DKrbeNmMfaeO+5rE7W52o17goAn5aG0xF9I3FEwSDa+iTIg==
-X-Received: by 2002:a17:90a:ba11:b0:1f2:38ec:3be3 with SMTP id s17-20020a17090aba1100b001f238ec3be3mr5810238pjr.177.1659126010749;
-        Fri, 29 Jul 2022 13:20:10 -0700 (PDT)
-Received: from google.com (223.103.125.34.bc.googleusercontent.com. [34.125.103.223])
-        by smtp.gmail.com with ESMTPSA id x22-20020aa78f16000000b0052cec54e3b8sm467009pfr.215.2022.07.29.13.20.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Jul 2022 13:20:10 -0700 (PDT)
-Date:   Fri, 29 Jul 2022 20:20:05 +0000
-From:   Joe Burton <jevburton@google.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Joe Burton <jevburton.kernel@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 bpf-next] libbpf: Add bpf_obj_get_opts()
-Message-ID: <YuRA9Tmy6YNdM7Ih@google.com>
-References: <20220719194028.4180569-1-jevburton.kernel@gmail.com>
- <CAEf4BzbWpQS6js5LfS80PkqwDwcLc+NgzfqqUTG-CkLP16shCg@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6usqecbZDEBijPawR7ofPwCug/h1TymgVTHvmpp52Vs=;
+        b=4vUTuhSX+OppxLU9/1xTCa4r/0uBddv1U++gFwnDR/PkwQYVRMNURdFbWaWGE0vYQe
+         /HO4nKbUEXyKGZOL4KMKKnuHX5ahz7cBP7fufTDHDudarbGVH98JWiyNLGXrGSUNa6V1
+         tcwi2oM8maymU/pOC0B6DFnMLDoUMDt5cZv2FHhyP70/0IZ22DcldalYkVZCxkH91SXk
+         Hqas9557LvWBKfENM7WkKJP2Or3ugh/cS0eg0YcK2fzczQ4ZHl/G5adZQ5wlpxkmK07J
+         +SPgiB5ju4edXSnmMwUdizf3xC+Bxo3TxKc9ZNnn1JXxPsXAC62QAqBK/Ffz5YBmz7TV
+         I+Vw==
+X-Gm-Message-State: AJIora/T7J9IyZ+DQNH9u04Xe4igcSPobyOREbmgdxB+Y8cvjeBlW6+M
+        DVWZFJEgrOv/wnvyEyw2jJBqcSf9rS3SxCJcog5qEV3mOSQ=
+X-Google-Smtp-Source: AGRyM1tT0+nDEL+lBIpE94k9ocsnW9m1YAnoFejJpTQB90PDS2PFJMiSXHTwZgvWtuPvEdqlAagto+iNh2kxZ4OeQiQ=
+X-Received: by 2002:a05:6402:190e:b0:43c:34ba:1903 with SMTP id
+ e14-20020a056402190e00b0043c34ba1903mr5288737edz.229.1659126402732; Fri, 29
+ Jul 2022 13:26:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzbWpQS6js5LfS80PkqwDwcLc+NgzfqqUTG-CkLP16shCg@mail.gmail.com>
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+References: <20220726184706.954822-1-joannelkoong@gmail.com>
+ <20220726184706.954822-2-joannelkoong@gmail.com> <20220728233936.hjj2smwey447zqyy@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20220728233936.hjj2smwey447zqyy@kafai-mbp.dhcp.thefacebook.com>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Fri, 29 Jul 2022 13:26:31 -0700
+Message-ID: <CAJnrk1b2WoHV=iE3j4n_4=2NBP3GaoeD=v-Zt+p-M9N=LApsuQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/3] bpf: Add skb dynptrs
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,25 +67,120 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jul 27, 2022 at 04:02:43PM -0700, Andrii Nakryiko wrote:
+On Thu, Jul 28, 2022 at 4:39 PM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> On Tue, Jul 26, 2022 at 11:47:04AM -0700, Joanne Koong wrote:
+> > @@ -1567,6 +1607,18 @@ BPF_CALL_3(bpf_dynptr_data, struct bpf_dynptr_kern *, ptr, u32, offset, u32, len
+> >       if (bpf_dynptr_is_rdonly(ptr))
+> Is it possible to allow data slice for rdonly dynptr-skb?
+> and depends on the may_access_direct_pkt_data() check in the verifier.
 
-Applied both of these in v3, which I'll send out in a moment. Thanks for
-the feedback!
+Ooh great idea. This should be very simple to do, since the data slice
+that gets returned is assigned as PTR_TO_PACKET. So any stx operations
+on it will by default go through the may_access_direct_pkt_data()
+check. I'll add this for v2.
 
-> >  int bpf_obj_get(const char *pathname)
-> > +{
-> > +       LIBBPF_OPTS(bpf_obj_get_opts, opts);
-> 
-> if you were doing it this way, here should be an empty line. But
-> really you can/should just pass NULL instead of opts in this case.
-
-> > +struct bpf_obj_get_opts {
-> > +       size_t sz; /* size of this struct for forward/backward compatibility */
+>
+> >               return 0;
+> >
+> > +     type = bpf_dynptr_get_type(ptr);
 > > +
-> > +       __u32 file_flags;
-> 
-> please add size_t :0; to avoid non-zero-initialized padding  (we do it
-> in a lot of other opts structs)
-> 
-
-TIL about this trick. Very clever.
+> > +     if (type == BPF_DYNPTR_TYPE_SKB) {
+> > +             struct sk_buff *skb = ptr->data;
+> > +
+> > +             /* if the data is paged, the caller needs to pull it first */
+> > +             if (ptr->offset + offset + len > skb->len - skb->data_len)
+> > +                     return 0;
+> > +
+> > +             return (unsigned long)(skb->data + ptr->offset + offset);
+> > +     }
+> > +
+> >       return (unsigned long)(ptr->data + ptr->offset + offset);
+> >  }
+>
+> [ ... ]
+>
+> > -static u32 stack_slot_get_id(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
+> > +static void stack_slot_get_dynptr_info(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
+> > +                                    struct bpf_call_arg_meta *meta)
+> >  {
+> >       struct bpf_func_state *state = func(env, reg);
+> >       int spi = get_spi(reg->off);
+> >
+> > -     return state->stack[spi].spilled_ptr.id;
+> > +     meta->ref_obj_id = state->stack[spi].spilled_ptr.id;
+> > +     meta->type = state->stack[spi].spilled_ptr.dynptr.type;
+> >  }
+> >
+> >  static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+> > @@ -6052,6 +6057,9 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+> >                               case DYNPTR_TYPE_RINGBUF:
+> >                                       err_extra = "ringbuf ";
+> >                                       break;
+> > +                             case DYNPTR_TYPE_SKB:
+> > +                                     err_extra = "skb ";
+> > +                                     break;
+> >                               default:
+> >                                       break;
+> >                               }
+> > @@ -6065,8 +6073,10 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+> >                                       verbose(env, "verifier internal error: multiple refcounted args in BPF_FUNC_dynptr_data");
+> >                                       return -EFAULT;
+> >                               }
+> > -                             /* Find the id of the dynptr we're tracking the reference of */
+> > -                             meta->ref_obj_id = stack_slot_get_id(env, reg);
+> > +                             /* Find the id and the type of the dynptr we're tracking
+> > +                              * the reference of.
+> > +                              */
+> > +                             stack_slot_get_dynptr_info(env, reg, meta);
+> >                       }
+> >               }
+> >               break;
+> > @@ -7406,7 +7416,11 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+> >               regs[BPF_REG_0].type = PTR_TO_TCP_SOCK | ret_flag;
+> >       } else if (base_type(ret_type) == RET_PTR_TO_ALLOC_MEM) {
+> >               mark_reg_known_zero(env, regs, BPF_REG_0);
+> > -             regs[BPF_REG_0].type = PTR_TO_MEM | ret_flag;
+> > +             if (func_id == BPF_FUNC_dynptr_data &&
+> > +                 meta.type == BPF_DYNPTR_TYPE_SKB)
+> > +                     regs[BPF_REG_0].type = PTR_TO_PACKET | ret_flag;
+> > +             else
+> > +                     regs[BPF_REG_0].type = PTR_TO_MEM | ret_flag;
+> >               regs[BPF_REG_0].mem_size = meta.mem_size;
+> check_packet_access() uses range.
+> It took me a while to figure range and mem_size is in union.
+> Mentioning here in case someone has similar question.
+For v2, I'll add this as a comment in the code or I'll include
+"regs[BPF_REG_0].range = meta.mem_size" explicitly to make it more
+obvious :)
+>
+> >       } else if (base_type(ret_type) == RET_PTR_TO_MEM_OR_BTF_ID) {
+> >               const struct btf_type *t;
+> > @@ -14132,6 +14146,25 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+> >                       goto patch_call_imm;
+> >               }
+> >
+> > +             if (insn->imm == BPF_FUNC_dynptr_from_skb) {
+> > +                     if (!may_access_direct_pkt_data(env, NULL, BPF_WRITE))
+> > +                             insn_buf[0] = BPF_MOV32_IMM(BPF_REG_4, true);
+> > +                     else
+> > +                             insn_buf[0] = BPF_MOV32_IMM(BPF_REG_4, false);
+> > +                     insn_buf[1] = *insn;
+> > +                     cnt = 2;
+> > +
+> > +                     new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
+> > +                     if (!new_prog)
+> > +                             return -ENOMEM;
+> > +
+> > +                     delta += cnt - 1;
+> > +                     env->prog = new_prog;
+> > +                     prog = new_prog;
+> > +                     insn = new_prog->insnsi + i + delta;
+> > +                     goto patch_call_imm;
+> > +             }
+> Have you considered to reject bpf_dynptr_write()
+> at prog load time?
+It's possible to reject bpf_dynptr_write() at prog load time but would
+require adding tracking in the verifier for whether a dynptr is
+read-only or not. Do you think it's better to reject it at load time
+instead of returning NULL at runtime?
