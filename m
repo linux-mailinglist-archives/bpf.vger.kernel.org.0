@@ -2,62 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60FB458604C
-	for <lists+bpf@lfdr.de>; Sun, 31 Jul 2022 20:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3BDB586185
+	for <lists+bpf@lfdr.de>; Sun, 31 Jul 2022 23:08:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229826AbiGaSKv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 31 Jul 2022 14:10:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53748 "EHLO
+        id S231264AbiGaVIU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 31 Jul 2022 17:08:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbiGaSKv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 31 Jul 2022 14:10:51 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD6FA193
-        for <bpf@vger.kernel.org>; Sun, 31 Jul 2022 11:10:50 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id x7so8592036pll.7
-        for <bpf@vger.kernel.org>; Sun, 31 Jul 2022 11:10:50 -0700 (PDT)
+        with ESMTP id S230287AbiGaVIT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 31 Jul 2022 17:08:19 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 019CBDF59
+        for <bpf@vger.kernel.org>; Sun, 31 Jul 2022 14:08:17 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id f22so538857edc.7
+        for <bpf@vger.kernel.org>; Sun, 31 Jul 2022 14:08:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1nqfIOdDtwMXR2oqlxfOA/ZiP+LTfGK3RwTusDejpX4=;
-        b=BX+nSPY/2TLrpg0311blwi6SOwVn52PCgFr5MNcT2bUfbgK3dTeGDhNfND89MFeRFv
-         UjQHNm0GjM9pAYBT911yhLKt6/6whIZFQWAeo2txB3t4cU/ArKKE/vs75oXvE96i0jn/
-         jBBagC73UXRBRKsl4f/ci4hbdY3e4wqb75fgUeAEj9DQMRiTqu5eyR0GIQSN94jkJ7qB
-         gwCjjT028MYacSkyBw5roJFlxUIi+S1s++7eQoDtc8etgdrPxq4e4Dsesej8W2u/B/ot
-         OtbMktzB/tg4faGTZVVSTpiOt3gyvH335oVPLVMhvgL2g6ihKSZnNm5+DWU8JGsnsjR2
-         LVrg==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc;
+        bh=VqQ4sb4V9J76T+WwHKPB5LfSBOfTPlzm3qwF/bhChPs=;
+        b=N52d6wWRtHsKpHCZfO9l+mSihzqN/RVKlJacb4TkB4Cy7l5S+BMrmtzAZShGuknKzf
+         ACgb3X4ECIblAwRIHJehORfeVbLaYWu0RdYbZ2zVTGURfp097z9cEe/RSeztu/X8TOlM
+         89LSSAEAgWjAygvNCfcB+9RGwxGlYwTtFiY03hwuHLJJPKbcGLWyXOLnEAJ5P6tpEk0I
+         3CUawqBUaIDLEa5BZaZck59GSARDX83+1tOUqFT57r9HWXCqSrpDK1KQUAApan3nYUnS
+         4olxWbATbRKaWTITasWRQeLw4HHHkJGVgu+IJ1ptfMkhZ0Vno454/xnpLbOLq6SpUjN3
+         H21g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1nqfIOdDtwMXR2oqlxfOA/ZiP+LTfGK3RwTusDejpX4=;
-        b=WzkWHeRnVfV6VbZ3ewKd/Eeld1guinTOsBxoFPHphS9jdFgQp6hVO2+UvOnRKm6WIY
-         09DgodfSDra/ajEt7csJjfGePkwkbCIQBouPpyaX/FULk1Y7MqtXnB01nbeESGeC9Mrh
-         Y3uMAEl1Lhf8d+MRFLWR9Pojo1t2fOfgM80Pk7V9IVqlV2DfnlXJT0VD2gPK/qHXnCh0
-         a9LKoHTGUt/cL9vsiDnerS4JuQn1gnBnqN2gMGmDeYulGPPxoGwxZNtWWhR7BTo49m5a
-         vEqK295GbhhjQczHIbv1AIu1OfJiFMAZfuOapsSgWoK+Gi2RFjX2GZ19oIxre7a1fp1L
-         oZRw==
-X-Gm-Message-State: ACgBeo33MvbAgTzSGR0lezr2/QEn0iAXa0bGgDZQ/VoBjOkZ3pHqDMMf
-        FVY/hMNB+9yo5lkxccmKRkr4xNnIRqw=
-X-Google-Smtp-Source: AA6agR5kSwYf1qjDfW2AkQOxz+z8nbd9hR4lMhXOMLekUmDAa04rHsHBcFW4JtH1ZrrjSd7Jx3p0Kg==
-X-Received: by 2002:a17:902:cec6:b0:16e:ec03:ff1 with SMTP id d6-20020a170902cec600b0016eec030ff1mr1645052plg.96.1659291049210;
-        Sun, 31 Jul 2022 11:10:49 -0700 (PDT)
-Received: from localhost (fwdproxy-prn-027.fbsv.net. [2a03:2880:ff:1b::face:b00c])
-        by smtp.gmail.com with ESMTPSA id q12-20020a170902a3cc00b0016c6a6d8967sm7775891plb.83.2022.07.31.11.10.48
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc;
+        bh=VqQ4sb4V9J76T+WwHKPB5LfSBOfTPlzm3qwF/bhChPs=;
+        b=bkgG8eLipek54lJNcLHJAiQ59466qEQcpqyu40LgZOBsXKIkbf/liwVv3c+h3V8Yh3
+         82cgnga+Zbc4bJn+L1oQ+mHH0+DyS5V14A+bKzUqpb8fTqUtpbKXZp7cGckvkUOcoAEp
+         77koDSxHcYV1qysKwjNw1hjQWiU7kwNQrtTONYxQzDbXuIH0hOfwl73KkigLkkiYx0NO
+         ZBAt8ILPV/CysNOBJSrAu0ECcYVTodhDMwBWVVbI3PCcl0UpTR27h9SBqXIPI5Qx8m8d
+         0HPwnvMDERWOJkPzIlIdDmhGFRRxu2Kp26/5swPFvteePXBU6E3TJeDqJE5+fPi97sXN
+         NUHg==
+X-Gm-Message-State: AJIora+sOPPIphbfIX+PEUR2zL7OzTW7cpbMOe+XXeqF0ZDguIr8Io+9
+        IdVfyZR5QbdLEZjQTVlMkOk=
+X-Google-Smtp-Source: AGRyM1tGBHVq3VupnSVGsPikAOwRM5rHkicbaqKtlGAqNrDQKNQ6vO+faasFi0n4cbf2TXTM6KIKog==
+X-Received: by 2002:a05:6402:5412:b0:435:5997:ccb5 with SMTP id ev18-20020a056402541200b004355997ccb5mr12326355edb.167.1659301696576;
+        Sun, 31 Jul 2022 14:08:16 -0700 (PDT)
+Received: from krava ([83.240.61.175])
+        by smtp.gmail.com with ESMTPSA id p6-20020a17090653c600b007307c557e31sm769942ejo.106.2022.07.31.14.08.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Jul 2022 11:10:48 -0700 (PDT)
-From:   Manu Bretelle <chantr4@gmail.com>
-To:     bpf@vger.kernel.org, andrii@kernel.org, quentin@isovalent.com
-Subject: [PATCH bpf-next v2] bpftool: Remove BPF_OBJ_NAME_LEN restriction when looking up bpf program by name
-Date:   Sun, 31 Jul 2022 11:10:07 -0700
-Message-Id: <20220731181007.3130320-1-chantr4@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Sun, 31 Jul 2022 14:08:16 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Sun, 31 Jul 2022 23:08:13 +0200
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH bpf-next 0/5] bpf: Fixes for CONFIG_X86_KERNEL_IBT
+Message-ID: <YubvPcHwPrcc1CD0@krava>
+References: <20220724212146.383680-1-jolsa@kernel.org>
+ <CAEf4Bzbrqrg-wuNNWNJ1GSQQzLOF7azzM8B17ti1TBz_D7irKg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4Bzbrqrg-wuNNWNJ1GSQQzLOF7azzM8B17ti1TBz_D7irKg@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,91 +79,71 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bpftool was limiting the length of names to BPF_OBJ_NAME_LEN in prog_parse
-fds.
+On Fri, Jul 29, 2022 at 03:18:54PM -0700, Andrii Nakryiko wrote:
+> On Sun, Jul 24, 2022 at 2:21 PM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > hi,
+> > Martynas reported bpf_get_func_ip returning +4 address when
+> > CONFIG_X86_KERNEL_IBT option is enabled and I found there are
+> > some failing bpf tests when this option is enabled.
+> >
+> > The CONFIG_X86_KERNEL_IBT option adds endbr instruction at the
+> > function entry, so the idea is to 'fix' entry ip for kprobe_multi
+> > and trampoline probes, because they are placed on the function
+> > entry.
+> >
+> > For kprobes I only fixed the bpf test program to adjust ip based
+> > on CONFIG_X86_KERNEL_IBT option. I'm not sure what the right fix
+> > should be in here, because I think user should be aware where the
+> 
+> user can't be aware of this when using multi-kprobe attach by symbolic
+> name of the function. So I think bpf_get_func_ip() at least in that
+> case should be compensating for KERNEL_IBT.
 
-Since commit b662000aff84 ("bpftool: Adding support for BTF program names")
-we can get the full program name from BTF.
+sorry I said kprobes, but that does not include kprobe multi link,
+I meant what you call general kprobe below
 
-This patch removes the restriction of name length when running `bpftool
-prog show name ${name}`.
+I do the adjustment for kprobe multi version of bpf_get_func_ip,
+so that should be fine
 
-Test:
-Tested against some internal program names that were longer than
-`BPF_OBJ_NAME_LEN`, here a redacted example of what was ran to test.
+> 
+> BTW, given in general kprobe can be placed in them middle of the
+> function, should bpf_get_func_ip() return zero or something for such
+> cases instead of wrong value somewhere in the middle of kprobe? If
+> user cares about current IP, they can get it with PT_REGS_IP(ctx),
+> right?
 
-    # previous behaviour
-    $ sudo bpftool prog show name some_long_program_name
-    Error: can't parse name
-    # with the patch
-    $ sudo ./bpftool prog show name some_long_program_name
-    123456789: tracing  name some_long_program_name  tag taghexa  gpl ....
-    ...
-    ...
-    ...
-    # too long
-    sudo ./bpftool prog show name $(python3 -c 'print("A"*128)')
-    Error: can't parse name
-    # not too long but no match
-    $ sudo ./bpftool prog show name $(python3 -c 'print("A"*127)')
+true.. we could add flag to 'struct kprobe' to indicate it's placed
+on function's entry and check on endbr instruction for IBT config,
+and return 0 for anything else
 
-Signed-off-by: Manu Bretelle <chantr4@gmail.com>
+jirka
 
----
-
-v1 -> v2:
-* Fix commit message to follow patch submission guidelines
-* use strncmp instead of strcmp
-* reintroduce arg length check against MAX_PROG_FULL_NAME
-
-
- tools/bpf/bpftool/common.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
-
-diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
-index 067e9ea59e3b..3ea747b3b194 100644
---- a/tools/bpf/bpftool/common.c
-+++ b/tools/bpf/bpftool/common.c
-@@ -722,6 +722,7 @@ print_all_levels(__maybe_unused enum libbpf_print_level level,
- 
- static int prog_fd_by_nametag(void *nametag, int **fds, bool tag)
- {
-+	char prog_name[MAX_PROG_FULL_NAME];
- 	unsigned int id = 0;
- 	int fd, nb_fds = 0;
- 	void *tmp;
-@@ -754,12 +755,20 @@ static int prog_fd_by_nametag(void *nametag, int **fds, bool tag)
- 			goto err_close_fd;
- 		}
- 
--		if ((tag && memcmp(nametag, info.tag, BPF_TAG_SIZE)) ||
--		    (!tag && strncmp(nametag, info.name, BPF_OBJ_NAME_LEN))) {
-+		if (tag && memcmp(nametag, info.tag, BPF_TAG_SIZE)) {
- 			close(fd);
- 			continue;
- 		}
- 
-+		if (!tag) {
-+			get_prog_full_name(&info, fd, prog_name,
-+				sizeof(prog_name));
-+			if (strncmp(nametag, prog_name, sizeof(prog_name))) {
-+				close(fd);
-+				continue;
-+			}
-+		}
-+
- 		if (nb_fds > 0) {
- 			tmp = realloc(*fds, (nb_fds + 1) * sizeof(int));
- 			if (!tmp) {
-@@ -820,7 +829,7 @@ int prog_parse_fds(int *argc, char ***argv, int **fds)
- 		NEXT_ARGP();
- 
- 		name = **argv;
--		if (strlen(name) > BPF_OBJ_NAME_LEN - 1) {
-+		if (strlen(name) > MAX_PROG_FULL_NAME - 1) {
- 			p_err("can't parse name");
- 			return -1;
- 		}
--- 
-2.30.2
-
+> > kprobe is placed, on the other hand we move the kprobe address if
+> > its placed on top of endbr instruction.
+> >
+> > v1 changes:
+> >   - read previous instruction in kprobe_multi link handler
+> >     and adjust entry_ip for CONFIG_X86_KERNEL_IBT option
+> >   - split first patch into 2 separate changes
+> >   - update changelogs
+> >
+> > thanks,
+> > jirka
+> >
+> >
+> > ---
+> > Jiri Olsa (5):
+> >       ftrace: Keep the resolved addr in kallsyms_callback
+> >       bpf: Adjust kprobe_multi entry_ip for CONFIG_X86_KERNEL_IBT
+> >       bpf: Use given function address for trampoline ip arg
+> >       selftests/bpf: Disable kprobe attach test with offset for CONFIG_X86_KERNEL_IBT
+> >       selftests/bpf: Fix kprobe get_func_ip tests for CONFIG_X86_KERNEL_IBT
+> >
+> >  arch/x86/net/bpf_jit_comp.c                               |  9 ++++-----
+> >  kernel/trace/bpf_trace.c                                  |  4 ++++
+> >  kernel/trace/ftrace.c                                     |  3 +--
+> >  tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c | 25 ++++++++++++++++++++-----
+> >  tools/testing/selftests/bpf/progs/get_func_ip_test.c      |  7 +++++--
+> >  tools/testing/selftests/bpf/progs/kprobe_multi.c          |  2 +-
+> >  6 files changed, 35 insertions(+), 15 deletions(-)
