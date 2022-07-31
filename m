@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3BDB586185
-	for <lists+bpf@lfdr.de>; Sun, 31 Jul 2022 23:08:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8B8058618B
+	for <lists+bpf@lfdr.de>; Sun, 31 Jul 2022 23:14:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231264AbiGaVIU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 31 Jul 2022 17:08:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57184 "EHLO
+        id S237982AbiGaVOk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 31 Jul 2022 17:14:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230287AbiGaVIT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 31 Jul 2022 17:08:19 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 019CBDF59
-        for <bpf@vger.kernel.org>; Sun, 31 Jul 2022 14:08:17 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id f22so538857edc.7
-        for <bpf@vger.kernel.org>; Sun, 31 Jul 2022 14:08:17 -0700 (PDT)
+        with ESMTP id S232336AbiGaVOk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 31 Jul 2022 17:14:40 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2721223B
+        for <bpf@vger.kernel.org>; Sun, 31 Jul 2022 14:14:39 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id fy29so17052845ejc.12
+        for <bpf@vger.kernel.org>; Sun, 31 Jul 2022 14:14:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc;
-        bh=VqQ4sb4V9J76T+WwHKPB5LfSBOfTPlzm3qwF/bhChPs=;
-        b=N52d6wWRtHsKpHCZfO9l+mSihzqN/RVKlJacb4TkB4Cy7l5S+BMrmtzAZShGuknKzf
-         ACgb3X4ECIblAwRIHJehORfeVbLaYWu0RdYbZ2zVTGURfp097z9cEe/RSeztu/X8TOlM
-         89LSSAEAgWjAygvNCfcB+9RGwxGlYwTtFiY03hwuHLJJPKbcGLWyXOLnEAJ5P6tpEk0I
-         3CUawqBUaIDLEa5BZaZck59GSARDX83+1tOUqFT57r9HWXCqSrpDK1KQUAApan3nYUnS
-         4olxWbATbRKaWTITasWRQeLw4HHHkJGVgu+IJ1ptfMkhZ0Vno454/xnpLbOLq6SpUjN3
-         H21g==
+        bh=3//CunvtFkZt4XvlNgLtMfUiOtkab4hADb/1RUx2yjE=;
+        b=mCHkNVWdswM+Nna/doxGRedFDg9aVsF21Vr4C8OQggmXw8yJ/XN2Y4W64C05Z5OZ+m
+         hXt34WtEOhPJBNO+vg5ufC3iCCh3F+TZBszJDMEGmuxETLZF9F29eRyPF6jfR+21tzhV
+         gzbuh0kXgQUOmx6u6Mq6SAKDRb2tnA+jdSTMomRvCELFSGnpT+9t7+frFSF7G/z5OfRG
+         Eob+pD+tBdgrsyzMrzHOYwvgDjMT7sPbfeeAfGj/0tIIfMmUPIlihoTPFHJkzXpBv+BT
+         Ru62xcdRMYeyXrVgNyCwSQwgprm5zk0DhOgrbOD3Q9eceFUb3Rxo46vlTX9mrD+g55ev
+         6K5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc;
-        bh=VqQ4sb4V9J76T+WwHKPB5LfSBOfTPlzm3qwF/bhChPs=;
-        b=bkgG8eLipek54lJNcLHJAiQ59466qEQcpqyu40LgZOBsXKIkbf/liwVv3c+h3V8Yh3
-         82cgnga+Zbc4bJn+L1oQ+mHH0+DyS5V14A+bKzUqpb8fTqUtpbKXZp7cGckvkUOcoAEp
-         77koDSxHcYV1qysKwjNw1hjQWiU7kwNQrtTONYxQzDbXuIH0hOfwl73KkigLkkiYx0NO
-         ZBAt8ILPV/CysNOBJSrAu0ECcYVTodhDMwBWVVbI3PCcl0UpTR27h9SBqXIPI5Qx8m8d
-         0HPwnvMDERWOJkPzIlIdDmhGFRRxu2Kp26/5swPFvteePXBU6E3TJeDqJE5+fPi97sXN
-         NUHg==
-X-Gm-Message-State: AJIora+sOPPIphbfIX+PEUR2zL7OzTW7cpbMOe+XXeqF0ZDguIr8Io+9
-        IdVfyZR5QbdLEZjQTVlMkOk=
-X-Google-Smtp-Source: AGRyM1tGBHVq3VupnSVGsPikAOwRM5rHkicbaqKtlGAqNrDQKNQ6vO+faasFi0n4cbf2TXTM6KIKog==
-X-Received: by 2002:a05:6402:5412:b0:435:5997:ccb5 with SMTP id ev18-20020a056402541200b004355997ccb5mr12326355edb.167.1659301696576;
-        Sun, 31 Jul 2022 14:08:16 -0700 (PDT)
+        bh=3//CunvtFkZt4XvlNgLtMfUiOtkab4hADb/1RUx2yjE=;
+        b=dONi0cX0XV2Sr9c3Ca4I4lIKELbVTI1mcKS6MBApdPZTKdeG322A9I5w8Tl5N+z8i0
+         Da3K9AJg9bE+V8oZd3RfFbK/Czb5P7o0Tm/yPM0GGF6y316xvgdiQbmacVNHtFskkNG6
+         on/ULtt+dH5a+qfEgPOpWayKNAGq5TZrXbk5qy9Njq6D+D2se9oPPrDX7U1uOVem2XIA
+         ZH33R7TojbDu9s93da2oYaFSl20Jwi1F/g4PQK1+CSaO5yXFLJevYpa0SMps+ennz/MW
+         EoIF0gPcfGtapsVDNUyPdOgZEtHmM44l7sXFUxTqH6+oi6o+v+yyLPpM7drYgi5iv6pE
+         CSuQ==
+X-Gm-Message-State: ACgBeo0qBUIykacFZvCQ+gEJCp/GkNeaetbOC+kmtNy5BvEIFJNF/paL
+        aw8lhAsaNJFhiPvewKjd8uM=
+X-Google-Smtp-Source: AA6agR4az1eFvdfc8+/beKghFWR76ZdB+EHXZxhwkbp4bIcsRK/Fi0THTFuuI+yhKD0IdMjO59th9w==
+X-Received: by 2002:a17:906:98c8:b0:730:7ada:87a7 with SMTP id zd8-20020a17090698c800b007307ada87a7mr2368268ejb.748.1659302077683;
+        Sun, 31 Jul 2022 14:14:37 -0700 (PDT)
 Received: from krava ([83.240.61.175])
-        by smtp.gmail.com with ESMTPSA id p6-20020a17090653c600b007307c557e31sm769942ejo.106.2022.07.31.14.08.15
+        by smtp.gmail.com with ESMTPSA id es21-20020a056402381500b0043d27693d31sm4138754edb.31.2022.07.31.14.14.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Jul 2022 14:08:16 -0700 (PDT)
+        Sun, 31 Jul 2022 14:14:37 -0700 (PDT)
 From:   Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Sun, 31 Jul 2022 23:08:13 +0200
+Date:   Sun, 31 Jul 2022 23:14:34 +0200
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -61,14 +61,16 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>,
         Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH bpf-next 0/5] bpf: Fixes for CONFIG_X86_KERNEL_IBT
-Message-ID: <YubvPcHwPrcc1CD0@krava>
+Subject: Re: [PATCH bpf-next 4/5] selftests/bpf: Disable kprobe attach test
+ with offset for CONFIG_X86_KERNEL_IBT
+Message-ID: <YubwuidpHmjYt1Cg@krava>
 References: <20220724212146.383680-1-jolsa@kernel.org>
- <CAEf4Bzbrqrg-wuNNWNJ1GSQQzLOF7azzM8B17ti1TBz_D7irKg@mail.gmail.com>
+ <20220724212146.383680-5-jolsa@kernel.org>
+ <CAEf4BzYnG3SLXs1+ebK+x7fM1ZaoPZ8=qH4mqUGhb6Ojf8x3Jg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4Bzbrqrg-wuNNWNJ1GSQQzLOF7azzM8B17ti1TBz_D7irKg@mail.gmail.com>
+In-Reply-To: <CAEf4BzYnG3SLXs1+ebK+x7fM1ZaoPZ8=qH4mqUGhb6Ojf8x3Jg@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -79,71 +81,59 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 29, 2022 at 03:18:54PM -0700, Andrii Nakryiko wrote:
-> On Sun, Jul 24, 2022 at 2:21 PM Jiri Olsa <jolsa@kernel.org> wrote:
+On Fri, Jul 29, 2022 at 03:15:55PM -0700, Andrii Nakryiko wrote:
+> On Sun, Jul 24, 2022 at 2:22 PM Jiri Olsa <jolsa@kernel.org> wrote:
 > >
-> > hi,
-> > Martynas reported bpf_get_func_ip returning +4 address when
-> > CONFIG_X86_KERNEL_IBT option is enabled and I found there are
-> > some failing bpf tests when this option is enabled.
+> > Attach like 'kprobe/bpf_fentry_test6+0x5' will fail to attach
+> > when CONFIG_X86_KERNEL_IBT option is enabled because of the
+> > endbr instruction at the function entry.
 > >
-> > The CONFIG_X86_KERNEL_IBT option adds endbr instruction at the
-> > function entry, so the idea is to 'fix' entry ip for kprobe_multi
-> > and trampoline probes, because they are placed on the function
-> > entry.
+> > We would need to do manual attach with offset calculation based
+> > on the CONFIG_X86_KERNEL_IBT option, which does not seem worth
+> > the effort to me.
 > >
-> > For kprobes I only fixed the bpf test program to adjust ip based
-> > on CONFIG_X86_KERNEL_IBT option. I'm not sure what the right fix
-> > should be in here, because I think user should be aware where the
-> 
-> user can't be aware of this when using multi-kprobe attach by symbolic
-> name of the function. So I think bpf_get_func_ip() at least in that
-> case should be compensating for KERNEL_IBT.
-
-sorry I said kprobes, but that does not include kprobe multi link,
-I meant what you call general kprobe below
-
-I do the adjustment for kprobe multi version of bpf_get_func_ip,
-so that should be fine
-
-> 
-> BTW, given in general kprobe can be placed in them middle of the
-> function, should bpf_get_func_ip() return zero or something for such
-> cases instead of wrong value somewhere in the middle of kprobe? If
-> user cares about current IP, they can get it with PT_REGS_IP(ctx),
-> right?
-
-true.. we could add flag to 'struct kprobe' to indicate it's placed
-on function's entry and check on endbr instruction for IBT config,
-and return 0 for anything else
-
-jirka
-
-> > kprobe is placed, on the other hand we move the kprobe address if
-> > its placed on top of endbr instruction.
+> > Disabling these test when CONFIG_X86_KERNEL_IBT is enabled.
 > >
-> > v1 changes:
-> >   - read previous instruction in kprobe_multi link handler
-> >     and adjust entry_ip for CONFIG_X86_KERNEL_IBT option
-> >   - split first patch into 2 separate changes
-> >   - update changelogs
-> >
-> > thanks,
-> > jirka
-> >
-> >
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > > ---
-> > Jiri Olsa (5):
-> >       ftrace: Keep the resolved addr in kallsyms_callback
-> >       bpf: Adjust kprobe_multi entry_ip for CONFIG_X86_KERNEL_IBT
-> >       bpf: Use given function address for trampoline ip arg
-> >       selftests/bpf: Disable kprobe attach test with offset for CONFIG_X86_KERNEL_IBT
-> >       selftests/bpf: Fix kprobe get_func_ip tests for CONFIG_X86_KERNEL_IBT
+> >  .../bpf/prog_tests/get_func_ip_test.c         | 25 +++++++++++++++----
+> >  1 file changed, 20 insertions(+), 5 deletions(-)
 > >
-> >  arch/x86/net/bpf_jit_comp.c                               |  9 ++++-----
-> >  kernel/trace/bpf_trace.c                                  |  4 ++++
-> >  kernel/trace/ftrace.c                                     |  3 +--
-> >  tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c | 25 ++++++++++++++++++++-----
-> >  tools/testing/selftests/bpf/progs/get_func_ip_test.c      |  7 +++++--
-> >  tools/testing/selftests/bpf/progs/kprobe_multi.c          |  2 +-
-> >  6 files changed, 35 insertions(+), 15 deletions(-)
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c b/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
+> > index 938dbd4d7c2f..cb0b78fb29df 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
+> > @@ -2,6 +2,24 @@
+> >  #include <test_progs.h>
+> >  #include "get_func_ip_test.skel.h"
+> >
+> > +/* assume IBT is enabled when kernel configs are not available */
+> > +#ifdef HAVE_GENHDR
+> > +# include "autoconf.h"
+> > +#else
+> > +#  define CONFIG_X86_KERNEL_IBT 1
+> > +#endif
+> 
+> this autoconf.h business is something I'd rather avoid, it would be
+> great to be able to use libbpf's __kconfig support to detect
+> CONFIG_X86_KERNEL_IBT instead? One way would be to mark test6/test7 as
+> non-auto-loadable (SEC("?...")). Load only test1-tes5, run tests, in
+
+aah so that's what the '?' prefix is for :))
+
+> one of BPF programs propagate __kconfig CONFIG_X86_KERNEL_IBT to
+> user-space through a global variable. Attach skeleton, trigger
+> everything, remember whether IBT is enabled or not.
+> 
+> If it is defined, load skeleton again, but now enable test6 and test7
+> and manually attach them through bpf_program__attach_kprobe()
+> specifying offset as +5 or +9, depending on IBT. It's certainly a bit
+> more code, but we'll actually test IBT stuff properly.
+> 
+> WDYT?
+
+right, seems doable.. also I wonder how hard would it be to have some
+generic support for that, maybe there are other users..  I'll check
+
+thanks,
+jirka
