@@ -2,116 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE140586E80
-	for <lists+bpf@lfdr.de>; Mon,  1 Aug 2022 18:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97D46586EA4
+	for <lists+bpf@lfdr.de>; Mon,  1 Aug 2022 18:35:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230387AbiHAQZQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Aug 2022 12:25:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48964 "EHLO
+        id S233119AbiHAQfn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Aug 2022 12:35:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231810AbiHAQZO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Aug 2022 12:25:14 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65EAEB9F;
-        Mon,  1 Aug 2022 09:25:12 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id tk8so21313377ejc.7;
-        Mon, 01 Aug 2022 09:25:12 -0700 (PDT)
+        with ESMTP id S233145AbiHAQfS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Aug 2022 12:35:18 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ADFDB01
+        for <bpf@vger.kernel.org>; Mon,  1 Aug 2022 09:35:11 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id p132so13639837oif.9
+        for <bpf@vger.kernel.org>; Mon, 01 Aug 2022 09:35:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc;
-        bh=wcy/rcdKHUsNf9tppWBLadn82oSwXUzbkvBCll0A8mA=;
-        b=TLv1gSxXzDStTb6ykAHt11EaqHfK+pLXvcQHlAj3SlnO/ZMxskqKqEx79KFChNByi4
-         nlN9ZzgoIA3qDwW3n2p0zP6YXyeb2XyI2oHdu7fqem/c9ulb1JK4yOUWGkUMG6t5jp+G
-         nMoY/RFCK+cr+HQc+9CqJ1GSlKyNqSXXVzvYDM2KBzfGFVpbdHnAM8nTAFh10yYIYh4Y
-         quD5rXmZO7lLZe6GuDWtmVxXu6vrKTjCXh5sAs5JajY/y2Y0Fje7JvE391oDfKscVDPV
-         rnQfm01JZBNSxqdWqO9aBIQtJFh43fZITEfy3QiYiRFEK2fzKlenATobXJ1NXtDzSnKz
-         47Xw==
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=Fto1MpscWUFMNnBCFYXAwkIBHHJszVTIcxuhyhUimb8=;
+        b=FI+OTAEIYz2VsoXDkzo0BCE6i9UMDcLbhJ8KfQlM/Yb9whP/Aso6fJ6y77PQwhSnmh
+         LxrcRuG9r+1+NvdtFo31ZVrKx3dxqveIXaUH1MX9/P2cjvo8vJJiQImvUd5srpvFqSjX
+         gWd329LBF4+LFX44YhtcZ3a9uJTsRResZet1+XcU1+rNQD/w9pcinpKpIdIqvt9yl5gw
+         iXliFpwyHfGGnu7OpXt6GjUGhpaateed5310JLq6R84x7GmQyYp1iRpuyOIIhQXgRxzD
+         S3YHp7JVREAfFsiFCf0AWwsBF5mWhs1fqm12YsQRTrLC8OkjHs5jWq2wHG7W89qukPgb
+         shyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc;
-        bh=wcy/rcdKHUsNf9tppWBLadn82oSwXUzbkvBCll0A8mA=;
-        b=P1BuZLwzjEJnwFpSQ5hTnxoh5gIc5JQIDkkowbQPpV2fM2MKjhknqDbW390sfpzGT9
-         CAdfczm6gl2QZ1WrmeYhlWxB2oGhBRSvChLpBJVnl0iweJvSshIYiGDyFm91DJs6Gl7Y
-         DZ5vgPti2dIEBP/gy6rQrdSv5zdp+BXFsPWvdsPkAMQIeb5jIPdpCS2m3xSamUWRJwaH
-         I1Fe46JEx7M7Rw887s6Foe/QccJnh0JRFCXpQJFD3XFlXrI2+UyqHLRddtjPDREM0AXP
-         Sm6sT2egRuJzx+zyEhhs1DSy0P55nYHL5toyYeBEg26nF+r3ZI/LBhdYRJ022PbNCFLF
-         p98w==
-X-Gm-Message-State: AJIora/oh0EmY4woG4sn/7tGJi3unMylw3rPUOeOIMwHlfhqgf7qkk6m
-        6RhRErH8kqckPmtWaa/rv78=
-X-Google-Smtp-Source: AGRyM1sfslgwNE2GdO0SHlXU0tbK1hPkwQ+VSVUZaeLM+n3ccGrAYsitmIUAfEpBwO1L4oeN3Bo4aA==
-X-Received: by 2002:a17:906:8501:b0:711:bf65:2a47 with SMTP id i1-20020a170906850100b00711bf652a47mr13389539ejx.150.1659371110880;
-        Mon, 01 Aug 2022 09:25:10 -0700 (PDT)
-Received: from krava ([83.240.62.89])
-        by smtp.gmail.com with ESMTPSA id e15-20020a50fb8f000000b0043a6df72c11sm6918178edq.63.2022.08.01.09.25.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Aug 2022 09:25:10 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Mon, 1 Aug 2022 18:25:07 +0200
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] libbpf: Initialize err in probe_map_create
-Message-ID: <Yuf+Y7ocn1mgiaE3@krava>
-References: <20220801025109.1206633-1-f.fainelli@gmail.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=Fto1MpscWUFMNnBCFYXAwkIBHHJszVTIcxuhyhUimb8=;
+        b=KRmEBI6yTqp0YzqRCM9W3A7ZwVPOFsT/RQaZet+x89k0+TMw64ZTQdn2NPbgk2Owz7
+         bsQHwIriqr19CPwNm7yL2BvH321txyctlEZCI6O+PfgkW4qVvzpz1u+i3/Oddkcd0OCg
+         IfmNqCjGxScPtoCxBucBfNEg0ldzYeFWWg6fgOi8iimCxgDi5T5HAfUSTbSGTdXCyf1T
+         +vnX7G2fYLyZulvQLF57f+LvlVZoxQGKLVjYH/uGGGuFZFL0N4Ho60PfnPyX+cvh+m9h
+         rzx71pgDWxXwRJ9M87uJJNtbXUmZax4ezr8Jzr4c7yPrqE55DR4yxhQEmIBeAoG/jUlv
+         37qg==
+X-Gm-Message-State: AJIora9aUliRRpzisG7aNmbbyEpWbK7gxZQOWfd2IJyEADbUquNjpKN1
+        su9WWJJknud4CxxqUp++CPPOOs4XxeGjZiSI1/K+
+X-Google-Smtp-Source: AGRyM1sRwoHyAz1+k6JJUYUkUrZCg+t9c/gxOPl7fh2C55+kVa8+g83QHhkhNo8kDmE2GSBbgnazRbcpMAgwbTLYWjE=
+X-Received: by 2002:a05:6808:3087:b0:33a:a6ae:7bf7 with SMTP id
+ bl7-20020a056808308700b0033aa6ae7bf7mr7223113oib.41.1659371710188; Mon, 01
+ Aug 2022 09:35:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220801025109.1206633-1-f.fainelli@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220721172808.585539-1-fred@cloudflare.com> <20220722061137.jahbjeucrljn2y45@kafai-mbp.dhcp.thefacebook.com>
+ <18225d94bf0.28e3.85c95baa4474aabc7814e68940a78392@paul-moore.com>
+ <a4db1154-94bc-9833-1665-a88a5eee48de@cloudflare.com> <9eee1d03-3153-67d3-fe21-14fcb5fe8d27@schaufler-ca.com>
+In-Reply-To: <9eee1d03-3153-67d3-fe21-14fcb5fe8d27@schaufler-ca.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 1 Aug 2022 12:34:59 -0400
+Message-ID: <CAHC9VhS9NN9a0=4ANwOf1e74+mKMD5BwE+rKhXcno3dtrZ7GVg@mail.gmail.com>
+Subject: Re: [PATCH v3 0/4] Introduce security_create_user_ns()
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Frederick Lawler <fred@cloudflare.com>,
+        Martin KaFai Lau <kafai@fb.com>, kpsingh@kernel.org,
+        revest@chromium.org, jackmanb@chromium.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, songliubraving@fb.com,
+        yhs@fb.com, john.fastabend@gmail.com, jmorris@namei.org,
+        serge@hallyn.com, stephen.smalley.work@gmail.com,
+        eparis@parisplace.org, shuah@kernel.org, brauner@kernel.org,
+        ebiederm@xmission.com, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, kernel-team@cloudflare.com,
+        cgzones@googlemail.com, karl@bigbadwolfsecurity.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jul 31, 2022 at 07:51:09PM -0700, Florian Fainelli wrote:
-> GCC-11 warns about the possibly unitialized err variable in
-> probe_map_create:
-> 
-> libbpf_probes.c: In function 'probe_map_create':
-> libbpf_probes.c:361:38: error: 'err' may be used uninitialized in this function [-Werror=maybe-uninitialized]
->   361 |                 return fd < 0 && err == exp_err ? 1 : 0;
->       |                                  ~~~~^~~~~~~~~~
-> 
-> Fixes: 878d8def0603 ("libbpf: Rework feature-probing APIs")
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+On Mon, Aug 1, 2022 at 11:25 AM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> On 8/1/2022 6:13 AM, Frederick Lawler wrote:
+> > On 7/22/22 7:20 AM, Paul Moore wrote:
+> >> On July 22, 2022 2:12:03 AM Martin KaFai Lau <kafai@fb.com> wrote:
+> >>
+> >>> On Thu, Jul 21, 2022 at 12:28:04PM -0500, Frederick Lawler wrote:
+> >>>> While creating a LSM BPF MAC policy to block user namespace
+> >>>> creation, we
+> >>>> used the LSM cred_prepare hook because that is the closest hook to
+> >>>> prevent
+> >>>> a call to create_user_ns().
+> >>>>
+> >>>> The calls look something like this:
+> >>>>
+> >>>> cred = prepare_creds()
+> >>>> security_prepare_creds()
+> >>>> call_int_hook(cred_prepare, ...
+> >>>> if (cred)
+> >>>> create_user_ns(cred)
+> >>>>
+> >>>> We noticed that error codes were not propagated from this hook and
+> >>>> introduced a patch [1] to propagate those errors.
+> >>>>
+> >>>> The discussion notes that security_prepare_creds()
+> >>>> is not appropriate for MAC policies, and instead the hook is
+> >>>> meant for LSM authors to prepare credentials for mutation. [2]
+> >>>>
+> >>>> Ultimately, we concluded that a better course of action is to
+> >>>> introduce
+> >>>> a new security hook for LSM authors. [3]
+> >>>>
+> >>>> This patch set first introduces a new security_create_user_ns()
+> >>>> function
+> >>>> and userns_create LSM hook, then marks the hook as sleepable in BPF.
+> >>> Patch 1 and 4 still need review from the lsm/security side.
+> >>
+> >>
+> >> This patchset is in my review queue and assuming everything checks
+> >> out, I expect to merge it after the upcoming merge window closes.
+> >>
+> >> I would also need an ACK from the BPF LSM folks, but they're CC'd on
+> >> this patchset.
+> >
+> > Based on last weeks comments, should I go ahead and put up v4 for
+> > 5.20-rc1 when that drops, or do I need to wait for more feedback?
+>
+> As the primary consumer of this hook is BPF I would really expect their
+> reviewed-by before accepting this.
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+We love all our in-tree LSMs equally.  As long as there is at least
+one LSM which provides an implementation and has ACK'd the hook, and
+no other LSMs have NACK'd the hook, then I have no problem merging it.
+I doubt it will be necessary in this case, but if we need to tweak the
+hook in the future we can definitely do that; we've done this in the
+past when it has made sense.
 
-jirka
+As a reminder, the LSM hooks are *not* part of the "don't break
+userspace" promise.  I know it gets a little muddy with the way the
+BPF LSM works, but just as we don't want to allow one LSM to impact
+the runtime controls on another, we don't want to allow one LSM to
+freeze the hooks for everyone.
 
-> ---
->  tools/lib/bpf/libbpf_probes.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
-> index 97b06cede56f..6cf44e61815d 100644
-> --- a/tools/lib/bpf/libbpf_probes.c
-> +++ b/tools/lib/bpf/libbpf_probes.c
-> @@ -247,7 +247,7 @@ static int probe_map_create(enum bpf_map_type map_type, __u32 ifindex)
->  	LIBBPF_OPTS(bpf_map_create_opts, opts);
->  	int key_size, value_size, max_entries;
->  	__u32 btf_key_type_id = 0, btf_value_type_id = 0;
-> -	int fd = -1, btf_fd = -1, fd_inner = -1, exp_err = 0, err;
-> +	int fd = -1, btf_fd = -1, fd_inner = -1, exp_err = 0, err = 0;
->  
->  	opts.map_ifindex = ifindex;
->  
-> -- 
-> 2.25.1
-> 
+-- 
+paul-moore.com
