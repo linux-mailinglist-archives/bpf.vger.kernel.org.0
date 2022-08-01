@@ -2,71 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8A36586620
-	for <lists+bpf@lfdr.de>; Mon,  1 Aug 2022 10:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 517F95866BF
+	for <lists+bpf@lfdr.de>; Mon,  1 Aug 2022 11:16:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229642AbiHAIRj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Aug 2022 04:17:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34472 "EHLO
+        id S230373AbiHAJQK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Aug 2022 05:16:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229725AbiHAIRi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Aug 2022 04:17:38 -0400
-Received: from mail.coredeal.pl (mail.coredeal.pl [51.75.73.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3C023A49D
-        for <bpf@vger.kernel.org>; Mon,  1 Aug 2022 01:17:36 -0700 (PDT)
-Received: by mail.coredeal.pl (Postfix, from userid 1002)
-        id 5BFECA3795; Mon,  1 Aug 2022 08:15:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=coredeal.pl; s=mail;
-        t=1659341756; bh=9KGuIG62LgzC9aYmjKxzocuYLRCVghXg6v9Q1q2LHec=;
-        h=Date:From:To:Subject:From;
-        b=PAixQtVuEgiUFkDMaVWyuTmFPX56naeOAn3La/uVWCw3wHnGJ3usPxI+nr0wj52Zk
-         qGdeullm7AOL5V0NnW25uK6h92JHI+MZBuuAYxdUpQu0L+FLOJgfvlDKMvgKHXB/Yo
-         XCto7YJI4zb3agwOPN452kHZDsRjyba9x+TgdoaKZkpUgEKhj53hq3jqemG04UbrtA
-         MnRmk+wnomDpDkeLCX6eJtPw+/uF4+GqMx1ZAu/ulqnqpjXN66GVp4aUmZiM9LsShr
-         1M2uGudHXeWVaPnW9Ytl6y5co6hJLmbXJQhXjOEQh+yLcbt2S4RME3PrdpgEhrieD1
-         rxzUBMVjObO1Q==
-Received: by mail.coredeal.pl for <bpf@vger.kernel.org>; Mon,  1 Aug 2022 08:15:10 GMT
-Message-ID: <20220801064500-0.1.4m.18q16.0.a4nq961bgf@coredeal.pl>
-Date:   Mon,  1 Aug 2022 08:15:10 GMT
-From:   "Krzysztof Maj" <krzysztof.maj@coredeal.pl>
-To:     <bpf@vger.kernel.org>
-Subject: Biznesowy angielski
-X-Mailer: mail.coredeal.pl
+        with ESMTP id S230353AbiHAJQH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Aug 2022 05:16:07 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 885E11A04E
+        for <bpf@vger.kernel.org>; Mon,  1 Aug 2022 02:16:03 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id ss3so19123196ejc.11
+        for <bpf@vger.kernel.org>; Mon, 01 Aug 2022 02:16:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc;
+        bh=mVLib6+KglGWzrVB//L7ezE4how+oky3wShDacSr+Rk=;
+        b=fp+jCnQ/ItfHQ1hBwegHh+Ldz7J5kAwEOruTIPovevlje/32kxnh/US3StTNaYN0hk
+         LBjV0xdxA2kKiZ7glZAtjn3ihomHLymWh2cSyoDhKTDoMt0iZjgAys3zXeZ2SIK1lC6N
+         FW7ALONcIV5nxv9CvyCeLgNoZFZ3ZWcMX0q24=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc;
+        bh=mVLib6+KglGWzrVB//L7ezE4how+oky3wShDacSr+Rk=;
+        b=zq9uZFaOoRFFdK7IJ+COY/fitR8C3wxTgfedqkRRiGaL8oQDeAyVLgoKBEiDRgd9xz
+         04GxUNbf8bvqt48RxAj4FBfM273NNH1XHfP8ur2DxfJwNCrZDhsc4dvbDvUYMQp/OOH8
+         iUK0/x8qdS7GZv8z3vFCj743V1+pmpM9XqC5Urs+x+KTMI+R7ngZhnoDbQGfc6YQki7Y
+         m/37EtVuEExYycdigBiOtKCHatzjNo9A+W+BtqfY81i2qBSGIrsaaXnpw8zuZq3g9h4F
+         npsuxuNelnittPKVc720oCVPKhmLyrqSYohRf0dvqWbIlWAq8O5PyIAWRaed9lhpoao6
+         3/NA==
+X-Gm-Message-State: ACgBeo289dA9xopuL2Y7h8B2FNmAQiuwQ6qrJQaD6t0/6e0pUFWyoYrm
+        CV3VOadpy2p88EfiDP9SeU+l8g==
+X-Google-Smtp-Source: AA6agR4W2ED17/n5sJ/4mk6scRZmpD1dZvTpHT3k2MkraGjSqDq6np/Nh+5vKxICYqkmm4nr3glzrg==
+X-Received: by 2002:a17:907:1deb:b0:730:81ea:1d09 with SMTP id og43-20020a1709071deb00b0073081ea1d09mr3464726ejc.183.1659345362041;
+        Mon, 01 Aug 2022 02:16:02 -0700 (PDT)
+Received: from cloudflare.com (79.184.200.53.ipv4.supernova.orange.pl. [79.184.200.53])
+        by smtp.gmail.com with ESMTPSA id ky1-20020a170907778100b00722e52d043dsm4984008ejc.114.2022.08.01.02.16.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Aug 2022 02:16:01 -0700 (PDT)
+References: <00000000000026328205e08cdbeb@google.com>
+ <20220730085654.2598-1-yin31149@gmail.com>
+User-agent: mu4e 1.6.10; emacs 27.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Hawkins Jiawei <yin31149@gmail.com>
+Cc:     syzbot+5f26f85569bd179c18ce@syzkaller.appspotmail.com,
+        andrii@kernel.org, ast@kernel.org, borisp@nvidia.com,
+        bpf@vger.kernel.org, wenjia@linux.ibm.com, ubraun@linux.ibm.com,
+        daniel@iogearbox.net, guvenc@linux.ibm.com, davem@davemloft.net,
+        edumazet@google.com, guwen@linux.alibaba.com,
+        john.fastabend@gmail.com, kafai@fb.com, kgraul@linux.ibm.com,
+        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, linux-s390@vger.kernel.org,
+        yhs@fb.com, 18801353760@163.com, paskripkin@gmail.com,
+        skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH v2] net/smc: fix refcount bug in sk_psock_get (2)
+Date:   Mon, 01 Aug 2022 11:09:23 +0200
+In-reply-to: <20220730085654.2598-1-yin31149@gmail.com>
+Message-ID: <87wnbsjpdb.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dzie=C5=84 dobry,=20
+Hi,
 
-czy rozwa=C5=BCali Pa=C5=84stwo rozw=C3=B3j kwalifikacji j=C4=99zykowych =
-swoich pracownik=C3=B3w?
+On Sat, Jul 30, 2022 at 04:56 PM +08, Hawkins Jiawei wrote:
+> Syzkaller reports refcount bug as follows:
+> ------------[ cut here ]------------
+> refcount_t: saturated; leaking memory.
+> WARNING: CPU: 1 PID: 3605 at lib/refcount.c:19 refcount_warn_saturate+0xf4/0x1e0 lib/refcount.c:19
+> Modules linked in:
+> CPU: 1 PID: 3605 Comm: syz-executor208 Not tainted 5.18.0-syzkaller-03023-g7e062cda7d90 #0
+> ...
+> Call Trace:
+>  <TASK>
+>  __refcount_add_not_zero include/linux/refcount.h:163 [inline]
+>  __refcount_inc_not_zero include/linux/refcount.h:227 [inline]
+>  refcount_inc_not_zero include/linux/refcount.h:245 [inline]
+>  sk_psock_get+0x3bc/0x410 include/linux/skmsg.h:439
+>  tls_data_ready+0x6d/0x1b0 net/tls/tls_sw.c:2091
+>  tcp_data_ready+0x106/0x520 net/ipv4/tcp_input.c:4983
+>  tcp_data_queue+0x25f2/0x4c90 net/ipv4/tcp_input.c:5057
+>  tcp_rcv_state_process+0x1774/0x4e80 net/ipv4/tcp_input.c:6659
+>  tcp_v4_do_rcv+0x339/0x980 net/ipv4/tcp_ipv4.c:1682
+>  sk_backlog_rcv include/net/sock.h:1061 [inline]
+>  __release_sock+0x134/0x3b0 net/core/sock.c:2849
+>  release_sock+0x54/0x1b0 net/core/sock.c:3404
+>  inet_shutdown+0x1e0/0x430 net/ipv4/af_inet.c:909
+>  __sys_shutdown_sock net/socket.c:2331 [inline]
+>  __sys_shutdown_sock net/socket.c:2325 [inline]
+>  __sys_shutdown+0xf1/0x1b0 net/socket.c:2343
+>  __do_sys_shutdown net/socket.c:2351 [inline]
+>  __se_sys_shutdown net/socket.c:2349 [inline]
+>  __x64_sys_shutdown+0x50/0x70 net/socket.c:2349
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x46/0xb0
+>  </TASK>
+>
+> During SMC fallback process in connect syscall, kernel will
+> replaces TCP with SMC. In order to forward wakeup
+> smc socket waitqueue after fallback, kernel will sets
+> clcsk->sk_user_data to origin smc socket in
+> smc_fback_replace_callbacks().
+>
+> Later, in shutdown syscall, kernel will calls
+> sk_psock_get(), which treats the clcsk->sk_user_data
+> as sk_psock type, triggering the refcnt warning.
+>
+> So, the root cause is that smc and psock, both will use
+> sk_user_data field. So they will mismatch this field
+> easily.
+>
+> This patch solves it by using another bit(defined as
+> SK_USER_DATA_NOTPSOCK) in PTRMASK, to mark whether
+> sk_user_data points to a sk_psock object or not.
+> This patch depends on a PTRMASK introduced in commit f1ff5ce2cd5e
+> ("net, sk_msg: Clear sk_user_data pointer on clone if tagged").
+>
+> Fixes: 341adeec9ada ("net/smc: Forward wakeup to smc socket waitqueue after fallback")
+> Fixes: a60a2b1e0af1 ("net/smc: reduce active tcp_listen workers")
+> Reported-and-tested-by: syzbot+5f26f85569bd179c18ce@syzkaller.appspotmail.com
+> Suggested-by: Jakub Kicinski <kuba@kernel.org>
+> Acked-by: Wen Gu <guwen@linux.alibaba.com>
+> Signed-off-by: Hawkins Jiawei <yin31149@gmail.com>
+> ---
 
-Opracowali=C5=9Bmy kursy j=C4=99zykowe dla r=C3=B3=C5=BCnych bran=C5=BC, =
-w kt=C3=B3rych koncentrujemy si=C4=99 na podniesieniu poziomu s=C5=82owni=
-ctwa i jako=C5=9Bci komunikacji wykorzystuj=C4=85c autorsk=C4=85 metod=C4=
-=99, stworzon=C4=85 specjalnie dla wymagaj=C4=85cego biznesu.=20
+Since using psock is not the common case, I'm wondering if it makes more
+sense to have an inverse flag - SK_USER_DATA_PSOCK. Flag would be set by
+the psock code on assignment to sk_user_data.
 
-Niestandardowy kurs on-line, dopasowany do profilu firmy i obszar=C3=B3w =
-=C5=9Bwiadczonych us=C5=82ug, w szybkim czasie przyniesie efekty, kt=C3=B3=
-re zwi=C4=99ksz=C4=85 komfort i jako=C5=9B=C4=87 pracy, rozwijaj=C4=85c m=
-o=C5=BCliwo=C5=9Bci biznesowe.=20
+This way we would also avoid some confusion. With the change below, the
+SK_USER_DATA_NOTPSOCK is not *always* set when sk_user_data holds a
+non-psock pointer. Only when SMC sets it.
 
-Zdalne szkolenie j=C4=99zykowe to m.in. zaj=C4=99cia z native speakerami,=
- kt=C3=B3re w szybkim czasie naucz=C4=85 pracownik=C3=B3w rozmawia=C4=87 =
-za pomoc=C4=85 jasnego i zwi=C4=99z=C5=82ego j=C4=99zyka Business English=
-=2E
+If we go with the current approach, the rest of sites, execpt for psock,
+that assign to sk_user_data should be updated to set
+SK_USER_DATA_NOTPSOCK as well, IMO.
 
-Czy m=C3=B3g=C5=82bym przedstawi=C4=87 wi=C4=99cej szczeg=C3=B3=C5=82=C3=B3=
-w i opowiedzie=C4=87 jak dzia=C5=82amy?=20
+That is why I'd do it the other way.
 
-
-Pozdrawiam
-Krzysztof Maj
+[...]
