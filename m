@@ -2,114 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 738C6587464
-	for <lists+bpf@lfdr.de>; Tue,  2 Aug 2022 01:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DE47587473
+	for <lists+bpf@lfdr.de>; Tue,  2 Aug 2022 01:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234567AbiHAX3a (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Aug 2022 19:29:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46222 "EHLO
+        id S232334AbiHAXdz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Aug 2022 19:33:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234368AbiHAX32 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Aug 2022 19:29:28 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ED4F422E1;
-        Mon,  1 Aug 2022 16:29:27 -0700 (PDT)
+        with ESMTP id S235083AbiHAXdy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Aug 2022 19:33:54 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CABD22F389
+        for <bpf@vger.kernel.org>; Mon,  1 Aug 2022 16:33:53 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 63D27B81250;
-        Mon,  1 Aug 2022 23:29:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFFF6C433D6;
-        Mon,  1 Aug 2022 23:29:21 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7CA6FB815FE
+        for <bpf@vger.kernel.org>; Mon,  1 Aug 2022 23:33:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F171AC433C1;
+        Mon,  1 Aug 2022 23:33:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1659396565;
-        bh=+tAKH5U9MjYkNE752i6vdc4km3iU4Hah9sUp7Z5hwiQ=;
+        s=k20201202; t=1659396831;
+        bh=QzekXH1La6BlxRQqc31UK+rVSKF3IhK0zz52C6U5Kfw=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=MIcSVcE/eFcKum0Ze1NoWJMNTpuglLoqZPMH5tSjiCHZ3VR5SIrf90902toEB42yR
-         dbzqkfoo7S7IaqZKw3A5uM0lV6nCdRPhlegwNjinUathfxIpiUZEVJD24UgqTjES9H
-         xMaFKga15S9s6sAPZ72xQrSX8rhQg+ooaHG/zBS0IyeToajmZyssvlImIYspxQFuVQ
-         f2bN5FbxSwTPu9axy3im8eOLhASBtXggy/JLEYJIKovVMyV4gBXyflbOp6Oq7agqpo
-         zkJPROBImOnKljAblSWk31Q/yCNduUis3kwBj4U4okqPtWZuhX9P41VWqr2SD73geW
-         GIgyN36NpwYgg==
-Date:   Tue, 2 Aug 2022 08:29:19 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        Chen Zhongjin <chenzhongjin@huawei.com>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
-        davem@davemloft.net, mhiramat@kernel.org, peterz@infradead.org,
-        mingo@kernel.org, ast@kernel.org, daniel@iogearbox.net
-Subject: Re: [PATCH v3] kprobes: Forbid probing on trampoline and bpf prog
-Message-Id: <20220802082919.449c691237155cee9e190713@kernel.org>
-In-Reply-To: <20220801165146.26fdeca2@gandalf.local.home>
-References: <20220801033719.228248-1-chenzhongjin@huawei.com>
-        <Yug6bx7T4GzqUf2a@krava>
-        <20220801165146.26fdeca2@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
+        b=Qp8FtpQBiJ3ZqMg+J3v+BZBkUc7cop2E6gOCYkTUjSEEnL74Ew86c+6Ob554lQCOx
+         JNgRvGPikhLWWxE497Er8Li3Iv5kAYvnIXqDRAuikkAx/hTwP8u3Vu+VNvtWXiikVB
+         UexYC+gEL/zsaDrmzdOwU9Ncg+5Eo0Lp7xtGgvG8/lparC1UmwqvCUmoogipeqT1xG
+         pTjYuhT+85jRtCcax0zt0/nWZKVeUa/zrakURpHU+Lb/LvkyuxOmPy3DfX2CPENZlq
+         ujFcnXoUEI4vr50Lij1y/UjomLxrkEeOzyjWgSrzWZCPk03k4bMU1pvIC/kcQLwYSy
+         33qIPU1ndwbQA==
+Date:   Mon, 1 Aug 2022 16:33:49 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+        ast@kernel.org
+Subject: Re: [PATCH bpf-next v1 1/3] bpf: Add skb dynptrs
+Message-ID: <20220801163349.4a28d154@kernel.org>
+In-Reply-To: <20220726184706.954822-2-joannelkoong@gmail.com>
+References: <20220726184706.954822-1-joannelkoong@gmail.com>
+        <20220726184706.954822-2-joannelkoong@gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 1 Aug 2022 16:51:46 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+(consider cross-posting network-related stuff to netdev@)
 
-> On Mon, 1 Aug 2022 22:41:19 +0200
-> Jiri Olsa <olsajiri@gmail.com> wrote:
-> 
-> > LGTM cc-ing Steven because it affects ftrace as well
-> 
-> Thanks for the Cc, but I don't quite see how it affects ftrace.
-> 
-> Unless you are just saying how it can affect kprobe_events?
+On Tue, 26 Jul 2022 11:47:04 -0700 Joanne Koong wrote:
+> Add skb dynptrs, which are dynptrs whose underlying pointer points
+> to a skb. The dynptr acts on skb data. skb dynptrs have two main
+> benefits. One is that they allow operations on sizes that are not
+> statically known at compile-time (eg variable-sized accesses).
+> Another is that parsing the packet data through dynptrs (instead of
+> through direct access of skb->data and skb->data_end) can be more
+> ergonomic and less brittle (eg does not need manual if checking for
+> being within bounds of data_end).
 
-Maybe kprobe_events can probe the ftrace trampoline buffer if
-CONFIG_KPROBE_EVENTS_ON_NOTRACE=y.
+Is there really a need for dynptr_from_{skb,xdp} to be different
+function IDs? I was hoping this work would improve portability of
+networking BPF programs across the hooks.
 
+> For bpf prog types that don't support writes on skb data, the dynptr is
+> read-only (writes and data slices are not permitted). For reads on the
+> dynptr, this includes reading into data in the non-linear paged buffers
+> but for writes and data slices, if the data is in a paged buffer, the
+> user must first call bpf_skb_pull_data to pull the data into the linear
+> portion.
 > 
-> -- Steve
-> 
-> 
-> > 
-> > jirka
-> > 
-> > > 
-> > > v1 -> v2:
-> > > Check core_kernel_text and is_module_text_address rather than
-> > > only kprobe_insn.
-> > > Also fix title and commit message for this. See old patch at [1].
-> > > ---
-> > >  kernel/kprobes.c | 3 ++-
-> > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> > > index f214f8c088ed..80697e5e03e4 100644
-> > > --- a/kernel/kprobes.c
-> > > +++ b/kernel/kprobes.c
-> > > @@ -1560,7 +1560,8 @@ static int check_kprobe_address_safe(struct kprobe *p,
-> > >  	preempt_disable();
-> > >  
-> > >  	/* Ensure it is not in reserved area nor out of text */
-> > > -	if (!kernel_text_address((unsigned long) p->addr) ||
-> > > +	if (!(core_kernel_text((unsigned long) p->addr) ||
-> > > +	    is_module_text_address((unsigned long) p->addr)) ||
-> > >  	    within_kprobe_blacklist((unsigned long) p->addr) ||
-> > >  	    jump_label_text_reserved(p->addr, p->addr) ||
-> > >  	    static_call_text_reserved(p->addr, p->addr) ||
-> > > -- 
-> > > 2.17.1
-> > >   
-> 
+> Additionally, any helper calls that change the underlying packet buffer
+> (eg bpf_skb_pull_data) invalidates any data slices of the associated
+> dynptr.
 
+Grepping the verifier did not help me find that, would you mind
+pointing me to the code?
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Right now, skb dynptrs can only be constructed from skbs that are
+> the bpf program context - as such, there does not need to be any
+> reference tracking or release on skb dynptrs.
