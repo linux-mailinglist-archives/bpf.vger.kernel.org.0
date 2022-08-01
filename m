@@ -2,57 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB617587026
-	for <lists+bpf@lfdr.de>; Mon,  1 Aug 2022 20:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A106658702A
+	for <lists+bpf@lfdr.de>; Mon,  1 Aug 2022 20:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234322AbiHASD4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Aug 2022 14:03:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42650 "EHLO
+        id S233235AbiHASFI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Aug 2022 14:05:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234431AbiHASDk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Aug 2022 14:03:40 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C7732AE30;
-        Mon,  1 Aug 2022 11:02:58 -0700 (PDT)
+        with ESMTP id S233816AbiHASFH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Aug 2022 14:05:07 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F92427FC2;
+        Mon,  1 Aug 2022 11:05:05 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B04A66109E;
-        Mon,  1 Aug 2022 18:02:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAD15C433C1;
-        Mon,  1 Aug 2022 18:02:55 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1A804B81613;
+        Mon,  1 Aug 2022 18:05:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D749C433C1;
+        Mon,  1 Aug 2022 18:05:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1659376976;
-        bh=fkxFSycSkhpqy8tlJDVKO4EElhG+NIDTEL0EX1VXSWU=;
+        s=k20201202; t=1659377102;
+        bh=WZn339z16/lJcxvgPxNR7mrRBsQuXDgDYpAiYuNzx5w=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QAY6Bf/AXJVPIRZluNX/xj6T1f9q8K3xsi6rMu/pcQa6J8tqULAUN8YbIpk1R5Uxq
-         U7RGLG/cGNTyamoT/mCd8HBijti5HVqhqpnN0qAQaTbPxyn25JS5zXWZ18W5JRSX27
-         7CBSjdr1efv8UPLI/gQ9XPb/Wly7LkPvKoLQhb9G0/OF21PBGMJxnNSd+avVhcWa23
-         UdBRTyvjt6JCoZ/lUnmAa22v++uTismBy9vGCCdFEDD/qD+y1dDiQm/vWXLVCTZKyb
-         yTAYYR/WacItIPIXsKfiNOKiPrE276Y0DW8Z5/LlyP8LIv48pM9/sgEgQYkxuoXPvB
-         QHfvkfowbwvEQ==
+        b=f6N6Gu/0OX4dBOkvVeo4EYMwWss8/I7tFwLjpZ5KYuwtJXOElG1NANoVk0HcWo9eH
+         rvxycBicHezG1h3Z7phG8d9F9bmK518a/+y49Orsf/7/OIHkmf1+wiZ3K5WeMqOQ6Z
+         4prygSSWUXegtSwGZDOR1Lt1hVypCFlbpPRbBPRT/uPXMCDKQeYKvUbmPAwWL4v1mz
+         HsGpM9OSs999M0nhpJGdmc44vpMxnFw5y/4/4sVhTE/pJ+j2qjLbTPIXrAn6hfmlgt
+         dJQ0Xnkwi9Iw1v9/mUNpHMqqMR3Cg2//f6bKPFEgdSBUjcKA5eMzxWeJEPZITinI6T
+         l4qZCfe9d/1Gw==
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id CB26440736; Mon,  1 Aug 2022 15:02:53 -0300 (-03)
-Date:   Mon, 1 Aug 2022 15:02:53 -0300
+        id 74AA640736; Mon,  1 Aug 2022 15:05:00 -0300 (-03)
+Date:   Mon, 1 Aug 2022 15:05:00 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Andres Freund <andres@anarazel.de>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+To:     Andres Freund <andres@anarazel.de>, Ben Hutchings <benh@debian.org>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Jiri Olsa <jolsa@kernel.org>,
         Sedat Dilek <sedat.dilek@gmail.com>,
-        Ben Hutchings <benh@debian.org>
-Subject: Re: [PATCH v3 0/8] tools: fix compilation failure caused by
- init_disassemble_info API changes
-Message-ID: <YugVTQ7CoqXRTNBY@kernel.org>
+        Quentin Monnet <quentin@isovalent.com>
+Subject: Re: [PATCH v3 3/8] tools include: add dis-asm-compat.h to handle
+ version differences
+Message-ID: <YugVzJqQhp2rYRvS@kernel.org>
 References: <20220622231624.t63bkmkzphqvh3kx@alap3.anarazel.de>
  <20220801013834.156015-1-andres@anarazel.de>
- <YufK0qnvVWCAFGEH@kernel.org>
- <ce9140c7-dd4b-0c4e-db7c-d25022cfe739@isovalent.com>
+ <20220801013834.156015-4-andres@anarazel.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ce9140c7-dd4b-0c4e-db7c-d25022cfe739@isovalent.com>
+In-Reply-To: <20220801013834.156015-4-andres@anarazel.de>
 X-Url:  http://acmel.wordpress.com
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
@@ -63,56 +62,112 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Mon, Aug 01, 2022 at 04:15:19PM +0100, Quentin Monnet escreveu:
-> On 01/08/2022 13:45, Arnaldo Carvalho de Melo wrote:
-> > Em Sun, Jul 31, 2022 at 06:38:26PM -0700, Andres Freund escreveu:
-> >> binutils changed the signature of init_disassemble_info(), which now causes
-> >> compilation failures for tools/{perf,bpf} on e.g. debian unstable. Relevant
-> >> binutils commit:
-> >> https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=60a3da00bd5407f07
-> >>
-> >> I first fixed this without introducing the compat header, as suggested by
-> >> Quentin, but I thought the amount of repeated boilerplate was a bit too
-> >> much. So instead I introduced a compat header to wrap the API changes. Even
-> >> tools/bpf/bpftool/jit_disasm.c, which needs its own callbacks for json, imo
-> >> looks nicer this way.
-> >>
-> >> I'm not regular contributor, so it very well might be my procedures are a
-> >> bit off...
-> >>
-> >> I am not sure I added the right [number of] people to CC?
-> > 
-> > I think its ok
-> >  
-> >> WRT the feature test: Not sure what the point of the -DPACKAGE='"perf"' is,
-> > 
-> > I think its related to libbfd, and it comes from a long time ago, trying
-> > to find the cset adding that...
-> > 
-> >> nor why tools/perf/Makefile.config sets some LDFLAGS/CFLAGS that are also
-> >> in feature/Makefile and why -ldl isn't needed in the other places. But...
-> >>
-> >> V2:
-> >> - split patches further, so that tools/bpf and tools/perf part are entirely
-> >>   separate
-> > 
-> > Cool, thanks, I'll process the first 4 patches, then at some point the
-> > bpftool bits can be merged, alternatively I can process those as well if
-> > the bpftool maintainers are ok with it.
-> > 
-> > I'll just wait a bit to see if Jiri and others have something to say.
-> > 
-> > - Arnaldo
+Em Sun, Jul 31, 2022 at 06:38:29PM -0700, Andres Freund escreveu:
+> binutils changed the signature of init_disassemble_info(), which now causes
+> compilation failures for tools/{perf,bpf}, e.g. on debian unstable.
+> Relevant binutils commit:
+> https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=60a3da00bd5407f07
 > 
-> Thanks for this work! For the series:
+> This commit introduces a wrapper for init_disassemble_info(), to avoid
+> spreading #ifdef DISASM_INIT_STYLED to a bunch of places. Subsequent
+> commits will use it to fix the build failures.
 > 
-> Acked-by: Quentin Monnet <quentin@isovalent.com>
+> It likely is worth adding a wrapper for disassember(), to avoid the already
+> existing DISASM_FOUR_ARGS_SIGNATURE ifdefery.
 > 
-> For what it's worth, it would make sense to me that these patches remain
-> together (so, through Arnaldo's tree), given that both the perf and
-> bpftool parts depend on dis-asm-compat.h being available.
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
+> Cc: Sedat Dilek <sedat.dilek@gmail.com>
+> Cc: Quentin Monnet <quentin@isovalent.com>
+> Cc: Ben Hutchings <benh@debian.org>
+> Link: http://lore.kernel.org/lkml/20220622181918.ykrs5rsnmx3og4sv@alap3.anarazel.de
+> Signed-off-by: Andres Freund <andres@anarazel.de>
+> Signed-off-by: Ben Hutchings <benh@debian.org>
 
-Ok, so I'm tentatively adding it to my local tree to do some tests, if
-someone disagrees, please holler.
+So, who is the author of this patch? Ben? b4 complained about it:
+
+NOTE: some trailers ignored due to from/email mismatches:
+    ! Trailer: Signed-off-by: Ben Hutchings <benh@debian.org>
+     Msg From: Andres Freund <andres@anarazel.de>
+NOTE: Rerun with -S to apply them anyway
+
+If it is Ben, then we would need a:
+
+From: Ben Hutchings <benh@debian.org>
+
+At the beginning of the patch, right?
+
+- Arnaldo
+
+> ---
+>  tools/include/tools/dis-asm-compat.h | 55 ++++++++++++++++++++++++++++
+>  1 file changed, 55 insertions(+)
+>  create mode 100644 tools/include/tools/dis-asm-compat.h
+> 
+> diff --git a/tools/include/tools/dis-asm-compat.h b/tools/include/tools/dis-asm-compat.h
+> new file mode 100644
+> index 000000000000..70f331e23ed3
+> --- /dev/null
+> +++ b/tools/include/tools/dis-asm-compat.h
+> @@ -0,0 +1,55 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause */
+> +#ifndef _TOOLS_DIS_ASM_COMPAT_H
+> +#define _TOOLS_DIS_ASM_COMPAT_H
+> +
+> +#include <stdio.h>
+> +#include <dis-asm.h>
+> +
+> +/* define types for older binutils version, to centralize ifdef'ery a bit */
+> +#ifndef DISASM_INIT_STYLED
+> +enum disassembler_style {DISASSEMBLER_STYLE_NOT_EMPTY};
+> +typedef int (*fprintf_styled_ftype) (void *, enum disassembler_style, const char*, ...);
+> +#endif
+> +
+> +/*
+> + * Trivial fprintf wrapper to be used as the fprintf_styled_func argument to
+> + * init_disassemble_info_compat() when normal fprintf suffices.
+> + */
+> +static inline int fprintf_styled(void *out,
+> +				 enum disassembler_style style,
+> +				 const char *fmt, ...)
+> +{
+> +	va_list args;
+> +	int r;
+> +
+> +	(void)style;
+> +
+> +	va_start(args, fmt);
+> +	r = vfprintf(out, fmt, args);
+> +	va_end(args);
+> +
+> +	return r;
+> +}
+> +
+> +/*
+> + * Wrapper for init_disassemble_info() that hides version
+> + * differences. Depending on binutils version and architecture either
+> + * fprintf_func or fprintf_styled_func will be called.
+> + */
+> +static inline void init_disassemble_info_compat(struct disassemble_info *info,
+> +						void *stream,
+> +						fprintf_ftype unstyled_func,
+> +						fprintf_styled_ftype styled_func)
+> +{
+> +#ifdef DISASM_INIT_STYLED
+> +	init_disassemble_info(info, stream,
+> +			      unstyled_func,
+> +			      styled_func);
+> +#else
+> +	(void)styled_func;
+> +	init_disassemble_info(info, stream,
+> +			      unstyled_func);
+> +#endif
+> +}
+> +
+> +#endif /* _TOOLS_DIS_ASM_COMPAT_H */
+> -- 
+> 2.37.0.3.g30cc8d0f14
+
+-- 
 
 - Arnaldo
