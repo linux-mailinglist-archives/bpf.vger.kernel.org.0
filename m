@@ -2,82 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7C6C586FE7
-	for <lists+bpf@lfdr.de>; Mon,  1 Aug 2022 19:56:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8051A586FFA
+	for <lists+bpf@lfdr.de>; Mon,  1 Aug 2022 19:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233719AbiHAR4B (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Aug 2022 13:56:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32982 "EHLO
+        id S234192AbiHAR7J (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Aug 2022 13:59:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233883AbiHARzE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Aug 2022 13:55:04 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B283DBD0
-        for <bpf@vger.kernel.org>; Mon,  1 Aug 2022 10:54:55 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id k16-20020a252410000000b006718984ef63so9107345ybk.3
-        for <bpf@vger.kernel.org>; Mon, 01 Aug 2022 10:54:55 -0700 (PDT)
+        with ESMTP id S234082AbiHAR6r (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Aug 2022 13:58:47 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC6893E744
+        for <bpf@vger.kernel.org>; Mon,  1 Aug 2022 10:58:29 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id sz17so21756033ejc.9
+        for <bpf@vger.kernel.org>; Mon, 01 Aug 2022 10:58:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=ydr4QjGV8KTGptkOEj8gMJr+oRqobCsTKXByyRxVRvQ=;
-        b=ih3y8NBErk8uRjRRQXjjGtZkQeyMRXH2bYna6G8qmcSXaQS79smnmwGmgUgwnvLXHe
-         zEaN7opbrOjiHvoqffhfOBmu6aauK41h32dAxHodBLyCnpVGxPs0mLZlscS6b2ZwDMK3
-         VtWK8SOYmHlYNZ3ZlcZCZMDLPvzUyobzTdYmrQkBAMnyJuQbijBG4xwc7d+KC34MVC8R
-         saTULM3qW3bLgJrkntWuRI8C1UZSr3vxl835wnxpEMUHObar7dCc3V+ynpOuFS49fRX2
-         LbY5W7ErChnKZR1W2Di8F2k0IuFAg53AQ9MKfJ/0XIHSCZv1Ilreq57J4f9VyA+D5mbt
-         e+rA==
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=u6DZTqqryl0kwUamcgWE97NQYfGL6zlc6yJP4paj3zE=;
+        b=BBsSojT/T7Z5ElOmrI6mk69NIM6Q3j/KL5vGwxWIuKqN04hBHusmQ2Ilwj3Podre44
+         DlsyznN5EQBtrPDpkF5mqZSU9GL0wa+WITEfE0GgHruTq+JdYJlQEOql4q2oZOaoHSap
+         A6X7YBEWjgWgt4Fu9VoGnFmh8iWHMxvts1wgwzg4rz85ZFvS/Uppf6s9cFdvKFWp0Row
+         NDGQAv01EO4IXwhM/2JHafX/hFMvzcKhiwuxBSFuLjw5GJ0veuZV1uCGM8X+z0SZpp9z
+         OyEz9bD0pMDFyTzK0hpd1bSIvGMbK0upzrFK8OEaKEnVVzf1AtVzoIivZvthfVpp9WFt
+         KiDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=ydr4QjGV8KTGptkOEj8gMJr+oRqobCsTKXByyRxVRvQ=;
-        b=IkYHLtwNUUNNML5eTeKIgyzTbH1f3LAMos9bup5ql3Q7wVPvy/QE900opXchkM5iJd
-         AcUW1H5eG+w4HRyWSFpRwciuq5T8GmR0+DWgtIGDS5TNnq6IGFijCjCWU4dWmEZh5M6r
-         QHNZwHt/QoHW6x7/lMqs+MIw/x6yz1jnxOM08Qji3u87D4Fpo5H7Iqb6Mtlbupo7CM2K
-         h9vY9stctfQCEfVQ4Y0fIPmkKKTPiJaLgDBIZsk+xvE8GOuGI855aDNOlhMXcoWuh5fm
-         KbosH7PMBfFISm/3CqiLaZpWm1fiuX3065ecpqxs9k4hP8HO84969FmYQgCN4SY8X6Pf
-         Z3pA==
-X-Gm-Message-State: ACgBeo3wVYd9HEEZXeIFqzHS+GFn74lJbYLL6wblLzHyJx+xYLEi9hpp
-        5wDawtPmWel3bY7Pot4KHrUIAExYfG4=
-X-Google-Smtp-Source: AA6agR6s7vDMCV26Tc2jCSX8t8QStnLYgzveneNGuEYM7jILPRo3jVrz3GPUf08qU8OXXkE6V24D9q30x3w=
-X-Received: from haoluo.svl.corp.google.com ([2620:15c:2d4:203:7c9:7b32:e73f:6716])
- (user=haoluo job=sendgmr) by 2002:a05:690c:90:b0:2f1:9b7a:ceec with SMTP id
- be16-20020a05690c009000b002f19b7aceecmr13830787ywb.308.1659376494324; Mon, 01
- Aug 2022 10:54:54 -0700 (PDT)
-Date:   Mon,  1 Aug 2022 10:54:07 -0700
-In-Reply-To: <20220801175407.2647869-1-haoluo@google.com>
-Message-Id: <20220801175407.2647869-9-haoluo@google.com>
-Mime-Version: 1.0
-References: <20220801175407.2647869-1-haoluo@google.com>
-X-Mailer: git-send-email 2.37.1.455.g008518b4e5-goog
-Subject: [PATCH bpf-next v6 8/8] selftests/bpf: add a selftest for cgroup
- hierarchical stats collection
-From:   Hao Luo <haoluo@google.com>
-To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        cgroups@vger.kernel.org, netdev@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=u6DZTqqryl0kwUamcgWE97NQYfGL6zlc6yJP4paj3zE=;
+        b=I6eyr7cLKHYe1+F5I1K7XwizqMsljW0oX7/7S2LEdpvoZDK+Gehj4F9iL2R6HXNy9N
+         o+8GqqQH1c1juhC6rUMBMpe8L/EIBR4koogreYb6B4cbl5TkdMErf0M0wIjhUBcAQlR/
+         6+HVrEeijbAFIOPc/xQdhL15xbfp8BpJTCWHZ1k65K7WSfZMwhnKZJk7Rpkqexx6GyyF
+         uVtO8aOhRk0CGvFSng70B6ceryxqrP+aA0n2whAu58lc30yxl8CiQH3RTmTqnT6TlnPA
+         noeHCzjraGXvqhuPA6Q5Lnvpr6eyj4URoNVZnODlYtcmymXI9+WMQNLtlQXhsNEFMcrw
+         0ZmQ==
+X-Gm-Message-State: AJIora+otPRQudXavLxwUbH1XsSb7jzAXULnpM6hNEtipM73knzRQppA
+        Qr1vMtizQLOJ+kZlqmCuBqkUY/Arr50aZEPbKAg=
+X-Google-Smtp-Source: AGRyM1vM55hIxSJHFmuPrlmHMwtc/X3oQpmgSMmFShgMeRggsX5Ho6K8SMxzjL7r+Rxnj/hS2FhMneTCXfJRmJsyc0Y=
+X-Received: by 2002:a17:907:2808:b0:72b:4d49:b2e9 with SMTP id
+ eb8-20020a170907280800b0072b4d49b2e9mr13867899ejc.176.1659376707939; Mon, 01
+ Aug 2022 10:58:27 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220726184706.954822-1-joannelkoong@gmail.com> <20220726184706.954822-4-joannelkoong@gmail.com>
+In-Reply-To: <20220726184706.954822-4-joannelkoong@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 1 Aug 2022 10:58:16 -0700
+Message-ID: <CAEf4Bzb2Jev=NpwzkKn8UPRe-99-3WcgySfGwOB6W8n-3E4G1g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 3/3] selftests/bpf: tests for using dynptrs to
+ parse skb and xdp buffers
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Michal Koutny <mkoutny@suse.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Hao Luo <haoluo@google.com>
+        Alexei Starovoitov <ast@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,653 +67,651 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Yosry Ahmed <yosryahmed@google.com>
+On Tue, Jul 26, 2022 at 11:48 AM Joanne Koong <joannelkoong@gmail.com> wrote:
+>
+> Test skb and xdp dynptr functionality in the following ways:
+>
+> 1) progs/test_xdp.c
+>    * Change existing test to use dynptrs to parse xdp data
+>
+>      There were no noticeable diferences in user + system time between
+>      the original version vs. using dynptrs. Averaging the time for 10
+>      runs (run using "time ./test_progs -t xdp_bpf2bpf"):
+>          original version: 0.0449 sec
+>          with dynptrs: 0.0429 sec
+>
+> 2) progs/test_l4lb_noinline.c
+>    * Change existing test to use dynptrs to parse skb data
+>
+>      There were no noticeable diferences in user + system time between
+>      the original version vs. using dynptrs. Averaging the time for 10
+>      runs (run using "time ./test_progs -t l4lb_all/l4lb_noinline"):
+>          original version: 0.0502 sec
+>          with dynptrs: 0.055 sec
+>
+>      For number of processed verifier instructions:
+>          original version: 6284 insns
+>          with dynptrs: 2538 insns
+>
+> 3) progs/test_dynptr_xdp.c
+>    * Add sample code for parsing tcp hdr opt lookup using dynptrs.
+>      This logic is lifted from a real-world use case of packet parsing in
+>      katran [0], a layer 4 load balancer
+>
+> 4) progs/dynptr_success.c
+>    * Add test case "test_skb_readonly" for testing attempts at writes /
+>      data slices on a prog type with read-only skb ctx.
+>
+> 5) progs/dynptr_fail.c
+>    * Add test cases "skb_invalid_data_slice" and
+>      "xdp_invalid_data_slice" for testing that helpers that modify the
+>      underlying packet buffer automatically invalidate the associated
+>      data slice.
+>    * Add test cases "skb_invalid_ctx" and "xdp_invalid_ctx" for testing
+>      that prog types that do not support bpf_dynptr_from_skb/xdp don't
+>      have access to the API.
+>
+> [0] https://github.com/facebookincubator/katran/blob/main/katran/lib/bpf/pckt_parsing.h
+>
+> Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+> ---
+>  .../testing/selftests/bpf/prog_tests/dynptr.c |  85 ++++++++++---
+>  .../selftests/bpf/prog_tests/dynptr_xdp.c     |  49 ++++++++
+>  .../testing/selftests/bpf/progs/dynptr_fail.c |  76 ++++++++++++
+>  .../selftests/bpf/progs/dynptr_success.c      |  32 +++++
+>  .../selftests/bpf/progs/test_dynptr_xdp.c     | 115 ++++++++++++++++++
+>  .../selftests/bpf/progs/test_l4lb_noinline.c  |  71 +++++------
+>  tools/testing/selftests/bpf/progs/test_xdp.c  |  95 +++++++--------
+>  .../selftests/bpf/test_tcp_hdr_options.h      |   1 +
+>  8 files changed, 416 insertions(+), 108 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/dynptr_xdp.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_dynptr_xdp.c
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/dynptr.c b/tools/testing/selftests/bpf/prog_tests/dynptr.c
+> index bcf80b9f7c27..c40631f33c7b 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/dynptr.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/dynptr.c
+> @@ -2,6 +2,7 @@
+>  /* Copyright (c) 2022 Facebook */
+>
+>  #include <test_progs.h>
+> +#include <network_helpers.h>
+>  #include "dynptr_fail.skel.h"
+>  #include "dynptr_success.skel.h"
+>
+> @@ -11,8 +12,8 @@ static char obj_log_buf[1048576];
+>  static struct {
+>         const char *prog_name;
+>         const char *expected_err_msg;
+> -} dynptr_tests[] = {
+> -       /* failure cases */
+> +} verifier_error_tests[] = {
+> +       /* these cases should trigger a verifier error */
+>         {"ringbuf_missing_release1", "Unreleased reference id=1"},
+>         {"ringbuf_missing_release2", "Unreleased reference id=2"},
+>         {"ringbuf_missing_release_callback", "Unreleased reference id"},
+> @@ -42,11 +43,25 @@ static struct {
+>         {"release_twice_callback", "arg 1 is an unacquired reference"},
+>         {"dynptr_from_mem_invalid_api",
+>                 "Unsupported reg type fp for bpf_dynptr_from_mem data"},
+> +       {"skb_invalid_data_slice", "invalid mem access 'scalar'"},
+> +       {"xdp_invalid_data_slice", "invalid mem access 'scalar'"},
+> +       {"skb_invalid_ctx", "unknown func bpf_dynptr_from_skb"},
+> +       {"xdp_invalid_ctx", "unknown func bpf_dynptr_from_xdp"},
+> +};
+> +
+> +enum test_setup_type {
+> +       SETUP_SYSCALL_SLEEP,
+> +       SETUP_SKB_PROG,
+> +};
+>
+> -       /* success cases */
+> -       {"test_read_write", NULL},
+> -       {"test_data_slice", NULL},
+> -       {"test_ringbuf", NULL},
+> +static struct {
+> +       const char *prog_name;
+> +       enum test_setup_type type;
+> +} runtime_tests[] = {
+> +       {"test_read_write", SETUP_SYSCALL_SLEEP},
+> +       {"test_data_slice", SETUP_SYSCALL_SLEEP},
+> +       {"test_ringbuf", SETUP_SYSCALL_SLEEP},
+> +       {"test_skb_readonly", SETUP_SKB_PROG},
 
-From: Yosry Ahmed <yosryahmed@google.com>
+nit: wouldn't it be better to add test_setup_type to dynptr_tests (and
+keep fail and success cases together)? It's conceivable that you might
+want different setups to test different error conditions, right?
 
-Add a selftest that tests the whole workflow for collecting,
-aggregating (flushing), and displaying cgroup hierarchical stats.
+>  };
+>
+>  static void verify_fail(const char *prog_name, const char *expected_err_msg)
+> @@ -85,7 +100,7 @@ static void verify_fail(const char *prog_name, const char *expected_err_msg)
+>         dynptr_fail__destroy(skel);
+>  }
+>
+> -static void verify_success(const char *prog_name)
+> +static void run_tests(const char *prog_name, enum test_setup_type setup_type)
+>  {
+>         struct dynptr_success *skel;
+>         struct bpf_program *prog;
+> @@ -107,15 +122,42 @@ static void verify_success(const char *prog_name)
+>         if (!ASSERT_OK_PTR(prog, "bpf_object__find_program_by_name"))
+>                 goto cleanup;
+>
+> -       link = bpf_program__attach(prog);
+> -       if (!ASSERT_OK_PTR(link, "bpf_program__attach"))
+> -               goto cleanup;
+> +       switch (setup_type) {
+> +       case SETUP_SYSCALL_SLEEP:
+> +               link = bpf_program__attach(prog);
+> +               if (!ASSERT_OK_PTR(link, "bpf_program__attach"))
+> +                       goto cleanup;
+>
+> -       usleep(1);
+> +               usleep(1);
+>
+> -       ASSERT_EQ(skel->bss->err, 0, "err");
+> +               bpf_link__destroy(link);
+> +               break;
+> +       case SETUP_SKB_PROG:
+> +       {
+> +               int prog_fd, err;
+> +               char buf[64];
+> +
+> +               prog_fd = bpf_program__fd(prog);
+> +               if (CHECK_FAIL(prog_fd < 0))
 
-TL;DR:
-- Userspace program creates a cgroup hierarchy and induces memcg reclaim
-  in parts of it.
-- Whenever reclaim happens, vmscan_start and vmscan_end update
-  per-cgroup percpu readings, and tell rstat which (cgroup, cpu) pairs
-  have updates.
-- When userspace tries to read the stats, vmscan_dump calls rstat to flush
-  the stats, and outputs the stats in text format to userspace (similar
-  to cgroupfs stats).
-- rstat calls vmscan_flush once for every (cgroup, cpu) pair that has
-  updates, vmscan_flush aggregates cpu readings and propagates updates
-  to parents.
-- Userspace program makes sure the stats are aggregated and read
-  correctly.
+please don't use CHECK and especially CHECK_FAIL
 
-Detailed explanation:
-- The test loads tracing bpf programs, vmscan_start and vmscan_end, to
-  measure the latency of cgroup reclaim. Per-cgroup readings are stored in
-  percpu maps for efficiency. When a cgroup reading is updated on a cpu,
-  cgroup_rstat_updated(cgroup, cpu) is called to add the cgroup to the
-  rstat updated tree on that cpu.
+> +                       goto cleanup;
+> +
+> +               LIBBPF_OPTS(bpf_test_run_opts, topts,
+> +                           .data_in = &pkt_v4,
+> +                           .data_size_in = sizeof(pkt_v4),
+> +                           .data_out = buf,
+> +                           .data_size_out = sizeof(buf),
+> +                           .repeat = 1,
+> +               );
 
-- A cgroup_iter program, vmscan_dump, is loaded and pinned to a file, for
-  each cgroup. Reading this file invokes the program, which calls
-  cgroup_rstat_flush(cgroup) to ask rstat to propagate the updates for all
-  cpus and cgroups that have updates in this cgroup's subtree. Afterwards,
-  the stats are exposed to the user. vmscan_dump returns 1 to terminate
-  iteration early, so that we only expose stats for one cgroup per read.
+nit: LIBBPF_OPTS declares variable, so should be part of variable
+declaration block
 
-- An ftrace program, vmscan_flush, is also loaded and attached to
-  bpf_rstat_flush. When rstat flushing is ongoing, vmscan_flush is invoked
-  once for each (cgroup, cpu) pair that has updates. cgroups are popped
-  from the rstat tree in a bottom-up fashion, so calls will always be
-  made for cgroups that have updates before their parents. The program
-  aggregates percpu readings to a total per-cgroup reading, and also
-  propagates them to the parent cgroup. After rstat flushing is over, all
-  cgroups will have correct updated hierarchical readings (including all
-  cpus and all their descendants).
+>
+> -       bpf_link__destroy(link);
+> +               err = bpf_prog_test_run_opts(prog_fd, &topts);
+> +
+> +               if (!ASSERT_OK(err, "test_run"))
+> +                       goto cleanup;
+> +
+> +               break;
+> +       }
+> +       }
+> +       ASSERT_EQ(skel->bss->err, 0, "err");
+>
+>  cleanup:
+>         dynptr_success__destroy(skel);
+> @@ -125,14 +167,17 @@ void test_dynptr(void)
+>  {
+>         int i;
+>
+> -       for (i = 0; i < ARRAY_SIZE(dynptr_tests); i++) {
+> -               if (!test__start_subtest(dynptr_tests[i].prog_name))
+> +       for (i = 0; i < ARRAY_SIZE(verifier_error_tests); i++) {
+> +               if (!test__start_subtest(verifier_error_tests[i].prog_name))
+> +                       continue;
+> +
+> +               verify_fail(verifier_error_tests[i].prog_name,
+> +                           verifier_error_tests[i].expected_err_msg);
+> +       }
+> +       for (i = 0; i < ARRAY_SIZE(runtime_tests); i++) {
+> +               if (!test__start_subtest(runtime_tests[i].prog_name))
+>                         continue;
+>
+> -               if (dynptr_tests[i].expected_err_msg)
+> -                       verify_fail(dynptr_tests[i].prog_name,
+> -                                   dynptr_tests[i].expected_err_msg);
+> -               else
+> -                       verify_success(dynptr_tests[i].prog_name);
+> +               run_tests(runtime_tests[i].prog_name, runtime_tests[i].type);
+>         }
+>  }
+> diff --git a/tools/testing/selftests/bpf/prog_tests/dynptr_xdp.c b/tools/testing/selftests/bpf/prog_tests/dynptr_xdp.c
+> new file mode 100644
+> index 000000000000..ca775d126b60
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/dynptr_xdp.c
+> @@ -0,0 +1,49 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <test_progs.h>
+> +#include <network_helpers.h>
+> +#include "test_dynptr_xdp.skel.h"
+> +#include "test_tcp_hdr_options.h"
+> +
+> +struct test_pkt {
+> +       struct ipv6_packet pk6_v6;
+> +       u8 options[16];
+> +} __packed;
+> +
+> +void test_dynptr_xdp(void)
+> +{
+> +       struct test_dynptr_xdp *skel;
+> +       char buf[128];
+> +       int err;
+> +
+> +       skel = test_dynptr_xdp__open_and_load();
+> +       if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
+> +               return;
+> +
+> +       struct test_pkt pkt = {
+> +               .pk6_v6.eth.h_proto = __bpf_constant_htons(ETH_P_IPV6),
+> +               .pk6_v6.iph.nexthdr = IPPROTO_TCP,
+> +               .pk6_v6.iph.payload_len = __bpf_constant_htons(MAGIC_BYTES),
+> +               .pk6_v6.tcp.urg_ptr = 123,
+> +               .pk6_v6.tcp.doff = 9, /* 16 bytes of options */
+> +
+> +               .options = {
+> +                       TCPOPT_MSS, 4, 0x05, 0xB4, TCPOPT_NOP, TCPOPT_NOP,
+> +                       skel->rodata->tcp_hdr_opt_kind_tpr, 6, 0, 0, 0, 9, TCPOPT_EOL
+> +               },
+> +       };
+> +
+> +       LIBBPF_OPTS(bpf_test_run_opts, topts,
+> +                   .data_in = &pkt,
+> +                   .data_size_in = sizeof(pkt),
+> +                   .data_out = buf,
+> +                   .data_size_out = sizeof(buf),
+> +                   .repeat = 3,
+> +       );
+> +
 
-- Finally, the test creates a cgroup hierarchy and induces memcg reclaim
-  in parts of it, and makes sure that the stats collection, aggregation,
-  and reading workflow works as expected.
+for topts and pkt, they should be up above with other variables
+(unless we want to break off from kernel code style, which I didn't
+think we want)
 
-Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-Signed-off-by: Hao Luo <haoluo@google.com>
----
- .../prog_tests/cgroup_hierarchical_stats.c    | 358 ++++++++++++++++++
- .../bpf/progs/cgroup_hierarchical_stats.c     | 218 +++++++++++
- 2 files changed, 576 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_hierarchical_stats.c
- create mode 100644 tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
+> +       err = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.xdp_ingress_v6), &topts);
+> +       ASSERT_OK(err, "ipv6 test_run");
+> +       ASSERT_EQ(skel->bss->server_id, 0x9000000, "server id");
+> +       ASSERT_EQ(topts.retval, XDP_PASS, "ipv6 test_run retval");
+> +
+> +       test_dynptr_xdp__destroy(skel);
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/dynptr_fail.c b/tools/testing/selftests/bpf/progs/dynptr_fail.c
+> index c1814938a5fd..4e3f853b2d02 100644
+> --- a/tools/testing/selftests/bpf/progs/dynptr_fail.c
+> +++ b/tools/testing/selftests/bpf/progs/dynptr_fail.c
+> @@ -5,6 +5,7 @@
+>  #include <string.h>
+>  #include <linux/bpf.h>
+>  #include <bpf/bpf_helpers.h>
+> +#include <linux/if_ether.h>
+>  #include "bpf_misc.h"
+>
+>  char _license[] SEC("license") = "GPL";
+> @@ -622,3 +623,78 @@ int dynptr_from_mem_invalid_api(void *ctx)
+>
+>         return 0;
+>  }
+> +
+> +/* The data slice is invalidated whenever a helper changes packet data */
+> +SEC("?tc")
+> +int skb_invalid_data_slice(struct __sk_buff *skb)
+> +{
+> +       struct bpf_dynptr ptr;
+> +       struct ethhdr *hdr;
+> +
+> +       bpf_dynptr_from_skb(skb, 0, &ptr);
+> +       hdr = bpf_dynptr_data(&ptr, 0, sizeof(*hdr));
+> +       if (!hdr)
+> +               return SK_DROP;
+> +
+> +       hdr->h_proto = 12;
+> +
+> +       if (bpf_skb_pull_data(skb, skb->len))
+> +               return SK_DROP;
+> +
+> +       /* this should fail */
+> +       hdr->h_proto = 1;
+> +
+> +       return SK_PASS;
+> +}
+> +
+> +/* The data slice is invalidated whenever a helper changes packet data */
+> +SEC("?xdp")
+> +int xdp_invalid_data_slice(struct xdp_md *xdp)
+> +{
+> +       struct bpf_dynptr ptr;
+> +       struct ethhdr *hdr1, *hdr2;
+> +
+> +       bpf_dynptr_from_xdp(xdp, 0, &ptr);
+> +       hdr1 = bpf_dynptr_data(&ptr, 0, sizeof(*hdr1));
+> +       if (!hdr1)
+> +               return XDP_DROP;
+> +
+> +       hdr2 = bpf_dynptr_data(&ptr, 0, sizeof(*hdr2));
+> +       if (!hdr2)
+> +               return XDP_DROP;
+> +
+> +       hdr1->h_proto = 12;
+> +       hdr2->h_proto = 12;
+> +
+> +       if (bpf_xdp_adjust_head(xdp, 0 - (int)sizeof(*hdr1)))
+> +               return XDP_DROP;
+> +
+> +       /* this should fail */
+> +       hdr2->h_proto = 1;
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_hierarchical_stats.c b/tools/testing/selftests/bpf/prog_tests/cgroup_hierarchical_stats.c
-new file mode 100644
-index 000000000000..647a2c1d5722
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_hierarchical_stats.c
-@@ -0,0 +1,358 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Functions to manage eBPF programs attached to cgroup subsystems
-+ *
-+ * Copyright 2022 Google LLC.
-+ */
-+#include <asm-generic/errno.h>
-+#include <errno.h>
-+#include <sys/types.h>
-+#include <sys/mount.h>
-+#include <sys/stat.h>
-+#include <unistd.h>
-+
-+#include <test_progs.h>
-+#include <bpf/libbpf.h>
-+#include <bpf/bpf.h>
-+
-+#include "cgroup_helpers.h"
-+#include "cgroup_hierarchical_stats.skel.h"
-+
-+#define PAGE_SIZE 4096
-+#define MB(x) (x << 20)
-+
-+#define BPFFS_ROOT "/sys/fs/bpf/"
-+#define BPFFS_VMSCAN BPFFS_ROOT"vmscan/"
-+
-+#define CG_ROOT_NAME "root"
-+#define CG_ROOT_ID 1
-+
-+#define CGROUP_PATH(p, n) {.path = p"/"n, .name = n}
-+
-+static struct {
-+	const char *path, *name;
-+	unsigned long long id;
-+	int fd;
-+} cgroups[] = {
-+	CGROUP_PATH("/", "test"),
-+	CGROUP_PATH("/test", "child1"),
-+	CGROUP_PATH("/test", "child2"),
-+	CGROUP_PATH("/test/child1", "child1_1"),
-+	CGROUP_PATH("/test/child1", "child1_2"),
-+	CGROUP_PATH("/test/child2", "child2_1"),
-+	CGROUP_PATH("/test/child2", "child2_2"),
-+};
-+
-+#define N_CGROUPS ARRAY_SIZE(cgroups)
-+#define N_NON_LEAF_CGROUPS 3
-+
-+static int root_cgroup_fd;
-+static bool mounted_bpffs;
-+
-+/* reads file at 'path' to 'buf', returns 0 on success. */
-+static int read_from_file(const char *path, char *buf, size_t size)
-+{
-+	int fd, len;
-+
-+	fd = open(path, O_RDONLY);
-+	if (fd < 0)
-+		return fd;
-+
-+	len = read(fd, buf, size);
-+	close(fd);
-+	if (len < 0)
-+		return len;
-+
-+	buf[len] = 0;
-+	return 0;
-+}
-+
-+/* mounts bpffs and mkdir for reading stats, returns 0 on success. */
-+static int setup_bpffs(void)
-+{
-+	int err;
-+
-+	/* Mount bpffs */
-+	err = mount("bpf", BPFFS_ROOT, "bpf", 0, NULL);
-+	mounted_bpffs = !err;
-+	if (ASSERT_FALSE(err && errno != EBUSY, "mount"))
-+		return err;
-+
-+	/* Create a directory to contain stat files in bpffs */
-+	err = mkdir(BPFFS_VMSCAN, 0755);
-+	if (!ASSERT_OK(err, "mkdir"))
-+		return err;
-+
-+	return 0;
-+}
-+
-+static void cleanup_bpffs(void)
-+{
-+	/* Remove created directory in bpffs */
-+	ASSERT_OK(rmdir(BPFFS_VMSCAN), "rmdir "BPFFS_VMSCAN);
-+
-+	/* Unmount bpffs, if it wasn't already mounted when we started */
-+	if (mounted_bpffs)
-+		return;
-+
-+	ASSERT_OK(umount(BPFFS_ROOT), "unmount bpffs");
-+}
-+
-+/* sets up cgroups, returns 0 on success. */
-+static int setup_cgroups(void)
-+{
-+	int i, fd, err;
-+
-+	err = setup_cgroup_environment();
-+	if (!ASSERT_OK(err, "setup_cgroup_environment"))
-+		return err;
-+
-+	root_cgroup_fd = get_root_cgroup();
-+	if (!ASSERT_GE(root_cgroup_fd, 0, "get_root_cgroup"))
-+		return root_cgroup_fd;
-+
-+	for (i = 0; i < N_CGROUPS; i++) {
-+		fd = create_and_get_cgroup(cgroups[i].path);
-+		if (!ASSERT_GE(fd, 0, "create_and_get_cgroup"))
-+			return fd;
-+
-+		cgroups[i].fd = fd;
-+		cgroups[i].id = get_cgroup_id(cgroups[i].path);
-+
-+		/*
-+		 * Enable memcg controller for the entire hierarchy.
-+		 * Note that stats are collected for all cgroups in a hierarchy
-+		 * with memcg enabled anyway, but are only exposed for cgroups
-+		 * that have memcg enabled.
-+		 */
-+		if (i < N_NON_LEAF_CGROUPS) {
-+			err = enable_controllers(cgroups[i].path, "memory");
-+			if (!ASSERT_OK(err, "enable_controllers"))
-+				return err;
-+		}
-+	}
-+	return 0;
-+}
-+
-+static void cleanup_cgroups(void)
-+{
-+	close(root_cgroup_fd);
-+	for (int i = 0; i < N_CGROUPS; i++)
-+		close(cgroups[i].fd);
-+	cleanup_cgroup_environment();
-+}
-+
-+/* Sets up cgroup hiearchary, returns 0 on success. */
-+static int setup_hierarchy(void)
-+{
-+	return setup_bpffs() || setup_cgroups();
-+}
-+
-+static void destroy_hierarchy(void)
-+{
-+	cleanup_cgroups();
-+	cleanup_bpffs();
-+}
-+
-+static int reclaimer(const char *cgroup_path, size_t size)
-+{
-+	static char size_buf[128];
-+	char *buf, *ptr;
-+	int err;
-+
-+	/* Join cgroup in the parent process workdir */
-+	if (join_parent_cgroup(cgroup_path))
-+		return EACCES;
-+
-+	/* Allocate memory */
-+	buf = malloc(size);
-+	if (!buf)
-+		return ENOMEM;
-+
-+	/* Write to memory to make sure it's actually allocated */
-+	for (ptr = buf; ptr < buf + size; ptr += PAGE_SIZE)
-+		*ptr = 1;
-+
-+	/* Try to reclaim memory */
-+	snprintf(size_buf, 128, "%lu", size);
-+	err = write_cgroup_file_parent(cgroup_path, "memory.reclaim", size_buf);
-+
-+	free(buf);
-+	/* memory.reclaim returns EAGAIN if the amount is not fully reclaimed */
-+	if (err && errno != EAGAIN)
-+		return errno;
-+
-+	return 0;
-+}
-+
-+static int induce_vmscan(void)
-+{
-+	int i, status;
-+
-+	/*
-+	 * In every leaf cgroup, run a child process that allocates some memory
-+	 * and attempts to reclaim some of it.
-+	 */
-+	for (i = N_NON_LEAF_CGROUPS; i < N_CGROUPS; i++) {
-+		pid_t pid;
-+
-+		/* Create reclaimer child */
-+		pid = fork();
-+		if (pid == 0) {
-+			status = reclaimer(cgroups[i].path, MB(5));
-+			exit(status);
-+		}
-+
-+		/* Cleanup reclaimer child */
-+		waitpid(pid, &status, 0);
-+		ASSERT_TRUE(WIFEXITED(status), "reclaimer exited");
-+		ASSERT_EQ(WEXITSTATUS(status), 0, "reclaim exit code");
-+	}
-+	return 0;
-+}
-+
-+static unsigned long long
-+get_cgroup_vmscan_delay(unsigned long long cgroup_id, const char *file_name)
-+{
-+	unsigned long long vmscan = 0, id = 0;
-+	static char buf[128], path[128];
-+
-+	/* For every cgroup, read the file generated by cgroup_iter */
-+	snprintf(path, 128, "%s%s", BPFFS_VMSCAN, file_name);
-+	if (!ASSERT_OK(read_from_file(path, buf, 128), "read cgroup_iter"))
-+		return 0;
-+
-+	/* Check the output file formatting */
-+	ASSERT_EQ(sscanf(buf, "cg_id: %llu, total_vmscan_delay: %llu\n",
-+			 &id, &vmscan), 2, "output format");
-+
-+	/* Check that the cgroup_id is displayed correctly */
-+	ASSERT_EQ(id, cgroup_id, "cgroup_id");
-+	/* Check that the vmscan reading is non-zero */
-+	ASSERT_GT(vmscan, 0, "vmscan_reading");
-+	return vmscan;
-+}
-+
-+static void check_vmscan_stats(void)
-+{
-+	unsigned long long vmscan_readings[N_CGROUPS], vmscan_root;
-+	int i;
-+
-+	for (i = 0; i < N_CGROUPS; i++) {
-+		vmscan_readings[i] = get_cgroup_vmscan_delay(cgroups[i].id,
-+							     cgroups[i].name);
-+	}
-+
-+	/* Read stats for root too */
-+	vmscan_root = get_cgroup_vmscan_delay(CG_ROOT_ID, CG_ROOT_NAME);
-+
-+	/* Check that child1 == child1_1 + child1_2 */
-+	ASSERT_EQ(vmscan_readings[1], vmscan_readings[3] + vmscan_readings[4],
-+		  "child1_vmscan");
-+	/* Check that child2 == child2_1 + child2_2 */
-+	ASSERT_EQ(vmscan_readings[2], vmscan_readings[5] + vmscan_readings[6],
-+		  "child2_vmscan");
-+	/* Check that test == child1 + child2 */
-+	ASSERT_EQ(vmscan_readings[0], vmscan_readings[1] + vmscan_readings[2],
-+		  "test_vmscan");
-+	/* Check that root >= test */
-+	ASSERT_GE(vmscan_root, vmscan_readings[1], "root_vmscan");
-+}
-+
-+/* Creates iter link and pins in bpffs, returns 0 on success, -errno on failure.
-+ */
-+static int setup_cgroup_iter(struct cgroup_hierarchical_stats *obj,
-+			     int cgroup_fd, const char *file_name)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-+	union bpf_iter_link_info linfo = {};
-+	struct bpf_link *link;
-+	static char path[128];
-+	int err;
-+
-+	/*
-+	 * Create an iter link, parameterized by cgroup_fd.
-+	 * We only want to traverse one cgroup, so set the traversal order to
-+	 * "pre", and return 1 from dump_vmscan to stop iteration after the
-+	 * first cgroup.
-+	 */
-+	linfo.cgroup.cgroup_fd = cgroup_fd;
-+	linfo.cgroup.traversal_order = BPF_ITER_CGROUP_PRE;
-+	opts.link_info = &linfo;
-+	opts.link_info_len = sizeof(linfo);
-+	link = bpf_program__attach_iter(obj->progs.dump_vmscan, &opts);
-+	if (!ASSERT_OK_PTR(link, "attach iter"))
-+		return -EFAULT;
-+
-+	/* Pin the link to a bpffs file */
-+	snprintf(path, 128, "%s%s", BPFFS_VMSCAN, file_name);
-+	err = bpf_link__pin(link, path);
-+	ASSERT_OK(err, "pin cgroup_iter");
-+
-+	/* Remove the link, leaving only the ref held by the pinned file */
-+	bpf_link__destroy(link);
-+	return err;
-+}
-+
-+/* Sets up programs for collecting stats, returns 0 on success. */
-+static int setup_progs(struct cgroup_hierarchical_stats **skel)
-+{
-+	int i, err;
-+
-+	*skel = cgroup_hierarchical_stats__open_and_load();
-+	if (!ASSERT_OK_PTR(*skel, "open_and_load"))
-+		return 1;
-+
-+	/* Attach cgroup_iter program that will dump the stats to cgroups */
-+	for (i = 0; i < N_CGROUPS; i++) {
-+		err = setup_cgroup_iter(*skel, cgroups[i].fd, cgroups[i].name);
-+		if (!ASSERT_OK(err, "setup_cgroup_iter"))
-+			return err;
-+	}
-+
-+	/* Also dump stats for root */
-+	err = setup_cgroup_iter(*skel, root_cgroup_fd, CG_ROOT_NAME);
-+	if (!ASSERT_OK(err, "setup_cgroup_iter"))
-+		return err;
-+
-+	err = cgroup_hierarchical_stats__attach(*skel);
-+	if (!ASSERT_OK(err, "attach"))
-+		return err;
-+
-+	return 0;
-+}
-+
-+static void destroy_progs(struct cgroup_hierarchical_stats *skel)
-+{
-+	static char path[128];
-+	int i;
-+
-+	for (i = 0; i < N_CGROUPS; i++) {
-+		/* Delete files in bpffs that cgroup_iters are pinned in */
-+		snprintf(path, 128, "%s%s", BPFFS_VMSCAN,
-+			 cgroups[i].name);
-+		ASSERT_OK(remove(path), "remove cgroup_iter pin");
-+	}
-+
-+	/* Delete root file in bpffs */
-+	snprintf(path, 128, "%s%s", BPFFS_VMSCAN, CG_ROOT_NAME);
-+	ASSERT_OK(remove(path), "remove cgroup_iter root pin");
-+	cgroup_hierarchical_stats__destroy(skel);
-+}
-+
-+void test_cgroup_hierarchical_stats(void)
-+{
-+	struct cgroup_hierarchical_stats *skel = NULL;
-+
-+	if (setup_hierarchy())
-+		goto hierarchy_cleanup;
-+	if (setup_progs(&skel))
-+		goto cleanup;
-+	if (induce_vmscan())
-+		goto cleanup;
-+	check_vmscan_stats();
-+cleanup:
-+	destroy_progs(skel);
-+hierarchy_cleanup:
-+	destroy_hierarchy();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c b/tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
-new file mode 100644
-index 000000000000..c3bd8f6846e5
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
-@@ -0,0 +1,218 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Functions to manage eBPF programs attached to cgroup subsystems
-+ *
-+ * Copyright 2022 Google LLC.
-+ */
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+/*
-+ * Start times are stored per-task, not per-cgroup, as multiple tasks in one
-+ * cgroup can perform reclaim concurrently.
-+ */
-+struct {
-+	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, __u64);
-+} vmscan_start_time SEC(".maps");
-+
-+struct vmscan_percpu {
-+	/* Previous percpu state, to figure out if we have new updates */
-+	__u64 prev;
-+	/* Current percpu state */
-+	__u64 state;
-+};
-+
-+struct vmscan {
-+	/* State propagated through children, pending aggregation */
-+	__u64 pending;
-+	/* Total state, including all cpus and all children */
-+	__u64 state;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_HASH);
-+	__uint(max_entries, 100);
-+	__type(key, __u64);
-+	__type(value, struct vmscan_percpu);
-+} pcpu_cgroup_vmscan_elapsed SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, 100);
-+	__type(key, __u64);
-+	__type(value, struct vmscan);
-+} cgroup_vmscan_elapsed SEC(".maps");
-+
-+extern void cgroup_rstat_updated(struct cgroup *cgrp, int cpu) __ksym;
-+extern void cgroup_rstat_flush(struct cgroup *cgrp) __ksym;
-+
-+static struct cgroup *task_memcg(struct task_struct *task)
-+{
-+	return task->cgroups->subsys[memory_cgrp_id]->cgroup;
-+}
-+
-+static uint64_t cgroup_id(struct cgroup *cgrp)
-+{
-+	return cgrp->kn->id;
-+}
-+
-+static int create_vmscan_percpu_elem(__u64 cg_id, __u64 state)
-+{
-+	struct vmscan_percpu pcpu_init = {.state = state, .prev = 0};
-+
-+	return bpf_map_update_elem(&pcpu_cgroup_vmscan_elapsed, &cg_id,
-+				   &pcpu_init, BPF_NOEXIST);
-+}
-+
-+static int create_vmscan_elem(__u64 cg_id, __u64 state, __u64 pending)
-+{
-+	struct vmscan init = {.state = state, .pending = pending};
-+
-+	return bpf_map_update_elem(&cgroup_vmscan_elapsed, &cg_id,
-+				   &init, BPF_NOEXIST);
-+}
-+
-+SEC("tp_btf/mm_vmscan_memcg_reclaim_begin")
-+int BPF_PROG(vmscan_start, int order, gfp_t gfp_flags)
-+{
-+	struct task_struct *task = bpf_get_current_task_btf();
-+	__u64 *start_time_ptr;
-+
-+	start_time_ptr = bpf_task_storage_get(&vmscan_start_time, task, 0,
-+					      BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (start_time_ptr)
-+		*start_time_ptr = bpf_ktime_get_ns();
-+	return 0;
-+}
-+
-+SEC("tp_btf/mm_vmscan_memcg_reclaim_end")
-+int BPF_PROG(vmscan_end, unsigned long nr_reclaimed)
-+{
-+	struct vmscan_percpu *pcpu_stat;
-+	struct task_struct *current = bpf_get_current_task_btf();
-+	struct cgroup *cgrp;
-+	__u64 *start_time_ptr;
-+	__u64 current_elapsed, cg_id;
-+	__u64 end_time = bpf_ktime_get_ns();
-+
-+	/*
-+	 * cgrp is the first parent cgroup of current that has memcg enabled in
-+	 * its subtree_control, or NULL if memcg is disabled in the entire tree.
-+	 * In a cgroup hierarchy like this:
-+	 *                               a
-+	 *                              / \
-+	 *                             b   c
-+	 *  If "a" has memcg enabled, while "b" doesn't, then processes in "b"
-+	 *  will accumulate their stats directly to "a". This makes sure that no
-+	 *  stats are lost from processes in leaf cgroups that don't have memcg
-+	 *  enabled, but only exposes stats for cgroups that have memcg enabled.
-+	 */
-+	cgrp = task_memcg(current);
-+	if (!cgrp)
-+		return 0;
-+
-+	cg_id = cgroup_id(cgrp);
-+	start_time_ptr = bpf_task_storage_get(&vmscan_start_time, current, 0,
-+					      BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (!start_time_ptr)
-+		return 0;
-+
-+	current_elapsed = end_time - *start_time_ptr;
-+	pcpu_stat = bpf_map_lookup_elem(&pcpu_cgroup_vmscan_elapsed,
-+					&cg_id);
-+	if (pcpu_stat)
-+		pcpu_stat->state += current_elapsed;
-+	else if (create_vmscan_percpu_elem(cg_id, current_elapsed))
-+		return 0;
-+
-+	cgroup_rstat_updated(cgrp, bpf_get_smp_processor_id());
-+	return 0;
-+}
-+
-+SEC("fentry/bpf_rstat_flush")
-+int BPF_PROG(vmscan_flush, struct cgroup *cgrp, struct cgroup *parent, int cpu)
-+{
-+	struct vmscan_percpu *pcpu_stat;
-+	struct vmscan *total_stat, *parent_stat;
-+	__u64 cg_id = cgroup_id(cgrp);
-+	__u64 parent_cg_id = parent ? cgroup_id(parent) : 0;
-+	__u64 *pcpu_vmscan;
-+	__u64 state;
-+	__u64 delta = 0;
-+
-+	/* Add CPU changes on this level since the last flush */
-+	pcpu_stat = bpf_map_lookup_percpu_elem(&pcpu_cgroup_vmscan_elapsed,
-+					       &cg_id, cpu);
-+	if (pcpu_stat) {
-+		state = pcpu_stat->state;
-+		delta += state - pcpu_stat->prev;
-+		pcpu_stat->prev = state;
-+	}
-+
-+	total_stat = bpf_map_lookup_elem(&cgroup_vmscan_elapsed, &cg_id);
-+	if (!total_stat) {
-+		if (create_vmscan_elem(cg_id, delta, 0))
-+			return 0;
-+
-+		goto update_parent;
-+	}
-+
-+	/* Collect pending stats from subtree */
-+	if (total_stat->pending) {
-+		delta += total_stat->pending;
-+		total_stat->pending = 0;
-+	}
-+
-+	/* Propagate changes to this cgroup's total */
-+	total_stat->state += delta;
-+
-+update_parent:
-+	/* Skip if there are no changes to propagate, or no parent */
-+	if (!delta || !parent_cg_id)
-+		return 0;
-+
-+	/* Propagate changes to cgroup's parent */
-+	parent_stat = bpf_map_lookup_elem(&cgroup_vmscan_elapsed,
-+					  &parent_cg_id);
-+	if (parent_stat)
-+		parent_stat->pending += delta;
-+	else
-+		create_vmscan_elem(parent_cg_id, 0, delta);
-+	return 0;
-+}
-+
-+SEC("iter.s/cgroup")
-+int BPF_PROG(dump_vmscan, struct bpf_iter_meta *meta, struct cgroup *cgrp)
-+{
-+	struct seq_file *seq = meta->seq;
-+	struct vmscan *total_stat;
-+	__u64 cg_id = cgrp ? cgroup_id(cgrp) : 0;
-+
-+	/* Do nothing for the terminal call */
-+	if (!cg_id)
-+		return 1;
-+
-+	/* Flush the stats to make sure we get the most updated numbers */
-+	cgroup_rstat_flush(cgrp);
-+
-+	total_stat = bpf_map_lookup_elem(&cgroup_vmscan_elapsed, &cg_id);
-+	if (!total_stat) {
-+		BPF_SEQ_PRINTF(seq, "cg_id: %llu, total_vmscan_delay: 0\n",
-+			       cg_id);
-+	} else {
-+		BPF_SEQ_PRINTF(seq, "cg_id: %llu, total_vmscan_delay: %llu\n",
-+			       cg_id, total_stat->state);
-+	}
-+
-+	/*
-+	 * We only dump stats for one cgroup here, so return 1 to stop
-+	 * iteration after the first cgroup.
-+	 */
-+	return 1;
-+}
--- 
-2.37.1.455.g008518b4e5-goog
+is there something special about having both hdr1 and hdr2? Wouldn't
+this test work with just single hdr pointer?
 
+> +
+> +       return XDP_PASS;
+> +}
+> +
+> +/* Only supported prog type can create skb-type dynptrs */
+
+[...]
+
+> +       err = 1;
+> +
+> +       if (bpf_dynptr_from_skb(ctx, 0, &ptr))
+> +               return 0;
+> +       err++;
+> +
+> +       data = bpf_dynptr_data(&ptr, 0, 1);
+> +       if (data)
+> +               /* it's an error if data is not NULL since cgroup skbs
+> +                * are read only
+> +                */
+> +               return 0;
+> +       err++;
+> +
+> +       ret = bpf_dynptr_write(&ptr, 0, write_data, sizeof(write_data), 0);
+> +       /* since cgroup skbs are read only, writes should fail */
+> +       if (ret != -EINVAL)
+> +               return 0;
+> +
+> +       err = 0;
+
+hm, if data is NULL you'll still report success if bpf_dynptr_write
+returns 0 or any other error but -EINVAL... The logic is a bit unclear
+here...
+
+> +
+> +       return 0;
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/test_dynptr_xdp.c b/tools/testing/selftests/bpf/progs/test_dynptr_xdp.c
+> new file mode 100644
+> index 000000000000..c879dfb6370a
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_dynptr_xdp.c
+> @@ -0,0 +1,115 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +/* This logic is lifted from a real-world use case of packet parsing, used in
+> + * the open source library katran, a layer 4 load balancer.
+> + *
+> + * This test demonstrates how to parse packet contents using dynptrs.
+> + *
+> + * https://github.com/facebookincubator/katran/blob/main/katran/lib/bpf/pckt_parsing.h
+> + */
+> +
+> +#include <string.h>
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include <linux/tcp.h>
+> +#include <stdbool.h>
+> +#include <linux/ipv6.h>
+> +#include <linux/if_ether.h>
+> +#include "test_tcp_hdr_options.h"
+> +
+> +char _license[] SEC("license") = "GPL";
+> +
+> +/* Arbitrarily picked unused value from IANA TCP Option Kind Numbers */
+> +const __u32 tcp_hdr_opt_kind_tpr = 0xB7;
+> +/* Length of the tcp header option */
+> +const __u32 tcp_hdr_opt_len_tpr = 6;
+> +/* maximum number of header options to check to lookup server_id */
+> +const __u32 tcp_hdr_opt_max_opt_checks = 15;
+> +
+> +__u32 server_id;
+> +
+> +static int parse_hdr_opt(struct bpf_dynptr *ptr, __u32 *off, __u8 *hdr_bytes_remaining,
+> +                        __u32 *server_id)
+> +{
+> +       __u8 *tcp_opt, kind, hdr_len;
+> +       __u8 *data;
+> +
+> +       data = bpf_dynptr_data(ptr, *off, sizeof(kind) + sizeof(hdr_len) +
+> +                              sizeof(*server_id));
+> +       if (!data)
+> +               return -1;
+> +
+> +       kind = data[0];
+> +
+> +       if (kind == TCPOPT_EOL)
+> +               return -1;
+> +
+> +       if (kind == TCPOPT_NOP) {
+> +               *off += 1;
+> +               /* continue to the next option */
+> +               *hdr_bytes_remaining -= 1;
+> +
+> +               return 0;
+> +       }
+> +
+> +       if (*hdr_bytes_remaining < 2)
+> +               return -1;
+> +
+> +       hdr_len = data[1];
+> +       if (hdr_len > *hdr_bytes_remaining)
+> +               return -1;
+> +
+> +       if (kind == tcp_hdr_opt_kind_tpr) {
+> +               if (hdr_len != tcp_hdr_opt_len_tpr)
+> +                       return -1;
+> +
+> +               memcpy(server_id, (__u32 *)(data + 2), sizeof(*server_id));
+
+this implicitly relies on compiler inlining memcpy, let's use
+__builtint_memcpy() here instead to set a good example?
+
+> +               return 1;
+> +       }
+> +
+> +       *off += hdr_len;
+> +       *hdr_bytes_remaining -= hdr_len;
+> +
+> +       return 0;
+> +}
+> +
+> +SEC("xdp")
+> +int xdp_ingress_v6(struct xdp_md *xdp)
+> +{
+> +       __u8 hdr_bytes_remaining;
+> +       struct tcphdr *tcp_hdr;
+> +       __u8 tcp_hdr_opt_len;
+> +       int err = 0;
+> +       __u32 off;
+> +
+> +       struct bpf_dynptr ptr;
+> +
+> +       bpf_dynptr_from_xdp(xdp, 0, &ptr);
+> +
+> +       off = sizeof(struct ethhdr) + sizeof(struct ipv6hdr);
+> +
+> +       tcp_hdr = bpf_dynptr_data(&ptr, off, sizeof(*tcp_hdr));
+> +       if (!tcp_hdr)
+> +               return XDP_DROP;
+> +
+> +       tcp_hdr_opt_len = (tcp_hdr->doff * 4) - sizeof(struct tcphdr);
+> +       if (tcp_hdr_opt_len < tcp_hdr_opt_len_tpr)
+> +               return XDP_DROP;
+> +
+> +       hdr_bytes_remaining = tcp_hdr_opt_len;
+> +
+> +       off += sizeof(struct tcphdr);
+> +
+> +       /* max number of bytes of options in tcp header is 40 bytes */
+> +       for (int i = 0; i < tcp_hdr_opt_max_opt_checks; i++) {
+> +               err = parse_hdr_opt(&ptr, &off, &hdr_bytes_remaining, &server_id);
+> +
+> +               if (err || !hdr_bytes_remaining)
+> +                       break;
+> +       }
+> +
+> +       if (!server_id)
+> +               return XDP_DROP;
+> +
+> +       return XDP_PASS;
+> +}
+
+I'm not a networking BPF expert, but the logic of packet parsing here
+looks pretty clean! Would it be possible to also backport original
+code with data and data_end, both for testing but also to be able to
+compare and contrast dynptr vs data/data_end approaches?
+
+
+> diff --git a/tools/testing/selftests/bpf/progs/test_l4lb_noinline.c b/tools/testing/selftests/bpf/progs/test_l4lb_noinline.c
+> index c8bc0c6947aa..1fef7868ea8b 100644
+> --- a/tools/testing/selftests/bpf/progs/test_l4lb_noinline.c
+> +++ b/tools/testing/selftests/bpf/progs/test_l4lb_noinline.c
+> @@ -230,21 +230,18 @@ static __noinline bool get_packet_dst(struct real_definition **real,
+>         return true;
+>  }
+>
+> -static __noinline int parse_icmpv6(void *data, void *data_end, __u64 off,
+> +static __noinline int parse_icmpv6(struct bpf_dynptr *skb_ptr, __u64 off,
+>                                    struct packet_description *pckt)
+>  {
+>         struct icmp6hdr *icmp_hdr;
+>         struct ipv6hdr *ip6h;
+>
+> -       icmp_hdr = data + off;
+> -       if (icmp_hdr + 1 > data_end)
+> +       icmp_hdr = bpf_dynptr_data(skb_ptr, off, sizeof(*icmp_hdr) + sizeof(*ip6h));
+> +       if (!icmp_hdr)
+>                 return TC_ACT_SHOT;
+>         if (icmp_hdr->icmp6_type != ICMPV6_PKT_TOOBIG)
+>                 return TC_ACT_OK;
+
+previously you can still TC_ACT_OK if it's ICMPV6_PKT_TOOBIG even if
+packet size is < sizeof(*icmp_hdr) + sizeof(*ip6h), which might have
+been a bug, but current logic will enforce that packet is at least
+sizeof(*icmp_hdr) + sizeof(*ip6h). Is that a problem?
+
+> -       off += sizeof(struct icmp6hdr);
+> -       ip6h = data + off;
+> -       if (ip6h + 1 > data_end)
+> -               return TC_ACT_SHOT;
+> +       ip6h = (struct ipv6hdr *)(icmp_hdr + 1);
+>         pckt->proto = ip6h->nexthdr;
+>         pckt->flags |= F_ICMP;
+>         memcpy(pckt->srcv6, ip6h->daddr.s6_addr32, 16);
+> @@ -252,22 +249,19 @@ static __noinline int parse_icmpv6(void *data, void *data_end, __u64 off,
+>         return TC_ACT_UNSPEC;
+>  }
+>
+> -static __noinline int parse_icmp(void *data, void *data_end, __u64 off,
+> +static __noinline int parse_icmp(struct bpf_dynptr *skb_ptr, __u64 off,
+>                                  struct packet_description *pckt)
+>  {
+>         struct icmphdr *icmp_hdr;
+>         struct iphdr *iph;
+>
+> -       icmp_hdr = data + off;
+> -       if (icmp_hdr + 1 > data_end)
+> +       icmp_hdr = bpf_dynptr_data(skb_ptr, off, sizeof(*icmp_hdr) + sizeof(*iph));
+> +       if (!icmp_hdr)
+>                 return TC_ACT_SHOT;
+>         if (icmp_hdr->type != ICMP_DEST_UNREACH ||
+>             icmp_hdr->code != ICMP_FRAG_NEEDED)
+>                 return TC_ACT_OK;
+
+similarly here, short packets can still be TC_ACT_OK in some
+circumstances, while with dynptr they will be shot down early on. Not
+saying this is wrong or bad, just bringing this up for you and others
+to chime in if it's an ok change
+
+> -       off += sizeof(struct icmphdr);
+> -       iph = data + off;
+> -       if (iph + 1 > data_end)
+> -               return TC_ACT_SHOT;
+> +       iph = (struct iphdr *)(icmp_hdr + 1);
+>         if (iph->ihl != 5)
+>                 return TC_ACT_SHOT;
+>         pckt->proto = iph->protocol;
+> @@ -277,13 +271,13 @@ static __noinline int parse_icmp(void *data, void *data_end, __u64 off,
+>         return TC_ACT_UNSPEC;
+>  }
+
+[...]
+
+> -static __always_inline int handle_ipv4(struct xdp_md *xdp)
+> +static __always_inline int handle_ipv4(struct xdp_md *xdp, struct bpf_dynptr *xdp_ptr)
+>  {
+> -       void *data_end = (void *)(long)xdp->data_end;
+> -       void *data = (void *)(long)xdp->data;
+> +       struct bpf_dynptr new_xdp_ptr;
+>         struct iptnl_info *tnl;
+>         struct ethhdr *new_eth;
+>         struct ethhdr *old_eth;
+> -       struct iphdr *iph = data + sizeof(struct ethhdr);
+> +       struct iphdr *iph;
+>         __u16 *next_iph;
+>         __u16 payload_len;
+>         struct vip vip = {};
+> @@ -90,10 +90,12 @@ static __always_inline int handle_ipv4(struct xdp_md *xdp)
+>         __u32 csum = 0;
+>         int i;
+>
+> -       if (iph + 1 > data_end)
+> +       iph = bpf_dynptr_data(xdp_ptr, ethhdr_sz,
+> +                             iphdr_sz + (tcphdr_sz > udphdr_sz ? tcphdr_sz : udphdr_sz));
+
+tcphdr_sz (20) is always bigger than udphdr_sz (8), so just use the
+bigger one here? Though again, for UDP packet it might be a bit too
+pessimistic to reject small packets?
+
+> +       if (!iph)
+>                 return XDP_DROP;
+>
+> -       dport = get_dport(iph + 1, data_end, iph->protocol);
+> +       dport = get_dport(iph + 1, iph->protocol);
+>         if (dport == -1)
+>                 return XDP_DROP;
+
+[...]
+
+> -static __always_inline int handle_ipv6(struct xdp_md *xdp)
+> +static __always_inline int handle_ipv6(struct xdp_md *xdp, struct bpf_dynptr *xdp_ptr)
+>  {
+> -       void *data_end = (void *)(long)xdp->data_end;
+> -       void *data = (void *)(long)xdp->data;
+> +       struct bpf_dynptr new_xdp_ptr;
+>         struct iptnl_info *tnl;
+>         struct ethhdr *new_eth;
+>         struct ethhdr *old_eth;
+> -       struct ipv6hdr *ip6h = data + sizeof(struct ethhdr);
+> +       struct ipv6hdr *ip6h;
+>         __u16 payload_len;
+>         struct vip vip = {};
+>         int dport;
+>
+> -       if (ip6h + 1 > data_end)
+> +       ip6h = bpf_dynptr_data(xdp_ptr, ethhdr_sz,
+> +                              ipv6hdr_sz + (tcphdr_sz > udphdr_sz ? tcphdr_sz : udphdr_sz));
+
+ditto, there is no dynamism here, verifier actually enforces that this
+value is statically known, I think this example will create false
+assumptions if written this way
+
+> +       if (!ip6h)
+>                 return XDP_DROP;
+>
+> -       dport = get_dport(ip6h + 1, data_end, ip6h->nexthdr);
+> +       dport = get_dport(ip6h + 1, ip6h->nexthdr);
+>         if (dport == -1)
+>                 return XDP_DROP;
+>
+
+[...]
