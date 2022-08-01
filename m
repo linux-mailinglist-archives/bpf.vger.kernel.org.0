@@ -2,160 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A65586B54
-	for <lists+bpf@lfdr.de>; Mon,  1 Aug 2022 14:51:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A51AF586B69
+	for <lists+bpf@lfdr.de>; Mon,  1 Aug 2022 14:56:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231233AbiHAMvH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Aug 2022 08:51:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50240 "EHLO
+        id S230082AbiHAM4I (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Aug 2022 08:56:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235213AbiHAMup (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Aug 2022 08:50:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12716265;
-        Mon,  1 Aug 2022 05:45:09 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5B19F611BE;
-        Mon,  1 Aug 2022 12:45:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 873D6C433D6;
-        Mon,  1 Aug 2022 12:45:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1659357908;
-        bh=Mc2vruz/cB/8iqIyaO03cgBU0b00xV7wxmZfNOX+iv4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=S3hrNrAU1uLgrrCjxzSQg6di2sKbtff1vZU/5Nq/T2s5rV5tkRSoE8XqM2hfXc8jd
-         X1A/3bEQcyVI2jFsPXvy6GlNX3L3NDuHfQ6dlH5N/DiMnMtkVy5dMBofEVP7HshBHD
-         HvCKfePFn2SydbRr8+hYqrqJ+Elv/2A+f/ShYczqSaoIYe7+nKA+iEeYpRwwfnf87w
-         jiU7rRj93FEP2q8Ju+kahrCgi2RKiqlTD2j2nVRD5eriHVOL3Dh2KDEe6cCFA0Ftbn
-         8OhI6r2DQGQ3k7xh3jP21KO5oSh/vcEEnZajvntdpuCfhv1eWo0rZCJZESYaHGZwd1
-         9kSduAAnJryng==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 1CCD240736; Mon,  1 Aug 2022 09:45:06 -0300 (-03)
-Date:   Mon, 1 Aug 2022 09:45:06 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andres Freund <andres@anarazel.de>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Ben Hutchings <benh@debian.org>
-Subject: Re: [PATCH v3 0/8] tools: fix compilation failure caused by
- init_disassemble_info API changes
-Message-ID: <YufK0qnvVWCAFGEH@kernel.org>
-References: <20220622231624.t63bkmkzphqvh3kx@alap3.anarazel.de>
- <20220801013834.156015-1-andres@anarazel.de>
+        with ESMTP id S235147AbiHAMzX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Aug 2022 08:55:23 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37755B1C9
+        for <bpf@vger.kernel.org>; Mon,  1 Aug 2022 05:52:31 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id bk11so4149412wrb.10
+        for <bpf@vger.kernel.org>; Mon, 01 Aug 2022 05:52:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc;
+        bh=EA9QdWUPQLebun95Yvb2w5eAjImMjoWwRIL2xCCGqBk=;
+        b=pHGZxjMnbOZWLDkSmZ0T0pIJjfVudZhaE09Qq+lJRNHvSs76C3+Ctw7DRw/ifF2a3F
+         cQQchBuUd5uey+v6/2Ki67lYkpCiQGxbmSNILr1UywbZffATBYpc5Bxv1gQtV06jdBxb
+         0UK3mbRBNPlYRRah/WW5Vy8N8l0V1lTt17opRt/8Oju2m0MRUyvh1rIxwAacoQAH79xm
+         zpzdZ6bM3g6cDCfu2G6KF0XT+b59kmqgSi3UnyKYf6wvh77PGAEACuNdLrnlLPZmVmLF
+         Lqjc7CG5mk9mcQFurO4LyXilEPYEoNzgbqgOgPT9KMxcjvmAhIqhYIHpsmGN6uWBWB8O
+         kV+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc;
+        bh=EA9QdWUPQLebun95Yvb2w5eAjImMjoWwRIL2xCCGqBk=;
+        b=ubVz8Tp1Ilg1hkt59m6C/3hYQ2ET2c8YEmvFBnd+V2J5MTJChvXYCbaH1dfmpxGWIa
+         cY7vvl9bmwZblSrwfxckh+3jvefYj/keA0j2rUISlk+LOAu7Rini6PzfblI9GMEl25oV
+         C6JxyY+BOgxnbtsn4jylSAUM5l2FTAixV2QrKFPkamuQTNijix555Frk2eWfv/s0+OPo
+         bIcBekqjcLi8F7mfVMLUCPDiYC0yHLeSJU+MY8N715JfXPAyek9S0Lm5Kw4P5C4qdQvq
+         JC6twR/cpqDS98OGMLg20FKLjNaEwtQdkgYehSNrgjmoRTAEt6T8AQAboOaNCsBcmOcd
+         Zgzg==
+X-Gm-Message-State: ACgBeo108N6j+UPF6uCQhSVjE8DHTuCnoflwaO12Ikqq89nBiLIwOYhw
+        n1y6/MOluQPyX5AYsMdSISfvORNnMZQJHED4
+X-Google-Smtp-Source: AA6agR6NGZ8h1WcSQqzy2cRSkPcIuS884xUpzp7Wx5IQwbqKXxCAjoeJHtJ7WRY90nTO3g1bSjoA0A==
+X-Received: by 2002:adf:d1c4:0:b0:21e:98d2:bd87 with SMTP id b4-20020adfd1c4000000b0021e98d2bd87mr10482638wrd.56.1659358349759;
+        Mon, 01 Aug 2022 05:52:29 -0700 (PDT)
+Received: from [192.168.178.32] ([51.155.200.13])
+        by smtp.gmail.com with ESMTPSA id r41-20020a05600c322900b003a2e89d1fb5sm17964017wmp.42.2022.08.01.05.52.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Aug 2022 05:52:29 -0700 (PDT)
+Message-ID: <d6b849a7-6930-f484-d042-a5a47d44317c@isovalent.com>
+Date:   Mon, 1 Aug 2022 13:52:28 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220801013834.156015-1-andres@anarazel.de>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.0
+Subject: Re: [PATCH bpf-next v2] bpftool: Remove BPF_OBJ_NAME_LEN restriction
+ when looking up bpf program by name
+Content-Language: en-GB
+To:     Manu Bretelle <chantr4@gmail.com>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org
+References: <20220731181007.3130320-1-chantr4@gmail.com>
+ <98f6a795-50dc-e6d2-87ee-8fafc7e1ee7b@isovalent.com>
+ <CAArYzrLEcFCZhCm_ap-FYBzPquzmwdwiejJsR7Uqd7omDG-iuA@mail.gmail.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <CAArYzrLEcFCZhCm_ap-FYBzPquzmwdwiejJsR7Uqd7omDG-iuA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Sun, Jul 31, 2022 at 06:38:26PM -0700, Andres Freund escreveu:
-> binutils changed the signature of init_disassemble_info(), which now causes
-> compilation failures for tools/{perf,bpf} on e.g. debian unstable. Relevant
-> binutils commit:
-> https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=60a3da00bd5407f07
+On 01/08/2022 13:39, Manu Bretelle wrote:
+> On Mon, Aug 1, 2022 at 5:18 AM Quentin Monnet <quentin@isovalent.com> wrote:
+>>
+>> On 31/07/2022 19:10, Manu Bretelle wrote:
+>>> bpftool was limiting the length of names to BPF_OBJ_NAME_LEN in prog_parse
+>>> fds.
+>>>
+>>> Since commit b662000aff84 ("bpftool: Adding support for BTF program names")
+>>> we can get the full program name from BTF.
+>>>
+>>> This patch removes the restriction of name length when running `bpftool
+>>> prog show name ${name}`.
+>>>
+>>> Test:
+>>> Tested against some internal program names that were longer than
+>>> `BPF_OBJ_NAME_LEN`, here a redacted example of what was ran to test.
+>>>
+>>>     # previous behaviour
+>>>     $ sudo bpftool prog show name some_long_program_name
+>>>     Error: can't parse name
+>>>     # with the patch
+>>>     $ sudo ./bpftool prog show name some_long_program_name
+>>>     123456789: tracing  name some_long_program_name  tag taghexa  gpl ....
+>>>     ...
+>>>     ...
+>>>     ...
+>>>     # too long
+>>>     sudo ./bpftool prog show name $(python3 -c 'print("A"*128)')
+>>>     Error: can't parse name
+>>>     # not too long but no match
+>>>     $ sudo ./bpftool prog show name $(python3 -c 'print("A"*127)')
+>>>
+>>> Signed-off-by: Manu Bretelle <chantr4@gmail.com>
+>>>
+>>> ---
+>>>
+>>> v1 -> v2:
+>>> * Fix commit message to follow patch submission guidelines
+>>> * use strncmp instead of strcmp
+>>> * reintroduce arg length check against MAX_PROG_FULL_NAME
+>>>
+>>>
+>>>  tools/bpf/bpftool/common.c | 15 ++++++++++++---
+>>>  1 file changed, 12 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
+>>> index 067e9ea59e3b..3ea747b3b194 100644
+>>> --- a/tools/bpf/bpftool/common.c
+>>> +++ b/tools/bpf/bpftool/common.c
+>>> @@ -722,6 +722,7 @@ print_all_levels(__maybe_unused enum libbpf_print_level level,
+>>>
+>>>  static int prog_fd_by_nametag(void *nametag, int **fds, bool tag)
+>>>  {
+>>> +     char prog_name[MAX_PROG_FULL_NAME];
+>>>       unsigned int id = 0;
+>>>       int fd, nb_fds = 0;
+>>>       void *tmp;
+>>> @@ -754,12 +755,20 @@ static int prog_fd_by_nametag(void *nametag, int **fds, bool tag)
+>>>                       goto err_close_fd;
+>>>               }
+>>>
+>>> -             if ((tag && memcmp(nametag, info.tag, BPF_TAG_SIZE)) ||
+>>> -                 (!tag && strncmp(nametag, info.name, BPF_OBJ_NAME_LEN))) {
+>>> +             if (tag && memcmp(nametag, info.tag, BPF_TAG_SIZE)) {
+>>>                       close(fd);
+>>>                       continue;
+>>>               }
+>>>
+>>> +             if (!tag) {
+>>> +                     get_prog_full_name(&info, fd, prog_name,
+>>> +                             sizeof(prog_name));
+>>
+>> Nit: This line should be aligned with the opening parenthesis from the
+>> line above, checkpatch.pl complains about it. Probably not worth sending
+>> a new version just for that, though.
 > 
-> I first fixed this without introducing the compat header, as suggested by
-> Quentin, but I thought the amount of repeated boilerplate was a bit too
-> much. So instead I introduced a compat header to wrap the API changes. Even
-> tools/bpf/bpftool/jit_disasm.c, which needs its own callbacks for json, imo
-> looks nicer this way.
-> 
-> I'm not regular contributor, so it very well might be my procedures are a
-> bit off...
-> 
-> I am not sure I added the right [number of] people to CC?
+> Yeah, I saw that on patchwork. For some reason, the `checkpatch.pl`
+> version I had from bpf-next tree did not catch this.
 
-I think its ok
- 
-> WRT the feature test: Not sure what the point of the -DPACKAGE='"perf"' is,
+It's because it's a low-level issue: a “check” for checkpatch, not a
+“warning” or an “error”. Checkpatch will only report this if you run it
+with "--strict", which the CI does.
 
-I think its related to libbfd, and it comes from a long time ago, trying
-to find the cset adding that...
+> Originally, I was getting an error because it was more than 75 char
+> long. Eventually found out that shiftwidth should have been set to 8
+> (mine was 4).
+> I am happy to provide a corrected version if you want, this is really
+> just a matter of a minute now that I have the right vim indentation
+> setting.
 
-> nor why tools/perf/Makefile.config sets some LDFLAGS/CFLAGS that are also
-> in feature/Makefile and why -ldl isn't needed in the other places. But...
-> 
-> V2:
-> - split patches further, so that tools/bpf and tools/perf part are entirely
->   separate
+OK let's do this. Please keep my Reviewed-by on v3.
 
-Cool, thanks, I'll process the first 4 patches, then at some point the
-bpftool bits can be merged, alternatively I can process those as well if
-the bpftool maintainers are ok with it.
-
-I'll just wait a bit to see if Jiri and others have something to say.
-
-- Arnaldo
-
-> - included a bit more information about tests I did in commit messages
-> - add a maybe_unused to fprintf_json_styled's style argument
-> 
-> V3:
-> - don't include dis-asm-compat.h when building without libbfd
->   (Ben Hutchings)
-> - don't include compiler.h in dis-asm-compat.h, use (void) casts instead,
->   to avoid compiler.h include due to potential licensing conflict
-> - dual-license dis-asm-compat.h, for better compatibility with the rest of
->   bpftool's code (suggested by Quentin Monnet)
-> - don't display feature-disassembler-init-styled test
->   (suggested by Jiri Olsa)
-> - don't display feature-disassembler-four-args test, I split this for the
->   different subsystems, but maybe that's overkill? (suggested by Jiri Olsa)
-> 
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Sedat Dilek <sedat.dilek@gmail.com>
-> Cc: Quentin Monnet <quentin@isovalent.com>
-> CC: Ben Hutchings <benh@debian.org>
-> Cc: bpf@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Link: https://lore.kernel.org/lkml/20220622181918.ykrs5rsnmx3og4sv@alap3.anarazel.de
-> Link: https://lore.kernel.org/lkml/CA+icZUVpr8ZeOKCj4zMMqbFT013KJz2T1csvXg+VSkdvJH1Ubw@mail.gmail.com
-> 
-> Andres Freund (8):
->   tools build: Add feature test for init_disassemble_info API changes
->   tools build: Don't display disassembler-four-args feature test
->   tools include: add dis-asm-compat.h to handle version differences
->   tools perf: Fix compilation error with new binutils
->   tools bpf_jit_disasm: Fix compilation error with new binutils
->   tools bpf_jit_disasm: Don't display disassembler-four-args feature
->     test
->   tools bpftool: Fix compilation error with new binutils
->   tools bpftool: Don't display disassembler-four-args feature test
-> 
->  tools/bpf/Makefile                            |  7 ++-
->  tools/bpf/bpf_jit_disasm.c                    |  5 +-
->  tools/bpf/bpftool/Makefile                    |  8 ++-
->  tools/bpf/bpftool/jit_disasm.c                | 42 +++++++++++---
->  tools/build/Makefile.feature                  |  4 +-
->  tools/build/feature/Makefile                  |  4 ++
->  tools/build/feature/test-all.c                |  4 ++
->  .../feature/test-disassembler-init-styled.c   | 13 +++++
->  tools/include/tools/dis-asm-compat.h          | 55 +++++++++++++++++++
->  tools/perf/Makefile.config                    |  8 +++
->  tools/perf/util/annotate.c                    |  7 ++-
->  11 files changed, 138 insertions(+), 19 deletions(-)
->  create mode 100644 tools/build/feature/test-disassembler-init-styled.c
->  create mode 100644 tools/include/tools/dis-asm-compat.h
-> 
-> -- 
-> 2.37.0.3.g30cc8d0f14
-
--- 
-
-- Arnaldo
