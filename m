@@ -2,67 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FEC85873B0
-	for <lists+bpf@lfdr.de>; Tue,  2 Aug 2022 00:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 764755873C7
+	for <lists+bpf@lfdr.de>; Tue,  2 Aug 2022 00:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233055AbiHAWDA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Aug 2022 18:03:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52664 "EHLO
+        id S235022AbiHAWLv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Aug 2022 18:11:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232927AbiHAWC7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Aug 2022 18:02:59 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEE1D3DBEF
-        for <bpf@vger.kernel.org>; Mon,  1 Aug 2022 15:02:58 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id i13so15433951edj.11
-        for <bpf@vger.kernel.org>; Mon, 01 Aug 2022 15:02:58 -0700 (PDT)
+        with ESMTP id S232334AbiHAWLu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Aug 2022 18:11:50 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA9DC1CB
+        for <bpf@vger.kernel.org>; Mon,  1 Aug 2022 15:11:49 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id m8so15439248edd.9
+        for <bpf@vger.kernel.org>; Mon, 01 Aug 2022 15:11:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=qGRAIo4IE+W9S0nxWZDufiR9kzlBtwcOAnoReRIyTHQ=;
-        b=mgRZ54SjEJj1KTwED6fNRCj6SLlSvXByt4PN8fgrI28k5BZ8WAxXinz2wQZcjgbL1Z
-         4qA0xhSUNuKBmc54BUjqY7kyWs0qHedX3hebo8vnLLR4RgokyOoko+jSDyQ4fxK12OrC
-         uh+OVpjcuL2+iVEMAwAXfrx/aeaMW4yQ+L5pTUw06Q9scpnXEhDC67aKYobDyaiTHnbg
-         Na1DVWfAZ6NS4qJo/yKOSpi+FtiVYF7gRZm5VhRXIv1m1iTKDQIJ5fLG6fCcpY6FmODZ
-         PZONZ9LMr2mk4jWBa/OCnFPELQq+LCZZ9ThWnxeKaDvi2JJ9eR12G1wH6ZCVm2ZVltRl
-         iAtQ==
+        bh=UHsbDfCilGs4Wr28fYfVMYAzIZZsm5fdc9QkNBdnGuw=;
+        b=JhBhtBGKaDcZ2ywR5C2u7NGlCcH7JfprQp6E9V9de0TadA5RWYPh6Az6RQhCFPK9tA
+         Lz3pX1EWUdRYXo36hHqsthsxOy/XrFBiLCMJzqqjpVki8N6g2IWycQzLBW5C5zgH8WGS
+         Z1PV0+sLETk+DAkNwvk+g2u12DQq9g3KdQK9Z9fF3BjdYn0F5ambu7qskBXG5hLgwjic
+         DU1lmEVX0ZY7pA5Nj7GTcecja8AxIYeNgxZta7/MhzRVGPe4nSUnayTGdaFb5Q4JskYf
+         1HmFDr7w5IdvCtNI8KQcaRlrFgKv1ZYQzeOCxHPVjMNkGzolRi3dFSZsRMpG8dzrvFJU
+         dy7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=qGRAIo4IE+W9S0nxWZDufiR9kzlBtwcOAnoReRIyTHQ=;
-        b=Mf6xhHSPiaV08+Tl24ObAjrlJVRTXIodzhkIm7J/R1SBXafMUbGHl73QbH5CETwKMC
-         IK7Pydqo/R4LN6R0mSAFGKzKZ9TFLjbatC5ibcRJnoQSUqBtfvJ1TpedcBljYGszhhCM
-         K9Cu6V461C7IEbs425uIGrgdlf/BKBf8zzO2Z9J+cmrdi6Z4OMpnVu/XLNpleiu6WikL
-         kHyD419m2pywPeKqgoP+xabqiGaeaDPHPnMY1vvsS7tkXuqlCEorh0es+7KraOzALYF0
-         Q1cWDEXEUEniuQA8xpJDhll5oftWqa6LiteH4f1wg2wjPsyXnV+uORcNlANLDumu677V
-         c2fg==
-X-Gm-Message-State: ACgBeo39M/ug4BC/Ktm6bP8RE7rsK5Nbq/KDBQEu8SGDzi9R3hj7qp5R
-        t9TvDn4+zBsfJn46xQkrNRWw7B5u0Et9uUvoU3o=
-X-Google-Smtp-Source: AA6agR7zszloYwT41X3z7ADMXwmqb7FkRAB1hznQ6rICyGmyj1QvTI2yrCIVPTNxG6/3usTGFEwk1qSKIZTWo5+SXRk=
-X-Received: by 2002:a50:ed82:0:b0:43d:5334:9d19 with SMTP id
- h2-20020a50ed82000000b0043d53349d19mr12134184edr.232.1659391377291; Mon, 01
- Aug 2022 15:02:57 -0700 (PDT)
+        bh=UHsbDfCilGs4Wr28fYfVMYAzIZZsm5fdc9QkNBdnGuw=;
+        b=JvdPZggdLQQBO++jyiBM4ShotuUS9OrdVlkjV0mbzaO3K43bIwxSaGesT/YflPcCWI
+         Eq5v3VYb2P635AISqE3a8UZWo3LIkUnDAtFREZZ5drUWs+ahUvEy7Fy7y8q1qIMptwVD
+         s1G9ScrE4ZOGIN/QlN+w3gEJNXzkZRqc1b6Z68RXZSNGD91XnSBi72GZlUDvoz6D2if6
+         BC2keitClv1ym+7iITLgKBkyQDD4+6t812LwWeA4kRpBeeJiygKwZ6xJ0EH/7CT/MDIR
+         G6Z78H2iGJT3RyRoT4K7UNEWtcmlvkwuZ/xq0a9TuA81JaJxdyaiWJENnqtaV240vfSy
+         mEKA==
+X-Gm-Message-State: AJIora9+hL2WPf28doRpICqLXjV9p7DXn8fPdrwF1yuEgjrPPHMMbHo2
+        RKHzAM64pi5v189SapfMjrMMqGkpi5lQWLEN4hE=
+X-Google-Smtp-Source: AGRyM1vDe1LignwMTERDVwstXt4BV9FwlrqQqP7Mw5zvPrzfWDZXC6zNAKQi0WkfIeHSuTum0Zi9+WixnR15vM6FaFo=
+X-Received: by 2002:a05:6402:28cb:b0:43b:c6d7:ef92 with SMTP id
+ ef11-20020a05640228cb00b0043bc6d7ef92mr17921600edb.333.1659391908264; Mon, 01
+ Aug 2022 15:11:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220724212146.383680-1-jolsa@kernel.org> <CAEf4Bzbrqrg-wuNNWNJ1GSQQzLOF7azzM8B17ti1TBz_D7irKg@mail.gmail.com>
- <YubvPcHwPrcc1CD0@krava>
-In-Reply-To: <YubvPcHwPrcc1CD0@krava>
+References: <20220726184706.954822-1-joannelkoong@gmail.com> <20220726184706.954822-2-joannelkoong@gmail.com>
+In-Reply-To: <20220726184706.954822-2-joannelkoong@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 1 Aug 2022 15:02:46 -0700
-Message-ID: <CAEf4Bzbo+kT9sThxqjMkTM9xQ_AEE9Z2sckh8AwbS6Dq-J9fHg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/5] bpf: Fixes for CONFIG_X86_KERNEL_IBT
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Peter Zijlstra <peterz@infradead.org>
+Date:   Mon, 1 Aug 2022 15:11:36 -0700
+Message-ID: <CAEf4BzbDbve0ouE3FVFf+uoYH6b84FrWGHF1xmjmwsmzLAjPaQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/3] bpf: Add skb dynptrs
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+        ast@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -74,81 +65,123 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jul 31, 2022 at 2:08 PM Jiri Olsa <olsajiri@gmail.com> wrote:
+On Tue, Jul 26, 2022 at 11:48 AM Joanne Koong <joannelkoong@gmail.com> wrote:
 >
-> On Fri, Jul 29, 2022 at 03:18:54PM -0700, Andrii Nakryiko wrote:
-> > On Sun, Jul 24, 2022 at 2:21 PM Jiri Olsa <jolsa@kernel.org> wrote:
-> > >
-> > > hi,
-> > > Martynas reported bpf_get_func_ip returning +4 address when
-> > > CONFIG_X86_KERNEL_IBT option is enabled and I found there are
-> > > some failing bpf tests when this option is enabled.
-> > >
-> > > The CONFIG_X86_KERNEL_IBT option adds endbr instruction at the
-> > > function entry, so the idea is to 'fix' entry ip for kprobe_multi
-> > > and trampoline probes, because they are placed on the function
-> > > entry.
-> > >
-> > > For kprobes I only fixed the bpf test program to adjust ip based
-> > > on CONFIG_X86_KERNEL_IBT option. I'm not sure what the right fix
-> > > should be in here, because I think user should be aware where the
-> >
-> > user can't be aware of this when using multi-kprobe attach by symbolic
-> > name of the function. So I think bpf_get_func_ip() at least in that
-> > case should be compensating for KERNEL_IBT.
+> Add skb dynptrs, which are dynptrs whose underlying pointer points
+> to a skb. The dynptr acts on skb data. skb dynptrs have two main
+> benefits. One is that they allow operations on sizes that are not
+> statically known at compile-time (eg variable-sized accesses).
+> Another is that parsing the packet data through dynptrs (instead of
+> through direct access of skb->data and skb->data_end) can be more
+> ergonomic and less brittle (eg does not need manual if checking for
+> being within bounds of data_end).
 >
-> sorry I said kprobes, but that does not include kprobe multi link,
-> I meant what you call general kprobe below
+> For bpf prog types that don't support writes on skb data, the dynptr is
+> read-only (writes and data slices are not permitted). For reads on the
+> dynptr, this includes reading into data in the non-linear paged buffers
+> but for writes and data slices, if the data is in a paged buffer, the
+> user must first call bpf_skb_pull_data to pull the data into the linear
+> portion.
 >
-> I do the adjustment for kprobe multi version of bpf_get_func_ip,
-> so that should be fine
+> Additionally, any helper calls that change the underlying packet buffer
+> (eg bpf_skb_pull_data) invalidates any data slices of the associated
+> dynptr.
+>
+> Right now, skb dynptrs can only be constructed from skbs that are
+> the bpf program context - as such, there does not need to be any
+> reference tracking or release on skb dynptrs.
+>
+> Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+> ---
+>  include/linux/bpf.h            |  8 ++++-
+>  include/linux/filter.h         |  4 +++
+>  include/uapi/linux/bpf.h       | 42 ++++++++++++++++++++++++--
+>  kernel/bpf/helpers.c           | 54 +++++++++++++++++++++++++++++++++-
+>  kernel/bpf/verifier.c          | 43 +++++++++++++++++++++++----
+>  net/core/filter.c              | 53 ++++++++++++++++++++++++++++++---
+>  tools/include/uapi/linux/bpf.h | 42 ++++++++++++++++++++++++--
+>  7 files changed, 229 insertions(+), 17 deletions(-)
+>
 
-I'd strive for multi-kprobe and kprobe to not have such differences,
-at least for common function entry (which also means kretprobe, btw)
-case. Ideally multi-kprobe is just a more efficient (in terms of
-mass-attachment) version of kprobe with no difference in BPF helpers.
+[...]
 
-So yeah, I totally support your idea of handling that in a helper.
+> +       type = bpf_dynptr_get_type(dst);
+> +
+> +       if (flags) {
+> +               if (type == BPF_DYNPTR_TYPE_SKB) {
+> +                       if (flags & ~(BPF_F_RECOMPUTE_CSUM | BPF_F_INVALIDATE_HASH))
+> +                               return -EINVAL;
+> +               } else {
+> +                       return -EINVAL;
+> +               }
+> +       }
+> +
+> +       if (type == BPF_DYNPTR_TYPE_SKB) {
+> +               struct sk_buff *skb = dst->data;
+> +
+> +               /* if the data is paged, the caller needs to pull it first */
+> +               if (dst->offset + offset + len > skb->len - skb->data_len)
+> +                       return -EAGAIN;
+> +
+> +               return __bpf_skb_store_bytes(skb, dst->offset + offset, src, len,
+> +                                            flags);
+> +       }
 
+It seems like it would be cleaner to have a switch per dynptr type and
+each case doing its extra error checking (like CSUM and HASH flags for
+TYPE_SKB) and then performing write operation.
+
+
+memcpy can be either a catch-all default case, or perhaps it's safer
+to explicitly list TYPE_LOCAL and TYPE_RINGBUF to do memcpy, and then
+default should WARN() and return error?
+
+> +
+>         memcpy(dst->data + dst->offset + offset, src, len);
 >
-> >
-> > BTW, given in general kprobe can be placed in them middle of the
-> > function, should bpf_get_func_ip() return zero or something for such
-> > cases instead of wrong value somewhere in the middle of kprobe? If
-> > user cares about current IP, they can get it with PT_REGS_IP(ctx),
-> > right?
+>         return 0;
+> @@ -1555,6 +1594,7 @@ static const struct bpf_func_proto bpf_dynptr_write_proto = {
 >
-> true.. we could add flag to 'struct kprobe' to indicate it's placed
-> on function's entry and check on endbr instruction for IBT config,
-> and return 0 for anything else
+>  BPF_CALL_3(bpf_dynptr_data, struct bpf_dynptr_kern *, ptr, u32, offset, u32, len)
+>  {
+> +       enum bpf_dynptr_type type;
+>         int err;
 >
-> jirka
+>         if (!ptr->data)
+> @@ -1567,6 +1607,18 @@ BPF_CALL_3(bpf_dynptr_data, struct bpf_dynptr_kern *, ptr, u32, offset, u32, len
+>         if (bpf_dynptr_is_rdonly(ptr))
+>                 return 0;
 >
-> > > kprobe is placed, on the other hand we move the kprobe address if
-> > > its placed on top of endbr instruction.
-> > >
-> > > v1 changes:
-> > >   - read previous instruction in kprobe_multi link handler
-> > >     and adjust entry_ip for CONFIG_X86_KERNEL_IBT option
-> > >   - split first patch into 2 separate changes
-> > >   - update changelogs
-> > >
-> > > thanks,
-> > > jirka
-> > >
-> > >
-> > > ---
-> > > Jiri Olsa (5):
-> > >       ftrace: Keep the resolved addr in kallsyms_callback
-> > >       bpf: Adjust kprobe_multi entry_ip for CONFIG_X86_KERNEL_IBT
-> > >       bpf: Use given function address for trampoline ip arg
-> > >       selftests/bpf: Disable kprobe attach test with offset for CONFIG_X86_KERNEL_IBT
-> > >       selftests/bpf: Fix kprobe get_func_ip tests for CONFIG_X86_KERNEL_IBT
-> > >
-> > >  arch/x86/net/bpf_jit_comp.c                               |  9 ++++-----
-> > >  kernel/trace/bpf_trace.c                                  |  4 ++++
-> > >  kernel/trace/ftrace.c                                     |  3 +--
-> > >  tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c | 25 ++++++++++++++++++++-----
-> > >  tools/testing/selftests/bpf/progs/get_func_ip_test.c      |  7 +++++--
-> > >  tools/testing/selftests/bpf/progs/kprobe_multi.c          |  2 +-
-> > >  6 files changed, 35 insertions(+), 15 deletions(-)
+> +       type = bpf_dynptr_get_type(ptr);
+> +
+> +       if (type == BPF_DYNPTR_TYPE_SKB) {
+> +               struct sk_buff *skb = ptr->data;
+> +
+> +               /* if the data is paged, the caller needs to pull it first */
+> +               if (ptr->offset + offset + len > skb->len - skb->data_len)
+> +                       return 0;
+> +
+> +               return (unsigned long)(skb->data + ptr->offset + offset);
+> +       }
+> +
+>         return (unsigned long)(ptr->data + ptr->offset + offset);
+
+Similarly, all these dynptr helpers effectively dispatch different
+implementations based on dynptr type. I think switch is most
+appropriate for this.
+
+>  }
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 0d523741a543..0838653eeb4e 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -263,6 +263,7 @@ struct bpf_call_arg_meta {
+>         u32 subprogno;
+>         struct bpf_map_value_off_desc *kptr_off_desc;
+>         u8 uninit_dynptr_regno;
+> +       enum bpf_dynptr_type type;
+>  };
+>
+
+[...]
