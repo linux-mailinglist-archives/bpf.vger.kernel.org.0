@@ -2,79 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8AC3586B9D
-	for <lists+bpf@lfdr.de>; Mon,  1 Aug 2022 15:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A92EE586BE1
+	for <lists+bpf@lfdr.de>; Mon,  1 Aug 2022 15:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231640AbiHANN7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Aug 2022 09:13:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45238 "EHLO
+        id S231352AbiHANY0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Aug 2022 09:24:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231384AbiHANN6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Aug 2022 09:13:58 -0400
-Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D705E252BE
-        for <bpf@vger.kernel.org>; Mon,  1 Aug 2022 06:13:55 -0700 (PDT)
-Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-f2a4c51c45so13576666fac.9
-        for <bpf@vger.kernel.org>; Mon, 01 Aug 2022 06:13:55 -0700 (PDT)
+        with ESMTP id S229953AbiHANYY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Aug 2022 09:24:24 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 437903206A
+        for <bpf@vger.kernel.org>; Mon,  1 Aug 2022 06:24:23 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id d65-20020a17090a6f4700b001f303a97b14so12003989pjk.1
+        for <bpf@vger.kernel.org>; Mon, 01 Aug 2022 06:24:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc;
-        bh=S4v2xzmivjkPNxxCfifaPK4xR7fi1R2DYRzw0gzDhqk=;
-        b=aU/EMjwvPmQHuC3EBkgE95P1u4OscFyLNRNnnObQ+qrX4FI5VdaEavlkuJv0eLaafS
-         LRfaSM+ftYFZBzQXUQVTjMlxhJ82TBVrX2MBIhQvsXC+TEYUHrHEHfxiIZvTEcQvnkne
-         otTWe5IN176ijSIBTW+IPCt5doE2JAB8vJu0Q=
+        d=gmail.com; s=20210112;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JLo+cqdChzkSZzadSGSQzj47WRgl4h2edDVULDweSVo=;
+        b=B4+9+17XbZmThjycCerE7/KbK3Q7ac5D8m77f9aqLua7lyIhXLIUUB+wXvWMFFydLO
+         j79m6//gxKVtYxkzz3r1Ib8jpBOuWWDONX7pkTFNAQzHclVm8RlIIH1sKH1BCT7SV/2Z
+         TFZ42iMd+aTqEKYdN0sKpRyyCHM20PQ3/CXgq8avyjUAiyjIAMwPRVB0n0ApbnTfXGJ1
+         tc3x7zOVwNZZLDUk84hm1QQDvcFnPnjkUIfHDlM4IqO8LRgmMpa2qGJnyyCC41TsSeKR
+         qXh23D+N7Pw6tExYPgDf4vtgm/V18C7TXR8xYPgLkbonF5yj+ZKjBycr5uZyTVMgZrAx
+         gReQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc;
-        bh=S4v2xzmivjkPNxxCfifaPK4xR7fi1R2DYRzw0gzDhqk=;
-        b=nb9wiKQ7ZRoirm+L3DO3p6/Hif2ygoXPYSheoj2s2YIcRUE84YJxEUdz5cskH4Gqoa
-         jIiuI9TTJSW2OhQmQHNZLywW75lQWaexmfKhGq1fc0Dt1nmL4Wb5XLb9EJ5GvQFAsg0M
-         Eu6oujExD1siPQzVNdt6GVkW+7GBgQhfUOgCm963Wfm+ooJrXbBgi7HH0qdvnIlw4vXz
-         XAdQ5lqfqnlWXEaBOz/qztx/xkpoE7JSfCKce/vUb15ViUBpJ3Eve+zQ3gjkXjCIsQZL
-         /sYNyWqVtr6YdacH76m3oGuACDRQjWyHMXfwvSdZMwr0+5wH2H7UpX3wxyJSBiS0PqXM
-         Y7rg==
-X-Gm-Message-State: AJIora+x92CFjcUut4Fh7ddvGRwNnLpKOeYy5Rk0BBygu+Fr3vJHCLxF
-        mKRrznIIQhG1sXTilajTBi++Yg==
-X-Google-Smtp-Source: AGRyM1vAYe6eYSqkhNEffp5nkSzS3sTGEFR4Fq4tFcvvlB80G4i7/GERIpfxWhXyvbYGQjvJ5+67TQ==
-X-Received: by 2002:a05:6870:f149:b0:de:e873:4a46 with SMTP id l9-20020a056870f14900b000dee8734a46mr6761101oac.286.1659359635202;
-        Mon, 01 Aug 2022 06:13:55 -0700 (PDT)
-Received: from [192.168.0.41] ([184.4.90.121])
-        by smtp.gmail.com with ESMTPSA id 22-20020aca2816000000b00339ff117f38sm2400911oix.53.2022.08.01.06.13.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Aug 2022 06:13:54 -0700 (PDT)
-Message-ID: <a4db1154-94bc-9833-1665-a88a5eee48de@cloudflare.com>
-Date:   Mon, 1 Aug 2022 08:13:57 -0500
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JLo+cqdChzkSZzadSGSQzj47WRgl4h2edDVULDweSVo=;
+        b=HqguVKK8Ua9X+5NmfIQe1iG7sHfTGd1N5nvhblQdZUX2oWK163AbvsjAqm2N2NblTQ
+         3k1sBUuLaL8vcP+KtMpPcPpT6p1N69T5A4NYIvHUqVLHXyLGZ2gsTCmyr08mPd8i3oti
+         MKwZwRC7wp4kx8EYvgoKI7trfjPsHql1qgK3RN7kxn2wxpBxVjzQ+otd9y0BttqJVvDv
+         LbDnftXMWU82v+BcXLrjugL51o6mRJBVVofrlqco8b4CSlgXyTWEix2hGQC6sthp6HqS
+         e6zDj9p1In8EXr7Pal70KfroCQb5Z4PQ92TREVXDXY8bW2Ry3r/JCrYAkKMXQ74lHSdJ
+         nN1Q==
+X-Gm-Message-State: ACgBeo0U+eyP/nl5EwfJHnMRC6yJKotJIkkSGtfEJN4wecIaWs780kbJ
+        dY+yI140U+kYeRq7nNGVV5O/RmPTIYw=
+X-Google-Smtp-Source: AA6agR42Dv0NEzPLyS6t3VGDgJnGtNT8MxWTAZF8O89dEn6OIgcYbDYUzA5r7s7T0qKBPc36YqvcRg==
+X-Received: by 2002:a17:90b:3b49:b0:1f4:df09:d671 with SMTP id ot9-20020a17090b3b4900b001f4df09d671mr11123718pjb.129.1659360262156;
+        Mon, 01 Aug 2022 06:24:22 -0700 (PDT)
+Received: from localhost (fwdproxy-prn-118.fbsv.net. [2a03:2880:ff:76::face:b00c])
+        by smtp.gmail.com with ESMTPSA id g18-20020aa79dd2000000b0052d4ffac466sm1369194pfq.188.2022.08.01.06.24.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Aug 2022 06:24:21 -0700 (PDT)
+From:   Manu Bretelle <chantr4@gmail.com>
+To:     bpf@vger.kernel.org, andrii@kernel.org, quentin@isovalent.com
+Subject: [PATCH bpf-next v3] bpftool: Remove BPF_OBJ_NAME_LEN restriction when looking up bpf program by name
+Date:   Mon,  1 Aug 2022 06:24:09 -0700
+Message-Id: <20220801132409.4147849-1-chantr4@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH v3 0/4] Introduce security_create_user_ns()
-Content-Language: en-US
-To:     Paul Moore <paul@paul-moore.com>, Martin KaFai Lau <kafai@fb.com>
-Cc:     kpsingh@kernel.org, revest@chromium.org, jackmanb@chromium.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        jmorris@namei.org, serge@hallyn.com,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        shuah@kernel.org, brauner@kernel.org, casey@schaufler-ca.com,
-        ebiederm@xmission.com, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, kernel-team@cloudflare.com,
-        cgzones@googlemail.com, karl@bigbadwolfsecurity.com
-References: <20220721172808.585539-1-fred@cloudflare.com>
- <20220722061137.jahbjeucrljn2y45@kafai-mbp.dhcp.thefacebook.com>
- <18225d94bf0.28e3.85c95baa4474aabc7814e68940a78392@paul-moore.com>
-From:   Frederick Lawler <fred@cloudflare.com>
-In-Reply-To: <18225d94bf0.28e3.85c95baa4474aabc7814e68940a78392@paul-moore.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,47 +65,95 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/22/22 7:20 AM, Paul Moore wrote:
-> On July 22, 2022 2:12:03 AM Martin KaFai Lau <kafai@fb.com> wrote:
-> 
->> On Thu, Jul 21, 2022 at 12:28:04PM -0500, Frederick Lawler wrote:
->>> While creating a LSM BPF MAC policy to block user namespace creation, we
->>> used the LSM cred_prepare hook because that is the closest hook to prevent
->>> a call to create_user_ns().
->>>
->>> The calls look something like this:
->>>
->>> cred = prepare_creds()
->>> security_prepare_creds()
->>> call_int_hook(cred_prepare, ...
->>> if (cred)
->>> create_user_ns(cred)
->>>
->>> We noticed that error codes were not propagated from this hook and
->>> introduced a patch [1] to propagate those errors.
->>>
->>> The discussion notes that security_prepare_creds()
->>> is not appropriate for MAC policies, and instead the hook is
->>> meant for LSM authors to prepare credentials for mutation. [2]
->>>
->>> Ultimately, we concluded that a better course of action is to introduce
->>> a new security hook for LSM authors. [3]
->>>
->>> This patch set first introduces a new security_create_user_ns() function
->>> and userns_create LSM hook, then marks the hook as sleepable in BPF.
->> Patch 1 and 4 still need review from the lsm/security side.
-> 
-> 
-> This patchset is in my review queue and assuming everything checks out, I expect to merge it after the upcoming merge window closes.
-> 
-> I would also need an ACK from the BPF LSM folks, but they're CC'd on this patchset.
-> 
+bpftool was limiting the length of names to BPF_OBJ_NAME_LEN in prog_parse
+fds.
 
-Based on last weeks comments, should I go ahead and put up v4 for 
-5.20-rc1 when that drops, or do I need to wait for more feedback?
+Since commit b662000aff84 ("bpftool: Adding support for BTF program names")
+we can get the full program name from BTF.
 
-> --
-> paul-moore.com
-> 
-> 
+This patch removes the restriction of name length when running `bpftool
+prog show name ${name}`.
+
+Test:
+Tested against some internal program names that were longer than
+`BPF_OBJ_NAME_LEN`, here a redacted example of what was ran to test.
+
+    # previous behaviour
+    $ sudo bpftool prog show name some_long_program_name
+    Error: can't parse name
+    # with the patch
+    $ sudo ./bpftool prog show name some_long_program_name
+    123456789: tracing  name some_long_program_name  tag taghexa  gpl ....
+    ...
+    ...
+    ...
+    # too long
+    sudo ./bpftool prog show name $(python3 -c 'print("A"*128)')
+    Error: can't parse name
+    # not too long but no match
+    $ sudo ./bpftool prog show name $(python3 -c 'print("A"*127)')
+
+Signed-off-by: Manu Bretelle <chantr4@gmail.com>
+
+Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+
+---
+
+v1 -> v2:
+* Fix commit message to follow patch submission guidelines
+* use strncmp instead of strcmp
+* reintroduce arg length check against MAX_PROG_FULL_NAME
+
+v2 -> v3:
+* Fix alignment with opening parenthesis
+---
+ tools/bpf/bpftool/common.c | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
+index 067e9ea59e3b..8727765add88 100644
+--- a/tools/bpf/bpftool/common.c
++++ b/tools/bpf/bpftool/common.c
+@@ -722,6 +722,7 @@ print_all_levels(__maybe_unused enum libbpf_print_level level,
+ 
+ static int prog_fd_by_nametag(void *nametag, int **fds, bool tag)
+ {
++	char prog_name[MAX_PROG_FULL_NAME];
+ 	unsigned int id = 0;
+ 	int fd, nb_fds = 0;
+ 	void *tmp;
+@@ -754,12 +755,20 @@ static int prog_fd_by_nametag(void *nametag, int **fds, bool tag)
+ 			goto err_close_fd;
+ 		}
+ 
+-		if ((tag && memcmp(nametag, info.tag, BPF_TAG_SIZE)) ||
+-		    (!tag && strncmp(nametag, info.name, BPF_OBJ_NAME_LEN))) {
++		if (tag && memcmp(nametag, info.tag, BPF_TAG_SIZE)) {
+ 			close(fd);
+ 			continue;
+ 		}
+ 
++		if (!tag) {
++			get_prog_full_name(&info, fd, prog_name,
++					   sizeof(prog_name));
++			if (strncmp(nametag, prog_name, sizeof(prog_name))) {
++				close(fd);
++				continue;
++			}
++		}
++
+ 		if (nb_fds > 0) {
+ 			tmp = realloc(*fds, (nb_fds + 1) * sizeof(int));
+ 			if (!tmp) {
+@@ -820,7 +829,7 @@ int prog_parse_fds(int *argc, char ***argv, int **fds)
+ 		NEXT_ARGP();
+ 
+ 		name = **argv;
+-		if (strlen(name) > BPF_OBJ_NAME_LEN - 1) {
++		if (strlen(name) > MAX_PROG_FULL_NAME - 1) {
+ 			p_err("can't parse name");
+ 			return -1;
+ 		}
+-- 
+2.30.2
 
