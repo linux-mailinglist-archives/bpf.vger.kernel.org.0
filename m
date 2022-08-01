@@ -2,214 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A624E586BE4
-	for <lists+bpf@lfdr.de>; Mon,  1 Aug 2022 15:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1316D586C72
+	for <lists+bpf@lfdr.de>; Mon,  1 Aug 2022 15:59:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231367AbiHANY0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Aug 2022 09:24:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54920 "EHLO
+        id S232214AbiHAN7I (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Aug 2022 09:59:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231343AbiHANYY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Aug 2022 09:24:24 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BEAD3206B;
-        Mon,  1 Aug 2022 06:24:23 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id tk8so20324045ejc.7;
-        Mon, 01 Aug 2022 06:24:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc;
-        bh=wHG9uomB3z//oXuVAbnaYlvkAHPtRk7dQYikI60ETu8=;
-        b=qefJ8SkBCTvGg27w9gR2wFCgxb8Kj3bUrxFDjrrmwHOnwRT2AUe4aK5aYECwMYJ7gD
-         n48a1mXOJ0mMEivPkiHqCglmYXCgp3wN7ta2Zm6RSvj3ozp39L0v3gH+L3sGmrMYUUtd
-         otpvuJQiGBIm3B9baXxd4pGPmYOTJ1FpphXqph+zVbVgKyaqqF+Yh1RvyUII0fWzJ9wg
-         vUpm/CIo+3SvQhZF4NK8caIfA6A9XilUqgtK6xFjlzHaU1z7c2XW/mHbE3lgZzspQGW/
-         C9jxUTtCDrqD5Jjd4x2XoFHCr+xPJ1u/uCMFpB34c4emwq5OwTbsapwRZO+Fevg2+dxE
-         UqhA==
+        with ESMTP id S231213AbiHAN7G (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Aug 2022 09:59:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8516E25EB7
+        for <bpf@vger.kernel.org>; Mon,  1 Aug 2022 06:59:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1659362343;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eXxFDNHmW1eO0dHBvosAP+F5NsGPg4Gs2jo3HyEeOm4=;
+        b=elBnH3m4Mc/5raaQ++OPBqwdsc40LXyyekriiAY3EdthBd7jxOhQrdUkFaNnS8A5EEP9DI
+        iWvW+4YxuXSmhy0zV9+xz/IJ4NZK2r8uE5gxLVQB5yOQnRGgugtY7kLXaTfUSfU88RYTz+
+        O26RUDniix2HHgO74CWDY+MR8tFxSSc=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-556-1dgpwpuyOc2I88Ul1h64vA-1; Mon, 01 Aug 2022 09:59:02 -0400
+X-MC-Unique: 1dgpwpuyOc2I88Ul1h64vA-1
+Received: by mail-ej1-f70.google.com with SMTP id hp13-20020a1709073e0d00b0072b812bc5e9so3021607ejc.9
+        for <bpf@vger.kernel.org>; Mon, 01 Aug 2022 06:59:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc;
-        bh=wHG9uomB3z//oXuVAbnaYlvkAHPtRk7dQYikI60ETu8=;
-        b=bxqPyJaJ8zxDzpBh542glGu49/7oPXed2hFja6P3ERZTv3DlZWSRB6NWHzPMan+G+Y
-         C6z5FJhlfL7wHXtF2wSh9VNjF0ngTMz02fsT/deAoA/EgUromJymjzrwjmaLWIFbJuFL
-         zeQIYYDtAeNU6I4/OFM/cWBlepZnxt0duS05StcVxbcobRsgvpxpIj8/1w7Cg5vo9hJA
-         WEOZtmuN9wPfq6ZkeIN1bKahWxHdSIEaTL0ZDubjKx6ETMeKMcWJPzI+GiFQBEyUnOVd
-         b/yFKe0FmfhKHI3HloNj1ExDTZpHevAfjvXmUeZQuPgsQ/3pNaDYroCtleUt1HNjUYd0
-         Qoig==
-X-Gm-Message-State: AJIora9tehxye7J6RzYi7hyhH2SEpbvTvKqHP3P+dHuF7L8SxE/OCW8Z
-        5eqdtdaVSpZqNbOts/zy+mU=
-X-Google-Smtp-Source: AGRyM1vLY8fZMhXk9fdsAMEfR/Cz7pWsIKbhkbn9A4PyqreH0FtK86tf+Rd1XQAo+uywVArkeoMspA==
-X-Received: by 2002:a17:907:160f:b0:72f:1442:ed54 with SMTP id hb15-20020a170907160f00b0072f1442ed54mr12119573ejc.339.1659360261725;
-        Mon, 01 Aug 2022 06:24:21 -0700 (PDT)
-Received: from krava ([193.85.244.190])
-        by smtp.gmail.com with ESMTPSA id lb17-20020a170907785100b0072ae174cdd4sm1870689ejc.111.2022.08.01.06.24.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Aug 2022 06:24:21 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Mon, 1 Aug 2022 15:24:18 +0200
-To:     Jiri Olsa <olsajiri@gmail.com>,
-        Stephane Eranian <eranian@google.com>
-Cc:     =?utf-8?B?6LCt5qKT54WK?= <tanzixuan.me@gmail.com>,
-        Zixuan Tan <tanzixuangg@gmail.com>, terrelln@fb.com,
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=eXxFDNHmW1eO0dHBvosAP+F5NsGPg4Gs2jo3HyEeOm4=;
+        b=UdDDwbuIHv5aBMsvnHhXEBBxE7THYT/fz+suMVZ4XRZzYyF3YGA4aLP+i21O1SUsCO
+         Z2hCAmpA/4V2l5pDH31ffZWI5uqWM8UymX/schLBg6VWen3M2VMOOyH+ByanAhtcpXoW
+         /MDw5yzptA8pef8Q5K6lG+AVymejrraOFk5k1wojWVaSTeOlZLna+sv9V0ZOAqRNf8W6
+         u3PQqU3IDWAPqrtrV4Tm87cp+0hS19DKqHVIvf2mYuc9RVNpKlkPxqLjMexj6NnHP5MJ
+         Loua1s2C23990W5bQhp5TGIOrBJagKLEHO28T37QLv+BsS0T7dg1JwM6KhcFDrapZ2FJ
+         LipA==
+X-Gm-Message-State: AJIora8HKNN8R/yKEC3YTfK8XIZNjIScqwfcZ8dAPny8fTpdVaKNbpqp
+        nTMbwZ2WpcE43JQd9Ys333L5QM3adSQcsxFcA5ko96SNSxahQrSfjFS0EGMGYpGunLufAo8+LjW
+        7t+pwmY2ZAyBj3gJ40vrXwXXRbPtW
+X-Received: by 2002:a05:6402:428a:b0:42e:8f7e:1638 with SMTP id g10-20020a056402428a00b0042e8f7e1638mr15797061edc.228.1659362341203;
+        Mon, 01 Aug 2022 06:59:01 -0700 (PDT)
+X-Google-Smtp-Source: AGRyM1sOKK1XArDJ/+T2IJ3/pCZ85i2lWKtqCnCIBQNq5wFJM3QRwfxBQ0mImsdCShuk7kTJM73OnyoYE+c/C8XVIdY=
+X-Received: by 2002:a05:6402:428a:b0:42e:8f7e:1638 with SMTP id
+ g10-20020a056402428a00b0042e8f7e1638mr15797050edc.228.1659362341081; Mon, 01
+ Aug 2022 06:59:01 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220711083220.2175036-1-asavkov@redhat.com> <YswAqrJrMKIZPpcz@krava>
+In-Reply-To: <YswAqrJrMKIZPpcz@krava>
+From:   Daniel Vacek <neelx@redhat.com>
+Date:   Mon, 1 Aug 2022 15:58:24 +0200
+Message-ID: <CACjP9X-HWHhFD6D1TsuhWOgj2v=dMkwVCjQCQzQqa054yKiqeg@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 0/4] bpf_panic() helper
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Artem Savkov <asavkov@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] perf build: Suppress openssl v3 deprecation warnings in
- libcrypto feature test
-Message-ID: <YufUAiLqKiuwdvcP@krava>
-References: <20220625153439.513559-1-tanzixuan.me@gmail.com>
- <YrhxE4s0hLvbbibp@krava>
- <CABwm_eT_LE6VbLMgT31yqW=tc_obLP=6E0jnMqVn1sMdWrVVNw@mail.gmail.com>
- <Yrqcpr7ICzpsoGrc@krava>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Yrqcpr7ICzpsoGrc@krava>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 28, 2022 at 08:16:06AM +0200, Jiri Olsa wrote:
-> On Mon, Jun 27, 2022 at 11:08:34AM +0800, 谭梓煊 wrote:
-> > On Sun, Jun 26, 2022 at 10:45 PM Jiri Olsa <olsajiri@gmail.com> wrote:
-> > >
-> > > On Sat, Jun 25, 2022 at 11:34:38PM +0800, Zixuan Tan wrote:
-> > > > With OpenSSL v3 installed, the libcrypto feature check fails as it use the
-> > > > deprecated MD5_* API (and is compiled with -Werror). The error message is
-> > > > as follows.
-> > > >
-> > > > $ make tools/perf
-> > > > ```
-> > > > Makefile.config:778: No libcrypto.h found, disables jitted code injection,
-> > > > please install openssl-devel or libssl-dev
-> > > >
-> > > > Auto-detecting system features:
-> > > > ...                         dwarf: [ on  ]
-> > > > ...            dwarf_getlocations: [ on  ]
-> > > > ...                         glibc: [ on  ]
-> > > > ...                        libbfd: [ on  ]
-> > > > ...                libbfd-buildid: [ on  ]
-> > > > ...                        libcap: [ on  ]
-> > > > ...                        libelf: [ on  ]
-> > > > ...                       libnuma: [ on  ]
-> > > > ...        numa_num_possible_cpus: [ on  ]
-> > > > ...                       libperl: [ on  ]
-> > > > ...                     libpython: [ on  ]
-> > > > ...                     libcrypto: [ OFF ]
-> > > > ...                     libunwind: [ on  ]
-> > > > ...            libdw-dwarf-unwind: [ on  ]
-> > > > ...                          zlib: [ on  ]
-> > > > ...                          lzma: [ on  ]
-> > > > ...                     get_cpuid: [ on  ]
-> > > > ...                           bpf: [ on  ]
-> > > > ...                        libaio: [ on  ]
-> > > > ...                       libzstd: [ on  ]
-> > > > ...        disassembler-four-args: [ on  ]
-> > > > ```
-> > > >
-> > > > This is very confusing because the suggested library (on my Ubuntu 20.04
-> > > > it is libssl-dev) is already installed. As the test only checks for the
-> > > > presence of libcrypto, this commit suppresses the deprecation warning to
-> > > > allow the test to pass.
-> > > >
-> > > > Signed-off-by: Zixuan Tan <tanzixuan.me@gmail.com>
-> > > > ---
-> > > >  tools/build/feature/test-libcrypto.c | 6 ++++++
-> > > >  1 file changed, 6 insertions(+)
-> > > >
-> > > > diff --git a/tools/build/feature/test-libcrypto.c b/tools/build/feature/test-libcrypto.c
-> > > > index a98174e0569c..31afff093d0b 100644
-> > > > --- a/tools/build/feature/test-libcrypto.c
-> > > > +++ b/tools/build/feature/test-libcrypto.c
-> > > > @@ -2,6 +2,12 @@
-> > > >  #include <openssl/sha.h>
-> > > >  #include <openssl/md5.h>
-> > > >
-> > > > +/*
-> > > > + * The MD5_* API have been deprecated since OpenSSL 3.0, which causes the
-> > > > + * feature test to fail silently. This is a workaround.
-> > > > + */
-> > >
-> > > then we use these deprecated MD5 calls in util/genelf.c if libcrypto is detected,
-> > > so I wonder how come the rest of the compilation passed for you.. do you have
-> > > CONFIG_JITDUMP disabled?
-> > >
-> > > thanks,
-> > > jirka
-> > >
-> > No, CONFIG_JITDUMP is not disabled. I am using the default configuration.
-> > 
-> > Yes, you are right. The rest of the compilation should fail, but it doesn't.
-> > I checked the verbose build commands. This seems to be the result of another
-> > inconsistency.
-> > 
-> > If libcrypto is detected, the macro "HAVE_LIBCRYPTO_SUPPORT" will be
-> > defined, but in perf/util/genelf.c, "HAVE_LIBCRYPTO" without the "_SUPPORT"
-> > prefix is checked. This causes urandom always be used to create build id
-> > rather than MD5 and SHA1, no matter what the detection result is.
-> > 
-> > In perf/Makefile.config, from line 776
-> > ```
-> > ifndef NO_LIBCRYPTO
-> >   ifneq ($(feature-libcrypto), 1)
-> >     msg := $(warning No libcrypto.h found, disables jitted code injection,
-> >             please install openssl-devel or libssl-dev);
-> >     NO_LIBCRYPTO := 1
-> >   else                                  <-- if libcrypto feature detected
-> >     CFLAGS += -DHAVE_LIBCRYPTO_SUPPORT  <-- define this
-> >     EXTLIBS += -lcrypto
-> >     $(call detected,CONFIG_CRYPTO)
-> >   endif
-> > endif
-> > ```
-> > 
-> > In perf/util/genelf.c, from line 33
-> > ```
-> > #ifdef HAVE_LIBCRYPTO                <-- but check this, it's always false
-> 
-> nice :)
-> 
-> > 
-> > #define BUILD_ID_MD5
-> > #undef BUILD_ID_SHA /* does not seem to work well when linked with Java */
-> > #undef BUILD_ID_URANDOM /* different uuid for each run */
-> > 
-> > #ifdef BUILD_ID_SHA
-> > #include <openssl/sha.h>
-> > #endif
-> > 
-> > #ifdef BUILD_ID_MD5
-> > #include <openssl/md5.h>
-> > #endif
-> > #endif                               <-- this block will be skipped
-> > ```
-> > 
-> > Maybe we should fix this, to really make use of libcrypto if it is available?
-> 
-> yea, I think that was the original idea, let's keep the variable with
-> SUPPORT suffix and use the -Wdeprecated-declarations for genelf.c
-> 
-> full fix would be to detect the new API and use it when it's available but..
-> given that the check was false at least since 2016, perhaps we could remove
-> that code? ;-) Stephane?
+On Mon, Jul 11, 2022 at 12:51 PM Jiri Olsa <olsajiri@gmail.com> wrote:
+>
+> On Mon, Jul 11, 2022 at 10:32:16AM +0200, Artem Savkov wrote:
+> > eBPF is often used for kernel debugging, and one of the widely used and
+> > powerful debugging techniques is post-mortem debugging with a full memory dump.
+> > Triggering a panic at exactly the right moment allows the user to get such a
+> > dump and thus a better view at the system's state. This patchset adds
+> > bpf_panic() helper to do exactly that.
+>
+> FWIW I was asked for such helper some time ago from Daniel Vacek, cc-ed
 
-ping
+Nice :-)
+This is totally welcome. Though, IIRC, I was asking if I could do a
+NULL pointer dereference within perf probe (or ftrace) back then.
+Still, the outcome is similar. So kudos to Artem.
 
-jirka
+--nX
+
+> jirka
+>
+> >
+> > I realize that even though there are multiple guards present, a helper like
+> > this is contrary to BPF being "safe", so this is sent as RFC to have a
+> > discussion on whether adding destructive capabilities is deemed acceptable.
+> >
+> > Artem Savkov (4):
+> >   bpf: add a sysctl to enable destructive bpf helpers
+> >   bpf: add BPF_F_DESTRUCTIVE flag for BPF_PROG_LOAD
+> >   bpf: add bpf_panic() helper
+> >   selftests/bpf: bpf_panic selftest
+> >
+> >  include/linux/bpf.h                           |   8 +
+> >  include/uapi/linux/bpf.h                      |  13 ++
+> >  kernel/bpf/core.c                             |   1 +
+> >  kernel/bpf/helpers.c                          |  13 ++
+> >  kernel/bpf/syscall.c                          |  33 +++-
+> >  kernel/bpf/verifier.c                         |   7 +
+> >  kernel/trace/bpf_trace.c                      |   2 +
+> >  tools/include/uapi/linux/bpf.h                |  13 ++
+> >  .../selftests/bpf/prog_tests/bpf_panic.c      | 144 ++++++++++++++++++
+> >  9 files changed, 233 insertions(+), 1 deletion(-)
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_panic.c
+> >
+> > --
+> > 2.35.3
+> >
+>
+
