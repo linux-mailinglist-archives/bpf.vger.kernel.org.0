@@ -2,45 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FDCD58745D
-	for <lists+bpf@lfdr.de>; Tue,  2 Aug 2022 01:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA2AB58745C
+	for <lists+bpf@lfdr.de>; Tue,  2 Aug 2022 01:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233860AbiHAX1K (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Aug 2022 19:27:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44840 "EHLO
+        id S230362AbiHAX1I (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Aug 2022 19:27:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233923AbiHAX1J (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Aug 2022 19:27:09 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3508A1C90B
-        for <bpf@vger.kernel.org>; Mon,  1 Aug 2022 16:27:07 -0700 (PDT)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 271NFq6W008159
+        with ESMTP id S233860AbiHAX1H (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Aug 2022 19:27:07 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68CC52180B
+        for <bpf@vger.kernel.org>; Mon,  1 Aug 2022 16:27:06 -0700 (PDT)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 271NFhv6020214
         for <bpf@vger.kernel.org>; Mon, 1 Aug 2022 16:27:06 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=/pm7D5f9u4z0KRTlsdg1aOUUIFLbRrHzTRUgVu8ueOc=;
- b=ZyWABsOT+mRYxk1sGlzDWLrz9C8Kuxm/ZCI14JN6pM+4YMXbVJ7qfjJFz8Irpk8L/kWN
- u2nwWFVcPwb5NBKy7lNc7r9AKmRMb+kVN8+82Y36OGLUHCHJhe3+zQEiH+OBMVwzHNd4
- 4TP81mmIlLG2/d/8I7RtlBkJjtw3/wxnKSQ= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hn2ftyeqg-1
+ bh=wBe/jrMX1EkDLIiQvsY7fBOeCO737If+U0PTIIh9+8U=;
+ b=dQtPpjw8TfRNS7KS+MdUO/DVrEQB0j7Xz9+MtGrFLhb3mE0h4X0BHokUFlqufbPYMsTh
+ 6gCSiDl+KmcfTwCrX3/k9OBFrgH8S9RTFMxO1QlHk16JJrRhdL4wJVxuqbxT5IVOBC/p
+ NWwZK+wLl3gACrBGwe2M891zijQrJY+1+jU= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hn2bn7349-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
         for <bpf@vger.kernel.org>; Mon, 01 Aug 2022 16:27:06 -0700
-Received: from twshared14818.18.frc3.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+Received: from twshared7570.37.frc1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2375.28; Mon, 1 Aug 2022 16:27:04 -0700
 Received: by devbig931.frc1.facebook.com (Postfix, from userid 460691)
-        id 45D3962953E7; Mon,  1 Aug 2022 16:26:55 -0700 (PDT)
+        id D853F62953EA; Mon,  1 Aug 2022 16:26:56 -0700 (PDT)
 From:   Kui-Feng Lee <kuifeng@fb.com>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <andrii@kernel.org>, <kernel-team@fb.com>, <yhs@fb.com>
 CC:     Kui-Feng Lee <kuifeng@fb.com>
-Subject: [PATCH bpf-next v2 1/3] bpf: Parameterize task iterators.
-Date:   Mon, 1 Aug 2022 16:26:47 -0700
-Message-ID: <20220801232649.2306614-2-kuifeng@fb.com>
+Subject: [PATCH bpf-next v2 2/3] bpf: Handle bpf_link_info for the parameterized task BPF iterators.
+Date:   Mon, 1 Aug 2022 16:26:48 -0700
+Message-ID: <20220801232649.2306614-3-kuifeng@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220801232649.2306614-1-kuifeng@fb.com>
 References: <20220801232649.2306614-1-kuifeng@fb.com>
@@ -48,11 +48,11 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: I5zdFZqGMCSeGDMzktiKZ2Uo0Dx3zr86
-X-Proofpoint-GUID: I5zdFZqGMCSeGDMzktiKZ2Uo0Dx3zr86
+X-Proofpoint-GUID: bXGF2eeEvG-YEJZxjurj9AfeoG6nTPH_
+X-Proofpoint-ORIG-GUID: bXGF2eeEvG-YEJZxjurj9AfeoG6nTPH_
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-08-01_11,2022-08-01_01,2022-06-22_01
+ definitions=2022-08-01_12,2022-08-01_01,2022-06-22_01
 X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
@@ -63,359 +63,91 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Allow creating an iterator that loops through resources of one task/threa=
-d.
-
-People could only create iterators to loop through all resources of
-files, vma, and tasks in the system, even though they were interested
-in only the resources of a specific task or process.  Passing the
-additional parameters, people can now create an iterator to go
-through all resources or only the resources of a task.
+Add new fields to bpf_link_info that users can query it through
+bpf_obj_get_info_by_fd().
 
 Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
 ---
- include/linux/bpf.h            |  4 ++
- include/uapi/linux/bpf.h       | 23 +++++++++
- kernel/bpf/task_iter.c         | 93 ++++++++++++++++++++++++++--------
- tools/include/uapi/linux/bpf.h | 23 +++++++++
- 4 files changed, 121 insertions(+), 22 deletions(-)
+ include/uapi/linux/bpf.h       |  4 ++++
+ kernel/bpf/task_iter.c         | 10 ++++++++++
+ tools/include/uapi/linux/bpf.h |  4 ++++
+ 3 files changed, 18 insertions(+)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 11950029284f..3c26dbfc9cef 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1718,6 +1718,10 @@ int bpf_obj_get_user(const char __user *pathname, =
-int flags);
-=20
- struct bpf_iter_aux_info {
- 	struct bpf_map *map;
-+	struct {
-+		u32	tid;
-+		u8	type;
-+	} task;
- };
-=20
- typedef int (*bpf_iter_attach_target_t)(struct bpf_prog *prog,
 diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index ffcbf79a556b..ed5ba501609f 100644
+index ed5ba501609f..33e6325d8d87 100644
 --- a/include/uapi/linux/bpf.h
 +++ b/include/uapi/linux/bpf.h
-@@ -87,10 +87,33 @@ struct bpf_cgroup_storage_key {
- 	__u32	attach_type;		/* program attach type (enum bpf_attach_type) */
- };
-=20
-+enum bpf_task_iter_type {
-+	BPF_TASK_ITER_ALL =3D 0,
-+	BPF_TASK_ITER_TID,
-+};
-+
- union bpf_iter_link_info {
- 	struct {
- 		__u32	map_fd;
- 	} map;
-+	/*
-+	 * Parameters of task iterators.
-+	 */
-+	struct {
-+		__u32   pid_fd;
-+		/*
-+		 * The type of the iterator.
-+		 *
-+		 * It can be one of enum bpf_task_iter_type.
-+		 *
-+		 * BPF_TASK_ITER_ALL (default)
-+		 *	The iterator iterates over resources of everyprocess.
-+		 *
-+		 * BPF_TASK_ITER_TID
-+		 *	You should also set *pid_fd* to iterate over one task.
-+		 */
-+		__u8	type;	/* BPF_TASK_ITER_* */
-+	} task;
- };
-=20
- /* BPF syscall commands, see bpf(2) man-page for more details. */
+@@ -6158,6 +6158,10 @@ struct bpf_link_info {
+ 				struct {
+ 					__u32 map_id;
+ 				} map;
++				struct {
++					__u32 tid;
++					__u8 type; /* one of enum bpf_task_iter_type */
++				} task;
+ 			};
+ 		} iter;
+ 		struct  {
 diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-index 8c921799def4..9942601e1dfb 100644
+index 9942601e1dfb..610ec96333f3 100644
 --- a/kernel/bpf/task_iter.c
 +++ b/kernel/bpf/task_iter.c
-@@ -12,6 +12,8 @@
-=20
- struct bpf_iter_seq_task_common {
- 	struct pid_namespace *ns;
-+	u32	tid;
-+	u8	type;
+@@ -577,6 +577,13 @@ static const struct bpf_iter_seq_info task_seq_info =
+=3D {
+ 	.seq_priv_size		=3D sizeof(struct bpf_iter_seq_task_info),
  };
 =20
- struct bpf_iter_seq_task_info {
-@@ -22,18 +24,31 @@ struct bpf_iter_seq_task_info {
- 	u32 tid;
- };
-=20
--static struct task_struct *task_seq_get_next(struct pid_namespace *ns,
-+static struct task_struct *task_seq_get_next(struct bpf_iter_seq_task_co=
-mmon *common,
- 					     u32 *tid,
- 					     bool skip_if_dup_files)
- {
- 	struct task_struct *task =3D NULL;
- 	struct pid *pid;
-=20
-+	if (common->type =3D=3D BPF_TASK_ITER_TID) {
-+		if (*tid && *tid !=3D common->tid)
-+			return NULL;
-+		rcu_read_lock();
-+		pid =3D find_pid_ns(common->tid, common->ns);
-+		if (pid) {
-+			task =3D get_pid_task(pid, PIDTYPE_PID);
-+			*tid =3D common->tid;
-+		}
-+		rcu_read_unlock();
-+		return task;
-+	}
-+
- 	rcu_read_lock();
- retry:
--	pid =3D find_ge_pid(*tid, ns);
-+	pid =3D find_ge_pid(*tid, common->ns);
- 	if (pid) {
--		*tid =3D pid_nr_ns(pid, ns);
-+		*tid =3D pid_nr_ns(pid, common->ns);
- 		task =3D get_pid_task(pid, PIDTYPE_PID);
- 		if (!task) {
- 			++*tid;
-@@ -56,7 +71,8 @@ static void *task_seq_start(struct seq_file *seq, loff_=
-t *pos)
- 	struct bpf_iter_seq_task_info *info =3D seq->private;
- 	struct task_struct *task;
-=20
--	task =3D task_seq_get_next(info->common.ns, &info->tid, false);
-+	task =3D task_seq_get_next(&info->common, &info->tid, false);
-+
- 	if (!task)
- 		return NULL;
-=20
-@@ -73,7 +89,8 @@ static void *task_seq_next(struct seq_file *seq, void *=
-v, loff_t *pos)
- 	++*pos;
- 	++info->tid;
- 	put_task_struct((struct task_struct *)v);
--	task =3D task_seq_get_next(info->common.ns, &info->tid, false);
-+
-+	task =3D task_seq_get_next(&info->common, &info->tid, false);
- 	if (!task)
- 		return NULL;
-=20
-@@ -117,6 +134,30 @@ static void task_seq_stop(struct seq_file *seq, void=
- *v)
- 		put_task_struct((struct task_struct *)v);
- }
-=20
-+static int bpf_iter_attach_task(struct bpf_prog *prog,
-+				union bpf_iter_link_info *linfo,
-+				struct bpf_iter_aux_info *aux)
++static int bpf_iter_fill_link_info(const struct bpf_iter_aux_info *aux, =
+struct bpf_link_info *info)
 +{
-+	unsigned int flags;
-+	struct task_struct *tsk;
-+
-+	if (linfo->task.type =3D=3D BPF_TASK_ITER_ALL && linfo->task.pid_fd !=3D=
- 0)
-+		return -EINVAL;
-+
-+	aux->task.type =3D linfo->task.type;
-+
-+	if (linfo->task.type =3D=3D BPF_TASK_ITER_TID) {
-+		tsk =3D pidfd_get_task(linfo->task.pid_fd, &flags);
-+		if (IS_ERR(tsk))
-+			return PTR_ERR(tsk);
-+
-+		aux->task.tid =3D tsk->pid;
-+		put_task_struct(tsk);
-+	}
-+
++	info->iter.task.tid =3D aux->task.tid;
++	info->iter.task.type =3D aux->task.type;
 +	return 0;
 +}
 +
- static const struct seq_operations task_seq_ops =3D {
- 	.start	=3D task_seq_start,
- 	.next	=3D task_seq_next,
-@@ -137,8 +178,7 @@ struct bpf_iter_seq_task_file_info {
- static struct file *
- task_file_seq_get_next(struct bpf_iter_seq_task_file_info *info)
- {
--	struct pid_namespace *ns =3D info->common.ns;
--	u32 curr_tid =3D info->tid;
-+	u32 saved_tid =3D info->tid;
- 	struct task_struct *curr_task;
- 	unsigned int curr_fd =3D info->fd;
-=20
-@@ -151,21 +191,18 @@ task_file_seq_get_next(struct bpf_iter_seq_task_fil=
-e_info *info)
- 		curr_task =3D info->task;
- 		curr_fd =3D info->fd;
- 	} else {
--                curr_task =3D task_seq_get_next(ns, &curr_tid, true);
-+		curr_task =3D task_seq_get_next(&info->common, &info->tid, true);
-                 if (!curr_task) {
-                         info->task =3D NULL;
--                        info->tid =3D curr_tid;
-                         return NULL;
-                 }
-=20
--                /* set info->task and info->tid */
-+		/* set info->task */
- 		info->task =3D curr_task;
--		if (curr_tid =3D=3D info->tid) {
-+		if (saved_tid =3D=3D info->tid)
- 			curr_fd =3D info->fd;
--		} else {
--			info->tid =3D curr_tid;
-+		else
- 			curr_fd =3D 0;
--		}
- 	}
-=20
- 	rcu_read_lock();
-@@ -186,9 +223,15 @@ task_file_seq_get_next(struct bpf_iter_seq_task_file=
-_info *info)
- 	/* the current task is done, go to the next task */
- 	rcu_read_unlock();
- 	put_task_struct(curr_task);
-+
-+	if (info->common.type =3D=3D BPF_TASK_ITER_TID) {
-+		info->task =3D NULL;
-+		return NULL;
-+	}
-+
- 	info->task =3D NULL;
- 	info->fd =3D 0;
--	curr_tid =3D ++(info->tid);
-+	saved_tid =3D ++(info->tid);
- 	goto again;
- }
-=20
-@@ -269,6 +312,8 @@ static int init_seq_pidns(void *priv_data, struct bpf=
-_iter_aux_info *aux)
- 	struct bpf_iter_seq_task_common *common =3D priv_data;
-=20
- 	common->ns =3D get_pid_ns(task_active_pid_ns(current));
-+	common->type =3D aux->task.type;
-+	common->tid =3D aux->task.tid;
- 	return 0;
- }
-=20
-@@ -307,11 +352,10 @@ enum bpf_task_vma_iter_find_op {
- static struct vm_area_struct *
- task_vma_seq_get_next(struct bpf_iter_seq_task_vma_info *info)
- {
--	struct pid_namespace *ns =3D info->common.ns;
- 	enum bpf_task_vma_iter_find_op op;
- 	struct vm_area_struct *curr_vma;
- 	struct task_struct *curr_task;
--	u32 curr_tid =3D info->tid;
-+	u32 saved_tid =3D info->tid;
-=20
- 	/* If this function returns a non-NULL vma, it holds a reference to
- 	 * the task_struct, and holds read lock on vma->mm->mmap_lock.
-@@ -371,14 +415,13 @@ task_vma_seq_get_next(struct bpf_iter_seq_task_vma_=
-info *info)
- 		}
- 	} else {
- again:
--		curr_task =3D task_seq_get_next(ns, &curr_tid, true);
-+		curr_task =3D task_seq_get_next(&info->common, &info->tid, true);
- 		if (!curr_task) {
--			info->tid =3D curr_tid + 1;
-+			info->tid++;
- 			goto finish;
- 		}
-=20
--		if (curr_tid !=3D info->tid) {
--			info->tid =3D curr_tid;
-+		if (saved_tid !=3D info->tid) {
- 			/* new task, process the first vma */
- 			op =3D task_vma_iter_first_vma;
- 		} else {
-@@ -430,9 +473,12 @@ task_vma_seq_get_next(struct bpf_iter_seq_task_vma_i=
-nfo *info)
- 	return curr_vma;
-=20
- next_task:
-+	if (info->common.type =3D=3D BPF_TASK_ITER_TID)
-+		goto finish;
-+
- 	put_task_struct(curr_task);
- 	info->task =3D NULL;
--	curr_tid++;
-+	info->tid++;
- 	goto again;
-=20
- finish:
-@@ -533,6 +579,7 @@ static const struct bpf_iter_seq_info task_seq_info =3D=
- {
-=20
  static struct bpf_iter_reg task_reg_info =3D {
  	.target			=3D "task",
-+	.attach_target		=3D bpf_iter_attach_task,
- 	.feature		=3D BPF_ITER_RESCHED,
- 	.ctx_arg_info_size	=3D 1,
- 	.ctx_arg_info		=3D {
-@@ -551,6 +598,7 @@ static const struct bpf_iter_seq_info task_file_seq_i=
-nfo =3D {
+ 	.attach_target		=3D bpf_iter_attach_task,
+@@ -587,6 +594,7 @@ static struct bpf_iter_reg task_reg_info =3D {
+ 		  PTR_TO_BTF_ID_OR_NULL },
+ 	},
+ 	.seq_info		=3D &task_seq_info,
++	.fill_link_info		=3D bpf_iter_fill_link_info,
+ };
 =20
- static struct bpf_iter_reg task_file_reg_info =3D {
- 	.target			=3D "task_file",
-+	.attach_target		=3D bpf_iter_attach_task,
- 	.feature		=3D BPF_ITER_RESCHED,
- 	.ctx_arg_info_size	=3D 2,
- 	.ctx_arg_info		=3D {
-@@ -571,6 +619,7 @@ static const struct bpf_iter_seq_info task_vma_seq_in=
-fo =3D {
+ static const struct bpf_iter_seq_info task_file_seq_info =3D {
+@@ -608,6 +616,7 @@ static struct bpf_iter_reg task_file_reg_info =3D {
+ 		  PTR_TO_BTF_ID_OR_NULL },
+ 	},
+ 	.seq_info		=3D &task_file_seq_info,
++	.fill_link_info		=3D bpf_iter_fill_link_info,
+ };
 =20
- static struct bpf_iter_reg task_vma_reg_info =3D {
- 	.target			=3D "task_vma",
-+	.attach_target		=3D bpf_iter_attach_task,
- 	.feature		=3D BPF_ITER_RESCHED,
- 	.ctx_arg_info_size	=3D 2,
- 	.ctx_arg_info		=3D {
+ static const struct bpf_iter_seq_info task_vma_seq_info =3D {
+@@ -629,6 +638,7 @@ static struct bpf_iter_reg task_vma_reg_info =3D {
+ 		  PTR_TO_BTF_ID_OR_NULL },
+ 	},
+ 	.seq_info		=3D &task_vma_seq_info,
++	.fill_link_info		=3D bpf_iter_fill_link_info,
+ };
+=20
+ BPF_CALL_5(bpf_find_vma, struct task_struct *, task, u64, start,
 diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
 f.h
-index ffcbf79a556b..ed5ba501609f 100644
+index ed5ba501609f..33e6325d8d87 100644
 --- a/tools/include/uapi/linux/bpf.h
 +++ b/tools/include/uapi/linux/bpf.h
-@@ -87,10 +87,33 @@ struct bpf_cgroup_storage_key {
- 	__u32	attach_type;		/* program attach type (enum bpf_attach_type) */
- };
-=20
-+enum bpf_task_iter_type {
-+	BPF_TASK_ITER_ALL =3D 0,
-+	BPF_TASK_ITER_TID,
-+};
-+
- union bpf_iter_link_info {
- 	struct {
- 		__u32	map_fd;
- 	} map;
-+	/*
-+	 * Parameters of task iterators.
-+	 */
-+	struct {
-+		__u32   pid_fd;
-+		/*
-+		 * The type of the iterator.
-+		 *
-+		 * It can be one of enum bpf_task_iter_type.
-+		 *
-+		 * BPF_TASK_ITER_ALL (default)
-+		 *	The iterator iterates over resources of everyprocess.
-+		 *
-+		 * BPF_TASK_ITER_TID
-+		 *	You should also set *pid_fd* to iterate over one task.
-+		 */
-+		__u8	type;	/* BPF_TASK_ITER_* */
-+	} task;
- };
-=20
- /* BPF syscall commands, see bpf(2) man-page for more details. */
+@@ -6158,6 +6158,10 @@ struct bpf_link_info {
+ 				struct {
+ 					__u32 map_id;
+ 				} map;
++				struct {
++					__u32 tid;
++					__u8 type; /* one of enum bpf_task_iter_type */
++				} task;
+ 			};
+ 		} iter;
+ 		struct  {
 --=20
 2.30.2
 
