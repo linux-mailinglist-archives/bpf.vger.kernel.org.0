@@ -2,284 +2,295 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5667B587398
-	for <lists+bpf@lfdr.de>; Mon,  1 Aug 2022 23:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB5F5873A4
+	for <lists+bpf@lfdr.de>; Mon,  1 Aug 2022 23:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234271AbiHAVvq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Aug 2022 17:51:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46040 "EHLO
+        id S234681AbiHAV7Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Aug 2022 17:59:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229914AbiHAVvp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Aug 2022 17:51:45 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E397039BA0;
-        Mon,  1 Aug 2022 14:51:43 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id m8so15392980edd.9;
-        Mon, 01 Aug 2022 14:51:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=VLuEcIkJtnKoMl8gBoUClGYBdOKVju+Fv4CrOEtOKBE=;
-        b=eQywm0SYRown4Vd/F5Sr8QZB48pltddGfTACwJqvJydCzDVTxghTZycjVyzWDiMkmx
-         tyyyQjbdCUDr7XtTQ8Ow/Tih7gktgV/xyfyLcPy3yJy4r2s7Hw+2X2ghPlZqM7nVHMLG
-         QCJX6wLvU8q8xx94nsmL3NoW5mKF0nqg+5QEysJ6T6a29nFkAFoXXobQSBocpv57pRcL
-         z4XvKnxw7JfBduEJtfa4MjDQ3/1NK5RV/ssYjkCtpAm2mGhzllxE7Kc1LCHKxObtsWr3
-         B0lzm8o+zw0y3SOBWcaSuVIiA8/z+5kCPMPgv6COUw0f4mbhhWge+Ay9Uh2mSj/gehvA
-         g+gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=VLuEcIkJtnKoMl8gBoUClGYBdOKVju+Fv4CrOEtOKBE=;
-        b=ICV92xa1efoaTRYgnd1C1x2J/yS0ye0Iu69cKne491bsw7uQkcc9UpltVjN1W75/Cr
-         nkkyTt48pL4611zpYYzSQgRJiSAvIZiLmLQANsfY0J29/zchHqCXWshhMLkoZnV86u63
-         XyKUMGI5ChWykYxnxtUgj2kLwqiekAbBc2L1fPaSgGC6EI2GHfLLUDN0NBMheE86vI+n
-         oNTWbCE4ax35CMugzanDNWnnE/afj2lqJFrMueT3AxBQ6r2b7lki2CU7dwsigE2ndovu
-         RPBX6h/DGadhU1/CVP8W9hnCs6F8POWN05eAlt71/lqv/08ZrKIXyMZUghqojSw72zks
-         c1sg==
-X-Gm-Message-State: ACgBeo2o9T6Rwi9niqGYkY9w9o/iWX2q+2bGQiIWU0jlhYPRmlAeq5Ox
-        xI4i7XSmTnE6/7bgeR2pqCW2evwjNIwPZJWt+PQ=
-X-Google-Smtp-Source: AA6agR7aLJ8wAO+BNHBsLmozA0N0weo6l4KeLAuItYUFusShEQ4dh2D1zYVKD/t563zJOWxIQTUHpiTlWB4jj8uhxY8=
-X-Received: by 2002:aa7:de18:0:b0:43d:30e2:d22b with SMTP id
- h24-20020aa7de18000000b0043d30e2d22bmr15551672edv.224.1659390702488; Mon, 01
- Aug 2022 14:51:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220801175407.2647869-1-haoluo@google.com> <20220801175407.2647869-6-haoluo@google.com>
-In-Reply-To: <20220801175407.2647869-6-haoluo@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 1 Aug 2022 14:51:31 -0700
-Message-ID: <CAEf4Bzbdz7=Cg-87G2tak1Mr=1wJkqr6g2d=dkHqu0YH+j2unA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 5/8] selftests/bpf: Test cgroup_iter.
-To:     Hao Luo <haoluo@google.com>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        cgroups@vger.kernel.org, netdev@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        with ESMTP id S230406AbiHAV7P (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Aug 2022 17:59:15 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 020761A83C
+        for <bpf@vger.kernel.org>; Mon,  1 Aug 2022 14:59:14 -0700 (PDT)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 271KCThp005737;
+        Mon, 1 Aug 2022 14:58:59 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=FDWWPhSajy1aZShVppIU7LUGV6OqsGK/AzEishn4i/U=;
+ b=dwYLKcsFFuHUoeJV43yyLpxMUzmf0gThs9yVtRNFReJf2uLKxhIjn9mC0KlcAgDtERTg
+ LITtM7anyZSb+kqYudLP1DLmyUNSwcVwsEZ45hQ5MTO85CoeNPpYdr6dXrtfKDyG4oG1
+ st1ceeNh8OlBlOH+Pa/uYjGBTMTp3vwdn6g= 
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hn2bn6nyk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Aug 2022 14:58:59 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Yj+aE5X4pbmMwIAXeWqc/Da1oyAs6aWbyFjJSu0ZOnxwxmd55Sp6z5ICXcTX3HjII8VeCZXEdYbQGnv5qcuC2jUf1Da+OhjPsVQE42XvRBuLaFXy1ccTko08RKUANbP0EIEn4rSo7Qq1y8xcqkwrhzR/cfrK+hTjQxjIsN6nXpTFVhnHDzBy5KfUCQtymkifMSJBVU1gFB7wK6iQeq0lU++yBDcL0Gsl1JSD59yEjz0PsHyJ6P21SCpwr+S1VNystAUMpFXn8m0QlOXLKg0vgM0dtH0x7cQPqJlf/KzjTC2MIeONJpTInnYW5dy/YRUT3kNqLaBcfHAQPKrAQLJiVg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FDWWPhSajy1aZShVppIU7LUGV6OqsGK/AzEishn4i/U=;
+ b=KCEWXDs1y74j3C32h0hIjSBnZ49WoL2dnbNSciwIdrBTeLVP5BTxKGPJFAEIpc5DPbvXATqZVqh9dXmmlxowhrpSnJCuQE8c/owMte5VfDDPCa52CaUbrw5/+hhEX7bFI8SlRwZGBbCt+3+dEbER35tJbZ0E0wzpuEYvmIwS419uFluK5jUQ1p0fZwRnMKRvyff6wjtdMm4D0Nh8Ty8Jx/krwU3/3y5HtIDDvLfUigubfoYkCsBkIvgGNvdWvu9Oq9en+deqNzx9FI3DmrBGpZQD+D3Lhn+mtFNV8mXSWi9CerKmMP9TcF2rqTA3VFfKtoZHzQfFa6NgXGHKWt+Gfg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from MW4PR15MB4490.namprd15.prod.outlook.com (2603:10b6:303:103::23)
+ by DM6PR15MB3831.namprd15.prod.outlook.com (2603:10b6:5:2b4::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5482.16; Mon, 1 Aug
+ 2022 21:58:57 +0000
+Received: from MW4PR15MB4490.namprd15.prod.outlook.com
+ ([fe80::5457:7e7d:bdd2:6eab]) by MW4PR15MB4490.namprd15.prod.outlook.com
+ ([fe80::5457:7e7d:bdd2:6eab%3]) with mapi id 15.20.5482.016; Mon, 1 Aug 2022
+ 21:58:57 +0000
+Message-ID: <93985c8f-1bcc-363e-ecf6-513b84d785ae@fb.com>
+Date:   Mon, 1 Aug 2022 14:58:55 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.11.0
+Subject: Re: [RFC PATCH bpf-next 06/11] bpf: Add bpf_rbtree_{lock,unlock}
+ helpers
+Content-Language: en-US
+To:     Dave Marchevsky <davemarchevsky@fb.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Michal Koutny <mkoutny@suse.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Yosry Ahmed <yosryahmed@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <kernel-team@fb.com>, Tejun Heo <tj@kernel.org>
+References: <20220722183438.3319790-1-davemarchevsky@fb.com>
+ <20220722183438.3319790-7-davemarchevsky@fb.com>
+From:   Alexei Starovoitov <ast@fb.com>
+In-Reply-To: <20220722183438.3319790-7-davemarchevsky@fb.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR03CA0012.namprd03.prod.outlook.com
+ (2603:10b6:a02:a8::25) To MW4PR15MB4490.namprd15.prod.outlook.com
+ (2603:10b6:303:103::23)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1541f96f-2b70-4787-7989-08da7409085c
+X-MS-TrafficTypeDiagnostic: DM6PR15MB3831:EE_
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hemk2RrQGE4gOvbKY7UZnCKCeAzCYKvLxULA0NKSoqp/fTRCfWG9n+taoPO3tYIxz5ngAd/3DNSPGXsYe6ZFDWUln/NPeVP+Ocl0bbzWVq3V1LxcetX3z3onIjntcfLc3x3OhEUnPpSgF93hw5ous4vLEZoJHzyYf2DjVZ218K95roGRBc+R593Rpcc2vRM+tnBT7yn89X9YFTn8cVmT3xb9FovhEfdPKam1roOu0gPsjKflNFkq+J3yLh59zdDuTzH1CU+IcvsWqcXOaLVjSgXXX64fEHCk6zBmqWJ6XVCdn8kJ1MlU1+ZCBqq+TAPU5FxuyPDfzX86W/vpNPQh/ktWHg0VxBKhOfuhs1amIwtByFxXAaRyl0Xq71JW027gmUAGFcVbftaZSYLIQk4+tvqBuLw0V/FJw74A6emPAegi4qU3xG0GVR3WgmJyPkoVTFcZV5nJtUZTTzuAe9pQwSL/sBE0kmagol+ZY4fH1MX7ku6P8lVydkXsG4yVuF7zTol9iGhwRLeOc/RV4O0yx1a/TnnpuMMqzy9NDbPEVT8J1C9DmGsWTr+ki4tW7XFLgGIj9LKqR5AW+04aTh4yfUrd21Y/bhpj6v5D9IXD0a2IuPKMZ6EGO5YutyIf7w3qA0ntDaMg1pEyH1rUuG98hM5mzBUTPI1TpnlbbxmdYKLQ6mXq0rinUIQZolWcEGEP1pPOCfA+E0K51EsOFCxvaZ/nvggyWWU+ck/TeyfUa+h42dUK1DAeMMVyYkYwBPqZGRy57Cyk+47LmRklMGBC2RdjUqo7yTtnAkjY2noflawK3RkB88pFPvrIg9+hxPsdT/hbKXTsPNpCJHEWnvwttg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4490.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(366004)(396003)(136003)(376002)(346002)(39860400002)(66946007)(6506007)(6512007)(4326008)(8676002)(66476007)(66556008)(2906002)(53546011)(52116002)(38100700002)(41300700001)(6486002)(83380400001)(31686004)(5660300002)(54906003)(478600001)(86362001)(8936002)(2616005)(316002)(186003)(31696002)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dmxXWUw5MUhoNXVtOUFSVU5qR2t2YTFRaHZkK25DOEx3YW1kYksrbmh3Qi9n?=
+ =?utf-8?B?VXZibzJFYktFK2lBVFV3M1NLY1Iybk9ULzhlME13aGtweWg1ZkFuNzI1MGpJ?=
+ =?utf-8?B?bFcra0xnM25EWUlrR2lOem5wTmp3aHZ3WGM3NXg5MGNqY0RHVHUwcUo0NHVn?=
+ =?utf-8?B?TEFFSENXWXFHRmpWZmk4Q3FtSmExQ1k2d0JDNTJWSUw5OTN4cmhNaDRFVmdB?=
+ =?utf-8?B?VmNBeDRDcVBkT0s3VlVoU0xIYURiK0RzMWp3ZjZJLzdTV3NtaXh4ckxzUjFM?=
+ =?utf-8?B?bjJYTEM5eEFteE9ndS8zQktSbERUNGpjcUQ4OHJIWURrV3BDSnFpd2dab1Ax?=
+ =?utf-8?B?RUJ0dnJQc0cvSjEzVXJtZ01SUy9KVEUybEZFWmlUdG9KVmZLMHJOS0ZYK0Rz?=
+ =?utf-8?B?QTMrckFEdUJVU2RUY3Z4VXpoM2hoSkxlZlJ0RXZQVzh6WU9EZndqMDVKWGp1?=
+ =?utf-8?B?c3FLUmtTTUs2ZGx0eTF5WjJ5Q05UTC9mRWVGdkZDNFRTamt2d0Vzbk5LVUwr?=
+ =?utf-8?B?czZONkhjNUR1VVhmajFJbDJJN1E4ZWd1cjJXQW94YXRqYU8vdVpSTnA4QnEx?=
+ =?utf-8?B?d1F1RkVnL0p1SkgrWTIvLzBoUW5LNGlIc21wMzVFMmphS1dKd3ZUQkxpQzY1?=
+ =?utf-8?B?Mk1NNkd1Y0xJTFBnelZaMnFwSHFzMDMvOG5zaDJtWk1ibFRzSUxPeUFVVFRt?=
+ =?utf-8?B?NDMzNnpVa0lCVjhXM2kyMVFLWnNWM2JsRHVCRE1VNklMN0NZVXZDa0Zib2p3?=
+ =?utf-8?B?T2lkRVdEVmo4eWFaWnZ5cGhxUXVWVEgvQnZGcnVDZWk0YnJJVVlHc00xUlYx?=
+ =?utf-8?B?WEFUalpsZEpoZVRyaFpJS09JZWhPVkhHUVVUUzEwb3JiSlg4ZUJQVUhmY2tV?=
+ =?utf-8?B?ekk1SDNyQXdWSWZMZTJiNzRzNkJQS1BOV3p6VEFKdEhVOFJLajBORERySVRY?=
+ =?utf-8?B?bk1UeGx6MXoxU0hCWEdhQnF0MnNkNTloWlBSaWh6Z0hDNDhYaEpmb1lCaENs?=
+ =?utf-8?B?d2lwQWJ3eW1hTEZIbVNPbHlTTlVHcVN5NlhWZTJDTUVQeVZnd1lsTUExNnph?=
+ =?utf-8?B?aHFCTGpHWkRZVkF1MVlRdnY1cWpWZ2c2NzdNOWhCTWJ3WW10RWlnWXBITmpG?=
+ =?utf-8?B?ellFVDVuVkFieG04Ny9ZSDExWXoyMzNGYXZhcDZyR0dnMUViSWk1S3VKZmZj?=
+ =?utf-8?B?VHB1NlRvc1R1emFQSFVaelgrclRnSng5aS9pZG5heUNicnlKZCtOZ1daZm9Y?=
+ =?utf-8?B?UUtEM1hDa2RKT0J1amJqM0F6T0F1ZU9SVG9heDMrRXNVYkk3akhWdURGbXhY?=
+ =?utf-8?B?d1VMa3pFZHZ5VVp2WFI4UmVGdzJ6T05IRzh5cTZ5TUtKZEQyK09jckpwek1k?=
+ =?utf-8?B?MCtLTjZxRzNaVUxVT05mRGMzbG1NcytZdEJPSzg1Zy9vMlEwYnJOdmcyT2lJ?=
+ =?utf-8?B?ckpWRmdUdGdwZGJTdyt2Vld0SGsvbWp1UlZBL1M0bmswTjN4Q3B4ZHgvbFNC?=
+ =?utf-8?B?NHNoc29KRDJjQ0RhbExYUHNzV0xjU0RZeUIxWXFTSm5NYXJDTEZocFBQQWM2?=
+ =?utf-8?B?dC83WGxaRTRKdnA1QVB5ZGJmdlcvblNsdm93MUViU252TUhWNjFDdEwxMVI5?=
+ =?utf-8?B?dElkMytXS2lzaHJSYVFLQ2JtbkVqTEJXQUxGekwvU011SUd1SlZzbUdSRS9m?=
+ =?utf-8?B?WXNMTSt6ditNOU1yQ0hrdHZrckh6OHJEdnRaL2Y5elBtcWdRenhOZ1orQzlF?=
+ =?utf-8?B?SXdyelhTMG5qc05FaDVkR3g1U2xWQUZqYlhMSnE1T2I4dTV4MG0wSncxcXUr?=
+ =?utf-8?B?SzRqcGM4MERaSzBvZEZWaVBBeFZIMEdzRnRONzRLN2J1SzZwWHBEQ1pxckRK?=
+ =?utf-8?B?eTk4YUxlQ1Bkc25uRmZHeGFBaTM1MENNMXczWThvd01ock05dWJNb0tQaEdF?=
+ =?utf-8?B?T2p4VmhHYmxYVlRWOHJsT0J5KzNHMWRWS3lFU0cxUWwwdkh1ejlSL1dsdjY4?=
+ =?utf-8?B?OCsvblpVVjF1VHhjd25IdEJQSFkvQ1p2d2hRR0FEd3l0U2xkbWRwZGFWcHNy?=
+ =?utf-8?B?R0VwWGFteDVDUHJBVE9PdmRFR3psVW1UY1p0NWV0bisvNG5ZYWlMOUFzWG01?=
+ =?utf-8?B?TS9RdWw5OTdRclJCcWVZQzR0YzVBYWJsdXVtUWZsM25KZkwyYWtnbW9qam16?=
+ =?utf-8?B?Q2c9PQ==?=
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1541f96f-2b70-4787-7989-08da7409085c
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4490.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Aug 2022 21:58:57.1870
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mN8U5TBkk6d3+F+rz8WBEz0fma7LzJEsuq6IfNzmcHF+25vnRA7CYtZih0kqJiaM
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB3831
+X-Proofpoint-GUID: cbnRbUIMF7gvYt1FvJMOfVHbQlz4R-EN
+X-Proofpoint-ORIG-GUID: cbnRbUIMF7gvYt1FvJMOfVHbQlz4R-EN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-08-01_11,2022-08-01_01,2022-06-22_01
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 1, 2022 at 10:54 AM Hao Luo <haoluo@google.com> wrote:
->
-> Add a selftest for cgroup_iter. The selftest creates a mini cgroup tree
-> of the following structure:
->
->     ROOT (working cgroup)
->      |
->    PARENT
->   /      \
-> CHILD1  CHILD2
->
-> and tests the following scenarios:
->
->  - invalid cgroup fd.
->  - pre-order walk over descendants from PARENT.
->  - post-order walk over descendants from PARENT.
->  - walk of ancestors from PARENT.
->  - early termination.
->
-> Acked-by: Yonghong Song <yhs@fb.com>
-> Signed-off-by: Hao Luo <haoluo@google.com>
+On 7/22/22 11:34 AM, Dave Marchevsky wrote:
+> These helpers are equivalent to bpf_spin_{lock,unlock}, but the verifier
+> doesn't try to enforce that no helper calls occur when there's an active
+> spin lock.
+> 
+> [ TODO: Currently the verifier doesn't do _anything_ spinlock related
+> when it sees one of these, including setting active_spin_lock. This is
+> probably too lenient. Also, EXPORT_SYMBOL for internal lock helpers
+> might not be the best code structure. ]
+> 
+> Future patches will add enforcement of "rbtree helpers must always be
+> called when lock is held" constraint.
+> 
+> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
 > ---
->  .../selftests/bpf/prog_tests/cgroup_iter.c    | 193 ++++++++++++++++++
->  tools/testing/selftests/bpf/progs/bpf_iter.h  |   7 +
->  .../testing/selftests/bpf/progs/cgroup_iter.c |  39 ++++
->  3 files changed, 239 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_iter.c
->  create mode 100644 tools/testing/selftests/bpf/progs/cgroup_iter.c
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_iter.c b/tools/testing/selftests/bpf/prog_tests/cgroup_iter.c
-> new file mode 100644
-> index 000000000000..5dc843a3f507
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/cgroup_iter.c
-> @@ -0,0 +1,193 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2022 Google */
-> +
-> +#include <test_progs.h>
-> +#include <bpf/libbpf.h>
-> +#include <bpf/btf.h>
-> +#include "cgroup_iter.skel.h"
-> +#include "cgroup_helpers.h"
-> +
-> +#define ROOT           0
-> +#define PARENT         1
-> +#define CHILD1         2
-> +#define CHILD2         3
-> +#define NUM_CGROUPS    4
-> +
-> +#define PROLOGUE       "prologue\n"
-> +#define EPILOGUE       "epilogue\n"
-> +
-> +#define format_expected_output1(cg_id1) \
-> +       snprintf(expected_output, sizeof(expected_output), \
-> +                PROLOGUE "%8llu\n" EPILOGUE, (cg_id1))
-> +
-> +#define format_expected_output2(cg_id1, cg_id2) \
-> +       snprintf(expected_output, sizeof(expected_output), \
-> +                PROLOGUE "%8llu\n%8llu\n" EPILOGUE, \
-> +                (cg_id1), (cg_id2))
-> +
-> +#define format_expected_output3(cg_id1, cg_id2, cg_id3) \
-> +       snprintf(expected_output, sizeof(expected_output), \
-> +                PROLOGUE "%8llu\n%8llu\n%8llu\n" EPILOGUE, \
-> +                (cg_id1), (cg_id2), (cg_id3))
-> +
+>   include/uapi/linux/bpf.h       | 20 ++++++++++++++++++++
+>   kernel/bpf/helpers.c           | 12 ++++++++++--
+>   kernel/bpf/rbtree.c            | 29 +++++++++++++++++++++++++++++
+>   kernel/bpf/verifier.c          |  2 ++
+>   tools/include/uapi/linux/bpf.h | 20 ++++++++++++++++++++
+>   5 files changed, 81 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index c677d92de3bc..d21e2c99ea14 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -5391,6 +5391,24 @@ union bpf_attr {
+>    *
+>    *	Return
+>    *		Ptr to lock
+> + *
+> + * void *bpf_rbtree_lock(struct bpf_spin_lock *lock)
+> + *	Description
+> + *		Like bpf_spin_lock helper, but use separate helper for now
+> + *		as we don't want this helper to have special meaning to the verifier
+> + *		so that we can do rbtree helper calls between rbtree_lock/unlock
+> + *
+> + *	Return
+> + *		0
+> + *
+> + * void *bpf_rbtree_unlock(struct bpf_spin_lock *lock)
+> + *	Description
+> + *		Like bpf_spin_unlock helper, but use separate helper for now
+> + *		as we don't want this helper to have special meaning to the verifier
+> + *		so that we can do rbtree helper calls between rbtree_lock/unlock
+> + *
+> + *	Return
+> + *		0
+>    */
+>   #define __BPF_FUNC_MAPPER(FN)		\
+>   	FN(unspec),			\
+> @@ -5607,6 +5625,8 @@ union bpf_attr {
+>   	FN(rbtree_remove),		\
+>   	FN(rbtree_free_node),		\
+>   	FN(rbtree_get_lock),		\
+> +	FN(rbtree_lock),		\
+> +	FN(rbtree_unlock),		\
+>   	/* */
+>   
+>   /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 257a808bb767..fa2dba1dcec8 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -303,7 +303,7 @@ static inline void __bpf_spin_unlock(struct bpf_spin_lock *lock)
+>   
+>   static DEFINE_PER_CPU(unsigned long, irqsave_flags);
+>   
+> -static inline void __bpf_spin_lock_irqsave(struct bpf_spin_lock *lock)
+> +inline void __bpf_spin_lock_irqsave(struct bpf_spin_lock *lock)
+>   {
+>   	unsigned long flags;
+>   
+> @@ -311,6 +311,7 @@ static inline void __bpf_spin_lock_irqsave(struct bpf_spin_lock *lock)
+>   	__bpf_spin_lock(lock);
+>   	__this_cpu_write(irqsave_flags, flags);
+>   }
+> +EXPORT_SYMBOL(__bpf_spin_lock_irqsave);
 
-you use format_expected_output{1,2} just once and
-format_expected_output3 twice. Is it worth defining macros for that?
+what is it for?
+It's not used out of modules.
 
-> +const char *cg_path[] = {
-> +       "/", "/parent", "/parent/child1", "/parent/child2"
-> +};
+>   
+>   notrace BPF_CALL_1(bpf_spin_lock, struct bpf_spin_lock *, lock)
+>   {
+> @@ -325,7 +326,7 @@ const struct bpf_func_proto bpf_spin_lock_proto = {
+>   	.arg1_type	= ARG_PTR_TO_SPIN_LOCK,
+>   };
+>   
+> -static inline void __bpf_spin_unlock_irqrestore(struct bpf_spin_lock *lock)
+> +inline void __bpf_spin_unlock_irqrestore(struct bpf_spin_lock *lock)
+>   {
+>   	unsigned long flags;
+>   
+> @@ -333,6 +334,7 @@ static inline void __bpf_spin_unlock_irqrestore(struct bpf_spin_lock *lock)
+>   	__bpf_spin_unlock(lock);
+>   	local_irq_restore(flags);
+>   }
+> +EXPORT_SYMBOL(__bpf_spin_unlock_irqrestore);
+>   
+>   notrace BPF_CALL_1(bpf_spin_unlock, struct bpf_spin_lock *, lock)
+>   {
+> @@ -1588,6 +1590,8 @@ const struct bpf_func_proto bpf_rbtree_find_proto __weak;
+>   const struct bpf_func_proto bpf_rbtree_remove_proto __weak;
+>   const struct bpf_func_proto bpf_rbtree_free_node_proto __weak;
+>   const struct bpf_func_proto bpf_rbtree_get_lock_proto __weak;
+> +const struct bpf_func_proto bpf_rbtree_lock_proto __weak;
+> +const struct bpf_func_proto bpf_rbtree_unlock_proto __weak;
+>   
+>   const struct bpf_func_proto *
+>   bpf_base_func_proto(enum bpf_func_id func_id)
+> @@ -1689,6 +1693,10 @@ bpf_base_func_proto(enum bpf_func_id func_id)
+>   		return &bpf_rbtree_free_node_proto;
+>   	case BPF_FUNC_rbtree_get_lock:
+>   		return &bpf_rbtree_get_lock_proto;
+> +	case BPF_FUNC_rbtree_lock:
+> +		return &bpf_rbtree_lock_proto;
+> +	case BPF_FUNC_rbtree_unlock:
+> +		return &bpf_rbtree_unlock_proto;
+>   	default:
+>   		break;
+>   	}
+> diff --git a/kernel/bpf/rbtree.c b/kernel/bpf/rbtree.c
+> index c6f0a2a083f6..bf2e30af82ec 100644
+> --- a/kernel/bpf/rbtree.c
+> +++ b/kernel/bpf/rbtree.c
+> @@ -262,6 +262,35 @@ const struct bpf_func_proto bpf_rbtree_get_lock_proto = {
+>   	.arg1_type = ARG_CONST_MAP_PTR,
+>   };
+>   
+> +extern void __bpf_spin_unlock_irqrestore(struct bpf_spin_lock *lock);
+> +extern void __bpf_spin_lock_irqsave(struct bpf_spin_lock *lock);
 > +
-> +static int cg_fd[] = {-1, -1, -1, -1};
-> +static unsigned long long cg_id[] = {0, 0, 0, 0};
-> +static char expected_output[64];
-> +
-> +int setup_cgroups(void)
+> +BPF_CALL_1(bpf_rbtree_lock, void *, lock)
 > +{
-> +       int fd, i = 0;
-> +
-> +       for (i = 0; i < NUM_CGROUPS; i++) {
-> +               fd = create_and_get_cgroup(cg_path[i]);
-> +               if (fd < 0)
-> +                       return fd;
-> +
-> +               cg_fd[i] = fd;
-> +               cg_id[i] = get_cgroup_id(cg_path[i]);
-> +       }
-> +       return 0;
+> +	__bpf_spin_lock_irqsave((struct bpf_spin_lock *)lock);
+> +	return 0;
 > +}
-> +
-> +void cleanup_cgroups(void)
 
-some more statics to cover (same for setup_cgroups)
+it doesn't have to be bpf_spin_lock.
+Normal spin_lock will do.
+bpf_spin_lock has specific size requirement, so when it's used inside
+map value the value size doesn't change from kernel to kernel.
+Since this lock is hidden it can be any lock.
 
-> +{
-> +       int i;
-> +
-> +       for (i = 0; i < NUM_CGROUPS; i++)
-> +               close(cg_fd[i]);
-> +}
-> +
-> +static void read_from_cgroup_iter(struct bpf_program *prog, int cgroup_fd,
-> +                                 int order, const char *testname)
-> +{
-> +       DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-> +       union bpf_iter_link_info linfo;
-> +       struct bpf_link *link;
-> +       int len, iter_fd;
-> +       static char buf[64];
-> +
-> +       memset(&linfo, 0, sizeof(linfo));
-> +       linfo.cgroup.cgroup_fd = cgroup_fd;
-> +       linfo.cgroup.traversal_order = order;
-> +       opts.link_info = &linfo;
-> +       opts.link_info_len = sizeof(linfo);
-> +
-> +       link = bpf_program__attach_iter(prog, &opts);
-> +       if (!ASSERT_OK_PTR(link, "attach_iter"))
-> +               return;
-> +
-> +       iter_fd = bpf_iter_create(bpf_link__fd(link));
-> +       if (iter_fd < 0)
-> +               goto free_link;
-> +
-> +       memset(buf, 0, sizeof(buf));
-> +       while ((len = read(iter_fd, buf, sizeof(buf))) > 0)
-> +               ;
+Also it needs to remember current task or something.
+Just spin_is_locked() from bpf_rbtree_add() is not enough.
+Instead of remembering current we can pass hidden 'prog' pointer
+and remember that in bpf_rbtree_lock.
+Also pass that hidden prog ptr to add/remove/find and compare.
+But probably overkill. Current task should be fine.
 
-this is broken, in general, you are overriding buffer content with
-each call to len
-
-I think you intended to advance buf after each read() call (and reduce
-remaining available buf size)?
-
-> +
-> +       ASSERT_STREQ(buf, expected_output, testname);
-> +
-> +       /* read() after iter finishes should be ok. */
-> +       if (len == 0)
-> +               ASSERT_OK(read(iter_fd, buf, sizeof(buf)), "second_read");
-> +
-> +       close(iter_fd);
-> +free_link:
-> +       bpf_link__destroy(link);
-> +}
-> +
-> +/* Invalid cgroup. */
-> +static void test_invalid_cgroup(struct cgroup_iter *skel)
-> +{
-> +       DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-> +       union bpf_iter_link_info linfo;
-> +       struct bpf_link *link;
-> +
-> +       memset(&linfo, 0, sizeof(linfo));
-> +       linfo.cgroup.cgroup_fd = (__u32)-1;
-> +       opts.link_info = &linfo;
-> +       opts.link_info_len = sizeof(linfo);
-> +
-> +       link = bpf_program__attach_iter(skel->progs.cgroup_id_printer, &opts);
-> +       if (!ASSERT_ERR_PTR(link, "attach_iter"))
-> +               bpf_link__destroy(link);
-
-nit: you can call bpf_link__destroy() even if link is NULL or IS_ERR
-
-> +}
-> +
-
-[...]
-
-> diff --git a/tools/testing/selftests/bpf/progs/cgroup_iter.c b/tools/testing/selftests/bpf/progs/cgroup_iter.c
-> new file mode 100644
-> index 000000000000..2a34d146d6df
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/cgroup_iter.c
-> @@ -0,0 +1,39 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2022 Google */
-> +
-> +#include "bpf_iter.h"
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +
-> +char _license[] SEC("license") = "GPL";
-> +volatile int terminate_early = 0;
-> +volatile u64 terminal_cgroup = 0;
-> +
-
-nit: you shouldn't need volatile for non-const global variables. Did
-you see any problems without volatile?
-
-> +static inline u64 cgroup_id(struct cgroup *cgrp)
-> +{
-> +       return cgrp->kn->id;
-> +}
-> +
-
-[...]
