@@ -2,68 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAB86587142
-	for <lists+bpf@lfdr.de>; Mon,  1 Aug 2022 21:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45A3B58717D
+	for <lists+bpf@lfdr.de>; Mon,  1 Aug 2022 21:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234930AbiHATOo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Aug 2022 15:14:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38022 "EHLO
+        id S233927AbiHATeG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Aug 2022 15:34:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234945AbiHATOR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Aug 2022 15:14:17 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A94E3DBCB;
-        Mon,  1 Aug 2022 12:13:22 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id c185so14122679oia.7;
-        Mon, 01 Aug 2022 12:13:22 -0700 (PDT)
+        with ESMTP id S233855AbiHATeC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Aug 2022 15:34:02 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02FB32AC79
+        for <bpf@vger.kernel.org>; Mon,  1 Aug 2022 12:34:01 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id h22so8863022qta.3
+        for <bpf@vger.kernel.org>; Mon, 01 Aug 2022 12:34:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=WQ+3RHhtoAPbSDWuqYfpFY25Zd84CR4169xpCTu3CFI=;
-        b=JpKnfFrox2guX+mZtcrOG+JNAsl3/H4FOB7Ud27UiLHtY2p9v3QWexiWy2bsivMhsh
-         3+u7LUqrNoBzFMhX0etZOv+N47nlJe+DPDXmPNFKycUVy+8V88tTeie7k0Z56yiwmVpB
-         ddCy3XO5GjalGgodYhjXu6JoevA0F4vE8OPXZVFVzsiNNjmuL8tCdig2RTdSRIgM9JxL
-         JDFAm9hqkmTyNEm81OseefsqfuutiMY4ToGOAvq7T8d0Iiow1HcQlxrM/ciI/lKxxz4b
-         T5Md6yC9GE8WTTg+uUlI/Ir+vCkBn8dZZvkT1gvTlTvu8low8SoTENYOTjdfPXP5O2qA
-         ZZtw==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=k9kOVzob3NkeSsnaWNYRlnwRAQpxcWIHoMoj93hHF6g=;
+        b=MaZugcFotMO5xNClYU99Yb7dwf16gGy87qiVPQ/Is55xfrQVF75sejbgYsMhT7ZwgP
+         PRJfK4A6EaiifzqB+VnEqop+ow2P18KQQCbeJtfTJbvTfGiG1XmzoWmqysYLpD3Jp6TD
+         2GiZJcWGOfPDQ1Yy58Dn7MMp6Y95/kWWSVMW+dUK3pYc9iJcZZtJdLHZ8YT+3rGKYPgB
+         MXow8jXD+3Mg86mrgyJ0KaIymIeBxvMscWIY+9MY9MjeuuACXPAUNgpFUDG1i3A5Vhoa
+         i7JbqNH91OF8n9N1mlwor8bUhLP3BylrOlEgOMcdHyNLjZsMpkpMaDfStTc+/VXuWuSQ
+         TkPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=WQ+3RHhtoAPbSDWuqYfpFY25Zd84CR4169xpCTu3CFI=;
-        b=kYIGz/9z+nbTxZvxMrm+BIGGgOdSzmfWM4eSQpXqlix6qVlf4VbhaD3QAwP41OcZST
-         NNWwUqE2YKa97zVqe5gFqiWG9HFjGFWiBhf1gr6wKxAKeoshcpWrrLAAep/qPyGl3edC
-         SEhCa+M0AYlSuIgQo1BiknaVDXTowIPNABRCIPKFxOrx/WpB8T//NC6Maqa4wsbWjjWj
-         LgyqgIJTVDleST9MJ2VcrQs5LcHbBIYeeqjK9XnTPOeJ3CY5oGlP98HxihJkhdNmMarR
-         +A9Z4fSxdOhE/IP2upP0wCBpwsG+0ookL7X3DhGVnJPFWYZ2Mf5AYFFBo54VIokoWOfj
-         FmuA==
-X-Gm-Message-State: ACgBeo03RpH7nX0jQEGnDFCDohV2QufZOgPps4OxFu/MSrEYvtn1ZMXp
-        C4hwX2q3rcU6vFKhSQ9uMCLWFt0ZST6l03eJo4fWesWxMej/9g==
-X-Google-Smtp-Source: AA6agR5JDuJanQECI2+FJtSaSQ6tdeaaO8Vkg5jGqJhPhU+N/26gYHfbwuRI+CMscZ3VNf1PGxaAn8TP6nkVX2gTZXc=
-X-Received: by 2002:a05:6808:bd5:b0:33f:dd8:c545 with SMTP id
- o21-20020a0568080bd500b0033f0dd8c545mr3414306oik.252.1659381201405; Mon, 01
- Aug 2022 12:13:21 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=k9kOVzob3NkeSsnaWNYRlnwRAQpxcWIHoMoj93hHF6g=;
+        b=SsU9TINt2pqRI+gQDqedrukZKbrpTLwOe+gOVlZHfPeBUqRjBmhNIbUfZ5Ds8q+g0U
+         Sdfy+YIAjLstXgHgWm2n2MsEFiUc2dEC59qHIwGdRqu2tfhOauE/k5pUVEz6JTANxDQX
+         OwsBV8pddsXo5/jsBMdPka7ePYONDJrcz3AGSvd6A3Kb1tTirSR5QKDMm5AFhSRuws8q
+         DHw7kfAe1rO+8tX+mpCrK0VnLH3xLdFGIKt/VxWrWww9E8Kpxs0bW8RXuYt7SNEW7U2d
+         mI2x3Mz28ynF4Fw2pA2yY7QKqUC3QmuTv5JiOAtIaFSHdAivfIZl2MNjJByUi7a8K//p
+         BNQg==
+X-Gm-Message-State: AJIora8BHk5tuB5Pceo4T5YfROxz38Uc6X/ilmwihwGbxgMfQKpXo3ru
+        d86R/wFPAbM006ajwN9QN0uVqJSum/SfCVNfTInchQ==
+X-Google-Smtp-Source: AGRyM1uf7Hs3kEgfTppCGTzwKDydoAkk6DCYGC58k3fQZJuhPqiP/xETRNanurjDCKNawUuwrpSQRLZrZ0F+FcV7TFM=
+X-Received: by 2002:a05:622a:4e:b0:31e:f84c:bf17 with SMTP id
+ y14-20020a05622a004e00b0031ef84cbf17mr15506559qtw.566.1659382439765; Mon, 01
+ Aug 2022 12:33:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220622231624.t63bkmkzphqvh3kx@alap3.anarazel.de> <20220801013834.156015-1-andres@anarazel.de>
-In-Reply-To: <20220801013834.156015-1-andres@anarazel.de>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Mon, 1 Aug 2022 21:12:45 +0200
-Message-ID: <CA+icZUWasopVhZ449k1F8zG-C0kRbrt4tH+N7JqJO7CotA24Hw@mail.gmail.com>
-Subject: Re: [PATCH v3 0/8] tools: fix compilation failure caused by
- init_disassemble_info API changes
-To:     Andres Freund <andres@anarazel.de>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Ben Hutchings <benh@debian.org>
+References: <20220801173926.2441748-1-sdf@google.com> <20220801173926.2441748-2-sdf@google.com>
+In-Reply-To: <20220801173926.2441748-2-sdf@google.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Mon, 1 Aug 2022 12:33:49 -0700
+Message-ID: <CA+khW7hWwXc3vXJaXSUzhWEwBAsH0JdxK6SC-H4DOXw+PxuUgA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: Excercise
+ bpf_obj_get_info_by_fd for bpf2bpf
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        jolsa@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,165 +69,152 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 1, 2022 at 3:38 AM Andres Freund <andres@anarazel.de> wrote:
+On Mon, Aug 1, 2022 at 10:39 AM Stanislav Fomichev <sdf@google.com> wrote:
 >
-> binutils changed the signature of init_disassemble_info(), which now causes
-> compilation failures for tools/{perf,bpf} on e.g. debian unstable. Relevant
-> binutils commit:
-> https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=60a3da00bd5407f07
+> Apparently, no existing selftest covers it. Add a new one where
+> we load cgroup/bind4 program and attach fentry to it.
+> Calling bpf_obj_get_info_by_fd on the fentry program
+> should return non-zero btf_id/btf_obj_id instead of crashing the kernel.
 >
-> I first fixed this without introducing the compat header, as suggested by
-> Quentin, but I thought the amount of repeated boilerplate was a bit too
-> much. So instead I introduced a compat header to wrap the API changes. Even
-> tools/bpf/bpftool/jit_disasm.c, which needs its own callbacks for json, imo
-> looks nicer this way.
+> v2:
+> - use ret instead of err in find_prog_btf_id (Hao)
+> - remove verifier log (Hao)
+> - drop if conditional from ASSERT_OK(bpf_obj_get_info_by_fd(...)) (Hao)
 >
-> I'm not regular contributor, so it very well might be my procedures are a
-> bit off...
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+
+I see Martin has comments based on v1, but v2 looks good to me.
+
+Acked-by: Hao Luo <haoluo@google.com>
+
+> ---
+>  .../selftests/bpf/prog_tests/attach_to_bpf.c  | 97 +++++++++++++++++++
+>  .../selftests/bpf/progs/attach_to_bpf.c       | 12 +++
+>  2 files changed, 109 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/attach_to_bpf.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/attach_to_bpf.c
 >
-> I am not sure I added the right [number of] people to CC?
->
-> WRT the feature test: Not sure what the point of the -DPACKAGE='"perf"' is,
-> nor why tools/perf/Makefile.config sets some LDFLAGS/CFLAGS that are also
-> in feature/Makefile and why -ldl isn't needed in the other places. But...
->
-> V2:
-> - split patches further, so that tools/bpf and tools/perf part are entirely
->   separate
-> - included a bit more information about tests I did in commit messages
-> - add a maybe_unused to fprintf_json_styled's style argument
->
-> V3:
-> - don't include dis-asm-compat.h when building without libbfd
->   (Ben Hutchings)
-> - don't include compiler.h in dis-asm-compat.h, use (void) casts instead,
->   to avoid compiler.h include due to potential licensing conflict
-> - dual-license dis-asm-compat.h, for better compatibility with the rest of
->   bpftool's code (suggested by Quentin Monnet)
-> - don't display feature-disassembler-init-styled test
->   (suggested by Jiri Olsa)
-> - don't display feature-disassembler-four-args test, I split this for the
->   different subsystems, but maybe that's overkill? (suggested by Jiri Olsa)
->
-
-Hi Andres,
-
-Just made a quick test & run with some custom patchset and LLVM-15 RC1:
-
-[ REPRODUCER ]
-
-LLVM_MVER="15"
-
-##LLVM_TOOLCHAIN_PATH="/usr/lib/llvm-${LLVM_MVER}/bin"
-LLVM_TOOLCHAIN_PATH="/opt/llvm/bin"
-if [ -d ${LLVM_TOOLCHAIN_PATH} ]; then
-   export PATH="${LLVM_TOOLCHAIN_PATH}:${PATH}"
-fi
-
-PYTHON_VER="3.10"
-MAKE="make"
-MAKE_OPTS="V=1 -j1 HOSTCC=clang-$LLVM_MVER HOSTLD=ld.lld
-HOSTAR=llvm-ar CC=clang-$LLVM_MVER LD=ld.lld AR=llvm-ar
-STRIP=llvm-strip"
-
-echo "LLVM MVER ........ $LLVM_MVER"
-echo "Path settings .... $PATH"
-echo "Python version ... $PYTHON_VER"
-echo "make line ........ $MAKE $MAKE_OPTS"
-
-LANG=C LC_ALL=C make -C tools/perf clean 2>&1 | tee ../make-log_perf-clean.txt
-
-LANG=C LC_ALL=C $MAKE $MAKE_OPTS -C tools/perf
-PYTHON=python${PYTHON_VER} install-bin 2>&1 | tee
-../make-log_perf-install_bin_python${PYTHON_VER}_llvm${LLVM_MVER}.txt
-
-Looks good.
-
-$ ~/bin/perf -vv
-perf version 5.19.0
-                dwarf: [ on  ]  # HAVE_DWARF_SUPPORT
-   dwarf_getlocations: [ on  ]  # HAVE_DWARF_GETLOCATIONS_SUPPORT
-                glibc: [ on  ]  # HAVE_GLIBC_SUPPORT
-        syscall_table: [ on  ]  # HAVE_SYSCALL_TABLE_SUPPORT
-               libbfd: [ on  ]  # HAVE_LIBBFD_SUPPORT
-           debuginfod: [ OFF ]  # HAVE_DEBUGINFOD_SUPPORT
-               libelf: [ on  ]  # HAVE_LIBELF_SUPPORT
-              libnuma: [ on  ]  # HAVE_LIBNUMA_SUPPORT
-numa_num_possible_cpus: [ on  ]  # HAVE_LIBNUMA_SUPPORT
-              libperl: [ on  ]  # HAVE_LIBPERL_SUPPORT
-            libpython: [ on  ]  # HAVE_LIBPYTHON_SUPPORT
-             libslang: [ on  ]  # HAVE_SLANG_SUPPORT
-            libcrypto: [ on  ]  # HAVE_LIBCRYPTO_SUPPORT
-            libunwind: [ on  ]  # HAVE_LIBUNWIND_SUPPORT
-   libdw-dwarf-unwind: [ on  ]  # HAVE_DWARF_SUPPORT
-                 zlib: [ on  ]  # HAVE_ZLIB_SUPPORT
-                 lzma: [ on  ]  # HAVE_LZMA_SUPPORT
-            get_cpuid: [ on  ]  # HAVE_AUXTRACE_SUPPORT
-                  bpf: [ on  ]  # HAVE_LIBBPF_SUPPORT
-                  aio: [ on  ]  # HAVE_AIO_SUPPORT
-                 zstd: [ on  ]  # HAVE_ZSTD_SUPPORT
-              libpfm4: [ OFF ]  # HAVE_LIBPFM
-
-[ Test on Intel Sandybridge CPU ]
-
-$ echo 0 | sudo tee /proc/sys/kernel/kptr_restrict
-/proc/sys/kernel/perf_event_paranoid
-0
-
-$ ~/bin/perf test 10 93 94 95
-10: PMU events                                                      :
-10.1: PMU event table sanity                                        : Ok
-10.2: PMU event map aliases                                         : Ok
-10.3: Parsing of PMU event table metrics                            : Ok
-10.4: Parsing of PMU event table metrics with fake PMUs             : Ok
-93: perf all metricgroups test                                      : Ok
-94: perf all metrics test                                           : Ok
-95: perf all PMU test                                               : Ok
-
-Feel free to add my:
-
-Tested-by: Sedat Dilek <sedat.dilek@gmail.com> # LLVM v15.0.0-rc1 (x86-64)
-
-Regards,
--Sedat-
-
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Sedat Dilek <sedat.dilek@gmail.com>
-> Cc: Quentin Monnet <quentin@isovalent.com>
-> CC: Ben Hutchings <benh@debian.org>
-> Cc: bpf@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Link: https://lore.kernel.org/lkml/20220622181918.ykrs5rsnmx3og4sv@alap3.anarazel.de
-> Link: https://lore.kernel.org/lkml/CA+icZUVpr8ZeOKCj4zMMqbFT013KJz2T1csvXg+VSkdvJH1Ubw@mail.gmail.com
->
-> Andres Freund (8):
->   tools build: Add feature test for init_disassemble_info API changes
->   tools build: Don't display disassembler-four-args feature test
->   tools include: add dis-asm-compat.h to handle version differences
->   tools perf: Fix compilation error with new binutils
->   tools bpf_jit_disasm: Fix compilation error with new binutils
->   tools bpf_jit_disasm: Don't display disassembler-four-args feature
->     test
->   tools bpftool: Fix compilation error with new binutils
->   tools bpftool: Don't display disassembler-four-args feature test
->
->  tools/bpf/Makefile                            |  7 ++-
->  tools/bpf/bpf_jit_disasm.c                    |  5 +-
->  tools/bpf/bpftool/Makefile                    |  8 ++-
->  tools/bpf/bpftool/jit_disasm.c                | 42 +++++++++++---
->  tools/build/Makefile.feature                  |  4 +-
->  tools/build/feature/Makefile                  |  4 ++
->  tools/build/feature/test-all.c                |  4 ++
->  .../feature/test-disassembler-init-styled.c   | 13 +++++
->  tools/include/tools/dis-asm-compat.h          | 55 +++++++++++++++++++
->  tools/perf/Makefile.config                    |  8 +++
->  tools/perf/util/annotate.c                    |  7 ++-
->  11 files changed, 138 insertions(+), 19 deletions(-)
->  create mode 100644 tools/build/feature/test-disassembler-init-styled.c
->  create mode 100644 tools/include/tools/dis-asm-compat.h
->
+> diff --git a/tools/testing/selftests/bpf/prog_tests/attach_to_bpf.c b/tools/testing/selftests/bpf/prog_tests/attach_to_bpf.c
+> new file mode 100644
+> index 000000000000..eb06f522c0b3
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/attach_to_bpf.c
+> @@ -0,0 +1,97 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#define _GNU_SOURCE
+> +#include <stdlib.h>
+> +#include <bpf/btf.h>
+> +#include <test_progs.h>
+> +#include <network_helpers.h>
+> +#include "attach_to_bpf.skel.h"
+> +
+> +static int find_prog_btf_id(const char *name, __u32 attach_prog_fd)
+> +{
+> +       struct bpf_prog_info info = {};
+> +       __u32 info_len = sizeof(info);
+> +       struct btf *btf;
+> +       int ret;
+> +
+> +       ret = bpf_obj_get_info_by_fd(attach_prog_fd, &info, &info_len);
+> +       if (ret)
+> +               return ret;
+> +
+> +       if (!info.btf_id)
+> +               return -EINVAL;
+> +
+> +       btf = btf__load_from_kernel_by_id(info.btf_id);
+> +       ret = libbpf_get_error(btf);
+> +       if (ret)
+> +               return ret;
+> +
+> +       ret = btf__find_by_name_kind(btf, name, BTF_KIND_FUNC);
+> +       btf__free(btf);
+> +       return ret;
+> +}
+> +
+> +int load_fentry(int attach_prog_fd, int attach_btf_id)
+> +{
+> +       LIBBPF_OPTS(bpf_prog_load_opts, opts,
+> +                   .expected_attach_type = BPF_TRACE_FENTRY,
+> +                   .attach_prog_fd = attach_prog_fd,
+> +                   .attach_btf_id = attach_btf_id,
+> +       );
+> +       struct bpf_insn insns[] = {
+> +               BPF_MOV64_IMM(BPF_REG_0, 0),
+> +               BPF_EXIT_INSN(),
+> +       };
+> +
+> +       return bpf_prog_load(BPF_PROG_TYPE_TRACING,
+> +                            "bind4_fentry",
+> +                            "GPL",
+> +                            insns,
+> +                            ARRAY_SIZE(insns),
+> +                            &opts);
+> +}
+> +
+> +void test_attach_to_bpf(void)
+> +{
+> +       struct attach_to_bpf *skel = NULL;
+> +       struct bpf_prog_info info = {};
+> +       __u32 info_len = sizeof(info);
+> +       int cgroup_fd = -1;
+> +       int fentry_fd = -1;
+> +       int btf_id;
+> +
+> +       cgroup_fd = test__join_cgroup("/attach_to_bpf");
+> +       if (!ASSERT_GE(cgroup_fd, 0, "cgroup_fd"))
+> +               return;
+> +
+> +       skel = attach_to_bpf__open_and_load();
+> +       if (!ASSERT_OK_PTR(skel, "skel"))
+> +               goto cleanup;
+> +
+> +       skel->links.bind4 = bpf_program__attach_cgroup(skel->progs.bind4, cgroup_fd);
+> +       if (!ASSERT_OK_PTR(skel, "bpf_program__attach_cgroup"))
+> +               goto cleanup;
+> +
+> +       btf_id = find_prog_btf_id("bind4", bpf_program__fd(skel->progs.bind4));
+> +       if (!ASSERT_GE(btf_id, 0, "find_prog_btf_id"))
+> +               goto cleanup;
+> +
+> +       fentry_fd = load_fentry(bpf_program__fd(skel->progs.bind4), btf_id);
+> +       if (!ASSERT_GE(fentry_fd, 0, "load_fentry"))
+> +               goto cleanup;
+> +
+> +       /* Make sure bpf_obj_get_info_by_fd works correctly when attaching
+> +        * to another BPF program.
+> +        */
+> +
+> +       ASSERT_OK(bpf_obj_get_info_by_fd(fentry_fd, &info, &info_len),
+> +                 "bpf_obj_get_info_by_fd");
+> +
+> +       ASSERT_EQ(info.btf_id, 0, "info.btf_id");
+> +       ASSERT_GT(info.attach_btf_id, 0, "info.attach_btf_id");
+> +       ASSERT_GT(info.attach_btf_obj_id, 0, "info.attach_btf_obj_id");
+> +
+> +cleanup:
+> +       close(cgroup_fd);
+> +       close(fentry_fd);
+> +       attach_to_bpf__destroy(skel);
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/attach_to_bpf.c b/tools/testing/selftests/bpf/progs/attach_to_bpf.c
+> new file mode 100644
+> index 000000000000..3f111fe96f8f
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/attach_to_bpf.c
+> @@ -0,0 +1,12 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +
+> +SEC("cgroup/bind4")
+> +int bind4(struct bpf_sock_addr *ctx)
+> +{
+> +       return 1;
+> +}
+> +
+> +char _license[] SEC("license") = "GPL";
 > --
-> 2.37.0.3.g30cc8d0f14
+> 2.37.1.455.g008518b4e5-goog
 >
