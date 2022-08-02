@@ -2,57 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8BCE587D20
-	for <lists+bpf@lfdr.de>; Tue,  2 Aug 2022 15:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C7FD587D5D
+	for <lists+bpf@lfdr.de>; Tue,  2 Aug 2022 15:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236062AbiHBNb6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Aug 2022 09:31:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35166 "EHLO
+        id S234614AbiHBNrm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Aug 2022 09:47:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233142AbiHBNb5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Aug 2022 09:31:57 -0400
+        with ESMTP id S234046AbiHBNrl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Aug 2022 09:47:41 -0400
 Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8166917584;
-        Tue,  2 Aug 2022 06:31:52 -0700 (PDT)
-Received: by mail-vs1-xe34.google.com with SMTP id m67so6976441vsc.12;
-        Tue, 02 Aug 2022 06:31:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA89018E13;
+        Tue,  2 Aug 2022 06:47:39 -0700 (PDT)
+Received: by mail-vs1-xe34.google.com with SMTP id 125so14590669vsx.7;
+        Tue, 02 Aug 2022 06:47:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=9gprTQRjUhTM4eoJepnmz+nTG4q6JfCebIgS1oAjgwU=;
-        b=WsFSaQ0R9QxYxMnzDFZdkA8WUEjIn3E7audy21Bm54MVjFyX7JZtf1A8KcqUHCDt7U
-         bZAn7toPyVdW5q/bKe7gYj0Dk8Bk2j6SUXKOOMaweItxHhoHgDqLQeAXSG4PsaU0+xcc
-         2TyH/ruXzF+N+565tAeMZgQC90MemwYTRhLPH668JKmzz9dhG8x/SB4iJXKyxrIlMuPw
-         +PhzKUSNcva/u6IJoqAM+aFbYAgMJc7j57L82HH4F2F1bDpkLsAVxmOp6X3oAiAFZaov
-         kR7sU4UfsQd8XLIVJ20bFYf6Fa3S5JGmxOxzRINBQHQylcSEYuL1RUG9ifRZj5R4FVno
-         2FJA==
+        bh=r0gY8IDHBQw9zV+tm+wIldwERHTU2a9jVP4S6o+Vte4=;
+        b=J/efUqCYkkHHwLdVoM8ZLUajg0xrGGY1WhxJCO7QQ9ZGLZjbteoD1BajhDJn43PcBR
+         5tipzx9Pug+5//1e53CnvMWHxBvpd0rKVpc8/niitWMYjDlxBi5kB9YnIAFbcaud1wn8
+         eyEKxfC89VvKaAze52JeiN6tegMoWJf0TidKrRbhHCoYQ/W3mHIdq3AUvZiZsmU1c+4f
+         Bl5FAtdoiGfF9Dpct+ycw2Kb4YaP/JINPTbuk2XHkFhHEW7305Ca6p1DTTKYM8fTRho8
+         v4eNLKLeX0gEd9VSuK5TZIGE3fXk8qLljyH8aRrOdAWCm4feRM9r2J2ofYVOjjjXV+Zw
+         GFiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=9gprTQRjUhTM4eoJepnmz+nTG4q6JfCebIgS1oAjgwU=;
-        b=behn9SZclu/Fm+Lwg4HHx52crFBzG/715ooFMpYNvwgN8HvtwY5//XwxHgsRaHqSFc
-         IeXtKX/cTw0Ig2RZqCfWSiQt6S743It7VMCZ0AEoVtzHy4UUgbF7OuYhFRv03oILyPsg
-         AS1RKJF4CA2dx1RDX7m4NTsf5+eTR5CI3FtmXxD4nZodbUduQe850kfm4TtZ16q3uSTB
-         ZFYGU5f7KGk1fxB+5O3QEj85Y/vXyg+cw/Hts8HdzJ+dnDUlDlAwJPCJqNuf/FxQyFLy
-         tVImNoHJaDfW5/RmjdycpNoajSxyqFgS5Gscx8yBEbcHDW8kbUK9etZx5Q8IPi0bUqFZ
-         mv8Q==
-X-Gm-Message-State: AJIora/Od7ehWbPmXUk5awRJv2cwfNCzfc1+FINH0cxW83TOpg/fdrY9
-        NgoSDs29xb6vn2klxfL7tpJVJ5xLUgRn2aNhkd4=
-X-Google-Smtp-Source: AGRyM1sB28TCJySSRg2dx30CTcTN8Y8SobsgdYSPL86qGc/CsIF5/pgoTjeoYVakke50BccLXowOmL606283XKZsDEk=
-X-Received: by 2002:a05:6102:3ec1:b0:358:70a1:3c28 with SMTP id
- n1-20020a0561023ec100b0035870a13c28mr7380469vsv.11.1659447111600; Tue, 02 Aug
- 2022 06:31:51 -0700 (PDT)
+        bh=r0gY8IDHBQw9zV+tm+wIldwERHTU2a9jVP4S6o+Vte4=;
+        b=KppOu/dvlW0NtyroKUmjByYs8eVweVgPx0HbQCFyb4IVz2yshbbVpx75C5tWABcpBD
+         /UQcPSapnpoiAh+hDSd4+xdpfCNgm09zDVTG131RtpqOHk3vO6XOCbq1PcNPeqDCdPdP
+         ZE6bpNgNr5vtB+CG9DkMUkB5AeSqSwe3kNy/8FrYTvQrERWvAUYF/zhr4vy/AAP/wrxV
+         toYFtXxXzsB1hYtRrpT7vFALp1S6FK3vQLPLjpbHSHe1H32nJ/drs/GTa7DRKH/t9GGg
+         NFvxyWs+wj6+XS4x5+Z4AzqokQ/glTOaSMCl6DtqLUtdUFHO5xQsEB+RAan1J8QKjclb
+         Xh7g==
+X-Gm-Message-State: ACgBeo0bozsJzcJR7r4Ua9VhBe7GL7Ghq7l9MfCf2xU3/TuP7iupSXs1
+        3DvtsAa9VnQKLsGHhdT8gKqWERJF1Iij6o7wN/4=
+X-Google-Smtp-Source: AA6agR4FIozwmF8WXJkvqaJsLvMa6V6YF2nj3uO403m3sxZU6AWbs4TsOYQV/stQMyWl40OOSZqPZFA2NMJhpmaF/hE=
+X-Received: by 2002:a05:6102:750:b0:381:feef:d966 with SMTP id
+ v16-20020a056102075000b00381feefd966mr4212270vsg.35.1659448058860; Tue, 02
+ Aug 2022 06:47:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220729152316.58205-1-laoar.shao@gmail.com> <20220729152316.58205-11-laoar.shao@gmail.com>
- <CAEf4BzZR41_JcQMvBfqB_7rcRZW97cJ_0WfWh7uh4Tt==A6zXw@mail.gmail.com>
-In-Reply-To: <CAEf4BzZR41_JcQMvBfqB_7rcRZW97cJ_0WfWh7uh4Tt==A6zXw@mail.gmail.com>
+References: <20220729152316.58205-1-laoar.shao@gmail.com> <20220729152316.58205-16-laoar.shao@gmail.com>
+ <20220802045531.6oi2pt3fyjhotmjo@macbook-pro-3.dhcp.thefacebook.com>
+In-Reply-To: <20220802045531.6oi2pt3fyjhotmjo@macbook-pro-3.dhcp.thefacebook.com>
 From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Tue, 2 Aug 2022 21:31:15 +0800
-Message-ID: <CALOAHbBqF31ExUKJ3yFA-zrRRHErWSEHCiPbUMi36WCTRm0j+g@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 10/15] bpf: Use bpf_map_pages_alloc in ringbuf
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 2 Aug 2022 21:47:02 +0800
+Message-ID: <CALOAHbDZq89ATv5pK4FAX9-DYOWZjFJPtJ8fAYL1zhuS2c1D9w@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 15/15] bpf: Introduce selectable memcg for
+ bpf map
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
@@ -80,63 +81,152 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 2, 2022 at 7:17 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Tue, Aug 2, 2022 at 12:55 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> On Fri, Jul 29, 2022 at 8:23 AM Yafang Shao <laoar.shao@gmail.com> wrote:
+> On Fri, Jul 29, 2022 at 03:23:16PM +0000, Yafang Shao wrote:
+> > A new member memcg_fd is introduced into bpf attr of BPF_MAP_CREATE
+> > command, which is the fd of an opened cgroup directory. In this cgroup,
+> > the memory subsystem must be enabled. This value is valid only when
+> > BPF_F_SELECTABLE_MEMCG is set in map_flags. Once the kernel get the
+> > memory cgroup from this fd, it will set this memcg into bpf map, then
+> > all the subsequent memory allocation of this map will be charge to the
+> > memcg.
 > >
-> > Introduce new helper bpf_map_pages_alloc() for this memory allocation.
+> > The map creation paths in libbpf are also changed consequently.
 > >
+> > Currently it is only supported for cgroup2 directory.
+> >
+> > The usage of this new member as follows,
+> >       struct bpf_map_create_opts map_opts = {
+> >               .sz = sizeof(map_opts),
+> >               .map_flags = BPF_F_SELECTABLE_MEMCG,
+> >       };
+> >       int memcg_fd, int map_fd;
+> >       int key, value;
+> >
+> >       memcg_fd = open("/cgroup2", O_DIRECTORY);
+> >       if (memcg_fd < 0) {
+> >               perror("memcg dir open");
+> >               return -1;
+> >       }
+> >
+> >       map_opts.memcg_fd = memcg_fd;
+> >       map_fd = bpf_map_create(BPF_MAP_TYPE_HASH, "map_for_memcg",
+> >                               sizeof(key), sizeof(value),
+> >                               1024, &map_opts);
+> >       if (map_fd <= 0) {
+> >               perror("map create");
+> >               return -1;
+> >       }
+>
+> Overall the api extension makes sense.
+> The flexibility of selecting memcg is useful.
+>
+
+Thanks!
+
 > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 > > ---
-> >  include/linux/bpf.h  |  4 ++++
-> >  kernel/bpf/ringbuf.c | 27 +++++++++------------------
-> >  kernel/bpf/syscall.c | 41 +++++++++++++++++++++++++++++++++++++++++
-> >  3 files changed, 54 insertions(+), 18 deletions(-)
+> >  include/uapi/linux/bpf.h       |  2 ++
+> >  kernel/bpf/syscall.c           | 47 ++++++++++++++++++++++++++--------
+> >  tools/include/uapi/linux/bpf.h |  2 ++
+> >  tools/lib/bpf/bpf.c            |  1 +
+> >  tools/lib/bpf/bpf.h            |  3 ++-
+> >  tools/lib/bpf/libbpf.c         |  2 ++
+> >  6 files changed, 46 insertions(+), 11 deletions(-)
 > >
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index d5fc1ea70b59..a6e02c8be924 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -1296,6 +1296,8 @@ union bpf_attr {
+> >                                                  * struct stored as the
+> >                                                  * map value
+> >                                                  */
+> > +             __s32   memcg_fd;       /* selectable memcg */
+> > +             __s32   :32;            /* hole */
 >
-> [...]
->
-> >         /* Each data page is mapped twice to allow "virtual"
-> >          * continuous read of samples wrapping around the end of ring
-> > @@ -95,16 +95,10 @@ static struct bpf_ringbuf *bpf_ringbuf_area_alloc(struct bpf_map *map,
-> >         if (!pages)
-> >                 return NULL;
-> >
-> > -       for (i = 0; i < nr_pages; i++) {
-> > -               page = alloc_pages_node(numa_node, flags, 0);
-> > -               if (!page) {
-> > -                       nr_pages = i;
-> > -                       goto err_free_pages;
-> > -               }
-> > -               pages[i] = page;
-> > -               if (i >= nr_meta_pages)
-> > -                       pages[nr_data_pages + i] = page;
-> > -       }
-> > +       ptr = bpf_map_pages_alloc(map, pages, nr_meta_pages, nr_data_pages,
-> > +                                 numa_node, flags, 0);
-> > +       if (!ptr)
->
-> bpf_map_pages_alloc() has some weird and confusing interface. It fills
-> out pages (second argument) and also returns pages as void *. Why not
-> just return int error (0 or -ENOMEM)? You are discarding this ptr
-> anyways.
+> new fields cannot be inserted in the middle of uapi struct.
 >
 
+There's a "#define BPF_MAP_CREATE_LAST_FIELD map_extra" in
+kernel/bpf/syscall.c, and thus I thought it may have some special
+meaning, so I put the new field above it.
+Now that it doesn't have any special meaning, I will change it as you suggested.
+
+> >               /* Any per-map-type extra fields
+> >                *
+> >                * BPF_MAP_TYPE_BLOOM_FILTER - the lowest 4 bits indicate the
+> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> > index 6401cc417fa9..9900e2b87315 100644
+> > --- a/kernel/bpf/syscall.c
+> > +++ b/kernel/bpf/syscall.c
+> > @@ -402,14 +402,30 @@ void bpf_map_free_id(struct bpf_map *map, bool do_idr_lock)
+> >  }
+> >
+> >  #ifdef CONFIG_MEMCG_KMEM
+> > -static void bpf_map_save_memcg(struct bpf_map *map)
+> > +static int bpf_map_save_memcg(struct bpf_map *map, union bpf_attr *attr)
+> >  {
+> > -     /* Currently if a map is created by a process belonging to the root
+> > -      * memory cgroup, get_obj_cgroup_from_current() will return NULL.
+> > -      * So we have to check map->objcg for being NULL each time it's
+> > -      * being used.
+> > -      */
+> > -     map->objcg = get_obj_cgroup_from_current();
+> > +     struct obj_cgroup *objcg;
+> > +     struct cgroup *cgrp;
+> > +
+> > +     if (attr->map_flags & BPF_F_SELECTABLE_MEMCG) {
+>
+> The flag is unnecessary. Just add memcg_fd to the end of attr and use != 0
+> as a condition that it should be used instead of get_obj_cgroup_from_current().
+> There are other parts of bpf uapi that have similar fd handling logic.
+>
+
+Right. There's a ensure_good_fd() to make the fd a positive number.
 I will change it.
 
+> > +             cgrp = cgroup_get_from_fd(attr->memcg_fd);
+> > +             if (IS_ERR(cgrp))
+> > +                     return -EINVAL;
+> > +
+> > +             objcg = get_obj_cgroup_from_cgroup(cgrp);
+> > +             if (IS_ERR(objcg))
+> > +                     return PTR_ERR(objcg);
+> > +     } else {
+> > +             /* Currently if a map is created by a process belonging to the root
+> > +              * memory cgroup, get_obj_cgroup_from_current() will return NULL.
+> > +              * So we have to check map->objcg for being NULL each time it's
+> > +              * being used.
+> > +              */
+> > +             objcg = get_obj_cgroup_from_current();
+> > +     }
+> > +
+> > +     map->objcg = objcg;
+> > +     return 0;
+> >  }
+> >
+> >  static void bpf_map_release_memcg(struct bpf_map *map)
+> > @@ -485,8 +501,9 @@ void __percpu *bpf_map_alloc_percpu(const struct bpf_map *map, size_t size,
+> >  }
+> >
+> >  #else
+> > -static void bpf_map_save_memcg(struct bpf_map *map)
+> > +static int bpf_map_save_memcg(struct bpf_map *map, union bpf_attr *attr)
+> >  {
+> > +     return 0;
+> >  }
+> >
+> >  static void bpf_map_release_memcg(struct bpf_map *map)
+> > @@ -530,13 +547,18 @@ void *bpf_map_container_alloc(union bpf_attr *attr, u64 size, int numa_node)
 >
-> But also thinking some more, bpf_map_pages_alloc() is very ringbuf
-> specific (which other map will have exactly the same meaning for
-> nr_meta_pages and nr_data_pages, where we also allocate 2 *
-> nr_data_pages, etc).
->
-> I don't think it makes sense to expose it as a generic internal API.
-> Why not keep all that inside kernel/bpf/ringbuf.c instead?
+> High level uapi struct should not be passed into low level helper like this.
+> Pls pass memcg_fd instead.
 >
 
-Right, it is used in ringbuf.c only currently. I will keep it inside ringbuf.c.
-
+Sure, I will do it.
 
 -- 
 Regards
