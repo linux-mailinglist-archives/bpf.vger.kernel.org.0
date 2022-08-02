@@ -2,71 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB98F58847E
-	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 00:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D293258848E
+	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 00:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236889AbiHBWir (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Aug 2022 18:38:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36850 "EHLO
+        id S232467AbiHBWuJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Aug 2022 18:50:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236953AbiHBWig (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Aug 2022 18:38:36 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F747564CA
-        for <bpf@vger.kernel.org>; Tue,  2 Aug 2022 15:38:16 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id y13so14389737ejp.13
-        for <bpf@vger.kernel.org>; Tue, 02 Aug 2022 15:38:16 -0700 (PDT)
+        with ESMTP id S229637AbiHBWuJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Aug 2022 18:50:09 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F0D20BE2;
+        Tue,  2 Aug 2022 15:50:07 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id i14so9679299ejg.6;
+        Tue, 02 Aug 2022 15:50:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc;
-        bh=Wpzx1elzmX2tIeNR/BNU5HcDq9H5HPWSUuIqkyP3lBo=;
-        b=BWNx4eQpt1o2kDfjTw22IThOeqQXW2DFO0MbPRYrPDEGrocFX6VZUhkrduQy1jD32H
-         VnPTBifcPucdWGn3Je4iIOhyfQiUTTt9TA9ICtbEnZrLYKRxN0XziCBWWCp5ExRobLZy
-         jbaB+CepsebXPS7PruoQy87CsopaGGpm6F/NGTcuuQrQJCYBIQPpKJ/njXwmGll//wJ2
-         wQNGk3Eb8j0IL5+jsy4uS559xfRneO7F2wTShQ8rpH+sMoMse7taoU2urJkpnUw5RJ44
-         uyqJSfXGJONIG6XJyTiGw9cvy1oUJmOVlQ5Asxmb/QyCWgdYLzpBqaGmeRCwtrO8UkPF
-         dRfg==
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=rfkpQPKLu8SRWjwd0TtH906xz9zr70rSua/GjZiwncg=;
+        b=Wd9p1qEtwQHVZWLVEbEMe3AQ+JCAwPYfU8jdUH2cHOQEwIoc1XBAzHbodO0B1fCYD0
+         UpBuoEJyV1B0swkybzR4KdVJh5tDDZVM3DsIIzGVNZegMkRuMLIbpXUxJqJqox4nPtAz
+         rRWzbMeRgQHivrhL138vGSActPpKv3yaatrB4cc28uHLqdkf74oLyfAXJ+c4BAOjM7W+
+         N7dCjmcV95QE8WQI3Fkci/w9EhIRvn7/02u3gGmdJxm5MjadOgEeFRbwNK1aOM38bsqL
+         zosSX19Qs0DqQGyX/LfQC0BeULRaR2n062yl92ATmp/+Jx/196u5ABsd3GGX60Je93tM
+         eABg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
-        bh=Wpzx1elzmX2tIeNR/BNU5HcDq9H5HPWSUuIqkyP3lBo=;
-        b=QLonfti25qVb9yKE+A2xGjx8zVsAaAeX1BiD2nvzqpAJdUhNMFA0+4PuJ5/h0ZPo9Q
-         QFLvI7pYg8lm+1XHCIFDpWL/MPXYDftxrOo98yWK25kf3d/PRCEmJ3lVd7sqScGZkV/Z
-         N2+mILCwkF6ShmVGrdpN8na9AJAc5w6elvGrvh8FpjxW3mbrzpkxQ8yjyxk53BRDXmie
-         9SLON0+gWNkTcfJRcp801z6FxM7zNMDQDTrV0lb6SrZKRfrPf7gVykuwRTegHPBZ4KM2
-         4DIzk3uT7EHmguy6RLjycAKxKbw9EmnBtTb9HwP0iDA7BALOr5R8Q83Gph/3S7H92TtA
-         i4tQ==
-X-Gm-Message-State: AJIora8b/uqN23Eq7D04S5fgyWbIkYMkFca0K9CFFPfmljGeMer0gNDs
-        jMKYIXQk058x6EneFKu1LCLndUE6Ww07qoggzEc=
-X-Google-Smtp-Source: AGRyM1t0iqkQ3hSFJ9J75+j+POVDDT3ncfdEOQHuaKCwmMt3I3f2KRf+Yj5uW/kMTcWIn+WxIikiSyLbxA/JSAfG/UQ=
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=rfkpQPKLu8SRWjwd0TtH906xz9zr70rSua/GjZiwncg=;
+        b=ItLxDkMDOEUqUB1TqARA3M9dLMNp5JLfG+RbHBOVpxPiN3T+0lggx/KG5IFAhwhH9Y
+         lVYDTiqUI9y/QXP70lQngl2Ui7gblJFjx7VQluleDkrEf1vQ1C0+GgrCrnbfDt2KubGs
+         tnjtjTbnPfMnLVNLmXNW7OUd4A+cFJCFzVFfjhcJTxWs9GW4Y/VsO2U5AvZoOZbTLDCN
+         qMRK7/Fs68Eq67qSjQ6Sk81B5an1fWlIXCLgrb2efD6bdoa7KHQh3Boprbfu340KCTwh
+         +7TicffX395p+2HFH0uQ/tMrQxFMyvkxtsCOiXEIyPBEXXK+jrR4e9Ny3KoUn38Zk6qY
+         SuYQ==
+X-Gm-Message-State: AJIora+D8lkvIk2p9zCJcH96D6tz9I1rUuu8o2awsXAJA9F826cBHnqM
+        +EpM3pJh8uGxmB1YtgN5G82XmrGPhSg/zFWbju0=
+X-Google-Smtp-Source: AGRyM1tVilscQlMqtuCjMqxEiWukkme1VpEV5t4XIMIpZ1DFVec4hXV3fVO69UAWvoV0Jq0YQhqQQLe/Odo9MSKricE=
 X-Received: by 2002:a17:907:6e1d:b0:72f:20ad:e1b6 with SMTP id
- sd29-20020a1709076e1d00b0072f20ade1b6mr18292625ejc.545.1659479894356; Tue, 02
- Aug 2022 15:38:14 -0700 (PDT)
+ sd29-20020a1709076e1d00b0072f20ade1b6mr18321344ejc.545.1659480605949; Tue, 02
+ Aug 2022 15:50:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220726130005.3102470-1-houtao1@huawei.com>
-In-Reply-To: <20220726130005.3102470-1-houtao1@huawei.com>
+References: <20220722174829.3422466-1-yosryahmed@google.com>
+ <20220722174829.3422466-5-yosryahmed@google.com> <CAEf4BzbD38XFVxMy5crO-=+Xg7U3Vc_fB4Ntug4BEbmdLpvuDQ@mail.gmail.com>
+ <CA+khW7jftQikVsc8moM6rNRqBerUHDM6WRDjb33exdbogDc7aQ@mail.gmail.com>
+In-Reply-To: <CA+khW7jftQikVsc8moM6rNRqBerUHDM6WRDjb33exdbogDc7aQ@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 2 Aug 2022 15:38:02 -0700
-Message-ID: <CAEf4BzYdC=G0CzbiXm4gnT5EKHuGfAiFnYRyzf0nNeuAU-T4pw@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 0/3] Add support for qp-trie map
-To:     Hou Tao <houtao1@huawei.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
+Date:   Tue, 2 Aug 2022 15:49:54 -0700
+Message-ID: <CAEf4BzYDqaTQr-S8TuLkysQ+FhT+6qMS0z=Sp_7+-wk84_4h6Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 4/8] bpf: Introduce cgroup iter
+To:     Hao Luo <haoluo@google.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
         KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Joanne Koong <joannelkoong@gmail.com>
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, cgroups@vger.kernel.org,
+        Kui-Feng Lee <kuifeng@fb.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -77,233 +87,248 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 26, 2022 at 5:42 AM Hou Tao <houtao1@huawei.com> wrote:
+On Tue, Aug 2, 2022 at 3:27 PM Hao Luo <haoluo@google.com> wrote:
 >
-> Hi,
+> Hi Andrii,
 >
-
-Hey, sorry I'm catching up on upstream and there is just too many
-complicated patch sets coming in, so it takes time to get through
-them.
-
-I think you did a great job with this implementation, it's certainly
-worth submitting as non-RFC for proper upstream review. I know that
-some people didn't get your patches, they got into spam somehow. So I
-think it would be great to just resubmit it as non-RFC so that it
-appears in patchworks as to-be-reviewew patches and hopefully will get
-a wider audience to review this.
-
-I've tried to answer some questions below, but would definitely like
-more people to chime in. I haven't went through implementation in
-details, but superficially it looks pretty clean and certainly ready
-for proper non-RFC review.
-
-One point about user API would be to maybe instead use bpf_dynptr as
-an interface for specifying variable-sized lookup key instead of
-hard-coded
- bpf_qp_trie_key. Please check recent work by Joanne on bpf_dynptr.
-
-In short: looks great, I think it's certainly worth adding this as BPF
-map type. Please submit as non-RFC and go through a proper review
-process. Looking forward (even if that means reviewing 1000k lines of
-dense algorithmic code :) ).
-
-> The initial motivation for qp-trie map is to reduce memory usage for
-> string keys special those with large differencies in length as
-> discussed in [0]. And as a big-endian lexicographical ordered map, it
-> can also be used for any binary data with fixed or variable length.
+> On Mon, Aug 1, 2022 at 8:43 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Fri, Jul 22, 2022 at 10:48 AM Yosry Ahmed <yosryahmed@google.com> wrote:
+> > >
+> > > From: Hao Luo <haoluo@google.com>
+> > >
+> > > Cgroup_iter is a type of bpf_iter. It walks over cgroups in three modes:
+> > >
+> > >  - walking a cgroup's descendants in pre-order.
+> > >  - walking a cgroup's descendants in post-order.
+> > >  - walking a cgroup's ancestors.
+> > >
+> > > When attaching cgroup_iter, one can set a cgroup to the iter_link
+> > > created from attaching. This cgroup is passed as a file descriptor and
+> > > serves as the starting point of the walk. If no cgroup is specified,
+> > > the starting point will be the root cgroup.
+> > >
+> > > For walking descendants, one can specify the order: either pre-order or
+> > > post-order. For walking ancestors, the walk starts at the specified
+> > > cgroup and ends at the root.
+> > >
+> > > One can also terminate the walk early by returning 1 from the iter
+> > > program.
+> > >
+> > > Note that because walking cgroup hierarchy holds cgroup_mutex, the iter
+> > > program is called with cgroup_mutex held.
+> > >
+> > > Currently only one session is supported, which means, depending on the
+> > > volume of data bpf program intends to send to user space, the number
+> > > of cgroups that can be walked is limited. For example, given the current
+> > > buffer size is 8 * PAGE_SIZE, if the program sends 64B data for each
+> > > cgroup, the total number of cgroups that can be walked is 512. This is
+> > > a limitation of cgroup_iter. If the output data is larger than the
+> > > buffer size, the second read() will signal EOPNOTSUPP. In order to work
+> > > around, the user may have to update their program to reduce the volume
+> > > of data sent to output. For example, skip some uninteresting cgroups.
+> > > In future, we may extend bpf_iter flags to allow customizing buffer
+> > > size.
+> > >
+> > > Signed-off-by: Hao Luo <haoluo@google.com>
+> > > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> > > Acked-by: Yonghong Song <yhs@fb.com>
+> > > ---
+> > >  include/linux/bpf.h                           |   8 +
+> > >  include/uapi/linux/bpf.h                      |  30 +++
+> > >  kernel/bpf/Makefile                           |   3 +
+> > >  kernel/bpf/cgroup_iter.c                      | 252 ++++++++++++++++++
+> > >  tools/include/uapi/linux/bpf.h                |  30 +++
+> > >  .../selftests/bpf/prog_tests/btf_dump.c       |   4 +-
+> > >  6 files changed, 325 insertions(+), 2 deletions(-)
+> > >  create mode 100644 kernel/bpf/cgroup_iter.c
+> > >
+> > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > > index a97751d845c9..9061618fe929 100644
+> > > --- a/include/linux/bpf.h
+> > > +++ b/include/linux/bpf.h
+> > > @@ -47,6 +47,7 @@ struct kobject;
+> > >  struct mem_cgroup;
+> > >  struct module;
+> > >  struct bpf_func_state;
+> > > +struct cgroup;
+> > >
+> > >  extern struct idr btf_idr;
+> > >  extern spinlock_t btf_idr_lock;
+> > > @@ -1717,7 +1718,14 @@ int bpf_obj_get_user(const char __user *pathname, int flags);
+> > >         int __init bpf_iter_ ## target(args) { return 0; }
+> > >
+> > >  struct bpf_iter_aux_info {
+> > > +       /* for map_elem iter */
+> > >         struct bpf_map *map;
+> > > +
+> > > +       /* for cgroup iter */
+> > > +       struct {
+> > > +               struct cgroup *start; /* starting cgroup */
+> > > +               int order;
+> > > +       } cgroup;
+> > >  };
+> > >
+> > >  typedef int (*bpf_iter_attach_target_t)(struct bpf_prog *prog,
+> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > > index ffcbf79a556b..fe50c2489350 100644
+> > > --- a/include/uapi/linux/bpf.h
+> > > +++ b/include/uapi/linux/bpf.h
+> > > @@ -87,10 +87,30 @@ struct bpf_cgroup_storage_key {
+> > >         __u32   attach_type;            /* program attach type (enum bpf_attach_type) */
+> > >  };
+> > >
+> > > +enum bpf_iter_cgroup_traversal_order {
+> > > +       BPF_ITER_CGROUP_PRE = 0,        /* pre-order traversal */
+> > > +       BPF_ITER_CGROUP_POST,           /* post-order traversal */
+> > > +       BPF_ITER_CGROUP_PARENT_UP,      /* traversal of ancestors up to the root */
+> >
+> > I've just put up my arguments why it's a good idea to also support a
+> > "trivial" mode of only traversing specified cgroup and no descendants
+> > or parents. Please see [0].
 >
-> Now the basic functionality of qp-trie is ready, so posting a RFC version
-> to get more feedback or suggestions about qp-trie. Specially feedback
-> about the following questions:
+> cc Kui-Feng in this thread.
 >
-> (1) Application scenario for qp-trie
-> Andrii had proposed to re-implement lpm-trie by using qp-trie. The
-> advantage would be the speed up of lookup operations due to lower tree
-> depth of qp-trie. Maybe the performance of update could also be improved
-> although in cillium there is a big lock during lpm-trie update [1]. Is
-
-Well, using qp-trie approach as an internal implementation of lpm-trie
-is probably a major win already, what's wrong with that?
-
-> there any other use cases for qp-trie ? Specially those cases which need
-> both ordering and memory efficiency or cases in which jhash() of htab
-> creates too much collisions and qp-trie lookup performances better than
-> hash-table lookup as shown below:
-
-I'm thinking about qp-trie as dynamically growable lookup table.
-That's a pretty big use case already. There is an RB tree proposal
-under review right now which would also satisfy dynamically growable
-criteria, but its focus is slightly different and it remains to be
-seen how convenient it will be as general-purpose resizable
-alternative to hashmap. But from benchmarks I've found online, RB tree
-will definitely use more memory than qp-trie.
-
-Ordered property seems also very useful, but I don't yet have specific
-use case for that. But once we have data structure like this in BPF,
-I'm sure use cases will pop up.
-
+> Yeah, I think it's a good idea. It's useful when we only want to show
+> a single object, which can be common. Going further, I think we may
+> want to restructure bpf_iter to optimize for this case.
 >
->   Randomly-generated binary data with variable length (length range=3D[1,=
- 256] entries=3D16K)
+> > I think the same applies here, especially
+> > considering that it seems like a good idea to support
+> > task/task_vma/task_files iteration within a cgroup.
 >
->   htab lookup      (1  thread)    5.062 =C2=B1 0.004M/s (drops 0.002 =C2=
-=B1 0.000M/s mem 8.125 MiB)
->   htab lookup      (2  thread)   10.256 =C2=B1 0.017M/s (drops 0.006 =C2=
-=B1 0.000M/s mem 8.114 MiB)
->   htab lookup      (4  thread)   20.383 =C2=B1 0.006M/s (drops 0.009 =C2=
-=B1 0.000M/s mem 8.117 MiB)
->   htab lookup      (8  thread)   40.727 =C2=B1 0.093M/s (drops 0.010 =C2=
-=B1 0.000M/s mem 8.123 MiB)
->   htab lookup      (16 thread)   81.333 =C2=B1 0.311M/s (drops 0.020 =C2=
-=B1 0.000M/s mem 8.122 MiB)
->
->   qp-trie lookup   (1  thread)   10.161 =C2=B1 0.008M/s (drops 0.006 =C2=
-=B1 0.000M/s mem 4.847 MiB)
->   qp-trie lookup   (2  thread)   20.287 =C2=B1 0.024M/s (drops 0.007 =C2=
-=B1 0.000M/s mem 4.828 MiB)
->   qp-trie lookup   (4  thread)   40.784 =C2=B1 0.020M/s (drops 0.015 =C2=
-=B1 0.000M/s mem 4.071 MiB)
->   qp-trie lookup   (8  thread)   81.165 =C2=B1 0.013M/s (drops 0.040 =C2=
-=B1 0.000M/s mem 4.045 MiB)
->   qp-trie lookup   (16 thread)  159.955 =C2=B1 0.014M/s (drops 0.108 =C2=
-=B1 0.000M/s mem 4.495 MiB)
->
-
-Kind of surprised that qp-tire is twice as fast as hashmap. Do you
-have any idea why hashmap is slower? Was htab pre-allocated? What was
-it's max_entries?
-
->   * non-zero drops is due to duplicated keys in generated keys.
->
-> (2) more fine-grained lock in qp-trie
-> Now qp-trie is divided into 256 sub-trees by using the first character of
-
-character -> byte, it's not always strings, right?
-
-> key and one sub-tree is protected one spinlock. From the data below,
-> although the update/delete speed of qp-trie is slower compare with hash
-> table, but it scales similar with hash table. So maybe 256-locks is a
-> good enough solution ?
->
->   Strings in /proc/kallsyms
->   htab update      (1  thread)    2.850 =C2=B1 0.129M/s (drops 0.000 =C2=
-=B1 0.000M/s mem 33.564 MiB)
->   htab update      (2  thread)    4.363 =C2=B1 0.031M/s (drops 0.000 =C2=
-=B1 0.000M/s mem 33.563 MiB)
->   htab update      (4  thread)    6.306 =C2=B1 0.096M/s (drops 0.000 =C2=
-=B1 0.000M/s mem 33.718 MiB)
->   htab update      (8  thread)    6.611 =C2=B1 0.026M/s (drops 0.000 =C2=
-=B1 0.000M/s mem 33.627 MiB)
->   htab update      (16 thread)    6.390 =C2=B1 0.015M/s (drops 0.000 =C2=
-=B1 0.000M/s mem 33.564 MiB)
->   qp-trie update   (1  thread)    1.157 =C2=B1 0.099M/s (drops 0.000 =C2=
-=B1 0.000M/s mem 18.333 MiB)
->   qp-trie update   (2  thread)    1.920 =C2=B1 0.062M/s (drops 0.000 =C2=
-=B1 0.000M/s mem 18.293 MiB)
->   qp-trie update   (4  thread)    2.630 =C2=B1 0.050M/s (drops 0.000 =C2=
-=B1 0.000M/s mem 18.472 MiB)
->   qp-trie update   (8  thread)    3.171 =C2=B1 0.027M/s (drops 0.000 =C2=
-=B1 0.000M/s mem 18.301 MiB)
->   qp-trie update   (16 thread)    3.782 =C2=B1 0.036M/s (drops 0.000 =C2=
-=B1 0.000M/s mem 19.040 MiB)
-
-
-qp-trie being slower than htab matches my expectation and what I
-observed when trying to use qp-trie with libbpf. But I think for a lot
-of cases memory vs CPU tradeoff, coupled with ability to dynamically
-grow qp-trie will make this data structure worthwhile.
-
-
->
-> (3) Improve memory efficiency further
-> When using strings in BTF string section as a data set for qp-trie, the
-> slab memory usage showed in cgroup memory.stats file is about 11MB for
-> qp-trie and 15MB for hash table as shown below. However the theoretical
-> memory usage for qp-trie is ~6.8MB (is ~4.9MB if removing "parent" & "rcu=
-"
-> fields from qp_trie_branch) and the extra memory usage (about 38% of tota=
-l
-> usage) mainly comes from internal fragment in slab (namely 2^n alignment
-> for allocation) and overhead in kmem-cgroup accounting. We can reduce the
-> internal fragment by creating separated kmem_cache for qp_trie_branch wit=
-h
-> different child nodes, but not sure whether it is worthy or not.
+> I have reservations on these use cases. I don't see immediate use of
+> iterating vma or files within a cgroup. Tasks within a cgroup? Maybe.
+> :)
 >
 
-Please CC Paul McKenney (paulmck@kernel.org) for your non-RFC patch
-set and maybe he has some good idea how to avoid having rcu_head in
-each leaf node. Maybe some sort of per-CPU queue of to-be-rcu-freed
-elements, so that we don't have to keep 16 bytes in each leaf and
-branch node?
+iter/task was what I had in mind in the first place. But I can also
+imagine tools utilizing iter/task_files for each process within a
+cgroup, so given iter/{task, task_file, task_vma} share the same UAPI
+and internals, I don't see why we'd restrict this to only iter/task.
 
-> And in order to prevent allocating a rcu_head for each leaf node, now onl=
-y
-> branch node is RCU-freed, so when replacing a leaf node, a new branch nod=
-e
-> and a new leaf node will be allocated instead of replacing the old leaf
-> node and RCU-freed the old leaf node. Also not sure whether or not it is
-> worthy.
+> > So depending on
+> > how successful I am in arguing for supporting task iterator with
+> > target cgroup, I think we should reuse *exactly* this
+> > bpf_iter_cgroup_traversal_order and how we specify cgroup (FD or ID,
+> > see some more below) *as is* in task iterators as well. In the latter
+> > case, having an ability to say "iterate task for only given cgroup" is
+> > very useful, and for such mode all the PRE/POST/PARENT_UP is just an
+> > unnecessary nuisance.
+> >
+> > So please consider also adding and supporting BPF_ITER_CGROUP_SELF (or
+> > whatever naming makes most sense).
+> >
 >
->   Strings in BTF string section (entries=3D115980):
->   htab lookup      (1  thread)    9.889 =C2=B1 0.006M/s (drops 0.000 =C2=
-=B1 0.000M/s mem 15.069 MiB)
->   qp-trie lookup   (1  thread)    5.132 =C2=B1 0.002M/s (drops 0.000 =C2=
-=B1 0.000M/s mem 10.721 MiB)
+> PRE/POST/UP can be reused for iter of tree-structured containers, like
+> rbtree [1]. SELF can be reused for any iters like iter/task,
+> iter/cgroup, etc. Promoting all of them out of cgroup-specific struct
+> seems valuable.
+
+you mean just define them as generic tree traversal orders? Sure, I
+guess makes sense. No strong feelings.
+
 >
->   All files under linux kernel source directory (entries=3D74359):
->   htab lookup      (1  thread)    8.418 =C2=B1 0.077M/s (drops 0.000 =C2=
-=B1 0.000M/s mem 14.207 MiB)
->   qp-trie lookup   (1  thread)    4.966 =C2=B1 0.003M/s (drops 0.000 =C2=
-=B1 0.000M/s mem 9.355 MiB)
+> [1] https://lwn.net/Articles/902405/
 >
->   Domain names for Alexa top million web site (entries=3D1000000):
->   htab lookup      (1  thread)    4.551 =C2=B1 0.043M/s (drops 0.000 =C2=
-=B1 0.000M/s mem 190.761 MiB)
->   qp-trie lookup   (1  thread)    2.804 =C2=B1 0.017M/s (drops 0.000 =C2=
-=B1 0.000M/s mem 83.194 MiB)
+> >
+> > Some more naming nits. I find BPF_ITER_CGROUP_PRE and
+> > BPF_ITER_CGROUP_POST a bit confusing. Even internally in kernel we
+> > have css_next_descendant_pre/css_next_descendant_post, so why not
+> > reflect the fact that we are going to iterate descendants:
+> > BPF_ITER_CGROUP_DESCENDANTS_{PRE,POST}. And now that we use
+> > "descendants" terminology, PARENT_UP should be ANCESTORS. ANCESTORS_UP
+> > probably is fine, but seems a bit redundant (unless we consider a
+> > somewhat weird ANCESTORS_DOWN, where we find the furthest parent and
+> > then descend through preceding parents until we reach specified
+> > cgroup; seems a bit exotic).
+> >
 >
-> Comments and suggestions are always welcome.
+> BPF_ITER_CGROUP_DESCENDANTS_PRE is too verbose. If there is a
+> possibility of merging rbtree and supporting walk order of rbtree
+> iter, maybe the name here could be general, like
+> BPF_ITER_DESCENDANTS_PRE, which seems better.
+
+it's not like you'll be typing this hundreds of type, so verboseness
+doesn't seem to be too problematic, but sure, BPF_ITER_DESCENDANTS_PRE
+is fine with me
+
 >
-> Regards,
-> Tao
+> >   [0] https://lore.kernel.org/bpf/f92e20e9961963e20766e290ee6668edd4bacf06.camel@fb.com/T/#m5ce50632aa550dd87a99241efb168cbcde1ee98f
+> >
+> > > +};
+> > > +
+> > >  union bpf_iter_link_info {
+> > >         struct {
+> > >                 __u32   map_fd;
+> > >         } map;
+> > > +
+> > > +       /* cgroup_iter walks either the live descendants of a cgroup subtree, or the
+> > > +        * ancestors of a given cgroup.
+> > > +        */
+> > > +       struct {
+> > > +               /* Cgroup file descriptor. This is root of the subtree if walking
+> > > +                * descendants; it's the starting cgroup if walking the ancestors.
+> > > +                * If it is left 0, the traversal starts from the default cgroup v2
+> > > +                * root. For walking v1 hierarchy, one should always explicitly
+> > > +                * specify the cgroup_fd.
+> > > +                */
+> > > +               __u32   cgroup_fd;
+> >
+> > Now, similar to what I argued in regard of pidfd vs pid, I think the
+> > same applied to cgroup_fd vs cgroup_id. Why can't we support both?
+> > cgroup_fd has some benefits, but cgroup_id is nice due to simplicity
+> > and not having to open/close/keep extra FDs (which can add up if we
+> > want to periodically query something about a large set of cgroups).
+> > Please see my arguments from [0] above.
+> >
+> > Thoughts?
+> >
 >
-> [0]: https://lore.kernel.org/bpf/CAEf4Bzb7keBS8vXgV5JZzwgNGgMV0X3_guQ_m9J=
-W3X6fJBDpPQ@mail.gmail.com/
-> [1]: https://github.com/cilium/cilium/blob/5145e31cd65db3361f6538d5f5f899=
-440b769070/pkg/datapath/prefilter/prefilter.go#L123
+> We can support both, it's a good idea IMO. But what exactly is the
+> interface going to look like? Can you be more specific about that?
+> Below is something I tried based on your description.
 >
-> Hou Tao (3):
->   bpf: Add support for qp-trie map
->   selftests/bpf: add a simple test for qp-trie
->   selftests/bpf: add benchmark for qp-trie map
+> @@ -91,6 +91,18 @@ union bpf_iter_link_info {
+>         struct {
+>                 __u32   map_fd;
+>         } map;
+> +       struct {
+> +               /* PRE/POST/UP/SELF */
+> +               __u32 order;
+> +               struct {
+> +                       __u32 cgroup_fd;
+> +                       __u64 cgroup_id;
+> +               } cgroup;
+> +               struct {
+> +                       __u32 pid_fd;
+> +                       __u64 pid;
+> +               } task;
+> +       };
+>  };
 >
 
-Overall, looks
+So I wouldn't combine task and cgroup definition together, let's keep
+them independent.
 
+then for cgroup we can do something like:
 
+struct {
+    __u32 order;
+    __u32 cgroup_fd; /* cgroup_fd ^ cgroup_id, exactly one can be non-zero */
+    __u32 cgroup_id;
+} cgroup
 
->  include/linux/bpf_types.h                     |    1 +
->  include/uapi/linux/bpf.h                      |    8 +
->  kernel/bpf/Makefile                           |    1 +
->  kernel/bpf/bpf_qp_trie.c                      | 1064 +++++++++++++++++
->  tools/include/uapi/linux/bpf.h                |    8 +
->  tools/testing/selftests/bpf/Makefile          |    5 +-
->  tools/testing/selftests/bpf/bench.c           |   10 +
->  .../selftests/bpf/benchs/bench_qp_trie.c      |  499 ++++++++
->  .../selftests/bpf/benchs/run_bench_qp_trie.sh |   55 +
->  .../selftests/bpf/prog_tests/str_key.c        |   69 ++
->  .../selftests/bpf/progs/qp_trie_bench.c       |  218 ++++
->  tools/testing/selftests/bpf/progs/str_key.c   |   85 ++
->  12 files changed, 2022 insertions(+), 1 deletion(-)
->  create mode 100644 kernel/bpf/bpf_qp_trie.c
->  create mode 100644 tools/testing/selftests/bpf/benchs/bench_qp_trie.c
->  create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_qp_trie.=
-sh
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/str_key.c
->  create mode 100644 tools/testing/selftests/bpf/progs/qp_trie_bench.c
->  create mode 100644 tools/testing/selftests/bpf/progs/str_key.c
->
-> --
-> 2.29.2
->
+Similar idea with task, but it's a bit more complicated because there
+we have target that can be pid, pidfd, or cgroup (cgroup_fd and
+cgroup_id). I haven't put much thought into the best representation,
+though.
+
+> > > +               __u32   traversal_order;
+> > > +       } cgroup;
+> > >  };
+> > >
+> > >  /* BPF syscall commands, see bpf(2) man-page for more details. */
+> >
+> > [...]
