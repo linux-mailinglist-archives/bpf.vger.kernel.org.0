@@ -2,82 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E3D258795B
-	for <lists+bpf@lfdr.de>; Tue,  2 Aug 2022 10:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E44D587994
+	for <lists+bpf@lfdr.de>; Tue,  2 Aug 2022 11:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234134AbiHBIwc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Aug 2022 04:52:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51504 "EHLO
+        id S235942AbiHBJGf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Aug 2022 05:06:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235942AbiHBIwa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Aug 2022 04:52:30 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E4163139D;
-        Tue,  2 Aug 2022 01:52:29 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id dc19so2032226ejb.12;
-        Tue, 02 Aug 2022 01:52:29 -0700 (PDT)
+        with ESMTP id S231571AbiHBJGe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Aug 2022 05:06:34 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 020E11F2F3;
+        Tue,  2 Aug 2022 02:06:33 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id kb8so10237056ejc.4;
+        Tue, 02 Aug 2022 02:06:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc;
-        bh=47uliyErnA8e09JF9HO7R5O/EfooUkx1RpBi+CvBMiE=;
-        b=gESk1Z8YO4csPW88/Rem8zWlU9ajVumN1NuZOqjSerOtIkAXrYHQ56cZkR7UgStNo3
-         UXsYDEunPb/uP3sFHLlZIBP551F0pHQ6e9R7TtH84bimUs+83hurokCsTGckUcGG+i1F
-         Qxpfh/Ag4uliVOneoUqqH2NEKFPVnFG1yE9OxoL01e/CMSwX6zyhoMotKKQ8B1l8H1DL
-         riTjB5SyJT6OcgwwZu6aQ53S+eCsj8dx6hriN1rLvjv3OHOLxDxW4VKaAaWHCbS3nvzi
-         SwV63szdMEsLfY/I8yu3NF81q7/kTU4xAHAl/qEoXBhsD8y32gGUvN0rlaFgeT+/QriZ
-         gi8g==
+        bh=V8gYa+sBiTGdjjR/vK84132IAMoTr3+9+KBnD1O06nE=;
+        b=pPqkMLt43zhJxSYfeIBgY5x7VroKNnvMivbgPS58Bv1VAJ65jaRyYyT1v88VdMmhaJ
+         p4GvrNO50B3ZFbzCW+vugW75ZTEw1+oCtb41mqo4yP9yFQfSUcK91y52wzE35AyIsSf3
+         G72lYCESRznPDaP1ZjW5SursV/nIBAk8V5850ZONvT5W3PmPEg6burgMgK6jdGR5mhVu
+         RVgiBvPACIsKAs1QzfgncfsSJ9e3Dhb1REMRDTO3GvHCmXertG5zjwrr9YLcAJN4+DWs
+         NlfvvADpRf16ePfQcOaFC5WZqql1DmiqIAZBB96l9dDi/VCzNvz0ppROMKeLI4IWUuJX
+         OFsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc;
-        bh=47uliyErnA8e09JF9HO7R5O/EfooUkx1RpBi+CvBMiE=;
-        b=6daGsIVCFw0dzUjdQBrGtyjkFL+kTjubFTObYHANQRwhEDjo6yIKFRbFLqgL4dGZff
-         zAoeg3vGWZVQxGgv7t327EErWmUZRTZV8eh3hEc3DqUZRc7nWsdhiEz2+YFhkiF0/vT0
-         nG+U9dQKj/YuMtmUZNl4qs3HBjgZiP+qPhL9roDHukcCEEVwy5QbxzJlGc/AaXtLFLC+
-         pSxjpfV8v01fSdB+0oMJNDpFHw/+XOf5/mk6d8JPDume0j99uXkHbFm/qHO0WTxPqhJ+
-         PJscur2u+dCI52zP0Kc2OG28AUfz3Y/VsqXvCvdQiay2bSKg/H3p0Jqzjg0yUyLoX2de
-         XVQQ==
-X-Gm-Message-State: AJIora9byuJ9vHAeffx5OZ+0p58YPXtXylSQ0FkiQWD+ug+Yyue+YzD4
-        IeXOYwcAmILGF1bC59+WwZ8=
-X-Google-Smtp-Source: AGRyM1smCNL1iF4wy+Op8u1PgSKXaUmky0EFr5tCCngDNbWaVuraIOTO4OFSsjBUoXvfgrpEsPLvmQ==
-X-Received: by 2002:a17:906:3f51:b0:712:3945:8c0d with SMTP id f17-20020a1709063f5100b0071239458c0dmr14894052ejj.302.1659430347780;
-        Tue, 02 Aug 2022 01:52:27 -0700 (PDT)
+        bh=V8gYa+sBiTGdjjR/vK84132IAMoTr3+9+KBnD1O06nE=;
+        b=vNsypET/E7pnBncWcm/88AJod9C4b9H0qiCu/0oDtrsvDUmr5u893JYCMvv5KvG9Hc
+         uADGkzCvb6gRsHmqKPewQSDqZQfl8N82mnCF5YfST7sy0v2N1Ofd27rRnHEkz9CDtw/v
+         SzkIvwF1C4pc1oyrZMBwEj8byvFePVSmsdQxFV+G4sLdvkkQjaA3EN0R5KJdfPgr3mhQ
+         ig4u4anCA6Pje0r5Z7xlpi6aLNM3Zcj0o95Dmx/icSoTiocNrRJQ66aNbW348lNSvcI1
+         a2c4Jqg4BuoyRQEcru9pR5KlRG3rJA3rZubz1xxIaH+rN5+r+fHzKFXiBqdyNIPLCRc2
+         HRpA==
+X-Gm-Message-State: AJIora8BpwrpTMqw9YKYHCaux6d4nDygHxNvDKDzqg+Tpt/tADIlOoK2
+        W4dmaXXe+L9x1q56n0mtiI0=
+X-Google-Smtp-Source: AGRyM1sPmP16v8BlQ+4t0ux1CrIzduOFP9FqkF0X1wwIL3cwna8RDtSm+P3GVuGgwKhGpKTX/y7g9w==
+X-Received: by 2002:a17:906:6c82:b0:709:f868:97f6 with SMTP id s2-20020a1709066c8200b00709f86897f6mr15071129ejr.555.1659431191492;
+        Tue, 02 Aug 2022 02:06:31 -0700 (PDT)
 Received: from krava ([83.240.61.12])
-        by smtp.gmail.com with ESMTPSA id n16-20020a170906841000b0072aa009aa68sm3201297ejx.36.2022.08.02.01.52.26
+        by smtp.gmail.com with ESMTPSA id i26-20020a50fc1a000000b0043cf1c6bb10sm7926070edr.25.2022.08.02.02.06.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Aug 2022 01:52:27 -0700 (PDT)
+        Tue, 02 Aug 2022 02:06:31 -0700 (PDT)
 From:   Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Tue, 2 Aug 2022 10:52:25 +0200
-To:     David Faust <david.faust@oracle.com>
+Date:   Tue, 2 Aug 2022 11:06:29 +0200
+To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        James Hilliard <james.hilliard1@gmail.com>,
-        bpf@vger.kernel.org,
-        "Jose E . Marchesi" <jose.marchesi@oracle.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH] libbpf: skip empty sections in
- bpf_object__init_global_data_maps
-Message-ID: <YujlyZevj6RDoOR6@krava>
-References: <20220731232649.4668-1-james.hilliard1@gmail.com>
- <Yug2iYQyd0TNlnHW@krava>
- <2dbffe19-6b28-2ce6-b367-960f2250a12a@oracle.com>
+        Chen Zhongjin <chenzhongjin@huawei.com>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
+        davem@davemloft.net, mhiramat@kernel.org, peterz@infradead.org,
+        mingo@kernel.org, ast@kernel.org, daniel@iogearbox.net
+Subject: Re: [PATCH v3] kprobes: Forbid probing on trampoline and bpf prog
+Message-ID: <YujpFUB8KlkOgzyb@krava>
+References: <20220801033719.228248-1-chenzhongjin@huawei.com>
+ <Yug6bx7T4GzqUf2a@krava>
+ <20220801165146.26fdeca2@gandalf.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2dbffe19-6b28-2ce6-b367-960f2250a12a@oracle.com>
+In-Reply-To: <20220801165146.26fdeca2@gandalf.local.home>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -88,70 +76,55 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 01, 2022 at 03:21:58PM -0700, David Faust wrote:
+On Mon, Aug 01, 2022 at 04:51:46PM -0400, Steven Rostedt wrote:
+> On Mon, 1 Aug 2022 22:41:19 +0200
+> Jiri Olsa <olsajiri@gmail.com> wrote:
 > 
+> > LGTM cc-ing Steven because it affects ftrace as well
 > 
-> On 8/1/22 13:24, Jiri Olsa wrote:
-> > On Sun, Jul 31, 2022 at 05:26:49PM -0600, James Hilliard wrote:
-> >> The GNU assembler generates an empty .bss section. This is a well
-> >> established behavior in GAS that happens in all supported targets.
-> >>
-> >> The LLVM assembler doesn't generate an empty .bss section.
-> >>
-> >> bpftool chokes on the empty .bss section.
-> >>
-> >> Additionally in bpf_object__elf_collect the sec_desc->data is not
-> >> initialized when a section is not recognized. In this case, this
-> >> happens with .comment.
-> >>
-> >> So we must check that sec_desc->data is initialized before checking
-> >> if the size is 0.
-> > 
-> > oops David send same change but I asked him to move the check
-> > to bpf_object__elf_collect [1] .. but with your explanation this
-> > fix actualy looks fine to me
+> Thanks for the Cc, but I don't quite see how it affects ftrace.
 > 
-> FWIW, I only just got back to actually making that change. This
-> patch has a much better explanation than the one I sent so +1 from
-> me also
+> Unless you are just saying how it can affect kprobe_events?
 
-thanks, I'm acking this one then
+nope, I just saw the 'ftrace' in changelog ;-)
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+anyway the patch makes check_kprobe_address_safe to fail
+on ftrace trampoline address.. but not sure you could make
+kprobe on ftrace trampoline before, probably not
 
 jirka
 
 > 
-> David
+> -- Steve
+> 
 > 
 > > 
 > > jirka
 > > 
-> > 
-> > [1] https://lore.kernel.org/bpf/YuKaFiZ+ksB5f0Ye@krava/
-> > 
-> >>
-> >> Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
-> >> Cc: Jose E. Marchesi <jose.marchesi@oracle.com>
-> >> ---
-> >>  tools/lib/bpf/libbpf.c | 4 ++++
-> >>  1 file changed, 4 insertions(+)
-> >>
-> >> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> >> index 50d41815f431..77e3797cf75a 100644
-> >> --- a/tools/lib/bpf/libbpf.c
-> >> +++ b/tools/lib/bpf/libbpf.c
-> >> @@ -1642,6 +1642,10 @@ static int bpf_object__init_global_data_maps(struct bpf_object *obj)
-> >>  	for (sec_idx = 1; sec_idx < obj->efile.sec_cnt; sec_idx++) {
-> >>  		sec_desc = &obj->efile.secs[sec_idx];
-> >>  
-> >> +		/* Skip recognized sections with size 0. */
-> >> +		if (sec_desc->data && sec_desc->data->d_size == 0)
-> >> +			continue;
-> >> +
-> >>  		switch (sec_desc->sec_type) {
-> >>  		case SEC_DATA:
-> >>  			sec_name = elf_sec_name(obj, elf_sec_by_idx(obj, sec_idx));
-> >> -- 
-> >> 2.34.1
-> >>
+> > > 
+> > > v1 -> v2:
+> > > Check core_kernel_text and is_module_text_address rather than
+> > > only kprobe_insn.
+> > > Also fix title and commit message for this. See old patch at [1].
+> > > ---
+> > >  kernel/kprobes.c | 3 ++-
+> > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> > > index f214f8c088ed..80697e5e03e4 100644
+> > > --- a/kernel/kprobes.c
+> > > +++ b/kernel/kprobes.c
+> > > @@ -1560,7 +1560,8 @@ static int check_kprobe_address_safe(struct kprobe *p,
+> > >  	preempt_disable();
+> > >  
+> > >  	/* Ensure it is not in reserved area nor out of text */
+> > > -	if (!kernel_text_address((unsigned long) p->addr) ||
+> > > +	if (!(core_kernel_text((unsigned long) p->addr) ||
+> > > +	    is_module_text_address((unsigned long) p->addr)) ||
+> > >  	    within_kprobe_blacklist((unsigned long) p->addr) ||
+> > >  	    jump_label_text_reserved(p->addr, p->addr) ||
+> > >  	    static_call_text_reserved(p->addr, p->addr) ||
+> > > -- 
+> > > 2.17.1
+> > >   
+> 
