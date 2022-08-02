@@ -2,109 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCC78588104
-	for <lists+bpf@lfdr.de>; Tue,  2 Aug 2022 19:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 330E758812F
+	for <lists+bpf@lfdr.de>; Tue,  2 Aug 2022 19:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234575AbiHBR3C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Aug 2022 13:29:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54824 "EHLO
+        id S232689AbiHBRjV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Aug 2022 13:39:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234672AbiHBR3B (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Aug 2022 13:29:01 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CB2E49B7E;
-        Tue,  2 Aug 2022 10:29:00 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id tl27so9320711ejc.1;
-        Tue, 02 Aug 2022 10:29:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=fG01VtUQWDj2G8XLV85uGypDOMVsGyzXJZJeDD96RAU=;
-        b=CudTMV1iKdUHGiDVdV7lhFWDU8JAGnxTMWs4/iUZh0aRx3/wLccMOVk/DrfLAW2ql+
-         eqiAqsGhN0zpcgq9lUgQSXDA3iN+rGTDJwcd7AuUTi980OFOi46Okl2TSAMvHZOPloQJ
-         diLs8pZ/+ia+Imhya8uTRGbbzI0wnsspNLokCHIO4ZDYg3i0M9qaxJvhGR9/vAHGqps/
-         ACcehG9qvRvL9vf+zSEs3uj3jq3CoLPavsKFJv2l2Ycxc9l/2DSw48HGOxgiImM/58g8
-         mxmvKvw6STlI1muk6MvG/Y8oz6Lxr+5kG67lBW3Dy9eKkA4iOb3QSN+BKDOcYw1Ee4ft
-         VlWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=fG01VtUQWDj2G8XLV85uGypDOMVsGyzXJZJeDD96RAU=;
-        b=iUcSe387zOlQRzj5niqFY1KgjhCRRRvqt3BrMMaqwa8SltqN98D5TPQYygTMAZnIDL
-         zsQtBrmQJ8f/mIkkQgGvwT69lBK7GBFLbjrtdBlGRooliLQdZOPCse4nTOSOTIEfWywe
-         fVGTenOiwJsJq+clkrVNcils3ABiVjgY/uZOPzH3L0rbRuCMzENux+NjS27A6B6+zZcn
-         l8ypPEucWGrVyZZKGtz/mAFROmWAqtwm+3HzoUK2LUhbo88wj/rnE1YPvG7x6JAQDEqP
-         cEPnkLc7KnIxONwwdzrW9xyBeS8ND1mHheZEfs5Gs6Qs9hYqZDjEtL8V3YB2Zywect75
-         8Wzg==
-X-Gm-Message-State: ACgBeo2a1Z10C3o/+rSrSr6CDvyc4O99cEF+JL6Fp2/wwsQIVlDGLdIU
-        T+/nFMwZQ2D6h/rsF8BX+lw=
-X-Google-Smtp-Source: AA6agR4nOHE9GdQzapRL6UPnQdOGydmJQ+w040Ps7whhbs2UsMYWS00BBj4QEXTQFOnfoPFIwjQ5ug==
-X-Received: by 2002:a17:906:4fd4:b0:730:a685:d27c with SMTP id i20-20020a1709064fd400b00730a685d27cmr1682599ejw.595.1659461338945;
-        Tue, 02 Aug 2022 10:28:58 -0700 (PDT)
-Received: from gmail.com (84-236-113-167.pool.digikabel.hu. [84.236.113.167])
-        by smtp.gmail.com with ESMTPSA id y8-20020aa7c248000000b0043c7efb8badsm8463219edo.61.2022.08.02.10.28.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Aug 2022 10:28:58 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Tue, 2 Aug 2022 19:28:56 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
-        linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Daniel =?iso-8859-1?Q?M=FCller?= <deso@posteo.net>
-Subject: Re: [PATCH] x86/kprobes: Fix to update kcb status flag after
- singlestepping
-Message-ID: <Yule2F3i+Qj6Cdxc@gmail.com>
-References: <165942025658.342061.12452378391879093249.stgit@devnote2>
- <20220802105230.43bb6079@gandalf.local.home>
+        with ESMTP id S232109AbiHBRjS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Aug 2022 13:39:18 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3FD64B0F4;
+        Tue,  2 Aug 2022 10:39:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7C55BB81FE5;
+        Tue,  2 Aug 2022 17:39:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 123B2C433B5;
+        Tue,  2 Aug 2022 17:39:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1659461955;
+        bh=D+x8CqdaXbsmhEFhqyxFXaNoVxZF5fkQARi2WHcJmQM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=CaQZluMzk/FwdJj1MolEVOBu/Rep66UaOgD3Casl7Xx0IdzE4yO9ln/B1NjI9AIME
+         R9Napl9UmEvg0AdIQeQdsf7m28/sUSpx+uztV6hUD+oYQYoEPes43yPzbyd5Y6CDQc
+         0peYZG7TyoRfudw+MKGLgs8mfW+x0AA9OFOCwvCpRAAwTswZ4Rp4CTWONaV8mgRk/z
+         ckLQ+bhCf2LWKV6LUpQOzSYYIGUP/H2Hb6+lHygbVyNpgyB6/2hqX3rNdPcaDSGzB8
+         nkGuHZjux34Sl75F++zlGRZR13FEEixVWN9suSvMUvitY/Vj2JKg2hpm+Tia9zzEAm
+         qikbvp073D8Aw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id B33F05C0369; Tue,  2 Aug 2022 10:39:14 -0700 (PDT)
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Cc:     corbet@lwn.net, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, kernel-team@fb.com,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH v3 bpf 1/3] bpf: Update bpf_design_QA.rst to clarify that kprobes is not ABI
+Date:   Tue,  2 Aug 2022 10:39:11 -0700
+Message-Id: <20220802173913.4170192-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.31.1.189.g2e36527f23
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220802105230.43bb6079@gandalf.local.home>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+This patch updates bpf_design_QA.rst to clarify that the ability to
+attach a BPF program to a given point in the kernel code via kprobes
+does not make that attachment point be part of the Linux kernel's ABI.
 
-* Steven Rostedt <rostedt@goodmis.org> wrote:
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ Documentation/bpf/bpf_design_QA.rst | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-> On Tue,  2 Aug 2022 15:04:16 +0900
-> "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
-> 
-> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > 
-> > Fix kprobes to update kcb (kprobes control block) status flag to
-> > KPROBE_HIT_SSDONE even if the kp->post_handler is not set.
-> > This may cause a kernel panic if another int3 user runs right
-> > after kprobes because kprobe_int3_handler() misunderstands the
-> > int3 is kprobe's single stepping int3.
-> > 
-> > Fixes: 6256e668b7af ("x86/kprobes: Use int3 instead of debug trap for single-step")
-> > Reported-by: Daniel Müller <deso@posteo.net>
-> > Tested-by: Daniel Müller <deso@posteo.net>
-> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > Cc: stable@vger.kernel.org
-> > Link: https://lore.kernel.org/all/20220727210136.jjgc3lpqeq42yr3m@muellerd-fedora-PC2BDTX9
-> > ---
-> 
-> Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> 
-> I guess this will go through the tip tree?
+diff --git a/Documentation/bpf/bpf_design_QA.rst b/Documentation/bpf/bpf_design_QA.rst
+index 437de2a7a5de7..2ed9128cfbec8 100644
+--- a/Documentation/bpf/bpf_design_QA.rst
++++ b/Documentation/bpf/bpf_design_QA.rst
+@@ -214,6 +214,12 @@ A: NO. Tracepoints are tied to internal implementation details hence they are
+ subject to change and can break with newer kernels. BPF programs need to change
+ accordingly when this happens.
+ 
++Q: Are places where kprobes can attach part of the stable ABI?
++--------------------------------------------------------------
++A: NO. The places to which kprobes can attach are internal implementation
++details, which means that they are subject to change and can break with
++newer kernels. BPF programs need to change accordingly when this happens.
++
+ Q: How much stack space a BPF program uses?
+ -------------------------------------------
+ A: Currently all program types are limited to 512 bytes of stack
+-- 
+2.31.1.189.g2e36527f23
 
-Yeah, it's already in tip:perf/urgent.
-
-Thanks,
-
-	Ingo
