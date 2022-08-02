@@ -2,80 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2149C587E83
-	for <lists+bpf@lfdr.de>; Tue,  2 Aug 2022 17:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 801FA587E8F
+	for <lists+bpf@lfdr.de>; Tue,  2 Aug 2022 17:05:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235370AbiHBPDu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Aug 2022 11:03:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46348 "EHLO
+        id S236435AbiHBPFq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Aug 2022 11:05:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233060AbiHBPDt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Aug 2022 11:03:49 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26909B1E3;
-        Tue,  2 Aug 2022 08:03:47 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id tl27so8604289ejc.1;
-        Tue, 02 Aug 2022 08:03:47 -0700 (PDT)
+        with ESMTP id S235511AbiHBPFp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Aug 2022 11:05:45 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E0810FE9
+        for <bpf@vger.kernel.org>; Tue,  2 Aug 2022 08:05:43 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id b16so10514513edd.4
+        for <bpf@vger.kernel.org>; Tue, 02 Aug 2022 08:05:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=YuKYTlYXsUuQmYJM1Cz/Cc34PkMLTAIIVUlnlbWHYeA=;
-        b=a8oo6jmlGaQ0vrWzMjLk34GqxgBH1AGiIl4FaktqAl774G8G4tbc/hyXjQll6s9LKP
-         C3Rwqu1qqg5WcXIoWPfUZ39SQpYQYX+5lvD6HoVHmEichLwYVjgIyu1ArnHL7sYLSZ5g
-         TPyAb39bKiVictNexZ044GV4X598gJQ6+42dWfMdEzYyE/v7yzoHQdj3M2XhlHu+zI+N
-         K/Kc7uDHv8UN1R+hhM/Rw6fRwIPlt+CkYiEo65+7AoU2w+0NjIIvNMFWmr/JVEK345Ik
-         kO4nrvlmRD3peBDEx5a6ghyrUdzx+XeCKQeHA/mxldjqyk7Cj6Z3ycHofoQzXcOK35xR
-         24QA==
+        bh=DRGzxYLFoGjpg1zgxllnXNs0e4zRM3heGoez7OwXxFo=;
+        b=EZ95xoj+fheOvnHUqDPXFTGwwH9oZQqGk9cvWskzlfria9CL4pFmiZJiJN0PhsE3hg
+         uFjz40pCnzRvusraD03AqFBBW2t638rBQnZ09y3hIdy6NAVtQXV/ZqYHW9cJuQfuCOdh
+         WmwF7G06vxCxsyN7z1gA6ukBVMiyDHhYIU9ZYwckZHN9buVsMV0ILHS3sWu+fb0rdCoB
+         nZYfZuwfQ9vbrBb8J7fwASsHJn4tbJ0kxWBDRSUrOsd/lOPNkffc0+Wk0c14Z7p50eQW
+         UhrC5mlhxksACZgqSHmYlesh9emoizQsKo7Udo1/Tz7p2CbI4/tfTrnmdAtcTm/Kzrqw
+         Hg7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=YuKYTlYXsUuQmYJM1Cz/Cc34PkMLTAIIVUlnlbWHYeA=;
-        b=Cj/PKNF1D3AKpqgd66FXATyL9owB0JJ+iYBw5YTYG5F+0nXl0PQT22bExnSoiSg0KR
-         OMXmB/KyfkyJwGdBYg2zCYv/P3XY8js2Dqa9Bu6I8BG00gXywFdqs2EVB4sLM3qvvCJL
-         LqeU7bn30nzN/ikXLMnW4Y3M0DphwUQ3D7glwwfYUEM1Hz0AHdUXszcH4f8ox6UohjLQ
-         jwjuJvlmy/oOUCFG/LgKMdfnWSOOYZ7xSu36xvPKxMzHjH28g2SStUHtb5rcOOGTuogi
-         e/QQy0WfoNRVyWC/6NEvuunEaQd0doXxrtdDUSEt4N6+7O5Nb66FHibPcpiYHvriZwsX
-         jsvw==
-X-Gm-Message-State: AJIora9oYX0Nn5ZaeyvTnvfH4V8svcFS6Q5osamE1MrxRs/qCvMenFgI
-        reYoNepvDHliTOUzUY4bMrDWE0i7MT8+Did+5ik=
-X-Google-Smtp-Source: AGRyM1uvx5S+DZkNnWCdQBUPLDXXG9hpJvt9yRykl0DSJ+DEawmimHUfaN3fxzaZrC6ioZaroXc7EXT9cH00EUXoiCM=
-X-Received: by 2002:a17:906:a089:b0:72f:826b:e084 with SMTP id
- q9-20020a170906a08900b0072f826be084mr17038947ejy.708.1659452625587; Tue, 02
- Aug 2022 08:03:45 -0700 (PDT)
+        bh=DRGzxYLFoGjpg1zgxllnXNs0e4zRM3heGoez7OwXxFo=;
+        b=sDPDzblSiy45iBzdJUGqG3TgQ3Zw8fg5AZm4wZhD07iZOBxHTZryfFDxlZIhEAk2ar
+         uxUaFEIn24amIuEQZYpv4kllY4chfZY1EKKeFRe8MZHqfl6vw/julwjAS8hg2rA4gpn2
+         Ccgy13cKin9y6wj6+NgoRkue1Gi4nYhadqZzZo/X2w4KXGM8iVMSzcPeztBHbmQduOVu
+         mShHNoPpMtqwmi19b0eZNhTarsFoEUMe1gaUaSvMr6PR/j8CZbbRNFa4hVU4UgfSjntQ
+         h44pfHoenimwMrk1gCfkQRGaZ9RCOGex5LKdcyrEFKSDgwaXmljb0yQ1L4vXQXKl+Dhr
+         /LdQ==
+X-Gm-Message-State: AJIora/j/yfC3QEO5imfEn0p7WRoq0gpkHDrC1HUlW0rjFaclW+VS0Nx
+        QRTAlOIv6odazE9/X6QBOZGqwLE3tNUDCszC7nA=
+X-Google-Smtp-Source: AGRyM1sJ8zzqTWIR/hUSpw0lEEt4LxTwEd4RY5YcycnwuT2xJ7q4LkJrRzW0sUXniN5EcFm+VuDHasB+m5SeMbpO6VM=
+X-Received: by 2002:a05:6402:5cb:b0:434:eb48:754f with SMTP id
+ n11-20020a05640205cb00b00434eb48754fmr21898410edx.421.1659452742251; Tue, 02
+ Aug 2022 08:05:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220606103734.92423-1-kurt@linutronix.de> <CAADnVQJ--oj+iZYXOwB1Rs9Qiy6Ph9HNha9pJyumVom0tiOFgg@mail.gmail.com>
- <875ylc6djv.ffs@tglx> <c166aa47-e404-e6ee-0ec5-0ead1923f412@redhat.com>
- <CAADnVQKqo1XfrPO8OYA1VpArKHZotuDjGNtxM0AftUj_R+vU7g@mail.gmail.com> <87pmhj15vf.fsf@kurt>
-In-Reply-To: <87pmhj15vf.fsf@kurt>
+References: <20220727081559.24571-1-memxor@gmail.com> <20220727081559.24571-2-memxor@gmail.com>
+ <fd75bc5ed2564f558000284c44c89632@huawei.com> <34ee6960df604501a5348eac7b1c5768@huawei.com>
+ <CAP01T762iv6bok3K6fQ4aBisUcWg5zhjbKzbXFqX=Z+cvd5tew@mail.gmail.com>
+ <CAP01T75TmR_+hOs+T8rwbNMXd6T8+WSgheC3uKoLOud3-4to5g@mail.gmail.com>
+ <CAADnVQ+pFYY_KGegBZQKMwqxYT1J6C_wZX=06UCN9yN7ZHpn4g@mail.gmail.com> <99f39e29a9ca416cb005ba690c7d7e51@huawei.com>
+In-Reply-To: <99f39e29a9ca416cb005ba690c7d7e51@huawei.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 2 Aug 2022 08:03:34 -0700
-Message-ID: <CAADnVQ+aDn9ku8p0M2yaPQb_Qi3CxkcyhHbcKTq8y2hrDP5A8Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Add BPF-helper for accessing CLOCK_TAI
-To:     Kurt Kanzenbach <kurt@linutronix.de>
-Cc:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
+Date:   Tue, 2 Aug 2022 08:05:30 -0700
+Message-ID: <CAADnVQLgCmyJ1RpjuDe7-6NA_wu20NkGsLjD9B8WzShiXyiV5w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/2] bpf: Add support for per-parameter
+ trusted args
+To:     Roberto Sassu <roberto.sassu@huawei.com>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Geliang Tang <geliang.tang@suse.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
+        Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLY,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,24 +73,84 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 2, 2022 at 12:06 AM Kurt Kanzenbach <kurt@linutronix.de> wrote:
+On Tue, Aug 2, 2022 at 3:07 AM Roberto Sassu <roberto.sassu@huawei.com> wrote:
 >
-> Hi Alexei,
+> > From: Alexei Starovoitov [mailto:alexei.starovoitov@gmail.com]
+> > Sent: Tuesday, August 2, 2022 6:46 AM
+> >
+> > On Thu, Jul 28, 2022 at 2:02 AM Kumar Kartikeya Dwivedi
+> > <memxor@gmail.com> wrote:
+> > >
+> > > On Thu, 28 Jul 2022 at 10:45, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > wrote:
+> > > >
+> > > > On Thu, 28 Jul 2022 at 10:18, Roberto Sassu <roberto.sassu@huawei.com>
+> > wrote:
+> > > > >
+> > > > > > From: Roberto Sassu [mailto:roberto.sassu@huawei.com]
+> > > > > > Sent: Thursday, July 28, 2022 9:46 AM
+> > > > > > > From: Kumar Kartikeya Dwivedi [mailto:memxor@gmail.com]
+> > > > > > > Sent: Wednesday, July 27, 2022 10:16 AM
+> > > > > > > Similar to how we detect mem, size pairs in kfunc, teach verifier to
+> > > > > > > treat __ref suffix on argument name to imply that it must be a trusted
+> > > > > > > arg when passed to kfunc, similar to the effect of KF_TRUSTED_ARGS
+> > flag
+> > > > > > > but limited to the specific parameter. This is required to ensure that
+> > > > > > > kfunc that operate on some object only work on acquired pointers and
+> > not
+> > > > > > > normal PTR_TO_BTF_ID with same type which can be obtained by
+> > pointer
+> > > > > > > walking. Release functions need not specify such suffix on release
+> > > > > > > arguments as they are already expected to receive one referenced
+> > > > > > > argument.
+> > > > > >
+> > > > > > Thanks, Kumar. I will try it.
+> > > > >
+> > > > > Uhm. I realized that I was already using another suffix,
+> > > > > __maybe_null, to indicate that a caller can pass NULL as
+> > > > > argument.
+> > > > >
+> > > > > Wouldn't probably work well with two suffixes.
+> > > > >
+> > > >
+> > > > Then you can maybe extend it to parse two suffixes at most (for now
+> > atleast)?
+> > > >
+> > > > > Have you considered to extend BTF_ID_FLAGS to take five
+> > > > > extra arguments, to set flags for each kfunc parameter?
+> > > > >
+> > > >
+> > > > I didn't understand this. Flags parameter is an OR of the flags you
+> > > > set, why would we want to extend it to take 5 args?
+> > > > You can just or f1 | f2 | f3 | f4 | f5, as many as you want.
+> > >
+> > > Oh, so you mean having 5 more args to indicate flags on each
+> > > parameter? It is possible, but I think the scheme for now works ok. If
+> > > you extend it to parse two suffixes, it should be fine. Yes, the
+> > > variable name would be ugly, but you can just make a copy into a
+> > > properly named one. This is the best we can do without switching to
+> > > BTF tags. We can revisit this when we start having 4 or 5 tags on a
+> > > single parameter.
+> > >
+> > > To make it a bit less verbose you could probably call maybe_null just null?
+> >
+> > Thank you for posting the patch.
+> > It still feels that this extra flexibility gets convoluted.
+> > I'm not sure Roberto's kfunc actually needs __ref.
+> > All pointers should be pointers. Hacking -1 and -2 into a pointer
+> > is something that key infra did, but it doesn't mean that
+> > we have to carry over it into bpf kfunc.
 >
-> On Tue Jun 07 2022, Alexei Starovoitov wrote:
-> > Anyway I guess new helper bpf_ktime_get_tai_ns() is ok, since
-> > it's so trivial, but selftest is necessary.
+> There is a separate parameter for the keyring IDs that only
+> verify_pkcs7_signature() understands. Type casting is done
+> internally in the bpf_verify_pkcs7_signature() kfunc.
 >
-> So, I did write a selftest [1] for testing bpf_ktime_get_tai_ns() and
-> verifying that the access to the clock works. It uses AF_XDP sockets and
-> timestamps the incoming packets. The timestamps are then validated in
-> user space.
->
-> Since AF_XDP related code is migrating from libbpf to libxdp, I'm
-> wondering if that sample fits into the kernel's selftests or not. What
-> kind of selftest are you looking for?
+> The other is always a valid struct key pointer or NULL, coming
+> from bpf_lookup_user_key() (acquire function). I extended
+> Kumar's patch further to annotate the struct key parameter
+> with the _ref_null suffix, to accept a referenced pointer or NULL,
+> instead of just referenced.
 
-Please use selftests/bpf framework.
-There are plenty of networking tests in there.
-bpf_ktime_get_tai_ns() doesn't have to rely on af_xdp.
-It can be skb based.
+I don't think it's a good tradeoff complexity wise.
+!=null check can be done in runtime by the helper.
+The type cast is a sign of something fishy in the design.
