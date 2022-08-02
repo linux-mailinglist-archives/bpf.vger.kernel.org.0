@@ -2,298 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A635C58843A
-	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 00:28:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16904588458
+	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 00:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233658AbiHBW2K (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Aug 2022 18:28:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56712 "EHLO
+        id S233348AbiHBWg7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Aug 2022 18:36:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233140AbiHBW2G (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Aug 2022 18:28:06 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C04F54CBF
-        for <bpf@vger.kernel.org>; Tue,  2 Aug 2022 15:27:55 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id b7so10387293qvq.2
-        for <bpf@vger.kernel.org>; Tue, 02 Aug 2022 15:27:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9SA1GeBCwPiGvsrnnwBDw1nYIHiUSNtHqCw5JUNeRyk=;
-        b=tN7USoFfowYqaOA3Zg7kBgDk9uh8FMrZP5UPHQpQgQA49sW+iNiHFS0Ua7puhPUvQV
-         y23XyuYrkE8cRYDz/Za/oub0X6hP/u2391ShPfSH6nuX3nku04d1N71G7JBwsqgFMBCL
-         svXUhAvY2hQc8Ot26TnHY2JyRLD7XFvGuqJeGRvQUqiEV3WxSZh4lwAFNPaW1v4k8i0s
-         9S8eVIpf0+8pemcv6MCpwmd7tlpfmxitnptjmQJDw8HPZMXMt3IPtJpk4KfIeDScYyBn
-         pcM3gNEYo0bAOeb3/VY4KxpyGtKfutMGciY6RE5pFf22fS/4Ng9+Ypqtwqw6Om+9t8at
-         ta0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9SA1GeBCwPiGvsrnnwBDw1nYIHiUSNtHqCw5JUNeRyk=;
-        b=qaKOiBzSHKzeJUD11/oUBi+5RLgloCDxyv00x6zJvXAlOvW76ZbJrIm581LfI7c8kN
-         gj16B+spHnX+Cd5Winv7E6LzKn/eWqC3W4LCBIF5oi0NujB6TbSjq1hYg2P/j+cVL2fT
-         j8kwj/FcCj4DAJU5gxQ617g03iOgtchEXZiSieeexj+Zqp6oQdk19XASNIZjp6IP7E4d
-         rreCoRm6jqa2aM9Xigc2vMEeFBcawbpQeuojXXvxrZoJLHd/gqsc2e8ZKdAGKWSfb9U/
-         ozuRe9KFOIvd9cpaosCFPMq09kadnFPe2qGijJKsM+oVFTOrxcQJ7IuBFj7zGkUkUfM7
-         F2AA==
-X-Gm-Message-State: ACgBeo26tCE8JQP7lpcC/z4jDZPGmk2Xm307NGt13KSRSdJX2on4FP5P
-        OAyTTRX/RPZqa0+kZcAFtRYnvw1xmPl1884iSra+ew==
-X-Google-Smtp-Source: AA6agR5+Y3zN3DuMsHNU5t2COkNkCwWZBkoftegn99gL+qMDMiI/AiRmHr5ptn4jQrA3+/lO3hRhX33eBXJdbM5Cocw=
-X-Received: by 2002:a0c:9101:0:b0:473:9b:d92a with SMTP id q1-20020a0c9101000000b00473009bd92amr19932398qvq.17.1659479274234;
- Tue, 02 Aug 2022 15:27:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220722174829.3422466-1-yosryahmed@google.com>
- <20220722174829.3422466-5-yosryahmed@google.com> <CAEf4BzbD38XFVxMy5crO-=+Xg7U3Vc_fB4Ntug4BEbmdLpvuDQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzbD38XFVxMy5crO-=+Xg7U3Vc_fB4Ntug4BEbmdLpvuDQ@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Tue, 2 Aug 2022 15:27:43 -0700
-Message-ID: <CA+khW7jftQikVsc8moM6rNRqBerUHDM6WRDjb33exdbogDc7aQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 4/8] bpf: Introduce cgroup iter
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yosry Ahmed <yosryahmed@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S233140AbiHBWg6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Aug 2022 18:36:58 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA92C1658C
+        for <bpf@vger.kernel.org>; Tue,  2 Aug 2022 15:36:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1659479816; x=1691015816;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=XCsTPnpTKoW+duZszx3zQSg+OHhT0zbLo009U3mVwMs=;
+  b=gJ5I/PIbXUWOHxTBJNFdFez3PstC8WlkuvCRdaZMjYOREY4UUTRPgh+d
+   HYZfgXbhJMNp4xJ5TPjwWWt1jTrWATer9Qk39A6gjWu2aNzSGy4K39hwW
+   /wvFc7GtL7YZ2tIqjZREApGdPZbkeIrc/GgQtROgUFAmSKl1uor4uws25
+   IrpuHrJiPpIdn64jHFCeAK/1qzPoOgmV+Kgr6NcnRaWUEWzWDfpGpPKFK
+   HGM0h8qja4XgUDgqlYXJ+V1Xt8K25AWXHrkDlBqLauC1D/iQS3yYgfqeO
+   uAWgCKvKLD+yJkTHzN/RhaOwYnji0+9rNEw2b4/sC949GKbOrddgS/Lpu
+   g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10427"; a="269303864"
+X-IronPort-AV: E=Sophos;i="5.93,212,1654585200"; 
+   d="scan'208";a="269303864"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2022 15:36:56 -0700
+X-IronPort-AV: E=Sophos;i="5.93,212,1654585200"; 
+   d="scan'208";a="599448815"
+Received: from dnrajurk-mobl.amr.corp.intel.com ([10.209.121.166])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2022 15:36:56 -0700
+Date:   Tue, 2 Aug 2022 15:36:55 -0700 (PDT)
+From:   Mat Martineau <mathew.j.martineau@linux.intel.com>
+To:     Jiri Olsa <jolsa@kernel.org>
+cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
+        KP Singh <kpsingh@chromium.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, cgroups@vger.kernel.org,
-        Kui-Feng Lee <kuifeng@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Hao Luo <haoluo@google.com>, mptcp@lists.linux.dev
+Subject: Re: [PATCHv2 bpf-next] mptcp: Add struct mptcp_sock definition when
+ CONFIG_MPTCP is disabled
+In-Reply-To: <20220802163324.1873044-1-jolsa@kernel.org>
+Message-ID: <341f1b39-24e1-3c80-41e0-a4ebac91297@linux.intel.com>
+References: <20220802163324.1873044-1-jolsa@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Andrii,
+On Tue, 2 Aug 2022, Jiri Olsa wrote:
 
-On Mon, Aug 1, 2022 at 8:43 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+> The btf_sock_ids array needs struct mptcp_sock BTF ID for
+> the bpf_skc_to_mptcp_sock helper.
 >
-> On Fri, Jul 22, 2022 at 10:48 AM Yosry Ahmed <yosryahmed@google.com> wrote:
-> >
-> > From: Hao Luo <haoluo@google.com>
-> >
-> > Cgroup_iter is a type of bpf_iter. It walks over cgroups in three modes:
-> >
-> >  - walking a cgroup's descendants in pre-order.
-> >  - walking a cgroup's descendants in post-order.
-> >  - walking a cgroup's ancestors.
-> >
-> > When attaching cgroup_iter, one can set a cgroup to the iter_link
-> > created from attaching. This cgroup is passed as a file descriptor and
-> > serves as the starting point of the walk. If no cgroup is specified,
-> > the starting point will be the root cgroup.
-> >
-> > For walking descendants, one can specify the order: either pre-order or
-> > post-order. For walking ancestors, the walk starts at the specified
-> > cgroup and ends at the root.
-> >
-> > One can also terminate the walk early by returning 1 from the iter
-> > program.
-> >
-> > Note that because walking cgroup hierarchy holds cgroup_mutex, the iter
-> > program is called with cgroup_mutex held.
-> >
-> > Currently only one session is supported, which means, depending on the
-> > volume of data bpf program intends to send to user space, the number
-> > of cgroups that can be walked is limited. For example, given the current
-> > buffer size is 8 * PAGE_SIZE, if the program sends 64B data for each
-> > cgroup, the total number of cgroups that can be walked is 512. This is
-> > a limitation of cgroup_iter. If the output data is larger than the
-> > buffer size, the second read() will signal EOPNOTSUPP. In order to work
-> > around, the user may have to update their program to reduce the volume
-> > of data sent to output. For example, skip some uninteresting cgroups.
-> > In future, we may extend bpf_iter flags to allow customizing buffer
-> > size.
-> >
-> > Signed-off-by: Hao Luo <haoluo@google.com>
-> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> > Acked-by: Yonghong Song <yhs@fb.com>
-> > ---
-> >  include/linux/bpf.h                           |   8 +
-> >  include/uapi/linux/bpf.h                      |  30 +++
-> >  kernel/bpf/Makefile                           |   3 +
-> >  kernel/bpf/cgroup_iter.c                      | 252 ++++++++++++++++++
-> >  tools/include/uapi/linux/bpf.h                |  30 +++
-> >  .../selftests/bpf/prog_tests/btf_dump.c       |   4 +-
-> >  6 files changed, 325 insertions(+), 2 deletions(-)
-> >  create mode 100644 kernel/bpf/cgroup_iter.c
-> >
-> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > index a97751d845c9..9061618fe929 100644
-> > --- a/include/linux/bpf.h
-> > +++ b/include/linux/bpf.h
-> > @@ -47,6 +47,7 @@ struct kobject;
-> >  struct mem_cgroup;
-> >  struct module;
-> >  struct bpf_func_state;
-> > +struct cgroup;
-> >
-> >  extern struct idr btf_idr;
-> >  extern spinlock_t btf_idr_lock;
-> > @@ -1717,7 +1718,14 @@ int bpf_obj_get_user(const char __user *pathname, int flags);
-> >         int __init bpf_iter_ ## target(args) { return 0; }
-> >
-> >  struct bpf_iter_aux_info {
-> > +       /* for map_elem iter */
-> >         struct bpf_map *map;
-> > +
-> > +       /* for cgroup iter */
-> > +       struct {
-> > +               struct cgroup *start; /* starting cgroup */
-> > +               int order;
-> > +       } cgroup;
-> >  };
-> >
-> >  typedef int (*bpf_iter_attach_target_t)(struct bpf_prog *prog,
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index ffcbf79a556b..fe50c2489350 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -87,10 +87,30 @@ struct bpf_cgroup_storage_key {
-> >         __u32   attach_type;            /* program attach type (enum bpf_attach_type) */
-> >  };
-> >
-> > +enum bpf_iter_cgroup_traversal_order {
-> > +       BPF_ITER_CGROUP_PRE = 0,        /* pre-order traversal */
-> > +       BPF_ITER_CGROUP_POST,           /* post-order traversal */
-> > +       BPF_ITER_CGROUP_PARENT_UP,      /* traversal of ancestors up to the root */
+> When CONFIG_MPTCP is disabled, the 'struct mptcp_sock' is not
+> defined and resolve_btfids will complain with:
 >
-> I've just put up my arguments why it's a good idea to also support a
-> "trivial" mode of only traversing specified cgroup and no descendants
-> or parents. Please see [0].
-
-cc Kui-Feng in this thread.
-
-Yeah, I think it's a good idea. It's useful when we only want to show
-a single object, which can be common. Going further, I think we may
-want to restructure bpf_iter to optimize for this case.
-
-> I think the same applies here, especially
-> considering that it seems like a good idea to support
-> task/task_vma/task_files iteration within a cgroup.
-
-I have reservations on these use cases. I don't see immediate use of
-iterating vma or files within a cgroup. Tasks within a cgroup? Maybe.
-:)
-
-> So depending on
-> how successful I am in arguing for supporting task iterator with
-> target cgroup, I think we should reuse *exactly* this
-> bpf_iter_cgroup_traversal_order and how we specify cgroup (FD or ID,
-> see some more below) *as is* in task iterators as well. In the latter
-> case, having an ability to say "iterate task for only given cgroup" is
-> very useful, and for such mode all the PRE/POST/PARENT_UP is just an
-> unnecessary nuisance.
+>  BTFIDS  vmlinux
+> WARN: resolve_btfids: unresolved symbol mptcp_sock
 >
-> So please consider also adding and supporting BPF_ITER_CGROUP_SELF (or
-> whatever naming makes most sense).
+> Adding empty difinition for struct mptcp_sock when CONFIG_MPTCP
+> is disabled.
+>
+> Acked-by: Martin KaFai Lau <kafai@fb.com>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+
+Thanks Jiri, v2 looks good to merge in bpf-next:
+
+Reviewed-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
+
+
+> ---
+> include/net/mptcp.h | 4 ++++
+> 1 file changed, 4 insertions(+)
+>
+> v2 changes:
+>  - moved the new empty struct declaration next to the inline
+>    bpf_mptcp_sock_from_subflow function [Mat]
+>
+> diff --git a/include/net/mptcp.h b/include/net/mptcp.h
+> index ac9cf7271d46..412479ebf5ad 100644
+> --- a/include/net/mptcp.h
+> +++ b/include/net/mptcp.h
+> @@ -291,4 +291,8 @@ struct mptcp_sock *bpf_mptcp_sock_from_subflow(struct sock *sk);
+> static inline struct mptcp_sock *bpf_mptcp_sock_from_subflow(struct sock *sk) { return NULL; }
+> #endif
+>
+> +#if !IS_ENABLED(CONFIG_MPTCP)
+> +struct mptcp_sock { };
+> +#endif
+> +
+> #endif /* __NET_MPTCP_H */
+> -- 
+> 2.37.1
+>
 >
 
-PRE/POST/UP can be reused for iter of tree-structured containers, like
-rbtree [1]. SELF can be reused for any iters like iter/task,
-iter/cgroup, etc. Promoting all of them out of cgroup-specific struct
-seems valuable.
-
-[1] https://lwn.net/Articles/902405/
-
->
-> Some more naming nits. I find BPF_ITER_CGROUP_PRE and
-> BPF_ITER_CGROUP_POST a bit confusing. Even internally in kernel we
-> have css_next_descendant_pre/css_next_descendant_post, so why not
-> reflect the fact that we are going to iterate descendants:
-> BPF_ITER_CGROUP_DESCENDANTS_{PRE,POST}. And now that we use
-> "descendants" terminology, PARENT_UP should be ANCESTORS. ANCESTORS_UP
-> probably is fine, but seems a bit redundant (unless we consider a
-> somewhat weird ANCESTORS_DOWN, where we find the furthest parent and
-> then descend through preceding parents until we reach specified
-> cgroup; seems a bit exotic).
->
-
-BPF_ITER_CGROUP_DESCENDANTS_PRE is too verbose. If there is a
-possibility of merging rbtree and supporting walk order of rbtree
-iter, maybe the name here could be general, like
-BPF_ITER_DESCENDANTS_PRE, which seems better.
-
->   [0] https://lore.kernel.org/bpf/f92e20e9961963e20766e290ee6668edd4bacf06.camel@fb.com/T/#m5ce50632aa550dd87a99241efb168cbcde1ee98f
->
-> > +};
-> > +
-> >  union bpf_iter_link_info {
-> >         struct {
-> >                 __u32   map_fd;
-> >         } map;
-> > +
-> > +       /* cgroup_iter walks either the live descendants of a cgroup subtree, or the
-> > +        * ancestors of a given cgroup.
-> > +        */
-> > +       struct {
-> > +               /* Cgroup file descriptor. This is root of the subtree if walking
-> > +                * descendants; it's the starting cgroup if walking the ancestors.
-> > +                * If it is left 0, the traversal starts from the default cgroup v2
-> > +                * root. For walking v1 hierarchy, one should always explicitly
-> > +                * specify the cgroup_fd.
-> > +                */
-> > +               __u32   cgroup_fd;
->
-> Now, similar to what I argued in regard of pidfd vs pid, I think the
-> same applied to cgroup_fd vs cgroup_id. Why can't we support both?
-> cgroup_fd has some benefits, but cgroup_id is nice due to simplicity
-> and not having to open/close/keep extra FDs (which can add up if we
-> want to periodically query something about a large set of cgroups).
-> Please see my arguments from [0] above.
->
-> Thoughts?
->
-
-We can support both, it's a good idea IMO. But what exactly is the
-interface going to look like? Can you be more specific about that?
-Below is something I tried based on your description.
-
-@@ -91,6 +91,18 @@ union bpf_iter_link_info {
-        struct {
-                __u32   map_fd;
-        } map;
-+       struct {
-+               /* PRE/POST/UP/SELF */
-+               __u32 order;
-+               struct {
-+                       __u32 cgroup_fd;
-+                       __u64 cgroup_id;
-+               } cgroup;
-+               struct {
-+                       __u32 pid_fd;
-+                       __u64 pid;
-+               } task;
-+       };
- };
-
-> > +               __u32   traversal_order;
-> > +       } cgroup;
-> >  };
-> >
-> >  /* BPF syscall commands, see bpf(2) man-page for more details. */
->
-> [...]
+--
+Mat Martineau
+Intel
