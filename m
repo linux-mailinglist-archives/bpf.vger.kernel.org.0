@@ -2,236 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA6D587B7E
-	for <lists+bpf@lfdr.de>; Tue,  2 Aug 2022 13:22:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17987587C0A
+	for <lists+bpf@lfdr.de>; Tue,  2 Aug 2022 14:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233412AbiHBLWV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Aug 2022 07:22:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55472 "EHLO
+        id S236656AbiHBMM4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Aug 2022 08:12:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231860AbiHBLWU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Aug 2022 07:22:20 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 468B63E740
-        for <bpf@vger.kernel.org>; Tue,  2 Aug 2022 04:22:19 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id i128-20020a1c3b86000000b003a3a22178beso101178wma.3
-        for <bpf@vger.kernel.org>; Tue, 02 Aug 2022 04:22:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc;
-        bh=TYeTEUPngR9YnSzCPr1EUlp9wqiY6b4xJaMzjAwP0t0=;
-        b=jp99q48Dv8PNMNUngavQIIYneqLwle4nTRV+p/PaGWjRHrDUO+OVng9CmozK/alFez
-         FIv56s7ALnAjow8ooYT0cQaP64RmJJiuggrjeblfTUMEVMPFJl6F4xQY82J8YjZTM/Kd
-         5ueS0Z22RDGwJAOlGT193CKy19bKddixKDeFLIIbt55koYHWxoQYWbfLIZfgziuuLdgU
-         DhDpwW6RHm0Aj0vubRfJqAI4O2jgEMeIe3jGt8I5Z6IXPDrxQwsNLi0Yh00rdNVfgQeW
-         CLo7TY4Poh6JC0K1eqsUkRKz45GNJcJtwfgdEcGrPa66C1vrx+I850N/jWSVGl6eGmHD
-         0G5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc;
-        bh=TYeTEUPngR9YnSzCPr1EUlp9wqiY6b4xJaMzjAwP0t0=;
-        b=jTfEdbEMI5VrDwpI38kDUMG873iTWi5BFbppNj0fT9T/bMhdEAckJRcLeMrCfnYCMS
-         PrsJmjFWtbYdEhbczD57uRU9XLvAeUpRs78Zd4DO1bnKcvJRuaEtINiY2Uw8VIQiYDQm
-         +iiWirp9x69Cegk8PdPFcUbAk3B3AfeW8zHXoc86ngNK6QSlhORUbpc26K39c5BoU0dH
-         /mrFZntoQ11KTVUzFAIxWOkbgUufvdck0V/FeI2mauPlo2dxSGxJT3Y1JlkelZvXfwkI
-         GtYm71vB03WPRxcU6vyxsmTC6ueolBkqehLl1jKtEEpaZGFXfpYQ1hovmIGskBKcsZx8
-         NQUA==
-X-Gm-Message-State: AJIora9lp1Q1hK22LzV5gqLKIJzvEe8aMTDmBY08MMATZrbEv8tQEWwd
-        oWOwp8Qq4UX12hMSvhoQwqOuMDYwQJdR6JNc
-X-Google-Smtp-Source: AGRyM1ubkUS/GmGP8jpYvO2fpWGsoNwLpadlgDUaMkol87amfjsESjvMStr08gR4IZwwB6wFsdJU7A==
-X-Received: by 2002:a05:600c:4313:b0:3a3:2c86:9b5c with SMTP id p19-20020a05600c431300b003a32c869b5cmr13781263wme.65.1659439337762;
-        Tue, 02 Aug 2022 04:22:17 -0700 (PDT)
-Received: from [192.168.178.32] ([51.155.200.13])
-        by smtp.gmail.com with ESMTPSA id c5-20020a05600c0a4500b003a3442f1229sm28425455wmq.29.2022.08.02.04.22.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Aug 2022 04:22:17 -0700 (PDT)
-Message-ID: <65acd7f9-742a-eecf-ee0b-5f9825933dc7@isovalent.com>
-Date:   Tue, 2 Aug 2022 12:22:16 +0100
+        with ESMTP id S233232AbiHBMMz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Aug 2022 08:12:55 -0400
+Received: from mx07-0057a101.pphosted.com (mx07-0057a101.pphosted.com [205.220.184.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4C552871E;
+        Tue,  2 Aug 2022 05:12:53 -0700 (PDT)
+Received: from pps.filterd (m0214197.ppops.net [127.0.0.1])
+        by mx07-0057a101.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 272Bru3x021377;
+        Tue, 2 Aug 2022 14:09:52 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=westermo.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=12052020; bh=yiYWJq9F9uZdrFhn759TuJd0/YpGKCmVgaHHZh39HmI=;
+ b=lUxQfIFyvIEw4LBm8jkD7UcA9naHvi2jLabSt5SuW3mSYC5J3tJF34XDPmTGNXumBfBR
+ 0Aheb1bo3w+I9L2hz7v+wjNry2VQZmm1x7b+38s1eWN+mkc6cJyFy+xBtoXDURbtMNnz
+ kUZVeKa4RwrdOGY4IFckZLDm13egDoTRxA70fcKfjXKUi42AiAwoFDEJYqrU55ru16/7
+ 9jB8pjlQxptNqICZ+C/Wd4Wvz3wtywSsxLpxK7lwHilSAKWtBwuxeonBUVyGTor+fe+R
+ 7y98idRxdUXD/hyjDcygC8Sh12xInivphCV4cYvLD+m7HJ9KYnJnq90rritd491KjZtv 3g== 
+Received: from mail.beijerelectronics.com ([195.67.87.131])
+        by mx07-0057a101.pphosted.com (PPS) with ESMTPS id 3hms0c2wbs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 02 Aug 2022 14:09:52 +0200
+Received: from Orpheus.westermo.com (172.29.101.13) by
+ EX01GLOBAL.beijerelectronics.com (10.101.10.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
+ 15.1.2375.17; Tue, 2 Aug 2022 14:09:50 +0200
+From:   Matthias May <matthias.may@westermo.com>
+To:     <netdev@vger.kernel.org>
+CC:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <roopa@nvidia.com>,
+        <eng.alaamohamedsoliman.am@gmail.com>, <bigeasy@linutronix.de>,
+        <saeedm@nvidia.com>, <leon@kernel.org>, <roid@nvidia.com>,
+        <maord@nvidia.com>, <lariel@nvidia.com>, <vladbu@nvidia.com>,
+        <cmi@nvidia.com>, <gnault@redhat.com>, <yoshfuji@linux-ipv6.org>,
+        <dsahern@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <nicolas.dichtel@6wind.com>, <eyal.birger@gmail.com>,
+        <jesse@nicira.com>, <linville@tuxdriver.com>,
+        <daniel@iogearbox.net>, <hadarh@mellanox.com>,
+        <ogerlitz@mellanox.com>, <willemb@google.com>,
+        <martin.varghese@nokia.com>,
+        Matthias May <matthias.may@westermo.com>
+Subject: [PATCH v2 net 0/4] Do not use RT_TOS for IPv6 flowlabel
+Date:   Tue, 2 Aug 2022 14:09:31 +0200
+Message-ID: <20220802120935.1363001-1-matthias.may@westermo.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.0
-Subject: Re: bpf-helpers.7: .TH line is... meh (was: [PATCH] bpf_doc.py: Use
- SPDX-License-Identifier)
-Content-Language: en-GB
-To:     Alejandro Colomar <alx.manpages@gmail.com>
-Cc:     bpf@vger.kernel.org, daniel@iogearbox.net
-References: <20220721110821.8240-1-alx.manpages@gmail.com>
- <165844381278.13656.3004635809924499624.git-patchwork-notify@kernel.org>
- <c5462667-377a-1544-f255-e57b9823df6a@gmail.com>
- <d7cd119b-fc34-8e14-6560-5d2cf5567e80@isovalent.com>
- <8f3cf769-4d95-9d16-dab1-bf58b0733af7@gmail.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <8f3cf769-4d95-9d16-dab1-bf58b0733af7@gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [172.29.101.13]
+X-ClientProxiedBy: wsevst-s0023.westermo.com (192.168.130.120) To
+ EX01GLOBAL.beijerelectronics.com (10.101.10.25)
+X-Proofpoint-GUID: U05Ks4GhqPAyaFLi6vew2kkis5G3PpGO
+X-Proofpoint-ORIG-GUID: U05Ks4GhqPAyaFLi6vew2kkis5G3PpGO
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 02/08/2022 11:59, Alejandro Colomar wrote:
-> Hi Quentin,
-> 
-> On 8/2/22 12:28, Quentin Monnet wrote:
->>> I've been running a linter on the man-pages, and had this triggered from
->>> bpf-helpers.7:
->>>
->>> [
->>> $ make lint V=1
->>> LINT (groff)    tmp/lint/man7/bpf-helpers.7.lint-man.groff.touch
->>> groff -man -t -M ./etc/groff/tmac -m checkstyle -rCHECKSTYLE=3 -ww  -z
->>> man7/bpf-helpers.7
->>> an.tmac:man7/bpf-helpers.7:3: style: .TH missing third argument; suggest
->>> document modification date in ISO 8601 format (YYYY-MM-DD)
->>> an.tmac:man7/bpf-helpers.7:3: style: .TH missing fourth argument;
->>> suggest package/project name and version (e.g., "groff 1.23.0")
->>> an.tmac:man7/bpf-helpers.7:3: style: .TH missing fifth argument and
->>> second argument '7' not a recognized manual section; specify volume
->>> title
->>> found style problems; aborting
->>
->> Not sure I understand this last one. Isn't "7" a valid man section?
-> 
-> It is a valid section.  I don't understand it either.  Maybe groff(1)
-> has gone crazy after so many errors.  I'll report a bug to groff.
-> 
->>
->>> make: *** [lib/lint-man.mk:49:
->>> tmp/lint/man7/bpf-helpers.7.lint-man.groff.touch] Error 1
->>>
->>> ]
->>>
->>> See what a normal .TH line looks like, and what bpf-helpers.7 has:
->>>
->>> [
->>> $ grep ^.TH man2/bpf.2
->>> .TH BPF 2 2021-08-27 "Linux" "Linux Programmer's Manual"
->>> $ grep ^.TH man7/bpf-helpers.7
->>> .TH BPF-HELPERS 7 "" "" ""
->>> ]
->>>
->>>
->>> I don't know if you can fix that, or if it's a limitation of the
->>> generator?  I can live with it, but it would be nice if it could be
->>> fixed.  It provides the headers and footers of the manual page.
->>
->> I had never really looked into completing this line before, but it seems
->> that Docutils/rst2man has a few (albeit not much documented) docinfo
->> elements available to complete _some_ of these fields. We currently have
->> ":Manual section: 7" in the generated page. I can generate a page close
->> to the result above with:
->>
->>      :Manual section: 7
->>      :Manual group: Linux Programmer's Manual
->>      :Version: Linux
->>      :Date: 2022-08-02
->>
->> With these fields, I get:
->>
->>      .TH BPF-HELPERS 7 "2022-08-03" "Linux" "Linux Programmer's Manual"
->>
->> Caveats: First, we get additional double quotes around the date, not
->> sure if this matters.
-> 
-> Nah, quotes are only for spaces (they are ignored in this case).  You're
-> fine with or without them.
-> 
->>
->> Second: “Version” does not seem a relevant field name in that case, but
->> this is apparently the only option that we have to insert a value at
->> this location [0]. Apparently the manpage writer for Docutils assumes
->> that this line contains a version number [1].
-> 
-> That field seems to be different, depending on who you ask.
-> 
-> In most cases, it's a "project and version" (see for example the groff
-> warning text).
-> 
-> But in the linux man-pages, since we cover many projects and versions,
-> we just say which project we're documenting (to avoid having to update
-> the version every time, I guess).
-> 
-> See man-pages(7):
-> [
->    Title line
->        The first command in a man page should be a TH command:
-> 
->               .TH title section date source manual
-> 
->        The arguments of the command are as follows:
-> 
->        [...]
-> 
->        source The source of the  command,  function,  or  system
->               call.
-> 
->               For those few man‐pages pages in Sections 1 and 8,
->               probably you just want to write GNU.
-> 
->               For  system  calls, just write Linux.  (An earlier
->               practice was to write the version  number  of  the
->               kernel  from which the manual page was being writ‐
->               ten/checked.  However, this was never done consis‐
->               tently, and so was probably worse  than  including
->               no  version number.  Henceforth, avoid including a
->               version number.)
-> 
->               For library calls that are part of glibc or one of
->               the other common GNU libraries, just use GNU C Li‐
->               brary, GNU, or an empty string.
-> 
->               For Section 4 pages, use Linux.
-> 
->               In cases of doubt, just write Linux, or GNU.
-> 
->        [...]
-> ]
-> 
-> So, just saying ':Version: Linux' would be fine.
-> 
->>
->> Third: The date should of course be updated when generating the page. I
->> found that rst2man has a "--date" option, but it does not insert it at
->> the location we want. Instead, it would probably be a matter of adding a
->> sed command to the pipeline, something along:
->>
->>      $ ./scripts/bpf_docs.py helpers | \
->>          sed -e "s/__DATE__/$(date -I)/" | \
->>          rst2man | man -l -
-> 
-> The date, yeah, I can add it to the pipeline.
-> BTW, I reported a bug to rst2man (I CCd you, so you probably already
-> know :)).
-> 
->>
->> If it looks better for the man-pages repo, I can send a patch for the
->> man-page template in bpf_docs.py to set ":Manual group:" and
->> ":Version:". I can also ask on the docutils mailing list if there is a
->> cleaner way to proceed, without falling back to this ":Version:" field.
-> 
-> Yeah, please patch :Manual group:.  Also patch :Version: (I think we can
-> live with it), although of course feel free to ask about better
-> alternatives to it.
-> 
-> But don't patch :Date: yet.  Let's see what they answer to the bug
-> report.  (And if you want, you can wait for the bug report to resolve to
-> patch everything at once, of course.)
+According to Guillaume Nault RT_TOS should never be used for IPv6.
 
-Thanks for the precisions, and for opening the bug!
-OK, I'll follow the discussion on the bug and wait to see how it goes.
-I've set a reminder to myself to update the other info in a few weeks if
-nothing happens by then.
+Quote:
+RT_TOS() is an old macro used to interprete IPv4 TOS as described in
+the obsolete RFC 1349. It's conceptually wrong to use it even in IPv4
+code, although, given the current state of the code, most of the
+existing calls have no consequence.
 
-Thanks,
-Quentin
+But using RT_TOS() in IPv6 code is always a bug: IPv6 never had a "TOS"
+field to be interpreted the RFC 1349 way. There's no historical
+compatibility to worry about.
 
+---
+v1 -> v2:
+ - Fix spacing of "Fixes" tag.
+ - Add missing CCs
 
+Matthias May (4):
+  geneve: do not use RT_TOS for IPv6 flowlabel
+  vxlan: do not use RT_TOS for IPv6 flowlabel
+  mlx5: do not use RT_TOS for IPv6 flowlabel
+  ipv6: do not use RT_TOS for IPv6 flowlabel
+
+ drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c | 4 ++--
+ drivers/net/geneve.c                                | 3 +--
+ drivers/net/vxlan/vxlan_core.c                      | 2 +-
+ net/ipv6/ip6_output.c                               | 3 +--
+ 4 files changed, 5 insertions(+), 7 deletions(-)
+
+-- 
+2.35.1
 
