@@ -2,181 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ED3558770E
-	for <lists+bpf@lfdr.de>; Tue,  2 Aug 2022 08:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 185ED587782
+	for <lists+bpf@lfdr.de>; Tue,  2 Aug 2022 09:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233695AbiHBGU1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Aug 2022 02:20:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49122 "EHLO
+        id S234360AbiHBHHR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Aug 2022 03:07:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230298AbiHBGU1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Aug 2022 02:20:27 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B0B65FF8
-        for <bpf@vger.kernel.org>; Mon,  1 Aug 2022 23:20:22 -0700 (PDT)
-Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4LxlDH4R2MzmVKb;
-        Tue,  2 Aug 2022 14:18:23 +0800 (CST)
-Received: from [10.174.176.117] (10.174.176.117) by
- dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 2 Aug 2022 14:20:18 +0800
-Subject: Re: [RFC PATCH bpf-next 0/3] Add support for qp-trie map
-To:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, <bpf@vger.kernel.org>
-CC:     Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        with ESMTP id S235738AbiHBHGu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Aug 2022 03:06:50 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06744491F3;
+        Tue,  2 Aug 2022 00:06:48 -0700 (PDT)
+From:   Kurt Kanzenbach <kurt@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1659424006;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tAdw5PAie7dR2rW+68+HHxt7ehKp+AayklL8k0nymhM=;
+        b=QXwOSd8d5AHmPeyPL9f/yDH28NMjHF80aZwbr+TMSiGR9kzsFRlqwXUV6TOrtUrg5YIuHM
+        RuV0qtyNz02QMrzDTTLPzSW9dCUx/J7XTMo1r7sQJaa2MpupTpY/Y5Cl0md1dN7365uMjz
+        f6KHchHr5IILDoTyVSiobqiUQ5BAlwXyNT4uQ1zgY/mR3MOUZMoZ3yefeAqnzO1pMeDHeh
+        ukhfd1w3GYpKlSpx4Wk0MH3GYBBTFnE08FB40Af7fQZlwf7wH4DeVA6DSCO9cXuybY8DFQ
+        mR4bIvZjTH4xQsbWCm6DjESbOGeD5+btKZz4PTgkI3dGmVvXsCMdT2BZbLNfIg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1659424006;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tAdw5PAie7dR2rW+68+HHxt7ehKp+AayklL8k0nymhM=;
+        b=eu9kQ392QLiVoA1eEm0Lb59RVAT3nn2RMJY3mEbxlnxo7jDmV5ZrEQCvFJkyzuxVTwQUAT
+        rYNxUPmT1PetgVDQ==
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-References: <20220726130005.3102470-1-houtao1@huawei.com>
-From:   Hou Tao <houtao1@huawei.com>
-Message-ID: <52792975-a08c-7cb7-ec7d-15f7d99aa288@huawei.com>
-Date:   Tue, 2 Aug 2022 14:20:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        KP Singh <kpsingh@kernel.org>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Geliang Tang <geliang.tang@suse.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next] bpf: Add BPF-helper for accessing CLOCK_TAI
+In-Reply-To: <CAADnVQKqo1XfrPO8OYA1VpArKHZotuDjGNtxM0AftUj_R+vU7g@mail.gmail.com>
+References: <20220606103734.92423-1-kurt@linutronix.de>
+ <CAADnVQJ--oj+iZYXOwB1Rs9Qiy6Ph9HNha9pJyumVom0tiOFgg@mail.gmail.com>
+ <875ylc6djv.ffs@tglx> <c166aa47-e404-e6ee-0ec5-0ead1923f412@redhat.com>
+ <CAADnVQKqo1XfrPO8OYA1VpArKHZotuDjGNtxM0AftUj_R+vU7g@mail.gmail.com>
+Date:   Tue, 02 Aug 2022 09:06:44 +0200
+Message-ID: <87pmhj15vf.fsf@kurt>
 MIME-Version: 1.0
-In-Reply-To: <20220726130005.3102470-1-houtao1@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.176.117]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500025.china.huawei.com (7.185.36.35)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-ping ?
+--=-=-=
+Content-Type: text/plain
 
-On 7/26/2022 9:00 PM, Hou Tao wrote:
-> Hi,
->
-> The initial motivation for qp-trie map is to reduce memory usage for
-> string keys special those with large differencies in length as
-> discussed in [0]. And as a big-endian lexicographical ordered map, it
-> can also be used for any binary data with fixed or variable length.
->
-> Now the basic functionality of qp-trie is ready, so posting a RFC version
-> to get more feedback or suggestions about qp-trie. Specially feedback
-> about the following questions:
->
-> (1) Application scenario for qp-trie
-> Andrii had proposed to re-implement lpm-trie by using qp-trie. The
-> advantage would be the speed up of lookup operations due to lower tree
-> depth of qp-trie. Maybe the performance of update could also be improved
-> although in cillium there is a big lock during lpm-trie update [1]. Is
-> there any other use cases for qp-trie ? Specially those cases which need
-> both ordering and memory efficiency or cases in which jhash() of htab
-> creates too much collisions and qp-trie lookup performances better than
-> hash-table lookup as shown below:
->
->   Randomly-generated binary data with variable length (length range=[1, 256] entries=16K)
->
->   htab lookup      (1  thread)    5.062 ± 0.004M/s (drops 0.002 ± 0.000M/s mem 8.125 MiB)
->   htab lookup      (2  thread)   10.256 ± 0.017M/s (drops 0.006 ± 0.000M/s mem 8.114 MiB)
->   htab lookup      (4  thread)   20.383 ± 0.006M/s (drops 0.009 ± 0.000M/s mem 8.117 MiB)
->   htab lookup      (8  thread)   40.727 ± 0.093M/s (drops 0.010 ± 0.000M/s mem 8.123 MiB)
->   htab lookup      (16 thread)   81.333 ± 0.311M/s (drops 0.020 ± 0.000M/s mem 8.122 MiB)
->   
->   qp-trie lookup   (1  thread)   10.161 ± 0.008M/s (drops 0.006 ± 0.000M/s mem 4.847 MiB)
->   qp-trie lookup   (2  thread)   20.287 ± 0.024M/s (drops 0.007 ± 0.000M/s mem 4.828 MiB)
->   qp-trie lookup   (4  thread)   40.784 ± 0.020M/s (drops 0.015 ± 0.000M/s mem 4.071 MiB)
->   qp-trie lookup   (8  thread)   81.165 ± 0.013M/s (drops 0.040 ± 0.000M/s mem 4.045 MiB)
->   qp-trie lookup   (16 thread)  159.955 ± 0.014M/s (drops 0.108 ± 0.000M/s mem 4.495 MiB)
->
->   * non-zero drops is due to duplicated keys in generated keys.
->
-> (2) more fine-grained lock in qp-trie
-> Now qp-trie is divided into 256 sub-trees by using the first character of
-> key and one sub-tree is protected one spinlock. From the data below,
-> although the update/delete speed of qp-trie is slower compare with hash
-> table, but it scales similar with hash table. So maybe 256-locks is a
-> good enough solution ?
->
->   Strings in /proc/kallsyms
->   htab update      (1  thread)    2.850 ± 0.129M/s (drops 0.000 ± 0.000M/s mem 33.564 MiB)
->   htab update      (2  thread)    4.363 ± 0.031M/s (drops 0.000 ± 0.000M/s mem 33.563 MiB)
->   htab update      (4  thread)    6.306 ± 0.096M/s (drops 0.000 ± 0.000M/s mem 33.718 MiB)
->   htab update      (8  thread)    6.611 ± 0.026M/s (drops 0.000 ± 0.000M/s mem 33.627 MiB)
->   htab update      (16 thread)    6.390 ± 0.015M/s (drops 0.000 ± 0.000M/s mem 33.564 MiB)
->   qp-trie update   (1  thread)    1.157 ± 0.099M/s (drops 0.000 ± 0.000M/s mem 18.333 MiB)
->   qp-trie update   (2  thread)    1.920 ± 0.062M/s (drops 0.000 ± 0.000M/s mem 18.293 MiB)
->   qp-trie update   (4  thread)    2.630 ± 0.050M/s (drops 0.000 ± 0.000M/s mem 18.472 MiB)
->   qp-trie update   (8  thread)    3.171 ± 0.027M/s (drops 0.000 ± 0.000M/s mem 18.301 MiB)
->   qp-trie update   (16 thread)    3.782 ± 0.036M/s (drops 0.000 ± 0.000M/s mem 19.040 MiB)
->
-> (3) Improve memory efficiency further
-> When using strings in BTF string section as a data set for qp-trie, the
-> slab memory usage showed in cgroup memory.stats file is about 11MB for
-> qp-trie and 15MB for hash table as shown below. However the theoretical
-> memory usage for qp-trie is ~6.8MB (is ~4.9MB if removing "parent" & "rcu"
-> fields from qp_trie_branch) and the extra memory usage (about 38% of total
-> usage) mainly comes from internal fragment in slab (namely 2^n alignment
-> for allocation) and overhead in kmem-cgroup accounting. We can reduce the
-> internal fragment by creating separated kmem_cache for qp_trie_branch with
-> different child nodes, but not sure whether it is worthy or not.
->
-> And in order to prevent allocating a rcu_head for each leaf node, now only
-> branch node is RCU-freed, so when replacing a leaf node, a new branch node
-> and a new leaf node will be allocated instead of replacing the old leaf
-> node and RCU-freed the old leaf node. Also not sure whether or not it is
-> worthy.
->
->   Strings in BTF string section (entries=115980):
->   htab lookup      (1  thread)    9.889 ± 0.006M/s (drops 0.000 ± 0.000M/s mem 15.069 MiB)
->   qp-trie lookup   (1  thread)    5.132 ± 0.002M/s (drops 0.000 ± 0.000M/s mem 10.721 MiB)
->
->   All files under linux kernel source directory (entries=74359):
->   htab lookup      (1  thread)    8.418 ± 0.077M/s (drops 0.000 ± 0.000M/s mem 14.207 MiB)
->   qp-trie lookup   (1  thread)    4.966 ± 0.003M/s (drops 0.000 ± 0.000M/s mem 9.355 MiB)
->
->   Domain names for Alexa top million web site (entries=1000000):
->   htab lookup      (1  thread)    4.551 ± 0.043M/s (drops 0.000 ± 0.000M/s mem 190.761 MiB)
->   qp-trie lookup   (1  thread)    2.804 ± 0.017M/s (drops 0.000 ± 0.000M/s mem 83.194 MiB)
->
-> Comments and suggestions are always welcome.
->
-> Regards,
-> Tao
->
-> [0]: https://lore.kernel.org/bpf/CAEf4Bzb7keBS8vXgV5JZzwgNGgMV0X3_guQ_m9JW3X6fJBDpPQ@mail.gmail.com/
-> [1]: https://github.com/cilium/cilium/blob/5145e31cd65db3361f6538d5f5f899440b769070/pkg/datapath/prefilter/prefilter.go#L123
->
-> Hou Tao (3):
->   bpf: Add support for qp-trie map
->   selftests/bpf: add a simple test for qp-trie
->   selftests/bpf: add benchmark for qp-trie map
->
->  include/linux/bpf_types.h                     |    1 +
->  include/uapi/linux/bpf.h                      |    8 +
->  kernel/bpf/Makefile                           |    1 +
->  kernel/bpf/bpf_qp_trie.c                      | 1064 +++++++++++++++++
->  tools/include/uapi/linux/bpf.h                |    8 +
->  tools/testing/selftests/bpf/Makefile          |    5 +-
->  tools/testing/selftests/bpf/bench.c           |   10 +
->  .../selftests/bpf/benchs/bench_qp_trie.c      |  499 ++++++++
->  .../selftests/bpf/benchs/run_bench_qp_trie.sh |   55 +
->  .../selftests/bpf/prog_tests/str_key.c        |   69 ++
->  .../selftests/bpf/progs/qp_trie_bench.c       |  218 ++++
->  tools/testing/selftests/bpf/progs/str_key.c   |   85 ++
->  12 files changed, 2022 insertions(+), 1 deletion(-)
->  create mode 100644 kernel/bpf/bpf_qp_trie.c
->  create mode 100644 tools/testing/selftests/bpf/benchs/bench_qp_trie.c
->  create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_qp_trie.sh
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/str_key.c
->  create mode 100644 tools/testing/selftests/bpf/progs/qp_trie_bench.c
->  create mode 100644 tools/testing/selftests/bpf/progs/str_key.c
->
+Hi Alexei,
 
+On Tue Jun 07 2022, Alexei Starovoitov wrote:
+> Anyway I guess new helper bpf_ktime_get_tai_ns() is ok, since
+> it's so trivial, but selftest is necessary.
+
+So, I did write a selftest [1] for testing bpf_ktime_get_tai_ns() and
+verifying that the access to the clock works. It uses AF_XDP sockets and
+timestamps the incoming packets. The timestamps are then validated in
+user space.
+
+Since AF_XDP related code is migrating from libbpf to libxdp, I'm
+wondering if that sample fits into the kernel's selftests or not. What
+kind of selftest are you looking for?
+
+Thanks,
+Kurt
+
+[1] - https://github.com/shifty91/xdp-timestamping/tree/master/src
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJHBAEBCgAxFiEEvLm/ssjDfdPf21mSwZPR8qpGc4IFAmLozQQTHGt1cnRAbGlu
+dXRyb25peC5kZQAKCRDBk9HyqkZzgt3bD/0cPNL9DF0UocuUq/aYcJwAr132MSSt
+GPbregF7Q7HtI41B0nbqfj3Zz3zYB4GYcMzen8ApbpTKIcnrxTQ2lRbyMoElfe3e
+9KKCVh6ALl8RzzHiCPfvFqwJClfdWZhyLr5IZ98K2cxIRPp/HdrPEBpK2LxcBXPu
+5Pi585ymkWZM/0dk6/NvmvDWPgMhPTbtwdQUGl85/q++2zUFGPNc6Sd7DO7f1bm9
+7mVZTZAp/OKj1W0Ul5/o+AA+7zIVbFnd7+s9Ezg908QqlW45Civy9dZpVCtsNvmX
+oa6jjipmU8tAUxRM8S8zuoR74o4TLthRNi481jKROGN6PHQpIQOGBlj9Mw1INnM7
+DjA//xYFYcjpPoG2ozvICZeWUNcqEIyuc+Ka5RlcGCpYw5WNHq+2XZLR6K6QhQ4k
+eZjCZK7jPLbM7zvm+M7pCMqGzG+nuddW2OcS+N2g4LgkKlK2xQ9Acp1KMyScXkaP
+RXEzPZkr9HcEVqd5KlzyFiqM4OFHOmQvZ4eyKxaNjAZwA9wwrVqiWI8xnp+PlpNF
+Gg2MVYYITQ4YWkepK3XieusPhINJARSNgBFRyRIG++2nm+1UDJ7RE6gI5vyLfpl0
+NwtwXBUMEM4JNog+7j/YHeF76pwHs9wCecplm2CdISZ+2RbWORS+Ox1i5/WnU9Mt
+MANw9OXx70nesA==
+=NcTj
+-----END PGP SIGNATURE-----
+--=-=-=--
