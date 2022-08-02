@@ -2,138 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 760015884DF
-	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 01:46:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF3175884E4
+	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 01:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229614AbiHBXq1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Aug 2022 19:46:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47500 "EHLO
+        id S229863AbiHBXv1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Aug 2022 19:51:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234762AbiHBXq0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Aug 2022 19:46:26 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A0ABE08F
-        for <bpf@vger.kernel.org>; Tue,  2 Aug 2022 16:46:25 -0700 (PDT)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 272Ni5eI031735;
-        Tue, 2 Aug 2022 16:46:11 -0700
+        with ESMTP id S229648AbiHBXvZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Aug 2022 19:51:25 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E5553D06
+        for <bpf@vger.kernel.org>; Tue,  2 Aug 2022 16:51:24 -0700 (PDT)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 272Ni5ew025716;
+        Tue, 2 Aug 2022 16:51:03 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
  subject : to : cc : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=EIpnB3O50h3TMtjN4rGoZfs+XCarKBZ4r9bO5n4y884=;
- b=XIpf6K0HGzMpnQpnqE/YmWsQmk4FxSnwZz9h0n/t/vTexkCjF40cbVixABAs2HpXlPmk
- e4joKUa4RFkfYGmhj3K3X7Xxts8StqPJZEqiaEFQYLOL3xO61gtEttKYluUMEfZIeN0R
- POqco26SqZcINHhy2lvLV//D8hamzMEVuZQ= 
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2102.outbound.protection.outlook.com [104.47.70.102])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3hq51cvah7-1
+ bh=PbRIRgm1CpJ0JNiJvhHr0/KJQWbCvelN/URDtbkqnrQ=;
+ b=l8Zoq/wD5hHOyonVTp7NHemCdd826nfEDfmyLy4fa/hyKY7+vB5Dyh1V8bwBBN3HM2gd
+ I60H96rN6p1XUprQKO+BH5mANps3gS1acei8AMHtIzzf8K5LV6F0uKU0sOsJRRYHasUE
+ wPArNErzACPaXxhIvKE7+0oIQevXZVqhcVw= 
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2176.outbound.protection.outlook.com [104.47.59.176])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hpy32e8t9-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 02 Aug 2022 16:46:11 -0700
+        Tue, 02 Aug 2022 16:51:02 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Im/8Qc0KHWOlZdt8HTQjr2rGQMdM4gk0ggaJAHxm73DNHUWCkDnkwCs+Q9TsKHDrb9ajKuY/Vym1gA+dUTHXXj1YpHCOdWeGWkKiBYhjpsWsO9gMzXjvphUsiR6TfriibXAVTtLXZH0zmf3hkkBYopidBWmsTwN1otvrZ7ywWQpkCS5w2WtOfDddtg4bGhLw3G1QbJ22YV4aFkVfGGZ2uT3Ey5ujRJg9sZ43ePGmBkKIbOICB8ocNk6z9R9V8jXGDoJTmkMLMwEFcHYAPs38uxdn0xtwc+dl4w6ny724AjOT4S5dQmTjXuzElrmi2IjfuRSbMfKB1DTzlBo84tT5Sw==
+ b=MgC39qr2Kp6QPlDjZW2fL0vr5+W4lR4GhD+nv0gbtSYEwyGW2x0OsjgQOkdcXtgomVhy3wzz/J0K+xqP0CjWt+C6gGY8BKvBIjo6xlgImpK7iuJqK+tmMCFAYSI9xZC7x3nclVNphWGrEKqz///pAYnOtvonyyHlA3jUUtH4geE+wY6fynMj57dIIVwBpBn+4G2w9jgIdxUcsLNUgfXy0KVk66zgxtjj5TXBshLRF1N9Tqcts9reXyblTdQIdFIXqVAwXHjrnimgM5ezWhtVbMbePEBWRWWVQu2rVImeCf7Oer+VygXl3aDQ8SuswMYE6slSb23ltrmJE/uX0Zlh2w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EIpnB3O50h3TMtjN4rGoZfs+XCarKBZ4r9bO5n4y884=;
- b=ELeA0iyIfMfcifn1UC3lnEcDPp+mbJiaZ8CjT9xO6fIgIfFStiaxs8mkwRQhNpZqlVRexMJ+dNrWuQnckDFmJIFwjYFOiqtYGLRNXCYKgaxheNBI4asPTKTzyNZTg/YHi5mG5I1ga+bwwrAyYpiw+izshls51r/68c4tYaNOjWbjRe0xESQeAZoIIvUXMTPTjFkhhbC6rq2jV94W3cQJjcY0EjHBqn0V/lK5KHQbjwtN7QfJCyTfEHz2tM+mBYyzn1X5Ouo0UT/try9RuWloZDNF8H+9scamwLLA3h2Oezl59gt95fT8XRaBTGmSLdFl2wDvxtEvcpjFgR3ZymU0yA==
+ bh=PbRIRgm1CpJ0JNiJvhHr0/KJQWbCvelN/URDtbkqnrQ=;
+ b=ek01CG0Ncx8eP9C0klIk5GyXiE9OROCVix6GzSsJrbXF+wCj+X7iIGCMUQBLzotGoxp/9wqSYDDzC4dXfUGrGbQAVUy7prcUA3JCf5ZAyP47QgBUCCr2qwrm60dNGhSLNPZUVtzFUnw0FhNB1CuTHFxKDvppl/WPgjoW9+JtK2auo//HL5Qrsk83oSV/HKTh2VOhhr48EuuWIC/DPNDIhn9WzDXb6EaI91G8b0B0l09yc9tzbrYkpwjqZKW98PQxqladEqjzpEaICDtBaF/yGfrhn0TVLHBmxw6Eak/0S6Z59ZyIhmPGvgEd2hlOKfWGE9iMJNx6OMebdfJA9aLcfw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by DM6PR15MB2956.namprd15.prod.outlook.com (2603:10b6:5:140::29) with
+ by MW3PR15MB4074.namprd15.prod.outlook.com (2603:10b6:303:48::10) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5482.16; Tue, 2 Aug
- 2022 23:46:08 +0000
+ 2022 23:51:00 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::de2:b318:f43e:6f55]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::de2:b318:f43e:6f55%3]) with mapi id 15.20.5482.015; Tue, 2 Aug 2022
- 23:46:08 +0000
-Message-ID: <2506a841-1485-7d61-3fba-21508077785d@fb.com>
-Date:   Tue, 2 Aug 2022 16:46:05 -0700
+ 23:51:00 +0000
+Message-ID: <d99a2505-5b7e-6b5e-0f41-1c4189d32e53@fb.com>
+Date:   Tue, 2 Aug 2022 16:50:57 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
  Gecko/20100101 Thunderbird/91.11.0
-Subject: Re: [RFC PATCH bpf-next 0/7] bpf: Support struct value argument for
- trampoline base progs
+Subject: Re: [PATCH v2] BPF: Fix potential bad pointer dereference in
+ bpf_sys_bpf()
 Content-Language: en-US
-To:     Kui-Feng Lee <kuifeng@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Cc:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "andrii@kernel.org" <andrii@kernel.org>
-References: <20220726171129.708371-1-yhs@fb.com>
- <aa998af64d0662af4c138175259244640cecfcbf.camel@fb.com>
- <18273e85-4e45-c395-0aa9-a10125d59e50@fb.com>
- <17dbbb831db12049ebfb5161e380c9078fbddad5.camel@fb.com>
- <a31dfd32-3065-1881-e2e2-3c420568232a@fb.com>
- <948ca89ada1e14ae21335eb5ded5aef4305fbf58.camel@fb.com>
+To:     Jinghao Jia <jinghao@linux.ibm.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org
+Cc:     martin.lau@linux.dev, song@kernel.org, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, bpf@vger.kernel.org, mvle@us.ibm.com,
+        jinghao7@illinois.edu
+References: <20220729201713.88688-1-jinghao@linux.ibm.com>
 From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <948ca89ada1e14ae21335eb5ded5aef4305fbf58.camel@fb.com>
+In-Reply-To: <20220729201713.88688-1-jinghao@linux.ibm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: BYAPR11CA0040.namprd11.prod.outlook.com
- (2603:10b6:a03:80::17) To SN6PR1501MB2064.namprd15.prod.outlook.com
+X-ClientProxiedBy: BY5PR16CA0024.namprd16.prod.outlook.com
+ (2603:10b6:a03:1a0::37) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
-MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 69bf2ef5-3b06-4053-1dab-08da74e12bdf
-X-MS-TrafficTypeDiagnostic: DM6PR15MB2956:EE_
+X-MS-Office365-Filtering-Correlation-Id: 587ae6a7-f0f0-42a6-6218-08da74e1da10
+X-MS-TrafficTypeDiagnostic: MW3PR15MB4074:EE_
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hNKqNnnmcLAks60gwe4sMAz2RYkcwNyyBQBImre6GGaunlDRLKE98GdPknbGDr2g/V1lp8Ry7b4D6Wf2NCuYvApJkrKzBXX4VC63cy3AHj1Zt43u2BcK8mlwXmwsEnyNhFZJ5CvuB7tlqzsV/Jyt3gimJL3coxhbqbZSR7O1adEHcIzYuKb2twyI2fRwNCbpXXPjfFpK+olB5zYaSJ0WkBs2L8w8Ig7eMcWr0EKAVlq4kDuU3Yu7KbyQsJQKX9O+lBIvVMwgyF7VhN4AXUqXOjrtoCGkrQgvQnN/o3ALzaucmwuJz/E+mJY/sS2yDcyMdpCrHf7cleaK5xj8hEVov2iR7c0Lg+loXd+yFobvAx3Lnu5Nb8OkXK8qpD3KKBXP8PoMW7ZfGXMSNWLt3goHlPiAGTGcR9/WtITrt1F9274ywyfuetTvsdTyvPzPKHjNCyV+9Ze7lDfGMGTx0VAx6xQNQHYqch6SggaQBQlst40uLUa7gajXUla22zFNwoJHm+9oxyOkDcw3wK2vcjnatJ4RhDlQvciM5TJcOFZad+rAMthoNLsC8uJEvgOZaYxWRBC4lPgRZIl05JB21HB4Zkyy6OXi3awcVXu2VomJS+3l312E4FlQKOATwTu0kbM9lpyxmhJvKfIXi09Oz49x5dG8XYemBQ0W11poK2XlIAqMYFgEgdakdfmUI3WFyB+7lhqt51Xr7VCVuhbSpFEEWGoWj5TrG/6wXbW4Pwdu6g9fhZkcxf6zLsw32JWr78nAPR4AG+XnvpP/mYVki/tBqXIIPniZoU251U18pSSHwmq0czHGlkLS4ZVnds3ph5rK79LwMLUGJhPj729rbjUwlw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(396003)(39860400002)(366004)(136003)(376002)(346002)(6512007)(36756003)(2616005)(186003)(53546011)(31686004)(5660300002)(38100700002)(86362001)(6506007)(31696002)(316002)(66476007)(6486002)(66556008)(66946007)(110136005)(54906003)(41300700001)(4326008)(8676002)(8936002)(6666004)(2906002)(83380400001)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: N9YRlouR9wF+RqhqtwPGjAn40BOPidtDlIbwDgzHxIpw3/OpHgZ4mgtN4SvCY20jCE4vcN3n3CKiQgpThJmaEcrZrI9WwZ/TperYr13f9KkgmLmV5KQE9SVXA4BKcNO8o25ZIjMgBty7vNRr9zQ6S2j6/ag/aKN22JlE6is8D3UVAU4Cfxe2ozFEvkuUvdr1Sc4dYa7W7luRxVo4NFYvIMzi7+Eflz7OuA+vuTUkoY0O3itcIOXtqoOY5FfBR2Phe1LCxjMuoYDGpwewS4zJtIljOqv+zCDBdV0qkDLr8OjG8y4FsmZ1R7ndEOPZIJSN/R+SUFRYm78S3a/IwfkNcwkEa4hFwh9BzKGf5ldqGLyrd96qoS3qTGfKq5+JUs5tyhmDoAFOWfsaIjDUy98jSY78+QVWQr3SWg8diPfcFNY//23YG2I/omsJmcRJv9qjaVAZj9IC83a5qnNiQGEuHf/3cf7StTM/ndFQGdbeEEdXoyqcaT8MHU7mE6kv1IqmI0JlKj6bLQBgV+ylu6W/9jEQH9m/KGf9hiT/UtEwi1J/j7l/l0rxBKoh4F50/fd31fsoLywYdody5rrJOqM03bbCMxJFiC/c3JI2kzBZOuukbw3bmkJ/sxaDItQrwaXPtc1vuQJlnlHXs3P0tNjkwC2cpNPmr4bX5YnBb6qDCYylnsRQUwZhg3/yPyt96ZrRrfI63GvfSs1p6t5hLWms5O8yEvc9Ps3c3QArZTFflJTtQ0JK++Buy6VUFNh5+OL2eyNlm71rapkAuIsEjMbdaJtdpdsZNKiWNUCr8av64Ltoo7C0RISt6qlY0dIGdY6SEnU/lTOzJzrNfflAtFzI0QNL36h94TO1s30VLrBPEw7pzXS6AigUXP26FBxS1lLM
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(396003)(366004)(376002)(346002)(136003)(39860400002)(83380400001)(186003)(4326008)(8676002)(66556008)(66946007)(6512007)(2906002)(6666004)(41300700001)(6506007)(53546011)(31696002)(86362001)(2616005)(478600001)(6486002)(966005)(66476007)(7416002)(8936002)(316002)(31686004)(36756003)(38100700002)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?U3VSMGF5UGE2R1dsNU1uMEIzZFpVT3dyY3I5K1RJdEZ4c1FsNWtzWTJ3VDFC?=
- =?utf-8?B?cnQrdTZBdXYwNW9MOG1Ra2tzcTltejNybkZzZEE2UlNlWVRXS0FBUWttMTIz?=
- =?utf-8?B?NzNyZlhMcHVGZFNQSmhvREVqSFFuUmJUL3lNbytZNFFLTmQxeGZvTXlXSGpI?=
- =?utf-8?B?RlIzYTFWL0lCOUhzSTlqQUF5bnZxZHJ3V3JPdTA4R25iSVR6T0tKdi9zaW5w?=
- =?utf-8?B?Zmw4Vnc0Rnk3Vnp1UkN6MU5INE9kUjUxN2pCM3pxeWtGSkZqSUZ1YzV5bEJQ?=
- =?utf-8?B?R1VwQit6WWZRdUJIb2FEU0JiWE9hVkxmQkRQb1dDWEF4NWZvMUFQK0JwTFBS?=
- =?utf-8?B?MERHTy9KL0NPSjMwTG4xa2VmcEhlT05jc3pVbUt0bm05bmFhQURwNXprOEl1?=
- =?utf-8?B?L2UwOFlhOFRac3NuTjFpaFY5ZW1WcHladTRqT3RyeTJXK1FKZnhrL3JiWlBw?=
- =?utf-8?B?QjdYeEwrUjJ3L0JlUjlwZjZLdk82Q0ljSXJnaDRWZThLWlRCTTE3VFFQS0x0?=
- =?utf-8?B?czArZm9idUdCK2JSdFlmWFgvQzQrZk12RHNPOUpQVnRDK1NybXV0ZFdNRzUw?=
- =?utf-8?B?aHhrRHFXS3h6Y05mTU00Q0hNOVpIU003Q1FXVE9HYUl4RVFIUVAzNTZTT3A3?=
- =?utf-8?B?bkxvSlFld3VHMW9Kc0xTUzRoZUxNQitYS2Y5QmFvRWt5NHNoc2FZOFZSOWVZ?=
- =?utf-8?B?Tk9YVitaZmFqTE9MWlFoS0ZjQUJFNkJmMWUzQ0NGaituRVlpY2hycm1Rd05m?=
- =?utf-8?B?UFdRYjVFY0F2d3NGaUJ1R0g1aVRmTVZ4QjdwUHJudHQ0TGJqMVUyU0tMUmJs?=
- =?utf-8?B?Y3ZuM2NSd3p6UWZqZ2Rnc1V6T29VZlhaaElvNDVlUURET2lLRnZ0Uis5QlFG?=
- =?utf-8?B?a1hwZW1oMmwzSVJSWmpneWQ4ZDVUdThEQ3prODIzK1NZK1JkRjBCQkkza1JJ?=
- =?utf-8?B?NnloZ3Y3NnBKQ2RETVNUakd2RlRYUTF2U2Y2eVRaMExhR3JLaGEvWkpJbW5v?=
- =?utf-8?B?R1JZMXhPSkswNkdSVVU3aFJGRUhSSFVlSU5lMlNVSFMwVUp5ellqVjlXZzRY?=
- =?utf-8?B?WnNkVk9yV2RjU1J0RXBTM2lmRXlRQ0R1NE5VWkloZExmc212a2VUUnZTenZJ?=
- =?utf-8?B?MnlqNVp3OEFWRDdCd3BVT3JPRjBZNWJ5Y3liRktuZmFXL05oMXFUZmxnUm5a?=
- =?utf-8?B?YzFlbXlxeUpUa1BIaWJMRHNQaHdyS1dFeDQvVm9SRCtpU1pOWC9wQVJpRmpw?=
- =?utf-8?B?OFdzT3locExSUm41dkZXYk5waDlyTzZ1eS9IRThxbE5Ca3lCajVTWk5ndHVv?=
- =?utf-8?B?eU1UMVFVbUhDa3dybEUwQjhjMGhENlBjS3lSWFF5bFA0UGxNOGxUYWs4aWVw?=
- =?utf-8?B?ZnVnbmhkUWdzOVJuelFmK0V4V1RnWUdRbGd4bnFoV2NKc3Yzd2w2dG9RRzVS?=
- =?utf-8?B?NGIxM3VIcHJseXZ3cmk3dnNiZjRNYVhHLzFYM29iRmROTWl2a3UrMTZFOTVP?=
- =?utf-8?B?SUN0L1FaUW9ia01iK0ZjQUwzMVRBZzhoOHVBQ05BZVA1anFyL2lKeTdVT3Nj?=
- =?utf-8?B?MEtvZllrcjlieGo1eVFkRDh4QnJnc1NmTVVqQ3R4aUZ0MGx6REFMeWRJZm00?=
- =?utf-8?B?cVhzbjhTVFVCTWNmVE5UbTI5RktEQmdrTzB1OVpVWmhLb0FNeCtYamluSE1Z?=
- =?utf-8?B?M0FxR0lKcEl5T2dpMW5HUnpwOGZmTXh4TFl5c3RjM0xhdFJZMDhFQjYwcE5k?=
- =?utf-8?B?OG5ZZ2lpTzFNM29zRzhheHRjRG1JbXlpbTFERktubm9LQ05nbTgrb2F3ZWlF?=
- =?utf-8?B?dmE2M2hsRkRvNVVjRWdTZ2hDbElxRUQ1R0Q1dnBVYVhXYTl5RFA3clJ2cXNN?=
- =?utf-8?B?OXFQRWgwZGh4OEdHWnNLcElwUVBodXlldEhDWmhBejVvV2VJZ0NuVkZ3RmJo?=
- =?utf-8?B?MFF3TDdjOXFNaTQzZ083UmNIWjI4VlhqTHQxdHQzd3h4aUFDb0pWZFpHd0NP?=
- =?utf-8?B?eDJqUzlMMC9SZi9hcmNtRUtjOEwrQVhQQ3pxdURyZ05ieU9TY2svSTI2VWc0?=
- =?utf-8?B?QVp1b0pxWWVleW8rYW02eXByMlREa3lEaEFuTGs3MTFtQTUwRjdYUytheTha?=
- =?utf-8?B?ZnVIb0FpL1ZERnp5VHF3U2lIYTZLTGpWSllpaDZ2SDB1K2NxRlk3dlc1TGo3?=
- =?utf-8?B?eXc9PQ==?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dkFhUGFrTERscm5yNmhiVWxieDltbWQ1U1NoOGJjeGVMOUMrMFF1VzdvZW1s?=
+ =?utf-8?B?QUgyL0ZpUXZoMXpPR1pXNEZ4M293VC9uYXQ0VGtpUVRMVlUySHZBZ0xyOFJr?=
+ =?utf-8?B?SWx5MlFja3FrVDAyRzJQdDltaSt3RUFWSSttYng4eEJEd3RJVUpxbkhFcHl0?=
+ =?utf-8?B?Z3pQYUlRUm1zR1R5aUxGaWRkUFo3a0ZpZDgyMEpvL2JBNjdvV25ENGFvYlEz?=
+ =?utf-8?B?Snc2bGk0RTFVTmJxWitOZDY1akdONUpLNU9LZGdaaE9IZ3BIUGZnUGdjVVJN?=
+ =?utf-8?B?a2dJQlMwQk5NTEEvdktENHZGZi9QM3RLSWRacGUyT0IxeHhLZFUyL0liK24x?=
+ =?utf-8?B?RGhSSDdvSHFjSXFzTkswVnhjZUxJNGdIY3F0V29rMk9iSE9jajdvQzNMSUha?=
+ =?utf-8?B?em40dGdZS25MYy9LR3BadU9TdU8yMzVrSGRDcG5UZ2dyZHF4YW1xZWtjSWJU?=
+ =?utf-8?B?QVg3VTkxMVRXQ2tUbG05ZWZlK2VackJpNVhpb2x3Z1ZYUXJSSFh4Y3pwQ0RS?=
+ =?utf-8?B?SnpBRWc4eWo2bk9KMnYrS0E5REtlZzZVTmpQdW9FOW9manFBaGtuZFE0YXQ4?=
+ =?utf-8?B?N0pVZVpqMmhET0kwTUNCSzJxYWJiR25LbTllZnRpWllFYkoraEFIbytNc2U2?=
+ =?utf-8?B?SGg2Nllham5ZeWZlWEhaNjdXcjI3ZnY3NC84dDE1S3EvSlp1WGhjY2dFOVMr?=
+ =?utf-8?B?b1lSa3MzRE1Pakw3TWl1SzRJZDlmVjRSWTBEbFRSYWFCL29CNzUzQ1F4ek83?=
+ =?utf-8?B?UG91ZGRVaW1ReTdjaDlTdjVxdkdRWHJTVU9IckxpclFodTVGQUwxemZLSnd6?=
+ =?utf-8?B?SWx4RjF4WElQQk16R3FjWFNqa0kvZDdIZHlPSVRMTnk2ZlNhTnc0RzVZa2k4?=
+ =?utf-8?B?Q3VZNHQvRnZxUEVtL0NPdml0NTJCY1FRYUJQSS94TFFML1REWTc1bTlqTHlq?=
+ =?utf-8?B?dkFLdFgwOUlDdVZXZEcvazJMTFhtQ3BFeSs1Mmw5YzkzRWI3QXZjaWRBUVBu?=
+ =?utf-8?B?SUIwVE1UNWlaWGJ1Vm1sb29xM2FHVkVVZVpxMkFNMlE2elV0STJ5SXhUcVZu?=
+ =?utf-8?B?V3kza2gxZXpyMkFicVd5Zk04NFV6UEV2WnBSeVQzbFhDdWJPMUVJZ3JxMVBG?=
+ =?utf-8?B?Z0hkb2pjVTU2T0w1cHN5Znl2aFZoaCtlZ2xITG9uWG5GL0RKaHZRcVFUZm10?=
+ =?utf-8?B?Yk1qZTlFUFB4OFhEeDhQM3VQWlN4TUVVemU4NzEvTmRPaWlWRStENGEybVpM?=
+ =?utf-8?B?a1BaY2NLZjliQU1sM0JsdjJuUFo5bkdEOFhXc0pJVnRwQWY1NWxnOG04TjFs?=
+ =?utf-8?B?cFhjYkFLaDVObVVMemVRVElSQ3BtVCttV1RaMnVmK0ZZc2c5M3B5WVJCQ2FJ?=
+ =?utf-8?B?b2JKZkdqdTVVWDM5OG5YSzF6UWFDTTVMK2I1SThXemY1cVdWbWJ0TnhUM0Fz?=
+ =?utf-8?B?RlY5VFlDc0VaeTF2Vkh0Qk1yTWtWTm4vdjlNbU9nTlgvbkhLMjBBazBIOUZx?=
+ =?utf-8?B?M0JhOWE4VVB2N3U4TmxtMldZdy9semJHelYwSTZDZWRXRXVRY3ZDbEhqY0tN?=
+ =?utf-8?B?cmYrdjk3Uy85a2dDYWNCNWtTdmJ5czhyV2RvcnNTU3Fub1lwRWdTNksvRUJL?=
+ =?utf-8?B?RWkwdmpIT1VaemgxTVFFczdoam5paEZrQlBHQUV2aXgyVkdMQ29tdnpoWnBB?=
+ =?utf-8?B?WEhvYkgrcGdyRmJvRTNnVFk4VEVFQmE5TXd5SGk4bW5XUm1wSUdqczNoRDNE?=
+ =?utf-8?B?WEFwZFJpdjlwVXhsVGtVTUNXU0Jtc2RQQUwwTHZzMy9mR21CZG9SRDVsUnl3?=
+ =?utf-8?B?VmVWU1c2RHRIb0s1RGlnOWI0dHhTSkNaL0Y5QXVzUWkwOTFlRzlrQzhveTdN?=
+ =?utf-8?B?YlRkZlJjOHVNYnNvQThtOS9xQWdXLzllMnB6WnNQV0VxeHpaWVJDVTJXdWs3?=
+ =?utf-8?B?UWVCMEtIbGxvdXdOZFFBUERXTXFzYlo1NEpaTEIvZ0JjTlhTWUtEWWtGU1M0?=
+ =?utf-8?B?ZkhGTG8zcDlLaWtCWDN2c3F5ODlKZXJVdnRsZU8waTM0YjVzSGplalpSSm1x?=
+ =?utf-8?B?NUE0TnFBYVR2cGhyWHlHTm5hWFRqdnRRWVRYUzBNaGVqaW5ROE0wVkZ5K3g0?=
+ =?utf-8?B?MkJ5VU82aTdXeDJWTHJvZjQ3ay9Ca3M2VkNhb2k3ZmlUVFYvd3FRZ0thQXdI?=
+ =?utf-8?B?REE9PQ==?=
 X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 69bf2ef5-3b06-4053-1dab-08da74e12bdf
+X-MS-Exchange-CrossTenant-Network-Message-Id: 587ae6a7-f0f0-42a6-6218-08da74e1da10
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Aug 2022 23:46:07.9946
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Aug 2022 23:51:00.2723
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rozAoZY6leFsOgRtu9/Lknt+l48PsnzTJel9t/h2+teIv08rZ81Aakspg/2TCJ1y
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB2956
-X-Proofpoint-GUID: 3LZYQYN_vJPC8pnkeMsPkEJ1fZHTWzuU
-X-Proofpoint-ORIG-GUID: 3LZYQYN_vJPC8pnkeMsPkEJ1fZHTWzuU
+X-MS-Exchange-CrossTenant-UserPrincipalName: M2I6qB78qFej3DIOsWh1AtqP2oh4OM/DKtWesKdZ5v7zQOWl6n7W4wlVPkoklwe7
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB4074
+X-Proofpoint-ORIG-GUID: alFHM3i9o_zpRrhTKy-HxHU7E3WhJYZ3
+X-Proofpoint-GUID: alFHM3i9o_zpRrhTKy-HxHU7E3WhJYZ3
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
  definitions=2022-08-02_15,2022-08-02_01,2022-06-22_01
@@ -149,125 +145,91 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 7/29/22 11:04 AM, Kui-Feng Lee wrote:
-> On Thu, 2022-07-28 at 16:30 -0700, Yonghong Song wrote:
->>
->>
->> On 7/28/22 12:57 PM, Kui-Feng Lee wrote:
->>> On Thu, 2022-07-28 at 10:46 -0700, Yonghong Song wrote:
->>>>
->>>>
->>>> On 7/28/22 8:46 AM, Kui-Feng Lee wrote:
->>>>> On Tue, 2022-07-26 at 10:11 -0700, Yonghong Song wrote:
->>>>>> Currently struct arguments are not supported for trampoline
->>>>>> based
->>>>>> progs.
->>>>>> One of major reason is that struct argument may pass by value
->>>>>> which
->>>>>> may
->>>>>> use more than one registers. This breaks trampoline progs
->>>>>> where
->>>>>> each argument is assumed to take one register. bcc community
->>>>>> reported
->>>>>> the
->>>>>> issue ([1]) where struct argument is not supported for fentry
->>>>>> program.
->>>>>>      typedef struct {
->>>>>>            uid_t val;
->>>>>>      } kuid_t;
->>>>>>      typedef struct {
->>>>>>            gid_t val;
->>>>>>      } kgid_t;
->>>>>>      int security_path_chown(struct path *path, kuid_t uid,
->>>>>> kgid_t
->>>>>> gid);
->>>>>> Inside Meta, we also have a use case to attach to
->>>>>> tcp_setsockopt()
->>>>>>      typedef struct {
->>>>>>            union {
->>>>>>                    void            *kernel;
->>>>>>                    void __user     *user;
->>>>>>            };
->>>>>>            bool            is_kernel : 1;
->>>>>>      } sockptr_t;
->>>>>>      int tcp_setsockopt(struct sock *sk, int level, int
->>>>>> optname,
->>>>>>                         sockptr_t optval, unsigned int
->>>>>> optlen);
->>>>>>
->>>>>> This patch added struct value support for bpf tracing
->>>>>> programs
->>>>>> which
->>>>>> uses trampoline. struct argument size needs to be 16 or less
->>>>>> so
->>>>>> it can fit in one or two registers. Based on analysis on llvm
->>>>>> and
->>>>>> experiments, atruct argument size greater than 16 will be
->>>>>> passed
->>>>>> as pointer to the struct.
->>>>>
->>>>> Is it possible to force llvm to always pass a pointer to a
->>>>> struct
->>>>> over
->>>>> 8 bytes (the size of single register) for the BPF traget?
->>>>
->>>> This is already the case for bpf target. Any struct parameter (1
->>>> byte, 2
->>>> bytes, ..., 8 types, ..., 16 bytes, ...) will be passed as a
->>>> reference.
->>>>
->>>> But this is not the case for most other architectures. For
->>>> example,
->>>> for
->>>> x86_64, in most cases, struct size <= 16 will be passed with two
->>>> registers instead of as a reference.
->>>
->>> I ask this question because you modify the signature of a bpf
->>> program
->>> to a pointer to a struct in patch #4.  Is that necessary if the
->>> compiler passes a struct paramter as a reference?
->>
->> Note that The true bpf program signature is only one.
->> long bpf_prog(<ctx_type> *ctx)
->> BPF_PROG is a macro for user friendly purpose.
->>
->> For example,
->> +int BPF_PROG(test_struct_arg_1, struct bpf_testmod_struct_arg_2 *a,
->> int
->> b, int c)
->>
->> after macro expansion:
->> int test_struct_arg_1(unsigned long long *ctx);
->> static __attribute__((always_inline))
->> typeof(test_struct_arg_1(0)) ____test_struct_arg_1(
->>     unsigned long long *ctx,
->>     struct bpf_testmod_struct_arg_2 *a, int b, int c);
->> ...
+On 7/29/22 1:17 PM, Jinghao Jia wrote:
+> The bpf_sys_bpf() helper function allows an eBPF program to load another
+> eBPF program from within the kernel. In this case the argument union
+> bpf_attr pointer (as well as the insns and license pointers inside) is a
+> kernel address instead of a userspace address (which is the case of a
+> usual bpf() syscall). To make the memory copying process in the syscall
+> work in both cases, bpfptr_t was introduced to wrap around the pointer
+> and distinguish its origin. Specifically, when copying memory contents
+> from a bpfptr_t, a copy_from_user() is performed in case of a userspace
+> address and a memcpy() is performed for a kernel address.
 > 
-> If cast the pointer of __test_struct_arg_1() to the type (int
-> (*)(void*, void*, void*, void*)), test_struct_arg_1() can pass all
-> arguments to __tst_struct_arg_1() in the type (void *) without changing
-> the types of struct arguments to the pointer to a struct since all
-> struct types will be passed as a reference for the BPF target.
+> This can lead to problems because the in-kernel pointer is never checked
+> for validity. The problem happens when an eBPF syscall program tries to
+> call bpf_sys_bpf() to load a program but provides a bad insns pointer --
+> say 0xdeadbeef -- in the bpf_attr union. The helper calls __sys_bpf()
+> which would then call bpf_prog_load() to load the program.
+> bpf_prog_load() is responsible for copying the eBPF instructions to the
+> newly allocated memory for the program; it creates a kernel bpfptr_t for
+> insns and invokes copy_from_bpfptr(). Internally, all bpfptr_t
+> operations are backed by the corresponding sockptr_t operations, which
+> performs direct memcpy() on kernel pointers for copy_from/strncpy_from
+> operations. Therefore, the code is always happy to dereference the bad
+> pointer to trigger a un-handle-able page fault and in turn an oops.
+> However, this is not supposed to happen because at that point the eBPF
+> program is already verified and should not cause a memory error.
 > 
-> For example, the macro above can be expanded into the following block.
->    ......
->    int test_struct_arg_1(unsigned long long *ctx) {
->      ......
->      return ((typeof(name(0)) (*)(void*, void*, void*,
-> void*))&____test_struct_arg_1)(ctx[0], ctx[1], ctx[2], ctx[3]);
->      ......
-
-This doesn't really work. Here ctx[0]/ctx[1]/... has type
-'unsigned long long' since ctx has type 'unsigned long long *'.
-
-But if later parameter type is 'struct bpf_testmod_struct_arg_2'
-in the function prototype and definition. Then implicitly we will
-have a type conversion like
-    (struct bpf_testmod_struct_arg_2)(unsigned long long)ctx[...]
-and the above won't work as you cannot convert a 'unsigned long long'
-to a struct.
-
->    }
->    ......
+> Sample KASAN trace:
 > 
+> [   25.685056][  T228] ==================================================================
+> [   25.685680][  T228] BUG: KASAN: user-memory-access in copy_from_bpfptr+0x21/0x30
+> [   25.686210][  T228] Read of size 80 at addr 00000000deadbeef by task poc/228
+> [   25.686732][  T228]
+> [   25.686893][  T228] CPU: 3 PID: 228 Comm: poc Not tainted 5.19.0-rc7 #7
+> [   25.687375][  T228] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS d55cb5a 04/01/2014
+> [   25.687991][  T228] Call Trace:
+> [   25.688223][  T228]  <TASK>
+> [   25.688429][  T228]  dump_stack_lvl+0x73/0x9e
+> [   25.688747][  T228]  print_report+0xea/0x200
+> [   25.689061][  T228]  ? copy_from_bpfptr+0x21/0x30
+> [   25.689401][  T228]  ? _printk+0x54/0x6e
+> [   25.689693][  T228]  ? _raw_spin_lock_irqsave+0x70/0xd0
+> [   25.690071][  T228]  ? copy_from_bpfptr+0x21/0x30
+> [   25.690412][  T228]  kasan_report+0xb5/0xe0
+> [   25.690716][  T228]  ? copy_from_bpfptr+0x21/0x30
+> [   25.691059][  T228]  kasan_check_range+0x2bd/0x2e0
+> [   25.691405][  T228]  ? copy_from_bpfptr+0x21/0x30
+> [   25.691734][  T228]  memcpy+0x25/0x60
+> [   25.692000][  T228]  copy_from_bpfptr+0x21/0x30
+> [   25.692328][  T228]  bpf_prog_load+0x604/0x9e0
+> [   25.692653][  T228]  ? cap_capable+0xb4/0xe0
+> [   25.692956][  T228]  ? security_capable+0x4f/0x70
+> [   25.693324][  T228]  __sys_bpf+0x3af/0x580
+> [   25.693635][  T228]  bpf_sys_bpf+0x45/0x240
+> [   25.693937][  T228]  bpf_prog_f0ec79a5a3caca46_bpf_func1+0xa2/0xbd
+> [   25.694394][  T228]  bpf_prog_run_pin_on_cpu+0x2f/0xb0
+> [   25.694756][  T228]  bpf_prog_test_run_syscall+0x146/0x1c0
+> [   25.695144][  T228]  bpf_prog_test_run+0x172/0x190
+> [   25.695487][  T228]  __sys_bpf+0x2c5/0x580
+> [   25.695776][  T228]  __x64_sys_bpf+0x3a/0x50
+> [   25.696084][  T228]  do_syscall_64+0x60/0x90
+> [   25.696393][  T228]  ? fpregs_assert_state_consistent+0x50/0x60
+> [   25.696815][  T228]  ? exit_to_user_mode_prepare+0x36/0xa0
+> [   25.697202][  T228]  ? syscall_exit_to_user_mode+0x20/0x40
+> [   25.697586][  T228]  ? do_syscall_64+0x6e/0x90
+> [   25.697899][  T228]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> [   25.698312][  T228] RIP: 0033:0x7f6d543fb759
+> [   25.698624][  T228] Code: 08 5b 89 e8 5d c3 66 2e 0f 1f 84 00 00 00 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 97 a6 0e 00 f7 d8 64 89 01 48
+> [   25.699946][  T228] RSP: 002b:00007ffc3df78468 EFLAGS: 00000287 ORIG_RAX: 0000000000000141
+> [   25.700526][  T228] RAX: ffffffffffffffda RBX: 00007ffc3df78628 RCX: 00007f6d543fb759
+> [   25.701071][  T228] RDX: 0000000000000090 RSI: 00007ffc3df78478 RDI: 000000000000000a
+> [   25.701636][  T228] RBP: 00007ffc3df78510 R08: 0000000000000000 R09: 0000000000300000
+> [   25.702191][  T228] R10: 0000000000000005 R11: 0000000000000287 R12: 0000000000000000
+> [   25.702736][  T228] R13: 00007ffc3df78638 R14: 000055a1584aca68 R15: 00007f6d5456a000
+> [   25.703282][  T228]  </TASK>
+> [   25.703490][  T228] ==================================================================
+> [   25.704050][  T228] Disabling lock debugging due to kernel taint
+> 
+> Update copy_from_bpfptr() and strncpy_from_bpfptr() so that:
+>   - for a kernel pointer, it uses the safe copy_from_kernel_nofault() and
+>     strncpy_from_kernel_nofault() functions.
+>   - for a userspace pointer, it performs copy_from_user() and
+>     strncpy_from_user().
+> 
+> Fixes: af2ac3e13e45 ("bpf: Prepare bpf syscall to be used from kernel and user space.")
+> Link: https://lore.kernel.org/bpf/20220727132905.45166-1-jinghao@linux.ibm.com/
+> Signed-off-by: Jinghao Jia <jinghao@linux.ibm.com>
+
+Acked-by: Yonghong Song <yhs@fb.com>
