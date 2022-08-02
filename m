@@ -2,77 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D54D58760A
-	for <lists+bpf@lfdr.de>; Tue,  2 Aug 2022 05:43:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B367587618
+	for <lists+bpf@lfdr.de>; Tue,  2 Aug 2022 05:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235443AbiHBDnD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Aug 2022 23:43:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51738 "EHLO
+        id S232891AbiHBDvy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Aug 2022 23:51:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233736AbiHBDnC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Aug 2022 23:43:02 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 999901CB0D;
-        Mon,  1 Aug 2022 20:43:00 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id m4so1959719ejr.3;
-        Mon, 01 Aug 2022 20:43:00 -0700 (PDT)
+        with ESMTP id S232170AbiHBDvx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Aug 2022 23:51:53 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB1F61EAFD;
+        Mon,  1 Aug 2022 20:51:51 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id b96so5743254edf.0;
+        Mon, 01 Aug 2022 20:51:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=5uie0B2JCGsqUwle4bwXCVdTJiXih+Q0BvylZoDUVgI=;
-        b=KPvelusiLrC3gfPAgC/hfczD/Hld3G0PsHAtonH6PmqI/aYd/eU7d41sB+uE9QeQ4x
-         z+/bw1xzVcLPUbuhrWkVJu69gmscSaYhSuSKz2wWFgg3OWOBmsAAbKWtRBFXQsTD2OT8
-         sCq7qJRxCKk4oqdywrb/fi6/ojNV0lnyADkRkTRXj3mjswD/gchUPCscYMRuUmIV02/y
-         AJI+y0CAYU4vxO8AOK4/BbwhdYX97R2KTOHKDmyj+yjzbaZcmKoke9q3FeQaT4b4kgGt
-         PfyOJNEgW64TVSeq8NHjoysyTwOlTMqCH23j/JiruUVH1igwkIVJEpdEXeFy6RMAsDIZ
-         xsMQ==
+        bh=aknSbmtx9GZBsEVN+nD/tmP8Ue7dUO3IiP2H96xy50g=;
+        b=i3UCo5l16RLXOguWEigG+qH4iaCECPbTgP1D7pIFmAkMbeljsk5uix1ZsFAI+DkSPW
+         Zzx/siylk9oKypfUjqZQkjXQNFS5X9dfiRdDmJS/rbHOxzK0YgYBMLnb4we29+L6rGd1
+         TFJE4K03n3JmkXJa2NX/hXgWpC/pBX8agtVMbApFT0El2jRPfIkVtikDYCuaMZADT0L/
+         c27GOOCbgXENsQQw+23NTshPJ5dn4pGIJSA4E8WGHPVLwc623jwfqkrwozr6bmd8gh9m
+         zRsOsCpdoZg2SxXnQ/A/xZjBZiSD2pJbk0gV9bwRiu7UQ6284lSnQkIDRiaWlo3kEvcR
+         EEmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=5uie0B2JCGsqUwle4bwXCVdTJiXih+Q0BvylZoDUVgI=;
-        b=5hLFflAevhoX3ZAd2KT4zW3HWUYQ6l7JsiBhsWpNHFJORpKBBdHOtqeEJyim/8vLw3
-         5aCoP9W7jW8TaaADP7YT/CLPGGweSFdm4WdhfxjacrGSdpHj1siWlRMywdDkc324WiWQ
-         DyZQf3fCIW4Pfs7fAXS7L8K2eGm0oL6aqmTcGsQ9wV0lusA8HZreUFzxHTekOVDmnKaZ
-         R0AbEq1ltWbnLCmQbp/EzUxiKlhP6KrrzzPlM4TScTNg1zxr3j4KSL6zZgeVo9OZFKQE
-         Gc8JY2NCUeO4sukQABSVknVP6PRiCM+aITWjGkyphaUDGcv1gBs7OcjHLGBe0jqi3b7B
-         nVTg==
-X-Gm-Message-State: AJIora/ZsABJMFe1bpOBSop73+Mom+ts7Aq7t6mOETeIOBB7OIPx6CqP
-        VM+Qxkay3demn1cyqY2IVxBXRFjIvj6njqn1423EA5Ew8nE=
-X-Google-Smtp-Source: AGRyM1v8QAwl9+8b9hQu7QS3XjvrpiHsbrUt+9FekIyEJgRW/HlVXGc418Y/OI28HaNbvFLdvArkxxr3/Td3GC1cvaE=
-X-Received: by 2002:a17:907:2ccc:b0:72b:6907:fce6 with SMTP id
- hg12-20020a1709072ccc00b0072b6907fce6mr14966848ejc.115.1659411779170; Mon, 01
- Aug 2022 20:42:59 -0700 (PDT)
+        bh=aknSbmtx9GZBsEVN+nD/tmP8Ue7dUO3IiP2H96xy50g=;
+        b=Q65MKbBDErHT+DCSm6IeXS7R0f4YMsCmr59fPfVYuvOhxvosOe9bo7zR7PJUOLETYI
+         bgzcOyPlFLQ2XjDTfU+miJDzqyqpjwjmqEtC78Y2kfsI2mtZiKZotgTa64CduC+j2Bc7
+         VcNl3z4FlywxR2s61lQy23WvA9ESD6OeTnZneGTv3mHflncip3rJGLP31EtRqjW3uTGT
+         drW9uqUDejXlImPDD1XyJgw6Gck6hNbGPUDa13clLDN9FpmjLZhgXg+GfTaSgKYz38Jp
+         yz7YoIVYouA8A/WU6J2fhjrQ1oo0ci09ple3K32cuBciWx2wsr4qcS1VV+18FOkUqYkl
+         haPQ==
+X-Gm-Message-State: ACgBeo3A4UrsJAdyejVkpnn6H5knPBuK5oVA90mI9szHvkSt0JmEHcwk
+        t/vLiUm4znTQI1j6K01wtuq/G4l8PwX/60Wkt0AOeNkU
+X-Google-Smtp-Source: AA6agR5309XHfmcJIKjQbEekXag6MzM8PvzpjMAPwKjfTOSUC0wqoBswewYMh3uBMsT/8cTkq8bSVz6HSpXWH2A9fvk=
+X-Received: by 2002:aa7:ccc4:0:b0:43d:9e0e:b7ff with SMTP id
+ y4-20020aa7ccc4000000b0043d9e0eb7ffmr8380082edt.14.1659412310200; Mon, 01 Aug
+ 2022 20:51:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220722174829.3422466-1-yosryahmed@google.com> <20220722174829.3422466-5-yosryahmed@google.com>
-In-Reply-To: <20220722174829.3422466-5-yosryahmed@google.com>
+References: <20220726184706.954822-2-joannelkoong@gmail.com>
+ <20220728233936.hjj2smwey447zqyy@kafai-mbp.dhcp.thefacebook.com>
+ <CAJnrk1b2WoHV=iE3j4n_4=2NBP3GaoeD=v-Zt+p-M9N=LApsuQ@mail.gmail.com>
+ <20220729213919.e7x6acvqnwqwfnzu@kafai-mbp.dhcp.thefacebook.com>
+ <CAJnrk1YXSx11TGhKhAZ20R81pUsgBVeAooGJjTR7dR5iyP_eeQ@mail.gmail.com>
+ <20220801193850.2qkf6uiic7nrwrfm@kafai-mbp.dhcp.thefacebook.com>
+ <CAJnrk1ZCQ5nRB=jBUxPFyS4OhMvDX1t4ddFYX2LqkepMZg-12w@mail.gmail.com>
+ <20220801223239.25z2krjm6ucid3fh@kafai-mbp.dhcp.thefacebook.com>
+ <CAEf4BzbjFOXFYeRHwnny1p-GWfMDiOqC6zGMSBjGkjY8RQi5Qw@mail.gmail.com>
+ <20220801232314.shzlt7ws3sp7d744@kafai-mbp.dhcp.thefacebook.com> <20220802005621.d6sjq72l357eesp6@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20220802005621.d6sjq72l357eesp6@kafai-mbp.dhcp.thefacebook.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 1 Aug 2022 20:42:47 -0700
-Message-ID: <CAEf4BzbD38XFVxMy5crO-=+Xg7U3Vc_fB4Ntug4BEbmdLpvuDQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 4/8] bpf: Introduce cgroup iter
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+Date:   Mon, 1 Aug 2022 20:51:38 -0700
+Message-ID: <CAEf4BzZCAX7h_wMpd9-uQt4smGDj8ToxS=nM6Z+qoV7j-SSVJg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/3] bpf: Add skb dynptrs
+To:     Martin KaFai Lau <kafai@fb.com>, Jakub Kicinski <kuba@kernel.org>
+Cc:     Joanne Koong <joannelkoong@gmail.com>, bpf <bpf@vger.kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Hao Luo <haoluo@google.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, cgroups@vger.kernel.org
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -84,158 +77,103 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 22, 2022 at 10:48 AM Yosry Ahmed <yosryahmed@google.com> wrote:
+On Mon, Aug 1, 2022 at 5:56 PM Martin KaFai Lau <kafai@fb.com> wrote:
 >
-> From: Hao Luo <haoluo@google.com>
+> On Mon, Aug 01, 2022 at 04:23:16PM -0700, Martin KaFai Lau wrote:
+> > On Mon, Aug 01, 2022 at 03:58:41PM -0700, Andrii Nakryiko wrote:
+> > > On Mon, Aug 1, 2022 at 3:33 PM Martin KaFai Lau <kafai@fb.com> wrote:
+> > > >
+> > > > On Mon, Aug 01, 2022 at 02:16:23PM -0700, Joanne Koong wrote:
+> > > > > On Mon, Aug 1, 2022 at 12:38 PM Martin KaFai Lau <kafai@fb.com> wrote:
+> > > > > >
+> > > > > > On Mon, Aug 01, 2022 at 10:52:14AM -0700, Joanne Koong wrote:
+> > > > > > > > Since we are on bpf_dynptr_write, what is the reason
+> > > > > > > > on limiting it to the skb_headlen() ?  Not implying one
+> > > > > > > > way is better than another.  would like to undertand the reason
+> > > > > > > > behind it since it is not clear in the commit message.
+> > > > > > > For bpf_dynptr_write, if we don't limit it to skb_headlen() then there
+> > > > > > > may be writes that pull the skb, so any existing data slices to the
+> > > > > > > skb must be invalidated. However, in the verifier we can't detect when
+> > > > > > > the data slice should be invalidated vs. when it shouldn't (eg
+> > > > > > > detecting when a write goes into the paged area vs when the write is
+> > > > > > > only in the head). If the prog wants to write into the paged area, I
+> > > > > > > think the only way it can work is if it pulls the data first with
+> > > > > > > bpf_skb_pull_data before calling bpf_dynptr_write. I will add this to
+> > > > > > > the commit message in v2
+> > > > > > Note that current verifier unconditionally invalidates PTR_TO_PACKET
+> > > > > > after bpf_skb_store_bytes().  Potentially the same could be done for
+> > > > > > other new helper like bpf_dynptr_write().  I think this bpf_dynptr_write()
+> > > > > > behavior cannot be changed later, so want to raise this possibility here
+> > > > > > just in case it wasn't considered before.
+> > > > >
+> > > > > Thanks for raising this possibility. To me, it seems more intuitive
+> > > > > from the user standpoint to have bpf_dynptr_write() on a paged area
+> > > > > fail (even if bpf_dynptr_read() on that same offset succeeds) than to
+> > > > > have bpf_dynptr_write() always invalidate all dynptr slices related to
+> > > > > that skb. I think most writes will be to the data in the head area,
+> > > > > which seems unfortunate that bpf_dynptr_writes to the head area would
+> > > > > invalidate the dynptr slices regardless.
+> > > > >
+> > > > > What are your thoughts? Do you think you prefer having
+> > > > > bpf_dynptr_write() always work regardless of where the data is? If so,
+> > > > > I'm happy to make that change for v2 :)
+> > > > Yeah, it sounds like an optimization to avoid unnecessarily
+> > > > invalidating the sliced data.
+> > > >
+> > > > To be honest, I am not sure how often the dynptr_data()+dynptr_write() combo will
+> > > > be used considering there is usually a pkt read before a pkt write in
+> > > > the pkt modification use case.  If I got that far to have a sliced data pointer
+> > > > to satisfy what I need for reading,  I would try to avoid making extra call
+> > > > to dyptr_write() to modify it.
+> > > >
+> > > > I would prefer user can have similar expectation (no need to worry pkt layout)
+> > > > between dynptr_read() and dynptr_write(), and also has similar experience to
+> > > > the bpf_skb_load_bytes() and bpf_skb_store_bytes().  Otherwise, it is just
+> > > > unnecessary rules for user to remember while there is no clear benefit on
+> > > > the chance of this optimization.
+> > > >
+> > >
+> > > Are you saying that bpf_dynptr_read() shouldn't read from non-linear
+> > > part of skb (and thus match more restrictive bpf_dynptr_write), or are
+> > > you saying you'd rather have bpf_dynptr_write() write into non-linear
+> > > part but invalidate bpf_dynptr_data() pointers?
+> > The latter.  Read and write without worrying about the skb layout.
+> >
+> > Also, if the prog needs to call a helper to write, it knows the bytes are
+> > not in the data pointer.  Then it needs to bpf_skb_pull_data() before
+> > it can call write.  However, after bpf_skb_pull_data(), why the prog
+> > needs to call the write helper instead of directly getting a new
+> > data pointer and write to it?  If the prog needs to write many many
+> > bytes, a write helper may then help.
+> After another thought, other than the non-linear handling,
+> bpf_skb_store_bytes() / dynptr_write() is more useful in
+> the 'BPF_F_RECOMPUTE_CSUM | BPF_F_INVALIDATE_HASH' flags.
 >
-> Cgroup_iter is a type of bpf_iter. It walks over cgroups in three modes:
+> That said,  my preference is still to have the same expectation on
+> non-linear data for both dynptr_read() and dynptr_write().  Considering
+> the user can fall back to use bpf_skb_load_bytes() and
+> bpf_skb_store_bytes(), I am fine with the current patch also.
 >
->  - walking a cgroup's descendants in pre-order.
->  - walking a cgroup's descendants in post-order.
->  - walking a cgroup's ancestors.
->
-> When attaching cgroup_iter, one can set a cgroup to the iter_link
-> created from attaching. This cgroup is passed as a file descriptor and
-> serves as the starting point of the walk. If no cgroup is specified,
-> the starting point will be the root cgroup.
->
-> For walking descendants, one can specify the order: either pre-order or
-> post-order. For walking ancestors, the walk starts at the specified
-> cgroup and ends at the root.
->
-> One can also terminate the walk early by returning 1 from the iter
-> program.
->
-> Note that because walking cgroup hierarchy holds cgroup_mutex, the iter
-> program is called with cgroup_mutex held.
->
-> Currently only one session is supported, which means, depending on the
-> volume of data bpf program intends to send to user space, the number
-> of cgroups that can be walked is limited. For example, given the current
-> buffer size is 8 * PAGE_SIZE, if the program sends 64B data for each
-> cgroup, the total number of cgroups that can be walked is 512. This is
-> a limitation of cgroup_iter. If the output data is larger than the
-> buffer size, the second read() will signal EOPNOTSUPP. In order to work
-> around, the user may have to update their program to reduce the volume
-> of data sent to output. For example, skip some uninteresting cgroups.
-> In future, we may extend bpf_iter flags to allow customizing buffer
-> size.
->
-> Signed-off-by: Hao Luo <haoluo@google.com>
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> Acked-by: Yonghong Song <yhs@fb.com>
-> ---
->  include/linux/bpf.h                           |   8 +
->  include/uapi/linux/bpf.h                      |  30 +++
->  kernel/bpf/Makefile                           |   3 +
->  kernel/bpf/cgroup_iter.c                      | 252 ++++++++++++++++++
->  tools/include/uapi/linux/bpf.h                |  30 +++
->  .../selftests/bpf/prog_tests/btf_dump.c       |   4 +-
->  6 files changed, 325 insertions(+), 2 deletions(-)
->  create mode 100644 kernel/bpf/cgroup_iter.c
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index a97751d845c9..9061618fe929 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -47,6 +47,7 @@ struct kobject;
->  struct mem_cgroup;
->  struct module;
->  struct bpf_func_state;
-> +struct cgroup;
->
->  extern struct idr btf_idr;
->  extern spinlock_t btf_idr_lock;
-> @@ -1717,7 +1718,14 @@ int bpf_obj_get_user(const char __user *pathname, int flags);
->         int __init bpf_iter_ ## target(args) { return 0; }
->
->  struct bpf_iter_aux_info {
-> +       /* for map_elem iter */
->         struct bpf_map *map;
-> +
-> +       /* for cgroup iter */
-> +       struct {
-> +               struct cgroup *start; /* starting cgroup */
-> +               int order;
-> +       } cgroup;
->  };
->
->  typedef int (*bpf_iter_attach_target_t)(struct bpf_prog *prog,
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index ffcbf79a556b..fe50c2489350 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -87,10 +87,30 @@ struct bpf_cgroup_storage_key {
->         __u32   attach_type;            /* program attach type (enum bpf_attach_type) */
->  };
->
-> +enum bpf_iter_cgroup_traversal_order {
-> +       BPF_ITER_CGROUP_PRE = 0,        /* pre-order traversal */
-> +       BPF_ITER_CGROUP_POST,           /* post-order traversal */
-> +       BPF_ITER_CGROUP_PARENT_UP,      /* traversal of ancestors up to the root */
 
-I've just put up my arguments why it's a good idea to also support a
-"trivial" mode of only traversing specified cgroup and no descendants
-or parents. Please see [0]. I think the same applies here, especially
-considering that it seems like a good idea to support
-task/task_vma/task_files iteration within a cgroup. So depending on
-how successful I am in arguing for supporting task iterator with
-target cgroup, I think we should reuse *exactly* this
-bpf_iter_cgroup_traversal_order and how we specify cgroup (FD or ID,
-see some more below) *as is* in task iterators as well. In the latter
-case, having an ability to say "iterate task for only given cgroup" is
-very useful, and for such mode all the PRE/POST/PARENT_UP is just an
-unnecessary nuisance.
+Honestly, I don't have any specific preference, because I don't have
+much specific experience writing networking BPF :)
 
-So please consider also adding and supporting BPF_ITER_CGROUP_SELF (or
-whatever naming makes most sense).
+But considering Jakub's point about trying to unify skb/xdp dynptr,
+while I can see how we might have symmetrical dynptr_{read,write}()
+for skb case (because you can pull skb), I believe this is not
+possible with XDP (e.g., multi-buffer one), so bpf_dynptr_write()
+would always be more limited for XDP case.
 
+Or maybe it is possible for XDP and I'm totally wrong here? I'm happy
+to be educated about this!
 
-Some more naming nits. I find BPF_ITER_CGROUP_PRE and
-BPF_ITER_CGROUP_POST a bit confusing. Even internally in kernel we
-have css_next_descendant_pre/css_next_descendant_post, so why not
-reflect the fact that we are going to iterate descendants:
-BPF_ITER_CGROUP_DESCENDANTS_{PRE,POST}. And now that we use
-"descendants" terminology, PARENT_UP should be ANCESTORS. ANCESTORS_UP
-probably is fine, but seems a bit redundant (unless we consider a
-somewhat weird ANCESTORS_DOWN, where we find the furthest parent and
-then descend through preceding parents until we reach specified
-cgroup; seems a bit exotic).
-
-  [0] https://lore.kernel.org/bpf/f92e20e9961963e20766e290ee6668edd4bacf06.camel@fb.com/T/#m5ce50632aa550dd87a99241efb168cbcde1ee98f
-
-> +};
-> +
->  union bpf_iter_link_info {
->         struct {
->                 __u32   map_fd;
->         } map;
-> +
-> +       /* cgroup_iter walks either the live descendants of a cgroup subtree, or the
-> +        * ancestors of a given cgroup.
-> +        */
-> +       struct {
-> +               /* Cgroup file descriptor. This is root of the subtree if walking
-> +                * descendants; it's the starting cgroup if walking the ancestors.
-> +                * If it is left 0, the traversal starts from the default cgroup v2
-> +                * root. For walking v1 hierarchy, one should always explicitly
-> +                * specify the cgroup_fd.
-> +                */
-> +               __u32   cgroup_fd;
-
-Now, similar to what I argued in regard of pidfd vs pid, I think the
-same applied to cgroup_fd vs cgroup_id. Why can't we support both?
-cgroup_fd has some benefits, but cgroup_id is nice due to simplicity
-and not having to open/close/keep extra FDs (which can add up if we
-want to periodically query something about a large set of cgroups).
-Please see my arguments from [0] above.
-
-Thoughts?
-
-> +               __u32   traversal_order;
-> +       } cgroup;
->  };
->
->  /* BPF syscall commands, see bpf(2) man-page for more details. */
-
-[...]
+> >
+> > >
+> > > I guess I agree about consistency and that it seems like in practice
+> > > you'd use bpf_dynptr_data() to work with headers and stuff like that
+> > > at known locations, and then if you need to modify the rest of payload
+> > > you'd do either bpf_skb_load_bytes()/bpf_skb_store_bytes() or
+> > > bpf_dynptr_read()/bpf_dynptr_write() which would invalidate
+> > > bpf_dynptr_data() pointers (but that would be ok by that time).
+> > imo, read, write and then go back to read is less common.
+> > writing bytes without first reading them is also less common.
