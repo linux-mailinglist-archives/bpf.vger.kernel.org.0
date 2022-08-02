@@ -2,173 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E97D758835A
-	for <lists+bpf@lfdr.de>; Tue,  2 Aug 2022 23:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8476F588366
+	for <lists+bpf@lfdr.de>; Tue,  2 Aug 2022 23:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229502AbiHBVTx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Aug 2022 17:19:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33054 "EHLO
+        id S231523AbiHBVZH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Aug 2022 17:25:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbiHBVTw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Aug 2022 17:19:52 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C48EACE3F
-        for <bpf@vger.kernel.org>; Tue,  2 Aug 2022 14:19:51 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id e13so248789edj.12
-        for <bpf@vger.kernel.org>; Tue, 02 Aug 2022 14:19:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=5eKmfeI5yvVu26IEzte6nhWK+/PzdEbCd6gfvfaJLhk=;
-        b=WU6IaecZiymfx+DMSsDwQkoFs3I+3t/9tzBTA2JIkq+XguaQHNzZt+NNKFLyHdPfFI
-         aN4djd22bdsCsiJQo6zBFh8GbYc9sFib4Wyn3d9DGjObusjBWNFODdrq7E4WYaJuVhBA
-         Ff+rZbwQFd4Jm1a1K5q/0mILImXXzSN/zu5nL+xw9kON5kB/5IvVc8CIfCWrYfrDcuvS
-         bYu3Hb62qJJVe16mGlO7UfQy94WcW0rfgD8vATmcrdp9OTL7u3R4Tp9f0yZgC2Z6c908
-         NPUmya/3CneGkS/R05h2jRFLklChW6gg/w0wHG0EIpoN7gwa7MhxbzWHLXFISw6c6b8t
-         s6Zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=5eKmfeI5yvVu26IEzte6nhWK+/PzdEbCd6gfvfaJLhk=;
-        b=BOwlOqTn7PmteeVGpJ/WI5Att/KaMhdV/YeaZGVxJJsx/xXBeN6T7yfD96h61OrG8X
-         m2wbK14cmPhNOOO+Xb4fb+Z1+QW5z1gz0poNCNvKo66BDIE+9cCIy3C9W38cQJtj7xQA
-         9k5qhyXaU0hoHNeHgI3uhOSU2M2kpJC0aXBbjaB8YwG4Nb9fVyyqzIKdVSHNS532olN6
-         DItaTfVWpwBsVsiRR47gEaCUp/5M/WMuduHgBSSnae+1AAByIkMWy9qQlJ6Vv+33O+sq
-         ajR2ugjJD+L17+TfITiyTh1YCom4J6rD1nSeFBetTHo2Mkt87p8XQkS1Mz0NyChdmXtM
-         MTQA==
-X-Gm-Message-State: ACgBeo1ywH2zygapXLzbJ7NyG7uclSYvl+cU8SaKrCsBBmrASCQEyBCY
-        S3AkWM65JAIxV9ATHrsXIEBjWJ2DKQDmJa0DE+RkL2uY
-X-Google-Smtp-Source: AA6agR5wHQPdB6nuoIs8CMzPGoKi1dfN3fdLYSlNL6RDmb4JSQel/lsHxUtCYkQBK381T2qwyK1vziJWaeSB9aFuhK4=
-X-Received: by 2002:a50:ed82:0:b0:43d:5334:9d19 with SMTP id
- h2-20020a50ed82000000b0043d53349d19mr16724390edr.232.1659475190331; Tue, 02
- Aug 2022 14:19:50 -0700 (PDT)
+        with ESMTP id S229854AbiHBVZE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Aug 2022 17:25:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 951084B4AC
+        for <bpf@vger.kernel.org>; Tue,  2 Aug 2022 14:25:02 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EAF096152B
+        for <bpf@vger.kernel.org>; Tue,  2 Aug 2022 21:25:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54888C43146
+        for <bpf@vger.kernel.org>; Tue,  2 Aug 2022 21:25:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1659475501;
+        bh=DRcXHF+hL2akkSQuSU/bab25l1HxDgWat6fbp5QgZhU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=u9yr6XEkjVdJIcA7/jlvQMUQ6t8yhcrWO0ZYXGvqrdvtpVE5j6WEAW//6gBiXrTTd
+         pdYOcUwOgR+EdfgzMvCV7AKNlFhoJiP49Mf1S/Gvh+BGlobnl8exw1zEd3r7hnS8um
+         7y4SftybEYukzwq6/Z7vl/5s/YsJBmXUG7xeMBf1jmKFEjqp8M7Tt5kezB7smnDxU1
+         4mdvpzCotHVNVCJgVFGnMC54CfVPFCxHeEkLgiM28NlBVoU2hJypcGPw2U7yQtfQV9
+         JhZNLFSoW4c5VwTlRHvcn3ukQqEFQKp+g8qfbcLT5S2wQcgHnZkmV9j5U7cLR2r8xC
+         8bG+hXkhqejYQ==
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-31f661b3f89so153592287b3.11
+        for <bpf@vger.kernel.org>; Tue, 02 Aug 2022 14:25:01 -0700 (PDT)
+X-Gm-Message-State: ACgBeo2oCbwY0PcsmWu2noLtFPD6SKTbEJuOqWM14nkA5ycJHkE2WDFI
+        jlNH2s//D7xuje3frWJbPx0c5c959npo2cstGw872A==
+X-Google-Smtp-Source: AA6agR76IZreUuGci5NqrZubzetTIA/QdScJIvyrhjNqtyLp6A9JrFMy5bTInLzADq8lje7PLu8L4AMmL5D5TBPUlpI=
+X-Received: by 2002:a0d:f0c7:0:b0:31e:e814:e7d6 with SMTP id
+ z190-20020a0df0c7000000b0031ee814e7d6mr20401368ywe.340.1659475500117; Tue, 02
+ Aug 2022 14:25:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220801232649.2306614-1-kuifeng@fb.com> <20220801232649.2306614-2-kuifeng@fb.com>
- <CAADnVQJp3GDjFw9H8nez4z8zSYME3h_fL3cuhiVSOrMc11T5KA@mail.gmail.com> <abd48496db08b3f50df163267f37bb96616f355e.camel@fb.com>
-In-Reply-To: <abd48496db08b3f50df163267f37bb96616f355e.camel@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 2 Aug 2022 14:19:38 -0700
-Message-ID: <CAEf4BzZ=+CR=Y48_YpUpBZb93WrwdKdALu=1AnfJLi-5Htad3Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/3] bpf: Parameterize task iterators.
-To:     Kui-Feng Lee <kuifeng@fb.com>
-Cc:     "alexei.starovoitov@gmail.com" <alexei.starovoitov@gmail.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+References: <20220721172808.585539-1-fred@cloudflare.com> <20220722061137.jahbjeucrljn2y45@kafai-mbp.dhcp.thefacebook.com>
+ <18225d94bf0.28e3.85c95baa4474aabc7814e68940a78392@paul-moore.com>
+ <a4db1154-94bc-9833-1665-a88a5eee48de@cloudflare.com> <CAHC9VhQw8LR9yJ9UkA-9aPNETQavt25G-GGSs-_ztg6ZpxNzxA@mail.gmail.com>
+In-Reply-To: <CAHC9VhQw8LR9yJ9UkA-9aPNETQavt25G-GGSs-_ztg6ZpxNzxA@mail.gmail.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Tue, 2 Aug 2022 23:24:49 +0200
+X-Gmail-Original-Message-ID: <CACYkzJ7=Cvo9qncMX_5_Wp1zNNWDyh3DxdOLq_ysWxDCs8VC8g@mail.gmail.com>
+Message-ID: <CACYkzJ7=Cvo9qncMX_5_Wp1zNNWDyh3DxdOLq_ysWxDCs8VC8g@mail.gmail.com>
+Subject: Re: [PATCH v3 0/4] Introduce security_create_user_ns()
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Frederick Lawler <fred@cloudflare.com>,
+        Martin KaFai Lau <kafai@fb.com>, revest@chromium.org,
+        jackmanb@chromium.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        shuah@kernel.org, brauner@kernel.org, casey@schaufler-ca.com,
+        ebiederm@xmission.com, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, kernel-team@cloudflare.com,
+        cgzones@googlemail.com, karl@bigbadwolfsecurity.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 2, 2022 at 9:48 AM Kui-Feng Lee <kuifeng@fb.com> wrote:
+On Mon, Aug 1, 2022 at 5:19 PM Paul Moore <paul@paul-moore.com> wrote:
 >
-> On Mon, 2022-08-01 at 18:49 -0700, Alexei Starovoitov wrote:
-> > On Mon, Aug 1, 2022 at 4:27 PM Kui-Feng Lee <kuifeng@fb.com> wrote:
+> On Mon, Aug 1, 2022 at 9:13 AM Frederick Lawler <fred@cloudflare.com> wrote:
+> > On 7/22/22 7:20 AM, Paul Moore wrote:
+> > > On July 22, 2022 2:12:03 AM Martin KaFai Lau <kafai@fb.com> wrote:
 > > >
-> > > Allow creating an iterator that loops through resources of one
-> > > task/thread.
+> > >> On Thu, Jul 21, 2022 at 12:28:04PM -0500, Frederick Lawler wrote:
+> > >>> While creating a LSM BPF MAC policy to block user namespace creation, we
+> > >>> used the LSM cred_prepare hook because that is the closest hook to prevent
+> > >>> a call to create_user_ns().
+> > >>>
+> > >>> The calls look something like this:
+> > >>>
+> > >>> cred = prepare_creds()
+> > >>> security_prepare_creds()
+> > >>> call_int_hook(cred_prepare, ...
+> > >>> if (cred)
+> > >>> create_user_ns(cred)
+> > >>>
+> > >>> We noticed that error codes were not propagated from this hook and
+> > >>> introduced a patch [1] to propagate those errors.
+> > >>>
+> > >>> The discussion notes that security_prepare_creds()
+> > >>> is not appropriate for MAC policies, and instead the hook is
+> > >>> meant for LSM authors to prepare credentials for mutation. [2]
+> > >>>
+> > >>> Ultimately, we concluded that a better course of action is to introduce
+> > >>> a new security hook for LSM authors. [3]
+> > >>>
+> > >>> This patch set first introduces a new security_create_user_ns() function
+> > >>> and userns_create LSM hook, then marks the hook as sleepable in BPF.
+> > >> Patch 1 and 4 still need review from the lsm/security side.
 > > >
-> > > People could only create iterators to loop through all resources of
-> > > files, vma, and tasks in the system, even though they were
-> > > interested
-> > > in only the resources of a specific task or process.  Passing the
-> > > additional parameters, people can now create an iterator to go
-> > > through all resources or only the resources of a task.
+> > > This patchset is in my review queue and assuming everything checks out, I expect to merge it after the upcoming merge window closes.
 > > >
-> > > Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
-> > > ---
-> > >  include/linux/bpf.h            |  4 ++
-> > >  include/uapi/linux/bpf.h       | 23 +++++++++
-> > >  kernel/bpf/task_iter.c         | 93 ++++++++++++++++++++++++++----
-> > > ----
-> > >  tools/include/uapi/linux/bpf.h | 23 +++++++++
-> > >  4 files changed, 121 insertions(+), 22 deletions(-)
-> > >
-> > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > > index 11950029284f..3c26dbfc9cef 100644
-> > > --- a/include/linux/bpf.h
-> > > +++ b/include/linux/bpf.h
-> > > @@ -1718,6 +1718,10 @@ int bpf_obj_get_user(const char __user
-> > > *pathname, int flags);
-> > >
-> > >  struct bpf_iter_aux_info {
-> > >         struct bpf_map *map;
-> > > +       struct {
-> > > +               u32     tid;
-> > > +               u8      type;
-> > > +       } task;
-> > >  };
-> > >
-> > >  typedef int (*bpf_iter_attach_target_t)(struct bpf_prog *prog,
-> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > index ffcbf79a556b..ed5ba501609f 100644
-> > > --- a/include/uapi/linux/bpf.h
-> > > +++ b/include/uapi/linux/bpf.h
-> > > @@ -87,10 +87,33 @@ struct bpf_cgroup_storage_key {
-> > >         __u32   attach_type;            /* program attach type
-> > > (enum bpf_attach_type) */
-> > >  };
-> > >
-> > > +enum bpf_task_iter_type {
-> > > +       BPF_TASK_ITER_ALL = 0,
-> > > +       BPF_TASK_ITER_TID,
-> > > +};
-> > > +
-> > >  union bpf_iter_link_info {
-> > >         struct {
-> > >                 __u32   map_fd;
-> > >         } map;
-> > > +       /*
-> > > +        * Parameters of task iterators.
-> > > +        */
-> > > +       struct {
-> > > +               __u32   pid_fd;
-> > > +               /*
-> > > +                * The type of the iterator.
-> > > +                *
-> > > +                * It can be one of enum bpf_task_iter_type.
-> > > +                *
-> > > +                * BPF_TASK_ITER_ALL (default)
-> > > +                *      The iterator iterates over resources of
-> > > everyprocess.
-> > > +                *
-> > > +                * BPF_TASK_ITER_TID
-> > > +                *      You should also set *pid_fd* to iterate
-> > > over one task.
-> > > +                */
-> > > +               __u8    type;   /* BPF_TASK_ITER_* */
+> > > I would also need an ACK from the BPF LSM folks, but they're CC'd on this patchset.
 > >
-> > __u8 might be a pain for future extensibility.
+> > Based on last weeks comments, should I go ahead and put up v4 for
+> > 5.20-rc1 when that drops, or do I need to wait for more feedback?
 >
-> Do you mean the problem caused by padding?
+> In general it rarely hurts to make another revision, and I think
+> you've gotten some decent feedback on this draft, especially around
+> the BPF LSM tests; I think rebasing on Linus tree after the upcoming
+> io_uring changes are merged would be a good idea.  Although as a
+> reminder to the BPF LSM folks - I'm looking at you KP Singh :) - I
+> need an ACK from you guys before I merge the BPF related patches
 
-Not Alexei, but I agree that there is no reason to try to save a few
-bytes here. Let's use u32 or just plain 32-bit enum. Please also put
-it in front of pid_fd (first field in this substruct), so that it's
-easier to extend this with more information about "iteration target"
-(e.g., if we later want to iterate tasks within cgroup, we might end
-up specifying cgroup_id, which I believe is 64-bit, so it would be
-nice to be able to just do a union across {pid_fd, pid, cgroup_fd,
-cgroup_id}.
+Apologies, I was on vacation. I am looking at the patches now.
+Reviews and acks coming soon :)
+
+- KP
+
+> (patches {2,3}/4).  For the record, I think the SELinux portion of
+> this patchset (path 4/4) is fine.
+>
+
+[...]
 
 >
-> > big vs little endian will be another potential issue.
->
-> Do we need binary compatible for different platforms?
-> I don't get the point of endian.  Could you explain it more?
->
-> >
-> > Maybe use enum bpf_task_iter_type type; here and
-> > move the comment to enum def ?
-> > Or rename it to '__u32 flags;' ?
->
+> --
+> paul-moore.com
