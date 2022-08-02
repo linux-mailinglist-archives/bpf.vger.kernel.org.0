@@ -2,136 +2,298 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DEFB588430
-	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 00:25:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A635C58843A
+	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 00:28:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236468AbiHBWZS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Aug 2022 18:25:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54594 "EHLO
+        id S233658AbiHBW2K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Aug 2022 18:28:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232519AbiHBWZR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Aug 2022 18:25:17 -0400
-Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E06BBBA9
-        for <bpf@vger.kernel.org>; Tue,  2 Aug 2022 15:25:13 -0700 (PDT)
-Received: from submission (posteo.de [185.67.36.169]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id 2FC18240026
-        for <bpf@vger.kernel.org>; Wed,  3 Aug 2022 00:25:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1659479111; bh=jdJTVBlEZCmjiGBIwKG07JVrulm/Lub01jc5uOXjeiY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=dRzQULPhh8xUGSBSNuI32VLjojGa/ERGk+32yqVUSBzEmOrBdc72jfUEyaHqrubPz
-         fh+gmtK46PEsSZMCbfLIRSyZoKBpfhFX+zr6i9jZ2sXDC5/RmQW4bZedoa3eFoq7pz
-         dxjBbngNzQP9ABIcN2t4JTC/3bT/tDBS0KSbWQkY9c4fSyYBsYzEaF3Ot5s+ZtUeo/
-         VZdx1HTuOYzqQTF6/+UoHEz2oMKc+eFAcNICGctI5IgLUghfeWbRBB4bF4LB0m9beW
-         Pgi5s1Do0RIcd0VQ1lUjF9/ZtrnTQTQAJ3XiojT2bjUVqS69NDSpKyKk0PVaCuLu/s
-         4NcD1NUWRDHdA==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4Ly8gn61Xmz6tpF;
-        Wed,  3 Aug 2022 00:25:09 +0200 (CEST)
-Date:   Tue,  2 Aug 2022 22:25:06 +0000
-From:   Daniel =?utf-8?Q?M=C3=BCller?= <deso@posteo.net>
-To:     bpf@vger.kernel.org
-Cc:     kernel-team@fb.com
-Subject: [BUG] Possible deadlock in bpf_local_storage_update
-Message-ID: <20220802222506.h7uekapwj5tioj5a@muellerd-fedora-MJ0AC3F3>
+        with ESMTP id S233140AbiHBW2G (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Aug 2022 18:28:06 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C04F54CBF
+        for <bpf@vger.kernel.org>; Tue,  2 Aug 2022 15:27:55 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id b7so10387293qvq.2
+        for <bpf@vger.kernel.org>; Tue, 02 Aug 2022 15:27:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9SA1GeBCwPiGvsrnnwBDw1nYIHiUSNtHqCw5JUNeRyk=;
+        b=tN7USoFfowYqaOA3Zg7kBgDk9uh8FMrZP5UPHQpQgQA49sW+iNiHFS0Ua7puhPUvQV
+         y23XyuYrkE8cRYDz/Za/oub0X6hP/u2391ShPfSH6nuX3nku04d1N71G7JBwsqgFMBCL
+         svXUhAvY2hQc8Ot26TnHY2JyRLD7XFvGuqJeGRvQUqiEV3WxSZh4lwAFNPaW1v4k8i0s
+         9S8eVIpf0+8pemcv6MCpwmd7tlpfmxitnptjmQJDw8HPZMXMt3IPtJpk4KfIeDScYyBn
+         pcM3gNEYo0bAOeb3/VY4KxpyGtKfutMGciY6RE5pFf22fS/4Ng9+Ypqtwqw6Om+9t8at
+         ta0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9SA1GeBCwPiGvsrnnwBDw1nYIHiUSNtHqCw5JUNeRyk=;
+        b=qaKOiBzSHKzeJUD11/oUBi+5RLgloCDxyv00x6zJvXAlOvW76ZbJrIm581LfI7c8kN
+         gj16B+spHnX+Cd5Winv7E6LzKn/eWqC3W4LCBIF5oi0NujB6TbSjq1hYg2P/j+cVL2fT
+         j8kwj/FcCj4DAJU5gxQ617g03iOgtchEXZiSieeexj+Zqp6oQdk19XASNIZjp6IP7E4d
+         rreCoRm6jqa2aM9Xigc2vMEeFBcawbpQeuojXXvxrZoJLHd/gqsc2e8ZKdAGKWSfb9U/
+         ozuRe9KFOIvd9cpaosCFPMq09kadnFPe2qGijJKsM+oVFTOrxcQJ7IuBFj7zGkUkUfM7
+         F2AA==
+X-Gm-Message-State: ACgBeo26tCE8JQP7lpcC/z4jDZPGmk2Xm307NGt13KSRSdJX2on4FP5P
+        OAyTTRX/RPZqa0+kZcAFtRYnvw1xmPl1884iSra+ew==
+X-Google-Smtp-Source: AA6agR5+Y3zN3DuMsHNU5t2COkNkCwWZBkoftegn99gL+qMDMiI/AiRmHr5ptn4jQrA3+/lO3hRhX33eBXJdbM5Cocw=
+X-Received: by 2002:a0c:9101:0:b0:473:9b:d92a with SMTP id q1-20020a0c9101000000b00473009bd92amr19932398qvq.17.1659479274234;
+ Tue, 02 Aug 2022 15:27:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20220722174829.3422466-1-yosryahmed@google.com>
+ <20220722174829.3422466-5-yosryahmed@google.com> <CAEf4BzbD38XFVxMy5crO-=+Xg7U3Vc_fB4Ntug4BEbmdLpvuDQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzbD38XFVxMy5crO-=+Xg7U3Vc_fB4Ntug4BEbmdLpvuDQ@mail.gmail.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Tue, 2 Aug 2022 15:27:43 -0700
+Message-ID: <CA+khW7jftQikVsc8moM6rNRqBerUHDM6WRDjb33exdbogDc7aQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 4/8] bpf: Introduce cgroup iter
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, cgroups@vger.kernel.org,
+        Kui-Feng Lee <kuifeng@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+Hi Andrii,
 
-I've seen the following deadlock warning when running the test_progs selftest:
+On Mon, Aug 1, 2022 at 8:43 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Fri, Jul 22, 2022 at 10:48 AM Yosry Ahmed <yosryahmed@google.com> wrote:
+> >
+> > From: Hao Luo <haoluo@google.com>
+> >
+> > Cgroup_iter is a type of bpf_iter. It walks over cgroups in three modes:
+> >
+> >  - walking a cgroup's descendants in pre-order.
+> >  - walking a cgroup's descendants in post-order.
+> >  - walking a cgroup's ancestors.
+> >
+> > When attaching cgroup_iter, one can set a cgroup to the iter_link
+> > created from attaching. This cgroup is passed as a file descriptor and
+> > serves as the starting point of the walk. If no cgroup is specified,
+> > the starting point will be the root cgroup.
+> >
+> > For walking descendants, one can specify the order: either pre-order or
+> > post-order. For walking ancestors, the walk starts at the specified
+> > cgroup and ends at the root.
+> >
+> > One can also terminate the walk early by returning 1 from the iter
+> > program.
+> >
+> > Note that because walking cgroup hierarchy holds cgroup_mutex, the iter
+> > program is called with cgroup_mutex held.
+> >
+> > Currently only one session is supported, which means, depending on the
+> > volume of data bpf program intends to send to user space, the number
+> > of cgroups that can be walked is limited. For example, given the current
+> > buffer size is 8 * PAGE_SIZE, if the program sends 64B data for each
+> > cgroup, the total number of cgroups that can be walked is 512. This is
+> > a limitation of cgroup_iter. If the output data is larger than the
+> > buffer size, the second read() will signal EOPNOTSUPP. In order to work
+> > around, the user may have to update their program to reduce the volume
+> > of data sent to output. For example, skip some uninteresting cgroups.
+> > In future, we may extend bpf_iter flags to allow customizing buffer
+> > size.
+> >
+> > Signed-off-by: Hao Luo <haoluo@google.com>
+> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> > Acked-by: Yonghong Song <yhs@fb.com>
+> > ---
+> >  include/linux/bpf.h                           |   8 +
+> >  include/uapi/linux/bpf.h                      |  30 +++
+> >  kernel/bpf/Makefile                           |   3 +
+> >  kernel/bpf/cgroup_iter.c                      | 252 ++++++++++++++++++
+> >  tools/include/uapi/linux/bpf.h                |  30 +++
+> >  .../selftests/bpf/prog_tests/btf_dump.c       |   4 +-
+> >  6 files changed, 325 insertions(+), 2 deletions(-)
+> >  create mode 100644 kernel/bpf/cgroup_iter.c
+> >
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index a97751d845c9..9061618fe929 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -47,6 +47,7 @@ struct kobject;
+> >  struct mem_cgroup;
+> >  struct module;
+> >  struct bpf_func_state;
+> > +struct cgroup;
+> >
+> >  extern struct idr btf_idr;
+> >  extern spinlock_t btf_idr_lock;
+> > @@ -1717,7 +1718,14 @@ int bpf_obj_get_user(const char __user *pathname, int flags);
+> >         int __init bpf_iter_ ## target(args) { return 0; }
+> >
+> >  struct bpf_iter_aux_info {
+> > +       /* for map_elem iter */
+> >         struct bpf_map *map;
+> > +
+> > +       /* for cgroup iter */
+> > +       struct {
+> > +               struct cgroup *start; /* starting cgroup */
+> > +               int order;
+> > +       } cgroup;
+> >  };
+> >
+> >  typedef int (*bpf_iter_attach_target_t)(struct bpf_prog *prog,
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index ffcbf79a556b..fe50c2489350 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -87,10 +87,30 @@ struct bpf_cgroup_storage_key {
+> >         __u32   attach_type;            /* program attach type (enum bpf_attach_type) */
+> >  };
+> >
+> > +enum bpf_iter_cgroup_traversal_order {
+> > +       BPF_ITER_CGROUP_PRE = 0,        /* pre-order traversal */
+> > +       BPF_ITER_CGROUP_POST,           /* post-order traversal */
+> > +       BPF_ITER_CGROUP_PARENT_UP,      /* traversal of ancestors up to the root */
+>
+> I've just put up my arguments why it's a good idea to also support a
+> "trivial" mode of only traversing specified cgroup and no descendants
+> or parents. Please see [0].
 
-[  127.404118] ============================================
-[  127.409306] WARNING: possible recursive locking detected
-[  127.414534] 5.19.0-rc8-02055-g43fe6c051c85 #257 Tainted: G           OE
-[  127.421172] --------------------------------------------
-[  127.426256] test_progs/492 is trying to acquire lock:
-[  127.431356] ffff8ffe0d6c4bb8 (&storage->lock){+.-.}-{2:2}, at: __bpf_selem_unlink_storage+0x3a/0x150
-[  127.440305]
-[  127.440305] but task is already holding lock:
-[  127.445872] ffff8ffe0d6c4ab8 (&storage->lock){+.-.}-{2:2}, at: bpf_local_storage_update+0x31e/0x490
-[  127.454681]
-[  127.454681] other info that might help us debug this:
-[  127.461171]  Possible unsafe locking scenario:
-[  127.461171]
-[  127.467377]        CPU0
-[  127.469971]        ----
-[  127.472497]   lock(&storage->lock);
-[  127.475963]   lock(&storage->lock);
-[  127.479391]
-[  127.479391]  *** DEADLOCK ***
-[  127.479391]
-[  127.485434]  May be due to missing lock nesting notation
-[  127.485434]
-[  127.492118] 3 locks held by test_progs/492:
-[  127.496484]  #0: ffffffffbaf94b60 (rcu_read_lock_trace){....}-{0:0}, at: __bpf_prog_enter_sleepable+0x0/0xe0
-[  127.505888]  #1: ffff8ffe0d6c4ab8 (&storage->lock){+.-.}-{2:2}, at: bpf_local_storage_update+0x31e/0x490
-[  127.514981]  #2: ffffffffbaf957e0 (rcu_read_lock){....}-{1:2}, at: __bpf_prog_enter+0x0/0x100
-[  127.523310]
-[  127.523310] stack backtrace:
-[  127.527574] CPU: 7 PID: 492 Comm: test_progs Tainted: G           OE     5.19.0-rc8-02055-g43fe6c051c85 #257
-[  127.536658] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.15.0-0-g2dd4b9b3f840-prebuilt.qemu.org 04/01/2014
-[  127.547462] Call Trace:
-[  127.549977]  <TASK>
-[  127.552175]  dump_stack_lvl+0x44/0x5b
-[  127.555758]  __lock_acquire.cold.74+0x151/0x2aa
-[  127.560217]  lock_acquire+0xc9/0x2f0
-[  127.563686]  ? __bpf_selem_unlink_storage+0x3a/0x150
-[  127.568524]  ? find_held_lock+0x2d/0xa0
-[  127.572378]  _raw_spin_lock_irqsave+0x38/0x60
-[  127.576532]  ? __bpf_selem_unlink_storage+0x3a/0x150
-[  127.581380]  __bpf_selem_unlink_storage+0x3a/0x150
-[  127.586044]  bpf_task_storage_delete+0x53/0xb0
-[  127.590385]  bpf_prog_730e33528dbd2937_on_lookup+0x26/0x3d
-[  127.595673]  bpf_trampoline_6442505865_0+0x47/0x1000
-[  127.600533]  ? bpf_local_storage_update+0x250/0x490
-[  127.605253]  bpf_local_storage_lookup+0x5/0x130
-[  127.609650]  bpf_local_storage_update+0xf1/0x490
-[  127.614175]  bpf_sk_storage_get+0xd3/0x130
-[  127.618126]  bpf_prog_b4aaeb10c7178354_socket_bind+0x18e/0x297
-[  127.623815]  bpf_trampoline_6442474456_1+0x5c/0x1000
-[  127.628591]  bpf_lsm_socket_bind+0x5/0x10
-[  127.632476]  security_socket_bind+0x30/0x50
-[  127.636755]  __sys_bind+0xba/0xf0
-[  127.640113]  ? ktime_get_coarse_real_ts64+0xb9/0xc0
-[  127.644910]  ? lockdep_hardirqs_on+0x79/0x100
-[  127.649438]  ? ktime_get_coarse_real_ts64+0xb9/0xc0
-[  127.654215]  ? syscall_trace_enter.isra.16+0x157/0x200
-[  127.659255]  __x64_sys_bind+0x16/0x20
-[  127.662894]  do_syscall_64+0x3a/0x90
-[  127.666456]  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-[  127.671500] RIP: 0033:0x7fbba4b36ceb
-[  127.674982] Code: c3 48 8b 15 77 31 0c 00 f7 d8 64 89 02 b8 ff ff ff ff eb c2 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa b8 31 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 8
-[  127.692457] RSP: 002b:00007fff4e9c9db8 EFLAGS: 00000206 ORIG_RAX: 0000000000000031
-[  127.699666] RAX: ffffffffffffffda RBX: 00007fbba5057000 RCX: 00007fbba4b36ceb
-[  127.706448] RDX: 000000000000001c RSI: 00007fff4e9c9e40 RDI: 0000000000000035
-[  127.713247] RBP: 00007fff4e9c9e00 R08: 0000000000000010 R09: 0000000000000000
-[  127.719938] R10: 0000000000000000 R11: 0000000000000206 R12: 000000000040d3a0
-[  127.726790] R13: 00007fff4e9ce330 R14: 0000000000000000 R15: 0000000000000000
-[  127.733820]  </TASK>
+cc Kui-Feng in this thread.
 
-I am not entirely sure I am reading the call trace correctly (or whether it
-really is all that accurate for that matter), but one way I could see a
-recursive acquisition is if we first acquire the local_storage lock in
-bpf_local_storage_update [0], then we call into bpf_local_storage_lookup in line
-439 (with the lock still held), and then attempt to acquire it again in line
-268.
+Yeah, I think it's a good idea. It's useful when we only want to show
+a single object, which can be common. Going further, I think we may
+want to restructure bpf_iter to optimize for this case.
 
-The config I used is tools/testing/selftests/bpf/config +
-tools/testing/selftests/bpf/config.x86_64. I am at synced to 71930846b36 ("net:
-marvell: prestera: uninitialized variable bug").
+> I think the same applies here, especially
+> considering that it seems like a good idea to support
+> task/task_vma/task_files iteration within a cgroup.
 
-Thanks,
-Daniel
+I have reservations on these use cases. I don't see immediate use of
+iterating vma or files within a cgroup. Tasks within a cgroup? Maybe.
+:)
 
-[0] https://elixir.bootlin.com/linux/v5.19-rc8/source/kernel/bpf/bpf_local_storage.c#L426
+> So depending on
+> how successful I am in arguing for supporting task iterator with
+> target cgroup, I think we should reuse *exactly* this
+> bpf_iter_cgroup_traversal_order and how we specify cgroup (FD or ID,
+> see some more below) *as is* in task iterators as well. In the latter
+> case, having an ability to say "iterate task for only given cgroup" is
+> very useful, and for such mode all the PRE/POST/PARENT_UP is just an
+> unnecessary nuisance.
+>
+> So please consider also adding and supporting BPF_ITER_CGROUP_SELF (or
+> whatever naming makes most sense).
+>
+
+PRE/POST/UP can be reused for iter of tree-structured containers, like
+rbtree [1]. SELF can be reused for any iters like iter/task,
+iter/cgroup, etc. Promoting all of them out of cgroup-specific struct
+seems valuable.
+
+[1] https://lwn.net/Articles/902405/
+
+>
+> Some more naming nits. I find BPF_ITER_CGROUP_PRE and
+> BPF_ITER_CGROUP_POST a bit confusing. Even internally in kernel we
+> have css_next_descendant_pre/css_next_descendant_post, so why not
+> reflect the fact that we are going to iterate descendants:
+> BPF_ITER_CGROUP_DESCENDANTS_{PRE,POST}. And now that we use
+> "descendants" terminology, PARENT_UP should be ANCESTORS. ANCESTORS_UP
+> probably is fine, but seems a bit redundant (unless we consider a
+> somewhat weird ANCESTORS_DOWN, where we find the furthest parent and
+> then descend through preceding parents until we reach specified
+> cgroup; seems a bit exotic).
+>
+
+BPF_ITER_CGROUP_DESCENDANTS_PRE is too verbose. If there is a
+possibility of merging rbtree and supporting walk order of rbtree
+iter, maybe the name here could be general, like
+BPF_ITER_DESCENDANTS_PRE, which seems better.
+
+>   [0] https://lore.kernel.org/bpf/f92e20e9961963e20766e290ee6668edd4bacf06.camel@fb.com/T/#m5ce50632aa550dd87a99241efb168cbcde1ee98f
+>
+> > +};
+> > +
+> >  union bpf_iter_link_info {
+> >         struct {
+> >                 __u32   map_fd;
+> >         } map;
+> > +
+> > +       /* cgroup_iter walks either the live descendants of a cgroup subtree, or the
+> > +        * ancestors of a given cgroup.
+> > +        */
+> > +       struct {
+> > +               /* Cgroup file descriptor. This is root of the subtree if walking
+> > +                * descendants; it's the starting cgroup if walking the ancestors.
+> > +                * If it is left 0, the traversal starts from the default cgroup v2
+> > +                * root. For walking v1 hierarchy, one should always explicitly
+> > +                * specify the cgroup_fd.
+> > +                */
+> > +               __u32   cgroup_fd;
+>
+> Now, similar to what I argued in regard of pidfd vs pid, I think the
+> same applied to cgroup_fd vs cgroup_id. Why can't we support both?
+> cgroup_fd has some benefits, but cgroup_id is nice due to simplicity
+> and not having to open/close/keep extra FDs (which can add up if we
+> want to periodically query something about a large set of cgroups).
+> Please see my arguments from [0] above.
+>
+> Thoughts?
+>
+
+We can support both, it's a good idea IMO. But what exactly is the
+interface going to look like? Can you be more specific about that?
+Below is something I tried based on your description.
+
+@@ -91,6 +91,18 @@ union bpf_iter_link_info {
+        struct {
+                __u32   map_fd;
+        } map;
++       struct {
++               /* PRE/POST/UP/SELF */
++               __u32 order;
++               struct {
++                       __u32 cgroup_fd;
++                       __u64 cgroup_id;
++               } cgroup;
++               struct {
++                       __u32 pid_fd;
++                       __u64 pid;
++               } task;
++       };
+ };
+
+> > +               __u32   traversal_order;
+> > +       } cgroup;
+> >  };
+> >
+> >  /* BPF syscall commands, see bpf(2) man-page for more details. */
+>
+> [...]
