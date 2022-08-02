@@ -2,103 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB35587C17
-	for <lists+bpf@lfdr.de>; Tue,  2 Aug 2022 14:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E957587C6F
+	for <lists+bpf@lfdr.de>; Tue,  2 Aug 2022 14:28:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236931AbiHBMNS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Aug 2022 08:13:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60740 "EHLO
+        id S236959AbiHBM2r (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Aug 2022 08:28:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236865AbiHBMNO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Aug 2022 08:13:14 -0400
-Received: from mx07-0057a101.pphosted.com (mx07-0057a101.pphosted.com [205.220.184.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F35004F648;
-        Tue,  2 Aug 2022 05:13:01 -0700 (PDT)
-Received: from pps.filterd (m0214197.ppops.net [127.0.0.1])
-        by mx07-0057a101.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 272Bru40021377;
-        Tue, 2 Aug 2022 14:10:04 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=westermo.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=12052020;
- bh=7Dt46XnYgf28PDkRim97Pp78Rq0luk57iTdbu5nsFDk=;
- b=5A5ZHa/0fQMLtboujnDa9BvigvhJm8zM/sKzAeRSrKNB/Vh8BF9o+gJvfxedi/5ona09
- BE6fPGar3b68cHForqu4ZK0KK9U5MJXrFgTbMXF9Ndr9kCmjdAU5XRVq1k+VzD38TK37
- wVtRkrcBN2c1OkEo9ZB/R8wZ1xJK1Rc+E3Dy5GVlcwrqfCCAO2HUkpKKJPtVhbMF/UiZ
- VLon0gn0MUaJloc9NgvcJi17bz/Tb5BY40K/A+QgvlsJo1ckpOUFl4qxtIhajLpjonCH
- J/d1746EKf7Eav9sh+YJ4Oayr9U8pd54NjmPZ05An5wZKjV8mFPio+M0qwZL+08WntQB Jw== 
-Received: from mail.beijerelectronics.com ([195.67.87.131])
-        by mx07-0057a101.pphosted.com (PPS) with ESMTPS id 3hms0c2wby-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 02 Aug 2022 14:10:04 +0200
-Received: from Orpheus.westermo.com (172.29.101.13) by
- EX01GLOBAL.beijerelectronics.com (10.101.10.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
- 15.1.2375.17; Tue, 2 Aug 2022 14:10:01 +0200
-From:   Matthias May <matthias.may@westermo.com>
-To:     <netdev@vger.kernel.org>
-CC:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <roopa@nvidia.com>,
-        <eng.alaamohamedsoliman.am@gmail.com>, <bigeasy@linutronix.de>,
-        <saeedm@nvidia.com>, <leon@kernel.org>, <roid@nvidia.com>,
-        <maord@nvidia.com>, <lariel@nvidia.com>, <vladbu@nvidia.com>,
-        <cmi@nvidia.com>, <gnault@redhat.com>, <yoshfuji@linux-ipv6.org>,
-        <dsahern@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <nicolas.dichtel@6wind.com>, <eyal.birger@gmail.com>,
-        <jesse@nicira.com>, <linville@tuxdriver.com>,
-        <daniel@iogearbox.net>, <hadarh@mellanox.com>,
-        <ogerlitz@mellanox.com>, <willemb@google.com>,
-        <martin.varghese@nokia.com>,
-        Matthias May <matthias.may@westermo.com>
-Subject: [PATCH v2 net 4/4] ipv6: do not use RT_TOS for IPv6 flowlabel
-Date:   Tue, 2 Aug 2022 14:09:35 +0200
-Message-ID: <20220802120935.1363001-5-matthias.may@westermo.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220802120935.1363001-1-matthias.may@westermo.com>
-References: <20220802120935.1363001-1-matthias.may@westermo.com>
+        with ESMTP id S236442AbiHBM2q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Aug 2022 08:28:46 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8204751408;
+        Tue,  2 Aug 2022 05:28:44 -0700 (PDT)
+Received: from dggpemm500021.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4LxvNS5gwYzlVnH;
+        Tue,  2 Aug 2022 20:26:00 +0800 (CST)
+Received: from dggpemm500013.china.huawei.com (7.185.36.172) by
+ dggpemm500021.china.huawei.com (7.185.36.109) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 2 Aug 2022 20:28:42 +0800
+Received: from [127.0.0.1] (10.67.108.67) by dggpemm500013.china.huawei.com
+ (7.185.36.172) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Tue, 2 Aug
+ 2022 20:28:42 +0800
+Message-ID: <e3993e00-9346-9e0d-7490-76ffb713f343@huawei.com>
+Date:   Tue, 2 Aug 2022 20:28:39 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.29.101.13]
-X-ClientProxiedBy: wsevst-s0023.westermo.com (192.168.130.120) To
- EX01GLOBAL.beijerelectronics.com (10.101.10.25)
-X-Proofpoint-GUID: ZoawDdE9j41KGZHES-cdGopeQksgu0vj
-X-Proofpoint-ORIG-GUID: ZoawDdE9j41KGZHES-cdGopeQksgu0vj
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.0
+Subject: Re: [PATCH v3] kprobes: Forbid probing on trampoline and bpf prog
+Content-Language: en-US
+To:     Jiri Olsa <olsajiri@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+CC:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <naveen.n.rao@linux.ibm.com>, <anil.s.keshavamurthy@intel.com>,
+        <davem@davemloft.net>, <mhiramat@kernel.org>,
+        <peterz@infradead.org>, <mingo@kernel.org>, <ast@kernel.org>,
+        <daniel@iogearbox.net>
+References: <20220801033719.228248-1-chenzhongjin@huawei.com>
+ <Yug6bx7T4GzqUf2a@krava> <20220801165146.26fdeca2@gandalf.local.home>
+ <YujpFUB8KlkOgzyb@krava>
+From:   Chen Zhongjin <chenzhongjin@huawei.com>
+In-Reply-To: <YujpFUB8KlkOgzyb@krava>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.108.67]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500013.china.huawei.com (7.185.36.172)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-According to Guillaume Nault RT_TOS should never be used for IPv6.
 
-Fixes: 571912c69f0e ("net: UDP tunnel encapsulation module for tunnelling different protocols like MPLS, IP, NSH etc.")
-Signed-off-by: Matthias May <matthias.may@westermo.com>
----
-v1 -> v2:
- - Fix spacing of "Fixes" tag.
- - Add missing CCs
----
- net/ipv6/ip6_output.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+On 2022/8/2 17:06, Jiri Olsa wrote:
+> On Mon, Aug 01, 2022 at 04:51:46PM -0400, Steven Rostedt wrote:
+>> On Mon, 1 Aug 2022 22:41:19 +0200
+>> Jiri Olsa <olsajiri@gmail.com> wrote:
+>>
+>>> LGTM cc-ing Steven because it affects ftrace as well
+>> Thanks for the Cc, but I don't quite see how it affects ftrace.
+>>
+>> Unless you are just saying how it can affect kprobe_events?
+> nope, I just saw the 'ftrace' in changelog ;-)
+>
+> anyway the patch makes check_kprobe_address_safe to fail
+> on ftrace trampoline address.. but not sure you could make
+> kprobe on ftrace trampoline before, probably not
+>
+> jirka
 
-diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-index 77e3f5970ce4..ec62f472aa1c 100644
---- a/net/ipv6/ip6_output.c
-+++ b/net/ipv6/ip6_output.c
-@@ -1311,8 +1311,7 @@ struct dst_entry *ip6_dst_lookup_tunnel(struct sk_buff *skb,
- 	fl6.daddr = info->key.u.ipv6.dst;
- 	fl6.saddr = info->key.u.ipv6.src;
- 	prio = info->key.tos;
--	fl6.flowlabel = ip6_make_flowinfo(RT_TOS(prio),
--					  info->key.label);
-+	fl6.flowlabel = ip6_make_flowinfo(prio, info->key.label);
- 
- 	dst = ipv6_stub->ipv6_dst_lookup_flow(net, sock->sk, &fl6,
- 					      NULL);
--- 
-2.35.1
+In fact with CONFIG_KPROBE_EVENTS_ON_NOTRACE=y it can happen.
+
+But I think ftrace has no responsibility to promise the address safety 
+when this option open.
+
+
+Best,
+
+Chen
+
+>> -- Steve
+>>
+>>
+>>> jirka
+>>>
+>>>> v1 -> v2:
+>>>> Check core_kernel_text and is_module_text_address rather than
+>>>> only kprobe_insn.
+>>>> Also fix title and commit message for this. See old patch at [1].
+>>>> ---
+>>>>   kernel/kprobes.c | 3 ++-
+>>>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+>>>> index f214f8c088ed..80697e5e03e4 100644
+>>>> --- a/kernel/kprobes.c
+>>>> +++ b/kernel/kprobes.c
+>>>> @@ -1560,7 +1560,8 @@ static int check_kprobe_address_safe(struct kprobe *p,
+>>>>   	preempt_disable();
+>>>>   
+>>>>   	/* Ensure it is not in reserved area nor out of text */
+>>>> -	if (!kernel_text_address((unsigned long) p->addr) ||
+>>>> +	if (!(core_kernel_text((unsigned long) p->addr) ||
+>>>> +	    is_module_text_address((unsigned long) p->addr)) ||
+>>>>   	    within_kprobe_blacklist((unsigned long) p->addr) ||
+>>>>   	    jump_label_text_reserved(p->addr, p->addr) ||
+>>>>   	    static_call_text_reserved(p->addr, p->addr) ||
+>>>> -- 
+>>>> 2.17.1
+>>>>    
 
