@@ -2,64 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5FD05883D9
-	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 00:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A7FE5883DA
+	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 00:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230512AbiHBWCW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Aug 2022 18:02:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37510 "EHLO
+        id S231674AbiHBWGO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Aug 2022 18:06:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230004AbiHBWCU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Aug 2022 18:02:20 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C67C83ED4D
-        for <bpf@vger.kernel.org>; Tue,  2 Aug 2022 15:02:18 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id r4so11556211edi.8
-        for <bpf@vger.kernel.org>; Tue, 02 Aug 2022 15:02:18 -0700 (PDT)
+        with ESMTP id S230004AbiHBWGN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Aug 2022 18:06:13 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96E2012AE7
+        for <bpf@vger.kernel.org>; Tue,  2 Aug 2022 15:06:11 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id w7so14655243ply.12
+        for <bpf@vger.kernel.org>; Tue, 02 Aug 2022 15:06:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=IOKp7j5RdeLWCFlagh2P08KKgE0rajw729gyquDZJwk=;
-        b=VQ4XUe+kAZEDrj87dG//ge8KnW/dPmMQ1aHeqRbmaexUZmR5PWBEoGx3YiVNd5EoAE
-         wwBQ/SUdRCAoTw6g2KAaQpdlwLM/xF0YDEsh+x1MfaahAW+THUm0E328NQcJZJMdZGne
-         UEEtPAb10LjnhN+Of9Q/ZcLnnTYGwndtngivRwQlYhpziWApF9BbISAxS8sFpBS17WA0
-         KSiBxeaHf8LnWwRmauRI9AQG0SseYhJum3yY5AKOE/kJAeHmAO4aTloKIRARRLuNpfIa
-         6RG3hpocbi+FmwK4D1S6nnrkeueeNxd8q7hcpKWJ3+eOUgCxLwPvtxBqaI9rQWbKlHnE
-         qu0g==
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc;
+        bh=B0o0xK5l4zN30wGQ9QJCO+bFioUFcDi2K2HiZZc9utQ=;
+        b=JoYhaWGpWj1f9ft9yCDHT0vr48Ftz4lWB+PrbSctwjVLQSx1TpT5QR3K4XB38zOj0Y
+         wd5gbVxFhJnushYBdGwUwqiG/1A2Lyv3y+XI1dDkvNmhOUogZWKjKq+BOGjEQrwNydfe
+         J/b7shm7C/QKxpNnlaEB6EcEeHegj6wAGsRJWt04LLDCgtHxC1B644DgNmabo/V8h4oH
+         0C2JEZ5DLkiCfs8gokyV9meyXd7xDqDfT0Lvdr7EoF9H6B/rKlV7mVsc3dzrH0Iz34fx
+         fUMiqu7rIMqQfmbd2f10X7HVFgun2675MwCuFOMUlr+ndkg6Q0Kem6J3unJN86pCD7NA
+         Wilg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=IOKp7j5RdeLWCFlagh2P08KKgE0rajw729gyquDZJwk=;
-        b=4BUcweL6wqvcT1MuWyWg7sF+LPpbscogKPd+NxhorGwaIaflfNPj7QnDDWGG871aTp
-         yOVUmxgqbr1leQcSldwqupbxdbLx+3NvfBasKR5zALilaqZrQnqSojFShsdRuNSq12UV
-         OMJANNaJgqNYZGLv4+GMYaWqNfMX46vnfV2ED5th6Cmb0XuD+6wOUCP4lD2IpfUXdqrf
-         O3RsYRdtBpnDdLnwgyAu29cNlIFRWDNREePklv4PUbxV3YPRmzQPivLI0YSxrDsYE9HF
-         kuOWKv+m+C8QbaU/F1hT6sPKrjwuzOJVH965MdnMmncwCBFaVC0Q4Z4inCPt3nyoBVU1
-         l/Hg==
-X-Gm-Message-State: ACgBeo2hfpgGuncNaAzUwnV1cZF80BFsI+IG4H5L/cxNWlLlBewXOWWT
-        igLpFgzuT9TWMbJr62HYz/Ymsrlj/WntFn+p3og=
-X-Google-Smtp-Source: AA6agR7xuPlvpcJCx1QEp/OFZ/GvWtecJTxhFXXFbQrZGaxm8nFmuy4jRp6PzWmCxzv/V6p/keskSUZvTpK1ioNbd7k=
-X-Received: by 2002:aa7:de18:0:b0:43d:30e2:d22b with SMTP id
- h24-20020aa7de18000000b0043d30e2d22bmr20387842edv.224.1659477737220; Tue, 02
- Aug 2022 15:02:17 -0700 (PDT)
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
+        bh=B0o0xK5l4zN30wGQ9QJCO+bFioUFcDi2K2HiZZc9utQ=;
+        b=wk/c1PLZqhSPfUNk6pY4iolPrq/yM5rDd/netidVo2e3I6kCxscCFO7nbMDXV6Ql3e
+         8K0+eUIshHYb3yVFNZ43WBpKiJBIlEJvIV1fGd5R/c5z9bc9M8ewOsiL4ARiC4F6NRy0
+         X5XBwcseBDtv4c1WxwG+26EMJXVHDWbUFE6Whejj8SzkfATyY/wViDZHWw6CAAgcOvdm
+         BpJnlGheOQnDRtVFF3zJSctj+tKSrewETL6Y629pgxIHhET//c8VWoVoluGqi9hzkePk
+         Sfq/e8eZI4isQ6z/i+6Lwq+UwyNXjqcFm2lNBY5i4eBMmIg70Dej0xEHYxJrJM4KXPhA
+         k89A==
+X-Gm-Message-State: ACgBeo14tKd67Pgvmb9R0/QGD9iDjpF4kAlN573qYhsbX4vFFlTqsdUD
+        qVtSRSMNhE/tlPijpbz6krKoK26+AuMaU2FJiksRBm9qruh/Rw==
+X-Google-Smtp-Source: AA6agR6pzi+qaeCWZsyOrOOKEBg9pgcrpSQCGHzZRdirlGQUC9Y47D3VQIzCVY1XncBj4rYcSAuYUy4AW91OfGYpfP4=
+X-Received: by 2002:a17:903:40c4:b0:16d:d2a9:43ae with SMTP id
+ t4-20020a17090340c400b0016dd2a943aemr21937245pld.57.1659477970936; Tue, 02
+ Aug 2022 15:06:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220722183438.3319790-1-davemarchevsky@fb.com>
-In-Reply-To: <20220722183438.3319790-1-davemarchevsky@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 2 Aug 2022 15:02:05 -0700
-Message-ID: <CAEf4BzZC=RQfWedkX7L=-nAsWNrX8+Lz8_RWeOeY4ROQP26UJA@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 00/11] bpf: Introduce rbtree map
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>, Tejun Heo <tj@kernel.org>
+References: <CADvTj4rytB_RDemr4CXO08waaEJGXRC6kt2y_SO0SKN3FgWg0g@mail.gmail.com>
+ <CAEf4BzZVq2VZg=S2xZinfth2-f50zxhMm-fPVQGUoeYPC5J4XA@mail.gmail.com>
+ <87wncnd5dd.fsf@oracle.com> <8735fbcv3x.fsf@oracle.com> <CADvTj4rBCEC_AFgszcMrgKMXfrBKzktABYy=dTH1F1Z7MxmcTw@mail.gmail.com>
+ <87v8s65hdc.fsf@oracle.com> <CADvTj4qniQWNFw4aYpsxV5chdj5v+cLfajRXYOHiK_GOn9OLWQ@mail.gmail.com>
+ <8735fa3unq.fsf@oracle.com> <CADvTj4r+1QB2Cg7L9R-fzqs_HA3kdiiQ_4WHvj+h_DvuxoM5kw@mail.gmail.com>
+ <CADvTj4pFQmS6XHpHCVO8jt-8ZRdTd--uny-n9vA0+vm4xUoLzQ@mail.gmail.com>
+ <87tu7p3o4k.fsf@oracle.com> <CADvTj4r_WnaC-nb-wQwqrzfJsERaX-TnR0tRXZF8fE5UPBThHQ@mail.gmail.com>
+ <87h73p1f5s.fsf@oracle.com> <CADvTj4qiz0xHnN+s32tiYm_WA8ai4cHUVPkKm7w6xTkZXUBCag@mail.gmail.com>
+ <87k08lunga.fsf@oracle.com> <87fsj8vjcy.fsf@oracle.com> <87bktwvhu5.fsf@oracle.com>
+ <CADvTj4o-36iuru665BW0XnEauXBeszW438QTtpt4_VUEjf5nXg@mail.gmail.com>
+ <CAEf4BzbN99WbEDS9r7nyO-7+SOYTU=-kXhD+A1L3dzrwrcHdBQ@mail.gmail.com>
+ <CADvTj4qi_ZZhdXRPd0X_tgQ8-jgrRgxF+4+kYVA92ZMO8KqESA@mail.gmail.com> <CAEf4BzamhADJv+K1e6bLKV7Pob0VC95rgUtEJbVhXWqLgHLTyg@mail.gmail.com>
+In-Reply-To: <CAEf4BzamhADJv+K1e6bLKV7Pob0VC95rgUtEJbVhXWqLgHLTyg@mail.gmail.com>
+From:   James Hilliard <james.hilliard1@gmail.com>
+Date:   Tue, 2 Aug 2022 16:05:58 -0600
+Message-ID: <CADvTj4oSc646ebcWzXB65gSy144D+GikbT5eF38OHu+T5tbn-w@mail.gmail.com>
+Subject: Re: bpftool gen object doesn't handle GCC built BPF ELF files
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     "Jose E. Marchesi" <jose.marchesi@oracle.com>,
+        bpf <bpf@vger.kernel.org>, david.faust@oracle.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,189 +77,220 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jul 22, 2022 at 11:34 AM Dave Marchevsky <davemarchevsky@fb.com> wrote:
+On Tue, Aug 2, 2022 at 3:29 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> Introduce bpf_rbtree map data structure. As the name implies, rbtree map
-> allows bpf programs to use red-black trees similarly to kernel code.
-> Programs interact with rbtree maps in a much more open-coded way than
-> more classic map implementations. Some example code to demonstrate:
+> On Mon, Aug 1, 2022 at 4:35 PM James Hilliard <james.hilliard1@gmail.com>=
+ wrote:
+> >
+> > On Mon, Aug 1, 2022 at 4:52 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Sun, Jul 31, 2022 at 7:20 PM James Hilliard
+> > > <james.hilliard1@gmail.com> wrote:
+> > > >
+> > > > On Sun, Jul 10, 2022 at 2:22 PM Jose E. Marchesi
+> > > > <jose.marchesi@oracle.com> wrote:
+> > > > >
+> > > > >
+> > > > > >>> On Sun, Jul 10, 2022 at 3:38 AM Jose E. Marchesi
+> > > > > >>> <jose.marchesi@oracle.com> wrote:
+> > > > > >>>>
+> > > > > >>>>
+> > > > > >>>> > On Sat, Jul 9, 2022 at 4:41 PM Jose E. Marchesi
+> > > > > >>>> > <jose.marchesi@oracle.com> wrote:
+> > > > > >>>> >>
+> > > > > >>>> >>
+> > > > > >>>> >> > On Sat, Jul 9, 2022 at 2:32 PM James Hilliard <james.hi=
+lliard1@gmail.com> wrote:
+> > > > > >>>> >> >>
+> > > > > >>>> >> >> On Sat, Jul 9, 2022 at 2:21 PM Jose E. Marchesi
+> > > > > >>>> >> >> <jose.marchesi@oracle.com> wrote:
+> > > > > >>>> >> >> >
+> > > > > >>>> >> >> >
+> > >
+> > > Please trim your replies (and I don't know what your email client did=
+,
+> > > but it completely ruined nested quote formatting)
+> >
+> > Yeah, not sure what happened there.
+> >
+> > >
+> > > [...]
+> > >
+> > > > > >>>>
+> > > > > >>>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > > > > >>>> index e89cc9c885b3..887b78780099 100644
+> > > > > >>>> --- a/tools/lib/bpf/libbpf.c
+> > > > > >>>> +++ b/tools/lib/bpf/libbpf.c
+> > > > > >>>> @@ -1591,6 +1591,10 @@ static int bpf_object__init_global_da=
+ta_maps(struct bpf_object *obj)
+> > > > > >>>>         for (sec_idx =3D 1; sec_idx < obj->efile.sec_cnt; se=
+c_idx++) {
+> > > > > >>>>                 sec_desc =3D &obj->efile.secs[sec_idx];
+> > > > > >>>>
+> > > > > >>>> +                /* Skip recognized sections with size 0.  *=
+/
+> > > > > >>>> +                if (sec_desc->data && sec_desc->data->d_siz=
+e =3D=3D 0)
+> > > > > >>>> +                  continue;
+> > > > > >>>> +
+> > > > > >>>>                 switch (sec_desc->sec_type) {
+> > > > > >>>>                 case SEC_DATA:
+> > > > > >>>>                         sec_name =3D elf_sec_name(obj, elf_s=
+ec_by_idx(obj, sec_idx));
+> > > > > >>>
+> > > > > >>> Ok, skeleton is now getting generated successfully, however i=
+t differs from the
+> > > > > >>> clang version so there's a build error when we include/use th=
+e header:
+> > > > > >>> ../src/core/restrict-ifaces.c: In function =E2=80=98prepare_r=
+estrict_ifaces_bpf=E2=80=99:
+> > > > > >>> ../src/core/restrict-ifaces.c:45:14: error: =E2=80=98struct
+> > > > > >>> restrict_ifaces_bpf=E2=80=99 has no member named =E2=80=98rod=
+ata=E2=80=99; did you mean
+> > > > > >>> =E2=80=98data=E2=80=99?
+> > > > > >>>    45 |         obj->rodata->is_allow_list =3D is_allow_list;
+> > > > > >>>       |              ^~~~~~
+> > > > > >>>       |              data
+> > > > > >>>
+> > > > > >>> The issue appears to be that clang generates "rodata" members=
+ in
+> > > > > >>> restrict_ifaces_bpf while with gcc we get "data" members inst=
+ead.
+> > > > > >>
+> > > > > >> This is because the BPF GCC port is putting the
+> > > > > >>
+> > > > > >>   const volatile unsigned char is_allow_list =3D 0;
+> > > > > >>
+> > > > > >> in a .data section instead of .rodata, due to the `volatile'. =
+ The
+> > > > > >> x86_64 GCC seems to use .rodata.
+> > > > > >>
+> > > > > >> Looking at why the PBF port does this...
+> > > > > >
+> > > > > > So, turns out GCC puts zero-initialized `const volatile' variab=
+les in
+> > > > > > .data sections (and not .rodata) in all the targets I have trie=
+d, like
+> > > > > > x86_64 and aarch64.
+> > > > > >
+> > > > > > So this is a LLVM and GCC divergence :/
+> > > > >
+> > > > > See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D25521.
+> > > > >
+> > > > > You may try, as a workaround:
+> > > > >
+> > > > > __attribute__((section(".rodata"))) const volatile unsigned char =
+is_allow_list =3D 0;
+> > > > >
+> > > > > But that will use permissions "aw" for the .rodata section (and y=
+ou will
+> > > > > get a warning from the assembler.)  It may be problematic for lib=
+bpf.
+> > > >
+> > > > So rather than try to force gcc to use the incorrect llvm .rodata
+> > > > section it looks
+> > > > like we can instead just force llvm to use the correct .data sectio=
+n like this:
+> > > > https://github.com/systemd/systemd/pull/24164
+> > > >
+> > >
+> > > There is a huge difference between variables in .rodata and .data.
+> > > .rodata variable's value is known to the BPF verifier at verification
+> > > time and this knowledge will be used to decide which code paths are
+> > > always or never taken (as one example). It's a crucial property and
+> > > important guarantee.
+> > >
+> > > If you don't care about that property, don't declare the variable as =
+`const`.
+> > >
+> > > So no, it's not llvm putting `const` variable into .rodata
+> > > incorrectly, but GCC is trying to be smart and just because variable
+> > > is declared volatile is putting *const* variable into read-write .dat=
+a
+> > > section. It's declared as const, and yes it's volatile to make sure
+> > > that compiler isn't too smart about optimizing away read operations.
+> >
+> > Isn't const volatile generating a .rodata section(like llvm is doing) a=
+ spec
+> > violation?
+> > https://github.com/llvm/llvm-project/issues/56468
+> >
+> > > But it's still a const read-only variable from the perspective of tha=
+t
+> > > BPF C code.
+> > >
+> > > If you don't care about the read-only nature of that variable, drop
+> > > the const and make it into a non-read-only variable.
+> > >
+> > > And please stop proposing hacks to be added to perfectly valid system=
+d
+> > > BPF source code (I replied on [0] as well).
+> >
+> > From my understanding gcc is correctly putting a const volatile variabl=
+e
+> > in .data while llvm is incorrectly putting it in .rodata, is the gcc be=
+havior
+> > here invalid or is the llvm behavior invalid?
 >
->   node = bpf_rbtree_alloc_node(&rbtree, sizeof(struct node_data));
->   if (!node)
->     return 0;
->
->   node->one = calls;
->   node->two = 6;
->   bpf_rbtree_lock(bpf_rbtree_get_lock(&rbtree));
->
->   ret = (struct node_data *)bpf_rbtree_add(&rbtree, node, less);
->   if (!ret) {
->     bpf_rbtree_free_node(&rbtree, node);
->     goto unlock_ret;
->   }
->
-> unlock_ret:
->   bpf_rbtree_unlock(bpf_rbtree_get_lock(&rbtree));
->   return 0;
->
->
-> This series is in a heavy RFC state, with some added verifier semantics
-> needing improvement before they can be considered safe. I am sending
-> early to gather feedback on approach:
->
->   * Does the API seem reasonable and might it be useful for others?
->
->   * Do new verifier semantics added in this series make logical sense?
->     Are there any glaring safety holes aside from those called out in
->     individual patches?
->
-> Please see individual patches for more in-depth explanation. A quick
-> summary of patches follows:
->
->
-> Patches 1-3 extend verifier and BTF searching logic in minor ways to
-> prepare for rbtree implementation patch.
->   bpf: Pull repeated reg access bounds check into helper fn
->   bpf: Add verifier support for custom callback return range
->   bpf: Add rb_node_off to bpf_map
->
->
-> Patch 4 adds basic rbtree map implementation.
->   bpf: Add rbtree map
->
-> Note that 'complete' implementation requires concepts and changes
-> introduced in further patches in the series. The series is currently
-> arranged in this way to ease RFC review.
->
->
-> Patches 5-7 add a spinlock to the rbtree map, with some differing
-> semantics from existing verifier spinlock handling.
->   bpf: Add bpf_spin_lock member to rbtree
->   bpf: Add bpf_rbtree_{lock,unlock} helpers
->   bpf: Enforce spinlock hold for bpf_rbtree_{add,remove,find}
->
-> Notably, rbtree's bpf_spin_lock must be held while manipulating the tree
-> via helpers, while existing spinlock verifier logic prevents any helper
-> calls while lock is held. In current state this is worked around by not
-> having the verifier treat rbtree's lock specially in any way. This
-> needs to be improved before leaving RFC state as it's unsafe.
->
->
-> Patch 8 adds the concept of non-owning references, firming up the
-> semantics of helpers that return a ptr to node which is owned by
-> a rbtree. See patch 4's summary for additional discussion of node
-> ownership.
->
->
-> Patch 9 adds a 'conditional release' concept: helpers which release a
-> resource, but may fail to do so and need to enforce that the BPF program
-> handles this failure appropriately, namely by freeing the resource
-> another way.
->
->
-> Path 10 adds 'iter' type flags which teach the verifier to understand
-> open-coded iteration of a data structure. Specifically, with such flags
-> the verifier can understand that this loop eventually ends:
->
->   struct node_data *iter = (struct node_data *)bpf_rbtree_first(&rbtree);
->
->   while (iter) {
->     node_ct++;
->     iter = (struct node_data *)bpf_rbtree_next(&rbtree, iter);
->   }
->
-> NOTE: Patch 10's logic is currently very unsafe and it's unclear whether
-> there's a safe path forward that isn't too complex. It's the most RFC-ey
-> of all the patches.
->
->
-> Patch 11 adds tests. Best to start here to see BPF programs using rbtree
-> map as intended.
->
->
-> This series is based ontop of "bpf: Cleanup check_refcount_ok" patch,
-> which was submitted separately [0] and therefore is not included here. That
-> patch is likely to be applied before this is out of RFC state, so will
-> just rebase on newer bpf-next/master.
->
->   [0]: lore.kernel.org/bpf/20220719215536.2787530-1-davemarchevsky@fb.com/
->
-> Dave Marchevsky (11):
->   bpf: Pull repeated reg access bounds check into helper fn
->   bpf: Add verifier support for custom callback return range
->   bpf: Add rb_node_off to bpf_map
->   bpf: Add rbtree map
->   bpf: Add bpf_spin_lock member to rbtree
->   bpf: Add bpf_rbtree_{lock,unlock} helpers
->   bpf: Enforce spinlock hold for bpf_rbtree_{add,remove,find}
->   bpf: Add OBJ_NON_OWNING_REF type flag
->   bpf: Add CONDITIONAL_RELEASE type flag
->   bpf: Introduce PTR_ITER and PTR_ITER_END type flags
->   selftests/bpf: Add rbtree map tests
->
->  include/linux/bpf.h                           |  13 +
->  include/linux/bpf_types.h                     |   1 +
->  include/linux/bpf_verifier.h                  |   2 +
->  include/linux/btf.h                           |   1 +
->  include/uapi/linux/bpf.h                      | 121 ++++++
->  kernel/bpf/Makefile                           |   2 +-
->  kernel/bpf/btf.c                              |  21 +
->  kernel/bpf/helpers.c                          |  42 +-
->  kernel/bpf/rbtree.c                           | 401 ++++++++++++++++++
->  kernel/bpf/syscall.c                          |   3 +
->  kernel/bpf/verifier.c                         | 382 +++++++++++++++--
->  tools/include/uapi/linux/bpf.h                | 121 ++++++
->  .../selftests/bpf/prog_tests/rbtree_map.c     | 164 +++++++
->  .../testing/selftests/bpf/progs/rbtree_map.c  | 108 +++++
->  .../selftests/bpf/progs/rbtree_map_fail.c     | 236 +++++++++++
->  .../bpf/progs/rbtree_map_load_fail.c          |  24 ++
->  16 files changed, 1605 insertions(+), 37 deletions(-)
->  create mode 100644 kernel/bpf/rbtree.c
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/rbtree_map.c
->  create mode 100644 tools/testing/selftests/bpf/progs/rbtree_map.c
->  create mode 100644 tools/testing/selftests/bpf/progs/rbtree_map_fail.c
->  create mode 100644 tools/testing/selftests/bpf/progs/rbtree_map_load_fail.c
->
-> --
-> 2.30.2
->
+> From link you left to C standard, it does seem like that side-note
+> *implies* that const volatile should be put into .data, but it's a)
+> implied b) is quite arguable about assumptions that this data has to
+> be in modifiable section, and c) entire CO-RE feature detection and
+> guarding relies on having `const volatile` variables in .rodata and
+> mark them as read-only for BPF verifier to allow dead code
+> elimination. Changing c) would break entire CO-RE ecosystem.
 
-I just skimmed through commit descriptions and wanted to ask few questions.
+Well it does appear that llvm is fixing the behavior to be in line with gcc=
+:
+https://reviews.llvm.org/D131012
 
-1. It's not exactly clear from descriptions what are the advantages of
-having struct node_data data vs sticking to more typical BPF map
-interface with bpf_map_lookup_elem() and so on. Am I right that the
-biggest advantage is that we can move node from one RB tree to
-another? But if that's the only reason, why can't we have a
-specialized bpf_rbtree_move(rb1, rb2, value) (where rb1 and rb2 are
-trees involved in a move, and value is whatever is returned by
-bpf_map_lookup_elem, which internally will also keep rbtree_node
-hidden in front of value pointer, just like we do it with ringbuf).
+>
+> Seems like this issue was raised by Ulrich Drepper back in 2005 ([0])
+> and he was also confused about GCC's behavior, btw.
+>
+> So either way, at the very least for BPF target we can't change this
+> and I still think it's more logical to put const variables into
+> .rodata, regardless of side notes in C standard.
 
-2. As for rbtree node pre-allocated in more permissive mode and then
-inserting into RB tree later on in more restrictive (e.g., NMI) mode.
-Wouldn't this problem be mostly solved by Alexei's BPF-specific memory
-allocator? And right now you are requiring to insert in the same mode
-as when node was allocated (or free it), right? That's just a current
-limitation and you are planning to lift this restriction? If yes, what
-would be the mechanism to "temporarily" store rbtree_node somewhere?
-kptr? dynptr? In both cases not exactly clear how type information is
-preserved.
+GCC does put const variables in .rodata, just not const volatile variables.
 
-3. As for locking. Assuming we add bpf_rbtree_move_node() helper, you
-can pass lock as an argument to it instead of storing lock inside the
-RB tree itself. Preventing deadlocks and stuff like that is still hard
-and tricky, but at least you won't have to worry about storing locks
-inside RB trees themselves.
+>
+>
+> As for systemd's program and its is_allow_list ([1]), to unblock
+> yourself you can drop const because systemd doesn't rely on read-only
+> guarantees of that variable anyways. It's much more critical in
+> feature-detection use cases. But let's try to converge discussion in
+> one place (preferably here), it's quite inconvenient to either reply
+> the same thing twice here and on Github, or cross-reference lore and
+> Github.
 
+Hmm, are you sure:
+const __u8 is_allow_list SEC(".rodata") =3D 0;
 
-Just some questions that I still remember from a brief reading of
-this. I think it would be extremely helpful for me and others to have
-a clear "why we need open-coded rbtree_node approach" question
-answered with comparison to possible alternative using a bit more
-conventional BPF approach.
+doesn't provide equivalent behavior to:
+const volatile __u8 is_allow_list =3D 0;
 
-Overall, I'm still trying to wrap my head around this, this approach
-and stated goals (e.g., moving nodes between two trees, all the
-locking story, etc) look very complicated, so will take some time to
-internalize this new approach and convince myself it's doable.
+The used attribute in the SEC macro supposedly ensures that:
+The compiler must emit the definition even if it appears to be unused, and
+it must not apply optimizations which depend on fully understanding how
+the entity is used.
+
+Or maybe the retain attribute along with used would be sufficient to allow
+us to drop volatile in these cases?:
+https://clang.llvm.org/docs/AttributeReference.html#retain
+
+>
+>
+>   [0] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D25521
+>   [1] https://github.com/systemd/systemd/pull/24164#issuecomment-12032073=
+72
+>
+> >
+> > >
+> > >   [0] https://github.com/systemd/systemd/pull/24164#issuecomment-1201=
+806413
+> > >
+> > >
+> > > [...]
