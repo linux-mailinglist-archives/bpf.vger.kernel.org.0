@@ -2,58 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 043B5588358
-	for <lists+bpf@lfdr.de>; Tue,  2 Aug 2022 23:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E97D758835A
+	for <lists+bpf@lfdr.de>; Tue,  2 Aug 2022 23:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230385AbiHBVRm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Aug 2022 17:17:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60596 "EHLO
+        id S229502AbiHBVTx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Aug 2022 17:19:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbiHBVRm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Aug 2022 17:17:42 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D5BCE3F
-        for <bpf@vger.kernel.org>; Tue,  2 Aug 2022 14:17:40 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id r4so11450899edi.8
-        for <bpf@vger.kernel.org>; Tue, 02 Aug 2022 14:17:40 -0700 (PDT)
+        with ESMTP id S229458AbiHBVTw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Aug 2022 17:19:52 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C48EACE3F
+        for <bpf@vger.kernel.org>; Tue,  2 Aug 2022 14:19:51 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id e13so248789edj.12
+        for <bpf@vger.kernel.org>; Tue, 02 Aug 2022 14:19:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=m8aoBoxWmgm+a72uY+fCUuESbuFs11nCOffbfRkxisY=;
-        b=gt76jp+1hgKJuVyWIasCgM+VduMJPTlF+RpYcdfWgdb42aX5qQnck+mjkgz4y5uxjO
-         db4kUr1fOlGg3NPeK3UAYrCEHU8ItgqXXf/thTcuMIHozJ2kCZBbdiYNa4WXsklIoCR6
-         A0vPXnemT2TytVjdKr8K07FikcWPQ7lKK4WyWU9hPM7L+W52XJKAk/1fgSAJ0lh0QZ1B
-         j6KLnx2DgN69k+Bs31JrSLqRn0Ih6tRHYPckPP5WtEO4bC2ZJiNs0YDyTi696H4ebG2V
-         W7rGtQI39s+TDlPzSeVFZZzud6ak7mOJFPhPPzBNS/RmhcEAskvBQiFaBiNPOqtt9S7P
-         dayw==
+        bh=5eKmfeI5yvVu26IEzte6nhWK+/PzdEbCd6gfvfaJLhk=;
+        b=WU6IaecZiymfx+DMSsDwQkoFs3I+3t/9tzBTA2JIkq+XguaQHNzZt+NNKFLyHdPfFI
+         aN4djd22bdsCsiJQo6zBFh8GbYc9sFib4Wyn3d9DGjObusjBWNFODdrq7E4WYaJuVhBA
+         Ff+rZbwQFd4Jm1a1K5q/0mILImXXzSN/zu5nL+xw9kON5kB/5IvVc8CIfCWrYfrDcuvS
+         bYu3Hb62qJJVe16mGlO7UfQy94WcW0rfgD8vATmcrdp9OTL7u3R4Tp9f0yZgC2Z6c908
+         NPUmya/3CneGkS/R05h2jRFLklChW6gg/w0wHG0EIpoN7gwa7MhxbzWHLXFISw6c6b8t
+         s6Zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=m8aoBoxWmgm+a72uY+fCUuESbuFs11nCOffbfRkxisY=;
-        b=l/djSzPweM+XEXIYgGoAGhcdnC75SfaT1QQMK2Vflg72+IbhIUA0VTccEsNVTODKe8
-         XirSBvEWulIsdZDipzvzm8aFWSQ/mMlM2+6p/KnPqFgnLkKbNsoZJFVl30CdtpO8gB98
-         O12J1EEFGvGDgUF03r4vebyF9G7yGhYI8CS52B3RUuAwnbzMXYfuFtWeeE4pE2PUeh11
-         81EPvbWma2iIhJkRKn2tfZwI+5q8xbdm4KJRc0ESLbQHD4bmFFDUj8cj3ihp05oeigEK
-         hZ296ABO0A7yt2o+rqkoWS2cEUiVxjWpU03A9hiBlwVB2R05WgykVbJ0jC8Odwzdgmem
-         CPMg==
-X-Gm-Message-State: AJIora/fovjwU4oWrXIDBLle+K/lRy/MVAJVi4E0mGNkNPkPvvnDGsHG
-        PgYygXfYKakw4W+IploG2cjchWv6xn1FMaI2dcw=
-X-Google-Smtp-Source: AGRyM1uf57jqnmRdFXAHgBvBB+FM724mVkyzF0pNpEeqBJkBfiAlrv7kF3x/sy/N+ZCrhwaxudvldM41kb1q5ZC5GdM=
-X-Received: by 2002:a05:6402:5108:b0:43b:e395:d2fb with SMTP id
- m8-20020a056402510800b0043be395d2fbmr22894339edd.260.1659475059271; Tue, 02
- Aug 2022 14:17:39 -0700 (PDT)
+        bh=5eKmfeI5yvVu26IEzte6nhWK+/PzdEbCd6gfvfaJLhk=;
+        b=BOwlOqTn7PmteeVGpJ/WI5Att/KaMhdV/YeaZGVxJJsx/xXBeN6T7yfD96h61OrG8X
+         m2wbK14cmPhNOOO+Xb4fb+Z1+QW5z1gz0poNCNvKo66BDIE+9cCIy3C9W38cQJtj7xQA
+         9k5qhyXaU0hoHNeHgI3uhOSU2M2kpJC0aXBbjaB8YwG4Nb9fVyyqzIKdVSHNS532olN6
+         DItaTfVWpwBsVsiRR47gEaCUp/5M/WMuduHgBSSnae+1AAByIkMWy9qQlJ6Vv+33O+sq
+         ajR2ugjJD+L17+TfITiyTh1YCom4J6rD1nSeFBetTHo2Mkt87p8XQkS1Mz0NyChdmXtM
+         MTQA==
+X-Gm-Message-State: ACgBeo1ywH2zygapXLzbJ7NyG7uclSYvl+cU8SaKrCsBBmrASCQEyBCY
+        S3AkWM65JAIxV9ATHrsXIEBjWJ2DKQDmJa0DE+RkL2uY
+X-Google-Smtp-Source: AA6agR5wHQPdB6nuoIs8CMzPGoKi1dfN3fdLYSlNL6RDmb4JSQel/lsHxUtCYkQBK381T2qwyK1vziJWaeSB9aFuhK4=
+X-Received: by 2002:a50:ed82:0:b0:43d:5334:9d19 with SMTP id
+ h2-20020a50ed82000000b0043d53349d19mr16724390edr.232.1659475190331; Tue, 02
+ Aug 2022 14:19:50 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220801232649.2306614-1-kuifeng@fb.com> <20220801232649.2306614-2-kuifeng@fb.com>
- <CAEf4BzZqwoCecuUTe=LGBBrTWMp_bCttik1fkmRF1rBXxBYPAw@mail.gmail.com> <9ab00aa58259d9dd7b45fdf860423e86612b591d.camel@fb.com>
-In-Reply-To: <9ab00aa58259d9dd7b45fdf860423e86612b591d.camel@fb.com>
+ <CAADnVQJp3GDjFw9H8nez4z8zSYME3h_fL3cuhiVSOrMc11T5KA@mail.gmail.com> <abd48496db08b3f50df163267f37bb96616f355e.camel@fb.com>
+In-Reply-To: <abd48496db08b3f50df163267f37bb96616f355e.camel@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 2 Aug 2022 14:17:27 -0700
-Message-ID: <CAEf4BzZjpb514dpzxfeE_OzV6jTajObxc3UNpX1Wyr+0ZM7pLQ@mail.gmail.com>
+Date:   Tue, 2 Aug 2022 14:19:38 -0700
+Message-ID: <CAEf4BzZ=+CR=Y48_YpUpBZb93WrwdKdALu=1AnfJLi-5Htad3Q@mail.gmail.com>
 Subject: Re: [PATCH bpf-next v2 1/3] bpf: Parameterize task iterators.
 To:     Kui-Feng Lee <kuifeng@fb.com>
-Cc:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
+Cc:     "alexei.starovoitov@gmail.com" <alexei.starovoitov@gmail.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
         Kernel Team <Kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
         "ast@kernel.org" <ast@kernel.org>,
         "andrii@kernel.org" <andrii@kernel.org>,
@@ -69,9 +70,9 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 2, 2022 at 9:42 AM Kui-Feng Lee <kuifeng@fb.com> wrote:
+On Tue, Aug 2, 2022 at 9:48 AM Kui-Feng Lee <kuifeng@fb.com> wrote:
 >
-> On Mon, 2022-08-01 at 20:30 -0700, Andrii Nakryiko wrote:
+> On Mon, 2022-08-01 at 18:49 -0700, Alexei Starovoitov wrote:
 > > On Mon, Aug 1, 2022 at 4:27 PM Kui-Feng Lee <kuifeng@fb.com> wrote:
 > > >
 > > > Allow creating an iterator that loops through resources of one
@@ -132,43 +133,6 @@ On Tue, Aug 2, 2022 at 9:42 AM Kui-Feng Lee <kuifeng@fb.com> wrote:
 > > > +        */
 > > > +       struct {
 > > > +               __u32   pid_fd;
-> >
-> > I was a bit late to the discussion about pidfd vs plain pid. I think
-> > we should support both in this API. While pid_fd has some nice
-> > guarantees like avoiding the risk of accidental PID reuse, in a lot
-> > (if not all) cases where task/task_vma/task_file iterators are going
-> > to be used this is never a risk, because pid will usually come from
-> > some tracing BPF program (kprobe/tp/fentry/etc), like in case of
-> > profiling, and then will be used by user-space almost immediately to
-> > query some additional information (fetching relevant vma information
-> > for profiling use case). So main benefit of pidfd is not that
-> > relevant
-> > for BPF tracing use cases, because PIDs are not going to be reused so
-> > fast within such a short time frame.
-> >
-> > But pidfd does have downsides. It requires 2 syscalls (pidfd_open and
-> > close) for each PID, it creates struct file for each such active
-> > pidfd. So it will have non-trivial overhead for high-frequency BPF
-> > iterator use cases (imagine querying some simple stats for a big set
-> > of tasks, frequently: you'll spend more time in pidfd syscalls and
-> > more resources just keeping corresponding struct file open than
-> > actually doing useful BPF work). For simple BPF iter cases it will
-> > unnecessarily complicate program flow while giving no benefit
-> > instead.
->
-> It is a good point to have more syscalls.
->
-> >
-> > So I propose we support both in UAPI. Internally either way we
-> > resolve
-> > to plain pid/tid, so this won't cause added maintenance burden. But
-> > simple cases will keep simple, while more long-lived and/or
-> > complicated ones will still be supported. We then can have
-> > BPF_TASK_ITER_PIDFD vs BPF_TASK_ITER_TID to differentiate whether the
-> > above __u32 pid_fd (which we should probably rename to something more
-> > generic like "target") is pid FD or TID/PID. See also below about TID
-> > vs PID.
-> >
 > > > +               /*
 > > > +                * The type of the iterator.
 > > > +                *
@@ -181,75 +145,30 @@ On Tue, Aug 2, 2022 at 9:42 AM Kui-Feng Lee <kuifeng@fb.com> wrote:
 > > > +                * BPF_TASK_ITER_TID
 > > > +                *      You should also set *pid_fd* to iterate
 > > > over one task.
-> >
-> > naming nit: we should decide whether we use TID (thread) and PID
-> > (process) terminology (more usual for user-space) or PID (process ==
-> > task == user-space thread) and TGID (thread group, i.e. user-space
-> > process). I haven't investigated much what's we use most
-> > consistently,
-> > but curious to hear what others think.
-> >
-> > Also I can see use-cases where we want to iterate just specified task
-> > (i.e., just specified thread) vs all the tasks that belong to the
-> > same
-> > process group (i.e., thread within process). Naming TBD, but we
-> > should
-> > have BPF_TASK_ITER_TID and BPF_TASK_ITER_TGID (or some other naming).
->
->
-> I discussed with Yonghong about iterators over resources of all tasks
-> of a process.  User code should create iterators for each thread of the
-> process if necessary.  We may add the support of tgid if it is higly
-> demanded.
->
-> In a discussion of using pidfd, people mentioned to extend pidfd to
-> threads if there is a good use-case.  It also applies to our case.
-> Most of the time, if not always, vma & files are shared by all threads
-> of a process.  So, an iteration over all resources of every threads of
-> a process doesn't get obvious benefit.  It is also true for an iterator
-> over the resources of a specific thread instead of a process.
->
-
-Ok, so two different points here.
-
-First, TID (thread) vs TGID (process) modes. I'd define TGID mode as:
-a) user specifies some TID and we resolve that to thread group leader
-TID (that is we resolve thread to process), and then iterate all
-threads within that process. For TID (thread) mode, we accept
-specified TID as exactly the thread we iterate (even if it's thread
-group leader, we iterate only that specific thread, not all threads in
-a process).
-
-Second, about the point that all threads within a process share vma,
-file table, etc. That's true. But you are forgetting about iter/task
-that is iterating just tasks. TGID mode for such use case is very
-useful. For task_vma/task_file we can probably do the same logic we
-have today where if the thread has the same file table or mm_struct as
-thread group leader, we skip such thread when iterating vmas and
-files.
-
-Thoughts?
-
-
-> >
-> > One might ask why do we need single-task mode if we can always stop
-> > iteration from BPF program, but this is trivial only for iter/task,
-> > while for iter/task_vma and iter/task_file it becomes inconvenient to
-> > detect switch from one task to another. It costs us essentially
-> > nothing to support this mode, so I advocate to do that.
-> >
-> > I have similar thoughts about cgroup iteration modes and actually
-> > supporting cgroup_fd as target for task iterators (which will mean
-> > iterating tasks belonging to provided cgroup(s)), but I'll reply on
-> > cgroup iterator patch first, and we can just reuse the same cgroup
-> > target specification between iter/cgroup and iter/task afterwards.
-> >
-> >
 > > > +                */
 > > > +               __u8    type;   /* BPF_TASK_ITER_* */
-> > > +       } task;
-> > >  };
-> > >
 > >
-> > [...]
+> > __u8 might be a pain for future extensibility.
+>
+> Do you mean the problem caused by padding?
+
+Not Alexei, but I agree that there is no reason to try to save a few
+bytes here. Let's use u32 or just plain 32-bit enum. Please also put
+it in front of pid_fd (first field in this substruct), so that it's
+easier to extend this with more information about "iteration target"
+(e.g., if we later want to iterate tasks within cgroup, we might end
+up specifying cgroup_id, which I believe is 64-bit, so it would be
+nice to be able to just do a union across {pid_fd, pid, cgroup_fd,
+cgroup_id}.
+
+>
+> > big vs little endian will be another potential issue.
+>
+> Do we need binary compatible for different platforms?
+> I don't get the point of endian.  Could you explain it more?
+>
+> >
+> > Maybe use enum bpf_task_iter_type type; here and
+> > move the comment to enum def ?
+> > Or rename it to '__u32 flags;' ?
 >
