@@ -2,225 +2,254 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A4595883BA
-	for <lists+bpf@lfdr.de>; Tue,  2 Aug 2022 23:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5FD05883D9
+	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 00:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229556AbiHBVrX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Aug 2022 17:47:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55680 "EHLO
+        id S230512AbiHBWCW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Aug 2022 18:02:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbiHBVrW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Aug 2022 17:47:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B258255BC
-        for <bpf@vger.kernel.org>; Tue,  2 Aug 2022 14:47:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B83D061560
-        for <bpf@vger.kernel.org>; Tue,  2 Aug 2022 21:47:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E2D8C43145
-        for <bpf@vger.kernel.org>; Tue,  2 Aug 2022 21:47:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1659476840;
-        bh=bw7ZR3OubmcRjpwNuSpXxWiUDJEe/z23F1fjfbai/Z8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dNi+LYAt3/CPYZlGqUV5GU4hD0GdpGKroTR3XXT2egsIp0St7XheZikB+URynp5Kd
-         Ioae9zba/0Z8xCRDd3qRSU/5yGutC0j9xtPzqQJR+g/Y7f36ZC36mPnY0lan1bSjDK
-         HOJKemClbM6/nGpyAKOO6BUTM6H6w/kF9Kv2e8EXyMjI8IHNgMCW4GVr0m6xKSt4lP
-         PUs5jMQuzjTHx5MSs068Gg8+g08eSQ8W2UJq6qZ4X7RRUC3dSCYIG4iOHy3cxsAVzE
-         u7Wkz1w/KC68cxxBJRn/mJPiXdk+f8kGlivjcrxY76R8pmIJFIubynb/P1JrBQYS2d
-         0Ix6eQiMUJw+Q==
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-3246910dac3so102230357b3.12
-        for <bpf@vger.kernel.org>; Tue, 02 Aug 2022 14:47:20 -0700 (PDT)
-X-Gm-Message-State: ACgBeo3ZRnvkMqhNRsB62T8bs5MmiTjBAbNmEXfFnRiWydocuRvTv97N
-        5B9AuP5F1CdG11MWayYaA6bx+q/GS8vls3a/vpPhrw==
-X-Google-Smtp-Source: AA6agR4fnI8EaqJu29BFVOEueN1dznAYAG7hl+whc2++wbcE3Ahd5U9wkn2b/VFuz0XOU8vk11ZqrjSnAeTTXExhUt8=
-X-Received: by 2002:a81:9148:0:b0:328:2c96:eaed with SMTP id
- i69-20020a819148000000b003282c96eaedmr1782937ywg.314.1659476838933; Tue, 02
- Aug 2022 14:47:18 -0700 (PDT)
+        with ESMTP id S230004AbiHBWCU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Aug 2022 18:02:20 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C67C83ED4D
+        for <bpf@vger.kernel.org>; Tue,  2 Aug 2022 15:02:18 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id r4so11556211edi.8
+        for <bpf@vger.kernel.org>; Tue, 02 Aug 2022 15:02:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=IOKp7j5RdeLWCFlagh2P08KKgE0rajw729gyquDZJwk=;
+        b=VQ4XUe+kAZEDrj87dG//ge8KnW/dPmMQ1aHeqRbmaexUZmR5PWBEoGx3YiVNd5EoAE
+         wwBQ/SUdRCAoTw6g2KAaQpdlwLM/xF0YDEsh+x1MfaahAW+THUm0E328NQcJZJMdZGne
+         UEEtPAb10LjnhN+Of9Q/ZcLnnTYGwndtngivRwQlYhpziWApF9BbISAxS8sFpBS17WA0
+         KSiBxeaHf8LnWwRmauRI9AQG0SseYhJum3yY5AKOE/kJAeHmAO4aTloKIRARRLuNpfIa
+         6RG3hpocbi+FmwK4D1S6nnrkeueeNxd8q7hcpKWJ3+eOUgCxLwPvtxBqaI9rQWbKlHnE
+         qu0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=IOKp7j5RdeLWCFlagh2P08KKgE0rajw729gyquDZJwk=;
+        b=4BUcweL6wqvcT1MuWyWg7sF+LPpbscogKPd+NxhorGwaIaflfNPj7QnDDWGG871aTp
+         yOVUmxgqbr1leQcSldwqupbxdbLx+3NvfBasKR5zALilaqZrQnqSojFShsdRuNSq12UV
+         OMJANNaJgqNYZGLv4+GMYaWqNfMX46vnfV2ED5th6Cmb0XuD+6wOUCP4lD2IpfUXdqrf
+         O3RsYRdtBpnDdLnwgyAu29cNlIFRWDNREePklv4PUbxV3YPRmzQPivLI0YSxrDsYE9HF
+         kuOWKv+m+C8QbaU/F1hT6sPKrjwuzOJVH965MdnMmncwCBFaVC0Q4Z4inCPt3nyoBVU1
+         l/Hg==
+X-Gm-Message-State: ACgBeo2hfpgGuncNaAzUwnV1cZF80BFsI+IG4H5L/cxNWlLlBewXOWWT
+        igLpFgzuT9TWMbJr62HYz/Ymsrlj/WntFn+p3og=
+X-Google-Smtp-Source: AA6agR7xuPlvpcJCx1QEp/OFZ/GvWtecJTxhFXXFbQrZGaxm8nFmuy4jRp6PzWmCxzv/V6p/keskSUZvTpK1ioNbd7k=
+X-Received: by 2002:aa7:de18:0:b0:43d:30e2:d22b with SMTP id
+ h24-20020aa7de18000000b0043d30e2d22bmr20387842edv.224.1659477737220; Tue, 02
+ Aug 2022 15:02:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220801180146.1157914-1-fred@cloudflare.com> <20220801180146.1157914-2-fred@cloudflare.com>
-In-Reply-To: <20220801180146.1157914-2-fred@cloudflare.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Tue, 2 Aug 2022 23:47:08 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ4x90DamdN4dRCn1gZuAHLqJNy4MoP=qTX+44Bqx1uxSQ@mail.gmail.com>
-Message-ID: <CACYkzJ4x90DamdN4dRCn1gZuAHLqJNy4MoP=qTX+44Bqx1uxSQ@mail.gmail.com>
-Subject: Re: [PATCH v4 1/4] security, lsm: Introduce security_create_user_ns()
-To:     Frederick Lawler <fred@cloudflare.com>
-Cc:     revest@chromium.org, jackmanb@chromium.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        jmorris@namei.org, serge@hallyn.com, paul@paul-moore.com,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        shuah@kernel.org, brauner@kernel.org, casey@schaufler-ca.com,
-        ebiederm@xmission.com, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, kernel-team@cloudflare.com,
-        cgzones@googlemail.com, karl@bigbadwolfsecurity.com
+References: <20220722183438.3319790-1-davemarchevsky@fb.com>
+In-Reply-To: <20220722183438.3319790-1-davemarchevsky@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 2 Aug 2022 15:02:05 -0700
+Message-ID: <CAEf4BzZC=RQfWedkX7L=-nAsWNrX8+Lz8_RWeOeY4ROQP26UJA@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 00/11] bpf: Introduce rbtree map
+To:     Dave Marchevsky <davemarchevsky@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <kernel-team@fb.com>, Tejun Heo <tj@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 1, 2022 at 8:02 PM Frederick Lawler <fred@cloudflare.com> wrote:
+On Fri, Jul 22, 2022 at 11:34 AM Dave Marchevsky <davemarchevsky@fb.com> wrote:
 >
-> Preventing user namespace (privileged or otherwise) creation comes in a
-> few of forms in order of granularity:
+> Introduce bpf_rbtree map data structure. As the name implies, rbtree map
+> allows bpf programs to use red-black trees similarly to kernel code.
+> Programs interact with rbtree maps in a much more open-coded way than
+> more classic map implementations. Some example code to demonstrate:
 >
->         1. /proc/sys/user/max_user_namespaces sysctl
->         2. OS specific patch(es)
->         3. CONFIG_USER_NS
+>   node = bpf_rbtree_alloc_node(&rbtree, sizeof(struct node_data));
+>   if (!node)
+>     return 0;
 >
-> To block a task based on its attributes, the LSM hook cred_prepare is a
-> good candidate for use because it provides more granular control, and
-> it is called before create_user_ns():
+>   node->one = calls;
+>   node->two = 6;
+>   bpf_rbtree_lock(bpf_rbtree_get_lock(&rbtree));
 >
->         cred = prepare_creds()
->                 security_prepare_creds()
->                         call_int_hook(cred_prepare, ...
->         if (cred)
->                 create_user_ns(cred)
+>   ret = (struct node_data *)bpf_rbtree_add(&rbtree, node, less);
+>   if (!ret) {
+>     bpf_rbtree_free_node(&rbtree, node);
+>     goto unlock_ret;
+>   }
 >
-> Since security_prepare_creds() is meant for LSMs to copy and prepare
-> credentials, access control is an unintended use of the hook. Therefore
-> introduce a new function security_create_user_ns() with an accompanying
-> userns_create LSM hook.
+> unlock_ret:
+>   bpf_rbtree_unlock(bpf_rbtree_get_lock(&rbtree));
+>   return 0;
 >
-> This hook takes the prepared creds for LSM authors to write policy
-> against. On success, the new namespace is applied to credentials,
-> otherwise an error is returned.
 >
-> Signed-off-by: Frederick Lawler <fred@cloudflare.com>
-> Reviewed-by: Christian Brauner (Microsoft) <brauner@kernel.org>
-
-Reviewed-by: KP Singh <kpsingh@kernel.org>
-
-This looks useful, and I would also like folks to consider the
-observability aspects of BPF LSM as
-brought up here:
-
-https://lore.kernel.org/all/CAEiveUdPhEPAk7Y0ZXjPsD=Vb5hn453CHzS9aG-tkyRa8bf_eg@mail.gmail.com/
-
-Frederick, what about adding the observability aspects to the commit
-description as well.
-
-- KP
-
+> This series is in a heavy RFC state, with some added verifier semantics
+> needing improvement before they can be considered safe. I am sending
+> early to gather feedback on approach:
 >
-> ---
-> Changes since v3:
-> - No changes
-> Changes since v2:
-> - Rename create_user_ns hook to userns_create
-> Changes since v1:
-> - Changed commit wording
-> - Moved execution to be after id mapping check
-> - Changed signature to only accept a const struct cred *
-> ---
->  include/linux/lsm_hook_defs.h | 1 +
->  include/linux/lsm_hooks.h     | 4 ++++
->  include/linux/security.h      | 6 ++++++
->  kernel/user_namespace.c       | 5 +++++
->  security/security.c           | 5 +++++
->  5 files changed, 21 insertions(+)
+>   * Does the API seem reasonable and might it be useful for others?
 >
-> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-> index eafa1d2489fd..7ff93cb8ca8d 100644
-> --- a/include/linux/lsm_hook_defs.h
-> +++ b/include/linux/lsm_hook_defs.h
-> @@ -223,6 +223,7 @@ LSM_HOOK(int, -ENOSYS, task_prctl, int option, unsigned long arg2,
->          unsigned long arg3, unsigned long arg4, unsigned long arg5)
->  LSM_HOOK(void, LSM_RET_VOID, task_to_inode, struct task_struct *p,
->          struct inode *inode)
-> +LSM_HOOK(int, 0, userns_create, const struct cred *cred)
->  LSM_HOOK(int, 0, ipc_permission, struct kern_ipc_perm *ipcp, short flag)
->  LSM_HOOK(void, LSM_RET_VOID, ipc_getsecid, struct kern_ipc_perm *ipcp,
->          u32 *secid)
-> diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
-> index 91c8146649f5..54fe534d0e01 100644
-> --- a/include/linux/lsm_hooks.h
-> +++ b/include/linux/lsm_hooks.h
-> @@ -799,6 +799,10 @@
->   *     security attributes, e.g. for /proc/pid inodes.
->   *     @p contains the task_struct for the task.
->   *     @inode contains the inode structure for the inode.
-> + * @userns_create:
-> + *     Check permission prior to creating a new user namespace.
-> + *     @cred points to prepared creds.
-> + *     Return 0 if successful, otherwise < 0 error code.
->   *
->   * Security hooks for Netlink messaging.
->   *
-> diff --git a/include/linux/security.h b/include/linux/security.h
-> index 7fc4e9f49f54..a195bf33246a 100644
-> --- a/include/linux/security.h
-> +++ b/include/linux/security.h
-> @@ -435,6 +435,7 @@ int security_task_kill(struct task_struct *p, struct kernel_siginfo *info,
->  int security_task_prctl(int option, unsigned long arg2, unsigned long arg3,
->                         unsigned long arg4, unsigned long arg5);
->  void security_task_to_inode(struct task_struct *p, struct inode *inode);
-> +int security_create_user_ns(const struct cred *cred);
->  int security_ipc_permission(struct kern_ipc_perm *ipcp, short flag);
->  void security_ipc_getsecid(struct kern_ipc_perm *ipcp, u32 *secid);
->  int security_msg_msg_alloc(struct msg_msg *msg);
-> @@ -1185,6 +1186,11 @@ static inline int security_task_prctl(int option, unsigned long arg2,
->  static inline void security_task_to_inode(struct task_struct *p, struct inode *inode)
->  { }
+>   * Do new verifier semantics added in this series make logical sense?
+>     Are there any glaring safety holes aside from those called out in
+>     individual patches?
 >
-> +static inline int security_create_user_ns(const struct cred *cred)
-> +{
-> +       return 0;
-> +}
-> +
->  static inline int security_ipc_permission(struct kern_ipc_perm *ipcp,
->                                           short flag)
->  {
-> diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
-> index 5481ba44a8d6..3f464bbda0e9 100644
-> --- a/kernel/user_namespace.c
-> +++ b/kernel/user_namespace.c
-> @@ -9,6 +9,7 @@
->  #include <linux/highuid.h>
->  #include <linux/cred.h>
->  #include <linux/securebits.h>
-> +#include <linux/security.h>
->  #include <linux/keyctl.h>
->  #include <linux/key-type.h>
->  #include <keys/user-type.h>
-> @@ -113,6 +114,10 @@ int create_user_ns(struct cred *new)
->             !kgid_has_mapping(parent_ns, group))
->                 goto fail_dec;
+> Please see individual patches for more in-depth explanation. A quick
+> summary of patches follows:
 >
-> +       ret = security_create_user_ns(new);
-> +       if (ret < 0)
-> +               goto fail_dec;
-> +
->         ret = -ENOMEM;
->         ns = kmem_cache_zalloc(user_ns_cachep, GFP_KERNEL);
->         if (!ns)
-> diff --git a/security/security.c b/security/security.c
-> index 188b8f782220..ec9b4696e86c 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -1903,6 +1903,11 @@ void security_task_to_inode(struct task_struct *p, struct inode *inode)
->         call_void_hook(task_to_inode, p, inode);
->  }
 >
-> +int security_create_user_ns(const struct cred *cred)
-> +{
-> +       return call_int_hook(userns_create, 0, cred);
-> +}
-> +
->  int security_ipc_permission(struct kern_ipc_perm *ipcp, short flag)
->  {
->         return call_int_hook(ipc_permission, 0, ipcp, flag);
+> Patches 1-3 extend verifier and BTF searching logic in minor ways to
+> prepare for rbtree implementation patch.
+>   bpf: Pull repeated reg access bounds check into helper fn
+>   bpf: Add verifier support for custom callback return range
+>   bpf: Add rb_node_off to bpf_map
+>
+>
+> Patch 4 adds basic rbtree map implementation.
+>   bpf: Add rbtree map
+>
+> Note that 'complete' implementation requires concepts and changes
+> introduced in further patches in the series. The series is currently
+> arranged in this way to ease RFC review.
+>
+>
+> Patches 5-7 add a spinlock to the rbtree map, with some differing
+> semantics from existing verifier spinlock handling.
+>   bpf: Add bpf_spin_lock member to rbtree
+>   bpf: Add bpf_rbtree_{lock,unlock} helpers
+>   bpf: Enforce spinlock hold for bpf_rbtree_{add,remove,find}
+>
+> Notably, rbtree's bpf_spin_lock must be held while manipulating the tree
+> via helpers, while existing spinlock verifier logic prevents any helper
+> calls while lock is held. In current state this is worked around by not
+> having the verifier treat rbtree's lock specially in any way. This
+> needs to be improved before leaving RFC state as it's unsafe.
+>
+>
+> Patch 8 adds the concept of non-owning references, firming up the
+> semantics of helpers that return a ptr to node which is owned by
+> a rbtree. See patch 4's summary for additional discussion of node
+> ownership.
+>
+>
+> Patch 9 adds a 'conditional release' concept: helpers which release a
+> resource, but may fail to do so and need to enforce that the BPF program
+> handles this failure appropriately, namely by freeing the resource
+> another way.
+>
+>
+> Path 10 adds 'iter' type flags which teach the verifier to understand
+> open-coded iteration of a data structure. Specifically, with such flags
+> the verifier can understand that this loop eventually ends:
+>
+>   struct node_data *iter = (struct node_data *)bpf_rbtree_first(&rbtree);
+>
+>   while (iter) {
+>     node_ct++;
+>     iter = (struct node_data *)bpf_rbtree_next(&rbtree, iter);
+>   }
+>
+> NOTE: Patch 10's logic is currently very unsafe and it's unclear whether
+> there's a safe path forward that isn't too complex. It's the most RFC-ey
+> of all the patches.
+>
+>
+> Patch 11 adds tests. Best to start here to see BPF programs using rbtree
+> map as intended.
+>
+>
+> This series is based ontop of "bpf: Cleanup check_refcount_ok" patch,
+> which was submitted separately [0] and therefore is not included here. That
+> patch is likely to be applied before this is out of RFC state, so will
+> just rebase on newer bpf-next/master.
+>
+>   [0]: lore.kernel.org/bpf/20220719215536.2787530-1-davemarchevsky@fb.com/
+>
+> Dave Marchevsky (11):
+>   bpf: Pull repeated reg access bounds check into helper fn
+>   bpf: Add verifier support for custom callback return range
+>   bpf: Add rb_node_off to bpf_map
+>   bpf: Add rbtree map
+>   bpf: Add bpf_spin_lock member to rbtree
+>   bpf: Add bpf_rbtree_{lock,unlock} helpers
+>   bpf: Enforce spinlock hold for bpf_rbtree_{add,remove,find}
+>   bpf: Add OBJ_NON_OWNING_REF type flag
+>   bpf: Add CONDITIONAL_RELEASE type flag
+>   bpf: Introduce PTR_ITER and PTR_ITER_END type flags
+>   selftests/bpf: Add rbtree map tests
+>
+>  include/linux/bpf.h                           |  13 +
+>  include/linux/bpf_types.h                     |   1 +
+>  include/linux/bpf_verifier.h                  |   2 +
+>  include/linux/btf.h                           |   1 +
+>  include/uapi/linux/bpf.h                      | 121 ++++++
+>  kernel/bpf/Makefile                           |   2 +-
+>  kernel/bpf/btf.c                              |  21 +
+>  kernel/bpf/helpers.c                          |  42 +-
+>  kernel/bpf/rbtree.c                           | 401 ++++++++++++++++++
+>  kernel/bpf/syscall.c                          |   3 +
+>  kernel/bpf/verifier.c                         | 382 +++++++++++++++--
+>  tools/include/uapi/linux/bpf.h                | 121 ++++++
+>  .../selftests/bpf/prog_tests/rbtree_map.c     | 164 +++++++
+>  .../testing/selftests/bpf/progs/rbtree_map.c  | 108 +++++
+>  .../selftests/bpf/progs/rbtree_map_fail.c     | 236 +++++++++++
+>  .../bpf/progs/rbtree_map_load_fail.c          |  24 ++
+>  16 files changed, 1605 insertions(+), 37 deletions(-)
+>  create mode 100644 kernel/bpf/rbtree.c
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/rbtree_map.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/rbtree_map.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/rbtree_map_fail.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/rbtree_map_load_fail.c
+>
 > --
 > 2.30.2
 >
+
+I just skimmed through commit descriptions and wanted to ask few questions.
+
+1. It's not exactly clear from descriptions what are the advantages of
+having struct node_data data vs sticking to more typical BPF map
+interface with bpf_map_lookup_elem() and so on. Am I right that the
+biggest advantage is that we can move node from one RB tree to
+another? But if that's the only reason, why can't we have a
+specialized bpf_rbtree_move(rb1, rb2, value) (where rb1 and rb2 are
+trees involved in a move, and value is whatever is returned by
+bpf_map_lookup_elem, which internally will also keep rbtree_node
+hidden in front of value pointer, just like we do it with ringbuf).
+
+2. As for rbtree node pre-allocated in more permissive mode and then
+inserting into RB tree later on in more restrictive (e.g., NMI) mode.
+Wouldn't this problem be mostly solved by Alexei's BPF-specific memory
+allocator? And right now you are requiring to insert in the same mode
+as when node was allocated (or free it), right? That's just a current
+limitation and you are planning to lift this restriction? If yes, what
+would be the mechanism to "temporarily" store rbtree_node somewhere?
+kptr? dynptr? In both cases not exactly clear how type information is
+preserved.
+
+3. As for locking. Assuming we add bpf_rbtree_move_node() helper, you
+can pass lock as an argument to it instead of storing lock inside the
+RB tree itself. Preventing deadlocks and stuff like that is still hard
+and tricky, but at least you won't have to worry about storing locks
+inside RB trees themselves.
+
+
+Just some questions that I still remember from a brief reading of
+this. I think it would be extremely helpful for me and others to have
+a clear "why we need open-coded rbtree_node approach" question
+answered with comparison to possible alternative using a bit more
+conventional BPF approach.
+
+Overall, I'm still trying to wrap my head around this, this approach
+and stated goals (e.g., moving nodes between two trees, all the
+locking story, etc) look very complicated, so will take some time to
+internalize this new approach and convince myself it's doable.
