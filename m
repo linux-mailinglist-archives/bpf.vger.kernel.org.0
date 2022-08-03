@@ -2,74 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8CBB58886C
-	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 10:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 479A4588888
+	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 10:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235134AbiHCID4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Aug 2022 04:03:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48628 "EHLO
+        id S230017AbiHCIPd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Aug 2022 04:15:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbiHCIDz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Aug 2022 04:03:55 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76CA813E06;
-        Wed,  3 Aug 2022 01:03:54 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id h21-20020a17090aa89500b001f31a61b91dso1203239pjq.4;
-        Wed, 03 Aug 2022 01:03:54 -0700 (PDT)
+        with ESMTP id S229944AbiHCIPc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Aug 2022 04:15:32 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9FAE5FE2
+        for <bpf@vger.kernel.org>; Wed,  3 Aug 2022 01:15:30 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id tk8so30059929ejc.7
+        for <bpf@vger.kernel.org>; Wed, 03 Aug 2022 01:15:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc;
-        bh=RwvyogrdBi+y8HfLgDtU4bktAJ8/XfTU9q1x/3DRwCU=;
-        b=c0YeISaCd+S1jZos5qQf/JlbMQefnTgWDCgM1xQxcVb9HekW3Jgk7V8Cffy2urjJvx
-         jEx6u2vqEPMVTLzRh6QZVxVEPlWsM/XylyBW8GlQAFS4g5jYOI7ess7rnG/6qUHokIDW
-         40QK2HBfhFtNpbAp/YKjetK5EQypDxhvCzDgKHcLpAyL65//QPNZDXaK7Jvy366FQVAp
-         oSRTl3RmI3LrDuVD1KPeqTLWchS/Fy+rKi/ObB2GdUHzyDuQ4E3d0dj6XjhpjMOXY6su
-         wBSx+ycqJK695SyK1xf05PjRP6QQITgufa6U97zkufSgpDFqQyUv4bZw6DZ/vBfGbAGY
-         axbw==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc;
+        bh=I7EXgXKt70nfCJSlRacteg8hrEWhTvt7sZ6ViIT6MZ0=;
+        b=VZvq+xu4fSeDT4HlpbSYypVcAvhOuMLoCc1uRoPZ+mnRADPfvJPoawfzFfJJ5X6zQI
+         VcOtLZRB3qUwpBF4E4kWvlV0SwvGRelcLvFnRYYUO1k05Kfo3qFgSxrydrOfEjq2zSsA
+         /OE5NUtFqwZiDRSpW3lgIjBcASMhNLPJeFyFce/GClLBzoyGm49QNCcVd8PNsEJ0NMhh
+         i9z5eXiIt5ixCCmvN9DD9GDgUYqCunLRGlOWTyVPelxvZ1IBJ6YTKunfHlCqoT3yN10F
+         UpGdpW3swmTh+Gt9ZvxAV3kJWVFVFWI40hwhBm/0FZ0BQza6lLovBFL5pRZSlSKihExE
+         YbSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
-        bh=RwvyogrdBi+y8HfLgDtU4bktAJ8/XfTU9q1x/3DRwCU=;
-        b=zAfhxR5YgeziegFvlSqp2NmIz/eFYvI5qclA9Bcq3GOZYKp7rwSt8PJ0e+ROnmq5mD
-         NMI3Ys4XJFXz03z7H7lpDAH0YWssxZeIjbR5mGpT3kXVPiqA+EdkJk2I6VU49zq+iWwR
-         VXxrsZsBwoltNJtCx6VQ4mgfftDLHJH1dHhB/4druGbtRekDUtdolXXz7QP8PwNBtzK4
-         y9SWAi4nEjBO+YfsazLpT/FHqIxA06ZZCdlUJpfB7JhPdfu3CLw0xFHZDPf0UTfwyecu
-         tGNWa/MYlEehr2OwJQAMuligIB1rjotHJmPkerUEPVDlnas0MUL5cjij/pi1Ud9PgwVh
-         +F6w==
-X-Gm-Message-State: ACgBeo078xxj673pNA4nKJSf3L0+T2j1LdtsHtOOjeUCq5ywqm9iFlwJ
-        TkgGaxw2b0EgTr1g76q1lJ4=
-X-Google-Smtp-Source: AA6agR76/zwYY+giGq5yekiXmJsdEH4fDSZnMo741CT5PmvXy90Qoa4vPHpH4CjSQgEHpkV2J4Xvkg==
-X-Received: by 2002:a17:902:f646:b0:168:e2da:8931 with SMTP id m6-20020a170902f64600b00168e2da8931mr25097102plg.84.1659513833884;
-        Wed, 03 Aug 2022 01:03:53 -0700 (PDT)
-Received: from localhost ([223.104.103.89])
-        by smtp.gmail.com with ESMTPSA id h27-20020a63211b000000b0040d48cf046csm10530027pgh.55.2022.08.03.01.03.50
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc;
+        bh=I7EXgXKt70nfCJSlRacteg8hrEWhTvt7sZ6ViIT6MZ0=;
+        b=Kmj2acFgsmw2MI428fz+XkFT/+rMWGenRcP/IpsVRi3Y0SXl2wYubUipKyR+/kniDC
+         QDfWMhmooe7BP9Mx8y0W2ETksubtOicHvI/1gV/n3Ptj86SnUUjmIJPmaAWubzCqPjwt
+         qJqMWsE6DJl5WifkXanEzNhbLQJ6My6MdZt6b6lOVtTa6uU1JXCImJLfrSgaY2SluKT3
+         K/pdptfHbRb9lcjVcZ5wiqWhGKMI6QCo/sci9yGFUSQuImpbrNy7DAtHXlH1fiipe5lc
+         l8fmlWlZGOniFepb+hZB4Vigas1EoCLGiyzcuSTnP/tQO/AYaFeF5qobeH5UnJnuL8LB
+         UBBg==
+X-Gm-Message-State: ACgBeo0kC+f1baJMLXxcZHlWGYefX/JSynZYpb6rvXP/KqdHwLB7L4VO
+        yAyZG4PlP7KgulGIaiaqZnQ=
+X-Google-Smtp-Source: AA6agR7yVTy8bRiLjJd2qTbNTXayVE1n4mbyVXNmQF33xF0N3BHLnQZH/EetsGIe/ZZaMjw0L+7nvA==
+X-Received: by 2002:a17:907:a06f:b0:730:69c7:9a1d with SMTP id ia15-20020a170907a06f00b0073069c79a1dmr11485469ejc.685.1659514529391;
+        Wed, 03 Aug 2022 01:15:29 -0700 (PDT)
+Received: from krava ([193.85.244.190])
+        by smtp.gmail.com with ESMTPSA id q4-20020a056402040400b0043c92c44c53sm9102570edv.93.2022.08.03.01.15.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Aug 2022 01:03:53 -0700 (PDT)
-From:   Hawkins Jiawei <yin31149@gmail.com>
-To:     syzbot+5f26f85569bd179c18ce@syzkaller.appspotmail.com
-Cc:     andrii@kernel.org, ast@kernel.org, borisp@nvidia.com,
-        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        edumazet@google.com, guwen@linux.alibaba.com,
-        john.fastabend@gmail.com, kafai@fb.com, kgraul@linux.ibm.com,
-        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com, 18801353760@163.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        jakub@cloudflare.com, paskripkin@gmail.com,
-        skhan@linuxfoundation.org, Hawkins Jiawei <yin31149@gmail.com>
-Subject: [PATCH v3] net/smc: fix refcount bug in sk_psock_get (2)
-Date:   Wed,  3 Aug 2022 16:03:38 +0800
-Message-Id: <20220803080338.166730-1-yin31149@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <00000000000026328205e08cdbeb@google.com>
-References: <00000000000026328205e08cdbeb@google.com>
+        Wed, 03 Aug 2022 01:15:28 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Wed, 3 Aug 2022 10:15:27 +0200
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org, daniel@iogearbox.net,
+        ast@kernel.org
+Subject: Re: [PATCH bpf-next v1] bpf: verifier cleanups
+Message-ID: <YuounwzH7ISYsrAN@krava>
+References: <20220802214638.3643235-1-joannelkoong@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220802214638.3643235-1-joannelkoong@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,185 +70,162 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Syzkaller reports refcount bug as follows:
-------------[ cut here ]------------
-refcount_t: saturated; leaking memory.
-WARNING: CPU: 1 PID: 3605 at lib/refcount.c:19 refcount_warn_saturate+0xf4/0x1e0 lib/refcount.c:19
-Modules linked in:
-CPU: 1 PID: 3605 Comm: syz-executor208 Not tainted 5.18.0-syzkaller-03023-g7e062cda7d90 #0
- <TASK>
- __refcount_add_not_zero include/linux/refcount.h:163 [inline]
- __refcount_inc_not_zero include/linux/refcount.h:227 [inline]
- refcount_inc_not_zero include/linux/refcount.h:245 [inline]
- sk_psock_get+0x3bc/0x410 include/linux/skmsg.h:439
- tls_data_ready+0x6d/0x1b0 net/tls/tls_sw.c:2091
- tcp_data_ready+0x106/0x520 net/ipv4/tcp_input.c:4983
- tcp_data_queue+0x25f2/0x4c90 net/ipv4/tcp_input.c:5057
- tcp_rcv_state_process+0x1774/0x4e80 net/ipv4/tcp_input.c:6659
- tcp_v4_do_rcv+0x339/0x980 net/ipv4/tcp_ipv4.c:1682
- sk_backlog_rcv include/net/sock.h:1061 [inline]
- __release_sock+0x134/0x3b0 net/core/sock.c:2849
- release_sock+0x54/0x1b0 net/core/sock.c:3404
- inet_shutdown+0x1e0/0x430 net/ipv4/af_inet.c:909
- __sys_shutdown_sock net/socket.c:2331 [inline]
- __sys_shutdown_sock net/socket.c:2325 [inline]
- __sys_shutdown+0xf1/0x1b0 net/socket.c:2343
- __do_sys_shutdown net/socket.c:2351 [inline]
- __se_sys_shutdown net/socket.c:2349 [inline]
- __x64_sys_shutdown+0x50/0x70 net/socket.c:2349
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x46/0xb0
- </TASK>
+On Tue, Aug 02, 2022 at 02:46:38PM -0700, Joanne Koong wrote:
+> This patch cleans up a few things in the verifier:
+>   * type_is_pkt_pointer():
+>     Future work (skb + xdp dynptrs [0]) will be using the reg type
+>     PTR_TO_PACKET | PTR_MAYBE_NULL. type_is_pkt_pointer() should return
+>     true for any type whose base type is PTR_TO_PACKET, regardless of
+>     flags attached to it.
+> 
+>   * reg_type_may_be_refcounted_or_null():
+>     Get the base type at the start of the function to avoid
+>     having to recompute it / improve readability
+> 
+>   * check_func_proto(): remove unnecessary 'meta' arg
+> 
+>   * check_helper_call():
+>     Use switch casing on the base type of return value instead of
+>     nested ifs on the full type
+> 
+> There are no functional behavior changes.
+> 
+> [0] https://lore.kernel.org/bpf/20220726184706.954822-1-joannelkoong@gmail.com/
+> 
+> Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
 
-During SMC fallback process in connect syscall, kernel will
-replaces TCP with SMC. In order to forward wakeup
-smc socket waitqueue after fallback, kernel will sets
-clcsk->sk_user_data to origin smc socket in
-smc_fback_replace_callbacks().
+LGTM
 
-Later, in shutdown syscall, kernel will calls
-sk_psock_get(), which treats the clcsk->sk_user_data
-as psock type, triggering the refcnt warning.
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
-So, the root cause is that smc and psock, both will use
-sk_user_data field. So they will mismatch this field
-easily.
+jirka
 
-This patch solves it by using another bit(defined as
-SK_USER_DATA_PSOCK) in PTRMASK, to mark whether
-sk_user_data points to a psock object or not.
-This patch depends on a PTRMASK introduced in commit f1ff5ce2cd5e
-("net, sk_msg: Clear sk_user_data pointer on clone if tagged").
-
-Reported-and-tested-by: syzbot+5f26f85569bd179c18ce@syzkaller.appspotmail.com
-Suggested-by: Jakub Kicinski <kuba@kernel.org>
-Acked-by: Wen Gu <guwen@linux.alibaba.com>
-Signed-off-by: Hawkins Jiawei <yin31149@gmail.com>
----
-v2 -> v3:
-  - use SK_USER_DATA_PSOCK instead of SK_USER_DATA_NOTPSOCK
-to patch the bug
-  - refactor the code on assigning to sk_user_data field
-in psock part
-  - refactor the code on getting and setting the flag
-with sk_user_data field
-
-v1 -> v2:
-  - add bit in PTRMASK to patch the bug
-
- include/linux/skmsg.h |  2 +-
- include/net/sock.h    | 58 +++++++++++++++++++++++++++++++------------
- net/core/skmsg.c      |  3 ++-
- 3 files changed, 45 insertions(+), 18 deletions(-)
-
-diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-index c5a2d6f50f25..81bfa1a33623 100644
---- a/include/linux/skmsg.h
-+++ b/include/linux/skmsg.h
-@@ -277,7 +277,7 @@ static inline void sk_msg_sg_copy_clear(struct sk_msg *msg, u32 start)
- 
- static inline struct sk_psock *sk_psock(const struct sock *sk)
- {
--	return rcu_dereference_sk_user_data(sk);
-+	return rcu_dereference_sk_user_data_psock(sk);
- }
- 
- static inline void sk_psock_set_state(struct sk_psock *psock,
-diff --git a/include/net/sock.h b/include/net/sock.h
-index 9fa54762e077..d010910d5879 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -545,14 +545,24 @@ enum sk_pacing {
- 	SK_PACING_FQ		= 2,
- };
- 
--/* Pointer stored in sk_user_data might not be suitable for copying
-- * when cloning the socket. For instance, it can point to a reference
-- * counted object. sk_user_data bottom bit is set if pointer must not
-- * be copied.
-+/* flag bits in sk_user_data
-+ *
-+ * SK_USER_DATA_NOCOPY - Pointer stored in sk_user_data might
-+ * not be suitable for copying when cloning the socket.
-+ * For instance, it can point to a reference counted object.
-+ * sk_user_data bottom bit is set if pointer must not be copied.
-+ *
-+ * SK_USER_DATA_BPF    - Managed by BPF
-+ *
-+ * SK_USER_DATA_PSOCK  - Mark whether pointer stored in sk_user_data points
-+ * to psock type. This bit should be set when sk_user_data is
-+ * assigned to a psock object.
-  */
- #define SK_USER_DATA_NOCOPY	1UL
--#define SK_USER_DATA_BPF	2UL	/* Managed by BPF */
--#define SK_USER_DATA_PTRMASK	~(SK_USER_DATA_NOCOPY | SK_USER_DATA_BPF)
-+#define SK_USER_DATA_BPF	2UL
-+#define SK_USER_DATA_PSOCK	4UL
-+#define SK_USER_DATA_PTRMASK	~(SK_USER_DATA_NOCOPY | SK_USER_DATA_BPF |\
-+				  SK_USER_DATA_PSOCK)
- 
- /**
-  * sk_user_data_is_nocopy - Test if sk_user_data pointer must not be copied
-@@ -570,19 +580,35 @@ static inline bool sk_user_data_is_nocopy(const struct sock *sk)
- 	void *__tmp = rcu_dereference(__sk_user_data((sk)));		\ (void *)((uintptr_t)__tmp & SK_USER_DATA_PTRMASK);		\
- })
--#define rcu_assign_sk_user_data(sk, ptr)				\
-+#define rcu_assign_sk_user_data_with_flags(sk, ptr, flags)		\
- ({									\
--	uintptr_t __tmp = (uintptr_t)(ptr);				\
--	WARN_ON_ONCE(__tmp & ~SK_USER_DATA_PTRMASK);			\
--	rcu_assign_pointer(__sk_user_data((sk)), __tmp);		\
--})
--#define rcu_assign_sk_user_data_nocopy(sk, ptr)				\
--({									\
--	uintptr_t __tmp = (uintptr_t)(ptr);				\
--	WARN_ON_ONCE(__tmp & ~SK_USER_DATA_PTRMASK);			\
-+	uintptr_t __tmp1 = (uintptr_t)(ptr),				\
-+		  __tmp2 = (uintptr_t)(flags);				\
-+	WARN_ON_ONCE(__tmp1 & ~SK_USER_DATA_PTRMASK);			\
-+	WARN_ON_ONCE(__tmp2 & SK_USER_DATA_PTRMASK);			\
- 	rcu_assign_pointer(__sk_user_data((sk)),			\
--			   __tmp | SK_USER_DATA_NOCOPY);		\
-+			   __tmp1 | __tmp2);				\
- })
-+#define rcu_assign_sk_user_data(sk, ptr)				\
-+	rcu_assign_sk_user_data_with_flags(sk, ptr, 0)
-+
-+/**
-+ * rcu_dereference_sk_user_data_psock - return psock if sk_user_data
-+ * points to the psock type(SK_USER_DATA_PSOCK flag is set), otherwise
-+ * return NULL
-+ *
-+ * @sk: socket
-+ */
-+static inline
-+struct sk_psock *rcu_dereference_sk_user_data_psock(const struct sock *sk)
-+{
-+	uintptr_t __tmp = (uintptr_t)rcu_dereference(__sk_user_data((sk)));
-+
-+	if (__tmp & SK_USER_DATA_PSOCK)
-+		return (struct sk_psock *)(__tmp & SK_USER_DATA_PTRMASK);
-+
-+	return NULL;
-+}
- 
- static inline
- struct net *sock_net(const struct sock *sk)
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index b0fcd0200e84..d174897dbb4b 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -735,7 +735,8 @@ struct sk_psock *sk_psock_init(struct sock *sk, int node)
- 	sk_psock_set_state(psock, SK_PSOCK_TX_ENABLED);
- 	refcount_set(&psock->refcnt, 1);
- 
--	rcu_assign_sk_user_data_nocopy(sk, psock);
-+	rcu_assign_sk_user_data_with_flags(sk, psock, SK_USER_DATA_NOCOPY |
-+						      SK_USER_DATA_PSOCK);
- 	sock_hold(sk);
- 
- out:
--- 
-2.25.1
-
+> ---
+>  kernel/bpf/verifier.c | 50 +++++++++++++++++++++++++++----------------
+>  1 file changed, 32 insertions(+), 18 deletions(-)
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 096fdac70165..843a966cd02b 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -427,6 +427,7 @@ static void verbose_invalid_scalar(struct bpf_verifier_env *env,
+>  
+>  static bool type_is_pkt_pointer(enum bpf_reg_type type)
+>  {
+> +	type = base_type(type);
+>  	return type == PTR_TO_PACKET ||
+>  	       type == PTR_TO_PACKET_META;
+>  }
+> @@ -456,10 +457,9 @@ static bool reg_may_point_to_spin_lock(const struct bpf_reg_state *reg)
+>  
+>  static bool reg_type_may_be_refcounted_or_null(enum bpf_reg_type type)
+>  {
+> -	return base_type(type) == PTR_TO_SOCKET ||
+> -		base_type(type) == PTR_TO_TCP_SOCK ||
+> -		base_type(type) == PTR_TO_MEM ||
+> -		base_type(type) == PTR_TO_BTF_ID;
+> +	type = base_type(type);
+> +	return type == PTR_TO_SOCKET || type == PTR_TO_TCP_SOCK ||
+> +		type == PTR_TO_MEM || type == PTR_TO_BTF_ID;
+>  }
+>  
+>  static bool type_is_rdonly_mem(u32 type)
+> @@ -6498,8 +6498,7 @@ static bool check_btf_id_ok(const struct bpf_func_proto *fn)
+>  	return true;
+>  }
+>  
+> -static int check_func_proto(const struct bpf_func_proto *fn, int func_id,
+> -			    struct bpf_call_arg_meta *meta)
+> +static int check_func_proto(const struct bpf_func_proto *fn, int func_id)
+>  {
+>  	return check_raw_mode_ok(fn) &&
+>  	       check_arg_pair_ok(fn) &&
+> @@ -7218,7 +7217,7 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>  	memset(&meta, 0, sizeof(meta));
+>  	meta.pkt_access = fn->pkt_access;
+>  
+> -	err = check_func_proto(fn, func_id, &meta);
+> +	err = check_func_proto(fn, func_id);
+>  	if (err) {
+>  		verbose(env, "kernel subsystem misconfigured func %s#%d\n",
+>  			func_id_name(func_id), func_id);
+> @@ -7359,13 +7358,17 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>  
+>  	/* update return register (already marked as written above) */
+>  	ret_type = fn->ret_type;
+> -	ret_flag = type_flag(fn->ret_type);
+> -	if (ret_type == RET_INTEGER) {
+> +	ret_flag = type_flag(ret_type);
+> +
+> +	switch (base_type(ret_type)) {
+> +	case RET_INTEGER:
+>  		/* sets type to SCALAR_VALUE */
+>  		mark_reg_unknown(env, regs, BPF_REG_0);
+> -	} else if (ret_type == RET_VOID) {
+> +		break;
+> +	case RET_VOID:
+>  		regs[BPF_REG_0].type = NOT_INIT;
+> -	} else if (base_type(ret_type) == RET_PTR_TO_MAP_VALUE) {
+> +		break;
+> +	case RET_PTR_TO_MAP_VALUE:
+>  		/* There is no offset yet applied, variable or fixed */
+>  		mark_reg_known_zero(env, regs, BPF_REG_0);
+>  		/* remember map_ptr, so that check_map_access()
+> @@ -7384,20 +7387,26 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>  		    map_value_has_spin_lock(meta.map_ptr)) {
+>  			regs[BPF_REG_0].id = ++env->id_gen;
+>  		}
+> -	} else if (base_type(ret_type) == RET_PTR_TO_SOCKET) {
+> +		break;
+> +	case RET_PTR_TO_SOCKET:
+>  		mark_reg_known_zero(env, regs, BPF_REG_0);
+>  		regs[BPF_REG_0].type = PTR_TO_SOCKET | ret_flag;
+> -	} else if (base_type(ret_type) == RET_PTR_TO_SOCK_COMMON) {
+> +		break;
+> +	case RET_PTR_TO_SOCK_COMMON:
+>  		mark_reg_known_zero(env, regs, BPF_REG_0);
+>  		regs[BPF_REG_0].type = PTR_TO_SOCK_COMMON | ret_flag;
+> -	} else if (base_type(ret_type) == RET_PTR_TO_TCP_SOCK) {
+> +		break;
+> +	case RET_PTR_TO_TCP_SOCK:
+>  		mark_reg_known_zero(env, regs, BPF_REG_0);
+>  		regs[BPF_REG_0].type = PTR_TO_TCP_SOCK | ret_flag;
+> -	} else if (base_type(ret_type) == RET_PTR_TO_ALLOC_MEM) {
+> +		break;
+> +	case RET_PTR_TO_ALLOC_MEM:
+>  		mark_reg_known_zero(env, regs, BPF_REG_0);
+>  		regs[BPF_REG_0].type = PTR_TO_MEM | ret_flag;
+>  		regs[BPF_REG_0].mem_size = meta.mem_size;
+> -	} else if (base_type(ret_type) == RET_PTR_TO_MEM_OR_BTF_ID) {
+> +		break;
+> +	case RET_PTR_TO_MEM_OR_BTF_ID:
+> +	{
+>  		const struct btf_type *t;
+>  
+>  		mark_reg_known_zero(env, regs, BPF_REG_0);
+> @@ -7429,7 +7438,10 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>  			regs[BPF_REG_0].btf = meta.ret_btf;
+>  			regs[BPF_REG_0].btf_id = meta.ret_btf_id;
+>  		}
+> -	} else if (base_type(ret_type) == RET_PTR_TO_BTF_ID) {
+> +		break;
+> +	}
+> +	case RET_PTR_TO_BTF_ID:
+> +	{
+>  		struct btf *ret_btf;
+>  		int ret_btf_id;
+>  
+> @@ -7450,7 +7462,9 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>  		}
+>  		regs[BPF_REG_0].btf = ret_btf;
+>  		regs[BPF_REG_0].btf_id = ret_btf_id;
+> -	} else {
+> +		break;
+> +	}
+> +	default:
+>  		verbose(env, "unknown return type %u of func %s#%d\n",
+>  			base_type(ret_type), func_id_name(func_id), func_id);
+>  		return -EINVAL;
+> -- 
+> 2.30.2
+> 
