@@ -2,125 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC5F588B11
-	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 13:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B30C9588B1E
+	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 13:27:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234872AbiHCLYJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Aug 2022 07:24:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44178 "EHLO
+        id S229912AbiHCL1O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Aug 2022 07:27:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229784AbiHCLYI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Aug 2022 07:24:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8E59E1D339
-        for <bpf@vger.kernel.org>; Wed,  3 Aug 2022 04:24:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1659525845;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3FOcvqJbUoGHDDUFPqQYrb80yq1QgKC3KQgj7v11X3w=;
-        b=Hl+mtnJq8XhFOI/TaStsdooCYoaOsihsJ6nEUm8i/TV6E8+WXjXZMoAu/J2Kb/p1DJWFcR
-        IuEet6Mo8w7FB05fEwAnZIkeexGyGOLKyX+0U/mCpHPEm2z3tk4813Vkq461FpTV3SqB1X
-        Qj4ijYlBYbZiRkxoZbCbAwzVD827WRI=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-507-x4HgasFSN_-SDZqTdb6l_A-1; Wed, 03 Aug 2022 07:24:01 -0400
-X-MC-Unique: x4HgasFSN_-SDZqTdb6l_A-1
-Received: by mail-qk1-f199.google.com with SMTP id bl27-20020a05620a1a9b00b0069994eeb30cso13255451qkb.11
-        for <bpf@vger.kernel.org>; Wed, 03 Aug 2022 04:24:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3FOcvqJbUoGHDDUFPqQYrb80yq1QgKC3KQgj7v11X3w=;
-        b=RWnH+qj1HYoCKzWkhERG07I6P51KSfH3mWeBblKL7RwoJ7mg0WEJqZ2gqcETFn4tZP
-         KsHpoaiiQV5oFkdgsB2qz/z0HUYav7rj+KCr4a8z3rIfmDYqj2e9ODMt0HRCpiXJp/vY
-         F8PNNSOT/FcMuIgW6KnFrBfSdOl3CxHwmaiCc3t6RF8LCDZ9QB8rGTNR7b7VCkydo+JG
-         yW3t/uCCekAX+r762y5myLyzqyBWaAVPvG1ncKcslNc8/P0V189pzJ7FY7J6PAIT/58k
-         waYESCwtoTKpm5Wz6XLAbGJ7/A8Y3uUxwjfkL//pbYPpdatZQPxJ1NyOUiahhiGTXCbm
-         BhOQ==
-X-Gm-Message-State: AJIora9TX7uGq7CwYIHZjlqG2isGzH0hrTPam5kSlAlOFxrQxoy4iMdS
-        NfRTa+JTm+VGbQboNOcQJBZtoy/CubX5GWB0bKjiTvFFpIEAlsKJ7eOdxd2cnlYMXmq8pb8smN5
-        6AXAriss1greo
-X-Received: by 2002:a05:622a:247:b0:31f:1ede:840b with SMTP id c7-20020a05622a024700b0031f1ede840bmr21715040qtx.564.1659525841368;
-        Wed, 03 Aug 2022 04:24:01 -0700 (PDT)
-X-Google-Smtp-Source: AGRyM1tz5KSr5SVrnhkcL1Hcg5mE7G3xX8TvBx1o0yHreZukVEWfYCkszcC3wldnfhHBqw0mSOSLXA==
-X-Received: by 2002:a05:622a:247:b0:31f:1ede:840b with SMTP id c7-20020a05622a024700b0031f1ede840bmr21715005qtx.564.1659525841139;
-        Wed, 03 Aug 2022 04:24:01 -0700 (PDT)
-Received: from pc-4.home (2a01cb058918ce00dd1a5a4f9908f2d5.ipv6.abo.wanadoo.fr. [2a01:cb05:8918:ce00:dd1a:5a4f:9908:f2d5])
-        by smtp.gmail.com with ESMTPSA id m26-20020ac866da000000b00339163a06fcsm3147288qtp.6.2022.08.03.04.23.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Aug 2022 04:24:00 -0700 (PDT)
-Date:   Wed, 3 Aug 2022 13:23:54 +0200
-From:   Guillaume Nault <gnault@redhat.com>
-To:     Matthias May <matthias.may@westermo.com>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, roopa@nvidia.com,
-        eng.alaamohamedsoliman.am@gmail.com, bigeasy@linutronix.de,
-        saeedm@nvidia.com, leon@kernel.org, roid@nvidia.com,
-        maord@nvidia.com, lariel@nvidia.com, vladbu@nvidia.com,
-        cmi@nvidia.com, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-rdma@vger.kernel.org, nicolas.dichtel@6wind.com,
-        eyal.birger@gmail.com, jesse@nicira.com, linville@tuxdriver.com,
-        daniel@iogearbox.net, hadarh@mellanox.com, ogerlitz@mellanox.com,
-        willemb@google.com, martin.varghese@nokia.com
-Subject: Re: [PATCH v2 net 1/4] geneve: do not use RT_TOS for IPv6 flowlabel
-Message-ID: <20220803112354.GA29408@pc-4.home>
-References: <20220802120935.1363001-1-matthias.may@westermo.com>
- <20220802120935.1363001-2-matthias.may@westermo.com>
+        with ESMTP id S229784AbiHCL1N (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Aug 2022 07:27:13 -0400
+Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD53B275CF;
+        Wed,  3 Aug 2022 04:27:11 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=25;SR=0;TI=SMTPD_---0VLGi36p_1659526024;
+Received: from 30.227.65.209(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0VLGi36p_1659526024)
+          by smtp.aliyun-inc.com;
+          Wed, 03 Aug 2022 19:27:06 +0800
+Message-ID: <ecf07c1b-a6f3-2537-aacd-a768c437fa7f@linux.alibaba.com>
+Date:   Wed, 3 Aug 2022 19:27:04 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220802120935.1363001-2-matthias.may@westermo.com>
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.11.0
+Subject: Re: [PATCH v3] net/smc: fix refcount bug in sk_psock_get (2)
+To:     Hawkins Jiawei <yin31149@gmail.com>,
+        syzbot+5f26f85569bd179c18ce@syzkaller.appspotmail.com
+Cc:     andrii@kernel.org, ast@kernel.org, borisp@nvidia.com,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        edumazet@google.com, john.fastabend@gmail.com, kafai@fb.com,
+        kgraul@linux.ibm.com, kpsingh@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com, 18801353760@163.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        jakub@cloudflare.com, paskripkin@gmail.com,
+        skhan@linuxfoundation.org
+References: <00000000000026328205e08cdbeb@google.com>
+ <20220803080338.166730-1-yin31149@gmail.com>
+From:   Wen Gu <guwen@linux.alibaba.com>
+In-Reply-To: <20220803080338.166730-1-yin31149@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 02, 2022 at 02:09:32PM +0200, Matthias May wrote:
-> According to Guillaume Nault RT_TOS should never be used for IPv6.
 
-While I obviously agree with this statement, I don't think it brings
-much information to other people reading the commit message. Even
-though the cover letter has more information, it won't be immediately
-available to people reading the patch. Also the cover letter will be
-lost if the patch gets picked up for the -stable trees.
 
-Appart from that, I'm fine with the patch of course.
-
-> Fixes: 3a56f86f1be6a ("geneve: handle ipv6 priority like ipv4 tos")
-> Signed-off-by: Matthias May <matthias.may@westermo.com>
+On 2022/8/3 16:03, Hawkins Jiawei wrote:
+> Syzkaller reports refcount bug as follows:
+> ------------[ cut here ]------------
+> refcount_t: saturated; leaking memory.
+> WARNING: CPU: 1 PID: 3605 at lib/refcount.c:19 refcount_warn_saturate+0xf4/0x1e0 lib/refcount.c:19
+> Modules linked in:
+> CPU: 1 PID: 3605 Comm: syz-executor208 Not tainted 5.18.0-syzkaller-03023-g7e062cda7d90 #0
+>   <TASK>
+>   __refcount_add_not_zero include/linux/refcount.h:163 [inline]
+>   __refcount_inc_not_zero include/linux/refcount.h:227 [inline]
+>   refcount_inc_not_zero include/linux/refcount.h:245 [inline]
+>   sk_psock_get+0x3bc/0x410 include/linux/skmsg.h:439
+>   tls_data_ready+0x6d/0x1b0 net/tls/tls_sw.c:2091
+>   tcp_data_ready+0x106/0x520 net/ipv4/tcp_input.c:4983
+>   tcp_data_queue+0x25f2/0x4c90 net/ipv4/tcp_input.c:5057
+>   tcp_rcv_state_process+0x1774/0x4e80 net/ipv4/tcp_input.c:6659
+>   tcp_v4_do_rcv+0x339/0x980 net/ipv4/tcp_ipv4.c:1682
+>   sk_backlog_rcv include/net/sock.h:1061 [inline]
+>   __release_sock+0x134/0x3b0 net/core/sock.c:2849
+>   release_sock+0x54/0x1b0 net/core/sock.c:3404
+>   inet_shutdown+0x1e0/0x430 net/ipv4/af_inet.c:909
+>   __sys_shutdown_sock net/socket.c:2331 [inline]
+>   __sys_shutdown_sock net/socket.c:2325 [inline]
+>   __sys_shutdown+0xf1/0x1b0 net/socket.c:2343
+>   __do_sys_shutdown net/socket.c:2351 [inline]
+>   __se_sys_shutdown net/socket.c:2349 [inline]
+>   __x64_sys_shutdown+0x50/0x70 net/socket.c:2349
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x46/0xb0
+>   </TASK>
+> 
+> During SMC fallback process in connect syscall, kernel will
+> replaces TCP with SMC. In order to forward wakeup
+> smc socket waitqueue after fallback, kernel will sets
+> clcsk->sk_user_data to origin smc socket in
+> smc_fback_replace_callbacks().
+> 
+> Later, in shutdown syscall, kernel will calls
+> sk_psock_get(), which treats the clcsk->sk_user_data
+> as psock type, triggering the refcnt warning.
+> 
+> So, the root cause is that smc and psock, both will use
+> sk_user_data field. So they will mismatch this field
+> easily.
+> 
+> This patch solves it by using another bit(defined as
+> SK_USER_DATA_PSOCK) in PTRMASK, to mark whether
+> sk_user_data points to a psock object or not.
+> This patch depends on a PTRMASK introduced in commit f1ff5ce2cd5e
+> ("net, sk_msg: Clear sk_user_data pointer on clone if tagged").
+> 
+> Reported-and-tested-by: syzbot+5f26f85569bd179c18ce@syzkaller.appspotmail.com
+> Suggested-by: Jakub Kicinski <kuba@kernel.org>
+> Acked-by: Wen Gu <guwen@linux.alibaba.com>
+> Signed-off-by: Hawkins Jiawei <yin31149@gmail.com>
 > ---
+> v2 -> v3:
+>    - use SK_USER_DATA_PSOCK instead of SK_USER_DATA_NOTPSOCK
+> to patch the bug
+>    - refactor the code on assigning to sk_user_data field
+> in psock part
+>    - refactor the code on getting and setting the flag
+> with sk_user_data field
+> 
 > v1 -> v2:
->  - Fix spacing of "Fixes" tag.
->  - Add missing CCs
-> ---
->  drivers/net/geneve.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+>    - add bit in PTRMASK to patch the bug
 > 
-> diff --git a/drivers/net/geneve.c b/drivers/net/geneve.c
-> index 4c380c06f178..e1a4480e6f17 100644
-> --- a/drivers/net/geneve.c
-> +++ b/drivers/net/geneve.c
-> @@ -877,8 +877,7 @@ static struct dst_entry *geneve_get_v6_dst(struct sk_buff *skb,
->  		use_cache = false;
->  	}
->  
-> -	fl6->flowlabel = ip6_make_flowinfo(RT_TOS(prio),
-> -					   info->key.label);
-> +	fl6->flowlabel = ip6_make_flowinfo(prio, info->key.label);
->  	dst_cache = (struct dst_cache *)&info->dst_cache;
->  	if (use_cache) {
->  		dst = dst_cache_get_ip6(dst_cache, &fl6->saddr);
-> -- 
-> 2.35.1
+>   include/linux/skmsg.h |  2 +-
+>   include/net/sock.h    | 58 +++++++++++++++++++++++++++++++------------
+>   net/core/skmsg.c      |  3 ++-
+>   3 files changed, 45 insertions(+), 18 deletions(-)
 > 
 
+Hi Hawkins,
+
+Since the fix v3 doesn't involved smc codes any more, I wonder if it's still
+appropriate to use 'net/smc:' in subject?
+
+Cheers,
+Wen Gu
