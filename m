@@ -2,117 +2,394 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3A30588FF7
-	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 18:01:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6608589008
+	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 18:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238344AbiHCQB0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Aug 2022 12:01:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34418 "EHLO
+        id S236287AbiHCQLt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Aug 2022 12:11:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238154AbiHCQBU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Aug 2022 12:01:20 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC18B48C97;
-        Wed,  3 Aug 2022 09:01:12 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 78064B82306;
-        Wed,  3 Aug 2022 16:01:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08EB1C433D7;
-        Wed,  3 Aug 2022 16:01:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1659542470;
-        bh=ag/lSTQWRd8gqBoVPmhF9Le1IGQ4IHOAtatLaz5Oc50=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=B5xyF8osvAl4j2QkDFLrHszV+msLoA2Y7AIEdlCUxic278wSuJnZ6TsijTh3Tjkg2
-         wY4RyDxIqyTqFrfrXXSJmoNQPwWiTGrLW97FB/PaDHFHhhIi+p0/sApQBy+8F+NKCc
-         XbWOQtcVGfw7xmOYZ9TNl8eCbuJLq6aOHiq0LmKuXVpiVVI8SK3vXmON+kxgZVnRDY
-         TKf+FZSTvUf4TMXMn1Aa17Aeakz3Nb7Ri9piwSmaiO36Pdp/u+8wazZWXyMRV9Vono
-         NeU8cNRYBt9emO+NtYyKlvLCuCchGmgKEkf+58AhXU6W37nlDO+Myp82lvPEwDDBjX
-         eVBiXkGRfMUhA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 593C240736; Wed,  3 Aug 2022 13:01:07 -0300 (-03)
-Date:   Wed, 3 Aug 2022 13:01:07 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Stephane Eranian <eranian@google.com>,
-        =?utf-8?B?6LCt5qKT54WK?= <tanzixuan.me@gmail.com>,
-        Zixuan Tan <tanzixuangg@gmail.com>, terrelln@fb.com,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] perf build: Suppress openssl v3 deprecation warnings in
- libcrypto feature test
-Message-ID: <Yuqbw8rTWLL+njpc@kernel.org>
-References: <20220625153439.513559-1-tanzixuan.me@gmail.com>
- <YrhxE4s0hLvbbibp@krava>
- <CABwm_eT_LE6VbLMgT31yqW=tc_obLP=6E0jnMqVn1sMdWrVVNw@mail.gmail.com>
- <Yrqcpr7ICzpsoGrc@krava>
- <YufUAiLqKiuwdvcP@krava>
- <YuloQYU72pe4p3eK@kernel.org>
- <YuokoBdtJ2Jp1R25@krava>
+        with ESMTP id S236061AbiHCQLs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Aug 2022 12:11:48 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA9A632DAA
+        for <bpf@vger.kernel.org>; Wed,  3 Aug 2022 09:11:46 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id tk8so32314884ejc.7
+        for <bpf@vger.kernel.org>; Wed, 03 Aug 2022 09:11:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LULOdmMImFHvi86I83XVdMzQKQVIPexAidsGV1AbhXo=;
+        b=f69i9CiVOJ2AqM7uR3TDRNqNikF1hF2CBV94Bgj/O7rtpWFPmeG3rvK0RFiQaKbZGB
+         dEWF+D9ogcEB7kTKphK7uW18fisdODOiFG+tMNLgO/FdCqciSUiBMTCBbjYIr5iLEt8T
+         AL3Bn2eeGewFN8hNaSRNLDybebNBbpPSqCf+NNti1JEpSTcnLZe/dSgy+pixLiOhb0g2
+         u+QXFYqkSIuHtbygLsjjZ8Ddnxdu7w0WZAFypRnbYy/8dIVxQfO1VkuzKFspfPu1KF26
+         M50LMd80QAVWkhkPDT5iP/Fp/OMd4lfQIOJhXasUnkzc9eJddAcbs8YvjDy4AE714uoB
+         YO0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LULOdmMImFHvi86I83XVdMzQKQVIPexAidsGV1AbhXo=;
+        b=o729Bnd++BBQeoYjCrjInndtQM/bXmAqE/jnl/vVAAs0bb/61/REDDzRLQc/32sM8c
+         pqB02xwqKPDTJNNkCXQKQIGcd2+VBVCV83rYUI9I8DUJ66W4SXY6eawVWoM2VbWPbnx5
+         ZoQnF03yH3qk1lVdI6ArWQnfBbtHuH9wOB+Dn20bS9LPhz0OFormVJ15tVCZhvxPBti2
+         tmzHgjhu6BiJOdeC2da+UDGq/yKH77gC6RZFQn9nQsihKfbkqGdAxDvcUo44LxK8Es1x
+         V87JnqPjbJn7kPr0cZyVwT1ZNPRivp4xRYojoS3VLX+8sOR6TWx7BDazwiqUspFH4ugi
+         l1AA==
+X-Gm-Message-State: AJIora8xfHDugS/KpnxadVadAjn3KRxmk5P477i8UoJVWRm/NjBlvZXb
+        WlSQDSgzSGHDQX8yEhYaBTMgXQds23oW7zpUqT8=
+X-Google-Smtp-Source: AGRyM1ue7/bPK63S7/YmKvR4n/m2zYAfywbf/nbFzPrMa7c/5Lv2BcgliBfazqYWa00ZPFweMEi2N/hvL+Dcz0IiFdA=
+X-Received: by 2002:a17:907:608f:b0:72b:7db9:4dc6 with SMTP id
+ ht15-20020a170907608f00b0072b7db94dc6mr19899041ejc.463.1659543105200; Wed, 03
+ Aug 2022 09:11:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YuokoBdtJ2Jp1R25@krava>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20220726184706.954822-1-joannelkoong@gmail.com>
+ <20220726184706.954822-4-joannelkoong@gmail.com> <CAEf4Bzb2Jev=NpwzkKn8UPRe-99-3WcgySfGwOB6W8n-3E4G1g@mail.gmail.com>
+ <CAJnrk1Yg75-pMX=T9AnXoCWhvRX+bA=DBkyj1Quci_zkazpZyg@mail.gmail.com> <CAEf4BzZVq2vG3DOx0Pa03ksucSYZK5=QKMPTO1NYqces4TPAJA@mail.gmail.com>
+In-Reply-To: <CAEf4BzZVq2vG3DOx0Pa03ksucSYZK5=QKMPTO1NYqces4TPAJA@mail.gmail.com>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Wed, 3 Aug 2022 09:11:33 -0700
+Message-ID: <CAJnrk1aodZ84YjaHNcxPZhREA+nx4=2Rh=4Nx9NcmkYvWn6S0g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 3/3] selftests/bpf: tests for using dynptrs to
+ parse skb and xdp buffers
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Wed, Aug 03, 2022 at 09:32:48AM +0200, Jiri Olsa escreveu:
-> On Tue, Aug 02, 2022 at 03:09:05PM -0300, Arnaldo Carvalho de Melo wrote:
-> > Em Mon, Aug 01, 2022 at 03:24:18PM +0200, Jiri Olsa escreveu:
-> > > On Tue, Jun 28, 2022 at 08:16:06AM +0200, Jiri Olsa wrote:
-> > > > On Mon, Jun 27, 2022 at 11:08:34AM +0800, 谭梓煊 wrote:
-> > > > > #ifdef HAVE_LIBCRYPTO                <-- but check this, it's always false
+On Tue, Aug 2, 2022 at 5:53 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Tue, Aug 2, 2022 at 3:56 PM Joanne Koong <joannelkoong@gmail.com> wrote:
+> >
+> > On Mon, Aug 1, 2022 at 10:58 AM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Tue, Jul 26, 2022 at 11:48 AM Joanne Koong <joannelkoong@gmail.com> wrote:
+> > > >
+> > > > Test skb and xdp dynptr functionality in the following ways:
+> > > >
+> > > > 1) progs/test_xdp.c
+> > > >    * Change existing test to use dynptrs to parse xdp data
+> > > >
+> > > >      There were no noticeable diferences in user + system time between
+> > > >      the original version vs. using dynptrs. Averaging the time for 10
+> > > >      runs (run using "time ./test_progs -t xdp_bpf2bpf"):
+> > > >          original version: 0.0449 sec
+> > > >          with dynptrs: 0.0429 sec
+> > > >
+> > > > 2) progs/test_l4lb_noinline.c
+> > > >    * Change existing test to use dynptrs to parse skb data
+> > > >
+> > > >      There were no noticeable diferences in user + system time between
+> > > >      the original version vs. using dynptrs. Averaging the time for 10
+> > > >      runs (run using "time ./test_progs -t l4lb_all/l4lb_noinline"):
+> > > >          original version: 0.0502 sec
+> > > >          with dynptrs: 0.055 sec
+> > > >
+> > > >      For number of processed verifier instructions:
+> > > >          original version: 6284 insns
+> > > >          with dynptrs: 2538 insns
+> > > >
+> > > > 3) progs/test_dynptr_xdp.c
+> > > >    * Add sample code for parsing tcp hdr opt lookup using dynptrs.
+> > > >      This logic is lifted from a real-world use case of packet parsing in
+> > > >      katran [0], a layer 4 load balancer
+> > > >
+> > > > 4) progs/dynptr_success.c
+> > > >    * Add test case "test_skb_readonly" for testing attempts at writes /
+> > > >      data slices on a prog type with read-only skb ctx.
+> > > >
+> > > > 5) progs/dynptr_fail.c
+> > > >    * Add test cases "skb_invalid_data_slice" and
+> > > >      "xdp_invalid_data_slice" for testing that helpers that modify the
+> > > >      underlying packet buffer automatically invalidate the associated
+> > > >      data slice.
+> > > >    * Add test cases "skb_invalid_ctx" and "xdp_invalid_ctx" for testing
+> > > >      that prog types that do not support bpf_dynptr_from_skb/xdp don't
+> > > >      have access to the API.
+> > > >
+> > > > [0] https://github.com/facebookincubator/katran/blob/main/katran/lib/bpf/pckt_parsing.h
+> > > >
+> > > > Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+> > > > ---
+> > > >  .../testing/selftests/bpf/prog_tests/dynptr.c |  85 ++++++++++---
+> > > >  .../selftests/bpf/prog_tests/dynptr_xdp.c     |  49 ++++++++
+> > > >  .../testing/selftests/bpf/progs/dynptr_fail.c |  76 ++++++++++++
+> > > >  .../selftests/bpf/progs/dynptr_success.c      |  32 +++++
+> > > >  .../selftests/bpf/progs/test_dynptr_xdp.c     | 115 ++++++++++++++++++
+> > > >  .../selftests/bpf/progs/test_l4lb_noinline.c  |  71 +++++------
+> > > >  tools/testing/selftests/bpf/progs/test_xdp.c  |  95 +++++++--------
+> > > >  .../selftests/bpf/test_tcp_hdr_options.h      |   1 +
+> > > >  8 files changed, 416 insertions(+), 108 deletions(-)
+> > > >  create mode 100644 tools/testing/selftests/bpf/prog_tests/dynptr_xdp.c
+> > > >  create mode 100644 tools/testing/selftests/bpf/progs/test_dynptr_xdp.c
+> > > >
+> > > > diff --git a/tools/testing/selftests/bpf/prog_tests/dynptr.c b/tools/testing/selftests/bpf/prog_tests/dynptr.c
+> > > > index bcf80b9f7c27..c40631f33c7b 100644
+> > > > --- a/tools/testing/selftests/bpf/prog_tests/dynptr.c
+> > > > +++ b/tools/testing/selftests/bpf/prog_tests/dynptr.c
+> > > > @@ -2,6 +2,7 @@
+> > > >  /* Copyright (c) 2022 Facebook */
+> > > >
+> > > >  #include <test_progs.h>
+> > > > +#include <network_helpers.h>
+> > > >  #include "dynptr_fail.skel.h"
+> > > >  #include "dynptr_success.skel.h"
+> > > >
+> > > > @@ -11,8 +12,8 @@ static char obj_log_buf[1048576];
+> > > >  static struct {
+> > > >         const char *prog_name;
+> > > >         const char *expected_err_msg;
+> > > > -} dynptr_tests[] = {
+> > > > -       /* failure cases */
+> > > > +} verifier_error_tests[] = {
+> > > > +       /* these cases should trigger a verifier error */
+> > > >         {"ringbuf_missing_release1", "Unreleased reference id=1"},
+> > > >         {"ringbuf_missing_release2", "Unreleased reference id=2"},
+> > > >         {"ringbuf_missing_release_callback", "Unreleased reference id"},
+> > > > @@ -42,11 +43,25 @@ static struct {
+> > > >         {"release_twice_callback", "arg 1 is an unacquired reference"},
+> > > >         {"dynptr_from_mem_invalid_api",
+> > > >                 "Unsupported reg type fp for bpf_dynptr_from_mem data"},
+> > > > +       {"skb_invalid_data_slice", "invalid mem access 'scalar'"},
+> > > > +       {"xdp_invalid_data_slice", "invalid mem access 'scalar'"},
+> > > > +       {"skb_invalid_ctx", "unknown func bpf_dynptr_from_skb"},
+> > > > +       {"xdp_invalid_ctx", "unknown func bpf_dynptr_from_xdp"},
+> > > > +};
+> > > > +
+> > > > +enum test_setup_type {
+> > > > +       SETUP_SYSCALL_SLEEP,
+> > > > +       SETUP_SKB_PROG,
+> > > > +};
+> > > >
+> > > > -       /* success cases */
+> > > > -       {"test_read_write", NULL},
+> > > > -       {"test_data_slice", NULL},
+> > > > -       {"test_ringbuf", NULL},
+> > > > +static struct {
+> > > > +       const char *prog_name;
+> > > > +       enum test_setup_type type;
+> > > > +} runtime_tests[] = {
+> > > > +       {"test_read_write", SETUP_SYSCALL_SLEEP},
+> > > > +       {"test_data_slice", SETUP_SYSCALL_SLEEP},
+> > > > +       {"test_ringbuf", SETUP_SYSCALL_SLEEP},
+> > > > +       {"test_skb_readonly", SETUP_SKB_PROG},
+> > >
+> > > nit: wouldn't it be better to add test_setup_type to dynptr_tests (and
+> > > keep fail and success cases together)? It's conceivable that you might
+> > > want different setups to test different error conditions, right?
+> >
+> > Yeah! I originally separated it out because the success tests don't
+> > have an error message while the fail ones do, and fail ones don't have
+> > a setup (I don't think we'll need any custom userspace setup for those
+> > since we're checking for verifier failures at prog load time) and the
+> > success ones do. But I can combine them into 1 so that it's simpler. I
+> > will do this in v2.
+>
+> great, thanks! you might actually need custom setup for SKB vs XDP
+> programs if you are unifying bpf_dynptr_from_packet?
 
-> > > > nice :)
+Yes I think so for the success cases (for the fail cases, I think just
+having SEC("xdp") and SEC("tc") is sufficient)
 
-> > > > > #define BUILD_ID_MD5
-> > > > > #undef BUILD_ID_SHA /* does not seem to work well when linked with Java */
-> > > > > #undef BUILD_ID_URANDOM /* different uuid for each run */
+>
+> > >
+> > > >  };
+> > > >
+> > > >  static void verify_fail(const char *prog_name, const char *expected_err_msg)
+> > > > @@ -85,7 +100,7 @@ static void verify_fail(const char *prog_name, const char *expected_err_msg)
+> > > >         dynptr_fail__destroy(skel);
+> > > >  }
+> > > >
+>
+> [...]
+>
+> > > > +/* The data slice is invalidated whenever a helper changes packet data */
+> > > > +SEC("?xdp")
+> > > > +int xdp_invalid_data_slice(struct xdp_md *xdp)
+> > > > +{
+> > > > +       struct bpf_dynptr ptr;
+> > > > +       struct ethhdr *hdr1, *hdr2;
+> > > > +
+> > > > +       bpf_dynptr_from_xdp(xdp, 0, &ptr);
+> > > > +       hdr1 = bpf_dynptr_data(&ptr, 0, sizeof(*hdr1));
+> > > > +       if (!hdr1)
+> > > > +               return XDP_DROP;
+> > > > +
+> > > > +       hdr2 = bpf_dynptr_data(&ptr, 0, sizeof(*hdr2));
+> > > > +       if (!hdr2)
+> > > > +               return XDP_DROP;
+> > > > +
+> > > > +       hdr1->h_proto = 12;
+> > > > +       hdr2->h_proto = 12;
+> > > > +
+> > > > +       if (bpf_xdp_adjust_head(xdp, 0 - (int)sizeof(*hdr1)))
+> > > > +               return XDP_DROP;
+> > > > +
+> > > > +       /* this should fail */
+> > > > +       hdr2->h_proto = 1;
+> > >
+> > > is there something special about having both hdr1 and hdr2? Wouldn't
+> > > this test work with just single hdr pointer?
+> >
+> > Yes, this test would work with just 1 single hdr pointer (which is
+> > what skb_invalid_data_slice does) but I wanted to ensure that this
+> > also works in the case of multiple data slices. If you think this is
+> > unnecessary / adds clutter, I can remove hdr2.
+>
+>
+> I think testing two pointers isn't the point, so I'd keep the test
+> minimal. It seems like testing two pointers should be in a success
+> test, to prove it works, rather than as some side effect of an
+> expected-to-fail test, no?
 
-> > > > > #ifdef BUILD_ID_SHA
-> > > > > #include <openssl/sha.h>
-> > > > > #endif
+My intention was to test that two pointers doesn't work (eg that when
+you have multiple data slices, changing the packet buffer should
+invalidate all slices, so that any attempt to access any slice should
+fail) so I think to test that this would have to stay in the
+verifier_fail test. I think this test might be more confusing than
+helpful, so I will just remove hdr2 for v2 :)
 
-> > > > > #ifdef BUILD_ID_MD5
-> > > > > #include <openssl/md5.h>
-> > > > > #endif
-> > > > > #endif                               <-- this block will be skipped
-> > > > > ```
+>
+> >
+> > >
+> > > > +
+> > > > +       return XDP_PASS;
+> > > > +}
+> > > > +
+> > > > +/* Only supported prog type can create skb-type dynptrs */
+> > >
+> > > [...]
+> > >
+> > > > +       err = 1;
+> > > > +
+> > > > +       if (bpf_dynptr_from_skb(ctx, 0, &ptr))
+> > > > +               return 0;
+> > > > +       err++;
+> > > > +
+> > > > +       data = bpf_dynptr_data(&ptr, 0, 1);
+> > > > +       if (data)
+> > > > +               /* it's an error if data is not NULL since cgroup skbs
+> > > > +                * are read only
+> > > > +                */
+> > > > +               return 0;
+> > > > +       err++;
+> > > > +
+> > > > +       ret = bpf_dynptr_write(&ptr, 0, write_data, sizeof(write_data), 0);
+> > > > +       /* since cgroup skbs are read only, writes should fail */
+> > > > +       if (ret != -EINVAL)
+> > > > +               return 0;
+> > > > +
+> > > > +       err = 0;
+> > >
+> > > hm, if data is NULL you'll still report success if bpf_dynptr_write
+> > > returns 0 or any other error but -EINVAL... The logic is a bit unclear
+> > > here...
+> > >
+> > If data is NULL and bpf_dynptr_write returns 0 or any other error
+> > besides -EINVAL, I think we report a failure here (err is set to a
+> > non-zero value, which userspace checks against)
+>
+> oh, ok, I read it backwards. I find this "stateful increasing error
+> number" pattern very confusing. Why not write it more
+> straightforwardly as:
+>
+> if (bpf_dynptr_from_skb(...)) {
+>     err = 1;
+>     return 0;
+> }
+>
+> data = bpf_dynptr_data(...);
+> if (data) {
+>     err = 2;
+>     return 0;
+> }
+>
+> ret = bpf_dynptr_write(...);
+> if (ret != -EINVAL) {
+>     err = 3;
+>     return 0;
+> }
+>
+> /* all tests passed */
+> err = 0;
+> return 0;
+>
+> ?
+>
 
-> > > > > Maybe we should fix this, to really make use of libcrypto if it is available?
+My thinking was that err++ would be more robust (eg if you add another
+case to the code, then you don't have to go down and fix all the err
+numbers to adjust them by 1). But you're right, I think this just ends
+up being confusing / non-intuitive to read. I will change it to the
+more explicit way for v2
 
-> > > > yea, I think that was the original idea, let's keep the variable with
-> > > > SUPPORT suffix and use the -Wdeprecated-declarations for genelf.c
-> > > > 
-> > > > full fix would be to detect the new API and use it when it's available but..
-> > > > given that the check was false at least since 2016, perhaps we could remove
-> > > > that code? ;-) Stephane?
-> > > 
-> > > ping
-> > 
-> > So, we should start with 谭梓煊 patch, then fix that ifdef and go on
-> > from there?
-> 
-> yes, I thought we could remove that, but there's no reply from
-> Stephane so let's fix that
+> >
+> > > > +
+> > > > +       return 0;
+> > > > +}
+> > > > diff --git a/tools/testing/selftests/bpf/progs/test_dynptr_xdp.c b/tools/testing/selftests/bpf/progs/test_dynptr_xdp.c
+> > > > new file mode 100644
+> > > > index 000000000000..c879dfb6370a
+> > > > --- /dev/null
+> > > > +++ b/tools/testing/selftests/bpf/progs/test_dynptr_xdp.c
+> > > > @@ -0,0 +1,115 @@
+> > > > +// SPDX-License-Identifier: GPL-2.0
+> > > > +
+>
+> [...]
+>
+> > > > +       hdr_len = data[1];
+> > > > +       if (hdr_len > *hdr_bytes_remaining)
+> > > > +               return -1;
+> > > > +
+> > > > +       if (kind == tcp_hdr_opt_kind_tpr) {
+> > > > +               if (hdr_len != tcp_hdr_opt_len_tpr)
+> > > > +                       return -1;
+> > > > +
+> > > > +               memcpy(server_id, (__u32 *)(data + 2), sizeof(*server_id));
+> > >
+> > > this implicitly relies on compiler inlining memcpy, let's use
+> > > __builtint_memcpy() here instead to set a good example?
+> >
+> > Sounds good, I will change this for v2. Should memcpys in bpf progs
+> > always use __builtin_memcpy or is it on a case-by-case basis where if
+> > the size is small enough, then you use it?
+>
+> __builtin_memcpy() is best. When we write just "memcpy()" we still
+> rely on compiler to actually optimizing that to __builtin_memcpy(),
+> because there is no memcpy() (we'd get unrecognized extern error if
+> compiler actually emitted call to memcpy()).
 
-Yeah, I did it and it seems to build, so lets ship it :-)
+Ohh I see, thanks for the explanation!
 
-- Arnaldo
+I am going to do some selftests cleanup this week, so I'll change the
+other usages of memcpy() to __builtin_memcpy() as part of that clean
+up.
+
+>
+> > >
+> > > > +               return 1;
+> > > > +       }
+> > > > +
+> > > > +       *off += hdr_len;
+> > > > +       *hdr_bytes_remaining -= hdr_len;
+> > > > +
+> > > > +       return 0;
+> > > > +}
+> > > > +
+>
+> [...]
