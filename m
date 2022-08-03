@@ -2,133 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C32945894C0
-	for <lists+bpf@lfdr.de>; Thu,  4 Aug 2022 01:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E88005894C2
+	for <lists+bpf@lfdr.de>; Thu,  4 Aug 2022 01:25:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237163AbiHCXZC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Aug 2022 19:25:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56448 "EHLO
+        id S236924AbiHCXZr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Aug 2022 19:25:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229881AbiHCXZC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Aug 2022 19:25:02 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72A802B606
-        for <bpf@vger.kernel.org>; Wed,  3 Aug 2022 16:25:01 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id g12so17840619pfb.3
-        for <bpf@vger.kernel.org>; Wed, 03 Aug 2022 16:25:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=qTGeTcvnCUefZYE/xFVjYpxikNnna7PdM4h3a6tPfiM=;
-        b=UyecZluAhG6BTxrROgCEJxpWmeHKaMGZYY/zLWio09Tn/pxoqlnUTQPSxVq6MC+lib
-         rVUQ6XTiuc8LrjBf4PtvslzanK0D4aYN7sK09vlj1R7j/vds6FewMURF2lfDeF1LTCr1
-         TdcJwTJDiQB6ey/80KQZJriZ9vRNEVpDR84gwKTyoCGocdwvQKwOB2TcGX49nwreVE9w
-         1zDLa+Piw+YFqO1AonlA9e9OCKOoX5nHfTTSlVAAlDnuopZS5V8wLG32Kt7gc/J0xQm2
-         Q3scCPxMbcdL0JKg14Fn/skIuy6j53dHI51dAuC5dTux+MRDY+Yk13cIHbiw+hsZjDVn
-         ITdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=qTGeTcvnCUefZYE/xFVjYpxikNnna7PdM4h3a6tPfiM=;
-        b=UmeCqFXNcIwv+IODIqaVo0CJ7sxs4PbuBEpZ6SxWrbMlgu494mRek22FoMmata6k/H
-         uG3tS4sgL4pL2sT3P5G7WxUoE2kcPi9ZvmY5R0lR1qvrMegFXGbnfyxsABqaAjNw4kys
-         OxVitCmu0hth/CxA+JD35Gmzwilq3kc1pXtexA2mkrABrLK0EdAWaNQE1Ni8qZRA0lko
-         7Zn8LiFGmXjYEXWhCcZfujlKhOcYgTbmZkyh+nf6SGOUAW5LaBICKfYmtPqCjRLiYEr8
-         3sJKezwYj7HqPPqh26dTqOH/gxwvuMkgLPo50aTkrrASHvpFgL5u8xHZaODd+MbLFmB9
-         MwOw==
-X-Gm-Message-State: ACgBeo3GiiKmLZrlYLCyOQtxzNTcW2dSLHZEKpqTrjPh5uegW1iZfVH1
-        oIC7K1uR2iYv1jchzKT3Hp9peg3Zhv1SyNN3O+8s5Q==
-X-Google-Smtp-Source: AA6agR6g5Jj9QG5hfuvAC6bblm2cNZkw4GDRlfL29cyiDl1zhaJ40EDIsYy2TIu+L8qKiu4etnL0bjkEYEZY+pRSaMU=
-X-Received: by 2002:a63:ec15:0:b0:41c:2669:1e54 with SMTP id
- j21-20020a63ec15000000b0041c26691e54mr13165135pgh.253.1659569100704; Wed, 03
- Aug 2022 16:25:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220803204601.3075863-1-kafai@fb.com> <20220803204614.3077284-1-kafai@fb.com>
- <Yur9zosqo4zpVBx5@google.com> <20220803231921.nb623atry4qdrp5r@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20220803231921.nb623atry4qdrp5r@kafai-mbp.dhcp.thefacebook.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Wed, 3 Aug 2022 16:24:49 -0700
-Message-ID: <CAKH8qBumw+-goDendFpcpzaq5u1ziJ97SUEQ5OwJKjbdtLDurA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 02/15] bpf: net: Avoid sk_setsockopt() taking
- sk lock when called from bpf
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229881AbiHCXZp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Aug 2022 19:25:45 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61F3932DAB
+        for <bpf@vger.kernel.org>; Wed,  3 Aug 2022 16:25:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 20620B82403
+        for <bpf@vger.kernel.org>; Wed,  3 Aug 2022 23:25:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83F93C433C1;
+        Wed,  3 Aug 2022 23:25:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1659569141;
+        bh=qs0Ie//moJ9Q5mN9w6Q+N0skuJfInjPBfYOt9FYlnB4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=o+QMLac27BHHqS8lHm2lMvuehpFDc50toW+Z+3v3kTjQDl+xCjiR0TX7j4PzkYgCA
+         ZXaGlw67Ox2GMk0qK/jaYd4k9oX6rmObvTRsDFYzWmBDQof3BE8UJpbG5K1DIOS9X3
+         cYxyhLwMRjPUHckC/T/VQ+CH9sDYkPpk8AOY2L5ogYKoC0bew//EJp89iK47u35x0e
+         RrnIoCq15f9z6LOG4C/vzWF/rz+HDSEgBzVXq8vtmiwmRr6nbPijx3Npr38QgxU6me
+         sWpryhNa5Kw6nwqc0aFKDTWTnuBRwdXZuinYfCON3ur9JHRhfEMSZ7OahAvOmTMpjN
+         6WZMvumzwWd7w==
+Date:   Wed, 3 Aug 2022 16:25:40 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, kernel-team@fb.com,
-        Paolo Abeni <pabeni@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Alexei Starovoitov <ast@kernel.org>
+Subject: Re: [PATCH bpf-next v1 1/3] bpf: Add skb dynptrs
+Message-ID: <20220803162540.19d31294@kernel.org>
+In-Reply-To: <CAJnrk1ZDzM5ir0rpf2kQdW_G4+-woMhULUufdz28DfiB_rqR-A@mail.gmail.com>
+References: <20220726184706.954822-1-joannelkoong@gmail.com>
+        <20220726184706.954822-2-joannelkoong@gmail.com>
+        <20220728233936.hjj2smwey447zqyy@kafai-mbp.dhcp.thefacebook.com>
+        <CAJnrk1b2WoHV=iE3j4n_4=2NBP3GaoeD=v-Zt+p-M9N=LApsuQ@mail.gmail.com>
+        <20220729213919.e7x6acvqnwqwfnzu@kafai-mbp.dhcp.thefacebook.com>
+        <CAJnrk1ZDzM5ir0rpf2kQdW_G4+-woMhULUufdz28DfiB_rqR-A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 3, 2022 at 4:19 PM Martin KaFai Lau <kafai@fb.com> wrote:
->
-> On Wed, Aug 03, 2022 at 03:59:26PM -0700, sdf@google.com wrote:
-> > On 08/03, Martin KaFai Lau wrote:
-> > > Most of the code in bpf_setsockopt(SOL_SOCKET) are duplicated from
-> > > the sk_setsockopt().  The number of supported optnames are
-> > > increasing ever and so as the duplicated code.
-> >
-> > > One issue in reusing sk_setsockopt() is that the bpf prog
-> > > has already acquired the sk lock.  This patch adds a in_bpf()
-> > > to tell if the sk_setsockopt() is called from a bpf prog.
-> > > The bpf prog calling bpf_setsockopt() is either running in_task()
-> > > or in_serving_softirq().  Both cases have the current->bpf_ctx
-> > > initialized.  Thus, the in_bpf() only needs to test !!current->bpf_ctx.
-> >
-> > > This patch also adds sockopt_{lock,release}_sock() helpers
-> > > for sk_setsockopt() to use.  These helpers will test in_bpf()
-> > > before acquiring/releasing the lock.  They are in EXPORT_SYMBOL
-> > > for the ipv6 module to use in a latter patch.
-> >
-> > > Note on the change in sock_setbindtodevice().  sockopt_lock_sock()
-> > > is done in sock_setbindtodevice() instead of doing the lock_sock
-> > > in sock_bindtoindex(..., lock_sk = true).
-> >
-> > > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
-> > > ---
-> > >   include/linux/bpf.h |  8 ++++++++
-> > >   include/net/sock.h  |  3 +++
-> > >   net/core/sock.c     | 26 +++++++++++++++++++++++---
-> > >   3 files changed, 34 insertions(+), 3 deletions(-)
-> >
-> > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > > index 20c26aed7896..b905b1b34fe4 100644
-> > > --- a/include/linux/bpf.h
-> > > +++ b/include/linux/bpf.h
-> > > @@ -1966,6 +1966,10 @@ static inline bool unprivileged_ebpf_enabled(void)
-> > >     return !sysctl_unprivileged_bpf_disabled;
-> > >   }
-> >
-> > > +static inline bool in_bpf(void)
-> > > +{
-> > > +   return !!current->bpf_ctx;
-> > > +}
-> >
-> > Good point on not needing to care about softirq!
-> > That actually turned even nicer :-)
-> >
-> > QQ: do we need to add a comment here about potential false-negatives?
-> > I see you're adding ctx to the iter, but there is still a bunch of places
-> > that don't use it.
-> Make sense.  I will add a comment on the requirement that the bpf prog type
-> needs to setup the bpf_run_ctx.
+On Wed, 3 Aug 2022 13:29:37 -0700 Joanne Koong wrote:
+> Thinking about this some more, I think BPF_FUNC_dynptr_from_skb needs
+> to be patched regardless in order to set the rd-only flag in the
+> metadata for the dynptr. There will be other helper functions that
+> write into dynptrs (eg memcpy with dynptrs, strncpy with dynptrs,
+> probe read user with dynptrs, ...) so I think it's more scalable if we
+> reject these writes at runtime through the rd-only flag in the
+> metadata, than for the verifier to custom-case that any helper funcs
+> that write into dynptrs will need to get dynptr type + do
+> may_access_direct_pkt_data() if it's type skb or xdp. The
+> inconsistency between not rd-only in metadata vs. rd-only in verifier
+> might be a little confusing as well.
+> 
+> For these reasons, I'm leaning more towards having bpf_dynptr_write()
+> and other dynptr write helper funcs be rejected at runtime instead of
+> prog load time, but I'm eager to hear what you prefer.
+> 
+> What are your thoughts?
 
-Thanks! White at it, is it worth adding a short sentence to
-sockopt_lock_sock on why it's safe to skip locking in the bpf case as
-well?
-Feels like the current state where bpf always runs with the locked
-socket might change in the future.
+Oh. I thought dynptrs are an extension of the discussion we had about
+creating a skb_header_pointer()-like abstraction but it sounds like 
+we veered quite far off that track at some point :(
+
+The point of skb_header_pointer() is to expose the chunk of the packet
+pointed to by [skb, offset, len] as a linear buffer. Potentially coping
+it out to a stack buffer *IIF* the header is not contiguous inside the
+skb head, which should very rarely happen.
+
+Here it seems we return an error so that user must pull if the data is
+not linear, which is defeating the purpose. The user of
+skb_header_pointer() wants to avoid the copy while _reliably_ getting 
+a contiguous pointer. Plus pulling in the header may be far more
+expensive than a small copy to the stack.
+
+The pointer returned by skb_header_pointer is writable, but it's not
+guaranteed that the writes go to the packet, they may go to the
+on-stack buffer, so the caller must do some sort of:
+
+	if (data_ptr == stack_buf)
+		skb_store_bits(...);
+
+Which we were thinking of wrapping in some sort of flush operation.
+
+If I'm reading this right dynptr as implemented here do not provide
+such semantics, am I confused in thinking that this is a continuation
+of the XDP multi-buff discussion? Is it a completely separate thing
+and we'll still need a header_pointer like helper?
