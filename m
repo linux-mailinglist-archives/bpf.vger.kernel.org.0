@@ -2,175 +2,483 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45C4F5890D3
-	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 18:52:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD3A5890DB
+	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 18:57:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236321AbiHCQwK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Aug 2022 12:52:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40248 "EHLO
+        id S236782AbiHCQ5b (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Aug 2022 12:57:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233814AbiHCQwJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Aug 2022 12:52:09 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 986A8AE49
-        for <bpf@vger.kernel.org>; Wed,  3 Aug 2022 09:52:06 -0700 (PDT)
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 273EcZdl015032;
-        Wed, 3 Aug 2022 09:51:47 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=sW8O4J0jRRs6ueLfXqxDDj5vXVcdj5oeLLI1xMHBqn8=;
- b=ccmK4SefXJ1U4UZaoNM6U5AFHUMe4LYQCackEFfE92+JxWASictgEWFPZj/3FjWycB/R
- mIBbGSTA0GThtfgfvyl66MJTmdD7WCNmSijDPTHX/gT6Fry0YqaIOV9QdriUEb0lZiD5
- mgW2WNloIq4z6UMpl8STVNme6zwMfKZPPfE= 
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2171.outbound.protection.outlook.com [104.47.57.171])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hqty7h343-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 Aug 2022 09:51:47 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TSoWmyd/p+4lXvyYd8TzapuH7hexyAsbf7L/K94ueb4GoKj4Iz8pwNQkZOpzdABI7VcUEBnBRpKqKv6qDL8x1OdX1rXLZFiXjr4pXlgzM8rDj09659RH8jmCI/TeHB+00MrkAulzSlkjpuZrx/DoM7WlsWxjQR5LrmSvaEVQAVXnYVIap/Xl7oQTWS43nqU1ncDfcBY0/eHENp3R+yMx1VwKE+D5eJWjXZJUMRqEioUYsylHmZT7nMqJTTP/GSsnwPxhjbjiK6jCuyUW8Czd9tS1FWwcMBm+lr7SxHmIgfmZmDDtHDOWPpe7BTTQqzHyM9bJshfqKFpOMXJ5nj6y2g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sW8O4J0jRRs6ueLfXqxDDj5vXVcdj5oeLLI1xMHBqn8=;
- b=MC6A/g1EVSvMs0+BoiFnxVbvLLbgKB3afcpNhVeedDcZHQTMZBqwpP25UxwLvXysCCl9oJDOYd91U5HB7CN7A8WPoCY+1fqr78xAb7Ygu+2vAuEJ28pbhHcgeaHhSqC6Ak3xHK2FPfumsiyJzAG4oWcpUPQfa9fXZyyEl6AI0OjfKyqktE3ua4U3tit1yzEypenZtalFRDsbf3Y2VKIomYkDiq8VaQ1e6yrUHSzwsmk9H/Bajcg1PNz4RQf1cMWRQ6WcTDh4dPQBD6E6NfIzQBKwKjrNyXqeWpR85qPAeoEugE8IomZ3okyN/fUGqJYrSnbPXTx0j99Uz2uGhuP/rw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from MW4PR15MB4475.namprd15.prod.outlook.com (2603:10b6:303:104::16)
- by DM6PR15MB2651.namprd15.prod.outlook.com (2603:10b6:5:1a3::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5504.14; Wed, 3 Aug
- 2022 16:51:44 +0000
-Received: from MW4PR15MB4475.namprd15.prod.outlook.com
- ([fe80::5455:4e3f:a5a2:6a9e]) by MW4PR15MB4475.namprd15.prod.outlook.com
- ([fe80::5455:4e3f:a5a2:6a9e%4]) with mapi id 15.20.5504.014; Wed, 3 Aug 2022
- 16:51:44 +0000
-Date:   Wed, 3 Aug 2022 09:51:42 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org
-Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: Excercise
- bpf_obj_get_info_by_fd for bpf2bpf
-Message-ID: <20220803165142.jp7xesq4ejxhwtl7@kafai-mbp.dhcp.thefacebook.com>
-References: <20220803163223.3747004-1-sdf@google.com>
- <20220803163223.3747004-2-sdf@google.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220803163223.3747004-2-sdf@google.com>
-X-ClientProxiedBy: SJ0PR03CA0071.namprd03.prod.outlook.com
- (2603:10b6:a03:331::16) To MW4PR15MB4475.namprd15.prod.outlook.com
- (2603:10b6:303:104::16)
+        with ESMTP id S233814AbiHCQ5a (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Aug 2022 12:57:30 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D88BDFA8
+        for <bpf@vger.kernel.org>; Wed,  3 Aug 2022 09:57:28 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id c24so1767068ejd.11
+        for <bpf@vger.kernel.org>; Wed, 03 Aug 2022 09:57:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc;
+        bh=4m9ni6Lkt4DwNmK//XYQi08KO/+XCZc30N36RVbL0R8=;
+        b=NoexfSZfrwC8eWkRuVqcGtToZM0CO934oE3rdw7g8Kq8PZUKYDx2sp0FR0sa5xCouJ
+         kAymH8MLVl4KuMjrbMVEJNc0XvtX9R8Zw3nYnwLYIArtlxr/NzhqtWLSJrG6pJTCS9kg
+         SO0xWSqVXVHjM4EjM4En08M4l8RyYDbLTDBHN/Gb+P6Dn9IbHzdCVtiSD2ptL7BCVSbw
+         TRjJjkqfWTc/xdWEJTDiuIXqHXDYVg5hcJTJJnjSmE5W5RvY7O09zn9Y2Oq8L89K0sfN
+         Q0dUcPn4gmob3WEp4p1YhVeWyPhBn25WtULVsSzn5rPixLvq4UDez+f9lQxMdmBElgyb
+         1GPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
+        bh=4m9ni6Lkt4DwNmK//XYQi08KO/+XCZc30N36RVbL0R8=;
+        b=zUyoR2w9f8kf6jS1a0BIuG73ZZ8Wa/gQvjf/cEV4Az+rXZPKsL8PPpzWDaFxe/9E5L
+         TRqHPx5gkEUyipLO4UyPjy3kINLl4hRxU3GUqUZ1d8xxQNIqd4zlvzHyfcjOOaoD8VS+
+         M6cCp2wo3An0X3UFBo7LJzhrVCwd36rcTz4Y7Tj7Z0QK9/u9UEfphbEdjknktEnt9Jkw
+         U3Iana0F6Cs1O5DCo0Bbxx1s7FggXTkXNyhoUJ4sjlHLH8fwIJwGZBT3+xwIq4mJ5WCd
+         WzJprJ6JjS7Xmh0w/wvBUt1rDkrRwFgu2irAhI8Wk7Xz5Jb9xioO3LBO7eH3/oRDQUUx
+         bfcA==
+X-Gm-Message-State: AJIora8TPOxlKm45YdqYUinkfoHAbf0uxeyafqe78qtqjEE1aZWgVkbA
+        rkxRzCMVMk1VAs5ary8gGo2Me6+Z01LoxMOI/YFXD9KsSrk=
+X-Google-Smtp-Source: AGRyM1v1yz6VK3qSWelb78CsWgwLUE65PdgcuQihxm/YbW6thsVDFTluhlrS5LoDKj7Ag8JC3N3WPLb2ilAqgIhNSto=
+X-Received: by 2002:a17:907:6e1d:b0:72f:20ad:e1b6 with SMTP id
+ sd29-20020a1709076e1d00b0072f20ade1b6mr21257777ejc.545.1659545846514; Wed, 03
+ Aug 2022 09:57:26 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8709a631-0aaf-4ab6-10aa-08da7570723e
-X-MS-TrafficTypeDiagnostic: DM6PR15MB2651:EE_
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tzZzC91fFQkBzajf4JX9n4f6qeYdM18EHxiWxvVxyi1ielsJod0WkacF9idhXLnEB95KEY4qn+hJ92N6ijr/WJhhcixjgSq6wxm6WRbebFEbGwpIDvC5hPSbljhHNDWyhOQLdrgjjUTkQPRm1XQQuqMku85tm+yiPbo0wdGXRm9svKI9EA6SS1MaE1q+3FPc5t6iT6aiQai11MZ2YmHxUKHlD5ysbbI5IRy1qbvurstVTBxSTk73Ix3Pzqnjm6o5ZF68YzDRQNIqAlDmOND3f1pOAM0fhJbmLrKH/Y4BsnKCQ4XBJulYeq9mOkj8ZUJjHhd/YmdvqyTqOp03FtqMO7g1FxEBfgNkiox2oLZdQLZUwAIKLBYAtiu4dXwbDNWNkLIenRwxMdeOjytJRLYzSX/gk6vToVPbzh0Z412aWqMtTHwHlHWtJg3FX2KI4vtLaiybjmVnoSfGdXMMLQMfs7NgTPJ50H4tZaVmhZwcUPUJT7f6eW1wwAvvujG/G985HAi0e4rmtFkupAYuoOhy6cgcjBj5KWGu+eaX4MqEoEUdiDdLhvu613NqS3U3uJ7rBa+bcyC+s5hMurCIFsrQI53AybcrV+fYkV3o5mbAOSRVq9aC4mIDjniep3O8eKZgjQyM7/qlaf00a/rSaEYMXLqjPIZy/AhkWmyRO1UmyDXVBeKuva4m02ajwb6kT7WOmxWBe7ZADi9SsyJiKZCvHvnisOcqYWY0ZRGG+I5yrQKSMPUp+8YChshOUIpQyA/T
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4475.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(396003)(39860400002)(376002)(136003)(366004)(346002)(38100700002)(1076003)(4326008)(8676002)(186003)(66556008)(66476007)(6916009)(316002)(86362001)(66946007)(9686003)(6506007)(6512007)(52116002)(6486002)(5660300002)(478600001)(2906002)(7416002)(8936002)(41300700001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2sk1kG2ILNzmjtQo+WzzaldbtHQoAm7ONJ41aPGkjjuRMLXd6BRS16VXu45I?=
- =?us-ascii?Q?Z2XKaJT7+lTfm2qFIRZMGT+JgqdG8/rLxs619nP2z7SQH/F6Lin/W0+Bzo5+?=
- =?us-ascii?Q?P/uQYKzhXx4gTqVD5epJJSxLHnySlrv3VdNTPn8aa50ldBNY85mxyHJ+R9WP?=
- =?us-ascii?Q?x/C3oojOlLJHO7vcFdlQegTPPTG5rF84UOYDV3OjpL2SEEMyWfnkMXn0YzZE?=
- =?us-ascii?Q?+ytWyA+dzRml9e6WR+/SMds2mcniDLrYIkZjoYnl10xXT3mWRUVGZEbdnXrJ?=
- =?us-ascii?Q?7HlamoUBYGT2Xf7Iu2hOPQbmYhXVRu6YhV0qNfETIUCq73BarHhHn0dIqmVO?=
- =?us-ascii?Q?2ECY9b+JEiDdrIFIrtTbwy9C6cP0/4JGC6x1lFtFyJBASC45P+CdC3wR762h?=
- =?us-ascii?Q?rTwC9vu8jHA76+0Q/obQ9uKkGYVKdRuW8XdsrEd+SKF9PXGNoc2ObayzX34f?=
- =?us-ascii?Q?2YwUyB1iPjnpVQiHVriZ91Hna00ImXhs8/4L9I5k7zHuuBJSPhv1bH5LDtJZ?=
- =?us-ascii?Q?8lUvplVOZZn5KePVuSqQySN2emJSN7gEw/H/uA2hznJ9beXwrhfKMinuIBLV?=
- =?us-ascii?Q?LdqusAkmRleHRI95T1x8w5/lUY7W+x941/x3bEu42b/xKjiySPJhv1hC4HiT?=
- =?us-ascii?Q?Jz0QYBLZWsX4WF9QYsu3YWpdkacjyIwqwLwkgFMYXKDNkZA6g8gRIEgtGBwp?=
- =?us-ascii?Q?NnIihZjfiU+9z48zEr25BNQbW0tYOZcT/boJCbUQLR4z/Qfb1P2RSfOgQlXG?=
- =?us-ascii?Q?uRnpvFOsSqt5CDu/UPlu6IklixSwsXQ8veswczBpvQcL13qkY6trjosF8B0O?=
- =?us-ascii?Q?ROGmmgp73uWnBl9CEq5lE+Vxvq8/slBfUR2KGx5whDbuKIxKjIqcMKsq6Qbx?=
- =?us-ascii?Q?/4GO5Md1J56XVvmNlC7fQtsqvYK0//R/kh+/P+X/queojxmtZBfW6TAs4dAh?=
- =?us-ascii?Q?Wvc8PS9/HLcPtUrziCvJllFf73tECQBuPwIas+xZjF5QiSeIf9SSX14CY2/I?=
- =?us-ascii?Q?El/aRNkzpQvW4pWB+B7kmY7lpAI35bH66CZdQCQMSPc4iTJjvxzoOzWKmIUs?=
- =?us-ascii?Q?DxhiisoLpZjyFNSNBpgRjsEaMr8pIOIGMZwQQ75M2WPftxDK6xSsubcA3cnQ?=
- =?us-ascii?Q?PBH5sUbHs6MwErUyED/FfPi+oqOOSwXiswiYIVfPhSeszIkMaLMNPyMcRb3n?=
- =?us-ascii?Q?dgQV8MPEOyKYoIxfu9CcNVku6msTF1PT4zgoSjhBne7AaYbu8FdRSkjpcrkW?=
- =?us-ascii?Q?sDDriQyTF5P0McOiOQi6WDKeQhR/EYpM21zYOrmAQglMyVS6GwtmVP+UBK1i?=
- =?us-ascii?Q?YZS/FkTd2MWAO/v+F5lFVXB+8odllYIEM3d1YdBKjWN6Vp/uWYLZstLheIUE?=
- =?us-ascii?Q?gL/FueKE83EyCQk8SzTODJ0fkAQNXDK6Fo++fwKH2sxryRorN4OIboh2EbVY?=
- =?us-ascii?Q?XA2OpcDjXFF1cqJUyml+h/f2Ma2Nj70ZCMf2/wX70OQHQWXP1h6vft0mEads?=
- =?us-ascii?Q?UbGe2EqfbmKHDjtXlNv6OePEGyCjBc94F2qdrF97a9sinLxB/vEkN1eIYFi5?=
- =?us-ascii?Q?/ZOIPhv0/bue+186jAWRy+VEPx3oK0Bs8QBt6iJrMTrDlNVVmArnD9XgFuaq?=
- =?us-ascii?Q?pw=3D=3D?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8709a631-0aaf-4ab6-10aa-08da7570723e
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4475.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2022 16:51:44.1834
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iQFMJdV2mVmTC3zVlBjfxjj0DSxrLiguFKKQ+cbXq6YuCn/9VKYATbMYe5O6TkHH
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB2651
-X-Proofpoint-ORIG-GUID: Z5-CqSa__T_0Zidg0TtEe1vN8GY1mTlX
-X-Proofpoint-GUID: Z5-CqSa__T_0Zidg0TtEe1vN8GY1mTlX
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-08-03_04,2022-08-02_01,2022-06-22_01
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <CADvTj4rytB_RDemr4CXO08waaEJGXRC6kt2y_SO0SKN3FgWg0g@mail.gmail.com>
+ <CAEf4BzZVq2VZg=S2xZinfth2-f50zxhMm-fPVQGUoeYPC5J4XA@mail.gmail.com>
+ <87wncnd5dd.fsf@oracle.com> <8735fbcv3x.fsf@oracle.com> <CADvTj4rBCEC_AFgszcMrgKMXfrBKzktABYy=dTH1F1Z7MxmcTw@mail.gmail.com>
+ <87v8s65hdc.fsf@oracle.com> <CADvTj4qniQWNFw4aYpsxV5chdj5v+cLfajRXYOHiK_GOn9OLWQ@mail.gmail.com>
+ <8735fa3unq.fsf@oracle.com> <CADvTj4r+1QB2Cg7L9R-fzqs_HA3kdiiQ_4WHvj+h_DvuxoM5kw@mail.gmail.com>
+ <CADvTj4pFQmS6XHpHCVO8jt-8ZRdTd--uny-n9vA0+vm4xUoLzQ@mail.gmail.com>
+ <87tu7p3o4k.fsf@oracle.com> <CADvTj4r_WnaC-nb-wQwqrzfJsERaX-TnR0tRXZF8fE5UPBThHQ@mail.gmail.com>
+ <87h73p1f5s.fsf@oracle.com> <CADvTj4qiz0xHnN+s32tiYm_WA8ai4cHUVPkKm7w6xTkZXUBCag@mail.gmail.com>
+ <87k08lunga.fsf@oracle.com> <87fsj8vjcy.fsf@oracle.com> <87bktwvhu5.fsf@oracle.com>
+ <CADvTj4o-36iuru665BW0XnEauXBeszW438QTtpt4_VUEjf5nXg@mail.gmail.com>
+ <CAEf4BzbN99WbEDS9r7nyO-7+SOYTU=-kXhD+A1L3dzrwrcHdBQ@mail.gmail.com>
+ <CADvTj4qi_ZZhdXRPd0X_tgQ8-jgrRgxF+4+kYVA92ZMO8KqESA@mail.gmail.com>
+ <CAEf4BzamhADJv+K1e6bLKV7Pob0VC95rgUtEJbVhXWqLgHLTyg@mail.gmail.com>
+ <CADvTj4oSc646ebcWzXB65gSy144D+GikbT5eF38OHu+T5tbn-w@mail.gmail.com>
+ <CAEf4BzYGXj4otX0pFSTcxKrQAuv7L_rqLyb5Hsp_ueZOZdJorA@mail.gmail.com> <CADvTj4pJwnCFB8LipENEPGAB2-+jBcvmOSJSezyTRr4xiozPNg@mail.gmail.com>
+In-Reply-To: <CADvTj4pJwnCFB8LipENEPGAB2-+jBcvmOSJSezyTRr4xiozPNg@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 3 Aug 2022 09:57:14 -0700
+Message-ID: <CAEf4Bza0-dx=X01ZqzLR_SF6-6r9YZFQa=VLyD6H=0DnLCU1AQ@mail.gmail.com>
+Subject: Re: bpftool gen object doesn't handle GCC built BPF ELF files
+To:     James Hilliard <james.hilliard1@gmail.com>
+Cc:     "Jose E. Marchesi" <jose.marchesi@oracle.com>,
+        bpf <bpf@vger.kernel.org>, david.faust@oracle.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 03, 2022 at 09:32:23AM -0700, Stanislav Fomichev wrote:
-> +static void test_fentry_to_cgroup_bpf(void)
-> +{
-> +	struct bind4_prog *skel = NULL;
-> +	struct bpf_prog_info info = {};
-> +	__u32 info_len = sizeof(info);
-> +	int cgroup_fd = -1;
-> +	int fentry_fd = -1;
-> +	int btf_id;
-> +
-> +	cgroup_fd = test__join_cgroup("/fentry_to_cgroup_bpf");
-> +	if (!ASSERT_GE(cgroup_fd, 0, "cgroup_fd"))
-> +		return;
-> +
-> +	skel = bind4_prog__open_and_load();
-> +	if (!ASSERT_OK_PTR(skel, "skel"))
-> +		goto cleanup;
-> +
-> +	skel->links.bind_v4_prog = bpf_program__attach_cgroup(skel->progs.bind_v4_prog, cgroup_fd);
-> +	if (!ASSERT_OK_PTR(skel->links.bind_v4_prog, "bpf_program__attach_cgroup"))
-> +		goto cleanup;
-> +
-> +	btf_id = find_prog_btf_id("bind_v4_prog", bpf_program__fd(skel->progs.bind_v4_prog));
-> +	if (!ASSERT_GE(btf_id, 0, "find_prog_btf_id"))
-> +		goto cleanup;
-> +
-> +	fentry_fd = load_fentry(bpf_program__fd(skel->progs.bind_v4_prog), btf_id);
-> +	if (!ASSERT_GE(fentry_fd, 0, "load_fentry"))
-> +		goto cleanup;
-> +
-> +	/* Make sure bpf_obj_get_info_by_fd works correctly when attaching
-> +	 * to another BPF program.
-> +	 */
-> +
-> +	ASSERT_OK(bpf_obj_get_info_by_fd(fentry_fd, &info, &info_len),
-> +		  "bpf_obj_get_info_by_fd");
-> +
-> +	ASSERT_EQ(info.btf_id, 0, "info.btf_id");
-> +	ASSERT_GT(info.attach_btf_id, 0, "info.attach_btf_id");
-> +	ASSERT_GT(info.attach_btf_obj_id, 0, "info.attach_btf_obj_id");
-nit. This can check against btf_id.
+On Tue, Aug 2, 2022 at 6:49 PM James Hilliard <james.hilliard1@gmail.com> w=
+rote:
+>
+> On Tue, Aug 2, 2022 at 6:29 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Tue, Aug 2, 2022 at 3:06 PM James Hilliard <james.hilliard1@gmail.co=
+m> wrote:
+> > >
+> > > On Tue, Aug 2, 2022 at 3:29 PM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
+> > > >
+> > > > On Mon, Aug 1, 2022 at 4:35 PM James Hilliard <james.hilliard1@gmai=
+l.com> wrote:
+> > > > >
+> > > > > On Mon, Aug 1, 2022 at 4:52 PM Andrii Nakryiko
+> > > > > <andrii.nakryiko@gmail.com> wrote:
+> > > > > >
+> > > > > > On Sun, Jul 31, 2022 at 7:20 PM James Hilliard
+> > > > > > <james.hilliard1@gmail.com> wrote:
+> > > > > > >
+> > > > > > > On Sun, Jul 10, 2022 at 2:22 PM Jose E. Marchesi
+> > > > > > > <jose.marchesi@oracle.com> wrote:
+> > > > > > > >
+> > > > > > > >
+> > > > > > > > >>> On Sun, Jul 10, 2022 at 3:38 AM Jose E. Marchesi
+> > > > > > > > >>> <jose.marchesi@oracle.com> wrote:
+> > > > > > > > >>>>
+> > > > > > > > >>>>
+> > > > > > > > >>>> > On Sat, Jul 9, 2022 at 4:41 PM Jose E. Marchesi
+> > > > > > > > >>>> > <jose.marchesi@oracle.com> wrote:
+> > > > > > > > >>>> >>
+> > > > > > > > >>>> >>
+> > > > > > > > >>>> >> > On Sat, Jul 9, 2022 at 2:32 PM James Hilliard <ja=
+mes.hilliard1@gmail.com> wrote:
+> > > > > > > > >>>> >> >>
+> > > > > > > > >>>> >> >> On Sat, Jul 9, 2022 at 2:21 PM Jose E. Marchesi
+> > > > > > > > >>>> >> >> <jose.marchesi@oracle.com> wrote:
+> > > > > > > > >>>> >> >> >
+> > > > > > > > >>>> >> >> >
+> > > > > >
+> > > > > > Please trim your replies (and I don't know what your email clie=
+nt did,
+> > > > > > but it completely ruined nested quote formatting)
+> > > > >
+> > > > > Yeah, not sure what happened there.
+> > > > >
+> > > > > >
+> > > > > > [...]
+> > > > > >
+> > > > > > > > >>>>
+> > > > > > > > >>>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/li=
+bbpf.c
+> > > > > > > > >>>> index e89cc9c885b3..887b78780099 100644
+> > > > > > > > >>>> --- a/tools/lib/bpf/libbpf.c
+> > > > > > > > >>>> +++ b/tools/lib/bpf/libbpf.c
+> > > > > > > > >>>> @@ -1591,6 +1591,10 @@ static int bpf_object__init_glo=
+bal_data_maps(struct bpf_object *obj)
+> > > > > > > > >>>>         for (sec_idx =3D 1; sec_idx < obj->efile.sec_c=
+nt; sec_idx++) {
+> > > > > > > > >>>>                 sec_desc =3D &obj->efile.secs[sec_idx]=
+;
+> > > > > > > > >>>>
+> > > > > > > > >>>> +                /* Skip recognized sections with size=
+ 0.  */
+> > > > > > > > >>>> +                if (sec_desc->data && sec_desc->data-=
+>d_size =3D=3D 0)
+> > > > > > > > >>>> +                  continue;
+> > > > > > > > >>>> +
+> > > > > > > > >>>>                 switch (sec_desc->sec_type) {
+> > > > > > > > >>>>                 case SEC_DATA:
+> > > > > > > > >>>>                         sec_name =3D elf_sec_name(obj,=
+ elf_sec_by_idx(obj, sec_idx));
+> > > > > > > > >>>
+> > > > > > > > >>> Ok, skeleton is now getting generated successfully, how=
+ever it differs from the
+> > > > > > > > >>> clang version so there's a build error when we include/=
+use the header:
+> > > > > > > > >>> ../src/core/restrict-ifaces.c: In function =E2=80=98pre=
+pare_restrict_ifaces_bpf=E2=80=99:
+> > > > > > > > >>> ../src/core/restrict-ifaces.c:45:14: error: =E2=80=98st=
+ruct
+> > > > > > > > >>> restrict_ifaces_bpf=E2=80=99 has no member named =E2=80=
+=98rodata=E2=80=99; did you mean
+> > > > > > > > >>> =E2=80=98data=E2=80=99?
+> > > > > > > > >>>    45 |         obj->rodata->is_allow_list =3D is_allow=
+_list;
+> > > > > > > > >>>       |              ^~~~~~
+> > > > > > > > >>>       |              data
+> > > > > > > > >>>
+> > > > > > > > >>> The issue appears to be that clang generates "rodata" m=
+embers in
+> > > > > > > > >>> restrict_ifaces_bpf while with gcc we get "data" member=
+s instead.
+> > > > > > > > >>
+> > > > > > > > >> This is because the BPF GCC port is putting the
+> > > > > > > > >>
+> > > > > > > > >>   const volatile unsigned char is_allow_list =3D 0;
+> > > > > > > > >>
+> > > > > > > > >> in a .data section instead of .rodata, due to the `volat=
+ile'.  The
+> > > > > > > > >> x86_64 GCC seems to use .rodata.
+> > > > > > > > >>
+> > > > > > > > >> Looking at why the PBF port does this...
+> > > > > > > > >
+> > > > > > > > > So, turns out GCC puts zero-initialized `const volatile' =
+variables in
+> > > > > > > > > .data sections (and not .rodata) in all the targets I hav=
+e tried, like
+> > > > > > > > > x86_64 and aarch64.
+> > > > > > > > >
+> > > > > > > > > So this is a LLVM and GCC divergence :/
+> > > > > > > >
+> > > > > > > > See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D25521.
+> > > > > > > >
+> > > > > > > > You may try, as a workaround:
+> > > > > > > >
+> > > > > > > > __attribute__((section(".rodata"))) const volatile unsigned=
+ char is_allow_list =3D 0;
+> > > > > > > >
+> > > > > > > > But that will use permissions "aw" for the .rodata section =
+(and you will
+> > > > > > > > get a warning from the assembler.)  It may be problematic f=
+or libbpf.
+> > > > > > >
+> > > > > > > So rather than try to force gcc to use the incorrect llvm .ro=
+data
+> > > > > > > section it looks
+> > > > > > > like we can instead just force llvm to use the correct .data =
+section like this:
+> > > > > > > https://github.com/systemd/systemd/pull/24164
+> > > > > > >
+> > > > > >
+> > > > > > There is a huge difference between variables in .rodata and .da=
+ta.
+> > > > > > .rodata variable's value is known to the BPF verifier at verifi=
+cation
+> > > > > > time and this knowledge will be used to decide which code paths=
+ are
+> > > > > > always or never taken (as one example). It's a crucial property=
+ and
+> > > > > > important guarantee.
+> > > > > >
+> > > > > > If you don't care about that property, don't declare the variab=
+le as `const`.
+> > > > > >
+> > > > > > So no, it's not llvm putting `const` variable into .rodata
+> > > > > > incorrectly, but GCC is trying to be smart and just because var=
+iable
+> > > > > > is declared volatile is putting *const* variable into read-writ=
+e .data
+> > > > > > section. It's declared as const, and yes it's volatile to make =
+sure
+> > > > > > that compiler isn't too smart about optimizing away read operat=
+ions.
+> > > > >
+> > > > > Isn't const volatile generating a .rodata section(like llvm is do=
+ing) a spec
+> > > > > violation?
+> > > > > https://github.com/llvm/llvm-project/issues/56468
+> > > > >
+> > > > > > But it's still a const read-only variable from the perspective =
+of that
+> > > > > > BPF C code.
+> > > > > >
+> > > > > > If you don't care about the read-only nature of that variable, =
+drop
+> > > > > > the const and make it into a non-read-only variable.
+> > > > > >
+> > > > > > And please stop proposing hacks to be added to perfectly valid =
+systemd
+> > > > > > BPF source code (I replied on [0] as well).
+> > > > >
+> > > > > From my understanding gcc is correctly putting a const volatile v=
+ariable
+> > > > > in .data while llvm is incorrectly putting it in .rodata, is the =
+gcc behavior
+> > > > > here invalid or is the llvm behavior invalid?
+> > > >
+> > > > From link you left to C standard, it does seem like that side-note
+> > > > *implies* that const volatile should be put into .data, but it's a)
+> > > > implied b) is quite arguable about assumptions that this data has t=
+o
+> > > > be in modifiable section, and c) entire CO-RE feature detection and
+> > > > guarding relies on having `const volatile` variables in .rodata and
+> > > > mark them as read-only for BPF verifier to allow dead code
+> > > > elimination. Changing c) would break entire CO-RE ecosystem.
+> > >
+> > > Well it does appear that llvm is fixing the behavior to be in line wi=
+th gcc:
+> > > https://reviews.llvm.org/D131012
+> > >
+> > > >
+> > > > Seems like this issue was raised by Ulrich Drepper back in 2005 ([0=
+])
+> > > > and he was also confused about GCC's behavior, btw.
+> > > >
+> > > > So either way, at the very least for BPF target we can't change thi=
+s
+> > > > and I still think it's more logical to put const variables into
+> > > > .rodata, regardless of side notes in C standard.
+> > >
+> > > GCC does put const variables in .rodata, just not const volatile vari=
+ables.
+> > >
+> >
+> > It's still const. Volatile doesn't change constness of a variable.
+> > We've been discussing this over and over, it gets a bit tiring, tbh.
+> >
+> > Aaron Ballman seems to agree, quoting him from [0]:
+> >
+> >   The footnote cited isn't a normative requirement (I can't see any
+> >   normative requirements that say we can't put a const volatile object
+> >   into a read only section), so it's debatable just how much of a bug
+> >   this is from a standards conformance perspective. I will have to
+> >   inquire on the WG14 reflectors to see if there's something I've
+> >   missed but I believe that C17 6.7.3p5 is meant to point out that
+> >   only lvalue are qualified; rvalues are not because lvalue conversion
+> >   strips the qualifiers. I think the footnote is mostly a nod towards
+> >   the fact that volatile qualified objects may change their value in
+> >   ways unknown to the compiler so storing it in a read-only section
+> >   of memory is a bit questionable. But I'm curious if the committee
+> >   tells me I've missed something there.
+> >
+> >
+> >   [0] https://github.com/llvm/llvm-project/issues/56468#issuecomment-12=
+03146308
+> >
+> > > >
+> > > >
+> > > > As for systemd's program and its is_allow_list ([1]), to unblock
+> > > > yourself you can drop const because systemd doesn't rely on read-on=
+ly
+> > > > guarantees of that variable anyways. It's much more critical in
+> > > > feature-detection use cases. But let's try to converge discussion i=
+n
+> > > > one place (preferably here), it's quite inconvenient to either repl=
+y
+> > > > the same thing twice here and on Github, or cross-reference lore an=
+d
+> > > > Github.
+> > >
+> > > Hmm, are you sure:
+> > > const __u8 is_allow_list SEC(".rodata") =3D 0;
+> > >
+> > > doesn't provide equivalent behavior to:
+> > > const volatile __u8 is_allow_list =3D 0;
+> >
+> > Is there anything preventing you from experimenting with this yourself?=
+..
+>
+> Wasn't sure how to reproduce the issue properly.
+>
 
-Overall lgtm. Thanks.
+Then please start asking specific questions about how to repro issues
+we are talking about, instead of randomly throwing various ideas
+around and seeing what sticks.
 
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+> >
+> > Let's see:
+> >
+> > $ git diff
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/skeleton.c
+> > b/tools/testing/selftests/bpf/prog_tests/skeleton.c
+> > index 99dac5292b41..386785a45af0 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/skeleton.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/skeleton.c
+> > @@ -31,6 +31,8 @@ void test_skeleton(void)
+> >         if (CHECK(skel->kconfig, "skel_kconfig", "kconfig is mmaped()!\=
+n"))
+> >                 goto cleanup;
+> >
+> > +       skel->rodata->should_trap =3D false;
+> > +
+> >         bss =3D skel->bss;
+> >         data =3D skel->data;
+> >         data_dyn =3D skel->data_dyn;
+> > diff --git a/tools/testing/selftests/bpf/progs/test_skeleton.c
+> > b/tools/testing/selftests/bpf/progs/test_skeleton.c
+> > index 1a4e93f6d9df..eee26bc82525 100644
+> > --- a/tools/testing/selftests/bpf/progs/test_skeleton.c
+> > +++ b/tools/testing/selftests/bpf/progs/test_skeleton.c
+> > @@ -26,6 +26,8 @@ const volatile struct {
+> >         const int in6;
+> >  } in =3D {};
+> >
+> > +const bool should_trap SEC(".rodata") =3D true;
+> > +
+> >  /* .data section */
+> >  int out1 =3D -1;
+> >  long long out2 =3D -1;
+> > @@ -58,6 +60,10 @@ int handler(const void *ctx)
+> >  {
+> >         int i;
+> >
+> > +       while (should_trap)
+> > +       {
+> > +       }
+> > +
+> >         out1 =3D in1;
+> >         out2 =3D in2;
+> >         out3 =3D in3;
+> >
+> >
+> > Result: selftests stop compiling. Why?
+> >
+> > $ llvm-objdump -d test_skeleton.linked1.o
+> >
+> > test_skeleton.linked1.o:        file format elf64-bpf
+> >
+> > Disassembly of section raw_tp/sys_enter:
+> >
+> > 0000000000000000 <handler>:
+> >        0:       05 00 ff ff 00 00 00 00 goto -1 <handler>
+> >
+> > Because compiler optimized away everything with while (true) {}. There
+> > is no global data at all anymore.
+> >
+> > This is what I keep telling you, const volatile is the only thing
+> > preventing the compiler from making wrong assumptions. And neither
+> >
+> > const bool should_trap SEC(".rodata") =3D true;
+> >
+> > nor
+> >
+> > const bool should_trap =3D true;
+> >
+> > work.
+> >
+> > But
+> >
+> > const volatile bool should_trap =3D true;
+> >
+> > does work.
+> >
+> > If you have some more speculative proposals, please investigate them
+> > yourself and report back with the results. But either way there is a
+> > lot of BPF code written with reliance on `const volatile`, both open
+> > source and not, so please stop actively trying to break BPF ecosystem
+> > with proposals like moving `const volatile` to .data, just because
+> > it's more convenient for you in GCC. Thank you.
+>
+> So it does at least seem I can force GCC to use .rodata like this for
+> systemd, maybe that's the best approach for now?:
+>
+> const volatile __u8 is_allow_list SEC(".rodata") =3D 0;
+>
+> It does emit an assembler warning but otherwise appears to work:
+> Generating src/core/bpf/restrict_ifaces/restrict-ifaces.bpf.unstripped.o
+> with a custom command
+> /tmp/ccM2b7jP.s: Assembler messages:
+> /tmp/ccM2b7jP.s:87: Warning: setting incorrect section attributes for .ro=
+data
+>
+> I updated my systemd PR with that.
+>
+
+For Nth time, don't do this. Drop the const for systemd. And please
+start paying attention to feedback.
+
+Please also start with learning how to build selftests/bpf with Clang
+and looking at various examples so that you can at least look at all
+the different features we rely on in the BPF world, instead of trying
+to tune one small piece (systemd's BPF programs) to your liking. If
+you are serious about making GCC BPF backend viable, you'll have to
+understand BPF a bit better.
+
+That would be a better use of everyone's time, instead of you going
+behind our backs and requesting Clang to break the entire BPF
+ecosystem just because GCC is doing something differently, like you
+and Jose E. Marchesi did with [0] and [1].
+
+  [0] https://github.com/llvm/llvm-project/issues/56468
+  [1] https://reviews.llvm.org/D131012
+
+> >
+> > >
+> > > The used attribute in the SEC macro supposedly ensures that:
+> > > The compiler must emit the definition even if it appears to be unused=
+, and
+> > > it must not apply optimizations which depend on fully understanding h=
+ow
+> > > the entity is used.
+> > >
+> > > Or maybe the retain attribute along with used would be sufficient to =
+allow
+> > > us to drop volatile in these cases?:
+> > > https://clang.llvm.org/docs/AttributeReference.html#retain
+> > >
+> > > >
+> > > >
+> > > >   [0] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D25521
+> > > >   [1] https://github.com/systemd/systemd/pull/24164#issuecomment-12=
+03207372
+> > > >
+> > > > >
+> > > > > >
+> > > > > >   [0] https://github.com/systemd/systemd/pull/24164#issuecommen=
+t-1201806413
+> > > > > >
+> > > > > >
+> > > > > > [...]
