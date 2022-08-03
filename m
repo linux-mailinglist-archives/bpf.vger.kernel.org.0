@@ -2,75 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B84EC588F52
-	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 17:27:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAA40588F5C
+	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 17:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232563AbiHCP1Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Aug 2022 11:27:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58508 "EHLO
+        id S234006AbiHCPbD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Aug 2022 11:31:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbiHCP1Y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Aug 2022 11:27:24 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D5211658B;
-        Wed,  3 Aug 2022 08:27:23 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id a89so21932188edf.5;
-        Wed, 03 Aug 2022 08:27:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc;
-        bh=NstIhUvDndfhWQhjJY54RegUN1YZlKiUPmz8PG5jen0=;
-        b=kbUTCYf8W9wxbL8ZzhcpD7tffIrDNB7uTgsF2jrAZFtiH+/oSbwNJ/59q6xBEJMGW5
-         J3+Df/AJ1ckT1I2e92XqpTGaXS6Cd9em/LvZQCXHq6f7fhkMGIWbyPCI6oEzx9Hvu3Pv
-         wjv7zFVW5UrS4uZtf8ARoixOmHUNRriP/9I7fJ8GMQFZrYESpmtz2o93ThkCuW6iGey1
-         pAd+d48rHt6aNNq1H3yPQvdXUOyxSpCh4LKrA1wk1vok3txU+BKqUC0V92iqewwTQOtZ
-         t3sO+fNKrrLbURpfaz5bhhn4diPvgIRrI7dIn8C69gYPh0CGplwCVPPGRsLQaNa16pss
-         Q3xA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc;
-        bh=NstIhUvDndfhWQhjJY54RegUN1YZlKiUPmz8PG5jen0=;
-        b=HVbillenALsdSzjVlD3Vfy+i8MVLYbCt29sWITwvNO+H/QdKtTOBovHWnhIczvauWz
-         0XyqsyFDeCwF2mupe/hlGglalfTkqkAMPsRV6M6/9s54dumKDUFHiBhFr5RfO85Iu4YS
-         I2lcg7msl1rNQ3lX8dHdGNo9YokyOE/zoOYNlAg18g59jytAK9uhZR5xvWWpvFawoPS6
-         gA1nsH7D2OYo3oIharMmR6xBk7GC0PM4FBEU23SbBx67WN3++9QUamDQ3wOBKB1VJlS1
-         Dn4IjpM8NoxNvrqjsw9M/gKydCtkz1zM1rQLl/FQ9tHzSygga8hSau5IJMXr3YQemGvp
-         T9LQ==
-X-Gm-Message-State: ACgBeo0RH5l+2LeuhLNrlHB1MQF4CaIbfmnQDJDnUdp5BQ5gO8OrvkCU
-        Vhm/HewO6cu6vJ6dhWIHX8o=
-X-Google-Smtp-Source: AA6agR6UzGbLznDIzufozkxc3QxIbkRILg9KQkRnk76qQftIeadMR3af1KL/ug7WWsuNc+O45rYqbw==
-X-Received: by 2002:a05:6402:3583:b0:43d:6943:44a with SMTP id y3-20020a056402358300b0043d6943044amr18876184edc.409.1659540441529;
-        Wed, 03 Aug 2022 08:27:21 -0700 (PDT)
-Received: from krava ([83.240.61.12])
-        by smtp.gmail.com with ESMTPSA id s10-20020aa7c54a000000b0043d1eff72b3sm8280323edr.74.2022.08.03.08.27.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Aug 2022 08:27:21 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Wed, 3 Aug 2022 17:27:19 +0200
-To:     Lee Jones <lee@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] bpf: Drop unprotected find_vpid() in favour of
- find_get_pid()
-Message-ID: <YuqT17dTbHK521pC@krava>
-References: <20220803134821.425334-1-lee@kernel.org>
+        with ESMTP id S238196AbiHCPav (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Aug 2022 11:30:51 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0033C5FC5;
+        Wed,  3 Aug 2022 08:30:50 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9ED75B822D8;
+        Wed,  3 Aug 2022 15:30:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9B7DC433C1;
+        Wed,  3 Aug 2022 15:30:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1659540648;
+        bh=qveOF7M+/THb5XqsBFIqmR62rxGDFMrgJivac9Qqmr4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Q354d5utkUKbbRk2IUMsye67BTsDOiNjH/AXCIWe3mPbNwUW67vsEJBG4GPnI5al5
+         QjhrsvPeGesev1kTAsnmw4vW/zaJegFugXy7yVL4m1fo4x8/oZ3YLTsgDn8JY40kJS
+         NAAVXdjs4gQHNIEgADnt6Hifvt3uHbfjuAgrqXJOMfl2zFhVZDv6V4NIsBwz5iBsMh
+         6Y1MoHih29xbm9kHKAGzz0NMUE2sB/vO+5KmNcMUQiLsjgOc6siYcbgf1PsBlbwdsY
+         viA0kvhPQbWCD6PNMpB0Myc1TjyxFkYn/+8PebgbFPmUwp+uFUmr896lHXELEmJ3+W
+         UzorkMOgoWqPw==
+Message-ID: <e5fa55d1-b690-a672-0a9b-b6e31930f08c@kernel.org>
+Date:   Wed, 3 Aug 2022 09:30:45 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220803134821.425334-1-lee@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.11.0
+Subject: Re: [PATCH v2 net 1/4] geneve: do not use RT_TOS for IPv6 flowlabel
+Content-Language: en-US
+To:     Matthias May <matthias.may@westermo.com>, netdev@vger.kernel.org
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, roopa@nvidia.com,
+        eng.alaamohamedsoliman.am@gmail.com, bigeasy@linutronix.de,
+        saeedm@nvidia.com, leon@kernel.org, roid@nvidia.com,
+        maord@nvidia.com, lariel@nvidia.com, vladbu@nvidia.com,
+        cmi@nvidia.com, gnault@redhat.com, yoshfuji@linux-ipv6.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-rdma@vger.kernel.org, nicolas.dichtel@6wind.com,
+        eyal.birger@gmail.com, jesse@nicira.com, linville@tuxdriver.com,
+        daniel@iogearbox.net, hadarh@mellanox.com, ogerlitz@mellanox.com,
+        willemb@google.com, martin.varghese@nokia.com
+References: <20220802120935.1363001-1-matthias.may@westermo.com>
+ <20220802120935.1363001-2-matthias.may@westermo.com>
+From:   David Ahern <dsahern@kernel.org>
+In-Reply-To: <20220802120935.1363001-2-matthias.may@westermo.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,71 +66,18 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 03, 2022 at 02:48:21PM +0100, Lee Jones wrote:
-> The documentation for find_pid() clearly states:
-
-nit: typo find_vpid
-
+On 8/2/22 6:09 AM, Matthias May wrote:
+> According to Guillaume Nault RT_TOS should never be used for IPv6.
 > 
->   "Must be called with the tasklist_lock or rcu_read_lock() held."
-> 
-> Presently we do neither.
-> 
-> Let's use find_get_pid() which searches for the vpid, then takes a
-> reference to it preventing early free, all within the safety of
-> rcu_read_lock().  Once we have our reference we can safely make use of
-> it up until the point it is put.
-> 
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> Cc: Song Liu <song@kernel.org>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: KP Singh <kpsingh@kernel.org>
-> Cc: Stanislav Fomichev <sdf@google.com>
-> Cc: Hao Luo <haoluo@google.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: bpf@vger.kernel.org
-> Fixes: 41bdc4b40ed6f ("bpf: introduce bpf subcommand BPF_TASK_FD_QUERY")
-> Signed-off-by: Lee Jones <lee@kernel.org>
-
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-
-jirka
-
+> Fixes: 3a56f86f1be6a ("geneve: handle ipv6 priority like ipv4 tos")
+> Signed-off-by: Matthias May <matthias.may@westermo.com>
 > ---
+> v1 -> v2:
+>  - Fix spacing of "Fixes" tag.
+>  - Add missing CCs
+> ---
+>  drivers/net/geneve.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> v1 => v2:
->   * Commit log update - no code differences
-> 
->  kernel/bpf/syscall.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 83c7136c5788d..c20cff30581c4 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -4385,6 +4385,7 @@ static int bpf_task_fd_query(const union bpf_attr *attr,
->  	const struct perf_event *event;
->  	struct task_struct *task;
->  	struct file *file;
-> +	struct pid *ppid;
->  	int err;
->  
->  	if (CHECK_ATTR(BPF_TASK_FD_QUERY))
-> @@ -4396,7 +4397,9 @@ static int bpf_task_fd_query(const union bpf_attr *attr,
->  	if (attr->task_fd_query.flags != 0)
->  		return -EINVAL;
->  
-> -	task = get_pid_task(find_vpid(pid), PIDTYPE_PID);
-> +	ppid = find_get_pid(pid);
-> +	task = get_pid_task(ppid, PIDTYPE_PID);
-> +	put_pid(ppid);
->  	if (!task)
->  		return -ENOENT;
->  
-> -- 
-> 2.37.1.455.g008518b4e5-goog
-> 
+
+Reviewed-by: David Ahern <dsahern@kernel.org>
