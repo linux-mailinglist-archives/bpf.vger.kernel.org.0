@@ -2,70 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76ECE588F37
-	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 17:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBFB6588F43
+	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 17:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231537AbiHCPR3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Aug 2022 11:17:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51900 "EHLO
+        id S238020AbiHCPUm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Aug 2022 11:20:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236201AbiHCPR3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Aug 2022 11:17:29 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 427265F52;
-        Wed,  3 Aug 2022 08:17:28 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d20so9314654pfq.5;
-        Wed, 03 Aug 2022 08:17:28 -0700 (PDT)
+        with ESMTP id S238100AbiHCPUi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Aug 2022 11:20:38 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA7F32BB2
+        for <bpf@vger.kernel.org>; Wed,  3 Aug 2022 08:20:35 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id cm4-20020a056830650400b0063675a4dd74so2616883otb.10
+        for <bpf@vger.kernel.org>; Wed, 03 Aug 2022 08:20:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc;
-        bh=oNr9cYrhYYJ71xIwjeGTHZcy87EslxiZzIalDyvPVWc=;
-        b=CwYeSEKCKvrVEdtvKHnBCKsNkdIOx9HcWLN6NVQXi85JWEkFg/5BAaVI8bQnVpAR9f
-         DfnukQoWDW738z5+6eeKeN9/ZI77LCtLtq77MwfL9Cj2a5JGN/50Ie27Wr7XTmu1gqN2
-         p2PB7DdQ/Mc5haRlWmeCS2yWS+c9roPuFKfUL1NI6SDCMu0Ur9RZ0S1oPb9+9TnBFoZs
-         vPiehKD6dvc+HOl5aYw+mxrbxR466Rc9WFzL7w2KOlfUhistrUnM0IwppggXlTdFrIYG
-         IHP/I9mtcFNUfAjGde1f3nSAl/UYbtEBhMHFCU8KNvdu3XtwMLutyrj2rYrmEtWqMdGR
-         4chA==
+        d=cloudflare.com; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc;
+        bh=RPqGFZtbNqgICpWV/6VvhSR6n3AOi6dZZb+5V7yogyQ=;
+        b=eKxcY/wUV1t5iGFQOTkC3uUqXsNlO3wJPUXpinu2/pZFiIuEZDbShMVl1SWFB8VMKG
+         dN33busgN2TumcApmrWbU9bmxspzUC3EobauqLvOHnBA8X1FgGKATmogtCPRFVJX7swX
+         jnEljBTuf+JFh+gnVMEfcFQpvfPapnczKgq9A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
-        bh=oNr9cYrhYYJ71xIwjeGTHZcy87EslxiZzIalDyvPVWc=;
-        b=Ye6fBG+N4NWIwPJmOvwVBg0vKUX/JsLsN+RDyH4rm+0mHoreIuPi+VmKPPNKpK/E9J
-         gPJv/pU4L+ARZaIvMRDy6yX1Po1K9zQ1umk2judSOeQ7M3ypK3xYMmmVReI9Nse5yKSL
-         sNRl7tNtONkhHlq3cWRWuTOHTOlf4mQ1ZQ67tfdR4mA16j3KX0a5F6veF3WFPJEHI4KU
-         +WTYFKw2n2hZ/NGTrlR9iDuaLjPsOLXJ/A21lB8bGZWBjT3wdnR1dWUEtnj2X9RKmDzq
-         tnLQQBq4nBNY42ozFwFYqmo0rV1kPIHT4QH3L1rj0eDlI/qAWHCBv6w04TAKpvMHVbRt
-         sAcg==
-X-Gm-Message-State: AJIora/xOH4rRPomAS2aBe+WWk0zOPkDVO2lO2lmRdj0j8x4dCwjcVb5
-        SPQrkQ45VwSdq5BJ93/HLGKwvPMcSEjB+JHply8=
-X-Google-Smtp-Source: AGRyM1sDxF9LFw5yhJVEcTicuVVo87n4bzo3w7dEvTUf3KF6IhSgAcbtG0vVoZ9p148276XCHYdfpTsnuXqq2hRjnFc=
-X-Received: by 2002:a05:6a00:2282:b0:52a:e79b:16e4 with SMTP id
- f2-20020a056a00228200b0052ae79b16e4mr26012746pfe.79.1659539847508; Wed, 03
- Aug 2022 08:17:27 -0700 (PDT)
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc;
+        bh=RPqGFZtbNqgICpWV/6VvhSR6n3AOi6dZZb+5V7yogyQ=;
+        b=wLeZtqe2CuIIpEbWtD9wK09uFwYECu368ov4VNDsqmF/qgGlqtoci5+kQZ7M5vhskr
+         xfmm9+Z5w/IYV3IJwlo322S/qtFqwX6K2Tok35mrnZpGYPIGw7WjL6VI/uNiVQz33PgK
+         FvbCLZPNtMCsYepUvBnsW4xQGiKye2IZKm+Vru6hok7huPfSXXoeEd/h98qzGYRAYCuU
+         QMWdcEibgZxtBhw1v1ki5e4IdHpeuu6UlUaJp5frSZnU3qHl3xN6x0YhJ4JZsG7dTSaq
+         Q6tMpc6XI1t1HItqqAdVdWVY07uJ6tPZgBaS1UscwBuVXCgIJSOmJzHc0cSCUu/oZTvc
+         /mSw==
+X-Gm-Message-State: AJIora/cOZAF0fNvvXWlDUbhxVpXlv4NdqlaOlLq1hm4xXeemlCPUROw
+        mxSEhgc0OYQ/SUUPpkCMtmkTeQ==
+X-Google-Smtp-Source: AGRyM1vhYxujzT2YaLXCnoBJSDqDHPUJMnPpsU0AX9VW0hT0pmIMq5BAvFR7alVbeYb7pUS4X0XAlA==
+X-Received: by 2002:a9d:6007:0:b0:61c:ecd2:ac55 with SMTP id h7-20020a9d6007000000b0061cecd2ac55mr8737434otj.32.1659540034249;
+        Wed, 03 Aug 2022 08:20:34 -0700 (PDT)
+Received: from [192.168.0.41] ([184.4.90.121])
+        by smtp.gmail.com with ESMTPSA id fo22-20020a0568709a1600b0010eaeee89a1sm3056992oab.46.2022.08.03.08.20.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Aug 2022 08:20:33 -0700 (PDT)
+Message-ID: <aad6c2cb-abdd-b066-9d1d-d0f415256ae6@cloudflare.com>
+Date:   Wed, 3 Aug 2022 10:20:32 -0500
 MIME-Version: 1.0
-References: <20220802232741.481145-1-james.hilliard1@gmail.com> <Yuovl3ycDfflqV9h@krava>
-In-Reply-To: <Yuovl3ycDfflqV9h@krava>
-From:   James Hilliard <james.hilliard1@gmail.com>
-Date:   Wed, 3 Aug 2022 09:17:14 -0600
-Message-ID: <CADvTj4omSZvx1EBAaMCBCqw=wYjEjX6aK57hhfvDA2Nc9P_yVA@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: ensure functions with always_inline attribute are inline
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH v3 0/4] Introduce security_create_user_ns()
+Content-Language: en-US
+To:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Paul Moore <paul@paul-moore.com>
+Cc:     Martin KaFai Lau <kafai@fb.com>, kpsingh@kernel.org,
+        revest@chromium.org, jackmanb@chromium.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, songliubraving@fb.com,
+        yhs@fb.com, john.fastabend@gmail.com, jmorris@namei.org,
+        serge@hallyn.com, stephen.smalley.work@gmail.com,
+        eparis@parisplace.org, shuah@kernel.org, brauner@kernel.org,
+        casey@schaufler-ca.com, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, kernel-team@cloudflare.com,
+        cgzones@googlemail.com, karl@bigbadwolfsecurity.com,
+        tixxdz@gmail.com
+References: <20220721172808.585539-1-fred@cloudflare.com>
+ <20220722061137.jahbjeucrljn2y45@kafai-mbp.dhcp.thefacebook.com>
+ <18225d94bf0.28e3.85c95baa4474aabc7814e68940a78392@paul-moore.com>
+ <87a68mcouk.fsf@email.froward.int.ebiederm.org>
+From:   Frederick Lawler <fred@cloudflare.com>
+In-Reply-To: <87a68mcouk.fsf@email.froward.int.ebiederm.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,186 +85,97 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 3, 2022 at 2:19 AM Jiri Olsa <olsajiri@gmail.com> wrote:
->
-> On Tue, Aug 02, 2022 at 05:27:41PM -0600, James Hilliard wrote:
-> > GCC expects the always_inline attribute to only be set on inline
-> > functions, as such we should make all functions with this attribute
-> > inline.
-> >
-> > Fixes errors like:
-> > /home/buildroot/bpf-next/tools/testing/selftests/bpf/tools/include/bpf/=
-bpf_tracing.h:439:1: error: =E2=80=98always_inline=E2=80=99 function might =
-not be inlinable [-Werror=3Dattributes]
-> >   439 | ____##name(unsigned long long *ctx, ##args)
-> >       | ^~~~
-> >
-> > Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
-> > ---
-> >  tools/lib/bpf/bpf_tracing.h | 14 +++++++-------
-> >  tools/lib/bpf/usdt.bpf.h    |  4 ++--
-> >  2 files changed, 9 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
-> > index 43ca3aff2292..ae67fcee912c 100644
-> > --- a/tools/lib/bpf/bpf_tracing.h
-> > +++ b/tools/lib/bpf/bpf_tracing.h
-> > @@ -426,7 +426,7 @@ struct pt_regs;
-> >   */
-> >  #define BPF_PROG(name, args...)                                       =
-           \
-> >  name(unsigned long long *ctx);                                        =
-           \
-> > -static __attribute__((always_inline)) typeof(name(0))                 =
-           \
-> > +static inline __attribute__((always_inline)) typeof(name(0))          =
-   \
->
-> could you use __always_inline that does exactly that?
+On 8/2/22 4:33 PM, Eric W. Biederman wrote:
+> Paul Moore <paul@paul-moore.com> writes:
+> 
+>> On July 22, 2022 2:12:03 AM Martin KaFai Lau <kafai@fb.com> wrote:
+>>
+>>> On Thu, Jul 21, 2022 at 12:28:04PM -0500, Frederick Lawler wrote:
+>>>> While creating a LSM BPF MAC policy to block user namespace creation, we
+>>>> used the LSM cred_prepare hook because that is the closest hook to prevent
+>>>> a call to create_user_ns().
+>>>>
+>>>> The calls look something like this:
+>>>>
+>>>> cred = prepare_creds()
+>>>> security_prepare_creds()
+>>>> call_int_hook(cred_prepare, ...
+>>>> if (cred)
+>>>> create_user_ns(cred)
+>>>>
+>>>> We noticed that error codes were not propagated from this hook and
+>>>> introduced a patch [1] to propagate those errors.
+>>>>
+>>>> The discussion notes that security_prepare_creds()
+>>>> is not appropriate for MAC policies, and instead the hook is
+>>>> meant for LSM authors to prepare credentials for mutation. [2]
+>>>>
+>>>> Ultimately, we concluded that a better course of action is to introduce
+>>>> a new security hook for LSM authors. [3]
+>>>>
+>>>> This patch set first introduces a new security_create_user_ns() function
+>>>> and userns_create LSM hook, then marks the hook as sleepable in BPF.
+>>> Patch 1 and 4 still need review from the lsm/security side.
+>>
+>>
+>> This patchset is in my review queue and assuming everything checks
+>> out, I expect to merge it after the upcoming merge window closes.
+> 
+> It doesn't even address my issues with the last patchset.
 
-Sure, changed to use the __always_inline macro in v2:
-https://lore.kernel.org/bpf/20220803151403.793024-1-james.hilliard1@gmail.c=
-om/
+Are you referring to [1], and with regards to [2], is the issue that the 
+wording could be improved for both the cover letter and patch 1/4?
 
->
-> jirka
->
-> >  ____##name(unsigned long long *ctx, ##args);                          =
-   \
-> >  typeof(name(0)) name(unsigned long long *ctx)                         =
-           \
-> >  {                                                                     =
-   \
-> > @@ -435,7 +435,7 @@ typeof(name(0)) name(unsigned long long *ctx)      =
-                           \
-> >       return ____##name(___bpf_ctx_cast(args));                        =
-   \
-> >       _Pragma("GCC diagnostic pop")                                    =
-   \
-> >  }                                                                     =
-   \
-> > -static __attribute__((always_inline)) typeof(name(0))                 =
-           \
-> > +static inline __attribute__((always_inline)) typeof(name(0))          =
-   \
-> >  ____##name(unsigned long long *ctx, ##args)
-> >
-> >  struct pt_regs;
-> > @@ -460,7 +460,7 @@ struct pt_regs;
-> >   */
-> >  #define BPF_KPROBE(name, args...)                                     =
-   \
-> >  name(struct pt_regs *ctx);                                            =
-   \
-> > -static __attribute__((always_inline)) typeof(name(0))                 =
-           \
-> > +static inline __attribute__((always_inline)) typeof(name(0))          =
-   \
-> >  ____##name(struct pt_regs *ctx, ##args);                              =
-   \
-> >  typeof(name(0)) name(struct pt_regs *ctx)                             =
-   \
-> >  {                                                                     =
-   \
-> > @@ -469,7 +469,7 @@ typeof(name(0)) name(struct pt_regs *ctx)          =
-                   \
-> >       return ____##name(___bpf_kprobe_args(args));                     =
-   \
-> >       _Pragma("GCC diagnostic pop")                                    =
-   \
-> >  }                                                                     =
-   \
-> > -static __attribute__((always_inline)) typeof(name(0))                 =
-           \
-> > +static inline __attribute__((always_inline)) typeof(name(0))          =
-   \
-> >  ____##name(struct pt_regs *ctx, ##args)
-> >
-> >  #define ___bpf_kretprobe_args0()       ctx
-> > @@ -484,7 +484,7 @@ ____##name(struct pt_regs *ctx, ##args)
-> >   */
-> >  #define BPF_KRETPROBE(name, args...)                                  =
-   \
-> >  name(struct pt_regs *ctx);                                            =
-   \
-> > -static __attribute__((always_inline)) typeof(name(0))                 =
-           \
-> > +static inline __attribute__((always_inline)) typeof(name(0))          =
-   \
-> >  ____##name(struct pt_regs *ctx, ##args);                              =
-   \
-> >  typeof(name(0)) name(struct pt_regs *ctx)                             =
-   \
-> >  {                                                                     =
-   \
-> > @@ -540,7 +540,7 @@ static __always_inline typeof(name(0)) ____##name(s=
-truct pt_regs *ctx, ##args)
-> >  #define BPF_KSYSCALL(name, args...)                                   =
-   \
-> >  name(struct pt_regs *ctx);                                            =
-   \
-> >  extern _Bool LINUX_HAS_SYSCALL_WRAPPER __kconfig;                     =
-   \
-> > -static __attribute__((always_inline)) typeof(name(0))                 =
-           \
-> > +static inline __attribute__((always_inline)) typeof(name(0))          =
-   \
-> >  ____##name(struct pt_regs *ctx, ##args);                              =
-   \
-> >  typeof(name(0)) name(struct pt_regs *ctx)                             =
-   \
-> >  {                                                                     =
-   \
-> > @@ -555,7 +555,7 @@ typeof(name(0)) name(struct pt_regs *ctx)          =
-                   \
-> >               return ____##name(___bpf_syscall_args(args));            =
-   \
-> >       _Pragma("GCC diagnostic pop")                                    =
-   \
-> >  }                                                                     =
-   \
-> > -static __attribute__((always_inline)) typeof(name(0))                 =
-           \
-> > +static inline __attribute__((always_inline)) typeof(name(0))          =
-   \
-> >  ____##name(struct pt_regs *ctx, ##args)
-> >
-> >  #define BPF_KPROBE_SYSCALL BPF_KSYSCALL
-> > diff --git a/tools/lib/bpf/usdt.bpf.h b/tools/lib/bpf/usdt.bpf.h
-> > index 4f2adc0bd6ca..2bd2d80b3751 100644
-> > --- a/tools/lib/bpf/usdt.bpf.h
-> > +++ b/tools/lib/bpf/usdt.bpf.h
-> > @@ -232,7 +232,7 @@ long bpf_usdt_cookie(struct pt_regs *ctx)
-> >   */
-> >  #define BPF_USDT(name, args...)                                       =
-           \
-> >  name(struct pt_regs *ctx);                                            =
-   \
-> > -static __attribute__((always_inline)) typeof(name(0))                 =
-           \
-> > +static inline __attribute__((always_inline)) typeof(name(0))          =
-   \
-> >  ____##name(struct pt_regs *ctx, ##args);                              =
-   \
-> >  typeof(name(0)) name(struct pt_regs *ctx)                             =
-   \
-> >  {                                                                     =
-   \
-> > @@ -241,7 +241,7 @@ typeof(name(0)) name(struct pt_regs *ctx)          =
-                   \
-> >          return ____##name(___bpf_usdt_args(args));                    =
-   \
-> >          _Pragma("GCC diagnostic pop")                                 =
-           \
-> >  }                                                                     =
-   \
-> > -static __attribute__((always_inline)) typeof(name(0))                 =
-           \
-> > +static inline __attribute__((always_inline)) typeof(name(0))          =
-   \
-> >  ____##name(struct pt_regs *ctx, ##args)
-> >
-> >  #endif /* __USDT_BPF_H__ */
-> > --
-> > 2.34.1
-> >
+Ultimately, the goal of CF is to leverage and use user namespaces and 
+block tasks whose meta information do not align with our allow list 
+criteria. Yes, there is a higher goal of restricting our attack surface. 
+Yes, people will find ways around security. The point is to have 
+multiple levels of security, and this patch series allows people to add 
+another level.
+
+Calling this hook a regression is not true since there's no actual 
+regression in the code. What would constitute a perceived regression is 
+an admin imposing such a SELinux or BPF restriction within their 
+company, but developers in that company ideally would try to work with 
+the admin to enable user namespaces for certain use cases, or 
+alternatively do what you don't want given current tooling: always run 
+code as root. That's where this hook comes in: let people observe and 
+enforce how they see fit. The average enthusiasts would see no impact.
+
+I was requested to add _some_ test to BPF and to add a SELinux 
+implementation. The low hanging fruit for a test to prove that the hook 
+is capable of doing _something_ was to simply just block outright, and 
+provide _some example_ of use. It doesn't make sense for us to write a 
+test that outlines specifically what CF or others are doing because that 
+would put too much emphasis on an implementation detail that doesn't 
+matter to prove that the hook works.
+
+Without Djalal's comment, I can't defend an observability use case that 
+we're not currently leveraging. We have it now, so therefore I'll defend 
+it per KP's suggestion[3] in v5.
+
+By not responding to the email discussions, we can't accurately gauge 
+what should or should not be in the descriptions. No one here 
+necessarily disagrees with some of the points you made, and others have 
+appropriately responded. As others have also wrote, you're not proposing 
+alternatives. How do you expect us to work with that?
+
+Please, let us know which bits and pieces ought to be included in the 
+descriptions, and let us know what things we should call out caveats to 
+that would satisfy your concerns.
+
+Links:
+1. 
+https://lore.kernel.org/all/01368386-521f-230b-1d49-de19377c27d1@cloudflare.com/
+2. 
+https://lore.kernel.org/all/877d45kri4.fsf@email.froward.int.ebiederm.org/#t
+3. 
+https://lore.kernel.org/all/CACYkzJ4x90DamdN4dRCn1gZuAHLqJNy4MoP=qTX+44Bqx1uxSQ@mail.gmail.com/
+4. 
+https://lore.kernel.org/all/CAEiveUdPhEPAk7Y0ZXjPsD=Vb5hn453CHzS9aG-tkyRa8bf_eg@mail.gmail.com/#t
+
+> 
+> So it has my NACK.
+> 
+> Eric
+
