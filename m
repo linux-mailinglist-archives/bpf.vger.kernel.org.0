@@ -2,84 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65BD0589166
-	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 19:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0353758923D
+	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 20:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236464AbiHCRaI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Aug 2022 13:30:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38958 "EHLO
+        id S238098AbiHCS1l (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Aug 2022 14:27:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234206AbiHCRaH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Aug 2022 13:30:07 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FDD9558EC;
-        Wed,  3 Aug 2022 10:30:06 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a7so19736288ejp.2;
-        Wed, 03 Aug 2022 10:30:05 -0700 (PDT)
+        with ESMTP id S238167AbiHCS1h (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Aug 2022 14:27:37 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D45115A2F9
+        for <bpf@vger.kernel.org>; Wed,  3 Aug 2022 11:27:35 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id w17-20020a17090a8a1100b001f326c73df6so2849179pjn.3
+        for <bpf@vger.kernel.org>; Wed, 03 Aug 2022 11:27:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=U7nJWoGM/ebcYWkwdDIue8qTiA80fkgvIER+SYbZjPE=;
-        b=WAG6eTdmnBbOaXUB+TGhPwZIc+XdJ8IuMYPZoYNl50YDJJ7HTmYzEQRV+04jPWfinn
-         lo0wuNvgf6IEQ9aMu79X6mP/4XECOjxg13mM9k5hQQ1gohaORpml5qBg7gIiSmhkT5sP
-         tIxkVXAmzjhvlHSLm6AiB5h7XX8g4O11GbZwgsyn7dvHecz7ZWK5j0heZf2zPWtcsMHP
-         YtbIPj8EXWSYvaffthlKYO78WQ5OmhpoS0m6tRWZ868s/ZxCeDzoSmAVzHhCUpu35ovy
-         8sW0PHdzgAQLj3QGyNo+1/L58oo7wCzVJwu7yNTWiR9r546uya/tLnK4aNHnqqEUksw2
-         CnwQ==
+        bh=SRwtA707AmX/MwRu3ABzIXYiv+Ca4br4bKPrZGaCYs4=;
+        b=S43u8mtb9ddkazJg3DaHv0fFJTAgi/DAdnKMKWDEgIOCmlh/Sf3S8RjO8/MnSOrUu8
+         PhTm3mQTvOM4HmJS8WDZW8rwvZpaVbeSYnOs+/aaO7FKPipbQ9vU8j+BqXa6/OlrwHeQ
+         UyMo2Y2jAX6WcF2evQ7y7RYBHtldqgzlP3AO3YXSRwaxM4iVH6EKK+OAE4G1c/hbz7CS
+         9PyavbbzGtpiZpct92VsiX2mdoIdJ1sAe+/C6cD1prk411OwzSms70b+v8VBSJTuvdBh
+         QAg3NR3O0tGUT2AmtQQdd+B4Pf7GWQCsyiLF9Pku6titEewsgnHLwglW3cgfXfTqSKAb
+         6IwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=U7nJWoGM/ebcYWkwdDIue8qTiA80fkgvIER+SYbZjPE=;
-        b=soGVBBN/6R1VbS8quleFaDkGw8VybTy8OLI/wQ5cl4Aweg7E31vIB2PrE1+8qQOPm9
-         JYfiBt9qz0+1ga9UF+QzGbEgpeoIK1kt6OiwLQJ7vhd0kDkRCNLxFRVBd7q1k9ha1/14
-         BMRlvPlApLUjt1DKagtA2mgeaBPFQ47SeDQYVv5z4/be3Tq9Jh8NnxQ8/OlBTmQcMZQN
-         X/Qz62RWttKM56XPFCEpWkpzYjjZJRs+XLRa9dAXF7OK+7Ow5gDn52d7+7EfFHQf8aD5
-         k6yufKNvM8VRdzCuLGznAJWVA+jhXpFKcV2OeKlXaIqw+/BijNsfzsuBPQMmBCedONoN
-         PiAg==
-X-Gm-Message-State: AJIora8t2PD6+9f+ixrXERDlARUVKbMUx4HxUi33Yvd9FlvDqpPP0xZ4
-        nLOfZKGHGOCwofzouJAtA0kBwRrXbR8026rD18E=
-X-Google-Smtp-Source: AGRyM1v/yzAj7I0pvfA4lKVAuo8DXdPbWdkBAa1p9kg6fg3uu5iY78xqCz4WLFBwKe4xcfz4v5qkNpw63IaQDJC5/nI=
-X-Received: by 2002:a17:906:3f51:b0:712:3945:8c0d with SMTP id
- f17-20020a1709063f5100b0071239458c0dmr20080647ejj.302.1659547804487; Wed, 03
- Aug 2022 10:30:04 -0700 (PDT)
+        bh=SRwtA707AmX/MwRu3ABzIXYiv+Ca4br4bKPrZGaCYs4=;
+        b=d039eK/CElsR2WI4ggLU9hI4e9Bs22v6cGVBjZm59lv3kLdtPrVEtrPUr14VdPH6+q
+         qrQbVEudlWnpUSmFdNNe7U9gBA58zAP27a4IJSJkNjm5Oe+0K/lGXxjpJqIuqwroQw/8
+         sEDvgyXI5nRv9GR11XMtaHg67Vy9Ytk3s+HmrN6g0/iRIJmldcnLWrlLTxdixPtDbKa9
+         8uy3OZlRpujWBBT5Bwvs8HKUN5yzszlBq/Oooo6RyxxRWKAn0FlZXt9FAzdvI+YGu5UV
+         3qZeJKcc5ZuYB+sdT3AHQakrQ8KLWL+nbqe8BNMDMDwGvbizu+a3tpdAbgjtg6vP2n8n
+         ehtw==
+X-Gm-Message-State: ACgBeo3MM/Qkf5wBwWeLJS7QH4gCY03nvx1xVTINDvEevlo5VqH74It6
+        lk3ZzXAtEq8mi1H27wqsEbd6+T3RXpzn0ZHEsTp3PQ==
+X-Google-Smtp-Source: AA6agR6/eFrzUkwLG1UcdFVPALpyRZ81brItoj/6cSg/81BkrwSixPbARAfc/DhB7+H0k//Oqt4nMLk69ZoBiAX6tCQ=
+X-Received: by 2002:a17:903:1111:b0:16a:acf4:e951 with SMTP id
+ n17-20020a170903111100b0016aacf4e951mr26889387plh.72.1659551255230; Wed, 03
+ Aug 2022 11:27:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220606103734.92423-1-kurt@linutronix.de> <CAADnVQJ--oj+iZYXOwB1Rs9Qiy6Ph9HNha9pJyumVom0tiOFgg@mail.gmail.com>
- <875ylc6djv.ffs@tglx> <c166aa47-e404-e6ee-0ec5-0ead1923f412@redhat.com>
- <CAADnVQKqo1XfrPO8OYA1VpArKHZotuDjGNtxM0AftUj_R+vU7g@mail.gmail.com>
- <87pmhj15vf.fsf@kurt> <CAADnVQ+aDn9ku8p0M2yaPQb_Qi3CxkcyhHbcKTq8y2hrDP5A8Q@mail.gmail.com>
- <87edxxg7qu.fsf@kurt> <Yuo/0hVGQcpTPxZD@boxer>
-In-Reply-To: <Yuo/0hVGQcpTPxZD@boxer>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 3 Aug 2022 10:29:53 -0700
-Message-ID: <CAEf4BzYSzOnJ9_76RFu7e6o_Q2JEen+F-GZbzaW86yh5xnM3Qw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Add BPF-helper for accessing CLOCK_TAI
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     Kurt Kanzenbach <kurt@linutronix.de>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Geliang Tang <geliang.tang@suse.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
+References: <20220803163223.3747004-1-sdf@google.com> <20220803163223.3747004-2-sdf@google.com>
+ <20220803165142.jp7xesq4ejxhwtl7@kafai-mbp.dhcp.thefacebook.com>
+ <CAKH8qBsAotiMp8zj_MgM73mrOEVmvrX7UEuBB63ViHee4Z37WA@mail.gmail.com> <20220803171904.m2gqrd3rf4td6l4p@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20220803171904.m2gqrd3rf4td6l4p@kafai-mbp.dhcp.thefacebook.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Wed, 3 Aug 2022 11:27:24 -0700
+Message-ID: <CAKH8qBuxZDa0-xBXw1Gmt+y7gnoXGdd-f3Tr3dHuaMFPvEFE1w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: Excercise
+ bpf_obj_get_info_by_fd for bpf2bpf
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,132 +71,65 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 3, 2022 at 2:29 AM Maciej Fijalkowski
-<maciej.fijalkowski@intel.com> wrote:
+On Wed, Aug 3, 2022 at 10:19 AM Martin KaFai Lau <kafai@fb.com> wrote:
 >
-> On Wed, Aug 03, 2022 at 08:29:29AM +0200, Kurt Kanzenbach wrote:
-> > On Tue Aug 02 2022, Alexei Starovoitov wrote:
-> > > On Tue, Aug 2, 2022 at 12:06 AM Kurt Kanzenbach <kurt@linutronix.de> wrote:
-> > >>
-> > >> Hi Alexei,
-> > >>
-> > >> On Tue Jun 07 2022, Alexei Starovoitov wrote:
-> > >> > Anyway I guess new helper bpf_ktime_get_tai_ns() is ok, since
-> > >> > it's so trivial, but selftest is necessary.
-> > >>
-> > >> So, I did write a selftest [1] for testing bpf_ktime_get_tai_ns() and
-> > >> verifying that the access to the clock works. It uses AF_XDP sockets and
-> > >> timestamps the incoming packets. The timestamps are then validated in
-> > >> user space.
-> > >>
-> > >> Since AF_XDP related code is migrating from libbpf to libxdp, I'm
-> > >> wondering if that sample fits into the kernel's selftests or not. What
-> > >> kind of selftest are you looking for?
+> On Wed, Aug 03, 2022 at 10:10:33AM -0700, Stanislav Fomichev wrote:
+> > On Wed, Aug 3, 2022 at 9:51 AM Martin KaFai Lau <kafai@fb.com> wrote:
 > > >
-> > > Please use selftests/bpf framework.
-> > > There are plenty of networking tests in there.
-> > > bpf_ktime_get_tai_ns() doesn't have to rely on af_xdp.
+> > > On Wed, Aug 03, 2022 at 09:32:23AM -0700, Stanislav Fomichev wrote:
+> > > > +static void test_fentry_to_cgroup_bpf(void)
+> > > > +{
+> > > > +     struct bind4_prog *skel = NULL;
+> > > > +     struct bpf_prog_info info = {};
+> > > > +     __u32 info_len = sizeof(info);
+> > > > +     int cgroup_fd = -1;
+> > > > +     int fentry_fd = -1;
+> > > > +     int btf_id;
+> > > > +
+> > > > +     cgroup_fd = test__join_cgroup("/fentry_to_cgroup_bpf");
+> > > > +     if (!ASSERT_GE(cgroup_fd, 0, "cgroup_fd"))
+> > > > +             return;
+> > > > +
+> > > > +     skel = bind4_prog__open_and_load();
+> > > > +     if (!ASSERT_OK_PTR(skel, "skel"))
+> > > > +             goto cleanup;
+> > > > +
+> > > > +     skel->links.bind_v4_prog = bpf_program__attach_cgroup(skel->progs.bind_v4_prog, cgroup_fd);
+> > > > +     if (!ASSERT_OK_PTR(skel->links.bind_v4_prog, "bpf_program__attach_cgroup"))
+> > > > +             goto cleanup;
+> > > > +
+> > > > +     btf_id = find_prog_btf_id("bind_v4_prog", bpf_program__fd(skel->progs.bind_v4_prog));
+> > > > +     if (!ASSERT_GE(btf_id, 0, "find_prog_btf_id"))
+> > > > +             goto cleanup;
+> > > > +
+> > > > +     fentry_fd = load_fentry(bpf_program__fd(skel->progs.bind_v4_prog), btf_id);
+> > > > +     if (!ASSERT_GE(fentry_fd, 0, "load_fentry"))
+> > > > +             goto cleanup;
+> > > > +
+> > > > +     /* Make sure bpf_obj_get_info_by_fd works correctly when attaching
+> > > > +      * to another BPF program.
+> > > > +      */
+> > > > +
+> > > > +     ASSERT_OK(bpf_obj_get_info_by_fd(fentry_fd, &info, &info_len),
+> > > > +               "bpf_obj_get_info_by_fd");
+> > > > +
+> > > > +     ASSERT_EQ(info.btf_id, 0, "info.btf_id");
+> > > > +     ASSERT_GT(info.attach_btf_id, 0, "info.attach_btf_id");
+> > > > +     ASSERT_GT(info.attach_btf_obj_id, 0, "info.attach_btf_obj_id");
+> > > nit. This can check against btf_id.
 > >
-> > OK.
-> >
-> > > It can be skb based.
+> > As in ASSERT_NEQ(info.attach_btf_obj_id, info.btf_id,
+> > "info.attach_btf_obj_id") ?
+> Ah, my bad on one line off.  I meant the previous line.
 >
-> FWIW there is xskxceiver and libbpf's xsk part in selftests/bpf framework,
-> so your initial work should be fine in there. Personally I found both
-> (AF_XDP and SKB one, below) tests valuable.
+> ASSERT_NEQ(info.attach_btf_id, btf_id, "info.attach_btf_id");
 
-test_progs is always tested on each patch/patch set. xskxceiver can
-potentially break without anyone noticing for a while. So having
-something like this in test_progs is much better.
+Thanks! I'm assuming that I also confused you with that ASSERT_NEQ and
+you really meant:
+ASSERT_EQ(info.attach_btf_id, btf_id, "info.attach_btf_id");
 
->
-> Later on, if we add a support to xskxceiver for loading external BPF progs
-> then your sample would just become another test case in there.
->
-> >
-> > Something like this?
-> >
-> > +++ b/tools/testing/selftests/bpf/prog_tests/check_tai.c
-> > @@ -0,0 +1,57 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/* Copyright (C) 2022 Linutronix GmbH */
-> > +
-> > +#include <test_progs.h>
-> > +#include <network_helpers.h>
-> > +
-> > +#include <time.h>
-> > +#include <stdint.h>
-> > +
-> > +#define TAI_THRESHOLD        1000000000ULL /* 1s */
-> > +#define NSEC_PER_SEC 1000000000ULL
-> > +
-> > +static __u64 ts_to_ns(const struct timespec *ts)
-> > +{
-> > +     return ts->tv_sec * NSEC_PER_SEC + ts->tv_nsec;
-> > +}
-> > +
-> > +void test_tai(void)
-> > +{
-> > +     struct __sk_buff skb = {
-> > +             .tstamp = 0,
-> > +             .hwtstamp = 0,
-> > +     };
-> > +     LIBBPF_OPTS(bpf_test_run_opts, topts,
-> > +             .data_in = &pkt_v4,
-> > +             .data_size_in = sizeof(pkt_v4),
-> > +             .ctx_in = &skb,
-> > +             .ctx_size_in = sizeof(skb),
-> > +             .ctx_out = &skb,
-> > +             .ctx_size_out = sizeof(skb),
-> > +     );
-> > +     struct timespec now_tai;
-> > +     struct bpf_object *obj;
-> > +     int ret, prog_fd;
-> > +
-> > +     ret = bpf_prog_test_load("./test_tai.o",
-> > +                              BPF_PROG_TYPE_SCHED_CLS, &obj, &prog_fd);
-> > +     if (!ASSERT_OK(ret, "load"))
-> > +             return;
-> > +     ret = bpf_prog_test_run_opts(prog_fd, &topts);
-> > +     ASSERT_OK(ret, "test_run");
-> > +
-> > +     /* TAI != 0 */
-> > +     ASSERT_NEQ(skb.tstamp, 0, "tai_ts0_0");
-> > +     ASSERT_NEQ(skb.hwtstamp, 0, "tai_ts0_1");
-> > +
-> > +     /* TAI is moving forward only */
-> > +     ASSERT_GT(skb.hwtstamp, skb.tstamp, "tai_forward");
-> > +
-> > +     /* Check for reasoneable range */
-> > +     ret = clock_gettime(CLOCK_TAI, &now_tai);
-> > +     ASSERT_EQ(ret, 0, "tai_gettime");
-> > +     ASSERT_TRUE((ts_to_ns(&now_tai) - skb.hwtstamp) < TAI_THRESHOLD,
-> > +                 "tai_range");
-> > +
-> > +     bpf_object__close(obj);
-> > +}
-> > diff --git a/tools/testing/selftests/bpf/progs/test_tai.c b/tools/testing/selftests/bpf/progs/test_tai.c
-> > new file mode 100644
-> > index 000000000000..34ac4175e29d
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/test_tai.c
-> > @@ -0,0 +1,17 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/* Copyright (C) 2022 Linutronix GmbH */
-> > +
-> > +#include <linux/bpf.h>
-> > +#include <bpf/bpf_helpers.h>
-> > +
-> > +char _license[] SEC("license") = "GPL";
-> > +
-> > +SEC("tc")
-> > +int save_tai(struct __sk_buff *skb)
-> > +{
-> > +     /* Save TAI timestamps */
-> > +     skb->tstamp = bpf_ktime_get_tai_ns();
-> > +     skb->hwtstamp = bpf_ktime_get_tai_ns();
-> > +
-> > +     return 0;
-> > +}
->
->
+Will wait for more potential feedback from Hao/Andrii and will try to
+respin tomorrow with your suggestion applied.
+
+> The bind_v4_prog's btf_obj_id is lost.  Otherwise, it could also do
+> ASSERT_NEQ(info.attach_btf_obj_id, bind_v4_prog_btf_id, "info.attach_btf_obj_id");
