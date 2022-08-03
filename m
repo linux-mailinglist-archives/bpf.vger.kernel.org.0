@@ -2,163 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C20588CF1
-	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 15:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AAF1588DE6
+	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 15:51:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235971AbiHCN2j (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Aug 2022 09:28:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47460 "EHLO
+        id S238715AbiHCNvs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Aug 2022 09:51:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235432AbiHCN2i (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Aug 2022 09:28:38 -0400
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F2C1400D;
-        Wed,  3 Aug 2022 06:28:37 -0700 (PDT)
-Received: by mail-vs1-xe2a.google.com with SMTP id x125so17781664vsb.13;
-        Wed, 03 Aug 2022 06:28:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=d4CMEGQnU+S9ZYP05NLfCafbO2suR8T26hcKhvZuoaw=;
-        b=ZvIb+0C1qehTMi24B7yGhqa99SBgp/GVNYmrBlByJqiMvXiYYacZsVBTgeRmFfKrE7
-         Kcp2l/7ydf4FNWFsiBoBzFU1jLiyfPzseMEePRWYD/GvsjvLl41mEAJTUfE9BQgZYb85
-         Z2GBA+uAYNixhh2ZmCyzOqfI9BUNGYRQu/GZwl/H5PmlKdhXldqe2U+BsEPdAGKalc7X
-         k9vDr9/a1zOae6c+iHFnCBfc9YVPHtdVp2UqwPRvU5m+mSNaAeyiyj+Dno2nKCv4D60A
-         jdcrvZEnxqipK1g4h5sCiC21eN3NLMDvK7m6fsF/yJkoU2hhHiFuZtrM+Ucv+SnGb0iH
-         mvMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=d4CMEGQnU+S9ZYP05NLfCafbO2suR8T26hcKhvZuoaw=;
-        b=oTwLb55Et88EwgPSMyA9Lr2JR1xNuReJd8/N+FJvfYh0zaq37Pb3+8THBv0nr+f+TF
-         Bnro5ynt2vbnSq13Hyk6ZTp6g1UPLoOqWCIBwDl+oqjk8p5noi6iT2Qv3pqDJux92nAH
-         u5G2Ypltp0pP6wicjph3u/yjBwdZhKNs036nfiy2yQGn92DiKMh4RO/JyPpvrPRtv7aN
-         VQ+HAf1eqHyLeRGARJHTUX7cnCNzq78DQOTCYP8bdc3k3AkHsaV/bqkxJfSvOVenMjPK
-         OfqQGRDqBZWVfGiFvKJiwkzWSsH2Q9wSZCsgDnonZrodyxgmBbXyQOqPUmRv/wXlkk5u
-         xRAQ==
-X-Gm-Message-State: ACgBeo1NhEeK0EeYMIHGrx+uDpbnz61oh6zfLWc5fH0Xi9RatOX7FUFJ
-        zR8C/KqT+MYPNtYYiy5a1O8ZWBkPYhjmeMxT3pM=
-X-Google-Smtp-Source: AA6agR7fssyMEPL+0GEoOPDewD5mH1gILM/Q0lLDfqi9TugsYxRKmx7COVHqe1jBD5Wr3DA8T//+hr0gSeSsFEpRPy4=
-X-Received: by 2002:a05:6102:441c:b0:378:fcdd:d951 with SMTP id
- df28-20020a056102441c00b00378fcddd951mr7831366vsb.22.1659533316066; Wed, 03
- Aug 2022 06:28:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220729152316.58205-1-laoar.shao@gmail.com> <20220729152316.58205-11-laoar.shao@gmail.com>
- <CAEf4BzZR41_JcQMvBfqB_7rcRZW97cJ_0WfWh7uh4Tt==A6zXw@mail.gmail.com>
- <CALOAHbBqF31ExUKJ3yFA-zrRRHErWSEHCiPbUMi36WCTRm0j+g@mail.gmail.com> <CAEf4BzYfpLG3X5b=stNBfX2KU1JOvFRucvQC_vUmg2yVK3JZ=Q@mail.gmail.com>
-In-Reply-To: <CAEf4BzYfpLG3X5b=stNBfX2KU1JOvFRucvQC_vUmg2yVK3JZ=Q@mail.gmail.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Wed, 3 Aug 2022 21:27:59 +0800
-Message-ID: <CALOAHbBaQh38htnVg7sXrBEeCghe3RYL514xAqi_DhuHbOXMyw@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 10/15] bpf: Use bpf_map_pages_alloc in ringbuf
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S238721AbiHCNvW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Aug 2022 09:51:22 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 639B9459B8;
+        Wed,  3 Aug 2022 06:48:58 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A6B20B822AF;
+        Wed,  3 Aug 2022 13:48:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF834C433D7;
+        Wed,  3 Aug 2022 13:48:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1659534519;
+        bh=QofVbPFWlQ6HFFbhEFcRVeQJ036YZ+JLjvZNFuTDFtg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ETuvR63hPfNyjnl8aA1zTfgeCrhaMDHj/D46IrW4izDOlIEB7pd84ceNLjR9ThUW9
+         Sa/qTouElugysbtT5O1rw5NfPBpYmvl5C/NJVkDeuJp8xAkTn0MPPqNktJBYviyC+v
+         nIoVV65WE6PWw/RqdA0YLqX/s5TLT6gV3cD9wp652TK/Tdp0mkEJ0qDIXpWB1XusSI
+         xfgjkFWY25hPpVKMfi+U7VTtn9bHZHRM7VwbjEzW8Xx6S9xiZ7hRF8SyygttIApiCN
+         7QjVd1/EmkwzeNFyooyt2ZcYWo8D6dtLr4zkv+oh1MTt6x+P0a4gObrs0DERzGUleJ
+         OwAQSHDnMlxcw==
+From:   Lee Jones <lee@kernel.org>
+To:     lee@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, jolsa@kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org
+Subject: [PATCH v2 1/1] bpf: Drop unprotected find_vpid() in favour of find_get_pid()
+Date:   Wed,  3 Aug 2022 14:48:21 +0100
+Message-Id: <20220803134821.425334-1-lee@kernel.org>
+X-Mailer: git-send-email 2.37.1.455.g008518b4e5-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 3, 2022 at 2:00 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Tue, Aug 2, 2022 at 6:31 AM Yafang Shao <laoar.shao@gmail.com> wrote:
-> >
-> > On Tue, Aug 2, 2022 at 7:17 AM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Fri, Jul 29, 2022 at 8:23 AM Yafang Shao <laoar.shao@gmail.com> wrote:
-> > > >
-> > > > Introduce new helper bpf_map_pages_alloc() for this memory allocation.
-> > > >
-> > > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > > > ---
-> > > >  include/linux/bpf.h  |  4 ++++
-> > > >  kernel/bpf/ringbuf.c | 27 +++++++++------------------
-> > > >  kernel/bpf/syscall.c | 41 +++++++++++++++++++++++++++++++++++++++++
-> > > >  3 files changed, 54 insertions(+), 18 deletions(-)
-> > > >
-> > >
-> > > [...]
-> > >
-> > > >         /* Each data page is mapped twice to allow "virtual"
-> > > >          * continuous read of samples wrapping around the end of ring
-> > > > @@ -95,16 +95,10 @@ static struct bpf_ringbuf *bpf_ringbuf_area_alloc(struct bpf_map *map,
-> > > >         if (!pages)
-> > > >                 return NULL;
-> > > >
-> > > > -       for (i = 0; i < nr_pages; i++) {
-> > > > -               page = alloc_pages_node(numa_node, flags, 0);
-> > > > -               if (!page) {
-> > > > -                       nr_pages = i;
-> > > > -                       goto err_free_pages;
-> > > > -               }
-> > > > -               pages[i] = page;
-> > > > -               if (i >= nr_meta_pages)
-> > > > -                       pages[nr_data_pages + i] = page;
-> > > > -       }
-> > > > +       ptr = bpf_map_pages_alloc(map, pages, nr_meta_pages, nr_data_pages,
-> > > > +                                 numa_node, flags, 0);
-> > > > +       if (!ptr)
-> > >
-> > > bpf_map_pages_alloc() has some weird and confusing interface. It fills
-> > > out pages (second argument) and also returns pages as void *. Why not
-> > > just return int error (0 or -ENOMEM)? You are discarding this ptr
-> > > anyways.
-> > >
-> >
-> > I will change it.
-> >
-> > >
-> > > But also thinking some more, bpf_map_pages_alloc() is very ringbuf
-> > > specific (which other map will have exactly the same meaning for
-> > > nr_meta_pages and nr_data_pages, where we also allocate 2 *
-> > > nr_data_pages, etc).
-> > >
-> > > I don't think it makes sense to expose it as a generic internal API.
-> > > Why not keep all that inside kernel/bpf/ringbuf.c instead?
-> > >
-> >
-> > Right, it is used in ringbuf.c only currently. I will keep it inside ringbuf.c.
-> >
->
-> In such case you might as well put pages = bpf_map_area_alloc(); part
-> into this function and return struct page ** as a result, so that
-> everything related to pages is handled as a single unit. And then
-> bpf_map_pages_free() will free not just each individual page, but also
-> struct page*[] array.
->
+The documentation for find_pid() clearly states:
 
-Good suggestion. I will do it.
+  "Must be called with the tasklist_lock or rcu_read_lock() held."
 
-> Also please call it something ringbuf specific, e.g.,
-> bpf_ringbuf_pages_{alloc,free}()?
->
+Presently we do neither.
 
-It Makes sense to me.
+Let's use find_get_pid() which searches for the vpid, then takes a
+reference to it preventing early free, all within the safety of
+rcu_read_lock().  Once we have our reference we can safely make use of
+it up until the point it is put.
 
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Song Liu <song@kernel.org>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: KP Singh <kpsingh@kernel.org>
+Cc: Stanislav Fomichev <sdf@google.com>
+Cc: Hao Luo <haoluo@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: bpf@vger.kernel.org
+Fixes: 41bdc4b40ed6f ("bpf: introduce bpf subcommand BPF_TASK_FD_QUERY")
+Signed-off-by: Lee Jones <lee@kernel.org>
+---
+
+v1 => v2:
+  * Commit log update - no code differences
+
+ kernel/bpf/syscall.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 83c7136c5788d..c20cff30581c4 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -4385,6 +4385,7 @@ static int bpf_task_fd_query(const union bpf_attr *attr,
+ 	const struct perf_event *event;
+ 	struct task_struct *task;
+ 	struct file *file;
++	struct pid *ppid;
+ 	int err;
+ 
+ 	if (CHECK_ATTR(BPF_TASK_FD_QUERY))
+@@ -4396,7 +4397,9 @@ static int bpf_task_fd_query(const union bpf_attr *attr,
+ 	if (attr->task_fd_query.flags != 0)
+ 		return -EINVAL;
+ 
+-	task = get_pid_task(find_vpid(pid), PIDTYPE_PID);
++	ppid = find_get_pid(pid);
++	task = get_pid_task(ppid, PIDTYPE_PID);
++	put_pid(ppid);
+ 	if (!task)
+ 		return -ENOENT;
+ 
 -- 
-Regards
-Yafang
+2.37.1.455.g008518b4e5-goog
+
