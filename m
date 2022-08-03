@@ -2,78 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7E035892AD
-	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 21:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DCEC58933A
+	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 22:29:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236278AbiHCTYl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Aug 2022 15:24:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58818 "EHLO
+        id S238725AbiHCU3y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Aug 2022 16:29:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234206AbiHCTYj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Aug 2022 15:24:39 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7A4C3E767
-        for <bpf@vger.kernel.org>; Wed,  3 Aug 2022 12:24:37 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id a8so3980725pjg.5
-        for <bpf@vger.kernel.org>; Wed, 03 Aug 2022 12:24:37 -0700 (PDT)
+        with ESMTP id S238714AbiHCU3v (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Aug 2022 16:29:51 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AFE15B79C
+        for <bpf@vger.kernel.org>; Wed,  3 Aug 2022 13:29:50 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id y13so19436618ejp.13
+        for <bpf@vger.kernel.org>; Wed, 03 Aug 2022 13:29:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc;
-        bh=NyM2GkHai4fbaYWeGGxOINZzJyzkNVsUHJUSOSxoJ0s=;
-        b=fq9y+bCxi0+b13Cm02iPmGrBdCiZSxhVB2HwbdEj3PsVfRKZZ4+XA1qOfavw+z8GKe
-         5Nzw1i+ZtISxs4l/nVt0oQRXA6Yqk2M7oO53wxxNKJ8xix2oNSBGBEFQMoTRFev82Q9D
-         LKnrMs0Yqx+k2iCuQ3P5cXn8XabrOGozJgIMmfj/YyrMNDKVoM5j7GKoTJ6frDndbKtW
-         LR4pgk8HG6iprBN+dpqx5ILzJB5nSUes/oIG2+qm+mZOvDdotDdrV/viBhlgKm0HF7uO
-         /rQqvC/RfRRO3j+IPhGemNCF5TmXT+Ait/tYj8lqQ8zS2UETGCNeyFGn89fg1QE4rWLY
-         wKpg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=alEn3Rax3peGNBKQ7ZiInI2/T8SrbdW8adjNWc/bDwQ=;
+        b=YydcLOTN4WmJEFwwdSN1r1WFN9P0yWeJ17AHX5KyOoircpzOiuqcLMi8d/BfZ+4Z4E
+         ZmNrkLx7swbDdnmlxqlaNwDbkotXj5kL+VFoKB4j3bgfJTVjGaZaCQtODueHxSKD/3+6
+         lN57l0PfEHXpmLjgLy6LBg4XrbVHVcFwmHKJ7iQ46OmQ1C6hIY6sMX+jfmtlIHZSwefo
+         kijbbKR9rE5kidpwzGm40N0IyE8m+y6Rq+wsTp4hVqo0Mgv5E+DqCu+JY4JfX4etxume
+         vxay7B4GsvT+/1NFc45C6B816NlJmxH1M86qdW+pClzo6zHKs3jLfiuNR8HKSAbjeqq2
+         sydA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
-        bh=NyM2GkHai4fbaYWeGGxOINZzJyzkNVsUHJUSOSxoJ0s=;
-        b=Ag3J259YiBHR9sCFMTWELzBks0dyIAJ+IhoA/iPiAWUPXDpv29JzidCeHOyByBy4rI
-         KOH0mWyyNQNcyNu1KQFsKM9z/nIf1+0FXFZdPDhK2YXmU4PWkyd2veN433kksx7uneBc
-         aXASXobhwz6jP7v7EnBnlajKojTss48+6h0ZVIL5Er8LKt3dHBLSLBKVnqCTKs7maTt+
-         mo/ea8cdFbcOmgQqgeJkd3Y749KMxkj060iGWDD5skLWZXa2PguXruPpZX7/rDEkkuAa
-         rgZdoceuuae3S4rwWV/dkaF7IUZv10RsNmPSu+Tav8Qs5UFa5eFmNfk1CpO4PXPmu45T
-         a8Pw==
-X-Gm-Message-State: ACgBeo0yVbaazHfeB6JBFtVfpodtie5bUPrj5nj0efkvr6gLfCB6IXZW
-        f1scLlAQcpJDhrEFvTjjoT3OZKcEFiRMN8ZDD4s=
-X-Google-Smtp-Source: AA6agR5JRTY4iXglIhyX2C6XnBtaYINLJ8Cerw72azF/OAN/7ulqGNiLr+n+BJPY28fvaIcC46Qe8utYFO8wifzcAt4=
-X-Received: by 2002:a17:903:40c4:b0:16d:d2a9:43ae with SMTP id
- t4-20020a17090340c400b0016dd2a943aemr26150168pld.57.1659554677080; Wed, 03
- Aug 2022 12:24:37 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=alEn3Rax3peGNBKQ7ZiInI2/T8SrbdW8adjNWc/bDwQ=;
+        b=rENcGjc4zVCWntqVxKfNkRSQDmoe7hvXbZhK56r9ghdrMFcPnT7ZD61tlaCJ9UZl+z
+         +2WOVPg2iV80+ykJ9EKCW5S9wioXqZoqIBlAok2B95Owxs4ghaQp9TkPTNwW7Y3vMg8P
+         BHcyCjgmvZdoq22PSJtlVJuOgQqMwVND05lnYawUiG2JzwQUlx0owDO6+4wpJe4MSlP4
+         vGE2ut//H1kXEKRz2nDHusR7kaMVM4rK5yoloaSVGuKqpA4H826d/EuNRG/2L28JIzXY
+         mqb6MXeHUbWfwTBgk6CR/C0cUyFkB+AwZKpOwmDfG5+1Yr9HkF+NF02/+tJ6jqfbBT66
+         8q8g==
+X-Gm-Message-State: ACgBeo0l9+X4zi8GXOMmcY/n0jOOu2MmFA0uOxHNt6kjFxkibV4fbaL/
+        b8aOOFwMMZCMMPlYAIpoykhKN33wjsYtefAemoQ=
+X-Google-Smtp-Source: AA6agR6M9nR8mas7DaMNaDXX6jLjBbMEyKZbaPpGTMKcduIo3/W1KU4koQU/w07xyQYhfcdashc3KB8xsnT9dCM7bqg=
+X-Received: by 2002:a17:907:20d1:b0:730:c420:42d with SMTP id
+ qq17-20020a17090720d100b00730c420042dmr663962ejb.268.1659558588598; Wed, 03
+ Aug 2022 13:29:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <CADvTj4rytB_RDemr4CXO08waaEJGXRC6kt2y_SO0SKN3FgWg0g@mail.gmail.com>
- <CAEf4BzZVq2VZg=S2xZinfth2-f50zxhMm-fPVQGUoeYPC5J4XA@mail.gmail.com>
- <87wncnd5dd.fsf@oracle.com> <8735fbcv3x.fsf@oracle.com> <CADvTj4rBCEC_AFgszcMrgKMXfrBKzktABYy=dTH1F1Z7MxmcTw@mail.gmail.com>
- <87v8s65hdc.fsf@oracle.com> <CADvTj4qniQWNFw4aYpsxV5chdj5v+cLfajRXYOHiK_GOn9OLWQ@mail.gmail.com>
- <8735fa3unq.fsf@oracle.com> <CADvTj4r+1QB2Cg7L9R-fzqs_HA3kdiiQ_4WHvj+h_DvuxoM5kw@mail.gmail.com>
- <CADvTj4pFQmS6XHpHCVO8jt-8ZRdTd--uny-n9vA0+vm4xUoLzQ@mail.gmail.com>
- <87tu7p3o4k.fsf@oracle.com> <CADvTj4r_WnaC-nb-wQwqrzfJsERaX-TnR0tRXZF8fE5UPBThHQ@mail.gmail.com>
- <87h73p1f5s.fsf@oracle.com> <CADvTj4qiz0xHnN+s32tiYm_WA8ai4cHUVPkKm7w6xTkZXUBCag@mail.gmail.com>
- <87k08lunga.fsf@oracle.com> <87fsj8vjcy.fsf@oracle.com> <87bktwvhu5.fsf@oracle.com>
- <CADvTj4o-36iuru665BW0XnEauXBeszW438QTtpt4_VUEjf5nXg@mail.gmail.com>
- <CAEf4BzbN99WbEDS9r7nyO-7+SOYTU=-kXhD+A1L3dzrwrcHdBQ@mail.gmail.com>
- <CADvTj4qi_ZZhdXRPd0X_tgQ8-jgrRgxF+4+kYVA92ZMO8KqESA@mail.gmail.com>
- <CAEf4BzamhADJv+K1e6bLKV7Pob0VC95rgUtEJbVhXWqLgHLTyg@mail.gmail.com>
- <CADvTj4oSc646ebcWzXB65gSy144D+GikbT5eF38OHu+T5tbn-w@mail.gmail.com>
- <CAEf4BzYGXj4otX0pFSTcxKrQAuv7L_rqLyb5Hsp_ueZOZdJorA@mail.gmail.com>
- <CADvTj4pJwnCFB8LipENEPGAB2-+jBcvmOSJSezyTRr4xiozPNg@mail.gmail.com> <CAEf4Bza0-dx=X01ZqzLR_SF6-6r9YZFQa=VLyD6H=0DnLCU1AQ@mail.gmail.com>
-In-Reply-To: <CAEf4Bza0-dx=X01ZqzLR_SF6-6r9YZFQa=VLyD6H=0DnLCU1AQ@mail.gmail.com>
-From:   James Hilliard <james.hilliard1@gmail.com>
-Date:   Wed, 3 Aug 2022 13:24:24 -0600
-Message-ID: <CADvTj4oUMQL2hni0grtAumZAbK5_uxrVW-gZ9wju=Y8ba1WZhg@mail.gmail.com>
-Subject: Re: bpftool gen object doesn't handle GCC built BPF ELF files
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     "Jose E. Marchesi" <jose.marchesi@oracle.com>,
-        bpf <bpf@vger.kernel.org>, david.faust@oracle.com
+References: <20220726184706.954822-1-joannelkoong@gmail.com>
+ <20220726184706.954822-2-joannelkoong@gmail.com> <20220728233936.hjj2smwey447zqyy@kafai-mbp.dhcp.thefacebook.com>
+ <CAJnrk1b2WoHV=iE3j4n_4=2NBP3GaoeD=v-Zt+p-M9N=LApsuQ@mail.gmail.com> <20220729213919.e7x6acvqnwqwfnzu@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20220729213919.e7x6acvqnwqwfnzu@kafai-mbp.dhcp.thefacebook.com>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Wed, 3 Aug 2022 13:29:37 -0700
+Message-ID: <CAJnrk1ZDzM5ir0rpf2kQdW_G4+-woMhULUufdz28DfiB_rqR-A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/3] bpf: Add skb dynptrs
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,452 +68,159 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 3, 2022 at 10:57 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Fri, Jul 29, 2022 at 2:39 PM Martin KaFai Lau <kafai@fb.com> wrote:
 >
-> On Tue, Aug 2, 2022 at 6:49 PM James Hilliard <james.hilliard1@gmail.com>=
- wrote:
+> On Fri, Jul 29, 2022 at 01:26:31PM -0700, Joanne Koong wrote:
+> > On Thu, Jul 28, 2022 at 4:39 PM Martin KaFai Lau <kafai@fb.com> wrote:
+> > >
+> > > On Tue, Jul 26, 2022 at 11:47:04AM -0700, Joanne Koong wrote:
+> > > > @@ -1567,6 +1607,18 @@ BPF_CALL_3(bpf_dynptr_data, struct bpf_dynptr_kern *, ptr, u32, offset, u32, len
+> > > >       if (bpf_dynptr_is_rdonly(ptr))
+> > > Is it possible to allow data slice for rdonly dynptr-skb?
+> > > and depends on the may_access_direct_pkt_data() check in the verifier.
 > >
-> > On Tue, Aug 2, 2022 at 6:29 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Tue, Aug 2, 2022 at 3:06 PM James Hilliard <james.hilliard1@gmail.=
-com> wrote:
-> > > >
-> > > > On Tue, Aug 2, 2022 at 3:29 PM Andrii Nakryiko
-> > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > >
-> > > > > On Mon, Aug 1, 2022 at 4:35 PM James Hilliard <james.hilliard1@gm=
-ail.com> wrote:
-> > > > > >
-> > > > > > On Mon, Aug 1, 2022 at 4:52 PM Andrii Nakryiko
-> > > > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > > > >
-> > > > > > > On Sun, Jul 31, 2022 at 7:20 PM James Hilliard
-> > > > > > > <james.hilliard1@gmail.com> wrote:
-> > > > > > > >
-> > > > > > > > On Sun, Jul 10, 2022 at 2:22 PM Jose E. Marchesi
-> > > > > > > > <jose.marchesi@oracle.com> wrote:
-> > > > > > > > >
-> > > > > > > > >
-> > > > > > > > > >>> On Sun, Jul 10, 2022 at 3:38 AM Jose E. Marchesi
-> > > > > > > > > >>> <jose.marchesi@oracle.com> wrote:
-> > > > > > > > > >>>>
-> > > > > > > > > >>>>
-> > > > > > > > > >>>> > On Sat, Jul 9, 2022 at 4:41 PM Jose E. Marchesi
-> > > > > > > > > >>>> > <jose.marchesi@oracle.com> wrote:
-> > > > > > > > > >>>> >>
-> > > > > > > > > >>>> >>
-> > > > > > > > > >>>> >> > On Sat, Jul 9, 2022 at 2:32 PM James Hilliard <=
-james.hilliard1@gmail.com> wrote:
-> > > > > > > > > >>>> >> >>
-> > > > > > > > > >>>> >> >> On Sat, Jul 9, 2022 at 2:21 PM Jose E. Marches=
-i
-> > > > > > > > > >>>> >> >> <jose.marchesi@oracle.com> wrote:
-> > > > > > > > > >>>> >> >> >
-> > > > > > > > > >>>> >> >> >
-> > > > > > >
-> > > > > > > Please trim your replies (and I don't know what your email cl=
-ient did,
-> > > > > > > but it completely ruined nested quote formatting)
-> > > > > >
-> > > > > > Yeah, not sure what happened there.
-> > > > > >
-> > > > > > >
-> > > > > > > [...]
-> > > > > > >
-> > > > > > > > > >>>>
-> > > > > > > > > >>>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/=
-libbpf.c
-> > > > > > > > > >>>> index e89cc9c885b3..887b78780099 100644
-> > > > > > > > > >>>> --- a/tools/lib/bpf/libbpf.c
-> > > > > > > > > >>>> +++ b/tools/lib/bpf/libbpf.c
-> > > > > > > > > >>>> @@ -1591,6 +1591,10 @@ static int bpf_object__init_g=
-lobal_data_maps(struct bpf_object *obj)
-> > > > > > > > > >>>>         for (sec_idx =3D 1; sec_idx < obj->efile.sec=
-_cnt; sec_idx++) {
-> > > > > > > > > >>>>                 sec_desc =3D &obj->efile.secs[sec_id=
-x];
-> > > > > > > > > >>>>
-> > > > > > > > > >>>> +                /* Skip recognized sections with si=
-ze 0.  */
-> > > > > > > > > >>>> +                if (sec_desc->data && sec_desc->dat=
-a->d_size =3D=3D 0)
-> > > > > > > > > >>>> +                  continue;
-> > > > > > > > > >>>> +
-> > > > > > > > > >>>>                 switch (sec_desc->sec_type) {
-> > > > > > > > > >>>>                 case SEC_DATA:
-> > > > > > > > > >>>>                         sec_name =3D elf_sec_name(ob=
-j, elf_sec_by_idx(obj, sec_idx));
-> > > > > > > > > >>>
-> > > > > > > > > >>> Ok, skeleton is now getting generated successfully, h=
-owever it differs from the
-> > > > > > > > > >>> clang version so there's a build error when we includ=
-e/use the header:
-> > > > > > > > > >>> ../src/core/restrict-ifaces.c: In function =E2=80=98p=
-repare_restrict_ifaces_bpf=E2=80=99:
-> > > > > > > > > >>> ../src/core/restrict-ifaces.c:45:14: error: =E2=80=98=
-struct
-> > > > > > > > > >>> restrict_ifaces_bpf=E2=80=99 has no member named =E2=
-=80=98rodata=E2=80=99; did you mean
-> > > > > > > > > >>> =E2=80=98data=E2=80=99?
-> > > > > > > > > >>>    45 |         obj->rodata->is_allow_list =3D is_all=
-ow_list;
-> > > > > > > > > >>>       |              ^~~~~~
-> > > > > > > > > >>>       |              data
-> > > > > > > > > >>>
-> > > > > > > > > >>> The issue appears to be that clang generates "rodata"=
- members in
-> > > > > > > > > >>> restrict_ifaces_bpf while with gcc we get "data" memb=
-ers instead.
-> > > > > > > > > >>
-> > > > > > > > > >> This is because the BPF GCC port is putting the
-> > > > > > > > > >>
-> > > > > > > > > >>   const volatile unsigned char is_allow_list =3D 0;
-> > > > > > > > > >>
-> > > > > > > > > >> in a .data section instead of .rodata, due to the `vol=
-atile'.  The
-> > > > > > > > > >> x86_64 GCC seems to use .rodata.
-> > > > > > > > > >>
-> > > > > > > > > >> Looking at why the PBF port does this...
-> > > > > > > > > >
-> > > > > > > > > > So, turns out GCC puts zero-initialized `const volatile=
-' variables in
-> > > > > > > > > > .data sections (and not .rodata) in all the targets I h=
-ave tried, like
-> > > > > > > > > > x86_64 and aarch64.
-> > > > > > > > > >
-> > > > > > > > > > So this is a LLVM and GCC divergence :/
-> > > > > > > > >
-> > > > > > > > > See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D25521.
-> > > > > > > > >
-> > > > > > > > > You may try, as a workaround:
-> > > > > > > > >
-> > > > > > > > > __attribute__((section(".rodata"))) const volatile unsign=
-ed char is_allow_list =3D 0;
-> > > > > > > > >
-> > > > > > > > > But that will use permissions "aw" for the .rodata sectio=
-n (and you will
-> > > > > > > > > get a warning from the assembler.)  It may be problematic=
- for libbpf.
-> > > > > > > >
-> > > > > > > > So rather than try to force gcc to use the incorrect llvm .=
-rodata
-> > > > > > > > section it looks
-> > > > > > > > like we can instead just force llvm to use the correct .dat=
-a section like this:
-> > > > > > > > https://github.com/systemd/systemd/pull/24164
-> > > > > > > >
-> > > > > > >
-> > > > > > > There is a huge difference between variables in .rodata and .=
-data.
-> > > > > > > .rodata variable's value is known to the BPF verifier at veri=
-fication
-> > > > > > > time and this knowledge will be used to decide which code pat=
-hs are
-> > > > > > > always or never taken (as one example). It's a crucial proper=
-ty and
-> > > > > > > important guarantee.
-> > > > > > >
-> > > > > > > If you don't care about that property, don't declare the vari=
-able as `const`.
-> > > > > > >
-> > > > > > > So no, it's not llvm putting `const` variable into .rodata
-> > > > > > > incorrectly, but GCC is trying to be smart and just because v=
-ariable
-> > > > > > > is declared volatile is putting *const* variable into read-wr=
-ite .data
-> > > > > > > section. It's declared as const, and yes it's volatile to mak=
-e sure
-> > > > > > > that compiler isn't too smart about optimizing away read oper=
-ations.
-> > > > > >
-> > > > > > Isn't const volatile generating a .rodata section(like llvm is =
-doing) a spec
-> > > > > > violation?
-> > > > > > https://github.com/llvm/llvm-project/issues/56468
-> > > > > >
-> > > > > > > But it's still a const read-only variable from the perspectiv=
-e of that
-> > > > > > > BPF C code.
-> > > > > > >
-> > > > > > > If you don't care about the read-only nature of that variable=
-, drop
-> > > > > > > the const and make it into a non-read-only variable.
-> > > > > > >
-> > > > > > > And please stop proposing hacks to be added to perfectly vali=
-d systemd
-> > > > > > > BPF source code (I replied on [0] as well).
-> > > > > >
-> > > > > > From my understanding gcc is correctly putting a const volatile=
- variable
-> > > > > > in .data while llvm is incorrectly putting it in .rodata, is th=
-e gcc behavior
-> > > > > > here invalid or is the llvm behavior invalid?
-> > > > >
-> > > > > From link you left to C standard, it does seem like that side-not=
-e
-> > > > > *implies* that const volatile should be put into .data, but it's =
-a)
-> > > > > implied b) is quite arguable about assumptions that this data has=
- to
-> > > > > be in modifiable section, and c) entire CO-RE feature detection a=
-nd
-> > > > > guarding relies on having `const volatile` variables in .rodata a=
-nd
-> > > > > mark them as read-only for BPF verifier to allow dead code
-> > > > > elimination. Changing c) would break entire CO-RE ecosystem.
-> > > >
-> > > > Well it does appear that llvm is fixing the behavior to be in line =
-with gcc:
-> > > > https://reviews.llvm.org/D131012
-> > > >
-> > > > >
-> > > > > Seems like this issue was raised by Ulrich Drepper back in 2005 (=
-[0])
-> > > > > and he was also confused about GCC's behavior, btw.
-> > > > >
-> > > > > So either way, at the very least for BPF target we can't change t=
-his
-> > > > > and I still think it's more logical to put const variables into
-> > > > > .rodata, regardless of side notes in C standard.
-> > > >
-> > > > GCC does put const variables in .rodata, just not const volatile va=
-riables.
-> > > >
-> > >
-> > > It's still const. Volatile doesn't change constness of a variable.
-> > > We've been discussing this over and over, it gets a bit tiring, tbh.
-> > >
-> > > Aaron Ballman seems to agree, quoting him from [0]:
-> > >
-> > >   The footnote cited isn't a normative requirement (I can't see any
-> > >   normative requirements that say we can't put a const volatile objec=
-t
-> > >   into a read only section), so it's debatable just how much of a bug
-> > >   this is from a standards conformance perspective. I will have to
-> > >   inquire on the WG14 reflectors to see if there's something I've
-> > >   missed but I believe that C17 6.7.3p5 is meant to point out that
-> > >   only lvalue are qualified; rvalues are not because lvalue conversio=
-n
-> > >   strips the qualifiers. I think the footnote is mostly a nod towards
-> > >   the fact that volatile qualified objects may change their value in
-> > >   ways unknown to the compiler so storing it in a read-only section
-> > >   of memory is a bit questionable. But I'm curious if the committee
-> > >   tells me I've missed something there.
-> > >
-> > >
-> > >   [0] https://github.com/llvm/llvm-project/issues/56468#issuecomment-=
-1203146308
-> > >
-> > > > >
-> > > > >
-> > > > > As for systemd's program and its is_allow_list ([1]), to unblock
-> > > > > yourself you can drop const because systemd doesn't rely on read-=
-only
-> > > > > guarantees of that variable anyways. It's much more critical in
-> > > > > feature-detection use cases. But let's try to converge discussion=
- in
-> > > > > one place (preferably here), it's quite inconvenient to either re=
-ply
-> > > > > the same thing twice here and on Github, or cross-reference lore =
-and
-> > > > > Github.
-> > > >
-> > > > Hmm, are you sure:
-> > > > const __u8 is_allow_list SEC(".rodata") =3D 0;
-> > > >
-> > > > doesn't provide equivalent behavior to:
-> > > > const volatile __u8 is_allow_list =3D 0;
-> > >
-> > > Is there anything preventing you from experimenting with this yoursel=
-f?..
-> >
-> > Wasn't sure how to reproduce the issue properly.
-> >
+> > Ooh great idea. This should be very simple to do, since the data slice
+> > that gets returned is assigned as PTR_TO_PACKET. So any stx operations
+> > on it will by default go through the may_access_direct_pkt_data()
+> > check. I'll add this for v2.
+> It will be great.  Out of all three helpers (bpf_dynptr_read/write/data),
+> bpf_dynptr_data will be the useful one to parse the header data (e.g. tcp-hdr-opt)
+> that has runtime variable length because bpf_dynptr_data() can take a non-cost
+> 'offset' argument.  It is useful to get a consistent usage across all bpf
+> prog types that are either read-only or read-write of the skb.
 >
-> Then please start asking specific questions about how to repro issues
-> we are talking about, instead of randomly throwing various ideas
-> around and seeing what sticks.
-
-I tested with the reproducer to see if any attribute based workarounds
-might avoid the need for volatile, and I didn't find anything.
-
+> >
+> > >
+> > > >               return 0;
+> > > >
+> > > > +     type = bpf_dynptr_get_type(ptr);
+> > > > +
+> > > > +     if (type == BPF_DYNPTR_TYPE_SKB) {
+> > > > +             struct sk_buff *skb = ptr->data;
+> > > > +
+> > > > +             /* if the data is paged, the caller needs to pull it first */
+> > > > +             if (ptr->offset + offset + len > skb->len - skb->data_len)
+> > > > +                     return 0;
+> > > > +
+> > > > +             return (unsigned long)(skb->data + ptr->offset + offset);
+> > > > +     }
+> > > > +
+> > > >       return (unsigned long)(ptr->data + ptr->offset + offset);
+> > > >  }
+> > >
+> > > [ ... ]
+> > >
+> > > > -static u32 stack_slot_get_id(struct bpf_verifier_env *env, struct bpf_reg_state *reg)
+> > > > +static void stack_slot_get_dynptr_info(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
+> > > > +                                    struct bpf_call_arg_meta *meta)
+> > > >  {
+> > > >       struct bpf_func_state *state = func(env, reg);
+> > > >       int spi = get_spi(reg->off);
+> > > >
+> > > > -     return state->stack[spi].spilled_ptr.id;
+> > > > +     meta->ref_obj_id = state->stack[spi].spilled_ptr.id;
+> > > > +     meta->type = state->stack[spi].spilled_ptr.dynptr.type;
+> > > >  }
+> > > >
+> > > >  static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+> > > > @@ -6052,6 +6057,9 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+> > > >                               case DYNPTR_TYPE_RINGBUF:
+> > > >                                       err_extra = "ringbuf ";
+> > > >                                       break;
+> > > > +                             case DYNPTR_TYPE_SKB:
+> > > > +                                     err_extra = "skb ";
+> > > > +                                     break;
+> > > >                               default:
+> > > >                                       break;
+> > > >                               }
+> > > > @@ -6065,8 +6073,10 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+> > > >                                       verbose(env, "verifier internal error: multiple refcounted args in BPF_FUNC_dynptr_data");
+> > > >                                       return -EFAULT;
+> > > >                               }
+> > > > -                             /* Find the id of the dynptr we're tracking the reference of */
+> > > > -                             meta->ref_obj_id = stack_slot_get_id(env, reg);
+> > > > +                             /* Find the id and the type of the dynptr we're tracking
+> > > > +                              * the reference of.
+> > > > +                              */
+> > > > +                             stack_slot_get_dynptr_info(env, reg, meta);
+> > > >                       }
+> > > >               }
+> > > >               break;
+> > > > @@ -7406,7 +7416,11 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+> > > >               regs[BPF_REG_0].type = PTR_TO_TCP_SOCK | ret_flag;
+> > > >       } else if (base_type(ret_type) == RET_PTR_TO_ALLOC_MEM) {
+> > > >               mark_reg_known_zero(env, regs, BPF_REG_0);
+> > > > -             regs[BPF_REG_0].type = PTR_TO_MEM | ret_flag;
+> > > > +             if (func_id == BPF_FUNC_dynptr_data &&
+> > > > +                 meta.type == BPF_DYNPTR_TYPE_SKB)
+> > > > +                     regs[BPF_REG_0].type = PTR_TO_PACKET | ret_flag;
+> > > > +             else
+> > > > +                     regs[BPF_REG_0].type = PTR_TO_MEM | ret_flag;
+> > > >               regs[BPF_REG_0].mem_size = meta.mem_size;
+> > > check_packet_access() uses range.
+> > > It took me a while to figure range and mem_size is in union.
+> > > Mentioning here in case someone has similar question.
+> > For v2, I'll add this as a comment in the code or I'll include
+> > "regs[BPF_REG_0].range = meta.mem_size" explicitly to make it more
+> > obvious :)
+> 'regs[BPF_REG_0].range = meta.mem_size' would be great.  No strong
+> opinion here.
 >
 > > >
-> > > Let's see:
-> > >
-> > > $ git diff
-> > > diff --git a/tools/testing/selftests/bpf/prog_tests/skeleton.c
-> > > b/tools/testing/selftests/bpf/prog_tests/skeleton.c
-> > > index 99dac5292b41..386785a45af0 100644
-> > > --- a/tools/testing/selftests/bpf/prog_tests/skeleton.c
-> > > +++ b/tools/testing/selftests/bpf/prog_tests/skeleton.c
-> > > @@ -31,6 +31,8 @@ void test_skeleton(void)
-> > >         if (CHECK(skel->kconfig, "skel_kconfig", "kconfig is mmaped()=
-!\n"))
-> > >                 goto cleanup;
-> > >
-> > > +       skel->rodata->should_trap =3D false;
-> > > +
-> > >         bss =3D skel->bss;
-> > >         data =3D skel->data;
-> > >         data_dyn =3D skel->data_dyn;
-> > > diff --git a/tools/testing/selftests/bpf/progs/test_skeleton.c
-> > > b/tools/testing/selftests/bpf/progs/test_skeleton.c
-> > > index 1a4e93f6d9df..eee26bc82525 100644
-> > > --- a/tools/testing/selftests/bpf/progs/test_skeleton.c
-> > > +++ b/tools/testing/selftests/bpf/progs/test_skeleton.c
-> > > @@ -26,6 +26,8 @@ const volatile struct {
-> > >         const int in6;
-> > >  } in =3D {};
-> > >
-> > > +const bool should_trap SEC(".rodata") =3D true;
-> > > +
-> > >  /* .data section */
-> > >  int out1 =3D -1;
-> > >  long long out2 =3D -1;
-> > > @@ -58,6 +60,10 @@ int handler(const void *ctx)
-> > >  {
-> > >         int i;
-> > >
-> > > +       while (should_trap)
-> > > +       {
-> > > +       }
-> > > +
-> > >         out1 =3D in1;
-> > >         out2 =3D in2;
-> > >         out3 =3D in3;
-> > >
-> > >
-> > > Result: selftests stop compiling. Why?
-> > >
-> > > $ llvm-objdump -d test_skeleton.linked1.o
-> > >
-> > > test_skeleton.linked1.o:        file format elf64-bpf
-> > >
-> > > Disassembly of section raw_tp/sys_enter:
-> > >
-> > > 0000000000000000 <handler>:
-> > >        0:       05 00 ff ff 00 00 00 00 goto -1 <handler>
-> > >
-> > > Because compiler optimized away everything with while (true) {}. Ther=
-e
-> > > is no global data at all anymore.
-> > >
-> > > This is what I keep telling you, const volatile is the only thing
-> > > preventing the compiler from making wrong assumptions. And neither
-> > >
-> > > const bool should_trap SEC(".rodata") =3D true;
-> > >
-> > > nor
-> > >
-> > > const bool should_trap =3D true;
-> > >
-> > > work.
-> > >
-> > > But
-> > >
-> > > const volatile bool should_trap =3D true;
-> > >
-> > > does work.
-> > >
-> > > If you have some more speculative proposals, please investigate them
-> > > yourself and report back with the results. But either way there is a
-> > > lot of BPF code written with reliance on `const volatile`, both open
-> > > source and not, so please stop actively trying to break BPF ecosystem
-> > > with proposals like moving `const volatile` to .data, just because
-> > > it's more convenient for you in GCC. Thank you.
-> >
-> > So it does at least seem I can force GCC to use .rodata like this for
-> > systemd, maybe that's the best approach for now?:
-> >
-> > const volatile __u8 is_allow_list SEC(".rodata") =3D 0;
-> >
-> > It does emit an assembler warning but otherwise appears to work:
-> > Generating src/core/bpf/restrict_ifaces/restrict-ifaces.bpf.unstripped.=
-o
-> > with a custom command
-> > /tmp/ccM2b7jP.s: Assembler messages:
-> > /tmp/ccM2b7jP.s:87: Warning: setting incorrect section attributes for .=
-rodata
-> >
-> > I updated my systemd PR with that.
-> >
->
-> For Nth time, don't do this. Drop the const for systemd. And please
-> start paying attention to feedback.
-
-Well I was looking for a more general solution for behavior convergence,
-I posted here to see if that was a workable option to get both compilers
-to behave the same for cases where we want the variable to be in
-.rodata. I had also updated the pull request to make it easier to get
-feedback on that approach.
-
-I guess a developer at your company approved the PR already and
-it got merged.
-
->
-> Please also start with learning how to build selftests/bpf with Clang
-> and looking at various examples so that you can at least look at all
-> the different features we rely on in the BPF world, instead of trying
-> to tune one small piece (systemd's BPF programs) to your liking. If
-> you are serious about making GCC BPF backend viable, you'll have to
-> understand BPF a bit better.
-
-I did do that for both clang and gcc, I've been fixing issues I discovered
-like this one for example when trying to build tests with gcc:
-https://lore.kernel.org/bpf/20220803151403.793024-1-james.hilliard1@gmail.c=
-om/
-
->
-> That would be a better use of everyone's time, instead of you going
-> behind our backs and requesting Clang to break the entire BPF
-> ecosystem just because GCC is doing something differently, like you
-> and Jose E. Marchesi did with [0] and [1].
-
-The behavior divergence here appears to predate BPF support in both
-compilers from my understanding, the issue is being discussed in both
-GCC and llvm issue trackers to try and figure out what the best way to
-get behavior convergence would be, seems to make sense to me to
-have this issue tracked by llvm and GCC.
-
-Explicitly setting the section seemed like it might be a good approach so
-that in the event llvm did change the default things would still work the
-same way.
-
-I don't think anyone is trying to go behind anyone's back here...I've tried
-to cross reference issues in general so that everyone is aware of all the
-discussions.
-
->
->   [0] https://github.com/llvm/llvm-project/issues/56468
->   [1] https://reviews.llvm.org/D131012
->
-> > >
+> > > >       } else if (base_type(ret_type) == RET_PTR_TO_MEM_OR_BTF_ID) {
+> > > >               const struct btf_type *t;
+> > > > @@ -14132,6 +14146,25 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+> > > >                       goto patch_call_imm;
+> > > >               }
 > > > >
-> > > > The used attribute in the SEC macro supposedly ensures that:
-> > > > The compiler must emit the definition even if it appears to be unus=
-ed, and
-> > > > it must not apply optimizations which depend on fully understanding=
- how
-> > > > the entity is used.
-> > > >
-> > > > Or maybe the retain attribute along with used would be sufficient t=
-o allow
-> > > > us to drop volatile in these cases?:
-> > > > https://clang.llvm.org/docs/AttributeReference.html#retain
-> > > >
-> > > > >
-> > > > >
-> > > > >   [0] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D25521
-> > > > >   [1] https://github.com/systemd/systemd/pull/24164#issuecomment-=
-1203207372
-> > > > >
-> > > > > >
-> > > > > > >
-> > > > > > >   [0] https://github.com/systemd/systemd/pull/24164#issuecomm=
-ent-1201806413
-> > > > > > >
-> > > > > > >
-> > > > > > > [...]
+> > > > +             if (insn->imm == BPF_FUNC_dynptr_from_skb) {
+> > > > +                     if (!may_access_direct_pkt_data(env, NULL, BPF_WRITE))
+> > > > +                             insn_buf[0] = BPF_MOV32_IMM(BPF_REG_4, true);
+> > > > +                     else
+> > > > +                             insn_buf[0] = BPF_MOV32_IMM(BPF_REG_4, false);
+> > > > +                     insn_buf[1] = *insn;
+> > > > +                     cnt = 2;
+> > > > +
+> > > > +                     new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
+> > > > +                     if (!new_prog)
+> > > > +                             return -ENOMEM;
+> > > > +
+> > > > +                     delta += cnt - 1;
+> > > > +                     env->prog = new_prog;
+> > > > +                     prog = new_prog;
+> > > > +                     insn = new_prog->insnsi + i + delta;
+> > > > +                     goto patch_call_imm;
+> > > > +             }
+> > > Have you considered to reject bpf_dynptr_write()
+> > > at prog load time?
+> > It's possible to reject bpf_dynptr_write() at prog load time but would
+> > require adding tracking in the verifier for whether a dynptr is
+> > read-only or not. Do you think it's better to reject it at load time
+> > instead of returning NULL at runtime?
+> The check_helper_call above seems to know 'meta.type == BPF_DYNPTR_TYPE_SKB'.
+> Together with may_access_direct_pkt_data(), would it be enough ?
+> Then no need to do patching for BPF_FUNC_dynptr_from_skb here.
+
+Thinking about this some more, I think BPF_FUNC_dynptr_from_skb needs
+to be patched regardless in order to set the rd-only flag in the
+metadata for the dynptr. There will be other helper functions that
+write into dynptrs (eg memcpy with dynptrs, strncpy with dynptrs,
+probe read user with dynptrs, ...) so I think it's more scalable if we
+reject these writes at runtime through the rd-only flag in the
+metadata, than for the verifier to custom-case that any helper funcs
+that write into dynptrs will need to get dynptr type + do
+may_access_direct_pkt_data() if it's type skb or xdp. The
+inconsistency between not rd-only in metadata vs. rd-only in verifier
+might be a little confusing as well.
+
+For these reasons, I'm leaning more towards having bpf_dynptr_write()
+and other dynptr write helper funcs be rejected at runtime instead of
+prog load time, but I'm eager to hear what you prefer.
+
+What are your thoughts?
+
+>
+> Since we are on bpf_dynptr_write, what is the reason
+> on limiting it to the skb_headlen() ?  Not implying one
+> way is better than another.  would like to undertand the reason
+> behind it since it is not clear in the commit message.
