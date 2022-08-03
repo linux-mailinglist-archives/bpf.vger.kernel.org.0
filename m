@@ -2,82 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBFB6588F43
-	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 17:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B84EC588F52
+	for <lists+bpf@lfdr.de>; Wed,  3 Aug 2022 17:27:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238020AbiHCPUm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Aug 2022 11:20:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53978 "EHLO
+        id S232563AbiHCP1Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Aug 2022 11:27:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238100AbiHCPUi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Aug 2022 11:20:38 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA7F32BB2
-        for <bpf@vger.kernel.org>; Wed,  3 Aug 2022 08:20:35 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id cm4-20020a056830650400b0063675a4dd74so2616883otb.10
-        for <bpf@vger.kernel.org>; Wed, 03 Aug 2022 08:20:35 -0700 (PDT)
+        with ESMTP id S229621AbiHCP1Y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Aug 2022 11:27:24 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D5211658B;
+        Wed,  3 Aug 2022 08:27:23 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id a89so21932188edf.5;
+        Wed, 03 Aug 2022 08:27:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc;
-        bh=RPqGFZtbNqgICpWV/6VvhSR6n3AOi6dZZb+5V7yogyQ=;
-        b=eKxcY/wUV1t5iGFQOTkC3uUqXsNlO3wJPUXpinu2/pZFiIuEZDbShMVl1SWFB8VMKG
-         dN33busgN2TumcApmrWbU9bmxspzUC3EobauqLvOHnBA8X1FgGKATmogtCPRFVJX7swX
-         jnEljBTuf+JFh+gnVMEfcFQpvfPapnczKgq9A=
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc;
+        bh=NstIhUvDndfhWQhjJY54RegUN1YZlKiUPmz8PG5jen0=;
+        b=kbUTCYf8W9wxbL8ZzhcpD7tffIrDNB7uTgsF2jrAZFtiH+/oSbwNJ/59q6xBEJMGW5
+         J3+Df/AJ1ckT1I2e92XqpTGaXS6Cd9em/LvZQCXHq6f7fhkMGIWbyPCI6oEzx9Hvu3Pv
+         wjv7zFVW5UrS4uZtf8ARoixOmHUNRriP/9I7fJ8GMQFZrYESpmtz2o93ThkCuW6iGey1
+         pAd+d48rHt6aNNq1H3yPQvdXUOyxSpCh4LKrA1wk1vok3txU+BKqUC0V92iqewwTQOtZ
+         t3sO+fNKrrLbURpfaz5bhhn4diPvgIRrI7dIn8C69gYPh0CGplwCVPPGRsLQaNa16pss
+         Q3xA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc;
-        bh=RPqGFZtbNqgICpWV/6VvhSR6n3AOi6dZZb+5V7yogyQ=;
-        b=wLeZtqe2CuIIpEbWtD9wK09uFwYECu368ov4VNDsqmF/qgGlqtoci5+kQZ7M5vhskr
-         xfmm9+Z5w/IYV3IJwlo322S/qtFqwX6K2Tok35mrnZpGYPIGw7WjL6VI/uNiVQz33PgK
-         FvbCLZPNtMCsYepUvBnsW4xQGiKye2IZKm+Vru6hok7huPfSXXoeEd/h98qzGYRAYCuU
-         QMWdcEibgZxtBhw1v1ki5e4IdHpeuu6UlUaJp5frSZnU3qHl3xN6x0YhJ4JZsG7dTSaq
-         Q6tMpc6XI1t1HItqqAdVdWVY07uJ6tPZgBaS1UscwBuVXCgIJSOmJzHc0cSCUu/oZTvc
-         /mSw==
-X-Gm-Message-State: AJIora/cOZAF0fNvvXWlDUbhxVpXlv4NdqlaOlLq1hm4xXeemlCPUROw
-        mxSEhgc0OYQ/SUUPpkCMtmkTeQ==
-X-Google-Smtp-Source: AGRyM1vhYxujzT2YaLXCnoBJSDqDHPUJMnPpsU0AX9VW0hT0pmIMq5BAvFR7alVbeYb7pUS4X0XAlA==
-X-Received: by 2002:a9d:6007:0:b0:61c:ecd2:ac55 with SMTP id h7-20020a9d6007000000b0061cecd2ac55mr8737434otj.32.1659540034249;
-        Wed, 03 Aug 2022 08:20:34 -0700 (PDT)
-Received: from [192.168.0.41] ([184.4.90.121])
-        by smtp.gmail.com with ESMTPSA id fo22-20020a0568709a1600b0010eaeee89a1sm3056992oab.46.2022.08.03.08.20.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Aug 2022 08:20:33 -0700 (PDT)
-Message-ID: <aad6c2cb-abdd-b066-9d1d-d0f415256ae6@cloudflare.com>
-Date:   Wed, 3 Aug 2022 10:20:32 -0500
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc;
+        bh=NstIhUvDndfhWQhjJY54RegUN1YZlKiUPmz8PG5jen0=;
+        b=HVbillenALsdSzjVlD3Vfy+i8MVLYbCt29sWITwvNO+H/QdKtTOBovHWnhIczvauWz
+         0XyqsyFDeCwF2mupe/hlGglalfTkqkAMPsRV6M6/9s54dumKDUFHiBhFr5RfO85Iu4YS
+         I2lcg7msl1rNQ3lX8dHdGNo9YokyOE/zoOYNlAg18g59jytAK9uhZR5xvWWpvFawoPS6
+         gA1nsH7D2OYo3oIharMmR6xBk7GC0PM4FBEU23SbBx67WN3++9QUamDQ3wOBKB1VJlS1
+         Dn4IjpM8NoxNvrqjsw9M/gKydCtkz1zM1rQLl/FQ9tHzSygga8hSau5IJMXr3YQemGvp
+         T9LQ==
+X-Gm-Message-State: ACgBeo0RH5l+2LeuhLNrlHB1MQF4CaIbfmnQDJDnUdp5BQ5gO8OrvkCU
+        Vhm/HewO6cu6vJ6dhWIHX8o=
+X-Google-Smtp-Source: AA6agR6UzGbLznDIzufozkxc3QxIbkRILg9KQkRnk76qQftIeadMR3af1KL/ug7WWsuNc+O45rYqbw==
+X-Received: by 2002:a05:6402:3583:b0:43d:6943:44a with SMTP id y3-20020a056402358300b0043d6943044amr18876184edc.409.1659540441529;
+        Wed, 03 Aug 2022 08:27:21 -0700 (PDT)
+Received: from krava ([83.240.61.12])
+        by smtp.gmail.com with ESMTPSA id s10-20020aa7c54a000000b0043d1eff72b3sm8280323edr.74.2022.08.03.08.27.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Aug 2022 08:27:21 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Wed, 3 Aug 2022 17:27:19 +0200
+To:     Lee Jones <lee@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] bpf: Drop unprotected find_vpid() in favour of
+ find_get_pid()
+Message-ID: <YuqT17dTbHK521pC@krava>
+References: <20220803134821.425334-1-lee@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH v3 0/4] Introduce security_create_user_ns()
-Content-Language: en-US
-To:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Paul Moore <paul@paul-moore.com>
-Cc:     Martin KaFai Lau <kafai@fb.com>, kpsingh@kernel.org,
-        revest@chromium.org, jackmanb@chromium.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, songliubraving@fb.com,
-        yhs@fb.com, john.fastabend@gmail.com, jmorris@namei.org,
-        serge@hallyn.com, stephen.smalley.work@gmail.com,
-        eparis@parisplace.org, shuah@kernel.org, brauner@kernel.org,
-        casey@schaufler-ca.com, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, kernel-team@cloudflare.com,
-        cgzones@googlemail.com, karl@bigbadwolfsecurity.com,
-        tixxdz@gmail.com
-References: <20220721172808.585539-1-fred@cloudflare.com>
- <20220722061137.jahbjeucrljn2y45@kafai-mbp.dhcp.thefacebook.com>
- <18225d94bf0.28e3.85c95baa4474aabc7814e68940a78392@paul-moore.com>
- <87a68mcouk.fsf@email.froward.int.ebiederm.org>
-From:   Frederick Lawler <fred@cloudflare.com>
-In-Reply-To: <87a68mcouk.fsf@email.froward.int.ebiederm.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220803134821.425334-1-lee@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,97 +78,71 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/2/22 4:33 PM, Eric W. Biederman wrote:
-> Paul Moore <paul@paul-moore.com> writes:
-> 
->> On July 22, 2022 2:12:03 AM Martin KaFai Lau <kafai@fb.com> wrote:
->>
->>> On Thu, Jul 21, 2022 at 12:28:04PM -0500, Frederick Lawler wrote:
->>>> While creating a LSM BPF MAC policy to block user namespace creation, we
->>>> used the LSM cred_prepare hook because that is the closest hook to prevent
->>>> a call to create_user_ns().
->>>>
->>>> The calls look something like this:
->>>>
->>>> cred = prepare_creds()
->>>> security_prepare_creds()
->>>> call_int_hook(cred_prepare, ...
->>>> if (cred)
->>>> create_user_ns(cred)
->>>>
->>>> We noticed that error codes were not propagated from this hook and
->>>> introduced a patch [1] to propagate those errors.
->>>>
->>>> The discussion notes that security_prepare_creds()
->>>> is not appropriate for MAC policies, and instead the hook is
->>>> meant for LSM authors to prepare credentials for mutation. [2]
->>>>
->>>> Ultimately, we concluded that a better course of action is to introduce
->>>> a new security hook for LSM authors. [3]
->>>>
->>>> This patch set first introduces a new security_create_user_ns() function
->>>> and userns_create LSM hook, then marks the hook as sleepable in BPF.
->>> Patch 1 and 4 still need review from the lsm/security side.
->>
->>
->> This patchset is in my review queue and assuming everything checks
->> out, I expect to merge it after the upcoming merge window closes.
-> 
-> It doesn't even address my issues with the last patchset.
+On Wed, Aug 03, 2022 at 02:48:21PM +0100, Lee Jones wrote:
+> The documentation for find_pid() clearly states:
 
-Are you referring to [1], and with regards to [2], is the issue that the 
-wording could be improved for both the cover letter and patch 1/4?
-
-Ultimately, the goal of CF is to leverage and use user namespaces and 
-block tasks whose meta information do not align with our allow list 
-criteria. Yes, there is a higher goal of restricting our attack surface. 
-Yes, people will find ways around security. The point is to have 
-multiple levels of security, and this patch series allows people to add 
-another level.
-
-Calling this hook a regression is not true since there's no actual 
-regression in the code. What would constitute a perceived regression is 
-an admin imposing such a SELinux or BPF restriction within their 
-company, but developers in that company ideally would try to work with 
-the admin to enable user namespaces for certain use cases, or 
-alternatively do what you don't want given current tooling: always run 
-code as root. That's where this hook comes in: let people observe and 
-enforce how they see fit. The average enthusiasts would see no impact.
-
-I was requested to add _some_ test to BPF and to add a SELinux 
-implementation. The low hanging fruit for a test to prove that the hook 
-is capable of doing _something_ was to simply just block outright, and 
-provide _some example_ of use. It doesn't make sense for us to write a 
-test that outlines specifically what CF or others are doing because that 
-would put too much emphasis on an implementation detail that doesn't 
-matter to prove that the hook works.
-
-Without Djalal's comment, I can't defend an observability use case that 
-we're not currently leveraging. We have it now, so therefore I'll defend 
-it per KP's suggestion[3] in v5.
-
-By not responding to the email discussions, we can't accurately gauge 
-what should or should not be in the descriptions. No one here 
-necessarily disagrees with some of the points you made, and others have 
-appropriately responded. As others have also wrote, you're not proposing 
-alternatives. How do you expect us to work with that?
-
-Please, let us know which bits and pieces ought to be included in the 
-descriptions, and let us know what things we should call out caveats to 
-that would satisfy your concerns.
-
-Links:
-1. 
-https://lore.kernel.org/all/01368386-521f-230b-1d49-de19377c27d1@cloudflare.com/
-2. 
-https://lore.kernel.org/all/877d45kri4.fsf@email.froward.int.ebiederm.org/#t
-3. 
-https://lore.kernel.org/all/CACYkzJ4x90DamdN4dRCn1gZuAHLqJNy4MoP=qTX+44Bqx1uxSQ@mail.gmail.com/
-4. 
-https://lore.kernel.org/all/CAEiveUdPhEPAk7Y0ZXjPsD=Vb5hn453CHzS9aG-tkyRa8bf_eg@mail.gmail.com/#t
+nit: typo find_vpid
 
 > 
-> So it has my NACK.
+>   "Must be called with the tasklist_lock or rcu_read_lock() held."
 > 
-> Eric
+> Presently we do neither.
+> 
+> Let's use find_get_pid() which searches for the vpid, then takes a
+> reference to it preventing early free, all within the safety of
+> rcu_read_lock().  Once we have our reference we can safely make use of
+> it up until the point it is put.
+> 
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: Andrii Nakryiko <andrii@kernel.org>
+> Cc: Martin KaFai Lau <martin.lau@linux.dev>
+> Cc: Song Liu <song@kernel.org>
+> Cc: Yonghong Song <yhs@fb.com>
+> Cc: KP Singh <kpsingh@kernel.org>
+> Cc: Stanislav Fomichev <sdf@google.com>
+> Cc: Hao Luo <haoluo@google.com>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Cc: bpf@vger.kernel.org
+> Fixes: 41bdc4b40ed6f ("bpf: introduce bpf subcommand BPF_TASK_FD_QUERY")
+> Signed-off-by: Lee Jones <lee@kernel.org>
 
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+
+jirka
+
+> ---
+> 
+> v1 => v2:
+>   * Commit log update - no code differences
+> 
+>  kernel/bpf/syscall.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 83c7136c5788d..c20cff30581c4 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -4385,6 +4385,7 @@ static int bpf_task_fd_query(const union bpf_attr *attr,
+>  	const struct perf_event *event;
+>  	struct task_struct *task;
+>  	struct file *file;
+> +	struct pid *ppid;
+>  	int err;
+>  
+>  	if (CHECK_ATTR(BPF_TASK_FD_QUERY))
+> @@ -4396,7 +4397,9 @@ static int bpf_task_fd_query(const union bpf_attr *attr,
+>  	if (attr->task_fd_query.flags != 0)
+>  		return -EINVAL;
+>  
+> -	task = get_pid_task(find_vpid(pid), PIDTYPE_PID);
+> +	ppid = find_get_pid(pid);
+> +	task = get_pid_task(ppid, PIDTYPE_PID);
+> +	put_pid(ppid);
+>  	if (!task)
+>  		return -ENOENT;
+>  
+> -- 
+> 2.37.1.455.g008518b4e5-goog
+> 
