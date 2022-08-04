@@ -2,75 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70924589FE2
-	for <lists+bpf@lfdr.de>; Thu,  4 Aug 2022 19:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4744158A0B1
+	for <lists+bpf@lfdr.de>; Thu,  4 Aug 2022 20:45:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234487AbiHDRaJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Aug 2022 13:30:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50002 "EHLO
+        id S232163AbiHDSpd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Aug 2022 14:45:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233703AbiHDRaH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Aug 2022 13:30:07 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BFB9186F9
-        for <bpf@vger.kernel.org>; Thu,  4 Aug 2022 10:30:06 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id k26so542145ejx.5
-        for <bpf@vger.kernel.org>; Thu, 04 Aug 2022 10:30:05 -0700 (PDT)
+        with ESMTP id S231355AbiHDSpc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Aug 2022 14:45:32 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00D92FD28
+        for <bpf@vger.kernel.org>; Thu,  4 Aug 2022 11:45:28 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id y13so803866ejp.13
+        for <bpf@vger.kernel.org>; Thu, 04 Aug 2022 11:45:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=XyL5SVUmTOUbTKdARYMTlRfQUF3PC0E2gSVrWnr+WdE=;
-        b=kcLJbQdaklWdwjMZUhftTOAGQye7SInvfaQLRMnEhrBmmnFow5LaI+GaO+uKIVeuiT
-         g7QLqr3nlI97kRdujiX6DudIEeF330Px+vEm1URdh2MO0wQt7LNx6mAB8+L8Pc/MbSmw
-         g3wpdgM9SJcNaoayFqVWfA6jPyFzWAjGN9AD7UtUKvWwpw4lpG5m9PLL+BO1jYjPA/90
-         FkFFwwV7djSNSEIgYCeDD8WqdFnU2iNOBN5tpW8fURaQZDcl10JoWyFp9uyEvnB2Z7lD
-         dQmYfZ6IqCoCePkpnIsO47SSnSobImXE842An9qkMWIwNGVubzoDLX4lJUhZLhQDkI9b
-         LILg==
+        bh=LT8EntzTQx4FXzf8ujFhKvJBalVOvM5VsXwPWJElMgc=;
+        b=WbQqp6sDHfxbwf5Sk9FnpHFoUsP7WUJaw52RywSIxZ/Hf2yBhnA1uskxE7QulN5vlE
+         7QanDulOQ5prlfpwP3T712XgDU50zlTtMQFGq9NK/WG8QQqOFeaNEWFu32U/DlmT9Lw9
+         1/rgDbSy94/AEbCNzfg6L2XmQlxMJQeQOeJhGZkdd603LdDQUvv1GjMLNSC/yGR7powT
+         HZdbauIoQb6MrKwFC1vJkNH9m+lTNlmUTOR+OHj94dafNKsEwEh9BUypxc2wqQ8lQR95
+         z7U1uVMCilBhZ2XsuUJoUHKOaFNuJObkz8qcxwKRf7vPc/PCM/gQXyXjk26nJShVlsYG
+         7SwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=XyL5SVUmTOUbTKdARYMTlRfQUF3PC0E2gSVrWnr+WdE=;
-        b=Pd60FawP4ydUBONJ+BGPG/uUmiEev8B0dyWGkE27gVb+8i/Tu+wFaSlshfFrpHjjBv
-         SBax9+cBspthu4pXcnUIrrprUUnSzJv9Zm/RtewUbMMuo7CYP6ngbWOXzZqnrjHR/B84
-         JGu3Ezjg+UxzhnA9YbRVWm+0ODP7J0N2EbfbL7+tGgkyrHGnW8Zwt60Rs8que7akU4IU
-         dDCUpvK1+CCKKrAGUzuW707kdw5V4XZ7a2sktj2wmk7CJtZ9Faqf51ybvD3F/bdXobhT
-         LsuNmrIUh+RNxG/utyE48gCW9Pilb9nW0/+wuU7Leb+/746PuIohAlDZVAFLrwdafSwk
-         C8AQ==
-X-Gm-Message-State: ACgBeo1136VDjI+oCH4FRwqBIFOIWu4lrTuZNPc08aGY34P8ti5SBjsg
-        F0jvr6F74xMFvY+mh0N2UF6wx9lqwTQdq/MkdL4=
-X-Google-Smtp-Source: AA6agR5I3atavoG0YC1Ar6Ia2qJOen2XLuBIiTGL3FWnDx5oQ6eYKNp7vUiLcGi4xWBuP5rMi1d2+hmO1zP7tY5gLw4=
-X-Received: by 2002:a17:906:9b86:b0:6fe:d37f:b29d with SMTP id
- dd6-20020a1709069b8600b006fed37fb29dmr2207333ejc.327.1659634204457; Thu, 04
- Aug 2022 10:30:04 -0700 (PDT)
+        bh=LT8EntzTQx4FXzf8ujFhKvJBalVOvM5VsXwPWJElMgc=;
+        b=36VPPS8fs9DoXnQ6KS9BvU5q7IT9qlGhIeL0udgOykqQllPEKJ00DpIkMBOLL9f83R
+         UdUHXa+IJQgY+ZDsrSW66l92qe5ioJmpcjEsiMFcWek/vVxSpYZDnsmxmrgCkavPKF3Q
+         nJ1BvSUKvbq12e//inn3+Cmyu5RqwD+WBTDXWpjJ7NzCxJzKAdannNn0qKT1z58oLaGF
+         oF1m+UkZd7/gPzrkeep4PKs004crIr4UHBoqctdDkHtTFu1cBMO4hS6tv7zXwmFResmU
+         bmhNdWwEfmwk97SUJ4tCmSpFt6z9PBNxINAU/XREXJyOrvth4maXfQ/ktgoAjOxaHCzP
+         T10w==
+X-Gm-Message-State: ACgBeo05hVcubTScRm0ubeKirHpSsjo+mVzCOVdxqg70uENII/h4w8tZ
+        PmPS/rMCiOwf2QbTQRqFR0JWgG2nFno06O7B1sUCo3j6xRw=
+X-Google-Smtp-Source: AA6agR5nJPN6X0qrhQou7vYaNokGCVUrdNomzhwq5HoSmxKUsBu6PM41Ab2OEduR6uSdyHBWWAA4rgkuR++UvaIieUY=
+X-Received: by 2002:a17:907:971c:b0:72b:83d2:aa7a with SMTP id
+ jg28-20020a170907971c00b0072b83d2aa7amr2340698ejc.633.1659638727421; Thu, 04
+ Aug 2022 11:45:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <CADvTj4rytB_RDemr4CXO08waaEJGXRC6kt2y_SO0SKN3FgWg0g@mail.gmail.com>
- <CAEf4BzZVq2VZg=S2xZinfth2-f50zxhMm-fPVQGUoeYPC5J4XA@mail.gmail.com>
- <87wncnd5dd.fsf@oracle.com> <8735fbcv3x.fsf@oracle.com> <CADvTj4rBCEC_AFgszcMrgKMXfrBKzktABYy=dTH1F1Z7MxmcTw@mail.gmail.com>
- <87v8s65hdc.fsf@oracle.com> <CADvTj4qniQWNFw4aYpsxV5chdj5v+cLfajRXYOHiK_GOn9OLWQ@mail.gmail.com>
- <8735fa3unq.fsf@oracle.com> <CADvTj4r+1QB2Cg7L9R-fzqs_HA3kdiiQ_4WHvj+h_DvuxoM5kw@mail.gmail.com>
- <CADvTj4pFQmS6XHpHCVO8jt-8ZRdTd--uny-n9vA0+vm4xUoLzQ@mail.gmail.com>
- <87tu7p3o4k.fsf@oracle.com> <CADvTj4r_WnaC-nb-wQwqrzfJsERaX-TnR0tRXZF8fE5UPBThHQ@mail.gmail.com>
- <87h73p1f5s.fsf@oracle.com> <CADvTj4qiz0xHnN+s32tiYm_WA8ai4cHUVPkKm7w6xTkZXUBCag@mail.gmail.com>
- <87k08lunga.fsf@oracle.com> <87fsj8vjcy.fsf@oracle.com> <87bktwvhu5.fsf@oracle.com>
- <CADvTj4o-36iuru665BW0XnEauXBeszW438QTtpt4_VUEjf5nXg@mail.gmail.com>
- <CAEf4BzbN99WbEDS9r7nyO-7+SOYTU=-kXhD+A1L3dzrwrcHdBQ@mail.gmail.com>
- <CADvTj4qi_ZZhdXRPd0X_tgQ8-jgrRgxF+4+kYVA92ZMO8KqESA@mail.gmail.com>
- <CAEf4BzamhADJv+K1e6bLKV7Pob0VC95rgUtEJbVhXWqLgHLTyg@mail.gmail.com>
- <CADvTj4oSc646ebcWzXB65gSy144D+GikbT5eF38OHu+T5tbn-w@mail.gmail.com>
- <CAEf4BzYGXj4otX0pFSTcxKrQAuv7L_rqLyb5Hsp_ueZOZdJorA@mail.gmail.com>
- <CADvTj4pJwnCFB8LipENEPGAB2-+jBcvmOSJSezyTRr4xiozPNg@mail.gmail.com> <CAEf4Bza0-dx=X01ZqzLR_SF6-6r9YZFQa=VLyD6H=0DnLCU1AQ@mail.gmail.com>
-In-Reply-To: <CAEf4Bza0-dx=X01ZqzLR_SF6-6r9YZFQa=VLyD6H=0DnLCU1AQ@mail.gmail.com>
+References: <20220726184706.954822-1-joannelkoong@gmail.com>
+ <20220726184706.954822-4-joannelkoong@gmail.com> <CAEf4Bzb2Jev=NpwzkKn8UPRe-99-3WcgySfGwOB6W8n-3E4G1g@mail.gmail.com>
+ <CAJnrk1Yg75-pMX=T9AnXoCWhvRX+bA=DBkyj1Quci_zkazpZyg@mail.gmail.com>
+ <CAEf4BzZVq2vG3DOx0Pa03ksucSYZK5=QKMPTO1NYqces4TPAJA@mail.gmail.com> <CAJnrk1aodZ84YjaHNcxPZhREA+nx4=2Rh=4Nx9NcmkYvWn6S0g@mail.gmail.com>
+In-Reply-To: <CAJnrk1aodZ84YjaHNcxPZhREA+nx4=2Rh=4Nx9NcmkYvWn6S0g@mail.gmail.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 4 Aug 2022 10:29:52 -0700
-Message-ID: <CAADnVQK1A-Y0jzXO2KdxjpHF4DUxcgh-Jy5MubLa4wsyHc0scQ@mail.gmail.com>
-Subject: Re: bpftool gen object doesn't handle GCC built BPF ELF files
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     James Hilliard <james.hilliard1@gmail.com>,
-        "Jose E. Marchesi" <jose.marchesi@oracle.com>,
-        bpf <bpf@vger.kernel.org>, david.faust@oracle.com,
-        Jonathan Corbet <corbet@lwn.net>
+Date:   Thu, 4 Aug 2022 11:45:15 -0700
+Message-ID: <CAADnVQLEkfj-T8DXgmHU=MyUBL6Hb3TXPwNERzogW_DKCN2Asw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 3/3] selftests/bpf: tests for using dynptrs to
+ parse skb and xdp buffers
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -82,22 +71,23 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 3, 2022 at 9:59 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Wed, Aug 3, 2022 at 9:11 AM Joanne Koong <joannelkoong@gmail.com> wrote:
+> >
+> > __builtin_memcpy() is best. When we write just "memcpy()" we still
+> > rely on compiler to actually optimizing that to __builtin_memcpy(),
+> > because there is no memcpy() (we'd get unrecognized extern error if
+> > compiler actually emitted call to memcpy()).
 >
-> Please also start with learning how to build selftests/bpf with Clang
-> and looking at various examples so that you can at least look at all
-> the different features we rely on in the BPF world, instead of trying
-> to tune one small piece (systemd's BPF programs) to your liking. If
-> you are serious about making GCC BPF backend viable, you'll have to
-> understand BPF a bit better.
+> Ohh I see, thanks for the explanation!
 >
-> That would be a better use of everyone's time, instead of you going
-> behind our backs and requesting Clang to break the entire BPF
-> ecosystem just because GCC is doing something differently, like you
-> and Jose E. Marchesi did with [0] and [1].
->
->   [0] https://github.com/llvm/llvm-project/issues/56468
->   [1] https://reviews.llvm.org/D131012
+> I am going to do some selftests cleanup this week, so I'll change the
+> other usages of memcpy() to __builtin_memcpy() as part of that clean
+> up.
 
-+1
+builtin_memcpy might be doing single byte copy when
+alignment is not known which is often the case when
+working with packets.
+If we do this cleanup, let's copy-paste cilium's memcpy
+helper that does 8 byte copy.
+It's much better than builtin_memcpy.
+https://github.com/cilium/cilium/blob/master/bpf/include/bpf/builtins.h
