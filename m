@@ -2,67 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1D07589FC7
-	for <lists+bpf@lfdr.de>; Thu,  4 Aug 2022 19:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70924589FE2
+	for <lists+bpf@lfdr.de>; Thu,  4 Aug 2022 19:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235219AbiHDRRP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Aug 2022 13:17:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42562 "EHLO
+        id S234487AbiHDRaJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Aug 2022 13:30:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232927AbiHDRRO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Aug 2022 13:17:14 -0400
+        with ESMTP id S233703AbiHDRaH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Aug 2022 13:30:07 -0400
 Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13FAA6A485;
-        Thu,  4 Aug 2022 10:17:12 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id i14so475384ejg.6;
-        Thu, 04 Aug 2022 10:17:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BFB9186F9
+        for <bpf@vger.kernel.org>; Thu,  4 Aug 2022 10:30:06 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id k26so542145ejx.5
+        for <bpf@vger.kernel.org>; Thu, 04 Aug 2022 10:30:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=QsqdAv7lzfCzVrls5e3D/1HBUNjDsakydLuhi3H9Yhg=;
-        b=KmSc8/HSgtUjLn/eY3kel/629G+B2lunQLmO6hXxq1nf+hYt51xD57hD1DUHn14NDV
-         GuU4KrLJBRZPUCk/xtb8q7q4qV+gtwvIFPFYmCfo6ZczQeKDHnxNi6Q4FPM08VGpxN9F
-         AT2hgVK6n6aHUnbW7RdrTyTADlBpkKFIdJi/mlRALt5sk3rDKNYsClN4hAF6HYk2k8ud
-         AJh7F1chqTi24O7vdHwXGlWZHnmz1jqddqvqXf9b9QUzCL28CUpEyeuoo2C/WzE5HbWU
-         m49pWie4g/HPSf5BUPsb/VsJx59+rh8m4muCh1vOzFiPnCaCOs0qaYRbKAY0vyKYSgmW
-         zbNg==
+        bh=XyL5SVUmTOUbTKdARYMTlRfQUF3PC0E2gSVrWnr+WdE=;
+        b=kcLJbQdaklWdwjMZUhftTOAGQye7SInvfaQLRMnEhrBmmnFow5LaI+GaO+uKIVeuiT
+         g7QLqr3nlI97kRdujiX6DudIEeF330Px+vEm1URdh2MO0wQt7LNx6mAB8+L8Pc/MbSmw
+         g3wpdgM9SJcNaoayFqVWfA6jPyFzWAjGN9AD7UtUKvWwpw4lpG5m9PLL+BO1jYjPA/90
+         FkFFwwV7djSNSEIgYCeDD8WqdFnU2iNOBN5tpW8fURaQZDcl10JoWyFp9uyEvnB2Z7lD
+         dQmYfZ6IqCoCePkpnIsO47SSnSobImXE842An9qkMWIwNGVubzoDLX4lJUhZLhQDkI9b
+         LILg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=QsqdAv7lzfCzVrls5e3D/1HBUNjDsakydLuhi3H9Yhg=;
-        b=r9X5X9bseGsz6VjJWkRCtgkqSA603GliEdUhsmup86x0lLzMkZ2OALE3BKOMqEzJM9
-         mh6T2cT2SADWRZSE0Kqth9XrZ0iZ/6VBEiiH/Vbu/kwMfw7R+2+fijMic4RfVv0OCDbZ
-         9dTitVekV2LGk7UqFdMND+gdtieyvhVkFiH4B+OrLevx/tMwjwKaFc8bGLC6qrXG6d5z
-         IOLMWqjEit0PwSixEySW1gMzS6zRwyWwLG5+iMjScY6xGdNgFNvB/KJ0xdrL22DKtWnU
-         VceIL3ayB2fCscpSpOwKP3CeHXjssodVMUYO7hf0oQRihL14i4IXx9gWouRuFdI/bqVB
-         LSjA==
-X-Gm-Message-State: ACgBeo3o34pWLtCvmV4r0BgMrBXIM3kwoNAd6Z/3FmVFhmavvKDdbZAR
-        XfqFyNnF182o6GA9wD1iAJvuGRsI3T25dUBsciY=
-X-Google-Smtp-Source: AA6agR6OoOj08B7Hsh9uYlMY2QWamsku3wjAUwuzJj8XR5bHi7H75/jMIvGbCspmJi45/sQjkh7ZRgWruXaZmSq+nfE=
-X-Received: by 2002:a17:907:6e02:b0:72b:9f16:1bc5 with SMTP id
- sd2-20020a1709076e0200b0072b9f161bc5mr2244766ejc.676.1659633430590; Thu, 04
- Aug 2022 10:17:10 -0700 (PDT)
+        bh=XyL5SVUmTOUbTKdARYMTlRfQUF3PC0E2gSVrWnr+WdE=;
+        b=Pd60FawP4ydUBONJ+BGPG/uUmiEev8B0dyWGkE27gVb+8i/Tu+wFaSlshfFrpHjjBv
+         SBax9+cBspthu4pXcnUIrrprUUnSzJv9Zm/RtewUbMMuo7CYP6ngbWOXzZqnrjHR/B84
+         JGu3Ezjg+UxzhnA9YbRVWm+0ODP7J0N2EbfbL7+tGgkyrHGnW8Zwt60Rs8que7akU4IU
+         dDCUpvK1+CCKKrAGUzuW707kdw5V4XZ7a2sktj2wmk7CJtZ9Faqf51ybvD3F/bdXobhT
+         LsuNmrIUh+RNxG/utyE48gCW9Pilb9nW0/+wuU7Leb+/746PuIohAlDZVAFLrwdafSwk
+         C8AQ==
+X-Gm-Message-State: ACgBeo1136VDjI+oCH4FRwqBIFOIWu4lrTuZNPc08aGY34P8ti5SBjsg
+        F0jvr6F74xMFvY+mh0N2UF6wx9lqwTQdq/MkdL4=
+X-Google-Smtp-Source: AA6agR5I3atavoG0YC1Ar6Ia2qJOen2XLuBIiTGL3FWnDx5oQ6eYKNp7vUiLcGi4xWBuP5rMi1d2+hmO1zP7tY5gLw4=
+X-Received: by 2002:a17:906:9b86:b0:6fe:d37f:b29d with SMTP id
+ dd6-20020a1709069b8600b006fed37fb29dmr2207333ejc.327.1659634204457; Thu, 04
+ Aug 2022 10:30:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220803134821.425334-1-lee@kernel.org>
-In-Reply-To: <20220803134821.425334-1-lee@kernel.org>
+References: <CADvTj4rytB_RDemr4CXO08waaEJGXRC6kt2y_SO0SKN3FgWg0g@mail.gmail.com>
+ <CAEf4BzZVq2VZg=S2xZinfth2-f50zxhMm-fPVQGUoeYPC5J4XA@mail.gmail.com>
+ <87wncnd5dd.fsf@oracle.com> <8735fbcv3x.fsf@oracle.com> <CADvTj4rBCEC_AFgszcMrgKMXfrBKzktABYy=dTH1F1Z7MxmcTw@mail.gmail.com>
+ <87v8s65hdc.fsf@oracle.com> <CADvTj4qniQWNFw4aYpsxV5chdj5v+cLfajRXYOHiK_GOn9OLWQ@mail.gmail.com>
+ <8735fa3unq.fsf@oracle.com> <CADvTj4r+1QB2Cg7L9R-fzqs_HA3kdiiQ_4WHvj+h_DvuxoM5kw@mail.gmail.com>
+ <CADvTj4pFQmS6XHpHCVO8jt-8ZRdTd--uny-n9vA0+vm4xUoLzQ@mail.gmail.com>
+ <87tu7p3o4k.fsf@oracle.com> <CADvTj4r_WnaC-nb-wQwqrzfJsERaX-TnR0tRXZF8fE5UPBThHQ@mail.gmail.com>
+ <87h73p1f5s.fsf@oracle.com> <CADvTj4qiz0xHnN+s32tiYm_WA8ai4cHUVPkKm7w6xTkZXUBCag@mail.gmail.com>
+ <87k08lunga.fsf@oracle.com> <87fsj8vjcy.fsf@oracle.com> <87bktwvhu5.fsf@oracle.com>
+ <CADvTj4o-36iuru665BW0XnEauXBeszW438QTtpt4_VUEjf5nXg@mail.gmail.com>
+ <CAEf4BzbN99WbEDS9r7nyO-7+SOYTU=-kXhD+A1L3dzrwrcHdBQ@mail.gmail.com>
+ <CADvTj4qi_ZZhdXRPd0X_tgQ8-jgrRgxF+4+kYVA92ZMO8KqESA@mail.gmail.com>
+ <CAEf4BzamhADJv+K1e6bLKV7Pob0VC95rgUtEJbVhXWqLgHLTyg@mail.gmail.com>
+ <CADvTj4oSc646ebcWzXB65gSy144D+GikbT5eF38OHu+T5tbn-w@mail.gmail.com>
+ <CAEf4BzYGXj4otX0pFSTcxKrQAuv7L_rqLyb5Hsp_ueZOZdJorA@mail.gmail.com>
+ <CADvTj4pJwnCFB8LipENEPGAB2-+jBcvmOSJSezyTRr4xiozPNg@mail.gmail.com> <CAEf4Bza0-dx=X01ZqzLR_SF6-6r9YZFQa=VLyD6H=0DnLCU1AQ@mail.gmail.com>
+In-Reply-To: <CAEf4Bza0-dx=X01ZqzLR_SF6-6r9YZFQa=VLyD6H=0DnLCU1AQ@mail.gmail.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 4 Aug 2022 10:16:59 -0700
-Message-ID: <CAADnVQ+X_B4LC6CtYM1PXPA4BBprWLj5Qip--Eeu32Zti==Ydw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] bpf: Drop unprotected find_vpid() in favour of find_get_pid()
-To:     Lee Jones <lee@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf <bpf@vger.kernel.org>
+Date:   Thu, 4 Aug 2022 10:29:52 -0700
+Message-ID: <CAADnVQK1A-Y0jzXO2KdxjpHF4DUxcgh-Jy5MubLa4wsyHc0scQ@mail.gmail.com>
+Subject: Re: bpftool gen object doesn't handle GCC built BPF ELF files
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     James Hilliard <james.hilliard1@gmail.com>,
+        "Jose E. Marchesi" <jose.marchesi@oracle.com>,
+        bpf <bpf@vger.kernel.org>, david.faust@oracle.com,
+        Jonathan Corbet <corbet@lwn.net>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -74,62 +82,22 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 3, 2022 at 6:48 AM Lee Jones <lee@kernel.org> wrote:
+On Wed, Aug 3, 2022 at 9:59 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> The documentation for find_pid() clearly states:
+> Please also start with learning how to build selftests/bpf with Clang
+> and looking at various examples so that you can at least look at all
+> the different features we rely on in the BPF world, instead of trying
+> to tune one small piece (systemd's BPF programs) to your liking. If
+> you are serious about making GCC BPF backend viable, you'll have to
+> understand BPF a bit better.
 >
->   "Must be called with the tasklist_lock or rcu_read_lock() held."
+> That would be a better use of everyone's time, instead of you going
+> behind our backs and requesting Clang to break the entire BPF
+> ecosystem just because GCC is doing something differently, like you
+> and Jose E. Marchesi did with [0] and [1].
 >
-> Presently we do neither.
->
-> Let's use find_get_pid() which searches for the vpid, then takes a
-> reference to it preventing early free, all within the safety of
-> rcu_read_lock().  Once we have our reference we can safely make use of
-> it up until the point it is put.
->
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> Cc: Song Liu <song@kernel.org>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: KP Singh <kpsingh@kernel.org>
-> Cc: Stanislav Fomichev <sdf@google.com>
-> Cc: Hao Luo <haoluo@google.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: bpf@vger.kernel.org
-> Fixes: 41bdc4b40ed6f ("bpf: introduce bpf subcommand BPF_TASK_FD_QUERY")
-> Signed-off-by: Lee Jones <lee@kernel.org>
-> ---
->
-> v1 => v2:
->   * Commit log update - no code differences
->
->  kernel/bpf/syscall.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 83c7136c5788d..c20cff30581c4 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -4385,6 +4385,7 @@ static int bpf_task_fd_query(const union bpf_attr *attr,
->         const struct perf_event *event;
->         struct task_struct *task;
->         struct file *file;
-> +       struct pid *ppid;
->         int err;
->
->         if (CHECK_ATTR(BPF_TASK_FD_QUERY))
-> @@ -4396,7 +4397,9 @@ static int bpf_task_fd_query(const union bpf_attr *attr,
->         if (attr->task_fd_query.flags != 0)
->                 return -EINVAL;
->
-> -       task = get_pid_task(find_vpid(pid), PIDTYPE_PID);
-> +       ppid = find_get_pid(pid);
-> +       task = get_pid_task(ppid, PIDTYPE_PID);
-> +       put_pid(ppid);
+>   [0] https://github.com/llvm/llvm-project/issues/56468
+>   [1] https://reviews.llvm.org/D131012
 
-rcu_read_lock/unlock around this line
-would be a cheaper and faster alternative than pid's
-refcount inc/dec.
++1
