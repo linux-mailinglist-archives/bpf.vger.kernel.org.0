@@ -2,87 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 295E3589556
-	for <lists+bpf@lfdr.de>; Thu,  4 Aug 2022 02:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F48C589593
+	for <lists+bpf@lfdr.de>; Thu,  4 Aug 2022 03:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238712AbiHDAaJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Aug 2022 20:30:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46296 "EHLO
+        id S238903AbiHDBGA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Aug 2022 21:06:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238499AbiHDAaG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Aug 2022 20:30:06 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A4AE58B79
-        for <bpf@vger.kernel.org>; Wed,  3 Aug 2022 17:30:05 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id ct13so10444828qvb.9
-        for <bpf@vger.kernel.org>; Wed, 03 Aug 2022 17:30:05 -0700 (PDT)
+        with ESMTP id S229986AbiHDBF6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Aug 2022 21:05:58 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C357913CED
+        for <bpf@vger.kernel.org>; Wed,  3 Aug 2022 18:05:57 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id j8so9043843ejx.9
+        for <bpf@vger.kernel.org>; Wed, 03 Aug 2022 18:05:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=m6XkC9SsYbws11fU/lKUsxSKL8HIjijhC5ukFJOVAg0=;
-        b=lxEIIB2x2iibG4PBjXLIXWtMcmcGyMl4ihpwyUY7PqULj9eFbsANj8sp9BO+MIUc8m
-         zgNMHvRyeehg1eLXEKH5zHrm09x2KfCSBSu6bQ61eEnE7/U8ZFIDtE1DBHsg89oyx8Xi
-         TzUM3+OD77maP7r32Y/hBG7zSRhgSIYYBeLg9HrW+kyLW+hNXP7nZNBWp/2n1zhfso8F
-         1xMgQDUNo4e32+zlSmzj1CyN7BCj/a/ucsdHY4YiGVIc5X0eHj8/l1dm4sVUjbwNn/g1
-         bdg8VkTe1CITpGeKNCaNEXdPGxxj/gQnFejEErFBpDXIlSYDeEqCFDviYLvbd692DIio
-         Hz4Q==
+        bh=KwT877vrDy5/zVB4Rq5sutLgOp/P9ieSgGViWyyn6M0=;
+        b=QSG0z3e40By368z6ri8K4THgUvuPHlIniv27hivGPtANUXiX5Z1Rnsh/HKZu/zVHJQ
+         FV4QOeOgtW/JFmM6UwotBApeFT68QnSyujFK8LzuS6t1GRR2MHcWetZUmlWRlzZryOx7
+         2L3BhvvPvzsbHIUewL2DVyO54OYzNucvstexy10MhZXeehgzqP1x3kkzW3+2orFZJ/FH
+         880L0eQLA77ofCsbbFx6kXJVSI8dCHYqyVmGGtM8/ZagT9xcF43LU2CBP4Ueys8bWP1e
+         HQ3LVzH2k69DnoBVh1mXsC/4ukZu5xio5ZCAkdDZ57nAeYNZ5punHq+kucs5cDC6t+BR
+         Z3Ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=m6XkC9SsYbws11fU/lKUsxSKL8HIjijhC5ukFJOVAg0=;
-        b=jezpS4TbSzsF5QM5qfhpuWpV+zrPOA8KB6EhwNyiEBgqhqvToPUlwVJSRwbf8uo66M
-         YoTy4/OL/JuVOANgjiUaohwUKDRKpZoWHJt+FvSYwYYXNRsU9pSDQ29ErvjE4ZQV7/w1
-         imD/r05QZVK2U5FKgyCERgJmkmeFrLwGx80lyB1v99gxSNooinWCGNzBYu9p0TrMoP0y
-         yDExWdGvgUbAStJ2Mo8gk+ovRQzVJvRR4T//oYB7VlKd1M1pThx6a/sn6g18KbntxfH7
-         oeaRZXi7z8oE8QMwrBOel77jMYcCZRBZ3LkOIDXsTIdH0JwAOlTFiEnhlT7nRkGxWS+/
-         WqOw==
-X-Gm-Message-State: ACgBeo1fG8pvX/Bl2gpVD/Fhu0+xs9jSRTpO1mVbtRIgnGKF+hwOt+JJ
-        QJgsKfI07KBCCgpTVhnVAuWQVHq62ZevfKTHtiQIhA==
-X-Google-Smtp-Source: AA6agR6lahu4GM/VNiA4RD1/ceM/yj+jVGPjA2YZnH7aavqPzYhk9txYF8tPePFZuNAGK+/RFKNZQettinIlm70U8Dw=
-X-Received: by 2002:a0c:b31a:0:b0:473:8062:b1b4 with SMTP id
- s26-20020a0cb31a000000b004738062b1b4mr24728083qve.85.1659573004159; Wed, 03
- Aug 2022 17:30:04 -0700 (PDT)
+        bh=KwT877vrDy5/zVB4Rq5sutLgOp/P9ieSgGViWyyn6M0=;
+        b=q1rob3rYIgMtYcjsbsNCD6UfeW1l01uFFF6akXf+fmRiW+JEQ0r4W2NWhivGhLfohY
+         XzhPPu3jJAWucV8NYhsUf4EpfD1sE6GAWRnGS6WjN+jsTQfnUoig6RozyLYs0PMiYu1U
+         6M3iClv6Y2X9AoZxE2hilsrLeKG9Ure1flvKpTswz58YOZZB+B4Tnf39twhefhEzJcDD
+         F3SB1J0BI+30cwGi6QX3T+adZcLKaVlFlFtV0huO+QfC9EG/X3KKDvrW7Ncfq4oB/I+W
+         WRemmEzTRz/n41MlVk2Shuw3JovkoaH22b8/TOeHll2d1d/pYZeeg6xmtMEPxpJNASkP
+         jJKw==
+X-Gm-Message-State: AJIora+98UWHRktYYlttKUGE/2edUlpJvnzvL/rB0BZ5c7/ZDhRe8TO/
+        DdCF5d9/n6ROt/YjQXloY2gKWBZoAtc+JlgGbdZs/8x0SOE=
+X-Google-Smtp-Source: AGRyM1usOeXvODPfZuOp3Wew3LkLfyp5twU5kxDZzw16Tjw7+SQlm5Egbgpqc6ygodX5e0Pxkv0b6lOCvziCZvdlj40=
+X-Received: by 2002:a17:907:608f:b0:72b:7db9:4dc6 with SMTP id
+ ht15-20020a170907608f00b0072b7db94dc6mr21156899ejc.463.1659575156353; Wed, 03
+ Aug 2022 18:05:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220722174829.3422466-1-yosryahmed@google.com>
- <20220722174829.3422466-5-yosryahmed@google.com> <CAEf4BzbD38XFVxMy5crO-=+Xg7U3Vc_fB4Ntug4BEbmdLpvuDQ@mail.gmail.com>
- <CA+khW7jftQikVsc8moM6rNRqBerUHDM6WRDjb33exdbogDc7aQ@mail.gmail.com>
- <CAEf4BzYDqaTQr-S8TuLkysQ+FhT+6qMS0z=Sp_7+-wk84_4h6Q@mail.gmail.com>
- <CA+khW7jDD9p80xnZj0Z3m5oFHjb2u___NAiJkbyRgD5FKopGhg@mail.gmail.com> <CAEf4BzZhy49KLe5VG4aXZtWBExADskgA__MzhC+6k3DVgU5o5w@mail.gmail.com>
-In-Reply-To: <CAEf4BzZhy49KLe5VG4aXZtWBExADskgA__MzhC+6k3DVgU5o5w@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Wed, 3 Aug 2022 17:29:53 -0700
-Message-ID: <CA+khW7ggTFp8je0zwo83uGN8pKZXy+D07y+tPRRAXmY+e3pm-g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 4/8] bpf: Introduce cgroup iter
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yosry Ahmed <yosryahmed@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+References: <20220726184706.954822-1-joannelkoong@gmail.com>
+ <20220726184706.954822-2-joannelkoong@gmail.com> <20220728233936.hjj2smwey447zqyy@kafai-mbp.dhcp.thefacebook.com>
+ <CAJnrk1b2WoHV=iE3j4n_4=2NBP3GaoeD=v-Zt+p-M9N=LApsuQ@mail.gmail.com>
+ <20220729213919.e7x6acvqnwqwfnzu@kafai-mbp.dhcp.thefacebook.com>
+ <CAJnrk1ZDzM5ir0rpf2kQdW_G4+-woMhULUufdz28DfiB_rqR-A@mail.gmail.com> <20220803162540.19d31294@kernel.org>
+In-Reply-To: <20220803162540.19d31294@kernel.org>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Wed, 3 Aug 2022 18:05:44 -0700
+Message-ID: <CAJnrk1YWvKqujw1py+HzV8QP1g=cCQmOJ0KtGkNXjdJ4PY3Zkg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/3] bpf: Add skb dynptrs
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, cgroups@vger.kernel.org,
-        Kui-Feng Lee <kuifeng@fb.com>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,136 +71,85 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 3, 2022 at 1:40 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Wed, Aug 3, 2022 at 4:25 PM Jakub Kicinski <kuba@kernel.org> wrote:
 >
-> On Wed, Aug 3, 2022 at 1:30 PM Hao Luo <haoluo@google.com> wrote:
+> On Wed, 3 Aug 2022 13:29:37 -0700 Joanne Koong wrote:
+> > Thinking about this some more, I think BPF_FUNC_dynptr_from_skb needs
+> > to be patched regardless in order to set the rd-only flag in the
+> > metadata for the dynptr. There will be other helper functions that
+> > write into dynptrs (eg memcpy with dynptrs, strncpy with dynptrs,
+> > probe read user with dynptrs, ...) so I think it's more scalable if we
+> > reject these writes at runtime through the rd-only flag in the
+> > metadata, than for the verifier to custom-case that any helper funcs
+> > that write into dynptrs will need to get dynptr type + do
+> > may_access_direct_pkt_data() if it's type skb or xdp. The
+> > inconsistency between not rd-only in metadata vs. rd-only in verifier
+> > might be a little confusing as well.
 > >
-> > On Tue, Aug 2, 2022 at 3:50 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Tue, Aug 2, 2022 at 3:27 PM Hao Luo <haoluo@google.com> wrote:
-> > > >
-> > > > On Mon, Aug 1, 2022 at 8:43 PM Andrii Nakryiko
-> > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > >
-> > > > > On Fri, Jul 22, 2022 at 10:48 AM Yosry Ahmed <yosryahmed@google.com> wrote:
-[...]
-> > > > > > +};
-> > > > > > +
-> > > > > >  union bpf_iter_link_info {
-> > > > > >         struct {
-> > > > > >                 __u32   map_fd;
-> > > > > >         } map;
-> > > > > > +
-> > > > > > +       /* cgroup_iter walks either the live descendants of a cgroup subtree, or the
-> > > > > > +        * ancestors of a given cgroup.
-> > > > > > +        */
-> > > > > > +       struct {
-> > > > > > +               /* Cgroup file descriptor. This is root of the subtree if walking
-> > > > > > +                * descendants; it's the starting cgroup if walking the ancestors.
-> > > > > > +                * If it is left 0, the traversal starts from the default cgroup v2
-> > > > > > +                * root. For walking v1 hierarchy, one should always explicitly
-> > > > > > +                * specify the cgroup_fd.
-> > > > > > +                */
-> > > > > > +               __u32   cgroup_fd;
-> > > > >
-> > > > > Now, similar to what I argued in regard of pidfd vs pid, I think the
-> > > > > same applied to cgroup_fd vs cgroup_id. Why can't we support both?
-> > > > > cgroup_fd has some benefits, but cgroup_id is nice due to simplicity
-> > > > > and not having to open/close/keep extra FDs (which can add up if we
-> > > > > want to periodically query something about a large set of cgroups).
-> > > > > Please see my arguments from [0] above.
-> > > > >
-> > > > > Thoughts?
-> > > > >
-> > > >
-> > > > We can support both, it's a good idea IMO. But what exactly is the
-> > > > interface going to look like? Can you be more specific about that?
-> > > > Below is something I tried based on your description.
-> > > >
-> > > > @@ -91,6 +91,18 @@ union bpf_iter_link_info {
-> > > >         struct {
-> > > >                 __u32   map_fd;
-> > > >         } map;
-> > > > +       struct {
-> > > > +               /* PRE/POST/UP/SELF */
-> > > > +               __u32 order;
-> > > > +               struct {
-> > > > +                       __u32 cgroup_fd;
-> > > > +                       __u64 cgroup_id;
-> > > > +               } cgroup;
-> > > > +               struct {
-> > > > +                       __u32 pid_fd;
-> > > > +                       __u64 pid;
-> > > > +               } task;
-> > > > +       };
-> > > >  };
-> > > >
-> > >
-> > > So I wouldn't combine task and cgroup definition together, let's keep
-> > > them independent.
-> > >
-> > > then for cgroup we can do something like:
-> > >
-> > > struct {
-> > >     __u32 order;
-> > >     __u32 cgroup_fd; /* cgroup_fd ^ cgroup_id, exactly one can be non-zero */
-> > >     __u32 cgroup_id;
-> > > } cgroup
-> > >
-> > > Similar idea with task, but it's a bit more complicated because there
-> > > we have target that can be pid, pidfd, or cgroup (cgroup_fd and
-> > > cgroup_id). I haven't put much thought into the best representation,
-> > > though.
-> > >
+> > For these reasons, I'm leaning more towards having bpf_dynptr_write()
+> > and other dynptr write helper funcs be rejected at runtime instead of
+> > prog load time, but I'm eager to hear what you prefer.
 > >
-> > The cgroup part sounds good to me. For the full picture, how about
-> > this? I'm just trying  a prototype, hoping that it can help people to
-> > get a clear picture.
-> >
-> > union bpf_iter_link_info {
-> >           struct {
-> >                   __u32   map_fd;
-> >           } map;
-> >           struct {
-> >                   __u32   order; /* PRE/POST/UP/SELF */
-> >                   __u32   cgroup_fd;
-> >                   __u64   cgroup_id;
-> >           } cgroup;
+> > What are your thoughts?
 >
-> lgtm
->
-> >           struct {
-> >                   __u32   pid;
-> >                   __u32   pid_fd;
-> >                   __u64   cgroup_id;
-> >                   __u32   cgroup_fd;
-> >                   __u32   mode; /* SELF or others */
->
-> I'd move mode to be first. I'm undecided on using 4 separate fields
-> for pid/pid_fd/cgroup_{id,fd} vs a single union (or just generic "u64
-> target"  and then mode can define how we should treat target --
-> whether it's pid, pid_fd, cgroup ID or FD. I'm fine either way, I
-> think. But for cgroup case not having to duplicate PRE/POST/UP/SELF
-> for cgroup id and then for cgroup fd seems like a win. So separate
-> fields might be better. It's also pretty extendable. And I'm
-> personally not worried about using few more bytes in bpf_attr for
-> disjoin fields like this.
->
+> Oh. I thought dynptrs are an extension of the discussion we had about
+> creating a skb_header_pointer()-like abstraction but it sounds like
+> we veered quite far off that track at some point :(
 
-Sounds good. Thanks for clarification. Using separate fields looks
-good to me. Since we settled on the cgroup part, I will apply update
-in cgroup_iter v7.
+I think the problem is that the skb may be cloned, so a write into any
+portion of the paged data requires a pull. If it weren't for this,
+then we could do the write and checksumming without pulling (eg kmap
+the page, get the csum_partial of the bytes you'll write over, do the
+write, get the csum_partial of the bytes you just wrote, then unkmap,
+then update skb->csum to be skb->csum - csum of the bytes you wrote
+over + csum of the bytes you wrote). I think we would even be able to
+provide a direct data slice to non-contiguous pages without needing
+the additional copy to a stack buffer (eg kmap the non-contiguous
+pages to a contiguous virtual address that we pass back to the bpf
+program, and then when the bpf program is finished do the cleanup for
+the mappings).
 
+Three ideas I'm thinking through as a possible solution:
+1) Enforce that the skb is always uncloned for skb-type bpf progs (we
+currently do this just for the skb head, see bpf_unclone_prologue()),
+but I'm not sure if the trade-off (pulling all the packet data, even
+if it won't be used) is acceptable.
 
-> >           } task;
-> > };
-> >
-> > > > > > +               __u32   traversal_order;
-> > > > > > +       } cgroup;
-> > > > > >  };
-> > > > > >
-> > > > > >  /* BPF syscall commands, see bpf(2) man-page for more details. */
-> > > > >
-> > > > > [...]
+2) Don't support cloned skbs for bpf_dynptr_write/data and don't do
+any pulling. If the prog wants to use bpf_dynptr_write/data, then they
+have to pull it first
+
+2) (uglier than #1 and #2) For bpf_dynptr_write()s, pull if the write
+is to a paged area and the skb is cloned, otherwise write to the paged
+area without pulling; if we do this, then we always have to invalidate
+all data slices associated with the skb (even for writes to the head)
+since at prog load time, the verifier doesn't know if the pull happens
+or not. For bpf_dynptr_data()s, follow the same policy.
+
+I'm leaning towards 2. What are your thoughts?
+
+>
+> The point of skb_header_pointer() is to expose the chunk of the packet
+> pointed to by [skb, offset, len] as a linear buffer. Potentially coping
+> it out to a stack buffer *IIF* the header is not contiguous inside the
+> skb head, which should very rarely happen.
+>
+> Here it seems we return an error so that user must pull if the data is
+> not linear, which is defeating the purpose. The user of
+> skb_header_pointer() wants to avoid the copy while _reliably_ getting
+> a contiguous pointer. Plus pulling in the header may be far more
+> expensive than a small copy to the stack.
+>
+> The pointer returned by skb_header_pointer is writable, but it's not
+> guaranteed that the writes go to the packet, they may go to the
+> on-stack buffer, so the caller must do some sort of:
+>
+>         if (data_ptr == stack_buf)
+>                 skb_store_bits(...);
+>
+> Which we were thinking of wrapping in some sort of flush operation.
+>
+> If I'm reading this right dynptr as implemented here do not provide
+> such semantics, am I confused in thinking that this is a continuation
+> of the XDP multi-buff discussion? Is it a completely separate thing
+> and we'll still need a header_pointer like helper?
