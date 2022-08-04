@@ -2,132 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 760E65897D5
-	for <lists+bpf@lfdr.de>; Thu,  4 Aug 2022 08:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCBD8589833
+	for <lists+bpf@lfdr.de>; Thu,  4 Aug 2022 09:13:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234569AbiHDGk7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Aug 2022 02:40:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48254 "EHLO
+        id S236920AbiHDHN1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Aug 2022 03:13:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbiHDGk6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Aug 2022 02:40:58 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DCA8BC8E;
-        Wed,  3 Aug 2022 23:40:57 -0700 (PDT)
-From:   Kurt Kanzenbach <kurt@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1659595254;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bSk08bkNlpYDlbdzO3aE5gLjc33dPKODmc2QenLeSYU=;
-        b=LYFkNSEAfzl0GHTHbeeaxVZeF/Zfsrv/vsAnoCXvkD2CHkxMnIOMOj44Nk8oH7DAUHeFHt
-        xS6R6NHDLpBL0F7l8Vd/FoUdQ9mIcAynbRoP/uZBI2R4/9mjdQdUpIfspLOr0pHFe7+dwe
-        yZp9o3UlzrEE62vszlftlo6wxlAJYhZJdp8j7T01kkVUT6eitW/3yL4DWMmQ5POJ0BEEDg
-        u75cyxKwSPox9VvYpw7YE5Jqa8u16tnhz52v8PcCXKcrtHrkht3i8OOPpAng5OyobKQLFR
-        2cEKjyH+d14NhT2697EdspylFfxbu37BXrpYO6BhQLspDEhequZ1uK7c2+HRUw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1659595254;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bSk08bkNlpYDlbdzO3aE5gLjc33dPKODmc2QenLeSYU=;
-        b=Rq3tzWEeTS4Kr7ST9RCXYESW1NqRTBYOs0OUduR3g02AQ8NlhYH0SG/bIkF584BH81hR9x
-        61d9te2ij2rMoeDQ==
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S230001AbiHDHN0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Aug 2022 03:13:26 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 485D4606A8;
+        Thu,  4 Aug 2022 00:13:25 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id kb8so20678816ejc.4;
+        Thu, 04 Aug 2022 00:13:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc;
+        bh=3YvlPtzAAZUqzmZnRdFclgixc3h9aOjUwqn3zpjfevE=;
+        b=LVotmRHO7gz0Ww4OVBW3Kw8b2lDL+zylY6Oi1az/4NELdBMEMnNpO3cOZcRLx86Vw/
+         fYGEJnf9qR3pzDFHOSisjcbXJi8XGEE2yqsy5UKVE52KeGbWoa8DSni6oFQXSOSv/E1K
+         CmVeKezBXsjRrnFIMPs/KUNpBbwZBr9xfaTpRXhy52QUYM1SA5Pn66fZpbZ7+EJrfRYy
+         ufwTWNS+8K8xakGnLnMgB3a3XZltpUejuMhBvSE0yU7Xvrrmtr7bqoNe8Gb4R1P42cvK
+         vgDGf6FMVgNwxiI/D1SofOsfx6b7mutKfW9XtM7ea0FW9qL1MFQF3DlT0xK1JjRwXHqd
+         FOOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc;
+        bh=3YvlPtzAAZUqzmZnRdFclgixc3h9aOjUwqn3zpjfevE=;
+        b=oquVCjCJlfjpwFNJt8cuWUFixwD0JCga6X1dhWH0UU5uOJg5a+aq7QwGSo7WYc7O2O
+         AfdBiX9lizx1OOcY8s43JVziLncY1D6erM1CfVlw/c5azEkaET9iDUnaIs7nTCCLCtEu
+         P3PM4RUhmeVpDy2tSJ2rEVprIOPAf3kB1VP2zKnwcbkXApXHP+c6EfkQU/0wdrRt0pJ8
+         W/B4gpDTRErZ2UcuzGb0+Me4vqhH/Zd1Jl93A+hjZVecLAv454Dxdd92yxE1AopM7daO
+         4cRWCsojNp1HBG942zBDH3rxWcrjbBGa9BCncbeKsWCzexpcI/Tt95Jy6NWtEhoNreCu
+         P44w==
+X-Gm-Message-State: ACgBeo1t8W92jYnEmnOtdiWomexW7lseLkU9dIwzaQO+3p6CMhT6/Wzs
+        pL8GdArm4U6zMqBy9OlecLg=
+X-Google-Smtp-Source: AA6agR5/2TFW6vMzbPBpIdm0vp1cBA3HIBmNbeh6YfmNg9r7Kpe3LkFSh5Y+0WPVFnBtQXY15K/ZYA==
+X-Received: by 2002:a17:907:a0c6:b0:72e:ee9a:cf89 with SMTP id hw6-20020a170907a0c600b0072eee9acf89mr396089ejc.43.1659597203811;
+        Thu, 04 Aug 2022 00:13:23 -0700 (PDT)
+Received: from krava ([193.85.244.190])
+        by smtp.gmail.com with ESMTPSA id dc3-20020a170906c7c300b0073093eaf53esm11889ejb.131.2022.08.04.00.13.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Aug 2022 00:13:23 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 4 Aug 2022 09:13:21 +0200
+To:     James Hilliard <james.hilliard1@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Geliang Tang <geliang.tang@suse.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] bpf: Add BPF-helper for accessing CLOCK_TAI
-In-Reply-To: <CAEf4BzZtraeLSP4wcNk7t4sqDK6t2HVoo57nkUhVVLNCWe=JfA@mail.gmail.com>
-References: <20220606103734.92423-1-kurt@linutronix.de>
- <CAADnVQJ--oj+iZYXOwB1Rs9Qiy6Ph9HNha9pJyumVom0tiOFgg@mail.gmail.com>
- <875ylc6djv.ffs@tglx> <c166aa47-e404-e6ee-0ec5-0ead1923f412@redhat.com>
- <CAADnVQKqo1XfrPO8OYA1VpArKHZotuDjGNtxM0AftUj_R+vU7g@mail.gmail.com>
- <87pmhj15vf.fsf@kurt>
- <CAADnVQ+aDn9ku8p0M2yaPQb_Qi3CxkcyhHbcKTq8y2hrDP5A8Q@mail.gmail.com>
- <87edxxg7qu.fsf@kurt>
- <CAEf4BzZtraeLSP4wcNk7t4sqDK6t2HVoo57nkUhVVLNCWe=JfA@mail.gmail.com>
-Date:   Thu, 04 Aug 2022 08:40:51 +0200
-Message-ID: <87k07o1pfw.fsf@kurt>
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] libbpf: ensure functions with always_inline attribute
+ are inline
+Message-ID: <YutxkVTxtCgVwBiq@krava>
+References: <20220803151403.793024-1-james.hilliard1@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20220803151403.793024-1-james.hilliard1@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
+On Wed, Aug 03, 2022 at 09:14:03AM -0600, James Hilliard wrote:
+> GCC expects the always_inline attribute to only be set on inline
+> functions, as such we should make all functions with this attribute
+> use the __always_inline macro which makes the function inline and
+> sets the attribute.
+> 
+> Fixes errors like:
+> /home/buildroot/bpf-next/tools/testing/selftests/bpf/tools/include/bpf/bpf_tracing.h:439:1: error: ‘always_inline’ function might not be inlinable [-Werror=attributes]
+>   439 | ____##name(unsigned long long *ctx, ##args)
+>       | ^~~~
+> 
+> Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+> ---
+> Changes v1 -> v2:
+>   - use __always_inline macro
 
-On Wed Aug 03 2022, Andrii Nakryiko wrote:
->> +void test_tai(void)
->> +{
->> +       struct __sk_buff skb = {
->> +               .tstamp = 0,
->> +               .hwtstamp = 0,
->> +       };
->> +       LIBBPF_OPTS(bpf_test_run_opts, topts,
->> +               .data_in = &pkt_v4,
->> +               .data_size_in = sizeof(pkt_v4),
->> +               .ctx_in = &skb,
->> +               .ctx_size_in = sizeof(skb),
->> +               .ctx_out = &skb,
->> +               .ctx_size_out = sizeof(skb),
->> +       );
->> +       struct timespec now_tai;
->> +       struct bpf_object *obj;
->> +       int ret, prog_fd;
->> +
->> +       ret = bpf_prog_test_load("./test_tai.o",
->> +                                BPF_PROG_TYPE_SCHED_CLS, &obj, &prog_fd);
->
-> it would be best to rely on BPF skeleton, please see other tests
-> including *.skel.h, thanks
->
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
-Ah, nice. Adjusted the test case accordingly. Will post v2 after the
-merge window. Thanks!
+jirka
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJHBAEBCgAxFiEEvLm/ssjDfdPf21mSwZPR8qpGc4IFAmLrafMTHGt1cnRAbGlu
-dXRyb25peC5kZQAKCRDBk9HyqkZzgsOYD/wNaF06Og6TEXbnkXlu1CNHxnV0v+yx
-Nj0uHcBIJQJSHyd98URvTOARdaL4xRAvZY7Km88lFIQUy6JFPJI9lkvIbLbFbZcH
-vgWiZWdW7PD4OmVbYlYI5gFz7RCk+uanRRp7xIcUyVPRiEQ8cPPXOQzgr5W/9+9X
-zLqCTWtfzXErh9eczVNtrjiRY+kDKMJqLNUyEyl6BVx3aGgcSpStQeyBXx282njh
-kEfPn1bz+kjaQFudN6GBjkYjNG4MPgTOUzc1WbBpdEjsL9Oa0QemMLCMihbc2PSM
-SIM5/YMVd12o0eS/8Ca9lanrZ8IyNOaH9ZAHT1mJeBT5QU0rwK1afrBNzr/L0ZKE
-1D1z6+MSsNWrJGOKdOH8MG0Q8va7+xBs4KOQuAdBJIWGimsRYszOmPurYI04f6i+
-+1/RzQZ92ima0rz9Q4O8J4gnxhv11Ttp+NiQp+rgdOsMgKWg0aT2+WcSLiZaC3nr
-y87mPxW6F3CmBJdeBmAjLseqFAhLDfXAgJANPRvqpgbFUJNoMe0nXDaPJrd31PlE
-46iF0in1dMZPeLe6vaHIgTxht7uB2Dsbd5B8nTq2lQPb0ThQAKQX9lLeoOPUVjaQ
-pUdkCoxFFBZHW79j2AHKYEOGnIE+IeuIfycEdkWoE9LH1gmUf5giZvmgVo1RCbeu
-QymM8Gpg0sGUtw==
-=f9AS
------END PGP SIGNATURE-----
---=-=-=--
+> ---
+>  tools/lib/bpf/bpf_tracing.h | 14 +++++++-------
+>  tools/lib/bpf/usdt.bpf.h    |  4 ++--
+>  2 files changed, 9 insertions(+), 9 deletions(-)
+> 
+> diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
+> index 43ca3aff2292..5fdb93da423b 100644
+> --- a/tools/lib/bpf/bpf_tracing.h
+> +++ b/tools/lib/bpf/bpf_tracing.h
+> @@ -426,7 +426,7 @@ struct pt_regs;
+>   */
+>  #define BPF_PROG(name, args...)						    \
+>  name(unsigned long long *ctx);						    \
+> -static __attribute__((always_inline)) typeof(name(0))			    \
+> +static __always_inline typeof(name(0))					    \
+>  ____##name(unsigned long long *ctx, ##args);				    \
+>  typeof(name(0)) name(unsigned long long *ctx)				    \
+>  {									    \
+> @@ -435,7 +435,7 @@ typeof(name(0)) name(unsigned long long *ctx)				    \
+>  	return ____##name(___bpf_ctx_cast(args));			    \
+>  	_Pragma("GCC diagnostic pop")					    \
+>  }									    \
+> -static __attribute__((always_inline)) typeof(name(0))			    \
+> +static __always_inline typeof(name(0))					    \
+>  ____##name(unsigned long long *ctx, ##args)
+>  
+>  struct pt_regs;
+> @@ -460,7 +460,7 @@ struct pt_regs;
+>   */
+>  #define BPF_KPROBE(name, args...)					    \
+>  name(struct pt_regs *ctx);						    \
+> -static __attribute__((always_inline)) typeof(name(0))			    \
+> +static __always_inline typeof(name(0))					    \
+>  ____##name(struct pt_regs *ctx, ##args);				    \
+>  typeof(name(0)) name(struct pt_regs *ctx)				    \
+>  {									    \
+> @@ -469,7 +469,7 @@ typeof(name(0)) name(struct pt_regs *ctx)				    \
+>  	return ____##name(___bpf_kprobe_args(args));			    \
+>  	_Pragma("GCC diagnostic pop")					    \
+>  }									    \
+> -static __attribute__((always_inline)) typeof(name(0))			    \
+> +static __always_inline typeof(name(0))					    \
+>  ____##name(struct pt_regs *ctx, ##args)
+>  
+>  #define ___bpf_kretprobe_args0()       ctx
+> @@ -484,7 +484,7 @@ ____##name(struct pt_regs *ctx, ##args)
+>   */
+>  #define BPF_KRETPROBE(name, args...)					    \
+>  name(struct pt_regs *ctx);						    \
+> -static __attribute__((always_inline)) typeof(name(0))			    \
+> +static __always_inline typeof(name(0))					    \
+>  ____##name(struct pt_regs *ctx, ##args);				    \
+>  typeof(name(0)) name(struct pt_regs *ctx)				    \
+>  {									    \
+> @@ -540,7 +540,7 @@ static __always_inline typeof(name(0)) ____##name(struct pt_regs *ctx, ##args)
+>  #define BPF_KSYSCALL(name, args...)					    \
+>  name(struct pt_regs *ctx);						    \
+>  extern _Bool LINUX_HAS_SYSCALL_WRAPPER __kconfig;			    \
+> -static __attribute__((always_inline)) typeof(name(0))			    \
+> +static __always_inline typeof(name(0))					    \
+>  ____##name(struct pt_regs *ctx, ##args);				    \
+>  typeof(name(0)) name(struct pt_regs *ctx)				    \
+>  {									    \
+> @@ -555,7 +555,7 @@ typeof(name(0)) name(struct pt_regs *ctx)				    \
+>  		return ____##name(___bpf_syscall_args(args));		    \
+>  	_Pragma("GCC diagnostic pop")					    \
+>  }									    \
+> -static __attribute__((always_inline)) typeof(name(0))			    \
+> +static __always_inline typeof(name(0))					    \
+>  ____##name(struct pt_regs *ctx, ##args)
+>  
+>  #define BPF_KPROBE_SYSCALL BPF_KSYSCALL
+> diff --git a/tools/lib/bpf/usdt.bpf.h b/tools/lib/bpf/usdt.bpf.h
+> index 4f2adc0bd6ca..fdfd235e52c4 100644
+> --- a/tools/lib/bpf/usdt.bpf.h
+> +++ b/tools/lib/bpf/usdt.bpf.h
+> @@ -232,7 +232,7 @@ long bpf_usdt_cookie(struct pt_regs *ctx)
+>   */
+>  #define BPF_USDT(name, args...)						    \
+>  name(struct pt_regs *ctx);						    \
+> -static __attribute__((always_inline)) typeof(name(0))			    \
+> +static __always_inline typeof(name(0))					    \
+>  ____##name(struct pt_regs *ctx, ##args);				    \
+>  typeof(name(0)) name(struct pt_regs *ctx)				    \
+>  {									    \
+> @@ -241,7 +241,7 @@ typeof(name(0)) name(struct pt_regs *ctx)				    \
+>          return ____##name(___bpf_usdt_args(args));			    \
+>          _Pragma("GCC diagnostic pop")					    \
+>  }									    \
+> -static __attribute__((always_inline)) typeof(name(0))			    \
+> +static __always_inline typeof(name(0))					    \
+>  ____##name(struct pt_regs *ctx, ##args)
+>  
+>  #endif /* __USDT_BPF_H__ */
+> -- 
+> 2.34.1
+> 
