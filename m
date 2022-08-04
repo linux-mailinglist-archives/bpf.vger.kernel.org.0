@@ -2,110 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C30425895B6
-	for <lists+bpf@lfdr.de>; Thu,  4 Aug 2022 03:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F1E758962C
+	for <lists+bpf@lfdr.de>; Thu,  4 Aug 2022 04:35:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232195AbiHDBoV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Aug 2022 21:44:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56012 "EHLO
+        id S238735AbiHDCfr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 3 Aug 2022 22:35:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230046AbiHDBoV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Aug 2022 21:44:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC0475D0DD
-        for <bpf@vger.kernel.org>; Wed,  3 Aug 2022 18:44:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 50B7D61764
-        for <bpf@vger.kernel.org>; Thu,  4 Aug 2022 01:44:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74DE5C433D6;
-        Thu,  4 Aug 2022 01:44:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1659577459;
-        bh=5PYEIm5njlUAAry2OabjRW1bWaAlXNebD94LSMfq5Lo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=j9fU8oJYRA1jaYdzTJRM/uODC7xQa0k1wJCo2xFJXEh7+itVp6ef9A+rXIepk7bjW
-         D97z3mhf7H2VVezZMEHUhgQfmZT0nDhhakE4G4hS3Xxd32BT1RiYVRt53xX9TKMecr
-         2/lun2U+twXh0u0qOdTTUOiLGELUKc3au9Hpa1tsPHhnPOKuWmgLABMrIBQnrMCizw
-         zgjHMnMctjNMHxN9xgwE9N1HHBhge8yDakSRrxsAPT87XwYAiw75XWU1OKBI9L/8a+
-         AjWAR8KXhMfHZlm09bYlQXJbR8ZA6H6EWvQI3bfaaCIV+RGQISBV8U5bjbZ+LidNS8
-         ONcADtbAzbcag==
-Date:   Wed, 3 Aug 2022 18:44:18 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Joanne Koong <joannelkoong@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: Re: [PATCH bpf-next v1 1/3] bpf: Add skb dynptrs
-Message-ID: <20220803184418.38f9ed42@kernel.org>
-In-Reply-To: <20220804012756.2eqvkofecpthzcoi@kafai-mbp.dhcp.thefacebook.com>
-References: <20220726184706.954822-1-joannelkoong@gmail.com>
-        <20220726184706.954822-2-joannelkoong@gmail.com>
-        <20220728233936.hjj2smwey447zqyy@kafai-mbp.dhcp.thefacebook.com>
-        <CAJnrk1b2WoHV=iE3j4n_4=2NBP3GaoeD=v-Zt+p-M9N=LApsuQ@mail.gmail.com>
-        <20220729213919.e7x6acvqnwqwfnzu@kafai-mbp.dhcp.thefacebook.com>
-        <CAJnrk1ZDzM5ir0rpf2kQdW_G4+-woMhULUufdz28DfiB_rqR-A@mail.gmail.com>
-        <20220803162540.19d31294@kernel.org>
-        <20220804012756.2eqvkofecpthzcoi@kafai-mbp.dhcp.thefacebook.com>
+        with ESMTP id S239112AbiHDCfc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Aug 2022 22:35:32 -0400
+X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 03 Aug 2022 19:35:30 PDT
+Received: from lvs-smtpgate4.nz.fh-koeln.de (lvs-smtpgate4.nz.FH-Koeln.DE [139.6.1.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AC32E0A0
+        for <bpf@vger.kernel.org>; Wed,  3 Aug 2022 19:35:29 -0700 (PDT)
+Message-Id: <9fb2d8$1iv728@smtp.intranet.fh-koeln.de>
+X-IPAS-Result: =?us-ascii?q?A2D//wDdL+ti/wQiBotaHQEBPAEFBQECAQkBFYFRARoIA?=
+ =?us-ascii?q?YEWAgFPAQEBgRSBLAEBK4ROg0+IT4NDAYEpgnWLFYFjBQKPBAsBAQEBAQEBA?=
+ =?us-ascii?q?QEJEgIlCQQBAYUDAVMBAQEBB4QdJjgTAQIEAQEBAQMCAwEBAQEBAQMBAQgBA?=
+ =?us-ascii?q?QEBBgSBHIUvOQ1fAQEBgQw0AQEBhBABAQEGAQEBK2sgAhkNAkkWRwEBAQGCR?=
+ =?us-ascii?q?kUBAQGCHQEBMxOiLIdhgTGBAYIpgSYBgQuCKQWCcoEXKgIBAQGHZ5BcgQ8BA?=
+ =?us-ascii?q?oUYHROCUgSXbwICGjgDNBEeNwsDXQgJFxIgAgQRGgsGAxY/CQIEDgNACA0DE?=
+ =?us-ascii?q?QQDDxgJEggQBAYDMQwlCwMUDAEGAwYFAwEDGwMUAwUkBwMcDyMNDQQfHQMDB?=
+ =?us-ascii?q?SUDAgIbBwICAwIGFQYCAk45CAQIBCsjDwUCBy8FBC8CHgQFBhEIAhYCBgQEB?=
+ =?us-ascii?q?AQWAhAIAggnFwcTMxkBBVkQCSEcCR8QBQYTAyBtBUUPKDM1PCsfGwpgJwsqJ?=
+ =?us-ascii?q?wQVAwQEAwIGEwMDIgIQLjEDFQYpExItCSp1CQIDIm0DAwQoLgMJPgcJJixMP?=
+ =?us-ascii?q?g+WQ4INgTgCMIcLjUKDZQWKVKBbCoNRgUQCk32MKIJGknQOBJF9CYVvhHaME?=
+ =?us-ascii?q?KdXgXiBfnCBbgolgRtRGQ+SEopfdAI5AgYBCgEBAwmMZIEKgRgBAQ?=
+IronPort-Data: A9a23:8oy6BaMFoaNsAhHvrR3xkcFynXyQoLVcMsEvi/4bfWQNrUojhTUFn
+ 2UbW2qCb/mINGChe4pya9m+8kIBu5HcmoRlGnM5pCpnJ55oRWspJjg7wmPYZX76whjrFRo/h
+ ykmQoCcappyFhcwnz/1WpD5t35wyKqUcbT1De/AK0hZSBRtIMsboUsLd9MR2+aEv/DoW2thh
+ vuv+6UzCHf9sxZoP2Qd7b60qR8HlJwebxtB4zTSzdgS1LPvvyF94KA3fMldHFOkKmVgJdNWc
+ s6YpF2PEsM1yD92Yj+tuu6TnkTn2dc+NyDW4pZdc/DKbhSvOkXe345jXMfwZ3u7hB2PkNcy7
+ o1w7ae6QFkVP47GxvlMdQhXRnQW0a1uoNcrIFCamOfKkmOdNWX0xbNgDAQ1OoAc/KB7DAmi9
+ 9RBc2FLMFbY26TqqF64YrAEasALKcDgP44ZqHBtiC3EEeoiTLjISuPQ/5lT2zJYasVmQK2CO
+ pNJNWoHgBLocgBeOGYqC7UCxciku0jYdx5DsA6MjP9ii4TU5FYoi+G2YIu9lsaxbc9NkG6Gq
+ W/cuWf0GBcXMJqY0zXt2ij03LeXwHulANpKT+fgsKQ60QPOgzVWDAAVWB2h5/+0jlWWVNdWK
+ khS8S0rxYA29Uq2XpznXgazvjueswcBVsFMO+k78x2WjKvS7RyQCmUNQnhGctNOnNQxQzMu1
+ 0KDhdr3BDpgmLOfD3ma89+8pDSvESUYJnREbyIeTgYB7silrY0u5jrDR9BiHaqdj9r6FDjqy
+ Tea6i4zm907h8wMzaP94VffjjaEqZ3ATwpz7QLSNkqn6QN/IoCsfJCh41Xd4d5PKY+YSh+Ku
+ 31ss8GF8MgNAIuLmSjLR/8CdJmv6uqJPSP0n1FiBd8i+i6r9nrleppfiBlmLUNsP9wsdTbja
+ kLXpUVa45o7FGOjcKsxfIu1Dt8uwLnIDtXrV+7ZKNFJZ/BZdxec/SdhZWab33rqlUkxlOc4I
+ 5jzWdesFl4UA+Jsyz/eb+4b3aUqxyYWy2mVTpf+pzyk2LSXZVabQ/EON17mRvA4qryNpgr9/
+ NNWNs/MwBJaOMX6Yy/K4csJLEsBMz0xAo3woMFMXuqCORZ9XmAnBeXYzb4od8pihas9vr2Qp
+ CnlBxcGkAKn3iefb1/aOy4+LemqWYt8oDQheyohOU2A1H0qYILp56AaH7NtJeN/rLE7k6YsF
+ 6JfI4PaUqURF3GbvjAAbpS7tspkeRCwrQ2LNiuhJjM4evZdqxfh4oe/IlO3qG8QFizyu5Ni5
+ bOgkwDcTJ4FAQhvZCrLVB6x51W+ujs7wN8qZEHBfOVSW0+y7dlMOiOk25fbPPowxQX/Kiqyj
+ ljLUEtA+LCQ+ufZ4/GU3fDe/tnB//9WQBsKRjKzAaOebHGyw4a1/WNXeMqlFdw3fFz5476vY
+ eRTwJkQ29VaxA0a4uKQ/55Nyrgi55PVp75cw0FbEW7Xd1SiDrJpSkRqPPWjVYUUmNe1QSPsB
+ iqyFiByYN1k+KrNSTb93jYNYOWZzu0zkTLP9/kzK0iSzHYpoevaDBwOZETd1nc1wF5J3GUNn
+ rpJVCk+tFfXt/bWGoza0Ei4CkzTfyxQAvR93n3kKNO601Jyor29XXAsInWvu8jUO4Qk3rgCL
+ jKJmLHJh7lHjkTFaWE4FWXL0vFbiIgc0C2mP3ddT2lkW7Pt2JcK4fGm2W9qE1sMkkgWg7ob1
+ 6oCHxQdGJhiNgxA3KBrN11A0SkQbPFF0iQdE2c0qVA=
+IronPort-HdrOrdr: A9a23:Lk7QOaiNEdsPAMy5bLCwW2YViHBQXs0ji2hC6mlwRA09TyRQ//
+ rDoB1973LJYVcqM03I9urhBEDtexLhHP1Oi7X5VI3KNDUO3lHYT72LKODZsljd8kbFmdK1u5
+ 0PT0EEMqyTMWRH
+X-IronPort-Anti-Spam-Filtered: true
+THK-HEADER: Antispam--identified_spam--outgoing_filter
+Received: from p034004.vpn-f04.fh-koeln.de (HELO MAC15F3.vpn.fh-koeln.de) ([139.6.34.4])
+  by smtp.intranet.fh-koeln.de with ESMTP/TLS/DHE-RSA-AES128-SHA; 04 Aug 2022 04:34:02 +0200
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Charity Donation
+To:     You <mackenzie-tuttle@ca.rr.com>
+From:   "MacKenzie Scott" <mackenzie-tuttle@ca.rr.com>
+Date:   Thu, 04 Aug 2022 03:33:59 +0100
+Reply-To: mackenzie-tuttle@californiamail.com
+X-Priority: 1 (High)
+Sensitivity: Company-Confidential
+X-Spam-Status: No, score=1.3 required=5.0 tests=BAYES_50,
+        FREEMAIL_FORGED_REPLYTO,MSGID_FROM_MTA_HEADER,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 3 Aug 2022 18:27:56 -0700 Martin KaFai Lau wrote:
-> On Wed, Aug 03, 2022 at 04:25:40PM -0700, Jakub Kicinski wrote:
-> > The point of skb_header_pointer() is to expose the chunk of the packet
-> > pointed to by [skb, offset, len] as a linear buffer. Potentially coping
-> > it out to a stack buffer *IIF* the header is not contiguous inside the
-> > skb head, which should very rarely happen.
-> > 
-> > Here it seems we return an error so that user must pull if the data is
-> > not linear, which is defeating the purpose. The user of
-> > skb_header_pointer() wants to avoid the copy while _reliably_ getting 
-> > a contiguous pointer. Plus pulling in the header may be far more
-> > expensive than a small copy to the stack.
-> > 
-> > The pointer returned by skb_header_pointer is writable, but it's not
-> > guaranteed that the writes go to the packet, they may go to the
-> > on-stack buffer, so the caller must do some sort of:
-> > 
-> > 	if (data_ptr == stack_buf)
-> > 		skb_store_bits(...);
-> > 
-> > Which we were thinking of wrapping in some sort of flush operation.  
-> Curious on the idea.  don't know whether this is a dynptr helper or
-> should be a specific pkt helper though.
+Hi,
+  My name is MacKenzie Scott Tuttle; I'm a philanthropist and founder of one of the largest private foundations in the world. I'm on a mission to give it all away as I believe in ‘giving while living.’ I always had the idea that never changed in my mind — that wealth should be used to help each other, which has made me decide to donate to you. Kindly acknowledge this message and I will get back to you with more details.
 
-Yeah, I could well pattern matched the dynptr because it sounded
-similar but it's a completely different beast.
+Visit the web page to know more about me: https://www.nytimes.com/2022/04/10/business/mackenzie-scott-charity.html
 
-> The idea is to have the prog keeps writing to a ptr (skb->data or stack_buf).
-
-To be clear writing is a lot more rare than reading in this case.
-
-> When the prog is done, call a bpf helper to flush.  The helper
-> decides if it needs to flush from stack_buf to skb and
-> will take care of the cloned skb ?
-
-Yeah, I'd think for skb it'd just pull. Normally dealing with skbs
-you'd indeed probably just pull upfront if you knew you're gonna write.
-Hence saving yourself from the unnecessary trip thru the stack. But XDP
-does not have strong pulling support, so if the interface must support
-both then it's the lower common denominator.
-
-> > If I'm reading this right dynptr as implemented here do not provide
-> > such semantics, am I confused in thinking that this is a continuation
-> > of the XDP multi-buff discussion? Is it a completely separate thing
-> > and we'll still need a header_pointer like helper?  
-> Can you share a pointer to the XDP multi-buff discussion?
-
-https://lore.kernel.org/all/20210916095539.4696ae27@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com/
+Regards,
+MacKenzie Scott Tuttle.
