@@ -2,155 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EF0358A2EF
-	for <lists+bpf@lfdr.de>; Thu,  4 Aug 2022 23:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF5258A2F5
+	for <lists+bpf@lfdr.de>; Thu,  4 Aug 2022 23:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235595AbiHDVza (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Aug 2022 17:55:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35664 "EHLO
+        id S234184AbiHDV6C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Aug 2022 17:58:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237575AbiHDVz3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Aug 2022 17:55:29 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6C0013F26
-        for <bpf@vger.kernel.org>; Thu,  4 Aug 2022 14:55:27 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id e13so1238083edj.12
-        for <bpf@vger.kernel.org>; Thu, 04 Aug 2022 14:55:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DnTtHPUlTuUcTBiVFV4AkAseSUfZM3l9BOJP7dLKA9I=;
-        b=UuUqTq4yKHxM3QniVqd3N216GfI9SIlGM7cozLRkzaNORfYujGyHea4Ya9EolTznBH
-         MHfE4qeOvK3RJOO6vE8UH26UtDMRnoPdUq9LZwxNqK2iqH9n3rXoyDovkcRLQfMR3M1R
-         xEPzQWxDAkefUwcoDs5tZWt8oxiWJqnBnmp2Ez2gDsG6SL1XXYVbLW33nJEA5gV9wvaD
-         7sFc0EsguihS+bfkKmf14iYyPjqCGw5KzIAnqvtRga7WQMWWL5TD/ssfO9ajE29/SmKw
-         C8EpaLMLURidU+sXv5ZUc+/7+KUz8iv2d6NEbpbqGBZYz7QLKwP+KR2Yskx4b2Iuw4Mq
-         UV0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DnTtHPUlTuUcTBiVFV4AkAseSUfZM3l9BOJP7dLKA9I=;
-        b=xN2EQVKf87ax4PLULGHIzg2O5Q/qUsanx1yYLYrDcmvFbCcOyDQC1tEYV5+U2UWpms
-         7R4EQxWOmTxLBVz8tbqu1nPKPqLCk0Afm3jiLZt23LIvOF3DEtPkz3t+LNCiwISYfrK1
-         EK2/E5XlAbe/o/opk2DUthc+fePnJwMSWnpK8IbKMyskXlKHsdPJdwBTTq7oUD7+yTk+
-         eIKzoxcKQP+vCh6c9WGEzbeSyg0TUSQYECb+VJRvNhbWnft3j3yWaikApvWVQFygt+hc
-         MVl9U9DL4+DdTVVOkN86lZlXbML+MWKIMHEKTD2Vonm7j6uZsmxCydbAih1U6TSWoIFJ
-         jk/g==
-X-Gm-Message-State: ACgBeo3s6QrGFq8M6zXMRSOF7AUH71DxRI6qnxNpI5TODS6ieOxaPet/
-        JN/U66OtNhe5f2hUbYzCPEvkfWTkr2Ww8xkex+0=
-X-Google-Smtp-Source: AA6agR5rO/YJZqHHZujLMz+4oqYenuMA/1w6LDOkHT+zQWKDDwwtnR/NyfPjCIqUed4PeCKgzzrH0oFjypm/11D1QSQ=
-X-Received: by 2002:a50:fb13:0:b0:43c:ef2b:d29 with SMTP id
- d19-20020a50fb13000000b0043cef2b0d29mr3994890edq.378.1659650126037; Thu, 04
- Aug 2022 14:55:26 -0700 (PDT)
+        with ESMTP id S231321AbiHDV6B (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Aug 2022 17:58:01 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DACAD1B794
+        for <bpf@vger.kernel.org>; Thu,  4 Aug 2022 14:58:00 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 943E4B82773
+        for <bpf@vger.kernel.org>; Thu,  4 Aug 2022 21:57:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 418D9C433D7
+        for <bpf@vger.kernel.org>; Thu,  4 Aug 2022 21:57:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1659650278;
+        bh=A+ORtwtH+nQKM4sSLtbkpk1pB9SsV5SU2yqcbDUBHkc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=iQMQuiuiddruNdt92QVQBOCnfLqoJCxuGxCX9OkGpm9SeLUx33dHkCOl6qUoQTI1Q
+         IM5wNTE79T1oAO2DMLWEXWEl8heQi2kHbIQpMA5ZDAKCKfXVsrG1YNFVCYlZJMsQGl
+         WbN38p6Dvc1me6ZUfktrOQxWCklmBvUgtwaAuBR6k8PexV18B2vbSBLv2YJYJ7ahHN
+         OkSMa0riCAc5ca9xqbHG4noxkL58rCF/oVAyRh3nrMxKVcS8dlLQLV3ocOgIvkLenn
+         7EG21unMq6mwLxGJkk3AWFAv5CHbgKVrklXssbn5c8HLxPYOfPxqJdOEvuw7Rao5FZ
+         cWmiXI4S2crzQ==
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-31f445bd486so8152897b3.13
+        for <bpf@vger.kernel.org>; Thu, 04 Aug 2022 14:57:58 -0700 (PDT)
+X-Gm-Message-State: ACgBeo1/7nwo5W1TXdf04C5JGdEvYsnyAheaQlKXtVudR4EhYX+1K4R9
+        R9DAkqtnE14/498yy3gTB1QcrRISNW46+KgK16I=
+X-Google-Smtp-Source: AA6agR7gHSmYTbVSeOvjFBlpB8mcDoaoYDll6Als9s5i4E9ojIeVV37hDhipzJ51+R5L/8PHdUiXLLKuSLI9GnvZOWI=
+X-Received: by 2002:a81:63c3:0:b0:323:ce27:4e4d with SMTP id
+ x186-20020a8163c3000000b00323ce274e4dmr3495885ywb.472.1659650277271; Thu, 04
+ Aug 2022 14:57:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220726184706.954822-1-joannelkoong@gmail.com>
- <20220726184706.954822-2-joannelkoong@gmail.com> <20220801163349.4a28d154@kernel.org>
- <CAJnrk1bow8je9VkTAQHiOOPQLWGDg1uDqDRN+tr43bMYtTSGjw@mail.gmail.com>
-In-Reply-To: <CAJnrk1bow8je9VkTAQHiOOPQLWGDg1uDqDRN+tr43bMYtTSGjw@mail.gmail.com>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Thu, 4 Aug 2022 14:55:14 -0700
-Message-ID: <CAJnrk1aq719=e07tP2Udn3FVXgzMdsPgyQ9KUp2GK=E=paZEzg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 1/3] bpf: Add skb dynptrs
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     bpf@vger.kernel.org, andrii@kernel.org, daniel@iogearbox.net,
-        ast@kernel.org
+References: <20220802135651.1794015-1-jolsa@kernel.org>
+In-Reply-To: <20220802135651.1794015-1-jolsa@kernel.org>
+From:   Song Liu <song@kernel.org>
+Date:   Thu, 4 Aug 2022 14:57:46 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW76i55-UqfaL0gRLK7FKGoPFjMCfPNZNePry=PamYrRfw@mail.gmail.com>
+Message-ID: <CAPhsuW76i55-UqfaL0gRLK7FKGoPFjMCfPNZNePry=PamYrRfw@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: Cleanup ftrace hash in bpf_trampoline_put
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 1, 2022 at 7:12 PM Joanne Koong <joannelkoong@gmail.com> wrote:
+On Tue, Aug 2, 2022 at 6:57 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> On Mon, Aug 1, 2022 at 4:33 PM Jakub Kicinski <kuba@kernel.org> wrote:
-> >
-> > (consider cross-posting network-related stuff to netdev@)
+> We need to release possible hash from trampoline fops object
+> before removing it, otherwise we leak it.
 >
-> Great, I will start cc-ing netdev@
->
-> >
-> > On Tue, 26 Jul 2022 11:47:04 -0700 Joanne Koong wrote:
-> > > Add skb dynptrs, which are dynptrs whose underlying pointer points
-> > > to a skb. The dynptr acts on skb data. skb dynptrs have two main
-> > > benefits. One is that they allow operations on sizes that are not
-> > > statically known at compile-time (eg variable-sized accesses).
-> > > Another is that parsing the packet data through dynptrs (instead of
-> > > through direct access of skb->data and skb->data_end) can be more
-> > > ergonomic and less brittle (eg does not need manual if checking for
-> > > being within bounds of data_end).
-> >
-> > Is there really a need for dynptr_from_{skb,xdp} to be different
-> > function IDs? I was hoping this work would improve portability of
-> > networking BPF programs across the hooks.
->
-> Awesome, I like this idea of having just one generic API named
-> something like bpf_dynptr_from_packet. I'll add this for v2!
->
+> Fixes: 00963a2e75a8 ("bpf: Support bpf_trampoline on functions with IPMODIFY (e.g. livepatch)")
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 
-Thinking about this some more, I don't think we get a lot of benefits
-from combining it into one API (bpf_dynptr_from_packet) instead of 2
-separate APIs (bpf_dynptr_from_skb / bpf_dynptr_from_xdp). The
-bpf_dynptr_write behavior will be inconsistent (eg bpf_dynptr_write
-into xdp frags will work whereas bpf_dynptr_write into skb frags will
-fail). Martin also pointed out that he'd prefer bpf_dynptr_write() to
-succeed for writing into frags and invalidate data slices (instead of
-failing the write and always keeping data slices valid), which we
-can't do if we combine xdp + skb, without always (needlessly)
-invalidating xdp data slices whenever there's a write. Additionally,
-in the verifier, there's no organic mapping between prog type -> prog
-ctx, so we'll have to hardcode some mapping between prog type -> skb
-vs. xdp ctx. I think for these reasons it makes more sense to have 2
-separate APIs, instead of having 1 API that both hooks can call.
+Great catch! Thanks!
 
-> >
-> > > For bpf prog types that don't support writes on skb data, the dynptr is
-> > > read-only (writes and data slices are not permitted). For reads on the
-> > > dynptr, this includes reading into data in the non-linear paged buffers
-> > > but for writes and data slices, if the data is in a paged buffer, the
-> > > user must first call bpf_skb_pull_data to pull the data into the linear
-> > > portion.
-> > >
-> > > Additionally, any helper calls that change the underlying packet buffer
-> > > (eg bpf_skb_pull_data) invalidates any data slices of the associated
-> > > dynptr.
-> >
-> > Grepping the verifier did not help me find that, would you mind
-> > pointing me to the code?
+Acked-by: Song Liu <song@kernel.org>
+
+> ---
+>  kernel/bpf/trampoline.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 >
-> The base reg type of a skb data slice will be PTR_TO_PACKET - this
-> gets set in this patch in check_helper_call() in verifier.c:
+> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+> index 0f532e6a717f..ff87e38af8a7 100644
+> --- a/kernel/bpf/trampoline.c
+> +++ b/kernel/bpf/trampoline.c
+> @@ -841,7 +841,10 @@ void bpf_trampoline_put(struct bpf_trampoline *tr)
+>          * multiple rcu callbacks.
+>          */
+>         hlist_del(&tr->hlist);
+> -       kfree(tr->fops);
+> +       if (tr->fops) {
+> +               ftrace_free_filter(tr->fops);
+> +               kfree(tr->fops);
+> +       }
+>         kfree(tr);
+>  out:
+>         mutex_unlock(&trampoline_mutex);
+> --
+> 2.37.1
 >
-> + if (func_id == BPF_FUNC_dynptr_data &&
-> +    meta.type == BPF_DYNPTR_TYPE_SKB)
-> + regs[BPF_REG_0].type = PTR_TO_PACKET | ret_flag;
->
-> Anytime there is a helper call that changes the underlying packet
-> buffer [0], the verifier iterates through the registers and marks all
-> PTR_TO_PACKET reg types as unknown, which invalidates them. The dynptr
-> data slice will be invalidated since its base reg type is
-> PTR_TO_PACKET
->
-> The stack trace is:
->    check_helper_call() -> clear_all_pkt_pointers() ->
-> __clear_all_pkt_pointers() -> mark_reg_unknown()
->
->
-> I will add this explanation to the commit message for v2 since it is non-obvious
->
->
-> [0] https://elixir.bootlin.com/linux/latest/source/kernel/bpf/verifier.c#L7143
->
-> [1] https://elixir.bootlin.com/linux/latest/source/kernel/bpf/verifier.c#L6489
->
->
-> >
-> > > Right now, skb dynptrs can only be constructed from skbs that are
-> > > the bpf program context - as such, there does not need to be any
-> > > reference tracking or release on skb dynptrs.
