@@ -2,206 +2,380 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 146DF58AE9C
-	for <lists+bpf@lfdr.de>; Fri,  5 Aug 2022 19:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34CD958AEB3
+	for <lists+bpf@lfdr.de>; Fri,  5 Aug 2022 19:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240841AbiHEREm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Aug 2022 13:04:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58156 "EHLO
+        id S237339AbiHERO3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Aug 2022 13:14:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237076AbiHEREl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Aug 2022 13:04:41 -0400
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2047.outbound.protection.outlook.com [40.107.101.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C96A26E881;
-        Fri,  5 Aug 2022 10:04:40 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=F2H2UEfx0tkGhXk2nkED7KlNo7O2Eno1i5o+3wBKwUxN0/pA0GP/O/7WZlCS2ASnnO5XCLM5rAVEcHjS/3WFBcb/o7eMnzeT0FULf8hAJxYvnmfo8wcCq7PeSAiBxjJUEye5CAD6uvNUKb53/8tVRImVq7exWpQQ5bqXCEOIOl18DDRHTSnMiWkOj8iDqQPcJA+Dqq/DJ780baI7nJR/9SFXTPCZwPiIMiFsVqrT3hp29g2DFJCIJDm0YXcm0M9FpJaquZaCVB1l72OQw9O+NedWj9uaOgaaiiDU+8ZEeepz36yVl3bno7eWPHP46J7g/C9oo+BExfmc6DtN2INyeA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xAoyTnd4Mu8j11oZF5uRkgoQu/qfuGYVKtJH48iVSlY=;
- b=mUxI1M5QJj60NF559gFaLWutsqiDfgLWIvE73zGpiyZ84hMd00ih7AOpsb1YALfnA0CRhfwFKTn9HjHssjEy9SAIQQzAHoFXVO948XSOWiI0MD9ndzeDRfsJHCQUmkMSqcWnmsLsjNokj9B0q61wizA2Sl4EP+5xQzd6nVCLhCvyMAc9xM6eLf5BkdiBeInVI2Ojot6Nmlu2o1sGbuUeyq4FKX5oQhhfa7fhSo5JApQfMz3M3Jq1QeXDLL05NLg2uTXv4MeJ6auFoGdtsztdZeQR4HoguDC4AkJ47zC+Enoc7Q8u1S1PrjsJU1yn5QGiNAsKbo2LxFS4k8Ki7nrFag==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xAoyTnd4Mu8j11oZF5uRkgoQu/qfuGYVKtJH48iVSlY=;
- b=Fl189guTxeUijSieMemu9wllfKgbzthi5PYQz0NGdbPShNpC/Vc2kG0n/6Dzn8W9ufk/RxjMo8HgCPF3X7OBp55/Ri4GNyu7KQM3UkHBgKbsuJymORe3LRgeoH0qXxp6Cw1+Sdzh0VdOvuOslnvsYGOfpfgFy3gjL0TwWowiSZU=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB6272.namprd12.prod.outlook.com (2603:10b6:208:3c0::22)
- by CO6PR12MB5394.namprd12.prod.outlook.com (2603:10b6:5:35f::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5504.15; Fri, 5 Aug
- 2022 17:04:37 +0000
-Received: from MN0PR12MB6272.namprd12.prod.outlook.com
- ([fe80::5ce0:108d:9127:feae]) by MN0PR12MB6272.namprd12.prod.outlook.com
- ([fe80::5ce0:108d:9127:feae%4]) with mapi id 15.20.5504.014; Fri, 5 Aug 2022
- 17:04:36 +0000
-Message-ID: <86921fe7-6a6b-2731-b09e-a6e03f38a6b9@amd.com>
-Date:   Fri, 5 Aug 2022 12:04:34 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Content-Language: en-US
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, peterz@infradead.org, bpf@vger.kernel.org,
-        jpoimboe@redhat.com, andrew.cooper3@citrix.com,
-        linux-kernel@vger.kernel.org, thomas.lendacky@amd.com
-References: <20220804192201.439596-1-kim.phillips@amd.com>
- <Yu0sT6vCofyWiAMI@zn.tnic>
-From:   Kim Phillips <kim.phillips@amd.com>
-Subject: Re: [PATCH] x86/bugs: Enable STIBP for IBPB mitigated RetBleed
-In-Reply-To: <Yu0sT6vCofyWiAMI@zn.tnic>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL0PR02CA0035.namprd02.prod.outlook.com
- (2603:10b6:207:3c::48) To MN0PR12MB6272.namprd12.prod.outlook.com
- (2603:10b6:208:3c0::22)
+        with ESMTP id S231281AbiHERO2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Aug 2022 13:14:28 -0400
+Received: from 66-220-155-178.mail-mxout.facebook.com (66-220-155-178.mail-mxout.facebook.com [66.220.155.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B5918379
+        for <bpf@vger.kernel.org>; Fri,  5 Aug 2022 10:14:26 -0700 (PDT)
+Received: by devbig010.atn6.facebook.com (Postfix, from userid 115148)
+        id 4F035FFDF4B9; Fri,  5 Aug 2022 10:14:13 -0700 (PDT)
+From:   Joanne Koong <joannelkoong@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     andrii@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        Joanne Koong <joannelkoong@gmail.com>
+Subject: [PATCH bpf-next v1] selftests/bpf: Clean up sys_nanosleep uses
+Date:   Fri,  5 Aug 2022 10:14:05 -0700
+Message-Id: <20220805171405.2272103-1-joannelkoong@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c4eab476-aec6-4edf-2152-08da770493b3
-X-MS-TrafficTypeDiagnostic: CO6PR12MB5394:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lCj7qQQp2rGgJLAk68EiO8WvEkbLCB4vFGpfU4l6ig1o3f+fqp0dQrBrP0DSLWRbN2NA/HzmvUaskGCcIovuCXsJE+JshKHVOXTML4jrCI8G9bNbugJlDAQFX5zJng1ypsT2WEqiT9zs1xQZrDJDypGo4+gJOr98FaZkZ8gGBU1G10ulGgD3oB5QoFTX4cc2/Xxz6+dzi0nQ3O2IyN4HgqEy7N2TyrGEuqkoelH9AppDZOEkuGZkqCbQzijTdI4TkLB1eG+wScwo1wP9TTOMaVIX32aplPrpz9BbmInhUQyG0l3k4sjiQQpHHI4G22lX7kdmTRzQDXCkUs7pV8AJa3/5JvbVknm9RtEM0dii9+qxHRm8yzTOo1qp74dvay7gkjX9HHzc4ho1IfFCszMHvtlTg+yziMTkD6DCK/pTG71NH555w9LZW1TokC3Byer2+Xj86sPhyNaTyjIjUKD6SJ9Px8CGSvFtTyxTBYoxMJvqFfq6RC84GtawOmDNi6KJfhPkxVKXpnv43YZwZgOXrwZMcMUwwO4eIJxPpOLx07rjWUAcGuwTxPSSsLOjxuzaCK9Q+eOCyX2noOTTcmwWWFipdyfoEc9hbsaM9wsbVosY8yJlVrB+NjKTpttYNkuf7QI6huiIC9wTpdK8ZcKtM9x47Aik4TD3ODBsuZR3aSAOoNYVmDhE0dQfO1ePUoWkdFMEy+1GF84hkOTb+WKy56lfkq4W+8jqVNC3xrRKkn6YmVyoE9k+VgzBlGAkAd4TSt11cD9oPmzYuHb0cvFGUwjFum+rbKEz/DlTxvlwP3U15exDZmvVtkgp0R0g79WkXpzpFUxHLTC1/0KPuxLvtYPKWjdkLmQfP3fwKfkYAgY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6272.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(376002)(39860400002)(346002)(366004)(136003)(396003)(53546011)(6506007)(38100700002)(83380400001)(44832011)(2906002)(41300700001)(186003)(2616005)(66574015)(6512007)(26005)(316002)(6916009)(478600001)(6486002)(966005)(66556008)(66946007)(8676002)(36756003)(86362001)(31696002)(4326008)(66476007)(31686004)(5660300002)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aXJOaFNwRFc5VHVLMkptU2hoSFZ5NHlrdUx6SkJRNlF3NDcxMytYbnp6WkE4?=
- =?utf-8?B?b3pkMFdtWE50RmNabHBGZEJ4cVk5VWVJc1VVVW42T1ZEYlZkVnhZYnZ3OW9k?=
- =?utf-8?B?N3ZFcDM0OWpuM0haSng5VjRnSG5IWDFXMzFKY084a2FJSzJKL09OMlpoSzlZ?=
- =?utf-8?B?VHp2Z0t0Zi9ITER0ejZvZ0VGSCtoMzVKQlN0Q0k1dmtkSlhWZGRaWXUwTEth?=
- =?utf-8?B?ZCsxWlcycVFkY041dUwyVi9SVU4xQ2UwaGNWOG5qOGg2cFlFanVPamtjZmNi?=
- =?utf-8?B?N3BJSlUwWFMwU3B6ZktrVUVUbmprYXBISE80VmJpVXpZTTZyby9JenF1U3Fi?=
- =?utf-8?B?UHJhLzhOa3E4NFJlQ3NMeWdxSzA2dllrVFJKVkVMK1JYd0pEZ0N1azVNVEpw?=
- =?utf-8?B?bEQzTzUyc0xnMk5mUXNVZFdCMEN2RzJKRkRkdWJXMWtKYXZzWUpNcW1SOHd2?=
- =?utf-8?B?Mkg0SzE3QmNhUHBQWVJCelhqeHdNQmJON3UwMEc2bldaTHVMTytGaHBQMlJT?=
- =?utf-8?B?dGJpdXczeStoR2lhQS9reUQyRFFHam80Vm1XOGlncUIwb0huQU5YRld0SGZR?=
- =?utf-8?B?MUp6a3F1NG8vRzBuU1NpNUdyQmI5eXdTdnRMMjhJK21ySzlXUWtjUTFEcUhZ?=
- =?utf-8?B?azJuVTM4L1g2UTY3YjBERlFkYk5MUVE0WEpud2hMQm1oQURlMTVpelNJMnpV?=
- =?utf-8?B?cUJTdDR6SllMdHMrcnJpc1E3bnRnd3gwV2E0RitZVkNQZm1TQWlhWndDdzRv?=
- =?utf-8?B?dmszQk90cGh5TGNjdlE2clJDNFh6MkFTQktGMVlkSlFNdUxwemFldGlCY01J?=
- =?utf-8?B?N1ZqRVF0THlXWnBUMmsvYks1Zi9wWTEyVGE5UENwS3gxZXkzQjluR2g2N2J5?=
- =?utf-8?B?Rk1IdUQvMlNzU2RLQXhzOE5MbDBRazNkdWtiRDJNRVVzNDJ4R0xQa3lIUG9n?=
- =?utf-8?B?ejVFYllZc3MrL3NZUXRJSmUrMHBNRituNHdkNlAwMnMreFZ1V2tnQTNYeWQx?=
- =?utf-8?B?VUxLUUo5RWVqeHdIeDFyTWRQQ0hWVjBpc0ZwRHZUYkVEbFpZYnBlaFNDUkp2?=
- =?utf-8?B?Unhla1ZSWEZ2YjFtSGJ5T1RiL2pkYm1hMzd1bHg4a3NGUHd6SUhDTTdyallW?=
- =?utf-8?B?WDlRQVNqa1ZDWjJ2YmdFNU9HZlU1UTBuWnJJekdlOFpSaU9mV3JUelBtMUZ6?=
- =?utf-8?B?ZWhWZzFMVW9tUEhkbGsycnJKekpJa1l5ZldsaXorTjRJS2d4VlRaUmt6M3p4?=
- =?utf-8?B?RE9EZUl1ejhTTDl5ZnpQeEFneklvN3l6Vm5nZWlhdXFVZ05WSWpBL1JTd3E2?=
- =?utf-8?B?MlZhMzR0NnZqR3FWS3g0Uk5ieHIzU2FDRTRwRFoxVFIrUmMreDFUR2IyQUNr?=
- =?utf-8?B?a1RyOXZ1SUVXQ0g5RGcySm1wWGlTc3RneGVyWHVGeVVhNjVnRjFkMzF4WWwx?=
- =?utf-8?B?c3kxQVByVnpmYndwVGN0cjBHUlo1L3Z4M2dDODEvQldlNGs3YnNlL3A2Z0Nm?=
- =?utf-8?B?UDlvempRMktsK2xJT0o0QVI2Y2hrdU52SmJHZzQvMCs5dHFhenBZWW1qUlhT?=
- =?utf-8?B?RWJ2MGZNQWJuazRQNDZuRHdld3dmZEhnYjlrbm8yQ0F6dkJlQVMxdWJSTFFY?=
- =?utf-8?B?K1laSVZqRkFLTVppMzJBVDMwdjRlK3E2cDZNZmxuSzdiSEJiQ1BlL1lUV2FU?=
- =?utf-8?B?SGtTRXhmVXhTSSs3bkUvUXErYzhhVHZ5UHFhMCs4ekRaaGFPTWltQnROeUdG?=
- =?utf-8?B?Q2NxdTJjckVjUUMzQnZ3K3VjUHlJajNvVzlCRHVvSDExOU1yT3dBaE45K0RE?=
- =?utf-8?B?emVuaHV5RlIzWTgyZVFIV0pGOGZoQ09haElGMUM2b0FKV2dCMTJHMVpONkY3?=
- =?utf-8?B?Slo5WTNLblIxLzZKL1dsWHV4WmdZQlFqRWxtMkNJaGJjTFBSZnBrNWZ6aGc4?=
- =?utf-8?B?bmUvZmdjOW5mbUVudFAwdnVEYnZKQlJnd0NKVU9vTFdGYVhNRnR0UENWRjhZ?=
- =?utf-8?B?K1RJaEYvUEJvK3cyV3Vtb0RPb2U3S0JtYjZyS05WbElHSXJObURJcnRUcUEz?=
- =?utf-8?B?WElWTVZMZnJ0TXB4WFY3Y0JpZDkzTnFEamkzZzI4L2dWYXZ4MGZjblRNVno0?=
- =?utf-8?Q?967Bk9nX1SbmnfVvCIuAE6kyU?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c4eab476-aec6-4edf-2152-08da770493b3
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6272.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Aug 2022 17:04:36.9161
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sTvUiOChFTUO6i8NEnZeF2GgNTSIE73uIjbSeJ21TrCpkwMtjYieExCCiNhmhuTFfE0k9kziwZnu2NV9xRt0KQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR12MB5394
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=3.4 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+        FORGED_GMAIL_RCVD,FREEMAIL_FROM,NML_ADSP_CUSTOM_MED,RDNS_DYNAMIC,
+        SPF_HELO_PASS,SPF_SOFTFAIL,SPOOFED_FREEMAIL,SPOOF_GMAIL_MID,
+        TVD_RCVD_IP,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/5/22 9:42 AM, Borislav Petkov wrote:
-> On Thu, Aug 04, 2022 at 02:22:01PM -0500, Kim Phillips wrote:
->> For retbleed=ibpb, force STIBP on machines that have it,
-> 
-> Because?
+This patch cleans up a few things:
 
-See "6.1.2 IBPB On Privileged Mode Entry / SMT Safety":
+  * dynptr_fail.c:
+    There is no sys_nanosleep tracepoint. dynptr_fail only tests
+    that the prog load fails, so just SEC("?raw_tp") suffices here.
 
-https://www.amd.com/system/files/documents/technical-guidance-for-mitigating-branch-type-confusion_v7_20220712.pdf
+  * test_bpf_cookie:
+    There is no sys_nanosleep kprobe. The prog is loaded in
+    userspace through bpf_program__attach_kprobe_opts passing in
+    SYS_NANOSLEEP_KPROBE_NAME, so just SEC("k{ret}probe") suffices here.
 
-Did you want me to re-quote the whitepaper, or reference it,
-or paraphrase it, or...?
+  * test_helper_restricted:
+    There is no sys_nanosleep kprobe. test_helper_restricted only tests
+    that the prog load fails, so just SEC("?kprobe")( suffices here.
 
->> and report its SMT vulnerability status accordingly.
->>
->> Fixes: 3ebc17006888 ("x86/bugs: Add retbleed=ibpb")
->> Signed-off-by: Kim Phillips <kim.phillips@amd.com>
->> ---
->>   Documentation/admin-guide/kernel-parameters.txt |  4 +++-
->>   arch/x86/kernel/cpu/bugs.c                      | 10 ++++++----
->>   2 files changed, 9 insertions(+), 5 deletions(-)
->>
->> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
->> index 597ac77b541c..127fa4328360 100644
->> --- a/Documentation/admin-guide/kernel-parameters.txt
->> +++ b/Documentation/admin-guide/kernel-parameters.txt
->> @@ -5212,10 +5212,12 @@
->>   			ibpb	     - mitigate short speculation windows on
->>   				       basic block boundaries too. Safe, highest
->>   				       perf impact.
-> 
-> You should put some blurb here about STIBP and why it is being enabled,
-> where present.
+There are no functional changes.
 
-unret didn't have it, was just copying unret's entry, but,
-ok, will do for both now.
+Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ .../testing/selftests/bpf/progs/dynptr_fail.c | 56 +++++++++----------
+ .../selftests/bpf/progs/test_bpf_cookie.c     |  4 +-
+ .../bpf/progs/test_helper_restricted.c        |  4 +-
+ 3 files changed, 32 insertions(+), 32 deletions(-)
 
-How about:
+diff --git a/tools/testing/selftests/bpf/progs/dynptr_fail.c b/tools/test=
+ing/selftests/bpf/progs/dynptr_fail.c
+index 0a26c243e6e9..b5e0a87f0a36 100644
+--- a/tools/testing/selftests/bpf/progs/dynptr_fail.c
++++ b/tools/testing/selftests/bpf/progs/dynptr_fail.c
+@@ -65,7 +65,7 @@ static int get_map_val_dynptr(struct bpf_dynptr *ptr)
+ /* Every bpf_ringbuf_reserve_dynptr call must have a corresponding
+  * bpf_ringbuf_submit/discard_dynptr call
+  */
+-SEC("?raw_tp/sys_nanosleep")
++SEC("?raw_tp")
+ int ringbuf_missing_release1(void *ctx)
+ {
+ 	struct bpf_dynptr ptr;
+@@ -77,7 +77,7 @@ int ringbuf_missing_release1(void *ctx)
+ 	return 0;
+ }
+=20
+-SEC("?raw_tp/sys_nanosleep")
++SEC("?raw_tp")
+ int ringbuf_missing_release2(void *ctx)
+ {
+ 	struct bpf_dynptr ptr1, ptr2;
+@@ -112,7 +112,7 @@ static int missing_release_callback_fn(__u32 index, v=
+oid *data)
+ }
+=20
+ /* Any dynptr initialized within a callback must have bpf_dynptr_put cal=
+led */
+-SEC("?raw_tp/sys_nanosleep")
++SEC("?raw_tp")
+ int ringbuf_missing_release_callback(void *ctx)
+ {
+ 	bpf_loop(10, missing_release_callback_fn, NULL, 0);
+@@ -120,7 +120,7 @@ int ringbuf_missing_release_callback(void *ctx)
+ }
+=20
+ /* Can't call bpf_ringbuf_submit/discard_dynptr on a non-initialized dyn=
+ptr */
+-SEC("?raw_tp/sys_nanosleep")
++SEC("?raw_tp")
+ int ringbuf_release_uninit_dynptr(void *ctx)
+ {
+ 	struct bpf_dynptr ptr;
+@@ -132,7 +132,7 @@ int ringbuf_release_uninit_dynptr(void *ctx)
+ }
+=20
+ /* A dynptr can't be used after it has been invalidated */
+-SEC("?raw_tp/sys_nanosleep")
++SEC("?raw_tp")
+ int use_after_invalid(void *ctx)
+ {
+ 	struct bpf_dynptr ptr;
+@@ -151,7 +151,7 @@ int use_after_invalid(void *ctx)
+ }
+=20
+ /* Can't call non-dynptr ringbuf APIs on a dynptr ringbuf sample */
+-SEC("?raw_tp/sys_nanosleep")
++SEC("?raw_tp")
+ int ringbuf_invalid_api(void *ctx)
+ {
+ 	struct bpf_dynptr ptr;
+@@ -173,7 +173,7 @@ int ringbuf_invalid_api(void *ctx)
+ }
+=20
+ /* Can't add a dynptr to a map */
+-SEC("?raw_tp/sys_nanosleep")
++SEC("?raw_tp")
+ int add_dynptr_to_map1(void *ctx)
+ {
+ 	struct bpf_dynptr ptr;
+@@ -190,7 +190,7 @@ int add_dynptr_to_map1(void *ctx)
+ }
+=20
+ /* Can't add a struct with an embedded dynptr to a map */
+-SEC("?raw_tp/sys_nanosleep")
++SEC("?raw_tp")
+ int add_dynptr_to_map2(void *ctx)
+ {
+ 	struct test_info x;
+@@ -207,7 +207,7 @@ int add_dynptr_to_map2(void *ctx)
+ }
+=20
+ /* A data slice can't be accessed out of bounds */
+-SEC("?raw_tp/sys_nanosleep")
++SEC("?raw_tp")
+ int data_slice_out_of_bounds_ringbuf(void *ctx)
+ {
+ 	struct bpf_dynptr ptr;
+@@ -227,7 +227,7 @@ int data_slice_out_of_bounds_ringbuf(void *ctx)
+ 	return 0;
+ }
+=20
+-SEC("?raw_tp/sys_nanosleep")
++SEC("?raw_tp")
+ int data_slice_out_of_bounds_map_value(void *ctx)
+ {
+ 	__u32 key =3D 0, map_val;
+@@ -247,7 +247,7 @@ int data_slice_out_of_bounds_map_value(void *ctx)
+ }
+=20
+ /* A data slice can't be used after it has been released */
+-SEC("?raw_tp/sys_nanosleep")
++SEC("?raw_tp")
+ int data_slice_use_after_release(void *ctx)
+ {
+ 	struct bpf_dynptr ptr;
+@@ -273,7 +273,7 @@ int data_slice_use_after_release(void *ctx)
+ }
+=20
+ /* A data slice must be first checked for NULL */
+-SEC("?raw_tp/sys_nanosleep")
++SEC("?raw_tp")
+ int data_slice_missing_null_check1(void *ctx)
+ {
+ 	struct bpf_dynptr ptr;
+@@ -293,7 +293,7 @@ int data_slice_missing_null_check1(void *ctx)
+ }
+=20
+ /* A data slice can't be dereferenced if it wasn't checked for null */
+-SEC("?raw_tp/sys_nanosleep")
++SEC("?raw_tp")
+ int data_slice_missing_null_check2(void *ctx)
+ {
+ 	struct bpf_dynptr ptr;
+@@ -315,7 +315,7 @@ int data_slice_missing_null_check2(void *ctx)
+ /* Can't pass in a dynptr as an arg to a helper function that doesn't ta=
+ke in a
+  * dynptr argument
+  */
+-SEC("?raw_tp/sys_nanosleep")
++SEC("?raw_tp")
+ int invalid_helper1(void *ctx)
+ {
+ 	struct bpf_dynptr ptr;
+@@ -329,7 +329,7 @@ int invalid_helper1(void *ctx)
+ }
+=20
+ /* A dynptr can't be passed into a helper function at a non-zero offset =
+*/
+-SEC("?raw_tp/sys_nanosleep")
++SEC("?raw_tp")
+ int invalid_helper2(void *ctx)
+ {
+ 	struct bpf_dynptr ptr;
+@@ -344,7 +344,7 @@ int invalid_helper2(void *ctx)
+ }
+=20
+ /* A bpf_dynptr is invalidated if it's been written into */
+-SEC("?raw_tp/sys_nanosleep")
++SEC("?raw_tp")
+ int invalid_write1(void *ctx)
+ {
+ 	struct bpf_dynptr ptr;
+@@ -365,7 +365,7 @@ int invalid_write1(void *ctx)
+  * A bpf_dynptr can't be used as a dynptr if it has been written into at=
+ a fixed
+  * offset
+  */
+-SEC("?raw_tp/sys_nanosleep")
++SEC("?raw_tp")
+ int invalid_write2(void *ctx)
+ {
+ 	struct bpf_dynptr ptr;
+@@ -388,7 +388,7 @@ int invalid_write2(void *ctx)
+  * A bpf_dynptr can't be used as a dynptr if it has been written into at=
+ a
+  * non-const offset
+  */
+-SEC("?raw_tp/sys_nanosleep")
++SEC("?raw_tp")
+ int invalid_write3(void *ctx)
+ {
+ 	struct bpf_dynptr ptr;
+@@ -419,7 +419,7 @@ static int invalid_write4_callback(__u32 index, void =
+*data)
+ /* If the dynptr is written into in a callback function, it should
+  * be invalidated as a dynptr
+  */
+-SEC("?raw_tp/sys_nanosleep")
++SEC("?raw_tp")
+ int invalid_write4(void *ctx)
+ {
+ 	struct bpf_dynptr ptr;
+@@ -436,7 +436,7 @@ int invalid_write4(void *ctx)
+=20
+ /* A globally-defined bpf_dynptr can't be used (it must reside as a stac=
+k frame) */
+ struct bpf_dynptr global_dynptr;
+-SEC("?raw_tp/sys_nanosleep")
++SEC("?raw_tp")
+ int global(void *ctx)
+ {
+ 	/* this should fail */
+@@ -448,7 +448,7 @@ int global(void *ctx)
+ }
+=20
+ /* A direct read should fail */
+-SEC("?raw_tp/sys_nanosleep")
++SEC("?raw_tp")
+ int invalid_read1(void *ctx)
+ {
+ 	struct bpf_dynptr ptr;
+@@ -464,7 +464,7 @@ int invalid_read1(void *ctx)
+ }
+=20
+ /* A direct read at an offset should fail */
+-SEC("?raw_tp/sys_nanosleep")
++SEC("?raw_tp")
+ int invalid_read2(void *ctx)
+ {
+ 	struct bpf_dynptr ptr;
+@@ -479,7 +479,7 @@ int invalid_read2(void *ctx)
+ }
+=20
+ /* A direct read at an offset into the lower stack slot should fail */
+-SEC("?raw_tp/sys_nanosleep")
++SEC("?raw_tp")
+ int invalid_read3(void *ctx)
+ {
+ 	struct bpf_dynptr ptr1, ptr2;
+@@ -505,7 +505,7 @@ static int invalid_read4_callback(__u32 index, void *=
+data)
+ }
+=20
+ /* A direct read within a callback function should fail */
+-SEC("?raw_tp/sys_nanosleep")
++SEC("?raw_tp")
+ int invalid_read4(void *ctx)
+ {
+ 	struct bpf_dynptr ptr;
+@@ -520,7 +520,7 @@ int invalid_read4(void *ctx)
+ }
+=20
+ /* Initializing a dynptr on an offset should fail */
+-SEC("?raw_tp/sys_nanosleep")
++SEC("?raw_tp")
+ int invalid_offset(void *ctx)
+ {
+ 	struct bpf_dynptr ptr;
+@@ -534,7 +534,7 @@ int invalid_offset(void *ctx)
+ }
+=20
+ /* Can't release a dynptr twice */
+-SEC("?raw_tp/sys_nanosleep")
++SEC("?raw_tp")
+ int release_twice(void *ctx)
+ {
+ 	struct bpf_dynptr ptr;
+@@ -560,7 +560,7 @@ static int release_twice_callback_fn(__u32 index, voi=
+d *data)
+ /* Test that releasing a dynptr twice, where one of the releases happens
+  * within a calback function, fails
+  */
+-SEC("?raw_tp/sys_nanosleep")
++SEC("?raw_tp")
+ int release_twice_callback(void *ctx)
+ {
+ 	struct bpf_dynptr ptr;
+@@ -575,7 +575,7 @@ int release_twice_callback(void *ctx)
+ }
+=20
+ /* Reject unsupported local mem types for dynptr_from_mem API */
+-SEC("?raw_tp/sys_nanosleep")
++SEC("?raw_tp")
+ int dynptr_from_mem_invalid_api(void *ctx)
+ {
+ 	struct bpf_dynptr ptr;
+diff --git a/tools/testing/selftests/bpf/progs/test_bpf_cookie.c b/tools/=
+testing/selftests/bpf/progs/test_bpf_cookie.c
+index 22d0ac8709b4..5a3a80f751c4 100644
+--- a/tools/testing/selftests/bpf/progs/test_bpf_cookie.c
++++ b/tools/testing/selftests/bpf/progs/test_bpf_cookie.c
+@@ -28,14 +28,14 @@ static void update(void *ctx, __u64 *res)
+ 	*res |=3D bpf_get_attach_cookie(ctx);
+ }
+=20
+-SEC("kprobe/sys_nanosleep")
++SEC("kprobe")
+ int handle_kprobe(struct pt_regs *ctx)
+ {
+ 	update(ctx, &kprobe_res);
+ 	return 0;
+ }
+=20
+-SEC("kretprobe/sys_nanosleep")
++SEC("kretprobe")
+ int handle_kretprobe(struct pt_regs *ctx)
+ {
+ 	update(ctx, &kretprobe_res);
+diff --git a/tools/testing/selftests/bpf/progs/test_helper_restricted.c b=
+/tools/testing/selftests/bpf/progs/test_helper_restricted.c
+index 20ef9d433b97..5715c569ec03 100644
+--- a/tools/testing/selftests/bpf/progs/test_helper_restricted.c
++++ b/tools/testing/selftests/bpf/progs/test_helper_restricted.c
+@@ -72,7 +72,7 @@ int tp_timer(void *ctx)
+ 	return 0;
+ }
+=20
+-SEC("?kprobe/sys_nanosleep")
++SEC("?kprobe")
+ int kprobe_timer(void *ctx)
+ {
+ 	timer_work();
+@@ -104,7 +104,7 @@ int tp_spin_lock(void *ctx)
+ 	return 0;
+ }
+=20
+-SEC("?kprobe/sys_nanosleep")
++SEC("?kprobe")
+ int kprobe_spin_lock(void *ctx)
+ {
+ 	spin_lock_work();
+--=20
+2.30.2
 
-"{unret,ibpb} alone does not stop sibling threads influencing the predictions of
-other sibling threads.  For that reason, we use STIBP on processors that support
-it, and mitigate SMT on processors that don't."
-
->> @@ -2346,10 +2347,11 @@ static ssize_t srbds_show_state(char *buf)
->>   
->>   static ssize_t retbleed_show_state(char *buf)
->>   {
->> -	if (retbleed_mitigation == RETBLEED_MITIGATION_UNRET) {
->> +	if (retbleed_mitigation == RETBLEED_MITIGATION_UNRET ||
->> +	    retbleed_mitigation == RETBLEED_MITIGATION_IBPB) {
->>   	    if (boot_cpu_data.x86_vendor != X86_VENDOR_AMD &&
->>   		boot_cpu_data.x86_vendor != X86_VENDOR_HYGON)
->> -		    return sprintf(buf, "Vulnerable: untrained return thunk on non-Zen uarch\n");
->> +		    return sprintf(buf, "Vulnerable: untrained return thunk / IBPB on non-AMD based uarch\n");
-> 
-> Well, you can't lump those together.
->  > You can't especially say "Vulnerable" and "IBPB" in one line.
-> 
-> To quote from the BTC paper:
-> 
-> "Software may choose to perform an IBPB command on entry into privileged
-> code in order to avoid any previous branch prediction information from
-> subsequently being used. This effectively mitigates all forms of BTC for
-> scenarios like user-to-supervisor or VM-to-hypervisor attacks."
-> 
-> Especially if we disable SMT only on !STIBP parts:
-> 
->          if (mitigate_smt && !boot_cpu_has(X86_FEATURE_STIBP) &&
->              (retbleed_nosmt || cpu_mitigations_auto_nosmt()))
->                  cpu_smt_disable(false);
-> 
-> If there are AMD parts which have IBPB but DO NOT have STIBP, then you
-> can say "Vulnerable... IBPB" but then you need to check for !STIBP and
-> issue that on a separate line.
-> 
-> I'd say...
-
-Those messages only get printed on non-AMD hardware?
-
-Kim
