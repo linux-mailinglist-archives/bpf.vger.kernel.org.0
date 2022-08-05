@@ -2,98 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B68AB58AF3B
-	for <lists+bpf@lfdr.de>; Fri,  5 Aug 2022 19:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EA1058B042
+	for <lists+bpf@lfdr.de>; Fri,  5 Aug 2022 21:18:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241524AbiHERzl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Aug 2022 13:55:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38072 "EHLO
+        id S237587AbiHETSy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Aug 2022 15:18:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241483AbiHERzi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Aug 2022 13:55:38 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3190065FB;
-        Fri,  5 Aug 2022 10:55:37 -0700 (PDT)
-Received: from zn.tnic (p200300ea971b986e329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ea:971b:986e:329c:23ff:fea6:a903])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S237689AbiHETSx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Aug 2022 15:18:53 -0400
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B2A959243
+        for <bpf@vger.kernel.org>; Fri,  5 Aug 2022 12:18:52 -0700 (PDT)
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 718381EC04C2;
-        Fri,  5 Aug 2022 19:55:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1659722131;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=lgHt3P8hxmYNsCsO6oz+2j46ElNujepttLSppVvmEgo=;
-        b=LhH4G9E2jS2NJtKOOrZhc5cvM3+7Wrv9VzdHWSsSgwvfMzg2i4SHyA0giKHc4WZ+vu6DWw
-        yNR87bw4s/ZIL3vRfcdv9jPSqoamVpaCFtwHf2gWSNe/wr0bUiBy793oG1PF9N/MSAVJGN
-        Nu3L3/WqLhVSJ8i5Be/Ek30EdBieORA=
-Date:   Fri, 5 Aug 2022 19:55:27 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Kim Phillips <kim.phillips@amd.com>
-Cc:     x86@kernel.org, peterz@infradead.org, bpf@vger.kernel.org,
-        jpoimboe@redhat.com, andrew.cooper3@citrix.com,
-        linux-kernel@vger.kernel.org, thomas.lendacky@amd.com
-Subject: Re: [PATCH] x86/bugs: Enable STIBP for IBPB mitigated RetBleed
-Message-ID: <Yu1Zj5mNZiAWdJgK@zn.tnic>
-References: <20220804192201.439596-1-kim.phillips@amd.com>
- <Yu0sT6vCofyWiAMI@zn.tnic>
- <86921fe7-6a6b-2731-b09e-a6e03f38a6b9@amd.com>
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 8A8DA3F469
+        for <bpf@vger.kernel.org>; Fri,  5 Aug 2022 19:18:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1659727130;
+        bh=OSDKJxwzJ6ueB+8LZEp7+zVxhmnAMp6wGzGM0b5M3RM=;
+        h=From:To:cc:Subject:In-reply-to:References:MIME-Version:
+         Content-Type:Date:Message-ID;
+        b=W7eoIdSAMWLunr+fLr01J+4/TiaspE9TMvKJab78MInR0bCwrnP1gv8GX/f8b8rT1
+         4yA3YI+Vfh0NyO4OvM8v2/86VQO7SdraNu1dWsne/Ly785ZdL0MuzjYNtyWKUmkiUH
+         5jCUdBdnjAhVkZla4Qk6wTuoP06qN0XPiC5C7hbSQsyzldN0a/Vbrhi7yPR7GKbx3A
+         6clFp1muN7UGfXLgmbIgK6T4jWi85oKkcfIVngFGllsVKqo/3pu6xGzq60pDjAwk4y
+         V+rqsl6x+/5bKlwI4JrTJhj9iPjVJ6Mll21oO8TIbnU/6aHoYD7vCHPnjESDqTmCDd
+         Lk8ixSVAqtKRA==
+Received: by mail-pl1-f200.google.com with SMTP id f13-20020a170902ce8d00b0016eebfe70fcso2075001plg.7
+        for <bpf@vger.kernel.org>; Fri, 05 Aug 2022 12:18:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=message-id:date:content-transfer-encoding:content-id:mime-version
+         :comments:references:in-reply-to:subject:cc:to:from
+         :x-gm-message-state:from:to:cc;
+        bh=OSDKJxwzJ6ueB+8LZEp7+zVxhmnAMp6wGzGM0b5M3RM=;
+        b=Xackc+SNiCWXd6pnTpwm12TI3rSigoi9dt3SXoYIrUAwOt34z38robJonU8XxXaHZ9
+         VKS2KPNzf10uWz43dWqZg9zTBm51oHg3vWKqzaKawgGL8f+pHZjVj9oO2ei1Ii/5aBBr
+         u7s+UfoYgBVdMHP8n8zGJFERAk0l+NYLsEf1PfEkZogdxzoqqXDwGEFWGOQCA2j/MWyk
+         ZfmJzfp9gYrt1J+Vid2z62IhbgDnJCWgufiw42qeADKxImxhE6i3eIniiKMzxOtTv9E/
+         0n8AqDbUGm6IHrqxSZ25VrKr8JwmN7HCZDUqa8sGHHjb6J3tpnEb0s0rQgMNATwx//ci
+         OfvA==
+X-Gm-Message-State: ACgBeo19P1vIbsHXYsb/9hhLp2RiHuEslInGkpfFegkDDw10OsaVPLEI
+        nWfaq9b6EzFPhZz5HHoGajMo09rMmHaNzs17gGKDH/8cPpmqCjmX410JTWt30F/bt32cpx1ZAt/
+        +kbIm87uBxHPbC1ZcNkeaAKMSz82gcw==
+X-Received: by 2002:a05:6a00:1644:b0:52e:d72c:aadc with SMTP id m4-20020a056a00164400b0052ed72caadcmr2364669pfc.5.1659727129073;
+        Fri, 05 Aug 2022 12:18:49 -0700 (PDT)
+X-Google-Smtp-Source: AA6agR5nM3Dh8SaxN151LABkSs0HGBtCpyva8n1+s+C1U28qmBQ55OWLIEvBOgfb/529p7gm874RJw==
+X-Received: by 2002:a05:6a00:1644:b0:52e:d72c:aadc with SMTP id m4-20020a056a00164400b0052ed72caadcmr2364636pfc.5.1659727128702;
+        Fri, 05 Aug 2022 12:18:48 -0700 (PDT)
+Received: from famine.localdomain ([50.125.80.157])
+        by smtp.gmail.com with ESMTPSA id d6-20020a170902654600b0016a3f9e4865sm3356697pln.148.2022.08.05.12.18.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 05 Aug 2022 12:18:48 -0700 (PDT)
+Received: by famine.localdomain (Postfix, from userid 1000)
+        id 7E6966118F; Fri,  5 Aug 2022 12:18:47 -0700 (PDT)
+Received: from famine (localhost [127.0.0.1])
+        by famine.localdomain (Postfix) with ESMTP id 774AE9FA79;
+        Fri,  5 Aug 2022 12:18:47 -0700 (PDT)
+From:   Jay Vosburgh <jay.vosburgh@canonical.com>
+To:     Sun Shouxin <sunshouxin@chinatelecom.cn>
+cc:     vfalico@gmail.com, andy@greyhouse.net, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        huyd12@chinatelecom.cn
+Subject: Re: [PATCH] net:bonding:support balance-alb interface with vlan to bridge
+In-reply-to: <20220805074556.70297-1-sunshouxin@chinatelecom.cn>
+References: <20220805074556.70297-1-sunshouxin@chinatelecom.cn>
+Comments: In-reply-to Sun Shouxin <sunshouxin@chinatelecom.cn>
+   message dated "Fri, 05 Aug 2022 00:45:56 -0700."
+X-Mailer: MH-E 8.6+git; nmh 1.6; Emacs 29.0.50
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <86921fe7-6a6b-2731-b09e-a6e03f38a6b9@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3916.1659727127.1@famine>
+Content-Transfer-Encoding: quoted-printable
+Date:   Fri, 05 Aug 2022 12:18:47 -0700
+Message-ID: <3917.1659727127@famine>
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 05, 2022 at 12:04:34PM -0500, Kim Phillips wrote:
-> On 8/5/22 9:42 AM, Borislav Petkov wrote:
-> > On Thu, Aug 04, 2022 at 02:22:01PM -0500, Kim Phillips wrote:
-> > > For retbleed=ibpb, force STIBP on machines that have it,
-> > 
-> > Because?
-> 
-> See "6.1.2 IBPB On Privileged Mode Entry / SMT Safety":
-> 
-> https://www.amd.com/system/files/documents/technical-guidance-for-mitigating-branch-type-confusion_v7_20220712.pdf
-> 
-> Did you want me to re-quote the whitepaper, or reference it,
-> or paraphrase it, or...?
+Sun Shouxin <sunshouxin@chinatelecom.cn> wrote:
 
-I would like for our commit messages to be fully standalone and explain
-in detail why a change is being done. So that when doing git archeology
-months, years from now it is perfectly clear why a change was needed.
+>In my test, balance-alb bonding with two slaves eth0 and eth1,
+>and then Bond0.150 is created with vlan id attached bond0.
+>After adding bond0.150 into one linux bridge, I noted that Bond0,
+>bond0.150 and  bridge were assigned to the same MAC as eth0.
+>Once bond0.150 receives a packet whose dest IP is bridge's
+>and dest MAC is eth1's, the linux bridge cannot process it as expected.
+>The patch fix the issue, and diagram as below:
+>
+>eth1(mac:eth1_mac)--bond0(balance-alb,mac:eth0_mac)--eth0(mac:eth0_mac)
+>      		      |
+>      		   bond0.150(mac:eth0_mac)
+>      		      |
+>      	           bridge(ip:br_ip, mac:eth0_mac)--other port
 
-This holds especially true for the CPU vuln nightmares.
+	In principle, since 567b871e5033, the bond alb mode shouldn't be
+load balancing incoming traffic for an IP address arriving via a bridge
+configured above the bond.
 
-So please explain the "why" of your change. In your own words.
+	Looking at it, there's logic in rlb_arp_xmit to exclude the
+bridge-over-bond case, but it relies on the MAC of traffic arriving via
+the bridge being different from the bond's MAC.  I suspect this is
+because 567b871e5033 was intended to manage traffic originating from
+other bridge ports, and didn't consider the case of the bridge itself
+when the bridge MAC equals the bond MAC.
 
-> "{unret,ibpb} alone does not stop sibling threads influencing the predictions of
-> other sibling threads.  For that reason, we use STIBP on processors that support
-> it, and mitigate SMT on processors that don't."
+	The bridge MAC will equal the bond MAC if the bond is the first
+port added to the bridge, because the bridge will normally adopt the MAC
+of the first port added (unless manually set to something else).
 
-Pretty much. I'd even explain each case explicitly:
+	I think the correct fix here is to update the test in
+rlb_arp_xmit to properly exclude all bridge traffic (i.e., handle the
+bridge MAC =3D=3D bond MAC case), not to alter the destination MAC address
+in incoming traffic.
 
-                        ibpb         - mitigate short speculation windows on
-                                       basic block boundaries too. Safe, highest
-                                       perf impact. On AMD, it also enables STIBP if
-				       present.
-                        ibpb,nosmt   - like ibpb, but will disable SMT when STIBP
-                                       is not available. This is the alternative for
-				       systems which do not have STIBP.
+	-J
 
-> Those messages only get printed on non-AMD hardware?
+>Suggested-by: Hu Yadi <huyd12@chinatelecom.cn>
+>Signed-off-by: Sun Shouxin <sunshouxin@chinatelecom.cn>
+>---
+> drivers/net/bonding/bond_main.c | 20 ++++++++++++++++++++
+> 1 file changed, 20 insertions(+)
+>
+>diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_m=
+ain.c
+>index e75acb14d066..6210a9c7ca76 100644
+>--- a/drivers/net/bonding/bond_main.c
+>+++ b/drivers/net/bonding/bond_main.c
+>@@ -1537,9 +1537,11 @@ static rx_handler_result_t bond_handle_frame(struc=
+t sk_buff **pskb)
+> 	struct sk_buff *skb =3D *pskb;
+> 	struct slave *slave;
+> 	struct bonding *bond;
+>+	struct net_device *vlan;
+> 	int (*recv_probe)(const struct sk_buff *, struct bonding *,
+> 			  struct slave *);
+> 	int ret =3D RX_HANDLER_ANOTHER;
+>+	unsigned int headroom;
+> =
 
-See, I got confused by our spaghetti code from hell. ;-\
+> 	skb =3D skb_share_check(skb, GFP_ATOMIC);
+> 	if (unlikely(!skb))
+>@@ -1591,6 +1593,24 @@ static rx_handler_result_t bond_handle_frame(struc=
+t sk_buff **pskb)
+> 				  bond->dev->addr_len);
+> 	}
+> =
 
--- 
-Regards/Gruss,
-    Boris.
+>+	if (skb_vlan_tag_present(skb)) {
+>+		if (BOND_MODE(bond) =3D=3D BOND_MODE_ALB && skb->pkt_type =3D=3D PACKE=
+T_HOST) {
+>+			vlan =3D __vlan_find_dev_deep_rcu(bond->dev, skb->vlan_proto,
+>+							skb_vlan_tag_get(skb) & VLAN_VID_MASK);
+>+			if (vlan) {
+>+				if (vlan->priv_flags & IFF_BRIDGE_PORT) {
+>+					headroom =3D skb->data - skb_mac_header(skb);
+>+					if (unlikely(skb_cow_head(skb, headroom))) {
+>+						kfree_skb(skb);
+>+						return RX_HANDLER_CONSUMED;
+>+					}
+>+					bond_hw_addr_copy(eth_hdr(skb)->h_dest, vlan->dev_addr,
+>+							  vlan->addr_len);
+>+				}
+>+			}
+>+		}
+>+	}
+>+
+> 	return ret;
+> }
+> =
 
-https://people.kernel.org/tglx/notes-about-netiquette
+>-- =
+
+>2.27.0
+>
+
+---
+	-Jay Vosburgh, jay.vosburgh@canonical.com
