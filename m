@@ -2,146 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88E1958AA23
-	for <lists+bpf@lfdr.de>; Fri,  5 Aug 2022 13:31:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22AC158ABAC
+	for <lists+bpf@lfdr.de>; Fri,  5 Aug 2022 15:33:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232378AbiHELb0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Aug 2022 07:31:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53066 "EHLO
+        id S240610AbiHENdy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Aug 2022 09:33:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235890AbiHELbY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Aug 2022 07:31:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5CACE1A81B
-        for <bpf@vger.kernel.org>; Fri,  5 Aug 2022 04:31:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1659699082;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iJ2vojdH8FtOr3UJApDg2Ea8FrlKufBhz/SYWXyGjZg=;
-        b=GLMRzlKtkY16uUuZd56fyvJRgnruNmqR/M8Ui3avKlL4NRen0QiQwi8DiKiVKFDKp9XW//
-        4mmiPuthy8hns1SzjJHy5bvSNUy8MvpVZYN/j23BgHjI8TrlbvE8+rvaqXYNKHI42xaSrA
-        r+4Cl+JYbAhy33l2khzI0IVROlik32k=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-38-msbGWBtKM9GAzByWCUYbKg-1; Fri, 05 Aug 2022 07:31:19 -0400
-X-MC-Unique: msbGWBtKM9GAzByWCUYbKg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D74DA108C19D;
-        Fri,  5 Aug 2022 11:31:18 +0000 (UTC)
-Received: from samus.usersys.redhat.com (unknown [10.43.17.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 242A618EB7;
-        Fri,  5 Aug 2022 11:31:17 +0000 (UTC)
-Date:   Fri, 5 Aug 2022 13:31:15 +0200
-From:   Artem Savkov <asavkov@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Daniel Vacek <dvacek@redhat.com>,
-        Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>
-Subject: Re: [PATCH bpf-next v2 2/3] bpf: export crash_kexec() as destructive
- kfunc
-Message-ID: <Yuz/g8nONMJyiyrh@samus.usersys.redhat.com>
-Mail-Followup-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Daniel Vacek <dvacek@redhat.com>, Jiri Olsa <olsajiri@gmail.com>,
-        Song Liu <song@kernel.org>, Daniel Xu <dxu@dxuuu.xyz>
-References: <20220802091030.3742334-1-asavkov@redhat.com>
- <20220802091030.3742334-3-asavkov@redhat.com>
- <CAADnVQL7GH0MBhjTHA2xWXVzkDgdzk4RS9qS+DJ1+t1T8NkYxA@mail.gmail.com>
+        with ESMTP id S237835AbiHENdy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Aug 2022 09:33:54 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26F873F30E
+        for <bpf@vger.kernel.org>; Fri,  5 Aug 2022 06:33:53 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id gj1so2840318pjb.0
+        for <bpf@vger.kernel.org>; Fri, 05 Aug 2022 06:33:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=SRJq7ym9W33hNUQEvsIKvmNHLOQKGAS74MpbCaquZiI=;
+        b=KT0dWDGFTSTP90ki3pJq5M8OGEUMJSQKkn6Bp58hVddnxnGmGIe1UJW7JeMAZhULnI
+         hI5KrGl54NT57X2yyt8WHQQF8PeXyymUDJa3BJnLJ6svoQb5KNtR/yBvXLh0/4e5t69j
+         JSVBgREtcENn3tDrDN3Y1ysST25QDUaDvIpegFXdH3caWmxZK3xfMmke9w/Hi3khzfI+
+         cs2gabd5xX2twNZ2Wen/BK+sNdpZNGTSTIXiGzZlAGXBKDsMOYSdbC4QhDYrVLOPQBNW
+         JYwGBLkftmDIbjkao3snwHuVzEuxqmc/aCWrg3MIhYMV9DmxinsqOVXivJrwupp9hZ8v
+         i3Zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=SRJq7ym9W33hNUQEvsIKvmNHLOQKGAS74MpbCaquZiI=;
+        b=fni9lmRi6tiK3dy0mfbjFI1asrdY31I1tBUERKU6fuyLpvEspzOxiHQfFQs1T78QyX
+         c4nYBtQ2ISF9NGVULt2rqt/jmkwf5hkkLvEAqtIkP49hy5iRJ0uU0QUAaEBOk3FON7MW
+         /iJ9N02Zchs8B/odEE0+Ku/dYsIcetLjoX1sPAADa/jKcAIfnAMRoLd60vJ6k48Dv4BG
+         +BYl0/XjCyah3+UwAYa0WioNbL11NFqQ6VguN3InHNNUZgOeV5/nV2s93lC5I4dqDX5x
+         SF0ACSsykuhQ5ukq+oYL6eE0ED+otXEqiMlIAJJO695tfAKbxHq2ZavZTC3gCohCIHYI
+         Thkw==
+X-Gm-Message-State: ACgBeo1LI0W1X/YW0AT3clVPaEZy9vbifocS11Jl6Q02Dw+ZfluF9K/1
+        NBUpkmmq/Tqn0KD0gd3BsqDpXuUjeGdtlA28Lwo=
+X-Google-Smtp-Source: AA6agR6rAZKjQbJbk3NGF4jqaaPGayAKFzcM88aazGRCuNQRZaPqBn31OictBhluDSlKlxaRdGPWUc22gQgXqOX2guc=
+X-Received: by 2002:a17:902:f652:b0:156:701b:9a2a with SMTP id
+ m18-20020a170902f65200b00156701b9a2amr6853102plg.14.1659706432578; Fri, 05
+ Aug 2022 06:33:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAADnVQL7GH0MBhjTHA2xWXVzkDgdzk4RS9qS+DJ1+t1T8NkYxA@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.11.54.5
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Received: by 2002:ac4:bf14:0:b0:536:dae8:5091 with HTTP; Fri, 5 Aug 2022
+ 06:33:52 -0700 (PDT)
+Reply-To: fasttrustc3@gmail.com
+From:   fast trust <dhllometogo37@gmail.com>
+Date:   Fri, 5 Aug 2022 14:33:52 +0100
+Message-ID: <CAKCZ4ORwKSW5ioJFm=vpn3ACwx25PAPzi5+P6CXVafxA8wCuEQ@mail.gmail.com>
+Subject: ???????
+To:     dhllometogo37@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.7 required=5.0 tests=BAYES_50,DEAR_FRIEND,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 04, 2022 at 01:41:53PM -0700, Alexei Starovoitov wrote:
-> On Tue, Aug 2, 2022 at 2:10 AM Artem Savkov <asavkov@redhat.com> wrote:
-> >
-> > Allow properly marked bpf programs to call crash_kexec().
-> >
-> > Signed-off-by: Artem Savkov <asavkov@redhat.com>
-> > ---
-> >  kernel/kexec_core.c | 21 +++++++++++++++++++++
-> >  1 file changed, 21 insertions(+)
-> >
-> > diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
-> > index 4d34c78334ce..9259ea3bd693 100644
-> > --- a/kernel/kexec_core.c
-> > +++ b/kernel/kexec_core.c
-> > @@ -39,6 +39,8 @@
-> >  #include <linux/hugetlb.h>
-> >  #include <linux/objtool.h>
-> >  #include <linux/kmsg_dump.h>
-> > +#include <linux/btf.h>
-> > +#include <linux/btf_ids.h>
-> >
-> >  #include <asm/page.h>
-> >  #include <asm/sections.h>
-> > @@ -1238,3 +1240,22 @@ void __weak arch_kexec_protect_crashkres(void)
-> >
-> >  void __weak arch_kexec_unprotect_crashkres(void)
-> >  {}
-> > +
-> > +#ifdef CONFIG_DEBUG_INFO_BTF_MODULES
-> > +BTF_SET8_START(kexec_btf_ids)
-> > +BTF_ID_FLAGS(func, crash_kexec, KF_DESTRUCTIVE)
-> > +BTF_SET8_END(kexec_btf_ids)
-> > +
-> > +static const struct btf_kfunc_id_set kexec_kfunc_set = {
-> > +       .owner = THIS_MODULE,
-> > +       .set   = &kexec_btf_ids,
-> > +};
-> > +
-> > +static int __init crash_kfunc_init(void)
-> > +{
-> > +       register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &kexec_kfunc_set);
-> > +       return 0;
-> > +}
-> > +
-> > +subsys_initcall(crash_kfunc_init);
-> > +#endif
-> 
-> It feels there will be a bunch of such boiler plate code
-> in different .c files in many places in the kernel
-> if we go with this approach.
-> 
-> Maybe we should do one call:
-> register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING
-> from kernel/bpf/helper.c
-> to register all tracing kfuncs ?
-> 
-> And gate
-> BTF_ID_FLAGS(func, crash_kexec, KF_DESTRUCTIVE)
-> with #ifdef CONFIG_KEXEC_CORE.
-> 
-> We have such a pattern in verifier.c already.
-
-Good idea, thanks for the pointers. I'll do that in next version.
-
--- 
- Artem
-
+Dear Friend,
+Go through the documents carefully. Attached is all the related legal
+documents from my late husband with the company where our family
+inheritance has been deposited.
+Regards,
+Abda Hassan Mohammed
