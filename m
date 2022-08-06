@@ -2,24 +2,24 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8D4358B442
-	for <lists+bpf@lfdr.de>; Sat,  6 Aug 2022 09:40:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C271A58B43F
+	for <lists+bpf@lfdr.de>; Sat,  6 Aug 2022 09:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239692AbiHFHkd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 6 Aug 2022 03:40:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41092 "EHLO
+        id S239508AbiHFHkb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 6 Aug 2022 03:40:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239728AbiHFHk2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 6 Aug 2022 03:40:28 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 199CFBE08
-        for <bpf@vger.kernel.org>; Sat,  6 Aug 2022 00:40:25 -0700 (PDT)
+        with ESMTP id S238770AbiHFHk0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 6 Aug 2022 03:40:26 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B8CB7F9
+        for <bpf@vger.kernel.org>; Sat,  6 Aug 2022 00:40:24 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4M0DQS6g9szKHcy
-        for <bpf@vger.kernel.org>; Sat,  6 Aug 2022 15:20:48 +0800 (CST)
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4M0DQV0hwNz6S2G4
+        for <bpf@vger.kernel.org>; Sat,  6 Aug 2022 15:20:50 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP2 (Coremail) with SMTP id Syh0CgDHeVydFu5iXIYHAA--.28679S7;
-        Sat, 06 Aug 2022 15:22:08 +0800 (CST)
+        by APP2 (Coremail) with SMTP id Syh0CgDHeVydFu5iXIYHAA--.28679S8;
+        Sat, 06 Aug 2022 15:22:09 +0800 (CST)
 From:   Hou Tao <houtao@huaweicloud.com>
 To:     bpf@vger.kernel.org
 Cc:     Andrii Nakryiko <andrii@kernel.org>,
@@ -34,31 +34,31 @@ Cc:     Andrii Nakryiko <andrii@kernel.org>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         Lorenz Bauer <lmb@cloudflare.com>, houtao1@huawei.com
-Subject: [PATCH bpf 3/9] bpf: Acquire map uref in .init_seq_private for sock local storage map iterator
-Date:   Sat,  6 Aug 2022 15:40:13 +0800
-Message-Id: <20220806074019.2756957-4-houtao@huaweicloud.com>
+Subject: [PATCH bpf 4/9] bpf: Acquire map uref in .init_seq_private for sock{map,hash} iterator
+Date:   Sat,  6 Aug 2022 15:40:14 +0800
+Message-Id: <20220806074019.2756957-5-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20220806074019.2756957-1-houtao@huaweicloud.com>
 References: <20220806074019.2756957-1-houtao@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgDHeVydFu5iXIYHAA--.28679S7
-X-Coremail-Antispam: 1UD129KBjvJXoW7WF47AryrAw15ZFyDXF45GFg_yoW8AFyUpr
-        1fAFnIkrW8X3yfCrsrJanrCr13Aw1qga45KFZ3Awsakr4vqFy5GF13GF1IyFy5CrW8XFna
-        yr1a9Fy5CFykC3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1F6r1fM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
-        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-        Ij6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
-        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2I
-        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAI
-        w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbHa0PUUUUU==
+X-CM-TRANSID: Syh0CgDHeVydFu5iXIYHAA--.28679S8
+X-Coremail-Antispam: 1UD129KBjvJXoW7tr47CrWxWr4ktr4rXw4kXrb_yoW8tryrpF
+        9Yyws09w48XF4j9Fn8Ja9rZwnayFn3Ww1jqFn3Jas5CrnrGr47WF18tFyIkF4YkrW8Kry3
+        Jrn29F1UG3y7C3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBIb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1F6r1fM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
+        Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
+        rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267
+        AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E
+        14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
+        xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
+        z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2
+        Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
+        6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0x
+        vE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY
+        6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aV
+        CY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbGXdUUUUUU==
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
@@ -72,49 +72,73 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Hou Tao <houtao1@huawei.com>
 
-During bpf(BPF_LINK_CREATE) for BPF_TRACE_ITER, bpf_iter_attach_map()
-has already acquired a map uref, but the uref may be released
-by bpf_link_release() during th reading of map iterator.
+During bpf(BPF_LINK_CREATE), sock_map_iter_attach_target() has already
+acquired a map uref, but the uref may be released by bpf_link_release()
+during th reading of map iterator.
 
-So acquiring an extra map uref in bpf_iter_init_sk_storage_map() and
-releasing it in bpf_iter_fini_sk_storage_map().
+Fixing it by acquiring an extra map uref in .init_seq_private and
+releasing it in .fini_seq_private.
 
-Fixes: 5ce6e77c7edf ("bpf: Implement bpf iterator for sock local storage map")
+Fixes: 0365351524d7 ("net: Allow iterating sockmap and sockhash")
 Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- net/core/bpf_sk_storage.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ net/core/sock_map.c | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
 
-diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
-index a25ec93729b9..83b89ba824d7 100644
---- a/net/core/bpf_sk_storage.c
-+++ b/net/core/bpf_sk_storage.c
-@@ -875,10 +875,18 @@ static int bpf_iter_init_sk_storage_map(void *priv_data,
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index 028813dfecb0..9a9fb9487d63 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -783,13 +783,22 @@ static int sock_map_init_seq_private(void *priv_data,
  {
- 	struct bpf_iter_seq_sk_storage_map_info *seq_info = priv_data;
+ 	struct sock_map_seq_info *info = priv_data;
  
 +	bpf_map_inc_with_uref(aux->map);
- 	seq_info->map = aux->map;
+ 	info->map = aux->map;
  	return 0;
  }
  
-+static void bpf_iter_fini_sk_storage_map(void *priv_data)
++static void sock_map_fini_seq_private(void *priv_data)
 +{
-+	struct bpf_iter_seq_sk_storage_map_info *seq_info = priv_data;
++	struct sock_map_seq_info *info = priv_data;
 +
-+	bpf_map_put_with_uref(seq_info->map);
++	bpf_map_put_with_uref(info->map);
 +}
 +
- static int bpf_iter_attach_map(struct bpf_prog *prog,
- 			       union bpf_iter_link_info *linfo,
- 			       struct bpf_iter_aux_info *aux)
-@@ -924,7 +932,7 @@ static const struct seq_operations bpf_sk_storage_map_seq_ops = {
- static const struct bpf_iter_seq_info iter_seq_info = {
- 	.seq_ops		= &bpf_sk_storage_map_seq_ops,
- 	.init_seq_private	= bpf_iter_init_sk_storage_map,
--	.fini_seq_private	= NULL,
-+	.fini_seq_private	= bpf_iter_fini_sk_storage_map,
- 	.seq_priv_size		= sizeof(struct bpf_iter_seq_sk_storage_map_info),
+ static const struct bpf_iter_seq_info sock_map_iter_seq_info = {
+ 	.seq_ops		= &sock_map_seq_ops,
+ 	.init_seq_private	= sock_map_init_seq_private,
++	.fini_seq_private	= sock_map_fini_seq_private,
+ 	.seq_priv_size		= sizeof(struct sock_map_seq_info),
+ };
+ 
+@@ -1369,18 +1378,27 @@ static const struct seq_operations sock_hash_seq_ops = {
+ };
+ 
+ static int sock_hash_init_seq_private(void *priv_data,
+-				     struct bpf_iter_aux_info *aux)
++				      struct bpf_iter_aux_info *aux)
+ {
+ 	struct sock_hash_seq_info *info = priv_data;
+ 
++	bpf_map_inc_with_uref(aux->map);
+ 	info->map = aux->map;
+ 	info->htab = container_of(aux->map, struct bpf_shtab, map);
+ 	return 0;
+ }
+ 
++static void sock_hash_fini_seq_private(void *priv_data)
++{
++	struct sock_hash_seq_info *info = priv_data;
++
++	bpf_map_put_with_uref(info->map);
++}
++
+ static const struct bpf_iter_seq_info sock_hash_iter_seq_info = {
+ 	.seq_ops		= &sock_hash_seq_ops,
+ 	.init_seq_private	= sock_hash_init_seq_private,
++	.fini_seq_private	= sock_hash_fini_seq_private,
+ 	.seq_priv_size		= sizeof(struct sock_hash_seq_info),
  };
  
 -- 
