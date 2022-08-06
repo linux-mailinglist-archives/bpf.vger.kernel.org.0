@@ -2,24 +2,24 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D972958B43A
-	for <lists+bpf@lfdr.de>; Sat,  6 Aug 2022 09:40:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0D6658B441
+	for <lists+bpf@lfdr.de>; Sat,  6 Aug 2022 09:40:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229446AbiHFHk2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 6 Aug 2022 03:40:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41068 "EHLO
+        id S239521AbiHFHkc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 6 Aug 2022 03:40:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231222AbiHFHk0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 6 Aug 2022 03:40:26 -0400
+        with ESMTP id S239692AbiHFHk2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 6 Aug 2022 03:40:28 -0400
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC691B7F3
-        for <bpf@vger.kernel.org>; Sat,  6 Aug 2022 00:40:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C7F4BCAD
+        for <bpf@vger.kernel.org>; Sat,  6 Aug 2022 00:40:25 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4M0DQf4QvkzlBKW
-        for <bpf@vger.kernel.org>; Sat,  6 Aug 2022 15:20:58 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4M0DQR3n2tzJxXF
+        for <bpf@vger.kernel.org>; Sat,  6 Aug 2022 15:20:47 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP2 (Coremail) with SMTP id Syh0CgDHeVydFu5iXIYHAA--.28679S4;
-        Sat, 06 Aug 2022 15:22:06 +0800 (CST)
+        by APP2 (Coremail) with SMTP id Syh0CgDHeVydFu5iXIYHAA--.28679S5;
+        Sat, 06 Aug 2022 15:22:07 +0800 (CST)
 From:   Hou Tao <houtao@huaweicloud.com>
 To:     bpf@vger.kernel.org
 Cc:     Andrii Nakryiko <andrii@kernel.org>,
@@ -34,28 +34,31 @@ Cc:     Andrii Nakryiko <andrii@kernel.org>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         Lorenz Bauer <lmb@cloudflare.com>, houtao1@huawei.com
-Subject: [PATCH bpf 0/9] fixes for bpf map iterator
-Date:   Sat,  6 Aug 2022 15:40:10 +0800
-Message-Id: <20220806074019.2756957-1-houtao@huaweicloud.com>
+Subject: [PATCH bpf 1/9] bpf: Acquire map uref in .init_seq_private for array map iterator
+Date:   Sat,  6 Aug 2022 15:40:11 +0800
+Message-Id: <20220806074019.2756957-2-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20220806074019.2756957-1-houtao@huaweicloud.com>
+References: <20220806074019.2756957-1-houtao@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgDHeVydFu5iXIYHAA--.28679S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7ArWrGr47Ww1UGw17tw1xuFg_yoW8AFy8pr
-        WfXFy5Kr4xAF4xZrnrZa12kFyrA3yrXa4jqFs5Jr1Ykw1DZa45WrWIkF13uFy3WFn8JryS
-        y3y09r95Ca4xZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1F6r1fM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
-        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
-        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI
-        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
-        IY6xAIw20EY4v20xvaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
-        jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UdxhLUUUUU=
+X-CM-TRANSID: Syh0CgDHeVydFu5iXIYHAA--.28679S5
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ary7try8Kw1xZFW7KFykZrb_yoW8XF1xpr
+        Z3JFWjka1xXrZru3Z5Ja48CayFq345W345JFZ5G3sa9F45XF47urW8GF129FWYkF4vkr1r
+        tw1j9w4Uua4UA37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1F6r1fM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGw
+        A2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
+        Ij6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
+        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
+        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
+        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2I
+        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
+        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
+        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU7TKZDUUUU
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
@@ -69,50 +72,48 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Hou Tao <houtao1@huawei.com>
 
-Hi,
+During bpf(BPF_LINK_CREATE) for BPF_TRACE_ITER, bpf_iter_attach_map()
+has already acquired a map uref, but the uref may be released by
+bpf_link_release() during th reading of map iterator.
 
-The patchset constitues three fixes for bpf map iterator:
+Alternative fix is acquiring an extra bpf_link reference just like
+a pinned map iterator does, but it introduces unnecessary dependency
+on bpf_link instead of bpf_map.
 
-(1) patch 1~4: fix user-after-free during reading map iterator fd
-It is possible when both the corresponding link fd and map fd are
-closed bfore reading the iterator fd. I had squashed these four patches
-into one, but it was not friendly for stable backport, so I break these
-fixes into 4 single patches in the end. Patch 7 is its testing patch.
+So choose another fix: acquiring an extra map uref in .init_seq_private
+for array map iterator.
 
-(2) patch 5: fix invalidity check for values in sk local storage map
-Patch 8 adds two tests for it.
+Fixes: d3cc2ab546ad ("bpf: Implement bpf iterator for array maps")
+Signed-off-by: Hou Tao <houtao1@huawei.com>
+---
+ kernel/bpf/arraymap.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-(3) patch 6: reject sleepable program for non-resched map iterator
-Patch 9 add a test for it.
-
-Please check the individual patches for more details. And comments are
-always welcome.
-
-Regards,
-Tao
-
-Hou Tao (9):
-  bpf: Acquire map uref in .init_seq_private for array map iterator
-  bpf: Acquire map uref in .init_seq_private for hash map iterator
-  bpf: Acquire map uref in .init_seq_private for sock local storage map
-    iterator
-  bpf: Acquire map uref in .init_seq_private for sock{map,hash} iterator
-  bpf: Check the validity of max_rdwr_access for sk storage map iterator
-  bpf: Only allow sleepable program for resched-able iterator
-  selftests/bpf: Add tests for reading a dangling map iter fd
-  selftests/bpf: Add write tests for sk storage map iterator
-  selftests/bpf: Ensure sleepable program is rejected by hash map iter
-
- kernel/bpf/arraymap.c                         |   7 ++
- kernel/bpf/bpf_iter.c                         |  11 +-
- kernel/bpf/hashtab.c                          |   2 +
- net/core/bpf_sk_storage.c                     |  12 +-
- net/core/sock_map.c                           |  20 ++-
- .../selftests/bpf/prog_tests/bpf_iter.c       | 114 +++++++++++++++++-
- .../bpf/progs/bpf_iter_bpf_hash_map.c         |   9 ++
- .../bpf/progs/bpf_iter_bpf_sk_storage_map.c   |  20 ++-
- 8 files changed, 189 insertions(+), 6 deletions(-)
-
+diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+index d3e734bf8056..bf6898bb7cb8 100644
+--- a/kernel/bpf/arraymap.c
++++ b/kernel/bpf/arraymap.c
+@@ -649,6 +649,12 @@ static int bpf_iter_init_array_map(void *priv_data,
+ 		seq_info->percpu_value_buf = value_buf;
+ 	}
+ 
++	/*
++	 * During bpf(BPF_LINK_CREATE), bpf_iter_attach_map() has already
++	 * acquired a map uref, but the uref may be released by
++	 * bpf_link_release(), so acquire an extra map uref for iterator.
++	 */
++	bpf_map_inc_with_uref(map);
+ 	seq_info->map = map;
+ 	return 0;
+ }
+@@ -657,6 +663,7 @@ static void bpf_iter_fini_array_map(void *priv_data)
+ {
+ 	struct bpf_iter_seq_array_map_info *seq_info = priv_data;
+ 
++	bpf_map_put_with_uref(seq_info->map);
+ 	kfree(seq_info->percpu_value_buf);
+ }
+ 
 -- 
 2.29.2
 
