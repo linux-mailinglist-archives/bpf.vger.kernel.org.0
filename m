@@ -2,53 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E94EF58BC1B
-	for <lists+bpf@lfdr.de>; Sun,  7 Aug 2022 19:51:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F11B958BC1C
+	for <lists+bpf@lfdr.de>; Sun,  7 Aug 2022 19:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230012AbiHGRvW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 7 Aug 2022 13:51:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40602 "EHLO
+        id S230262AbiHGRv3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 7 Aug 2022 13:51:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbiHGRvW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 7 Aug 2022 13:51:22 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59E1F5FC7
-        for <bpf@vger.kernel.org>; Sun,  7 Aug 2022 10:51:21 -0700 (PDT)
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 277BZwnR020629
-        for <bpf@vger.kernel.org>; Sun, 7 Aug 2022 10:51:20 -0700
+        with ESMTP id S229501AbiHGRv2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 7 Aug 2022 13:51:28 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD4360C3
+        for <bpf@vger.kernel.org>; Sun,  7 Aug 2022 10:51:27 -0700 (PDT)
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 277EkQOc012001
+        for <bpf@vger.kernel.org>; Sun, 7 Aug 2022 10:51:26 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=jKXT+rVpBlqp2JXkelPuE/zZ2SMit7phbnJ39HbmL7o=;
- b=VwCsID8K+uiInzo9ivXRtS/CfX2DUKyNrA/iLzor9MJql6xZGVCDJPOVZ/Dme0ypuLGC
- 4t8OB6c13J1U1ebxAd7vooV4QtbWZmqANDClDCxZ1kVpHwqiEa4Y1VI811znH5mASNRD
- Rbzp3OKYJQqQzMq/0mXD8Ie62GIvJg8RSEc= 
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=facebook;
+ bh=FtcTkn3LrWRN7wtepF2RfbXRfi33ZXDmkZfqK4+clLA=;
+ b=pmA6GTLfpN6vIqvS7SSPt2CTSpWN02iUf7njefJc51JOGF2ExiqOA//UeEXp5JEnyoZA
+ iqiKXQCdVc30pJe6/tQMHbLdMcL5TGV0LmbtkbCW20eOer+kqjEdOb6XOW/2oTAby3Jk
+ +B6TquviYVN94ghZ7YjgMLVxLL15qwo9R18= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net (PPS) with ESMTPS id 3hskywdu0j-2
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hsp4uwgdh-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Sun, 07 Aug 2022 10:51:20 -0700
-Received: from twshared8442.02.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Sun, 07 Aug 2022 10:51:26 -0700
+Received: from twshared22934.08.ash9.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Sun, 7 Aug 2022 10:51:19 -0700
+ 15.1.2375.28; Sun, 7 Aug 2022 10:51:25 -0700
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 3D268DC75998; Sun,  7 Aug 2022 10:51:11 -0700 (PDT)
+        id 7D772DC759A6; Sun,  7 Aug 2022 10:51:16 -0700 (PDT)
 From:   Yonghong Song <yhs@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
         Tejun Heo <tj@kernel.org>
-Subject: [PATCH bpf-next 0/3] bpf: Perform necessary sign/zero extension for kfunc return values
-Date:   Sun, 7 Aug 2022 10:51:11 -0700
-Message-ID: <20220807175111.4178812-1-yhs@fb.com>
+Subject: [PATCH bpf-next 1/3] bpf: Always return corresponding btf_type in __get_type_size()
+Date:   Sun, 7 Aug 2022 10:51:16 -0700
+Message-ID: <20220807175116.4179242-1-yhs@fb.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220807175111.4178812-1-yhs@fb.com>
+References: <20220807175111.4178812-1-yhs@fb.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: lk_cQXhUeqzKjjSAiW5ddFeSF0ujFczW
-X-Proofpoint-ORIG-GUID: lk_cQXhUeqzKjjSAiW5ddFeSF0ujFczW
+X-Proofpoint-GUID: FiII6U7rBFfSXvYj2yDmfszfQzf-aNBk
+X-Proofpoint-ORIG-GUID: FiII6U7rBFfSXvYj2yDmfszfQzf-aNBk
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
  definitions=2022-08-07_11,2022-08-05_01,2022-06-22_01
@@ -62,38 +65,52 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Tejun reported a bpf program kfunc return value mis-handling which
-may cause incorrect result. If the kfunc return value is boolean
-or u8, the bpf program produce incorrect results.
+Currently in funciton __get_type_size(), the corresponding
+btf_type is returned only in invalid cases. Let us always
+return btf_type regardless of valid or invalid cases.
+Such a new functionality will be used in subsequent patches.
 
-The main reason is due to mismatch of return value expectation between
-native architecture and bpf. For example, for x86_64, if a kfunc
-returns a u8, the kfunc returns 64-bit %rax, the top 56 bits might
-be garbage. This is okay if the caller is x86_64 as the caller can
-use special instruction to access lower 8-bit register %al. But this
-will cause a problem for bpf program since bpf program assumes
-the whole r0 register should contain correct value.
-This patch set fixed the issue by doing necessary zero/sign extension
-for the kfunc return value to meet bpf requirement.
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ kernel/bpf/btf.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-For the rest of patches, Patch 1 is a preparation patch. Patch 2
-implemented kernel support to perform necessary zero/sign extension
-for kfunc return value. Patch 3 added two tests, one with return type
-u8 and another with s16.
-
-Yonghong Song (3):
-  bpf: Always return corresponding btf_type in __get_type_size()
-  bpf: Perform necessary sign/zero extension for kfunc return values
-  selftests/bpf: Add tests with u8/s16 kfunc return types
-
- include/linux/bpf.h                           |  2 ++
- kernel/bpf/btf.c                              | 18 +++++++---
- kernel/bpf/verifier.c                         | 35 +++++++++++++++++--
- net/bpf/test_run.c                            | 12 +++++++
- .../selftests/bpf/prog_tests/kfunc_call.c     | 10 ++++++
- .../selftests/bpf/progs/kfunc_call_test.c     | 32 +++++++++++++++++
- 6 files changed, 102 insertions(+), 7 deletions(-)
-
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 7e64447659f3..8119dc3994db 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -5864,26 +5864,25 @@ bool btf_struct_ids_match(struct bpf_verifier_log=
+ *log,
+ }
+=20
+ static int __get_type_size(struct btf *btf, u32 btf_id,
+-			   const struct btf_type **bad_type)
++			   const struct btf_type **ret_type)
+ {
+ 	const struct btf_type *t;
+=20
++	*ret_type =3D btf_type_by_id(btf, 0);
+ 	if (!btf_id)
+ 		/* void */
+ 		return 0;
+ 	t =3D btf_type_by_id(btf, btf_id);
+ 	while (t && btf_type_is_modifier(t))
+ 		t =3D btf_type_by_id(btf, t->type);
+-	if (!t) {
+-		*bad_type =3D btf_type_by_id(btf, 0);
++	if (!t)
+ 		return -EINVAL;
+-	}
++	*ret_type =3D t;
+ 	if (btf_type_is_ptr(t))
+ 		/* kernel size of pointer. Not BPF's size of pointer*/
+ 		return sizeof(void *);
+ 	if (btf_type_is_int(t) || btf_is_any_enum(t))
+ 		return t->size;
+-	*bad_type =3D t;
+ 	return -EINVAL;
+ }
+=20
 --=20
 2.30.2
 
