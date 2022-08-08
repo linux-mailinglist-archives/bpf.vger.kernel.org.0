@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9673A58CCD6
-	for <lists+bpf@lfdr.de>; Mon,  8 Aug 2022 19:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D1DB58CD0C
+	for <lists+bpf@lfdr.de>; Mon,  8 Aug 2022 19:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244207AbiHHRli (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Aug 2022 13:41:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44414 "EHLO
+        id S243549AbiHHRu6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Aug 2022 13:50:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243868AbiHHRlX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Aug 2022 13:41:23 -0400
+        with ESMTP id S244001AbiHHRun (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Aug 2022 13:50:43 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D34FDEC5
-        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 10:40:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5865B109B
+        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 10:50:42 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9B880B8105F
-        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 17:40:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CEA2C4347C
-        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 17:40:39 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 05B42B81022
+        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 17:50:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B34E9C43470
+        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 17:50:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1659980439;
-        bh=VNh6CmjijPgqdF3Pt5Mp1wyR31XHB83bEMO7A3Uy6Y8=;
+        s=k20201202; t=1659981039;
+        bh=kYzYZNbpMQ7r3hpRHKo0xg1Lbcv2YUv1uswr9A4RxdA=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=X4meTR5MYvVxaHTeIrWLG1oxj+WevfW8H7iRJrG+fzI6IIUGkr3aucmnsZ7kT8PRB
-         2qZhZyPDRlhkOUHTEcYHCVlq+1zrS2NX1uuq9in7qQa48KCy8Jn9WVR0E2e7nOrS2R
-         SNBterFRLglSTwfOm0Qk21jDyaozrcOg955/trX2bE5pTH9nzo9Bt4R29k8lxXvbuT
-         qrzxsqYc+PSEjIZ9Z+iTrmbXHLyZjhB+zrsbFC29wggLpQ4xNUm6/xv3QfN/yVFeId
-         im9/p+GwjvbqB2xk7eHJ2BJQ3QoEjEIgNjCpkhK2AYP8hd+/RzRz9GlFv1JaEuAm5U
-         89Mj5CydTyxkQ==
-Received: by mail-yb1-f176.google.com with SMTP id n8so14792192yba.2
-        for <bpf@vger.kernel.org>; Mon, 08 Aug 2022 10:40:39 -0700 (PDT)
-X-Gm-Message-State: ACgBeo0rQ+PFN5q5BpsBKrOFl4YzJrd7Ute//GknQvJc4A0ZI0M5Fha/
-        oPhoL5AKPbUkCJvaFnvTcJ4SJDaU5PWLEo9ZNfg=
-X-Google-Smtp-Source: AA6agR5naVhXEQrwU/GQIy0UUSSztH1XqQpiOiVMm0OTecOnStneKZEfI6obG6lrD8WkvnoZVe80h7Js+6xjSeFhbXs=
-X-Received: by 2002:a25:55c5:0:b0:670:96cb:a295 with SMTP id
- j188-20020a2555c5000000b0067096cba295mr16167924ybb.449.1659980438382; Mon, 08
- Aug 2022 10:40:38 -0700 (PDT)
+        b=BEXRMh21X5Sx5kT+rmVsGRuyKwM63HMdpYrPwsPwnf7Bn0X36zzDJ3yFwxOEox9X7
+         oo7bwPhP9646gsoWSb+vmWGez5oaV5UPF/66TxTJ3dI6A20K80F7k0qNjuNtlzWoXz
+         2Ys01EjKlfX4dGukcsa2I7t9Pxw+FXMrHROhFVutCMnpK7weAMBB6e2AlIqFnBWnw4
+         msYiK8Y5IYRlqKVx+zKA14W/gWe+0DQoiwNv34W5Xc9vEs3ekYp4OEN7jb88Y0tuhP
+         OnaG/33xaiySydQOAl1C81tsBGPpsSPpuXHEVCguqm7qur8vRYroUAzoSAn4uqsQFX
+         NLkpaoqmdaMrg==
+Received: by mail-yb1-f176.google.com with SMTP id o15so14760792yba.10
+        for <bpf@vger.kernel.org>; Mon, 08 Aug 2022 10:50:39 -0700 (PDT)
+X-Gm-Message-State: ACgBeo0RzNlYoB9+V/Y8/5Fw09/pasuZG4xjeKk/SzJKyyDzM0KpV0mw
+        llQAbFeyEuG0LuBkIC1JD7Nbs/k5Bd0aX5erx0M=
+X-Google-Smtp-Source: AA6agR62Zqne0BXvoI/iPg5pT7POjQJHCK9CpokqqJ3LVIuHoJAO4qaZCBwQm1jGI1wqxgLo3vzIYo1Cy1fGxDgaw88=
+X-Received: by 2002:a25:805:0:b0:670:4237:cddf with SMTP id
+ 5-20020a250805000000b006704237cddfmr16555061ybi.9.1659981038705; Mon, 08 Aug
+ 2022 10:50:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220808140626.422731-1-jolsa@kernel.org> <20220808140626.422731-2-jolsa@kernel.org>
-In-Reply-To: <20220808140626.422731-2-jolsa@kernel.org>
+References: <20220808140626.422731-1-jolsa@kernel.org>
+In-Reply-To: <20220808140626.422731-1-jolsa@kernel.org>
 From:   Song Liu <song@kernel.org>
-Date:   Mon, 8 Aug 2022 10:40:27 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4GKZ8_6mwGwTDjkGx_0TSzzBvvV-EsmfVBXCobMEnDzw@mail.gmail.com>
-Message-ID: <CAPhsuW4GKZ8_6mwGwTDjkGx_0TSzzBvvV-EsmfVBXCobMEnDzw@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 01/17] bpf: Link shimlink directly in trampoline
+Date:   Mon, 8 Aug 2022 10:50:28 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW79BmASh7M79DG7O2AT60op5unujeHKe33BUhZdr+wd9A@mail.gmail.com>
+Message-ID: <CAPhsuW79BmASh7M79DG7O2AT60op5unujeHKe33BUhZdr+wd9A@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 00/17] bpf: Add tracing multi link
 To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -70,44 +70,35 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Mon, Aug 8, 2022 at 7:06 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> We are going to get rid of struct bpf_tramp_link in following
-> changes and cgroup_shim_find logic does not fit to that.
+[...]
 >
-> We can store the link directly in the trampoline and omit the
-> cgroup_shim_find searching logic.
+> Maybe better explained on following example:
 >
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  include/linux/bpf.h     |  3 +++
->  kernel/bpf/trampoline.c | 23 +++--------------------
->  2 files changed, 6 insertions(+), 20 deletions(-)
+>   - you want to attach program P to functions A,B,C,D,E,F
+>     via bpf_trampoline_multi_attach
 >
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 20c26aed7896..ed2a921094bc 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -841,6 +841,8 @@ struct bpf_tramp_image {
->         };
->  };
+>   - D,E,F already have standard trampoline attached
 >
-> +struct bpf_shim_tramp_link;
-> +
->  struct bpf_trampoline {
->         /* hlist for trampoline_table */
->         struct hlist_node hlist;
-> @@ -868,6 +870,7 @@ struct bpf_trampoline {
->         struct bpf_tramp_image *cur_image;
->         u64 selector;
->         struct module *mod;
-> +       struct bpf_shim_tramp_link *shim_link;
->  };
+>   - the bpf_trampoline_multi_attach will create new 'multi' trampoline
+>     which spans over A,B,C functions and attach program P to single
+>     trampolines D,E,F
 
-Hi Stanislav,
+IIUC, we have 4 trampolines (1 multi, 3 singles) at this moment?
 
-Is it possible to have multiple shim_link per bpf_trampoline? If so, I guess
-this won't work.
+>
+>  -  another program can be attached to A,B,C,D,E,F multi trampoline
+>
+>   - A,B,C functions are now 'not attachable' by any trampoline
+>     until the above 'multi' trampoline is released
+
+I guess the limitation here is, multi trampolines cannot be splitted after
+attached. While multi trampoline is motivated by short term use cases
+like retsnoop, it is allowed to run them for extended periods of time.
+Then, this limitation might be a real issue in production.
 
 Thanks,
 Song
 
-[...]
+>
+>  -  D,E,F functions are still attachable by any new trampoline
+>
