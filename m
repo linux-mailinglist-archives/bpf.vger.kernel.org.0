@@ -2,192 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA7758CE1B
-	for <lists+bpf@lfdr.de>; Mon,  8 Aug 2022 20:56:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7553458CE23
+	for <lists+bpf@lfdr.de>; Mon,  8 Aug 2022 20:58:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243935AbiHHS4t (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Aug 2022 14:56:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49244 "EHLO
+        id S244110AbiHHS6M (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Aug 2022 14:58:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243680AbiHHS4t (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Aug 2022 14:56:49 -0400
-Received: from out03.mta.xmission.com (out03.mta.xmission.com [166.70.13.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D6B61834B;
-        Mon,  8 Aug 2022 11:56:48 -0700 (PDT)
-Received: from in01.mta.xmission.com ([166.70.13.51]:35272)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1oL7vh-00BiRy-6H; Mon, 08 Aug 2022 12:56:45 -0600
-Received: from ip68-227-174-4.om.om.cox.net ([68.227.174.4]:45314 helo=email.froward.int.ebiederm.org.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1oL7vf-00HUDL-GZ; Mon, 08 Aug 2022 12:56:44 -0600
-From:   "Eric W. Biederman" <ebiederm@xmission.com>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Frederick Lawler <fred@cloudflare.com>, kpsingh@kernel.org,
-        revest@chromium.org, jackmanb@chromium.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        jmorris@namei.org, serge@hallyn.com,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        shuah@kernel.org, brauner@kernel.org, casey@schaufler-ca.com,
-        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        kernel-team@cloudflare.com, cgzones@googlemail.com,
-        karl@bigbadwolfsecurity.com
-References: <20220801180146.1157914-1-fred@cloudflare.com>
-        <87les7cq03.fsf@email.froward.int.ebiederm.org>
-        <CAHC9VhRpUxyxkPaTz1scGeRm+i4KviQQA7WismOX2q5agzC+DQ@mail.gmail.com>
-Date:   Mon, 08 Aug 2022 13:56:18 -0500
-In-Reply-To: <CAHC9VhRpUxyxkPaTz1scGeRm+i4KviQQA7WismOX2q5agzC+DQ@mail.gmail.com>
-        (Paul Moore's message of "Tue, 2 Aug 2022 22:10:07 -0400")
-Message-ID: <87wnbia7jh.fsf@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        with ESMTP id S244086AbiHHS6K (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Aug 2022 14:58:10 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C671834C
+        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 11:58:05 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id a2so7178635qkk.2
+        for <bpf@vger.kernel.org>; Mon, 08 Aug 2022 11:58:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=aS9foFym22Ym3nm/+GI5NjtfanGnG5x1WdG+Bb6ikDM=;
+        b=PA89YVHuM6X5P0brGzVHtsDAdu9/2OQGWnhPAqZ+w5VSyqlTo1Qge/s2W+xS4yGIHN
+         pwwTIVogFl80UG00aWWKF/CI/xZ04/qE+I8a2x66IiII4NCsQKPQ+PwdL6K8LjrXphGq
+         iJkOI6IoKbQs1JRKdoE2c950ifQUW7rAOQSxi8gf/TJZOTNogbCcSmIH9f1mKxpfXuzX
+         5jJsAun27iHR+Mxd2phIF3r8Pkz2XfOnHykMG83cKhq/nd/Zg24mNmXYLksLVFv1eGjt
+         M2+UN+rLnv/nmuHxdm298YSzcre1K8fnzM+tL1GTFy2zUwsVEEVA1OuCzXwou75ZZwDa
+         M8sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=aS9foFym22Ym3nm/+GI5NjtfanGnG5x1WdG+Bb6ikDM=;
+        b=kzM9YFTYzgGCRKZ3sY/Jeq+gzCKvl8k9pWmGsKF6i3CLWnTwoDhzVlyRsD0u+rOamP
+         27wQ+/v46zvN/VObpaOZO9krBE8ZIPxiFe2hXGca6QuloWtEPiny7C8Tzox7KCx62zrd
+         AUK7ZCd9A4kaAvQgTvxspBvLbYfaao0J7UJL9r8FWa/DNkMU4DJBAGNXDuaIQG7A3O4p
+         02oYxzqPVBUS4JSMwc8S37nAdRZiHSgcI86sP5ZHK0Gy2ouY+7VG8M+7NSp/SpnRJRZS
+         DS/PUPmUwxHPTxCR1/qaU1lG9MQ11LzQ/Df3HFwWlIDoiki5/t1PhvaiVK3o/4PIZCpV
+         /c7w==
+X-Gm-Message-State: ACgBeo1ttpeNIJ3uFl45u6p+TYm9vjK03WdR+MgSthK43ivrHkmmyWpl
+        ctfoKGx1ecQldskW8CbwDAER8BKkPI8B4GqGk/zAeg==
+X-Google-Smtp-Source: AA6agR6/8L0dlzASGfl5G40giiFvJCP79JS8mXRCVJE7nKMm54hM0Zzv4zCblk4How/h/PYD+X8Q8n6RVXZX5yA7SJI=
+X-Received: by 2002:a37:650e:0:b0:6b9:4a21:ebb2 with SMTP id
+ z14-20020a37650e000000b006b94a21ebb2mr4884104qkb.669.1659985084560; Mon, 08
+ Aug 2022 11:58:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1oL7vf-00HUDL-GZ;;;mid=<87wnbia7jh.fsf@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.174.4;;;frm=ebiederm@xmission.com;;;spf=softfail
-X-XM-AID: U2FsdGVkX1+Nfaifvy48ZLTWFCOzOsrcFXZE8jWgnyo=
-X-SA-Exim-Connect-IP: 68.227.174.4
-X-SA-Exim-Mail-From: ebiederm@xmission.com
+References: <20220808155248.2475981-1-void@manifault.com>
+In-Reply-To: <20220808155248.2475981-1-void@manifault.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Mon, 8 Aug 2022 11:57:53 -0700
+Message-ID: <CA+khW7iuENZHvbyWUkq1T1ieV9Yz+MJyRs=7Kd6N59kPTjz7Rg@mail.gmail.com>
+Subject: Re: [PATCH 0/5] bpf: Add user-space-publisher ringbuffer map type
+To:     David Vernet <void@manifault.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, john.fastabend@gmail.com, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, kpsingh@kernel.org, sdf@google.com,
+        jolsa@kernel.org, tj@kernel.org, joannelkoong@gmail.com,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
-X-Spam-DCC: XMission; sa04 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ***;Paul Moore <paul@paul-moore.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 1107 ms - load_scoreonly_sql: 0.09 (0.0%),
-        signal_user_changed: 12 (1.1%), b_tie_ro: 10 (0.9%), parse: 1.45
-        (0.1%), extract_message_metadata: 23 (2.1%), get_uri_detail_list: 3.2
-        (0.3%), tests_pri_-1000: 59 (5.3%), tests_pri_-950: 1.94 (0.2%),
-        tests_pri_-900: 1.62 (0.1%), tests_pri_-90: 105 (9.5%), check_bayes:
-        102 (9.3%), b_tokenize: 13 (1.2%), b_tok_get_all: 15 (1.3%),
-        b_comp_prob: 8 (0.7%), b_tok_touch_all: 59 (5.3%), b_finish: 1.30
-        (0.1%), tests_pri_0: 881 (79.6%), check_dkim_signature: 1.57 (0.1%),
-        check_dkim_adsp: 12 (1.1%), poll_dns_idle: 0.42 (0.0%), tests_pri_10:
-        2.4 (0.2%), tests_pri_500: 15 (1.3%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v4 0/4] Introduce security_create_user_ns()
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Paul Moore <paul@paul-moore.com> writes:
+Hi David,
 
-> On Mon, Aug 1, 2022 at 10:56 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
->> Frederick Lawler <fred@cloudflare.com> writes:
->>
->> > While creating a LSM BPF MAC policy to block user namespace creation, we
->> > used the LSM cred_prepare hook because that is the closest hook to prevent
->> > a call to create_user_ns().
->>
->> Re-nack for all of the same reasons.
->> AKA This can only break the users of the user namespace.
->>
->> Nacked-by: "Eric W. Biederman" <ebiederm@xmission.com>
->>
->> You aren't fixing what your problem you are papering over it by denying
->> access to the user namespace.
->>
->> Nack Nack Nack.
->>
->> Stop.
->>
->> Go back to the drawing board.
->>
->> Do not pass go.
->>
->> Do not collect $200.
+On Mon, Aug 8, 2022 at 8:52 AM David Vernet <void@manifault.com> wrote:
 >
-> If you want us to take your comments seriously Eric, you need to
-> provide the list with some constructive feedback that would allow
-> Frederick to move forward with a solution to the use case that has
-> been proposed.  You response above may be many things, but it is
-> certainly not that.
+> This patch set defines a new map type, BPF_MAP_TYPE_USER_RINGBUF, which
+> provides single-user-space-producer / single-kernel-consumer semantics over
+> a ringbuffer.  Along with the new map type, a helper function called
+> bpf_user_ringbuf_drain() is added which allows a BPF program to specify a
+> callback with the following signature, to which samples are posted by the
+> helper:
+>
+> void (struct bpf_dynptr *dynptr, void *context);
+>
+> The program can then use the bpf_dynptr_read() or bpf_dynptr_data() helper
+> functions to safely read the sample from the dynptr. There are currently no
+> helpers available to determine the size of the sample, but one could easily
+> be added if required.
+>
+> On the user-space side, libbpf has been updated to export a new
+> 'struct ring_buffer_user' type, along with the following symbols:
+>
+> struct ring_buffer_user *
+> ring_buffer_user__new(int map_fd,
+>                       const struct ring_buffer_user_opts *opts);
+> void ring_buffer_user__free(struct ring_buffer_user *rb);
+> void *ring_buffer_user__reserve(struct ring_buffer_user *rb, uint32_t size);
+> void *ring_buffer_user__poll(struct ring_buffer_user *rb, uint32_t size,
+>                              int timeout_ms);
+> void ring_buffer_user__discard(struct ring_buffer_user *rb, void *sample);
+> void ring_buffer_user__submit(struct ring_buffer_user *rb, void *sample);
+>
+> These symbols are exported for inclusion in libbpf version 1.0.0.
+>
+> Note that one thing that is not included in this patch-set is the ability
+> to kick the kernel from user-space to have it drain messages. The selftests
+> included in this patch-set currently just use progs with syscall hooks to
+> "kick" the kernel and have it drain samples from a user-producer
+> ringbuffer, but being able to kick the kernel using some other mechanism
+> that doesn't rely on such hooks would be very useful as well. I'm planning
+> on adding this in a future patch-set.
+>
 
-I did provide constructive feedback.  My feedback to his problem
-was to address the real problem of bugs in the kernel.
+This could be done using iters. Basically, you can perform draining in
+bpf_iter programs and export iter links as bpffs files. Then to kick
+the kernel, you simply just read() the file.
 
-It is not a constructive approach to shoot the messenger
-and is not a constructive approach to blow me off every time you
-reply.
-
-I have proposed that is there is a subsystem that is unduly buggy we
-stop it from being enabled with a user-namespaces.
-
-Further this is a hook really should have extra-ordinary requirements,
-as all it can do is add additional failure modes to something that
-does not really fail.  AKA all it can do is break-userspace.
-
-As such I need to see a justification on why it makes sense to
-break-userspace.
-
-> We've heard from different users now that there are very real use
-> cases for this LSM hook.  I understand you are concerned about adding
- > additional controls to user namespaces, but these are controls
-> requested by real users, and the controls being requested (LSM hooks,
-> with BPF and SELinux implementations) are configurable by the *users*
-> at *runtime*.  This patchset does not force additional restrictions on
-> user namespaces, it provides a mechanism that *users* can leverage to
-> add additional granularity to the access controls surrounding user
-> namespaces.
-
-But that is not the problem that cloudfare encountered and are trying to
-solve.
-
-At least that is not what I was told when I asked early in the review
-cycle.
-
-All saying that is user-configurable does is shift the blame from the
-kernel maintainers to the users.  Shift the responsibility from people
-who should have enough expertise to know what is going on to people
-who are by definition have other concerns, so are less likely to be as
-well informed, and less likely to come up with good solutions.
-
-> Eric, if you have a different approach in mind to adding a LSM hook to
-> user namespace creation I think we would all very much like to hear
-> about it.  However, if you do not have any suggestions along those
-> lines, and simply want to NACK any effort to add a LSM hook to user
-> namespace creation, I think we all understand your point of view and
-> respectfully disagree.  Barring any new approaches or suggestions, I
-> think Frederick's patches look reasonable and I still plan on merging
-> them into the LSM next branch when the merge window closes.
-
-
-But it is my code you are planning to merge this into, and your are
-asking me to support something.
-
-I admit I have not had time to read everything.  I am sick and tired
-and quite frankly very tired that people are busy wanting to shoot
-the messenger to the fact that there are bugs in the kernel.
-
-I am speaking up and engaging as best as I can with objections that
-are not hot-air.
-
-You are very much proposing to merge code that can only cause
-regressions and cause me grief.  At least that is all I see.  I don't
-see anything in the change descriptions of the change that refutes that.
-
-I don't see any interaction in fact with my concerns.
-
-In fact your last reply was to completely blow off my request on how to
-address the concerns that inspired this patch and to say other people
-have a use too.
-
-At this point I am happy to turn your request around and ask that you
-address my concerns and not blow them off.  As I have seen no
-constructive engagement with my concerns.   I think that is reasonable
-as by definition I will get the support issues when some LSM has some
-ill-thought out idea of how things should work and I get the bug report.
-
-Eric
-
-
-
-
-
+> Signed-off-by: David Vernet <void@manifault.com>
+> --
+>
+> David Vernet (5):
+>   bpf: Clear callee saved regs after updating REG0
+>   bpf: Define new BPF_MAP_TYPE_USER_RINGBUF map type
+>   bpf: Add bpf_user_ringbuf_drain() helper
+>   bpf: Add libbpf logic for user-space ring buffer
+>   selftests/bpf: Add selftests validating the user ringbuf
+>
+>  include/linux/bpf.h                           |   6 +-
+>  include/linux/bpf_types.h                     |   1 +
+>  include/uapi/linux/bpf.h                      |   9 +
+>  kernel/bpf/helpers.c                          |   2 +
+>  kernel/bpf/ringbuf.c                          | 232 ++++++-
+>  kernel/bpf/verifier.c                         |  73 ++-
+>  tools/include/uapi/linux/bpf.h                |   9 +
+>  tools/lib/bpf/libbpf.c                        |  11 +-
+>  tools/lib/bpf/libbpf.h                        |  19 +
+>  tools/lib/bpf/libbpf.map                      |   6 +
+>  tools/lib/bpf/libbpf_probes.c                 |   1 +
+>  tools/lib/bpf/ringbuf.c                       | 214 +++++++
+>  .../selftests/bpf/prog_tests/user_ringbuf.c   | 592 ++++++++++++++++++
+>  .../selftests/bpf/progs/user_ringbuf_fail.c   | 174 +++++
+>  .../bpf/progs/user_ringbuf_success.c          | 227 +++++++
+>  .../testing/selftests/bpf/test_user_ringbuf.h |  28 +
+>  16 files changed, 1579 insertions(+), 25 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/user_ringbuf_fail.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/user_ringbuf_success.c
+>  create mode 100644 tools/testing/selftests/bpf/test_user_ringbuf.h
+>
+> --
+> 2.30.2
+>
