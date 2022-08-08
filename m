@@ -2,82 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EDB758CBC0
-	for <lists+bpf@lfdr.de>; Mon,  8 Aug 2022 18:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D60058CBF1
+	for <lists+bpf@lfdr.de>; Mon,  8 Aug 2022 18:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235083AbiHHQAT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Aug 2022 12:00:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35114 "EHLO
+        id S243879AbiHHQPP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Aug 2022 12:15:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243856AbiHHQAR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Aug 2022 12:00:17 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F585C44
-        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 09:00:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C4126B80E24
-        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 16:00:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 843DEC433D7;
-        Mon,  8 Aug 2022 16:00:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1659974414;
-        bh=X9q44N7Un9T4eBygc8JgvL75dG4RfgnsHuK5697+I7M=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Ta4RoEPFKKglACjuunOso9IH67SWxmQ6pcGpMqJMAMALHvk4Od8pEK5mn+U0X0fo5
-         JVVv9szoQ1D6KlsiznefBqVeOBlwFzJiV9qXiqti5BfCZq8eid39JhPA0hhcd2w+0K
-         8ywHP58yPDIcbie9Wi/701MuvfHU3NM6tYqpnnY+V2FrAs7Eb34L6hEv3INSUoqWKj
-         XfqYcQLLah0z6MSEP/r0ZQ+AuS9eJ6bUEz0e7wNbKlbTdPiW9pD6tXrWhkIGCDAI7L
-         8jHP+LT7qQiPvkm86fpYuSu/VqRgmEOzTvB962wLcdVFWKRL6NV0QUE6Gzz7p+sIct
-         J5JuISaUBplJA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6AAD6C43142;
-        Mon,  8 Aug 2022 16:00:14 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S230398AbiHHQPO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Aug 2022 12:15:14 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 622FE126;
+        Mon,  8 Aug 2022 09:15:12 -0700 (PDT)
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1oL5Oz-0002Rw-Hu; Mon, 08 Aug 2022 18:14:49 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1oL5Oz-000OuE-0M; Mon, 08 Aug 2022 18:14:49 +0200
+Subject: Re: [PATCH 4/4] build: Switch to new openssl API for test-libcrypto
+To:     Roberto Sassu <roberto.sassu@huawei.com>, quentin@isovalent.com,
+        ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, peterz@infradead.org, mingo@redhat.com,
+        acme@kernel.org, terrelln@fb.com, nathan@kernel.org,
+        ndesaulniers@google.com
+Cc:     bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        llvm@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20220719170555.2576993-1-roberto.sassu@huawei.com>
+ <20220719170555.2576993-4-roberto.sassu@huawei.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <5f867295-10d2-0085-d1dc-051f56e7136a@iogearbox.net>
+Date:   Mon, 8 Aug 2022 18:14:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v1] bpf: verifier cleanups
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165997441443.32093.4867734298996596066.git-patchwork-notify@kernel.org>
-Date:   Mon, 08 Aug 2022 16:00:14 +0000
-References: <20220802214638.3643235-1-joannelkoong@gmail.com>
-In-Reply-To: <20220802214638.3643235-1-joannelkoong@gmail.com>
-To:     Joanne Koong <joannelkoong@gmail.com>
-Cc:     bpf@vger.kernel.org, andrii@kernel.org, daniel@iogearbox.net,
-        ast@kernel.org
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20220719170555.2576993-4-roberto.sassu@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.6/26621/Mon Aug  8 09:52:38 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Hi Arnaldo,
 
-This patch was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Tue,  2 Aug 2022 14:46:38 -0700 you wrote:
-> This patch cleans up a few things in the verifier:
->   * type_is_pkt_pointer():
->     Future work (skb + xdp dynptrs [0]) will be using the reg type
->     PTR_TO_PACKET | PTR_MAYBE_NULL. type_is_pkt_pointer() should return
->     true for any type whose base type is PTR_TO_PACKET, regardless of
->     flags attached to it.
+On 7/19/22 7:05 PM, Roberto Sassu wrote:
+> Switch to new EVP API for detecting libcrypto, as Fedora 36 returns an
+> error when it encounters the deprecated function MD5_Init() and the others.
+> The error would be interpreted as missing libcrypto, while in reality it is
+> not.
 > 
-> [...]
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 
-Here is the summary with links:
-  - [bpf-next,v1] bpf: verifier cleanups
-    https://git.kernel.org/bpf/bpf-next/c/0c9a7a7e2049
+Given rest of the tooling fixes from Andres Freund went via perf tree and the
+below is perf related as well, I presume you'll pick this up, too?
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+   [0] https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/log/?h=perf/core
 
+>   tools/build/feature/test-libcrypto.c | 15 +++++++++++----
+>   1 file changed, 11 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tools/build/feature/test-libcrypto.c b/tools/build/feature/test-libcrypto.c
+> index a98174e0569c..bc34a5bbb504 100644
+> --- a/tools/build/feature/test-libcrypto.c
+> +++ b/tools/build/feature/test-libcrypto.c
+> @@ -1,16 +1,23 @@
+>   // SPDX-License-Identifier: GPL-2.0
+> +#include <openssl/evp.h>
+>   #include <openssl/sha.h>
+>   #include <openssl/md5.h>
+>   
+>   int main(void)
+>   {
+> -	MD5_CTX context;
+> +	EVP_MD_CTX *mdctx;
+>   	unsigned char md[MD5_DIGEST_LENGTH + SHA_DIGEST_LENGTH];
+>   	unsigned char dat[] = "12345";
+> +	unsigned int digest_len;
+>   
+> -	MD5_Init(&context);
+> -	MD5_Update(&context, &dat[0], sizeof(dat));
+> -	MD5_Final(&md[0], &context);
+> +	mdctx = EVP_MD_CTX_new();
+> +	if (!mdctx)
+> +		return 0;
+> +
+> +	EVP_DigestInit_ex(mdctx, EVP_md5(), NULL);
+> +	EVP_DigestUpdate(mdctx, &dat[0], sizeof(dat));
+> +	EVP_DigestFinal_ex(mdctx, &md[0], &digest_len);
+> +	EVP_MD_CTX_free(mdctx);
+>   
+>   	SHA1(&dat[0], sizeof(dat), &md[0]);
+>   
+> 
 
