@@ -2,50 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 486E458C958
-	for <lists+bpf@lfdr.de>; Mon,  8 Aug 2022 15:25:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 779C358C988
+	for <lists+bpf@lfdr.de>; Mon,  8 Aug 2022 15:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235514AbiHHNZu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Aug 2022 09:25:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37180 "EHLO
+        id S237227AbiHHNdX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Aug 2022 09:33:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243333AbiHHNZp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Aug 2022 09:25:45 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29FE56362;
-        Mon,  8 Aug 2022 06:25:44 -0700 (PDT)
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oL2lD-00007g-Cf; Mon, 08 Aug 2022 15:25:35 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oL2lD-0008MS-0L; Mon, 08 Aug 2022 15:25:35 +0200
-Subject: Re: [PATCH bpf] bpf: Do more tight ALU bounds tracking
-To:     Hao Luo <haoluo@google.com>, Youlin Li <liulin063@gmail.com>
-Cc:     ast@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        kpsingh@kernel.org, sdf@google.com, jolsa@kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <CA+khW7iknv0hcn-D2tRt8HFseUnyTV7BwpohQHtEyctbA1k27w@mail.gmail.com>
- <20220729224254.1798-1-liulin063@gmail.com>
- <CA+khW7iLeSZPweZEz_tfP+LRtpvZbfvstZWgUbNrEDK-Ntxyxw@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <ccafa637-d986-b4e3-73e0-03721a940ce1@iogearbox.net>
-Date:   Mon, 8 Aug 2022 15:25:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S236127AbiHHNdV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Aug 2022 09:33:21 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2AF760D0;
+        Mon,  8 Aug 2022 06:33:18 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id l24so7061320ion.13;
+        Mon, 08 Aug 2022 06:33:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :from:to:cc;
+        bh=gYGa7o0LFb+k6WKzPDuCuY6ek/qRblZnSJwsd7ilTIM=;
+        b=o2Dtu4FFj/pojz+rNpvnjks91j8WaiA5Okxru7Md2PSU80mxxJYUYOpAclzj8ddQIz
+         5NFVRozDYnUTzrSLT8Bjqddvv/0PRBSImB5zgDxEuA5iyDdEAjab3DFDrTOkK50R+JmG
+         iCbtj0QR7p24sE0brxbZhBUOyqkpZP04gqpYVUwbfrUnzmT5UwqU3C77sg8ys5q/+A/r
+         F5rFcAheCQnfjxrotV6NgID6yJPG6yGJxmnT7bu7aZQ/ZXdISNA+CTygjSUx4QoFOl4j
+         WjqC9iCZM+xMSsqwGVoK3rGOmxZZswYBx92hc891PZslmDOyXL4E+31gneLvC+ejerdy
+         Eysg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :x-gm-message-state:from:to:cc;
+        bh=gYGa7o0LFb+k6WKzPDuCuY6ek/qRblZnSJwsd7ilTIM=;
+        b=CE+PLx416LZp9A/K0tdMu+zdyPnSjwqUg5EKY4qnrKCyjHO8zvldTj4OeVWiea6nrB
+         wZeWJEZwGIOtBLrDFf+O84XVPT1qZXvKGapFygi4T7rchCN1+vbpoTnfZ0ATB5pLCITl
+         yvOxhBORO9xIAV93dvmRP02122eabaDMu1TboM3qG0jtz2s9vfZK5Hp/6NRZH3Ig5qEH
+         dvCTouyEbnV83tVeqYVBZRujoiImMMqvswg3sF3pyeQVu1z3Tu9sk52A92qiGQ0QCSI/
+         Zr6EbmgUWqfbw9FHGtqn12hrf/6BT4rxTtGBjdiDK5SOg6Moeum3yhABfKM4XTQjjTdK
+         FCuw==
+X-Gm-Message-State: ACgBeo1WNCPcys7sTcrxkR5pMkm9wUbSjhhYhPKhYyBek7TpeAkpxyJ3
+        TkEO/qI4yhAzVQs8rcSpVcSu316kKiqWNAZ9L8Y=
+X-Google-Smtp-Source: AA6agR6i6CFJfQodXIHpToqaudMJeJWTrZcXk27S/3V3aW2/9jfnIhdKHvJws1KMvd1aZSx5NfCXVVmYoRYMBndGvHk=
+X-Received: by 2002:a05:6638:3822:b0:342:a65d:ade3 with SMTP id
+ i34-20020a056638382200b00342a65dade3mr8501595jav.206.1659965598160; Mon, 08
+ Aug 2022 06:33:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CA+khW7iLeSZPweZEz_tfP+LRtpvZbfvstZWgUbNrEDK-Ntxyxw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26621/Mon Aug  8 09:52:38 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+References: <20220808094623.387348-1-asavkov@redhat.com> <20220808094623.387348-2-asavkov@redhat.com>
+ <CAP01T76dELOx8p_iky_Py_VcqDbQtaL-4d=zrFiCbFhMdVEmNA@mail.gmail.com> <YvEEXsdo/fCnoEFY@samus.usersys.redhat.com>
+In-Reply-To: <YvEEXsdo/fCnoEFY@samus.usersys.redhat.com>
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date:   Mon, 8 Aug 2022 15:32:39 +0200
+Message-ID: <CAP01T74kqdAeZbmnVA2uDRiB-8tjuWtdw-q_2V5fL6wQ==rTEA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/3] bpf: add destructive kfunc flag
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Daniel Vacek <dvacek@redhat.com>,
+        Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -54,62 +72,65 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 7/30/22 12:48 AM, Hao Luo wrote:
-> On Fri, Jul 29, 2022 at 3:43 PM Youlin Li <liulin063@gmail.com> wrote:
->>
->> In adjust_scalar_min_max_vals(), let 32bit bounds learn from 64bit bounds
->> to get more tight bounds tracking. Similar operation can be found in
->> reg_set_min_max().
->>
->> Also, we can now fold reg_bounds_sync() into zext_32_to_64().
->>
->> Before:
->>
->>      func#0 @0
->>      0: R1=ctx(off=0,imm=0) R10=fp0
->>      0: (b7) r0 = 0                        ; R0_w=0
->>      1: (b7) r1 = 0                        ; R1_w=0
->>      2: (87) r1 = -r1                      ; R1_w=scalar()
->>      3: (87) r1 = -r1                      ; R1_w=scalar()
->>      4: (c7) r1 s>>= 63                    ; R1_w=scalar(smin=-1,smax=0)
->>      5: (07) r1 += 2                       ; R1_w=scalar(umin=1,umax=2,var_off=(0x0; 0xffffffff))  <--- [*]
->>      6: (95) exit
->>
->> It can be seen that even if the 64bit bounds is clear here, the 32bit
->> bounds is still in the state of 'UNKNOWN'.
->>
->> After:
->>
->>      func#0 @0
->>      0: R1=ctx(off=0,imm=0) R10=fp0
->>      0: (b7) r0 = 0                        ; R0_w=0
->>      1: (b7) r1 = 0                        ; R1_w=0
->>      2: (87) r1 = -r1                      ; R1_w=scalar()
->>      3: (87) r1 = -r1                      ; R1_w=scalar()
->>      4: (c7) r1 s>>= 63                    ; R1_w=scalar(smin=-1,smax=0)
->>      5: (07) r1 += 2                       ; R1_w=scalar(umin=1,umax=2,var_off=(0x0; 0x3))  <--- [*]
->>      6: (95) exit
->>
->> Signed-off-by: Youlin Li <liulin063@gmail.com>
-> 
-> Looks good to me. Thanks Youlin.
-> 
-> Acked-by: Hao Luo <haoluo@google.com>
+On Mon, 8 Aug 2022 at 14:41, Artem Savkov <asavkov@redhat.com> wrote:
+>
+> On Mon, Aug 08, 2022 at 02:14:33PM +0200, Kumar Kartikeya Dwivedi wrote:
+> > On Mon, 8 Aug 2022 at 11:48, Artem Savkov <asavkov@redhat.com> wrote:
+> > >
+> > > Add KF_DESTRUCTIVE flag for destructive functions. Functions with this
+> > > flag set will require CAP_SYS_BOOT capabilities.
+> > >
+> > > Signed-off-by: Artem Savkov <asavkov@redhat.com>
+> > > ---
+> > >  include/linux/btf.h   | 1 +
+> > >  kernel/bpf/verifier.c | 5 +++++
+> > >  2 files changed, 6 insertions(+)
+> > >
+> > > diff --git a/include/linux/btf.h b/include/linux/btf.h
+> > > index cdb376d53238..51a0961c84e3 100644
+> > > --- a/include/linux/btf.h
+> > > +++ b/include/linux/btf.h
+> > > @@ -49,6 +49,7 @@
+> > >   * for this case.
+> > >   */
+> > >  #define KF_TRUSTED_ARGS (1 << 4) /* kfunc only takes trusted pointer arguments */
+> > > +#define KF_DESTRUCTIVE  (1 << 5) /* kfunc performs destructive actions */
+> > >
+> >
+> > Please also document this flag in Documentation/bpf/kfuncs.rst.
+>
+> Ok, will do.
+>
+> > And maybe instead of KF_DESTRUCTIVE, it might be more apt to call this
+> > KF_CAP_SYS_BOOT. While it is true you had a destructive flag for
+> > programs being loaded earlier, so there was a mapping between the two
+> > UAPI and kfunc flags, what it has boiled down to is that this flag
+> > just requires CAP_SYS_BOOT (in addition to other capabilities) during
+> > load. So that name might express the intent a bit better. We might
+> > soon have similar flags encoding requirements of other capabilities on
+> > load.
+> >
+> > The flag rename is just a suggestion, up to you.
+>
+> This makes sense right now, but if going forward we'll add stricter
+> signing requirements or other prerequisites we'll either have to rename
+> the flag back, or add those as separate flags. I guess the decision here
 
-Thanks Youlin! Looks like the patch breaks CI [0] e.g.:
+IMO we should do that when the time comes, for now it should reflect
+the current state.
+To me this helper requiring cap_sys_boot is just like how some
+existing stable helpers are gated behind bpf_capable or
+perfmon_capable.
+When it requires that the program calling it be signed, we can revisit this.
 
-   #142/p bounds check after truncation of non-boundary-crossing range FAIL
-   Failed to load prog 'Permission denied'!
-   invalid access to map value, value_size=8 off=16777215 size=1
-   R0 max value is outside of the allowed memory range
-   verification time 296 usec
-   stack depth 8
-   processed 15 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
+> depends on whether some of non-destructive bpf programs might ever require
+> CAP_SYS_BOOT capabilities or not.
 
-Please take a look. Also it would be great to add a test_verifier selftest to
-assert above case from commit log against future changes.
+These are just internal kernel flags, so refactoring/renaming is not a
+big deal when it is needed. E.g. we've changed just how kfuncs are
+registered twice since the support was added not long ago :).
 
-Thanks,
-Daniel
-
-   [0] https://github.com/kernel-patches/bpf/runs/7696324041?check_suite_focus=true
+>
+> --
+>  Artem
+>
