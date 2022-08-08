@@ -2,123 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0BD158C878
-	for <lists+bpf@lfdr.de>; Mon,  8 Aug 2022 14:41:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 486E458C958
+	for <lists+bpf@lfdr.de>; Mon,  8 Aug 2022 15:25:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237846AbiHHMlP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Aug 2022 08:41:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58392 "EHLO
+        id S235514AbiHHNZu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Aug 2022 09:25:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234872AbiHHMlO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Aug 2022 08:41:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E4F2FBF5D
-        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 05:41:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1659962473;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TrFh1uBMq/fvCw2kODakluoaRrhdWrjukcnqYlihIj0=;
-        b=eHq/p0i0FNdFhJ+2c+dD+gtFJdvhC8+JtY5E9VjvRCTI9v3v08rAKsVFsrsGALilgJI7rR
-        YzOYXtIcTNNRnSwH9FNrUmSVF7wELGzYaUwSWlgljJ+VM8NqjAMud54bOGkP55zxbmeQRP
-        ExcwS2spHz192aMAECPpAOLXCdwoHzk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-134-eiN6VEufMYamlUmCExinFg-1; Mon, 08 Aug 2022 08:41:09 -0400
-X-MC-Unique: eiN6VEufMYamlUmCExinFg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8383D957BA1;
-        Mon,  8 Aug 2022 12:41:08 +0000 (UTC)
-Received: from samus.usersys.redhat.com (unknown [10.40.194.133])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id ABE6618ECC;
-        Mon,  8 Aug 2022 12:41:05 +0000 (UTC)
-Date:   Mon, 8 Aug 2022 14:41:02 +0200
-From:   Artem Savkov <asavkov@redhat.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Daniel Vacek <dvacek@redhat.com>,
-        Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>
-Subject: Re: [PATCH bpf-next v3 1/3] bpf: add destructive kfunc flag
-Message-ID: <YvEEXsdo/fCnoEFY@samus.usersys.redhat.com>
-Mail-Followup-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Daniel Vacek <dvacek@redhat.com>, Jiri Olsa <olsajiri@gmail.com>,
-        Song Liu <song@kernel.org>, Daniel Xu <dxu@dxuuu.xyz>
-References: <20220808094623.387348-1-asavkov@redhat.com>
- <20220808094623.387348-2-asavkov@redhat.com>
- <CAP01T76dELOx8p_iky_Py_VcqDbQtaL-4d=zrFiCbFhMdVEmNA@mail.gmail.com>
+        with ESMTP id S243333AbiHHNZp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Aug 2022 09:25:45 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29FE56362;
+        Mon,  8 Aug 2022 06:25:44 -0700 (PDT)
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1oL2lD-00007g-Cf; Mon, 08 Aug 2022 15:25:35 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1oL2lD-0008MS-0L; Mon, 08 Aug 2022 15:25:35 +0200
+Subject: Re: [PATCH bpf] bpf: Do more tight ALU bounds tracking
+To:     Hao Luo <haoluo@google.com>, Youlin Li <liulin063@gmail.com>
+Cc:     ast@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        kpsingh@kernel.org, sdf@google.com, jolsa@kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <CA+khW7iknv0hcn-D2tRt8HFseUnyTV7BwpohQHtEyctbA1k27w@mail.gmail.com>
+ <20220729224254.1798-1-liulin063@gmail.com>
+ <CA+khW7iLeSZPweZEz_tfP+LRtpvZbfvstZWgUbNrEDK-Ntxyxw@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <ccafa637-d986-b4e3-73e0-03721a940ce1@iogearbox.net>
+Date:   Mon, 8 Aug 2022 15:25:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAP01T76dELOx8p_iky_Py_VcqDbQtaL-4d=zrFiCbFhMdVEmNA@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.11.54.5
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CA+khW7iLeSZPweZEz_tfP+LRtpvZbfvstZWgUbNrEDK-Ntxyxw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.6/26621/Mon Aug  8 09:52:38 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 08, 2022 at 02:14:33PM +0200, Kumar Kartikeya Dwivedi wrote:
-> On Mon, 8 Aug 2022 at 11:48, Artem Savkov <asavkov@redhat.com> wrote:
-> >
-> > Add KF_DESTRUCTIVE flag for destructive functions. Functions with this
-> > flag set will require CAP_SYS_BOOT capabilities.
-> >
-> > Signed-off-by: Artem Savkov <asavkov@redhat.com>
-> > ---
-> >  include/linux/btf.h   | 1 +
-> >  kernel/bpf/verifier.c | 5 +++++
-> >  2 files changed, 6 insertions(+)
-> >
-> > diff --git a/include/linux/btf.h b/include/linux/btf.h
-> > index cdb376d53238..51a0961c84e3 100644
-> > --- a/include/linux/btf.h
-> > +++ b/include/linux/btf.h
-> > @@ -49,6 +49,7 @@
-> >   * for this case.
-> >   */
-> >  #define KF_TRUSTED_ARGS (1 << 4) /* kfunc only takes trusted pointer arguments */
-> > +#define KF_DESTRUCTIVE  (1 << 5) /* kfunc performs destructive actions */
-> >
+On 7/30/22 12:48 AM, Hao Luo wrote:
+> On Fri, Jul 29, 2022 at 3:43 PM Youlin Li <liulin063@gmail.com> wrote:
+>>
+>> In adjust_scalar_min_max_vals(), let 32bit bounds learn from 64bit bounds
+>> to get more tight bounds tracking. Similar operation can be found in
+>> reg_set_min_max().
+>>
+>> Also, we can now fold reg_bounds_sync() into zext_32_to_64().
+>>
+>> Before:
+>>
+>>      func#0 @0
+>>      0: R1=ctx(off=0,imm=0) R10=fp0
+>>      0: (b7) r0 = 0                        ; R0_w=0
+>>      1: (b7) r1 = 0                        ; R1_w=0
+>>      2: (87) r1 = -r1                      ; R1_w=scalar()
+>>      3: (87) r1 = -r1                      ; R1_w=scalar()
+>>      4: (c7) r1 s>>= 63                    ; R1_w=scalar(smin=-1,smax=0)
+>>      5: (07) r1 += 2                       ; R1_w=scalar(umin=1,umax=2,var_off=(0x0; 0xffffffff))  <--- [*]
+>>      6: (95) exit
+>>
+>> It can be seen that even if the 64bit bounds is clear here, the 32bit
+>> bounds is still in the state of 'UNKNOWN'.
+>>
+>> After:
+>>
+>>      func#0 @0
+>>      0: R1=ctx(off=0,imm=0) R10=fp0
+>>      0: (b7) r0 = 0                        ; R0_w=0
+>>      1: (b7) r1 = 0                        ; R1_w=0
+>>      2: (87) r1 = -r1                      ; R1_w=scalar()
+>>      3: (87) r1 = -r1                      ; R1_w=scalar()
+>>      4: (c7) r1 s>>= 63                    ; R1_w=scalar(smin=-1,smax=0)
+>>      5: (07) r1 += 2                       ; R1_w=scalar(umin=1,umax=2,var_off=(0x0; 0x3))  <--- [*]
+>>      6: (95) exit
+>>
+>> Signed-off-by: Youlin Li <liulin063@gmail.com>
 > 
-> Please also document this flag in Documentation/bpf/kfuncs.rst.
-
-Ok, will do.
-
-> And maybe instead of KF_DESTRUCTIVE, it might be more apt to call this
-> KF_CAP_SYS_BOOT. While it is true you had a destructive flag for
-> programs being loaded earlier, so there was a mapping between the two
-> UAPI and kfunc flags, what it has boiled down to is that this flag
-> just requires CAP_SYS_BOOT (in addition to other capabilities) during
-> load. So that name might express the intent a bit better. We might
-> soon have similar flags encoding requirements of other capabilities on
-> load.
+> Looks good to me. Thanks Youlin.
 > 
-> The flag rename is just a suggestion, up to you.
+> Acked-by: Hao Luo <haoluo@google.com>
 
-This makes sense right now, but if going forward we'll add stricter
-signing requirements or other prerequisites we'll either have to rename
-the flag back, or add those as separate flags. I guess the decision here
-depends on whether some of non-destructive bpf programs might ever require
-CAP_SYS_BOOT capabilities or not.
+Thanks Youlin! Looks like the patch breaks CI [0] e.g.:
 
--- 
- Artem
+   #142/p bounds check after truncation of non-boundary-crossing range FAIL
+   Failed to load prog 'Permission denied'!
+   invalid access to map value, value_size=8 off=16777215 size=1
+   R0 max value is outside of the allowed memory range
+   verification time 296 usec
+   stack depth 8
+   processed 15 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
 
+Please take a look. Also it would be great to add a test_verifier selftest to
+assert above case from commit log against future changes.
+
+Thanks,
+Daniel
+
+   [0] https://github.com/kernel-patches/bpf/runs/7696324041?check_suite_focus=true
