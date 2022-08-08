@@ -2,184 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B76F958CE19
-	for <lists+bpf@lfdr.de>; Mon,  8 Aug 2022 20:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AA7758CE1B
+	for <lists+bpf@lfdr.de>; Mon,  8 Aug 2022 20:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234427AbiHHS4X (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Aug 2022 14:56:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48970 "EHLO
+        id S243935AbiHHS4t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Aug 2022 14:56:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243935AbiHHS4W (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Aug 2022 14:56:22 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A3221834B
-        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 11:56:21 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id o14so5366628ilt.2
-        for <bpf@vger.kernel.org>; Mon, 08 Aug 2022 11:56:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=X6wWckFSd/llvt+xf8wcCctfIJ2Cn74UQyep6/D0Pu4=;
-        b=F9Rh8pZYT7Be6HxfwO81aB9NkU/8K5LDK8lhYwUAEaUho3Agx9OmCQ7l7b7BamcMMi
-         iVSif3uR9sn1VwrV9C5a6cK0i8z6ZGhjGPb50A6ZCmonzBHF9ZXv6gMdeGaDkGtW9wst
-         6njqTQY29GUSTchWI58csB5v3ImMKK1P1fDbpYvvgz4EFnTUdEIyKlkTRslQlkLK0dOH
-         DRbtbKSFlxd2BruA1WhvxYw2uFAPNJ03M2qm+lZdZJmwzPzeVGgZ2RkMna5++VnjG5vn
-         ZYMhVa040GyLLvixZvfFSinhQLRd0ku8geBg23U+diqUcTR9YeT1sP8kXmji5hnLjLL7
-         Kfgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=X6wWckFSd/llvt+xf8wcCctfIJ2Cn74UQyep6/D0Pu4=;
-        b=1vlXIUc9ywZ2AkbB1X5LCBD96mtvAPldR7ZnK5Lm6pmK2jSd41wB3x1S26Xuk7IPQ0
-         pRmWcnO5/NxRl7OHvBbwrgOdZ8/7g7smqUonmwSLJhjVtwTXaTr1rqvzOOdIsa434gLD
-         4viodcTwdySbffEYgqfNad6GobgNC2/yqwB2DgSqY6tKBZApdeGordGxZ4+O4jPHi2ck
-         C8h4O/+xnX7kvdB3l4lyILLAvNKDAhKrvKFyqmJMpx80G2aFM8csRBpZP3G0dKJhcGbb
-         0rw/JgBjr2xQh0hfbaX+zfCgaVRgQMyg+kxRPaB9JLPhoQK5BLmCxR5qnRzjun2tfLHs
-         MZxQ==
-X-Gm-Message-State: ACgBeo2nZWlltoyWBaE/AKyxt2xuzDgdNvijVTbQtzpotEUOqMuDkw1j
-        sxJ1Fk4psMzb07bMURFRttta1hj8Y28bRQx6DDpCzWVt
-X-Google-Smtp-Source: AA6agR7aEk7sfiLn0GxIvIcLT/6t5UYQOmI7f6OleMaTT7Dtc6S9FN5y1bmkYq7PuEi+l2ypK2QLzvil2TNeCBXX3S4=
-X-Received: by 2002:a05:6e02:218c:b0:2e0:c966:a39d with SMTP id
- j12-20020a056e02218c00b002e0c966a39dmr4521045ila.216.1659984980666; Mon, 08
- Aug 2022 11:56:20 -0700 (PDT)
+        with ESMTP id S243680AbiHHS4t (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Aug 2022 14:56:49 -0400
+Received: from out03.mta.xmission.com (out03.mta.xmission.com [166.70.13.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D6B61834B;
+        Mon,  8 Aug 2022 11:56:48 -0700 (PDT)
+Received: from in01.mta.xmission.com ([166.70.13.51]:35272)
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1oL7vh-00BiRy-6H; Mon, 08 Aug 2022 12:56:45 -0600
+Received: from ip68-227-174-4.om.om.cox.net ([68.227.174.4]:45314 helo=email.froward.int.ebiederm.org.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1oL7vf-00HUDL-GZ; Mon, 08 Aug 2022 12:56:44 -0600
+From:   "Eric W. Biederman" <ebiederm@xmission.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Frederick Lawler <fred@cloudflare.com>, kpsingh@kernel.org,
+        revest@chromium.org, jackmanb@chromium.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        jmorris@namei.org, serge@hallyn.com,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        shuah@kernel.org, brauner@kernel.org, casey@schaufler-ca.com,
+        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-team@cloudflare.com, cgzones@googlemail.com,
+        karl@bigbadwolfsecurity.com
+References: <20220801180146.1157914-1-fred@cloudflare.com>
+        <87les7cq03.fsf@email.froward.int.ebiederm.org>
+        <CAHC9VhRpUxyxkPaTz1scGeRm+i4KviQQA7WismOX2q5agzC+DQ@mail.gmail.com>
+Date:   Mon, 08 Aug 2022 13:56:18 -0500
+In-Reply-To: <CAHC9VhRpUxyxkPaTz1scGeRm+i4KviQQA7WismOX2q5agzC+DQ@mail.gmail.com>
+        (Paul Moore's message of "Tue, 2 Aug 2022 22:10:07 -0400")
+Message-ID: <87wnbia7jh.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20220806014603.1771-1-memxor@gmail.com> <20220806014603.1771-3-memxor@gmail.com>
- <fcd4ad34-8abe-d156-f1ff-d2f752748e5b@fb.com> <CAP01T76kSupCeSvPDFX=5R24DkMvjD_iNnScqGy9eofZE=f2Mw@mail.gmail.com>
- <334f055b-4b44-f1d1-3770-b5c4ffe61913@fb.com>
-In-Reply-To: <334f055b-4b44-f1d1-3770-b5c4ffe61913@fb.com>
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Mon, 8 Aug 2022 20:55:26 +0200
-Message-ID: <CAP01T76W95FnsT26L=f6ErVWvjkxMg92o-XLGqP9zbHLEG1yvw@mail.gmail.com>
-Subject: Re: [PATCH bpf v1 2/3] bpf: Don't reinit map value in prealloc_lru_pop
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "toke@redhat.com" <toke@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-XM-SPF: eid=1oL7vf-00HUDL-GZ;;;mid=<87wnbia7jh.fsf@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.174.4;;;frm=ebiederm@xmission.com;;;spf=softfail
+X-XM-AID: U2FsdGVkX1+Nfaifvy48ZLTWFCOzOsrcFXZE8jWgnyo=
+X-SA-Exim-Connect-IP: 68.227.174.4
+X-SA-Exim-Mail-From: ebiederm@xmission.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
+X-Spam-DCC: XMission; sa04 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ***;Paul Moore <paul@paul-moore.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 1107 ms - load_scoreonly_sql: 0.09 (0.0%),
+        signal_user_changed: 12 (1.1%), b_tie_ro: 10 (0.9%), parse: 1.45
+        (0.1%), extract_message_metadata: 23 (2.1%), get_uri_detail_list: 3.2
+        (0.3%), tests_pri_-1000: 59 (5.3%), tests_pri_-950: 1.94 (0.2%),
+        tests_pri_-900: 1.62 (0.1%), tests_pri_-90: 105 (9.5%), check_bayes:
+        102 (9.3%), b_tokenize: 13 (1.2%), b_tok_get_all: 15 (1.3%),
+        b_comp_prob: 8 (0.7%), b_tok_touch_all: 59 (5.3%), b_finish: 1.30
+        (0.1%), tests_pri_0: 881 (79.6%), check_dkim_signature: 1.57 (0.1%),
+        check_dkim_adsp: 12 (1.1%), poll_dns_idle: 0.42 (0.0%), tests_pri_10:
+        2.4 (0.2%), tests_pri_500: 15 (1.3%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v4 0/4] Introduce security_create_user_ns()
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 8 Aug 2022 at 18:19, Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 8/8/22 4:18 AM, Kumar Kartikeya Dwivedi wrote:
-> > On Mon, 8 Aug 2022 at 08:09, Yonghong Song <yhs@fb.com> wrote:
-> >>
-> >>
-> >>
-> >> On 8/5/22 6:46 PM, Kumar Kartikeya Dwivedi wrote:
-> >>> The LRU map that is preallocated may have its elements reused while
-> >>> another program holds a pointer to it from bpf_map_lookup_elem. Hence,
-> >>> only check_and_free_fields is appropriate when the element is being
-> >>> deleted, as it ensures proper synchronization against concurrent access
-> >>> of the map value. After that, we cannot call check_and_init_map_value
-> >>> again as it may rewrite bpf_spin_lock, bpf_timer, and kptr fields while
-> >>> they can be concurrently accessed from a BPF program.
-> >>
-> >> If I understand correctly, one lru_node gets freed and pushed to free
-> >> list without doing check_and_free_fields().
-> >
-> > I don't think that's true, there is a check_and_free_fields call on
-> > deletion right before bpf_lru_push_free in htab_lru_push_free.
-> > Then once the preallocated items are freed on map destruction, we free
-> > timers and kptrs again, so if someone has access to preallocated items
-> > after freeing e.g. through an earlier lookup, we still release
-> > resources they may have created at the end of map's lifetime.
-> >
-> >> If later the same node is used with bpf_map_update_elem() and
-> >> prealloc_lru_pop() is called, then with this patch,
-> >> check_and_init_map_value() is not called, so the new node may contain
-> >> leftover values for kptr/timer/spin_lock, could this cause a problem?
-> >>
-> >
-> > This can only happen once you touch kptr/timer/spin_lock after
-> > deletion's check_and_free_fields call, but the program obtaining the
-> > new item will see and be able to handle that case. The timer helpers
-> > handle if an existing timer exists, kptr_xchg returns the old pointer
-> > as a reference you must release. For unreferenced kptr, it is marked
-> > as PTR_UNTRUSTED so a corrupted pointer value is possible but not
-> > fatal. If spin_lock is locked on lookup, then the other CPU having
-> > access to deleted-but-now-reallocated item will eventually call
-> > unlock.
->
-> Thanks for explanation. Originally I think we should clear everything
-> including spin_lock before putting the deleted lru_node to free list.
-> check_and_free_fields() only did for kptr/timer but not spin_lock.
->
-> But looks like we should not delete spin_lock before pushing the
-> deleted nodes to free list since lookup side may hold a reference
-> to the map value and it may have done a bpf_spin_lock() call.
-> And we should not clear spin_lock fields in check_and_free_fields()
-> and neither in prealloc_lru_pop() in map_update. Otherwise, we
-> may have issues for bpf_spin_unlock() on lookup side.
->
-> It looks timer and kptr are already been handled for such
-> cases (concurrency between map_lookup() and clearing some map_value
-> fields for timer/kptr).
->
+Paul Moore <paul@paul-moore.com> writes:
 
-Yes, I also took a look again at other call sites of
-check_and_init_map_value and everything looks sane.
+> On Mon, Aug 1, 2022 at 10:56 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>> Frederick Lawler <fred@cloudflare.com> writes:
+>>
+>> > While creating a LSM BPF MAC policy to block user namespace creation, we
+>> > used the LSM cred_prepare hook because that is the closest hook to prevent
+>> > a call to create_user_ns().
+>>
+>> Re-nack for all of the same reasons.
+>> AKA This can only break the users of the user namespace.
+>>
+>> Nacked-by: "Eric W. Biederman" <ebiederm@xmission.com>
+>>
+>> You aren't fixing what your problem you are papering over it by denying
+>> access to the user namespace.
+>>
+>> Nack Nack Nack.
+>>
+>> Stop.
+>>
+>> Go back to the drawing board.
+>>
+>> Do not pass go.
+>>
+>> Do not collect $200.
+>
+> If you want us to take your comments seriously Eric, you need to
+> provide the list with some constructive feedback that would allow
+> Frederick to move forward with a solution to the use case that has
+> been proposed.  You response above may be many things, but it is
+> certainly not that.
 
-> >
-> > It is very much expected, IIUC, that someone else may use-after-free
-> > deleted items of hashtab.c maps in case of preallocation. It can be
-> > considered similar to how SLAB_TYPESAFE_BY_RCU behaves.
-> >
-> >> To address the above rewrite issue, maybe the solution should be
-> >> to push the deleted lru_nodes back to free list only after
-> >> rcu_read_unlock() is done?
-> >
-> > Please correct me if I'm wrong, but I don't think this is a good idea.
-> > Delaying preallocated item reuse for a RCU grace period will greatly
-> > increase the probability of running out of preallocated items under
-> > load, even though technically those items are free for use.
->
-> Agree. This is not a good idea. It increased life cycle for preallocated
-> item reuse and will have some performance issue and resource consumption
-> issue.
->
-> >
-> > Side note: I found the problem this patch fixes while reading the
-> > code, because I am running into this exact problem with my WIP skip
-> > list map implementation, where in the preallocated case, to make
-> > things a bit easier for the lockless lookup, I delay reuse of items
-> > until an RCU grace period passes (so that the deleted -> unlinked
-> > transition does not happen during traversal), but I'm easily able to
-> > come up with scenarios (producer/consumer situations) where that leads
-> > to exhaustion of the preallocated memory (and if not that, performance
-> > degradation on updates because pcpu_freelist now needs to search other
-> > CPU's caches more often).
-> >
-> > BTW, this would be fixed if we could simply use Alexei's per-CPU cache
-> > based memory allocator instead of preallocating items, because then
-> > the per-CPU cache gets replenished when it goes below the watermark
-> > (and also frees stuff back to kernel allocator above the high
-> > watermark, which is great for producer/consumer cases with alloc/free
-> > imbalance), so we can do the RCU delays similar to kmalloc case
-> > without running into the memory exhaustion problem.
->
-> Thanks for explanation. So okay the patch looks good to me.
->
-> >
-> >>
-> >>>
-> >>> Fixes: 68134668c17f ("bpf: Add map side support for bpf timers.")
-> >>> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
->
-> Acked-by: Yonghong Song <yhs@fb.com>
->
+I did provide constructive feedback.  My feedback to his problem
+was to address the real problem of bugs in the kernel.
 
-Thanks! I'll summarize our discussion in short and add it to the commit log.
+It is not a constructive approach to shoot the messenger
+and is not a constructive approach to blow me off every time you
+reply.
+
+I have proposed that is there is a subsystem that is unduly buggy we
+stop it from being enabled with a user-namespaces.
+
+Further this is a hook really should have extra-ordinary requirements,
+as all it can do is add additional failure modes to something that
+does not really fail.  AKA all it can do is break-userspace.
+
+As such I need to see a justification on why it makes sense to
+break-userspace.
+
+> We've heard from different users now that there are very real use
+> cases for this LSM hook.  I understand you are concerned about adding
+ > additional controls to user namespaces, but these are controls
+> requested by real users, and the controls being requested (LSM hooks,
+> with BPF and SELinux implementations) are configurable by the *users*
+> at *runtime*.  This patchset does not force additional restrictions on
+> user namespaces, it provides a mechanism that *users* can leverage to
+> add additional granularity to the access controls surrounding user
+> namespaces.
+
+But that is not the problem that cloudfare encountered and are trying to
+solve.
+
+At least that is not what I was told when I asked early in the review
+cycle.
+
+All saying that is user-configurable does is shift the blame from the
+kernel maintainers to the users.  Shift the responsibility from people
+who should have enough expertise to know what is going on to people
+who are by definition have other concerns, so are less likely to be as
+well informed, and less likely to come up with good solutions.
+
+> Eric, if you have a different approach in mind to adding a LSM hook to
+> user namespace creation I think we would all very much like to hear
+> about it.  However, if you do not have any suggestions along those
+> lines, and simply want to NACK any effort to add a LSM hook to user
+> namespace creation, I think we all understand your point of view and
+> respectfully disagree.  Barring any new approaches or suggestions, I
+> think Frederick's patches look reasonable and I still plan on merging
+> them into the LSM next branch when the merge window closes.
+
+
+But it is my code you are planning to merge this into, and your are
+asking me to support something.
+
+I admit I have not had time to read everything.  I am sick and tired
+and quite frankly very tired that people are busy wanting to shoot
+the messenger to the fact that there are bugs in the kernel.
+
+I am speaking up and engaging as best as I can with objections that
+are not hot-air.
+
+You are very much proposing to merge code that can only cause
+regressions and cause me grief.  At least that is all I see.  I don't
+see anything in the change descriptions of the change that refutes that.
+
+I don't see any interaction in fact with my concerns.
+
+In fact your last reply was to completely blow off my request on how to
+address the concerns that inspired this patch and to say other people
+have a use too.
+
+At this point I am happy to turn your request around and ask that you
+address my concerns and not blow them off.  As I have seen no
+constructive engagement with my concerns.   I think that is reasonable
+as by definition I will get the support issues when some LSM has some
+ill-thought out idea of how things should work and I get the bug report.
+
+Eric
+
+
+
+
+
