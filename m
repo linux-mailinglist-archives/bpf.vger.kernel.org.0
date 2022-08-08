@@ -2,121 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E02A458C215
-	for <lists+bpf@lfdr.de>; Mon,  8 Aug 2022 05:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5491B58C23F
+	for <lists+bpf@lfdr.de>; Mon,  8 Aug 2022 05:58:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237160AbiHHDbk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 7 Aug 2022 23:31:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34984 "EHLO
+        id S232650AbiHHD6n (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 7 Aug 2022 23:58:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236926AbiHHDb2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 7 Aug 2022 23:31:28 -0400
-Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB23B101C4;
-        Sun,  7 Aug 2022 20:31:27 -0700 (PDT)
-Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-10ea7d8fbf7so9236486fac.7;
-        Sun, 07 Aug 2022 20:31:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=r5rwo4MClopVYNBDSVFISgAhr1YiHSTdz7IJx7vtnx8=;
-        b=OF4kIqELYjTV9D6nl6RxP86+WuBujC0QDALDIBECVbVfx3FIvb9pnZdqDSfazRSq23
-         bD2b36Z4Q4r+DG7DmqRhq7sPd1IzfyHULWfZinNbC8RQIkeXYpbNHHSZ6jVG8R+YgHji
-         5Ccm/Ij7g5H9Z2ZfuQqGSTVNz7O2dthP74U70YlniGfyFSkcZObT65uNPdgVHW3dv2pr
-         XU6kqQ/uO+kNu8OOmls2TeR0/iiBz/clHrYfnQHW+/XRCobgzGlegkRffN5npluWDRin
-         vpqq72mPR4u66n4dI5XH6xEG1m4PksSuCgW7cAEtxtpJrKKrfPcpt3bYQEqG77myuEeX
-         7rHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=r5rwo4MClopVYNBDSVFISgAhr1YiHSTdz7IJx7vtnx8=;
-        b=62V9sTtaMprh38JI6P9FN4PYJ7EycQerrO1aNLXFzhxkAqhR5S3lXfxpLc+vdY7qse
-         GQDRkoBkgK7k5KRFly3ukq+gPjERGAddXj5CwkDEjCPpU/ZRN8XC2LWhKBKK9hGDLxw9
-         8ct85qEfv1PTy6iMbNsVzlKkNjdnKgqOB06XL8Bj4NJWa3muvXBIKOZeUV6+U2OIBDxA
-         p0Zo3DBzPodcfuMjldcOdHJFAMB5sDIQRmmc6xry4R5xUvGvDKm0rgRN+5Zuw3uXunWz
-         2U0U0kEK+p9a9vYsjCwPjY54BUCze0hxYRfG/jd92FLLAlgYGlWrpKM0pMK8cCtVySLP
-         nRJQ==
-X-Gm-Message-State: ACgBeo2cdka7y/2G7neIh2aFzKoISlq+MuuUEOuQZWco8ogIzaonGQxt
-        U8dGzNjH0UQFFB+tgr1OhPY6BX9jeSY=
-X-Google-Smtp-Source: AA6agR60FfYgrHi8iqWqRx/xXe+UguwRI2xOB7tnlrFr68B7Pyd9xBPIjJWL07Mh6BuzPLvzWw4uqQ==
-X-Received: by 2002:a05:6871:1d6:b0:10e:6a7f:cc3b with SMTP id q22-20020a05687101d600b0010e6a7fcc3bmr10688426oad.210.1659929486997;
-        Sun, 07 Aug 2022 20:31:26 -0700 (PDT)
-Received: from pop-os.attlocal.net ([2600:1700:65a0:ab60:ad03:d88f:99fe:9487])
-        by smtp.gmail.com with ESMTPSA id k39-20020a4a94aa000000b00425806a20f5sm1945138ooi.3.2022.08.07.20.31.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Aug 2022 20:31:26 -0700 (PDT)
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
-        Eric Dumazet <edumazet@google.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-Subject: [Patch net v2 4/4] tcp: handle pure FIN case correctly
-Date:   Sun,  7 Aug 2022 20:31:06 -0700
-Message-Id: <20220808033106.130263-5-xiyou.wangcong@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220808033106.130263-1-xiyou.wangcong@gmail.com>
-References: <20220808033106.130263-1-xiyou.wangcong@gmail.com>
+        with ESMTP id S230364AbiHHD6m (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 7 Aug 2022 23:58:42 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA7610FC9;
+        Sun,  7 Aug 2022 20:58:40 -0700 (PDT)
+Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4M1Mmd5CM1zjX6Y;
+        Mon,  8 Aug 2022 11:55:29 +0800 (CST)
+Received: from huawei.com (10.67.174.197) by kwepemi500013.china.huawei.com
+ (7.221.188.120) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Mon, 8 Aug
+ 2022 11:58:38 +0800
+From:   Xu Kuohai <xukuohai@huawei.com>
+To:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <lkp@intel.com>
+CC:     <kbuild-all@lists.01.org>, Daniel Borkmann <daniel@iogearbox.net>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+Subject: [PATCH bpf] bpf, arm64: Fix bpf trampoline instruction endianness
+Date:   Mon, 8 Aug 2022 00:07:35 -0400
+Message-ID: <20220808040735.1232002-1-xukuohai@huawei.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.197]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemi500013.china.huawei.com (7.221.188.120)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Cong Wang <cong.wang@bytedance.com>
+The sparse tool complains as follows:
 
-When skb->len==0, the recv_actor() returns 0 too, but we also use 0
-for error conditions. This patch amends this by propagating the errors
-to tcp_read_skb() so that we can distinguish skb->len==0 case from
-error cases.
+arch/arm64/net/bpf_jit_comp.c:1684:16:
+	warning: incorrect type in assignment (different base types)
+arch/arm64/net/bpf_jit_comp.c:1684:16:
+	expected unsigned int [usertype] *branch
+arch/arm64/net/bpf_jit_comp.c:1684:16:
+	got restricted __le32 [usertype] *
+arch/arm64/net/bpf_jit_comp.c:1700:52:
+	error: subtraction of different types can't work (different base
+	types)
+arch/arm64/net/bpf_jit_comp.c:1734:29:
+	warning: incorrect type in assignment (different base types)
+arch/arm64/net/bpf_jit_comp.c:1734:29:
+	expected unsigned int [usertype] *
+arch/arm64/net/bpf_jit_comp.c:1734:29:
+	got restricted __le32 [usertype] *
+arch/arm64/net/bpf_jit_comp.c:1918:52:
+	error: subtraction of different types can't work (different base
+	types)
 
-Fixes: 04919bed948d ("tcp: Introduce tcp_read_skb()")
-Reported-by: Eric Dumazet <edumazet@google.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: Jakub Sitnicki <jakub@cloudflare.com>
-Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+This is because the variable branch in function invoke_bpf_prog and the
+variable branches in function prepare_trampoline are defined as type
+u32 *, which conflicts with ctx->image's type __le32 *, so sparse complains
+when assignment or arithmetic operation are performed on these two
+variables and ctx->image.
+
+Since arm64 instructions are always little-endian, change the type of
+these two variables to __le32 * and call cpu_to_le32 to convert
+instruction to little-endian before writing it to memory.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: efc9909fdce0 ("bpf, arm64: Add bpf trampoline for arm64")
+Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
 ---
- net/core/skmsg.c | 5 +++--
- net/ipv4/tcp.c   | 2 +-
- 2 files changed, 4 insertions(+), 3 deletions(-)
+ arch/arm64/net/bpf_jit_comp.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index 81627892bdd4..f0fa915cfe16 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -1193,8 +1193,9 @@ static int sk_psock_verdict_recv(struct sock *sk, struct sk_buff *skb)
- 		ret = bpf_prog_run_pin_on_cpu(prog, skb);
- 		ret = sk_psock_map_verd(ret, skb_bpf_redirect_fetch(skb));
+diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+index 7ca8779ae34f..29dc55da2476 100644
+--- a/arch/arm64/net/bpf_jit_comp.c
++++ b/arch/arm64/net/bpf_jit_comp.c
+@@ -1643,7 +1643,7 @@ static void invoke_bpf_prog(struct jit_ctx *ctx, struct bpf_tramp_link *l,
+ 			    int args_off, int retval_off, int run_ctx_off,
+ 			    bool save_ret)
+ {
+-	u32 *branch;
++	__le32 *branch;
+ 	u64 enter_prog;
+ 	u64 exit_prog;
+ 	struct bpf_prog *p = l->link.prog;
+@@ -1698,7 +1698,7 @@ static void invoke_bpf_prog(struct jit_ctx *ctx, struct bpf_tramp_link *l,
+ 
+ 	if (ctx->image) {
+ 		int offset = &ctx->image[ctx->idx] - branch;
+-		*branch = A64_CBZ(1, A64_R(0), offset);
++		*branch = cpu_to_le32(A64_CBZ(1, A64_R(0), offset));
  	}
--	if (sk_psock_verdict_apply(psock, skb, ret) < 0)
--		len = 0;
-+	ret = sk_psock_verdict_apply(psock, skb, ret);
-+	if (ret < 0)
-+		len = ret;
- out:
- 	rcu_read_unlock();
- 	return len;
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index 5212a7512269..5e99ecf5515f 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -1766,7 +1766,7 @@ int tcp_read_skb(struct sock *sk, skb_read_actor_t recv_actor)
- 		__skb_unlink(skb, &sk->sk_receive_queue);
- 		WARN_ON(!skb_set_owner_sk_safe(skb, sk));
- 		copied = recv_actor(sk, skb);
--		if (copied > 0) {
-+		if (copied >= 0) {
- 			seq += copied;
- 			if (TCP_SKB_CB(skb)->tcp_flags & TCPHDR_FIN)
- 				++seq;
+ 
+ 	/* arg1: prog */
+@@ -1713,7 +1713,7 @@ static void invoke_bpf_prog(struct jit_ctx *ctx, struct bpf_tramp_link *l,
+ 
+ static void invoke_bpf_mod_ret(struct jit_ctx *ctx, struct bpf_tramp_links *tl,
+ 			       int args_off, int retval_off, int run_ctx_off,
+-			       u32 **branches)
++			       __le32 **branches)
+ {
+ 	int i;
+ 
+@@ -1784,7 +1784,7 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
+ 	struct bpf_tramp_links *fexit = &tlinks[BPF_TRAMP_FEXIT];
+ 	struct bpf_tramp_links *fmod_ret = &tlinks[BPF_TRAMP_MODIFY_RETURN];
+ 	bool save_ret;
+-	u32 **branches = NULL;
++	__le32 **branches = NULL;
+ 
+ 	/* trampoline stack layout:
+ 	 *                  [ parent ip         ]
+@@ -1892,7 +1892,7 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
+ 				flags & BPF_TRAMP_F_RET_FENTRY_RET);
+ 
+ 	if (fmod_ret->nr_links) {
+-		branches = kcalloc(fmod_ret->nr_links, sizeof(u32 *),
++		branches = kcalloc(fmod_ret->nr_links, sizeof(__le32 *),
+ 				   GFP_KERNEL);
+ 		if (!branches)
+ 			return -ENOMEM;
+@@ -1916,7 +1916,7 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
+ 	/* update the branches saved in invoke_bpf_mod_ret with cbnz */
+ 	for (i = 0; i < fmod_ret->nr_links && ctx->image != NULL; i++) {
+ 		int offset = &ctx->image[ctx->idx] - branches[i];
+-		*branches[i] = A64_CBNZ(1, A64_R(10), offset);
++		*branches[i] = cpu_to_le32(A64_CBNZ(1, A64_R(10), offset));
+ 	}
+ 
+ 	for (i = 0; i < fexit->nr_links; i++)
 -- 
-2.34.1
+2.30.2
 
