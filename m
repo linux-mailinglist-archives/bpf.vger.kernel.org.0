@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB1A358CA23
-	for <lists+bpf@lfdr.de>; Mon,  8 Aug 2022 16:08:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DE2558CA27
+	for <lists+bpf@lfdr.de>; Mon,  8 Aug 2022 16:08:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235514AbiHHOIE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Aug 2022 10:08:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40210 "EHLO
+        id S243353AbiHHOI0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Aug 2022 10:08:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237227AbiHHOIE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Aug 2022 10:08:04 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4706E2E
-        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 07:08:02 -0700 (PDT)
+        with ESMTP id S243282AbiHHOIQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Aug 2022 10:08:16 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79DB2FD1C
+        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 07:08:14 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A3FD2B8049B
-        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 14:08:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 637B6C433D6;
-        Mon,  8 Aug 2022 14:07:57 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id AAE7DCE1107
+        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 14:08:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DA17C433B5;
+        Mon,  8 Aug 2022 14:08:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1659967680;
-        bh=Eabw5c+cDjQGY9iSJWIk/1u/+WzAFRBu7rJ7bIbnxPk=;
+        s=k20201202; t=1659967691;
+        bh=tNzc71raX5o7gseJh9tni2LdxYhM88jj6NK+OdwaOT8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fgqnkhisFFKwF2yjQE3EibEuQ4PmTRfy+XncD4pHs7lqoEFUL6zvrdiNt4MxAmGoi
-         IkHAqnSVezoP61FQ26WrUA9MOboUmgkNlepkI4LQacpLpFfBOxG3ACbNtBz+BVnw6+
-         ccBcijfEgy0cg0nUZ23m+AnobyxWgowA6LrgnZ785dlHQBfO8KN4cEv8qSeTdD2403
-         eu00xA2gkbrreOIRMsbhnAkZazE1PqEYAczmS7KVWIqTLL0SptQrO1Yk5sajkGjLK5
-         +3+SCeAdCmFG7w/2rgxo2Y3zFDdLr1tHsG19+C2skb3hI+VBlvtzgmvv4cxCF+uOGA
-         c4BjcXpCmKoUw==
+        b=bnBH4eAnk5fMLcqilSvK9/DRJr1oW1fGp5e+EeASyUt5bi8Co107RDly3zd/8D6QV
+         SGcorBQCOqNeq2R7LSEIcAaJoa3T90IjExHEg0WD8Ob4mLrgpGAKpfdcnu20ixl89A
+         HV+ojE185+xg11ANlFsInAAnPiQy3/NcAs3XGC4RhLeo90EXuLSyA5wMqgEf+4mPqx
+         Z7g3DhlMBMEAr870lJmeChEYCsLm+Y0DGeLQF5d45F3HdffifWz72aIdWL/QNOKb2y
+         pxbd88LiZbLIYexOgMi94MhzNuulU7Gia54T6zDkIiaCFKkpHnlPxw3SQpW2EBqHBa
+         AXGhtmJ5XLLPQ==
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -41,9 +41,9 @@ Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
         KP Singh <kpsingh@chromium.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>
-Subject: [RFC PATCH bpf-next 08/17] bpf: Factor bpf_trampoline_lookup function
-Date:   Mon,  8 Aug 2022 16:06:17 +0200
-Message-Id: <20220808140626.422731-9-jolsa@kernel.org>
+Subject: [RFC PATCH bpf-next 09/17] bpf: Factor bpf_trampoline_put function
+Date:   Mon,  8 Aug 2022 16:06:18 +0200
+Message-Id: <20220808140626.422731-10-jolsa@kernel.org>
 X-Mailer: git-send-email 2.37.1
 In-Reply-To: <20220808140626.422731-1-jolsa@kernel.org>
 References: <20220808140626.422731-1-jolsa@kernel.org>
@@ -59,98 +59,62 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Factoring bpf_trampoline_lookup function and adding to new
-functions which will be needed in following changes:
+Factoring bpf_trampoline_put function and adding new
+__bpf_trampoline_put function without locking trampoline_mutex.
 
-  struct bpf_trampoline *__bpf_trampoline_lookup(u64 key)
-  - returns trampoline without locking trampoline_mutex
-
-  static struct bpf_trampoline *bpf_trampoline_alloc(void)
-  - alocates trampoline object
-
-The bpf_trampoline_lookup logic stays the same.
+It will be needed in following changes.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- kernel/bpf/trampoline.c | 45 ++++++++++++++++++++++++++++++-----------
- 1 file changed, 33 insertions(+), 12 deletions(-)
+ kernel/bpf/trampoline.c | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
 diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index e926692ded85..15801f6c5071 100644
+index 15801f6c5071..b6b57aa09364 100644
 --- a/kernel/bpf/trampoline.c
 +++ b/kernel/bpf/trampoline.c
-@@ -188,38 +188,59 @@ void bpf_tramp_id_put(struct bpf_tramp_id *id)
- 	kfree(id);
+@@ -928,22 +928,19 @@ struct bpf_trampoline *bpf_trampoline_get(u64 key,
+ 	return tr;
  }
  
--static struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
-+static struct bpf_trampoline *__bpf_trampoline_lookup(u64 key)
+-void bpf_trampoline_put(struct bpf_trampoline *tr)
++static void __bpf_trampoline_put(struct bpf_trampoline *tr)
  {
- 	struct bpf_trampoline *tr;
- 	struct hlist_head *head;
+ 	int i;
  
+-	if (!tr)
+-		return;
 -	mutex_lock(&trampoline_mutex);
- 	head = &trampoline_table[hash_64(key, TRAMPOLINE_HASH_BITS)];
- 	hlist_for_each_entry(tr, head, hlist) {
--		if (tr->key == key) {
--			refcount_inc(&tr->refcnt);
--			goto out;
--		}
-+		if (tr->key == key)
-+			return tr;
- 	}
-+	return NULL;
-+}
-+
-+static struct bpf_trampoline *bpf_trampoline_alloc(void)
-+{
-+	struct bpf_trampoline *tr;
-+
- 	tr = kzalloc(sizeof(*tr), GFP_KERNEL);
- 	if (!tr)
+ 	if (!refcount_dec_and_test(&tr->refcnt))
 -		goto out;
-+		return NULL;
-+
-+	INIT_HLIST_NODE(&tr->hlist);
-+	refcount_set(&tr->refcnt, 1);
-+	mutex_init(&tr->mutex);
- #ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
- 	tr->fops = kzalloc(sizeof(struct ftrace_ops), GFP_KERNEL);
- 	if (!tr->fops) {
- 		kfree(tr);
--		tr = NULL;
--		goto out;
-+		return NULL;
- 	}
- 	tr->fops->private = tr;
- 	tr->fops->ops_func = bpf_tramp_ftrace_ops_func;
- #endif
-+	return tr;
-+}
-+
-+static struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
-+{
-+	struct bpf_trampoline *tr;
-+	struct hlist_head *head;
++		return;
+ 	WARN_ON_ONCE(mutex_is_locked(&tr->mutex));
  
-+	mutex_lock(&trampoline_mutex);
-+	tr = __bpf_trampoline_lookup(key);
-+	if (tr) {
-+		refcount_inc(&tr->refcnt);
-+		goto out;
-+	}
-+	tr = bpf_trampoline_alloc();
+ 	for (i = 0; i < BPF_TRAMP_MAX; i++) {
+ 		if (!tr->progs_array[i])
+ 			continue;
+ 		if (WARN_ON_ONCE(!bpf_prog_array_is_empty(tr->progs_array[i])))
+-			goto out;
++			return;
+ 	}
+ 
+ 	/* This code will be executed even when the last bpf_tramp_image
+@@ -958,7 +955,14 @@ void bpf_trampoline_put(struct bpf_trampoline *tr)
+ 		kfree(tr->fops);
+ 	}
+ 	kfree(tr);
+-out:
++}
++
++void bpf_trampoline_put(struct bpf_trampoline *tr)
++{
 +	if (!tr)
-+		goto out;
- 	tr->key = key;
--	INIT_HLIST_NODE(&tr->hlist);
-+	head = &trampoline_table[hash_64(key, TRAMPOLINE_HASH_BITS)];
- 	hlist_add_head(&tr->hlist, head);
--	refcount_set(&tr->refcnt, 1);
--	mutex_init(&tr->mutex);
- out:
++		return;
++	mutex_lock(&trampoline_mutex);
++	__bpf_trampoline_put(tr);
  	mutex_unlock(&trampoline_mutex);
- 	return tr;
+ }
+ 
 -- 
 2.37.1
 
