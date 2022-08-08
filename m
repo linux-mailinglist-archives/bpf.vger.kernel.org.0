@@ -2,53 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41F9558CA0B
-	for <lists+bpf@lfdr.de>; Mon,  8 Aug 2022 16:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6301F58CA17
+	for <lists+bpf@lfdr.de>; Mon,  8 Aug 2022 16:06:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243468AbiHHOAT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Aug 2022 10:00:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35282 "EHLO
+        id S237709AbiHHOGi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Aug 2022 10:06:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243477AbiHHOAR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Aug 2022 10:00:17 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7781EB89
-        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 07:00:16 -0700 (PDT)
+        with ESMTP id S233230AbiHHOGi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Aug 2022 10:06:38 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E80D73
+        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 07:06:36 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 3089EB80EAD
-        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 14:00:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C4740C433B5;
-        Mon,  8 Aug 2022 14:00:13 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id CEB76CE1104
+        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 14:06:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75D3DC433D6;
+        Mon,  8 Aug 2022 14:06:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1659967213;
-        bh=WgjNVV2EnrEDKMGUqUPIArn3+7YfPgTxaPM+cQjl24M=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=tjABYboDeLCGKc09KgI1743jTCV+kwHZFwCMwk32DSDkTzk2EurlP29rdPR8V3Bg/
-         o/E+124lff1dCu/0KoMdank4f7GTlNrvNOsuKFpRt2WOmh0rzQj0ShvhJ0ZdNn1otL
-         v7ty5KivYl+0JHweK0FIisHgMZXiL6CtadlaWrNUXAKtkH4/N1klNuEDI704g6+ooH
-         9//Az56Q1YqAsGzP/PGdQwuc+7hQRaADR0CeFelR02N8mmfRWZ2jOg8wBtm7xI5ZM8
-         IdmKUAMHoB+HCoXjVfMyQX/12RI3GvUxV4peBnmxVi0Bzq6wiuQAzSHPslCJ3VSuAO
-         ugLLbOT5x9LEg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id AC4F1C43142;
-        Mon,  8 Aug 2022 14:00:13 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1659967593;
+        bh=Jyjb2iG67Yw0o4r6uFbUuzn6Wo+JpgR0EElmyAz04xw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Js0losBOJTOS1bBK5AQTNsY8OjBEinXKOAfBojiVu0mldpsxBpPRPtkz0MZAFn6hy
+         ic+6CCIIjjFoZW9Hj8PB0DbuedxA+LC1raf4v0sfR20SmsZ36qAYDDajSJvLT8Ifqu
+         9WgdJCvdwXOvpD4eg8PXnsiN2oweSNQ22NZQQ+HXHomycVwar/7bDcqUbaMJtX1t3b
+         z8Bw/P4MjQIzeoa3tTafXcfKmuQN5YTBtO13AwMPzwHXau22PHMYJ9yFMtXSGZ5mHU
+         cGdrcQROfS8ze9rQs1wP26v+ltPzeqeGC26usiEU7YSNlcA+zzVF4VYMSZD2wDTRzt
+         eF4q+6vhEt4eQ==
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>
+Subject: [RFC PATCH bpf-next 00/17] bpf: Add tracing multi link
+Date:   Mon,  8 Aug 2022 16:06:09 +0200
+Message-Id: <20220808140626.422731-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v3 1/2] bpf: use proper target btf when exporting
- attach_btf_obj_id
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165996721370.30475.9351067978243460294.git-patchwork-notify@kernel.org>
-Date:   Mon, 08 Aug 2022 14:00:13 +0000
-References: <20220804201140.1340684-1-sdf@google.com>
-In-Reply-To: <20220804201140.1340684-1-sdf@google.com>
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org, kafai@fb.com
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -59,31 +57,123 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+hi,
+this is another attempt to add batch attachment support for
+trampolines.
 
-This series was applied to bpf/bpf.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+The patchset adds support to create 'multi' trampoline that is
+attached to set of functions represented by BTF IDs.
 
-On Thu,  4 Aug 2022 13:11:39 -0700 you wrote:
-> When attaching to program, the program itself might not be attached
-> to anything (and, hence, might not have attach_btf), so we can't
-> unconditionally use 'prog->aux->dst_prog->aux->attach_btf'.
-> Instead, use bpf_prog_get_target_btf to pick proper target btf:
-> 
-> * when attached to dst_prog, use dst_prog->aux->btf
-> * when attached to kernel btf, use prog->aux->attach_btf
-> 
-> [...]
+Previous post [0] tried to implement multi trampolines overlapping,
+but it turned out too complex, so I got back to simpler rules:
+(we can discuss possible overlapping changes on top this change)
 
-Here is the summary with links:
-  - [bpf-next,v3,1/2] bpf: use proper target btf when exporting attach_btf_obj_id
-    https://git.kernel.org/bpf/bpf/c/6644aabbd897
-  - [bpf-next,v3,2/2] selftests/bpf: Excercise bpf_obj_get_info_by_fd for bpf2bpf
-    https://git.kernel.org/bpf/bpf/c/ffd5cfca5388
+  - multi trampoline can attach on top of existing single trampolines,
+    which creates 2 types of function IDs:
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+      1) single-IDs - functions that are attached within existing
+         single trampolines
+      2) multi-IDs  - functions that were 'not used' and are now
+         taken by new 'multi' trampoline
+
+  - we allow overlapping of 2 'multi' trampolines if they are attached
+    to same IDs
+  - we do now allow any other overlapping of 2 'multi' trampolines
+  - any new 'single' trampoline cannot attach to existing multi-IDs IDs
 
 
+Maybe better explained on following example:
+    
+  - you want to attach program P to functions A,B,C,D,E,F
+    via bpf_trampoline_multi_attach
+
+  - D,E,F already have standard trampoline attached
+
+  - the bpf_trampoline_multi_attach will create new 'multi' trampoline
+    which spans over A,B,C functions and attach program P to single
+    trampolines D,E,F
+
+ -  another program can be attached to A,B,C,D,E,F multi trampoline
+
+  - A,B,C functions are now 'not attachable' by any trampoline
+    until the above 'multi' trampoline is released
+
+ -  D,E,F functions are still attachable by any new trampoline
+
+
+Also now that we have trampoline helpers for function arguments,
+we can just simply use function declaration with maximum arguments
+for any multi trampoline or related single trampoline.
+
+There are couple of things missing in this post (that I know of),
+which I'll add when we agree that this is the way to go:
+
+  - attaching by functions names
+  - cookies support
+  - find out better way of locking trampolines in bpf_trampoline_multi_attach
+    and bpf_trampoline_multi_detach
+  - bpf_tramp_update_set logic of calling multiple times register_ftrace_direct_multi
+    function can be replaced by calling single update ftrace function that I have
+    prototype for, but I will send it out separately to ftrace for review
+  - arm trampoline code changes (won't compile now)
+  - tests for error paths
+
+thanks,
+jirka
+
+
+[0] - https://lore.kernel.org/bpf/20211118112455.475349-1-jolsa@kernel.org/
+---
+Jiri Olsa (17):
+      bpf: Link shimlink directly in trampoline
+      bpf: Replace bpf_tramp_links with bpf_tramp_progs
+      bpf: Store trampoline progs in arrays
+      bpf: Add multi tracing attach types
+      bpf: Add bpf_tramp_id object
+      bpf: Pass image struct to reg/unreg/modify fentry functions
+      bpf: Add support to postpone trampoline update
+      bpf: Factor bpf_trampoline_lookup function
+      bpf: Factor bpf_trampoline_put function
+      bpf: Add support to attach program to multiple trampolines
+      bpf: Add support to create tracing multi link
+      libbpf: Add btf__find_by_glob_kind function
+      libbpf: Add support to create tracing multi link
+      selftests/bpf: Add fentry tracing multi func test
+      selftests/bpf: Add fexit tracing multi func test
+      selftests/bpf: Add fentry/fexit tracing multi func test
+      selftests/bpf: Add mixed tracing multi func test
+
+ arch/x86/net/bpf_jit_comp.c                                    |  38 ++---
+ include/linux/bpf.h                                            |  98 ++++++++----
+ include/linux/trace_events.h                                   |   5 +
+ include/uapi/linux/bpf.h                                       |   7 +
+ kernel/bpf/bpf_struct_ops.c                                    |  30 ++--
+ kernel/bpf/syscall.c                                           |  56 +++++--
+ kernel/bpf/trampoline.c                                        | 723 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--------------
+ kernel/bpf/verifier.c                                          |   8 +-
+ kernel/trace/bpf_trace.c                                       | 240 +++++++++++++++++++++++++++++
+ net/bpf/bpf_dummy_struct_ops.c                                 |  16 +-
+ net/bpf/test_run.c                                             |   2 +
+ tools/include/uapi/linux/bpf.h                                 |   7 +
+ tools/lib/bpf/bpf.c                                            |   7 +
+ tools/lib/bpf/bpf.h                                            |   4 +
+ tools/lib/bpf/btf.c                                            |  41 +++++
+ tools/lib/bpf/btf.h                                            |   3 +
+ tools/lib/bpf/libbpf.c                                         |  91 ++++++++++-
+ tools/lib/bpf/libbpf.h                                         |  14 ++
+ tools/lib/bpf/libbpf.map                                       |   1 +
+ tools/lib/bpf/libbpf_internal.h                                |   1 +
+ tools/testing/selftests/bpf/Makefile                           |   9 +-
+ tools/testing/selftests/bpf/prog_tests/tracing_multi.c         | 158 ++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/tracing_multi_check.c        | 158 ++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/tracing_multi_fentry.c       |  17 +++
+ tools/testing/selftests/bpf/progs/tracing_multi_fentry_fexit.c |  28 ++++
+ tools/testing/selftests/bpf/progs/tracing_multi_fexit.c        |  20 +++
+ tools/testing/selftests/bpf/progs/tracing_multi_mixed.c        |  43 ++++++
+ 27 files changed, 1624 insertions(+), 201 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/tracing_multi.c
+ create mode 100644 tools/testing/selftests/bpf/progs/tracing_multi_check.c
+ create mode 100644 tools/testing/selftests/bpf/progs/tracing_multi_fentry.c
+ create mode 100644 tools/testing/selftests/bpf/progs/tracing_multi_fentry_fexit.c
+ create mode 100644 tools/testing/selftests/bpf/progs/tracing_multi_fexit.c
+ create mode 100644 tools/testing/selftests/bpf/progs/tracing_multi_mixed.c
