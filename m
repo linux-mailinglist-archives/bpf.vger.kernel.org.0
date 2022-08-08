@@ -2,124 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C290D58D04C
-	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 00:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D785A58D057
+	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 00:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244474AbiHHWrh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Aug 2022 18:47:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39256 "EHLO
+        id S244550AbiHHWwo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Aug 2022 18:52:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238982AbiHHWrg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Aug 2022 18:47:36 -0400
-Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C066E1928E
-        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 15:47:32 -0700 (PDT)
-Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-10cf9f5b500so12190032fac.2
-        for <bpf@vger.kernel.org>; Mon, 08 Aug 2022 15:47:32 -0700 (PDT)
+        with ESMTP id S244528AbiHHWwg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Aug 2022 18:52:36 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E561C115;
+        Mon,  8 Aug 2022 15:52:35 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id b96so13186374edf.0;
+        Mon, 08 Aug 2022 15:52:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=Xgr1zcvVw2pumc5i5OyXUSrHvFDN2EKwHe94fGDtFRc=;
-        b=SpIxuRBySHLiJnzlZCqbG6d10oLBSB6+sdgZ2x0xGqg9Qwam4ErXCCwXAKSMe60/qQ
-         LXKVAHne5E6sMcti6T8BzKOmUlluVg+91nYIVsD/0Gx3/1Rh2GpuPw9yoGoFsgMlDreE
-         Hyl7ji9Dex0sOxkL7gyZ6yKDSJMbl0988qMpWHJVC/avb0dk6uwrDgie4XTtnptBThSh
-         Up1jSUYskmN+BE7RpU+76YeIe2h9UEMKds5itTlwRZM2KUpbnrIwFoatEQqlk2f3vpqS
-         XUCZ38YIDNDrGV3oUTW23sBHHU+JWpi09zppu2VYozxXeu5uN48iLjgdfOfOEWtu5/ZA
-         oTxA==
+        bh=dU6sPoZYBSNt4B9LtuHokgv92EsNlfChjuz4gWlCh3c=;
+        b=Exr8JjKVIeUBk4QLNhCoiII5yg41/A8vnhEx4Fc2fGaZ7n1pUJhVU+9lgsCg1XQcCO
+         Wo9Eu2FjgNgTbOepoodzti9lYqnPhlSE0zczGqrbhujlOcI+dxS69w1P9VDJuDtrbzhO
+         SsQrY+dGcuE/N1OElMRnPwP1MbqGnlNbNKIptPM2dnCdVCjNUGlf4cLrnNQ2HvJpByw4
+         hTgvDQ07a6xelXdLS8323V7ibmh8GOH9R+fJe29ZXqhiFpYAAUr9HI75WcWdyHJqqtWb
+         YYsbB9p5eryI33IWmPFwso/ii0ODJi4RLYbp9kZed4q1/Ek68EA5rVfy+UgPWNsHs6+B
+         txfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=Xgr1zcvVw2pumc5i5OyXUSrHvFDN2EKwHe94fGDtFRc=;
-        b=k8kMfybeqbuKiv9f4ROYmpugP2aVxaPCEtIOmE6oUPmIQNkxdN1IgQxgQUcs01g3fq
-         0vzx/lUzol75JZSoii2egMNY0qIKbP1GNPoQixnZjq/Tn+OQf/uKZa8c1i5c/biuUbYH
-         8BziVhTo5lQcbCO8EtdELQpYb1JJqlFqmls3FBkznC8BCGqZoxtmDvUE3k2CH8v0igfc
-         N+CMsamdWkFu6yTY6a4lxRisVPLPmg/Zw9WfnIEEMGn935baoCWRrvHf/68YB3ufeDBi
-         k9dKlgXX0RUSxHpt9dneUbS8yOlH7KYmC1aObbw9DAhOBFI1Qk7Be5ycZe2OxcrEJ3go
-         Tynw==
-X-Gm-Message-State: ACgBeo3rm1gFgY4DX+jHefrSTNI7NHNyXNM+cQocb3fPc0HCVzm7Mn85
-        NHBlllZdOWxgIfXXCr5lcmkizKs2hX/hvbS2OZyz
-X-Google-Smtp-Source: AA6agR4xuYwVmCC3J5R5EIaV2vMNU+sZEdEaDmuaoGD6OS/1cZ5bdac1//FK/Z+H/JjLJ5ZJ0b1/X9olSD/ppX1e9zM=
-X-Received: by 2002:a05:6870:b41e:b0:116:5dc7:192a with SMTP id
- x30-20020a056870b41e00b001165dc7192amr2571672oap.136.1659998852083; Mon, 08
- Aug 2022 15:47:32 -0700 (PDT)
+        bh=dU6sPoZYBSNt4B9LtuHokgv92EsNlfChjuz4gWlCh3c=;
+        b=tXj1qncJzzo3voYxmvrAzV0g3YUF4WXRd+xL7QWYcpvcaF7DJfcto1jTEBJxi2jTgX
+         BIYkQVg7Fu2Fp3uGu7nmVaD6bJl//qW4O0153O+1xaTnCkCT2MlRFBeS0i7408CheYL3
+         DuE/unxmUm69XPA0jzjdS9HEQHmGYCss/XMEP4fgF27TjJJZqjo/s1aEQpWbcxJIhRpw
+         gVTJG6WBBLJzYB6pqmaq+QKgoS6GZsQy92u3pnH9O1b2JI9WnxxsZpNoScEm3Jk6dLQK
+         4HE7Mebq6dld1MBIuaSV3fWgZz36p5dyUdBSiY4qFIEbOyvwMzPMRYXl1WMi1zqgdIq/
+         Tkyw==
+X-Gm-Message-State: ACgBeo0FR1tpFZGRnSChP/6ZpczWZb6LG+wnZBdixLOAhAweZZ/ZQSi1
+        EqGabSDEXwCjZLZpIICcKYkdbX1G31NsObEWV4kN+mBY
+X-Google-Smtp-Source: AA6agR5C2GkrdaY4xKi1nXEKkbJmNhl3u4xaS/qs1ow89CmtKfs2r1fYVlccvUopchgsp+TvJJRs9xiklXAGUZMuT/s=
+X-Received: by 2002:a05:6402:28cb:b0:43b:c6d7:ef92 with SMTP id
+ ef11-20020a05640228cb00b0043bc6d7ef92mr19868759edb.333.1659999153319; Mon, 08
+ Aug 2022 15:52:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220801180146.1157914-1-fred@cloudflare.com> <87les7cq03.fsf@email.froward.int.ebiederm.org>
- <CAHC9VhRpUxyxkPaTz1scGeRm+i4KviQQA7WismOX2q5agzC+DQ@mail.gmail.com>
- <87wnbia7jh.fsf@email.froward.int.ebiederm.org> <CAHC9VhS3udhEecVYVvHm=tuqiPGh034-xPqXYtFjBk23+p-Szg@mail.gmail.com>
- <877d3ia65v.fsf@email.froward.int.ebiederm.org> <87bksu8qs2.fsf@email.froward.int.ebiederm.org>
-In-Reply-To: <87bksu8qs2.fsf@email.froward.int.ebiederm.org>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 8 Aug 2022 18:47:21 -0400
-Message-ID: <CAHC9VhTEwD2y9Witj-1z3e2TC-NGjghQ4KT4Dqf3UOLzDcDc3Q@mail.gmail.com>
-Subject: Re: [PATCH v4 0/4] Introduce security_create_user_ns()
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Frederick Lawler <fred@cloudflare.com>, kpsingh@kernel.org,
-        revest@chromium.org, jackmanb@chromium.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        jmorris@namei.org, serge@hallyn.com,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        shuah@kernel.org, brauner@kernel.org, casey@schaufler-ca.com,
-        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        kernel-team@cloudflare.com, cgzones@googlemail.com,
-        karl@bigbadwolfsecurity.com
+References: <20220807175309.4186342-1-yhs@fb.com>
+In-Reply-To: <20220807175309.4186342-1-yhs@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 8 Aug 2022 15:52:22 -0700
+Message-ID: <CAEf4BzZJdqxOS_8VLX73z94GCUBVW4k6hKo3WGHyv4n-jQ-niQ@mail.gmail.com>
+Subject: Re: [PATCH dwarves] dwarf_loader: encode char type as signed
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 8, 2022 at 3:43 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
-> "Eric W. Biederman" <ebiederm@xmission.com> writes:
-> > Paul Moore <paul@paul-moore.com> writes:
-> >
-> >>> I did provide constructive feedback.  My feedback to his problem
-> >>> was to address the real problem of bugs in the kernel.
-> >>
-> >> We've heard from several people who have use cases which require
-> >> adding LSM-level access controls and observability to user namespace
-> >> creation.  This is the problem we are trying to solve here; if you do
-> >> not like the approach proposed in this patchset please suggest another
-> >> implementation that allows LSMs visibility into user namespace
-> >> creation.
-> >
-> > Please stop, ignoring my feedback, not detailing what problem or
-> > problems you are actually trying to be solved, and threatening to merge
-> > code into files that I maintain that has the express purpose of breaking
-> > my users.
-> >
-> > You just artificially constrained the problems, so that no other
-> > solution is acceptable.  On that basis alone I am object to this whole
-> > approach to steam roll over me and my code.
+On Sun, Aug 7, 2022 at 10:53 AM Yonghong Song <yhs@fb.com> wrote:
 >
-> If you want an example of what kind of harm it can cause to introduce a
-> failure where no failure was before I invite you to look at what
-> happened with sendmail when setuid was modified to fail, when changing
-> the user of a process would cause RLIMIT_NPROC to be exceeded.
+> Currently, the pahole treats 'char' or 'signed char' type
+> as unsigned in BTF generation. The following is an example,
+>   $ cat t.c
+>   signed char a;
+>   char b;
+>   $ clang -O2 -g -c t.c
+>   $ pahole -JV t.o
+>   ...
+>   [1] INT signed char size=1 nr_bits=8 encoding=(none)
+>   [2] INT char size=1 nr_bits=8 encoding=(none)
+> In the above encoding '(none)' implies unsigned type.
+>
+> But if the same program is compiled with bpf target,
+>   $ clang -target bpf -O2 -g -c t.c
+>   $ bpftool btf dump file t.o
+>   [1] INT 'signed char' size=1 bits_offset=0 nr_bits=8 encoding=SIGNED
+>   [2] VAR 'a' type_id=1, linkage=global
+>   [3] INT 'char' size=1 bits_offset=0 nr_bits=8 encoding=SIGNED
+>   [4] VAR 'b' type_id=3, linkage=global
+>   [5] DATASEC '.bss' size=0 vlen=2
+>           type_id=2 offset=0 size=1 (VAR 'a')
+>           type_id=4 offset=0 size=1 (VAR 'b')
+> the 'char' and 'signed char' are encoded as SIGNED integers.
+>
+> Encode 'char' and 'signed char' as SIGNED should be a right to
+> do and it will be consistent with bpf implementation.
+>
+> With this patch,
+>   $ pahole -JV t.o
+>   ...
+>   [1] INT signed char size=1 nr_bits=8 encoding=SIGNED
+>   [2] INT char size=1 nr_bits=8 encoding=SIGNED
+>
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
 
-I think we are all familiar with the sendmail capabilities bug and the
-others like it, but using that as an excuse to block additional access
-controls seems very weak.  The Linux Kernel is very different from
-when the sendmail bug hit (what was that, ~20 years ago?), with
-advancements in capabilities and other discretionary controls, as well
-as mandatory access controls which have enabled Linux to be certified
-through a number of third party security evaluations.
+LGTM.
 
-> I am not arguing that what you are proposing is that bad but unexpected
-> failures cause real problems, and at a minimum that needs a better
-> response than: "There is at least one user that wants a failure here".
+Is there a plan to also add CHAR encoding bit?
 
-Let me fix that for you: "There are multiple users who want to have
-better visibility and access control for user namespace creation."
 
---
-paul-moore.com
+>  dwarf_loader.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/dwarf_loader.c b/dwarf_loader.c
+> index d892bc3..c2ad2a0 100644
+> --- a/dwarf_loader.c
+> +++ b/dwarf_loader.c
+> @@ -560,7 +560,7 @@ static struct base_type *base_type__new(Dwarf_Die *die, struct cu *cu, struct co
+>                 bt->bit_size = attr_numeric(die, DW_AT_byte_size) * 8;
+>                 uint64_t encoding = attr_numeric(die, DW_AT_encoding);
+>                 bt->is_bool = encoding == DW_ATE_boolean;
+> -               bt->is_signed = encoding == DW_ATE_signed;
+> +               bt->is_signed = (encoding == DW_ATE_signed) || (encoding == DW_ATE_signed_char);
+>                 bt->is_varargs = false;
+>                 bt->name_has_encoding = true;
+>                 bt->float_type = encoding_to_float_type(encoding);
+> --
+> 2.30.2
+>
