@@ -2,157 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DA0758C43A
-	for <lists+bpf@lfdr.de>; Mon,  8 Aug 2022 09:41:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C1A258C4BF
+	for <lists+bpf@lfdr.de>; Mon,  8 Aug 2022 10:12:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232190AbiHHHlC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Aug 2022 03:41:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47316 "EHLO
+        id S242060AbiHHIMG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Aug 2022 04:12:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239232AbiHHHkx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Aug 2022 03:40:53 -0400
-Received: from chinatelecom.cn (prt-mail.chinatelecom.cn [42.123.76.221])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CE87EA188;
-        Mon,  8 Aug 2022 00:40:50 -0700 (PDT)
-HMM_SOURCE_IP: 172.18.0.188:35708.210023178
-HMM_ATTACHE_NUM: 0000
-HMM_SOURCE_TYPE: SMTP
-Received: from clientip-182.42.224.56 (unknown [172.18.0.188])
-        by chinatelecom.cn (HERMES) with SMTP id F276528009E;
-        Mon,  8 Aug 2022 15:40:40 +0800 (CST)
-X-189-SAVE-TO-SEND: sunshouxin@chinatelecom.cn
-Received: from  ([172.18.0.188])
-        by app0023 with ESMTP id b08883f68b494bb590f1e44e66e496b3 for huyd12@chinatelecom.cn;
-        Mon, 08 Aug 2022 15:40:46 CST
-X-Transaction-ID: b08883f68b494bb590f1e44e66e496b3
-X-Real-From: sunshouxin@chinatelecom.cn
-X-Receive-IP: 172.18.0.188
-X-MEDUSA-Status: 0
-Sender: sunshouxin@chinatelecom.cn
-Subject: Re: [PATCH] net:bonding:support balance-alb interface with vlan to
- bridge
-To:     Jay Vosburgh <jay.vosburgh@canonical.com>
-Cc:     vfalico@gmail.com, andy@greyhouse.net, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        huyd12@chinatelecom.cn
-References: <20220805074556.70297-1-sunshouxin@chinatelecom.cn>
- <3917.1659727127@famine>
-From:   "sunshouxin@chinatelecom.cn" <sunshouxin@chinatelecom.cn>
-Message-ID: <e557c459-3337-6e5e-d6b5-28a89513b919@chinatelecom.cn>
-Date:   Mon, 8 Aug 2022 15:40:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        with ESMTP id S235829AbiHHIMF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Aug 2022 04:12:05 -0400
+Received: from zju.edu.cn (mail.zju.edu.cn [61.164.42.155])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4CCD610FE0;
+        Mon,  8 Aug 2022 01:12:03 -0700 (PDT)
+Received: from localhost.localdomain (unknown [10.12.77.33])
+        by mail-app2 (Coremail) with SMTP id by_KCgC3v_c6xfBiCvV1Ag--.31789S4;
+        Mon, 08 Aug 2022 16:11:38 +0800 (CST)
+From:   Lin Ma <linma@zju.edu.cn>
+To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Lin Ma <linma@zju.edu.cn>
+Subject: [PATCH v0] idb: Add rtnl_lock to avoid data race
+Date:   Mon,  8 Aug 2022 16:10:50 +0800
+Message-Id: <20220808081050.25229-1-linma@zju.edu.cn>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-In-Reply-To: <3917.1659727127@famine>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-CM-TRANSID: by_KCgC3v_c6xfBiCvV1Ag--.31789S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7KF1rJr1kWFWDtF18Wr1DGFg_yoW8Ww4kpF
+        s8GryxKr10qF47WaykJ3W8AFyYga1qy34rG3W7uw4ruan8JryjvrWUKFyrZ34FkrWru39I
+        vr4Yvw4fAFyDArJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvm1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
+        c2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2
+        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
+        UI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+The commit c23d92b80e0b ("igb: Teardown SR-IOV before
+unregister_netdev()") places the unregister_netdev() call after the
+igb_disable_sriov() call to avoid functionality issue.
 
-在 2022/8/6 3:18, Jay Vosburgh 写道:
-> Sun Shouxin <sunshouxin@chinatelecom.cn> wrote:
->
->> In my test, balance-alb bonding with two slaves eth0 and eth1,
->> and then Bond0.150 is created with vlan id attached bond0.
->> After adding bond0.150 into one linux bridge, I noted that Bond0,
->> bond0.150 and  bridge were assigned to the same MAC as eth0.
->> Once bond0.150 receives a packet whose dest IP is bridge's
->> and dest MAC is eth1's, the linux bridge cannot process it as expected.
->> The patch fix the issue, and diagram as below:
->>
->> eth1(mac:eth1_mac)--bond0(balance-alb,mac:eth0_mac)--eth0(mac:eth0_mac)
->>       		      |
->>       		   bond0.150(mac:eth0_mac)
->>       		      |
->>       	           bridge(ip:br_ip, mac:eth0_mac)--other port
-> 	In principle, since 567b871e5033, the bond alb mode shouldn't be
-> load balancing incoming traffic for an IP address arriving via a bridge
-> configured above the bond.
->
-> 	Looking at it, there's logic in rlb_arp_xmit to exclude the
-> bridge-over-bond case, but it relies on the MAC of traffic arriving via
-> the bridge being different from the bond's MAC.  I suspect this is
-> because 567b871e5033 was intended to manage traffic originating from
-> other bridge ports, and didn't consider the case of the bridge itself
-> when the bridge MAC equals the bond MAC.
->
-> 	The bridge MAC will equal the bond MAC if the bond is the first
-> port added to the bridge, because the bridge will normally adopt the MAC
-> of the first port added (unless manually set to something else).
->
-> 	I think the correct fix here is to update the test in
-> rlb_arp_xmit to properly exclude all bridge traffic (i.e., handle the
-> bridge MAC == bond MAC case), not to alter the destination MAC address
-> in incoming traffic.
->
-> 	-J
+However, it introduces several race conditions when detaching a device.
+For example, when .remove() is called, the below interleaving leads to
+use-after-free.
 
+ (FREE from device detaching)      |   (USE from netdev core)
+igb_remove                         |  igb_ndo_get_vf_config
+ igb_disable_sriov                 |  vf >= adapter->vfs_allocated_count?
+  kfree(adapter->vf_data)          |
+  adapter->vfs_allocated_count = 0 |
+                                   |    memcpy(... adapter->vf_data[vf]
 
-Thanks your warm instruction, I'll resend patch as your suggestion.
+In short, there are data races between read and write of
+adapter->vfs_allocated_count. To fix this, we can add a new lock to
+protect members in adapter object. However, we cau use the existing
+rtnl_lock just as other drivers do. (See how dpaa2_eth_disconnect_mac is
+protected in dpaa2_eth_remove function). This patch adopts similar
+fixes.
 
-   -Sun
+Fixes: c23d92b80e0b ("igb: Teardown SR-IOV before unregister_netdev()")
+Signed-off-by: Lin Ma <linma@zju.edu.cn>
+---
+ drivers/net/ethernet/intel/igb/igb_main.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
+diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
+index d8b836a85cc3..e86ea4de05f8 100644
+--- a/drivers/net/ethernet/intel/igb/igb_main.c
++++ b/drivers/net/ethernet/intel/igb/igb_main.c
+@@ -3814,7 +3814,9 @@ static void igb_remove(struct pci_dev *pdev)
+ 	igb_release_hw_control(adapter);
+ 
+ #ifdef CONFIG_PCI_IOV
++	rtnl_lock();
+ 	igb_disable_sriov(pdev);
++	rtnl_unlock();
+ #endif
+ 
+ 	unregister_netdev(netdev);
+-- 
+2.36.1
 
->
->> Suggested-by: Hu Yadi <huyd12@chinatelecom.cn>
->> Signed-off-by: Sun Shouxin <sunshouxin@chinatelecom.cn>
->> ---
->> drivers/net/bonding/bond_main.c | 20 ++++++++++++++++++++
->> 1 file changed, 20 insertions(+)
->>
->> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
->> index e75acb14d066..6210a9c7ca76 100644
->> --- a/drivers/net/bonding/bond_main.c
->> +++ b/drivers/net/bonding/bond_main.c
->> @@ -1537,9 +1537,11 @@ static rx_handler_result_t bond_handle_frame(struct sk_buff **pskb)
->> 	struct sk_buff *skb = *pskb;
->> 	struct slave *slave;
->> 	struct bonding *bond;
->> +	struct net_device *vlan;
->> 	int (*recv_probe)(const struct sk_buff *, struct bonding *,
->> 			  struct slave *);
->> 	int ret = RX_HANDLER_ANOTHER;
->> +	unsigned int headroom;
->>
->> 	skb = skb_share_check(skb, GFP_ATOMIC);
->> 	if (unlikely(!skb))
->> @@ -1591,6 +1593,24 @@ static rx_handler_result_t bond_handle_frame(struct sk_buff **pskb)
->> 				  bond->dev->addr_len);
->> 	}
->>
->> +	if (skb_vlan_tag_present(skb)) {
->> +		if (BOND_MODE(bond) == BOND_MODE_ALB && skb->pkt_type == PACKET_HOST) {
->> +			vlan = __vlan_find_dev_deep_rcu(bond->dev, skb->vlan_proto,
->> +							skb_vlan_tag_get(skb) & VLAN_VID_MASK);
->> +			if (vlan) {
->> +				if (vlan->priv_flags & IFF_BRIDGE_PORT) {
->> +					headroom = skb->data - skb_mac_header(skb);
->> +					if (unlikely(skb_cow_head(skb, headroom))) {
->> +						kfree_skb(skb);
->> +						return RX_HANDLER_CONSUMED;
->> +					}
->> +					bond_hw_addr_copy(eth_hdr(skb)->h_dest, vlan->dev_addr,
->> +							  vlan->addr_len);
->> +				}
->> +			}
->> +		}
->> +	}
->> +
->> 	return ret;
->> }
->>
->> -- 
->> 2.27.0
->>
-> ---
-> 	-Jay Vosburgh, jay.vosburgh@canonical.com
