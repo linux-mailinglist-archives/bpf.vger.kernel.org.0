@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 540D858D072
-	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 01:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BFE758D077
+	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 01:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232384AbiHHXZX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Aug 2022 19:25:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54894 "EHLO
+        id S244523AbiHHX0O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Aug 2022 19:26:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229842AbiHHXZW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Aug 2022 19:25:22 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6982A6258
-        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 16:25:19 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id k26so19355110ejx.5
-        for <bpf@vger.kernel.org>; Mon, 08 Aug 2022 16:25:19 -0700 (PDT)
+        with ESMTP id S244528AbiHHX0N (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Aug 2022 19:26:13 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05ADE167E6
+        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 16:26:12 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id qn6so7521857ejc.11
+        for <bpf@vger.kernel.org>; Mon, 08 Aug 2022 16:26:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=GKkTprBhPuCPHHHnb6WAlGgtQzVBAZdL/pEHv5Ea494=;
-        b=TgHe9QXNoAtM5AHNr1Mt+nvcdZoeRZLj+Unc7QWWvKG72yQH1vHhvU2qpOM2BKVmNZ
-         Cce5P83kZfqIJc6pD7+PSrVgNmhOrP0yYuTYjLgHZrikYd3+OJYJoRksq8j4IrDrIyii
-         hnbhaAvjjo0he/vxGIYa9gS3PGtQqyK4hx1XPSvM8XrJvEHTSEJ6W1jOk6GK6XtqFQJ1
-         luoJ/Ti7lqBIe4eD8n4qdtcFrqE4bCWisxgOBm08B44BSDvnwg8ZilICRTn4dRcJnApq
-         ocpdLmp7PO6c08BFp+2WX86c8+jqcgHsbcVi5uoRJ6q7BQKKulajYwAGdpOTjNrE83t4
-         ibmA==
+        bh=XXPyRo3qEZ9cuycZhN6dfSJJGfe7DaOHg2cr3cfJ3BA=;
+        b=NJTPngWb19kFCBrzbSCjGoHEpMGrqk1kVtbJS85Y0tnpNs9uPH1itkv6jIXo3hNhAd
+         gtTzyEblkcupwfS2sVhBjWHrEc93sOCFmEjLH9xzuX13Yvs+geyD2IZ5QRXlS/8ArZyt
+         DAE0R7pX34nxYyaUiSIfZ/kuVDPqYyCEKlmaq2l9sk9ujUAJFxe8r86AKuvHEyvfoIfN
+         PypTZw3IH0X63+Q/fMuB1Oq/R5/mhIQTtbpETOHYzMPa67CQ6XvUKoTek073jbSUPxzo
+         fCz3lrd6HTVHdmckV3FGk0PSt5NF+3ja9Nnfw8fcysjBGY2Mi2bxcFB9zgg77Q/V9EbS
+         JzeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=GKkTprBhPuCPHHHnb6WAlGgtQzVBAZdL/pEHv5Ea494=;
-        b=KbZnqEHBroWjq/EsXO1OQLjsQDm1YPX2+IB9/5XZViyPf37z9cIIncgT/25ZOgX1UD
-         bzWMTNqtNKj7DsDa8ut5XEQD7N8yM9BdqI3nmTRmmaDb2o/oBqK7H8zFATE+lFs1YHD+
-         GI59emzCIJzECFtirJ06f0MEJ7cnDIcfLgh/Zp+rYjPbY0ypFZpO753wY79Qlv5TatuK
-         qFYYiui8ekp6m1OEOiiiVrwdUiqD8iEl3QyA5OkD1XJWdV41BttpgI6pKXYfJMUX/VTb
-         RSjY800egtyWvVtcLLUjqkjCy6J6LQhAbgTZeut9o4QDua3ISfTNCrHTVdDAShm/ykGe
-         WSpA==
-X-Gm-Message-State: ACgBeo3y1YF2s44k08y9Iin+inC9MNd60+/SLeRWus7vBIL809ekHB8/
-        HgSk4HFekm7tHWRjfb79mxYzMjBWj6pcGu7ZoSs=
-X-Google-Smtp-Source: AA6agR5B0SUmELnfGiEULoNiSCejbfdSrlNK6CoqLru8wd4etZrM6AAdbbBJ9BK2O3wqGRKV5msE3z5zmYt/K7+7mbE=
-X-Received: by 2002:a17:907:3d90:b0:730:a937:fb04 with SMTP id
- he16-20020a1709073d9000b00730a937fb04mr15568165ejc.176.1660001117957; Mon, 08
- Aug 2022 16:25:17 -0700 (PDT)
+        bh=XXPyRo3qEZ9cuycZhN6dfSJJGfe7DaOHg2cr3cfJ3BA=;
+        b=QYe6yW0FeVVQehosw3k5zpG1cn2rmdhbGXEy1WGR6OydNdPUXltZYc1JyRh+7NTFMh
+         Jtr0R/RTXP1AfSnPZnY9M3x7SHL2ZnPoyCg9p1/5op6/bm+Yfw61kp6f3Olq+zdRGL4N
+         mCCxw6YgjI70Bxxur6CqlHagZY1qrjTBEZMtiITd6D9pHDaH4QAAUO8ZbKwsuUX8cAWY
+         1YHwCA+YuDTYoIuOLjO2gkMb68Z70LvGFB+cyGUu6w1lzXNVAKNjluGHzYNuE54piMO0
+         gqCUBwqogV8D/QPlUYB7N7wpwMqEd7TKgUh/005W2fSR65LmQlEw8TJQH2/2pBeyXOEr
+         JYLw==
+X-Gm-Message-State: ACgBeo3uUGFgu27oggw09RV+ER0pp89YyQgHnkMZFssYDJn/k6dBjBAJ
+        OX/POds/th3rAvOc4RFNaKpadBPbl9abSRbmvD8=
+X-Google-Smtp-Source: AA6agR5ZhxQfLErv+qalcLvYLzlBq1CqQ3hP9x53sw4QxTX42viclQMr9tC4JlBIzfj0+8nJu2vQW44vV+Ys3zt1nl8=
+X-Received: by 2002:a17:907:3e08:b0:730:d55c:1b26 with SMTP id
+ hp8-20020a1709073e0800b00730d55c1b26mr15002005ejc.226.1660001170588; Mon, 08
+ Aug 2022 16:26:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220807175111.4178812-1-yhs@fb.com> <20220807175121.4179410-1-yhs@fb.com>
-In-Reply-To: <20220807175121.4179410-1-yhs@fb.com>
+References: <20220807175111.4178812-1-yhs@fb.com> <20220807175126.4179877-1-yhs@fb.com>
+In-Reply-To: <20220807175126.4179877-1-yhs@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 8 Aug 2022 16:25:06 -0700
-Message-ID: <CAEf4BzaJydVpt+H6abR6udjcQ5Scu07W+LLQyo7jC9et9T=ZOA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] bpf: Perform necessary sign/zero extension
- for kfunc return values
+Date:   Mon, 8 Aug 2022 16:25:59 -0700
+Message-ID: <CAEf4BzY7xdJx9uEGA-_Jx+VOnz2EdGrjyLrHENp-SsG2U+zPGw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: Add tests with u8/s16 kfunc
+ return types
 To:     Yonghong Song <yhs@fb.com>
 Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -70,71 +70,74 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Sun, Aug 7, 2022 at 10:51 AM Yonghong Song <yhs@fb.com> wrote:
 >
-> Tejun reported a bpf program kfunc return value mis-handling which
-> may cause incorrect result. The following is an example to show
-> the problem.
->   $ cat t.c
->   unsigned char bar();
->   int foo() {
->         if (bar() != 10) return 0; else return 1;
->   }
->   $ clang -target bpf -O2 -c t.c
->   $ llvm-objdump -d t.o
+> Add two program tests with kfunc return types u8/s16.
+> With previous patch, xlated codes looks like below:
 >   ...
->   0000000000000000 <foo>:
->        0:       85 10 00 00 ff ff ff ff call -1
->        1:       bf 01 00 00 00 00 00 00 r1 = r0
->        2:       b7 00 00 00 01 00 00 00 r0 = 1
->        3:       15 01 01 00 0a 00 00 00 if r1 == 10 goto +1 <LBB0_2>
->        4:       b7 00 00 00 00 00 00 00 r0 = 0
+>   ; return bpf_kfunc_call_test4((struct sock *)sk, (1 << 16) + 0xff00, (1 << 16) + 0xff);
+>      5: (bf) r1 = r0
+>      6: (b4) w2 = 130816
+>      7: (b4) w3 = 65791
+>      8: (85) call bpf_kfunc_call_test4#8931696
+>      9: (67) r0 <<= 48
+>     10: (c7) r0 s>>= 48
+>     11: (bc) w6 = w0
+>   ; }
+>     12: (bc) w0 = w6
+>     13: (95) exit
+>   ...
+>   ; return bpf_kfunc_call_test5((struct sock *)sk, (1 << 8) + 1, (1 << 8) + 2);
+>      5: (bf) r1 = r0
+>      6: (b4) w2 = 257
+>      7: (b4) w3 = 258
+>      8: (85) call bpf_kfunc_call_test5#8931712
+>      9: (67) r0 <<= 56
+>     10: (77) r0 >>= 56
+>     11: (bc) w6 = w0
+>   ; }
+>     12: (bc) w0 = w6
+>     13: (95) exit
 >
->   0000000000000028 <LBB0_2>:
->        5:       95 00 00 00 00 00 00 00 exit
->   $
+> For return type s16, proper sign extension for the return value is done
+> for kfunc bpf_kfunc_call_test4(). For return type s8, proper zero
+> extension for the return value is done for bpf_kfunc_call_test5().
 >
-> In the above example, the return type for bar() is 'unsigned char'.
-> But in the disassembly code, the whole register 'r1' is used to
-> compare to 10 without truncating upper 56 bits.
+> Without the previous patch, the test kfunc_call will fail with
+>   ...
+>   test_main:FAIL:test4-retval unexpected test4-retval: actual 196607 != expected 4294967295
+>   ...
+>   test_main:FAIL:test5-retval unexpected test5-retval: actual 515 != expected 3
 >
-> If function bar() is implemented as a bpf function, everything
-> should be okay since bpf ABI will make sure the caller do
-> proper truncation of upper 56 bits.
->
-> But if function bar() is implemented as a non-bpf kfunc,
-> there could a mismatch between bar() implementation and bpf program.
-> For example, if the host arch is x86_64, the bar() function
-> may just put the return value in lower 8-bit subregister and all
-> upper 56 bits could contain garbage. This is not a problem
-> if bar() is called in x86_64 context as the caller will use
-> %al to get the value.
->
-> But this could be a problem if bar() is called in bpf context
-> and there is a mismatch expectation between bpf and native architecture.
-> Currently, bpf programs use the default llvm ABI ([1], function
-> isPromotableIntegerTypeForABI()) such that if an integer type size
-> is less than int type size, it is assumed proper sign or zero
-> extension has been done to the return value. There will be a problem
-> if the kfunc return value type is u8/s8/u16/s16.
-
-Reading this I was still confused how (and whether) s32/u32 returns
-are going to be handled correctly, especially on non-cpuv3 BPF object
-code. So I played with this a bit and Clang does generate explicit <<
-and >>/>>= shifts as expected. It might be worth it emphasizing that
-for 32-bit returns Clang will generate explicit shifts?
-
->
-> This patch intends to address this issue by doing proper sign or zero
-> extension for the kfunc return value before it is used later.
->
->  [1] https://github.com/llvm/llvm-project/blob/main/clang/lib/CodeGen/TargetInfo.cpp
->
-> Reported-by: Tejun Heo <tj@kernel.org>
 > Signed-off-by: Yonghong Song <yhs@fb.com>
 > ---
->  include/linux/bpf.h   |  2 ++
->  kernel/bpf/btf.c      |  9 +++++++++
->  kernel/bpf/verifier.c | 35 +++++++++++++++++++++++++++++++++--
->  3 files changed, 44 insertions(+), 2 deletions(-)
+>  net/bpf/test_run.c                            | 12 +++++++
+>  .../selftests/bpf/prog_tests/kfunc_call.c     | 10 ++++++
+>  .../selftests/bpf/progs/kfunc_call_test.c     | 32 +++++++++++++++++++
+>  3 files changed, 54 insertions(+)
 >
+> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+> index cbc9cd5058cb..3a17ab4107f5 100644
+> --- a/net/bpf/test_run.c
+> +++ b/net/bpf/test_run.c
+> @@ -551,6 +551,16 @@ struct sock * noinline bpf_kfunc_call_test3(struct sock *sk)
+>         return sk;
+>  }
+>
+> +s16 noinline bpf_kfunc_call_test4(struct sock *sk, u32 a, u32 b)
+> +{
+> +       return a + b;
+> +}
+> +
+> +u8 noinline bpf_kfunc_call_test5(struct sock *sk, u32 a, u32 b)
+> +{
+> +       return a + b;
+> +}
+
+Is there any upside of adding this to net/bpf/test_run.c instead of
+defining it in bpf_testmod?
+
+> +
+>  struct prog_test_member1 {
+>         int a;
+>  };
 
 [...]
