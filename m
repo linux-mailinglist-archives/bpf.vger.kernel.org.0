@@ -2,104 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C1A258C4BF
-	for <lists+bpf@lfdr.de>; Mon,  8 Aug 2022 10:12:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B900558C50C
+	for <lists+bpf@lfdr.de>; Mon,  8 Aug 2022 10:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242060AbiHHIMG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Aug 2022 04:12:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42984 "EHLO
+        id S234589AbiHHIuS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Aug 2022 04:50:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235829AbiHHIMF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Aug 2022 04:12:05 -0400
-Received: from zju.edu.cn (mail.zju.edu.cn [61.164.42.155])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4CCD610FE0;
-        Mon,  8 Aug 2022 01:12:03 -0700 (PDT)
-Received: from localhost.localdomain (unknown [10.12.77.33])
-        by mail-app2 (Coremail) with SMTP id by_KCgC3v_c6xfBiCvV1Ag--.31789S4;
-        Mon, 08 Aug 2022 16:11:38 +0800 (CST)
-From:   Lin Ma <linma@zju.edu.cn>
-To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        with ESMTP id S230127AbiHHIuR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Aug 2022 04:50:17 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D2D6103E;
+        Mon,  8 Aug 2022 01:50:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 036A9B80B2B;
+        Mon,  8 Aug 2022 08:50:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 747FFC433D7;
+        Mon,  8 Aug 2022 08:50:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1659948613;
+        bh=vTtW7Jpsz7mxLP/cz0pwqd+V3tCzbGxdXCK1pCfio8c=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=IHN2ifkmz3TRcRUmmp6YgRvs7IN3B7lTD07ayr6TR74migWXXf84gFKEXt2Ha91tI
+         aB39o+XpeonJLzedfagRV0doTLxEc1kijTFQa1rLfZt74YST8eOrN4Nj5B3dyBHhl3
+         Qs42DQrnBeQ5MtA+Mr2IywBBtpE8OihhMU6qmJ7JR70gRs60jjktpDaD4U51hsk69F
+         ecNNtGIYz77A4+miHCA8JxzMfz7jp+zVMr0qnaI2/rVQCHaPKCRkkG6Glg8+UV+Cq0
+         NiHLyx/dtPwaRsRap/5uxhiLQgbMfd24RPrIBDqn09bwc0PN+wWSXOlMl6kwKY7s5M
+         QeA4cxj8cvxAw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5523AC43140;
+        Mon,  8 Aug 2022 08:50:13 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] virtio_net: fix memory leak inside XPD_TX with mergeable
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <165994861334.797.7508341498448348184.git-patchwork-notify@kernel.org>
+Date:   Mon, 08 Aug 2022 08:50:13 +0000
+References: <20220804063248.104523-1-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220804063248.104523-1-xuanzhuo@linux.alibaba.com>
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     netdev@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
         davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
         pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
         hawk@kernel.org, john.fastabend@gmail.com,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Lin Ma <linma@zju.edu.cn>
-Subject: [PATCH v0] idb: Add rtnl_lock to avoid data race
-Date:   Mon,  8 Aug 2022 16:10:50 +0800
-Message-Id: <20220808081050.25229-1-linma@zju.edu.cn>
-X-Mailer: git-send-email 2.36.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: by_KCgC3v_c6xfBiCvV1Ag--.31789S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7KF1rJr1kWFWDtF18Wr1DGFg_yoW8Ww4kpF
-        s8GryxKr10qF47WaykJ3W8AFyYga1qy34rG3W7uw4ruan8JryjvrWUKFyrZ34FkrWru39I
-        vr4Yvw4fAFyDArJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvm1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E
-        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
-        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
-        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
-        c2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r
-        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
-        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
-        x0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2
-        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
-        UI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The commit c23d92b80e0b ("igb: Teardown SR-IOV before
-unregister_netdev()") places the unregister_netdev() call after the
-igb_disable_sriov() call to avoid functionality issue.
+Hello:
 
-However, it introduces several race conditions when detaching a device.
-For example, when .remove() is called, the below interleaving leads to
-use-after-free.
+This patch was applied to netdev/net.git (master)
+by David S. Miller <davem@davemloft.net>:
 
- (FREE from device detaching)      |   (USE from netdev core)
-igb_remove                         |  igb_ndo_get_vf_config
- igb_disable_sriov                 |  vf >= adapter->vfs_allocated_count?
-  kfree(adapter->vf_data)          |
-  adapter->vfs_allocated_count = 0 |
-                                   |    memcpy(... adapter->vf_data[vf]
+On Thu,  4 Aug 2022 14:32:48 +0800 you wrote:
+> When we call xdp_convert_buff_to_frame() to get xdpf, if it returns
+> NULL, we should check if xdp_page was allocated by xdp_linearize_page().
+> If it is newly allocated, it should be freed here alone. Just like any
+> other "goto err_xdp".
+> 
+> Fixes: 44fa2dbd4759 ("xdp: transition into using xdp_frame for ndo_xdp_xmit")
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> 
+> [...]
 
-In short, there are data races between read and write of
-adapter->vfs_allocated_count. To fix this, we can add a new lock to
-protect members in adapter object. However, we cau use the existing
-rtnl_lock just as other drivers do. (See how dpaa2_eth_disconnect_mac is
-protected in dpaa2_eth_remove function). This patch adopts similar
-fixes.
+Here is the summary with links:
+  - [net] virtio_net: fix memory leak inside XPD_TX with mergeable
+    https://git.kernel.org/netdev/net/c/7a542bee27c6
 
-Fixes: c23d92b80e0b ("igb: Teardown SR-IOV before unregister_netdev()")
-Signed-off-by: Lin Ma <linma@zju.edu.cn>
----
- drivers/net/ethernet/intel/igb/igb_main.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
-index d8b836a85cc3..e86ea4de05f8 100644
---- a/drivers/net/ethernet/intel/igb/igb_main.c
-+++ b/drivers/net/ethernet/intel/igb/igb_main.c
-@@ -3814,7 +3814,9 @@ static void igb_remove(struct pci_dev *pdev)
- 	igb_release_hw_control(adapter);
- 
- #ifdef CONFIG_PCI_IOV
-+	rtnl_lock();
- 	igb_disable_sriov(pdev);
-+	rtnl_unlock();
- #endif
- 
- 	unregister_netdev(netdev);
+You are awesome, thank you!
 -- 
-2.36.1
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
