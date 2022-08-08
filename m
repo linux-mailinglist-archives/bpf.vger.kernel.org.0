@@ -2,151 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24CD258CD6A
-	for <lists+bpf@lfdr.de>; Mon,  8 Aug 2022 20:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 185CE58CDAA
+	for <lists+bpf@lfdr.de>; Mon,  8 Aug 2022 20:33:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243357AbiHHSPD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Aug 2022 14:15:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46930 "EHLO
+        id S243228AbiHHSdl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Aug 2022 14:33:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230062AbiHHSPC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Aug 2022 14:15:02 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2345012AB3;
-        Mon,  8 Aug 2022 11:15:01 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id gk3so18026456ejb.8;
-        Mon, 08 Aug 2022 11:15:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TPx8e2WZ5x3O6RzJ0FBYuElFwi40nMqF3zJj8LRx/uM=;
-        b=AeoyWAKH3SpNET04KSZr8c4od/fZuq6fXzbg3b1+sLGHGviz0lzCv3VWkC12aoxiPb
-         YdyiIsZHoLrernC7n0pQkfXj5fw+W3TRfZ0qDDTEqH9oC1YfxHjZ5v0Ot5CXdjAEhb70
-         QmTja47co3PpiIoksu2rXu22OhMF+T1Tc1kr5ThVNtkFRh3grGc0y/LApFcJccd3SZrx
-         C4SRsj2UW05KGXhdLOMuWrviH/qo0WQzwklDw5v8kLtgJ+4g5kA9CKm3vAQHlNPjhJ5E
-         QhOZNVra0D6NXhVMPlqpL9jIJOxywliKOWzTZ6y9L8nMS3nI53uIPTsnKapK832aN3bY
-         6U9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TPx8e2WZ5x3O6RzJ0FBYuElFwi40nMqF3zJj8LRx/uM=;
-        b=NhtqnTytynVhfYIMBcdNkmnuEYIUh2QRk9oCToLkDNBKju2pjm/Eky5sVeMF2cPADz
-         yBsoGif1JKnOCXkJ3sBSCJ9lb+jM7vcf9CUnA2vheMoRHzzGHBrGgnssVbYEFFklXwV5
-         Bqr6+uTOlBke+UDMqH1kkYG1DEk7gaLztw+PIowsZo7myMXS+AGbZhkj9h4hdCjcGSFF
-         LHfMtFEL6HEOu1tGXs282cu8loM1oN6RB4vcW9dtO5Ochpcnc9sigZLjakJ6ropjAp+5
-         Gvyxdf4Pk5/jZf8slC9s0MqxbYiJ+ydnbATXXAkWxjByqEUSmOqr47jvkUCZPKknRW3p
-         l0Hw==
-X-Gm-Message-State: ACgBeo1wouW4Ufp4VemMRVrGp3jCbfs2NVcIwAfwmlK+f8YXgdF7cbj3
-        F0eZ3eAuMr+qs6hOgMNO3wETRaA0+bXWwnTtJsrzqDjHi+0=
-X-Google-Smtp-Source: AA6agR5h3XhlvNoxhWzOgR+EtkZun8KF7u+zK+88U74khRnQcS1xjgGa4EMWaBY/RgQDnu4R4P0prGvyQa09K/CkQ/Y=
-X-Received: by 2002:a17:907:8687:b0:730:7c7b:b9ce with SMTP id
- qa7-20020a170907868700b007307c7bb9cemr14127780ejc.656.1659982499687; Mon, 08
- Aug 2022 11:14:59 -0700 (PDT)
+        with ESMTP id S235278AbiHHSdj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Aug 2022 14:33:39 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B7D4DE82;
+        Mon,  8 Aug 2022 11:33:39 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0062F61245;
+        Mon,  8 Aug 2022 18:33:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F40CC433D7;
+        Mon,  8 Aug 2022 18:33:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1659983618;
+        bh=D2XW8J2IVrVhTm9qso0bSI1eB34b3POF3YjI53CNJj4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m9TCF1LblgMJD9S1VkUE1pBE+IEXHKG5gTnWhHoVjYzgmUxhwaysmPAQvRofn/80w
+         RyDEbWSMcg77uqD8/ygAOFo6i+JcrqbhmrB+sIHzc4iFNGLTsy7Bhuq08Txqm92O8j
+         +jsZ13tpScJr+DjRmevGyqJQMs4jUiSYh4RhL/Kk7NuokDsjucHxnXHojQxOAoRn2l
+         mk25fUHPE5q6IvRDFkA4u2JFjEXXo/7/5ZP0unvdPkEvRR3trTvmrwMPIIZM2fG7vb
+         oDgJ1YM4frZ6AU3rMsdAhwx02Ea7pU8U1mIoDduRDaISAM8rHn90yNplMy+c/vRZJK
+         T+FQ+5abhb/fg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id F27384035A; Mon,  8 Aug 2022 15:33:34 -0300 (-03)
+Date:   Mon, 8 Aug 2022 15:33:34 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Roberto Sassu <roberto.sassu@huawei.com>, quentin@isovalent.com,
+        ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, peterz@infradead.org, mingo@redhat.com,
+        terrelln@fb.com, nathan@kernel.org, ndesaulniers@google.com,
+        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        llvm@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] build: Switch to new openssl API for test-libcrypto
+Message-ID: <YvFW/kBL6YA3Tlnc@kernel.org>
+References: <20220719170555.2576993-1-roberto.sassu@huawei.com>
+ <20220719170555.2576993-4-roberto.sassu@huawei.com>
+ <5f867295-10d2-0085-d1dc-051f56e7136a@iogearbox.net>
 MIME-Version: 1.0
-References: <20220808155341.2479054-1-void@manifault.com>
-In-Reply-To: <20220808155341.2479054-1-void@manifault.com>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Mon, 8 Aug 2022 11:14:48 -0700
-Message-ID: <CAJnrk1YL1N371vkRDx9E6_OU2GwCj4sVzasBdjmYNUBuzygF_g@mail.gmail.com>
-Subject: Re: [PATCH 1/5] bpf: Clear callee saved regs after updating REG0
-To:     David Vernet <void@manifault.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, john.fastabend@gmail.com, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, tj@kernel.org,
-        linux-kernel@vger.kernel.org, Kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5f867295-10d2-0085-d1dc-051f56e7136a@iogearbox.net>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 8, 2022 at 8:53 AM David Vernet <void@manifault.com> wrote:
->
-> In the verifier, we currently reset all of the registers containing caller
-> saved args before updating the callee's return register (REG0). In a
-> follow-on patch, we will need to be able to be able to inspect the caller
-> saved registers when updating REG0 to determine if a dynptr that's passed
-> to a helper function was allocated by a helper, or allocated by a program.
->
-> This patch therefore updates check_helper_call() to clear the caller saved
-> regs after updating REG0.
->
-Overall lgtm
+Em Mon, Aug 08, 2022 at 06:14:48PM +0200, Daniel Borkmann escreveu:
+> Hi Arnaldo,
+> 
+> On 7/19/22 7:05 PM, Roberto Sassu wrote:
+> > Switch to new EVP API for detecting libcrypto, as Fedora 36 returns an
+> > error when it encounters the deprecated function MD5_Init() and the others.
+> > The error would be interpreted as missing libcrypto, while in reality it is
+> > not.
+> > 
+> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> 
+> Given rest of the tooling fixes from Andres Freund went via perf tree and the
+> below is perf related as well, I presume you'll pick this up, too?
 
-There's a patch [0] that finds + stores the ref obj id before the
-caller saved regs get reset, which would make this patch not needed.
-That hasn't been merged in yet though and I think there's pros for
-either approach.
+Sure.
+ 
+>   [0] https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/log/?h=perf/core
+> 
+> >   tools/build/feature/test-libcrypto.c | 15 +++++++++++----
+> >   1 file changed, 11 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/tools/build/feature/test-libcrypto.c b/tools/build/feature/test-libcrypto.c
+> > index a98174e0569c..bc34a5bbb504 100644
+> > --- a/tools/build/feature/test-libcrypto.c
+> > +++ b/tools/build/feature/test-libcrypto.c
+> > @@ -1,16 +1,23 @@
+> >   // SPDX-License-Identifier: GPL-2.0
+> > +#include <openssl/evp.h>
+> >   #include <openssl/sha.h>
+> >   #include <openssl/md5.h>
+> >   int main(void)
+> >   {
+> > -	MD5_CTX context;
+> > +	EVP_MD_CTX *mdctx;
+> >   	unsigned char md[MD5_DIGEST_LENGTH + SHA_DIGEST_LENGTH];
+> >   	unsigned char dat[] = "12345";
+> > +	unsigned int digest_len;
+> > -	MD5_Init(&context);
+> > -	MD5_Update(&context, &dat[0], sizeof(dat));
+> > -	MD5_Final(&md[0], &context);
+> > +	mdctx = EVP_MD_CTX_new();
+> > +	if (!mdctx)
+> > +		return 0;
+> > +
+> > +	EVP_DigestInit_ex(mdctx, EVP_md5(), NULL);
+> > +	EVP_DigestUpdate(mdctx, &dat[0], sizeof(dat));
+> > +	EVP_DigestFinal_ex(mdctx, &md[0], &digest_len);
+> > +	EVP_MD_CTX_free(mdctx);
+> >   	SHA1(&dat[0], sizeof(dat), &md[0]);
+> > 
 
-In the one where we find + store the ref obj id before any caller
-saved regs get reset, the pro is that getting the dynptr metadata (eg
-ref obj id and in the near future, the dynptr type as well) earlier
-will be useful (eg when we add skb/xdp dynptrs [1], we'll need to know
-the type of the dynptr in order to determine whether to set the return
-reg as PTR_TO_PACKET). In this patch, the pro is that the logic is a
-lot more obvious to readers that the ref obj id for the dynptr gets
-found and set in order to store it in the return reg's ref obj id.
+-- 
 
-I personally lean more towards the approach in [0] because I think
-that ends up being cleaner for future extensibility, but I don't feel
-strongly about it and would be happy going with this approach as well
-
-[0] https://lore.kernel.org/bpf/20220722175807.4038317-1-joannelkoong@gmail.com/#t
-
-[1] https://lore.kernel.org/bpf/20220726184706.954822-1-joannelkoong@gmail.com/T/#t
-
-> Signed-off-by: David Vernet <void@manifault.com>
-> ---
->  kernel/bpf/verifier.c | 15 ++++++++++-----
->  1 file changed, 10 insertions(+), 5 deletions(-)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 096fdac70165..938ba1536249 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -7348,11 +7348,9 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
->         if (err)
->                 return err;
->
-> -       /* reset caller saved regs */
-> -       for (i = 0; i < CALLER_SAVED_REGS; i++) {
-> -               mark_reg_not_init(env, regs, caller_saved[i]);
-> -               check_reg_arg(env, caller_saved[i], DST_OP_NO_MARK);
-> -       }
-> +       /* reset return reg */
-> +       mark_reg_not_init(env, regs, BPF_REG_0);
-> +       check_reg_arg(env, BPF_REG_0, DST_OP_NO_MARK);
->
->         /* helper call returns 64-bit value. */
->         regs[BPF_REG_0].subreg_def = DEF_NOT_SUBREG;
-> @@ -7488,6 +7486,13 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
->                 regs[BPF_REG_0].ref_obj_id = dynptr_id;
->         }
->
-> +       /* reset remaining caller saved regs */
-> +       BUILD_BUG_ON(caller_saved[0] != BPF_REG_0);
-
-nit: caller_saved is a read-only const, so I don't think this line is needed
-
-> +       for (i = 1; i < CALLER_SAVED_REGS; i++) {
-
-nit: maybe "for i = BPF_REG_1" ?
-
-> +               mark_reg_not_init(env, regs, caller_saved[i]);
-> +               check_reg_arg(env, caller_saved[i], DST_OP_NO_MARK);
-> +       }
-> +
->         do_refine_retval_range(regs, fn->ret_type, func_id, &meta);
->
->         err = check_map_func_compatibility(env, meta.map_ptr, func_id);
-> --
-> 2.30.2
->
+- Arnaldo
