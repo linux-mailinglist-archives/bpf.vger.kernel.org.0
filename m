@@ -2,172 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9331458CB6A
-	for <lists+bpf@lfdr.de>; Mon,  8 Aug 2022 17:43:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C4F58CB94
+	for <lists+bpf@lfdr.de>; Mon,  8 Aug 2022 17:53:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231284AbiHHPnA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Aug 2022 11:43:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49464 "EHLO
+        id S243747AbiHHPxC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Aug 2022 11:53:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235852AbiHHPm7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Aug 2022 11:42:59 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0010D1E8;
-        Mon,  8 Aug 2022 08:42:57 -0700 (PDT)
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oL4u1-000GLV-Pr; Mon, 08 Aug 2022 17:42:49 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oL4u1-000SiB-FQ; Mon, 08 Aug 2022 17:42:49 +0200
-Subject: Re: Fwd: [PATCH bpf] bpf: Do more tight ALU bounds tracking
-To:     Kuee k1r0a <liulin063@gmail.com>, haoluo@google.com
-Cc:     Alexei Starovoitov <ast@kernel.org>, john.fastabend@gmail.com,
-        Andrii Nakryiko <andrii@kernel.org>, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, kpsingh@kernel.org, sdf@google.com,
-        jolsa@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <CA+khW7iknv0hcn-D2tRt8HFseUnyTV7BwpohQHtEyctbA1k27w@mail.gmail.com>
- <20220729224254.1798-1-liulin063@gmail.com>
- <CA+khW7iLeSZPweZEz_tfP+LRtpvZbfvstZWgUbNrEDK-Ntxyxw@mail.gmail.com>
- <ccafa637-d986-b4e3-73e0-03721a940ce1@iogearbox.net>
- <CANdZH3U7axKg6zDY+iswF2d1fBYY1Xo2jeVsbgMYMoJfd1AYJg@mail.gmail.com>
- <CANdZH3V64LdfYpWrX9teQQU8LGj10_ecXpupRfnyKQ47gvtOoQ@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <9f954e67-67fc-e3b9-d810-22bfea95d2aa@iogearbox.net>
-Date:   Mon, 8 Aug 2022 17:42:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S230460AbiHHPxA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Aug 2022 11:53:00 -0400
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FBA8D8F;
+        Mon,  8 Aug 2022 08:52:59 -0700 (PDT)
+Received: by mail-qk1-f172.google.com with SMTP id 17so6745779qky.8;
+        Mon, 08 Aug 2022 08:52:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc;
+        bh=gIMeQqTxtshFeA9h8v+qBpYkzXb4o0KGIg6z7z9V00M=;
+        b=DKDxhcBQX5VrwI8FFNN5NYRjKyVVh54mcKewaJVKh2ikdchBJBLLlQ+nhtXEBaCOx7
+         VyZWUpcmyUAbQKFxJCgLk7p9XzYE6BHIhWlh5kBohjbN79EOcXQarbEcHUhe/PpIq82R
+         8EacxGU1pJXcNxaYgaXI7q7r82TFdjqzzKB2MDDHXix9lPJ0Eq9oixVewviQBy++qH3d
+         FN4o0dLeV2UJVczYhnsoDOm/+7X1W158uGOrq6OWcQ/j/0hcsV9cLI7uf6mVuC2hcf59
+         KIHROdE0mY1ZJiIX3KC/8tLwov9W7SnYAz2HzvkK2bvxZterMI1jYpUBhGyYinxo0A4l
+         0C+g==
+X-Gm-Message-State: ACgBeo0Q+7wytxFd0LSTyjBb6W9kQ7VkTyOAmlrrsCcq6o9B3+Ypf1XT
+        AOzOTxBoOvRarAbRVeDk/y8cdq3ouZaSwQ==
+X-Google-Smtp-Source: AA6agR6BMGU4ySAPY6pbbekaFaL3Qs4yrveyBD9hbrlQkHAUgEeouW1l86QjIC2cmH35phm2HSt5yw==
+X-Received: by 2002:ae9:f309:0:b0:6b5:bf22:f2e7 with SMTP id p9-20020ae9f309000000b006b5bf22f2e7mr14677973qkg.509.1659973978160;
+        Mon, 08 Aug 2022 08:52:58 -0700 (PDT)
+Received: from localhost (fwdproxy-ash-016.fbsv.net. [2a03:2880:20ff:10::face:b00c])
+        by smtp.gmail.com with ESMTPSA id v18-20020a05620a0f1200b006b60f5f53ccsm9891261qkl.25.2022.08.08.08.52.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Aug 2022 08:52:57 -0700 (PDT)
+From:   David Vernet <void@manifault.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        john.fastabend@gmail.com, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, tj@kernel.org, joannelkoong@gmail.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/5] bpf: Add user-space-publisher ringbuffer map type
+Date:   Mon,  8 Aug 2022 08:52:43 -0700
+Message-Id: <20220808155248.2475981-1-void@manifault.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <CANdZH3V64LdfYpWrX9teQQU8LGj10_ecXpupRfnyKQ47gvtOoQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26621/Mon Aug  8 09:52:38 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/8/22 5:14 PM, Kuee k1r0a wrote:
-> ---------- Forwarded message ---------
-> From: Kuee k1r0a <liulin063@gmail.com>
-> Date: Mon, Aug 8, 2022 at 11:11 PM
-> Subject: Re: [PATCH bpf] bpf: Do more tight ALU bounds tracking
-> To: Daniel Borkmann <daniel@iogearbox.net>
-> 
-> 
-> On Mon, Aug 8, 2022 at 9:25 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>
->> On 7/30/22 12:48 AM, Hao Luo wrote:
->>> On Fri, Jul 29, 2022 at 3:43 PM Youlin Li <liulin063@gmail.com> wrote:
->>>>
->>>> In adjust_scalar_min_max_vals(), let 32bit bounds learn from 64bit bounds
->>>> to get more tight bounds tracking. Similar operation can be found in
->>>> reg_set_min_max().
->>>>
->>>> Also, we can now fold reg_bounds_sync() into zext_32_to_64().
->>>>
->>>> Before:
->>>>
->>>>       func#0 @0
->>>>       0: R1=ctx(off=0,imm=0) R10=fp0
->>>>       0: (b7) r0 = 0                        ; R0_w=0
->>>>       1: (b7) r1 = 0                        ; R1_w=0
->>>>       2: (87) r1 = -r1                      ; R1_w=scalar()
->>>>       3: (87) r1 = -r1                      ; R1_w=scalar()
->>>>       4: (c7) r1 s>>= 63                    ; R1_w=scalar(smin=-1,smax=0)
->>>>       5: (07) r1 += 2                       ; R1_w=scalar(umin=1,umax=2,var_off=(0x0; 0xffffffff))  <--- [*]
->>>>       6: (95) exit
->>>>
->>>> It can be seen that even if the 64bit bounds is clear here, the 32bit
->>>> bounds is still in the state of 'UNKNOWN'.
->>>>
->>>> After:
->>>>
->>>>       func#0 @0
->>>>       0: R1=ctx(off=0,imm=0) R10=fp0
->>>>       0: (b7) r0 = 0                        ; R0_w=0
->>>>       1: (b7) r1 = 0                        ; R1_w=0
->>>>       2: (87) r1 = -r1                      ; R1_w=scalar()
->>>>       3: (87) r1 = -r1                      ; R1_w=scalar()
->>>>       4: (c7) r1 s>>= 63                    ; R1_w=scalar(smin=-1,smax=0)
->>>>       5: (07) r1 += 2                       ; R1_w=scalar(umin=1,umax=2,var_off=(0x0; 0x3))  <--- [*]
->>>>       6: (95) exit
->>>>
->>>> Signed-off-by: Youlin Li <liulin063@gmail.com>
->>>
->>> Looks good to me. Thanks Youlin.
->>>
->>> Acked-by: Hao Luo <haoluo@google.com>
->>
->> Thanks Youlin! Looks like the patch breaks CI [0] e.g.:
->>
->>     #142/p bounds check after truncation of non-boundary-crossing range FAIL
->>     Failed to load prog 'Permission denied'!
->>     invalid access to map value, value_size=8 off=16777215 size=1
->>     R0 max value is outside of the allowed memory range
->>     verification time 296 usec
->>     stack depth 8
->>     processed 15 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
->>
->> Please take a look. Also it would be great to add a test_verifier selftest to
->> assert above case from commit log against future changes.
->>
->> Thanks,
->> Daniel
->>
->>     [0] https://github.com/kernel-patches/bpf/runs/7696324041?check_suite_focus=true
-> 
-> This test case fails because the 32bit boundary information is lost
-> after the 11th instruction is executed:
-> Before:
->      11: (07) r1 += 2147483647             ;
-> R1_w=scalar(umin=70866960383,umax=70866960638,var_off=(0x1000000000;
-> 0xffffffff),u32_min=2147483647,u32_max=-2147483394)
-> After:
->      11: (07) r1 += 2147483647             ;
-> R1_w=scalar(umin=70866960383,umax=70866960638,var_off=(0x1000000000;
-> 0xffffffff))
-> 
-> This may be because, in previous versions of the code, when
-> __reg_combine_64_into_32() was called, the 32bit boundary was
-> completely deduced from the 64bit boundary, so there was a call to
-> __mark_reg32_unbounded() in __reg_combine_64_into_32().
-> 
-> But now, before adjust_scalar_min_max_vals() calls
-> __reg_combine_64_into_32() , the 32bit bounds are already calculated
-> to some extent, and __mark_reg32_unbounded() will eliminate these
-> information.
-> 
-> Simply copying a code without __mark_reg32_unbounded() should work,
-> perhaps it would be more elegant to introduce a flag into
-> __reg_combine_64_into_32()?
-> 
-> Sorry for not completing the tests because I did not 'make selftests'
-> successfully, and uploaded the code that caused the error.
+This patch set defines a new map type, BPF_MAP_TYPE_USER_RINGBUF, which
+provides single-user-space-producer / single-kernel-consumer semantics over
+a ringbuffer.  Along with the new map type, a helper function called
+bpf_user_ringbuf_drain() is added which allows a BPF program to specify a
+callback with the following signature, to which samples are posted by the
+helper:
 
-Under tools/testing/selftests/bpf/, you can run test_progs and test_verifier
-through the vmtest script, e.g. `./vmtest.sh -- ./test_progs` should ease
-running it. The whole `make selftests` is not necessary given here we care
-about BPF, CI is running these where 2 failed and need investigation:
+void (struct bpf_dynptr *dynptr, void *context);
 
-           test_progs: PASS
-  test_progs-no_alu32: FAIL (returned 1)
-            test_maps: PASS
-        test_verifier: FAIL (returned 1)
+The program can then use the bpf_dynptr_read() or bpf_dynptr_data() helper
+functions to safely read the sample from the dynptr. There are currently no
+helpers available to determine the size of the sample, but one could easily
+be added if required.
 
-Fwiw, for the test_verifier failure case at least, we should then adapt it
-in a separate commit with an analysis explaining why it is okay to alter the
-test; plus a 3rd commit adding new test cases as mentioned earlier.
+On the user-space side, libbpf has been updated to export a new
+'struct ring_buffer_user' type, along with the following symbols:
 
-Thanks a lot, Kuee!
-Daniel
+struct ring_buffer_user *
+ring_buffer_user__new(int map_fd,
+                      const struct ring_buffer_user_opts *opts);
+void ring_buffer_user__free(struct ring_buffer_user *rb);
+void *ring_buffer_user__reserve(struct ring_buffer_user *rb, uint32_t size);
+void *ring_buffer_user__poll(struct ring_buffer_user *rb, uint32_t size,
+			     int timeout_ms);
+void ring_buffer_user__discard(struct ring_buffer_user *rb, void *sample);
+void ring_buffer_user__submit(struct ring_buffer_user *rb, void *sample);
+
+These symbols are exported for inclusion in libbpf version 1.0.0.
+
+Note that one thing that is not included in this patch-set is the ability
+to kick the kernel from user-space to have it drain messages. The selftests
+included in this patch-set currently just use progs with syscall hooks to
+"kick" the kernel and have it drain samples from a user-producer
+ringbuffer, but being able to kick the kernel using some other mechanism
+that doesn't rely on such hooks would be very useful as well. I'm planning
+on adding this in a future patch-set.
+
+Signed-off-by: David Vernet <void@manifault.com>
+--
+
+David Vernet (5):
+  bpf: Clear callee saved regs after updating REG0
+  bpf: Define new BPF_MAP_TYPE_USER_RINGBUF map type
+  bpf: Add bpf_user_ringbuf_drain() helper
+  bpf: Add libbpf logic for user-space ring buffer
+  selftests/bpf: Add selftests validating the user ringbuf
+
+ include/linux/bpf.h                           |   6 +-
+ include/linux/bpf_types.h                     |   1 +
+ include/uapi/linux/bpf.h                      |   9 +
+ kernel/bpf/helpers.c                          |   2 +
+ kernel/bpf/ringbuf.c                          | 232 ++++++-
+ kernel/bpf/verifier.c                         |  73 ++-
+ tools/include/uapi/linux/bpf.h                |   9 +
+ tools/lib/bpf/libbpf.c                        |  11 +-
+ tools/lib/bpf/libbpf.h                        |  19 +
+ tools/lib/bpf/libbpf.map                      |   6 +
+ tools/lib/bpf/libbpf_probes.c                 |   1 +
+ tools/lib/bpf/ringbuf.c                       | 214 +++++++
+ .../selftests/bpf/prog_tests/user_ringbuf.c   | 592 ++++++++++++++++++
+ .../selftests/bpf/progs/user_ringbuf_fail.c   | 174 +++++
+ .../bpf/progs/user_ringbuf_success.c          | 227 +++++++
+ .../testing/selftests/bpf/test_user_ringbuf.h |  28 +
+ 16 files changed, 1579 insertions(+), 25 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/user_ringbuf.c
+ create mode 100644 tools/testing/selftests/bpf/progs/user_ringbuf_fail.c
+ create mode 100644 tools/testing/selftests/bpf/progs/user_ringbuf_success.c
+ create mode 100644 tools/testing/selftests/bpf/test_user_ringbuf.h
+
+-- 
+2.30.2
+
