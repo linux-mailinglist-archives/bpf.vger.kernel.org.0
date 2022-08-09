@@ -2,33 +2,33 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 332F858D76E
-	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 12:32:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F51258D76F
+	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 12:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239907AbiHIKb6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Aug 2022 06:31:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45804 "EHLO
+        id S231220AbiHIKcR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Aug 2022 06:32:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231220AbiHIKb6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Aug 2022 06:31:58 -0400
+        with ESMTP id S234253AbiHIKcR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Aug 2022 06:32:17 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9500A2316F;
-        Tue,  9 Aug 2022 03:31:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BED8722BDD;
+        Tue,  9 Aug 2022 03:32:16 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0027560F97;
-        Tue,  9 Aug 2022 10:31:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3BDFC433C1;
-        Tue,  9 Aug 2022 10:31:55 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5A17A60F74;
+        Tue,  9 Aug 2022 10:32:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 660D2C433D6;
+        Tue,  9 Aug 2022 10:32:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1660041116;
-        bh=WG6HNx5fPEM83cbBjERH0yaKplVZjzF8hr0utFyOdY8=;
+        s=korg; t=1660041135;
+        bh=JWmw+cqaXhGSm4QfvzpKOvnCaTd0Um5gyOr1cBdz3ug=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tv212bpi2NVNmXcOVPNTWUTheJEa6KvuVXewowz8UPX2beFR2ViwG6vH7NDBFuD2i
-         DAgR6QqvMQ+oY4uW4Mner4c1/UF2OYTXsHE6gJJI59WQNGc2a7CEx0CWX/2itHkcMR
-         aI/cJin3Mn3tbaXFOhxO6//sR6BbClLOoAxufPFA=
-Date:   Tue, 9 Aug 2022 12:31:53 +0200
+        b=iw5L9w/PMw3pQAoywpMdJxkcZd8mr0QO7HqNcNzcLPsy6MXn3+Tsm1AODi/INfKvb
+         XY0YOcQo5zIlBwR6Aln/lm8rDk2o6Lu6XG45l18MRTl6NNl8/UsNgv6GecDFu/Z9pq
+         juuHdsO/X/mBa107okiKxs+Zc2T4RxprBbmXPekk=
+Date:   Tue, 9 Aug 2022 12:32:13 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     Bastien Nocera <hadess@hadess.net>
 Cc:     linux-usb@vger.kernel.org, bpf@vger.kernel.org,
@@ -39,14 +39,15 @@ Cc:     linux-usb@vger.kernel.org, bpf@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH 0/2] USB: core: add a way to revoke access to open USB
+Subject: Re: [PATCH 1/2] USB: core: add a way to revoke access to open USB
  devices
-Message-ID: <YvI3mcXDOHzOL78r@kroah.com>
+Message-ID: <YvI3rUTs/axBANHm@kroah.com>
 References: <20220809094300.83116-1-hadess@hadess.net>
+ <20220809094300.83116-2-hadess@hadess.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220809094300.83116-1-hadess@hadess.net>
+In-Reply-To: <20220809094300.83116-2-hadess@hadess.net>
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -57,33 +58,37 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 09, 2022 at 11:42:58AM +0200, Bastien Nocera wrote:
-> BPF list, first CC: here, I hope the commit messages are clear enough to
-> understand the purpose of the patchset. If not, your comments would be
-> greatly appreciated so I can make the commit messages self-explanatory.
+On Tue, Aug 09, 2022 at 11:42:59AM +0200, Bastien Nocera wrote:
+> There is a need for userspace applications to open USB devices directly,
+> for all the USB devices without a kernel-level class driver[1], and
+> implemented in user-space.
 > 
-> Eric, what would be the right identifier to use for a specific user
-> namespace that userspace could find out? I know the PIDs of the
-> bubblewrap processes that created those user namespaces, would those be
-> good enough?
+> As not all devices are built equal, we want to be able to revoke
+> access to those devices whether it's because the user isn't at the
+> console anymore, or because the web browser, or sandbox doesn't want
+> to allow access to that device.
 > 
-> Changes since v2:
-> - Changed the internal API to pass a struct usb_device
-> - Fixed potential busy loop in user-space when revoking access to a
->   device
+> This commit implements the internal API used to revoke access to USB
+> devices, given either bus and device numbers, or/and a user's
+> effective UID.
 > 
-> Bastien Nocera (2):
->   USB: core: add a way to revoke access to open USB devices
->   usb: Implement usb_revoke() BPF function
+> Signed-off-by: Bastien Nocera <hadess@hadess.net>
 > 
->  drivers/usb/core/devio.c | 79 ++++++++++++++++++++++++++++++++++++++--
->  drivers/usb/core/usb.c   | 51 ++++++++++++++++++++++++++
->  drivers/usb/core/usb.h   |  2 +
->  3 files changed, 128 insertions(+), 4 deletions(-)
-> 
-> -- 
-> 2.37.1
-> 
+> [1]:
+> Non exhaustive list of devices and device types that need raw USB access:
+> - all manners of single-board computers and programmable chips and
+> devices (avrdude, STLink, sunxi bootloader, flashrom, etc.)
+> - 3D printers
+> - scanners
+> - LCD "displays"
+> - user-space webcam and still cameras
+> - game controllers
+> - video/audio capture devices
+> - sensors
+> - software-defined radios
+> - DJ/music equipment
+> - protocol analysers
+> - Rio 500 music player
 
-You say "changes since v2", but have no version identifier on this
-series at all :(
+We can't take "footnotes" after a signed-off-by line, you know this :(
+
