@@ -2,91 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C881458D8E3
-	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 14:47:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5620F58D8EB
+	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 14:50:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243109AbiHIMr3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Aug 2022 08:47:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43696 "EHLO
+        id S235660AbiHIMuC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Aug 2022 08:50:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238259AbiHIMr3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Aug 2022 08:47:29 -0400
-Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AC95BE0C;
-        Tue,  9 Aug 2022 05:47:28 -0700 (PDT)
-Received: by mail-qt1-f171.google.com with SMTP id u12so8661539qtk.0;
-        Tue, 09 Aug 2022 05:47:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc;
-        bh=skGgXQvIc7cnUz2HlWUu8GijSgY3uLhsRNuHzFVWxBQ=;
-        b=AxsMVTNUSxAj/6qnVSsmXS9ETrt3oXgyr//c+e4xYMgaiQRBoFfvnzAoT6RA+Ntnsn
-         LBtsuzM28GI0+bL6Ho0P15bIJm0mQOlspQ7lMX9oZDEUgu2o9530BanQstfIqsaVYPMA
-         U/D/z9d7z3oAVdyf3zgIZtSfTaZ5PC1uaactPhyp+tPH9UzkLj7D3n10/3TPVEAdbP5c
-         Z1z9mzVly11vIwLkGN72YlW2kpWrqN0jrbkwqjmGFe+e/Ndi/BUw2puiO7KYzxpzB3Lo
-         QNgvwaffwryVe3Qlyrdid9cQZspORVN/3bSf0qO5WRj34AfyncprRMnNB529HvEbNJnB
-         D1sQ==
-X-Gm-Message-State: ACgBeo2+LNTGyNPjwuMd26ekapcBXkhgmU0FebcE6HadkIi64b/+slRb
-        bLivNfXWvpJ3X3fLcMtredQ=
-X-Google-Smtp-Source: AA6agR4MS/Ygz4SSC60dOJMkIOXOssulJx/2usTjn6qa6vaG5OdU29OU5WlHvW3zYHmCrSeuzjBZAw==
-X-Received: by 2002:a05:622a:447:b0:31e:ea5d:34c2 with SMTP id o7-20020a05622a044700b0031eea5d34c2mr19441652qtx.604.1660049247328;
-        Tue, 09 Aug 2022 05:47:27 -0700 (PDT)
-Received: from dev0025.ash9.facebook.com (fwdproxy-ash-006.fbsv.net. [2a03:2880:20ff:6::face:b00c])
-        by smtp.gmail.com with ESMTPSA id s12-20020a05622a018c00b003431446588fsm973559qtw.5.2022.08.09.05.47.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Aug 2022 05:47:27 -0700 (PDT)
-Date:   Tue, 9 Aug 2022 05:47:24 -0700
-From:   David Vernet <void@manifault.com>
-To:     Joanne Koong <joannelkoong@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, john.fastabend@gmail.com, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, tj@kernel.org,
-        linux-kernel@vger.kernel.org, Kernel-team@fb.com
-Subject: Re: [PATCH 1/5] bpf: Clear callee saved regs after updating REG0
-Message-ID: <20220809124724.ps6fmzeazizzjoon@dev0025.ash9.facebook.com>
-References: <20220808155341.2479054-1-void@manifault.com>
- <CAJnrk1YL1N371vkRDx9E6_OU2GwCj4sVzasBdjmYNUBuzygF_g@mail.gmail.com>
- <20220808185021.6papg2iwujlcaqlc@dev0025.ash9.facebook.com>
- <CAJnrk1bxiYfaR-2aM-PQdg75UQxWt0XJZxxrMs3sfZo02vvkYw@mail.gmail.com>
+        with ESMTP id S243189AbiHIMuA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Aug 2022 08:50:00 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F1B81A805;
+        Tue,  9 Aug 2022 05:49:58 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 282B0B80B7F;
+        Tue,  9 Aug 2022 12:49:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C89CC433D6;
+        Tue,  9 Aug 2022 12:49:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1660049395;
+        bh=IR/sAGCqtlagzXbdrYCAxMaZuQirH4Ghq1RreFYcA0k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c9AGqM2TQl3F3L4Ix3IO+lfNTvQwYPEnd+Wnhib6NeHcxpCRNR3HohT+lr7AFcg7P
+         /Gy3OZnMkH6eDs9jkY/A00rdbov96PV81flKfTSjDJipeL3j0tz32QNLBhRGNcRuN2
+         unwS/gueQJaqR9+/VpteLmY2URHZ7xE7OYHdjyjw=
+Date:   Tue, 9 Aug 2022 14:49:52 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Bastien Nocera <hadess@hadess.net>
+Cc:     linux-usb@vger.kernel.org, bpf@vger.kernel.org,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Peter Hutterer <peter.hutterer@who-t.net>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH 2/2] usb: Implement usb_revoke() BPF function
+Message-ID: <YvJX8GS3+msFKjjV@kroah.com>
+References: <20220809094300.83116-1-hadess@hadess.net>
+ <20220809094300.83116-3-hadess@hadess.net>
+ <YvI5DJnOjhJbNnNO@kroah.com>
+ <7cedc4e3a91a520c0c9f5dc65d84d3a0fffed67a.camel@hadess.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAJnrk1bxiYfaR-2aM-PQdg75UQxWt0XJZxxrMs3sfZo02vvkYw@mail.gmail.com>
-User-Agent: NeoMutt/20211029
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7cedc4e3a91a520c0c9f5dc65d84d3a0fffed67a.camel@hadess.net>
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 08, 2022 at 04:32:39PM -0700, Joanne Koong wrote:
-
-[...]
-
-> > It being a read-only const is was why I made this a BUILD_BUG_ON. My
-> > intention here was to ensure that we're not accidentally skipping the
-> > resetting of caller_saved[0]. The original code iterated from
-> > caller_saved[0] -> caller_saved[CALLER_SAVED_REGS - 1]. Now that we're
-> > starting from caller_saved[1], this compile-time assertion verifies that
-> > we're not accidentally skipping caller_saved[0] by checking that it's the
-> > same as BPF_REG_0, which is reset above. Does that make sense?
+On Tue, Aug 09, 2022 at 01:18:27PM +0200, Bastien Nocera wrote:
+> On Tue, 2022-08-09 at 12:38 +0200, Greg Kroah-Hartman wrote:
+> > On Tue, Aug 09, 2022 at 11:43:00AM +0200, Bastien Nocera wrote:
+> > > This functionality allows a sufficiently privileged user-space
+> > > process
+> > > to upload a BPF programme that will call to usb_revoke_device() as
+> > > if
+> > > it were a kernel API.
+> > > 
+> > > This functionality will be used by logind to revoke access to
+> > > devices on
+> > > fast user-switching to start with.
+> > > 
+> > > logind, and other session management software, does not have access
+> > > to
+> > > the file descriptor used by the application so other identifiers
+> > > are used.
+> > > 
+> > > Signed-off-by: Bastien Nocera <hadess@hadess.net>
+> > > ---
+> > >  drivers/usb/core/usb.c | 51
+> > > ++++++++++++++++++++++++++++++++++++++++++
+> > >  1 file changed, 51 insertions(+)
+> > > 
+> > > diff --git a/drivers/usb/core/usb.c b/drivers/usb/core/usb.c
+> > > index 2f71636af6e1..ca394848a51e 100644
+> > > --- a/drivers/usb/core/usb.c
+> > > +++ b/drivers/usb/core/usb.c
+> > > @@ -38,6 +38,8 @@
+> > >  #include <linux/workqueue.h>
+> > >  #include <linux/debugfs.h>
+> > >  #include <linux/usb/of.h>
+> > > +#include <linux/btf.h>
+> > > +#include <linux/btf_ids.h>
+> > >  
+> > >  #include <asm/io.h>
+> > >  #include <linux/scatterlist.h>
+> > > @@ -438,6 +440,41 @@ static int usb_dev_uevent(struct device *dev,
+> > > struct kobj_uevent_env *env)
+> > >         return 0;
+> > >  }
+> > >  
+> > > +struct usb_revoke_match {
+> > > +       int busnum, devnum; /* -1 to match all devices */
+> > > +       int euid; /* -1 to match all users */
+> > > +};
+> > > +
+> > > +static int
+> > > +__usb_revoke(struct usb_device *udev, void *data)
+> > > +{
+> > > +       struct usb_revoke_match *match = data;
+> > > +
+> > > +       if (match->devnum >= 0 && match->busnum >= 0) {
+> > > +               if (match->busnum != udev->bus->busnum ||
+> > > +                   match->devnum != udev->devnum) {
+> > > +                       return 0;
+> > > +               }
+> > > +       }
+> > > +
+> > > +       usb_revoke_for_euid(udev, match->euid);
+> > 
+> > How are you not racing with other devices being added and removed at
+> > the
+> > same time?
+> > 
+> > Again, please stick with the file descriptor, that's the unique thing
+> > you know you have that you want to revoke.
+> > 
+> > Now if you really really want to disable a device from under a user,
+> > without the file handle present, you can do that today, as root, by
+> > doing the 'unbind' hack through userspace and sysfs.  It's so common
+> > that this seems to be how virtual device managers handle virtual
+> > machines, so it should be well tested by now.
+> > 
+> > or does usbfs not bind to the device it opens?
 > 
-> I think it's an invariant that r0 - r5 are the caller saved args and
-> that caller_saved[0] will always be BPF_REG_0. I'm having a hard time
-> seeing a case where this would change in the future, but then again, I
-> am also not a fortune teller so maybe I am wrong here :) I don't think
-> it's a big deal though so I don't feel strongly about this
+> And how is this not racy, and clunky and slow?
 
-I agree that it seems very unlikely to change, but I don't see the harm in
-leaving it in. Compile time checks are very fast, and are meant for cases
-such as these to check constant, build-time invariants. If you feel
-strongly, I can remove it.
+Is speed an issue here?
 
-Thanks,
-David
+And how is that any less racy than your proposal?
+
+And yes, clunky, but well defined and has been around for well over a
+decade.
+
+> It would lose all the PM setup the drive might have done, reset and
+> reprobe the device, and forcibly close the file descriptor the
+> programme had opened.
+
+It will not reset the device, try it and see!
+
+And forcibly closing the file descriptor is the goal here I thought.  If
+not, I have no idea what this is for at all, sorry.
+
+greg k-h
