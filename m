@@ -2,59 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D208358E094
-	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 22:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44CE358E098
+	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 22:05:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345621AbiHIUEc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Aug 2022 16:04:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57280 "EHLO
+        id S240473AbiHIUFb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Aug 2022 16:05:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345723AbiHIUEb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Aug 2022 16:04:31 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D4D1403C
-        for <bpf@vger.kernel.org>; Tue,  9 Aug 2022 13:04:29 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id o2so10484296iof.8
-        for <bpf@vger.kernel.org>; Tue, 09 Aug 2022 13:04:29 -0700 (PDT)
+        with ESMTP id S1345913AbiHIUF0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Aug 2022 16:05:26 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE55C1C114
+        for <bpf@vger.kernel.org>; Tue,  9 Aug 2022 13:05:25 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id h138so10474533iof.12
+        for <bpf@vger.kernel.org>; Tue, 09 Aug 2022 13:05:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=fooLQJXN+rJ2DyZbLJrLfyJpExa+eNPxP6CAViEUZ/I=;
-        b=M7NsL/PUpvlaG6JRyTrLT9vamd1KO/CWGOLTmqpX0UWGmZ76uKbLk9c7C/EuV/Rsm9
-         h6QMjGmbrprGayP2hi/ofxttT7yuf0BptTRq54nrmk6J/CKPnJEGBkSd8mgvFaYuY1HY
-         T341e0lAEhdyWYUREWcwwDs3vi976J/1nKbqLr6z6k5meMv9s94+dUDUyb1puu9QiF7T
-         hYXRszTfk06BNz/lFBkAZny3B2IYA6cJ70gCEJu9TsWqD3KpgtwlDhn9FhU7fGIu8H2r
-         uW8nbG3ydKZT+OLkbmQ6k7BgsyBlfTqMKh6hMSUlv/QfcD5SwnojkthqXIZxHXHH0tdJ
-         Oz3A==
+        bh=2s4SK74fy8qe/GpFXYFbwoSCigQIrVQuR2vx1+RtWHA=;
+        b=cLAOxsGlj/iBiMZQ7CNYGbMvK8plDKZXM7Cnp9JoaKYv8m94l2vyAx9W+aebPEPGX+
+         j6JE3kPYTC2W/fbclCyy3ZJ9msRJX+TB7ckIpZG5BXIx4WFfG17Fu9eW+UAxk8uLQlYC
+         4Xr5fhk/mNuwLqRQmOp+sgcIj8Dy6Oe8fdrSPv4fuTsj/DqpCAOSjsM0CmZ7rrVl19IP
+         ABU6cKoD83xMiN4hAnF11zfr/5eGKd1seTR8WOlTgP2Ps0MF4g3x+2UFBjSDC7b4gJQj
+         QWdWNnLFgEDHzTOI9JhHuPK2fQVL1r2IwOnDW7WdrXqrktIuLgudu0woIkYjSIrJS27s
+         Hvzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=fooLQJXN+rJ2DyZbLJrLfyJpExa+eNPxP6CAViEUZ/I=;
-        b=nulP4ERb1QHQ42ug0ed0V0Pkc16OCOm7TIsAe7pDwiXjMBMlfZpeZwzCTjGovtYk6h
-         APh51nUEJb6A2X3cnuywx0gPhfAeD3pok9Pz8+e48cgfEY9Qb5eC+OnEoSv82sAvEbBL
-         btsEUnRsK3HGz5x5AV1lUuPmTCjd91/5wGhTp8krbOsMlsFmm7dMbMGjDeZXR1sF7Dii
-         TQ76n0Y65GjLKpH/ptwaI2ksRpXN9uMuwwna0Eajw2uaYoPSUq+CrdkEMqY0jwaIDtKk
-         idmj7jKh7IPUQYVs0JCquu4Ebi5KtOMTF0Rpmy1IgzUsizCAtWH3rXAv1lwpAqO+hpJf
-         wnoA==
-X-Gm-Message-State: ACgBeo0vxTiPdRlIMXdyMjDPGeh5Mzpl2EH0VAxFA/yNI82AIubmz2s9
-        f5CHJ5iVOoUM8yTlbbqwcUW7s8/tpa2yuwhcj8tqZHgO
-X-Google-Smtp-Source: AA6agR4oMz9jWGS/umm5rFsGd1eqx52d1twUPlO/QElYKKPQyMDcv3dzuFJa2+P/uEUXImVA5UenO+iBx0ZVxoUDdMA=
-X-Received: by 2002:a6b:c582:0:b0:67c:b3dc:54bd with SMTP id
- v124-20020a6bc582000000b0067cb3dc54bdmr9535793iof.62.1660075468486; Tue, 09
- Aug 2022 13:04:28 -0700 (PDT)
+        bh=2s4SK74fy8qe/GpFXYFbwoSCigQIrVQuR2vx1+RtWHA=;
+        b=tHYmc91uu1gxcyl2f1DzBUg+tPcmFafVLm3Pg5QNfL1lj/oZGIjBbDyR2DF1guBAmr
+         cXWuj2uRarT9soAg+TSVftguLobUnw7qKrnzvqO57twPSu5CZNzswY24eWkXcWKl0z7f
+         b00U+uN7QVX7BARcgI4XPZ45JlvPZdFliSfbESBjPNJH/pPVfb9w7CPcPIspqfa6CJ3C
+         WtgV9pbxziAVVCHkK+0zYTzENCzKts5bMIlH9unv0lXf0Pucdiu44pXRqZcT4tlQ6gHC
+         7fp7IRJf0K+pHMMYLPKRIJB6VqC+MbhWjPX6/VNMuTmb//CzXIlhST3ey4PxVNOOdVHB
+         mHHg==
+X-Gm-Message-State: ACgBeo3yWmi3E3wPnbWB4zffdXwOzYcZ0w5cWRaGE4PE8AlHyCm229zN
+        HGqZf8lklSPb0ZcxjLab+Rhgy5Uq5QVMA7YX26I=
+X-Google-Smtp-Source: AA6agR4wcwUsSlNK8maRuQlX9hy7z9RyE4Y6bs7rxj6+q/eGQ14o0TGt5hHM4SAYN3Zaz+ZFY2Y7mmkIw1MiFaEvjko=
+X-Received: by 2002:a05:6638:210e:b0:343:1748:910 with SMTP id
+ n14-20020a056638210e00b0034317480910mr4385072jaj.116.1660075525103; Tue, 09
+ Aug 2022 13:05:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220809140615.21231-1-memxor@gmail.com> <20220809140615.21231-4-memxor@gmail.com>
- <47cc7999-bfff-bd34-6c46-6ff5cd09f8e1@fb.com>
-In-Reply-To: <47cc7999-bfff-bd34-6c46-6ff5cd09f8e1@fb.com>
+References: <20220809140615.21231-1-memxor@gmail.com> <CAADnVQKBajvLk7L5Oe8jX9fp3XQznsLY_Od9sP2_z_ox-eMMXg@mail.gmail.com>
+In-Reply-To: <CAADnVQKBajvLk7L5Oe8jX9fp3XQznsLY_Od9sP2_z_ox-eMMXg@mail.gmail.com>
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Tue, 9 Aug 2022 22:03:50 +0200
-Message-ID: <CAP01T747iZdi4wRAi6PB7GY7JzxAY3vF84m0Ata2nF3rpY4EfQ@mail.gmail.com>
-Subject: Re: [PATCH bpf v2 3/3] selftests/bpf: Add test for prealloc_lru_pop bug
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
+Date:   Tue, 9 Aug 2022 22:04:47 +0200
+Message-ID: <CAP01T74yjNq3SMOL_ZH7DMvOGWvb1aF18uNUoww9D9rgXir7Sg@mail.gmail.com>
+Subject: Re: [PATCH bpf v2 0/3] Don't reinit map value in prealloc_lru_pop
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
@@ -68,74 +67,22 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 9 Aug 2022 at 18:01, Yonghong Song <yhs@fb.com> wrote:
-> On 8/9/22 7:06 AM, Kumar Kartikeya Dwivedi wrote:
-> > Add a regression test to check against invalid check_and_init_map_value
-> > call inside prealloc_lru_pop.
-> >
-> > To actually observe a kind of problem this can cause, set debug to 1
-> > when running the test locally without the fix. Then, just observe the
-> > refcount which keeps increasing on each run of the test. With timers or
-> > spin locks, it would cause unpredictable results when racing.
-> >
-> > ...
-> >
-> > bash-5.1# ./test_progs -t lru_bug
-> >        test_progs-192     [000] d..21   354.838821: bpf_trace_printk: ref: 4
-> >        test_progs-192     [000] d..21   354.842824: bpf_trace_printk: ref: 5
-> > bash-5.1# ./test_progs -t lru_bug
-> >        test_progs-193     [000] d..21   356.722813: bpf_trace_printk: ref: 5
-> >        test_progs-193     [000] d..21   356.727071: bpf_trace_printk: ref: 6
-> >
-> > ... and so on.
-> >
-> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+On Tue, 9 Aug 2022 at 20:49, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> Ack with a minor nit below.
->
-> Acked-by: Yonghong Song <yhs@fb.com>
->
-> > ---
-> >   .../selftests/bpf/prog_tests/lru_bug.c        | 19 ++++++
-> >   tools/testing/selftests/bpf/progs/lru_bug.c   | 67 +++++++++++++++++++
-> >   2 files changed, 86 insertions(+)
-> >   create mode 100644 tools/testing/selftests/bpf/prog_tests/lru_bug.c
-> >   create mode 100644 tools/testing/selftests/bpf/progs/lru_bug.c
+> On Tue, Aug 9, 2022 at 7:06 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
 > >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/lru_bug.c b/tools/testing/selftests/bpf/prog_tests/lru_bug.c
-> > new file mode 100644
-> > index 000000000000..3bcb5bc62d5a
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/prog_tests/lru_bug.c
-> > @@ -0,0 +1,19 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +#include <test_progs.h>
-> > +
-> > +#include "lru_bug.skel.h"
-> > +
-> > +void serial_test_lru_bug(void)
-> > +{
-> > +     struct lru_bug *skel;
-> > +     int ret;
-> > +
-> > +     skel = lru_bug__open_and_load();
-> > +     if (!ASSERT_OK_PTR(skel, "lru_bug__open_and_load"))
-> > +             return;
-> > +     ret = lru_bug__attach(skel);
-> > +     if (!ASSERT_OK(ret, "lru_bug__attach"))
-> > +             return;
+> > Fix for a bug in prelloc_lru_pop spotted while reading the code, then a test +
+> > example that checks whether it is fixed.
+> >
+> > Changelog:
+> > ----------
+> > v1 -> v2:
+> > v1: https://lore.kernel.org/bpf/20220806014603.1771-1-memxor@gmail.com
+> >
+> >  * Expand commit log to include summary of the discussion with Yonghong
+> >  * Make lru_bug selftest serial to not mess up refcount for map_kptr test
 >
-> If not ASSERT_OK, should go to lru_bug__destroy(skel).
->
-> > +     usleep(1);
-> > +     ASSERT_OK(skel->data->result, "prealloc_lru_pop doesn't call check_and_init_map_value");
->
-> Missing
->         lru_bug__destroy(skel);
+> hmm. CI is still not happy.
 
-Oops, thanks for catching, will fix.
-
-> .
->
-> > +}
-> [...]
+Yeah, I'll try to check for it differently.
