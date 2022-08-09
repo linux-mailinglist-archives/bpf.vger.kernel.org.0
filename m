@@ -2,128 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ECB958D1AF
-	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 03:18:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8CE58D1B4
+	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 03:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244811AbiHIBSr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Aug 2022 21:18:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60816 "EHLO
+        id S229953AbiHIBXs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Aug 2022 21:23:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244736AbiHIBSq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Aug 2022 21:18:46 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94416636B
-        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 18:18:44 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id b7so7609158qvq.2
-        for <bpf@vger.kernel.org>; Mon, 08 Aug 2022 18:18:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=YEeewL7u26t5xnjYAteTsi6uBftnEQWFJtji4zMngLI=;
-        b=QM7K5PRSL41dOjkkhbr12boFvR549hO04dJ6wroBBRID09Qd38NtGUxr6+hJ5liFdh
-         XADmeBQIhVFJtuCVXUkjFuwfdSvnHuxmLN1qDsStbSuWm4xjUEeppWn/O3X1TViF2Jfb
-         vzG4LoMdmvy0fDsZvNLXes7sfmqTrmRozESBVcgJqVQJctpZogvFqk03nnLd9G2FE85j
-         mvgIFtviM/gLC7idiwlUZ2Pm40O2ikuhBVo93f4phvXVe1dd5yEIxb7hUSbrH1BtaAKO
-         6iyDof7WrBiuDe4ojNt5E4BwSCWP9fqef4pqYecQOrw1nt5uU4QtWucqjT597i1qxEwi
-         J1Tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=YEeewL7u26t5xnjYAteTsi6uBftnEQWFJtji4zMngLI=;
-        b=dGYhmRNuBh4Fb64IpV18WcaJrkX9VUc65z/wsekUHer8AQf5wIrysv5dX7S9IaH0Qf
-         v6pTSPBR51cYJIRfW/TEtSPm34E+k0ktNZoJmZSdfqLodIea85dKCmB0UxgBFx8nrJix
-         73IfmiTFcURxvn+SQyvX2GUwlHVlY2LhtbqPEamJFdIRRE6W6/bTKoGkPhC16VgoVK2Z
-         bIP8ghMBCRjvm2H9pEfmnF+CR9lmln6ZmKwvlUD02DBHqvdMrtO1tcMl91AzElq9bAU1
-         m5fEHDJF8Ksvqu5j07jPeCP/BucM7M6CQ11ndY2h/JpXltbuD1+4P6Q9fdynL2PgSQJu
-         aNYg==
-X-Gm-Message-State: ACgBeo34NzqWp37nxSL8yTvA5/gpZ0Q0wy5tPNd5Hk2cldS/1RCF7sh1
-        thq7LcwWTn1E11dc+b09VoK1Br6cn42VtQsCmpbEQp34QHIdAQ==
-X-Google-Smtp-Source: AA6agR6GfNUHY3jjjD2/YbLO6QDE3wjQK3U0O5pNRoIUFkwF92SuJQ7vt+YDB3NGLYzJzR+CWS0iMHLYfxJ/o4LLEfE=
-X-Received: by 2002:a0c:9101:0:b0:473:9b:d92a with SMTP id q1-20020a0c9101000000b00473009bd92amr18310037qvq.17.1660007923619;
- Mon, 08 Aug 2022 18:18:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220805214821.1058337-1-haoluo@google.com> <20220805214821.1058337-6-haoluo@google.com>
- <CAEf4BzarAHuR7mOeHToNiNMc03QnR=74cxt_h5LRymf1U6HevQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzarAHuR7mOeHToNiNMc03QnR=74cxt_h5LRymf1U6HevQ@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Mon, 8 Aug 2022 18:18:33 -0700
-Message-ID: <CA+khW7gJS2pjc2eHXCkHirdHMqcmzZM_a4VPUvw9RAicgH9Q=A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v7 5/8] selftests/bpf: Test cgroup_iter.
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        cgroups@vger.kernel.org, netdev@vger.kernel.org,
+        with ESMTP id S230441AbiHIBXr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Aug 2022 21:23:47 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5D3EC6B
+        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 18:23:45 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4M1wKT5jm1zKK60
+        for <bpf@vger.kernel.org>; Tue,  9 Aug 2022 09:22:21 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP2 (Coremail) with SMTP id Syh0CgDXwb0ct_Fi5BNuAA--.10017S2;
+        Tue, 09 Aug 2022 09:23:43 +0800 (CST)
+Subject: Re: [PATCH bpf 7/9] selftests/bpf: Add tests for reading a dangling
+ map iter fd
+To:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
         KP Singh <kpsingh@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Michal Koutny <mkoutny@suse.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Yosry Ahmed <yosryahmed@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com,
+        Lorenz Bauer <oss@lmb.io>
+References: <20220806074019.2756957-1-houtao@huaweicloud.com>
+ <20220806074019.2756957-8-houtao@huaweicloud.com>
+ <32e803c8-4042-2d01-0249-b6358c0fb627@fb.com>
+From:   houtao <houtao@huaweicloud.com>
+Message-ID: <695edb91-dabf-2bff-9cba-12eb64162b1e@huaweicloud.com>
+Date:   Tue, 9 Aug 2022 09:23:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <32e803c8-4042-2d01-0249-b6358c0fb627@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: Syh0CgDXwb0ct_Fi5BNuAA--.10017S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7KFyxZry3tFWrtry5Aw1kZrb_yoW5JF4DpF
+        1kJFWUCry8Ars3Ar1DJa15CFyYyFy8J3WDJF1rXFy5AF4DurnYgr17WFs0gF1rGrW0yr12
+        vr1jv393uFyDAFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1F6r1fM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
+        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
+        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
+        uYvjxUrR6zUUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 8, 2022 at 5:20 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Fri, Aug 5, 2022 at 2:49 PM Hao Luo <haoluo@google.com> wrote:
-> >
-> > Add a selftest for cgroup_iter. The selftest creates a mini cgroup tree
-> > of the following structure:
-> >
-> >     ROOT (working cgroup)
-> >      |
-> >    PARENT
-> >   /      \
-> > CHILD1  CHILD2
-> >
-> > and tests the following scenarios:
-> >
-> >  - invalid cgroup fd.
-> >  - pre-order walk over descendants from PARENT.
-> >  - post-order walk over descendants from PARENT.
-> >  - walk of ancestors from PARENT.
-> >  - walk from PARENT in the default order, which is pre-order.
-> >  - process only a single object (i.e. PARENT).
-> >  - early termination.
-> >
-> > Acked-by: Yonghong Song <yhs@fb.com>
-> > Signed-off-by: Hao Luo <haoluo@google.com>
-> > ---
->
-> LGTM.
->
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
->
+Hi,
 
-Thanks!
-
-> >  .../selftests/bpf/prog_tests/cgroup_iter.c    | 237 ++++++++++++++++++
-> >  tools/testing/selftests/bpf/progs/bpf_iter.h  |   7 +
-> >  .../testing/selftests/bpf/progs/cgroup_iter.c |  39 +++
-> >  3 files changed, 283 insertions(+)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_iter.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/cgroup_iter.c
-> >
+On 8/8/2022 11:15 PM, Yonghong Song wrote:
 >
+>
+> On 8/6/22 12:40 AM, Hou Tao wrote:
+>> From: Hou Tao <houtao1@huawei.com>
+>>
+>> After closing both related link fd and map fd, reading the map
+>> iterator fd to ensure it is OK to do so.
+>>
+>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+>> ---
+>>   .../selftests/bpf/prog_tests/bpf_iter.c       | 90 +++++++++++++++++++
+>>   1 file changed, 90 insertions(+)
+SNIP
+>> +    /* Close link and map fd prematurely */
+>> +    bpf_link__destroy(link);
+>> +    bpf_object__destroy_skeleton(*skel);
+>> +    *skel = NULL;
+>> +
+>> +    /* Let kworker to run first */
+>
+> Which kworker?
+Now bpf map is freed through bpf_map_free_deferred() and it is running in the
+kworker context. Will be more specific in v2.
+>
+>> +    usleep(100);
+>> +    /* Sock map is freed after two synchronize_rcu() calls, so wait */
+>> +    kern_sync_rcu();
+>> +    kern_sync_rcu();
+>
+> In btf_map_in_map.c, the comment mentions two kern_sync_rcu()
+> is needed for 5.8 and earlier kernel. Other cases in prog_tests/
+> directory only has one kern_sync_rcu(). Why we need two
+> kern_sync_rcu() for the current kernel?
+As tried to explain in the comment,  for both sock map and sock storage map, the
+used memory is freed two synchronize_rcu(), so if there are not two
+kern_sync_rcu() in the test prog, reading the iterator fd will not be able to
+trigger the Use-After-Free problem and it will end normally.
+>
+>> +
+>> +    /* Read after both map fd and link fd are closed */
+>> +    while ((len = read(iter_fd, buf, sizeof(buf))) > 0)
+>> +        ;
+>> +    ASSERT_GE(len, 0, "read_iterator");
+>> +
+>> +    close(iter_fd);
+>> +}
+>> +
+>>   static int read_fd_into_buffer(int fd, char *buf, int size)
+>>   {
+>>       int bufleft = size;
+>> @@ -827,6 +870,20 @@ static void test_bpf_array_map(void)
+>>       bpf_iter_bpf_array_map__destroy(skel);
+>>   }
+>>   +static void test_bpf_array_map_iter_fd(void)
+>> +{
+>> +    struct bpf_iter_bpf_array_map *skel;
+>> +
+>> +    skel = bpf_iter_bpf_array_map__open_and_load();
+>> +    if (!ASSERT_OK_PTR(skel, "bpf_iter_bpf_array_map__open_and_load"))
+>> +        return;
+>> +
+>> +    do_read_map_iter_fd(&skel->skeleton, skel->progs.dump_bpf_array_map,
+>> +                skel->maps.arraymap1);
+>> +
+>> +    bpf_iter_bpf_array_map__destroy(skel);
+>> +}
+>> +
 > [...]
+
