@@ -2,352 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 370F358D18F
-	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 02:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A11358D1A4
+	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 03:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244771AbiHIA5N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Aug 2022 20:57:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48688 "EHLO
+        id S238886AbiHIBHP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Aug 2022 21:07:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236892AbiHIA5L (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Aug 2022 20:57:11 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CB811BEAF
-        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 17:57:09 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id m22so7717969qkm.12
-        for <bpf@vger.kernel.org>; Mon, 08 Aug 2022 17:57:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=CgrmreBLfwTLbsIgALcEwvyCRTeQIS+Q14oyIN4x0GI=;
-        b=bQMhBQzZgEiq7nGvmkQiAsIuWbVFgFj0Bdn3dvgPdKsyRT3/umhMygT1kIHw4oEHoC
-         FV6hkHTEt16NDBALMjSBP+BbGvjPxjNX5QwzN0/NYtl3v9PDetYmIe8bDjyGZUkmca69
-         eo7tHMVCzh2snuTxm91XRtzOdwLZ9lEB1P4najKfi8i6HdAfttdFN8b0x4I4GNTeKk0N
-         JIw9BGDuzas/BcQwFRsmBaU/f6F3cUV8fHuH6Fqha0EnRkiQNvtPdpUshoWTb5ROjElK
-         fY3m2JSvbu4n+xNziJ5CUaOzyBB450BD/B2VXP3xq4I2BVt40PGYJKCSnjoQZ/cTkQg9
-         a19g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=CgrmreBLfwTLbsIgALcEwvyCRTeQIS+Q14oyIN4x0GI=;
-        b=rETqlfbvb3XCMeQpVEvacJ5rujvZ+L3bceSQ2SvCb4c6GQYO9KSwz/vuPJJrPfdqbz
-         eByZ6V2rO94tysegMSgjjNVq/HprxHaqwzMyhz5EnsVNyDNBNcLvpX3rNMS1rtmfwt7B
-         UJnbS0AhF6IZj8otFIgxLNOOH98Ia2dZQPLqJAMpNxRoibwwHYvMn/fIqMSIWK+9VdLM
-         2G5I50HBg1RAmZBQKy9j5S6QnPgJ+XDC/F6EXV47WfIO3sDKmjW+1BfWcRYSLt42YwaM
-         hEzC2VkZWvM7CS4+zlL6msWjoLi5MSxpAGdxLoJfMacFisSaCQCGnTWc+4Qou7jDyVOF
-         uTyg==
-X-Gm-Message-State: ACgBeo2huZVWybJaILqODvwmIExecYwi0ClDZhTnnnzyhgtLbAxa33j8
-        KTFnweRi1dzKgGZIdiYI9Z7a8DUHxpFOGwgFCisQtqwn9owQTQ==
-X-Google-Smtp-Source: AA6agR6XZV6UgebJ9mhruN2Ve4JkKgadclgi9ioDEpiDkXxiepgd9YlJjzardVLnFrhomyl73G039mm21Q+ABhf1Qc0=
-X-Received: by 2002:a05:620a:4590:b0:6b5:e884:2d2c with SMTP id
- bp16-20020a05620a459000b006b5e8842d2cmr15761934qkb.267.1660006628043; Mon, 08
- Aug 2022 17:57:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220805214821.1058337-1-haoluo@google.com> <20220805214821.1058337-5-haoluo@google.com>
- <CAEf4BzZHf89Ds8nQWFCH00fKs9-9GkJ0d+Hrp-LkMCDUP_td0A@mail.gmail.com>
-In-Reply-To: <CAEf4BzZHf89Ds8nQWFCH00fKs9-9GkJ0d+Hrp-LkMCDUP_td0A@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Mon, 8 Aug 2022 17:56:57 -0700
-Message-ID: <CA+khW7hUVOkHBO3dhRze2_VKZuxD-LuNQdO3nHUkLCYmuuR6eg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v7 4/8] bpf: Introduce cgroup iter
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        cgroups@vger.kernel.org, netdev@vger.kernel.org,
+        with ESMTP id S232876AbiHIBHM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Aug 2022 21:07:12 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CB2C1D332
+        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 18:07:10 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4M1vyK5HqZzKs2Q
+        for <bpf@vger.kernel.org>; Tue,  9 Aug 2022 09:05:45 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP4 (Coremail) with SMTP id gCh0CgD3_Pk3s_FiYlhrAA--.32461S2;
+        Tue, 09 Aug 2022 09:07:07 +0800 (CST)
+Subject: Re: [PATCH bpf 1/9] bpf: Acquire map uref in .init_seq_private for
+ array map iterator
+To:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
         KP Singh <kpsingh@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Michal Koutny <mkoutny@suse.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Yosry Ahmed <yosryahmed@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>, houtao1@huawei.com
+References: <20220806074019.2756957-1-houtao@huaweicloud.com>
+ <20220806074019.2756957-2-houtao@huaweicloud.com>
+ <7e82bc88-d42c-98de-79a7-eda5d48c2b3c@fb.com>
+From:   houtao <houtao@huaweicloud.com>
+Message-ID: <b7edc598-9d0c-3eb6-4ff2-ecf14bbc3226@huaweicloud.com>
+Date:   Tue, 9 Aug 2022 09:07:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <7e82bc88-d42c-98de-79a7-eda5d48c2b3c@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: gCh0CgD3_Pk3s_FiYlhrAA--.32461S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kw1DGr4fKw43KF4fXrWxXrb_yoW8Kr4xpF
+        WktFWjk3y8Zrs29Fn5ta4Uuay0v345Wa45Jrn5ta4YvFW5Xr129r18WF1a9F4YyF48Jr18
+        tw1j939ruFyUAFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1F6r1fM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
+        6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+        9x07UWE__UUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 8, 2022 at 5:19 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Fri, Aug 5, 2022 at 2:49 PM Hao Luo <haoluo@google.com> wrote:
-> >
-> > Cgroup_iter is a type of bpf_iter. It walks over cgroups in four modes:
-> >
-> >  - walking a cgroup's descendants in pre-order.
-> >  - walking a cgroup's descendants in post-order.
-> >  - walking a cgroup's ancestors.
-> >  - process only the given cgroup.
-> >
-> > When attaching cgroup_iter, one can set a cgroup to the iter_link
-> > created from attaching. This cgroup is passed as a file descriptor
-> > or cgroup id and serves as the starting point of the walk. If no
-> > cgroup is specified, the starting point will be the root cgroup v2.
-> >
-> > For walking descendants, one can specify the order: either pre-order or
-> > post-order. For walking ancestors, the walk starts at the specified
-> > cgroup and ends at the root.
-> >
-> > One can also terminate the walk early by returning 1 from the iter
-> > program.
-> >
-> > Note that because walking cgroup hierarchy holds cgroup_mutex, the iter
-> > program is called with cgroup_mutex held.
-> >
-> > Currently only one session is supported, which means, depending on the
-> > volume of data bpf program intends to send to user space, the number
-> > of cgroups that can be walked is limited. For example, given the current
-> > buffer size is 8 * PAGE_SIZE, if the program sends 64B data for each
-> > cgroup, assuming PAGE_SIZE is 4kb, the total number of cgroups that can
-> > be walked is 512. This is a limitation of cgroup_iter. If the output
-> > data is larger than the kernel buffer size, after all data in the
-> > kernel buffer is consumed by user space, the subsequent read() syscall
-> > will signal EOPNOTSUPP. In order to work around, the user may have to
-> > update their program to reduce the volume of data sent to output. For
-> > example, skip some uninteresting cgroups. In future, we may extend
-> > bpf_iter flags to allow customizing buffer size.
-> >
-> > Acked-by: Yonghong Song <yhs@fb.com>
-> > Acked-by: Tejun Heo <tj@kernel.org>
-> > Signed-off-by: Hao Luo <haoluo@google.com>
-> > ---
-> >  include/linux/bpf.h                           |   8 +
-> >  include/uapi/linux/bpf.h                      |  38 +++
-> >  kernel/bpf/Makefile                           |   3 +
-> >  kernel/bpf/cgroup_iter.c                      | 286 ++++++++++++++++++
-> >  tools/include/uapi/linux/bpf.h                |  38 +++
-> >  .../selftests/bpf/prog_tests/btf_dump.c       |   4 +-
-> >  6 files changed, 375 insertions(+), 2 deletions(-)
-> >  create mode 100644 kernel/bpf/cgroup_iter.c
-> >
-> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > index 20c26aed7896..09b5c2167424 100644
-> > --- a/include/linux/bpf.h
-> > +++ b/include/linux/bpf.h
-> > @@ -48,6 +48,7 @@ struct mem_cgroup;
-> >  struct module;
-> >  struct bpf_func_state;
-> >  struct ftrace_ops;
-> > +struct cgroup;
-> >
-> >  extern struct idr btf_idr;
-> >  extern spinlock_t btf_idr_lock;
-> > @@ -1730,7 +1731,14 @@ int bpf_obj_get_user(const char __user *pathname, int flags);
-> >         int __init bpf_iter_ ## target(args) { return 0; }
-> >
-> >  struct bpf_iter_aux_info {
-> > +       /* for map_elem iter */
-> >         struct bpf_map *map;
-> > +
-> > +       /* for cgroup iter */
-> > +       struct {
-> > +               struct cgroup *start; /* starting cgroup */
-> > +               int order;
-> > +       } cgroup;
-> >  };
-> >
-> >  typedef int (*bpf_iter_attach_target_t)(struct bpf_prog *prog,
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 59a217ca2dfd..4d758b2e70d6 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -87,10 +87,37 @@ struct bpf_cgroup_storage_key {
-> >         __u32   attach_type;            /* program attach type (enum bpf_attach_type) */
-> >  };
-> >
-> > +enum bpf_iter_order {
-> > +       BPF_ITER_ORDER_DEFAULT = 0,     /* default order. */
->
-> why is this default order necessary? It just adds confusion (I had to
-> look up source code to know what is default order). I might have
-> missed some discussion, so if there is some very good reason, then
-> please document this in commit message. But I'd rather not do some
-> magical default order instead. We can set 0 to mean invalid and error
-> out, or just do SELF as the very first value (and if user forgot to
-> specify more fancy mode, they hopefully will quickly discover this in
-> their testing).
->
+Hi,
 
-PRE/POST/UP are tree-specific orders. SELF applies on all iters and
-yields only a single object. How does task_iter express a non-self
-order? By non-self, I mean something like "I don't care about the
-order, just scan _all_ the objects". And this "don't care" order, IMO,
-may be the common case. I don't think everyone cares about walking
-order for tasks. The DEFAULT is intentionally put at the first value,
-so that if users don't care about order, they don't have to specify
-this field.
+On 8/8/2022 10:53 PM, Yonghong Song wrote:
+>
+>
+> On 8/6/22 12:40 AM, Hou Tao wrote:
+>> From: Hou Tao <houtao1@huawei.com>
+>>
+>> During bpf(BPF_LINK_CREATE) for BPF_TRACE_ITER, bpf_iter_attach_map()
+>> has already acquired a map uref, but the uref may be released by
+>> bpf_link_release() during th reading of map iterator.
+>
+> some wording issue:
+> bpf_iter_attach_map() acquires a map uref, and the uref may be released
+> before or in the middle of iterating map elements. For example, the uref
+> could be released in bpf_iter_detach_map() as part of
+> bpf_link_release(), or could be released in bpf_map_put_with_uref()
+> as part of bpf_map_release().
+Thanks, it is much better than the original commit message. Will update in v2.
 
-If that sounds valid, maybe using "UNSPEC" instead of "DEFAULT" is better?
+Regards
+Tao
+>
+>>
+>> Alternative fix is acquiring an extra bpf_link reference just like
+>> a pinned map iterator does, but it introduces unnecessary dependency
+>> on bpf_link instead of bpf_map.
+>>
+>> So choose another fix: acquiring an extra map uref in .init_seq_private
+>> for array map iterator.
+>>
+>> Fixes: d3cc2ab546ad ("bpf: Implement bpf iterator for array maps")
+>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+>
+> Acked-by: Yonghong Song <yhs@fb.com>
+>
+>> ---
+>>   kernel/bpf/arraymap.c | 7 +++++++
+>>   1 file changed, 7 insertions(+)
+>>
+>> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+>> index d3e734bf8056..bf6898bb7cb8 100644
+>> --- a/kernel/bpf/arraymap.c
+>> +++ b/kernel/bpf/arraymap.c
+>> @@ -649,6 +649,12 @@ static int bpf_iter_init_array_map(void *priv_data,
+>>           seq_info->percpu_value_buf = value_buf;
+>>       }
+>>   +    /*
+>> +     * During bpf(BPF_LINK_CREATE), bpf_iter_attach_map() has already
+>> +     * acquired a map uref, but the uref may be released by
+>> +     * bpf_link_release(), so acquire an extra map uref for iterator.
+>> +     */
+>> +    bpf_map_inc_with_uref(map);
+>>       seq_info->map = map;
+>>       return 0;
+>>   }
+>> @@ -657,6 +663,7 @@ static void bpf_iter_fini_array_map(void *priv_data)
+>>   {
+>>       struct bpf_iter_seq_array_map_info *seq_info = priv_data;
+>>   +    bpf_map_put_with_uref(seq_info->map);
+>>       kfree(seq_info->percpu_value_buf);
+>>   }
+>>   
 
-> > +       BPF_ITER_SELF,                  /* process only a single object. */
-> > +       BPF_ITER_DESCENDANTS_PRE,       /* walk descendants in pre-order. */
-> > +       BPF_ITER_DESCENDANTS_POST,      /* walk descendants in post-order. */
-> > +       BPF_ITER_ANCESTORS_UP,          /* walk ancestors upward. */
-> > +};
-> > +
->
-> This is a somewhat pedantic nit, so feel free to ignore completely,
-> but don't DESCENDANTS_{PRE,POST} and ANCESTORS_UP also include "self"?
-> As it is right now, BPF_ITER_SELF name might be read as implying that
-> DESCENDANTS and ANCESTORS order don't include self. So I don't know,
-> maybe BPF_ITER_SELF_ONLY would be a bit clearer?
->
-
-No problem with that. I can update it in the next version.
-
->
-> >  union bpf_iter_link_info {
-> >         struct {
-> >                 __u32   map_fd;
-> >         } map;
-> > +       struct {
-> > +               /* Valid values include:
-> > +                *  - BPF_ITER_ORDER_DEFAULT
-> > +                *  - BPF_ITER_SELF
-> > +                *  - BPF_ITER_DESCENDANTS_PRE
-> > +                *  - BPF_ITER_DESCENDANTS_POST
-> > +                *  - BPF_ITER_ANCESTORS_UP
-> > +                * for cgroup_iter, DEFAULT is equivalent to DESCENDANTS_PRE.
-> > +                */
-> > +               __u32   order;
-> > +
-> > +               /* At most one of cgroup_fd and cgroup_id can be non-zero. If
-> > +                * both are zero, the walk starts from the default cgroup v2
-> > +                * root. For walking v1 hierarchy, one should always explicitly
-> > +                * specify cgroup_fd.
-> > +                */
-> > +               __u32   cgroup_fd;
-> > +               __u64   cgroup_id;
-> > +       } cgroup;
-> >  };
-> >
-> >  /* BPF syscall commands, see bpf(2) man-page for more details. */
-> > @@ -6134,11 +6161,22 @@ struct bpf_link_info {
-> >                 struct {
-> >                         __aligned_u64 target_name; /* in/out: target_name buffer ptr */
-> >                         __u32 target_name_len;     /* in/out: target_name buffer len */
-> > +
-> > +                       /* If the iter specific field is 32 bits, it can be put
-> > +                        * in the first or second union. Otherwise it should be
-> > +                        * put in the second union.
-> > +                        */
-> >                         union {
-> >                                 struct {
-> >                                         __u32 map_id;
-> >                                 } map;
-> >                         };
-> > +                       union {
-> > +                               struct {
-> > +                                       __u64 cgroup_id;
-> > +                                       __u32 order;
-> > +                               } cgroup;
-> > +                       };
-> >                 } iter;
->
-> But other than above, I like how UAPI looks like, thanks!
->
-> [...]
->
-> > + *
-> > + * For walking descendants, cgroup_iter can walk in either pre-order or
-> > + * post-order. For walking ancestors, the iter walks up from a cgroup to
-> > + * the root.
-> > + *
-> > + * The iter program can terminate the walk early by returning 1. Walk
-> > + * continues if prog returns 0.
-> > + *
-> > + * The prog can check (seq->num == 0) to determine whether this is
-> > + * the first element. The prog may also be passed a NULL cgroup,
-> > + * which means the walk has completed and the prog has a chance to
-> > + * do post-processing, such as outputing an epilogue.
->
-> typo: outputting
->
-
-Thanks for catching. Will fix.
-
-> > + *
-> > + * Note: the iter_prog is called with cgroup_mutex held.
-> > + *
-> > + * Currently only one session is supported, which means, depending on the
-> > + * volume of data bpf program intends to send to user space, the number
-> > + * of cgroups that can be walked is limited. For example, given the current
-> > + * buffer size is 8 * PAGE_SIZE, if the program sends 64B data for each
-> > + * cgroup, assuming PAGE_SIZE is 4kb, the total number of cgroups that can
-> > + * be walked is 512. This is a limitation of cgroup_iter. If the output data
-> > + * is larger than the kernel buffer size, after all data in the kernel buffer
-> > + * is consumed by user space, the subsequent read() syscall will signal
-> > + * EOPNOTSUPP. In order to work around, the user may have to update their
-> > + * program to reduce the volume of data sent to output. For example, skip
-> > + * some uninteresting cgroups.
-> > + */
-> > +
->
-> [...]
->
-> > +
-> > +static void bpf_iter_cgroup_show_fdinfo(const struct bpf_iter_aux_info *aux,
-> > +                                       struct seq_file *seq)
-> > +{
-> > +       char *buf;
-> > +
-> > +       buf = kzalloc(PATH_MAX, GFP_KERNEL);
-> > +       if (!buf) {
-> > +               seq_puts(seq, "cgroup_path:\t<unknown>\n");
-> > +               goto show_order;
-> > +       }
-> > +
-> > +       /* If cgroup_path_ns() fails, buf will be an empty string, cgroup_path
-> > +        * will print nothing.
-> > +        *
-> > +        * Path is in the calling process's cgroup namespace.
-> > +        */
-> > +       cgroup_path_ns(aux->cgroup.start, buf, PATH_MAX,
-> > +                      current->nsproxy->cgroup_ns);
-> > +       seq_printf(seq, "cgroup_path:\t%s\n", buf);
-> > +       kfree(buf);
-> > +
-> > +show_order:
-> > +       if (aux->cgroup.order == BPF_ITER_DESCENDANTS_PRE)
-> > +               seq_puts(seq, "order: pre\n");
-> > +       else if (aux->cgroup.order == BPF_ITER_DESCENDANTS_POST)
-> > +               seq_puts(seq, "order: post\n");
-> > +       else if (aux->cgroup.order == BPF_ITER_ANCESTORS_UP)
-> > +               seq_puts(seq, "order: up\n");
-> > +       else /* BPF_ITER_SELF */
-> > +               seq_puts(seq, "order: self\n");
->
-> should we output "descendants_pre", "descendants_post", "ancestors_up"
-> and "self" to match enum names more uniformly? We had similar
-> discussion when Daniel Mueller was doing some clean up in bpftool and
-> public's opinion was that uniform and consistent mapping between
-> kernel enum and it's string representation is more valuable than
-> shortness of the string.
->
-
-I feel this is very nit, but can update in the next version. On a
-second thought, I think, specifying "descendants", "ancestors" and
-"self" are probably slightly better. Because doing so, people know
-it's a tree when reading iter link info.
-
-> > +}
-> > +
->
-> [...]
