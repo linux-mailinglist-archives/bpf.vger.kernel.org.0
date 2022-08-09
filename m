@@ -2,249 +2,241 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 912CB58DCB8
-	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 19:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2471C58DCBD
+	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 19:04:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244959AbiHIRD3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Aug 2022 13:03:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45302 "EHLO
+        id S245324AbiHIREH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Aug 2022 13:04:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244597AbiHIRDF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Aug 2022 13:03:05 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AE7323F
-        for <bpf@vger.kernel.org>; Tue,  9 Aug 2022 10:03:03 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id qn6so11492227ejc.11
-        for <bpf@vger.kernel.org>; Tue, 09 Aug 2022 10:03:03 -0700 (PDT)
+        with ESMTP id S245257AbiHIREF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Aug 2022 13:04:05 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 528F519D
+        for <bpf@vger.kernel.org>; Tue,  9 Aug 2022 10:04:04 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id i13so1328359qkm.8
+        for <bpf@vger.kernel.org>; Tue, 09 Aug 2022 10:04:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=mRHykDDdPXEUKTN7X42YKosL9BoN0z+JwMR33KtE41o=;
-        b=autCxdIthMzjmwJynR6r0SAues+TAnIw0UHcHPsRH8/LC9WIuafiIQgU/+n3MasMxY
-         dIH30for1ZY7ydg4P0TgNvgQXOghCLxOgUKvBbvtL0IiTYTdDkpx30FpDWwGiWfVhknS
-         gMeENh+TwOzFvEU6FAQuTxWCSwJSS/uWPkAAJ05N18dIGLoY+oHF2gIZ/92g71VdcsOa
-         YZYiLbW5RuA5ImICiIe/ZIbhiy/Tl0R0KAdm58Gwtn+agFxA3AF+frTORUoogaR4oi4b
-         3fl89nYl+EbDoddq4AsZgCOrkLejYmxzdxhuMZmHlQGZeZGl0hNYMJ69qmevapXZK87v
-         PfOQ==
+        bh=wK2UgiO0xmPm9gijXHdgykd9J2+++2+6yb4/6WYnghc=;
+        b=Qd2j159QFh2Ba9yZo2y6muhNd/MB6kx1pzreSiNh/IP8NYWmhVkxCntqx++BPMqkYa
+         afojxFFSXsVdw3irQaSLsOSlvHg4zmyHko5zytdVke0ShLA5lXIf5+WJ+saTzEUy8jLk
+         NlJnzoN2xfcUmzN+pImB1NmT9eYiOqGsnNN+s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=mRHykDDdPXEUKTN7X42YKosL9BoN0z+JwMR33KtE41o=;
-        b=taN3+HqBGytXdQVYDjqcNw3Fo7qERY1KVlxhD8zPVEgVkvN1pLGPRlfWoCNamCPOAw
-         EBvPVp6ffT1O06hnp9NNrde1sTcKVJBY7PfYxce3Tk32yakqauZ528TqvlHxHQ3FkW7C
-         qXc9ucJWb/IETD8zgSpz9jGl2UAO7G65dbjFhsKdjm2TAWPD7Aru1736YrzpjRJkoAqA
-         wPfFYdRuFiB/yBf+vD9F8fw94Zlp9YwvNnRYHRt4nRCyfJnirmTSbjYSNMuE1stIy41X
-         yx4ldBpUELy0lOIy7tWs8L6Qb9FKo7/7kEFS+ToO1Ajz1evHM+6DcXGuAYjLSfRyC6E5
-         xvlA==
-X-Gm-Message-State: ACgBeo0YZ7Lh3JnsgawryRrHAoXUv/pktXTpcYjMhKWPXXLCaZw2QiSp
-        zkdDWUZcUP8wxStUJUe9FqeN0wrUqONKLur+dC4FC7XM
-X-Google-Smtp-Source: AA6agR76UOjVxFPiI+lyiY4BXo3aPyAVfZZ5ibBDoaVuyTYJkhy+0BmycSv5O6e/H16kzVj/Q+aMGH3yknl0DVOt+ao=
-X-Received: by 2002:a17:906:ef90:b0:730:9cd8:56d7 with SMTP id
- ze16-20020a170906ef9000b007309cd856d7mr16695025ejb.94.1660064581738; Tue, 09
- Aug 2022 10:03:01 -0700 (PDT)
+        bh=wK2UgiO0xmPm9gijXHdgykd9J2+++2+6yb4/6WYnghc=;
+        b=AQ5dF5BTPUeK6uW/o/kDMlVo6NmbeqH83WiQPCKHiFI4k+9yPdOQc038ZMrpYHyIVq
+         yOciuKm0/zxTMCUe70H2bguDKcjjFcIzh4RYJ6eUhY16idrI5OX3evHRIvYQ2kWouScm
+         dVp720mR7KO09azQhOD+BQw4gwz9DHSLeJfdlDIYfKSsB3KOsKe0laBxGVOnYrXHDP8l
+         //JVoql87o8ivlW1rgP72HcwJBm18lLpktnvVL3JyygRqO3DTy0oBWDNKSGg5ypXSznC
+         5YSaBmGCjCHQvaKTd4yPyRiDWvYFcQqizoXypK3Ey5fx/llq7oPNAir5rYE0qDXhZ7hd
+         DAFg==
+X-Gm-Message-State: ACgBeo19SIhLH50VJpu5cFCNpuwc/K5AuwHJvTE+bzif6A5nSYVJxaQa
+        Z523c78Yp3n3Fn0/b7Z5s/qeUeVJZH40l7Zm50Q1tw==
+X-Google-Smtp-Source: AA6agR5hqFK/rP1CLKlAqc+pNfT72uqlNlIbvr0GiCDZaizK6zy4eTXbYO7r2AkEzj0Uuu/VQkXwfJzymxc6m94w6eI=
+X-Received: by 2002:a05:620a:371e:b0:6b8:b7a4:42c8 with SMTP id
+ de30-20020a05620a371e00b006b8b7a442c8mr18416821qkb.608.1660064643348; Tue, 09
+ Aug 2022 10:04:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220807175111.4178812-1-yhs@fb.com> <20220807175121.4179410-1-yhs@fb.com>
-In-Reply-To: <20220807175121.4179410-1-yhs@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 9 Aug 2022 10:02:50 -0700
-Message-ID: <CAADnVQK__BPkmgsjuLmBxZ3a=kDTA_cGR8oWLCvjLVDYYW6hfw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] bpf: Perform necessary sign/zero extension
- for kfunc return values
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+References: <Yo4xb2w+FHhUtJNw@FVFF77S0Q05N> <0f8fe661-c450-ccd8-761f-dbfff449c533@huawei.com>
+ <Yo9REdx3nsgbZunE@FVFF77S0Q05N> <40fda0b0-0efc-ea1b-96d5-e51a4d1593dd@huawei.com>
+ <Yp4s7eNGvb2CNtPp@FVFF77S0Q05N.cambridge.arm.com> <55c1b9d6-1d53-9752-fb03-00f60ed15db7@huawei.com>
+In-Reply-To: <55c1b9d6-1d53-9752-fb03-00f60ed15db7@huawei.com>
+From:   Florent Revest <revest@chromium.org>
+Date:   Tue, 9 Aug 2022 19:03:52 +0200
+Message-ID: <CABRcYmKEn7eajowROwZKerngf0eo0jddNzYgFp82tAqgu0BAxg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 1/6] arm64: ftrace: Add ftrace direct call support
+To:     Xu Kuohai <xukuohai@huawei.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>, bpf@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>, Tejun Heo <tj@kernel.org>
+        Alexei Starovoitov <ast@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        hpa@zytor.com, Shuah Khan <shuah@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Daniel Kiss <daniel.kiss@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Peter Collingbourne <pcc@google.com>,
+        Mark Brown <broonie@kernel.org>,
+        Delyan Kratunov <delyank@fb.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Wang ShaoBo <bobo.shaobowang@huawei.com>,
+        cj.chengjian@huawei.com, huawei.libin@huawei.com,
+        xiexiuqi@huawei.com, liwei391@huawei.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Aug 7, 2022 at 10:51 AM Yonghong Song <yhs@fb.com> wrote:
+On Thu, Jun 9, 2022 at 6:27 AM Xu Kuohai <xukuohai@huawei.com> wrote:
+> On 6/7/2022 12:35 AM, Mark Rutland wrote:
+> > On Thu, May 26, 2022 at 10:48:05PM +0800, Xu Kuohai wrote:
+> >> On 5/26/2022 6:06 PM, Mark Rutland wrote:
+> >>> On Thu, May 26, 2022 at 05:45:03PM +0800, Xu Kuohai wrote:
+> >>>> On 5/25/2022 9:38 PM, Mark Rutland wrote:
+> >>>>> On Wed, May 18, 2022 at 09:16:33AM -0400, Xu Kuohai wrote:
+> >>>>>> As noted in that thread, I have a few concerns which equally apply here:
+> >>>>>
+> >>>>> * Due to the limited range of BL instructions, it's not always possible to
+> >>>>>   patch an ftrace call-site to branch to an arbitrary trampoline. The way this
+> >>>>>   works for ftrace today relies upon knowingthe set of trampolines at
+> >>>>>   compile-time, and allocating module PLTs for those, and that approach cannot
+> >>>>>   work reliably for dynanically allocated trampolines.
+> >>>>
+> >>>> Currently patch 5 returns -ENOTSUPP when long jump is detected, so no
+> >>>> bpf trampoline is constructed for out of range patch-site:
+> >>>>
+> >>>> if (is_long_jump(orig_call, image))
+> >>>>    return -ENOTSUPP;
+> >>>
+> >>> Sure, my point is that in practice that means that (from the user's PoV) this
+> >>> may randomly fail to work, and I'd like something that we can ensure works
+> >>> consistently.
+> >>>
+> >>
+> >> OK, should I suspend this work until you finish refactoring ftrace?
+> >
+> > Yes; I'd appreciate if we could hold on this for a bit.
+> >
+> > I think with some ground work we can avoid most of the painful edge cases and
+> > might be able to avoid the need for custom trampolines.
+> >
 >
-> Tejun reported a bpf program kfunc return value mis-handling which
-> may cause incorrect result. The following is an example to show
-> the problem.
->   $ cat t.c
->   unsigned char bar();
->   int foo() {
->         if (bar() != 10) return 0; else return 1;
->   }
->   $ clang -target bpf -O2 -c t.c
->   $ llvm-objdump -d t.o
->   ...
->   0000000000000000 <foo>:
->        0:       85 10 00 00 ff ff ff ff call -1
->        1:       bf 01 00 00 00 00 00 00 r1 = r0
->        2:       b7 00 00 00 01 00 00 00 r0 = 1
->        3:       15 01 01 00 0a 00 00 00 if r1 == 10 goto +1 <LBB0_2>
->        4:       b7 00 00 00 00 00 00 00 r0 = 0
+> I'v read your WIP code, but unfortunately I didn't find any mechanism to
+> replace bpf trampoline in your code, sorry.
 >
->   0000000000000028 <LBB0_2>:
->        5:       95 00 00 00 00 00 00 00 exit
->   $
->
-> In the above example, the return type for bar() is 'unsigned char'.
-> But in the disassembly code, the whole register 'r1' is used to
-> compare to 10 without truncating upper 56 bits.
->
-> If function bar() is implemented as a bpf function, everything
-> should be okay since bpf ABI will make sure the caller do
-> proper truncation of upper 56 bits.
->
-> But if function bar() is implemented as a non-bpf kfunc,
-> there could a mismatch between bar() implementation and bpf program.
-> For example, if the host arch is x86_64, the bar() function
-> may just put the return value in lower 8-bit subregister and all
-> upper 56 bits could contain garbage. This is not a problem
-> if bar() is called in x86_64 context as the caller will use
-> %al to get the value.
->
-> But this could be a problem if bar() is called in bpf context
-> and there is a mismatch expectation between bpf and native architecture.
-> Currently, bpf programs use the default llvm ABI ([1], function
-> isPromotableIntegerTypeForABI()) such that if an integer type size
-> is less than int type size, it is assumed proper sign or zero
-> extension has been done to the return value. There will be a problem
-> if the kfunc return value type is u8/s8/u16/s16.
->
-> This patch intends to address this issue by doing proper sign or zero
-> extension for the kfunc return value before it is used later.
->
->  [1] https://github.com/llvm/llvm-project/blob/main/clang/lib/CodeGen/TargetInfo.cpp
->
-> Reported-by: Tejun Heo <tj@kernel.org>
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
->  include/linux/bpf.h   |  2 ++
->  kernel/bpf/btf.c      |  9 +++++++++
->  kernel/bpf/verifier.c | 35 +++++++++++++++++++++++++++++++++--
->  3 files changed, 44 insertions(+), 2 deletions(-)
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 20c26aed7896..b6f6bb1b707d 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -727,6 +727,8 @@ enum bpf_cgroup_storage_type {
->  #define MAX_BPF_FUNC_REG_ARGS 5
->
->  struct btf_func_model {
-> +       u8 ret_integer:1;
-> +       u8 ret_integer_signed:1;
->         u8 ret_size;
->         u8 nr_args;
->         u8 arg_size[MAX_BPF_FUNC_ARGS];
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 8119dc3994db..f30a02018701 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -5897,6 +5897,7 @@ int btf_distill_func_proto(struct bpf_verifier_log *log,
->         u32 i, nargs;
->         int ret;
->
-> +       m->ret_integer = false;
->         if (!func) {
->                 /* BTF function prototype doesn't match the verifier types.
->                  * Fall back to MAX_BPF_FUNC_REG_ARGS u64 args.
-> @@ -5923,6 +5924,14 @@ int btf_distill_func_proto(struct bpf_verifier_log *log,
->                 return -EINVAL;
->         }
->         m->ret_size = ret;
-> +       if (btf_type_is_int(t)) {
-> +               m->ret_integer = true;
-> +               /* BTF_INT_BOOL is considered as unsigned */
-> +               if (BTF_INT_ENCODING(btf_type_int(t)) == BTF_INT_SIGNED)
-> +                       m->ret_integer_signed = true;
-> +               else
-> +                       m->ret_integer_signed = false;
-> +       }
->
->         for (i = 0; i < nargs; i++) {
->                 if (i == nargs - 1 && args[i].type == 0) {
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 096fdac70165..684f8606f341 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -13834,8 +13834,9 @@ static int fixup_call_args(struct bpf_verifier_env *env)
->  }
->
->  static int fixup_kfunc_call(struct bpf_verifier_env *env,
-> -                           struct bpf_insn *insn)
-> +                           struct bpf_insn *insn, struct bpf_insn *insn_buf, int *cnt)
->  {
-> +       u8 ret_size, shift_cnt, rshift_opcode;
->         const struct bpf_kfunc_desc *desc;
->
->         if (!insn->imm) {
-> @@ -13855,6 +13856,26 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env,
->
->         insn->imm = desc->imm;
->
-> +       *cnt = 0;
-> +       ret_size = desc->func_model.ret_size;
-> +
-> +       /* If the kfunc return type is an integer and the type size is one byte or two
-> +        * bytes, currently llvm/bpf assumes proper sign/zero extension has been done
-> +        * in the caller. But such an asumption may not hold for non-bpf architectures.
-> +        * For example, for x86_64, if the return type is 'u8', it is possible that only
-> +        * %al register is set properly and upper 56 bits of %rax register may contain
-> +        * garbage. To resolve this case, Let us do a necessary truncation to zero-out
-> +        * or properly sign-extend upper 56 bits.
-> +        */
-> +       if (desc->func_model.ret_integer && ret_size < sizeof(int)) {
+> It looks like bpf trampoline and ftrace works can be done at the same
+> time. I think for now we can just attach bpf trampoline to bpf prog.
+> Once your ftrace work is done, we can add support for attaching bpf
+> trampoline to regular kernel function. Is this OK?
 
-Few questions...
-Do we really need 'ret_integer' here?
-and is it x86 specific?
-afaik only x86 has 8 and 16-bit subregisters.
-On all other archs the hw cannot write such quantities into
-a register and don't touch the upper bits.
-At the same time such return values from kfunc are rare.
-I don't think we have such a case in the current set of kfuncs.
-So being safe than sorry is a reasonable trade off and
-gating by x86 only is unnecessary.
-So how about just if (ret_size < sizeof(int)) here?
+Hey Mark and Xu! :)
 
-> +               shift_cnt = (sizeof(u64) - ret_size) * 8;
-> +               rshift_opcode = desc->func_model.ret_integer_signed ? BPF_ARSH : BPF_RSH;
-> +               insn_buf[0] = *insn;
-> +               insn_buf[1] = BPF_ALU64_IMM(BPF_LSH, BPF_REG_0, shift_cnt);
-> +               insn_buf[2] = BPF_ALU64_IMM(rshift_opcode, BPF_REG_0, shift_cnt);
-> +               *cnt = 3;
-> +       }
-> +
->         return 0;
->  }
->
-> @@ -13996,9 +14017,19 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
->                 if (insn->src_reg == BPF_PSEUDO_CALL)
->                         continue;
->                 if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL) {
-> -                       ret = fixup_kfunc_call(env, insn);
-> +                       ret = fixup_kfunc_call(env, insn, insn_buf, &cnt);
->                         if (ret)
->                                 return ret;
-> +                       if (cnt == 0)
-> +                               continue;
-> +
-> +                       new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
-> +                       if (!new_prog)
-> +                               return -ENOMEM;
-> +
-> +                       delta    += cnt - 1;
-> +                       env->prog = prog = new_prog;
-> +                       insn      = new_prog->insnsi + i + delta;
->                         continue;
->                 }
->
-> --
-> 2.30.2
->
+I'm interested in this feature too and would be happy to help.
+
+I've been trying to understand what you both have in mind to figure out a way
+forward, please correct me if I got anything wrong! :)
+
+
+It looks like, currently, there are three places where an indirection to BPF is
+technically possible. Chronologically these are:
+
+- the function's patchsite (currently there are 2 nops, this could become 4
+  nops with Mark's series on per call-site ops)
+
+- the ftrace ops (currently called by iterating over a global list but could be
+  called more directly with Mark's series on per-call-site ops or by
+  dynamically generated branches with Wang's series on dynamic trampolines)
+
+- a ftrace trampoline tail call (currently, this is after restoring a full
+  pt_regs but this could become an args only restoration with Mark's series on
+  DYNAMIC_FTRACE_WITH_ARGS)
+
+
+If we first consider the situation when only a BPF program is attached to a
+kernel function:
+- Using the patchsite for indirection (proposed by Xu, same as on x86)
+   Pros:
+   - We have BPF trampolines anyway because they are required for orthogonal
+     features such as calling BPF programs as functions, so jumping into that
+     existing JITed code is straightforward
+   - This has the minimum overhead (eg: these trampolines only save the actual
+     number of args used by the function in ctx and avoid indirect calls)
+   Cons:
+   - If the BPF trampoline is JITed outside BL's limits, attachment can
+     randomly fail
+
+- Using a ftrace op for indirection (proposed by Mark)
+  Pros:
+  - BPF doesn't need to care about BL's range, ftrace_caller will be in range
+  Cons:
+  - The ftrace trampoline would first save all args in an ftrace_regs only for
+    the BPF op to then re-save them in a BPF ctx array (as per BPF calling
+    convention) so we'd effectively have to do the work of saving args twice
+  - BPF currently uses DYNAMIC_FTRACE_WITH_DIRECT_CALLS APIs. Either arm64
+    should implement DIRECT_CALLS with... an indirect call :) (that is, the
+    arch_ftrace_set_direct_caller op would turn back its ftrace_regs into
+    arguments for the BPF trampoline) or BPF would need to use a different
+    ftrace API just on arm64 (to define new ops, which, unless if they would be
+    dynamically JITed, wouldn't be as performant as the existing BPF
+    trampolines)
+
+- Using a ftrace trampoline tail call for indirection (not discussed yet iiuc)
+  Pros:
+  - BPF also doesn't need to care about BL's range
+  - This also leverages the existing BPF trampolines
+  Cons:
+  - This also does the work of saving/restoring arguments twice
+  - DYNAMIC_FTRACE_WITH_DIRECT_CALLS depends on DYNAMIC_FTRACE_WITH_REGS now
+    although in practice the registers kept by DYNAMIC_FTRACE_WITH_ARGS
+    should be enough to call BPF trampolines
+
+If we consider the situation when both ftrace ops and BPF programs are attached
+to a kernel function:
+- Using the patchsite for indirection can't solve this
+
+- Using a ftrace op for indirection (proposed by Mark) or using a ftrace
+  trampoline tail call as an indirection (proposed by Xu, same as on x86) have
+  the same pros & cons as in the BPF only situation except that this time we
+  pay the cost of registers saving twice for good reasons (we need args in both
+  ftrace_regs and the BPF ctx array formats anyway)
+
+
+Unless I'm missing something, it sounds like the following approach would work:
+- Always patch patchsites with calls to ftrace trampolines (within BL ranges)
+- Always go through ops and have arch_ftrace_set_direct_caller set
+  ftrace_regs->direct_call (instead of pt_regs->orig_x0 in this patch)
+- If ftrace_regs->direct_call != 0 at the end of the ftrace trampoline, tail
+  call it
+
+Once Mark's series on DYNAMIC_FTRACE_WITH_ARGS is merged, we would need to have
+DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+  depend on DYNAMIC_FTRACE_WITH_REGS || DYNAMIC_FTRACE_WITH_ARGS
+BPF trampolines (the only users of this API now) only care about args to the
+attachment point anyway so I think this would work transparently ?
+
+Once Mark's series on per-callsite ops is merged, the second step (going
+through ops) would be significantly faster in the situation where only one
+program is used, therefore one arch_ftrace_set_direct_caller op.
+
+Once Wang's series on dynamic trampolines is merged, the second step (going
+through ops) would also be significantly faster in the case when multiple ops
+are attached.
+
+
+What are your thoughts? If this sounds somewhat sane, I'm happy to help out
+with the implementation as well :)
+
+Thanks!
+Florent
