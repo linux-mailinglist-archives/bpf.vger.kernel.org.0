@@ -2,597 +2,223 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0725758D3E8
-	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 08:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67C8758D3E7
+	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 08:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231147AbiHIGh3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Aug 2022 02:37:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48328 "EHLO
+        id S231459AbiHIGgo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Aug 2022 02:36:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229886AbiHIGh3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Aug 2022 02:37:29 -0400
+        with ESMTP id S237907AbiHIGg2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Aug 2022 02:36:28 -0400
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA66C18B27
-        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 23:37:26 -0700 (PDT)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 278NSISj015582
-        for <bpf@vger.kernel.org>; Mon, 8 Aug 2022 23:37:26 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=zytXAXcDS/l/HJzENrlZgeJV5mcbuuykUmecWSxHCxs=;
- b=TSRMW2k69YGYFgI1JrEiMq2OdsS74DN9tGp6FaE639LdKIhLgK+bjxZZ912MGY/V2D+l
- BDD99N0XjdXtEv4jSwknDU84HNWE3Kqe2Bs7bvgcKOEPrXvcv8hwhSEM5i1DoFQ1ebJO
- hJYHu/fEp+/+ttxkEe5TZ4NcXmgiBPD/dms= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3htxr4q9fn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 08 Aug 2022 23:37:26 -0700
-Received: from snc-exhub201.TheFacebook.com (2620:10d:c085:21d::7) by
- snc-exhub204.TheFacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Mon, 8 Aug 2022 23:37:25 -0700
-Received: from twshared14818.18.frc3.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Mon, 8 Aug 2022 23:37:25 -0700
-Received: by devbig931.frc1.facebook.com (Postfix, from userid 460691)
-        id 8D2336716762; Mon,  8 Aug 2022 23:35:03 -0700 (PDT)
-From:   Kui-Feng Lee <kuifeng@fb.com>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andrii@kernel.org>, <kernel-team@fb.com>, <yhs@fb.com>
-CC:     Kui-Feng Lee <kuifeng@fb.com>
-Subject: [PATCH bpf-next v3 3/3] selftests/bpf: Test parameterized task BPF iterators.
-Date:   Mon, 8 Aug 2022 23:35:01 -0700
-Message-ID: <20220809063501.667610-4-kuifeng@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220809063501.667610-1-kuifeng@fb.com>
-References: <20220809063501.667610-1-kuifeng@fb.com>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F391205CC
+        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 23:36:28 -0700 (PDT)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 278NSMhl027569;
+        Mon, 8 Aug 2022 23:36:12 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=yXMu3w5q6xYX2fwm+XLEr8CL5B5+rwfrTa2+z76tt2Y=;
+ b=e0Tv93m3Y+ips3o3AAaKH5XtP6SRw6zTH6U5fyMmaML9ohYHz1/LetvK4BGeRvlpdu+O
+ tfClIfz7Dr048dGnZzeIVHmvJTQoVuR+5wxIG0m3QIii75XGObkN0qgNqrdWTrjAuKCV
+ 6ErOoiBjLtXlbup+ONzXaZDfSXs98OLu/ac= 
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hsp0q7a2w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Aug 2022 23:36:12 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oVGTAhw1DRSABhQQcVXvjuVzpTz5WqXSR8K/Q4vsr7raygyl3PrY5hO96DlCSSiX2h0/BYxDJYdQSzsTDURnTeUcg4+TpC2sv/K2Vz91YSsM2aVU6CX6G53ywq8b1a2xT48O7xL0lXB5DF5WeBc0qZENgv/grSUi8gIU50UenDy55uT8sz2QduiwJ5OXjHwLI9JN+9Hvrqoe6yV8shYvoRnq882Lhtc2dwXchaNXH+8WVeKpHZRex1m2H+lZ57PBWFBnELOh3Uyz/ezvNgwhrqKgmpYgD1uy8w3GlvY2kuHy7mmK2fwiZf5cnP0rnyYokDGehw257w+gDAp3vqrEiQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yXMu3w5q6xYX2fwm+XLEr8CL5B5+rwfrTa2+z76tt2Y=;
+ b=FO2onAM4wPr3RKSzIS0enAd6Oz+TYAc9qv3d6mIyCSELMH6ymKUiCT49TSQjOHcPhxkavzsMng5t6J98/7OuhGwOqQSquqRVzjZNApFyq43zmUCeKXBiMzrzY3/Jz8cbl7DnBCGqPmTVi779LLc6lfGwv0FwMuEH1ZklMkRwyztsx+Ma33IPOcRtzFdHru5EATLQjYv3n+2dFElKnzyT5p7V8/be21thIffNomq96v0eERGcgPi/k4sKwgkfpZ3kq89zJ8OLVO840+LELWBmZbtf7qPB6ECNKQbFJda6ZI71fwzsLHxo3S3l2s3ejp7CMSgww/c2FLyM+vPqHlNLNA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by PH0PR15MB4197.namprd15.prod.outlook.com (2603:10b6:510:24::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5525.10; Tue, 9 Aug
+ 2022 06:36:09 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::de2:b318:f43e:6f55]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::de2:b318:f43e:6f55%3]) with mapi id 15.20.5504.021; Tue, 9 Aug 2022
+ 06:36:09 +0000
+Message-ID: <b72643b6-831e-9362-c54b-ba6411338c77@fb.com>
+Date:   Mon, 8 Aug 2022 23:36:07 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.12.0
+Subject: Re: [PATCH bpf-next 2/3] bpf: Perform necessary sign/zero extension
+ for kfunc return values
+Content-Language: en-US
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+        Tejun Heo <tj@kernel.org>
+References: <20220807175111.4178812-1-yhs@fb.com>
+ <20220807175121.4179410-1-yhs@fb.com>
+ <CAEf4BzaJydVpt+H6abR6udjcQ5Scu07W+LLQyo7jC9et9T=ZOA@mail.gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+In-Reply-To: <CAEf4BzaJydVpt+H6abR6udjcQ5Scu07W+LLQyo7jC9et9T=ZOA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-ClientProxiedBy: BYAPR07CA0073.namprd07.prod.outlook.com
+ (2603:10b6:a03:12b::14) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c777a5dd-2dc3-4c04-c175-08da79d1721f
+X-MS-TrafficTypeDiagnostic: PH0PR15MB4197:EE_
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5vG3YnZ268ffw9unsr7DEzSBhDkJq3DyimvW8j1BDKhFj1BmqQNVsHt4aYaWJYArsA8AruQppaoAepsKnYOq2bhLGi+BAq8p/IbL/bnUUYWmvGgTl3zfeHT0EK4xeBvcDXXCetB09GLBPiSMY3N9U+YHOBK2sBxmZddnRCxSZnyl2RuEq3xEfS4ELs3Nu6bIZP282ehaREahCyZ64WGCdvon0Kk44sihcxhLAulIl2SmKwMLOl0mw3buymGDfSXf7rF9K2jqYsyX8jaATYJhOdmmm9xOttqS4jkOrIRHp8mSo5Qw9VFBGGlKz6R4IYZM1EoPVBCp/URMm2Wr6aBz8XyiUXElEckbzAWzRsezkchBDbcHN1zIszIhSKldHCE1JGKs9coLwKoUMtfOcEGLfXmh0hg56w3Rl5Ubdjx38jTeNrFZ5QZAwKo04kmVzOFED0RJW1Uzn18CSpcz0E2INAPA7YI5sYkZbtGBPRPCqsRq6tZHkoGzH8LZN8/3tbhFL43IkbnqKS6sEpqlb9MQEMWGxBTyD7xGOU05ILIZkrV9xeN4lvPSzfLatMsdDIDSrm4/CJmq5RoP2seC3E+vRhh8RTpFm8zemNZyNuBwTyfjFOU/Zk4w6kWJturQa7vTIccFeX6XvEHVUUagYKJX+SsNQSk60qbWyCFkgdLkGeciG7/JCFGZuocJ/p+BjsKCf+ey/oDdkFt2lPfNdKcPoYZ+SK+7YaeJuEHXHR4HphJrcbwXNgPPiIGpK9SdD/fyQwRkWm4+yhqsQgkVa0CiPEH+h9//d/I/7cTaGBY7dHaOjXYqQeUKt9lKMkLY+BilFZ/aQmgJCHgKgMIUc6IZfUjD2higedc88LDDIJu89HKJJCfLMCXbM+aQeFSK90x4
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(136003)(39860400002)(376002)(346002)(366004)(396003)(4326008)(66476007)(66556008)(66946007)(83380400001)(8676002)(6916009)(54906003)(41300700001)(316002)(31686004)(36756003)(6506007)(53546011)(6512007)(186003)(2616005)(2906002)(8936002)(5660300002)(478600001)(966005)(6486002)(31696002)(86362001)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YVVxSTF4MkNMVFhsNlNtaGpDVEV6eUltL2RXSE11NjZhcUxvMy85ZWk4ZjhC?=
+ =?utf-8?B?KzV3akxmcmpIOHRhelZGMkhqcmIrMUR6Ym1kNmIzb08xdVpBcmcrdlpIb0RV?=
+ =?utf-8?B?cmgyYVc5Y01ITFhmWkJVRndsN1hOUDM5dEM4cEVqcFR5YXZ1R2I5OEdmS01n?=
+ =?utf-8?B?UzI5Y1ZtdFh6ZkptSDJXRjl3TUVRdFBWSHJVOHNDSHNtbmpqMndkSWlOcXNn?=
+ =?utf-8?B?enpvUytyc2U3Mm9ra1pwSlIxMVBLeUVJODVpUkRWQVFuSWhsQTdnNmdtcEp6?=
+ =?utf-8?B?alZuZ2VZUjFxTjg5TlJDWVp0Q1UzcXhlL1IzbU8yaW9qQ0lOclNiWEx4YStI?=
+ =?utf-8?B?UkI4WWFFRHR2bXFKZlA5WnU3aEdYK3Y1bVJEWkl2MWdFUS9HU0FaMGNscSs0?=
+ =?utf-8?B?NmRwMWdrNTNBaDNXaUxGQ01nUXlMaXY0NTZpVFdsQUdTb25GR1IvOHBmaFdm?=
+ =?utf-8?B?S1JQNGlXTWNBTzFGV3U3TEpjak1pUGt4OW9VRnF4NVdxdkZ0aW5rL21PblQ0?=
+ =?utf-8?B?MThQS21FOUcycmVTakxRTjMvR0VWWmJuVUpYa2tPeTgralMrUHlwTUw4OVcy?=
+ =?utf-8?B?eEdNREx2SGt0ZFlWVFExZGlxVHU3ZTF3dW91cSszbkRCMEErM3p1YkRjRnk1?=
+ =?utf-8?B?VEF1U1MvNCs0RHJpUnp4bTlNN0NKekdvdnZTYS80Q2hydkJXalRKV1A3cUs1?=
+ =?utf-8?B?VzJQeUhuMmY3Tkw0VzQxZGUwdDBPYXdHNTNreUhlQU9XVnFuNjFqeFRHY3FQ?=
+ =?utf-8?B?ZmE1M0NFMnhXeHdmUFBrL0dIc3NvbVc3Tk1KWnk0dG5zcjdFWGt4M3EvSnZm?=
+ =?utf-8?B?UVBLTTdQWml2S1IxdVBDajdxK0tQMDZOdngzZTBNbkFSVzB5TWFQNGxTY09Q?=
+ =?utf-8?B?enlOcE1xSjN0WTNHQlV6cmtranhadG00Zk9zNW9GVnJ2WG8raXVTZHlTb3dS?=
+ =?utf-8?B?RTFxTTRjKzVOYkRVSlErb2c2U2E2N0xocGtHRUtLMVZneExvdkl2bEtBQjFV?=
+ =?utf-8?B?UC9jY0VZL3VDeWNzVHovMFpGb0NBUGpMbklvcEhScDd5Z2ZuVXdSdFUyOEJT?=
+ =?utf-8?B?VGh1d2Zna3RUWnlzVThORmROWk5hMC9sMURha1ZDZ3ZkajVBa3VXeEMxS3dh?=
+ =?utf-8?B?YlRtYTFKVDdicVhPVUFreVNOMDJTT1pqOHNBNE9meEZXUUplc0llQ0F3QUhQ?=
+ =?utf-8?B?NXQzRjJTcUhETHV1ZU9RSy9rTWZ3dUE4bURpY1Q3SWdGQ25aNEFYNmErVm1Q?=
+ =?utf-8?B?OVdSYzkzdlpRN3U3a0JzOHdhdzB1YXFISndDa05GZldnUlF5QS9wck45eG9C?=
+ =?utf-8?B?eTUxYW1LVzJ3dHV5WGFwTkhrNVR2U0loYWV1REowdnJFZFhIS1FheGM4dk1L?=
+ =?utf-8?B?ajFJcFQxS0JoWmcvYXpSODhoeG0yQzQ4NEkwZ0U1dUNxclc3TE1IaWhBN2FV?=
+ =?utf-8?B?RnZEd25IY1QvOXQ4WnhRVkxHRC9tcHlnV2crbnd3MHlUWkp2ektGR2FNOUVm?=
+ =?utf-8?B?aWxLTFNrajFtV2ZaOUpmWmw3VitKWTh4TWtmdGV0MXpoUWdHc0pzdDEwNWZj?=
+ =?utf-8?B?b016aXBsQTI5N2ZoQ2J6NEszdU5CYXpzUzY4bWJrQzJmSCtiVUJtaW9ScDFP?=
+ =?utf-8?B?cEJvN3V5eDlUT0l6QXR2MTR4cG1rUkNLbnltOUNzZlluSnlEcmdNczdyN2JH?=
+ =?utf-8?B?WTF2WG8wSGlJNG15dGY3SnA1ZXF5UTMrOER5SmRiTnpzRWR1Q2VwdnVjN0NR?=
+ =?utf-8?B?Slgzbmd1UDFibm1KdjloZjhzTEdjUFpBZGZZQjRvSjgrQ0JHWTFDaDlwOUVT?=
+ =?utf-8?B?blRNejIyamVBOXFFOGYzMnVMd0daQi9RbDZmUUs5WFJ4aEl5M0NHYTVUeVEz?=
+ =?utf-8?B?YjZRNFc5TGhFQWRRWk54QUcwV0I4QTBJcVVMVXNpVlFGeGk5RTVtQUNZSDhT?=
+ =?utf-8?B?a2pZU1luYk4wdGlYRWt4WFRiN1U4cE5zclhGQXBzQzZyY0lNcUR2SHh2WkNT?=
+ =?utf-8?B?U0pMVWdSMENBbFJsREx0ZFRXdzNqdjRna3IxVDhWeTVER3FncEIrbzRIZHRW?=
+ =?utf-8?B?TkhZSHQrcmVmM3BxeTdwSUpsZjM5MkdRS2FYeWlUbW55SjhCL0pGMmZIODFo?=
+ =?utf-8?B?RTFFdXcweEJTdU1INFhCWm9OOXFaVENtMzl5VU1tbU9TbmtEdUh0YTRubWcr?=
+ =?utf-8?B?YkE9PQ==?=
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c777a5dd-2dc3-4c04-c175-08da79d1721f
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2022 06:36:09.7405
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4cn9OZI45pvCjAUIJkTUYleex8B5oMHBBeJJUycNuErOAbmlmrViZMDcsECOSOyl
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR15MB4197
+X-Proofpoint-ORIG-GUID: ev7HoVgOanokd1QPzcQqPHBtfG4JpAjt
+X-Proofpoint-GUID: ev7HoVgOanokd1QPzcQqPHBtfG4JpAjt
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: cbOq1PgJKH-2whjM5flwpmIRv-qar3TL
-X-Proofpoint-GUID: cbOq1PgJKH-2whjM5flwpmIRv-qar3TL
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
  definitions=2022-08-09_03,2022-08-09_01,2022-06-22_01
 X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Test iterators of vma, files, and tasks of tasks.
 
-Ensure the API works appropriately to visit all tasks,
-tasks in a process, or a particular task.
 
-Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
----
- .../selftests/bpf/prog_tests/bpf_iter.c       | 206 ++++++++++++++++--
- .../selftests/bpf/prog_tests/btf_dump.c       |   2 +-
- .../selftests/bpf/progs/bpf_iter_task.c       |   9 +
- .../selftests/bpf/progs/bpf_iter_task_file.c  |   7 +
- .../selftests/bpf/progs/bpf_iter_task_vma.c   |   6 +-
- 5 files changed, 205 insertions(+), 25 deletions(-)
+On 8/8/22 4:25 PM, Andrii Nakryiko wrote:
+> On Sun, Aug 7, 2022 at 10:51 AM Yonghong Song <yhs@fb.com> wrote:
+>>
+>> Tejun reported a bpf program kfunc return value mis-handling which
+>> may cause incorrect result. The following is an example to show
+>> the problem.
+>>    $ cat t.c
+>>    unsigned char bar();
+>>    int foo() {
+>>          if (bar() != 10) return 0; else return 1;
+>>    }
+>>    $ clang -target bpf -O2 -c t.c
+>>    $ llvm-objdump -d t.o
+>>    ...
+>>    0000000000000000 <foo>:
+>>         0:       85 10 00 00 ff ff ff ff call -1
+>>         1:       bf 01 00 00 00 00 00 00 r1 = r0
+>>         2:       b7 00 00 00 01 00 00 00 r0 = 1
+>>         3:       15 01 01 00 0a 00 00 00 if r1 == 10 goto +1 <LBB0_2>
+>>         4:       b7 00 00 00 00 00 00 00 r0 = 0
+>>
+>>    0000000000000028 <LBB0_2>:
+>>         5:       95 00 00 00 00 00 00 00 exit
+>>    $
+>>
+>> In the above example, the return type for bar() is 'unsigned char'.
+>> But in the disassembly code, the whole register 'r1' is used to
+>> compare to 10 without truncating upper 56 bits.
+>>
+>> If function bar() is implemented as a bpf function, everything
+>> should be okay since bpf ABI will make sure the caller do
+>> proper truncation of upper 56 bits.
+>>
+>> But if function bar() is implemented as a non-bpf kfunc,
+>> there could a mismatch between bar() implementation and bpf program.
+>> For example, if the host arch is x86_64, the bar() function
+>> may just put the return value in lower 8-bit subregister and all
+>> upper 56 bits could contain garbage. This is not a problem
+>> if bar() is called in x86_64 context as the caller will use
+>> %al to get the value.
+>>
+>> But this could be a problem if bar() is called in bpf context
+>> and there is a mismatch expectation between bpf and native architecture.
+>> Currently, bpf programs use the default llvm ABI ([1], function
+>> isPromotableIntegerTypeForABI()) such that if an integer type size
+>> is less than int type size, it is assumed proper sign or zero
+>> extension has been done to the return value. There will be a problem
+>> if the kfunc return value type is u8/s8/u16/s16.
+> 
+> Reading this I was still confused how (and whether) s32/u32 returns
+> are going to be handled correctly, especially on non-cpuv3 BPF object
+> code. So I played with this a bit and Clang does generate explicit <<
+> and >>/>>= shifts as expected. It might be worth it emphasizing that
+> for 32-bit returns Clang will generate explicit shifts?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/te=
-sting/selftests/bpf/prog_tests/bpf_iter.c
-index a33874b081b6..5c2b0bd4f3dc 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-@@ -1,6 +1,9 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2020 Facebook */
- #include <test_progs.h>
-+#include <sys/syscall.h>
-+#include <unistd.h>
-+#include <signal.h>
- #include "bpf_iter_ipv6_route.skel.h"
- #include "bpf_iter_netlink.skel.h"
- #include "bpf_iter_bpf_map.skel.h"
-@@ -42,13 +45,13 @@ static void test_btf_id_or_null(void)
- 	}
- }
-=20
--static void do_dummy_read(struct bpf_program *prog)
-+static void do_dummy_read(struct bpf_program *prog, struct bpf_iter_atta=
-ch_opts *opts)
- {
- 	struct bpf_link *link;
- 	char buf[16] =3D {};
- 	int iter_fd, len;
-=20
--	link =3D bpf_program__attach_iter(prog, NULL);
-+	link =3D bpf_program__attach_iter(prog, opts);
- 	if (!ASSERT_OK_PTR(link, "attach_iter"))
- 		return;
-=20
-@@ -91,7 +94,7 @@ static void test_ipv6_route(void)
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_ipv6_route__open_and_load"))
- 		return;
-=20
--	do_dummy_read(skel->progs.dump_ipv6_route);
-+	do_dummy_read(skel->progs.dump_ipv6_route, NULL);
-=20
- 	bpf_iter_ipv6_route__destroy(skel);
- }
-@@ -104,7 +107,7 @@ static void test_netlink(void)
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_netlink__open_and_load"))
- 		return;
-=20
--	do_dummy_read(skel->progs.dump_netlink);
-+	do_dummy_read(skel->progs.dump_netlink, NULL);
-=20
- 	bpf_iter_netlink__destroy(skel);
- }
-@@ -117,24 +120,140 @@ static void test_bpf_map(void)
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_bpf_map__open_and_load"))
- 		return;
-=20
--	do_dummy_read(skel->progs.dump_bpf_map);
-+	do_dummy_read(skel->progs.dump_bpf_map, NULL);
-=20
- 	bpf_iter_bpf_map__destroy(skel);
- }
-=20
--static void test_task(void)
-+static int pidfd_open(pid_t pid, unsigned int flags)
-+{
-+	return syscall(SYS_pidfd_open, pid, flags);
-+}
-+
-+static void check_bpf_link_info(const struct bpf_program *prog)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-+	union bpf_iter_link_info linfo;
-+	struct bpf_link_info info =3D {};
-+	__u32 info_len;
-+	struct bpf_link *link;
-+	int err;
-+
-+	linfo.task.tid =3D getpid();
-+	linfo.task.type =3D BPF_TASK_ITER_TID;
-+	opts.link_info =3D &linfo;
-+	opts.link_info_len =3D sizeof(linfo);
-+
-+	link =3D bpf_program__attach_iter(prog, &opts);
-+	if (!ASSERT_OK_PTR(link, "attach_iter"))
-+		return;
-+
-+	info_len =3D sizeof(info);
-+	err =3D bpf_obj_get_info_by_fd(bpf_link__fd(link), &info, &info_len);
-+	if (ASSERT_OK(err, "bpf_obj_get_info_by_fd")) {
-+		ASSERT_EQ(info.iter.task.type, BPF_TASK_ITER_TID, "check_task_type");
-+		ASSERT_EQ(info.iter.task.tid, getpid(), "check_task_tid");
-+	}
-+
-+	bpf_link__destroy(link);
-+}
-+
-+static pthread_mutex_t do_nothing_mutex;
-+
-+static void *do_nothing_wait(void *arg)
-+{
-+	pthread_mutex_lock(&do_nothing_mutex);
-+	pthread_mutex_unlock(&do_nothing_mutex);
-+
-+	pthread_exit(arg);
-+}
-+
-+static void test_task_(struct bpf_iter_attach_opts *opts, int num_unknow=
-n, int numknown)
- {
- 	struct bpf_iter_task *skel;
-+	pthread_t thread_id;
-+	void *ret;
-=20
- 	skel =3D bpf_iter_task__open_and_load();
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_task__open_and_load"))
- 		return;
-=20
--	do_dummy_read(skel->progs.dump_task);
-+	if (!ASSERT_OK(pthread_mutex_init(&do_nothing_mutex, NULL), "pthread_mu=
-tex_init"))
-+		goto done;
-+	if (!ASSERT_OK(pthread_mutex_lock(&do_nothing_mutex), "pthread_mutex_lo=
-ck"))
-+		goto done;
-+
-+	if (!ASSERT_OK(pthread_create(&thread_id, NULL, &do_nothing_wait, NULL)=
-,
-+		  "pthread_create"))
-+		goto done;
-+
-+
-+	skel->bss->tid =3D getpid();
-+
-+	do_dummy_read(skel->progs.dump_task, opts);
-=20
-+	if (!ASSERT_OK(pthread_mutex_unlock(&do_nothing_mutex), "pthread_mutex_=
-unlock"))
-+		goto done;
-+
-+	ASSERT_EQ(skel->bss->num_unknown_tid, 1, "check_num_unknown_tid");
-+	ASSERT_EQ(skel->bss->num_known_tid, 1, "check_num_known_tid");
-+
-+	ASSERT_FALSE(pthread_join(thread_id, &ret) || ret !=3D NULL,
-+		     "pthread_join");
-+
-+done:
- 	bpf_iter_task__destroy(skel);
- }
-=20
-+static void test_task(void)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-+	union bpf_iter_link_info linfo;
-+
-+	linfo.task.tid =3D getpid();
-+	linfo.task.type =3D BPF_TASK_ITER_TID;
-+	opts.link_info =3D &linfo;
-+	opts.link_info_len =3D sizeof(linfo);
-+
-+	test_task_(&opts, 0, 1);
-+
-+	test_task_(NULL, 0, 1);
-+}
-+
-+static void test_task_tgid(void)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-+	union bpf_iter_link_info linfo;
-+
-+	linfo.task.tgid =3D getpid();
-+	linfo.task.type =3D BPF_TASK_ITER_TGID;
-+	opts.link_info =3D &linfo;
-+	opts.link_info_len =3D sizeof(linfo);
-+
-+	test_task_(&opts, 1, 1);
-+}
-+
-+static void test_task_pidfd(void)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-+	union bpf_iter_link_info linfo;
-+	int pidfd;
-+
-+	pidfd =3D pidfd_open(getpid(), 0);
-+	if (!ASSERT_GE(pidfd, 0, "pidfd_open"))
-+		return;
-+
-+
-+	linfo.task.pid_fd =3D pidfd;
-+	linfo.task.type =3D BPF_TASK_ITER_PIDFD;
-+	opts.link_info =3D &linfo;
-+	opts.link_info_len =3D sizeof(linfo);
-+
-+	test_task_(&opts, 1, 1);
-+
-+	close(pidfd);
-+}
-+
- static void test_task_sleepable(void)
- {
- 	struct bpf_iter_task *skel;
-@@ -143,7 +262,7 @@ static void test_task_sleepable(void)
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_task__open_and_load"))
- 		return;
-=20
--	do_dummy_read(skel->progs.dump_task_sleepable);
-+	do_dummy_read(skel->progs.dump_task_sleepable, NULL);
-=20
- 	ASSERT_GT(skel->bss->num_expected_failure_copy_from_user_task, 0,
- 		  "num_expected_failure_copy_from_user_task");
-@@ -161,8 +280,8 @@ static void test_task_stack(void)
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_task_stack__open_and_load"))
- 		return;
-=20
--	do_dummy_read(skel->progs.dump_task_stack);
--	do_dummy_read(skel->progs.get_task_user_stacks);
-+	do_dummy_read(skel->progs.dump_task_stack, NULL);
-+	do_dummy_read(skel->progs.get_task_user_stacks, NULL);
-=20
- 	bpf_iter_task_stack__destroy(skel);
- }
-@@ -174,7 +293,9 @@ static void *do_nothing(void *arg)
-=20
- static void test_task_file(void)
- {
-+	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
- 	struct bpf_iter_task_file *skel;
-+	union bpf_iter_link_info linfo;
- 	pthread_t thread_id;
- 	void *ret;
-=20
-@@ -188,15 +309,31 @@ static void test_task_file(void)
- 		  "pthread_create"))
- 		goto done;
-=20
--	do_dummy_read(skel->progs.dump_task_file);
-+	linfo.task.tid =3D getpid();
-+	linfo.task.type =3D BPF_TASK_ITER_TID;
-+	opts.link_info =3D &linfo;
-+	opts.link_info_len =3D sizeof(linfo);
-+
-+	do_dummy_read(skel->progs.dump_task_file, &opts);
-=20
- 	if (!ASSERT_FALSE(pthread_join(thread_id, &ret) || ret !=3D NULL,
- 		  "pthread_join"))
- 		goto done;
-=20
- 	ASSERT_EQ(skel->bss->count, 0, "check_count");
-+	ASSERT_EQ(skel->bss->unique_tgid_count, 1, "check_unique_tgid_count");
-=20
--done:
-+	skel->bss->count =3D 0;
-+	skel->bss->unique_tgid_count =3D 0;
-+
-+	do_dummy_read(skel->progs.dump_task_file, NULL);
-+
-+	ASSERT_GE(skel->bss->count, 0, "check_count");
-+	ASSERT_GE(skel->bss->unique_tgid_count, 1, "check_unique_tgid_count");
-+
-+	check_bpf_link_info(skel->progs.dump_task_file);
-+
-+ done:
- 	bpf_iter_task_file__destroy(skel);
- }
-=20
-@@ -274,7 +411,7 @@ static void test_tcp4(void)
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_tcp4__open_and_load"))
- 		return;
-=20
--	do_dummy_read(skel->progs.dump_tcp4);
-+	do_dummy_read(skel->progs.dump_tcp4, NULL);
-=20
- 	bpf_iter_tcp4__destroy(skel);
- }
-@@ -287,7 +424,7 @@ static void test_tcp6(void)
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_tcp6__open_and_load"))
- 		return;
-=20
--	do_dummy_read(skel->progs.dump_tcp6);
-+	do_dummy_read(skel->progs.dump_tcp6, NULL);
-=20
- 	bpf_iter_tcp6__destroy(skel);
- }
-@@ -300,7 +437,7 @@ static void test_udp4(void)
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_udp4__open_and_load"))
- 		return;
-=20
--	do_dummy_read(skel->progs.dump_udp4);
-+	do_dummy_read(skel->progs.dump_udp4, NULL);
-=20
- 	bpf_iter_udp4__destroy(skel);
- }
-@@ -313,7 +450,7 @@ static void test_udp6(void)
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_udp6__open_and_load"))
- 		return;
-=20
--	do_dummy_read(skel->progs.dump_udp6);
-+	do_dummy_read(skel->progs.dump_udp6, NULL);
-=20
- 	bpf_iter_udp6__destroy(skel);
- }
-@@ -326,7 +463,7 @@ static void test_unix(void)
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_unix__open_and_load"))
- 		return;
-=20
--	do_dummy_read(skel->progs.dump_unix);
-+	do_dummy_read(skel->progs.dump_unix, NULL);
-=20
- 	bpf_iter_unix__destroy(skel);
- }
-@@ -988,7 +1125,7 @@ static void test_bpf_sk_storage_get(void)
- 	if (!ASSERT_OK(err, "bpf_map_update_elem"))
- 		goto close_socket;
-=20
--	do_dummy_read(skel->progs.fill_socket_owner);
-+	do_dummy_read(skel->progs.fill_socket_owner, NULL);
-=20
- 	err =3D bpf_map_lookup_elem(map_fd, &sock_fd, &val);
- 	if (CHECK(err || val !=3D getpid(), "bpf_map_lookup_elem",
-@@ -996,7 +1133,7 @@ static void test_bpf_sk_storage_get(void)
- 	    getpid(), val, err))
- 		goto close_socket;
-=20
--	do_dummy_read(skel->progs.negate_socket_local_storage);
-+	do_dummy_read(skel->progs.negate_socket_local_storage, NULL);
-=20
- 	err =3D bpf_map_lookup_elem(map_fd, &sock_fd, &val);
- 	CHECK(err || val !=3D -getpid(), "bpf_map_lookup_elem",
-@@ -1116,7 +1253,7 @@ static void test_link_iter(void)
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_bpf_link__open_and_load"))
- 		return;
-=20
--	do_dummy_read(skel->progs.dump_bpf_link);
-+	do_dummy_read(skel->progs.dump_bpf_link, NULL);
-=20
- 	bpf_iter_bpf_link__destroy(skel);
- }
-@@ -1129,7 +1266,7 @@ static void test_ksym_iter(void)
- 	if (!ASSERT_OK_PTR(skel, "bpf_iter_ksym__open_and_load"))
- 		return;
-=20
--	do_dummy_read(skel->progs.dump_ksym);
-+	do_dummy_read(skel->progs.dump_ksym, NULL);
-=20
- 	bpf_iter_ksym__destroy(skel);
- }
-@@ -1154,7 +1291,7 @@ static void str_strip_first_line(char *str)
- 	*dst =3D '\0';
- }
-=20
--static void test_task_vma(void)
-+static void test_task_vma_(struct bpf_iter_attach_opts *opts)
- {
- 	int err, iter_fd =3D -1, proc_maps_fd =3D -1;
- 	struct bpf_iter_task_vma *skel;
-@@ -1166,13 +1303,14 @@ static void test_task_vma(void)
- 		return;
-=20
- 	skel->bss->pid =3D getpid();
-+	skel->bss->one_task =3D opts ? 1 : 0;
-=20
- 	err =3D bpf_iter_task_vma__load(skel);
- 	if (!ASSERT_OK(err, "bpf_iter_task_vma__load"))
- 		goto out;
-=20
- 	skel->links.proc_maps =3D bpf_program__attach_iter(
--		skel->progs.proc_maps, NULL);
-+		skel->progs.proc_maps, opts);
-=20
- 	if (!ASSERT_OK_PTR(skel->links.proc_maps, "bpf_program__attach_iter")) =
-{
- 		skel->links.proc_maps =3D NULL;
-@@ -1211,12 +1349,30 @@ static void test_task_vma(void)
- 	str_strip_first_line(proc_maps_output);
-=20
- 	ASSERT_STREQ(task_vma_output, proc_maps_output, "compare_output");
-+
-+	check_bpf_link_info(skel->progs.proc_maps);
-+
- out:
- 	close(proc_maps_fd);
- 	close(iter_fd);
- 	bpf_iter_task_vma__destroy(skel);
- }
-=20
-+static void test_task_vma(void)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-+	union bpf_iter_link_info linfo;
-+
-+	memset(&linfo, 0, sizeof(linfo));
-+	linfo.task.tid =3D getpid();
-+	linfo.task.type =3D BPF_TASK_ITER_TID;
-+	opts.link_info =3D &linfo;
-+	opts.link_info_len =3D sizeof(linfo);
-+
-+	test_task_vma_(&opts);
-+	test_task_vma_(NULL);
-+}
-+
- void test_bpf_iter(void)
- {
- 	if (test__start_subtest("btf_id_or_null"))
-@@ -1229,6 +1385,10 @@ void test_bpf_iter(void)
- 		test_bpf_map();
- 	if (test__start_subtest("task"))
- 		test_task();
-+	if (test__start_subtest("task_tgid"))
-+		test_task_tgid();
-+	if (test__start_subtest("task_pidfd"))
-+		test_task_pidfd();
- 	if (test__start_subtest("task_sleepable"))
- 		test_task_sleepable();
- 	if (test__start_subtest("task_stack"))
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dump.c b/tools/te=
-sting/selftests/bpf/prog_tests/btf_dump.c
-index 5fce7008d1ff..6a41e6a03154 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-@@ -764,7 +764,7 @@ static void test_btf_dump_struct_data(struct btf *btf=
-, struct btf_dump *d,
-=20
- 	/* union with nested struct */
- 	TEST_BTF_DUMP_DATA(btf, d, "union", str, union bpf_iter_link_info, BTF_=
-F_COMPACT,
--			   "(union bpf_iter_link_info){.map =3D (struct){.map_fd =3D (__u32)1=
-,},}",
-+			   "(union bpf_iter_link_info){.map =3D (struct){.map_fd =3D (__u32)1=
-,},.task =3D (struct){.type =3D (enum bpf_iter_task_type)BPF_TASK_ITER_TI=
-D,},}",
- 			   { .map =3D { .map_fd =3D 1 }});
-=20
- 	/* struct skb with nested structs/unions; because type output is so
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task.c b/tools/te=
-sting/selftests/bpf/progs/bpf_iter_task.c
-index d22741272692..96131b9a1caa 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_task.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_task.c
-@@ -6,6 +6,10 @@
-=20
- char _license[] SEC("license") =3D "GPL";
-=20
-+uint32_t tid =3D 0;
-+int num_unknown_tid =3D 0;
-+int num_known_tid =3D 0;
-+
- SEC("iter/task")
- int dump_task(struct bpf_iter__task *ctx)
- {
-@@ -18,6 +22,11 @@ int dump_task(struct bpf_iter__task *ctx)
- 		return 0;
- 	}
-=20
-+	if (task->pid !=3D tid)
-+		num_unknown_tid++;
-+	else
-+		num_known_tid++;
-+
- 	if (ctx->meta->seq_num =3D=3D 0)
- 		BPF_SEQ_PRINTF(seq, "    tgid      gid\n");
-=20
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task_file.c b/too=
-ls/testing/selftests/bpf/progs/bpf_iter_task_file.c
-index 6e7b400888fe..031455ed8748 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_task_file.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_task_file.c
-@@ -7,6 +7,8 @@ char _license[] SEC("license") =3D "GPL";
-=20
- int count =3D 0;
- int tgid =3D 0;
-+int last_tgid =3D -1;
-+int unique_tgid_count =3D 0;
-=20
- SEC("iter/task_file")
- int dump_task_file(struct bpf_iter__task_file *ctx)
-@@ -27,6 +29,11 @@ int dump_task_file(struct bpf_iter__task_file *ctx)
- 	if (tgid =3D=3D task->tgid && task->tgid !=3D task->pid)
- 		count++;
-=20
-+	if (last_tgid !=3D task->tgid) {
-+		last_tgid =3D task->tgid;
-+		unique_tgid_count++;
-+	}
-+
- 	BPF_SEQ_PRINTF(seq, "%8d %8d %8d %lx\n", task->tgid, task->pid, fd,
- 		       (long)file->f_op);
- 	return 0;
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task_vma.c b/tool=
-s/testing/selftests/bpf/progs/bpf_iter_task_vma.c
-index 4ea6a37d1345..44f4a31c2ddd 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_task_vma.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_task_vma.c
-@@ -20,6 +20,7 @@ char _license[] SEC("license") =3D "GPL";
- #define D_PATH_BUF_SIZE 1024
- char d_path_buf[D_PATH_BUF_SIZE] =3D {};
- __u32 pid =3D 0;
-+__u32 one_task =3D 0;
-=20
- SEC("iter/task_vma") int proc_maps(struct bpf_iter__task_vma *ctx)
- {
-@@ -33,8 +34,11 @@ SEC("iter/task_vma") int proc_maps(struct bpf_iter__ta=
-sk_vma *ctx)
- 		return 0;
-=20
- 	file =3D vma->vm_file;
--	if (task->tgid !=3D pid)
-+	if (task->tgid !=3D pid) {
-+		if (one_task)
-+			BPF_SEQ_PRINTF(seq, "unexpected task (%d !=3D %d)", task->tgid, pid);
- 		return 0;
-+	}
- 	perm_str[0] =3D (vma->vm_flags & VM_READ) ? 'r' : '-';
- 	perm_str[1] =3D (vma->vm_flags & VM_WRITE) ? 'w' : '-';
- 	perm_str[2] =3D (vma->vm_flags & VM_EXEC) ? 'x' : '-';
---=20
-2.30.2
+Yes, I can reword the commit message to emphasize 32-bit return
+value won't be an issue.
 
+> 
+>>
+>> This patch intends to address this issue by doing proper sign or zero
+>> extension for the kfunc return value before it is used later.
+>>
+>>   [1] https://github.com/llvm/llvm-project/blob/main/clang/lib/CodeGen/TargetInfo.cpp
+>>
+>> Reported-by: Tejun Heo <tj@kernel.org>
+>> Signed-off-by: Yonghong Song <yhs@fb.com>
+>> ---
+>>   include/linux/bpf.h   |  2 ++
+>>   kernel/bpf/btf.c      |  9 +++++++++
+>>   kernel/bpf/verifier.c | 35 +++++++++++++++++++++++++++++++++--
+>>   3 files changed, 44 insertions(+), 2 deletions(-)
+>>
+> 
+> [...]
