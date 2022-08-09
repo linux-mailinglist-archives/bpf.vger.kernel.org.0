@@ -2,68 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A432458D253
-	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 05:18:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0CFC58D25A
+	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 05:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232003AbiHIDSy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Aug 2022 23:18:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33158 "EHLO
+        id S229978AbiHIDab (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Aug 2022 23:30:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230018AbiHIDSw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Aug 2022 23:18:52 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB891E3E9
-        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 20:18:50 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id j8so19986633ejx.9
-        for <bpf@vger.kernel.org>; Mon, 08 Aug 2022 20:18:50 -0700 (PDT)
+        with ESMTP id S229817AbiHIDaa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Aug 2022 23:30:30 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C821109;
+        Mon,  8 Aug 2022 20:30:29 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id w6so7904093qkf.3;
+        Mon, 08 Aug 2022 20:30:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D7CLP/LbkSmdSEeoQMhy2dh4wDa/igezNugIuBOVJh4=;
-        b=jk8lzsusB4jtJ4DaPAPVZiLyLzvq/K44H8a+bmUDytFco117UtZq/X+PNhE9NZwcfA
-         nnnlnxugsjyJ8Wi33aqQQJ/H7pSHgcgZRyutpB5Gqi2LLy51t1M/vN5L1EZVJjnzZz3K
-         ost1uIBzn/rlD5FRISS7vyGSDXco2ewUBflecRMJorB15zGjjfuR08BF5sUZjEyXB1NR
-         8JESjlqP0PMg2gZuXCJJfx/OttvUYEN1lV/R1kpsaqYH/H26BvgOtDG+f4ZZ2QbACLKj
-         7dea/ms0Ikkj5HjqeYS9mmzlwO63m++dAoXrUrc3QzS+M/TeB9SyDU2Cf3KOMrMHT8yk
-         SlWA==
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc;
+        bh=Ni63gAQOgqL3rVx5QRs1Ql+8uMsi8IRaIfTqyv6SPMg=;
+        b=iH4GEEDLr/n9fbIRXJIfL86UxTHrN+4QzzObag4OOSRbNVj/TinS+CphoSLqOC8rmn
+         IgT41B7ayvLyCvW74GmwDxxAe0tGpTf8eN5wY0XSLu02un6jYjFqge94Pc3ypIg4PBja
+         NmH5n9qGyZwcCotGP/GFohONvT4+dpZqj+HiDMGhoa91N+EpYjfA3BRN0Bf416vPZoSt
+         DOdi50ATkHdOas4YAuMEZVm7CSCjb1+6zLprwGLQUg54Ov7kcIHQF30n7fy8shYWUX8C
+         xY0ZB0J9LQ3XPru2Gfh/Tv/exIMAYtcnJWULr9CPPIqnjBu5Zp3j0LZLMSruBZe1bh2R
+         R3VQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D7CLP/LbkSmdSEeoQMhy2dh4wDa/igezNugIuBOVJh4=;
-        b=Kr4UuHcSqQ+o78of/7rHXeB27YQu0RGmzzpksW0qgXDPJsP9DUJPeRXGeScS32QGtW
-         YDG4jPU1kbGrJOL/rbyZJUcdgEKo3vJKjhs+SL1xk2kiMLg/iqSuHGZm3QEmJGOla6YT
-         gIXVbjbslsDdas+z8lnyloqUDMFnNXDtEpww/xeupRiJEFKZ/hvxQHS9iDnoXkxIT03M
-         n5lRVU6hJnBD2dPpkGb0j0k7bns78muuXg8ZbgcF49+5WL00TwrOVs2hJYa5BF4ut8J9
-         fPJdoFeJjCRZ1/tOpw9Fa02w2WOWPSZMDXXrqkdQXg4ZDafHtUA2HhsO04SXhAwnp0XA
-         kxLA==
-X-Gm-Message-State: ACgBeo0NmUY8Qk3oGIPdeQpvznG2wu5P16owZVGAO7cff0LSe/5iVGFz
-        snSG/HzfH1scJaPL2wVtYvoEf7u8iuncpsPefIYyIRXHMjU=
-X-Google-Smtp-Source: AA6agR4yT+v6e4ZnJVeGkXyPXOEUcCm2WToKVMtDDYuXVMfWlO5J9cD+8tO8/AmbjpejMXcuwT6GFLSVnjzvs+X5VIg=
-X-Received: by 2002:a17:907:2896:b0:730:983c:4621 with SMTP id
- em22-20020a170907289600b00730983c4621mr16199235ejc.502.1660015128678; Mon, 08
- Aug 2022 20:18:48 -0700 (PDT)
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc;
+        bh=Ni63gAQOgqL3rVx5QRs1Ql+8uMsi8IRaIfTqyv6SPMg=;
+        b=SErehoT2WRnOzGHrnB3tF1qqNB5ydTshVKV502vg8VKQazWFf1nB75YPby7BMs/4vO
+         vZgUAFqrARev0CjB9lW0KQZhxlva4epwHugYKeHMHxMb+FXGFpTIzOb0FXqzC4Q8/BWb
+         f5HPsSkaEOaeMFaOcNawy7dsR9Z+Ql1a5pfkXglBXIoUNasqKy7L3Muy4agJRbBMqLs9
+         F4SFrY7h4ewQYkD0GQcs3c2eRMDTkWArKqqnQKTNfg72xSDNM0yZspFGM/l4FWER6ey9
+         pN5t0U6IA0rlurk/bChf73yCsFgvUj2d1dPN1jllWqfb7l3uWRZ1RrGomM5ZnDykJavQ
+         TQhw==
+X-Gm-Message-State: ACgBeo2h6FOoEk07ZKDCSJ83fC8xgw0KK1FkkVnB3CXNWcWHZYsS4OtG
+        VEnAbmX4xS/xpqDqRtG9jUI=
+X-Google-Smtp-Source: AA6agR5ysDU+Ec8zr+8uvEcFpdBosOFWEpDQaOGMEESNVEfrh63BdHRTCc7U3AiVqOtgkZmdGYgQ0Q==
+X-Received: by 2002:ae9:ef82:0:b0:6b9:6e9a:3da1 with SMTP id d124-20020ae9ef82000000b006b96e9a3da1mr3119057qkg.696.1660015828299;
+        Mon, 08 Aug 2022 20:30:28 -0700 (PDT)
+Received: from [192.168.1.3] (ip72-194-116-95.oc.oc.cox.net. [72.194.116.95])
+        by smtp.gmail.com with ESMTPSA id ay36-20020a05622a22a400b0033ae41bd326sm8635779qtb.73.2022.08.08.20.30.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Aug 2022 20:30:26 -0700 (PDT)
+Message-ID: <f5c4d092-eeb7-2342-605f-7d86df9b1b10@gmail.com>
+Date:   Mon, 8 Aug 2022 20:30:23 -0700
 MIME-Version: 1.0
-References: <20220806014603.1771-1-memxor@gmail.com> <20220806014603.1771-3-memxor@gmail.com>
- <fcd4ad34-8abe-d156-f1ff-d2f752748e5b@fb.com> <CAP01T76kSupCeSvPDFX=5R24DkMvjD_iNnScqGy9eofZE=f2Mw@mail.gmail.com>
- <334f055b-4b44-f1d1-3770-b5c4ffe61913@fb.com> <CAP01T76W95FnsT26L=f6ErVWvjkxMg92o-XLGqP9zbHLEG1yvw@mail.gmail.com>
- <1052d7fa-3c36-6995-7455-1287fd8fab90@fb.com> <CAP01T77QGkJR=kvPuZ2eDtyF4UHiwq31+ixyfKQfedPBU06cZg@mail.gmail.com>
-In-Reply-To: <CAP01T77QGkJR=kvPuZ2eDtyF4UHiwq31+ixyfKQfedPBU06cZg@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 8 Aug 2022 20:18:37 -0700
-Message-ID: <CAADnVQKBxv30_tBCiD8RwSyeNcgQb-qTpmYLfPXp3VLN-omM=g@mail.gmail.com>
-Subject: Re: [PATCH bpf v1 2/3] bpf: Don't reinit map value in prealloc_lru_pop
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "toke@redhat.com" <toke@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.1
+Subject: Re: [PATCH v1] idb: Add lock to avoid data race
+Content-Language: en-US
+To:     Lin Ma <linma@zju.edu.cn>, jesse.brandeburg@intel.com,
+        anthony.l.nguyen@intel.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, intel-wired-lan@lists.osuosl.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <20220809025953.2311-1-linma@zju.edu.cn>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20220809025953.2311-1-linma@zju.edu.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -72,52 +78,37 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 8, 2022 at 5:25 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
-> >
-> > Thinking again. I guess the following scenario is possible:
-> >
-> >       rcu_read_lock()
-> >          v = bpf_map_lookup_elem(&key);
-> >          t1 = v->field;
-> >          bpf_map_delete_elem(&key);
-> >             /* another bpf program triggering bpf_map_update_elem() */
-> >             /* the element with 'key' is reused */
-> >             /* the value is updated */
-> >          t2 = v->field;
-> >          ...
-> >       rcu_read_unlock()
-> >
-> > it is possible t1 and t2 may not be the same.
-> > This should be an extremely corner case, not sure how to resolve
-> > this easily without performance degradation.
->
-> Yes, this is totally possible. This extreme corner case may also
-> become a real problem in sleepable programs ;-).
->
-> I had an idea in mind on how it can be done completely in the BPF
-> program side without changing the map implementation.
 
-+1 it's best to address it inside the program instead
-of complicating and likely slowing down maps.
 
-As far as sleepable progs.. the issue is not present
-because sleepable progs are only allowed to use preallocated maps.
-In non-prealloc maps free_htab_elem() would just call_rcu()
-and the element would be freed into the global slab which
-will be bad if bpf prog is doing something like above.
+On 8/8/2022 7:59 PM, Lin Ma wrote:
+> The commit c23d92b80e0b ("igb: Teardown SR-IOV before
+> unregister_netdev()") places the unregister_netdev() call after the
+> igb_disable_sriov() call to avoid functionality issue.
+> 
+> However, it introduces several race conditions when detaching a device.
+> For example, when .remove() is called, the below interleaving leads to
+> use-after-free.
+> 
+>   (FREE from device detaching)      |   (USE from netdev core)
+> igb_remove                         |  igb_ndo_get_vf_config
+>   igb_disable_sriov                 |  vf >= adapter->vfs_allocated_count?
+>    kfree(adapter->vf_data)          |
+>    adapter->vfs_allocated_count = 0 |
+>                                     |    memcpy(... adapter->vf_data[vf]
+> 
+> Moreover, just as commit 1e53834ce541 ("ixgbe: Add locking to
+> prevent panic when setting sriov_numvfs to zero") shows. The
+> igb_disable_sriov function also need to watch out the requests from VF
+> driver.
+> 
+> To this end, this commit first eliminates the data races from netdev
+> core by using rtnl_lock (similar to commit 719479230893 ("dpaa2-eth: add
+> MAC/PHY support through phylink")). And then adds a spinlock just as
+> 1d53834ce541 did.
+> 
+> Fixes: c23d92b80e0b ("igb: Teardown SR-IOV before unregister_netdev()")
+> Signed-off-by: Lin Ma <linma@zju.edu.cn>
 
-Doing call_rcu_tasks_trace() + call_rcu() would allow
-non-prealloc in sleepable, but it doesn't scale
-and non-prealloc is already many times slower comparing
-to prealloc due to atomic_inc/dec and call_rcu.
-
-With new bpf_mem_alloc I'm experimenting with batching
-of call_rcu_tasks_trace + call_rcu, so hash map can be
-dynamically allocated, just as fast as full prealloc and
-finally safe in both sleepable and traditional progs.
-I was thinking of adding a new SLAB_TYPESAFE_BY_RCU_TASKS_TRACE
-flag to the slab, but decided to go that route only if
-batching of call_rcu*() won't be sufficient.
-Sorry it takes so long to get the patches ready.
-Summer in WA is the best time to take vacation :)
-I've been taking plenty.
+You have a typo in your subject: s/idb/igb/
+-- 
+Florian
