@@ -2,120 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0802558DCE8
-	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 19:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD59E58DCEF
+	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 19:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245231AbiHIROP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Aug 2022 13:14:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54208 "EHLO
+        id S237621AbiHIRQf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 9 Aug 2022 13:16:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245266AbiHIROO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Aug 2022 13:14:14 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A1724F18;
-        Tue,  9 Aug 2022 10:14:13 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id E7AF432007E8;
-        Tue,  9 Aug 2022 13:14:11 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Tue, 09 Aug 2022 13:14:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-        :cc:content-transfer-encoding:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1660065251; x=1660151651; bh=J4
-        gpiV71j0xKQ3FtJFMd2wIZaka/D1TIWpUk5i2bNWw=; b=jESG/Hpr8Q121hxrB7
-        3p8jpraFEzmRUnx2scQOkcwk3Hp0JYaxPri4/XMj87PA6yEk8ULRV0T4uOVy7/NP
-        SZNPo4+ah1TQDk9k1+P3OFfi0GDbWYzZmghufnz/LSQQERvNY79QAoOUR+4N3xqJ
-        5NXDgbyID59kBDlTQqi4uK2zoRtdiwQaFDQ8k0tjyxejjBYGCj0Q07K8hytZpl6Q
-        tAiOtO9T44q0KCyFK5jygSzMhVHeDz7CEhEhxW8pv9LcK4uVtpkSHl6KfY8m0J0j
-        ixKlPKP3nWYQd7Va7i+MJRpCALwnE2dODHbkH5B8dRTolYV5Rtqt0+zHC4Kf6WWO
-        qaEA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1660065251; x=1660151651; bh=J4gpiV71j0xKQ
-        3FtJFMd2wIZaka/D1TIWpUk5i2bNWw=; b=FThzYY0uIS5SIPv8vCNy7LkRFdpGH
-        ASVbigxf79HR/4oAFlHi69N9DNwRbDJCddqG+vhslB5l14f5jxiuNNeZMnZt/87n
-        yb2iLjdKgG+ThhIQGj/ni7ZQbb99QvKHqSKxGrzvilyj7echnAFQQ0xP4LDMl9zS
-        pXdraZbyBPAiwNM4fIx5hXEw8Zv8vFJkqBirUEXeEcPONp8Cen7OommedeAFqAnk
-        E4iTZ+tsxov0uNnwQX3n3NSgm3qthsSbapFxQ9FtRAXgDJGTDa+w8UHG/DCi1MHz
-        O4QclSCbQq+T1Opdg5hXrVYaLmVE/29fIgJdJAzWZGjZ/6bZbiF1DqVdg==
-X-ME-Sender: <xms:4pXyYg9w5aB-KACNIXIywemVt3KKCb0a1vYHBCdnGJY-oB_2YBKGgQ>
-    <xme:4pXyYotMKDywonsH_5keXBl6zJ91gnO0vqJfnKquBHOn9qOp8O9RlefqUelPzoYT0
-    iTiJVSJYFJeHbfHOA>
-X-ME-Received: <xmr:4pXyYmDRcePklYRu7yOooIZNtArw6iaoyjRemhcKb7gFG_7GWgplLdKOcCkLGpocSqDPtcx0fcU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdegtddgudduudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdejtddmnecujfgurhephf
-    fvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcu
-    oegugihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpefgfefggeejhfduie
-    ekvdeuteffleeifeeuvdfhheejleejjeekgfffgefhtddtteenucevlhhushhtvghrufhi
-    iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:45XyYgfS9aK_p9Fk7REePY5A4XuGox4bMqg4W3gnf_geuMFvPbbKRg>
-    <xmx:45XyYlN7FCrIWB9Ea3xApwQABgJ3mnwSxhxj_eW5qRfb4Vsho2w3JQ>
-    <xmx:45XyYqmw73yxL0CoxLZzrSqEOGIW_aiolEpkl--KTv4KBfdVPCQ3Qg>
-    <xmx:45XyYo1U0l4wi_WMJtpZ9L6VhJ8q2ul5OnJ9o0_kBP7-xZzu6STPGw>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 9 Aug 2022 13:14:09 -0400 (EDT)
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kpsingh@kernel.org
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Fix vmtest.sh getopts optstring
-Date:   Tue,  9 Aug 2022 11:11:10 -0600
-Message-Id: <0f93b56198328b6b4da7b4cf4662d05c3edb5fd2.1660064925.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.37.1
-In-Reply-To: <cover.1660064925.git.dxu@dxuuu.xyz>
-References: <cover.1660064925.git.dxu@dxuuu.xyz>
+        with ESMTP id S242610AbiHIRQe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Aug 2022 13:16:34 -0400
+Received: from relay11.mail.gandi.net (relay11.mail.gandi.net [IPv6:2001:4b98:dc4:8::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F3A32668;
+        Tue,  9 Aug 2022 10:16:33 -0700 (PDT)
+Received: (Authenticated sender: hadess@hadess.net)
+        by mail.gandi.net (Postfix) with ESMTPSA id B0FEC100007;
+        Tue,  9 Aug 2022 17:16:29 +0000 (UTC)
+Message-ID: <6f3fa6727e14f39a8c7c32fffb8c3e92cf95b5d5.camel@hadess.net>
+Subject: Re: [PATCH 1/2] USB: core: add a way to revoke access to open USB
+ devices
+From:   Bastien Nocera <hadess@hadess.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, bpf@vger.kernel.org,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Peter Hutterer <peter.hutterer@who-t.net>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Date:   Tue, 09 Aug 2022 19:16:29 +0200
+In-Reply-To: <YvKL79C4k7EpRaKh@kroah.com>
+References: <20220809094300.83116-1-hadess@hadess.net>
+         <20220809094300.83116-2-hadess@hadess.net> <YvI4em9fCdZgRPnY@kroah.com>
+         <d2dc546d771060b0a95d663fb77158d63b75bb9b.camel@hadess.net>
+         <YvJYmG/upX2NWRJJ@kroah.com>
+         <b1af087bc41a47bc29a7192a5c268243ef54ad26.camel@hadess.net>
+         <YvKL79C4k7EpRaKh@kroah.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_SUSPICIOUS_NTLD,
-        PDS_OTHER_BAD_TLD,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Before, you could see the following errors:
+On Tue, 2022-08-09 at 18:31 +0200, Greg Kroah-Hartman wrote:
+> On Tue, Aug 09, 2022 at 03:27:16PM +0200, Bastien Nocera wrote:
+> > The link to the user-space programme is in the "RFC v2" version of
+> > the
+> > patch from last week. It calls into the kernel through that
+> > function
+> > which is exported through BPF.
+> > 
+> > > 
+> > > > > Again, just revoke the file descriptor, like the BSDs do for
+> > > > > a
+> > > > > tiny
+> > > > > subset of device drivers.
+> > > > > 
+> > > > > This comes up ever so often, why does someone not just add
+> > > > > real
+> > > > > revoke(2) support to Linux to handle it if they really really
+> > > > > want it
+> > > > > (I
+> > > > > tried a long time ago, but didn't have it in me as I had no
+> > > > > real
+> > > > > users
+> > > > > for it...)
+> > > > 
+> > > > This was already explained twice,
+> > > 
+> > > Explained where?
+> > 
+> > https://www.spinics.net/lists/linux-usb/msg225448.html
+> > https://www.spinics.net/lists/linux-usb/msg229753.html
+> 
+> Please use lore.kernel.org.
 
-```
-$ ./vmtest.sh -j
-./vmtest.sh: option requires an argument -- j
-./vmtest.sh: line 357: OPTARG: unbound variable
+Would be great if it showed up when somebody searches for "linux-usb
+mailing-list".
 
-$ ./vmtest.sh -z
-./vmtest.sh: illegal option -- z
-./vmtest.sh: line 357: OPTARG: unbound variable
-```
+> Anyway, pointing to random old submissions of an RFC series does not
+> mean that you do not have to document and justify this design
+> decision
+> in this patch submission.
 
-Fix by adding ':' as first character of optstring. Reason is that
-getopts requires ':' as the first character for OPTARG to be set in the
-`?` and `:` error cases.
+I guess me repeatedly asking for guidance as to what information I
+should add to the commit message while I was being yelled at didn't get
+through.
 
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- tools/testing/selftests/bpf/vmtest.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Assume that reviewers have NO knowlege of previous submissions of
+> your
+> patch series.  Because we usually do not, given how many changes we
+> review all the time.
+> 
+> Please resend this, as a v4, and update the changelog descriptions
+> based
+> on the comments so far on this series and I will be glad to review it
+> sometime after -rc1 is out, as there's nothing I can do with it right
+> now.
 
-diff --git a/tools/testing/selftests/bpf/vmtest.sh b/tools/testing/selftests/bpf/vmtest.sh
-index 976ef7585b33..a29aa05ebb3e 100755
---- a/tools/testing/selftests/bpf/vmtest.sh
-+++ b/tools/testing/selftests/bpf/vmtest.sh
-@@ -333,7 +333,7 @@ main()
- 	local exit_command="poweroff -f"
- 	local debug_shell="no"
- 
--	while getopts 'hskid:j:' opt; do
-+	while getopts ':hskid:j:' opt; do
- 		case ${opt} in
- 		i)
- 			update_image="yes"
--- 
-2.37.1
-
+Sure.
