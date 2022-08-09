@@ -2,40 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1765758D403
-	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 08:50:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF30158D405
+	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 08:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229760AbiHIGuM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Aug 2022 02:50:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54500 "EHLO
+        id S233045AbiHIGuq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Aug 2022 02:50:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbiHIGuL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Aug 2022 02:50:11 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3E61F2C4;
-        Mon,  8 Aug 2022 23:50:10 -0700 (PDT)
+        with ESMTP id S229600AbiHIGup (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Aug 2022 02:50:45 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 544E9C1E;
+        Mon,  8 Aug 2022 23:50:45 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 425A261218;
-        Tue,  9 Aug 2022 06:50:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70ECEC433C1;
-        Tue,  9 Aug 2022 06:50:05 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id F1E49B811B1;
+        Tue,  9 Aug 2022 06:50:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D44DC433D6;
+        Tue,  9 Aug 2022 06:50:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660027809;
-        bh=ynJyKQ66METpJqPUjWfrzqF4JjlT26+ei9p1vjSEDTI=;
+        s=k20201202; t=1660027842;
+        bh=4XRLYBkHIeanHtUx9JVZ94kPXzXpTAAOY2sRWbNULrk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iIr5JmbCbVbcJ6eGv8iS/D+qITb4OE5u3y5124+JdEU0NdfQMGYYx93fRc8U9dEw7
-         vKPsO0mHX7pWGitYMqbgeHi1IaWXkc1J4I4zpMUJYZg1T8IWq4QJbmiJwylmIY5RUY
-         frxbvpxxZzliB8m1wrr7FffbnjhnfWlCrhOtQKgyN+rfWRYrF8HNJ6CH5eWbo0iLVd
-         kfSJoS4jPAdy4GMv/0OXlUZQNF+Eedk1DOagWNqqtObYNqFUf+5KwyS1x7cd7jJmUC
-         JrLHhd5GZDka1CbOUaMbgFDrjsVkN3ML+OWDyEXqwUDeAQIKSKGdP/H9wKc/ej/+wa
-         N7WFOY/dS2+lw==
-Date:   Tue, 9 Aug 2022 07:50:02 +0100
+        b=QzdOYdAMDF/AQjiflW2UwPuPZqVu1Dgu1O4LLZxKUD1focGf0nQsrWClKfvzSOxvd
+         RkkhTQ1q56hslpBnFppSsSTmYCZaI6ZCiPN1NBUUG9WUbwsHb32L+2VrDj+rFpRdQb
+         LX3lZ/t+zvQ53haySi69n7ykmZIsdhXmtlcxNOCwRwplZ9CQQI68so3WytzM1Yx1oN
+         G4i2YRPWHY0T6JrfHfJo6WII3vG8KnkJK42o3t9BygFuYbV7FC/cjaizp9ptccsi5n
+         cjUMqcVDOp1BOY0rOO8UbGlJxgD+jhKa3FJl1GFv0rtTv8rrWEypDvcpI7T2E5Oo3u
+         FheD1yfF9/E6w==
+Date:   Tue, 9 Aug 2022 07:50:35 +0100
 From:   Lee Jones <lee@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         John Fastabend <john.fastabend@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -43,18 +42,17 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf <bpf@vger.kernel.org>
+        Hao Luo <haoluo@google.com>, bpf@vger.kernel.org
 Subject: Re: [PATCH v2 1/1] bpf: Drop unprotected find_vpid() in favour of
  find_get_pid()
-Message-ID: <YvIDmku4us2SSBKu@google.com>
+Message-ID: <YvIDu0zU7eDUGEYq@google.com>
 References: <20220803134821.425334-1-lee@kernel.org>
- <CAADnVQ+X_B4LC6CtYM1PXPA4BBprWLj5Qip--Eeu32Zti==Ydw@mail.gmail.com>
+ <YuqT17dTbHK521pC@krava>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQ+X_B4LC6CtYM1PXPA4BBprWLj5Qip--Eeu32Zti==Ydw@mail.gmail.com>
+In-Reply-To: <YuqT17dTbHK521pC@krava>
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -65,21 +63,26 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 04 Aug 2022, Alexei Starovoitov wrote:
+On Wed, 03 Aug 2022, Jiri Olsa wrote:
 
-> On Wed, Aug 3, 2022 at 6:48 AM Lee Jones <lee@kernel.org> wrote:
-> >
+> On Wed, Aug 03, 2022 at 02:48:21PM +0100, Lee Jones wrote:
 > > The documentation for find_pid() clearly states:
-> >
+> 
+> nit: typo find_vpid
+
+Sorry missed this.
+
+Will fix.
+
 > >   "Must be called with the tasklist_lock or rcu_read_lock() held."
-> >
+> > 
 > > Presently we do neither.
-> >
+> > 
 > > Let's use find_get_pid() which searches for the vpid, then takes a
 > > reference to it preventing early free, all within the safety of
 > > rcu_read_lock().  Once we have our reference we can safely make use of
 > > it up until the point it is put.
-> >
+> > 
 > > Cc: Alexei Starovoitov <ast@kernel.org>
 > > Cc: Daniel Borkmann <daniel@iogearbox.net>
 > > Cc: John Fastabend <john.fastabend@gmail.com>
@@ -94,42 +97,10 @@ On Thu, 04 Aug 2022, Alexei Starovoitov wrote:
 > > Cc: bpf@vger.kernel.org
 > > Fixes: 41bdc4b40ed6f ("bpf: introduce bpf subcommand BPF_TASK_FD_QUERY")
 > > Signed-off-by: Lee Jones <lee@kernel.org>
-> > ---
-> >
-> > v1 => v2:
-> >   * Commit log update - no code differences
-> >
-> >  kernel/bpf/syscall.c | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > index 83c7136c5788d..c20cff30581c4 100644
-> > --- a/kernel/bpf/syscall.c
-> > +++ b/kernel/bpf/syscall.c
-> > @@ -4385,6 +4385,7 @@ static int bpf_task_fd_query(const union bpf_attr *attr,
-> >         const struct perf_event *event;
-> >         struct task_struct *task;
-> >         struct file *file;
-> > +       struct pid *ppid;
-> >         int err;
-> >
-> >         if (CHECK_ATTR(BPF_TASK_FD_QUERY))
-> > @@ -4396,7 +4397,9 @@ static int bpf_task_fd_query(const union bpf_attr *attr,
-> >         if (attr->task_fd_query.flags != 0)
-> >                 return -EINVAL;
-> >
-> > -       task = get_pid_task(find_vpid(pid), PIDTYPE_PID);
-> > +       ppid = find_get_pid(pid);
-> > +       task = get_pid_task(ppid, PIDTYPE_PID);
-> > +       put_pid(ppid);
 > 
-> rcu_read_lock/unlock around this line
-> would be a cheaper and faster alternative than pid's
-> refcount inc/dec.
+> Acked-by: Jiri Olsa <jolsa@kernel.org>
 
-This was already discussed here:
-
-https://lore.kernel.org/all/YtsFT1yFtb7UW2Xu@krava/
+Thanks.
 
 -- 
 Lee Jones [李琼斯]
