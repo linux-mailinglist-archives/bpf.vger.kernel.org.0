@@ -2,55 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA4D458E2B7
-	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 00:13:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF14358E2BB
+	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 00:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229932AbiHIWNQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Aug 2022 18:13:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35130 "EHLO
+        id S229489AbiHIWN6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Aug 2022 18:13:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230005AbiHIWMz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Aug 2022 18:12:55 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43693275C7;
-        Tue,  9 Aug 2022 15:09:13 -0700 (PDT)
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oLXPC-0007Lb-LF; Wed, 10 Aug 2022 00:08:54 +0200
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oLXPB-000OdW-V3; Wed, 10 Aug 2022 00:08:53 +0200
-Subject: Re: [PATCH v9 03/10] btf: Handle dynamic pointer parameter in kfuncs
-To:     Roberto Sassu <roberto.sassu@huawei.com>, ast@kernel.org,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
-        corbet@lwn.net, dhowells@redhat.com, jarkko@kernel.org,
-        rostedt@goodmis.org, mingo@redhat.com, paul@paul-moore.com,
-        jmorris@namei.org, serge@hallyn.com, shuah@kernel.org
-Cc:     bpf@vger.kernel.org, linux-doc@vger.kernel.org,
-        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Joanne Koong <joannelkoong@gmail.com>
-References: <20220809134603.1769279-1-roberto.sassu@huawei.com>
- <20220809134603.1769279-4-roberto.sassu@huawei.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <8fe84489-be78-142e-90fe-a76c7d61100d@iogearbox.net>
-Date:   Wed, 10 Aug 2022 00:08:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S229747AbiHIWNi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Aug 2022 18:13:38 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42EB6186D2
+        for <bpf@vger.kernel.org>; Tue,  9 Aug 2022 15:12:38 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id z20so14916444edb.9
+        for <bpf@vger.kernel.org>; Tue, 09 Aug 2022 15:12:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YVIDw6XnpvNCwkszE5+XQ2op+IiW359EhausHzoYr3s=;
+        b=f6re58jASFmDHK5eemaDqCjI4+t6TkHya6iKNFQ55mDJ6/zQXhERFsVjZeAPtWBfBT
+         41btIcnqzLjMn8oLEPfgdjhmw9jexh1uJXckK3lodyq8EPIwDdOGMx/bHHSNvoPvKiHc
+         tyS/TB9xFNELXMHDAxIOB34vOnoQBz/rFoJ8eXYKzhrBzAa5T+WRx8Q/9xRR8FJHMmmJ
+         YAjQDCaVGLGUyODf1RELrMwwM3pQ5XHcbL215ZNgKfdAKYX1Kf9p+m17k/huMdrVZ+PS
+         sL1vmwCygTINAos8EqMVymwV0Pq9ZkcZrchwyP3BYIBAs6SNMEEsMUZNYCWfxcuSUiaY
+         QV7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YVIDw6XnpvNCwkszE5+XQ2op+IiW359EhausHzoYr3s=;
+        b=6ijk+3M5b6JvRco5Jff9Pb5Ixcrd+jYtyOF6rV/jOXweQgqJOoY7oJK5ZGuK2s7tSw
+         v6oS1c2QdUoQtyGxlvVC8JKd+Tq3hWoJ4OEmU9Z+CwAdDjCKQfG8nI7KbuEqLHe0k5A9
+         KalX3zjjJI4jrvbNXQR0hKwjz7/HbSjrdaonYKf0/z9KTbep5HZR4L5U7TAj1T0yTNoa
+         cScYKKBM6DxwABUVUt6r687Y8XQhpG1X2RYz9GkMfdqGrbU2KxD6o98Ptjxi0d/ziBmK
+         2uMAy4FnTN+5xRyDlUmKiIHeohqdAMoy0yVnGUuE9bo91s0o1paO/qgnBolA0VDue3GW
+         8Img==
+X-Gm-Message-State: ACgBeo3m+hNd9K8qXQ2Na5va3irMxI+tZDCQvQKINJuQW5uY18Lsc34+
+        l6YldrRswOnoRj9ywK5VOWa4yub+eBP3y22XiZs=
+X-Google-Smtp-Source: AA6agR5lVdXsWJagMSdMTwBptp5GWZEhoB9p+yDGXwj0lTG2hxh5e04XjfHWQPmcncotyxTMBMuOrHcGxQfF6MBFakI=
+X-Received: by 2002:a05:6402:2079:b0:43d:a218:9b8a with SMTP id
+ bd25-20020a056402207900b0043da2189b8amr23291940edb.357.1660083156719; Tue, 09
+ Aug 2022 15:12:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20220809134603.1769279-4-roberto.sassu@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26622/Tue Aug  9 09:53:52 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+References: <20220809195429.1043220-1-kuifeng@fb.com> <20220809195429.1043220-2-kuifeng@fb.com>
+In-Reply-To: <20220809195429.1043220-2-kuifeng@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 9 Aug 2022 15:12:25 -0700
+Message-ID: <CAADnVQLjHpfFQDn_1mXj7+o6E8Dsmatr0jeozPAk5rV8hcLWfg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/3] bpf: Parameterize task iterators.
+To:     Kui-Feng Lee <kuifeng@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,88 +67,108 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/9/22 3:45 PM, Roberto Sassu wrote:
-> Allow the bpf_dynptr_kern parameter to be specified in kfuncs. Also, ensure
-> that the dynamic pointer is valid and initialized.
-> 
-> Cc: Joanne Koong <joannelkoong@gmail.com>
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+On Tue, Aug 9, 2022 at 12:54 PM Kui-Feng Lee <kuifeng@fb.com> wrote:
+>
+> Allow creating an iterator that loops through resources of one task/thread.
+>
+> People could only create iterators to loop through all resources of
+> files, vma, and tasks in the system, even though they were interested
+> in only the resources of a specific task or process.  Passing the
+> additional parameters, people can now create an iterator to go
+> through all resources or only the resources of a task.
+>
+> Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
 > ---
->   include/linux/bpf_verifier.h |  3 +++
->   kernel/bpf/btf.c             | 17 +++++++++++++++++
->   kernel/bpf/verifier.c        |  4 ++--
->   3 files changed, 22 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> index 2e3bad8640dc..55876fbdbae2 100644
-> --- a/include/linux/bpf_verifier.h
-> +++ b/include/linux/bpf_verifier.h
-> @@ -560,6 +560,9 @@ int check_kfunc_mem_size_reg(struct bpf_verifier_env *env, struct bpf_reg_state
->   			     u32 regno);
->   int check_mem_reg(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
->   		   u32 regno, u32 mem_size);
-> +bool is_dynptr_reg_valid_init(struct bpf_verifier_env *env,
-> +			      struct bpf_reg_state *reg,
-> +			      enum bpf_arg_type arg_type);
->   
->   /* this lives here instead of in bpf.h because it needs to dereference tgt_prog */
->   static inline u64 bpf_trampoline_compute_key(const struct bpf_prog *tgt_prog,
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 67dfc728fbf8..17cca396c89f 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -6363,6 +6363,8 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
->   
->   			if (is_kfunc) {
->   				bool arg_mem_size = i + 1 < nargs && is_kfunc_arg_mem_size(btf, &args[i + 1], &regs[regno + 1]);
-> +				bool arg_dynptr = btf_type_is_struct(ref_t) &&
-> +						  !strcmp(ref_tname, "bpf_dynptr_kern");
+>  include/linux/bpf.h            |   8 ++
+>  include/uapi/linux/bpf.h       |  36 +++++++++
+>  kernel/bpf/task_iter.c         | 134 +++++++++++++++++++++++++++------
+>  tools/include/uapi/linux/bpf.h |  36 +++++++++
+>  4 files changed, 190 insertions(+), 24 deletions(-)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 11950029284f..bef81324e5f1 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1718,6 +1718,14 @@ int bpf_obj_get_user(const char __user *pathname, int flags);
+>
+>  struct bpf_iter_aux_info {
+>         struct bpf_map *map;
+> +       struct {
+> +               enum bpf_iter_task_type type;
+> +               union {
+> +                       u32 tid;
+> +                       u32 tgid;
+> +                       u32 pid_fd;
+> +               };
+> +       } task;
+>  };
+>
+>  typedef int (*bpf_iter_attach_target_t)(struct bpf_prog *prog,
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index ffcbf79a556b..3d0b9e34089f 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -87,10 +87,46 @@ struct bpf_cgroup_storage_key {
+>         __u32   attach_type;            /* program attach type (enum bpf_attach_type) */
+>  };
+>
+> +/*
+> + * The task type of iterators.
+> + *
+> + * For BPF task iterators, they can be parameterized with various
+> + * parameters to visit only some of tasks.
+> + *
+> + * BPF_TASK_ITER_ALL (default)
+> + *     Iterate over resources of every task.
+> + *
+> + * BPF_TASK_ITER_TID
+> + *     Iterate over resources of a task/tid.
+> + *
+> + * BPF_TASK_ITER_TGID
+> + *     Iterate over reosurces of evevry task of a process / task group.
+> + *
+> + * BPF_TASK_ITER_PIDFD
+> + *     Iterate over resources of every task of a process /task group specified by a pidfd.
+> + */
+> +enum bpf_iter_task_type {
+> +       BPF_TASK_ITER_ALL = 0,
+> +       BPF_TASK_ITER_TID,
+> +       BPF_TASK_ITER_TGID,
+> +       BPF_TASK_ITER_PIDFD,
+> +};
+> +
+>  union bpf_iter_link_info {
+>         struct {
+>                 __u32   map_fd;
+>         } map;
+> +       /*
+> +        * Parameters of task iterators.
+> +        */
+> +       struct {
+> +               enum bpf_iter_task_type type;
+> +               union {
+> +                       __u32 tid;
+> +                       __u32 tgid;
+> +                       __u32 pid_fd;
+> +               };
 
-For the strcmp(), could we add some BUILD_BUG_ON() if "bpf_dynptr_kern" ever
-gets renamed? I played a bit with the below compile-tested toy example. If we
-rename foo_bar into something else, we then get:
+Sorry I'm late to this discussion, but
+with enum and with union we kinda tell
+the kernel the same information twice.
+Here is how the selftest looks:
++       linfo.task.tid = getpid();
++       linfo.task.type = BPF_TASK_ITER_TID;
 
-   [...]
-   CC      net/core/dev.o
-   In file included from <command-line>:
-   net/core/dev.c: In function ‘net_dev_init’:
-   net/core/dev.c:11376:25: error: invalid application of ‘sizeof’ to incomplete type ‘struct foo_bar’
-   11376 |  ({ BUILD_BUG_ON(sizeof(struct x) < 0); \
-         |                         ^~~~~~
-   [...]
+first line -> use tid.
+second line -> yeah. I really meant the tid.
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 716df64fcfa5..a2ed271f7ded 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -11368,16 +11368,30 @@ static struct pernet_operations __net_initdata default_device_ops = {
-   *
-   */
+Instead of union and type can we do:
+> +                       __u32 tid;
+> +                       __u32 tgid;
+> +                       __u32 pid_fd;
 
-+struct foo_bar {
-+       int a;
-+};
-+
-+#define stringify_struct(x)                    \
-+       ({ BUILD_BUG_ON(sizeof(struct x) < 0);  \
-+       __stringify(x); })
-+
-  /*
-   *       This is called single threaded during boot, so no need
-   *       to take the rtnl semaphore.
-   */
-  static int __init net_dev_init(void)
-  {
-+       const char *ref_tname = "abc";
-         int i, rc = -ENOMEM;
+as 3 separate fields?
+The kernel would have to check that only one
+of them is set.
 
-         BUG_ON(!dev_boot_phase);
-
-+       printk("%s\n", stringify_struct(foo_bar));
-+
-+       if (!strcmp(ref_tname, stringify_struct(foo_bar)))
-+               goto out;
-+
-         if (dev_proc_init())
-                 goto out;
-
+I could have missed an earlier discussion on this subj.
