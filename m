@@ -2,206 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4819058DB85
-	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 18:01:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57F4A58DBA3
+	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 18:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244856AbiHIQBh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 9 Aug 2022 12:01:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56558 "EHLO
+        id S237321AbiHIQIY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Aug 2022 12:08:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239710AbiHIQBg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Aug 2022 12:01:36 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FEDC101C0;
-        Tue,  9 Aug 2022 09:01:35 -0700 (PDT)
-Received: from fraeml707-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4M2Hqt3L9xz67gtM;
-        Wed, 10 Aug 2022 00:01:30 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml707-chm.china.huawei.com (10.206.15.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 9 Aug 2022 18:01:32 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2375.024;
- Tue, 9 Aug 2022 18:01:32 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-CC:     "quentin@isovalent.com" <quentin@isovalent.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "martin.lau@linux.dev" <martin.lau@linux.dev>,
-        "song@kernel.org" <song@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "sdf@google.com" <sdf@google.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "terrelln@fb.com" <terrelln@fb.com>,
-        "nathan@kernel.org" <nathan@kernel.org>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Andres Freund <andres@anarazel.de>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: RE: [PATCH 4/4] build: Switch to new openssl API for test-libcrypto
-Thread-Topic: [PATCH 4/4] build: Switch to new openssl API for test-libcrypto
-Thread-Index: AQHYm5HfT/KQ8BwklE+dy083QuWM9q2lK0sAgAAmxQCAAVr4gIAAAaGAgAAjZQCAAAjuAA==
-Date:   Tue, 9 Aug 2022 16:01:32 +0000
-Message-ID: <bf906906df714ebb82259539496ec6be@huawei.com>
-References: <20220719170555.2576993-1-roberto.sassu@huawei.com>
- <20220719170555.2576993-4-roberto.sassu@huawei.com>
- <5f867295-10d2-0085-d1dc-051f56e7136a@iogearbox.net>
- <YvFW/kBL6YA3Tlnc@kernel.org> <YvJ6DbzBNsAgNZS4@kernel.org>
- <YvJ7awkCVBYaZ2dd@kernel.org> <23f8c56f584b4da8acf15d050c0443b6@huawei.com>
-In-Reply-To: <23f8c56f584b4da8acf15d050c0443b6@huawei.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.81.201.209]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        with ESMTP id S240145AbiHIQIY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Aug 2022 12:08:24 -0400
+Received: from out02.mta.xmission.com (out02.mta.xmission.com [166.70.13.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 933DB1132;
+        Tue,  9 Aug 2022 09:08:21 -0700 (PDT)
+Received: from in02.mta.xmission.com ([166.70.13.52]:51188)
+        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1oLRmD-003S1H-KH; Tue, 09 Aug 2022 10:08:17 -0600
+Received: from ip68-227-174-4.om.om.cox.net ([68.227.174.4]:57438 helo=email.froward.int.ebiederm.org.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1oLRmC-00C526-5Z; Tue, 09 Aug 2022 10:08:17 -0600
+From:   "Eric W. Biederman" <ebiederm@xmission.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Frederick Lawler <fred@cloudflare.com>, kpsingh@kernel.org,
+        revest@chromium.org, jackmanb@chromium.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        jmorris@namei.org, serge@hallyn.com,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        shuah@kernel.org, brauner@kernel.org, casey@schaufler-ca.com,
+        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-team@cloudflare.com, cgzones@googlemail.com,
+        karl@bigbadwolfsecurity.com
+References: <20220801180146.1157914-1-fred@cloudflare.com>
+        <87les7cq03.fsf@email.froward.int.ebiederm.org>
+        <CAHC9VhRpUxyxkPaTz1scGeRm+i4KviQQA7WismOX2q5agzC+DQ@mail.gmail.com>
+        <87wnbia7jh.fsf@email.froward.int.ebiederm.org>
+        <CAHC9VhS3udhEecVYVvHm=tuqiPGh034-xPqXYtFjBk23+p-Szg@mail.gmail.com>
+        <877d3ia65v.fsf@email.froward.int.ebiederm.org>
+        <87bksu8qs2.fsf@email.froward.int.ebiederm.org>
+        <CAHC9VhTEwD2y9Witj-1z3e2TC-NGjghQ4KT4Dqf3UOLzDcDc3Q@mail.gmail.com>
+Date:   Tue, 09 Aug 2022 11:07:51 -0500
+In-Reply-To: <CAHC9VhTEwD2y9Witj-1z3e2TC-NGjghQ4KT4Dqf3UOLzDcDc3Q@mail.gmail.com>
+        (Paul Moore's message of "Mon, 8 Aug 2022 18:47:21 -0400")
+Message-ID: <87czd95rjc.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-XM-SPF: eid=1oLRmC-00C526-5Z;;;mid=<87czd95rjc.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.174.4;;;frm=ebiederm@xmission.com;;;spf=softfail
+X-XM-AID: U2FsdGVkX1/OKOUHv1PWhUjp+g6EbQWzYWXeUfqqFrY=
+X-SA-Exim-Connect-IP: 68.227.174.4
+X-SA-Exim-Mail-From: ebiederm@xmission.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ***;Paul Moore <paul@paul-moore.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 844 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 11 (1.3%), b_tie_ro: 10 (1.1%), parse: 1.67
+        (0.2%), extract_message_metadata: 26 (3.0%), get_uri_detail_list: 5
+        (0.6%), tests_pri_-1000: 26 (3.1%), tests_pri_-950: 1.75 (0.2%),
+        tests_pri_-900: 1.45 (0.2%), tests_pri_-90: 129 (15.2%), check_bayes:
+        126 (15.0%), b_tokenize: 20 (2.4%), b_tok_get_all: 14 (1.6%),
+        b_comp_prob: 6 (0.7%), b_tok_touch_all: 81 (9.6%), b_finish: 1.15
+        (0.1%), tests_pri_0: 632 (74.8%), check_dkim_signature: 0.53 (0.1%),
+        check_dkim_adsp: 7 (0.9%), poll_dns_idle: 0.63 (0.1%), tests_pri_10:
+        1.97 (0.2%), tests_pri_500: 9 (1.0%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v4 0/4] Introduce security_create_user_ns()
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> From: Roberto Sassu [mailto:roberto.sassu@huawei.com]
-> Sent: Tuesday, August 9, 2022 5:29 PM
-> > From: Arnaldo Carvalho de Melo [mailto:acme@kernel.org]
-> > Sent: Tuesday, August 9, 2022 5:21 PM
-> > Em Tue, Aug 09, 2022 at 12:15:25PM -0300, Arnaldo Carvalho de Melo
-> escreveu:
-> > > Em Mon, Aug 08, 2022 at 03:33:34PM -0300, Arnaldo Carvalho de Melo
-> > escreveu:
-> > > > Em Mon, Aug 08, 2022 at 06:14:48PM +0200, Daniel Borkmann escreveu:
-> > > > > Hi Arnaldo,
-> > > > >
-> > > > > On 7/19/22 7:05 PM, Roberto Sassu wrote:
-> > > > > > Switch to new EVP API for detecting libcrypto, as Fedora 36 returns an
-> > > > > > error when it encounters the deprecated function MD5_Init() and the
-> > others.
-> > > > > > The error would be interpreted as missing libcrypto, while in reality it is
-> > > > > > not.
-> > > > > >
-> > > > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > > > >
-> > > > > Given rest of the tooling fixes from Andres Freund went via perf tree and
-> > the
-> > > > > below is perf related as well, I presume you'll pick this up, too?
-> > > >
-> > > > Sure.
-> > > >
-> > > > >   [0]
-> >
-> https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/log/?h=perf/cor
-> > e
-> > >
-> > > So I fixed up the first one, minor fuzzes, the second I had to fix
-> > > conflicts with the patchset from Andres, ended up as below, will test
-> > > build it then in my container kit.
+Paul Moore <paul@paul-moore.com> writes:
 
-Did you push to a remote branch, so that I start from those?
+> On Mon, Aug 8, 2022 at 3:43 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>> "Eric W. Biederman" <ebiederm@xmission.com> writes:
+>> > Paul Moore <paul@paul-moore.com> writes:
+>> >
+>> >>> I did provide constructive feedback.  My feedback to his problem
+>> >>> was to address the real problem of bugs in the kernel.
+>> >>
+>> >> We've heard from several people who have use cases which require
+>> >> adding LSM-level access controls and observability to user namespace
+>> >> creation.  This is the problem we are trying to solve here; if you do
+>> >> not like the approach proposed in this patchset please suggest another
+>> >> implementation that allows LSMs visibility into user namespace
+>> >> creation.
+>> >
+>> > Please stop, ignoring my feedback, not detailing what problem or
+>> > problems you are actually trying to be solved, and threatening to merge
+>> > code into files that I maintain that has the express purpose of breaking
+>> > my users.
+>> >
+>> > You just artificially constrained the problems, so that no other
+>> > solution is acceptable.  On that basis alone I am object to this whole
+>> > approach to steam roll over me and my code.
+>>
+>> If you want an example of what kind of harm it can cause to introduce a
+>> failure where no failure was before I invite you to look at what
+>> happened with sendmail when setuid was modified to fail, when changing
+>> the user of a process would cause RLIMIT_NPROC to be exceeded.
+>
+> I think we are all familiar with the sendmail capabilities bug and the
+> others like it, but using that as an excuse to block additional access
+> controls seems very weak.  The Linux Kernel is very different from
+> when the sendmail bug hit (what was that, ~20 years ago?), with
+> advancements in capabilities and other discretionary controls, as well
+> as mandatory access controls which have enabled Linux to be certified
+> through a number of third party security evaluations.
 
-Thanks
+If you are familiar with scenarios like that then why is there not
+being due diligence performed to ensure that userspace won't break?
 
-Roberto
+Certainly none of the paperwork you are talking about does that kind
+of checking and it most definitely is not happening before the code
+gets merged. 
 
-> > So I backtracked, the way it works needs further consideration with
-> > regard to the patchkit from Andres, that is already upstream, so it
-> > would be good for Roberto to take a look at what is in torvalds/master
-> > now and see if we have to removed that styled thing from Andres.
-> 
-> Will do. Thanks Arnaldo for adapting the patch.
-> 
-> Roberto
-> 
-> > Andres, if you could take a look at Roberto's patchkit as well that
-> > would be great.
-> >
-> > - Arnaldo
-> >
-> > > commit bea955a0256e20cc18e87087e42f2a903b9a8b84
-> > > Author: Roberto Sassu <roberto.sassu@huawei.com>
-> > > Date:   Tue Jul 19 19:05:53 2022 +0200
-> > >
-> > >     bpftool: Complete libbfd feature detection
-> > >
-> > >     Commit 6e8ccb4f624a7 ("tools/bpf: properly account for libbfd
-> variations")
-> > >     sets the linking flags depending on which flavor of the libbfd feature was
-> > >     detected.
-> > >
-> > >     However, the flavors except libbfd cannot be detected, as they are not in
-> > >     the feature list.
-> > >
-> > >     Complete the list of features to detect by adding libbfd-liberty and
-> > >     libbfd-liberty-z.
-> > >
-> > >     Committer notes:
-> > >
-> > >     Adjust conflict with with:
-> > >
-> > >       1e1613f64cc8a09d ("tools bpftool: Don't display disassembler-four-args
-> > feature test")
-> > >       600b7b26c07a070d ("tools bpftool: Fix compilation error with new
-> > binutils")
-> > >
-> > >     Fixes: 6e8ccb4f624a73c5 ("tools/bpf: properly account for libbfd
-> variations")
-> > >     Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > >     Cc: Alexei Starovoitov <ast@kernel.org>
-> > >     Cc: Andres Freund <andres@anarazel.de>
-> > >     Cc: Andrii Nakryiko <andrii@kernel.org>
-> > >     Cc: bpf@vger.kernel.org
-> > >     Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > >     Cc: Ingo Molnar <mingo@redhat.com>
-> > >     Cc: John Fastabend <john.fastabend@gmail.com>
-> > >     Cc: KP Singh <kpsingh@kernel.org>
-> > >     Cc: llvm@lists.linux.dev
-> > >     Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> > >     Cc: Nathan Chancellor <nathan@kernel.org>
-> > >     Cc: Nick Desaulniers <ndesaulniers@google.com>
-> > >     Cc: Nick Terrell <terrelln@fb.com>
-> > >     Cc: Peter Zijlstra <peterz@infradead.org>
-> > >     Cc: Quentin Monnet <quentin@isovalent.com>
-> > >     Cc: Song Liu <song@kernel.org>
-> > >     Cc: Stanislav Fomichev <sdf@google.com>
-> > >     Link: https://lore.kernel.org/r/20220719170555.2576993-2-
-> > roberto.sassu@huawei.com
-> > >     Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> > >
-> > > diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-> > > index 04d733e98bffbc08..9cc132277150c534 100644
-> > > --- a/tools/bpf/bpftool/Makefile
-> > > +++ b/tools/bpf/bpftool/Makefile
-> > > @@ -93,9 +93,11 @@ INSTALL ?= install
-> > >  RM ?= rm -f
-> > >
-> > >  FEATURE_USER = .bpftool
-> > > -FEATURE_TESTS = libbfd disassembler-four-args disassembler-init-styled
-> > libcap \
-> > > +FEATURE_TESTS = libbfd libbfd-liberty libbfd-liberty-z
-> > > +	disassembler-four-args disassembler-init-styled libcap \
-> > >  	clang-bpf-co-re
-> > > -FEATURE_DISPLAY = libbfd libcap clang-bpf-co-re
-> > > +FEATURE_DISPLAY = libbfd libbfd-liberty libbfd-liberty-z
-> > > +	libcap clang-bpf-co-re
-> > >
-> > >  check_feat := 1
-> > >  NON_CHECK_FEAT_TARGETS := clean uninstall doc doc-clean doc-install
-> doc-
-> > uninstall
-> >
-> > --
-> >
-> > - Arnaldo
+I am saying that performing that due diligence should be a requirement
+before anyone even thinks about merging a patch that adds permission
+checks where no existed before.
+
+Sometimes changes to fix security bugs can get away with adding new
+restrictions because we know with a very very high degree of probability
+that the only thing that will break will be exploit code.  In the rare
+case when real world applications are broken such changes need to be
+reverted or adapted.  No one has even made the argument that only
+exploit code will be affected.
+
+So I am sorry I am the one who has to be the one to get in the way of a
+broken process with semantic review,  but due diligence has not been
+done.  So I am say no way this code should be merged.
+
+
+In addition to actually breaking existing userspace, I think there is a
+very real danger of breaking userspace, I think there is a very real
+danger of breaking network effects by making such a large change to the
+design of user namespaces.
+
+
+>> I am not arguing that what you are proposing is that bad but unexpected
+>> failures cause real problems, and at a minimum that needs a better
+>> response than: "There is at least one user that wants a failure here".
+>
+> Let me fix that for you: "There are multiple users who want to have
+> better visibility and access control for user namespace creation."
+
+Visibility sure.  Design a proper hook for that.  All the proposed hook
+can do is print an audit message.  It can't allocate or manage any state
+as there is not the corresponding hook when a user namespace is freed.
+So the proposed hook is not appropriate for increasing visibility.
+
+
+Access control.  Not a chance unless it is carefully designed and
+reviewed.  There is a very large cost to adding access control where
+it has not previously existed.
+
+I talk about that cost as people breaking my users as that is how I see
+it.  I don't see any discussion on why I am wrong.
+
+If we are going to add an access controls I want to see someone point
+out something that is actually semantically a problem.  What motivates
+an access control?
+
+So far the only answer I have received is people want to reduce the
+attack surface of the kernel.  I don't possibly see how reducing the
+attack surface by removing user namespaces makes the probability of
+having an exploitable kernel bug, anything approaching zero.
+
+So I look at the calculus.  Chance of actually breaking userspace, or
+preventing people with a legitimate use from using user namespaces > 0%.
+Chance of actually preventing a determined attacker from exploiting the
+kernel < 1%.  Amount of work to maintain, non-zero, and I really don't
+like it.
+
+Lots of work to achieve nothing but breaking some of my users.
+
+So please stop trying to redesign my subsystem and cause me headaches,
+unless you are going to do the due diligence necessary to do so
+responsibly.
+
+Eric
