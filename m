@@ -2,59 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E06058D0F6
-	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 02:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B48C58D14C
+	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 02:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233488AbiHIADE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Aug 2022 20:03:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47182 "EHLO
+        id S244660AbiHIATF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Aug 2022 20:19:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232541AbiHIADE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Aug 2022 20:03:04 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D6FB16590
-        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 17:03:03 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id i14so19473860ejg.6
-        for <bpf@vger.kernel.org>; Mon, 08 Aug 2022 17:03:03 -0700 (PDT)
+        with ESMTP id S244653AbiHIATE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Aug 2022 20:19:04 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BF825F6B;
+        Mon,  8 Aug 2022 17:19:02 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id gb36so19475310ejc.10;
+        Mon, 08 Aug 2022 17:19:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=AEDWWy2We22Dh2wfoNS245D1UmRnj+HRC1XYk4EGHpc=;
-        b=g9DoMGj6qd1xJNI6dbvI3ajj+l8wZ9t302c4Uons/vZT/IZuiULyX2bbCYAp6OmYL6
-         GoWxl+OQ3ALSWXgBpAEBSvRY8Eah4IB5zAH7UkrWruQ5dMHMqyaKTEd2f/e9VvgXzzTV
-         14hk/34CDm3eb4Gzivo6xLT7MhbhUYiwJ/ygWP88Yc0SWxFajv8G+HjcF4sOImZYTlCg
-         n+Pj+QIbhuu4j8/u4b5/cGQfk4TIj8lfv1uTDbSsTGFX6JaNsI2qRAYy/MkBpP65o93P
-         08FQCaUpl8Nkj9DDP/2uHhqKXjaQ2FbC4WNEvl9nHs+soHytG6V52jF4wXp8YsrbbnC3
-         8+Iw==
+        bh=TlM9leardc/lh2LAQcB7vPGtKrRV8tCxZE6tCV2q/hQ=;
+        b=VsnzieyrIyNJZZwyHN0jtoFOIpZfLyZFOi1lYn8touGkiYf4w+JAgrG1eWHpD+jrdV
+         R07dDJfmhqLjearJ1lyl7LCZ4hvDoJVr7A8Si1D3+OaiMyN5aW86ZJQr9IHkMMFzfsbr
+         rmi+xmz2pgROi8oYv5koHymujX9oIuhcHFdQwMnkTK17Yim9kH33pkjbHAB6R0ELQzKI
+         2Ysm8bKSs9lyCPp53i/WovGrjs+rjovSnVBoD85i54YkRBFtDw7ba0YuILGnLjlfVsO2
+         2wPNEirmmM815pBen/hQC7Gj7RgUYxcNdu1+BP5BLfoSy0nISGaoIUqqnkNt7F2NUzCD
+         6sKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=AEDWWy2We22Dh2wfoNS245D1UmRnj+HRC1XYk4EGHpc=;
-        b=Dh0Yh6+ZPxQkBC/5y5s4e/5sVHUo6J3UqMaQdlu7G9JZ6FUc+6a5q5QQqxG/Ape2lt
-         ME7C0FipPmx33SPm+qGyyKxQOAoCn2etGo2cITGrXmW4cZvYbjvBKMPq9H71yNu27+sl
-         a3+5MZg0mGRujFSFzJNBofRt5i9AViCLpIzrQssYbcwYMGD9HvQcy6+FJnck9/ApnPtw
-         ZvWl9qQRll+l97a3qhSR5nvkDqF0z+AIKxKXFc4Gzk1wcRiksc7LzIJ2t8jfXCwvsB6d
-         PTatGsYgswCwVLXA1K2klOmhPTvEbkU/321J/U2S7elazhUd4A/UVP4s1RxRuBfEfJXt
-         U34A==
-X-Gm-Message-State: ACgBeo2rGaFzuvaicQ4xDV2GcUvddCxHldQe5Q6RsfLtkucUr0FBUs3w
-        FOd9hFAzI7azWZXwQUJ9jtAU6t7ttKJN+nUN0w8=
-X-Google-Smtp-Source: AA6agR56c351cz+ERmoVkeAEPaanV+Lx3HKIr4Agq3czyUQQWdgQu+GSPlYqomfyWfJSZdBngcWouKBTNTZFLBO1gjQ=
-X-Received: by 2002:a17:907:6e22:b0:731:152:2504 with SMTP id
- sd34-20020a1709076e2200b0073101522504mr11717534ejc.545.1660003381870; Mon, 08
- Aug 2022 17:03:01 -0700 (PDT)
+        bh=TlM9leardc/lh2LAQcB7vPGtKrRV8tCxZE6tCV2q/hQ=;
+        b=sJpjlr7gIeU7mmWev09xxt1Ayx93l/aZ5LRY+pFeI+/nvhM29gjt9xbRZkyAj/qlMe
+         ocEEv4TkUw+osnH+7AKBU5CcQFGf8x1LCGMSeP3R+Ob/bbIVtfywBWaz/jrshSfz64Yq
+         1iVxw3vh9EqpmWn6+xNRsiz7Ay8oWQoK+M0pKliEsYsRWHqm+8k1TWDBisSwZHwBBndm
+         Y3I86sRXcVvyq6C9ojA+U7XL/GunrWNRLGqP3BeVKM9NvAcAWyigpOcJldSVBo+f63is
+         LHSY4Lfsu14mvrSSO194VYKk6o72+E/QOCafPWhid00eTgH5PIqz2kvGix6v+QzhybUM
+         bwCA==
+X-Gm-Message-State: ACgBeo1fCiTmO1pgmJLUuEE5BZzJxU4gL0B0RJVxBZS4HrocrUU/JWVG
+        it0ZVwZbModh5T+qzL3xO5QeZtnWuF+N9SFXHJo=
+X-Google-Smtp-Source: AA6agR7jsp2GdBBsJMK1XRlFbL78j6qGRxxcAxXMkQ9l/oLN7j+VD7I75rRoCu4Vib7KufeKo7eWlxIMKbKtTjwoIsA=
+X-Received: by 2002:a17:907:3e08:b0:730:d55c:1b26 with SMTP id
+ hp8-20020a1709073e0800b00730d55c1b26mr15119311ejc.226.1660004340751; Mon, 08
+ Aug 2022 17:19:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220726171129.708371-1-yhs@fb.com> <20220726171140.710070-1-yhs@fb.com>
-In-Reply-To: <20220726171140.710070-1-yhs@fb.com>
+References: <20220805214821.1058337-1-haoluo@google.com> <20220805214821.1058337-5-haoluo@google.com>
+In-Reply-To: <20220805214821.1058337-5-haoluo@google.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 8 Aug 2022 17:02:50 -0700
-Message-ID: <CAEf4Bza1TfpRSZa48Y9zJEi+VBTo9Y7u2YmtEYQZSOnuyJRiHA@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 2/7] bpf: Add struct argument info in btf_func_model
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+Date:   Mon, 8 Aug 2022 17:18:49 -0700
+Message-ID: <CAEf4BzZHf89Ds8nQWFCH00fKs9-9GkJ0d+Hrp-LkMCDUP_td0A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v7 4/8] bpf: Introduce cgroup iter
+To:     Hao Luo <haoluo@google.com>
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        cgroups@vger.kernel.org, netdev@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Michal Koutny <mkoutny@suse.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yosry Ahmed <yosryahmed@google.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -66,90 +82,243 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jul 26, 2022 at 10:11 AM Yonghong Song <yhs@fb.com> wrote:
+On Fri, Aug 5, 2022 at 2:49 PM Hao Luo <haoluo@google.com> wrote:
 >
-> Add struct argument information in btf_func_model and such information
-> will be used in arch specific function arch_prepare_bpf_trampoline()
-> to prepare argument access properly in trampoline.
+> Cgroup_iter is a type of bpf_iter. It walks over cgroups in four modes:
 >
-> Signed-off-by: Yonghong Song <yhs@fb.com>
+>  - walking a cgroup's descendants in pre-order.
+>  - walking a cgroup's descendants in post-order.
+>  - walking a cgroup's ancestors.
+>  - process only the given cgroup.
+>
+> When attaching cgroup_iter, one can set a cgroup to the iter_link
+> created from attaching. This cgroup is passed as a file descriptor
+> or cgroup id and serves as the starting point of the walk. If no
+> cgroup is specified, the starting point will be the root cgroup v2.
+>
+> For walking descendants, one can specify the order: either pre-order or
+> post-order. For walking ancestors, the walk starts at the specified
+> cgroup and ends at the root.
+>
+> One can also terminate the walk early by returning 1 from the iter
+> program.
+>
+> Note that because walking cgroup hierarchy holds cgroup_mutex, the iter
+> program is called with cgroup_mutex held.
+>
+> Currently only one session is supported, which means, depending on the
+> volume of data bpf program intends to send to user space, the number
+> of cgroups that can be walked is limited. For example, given the current
+> buffer size is 8 * PAGE_SIZE, if the program sends 64B data for each
+> cgroup, assuming PAGE_SIZE is 4kb, the total number of cgroups that can
+> be walked is 512. This is a limitation of cgroup_iter. If the output
+> data is larger than the kernel buffer size, after all data in the
+> kernel buffer is consumed by user space, the subsequent read() syscall
+> will signal EOPNOTSUPP. In order to work around, the user may have to
+> update their program to reduce the volume of data sent to output. For
+> example, skip some uninteresting cgroups. In future, we may extend
+> bpf_iter flags to allow customizing buffer size.
+>
+> Acked-by: Yonghong Song <yhs@fb.com>
+> Acked-by: Tejun Heo <tj@kernel.org>
+> Signed-off-by: Hao Luo <haoluo@google.com>
 > ---
->  include/linux/bpf.h | 9 +++++++++
->  1 file changed, 9 insertions(+)
+>  include/linux/bpf.h                           |   8 +
+>  include/uapi/linux/bpf.h                      |  38 +++
+>  kernel/bpf/Makefile                           |   3 +
+>  kernel/bpf/cgroup_iter.c                      | 286 ++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h                |  38 +++
+>  .../selftests/bpf/prog_tests/btf_dump.c       |   4 +-
+>  6 files changed, 375 insertions(+), 2 deletions(-)
+>  create mode 100644 kernel/bpf/cgroup_iter.c
 >
 > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 20c26aed7896..173b42cf3940 100644
+> index 20c26aed7896..09b5c2167424 100644
 > --- a/include/linux/bpf.h
 > +++ b/include/linux/bpf.h
-> @@ -726,10 +726,19 @@ enum bpf_cgroup_storage_type {
->   */
->  #define MAX_BPF_FUNC_REG_ARGS 5
+> @@ -48,6 +48,7 @@ struct mem_cgroup;
+>  struct module;
+>  struct bpf_func_state;
+>  struct ftrace_ops;
+> +struct cgroup;
 >
-> +/* The maximum number of struct arguments a single function may have. */
-> +#define MAX_BPF_FUNC_STRUCT_ARGS 2
+>  extern struct idr btf_idr;
+>  extern spinlock_t btf_idr_lock;
+> @@ -1730,7 +1731,14 @@ int bpf_obj_get_user(const char __user *pathname, int flags);
+>         int __init bpf_iter_ ## target(args) { return 0; }
+>
+>  struct bpf_iter_aux_info {
+> +       /* for map_elem iter */
+>         struct bpf_map *map;
 > +
->  struct btf_func_model {
->         u8 ret_size;
->         u8 nr_args;
->         u8 arg_size[MAX_BPF_FUNC_ARGS];
-> +       /* The struct_arg_idx should be in increasing order like (0, 2, ...).
-> +        * The struct_arg_bsize encodes the struct field byte size
-> +        * for the corresponding struct argument index.
-> +        */
-> +       u8 struct_arg_idx[MAX_BPF_FUNC_STRUCT_ARGS];
-> +       u8 struct_arg_bsize[MAX_BPF_FUNC_STRUCT_ARGS];
-
-Few questions here. It might be a bad idea, but I thought I'd bring it
-up anyway.
-
-So, is there any benefit into having these separate struct_arg_idx and
-struct_arg_bsize fields and then processing arg_size completely
-separate from struct_arg_idx/struct_arg_bsize in patch #4? Reading
-patch #4 it felt like it would be much easier to keep track of things
-if we had a single loop going over all the arguments, and then if some
-argument is a struct -- do some extra step to copy up to 16 bytes onto
-stack and store the pointer there (and skip up to one extra argument).
-And if it's not a struct arg -- do what we do right now.
-
-What if instead we keep btf_func_mode definition as is, but for struct
-argument we add extra flag to arg_size[struct_arg_idx] value to mark
-that it is a struct argument. This limits arg_size to 128 bytes, but I
-think it's more than enough for both struct and non-struct cases,
-right? Distill function would make sure that nr_args matches number of
-logical arguments and not number of registers.
-
-Would that work? Would that make anything harder to implement in
-arch-specific code? I don't see what, but I haven't grokked all the
-details of patch #4, so I'm sorry if I missed something obvious. The
-way I see it, it will make overall logic for saving/restoring
-registers more uniform, roughly:
-
-for (int arg_idx = 0; arg_idx < model->arg_size; arg_idx++) {
-  if (arg & BTF_FMODEL_STRUCT_ARG) {
-    /* handle struct, calc extra registers "consumed" from
-arg_size[arg_idx] ~BTF_FMODEL_STRUCT_ARG */
-  } else {
-    /* just a normal register */
-  }
-}
-
-
-If we do stick to current approach, though, let's please
-s/struct_arg_bsize/struct_arg_size/. Isn't arg_size also and already
-in bytes? It will keep naming and meaning consistent across struct and
-non-struct args.
-
-BTW, by not having btf_func_model encode register indices in
-struct_arg_idx we keep btf_func_model pretty architecture-agnostic,
-right? It will be per each architecture specific implementation to
-perform mapping this *model* into actual registers used?
-
-
-
-
+> +       /* for cgroup iter */
+> +       struct {
+> +               struct cgroup *start; /* starting cgroup */
+> +               int order;
+> +       } cgroup;
 >  };
 >
->  /* Restore arguments before returning from trampoline to let original function
-> --
-> 2.30.2
+>  typedef int (*bpf_iter_attach_target_t)(struct bpf_prog *prog,
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 59a217ca2dfd..4d758b2e70d6 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -87,10 +87,37 @@ struct bpf_cgroup_storage_key {
+>         __u32   attach_type;            /* program attach type (enum bpf_attach_type) */
+>  };
 >
+> +enum bpf_iter_order {
+> +       BPF_ITER_ORDER_DEFAULT = 0,     /* default order. */
+
+why is this default order necessary? It just adds confusion (I had to
+look up source code to know what is default order). I might have
+missed some discussion, so if there is some very good reason, then
+please document this in commit message. But I'd rather not do some
+magical default order instead. We can set 0 to mean invalid and error
+out, or just do SELF as the very first value (and if user forgot to
+specify more fancy mode, they hopefully will quickly discover this in
+their testing).
+
+> +       BPF_ITER_SELF,                  /* process only a single object. */
+> +       BPF_ITER_DESCENDANTS_PRE,       /* walk descendants in pre-order. */
+> +       BPF_ITER_DESCENDANTS_POST,      /* walk descendants in post-order. */
+> +       BPF_ITER_ANCESTORS_UP,          /* walk ancestors upward. */
+> +};
+> +
+
+This is a somewhat pedantic nit, so feel free to ignore completely,
+but don't DESCENDANTS_{PRE,POST} and ANCESTORS_UP also include "self"?
+As it is right now, BPF_ITER_SELF name might be read as implying that
+DESCENDANTS and ANCESTORS order don't include self. So I don't know,
+maybe BPF_ITER_SELF_ONLY would be a bit clearer?
+
+
+>  union bpf_iter_link_info {
+>         struct {
+>                 __u32   map_fd;
+>         } map;
+> +       struct {
+> +               /* Valid values include:
+> +                *  - BPF_ITER_ORDER_DEFAULT
+> +                *  - BPF_ITER_SELF
+> +                *  - BPF_ITER_DESCENDANTS_PRE
+> +                *  - BPF_ITER_DESCENDANTS_POST
+> +                *  - BPF_ITER_ANCESTORS_UP
+> +                * for cgroup_iter, DEFAULT is equivalent to DESCENDANTS_PRE.
+> +                */
+> +               __u32   order;
+> +
+> +               /* At most one of cgroup_fd and cgroup_id can be non-zero. If
+> +                * both are zero, the walk starts from the default cgroup v2
+> +                * root. For walking v1 hierarchy, one should always explicitly
+> +                * specify cgroup_fd.
+> +                */
+> +               __u32   cgroup_fd;
+> +               __u64   cgroup_id;
+> +       } cgroup;
+>  };
+>
+>  /* BPF syscall commands, see bpf(2) man-page for more details. */
+> @@ -6134,11 +6161,22 @@ struct bpf_link_info {
+>                 struct {
+>                         __aligned_u64 target_name; /* in/out: target_name buffer ptr */
+>                         __u32 target_name_len;     /* in/out: target_name buffer len */
+> +
+> +                       /* If the iter specific field is 32 bits, it can be put
+> +                        * in the first or second union. Otherwise it should be
+> +                        * put in the second union.
+> +                        */
+>                         union {
+>                                 struct {
+>                                         __u32 map_id;
+>                                 } map;
+>                         };
+> +                       union {
+> +                               struct {
+> +                                       __u64 cgroup_id;
+> +                                       __u32 order;
+> +                               } cgroup;
+> +                       };
+>                 } iter;
+
+But other than above, I like how UAPI looks like, thanks!
+
+[...]
+
+> + *
+> + * For walking descendants, cgroup_iter can walk in either pre-order or
+> + * post-order. For walking ancestors, the iter walks up from a cgroup to
+> + * the root.
+> + *
+> + * The iter program can terminate the walk early by returning 1. Walk
+> + * continues if prog returns 0.
+> + *
+> + * The prog can check (seq->num == 0) to determine whether this is
+> + * the first element. The prog may also be passed a NULL cgroup,
+> + * which means the walk has completed and the prog has a chance to
+> + * do post-processing, such as outputing an epilogue.
+
+typo: outputting
+
+> + *
+> + * Note: the iter_prog is called with cgroup_mutex held.
+> + *
+> + * Currently only one session is supported, which means, depending on the
+> + * volume of data bpf program intends to send to user space, the number
+> + * of cgroups that can be walked is limited. For example, given the current
+> + * buffer size is 8 * PAGE_SIZE, if the program sends 64B data for each
+> + * cgroup, assuming PAGE_SIZE is 4kb, the total number of cgroups that can
+> + * be walked is 512. This is a limitation of cgroup_iter. If the output data
+> + * is larger than the kernel buffer size, after all data in the kernel buffer
+> + * is consumed by user space, the subsequent read() syscall will signal
+> + * EOPNOTSUPP. In order to work around, the user may have to update their
+> + * program to reduce the volume of data sent to output. For example, skip
+> + * some uninteresting cgroups.
+> + */
+> +
+
+[...]
+
+> +
+> +static void bpf_iter_cgroup_show_fdinfo(const struct bpf_iter_aux_info *aux,
+> +                                       struct seq_file *seq)
+> +{
+> +       char *buf;
+> +
+> +       buf = kzalloc(PATH_MAX, GFP_KERNEL);
+> +       if (!buf) {
+> +               seq_puts(seq, "cgroup_path:\t<unknown>\n");
+> +               goto show_order;
+> +       }
+> +
+> +       /* If cgroup_path_ns() fails, buf will be an empty string, cgroup_path
+> +        * will print nothing.
+> +        *
+> +        * Path is in the calling process's cgroup namespace.
+> +        */
+> +       cgroup_path_ns(aux->cgroup.start, buf, PATH_MAX,
+> +                      current->nsproxy->cgroup_ns);
+> +       seq_printf(seq, "cgroup_path:\t%s\n", buf);
+> +       kfree(buf);
+> +
+> +show_order:
+> +       if (aux->cgroup.order == BPF_ITER_DESCENDANTS_PRE)
+> +               seq_puts(seq, "order: pre\n");
+> +       else if (aux->cgroup.order == BPF_ITER_DESCENDANTS_POST)
+> +               seq_puts(seq, "order: post\n");
+> +       else if (aux->cgroup.order == BPF_ITER_ANCESTORS_UP)
+> +               seq_puts(seq, "order: up\n");
+> +       else /* BPF_ITER_SELF */
+> +               seq_puts(seq, "order: self\n");
+
+should we output "descendants_pre", "descendants_post", "ancestors_up"
+and "self" to match enum names more uniformly? We had similar
+discussion when Daniel Mueller was doing some clean up in bpftool and
+public's opinion was that uniform and consistent mapping between
+kernel enum and it's string representation is more valuable than
+shortness of the string.
+
+> +}
+> +
+
+[...]
