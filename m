@@ -2,88 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3E9158DFA4
-	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 21:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C3158DFB3
+	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 21:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243130AbiHITDb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Aug 2022 15:03:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38860 "EHLO
+        id S1345417AbiHITEX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Aug 2022 15:04:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345372AbiHITCx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Aug 2022 15:02:53 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C5F127154
-        for <bpf@vger.kernel.org>; Tue,  9 Aug 2022 11:36:51 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id kb8so23753638ejc.4
-        for <bpf@vger.kernel.org>; Tue, 09 Aug 2022 11:36:51 -0700 (PDT)
+        with ESMTP id S1345075AbiHITDU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Aug 2022 15:03:20 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 386E82BB15
+        for <bpf@vger.kernel.org>; Tue,  9 Aug 2022 11:38:44 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id f14so9444235qkm.0
+        for <bpf@vger.kernel.org>; Tue, 09 Aug 2022 11:38:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=r1udxiufLg2zQG7fcR9O3XIbCaneDTtc2a4z99MA4xU=;
-        b=ircE61oswZtl8VM78NwlhZT9E0w9u5pquSdr3rN+04ShF7uk5rMdUIxDOQW3oqKbW7
-         fTR4QVP42lBBv62UaQZAvczdSbgpJ6sbA4nBcUqabMV9bgVuz2T3hJatYpHQ/1BjvXT4
-         QZQiPJWWbmZ4Ao1iklKGk3u5cMo7hs8YSGX2BRWvJ4WxR9iOLudXlmuG4r3OTmxnj6ha
-         W+FUIUg7HXHhSaftLVxjwVRH4SLPzJpmC/Cujna3PgTqm4iV0O5JFJ884AtTIMyCF5s0
-         8gZt5e2JDRfNSVB3WjXw//uxtxYZR5hH2vXc5DZ+/rPG7zprrHvy8OAK3TNB9j5tb/Qv
-         QCDg==
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=W39UTjuGL/i3nw+dgDx0+fMLYroO0xsXKyyQ9sO3qfs=;
+        b=Fm5fnpQkRBDixj266mJEDjoI5meQ1E60sTmfOsHyY4gHXSPI47WK21mPv188hkdsBc
+         1D4TqzxCqwoLkifQFTRkJW0CYED+uXT5c8xuxNC1L52e+xaIjanzU9IqE0lbAHCb7J2/
+         c4D622uQsla/OWEOaDBGBLVELPWHUKcAbfKsBMFVJzYbc7DdCkDcN30dU/x0nBfoZZqP
+         qOpFVPntPIQ140a5/hXtOFv0p1SE86EJi+UCbpZPFjopffVvfr9bwa1vVrgkZXSCpQqF
+         zy8+xUOGIBZuCbUaq9a9ce80kCe0wK5TguviBzveJ9mxc7tNKCMigHVnDp9JUlUoYPkh
+         sAHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r1udxiufLg2zQG7fcR9O3XIbCaneDTtc2a4z99MA4xU=;
-        b=ChvQnWEIXDHj47sYaXzfXtAtgGJjOqTfsMdwOikAMBLPKtM4n6KnJO/0OL4dnXE3av
-         r0e1SHCProkgbIwl9Nm/gBfWM+Y6lOGwiB6O1KfdgqB/zSzpnh6zq8kKXjdtN9QBGAxU
-         0Vk4WMc3smtvg+APidHqkqzdo5JrLR+X9QhJCIeocymHu3E0V5sg4k7OFizY0VScAbCm
-         jM+jIV0U6JqXXAcylwbPhnFPTD3Q1p+xAwU006bDLYC5RyExNFMtygm5e5iXtcDiQNpD
-         Jts/P+/u4oGRZPD/tG+imQGdsEyctlC5m4nZLpmfc0hRIFRBcy7gCgnbj2BjBmhhdxyM
-         bQzA==
-X-Gm-Message-State: ACgBeo1LR1gy/dn9DjQ30Nl8vLtL0uwdyAgM7qP2Qh6bx7fcmd7rtUEn
-        SaZ3UsD0lEDNfRCz0tx2eruQ7B9Wci770FTAWtg=
-X-Google-Smtp-Source: AA6agR7eaEO1lzqQO7BiTfJItG/ViwJdZ8RbgAraxxkQLKSxDdirgKeSxufgsJxbf3pEq6qqsqG31VbxtlJmPMuqD1Q=
-X-Received: by 2002:a17:907:2896:b0:730:983c:4621 with SMTP id
- em22-20020a170907289600b00730983c4621mr18406108ejc.502.1660070209681; Tue, 09
- Aug 2022 11:36:49 -0700 (PDT)
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=W39UTjuGL/i3nw+dgDx0+fMLYroO0xsXKyyQ9sO3qfs=;
+        b=QyTkF5n7TpFoTxSARFoNfihUqGfgAa16f6XzwRrjXXOxtE9xkTajFtXwNRE6WOsQU6
+         GCwS6zmgp3b6iVGR66mzKvR18i1Bzt/1LfPEZW3RdnAyXqX6ohhzTJD9teYg41RwxQke
+         uiCwu1AHi++C37xuD/bgXOPvSlJXVLXyCZnyUTxxHCq23C6qi28UXhKv1dwR6+hBS8Ah
+         2/P9Y2q/4VtsSu9QBiI+WlGUqfwa2vkb4FPSlmezzSZ7L8kOT4EjrJlvVveoo8Idzk7F
+         mhDrq0e0Juc8TtoAKIGb5lb0EqWd4BGmH4pe8PS8ZI3Iehsw+l5RuzCCWE0QdQyacKEz
+         iKMw==
+X-Gm-Message-State: ACgBeo3kaA4by5Q8kYOLIzkzakA5dHVnBo4l+moPO2eR7a7+52N5WXCP
+        wFDKFEtvSTMW5NPrdLeZgA1qF/XLp9tzgN/SB93lxA==
+X-Google-Smtp-Source: AA6agR7j7J8hfYaZbUCNovVrxp1DMCrCrOlUSxvDOduvi868dcDyOoshl/+dg7eRHqEx1jC61ycVEwqC6RyMjmSPXNM=
+X-Received: by 2002:a05:620a:8:b0:6b9:58ea:be83 with SMTP id
+ j8-20020a05620a000800b006b958eabe83mr6879567qki.221.1660070323122; Tue, 09
+ Aug 2022 11:38:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220809175208.2224443-1-joannelkoong@gmail.com>
-In-Reply-To: <20220809175208.2224443-1-joannelkoong@gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 9 Aug 2022 11:36:38 -0700
-Message-ID: <CAADnVQJV3-q_kkqoz+_RtOhQ4+ckBTLfTvgSbgmUP47mzMLtZA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/2] bpf: Fix ref_obj_id for dynptr data
- slices in verifier
-To:     Joanne Koong <joannelkoong@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        David Vernet <void@manifault.com>,
+References: <20220805214821.1058337-1-haoluo@google.com> <20220805214821.1058337-5-haoluo@google.com>
+ <CAEf4BzZHf89Ds8nQWFCH00fKs9-9GkJ0d+Hrp-LkMCDUP_td0A@mail.gmail.com>
+ <CA+khW7hUVOkHBO3dhRze2_VKZuxD-LuNQdO3nHUkLCYmuuR6eg@mail.gmail.com> <20220809162325.hwgvys5n3rivuz7a@MacBook-Pro-3.local.dhcp.thefacebook.com>
+In-Reply-To: <20220809162325.hwgvys5n3rivuz7a@MacBook-Pro-3.local.dhcp.thefacebook.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Tue, 9 Aug 2022 11:38:32 -0700
+Message-ID: <CA+khW7j0kzP+W_Qgsim52J+HeR27XJcyMk73Hq93tsmNzT7q6w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v7 4/8] bpf: Introduce cgroup iter
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        cgroups@vger.kernel.org, netdev@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Michal Koutny <mkoutny@suse.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yosry Ahmed <yosryahmed@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 9, 2022 at 10:52 AM Joanne Koong <joannelkoong@gmail.com> wrote:
+On Tue, Aug 9, 2022 at 9:23 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> When a data slice is obtained from a dynptr (through the bpf_dynptr_data API),
-> the ref obj id of the dynptr must be found and then associated with the data
-> slice.
+> On Mon, Aug 08, 2022 at 05:56:57PM -0700, Hao Luo wrote:
+> > On Mon, Aug 8, 2022 at 5:19 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Fri, Aug 5, 2022 at 2:49 PM Hao Luo <haoluo@google.com> wrote:
+> > > >
+> > > > Cgroup_iter is a type of bpf_iter. It walks over cgroups in four modes:
+> > > >
+> > > >  - walking a cgroup's descendants in pre-order.
+> > > >  - walking a cgroup's descendants in post-order.
+> > > >  - walking a cgroup's ancestors.
+> > > >  - process only the given cgroup.
+> > > >
+[...]
+> > > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > > > index 59a217ca2dfd..4d758b2e70d6 100644
+> > > > --- a/include/uapi/linux/bpf.h
+> > > > +++ b/include/uapi/linux/bpf.h
+> > > > @@ -87,10 +87,37 @@ struct bpf_cgroup_storage_key {
+> > > >         __u32   attach_type;            /* program attach type (enum bpf_attach_type) */
+> > > >  };
+> > > >
+> > > > +enum bpf_iter_order {
+> > > > +       BPF_ITER_ORDER_DEFAULT = 0,     /* default order. */
+> > >
+> > > why is this default order necessary? It just adds confusion (I had to
+> > > look up source code to know what is default order). I might have
+> > > missed some discussion, so if there is some very good reason, then
+> > > please document this in commit message. But I'd rather not do some
+> > > magical default order instead. We can set 0 to mean invalid and error
+> > > out, or just do SELF as the very first value (and if user forgot to
+> > > specify more fancy mode, they hopefully will quickly discover this in
+> > > their testing).
+> > >
+> >
+> > PRE/POST/UP are tree-specific orders. SELF applies on all iters and
+> > yields only a single object. How does task_iter express a non-self
+> > order? By non-self, I mean something like "I don't care about the
+> > order, just scan _all_ the objects". And this "don't care" order, IMO,
+> > may be the common case. I don't think everyone cares about walking
+> > order for tasks. The DEFAULT is intentionally put at the first value,
+> > so that if users don't care about order, they don't have to specify
+> > this field.
+> >
+> > If that sounds valid, maybe using "UNSPEC" instead of "DEFAULT" is better?
 >
-> The ref obj id of the dynptr must be found *before* the caller saved regs are
-> reset. Without this fix, the ref obj id tracking is not correct for
-> dynptrs that are at an offset from the frame pointer.
+> I agree with Andrii.
+> This:
+> +       if (order == BPF_ITER_ORDER_DEFAULT)
+> +               order = BPF_ITER_DESCENDANTS_PRE;
 >
-> Please also note that the data slice's ref obj id must be assigned after the
-> ret types are parsed, since RET_PTR_TO_ALLOC_MEM-type return regs get
-> zero-marked.
+> looks like an arbitrary choice.
+> imo
+> BPF_ITER_DESCENDANTS_PRE = 0,
+> would have been more obvious. No need to dig into definition of "default".
 >
-> Fixes: 34d4ef5775f776ec4b0d53a02d588bf3195cada6 ("bpf: Add dynptr data slices");
-> Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+> UNSPEC = 0
+> is fine too if we want user to always be conscious about the order
+> and the kernel will error if that field is not initialized.
+> That would be my preference, since it will match the rest of uapi/bpf.h
+>
 
-merge conflict. pls respin.
+Sounds good. In the next version, will use
+
+enum bpf_iter_order {
+        BPF_ITER_ORDER_UNSPEC = 0,
+        BPF_ITER_SELF_ONLY,             /* process only a single object. */
+        BPF_ITER_DESCENDANTS_PRE,       /* walk descendants in pre-order. */
+        BPF_ITER_DESCENDANTS_POST,      /* walk descendants in post-order. */
+        BPF_ITER_ANCESTORS_UP,          /* walk ancestors upward. */
+};
+
+and explicitly list the values acceptable by cgroup_iter, error out if
+UNSPEC is detected.
+
+Also, following Andrii's comments, will change BPF_ITER_SELF to
+BPF_ITER_SELF_ONLY, which does seem a little bit explicit in
+comparison.
+
+> I applied the first 3 patches to ease respin.
+
+Thanks! This helps!
+
+> Thanks!
