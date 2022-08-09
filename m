@@ -2,64 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DED958DB2B
-	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 17:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11CCB58DB39
+	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 17:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244278AbiHIPea (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Aug 2022 11:34:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39256 "EHLO
+        id S231377AbiHIPhk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Aug 2022 11:37:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236852AbiHIPe3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Aug 2022 11:34:29 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABFFC65B6
-        for <bpf@vger.kernel.org>; Tue,  9 Aug 2022 08:34:28 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id j7so14766389wrh.3
-        for <bpf@vger.kernel.org>; Tue, 09 Aug 2022 08:34:28 -0700 (PDT)
+        with ESMTP id S244934AbiHIPhY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Aug 2022 11:37:24 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80AEB558E
+        for <bpf@vger.kernel.org>; Tue,  9 Aug 2022 08:37:00 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id q30so14707286wra.11
+        for <bpf@vger.kernel.org>; Tue, 09 Aug 2022 08:37:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc;
-        bh=Qa1S//XEgl1EoiqMCyA/2wdEbj52xdYm49q49/jtgYg=;
-        b=PO5iQRJMSK0rwThPpR0bqrDNBKjComgEcrnrYbRkLT3Btx6XS7/Lf1uaeKTKKH6OVo
-         3xP5ckUojVKNs68it4oD6KOPdEeR8undWX3Agf2wz5olp2RqHXCQVbTwC4pVXUT2IBAJ
-         8X3uit51s1lqrS82GsfsTTBzKrFdO3EAYvIXicBKuVwJlZWlS8wGk733n5EMYiixRc2P
-         qaFhBq9P9aAhD5ob+oFg5to761Ggmxjag9/NclIoT8AAV6kfpWU75UDL0L9IM46LqFqR
-         5UkKyn/0vJV84EnldOyB7cAXkeVzr/KtflbVxtZ0Fen0nrlAufjQHZWNGGpOTUQlnL6a
-         ACIA==
+        bh=VqzY97Hwy2bxw6VcSJ85drCVtic8+BFcOq2r2JHTqLc=;
+        b=Wfo9ZwGqLluNYf1fdAv3QiEhagEbV0rD3XoOX4tauT8jfLGfF2ZgQ3pVIchE3Ag5dM
+         kkZebqJhRdJHoe04RYI7FJn8oAqBO+UhYwoecVnJjKPig/9raf7EeqcXjMaLsqeiTUmC
+         uAUqeAVbHCFagmWfR7aygmMxYesPTLR2wRjprBVKpKygdHfD7fl3UrIVvHmyyr8YxaCA
+         PKlJPvMcG0tOhzo59iyHooy87NpVqoJ03bWAflPZ5wSSIsSuHdb1jRuF/Oh0pDb9qpaJ
+         JX7QODod+tf5nhNUMS3XDnUPKi5ceVHmIoGWUuknmVG+PTqD5EUMCTezTHtnVcsguOdc
+         55pA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc;
-        bh=Qa1S//XEgl1EoiqMCyA/2wdEbj52xdYm49q49/jtgYg=;
-        b=KPsWADZw6qB+Abqw1sV0VPECsfSHg2qpEV8YZKFhNrFZ/2j0CAf4A4qxTH2cmWUGjT
-         hpe1JrGleFCkVl2zYn/dDOAdIxSXXj83mWV4fjtPw/9MLyxQCBoiwazHay7w45QYVdwm
-         W1I3MR+UNCfqE0TqUDByt5XEDWnyPvK+hHy/F0oGz9HK3Jax6pvkQHyxvv5t0RDjzMan
-         ia0SbFTnYDmUtJzoDSG8zLPRWtUEnTB4uV0o6AgIyTBDwql3BbJqOZGX2Divw1VVZPnZ
-         kd71kTWpE5uKflmUin7xC/HaJ90Zj/dsZM0y4ot2fJ2/kTCVog7VKnV2RGcpp4jbnxIH
-         MqOA==
-X-Gm-Message-State: ACgBeo1t8HaZgK8gem750OLnCVI9BS8XxJQIljER1e5lp7awimfNJzZt
-        id5/JDsDCpEzlP5WsfetYVs=
-X-Google-Smtp-Source: AA6agR7QMO/zxxc9mFO3xa1lP2ZKnnPEs77xKPME7bKVNN9+Z8IRNves/j9mt95cuYmaSpi6Tyyrqg==
-X-Received: by 2002:a5d:6a85:0:b0:21f:cf7f:fdfd with SMTP id s5-20020a5d6a85000000b0021fcf7ffdfdmr14648945wru.220.1660059267018;
-        Tue, 09 Aug 2022 08:34:27 -0700 (PDT)
+        bh=VqzY97Hwy2bxw6VcSJ85drCVtic8+BFcOq2r2JHTqLc=;
+        b=zo5VN9KiiZvbwddH52OuV3yNwhGn2d2eGMDlG6ca0ZZZ0yXw4hduAWe9rcWzd1xvC3
+         QbJCBFnPVH+gdgXIy9R7qu149Cnmcq1PkEtgx2Miwrj2/uzHGOglQSj+q0k04rX/nq0p
+         FKgXkGGs4h8D8UR+VuHmuuwCmq9FccU++Xj6QIJarDm5oMyVfbGufROj9jscgv4DNhCo
+         ulZazvNSXTdqxXhP+1EkQr37b1xaerT1+ubARlE7x9rdKkI+ZOxoZiV6jrfL8PqJlOUz
+         IZQ997WkRLeVAuGL2pE4f/BkxpxW6VGD2VCAXcminlROWQsxnK+KoD16edDj5gJwXmIw
+         O/ZQ==
+X-Gm-Message-State: ACgBeo3eqC+NOD2iAR3AUUm1vYzN81w9Z9SY0MmYMNz6w7pwK48RDQPS
+        yimB8o0HAMS7gt0nsOrResU=
+X-Google-Smtp-Source: AA6agR5lNpDFXI/Pz9IcCpfu7iLaxJ+IgDxoil67/gHHJpl1t5VocaO/8WVKogD33cvHRWQAYDTB4g==
+X-Received: by 2002:a5d:64ca:0:b0:220:6247:42c1 with SMTP id f10-20020a5d64ca000000b00220624742c1mr14671643wri.478.1660059419043;
+        Tue, 09 Aug 2022 08:36:59 -0700 (PDT)
 Received: from krava ([193.85.244.190])
-        by smtp.gmail.com with ESMTPSA id r1-20020adfe681000000b002216d3aee78sm11728762wrm.86.2022.08.09.08.34.26
+        by smtp.gmail.com with ESMTPSA id o5-20020a056000010500b0021f0af83142sm13705632wrx.91.2022.08.09.08.36.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Aug 2022 08:34:26 -0700 (PDT)
+        Tue, 09 Aug 2022 08:36:58 -0700 (PDT)
 From:   Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Tue, 9 Aug 2022 17:34:24 +0200
-To:     Kui-Feng Lee <kuifeng@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kernel-team@fb.com, yhs@fb.com
-Subject: Re: [PATCH bpf-next v3 0/3] Parameterize task iterators.
-Message-ID: <YvJ+gCJ0V5hg8wLR@krava>
-References: <20220809063501.667610-1-kuifeng@fb.com>
+Date:   Tue, 9 Aug 2022 17:36:56 +0200
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Song Liu <song@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Hao Luo <haoluo@google.com>
+Subject: Re: [RFC PATCH bpf-next 01/17] bpf: Link shimlink directly in
+ trampoline
+Message-ID: <YvJ/GGiRkFtqMdoC@krava>
+References: <20220808140626.422731-1-jolsa@kernel.org>
+ <20220808140626.422731-2-jolsa@kernel.org>
+ <CAPhsuW4GKZ8_6mwGwTDjkGx_0TSzzBvvV-EsmfVBXCobMEnDzw@mail.gmail.com>
+ <CAKH8qBs49nedJEm4qS=P2c0XjH9wCUP3q_+oC6Q5XQMwgrz64w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220809063501.667610-1-kuifeng@fb.com>
+In-Reply-To: <CAKH8qBs49nedJEm4qS=P2c0XjH9wCUP3q_+oC6Q5XQMwgrz64w@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -70,81 +79,54 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 08, 2022 at 11:34:58PM -0700, Kui-Feng Lee wrote:
-> Allow creating an iterator that loops through resources of one task/thread.
+On Mon, Aug 08, 2022 at 10:58:36AM -0700, Stanislav Fomichev wrote:
+> On Mon, Aug 8, 2022 at 10:40 AM Song Liu <song@kernel.org> wrote:
+> >
+> > On Mon, Aug 8, 2022 at 7:06 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> > >
+> > > We are going to get rid of struct bpf_tramp_link in following
+> > > changes and cgroup_shim_find logic does not fit to that.
+> > >
+> > > We can store the link directly in the trampoline and omit the
+> > > cgroup_shim_find searching logic.
+> > >
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >  include/linux/bpf.h     |  3 +++
+> > >  kernel/bpf/trampoline.c | 23 +++--------------------
+> > >  2 files changed, 6 insertions(+), 20 deletions(-)
+> > >
+> > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > > index 20c26aed7896..ed2a921094bc 100644
+> > > --- a/include/linux/bpf.h
+> > > +++ b/include/linux/bpf.h
+> > > @@ -841,6 +841,8 @@ struct bpf_tramp_image {
+> > >         };
+> > >  };
+> > >
+> > > +struct bpf_shim_tramp_link;
+> > > +
+> > >  struct bpf_trampoline {
+> > >         /* hlist for trampoline_table */
+> > >         struct hlist_node hlist;
+> > > @@ -868,6 +870,7 @@ struct bpf_trampoline {
+> > >         struct bpf_tramp_image *cur_image;
+> > >         u64 selector;
+> > >         struct module *mod;
+> > > +       struct bpf_shim_tramp_link *shim_link;
+> > >  };
+> >
+> > Hi Stanislav,
+> >
+> > Is it possible to have multiple shim_link per bpf_trampoline? If so, I guess
+> > this won't work.
 > 
-> People could only create iterators to loop through all resources of
-> files, vma, and tasks in the system, even though they were interested in only the
-> resources of a specific task or process.  Passing the addintional
-> parameters, people can now create an iterator to go through all
-> resources or only the resources of a task.
-> 
-> Major Changes:
-> 
->  - Add new parameters in bpf_iter_link_info to indicate to go through
->    all tasks or to go through a specific task.
-> 
->  - Change the implementations of BPF iterators of vma, files, and
->    tasks to allow going through only the resources of a specific task.
-> 
->  - Provide the arguments of parameterized task iterators in
->    bpf_link_info.
-> 
-> Differences from v2:
-> 
->  - Supports tid, tgid, and pidfd.
-> 
->  - Change 'type' from __u8 to enum bpf_task_iter_type.
+> There is only one shim_link per bpf_trampoline. But I'm not sure
+> storing the pointer is enough. We have to do 'shim_link=NULL' when the
+> (final) shim is removed. (multiple lsm_cgroup progs can share the same
+> shim)
 
-hi,
-I'm getting test fail:
+ok, will check on that
 
-test_task_:PASS:bpf_iter_task__open_and_load 0 nsec
-test_task_:PASS:pthread_mutex_init 0 nsec
-test_task_:PASS:pthread_mutex_lock 0 nsec
-test_task_:PASS:pthread_create 0 nsec
-do_dummy_read:PASS:attach_iter 0 nsec
-do_dummy_read:PASS:create_iter 0 nsec
-do_dummy_read:PASS:read 0 nsec
-test_task_:PASS:pthread_mutex_unlock 0 nsec
-test_task_:FAIL:check_num_unknown_tid unexpected check_num_unknown_tid: actual 0 != expected 1
-test_task_:PASS:check_num_known_tid 0 nsec
-test_task_:PASS:pthread_join 0 nsec
-test_task_:PASS:bpf_iter_task__open_and_load 0 nsec
-test_task_:PASS:pthread_mutex_init 0 nsec
-test_task_:PASS:pthread_mutex_lock 0 nsec
-test_task_:PASS:pthread_create 0 nsec
-do_dummy_read:PASS:attach_iter 0 nsec
-do_dummy_read:PASS:create_iter 0 nsec
-do_dummy_read:PASS:read 0 nsec
-test_task_:PASS:pthread_mutex_unlock 0 nsec
-test_task_:FAIL:check_num_unknown_tid unexpected check_num_unknown_tid: actual 134 != expected 1
-test_task_:PASS:check_num_known_tid 0 nsec
-test_task_:PASS:pthread_join 0 nsec
-#10/5    bpf_iter/task:FAIL
-
+thanks,
 jirka
-
-> 
-> v2: https://lore.kernel.org/bpf/20220801232649.2306614-1-kuifeng@fb.com/
-> v1: https://lore.kernel.org/bpf/20220726051713.840431-1-kuifeng@fb.com/
-> 
-> Kui-Feng Lee (3):
->   bpf: Parameterize task iterators.
->   bpf: Handle bpf_link_info for the parameterized task BPF iterators.
->   selftests/bpf: Test parameterized task BPF iterators.
-> 
->  include/linux/bpf.h                           |   8 +
->  include/uapi/linux/bpf.h                      |  43 +++
->  kernel/bpf/task_iter.c                        | 153 +++++++++--
->  tools/include/uapi/linux/bpf.h                |  43 +++
->  .../selftests/bpf/prog_tests/bpf_iter.c       | 251 ++++++++++++++++--
->  .../selftests/bpf/prog_tests/btf_dump.c       |   2 +-
->  .../selftests/bpf/progs/bpf_iter_task.c       |   9 +
->  .../selftests/bpf/progs/bpf_iter_task_file.c  |   7 +
->  .../selftests/bpf/progs/bpf_iter_task_vma.c   |   6 +-
->  9 files changed, 474 insertions(+), 48 deletions(-)
-> 
-> -- 
-> 2.30.2
-> 
