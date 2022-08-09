@@ -2,20 +2,20 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E72BF58D228
-	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 04:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA6158D22A
+	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 04:53:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230262AbiHICxQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Aug 2022 22:53:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46896 "EHLO
+        id S231700AbiHICxR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Aug 2022 22:53:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231574AbiHICxN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S231713AbiHICxN (ORCPT <rfc822;bpf@vger.kernel.org>);
         Mon, 8 Aug 2022 22:53:13 -0400
 Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C5FC41E3E3
-        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 19:53:11 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 348561E3E7
+        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 19:53:12 -0700 (PDT)
 Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxvyMNzPFiwLAKAA--.4926S6;
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxvyMNzPFiwLAKAA--.4926S7;
         Tue, 09 Aug 2022 10:53:06 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
 To:     Huacai Chen <chenhuacai@kernel.org>,
@@ -23,275 +23,65 @@ To:     Huacai Chen <chenhuacai@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>
 Cc:     bpf@vger.kernel.org, loongarch@lists.linux.dev
-Subject: [RFC PATCH 4/5] LoongArch: Update loongson3_defconfig to make it clean
-Date:   Tue,  9 Aug 2022 10:52:59 +0800
-Message-Id: <1660013580-19053-5-git-send-email-yangtiezhu@loongson.cn>
+Subject: [RFC PATCH 5/5] LoongArch: Enable BPF_JIT and TEST_BPF in loongson3_defconfig
+Date:   Tue,  9 Aug 2022 10:53:00 +0800
+Message-Id: <1660013580-19053-6-git-send-email-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.1.0
 In-Reply-To: <1660013580-19053-1-git-send-email-yangtiezhu@loongson.cn>
 References: <1660013580-19053-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9DxvyMNzPFiwLAKAA--.4926S6
-X-Coremail-Antispam: 1UD129KBjvJXoW3XF47urWfJFyDKw17GF1xKrg_yoWxZFWxpF
-        1fGr4xJay8Ar1jyrW2kr4DGrZ5tFnrJasrCF17Ar1Duw18Aw4UXrnFgr1UGr4UXa9rXr4r
-        XF93Kw13Aay5J37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBSb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
-        8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28C
-        jxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI
-        8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2
-        z280aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2
-        IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4U
-        McvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_Gr1l42xK82
-        IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC2
-        0s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMI
-        IF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF
-        0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87
-        Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUgYhwUUUUU
+X-CM-TRANSID: AQAAf9DxvyMNzPFiwLAKAA--.4926S7
+X-Coremail-Antispam: 1UD129KBjvdXoWrZw48tFyrGryfKFy5Ww4rZrb_yoWDWrc_JF
+        W7Gw1Dur48J397Wr12qw1ruw4DA3WUu3WrCr17Xr4I9ay7Kr13tr4DJ3W3CFn0gay5Wr43
+        ZaykAasFkF10yjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbSAYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7
+        IE14v26r126s0DM28IrcIa0xkI8VCY1x0267AKxVW5JVCq3wA2ocxC64kIII0Yj41l84x0
+        c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2
+        IY6xkF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E
+        87Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0V
+        AKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1l
+        Ox8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8JwCF04k20x
+        vY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I
+        3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIx
+        AIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAI
+        cVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2js
+        IEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jn4SrUUUUU=
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UPPERCASE_50_75 autolearn=no
-        autolearn_force=no version=3.4.6
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Some configs in loongson3_defconfig is invalid or needless,
-use the following steps to update it:
-
-make loongson3_defconfig
-make savedefconfig
-cp defconfig arch/loongarch/configs/loongson3_defconfig
-
-This is preparation for later patch.
+For now, BPF JIT for LoongArch is supported, update loongson3_defconfig to
+enable BPF_JIT to allow the kernel to generate native code when a program
+is loaded into the kernel, and also enable TEST_BPF to test BPF JIT.
 
 Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- arch/loongarch/configs/loongson3_defconfig | 56 ++++++------------------------
- 1 file changed, 11 insertions(+), 45 deletions(-)
+ arch/loongarch/configs/loongson3_defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/arch/loongarch/configs/loongson3_defconfig b/arch/loongarch/configs/loongson3_defconfig
-index eb91497..14239b9 100644
+index 14239b9..9032708 100644
 --- a/arch/loongarch/configs/loongson3_defconfig
 +++ b/arch/loongarch/configs/loongson3_defconfig
-@@ -33,24 +33,11 @@ CONFIG_SYSFS_DEPRECATED=y
- CONFIG_RELAY=y
- CONFIG_BLK_DEV_INITRD=y
- CONFIG_EXPERT=y
--CONFIG_USERFAULTFD=y
- CONFIG_PERF_EVENTS=y
--# CONFIG_COMPAT_BRK is not set
--CONFIG_LOONGARCH=y
--CONFIG_64BIT=y
--CONFIG_MACH_LOONGSON64=y
--CONFIG_DMI=y
- CONFIG_EFI=y
--CONFIG_SMP=y
- CONFIG_HOTPLUG_CPU=y
--CONFIG_NR_CPUS=64
- CONFIG_NUMA=y
--CONFIG_PAGE_SIZE_16KB=y
--CONFIG_HZ_250=y
--CONFIG_ACPI=y
- CONFIG_ACPI_SPCR_TABLE=y
--CONFIG_ACPI_HOTPLUG_CPU=y
--CONFIG_ACPI_TAD=y
- CONFIG_ACPI_DOCK=y
- CONFIG_ACPI_IPMI=m
- CONFIG_ACPI_PCI_SLOT=y
-@@ -68,17 +55,16 @@ CONFIG_PARTITION_ADVANCED=y
- CONFIG_IOSCHED_BFQ=y
- CONFIG_BFQ_GROUP_IOSCHED=y
- CONFIG_BINFMT_MISC=m
-+CONFIG_ZSWAP=y
-+CONFIG_ZSWAP_COMPRESSOR_DEFAULT_ZSTD=y
-+CONFIG_Z3FOLD=y
-+# CONFIG_COMPAT_BRK is not set
- CONFIG_MEMORY_HOTPLUG=y
- CONFIG_MEMORY_HOTPLUG_DEFAULT_ONLINE=y
- CONFIG_MEMORY_HOTREMOVE=y
- CONFIG_KSM=y
- CONFIG_TRANSPARENT_HUGEPAGE=y
--CONFIG_ZSWAP=y
--CONFIG_ZSWAP_COMPRESSOR_DEFAULT_ZSTD=y
--CONFIG_ZPOOL=y
--CONFIG_ZBUD=y
--CONFIG_Z3FOLD=y
--CONFIG_ZSMALLOC=m
-+CONFIG_USERFAULTFD=y
- CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_UNIX=y
-@@ -108,14 +94,12 @@ CONFIG_NETFILTER=y
- CONFIG_BRIDGE_NETFILTER=m
- CONFIG_NETFILTER_NETLINK_LOG=m
- CONFIG_NF_CONNTRACK=m
--CONFIG_NF_LOG_NETDEV=m
- CONFIG_NF_CONNTRACK_AMANDA=m
- CONFIG_NF_CONNTRACK_FTP=m
- CONFIG_NF_CONNTRACK_NETBIOS_NS=m
- CONFIG_NF_CONNTRACK_TFTP=m
- CONFIG_NF_CT_NETLINK=m
- CONFIG_NF_TABLES=m
--CONFIG_NFT_COUNTER=m
- CONFIG_NFT_CONNLIMIT=m
- CONFIG_NFT_LOG=m
- CONFIG_NFT_LIMIT=m
-@@ -289,7 +273,6 @@ CONFIG_MAC80211=m
- CONFIG_RFKILL=m
- CONFIG_RFKILL_INPUT=y
- CONFIG_NET_9P=y
--CONFIG_CEPH_LIB=m
- CONFIG_PCIEPORTBUS=y
- CONFIG_HOTPLUG_PCI_PCIE=y
- CONFIG_PCIEAER=y
-@@ -324,7 +307,6 @@ CONFIG_PARPORT_PC_FIFO=y
- CONFIG_ZRAM=m
- CONFIG_ZRAM_DEF_COMP_ZSTD=y
- CONFIG_BLK_DEV_LOOP=y
--CONFIG_BLK_DEV_CRYPTOLOOP=y
- CONFIG_BLK_DEV_NBD=m
- CONFIG_BLK_DEV_RAM=y
- CONFIG_BLK_DEV_RAM_SIZE=8192
-@@ -358,19 +340,13 @@ CONFIG_SCSI_QLOGIC_1280=m
- CONFIG_SCSI_QLA_FC=m
- CONFIG_TCM_QLA2XXX=m
- CONFIG_SCSI_QLA_ISCSI=m
--CONFIG_SCSI_LPFC=m
- CONFIG_ATA=y
- CONFIG_SATA_AHCI=y
- CONFIG_SATA_AHCI_PLATFORM=y
- CONFIG_PATA_ATIIXP=y
- CONFIG_PATA_PCMCIA=m
- CONFIG_MD=y
--CONFIG_BLK_DEV_MD=m
- CONFIG_MD_LINEAR=m
--CONFIG_MD_RAID0=m
--CONFIG_MD_RAID1=m
--CONFIG_MD_RAID10=m
--CONFIG_MD_RAID456=m
- CONFIG_MD_MULTIPATH=m
- CONFIG_BCACHE=m
- CONFIG_BLK_DEV_DM=y
-@@ -414,13 +390,11 @@ CONFIG_VETH=m
- # CONFIG_NET_VENDOR_ARC is not set
- # CONFIG_NET_VENDOR_ATHEROS is not set
- CONFIG_BNX2=y
--# CONFIG_NET_VENDOR_BROCADE is not set
- # CONFIG_NET_VENDOR_CAVIUM is not set
- CONFIG_CHELSIO_T1=m
- CONFIG_CHELSIO_T1_1G=y
- CONFIG_CHELSIO_T3=m
- CONFIG_CHELSIO_T4=m
--# CONFIG_NET_VENDOR_CIRRUS is not set
- # CONFIG_NET_VENDOR_CISCO is not set
- # CONFIG_NET_VENDOR_DEC is not set
- # CONFIG_NET_VENDOR_DLINK is not set
-@@ -441,6 +415,7 @@ CONFIG_IXGBE=y
- # CONFIG_NET_VENDOR_NVIDIA is not set
- # CONFIG_NET_VENDOR_OKI is not set
- # CONFIG_NET_VENDOR_QLOGIC is not set
-+# CONFIG_NET_VENDOR_BROCADE is not set
- # CONFIG_NET_VENDOR_QUALCOMM is not set
- # CONFIG_NET_VENDOR_RDC is not set
- CONFIG_8139CP=m
-@@ -450,9 +425,9 @@ CONFIG_R8169=y
- # CONFIG_NET_VENDOR_ROCKER is not set
- # CONFIG_NET_VENDOR_SAMSUNG is not set
- # CONFIG_NET_VENDOR_SEEQ is not set
--# CONFIG_NET_VENDOR_SOLARFLARE is not set
- # CONFIG_NET_VENDOR_SILAN is not set
- # CONFIG_NET_VENDOR_SIS is not set
-+# CONFIG_NET_VENDOR_SOLARFLARE is not set
- # CONFIG_NET_VENDOR_SMSC is not set
- CONFIG_STMMAC_ETH=y
- # CONFIG_NET_VENDOR_SUN is not set
-@@ -487,7 +462,6 @@ CONFIG_ATH9K_HTC=m
- CONFIG_IWLWIFI=m
- CONFIG_IWLDVM=m
- CONFIG_IWLMVM=m
--CONFIG_IWLWIFI_BCAST_FILTERING=y
- CONFIG_HOSTAP=m
- CONFIG_MT7601U=m
- CONFIG_RT2X00=m
-@@ -536,7 +510,6 @@ CONFIG_I2C_PIIX4=y
- CONFIG_I2C_GPIO=y
- CONFIG_SPI=y
- CONFIG_GPIO_SYSFS=y
--CONFIG_GPIO_LOONGSON=y
- CONFIG_SENSORS_LM75=m
- CONFIG_SENSORS_LM93=m
- CONFIG_SENSORS_W83795=m
-@@ -544,16 +517,16 @@ CONFIG_SENSORS_W83627HF=m
- CONFIG_RC_CORE=m
- CONFIG_LIRC=y
- CONFIG_RC_DECODERS=y
-+CONFIG_IR_IMON_DECODER=m
-+CONFIG_IR_JVC_DECODER=m
-+CONFIG_IR_MCE_KBD_DECODER=m
- CONFIG_IR_NEC_DECODER=m
- CONFIG_IR_RC5_DECODER=m
- CONFIG_IR_RC6_DECODER=m
--CONFIG_IR_JVC_DECODER=m
--CONFIG_IR_SONY_DECODER=m
- CONFIG_IR_SANYO_DECODER=m
- CONFIG_IR_SHARP_DECODER=m
--CONFIG_IR_MCE_KBD_DECODER=m
-+CONFIG_IR_SONY_DECODER=m
- CONFIG_IR_XMP_DECODER=m
--CONFIG_IR_IMON_DECODER=m
- CONFIG_MEDIA_SUPPORT=m
- CONFIG_MEDIA_USB_SUPPORT=y
- CONFIG_USB_VIDEO_CLASS=m
-@@ -571,7 +544,6 @@ CONFIG_DRM_AST=y
- CONFIG_FB=y
- CONFIG_FB_EFI=y
- CONFIG_FB_RADEON=y
--CONFIG_LCD_PLATFORM=m
- # CONFIG_VGA_CONSOLE is not set
- CONFIG_FRAMEBUFFER_CONSOLE=y
- CONFIG_FRAMEBUFFER_CONSOLE_ROTATION=y
-@@ -580,7 +552,6 @@ CONFIG_SOUND=y
- CONFIG_SND=y
- CONFIG_SND_SEQUENCER=m
- CONFIG_SND_SEQ_DUMMY=m
--# CONFIG_SND_ISA is not set
- CONFIG_SND_BT87X=m
- CONFIG_SND_BT87X_OVERCLOCK=y
- CONFIG_SND_HDA_INTEL=y
-@@ -606,7 +577,6 @@ CONFIG_HID_MULTITOUCH=m
- CONFIG_HID_SUNPLUS=m
- CONFIG_USB_HIDDEV=y
- CONFIG_USB=y
--CONFIG_USB_OTG=y
- CONFIG_USB_MON=y
- CONFIG_USB_XHCI_HCD=y
- CONFIG_USB_EHCI_HCD=y
-@@ -657,7 +627,6 @@ CONFIG_COMEDI_NI_PCIDIO=m
- CONFIG_COMEDI_NI_PCIMIO=m
- CONFIG_STAGING=y
- CONFIG_R8188EU=m
--# CONFIG_88EU_AP_MODE is not set
- CONFIG_PM_DEVFREQ=y
- CONFIG_DEVFREQ_GOV_SIMPLE_ONDEMAND=y
- CONFIG_DEVFREQ_GOV_PERFORMANCE=y
-@@ -739,16 +708,13 @@ CONFIG_CRYPTO_USER=m
- CONFIG_CRYPTO_PCRYPT=m
- CONFIG_CRYPTO_CRYPTD=m
- CONFIG_CRYPTO_CHACHA20POLY1305=m
--CONFIG_CRYPTO_HMAC=y
- CONFIG_CRYPTO_VMAC=m
--CONFIG_CRYPTO_TGR192=m
- CONFIG_CRYPTO_WP512=m
- CONFIG_CRYPTO_ANUBIS=m
- CONFIG_CRYPTO_BLOWFISH=m
- CONFIG_CRYPTO_CAST5=m
- CONFIG_CRYPTO_CAST6=m
- CONFIG_CRYPTO_KHAZAD=m
--CONFIG_CRYPTO_SALSA20=m
- CONFIG_CRYPTO_SEED=m
- CONFIG_CRYPTO_SERPENT=m
- CONFIG_CRYPTO_TEA=m
+@@ -4,6 +4,7 @@ CONFIG_POSIX_MQUEUE=y
+ CONFIG_NO_HZ=y
+ CONFIG_HIGH_RES_TIMERS=y
+ CONFIG_BPF_SYSCALL=y
++CONFIG_BPF_JIT=y
+ CONFIG_PREEMPT=y
+ CONFIG_BSD_PROCESS_ACCT=y
+ CONFIG_BSD_PROCESS_ACCT_V3=y
+@@ -735,3 +736,4 @@ CONFIG_MAGIC_SYSRQ=y
+ CONFIG_SCHEDSTATS=y
+ # CONFIG_DEBUG_PREEMPT is not set
+ # CONFIG_FTRACE is not set
++CONFIG_TEST_BPF=m
 -- 
 2.1.0
 
