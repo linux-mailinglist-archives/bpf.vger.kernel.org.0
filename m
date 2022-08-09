@@ -2,108 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B823558D8BD
-	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 14:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85C5C58D8C7
+	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 14:35:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241509AbiHIM31 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Aug 2022 08:29:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60384 "EHLO
+        id S242631AbiHIMfr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Aug 2022 08:35:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231805AbiHIM30 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Aug 2022 08:29:26 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1DE017050
-        for <bpf@vger.kernel.org>; Tue,  9 Aug 2022 05:29:24 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id w15so12846629ljw.1
-        for <bpf@vger.kernel.org>; Tue, 09 Aug 2022 05:29:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc;
-        bh=3+KBkpV9m1bxJhsMtzeVGV+drTP66AAmd/wpftn5OL4=;
-        b=E6FupvpTXxk3V7KyG/UrXwV0+9ePJHgQQbeBBwxS0LtgXCHuLfAblq2be3zPHNhFB/
-         vU1EKkk3gRW0HTgiBX5BfrJuD1WggYV2YPN8v3MuvYDa3wYj8nRV2W4n1joyK0aa1b+4
-         l8DJQzOPlXgjSBkJWS4VIsnVC0XlC5ryT1cJo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc;
-        bh=3+KBkpV9m1bxJhsMtzeVGV+drTP66AAmd/wpftn5OL4=;
-        b=hC/lfiMIBgiw7vTh4r/IuPSXnxp50Mc9fMjuIObgyWT4gVj+ZKZHtjXqs39q1GguBd
-         OAC562h81ddYVfvxcbfGOohAN+26xSU9haFSzakOjh3wjD7VhifRiFYtyEedD4jkXY45
-         UV8gPpdIb3TAZR9UtmhHctuQ9ruA/WgyWIbDKSR7Ey6UMq+r4lvrErF3zEONnEOpLotD
-         kttpNT+si+/eaYC+nQ7ACDUi4ssMCQUIwvjZAS7nUehm9IG6V1mMkJ0sA/b4upAztDdK
-         +MC3cohfAGv6qgeQ3vFeQd9pw0mFUTdlQI0zhQxSKpAY3A8sbNj3ab2RgVUWeoZUP8+f
-         caCg==
-X-Gm-Message-State: ACgBeo05Q0xCsLHPX64MHMUU4AsVxlxZTmdXXvD8y+3x15QlALcHB+WR
-        1tnr4jKn02g/B1q11NX7V5mQaQ==
-X-Google-Smtp-Source: AA6agR7f9t6NUk6GIPJFQim/LeGnjxzz1Ffi5AyCR+zSh+hscpnQ+tPNX0g+xvGZG32bZsniYdwOeQ==
-X-Received: by 2002:a2e:8008:0:b0:25f:dd78:8312 with SMTP id j8-20020a2e8008000000b0025fdd788312mr3002868ljg.127.1660048162776;
-        Tue, 09 Aug 2022 05:29:22 -0700 (PDT)
-Received: from [172.16.11.74] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id y8-20020ac24208000000b0047f8e9826a1sm1752461lfh.31.2022.08.09.05.29.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Aug 2022 05:29:19 -0700 (PDT)
-Message-ID: <79b1b62c-8ea1-5f47-bf80-3e003f7a3ac7@rasmusvillemoes.dk>
-Date:   Tue, 9 Aug 2022 14:29:12 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH 11/16] time: optimize tick_check_preferred()
-Content-Language: en-US
-To:     Yury Norov <yury.norov@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        with ESMTP id S242502AbiHIMfn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Aug 2022 08:35:43 -0400
+Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4DB9EEB
+        for <bpf@vger.kernel.org>; Tue,  9 Aug 2022 05:35:42 -0700 (PDT)
+Received: from [10.130.0.193] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxzyOXVPJibxwLAA--.5691S3;
+        Tue, 09 Aug 2022 20:35:35 +0800 (CST)
+Subject: Re: [RFC PATCH 3/5] LoongArch: Add BPF JIT support
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+References: <1660013580-19053-1-git-send-email-yangtiezhu@loongson.cn>
+ <1660013580-19053-4-git-send-email-yangtiezhu@loongson.cn>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Alexey Klimov <aklimov@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ben Segall <bsegall@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Isabella Basso <isabbasso@riseup.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Juergen Gross <jgross@suse.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Mel Gorman <mgorman@suse.de>, Miroslav Benes <mbenes@suse.cz>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Song Liu <songliubraving@fb.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tejun Heo <tj@kernel.org>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yonghong Song <yhs@fb.com>,
-        linux-mm@kvack.org, netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <20220718192844.1805158-1-yury.norov@gmail.com>
- <20220718192844.1805158-12-yury.norov@gmail.com> <87fsi9rcxu.ffs@tglx>
- <87czdbq7up.ffs@tglx> <YvE8HGXFDicr/zI5@yury-laptop>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-In-Reply-To: <YvE8HGXFDicr/zI5@yury-laptop>
-Content-Type: text/plain; charset=UTF-8
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        loongarch@lists.linux.dev
+From:   Youling Tang <tangyouling@loongson.cn>
+Message-ID: <7ce74276-9cd9-8667-5e82-6b49f6c7b62b@loongson.cn>
+Date:   Tue, 9 Aug 2022 20:35:35 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
+MIME-Version: 1.0
+In-Reply-To: <1660013580-19053-4-git-send-email-yangtiezhu@loongson.cn>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+X-CM-TRANSID: AQAAf9DxzyOXVPJibxwLAA--.5691S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrZry7tr4rJw4DGFyxJw18Zrb_yoWfCwb_tr
+        1kKrsF93Z7JayUArWrJr9rXF9rGFn3ZFyFga4DWr13Ar1Fkr1rXFs3Kry8ury8Ww43Cw1a
+        9ayYgr43KayjvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbV8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+        Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE67vI
+        Y487MxkIecxEwVAFwVW5JwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
+        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
+        wI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
+        v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
+        DU0xZFpf9x0JUID73UUUUU=
+X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -111,37 +62,33 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 08/08/2022 18.38, Yury Norov wrote:
-> On Mon, Aug 08, 2022 at 01:42:54PM +0200, Thomas Gleixner wrote:
->> On Sat, Aug 06 2022 at 10:30, Thomas Gleixner wrote:
->>> On Mon, Jul 18 2022 at 12:28, Yury Norov wrote:
->>>
->>>> tick_check_preferred() calls cpumask_equal() even if
->>>> curdev->cpumask == newdev->cpumask. Fix it.
->>>
->>> What's to fix here? It's a pointless operation in a slow path and all
->>> your "fix' is doing is to make the code larger.
-> 
-> Pointless operation in a slow path is still pointless.
->  
->> In fact cpumask_equal() should have the ptr1 == ptr2 check, so you don't
->> have to add it all over the place.
-> 
-> This adds to the image size:
-> add/remove: 1/1 grow/shrink: 24/3 up/down: 507/-46 (461)
-> 
-> The more important, cpumask shouldn't check parameters because this is
-> an internal function. This whole series point is about adding such checks
-> under DEBUG_BITMAP config, and not affecting general case.
+Hi, Tiezhu
 
-Yury, calling bitmap_equal (and by extension cpumask_equal) with
-something that happens in some cases to be the same pointer for both
-operands is not a bug.
+On 08/09/2022 10:52 AM, Tiezhu Yang wrote:
+> +
+> +static inline bool is_unsigned_imm(unsigned long val, unsigned int bit)
+> +{
+> +	return val >= 0 && val < (1UL << bit);
+> +}
+The "val >= 0" condition can be removed because val is of type
+"unsigned long".
 
-If you want to optimize that case, add a check in __bitmap_equal(), it
-will add a few bytes (maybe 2-4 instructions) to the kernel image, much
-less than what this whole series does by open-coding that check all
-over, and since it's comparing two registers, it won't in any way affect
-the performance of the case where the pointers are distinct.
+> +
+> +static inline bool is_signed_imm(long val, unsigned int bit)
+> +{
+> +	return -(1L << (bit - 1)) <= val && val < (1L << (bit - 1));
+> +}
+is_{unsigned/signed}_imm() is the same as {signed/unsigned}_imm_check()
+in module.c, maybe we can move this function to inst.h.
 
-Rasmus
+Thanks,
+Youling
+> +
+> +#define is_signed_imm12(val) is_signed_imm(val, 12)
+> +#define is_signed_imm16(val) is_signed_imm(val, 16)
+> +#define is_signed_imm26(val) is_signed_imm(val, 26)
+> +#define is_signed_imm32(val) is_signed_imm(val, 32)
+> +#define is_signed_imm52(val) is_signed_imm(val, 52)
+> +#define is_unsigned_imm12(val) is_unsigned_imm(val, 12)
+> +
+
