@@ -2,110 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D5FF58DD75
-	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 19:49:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A07CA58DD7E
+	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 19:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237621AbiHIRtD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Aug 2022 13:49:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52874 "EHLO
+        id S233963AbiHIRwo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Aug 2022 13:52:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233963AbiHIRtC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Aug 2022 13:49:02 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B3F3237D2;
-        Tue,  9 Aug 2022 10:49:01 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a7so23547319ejp.2;
-        Tue, 09 Aug 2022 10:49:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FrHzlixcS1FrSu9iA6VWLEjUzH4K4SCNdB82J7P9I/I=;
-        b=OSubONaK/J343gxVF4lFuOplXjLk5hLPnbz1r0dnlzwS0KIHNtaTcs/DhUzBCip1GC
-         cDq6EciZP0ICzJSoSQ+pJBkd2AB+pPu7V+n5FSXm2gWA19KAvkGNytIPUzfl/Ny6vxyh
-         QYt8UDX1zBmxqJl6SAV/1AsE6jFFHSwy7quxRGKkAFEvc3NGJIk15W/uB4cu69X6beWG
-         x/PRTBPNC1udHeBhJ7a+4rC+JlxLiJYjJm48QV2S5qz3gyZffjMdBRY8yZbmTCpFB0D5
-         1dJjfvFMY3IpsCm00oOkkc4eny6//rNj7GjVm732f750sxr18hIOVFF8F5JlMo3ydMz1
-         aWQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FrHzlixcS1FrSu9iA6VWLEjUzH4K4SCNdB82J7P9I/I=;
-        b=MtcAzIrsgIr46Z/0t5IVKlof+pSBTfJdcQLybhLctHWieIE/wTrMpji11ZDtNWqzVY
-         os1DMbrDMN9LfrkPeeC/96urnfQEGwzdsC88TGGvyN7KxNbYc9ek7h4+323rvLfrNjB+
-         GGvnHLmnsAZ9PQLNBNz63TYAbZT+nQnpXtteCWDlhJengIBf3dZG7okqP1Njkdg3l7x0
-         T1ICPBbvZEAuJvogtI1t8yy/qrMuMbouwi4il+vxEqNX0EO756BXfLJIDzqBxUChUJQg
-         hXXiDf8tIQ6CWK7SDXxcW1AgRU5fMAvifderzbfZCYromfyB4huRBIJG3xeINTxP6cHU
-         orLQ==
-X-Gm-Message-State: ACgBeo0D8kA+iju7aC3mcVpMUVtYjRsagNwL8I1YWvWrD6UlQYHI9l+R
-        nJtfi0WAuP2MoYhpqcMidT9i7+WCntiXbHW19ZI=
-X-Google-Smtp-Source: AA6agR5Y+K1O7OP168yNU1SaAfCHyiXzxJw8I+spUd0Mqp3fh+qgK5QKAu1yxh0w8txty31WvQIbYU7BOGvwYmhjeY4=
-X-Received: by 2002:a17:907:7b94:b0:731:1b11:c241 with SMTP id
- ne20-20020a1709077b9400b007311b11c241mr12654037ejc.676.1660067339882; Tue, 09
- Aug 2022 10:48:59 -0700 (PDT)
+        with ESMTP id S244985AbiHIRwm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Aug 2022 13:52:42 -0400
+Received: from 66-220-155-178.mail-mxout.facebook.com (66-220-155-178.mail-mxout.facebook.com [66.220.155.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3391A20F40
+        for <bpf@vger.kernel.org>; Tue,  9 Aug 2022 10:52:42 -0700 (PDT)
+Received: by devbig010.atn6.facebook.com (Postfix, from userid 115148)
+        id 4D743102FBCDC; Tue,  9 Aug 2022 10:52:28 -0700 (PDT)
+From:   Joanne Koong <joannelkoong@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     kafai@fb.com, void@manifault.com, andrii@kernel.org,
+        daniel@iogearbox.net, ast@kernel.org,
+        Joanne Koong <joannelkoong@gmail.com>
+Subject: [PATCH bpf-next v3 1/2] bpf: Fix ref_obj_id for dynptr data slices in verifier
+Date:   Tue,  9 Aug 2022 10:52:07 -0700
+Message-Id: <20220809175208.2224443-1-joannelkoong@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20220809105317.436682-1-asavkov@redhat.com> <20220809105317.436682-3-asavkov@redhat.com>
-In-Reply-To: <20220809105317.436682-3-asavkov@redhat.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 9 Aug 2022 10:48:48 -0700
-Message-ID: <CAADnVQKgOR0L0thz6HbkL1x7mwc4eSRHftwsrzE9AxufyGBYZg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 2/3] bpf: export crash_kexec() as destructive kfunc
-To:     Artem Savkov <asavkov@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Daniel Vacek <dvacek@redhat.com>,
-        Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=3.6 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+        FORGED_GMAIL_RCVD,FREEMAIL_FROM,NML_ADSP_CUSTOM_MED,RDNS_DYNAMIC,
+        SPF_HELO_PASS,SPF_SOFTFAIL,SPOOFED_FREEMAIL,SPOOF_GMAIL_MID,
+        TVD_RCVD_IP,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 9, 2022 at 3:53 AM Artem Savkov <asavkov@redhat.com> wrote:
->
-> Allow properly marked bpf programs to call crash_kexec().
->
-> Signed-off-by: Artem Savkov <asavkov@redhat.com>
-> ---
->  kernel/bpf/helpers.c | 21 +++++++++++++++++++++
->  1 file changed, 21 insertions(+)
->
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 1f961f9982d2..103dbddff41f 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -1711,3 +1711,24 @@ bpf_base_func_proto(enum bpf_func_id func_id)
->                 return NULL;
->         }
->  }
-> +
-> +BTF_SET8_START(tracing_btf_ids)
-> +#ifdef CONFIG_KEXEC_CORE
-> +BTF_ID_FLAGS(func, crash_kexec, KF_DESTRUCTIVE)
-> +#endif
-> +BTF_SET8_END(tracing_btf_ids)
-> +
-> +static const struct btf_kfunc_id_set tracing_kfunc_set = {
-> +       .owner = THIS_MODULE,
-> +       .set   = &tracing_btf_ids,
-> +};
-> +
-> +static int __init kfunc_init(void)
-> +{
-> +       if (register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &tracing_kfunc_set))
-> +               pr_warn("failed to register kfunc id set for BPF_PROG_TYPE_TRACING\n");
+When a data slice is obtained from a dynptr (through the bpf_dynptr_data =
+API),
+the ref obj id of the dynptr must be found and then associated with the d=
+ata
+slice.
 
-Please drop pr_warn. We don't have it in all other
-places where we do registration.
+The ref obj id of the dynptr must be found *before* the caller saved regs=
+ are
+reset. Without this fix, the ref obj id tracking is not correct for
+dynptrs that are at an offset from the frame pointer.
+
+Please also note that the data slice's ref obj id must be assigned after =
+the
+ret types are parsed, since RET_PTR_TO_ALLOC_MEM-type return regs get
+zero-marked.
+
+Fixes: 34d4ef5775f776ec4b0d53a02d588bf3195cada6 ("bpf: Add dynptr data sl=
+ices");
+Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+---
+ kernel/bpf/verifier.c | 34 ++++++++++++++++++----------------
+ 1 file changed, 18 insertions(+), 16 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 843a966cd02b..671786a56bb6 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -7342,6 +7342,23 @@ static int check_helper_call(struct bpf_verifier_e=
+nv *env, struct bpf_insn *insn
+ 			}
+ 		}
+ 		break;
++	case BPF_FUNC_dynptr_data:
++		for (i =3D 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
++			if (arg_type_is_dynptr(fn->arg_type[i])) {
++				if (meta.ref_obj_id) {
++					verbose(env, "verifier internal error: meta.ref_obj_id already set\=
+n");
++					return -EFAULT;
++				}
++				/* Find the id of the dynptr we're tracking the reference of */
++				meta.ref_obj_id =3D stack_slot_get_id(env, &regs[BPF_REG_1 + i]);
++				break;
++			}
++		}
++		if (i =3D=3D MAX_BPF_FUNC_REG_ARGS) {
++			verbose(env, "verifier internal error: no dynptr in bpf_dynptr_data()=
+\n");
++			return -EFAULT;
++		}
++		break;
+ 	}
+=20
+ 	if (err)
+@@ -7473,7 +7490,7 @@ static int check_helper_call(struct bpf_verifier_en=
+v *env, struct bpf_insn *insn
+ 	if (type_may_be_null(regs[BPF_REG_0].type))
+ 		regs[BPF_REG_0].id =3D ++env->id_gen;
+=20
+-	if (is_ptr_cast_function(func_id)) {
++	if (is_ptr_cast_function(func_id) || func_id =3D=3D BPF_FUNC_dynptr_dat=
+a) {
+ 		/* For release_reference() */
+ 		regs[BPF_REG_0].ref_obj_id =3D meta.ref_obj_id;
+ 	} else if (is_acquire_function(func_id, meta.map_ptr)) {
+@@ -7485,21 +7502,6 @@ static int check_helper_call(struct bpf_verifier_e=
+nv *env, struct bpf_insn *insn
+ 		regs[BPF_REG_0].id =3D id;
+ 		/* For release_reference() */
+ 		regs[BPF_REG_0].ref_obj_id =3D id;
+-	} else if (func_id =3D=3D BPF_FUNC_dynptr_data) {
+-		int dynptr_id =3D 0, i;
+-
+-		/* Find the id of the dynptr we're acquiring a reference to */
+-		for (i =3D 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
+-			if (arg_type_is_dynptr(fn->arg_type[i])) {
+-				if (dynptr_id) {
+-					verbose(env, "verifier internal error: multiple dynptr args in func=
+\n");
+-					return -EFAULT;
+-				}
+-				dynptr_id =3D stack_slot_get_id(env, &regs[BPF_REG_1 + i]);
+-			}
+-		}
+-		/* For release_reference() */
+-		regs[BPF_REG_0].ref_obj_id =3D dynptr_id;
+ 	}
+=20
+ 	do_refine_retval_range(regs, fn->ret_type, func_id, &meta);
+--=20
+2.30.2
+
