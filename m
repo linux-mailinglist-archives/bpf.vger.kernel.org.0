@@ -2,23 +2,24 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D23D58D7F2
-	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 13:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4C258D7F5
+	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 13:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237990AbiHILSg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 9 Aug 2022 07:18:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46696 "EHLO
+        id S239487AbiHILSu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Aug 2022 07:18:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232697AbiHILSf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Aug 2022 07:18:35 -0400
+        with ESMTP id S232697AbiHILSt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Aug 2022 07:18:49 -0400
 Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C1021E3D;
-        Tue,  9 Aug 2022 04:18:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C776220C9;
+        Tue,  9 Aug 2022 04:18:47 -0700 (PDT)
 Received: (Authenticated sender: hadess@hadess.net)
-        by mail.gandi.net (Postfix) with ESMTPSA id 040D2FF809;
-        Tue,  9 Aug 2022 11:18:27 +0000 (UTC)
-Message-ID: <7cedc4e3a91a520c0c9f5dc65d84d3a0fffed67a.camel@hadess.net>
-Subject: Re: [PATCH 2/2] usb: Implement usb_revoke() BPF function
+        by mail.gandi.net (Postfix) with ESMTPSA id 5C12FFF808;
+        Tue,  9 Aug 2022 11:18:44 +0000 (UTC)
+Message-ID: <d2dc546d771060b0a95d663fb77158d63b75bb9b.camel@hadess.net>
+Subject: Re: [PATCH 1/2] USB: core: add a way to revoke access to open USB
+ devices
 From:   Bastien Nocera <hadess@hadess.net>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linux-usb@vger.kernel.org, bpf@vger.kernel.org,
@@ -29,12 +30,12 @@ Cc:     linux-usb@vger.kernel.org, bpf@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>
-Date:   Tue, 09 Aug 2022 13:18:27 +0200
-In-Reply-To: <YvI5DJnOjhJbNnNO@kroah.com>
+Date:   Tue, 09 Aug 2022 13:18:43 +0200
+In-Reply-To: <YvI4em9fCdZgRPnY@kroah.com>
 References: <20220809094300.83116-1-hadess@hadess.net>
-         <20220809094300.83116-3-hadess@hadess.net> <YvI5DJnOjhJbNnNO@kroah.com>
+         <20220809094300.83116-2-hadess@hadess.net> <YvI4em9fCdZgRPnY@kroah.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: base64
 User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
 MIME-Version: 1.0
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
@@ -46,87 +47,130 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 2022-08-09 at 12:38 +0200, Greg Kroah-Hartman wrote:
-> On Tue, Aug 09, 2022 at 11:43:00AM +0200, Bastien Nocera wrote:
-> > This functionality allows a sufficiently privileged user-space
-> > process
-> > to upload a BPF programme that will call to usb_revoke_device() as
-> > if
-> > it were a kernel API.
-> > 
-> > This functionality will be used by logind to revoke access to
-> > devices on
-> > fast user-switching to start with.
-> > 
-> > logind, and other session management software, does not have access
-> > to
-> > the file descriptor used by the application so other identifiers
-> > are used.
-> > 
-> > Signed-off-by: Bastien Nocera <hadess@hadess.net>
-> > ---
-> >  drivers/usb/core/usb.c | 51
-> > ++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 51 insertions(+)
-> > 
-> > diff --git a/drivers/usb/core/usb.c b/drivers/usb/core/usb.c
-> > index 2f71636af6e1..ca394848a51e 100644
-> > --- a/drivers/usb/core/usb.c
-> > +++ b/drivers/usb/core/usb.c
-> > @@ -38,6 +38,8 @@
-> >  #include <linux/workqueue.h>
-> >  #include <linux/debugfs.h>
-> >  #include <linux/usb/of.h>
-> > +#include <linux/btf.h>
-> > +#include <linux/btf_ids.h>
-> >  
-> >  #include <asm/io.h>
-> >  #include <linux/scatterlist.h>
-> > @@ -438,6 +440,41 @@ static int usb_dev_uevent(struct device *dev,
-> > struct kobj_uevent_env *env)
-> >         return 0;
-> >  }
-> >  
-> > +struct usb_revoke_match {
-> > +       int busnum, devnum; /* -1 to match all devices */
-> > +       int euid; /* -1 to match all users */
-> > +};
-> > +
-> > +static int
-> > +__usb_revoke(struct usb_device *udev, void *data)
-> > +{
-> > +       struct usb_revoke_match *match = data;
-> > +
-> > +       if (match->devnum >= 0 && match->busnum >= 0) {
-> > +               if (match->busnum != udev->bus->busnum ||
-> > +                   match->devnum != udev->devnum) {
-> > +                       return 0;
-> > +               }
-> > +       }
-> > +
-> > +       usb_revoke_for_euid(udev, match->euid);
-> 
-> How are you not racing with other devices being added and removed at
-> the
-> same time?
-> 
-> Again, please stick with the file descriptor, that's the unique thing
-> you know you have that you want to revoke.
-> 
-> Now if you really really want to disable a device from under a user,
-> without the file handle present, you can do that today, as root, by
-> doing the 'unbind' hack through userspace and sysfs.  It's so common
-> that this seems to be how virtual device managers handle virtual
-> machines, so it should be well tested by now.
-> 
-> or does usbfs not bind to the device it opens?
+T24gVHVlLCAyMDIyLTA4LTA5IGF0IDEyOjM1ICswMjAwLCBHcmVnIEtyb2FoLUhhcnRtYW4gd3Jv
+dGU6Cj4gT24gVHVlLCBBdWcgMDksIDIwMjIgYXQgMTE6NDI6NTlBTSArMDIwMCwgQmFzdGllbiBO
+b2NlcmEgd3JvdGU6Cj4gPiBUaGVyZSBpcyBhIG5lZWQgZm9yIHVzZXJzcGFjZSBhcHBsaWNhdGlv
+bnMgdG8gb3BlbiBVU0IgZGV2aWNlcwo+ID4gZGlyZWN0bHksCj4gPiBmb3IgYWxsIHRoZSBVU0Ig
+ZGV2aWNlcyB3aXRob3V0IGEga2VybmVsLWxldmVsIGNsYXNzIGRyaXZlclsxXSwgYW5kCj4gPiBp
+bXBsZW1lbnRlZCBpbiB1c2VyLXNwYWNlLgo+ID4gCj4gPiBBcyBub3QgYWxsIGRldmljZXMgYXJl
+IGJ1aWx0IGVxdWFsLCB3ZSB3YW50IHRvIGJlIGFibGUgdG8gcmV2b2tlCj4gPiBhY2Nlc3MgdG8g
+dGhvc2UgZGV2aWNlcyB3aGV0aGVyIGl0J3MgYmVjYXVzZSB0aGUgdXNlciBpc24ndCBhdCB0aGUK
+PiA+IGNvbnNvbGUgYW55bW9yZSwgb3IgYmVjYXVzZSB0aGUgd2ViIGJyb3dzZXIsIG9yIHNhbmRi
+b3ggZG9lc24ndAo+ID4gd2FudAo+ID4gdG8gYWxsb3cgYWNjZXNzIHRvIHRoYXQgZGV2aWNlLgo+
+ID4gCj4gPiBUaGlzIGNvbW1pdCBpbXBsZW1lbnRzIHRoZSBpbnRlcm5hbCBBUEkgdXNlZCB0byBy
+ZXZva2UgYWNjZXNzIHRvCj4gPiBVU0IKPiA+IGRldmljZXMsIGdpdmVuIGVpdGhlciBidXMgYW5k
+IGRldmljZSBudW1iZXJzLCBvci9hbmQgYSB1c2VyJ3MKPiA+IGVmZmVjdGl2ZSBVSUQuCj4gCj4g
+UmV2b2tlIHdoYXQgZXhhY3RseT8KCkFjY2Vzcy4KCj4gwqAgWW91IHNob3VsZCBiZSByZXZva2lu
+ZyB0aGUgZmlsZSBkZXNjcmlwdG9yIHRoYXQgaXMKPiBvcGVuLCBub3QgYW55dGhpbmcgZWxzZSBh
+cyB0aG9zZSBhcmUgYWxsIHRyYW5zaWVudCBhbmQgbm90IHVuaXF1ZWx5Cj4gaWRlbnRpZmllZCBh
+bmQgcmFjeS4KClRoZXkncmUgInVuaXF1ZSBlbm91Z2giICh0bSkuIFRoZSAKCj4gCj4gCj4gCj4g
+PiAKPiA+IFNpZ25lZC1vZmYtYnk6IEJhc3RpZW4gTm9jZXJhIDxoYWRlc3NAaGFkZXNzLm5ldD4K
+PiA+IAo+ID4gWzFdOgo+ID4gTm9uIGV4aGF1c3RpdmUgbGlzdCBvZiBkZXZpY2VzIGFuZCBkZXZp
+Y2UgdHlwZXMgdGhhdCBuZWVkIHJhdyBVU0IKPiA+IGFjY2VzczoKPiA+IC0gYWxsIG1hbm5lcnMg
+b2Ygc2luZ2xlLWJvYXJkIGNvbXB1dGVycyBhbmQgcHJvZ3JhbW1hYmxlIGNoaXBzIGFuZAo+ID4g
+ZGV2aWNlcyAoYXZyZHVkZSwgU1RMaW5rLCBzdW54aSBib290bG9hZGVyLCBmbGFzaHJvbSwgZXRj
+LikKPiA+IC0gM0QgcHJpbnRlcnMKPiA+IC0gc2Nhbm5lcnMKPiA+IC0gTENEICJkaXNwbGF5cyIK
+PiA+IC0gdXNlci1zcGFjZSB3ZWJjYW0gYW5kIHN0aWxsIGNhbWVyYXMKPiA+IC0gZ2FtZSBjb250
+cm9sbGVycwo+ID4gLSB2aWRlby9hdWRpbyBjYXB0dXJlIGRldmljZXMKPiA+IC0gc2Vuc29ycwo+
+ID4gLSBzb2Z0d2FyZS1kZWZpbmVkIHJhZGlvcwo+ID4gLSBESi9tdXNpYyBlcXVpcG1lbnQKPiA+
+IC0gcHJvdG9jb2wgYW5hbHlzZXJzCj4gPiAtIFJpbyA1MDAgbXVzaWMgcGxheWVyCj4gPiAtLS0K
+PiA+IMKgZHJpdmVycy91c2IvY29yZS9kZXZpby5jIHwgNzkKPiA+ICsrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrLS0KPiA+IMKgZHJpdmVycy91c2IvY29yZS91c2IuaMKgwqAg
+fMKgIDIgKwo+ID4gwqAyIGZpbGVzIGNoYW5nZWQsIDc3IGluc2VydGlvbnMoKyksIDQgZGVsZXRp
+b25zKC0pCj4gPiAKPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3VzYi9jb3JlL2RldmlvLmMgYi9k
+cml2ZXJzL3VzYi9jb3JlL2RldmlvLmMKPiA+IGluZGV4IGI1Yjg1YmY4MDMyOS4uZDhkMjEyZWY1
+ODFmIDEwMDY0NAo+ID4gLS0tIGEvZHJpdmVycy91c2IvY29yZS9kZXZpby5jCj4gPiArKysgYi9k
+cml2ZXJzL3VzYi9jb3JlL2RldmlvLmMKPiA+IEBAIC03OCw2ICs3OCw3IEBAIHN0cnVjdCB1c2Jf
+ZGV2X3N0YXRlIHsKPiA+IMKgwqDCoMKgwqDCoMKgwqBpbnQgbm90X3lldF9yZXN1bWVkOwo+ID4g
+wqDCoMKgwqDCoMKgwqDCoGJvb2wgc3VzcGVuZF9hbGxvd2VkOwo+ID4gwqDCoMKgwqDCoMKgwqDC
+oGJvb2wgcHJpdmlsZWdlc19kcm9wcGVkOwo+ID4gK8KgwqDCoMKgwqDCoMKgYm9vbCByZXZva2Vk
+Owo+ID4gwqB9Owo+ID4gwqAKPiA+IMKgc3RydWN0IHVzYl9tZW1vcnkgewo+ID4gQEAgLTE4Myw2
+ICsxODQsMTMgQEAgc3RhdGljIGludCBjb25uZWN0ZWQoc3RydWN0IHVzYl9kZXZfc3RhdGUgKnBz
+KQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcHMt
+PmRldi0+c3RhdGUgIT0gVVNCX1NUQVRFX05PVEFUVEFDSEVEKTsKPiA+IMKgfQo+ID4gwqAKPiA+
+ICtzdGF0aWMgaW50IGRpc2Nvbm5lY3RlZF9vcl9yZXZva2VkKHN0cnVjdCB1c2JfZGV2X3N0YXRl
+ICpwcykKPiA+ICt7Cj4gPiArwqDCoMKgwqDCoMKgwqByZXR1cm4gKGxpc3RfZW1wdHkoJnBzLT5s
+aXN0KSB8fAo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqBwcy0+ZGV2LT5zdGF0ZSA9PSBVU0JfU1RBVEVfTk9UQVRUQUNIRUQgfHwKPiA+ICvCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcHMtPnJldm9rZWQpOwo+ID4g
+K30KPiA+ICsKPiA+IMKgc3RhdGljIHZvaWQgZGVjX3VzYl9tZW1vcnlfdXNlX2NvdW50KHN0cnVj
+dCB1c2JfbWVtb3J5ICp1c2JtLCBpbnQKPiA+ICpjb3VudCkKPiA+IMKgewo+ID4gwqDCoMKgwqDC
+oMKgwqDCoHN0cnVjdCB1c2JfZGV2X3N0YXRlICpwcyA9IHVzYm0tPnBzOwo+ID4gQEAgLTIzNyw2
+ICsyNDUsOSBAQCBzdGF0aWMgaW50IHVzYmRldl9tbWFwKHN0cnVjdCBmaWxlICpmaWxlLAo+ID4g
+c3RydWN0IHZtX2FyZWFfc3RydWN0ICp2bWEpCj4gPiDCoMKgwqDCoMKgwqDCoMKgZG1hX2FkZHJf
+dCBkbWFfaGFuZGxlOwo+ID4gwqDCoMKgwqDCoMKgwqDCoGludCByZXQ7Cj4gPiDCoAo+ID4gK8Kg
+wqDCoMKgwqDCoMKgaWYgKGRpc2Nvbm5lY3RlZF9vcl9yZXZva2VkKHBzKSkKPiA+ICvCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqByZXR1cm4gLUVOT0RFVjsKPiA+ICsKPiA+IMKgwqDCoMKg
+wqDCoMKgwqByZXQgPSB1c2Jmc19pbmNyZWFzZV9tZW1vcnlfdXNhZ2Uoc2l6ZSArIHNpemVvZihz
+dHJ1Y3QKPiA+IHVzYl9tZW1vcnkpKTsKPiA+IMKgwqDCoMKgwqDCoMKgwqBpZiAocmV0KQo+ID4g
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBnb3RvIGVycm9yOwo+ID4gQEAgLTMxMCw3
+ICszMjEsNyBAQCBzdGF0aWMgc3NpemVfdCB1c2JkZXZfcmVhZChzdHJ1Y3QgZmlsZSAqZmlsZSwK
+PiA+IGNoYXIgX191c2VyICpidWYsIHNpemVfdCBuYnl0ZXMsCj4gPiDCoAo+ID4gwqDCoMKgwqDC
+oMKgwqDCoHBvcyA9ICpwcG9zOwo+ID4gwqDCoMKgwqDCoMKgwqDCoHVzYl9sb2NrX2RldmljZShk
+ZXYpOwo+ID4gLcKgwqDCoMKgwqDCoMKgaWYgKCFjb25uZWN0ZWQocHMpKSB7Cj4gPiArwqDCoMKg
+wqDCoMKgwqBpZiAoZGlzY29ubmVjdGVkX29yX3Jldm9rZWQocHMpKSB7Cj4gPiDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldCA9IC1FTk9ERVY7Cj4gPiDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoGdvdG8gZXJyOwo+ID4gwqDCoMKgwqDCoMKgwqDCoH0gZWxzZSBpZiAo
+cG9zIDwgMCkgewo+ID4gQEAgLTIzMTUsNyArMjMyNiw3IEBAIHN0YXRpYyBpbnQgcHJvY19pb2N0
+bChzdHJ1Y3QgdXNiX2Rldl9zdGF0ZQo+ID4gKnBzLCBzdHJ1Y3QgdXNiZGV2ZnNfaW9jdGwgKmN0
+bCkKPiA+IMKgwqDCoMKgwqDCoMKgwqBpZiAocHMtPnByaXZpbGVnZXNfZHJvcHBlZCkKPiA+IMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuIC1FQUNDRVM7Cj4gPiDCoAo+ID4g
+LcKgwqDCoMKgwqDCoMKgaWYgKCFjb25uZWN0ZWQocHMpKQo+ID4gK8KgwqDCoMKgwqDCoMKgaWYg
+KGRpc2Nvbm5lY3RlZF9vcl9yZXZva2VkKHBzKSkKPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgcmV0dXJuIC1FTk9ERVY7Cj4gPiDCoAo+ID4gwqDCoMKgwqDCoMKgwqDCoC8qIGFs
+bG9jIGJ1ZmZlciAqLwo+ID4gQEAgLTI1NTUsNyArMjU2Niw3IEBAIHN0YXRpYyBpbnQgcHJvY19m
+b3JiaWRfc3VzcGVuZChzdHJ1Y3QKPiA+IHVzYl9kZXZfc3RhdGUgKnBzKQo+ID4gwqAKPiA+IMKg
+c3RhdGljIGludCBwcm9jX2FsbG93X3N1c3BlbmQoc3RydWN0IHVzYl9kZXZfc3RhdGUgKnBzKQo+
+ID4gwqB7Cj4gPiAtwqDCoMKgwqDCoMKgwqBpZiAoIWNvbm5lY3RlZChwcykpCj4gPiArwqDCoMKg
+wqDCoMKgwqBpZiAoZGlzY29ubmVjdGVkX29yX3Jldm9rZWQocHMpKQo+ID4gwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqByZXR1cm4gLUVOT0RFVjsKPiA+IMKgCj4gPiDCoMKgwqDCoMKg
+wqDCoMKgV1JJVEVfT05DRShwcy0+bm90X3lldF9yZXN1bWVkLCAxKTsKPiA+IEBAIC0yNTgwLDYg
+KzI1OTEsNjYgQEAgc3RhdGljIGludCBwcm9jX3dhaXRfZm9yX3Jlc3VtZShzdHJ1Y3QKPiA+IHVz
+Yl9kZXZfc3RhdGUgKnBzKQo+ID4gwqDCoMKgwqDCoMKgwqDCoHJldHVybiBwcm9jX2ZvcmJpZF9z
+dXNwZW5kKHBzKTsKPiA+IMKgfQo+ID4gwqAKPiA+ICtzdGF0aWMgaW50IHVzYmRldl9yZXZva2Uo
+c3RydWN0IHVzYl9kZXZfc3RhdGUgKnBzKQo+ID4gK3sKPiA+ICvCoMKgwqDCoMKgwqDCoHN0cnVj
+dCB1c2JfZGV2aWNlICpkZXYgPSBwcy0+ZGV2Owo+ID4gK8KgwqDCoMKgwqDCoMKgdW5zaWduZWQg
+aW50IGlmbnVtOwo+ID4gK8KgwqDCoMKgwqDCoMKgc3RydWN0IGFzeW5jICphczsKPiA+ICsKPiA+
+ICvCoMKgwqDCoMKgwqDCoGlmIChwcy0+cmV2b2tlZCkgewo+ID4gK8KgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoHVzYl91bmxvY2tfZGV2aWNlKGRldik7Cj4gPiArwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgcmV0dXJuIC1FTk9ERVY7Cj4gPiArwqDCoMKgwqDCoMKgwqB9Cj4gPiAr
+Cj4gPiArwqDCoMKgwqDCoMKgwqBzbm9vcCgmZGV2LT5kZXYsICIlczogUkVWT0tFIGJ5IFBJRCAl
+ZDogJXNcbiIsIF9fZnVuY19fLAo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB0YXNrX3Bp
+ZF9ucihjdXJyZW50KSwgY3VycmVudC0+Y29tbSk7Cj4gPiArCj4gPiArwqDCoMKgwqDCoMKgwqBw
+cy0+cmV2b2tlZCA9IHRydWU7Cj4gPiArCj4gPiArwqDCoMKgwqDCoMKgwqBmb3IgKGlmbnVtID0g
+MDsgcHMtPmlmY2xhaW1lZCAmJiBpZm51bSA8IDgqc2l6ZW9mKHBzLQo+ID4gPmlmY2xhaW1lZCk7
+Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGlmbnVt
+KyspIHsKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAodGVzdF9iaXQoaWZu
+dW0sICZwcy0+aWZjbGFpbWVkKSkKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgcmVsZWFzZWludGYocHMsIGlmbnVtKTsKPiA+ICvCoMKgwqDCoMKgwqDC
+oH0KPiA+ICvCoMKgwqDCoMKgwqDCoGRlc3Ryb3lfYWxsX2FzeW5jKHBzKTsKPiA+ICsKPiA+ICvC
+oMKgwqDCoMKgwqDCoGFzID0gYXN5bmNfZ2V0Y29tcGxldGVkKHBzKTsKPiA+ICvCoMKgwqDCoMKg
+wqDCoHdoaWxlIChhcykgewo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGZyZWVf
+YXN5bmMoYXMpOwo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGFzID0gYXN5bmNf
+Z2V0Y29tcGxldGVkKHBzKTsKPiA+ICvCoMKgwqDCoMKgwqDCoH0KPiA+ICsKPiA+ICvCoMKgwqDC
+oMKgwqDCoHdha2VfdXAoJnBzLT53YWl0KTsKPiA+ICsKPiA+ICvCoMKgwqDCoMKgwqDCoHJldHVy
+biAwOwo+ID4gK30KPiA+ICsKPiA+ICtpbnQgdXNiX3Jldm9rZV9mb3JfZXVpZChzdHJ1Y3QgdXNi
+X2RldmljZSAqdWRldiwKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpbnQgZXVp
+ZCkKPiA+ICt7Cj4gPiArwqDCoMKgwqDCoMKgwqBzdHJ1Y3QgdXNiX2Rldl9zdGF0ZSAqcHM7Cj4g
+PiArCj4gPiArwqDCoMKgwqDCoMKgwqB1c2JfbG9ja19kZXZpY2UodWRldik7Cj4gPiArCj4gPiAr
+wqDCoMKgwqDCoMKgwqBsaXN0X2Zvcl9lYWNoX2VudHJ5KHBzLCAmdWRldi0+ZmlsZWxpc3QsIGxp
+c3QpIHsKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAoZXVpZCA+PSAwKSB7
+Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGt1aWRf
+dCBrdWlkOwo+ID4gKwo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqBpZiAoIXBzIHx8ICFwcy0+Y3JlZCkKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGNvbnRpbnVlOwo+ID4gK8Kg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBrdWlkID0gcHMtPmNy
+ZWQtPmV1aWQ7Cj4gCj4gSG93IGlzIHRoaXMgaGFuZGxpbmcgdWlkIG5hbWVzcGFjZXM/CgpUaGUg
+Y2FsbGVyIGlzIHN1cHBvc2VkIHRvIGJlIG91dHNpZGUgbmFtZXNwYWNlcy4gSXQncyBhIEJQRiBw
+cm9ncmFtbWUsCnNvIG11c3QgYmUgbG9hZGVkIGJ5IGEgcHJpdmlsZWdlZCBjYWxsZXIuCgo+IAo+
+IEFnYWluLCBqdXN0IHJldm9rZSB0aGUgZmlsZSBkZXNjcmlwdG9yLCBsaWtlIHRoZSBCU0RzIGRv
+IGZvciBhIHRpbnkKPiBzdWJzZXQgb2YgZGV2aWNlIGRyaXZlcnMuCj4gCj4gVGhpcyBjb21lcyB1
+cCBldmVyIHNvIG9mdGVuLCB3aHkgZG9lcyBzb21lb25lIG5vdCBqdXN0IGFkZCByZWFsCj4gcmV2
+b2tlKDIpIHN1cHBvcnQgdG8gTGludXggdG8gaGFuZGxlIGl0IGlmIHRoZXkgcmVhbGx5IHJlYWxs
+eSB3YW50IGl0Cj4gKEkKPiB0cmllZCBhIGxvbmcgdGltZSBhZ28sIGJ1dCBkaWRuJ3QgaGF2ZSBp
+dCBpbiBtZSBhcyBJIGhhZCBubyByZWFsCj4gdXNlcnMKPiBmb3IgaXQuLi4pCgpUaGlzIHdhcyBh
+bHJlYWR5IGV4cGxhaW5lZCB0d2ljZSwgdGhlcmUncyBub3RoaW5nIHRvICJoYW5kIG91dCIgdGhv
+c2UKZmlsZSBkZXNjcmlwdG9ycywgc28gbm8gb25lIGJ1dCB0aGUga2VybmVsIGFuZCB0aGUgcHJv
+Z3JhbW1lIGl0c2VsZgpoYXZlIHRoYXQgZmlsZSBkZXNjcmlwdG9yLCBzbyBpdCBjYW4ndCBiZSB1
+c2VkIGFzIGFuIGlkZW50aWZpZXIuCg==
 
-And how is this not racy, and clunky and slow?
-
-It would lose all the PM setup the drive might have done, reset and
-reprobe the device, and forcibly close the file descriptor the
-programme had opened.
-
-This revocation just "mutes" (with no possibility to unmute) the file
-descriptor the programme has, so it can't talk to physical device
-anymore.
