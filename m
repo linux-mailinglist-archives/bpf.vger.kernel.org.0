@@ -2,66 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADCCB58D7AB
-	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 12:53:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E53058D7E3
+	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 13:15:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241168AbiHIKx2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Aug 2022 06:53:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59648 "EHLO
+        id S231377AbiHILPp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 9 Aug 2022 07:15:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236849AbiHIKx1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Aug 2022 06:53:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2C3855F46
-        for <bpf@vger.kernel.org>; Tue,  9 Aug 2022 03:53:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1660042403;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=t3awSX3Tq4QpWeUfA1tbizxgPGHJw6AQeDWWE3eaTyI=;
-        b=g9IqD2NpgAowj1ppybuy06IPRb9ZYQ6eLgbH6TqMlcCZYW0LL7ZXWVzrLJTWtAysQsVBi1
-        P5YvaDxdrj69uz9XNHJwY45+79NWNuoiVm0NTz2NQz0OcAvZ7n1ISBLlnSqdzR+SeNjpAW
-        0YP2fQzincxD8HOs8dMnn5NUKUgI5Hc=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-651-PjBZ2mGmOIS8ho1mtfhAmg-1; Tue, 09 Aug 2022 06:53:19 -0400
-X-MC-Unique: PjBZ2mGmOIS8ho1mtfhAmg-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2F551811E87;
-        Tue,  9 Aug 2022 10:53:19 +0000 (UTC)
-Received: from shodan.usersys.redhat.com (unknown [10.43.17.22])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E7862492C3B;
-        Tue,  9 Aug 2022 10:53:18 +0000 (UTC)
-Received: by shodan.usersys.redhat.com (Postfix, from userid 1000)
-        id 028C91C031E; Tue,  9 Aug 2022 12:53:18 +0200 (CEST)
-From:   Artem Savkov <asavkov@redhat.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S237249AbiHILPn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Aug 2022 07:15:43 -0400
+Received: from relay12.mail.gandi.net (relay12.mail.gandi.net [IPv6:2001:4b98:dc4:8::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 754FC1929A;
+        Tue,  9 Aug 2022 04:15:42 -0700 (PDT)
+Received: (Authenticated sender: hadess@hadess.net)
+        by mail.gandi.net (Postfix) with ESMTPSA id 8DCFA200009;
+        Tue,  9 Aug 2022 11:15:38 +0000 (UTC)
+Message-ID: <8ff97aaacab2fc3838290af0742a7bbf15cb0398.camel@hadess.net>
+Subject: Re: [PATCH 0/2] USB: core: add a way to revoke access to open USB
+ devices
+From:   Bastien Nocera <hadess@hadess.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, bpf@vger.kernel.org,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Peter Hutterer <peter.hutterer@who-t.net>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Daniel Vacek <dvacek@redhat.com>,
-        Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Artem Savkov <asavkov@redhat.com>
-Subject: [PATCH bpf-next v4 3/3] selftests/bpf: add destructive kfunc test
-Date:   Tue,  9 Aug 2022 12:53:17 +0200
-Message-Id: <20220809105317.436682-4-asavkov@redhat.com>
-In-Reply-To: <20220809105317.436682-1-asavkov@redhat.com>
-References: <20220809105317.436682-1-asavkov@redhat.com>
+        Andrii Nakryiko <andrii@kernel.org>
+Date:   Tue, 09 Aug 2022 13:15:38 +0200
+In-Reply-To: <YvI3mcXDOHzOL78r@kroah.com>
+References: <20220809094300.83116-1-hadess@hadess.net>
+         <YvI3mcXDOHzOL78r@kroah.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.44.4 (3.44.4-1.fc36) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.85 on 10.11.54.9
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,119 +47,44 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a test checking that programs calling destructive kfuncs can only do
-so if they have CAP_SYS_BOOT capabilities.
+On Tue, 2022-08-09 at 12:31 +0200, Greg Kroah-Hartman wrote:
+> On Tue, Aug 09, 2022 at 11:42:58AM +0200, Bastien Nocera wrote:
+> > BPF list, first CC: here, I hope the commit messages are clear
+> > enough to
+> > understand the purpose of the patchset. If not, your comments would
+> > be
+> > greatly appreciated so I can make the commit messages self-
+> > explanatory.
+> > 
+> > Eric, what would be the right identifier to use for a specific user
+> > namespace that userspace could find out? I know the PIDs of the
+> > bubblewrap processes that created those user namespaces, would
+> > those be
+> > good enough?
+> > 
+> > Changes since v2:
+> > - Changed the internal API to pass a struct usb_device
+> > - Fixed potential busy loop in user-space when revoking access to a
+> >   device
+> > 
+> > Bastien Nocera (2):
+> >   USB: core: add a way to revoke access to open USB devices
+> >   usb: Implement usb_revoke() BPF function
+> > 
+> >  drivers/usb/core/devio.c | 79
+> > ++++++++++++++++++++++++++++++++++++++--
+> >  drivers/usb/core/usb.c   | 51 ++++++++++++++++++++++++++
+> >  drivers/usb/core/usb.h   |  2 +
+> >  3 files changed, 128 insertions(+), 4 deletions(-)
+> > 
+> > -- 
+> > 2.37.1
+> > 
+> 
+> You say "changes since v2", but have no version identifier on this
+> series at all :(
 
-Signed-off-by: Artem Savkov <asavkov@redhat.com>
----
- net/bpf/test_run.c                            |  5 +++
- .../selftests/bpf/prog_tests/kfunc_call.c     | 36 +++++++++++++++++++
- .../bpf/progs/kfunc_call_destructive.c        | 14 ++++++++
- 3 files changed, 55 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/kfunc_call_destructive.c
+It was sent as "RFC v2" under the same name. This is v3.
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index cbc9cd5058cb..afa7125252f6 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -695,6 +695,10 @@ noinline void bpf_kfunc_call_test_ref(struct prog_test_ref_kfunc *p)
- {
- }
- 
-+noinline void bpf_kfunc_call_test_destructive(void)
-+{
-+}
-+
- __diag_pop();
- 
- ALLOW_ERROR_INJECTION(bpf_modify_return_test, ERRNO);
-@@ -719,6 +723,7 @@ BTF_ID_FLAGS(func, bpf_kfunc_call_test_mem_len_pass1)
- BTF_ID_FLAGS(func, bpf_kfunc_call_test_mem_len_fail1)
- BTF_ID_FLAGS(func, bpf_kfunc_call_test_mem_len_fail2)
- BTF_ID_FLAGS(func, bpf_kfunc_call_test_ref, KF_TRUSTED_ARGS)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_test_destructive, KF_DESTRUCTIVE)
- BTF_SET8_END(test_sk_check_kfunc_ids)
- 
- static void *bpf_test_init(const union bpf_attr *kattr, u32 user_size,
-diff --git a/tools/testing/selftests/bpf/prog_tests/kfunc_call.c b/tools/testing/selftests/bpf/prog_tests/kfunc_call.c
-index c00eb974eb85..351fafa006fb 100644
---- a/tools/testing/selftests/bpf/prog_tests/kfunc_call.c
-+++ b/tools/testing/selftests/bpf/prog_tests/kfunc_call.c
-@@ -5,6 +5,9 @@
- #include "kfunc_call_test.lskel.h"
- #include "kfunc_call_test_subprog.skel.h"
- #include "kfunc_call_test_subprog.lskel.h"
-+#include "kfunc_call_destructive.skel.h"
-+
-+#include "cap_helpers.h"
- 
- static void test_main(void)
- {
-@@ -86,6 +89,36 @@ static void test_subprog_lskel(void)
- 	kfunc_call_test_subprog_lskel__destroy(skel);
- }
- 
-+static int test_destructive_open_and_load(void)
-+{
-+	struct kfunc_call_destructive *skel;
-+	int err;
-+
-+	skel = kfunc_call_destructive__open();
-+	if (!ASSERT_OK_PTR(skel, "prog_open"))
-+		return -1;
-+
-+	err = kfunc_call_destructive__load(skel);
-+
-+	kfunc_call_destructive__destroy(skel);
-+
-+	return err;
-+}
-+
-+static void test_destructive(void)
-+{
-+	__u64 save_caps = 0;
-+
-+	ASSERT_OK(test_destructive_open_and_load(), "succesful_load");
-+
-+	if (!ASSERT_OK(cap_disable_effective(1ULL << CAP_SYS_BOOT, &save_caps), "drop_caps"))
-+		return;
-+
-+	ASSERT_EQ(test_destructive_open_and_load(), -13, "no_caps_failure");
-+
-+	cap_enable_effective(save_caps, NULL);
-+}
-+
- void test_kfunc_call(void)
- {
- 	if (test__start_subtest("main"))
-@@ -96,4 +129,7 @@ void test_kfunc_call(void)
- 
- 	if (test__start_subtest("subprog_lskel"))
- 		test_subprog_lskel();
-+
-+	if (test__start_subtest("destructive"))
-+		test_destructive();
- }
-diff --git a/tools/testing/selftests/bpf/progs/kfunc_call_destructive.c b/tools/testing/selftests/bpf/progs/kfunc_call_destructive.c
-new file mode 100644
-index 000000000000..767472bc5a97
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/kfunc_call_destructive.c
-@@ -0,0 +1,14 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+
-+extern void bpf_kfunc_call_test_destructive(void) __ksym;
-+
-+SEC("tc")
-+int kfunc_destructive_test(void)
-+{
-+	bpf_kfunc_call_test_destructive();
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.37.1
-
+Sorry, but this will probably keep happening until the tools folks have
+to use for kernel development aren't as clunky as they are now...
