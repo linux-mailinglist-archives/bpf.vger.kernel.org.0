@@ -2,97 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D18F58DCE5
-	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 19:14:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE7F58DCE6
+	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 19:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245250AbiHIROK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Aug 2022 13:14:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54154 "EHLO
+        id S245256AbiHIROL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Aug 2022 13:14:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245231AbiHIROG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Aug 2022 13:14:06 -0400
+        with ESMTP id S245248AbiHIROK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Aug 2022 13:14:10 -0400
 Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 297BD24F0A;
-        Tue,  9 Aug 2022 10:14:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE1624F0A;
+        Tue,  9 Aug 2022 10:14:09 -0700 (PDT)
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 1640F3200954;
-        Tue,  9 Aug 2022 13:14:05 -0400 (EDT)
+        by mailout.west.internal (Postfix) with ESMTP id C9D11320095A;
+        Tue,  9 Aug 2022 13:14:08 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 09 Aug 2022 13:14:05 -0400
+  by compute4.internal (MEProxy); Tue, 09 Aug 2022 13:14:09 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
         :cc:content-transfer-encoding:date:date:from:from:in-reply-to
-        :message-id:mime-version:reply-to:sender:subject:subject:to:to;
-         s=fm3; t=1660065244; x=1660151644; bh=NtaGi1m6fH6ewaaVqBbonzc3l
-        RMbE0c81K+W27LNgbE=; b=hWKHsPkXIfi8yy+sp748vdOwXCp0qGRcpEMBbvwXq
-        zwgZH3vrw1gENagx9PGK+HmKi8O8tYd/O6cH8QHq27jt+ZXu5MWbGnCuf+L3/JyF
-        eLFzs9/rfZGbd11QclP4QX83pFYEbVSemv/AaDtxv0yWi2+7QgP/JB6CjTNql/lH
-        MoYgF4NSQNdjwVGrWuHFQVXf2QS8y9jACOjuQsAlj0Qd9d6ZwVInajpsT5gTdDPE
-        3/72pSNonem8sqoAXBkzEbu5zjFJ2c1cPzSSPeJYeQPXI8h2jr3uDSFyYXfpVN0q
-        FuL9RrqTnQaC5ypIGFRYrPILcH5PKc+LpDEBMwmlJGE0Q==
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1660065248; x=1660151648; bh=Y2
+        vLDOx8dQXCiR8IQJdil5G4h9Cpiut6CvYWI0fO7c4=; b=CPcQx8KuEH/7ORSc9F
+        VlN+rsReujPhWo+E5a1UNOXDKsK6yi+eX6pDRCte0kmSYYdkg8ycCRm67HAPnf05
+        JztK9MXM9gj485zI8Ocs+H9dyUR3UQ2gIeMbaJC2b+F8gYW6o0rtfa2oq95WgLxO
+        k8Pi7cWB0gYm9hxlB+cEfHs3ZaP5Joprd5qsYMxzFNDuyBNiCGb9lBYt3qZYZOVm
+        z33j93pin1O4SRxSZ3rmITjZr6pNXojmGlRP98cOT0WgooNgP3zzMTxG8dURFF4N
+        uDfzx8Oa85/v+H7YfBgvFh6GyTBYb7DrstEr9KZEwkoO0KoHG6db05bgpfrJLyhp
+        z99Q==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:message-id
-        :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1660065244; x=1660151644; bh=NtaGi1m6fH6ewaaVqBbonzc3lRMbE0c81K+
-        W27LNgbE=; b=aD46INOSuhkWgNGcsTBIBBThFkJYWLIhBDkFsCv8X43JHDBokic
-        gaTR1WWUygCKhweNfjIIXVsYDERn4IUTKS42Z5bvBTqwONS8LThlvvSwUYtqJjZ0
-        J6aQvwu14gPaM8hh+XrPWYtViZyDUc5X2RYsTYBIXMKUK+bwcft0cLd1la0x8g2B
-        NXpDlT9ZuMtGpYXXUpxxZMHLgUlIiMHJOUZ0sC5Znpqh6GB0Y1wzRsRBmddVddzJ
-        ivkX8YbKM9t4bUlkDI613ZPKBh+ziaW6Gf2b0P/EpYmG1PPjFcCgxJ1Jx0fbLuLc
-        996wLl3zMJHcMWvEqu6kVnwfdoLr2K9Weog==
-X-ME-Sender: <xms:3JXyYoKc0xFSCelhox0hewqhTwRkq2G2rKORwTUUlHrFToXtrrOpFQ>
-    <xme:3JXyYoKLhAFmrSXkrVBSH9dczeltqGCCaP36luq759DYH4CP1EuiSUPjvuCVw4vVU
-    sKSyKLxNCswNvhppA>
-X-ME-Received: <xmr:3JXyYouK_gmsku0mHDoHVIaXOvrAlXRfJKbJeTWsCq3--PX8Q6eokM0_nLgzNFPTp9g8N8nBXUc>
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1660065248; x=1660151648; bh=Y2vLDOx8dQXCi
+        R8IQJdil5G4h9Cpiut6CvYWI0fO7c4=; b=EkLqdOVNpjHMNNj31Oi1MAYmTO1dp
+        j0UeWmT6msf3ounleDyMLwz51wyKQKrn2+5+LgPxCCh9fMwE0Hvbcmlro2kH6Isf
+        Hc38e3TsUIx/jBB6KPoGVUlAInBeFjrx3x0vWEXtbtht0fyTY+LrLd3QmmtXPfbv
+        BEOMEOOpoXcq1SKpqM1Qy5NEm4SI7GmTf9+oYnrY/E9qM3FgtITvu7GiQH5tbbP/
+        KK4ayMo7V+H8AdfcTMHHXNiI5S04dKLm6KSf6fHAxWnPsQQ9O7NYdNeE4alro6Eb
+        O7HYwHewBtOS1iw6rEZ9E6cD7jJINkGjRc63bFSpsOnBjHeJRtAV46heA==
+X-ME-Sender: <xms:4JXyYql0tsmKCA98uqknEXUBTV_Mj8dNzlr53istpdqAE4vG1VLbWg>
+    <xme:4JXyYh2eQTGB_ZlgVjT6FSDjR4gEgpzWT4xcCb9FZkOgHCEbTSuFVJbK3ez8lBZTm
+    I678TvQQ79sxENBJw>
+X-ME-Received: <xmr:4JXyYoq4Gs1zdLGYWCy5gEn_PS6IGdIEPEn7nKrZL4Fi751qsZtqqb5Zq76254nbU1yQw23LV0A>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdegtddgudduudcutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdejtddmnecujfgurhephf
-    fvvefufffkofgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegu
-    gihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpedvgefgtefgleehhfeufe
-    ekuddvgfeuvdfhgeeljeduudfffffgteeuudeiieekjeenucevlhhushhtvghrufhiiigv
-    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:3JXyYlZL4XhmuOr4_S6yT6okm3UM6KTMGJztar_JIeGI5c11L8nffA>
-    <xmx:3JXyYvYbKCXbf9pIoht0YVoJBaRvKBhh6ijQaKBEd1l1yBVK560lMw>
-    <xmx:3JXyYhCI4XZK8cmFSQ_4S3k6Nuzuz0auSCDX3Dv1BV2tikfQqc26jw>
-    <xmx:3JXyYqy8vHTt793jr5ASlwkNV1dB5GRZJv2E_utIDmDdGEuJKH5uDw>
+    fvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcu
+    oegugihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpefgfefggeejhfduie
+    ekvdeuteffleeifeeuvdfhheejleejjeekgfffgefhtddtteenucevlhhushhtvghrufhi
+    iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:4JXyYun6R2aBgLwaO8s8lV9kmWHNKtBES_-tgQPjK14cNyJ6k_IWvA>
+    <xmx:4JXyYo3vItGe45P5E36S-27Mg0KS5v8gayB3GalIyeSBxPgLcjcWHg>
+    <xmx:4JXyYltJ-wuuIGacs2Uqa4XcfZg82OEpw7iMyyfpktk_Lt8Z0WgrQQ>
+    <xmx:4JXyYs_HM-QzB3TBZTnplIXoVl03QSBYsc8Nr5AZJRt_1fDpZS6J6g>
 Feedback-ID: i6a694271:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 9 Aug 2022 13:14:03 -0400 (EDT)
+ 9 Aug 2022 13:14:06 -0400 (EDT)
 From:   Daniel Xu <dxu@dxuuu.xyz>
 To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
         andrii@kernel.org, kpsingh@kernel.org
 Cc:     Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next 0/2] bpf/selftests: Small vmtest.sh fixes
-Date:   Tue,  9 Aug 2022 11:11:08 -0600
-Message-Id: <cover.1660064925.git.dxu@dxuuu.xyz>
+Subject: [PATCH bpf-next 1/2] selftests/bpf: Fix vmtest.sh -h to not require root
+Date:   Tue,  9 Aug 2022 11:11:09 -0600
+Message-Id: <6a802aa37758e5a7e6aa5de294634f5518005e2b.1660064925.git.dxu@dxuuu.xyz>
 X-Mailer: git-send-email 2.37.1
+In-Reply-To: <cover.1660064925.git.dxu@dxuuu.xyz>
+References: <cover.1660064925.git.dxu@dxuuu.xyz>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_SUSPICIOUS_NTLD,
-        FROM_SUSPICIOUS_NTLD_FP,PDS_OTHER_BAD_TLD,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: *
+        PDS_OTHER_BAD_TLD,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Two small quality of life fixes for vmtest.sh:
+Set the exit trap only after argument parsing is done. This way argument
+parse failure or `-h` will not require sudo.
 
-* Don't require root for `-h`
-* Fix unset variable errors for failed option parsing
+Reasoning is that it's confusing that a help message would require root
+access.
 
-Daniel Xu (2):
-  selftests/bpf: Fix vmtest.sh -h to not require root
-  selftests/bpf: Fix vmtest.sh getopts optstring
+Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+---
+ tools/testing/selftests/bpf/vmtest.sh | 32 +++++++++++++--------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
- tools/testing/selftests/bpf/vmtest.sh | 34 +++++++++++++--------------
- 1 file changed, 17 insertions(+), 17 deletions(-)
-
+diff --git a/tools/testing/selftests/bpf/vmtest.sh b/tools/testing/selftests/bpf/vmtest.sh
+index b86ae4a2e5c5..976ef7585b33 100755
+--- a/tools/testing/selftests/bpf/vmtest.sh
++++ b/tools/testing/selftests/bpf/vmtest.sh
+@@ -307,6 +307,20 @@ update_kconfig()
+ 	fi
+ }
+ 
++catch()
++{
++	local exit_code=$1
++	local exit_status_file="${OUTPUT_DIR}/${EXIT_STATUS_FILE}"
++	# This is just a cleanup and the directory may
++	# have already been unmounted. So, don't let this
++	# clobber the error code we intend to return.
++	unmount_image || true
++	if [[ -f "${exit_status_file}" ]]; then
++		exit_code="$(cat ${exit_status_file})"
++	fi
++	exit ${exit_code}
++}
++
+ main()
+ {
+ 	local script_dir="$(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+@@ -353,6 +367,8 @@ main()
+ 	done
+ 	shift $((OPTIND -1))
+ 
++	trap 'catch "$?"' EXIT
++
+ 	if [[ $# -eq 0  && "${debug_shell}" == "no" ]]; then
+ 		echo "No command specified, will run ${DEFAULT_COMMAND} in the vm"
+ 	else
+@@ -409,20 +425,4 @@ main()
+ 	fi
+ }
+ 
+-catch()
+-{
+-	local exit_code=$1
+-	local exit_status_file="${OUTPUT_DIR}/${EXIT_STATUS_FILE}"
+-	# This is just a cleanup and the directory may
+-	# have already been unmounted. So, don't let this
+-	# clobber the error code we intend to return.
+-	unmount_image || true
+-	if [[ -f "${exit_status_file}" ]]; then
+-		exit_code="$(cat ${exit_status_file})"
+-	fi
+-	exit ${exit_code}
+-}
+-
+-trap 'catch "$?"' EXIT
+-
+ main "$@"
 -- 
 2.37.1
 
