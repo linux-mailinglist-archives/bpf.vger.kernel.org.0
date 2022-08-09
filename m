@@ -2,72 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 662A358DB1E
-	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 17:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DED958DB2B
+	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 17:34:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244826AbiHIP2y convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 9 Aug 2022 11:28:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36046 "EHLO
+        id S244278AbiHIPea (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Aug 2022 11:34:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244899AbiHIP2x (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Aug 2022 11:28:53 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4DAC18B16;
-        Tue,  9 Aug 2022 08:28:51 -0700 (PDT)
-Received: from fraeml709-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4M2H326hdJz67hYm;
-        Tue,  9 Aug 2022 23:26:06 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml709-chm.china.huawei.com (10.206.15.37) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Tue, 9 Aug 2022 17:28:49 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2375.024;
- Tue, 9 Aug 2022 17:28:49 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Andres Freund <andres@anarazel.de>,
-        Daniel Borkmann <daniel@iogearbox.net>
-CC:     "quentin@isovalent.com" <quentin@isovalent.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "martin.lau@linux.dev" <martin.lau@linux.dev>,
-        "song@kernel.org" <song@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "sdf@google.com" <sdf@google.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "terrelln@fb.com" <terrelln@fb.com>,
-        "nathan@kernel.org" <nathan@kernel.org>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Subject: RE: [PATCH 4/4] build: Switch to new openssl API for test-libcrypto
-Thread-Topic: [PATCH 4/4] build: Switch to new openssl API for test-libcrypto
-Thread-Index: AQHYm5HfT/KQ8BwklE+dy083QuWM9q2lK0sAgAAmxQCAAVr4gIAAAaGAgAAjZQA=
-Date:   Tue, 9 Aug 2022 15:28:49 +0000
-Message-ID: <23f8c56f584b4da8acf15d050c0443b6@huawei.com>
-References: <20220719170555.2576993-1-roberto.sassu@huawei.com>
- <20220719170555.2576993-4-roberto.sassu@huawei.com>
- <5f867295-10d2-0085-d1dc-051f56e7136a@iogearbox.net>
- <YvFW/kBL6YA3Tlnc@kernel.org> <YvJ6DbzBNsAgNZS4@kernel.org>
- <YvJ7awkCVBYaZ2dd@kernel.org>
-In-Reply-To: <YvJ7awkCVBYaZ2dd@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.81.201.209]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        with ESMTP id S236852AbiHIPe3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Aug 2022 11:34:29 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABFFC65B6
+        for <bpf@vger.kernel.org>; Tue,  9 Aug 2022 08:34:28 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id j7so14766389wrh.3
+        for <bpf@vger.kernel.org>; Tue, 09 Aug 2022 08:34:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc;
+        bh=Qa1S//XEgl1EoiqMCyA/2wdEbj52xdYm49q49/jtgYg=;
+        b=PO5iQRJMSK0rwThPpR0bqrDNBKjComgEcrnrYbRkLT3Btx6XS7/Lf1uaeKTKKH6OVo
+         3xP5ckUojVKNs68it4oD6KOPdEeR8undWX3Agf2wz5olp2RqHXCQVbTwC4pVXUT2IBAJ
+         8X3uit51s1lqrS82GsfsTTBzKrFdO3EAYvIXicBKuVwJlZWlS8wGk733n5EMYiixRc2P
+         qaFhBq9P9aAhD5ob+oFg5to761Ggmxjag9/NclIoT8AAV6kfpWU75UDL0L9IM46LqFqR
+         5UkKyn/0vJV84EnldOyB7cAXkeVzr/KtflbVxtZ0Fen0nrlAufjQHZWNGGpOTUQlnL6a
+         ACIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc;
+        bh=Qa1S//XEgl1EoiqMCyA/2wdEbj52xdYm49q49/jtgYg=;
+        b=KPsWADZw6qB+Abqw1sV0VPECsfSHg2qpEV8YZKFhNrFZ/2j0CAf4A4qxTH2cmWUGjT
+         hpe1JrGleFCkVl2zYn/dDOAdIxSXXj83mWV4fjtPw/9MLyxQCBoiwazHay7w45QYVdwm
+         W1I3MR+UNCfqE0TqUDByt5XEDWnyPvK+hHy/F0oGz9HK3Jax6pvkQHyxvv5t0RDjzMan
+         ia0SbFTnYDmUtJzoDSG8zLPRWtUEnTB4uV0o6AgIyTBDwql3BbJqOZGX2Divw1VVZPnZ
+         kd71kTWpE5uKflmUin7xC/HaJ90Zj/dsZM0y4ot2fJ2/kTCVog7VKnV2RGcpp4jbnxIH
+         MqOA==
+X-Gm-Message-State: ACgBeo1t8HaZgK8gem750OLnCVI9BS8XxJQIljER1e5lp7awimfNJzZt
+        id5/JDsDCpEzlP5WsfetYVs=
+X-Google-Smtp-Source: AA6agR7QMO/zxxc9mFO3xa1lP2ZKnnPEs77xKPME7bKVNN9+Z8IRNves/j9mt95cuYmaSpi6Tyyrqg==
+X-Received: by 2002:a5d:6a85:0:b0:21f:cf7f:fdfd with SMTP id s5-20020a5d6a85000000b0021fcf7ffdfdmr14648945wru.220.1660059267018;
+        Tue, 09 Aug 2022 08:34:27 -0700 (PDT)
+Received: from krava ([193.85.244.190])
+        by smtp.gmail.com with ESMTPSA id r1-20020adfe681000000b002216d3aee78sm11728762wrm.86.2022.08.09.08.34.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Aug 2022 08:34:26 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Tue, 9 Aug 2022 17:34:24 +0200
+To:     Kui-Feng Lee <kuifeng@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kernel-team@fb.com, yhs@fb.com
+Subject: Re: [PATCH bpf-next v3 0/3] Parameterize task iterators.
+Message-ID: <YvJ+gCJ0V5hg8wLR@krava>
+References: <20220809063501.667610-1-kuifeng@fb.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220809063501.667610-1-kuifeng@fb.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,120 +70,81 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> From: Arnaldo Carvalho de Melo [mailto:acme@kernel.org]
-> Sent: Tuesday, August 9, 2022 5:21 PM
-> Em Tue, Aug 09, 2022 at 12:15:25PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > Em Mon, Aug 08, 2022 at 03:33:34PM -0300, Arnaldo Carvalho de Melo
-> escreveu:
-> > > Em Mon, Aug 08, 2022 at 06:14:48PM +0200, Daniel Borkmann escreveu:
-> > > > Hi Arnaldo,
-> > > >
-> > > > On 7/19/22 7:05 PM, Roberto Sassu wrote:
-> > > > > Switch to new EVP API for detecting libcrypto, as Fedora 36 returns an
-> > > > > error when it encounters the deprecated function MD5_Init() and the
-> others.
-> > > > > The error would be interpreted as missing libcrypto, while in reality it is
-> > > > > not.
-> > > > >
-> > > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > > >
-> > > > Given rest of the tooling fixes from Andres Freund went via perf tree and
-> the
-> > > > below is perf related as well, I presume you'll pick this up, too?
-> > >
-> > > Sure.
-> > >
-> > > >   [0]
-> https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/log/?h=perf/cor
-> e
-> >
-> > So I fixed up the first one, minor fuzzes, the second I had to fix
-> > conflicts with the patchset from Andres, ended up as below, will test
-> > build it then in my container kit.
+On Mon, Aug 08, 2022 at 11:34:58PM -0700, Kui-Feng Lee wrote:
+> Allow creating an iterator that loops through resources of one task/thread.
 > 
-> So I backtracked, the way it works needs further consideration with
-> regard to the patchkit from Andres, that is already upstream, so it
-> would be good for Roberto to take a look at what is in torvalds/master
-> now and see if we have to removed that styled thing from Andres.
+> People could only create iterators to loop through all resources of
+> files, vma, and tasks in the system, even though they were interested in only the
+> resources of a specific task or process.  Passing the addintional
+> parameters, people can now create an iterator to go through all
+> resources or only the resources of a task.
+> 
+> Major Changes:
+> 
+>  - Add new parameters in bpf_iter_link_info to indicate to go through
+>    all tasks or to go through a specific task.
+> 
+>  - Change the implementations of BPF iterators of vma, files, and
+>    tasks to allow going through only the resources of a specific task.
+> 
+>  - Provide the arguments of parameterized task iterators in
+>    bpf_link_info.
+> 
+> Differences from v2:
+> 
+>  - Supports tid, tgid, and pidfd.
+> 
+>  - Change 'type' from __u8 to enum bpf_task_iter_type.
 
-Will do. Thanks Arnaldo for adapting the patch.
+hi,
+I'm getting test fail:
 
-Roberto
+test_task_:PASS:bpf_iter_task__open_and_load 0 nsec
+test_task_:PASS:pthread_mutex_init 0 nsec
+test_task_:PASS:pthread_mutex_lock 0 nsec
+test_task_:PASS:pthread_create 0 nsec
+do_dummy_read:PASS:attach_iter 0 nsec
+do_dummy_read:PASS:create_iter 0 nsec
+do_dummy_read:PASS:read 0 nsec
+test_task_:PASS:pthread_mutex_unlock 0 nsec
+test_task_:FAIL:check_num_unknown_tid unexpected check_num_unknown_tid: actual 0 != expected 1
+test_task_:PASS:check_num_known_tid 0 nsec
+test_task_:PASS:pthread_join 0 nsec
+test_task_:PASS:bpf_iter_task__open_and_load 0 nsec
+test_task_:PASS:pthread_mutex_init 0 nsec
+test_task_:PASS:pthread_mutex_lock 0 nsec
+test_task_:PASS:pthread_create 0 nsec
+do_dummy_read:PASS:attach_iter 0 nsec
+do_dummy_read:PASS:create_iter 0 nsec
+do_dummy_read:PASS:read 0 nsec
+test_task_:PASS:pthread_mutex_unlock 0 nsec
+test_task_:FAIL:check_num_unknown_tid unexpected check_num_unknown_tid: actual 134 != expected 1
+test_task_:PASS:check_num_known_tid 0 nsec
+test_task_:PASS:pthread_join 0 nsec
+#10/5    bpf_iter/task:FAIL
 
-> Andres, if you could take a look at Roberto's patchkit as well that
-> would be great.
+jirka
+
 > 
-> - Arnaldo
+> v2: https://lore.kernel.org/bpf/20220801232649.2306614-1-kuifeng@fb.com/
+> v1: https://lore.kernel.org/bpf/20220726051713.840431-1-kuifeng@fb.com/
 > 
-> > commit bea955a0256e20cc18e87087e42f2a903b9a8b84
-> > Author: Roberto Sassu <roberto.sassu@huawei.com>
-> > Date:   Tue Jul 19 19:05:53 2022 +0200
-> >
-> >     bpftool: Complete libbfd feature detection
-> >
-> >     Commit 6e8ccb4f624a7 ("tools/bpf: properly account for libbfd variations")
-> >     sets the linking flags depending on which flavor of the libbfd feature was
-> >     detected.
-> >
-> >     However, the flavors except libbfd cannot be detected, as they are not in
-> >     the feature list.
-> >
-> >     Complete the list of features to detect by adding libbfd-liberty and
-> >     libbfd-liberty-z.
-> >
-> >     Committer notes:
-> >
-> >     Adjust conflict with with:
-> >
-> >       1e1613f64cc8a09d ("tools bpftool: Don't display disassembler-four-args
-> feature test")
-> >       600b7b26c07a070d ("tools bpftool: Fix compilation error with new
-> binutils")
-> >
-> >     Fixes: 6e8ccb4f624a73c5 ("tools/bpf: properly account for libbfd variations")
-> >     Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> >     Cc: Alexei Starovoitov <ast@kernel.org>
-> >     Cc: Andres Freund <andres@anarazel.de>
-> >     Cc: Andrii Nakryiko <andrii@kernel.org>
-> >     Cc: bpf@vger.kernel.org
-> >     Cc: Daniel Borkmann <daniel@iogearbox.net>
-> >     Cc: Ingo Molnar <mingo@redhat.com>
-> >     Cc: John Fastabend <john.fastabend@gmail.com>
-> >     Cc: KP Singh <kpsingh@kernel.org>
-> >     Cc: llvm@lists.linux.dev
-> >     Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> >     Cc: Nathan Chancellor <nathan@kernel.org>
-> >     Cc: Nick Desaulniers <ndesaulniers@google.com>
-> >     Cc: Nick Terrell <terrelln@fb.com>
-> >     Cc: Peter Zijlstra <peterz@infradead.org>
-> >     Cc: Quentin Monnet <quentin@isovalent.com>
-> >     Cc: Song Liu <song@kernel.org>
-> >     Cc: Stanislav Fomichev <sdf@google.com>
-> >     Link: https://lore.kernel.org/r/20220719170555.2576993-2-
-> roberto.sassu@huawei.com
-> >     Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> >
-> > diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-> > index 04d733e98bffbc08..9cc132277150c534 100644
-> > --- a/tools/bpf/bpftool/Makefile
-> > +++ b/tools/bpf/bpftool/Makefile
-> > @@ -93,9 +93,11 @@ INSTALL ?= install
-> >  RM ?= rm -f
-> >
-> >  FEATURE_USER = .bpftool
-> > -FEATURE_TESTS = libbfd disassembler-four-args disassembler-init-styled
-> libcap \
-> > +FEATURE_TESTS = libbfd libbfd-liberty libbfd-liberty-z
-> > +	disassembler-four-args disassembler-init-styled libcap \
-> >  	clang-bpf-co-re
-> > -FEATURE_DISPLAY = libbfd libcap clang-bpf-co-re
-> > +FEATURE_DISPLAY = libbfd libbfd-liberty libbfd-liberty-z
-> > +	libcap clang-bpf-co-re
-> >
-> >  check_feat := 1
-> >  NON_CHECK_FEAT_TARGETS := clean uninstall doc doc-clean doc-install doc-
-> uninstall
+> Kui-Feng Lee (3):
+>   bpf: Parameterize task iterators.
+>   bpf: Handle bpf_link_info for the parameterized task BPF iterators.
+>   selftests/bpf: Test parameterized task BPF iterators.
 > 
-> --
+>  include/linux/bpf.h                           |   8 +
+>  include/uapi/linux/bpf.h                      |  43 +++
+>  kernel/bpf/task_iter.c                        | 153 +++++++++--
+>  tools/include/uapi/linux/bpf.h                |  43 +++
+>  .../selftests/bpf/prog_tests/bpf_iter.c       | 251 ++++++++++++++++--
+>  .../selftests/bpf/prog_tests/btf_dump.c       |   2 +-
+>  .../selftests/bpf/progs/bpf_iter_task.c       |   9 +
+>  .../selftests/bpf/progs/bpf_iter_task_file.c  |   7 +
+>  .../selftests/bpf/progs/bpf_iter_task_vma.c   |   6 +-
+>  9 files changed, 474 insertions(+), 48 deletions(-)
 > 
-> - Arnaldo
+> -- 
+> 2.30.2
+> 
