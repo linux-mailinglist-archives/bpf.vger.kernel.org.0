@@ -2,58 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 367AA58DC8F
-	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 18:55:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7FF58DCA4
+	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 19:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245023AbiHIQzF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Aug 2022 12:55:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36386 "EHLO
+        id S233963AbiHIRAy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Aug 2022 13:00:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243307AbiHIQzE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Aug 2022 12:55:04 -0400
+        with ESMTP id S245249AbiHIRAa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Aug 2022 13:00:30 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A083522B17;
-        Tue,  9 Aug 2022 09:55:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F36A262F;
+        Tue,  9 Aug 2022 10:00:17 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 28D58B81658;
-        Tue,  9 Aug 2022 16:55:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C91DC433C1;
-        Tue,  9 Aug 2022 16:55:00 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id ADDEDB8165D;
+        Tue,  9 Aug 2022 17:00:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 57B27C433C1;
+        Tue,  9 Aug 2022 17:00:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660064100;
-        bh=K8o8qgPrj5J9A6+GrMQpiR8pTGn1sY02He1mKx0vTq0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jTE0oYw3+67b/0pE6Q41QON9uh/4DdFmcAh9hJFZg3bMY9/1Kl1xs0LFPJQr+3N8b
-         +gIQzRv3kpEAnXPAAdSLldfDCRa/+1QhAeNhUoQpcZLzIhfEGBmVL5BMxbmzXDPZQf
-         M8ip9LZjsDdy6ctxu3aQJ6k/4528n7KDv1LEqijhySaVGHZ0rfIRwl1j8p/HUvXZPC
-         /E4vdgoZmfCFaVP1DV1ud0izZgkUbzDvzzt12eYtn3N/N265upkq2E5hi3GJ4c/iq8
-         J23vH4L3LZEbnN0fPWVDvsMdx6Ae95pEZHxPirBzvzPLwUFeZy/D/KxWuklsuxmVuu
-         ALjVGxmDAJWWA==
-Date:   Tue, 9 Aug 2022 19:54:57 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Roberto Sassu <roberto.sassu@huawei.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, corbet@lwn.net,
-        dhowells@redhat.com, rostedt@goodmis.org, mingo@redhat.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        shuah@kernel.org, bpf@vger.kernel.org, linux-doc@vger.kernel.org,
-        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Yosry Ahmed <yosryahmed@google.com>
-Subject: Re: [PATCH v9 01/10] btf: Add a new kfunc flag which allows to mark
- a function to be sleepable
-Message-ID: <YvKRYRjJdXbAWL6Y@kernel.org>
-References: <20220809134603.1769279-1-roberto.sassu@huawei.com>
- <20220809134603.1769279-2-roberto.sassu@huawei.com>
+        s=k20201202; t=1660064414;
+        bh=IlYt2GXL0Kv0NGOdSrr8ACS9GkgE6OyEFxzb5ToeNms=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Pqg3E1B/OirUga1YLv4HjoGfoBo2z6ydtexdTSU8nI2rYwrig1za5MWCNV6Mt3W0n
+         gK4ZLmbS52M4xzAT3WSxpAf39TaoDNsI/m9I2Zeqigc6e8iZ1uBbugPpVF1QYVznGz
+         EeamsXztOGD7l2MOvb8yUQdUkVz3w6W6cc6wUq4BDEn5UXpNtWsdkNPzhX0BhxR6uj
+         zEkuSm5/8jkGbfNeVhxtdzMmMEoUqw1UhwK5AW12w+5WA72Mz/SE9mP7M8mxQEHpQ1
+         rOgjl1/jNlWjn6mgj7rD/pXSpg+iv89xT11bIMsbF17SUY5qp/REVcrpEEsHt7Z6jp
+         FkbEKd12nvY0Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 43307C43143;
+        Tue,  9 Aug 2022 17:00:14 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220809134603.1769279-2-roberto.sassu@huawei.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v2 0/2] Add BPF-helper for accessing CLOCK_TAI
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166006441427.21395.6653949715858271839.git-patchwork-notify@kernel.org>
+Date:   Tue, 09 Aug 2022 17:00:14 +0000
+References: <20220809060803.5773-1-kurt@linutronix.de>
+In-Reply-To: <20220809060803.5773-1-kurt@linutronix.de>
+To:     Kurt Kanzenbach <kurt@linutronix.de>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        joannelkoong@gmail.com, jolsa@kernel.org, davemarchevsky@fb.com,
+        lorenzo@kernel.org, geliang.tang@suse.com, jakub@cloudflare.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, tglx@linutronix.de,
+        maciej.fijalkowski@intel.com, brouer@redhat.com
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -64,95 +61,32 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 09, 2022 at 03:45:54PM +0200, Roberto Sassu wrote:
-> From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> 
-> From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> 
-> This allows to declare a kfunc as sleepable and prevents its use in
-> a non sleepable program.
+Hello:
 
-Nit: "Declare a kfunc as sleepable and prevent its use in a
-non-sleepable program."
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-It's missing the part *how* the patch accomplishes its goals.
+On Tue,  9 Aug 2022 08:08:01 +0200 you wrote:
+> Hi,
+> 
+> add a BPF-helper for accessing CLOCK_TAI. Use cases for such a BPF helper
+> include functionalities such as Tx launch time (e.g. ETF and TAPRIO Qdiscs),
+> timestamping and policing.
+> 
+> Patch #1 - Introduce BPF helper
+> Patch #2 - Add test case (skb based)
+> 
+> [...]
 
-> 
-> Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> Co-developed-by: Yosry Ahmed <yosryahmed@google.com>
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> Signed-off-by: Hao Luo <haoluo@google.com>
-> ---
->  Documentation/bpf/kfuncs.rst | 6 ++++++
->  include/linux/btf.h          | 1 +
->  kernel/bpf/btf.c             | 9 +++++++++
->  3 files changed, 16 insertions(+)
-> 
-> diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
-> index c0b7dae6dbf5..c8b21de1c772 100644
-> --- a/Documentation/bpf/kfuncs.rst
-> +++ b/Documentation/bpf/kfuncs.rst
-> @@ -146,6 +146,12 @@ that operate (change some property, perform some operation) on an object that
->  was obtained using an acquire kfunc. Such kfuncs need an unchanged pointer to
->  ensure the integrity of the operation being performed on the expected object.
->  
-> +2.4.6 KF_SLEEPABLE flag
-> +-----------------------
-> +
-> +The KF_SLEEPABLE flag is used for kfuncs that may sleep. Such kfuncs can only
-> +be called by sleepable BPF programs (BPF_F_SLEEPABLE).
-> +
->  2.5 Registering the kfuncs
->  --------------------------
->  
-> diff --git a/include/linux/btf.h b/include/linux/btf.h
-> index cdb376d53238..976cbdd2981f 100644
-> --- a/include/linux/btf.h
-> +++ b/include/linux/btf.h
-> @@ -49,6 +49,7 @@
->   * for this case.
->   */
->  #define KF_TRUSTED_ARGS (1 << 4) /* kfunc only takes trusted pointer arguments */
-> +#define KF_SLEEPABLE   (1 << 5) /* kfunc may sleep */
->  
->  struct btf;
->  struct btf_member;
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 7e64447659f3..d3e4c86b8fcd 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -6175,6 +6175,7 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
->  {
->  	enum bpf_prog_type prog_type = resolve_prog_type(env->prog);
->  	bool rel = false, kptr_get = false, trusted_arg = false;
-> +	bool sleepable = false;
->  	struct bpf_verifier_log *log = &env->log;
->  	u32 i, nargs, ref_id, ref_obj_id = 0;
->  	bool is_kfunc = btf_is_kernel(btf);
-> @@ -6212,6 +6213,7 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
->  		rel = kfunc_flags & KF_RELEASE;
->  		kptr_get = kfunc_flags & KF_KPTR_GET;
->  		trusted_arg = kfunc_flags & KF_TRUSTED_ARGS;
-> +		sleepable = kfunc_flags & KF_SLEEPABLE;
->  	}
->  
->  	/* check that BTF function arguments match actual types that the
-> @@ -6419,6 +6421,13 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
->  			func_name);
->  		return -EINVAL;
->  	}
-> +
-> +	if (sleepable && !env->prog->aux->sleepable) {
-> +		bpf_log(log, "kernel function %s is sleepable but the program is not\n",
-> +			func_name);
-> +		return -EINVAL;
-> +	}
-> +
->  	/* returns argument register number > 0 in case of reference release kfunc */
->  	return rel ? ref_regno : 0;
->  }
-> -- 
-> 2.25.1
-> 
+Here is the summary with links:
+  - [bpf-next,v2,1/2] bpf: Add BPF-helper for accessing CLOCK_TAI
+    https://git.kernel.org/bpf/bpf-next/c/c8996c98f703
+  - [bpf-next,v2,2/2] selftests/bpf: Add BPF-helper test for CLOCK_TAI access
+    https://git.kernel.org/bpf/bpf-next/c/64e15820b987
 
-BR, Jarkko
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
