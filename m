@@ -2,179 +2,187 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8449558D303
-	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 06:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDD3158D307
+	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 06:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233256AbiHIEtR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Aug 2022 00:49:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47582 "EHLO
+        id S230225AbiHIEzi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Aug 2022 00:55:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbiHIEtQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Aug 2022 00:49:16 -0400
-Received: from zju.edu.cn (mail.zju.edu.cn [61.164.42.155])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 07BBB1D32B;
-        Mon,  8 Aug 2022 21:49:09 -0700 (PDT)
-Received: from localhost.localdomain (unknown [10.12.77.33])
-        by mail-app2 (Coremail) with SMTP id by_KCgC3vvYY5_FiY7Z_Ag--.15876S4;
-        Tue, 09 Aug 2022 12:48:24 +0800 (CST)
-From:   Lin Ma <linma@zju.edu.cn>
-To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Lin Ma <linma@zju.edu.cn>
-Subject: [PATCH v2] igb: Add lock to avoid data race
-Date:   Tue,  9 Aug 2022 12:48:20 +0800
-Message-Id: <20220809044820.2861-1-linma@zju.edu.cn>
-X-Mailer: git-send-email 2.36.1
+        with ESMTP id S229600AbiHIEzh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Aug 2022 00:55:37 -0400
+Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AFAB51DA53
+        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 21:55:34 -0700 (PDT)
+Received: from [10.130.0.63] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxIM+_6PFi3cUKAA--.34602S3;
+        Tue, 09 Aug 2022 12:55:28 +0800 (CST)
+Subject: Re: [RFC PATCH 3/5] LoongArch: Add BPF JIT support
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, loongarch@lists.linux.dev
+References: <1660013580-19053-1-git-send-email-yangtiezhu@loongson.cn>
+ <1660013580-19053-4-git-send-email-yangtiezhu@loongson.cn>
+From:   Qing Zhang <zhangqing@loongson.cn>
+Message-ID: <ab694f5c-10df-8c90-b8e5-a20368fb9b7d@loongson.cn>
+Date:   Tue, 9 Aug 2022 12:55:27 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <1660013580-19053-4-git-send-email-yangtiezhu@loongson.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: by_KCgC3vvYY5_FiY7Z_Ag--.15876S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxur4xCr13XF48ZrykuF17ZFb_yoWrZr1rpF
-        4DX342yr10qF12qa97Xa18Ary3K3yrtrWfK3W3uw4F93Z8JryqqrWFyryjvFyFk393u3ZI
-        yryDuw4fZ3WDAFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvl1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2
-        z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcV
-        Aq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j
-        6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
-        vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
-        cxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJV
-        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
-        1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
-        IIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
-        DU0xZFpf9x0JUdHUDUUUUU=
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-CM-TRANSID: AQAAf9DxIM+_6PFi3cUKAA--.34602S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxZr4UWFW8Wr1DJF1fCw4xCrg_yoWrCF4kp3
+        ZxKF4fGFyjq3W7tFn3Xryjvr98GwsagF4DWry7Jr48GryDZa4rGF1UKF1fGayDJrWkJr18
+        Zrn0krnFkr1Dt37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr
+        1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mxk0xIA0c2IEe2xFo4CE
+        bIxvr21lc2xSY4AK67AK6r45MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY
+        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvj
+        DU0xZFpf9x0JUfcTPUUUUU=
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The commit c23d92b80e0b ("igb: Teardown SR-IOV before
-unregister_netdev()") places the unregister_netdev() call after the
-igb_disable_sriov() call to avoid functionality issue.
+Hi,
+Tiezhu
 
-However, it introduces several race conditions when detaching a device.
-For example, when .remove() is called, the below interleaving leads to
-use-after-free.
+On 2022/8/9 上午10:52, Tiezhu Yang wrote:
+> BPF programs are normally handled by a BPF interpreter, add BPF JIT
+> support for LoongArch to allow the kernel to generate native code
+> when a program is loaded into the kernel, this will significantly
+> speed-up processing of BPF programs.
+> 
+> Co-developed-by: Youling Tang <tangyouling@loongson.cn>
+> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>   arch/loongarch/Kbuild        |    1 +
+>   arch/loongarch/Kconfig       |    1 +
+>   arch/loongarch/net/Makefile  |    7 +
+>   arch/loongarch/net/bpf_jit.c | 1119 ++++++++++++++++++++++++++++++++++++++++++
+>   arch/loongarch/net/bpf_jit.h |  946 +++++++++++++++++++++++++++++++++++
+>   5 files changed, 2074 insertions(+)
+>   create mode 100644 arch/loongarch/net/Makefile
+>   create mode 100644 arch/loongarch/net/bpf_jit.c
+>   create mode 100644 arch/loongarch/net/bpf_jit.h
+> 
+> diff --git a/arch/loongarch/Kbuild b/arch/loongarch/Kbuild
+> +
+[...]
+> +/*
+> + * eBPF prog stack layout:
+> + *
+> + *                                        high
+> + * original $sp ------------> +-------------------------+ <--LOONGARCH_GPR_FP
+> + *                            |           $ra           |
+> + *                            +-------------------------+
+> + *                            |           $fp           |
+> + *                            +-------------------------+
+> + *                            |           $s0           |
+> + *                            +-------------------------+
+> + *                            |           $s1           |
+> + *                            +-------------------------+
+> + *                            |           $s2           |
+> + *                            +-------------------------+
+> + *                            |           $s3           |
+> + *                            +-------------------------+
+> + *                            |           $s4           |
+> + *                            +-------------------------+
+> + *                            |           $s5           |
+> + *                            +-------------------------+ <--BPF_REG_FP
+> + *                            |  prog->aux->stack_depth |
+> + *                            |        (optional)       |
+> + * current $sp -------------> +-------------------------+
+> + *                                        low
+> + */
+> +static void build_prologue(struct jit_ctx *ctx)
+> +{
+> +	int stack_adjust = 0, store_offset, bpf_stack_adjust;
+> +
+> +	bpf_stack_adjust = round_up(ctx->prog->aux->stack_depth, 16);
+> +
+> +	stack_adjust += sizeof(long); /* LOONGARCH_GPR_RA */
+> +	stack_adjust += sizeof(long); /* LOONGARCH_GPR_FP */
+> +	stack_adjust += sizeof(long); /* LOONGARCH_GPR_S0 */
+> +	stack_adjust += sizeof(long); /* LOONGARCH_GPR_S1 */
+> +	stack_adjust += sizeof(long); /* LOONGARCH_GPR_S2 */
+> +	stack_adjust += sizeof(long); /* LOONGARCH_GPR_S3 */
+> +	stack_adjust += sizeof(long); /* LOONGARCH_GPR_S4 */
+> +	stack_adjust += sizeof(long); /* LOONGARCH_GPR_S5 */
+> +
+> +	stack_adjust = round_up(stack_adjust, 16);
+> +	stack_adjust += bpf_stack_adjust;
 
- (FREE from device detaching)      |   (USE from netdev core)
-igb_remove                         |  igb_ndo_get_vf_config
- igb_disable_sriov                 |  vf >= adapter->vfs_allocated_count?
-  kfree(adapter->vf_data)          |
-  adapter->vfs_allocated_count = 0 |
-                                   |    memcpy(... adapter->vf_data[vf]
+Maybe get the size of stack_adjust can be combined together, and only 
+need one comment.
 
-Moreover, just as commit 1e53834ce541 ("ixgbe: Add locking to
-prevent panic when setting sriov_numvfs to zero") shows. The
-igb_disable_sriov function also need to watch out the requests from VF
-driver.
-
-To this end, this commit first eliminates the data races from netdev
-core by using rtnl_lock (similar to commit 719479230893 ("dpaa2-eth: add
-MAC/PHY support through phylink")). And then adds a spinlock just as
-1d53834ce541 did.
-
-Fixes: c23d92b80e0b ("igb: Teardown SR-IOV before unregister_netdev()")
-Signed-off-by: Lin Ma <linma@zju.edu.cn>
----
-V1 -> V2:  fix typo in title idb -> igb
-V0 -> V1:  change title from "Add rtnl_lock" to "Add lock"
-           add additional spinlock as suggested by Jakub, according to
-           1e53834ce541 ("ixgbe: Add locking to prevent panic when setting
-           sriov_numvfs to zero")
-
- drivers/net/ethernet/intel/igb/igb.h      |  2 ++
- drivers/net/ethernet/intel/igb/igb_main.c | 12 +++++++++++-
- 2 files changed, 13 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/intel/igb/igb.h b/drivers/net/ethernet/intel/igb/igb.h
-index 2d3daf022651..015b78144114 100644
---- a/drivers/net/ethernet/intel/igb/igb.h
-+++ b/drivers/net/ethernet/intel/igb/igb.h
-@@ -664,6 +664,8 @@ struct igb_adapter {
- 	struct igb_mac_addr *mac_table;
- 	struct vf_mac_filter vf_macs;
- 	struct vf_mac_filter *vf_mac_list;
-+	/* lock for VF resources */
-+	spinlock_t vfs_lock;
- };
- 
- /* flags controlling PTP/1588 function */
-diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
-index d8b836a85cc3..2796e81d2726 100644
---- a/drivers/net/ethernet/intel/igb/igb_main.c
-+++ b/drivers/net/ethernet/intel/igb/igb_main.c
-@@ -3637,6 +3637,7 @@ static int igb_disable_sriov(struct pci_dev *pdev)
- 	struct net_device *netdev = pci_get_drvdata(pdev);
- 	struct igb_adapter *adapter = netdev_priv(netdev);
- 	struct e1000_hw *hw = &adapter->hw;
-+	unsigned long flags;
- 
- 	/* reclaim resources allocated to VFs */
- 	if (adapter->vf_data) {
-@@ -3649,12 +3650,13 @@ static int igb_disable_sriov(struct pci_dev *pdev)
- 			pci_disable_sriov(pdev);
- 			msleep(500);
- 		}
--
-+		spin_lock_irqsave(&adapter->vfs_lock, flags);
- 		kfree(adapter->vf_mac_list);
- 		adapter->vf_mac_list = NULL;
- 		kfree(adapter->vf_data);
- 		adapter->vf_data = NULL;
- 		adapter->vfs_allocated_count = 0;
-+		spin_unlock_irqrestore(&adapter->vfs_lock, flags);
- 		wr32(E1000_IOVCTL, E1000_IOVCTL_REUSE_VFQ);
- 		wrfl();
- 		msleep(100);
-@@ -3814,7 +3816,9 @@ static void igb_remove(struct pci_dev *pdev)
- 	igb_release_hw_control(adapter);
- 
- #ifdef CONFIG_PCI_IOV
-+	rtnl_lock();
- 	igb_disable_sriov(pdev);
-+	rtnl_unlock();
- #endif
- 
- 	unregister_netdev(netdev);
-@@ -3974,6 +3978,9 @@ static int igb_sw_init(struct igb_adapter *adapter)
- 
- 	spin_lock_init(&adapter->nfc_lock);
- 	spin_lock_init(&adapter->stats64_lock);
-+
-+	/* init spinlock to avoid concurrency of VF resources */
-+	spin_lock_init(&adapter->vfs_lock);
- #ifdef CONFIG_PCI_IOV
- 	switch (hw->mac.type) {
- 	case e1000_82576:
-@@ -7958,8 +7965,10 @@ static void igb_rcv_msg_from_vf(struct igb_adapter *adapter, u32 vf)
- static void igb_msg_task(struct igb_adapter *adapter)
- {
- 	struct e1000_hw *hw = &adapter->hw;
-+	unsigned long flags;
- 	u32 vf;
- 
-+	spin_lock_irqsave(&adapter->vfs_lock, flags);
- 	for (vf = 0; vf < adapter->vfs_allocated_count; vf++) {
- 		/* process any reset requests */
- 		if (!igb_check_for_rst(hw, vf))
-@@ -7973,6 +7982,7 @@ static void igb_msg_task(struct igb_adapter *adapter)
- 		if (!igb_check_for_ack(hw, vf))
- 			igb_rcv_ack_from_vf(adapter, vf);
- 	}
-+	spin_unlock_irqrestore(&adapter->vfs_lock, flags);
- }
- 
- /**
--- 
-2.36.1
+Thanks,
+Qing
+> +	/*
+> +	 * First instruction initializes the tail call count (TCC).
+> +	 * On tail call we skip this instruction, and the TCC is
+> +	 * passed in REG_TCC from the caller.
+> +	 */
+> +	emit_insn(ctx, addid, REG_TCC, LOONGARCH_GPR_ZERO, MAX_TAIL_CALL_CNT);
+> +
+> +	emit_insn(ctx, addid, LOONGARCH_GPR_SP, LOONGARCH_GPR_SP, -stack_adjust);
+> +
+> +	store_offset = stack_adjust - sizeof(long);
+> +	emit_insn(ctx, std, LOONGARCH_GPR_RA, LOONGARCH_GPR_SP, store_offset);
+> +
+> +	store_offset -= sizeof(long);
+> +	emit_insn(ctx, std, LOONGARCH_GPR_FP, LOONGARCH_GPR_SP, store_offset);
+> +
+> +	store_offset -= sizeof(long);
+> +	emit_insn(ctx, std, LOONGARCH_GPR_S0, LOONGARCH_GPR_SP, store_offset);
+> +
+> +	store_offset -= sizeof(long);
+> +	emit_insn(ctx, std, LOONGARCH_GPR_S1, LOONGARCH_GPR_SP, store_offset);
+> +
+> +	store_offset -= sizeof(long);
+> +	emit_insn(ctx, std, LOONGARCH_GPR_S2, LOONGARCH_GPR_SP, store_offset);
+> +
+> +	store_offset -= sizeof(long);
+> +	emit_insn(ctx, std, LOONGARCH_GPR_S3, LOONGARCH_GPR_SP, store_offset);
+> +
+> +	store_offset -= sizeof(long);
+> +	emit_insn(ctx, std, LOONGARCH_GPR_S4, LOONGARCH_GPR_SP, store_offset);
+> +
+> +	store_offset -= sizeof(long);
+> +	emit_insn(ctx, std, LOONGARCH_GPR_S5, LOONGARCH_GPR_SP, store_offset);
+> +
+> +	emit_insn(ctx, addid, LOONGARCH_GPR_FP, LOONGARCH_GPR_SP, stack_adjust);
+> +
+> +	if (bpf_stack_adjust)
+> +		emit_insn(ctx, addid, regmap[BPF_REG_FP], LOONGARCH_GPR_SP, bpf_stack_adjust);
+> +
+> +	/*
+> +	 * Program contains calls and tail calls, so REG_TCC need
+> +	 * to be saved across calls.
+> +	 */
+> +	if (seen_tail_call(ctx) && seen_call(ctx))
+> +		move_reg(ctx, TCC_SAVED, REG_TCC);
+> +
+> +	ctx->stack_size = stack_adjust;
+> +}
 
