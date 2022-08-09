@@ -2,131 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 116B358DD7D
-	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 19:52:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D692C58DF48
+	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 20:44:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245016AbiHIRwo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Aug 2022 13:52:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55126 "EHLO
+        id S1344184AbiHISoG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Aug 2022 14:44:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233963AbiHIRwm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Aug 2022 13:52:42 -0400
-Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14DEF1CFCD
-        for <bpf@vger.kernel.org>; Tue,  9 Aug 2022 10:52:41 -0700 (PDT)
-Received: by devbig010.atn6.facebook.com (Postfix, from userid 115148)
-        id 1044C102FBCEC; Tue,  9 Aug 2022 10:52:28 -0700 (PDT)
-From:   Joanne Koong <joannelkoong@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     kafai@fb.com, void@manifault.com, andrii@kernel.org,
-        daniel@iogearbox.net, ast@kernel.org,
-        Joanne Koong <joannelkoong@gmail.com>
-Subject: [PATCH bpf-next v3 2/2] selftests/bpf: add extra test for using dynptr data slice after release
-Date:   Tue,  9 Aug 2022 10:52:08 -0700
-Message-Id: <20220809175208.2224443-2-joannelkoong@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220809175208.2224443-1-joannelkoong@gmail.com>
-References: <20220809175208.2224443-1-joannelkoong@gmail.com>
+        with ESMTP id S1344412AbiHISnp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Aug 2022 14:43:45 -0400
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDACB2CE29
+        for <bpf@vger.kernel.org>; Tue,  9 Aug 2022 11:18:55 -0700 (PDT)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id 5774E240106
+        for <bpf@vger.kernel.org>; Tue,  9 Aug 2022 20:18:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1660069133; bh=NGCo6G97/D+DFJHZEJlgWxPMh8d5YJ9QKfmC0rdGXPg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=P/mxWtIU+OhwQ0G3Uxiusi2rd9Vegpev4L6kn5k0jNSHX+CTLlDbfJdyydrracDuO
+         qBnDiDVSl6RxS9ARPNktSNfOR0BWvRDacnPGj4Y79+ADCB1zg8chRQ5CxjZtbBIqHs
+         UaOau8SAS0EPEY0qMGuhaNl2krDGRS5oS0x1zTGtae70imGR51kU7xU5wanB9q/26V
+         f/nkyghmxfyOcmS128S7yA/UKAK2IQspLtEi/5TXWLXlFFEsM4t1bcGJsNdtZXE1+2
+         pBQB0k0Tty7yXZt+CTJue2oqXl2HfrVcmX3j6fpiAKlM9kpFVhWNGRmcE8VZw3LzJa
+         7L4WDsRPTyVow==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4M2LtL13Xqz6tn7;
+        Tue,  9 Aug 2022 20:18:49 +0200 (CEST)
+Date:   Tue,  9 Aug 2022 18:18:45 +0000
+From:   Daniel =?utf-8?Q?M=C3=BCller?= <deso@posteo.net>
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Fix vmtest.sh getopts
+ optstring
+Message-ID: <20220809181845.bkmrgogdgd3divfj@muellerd-fedora-PC2BDTX9>
+References: <cover.1660064925.git.dxu@dxuuu.xyz>
+ <0f93b56198328b6b4da7b4cf4662d05c3edb5fd2.1660064925.git.dxu@dxuuu.xyz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=1.6 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-        FORGED_GMAIL_RCVD,FREEMAIL_FROM,NML_ADSP_CUSTOM_MED,RDNS_DYNAMIC,
-        SPF_HELO_PASS,SPF_SOFTFAIL,TVD_RCVD_IP,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0f93b56198328b6b4da7b4cf4662d05c3edb5fd2.1660064925.git.dxu@dxuuu.xyz>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add an additional test, "data_slice_use_after_release2", for ensuring
-that data slices are correctly invalidated by the verifier after the
-dynptr whose ref obj id they track is released. In particular, this
-tests data slice invalidation for dynptrs located at a non-zero offset
-from the frame pointer.
+On Tue, Aug 09, 2022 at 11:11:10AM -0600, Daniel Xu wrote:
+> Before, you could see the following errors:
+> 
+> ```
+> $ ./vmtest.sh -j
+> ./vmtest.sh: option requires an argument -- j
+> ./vmtest.sh: line 357: OPTARG: unbound variable
+> 
+> $ ./vmtest.sh -z
+> ./vmtest.sh: illegal option -- z
+> ./vmtest.sh: line 357: OPTARG: unbound variable
+> ```
+> 
+> Fix by adding ':' as first character of optstring. Reason is that
+> getopts requires ':' as the first character for OPTARG to be set in the
+> `?` and `:` error cases.
+> 
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
+>  tools/testing/selftests/bpf/vmtest.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/vmtest.sh b/tools/testing/selftests/bpf/vmtest.sh
+> index 976ef7585b33..a29aa05ebb3e 100755
+> --- a/tools/testing/selftests/bpf/vmtest.sh
+> +++ b/tools/testing/selftests/bpf/vmtest.sh
+> @@ -333,7 +333,7 @@ main()
+>  	local exit_command="poweroff -f"
+>  	local debug_shell="no"
+>  
+> -	while getopts 'hskid:j:' opt; do
+> +	while getopts ':hskid:j:' opt; do
+>  		case ${opt} in
+>  		i)
+>  			update_image="yes"
+> -- 
+> 2.37.1
+> 
 
-Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
-Acked-by: Martin KaFai Lau <kafai@fb.com>
----
- .../testing/selftests/bpf/prog_tests/dynptr.c |  3 +-
- .../testing/selftests/bpf/progs/dynptr_fail.c | 38 ++++++++++++++++++-
- 2 files changed, 39 insertions(+), 2 deletions(-)
+I tested with this change and it worked fine for me. One thing to consider
+pointing out more clearly in the description is that ':' as the first character
+of the optstring switches getopts to silent mode. The desire to run in this mode
+seems to have been there all along, as the script takes care of reporting
+errors.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/dynptr.c b/tools/test=
-ing/selftests/bpf/prog_tests/dynptr.c
-index 3c7aa82b98e2..bcf80b9f7c27 100644
---- a/tools/testing/selftests/bpf/prog_tests/dynptr.c
-+++ b/tools/testing/selftests/bpf/prog_tests/dynptr.c
-@@ -22,7 +22,8 @@ static struct {
- 	{"add_dynptr_to_map2", "invalid indirect read from stack"},
- 	{"data_slice_out_of_bounds_ringbuf", "value is outside of the allowed m=
-emory range"},
- 	{"data_slice_out_of_bounds_map_value", "value is outside of the allowed=
- memory range"},
--	{"data_slice_use_after_release", "invalid mem access 'scalar'"},
-+	{"data_slice_use_after_release1", "invalid mem access 'scalar'"},
-+	{"data_slice_use_after_release2", "invalid mem access 'scalar'"},
- 	{"data_slice_missing_null_check1", "invalid mem access 'mem_or_null'"},
- 	{"data_slice_missing_null_check2", "invalid mem access 'mem_or_null'"},
- 	{"invalid_helper1", "invalid indirect read from stack"},
-diff --git a/tools/testing/selftests/bpf/progs/dynptr_fail.c b/tools/test=
-ing/selftests/bpf/progs/dynptr_fail.c
-index b5e0a87f0a36..b0f08ff024fb 100644
---- a/tools/testing/selftests/bpf/progs/dynptr_fail.c
-+++ b/tools/testing/selftests/bpf/progs/dynptr_fail.c
-@@ -248,7 +248,7 @@ int data_slice_out_of_bounds_map_value(void *ctx)
-=20
- /* A data slice can't be used after it has been released */
- SEC("?raw_tp")
--int data_slice_use_after_release(void *ctx)
-+int data_slice_use_after_release1(void *ctx)
- {
- 	struct bpf_dynptr ptr;
- 	struct sample *sample;
-@@ -272,6 +272,42 @@ int data_slice_use_after_release(void *ctx)
- 	return 0;
- }
-=20
-+/* A data slice can't be used after it has been released.
-+ *
-+ * This tests the case where the data slice tracks a dynptr (ptr2)
-+ * that is at a non-zero offset from the frame pointer (ptr1 is at fp,
-+ * ptr2 is at fp - 16).
-+ */
-+SEC("?raw_tp")
-+int data_slice_use_after_release2(void *ctx)
-+{
-+	struct bpf_dynptr ptr1, ptr2;
-+	struct sample *sample;
-+
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, 64, 0, &ptr1);
-+	bpf_ringbuf_reserve_dynptr(&ringbuf, sizeof(*sample), 0, &ptr2);
-+
-+	sample =3D bpf_dynptr_data(&ptr2, 0, sizeof(*sample));
-+	if (!sample)
-+		goto done;
-+
-+	sample->pid =3D 23;
-+
-+	bpf_ringbuf_submit_dynptr(&ptr2, 0);
-+
-+	/* this should fail */
-+	sample->pid =3D 23;
-+
-+	bpf_ringbuf_submit_dynptr(&ptr1, 0);
-+
-+	return 0;
-+
-+done:
-+	bpf_ringbuf_discard_dynptr(&ptr2, 0);
-+	bpf_ringbuf_discard_dynptr(&ptr1, 0);
-+	return 0;
-+}
-+
- /* A data slice must be first checked for NULL */
- SEC("?raw_tp")
- int data_slice_missing_null_check1(void *ctx)
---=20
-2.30.2
-
+Acked-by: Daniel Müller <deso@posteo.net>
