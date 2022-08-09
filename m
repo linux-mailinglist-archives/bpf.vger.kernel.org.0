@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C8758D3E7
-	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 08:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3DBE58D3F2
+	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 08:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231459AbiHIGgo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Aug 2022 02:36:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47622 "EHLO
+        id S229886AbiHIGl7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Aug 2022 02:41:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237907AbiHIGg2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Aug 2022 02:36:28 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F391205CC
-        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 23:36:28 -0700 (PDT)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 278NSMhl027569;
-        Mon, 8 Aug 2022 23:36:12 -0700
+        with ESMTP id S238173AbiHIGl6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Aug 2022 02:41:58 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27A70201AC
+        for <bpf@vger.kernel.org>; Mon,  8 Aug 2022 23:41:57 -0700 (PDT)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 278NSIkY003012;
+        Mon, 8 Aug 2022 23:41:43 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
  subject : to : cc : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=yXMu3w5q6xYX2fwm+XLEr8CL5B5+rwfrTa2+z76tt2Y=;
- b=e0Tv93m3Y+ips3o3AAaKH5XtP6SRw6zTH6U5fyMmaML9ohYHz1/LetvK4BGeRvlpdu+O
- tfClIfz7Dr048dGnZzeIVHmvJTQoVuR+5wxIG0m3QIii75XGObkN0qgNqrdWTrjAuKCV
- 6ErOoiBjLtXlbup+ONzXaZDfSXs98OLu/ac= 
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hsp0q7a2w-1
+ bh=vNuu8uj6BRVYR1PX60CgPjzlzfCGDeVm2Lz7h85VZVM=;
+ b=aGA2+/RaNznSIJlIU5+qBqNDSVgoicwUiBboyJMnFGf0JTjTec+AYo61dfcexqzgq28R
+ 0NgDyal8kYwQBZa0/fiRPvzOOTBj8Ki3dlifqvYKMjciapcOPNmwleXbBjcK/2MOsupb
+ F/qvxp4hU00DB6k38N9s9xIQpB3sPwlKmUA= 
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2168.outbound.protection.outlook.com [104.47.59.168])
+        by m0089730.ppops.net (PPS) with ESMTPS id 3hskt8ynq1-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 08 Aug 2022 23:36:12 -0700
+        Mon, 08 Aug 2022 23:41:43 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oVGTAhw1DRSABhQQcVXvjuVzpTz5WqXSR8K/Q4vsr7raygyl3PrY5hO96DlCSSiX2h0/BYxDJYdQSzsTDURnTeUcg4+TpC2sv/K2Vz91YSsM2aVU6CX6G53ywq8b1a2xT48O7xL0lXB5DF5WeBc0qZENgv/grSUi8gIU50UenDy55uT8sz2QduiwJ5OXjHwLI9JN+9Hvrqoe6yV8shYvoRnq882Lhtc2dwXchaNXH+8WVeKpHZRex1m2H+lZ57PBWFBnELOh3Uyz/ezvNgwhrqKgmpYgD1uy8w3GlvY2kuHy7mmK2fwiZf5cnP0rnyYokDGehw257w+gDAp3vqrEiQ==
+ b=HfVe8dQgt/gt9YrN5gJr3lCMre+Xqn2ndo9ZOkoEHgZzR8d5rxIc8fhC3vchF3aAfPA1q/+lMR/hPe3oUFCVSj+A58fQExGIgyxMe7F4BOh7rtpeqKVIWkRxa0BN4IWFzJ8kYqdxNAsjnyBmKR4BOJn7pAkgG3IKYrhFWf2P/1539sptOTIvoTetQI3ir383v+cssSNY6E3VOb7b8fMZ9R2v3ku+LiixC5F1C8p1AdRaKXHvtw/3TZYglHVfLeWcz3z9K3B1RYGwcBn+akVd+On4/jHKV2jux0LraA7u81zGDq5eBzqehYhANW3WBZGAFn6KYJ40hJET06erMb96ug==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yXMu3w5q6xYX2fwm+XLEr8CL5B5+rwfrTa2+z76tt2Y=;
- b=FO2onAM4wPr3RKSzIS0enAd6Oz+TYAc9qv3d6mIyCSELMH6ymKUiCT49TSQjOHcPhxkavzsMng5t6J98/7OuhGwOqQSquqRVzjZNApFyq43zmUCeKXBiMzrzY3/Jz8cbl7DnBCGqPmTVi779LLc6lfGwv0FwMuEH1ZklMkRwyztsx+Ma33IPOcRtzFdHru5EATLQjYv3n+2dFElKnzyT5p7V8/be21thIffNomq96v0eERGcgPi/k4sKwgkfpZ3kq89zJ8OLVO840+LELWBmZbtf7qPB6ECNKQbFJda6ZI71fwzsLHxo3S3l2s3ejp7CMSgww/c2FLyM+vPqHlNLNA==
+ bh=vNuu8uj6BRVYR1PX60CgPjzlzfCGDeVm2Lz7h85VZVM=;
+ b=h0JGrGC6B4HzIz7PR+bXkm4iiaGKMuD4kljsIGRt9u+phCL+OW4PgARnv1up71DHvKYoJM73THPoGwLgbl6zT+CBULQJy6T9cAapDCcfgPdlfu+koM+djlYJNjf7sgOp1jZgPdPE8QLTDCbNQ/tmIvoN6nG0i0ju7dH2dxQZHHmt3YWdrrw0MzByL94azNHr5KZVXX8RIQFYjcd6ogYyLupOwNWhOL52WqQKZkagRHcSaO8pPz0A29rGDcxXFewRWYsYzBMoiXidB9772MRYoCJTeC+I05DkCu2TNq2AdS3G1MJfPNYa9ygYfHgP+5aKKrIozlMAy3dNBpW0Nq6OpA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by PH0PR15MB4197.namprd15.prod.outlook.com (2603:10b6:510:24::17) with
+ by SN6PR1501MB1998.namprd15.prod.outlook.com (2603:10b6:805:11::32) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5525.10; Tue, 9 Aug
- 2022 06:36:09 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5504.20; Tue, 9 Aug
+ 2022 06:41:41 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::de2:b318:f43e:6f55]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::de2:b318:f43e:6f55%3]) with mapi id 15.20.5504.021; Tue, 9 Aug 2022
- 06:36:09 +0000
-Message-ID: <b72643b6-831e-9362-c54b-ba6411338c77@fb.com>
-Date:   Mon, 8 Aug 2022 23:36:07 -0700
+ 06:41:40 +0000
+Message-ID: <2a3b9d6a-759a-cbfd-6f37-2ff804e87741@fb.com>
+Date:   Mon, 8 Aug 2022 23:41:38 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
  Gecko/20100101 Thunderbird/91.12.0
-Subject: Re: [PATCH bpf-next 2/3] bpf: Perform necessary sign/zero extension
- for kfunc return values
+Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: Add tests with u8/s16 kfunc
+ return types
 Content-Language: en-US
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
@@ -60,77 +60,76 @@ Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
         Tejun Heo <tj@kernel.org>
 References: <20220807175111.4178812-1-yhs@fb.com>
- <20220807175121.4179410-1-yhs@fb.com>
- <CAEf4BzaJydVpt+H6abR6udjcQ5Scu07W+LLQyo7jC9et9T=ZOA@mail.gmail.com>
+ <20220807175126.4179877-1-yhs@fb.com>
+ <CAEf4BzY7xdJx9uEGA-_Jx+VOnz2EdGrjyLrHENp-SsG2U+zPGw@mail.gmail.com>
 From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <CAEf4BzaJydVpt+H6abR6udjcQ5Scu07W+LLQyo7jC9et9T=ZOA@mail.gmail.com>
+In-Reply-To: <CAEf4BzY7xdJx9uEGA-_Jx+VOnz2EdGrjyLrHENp-SsG2U+zPGw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-X-ClientProxiedBy: BYAPR07CA0073.namprd07.prod.outlook.com
- (2603:10b6:a03:12b::14) To SN6PR1501MB2064.namprd15.prod.outlook.com
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR03CA0072.namprd03.prod.outlook.com
+ (2603:10b6:a03:331::17) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
+MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c777a5dd-2dc3-4c04-c175-08da79d1721f
-X-MS-TrafficTypeDiagnostic: PH0PR15MB4197:EE_
+X-MS-Office365-Filtering-Correlation-Id: 279b7171-3c4a-4ccd-4ea4-08da79d23788
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB1998:EE_
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5vG3YnZ268ffw9unsr7DEzSBhDkJq3DyimvW8j1BDKhFj1BmqQNVsHt4aYaWJYArsA8AruQppaoAepsKnYOq2bhLGi+BAq8p/IbL/bnUUYWmvGgTl3zfeHT0EK4xeBvcDXXCetB09GLBPiSMY3N9U+YHOBK2sBxmZddnRCxSZnyl2RuEq3xEfS4ELs3Nu6bIZP282ehaREahCyZ64WGCdvon0Kk44sihcxhLAulIl2SmKwMLOl0mw3buymGDfSXf7rF9K2jqYsyX8jaATYJhOdmmm9xOttqS4jkOrIRHp8mSo5Qw9VFBGGlKz6R4IYZM1EoPVBCp/URMm2Wr6aBz8XyiUXElEckbzAWzRsezkchBDbcHN1zIszIhSKldHCE1JGKs9coLwKoUMtfOcEGLfXmh0hg56w3Rl5Ubdjx38jTeNrFZ5QZAwKo04kmVzOFED0RJW1Uzn18CSpcz0E2INAPA7YI5sYkZbtGBPRPCqsRq6tZHkoGzH8LZN8/3tbhFL43IkbnqKS6sEpqlb9MQEMWGxBTyD7xGOU05ILIZkrV9xeN4lvPSzfLatMsdDIDSrm4/CJmq5RoP2seC3E+vRhh8RTpFm8zemNZyNuBwTyfjFOU/Zk4w6kWJturQa7vTIccFeX6XvEHVUUagYKJX+SsNQSk60qbWyCFkgdLkGeciG7/JCFGZuocJ/p+BjsKCf+ey/oDdkFt2lPfNdKcPoYZ+SK+7YaeJuEHXHR4HphJrcbwXNgPPiIGpK9SdD/fyQwRkWm4+yhqsQgkVa0CiPEH+h9//d/I/7cTaGBY7dHaOjXYqQeUKt9lKMkLY+BilFZ/aQmgJCHgKgMIUc6IZfUjD2higedc88LDDIJu89HKJJCfLMCXbM+aQeFSK90x4
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(136003)(39860400002)(376002)(346002)(366004)(396003)(4326008)(66476007)(66556008)(66946007)(83380400001)(8676002)(6916009)(54906003)(41300700001)(316002)(31686004)(36756003)(6506007)(53546011)(6512007)(186003)(2616005)(2906002)(8936002)(5660300002)(478600001)(966005)(6486002)(31696002)(86362001)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: kTjOvMePSEpubDddcGVQvOv1PS9LQ8GiG9TRIMReWl6L91/rB57HFJeu8iPNMRDaazyE73ychi0rwgysQw8chbZKD+zO1e+j/1fmXQC5NNH9+ytPyCmbiCnZQ5snGyqixMh7FlQbBhYdaH2Rd5VGRtS5DlK7Y//Cyk9E9EeSln6ZZJXaYLBtBqLYzo9fpWe2psKSyfT9ag22rpSf9BCIMepd3lrlZwLqe2qhyibch5RctJeZDMclGT3vR5i7Vz8E0LtGYZWAMNezx7b4C+waoTSuOmgRM05Uz6aCofAdDblqrzSyhyei5T8mp78h8klsmZY/QBndFEkive7Rj8mW50jXkWrjJQYttkFEtHBp9cmVVyalN3NxkDTjfkLTZfBmnCnTpmcvAnBn/Ep4Psy46LankacqBiALY7jFahdICoLro5Q7d16cXxKPsocZSIdyN/d1iXKc13jV8Dv5n3TipBFZrZzNqZOzk7kmC/8GgkqR0aq2g6ajXNb/nopt0zL+prwv+p61PxLa1KOoGJo8zDwQEAm36ueV8t7dT4jhT2l0+J1J09z0yPyG8NGgQwW5STP1zZuCi/ki9xBJN8XAgkhB8Xq2wCO8U7sx+5rZ20fiFwg1BrB/TBjiXGTfDRsMLbYR03FfF2r9mdXAVMwtW586cswWQqHfh0Klexa5M2h2ZmejXUWikkQ/KVT4eXRd9nLiHoJAl02797j/eH2FrvfWgI7Y6UDTdSI4dD3PeVBatCL+n/MdJ2+W3gembwdSLGI6EEH430m2vH6ZwZ12BiLrbuuxJ1WKFIcyLgaosBY2X9knuV5oeftNfWn7Vo9/7Tlt8bQeTeiug63z4rDSFQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(39860400002)(366004)(346002)(376002)(396003)(136003)(66556008)(66476007)(8676002)(31686004)(36756003)(66946007)(4326008)(31696002)(8936002)(86362001)(6916009)(5660300002)(38100700002)(54906003)(2906002)(478600001)(6486002)(316002)(53546011)(6506007)(2616005)(6512007)(186003)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YVVxSTF4MkNMVFhsNlNtaGpDVEV6eUltL2RXSE11NjZhcUxvMy85ZWk4ZjhC?=
- =?utf-8?B?KzV3akxmcmpIOHRhelZGMkhqcmIrMUR6Ym1kNmIzb08xdVpBcmcrdlpIb0RV?=
- =?utf-8?B?cmgyYVc5Y01ITFhmWkJVRndsN1hOUDM5dEM4cEVqcFR5YXZ1R2I5OEdmS01n?=
- =?utf-8?B?UzI5Y1ZtdFh6ZkptSDJXRjl3TUVRdFBWSHJVOHNDSHNtbmpqMndkSWlOcXNn?=
- =?utf-8?B?enpvUytyc2U3Mm9ra1pwSlIxMVBLeUVJODVpUkRWQVFuSWhsQTdnNmdtcEp6?=
- =?utf-8?B?alZuZ2VZUjFxTjg5TlJDWVp0Q1UzcXhlL1IzbU8yaW9qQ0lOclNiWEx4YStI?=
- =?utf-8?B?UkI4WWFFRHR2bXFKZlA5WnU3aEdYK3Y1bVJEWkl2MWdFUS9HU0FaMGNscSs0?=
- =?utf-8?B?NmRwMWdrNTNBaDNXaUxGQ01nUXlMaXY0NTZpVFdsQUdTb25GR1IvOHBmaFdm?=
- =?utf-8?B?S1JQNGlXTWNBTzFGV3U3TEpjak1pUGt4OW9VRnF4NVdxdkZ0aW5rL21PblQ0?=
- =?utf-8?B?MThQS21FOUcycmVTakxRTjMvR0VWWmJuVUpYa2tPeTgralMrUHlwTUw4OVcy?=
- =?utf-8?B?eEdNREx2SGt0ZFlWVFExZGlxVHU3ZTF3dW91cSszbkRCMEErM3p1YkRjRnk1?=
- =?utf-8?B?VEF1U1MvNCs0RHJpUnp4bTlNN0NKekdvdnZTYS80Q2hydkJXalRKV1A3cUs1?=
- =?utf-8?B?VzJQeUhuMmY3Tkw0VzQxZGUwdDBPYXdHNTNreUhlQU9XVnFuNjFqeFRHY3FQ?=
- =?utf-8?B?ZmE1M0NFMnhXeHdmUFBrL0dIc3NvbVc3Tk1KWnk0dG5zcjdFWGt4M3EvSnZm?=
- =?utf-8?B?UVBLTTdQWml2S1IxdVBDajdxK0tQMDZOdngzZTBNbkFSVzB5TWFQNGxTY09Q?=
- =?utf-8?B?enlOcE1xSjN0WTNHQlV6cmtranhadG00Zk9zNW9GVnJ2WG8raXVTZHlTb3dS?=
- =?utf-8?B?RTFxTTRjKzVOYkRVSlErb2c2U2E2N0xocGtHRUtLMVZneExvdkl2bEtBQjFV?=
- =?utf-8?B?UC9jY0VZL3VDeWNzVHovMFpGb0NBUGpMbklvcEhScDd5Z2ZuVXdSdFUyOEJT?=
- =?utf-8?B?VGh1d2Zna3RUWnlzVThORmROWk5hMC9sMURha1ZDZ3ZkajVBa3VXeEMxS3dh?=
- =?utf-8?B?YlRtYTFKVDdicVhPVUFreVNOMDJTT1pqOHNBNE9meEZXUUplc0llQ0F3QUhQ?=
- =?utf-8?B?NXQzRjJTcUhETHV1ZU9RSy9rTWZ3dUE4bURpY1Q3SWdGQ25aNEFYNmErVm1Q?=
- =?utf-8?B?OVdSYzkzdlpRN3U3a0JzOHdhdzB1YXFISndDa05GZldnUlF5QS9wck45eG9C?=
- =?utf-8?B?eTUxYW1LVzJ3dHV5WGFwTkhrNVR2U0loYWV1REowdnJFZFhIS1FheGM4dk1L?=
- =?utf-8?B?ajFJcFQxS0JoWmcvYXpSODhoeG0yQzQ4NEkwZ0U1dUNxclc3TE1IaWhBN2FV?=
- =?utf-8?B?RnZEd25IY1QvOXQ4WnhRVkxHRC9tcHlnV2crbnd3MHlUWkp2ektGR2FNOUVm?=
- =?utf-8?B?aWxLTFNrajFtV2ZaOUpmWmw3VitKWTh4TWtmdGV0MXpoUWdHc0pzdDEwNWZj?=
- =?utf-8?B?b016aXBsQTI5N2ZoQ2J6NEszdU5CYXpzUzY4bWJrQzJmSCtiVUJtaW9ScDFP?=
- =?utf-8?B?cEJvN3V5eDlUT0l6QXR2MTR4cG1rUkNLbnltOUNzZlluSnlEcmdNczdyN2JH?=
- =?utf-8?B?WTF2WG8wSGlJNG15dGY3SnA1ZXF5UTMrOER5SmRiTnpzRWR1Q2VwdnVjN0NR?=
- =?utf-8?B?Slgzbmd1UDFibm1KdjloZjhzTEdjUFpBZGZZQjRvSjgrQ0JHWTFDaDlwOUVT?=
- =?utf-8?B?blRNejIyamVBOXFFOGYzMnVMd0daQi9RbDZmUUs5WFJ4aEl5M0NHYTVUeVEz?=
- =?utf-8?B?YjZRNFc5TGhFQWRRWk54QUcwV0I4QTBJcVVMVXNpVlFGeGk5RTVtQUNZSDhT?=
- =?utf-8?B?a2pZU1luYk4wdGlYRWt4WFRiN1U4cE5zclhGQXBzQzZyY0lNcUR2SHh2WkNT?=
- =?utf-8?B?U0pMVWdSMENBbFJsREx0ZFRXdzNqdjRna3IxVDhWeTVER3FncEIrbzRIZHRW?=
- =?utf-8?B?TkhZSHQrcmVmM3BxeTdwSUpsZjM5MkdRS2FYeWlUbW55SjhCL0pGMmZIODFo?=
- =?utf-8?B?RTFFdXcweEJTdU1INFhCWm9OOXFaVENtMzl5VU1tbU9TbmtEdUh0YTRubWcr?=
- =?utf-8?B?YkE9PQ==?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SGg4MVQ1VUZuNEFxUUVnMkxhSklOZUs4bXFGSU5JUjJzNDd6Wnd4K0ZEQUc4?=
+ =?utf-8?B?WGVlY1QzL2VxVTFlQmdXUit3QXpDcHRVYUIzQU14bFpnc2JBb0N3bkQ5MUt4?=
+ =?utf-8?B?WngzRkR3S1FUL256bUxsSDhFT29tVXVUZ1hoZWZoSkllTkZKdDRTNHAwOW8z?=
+ =?utf-8?B?WlRHV29EUzJDZmRqdWp6TU1USkFvKzUycUhBMlNpUGtFMkRvK0QwZzU0R2E1?=
+ =?utf-8?B?Ni9sWjFyZUEvTVozYlQ1YThCcDhycGJnbGxZWGQ4SlFJdDhXeE13OFByQWdu?=
+ =?utf-8?B?WXFYL0xRQU9CdmlWbmlxNVBRL2VSeE1VNDBJaGs2QnZRNmNuRU5NL0xJeGNj?=
+ =?utf-8?B?cjU1cGs4MzZDYnB3WERQWlVGRmcrWVhzVlpxYmhoM0tVbGpEQmMvSmN0VWJU?=
+ =?utf-8?B?b2M2NGVob1JyZ1VnU2d1NDluVXNkL2ZGQnk5eXdDS3F2U1R2alcwK1hWZFJm?=
+ =?utf-8?B?TEF3eTFaM3BOd2k2dmJSdytwdFpHdC95UmV1T3RkdzlUN3RTcFlIVG9tOGov?=
+ =?utf-8?B?QjRRKzM3TFBqTi9aZENJSEN3cGtuOTlVZy9sOU9rdVFPZDRTU0FLOUgzUzcy?=
+ =?utf-8?B?UjR0Y1BkQUh5YkVENnM0SGNZMVpuOG1FUGlocUgyR2hXTHlJL3Z2cFRUOHZv?=
+ =?utf-8?B?dlVmbXJjaXpVTTNQM1VJVUg5ZUk4SWVhK1ZZMUlqaCtGcU1UZlEzNzYyZVJK?=
+ =?utf-8?B?U2p3cXg4VWZQWFhQVlhkOEF1TWY3cC9DaXVSYlZEcmtTWm4rNThjNnhBV3Mr?=
+ =?utf-8?B?VjQrcEE1K3Ryc3RuWHYxTEdiWHFFYWIwekpPKzJGczRqYTNUU2lvT1BhK2lL?=
+ =?utf-8?B?aXdXaE1SK2UzLzQ0VGF2YktTcGl1MmxRa0taMmtUSkNaNS9FWVN5TGUwK2Ir?=
+ =?utf-8?B?eTRhYmQ2WVhVZExVWXhKSnlZM1hPNERMUUJ2d1kzd2hhbHN5bXJlN2lBN3oz?=
+ =?utf-8?B?dm9KTUVnOWhqL3dZZlJzSTJQdDF3LzZ3YnpVcDJCdm9BVitsTkg1aE9lQm8z?=
+ =?utf-8?B?M3hja1NpNjdJem9zUm5jSFZaQlZ4QVpCVlBTczhncUduUG1lNWxvaXZKa2NR?=
+ =?utf-8?B?WWVCcjlyQU54TWxWNXA2VjhIeTh0RlNBcnFka1Awb1BVRk1PQ0hCVG0xa2hF?=
+ =?utf-8?B?TVZsWkJKRlZadE93L1FwWCtsWUFEa1lKZW9CNjR3U1hmSnVnZ2phVkFudGVJ?=
+ =?utf-8?B?NVpRSXpueGs2TjlhV2ZNQzBPWDl2SjExSC9VUWo1eHlDKys0SDVsMFY4cXN0?=
+ =?utf-8?B?Ry9jMmNWbHVFKyt0YWpNMlRQQmVXRUpET0E1K1dURFUyeVBjVjgvSk1ZN0RJ?=
+ =?utf-8?B?OEU0aWZUT25zWVEyWHpQL0ZyREUwVXlLemU2V3N0bnFiajlKNTZoU09SRlFp?=
+ =?utf-8?B?NWhIaXJ5aFNTL3QxQ1BpaDFFbVdNLzdlV2Zkd0dobDFNVVdUUURRSXhnbDJM?=
+ =?utf-8?B?d2hSeGV4TTlzd3dXNlMzb3lSaks1YVJLWHkvYjZlSElkb0ExRVdicmRtd3pk?=
+ =?utf-8?B?b2VpejJnY2JvR0dWOHY3eEN0TU91aGNzVGJFZFh1Q3BqTXNCc1luRFBhTzNN?=
+ =?utf-8?B?eDQ5WDdINHUrQ2NxOXRsMUcyWmlVbWxGZ2ZWQ3FwS2FRa1ZQamh2dGZJV1E1?=
+ =?utf-8?B?bEFOY2s3K05GSCtDUDRMT2dDaUFPemo2V3RTZ3BvYmRySFkyNk9aODBFYVRx?=
+ =?utf-8?B?MzhuQXJNL2RzVzJtSUN4Z2kxdGpzVWVyZWpzbWVnNUhMQmYwcFRYQUU5MkZt?=
+ =?utf-8?B?cDVCZ2JRR2swbklob3B4NGcrSlU0Z2JQTW51K2xWS3h1N3kzQWNnTm4rNkJW?=
+ =?utf-8?B?QXVtOTN3RFRYeHQwME9oMGpCNjBibXo1Q2thZjZ1Rm9Ld1RjczZzM2h3cEJD?=
+ =?utf-8?B?QlNvK0k5QWRSbzdqWjE3VWlCK3B0RHlseGFEOG1RNlNWaGVBeDk0S3A3Ylpl?=
+ =?utf-8?B?aThqZnlycjBSRVdvOTNPd1Z5T2JhcmpkVkRrUjNwRldBZkJ1dmZwSHRLaHpV?=
+ =?utf-8?B?c0RHSTdtN2ZWQUEzakNZemlCeFB1bmM5VDJXTTZzSDI2RFRSZDhUbjBuU29V?=
+ =?utf-8?B?VkRqMHg4eEVTZnRUbFEzSUdRdmIwdTVOc0NiOEZxb1dUZXB1S0JBdmJFOElv?=
+ =?utf-8?B?SmpiUk53L0hSSlVpaTRWeUdpM3pjMmVVNEdXMGhSaldDQ3NRV3ZxUmU2d1pD?=
+ =?utf-8?B?elE9PQ==?=
 X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c777a5dd-2dc3-4c04-c175-08da79d1721f
+X-MS-Exchange-CrossTenant-Network-Message-Id: 279b7171-3c4a-4ccd-4ea4-08da79d23788
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2022 06:36:09.7405
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2022 06:41:40.9056
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4cn9OZI45pvCjAUIJkTUYleex8B5oMHBBeJJUycNuErOAbmlmrViZMDcsECOSOyl
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR15MB4197
-X-Proofpoint-ORIG-GUID: ev7HoVgOanokd1QPzcQqPHBtfG4JpAjt
-X-Proofpoint-GUID: ev7HoVgOanokd1QPzcQqPHBtfG4JpAjt
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-UserPrincipalName: tydHk4wN0v3e380+a7ldsV5mSjCTBcDGNCF7k8x0jLAUN6QrJirjw/F0l787Lwbg
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR1501MB1998
+X-Proofpoint-GUID: k7Lu19F8opUqsV9cpHqwi7hub9ysif3G
+X-Proofpoint-ORIG-GUID: k7Lu19F8opUqsV9cpHqwi7hub9ysif3G
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
  definitions=2022-08-09_03,2022-08-09_01,2022-06-22_01
@@ -150,75 +149,81 @@ X-Mailing-List: bpf@vger.kernel.org
 On 8/8/22 4:25 PM, Andrii Nakryiko wrote:
 > On Sun, Aug 7, 2022 at 10:51 AM Yonghong Song <yhs@fb.com> wrote:
 >>
->> Tejun reported a bpf program kfunc return value mis-handling which
->> may cause incorrect result. The following is an example to show
->> the problem.
->>    $ cat t.c
->>    unsigned char bar();
->>    int foo() {
->>          if (bar() != 10) return 0; else return 1;
->>    }
->>    $ clang -target bpf -O2 -c t.c
->>    $ llvm-objdump -d t.o
+>> Add two program tests with kfunc return types u8/s16.
+>> With previous patch, xlated codes looks like below:
 >>    ...
->>    0000000000000000 <foo>:
->>         0:       85 10 00 00 ff ff ff ff call -1
->>         1:       bf 01 00 00 00 00 00 00 r1 = r0
->>         2:       b7 00 00 00 01 00 00 00 r0 = 1
->>         3:       15 01 01 00 0a 00 00 00 if r1 == 10 goto +1 <LBB0_2>
->>         4:       b7 00 00 00 00 00 00 00 r0 = 0
+>>    ; return bpf_kfunc_call_test4((struct sock *)sk, (1 << 16) + 0xff00, (1 << 16) + 0xff);
+>>       5: (bf) r1 = r0
+>>       6: (b4) w2 = 130816
+>>       7: (b4) w3 = 65791
+>>       8: (85) call bpf_kfunc_call_test4#8931696
+>>       9: (67) r0 <<= 48
+>>      10: (c7) r0 s>>= 48
+>>      11: (bc) w6 = w0
+>>    ; }
+>>      12: (bc) w0 = w6
+>>      13: (95) exit
+>>    ...
+>>    ; return bpf_kfunc_call_test5((struct sock *)sk, (1 << 8) + 1, (1 << 8) + 2);
+>>       5: (bf) r1 = r0
+>>       6: (b4) w2 = 257
+>>       7: (b4) w3 = 258
+>>       8: (85) call bpf_kfunc_call_test5#8931712
+>>       9: (67) r0 <<= 56
+>>      10: (77) r0 >>= 56
+>>      11: (bc) w6 = w0
+>>    ; }
+>>      12: (bc) w0 = w6
+>>      13: (95) exit
 >>
->>    0000000000000028 <LBB0_2>:
->>         5:       95 00 00 00 00 00 00 00 exit
->>    $
+>> For return type s16, proper sign extension for the return value is done
+>> for kfunc bpf_kfunc_call_test4(). For return type s8, proper zero
+>> extension for the return value is done for bpf_kfunc_call_test5().
 >>
->> In the above example, the return type for bar() is 'unsigned char'.
->> But in the disassembly code, the whole register 'r1' is used to
->> compare to 10 without truncating upper 56 bits.
+>> Without the previous patch, the test kfunc_call will fail with
+>>    ...
+>>    test_main:FAIL:test4-retval unexpected test4-retval: actual 196607 != expected 4294967295
+>>    ...
+>>    test_main:FAIL:test5-retval unexpected test5-retval: actual 515 != expected 3
 >>
->> If function bar() is implemented as a bpf function, everything
->> should be okay since bpf ABI will make sure the caller do
->> proper truncation of upper 56 bits.
->>
->> But if function bar() is implemented as a non-bpf kfunc,
->> there could a mismatch between bar() implementation and bpf program.
->> For example, if the host arch is x86_64, the bar() function
->> may just put the return value in lower 8-bit subregister and all
->> upper 56 bits could contain garbage. This is not a problem
->> if bar() is called in x86_64 context as the caller will use
->> %al to get the value.
->>
->> But this could be a problem if bar() is called in bpf context
->> and there is a mismatch expectation between bpf and native architecture.
->> Currently, bpf programs use the default llvm ABI ([1], function
->> isPromotableIntegerTypeForABI()) such that if an integer type size
->> is less than int type size, it is assumed proper sign or zero
->> extension has been done to the return value. There will be a problem
->> if the kfunc return value type is u8/s8/u16/s16.
-> 
-> Reading this I was still confused how (and whether) s32/u32 returns
-> are going to be handled correctly, especially on non-cpuv3 BPF object
-> code. So I played with this a bit and Clang does generate explicit <<
-> and >>/>>= shifts as expected. It might be worth it emphasizing that
-> for 32-bit returns Clang will generate explicit shifts?
-
-Yes, I can reword the commit message to emphasize 32-bit return
-value won't be an issue.
-
-> 
->>
->> This patch intends to address this issue by doing proper sign or zero
->> extension for the kfunc return value before it is used later.
->>
->>   [1] https://github.com/llvm/llvm-project/blob/main/clang/lib/CodeGen/TargetInfo.cpp
->>
->> Reported-by: Tejun Heo <tj@kernel.org>
 >> Signed-off-by: Yonghong Song <yhs@fb.com>
 >> ---
->>   include/linux/bpf.h   |  2 ++
->>   kernel/bpf/btf.c      |  9 +++++++++
->>   kernel/bpf/verifier.c | 35 +++++++++++++++++++++++++++++++++--
->>   3 files changed, 44 insertions(+), 2 deletions(-)
+>>   net/bpf/test_run.c                            | 12 +++++++
+>>   .../selftests/bpf/prog_tests/kfunc_call.c     | 10 ++++++
+>>   .../selftests/bpf/progs/kfunc_call_test.c     | 32 +++++++++++++++++++
+>>   3 files changed, 54 insertions(+)
 >>
+>> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+>> index cbc9cd5058cb..3a17ab4107f5 100644
+>> --- a/net/bpf/test_run.c
+>> +++ b/net/bpf/test_run.c
+>> @@ -551,6 +551,16 @@ struct sock * noinline bpf_kfunc_call_test3(struct sock *sk)
+>>          return sk;
+>>   }
+>>
+>> +s16 noinline bpf_kfunc_call_test4(struct sock *sk, u32 a, u32 b)
+>> +{
+>> +       return a + b;
+>> +}
+>> +
+>> +u8 noinline bpf_kfunc_call_test5(struct sock *sk, u32 a, u32 b)
+>> +{
+>> +       return a + b;
+>> +}
+> 
+> Is there any upside of adding this to net/bpf/test_run.c instead of
+> defining it in bpf_testmod?
+
+I put these two functions in test_run.c since bpf_kfunc_call_test{1,2,3}
+are defined here and they easily fit the existing kfunc_call testing code.
+
+But yes, I just checked the bpf_testmod.c. Looks like I am able
+to define kfunc's in bpf_testmod. Will respin in v2 with this change.
+
+> 
+>> +
+>>   struct prog_test_member1 {
+>>          int a;
+>>   };
 > 
 > [...]
