@@ -2,101 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B321F58DC20
-	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 18:33:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A741258DC2B
+	for <lists+bpf@lfdr.de>; Tue,  9 Aug 2022 18:35:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244861AbiHIQdd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Aug 2022 12:33:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49242 "EHLO
+        id S245123AbiHIQfH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Aug 2022 12:35:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231409AbiHIQdc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Aug 2022 12:33:32 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE2CA1E3FC;
-        Tue,  9 Aug 2022 09:33:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9A6EEB8162B;
-        Tue,  9 Aug 2022 16:33:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCF0CC433C1;
-        Tue,  9 Aug 2022 16:33:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1660062809;
-        bh=8fxgktB6LFnIb5dP4SkWit1LLtIFgKBcYexKqyYW/uU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GyCaZ8Nu1dXBnMUv0bnuUQIeDO1IuLfcBM4qR2yV2IL+msxDF8WmGVcOqwox5c6rM
-         HdPk9X4A30xyYkwcIdTTYdysMPCRQXOHQB7SrTXOYtUsYCaZ+P/hA0tGbiG6YKGqe8
-         eSGfqIIJtYjQElaGqmCw+UeNXWk3II6uuDWP8hmw=
-Date:   Tue, 9 Aug 2022 18:33:26 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Bastien Nocera <hadess@hadess.net>
-Cc:     linux-usb@vger.kernel.org, bpf@vger.kernel.org,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Peter Hutterer <peter.hutterer@who-t.net>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH 2/2] usb: Implement usb_revoke() BPF function
-Message-ID: <YvKMVjl6x38Hud6I@kroah.com>
-References: <20220809094300.83116-1-hadess@hadess.net>
- <20220809094300.83116-3-hadess@hadess.net>
- <YvI5DJnOjhJbNnNO@kroah.com>
- <2cde406b4d59ddfe71a7cdc11a76913a0a168595.camel@hadess.net>
+        with ESMTP id S245098AbiHIQfC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Aug 2022 12:35:02 -0400
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E72411EECB;
+        Tue,  9 Aug 2022 09:34:59 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 9F71B32008FA;
+        Tue,  9 Aug 2022 12:34:56 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Tue, 09 Aug 2022 12:34:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-transfer-encoding:date:date:from:from:in-reply-to
+        :message-id:mime-version:reply-to:sender:subject:subject:to:to;
+         s=fm3; t=1660062896; x=1660149296; bh=uP5Ush9788ztF3g3kX382p5ir
+        OwRq/RLQO97X222ADo=; b=a9DWCo18RTU15Ywij8R7c8cVdAsimEQ1Q9oLYeTiS
+        rONGNtq+/V+An2EQyYBDBgprn/StuQOJp9MZN6QZgRT1esyu6Er5QHaZMSmhs89I
+        QEbn1hUDODpzqjFfMKcibu6vZy369aScILE3EFzILde7eVCBiUwgQaGs5NOCNjpK
+        lsPOGn/Ei/FOa9+BuyBYJC3msus3YJ+oLedlQL23c6FhN1Ed0Ed7UTvGx+qVpJ1D
+        XyiGuJM4m60g+acWBQ9ffZbAv5tKqb9HJuJWo+VGgK7ME2wvI5DPlE8HnMA5htWt
+        h4J5VEqLCh0nGqO+mwrH8q8aM8I5WzED73WG4HqE3ILsA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:message-id
+        :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1660062896; x=1660149296; bh=uP5Ush9788ztF3g3kX382p5irOwRq/RLQO9
+        7X222ADo=; b=OJ3imwNTs9+wQk2zKsM2tmK0C1Gk764Sx6Ys5BfgdtN5XSsArcm
+        xTrhSpEKXEUAlFP+LU+0hiV+Duz4p1yZ9usF3JqpnIKjFt4LRU3/rkimpNPd1TVQ
+        BA8n71VYlGwSSzY4w27PMKrVzie3fG3WOyqZnjPRSoFu3tSmfhTIRC0U0Wf+xNkf
+        hgMbcslxIo/khsDQHUQ+1rspT7EaYzBMroyGbxpy1iq5EVIXKvf642lZUzd6kX/X
+        hvAQ/X4GqE9C2XcXqKGGpmkRiBF+ituXjWBM7eCYn4KBGjhY3woHFBbCcnFZ5rO6
+        DZ2Pncf5MJhmAFu5bTVNfIPN3+IjzX4TMAA==
+X-ME-Sender: <xms:r4zyYlVlOrWjMWl4aTkQnatS1nk6y0ksQo-FEHidheSHqgdB3cy2cA>
+    <xme:r4zyYlmfOQnngdFrEDGx3QsCTSihxscjbqQtkv00ZpbNI3os61ab_EdrcgDh6wc4X
+    5bnzv8BTRDt4M7OBg>
+X-ME-Received: <xmr:r4zyYhYnH75t0ooeElxNfnGTmmaYCtN51VXr8iwC3lTWhO9Jx5jIYlPgwGk_uXFpU0CKANtMr8s>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdegtddguddtfecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdefhedmnecujfgurhephf
+    fvvefufffkofgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegu
+    gihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeetueektdeuhfefvefggf
+    evgeffgfekfefhkeekteffheevtddvhedukeehffeltdenucffohhmrghinhepkhgvrhhn
+    vghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:r4zyYoXUjFHVoVRQgQVjRgQLAXB7wuqNTjAtrm2VU8sK8082SArSrg>
+    <xmx:r4zyYvm-xbzFEb_exNROMdP65c1qRWe1t5AeDG6ymNJXgkXI6lKurg>
+    <xmx:r4zyYleiOIZ5_CmpFNnQfey7JdQTzlpZy6-ntFclab5_fXdmURoPLw>
+    <xmx:sIzyYqsuUJdOmQxTFcCw-JobzsLSlBQsj7qIEaWaed1lzoIG87F5BA>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 9 Aug 2022 12:34:54 -0400 (EDT)
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, memxor@gmail.com
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v2 0/2] Add more bpf_*_ct_lookup() selftests
+Date:   Tue,  9 Aug 2022 10:34:40 -0600
+Message-Id: <cover.1660062725.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <2cde406b4d59ddfe71a7cdc11a76913a0a168595.camel@hadess.net>
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_SUSPICIOUS_NTLD,
+        FROM_SUSPICIOUS_NTLD_FP,PDS_OTHER_BAD_TLD,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 09, 2022 at 04:31:04PM +0200, Bastien Nocera wrote:
-> On Tue, 2022-08-09 at 12:38 +0200, Greg Kroah-Hartman wrote:
-> > Now if you really really want to disable a device from under a user,
-> > without the file handle present, you can do that today, as root, by
-> > doing the 'unbind' hack through userspace and sysfs.  It's so common
-> > that this seems to be how virtual device managers handle virtual
-> > machines, so it should be well tested by now.
-> 
-> The only thing I know that works that way is usbip, and it requires
-> unbinding each of the interfaces:
-> 
-> https://sourceforge.net/p/usbip/git-windows/ci/master/tree/trunk/userspace/src/bind-driver.c#l157
+This patchset adds more bpf_*_ct_lookup() selftests. The goal is to test
+interaction with netfilter subsystem as well as reading from `struct
+nf_conn`. The first is important when migrating legacy systems towards
+bpf. The latter is important in general to take full advantage of
+connection tracking.
 
-virtio devices also use the api from what I recall.
+I'll follow this patchset up with support for writing to `struct nf_conn`.
 
-> That means that, for example, revoking access to the raw USB device
-> that OpenRGB used to blink colours across a keyboard would disconnect
-> the keyboard from the HID device.
+This change will require two changes to BPF CI kconfig:
 
-No, you unbind the usbfs driver, not the hid driver.
+* CONFIG_NF_CONNTRACK_MARK=y
+* CONFIG_NETFILTER_XT_CONNMARK=y
 
-> Can you show me any other users of that "trick" that would keep the
-> "hid" keyboard driver working while access to the /dev/bus/usb/* device
-> node is revoked/closed/yanked/unbound?
+I can put up the PR if this patchset looks good.
 
-Try unbinding usbfs from the device instead.
+Past discussion:
+- v1: https://lore.kernel.org/bpf/cover.1659209738.git.dxu@dxuuu.xyz/
 
-> And if you can't, I would appreciate some efforts being made trying to
-> understand the use case, along with the limitations we're working
-> against, so we can find a good solution to the problem, instead of
-> retreading discussion points.
+Changes since v1:
+- Reword commit message / cover letter to not mention connmark writing
 
-As you have not documented the use case well enough in these changelog
-entries for me to understand it, the fact that I brought up things you
-previously discussed seems to mean you didn't document it well enough
-here for it not to come up again :)
+Daniel Xu (2):
+  selftests/bpf: Add existing connection bpf_*_ct_lookup() test
+  selftests/bpf: Add connmark read test
 
-thanks,
+ .../testing/selftests/bpf/prog_tests/bpf_nf.c | 60 +++++++++++++++++++
+ .../testing/selftests/bpf/progs/test_bpf_nf.c | 21 +++++++
+ 2 files changed, 81 insertions(+)
 
-greg k-h
+-- 
+2.37.1
+
