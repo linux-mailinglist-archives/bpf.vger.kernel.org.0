@@ -2,186 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4214C58E782
-	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 08:59:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CFF358E81B
+	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 09:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231417AbiHJG7S (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Aug 2022 02:59:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52514 "EHLO
+        id S231364AbiHJHsE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Aug 2022 03:48:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231400AbiHJG7O (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Aug 2022 02:59:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BF12572EC4
-        for <bpf@vger.kernel.org>; Tue,  9 Aug 2022 23:59:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1660114751;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=t3awSX3Tq4QpWeUfA1tbizxgPGHJw6AQeDWWE3eaTyI=;
-        b=U4Uwl2Dfc2IIwLhBrFZEhrpa/J6m9BARIm+xftiYttGTxKWlvBnIT3CB5t6zZAGyKXjgIF
-        yJnB+Fzh6/XCmaEFVQKJv4Z/25Chgi1NBq1cv9SmbTKGKxVZ76fdwyaQ1AGSIWy1SXlwsq
-        qFle4XQ5f+75vayaDr9+Lv2/HO7krCs=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-312-D8Vbd_zvO-qCq1gk_85QFw-1; Wed, 10 Aug 2022 02:59:08 -0400
-X-MC-Unique: D8Vbd_zvO-qCq1gk_85QFw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 242161019C95;
-        Wed, 10 Aug 2022 06:59:08 +0000 (UTC)
-Received: from shodan.usersys.redhat.com (unknown [10.43.17.22])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D6D0C145BA44;
-        Wed, 10 Aug 2022 06:59:07 +0000 (UTC)
-Received: by shodan.usersys.redhat.com (Postfix, from userid 1000)
-        id E60741C0461; Wed, 10 Aug 2022 08:59:06 +0200 (CEST)
-From:   Artem Savkov <asavkov@redhat.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S231360AbiHJHre (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Aug 2022 03:47:34 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D68CB6E8BB
+        for <bpf@vger.kernel.org>; Wed, 10 Aug 2022 00:47:31 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4M2hnp62fVz6S3gd
+        for <bpf@vger.kernel.org>; Wed, 10 Aug 2022 15:46:06 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+        by APP2 (Coremail) with SMTP id Syh0CgDHsb2NYvNiIKmmAA--.61804S4;
+        Wed, 10 Aug 2022 15:47:27 +0800 (CST)
+From:   Hou Tao <houtao@huaweicloud.com>
+To:     bpf@vger.kernel.org, Yonghong Song <yhs@fb.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Daniel Vacek <dvacek@redhat.com>,
-        Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Artem Savkov <asavkov@redhat.com>
-Subject: [PATCH bpf-next v5 3/3] selftests/bpf: add destructive kfunc test
-Date:   Wed, 10 Aug 2022 08:59:05 +0200
-Message-Id: <20220810065905.475418-4-asavkov@redhat.com>
-In-Reply-To: <20220810065905.475418-1-asavkov@redhat.com>
-References: <20220810065905.475418-1-asavkov@redhat.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Lorenz Bauer <oss@lmb.io>, houtao1@huawei.com
+Subject: [PATCH bpf v2 0/9] fixes for bpf map iterator
+Date:   Wed, 10 Aug 2022 16:05:29 +0800
+Message-Id: <20220810080538.1845898-1-houtao@huaweicloud.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.85 on 10.11.54.7
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-CM-TRANSID: Syh0CgDHsb2NYvNiIKmmAA--.61804S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7ArWrGr47Ww1UGw17tw1xuFg_yoW8ur1xpr
+        y8JFW5Kr1xAF4xZrnrAa129a45A3yrXa4qqFs5Ar15Cw4DXFy5WrW8KFy3uFy3XFn8Xr1S
+        y3409F95Ca4xZFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
+        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI
+        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
+        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFDGOUUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a test checking that programs calling destructive kfuncs can only do
-so if they have CAP_SYS_BOOT capabilities.
+From: Hou Tao <houtao1@huawei.com>
 
-Signed-off-by: Artem Savkov <asavkov@redhat.com>
----
- net/bpf/test_run.c                            |  5 +++
- .../selftests/bpf/prog_tests/kfunc_call.c     | 36 +++++++++++++++++++
- .../bpf/progs/kfunc_call_destructive.c        | 14 ++++++++
- 3 files changed, 55 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/kfunc_call_destructive.c
+Hi,
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index cbc9cd5058cb..afa7125252f6 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -695,6 +695,10 @@ noinline void bpf_kfunc_call_test_ref(struct prog_test_ref_kfunc *p)
- {
- }
- 
-+noinline void bpf_kfunc_call_test_destructive(void)
-+{
-+}
-+
- __diag_pop();
- 
- ALLOW_ERROR_INJECTION(bpf_modify_return_test, ERRNO);
-@@ -719,6 +723,7 @@ BTF_ID_FLAGS(func, bpf_kfunc_call_test_mem_len_pass1)
- BTF_ID_FLAGS(func, bpf_kfunc_call_test_mem_len_fail1)
- BTF_ID_FLAGS(func, bpf_kfunc_call_test_mem_len_fail2)
- BTF_ID_FLAGS(func, bpf_kfunc_call_test_ref, KF_TRUSTED_ARGS)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_test_destructive, KF_DESTRUCTIVE)
- BTF_SET8_END(test_sk_check_kfunc_ids)
- 
- static void *bpf_test_init(const union bpf_attr *kattr, u32 user_size,
-diff --git a/tools/testing/selftests/bpf/prog_tests/kfunc_call.c b/tools/testing/selftests/bpf/prog_tests/kfunc_call.c
-index c00eb974eb85..351fafa006fb 100644
---- a/tools/testing/selftests/bpf/prog_tests/kfunc_call.c
-+++ b/tools/testing/selftests/bpf/prog_tests/kfunc_call.c
-@@ -5,6 +5,9 @@
- #include "kfunc_call_test.lskel.h"
- #include "kfunc_call_test_subprog.skel.h"
- #include "kfunc_call_test_subprog.lskel.h"
-+#include "kfunc_call_destructive.skel.h"
-+
-+#include "cap_helpers.h"
- 
- static void test_main(void)
- {
-@@ -86,6 +89,36 @@ static void test_subprog_lskel(void)
- 	kfunc_call_test_subprog_lskel__destroy(skel);
- }
- 
-+static int test_destructive_open_and_load(void)
-+{
-+	struct kfunc_call_destructive *skel;
-+	int err;
-+
-+	skel = kfunc_call_destructive__open();
-+	if (!ASSERT_OK_PTR(skel, "prog_open"))
-+		return -1;
-+
-+	err = kfunc_call_destructive__load(skel);
-+
-+	kfunc_call_destructive__destroy(skel);
-+
-+	return err;
-+}
-+
-+static void test_destructive(void)
-+{
-+	__u64 save_caps = 0;
-+
-+	ASSERT_OK(test_destructive_open_and_load(), "succesful_load");
-+
-+	if (!ASSERT_OK(cap_disable_effective(1ULL << CAP_SYS_BOOT, &save_caps), "drop_caps"))
-+		return;
-+
-+	ASSERT_EQ(test_destructive_open_and_load(), -13, "no_caps_failure");
-+
-+	cap_enable_effective(save_caps, NULL);
-+}
-+
- void test_kfunc_call(void)
- {
- 	if (test__start_subtest("main"))
-@@ -96,4 +129,7 @@ void test_kfunc_call(void)
- 
- 	if (test__start_subtest("subprog_lskel"))
- 		test_subprog_lskel();
-+
-+	if (test__start_subtest("destructive"))
-+		test_destructive();
- }
-diff --git a/tools/testing/selftests/bpf/progs/kfunc_call_destructive.c b/tools/testing/selftests/bpf/progs/kfunc_call_destructive.c
-new file mode 100644
-index 000000000000..767472bc5a97
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/kfunc_call_destructive.c
-@@ -0,0 +1,14 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+
-+extern void bpf_kfunc_call_test_destructive(void) __ksym;
-+
-+SEC("tc")
-+int kfunc_destructive_test(void)
-+{
-+	bpf_kfunc_call_test_destructive();
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
+The patchset constitues three fixes for bpf map iterator:
+
+(1) patch 1~4: fix user-after-free during reading map iterator fd
+It is possible when both the corresponding link fd and map fd are
+closed bfore reading the iterator fd. I had squashed these four patches
+into one, but it was not friendly for stable backport, so I break these
+fixes into four single patches in the end. Patch 7 is its testing patch.
+
+(2) patch 5: fix invalidity check for values in sk local storage map
+Patch 8 adds two tests for it.
+
+(3) patch 6: reject sleepable program for non-resched map iterator
+Patch 9 add a test for it.
+
+Please check the individual patches for more details. And comments are
+always welcome.
+
+Regards,
+Tao
+
+Changes since v2:
+* patch 1~6: update commit messages (from Yonghong & Martin)
+* patch 7: add more detailed comments (from Yonghong)
+* patch 8: use NULL directly instead of (void *)0
+
+v1: https://lore.kernel.org/bpf/20220806074019.2756957-1-houtao@huaweicloud.com
+
+Hou Tao (9):
+  bpf: Acquire map uref in .init_seq_private for array map iterator
+  bpf: Acquire map uref in .init_seq_private for hash map iterator
+  bpf: Acquire map uref in .init_seq_private for sock local storage map
+    iterator
+  bpf: Acquire map uref in .init_seq_private for sock{map,hash} iterator
+  bpf: Check the validity of max_rdwr_access for sock local storage map
+    iterator
+  bpf: Only allow sleepable program for resched-able iterator
+  selftests/bpf: Add tests for reading a dangling map iter fd
+  selftests/bpf: Add write tests for sk local storage map iterator
+  selftests/bpf: Ensure sleepable program is rejected by hash map iter
+
+ kernel/bpf/arraymap.c                         |   6 +
+ kernel/bpf/bpf_iter.c                         |  11 +-
+ kernel/bpf/hashtab.c                          |   2 +
+ net/core/bpf_sk_storage.c                     |  12 +-
+ net/core/sock_map.c                           |  20 ++-
+ .../selftests/bpf/prog_tests/bpf_iter.c       | 116 +++++++++++++++++-
+ .../bpf/progs/bpf_iter_bpf_hash_map.c         |   9 ++
+ .../bpf/progs/bpf_iter_bpf_sk_storage_map.c   |  22 +++-
+ 8 files changed, 191 insertions(+), 7 deletions(-)
+
 -- 
-2.37.1
+2.29.2
 
