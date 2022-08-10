@@ -2,63 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E899258E6C4
-	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 07:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC79858E784
+	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 08:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbiHJFaU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Aug 2022 01:30:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41912 "EHLO
+        id S231419AbiHJG7a (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Aug 2022 02:59:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229693AbiHJFaT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Aug 2022 01:30:19 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D53C1AF06;
-        Tue,  9 Aug 2022 22:30:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        with ESMTP id S231282AbiHJG7S (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Aug 2022 02:59:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AB4127437E
+        for <bpf@vger.kernel.org>; Tue,  9 Aug 2022 23:59:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1660114755;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=zls4Cl4FNP8DuIoFTM3V5sZep3mW2y+G5cy1prlx7I0=;
+        b=QmavTa5WnzoYyYm/GiKQ8TbzhW6yvGBE5PEbJ4qDB+Vgk87zYpex3mlrNR0npna+6Joicm
+        qH/tXftk4DbAYMccBh08ofVevhkcm3HnOkPogKGgsDKpgxyWzHLfnCkM9gXrYhFkG7F2Rs
+        LBlHmIsbFPaWM9GmTHmDDp1l6mwgH/8=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-412-gkP8E-dwMIC2KGuJo0mo-w-1; Wed, 10 Aug 2022 02:59:08 -0400
+X-MC-Unique: gkP8E-dwMIC2KGuJo0mo-w-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A2CE5B81A8C;
-        Wed, 10 Aug 2022 05:30:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 441B5C433D6;
-        Wed, 10 Aug 2022 05:30:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660109415;
-        bh=DAKEdeVaJXKEjwOEM9FsGCS+nd5YgZPqRRBOqMJXYf0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=hQwJ/I7zaw1gg62+i/RZMdfh1oXgtlCE8wz0vwALjV0i1kOtYY/eO7nk433Hmfskc
-         DoJGsyA/edBywnMAZExNUGZTqJSAHk1pY1UommcuK/SsPfujJbtJN2bkNpLAcOrd+g
-         fcqa3pHPhLBsI6vmKsIWkPo+M8aApZ0poB+Yu/sCPd8JrkkPnZRtJ1JSJOYDpXI/un
-         AMGI+vp1T7hd3NXjxuCssmxC6lsirQPYBPBppxqPB0EuU8xoN5AuSfVG6lkgXQOicg
-         ih38KZJV7i4HSRmM/ftbxP8cSh6ZLeTwW0r0xM2BG5SVu0SjTIoStNT1jrs5WrYnpp
-         HrRF8yyHObsvA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 171ABC43141;
-        Wed, 10 Aug 2022 05:30:15 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 269F43821C0B;
+        Wed, 10 Aug 2022 06:59:08 +0000 (UTC)
+Received: from shodan.usersys.redhat.com (unknown [10.43.17.22])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D6DE618EB5;
+        Wed, 10 Aug 2022 06:59:07 +0000 (UTC)
+Received: by shodan.usersys.redhat.com (Postfix, from userid 1000)
+        id CBA131C02A9; Wed, 10 Aug 2022 08:59:06 +0200 (CEST)
+From:   Artem Savkov <asavkov@redhat.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Daniel Vacek <dvacek@redhat.com>,
+        Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Artem Savkov <asavkov@redhat.com>
+Subject: [PATCH bpf-next v5 0/3] destructive bpf_kfuncs
+Date:   Wed, 10 Aug 2022 08:59:02 +0200
+Message-Id: <20220810065905.475418-1-asavkov@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3 net 0/4] Do not use RT_TOS for IPv6 flowlabel
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166010941509.28354.4070205529525758568.git-patchwork-notify@kernel.org>
-Date:   Wed, 10 Aug 2022 05:30:15 +0000
-References: <20220805191906.9323-1-matthias.may@westermo.com>
-In-Reply-To: <20220805191906.9323-1-matthias.may@westermo.com>
-To:     Matthias May <matthias.may@westermo.com>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, roopa@nvidia.com,
-        eng.alaamohamedsoliman.am@gmail.com, bigeasy@linutronix.de,
-        saeedm@nvidia.com, leon@kernel.org, roid@nvidia.com,
-        maord@nvidia.com, lariel@nvidia.com, vladbu@nvidia.com,
-        cmi@nvidia.com, gnault@redhat.com, yoshfuji@linux-ipv6.org,
-        dsahern@kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, linux-rdma@vger.kernel.org,
-        nicolas.dichtel@6wind.com, eyal.birger@gmail.com, jesse@nicira.com,
-        linville@tuxdriver.com, daniel@iogearbox.net, hadarh@mellanox.com,
-        ogerlitz@mellanox.com, willemb@google.com,
-        martin.varghese@nokia.com
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Scanned-By: MIMEDefang 2.79 on 10.11.54.5
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,35 +66,60 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+eBPF is often used for kernel debugging, and one of the widely used and
+powerful debugging techniques is post-mortem debugging with a full memory dump.
+Triggering a panic at exactly the right moment allows the user to get such a
+dump and thus a better view at the system's state. Right now the only way to
+do this in BPF is to signal userspace to trigger kexec/panic. This is
+suboptimal as going through userspace requires context changes and adds
+significant delays taking system further away from "the right moment". On a
+single-cpu system the situation is even worse because BPF program won't even be
+able to block the thread of interest.
 
-This series was applied to netdev/net.git (master)
-by Jakub Kicinski <kuba@kernel.org>:
+This patchset tries to solve this problem by allowing properly marked tracing
+bpf programs to call crash_kexec() kernel function. The only requirement for
+now to run programs calling crash_kexec() or other destructive kfuncs is
+CAP_SYS_BOOT capability. When signature checking for bpf programs is available
+it is possible that stricter rules will be applied to programs utilizing
+destructive kfuncs.
 
-On Fri, 5 Aug 2022 21:19:02 +0200 you wrote:
-> According to Guillaume Nault RT_TOS should never be used for IPv6.
-> 
-> Quote:
-> RT_TOS() is an old macro used to interprete IPv4 TOS as described in
-> the obsolete RFC 1349. It's conceptually wrong to use it even in IPv4
-> code, although, given the current state of the code, most of the
-> existing calls have no consequence.
-> 
-> [...]
+Changes in v5:
+ - documentation numbering fixed
+ - no more warning on failed kfunc registration
 
-Here is the summary with links:
-  - [v3,net,1/4] geneve: do not use RT_TOS for IPv6 flowlabel
-    https://git.kernel.org/netdev/net/c/ca2bb69514a8
-  - [v3,net,2/4] vxlan: do not use RT_TOS for IPv6 flowlabel
-    https://git.kernel.org/netdev/net/c/e488d4f5d6e4
-  - [v3,net,3/4] mlx5: do not use RT_TOS for IPv6 flowlabel
-    https://git.kernel.org/netdev/net/c/bcb0da7fffee
-  - [v3,net,4/4] ipv6: do not use RT_TOS for IPv6 flowlabel
-    https://git.kernel.org/netdev/net/c/ab7e2e0dfa5d
+Changes in v4:
+ - added description for KF_DESTRUCTIVE flag to documentation
 
-You are awesome, thank you!
+Changes in v3:
+ - moved kfunc set registration to kernel/bpf/helpers.c
+
+Changes in v2:
+ - BPF_PROG_LOAD flag dropped as it doesn't fully achieve it's aim of
+   preventing accidental execution of destructive bpf programs
+ - selftest moved to the end of patchset
+ - switched to kfunc destructive flag instead of a separate set
+
+Changes from RFC:
+ - sysctl knob dropped
+ - using crash_kexec() instead of panic()
+ - using kfuncs instead of adding a new helper
+
+
+Artem Savkov (3):
+  bpf: add destructive kfunc flag
+  bpf: export crash_kexec() as destructive kfunc
+  selftests/bpf: add destructive kfunc test
+
+ Documentation/bpf/kfuncs.rst                  |  9 +++++
+ include/linux/btf.h                           |  3 +-
+ kernel/bpf/helpers.c                          | 18 ++++++++++
+ kernel/bpf/verifier.c                         |  5 +++
+ net/bpf/test_run.c                            |  5 +++
+ .../selftests/bpf/prog_tests/kfunc_call.c     | 36 +++++++++++++++++++
+ .../bpf/progs/kfunc_call_destructive.c        | 14 ++++++++
+ 7 files changed, 89 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/kfunc_call_destructive.c
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.37.1
 
