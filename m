@@ -2,338 +2,193 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FC0358ED09
-	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 15:23:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67CBE58ED89
+	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 15:44:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232572AbiHJNXK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Aug 2022 09:23:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57224 "EHLO
+        id S232649AbiHJNoe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 10 Aug 2022 09:44:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232561AbiHJNXJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Aug 2022 09:23:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A3B1F623;
-        Wed, 10 Aug 2022 06:23:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E2EA96145F;
-        Wed, 10 Aug 2022 13:23:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF9A1C433B5;
-        Wed, 10 Aug 2022 13:23:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660137787;
-        bh=w0s1m4MGSnxs9kcotHbnALXm6aRC/xMyXf6EHeBp9qY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vOq6OvMgVGwV6Snk369bzrHvAh0gb/zdWu8CkPHa9OcCEvfiRfBGxSn5H50IwBHaB
-         VbIFeaiWl7O+WgG+l2iGDIPGgMAPagwt6ifdkjL1eQeWaBHz5bNzXn8uq5BKFRS2C+
-         waP3wHR5TYM8KUh5Nxg3E+cu8uk2SEfpjCsE384oAfTvbIhI1TeERdPDIm3wbhHdvq
-         Fzz6Qx3aK/LvWbK10NqlKMwtHRD8nJ9E1bOm2U3oSlooz+IktyhCNG6Ugbvw5LupsJ
-         Wd02xAUoPLeNl5KaDk7IAejAuMtcyalkZFCqUDvAlb2vLToDJ3U/Hg6MDqG8d8jE+3
-         4hQy7CVByhh/g==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id DAEC04035A; Wed, 10 Aug 2022 10:23:04 -0300 (-03)
-Date:   Wed, 10 Aug 2022 10:23:04 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andrew Kilroy <andrew.kilroy@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Tom Rix <trix@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH 1/8] perf arm64: Send pointer auth masks to ring buffer
-Message-ID: <YvOxOBzsbjX1rMdY@kernel.org>
-References: <20220704145333.22557-1-andrew.kilroy@arm.com>
- <20220704145333.22557-2-andrew.kilroy@arm.com>
+        with ESMTP id S229680AbiHJNod (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Aug 2022 09:44:33 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D27876714A;
+        Wed, 10 Aug 2022 06:44:31 -0700 (PDT)
+Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4M2rh82TQLz67wDW;
+        Wed, 10 Aug 2022 21:41:44 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Wed, 10 Aug 2022 15:44:29 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2375.024;
+ Wed, 10 Aug 2022 15:44:29 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+CC:     "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "martin.lau@linux.dev" <martin.lau@linux.dev>,
+        "song@kernel.org" <song@kernel.org>, "yhs@fb.com" <yhs@fb.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "sdf@google.com" <sdf@google.com>,
+        "haoluo@google.com" <haoluo@google.com>,
+        "jolsa@kernel.org" <jolsa@kernel.org>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "dhowells@redhat.com" <dhowells@redhat.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "paul@paul-moore.com" <paul@paul-moore.com>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "serge@hallyn.com" <serge@hallyn.com>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Yosry Ahmed <yosryahmed@google.com>
+Subject: RE: [PATCH v9 01/10] btf: Add a new kfunc flag which allows to mark a
+ function to be sleepable
+Thread-Topic: [PATCH v9 01/10] btf: Add a new kfunc flag which allows to mark
+ a function to be sleepable
+Thread-Index: AQHYq/aDa3kCDLsk5EK6T80CaXl/sK2mqA6AgAF8nfA=
+Date:   Wed, 10 Aug 2022 13:44:28 +0000
+Message-ID: <c9e73d7aa51a47c585b935a41dbf1924@huawei.com>
+References: <20220809134603.1769279-1-roberto.sassu@huawei.com>
+ <20220809134603.1769279-2-roberto.sassu@huawei.com>
+ <YvKRYRjJdXbAWL6Y@kernel.org>
+In-Reply-To: <YvKRYRjJdXbAWL6Y@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.45.144.193]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220704145333.22557-2-andrew.kilroy@arm.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Mon, Jul 04, 2022 at 03:53:25PM +0100, Andrew Kilroy escreveu:
-> Perf report cannot produce callgraphs using dwarf on arm64 where pointer
-> authentication is enabled.  This is because libunwind and libdw cannot
-> unmangle instruction pointers that have a pointer authentication code
-> (PAC) embedded in them.
+> From: Jarkko Sakkinen [mailto:jarkko@kernel.org]
+> Sent: Tuesday, August 9, 2022 6:55 PM
+> On Tue, Aug 09, 2022 at 03:45:54PM +0200, Roberto Sassu wrote:
+> > From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+> >
+> > From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+> >
+> > This allows to declare a kfunc as sleepable and prevents its use in
+> > a non sleepable program.
 > 
-> libunwind and libdw need to be given an instruction mask which they can
-> use to arrive at the correct return address that does not contain the
-> PAC.
+> Nit: "Declare a kfunc as sleepable and prevent its use in a
+> non-sleepable program."
 > 
-> The bits in the return address that contain the PAC can differ by
-> process, so this patch adds a new sample field PERF_SAMPLE_ARCH_1
-> to allow the kernel to send the masks up to userspace perf.
+> It's missing the part *how* the patch accomplishes its goals.
+
+I will add:
+
+If an eBPF program is going to call a kfunc declared as sleepable,
+eBPF will look at the eBPF program flags. If BPF_F_SLEEPABLE is
+not set, execution of that program is denied.
+
+Roberto
+
+> > Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+> > Co-developed-by: Yosry Ahmed <yosryahmed@google.com>
+> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> > Signed-off-by: Hao Luo <haoluo@google.com>
+> > ---
+> >  Documentation/bpf/kfuncs.rst | 6 ++++++
+> >  include/linux/btf.h          | 1 +
+> >  kernel/bpf/btf.c             | 9 +++++++++
+> >  3 files changed, 16 insertions(+)
+> >
+> > diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
+> > index c0b7dae6dbf5..c8b21de1c772 100644
+> > --- a/Documentation/bpf/kfuncs.rst
+> > +++ b/Documentation/bpf/kfuncs.rst
+> > @@ -146,6 +146,12 @@ that operate (change some property, perform some
+> operation) on an object that
+> >  was obtained using an acquire kfunc. Such kfuncs need an unchanged pointer
+> to
+> >  ensure the integrity of the operation being performed on the expected object.
+> >
+> > +2.4.6 KF_SLEEPABLE flag
+> > +-----------------------
+> > +
+> > +The KF_SLEEPABLE flag is used for kfuncs that may sleep. Such kfuncs can
+> only
+> > +be called by sleepable BPF programs (BPF_F_SLEEPABLE).
+> > +
+> >  2.5 Registering the kfuncs
+> >  --------------------------
+> >
+> > diff --git a/include/linux/btf.h b/include/linux/btf.h
+> > index cdb376d53238..976cbdd2981f 100644
+> > --- a/include/linux/btf.h
+> > +++ b/include/linux/btf.h
+> > @@ -49,6 +49,7 @@
+> >   * for this case.
+> >   */
+> >  #define KF_TRUSTED_ARGS (1 << 4) /* kfunc only takes trusted pointer
+> arguments */
+> > +#define KF_SLEEPABLE   (1 << 5) /* kfunc may sleep */
+> >
+> >  struct btf;
+> >  struct btf_member;
+> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > index 7e64447659f3..d3e4c86b8fcd 100644
+> > --- a/kernel/bpf/btf.c
+> > +++ b/kernel/bpf/btf.c
+> > @@ -6175,6 +6175,7 @@ static int btf_check_func_arg_match(struct
+> bpf_verifier_env *env,
+> >  {
+> >  	enum bpf_prog_type prog_type = resolve_prog_type(env->prog);
+> >  	bool rel = false, kptr_get = false, trusted_arg = false;
+> > +	bool sleepable = false;
+> >  	struct bpf_verifier_log *log = &env->log;
+> >  	u32 i, nargs, ref_id, ref_obj_id = 0;
+> >  	bool is_kfunc = btf_is_kernel(btf);
+> > @@ -6212,6 +6213,7 @@ static int btf_check_func_arg_match(struct
+> bpf_verifier_env *env,
+> >  		rel = kfunc_flags & KF_RELEASE;
+> >  		kptr_get = kfunc_flags & KF_KPTR_GET;
+> >  		trusted_arg = kfunc_flags & KF_TRUSTED_ARGS;
+> > +		sleepable = kfunc_flags & KF_SLEEPABLE;
+> >  	}
+> >
+> >  	/* check that BTF function arguments match actual types that the
+> > @@ -6419,6 +6421,13 @@ static int btf_check_func_arg_match(struct
+> bpf_verifier_env *env,
+> >  			func_name);
+> >  		return -EINVAL;
+> >  	}
+> > +
+> > +	if (sleepable && !env->prog->aux->sleepable) {
+> > +		bpf_log(log, "kernel function %s is sleepable but the program is
+> not\n",
+> > +			func_name);
+> > +		return -EINVAL;
+> > +	}
+> > +
+> >  	/* returns argument register number > 0 in case of reference release
+> kfunc */
+> >  	return rel ? ref_regno : 0;
+> >  }
+> > --
+> > 2.25.1
+> >
 > 
-> This field can be used in a architecture specific fashion, but on
-> aarch64, it contains the ptrauth mask information.
-
-I'm not seeing this kernel patch applied to tip/master or
-torvalds/master, what is the status of that part? Then I can look at the
-tooling part.
-
-- Arnaldo
- 
-> Signed-off-by: Andrew Kilroy <andrew.kilroy@arm.com>
-> ---
->  arch/arm64/include/asm/arch_sample_data.h | 38 +++++++++++++++++++++++
->  arch/arm64/kernel/Makefile                |  2 +-
->  arch/arm64/kernel/arch_sample_data.c      | 37 ++++++++++++++++++++++
->  include/linux/perf_event.h                | 24 ++++++++++++++
->  include/uapi/linux/perf_event.h           |  5 ++-
->  kernel/events/core.c                      | 35 +++++++++++++++++++++
->  6 files changed, 139 insertions(+), 2 deletions(-)
->  create mode 100644 arch/arm64/include/asm/arch_sample_data.h
->  create mode 100644 arch/arm64/kernel/arch_sample_data.c
-> 
-> diff --git a/arch/arm64/include/asm/arch_sample_data.h b/arch/arm64/include/asm/arch_sample_data.h
-> new file mode 100644
-> index 000000000000..83fda293b1fc
-> --- /dev/null
-> +++ b/arch/arm64/include/asm/arch_sample_data.h
-> @@ -0,0 +1,38 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +#ifndef _ASM_ARCH_SAMPLE_DATA_H
-> +#define _ASM_ARCH_SAMPLE_DATA_H
-> +
-> +#include <linux/types.h>
-> +
-> +/*
-> + * Structure holding masks to help userspace stack unwinding
-> + * in the presence of arm64 pointer authentication.
-> + */
-> +struct ptrauth_info {
-> +	/*
-> +	 * Bits 0, 1, 2, 3, 4 may be set to on, to indicate which keys are being used
-> +	 * The APIAKEY, APIBKEY, APDAKEY, APDBKEY, or the APGAKEY respectively.
-> +	 * Where all bits are off, pointer authentication is not in use for the
-> +	 * process.
-> +	 */
-> +	u64 enabled_keys;
-> +
-> +	/*
-> +	 * The on bits represent which bits in an instruction pointer
-> +	 * constitute the pointer authentication code.
-> +	 */
-> +	u64 insn_mask;
-> +
-> +	/*
-> +	 * The on bits represent which bits in a data pointer constitute the
-> +	 * pointer authentication code.
-> +	 */
-> +	u64 data_mask;
-> +};
-> +
-> +struct arch_sample_data {
-> +	struct ptrauth_info ptrauth;
-> +};
-> +
-> +#endif
-> diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
-> index fa7981d0d917..843c6e0e2393 100644
-> --- a/arch/arm64/kernel/Makefile
-> +++ b/arch/arm64/kernel/Makefile
-> @@ -44,7 +44,7 @@ obj-$(CONFIG_KUSER_HELPERS)		+= kuser32.o
->  obj-$(CONFIG_FUNCTION_TRACER)		+= ftrace.o entry-ftrace.o
->  obj-$(CONFIG_MODULES)			+= module.o
->  obj-$(CONFIG_ARM64_MODULE_PLTS)		+= module-plts.o
-> -obj-$(CONFIG_PERF_EVENTS)		+= perf_regs.o perf_callchain.o
-> +obj-$(CONFIG_PERF_EVENTS)		+= perf_regs.o perf_callchain.o arch_sample_data.o
->  obj-$(CONFIG_HW_PERF_EVENTS)		+= perf_event.o
->  obj-$(CONFIG_HAVE_HW_BREAKPOINT)	+= hw_breakpoint.o
->  obj-$(CONFIG_CPU_PM)			+= sleep.o suspend.o
-> diff --git a/arch/arm64/kernel/arch_sample_data.c b/arch/arm64/kernel/arch_sample_data.c
-> new file mode 100644
-> index 000000000000..2d47e8db0dbe
-> --- /dev/null
-> +++ b/arch/arm64/kernel/arch_sample_data.c
-> @@ -0,0 +1,37 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <asm/arch_sample_data.h>
-> +#include <linux/perf_event.h>
-> +
-> +inline void perf_output_sample_arch_1(struct perf_output_handle *handle,
-> +				      struct perf_event_header *header,
-> +				      struct perf_sample_data *data,
-> +				      struct perf_event *event)
-> +{
-> +	perf_output_put(handle, data->arch.ptrauth.enabled_keys);
-> +	perf_output_put(handle, data->arch.ptrauth.insn_mask);
-> +	perf_output_put(handle, data->arch.ptrauth.data_mask);
-> +}
-> +
-> +inline void perf_prepare_sample_arch_1(struct perf_event_header *header,
-> +				       struct perf_sample_data *data,
-> +				       struct perf_event *event,
-> +				       struct pt_regs *regs)
-> +{
-> +	struct task_struct *task = current;
-> +	int keys_result = ptrauth_get_enabled_keys(task);
-> +	u64 user_pac_mask = keys_result > 0 ? ptrauth_user_pac_mask() : 0;
-> +
-> +	data->arch.ptrauth.enabled_keys = keys_result > 0 ? keys_result : 0;
-> +	data->arch.ptrauth.insn_mask = user_pac_mask;
-> +	data->arch.ptrauth.data_mask = user_pac_mask;
-> +
-> +	header->size += (3 * sizeof(u64));
-> +}
-> +
-> +inline int perf_event_open_request_arch_1(void)
-> +{
-> +	return 0;
-> +}
-> +
-> +
-> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-> index da759560eec5..8a99942989ce 100644
-> --- a/include/linux/perf_event.h
-> +++ b/include/linux/perf_event.h
-> @@ -999,6 +999,29 @@ int perf_event_read_local(struct perf_event *event, u64 *value,
->  extern u64 perf_event_read_value(struct perf_event *event,
->  				 u64 *enabled, u64 *running);
->  
-> +void perf_output_sample_arch_1(struct perf_output_handle *handle,
-> +			       struct perf_event_header *header,
-> +			       struct perf_sample_data *data,
-> +			       struct perf_event *event);
-> +
-> +void perf_prepare_sample_arch_1(struct perf_event_header *header,
-> +				struct perf_sample_data *data,
-> +				struct perf_event *event,
-> +				struct pt_regs *regs);
-> +
-> +int perf_event_open_request_arch_1(void);
-> +
-> +#if IS_ENABLED(CONFIG_ARM64)
-> +
-> +#define HAS_ARCH_SAMPLE_DATA
-> +#include <asm/arch_sample_data.h>
-> +
-> +#endif
-> +
-> +#ifndef HAS_ARCH_SAMPLE_DATA
-> +struct arch_sample_data {
-> +};
-> +#endif
->  
->  struct perf_sample_data {
->  	/*
-> @@ -1041,6 +1064,7 @@ struct perf_sample_data {
->  	u64				cgroup;
->  	u64				data_page_size;
->  	u64				code_page_size;
-> +	struct arch_sample_data		arch;
->  } ____cacheline_aligned;
->  
->  /* default value for data source */
-> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-> index d37629dbad72..821bf5ff6a19 100644
-> --- a/include/uapi/linux/perf_event.h
-> +++ b/include/uapi/linux/perf_event.h
-> @@ -162,12 +162,15 @@ enum perf_event_sample_format {
->  	PERF_SAMPLE_DATA_PAGE_SIZE		= 1U << 22,
->  	PERF_SAMPLE_CODE_PAGE_SIZE		= 1U << 23,
->  	PERF_SAMPLE_WEIGHT_STRUCT		= 1U << 24,
-> +	PERF_SAMPLE_ARCH_1			= 1U << 25,
->  
-> -	PERF_SAMPLE_MAX = 1U << 25,		/* non-ABI */
-> +	PERF_SAMPLE_MAX = 1U << 26,		/* non-ABI */
->  
->  	__PERF_SAMPLE_CALLCHAIN_EARLY		= 1ULL << 63, /* non-ABI; internal use */
->  };
->  
-> +#define PERF_SAMPLE_ARM64_PTRAUTH PERF_SAMPLE_ARCH_1
-> +
->  #define PERF_SAMPLE_WEIGHT_TYPE	(PERF_SAMPLE_WEIGHT | PERF_SAMPLE_WEIGHT_STRUCT)
->  /*
->   * values to program into branch_sample_type when PERF_SAMPLE_BRANCH is set
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 80782cddb1da..89ab8120f4f0 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -6957,6 +6957,29 @@ static inline bool perf_sample_save_hw_index(struct perf_event *event)
->  	return event->attr.branch_sample_type & PERF_SAMPLE_BRANCH_HW_INDEX;
->  }
->  
-> +#ifndef HAS_ARCH_SAMPLE_DATA
-> +
-> +inline void perf_output_sample_arch_1(struct perf_output_handle *handle __maybe_unused,
-> +				      struct perf_event_header *header __maybe_unused,
-> +				      struct perf_sample_data *data __maybe_unused,
-> +				      struct perf_event *event __maybe_unused)
-> +{
-> +}
-> +
-> +inline void perf_prepare_sample_arch_1(struct perf_event_header *header __maybe_unused,
-> +				       struct perf_sample_data *data __maybe_unused,
-> +				       struct perf_event *event __maybe_unused,
-> +				       struct pt_regs *regs __maybe_unused)
-> +{
-> +}
-> +
-> +inline int perf_event_open_request_arch_1(void)
-> +{
-> +	return -EINVAL;
-> +}
-> +
-> +#endif
-> +
->  void perf_output_sample(struct perf_output_handle *handle,
->  			struct perf_event_header *header,
->  			struct perf_sample_data *data,
-> @@ -7125,6 +7148,9 @@ void perf_output_sample(struct perf_output_handle *handle,
->  			perf_aux_sample_output(event, handle, data);
->  	}
->  
-> +	if (sample_type & PERF_SAMPLE_ARCH_1)
-> +		perf_output_sample_arch_1(handle, header, data, event);
-> +
->  	if (!event->attr.watermark) {
->  		int wakeup_events = event->attr.wakeup_events;
->  
-> @@ -7427,6 +7453,9 @@ void perf_prepare_sample(struct perf_event_header *header,
->  	if (sample_type & PERF_SAMPLE_CODE_PAGE_SIZE)
->  		data->code_page_size = perf_get_page_size(data->ip);
->  
-> +	if (sample_type & PERF_SAMPLE_ARCH_1)
-> +		perf_prepare_sample_arch_1(header, data, event, regs);
-> +
->  	if (sample_type & PERF_SAMPLE_AUX) {
->  		u64 size;
->  
-> @@ -12074,6 +12103,12 @@ SYSCALL_DEFINE5(perf_event_open,
->  			return err;
->  	}
->  
-> +	if (attr.sample_type & PERF_SAMPLE_ARCH_1) {
-> +		err = perf_event_open_request_arch_1();
-> +		if (err)
-> +			return err;
-> +	}
-> +
->  	/*
->  	 * In cgroup mode, the pid argument is used to pass the fd
->  	 * opened to the cgroup directory in cgroupfs. The cpu argument
-> -- 
-> 2.17.1
-
--- 
-
-- Arnaldo
+> BR, Jarkko
