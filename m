@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BAE658F2A6
-	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 21:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30B0158F2A8
+	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 21:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbiHJTAG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Aug 2022 15:00:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60442 "EHLO
+        id S230282AbiHJTAX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Aug 2022 15:00:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbiHJTAF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Aug 2022 15:00:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C6598D3DC;
-        Wed, 10 Aug 2022 12:00:05 -0700 (PDT)
+        with ESMTP id S230095AbiHJTAW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Aug 2022 15:00:22 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D190D4;
+        Wed, 10 Aug 2022 12:00:18 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CA8F961474;
-        Wed, 10 Aug 2022 19:00:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7F39C433D6;
-        Wed, 10 Aug 2022 19:00:03 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D5F5EB81B5E;
+        Wed, 10 Aug 2022 19:00:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 7E676C433D6;
+        Wed, 10 Aug 2022 19:00:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660158004;
-        bh=kpkug43r/mu6B8UwPvE9lX1MDYhE5WZMwEJOzV0s2nk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gfIKauT77/6xqs2jULvclokXA9kxZ04Ke6/lkqGqehimp1QROt55oHqnetfyQiC/H
-         DOSlMcBNCkOUcU3Cqq+x0NTmUS0SpLo7rI4FbLRzp4AyNATjd+N2SnZklxMi0dzIiu
-         iWSI4htilaUYj0RZRR8ZzXGm0KAvRPRMXPeFzVRv7ZLi4toE2CMi76s/EKHayWjP3I
-         HuMdadm/ZqIf5vVkAIJGDVTo/X5/1/QzjUolT+/cRhbq3stt+Xg2i8FxbZ0a4TeYJf
-         0tAEWNiSgogaxXFkvASBuem87CjniKgk2Y97aTJOAKJA3k1yj61ixj2Tow7TPpgtec
-         oRjOx0YAovElQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 0C0D84035A; Wed, 10 Aug 2022 16:00:00 -0300 (-03)
-Date:   Wed, 10 Aug 2022 15:59:59 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
-Subject: Re: [PATCH dwarves] dwarf_loader: encode char type as signed
-Message-ID: <YvQAL+8Ah5J0hWAg@kernel.org>
-References: <20220807175309.4186342-1-yhs@fb.com>
- <CAEf4BzZJdqxOS_8VLX73z94GCUBVW4k6hKo3WGHyv4n-jQ-niQ@mail.gmail.com>
- <CAEf4BzYaWboRjHqewen71QZhvQyvtkeE5N43y=NvE+igw4RXYw@mail.gmail.com>
+        s=k20201202; t=1660158015;
+        bh=k0Q5bajyKIBZrWFSLzKBSZvdrKWfsZKmcC5siRp1c0w=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=TV3qfwUGXag23WG4dxqwR9udyhw8A5M8Y1hupIx/CWwxuecwpuPF/1AezMKvZw/xI
+         H57skQhMgF69xUG1dx2E8Cg87BLdchlBuHJrl+k3LczP/CRdql2jE3HJb7mXD46NRE
+         DbB6l1R9iYbgLLuxcM3Bk8TuhppRdRNTz3zrq2hwoq0ZRqyK4Ft2PiQZgPhcF93kMw
+         RKKvwKpFbwX2n21YoPEH4CgCX9qWWWZmRX5kM8nv++ZcjsMPHf0J2p5/6cGsX74deG
+         VFXUGwz1p9TqSR36GYRVRWWk7Twi5HZck0sM2nVnvnbaLx2ibPHPifPjbftsZ5yQwz
+         Ym66wL35EiJNA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 59FD6C43143;
+        Wed, 10 Aug 2022 19:00:15 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzYaWboRjHqewen71QZhvQyvtkeE5N43y=NvE+igw4RXYw@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next 00/15] bpf: Introduce selectable memcg for bpf map 
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166015801536.14189.14692203185396182235.git-patchwork-notify@kernel.org>
+Date:   Wed, 10 Aug 2022 19:00:15 +0000
+References: <20220810151840.16394-1-laoar.shao@gmail.com>
+In-Reply-To: <20220810151840.16394-1-laoar.shao@gmail.com>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, hannes@cmpxchg.org,
+        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        songmuchun@bytedance.com, akpm@linux-foundation.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -61,54 +61,62 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Mon, Aug 08, 2022 at 03:52:38PM -0700, Andrii Nakryiko escreveu:
-> On Mon, Aug 8, 2022 at 3:52 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Sun, Aug 7, 2022 at 10:53 AM Yonghong Song <yhs@fb.com> wrote:
-> > >
-> > > Currently, the pahole treats 'char' or 'signed char' type
-> > > as unsigned in BTF generation. The following is an example,
-> > >   $ cat t.c
-> > >   signed char a;
-> > >   char b;
-> > >   $ clang -O2 -g -c t.c
-> > >   $ pahole -JV t.o
-> > >   ...
-> > >   [1] INT signed char size=1 nr_bits=8 encoding=(none)
-> > >   [2] INT char size=1 nr_bits=8 encoding=(none)
-> > > In the above encoding '(none)' implies unsigned type.
-> > >
-> > > But if the same program is compiled with bpf target,
-> > >   $ clang -target bpf -O2 -g -c t.c
-> > >   $ bpftool btf dump file t.o
-> > >   [1] INT 'signed char' size=1 bits_offset=0 nr_bits=8 encoding=SIGNED
-> > >   [2] VAR 'a' type_id=1, linkage=global
-> > >   [3] INT 'char' size=1 bits_offset=0 nr_bits=8 encoding=SIGNED
-> > >   [4] VAR 'b' type_id=3, linkage=global
-> > >   [5] DATASEC '.bss' size=0 vlen=2
-> > >           type_id=2 offset=0 size=1 (VAR 'a')
-> > >           type_id=4 offset=0 size=1 (VAR 'b')
-> > > the 'char' and 'signed char' are encoded as SIGNED integers.
-> > >
-> > > Encode 'char' and 'signed char' as SIGNED should be a right to
-> > > do and it will be consistent with bpf implementation.
-> > >
-> > > With this patch,
-> > >   $ pahole -JV t.o
-> > >   ...
-> > >   [1] INT signed char size=1 nr_bits=8 encoding=SIGNED
-> > >   [2] INT char size=1 nr_bits=8 encoding=SIGNED
-> > >
-> > > Signed-off-by: Yonghong Song <yhs@fb.com>
-> > > ---
-> >
-> > LGTM.
+Hello:
+
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Wed, 10 Aug 2022 15:18:25 +0000 you wrote:
+> On our production environment, we may load, run and pin bpf programs and
+> maps in containers. For example, some of our networking bpf programs and
+> maps are loaded and pinned by a process running in a container on our
+> k8s environment. In this container, there're also running some other
+> user applications which watch the networking configurations from remote
+> servers and update them on this local host, log the error events, monitor
+> the traffic, and do some other stuffs. Sometimes we may need to update
+> these user applications to a new release, and in this update process we
+> will destroy the old container and then start a new genration. In order not
+> to interrupt the bpf programs in the update process, we will pin the bpf
+> programs and maps in bpffs. That is the background and use case on our
+> production environment.
 > 
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> [...]
 
-Thanks, tested before/after, applied.
+Here is the summary with links:
+  - [bpf-next,01/15] bpf: Remove unneeded memset in queue_stack_map creation
+    https://git.kernel.org/bpf/bpf-next/c/083818156d1e
+  - [bpf-next,02/15] bpf: Use bpf_map_area_free instread of kvfree
+    https://git.kernel.org/bpf/bpf-next/c/8f58ee54c2ea
+  - [bpf-next,03/15] bpf: Make __GFP_NOWARN consistent in bpf map creation
+    https://git.kernel.org/bpf/bpf-next/c/992c9e13f593
+  - [bpf-next,04/15] bpf: Use bpf_map_area_alloc consistently on bpf map creation
+    https://git.kernel.org/bpf/bpf-next/c/73cf09a36bf7
+  - [bpf-next,05/15] bpf: Fix incorrect mem_cgroup_put
+    (no matching commit)
+  - [bpf-next,06/15] bpf: Define bpf_map_{get,put}_memcg for !CONFIG_MEMCG_KMEM
+    (no matching commit)
+  - [bpf-next,07/15] bpf: Call bpf_map_init_from_attr() immediately after map creation
+    (no matching commit)
+  - [bpf-next,08/15] bpf: Save memcg in bpf_map_init_from_attr()
+    (no matching commit)
+  - [bpf-next,09/15] bpf: Use scoped-based charge in bpf_map_area_alloc
+    (no matching commit)
+  - [bpf-next,10/15] bpf: Introduce new helpers bpf_ringbuf_pages_{alloc,free}
+    (no matching commit)
+  - [bpf-next,11/15] bpf: Use bpf_map_kzalloc in arraymap
+    (no matching commit)
+  - [bpf-next,12/15] bpf: Use bpf_map_kvcalloc in bpf_local_storage
+    (no matching commit)
+  - [bpf-next,13/15] mm, memcg: Add new helper get_obj_cgroup_from_cgroup
+    (no matching commit)
+  - [bpf-next,14/15] bpf: Add return value for bpf_map_init_from_attr
+    (no matching commit)
+  - [bpf-next,15/15] bpf: Introduce selectable memcg for bpf map
+    (no matching commit)
 
-Pushing out next for CI testing.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-- Arnaldo
+
