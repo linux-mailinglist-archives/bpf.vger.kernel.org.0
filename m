@@ -2,78 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2001758F132
-	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 19:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D579A58F16A
+	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 19:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233237AbiHJRHU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Aug 2022 13:07:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41648 "EHLO
+        id S233465AbiHJRSB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Aug 2022 13:18:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233254AbiHJRHM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Aug 2022 13:07:12 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F21827757C
-        for <bpf@vger.kernel.org>; Wed, 10 Aug 2022 10:07:10 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-31f56f635a9so130397987b3.4
-        for <bpf@vger.kernel.org>; Wed, 10 Aug 2022 10:07:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:from:to:cc;
-        bh=NDKj9WvDVcpp72e/Jq/GTiPcROFKNcyaGjJEdm/L+Ts=;
-        b=X9e/GgluQJANDKFV0jFwlXW00XKEjHhjfO/brvre3Gw5uNpgSHsWoIi8QDqA4wt8zk
-         CexRXMYl9XeZtcQ1hg2op+YKm38bo0z4cWq8rCwG5+wrjzrUOJSInGLpcRNPTKVPxD8J
-         TQJ02+pc3eBFY+XQ/1/w34xfwA9dtKzVGX0nmZGQMjB+MdAlDz3bkz8mMF91BWMCEFEt
-         j+/QOmPEv9/ryDVEy/xsPy0lJGhPCSW59i60SFbFZp6JphxcmA71yWhTiw3oKJzNgwnu
-         XoWreqyMPwsntxrmAakC9gUG0oYWZ4lVDH7xx1MiVudxtJgaYpbfsUUkgBjahjMLoLq3
-         i1YQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:x-gm-message-state:from:to:cc;
-        bh=NDKj9WvDVcpp72e/Jq/GTiPcROFKNcyaGjJEdm/L+Ts=;
-        b=6pAN5rUZH7Lx+Es7fFCHdN3mQt4iaevt1ZtVcIvPSRU/aB/6VG+z4Nn01pyRnjHOoQ
-         2um3n7bwOg2+Ob3lGnzlLEnZXruBT5RRFYVbcRW6+xKC8xzSPubHhWhh+RaUrmC0N517
-         2Q3rm/zK9n1gL9jP8CAh/O4K2OryPMFBQiJQbiYUiiPlJPHrNj8fsuxBJV2GSWwpBF0Y
-         ofuRdO6BVPAjrDu7PK3A5hAiXUcI7afsTPisDl6MZzSGpwBT4cOJBuqm/ToLfYxNvQAd
-         7TJ1PlntW2OdGmkL13rrevlNLS9SipBEToJhIlIIfV2AF7vepUpPM3DvlXJnH0plhK/G
-         u6gA==
-X-Gm-Message-State: ACgBeo2Ew66R9gIM4fO8FoXBfWc6lgBV9AuOmQ9cLVNeVWNcULw5YjgM
-        huU0xI4TGe1iItR0XFS5yvjdheOgTF6dyQ==
-X-Google-Smtp-Source: AA6agR40+GyN7iMi/+y8+SEnXgz5d1sWTF6KBR9mZOrYJz5MsqI+gArikvEGD0ucx6p3tDpnZos8Ahi8w8vEZQ==
-X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:28b])
- (user=shakeelb job=sendgmr) by 2002:a25:cb4f:0:b0:677:5f49:99e6 with SMTP id
- b76-20020a25cb4f000000b006775f4999e6mr25934323ybg.338.1660151229736; Wed, 10
- Aug 2022 10:07:09 -0700 (PDT)
-Date:   Wed, 10 Aug 2022 17:07:06 +0000
-In-Reply-To: <20220810151840.16394-6-laoar.shao@gmail.com>
-Message-Id: <20220810170706.ikyrsuzupjwt65h7@google.com>
-Mime-Version: 1.0
-References: <20220810151840.16394-1-laoar.shao@gmail.com> <20220810151840.16394-6-laoar.shao@gmail.com>
-Subject: Re: [PATCH bpf-next 05/15] bpf: Fix incorrect mem_cgroup_put
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, hannes@cmpxchg.org,
-        mhocko@kernel.org, roman.gushchin@linux.dev,
-        songmuchun@bytedance.com, akpm@linux-foundation.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S233489AbiHJRR6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Aug 2022 13:17:58 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9BF1F5A880;
+        Wed, 10 Aug 2022 10:17:57 -0700 (PDT)
+Received: from pwmachine.numericable.fr (85-170-37-153.rev.numericable.fr [85.170.37.153])
+        by linux.microsoft.com (Postfix) with ESMTPSA id C2DC8210CB09;
+        Wed, 10 Aug 2022 10:17:53 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C2DC8210CB09
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1660151877;
+        bh=4aPs3i1QoObt5JaQKhi+7wDPlNlhQH3nxRns9sDPclE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=liJRcl7xWeFchZ8sIUDxlFeZ7UQlO1C7I4pc0X5kkg+xYzqWc38lxIXyXW/zQa9Wc
+         v998V3pqStIkcBVk7LRKneCNLtYX5pVCO5m0DRNrsW6AOZKqG6E/vgAgDcKnzR8nSo
+         oEKxD5XxiIbRh2id+BzwbB7A08+30ErrLFXmbkq4=
+From:   Francis Laniel <flaniel@linux.microsoft.com>
+To:     bpf@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Francis Laniel <flaniel@linux.microsoft.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Joanne Koong <joannelkoong@gmail.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Geliang Tang <geliang.tang@suse.com>,
+        Hengqi Chen <hengqi.chen@gmail.com>
+Subject: [RFC PATCH v1 0/3] Make BPF ring buffer over writable
+Date:   Wed, 10 Aug 2022 19:16:51 +0200
+Message-Id: <20220810171702.74932-1-flaniel@linux.microsoft.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 10, 2022 at 03:18:30PM +0000, Yafang Shao wrote:
-> The memcg may be the root_mem_cgroup, in which case we shouldn't put it.
+Hi.
 
-No, it is ok to put root_mem_cgroup. css_put already handles the root
-cgroups.
+
+First, I hope you are fine and the same for your relatives.
+
+Normally, when BPF ring buffer are full, producers cannot write anymore and
+need to wait for consumer to get some data.
+As a consequence, calling bpf_ringbuf_reserve() from eBPF code returns NULL.
+
+This contribution adds a new flag to make BPF ring buffer over writable.
+When the buffer is full, the producer will over write the oldest data.
+So, calling bpf_ringbuf_reserve() on an over writable BPF ring buffer never
+returns NULL but consumer will loose some data.
+This flag can be used to monitor lots of events, like all the syscalls done on
+a given machine.
+
+I tested it within a VM with the fourth patch which creates a "toy" eBPF
+program:
+you@home$ cd /path/to/iovisor/bcc
+you@home$ git apply 0001-for-test-purpose-only-Add-toy-to-play-with-BPF-ring-.patch
+you@home$ cd /path/to/linux/tools/lib/bpf
+you@home$ make -j$(nproc)
+you@home$ cp libbpf.a /path/to/iovisor/bcc/libbpf-tools/.output
+you@home$ cd /path/to/iovisor/bcc/libbpf-tools/
+you@home$ make -j toy
+# Start your VM and copy toy executable inside it.
+you@vm# ./share/toy
+Press any key to begin consuming!
+^Z
+you@vm# for i in {1..16}; do true; done
+you@vm# fg # Please press any key
+
+8
+9
+10
+11
+12
+13
+14
+15
+16
+
+^Z
+you@vm# true && true
+you@vm# fg
+17
+18
+
+As you can see, the first eight events are overwritten.
+
+If you any way to improve this contribution, feel free to share.
+
+Francis Laniel (3):
+  bpf: Make ring buffer overwritable.
+  do not merge: Temporary fix for is_power_of_2.
+  libbpf: Make bpf ring buffer overwritable.
+
+ include/uapi/linux/bpf.h       |  3 ++
+ kernel/bpf/ringbuf.c           | 51 ++++++++++++++++++++++++++--------
+ tools/include/uapi/linux/bpf.h |  3 ++
+ tools/lib/bpf/libbpf.c         |  2 +-
+ tools/lib/bpf/ringbuf.c        | 35 ++++++++++++++++++++++-
+ 5 files changed, 81 insertions(+), 13 deletions(-)
+
+
+Best regards and thank you in advance.
+--
+2.25.1
 
