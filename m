@@ -2,29 +2,29 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D579A58F16A
-	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 19:18:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73EF158F16E
+	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 19:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233465AbiHJRSB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Aug 2022 13:18:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53140 "EHLO
+        id S233429AbiHJRSr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Aug 2022 13:18:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233489AbiHJRR6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Aug 2022 13:17:58 -0400
+        with ESMTP id S233548AbiHJRS3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Aug 2022 13:18:29 -0400
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9BF1F5A880;
-        Wed, 10 Aug 2022 10:17:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 73777832DE;
+        Wed, 10 Aug 2022 10:18:11 -0700 (PDT)
 Received: from pwmachine.numericable.fr (85-170-37-153.rev.numericable.fr [85.170.37.153])
-        by linux.microsoft.com (Postfix) with ESMTPSA id C2DC8210CB09;
-        Wed, 10 Aug 2022 10:17:53 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C2DC8210CB09
+        by linux.microsoft.com (Postfix) with ESMTPSA id 313C7210CB09;
+        Wed, 10 Aug 2022 10:18:07 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 313C7210CB09
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1660151877;
-        bh=4aPs3i1QoObt5JaQKhi+7wDPlNlhQH3nxRns9sDPclE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=liJRcl7xWeFchZ8sIUDxlFeZ7UQlO1C7I4pc0X5kkg+xYzqWc38lxIXyXW/zQa9Wc
-         v998V3pqStIkcBVk7LRKneCNLtYX5pVCO5m0DRNrsW6AOZKqG6E/vgAgDcKnzR8nSo
-         oEKxD5XxiIbRh2id+BzwbB7A08+30ErrLFXmbkq4=
+        s=default; t=1660151890;
+        bh=3kiPsqUPtso+NNqIgTkQ85tKAvMJGntQbjjUHjVcF7I=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=dB94HTgoM6vLToCJMc+xWK/jUYegFT21uB7xqzT78FYU/qz7ZES9fGtXM+3spSy0b
+         Lf53z+KnmjBeyuCAd5XsXljNylV3loy61Fb8vnKU2vXq+nTt5S7cA98KA5P0dFvQOz
+         imsaV8vkx9EXUkEAkYNxdZd3bSvoXElAGG6BIx00=
 From:   Francis Laniel <flaniel@linux.microsoft.com>
 To:     bpf@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -43,10 +43,12 @@ Cc:     linux-kernel@vger.kernel.org,
         Lorenzo Bianconi <lorenzo@kernel.org>,
         Geliang Tang <geliang.tang@suse.com>,
         Hengqi Chen <hengqi.chen@gmail.com>
-Subject: [RFC PATCH v1 0/3] Make BPF ring buffer over writable
-Date:   Wed, 10 Aug 2022 19:16:51 +0200
-Message-Id: <20220810171702.74932-1-flaniel@linux.microsoft.com>
+Subject: [RFC PATCH v1 1/3] bpf: Make ring buffer overwritable.
+Date:   Wed, 10 Aug 2022 19:16:52 +0200
+Message-Id: <20220810171702.74932-2-flaniel@linux.microsoft.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220810171702.74932-1-flaniel@linux.microsoft.com>
+References: <20220810171702.74932-1-flaniel@linux.microsoft.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -59,72 +61,143 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi.
+By default, BPF ring buffer are size bounded, when producers already filled the
+buffer, they need to wait for the consumer to get those data before adding new
+ones.
+In terms of API, bpf_ringbuf_reserve() returns NULL if the buffer is full.
 
+This patch permits making BPF ring buffer overwritable.
+When producers already wrote as many data as the buffer size, they will begin to
+over write existing data, so the oldest will be replaced.
+As a result, bpf_ringbuf_reserve() never returns NULL.
 
-First, I hope you are fine and the same for your relatives.
+Signed-off-by: Francis Laniel <flaniel@linux.microsoft.com>
+---
+ include/uapi/linux/bpf.h |  3 +++
+ kernel/bpf/ringbuf.c     | 51 +++++++++++++++++++++++++++++++---------
+ 2 files changed, 43 insertions(+), 11 deletions(-)
 
-Normally, when BPF ring buffer are full, producers cannot write anymore and
-need to wait for consumer to get some data.
-As a consequence, calling bpf_ringbuf_reserve() from eBPF code returns NULL.
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index ef78e0e1a754..19c7039265d8 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1226,6 +1226,9 @@ enum {
 
-This contribution adds a new flag to make BPF ring buffer over writable.
-When the buffer is full, the producer will over write the oldest data.
-So, calling bpf_ringbuf_reserve() on an over writable BPF ring buffer never
-returns NULL but consumer will loose some data.
-This flag can be used to monitor lots of events, like all the syscalls done on
-a given machine.
+ /* Create a map that is suitable to be an inner map with dynamic max entries */
+ 	BPF_F_INNER_MAP		= (1U << 12),
++
++/* Create an over writable BPF_RINGBUF */
++	BFP_F_RB_OVER_WRITABLE	= (1U << 13),
+ };
 
-I tested it within a VM with the fourth patch which creates a "toy" eBPF
-program:
-you@home$ cd /path/to/iovisor/bcc
-you@home$ git apply 0001-for-test-purpose-only-Add-toy-to-play-with-BPF-ring-.patch
-you@home$ cd /path/to/linux/tools/lib/bpf
-you@home$ make -j$(nproc)
-you@home$ cp libbpf.a /path/to/iovisor/bcc/libbpf-tools/.output
-you@home$ cd /path/to/iovisor/bcc/libbpf-tools/
-you@home$ make -j toy
-# Start your VM and copy toy executable inside it.
-you@vm# ./share/toy
-Press any key to begin consuming!
-^Z
-you@vm# for i in {1..16}; do true; done
-you@vm# fg # Please press any key
+ /* Flags for BPF_PROG_QUERY. */
+diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
+index ded4faeca192..e2d907df4989 100644
+--- a/kernel/bpf/ringbuf.c
++++ b/kernel/bpf/ringbuf.c
+@@ -12,7 +12,7 @@
+ #include <uapi/linux/btf.h>
+ #include <linux/btf_ids.h>
 
-8
-9
-10
-11
-12
-13
-14
-15
-16
+-#define RINGBUF_CREATE_FLAG_MASK (BPF_F_NUMA_NODE)
++#define RINGBUF_CREATE_FLAG_MASK (BPF_F_NUMA_NODE | BFP_F_RB_OVER_WRITABLE)
 
-^Z
-you@vm# true && true
-you@vm# fg
-17
-18
+ /* non-mmap()'able part of bpf_ringbuf (everything up to consumer page) */
+ #define RINGBUF_PGOFF \
+@@ -37,6 +37,8 @@ struct bpf_ringbuf {
+ 	u64 mask;
+ 	struct page **pages;
+ 	int nr_pages;
++	__u8 over_writable: 1,
++	     __reserved:    7;
+ 	spinlock_t spinlock ____cacheline_aligned_in_smp;
+ 	/* Consumer and producer counters are put into separate pages to allow
+ 	 * mapping consumer page as r/w, but restrict producer page to r/o.
+@@ -127,7 +129,12 @@ static void bpf_ringbuf_notify(struct irq_work *work)
+ 	wake_up_all(&rb->waitq);
+ }
 
-As you can see, the first eight events are overwritten.
+-static struct bpf_ringbuf *bpf_ringbuf_alloc(size_t data_sz, int numa_node)
++static inline bool is_over_writable(struct bpf_ringbuf *rb)
++{
++	return !!rb->over_writable;
++}
++
++static struct bpf_ringbuf *bpf_ringbuf_alloc(size_t data_sz, int numa_node, __u32 flags)
+ {
+ 	struct bpf_ringbuf *rb;
 
-If you any way to improve this contribution, feel free to share.
+@@ -142,6 +149,7 @@ static struct bpf_ringbuf *bpf_ringbuf_alloc(size_t data_sz, int numa_node)
+ 	rb->mask = data_sz - 1;
+ 	rb->consumer_pos = 0;
+ 	rb->producer_pos = 0;
++	rb->over_writable = !!(flags & BFP_F_RB_OVER_WRITABLE);
 
-Francis Laniel (3):
-  bpf: Make ring buffer overwritable.
-  do not merge: Temporary fix for is_power_of_2.
-  libbpf: Make bpf ring buffer overwritable.
+ 	return rb;
+ }
+@@ -170,7 +178,7 @@ static struct bpf_map *ringbuf_map_alloc(union bpf_attr *attr)
 
- include/uapi/linux/bpf.h       |  3 ++
- kernel/bpf/ringbuf.c           | 51 ++++++++++++++++++++++++++--------
- tools/include/uapi/linux/bpf.h |  3 ++
- tools/lib/bpf/libbpf.c         |  2 +-
- tools/lib/bpf/ringbuf.c        | 35 ++++++++++++++++++++++-
- 5 files changed, 81 insertions(+), 13 deletions(-)
+ 	bpf_map_init_from_attr(&rb_map->map, attr);
 
+-	rb_map->rb = bpf_ringbuf_alloc(attr->max_entries, rb_map->map.numa_node);
++	rb_map->rb = bpf_ringbuf_alloc(attr->max_entries, rb_map->map.numa_node, attr->map_flags);
+ 	if (!rb_map->rb) {
+ 		kfree(rb_map);
+ 		return ERR_PTR(-ENOMEM);
+@@ -244,11 +252,15 @@ static int ringbuf_map_mmap(struct bpf_map *map, struct vm_area_struct *vma)
 
-Best regards and thank you in advance.
+ static unsigned long ringbuf_avail_data_sz(struct bpf_ringbuf *rb)
+ {
+-	unsigned long cons_pos, prod_pos;
++	unsigned long cons_pos, prod_pos, diff;
+
+ 	cons_pos = smp_load_acquire(&rb->consumer_pos);
+ 	prod_pos = smp_load_acquire(&rb->producer_pos);
+-	return prod_pos - cons_pos;
++	diff = prod_pos - cons_pos;
++
++	if (is_over_writable(rb) && diff > rb->mask)
++		return rb->mask;
++	return diff;
+ }
+
+ static __poll_t ringbuf_map_poll(struct bpf_map *map, struct file *filp,
+@@ -327,12 +339,29 @@ static void *__bpf_ringbuf_reserve(struct bpf_ringbuf *rb, u64 size)
+ 	prod_pos = rb->producer_pos;
+ 	new_prod_pos = prod_pos + len;
+
+-	/* check for out of ringbuf space by ensuring producer position
+-	 * doesn't advance more than (ringbuf_size - 1) ahead
+-	 */
+-	if (new_prod_pos - cons_pos > rb->mask) {
+-		spin_unlock_irqrestore(&rb->spinlock, flags);
+-		return NULL;
++	if (!is_over_writable(rb)) {
++		/* check for out of ringbuf space by ensuring producer position
++		 * doesn't advance more than (ringbuf_size - 1) ahead
++		 */
++		if (new_prod_pos - cons_pos > rb->mask) {
++			spin_unlock_irqrestore(&rb->spinlock, flags);
++			return NULL;
++		}
++	} else {
++		/*
++		 * Data length is already rounded to be divisible by 8, but in
++		 * the case of over writing buffer we need to round it again.
++		 * Indeed, when the producer position will cross the buffer
++		 * size, it is possible new position will not be divisible by
++		 * buffer size.
++		 * For example, if len is 520 and buffer size is 4096, then the
++		 * next position after 4096 is 4160.
++		 * This is a problem as it will impede us to over write data
++		 * (4160 & 4095 = 64 which is different from 0).
++		 * So by substracting the modulo of len, we are able to over
++		 * write existing data.
++		 */
++		new_prod_pos -= (new_prod_pos & rb->mask) % len;
+ 	}
+
+ 	hdr = (void *)rb->data + (prod_pos & rb->mask);
 --
 2.25.1
 
