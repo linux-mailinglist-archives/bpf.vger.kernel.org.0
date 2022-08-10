@@ -2,24 +2,24 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82B0658E81E
+	by mail.lfdr.de (Postfix) with ESMTP id 101EC58E81D
 	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 09:48:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231421AbiHJHsH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S231435AbiHJHsH (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Wed, 10 Aug 2022 03:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40996 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231403AbiHJHrh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Aug 2022 03:47:37 -0400
+        with ESMTP id S231409AbiHJHri (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Aug 2022 03:47:38 -0400
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D0E86E8B5
-        for <bpf@vger.kernel.org>; Wed, 10 Aug 2022 00:47:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FE796E8A2
+        for <bpf@vger.kernel.org>; Wed, 10 Aug 2022 00:47:37 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4M2hnt6rhTzKQ2W
-        for <bpf@vger.kernel.org>; Wed, 10 Aug 2022 15:46:10 +0800 (CST)
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4M2hnv4fzXzKpPD
+        for <bpf@vger.kernel.org>; Wed, 10 Aug 2022 15:46:11 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP2 (Coremail) with SMTP id Syh0CgDHsb2NYvNiIKmmAA--.61804S11;
-        Wed, 10 Aug 2022 15:47:33 +0800 (CST)
+        by APP2 (Coremail) with SMTP id Syh0CgDHsb2NYvNiIKmmAA--.61804S12;
+        Wed, 10 Aug 2022 15:47:34 +0800 (CST)
 From:   Hou Tao <houtao@huaweicloud.com>
 To:     bpf@vger.kernel.org, Yonghong Song <yhs@fb.com>
 Cc:     Andrii Nakryiko <andrii@kernel.org>,
@@ -34,18 +34,18 @@ Cc:     Andrii Nakryiko <andrii@kernel.org>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         Lorenz Bauer <oss@lmb.io>, houtao1@huawei.com
-Subject: [PATCH bpf v2 7/9] selftests/bpf: Add tests for reading a dangling map iter fd
-Date:   Wed, 10 Aug 2022 16:05:36 +0800
-Message-Id: <20220810080538.1845898-8-houtao@huaweicloud.com>
+Subject: [PATCH bpf v2 8/9] selftests/bpf: Add write tests for sk local storage map iterator
+Date:   Wed, 10 Aug 2022 16:05:37 +0800
+Message-Id: <20220810080538.1845898-9-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20220810080538.1845898-1-houtao@huaweicloud.com>
 References: <20220810080538.1845898-1-houtao@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgDHsb2NYvNiIKmmAA--.61804S11
-X-Coremail-Antispam: 1UD129KBjvJXoW3Gw1UCw4kGFy8ZF48tw48Xrb_yoW7Grykp3
-        4xJ390kr4rXan7Xr1kJa1Ykr45ta1jqa4UG3yrG3y5CrsrXrWagr1xGFW8JFn8JrW0vFnI
-        y34ay3yfGrWUAFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: Syh0CgDHsb2NYvNiIKmmAA--.61804S12
+X-Coremail-Antispam: 1UD129KBjvJXoWxJFWkuw47KF15Jw4UZFW5ZFb_yoWrJFy3pF
+        yIq3yakr1fXw4fZrnrJw4akryrtw10qw1fKrs3Gr45Ar4kXr95Gr1xKF10vF9xGr9Yqr1S
+        yr1akay5Cry8Z3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUBSb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
         6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
         Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
@@ -72,160 +72,112 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Hou Tao <houtao1@huawei.com>
 
-After closing both related link fd and map fd, reading the map
-iterator fd to ensure it is OK to do so.
+Add test to validate the overwrite of sock local storage map value in
+map iterator and another one to ensure out-of-bound value writing is
+rejected.
 
 Signed-off-by: Hou Tao <houtao1@huawei.com>
+Acked-by: Yonghong Song <yhs@fb.com>
 ---
- .../selftests/bpf/prog_tests/bpf_iter.c       | 92 +++++++++++++++++++
- 1 file changed, 92 insertions(+)
+ .../selftests/bpf/prog_tests/bpf_iter.c       | 20 +++++++++++++++--
+ .../bpf/progs/bpf_iter_bpf_sk_storage_map.c   | 22 +++++++++++++++++--
+ 2 files changed, 38 insertions(+), 4 deletions(-)
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-index a33874b081b6..b690c9e9d346 100644
+index b690c9e9d346..1571a6586b3b 100644
 --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
 +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-@@ -28,6 +28,7 @@
- #include "bpf_iter_test_kern6.skel.h"
- #include "bpf_iter_bpf_link.skel.h"
- #include "bpf_iter_ksym.skel.h"
-+#include "bpf_iter_sockmap.skel.h"
+@@ -1076,7 +1076,7 @@ static void test_bpf_sk_stoarge_map_iter_fd(void)
+ 	if (!ASSERT_OK_PTR(skel, "bpf_iter_bpf_sk_storage_map__open_and_load"))
+ 		return;
  
- static int duration;
+-	do_read_map_iter_fd(&skel->skeleton, skel->progs.dump_bpf_sk_storage_map,
++	do_read_map_iter_fd(&skel->skeleton, skel->progs.rw_bpf_sk_storage_map,
+ 			    skel->maps.sk_stg_map);
  
-@@ -67,6 +68,50 @@ static void do_dummy_read(struct bpf_program *prog)
- 	bpf_link__destroy(link);
- }
- 
-+static void do_read_map_iter_fd(struct bpf_object_skeleton **skel, struct bpf_program *prog,
-+				struct bpf_map *map)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-+	union bpf_iter_link_info linfo;
-+	struct bpf_link *link;
-+	char buf[16] = {};
-+	int iter_fd, len;
-+
-+	memset(&linfo, 0, sizeof(linfo));
-+	linfo.map.map_fd = bpf_map__fd(map);
-+	opts.link_info = &linfo;
-+	opts.link_info_len = sizeof(linfo);
-+	link = bpf_program__attach_iter(prog, &opts);
-+	if (!ASSERT_OK_PTR(link, "attach_map_iter"))
-+		return;
-+
-+	iter_fd = bpf_iter_create(bpf_link__fd(link));
-+	if (!ASSERT_GE(iter_fd, 0, "create_map_iter")) {
-+		bpf_link__destroy(link);
-+		return;
+ 	bpf_iter_bpf_sk_storage_map__destroy(skel);
+@@ -1117,7 +1117,15 @@ static void test_bpf_sk_storage_map(void)
+ 	linfo.map.map_fd = map_fd;
+ 	opts.link_info = &linfo;
+ 	opts.link_info_len = sizeof(linfo);
+-	link = bpf_program__attach_iter(skel->progs.dump_bpf_sk_storage_map, &opts);
++	link = bpf_program__attach_iter(skel->progs.oob_write_bpf_sk_storage_map, &opts);
++	err = libbpf_get_error(link);
++	if (!ASSERT_EQ(err, -EACCES, "attach_oob_write_iter")) {
++		if (!err)
++			bpf_link__destroy(link);
++		goto out;
 +	}
 +
-+	/* Close link and map fd prematurely */
-+	bpf_link__destroy(link);
-+	bpf_object__destroy_skeleton(*skel);
-+	*skel = NULL;
-+
-+	/* Try to let map free work to run first if map is freed */
-+	usleep(100);
-+	/* Memory used by both sock map and sock local storage map are
-+	 * freed after two synchronize_rcu() calls, so wait for it
-+	 */
-+	kern_sync_rcu();
-+	kern_sync_rcu();
-+
-+	/* Read after both map fd and link fd are closed */
-+	while ((len = read(iter_fd, buf, sizeof(buf))) > 0)
-+		;
-+	ASSERT_GE(len, 0, "read_iterator");
-+
-+	close(iter_fd);
-+}
-+
- static int read_fd_into_buffer(int fd, char *buf, int size)
- {
- 	int bufleft = size;
-@@ -827,6 +872,20 @@ static void test_bpf_array_map(void)
- 	bpf_iter_bpf_array_map__destroy(skel);
- }
++	link = bpf_program__attach_iter(skel->progs.rw_bpf_sk_storage_map, &opts);
+ 	if (!ASSERT_OK_PTR(link, "attach_iter"))
+ 		goto out;
  
-+static void test_bpf_array_map_iter_fd(void)
-+{
-+	struct bpf_iter_bpf_array_map *skel;
-+
-+	skel = bpf_iter_bpf_array_map__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "bpf_iter_bpf_array_map__open_and_load"))
-+		return;
-+
-+	do_read_map_iter_fd(&skel->skeleton, skel->progs.dump_bpf_array_map,
-+			    skel->maps.arraymap1);
-+
-+	bpf_iter_bpf_array_map__destroy(skel);
-+}
-+
- static void test_bpf_percpu_array_map(void)
- {
- 	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-@@ -1009,6 +1068,20 @@ static void test_bpf_sk_storage_get(void)
- 	bpf_iter_bpf_sk_storage_helpers__destroy(skel);
- }
+@@ -1125,6 +1133,7 @@ static void test_bpf_sk_storage_map(void)
+ 	if (!ASSERT_GE(iter_fd, 0, "create_iter"))
+ 		goto free_link;
  
-+static void test_bpf_sk_stoarge_map_iter_fd(void)
-+{
-+	struct bpf_iter_bpf_sk_storage_map *skel;
-+
-+	skel = bpf_iter_bpf_sk_storage_map__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "bpf_iter_bpf_sk_storage_map__open_and_load"))
-+		return;
-+
-+	do_read_map_iter_fd(&skel->skeleton, skel->progs.dump_bpf_sk_storage_map,
-+			    skel->maps.sk_stg_map);
-+
-+	bpf_iter_bpf_sk_storage_map__destroy(skel);
-+}
-+
- static void test_bpf_sk_storage_map(void)
- {
- 	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-@@ -1217,6 +1290,19 @@ static void test_task_vma(void)
- 	bpf_iter_task_vma__destroy(skel);
- }
++	skel->bss->to_add_val = time(NULL);
+ 	/* do some tests */
+ 	while ((len = read(iter_fd, buf, sizeof(buf))) > 0)
+ 		;
+@@ -1138,6 +1147,13 @@ static void test_bpf_sk_storage_map(void)
+ 	if (!ASSERT_EQ(skel->bss->val_sum, expected_val, "val_sum"))
+ 		goto close_iter;
  
-+void test_bpf_sockmap_map_iter_fd(void)
-+{
-+	struct bpf_iter_sockmap *skel;
++	for (i = 0; i < num_sockets; i++) {
++		err = bpf_map_lookup_elem(map_fd, &sock_fd[i], &val);
++		if (!ASSERT_OK(err, "map_lookup") ||
++		    !ASSERT_EQ(val, i + 1 + skel->bss->to_add_val, "check_map_value"))
++			break;
++	}
 +
-+	skel = bpf_iter_sockmap__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "bpf_iter_sockmap__open_and_load"))
-+		return;
+ close_iter:
+ 	close(iter_fd);
+ free_link:
+diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_bpf_sk_storage_map.c b/tools/testing/selftests/bpf/progs/bpf_iter_bpf_sk_storage_map.c
+index 6b70ccaba301..c7b8e006b171 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_iter_bpf_sk_storage_map.c
++++ b/tools/testing/selftests/bpf/progs/bpf_iter_bpf_sk_storage_map.c
+@@ -16,19 +16,37 @@ struct {
+ 
+ __u32 val_sum = 0;
+ __u32 ipv6_sk_count = 0;
++__u32 to_add_val = 0;
+ 
+ SEC("iter/bpf_sk_storage_map")
+-int dump_bpf_sk_storage_map(struct bpf_iter__bpf_sk_storage_map *ctx)
++int rw_bpf_sk_storage_map(struct bpf_iter__bpf_sk_storage_map *ctx)
+ {
+ 	struct sock *sk = ctx->sk;
+ 	__u32 *val = ctx->value;
+ 
+-	if (sk == (void *)0 || val == (void *)0)
++	if (sk == NULL || val == NULL)
+ 		return 0;
+ 
+ 	if (sk->sk_family == AF_INET6)
+ 		ipv6_sk_count++;
+ 
+ 	val_sum += *val;
 +
-+	do_read_map_iter_fd(&skel->skeleton, skel->progs.copy, skel->maps.sockmap);
++	*val += to_add_val;
 +
-+	bpf_iter_sockmap__destroy(skel);
++	return 0;
 +}
 +
- void test_bpf_iter(void)
- {
- 	if (test__start_subtest("btf_id_or_null"))
-@@ -1267,10 +1353,14 @@ void test_bpf_iter(void)
- 		test_bpf_percpu_hash_map();
- 	if (test__start_subtest("bpf_array_map"))
- 		test_bpf_array_map();
-+	if (test__start_subtest("bpf_array_map_iter_fd"))
-+		test_bpf_array_map_iter_fd();
- 	if (test__start_subtest("bpf_percpu_array_map"))
- 		test_bpf_percpu_array_map();
- 	if (test__start_subtest("bpf_sk_storage_map"))
- 		test_bpf_sk_storage_map();
-+	if (test__start_subtest("bpf_sk_storage_map_iter_fd"))
-+		test_bpf_sk_stoarge_map_iter_fd();
- 	if (test__start_subtest("bpf_sk_storage_delete"))
- 		test_bpf_sk_storage_delete();
- 	if (test__start_subtest("bpf_sk_storage_get"))
-@@ -1283,4 +1373,6 @@ void test_bpf_iter(void)
- 		test_link_iter();
- 	if (test__start_subtest("ksym"))
- 		test_ksym_iter();
-+	if (test__start_subtest("bpf_sockmap_map_iter_fd"))
-+		test_bpf_sockmap_map_iter_fd();
++SEC("iter/bpf_sk_storage_map")
++int oob_write_bpf_sk_storage_map(struct bpf_iter__bpf_sk_storage_map *ctx)
++{
++	struct sock *sk = ctx->sk;
++	__u32 *val = ctx->value;
++
++	if (sk == NULL || val == NULL)
++		return 0;
++
++	*(val + 1) = 0xdeadbeef;
++
+ 	return 0;
  }
 -- 
 2.29.2
