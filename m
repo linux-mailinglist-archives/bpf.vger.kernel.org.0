@@ -2,111 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8607B58E48B
-	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 03:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A827758E4A0
+	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 03:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbiHJBfA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Aug 2022 21:35:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58636 "EHLO
+        id S229605AbiHJBnK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Aug 2022 21:43:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230115AbiHJBe7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Aug 2022 21:34:59 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B4A470E6D
-        for <bpf@vger.kernel.org>; Tue,  9 Aug 2022 18:34:57 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4M2XWw6KkhzKPxp
-        for <bpf@vger.kernel.org>; Wed, 10 Aug 2022 09:33:32 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP1 (Coremail) with SMTP id cCh0CgDX3us7C_NiBzmTAA--.2076S2;
-        Wed, 10 Aug 2022 09:34:55 +0800 (CST)
-Subject: Re: [PATCH bpf 5/9] bpf: Check the validity of max_rdwr_access for sk
- storage map iterator
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>, houtao1@huawei.com
-References: <20220806074019.2756957-1-houtao@huaweicloud.com>
- <20220806074019.2756957-6-houtao@huaweicloud.com>
- <20220809184602.equlp2thcs2j4774@kafai-mbp>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <60c922fa-24cc-a108-696e-64c0fb75f2c2@huaweicloud.com>
-Date:   Wed, 10 Aug 2022 09:34:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        with ESMTP id S229513AbiHJBmx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Aug 2022 21:42:53 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D01F6FA2A
+        for <bpf@vger.kernel.org>; Tue,  9 Aug 2022 18:42:52 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a7so25222588ejp.2
+        for <bpf@vger.kernel.org>; Tue, 09 Aug 2022 18:42:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=KHADnXhpj7armAd2wmbdMCnBwL4OaEHm3SVGv3C5Xnc=;
+        b=hNT5aSamihOhh+j7xc/mQHXgR4XMogWuEJxqm6exBzOFTNzSJuIiM3EKjK3b+UuazA
+         ORABmlNusUOiUqcaGMM9Hkk9L2Rq3+rOLWFKERrwJdmJrV75QgfanhIW9sn96ptRc1v1
+         P0I5nyFaw/CWDeoTjAtW2KcXnfggA3xYwDL1uKHIOINCcssD2gf0NWDMUOm9+ijt5IIN
+         ifmx10iLrXYrLke2O6NNjqJQwAGJadGS3Rp8TfjALPry34xZdlp4ARZxgWR+T9uKhTS/
+         EQyzXZm6YHJfDAlvJEFYct9PTcGQ/thpYumXfRjGO7yefdRe323ANvcnRBllUXnmnzo8
+         rFhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=KHADnXhpj7armAd2wmbdMCnBwL4OaEHm3SVGv3C5Xnc=;
+        b=rO/TN618FzVVuDlWj/a0Y37I4fw2Y8en87xGNadWGkrfnDG00pPZIEH4lX9qAUO4sP
+         3oMpWl04jCN8hMjHQv9k8wkd9IYj0XUDpoq4gQwTS6f1VZ9v5f+TS+EcDHDM/0FvjaRr
+         T2MYPpQTYPuJtqLMn/frAdg/z3GZpTHmlKlSZtQ37ATGDIugLVKLavJ2jFjmMsyvXlEZ
+         Bae3Xm/JLLn+Mae9a5G+zEXJ8a1Sidb4VE/wZUay2/N0dudnYBQrYu51/Zh9oxH3Isge
+         PPCSiaphnOitLcrEaTDkXN4bX8dbiGTMRKFb2S9pEiR8zokvHRi2SwDeV17q8slb03aI
+         JN1A==
+X-Gm-Message-State: ACgBeo3knZMNb9tu2lpXymEGKspLvwfmGCbVzYcnowwJnkaEna3BMQD5
+        N70aLm7kTEYbUTZgNcyXdKgqO7vraFmtGsIKnOoGXfKUgRY=
+X-Google-Smtp-Source: AA6agR62s/CSaswwW77InVLoIVTgGzJ/TlXMOBYP7ZHwEJAyzUXt7sJxRyaapnblzZUxFzqIRQ0qhKHyqiAgxm4fAEw=
+X-Received: by 2002:a17:906:a089:b0:72f:826b:e084 with SMTP id
+ q9-20020a170906a08900b0072f826be084mr19302991ejy.708.1660095771143; Tue, 09
+ Aug 2022 18:42:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20220809184602.equlp2thcs2j4774@kafai-mbp>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID: cCh0CgDX3us7C_NiBzmTAA--.2076S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrZryrWrWrtr4fJw43ZFyUAwb_yoWkGrc_uF
-        4UZ3Wxur4agrn2kw4qkasxZry7Kw1kZF18GrZxJrW3G3ZxXay0q3W0yrWkZa4fWrn5XF47
-        Jwn5ZrZ2gF43ZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbIxYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-        Y4v20xvaj40_JFC_Wr1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
-        67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_
-        WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
-        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-        7IU1zuWJUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220809214055.4050604-1-joannelkoong@gmail.com>
+In-Reply-To: <20220809214055.4050604-1-joannelkoong@gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 9 Aug 2022 18:42:39 -0700
+Message-ID: <CAADnVQ+yLEuOFYQ47EDt4yGxHfEpL11qbMnabO_MHp_nihVY2w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/2] bpf: Fix ref_obj_id for dynptr data
+ slices in verifier
+To:     Joanne Koong <joannelkoong@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        David Vernet <void@manifault.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
-
-On 8/10/2022 2:46 AM, Martin KaFai Lau wrote:
-> On Sat, Aug 06, 2022 at 03:40:15PM +0800, Hou Tao wrote:
->> From: Hou Tao <houtao1@huawei.com>
->>
->> The value of sock map is writable in map iterator, so check
-> Not a sock map.  It is a sk local storage map.
-Will update in v2. Thanks.
+On Tue, Aug 9, 2022 at 2:41 PM Joanne Koong <joannelkoong@gmail.com> wrote:
 >
->> max_rdwr_access instead of max_rdonly_access.
->>
->> Fixes: 5ce6e77c7edf ("bpf: Implement bpf iterator for sock local storage map")
->> Signed-off-by: Hou Tao <houtao1@huawei.com>
->> ---
->>  net/core/bpf_sk_storage.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
->> index 83b89ba824d7..1b7f385643b4 100644
->> --- a/net/core/bpf_sk_storage.c
->> +++ b/net/core/bpf_sk_storage.c
->> @@ -904,7 +904,7 @@ static int bpf_iter_attach_map(struct bpf_prog *prog,
->>  	if (map->map_type != BPF_MAP_TYPE_SK_STORAGE)
->>  		goto put_map;
->>  
->> -	if (prog->aux->max_rdonly_access > map->value_size) {
->> +	if (prog->aux->max_rdwr_access > map->value_size) {
->>  		err = -EACCES;
->>  		goto put_map;
->>  	}
->> -- 
->> 2.29.2
->>
+> When a data slice is obtained from a dynptr (through the bpf_dynptr_data API),
+> the ref obj id of the dynptr must be found and then associated with the data
+> slice.
+>
+> The ref obj id of the dynptr must be found *before* the caller saved regs are
+> reset. Without this fix, the ref obj id tracking is not correct for
+> dynptrs that are at an offset from the frame pointer.
+>
+> Please also note that the data slice's ref obj id must be assigned after the
+> ret types are parsed, since RET_PTR_TO_ALLOC_MEM-type return regs get
+> zero-marked.
+>
+> Fixes: 34d4ef5775f776ec4b0d53a02d588bf3195cada6 ("bpf: Add dynptr data slices");
 
+The proper format is:
+Fixes: 34d4ef5775f7 ("bpf: Add dynptr data slices")
+make sure you have abbrev = 12 in your .gitconfig
+No need for ; at the end.
+
+> Signed-off-by: Joanne Koong <joannelkoong@gmail.com>
+> ---
+>  kernel/bpf/verifier.c | 38 ++++++++++++++++++++------------------
+>  1 file changed, 20 insertions(+), 18 deletions(-)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 01e7f48b4d8c..28b02dc67a2a 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -504,7 +504,7 @@ static bool is_ptr_cast_function(enum bpf_func_id func_id)
+>                 func_id == BPF_FUNC_skc_to_tcp_request_sock;
+>  }
+>
+> -static bool is_dynptr_acquire_function(enum bpf_func_id func_id)
+> +static bool is_dynptr_ref_function(enum bpf_func_id func_id)
+>  {
+>         return func_id == BPF_FUNC_dynptr_data;
+>  }
+> @@ -518,7 +518,7 @@ static bool helper_multiple_ref_obj_use(enum bpf_func_id func_id,
+>                 ref_obj_uses++;
+>         if (is_acquire_function(func_id, map))
+>                 ref_obj_uses++;
+> -       if (is_dynptr_acquire_function(func_id))
+> +       if (is_dynptr_ref_function(func_id))
+>                 ref_obj_uses++;
+>
+>         return ref_obj_uses > 1;
+> @@ -7320,6 +7320,23 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>                         }
+>                 }
+>                 break;
+> +       case BPF_FUNC_dynptr_data:
+> +               for (i = 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
+> +                       if (arg_type_is_dynptr(fn->arg_type[i])) {
+> +                               if (meta.ref_obj_id) {
+> +                                       verbose(env, "verifier internal error: meta.ref_obj_id already set\n");
+> +                                       return -EFAULT;
+> +                               }
+> +                               /* Find the id of the dynptr we're tracking the reference of */
+> +                               meta.ref_obj_id = stack_slot_get_id(env, &regs[BPF_REG_1 + i]);
+> +                               break;
+> +                       }
+> +               }
+> +               if (i == MAX_BPF_FUNC_REG_ARGS) {
+> +                       verbose(env, "verifier internal error: no dynptr in bpf_dynptr_data()\n");
+> +                       return -EFAULT;
+> +               }
+> +               break;
+>         }
+>
+>         if (err)
+> @@ -7457,7 +7474,7 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>                 return -EFAULT;
+>         }
+>
+> -       if (is_ptr_cast_function(func_id)) {
+> +       if (is_ptr_cast_function(func_id) || is_dynptr_ref_function(func_id)) {
+>                 /* For release_reference() */
+>                 regs[BPF_REG_0].ref_obj_id = meta.ref_obj_id;
+>         } else if (is_acquire_function(func_id, meta.map_ptr)) {
+> @@ -7469,21 +7486,6 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+>                 regs[BPF_REG_0].id = id;
+>                 /* For release_reference() */
+>                 regs[BPF_REG_0].ref_obj_id = id;
+> -       } else if (is_dynptr_acquire_function(func_id)) {
+> -               int dynptr_id = 0, i;
+> -
+> -               /* Find the id of the dynptr we're tracking the reference of */
+> -               for (i = 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
+> -                       if (arg_type_is_dynptr(fn->arg_type[i])) {
+> -                               if (dynptr_id) {
+> -                                       verbose(env, "verifier internal error: multiple dynptr args in func\n");
+> -                                       return -EFAULT;
+> -                               }
+> -                               dynptr_id = stack_slot_get_id(env, &regs[BPF_REG_1 + i]);
+
+So this bit of code was just grabbing REG_[1-5] with reg->off == 0
+and random spilled_ptr.id ?
+It never worked correctly, right?
+
+Technically bpf material, but applied to bpf-next due to conflicts.
