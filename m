@@ -2,111 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16AAD58E953
-	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 11:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7F0958EA40
+	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 12:09:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231975AbiHJJMZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Aug 2022 05:12:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37386 "EHLO
+        id S231174AbiHJKJF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Aug 2022 06:09:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231594AbiHJJMY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Aug 2022 05:12:24 -0400
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DC9A86C2D
-        for <bpf@vger.kernel.org>; Wed, 10 Aug 2022 02:12:22 -0700 (PDT)
-Received: by mail-io1-f72.google.com with SMTP id p123-20020a6bbf81000000b00674f66cf13aso7761865iof.23
-        for <bpf@vger.kernel.org>; Wed, 10 Aug 2022 02:12:22 -0700 (PDT)
+        with ESMTP id S231419AbiHJKJE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Aug 2022 06:09:04 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B36BA74CED;
+        Wed, 10 Aug 2022 03:09:03 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id e8-20020a17090a280800b001f2fef7886eso1618622pjd.3;
+        Wed, 10 Aug 2022 03:09:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc;
+        bh=8BJbfd1mRNGml5888L+ImtrTerWo1vcBhYW5MMMQ4FE=;
+        b=Utp8ikvbCkBSPkdkghdTDXMnYkz0rGrQxzOgFyjTRPEkJM00OE9nLLyIl2CNYXlwa9
+         xOJ8Z5IDJe1xWeZ+ncxB8ajIrZBtg5W9KFjEIhORR06NciRre9KYPqm1VoG83ggY92gF
+         1Zi5VDQkMGFzqrITqnptuEfG7lzybrJ8VG9IT3urU2hGvO6exWUeZBVsJy6kraVp8INw
+         BudxtPwColVX7eq1z3emzMDjAg2p6yrL/kxbbZd0gLO2wGP2UJhyii4T3ITjvQBk7rJf
+         24ODbBDwueviBOet/NO142okCAM3Q9xN/u3SPi6bLBXTi8B8bomgdQRuwo57gQw2Drgf
+         k1sQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc;
-        bh=oZmlmPgFuLzTVeJwCUtsQn3jK92/Zbe9geTOC8F9kDE=;
-        b=SqVGlngHLAFWqLr4/19K6Yv5RvHq2mD7+4A3vLbNIHiob3m+Ujx1zp5ygMPusA6uaX
-         dtSFhPF7hdV5f3gzgW7m1ZL19hhocQ/LtOL6UhpKaAcYPAGkuQ+h5HCZCz3etzCTaMoc
-         NXAqZB+gkOFTggecap9wHzGvz+BS/3XBtntPOUB+1BXLWUdhsYAiI8J9LEq7oJbSfkdz
-         EykZ9kfFElBwaSwv4Zq6Oer6G6T8PHOtvyvCebJgPuIqCbka8phYJfk/Og63F75ugLpt
-         MdklBYGBQ+iYoxTdsN+9ze/oPqLJW0diOHhtPJN+WDNTwqBLAZKTkDnv2goVmWxPDxFn
-         Nf6A==
-X-Gm-Message-State: ACgBeo1+kSmp9lDBTJL/QVra2Ww6DAoKOe5soeEYDlKgMX+JqMOAIuTL
-        TSOP6ZWJ1C8427Tq5RkOwqiwfk7hSdYGj5VQ8WUPUFhDfORm
-X-Google-Smtp-Source: AA6agR5LGbZgJoKzBnPq44ScUexr0uehLu94E1e9uLvjC/b/BzoDxSbE4LKZtOlIcspat0kvmw6sWwbM7izBt45glwnwSIEVt8aR
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
+        bh=8BJbfd1mRNGml5888L+ImtrTerWo1vcBhYW5MMMQ4FE=;
+        b=0YFe0kPFgXco67xCrHdsCrUqmJK0VUwmDqbP0rVNT806Cgy880CA8FsP4xhIvuaRo6
+         zm9blRcGke2Z1x1THTdyGxFTn6i/0UnR+pPzOx+jwnH9xqPjW0t2Nf/EJskLl9+sNarE
+         YoLflSXobOrnqariWTfSI1Pw0Cxe3vq2X5iuVWIx/qHIJO0wutA3SkMT+RVQNHqXMKtv
+         4NJN7Hs5CTws7JdM39vjN3RGj1CfP1HtJGAN5lb1XiyFrdyMBCCITc9J7yKpJdAeqDeN
+         40RUgxUzg8iuaPwtfZpp6jVzUcIMjMUbDne2BNvgIWudSkDlRirDGdYUKBLFhNyzBu8S
+         Ifrw==
+X-Gm-Message-State: ACgBeo0jEWfMjSY1wbU4/5g2gMV5QQGZd/NUe89446NWLKMhNYul4/ym
+        0B7TwdyEO0XMFma+5dYeRnQ=
+X-Google-Smtp-Source: AA6agR53jgE60SpiJHyfFh5Cw7iX4QKN5e2MCI+Il7Z4TqbuVF/RGMIg/gtTC0MMBoYMsWB9wwAW8Q==
+X-Received: by 2002:a17:902:dac4:b0:170:d34b:9100 with SMTP id q4-20020a170902dac400b00170d34b9100mr9601997plx.166.1660126143142;
+        Wed, 10 Aug 2022 03:09:03 -0700 (PDT)
+Received: from Kk1r0a.localdomain ([20.205.61.210])
+        by smtp.gmail.com with ESMTPSA id u17-20020a170902e5d100b0016c78aaae7fsm12757848plf.23.2022.08.10.03.08.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Aug 2022 03:09:02 -0700 (PDT)
+From:   Youlin Li <liulin063@gmail.com>
+To:     daniel@iogearbox.net, haoluo@google.com
+Cc:     ast@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        kpsingh@kernel.org, sdf@google.com, jolsa@kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Youlin Li <liulin063@gmail.com>
+Subject: [PATCH 1/2] bpf: Fix 32bit bounds update in ALU64
+Date:   Wed, 10 Aug 2022 18:08:49 +0800
+Message-Id: <20220810100849.25710-1-liulin063@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <9f954e67-67fc-e3b9-d810-22bfea95d2aa@iogearbox.net>
+References: <9f954e67-67fc-e3b9-d810-22bfea95d2aa@iogearbox.net>
 MIME-Version: 1.0
-X-Received: by 2002:a02:6347:0:b0:342:8ad4:ef54 with SMTP id
- j68-20020a026347000000b003428ad4ef54mr12189351jac.162.1660122741600; Wed, 10
- Aug 2022 02:12:21 -0700 (PDT)
-Date:   Wed, 10 Aug 2022 02:12:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004bffef05e5df7207@google.com>
-Subject: [syzbot] linux-next boot error: WARNING in copy_process
-From:   syzbot <syzbot+0f36653d0d34001e0b43@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, bigeasy@linutronix.de,
-        bpf@vger.kernel.org, brauner@kernel.org, david@redhat.com,
-        ebiederm@xmission.com, linux-kernel@vger.kernel.org,
-        linux-next@vger.kernel.org, luto@kernel.org, sfr@canb.auug.org.au,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+The commit ("bpf: Do more tight ALU bounds tracking") introduces a bug
+that fails some selftests.
 
-syzbot found the following issue on:
+in previous versions of the code, when
+__reg_combine_64_into_32() was called, the 32bit boundary was
+completely deduced from the 64bit boundary, so there was a call to
+__mark_reg32_unbounded() in __reg_combine_64_into_32(). But before
+adjust_scalar_min_max_vals() calls
+__reg_combine_64_into_32() , the 32bit bounds are already calculated
+to some extent, and __mark_reg32_unbounded() will eliminate these
+information.
 
-HEAD commit:    bc6c6584ffb2 Add linux-next specific files for 20220810
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=109b7021080000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5784be4315a4403b
-dashboard link: https://syzkaller.appspot.com/bug?extid=0f36653d0d34001e0b43
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+Simply remove the call to __reg_combine_64_into_32() and copying a code
+without __mark_reg32_unbounded() should work.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0f36653d0d34001e0b43@syzkaller.appspotmail.com
+Before:
+    ./test_verifier 142
+    #142/p bounds check after truncation of non-boundary-crossing range FAIL
+    Failed to load prog 'Permission denied'!
+    invalid access to map value, value_size=8 off=16777215 size=1
+    R0 max value is outside of the allowed memory range
+    verification time 149 usec
+    stack depth 8
+    processed 15 insns (limit 1000000) max_states_per_insn 0
+    total_states 0 peak_states 0 mark_read 0
+    Summary: 0 PASSED, 1 SKIPPED, 1 FAILED
 
-------------[ cut here ]------------
-DEBUG_LOCKS_WARN_ON(!p->softirqs_enabled)
-WARNING: CPU: 0 PID: 1047 at kernel/fork.c:2115 copy_process+0x36c9/0x7120 kernel/fork.c:2115
-Modules linked in:
-CPU: 0 PID: 1047 Comm: kworker/u4:5 Not tainted 5.19.0-next-20220810-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/22/2022
-Workqueue: events_unbound call_usermodehelper_exec_work
-RIP: 0010:copy_process+0x36c9/0x7120 kernel/fork.c:2115
-Code: 0c 31 ff 89 de e8 a7 00 35 00 85 db 0f 85 c3 d7 ff ff e8 da 03 35 00 48 c7 c6 c0 11 eb 89 48 c7 c7 00 12 eb 89 e8 68 3a f3 07 <0f> 0b e9 a4 d7 ff ff e8 bb 03 35 00 0f 0b e8 b4 03 35 00 0f 0b e8
-RSP: 0000:ffffc90005187938 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff88801f015880 RSI: ffffffff8161f1f8 RDI: fffff52000a30f19
-RBP: ffffc90005187ac8 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000080000000 R11: 0000000000000001 R12: ffff88802017002c
-R13: ffff888020170000 R14: ffffc90005187c10 R15: 0000000000808100
-FS:  0000000000000000(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffff88823ffff000 CR3: 000000000bc8e000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- kernel_clone+0xe7/0xab0 kernel/fork.c:2675
- user_mode_thread+0xad/0xe0 kernel/fork.c:2744
- call_usermodehelper_exec_work kernel/umh.c:174 [inline]
- call_usermodehelper_exec_work+0xcc/0x180 kernel/umh.c:160
- process_one_work+0x991/0x1610 kernel/workqueue.c:2289
- worker_thread+0x665/0x1080 kernel/workqueue.c:2436
- kthread+0x2e4/0x3a0 kernel/kthread.c:376
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
- </TASK>
+After:
+    ./test_verifier 142
+    #142/p bounds check after truncation of non-boundary-crossing range OK
+    Summary: 1 PASSED, 1 SKIPPED, 0 FAILED
 
-
+Signed-off-by: Youlin Li <liulin063@gmail.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ kernel/bpf/verifier.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 11d8bb54ba6b..7ea6e0372d62 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -9014,7 +9014,17 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
+ 		/* ALU32 ops are zero extended into 64bit register */
+ 		zext_32_to_64(dst_reg);
+ 	} else {
+-		__reg_combine_64_into_32(dst_reg);
++		if (__reg64_bound_s32(dst_reg->smin_value) &&
++		    __reg64_bound_s32(dst_reg->smax_value)) {
++			dst_reg->s32_min_value = (s32)dst_reg->smin_value;
++			dst_reg->s32_max_value = (s32)dst_reg->smax_value;
++		}
++		if (__reg64_bound_u32(dst_reg->umin_value) &&
++		    __reg64_bound_u32(dst_reg->umax_value)) {
++			dst_reg->u32_min_value = (u32)dst_reg->umin_value;
++			dst_reg->u32_max_value = (u32)dst_reg->umax_value;
++		}
++		reg_bounds_sync(dst_reg);
+ 	}
+ 	return 0;
+ }
+-- 
+2.25.1
+
