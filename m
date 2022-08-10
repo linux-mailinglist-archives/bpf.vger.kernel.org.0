@@ -2,97 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E84658E464
-	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 03:15:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8607B58E48B
+	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 03:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229959AbiHJBPT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Aug 2022 21:15:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38210 "EHLO
+        id S229809AbiHJBfA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Aug 2022 21:35:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230003AbiHJBPP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Aug 2022 21:15:15 -0400
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD6B4390;
-        Tue,  9 Aug 2022 18:15:13 -0700 (PDT)
-Received: by mail-qt1-f182.google.com with SMTP id h22so4665566qtu.2;
-        Tue, 09 Aug 2022 18:15:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc;
-        bh=9z8DBBifgkq61eRO+eTNs7T6Uni8kIgemh6E9ctPyVk=;
-        b=kOqSB8i+OjaAZelptc48qGUHp+W0b6QQIjNUFh1Uk/579fjU4Ha2HGtZ07n5nQiPXh
-         RBCTnYHwlCfPVY8pRaHExCpuMuy4MIbYQg8E8zFzU263l/7C2we/tRHm14CIH2OJd22l
-         VzH9lRpmzeKZrGrhkW7zkQSn5nloBmamPPKDCrtiTovNJ4c3mFW7UTxkCnJoBWhDm9II
-         Yk6fm3gI1OgQpOkQgNakwzqALEr3gFAq11ZdmvnQBIIU3d+cfQe8zwJ87VSAcfkgFouZ
-         3d/QztaJQ5gdIGBB9FmHaCjhQnGlg/G+Gdpxsb9hyVSXp+NMJEXlA0oeNr5xaIjg9WJ6
-         JYbQ==
-X-Gm-Message-State: ACgBeo2sV0J54FsI3DLNVopBHdqZw90FlPmxWkczNSyPrUKErEnbEUIn
-        ElUmN3K3pzMpvGz3QWflG4c=
-X-Google-Smtp-Source: AA6agR6gwRuYaoWSNfwhCRSGAbU97vnIZ7xYN+3f4SdlOvWm8FcE+H6apQTwi27KEHzX3zsd3vling==
-X-Received: by 2002:a05:622a:654:b0:31e:e8aa:aef0 with SMTP id a20-20020a05622a065400b0031ee8aaaef0mr22124777qtb.328.1660094112722;
-        Tue, 09 Aug 2022 18:15:12 -0700 (PDT)
-Received: from maniforge (c-24-15-214-156.hsd1.il.comcast.net. [24.15.214.156])
-        by smtp.gmail.com with ESMTPSA id y5-20020a37f605000000b006b5f8f32a8fsm12152264qkj.114.2022.08.09.18.15.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Aug 2022 18:15:12 -0700 (PDT)
-Date:   Tue, 9 Aug 2022 20:15:10 -0500
-From:   David Vernet <void@manifault.com>
-To:     Hao Luo <haoluo@google.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, john.fastabend@gmail.com, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, kpsingh@kernel.org, sdf@google.com,
-        jolsa@kernel.org, tj@kernel.org, joannelkoong@gmail.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/5] bpf: Add user-space-publisher ringbuffer map type
-Message-ID: <20220810011510.c3chrli27e6ebftt@maniforge>
-References: <20220808155248.2475981-1-void@manifault.com>
- <CA+khW7iuENZHvbyWUkq1T1ieV9Yz+MJyRs=7Kd6N59kPTjz7Rg@mail.gmail.com>
+        with ESMTP id S230115AbiHJBe7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Aug 2022 21:34:59 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B4A470E6D
+        for <bpf@vger.kernel.org>; Tue,  9 Aug 2022 18:34:57 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4M2XWw6KkhzKPxp
+        for <bpf@vger.kernel.org>; Wed, 10 Aug 2022 09:33:32 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP1 (Coremail) with SMTP id cCh0CgDX3us7C_NiBzmTAA--.2076S2;
+        Wed, 10 Aug 2022 09:34:55 +0800 (CST)
+Subject: Re: [PATCH bpf 5/9] bpf: Check the validity of max_rdwr_access for sk
+ storage map iterator
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>, houtao1@huawei.com
+References: <20220806074019.2756957-1-houtao@huaweicloud.com>
+ <20220806074019.2756957-6-houtao@huaweicloud.com>
+ <20220809184602.equlp2thcs2j4774@kafai-mbp>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <60c922fa-24cc-a108-696e-64c0fb75f2c2@huaweicloud.com>
+Date:   Wed, 10 Aug 2022 09:34:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+khW7iuENZHvbyWUkq1T1ieV9Yz+MJyRs=7Kd6N59kPTjz7Rg@mail.gmail.com>
-User-Agent: NeoMutt/20220429
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20220809184602.equlp2thcs2j4774@kafai-mbp>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID: cCh0CgDX3us7C_NiBzmTAA--.2076S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZryrWrWrtr4fJw43ZFyUAwb_yoWkGrc_uF
+        4UZ3Wxur4agrn2kw4qkasxZry7Kw1kZF18GrZxJrW3G3ZxXay0q3W0yrWkZa4fWrn5XF47
+        Jwn5ZrZ2gF43ZjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbIxYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+        Y4v20xvaj40_JFC_Wr1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
+        67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_
+        WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+        7IU1zuWJUUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Hao,
+Hi,
 
-On Mon, Aug 08, 2022 at 11:57:53AM -0700, Hao Luo wrote:
-> > Note that one thing that is not included in this patch-set is the ability
-> > to kick the kernel from user-space to have it drain messages. The selftests
-> > included in this patch-set currently just use progs with syscall hooks to
-> > "kick" the kernel and have it drain samples from a user-producer
-> > ringbuffer, but being able to kick the kernel using some other mechanism
-> > that doesn't rely on such hooks would be very useful as well. I'm planning
-> > on adding this in a future patch-set.
-> >
-> 
-> This could be done using iters. Basically, you can perform draining in
-> bpf_iter programs and export iter links as bpffs files. Then to kick
-> the kernel, you simply just read() the file.
+On 8/10/2022 2:46 AM, Martin KaFai Lau wrote:
+> On Sat, Aug 06, 2022 at 03:40:15PM +0800, Hou Tao wrote:
+>> From: Hou Tao <houtao1@huawei.com>
+>>
+>> The value of sock map is writable in map iterator, so check
+> Not a sock map.  It is a sk local storage map.
+Will update in v2. Thanks.
+>
+>> max_rdwr_access instead of max_rdonly_access.
+>>
+>> Fixes: 5ce6e77c7edf ("bpf: Implement bpf iterator for sock local storage map")
+>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+>> ---
+>>  net/core/bpf_sk_storage.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/net/core/bpf_sk_storage.c b/net/core/bpf_sk_storage.c
+>> index 83b89ba824d7..1b7f385643b4 100644
+>> --- a/net/core/bpf_sk_storage.c
+>> +++ b/net/core/bpf_sk_storage.c
+>> @@ -904,7 +904,7 @@ static int bpf_iter_attach_map(struct bpf_prog *prog,
+>>  	if (map->map_type != BPF_MAP_TYPE_SK_STORAGE)
+>>  		goto put_map;
+>>  
+>> -	if (prog->aux->max_rdonly_access > map->value_size) {
+>> +	if (prog->aux->max_rdwr_access > map->value_size) {
+>>  		err = -EACCES;
+>>  		goto put_map;
+>>  	}
+>> -- 
+>> 2.29.2
+>>
 
-Thanks for pointing this out. I agree that iters could be used this way to
-kick the kernel, and perhaps that would be a sufficient solution. My
-thinking, however, was that it would be useful to provide some APIs that
-are a bit more ergonomic, and specifically meant to enable kicking
-arbitrary "pre-attached" callbacks in a BPF prog, possibly along with some
-payload from userspace.
-
-Iters allow userspace to kick the kernel, but IMO they're meant to enable
-data extraction from the kernel, and dumping kernel data into user-space.
-What I'm proposing is a more generalizable way of driving logic in the
-kernel from user-space.
-
-Does that make sense? Looking forward to hearing your thoughts.
-
-Thanks,
-David
