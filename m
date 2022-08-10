@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7F0958EA40
-	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 12:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91E6D58EA44
+	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 12:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231174AbiHJKJF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Aug 2022 06:09:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43916 "EHLO
+        id S231190AbiHJKJd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Aug 2022 06:09:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231419AbiHJKJE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Aug 2022 06:09:04 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B36BA74CED;
-        Wed, 10 Aug 2022 03:09:03 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id e8-20020a17090a280800b001f2fef7886eso1618622pjd.3;
-        Wed, 10 Aug 2022 03:09:03 -0700 (PDT)
+        with ESMTP id S230006AbiHJKJc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Aug 2022 06:09:32 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BE3C7436C;
+        Wed, 10 Aug 2022 03:09:32 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id ha11so14282767pjb.2;
+        Wed, 10 Aug 2022 03:09:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc;
-        bh=8BJbfd1mRNGml5888L+ImtrTerWo1vcBhYW5MMMQ4FE=;
-        b=Utp8ikvbCkBSPkdkghdTDXMnYkz0rGrQxzOgFyjTRPEkJM00OE9nLLyIl2CNYXlwa9
-         xOJ8Z5IDJe1xWeZ+ncxB8ajIrZBtg5W9KFjEIhORR06NciRre9KYPqm1VoG83ggY92gF
-         1Zi5VDQkMGFzqrITqnptuEfG7lzybrJ8VG9IT3urU2hGvO6exWUeZBVsJy6kraVp8INw
-         BudxtPwColVX7eq1z3emzMDjAg2p6yrL/kxbbZd0gLO2wGP2UJhyii4T3ITjvQBk7rJf
-         24ODbBDwueviBOet/NO142okCAM3Q9xN/u3SPi6bLBXTi8B8bomgdQRuwo57gQw2Drgf
-         k1sQ==
+        bh=KcmHJefryIxAiZBfRnjU5qecxx/rK/aM8Ha7CjqQQlM=;
+        b=kl9I5pFTBuw8+Sq/Ag3aM7mTJ5MLA87i5Gfma9VL28i8mEyo3paDft6pqNfwPFymh1
+         GpId3pzgxWlizyKFgwYUbll3+ujOc6y/3/Gp9cQgpaZ/eTnE7wjdZhgNSZFdmBTtxK61
+         2Mz0IE3lJVhLRPQe7OZDWeBIfS2dzsfHcGXazSTqfc+0M4XJlfeFNtfEef5d9GRyRVax
+         N3XXmD2S2gfla77WbiDUdzw8t64Ih8vjbgvXu9K8TYxupixwOmXCWf1Q+o0/l0Ekt134
+         4vSfLF3wFlVTAW/RxCb+MqrL0HueRNw1dBb4faPZ3axwbb3JKIzdATZR2dcnHvj6ndHl
+         PwfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
-        bh=8BJbfd1mRNGml5888L+ImtrTerWo1vcBhYW5MMMQ4FE=;
-        b=0YFe0kPFgXco67xCrHdsCrUqmJK0VUwmDqbP0rVNT806Cgy880CA8FsP4xhIvuaRo6
-         zm9blRcGke2Z1x1THTdyGxFTn6i/0UnR+pPzOx+jwnH9xqPjW0t2Nf/EJskLl9+sNarE
-         YoLflSXobOrnqariWTfSI1Pw0Cxe3vq2X5iuVWIx/qHIJO0wutA3SkMT+RVQNHqXMKtv
-         4NJN7Hs5CTws7JdM39vjN3RGj1CfP1HtJGAN5lb1XiyFrdyMBCCITc9J7yKpJdAeqDeN
-         40RUgxUzg8iuaPwtfZpp6jVzUcIMjMUbDne2BNvgIWudSkDlRirDGdYUKBLFhNyzBu8S
-         Ifrw==
-X-Gm-Message-State: ACgBeo0jEWfMjSY1wbU4/5g2gMV5QQGZd/NUe89446NWLKMhNYul4/ym
-        0B7TwdyEO0XMFma+5dYeRnQ=
-X-Google-Smtp-Source: AA6agR53jgE60SpiJHyfFh5Cw7iX4QKN5e2MCI+Il7Z4TqbuVF/RGMIg/gtTC0MMBoYMsWB9wwAW8Q==
-X-Received: by 2002:a17:902:dac4:b0:170:d34b:9100 with SMTP id q4-20020a170902dac400b00170d34b9100mr9601997plx.166.1660126143142;
-        Wed, 10 Aug 2022 03:09:03 -0700 (PDT)
+        bh=KcmHJefryIxAiZBfRnjU5qecxx/rK/aM8Ha7CjqQQlM=;
+        b=hMleyo0ceLtYuiythbgw1Uaqegjfaz1OkPCjyM06zasSOPjlJJHAaWhD0RRzuTlr8s
+         cRm4nP8ZYAP1DmiCrq3VMb5Q2V89UNB6PMrdx6qYdYK1ScUBtxMc26j6fWL0sRpy9vtb
+         dV7+n1DUZwfXaXHtSYoWMzQbOYR8c2UMhXarPfzAXXNIMBjPBqukL/9Od9fL17O2eerO
+         SrS/5EsP4Z07Dosl4QbP55hYvEwxcQom4NpK6Bb8Xxxs7NG0aFdGChHN7oTZ+Tf/DmGY
+         /no55C+vec0mOWEB9xt2OUpvDpzXxcRfsJmjrzIiUXRp2XPTEg+mRFsSxPUPHIBcxdbO
+         n9Ww==
+X-Gm-Message-State: ACgBeo10zY6km5Ax+VaVFcntC8dbCrAXqC+w6BpUn9/SsldTL1bIV1F0
+        FS27c1GvaX4XVw1nnkvQ96JcOzdWi8urCRdp6GU=
+X-Google-Smtp-Source: AA6agR6wtwY1QyETP8dUDItPiaXa+PCUBe3tyGDvEncw3AU5xVc2av6Ipq/lvr9tra0aSXfTky4wow==
+X-Received: by 2002:a17:90a:fd82:b0:1f7:2cb2:e369 with SMTP id cx2-20020a17090afd8200b001f72cb2e369mr3023151pjb.134.1660126171611;
+        Wed, 10 Aug 2022 03:09:31 -0700 (PDT)
 Received: from Kk1r0a.localdomain ([20.205.61.210])
-        by smtp.gmail.com with ESMTPSA id u17-20020a170902e5d100b0016c78aaae7fsm12757848plf.23.2022.08.10.03.08.56
+        by smtp.gmail.com with ESMTPSA id s7-20020a170902988700b0016f8e8032c4sm11379778plp.129.2022.08.10.03.09.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Aug 2022 03:09:02 -0700 (PDT)
+        Wed, 10 Aug 2022 03:09:31 -0700 (PDT)
 From:   Youlin Li <liulin063@gmail.com>
 To:     daniel@iogearbox.net, haoluo@google.com
 Cc:     ast@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
@@ -54,9 +54,9 @@ Cc:     ast@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
         kpsingh@kernel.org, sdf@google.com, jolsa@kernel.org,
         bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
         Youlin Li <liulin063@gmail.com>
-Subject: [PATCH 1/2] bpf: Fix 32bit bounds update in ALU64
-Date:   Wed, 10 Aug 2022 18:08:49 +0800
-Message-Id: <20220810100849.25710-1-liulin063@gmail.com>
+Subject: [PATCH 2/2] bpf, selftests: Add verifier test case for ALU64
+Date:   Wed, 10 Aug 2022 18:09:19 +0800
+Message-Id: <20220810100919.26447-1-liulin063@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <9f954e67-67fc-e3b9-d810-22bfea95d2aa@iogearbox.net>
 References: <9f954e67-67fc-e3b9-d810-22bfea95d2aa@iogearbox.net>
@@ -72,66 +72,58 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The commit ("bpf: Do more tight ALU bounds tracking") introduces a bug
-that fails some selftests.
+Add a test case to ensure that 32-bit bounds can be learned from 64-bit
+bounds when performing 64-bit ALU operations.
 
-in previous versions of the code, when
-__reg_combine_64_into_32() was called, the 32bit boundary was
-completely deduced from the 64bit boundary, so there was a call to
-__mark_reg32_unbounded() in __reg_combine_64_into_32(). But before
-adjust_scalar_min_max_vals() calls
-__reg_combine_64_into_32() , the 32bit bounds are already calculated
-to some extent, and __mark_reg32_unbounded() will eliminate these
-information.
-
-Simply remove the call to __reg_combine_64_into_32() and copying a code
-without __mark_reg32_unbounded() should work.
+Make use of dead code elimination, so that we can see the verifier
+bailing out on unmodified kernels.
 
 Before:
-    ./test_verifier 142
-    #142/p bounds check after truncation of non-boundary-crossing range FAIL
+    ./test_verifier 165
+    #165/p 32-bit bounds update in ALU64 FAIL
     Failed to load prog 'Permission denied'!
-    invalid access to map value, value_size=8 off=16777215 size=1
-    R0 max value is outside of the allowed memory range
-    verification time 149 usec
-    stack depth 8
-    processed 15 insns (limit 1000000) max_states_per_insn 0
-    total_states 0 peak_states 0 mark_read 0
+    R2 !read_ok
+    verification time 49 usec
+    stack depth 0
+    processed 8 insns (limit 1000000) max_states_per_insn 0 total_states
+    0 peak_states 0 mark_read 0
     Summary: 0 PASSED, 1 SKIPPED, 1 FAILED
 
 After:
-    ./test_verifier 142
-    #142/p bounds check after truncation of non-boundary-crossing range OK
+    ./test_verifier 165
+    #165/p 32-bit bounds update in ALU64 OK
     Summary: 1 PASSED, 1 SKIPPED, 0 FAILED
 
 Signed-off-by: Youlin Li <liulin063@gmail.com>
 ---
- kernel/bpf/verifier.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ tools/testing/selftests/bpf/verifier/bounds.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 11d8bb54ba6b..7ea6e0372d62 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -9014,7 +9014,17 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
- 		/* ALU32 ops are zero extended into 64bit register */
- 		zext_32_to_64(dst_reg);
- 	} else {
--		__reg_combine_64_into_32(dst_reg);
-+		if (__reg64_bound_s32(dst_reg->smin_value) &&
-+		    __reg64_bound_s32(dst_reg->smax_value)) {
-+			dst_reg->s32_min_value = (s32)dst_reg->smin_value;
-+			dst_reg->s32_max_value = (s32)dst_reg->smax_value;
-+		}
-+		if (__reg64_bound_u32(dst_reg->umin_value) &&
-+		    __reg64_bound_u32(dst_reg->umax_value)) {
-+			dst_reg->u32_min_value = (u32)dst_reg->umin_value;
-+			dst_reg->u32_max_value = (u32)dst_reg->umax_value;
-+		}
-+		reg_bounds_sync(dst_reg);
- 	}
- 	return 0;
- }
+diff --git a/tools/testing/selftests/bpf/verifier/bounds.c b/tools/testing/selftests/bpf/verifier/bounds.c
+index 33125d5f6772..b9aee2f2c66e 100644
+--- a/tools/testing/selftests/bpf/verifier/bounds.c
++++ b/tools/testing/selftests/bpf/verifier/bounds.c
+@@ -753,3 +753,20 @@
+ 	.result_unpriv = REJECT,
+ 	.result = ACCEPT,
+ },
++{
++	"32-bit bounds update in ALU64",
++	.insns = {
++	BPF_MOV64_IMM(BPF_REG_0, 0),
++	BPF_MOV64_IMM(BPF_REG_1, 0),
++	BPF_ALU64_IMM(BPF_NEG, BPF_REG_1, 0),
++	BPF_ALU64_IMM(BPF_NEG, BPF_REG_1, 0),
++	BPF_ALU64_IMM(BPF_ARSH, BPF_REG_1, 63),
++	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 2),
++	BPF_JMP32_IMM(BPF_JGE, BPF_REG_1, 1, 1),
++	BPF_MOV64_REG(BPF_REG_0, BPF_REG_2),
++	BPF_JMP32_IMM(BPF_JLE, BPF_REG_1, 2, 1),
++	BPF_MOV64_REG(BPF_REG_0, BPF_REG_2),
++	BPF_EXIT_INSN()
++	},
++	.result = ACCEPT,
++},
 -- 
 2.25.1
 
