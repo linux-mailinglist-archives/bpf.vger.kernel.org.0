@@ -2,133 +2,188 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB1058F467
-	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 00:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8597458F4BD
+	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 01:17:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233434AbiHJWa7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Aug 2022 18:30:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35412 "EHLO
+        id S231499AbiHJXQ5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Aug 2022 19:16:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233491AbiHJWa6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Aug 2022 18:30:58 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 065E9C43;
-        Wed, 10 Aug 2022 15:30:57 -0700 (PDT)
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27AGuSA5003233;
-        Wed, 10 Aug 2022 15:30:57 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=ln/TxMM1PbYkM5xdEE1MijES8wOeA8H8gSyfD2Rkoww=;
- b=RvketywgHyrfYa0DjZqV+sc9UzCj8J6Sk9vXCU4iqQ0kbN0m5VFDgbLZQjj4te86fnnf
- 0b5L2fhm008qz1omPJQA8EVL0keAnObMOUHgD+rn+wZVywFz29H8LtYvK5vz/oNiAnhA
- LMSuIVDvujYWTOtB8dZAMkOQT3x1dyOQZFI= 
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2170.outbound.protection.outlook.com [104.47.55.170])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hvdb6cnjw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Aug 2022 15:30:57 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fYy+/HJLgg4pDRYpSrDk2R5itvUrfPABxBM221mWS94/cL7orLoDrMQ7RfZcJ2O2xprg7bwGlcuiAF94dsrbCQAJ+wxA7m2PLl5Bex8LKHpXnkItnCTRY8Xa6ieXIIEAlFgDg7ConMahxLsRnt6sQ5PLHb0+sprkiz1Qlm8cAtkzOMRuEdfWv8dVYEiQCLH5oTRClm2q8ejhKCRxz1wbSCoPixY1EqReLZcQ0G48ULj7wpc4mcoJfM3CReSxNmo9uXE9ihSavdZr0ol2oyId8dKcfq5UJLkY/GqvAP6akppSdeEn/ENs5GAwvh0iPtIvMzcPjHJchg5u0f15PtcT+Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ln/TxMM1PbYkM5xdEE1MijES8wOeA8H8gSyfD2Rkoww=;
- b=iw0TjxStmKUpBwde99n2APPBCfMQrvdO8a1ph5D/Sbm8Z0Ls+9OPMgqUfijrBTutuKIa1RcFXMvnlRWyPXZIaDeDprFnA5Sg/cEiWDxmE3UCbkpp0ZRAe6+cH6FBiHP8wUfUyZw4ZZ9hOKWP2mXkM2yIe3xurqaAnf2vdGPIwL50qmNmCpXW26hLry5hlNnnQZVau9arvFdyaTtIwQtG199I6XmRrWXiX7WZQPANNQ5pcvoWT6yp/sSvzsS8vCP1H8WFzu1WQvzk2wH4PbYzYUp1VYoNL1kkX1d107LW7zUDsbyklo85eprQTkstONbdQhAEKbwiyduP4e89gv0qYQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from MW4PR15MB4475.namprd15.prod.outlook.com (2603:10b6:303:104::16)
- by BYAPR15MB2471.namprd15.prod.outlook.com (2603:10b6:a02:90::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5525.11; Wed, 10 Aug
- 2022 22:30:55 +0000
-Received: from MW4PR15MB4475.namprd15.prod.outlook.com
- ([fe80::5455:4e3f:a5a2:6a9e]) by MW4PR15MB4475.namprd15.prod.outlook.com
- ([fe80::5455:4e3f:a5a2:6a9e%4]) with mapi id 15.20.5525.011; Wed, 10 Aug 2022
- 22:30:55 +0000
-Date:   Wed, 10 Aug 2022 15:30:51 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Jie Meng <jmeng@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next] tcp: Make SYN ACK RTO tunable by BPF programs
- with TFO
-Message-ID: <20220810223051.5pg2jayrak7nk46a@kafai-mbp.dhcp.thefacebook.com>
-References: <20220806000635.472853-1-jmeng@fb.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220806000635.472853-1-jmeng@fb.com>
-X-ClientProxiedBy: SJ0PR03CA0070.namprd03.prod.outlook.com
- (2603:10b6:a03:331::15) To MW4PR15MB4475.namprd15.prod.outlook.com
- (2603:10b6:303:104::16)
+        with ESMTP id S231424AbiHJXQ5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Aug 2022 19:16:57 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06E5279EFD
+        for <bpf@vger.kernel.org>; Wed, 10 Aug 2022 16:16:55 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id d187so6681382iof.4
+        for <bpf@vger.kernel.org>; Wed, 10 Aug 2022 16:16:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=5nTkKdwl3VhpsGQc0Q951tVWFeGUipc4OlwaamzfkrU=;
+        b=XituKCRBhfQx4imB/Xmuly3Jsy9Ql5zO35DcYUI9ZNmd5qtVeelgIipAKokqFpd7iC
+         46Nr10YZL5vJkTtUdTN5xuZHKr1pwNnbaTfGSkO2D9vKlFX0gqyJDTmq3dCLRMGliOOJ
+         f62cA0Fylbi4V4Tus7pjllivbbmss/0P039Ej4m4ZZkmBBHtW3aco+NDBG9wmOfWmKT3
+         7F0EARCeWdCsR0Ilww+7ft5QsNnQgNXbEuf/dJqfdNhVDZutUmQOCDKjUNf6qOXkGrzd
+         q72EoxWPnckExeuG/tfAWtTfPiZUh5jR3EiU0dwmSc3ebnsZKzYmSas23BpTw5CC0yET
+         CTQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=5nTkKdwl3VhpsGQc0Q951tVWFeGUipc4OlwaamzfkrU=;
+        b=oxZ8HDlNkUwrvXUKhjaN2G3LToC1oBNEyY1PaFCeiIJadXHaROfma+yqsppLruFYLK
+         /Sc9MqPL0R8X60VBvKOVJfm/YkJrSeB9elZVeP0/UQJEwefXRCFbCtDJAm3xfAX51hHN
+         0l8BjHHUtjOJVDDAdz3IzJNoWFymsFJZtgdEC7VkLlRVBTutX0JpWCb3EpsWxQB6kTFG
+         sR5qar2WuxRQ9br7C4MoTJ7x9xAPSlfzP3/BgOPemXUSmcp2ISBKQqsVRTMEyVTP9v10
+         vCCoBz6ASZb2xY8eeOFnXbq/MhlN0PXaiV7IsHpU3CxKCyiZPE4v1RR42FVV606CTsoF
+         udiw==
+X-Gm-Message-State: ACgBeo0PHNhxsJNYV3Dswz8rliQncPL+YpxWnc0MwSPeDV6zO/UKBnPm
+        NZ8/ebstpEIyvMA380opDZa/nax4vgKm+MBsdGs=
+X-Google-Smtp-Source: AA6agR4ja1lwOz20wI329KL4HAc0NT86o1FEPkoMg4BXkBmLUFMu4WvWYO+O4Ul/btdB6WzkY9dIzx7NUNtm1ZsxnVI=
+X-Received: by 2002:a05:6638:210e:b0:343:1748:910 with SMTP id
+ n14-20020a056638210e00b0034317480910mr7218760jaj.116.1660173414029; Wed, 10
+ Aug 2022 16:16:54 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1e8c2a6f-17dd-4112-adeb-08da7b1ffd5b
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2471:EE_
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: y6ie7edy4QjOxLZyS4wNW0gPIHtK7mjPa0coHOKClJRpDgz+SeD14P7MW4e5PsUB3mmunW4W05x18D2LYXbZTTrgtdcmvnXrcR/k0RdH3yFSSBuPiF56MNpU6dlv24XJwufBoJCUySmke5ZQwnxO/aDgAEYz8PAr+W9no0MY8uA/soVY1fZH7sauAH1XhIf3IYGdjiWpFmhX7byIXaHLxoGcVLybvkO5QNB1oceTKC/KcIYfx0IZO6V+wPgD0hKp3vvGMDbXKG+s6pu+QcEJ3qTHPWHOImbXpGt0SAs/S5v3zGVWTjF0IeEcld1jSOWbKtZWGhuDDlfnyRjXe4/8qgZPfwpZTVIDgN6suPiKjp+vK3beT1XWlmYJF95KGggDNNGAlME5obRMQuw4B43fdkBe2TE4VMNTI16rcT3T+uNlAZcY0WY8PSfA6zMBxJZRtUopdFvVbjxk7k8FBrDcR/53/RkN/Qpjo1R2DI1F0aXZzBSCPsX5YKG8jum/FBUUxTKik+PWjWQTpTu6Skg5qt8Tvw5kVXCaBUyGzq0povqST64I+4dA+6uHXeVuSykzcu8Ov9rzw5omNYrJjOaIDvRlPJNGZMMKkaialkZ5iIKwfRxL7XTjQ5FdlSqEA75YqXyWAWYB7M0m72nOmu16jIY4+dI7s1EusL46zagj3Fo9Wa8ietM+eLdwF4NkcneBQoIbYuzWmk6AI6mt2OaKRpjcl89xHpOpyGKmyZ2wonetfXL57ktwaF1/hM2ZabLv
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4475.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(39860400002)(376002)(136003)(346002)(396003)(366004)(1076003)(6636002)(66556008)(66476007)(316002)(4326008)(450100002)(66946007)(8676002)(86362001)(186003)(6506007)(6486002)(41300700001)(52116002)(38100700002)(6666004)(6512007)(478600001)(9686003)(8936002)(4744005)(6862004)(2906002)(5660300002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?BWMrRG1Y2FNsZTVH393BrOqFRf0CeIFcGVxdLEtpPxb9+VX3prWp0vdWjo7f?=
- =?us-ascii?Q?MECmtIu0oD/ao1PwX6HrcXfLF2i18UGZNY/9PCr7SrbntSc3azMZq4BKOW9V?=
- =?us-ascii?Q?muIKJL35BtndQCIBLWVkrviAWqOZDCud8SHDWOwfx7KL9fBVJGSXWd+E6v4l?=
- =?us-ascii?Q?kWn2WR6vaE7lZvYgInl3b+iblDXw6FsH80WbJ/JhDnnzmgxH5UxHOtsNQ4JJ?=
- =?us-ascii?Q?/kNxmK17fwjTsgsTHiDfhAEDBXoz1Ka8Gn1kHRjpjGVhyzFecBf3+v3XyLLV?=
- =?us-ascii?Q?eqzILI8QqFDd3VwPlIlZF6Tu74Wit/CI5pnQN9c5iPeVB09295/yjEFgUeOw?=
- =?us-ascii?Q?4TB7Jejc6ib6fyk0qXp17zhY3lEVhpMnTtC6IlMUOfh75G4n0muKhAeRYgRT?=
- =?us-ascii?Q?TpIsMEKU60V/R6v5Gs5RSrRC+DqfIUOiMguFOqlJrHLaF/Pm6n2JwqFKJsgN?=
- =?us-ascii?Q?wsTQHnq+A1lhSXM4WN1D9XBKebl3s25FTM9mO27p/IqNNfAV4sEUl9XlfGnv?=
- =?us-ascii?Q?4JNj242W5sxcnaSnSqf1wgRbdQtKRs8L0tQ8+vJMn3MmVM+SbBkt+ua7MXq9?=
- =?us-ascii?Q?hxCpAVXU0ZNm9Aafqz2fXbsXg5UBlFONAOTEpu/rVxWFHFBUnsXlnCheMW4V?=
- =?us-ascii?Q?34CJbdcoaIshUqIIYFHABKACcR0GADv0LzE6PjZNws1NL/WC5q8CVK5qz0M7?=
- =?us-ascii?Q?K8OQNxC6LsUT12f6OnXEHy17vcHBUHd8Px/0aY9pJm7RDOV9xNV6+d0FuMFZ?=
- =?us-ascii?Q?TKULts0GKbyD4gg8krOwKB3sIP2eJ8R7/6vNuthHGMlTw8US76PzGMrbm219?=
- =?us-ascii?Q?aZF2TLjSJwjx5gWo82Ntq6w8r59rEeA1J71t4DgQoReHpsxi0+uQEHCUqx7N?=
- =?us-ascii?Q?GbxhDicR/q24PteBDse+CnHXYx17J2uz29/y95tsvLiHPvNZHMCoQRykov6k?=
- =?us-ascii?Q?ZxnzLOsoD5/32pysM3goCwNxDfzdTEZKGY2ZPfmVLKaex8SVGmAq9u0wrUhw?=
- =?us-ascii?Q?ZqL+eUU3MMKJQqXuEMWS6A6yOw4c4iSdLlp3BtUX5OZO+prCNYnaMjd3zvfk?=
- =?us-ascii?Q?ncCDv7Z37hngbbFpc+Q7UqyYniqaVWStFJ6fEPWUde18C7ENa5s+Z6llF7Di?=
- =?us-ascii?Q?z9HpZCgqLlfy8Tc1gj0dZevW0AsxDerb7SJtRnFVVE6EYKgj424qdqisG+qB?=
- =?us-ascii?Q?lTkD+89m0f81tRaa7Vg3qeFCLz56TxW104GVgYXM33YAf4nUf3bK39MwzoIS?=
- =?us-ascii?Q?Cqs1qMKhxzdD3djlBYDAxuz9N3LzfjcIndgwSdEjTH3OcsxUn2Azg4Z4FcT+?=
- =?us-ascii?Q?fga8tpzys/6S/PbYzHYmqd1fyhwU6QC8p17b1i4mhJmNZDTU4NbrnyAUbObx?=
- =?us-ascii?Q?DsyiDWJj68d2FLiWNrBBBsJ9SI+K+FTaBWN5yPowIySuTLePRAJsdAjY1zUL?=
- =?us-ascii?Q?kQ9Sg2F2Dt2xM7YirFMCDFsN6vzRJOvz3qnV4zVMQWqhoC6jZEdYaVdJArOC?=
- =?us-ascii?Q?zR9BqTHLZSls802AokrWoB+sMjg/koa6mo0MpTuPDI4p4rgFpzNS5FwzqSQk?=
- =?us-ascii?Q?CdmAHLymmNtJM3t3tjC4zBB2Cxo4NZRwh5qjy2HAGBx6fkpkl+TY9cLfDYsQ?=
- =?us-ascii?Q?4g=3D=3D?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1e8c2a6f-17dd-4112-adeb-08da7b1ffd5b
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4475.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Aug 2022 22:30:55.2911
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NfkldNWw8wx0ig+QcaZxvIDBAwOBipMdugtWGZmRECzls0OoGndoS02uzY6272xu
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2471
-X-Proofpoint-ORIG-GUID: c-TLRMDzjZKclNx6ZZXdcKnCJjBFxHpo
-X-Proofpoint-GUID: c-TLRMDzjZKclNx6ZZXdcKnCJjBFxHpo
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-08-10_14,2022-08-10_01,2022-06-22_01
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220722183438.3319790-1-davemarchevsky@fb.com>
+ <20220722183438.3319790-6-davemarchevsky@fb.com> <61209d3a-bc15-e4f2-9079-7bdcfdd13cd0@fb.com>
+ <CAP01T75nt69=jgGPGXYXHSGc5EDHejgLQpyY8TMeUy2U4Prxvg@mail.gmail.com> <CAADnVQ+1SE8EVMEuM=6fbjkA63Lv-OqzMCrgAkg5dS_mb5g6bg@mail.gmail.com>
+In-Reply-To: <CAADnVQ+1SE8EVMEuM=6fbjkA63Lv-OqzMCrgAkg5dS_mb5g6bg@mail.gmail.com>
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date:   Thu, 11 Aug 2022 01:16:17 +0200
+Message-ID: <CAP01T76xEBcn5K4F8-4xt_TwBwtVCkyCLMJLBDG8iiAJpOzhCw@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 05/11] bpf: Add bpf_spin_lock member to rbtree
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@fb.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <kernel-team@fb.com>, Tejun Heo <tj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 05, 2022 at 05:06:35PM -0700, Jie Meng wrote:
-> Instead of the hardcoded TCP_TIMEOUT_INIT, this diff calls tcp_timeout_init
-> to initiate req->timeout like the non TFO SYN ACK case.
-> 
-> Tested using the following packetdrill script, on a host with a BPF
-> program that sets the initial connect timeout to 10ms.
-Please also cc the bpf mailing list.
+On Thu, 11 Aug 2022 at 00:06, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, Aug 10, 2022 at 2:47 PM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
+> >
+> > Just to continue brainstorming: Comments on this?
+> >
+> > Instead of a rbtree map, you have a struct bpf_rbtree global variable
+> > which works like a rbtree. To associate a lock with multiple
+> > bpf_rbtree, you do clang style thread safety annotation in the bpf
+> > program:
+> >
+> > #define __guarded_by(lock) __attribute__((btf_type_tag("guarded_by:" #lock))
+> >
+> > struct bpf_spin_lock shared_lock;
+> > struct bpf_rbtree rbtree1 __guarded_by(shared_lock);
+> > struct bpf_rbtree rbtree2 __guarded_by(shared_lock);
+> >
+> > guarded_by tag is mandatory for the rbtree. Verifier ensures
+> > shared_lock spin lock is held whenever rbtree1 or rbtree2 is being
+> > accessed, and whitelists add/remove helpers inside the critical
+> > section.
+>
+> We've been discussing exactly btf_type_tag annotation
+> to associate rbtree with a lock :)
+> Thanks for bringing it up as well.
+> Great that we're aligned.
+>
+
+You know how the saying goes, "Great minds think alike" ;-)
+
+> > I don't think associating locks to rbtree dynamically is a hard
+> > requirement for your use case? But if you need that, you may probably
+> > also allocate sets of rbtree that are part of the same lock "class"
+> > dynamically using bpf_kptr_alloc, and do similar annotation for the
+> > struct being allocated.
+> > struct rbtree_set {
+> >   struct bpf_spin_lock lock;
+> >   struct bpf_rbtree rbtree1 __guarded_by(lock);
+> >   struct bpf_rbtree rbtree2 __guarded_by(lock);
+> > };
+> > struct rbtree_set *s = bpf_kptr_alloc(sizeof(*s), btf_local_type_id(*s));
+> > // Just stash the pointer somewhere with kptr_xchg
+> > On bpf_kptr_free, the verifier knows this is not a "trivial" struct,
+> > so inserts destructor calls for bpf_rbtree fields during program
+> > fixup.
+> >
+> > The main insight is that lock and rbtree are part of the same
+> > allocation (map value for global case, ptr_to_btf_id for dynamic case)
+> > so the locked state can be bound to the reg state in the verifier.
+>
+> It works nicely in the static case, but ffwd a bit.
+> We might need an rbtree of rbtrees.
+> Pretty much like map-in-map that we have today for hash tables.
+>
+
+True, the map in map case makes things harder. But just like
+inner_map_fd, you will need to parameterize such rb_root/list_head
+containers with a value type (probably type tag again) so the result
+of find/remove can be known statically.
+From there, we know the type of lock associated with the rbtree in the
+value, _if_ we follow the convention of binding rb_root + lock + ...
+in a single data item. Without that, it's pretty hard to do without
+runtime checks, as you've pointed out in a previous reply.
+
+My idea was that we should try to associate data being locked with its
+lock in the same allocation, working a bit like a bpf_spin_lock<T>,
+but more flexible as you can have additional unprotected data in the
+struct by annotating using guarded_by style tags.
+
+There might be some use cases where we really require dynamically
+binding locks at runtime to some data structure, then we should
+probably add that later when a use case comes up, and keep those sets
+of APIs separate from the simpler case. As you mentioned, in the
+dynamic case the add helper becomes fallible. The same will happen
+with linked list helpers.
+
+> And the rbtree_node might be a part of an rbtree while
+> being chained into a separate link list.
+>
+> We need a lock to protect operations on both rbtree and link list.
+> Then we might need to create an rbtree dynamically for each cgroup.
+> And store a pointer to rb_root in cgroup local storage.
+> Maybe allocating a lock + rb_root + linklist_head as one
+> allocation will not be too restrictive.
+>
+> > Then we can also make this new rbtree API use kfuncs instead of UAPI
+> > helpers, to get some field experience before baking it in.
+>
+> +1 to that.
+>
+> > Any opinions? Any brainos or deficiencies in the scheme above?
+>
+> It would be great if we can do the lock checks statically.
+> Dynamic locks means that rbtree_add/erase and in the future
+> link list insert/remove might fail which is horrible from
+> programmer perspective.
+
++1. I'll also be happy to help with code review (for as much as I
+understand) when Dave reposts the series.
+
+> We've been thinking about the "abort" concept for such cases.
+> When helpers detect an unsafe condition like correct lock is not
+> taken, they can abort execution of itself, the bpf program
+> and prevent the program from executing in the future.
+> Conceptually it sounds great and will solve all kinds of ugliness,
+> but it's not clear yet how to implement such abort mechanism
+> which would mean stack unwind and calling of destructors for kptr-s,
+> refcnt decrements for acquired objects like sockets, etc.
+
+Fancy. Though it certainly looks very painful to implement (just
+thinking about kptr, say the release kfunc is NMI unsafe, and
+detecting such live kptr in perf prog moved out of a map, we would
+probably then need to do it using irq_work_queue, but also alloc work
+item for it, which might fail in NMI context unwind so mem leak).
