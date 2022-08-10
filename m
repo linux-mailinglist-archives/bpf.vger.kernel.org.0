@@ -2,70 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D094258F174
-	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 19:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF91E58F17A
+	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 19:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233508AbiHJRTW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Aug 2022 13:19:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53692 "EHLO
+        id S233543AbiHJRUz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Aug 2022 13:20:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233540AbiHJRTC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Aug 2022 13:19:02 -0400
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 520087E011;
-        Wed, 10 Aug 2022 10:19:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1660151941; x=1691687941;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=LmwbX+mh4uHjDwRRDXV7R/Jr/jLNCB9tPJUFhhiEExg=;
-  b=i9EYUVTPX9I1oGQ97HRirb2SLIQOa4qvjDVAhy0+Y8vGH9KjMCVjuIw5
-   bfvFUG3UIPn/q1xSP9vSOWt2Rd3QE2s5yk9RG6DSmvEeq6IHWvFYofMKu
-   pvysSzZnuNRRi5R7gl0qCUtXx2xzoSiYksTXMQCwGIFXOTm7fNK8dd2AD
-   CFmpOMGviay/QqT+naJ6nsiHyhaovtejb3zzhkfgKJF/re/cl1xKv8CU/
-   2p5TLekmqIzuDJ7jms5scR0/EvUv6X18jPq694UcT0/jcVLEwi4oCKkgB
-   puIV71xVc/VagJqd0uxdAOYSF+c7hT5v5sneE1HhX9Su5Qs6uEmqwmOeF
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10435"; a="289900449"
-X-IronPort-AV: E=Sophos;i="5.93,227,1654585200"; 
-   d="scan'208";a="289900449"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2022 10:19:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,227,1654585200"; 
-   d="scan'208";a="638186837"
-Received: from lkp-server02.sh.intel.com (HELO 5d6b42aa80b8) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 10 Aug 2022 10:18:57 -0700
-Received: from kbuild by 5d6b42aa80b8 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oLpM8-0000WL-2p;
-        Wed, 10 Aug 2022 17:18:56 +0000
-Date:   Thu, 11 Aug 2022 01:18:40 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Bastien Nocera <hadess@hadess.net>, linux-usb@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Peter Hutterer <peter.hutterer@who-t.net>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Bastien Nocera <hadess@hadess.net>
-Subject: Re: [PATCH 1/2] USB: core: add a way to revoke access to open USB
- devices
-Message-ID: <202208110108.ilG9Ea14-lkp@intel.com>
-References: <20220809094300.83116-2-hadess@hadess.net>
+        with ESMTP id S233686AbiHJRUV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Aug 2022 13:20:21 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E79A73327
+        for <bpf@vger.kernel.org>; Wed, 10 Aug 2022 10:20:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 83EF1B81E61
+        for <bpf@vger.kernel.org>; Wed, 10 Aug 2022 17:20:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 32A90C433D7;
+        Wed, 10 Aug 2022 17:20:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1660152016;
+        bh=1kVPhPPoE/GhkGd+0NckVIA+oTZFE47BopnFBSb0mTs=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=KkZbuAozE/MI1nBpXENWXiPCjA+T7SVHjk35m7jZ4C9tdIznX3XsPC+V5Xh6Nl5De
+         R971NwYC4YGQ53+qb8ODF1bcnIukT9cf922afZF6Wm7NxXJt2u9D0hcfZA3I7qA1NF
+         xHDsndXDf55GWaF4o+H7en91JYwg64sA+qU9JZ6kElIPAsNRMu1sizz1Rrth1dJBeo
+         Tng3wH1lbwKoLYSK/mxsbzq7v0PDoxDo4sSW+4wc8xN2b78G0lZ4yWSFfezx6o0MZ1
+         hUfyoY8q/3k2RfPCOhL0B8sX80LAFxvX8//L2llvXbYOPx2UcwgngaGSLAK7FDH+RN
+         PQ04S6t9nWgpA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 11273C43141;
+        Wed, 10 Aug 2022 17:20:16 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220809094300.83116-2-hadess@hadess.net>
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf v2 0/9] fixes for bpf map iterator
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166015201605.23495.13849985276063325682.git-patchwork-notify@kernel.org>
+Date:   Wed, 10 Aug 2022 17:20:16 +0000
+References: <20220810080538.1845898-1-houtao@huaweicloud.com>
+In-Reply-To: <20220810080538.1845898-1-houtao@huaweicloud.com>
+To:     Hou Tao <houtao@huaweicloud.com>
+Cc:     bpf@vger.kernel.org, yhs@fb.com, andrii@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, kafai@fb.com, songliubraving@fb.com,
+        kpsingh@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        john.fastabend@gmail.com, oss@lmb.io, houtao1@huawei.com
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,74 +59,49 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Bastien,
+Hello:
 
-I love your patch! Perhaps something to improve:
+This series was applied to bpf/bpf.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-[auto build test WARNING on usb/usb-testing]
-[also build test WARNING on balbi-usb/testing/next peter-chen-usb/for-usb-next linus/master v5.19 next-20220810]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+On Wed, 10 Aug 2022 16:05:29 +0800 you wrote:
+> From: Hou Tao <houtao1@huawei.com>
+> 
+> Hi,
+> 
+> The patchset constitues three fixes for bpf map iterator:
+> 
+> (1) patch 1~4: fix user-after-free during reading map iterator fd
+> It is possible when both the corresponding link fd and map fd are
+> closed bfore reading the iterator fd. I had squashed these four patches
+> into one, but it was not friendly for stable backport, so I break these
+> fixes into four single patches in the end. Patch 7 is its testing patch.
+> 
+> [...]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Bastien-Nocera/USB-core-add-a-way-to-revoke-access-to-open-USB-devices/20220809-174609
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-config: arm64-randconfig-r001-20220810 (https://download.01.org/0day-ci/archive/20220811/202208110108.ilG9Ea14-lkp@intel.com/config)
-compiler: clang version 16.0.0 (https://github.com/llvm/llvm-project 5f1c7e2cc5a3c07cbc2412e851a7283c1841f520)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install arm64 cross compiling tool for clang build
-        # apt-get install binutils-aarch64-linux-gnu
-        # https://github.com/intel-lab-lkp/linux/commit/6bd6f04e6d463be82fbf45585e4af84925bf1ab9
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Bastien-Nocera/USB-core-add-a-way-to-revoke-access-to-open-USB-devices/20220809-174609
-        git checkout 6bd6f04e6d463be82fbf45585e4af84925bf1ab9
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=arm64 SHELL=/bin/bash drivers/usb/core/
+Here is the summary with links:
+  - [bpf,v2,1/9] bpf: Acquire map uref in .init_seq_private for array map iterator
+    https://git.kernel.org/bpf/bpf/c/f76fa6b33805
+  - [bpf,v2,2/9] bpf: Acquire map uref in .init_seq_private for hash map iterator
+    https://git.kernel.org/bpf/bpf/c/ef1e93d2eeb5
+  - [bpf,v2,3/9] bpf: Acquire map uref in .init_seq_private for sock local storage map iterator
+    https://git.kernel.org/bpf/bpf/c/3c5f6e698b5c
+  - [bpf,v2,4/9] bpf: Acquire map uref in .init_seq_private for sock{map,hash} iterator
+    https://git.kernel.org/bpf/bpf/c/f0d2b2716d71
+  - [bpf,v2,5/9] bpf: Check the validity of max_rdwr_access for sock local storage map iterator
+    https://git.kernel.org/bpf/bpf/c/52bd05eb7c88
+  - [bpf,v2,6/9] bpf: Only allow sleepable program for resched-able iterator
+    https://git.kernel.org/bpf/bpf/c/d247049f4fd0
+  - [bpf,v2,7/9] selftests/bpf: Add tests for reading a dangling map iter fd
+    https://git.kernel.org/bpf/bpf/c/5836d81e4b03
+  - [bpf,v2,8/9] selftests/bpf: Add write tests for sk local storage map iterator
+    https://git.kernel.org/bpf/bpf/c/939a1a946d75
+  - [bpf,v2,9/9] selftests/bpf: Ensure sleepable program is rejected by hash map iter
+    https://git.kernel.org/bpf/bpf/c/c5c0981fd81d
 
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
->> drivers/usb/core/devio.c:2649:1: warning: unused label 'out' [-Wunused-label]
-   out:
-   ^~~~
-   1 warning generated.
-
-
-vim +/out +2649 drivers/usb/core/devio.c
-
-  2627	
-  2628	int usb_revoke_for_euid(struct usb_device *udev,
-  2629			int euid)
-  2630	{
-  2631		struct usb_dev_state *ps;
-  2632	
-  2633		usb_lock_device(udev);
-  2634	
-  2635		list_for_each_entry(ps, &udev->filelist, list) {
-  2636			if (euid >= 0) {
-  2637				kuid_t kuid;
-  2638	
-  2639				if (!ps || !ps->cred)
-  2640					continue;
-  2641				kuid = ps->cred->euid;
-  2642				if (kuid.val != euid)
-  2643					continue;
-  2644			}
-  2645	
-  2646			usbdev_revoke(ps);
-  2647		}
-  2648	
-> 2649	out:
-  2650		usb_unlock_device(udev);
-  2651		return 0;
-  2652	}
-  2653	
-
+You are awesome, thank you!
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
