@@ -2,62 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A440B58E43D
-	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 02:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D7BB58E439
+	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 02:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229756AbiHJAw1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Aug 2022 20:52:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53934 "EHLO
+        id S229539AbiHJAwF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Aug 2022 20:52:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbiHJAw0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Aug 2022 20:52:26 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4EDD7E817
-        for <bpf@vger.kernel.org>; Tue,  9 Aug 2022 17:52:25 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id r6so7472338ilc.12
-        for <bpf@vger.kernel.org>; Tue, 09 Aug 2022 17:52:25 -0700 (PDT)
+        with ESMTP id S229456AbiHJAwE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Aug 2022 20:52:04 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D3D374E14;
+        Tue,  9 Aug 2022 17:52:03 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id z2so17203982edc.1;
+        Tue, 09 Aug 2022 17:52:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=p2o2JFNFjx5j8Ih+4dyhgoDXa69sErXd7ppWCeTc9mM=;
-        b=d1ZS5SmlPxZTVErtqNtFRKQFQpzYxbKV7/s9I7R4U4iio2swzWXabaRS/pJPnnchJX
-         fkjUxrBEqtfABbx9zBiGzWxfrWRn6Do7NEbjH6fy6W4qKLBoFh9bGXJgKBsYUMmkC3ey
-         AzUOuXVKJ1B4Zc9qJwBzYjvHvV28OsB6Sxm/Sr38aEmXoNqMtT4Zv20uT1CVyrbldhV5
-         B3wFfaAMhjuYN8I/sd9vNdlQzX5aWzaBg0ugdZTAKNREHaP3ZqHzq0pMlFIsjpW7t8JP
-         pprNhhL1jmNuRAjoCBsHcpw/+Go5pHrwDSm2EM/sbBekOBOJLZUAb5M4nKJhLJ4zJ9Hg
-         ctzg==
+        bh=Il1Pi56tAdbHD2xkzMpWzGBdztzd5zgrSb7IoS2zT/U=;
+        b=FkIsMzd+v0083XugBqAhPXZbO1+72jhsZHlw61FcLI/wavV+QldtPeUl3OCyrp3Fyh
+         rhAQdPX6jx45sT0czdTuoyR4h4UMXOXYwZyHsQszuQnRbHvpbEzMmxgRiSA3QEaM4mBs
+         SKnFU5ejLzWtXKmbxN0Pv3GwI6XLv0/y97ibV5XVZh9PpNh9njFEPsRyWFQKgVwo42SK
+         NOv+UA+ZWUQRCDhdQALBJTWOeVt+T6mbPxZ31MNAfAPfMd+Nn+IFB7c5Ic20smmRk/GZ
+         IatX2zC7jb3XV6vxFp30NlaQJISIXCVKNKMc6255KHq7r6W83s3bHHAcV8ZBnIOpZTnc
+         Q3zQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=p2o2JFNFjx5j8Ih+4dyhgoDXa69sErXd7ppWCeTc9mM=;
-        b=dSxmIlO1oUMDu31TdbivleaB6eQ4cCEwOFAr6kZdNvp2Ni2EBux7EjKZk38qk/yG77
-         JgdmWXOZm6Rb4b3FpkRP0w5vWkvV1AV9eHdboEuuApUwYFtP/QHDk3cDmMSief0k+E4l
-         GVCWPpfkB02tNpf0O1oTUIu+xSapuiC1f41H6jemlH+jyL1Dp0IlQlGSdi7ePR5XkKOw
-         cxKr39rBizFiKfU3kss9fIEqv3pBxw5+6cesmW/DygT0iNck8AFgbIp25Y1MJ+9QB81G
-         yjL/Rd0OOuAN7hsXwijNy/ea/U77Iy6QstQUoMqpcY0Sdhldl/uNfOQApyU0BsgxK0qb
-         gbYA==
-X-Gm-Message-State: ACgBeo3g2MG0kQUk87xBl6cvernRDglY1T3JlcSlzwspx1RW+N+D4Bws
-        SG76/B5N3bbxdDZLb+RpV4u8W8CBLetXcXaH/4A=
-X-Google-Smtp-Source: AA6agR4MmEhYTR8zxjqUrDKHLnJ7sb0/kOGASIPIclhj9kBnk4lFDtNE6uTTDfqU0+HSvEsCBdKrtpVF1VGmdbJ1MMw=
-X-Received: by 2002:a92:d606:0:b0:2dc:e2d1:b75b with SMTP id
- w6-20020a92d606000000b002dce2d1b75bmr11841898ilm.91.1660092744832; Tue, 09
- Aug 2022 17:52:24 -0700 (PDT)
+        bh=Il1Pi56tAdbHD2xkzMpWzGBdztzd5zgrSb7IoS2zT/U=;
+        b=RkPuR3xKm1Yy1S9fNO4QQta6e5zXhgYKcoHzIyv7iSws68N1tSDTFxmk24OsPyhTEB
+         YjuqrtRAgmaufFvIdBXMhWlphuQL9ziwnfswTtv6cy3tqaACrNH0GVCSTwiZ1b4NbC2g
+         aWtnZ9WmVW9oevVlNhbpEd/ntRW9y2kglJmFmJ1ywoaZ4sQChZGk8PKfZ7nxRZYYYAYK
+         xg3Opz/uuUk6JSsmvdjsssZjnlfDzh/7nWNXY0cMsBBp7+XFOa6tBaSQAlI+v6QhuATM
+         6VnnN6EgfIESj/l5KSeeW+qBNgFaIRXbcAd8Q+2MMdQ7oOuUbFw8HhI2oeRbnaz48rSo
+         MIIA==
+X-Gm-Message-State: ACgBeo0rDDfMQB09McPgc3JNMh7yCZJBe70UzdqzhZnbnip6sojPdrji
+        INfF+0FcXo/ICe/Ag79nzVEkMdHwjZuJ5jSqn/M=
+X-Google-Smtp-Source: AA6agR6sLH6713PplNbjRmTeKN+KUJlbDRD64uMge0GGzpH/dD2DRuAtHnMwxGID1u5AP+Pk550sA76uQe/IBLWBCeE=
+X-Received: by 2002:a05:6402:28cb:b0:43b:c6d7:ef92 with SMTP id
+ ef11-20020a05640228cb00b0043bc6d7ef92mr24499717edb.333.1660092722224; Tue, 09
+ Aug 2022 17:52:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220809213033.24147-1-memxor@gmail.com> <20220809213033.24147-3-memxor@gmail.com>
- <20220809222908.hmy4pz3ai6howqhm@kafai-mbp> <CAADnVQ+X3qxf2ksRSLT0ZK792Pz4LA5xc3G+EPL8cAQEUS=tGA@mail.gmail.com>
-In-Reply-To: <CAADnVQ+X3qxf2ksRSLT0ZK792Pz4LA5xc3G+EPL8cAQEUS=tGA@mail.gmail.com>
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Wed, 10 Aug 2022 02:51:49 +0200
-Message-ID: <CAP01T742w_xbDU6muUbPjT11noVgL8ofR5m-7wbjaH-FxXRi3w@mail.gmail.com>
-Subject: Re: [PATCH bpf v3 2/3] bpf: Don't reinit map value in prealloc_lru_pop
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
-        Yonghong Song <yhs@fb.com>,
+References: <20220801180146.1157914-1-fred@cloudflare.com> <87les7cq03.fsf@email.froward.int.ebiederm.org>
+ <CAHC9VhRpUxyxkPaTz1scGeRm+i4KviQQA7WismOX2q5agzC+DQ@mail.gmail.com>
+ <87wnbia7jh.fsf@email.froward.int.ebiederm.org> <CAHC9VhS3udhEecVYVvHm=tuqiPGh034-xPqXYtFjBk23+p-Szg@mail.gmail.com>
+ <877d3ia65v.fsf@email.froward.int.ebiederm.org> <87bksu8qs2.fsf@email.froward.int.ebiederm.org>
+ <CAHC9VhTEwD2y9Witj-1z3e2TC-NGjghQ4KT4Dqf3UOLzDcDc3Q@mail.gmail.com>
+ <87czd95rjc.fsf@email.froward.int.ebiederm.org> <CAHC9VhQY6H4JxOvSYWk2cpH8E3LYeOkMP_ay+ih+ULKKdeob=Q@mail.gmail.com>
+ <87a68dccyu.fsf@email.froward.int.ebiederm.org> <CAHC9VhRkHuwjrtOoK+vn9zzERU2TM_2PEbQGRAZsr-D1pFv9GQ@mail.gmail.com>
+In-Reply-To: <CAHC9VhRkHuwjrtOoK+vn9zzERU2TM_2PEbQGRAZsr-D1pFv9GQ@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 9 Aug 2022 17:51:50 -0700
+Message-ID: <CAADnVQJcvwb_5dY-FomsDzJWZQG_5EWLmjBFJYNqomd0f9XO+w@mail.gmail.com>
+Subject: Re: [PATCH v4 0/4] Introduce security_create_user_ns()
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Frederick Lawler <fred@cloudflare.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
         Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        eparis@parisplace.org, Shuah Khan <shuah@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        bpf <bpf@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        selinux@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>,
+        karl@bigbadwolfsecurity.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -69,48 +96,37 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 10 Aug 2022 at 02:50, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Tue, Aug 9, 2022 at 3:40 PM Paul Moore <paul@paul-moore.com> wrote:
 >
-> On Tue, Aug 9, 2022 at 3:29 PM Martin KaFai Lau <kafai@fb.com> wrote:
+> On Tue, Aug 9, 2022 at 5:41 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+> > Paul Moore <paul@paul-moore.com> writes:
+> > >
+> > > What level of due diligence would satisfy you Eric?
 > >
-> > On Tue, Aug 09, 2022 at 11:30:32PM +0200, Kumar Kartikeya Dwivedi wrote:
-> > > The LRU map that is preallocated may have its elements reused while
-> > > another program holds a pointer to it from bpf_map_lookup_elem. Hence,
-> > > only check_and_free_fields is appropriate when the element is being
-> > > deleted, as it ensures proper synchronization against concurrent access
-> > > of the map value. After that, we cannot call check_and_init_map_value
-> > > again as it may rewrite bpf_spin_lock, bpf_timer, and kptr fields while
-> > > they can be concurrently accessed from a BPF program.
-> > >
-> > > This is safe to do as when the map entry is deleted, concurrent access
-> > > is protected against by check_and_free_fields, i.e. an existing timer
-> > > would be freed, and any existing kptr will be released by it. The
-> > > program can create further timers and kptrs after check_and_free_fields,
-> > > but they will eventually be released once the preallocated items are
-> > > freed on map destruction, even if the item is never reused again. Hence,
-> > > the deleted item sitting in the free list can still have resources
-> > > attached to it, and they would never leak.
-> > >
-> > > With spin_lock, we never touch the field at all on delete or update, as
-> > > we may end up modifying the state of the lock. Since the verifier
-> > > ensures that a bpf_spin_lock call is always paired with bpf_spin_unlock
-> > > call, the program will eventually release the lock so that on reuse the
-> > > new user of the value can take the lock.
-> > The bpf_spin_lock's verifier description makes sense.  Note that
-> > the lru map does not support spin lock for now.
+> > Having a real conversation about what a change is doing and to talk
+> > about it's merits and it's pro's and cons.  I can't promise I would be
+> > convinced but that is the kind of conversation it would take.
 >
-> ahh. then it's not a bpf tree material.
-> It's a minor cleanup for bpf-next?
+> Earlier today you talked about due diligence to ensure that userspace
+> won't break and I provided my reasoning on why userspace would not
+> break (at least not because of this change).  Userspace might be
+> blocked from creating a new user namespace due to a security policy,
+> but that would be the expected and desired outcome, not breakage.  As
+> far as your most recent comment regarding merit and pros/cons, I
+> believe we have had that discussion (quite a few times already); it
+> just seems you are not satisfied with the majority's conclusion.
 >
+> Personally, I'm not sure there is anything more I can do to convince
+> you that this patchset is reasonable; I'm going to leave it to others
+> at this point, or we can all simply agree to disagree for the moment.
+> Just as you haven't heard a compelling argument for this patchset, I
+> haven't heard a compelling argument against it.  Barring some
+> significant new discussion point, or opinion, I still plan on merging
+> this into the LSM next branch when the merge window closes next week
+> so it has time to go through a full round of linux-next testing.
+> Assuming no unresolvable problems are found during the additional
+> testing I plan to send it to Linus during the v6.1 merge window and
+> I'm guessing we will get to go through this all again.  It's less than
+> ideal, but I think this is where we are at right now.
 
-I was just describing what we do for each of the three types in the
-commit log. It still affects timers and kptrs, which lru map supports.
-
-> > >
-> > > Essentially, for the preallocated case, we must assume that the map
-> > > value may always be in use by the program, even when it is sitting in
-> > > the freelist, and handle things accordingly, i.e. use proper
-> > > synchronization inside check_and_free_fields, and never reinitialize the
-> > > special fields when it is reused on update.
-> > Acked-by: Martin KaFai Lau <kafai@fb.com>
++1
