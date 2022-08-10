@@ -2,110 +2,211 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6D8E58F4C2
-	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 01:17:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D26658F4D2
+	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 01:26:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233625AbiHJXRG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Aug 2022 19:17:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42078 "EHLO
+        id S233687AbiHJX0Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Aug 2022 19:26:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233626AbiHJXRD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Aug 2022 19:17:03 -0400
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E2C67A524;
-        Wed, 10 Aug 2022 16:17:02 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id E0EF85C01B2;
-        Wed, 10 Aug 2022 19:17:01 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Wed, 10 Aug 2022 19:17:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-        :cc:content-transfer-encoding:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1660173421; x=1660259821; bh=rq
-        QdddERpZ6h+Dz3PfNtsNxkKxZspx2pv9UNJ9J1FoI=; b=cDEs1KkoHMRlmKlU65
-        dNqtqzMyRvyXFkHQ5FsI8vOkuN1+fEJAebjUh2U4CcKPMrNRp+dsVX1n9FXASbJX
-        qISVwK/htL/rmTP+Gmr3Kln/5nxjsXbQjdAjXyjyL4wZtKbKWbwaDpE6dmWoRqcE
-        0PF5NHEoBVTy+1VhPHSyI1HVV3gKgrVsZ4DTho+YU9/NO1wO71nGqDQ1aZEcAXyx
-        h31IQ6JVbhxVMiEGqFzLZRTEHaxKM6Oc7BfAJ+nLsm2psBs2E8Mu0Qh5J3Uvbwwb
-        f2p530mBnBmsVtpwq/AH5GNydZ+7WQqjR2WkjMY7bgWn+pYpBUOAEsvLZQiMKpG6
-        UD3g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1660173421; x=1660259821; bh=rqQdddERpZ6h+
-        Dz3PfNtsNxkKxZspx2pv9UNJ9J1FoI=; b=B53XW8PTVdgTEY7VBTduOLBGJlutu
-        86Dg1mXt7MSHMOx84fR6vLK0cVRKY4BBzHQVz1+F+v7WW/t1259ZOCa0kcHXQtJ3
-        oP/FvwMKkiE2C7Tf7GmRQEJGhCbmT3rRx1GRyLSgI56IoGhRmYibwVBjNrh+unJR
-        tD39Z/JnIX8kuIwjg8CpiHKkvakKX8bLtItuCPI5vKTkIWDMvxCSt8M0WQMp1mc1
-        0xqG6NQE71YkivWcXgtSnGV8H81JEpwmePLaCX49FIsLf+F6UN9bxYoFg4fYxlq/
-        L6+Fsj0x5CGfqvJLK5FT3QS80t33t5IFkxYkj91AYisUKmiGxcLPQYKkg==
-X-ME-Sender: <xms:bTz0YoSyf-ahKva0OaDLirX6XBElLcg_BqbBUiOcX51fCju1v_WUJA>
-    <xme:bTz0Yly2ZzCNJ6uIhaWPPTAfyqUGB1tzLV29p3WbnPx58zwJvJtmmu_DWRhoO34gT
-    a92nTgd9rD8Q_LB4A>
-X-ME-Received: <xmr:bTz0Yl2lL6bf_m5jIxpPXjeGCMKrp_998R0jnDi_kEaUUbm-huRtKs_HO9Awb3JSNA6KaKSswso>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdegfedgvdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
-    evufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceo
-    ugiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepgfefgfegjefhudeike
-    dvueetffelieefuedvhfehjeeljeejkefgffeghfdttdetnecuvehluhhsthgvrhfuihii
-    vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:bTz0YsBieu1Q4zabwdEZMRhag5_Fauwnil137dzGKNLiiVbwCIb00g>
-    <xmx:bTz0YhhQGNfB6WYEKDvtaF6_AQvBz4l-_mzLc3yEqzSOvMk8LO8JLA>
-    <xmx:bTz0YopGVpTr62MZyMhMFb3UQEsgqWsYqbNQKCNSrRB_5bQaF8fWqQ>
-    <xmx:bTz0YvZXQHiacYuV-Tl1MqtR4JFWt1weAmbrHkvKlN863VUp8fVSSw>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 10 Aug 2022 19:17:00 -0400 (EDT)
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, memxor@gmail.com
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v3 3/3] selftests/bpf: Update CI kconfig
-Date:   Wed, 10 Aug 2022 17:16:44 -0600
-Message-Id: <539623914b93e2bc51ca1e420d19473d436b327c.1660173222.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.37.1
-In-Reply-To: <cover.1660173222.git.dxu@dxuuu.xyz>
-References: <cover.1660173222.git.dxu@dxuuu.xyz>
+        with ESMTP id S233626AbiHJX0Y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Aug 2022 19:26:24 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 917CE7B7AC;
+        Wed, 10 Aug 2022 16:26:23 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id x2so3015806ilp.10;
+        Wed, 10 Aug 2022 16:26:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=ZWG0Pplx8o3vWqJcu5N5Rp9ELa1xjLQiL3hpegwnr1I=;
+        b=H2OYenAG2+KJR3IyeJVLiRVGw9bcGJwfpolvXYZXJVHmXcjEBatHuOKq46aCoAQNLv
+         GyP42AURQfkEOuhsZeo4Joq1d+b9WidU1HzjaLpStNuQzGRWG/vXTwsdrFFcJTLHdySU
+         TkD+qB5DxMzkT6Xp5ePoKL1AyOIRCRnJXCHPaoMpOtRzvlKTxiXS3FVJrs+GH9z2/nKo
+         H5jU2L90uinfUEuADoseVVsvmpOJtmOEEWYahi/m9sjlelrlUImJTkbt++8kdKPoIY1A
+         Qf4FTlds9zArEOGH4F/dGVpYvrHF1xS/B1+BfFtSNjTX6vHUASRInLqtKrIrPfCD+pel
+         q6XQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=ZWG0Pplx8o3vWqJcu5N5Rp9ELa1xjLQiL3hpegwnr1I=;
+        b=iSVW/YlmEFUxwe6oFWcxNe6JIOQK4wZQIZSXi8ijmeGUsa+UPpaBBSxHsZxThbB8q+
+         3hgGwF88QeCkApPzq6/G1Uccto6D3y2B5WEqiMuASShIzB79SMlBqwSRnr03NXCcSrlz
+         j5JrdShsaRXPncDEVVFm2NFqj4QTRypspgqVLuv5sRocHqyY9JKNFnhbe5odUfCejXnF
+         VwkLxoPHp6N6eA3LFiWgXwEm+hUe509V6etKU47+RjZIExv5dzI9S88bZcf1fY2m5QwC
+         niUWxsfBABz4VXL0b9vMd8qwRcUfMRyMiogJfC+N/LWwuBwhd4wddWR8BahWI5kNCmDe
+         W2iQ==
+X-Gm-Message-State: ACgBeo3XA6Fppa61vbgqrnm0oJr+bg5bdulHCaqdclvX3QnJ8GZ5cayl
+        NAiVeocKY1lRPHT79zcCrUHRJ1QMPHN8NItaCsJpBGpN
+X-Google-Smtp-Source: AA6agR6CxGmAs2M5Lq1KuJdo6O8i149G0FC0fNmGz0gS3OiWDA9ijhUpfFMuNKKdT72bCKe5Grdo9VG7eLB5GEqCukU=
+X-Received: by 2002:a05:6e02:218c:b0:2e0:c966:a39d with SMTP id
+ j12-20020a056e02218c00b002e0c966a39dmr9536232ila.216.1660173982972; Wed, 10
+ Aug 2022 16:26:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_SUSPICIOUS_NTLD,
-        PDS_OTHER_BAD_TLD,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <cover.1660173222.git.dxu@dxuuu.xyz> <d82d4a001572e2f29cc0537563c3ef74b1351480.1660173222.git.dxu@dxuuu.xyz>
+In-Reply-To: <d82d4a001572e2f29cc0537563c3ef74b1351480.1660173222.git.dxu@dxuuu.xyz>
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date:   Thu, 11 Aug 2022 01:25:46 +0200
+Message-ID: <CAP01T76R=rCL7YEeMyDfM_HLvfNDY=Khh0FPToB08x4cD6LZhw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/3] selftests/bpf: Add existing connection
+ bpf_*_ct_lookup() test
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The previous selftest changes require two kconfig changes in bpf-ci.
+On Thu, 11 Aug 2022 at 01:16, Daniel Xu <dxu@dxuuu.xyz> wrote:
+>
+> Add a test where we do a conntrack lookup on an existing connection.
+> This is nice because it's a more realistic test than artifically
+> creating a ct entry and looking it up afterwards.
+>
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
+>  .../testing/selftests/bpf/prog_tests/bpf_nf.c | 59 +++++++++++++++++++
+>  .../testing/selftests/bpf/progs/test_bpf_nf.c | 18 ++++++
+>  2 files changed, 77 insertions(+)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_nf.c b/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
+> index 7a74a1579076..317978cac029 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
+> @@ -24,10 +24,34 @@ enum {
+>         TEST_TC_BPF,
+>  };
+>
+> +#define TIMEOUT_MS 3000
+> +
+> +static int connect_to_server(int srv_fd)
+> +{
+> +       int fd = -1;
+> +
+> +       fd = socket(AF_INET, SOCK_STREAM, 0);
+> +       if (!ASSERT_GE(fd, 0, "socket"))
+> +               goto out;
+> +
+> +       if (CHECK_FAIL(connect_fd_to_fd(fd, srv_fd, TIMEOUT_MS))) {
 
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- tools/testing/selftests/bpf/config | 2 ++
- 1 file changed, 2 insertions(+)
+CHECK_FAIL is deprecated, please consider using ASSERT_*. Sorry for
+not catching this before your respin...
 
-diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-index fabf0c014349..3fc46f9cfb22 100644
---- a/tools/testing/selftests/bpf/config
-+++ b/tools/testing/selftests/bpf/config
-@@ -50,9 +50,11 @@ CONFIG_NET_SCHED=y
- CONFIG_NETDEVSIM=m
- CONFIG_NETFILTER=y
- CONFIG_NETFILTER_SYNPROXY=y
-+CONFIG_NETFILTER_XT_CONNMARK=y
- CONFIG_NETFILTER_XT_MATCH_STATE=y
- CONFIG_NETFILTER_XT_TARGET_CT=y
- CONFIG_NF_CONNTRACK=y
-+CONFIG_NF_CONNTRACK_MARK=y
- CONFIG_NF_DEFRAG_IPV4=y
- CONFIG_NF_DEFRAG_IPV6=y
- CONFIG_RC_CORE=y
--- 
-2.37.1
-
+> +               close(fd);
+> +               fd = -1;
+> +       }
+> +out:
+> +       return fd;
+> +}
+> +
+>  static void test_bpf_nf_ct(int mode)
+>  {
+> +       const char *iptables = "iptables -t raw %s PREROUTING -j CT";
+> +       int srv_fd = -1, client_fd = -1, srv_client_fd = -1;
+> +       struct sockaddr_in peer_addr = {};
+>         struct test_bpf_nf *skel;
+>         int prog_fd, err;
+> +       socklen_t len;
+> +       u16 srv_port;
+> +       char cmd[64];
+>         LIBBPF_OPTS(bpf_test_run_opts, topts,
+>                 .data_in = &pkt_v4,
+>                 .data_size_in = sizeof(pkt_v4),
+> @@ -38,6 +62,32 @@ static void test_bpf_nf_ct(int mode)
+>         if (!ASSERT_OK_PTR(skel, "test_bpf_nf__open_and_load"))
+>                 return;
+>
+> +       /* Enable connection tracking */
+> +       snprintf(cmd, sizeof(cmd), iptables, "-A");
+> +       if (!ASSERT_OK(system(cmd), "iptables"))
+> +               goto end;
+> +
+> +       srv_port = (mode == TEST_XDP) ? 5005 : 5006;
+> +       srv_fd = start_server(AF_INET, SOCK_STREAM, "127.0.0.1", srv_port, TIMEOUT_MS);
+> +       if (!ASSERT_GE(srv_fd, 0, "start_server"))
+> +               goto end;
+> +
+> +       client_fd = connect_to_server(srv_fd);
+> +       if (!ASSERT_GE(client_fd, 0, "connect_to_server"))
+> +               goto end;
+> +
+> +       len = sizeof(peer_addr);
+> +       srv_client_fd = accept(srv_fd, (struct sockaddr *)&peer_addr, &len);
+> +       if (!ASSERT_GE(srv_client_fd, 0, "accept"))
+> +               goto end;
+> +       if (!ASSERT_EQ(len, sizeof(struct sockaddr_in), "sockaddr len"))
+> +               goto end;
+> +
+> +       skel->bss->saddr = peer_addr.sin_addr.s_addr;
+> +       skel->bss->sport = peer_addr.sin_port;
+> +       skel->bss->daddr = peer_addr.sin_addr.s_addr;
+> +       skel->bss->dport = htons(srv_port);
+> +
+>         if (mode == TEST_XDP)
+>                 prog_fd = bpf_program__fd(skel->progs.nf_xdp_ct_test);
+>         else
+> @@ -63,7 +113,16 @@ static void test_bpf_nf_ct(int mode)
+>         ASSERT_LE(skel->bss->test_delta_timeout, 10, "Test for max ct timeout update");
+>         /* expected status is IPS_SEEN_REPLY */
+>         ASSERT_EQ(skel->bss->test_status, 2, "Test for ct status update ");
+> +       ASSERT_EQ(skel->data->test_exist_lookup, 0, "Test existing connection lookup");
+>  end:
+> +       if (srv_client_fd != -1)
+> +               close(srv_client_fd);
+> +       if (client_fd != -1)
+> +               close(client_fd);
+> +       if (srv_fd != -1)
+> +               close(srv_fd);
+> +       snprintf(cmd, sizeof(cmd), iptables, "-D");
+> +       system(cmd);
+>         test_bpf_nf__destroy(skel);
+>  }
+>
+> diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+> index 196cd8dfe42a..84e0fd479794 100644
+> --- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+> +++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
+> @@ -23,6 +23,11 @@ int test_insert_entry = -EAFNOSUPPORT;
+>  int test_succ_lookup = -ENOENT;
+>  u32 test_delta_timeout = 0;
+>  u32 test_status = 0;
+> +__be32 saddr = 0;
+> +__be16 sport = 0;
+> +__be32 daddr = 0;
+> +__be16 dport = 0;
+> +int test_exist_lookup = -ENOENT;
+>
+>  struct nf_conn;
+>
+> @@ -160,6 +165,19 @@ nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
+>                 }
+>                 test_alloc_entry = 0;
+>         }
+> +
+> +       bpf_tuple.ipv4.saddr = saddr;
+> +       bpf_tuple.ipv4.daddr = daddr;
+> +       bpf_tuple.ipv4.sport = sport;
+> +       bpf_tuple.ipv4.dport = dport;
+> +       ct = lookup_fn(ctx, &bpf_tuple, sizeof(bpf_tuple.ipv4), &opts_def,
+> +                      sizeof(opts_def));
+> +       if (ct) {
+> +               test_exist_lookup = 0;
+> +               bpf_ct_release(ct);
+> +       } else {
+> +               test_exist_lookup = opts_def.error;
+> +       }
+>  }
+>
+>  SEC("xdp")
+> --
+> 2.37.1
+>
