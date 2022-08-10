@@ -2,145 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF18D58ECC5
-	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 15:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC0358ED09
+	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 15:23:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231646AbiHJNJD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Aug 2022 09:09:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40650 "EHLO
+        id S232572AbiHJNXK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Aug 2022 09:23:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232242AbiHJNJD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Aug 2022 09:09:03 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F1879A41;
-        Wed, 10 Aug 2022 06:09:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1660136941; x=1691672941;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=qAaAY/bq6+Zxce3LAYgOGsXR3e63R6ljJtVketFDdT0=;
-  b=iMi0jLIEpE4JMcISYV6GrAzTmXPldvmxJfNrgOvz5AeUlbzFGByjWepF
-   y44CypOkn2ta+yYy+qgkF0m4BlaWFuru7I5XRzCKpS6xZ2cmhT9T4SOtu
-   +YwPUMzvLuAHz+ENmcxIxpRPGyqHnvb2P4VqRv+/cAADyDjSgEYl689g5
-   7IauICcPbdLGKrGWJ4/GGUIGTLMxgpezPplOgmaKzpirev6zmozPLxNqy
-   1RsZhZb6J8WuAZhJKcqDBA9drLJjtNKKgtbd/66HDTq4c0JkWeDDGqSN2
-   w8Crj5AM19QD4eGcozLMKYNLq4gUkVAfZ2bN3cTBmLZmzOCVD8+REOvcI
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10434"; a="355077136"
-X-IronPort-AV: E=Sophos;i="5.93,227,1654585200"; 
-   d="scan'208";a="355077136"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2022 06:09:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,227,1654585200"; 
-   d="scan'208";a="638100466"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga001.jf.intel.com with ESMTP; 10 Aug 2022 06:09:01 -0700
-Received: from orsmsx607.amr.corp.intel.com (10.22.229.20) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Wed, 10 Aug 2022 06:09:00 -0700
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX607.amr.corp.intel.com (10.22.229.20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28; Wed, 10 Aug 2022 06:09:00 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.28 via Frontend Transport; Wed, 10 Aug 2022 06:09:00 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.49) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2375.28; Wed, 10 Aug 2022 06:09:00 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FEG37fFaRHvB5MUbPjh2pmyPg1feEKZbxXo/FXJmIHvrIuJcGLqJIjKsO+Oqx/f7URXjg6LPNNAsI5esR0O5WjLka/sxt7m/fOKSREcSVdBzadr+jH3vLjyL0UvK/LRR97pVsarAi3a6waX1W6ADPHyvwLuC2ZgNvF6EYcxPxLahtJv50Qy4CAdEA8DFIJB0N9/AfpIv1q9cCl0gGXsPKGa/d1DrCSGLJvW1ofKDNbx6i3ITQqTDPyOHRP2AV7eRbL2NEkhn9lqG+AnNeS6xwWLa9OgqCnYVOldjhLKOwiPP2riB5wQqgMrVEno30AqGlfnia9apuo6+JAx4W6Rs+g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Trr2xnuFt0ZeQDzsrcxOdWQUkXBKs3PRIt1l4ZL8xNU=;
- b=EjPamRu855C1gn7ht74kExBUwI37yDiEuJH5a5RlWqoR2UD8qpmYcRyyIJXWsuMhu8NBqYw1iKHllbVhkRTyMI/V7u9zti5puwE33c6CZ23RerY+zd7emXQW5+aYwZVnWjFrxUKgzTV7/YRHpBRBvL/Oj9b+BXru92ddgEivQXl6Kf64tZY/TP1FQyd+RmRgkkXWbxaNYlcZWohH00w4ZDPtStUzhmZBB7kjFlExqWDsySmt8mAqvb0KSq6oze0Yi57SuQ4zbAKywaMQXjUP849IIjA1RM+/OudfefBpQxG7Urj2SvZWQ68JvIRnDMT3jXCrm2Li7t8JBSunejI5qw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
- DM5PR11MB1547.namprd11.prod.outlook.com (2603:10b6:4:a::15) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5504.17; Wed, 10 Aug 2022 13:08:58 +0000
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::5876:103b:22ca:39b7]) by DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::5876:103b:22ca:39b7%4]) with mapi id 15.20.5525.011; Wed, 10 Aug 2022
- 13:08:58 +0000
-Date:   Wed, 10 Aug 2022 15:08:14 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Shibin Koikkara Reeny <shibin.koikkara.reeny@intel.com>
-CC:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <netdev@vger.kernel.org>, <magnus.karlsson@intel.com>,
-        <bjorn@kernel.org>, <kuba@kernel.org>, <andrii@kernel.org>,
-        <ciara.loftus@intel.com>
-Subject: Re: [PATCH bpf-next v4] selftests: xsk: Update poll test cases
-Message-ID: <YvOtvgdSnOhUd9Po@boxer>
-References: <20220803144354.98122-1-shibin.koikkara.reeny@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20220803144354.98122-1-shibin.koikkara.reeny@intel.com>
-X-ClientProxiedBy: AM6P194CA0076.EURP194.PROD.OUTLOOK.COM
- (2603:10a6:209:8f::17) To DM4PR11MB6117.namprd11.prod.outlook.com
- (2603:10b6:8:b3::19)
+        with ESMTP id S232561AbiHJNXJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Aug 2022 09:23:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A3B1F623;
+        Wed, 10 Aug 2022 06:23:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E2EA96145F;
+        Wed, 10 Aug 2022 13:23:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF9A1C433B5;
+        Wed, 10 Aug 2022 13:23:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1660137787;
+        bh=w0s1m4MGSnxs9kcotHbnALXm6aRC/xMyXf6EHeBp9qY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vOq6OvMgVGwV6Snk369bzrHvAh0gb/zdWu8CkPHa9OcCEvfiRfBGxSn5H50IwBHaB
+         VbIFeaiWl7O+WgG+l2iGDIPGgMAPagwt6ifdkjL1eQeWaBHz5bNzXn8uq5BKFRS2C+
+         waP3wHR5TYM8KUh5Nxg3E+cu8uk2SEfpjCsE384oAfTvbIhI1TeERdPDIm3wbhHdvq
+         Fzz6Qx3aK/LvWbK10NqlKMwtHRD8nJ9E1bOm2U3oSlooz+IktyhCNG6Ugbvw5LupsJ
+         Wd02xAUoPLeNl5KaDk7IAejAuMtcyalkZFCqUDvAlb2vLToDJ3U/Hg6MDqG8d8jE+3
+         4hQy7CVByhh/g==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id DAEC04035A; Wed, 10 Aug 2022 10:23:04 -0300 (-03)
+Date:   Wed, 10 Aug 2022 10:23:04 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andrew Kilroy <andrew.kilroy@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Tom Rix <trix@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH 1/8] perf arm64: Send pointer auth masks to ring buffer
+Message-ID: <YvOxOBzsbjX1rMdY@kernel.org>
+References: <20220704145333.22557-1-andrew.kilroy@arm.com>
+ <20220704145333.22557-2-andrew.kilroy@arm.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f7f5b328-73e2-4344-be12-08da7ad17c63
-X-MS-TrafficTypeDiagnostic: DM5PR11MB1547:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OguMeHkcj8HdaD9Yo73FSTpAs9NJ0VN3E3LM815Xif86/jGe4wi9MlW9pvNipFcL+BWPEv5jLRmmjcAS+tBRGF5qY4TD6KQa1ayxeaz5Ps5J7hHWcvTQQBwu2bqKX8DpbKdziRm1dfQfPSyYSIdgiFL4CNq5M5UoTeW/3//Zh8b13STmn5+K0gZTzBwcCKLP3ZCzGsJNeAR/p9IaTQCeNWfVrNPDbQpSxZjZ++c/u6rRg+lfq00SwvB7Tl/HIVIeb+UrB2ZbDbcNfNez3k+P0j9c8c5RT84RiBam9JmkuSPWfpwkYgyA7Dfykg4KAekVd5WvOiYvEHljlLE+7YtjGXnrNgT2VYKEniUC6HuQU2oA2kWJLOZr80o5UZOtq7xCkA0S31OCghexJIYCyCxHOQmu/5no3JljYrhmkD3zhfAoIDR0jUwFT03PXo08ULtBaD2y1b/I6EC1X0GVGBW/PYie5w1C8uf7aMC2sQ2crIeAtM1BzqxuOsylhXZlDsWboBZS0QQCU6hkpnJgVI48lS5n47Lmsy9qL1OC7EgjL2nWnXs0rZF04dKH44fVYRHtPiJ1+PlGNTsOFXt7DE1m/j8haT0v8XHP78MxZXeozYN5TAyPR1oWr71iCB5+wCOHlVFS0jOHf+Qj4+Rn/fjsjqs9R3Wig4aR/jWFNSxzgxX/23edD9C7Vz4vGbJk6+sV1v5wrJ3I0Ozbqk3+gbiDKRs1FYaMGuf5ss026mqCWVUpPGP+2We1iO+MsYZmTEzj9wJPTlDY1rNexaLKe2MkXOhzqXZ0t+uxwSFFhSDxS+SvViJ9ISfUfimJxFcvvdN0
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(7916004)(39860400002)(136003)(346002)(376002)(396003)(366004)(82960400001)(38100700002)(9686003)(6512007)(26005)(6666004)(83380400001)(6506007)(86362001)(107886003)(186003)(478600001)(41300700001)(6636002)(316002)(6486002)(966005)(2906002)(66946007)(66556008)(66476007)(5660300002)(8676002)(4326008)(8936002)(6862004)(44832011)(15650500001)(33716001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8RKRlu3LdSS7yJneXKcoPzcC6IFZ9dirNcXhD0/YDWvCmPgrt8njYRPggO3P?=
- =?us-ascii?Q?v3MhQKPbqvY102evQGU8TrEImjBaCF1gvpAuZDCf/nVBEHxlPOdkr9fHi2wv?=
- =?us-ascii?Q?Wzo/7n1J1XnK4m5OddP6XRF15+1DrfsGwMr5DH4H77aLg0kcl8Srk2+fs/uM?=
- =?us-ascii?Q?WirlsSJmRCiSaz+gRi65lT33l0zrv4i3du1JmCUVNkOXbZ9dXJrV4TJg+Mdg?=
- =?us-ascii?Q?vj9xSUdCNAGVCdM4/s0y+9PaicClTdPyBsD0WDz7Lo2o9VXR68voJtBXQIXV?=
- =?us-ascii?Q?B/Lf0fa8GlcVE/kXgwrS4w2lFRI3qRq+o5hkjtawV5pNm6O/7LFWXgcrTR8w?=
- =?us-ascii?Q?RSlWFn7o/bbWUOtvWbPPTNYmBOb2zcTcOAz81ypExr5Qkyi0JMk1AG0PtfCR?=
- =?us-ascii?Q?GcKwVm7FTSe2G2Z2CdtQY5/ewNQEFBVYrWE4t9EHyGSq6wM01SZOq2ALmy7Q?=
- =?us-ascii?Q?NVVsTkICXklV/1OTAtA675qJLMWqON7/BbWc3wTLnMuWZxA5IesMnocT2KoE?=
- =?us-ascii?Q?LPR38EvD+LNN7WmlvJtni8onVfW89zGFAvRiwHV9QzxtLex6Xyh93AZkdcjJ?=
- =?us-ascii?Q?FmnG3c5FyqdYNe26EWYw4Pi1MwZ99e+4jkksAK5PgbXITfN2Z9Qr6vShOdD2?=
- =?us-ascii?Q?+8iOzRKMoEKytot3s0AnqX0WSZCixNJtxcCd9btpPFIJvKMDiUWGVfytalwe?=
- =?us-ascii?Q?W0E3ttar4QNSr0b0VomNk9mQIB7YY/Wo6PuqquW/qxgUOTlU6wsjT+9BraPl?=
- =?us-ascii?Q?MNC3lHjIif4Tf3BWxq+nxk/E3j/hZ5anIQgaLjDPHPZ3Pl+RWNUL2tUV2MIC?=
- =?us-ascii?Q?eqO4jgQ55Noke4dNzZgijtq/f/bILk2EIdkeExuMdpXfCsvTpmFsoL5DXl6c?=
- =?us-ascii?Q?CShfbF0qYSxFXlujm3kkCAvqGLofOO0ALoxEP6y59bdzj1ztkdbtkXppBpDI?=
- =?us-ascii?Q?mjSRAm3KN1IvJyYO8mhVSanOkO7fh7H3DfHyFaz0n1dhXQcpSqGxx6sMR5KS?=
- =?us-ascii?Q?0oRmHa89+BpIJMJQEE045i0/p7e3eY1jCZwPvuGwP3JEGKctSl1z0yQz43Bg?=
- =?us-ascii?Q?GC+emIxooZ9ZIiCAsI9YOVY8QHNIPp0CQTm3MIqa4LgMX2ajNn0wCfHcNCWR?=
- =?us-ascii?Q?dzN9tF1F0wXTU55SVnJ7g7DHsnKsuh+4Sp5xWaLuHxRoUVLXo4kzCovBARO5?=
- =?us-ascii?Q?Qqes07IKLKFnkYxG+nJgpC3faKA+KoN98yx5KEytXqq7kpokaxuw6oy2GlWP?=
- =?us-ascii?Q?nEBcd1RG1Dnk6827BuOlKjo4+143fmgTN4s6OZMt3uEhPGGWujkrA3STa6cR?=
- =?us-ascii?Q?bY425t9zXIf25asQVUsV4Ju2Q4nydW7Ekz4q8w+bkcBj+VlF2pmpoUDJhfiq?=
- =?us-ascii?Q?tHkc1/b7jUYiZstKB6amJiuREJn8Qg7rdPfbPmmxFSO0bN7fPKoIybjMRtpB?=
- =?us-ascii?Q?cSDsp5UZDB98nIS3d0AswKzcFf+0IaR7+Ni3pIt4HswksiMQx0bDcJbpBgzm?=
- =?us-ascii?Q?Q5hPjjbPfAQ87iticxrtUTa8wjt6ERB9b06NgBDixwX0vOF2zzRsO/6/UJmB?=
- =?us-ascii?Q?E1AkfLjY8s4daSClZNX7/fusp1jE5lBGMZqmPP59qhme8UryPRIHHquRP1sH?=
- =?us-ascii?Q?kw=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: f7f5b328-73e2-4344-be12-08da7ad17c63
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Aug 2022 13:08:58.4541
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IWx/GwmYhhvkhYSyyXxNL4Nz0BgojSDtg3uab9ZdqwEuETI/J2JgXWGoaf0TicDCWlqIL9FZYsHAOhdxmA8ZXmKsLOlyN+ifuFx22+WXLNg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB1547
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220704145333.22557-2-andrew.kilroy@arm.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -148,78 +66,274 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 03, 2022 at 02:43:54PM +0000, Shibin Koikkara Reeny wrote:
-> Poll test case was not testing all the functionality
-> of the poll feature in the testsuite. This patch
-> update the poll test case which contain 2 testcases to
-
-updates, contains, test cases
-
-> test the RX and the TX poll functionality and additional
-> 2 more testcases to check the timeout features of the
-
-feature
-
-> poll event.
+Em Mon, Jul 04, 2022 at 03:53:25PM +0100, Andrew Kilroy escreveu:
+> Perf report cannot produce callgraphs using dwarf on arm64 where pointer
+> authentication is enabled.  This is because libunwind and libdw cannot
+> unmangle instruction pointers that have a pointer authentication code
+> (PAC) embedded in them.
 > 
-> Poll testsuite have 4 test cases:
-
-test suite, has
-
+> libunwind and libdw need to be given an instruction mask which they can
+> use to arrive at the correct return address that does not contain the
+> PAC.
 > 
-> 1. TEST_TYPE_RX_POLL:
-> Check if RX path POLLIN function work as expect. TX path
-
-works
-
-> can use any method to sent the traffic.
-
-send
-
+> The bits in the return address that contain the PAC can differ by
+> process, so this patch adds a new sample field PERF_SAMPLE_ARCH_1
+> to allow the kernel to send the masks up to userspace perf.
 > 
-> 2. TEST_TYPE_TX_POLL:
-> Check if TX path POLLOUT function work as expect. RX path
-> can use any method to receive the traffic.
-> 
-> 3. TEST_TYPE_POLL_RXQ_EMPTY:
-> Call poll function with parameter POLLIN on empty rx queue
-> will cause timeout.If return timeout then test case is pass.
+> This field can be used in a architecture specific fashion, but on
+> aarch64, it contains the ptrauth mask information.
 
-space after dot
+I'm not seeing this kernel patch applied to tip/master or
+torvalds/master, what is the status of that part? Then I can look at the
+tooling part.
 
-> 
-> 4. TEST_TYPE_POLL_TXQ_FULL:
-> When txq is filled and packets are not cleaned by the kernel
-> then if we invoke the poll function with POLLOUT then it
-> should trigger timeout.
-> 
-> v1: https://lore.kernel.org/bpf/20220718095712.588513-1-shibin.koikkara.reeny@intel.com/
-> v2: https://lore.kernel.org/bpf/20220726101723.250746-1-shibin.koikkara.reeny@intel.com/
-> v3: https://lore.kernel.org/bpf/20220729132337.211443-1-shibin.koikkara.reeny@intel.com/
-> 
-> Changes in v2:
->  * Updated the commit message
->  * fixed the while loop flow in receive_pkts function.
-> Changes in v3:
->  * Introduced single thread validation function.
->  * Removed pkt_stream_invalid().
->  * Updated TEST_TYPE_POLL_TXQ_FULL testcase to create invalid frame.
->  * Removed timer from send_pkts().
->  * Removed boolean variable skip_rx and skip_tx.
-> Change in v4:
->  * Added is_umem_valid()
-
-for single patches, I believe that it's concerned a better practice to
-include the versioning below the '---' line?
-
-> 
-> Signed-off-by: Shibin Koikkara Reeny <shibin.koikkara.reeny@intel.com>
+- Arnaldo
+ 
+> Signed-off-by: Andrew Kilroy <andrew.kilroy@arm.com>
 > ---
->  tools/testing/selftests/bpf/xskxceiver.c | 166 +++++++++++++++++------
->  tools/testing/selftests/bpf/xskxceiver.h |   8 +-
->  2 files changed, 134 insertions(+), 40 deletions(-)
+>  arch/arm64/include/asm/arch_sample_data.h | 38 +++++++++++++++++++++++
+>  arch/arm64/kernel/Makefile                |  2 +-
+>  arch/arm64/kernel/arch_sample_data.c      | 37 ++++++++++++++++++++++
+>  include/linux/perf_event.h                | 24 ++++++++++++++
+>  include/uapi/linux/perf_event.h           |  5 ++-
+>  kernel/events/core.c                      | 35 +++++++++++++++++++++
+>  6 files changed, 139 insertions(+), 2 deletions(-)
+>  create mode 100644 arch/arm64/include/asm/arch_sample_data.h
+>  create mode 100644 arch/arm64/kernel/arch_sample_data.c
 > 
+> diff --git a/arch/arm64/include/asm/arch_sample_data.h b/arch/arm64/include/asm/arch_sample_data.h
+> new file mode 100644
+> index 000000000000..83fda293b1fc
+> --- /dev/null
+> +++ b/arch/arm64/include/asm/arch_sample_data.h
+> @@ -0,0 +1,38 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +#ifndef _ASM_ARCH_SAMPLE_DATA_H
+> +#define _ASM_ARCH_SAMPLE_DATA_H
+> +
+> +#include <linux/types.h>
+> +
+> +/*
+> + * Structure holding masks to help userspace stack unwinding
+> + * in the presence of arm64 pointer authentication.
+> + */
+> +struct ptrauth_info {
+> +	/*
+> +	 * Bits 0, 1, 2, 3, 4 may be set to on, to indicate which keys are being used
+> +	 * The APIAKEY, APIBKEY, APDAKEY, APDBKEY, or the APGAKEY respectively.
+> +	 * Where all bits are off, pointer authentication is not in use for the
+> +	 * process.
+> +	 */
+> +	u64 enabled_keys;
+> +
+> +	/*
+> +	 * The on bits represent which bits in an instruction pointer
+> +	 * constitute the pointer authentication code.
+> +	 */
+> +	u64 insn_mask;
+> +
+> +	/*
+> +	 * The on bits represent which bits in a data pointer constitute the
+> +	 * pointer authentication code.
+> +	 */
+> +	u64 data_mask;
+> +};
+> +
+> +struct arch_sample_data {
+> +	struct ptrauth_info ptrauth;
+> +};
+> +
+> +#endif
+> diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
+> index fa7981d0d917..843c6e0e2393 100644
+> --- a/arch/arm64/kernel/Makefile
+> +++ b/arch/arm64/kernel/Makefile
+> @@ -44,7 +44,7 @@ obj-$(CONFIG_KUSER_HELPERS)		+= kuser32.o
+>  obj-$(CONFIG_FUNCTION_TRACER)		+= ftrace.o entry-ftrace.o
+>  obj-$(CONFIG_MODULES)			+= module.o
+>  obj-$(CONFIG_ARM64_MODULE_PLTS)		+= module-plts.o
+> -obj-$(CONFIG_PERF_EVENTS)		+= perf_regs.o perf_callchain.o
+> +obj-$(CONFIG_PERF_EVENTS)		+= perf_regs.o perf_callchain.o arch_sample_data.o
+>  obj-$(CONFIG_HW_PERF_EVENTS)		+= perf_event.o
+>  obj-$(CONFIG_HAVE_HW_BREAKPOINT)	+= hw_breakpoint.o
+>  obj-$(CONFIG_CPU_PM)			+= sleep.o suspend.o
+> diff --git a/arch/arm64/kernel/arch_sample_data.c b/arch/arm64/kernel/arch_sample_data.c
+> new file mode 100644
+> index 000000000000..2d47e8db0dbe
+> --- /dev/null
+> +++ b/arch/arm64/kernel/arch_sample_data.c
+> @@ -0,0 +1,37 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <asm/arch_sample_data.h>
+> +#include <linux/perf_event.h>
+> +
+> +inline void perf_output_sample_arch_1(struct perf_output_handle *handle,
+> +				      struct perf_event_header *header,
+> +				      struct perf_sample_data *data,
+> +				      struct perf_event *event)
+> +{
+> +	perf_output_put(handle, data->arch.ptrauth.enabled_keys);
+> +	perf_output_put(handle, data->arch.ptrauth.insn_mask);
+> +	perf_output_put(handle, data->arch.ptrauth.data_mask);
+> +}
+> +
+> +inline void perf_prepare_sample_arch_1(struct perf_event_header *header,
+> +				       struct perf_sample_data *data,
+> +				       struct perf_event *event,
+> +				       struct pt_regs *regs)
+> +{
+> +	struct task_struct *task = current;
+> +	int keys_result = ptrauth_get_enabled_keys(task);
+> +	u64 user_pac_mask = keys_result > 0 ? ptrauth_user_pac_mask() : 0;
+> +
+> +	data->arch.ptrauth.enabled_keys = keys_result > 0 ? keys_result : 0;
+> +	data->arch.ptrauth.insn_mask = user_pac_mask;
+> +	data->arch.ptrauth.data_mask = user_pac_mask;
+> +
+> +	header->size += (3 * sizeof(u64));
+> +}
+> +
+> +inline int perf_event_open_request_arch_1(void)
+> +{
+> +	return 0;
+> +}
+> +
+> +
+> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+> index da759560eec5..8a99942989ce 100644
+> --- a/include/linux/perf_event.h
+> +++ b/include/linux/perf_event.h
+> @@ -999,6 +999,29 @@ int perf_event_read_local(struct perf_event *event, u64 *value,
+>  extern u64 perf_event_read_value(struct perf_event *event,
+>  				 u64 *enabled, u64 *running);
+>  
+> +void perf_output_sample_arch_1(struct perf_output_handle *handle,
+> +			       struct perf_event_header *header,
+> +			       struct perf_sample_data *data,
+> +			       struct perf_event *event);
+> +
+> +void perf_prepare_sample_arch_1(struct perf_event_header *header,
+> +				struct perf_sample_data *data,
+> +				struct perf_event *event,
+> +				struct pt_regs *regs);
+> +
+> +int perf_event_open_request_arch_1(void);
+> +
+> +#if IS_ENABLED(CONFIG_ARM64)
+> +
+> +#define HAS_ARCH_SAMPLE_DATA
+> +#include <asm/arch_sample_data.h>
+> +
+> +#endif
+> +
+> +#ifndef HAS_ARCH_SAMPLE_DATA
+> +struct arch_sample_data {
+> +};
+> +#endif
+>  
+>  struct perf_sample_data {
+>  	/*
+> @@ -1041,6 +1064,7 @@ struct perf_sample_data {
+>  	u64				cgroup;
+>  	u64				data_page_size;
+>  	u64				code_page_size;
+> +	struct arch_sample_data		arch;
+>  } ____cacheline_aligned;
+>  
+>  /* default value for data source */
+> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+> index d37629dbad72..821bf5ff6a19 100644
+> --- a/include/uapi/linux/perf_event.h
+> +++ b/include/uapi/linux/perf_event.h
+> @@ -162,12 +162,15 @@ enum perf_event_sample_format {
+>  	PERF_SAMPLE_DATA_PAGE_SIZE		= 1U << 22,
+>  	PERF_SAMPLE_CODE_PAGE_SIZE		= 1U << 23,
+>  	PERF_SAMPLE_WEIGHT_STRUCT		= 1U << 24,
+> +	PERF_SAMPLE_ARCH_1			= 1U << 25,
+>  
+> -	PERF_SAMPLE_MAX = 1U << 25,		/* non-ABI */
+> +	PERF_SAMPLE_MAX = 1U << 26,		/* non-ABI */
+>  
+>  	__PERF_SAMPLE_CALLCHAIN_EARLY		= 1ULL << 63, /* non-ABI; internal use */
+>  };
+>  
+> +#define PERF_SAMPLE_ARM64_PTRAUTH PERF_SAMPLE_ARCH_1
+> +
+>  #define PERF_SAMPLE_WEIGHT_TYPE	(PERF_SAMPLE_WEIGHT | PERF_SAMPLE_WEIGHT_STRUCT)
+>  /*
+>   * values to program into branch_sample_type when PERF_SAMPLE_BRANCH is set
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index 80782cddb1da..89ab8120f4f0 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -6957,6 +6957,29 @@ static inline bool perf_sample_save_hw_index(struct perf_event *event)
+>  	return event->attr.branch_sample_type & PERF_SAMPLE_BRANCH_HW_INDEX;
+>  }
+>  
+> +#ifndef HAS_ARCH_SAMPLE_DATA
+> +
+> +inline void perf_output_sample_arch_1(struct perf_output_handle *handle __maybe_unused,
+> +				      struct perf_event_header *header __maybe_unused,
+> +				      struct perf_sample_data *data __maybe_unused,
+> +				      struct perf_event *event __maybe_unused)
+> +{
+> +}
+> +
+> +inline void perf_prepare_sample_arch_1(struct perf_event_header *header __maybe_unused,
+> +				       struct perf_sample_data *data __maybe_unused,
+> +				       struct perf_event *event __maybe_unused,
+> +				       struct pt_regs *regs __maybe_unused)
+> +{
+> +}
+> +
+> +inline int perf_event_open_request_arch_1(void)
+> +{
+> +	return -EINVAL;
+> +}
+> +
+> +#endif
+> +
+>  void perf_output_sample(struct perf_output_handle *handle,
+>  			struct perf_event_header *header,
+>  			struct perf_sample_data *data,
+> @@ -7125,6 +7148,9 @@ void perf_output_sample(struct perf_output_handle *handle,
+>  			perf_aux_sample_output(event, handle, data);
+>  	}
+>  
+> +	if (sample_type & PERF_SAMPLE_ARCH_1)
+> +		perf_output_sample_arch_1(handle, header, data, event);
+> +
+>  	if (!event->attr.watermark) {
+>  		int wakeup_events = event->attr.wakeup_events;
+>  
+> @@ -7427,6 +7453,9 @@ void perf_prepare_sample(struct perf_event_header *header,
+>  	if (sample_type & PERF_SAMPLE_CODE_PAGE_SIZE)
+>  		data->code_page_size = perf_get_page_size(data->ip);
+>  
+> +	if (sample_type & PERF_SAMPLE_ARCH_1)
+> +		perf_prepare_sample_arch_1(header, data, event, regs);
+> +
+>  	if (sample_type & PERF_SAMPLE_AUX) {
+>  		u64 size;
+>  
+> @@ -12074,6 +12103,12 @@ SYSCALL_DEFINE5(perf_event_open,
+>  			return err;
+>  	}
+>  
+> +	if (attr.sample_type & PERF_SAMPLE_ARCH_1) {
+> +		err = perf_event_open_request_arch_1();
+> +		if (err)
+> +			return err;
+> +	}
+> +
+>  	/*
+>  	 * In cgroup mode, the pid argument is used to pass the fd
+>  	 * opened to the cgroup directory in cgroupfs. The cpu argument
+> -- 
+> 2.17.1
 
-I don't think these grammar suggestions require a new revision, so:
-Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+-- 
 
+- Arnaldo
