@@ -2,23 +2,23 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 636FC58E821
-	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 09:48:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82B0658E81E
+	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 09:48:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231445AbiHJHsJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Aug 2022 03:48:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41466 "EHLO
+        id S231421AbiHJHsH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Aug 2022 03:48:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231460AbiHJHr6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Aug 2022 03:47:58 -0400
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6520E6F559
-        for <bpf@vger.kernel.org>; Wed, 10 Aug 2022 00:47:36 -0700 (PDT)
+        with ESMTP id S231403AbiHJHrh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Aug 2022 03:47:37 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D0E86E8B5
+        for <bpf@vger.kernel.org>; Wed, 10 Aug 2022 00:47:35 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4M2hnt54JPz6T8cN
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4M2hnt6rhTzKQ2W
         for <bpf@vger.kernel.org>; Wed, 10 Aug 2022 15:46:10 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP2 (Coremail) with SMTP id Syh0CgDHsb2NYvNiIKmmAA--.61804S10;
+        by APP2 (Coremail) with SMTP id Syh0CgDHsb2NYvNiIKmmAA--.61804S11;
         Wed, 10 Aug 2022 15:47:33 +0800 (CST)
 From:   Hou Tao <houtao@huaweicloud.com>
 To:     bpf@vger.kernel.org, Yonghong Song <yhs@fb.com>
@@ -34,18 +34,18 @@ Cc:     Andrii Nakryiko <andrii@kernel.org>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         Lorenz Bauer <oss@lmb.io>, houtao1@huawei.com
-Subject: [PATCH bpf v2 6/9] bpf: Only allow sleepable program for resched-able iterator
-Date:   Wed, 10 Aug 2022 16:05:35 +0800
-Message-Id: <20220810080538.1845898-7-houtao@huaweicloud.com>
+Subject: [PATCH bpf v2 7/9] selftests/bpf: Add tests for reading a dangling map iter fd
+Date:   Wed, 10 Aug 2022 16:05:36 +0800
+Message-Id: <20220810080538.1845898-8-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20220810080538.1845898-1-houtao@huaweicloud.com>
 References: <20220810080538.1845898-1-houtao@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgDHsb2NYvNiIKmmAA--.61804S10
-X-Coremail-Antispam: 1UD129KBjvJXoW7ury5KryktrW3Zw4rtFWfuFg_yoW8urWUpF
-        Z3WryUAr48Xws7JF4DAa1DuFy5Aw18Wa43WFs7WrsIyanru39rWrWrtF129Fn0qry0yFZa
-        yFWIk34jy3yUZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: Syh0CgDHsb2NYvNiIKmmAA--.61804S11
+X-Coremail-Antispam: 1UD129KBjvJXoW3Gw1UCw4kGFy8ZF48tw48Xrb_yoW7Grykp3
+        4xJ390kr4rXan7Xr1kJa1Ykr45ta1jqa4UG3yrG3y5CrsrXrWagr1xGFW8JFn8JrW0vFnI
+        y34ay3yfGrWUAFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUBSb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
         6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
         Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
@@ -72,58 +72,161 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Hou Tao <houtao1@huawei.com>
 
-When a sleepable program is attached to a hash map iterator, might_fault()
-will report "BUG: sleeping function called from invalid context..." if
-CONFIG_DEBUG_ATOMIC_SLEEP is enabled. The reason is that rcu_read_lock()
-is held in bpf_hash_map_seq_next() and won't be released until all elements
-are traversed or bpf_hash_map_seq_stop() is called.
-
-Fixing it by reusing BPF_ITER_RESCHED to indicate that only non-sleepable
-program is allowed for iterator without BPF_ITER_RESCHED. We can revise
-bpf_iter_link_attach() later if there are other conditions which may
-cause rcu_read_lock() or spin_lock() issues.
+After closing both related link fd and map fd, reading the map
+iterator fd to ensure it is OK to do so.
 
 Signed-off-by: Hou Tao <houtao1@huawei.com>
-Acked-by: Yonghong Song <yhs@fb.com>
 ---
- kernel/bpf/bpf_iter.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ .../selftests/bpf/prog_tests/bpf_iter.c       | 92 +++++++++++++++++++
+ 1 file changed, 92 insertions(+)
 
-diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
-index 4b112aa8bba3..97bb57493ed5 100644
---- a/kernel/bpf/bpf_iter.c
-+++ b/kernel/bpf/bpf_iter.c
-@@ -68,13 +68,18 @@ static void bpf_iter_done_stop(struct seq_file *seq)
- 	iter_priv->done_stop = true;
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+index a33874b081b6..b690c9e9d346 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+@@ -28,6 +28,7 @@
+ #include "bpf_iter_test_kern6.skel.h"
+ #include "bpf_iter_bpf_link.skel.h"
+ #include "bpf_iter_ksym.skel.h"
++#include "bpf_iter_sockmap.skel.h"
+ 
+ static int duration;
+ 
+@@ -67,6 +68,50 @@ static void do_dummy_read(struct bpf_program *prog)
+ 	bpf_link__destroy(link);
  }
  
-+static inline bool bpf_iter_target_support_resched(const struct bpf_iter_target_info *tinfo)
++static void do_read_map_iter_fd(struct bpf_object_skeleton **skel, struct bpf_program *prog,
++				struct bpf_map *map)
 +{
-+	return tinfo->reg_info->feature & BPF_ITER_RESCHED;
++	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
++	union bpf_iter_link_info linfo;
++	struct bpf_link *link;
++	char buf[16] = {};
++	int iter_fd, len;
++
++	memset(&linfo, 0, sizeof(linfo));
++	linfo.map.map_fd = bpf_map__fd(map);
++	opts.link_info = &linfo;
++	opts.link_info_len = sizeof(linfo);
++	link = bpf_program__attach_iter(prog, &opts);
++	if (!ASSERT_OK_PTR(link, "attach_map_iter"))
++		return;
++
++	iter_fd = bpf_iter_create(bpf_link__fd(link));
++	if (!ASSERT_GE(iter_fd, 0, "create_map_iter")) {
++		bpf_link__destroy(link);
++		return;
++	}
++
++	/* Close link and map fd prematurely */
++	bpf_link__destroy(link);
++	bpf_object__destroy_skeleton(*skel);
++	*skel = NULL;
++
++	/* Try to let map free work to run first if map is freed */
++	usleep(100);
++	/* Memory used by both sock map and sock local storage map are
++	 * freed after two synchronize_rcu() calls, so wait for it
++	 */
++	kern_sync_rcu();
++	kern_sync_rcu();
++
++	/* Read after both map fd and link fd are closed */
++	while ((len = read(iter_fd, buf, sizeof(buf))) > 0)
++		;
++	ASSERT_GE(len, 0, "read_iterator");
++
++	close(iter_fd);
 +}
 +
- static bool bpf_iter_support_resched(struct seq_file *seq)
+ static int read_fd_into_buffer(int fd, char *buf, int size)
  {
- 	struct bpf_iter_priv_data *iter_priv;
- 
- 	iter_priv = container_of(seq->private, struct bpf_iter_priv_data,
- 				 target_private);
--	return iter_priv->tinfo->reg_info->feature & BPF_ITER_RESCHED;
-+	return bpf_iter_target_support_resched(iter_priv->tinfo);
+ 	int bufleft = size;
+@@ -827,6 +872,20 @@ static void test_bpf_array_map(void)
+ 	bpf_iter_bpf_array_map__destroy(skel);
  }
  
- /* maximum visited objects before bailing out */
-@@ -542,6 +547,10 @@ int bpf_iter_link_attach(const union bpf_attr *attr, bpfptr_t uattr,
- 	if (!tinfo)
- 		return -ENOENT;
- 
-+	/* Only allow sleepable program for resched-able iterator */
-+	if (prog->aux->sleepable && !bpf_iter_target_support_resched(tinfo))
-+		return -EINVAL;
++static void test_bpf_array_map_iter_fd(void)
++{
++	struct bpf_iter_bpf_array_map *skel;
 +
- 	link = kzalloc(sizeof(*link), GFP_USER | __GFP_NOWARN);
- 	if (!link)
- 		return -ENOMEM;
++	skel = bpf_iter_bpf_array_map__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "bpf_iter_bpf_array_map__open_and_load"))
++		return;
++
++	do_read_map_iter_fd(&skel->skeleton, skel->progs.dump_bpf_array_map,
++			    skel->maps.arraymap1);
++
++	bpf_iter_bpf_array_map__destroy(skel);
++}
++
+ static void test_bpf_percpu_array_map(void)
+ {
+ 	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
+@@ -1009,6 +1068,20 @@ static void test_bpf_sk_storage_get(void)
+ 	bpf_iter_bpf_sk_storage_helpers__destroy(skel);
+ }
+ 
++static void test_bpf_sk_stoarge_map_iter_fd(void)
++{
++	struct bpf_iter_bpf_sk_storage_map *skel;
++
++	skel = bpf_iter_bpf_sk_storage_map__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "bpf_iter_bpf_sk_storage_map__open_and_load"))
++		return;
++
++	do_read_map_iter_fd(&skel->skeleton, skel->progs.dump_bpf_sk_storage_map,
++			    skel->maps.sk_stg_map);
++
++	bpf_iter_bpf_sk_storage_map__destroy(skel);
++}
++
+ static void test_bpf_sk_storage_map(void)
+ {
+ 	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
+@@ -1217,6 +1290,19 @@ static void test_task_vma(void)
+ 	bpf_iter_task_vma__destroy(skel);
+ }
+ 
++void test_bpf_sockmap_map_iter_fd(void)
++{
++	struct bpf_iter_sockmap *skel;
++
++	skel = bpf_iter_sockmap__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "bpf_iter_sockmap__open_and_load"))
++		return;
++
++	do_read_map_iter_fd(&skel->skeleton, skel->progs.copy, skel->maps.sockmap);
++
++	bpf_iter_sockmap__destroy(skel);
++}
++
+ void test_bpf_iter(void)
+ {
+ 	if (test__start_subtest("btf_id_or_null"))
+@@ -1267,10 +1353,14 @@ void test_bpf_iter(void)
+ 		test_bpf_percpu_hash_map();
+ 	if (test__start_subtest("bpf_array_map"))
+ 		test_bpf_array_map();
++	if (test__start_subtest("bpf_array_map_iter_fd"))
++		test_bpf_array_map_iter_fd();
+ 	if (test__start_subtest("bpf_percpu_array_map"))
+ 		test_bpf_percpu_array_map();
+ 	if (test__start_subtest("bpf_sk_storage_map"))
+ 		test_bpf_sk_storage_map();
++	if (test__start_subtest("bpf_sk_storage_map_iter_fd"))
++		test_bpf_sk_stoarge_map_iter_fd();
+ 	if (test__start_subtest("bpf_sk_storage_delete"))
+ 		test_bpf_sk_storage_delete();
+ 	if (test__start_subtest("bpf_sk_storage_get"))
+@@ -1283,4 +1373,6 @@ void test_bpf_iter(void)
+ 		test_link_iter();
+ 	if (test__start_subtest("ksym"))
+ 		test_ksym_iter();
++	if (test__start_subtest("bpf_sockmap_map_iter_fd"))
++		test_bpf_sockmap_map_iter_fd();
+ }
 -- 
 2.29.2
 
