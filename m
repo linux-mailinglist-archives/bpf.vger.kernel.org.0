@@ -2,171 +2,224 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B096358EB8C
-	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 13:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF18D58ECC5
+	for <lists+bpf@lfdr.de>; Wed, 10 Aug 2022 15:09:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231777AbiHJLw6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Aug 2022 07:52:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50696 "EHLO
+        id S231646AbiHJNJD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Aug 2022 09:09:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231190AbiHJLw5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Aug 2022 07:52:57 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F5407D1E8;
-        Wed, 10 Aug 2022 04:52:56 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id qn6so15439355ejc.11;
-        Wed, 10 Aug 2022 04:52:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc;
-        bh=ehno/SjxBI23HPBparcnIDPiUCpTkSu5X80BvIMFKVs=;
-        b=EG+vAH2ovWKE8dUB1I3gxGtmRTefbhUMPfD2QnW+ZMDtSPGq0hmMCaR8J2kaowjyyy
-         7bpjrjHw0CQiDLVH9pOtec9X858DHB7Pumo9jSdL9JiYga5Gtt8MDRORLiD9Mv3zazTK
-         x+s2k4D1dtEaROhfaxvTZ/0ODJIv4PUTYzQpZSsVFQJ937pZzvM041h/Y38hzE7jam2Z
-         sN3jVYydNK8biazB6zThVkdFu52gCjXq+/F75xVOIEILl1rlz2wBlcswZbd84NvowXB5
-         oU6ldZtV+2t7UwPySAHL9/waZzSn7RYltvJi3hYrZHbFk2PAyvOezxPz6zkjzyI4YqNA
-         d7eQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc;
-        bh=ehno/SjxBI23HPBparcnIDPiUCpTkSu5X80BvIMFKVs=;
-        b=4r7FgB3G4hzOX6KMXmrT2d/aZHF16QXd+fElKsuby+Ky7+9mZnmRpoUPPmXRuYH0Rr
-         RDReJetHN4/uHbBr+EgRlnly4/d/NSHtRLOySKap3Q0BzHrc9kLCgiaFB7sVGH9d/ANZ
-         pgKx4ugzUf+9HzqNYz4HtrVgieEkh7TyBch6C3NiIG/XmgIqDn6IY8nhat7S4+iOkZBf
-         IdziiMnG3k7KRJ/IjnQCWdyHWvaFSZvumI4tMN2oGWC2rcd0zli0eQqZJ2GNV/riiGz5
-         vTmrkN5z7yezI+dnDLWJO1U5dWFoBvE6j6CP8t3Ti4V6HAVOviUTeVDlsck6cyZryZVe
-         kz1g==
-X-Gm-Message-State: ACgBeo1ImqbprAtMNbRecck1G+rzwIM8owQXbdlccGH0m+w7++QnrKf5
-        8ObdN3nbIwBmUyeR616PGio=
-X-Google-Smtp-Source: AA6agR4tgPVhyEVOEBsk7z7+7Ios8R9LycYiju7Ppa8IcfRbIHsYToqlJdrnvX80fb8r4k/gbwPMMA==
-X-Received: by 2002:a17:906:eec7:b0:733:189f:b07a with SMTP id wu7-20020a170906eec700b00733189fb07amr672600ejb.230.1660132374742;
-        Wed, 10 Aug 2022 04:52:54 -0700 (PDT)
-Received: from krava ([193.85.244.190])
-        by smtp.gmail.com with ESMTPSA id d4-20020a17090694c400b007313a25e56esm2214287ejy.29.2022.08.10.04.52.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Aug 2022 04:52:54 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Wed, 10 Aug 2022 13:52:50 +0200
-To:     Lee Jones <lee@kernel.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH v2 1/1] bpf: Drop unprotected find_vpid() in favour of
- find_get_pid()
-Message-ID: <YvOcEqGf6KgmUmmp@krava>
-References: <20220803134821.425334-1-lee@kernel.org>
- <CAADnVQ+X_B4LC6CtYM1PXPA4BBprWLj5Qip--Eeu32Zti==Ydw@mail.gmail.com>
- <YvIDmku4us2SSBKu@google.com>
- <CAADnVQ+5eq3qQTgHH6nDdVM-n1i4TWkZ35Ou8TDMi3MqGzm63w@mail.gmail.com>
- <YvOQhTUD1x6W0ozO@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        with ESMTP id S232242AbiHJNJD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Aug 2022 09:09:03 -0400
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F1879A41;
+        Wed, 10 Aug 2022 06:09:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1660136941; x=1691672941;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=qAaAY/bq6+Zxce3LAYgOGsXR3e63R6ljJtVketFDdT0=;
+  b=iMi0jLIEpE4JMcISYV6GrAzTmXPldvmxJfNrgOvz5AeUlbzFGByjWepF
+   y44CypOkn2ta+yYy+qgkF0m4BlaWFuru7I5XRzCKpS6xZ2cmhT9T4SOtu
+   +YwPUMzvLuAHz+ENmcxIxpRPGyqHnvb2P4VqRv+/cAADyDjSgEYl689g5
+   7IauICcPbdLGKrGWJ4/GGUIGTLMxgpezPplOgmaKzpirev6zmozPLxNqy
+   1RsZhZb6J8WuAZhJKcqDBA9drLJjtNKKgtbd/66HDTq4c0JkWeDDGqSN2
+   w8Crj5AM19QD4eGcozLMKYNLq4gUkVAfZ2bN3cTBmLZmzOCVD8+REOvcI
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10434"; a="355077136"
+X-IronPort-AV: E=Sophos;i="5.93,227,1654585200"; 
+   d="scan'208";a="355077136"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2022 06:09:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,227,1654585200"; 
+   d="scan'208";a="638100466"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga001.jf.intel.com with ESMTP; 10 Aug 2022 06:09:01 -0700
+Received: from orsmsx607.amr.corp.intel.com (10.22.229.20) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28; Wed, 10 Aug 2022 06:09:00 -0700
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX607.amr.corp.intel.com (10.22.229.20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28; Wed, 10 Aug 2022 06:09:00 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28 via Frontend Transport; Wed, 10 Aug 2022 06:09:00 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.49) by
+ edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2375.28; Wed, 10 Aug 2022 06:09:00 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FEG37fFaRHvB5MUbPjh2pmyPg1feEKZbxXo/FXJmIHvrIuJcGLqJIjKsO+Oqx/f7URXjg6LPNNAsI5esR0O5WjLka/sxt7m/fOKSREcSVdBzadr+jH3vLjyL0UvK/LRR97pVsarAi3a6waX1W6ADPHyvwLuC2ZgNvF6EYcxPxLahtJv50Qy4CAdEA8DFIJB0N9/AfpIv1q9cCl0gGXsPKGa/d1DrCSGLJvW1ofKDNbx6i3ITQqTDPyOHRP2AV7eRbL2NEkhn9lqG+AnNeS6xwWLa9OgqCnYVOldjhLKOwiPP2riB5wQqgMrVEno30AqGlfnia9apuo6+JAx4W6Rs+g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Trr2xnuFt0ZeQDzsrcxOdWQUkXBKs3PRIt1l4ZL8xNU=;
+ b=EjPamRu855C1gn7ht74kExBUwI37yDiEuJH5a5RlWqoR2UD8qpmYcRyyIJXWsuMhu8NBqYw1iKHllbVhkRTyMI/V7u9zti5puwE33c6CZ23RerY+zd7emXQW5+aYwZVnWjFrxUKgzTV7/YRHpBRBvL/Oj9b+BXru92ddgEivQXl6Kf64tZY/TP1FQyd+RmRgkkXWbxaNYlcZWohH00w4ZDPtStUzhmZBB7kjFlExqWDsySmt8mAqvb0KSq6oze0Yi57SuQ4zbAKywaMQXjUP849IIjA1RM+/OudfefBpQxG7Urj2SvZWQ68JvIRnDMT3jXCrm2Li7t8JBSunejI5qw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
+ DM5PR11MB1547.namprd11.prod.outlook.com (2603:10b6:4:a::15) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5504.17; Wed, 10 Aug 2022 13:08:58 +0000
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::5876:103b:22ca:39b7]) by DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::5876:103b:22ca:39b7%4]) with mapi id 15.20.5525.011; Wed, 10 Aug 2022
+ 13:08:58 +0000
+Date:   Wed, 10 Aug 2022 15:08:14 +0200
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Shibin Koikkara Reeny <shibin.koikkara.reeny@intel.com>
+CC:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <netdev@vger.kernel.org>, <magnus.karlsson@intel.com>,
+        <bjorn@kernel.org>, <kuba@kernel.org>, <andrii@kernel.org>,
+        <ciara.loftus@intel.com>
+Subject: Re: [PATCH bpf-next v4] selftests: xsk: Update poll test cases
+Message-ID: <YvOtvgdSnOhUd9Po@boxer>
+References: <20220803144354.98122-1-shibin.koikkara.reeny@intel.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <YvOQhTUD1x6W0ozO@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220803144354.98122-1-shibin.koikkara.reeny@intel.com>
+X-ClientProxiedBy: AM6P194CA0076.EURP194.PROD.OUTLOOK.COM
+ (2603:10a6:209:8f::17) To DM4PR11MB6117.namprd11.prod.outlook.com
+ (2603:10b6:8:b3::19)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f7f5b328-73e2-4344-be12-08da7ad17c63
+X-MS-TrafficTypeDiagnostic: DM5PR11MB1547:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OguMeHkcj8HdaD9Yo73FSTpAs9NJ0VN3E3LM815Xif86/jGe4wi9MlW9pvNipFcL+BWPEv5jLRmmjcAS+tBRGF5qY4TD6KQa1ayxeaz5Ps5J7hHWcvTQQBwu2bqKX8DpbKdziRm1dfQfPSyYSIdgiFL4CNq5M5UoTeW/3//Zh8b13STmn5+K0gZTzBwcCKLP3ZCzGsJNeAR/p9IaTQCeNWfVrNPDbQpSxZjZ++c/u6rRg+lfq00SwvB7Tl/HIVIeb+UrB2ZbDbcNfNez3k+P0j9c8c5RT84RiBam9JmkuSPWfpwkYgyA7Dfykg4KAekVd5WvOiYvEHljlLE+7YtjGXnrNgT2VYKEniUC6HuQU2oA2kWJLOZr80o5UZOtq7xCkA0S31OCghexJIYCyCxHOQmu/5no3JljYrhmkD3zhfAoIDR0jUwFT03PXo08ULtBaD2y1b/I6EC1X0GVGBW/PYie5w1C8uf7aMC2sQ2crIeAtM1BzqxuOsylhXZlDsWboBZS0QQCU6hkpnJgVI48lS5n47Lmsy9qL1OC7EgjL2nWnXs0rZF04dKH44fVYRHtPiJ1+PlGNTsOFXt7DE1m/j8haT0v8XHP78MxZXeozYN5TAyPR1oWr71iCB5+wCOHlVFS0jOHf+Qj4+Rn/fjsjqs9R3Wig4aR/jWFNSxzgxX/23edD9C7Vz4vGbJk6+sV1v5wrJ3I0Ozbqk3+gbiDKRs1FYaMGuf5ss026mqCWVUpPGP+2We1iO+MsYZmTEzj9wJPTlDY1rNexaLKe2MkXOhzqXZ0t+uxwSFFhSDxS+SvViJ9ISfUfimJxFcvvdN0
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(7916004)(39860400002)(136003)(346002)(376002)(396003)(366004)(82960400001)(38100700002)(9686003)(6512007)(26005)(6666004)(83380400001)(6506007)(86362001)(107886003)(186003)(478600001)(41300700001)(6636002)(316002)(6486002)(966005)(2906002)(66946007)(66556008)(66476007)(5660300002)(8676002)(4326008)(8936002)(6862004)(44832011)(15650500001)(33716001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8RKRlu3LdSS7yJneXKcoPzcC6IFZ9dirNcXhD0/YDWvCmPgrt8njYRPggO3P?=
+ =?us-ascii?Q?v3MhQKPbqvY102evQGU8TrEImjBaCF1gvpAuZDCf/nVBEHxlPOdkr9fHi2wv?=
+ =?us-ascii?Q?Wzo/7n1J1XnK4m5OddP6XRF15+1DrfsGwMr5DH4H77aLg0kcl8Srk2+fs/uM?=
+ =?us-ascii?Q?WirlsSJmRCiSaz+gRi65lT33l0zrv4i3du1JmCUVNkOXbZ9dXJrV4TJg+Mdg?=
+ =?us-ascii?Q?vj9xSUdCNAGVCdM4/s0y+9PaicClTdPyBsD0WDz7Lo2o9VXR68voJtBXQIXV?=
+ =?us-ascii?Q?B/Lf0fa8GlcVE/kXgwrS4w2lFRI3qRq+o5hkjtawV5pNm6O/7LFWXgcrTR8w?=
+ =?us-ascii?Q?RSlWFn7o/bbWUOtvWbPPTNYmBOb2zcTcOAz81ypExr5Qkyi0JMk1AG0PtfCR?=
+ =?us-ascii?Q?GcKwVm7FTSe2G2Z2CdtQY5/ewNQEFBVYrWE4t9EHyGSq6wM01SZOq2ALmy7Q?=
+ =?us-ascii?Q?NVVsTkICXklV/1OTAtA675qJLMWqON7/BbWc3wTLnMuWZxA5IesMnocT2KoE?=
+ =?us-ascii?Q?LPR38EvD+LNN7WmlvJtni8onVfW89zGFAvRiwHV9QzxtLex6Xyh93AZkdcjJ?=
+ =?us-ascii?Q?FmnG3c5FyqdYNe26EWYw4Pi1MwZ99e+4jkksAK5PgbXITfN2Z9Qr6vShOdD2?=
+ =?us-ascii?Q?+8iOzRKMoEKytot3s0AnqX0WSZCixNJtxcCd9btpPFIJvKMDiUWGVfytalwe?=
+ =?us-ascii?Q?W0E3ttar4QNSr0b0VomNk9mQIB7YY/Wo6PuqquW/qxgUOTlU6wsjT+9BraPl?=
+ =?us-ascii?Q?MNC3lHjIif4Tf3BWxq+nxk/E3j/hZ5anIQgaLjDPHPZ3Pl+RWNUL2tUV2MIC?=
+ =?us-ascii?Q?eqO4jgQ55Noke4dNzZgijtq/f/bILk2EIdkeExuMdpXfCsvTpmFsoL5DXl6c?=
+ =?us-ascii?Q?CShfbF0qYSxFXlujm3kkCAvqGLofOO0ALoxEP6y59bdzj1ztkdbtkXppBpDI?=
+ =?us-ascii?Q?mjSRAm3KN1IvJyYO8mhVSanOkO7fh7H3DfHyFaz0n1dhXQcpSqGxx6sMR5KS?=
+ =?us-ascii?Q?0oRmHa89+BpIJMJQEE045i0/p7e3eY1jCZwPvuGwP3JEGKctSl1z0yQz43Bg?=
+ =?us-ascii?Q?GC+emIxooZ9ZIiCAsI9YOVY8QHNIPp0CQTm3MIqa4LgMX2ajNn0wCfHcNCWR?=
+ =?us-ascii?Q?dzN9tF1F0wXTU55SVnJ7g7DHsnKsuh+4Sp5xWaLuHxRoUVLXo4kzCovBARO5?=
+ =?us-ascii?Q?Qqes07IKLKFnkYxG+nJgpC3faKA+KoN98yx5KEytXqq7kpokaxuw6oy2GlWP?=
+ =?us-ascii?Q?nEBcd1RG1Dnk6827BuOlKjo4+143fmgTN4s6OZMt3uEhPGGWujkrA3STa6cR?=
+ =?us-ascii?Q?bY425t9zXIf25asQVUsV4Ju2Q4nydW7Ekz4q8w+bkcBj+VlF2pmpoUDJhfiq?=
+ =?us-ascii?Q?tHkc1/b7jUYiZstKB6amJiuREJn8Qg7rdPfbPmmxFSO0bN7fPKoIybjMRtpB?=
+ =?us-ascii?Q?cSDsp5UZDB98nIS3d0AswKzcFf+0IaR7+Ni3pIt4HswksiMQx0bDcJbpBgzm?=
+ =?us-ascii?Q?Q5hPjjbPfAQ87iticxrtUTa8wjt6ERB9b06NgBDixwX0vOF2zzRsO/6/UJmB?=
+ =?us-ascii?Q?E1AkfLjY8s4daSClZNX7/fusp1jE5lBGMZqmPP59qhme8UryPRIHHquRP1sH?=
+ =?us-ascii?Q?kw=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: f7f5b328-73e2-4344-be12-08da7ad17c63
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Aug 2022 13:08:58.4541
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IWx/GwmYhhvkhYSyyXxNL4Nz0BgojSDtg3uab9ZdqwEuETI/J2JgXWGoaf0TicDCWlqIL9FZYsHAOhdxmA8ZXmKsLOlyN+ifuFx22+WXLNg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR11MB1547
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 10, 2022 at 12:03:33PM +0100, Lee Jones wrote:
-> On Tue, 09 Aug 2022, Alexei Starovoitov wrote:
-> 
-> > On Mon, Aug 8, 2022 at 11:50 PM Lee Jones <lee@kernel.org> wrote:
-> > >
-> > > On Thu, 04 Aug 2022, Alexei Starovoitov wrote:
-> > >
-> > > > On Wed, Aug 3, 2022 at 6:48 AM Lee Jones <lee@kernel.org> wrote:
-> > > > >
-> > > > > The documentation for find_pid() clearly states:
-> > > > >
-> > > > >   "Must be called with the tasklist_lock or rcu_read_lock() held."
-> > > > >
-> > > > > Presently we do neither.
-> > > > >
-> > > > > Let's use find_get_pid() which searches for the vpid, then takes a
-> > > > > reference to it preventing early free, all within the safety of
-> > > > > rcu_read_lock().  Once we have our reference we can safely make use of
-> > > > > it up until the point it is put.
-> > > > >
-> > > > > Cc: Alexei Starovoitov <ast@kernel.org>
-> > > > > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > > > > Cc: John Fastabend <john.fastabend@gmail.com>
-> > > > > Cc: Andrii Nakryiko <andrii@kernel.org>
-> > > > > Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> > > > > Cc: Song Liu <song@kernel.org>
-> > > > > Cc: Yonghong Song <yhs@fb.com>
-> > > > > Cc: KP Singh <kpsingh@kernel.org>
-> > > > > Cc: Stanislav Fomichev <sdf@google.com>
-> > > > > Cc: Hao Luo <haoluo@google.com>
-> > > > > Cc: Jiri Olsa <jolsa@kernel.org>
-> > > > > Cc: bpf@vger.kernel.org
-> > > > > Fixes: 41bdc4b40ed6f ("bpf: introduce bpf subcommand BPF_TASK_FD_QUERY")
-> > > > > Signed-off-by: Lee Jones <lee@kernel.org>
-> > > > > ---
-> > > > >
-> > > > > v1 => v2:
-> > > > >   * Commit log update - no code differences
-> > > > >
-> > > > >  kernel/bpf/syscall.c | 5 ++++-
-> > > > >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > > > >
-> > > > > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > > > > index 83c7136c5788d..c20cff30581c4 100644
-> > > > > --- a/kernel/bpf/syscall.c
-> > > > > +++ b/kernel/bpf/syscall.c
-> > > > > @@ -4385,6 +4385,7 @@ static int bpf_task_fd_query(const union bpf_attr *attr,
-> > > > >         const struct perf_event *event;
-> > > > >         struct task_struct *task;
-> > > > >         struct file *file;
-> > > > > +       struct pid *ppid;
-> > > > >         int err;
-> > > > >
-> > > > >         if (CHECK_ATTR(BPF_TASK_FD_QUERY))
-> > > > > @@ -4396,7 +4397,9 @@ static int bpf_task_fd_query(const union bpf_attr *attr,
-> > > > >         if (attr->task_fd_query.flags != 0)
-> > > > >                 return -EINVAL;
-> > > > >
-> > > > > -       task = get_pid_task(find_vpid(pid), PIDTYPE_PID);
-> > > > > +       ppid = find_get_pid(pid);
-> > > > > +       task = get_pid_task(ppid, PIDTYPE_PID);
-> > > > > +       put_pid(ppid);
-> > > >
-> > > > rcu_read_lock/unlock around this line
-> > > > would be a cheaper and faster alternative than pid's
-> > > > refcount inc/dec.
-> > >
-> > > This was already discussed here:
-> > >
-> > > https://lore.kernel.org/all/YtsFT1yFtb7UW2Xu@krava/
-> > 
-> > Since several people thought about rcu_read_lock instead of your
-> > approach it means that it's preferred.
-> > Sooner or later somebody will send a patch to optimize
-> > refcnt into rcu_read_lock.
-> > So let's avoid the churn and do it now.
-> 
-> I'm not wed to either approach.  Please discuss it with Yonghong and
-> Jiri and I'll do whatever is agreed upon.
+On Wed, Aug 03, 2022 at 02:43:54PM +0000, Shibin Koikkara Reeny wrote:
+> Poll test case was not testing all the functionality
+> of the poll feature in the testsuite. This patch
+> update the poll test case which contain 2 testcases to
 
-yea, I thought using rcu_read_lock would be better, but I did not
-have strong feelings against doing the pid's refcount inc/dec when
-Yonghong supported that.. now with Alexei it's 2 against 1 in favour
-of using rcu_read_lock ;-)
+updates, contains, test cases
 
-jirka
+> test the RX and the TX poll functionality and additional
+> 2 more testcases to check the timeout features of the
+
+feature
+
+> poll event.
+> 
+> Poll testsuite have 4 test cases:
+
+test suite, has
+
+> 
+> 1. TEST_TYPE_RX_POLL:
+> Check if RX path POLLIN function work as expect. TX path
+
+works
+
+> can use any method to sent the traffic.
+
+send
+
+> 
+> 2. TEST_TYPE_TX_POLL:
+> Check if TX path POLLOUT function work as expect. RX path
+> can use any method to receive the traffic.
+> 
+> 3. TEST_TYPE_POLL_RXQ_EMPTY:
+> Call poll function with parameter POLLIN on empty rx queue
+> will cause timeout.If return timeout then test case is pass.
+
+space after dot
+
+> 
+> 4. TEST_TYPE_POLL_TXQ_FULL:
+> When txq is filled and packets are not cleaned by the kernel
+> then if we invoke the poll function with POLLOUT then it
+> should trigger timeout.
+> 
+> v1: https://lore.kernel.org/bpf/20220718095712.588513-1-shibin.koikkara.reeny@intel.com/
+> v2: https://lore.kernel.org/bpf/20220726101723.250746-1-shibin.koikkara.reeny@intel.com/
+> v3: https://lore.kernel.org/bpf/20220729132337.211443-1-shibin.koikkara.reeny@intel.com/
+> 
+> Changes in v2:
+>  * Updated the commit message
+>  * fixed the while loop flow in receive_pkts function.
+> Changes in v3:
+>  * Introduced single thread validation function.
+>  * Removed pkt_stream_invalid().
+>  * Updated TEST_TYPE_POLL_TXQ_FULL testcase to create invalid frame.
+>  * Removed timer from send_pkts().
+>  * Removed boolean variable skip_rx and skip_tx.
+> Change in v4:
+>  * Added is_umem_valid()
+
+for single patches, I believe that it's concerned a better practice to
+include the versioning below the '---' line?
+
+> 
+> Signed-off-by: Shibin Koikkara Reeny <shibin.koikkara.reeny@intel.com>
+> ---
+>  tools/testing/selftests/bpf/xskxceiver.c | 166 +++++++++++++++++------
+>  tools/testing/selftests/bpf/xskxceiver.h |   8 +-
+>  2 files changed, 134 insertions(+), 40 deletions(-)
+> 
+
+I don't think these grammar suggestions require a new revision, so:
+Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+
