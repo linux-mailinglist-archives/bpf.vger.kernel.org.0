@@ -2,211 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D26658F4D2
-	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 01:26:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95C9858F525
+	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 02:17:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233687AbiHJX0Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Aug 2022 19:26:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49376 "EHLO
+        id S233356AbiHKAR0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Aug 2022 20:17:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233626AbiHJX0Y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Aug 2022 19:26:24 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 917CE7B7AC;
-        Wed, 10 Aug 2022 16:26:23 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id x2so3015806ilp.10;
-        Wed, 10 Aug 2022 16:26:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=ZWG0Pplx8o3vWqJcu5N5Rp9ELa1xjLQiL3hpegwnr1I=;
-        b=H2OYenAG2+KJR3IyeJVLiRVGw9bcGJwfpolvXYZXJVHmXcjEBatHuOKq46aCoAQNLv
-         GyP42AURQfkEOuhsZeo4Joq1d+b9WidU1HzjaLpStNuQzGRWG/vXTwsdrFFcJTLHdySU
-         TkD+qB5DxMzkT6Xp5ePoKL1AyOIRCRnJXCHPaoMpOtRzvlKTxiXS3FVJrs+GH9z2/nKo
-         H5jU2L90uinfUEuADoseVVsvmpOJtmOEEWYahi/m9sjlelrlUImJTkbt++8kdKPoIY1A
-         Qf4FTlds9zArEOGH4F/dGVpYvrHF1xS/B1+BfFtSNjTX6vHUASRInLqtKrIrPfCD+pel
-         q6XQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=ZWG0Pplx8o3vWqJcu5N5Rp9ELa1xjLQiL3hpegwnr1I=;
-        b=iSVW/YlmEFUxwe6oFWcxNe6JIOQK4wZQIZSXi8ijmeGUsa+UPpaBBSxHsZxThbB8q+
-         3hgGwF88QeCkApPzq6/G1Uccto6D3y2B5WEqiMuASShIzB79SMlBqwSRnr03NXCcSrlz
-         j5JrdShsaRXPncDEVVFm2NFqj4QTRypspgqVLuv5sRocHqyY9JKNFnhbe5odUfCejXnF
-         VwkLxoPHp6N6eA3LFiWgXwEm+hUe509V6etKU47+RjZIExv5dzI9S88bZcf1fY2m5QwC
-         niUWxsfBABz4VXL0b9vMd8qwRcUfMRyMiogJfC+N/LWwuBwhd4wddWR8BahWI5kNCmDe
-         W2iQ==
-X-Gm-Message-State: ACgBeo3XA6Fppa61vbgqrnm0oJr+bg5bdulHCaqdclvX3QnJ8GZ5cayl
-        NAiVeocKY1lRPHT79zcCrUHRJ1QMPHN8NItaCsJpBGpN
-X-Google-Smtp-Source: AA6agR6CxGmAs2M5Lq1KuJdo6O8i149G0FC0fNmGz0gS3OiWDA9ijhUpfFMuNKKdT72bCKe5Grdo9VG7eLB5GEqCukU=
-X-Received: by 2002:a05:6e02:218c:b0:2e0:c966:a39d with SMTP id
- j12-20020a056e02218c00b002e0c966a39dmr9536232ila.216.1660173982972; Wed, 10
- Aug 2022 16:26:22 -0700 (PDT)
+        with ESMTP id S233152AbiHKARZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Aug 2022 20:17:25 -0400
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 239B186C25
+        for <bpf@vger.kernel.org>; Wed, 10 Aug 2022 17:17:24 -0700 (PDT)
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27AGuRsA003159
+        for <bpf@vger.kernel.org>; Wed, 10 Aug 2022 17:17:24 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=ZPeIHR5s8FStqzUPjcpW9mxU1B1TVsgFBS1wMmo+J0I=;
+ b=Ck7BM3ArdiBe2kER/J/M9oIChD2/zr702nHHsy7qJvRmYkK9JhRJYMhh2ISoqTUbCCaD
+ TE4Wv41D5Hbt4jLiqOvPW1/2s1sKM0HXVfMeanrSQTins2KRgrx3ZqaQ131kM4HlxNy5
+ 2W7dDLnJHNUJb7ZqTmEZQxpQWmU/jQSOvR0= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hvdb6d82f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 10 Aug 2022 17:17:24 -0700
+Received: from twshared7570.37.frc1.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28; Wed, 10 Aug 2022 17:17:22 -0700
+Received: by devbig931.frc1.facebook.com (Postfix, from userid 460691)
+        id 1CF49683D651; Wed, 10 Aug 2022 17:17:19 -0700 (PDT)
+From:   Kui-Feng Lee <kuifeng@fb.com>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andrii@kernel.org>, <kernel-team@fb.com>, <yhs@fb.com>
+CC:     Kui-Feng Lee <kuifeng@fb.com>
+Subject: [PATCH bpf-next v5 0/3] Parameterize task iterators.
+Date:   Wed, 10 Aug 2022 17:16:51 -0700
+Message-ID: <20220811001654.1316689-1-kuifeng@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: mMLiKoRGZKSuYU0UqbgAqbpzKttK5_tT
+X-Proofpoint-GUID: mMLiKoRGZKSuYU0UqbgAqbpzKttK5_tT
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <cover.1660173222.git.dxu@dxuuu.xyz> <d82d4a001572e2f29cc0537563c3ef74b1351480.1660173222.git.dxu@dxuuu.xyz>
-In-Reply-To: <d82d4a001572e2f29cc0537563c3ef74b1351480.1660173222.git.dxu@dxuuu.xyz>
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date:   Thu, 11 Aug 2022 01:25:46 +0200
-Message-ID: <CAP01T76R=rCL7YEeMyDfM_HLvfNDY=Khh0FPToB08x4cD6LZhw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/3] selftests/bpf: Add existing connection
- bpf_*_ct_lookup() test
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-08-10_16,2022-08-10_01,2022-06-22_01
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 11 Aug 2022 at 01:16, Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> Add a test where we do a conntrack lookup on an existing connection.
-> This is nice because it's a more realistic test than artifically
-> creating a ct entry and looking it up afterwards.
->
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> ---
->  .../testing/selftests/bpf/prog_tests/bpf_nf.c | 59 +++++++++++++++++++
->  .../testing/selftests/bpf/progs/test_bpf_nf.c | 18 ++++++
->  2 files changed, 77 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_nf.c b/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
-> index 7a74a1579076..317978cac029 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_nf.c
-> @@ -24,10 +24,34 @@ enum {
->         TEST_TC_BPF,
->  };
->
-> +#define TIMEOUT_MS 3000
-> +
-> +static int connect_to_server(int srv_fd)
-> +{
-> +       int fd = -1;
-> +
-> +       fd = socket(AF_INET, SOCK_STREAM, 0);
-> +       if (!ASSERT_GE(fd, 0, "socket"))
-> +               goto out;
-> +
-> +       if (CHECK_FAIL(connect_fd_to_fd(fd, srv_fd, TIMEOUT_MS))) {
+Allow creating an iterator that loops through resources of one task/thread.
 
-CHECK_FAIL is deprecated, please consider using ASSERT_*. Sorry for
-not catching this before your respin...
+People could only create iterators to loop through all resources of
+files, vma, and tasks in the system, even though they were interested in on=
+ly the
+resources of a specific task or process.  Passing the addintional
+parameters, people can now create an iterator to go through all
+resources or only the resources of a task.
 
-> +               close(fd);
-> +               fd = -1;
-> +       }
-> +out:
-> +       return fd;
-> +}
-> +
->  static void test_bpf_nf_ct(int mode)
->  {
-> +       const char *iptables = "iptables -t raw %s PREROUTING -j CT";
-> +       int srv_fd = -1, client_fd = -1, srv_client_fd = -1;
-> +       struct sockaddr_in peer_addr = {};
->         struct test_bpf_nf *skel;
->         int prog_fd, err;
-> +       socklen_t len;
-> +       u16 srv_port;
-> +       char cmd[64];
->         LIBBPF_OPTS(bpf_test_run_opts, topts,
->                 .data_in = &pkt_v4,
->                 .data_size_in = sizeof(pkt_v4),
-> @@ -38,6 +62,32 @@ static void test_bpf_nf_ct(int mode)
->         if (!ASSERT_OK_PTR(skel, "test_bpf_nf__open_and_load"))
->                 return;
->
-> +       /* Enable connection tracking */
-> +       snprintf(cmd, sizeof(cmd), iptables, "-A");
-> +       if (!ASSERT_OK(system(cmd), "iptables"))
-> +               goto end;
-> +
-> +       srv_port = (mode == TEST_XDP) ? 5005 : 5006;
-> +       srv_fd = start_server(AF_INET, SOCK_STREAM, "127.0.0.1", srv_port, TIMEOUT_MS);
-> +       if (!ASSERT_GE(srv_fd, 0, "start_server"))
-> +               goto end;
-> +
-> +       client_fd = connect_to_server(srv_fd);
-> +       if (!ASSERT_GE(client_fd, 0, "connect_to_server"))
-> +               goto end;
-> +
-> +       len = sizeof(peer_addr);
-> +       srv_client_fd = accept(srv_fd, (struct sockaddr *)&peer_addr, &len);
-> +       if (!ASSERT_GE(srv_client_fd, 0, "accept"))
-> +               goto end;
-> +       if (!ASSERT_EQ(len, sizeof(struct sockaddr_in), "sockaddr len"))
-> +               goto end;
-> +
-> +       skel->bss->saddr = peer_addr.sin_addr.s_addr;
-> +       skel->bss->sport = peer_addr.sin_port;
-> +       skel->bss->daddr = peer_addr.sin_addr.s_addr;
-> +       skel->bss->dport = htons(srv_port);
-> +
->         if (mode == TEST_XDP)
->                 prog_fd = bpf_program__fd(skel->progs.nf_xdp_ct_test);
->         else
-> @@ -63,7 +113,16 @@ static void test_bpf_nf_ct(int mode)
->         ASSERT_LE(skel->bss->test_delta_timeout, 10, "Test for max ct timeout update");
->         /* expected status is IPS_SEEN_REPLY */
->         ASSERT_EQ(skel->bss->test_status, 2, "Test for ct status update ");
-> +       ASSERT_EQ(skel->data->test_exist_lookup, 0, "Test existing connection lookup");
->  end:
-> +       if (srv_client_fd != -1)
-> +               close(srv_client_fd);
-> +       if (client_fd != -1)
-> +               close(client_fd);
-> +       if (srv_fd != -1)
-> +               close(srv_fd);
-> +       snprintf(cmd, sizeof(cmd), iptables, "-D");
-> +       system(cmd);
->         test_bpf_nf__destroy(skel);
->  }
->
-> diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-> index 196cd8dfe42a..84e0fd479794 100644
-> --- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-> +++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-> @@ -23,6 +23,11 @@ int test_insert_entry = -EAFNOSUPPORT;
->  int test_succ_lookup = -ENOENT;
->  u32 test_delta_timeout = 0;
->  u32 test_status = 0;
-> +__be32 saddr = 0;
-> +__be16 sport = 0;
-> +__be32 daddr = 0;
-> +__be16 dport = 0;
-> +int test_exist_lookup = -ENOENT;
->
->  struct nf_conn;
->
-> @@ -160,6 +165,19 @@ nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
->                 }
->                 test_alloc_entry = 0;
->         }
-> +
-> +       bpf_tuple.ipv4.saddr = saddr;
-> +       bpf_tuple.ipv4.daddr = daddr;
-> +       bpf_tuple.ipv4.sport = sport;
-> +       bpf_tuple.ipv4.dport = dport;
-> +       ct = lookup_fn(ctx, &bpf_tuple, sizeof(bpf_tuple.ipv4), &opts_def,
-> +                      sizeof(opts_def));
-> +       if (ct) {
-> +               test_exist_lookup = 0;
-> +               bpf_ct_release(ct);
-> +       } else {
-> +               test_exist_lookup = opts_def.error;
-> +       }
->  }
->
->  SEC("xdp")
-> --
-> 2.37.1
->
+Major Changes:
+
+ - Add new parameters in bpf_iter_link_info to indicate to go through
+   all tasks or to go through a specific task.
+
+ - Change the implementations of BPF iterators of vma, files, and
+   tasks to allow going through only the resources of a specific task.
+
+ - Provide the arguments of parameterized task iterators in
+   bpf_link_info.
+
+Differences from v4:
+
+ - Remove 'type' from bpf_iter_link_info and bpf_link_info.
+
+v4: https://lore.kernel.org/bpf/20220809195429.1043220-1-kuifeng@fb.com/
+v3: https://lore.kernel.org/bpf/20220809063501.667610-1-kuifeng@fb.com/
+v2: https://lore.kernel.org/bpf/20220801232649.2306614-1-kuifeng@fb.com/
+v1: https://lore.kernel.org/bpf/20220726051713.840431-1-kuifeng@fb.com/
+
+Kui-Feng Lee (3):
+  bpf: Parameterize task iterators.
+  bpf: Handle bpf_link_info for the parameterized task BPF iterators.
+  selftests/bpf: Test parameterized task BPF iterators.
+
+ include/linux/bpf.h                           |  29 +++
+ include/uapi/linux/bpf.h                      |  12 ++
+ kernel/bpf/task_iter.c                        | 144 ++++++++++---
+ tools/include/uapi/linux/bpf.h                |  12 ++
+ .../selftests/bpf/prog_tests/bpf_iter.c       | 204 ++++++++++++++++--
+ .../selftests/bpf/prog_tests/btf_dump.c       |   2 +-
+ .../selftests/bpf/progs/bpf_iter_task.c       |   9 +
+ .../selftests/bpf/progs/bpf_iter_task_file.c  |   7 +
+ .../selftests/bpf/progs/bpf_iter_task_vma.c   |   6 +-
+ 9 files changed, 376 insertions(+), 49 deletions(-)
+
+--=20
+2.30.2
+
