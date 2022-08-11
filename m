@@ -2,57 +2,42 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C5C5906CD
-	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 21:07:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9618859079D
+	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 22:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236217AbiHKSzO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Aug 2022 14:55:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36062 "EHLO
+        id S235999AbiHKU6c (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Aug 2022 16:58:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236204AbiHKSzJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Aug 2022 14:55:09 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C4459F0DF;
-        Thu, 11 Aug 2022 11:55:09 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id y1so12059669plb.2;
-        Thu, 11 Aug 2022 11:55:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc;
-        bh=A5A/jLi0WcII7JTh+ce1YUU4pX6WGLPaKY+QG9OJx+Y=;
-        b=hSSvWCNT0mhtq5O8MW2RmbvXGefSAXmpNlzwEDir3msLd9VqFSyHBJnZfsZyzyA8TP
-         oI+IIHJ5eIk5JofkBZuHDXKypYnccBMkYgJDAZqAGCxueTUp4InMZr2TKRzunMuu+TIW
-         RnwKy42VNe3x1Y+AjS+0oPHfMFSKRlI/wOzf4/NkRehJTVPyw0vuk14J5vFqsHJ5ygvA
-         WDc+6/TT+nOXvbtGJ/+6KSYkyjSUlE2/B+HuoyfU9h+plgocawo1YprSOxrZO5HmYNfh
-         z+ccZFeQkqnKMdifvu+eGPgQKrYslJi5cWUWKYsC8+FhDZIuvuT0Qql1aa1H6moUnLdL
-         MijA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc;
-        bh=A5A/jLi0WcII7JTh+ce1YUU4pX6WGLPaKY+QG9OJx+Y=;
-        b=3Y5GCm3vMeOxN0EFQzl3SbH5TZHURZ75iR8/78+mVx4GVjsTCPBNn83oAp0aW6MNBl
-         UyQKF/wm7hkm1iwcX39AcV9iDtoJD5C9D6T1n5fltOoR8N7c0QqSW6M2OV8xByYU3pSM
-         5IAv9esnm2SNhrdUibHaIHpiNY0Yihqns5iLlm5wfaoN+jXd/eNQAhL5jU5nydd10w7+
-         uqZLLpc4CbJ7pc6VAmcidNwxu3K55mgCfYFhRh/FDWLp9asA1lfasZR76htTQjzNGJ1W
-         HPi6OY9lXGD5iqq+IR1C8I2KqwhoyWcG/NsbVsKGzqxx8ojrZJ8CfejlUok6eCtWKyTP
-         3dIw==
-X-Gm-Message-State: ACgBeo0qi+63sWnOetGv4G3MV9sa6yr7VcktxRaWXf7hWa6pbPidjBcn
-        GqZAsyGhEZBVGd85caoWB6M=
-X-Google-Smtp-Source: AA6agR4i2jONflU/i+NZC+0uurdYePRiA7PI9bX3pNhfGJJCx1FdcYBFLY8rq3Qn/qIm5DAsOQJPeA==
-X-Received: by 2002:a17:902:e84d:b0:16d:c9a0:e502 with SMTP id t13-20020a170902e84d00b0016dc9a0e502mr529747plg.125.1660244108465;
-        Thu, 11 Aug 2022 11:55:08 -0700 (PDT)
-Received: from youngsil.svl.corp.google.com ([2620:15c:2d4:203:cefb:475d:dd6d:a1e2])
-        by smtp.gmail.com with ESMTPSA id r12-20020a6560cc000000b0041975999455sm66314pgv.75.2022.08.11.11.55.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Aug 2022 11:55:07 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
+        with ESMTP id S234743AbiHKU6c (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Aug 2022 16:58:32 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D14B8E9A9;
+        Thu, 11 Aug 2022 13:58:30 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8D91D6137B;
+        Thu, 11 Aug 2022 20:58:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C812FC433C1;
+        Thu, 11 Aug 2022 20:58:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1660251510;
+        bh=BeL7COxgF4Rw3pdfVdmP0uTJrvLxti0oHgf0ikfECu8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=X1mkiPp7lJ4btv/yUxJmwj84GbDYm6FYiPrmwPkbquf7ZXQxvMtMGb/yTNFsagmfo
+         1PcRn+GPVaVjcTAy11tK4YjbObTrgpuL/ShRQsezSap+va4JCCyPC780FaJyT5njb+
+         tqTXwSjuwOEAVshhKqiAMiIlhi0gs3WB735nYflVq+t1EugoIlMAHFrt+66nAW/gM7
+         kdbS4JL8Ab/hsyIGW/8Wyh0755t3HwubphX23vf0D0hBshUMiGWxekIw2pYXQamcAD
+         exWi6F27cv2ZWcjtrqloSTpxS+KcQOCEfe8jkNRAH9t3KnVAn+TgoRZWsjhFBU0Ptf
+         ZH5WZKiT6vUrg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 651A04035A; Thu, 11 Aug 2022 17:58:27 -0300 (-03)
+Date:   Thu, 11 Aug 2022 17:58:27 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Ian Rogers <irogers@google.com>,
@@ -60,138 +45,94 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Hao Luo <haoluo@google.com>,
         Blake Jones <blakejones@google.com>,
         Milian Wolff <milian.wolff@kdab.com>, bpf@vger.kernel.org
-Subject: [PATCH 4/4] perf offcpu: Update offcpu test for child process
-Date:   Thu, 11 Aug 2022 11:54:56 -0700
-Message-Id: <20220811185456.194721-5-namhyung@kernel.org>
-X-Mailer: git-send-email 2.37.1.595.g718a3a8f04-goog
-In-Reply-To: <20220811185456.194721-1-namhyung@kernel.org>
+Subject: Re: [PATCH 0/4] Track processes properly for perf record --off-cpu
+ (v2)
+Message-ID: <YvVtc8qY3/dS0r6J@kernel.org>
 References: <20220811185456.194721-1-namhyung@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220811185456.194721-1-namhyung@kernel.org>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Record off-cpu data with perf bench sched messaging workload and count
-the number of offcpu-time events.  Also update the test script not to
-run next tests if failed already and revise the error messages.
+Em Thu, Aug 11, 2022 at 11:54:52AM -0700, Namhyung Kim escreveu:
+> Hello,
+> 
+> This patch series implements inheritance of offcpu events for the
+> child processes.  Unlike perf events, BPF cannot know which task it
+> should track except for ones set in a BPF map at the beginning.  Add
+> another BPF program to the fork path and add the process id to the map
+> if the parent is tracked.
 
-  $ sudo ./perf test offcpu -v
-   88: perf record offcpu profiling tests                              :
-  --- start ---
-  test child forked, pid 344780
-  Checking off-cpu privilege
-  Basic off-cpu test
-  Basic off-cpu test [Success]
-  Child task off-cpu test
-  Child task off-cpu test [Success]
-  test child finished with 0
-  ---- end ----
-  perf record offcpu profiling tests: Ok
+Thanks for resubmitting, applied!
 
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/tests/shell/record_offcpu.sh | 57 ++++++++++++++++++++++---
- 1 file changed, 50 insertions(+), 7 deletions(-)
+Will be up in perf/core as soon as tests finish.
 
-diff --git a/tools/perf/tests/shell/record_offcpu.sh b/tools/perf/tests/shell/record_offcpu.sh
-index 96e0739f7478..d2eba583a2ac 100755
---- a/tools/perf/tests/shell/record_offcpu.sh
-+++ b/tools/perf/tests/shell/record_offcpu.sh
-@@ -19,20 +19,26 @@ trap_cleanup() {
- }
- trap trap_cleanup exit term int
+- Arnaldo
  
--test_offcpu() {
--  echo "Basic off-cpu test"
-+test_offcpu_priv() {
-+  echo "Checking off-cpu privilege"
-+
-   if [ `id -u` != 0 ]
-   then
--    echo "Basic off-cpu test [Skipped permission]"
-+    echo "off-cpu test [Skipped permission]"
-     err=2
-     return
-   fi
--  if perf record --off-cpu -o ${perfdata} --quiet true 2>&1 | grep BUILD_BPF_SKEL
-+  if perf record --off-cpu -o /dev/null --quiet true 2>&1 | grep BUILD_BPF_SKEL
-   then
--    echo "Basic off-cpu test [Skipped missing BPF support]"
-+    echo "off-cpu test [Skipped missing BPF support]"
-     err=2
-     return
-   fi
-+}
-+
-+test_offcpu_basic() {
-+  echo "Basic off-cpu test"
-+
-   if ! perf record --off-cpu -e dummy -o ${perfdata} sleep 1 2> /dev/null
-   then
-     echo "Basic off-cpu test [Failed record]"
-@@ -41,7 +47,7 @@ test_offcpu() {
-   fi
-   if ! perf evlist -i ${perfdata} | grep -q "offcpu-time"
-   then
--    echo "Basic off-cpu test [Failed record]"
-+    echo "Basic off-cpu test [Failed no event]"
-     err=1
-     return
-   fi
-@@ -54,7 +60,44 @@ test_offcpu() {
-   echo "Basic off-cpu test [Success]"
- }
- 
--test_offcpu
-+test_offcpu_child() {
-+  echo "Child task off-cpu test"
-+
-+  # perf bench sched messaging creates 400 processes
-+  if ! perf record --off-cpu -e dummy -o ${perfdata} -- \
-+    perf bench sched messaging -g 10 > /dev/null 2&>1
-+  then
-+    echo "Child task off-cpu test [Failed record]"
-+    err=1
-+    return
-+  fi
-+  if ! perf evlist -i ${perfdata} | grep -q "offcpu-time"
-+  then
-+    echo "Child task off-cpu test [Failed no event]"
-+    err=1
-+    return
-+  fi
-+  # each process waits for read and write, so it should be more than 800 events
-+  if ! perf report -i ${perfdata} -s comm -q -n -t ';' --percent-limit=90 | \
-+    awk -F ";" '{ if (NF > 3 && int($3) < 800) exit 1; }'
-+  then
-+    echo "Child task off-cpu test [Failed invalid output]"
-+    err=1
-+    return
-+  fi
-+  echo "Child task off-cpu test [Success]"
-+}
-+
-+
-+test_offcpu_priv
-+
-+if [ $err = 0 ]; then
-+  test_offcpu_basic
-+fi
-+
-+if [ $err = 0 ]; then
-+  test_offcpu_child
-+fi
- 
- cleanup
- exit $err
+> Changes in v2)
+>  * drop already merged fixes
+>  * fix the shell test to omit noises
+>  
+> With this change, it can get the correct off-cpu events for child
+> processes.  I've tested it with perf bench sched messaging which
+> creates a lot of processes.
+> 
+>   $ sudo perf record -e dummy --off-cpu -- perf bench sched messaging
+>   # Running 'sched/messaging' benchmark:
+>   # 20 sender and receiver processes per group
+>   # 10 groups == 400 processes run
+> 
+>        Total time: 0.196 [sec]
+>   [ perf record: Woken up 1 times to write data ]
+>   [ perf record: Captured and wrote 0.178 MB perf.data (851 samples) ]
+> 
+> 
+>   $ sudo perf report --stat | grep -A1 offcpu
+>   offcpu-time stats:
+>             SAMPLE events:        851
+> 
+> The benchmark passes messages by read/write and it creates off-cpu
+> events.  With 400 processes, we can see more than 800 events.
+> 
+> The child process tracking is also enabled when -p option is given.
+> But -t option does NOT as it only cares about the specific threads.
+> It may be different what perf_event does now, but I think it makes
+> more sense.
+> 
+> You can get it from 'perf/offcpu-child-v2' branch in my tree
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
+> 
+> Thanks,
+> Namhyung
+> 
+> 
+> Namhyung Kim (4):
+>   perf offcpu: Check process id for the given workload
+>   perf offcpu: Parse process id separately
+>   perf offcpu: Track child processes
+>   perf offcpu: Update offcpu test for child process
+> 
+>  tools/perf/tests/shell/record_offcpu.sh | 57 ++++++++++++++++++++++---
+>  tools/perf/util/bpf_off_cpu.c           | 53 ++++++++++++++++++++++-
+>  tools/perf/util/bpf_skel/off_cpu.bpf.c  | 38 ++++++++++++++++-
+>  3 files changed, 138 insertions(+), 10 deletions(-)
+> 
+> 
+> base-commit: b39c9e1b101d2992de9981673919ae55a088792c
+> -- 
+> 2.37.1.595.g718a3a8f04-goog
+
 -- 
-2.37.1.595.g718a3a8f04-goog
 
+- Arnaldo
