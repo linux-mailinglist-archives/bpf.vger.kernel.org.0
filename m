@@ -2,130 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 918B259095C
-	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 01:54:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AD38590964
+	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 01:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235899AbiHKXyV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Aug 2022 19:54:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51890 "EHLO
+        id S234910AbiHKX7x (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Aug 2022 19:59:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235079AbiHKXyU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Aug 2022 19:54:20 -0400
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F79BA1D44
-        for <bpf@vger.kernel.org>; Thu, 11 Aug 2022 16:54:18 -0700 (PDT)
-Received: from submission (posteo.de [185.67.36.169]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id DD3E0240103
-        for <bpf@vger.kernel.org>; Fri, 12 Aug 2022 01:54:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1660262055; bh=JkMK2ZzPPyQl8oBskpaCW68aHa6Y2QAApaUOJCrkky0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=CA/7FK+OWSu6yxcj8TG/29CHNUbVCuIxHSHNuN2wWCuZxIGOydyyxS3VCr0125YJO
-         177K6jGKQLoUSrYAi6Wdh4JtQ3NSYYI3u6puyJsFVrQLlaQ50wn7Z7FPlV9EV+YEGG
-         QTKJZpquRibZI2CvPAwr+jvWoOFXpP6LcMiwB64a5ay8cNYiePu1p1VYOKx06jRgie
-         5zZv3N2DD8y1GYl0PEsOwST1vHc8Wbk9FegiNOpBVyVUMPIDjsrhlGIUX1GQ5Umsfn
-         3jTX+xXn5mk/9TNn62qmuUwm++ztb73ZkRJJhOmSy0svu59Y5wb7cnM2Q5jorzjyoD
-         hq8uJIDAB/X7Q==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4M3kDF2Dxrz6tm9;
-        Fri, 12 Aug 2022 01:54:04 +0200 (CEST)
-Date:   Thu, 11 Aug 2022 23:52:22 +0000
-From:   Daniel =?utf-8?Q?M=C3=BCller?= <deso@posteo.net>
-To:     Roberto Sassu <roberto.sassu@huawei.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "martin.lau@linux.dev" <martin.lau@linux.dev>,
-        "song@kernel.org" <song@kernel.org>, "yhs@fb.com" <yhs@fb.com>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "sdf@google.com" <sdf@google.com>,
-        "haoluo@google.com" <haoluo@google.com>,
-        "jolsa@kernel.org" <jolsa@kernel.org>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "dhowells@redhat.com" <dhowells@redhat.com>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "paul@paul-moore.com" <paul@paul-moore.com>,
-        "jmorris@namei.org" <jmorris@namei.org>,
-        "serge@hallyn.com" <serge@hallyn.com>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v10 5/9] bpf: Add bpf_lookup_*_key() and bpf_key_put()
- kfuncs
-Message-ID: <20220811235222.inghj73tf6vudoyw@vaio>
-References: <20220810165932.2143413-1-roberto.sassu@huawei.com>
- <20220810165932.2143413-6-roberto.sassu@huawei.com>
- <20220810213351.wm5utltm67q4i6lu@MacBook-Pro-3.local.dhcp.thefacebook.com>
- <2415f4931a364541b2e6d14a8185ffbb@huawei.com>
- <f7d401d6ec6c47cbb358046a2d3ca5e8@huawei.com>
+        with ESMTP id S231131AbiHKX7w (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Aug 2022 19:59:52 -0400
+Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 240009FABA;
+        Thu, 11 Aug 2022 16:59:52 -0700 (PDT)
+Received: by mail-qk1-f171.google.com with SMTP id b24so8296487qka.5;
+        Thu, 11 Aug 2022 16:59:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc;
+        bh=nbDO+MStGNHKFrVFyc476CdkFiR1jhUSyExekmndj6g=;
+        b=YFGTE6EjKTa9xDvHZ7sIvUt5/+Qz5NdEeioDzaNHtpyoNOu2myogbEBUPn7lbFyCSM
+         6TcCnngflIx5ZFc0Bg62Jvf9Juj7LKWGp/gUdX3+ptzW05LtyT7dmBdmrhQoffVg6tb3
+         UF1zjHYHyX6SqydVhR3MV6ht3aVPWm9joKrhxfDn/ZqVKvannEsCADzXrPaoE51MKgbU
+         HhSayMFjt/mjmlyRB4I8Iya8YgqGRnQrYP0imefJj0jWHXQ9gh3CQMDBITEyZX7pwyPn
+         WhHukCciQiUy8KBQVjSq5iAw8IfJBII+YHHwF13mcr6SgbcE/AiL+1h6Pn6lxfOpm0oG
+         XOEg==
+X-Gm-Message-State: ACgBeo0L4Tv9qJ55mUieqrd1QfGXkqiBhwQqGkqAustEzaqwnbTaUHli
+        rREsiUFCbtOTvFojs5efgMg6WmjNA+Ggheyj
+X-Google-Smtp-Source: AA6agR6BbeapvMgfRE5413qbReGVQkz0Cg1jEvIFBkW7bLODSxw83vfwhxnvGJ8xyG9At0zkVfrj7Q==
+X-Received: by 2002:a05:620a:45a1:b0:6b9:b5cf:c7fc with SMTP id bp33-20020a05620a45a100b006b9b5cfc7fcmr1182172qkb.78.1660262390301;
+        Thu, 11 Aug 2022 16:59:50 -0700 (PDT)
+Received: from maniforge.dhcp.thefacebook.com ([2620:10d:c091:480::bfe0])
+        by smtp.gmail.com with ESMTPSA id hf24-20020a05622a609800b0034361fb2f75sm534438qtb.22.2022.08.11.16.59.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Aug 2022 16:59:50 -0700 (PDT)
+Date:   Thu, 11 Aug 2022 18:59:48 -0500
+From:   David Vernet <void@manifault.com>
+To:     bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net
+Cc:     haoluo@google.com, joannelkoong@gmail.com,
+        john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@google.com,
+        song@kernel.org, yhs@fb.com, kernel-team@fb.com, tj@kernel.org
+Subject: Re: [PATCH v2 0/4] bpf: Add user-space-publisher ringbuffer map type
+Message-ID: <YvWX9GrJuTYfjjlK@maniforge.dhcp.thefacebook.com>
+References: <20220811234941.887747-1-void@manifault.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f7d401d6ec6c47cbb358046a2d3ca5e8@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220811234941.887747-1-void@manifault.com>
+User-Agent: Mutt/2.2.7 (2022-08-07)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 11, 2022 at 12:02:57PM +0000, Roberto Sassu wrote:
-> > From: Roberto Sassu [mailto:roberto.sassu@huawei.com]
-> > Sent: Thursday, August 11, 2022 9:47 AM
-> > > From: Alexei Starovoitov [mailto:alexei.starovoitov@gmail.com]
-> > > Sent: Wednesday, August 10, 2022 11:34 PM
-> > > On Wed, Aug 10, 2022 at 06:59:28PM +0200, Roberto Sassu wrote:
-> > > > +
-> > > > +static int __init bpf_key_sig_kfuncs_init(void)
-> > > > +{
-> > > > +	int ret;
-> > > > +
-> > > > +	ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING,
-> > > > +					&bpf_key_sig_kfunc_set);
-> > > > +	if (!ret)
-> > > > +		return 0;
-> > > > +
-> > > > +	return register_btf_kfunc_id_set(BPF_PROG_TYPE_LSM,
-> > > > +					 &bpf_key_sig_kfunc_set);
-> > >
-> > > Isn't this a watery water ?
-> > > Don't you have a patch 1 ?
-> > > What am I missing ?
-> > 
-> > Uhm, yes. I had doubts too. That was what also KP did.
-> > 
-> > It makes sense to register once, since we mapped LSM to
-> > TRACING.
-> > 
-> > Will resend only this patch. And I will figure out why CI failed.
-> 
-> Adding in CC Daniel Müller, which worked on this.
-> 
-> I think the issue is that some kernel options are set to =m.
-> This causes the CI to miss all kernel modules, since they are
-> not copied to the virtual machine that executes the tests.
-> 
-> I'm testing this patch:
-> 
-> https://github.com/robertosassu/libbpf-ci/commit/b665e001b58c4ddb792a2a68098ea5dc6936b15c
+On Thu, Aug 11, 2022 at 06:49:37PM -0500, David Vernet wrote:
+> This patch set defines a new map type, BPF_MAP_TYPE_USER_RINGBUF, which
+> provides single-user-space-producer / single-kernel-consumer semantics over
+> a ringbuffer.  Along with the new map type, a helper function called
+> bpf_user_ringbuf_drain() is added which allows a BPF program to specify a
+> callback with the following signature, to which samples are posted by the
+> helper:
 
-I commented on the pull request. Would it make sense to adjust the
-kernel configuration in this repository instead? I am worried that
-otherwise everybody may need a similar work around, depending on how
-selftests are ultimately run.
+[...]
 
-Thanks,
-Daniel
+I just noticed that Andrii left some comments on v1 about 20 mins ago.
+Please disregard this version -- I'll apply Andrii's comments and then send
+out a follow on v3 version.
