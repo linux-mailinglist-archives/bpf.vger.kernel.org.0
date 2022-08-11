@@ -2,44 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A751E590336
-	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 18:21:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B224859033B
+	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 18:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237659AbiHKQVV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Aug 2022 12:21:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60850 "EHLO
+        id S237671AbiHKQVW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Aug 2022 12:21:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237716AbiHKQUH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Aug 2022 12:20:07 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89E97AB199;
-        Thu, 11 Aug 2022 09:02:02 -0700 (PDT)
+        with ESMTP id S237521AbiHKQUW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Aug 2022 12:20:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C27CAEDB4;
+        Thu, 11 Aug 2022 09:02:19 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 10570612FC;
-        Thu, 11 Aug 2022 16:02:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 779D1C433D7;
-        Thu, 11 Aug 2022 16:02:00 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3868E61380;
+        Thu, 11 Aug 2022 16:02:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76C2CC433B5;
+        Thu, 11 Aug 2022 16:02:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660233721;
-        bh=/NfsTPynIzJ7q1vtVPX0fnJ6BQE75dnJVQ0W0eNTezM=;
+        s=k20201202; t=1660233738;
+        bh=Zu6ijkkJgaNWsevWxt6/GR63axzBMS3cxG1chMQKBkk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f/4ly/XjQ3AhQW3PoPmgECBIAonXWiMEx0/0VxglqyLr5wzrjps9At6y1IIPlm2Ux
-         jmpu2PIxlrqQGgZFDH5XQ93DQ9Spw94aTw+sYfb0KgEkPj4DUyWbkSzHmjHVAxEVE9
-         pao4djiAa2BAtc5m841jM0b/CWOMqYri/4XnkgIXO8fXrCULLkkNHLXewa2nWZfMpF
-         BXjyvqYgU0lGYQ8K62EzQyexo2oOLnorP8zD1Stwr1UndlP8pXch5j5qZVQ5vATANO
-         dmvl/NIyclBFN1bJJDntThouxX39SElPlJIjWXJu84oggFDWacoe28sjpejY9cBQx9
-         nSK3qhHMGa86w==
+        b=p/lGnwCokrdINPmu5iUKXYA2EIoNYCYNd4bpHXjvN/hk+iVCS6uTy+qE2eK/Vc8tj
+         O71jAgHUJuSNWfQjG4weqK6iQFiJSaud2BjXQnhPtcZ7BZweAyrFv9hFWuTqJVMhyx
+         MTNDGDq+JRYzINTuIR1Cpq2HaiCpw8sh46S2BQqJ/f1asTt7Lv7bpwK+TNzrHtAXZY
+         qe/LMrNzMWgqOuzW7G2ZErg+/wea/AxtRJB8uK31uPrXGsfVWMD13ZMrIcP9k3+Ljr
+         UsQWGZMOsS6fYsTsFcwf95iQeDKVO+DEIIlY8Ra3rgVnyhqAyqS0qSOdIreWDuTf1t
+         LdRwDspnEoYjQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     James Hilliard <james.hilliard1@gmail.com>,
+Cc:     Ben Dooks <ben.dooks@sifive.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, ast@kernel.org,
-        daniel@iogearbox.net, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 49/69] libbpf: Disable SEC pragma macro on GCC
-Date:   Thu, 11 Aug 2022 11:55:58 -0400
-Message-Id: <20220811155632.1536867-49-sashal@kernel.org>
+        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>,
+        martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 52/69] bpf: Fix check against plain integer v 'NULL'
+Date:   Thu, 11 Aug 2022 11:56:01 -0400
+Message-Id: <20220811155632.1536867-52-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220811155632.1536867-1-sashal@kernel.org>
 References: <20220811155632.1536867-1-sashal@kernel.org>
@@ -57,64 +58,45 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: James Hilliard <james.hilliard1@gmail.com>
+From: Ben Dooks <ben.dooks@sifive.com>
 
-[ Upstream commit 18410251f66aee7e82234073ce6656ca20a732a9 ]
+[ Upstream commit a2a5580fcbf808e7c2310e4959b62f9d2157fdb6 ]
 
-It seems the gcc preprocessor breaks with pragmas when surrounding
-__attribute__.
+When checking with sparse, btf_show_type_value() is causing a
+warning about checking integer vs NULL when the macro is passed
+a pointer, due to the 'value != 0' check. Stop sparse complaining
+about any type-casting by adding a cast to the typeof(value).
 
-Disable these pragmas on GCC due to upstream bugs see:
-https://gcc.gnu.org/bugzilla/show_bug.cgi?id=55578
-https://gcc.gnu.org/bugzilla/show_bug.cgi?id=90400
+This fixes the following sparse warnings:
 
-Fixes errors like:
-error: expected identifier or '(' before '#pragma'
-  106 | SEC("cgroup/bind6")
-      | ^~~
+kernel/bpf/btf.c:2579:17: warning: Using plain integer as NULL pointer
+kernel/bpf/btf.c:2581:17: warning: Using plain integer as NULL pointer
+kernel/bpf/btf.c:3407:17: warning: Using plain integer as NULL pointer
+kernel/bpf/btf.c:3758:9: warning: Using plain integer as NULL pointer
 
-error: expected '=', ',', ';', 'asm' or '__attribute__' before '#pragma'
-  114 | char _license[] SEC("license") = "GPL";
-      | ^~~
-
-Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+Signed-off-by: Ben Dooks <ben.dooks@sifive.com>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20220706111839.1247911-1-james.hilliard1@gmail.com
+Acked-by: Yonghong Song <yhs@fb.com>
+Link: https://lore.kernel.org/bpf/20220714100322.260467-1-ben.dooks@sifive.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/bpf_helpers.h | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ kernel/bpf/btf.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-index b9987c3efa3c..409b85d1cbd0 100644
---- a/tools/lib/bpf/bpf_helpers.h
-+++ b/tools/lib/bpf/bpf_helpers.h
-@@ -30,12 +30,25 @@
-  * To allow use of SEC() with externs (e.g., for extern .maps declarations),
-  * make sure __attribute__((unused)) doesn't trigger compilation warning.
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 3cfba41a0829..cf89c99d4f28 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -1013,7 +1013,8 @@ __printf(2, 3) static void btf_show(struct btf_show *show, const char *fmt, ...)
   */
-+#if __GNUC__ && !__clang__
-+
-+/*
-+ * Pragma macros are broken on GCC
-+ * https://gcc.gnu.org/bugzilla/show_bug.cgi?id=55578
-+ * https://gcc.gnu.org/bugzilla/show_bug.cgi?id=90400
-+ */
-+#define SEC(name) __attribute__((section(name), used))
-+
-+#else
-+
- #define SEC(name) \
- 	_Pragma("GCC diagnostic push")					    \
- 	_Pragma("GCC diagnostic ignored \"-Wignored-attributes\"")	    \
- 	__attribute__((section(name), used))				    \
- 	_Pragma("GCC diagnostic pop")					    \
- 
-+#endif
-+
- /* Avoid 'linux/stddef.h' definition of '__always_inline'. */
- #undef __always_inline
- #define __always_inline inline __attribute__((always_inline))
+ #define btf_show_type_value(show, fmt, value)				       \
+ 	do {								       \
+-		if ((value) != 0 || (show->flags & BTF_SHOW_ZERO) ||	       \
++		if ((value) != (__typeof__(value))0 ||			       \
++		    (show->flags & BTF_SHOW_ZERO) ||			       \
+ 		    show->state.depth == 0) {				       \
+ 			btf_show(show, "%s%s" fmt "%s%s",		       \
+ 				 btf_show_indent(show),			       \
 -- 
 2.35.1
 
