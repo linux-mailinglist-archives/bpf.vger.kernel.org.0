@@ -2,51 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C5F590246
-	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 18:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED79590285
+	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 18:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237367AbiHKQIX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Aug 2022 12:08:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38114 "EHLO
+        id S237397AbiHKQKZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Aug 2022 12:10:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236768AbiHKQIH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Aug 2022 12:08:07 -0400
+        with ESMTP id S237412AbiHKQJm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Aug 2022 12:09:42 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 091B7BB03D;
-        Thu, 11 Aug 2022 08:54:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2F7CA4B19;
+        Thu, 11 Aug 2022 08:55:02 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 96643B8216C;
-        Thu, 11 Aug 2022 15:54:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 082D0C433C1;
-        Thu, 11 Aug 2022 15:53:59 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 52C01B82160;
+        Thu, 11 Aug 2022 15:55:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3DF6C43140;
+        Thu, 11 Aug 2022 15:54:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660233243;
-        bh=NUWB7/Sh57+5huWrqVTl3Ebr9oqmwpV2gQVLc1BIPDM=;
+        s=k20201202; t=1660233300;
+        bh=wjXb44oYEnAlhU16rkHyBpckEauNUBNXCbEuTpPCOrU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l6Dqr6UF0I+BbuRrwZiHH3tlGwcqTnGpDmjwRsxbvqWcmr31qYT9aB8ck5nMIF3ue
-         6qR8ybB1T8N2TyuYSyG06YtRSg8+gdN5ZYL+3NN8djPav9IhTfeL8Ap23zpMiny+rb
-         BTuo/TKmhk1TV+y3b83UCc4x17lte9e6+38Sn+x+xrzodQYHJLEZPJR7GCRDPffbNi
-         EkUhoxeWOJoB8JhFdOZK1beRXwhQdH9m3R2YLuY84RIMVlABjK3H8Jr3awIDzejDTD
-         9xaQQMBKjOQB9k3Y3nBml0iOqZ8TLjdxJi/yWrpptyDo76hAZGFBlMbPmwA+8t+Cai
-         DN/zRwZnptfhA==
+        b=bDiRa0bZ954S8IrYamI0dCLcrStQbQceg1RUrryU4CX5/wq0TLgEdE7Ozn+YYPKBJ
+         oCBpt5P1QyS9DHpYU2U10wxiNsf/baky47DBVVoVkOcwcYeez1cLw++mXYWZW3LmVa
+         lEqXUno3dougC3Jw889nDbT14vswXSw35RP2MTahJE5L/+YpnumnzdAvSllW5/Zl6+
+         7LGgg9w99n82FvoCJtukngJmSS6IEcuVH2ZEXpO+0EExWZf2Mz9XFXqoswve5SmXI7
+         Ko3NzjT1qOTxzCBZ+RCVAG5VydEiUc5iS9v52QLzZ60Z1mKwUvLqqAOlan+HIYWz/4
+         NETkFLHzQ5llw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zhengchao Shao <shaozhengchao@huawei.com>,
-        syzbot+7a12909485b94426aceb@syzkaller.appspotmail.com,
-        Stanislav Fomichev <sdf@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, daniel@iogearbox.net,
-        andrii@kernel.org, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, imagedong@tencent.com,
-        dsahern@kernel.org, kafai@fb.com, talalahmad@google.com,
-        keescook@chromium.org, asml.silence@gmail.com,
-        bigeasy@linutronix.de, petrm@nvidia.com, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.18 69/93] bpf: Don't redirect packets with invalid pkt_len
-Date:   Thu, 11 Aug 2022 11:42:03 -0400
-Message-Id: <20220811154237.1531313-69-sashal@kernel.org>
+Cc:     Jie2x Zhou <jie2x.zhou@intel.com>,
+        kernel test robot <lkp@intel.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Sasha Levin <sashal@kernel.org>, ast@kernel.org,
+        davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
+        john.fastabend@gmail.com, andrii@kernel.org, shuah@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.18 81/93] bpf/selftests: Fix couldn't retrieve pinned program in xdp veth test
+Date:   Thu, 11 Aug 2022 11:42:15 -0400
+Message-Id: <20220811154237.1531313-81-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220811154237.1531313-1-sashal@kernel.org>
 References: <20220811154237.1531313-1-sashal@kernel.org>
@@ -64,77 +61,59 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Zhengchao Shao <shaozhengchao@huawei.com>
+From: Jie2x Zhou <jie2x.zhou@intel.com>
 
-[ Upstream commit fd1894224407c484f652ad456e1ce423e89bb3eb ]
+[ Upstream commit f664f9c6b4a1bb9a10af812df0fbbf6aac28fcc6 ]
 
-Syzbot found an issue [1]: fq_codel_drop() try to drop a flow whitout any
-skbs, that is, the flow->head is null.
-The root cause, as the [2] says, is because that bpf_prog_test_run_skb()
-run a bpf prog which redirects empty skbs.
-So we should determine whether the length of the packet modified by bpf
-prog or others like bpf_prog_test is valid before forwarding it directly.
+Before change:
 
-LINK: [1] https://syzkaller.appspot.com/bug?id=0b84da80c2917757915afa89f7738a9d16ec96c5
-LINK: [2] https://www.spinics.net/lists/netdev/msg777503.html
+  selftests: bpf: test_xdp_veth.sh
+  Couldn't retrieve pinned program '/sys/fs/bpf/test_xdp_veth/progs/redirect_map_0': No such file or directory
+  selftests: xdp_veth [SKIP]
+  ok 20 selftests: bpf: test_xdp_veth.sh # SKIP
 
-Reported-by: syzbot+7a12909485b94426aceb@syzkaller.appspotmail.com
-Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
-Reviewed-by: Stanislav Fomichev <sdf@google.com>
-Link: https://lore.kernel.org/r/20220715115559.139691-1-shaozhengchao@huawei.com
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+After change:
+
+  PING 10.1.1.33 (10.1.1.33) 56(84) bytes of data.
+  64 bytes from 10.1.1.33: icmp_seq=1 ttl=64 time=0.320 ms
+  --- 10.1.1.33 ping statistics ---
+  1 packets transmitted, 1 received, 0% packet loss, time 0ms
+  rtt min/avg/max/mdev = 0.320/0.320/0.320/0.000 ms
+  selftests: xdp_veth [PASS]
+
+For the test case, the following can be found:
+
+  ls /sys/fs/bpf/test_xdp_veth/progs/redirect_map_0
+  ls: cannot access '/sys/fs/bpf/test_xdp_veth/progs/redirect_map_0': No such file or directory
+  ls /sys/fs/bpf/test_xdp_veth/progs/
+  xdp_redirect_map_0  xdp_redirect_map_1  xdp_redirect_map_2
+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Jie2x Zhou <jie2x.zhou@intel.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Link: https://lore.kernel.org/bpf/20220719082430.9916-1-jie2x.zhou@intel.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/skbuff.h | 8 ++++++++
- net/bpf/test_run.c     | 3 +++
- net/core/dev.c         | 1 +
- 3 files changed, 12 insertions(+)
+ tools/testing/selftests/bpf/test_xdp_veth.sh | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-index 2394441fa3dd..4fac0091fb65 100644
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -2475,6 +2475,14 @@ static inline void skb_set_tail_pointer(struct sk_buff *skb, const int offset)
+diff --git a/tools/testing/selftests/bpf/test_xdp_veth.sh b/tools/testing/selftests/bpf/test_xdp_veth.sh
+index 392d28cc4e58..49936c4c8567 100755
+--- a/tools/testing/selftests/bpf/test_xdp_veth.sh
++++ b/tools/testing/selftests/bpf/test_xdp_veth.sh
+@@ -106,9 +106,9 @@ bpftool prog loadall \
+ bpftool map update pinned $BPF_DIR/maps/tx_port key 0 0 0 0 value 122 0 0 0
+ bpftool map update pinned $BPF_DIR/maps/tx_port key 1 0 0 0 value 133 0 0 0
+ bpftool map update pinned $BPF_DIR/maps/tx_port key 2 0 0 0 value 111 0 0 0
+-ip link set dev veth1 xdp pinned $BPF_DIR/progs/redirect_map_0
+-ip link set dev veth2 xdp pinned $BPF_DIR/progs/redirect_map_1
+-ip link set dev veth3 xdp pinned $BPF_DIR/progs/redirect_map_2
++ip link set dev veth1 xdp pinned $BPF_DIR/progs/xdp_redirect_map_0
++ip link set dev veth2 xdp pinned $BPF_DIR/progs/xdp_redirect_map_1
++ip link set dev veth3 xdp pinned $BPF_DIR/progs/xdp_redirect_map_2
  
- #endif /* NET_SKBUFF_DATA_USES_OFFSET */
- 
-+static inline void skb_assert_len(struct sk_buff *skb)
-+{
-+#ifdef CONFIG_DEBUG_NET
-+	if (WARN_ONCE(!skb->len, "%s\n", __func__))
-+		DO_ONCE_LITE(skb_dump, KERN_ERR, skb, false);
-+#endif /* CONFIG_DEBUG_NET */
-+}
-+
- /*
-  *	Add data to an sk_buff
-  */
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index af709c182674..f2a9c47c26fc 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -911,6 +911,9 @@ static int convert___skb_to_skb(struct sk_buff *skb, struct __sk_buff *__skb)
- {
- 	struct qdisc_skb_cb *cb = (struct qdisc_skb_cb *)skb->cb;
- 
-+	if (!skb->len)
-+		return -EINVAL;
-+
- 	if (!__skb)
- 		return 0;
- 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 842917883adb..301fa691b265 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -4102,6 +4102,7 @@ static int __dev_queue_xmit(struct sk_buff *skb, struct net_device *sb_dev)
- 	bool again = false;
- 
- 	skb_reset_mac_header(skb);
-+	skb_assert_len(skb);
- 
- 	if (unlikely(skb_shinfo(skb)->tx_flags & SKBTX_SCHED_TSTAMP))
- 		__skb_tstamp_tx(skb, NULL, NULL, skb->sk, SCM_TSTAMP_SCHED);
+ ip -n ${NS1} link set dev veth11 xdp obj xdp_dummy.o sec xdp
+ ip -n ${NS2} link set dev veth22 xdp obj xdp_tx.o sec xdp
 -- 
 2.35.1
 
