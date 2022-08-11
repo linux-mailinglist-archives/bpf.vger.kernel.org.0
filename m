@@ -2,45 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 814F9590319
-	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 18:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A751E590336
+	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 18:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237623AbiHKQSu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Aug 2022 12:18:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58602 "EHLO
+        id S237659AbiHKQVV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Aug 2022 12:21:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237585AbiHKQSI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Aug 2022 12:18:08 -0400
+        with ESMTP id S237716AbiHKQUH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Aug 2022 12:20:07 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE7D2381;
-        Thu, 11 Aug 2022 09:00:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89E97AB199;
+        Thu, 11 Aug 2022 09:02:02 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 209DB60FA0;
-        Thu, 11 Aug 2022 16:00:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68ADBC433D6;
-        Thu, 11 Aug 2022 16:00:16 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 10570612FC;
+        Thu, 11 Aug 2022 16:02:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 779D1C433D7;
+        Thu, 11 Aug 2022 16:02:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660233617;
-        bh=wsTmHiDUzkGL2xsjdamRGkdWY24nLy7FdLJ7TQ0P5lA=;
+        s=k20201202; t=1660233721;
+        bh=/NfsTPynIzJ7q1vtVPX0fnJ6BQE75dnJVQ0W0eNTezM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dSSFQqc3O241q/m9Qyd2b0AjV1+uCOGRUR4W1Ent/Me7wNoqw8pRQsMZwfRHCm1ZY
-         HnWhU0Z4nk3Gf1VOvzVCu/sJAJ/+HtGs86oS0Xm6Q6LGTe6bCoFhS6Lk8E98pII1Fh
-         rvqZsLKYpmYJHuDDJvLsWVGwcU34GlZup2aRfeq8geZdLdbPxLPrMvKYDVhuVLMXsD
-         wURsotTfxBSPPHKGe/cBP5cCpkX8YKSm8JFuCVnGlBkbpD0mFwd+bkciQ2blgFUh/K
-         2h4Ie+EOd1OKX7RpnRRQWkkim6VN5eHi1xeoKiYrEgLeec2IgwhI1tNMZ3AmgToJTP
-         8tWWdU038aUFg==
+        b=f/4ly/XjQ3AhQW3PoPmgECBIAonXWiMEx0/0VxglqyLr5wzrjps9At6y1IIPlm2Ux
+         jmpu2PIxlrqQGgZFDH5XQ93DQ9Spw94aTw+sYfb0KgEkPj4DUyWbkSzHmjHVAxEVE9
+         pao4djiAa2BAtc5m841jM0b/CWOMqYri/4XnkgIXO8fXrCULLkkNHLXewa2nWZfMpF
+         BXjyvqYgU0lGYQ8K62EzQyexo2oOLnorP8zD1Stwr1UndlP8pXch5j5qZVQ5vATANO
+         dmvl/NIyclBFN1bJJDntThouxX39SElPlJIjWXJu84oggFDWacoe28sjpejY9cBQx9
+         nSK3qhHMGa86w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Delyan Kratunov <delyank@fb.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, rostedt@goodmis.org,
-        mingo@redhat.com, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 31/69] uprobe: gate bpf call behind BPF_EVENTS
-Date:   Thu, 11 Aug 2022 11:55:40 -0400
-Message-Id: <20220811155632.1536867-31-sashal@kernel.org>
+Cc:     James Hilliard <james.hilliard1@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, ast@kernel.org,
+        daniel@iogearbox.net, bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 49/69] libbpf: Disable SEC pragma macro on GCC
+Date:   Thu, 11 Aug 2022 11:55:58 -0400
+Message-Id: <20220811155632.1536867-49-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220811155632.1536867-1-sashal@kernel.org>
 References: <20220811155632.1536867-1-sashal@kernel.org>
@@ -58,48 +57,64 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Delyan Kratunov <delyank@fb.com>
+From: James Hilliard <james.hilliard1@gmail.com>
 
-[ Upstream commit aca80dd95e20f1fa0daa212afc83c9fa0ad239e5 ]
+[ Upstream commit 18410251f66aee7e82234073ce6656ca20a732a9 ]
 
-The call into bpf from uprobes needs to be gated now that it doesn't use
-the trace_events.h helpers.
+It seems the gcc preprocessor breaks with pragmas when surrounding
+__attribute__.
 
-Randy found this as a randconfig build failure on linux-next [1].
+Disable these pragmas on GCC due to upstream bugs see:
+https://gcc.gnu.org/bugzilla/show_bug.cgi?id=55578
+https://gcc.gnu.org/bugzilla/show_bug.cgi?id=90400
 
-  [1]: https://lore.kernel.org/linux-next/2de99180-7d55-2fdf-134d-33198c27cc58@infradead.org/
+Fixes errors like:
+error: expected identifier or '(' before '#pragma'
+  106 | SEC("cgroup/bind6")
+      | ^~~
 
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Delyan Kratunov <delyank@fb.com>
-Tested-by: Randy Dunlap <rdunlap@infradead.org>
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-Link: https://lore.kernel.org/r/cb8bfbbcde87ed5d811227a393ef4925f2aadb7b.camel@fb.com
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+error: expected '=', ',', ';', 'asm' or '__attribute__' before '#pragma'
+  114 | char _license[] SEC("license") = "GPL";
+      | ^~~
+
+Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20220706111839.1247911-1-james.hilliard1@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/trace_uprobe.c | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/lib/bpf/bpf_helpers.h | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-index 78ec1c16ccf4..798c99994e2a 100644
---- a/kernel/trace/trace_uprobe.c
-+++ b/kernel/trace/trace_uprobe.c
-@@ -1352,6 +1352,7 @@ static void __uprobe_perf_func(struct trace_uprobe *tu,
- 	int size, esize;
- 	int rctx;
+diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
+index b9987c3efa3c..409b85d1cbd0 100644
+--- a/tools/lib/bpf/bpf_helpers.h
++++ b/tools/lib/bpf/bpf_helpers.h
+@@ -30,12 +30,25 @@
+  * To allow use of SEC() with externs (e.g., for extern .maps declarations),
+  * make sure __attribute__((unused)) doesn't trigger compilation warning.
+  */
++#if __GNUC__ && !__clang__
++
++/*
++ * Pragma macros are broken on GCC
++ * https://gcc.gnu.org/bugzilla/show_bug.cgi?id=55578
++ * https://gcc.gnu.org/bugzilla/show_bug.cgi?id=90400
++ */
++#define SEC(name) __attribute__((section(name), used))
++
++#else
++
+ #define SEC(name) \
+ 	_Pragma("GCC diagnostic push")					    \
+ 	_Pragma("GCC diagnostic ignored \"-Wignored-attributes\"")	    \
+ 	__attribute__((section(name), used))				    \
+ 	_Pragma("GCC diagnostic pop")					    \
  
-+#ifdef CONFIG_BPF_EVENTS
- 	if (bpf_prog_array_valid(call)) {
- 		u32 ret;
- 
-@@ -1361,6 +1362,7 @@ static void __uprobe_perf_func(struct trace_uprobe *tu,
- 		if (!ret)
- 			return;
- 	}
-+#endif /* CONFIG_BPF_EVENTS */
- 
- 	esize = SIZEOF_TRACE_ENTRY(is_ret_probe(tu));
- 
++#endif
++
+ /* Avoid 'linux/stddef.h' definition of '__always_inline'. */
+ #undef __always_inline
+ #define __always_inline inline __attribute__((always_inline))
 -- 
 2.35.1
 
