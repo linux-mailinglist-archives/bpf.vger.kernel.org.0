@@ -2,109 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E945901D9
-	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 18:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 825905901D7
+	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 18:01:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237044AbiHKP5a (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Aug 2022 11:57:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48230 "EHLO
+        id S237073AbiHKP5b (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Aug 2022 11:57:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237596AbiHKP45 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Aug 2022 11:56:57 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D1EA8CC0;
-        Thu, 11 Aug 2022 08:47:32 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D9315B82166;
-        Thu, 11 Aug 2022 15:47:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FE0FC433C1;
-        Thu, 11 Aug 2022 15:47:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660232848;
-        bh=yBJ2y8HCNBKPJMYF4B5gcb9bH4TcIwSHkzdudjGSQPo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=abBzRSFB+ieSu9X/v4jkihXd9vEPAd28hIFpeMiZpRj7SEmNvCdj3UC9Zu8JbYTQ9
-         qgNKnO4646skhiEFtUQPJo1gdPw+wuUBgPTOAiR9qoDsHclRnX78BhvxShr5HlOek+
-         U1ZwRPInyHrsf1i9u/OPmBF1yIu3Z/KER7+d0k+g34CDjl0vmlHhzlRPECvlwCzk27
-         N/XlWbDcmNHVJ2bzp5yqo+ZSp410zMWKi3E3xLViCgDiTa2aPnFoGrDN0D9orbhK/i
-         Jc8+X3piTlhEjnMEDFBvEsmsvohtHHcVNzy1BnQlnr2BAD3g1UL6asBQ8frRli14k/
-         DM/cD2P8UkydA==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, daniel@iogearbox.net,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.18 48/93] libbpf: fix up few libbpf.map problems
-Date:   Thu, 11 Aug 2022 11:41:42 -0400
-Message-Id: <20220811154237.1531313-48-sashal@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220811154237.1531313-1-sashal@kernel.org>
-References: <20220811154237.1531313-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S237682AbiHKP5K (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Aug 2022 11:57:10 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B8FFA9241
+        for <bpf@vger.kernel.org>; Thu, 11 Aug 2022 08:47:37 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id m5-20020a170902f64500b0016d313f3ce7so11704020plg.23
+        for <bpf@vger.kernel.org>; Thu, 11 Aug 2022 08:47:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
+         :date:from:to:cc;
+        bh=IuUmi8yK7ttP9DMj21dovzQZGBY13PHX+qXyVjOX3zQ=;
+        b=cLRlgW077jVAPqEiOj0qYsBikpH8O3puBBLslNGoTJgjF+b6BVpcKOPNHdjwOf1qhd
+         WYFRk5UNOu6AaulRni5vLlf7GW5zVXomALlhHClxvCP5XwkyY+3FIvChzlzJWIKHISej
+         3dJtNuIgl6TunDKCi65jDWXH6efqru55AYzfUf+yd3/4nugqcTGRPMaYGmICdKi40VZS
+         eYVqxbDXxqtewL3hR5/7q/aMFBblbiJjNIeHXPa0br4ciHHZZhVqySwVQYNBNeu4g32I
+         3/JPvv40f1szRuqKM7+juNmXs1XeHM1Fkpuw41YVFQv78GctEgqO8glWf/DVbAOYA1t5
+         V6EQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
+         :date:x-gm-message-state:from:to:cc;
+        bh=IuUmi8yK7ttP9DMj21dovzQZGBY13PHX+qXyVjOX3zQ=;
+        b=x4D5ZK+ktCl+7dBfRulivpBBpTAzOn+WUdE0EEpGr8iM0KFmLGLQaJHtEYY5i8SgjV
+         QHljLJYMXvbY5wrCV2Rqj2S1WGfGS430xO5Pnj3r2XtW9KAxtalEw1MIp5TlA2sP1lza
+         JpfYmTtffex/c/Q+eqPGMYVBA2n0W3ww0VrcBYaKGgK5oscRZSyzwLn3I6vQDVV4mxjE
+         lF8/drbHJqBOj7qNjxCERNPQepnS7pAJPXn5EjAdQMNmRKNsNt0VW/NgdDfZGysIIDVZ
+         GF+dX817kpaZUGvauCh8pnR+lRSqmix4ysnH8nUhUThptos0/OcQjjDcQ122AC+UvP+R
+         J/ZA==
+X-Gm-Message-State: ACgBeo2UwN0k7z4Svpp7bVP6EJOeASFbmeEeQjRpNnaW4XaGyu1qWYY4
+        Zdwpp0V4/mBbiDUsmsdn0+OYnYBzoAHZLA==
+X-Google-Smtp-Source: AA6agR5jU6SuRrnL1iSm+IArLzseac+oOI/Drs50eHZDtXnirQjPsSD2P965Ps18qhwgee7fgN00JA/weOPVFA==
+X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:28b])
+ (user=shakeelb job=sendgmr) by 2002:aa7:8096:0:b0:52d:d5f6:2ea6 with SMTP id
+ v22-20020aa78096000000b0052dd5f62ea6mr32956638pff.0.1660232854787; Thu, 11
+ Aug 2022 08:47:34 -0700 (PDT)
+Date:   Thu, 11 Aug 2022 15:47:31 +0000
+In-Reply-To: <CALOAHbBk+komswLqs0KBg8FeFAYpC20HjXrUeZA-=7cWf6nRUw@mail.gmail.com>
+Message-Id: <20220811154731.3smhom6v4qy2u6rd@google.com>
+Mime-Version: 1.0
+References: <20220810151840.16394-1-laoar.shao@gmail.com> <20220810151840.16394-6-laoar.shao@gmail.com>
+ <20220810170706.ikyrsuzupjwt65h7@google.com> <CALOAHbBk+komswLqs0KBg8FeFAYpC20HjXrUeZA-=7cWf6nRUw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 05/15] bpf: Fix incorrect mem_cgroup_put
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, jolsa@kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Andrii Nakryiko <andrii@kernel.org>
+On Thu, Aug 11, 2022 at 10:49:13AM +0800, Yafang Shao wrote:
+> On Thu, Aug 11, 2022 at 1:07 AM Shakeel Butt <shakeelb@google.com> wrote:
+> >
+> > On Wed, Aug 10, 2022 at 03:18:30PM +0000, Yafang Shao wrote:
+> > > The memcg may be the root_mem_cgroup, in which case we shouldn't put it.
+> >
+> > No, it is ok to put root_mem_cgroup. css_put already handles the root
+> > cgroups.
+> >
+> 
+> Ah, this commit log doesn't describe the issue clearly. I should improve it.
+> The issue is that in bpf_map_get_memcg() it doesn't get the objcg if
+> map->objcg is NULL (that can happen if the map belongs to the root
+> memcg), so we shouldn't put the objcg if map->objcg is NULL neither in
+> bpf_map_put_memcg().
 
-[ Upstream commit ab9a5a05dc480f8994eddd31093a8920b08ee71d ]
+Sorry I am still not understanding. We are not 'getting' objcg in
+bpf_map_get_memcg(). We are 'getting' memcg from map->objcg and if that
+is NULL the function is returning root memcg and putting root memcg is
+totally fine. Or are you saying that root_mem_cgroup is NULL?
 
-Seems like we missed to add 2 APIs to libbpf.map and another API was
-misspelled. Fix it in libbpf.map.
-
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/r/20220627211527.2245459-16-andrii@kernel.org
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- tools/lib/bpf/libbpf.map      | 3 ++-
- tools/lib/bpf/libbpf_legacy.h | 4 ++--
- 2 files changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index dd35ee58bfaa..d2476c1aee8c 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -434,10 +434,11 @@ LIBBPF_0.7.0 {
- 		bpf_xdp_detach;
- 		bpf_xdp_query;
- 		bpf_xdp_query_id;
-+		btf_ext__raw_data;
- 		libbpf_probe_bpf_helper;
- 		libbpf_probe_bpf_map_type;
- 		libbpf_probe_bpf_prog_type;
--		libbpf_set_memlock_rlim_max;
-+		libbpf_set_memlock_rlim;
- } LIBBPF_0.6.0;
- 
- LIBBPF_0.8.0 {
-diff --git a/tools/lib/bpf/libbpf_legacy.h b/tools/lib/bpf/libbpf_legacy.h
-index d7bcbd01f66f..a3503c02e4a9 100644
---- a/tools/lib/bpf/libbpf_legacy.h
-+++ b/tools/lib/bpf/libbpf_legacy.h
-@@ -71,8 +71,8 @@ enum libbpf_strict_mode {
- 	 * first BPF program or map creation operation. This is done only if
- 	 * kernel is too old to support memcg-based memory accounting for BPF
- 	 * subsystem. By default, RLIMIT_MEMLOCK limit is set to RLIM_INFINITY,
--	 * but it can be overriden with libbpf_set_memlock_rlim_max() API.
--	 * Note that libbpf_set_memlock_rlim_max() needs to be called before
-+	 * but it can be overriden with libbpf_set_memlock_rlim() API.
-+	 * Note that libbpf_set_memlock_rlim() needs to be called before
- 	 * the very first bpf_prog_load(), bpf_map_create() or bpf_object__load()
- 	 * operation.
- 	 */
--- 
-2.35.1
-
+> Maybe the change below would be more reasonable ?
+> 
+> +static void bpf_map_put_memcg(const struct bpf_map *map, struct
+> mem_cgroup *memcg)
+> +{
+> +       if (map->objcg)
+> +           mem_cgroup_put(memcg);
+> +}
+> 
+> -- 
+> Regards
+> Yafang
