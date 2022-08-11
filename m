@@ -2,45 +2,46 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 741F858FF9E
-	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 17:32:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D1B58FFC9
+	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 17:33:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235771AbiHKPbT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Aug 2022 11:31:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48064 "EHLO
+        id S236022AbiHKPdu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Aug 2022 11:33:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235775AbiHKPa6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Aug 2022 11:30:58 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 136DF95694;
-        Thu, 11 Aug 2022 08:30:09 -0700 (PDT)
+        with ESMTP id S235934AbiHKPdG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Aug 2022 11:33:06 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F33F997D71;
+        Thu, 11 Aug 2022 08:31:43 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9F54B615BB;
-        Thu, 11 Aug 2022 15:30:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20C88C43140;
-        Thu, 11 Aug 2022 15:30:07 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 58A84B82162;
+        Thu, 11 Aug 2022 15:31:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E018C433C1;
+        Thu, 11 Aug 2022 15:31:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660231808;
-        bh=6H4moB9QsrEB+NA2Gjt3GQdw4j7lCm+5w+xZmhZ6CbI=;
+        s=k20201202; t=1660231901;
+        bh=C7+0x5smBoXsfGE60PPyMZoOFvwkP0yI4WoQFbgn7e0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l5nZjappeqm5Ly//Evkhjv55KIIxtSODg/8eeQpj4bWKs+Crilo8BTfSR84cqC1l1
-         bCwTEGK2kSc6tzh1Ffl1LEFZ8xcWukM1Ve9qx0Nxt55/4CQZSXjAJWZV9zLifMZ99P
-         GkKC27DQncfljOQ3jACRZoiccHz+0SZEnUosa+Fx2tPghmiEuRUp6SE2K/c35+Z91R
-         rfNekvZdAXvNvSCGVfOabfh/qXrE6G0r+FAtMgm83UN3KkC/olP3DeYQ0cy0M7nC/2
-         PQprLy1Nwpc2vX/oQZvVz3Uor+IXTPPGI3oySW2G1WKA7MC64oKJ9lfVScxck2E/Z7
-         SvM5cB8Snxzkg==
+        b=KtUEjv219dG9c81JjhyOFqCZpp8zi0gKUVThma+Oey5YVapCUewjYhSG0SlYi4vHV
+         CpbVIqUFEhYfDB5w7BUmMBdgSq/Dx+flYlEBYlBBKDHn0dJsOcDtwmiWikHsCp1CwT
+         N8nZgjv73aWZ7/+K5zzywHQHebK0sDqJaEvznkJCx34/WX0QCIQmE/H7D0vEKSFWjV
+         rjTDvHVDfnm0PzvJ/0CdrSCNLW2Yj6m+04ytOXio5RY494JyfauG/AjT+icQ5SAQKU
+         /P+N2J0diOvzPiL26oqUiQ4x5aXDrT3y1ZZ/hKeaRud8v07miZk4binGtpUAMdNbMd
+         MjMg+dctpIBdw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andrii@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, daniel@iogearbox.net,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.19 014/105] libbpf: Fix an error in 64bit relocation value computation
-Date:   Thu, 11 Aug 2022 11:26:58 -0400
-Message-Id: <20220811152851.1520029-14-sashal@kernel.org>
+Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, andrii@kernel.org,
+        daniel@iogearbox.net, shuah@kernel.org, hengqi.chen@gmail.com,
+        fallentree@fb.com, songliubraving@fb.com, mauricio@kinvolk.io,
+        kuifeng@fb.com, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.19 024/105] selftests/bpf: Avoid skipping certain subtests
+Date:   Thu, 11 Aug 2022 11:27:08 -0400
+Message-Id: <20220811152851.1520029-24-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220811152851.1520029-1-sashal@kernel.org>
 References: <20220811152851.1520029-1-sashal@kernel.org>
@@ -60,46 +61,117 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Yonghong Song <yhs@fb.com>
 
-[ Upstream commit b58b2b3a31228bd9aaed9b96e9452dafd0d46024 ]
+[ Upstream commit 3831cd1f9ff627734096f22d8e37f72a5cabf92e ]
 
-Currently, the 64bit relocation value in the instruction
-is computed as follows:
-  __u64 imm = insn[0].imm + ((__u64)insn[1].imm << 32)
+Commit 704c91e59fe0 ('selftests/bpf: Test "bpftool gen min_core_btf"')
+added a test test_core_btfgen to test core relocation with btf
+generated with 'bpftool gen min_core_btf'. Currently,
+among 76 subtests, 25 are skipped.
 
-Suppose insn[0].imm = -1 (0xffffffff) and insn[1].imm = 1.
-With the above computation, insn[0].imm will first sign-extend
-to 64bit -1 (0xffffffffFFFFFFFF) and then add 0x1FFFFFFFF,
-producing incorrect value 0xFFFFFFFF. The correct value
-should be 0x1FFFFFFFF.
+  ...
+  #46/69   core_reloc_btfgen/enumval:OK
+  #46/70   core_reloc_btfgen/enumval___diff:OK
+  #46/71   core_reloc_btfgen/enumval___val3_missing:OK
+  #46/72   core_reloc_btfgen/enumval___err_missing:SKIP
+  #46/73   core_reloc_btfgen/enum64val:OK
+  #46/74   core_reloc_btfgen/enum64val___diff:OK
+  #46/75   core_reloc_btfgen/enum64val___val3_missing:OK
+  #46/76   core_reloc_btfgen/enum64val___err_missing:SKIP
+  ...
+  #46      core_reloc_btfgen:SKIP
+  Summary: 1/51 PASSED, 25 SKIPPED, 0 FAILED
 
-Changing insn[0].imm to __u32 first will prevent 64bit sign
-extension and fix the issue. Merging high and low 32bit values
-also changed from '+' to '|' to be consistent with other
-similar occurences in kernel and libbpf.
+Alexei found that in the above core_reloc_btfgen/enum64val___err_missing
+should not be skipped.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: Dave Marchevsky <davemarchevsky@fb.com>
+Currently, the core_reloc tests have some negative tests.
+In Commit 704c91e59fe0, for core_reloc_btfgen, all negative tests
+are skipped with the following condition
+  if (!test_case->btf_src_file || test_case->fails) {
+	test__skip();
+	continue;
+  }
+This is too conservative. Negative tests do not fail
+mkstemp() and run_btfgen() should not be skipped.
+There are a few negative tests indeed failing run_btfgen()
+and this patch added 'run_btfgen_fails' to mark these tests
+so that they can be skipped for btfgen tests. With this,
+we have
+  ...
+  #46/69   core_reloc_btfgen/enumval:OK
+  #46/70   core_reloc_btfgen/enumval___diff:OK
+  #46/71   core_reloc_btfgen/enumval___val3_missing:OK
+  #46/72   core_reloc_btfgen/enumval___err_missing:OK
+  #46/73   core_reloc_btfgen/enum64val:OK
+  #46/74   core_reloc_btfgen/enum64val___diff:OK
+  #46/75   core_reloc_btfgen/enum64val___val3_missing:OK
+  #46/76   core_reloc_btfgen/enum64val___err_missing:OK
+  ...
+  Summary: 1/62 PASSED, 14 SKIPPED, 0 FAILED
+
+Totally 14 subtests are skipped instead of 25.
+
+Reported-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Yonghong Song <yhs@fb.com>
-Link: https://lore.kernel.org/r/20220607062610.3717378-1-yhs@fb.com
+Link: https://lore.kernel.org/r/20220614055526.628299-1-yhs@fb.com
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/relo_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/bpf/prog_tests/core_reloc.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/relo_core.c b/tools/lib/bpf/relo_core.c
-index ba4453dfd1ed..a9216b65724a 100644
---- a/tools/lib/bpf/relo_core.c
-+++ b/tools/lib/bpf/relo_core.c
-@@ -1024,7 +1024,7 @@ int bpf_core_patch_insn(const char *prog_name, struct bpf_insn *insn,
- 			return -EINVAL;
- 		}
+diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
+index 3712dfe1be59..ed85abd6782c 100644
+--- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
++++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
+@@ -84,6 +84,7 @@ static int duration = 0;
+ #define NESTING_ERR_CASE(name) {					\
+ 	NESTING_CASE_COMMON(name),					\
+ 	.fails = true,							\
++	.run_btfgen_fails = true,							\
+ }
  
--		imm = insn[0].imm + ((__u64)insn[1].imm << 32);
-+		imm = (__u32)insn[0].imm | ((__u64)insn[1].imm << 32);
- 		if (res->validate && imm != orig_val) {
- 			pr_warn("prog '%s': relo #%d: unexpected insn #%d (LDIMM64) value: got %llu, exp %u -> %u\n",
- 				prog_name, relo_idx,
+ #define ARRAYS_DATA(struct_name) STRUCT_TO_CHAR_PTR(struct_name) {	\
+@@ -258,12 +259,14 @@ static int duration = 0;
+ 	BITFIELDS_CASE_COMMON("test_core_reloc_bitfields_probed.o",	\
+ 			      "probed:", name),				\
+ 	.fails = true,							\
++	.run_btfgen_fails = true,							\
+ 	.raw_tp_name = "sys_enter",					\
+ 	.prog_name = "test_core_bitfields",				\
+ }, {									\
+ 	BITFIELDS_CASE_COMMON("test_core_reloc_bitfields_direct.o",	\
+ 			      "direct:", name),				\
+ 	.fails = true,							\
++	.run_btfgen_fails = true,							\
+ 	.prog_name = "test_core_bitfields_direct",			\
+ }
+ 
+@@ -304,6 +307,7 @@ static int duration = 0;
+ #define SIZE_ERR_CASE(name) {						\
+ 	SIZE_CASE_COMMON(name),						\
+ 	.fails = true,							\
++	.run_btfgen_fails = true,							\
+ }
+ 
+ #define TYPE_BASED_CASE_COMMON(name)					\
+@@ -377,6 +381,7 @@ struct core_reloc_test_case {
+ 	const char *output;
+ 	int output_len;
+ 	bool fails;
++	bool run_btfgen_fails;
+ 	bool needs_testmod;
+ 	bool relaxed_core_relocs;
+ 	const char *prog_name;
+@@ -894,7 +899,7 @@ static void run_core_reloc_tests(bool use_btfgen)
+ 		/* generate a "minimal" BTF file and use it as source */
+ 		if (use_btfgen) {
+ 
+-			if (!test_case->btf_src_file || test_case->fails) {
++			if (!test_case->btf_src_file || test_case->run_btfgen_fails) {
+ 				test__skip();
+ 				continue;
+ 			}
 -- 
 2.35.1
 
