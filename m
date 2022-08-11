@@ -2,45 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 483715900C8
-	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 17:47:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B0705900D2
+	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 17:47:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234773AbiHKPqY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Aug 2022 11:46:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43180 "EHLO
+        id S235749AbiHKPrd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Aug 2022 11:47:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236248AbiHKPpT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Aug 2022 11:45:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12E1785AB2;
-        Thu, 11 Aug 2022 08:39:35 -0700 (PDT)
+        with ESMTP id S236664AbiHKPqD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Aug 2022 11:46:03 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ED3224950;
+        Thu, 11 Aug 2022 08:40:22 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A44896165E;
-        Thu, 11 Aug 2022 15:39:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDEBFC433C1;
-        Thu, 11 Aug 2022 15:39:32 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 14DD1CE223A;
+        Thu, 11 Aug 2022 15:40:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4334C433D7;
+        Thu, 11 Aug 2022 15:40:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660232374;
-        bh=zhl/sG1HuGjIn4wKTaffZ5Mcx2QihFUIsjJoG8g1RQY=;
+        s=k20201202; t=1660232419;
+        bh=VSXzN9FQUeQ+9olGNZCgpdskhfdRDBYRp89MGdAkkww=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UtJqpKPV1Y0Y/BKPSJtuoHVtXCroX0faV43F8wadjADoxN/GQ4rRHQK5YZwPNyCwn
-         z+nmhpc7WTRuUgpdhi9CCg6BT/a/C6OsqCCVceebFuFZv0aB/1DCC33gAUT1AJ+rIC
-         y6jmyDZA3dt44e1C7tsqMdbJCxyaO6cf6UHRUJD6Wyk400ysocPy1sHmeWnumLpxGa
-         0q6RyA0RE3UWawwMFdekDul3niD7XDh15Hp+W4JsqnY6WFEjQzhEedlUsdWpLbY3CD
-         WuQPHEigZYC6NifZ+aECGtJUjC23ZZJcts/e8tw63t49I8b3CH8bE2QcBARG6jM7s0
-         8hRyTwACgzYog==
+        b=KJgcbSmzpAh9RyXBp5Z2mPWsSS481N1xvDDb0fgm6epka4YNA1cOkj2L9hjEmjR8r
+         CGgqIrolBIoUdqNlQlN1A/JWD/dOfAGQ4roXMM7ZUhl62z56Cqk881YneRADmCAZyK
+         34rMoa1gCXd9yOSeU/BV1l2nCj1MgJ0maeODckIXg46X/1W7W0Hdjr3XB8obqmE6YC
+         irq80duFLp0TFvt6Cs4sgo01kMXAJOpsS43rryEVceMRpdufpfqtxT8lKvXnUWhgSu
+         oZyrJrBDjqtQWyp9dP1/u4d8HHjRPy5Yt6RZ9nK/XiSCabpTKHCYgs9ZUBSlxgJPB2
+         KEe1sMdbgQ0eg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ben Dooks <ben.dooks@sifive.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>,
-        martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.19 073/105] bpf: Fix check against plain integer v 'NULL'
-Date:   Thu, 11 Aug 2022 11:27:57 -0400
-Message-Id: <20220811152851.1520029-73-sashal@kernel.org>
+Cc:     Zhengchao Shao <shaozhengchao@huawei.com>,
+        syzbot+7a12909485b94426aceb@syzkaller.appspotmail.com,
+        Stanislav Fomichev <sdf@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, daniel@iogearbox.net,
+        andrii@kernel.org, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, imagedong@tencent.com,
+        dsahern@kernel.org, kafai@fb.com, talalahmad@google.com,
+        keescook@chromium.org, asml.silence@gmail.com,
+        bigeasy@linutronix.de, petrm@nvidia.com, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.19 077/105] bpf: Don't redirect packets with invalid pkt_len
+Date:   Thu, 11 Aug 2022 11:28:01 -0400
+Message-Id: <20220811152851.1520029-77-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220811152851.1520029-1-sashal@kernel.org>
 References: <20220811152851.1520029-1-sashal@kernel.org>
@@ -58,45 +64,77 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Ben Dooks <ben.dooks@sifive.com>
+From: Zhengchao Shao <shaozhengchao@huawei.com>
 
-[ Upstream commit a2a5580fcbf808e7c2310e4959b62f9d2157fdb6 ]
+[ Upstream commit fd1894224407c484f652ad456e1ce423e89bb3eb ]
 
-When checking with sparse, btf_show_type_value() is causing a
-warning about checking integer vs NULL when the macro is passed
-a pointer, due to the 'value != 0' check. Stop sparse complaining
-about any type-casting by adding a cast to the typeof(value).
+Syzbot found an issue [1]: fq_codel_drop() try to drop a flow whitout any
+skbs, that is, the flow->head is null.
+The root cause, as the [2] says, is because that bpf_prog_test_run_skb()
+run a bpf prog which redirects empty skbs.
+So we should determine whether the length of the packet modified by bpf
+prog or others like bpf_prog_test is valid before forwarding it directly.
 
-This fixes the following sparse warnings:
+LINK: [1] https://syzkaller.appspot.com/bug?id=0b84da80c2917757915afa89f7738a9d16ec96c5
+LINK: [2] https://www.spinics.net/lists/netdev/msg777503.html
 
-kernel/bpf/btf.c:2579:17: warning: Using plain integer as NULL pointer
-kernel/bpf/btf.c:2581:17: warning: Using plain integer as NULL pointer
-kernel/bpf/btf.c:3407:17: warning: Using plain integer as NULL pointer
-kernel/bpf/btf.c:3758:9: warning: Using plain integer as NULL pointer
-
-Signed-off-by: Ben Dooks <ben.dooks@sifive.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: Yonghong Song <yhs@fb.com>
-Link: https://lore.kernel.org/bpf/20220714100322.260467-1-ben.dooks@sifive.com
+Reported-by: syzbot+7a12909485b94426aceb@syzkaller.appspotmail.com
+Signed-off-by: Zhengchao Shao <shaozhengchao@huawei.com>
+Reviewed-by: Stanislav Fomichev <sdf@google.com>
+Link: https://lore.kernel.org/r/20220715115559.139691-1-shaozhengchao@huawei.com
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/btf.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/linux/skbuff.h | 8 ++++++++
+ net/bpf/test_run.c     | 3 +++
+ net/core/dev.c         | 1 +
+ 3 files changed, 12 insertions(+)
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index eb12d4f705cc..9a6e5f71bbd2 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -1108,7 +1108,8 @@ __printf(2, 3) static void btf_show(struct btf_show *show, const char *fmt, ...)
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index d3d10556f0fa..2f41364a6791 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -2624,6 +2624,14 @@ static inline void skb_set_tail_pointer(struct sk_buff *skb, const int offset)
+ 
+ #endif /* NET_SKBUFF_DATA_USES_OFFSET */
+ 
++static inline void skb_assert_len(struct sk_buff *skb)
++{
++#ifdef CONFIG_DEBUG_NET
++	if (WARN_ONCE(!skb->len, "%s\n", __func__))
++		DO_ONCE_LITE(skb_dump, KERN_ERR, skb, false);
++#endif /* CONFIG_DEBUG_NET */
++}
++
+ /*
+  *	Add data to an sk_buff
   */
- #define btf_show_type_value(show, fmt, value)				       \
- 	do {								       \
--		if ((value) != 0 || (show->flags & BTF_SHOW_ZERO) ||	       \
-+		if ((value) != (__typeof__(value))0 ||			       \
-+		    (show->flags & BTF_SHOW_ZERO) ||			       \
- 		    show->state.depth == 0) {				       \
- 			btf_show(show, "%s%s" fmt "%s%s",		       \
- 				 btf_show_indent(show),			       \
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index 56f059b3c242..42f8de4ebbd7 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -955,6 +955,9 @@ static int convert___skb_to_skb(struct sk_buff *skb, struct __sk_buff *__skb)
+ {
+ 	struct qdisc_skb_cb *cb = (struct qdisc_skb_cb *)skb->cb;
+ 
++	if (!skb->len)
++		return -EINVAL;
++
+ 	if (!__skb)
+ 		return 0;
+ 
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 30a1603a7225..fe487dc6798e 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -4168,6 +4168,7 @@ int __dev_queue_xmit(struct sk_buff *skb, struct net_device *sb_dev)
+ 	bool again = false;
+ 
+ 	skb_reset_mac_header(skb);
++	skb_assert_len(skb);
+ 
+ 	if (unlikely(skb_shinfo(skb)->tx_flags & SKBTX_SCHED_TSTAMP))
+ 		__skb_tstamp_tx(skb, NULL, NULL, skb->sk, SCM_TSTAMP_SCHED);
 -- 
 2.35.1
 
