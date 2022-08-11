@@ -2,49 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FD8659014F
-	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 17:52:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 806575901B2
+	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 18:00:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236884AbiHKPwX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Aug 2022 11:52:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35300 "EHLO
+        id S236876AbiHKPwy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Aug 2022 11:52:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235079AbiHKPvd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Aug 2022 11:51:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A4C497D49;
-        Thu, 11 Aug 2022 08:43:23 -0700 (PDT)
+        with ESMTP id S236878AbiHKPwQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Aug 2022 11:52:16 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 385E89DFB3;
+        Thu, 11 Aug 2022 08:44:07 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B955C616CF;
-        Thu, 11 Aug 2022 15:43:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E8DBC433B5;
-        Thu, 11 Aug 2022 15:43:19 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 74157B82156;
+        Thu, 11 Aug 2022 15:44:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23204C433C1;
+        Thu, 11 Aug 2022 15:44:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660232602;
-        bh=bWzmuzyP1DisSfhrizQ72YJYJ2pGLP4jgPk1L7NlL/k=;
+        s=k20201202; t=1660232644;
+        bh=zy+RadlHKf4+6wfk/N//I1iIxx7CK8Pr5EdABxD750Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uaoBqgQbHANuYtraSQiW684yMkCO5x3L8UiGMjmi9Z67R3q7UJ3AsQqTFZJz2ERik
-         xRIyMLI5g3p7tXz4nlSzgHiso2E6qcxbu2xXlujiMF6GBOzu9yLXTl/4itiSqrMMM3
-         w/8DQaHr9nYa1PJcmOZvfupx0IiMmLbZ90NRSqrSJrW/spm8wEOKqEyLd+IsLBkpu9
-         pMKhLhnuS8XBEKpiQvAijiamFjbBod3CTuH5rV46t/9XU/OomJL3vFGLufPJTiCzZF
-         ClO0KDfbWDdHrrrqqXFrJAku1jB+5TFP/jOK4YmfjpDKxqTZJC0z0f4XBPJ0KMPiiW
-         1PNYg0g49vSPw==
+        b=jGZHlYWN5aBWIEK/HM6aPSpJGoOZq02ulHqCK0aLqM3K/xoJcyU4+MYmInPL3m1IK
+         N9e0P8KReVldyIiozcyqo+6R4ia2QSpJJlBpa0gUAqwO9gnia1HrCDDlTSuF1zPghN
+         mWGRgKO3uDbBaXIccOmszCesmLVpHW0GqUZIXm1CzL19MktF9eCegv1q5QehsBsM6O
+         IvkZrB75/X5cE8QSYuGWagEM6oXfmM7WzlNwOm4CX4hFMq2q+e0pZBggz04f1uVO9X
+         UpGvosCrP4HRvFtgPrRIiAlNyf0OVDXedtvnGOgstErwCe4EKD0AdJXFwoU2/HYgHa
+         9ydHaG+nWGD0g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Wang Yufen <wangyufen@huawei.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, ast@kernel.org,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.18 10/93] bpf, sockmap: Fix sk->sk_forward_alloc warn_on in sk_stream_kill_queues
-Date:   Thu, 11 Aug 2022 11:41:04 -0400
-Message-Id: <20220811154237.1531313-10-sashal@kernel.org>
+Cc:     Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andrii@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, daniel@iogearbox.net,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.18 14/93] libbpf: Fix an error in 64bit relocation value computation
+Date:   Thu, 11 Aug 2022 11:41:08 -0400
+Message-Id: <20220811154237.1531313-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220811154237.1531313-1-sashal@kernel.org>
 References: <20220811154237.1531313-1-sashal@kernel.org>
@@ -62,133 +58,48 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Wang Yufen <wangyufen@huawei.com>
+From: Yonghong Song <yhs@fb.com>
 
-[ Upstream commit d8616ee2affcff37c5d315310da557a694a3303d ]
+[ Upstream commit b58b2b3a31228bd9aaed9b96e9452dafd0d46024 ]
 
-During TCP sockmap redirect pressure test, the following warning is triggered:
+Currently, the 64bit relocation value in the instruction
+is computed as follows:
+  __u64 imm = insn[0].imm + ((__u64)insn[1].imm << 32)
 
-WARNING: CPU: 3 PID: 2145 at net/core/stream.c:205 sk_stream_kill_queues+0xbc/0xd0
-CPU: 3 PID: 2145 Comm: iperf Kdump: loaded Tainted: G        W         5.10.0+ #9
-Call Trace:
- inet_csk_destroy_sock+0x55/0x110
- inet_csk_listen_stop+0xbb/0x380
- tcp_close+0x41b/0x480
- inet_release+0x42/0x80
- __sock_release+0x3d/0xa0
- sock_close+0x11/0x20
- __fput+0x9d/0x240
- task_work_run+0x62/0x90
- exit_to_user_mode_prepare+0x110/0x120
- syscall_exit_to_user_mode+0x27/0x190
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Suppose insn[0].imm = -1 (0xffffffff) and insn[1].imm = 1.
+With the above computation, insn[0].imm will first sign-extend
+to 64bit -1 (0xffffffffFFFFFFFF) and then add 0x1FFFFFFFF,
+producing incorrect value 0xFFFFFFFF. The correct value
+should be 0x1FFFFFFFF.
 
-The reason we observed is that:
+Changing insn[0].imm to __u32 first will prevent 64bit sign
+extension and fix the issue. Merging high and low 32bit values
+also changed from '+' to '|' to be consistent with other
+similar occurences in kernel and libbpf.
 
-When the listener is closing, a connection may have completed the three-way
-handshake but not accepted, and the client has sent some packets. The child
-sks in accept queue release by inet_child_forget()->inet_csk_destroy_sock(),
-but psocks of child sks have not released.
-
-To fix, add sock_map_destroy to release psocks.
-
-Signed-off-by: Wang Yufen <wangyufen@huawei.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: Jakub Sitnicki <jakub@cloudflare.com>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-Link: https://lore.kernel.org/bpf/20220524075311.649153-1-wangyufen@huawei.com
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Dave Marchevsky <davemarchevsky@fb.com>
+Signed-off-by: Yonghong Song <yhs@fb.com>
+Link: https://lore.kernel.org/r/20220607062610.3717378-1-yhs@fb.com
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/bpf.h   |  1 +
- include/linux/skmsg.h |  1 +
- net/core/skmsg.c      |  1 +
- net/core/sock_map.c   | 23 +++++++++++++++++++++++
- net/ipv4/tcp_bpf.c    |  1 +
- 5 files changed, 27 insertions(+)
+ tools/lib/bpf/relo_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 83bd5598ec4d..5db26f20aa70 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -2012,6 +2012,7 @@ int sock_map_bpf_prog_query(const union bpf_attr *attr,
- 			    union bpf_attr __user *uattr);
+diff --git a/tools/lib/bpf/relo_core.c b/tools/lib/bpf/relo_core.c
+index f946f23eab20..80862906df3f 100644
+--- a/tools/lib/bpf/relo_core.c
++++ b/tools/lib/bpf/relo_core.c
+@@ -1025,7 +1025,7 @@ int bpf_core_patch_insn(const char *prog_name, struct bpf_insn *insn,
+ 			return -EINVAL;
+ 		}
  
- void sock_map_unhash(struct sock *sk);
-+void sock_map_destroy(struct sock *sk);
- void sock_map_close(struct sock *sk, long timeout);
- #else
- static inline int bpf_prog_offload_init(struct bpf_prog *prog,
-diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-index c5a2d6f50f25..153b6dec9b6a 100644
---- a/include/linux/skmsg.h
-+++ b/include/linux/skmsg.h
-@@ -95,6 +95,7 @@ struct sk_psock {
- 	spinlock_t			link_lock;
- 	refcount_t			refcnt;
- 	void (*saved_unhash)(struct sock *sk);
-+	void (*saved_destroy)(struct sock *sk);
- 	void (*saved_close)(struct sock *sk, long timeout);
- 	void (*saved_write_space)(struct sock *sk);
- 	void (*saved_data_ready)(struct sock *sk);
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index ede0af308f40..2742d8e4dd82 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -716,6 +716,7 @@ struct sk_psock *sk_psock_init(struct sock *sk, int node)
- 	psock->eval = __SK_NONE;
- 	psock->sk_proto = prot;
- 	psock->saved_unhash = prot->unhash;
-+	psock->saved_destroy = prot->destroy;
- 	psock->saved_close = prot->close;
- 	psock->saved_write_space = sk->sk_write_space;
- 
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index 2d213c4011db..9947c1f94dc3 100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -1563,6 +1563,29 @@ void sock_map_unhash(struct sock *sk)
- }
- EXPORT_SYMBOL_GPL(sock_map_unhash);
- 
-+void sock_map_destroy(struct sock *sk)
-+{
-+	void (*saved_destroy)(struct sock *sk);
-+	struct sk_psock *psock;
-+
-+	rcu_read_lock();
-+	psock = sk_psock_get(sk);
-+	if (unlikely(!psock)) {
-+		rcu_read_unlock();
-+		if (sk->sk_prot->destroy)
-+			sk->sk_prot->destroy(sk);
-+		return;
-+	}
-+
-+	saved_destroy = psock->saved_destroy;
-+	sock_map_remove_links(sk, psock);
-+	rcu_read_unlock();
-+	sk_psock_stop(psock, true);
-+	sk_psock_put(sk, psock);
-+	saved_destroy(sk);
-+}
-+EXPORT_SYMBOL_GPL(sock_map_destroy);
-+
- void sock_map_close(struct sock *sk, long timeout)
- {
- 	void (*saved_close)(struct sock *sk, long timeout);
-diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index 2c597a4e429a..25e83d35138b 100644
---- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -541,6 +541,7 @@ static void tcp_bpf_rebuild_protos(struct proto prot[TCP_BPF_NUM_CFGS],
- 				   struct proto *base)
- {
- 	prot[TCP_BPF_BASE]			= *base;
-+	prot[TCP_BPF_BASE].destroy		= sock_map_destroy;
- 	prot[TCP_BPF_BASE].close		= sock_map_close;
- 	prot[TCP_BPF_BASE].recvmsg		= tcp_bpf_recvmsg;
- 	prot[TCP_BPF_BASE].sock_is_readable	= sk_msg_is_readable;
+-		imm = insn[0].imm + ((__u64)insn[1].imm << 32);
++		imm = (__u32)insn[0].imm | ((__u64)insn[1].imm << 32);
+ 		if (res->validate && imm != orig_val) {
+ 			pr_warn("prog '%s': relo #%d: unexpected insn #%d (LDIMM64) value: got %llu, exp %u -> %u\n",
+ 				prog_name, relo_idx,
 -- 
 2.35.1
 
