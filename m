@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A0EB590920
-	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 01:23:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C895A59092E
+	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 01:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236654AbiHKXXQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Aug 2022 19:23:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56216 "EHLO
+        id S236408AbiHKX3R (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Aug 2022 19:29:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236571AbiHKXXE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Aug 2022 19:23:04 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4966FA1D0A;
-        Thu, 11 Aug 2022 16:23:03 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id b16so24791240edd.4;
-        Thu, 11 Aug 2022 16:23:03 -0700 (PDT)
+        with ESMTP id S234259AbiHKX3Q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Aug 2022 19:29:16 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 725B1A1D18;
+        Thu, 11 Aug 2022 16:29:15 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id z22so24801960edd.6;
+        Thu, 11 Aug 2022 16:29:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=/U91/4PX2cpKjtuOoFQknW+ecNHAJ1lj200SkSG5NGo=;
-        b=DxMmdBcwHWCQnmnR8aPAu/oDtYp5pG3qc9c5fkyCudxd6XbS2J65kUUJJzH6Bx2LDX
-         w04K8eTOjFSZkViAYrxQMSC0OCsdp7wO8uL1NtW2hCKi79BXG60PC8yjPiRFALDYmbbd
-         13EKw3byU8q157quq1YdfbvhBq76/eYhEHm523Ur4WqGzYGbF05zwHFkTy2BwIpGsUyL
-         ds01I74rRfICwbbH/wK4YJQniGgAuN7JkaPzEgOwSAy6VqudvNhRsOsNCA6oSeQOkbhu
-         GNZD6RLgsJIOJFb4ezUZg44un0iA3VlUNVI4I8zb6fEV2fwpneJyNaG2BG4HAxh1gQ1L
-         +v+g==
+        bh=f8wt8SNd2Qsh50uz7XA5V0kZKP2oYkPYl+cvukWAopc=;
+        b=gr3DmPE0Agzr15MpmdcUohB+1kh68chdTGxcplwXyylzs3pEy6OR/IyJfRVDa2NvuN
+         TA6E1WvK2kimjqSxCf4uDi3srHWfdfrWhH4DISSICGwbGjaCVEmx1kx/hAQ/pyYhYcdr
+         mbebVrCLRHxW5G5GdmFmJ6hI5mv8CLoWq0XyMGws7ueRLbrC3JtgACYMMg/aR12PNA6i
+         1MmdnHaQZI5o+5HB1T1DfUYi5ihwesgj7dh40xy73x3OXj5qKbGoInOGMIgpayuxm7qX
+         zs0Ak52HFVPB2p5ehrqrf1U1xBmZXCWUUd8n/oVstfNRuhysyfvMjLDIK4w/qQ2uu+km
+         qbgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=/U91/4PX2cpKjtuOoFQknW+ecNHAJ1lj200SkSG5NGo=;
-        b=6m0vaaz1hmrYxzLDVdWHnbY1R7m4b3XkJ6QV+4/wHPAJPht//4pPK1wuPKTatkUtFB
-         gQJbXCHDGR0ubfyqyW6QBONIfzLSpSliqomp0FzrzdVsnSYaanHpt6LJW2DNEQ24uie8
-         2fvTbkCGdx3Ycmv0xkH9Z6/7BowdODKK35Q2jzdL7dGwxLAPJaq0JWEmw9a6/Zj3tWG8
-         QZFmrXh7ihIcvZfXvXCaGwW3LSYDvllN6YYSXQUkt3ejfgpVKhlnup42ttEQeRrKZJrY
-         ubbzscobn0/0BNs1+3ZW1chauXKD3IHPZdDoQVB9B5lSBXLgZX1kr3BjK48g5KjoYSGU
-         c8fw==
-X-Gm-Message-State: ACgBeo1IfFw1M/evgJh+qnaUc8EbhOAPFVdV4c4tte83w1KcjZYwc9am
-        S0MJd78AMuxs1SYj1rl7LeJ/1hcn0e90aDKW1vY=
-X-Google-Smtp-Source: AA6agR4YPEfgR/bDb/MhvLucvwWk13IzKj8Ug1hoRV4YqMmscMNCnEKauuMNQsnhnOhifR0LhNha1i1Nm6DfUguKph4=
-X-Received: by 2002:a05:6402:110a:b0:443:225c:6822 with SMTP id
- u10-20020a056402110a00b00443225c6822mr1155262edv.81.1660260181785; Thu, 11
- Aug 2022 16:23:01 -0700 (PDT)
+        bh=f8wt8SNd2Qsh50uz7XA5V0kZKP2oYkPYl+cvukWAopc=;
+        b=REWdTr5/VrQZPmAlrZktRfQo4F9IvoG2WHduyVBFgapkL+RRWHkkc+ZvhnueN0mp/f
+         FB3P/H7TCOjhWoyy2YxlaL0cmEcAtX3W2VUiSHS9CVxmx1o2E/qdK+AW8f5aeA4fL8Sh
+         tobKxzfltI1TQCDHnx90daE/Kjs7hF8SHnYNKjIVOPneUprxqLZD07j6Nw5HyjP4Xv//
+         4xci1yrBZ71acBWdCIGvP3hVCPsVm+O7SWr2FlRNYoOfFJLztq6nAac/Q2BBBpnq15qm
+         WOEnaiSpDKvs1FsBNXXmzxwTzsZy8+qZPod/JBC65Wp7EDyoFV9UkgXkcnMiqyyPg8im
+         XF9A==
+X-Gm-Message-State: ACgBeo2BBDz3Ho1M01kalLq7st5HyV06bYm1cl9x5hJYYCnEK2LUyjFZ
+        fYPhsjVqd5ClCDE3hWt+HlmU+Ai8Ub+iAD+QJ6k=
+X-Google-Smtp-Source: AA6agR6ClXQNqxX2OKPmEV2c+upHqeyH2Cog2uXylTfAJ7xVH12/235vUeIrR+xFr9dvPquu7hFijXvfAagl6rM5KG0=
+X-Received: by 2002:aa7:de8c:0:b0:440:3516:1813 with SMTP id
+ j12-20020aa7de8c000000b0044035161813mr1271383edv.260.1660260553996; Thu, 11
+ Aug 2022 16:29:13 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220808155341.2479054-1-void@manifault.com> <20220808155341.2479054-2-void@manifault.com>
 In-Reply-To: <20220808155341.2479054-2-void@manifault.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 11 Aug 2022 16:22:50 -0700
-Message-ID: <CAEf4BzbGEQ9rMHBaiex2wPEB2cOMXFNydpPUutko6P7UCK-UyQ@mail.gmail.com>
+Date:   Thu, 11 Aug 2022 16:29:02 -0700
+Message-ID: <CAEf4BzZdOQwym4Q2QXtWF9uKhtKEb8cya-eQvLU3h3+7wES8UA@mail.gmail.com>
 Subject: Re: [PATCH 2/5] bpf: Define new BPF_MAP_TYPE_USER_RINGBUF map type
 To:     David Vernet <void@manifault.com>
 Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
@@ -95,79 +95,76 @@ On Mon, Aug 8, 2022 at 8:54 AM David Vernet <void@manifault.com> wrote:
 >  tools/lib/bpf/libbpf.c         |  1 +
 >  6 files changed, 68 insertions(+), 9 deletions(-)
 >
-
-[...]
-
+> diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
+> index 2b9112b80171..2c6a4f2562a7 100644
+> --- a/include/linux/bpf_types.h
+> +++ b/include/linux/bpf_types.h
+> @@ -126,6 +126,7 @@ BPF_MAP_TYPE(BPF_MAP_TYPE_STRUCT_OPS, bpf_struct_ops_map_ops)
+>  #endif
+>  BPF_MAP_TYPE(BPF_MAP_TYPE_RINGBUF, ringbuf_map_ops)
+>  BPF_MAP_TYPE(BPF_MAP_TYPE_BLOOM_FILTER, bloom_filter_map_ops)
+> +BPF_MAP_TYPE(BPF_MAP_TYPE_USER_RINGBUF, user_ringbuf_map_ops)
 >
-> -static int ringbuf_map_mmap(struct bpf_map *map, struct vm_area_struct *vma)
-> +static int ringbuf_map_mmap(struct bpf_map *map, struct vm_area_struct *vma,
-> +                           bool kernel_producer)
->  {
->         struct bpf_ringbuf_map *rb_map;
->
->         rb_map = container_of(map, struct bpf_ringbuf_map, map);
->
->         if (vma->vm_flags & VM_WRITE) {
-> -               /* allow writable mapping for the consumer_pos only */
-> -               if (vma->vm_pgoff != 0 || vma->vm_end - vma->vm_start != PAGE_SIZE)
-> +               if (kernel_producer) {
-> +                       /* allow writable mapping for the consumer_pos only */
-> +                       if (vma->vm_pgoff != 0 || vma->vm_end - vma->vm_start != PAGE_SIZE)
-> +                               return -EPERM;
-> +               /* For user ringbufs, disallow writable mappings to the
-> +                * consumer pointer, and allow writable mappings to both the
-> +                * producer position, and the ring buffer data itself.
-> +                */
-> +               } else if (vma->vm_pgoff == 0)
->                         return -EPERM;
-
-the asymmetrical use of {} in one if branch and not using them in
-another is extremely confusing, please don't do that
-
-the way you put big comment inside the wrong if branch also throws me
-off, maybe move it before return -EPERM instead with proper
-indentation?
-
-sorry for nitpicks, but I've been stuck for a few minutes trying to
-figure out what exactly is happening here :)
-
-
->         } else {
->                 vma->vm_flags &= ~VM_MAYWRITE;
-> @@ -242,6 +271,16 @@ static int ringbuf_map_mmap(struct bpf_map *map, struct vm_area_struct *vma)
->                                    vma->vm_pgoff + RINGBUF_PGOFF);
->  }
->
-> +static int ringbuf_map_mmap_kern(struct bpf_map *map, struct vm_area_struct *vma)
-> +{
-> +       return ringbuf_map_mmap(map, vma, true);
-> +}
-> +
-> +static int ringbuf_map_mmap_user(struct bpf_map *map, struct vm_area_struct *vma)
-> +{
-> +       return ringbuf_map_mmap(map, vma, false);
-> +}
-
-I wouldn't mind if you just have two separate implementations of
-ringbuf_map_mmap for _kern and _user cases, tbh, probably would be
-clearer as well
-
-> +
->  static unsigned long ringbuf_avail_data_sz(struct bpf_ringbuf *rb)
->  {
->         unsigned long cons_pos, prod_pos;
-> @@ -269,7 +308,7 @@ const struct bpf_map_ops ringbuf_map_ops = {
->         .map_meta_equal = bpf_map_meta_equal,
->         .map_alloc = ringbuf_map_alloc,
->         .map_free = ringbuf_map_free,
-> -       .map_mmap = ringbuf_map_mmap,
-> +       .map_mmap = ringbuf_map_mmap_kern,
->         .map_poll = ringbuf_map_poll,
->         .map_lookup_elem = ringbuf_map_lookup_elem,
->         .map_update_elem = ringbuf_map_update_elem,
-> @@ -278,6 +317,19 @@ const struct bpf_map_ops ringbuf_map_ops = {
->         .map_btf_id = &ringbuf_map_btf_ids[0],
+>  BPF_LINK_TYPE(BPF_LINK_TYPE_RAW_TRACEPOINT, raw_tracepoint)
+>  BPF_LINK_TYPE(BPF_LINK_TYPE_TRACING, tracing)
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 7bf9ba1329be..a341f877b230 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -909,6 +909,7 @@ enum bpf_map_type {
+>         BPF_MAP_TYPE_INODE_STORAGE,
+>         BPF_MAP_TYPE_TASK_STORAGE,
+>         BPF_MAP_TYPE_BLOOM_FILTER,
+> +       BPF_MAP_TYPE_USER_RINGBUF,
 >  };
 >
+>  /* Note that tracing related programs such as
+> diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
+> index ded4faeca192..29e2de42df15 100644
+> --- a/kernel/bpf/ringbuf.c
+> +++ b/kernel/bpf/ringbuf.c
+> @@ -38,12 +38,32 @@ struct bpf_ringbuf {
+>         struct page **pages;
+>         int nr_pages;
+>         spinlock_t spinlock ____cacheline_aligned_in_smp;
+> -       /* Consumer and producer counters are put into separate pages to allow
+> -        * mapping consumer page as r/w, but restrict producer page to r/o.
+> -        * This protects producer position from being modified by user-space
+> -        * application and ruining in-kernel position tracking.
+> +       /* Consumer and producer counters are put into separate pages to
+> +        * allow each position to be mapped with different permissions.
+> +        * This prevents a user-space application from modifying the
+> +        * position and ruining in-kernel tracking. The permissions of the
+> +        * pages depend on who is producing samples: user-space or the
+> +        * kernel.
+> +        *
+> +        * Kernel-producer
+> +        * ---------------
+> +        * The producer position and data pages are mapped as r/o in
+> +        * userspace. For this approach, bits in the header of samples are
+> +        * used to signal to user-space, and to other producers, whether a
+> +        * sample is currently being written.
+> +        *
+> +        * User-space producer
+> +        * -------------------
+> +        * Only the page containing the consumer position, and whether the
+> +        * ringbuffer is currently being consumed via a 'busy' bit, are
+> +        * mapped r/o in user-space. Sample headers may not be used to
+> +        * communicate any information between kernel consumers, as a
+> +        * user-space application could modify its contents at any time.
+>          */
+> -       unsigned long consumer_pos __aligned(PAGE_SIZE);
+> +       struct {
+> +               unsigned long consumer_pos;
+> +               atomic_t busy;
+
+one more thing, why does busy have to be exposed into user-space
+mapped memory at all? Can't it be just a private variable in
+bpf_ringbuf?
+
+> +       } __aligned(PAGE_SIZE);
+>         unsigned long producer_pos __aligned(PAGE_SIZE);
+>         char data[] __aligned(PAGE_SIZE);
+>  };
 
 [...]
