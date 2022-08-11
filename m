@@ -2,45 +2,46 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED10C58F67C
-	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 05:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D9B58F6B3
+	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 06:19:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233931AbiHKDyC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Aug 2022 23:54:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60760 "EHLO
+        id S232823AbiHKETC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Aug 2022 00:19:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233818AbiHKDyB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Aug 2022 23:54:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D83783BCE;
-        Wed, 10 Aug 2022 20:54:00 -0700 (PDT)
+        with ESMTP id S229437AbiHKETB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Aug 2022 00:19:01 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D12F88DD7;
+        Wed, 10 Aug 2022 21:19:01 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C3DDF61323;
-        Thu, 11 Aug 2022 03:53:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB8CCC433C1;
-        Thu, 11 Aug 2022 03:53:58 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id EDFB5B81EE7;
+        Thu, 11 Aug 2022 04:18:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50DAEC433D6;
+        Thu, 11 Aug 2022 04:18:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660190039;
-        bh=6SH6afGD1FfbXG7YeYfQ4RzFR7jQhyCrQKdVXHLR+CE=;
+        s=k20201202; t=1660191538;
+        bh=qrPkiDYtM2cZyMlQQ5KMoCWV5WW3vJgeT3j0PNech64=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=caE+NyZtm5V1+bQeW5fIYaocj+e/ChjqSmNOzfQCOsWOD8Ev7ORlTY/hDHCj8HOyo
-         nskllk1TWIxgeiKRTgSNJONffT+cKngwQwkvqtnQ2nC8HtLMggm+FQisOgiyQfFDSY
-         hT6sS365OTtb4QnRee5UrFRNklWm+9N2+u52K5DoTrKK78F9VOEgKIZHLnJvXYaAUr
-         bhFNS6R4bpDqsNnE/acVo4TU8AsvPBnN2n4ZK4MTQGODZpcmaUV/pfRWBqSmL+2BPq
-         fZjv611kYN6nypwQ/EDcWbtgx2OXbx+d+4QAMlbBnvOK6tpnYbdogurTuUo+L9PS7u
-         r0xOof45W/MSA==
-Date:   Wed, 10 Aug 2022 20:53:57 -0700
+        b=u4bJRQUpjahgZvw5OI9qbQRIkB+ZTp7FdAcK/CH/VRTygZaeLBR6gtmfVM8rq0dhJ
+         grr82mUjPeN+WKDLSO71LfGnpi/XUYb5+j94AIJFiV52PrglZ8YQhCQW2TPQ4kKsNp
+         xNizDk5j6bbhJBV1lPP7EjXH/eQUnTkRJq0wJQPXB3e0l3IFl5dgLHLgbRAnD8AWxR
+         BS0OVG0RjmcGZuC7ezHGSXWetLQSsd+pJ3wou8A7nb1/zldKGxPdjy/oRPyL6QcF6l
+         gaXbHS03JFBF8gfc20mW5ZAwua5fr5GWgcOmZyVpXe6ZTLQHgecNoJVIQr8dhOK2ld
+         sCbx6GCvxQoGg==
+Date:   Wed, 10 Aug 2022 21:18:57 -0700
 From:   Jakub Kicinski <kuba@kernel.org>
 To:     Daniel Borkmann <daniel@iogearbox.net>
 Cc:     davem@davemloft.net, pabeni@redhat.com, edumazet@google.com,
         ast@kernel.org, andrii@kernel.org, netdev@vger.kernel.org,
         bpf@vger.kernel.org
 Subject: Re: pull-request: bpf 2022-08-10
-Message-ID: <20220810205357.304ade32@kernel.org>
-In-Reply-To: <20220810190624.10748-1-daniel@iogearbox.net>
+Message-ID: <20220810211857.51884269@kernel.org>
+In-Reply-To: <20220810205357.304ade32@kernel.org>
 References: <20220810190624.10748-1-daniel@iogearbox.net>
+        <20220810205357.304ade32@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -54,13 +55,19 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 10 Aug 2022 21:06:24 +0200 Daniel Borkmann wrote:
-> The following pull-request contains BPF updates for your *net* tree.
+On Wed, 10 Aug 2022 20:53:57 -0700 Jakub Kicinski wrote:
+> On Wed, 10 Aug 2022 21:06:24 +0200 Daniel Borkmann wrote:
+> > The following pull-request contains BPF updates for your *net* tree.  
+> 
+> Could you follow up before we send the PR to Linus if this is legit?
+> 
+> kernel/bpf/syscall.c:5089:5: warning: no previous prototype for function 'kern_sys_bpf' [-Wmissing-prototypes]
+> int kern_sys_bpf(int cmd, union bpf_attr *attr, unsigned int size)
+>     ^
+> kernel/bpf/syscall.c:5089:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+> int kern_sys_bpf(int cmd, union bpf_attr *attr, unsigned int size)
 
-Could you follow up before we send the PR to Linus if this is legit?
-
-kernel/bpf/syscall.c:5089:5: warning: no previous prototype for function 'kern_sys_bpf' [-Wmissing-prototypes]
-int kern_sys_bpf(int cmd, union bpf_attr *attr, unsigned int size)
-    ^
-kernel/bpf/syscall.c:5089:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-int kern_sys_bpf(int cmd, union bpf_attr *attr, unsigned int size)
+Looking at the code it seems intentional, even if questionable.
+I wish BPF didn't have all these W=1 warnings, I always worry
+we'll end up letting an real one in since the CI only compares 
+counts and the counts seem to fluctuate.
