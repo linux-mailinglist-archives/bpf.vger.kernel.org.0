@@ -2,198 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D215D58F64B
-	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 05:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC7F58F66E
+	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 05:40:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233930AbiHKDLC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Aug 2022 23:11:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60058 "EHLO
+        id S233366AbiHKDkf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Aug 2022 23:40:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233943AbiHKDLB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Aug 2022 23:11:01 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E98CEE76
-        for <bpf@vger.kernel.org>; Wed, 10 Aug 2022 20:10:58 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id l5so6261507qtv.4
-        for <bpf@vger.kernel.org>; Wed, 10 Aug 2022 20:10:58 -0700 (PDT)
+        with ESMTP id S229924AbiHKDke (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Aug 2022 23:40:34 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E5041CB19;
+        Wed, 10 Aug 2022 20:40:34 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id o5-20020a17090a3d4500b001ef76490983so3969051pjf.2;
+        Wed, 10 Aug 2022 20:40:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=rmxwVf7t1PNS4e5hrhApn9dN42pWVfDKUXBNKpe7GPE=;
-        b=OGIBZRTW1fN4NXGw414nvGJRbKag3aHq5Ziu4qj/DGZNt+s5Td7HX3QR6lPSb6HADc
-         Datb70J9zakU4jgz+wRg4rl/IL4md+mq9H5HvaQpBOs3NQRm8bGlH75ErXDOvcIO6khE
-         i/82PC2UyjnyduP6ecqJZpxSlRs2h+HRWC3QWdUSm3H0q5TRmo6jonEialdxv7o+UsJB
-         k0Gpp6P5KZ2AjuOSl20G3N3QYh7HHV2UI8Xr7wAFsIWsHT4qicKzKPqa/cgWbNygpWoW
-         5Newq4k5GZxGmuf8H0VKL3dOlxtYdNQANQ3AdU5I/0oigyJ5bIPJclNfjuRFFPM9aTQS
-         mafA==
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc;
+        bh=Mk3j1i9fjva3zOn4D60tqeJdxJKrOKo4G/RmrY0teV8=;
+        b=IKwV+B6G1N4PQzIEcp5Yq2XmnVU3ng7UhjBM7VRyqRt6Ug+yyLCE96ukuk8chUd0IS
+         eAQzPW2KbdzGtchePxc1BfZ29DiXEQ0HLQA+iI42BvFnNegrdZOPFBXZPWpuyPx27PQT
+         VmPY6SaTGD8C21vmFQo+QQNELnRce3IHK7FgsLyIgkrq3otgRsr/KSamnv3cJt9Z9VWw
+         Zc7hwA+p+/2PqN7APfyS7zJwPVQ+lyUVFVguWTBN+qwd2EnR722ryBl+JL3oE2ZBYqAf
+         9NNDe1k6yeDgb7L7nMCtkZx4rVXdHnrgzGzDf+yFLXmNtZhkJIERTZG1LspGFEn4E2gz
+         nogQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=rmxwVf7t1PNS4e5hrhApn9dN42pWVfDKUXBNKpe7GPE=;
-        b=Erj9/jPOvvIxFfQaFO3BAKKYA22NQVeLVpTDc3s46kHdki3VeOIVEBVoeNezQvkQEv
-         YQjZ514KHj3XP9QrpJUMyjjXv8yWVoHu/2ZCYrkFANOom8f25GZIuv1tzn0duphVPSIg
-         CAMcWd28sBxRTfzE+hYo0mCN7vGW10VnS9FDEyhIZkrguZBsxxqVUkm2/Aw+/+alFGzD
-         kh8sksAuQiPWUfh7m5Sd2ys6lL73GyNnAEeAyeL3IWX39Idnkir+J1PachnStcqJvAYq
-         SmlhNgkUR/QZrEn+ojvC+rV2raA7HTrWiw2zBm/UKArh1z2CH8YN6tdIZvG5/a5uqBH1
-         UCBg==
-X-Gm-Message-State: ACgBeo1cz/1zPOfYZwKPgwLgx4/2rjIT/WSD16AXMmruzbdTOwGCTV8l
-        2mQP+rFSYOEvsHVa5D6/AOtuMuZJKaf9q/vB9Xr/QQ==
-X-Google-Smtp-Source: AA6agR5uQwVDamlVJyjCUGZqvGIkRQ8eaoHoIvbB4CcDt9dlXFjB2eiGntIxzgE+9KZja1ke5pi07dzP5x3i+WE2irI=
-X-Received: by 2002:ac8:57d2:0:b0:343:6785:a2e5 with SMTP id
- w18-20020ac857d2000000b003436785a2e5mr314856qta.299.1660187457913; Wed, 10
- Aug 2022 20:10:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220805214821.1058337-1-haoluo@google.com> <20220805214821.1058337-5-haoluo@google.com>
- <CAEf4BzZHf89Ds8nQWFCH00fKs9-9GkJ0d+Hrp-LkMCDUP_td0A@mail.gmail.com>
- <CA+khW7hUVOkHBO3dhRze2_VKZuxD-LuNQdO3nHUkLCYmuuR6eg@mail.gmail.com>
- <20220809162325.hwgvys5n3rivuz7a@MacBook-Pro-3.local.dhcp.thefacebook.com> <CA+khW7j0kzP+W_Qgsim52J+HeR27XJcyMk73Hq93tsmNzT7q6w@mail.gmail.com>
-In-Reply-To: <CA+khW7j0kzP+W_Qgsim52J+HeR27XJcyMk73Hq93tsmNzT7q6w@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Wed, 10 Aug 2022 20:10:47 -0700
-Message-ID: <CA+khW7j1Ni_PfvsGisUpUgFtgg=f_qEUVd1VUmocn6L3=kndhw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v7 4/8] bpf: Introduce cgroup iter
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        cgroups@vger.kernel.org, netdev@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc;
+        bh=Mk3j1i9fjva3zOn4D60tqeJdxJKrOKo4G/RmrY0teV8=;
+        b=tyyCibscMa8H4oLHT8SGkfNi5DPXXOZObzjlAKQDg6BQQNMNzZstrCIWR9fCg0UcFY
+         4TD7Q8tgOyjpZccw7FJAF5Jh+LWSxIXLCjLzj4U7/Na0xIMXXSDgmDqnPSZCcwflXaZ5
+         LhgrP0fIpe/DM4vW7HYKCtHIMEccyRVpVhQFCqFJ0bKrRK0N5uL9pSRho5+YfzXjhumV
+         ogxbzr/XXv1vKnMIiWgBDzZOPq1SC+FUsMgyyhU7Mp8gaW6VoeQCYBZHoEjr18fyKl4i
+         nUrtGpfKbwv9DI70SDAnGy3/S4vaWD1qP5tmfETYdZEKxYU15QvHThXabZ59xq+o9Nzp
+         VnZQ==
+X-Gm-Message-State: ACgBeo3XKA66bEXk+9YBy25wrx8mZzn+aYkQRaqQwl0LL6fiKXLur8vI
+        8zgbObPQA6wxOBd06I2S+m5KAttjt8U=
+X-Google-Smtp-Source: AA6agR4V2BtEtEDGSkZJrGHu61syc3ugZApTaNsb/bNiRKPFRrcCWCJ7cdn6sKp/YC79jGNNLDONHQ==
+X-Received: by 2002:a17:90a:c402:b0:1f7:75ce:1206 with SMTP id i2-20020a17090ac40200b001f775ce1206mr6782355pjt.68.1660189233445;
+        Wed, 10 Aug 2022 20:40:33 -0700 (PDT)
+Received: from Laptop-X1.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id i6-20020a654d06000000b0040df0c9a1aasm10433017pgt.14.2022.08.10.20.40.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Aug 2022 20:40:32 -0700 (PDT)
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Quentin Monnet <quentin@isovalent.com>,
         Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <martin.lau@linux.dev>,
         Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Michal Koutny <mkoutny@suse.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
+        KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Yosry Ahmed <yosryahmed@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>
+Subject: [PATCHv3 bpf-next] libbpf: Add names for auxiliary maps
+Date:   Thu, 11 Aug 2022 11:40:20 +0800
+Message-Id: <20220811034020.529685-1-liuhangbin@gmail.com>
+X-Mailer: git-send-email 2.35.3
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 9, 2022 at 11:38 AM Hao Luo <haoluo@google.com> wrote:
->
-> On Tue, Aug 9, 2022 at 9:23 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Mon, Aug 08, 2022 at 05:56:57PM -0700, Hao Luo wrote:
-> > > On Mon, Aug 8, 2022 at 5:19 PM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > >
-> > > > On Fri, Aug 5, 2022 at 2:49 PM Hao Luo <haoluo@google.com> wrote:
-> > > > >
-> > > > > Cgroup_iter is a type of bpf_iter. It walks over cgroups in four modes:
-> > > > >
-> > > > >  - walking a cgroup's descendants in pre-order.
-> > > > >  - walking a cgroup's descendants in post-order.
-> > > > >  - walking a cgroup's ancestors.
-> > > > >  - process only the given cgroup.
-> > > > >
-> [...]
-> > > > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > > > index 59a217ca2dfd..4d758b2e70d6 100644
-> > > > > --- a/include/uapi/linux/bpf.h
-> > > > > +++ b/include/uapi/linux/bpf.h
-> > > > > @@ -87,10 +87,37 @@ struct bpf_cgroup_storage_key {
-> > > > >         __u32   attach_type;            /* program attach type (enum bpf_attach_type) */
-> > > > >  };
-> > > > >
-> > > > > +enum bpf_iter_order {
-> > > > > +       BPF_ITER_ORDER_DEFAULT = 0,     /* default order. */
-> > > >
-> > > > why is this default order necessary? It just adds confusion (I had to
-> > > > look up source code to know what is default order). I might have
-> > > > missed some discussion, so if there is some very good reason, then
-> > > > please document this in commit message. But I'd rather not do some
-> > > > magical default order instead. We can set 0 to mean invalid and error
-> > > > out, or just do SELF as the very first value (and if user forgot to
-> > > > specify more fancy mode, they hopefully will quickly discover this in
-> > > > their testing).
-> > > >
-> > >
-> > > PRE/POST/UP are tree-specific orders. SELF applies on all iters and
-> > > yields only a single object. How does task_iter express a non-self
-> > > order? By non-self, I mean something like "I don't care about the
-> > > order, just scan _all_ the objects". And this "don't care" order, IMO,
-> > > may be the common case. I don't think everyone cares about walking
-> > > order for tasks. The DEFAULT is intentionally put at the first value,
-> > > so that if users don't care about order, they don't have to specify
-> > > this field.
-> > >
-> > > If that sounds valid, maybe using "UNSPEC" instead of "DEFAULT" is better?
-> >
-> > I agree with Andrii.
-> > This:
-> > +       if (order == BPF_ITER_ORDER_DEFAULT)
-> > +               order = BPF_ITER_DESCENDANTS_PRE;
-> >
-> > looks like an arbitrary choice.
-> > imo
-> > BPF_ITER_DESCENDANTS_PRE = 0,
-> > would have been more obvious. No need to dig into definition of "default".
-> >
-> > UNSPEC = 0
-> > is fine too if we want user to always be conscious about the order
-> > and the kernel will error if that field is not initialized.
-> > That would be my preference, since it will match the rest of uapi/bpf.h
-> >
->
-> Sounds good. In the next version, will use
->
-> enum bpf_iter_order {
->         BPF_ITER_ORDER_UNSPEC = 0,
->         BPF_ITER_SELF_ONLY,             /* process only a single object. */
->         BPF_ITER_DESCENDANTS_PRE,       /* walk descendants in pre-order. */
->         BPF_ITER_DESCENDANTS_POST,      /* walk descendants in post-order. */
->         BPF_ITER_ANCESTORS_UP,          /* walk ancestors upward. */
-> };
->
+The bpftool self-created maps can appear in final map show output due to
+deferred removal in kernel. These maps don't have a name, which would make
+users confused about where it comes from.
 
-Sigh, I find that having UNSPEC=0 and erroring out when seeing UNSPEC
-doesn't work. Basically, if we have a non-iter prog and a cgroup_iter
-prog written in the same source file, I can't use
-bpf_object__attach_skeleton to attach them. Because the default
-prog_attach_fn for iter initializes `order` to 0 (that is, UNSPEC),
-which is going to be rejected by the kernel. In order to make
-bpf_object__attach_skeleton work on cgroup_iter, I think I need to use
-the following
+With a libbpf_ prefix name, users could know who created these maps.
+It also could make some tests (like test_offload.py, which skip base maps
+without names as a workaround) filter them out.
 
-enum bpf_iter_order {
-        BPF_ITER_DESCENDANTS_PRE,       /* walk descendants in pre-order. */
-        BPF_ITER_DESCENDANTS_POST,      /* walk descendants in post-order. */
-        BPF_ITER_ANCESTORS_UP,          /* walk ancestors upward. */
-        BPF_ITER_SELF_ONLY,             /* process only a single object. */
-};
+Kernel adds bpf prog/map name support in the same merge
+commit fadad670a8ab ("Merge branch 'bpf-extend-info'"). So we can also use
+kernel_supports(NULL, FEAT_PROG_NAME) to check if kernel supports map name.
 
-So that when calling bpf_object__attach_skeleton() on cgroup_iter, a
-link can be generated and the generated link defaults to pre-order
-walk on the whole hierarchy. Is there a better solution?
+As disscussed[1], Let's make bpf_map_create accept non-null
+name string, and silently ignore the name if kernel doesn't support.
 
-> and explicitly list the values acceptable by cgroup_iter, error out if
-> UNSPEC is detected.
->
-> Also, following Andrii's comments, will change BPF_ITER_SELF to
-> BPF_ITER_SELF_ONLY, which does seem a little bit explicit in
-> comparison.
->
-> > I applied the first 3 patches to ease respin.
->
-> Thanks! This helps!
->
-> > Thanks!
+[1] https://lore.kernel.org/bpf/CAEf4BzYL1TQwo1231s83pjTdFPk9XWWhfZC5=KzkU-VO0k=0Ug@mail.gmail.com/
+
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+---
+v3: let bpf_map_create ignore the name if kernel doesn't support
+v2: rename the wrapper with proper name
+---
+ tools/lib/bpf/bpf.c    | 2 +-
+ tools/lib/bpf/libbpf.c | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index efcc06dafbd9..6a96e665dc5d 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -183,7 +183,7 @@ int bpf_map_create(enum bpf_map_type map_type,
+ 		return libbpf_err(-EINVAL);
+ 
+ 	attr.map_type = map_type;
+-	if (map_name)
++	if (map_name && kernel_supports(NULL, FEAT_PROG_NAME))
+ 		libbpf_strlcpy(attr.map_name, map_name, sizeof(attr.map_name));
+ 	attr.key_size = key_size;
+ 	attr.value_size = value_size;
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index f7364ea82ac1..a075211b3730 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -4432,7 +4432,7 @@ static int probe_kern_global_data(void)
+ 	};
+ 	int ret, map, insn_cnt = ARRAY_SIZE(insns);
+ 
+-	map = bpf_map_create(BPF_MAP_TYPE_ARRAY, NULL, sizeof(int), 32, 1, NULL);
++	map = bpf_map_create(BPF_MAP_TYPE_ARRAY, "libbpf_global", sizeof(int), 32, 1, NULL);
+ 	if (map < 0) {
+ 		ret = -errno;
+ 		cp = libbpf_strerror_r(ret, errmsg, sizeof(errmsg));
+@@ -4565,7 +4565,7 @@ static int probe_kern_array_mmap(void)
+ 	LIBBPF_OPTS(bpf_map_create_opts, opts, .map_flags = BPF_F_MMAPABLE);
+ 	int fd;
+ 
+-	fd = bpf_map_create(BPF_MAP_TYPE_ARRAY, NULL, sizeof(int), sizeof(int), 1, &opts);
++	fd = bpf_map_create(BPF_MAP_TYPE_ARRAY, "libbpf_mmap", sizeof(int), sizeof(int), 1, &opts);
+ 	return probe_fd(fd);
+ }
+ 
+@@ -4612,7 +4612,7 @@ static int probe_prog_bind_map(void)
+ 	};
+ 	int ret, map, prog, insn_cnt = ARRAY_SIZE(insns);
+ 
+-	map = bpf_map_create(BPF_MAP_TYPE_ARRAY, NULL, sizeof(int), 32, 1, NULL);
++	map = bpf_map_create(BPF_MAP_TYPE_ARRAY, "libbpf_det_bind", sizeof(int), 32, 1, NULL);
+ 	if (map < 0) {
+ 		ret = -errno;
+ 		cp = libbpf_strerror_r(ret, errmsg, sizeof(errmsg));
+-- 
+2.35.3
+
