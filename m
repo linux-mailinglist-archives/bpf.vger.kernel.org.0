@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 784115906A6
-	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 21:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8B0B5906AA
+	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 21:07:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236169AbiHKSzG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Aug 2022 14:55:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35988 "EHLO
+        id S236179AbiHKSzJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Aug 2022 14:55:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236148AbiHKSzF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Aug 2022 14:55:05 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 912B09E2E7;
-        Thu, 11 Aug 2022 11:55:04 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id y141so17227600pfb.7;
-        Thu, 11 Aug 2022 11:55:04 -0700 (PDT)
+        with ESMTP id S236110AbiHKSzH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Aug 2022 14:55:07 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9421B9E2E7;
+        Thu, 11 Aug 2022 11:55:06 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id q19so17233948pfg.8;
+        Thu, 11 Aug 2022 11:55:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc;
-        bh=2cod6Z7LibdeMn8uoQb1Rhaw5oJrEcLjiUxCrov59Is=;
-        b=fJprRh7mUoC6596up0r7/10cQGnTTsJaaZ00ABFvuZMY2ee0sBzztjKBHcG6AZ5kLn
-         SOupl0lSWwR0G0e2SiJ4hvS9/1CAdLNd5dGShuV0b4W7bjfuh6jo6K9DiHFFZIMBzr4f
-         QO5/HrsTUq5bEkv+qbm+DmEwOodt3X1SrAaVswbDiK3ehKhzaqZwJB97DlUFaF7Y3b4g
-         aqJh6FPRtquWg+Lp0U8fbK+o1c7914o8jOrR93pKkl4wjn8ArpUL3cDNkvjjhno3c7g/
-         DAfEbMVQtLHuseBakimcbYt6wN7tCTjznq899p9O+3ikpfcDAmBZa7EbNntvSrYukwS5
-         CngQ==
+        bh=lCwq5ptfVT6LA/OJ3S7YeqvIhPQ7ZVzO5sJK2ii/XJA=;
+        b=PuQje8v+mJN+T9RJtHJg/4IQ6kE3CnrzpBouN5NWQjC1Rkxwdtyp/to31A4iovW4Zx
+         PXmk1IBFBXidjjRwPUmJsbzS4ITqDd6Ennt96eyM4xXvkzNMSz1yNKN0xYNZfZIIlKVU
+         YqcK9ljrRJ0xn4vEiSqxeo4shdpYEtOrS1VgjZ97JBquwqlRjuxN1ntMsJyVIcUpQ9bx
+         zhxMdUbLjrGMJtnp8CO8l5qTyzcs90YF233w6TfVBs377aXQ1VQuyccCKFG8ME/fzjE1
+         GeqFj3lKggIMbD98X/vbvP7Xe0JLBT90RKjCh9bMznwqk+hd/4pCq0S+3Fsk4JjTKgEj
+         xh/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc;
-        bh=2cod6Z7LibdeMn8uoQb1Rhaw5oJrEcLjiUxCrov59Is=;
-        b=L4PgvUdBqzWq8wx79cjwHcvcBF+z9cp6q93IS4AAbkkGg13KKhwQ2ef4gVxt2PUrj0
-         bUErPl8YfgraBXXHLSsCBAFMRTfkpGcdQkX/PU70DgNlr+iPd0ZiLIc4hCDVltTHHlx3
-         VZ/Oo7ThTWPWKRjfnX5qRsEaOQ5Jc20zu7MB+FlqBRzwS7hiDH/KCX6qZ/Leeyr0V+VV
-         YOLY2i1++k4HySgfNz66023eRcSzaAo25lqt+oGvCzVlaxO1cufqogbfjJ04eBxDM5Z3
-         D8B7V5YrMTNZsS+FYQX6nsiVVXdYkYQwRiZ+siv6/a2Cm20zBlH6eItyJXnt15l+06zC
-         nzpA==
-X-Gm-Message-State: ACgBeo0yXeucE0+2fnvRbuaZtphJZP8Wn8t5HmlPhOYwlFCtNgFnEDpW
-        FbJaYFwssJuIX6UIe8ygtdo=
-X-Google-Smtp-Source: AA6agR6PhZYOveICAttaIRAzc9X4mUErwc/Eq67S/Mco+gQ0auKvrydAhb25F1duRW92L5pBM+CF5A==
-X-Received: by 2002:a63:224a:0:b0:41e:1d36:5063 with SMTP id t10-20020a63224a000000b0041e1d365063mr306352pgm.568.1660244104049;
-        Thu, 11 Aug 2022 11:55:04 -0700 (PDT)
+        bh=lCwq5ptfVT6LA/OJ3S7YeqvIhPQ7ZVzO5sJK2ii/XJA=;
+        b=VAHy5MCdbzodV4rCflaJKdKjSbgWDOTdoij/z8jc0U5nFjNB6QKNDoRFwUHGLwBajb
+         cyTm32/V5gCoGaOyIrvVB/RN0OZwx2TRTMxaN29qJ314yoiGYo8aUjdj7LiIfUiT+rxZ
+         4tlyURsLD4eOBST3tILSeJdNypfNO3Wp30pV9ppn34uxezli7lQnILTH9pyg3nNCidk7
+         8F3zTkMgIY6bJPJo3avYMX28mOsifa31diWR3Ul8ek0vvaGtocprQZ2RAfos/cOeJqPt
+         fS9pSFkrMcYOZbovSdo09z2vVCUnf4s10dM3tItfrZjSFQiKTN0gMLtuJe9HjF5vDJBX
+         +iSA==
+X-Gm-Message-State: ACgBeo1MnTw0BuvQXmIwBXwptmI3LKWtORfOrbdtme7h6rhimi8b1vxu
+        bOf7yEEwoiNfLF1kJ6ZL554=
+X-Google-Smtp-Source: AA6agR6CzMsUihjP+aqaSObhyzOI/xQIfPZO3KdsCjV3xCSULFBtq6xYSXZnZojXiCGKh/k1adIfNg==
+X-Received: by 2002:a63:8bc8:0:b0:41c:6800:d4e9 with SMTP id j191-20020a638bc8000000b0041c6800d4e9mr300643pge.45.1660244105953;
+        Thu, 11 Aug 2022 11:55:05 -0700 (PDT)
 Received: from youngsil.svl.corp.google.com ([2620:15c:2d4:203:cefb:475d:dd6d:a1e2])
-        by smtp.gmail.com with ESMTPSA id r12-20020a6560cc000000b0041975999455sm66314pgv.75.2022.08.11.11.55.02
+        by smtp.gmail.com with ESMTPSA id r12-20020a6560cc000000b0041975999455sm66314pgv.75.2022.08.11.11.55.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Aug 2022 11:55:03 -0700 (PDT)
+        Thu, 11 Aug 2022 11:55:05 -0700 (PDT)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -60,9 +60,9 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Hao Luo <haoluo@google.com>,
         Blake Jones <blakejones@google.com>,
         Milian Wolff <milian.wolff@kdab.com>, bpf@vger.kernel.org
-Subject: [PATCH 2/4] perf offcpu: Parse process id separately
-Date:   Thu, 11 Aug 2022 11:54:54 -0700
-Message-Id: <20220811185456.194721-3-namhyung@kernel.org>
+Subject: [PATCH 3/4] perf offcpu: Track child processes
+Date:   Thu, 11 Aug 2022 11:54:55 -0700
+Message-Id: <20220811185456.194721-4-namhyung@kernel.org>
 X-Mailer: git-send-email 2.37.1.595.g718a3a8f04-goog
 In-Reply-To: <20220811185456.194721-1-namhyung@kernel.org>
 References: <20220811185456.194721-1-namhyung@kernel.org>
@@ -79,92 +79,106 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The current target code uses thread id for tracking tasks because
-perf_events need to be opened for each task.  But we can use tgid in
-BPF maps and check it easily.
+When -p option used or a workload is given, it needs to handle child
+processes.  The perf_event can inherit those task events
+automatically.  We can add a new BPF program in task_newtask
+tracepoint to track child processes.
+
+Before:
+  $ sudo perf record --off-cpu -- perf bench sched messaging
+  $ sudo perf report --stat | grep -A1 offcpu
+  offcpu-time stats:
+            SAMPLE events:        1
+
+After:
+  $ sudo perf record -a --off-cpu -- perf bench sched messaging
+  $ sudo perf report --stat | grep -A1 offcpu
+  offcpu-time stats:
+            SAMPLE events:      856
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/bpf_off_cpu.c | 45 +++++++++++++++++++++++++++++++++--
- 1 file changed, 43 insertions(+), 2 deletions(-)
+ tools/perf/util/bpf_off_cpu.c          |  7 ++++++
+ tools/perf/util/bpf_skel/off_cpu.bpf.c | 30 ++++++++++++++++++++++++++
+ 2 files changed, 37 insertions(+)
 
 diff --git a/tools/perf/util/bpf_off_cpu.c b/tools/perf/util/bpf_off_cpu.c
-index 7dbcb025da87..f7ee0c7a53f0 100644
+index f7ee0c7a53f0..c257813e674e 100644
 --- a/tools/perf/util/bpf_off_cpu.c
 +++ b/tools/perf/util/bpf_off_cpu.c
-@@ -11,6 +11,7 @@
- #include "util/cpumap.h"
- #include "util/thread_map.h"
- #include "util/cgroup.h"
-+#include "util/strlist.h"
- #include <bpf/bpf.h>
- 
+@@ -17,6 +17,7 @@
  #include "bpf_skel/off_cpu.skel.h"
-@@ -125,6 +126,8 @@ int off_cpu_prepare(struct evlist *evlist, struct target *target,
- {
- 	int err, fd, i;
- 	int ncpus = 1, ntasks = 1, ncgrps = 1;
-+	struct strlist *pid_slist = NULL;
-+	struct str_node *pos;
  
- 	if (off_cpu_config(evlist) < 0) {
- 		pr_err("Failed to config off-cpu BPF event\n");
-@@ -143,7 +146,26 @@ int off_cpu_prepare(struct evlist *evlist, struct target *target,
- 		bpf_map__set_max_entries(skel->maps.cpu_filter, ncpus);
- 	}
+ #define MAX_STACKS  32
++#define MAX_PROC  4096
+ /* we don't need actual timestamp, just want to put the samples at last */
+ #define OFF_CPU_TIMESTAMP  (~0ull << 32)
  
--	if (target__has_task(target)) {
-+	if (target->pid) {
-+		pid_slist = strlist__new(target->pid, NULL);
-+		if (!pid_slist) {
-+			pr_err("Failed to create a strlist for pid\n");
-+			return -1;
-+		}
+@@ -164,10 +165,16 @@ int off_cpu_prepare(struct evlist *evlist, struct target *target,
+ 
+ 			ntasks++;
+ 		}
 +
-+		ntasks = 0;
-+		strlist__for_each_entry(pos, pid_slist) {
-+			char *end_ptr;
-+			int pid = strtol(pos->s, &end_ptr, 10);
++		if (ntasks < MAX_PROC)
++			ntasks = MAX_PROC;
 +
-+			if (pid == INT_MIN || pid == INT_MAX ||
-+			    (*end_ptr != '\0' && *end_ptr != ','))
-+				continue;
-+
-+			ntasks++;
-+		}
-+		bpf_map__set_max_entries(skel->maps.task_filter, ntasks);
-+	} else if (target__has_task(target)) {
+ 		bpf_map__set_max_entries(skel->maps.task_filter, ntasks);
+ 	} else if (target__has_task(target)) {
  		ntasks = perf_thread_map__nr(evlist->core.threads);
  		bpf_map__set_max_entries(skel->maps.task_filter, ntasks);
- 	}
-@@ -185,7 +207,26 @@ int off_cpu_prepare(struct evlist *evlist, struct target *target,
- 		}
++	} else if (target__none(target)) {
++		bpf_map__set_max_entries(skel->maps.task_filter, MAX_PROC);
  	}
  
--	if (target__has_task(target)) {
-+	if (target->pid) {
-+		u8 val = 1;
-+
-+		skel->bss->has_task = 1;
-+		skel->bss->uses_tgid = 1;
-+		fd = bpf_map__fd(skel->maps.task_filter);
-+
-+		strlist__for_each_entry(pos, pid_slist) {
-+			char *end_ptr;
-+			u32 tgid;
-+			int pid = strtol(pos->s, &end_ptr, 10);
-+
-+			if (pid == INT_MIN || pid == INT_MAX ||
-+			    (*end_ptr != '\0' && *end_ptr != ','))
-+				continue;
-+
-+			tgid = pid;
-+			bpf_map_update_elem(fd, &tgid, &val, BPF_ANY);
-+		}
-+	} else if (target__has_task(target)) {
- 		u32 pid;
- 		u8 val = 1;
+ 	if (evlist__first(evlist)->cgrp) {
+diff --git a/tools/perf/util/bpf_skel/off_cpu.bpf.c b/tools/perf/util/bpf_skel/off_cpu.bpf.c
+index 143a8b7acf87..c4ba2bcf179f 100644
+--- a/tools/perf/util/bpf_skel/off_cpu.bpf.c
++++ b/tools/perf/util/bpf_skel/off_cpu.bpf.c
+@@ -12,6 +12,9 @@
+ #define TASK_INTERRUPTIBLE	0x0001
+ #define TASK_UNINTERRUPTIBLE	0x0002
  
++/* create a new thread */
++#define CLONE_THREAD  0x10000
++
+ #define MAX_STACKS   32
+ #define MAX_ENTRIES  102400
+ 
+@@ -220,6 +223,33 @@ static int off_cpu_stat(u64 *ctx, struct task_struct *prev,
+ 	return 0;
+ }
+ 
++SEC("tp_btf/task_newtask")
++int on_newtask(u64 *ctx)
++{
++	struct task_struct *task;
++	u64 clone_flags;
++	u32 pid;
++	u8 val = 1;
++
++	if (!uses_tgid)
++		return 0;
++
++	task = (struct task_struct *)bpf_get_current_task();
++
++	pid = BPF_CORE_READ(task, tgid);
++	if (!bpf_map_lookup_elem(&task_filter, &pid))
++		return 0;
++
++	task = (struct task_struct *)ctx[0];
++	clone_flags = ctx[1];
++
++	pid = task->tgid;
++	if (!(clone_flags & CLONE_THREAD))
++		bpf_map_update_elem(&task_filter, &pid, &val, BPF_NOEXIST);
++
++	return 0;
++}
++
+ SEC("tp_btf/sched_switch")
+ int on_switch(u64 *ctx)
+ {
 -- 
 2.37.1.595.g718a3a8f04-goog
 
