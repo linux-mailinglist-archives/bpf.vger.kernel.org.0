@@ -2,110 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18E6E58F88F
-	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 09:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D24358F9D3
+	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 11:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233883AbiHKHrB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 11 Aug 2022 03:47:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52334 "EHLO
+        id S234807AbiHKJPp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Aug 2022 05:15:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbiHKHq5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Aug 2022 03:46:57 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 714C56FA35;
-        Thu, 11 Aug 2022 00:46:56 -0700 (PDT)
-Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4M3Jfz3Q4Mz67P5W;
-        Thu, 11 Aug 2022 15:42:19 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Thu, 11 Aug 2022 09:46:53 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2375.024;
- Thu, 11 Aug 2022 09:46:53 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC:     "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "martin.lau@linux.dev" <martin.lau@linux.dev>,
-        "song@kernel.org" <song@kernel.org>, "yhs@fb.com" <yhs@fb.com>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "sdf@google.com" <sdf@google.com>,
-        "haoluo@google.com" <haoluo@google.com>,
-        "jolsa@kernel.org" <jolsa@kernel.org>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "dhowells@redhat.com" <dhowells@redhat.com>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "paul@paul-moore.com" <paul@paul-moore.com>,
-        "jmorris@namei.org" <jmorris@namei.org>,
-        "serge@hallyn.com" <serge@hallyn.com>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v10 5/9] bpf: Add bpf_lookup_*_key() and bpf_key_put()
- kfuncs
-Thread-Topic: [PATCH v10 5/9] bpf: Add bpf_lookup_*_key() and bpf_key_put()
- kfuncs
-Thread-Index: AQHYrNrI3xbltKneMkianwQkzvowha2ohoeAgADLvDA=
-Date:   Thu, 11 Aug 2022 07:46:53 +0000
-Message-ID: <2415f4931a364541b2e6d14a8185ffbb@huawei.com>
-References: <20220810165932.2143413-1-roberto.sassu@huawei.com>
- <20220810165932.2143413-6-roberto.sassu@huawei.com>
- <20220810213351.wm5utltm67q4i6lu@MacBook-Pro-3.local.dhcp.thefacebook.com>
-In-Reply-To: <20220810213351.wm5utltm67q4i6lu@MacBook-Pro-3.local.dhcp.thefacebook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.81.209.212]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        with ESMTP id S234935AbiHKJPg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Aug 2022 05:15:36 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A127F12613
+        for <bpf@vger.kernel.org>; Thu, 11 Aug 2022 02:15:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 3F60FB81F99
+        for <bpf@vger.kernel.org>; Thu, 11 Aug 2022 09:15:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DF5CC433C1;
+        Thu, 11 Aug 2022 09:15:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1660209333;
+        bh=PG8D+86ya+A02xuGcQ2gR18cMTOZfRb0+fGYe6uGB4o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=CJ7bpOs/Zx8VLOcjGDQzZatP8qFIBLhZ2Ym6AGjARFcatCDXmlY+Ybuk+jMl1+a0/
+         nL4hzA+v3JDW9NMMKxpfrYaZfKea4VyxQgPPtL03rMBbFHYUt06T0bpQsiaCzvvzKe
+         /X/qS6RZRPixaGzCtD84nYSfiXLcsjppP6OgQHxupVmcDIJQQkyuW7e4J55Vaz1+lG
+         2f0AMsbPsGsIJId2T4k9Ff9YRXcDK5Zig0nc00TOe8Q2jg2zBCO8hYYfjvvHIzUt5f
+         7lrHcwwRnzRgIGwt3iF0bcqMuBVkI8252ZT+POkJSuXUafVKS8qqW9pp2JViV8J0Po
+         D80dp6calnB7A==
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Subject: [PATCHv2 bpf-next 0/6] bpf: Fixes for CONFIG_X86_KERNEL_IBT 
+Date:   Thu, 11 Aug 2022 11:15:20 +0200
+Message-Id: <20220811091526.172610-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> From: Alexei Starovoitov [mailto:alexei.starovoitov@gmail.com]
-> Sent: Wednesday, August 10, 2022 11:34 PM
-> On Wed, Aug 10, 2022 at 06:59:28PM +0200, Roberto Sassu wrote:
-> > +
-> > +static int __init bpf_key_sig_kfuncs_init(void)
-> > +{
-> > +	int ret;
-> > +
-> > +	ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING,
-> > +					&bpf_key_sig_kfunc_set);
-> > +	if (!ret)
-> > +		return 0;
-> > +
-> > +	return register_btf_kfunc_id_set(BPF_PROG_TYPE_LSM,
-> > +					 &bpf_key_sig_kfunc_set);
-> 
-> Isn't this a watery water ?
-> Don't you have a patch 1 ?
-> What am I missing ?
+hi,
+Martynas reported bpf_get_func_ip returning +4 address when
+CONFIG_X86_KERNEL_IBT option is enabled and I found there are
+some failing bpf tests when this option is enabled.
 
-Uhm, yes. I had doubts too. That was what also KP did.
+The CONFIG_X86_KERNEL_IBT option adds endbr instruction at the
+function entry, so the idea is to 'fix' entry ip for kprobe_multi
+and trampoline probes, because they are placed on the function
+entry.
 
-It makes sense to register once, since we mapped LSM to
-TRACING.
+v2 changes:
+  - change kprobes get_func_ip to return zero for kprobes
+    attached within the function body [Andrii]
+  - detect IBT config and properly test kprobe with offset 
+    [Andrii]
 
-Will resend only this patch. And I will figure out why CI failed.
+v1 changes:
+  - read previous instruction in kprobe_multi link handler
+    and adjust entry_ip for CONFIG_X86_KERNEL_IBT option
+  - split first patch into 2 separate changes
+  - update changelogs
 
-Roberto
+thanks,
+jirka
+
+
+---
+Jiri Olsa (6):
+      kprobes: Add new KPROBE_FLAG_ON_FUNC_ENTRY kprobe flag
+      ftrace: Keep the resolved addr in kallsyms_callback
+      bpf: Use given function address for trampoline ip arg
+      bpf: Adjust kprobe_multi entry_ip for CONFIG_X86_KERNEL_IBT
+      bpf: Return value in kprobe get_func_ip only for entry address
+      selftests/bpf: Fix get_func_ip offset test for CONFIG_X86_KERNEL_IBT
+
+ arch/x86/net/bpf_jit_comp.c                               |  9 ++++-----
+ include/linux/kprobes.h                                   |  1 +
+ kernel/kprobes.c                                          |  6 +++++-
+ kernel/trace/bpf_trace.c                                  | 15 ++++++++++++++-
+ kernel/trace/ftrace.c                                     |  3 +--
+ tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c | 62 +++++++++++++++++++++++++++++++++++++++++++++++++++-----------
+ tools/testing/selftests/bpf/progs/get_func_ip_test.c      | 22 ++++++++++------------
+ tools/testing/selftests/bpf/progs/kprobe_multi.c          |  4 +---
+ 8 files changed, 87 insertions(+), 35 deletions(-)
