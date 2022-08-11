@@ -2,45 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C420159018A
-	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 18:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20E945901D9
+	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 18:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236952AbiHKP53 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Aug 2022 11:57:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45500 "EHLO
+        id S237044AbiHKP5a (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Aug 2022 11:57:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237050AbiHKPzT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Aug 2022 11:55:19 -0400
+        with ESMTP id S237596AbiHKP45 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Aug 2022 11:56:57 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C54897509;
-        Thu, 11 Aug 2022 08:46:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D1EA8CC0;
+        Thu, 11 Aug 2022 08:47:32 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 6DE0AB82160;
-        Thu, 11 Aug 2022 15:46:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 930EDC433D6;
-        Thu, 11 Aug 2022 15:46:29 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D9315B82166;
+        Thu, 11 Aug 2022 15:47:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FE0FC433C1;
+        Thu, 11 Aug 2022 15:47:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660232791;
-        bh=M8+2Regi7w11f9Fs6t96nrt3QoC76Pn7bK09bq3NUaE=;
+        s=k20201202; t=1660232848;
+        bh=yBJ2y8HCNBKPJMYF4B5gcb9bH4TcIwSHkzdudjGSQPo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m1+Cl5Ja9fRPv5qdcfiNj772cLsun9n2vfkvuXqLHXnDEPKysUkZA41huzA3XcAZl
-         dXSBZo+GObH9dRx0nlLyvr0JRzstZ1wNJ++xdzzF1kqQJ0iLB8ztmxhOLUJ+/lvUkg
-         9YohzlJ2LKHPcsIhwIj0Mc8Zta8GOvoBHrB5gU9ox6/xJCxZVQ++w4STmvT9yXr+ct
-         s2OE0HJS3MFDtrMONUzaROSnBa97JNsU71y8C3xvL+bNGRCip3uy07i7zExBwrp0bQ
-         LSmkqHAPOYyX6sIaFw6/tQ/ZXaGNwprrTZrVDdxetOmfQ3yelnB6c9zYiGhqyaNGIn
-         UnKz5p0i9WV3Q==
+        b=abBzRSFB+ieSu9X/v4jkihXd9vEPAd28hIFpeMiZpRj7SEmNvCdj3UC9Zu8JbYTQ9
+         qgNKnO4646skhiEFtUQPJo1gdPw+wuUBgPTOAiR9qoDsHclRnX78BhvxShr5HlOek+
+         U1ZwRPInyHrsf1i9u/OPmBF1yIu3Z/KER7+d0k+g34CDjl0vmlHhzlRPECvlwCzk27
+         N/XlWbDcmNHVJ2bzp5yqo+ZSp410zMWKi3E3xLViCgDiTa2aPnFoGrDN0D9orbhK/i
+         Jc8+X3piTlhEjnMEDFBvEsmsvohtHHcVNzy1BnQlnr2BAD3g1UL6asBQ8frRli14k/
+         DM/cD2P8UkydA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Delyan Kratunov <delyank@fb.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, rostedt@goodmis.org,
-        mingo@redhat.com, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.18 36/93] uprobe: gate bpf call behind BPF_EVENTS
-Date:   Thu, 11 Aug 2022 11:41:30 -0400
-Message-Id: <20220811154237.1531313-36-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, daniel@iogearbox.net,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.18 48/93] libbpf: fix up few libbpf.map problems
+Date:   Thu, 11 Aug 2022 11:41:42 -0400
+Message-Id: <20220811154237.1531313-48-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220811154237.1531313-1-sashal@kernel.org>
 References: <20220811154237.1531313-1-sashal@kernel.org>
@@ -58,48 +57,54 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Delyan Kratunov <delyank@fb.com>
+From: Andrii Nakryiko <andrii@kernel.org>
 
-[ Upstream commit aca80dd95e20f1fa0daa212afc83c9fa0ad239e5 ]
+[ Upstream commit ab9a5a05dc480f8994eddd31093a8920b08ee71d ]
 
-The call into bpf from uprobes needs to be gated now that it doesn't use
-the trace_events.h helpers.
+Seems like we missed to add 2 APIs to libbpf.map and another API was
+misspelled. Fix it in libbpf.map.
 
-Randy found this as a randconfig build failure on linux-next [1].
-
-  [1]: https://lore.kernel.org/linux-next/2de99180-7d55-2fdf-134d-33198c27cc58@infradead.org/
-
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Delyan Kratunov <delyank@fb.com>
-Tested-by: Randy Dunlap <rdunlap@infradead.org>
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-Link: https://lore.kernel.org/r/cb8bfbbcde87ed5d811227a393ef4925f2aadb7b.camel@fb.com
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/r/20220627211527.2245459-16-andrii@kernel.org
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/trace_uprobe.c | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/lib/bpf/libbpf.map      | 3 ++-
+ tools/lib/bpf/libbpf_legacy.h | 4 ++--
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-index 9711589273cd..c3937c935239 100644
---- a/kernel/trace/trace_uprobe.c
-+++ b/kernel/trace/trace_uprobe.c
-@@ -1343,6 +1343,7 @@ static void __uprobe_perf_func(struct trace_uprobe *tu,
- 	int size, esize;
- 	int rctx;
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index dd35ee58bfaa..d2476c1aee8c 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -434,10 +434,11 @@ LIBBPF_0.7.0 {
+ 		bpf_xdp_detach;
+ 		bpf_xdp_query;
+ 		bpf_xdp_query_id;
++		btf_ext__raw_data;
+ 		libbpf_probe_bpf_helper;
+ 		libbpf_probe_bpf_map_type;
+ 		libbpf_probe_bpf_prog_type;
+-		libbpf_set_memlock_rlim_max;
++		libbpf_set_memlock_rlim;
+ } LIBBPF_0.6.0;
  
-+#ifdef CONFIG_BPF_EVENTS
- 	if (bpf_prog_array_valid(call)) {
- 		u32 ret;
- 
-@@ -1352,6 +1353,7 @@ static void __uprobe_perf_func(struct trace_uprobe *tu,
- 		if (!ret)
- 			return;
- 	}
-+#endif /* CONFIG_BPF_EVENTS */
- 
- 	esize = SIZEOF_TRACE_ENTRY(is_ret_probe(tu));
- 
+ LIBBPF_0.8.0 {
+diff --git a/tools/lib/bpf/libbpf_legacy.h b/tools/lib/bpf/libbpf_legacy.h
+index d7bcbd01f66f..a3503c02e4a9 100644
+--- a/tools/lib/bpf/libbpf_legacy.h
++++ b/tools/lib/bpf/libbpf_legacy.h
+@@ -71,8 +71,8 @@ enum libbpf_strict_mode {
+ 	 * first BPF program or map creation operation. This is done only if
+ 	 * kernel is too old to support memcg-based memory accounting for BPF
+ 	 * subsystem. By default, RLIMIT_MEMLOCK limit is set to RLIM_INFINITY,
+-	 * but it can be overriden with libbpf_set_memlock_rlim_max() API.
+-	 * Note that libbpf_set_memlock_rlim_max() needs to be called before
++	 * but it can be overriden with libbpf_set_memlock_rlim() API.
++	 * Note that libbpf_set_memlock_rlim() needs to be called before
+ 	 * the very first bpf_prog_load(), bpf_map_create() or bpf_object__load()
+ 	 * operation.
+ 	 */
 -- 
 2.35.1
 
