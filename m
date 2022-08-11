@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8B0B5906AA
-	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 21:07:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C5C5906CD
+	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 21:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236179AbiHKSzJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Aug 2022 14:55:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36018 "EHLO
+        id S236217AbiHKSzO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Aug 2022 14:55:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236110AbiHKSzH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Aug 2022 14:55:07 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9421B9E2E7;
-        Thu, 11 Aug 2022 11:55:06 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id q19so17233948pfg.8;
-        Thu, 11 Aug 2022 11:55:06 -0700 (PDT)
+        with ESMTP id S236204AbiHKSzJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Aug 2022 14:55:09 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C4459F0DF;
+        Thu, 11 Aug 2022 11:55:09 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id y1so12059669plb.2;
+        Thu, 11 Aug 2022 11:55:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc;
-        bh=lCwq5ptfVT6LA/OJ3S7YeqvIhPQ7ZVzO5sJK2ii/XJA=;
-        b=PuQje8v+mJN+T9RJtHJg/4IQ6kE3CnrzpBouN5NWQjC1Rkxwdtyp/to31A4iovW4Zx
-         PXmk1IBFBXidjjRwPUmJsbzS4ITqDd6Ennt96eyM4xXvkzNMSz1yNKN0xYNZfZIIlKVU
-         YqcK9ljrRJ0xn4vEiSqxeo4shdpYEtOrS1VgjZ97JBquwqlRjuxN1ntMsJyVIcUpQ9bx
-         zhxMdUbLjrGMJtnp8CO8l5qTyzcs90YF233w6TfVBs377aXQ1VQuyccCKFG8ME/fzjE1
-         GeqFj3lKggIMbD98X/vbvP7Xe0JLBT90RKjCh9bMznwqk+hd/4pCq0S+3Fsk4JjTKgEj
-         xh/A==
+        bh=A5A/jLi0WcII7JTh+ce1YUU4pX6WGLPaKY+QG9OJx+Y=;
+        b=hSSvWCNT0mhtq5O8MW2RmbvXGefSAXmpNlzwEDir3msLd9VqFSyHBJnZfsZyzyA8TP
+         oI+IIHJ5eIk5JofkBZuHDXKypYnccBMkYgJDAZqAGCxueTUp4InMZr2TKRzunMuu+TIW
+         RnwKy42VNe3x1Y+AjS+0oPHfMFSKRlI/wOzf4/NkRehJTVPyw0vuk14J5vFqsHJ5ygvA
+         WDc+6/TT+nOXvbtGJ/+6KSYkyjSUlE2/B+HuoyfU9h+plgocawo1YprSOxrZO5HmYNfh
+         z+ccZFeQkqnKMdifvu+eGPgQKrYslJi5cWUWKYsC8+FhDZIuvuT0Qql1aa1H6moUnLdL
+         MijA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc;
-        bh=lCwq5ptfVT6LA/OJ3S7YeqvIhPQ7ZVzO5sJK2ii/XJA=;
-        b=VAHy5MCdbzodV4rCflaJKdKjSbgWDOTdoij/z8jc0U5nFjNB6QKNDoRFwUHGLwBajb
-         cyTm32/V5gCoGaOyIrvVB/RN0OZwx2TRTMxaN29qJ314yoiGYo8aUjdj7LiIfUiT+rxZ
-         4tlyURsLD4eOBST3tILSeJdNypfNO3Wp30pV9ppn34uxezli7lQnILTH9pyg3nNCidk7
-         8F3zTkMgIY6bJPJo3avYMX28mOsifa31diWR3Ul8ek0vvaGtocprQZ2RAfos/cOeJqPt
-         fS9pSFkrMcYOZbovSdo09z2vVCUnf4s10dM3tItfrZjSFQiKTN0gMLtuJe9HjF5vDJBX
-         +iSA==
-X-Gm-Message-State: ACgBeo1MnTw0BuvQXmIwBXwptmI3LKWtORfOrbdtme7h6rhimi8b1vxu
-        bOf7yEEwoiNfLF1kJ6ZL554=
-X-Google-Smtp-Source: AA6agR6CzMsUihjP+aqaSObhyzOI/xQIfPZO3KdsCjV3xCSULFBtq6xYSXZnZojXiCGKh/k1adIfNg==
-X-Received: by 2002:a63:8bc8:0:b0:41c:6800:d4e9 with SMTP id j191-20020a638bc8000000b0041c6800d4e9mr300643pge.45.1660244105953;
-        Thu, 11 Aug 2022 11:55:05 -0700 (PDT)
+        bh=A5A/jLi0WcII7JTh+ce1YUU4pX6WGLPaKY+QG9OJx+Y=;
+        b=3Y5GCm3vMeOxN0EFQzl3SbH5TZHURZ75iR8/78+mVx4GVjsTCPBNn83oAp0aW6MNBl
+         UyQKF/wm7hkm1iwcX39AcV9iDtoJD5C9D6T1n5fltOoR8N7c0QqSW6M2OV8xByYU3pSM
+         5IAv9esnm2SNhrdUibHaIHpiNY0Yihqns5iLlm5wfaoN+jXd/eNQAhL5jU5nydd10w7+
+         uqZLLpc4CbJ7pc6VAmcidNwxu3K55mgCfYFhRh/FDWLp9asA1lfasZR76htTQjzNGJ1W
+         HPi6OY9lXGD5iqq+IR1C8I2KqwhoyWcG/NsbVsKGzqxx8ojrZJ8CfejlUok6eCtWKyTP
+         3dIw==
+X-Gm-Message-State: ACgBeo0qi+63sWnOetGv4G3MV9sa6yr7VcktxRaWXf7hWa6pbPidjBcn
+        GqZAsyGhEZBVGd85caoWB6M=
+X-Google-Smtp-Source: AA6agR4i2jONflU/i+NZC+0uurdYePRiA7PI9bX3pNhfGJJCx1FdcYBFLY8rq3Qn/qIm5DAsOQJPeA==
+X-Received: by 2002:a17:902:e84d:b0:16d:c9a0:e502 with SMTP id t13-20020a170902e84d00b0016dc9a0e502mr529747plg.125.1660244108465;
+        Thu, 11 Aug 2022 11:55:08 -0700 (PDT)
 Received: from youngsil.svl.corp.google.com ([2620:15c:2d4:203:cefb:475d:dd6d:a1e2])
-        by smtp.gmail.com with ESMTPSA id r12-20020a6560cc000000b0041975999455sm66314pgv.75.2022.08.11.11.55.04
+        by smtp.gmail.com with ESMTPSA id r12-20020a6560cc000000b0041975999455sm66314pgv.75.2022.08.11.11.55.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Aug 2022 11:55:05 -0700 (PDT)
+        Thu, 11 Aug 2022 11:55:07 -0700 (PDT)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -60,9 +60,9 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Hao Luo <haoluo@google.com>,
         Blake Jones <blakejones@google.com>,
         Milian Wolff <milian.wolff@kdab.com>, bpf@vger.kernel.org
-Subject: [PATCH 3/4] perf offcpu: Track child processes
-Date:   Thu, 11 Aug 2022 11:54:55 -0700
-Message-Id: <20220811185456.194721-4-namhyung@kernel.org>
+Subject: [PATCH 4/4] perf offcpu: Update offcpu test for child process
+Date:   Thu, 11 Aug 2022 11:54:56 -0700
+Message-Id: <20220811185456.194721-5-namhyung@kernel.org>
 X-Mailer: git-send-email 2.37.1.595.g718a3a8f04-goog
 In-Reply-To: <20220811185456.194721-1-namhyung@kernel.org>
 References: <20220811185456.194721-1-namhyung@kernel.org>
@@ -79,106 +79,119 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When -p option used or a workload is given, it needs to handle child
-processes.  The perf_event can inherit those task events
-automatically.  We can add a new BPF program in task_newtask
-tracepoint to track child processes.
+Record off-cpu data with perf bench sched messaging workload and count
+the number of offcpu-time events.  Also update the test script not to
+run next tests if failed already and revise the error messages.
 
-Before:
-  $ sudo perf record --off-cpu -- perf bench sched messaging
-  $ sudo perf report --stat | grep -A1 offcpu
-  offcpu-time stats:
-            SAMPLE events:        1
-
-After:
-  $ sudo perf record -a --off-cpu -- perf bench sched messaging
-  $ sudo perf report --stat | grep -A1 offcpu
-  offcpu-time stats:
-            SAMPLE events:      856
+  $ sudo ./perf test offcpu -v
+   88: perf record offcpu profiling tests                              :
+  --- start ---
+  test child forked, pid 344780
+  Checking off-cpu privilege
+  Basic off-cpu test
+  Basic off-cpu test [Success]
+  Child task off-cpu test
+  Child task off-cpu test [Success]
+  test child finished with 0
+  ---- end ----
+  perf record offcpu profiling tests: Ok
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/bpf_off_cpu.c          |  7 ++++++
- tools/perf/util/bpf_skel/off_cpu.bpf.c | 30 ++++++++++++++++++++++++++
- 2 files changed, 37 insertions(+)
+ tools/perf/tests/shell/record_offcpu.sh | 57 ++++++++++++++++++++++---
+ 1 file changed, 50 insertions(+), 7 deletions(-)
 
-diff --git a/tools/perf/util/bpf_off_cpu.c b/tools/perf/util/bpf_off_cpu.c
-index f7ee0c7a53f0..c257813e674e 100644
---- a/tools/perf/util/bpf_off_cpu.c
-+++ b/tools/perf/util/bpf_off_cpu.c
-@@ -17,6 +17,7 @@
- #include "bpf_skel/off_cpu.skel.h"
- 
- #define MAX_STACKS  32
-+#define MAX_PROC  4096
- /* we don't need actual timestamp, just want to put the samples at last */
- #define OFF_CPU_TIMESTAMP  (~0ull << 32)
- 
-@@ -164,10 +165,16 @@ int off_cpu_prepare(struct evlist *evlist, struct target *target,
- 
- 			ntasks++;
- 		}
-+
-+		if (ntasks < MAX_PROC)
-+			ntasks = MAX_PROC;
-+
- 		bpf_map__set_max_entries(skel->maps.task_filter, ntasks);
- 	} else if (target__has_task(target)) {
- 		ntasks = perf_thread_map__nr(evlist->core.threads);
- 		bpf_map__set_max_entries(skel->maps.task_filter, ntasks);
-+	} else if (target__none(target)) {
-+		bpf_map__set_max_entries(skel->maps.task_filter, MAX_PROC);
- 	}
- 
- 	if (evlist__first(evlist)->cgrp) {
-diff --git a/tools/perf/util/bpf_skel/off_cpu.bpf.c b/tools/perf/util/bpf_skel/off_cpu.bpf.c
-index 143a8b7acf87..c4ba2bcf179f 100644
---- a/tools/perf/util/bpf_skel/off_cpu.bpf.c
-+++ b/tools/perf/util/bpf_skel/off_cpu.bpf.c
-@@ -12,6 +12,9 @@
- #define TASK_INTERRUPTIBLE	0x0001
- #define TASK_UNINTERRUPTIBLE	0x0002
- 
-+/* create a new thread */
-+#define CLONE_THREAD  0x10000
-+
- #define MAX_STACKS   32
- #define MAX_ENTRIES  102400
- 
-@@ -220,6 +223,33 @@ static int off_cpu_stat(u64 *ctx, struct task_struct *prev,
- 	return 0;
+diff --git a/tools/perf/tests/shell/record_offcpu.sh b/tools/perf/tests/shell/record_offcpu.sh
+index 96e0739f7478..d2eba583a2ac 100755
+--- a/tools/perf/tests/shell/record_offcpu.sh
++++ b/tools/perf/tests/shell/record_offcpu.sh
+@@ -19,20 +19,26 @@ trap_cleanup() {
  }
+ trap trap_cleanup exit term int
  
-+SEC("tp_btf/task_newtask")
-+int on_newtask(u64 *ctx)
-+{
-+	struct task_struct *task;
-+	u64 clone_flags;
-+	u32 pid;
-+	u8 val = 1;
+-test_offcpu() {
+-  echo "Basic off-cpu test"
++test_offcpu_priv() {
++  echo "Checking off-cpu privilege"
 +
-+	if (!uses_tgid)
-+		return 0;
-+
-+	task = (struct task_struct *)bpf_get_current_task();
-+
-+	pid = BPF_CORE_READ(task, tgid);
-+	if (!bpf_map_lookup_elem(&task_filter, &pid))
-+		return 0;
-+
-+	task = (struct task_struct *)ctx[0];
-+	clone_flags = ctx[1];
-+
-+	pid = task->tgid;
-+	if (!(clone_flags & CLONE_THREAD))
-+		bpf_map_update_elem(&task_filter, &pid, &val, BPF_NOEXIST);
-+
-+	return 0;
+   if [ `id -u` != 0 ]
+   then
+-    echo "Basic off-cpu test [Skipped permission]"
++    echo "off-cpu test [Skipped permission]"
+     err=2
+     return
+   fi
+-  if perf record --off-cpu -o ${perfdata} --quiet true 2>&1 | grep BUILD_BPF_SKEL
++  if perf record --off-cpu -o /dev/null --quiet true 2>&1 | grep BUILD_BPF_SKEL
+   then
+-    echo "Basic off-cpu test [Skipped missing BPF support]"
++    echo "off-cpu test [Skipped missing BPF support]"
+     err=2
+     return
+   fi
 +}
 +
- SEC("tp_btf/sched_switch")
- int on_switch(u64 *ctx)
- {
++test_offcpu_basic() {
++  echo "Basic off-cpu test"
++
+   if ! perf record --off-cpu -e dummy -o ${perfdata} sleep 1 2> /dev/null
+   then
+     echo "Basic off-cpu test [Failed record]"
+@@ -41,7 +47,7 @@ test_offcpu() {
+   fi
+   if ! perf evlist -i ${perfdata} | grep -q "offcpu-time"
+   then
+-    echo "Basic off-cpu test [Failed record]"
++    echo "Basic off-cpu test [Failed no event]"
+     err=1
+     return
+   fi
+@@ -54,7 +60,44 @@ test_offcpu() {
+   echo "Basic off-cpu test [Success]"
+ }
+ 
+-test_offcpu
++test_offcpu_child() {
++  echo "Child task off-cpu test"
++
++  # perf bench sched messaging creates 400 processes
++  if ! perf record --off-cpu -e dummy -o ${perfdata} -- \
++    perf bench sched messaging -g 10 > /dev/null 2&>1
++  then
++    echo "Child task off-cpu test [Failed record]"
++    err=1
++    return
++  fi
++  if ! perf evlist -i ${perfdata} | grep -q "offcpu-time"
++  then
++    echo "Child task off-cpu test [Failed no event]"
++    err=1
++    return
++  fi
++  # each process waits for read and write, so it should be more than 800 events
++  if ! perf report -i ${perfdata} -s comm -q -n -t ';' --percent-limit=90 | \
++    awk -F ";" '{ if (NF > 3 && int($3) < 800) exit 1; }'
++  then
++    echo "Child task off-cpu test [Failed invalid output]"
++    err=1
++    return
++  fi
++  echo "Child task off-cpu test [Success]"
++}
++
++
++test_offcpu_priv
++
++if [ $err = 0 ]; then
++  test_offcpu_basic
++fi
++
++if [ $err = 0 ]; then
++  test_offcpu_child
++fi
+ 
+ cleanup
+ exit $err
 -- 
 2.37.1.595.g718a3a8f04-goog
 
