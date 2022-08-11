@@ -2,84 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 132D658FAD2
-	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 12:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9694F58FBD6
+	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 14:03:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234549AbiHKKnK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Aug 2022 06:43:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48910 "EHLO
+        id S235103AbiHKMDF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 11 Aug 2022 08:03:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234533AbiHKKnJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Aug 2022 06:43:09 -0400
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A336E2E5
-        for <bpf@vger.kernel.org>; Thu, 11 Aug 2022 03:43:08 -0700 (PDT)
-Received: by mail-io1-f72.google.com with SMTP id u5-20020a6b4905000000b00681e48dbd92so9533423iob.21
-        for <bpf@vger.kernel.org>; Thu, 11 Aug 2022 03:43:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc;
-        bh=lEX60Cbcazn6R6L/6XwKBw23ViseQXIZ1Z7ZlktS5UU=;
-        b=py2wFaCgDKRX5Nrpe12sAaswRaTFwgRaDYi2vTscxxuJ2uMQQtunHAxE2lTAv+Nxr2
-         cQqW7rK4FQK5f3fUv/2AOLJ1f3sUZCFk24VkqXYCbMlXEkmRv1DV2uO2c8IS2V8VEoxR
-         gbp/Fop6+IeE9fHKWOhgdCV00DB3taQrZOZjE6YQrMSufieqPkexCUpO6iggocjnYVk2
-         iom0j5xOXlwiyS2AW4B8oj1RPwHpDXJ2ryxpM9JmOYDQzios9vv6akXWObuThuYF3s92
-         fCAVV3kMP2CKgeucvDUAOI8RqbmY69hsAt4uY9pHryUA1MGpitpYI3evCGhoVIrTJEJF
-         HtHA==
-X-Gm-Message-State: ACgBeo1D7/FwKHUMeXpH63UXQEgadqeNVDRF/AyPdV4hPvkOwogkUBuX
-        JFM3nTyl6TfulSzAAEIoiqXCvz2/poGL3+7MgdePMjzMOj8e
-X-Google-Smtp-Source: AA6agR7Hi8B5W6WKGtAFwNNK4FUnHOGc4ICUBkEfs2/hpQ+PtJ8uOlWMicG2kCUmtKciLXR1skIHdYUjGApnwnJNYP1JTBqG2pa1
+        with ESMTP id S235106AbiHKMDD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Aug 2022 08:03:03 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 251798A7D9;
+        Thu, 11 Aug 2022 05:03:00 -0700 (PDT)
+Received: from fraeml709-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4M3QNT69nnz67M1h;
+        Thu, 11 Aug 2022 20:00:09 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml709-chm.china.huawei.com (10.206.15.37) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Thu, 11 Aug 2022 14:02:57 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2375.024;
+ Thu, 11 Aug 2022 14:02:57 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "martin.lau@linux.dev" <martin.lau@linux.dev>,
+        "song@kernel.org" <song@kernel.org>, "yhs@fb.com" <yhs@fb.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "sdf@google.com" <sdf@google.com>,
+        "haoluo@google.com" <haoluo@google.com>,
+        "jolsa@kernel.org" <jolsa@kernel.org>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "dhowells@redhat.com" <dhowells@redhat.com>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "paul@paul-moore.com" <paul@paul-moore.com>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "serge@hallyn.com" <serge@hallyn.com>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "deso@posteo.net" <deso@posteo.net>
+Subject: RE: [PATCH v10 5/9] bpf: Add bpf_lookup_*_key() and bpf_key_put()
+ kfuncs
+Thread-Topic: [PATCH v10 5/9] bpf: Add bpf_lookup_*_key() and bpf_key_put()
+ kfuncs
+Thread-Index: AQHYrNrI3xbltKneMkianwQkzvowha2ohoeAgADLvDCAAEKEEA==
+Date:   Thu, 11 Aug 2022 12:02:57 +0000
+Message-ID: <f7d401d6ec6c47cbb358046a2d3ca5e8@huawei.com>
+References: <20220810165932.2143413-1-roberto.sassu@huawei.com>
+ <20220810165932.2143413-6-roberto.sassu@huawei.com>
+ <20220810213351.wm5utltm67q4i6lu@MacBook-Pro-3.local.dhcp.thefacebook.com>
+ <2415f4931a364541b2e6d14a8185ffbb@huawei.com>
+In-Reply-To: <2415f4931a364541b2e6d14a8185ffbb@huawei.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.81.209.212]
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2490:b0:343:31f3:b09f with SMTP id
- x16-20020a056638249000b0034331f3b09fmr5093263jat.247.1660214587687; Thu, 11
- Aug 2022 03:43:07 -0700 (PDT)
-Date:   Thu, 11 Aug 2022 03:43:07 -0700
-In-Reply-To: <000000000000a256df05e39a74e7@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c0089905e5f4d452@google.com>
-Subject: Re: [syzbot] inconsistent lock state in find_vmap_area
-From:   syzbot <syzbot+8d19062486784d15dda9@syzkaller.appspotmail.com>
-To:     alan.maguire@oracle.com, andrii@kernel.org, ast@kernel.org,
-        bp@alien8.de, bpf@vger.kernel.org, daniel@iogearbox.net,
-        dave.hansen@linux.intel.com, gor@linux.ibm.com, hpa@zytor.com,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        luto@kernel.org, mingo@redhat.com, netdev@vger.kernel.org,
-        peterz@infradead.org, rdunlap@infradead.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        x86@kernel.org, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_DIGITS,
-        FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot has bisected this issue to:
+> From: Roberto Sassu [mailto:roberto.sassu@huawei.com]
+> Sent: Thursday, August 11, 2022 9:47 AM
+> > From: Alexei Starovoitov [mailto:alexei.starovoitov@gmail.com]
+> > Sent: Wednesday, August 10, 2022 11:34 PM
+> > On Wed, Aug 10, 2022 at 06:59:28PM +0200, Roberto Sassu wrote:
+> > > +
+> > > +static int __init bpf_key_sig_kfuncs_init(void)
+> > > +{
+> > > +	int ret;
+> > > +
+> > > +	ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING,
+> > > +					&bpf_key_sig_kfunc_set);
+> > > +	if (!ret)
+> > > +		return 0;
+> > > +
+> > > +	return register_btf_kfunc_id_set(BPF_PROG_TYPE_LSM,
+> > > +					 &bpf_key_sig_kfunc_set);
+> >
+> > Isn't this a watery water ?
+> > Don't you have a patch 1 ?
+> > What am I missing ?
+> 
+> Uhm, yes. I had doubts too. That was what also KP did.
+> 
+> It makes sense to register once, since we mapped LSM to
+> TRACING.
+> 
+> Will resend only this patch. And I will figure out why CI failed.
 
-commit 43174f0d4597325cb91f1f1f55263eb6e6101036
-Author: Alan Maguire <alan.maguire@oracle.com>
-Date:   Mon Nov 29 10:00:40 2021 +0000
+Adding in CC Daniel Müller, which worked on this.
 
-    libbpf: Silence uninitialized warning/error in btf_dump_dump_type_data
+I think the issue is that some kernel options are set to =m.
+This causes the CI to miss all kernel modules, since they are
+not copied to the virtual machine that executes the tests.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1350eb05080000
-start commit:   200e340f2196 Merge tag 'pull-work.dcache' of git://git.ker..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=10d0eb05080000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1750eb05080000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a3f4d6985d3164cd
-dashboard link: https://syzkaller.appspot.com/bug?extid=8d19062486784d15dda9
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1252c5a7080000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1160a8e3080000
+I'm testing this patch:
 
-Reported-by: syzbot+8d19062486784d15dda9@syzkaller.appspotmail.com
-Fixes: 43174f0d4597 ("libbpf: Silence uninitialized warning/error in btf_dump_dump_type_data")
+https://github.com/robertosassu/libbpf-ci/commit/b665e001b58c4ddb792a2a68098ea5dc6936b15c
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Roberto
