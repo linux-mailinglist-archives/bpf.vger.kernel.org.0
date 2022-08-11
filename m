@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D24358F9D3
-	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 11:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0538158F9D4
+	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 11:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234807AbiHKJPp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Aug 2022 05:15:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57436 "EHLO
+        id S234929AbiHKJPt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Aug 2022 05:15:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234935AbiHKJPg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Aug 2022 05:15:36 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A127F12613
-        for <bpf@vger.kernel.org>; Thu, 11 Aug 2022 02:15:35 -0700 (PDT)
+        with ESMTP id S234934AbiHKJPr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Aug 2022 05:15:47 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B1F2F675
+        for <bpf@vger.kernel.org>; Thu, 11 Aug 2022 02:15:46 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 3F60FB81F99
-        for <bpf@vger.kernel.org>; Thu, 11 Aug 2022 09:15:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DF5CC433C1;
-        Thu, 11 Aug 2022 09:15:29 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 51F31615C3
+        for <bpf@vger.kernel.org>; Thu, 11 Aug 2022 09:15:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79149C433C1;
+        Thu, 11 Aug 2022 09:15:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660209333;
-        bh=PG8D+86ya+A02xuGcQ2gR18cMTOZfRb0+fGYe6uGB4o=;
-        h=From:To:Cc:Subject:Date:From;
-        b=CJ7bpOs/Zx8VLOcjGDQzZatP8qFIBLhZ2Ym6AGjARFcatCDXmlY+Ybuk+jMl1+a0/
-         nL4hzA+v3JDW9NMMKxpfrYaZfKea4VyxQgPPtL03rMBbFHYUt06T0bpQsiaCzvvzKe
-         /X/qS6RZRPixaGzCtD84nYSfiXLcsjppP6OgQHxupVmcDIJQQkyuW7e4J55Vaz1+lG
-         2f0AMsbPsGsIJId2T4k9Ff9YRXcDK5Zig0nc00TOe8Q2jg2zBCO8hYYfjvvHIzUt5f
-         7lrHcwwRnzRgIGwt3iF0bcqMuBVkI8252ZT+POkJSuXUafVKS8qqW9pp2JViV8J0Po
-         D80dp6calnB7A==
+        s=k20201202; t=1660209345;
+        bh=be1aKwDzQbVN1bGlLIykUjeGOVF3AW7KX5vh7AD6858=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ZxqObgFvVMMC/ibhxQYGZl/8HnLe3+iQAQW5CIX5AEBaLYaX7SGc+4Vklwqdn2nox
+         omF1yvI6pPWMfd5YnEkEGlMeiTAE35GPxeRecAj+4DC6ASRbVmYPFMzUvrTSBxnfWz
+         67LGGZ8Ic+07PLlFBPjm10yBZe/zON2+yNztYNJA0SZ4214RvMPhLR2Fij0n4ruHQG
+         MDCZeeTEryN1crC87ilzAIEdVzuoMgc+NWd6lWnjO5FB/0g6rBzp/s9Wipkr+6KABl
+         Xf3A/i8OgyolcOIhDbGZ8FDFscGsyQTS8bpvKK7xPaz78hGh7qjUyzb9d5BY0Xiq1M
+         3tCPoxwYWsp6A==
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -43,10 +43,12 @@ Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
         Hao Luo <haoluo@google.com>,
         Peter Zijlstra <peterz@infradead.org>,
         "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Subject: [PATCHv2 bpf-next 0/6] bpf: Fixes for CONFIG_X86_KERNEL_IBT 
-Date:   Thu, 11 Aug 2022 11:15:20 +0200
-Message-Id: <20220811091526.172610-1-jolsa@kernel.org>
+Subject: [PATCHv2 bpf-next 1/6] kprobes: Add new KPROBE_FLAG_ON_FUNC_ENTRY kprobe flag
+Date:   Thu, 11 Aug 2022 11:15:21 +0200
+Message-Id: <20220811091526.172610-2-jolsa@kernel.org>
 X-Mailer: git-send-email 2.37.1
+In-Reply-To: <20220811091526.172610-1-jolsa@kernel.org>
+References: <20220811091526.172610-1-jolsa@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -59,47 +61,54 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-hi,
-Martynas reported bpf_get_func_ip returning +4 address when
-CONFIG_X86_KERNEL_IBT option is enabled and I found there are
-some failing bpf tests when this option is enabled.
+Adding KPROBE_FLAG_ON_FUNC_ENTRY kprobe flag to indicate that
+attach address is on function entry. This is used in following
+changes in get_func_ip helper to return correct function address.
 
-The CONFIG_X86_KERNEL_IBT option adds endbr instruction at the
-function entry, so the idea is to 'fix' entry ip for kprobe_multi
-and trampoline probes, because they are placed on the function
-entry.
-
-v2 changes:
-  - change kprobes get_func_ip to return zero for kprobes
-    attached within the function body [Andrii]
-  - detect IBT config and properly test kprobe with offset 
-    [Andrii]
-
-v1 changes:
-  - read previous instruction in kprobe_multi link handler
-    and adjust entry_ip for CONFIG_X86_KERNEL_IBT option
-  - split first patch into 2 separate changes
-  - update changelogs
-
-thanks,
-jirka
-
-
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
-Jiri Olsa (6):
-      kprobes: Add new KPROBE_FLAG_ON_FUNC_ENTRY kprobe flag
-      ftrace: Keep the resolved addr in kallsyms_callback
-      bpf: Use given function address for trampoline ip arg
-      bpf: Adjust kprobe_multi entry_ip for CONFIG_X86_KERNEL_IBT
-      bpf: Return value in kprobe get_func_ip only for entry address
-      selftests/bpf: Fix get_func_ip offset test for CONFIG_X86_KERNEL_IBT
+ include/linux/kprobes.h | 1 +
+ kernel/kprobes.c        | 6 +++++-
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
- arch/x86/net/bpf_jit_comp.c                               |  9 ++++-----
- include/linux/kprobes.h                                   |  1 +
- kernel/kprobes.c                                          |  6 +++++-
- kernel/trace/bpf_trace.c                                  | 15 ++++++++++++++-
- kernel/trace/ftrace.c                                     |  3 +--
- tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c | 62 +++++++++++++++++++++++++++++++++++++++++++++++++++-----------
- tools/testing/selftests/bpf/progs/get_func_ip_test.c      | 22 ++++++++++------------
- tools/testing/selftests/bpf/progs/kprobe_multi.c          |  4 +---
- 8 files changed, 87 insertions(+), 35 deletions(-)
+diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+index 55041d2f884d..a0b92be98984 100644
+--- a/include/linux/kprobes.h
++++ b/include/linux/kprobes.h
+@@ -103,6 +103,7 @@ struct kprobe {
+ 				   * this flag is only for optimized_kprobe.
+ 				   */
+ #define KPROBE_FLAG_FTRACE	8 /* probe is using ftrace */
++#define KPROBE_FLAG_ON_FUNC_ENTRY	16 /* probe is on the function entry */
+ 
+ /* Has this kprobe gone ? */
+ static inline bool kprobe_gone(struct kprobe *p)
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index f214f8c088ed..a6b1b5c49d92 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -1605,9 +1605,10 @@ int register_kprobe(struct kprobe *p)
+ 	struct kprobe *old_p;
+ 	struct module *probed_mod;
+ 	kprobe_opcode_t *addr;
++	bool on_func_entry;
+ 
+ 	/* Adjust probe address from symbol */
+-	addr = kprobe_addr(p);
++	addr = _kprobe_addr(p->addr, p->symbol_name, p->offset, &on_func_entry);
+ 	if (IS_ERR(addr))
+ 		return PTR_ERR(addr);
+ 	p->addr = addr;
+@@ -1627,6 +1628,9 @@ int register_kprobe(struct kprobe *p)
+ 
+ 	mutex_lock(&kprobe_mutex);
+ 
++	if (on_func_entry)
++		p->flags |= KPROBE_FLAG_ON_FUNC_ENTRY;
++
+ 	old_p = get_kprobe(p->addr);
+ 	if (old_p) {
+ 		/* Since this may unoptimize 'old_p', locking 'text_mutex'. */
+-- 
+2.37.1
+
