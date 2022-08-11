@@ -2,45 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 637FE5902E1
-	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 18:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 814F9590319
+	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 18:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235482AbiHKQOE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Aug 2022 12:14:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49598 "EHLO
+        id S237623AbiHKQSu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Aug 2022 12:18:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237526AbiHKQNq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Aug 2022 12:13:46 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E639CA9253;
-        Thu, 11 Aug 2022 08:58:08 -0700 (PDT)
+        with ESMTP id S237585AbiHKQSI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Aug 2022 12:18:08 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE7D2381;
+        Thu, 11 Aug 2022 09:00:18 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 92539B82123;
-        Thu, 11 Aug 2022 15:58:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32046C433D6;
-        Thu, 11 Aug 2022 15:58:05 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 209DB60FA0;
+        Thu, 11 Aug 2022 16:00:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68ADBC433D6;
+        Thu, 11 Aug 2022 16:00:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660233486;
-        bh=tK3Q8kFUWPGzY3BXRw5B0T5PL6JdwDl2HzcZI2NlwuQ=;
+        s=k20201202; t=1660233617;
+        bh=wsTmHiDUzkGL2xsjdamRGkdWY24nLy7FdLJ7TQ0P5lA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OBhhzqDLx9FBacAaof6BHwEazyQvzk/gvpx8A7BwJvcoDkmXmpMV021wHOtCcFIWv
-         j1h4hZrA5OvysHzPyAcW8RCEITntNia4GmR8rC/0ZJM5j4WA0ZJai2UNBpeeD0xmAu
-         RqJQxJKGUvFr+9bGds2Q0n6XfCFaHbF3/Tne8+hFIrGVdyYIYDWir9qAhK07reNTFx
-         RnVEhEsZZ4UI4QHRU7TtYZT9acw9vfFX1+4qJck2Pz5GJozfkYW4Km9tjixMYM5u0j
-         RyqAf1othQjYy3I5a4Mm9K56f0T5KDedqJJeZPHZ7gPe4JCr4aVvwYDLYJW6DJcIeM
-         mVgH39JVKc6Ig==
+        b=dSSFQqc3O241q/m9Qyd2b0AjV1+uCOGRUR4W1Ent/Me7wNoqw8pRQsMZwfRHCm1ZY
+         HnWhU0Z4nk3Gf1VOvzVCu/sJAJ/+HtGs86oS0Xm6Q6LGTe6bCoFhS6Lk8E98pII1Fh
+         rvqZsLKYpmYJHuDDJvLsWVGwcU34GlZup2aRfeq8geZdLdbPxLPrMvKYDVhuVLMXsD
+         wURsotTfxBSPPHKGe/cBP5cCpkX8YKSm8JFuCVnGlBkbpD0mFwd+bkciQ2blgFUh/K
+         2h4Ie+EOd1OKX7RpnRRQWkkim6VN5eHi1xeoKiYrEgLeec2IgwhI1tNMZ3AmgToJTP
+         8tWWdU038aUFg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andrii@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
+Cc:     Delyan Kratunov <delyank@fb.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, daniel@iogearbox.net,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 14/69] libbpf: Fix an error in 64bit relocation value computation
-Date:   Thu, 11 Aug 2022 11:55:23 -0400
-Message-Id: <20220811155632.1536867-14-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, rostedt@goodmis.org,
+        mingo@redhat.com, bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 31/69] uprobe: gate bpf call behind BPF_EVENTS
+Date:   Thu, 11 Aug 2022 11:55:40 -0400
+Message-Id: <20220811155632.1536867-31-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220811155632.1536867-1-sashal@kernel.org>
 References: <20220811155632.1536867-1-sashal@kernel.org>
@@ -58,48 +58,48 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Yonghong Song <yhs@fb.com>
+From: Delyan Kratunov <delyank@fb.com>
 
-[ Upstream commit b58b2b3a31228bd9aaed9b96e9452dafd0d46024 ]
+[ Upstream commit aca80dd95e20f1fa0daa212afc83c9fa0ad239e5 ]
 
-Currently, the 64bit relocation value in the instruction
-is computed as follows:
-  __u64 imm = insn[0].imm + ((__u64)insn[1].imm << 32)
+The call into bpf from uprobes needs to be gated now that it doesn't use
+the trace_events.h helpers.
 
-Suppose insn[0].imm = -1 (0xffffffff) and insn[1].imm = 1.
-With the above computation, insn[0].imm will first sign-extend
-to 64bit -1 (0xffffffffFFFFFFFF) and then add 0x1FFFFFFFF,
-producing incorrect value 0xFFFFFFFF. The correct value
-should be 0x1FFFFFFFF.
+Randy found this as a randconfig build failure on linux-next [1].
 
-Changing insn[0].imm to __u32 first will prevent 64bit sign
-extension and fix the issue. Merging high and low 32bit values
-also changed from '+' to '|' to be consistent with other
-similar occurences in kernel and libbpf.
+  [1]: https://lore.kernel.org/linux-next/2de99180-7d55-2fdf-134d-33198c27cc58@infradead.org/
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: Dave Marchevsky <davemarchevsky@fb.com>
-Signed-off-by: Yonghong Song <yhs@fb.com>
-Link: https://lore.kernel.org/r/20220607062610.3717378-1-yhs@fb.com
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Delyan Kratunov <delyank@fb.com>
+Tested-by: Randy Dunlap <rdunlap@infradead.org>
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Link: https://lore.kernel.org/r/cb8bfbbcde87ed5d811227a393ef4925f2aadb7b.camel@fb.com
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/relo_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/trace/trace_uprobe.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/tools/lib/bpf/relo_core.c b/tools/lib/bpf/relo_core.c
-index 4016ed492d0c..1d65b47c0779 100644
---- a/tools/lib/bpf/relo_core.c
-+++ b/tools/lib/bpf/relo_core.c
-@@ -1015,7 +1015,7 @@ static int bpf_core_patch_insn(const char *prog_name, struct bpf_insn *insn,
- 			return -EINVAL;
- 		}
+diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+index 78ec1c16ccf4..798c99994e2a 100644
+--- a/kernel/trace/trace_uprobe.c
++++ b/kernel/trace/trace_uprobe.c
+@@ -1352,6 +1352,7 @@ static void __uprobe_perf_func(struct trace_uprobe *tu,
+ 	int size, esize;
+ 	int rctx;
  
--		imm = insn[0].imm + ((__u64)insn[1].imm << 32);
-+		imm = (__u32)insn[0].imm | ((__u64)insn[1].imm << 32);
- 		if (res->validate && imm != orig_val) {
- 			pr_warn("prog '%s': relo #%d: unexpected insn #%d (LDIMM64) value: got %llu, exp %u -> %u\n",
- 				prog_name, relo_idx,
++#ifdef CONFIG_BPF_EVENTS
+ 	if (bpf_prog_array_valid(call)) {
+ 		u32 ret;
+ 
+@@ -1361,6 +1362,7 @@ static void __uprobe_perf_func(struct trace_uprobe *tu,
+ 		if (!ret)
+ 			return;
+ 	}
++#endif /* CONFIG_BPF_EVENTS */
+ 
+ 	esize = SIZEOF_TRACE_ENTRY(is_ret_probe(tu));
+ 
 -- 
 2.35.1
 
