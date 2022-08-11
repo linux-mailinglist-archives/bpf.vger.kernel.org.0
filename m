@@ -2,230 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4097D58F9DC
-	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 11:16:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 132D658FAD2
+	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 12:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234334AbiHKJQp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Aug 2022 05:16:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58970 "EHLO
+        id S234549AbiHKKnK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Aug 2022 06:43:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234846AbiHKJQp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Aug 2022 05:16:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 801DF3DBCD
-        for <bpf@vger.kernel.org>; Thu, 11 Aug 2022 02:16:44 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0EF0F615CE
-        for <bpf@vger.kernel.org>; Thu, 11 Aug 2022 09:16:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B88FAC433D6;
-        Thu, 11 Aug 2022 09:16:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660209403;
-        bh=nBViZrcRTcxtrC/Hi81Cy8+sjNFVaHklVbGmZsQipdg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LaCRVS9oChX/bgPKhkmG793RgM5hf0zrG33g6G4JMe1wU1F2HubEAnftHACwm3PCZ
-         Spe55wIodjqykh8QfJwHwEVvR4MRPGoqxeztEe9uR/+iuG8qlXGtZ1EYmaeVj9P6Rr
-         eFo4dQxi8mLcc6072C8/p7UERmA5RhwpdKBStSO3XVL0e8XiPjplxqwv+VAAXBTKPi
-         +R4AwGAxo4fMwUaDS14lZiCB0MhX2fxST3kgiElsMAXpqdm+0kgmDblLdi40vAUtHM
-         4jis9zLQ1UM9ocNFP1vlOtjBG7AS3RTaDPC9bhZawUBMypDzCfxloXi7sBWOKs9Dpa
-         Y+QTu5WqNJIvA==
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Subject: [PATCHv2 bpf-next 6/6] selftests/bpf: Fix get_func_ip offset test for CONFIG_X86_KERNEL_IBT
-Date:   Thu, 11 Aug 2022 11:15:26 +0200
-Message-Id: <20220811091526.172610-7-jolsa@kernel.org>
-X-Mailer: git-send-email 2.37.1
-In-Reply-To: <20220811091526.172610-1-jolsa@kernel.org>
-References: <20220811091526.172610-1-jolsa@kernel.org>
+        with ESMTP id S234533AbiHKKnJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Aug 2022 06:43:09 -0400
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A336E2E5
+        for <bpf@vger.kernel.org>; Thu, 11 Aug 2022 03:43:08 -0700 (PDT)
+Received: by mail-io1-f72.google.com with SMTP id u5-20020a6b4905000000b00681e48dbd92so9533423iob.21
+        for <bpf@vger.kernel.org>; Thu, 11 Aug 2022 03:43:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc;
+        bh=lEX60Cbcazn6R6L/6XwKBw23ViseQXIZ1Z7ZlktS5UU=;
+        b=py2wFaCgDKRX5Nrpe12sAaswRaTFwgRaDYi2vTscxxuJ2uMQQtunHAxE2lTAv+Nxr2
+         cQqW7rK4FQK5f3fUv/2AOLJ1f3sUZCFk24VkqXYCbMlXEkmRv1DV2uO2c8IS2V8VEoxR
+         gbp/Fop6+IeE9fHKWOhgdCV00DB3taQrZOZjE6YQrMSufieqPkexCUpO6iggocjnYVk2
+         iom0j5xOXlwiyS2AW4B8oj1RPwHpDXJ2ryxpM9JmOYDQzios9vv6akXWObuThuYF3s92
+         fCAVV3kMP2CKgeucvDUAOI8RqbmY69hsAt4uY9pHryUA1MGpitpYI3evCGhoVIrTJEJF
+         HtHA==
+X-Gm-Message-State: ACgBeo1D7/FwKHUMeXpH63UXQEgadqeNVDRF/AyPdV4hPvkOwogkUBuX
+        JFM3nTyl6TfulSzAAEIoiqXCvz2/poGL3+7MgdePMjzMOj8e
+X-Google-Smtp-Source: AA6agR7Hi8B5W6WKGtAFwNNK4FUnHOGc4ICUBkEfs2/hpQ+PtJ8uOlWMicG2kCUmtKciLXR1skIHdYUjGApnwnJNYP1JTBqG2pa1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6638:2490:b0:343:31f3:b09f with SMTP id
+ x16-20020a056638249000b0034331f3b09fmr5093263jat.247.1660214587687; Thu, 11
+ Aug 2022 03:43:07 -0700 (PDT)
+Date:   Thu, 11 Aug 2022 03:43:07 -0700
+In-Reply-To: <000000000000a256df05e39a74e7@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c0089905e5f4d452@google.com>
+Subject: Re: [syzbot] inconsistent lock state in find_vmap_area
+From:   syzbot <syzbot+8d19062486784d15dda9@syzkaller.appspotmail.com>
+To:     alan.maguire@oracle.com, andrii@kernel.org, ast@kernel.org,
+        bp@alien8.de, bpf@vger.kernel.org, daniel@iogearbox.net,
+        dave.hansen@linux.intel.com, gor@linux.ibm.com, hpa@zytor.com,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        luto@kernel.org, mingo@redhat.com, netdev@vger.kernel.org,
+        peterz@infradead.org, rdunlap@infradead.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        x86@kernel.org, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_DIGITS,
+        FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-With CONFIG_X86_KERNEL_IBT enabled the test for kprobe with offset
-won't work because of the extra endbr instruction.
+syzbot has bisected this issue to:
 
-As suggested by Andrii adding CONFIG_X86_KERNEL_IBT detection
-and using appropriate offset value based on that.
+commit 43174f0d4597325cb91f1f1f55263eb6e6101036
+Author: Alan Maguire <alan.maguire@oracle.com>
+Date:   Mon Nov 29 10:00:40 2021 +0000
 
-Also removing test7 program, because it does the same as test6.
+    libbpf: Silence uninitialized warning/error in btf_dump_dump_type_data
 
-Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- .../bpf/prog_tests/get_func_ip_test.c         | 62 +++++++++++++++----
- .../selftests/bpf/progs/get_func_ip_test.c    | 20 +++---
- 2 files changed, 60 insertions(+), 22 deletions(-)
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1350eb05080000
+start commit:   200e340f2196 Merge tag 'pull-work.dcache' of git://git.ker..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=10d0eb05080000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1750eb05080000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a3f4d6985d3164cd
+dashboard link: https://syzkaller.appspot.com/bug?extid=8d19062486784d15dda9
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1252c5a7080000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1160a8e3080000
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c b/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
-index 938dbd4d7c2f..a4dab2fa2258 100644
---- a/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
-+++ b/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
-@@ -2,7 +2,9 @@
- #include <test_progs.h>
- #include "get_func_ip_test.skel.h"
- 
--void test_get_func_ip_test(void)
-+static int config_ibt;
-+
-+static void test_function_entry(void)
- {
- 	struct get_func_ip_test *skel = NULL;
- 	int err, prog_fd;
-@@ -12,14 +14,6 @@ void test_get_func_ip_test(void)
- 	if (!ASSERT_OK_PTR(skel, "get_func_ip_test__open"))
- 		return;
- 
--	/* test6 is x86_64 specifc because of the instruction
--	 * offset, disabling it for all other archs
--	 */
--#ifndef __x86_64__
--	bpf_program__set_autoload(skel->progs.test6, false);
--	bpf_program__set_autoload(skel->progs.test7, false);
--#endif
--
- 	err = get_func_ip_test__load(skel);
- 	if (!ASSERT_OK(err, "get_func_ip_test__load"))
- 		goto cleanup;
-@@ -38,16 +32,62 @@ void test_get_func_ip_test(void)
- 
- 	ASSERT_OK(err, "test_run");
- 
-+	config_ibt = skel->bss->config_ibt;
-+	ASSERT_TRUE(config_ibt == 0 || config_ibt == 1, "config_ibt");
-+	printf("%s:config_ibt %d\n", __func__, config_ibt);
-+
- 	ASSERT_EQ(skel->bss->test1_result, 1, "test1_result");
- 	ASSERT_EQ(skel->bss->test2_result, 1, "test2_result");
- 	ASSERT_EQ(skel->bss->test3_result, 1, "test3_result");
- 	ASSERT_EQ(skel->bss->test4_result, 1, "test4_result");
- 	ASSERT_EQ(skel->bss->test5_result, 1, "test5_result");
-+
-+cleanup:
-+	get_func_ip_test__destroy(skel);
-+}
-+
- #ifdef __x86_64__
-+static void test_function_body(void)
-+{
-+	struct get_func_ip_test *skel = NULL;
-+	LIBBPF_OPTS(bpf_test_run_opts, topts);
-+	LIBBPF_OPTS(bpf_kprobe_opts, kopts);
-+	struct bpf_link *link6 = NULL;
-+	int err, prog_fd;
-+
-+	skel = get_func_ip_test__open();
-+	if (!ASSERT_OK_PTR(skel, "get_func_ip_test__open"))
-+		return;
-+
-+	bpf_program__set_autoload(skel->progs.test6, true);
-+
-+	err = get_func_ip_test__load(skel);
-+	if (!ASSERT_OK(err, "get_func_ip_test__load"))
-+		goto cleanup;
-+
-+	kopts.offset = config_ibt ? 9 : 5;
-+
-+	link6 = bpf_program__attach_kprobe_opts(skel->progs.test6, "bpf_fentry_test6", &kopts);
-+	if (!ASSERT_OK_PTR(link6, "link6"))
-+		goto cleanup;
-+
-+	prog_fd = bpf_program__fd(skel->progs.test1);
-+	err = bpf_prog_test_run_opts(prog_fd, &topts);
-+	ASSERT_OK(err, "test_run");
-+	ASSERT_EQ(topts.retval, 0, "test_run");
-+
- 	ASSERT_EQ(skel->bss->test6_result, 1, "test6_result");
--	ASSERT_EQ(skel->bss->test7_result, 1, "test7_result");
--#endif
- 
- cleanup:
-+	bpf_link__destroy(link6);
- 	get_func_ip_test__destroy(skel);
- }
-+#else
-+#define test_function_body(arg)
-+#endif
-+
-+void test_get_func_ip_test(void)
-+{
-+	test_function_entry();
-+	test_function_body();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/get_func_ip_test.c b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-index 6db70757bc8b..cb8e58183d46 100644
---- a/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-+++ b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-@@ -2,6 +2,7 @@
- #include <linux/bpf.h>
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
-+#include <stdbool.h>
- 
- char _license[] SEC("license") = "GPL";
- 
-@@ -13,12 +14,19 @@ extern const void bpf_modify_return_test __ksym;
- extern const void bpf_fentry_test6 __ksym;
- extern const void bpf_fentry_test7 __ksym;
- 
-+extern bool CONFIG_X86_KERNEL_IBT __kconfig __weak;
-+
-+bool config_ibt;
-+
- __u64 test1_result = 0;
- SEC("fentry/bpf_fentry_test1")
- int BPF_PROG(test1, int a)
- {
- 	__u64 addr = bpf_get_func_ip(ctx);
- 
-+	/* just to propagate config option value to user space */
-+	config_ibt = CONFIG_X86_KERNEL_IBT;
-+
- 	test1_result = (const void *) addr == &bpf_fentry_test1;
- 	return 0;
- }
-@@ -64,7 +72,7 @@ int BPF_PROG(test5, int a, int *b, int ret)
- }
- 
- __u64 test6_result = 0;
--SEC("kprobe/bpf_fentry_test6+0x5")
-+SEC("?kprobe/")
- int test6(struct pt_regs *ctx)
- {
- 	__u64 addr = bpf_get_func_ip(ctx);
-@@ -72,13 +80,3 @@ int test6(struct pt_regs *ctx)
- 	test6_result = (const void *) addr == 0;
- 	return 0;
- }
--
--__u64 test7_result = 0;
--SEC("kprobe/bpf_fentry_test7+5")
--int test7(struct pt_regs *ctx)
--{
--	__u64 addr = bpf_get_func_ip(ctx);
--
--	test7_result = (const void *) addr == 0;
--	return 0;
--}
--- 
-2.37.1
+Reported-by: syzbot+8d19062486784d15dda9@syzkaller.appspotmail.com
+Fixes: 43174f0d4597 ("libbpf: Silence uninitialized warning/error in btf_dump_dump_type_data")
 
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
