@@ -2,51 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED79590285
-	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 18:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB6DA5902AC
+	for <lists+bpf@lfdr.de>; Thu, 11 Aug 2022 18:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237397AbiHKQKZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Aug 2022 12:10:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38556 "EHLO
+        id S236997AbiHKQMb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Aug 2022 12:12:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237412AbiHKQJm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Aug 2022 12:09:42 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2F7CA4B19;
-        Thu, 11 Aug 2022 08:55:02 -0700 (PDT)
+        with ESMTP id S237470AbiHKQMH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Aug 2022 12:12:07 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1289A98D25;
+        Thu, 11 Aug 2022 08:57:22 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 52C01B82160;
-        Thu, 11 Aug 2022 15:55:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3DF6C43140;
-        Thu, 11 Aug 2022 15:54:57 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A3273612FC;
+        Thu, 11 Aug 2022 15:57:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 135B6C433C1;
+        Thu, 11 Aug 2022 15:57:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660233300;
-        bh=wjXb44oYEnAlhU16rkHyBpckEauNUBNXCbEuTpPCOrU=;
+        s=k20201202; t=1660233441;
+        bh=/KuOhgfXWb+JoKlULRbM7nPodgcpssrXIDPhLmQUSUw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bDiRa0bZ954S8IrYamI0dCLcrStQbQceg1RUrryU4CX5/wq0TLgEdE7Ozn+YYPKBJ
-         oCBpt5P1QyS9DHpYU2U10wxiNsf/baky47DBVVoVkOcwcYeez1cLw++mXYWZW3LmVa
-         lEqXUno3dougC3Jw889nDbT14vswXSw35RP2MTahJE5L/+YpnumnzdAvSllW5/Zl6+
-         7LGgg9w99n82FvoCJtukngJmSS6IEcuVH2ZEXpO+0EExWZf2Mz9XFXqoswve5SmXI7
-         Ko3NzjT1qOTxzCBZ+RCVAG5VydEiUc5iS9v52QLzZ60Z1mKwUvLqqAOlan+HIYWz/4
-         NETkFLHzQ5llw==
+        b=EYxF2VSXHBlxQxgtkYR7nBQqLBSR4RU0nMIkBfGcsFgfQ9gJUONiD3IliQCm6GaM1
+         MlP8Cb9/4sWwmK65P4mpFAaXWtNgW1Ai3iFFk7oFmnAuI1UOWa8IbcAr0vygd5YcOH
+         x6Un+Ah6E0zAebYVMHzuORIYYMazMfow8PG6Hl6mjQkISzjLGIAycm5DaLKNj3xYAp
+         egB6Sba9LzxiLg/wFU6bD9mLLxoVExzkWMQy7CPC3i0b/7xxryyQcOaB7L/FmgN/+1
+         zDe9FMYaAD+Az7zwpCw0oE7Ix7m9UTHkpdPk9jTBADE9YOsyY2Ml0LkW62tPHq3ZdN
+         IbChohNNAN44Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jie2x Zhou <jie2x.zhou@intel.com>,
-        kernel test robot <lkp@intel.com>,
+Cc:     Wang Yufen <wangyufen@huawei.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         Sasha Levin <sashal@kernel.org>, ast@kernel.org,
-        davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
-        john.fastabend@gmail.com, andrii@kernel.org, shuah@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.18 81/93] bpf/selftests: Fix couldn't retrieve pinned program in xdp veth test
-Date:   Thu, 11 Aug 2022 11:42:15 -0400
-Message-Id: <20220811154237.1531313-81-sashal@kernel.org>
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        bpf@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 10/69] bpf, sockmap: Fix sk->sk_forward_alloc warn_on in sk_stream_kill_queues
+Date:   Thu, 11 Aug 2022 11:55:19 -0400
+Message-Id: <20220811155632.1536867-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220811154237.1531313-1-sashal@kernel.org>
-References: <20220811154237.1531313-1-sashal@kernel.org>
+In-Reply-To: <20220811155632.1536867-1-sashal@kernel.org>
+References: <20220811155632.1536867-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -61,59 +62,133 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jie2x Zhou <jie2x.zhou@intel.com>
+From: Wang Yufen <wangyufen@huawei.com>
 
-[ Upstream commit f664f9c6b4a1bb9a10af812df0fbbf6aac28fcc6 ]
+[ Upstream commit d8616ee2affcff37c5d315310da557a694a3303d ]
 
-Before change:
+During TCP sockmap redirect pressure test, the following warning is triggered:
 
-  selftests: bpf: test_xdp_veth.sh
-  Couldn't retrieve pinned program '/sys/fs/bpf/test_xdp_veth/progs/redirect_map_0': No such file or directory
-  selftests: xdp_veth [SKIP]
-  ok 20 selftests: bpf: test_xdp_veth.sh # SKIP
+WARNING: CPU: 3 PID: 2145 at net/core/stream.c:205 sk_stream_kill_queues+0xbc/0xd0
+CPU: 3 PID: 2145 Comm: iperf Kdump: loaded Tainted: G        W         5.10.0+ #9
+Call Trace:
+ inet_csk_destroy_sock+0x55/0x110
+ inet_csk_listen_stop+0xbb/0x380
+ tcp_close+0x41b/0x480
+ inet_release+0x42/0x80
+ __sock_release+0x3d/0xa0
+ sock_close+0x11/0x20
+ __fput+0x9d/0x240
+ task_work_run+0x62/0x90
+ exit_to_user_mode_prepare+0x110/0x120
+ syscall_exit_to_user_mode+0x27/0x190
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-After change:
+The reason we observed is that:
 
-  PING 10.1.1.33 (10.1.1.33) 56(84) bytes of data.
-  64 bytes from 10.1.1.33: icmp_seq=1 ttl=64 time=0.320 ms
-  --- 10.1.1.33 ping statistics ---
-  1 packets transmitted, 1 received, 0% packet loss, time 0ms
-  rtt min/avg/max/mdev = 0.320/0.320/0.320/0.000 ms
-  selftests: xdp_veth [PASS]
+When the listener is closing, a connection may have completed the three-way
+handshake but not accepted, and the client has sent some packets. The child
+sks in accept queue release by inet_child_forget()->inet_csk_destroy_sock(),
+but psocks of child sks have not released.
 
-For the test case, the following can be found:
+To fix, add sock_map_destroy to release psocks.
 
-  ls /sys/fs/bpf/test_xdp_veth/progs/redirect_map_0
-  ls: cannot access '/sys/fs/bpf/test_xdp_veth/progs/redirect_map_0': No such file or directory
-  ls /sys/fs/bpf/test_xdp_veth/progs/
-  xdp_redirect_map_0  xdp_redirect_map_1  xdp_redirect_map_2
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Jie2x Zhou <jie2x.zhou@intel.com>
+Signed-off-by: Wang Yufen <wangyufen@huawei.com>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/20220719082430.9916-1-jie2x.zhou@intel.com
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Jakub Sitnicki <jakub@cloudflare.com>
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+Link: https://lore.kernel.org/bpf/20220524075311.649153-1-wangyufen@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/test_xdp_veth.sh | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ include/linux/bpf.h   |  1 +
+ include/linux/skmsg.h |  1 +
+ net/core/skmsg.c      |  1 +
+ net/core/sock_map.c   | 23 +++++++++++++++++++++++
+ net/ipv4/tcp_bpf.c    |  1 +
+ 5 files changed, 27 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/test_xdp_veth.sh b/tools/testing/selftests/bpf/test_xdp_veth.sh
-index 392d28cc4e58..49936c4c8567 100755
---- a/tools/testing/selftests/bpf/test_xdp_veth.sh
-+++ b/tools/testing/selftests/bpf/test_xdp_veth.sh
-@@ -106,9 +106,9 @@ bpftool prog loadall \
- bpftool map update pinned $BPF_DIR/maps/tx_port key 0 0 0 0 value 122 0 0 0
- bpftool map update pinned $BPF_DIR/maps/tx_port key 1 0 0 0 value 133 0 0 0
- bpftool map update pinned $BPF_DIR/maps/tx_port key 2 0 0 0 value 111 0 0 0
--ip link set dev veth1 xdp pinned $BPF_DIR/progs/redirect_map_0
--ip link set dev veth2 xdp pinned $BPF_DIR/progs/redirect_map_1
--ip link set dev veth3 xdp pinned $BPF_DIR/progs/redirect_map_2
-+ip link set dev veth1 xdp pinned $BPF_DIR/progs/xdp_redirect_map_0
-+ip link set dev veth2 xdp pinned $BPF_DIR/progs/xdp_redirect_map_1
-+ip link set dev veth3 xdp pinned $BPF_DIR/progs/xdp_redirect_map_2
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 818cd594e922..84efd8dd139d 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -2022,6 +2022,7 @@ int sock_map_get_from_fd(const union bpf_attr *attr, struct bpf_prog *prog);
+ int sock_map_prog_detach(const union bpf_attr *attr, enum bpf_prog_type ptype);
+ int sock_map_update_elem_sys(struct bpf_map *map, void *key, void *value, u64 flags);
+ void sock_map_unhash(struct sock *sk);
++void sock_map_destroy(struct sock *sk);
+ void sock_map_close(struct sock *sk, long timeout);
+ #else
+ static inline int bpf_prog_offload_init(struct bpf_prog *prog,
+diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
+index 73bedd128d52..ad3b798d9944 100644
+--- a/include/linux/skmsg.h
++++ b/include/linux/skmsg.h
+@@ -96,6 +96,7 @@ struct sk_psock {
+ 	spinlock_t			link_lock;
+ 	refcount_t			refcnt;
+ 	void (*saved_unhash)(struct sock *sk);
++	void (*saved_destroy)(struct sock *sk);
+ 	void (*saved_close)(struct sock *sk, long timeout);
+ 	void (*saved_write_space)(struct sock *sk);
+ 	void (*saved_data_ready)(struct sock *sk);
+diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+index ede0af308f40..2742d8e4dd82 100644
+--- a/net/core/skmsg.c
++++ b/net/core/skmsg.c
+@@ -716,6 +716,7 @@ struct sk_psock *sk_psock_init(struct sock *sk, int node)
+ 	psock->eval = __SK_NONE;
+ 	psock->sk_proto = prot;
+ 	psock->saved_unhash = prot->unhash;
++	psock->saved_destroy = prot->destroy;
+ 	psock->saved_close = prot->close;
+ 	psock->saved_write_space = sk->sk_write_space;
  
- ip -n ${NS1} link set dev veth11 xdp obj xdp_dummy.o sec xdp
- ip -n ${NS2} link set dev veth22 xdp obj xdp_tx.o sec xdp
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index 6351b6af7aca..d846ed9c5855 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -1506,6 +1506,29 @@ void sock_map_unhash(struct sock *sk)
+ }
+ EXPORT_SYMBOL_GPL(sock_map_unhash);
+ 
++void sock_map_destroy(struct sock *sk)
++{
++	void (*saved_destroy)(struct sock *sk);
++	struct sk_psock *psock;
++
++	rcu_read_lock();
++	psock = sk_psock_get(sk);
++	if (unlikely(!psock)) {
++		rcu_read_unlock();
++		if (sk->sk_prot->destroy)
++			sk->sk_prot->destroy(sk);
++		return;
++	}
++
++	saved_destroy = psock->saved_destroy;
++	sock_map_remove_links(sk, psock);
++	rcu_read_unlock();
++	sk_psock_stop(psock, true);
++	sk_psock_put(sk, psock);
++	saved_destroy(sk);
++}
++EXPORT_SYMBOL_GPL(sock_map_destroy);
++
+ void sock_map_close(struct sock *sk, long timeout)
+ {
+ 	void (*saved_close)(struct sock *sk, long timeout);
+diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
+index 2c597a4e429a..25e83d35138b 100644
+--- a/net/ipv4/tcp_bpf.c
++++ b/net/ipv4/tcp_bpf.c
+@@ -541,6 +541,7 @@ static void tcp_bpf_rebuild_protos(struct proto prot[TCP_BPF_NUM_CFGS],
+ 				   struct proto *base)
+ {
+ 	prot[TCP_BPF_BASE]			= *base;
++	prot[TCP_BPF_BASE].destroy		= sock_map_destroy;
+ 	prot[TCP_BPF_BASE].close		= sock_map_close;
+ 	prot[TCP_BPF_BASE].recvmsg		= tcp_bpf_recvmsg;
+ 	prot[TCP_BPF_BASE].sock_is_readable	= sk_msg_is_readable;
 -- 
 2.35.1
 
