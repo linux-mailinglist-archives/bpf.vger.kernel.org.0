@@ -2,46 +2,46 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D201590B78
-	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 07:24:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B13590B7A
+	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 07:25:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235200AbiHLFYx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Aug 2022 01:24:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34336 "EHLO
+        id S236747AbiHLFY7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Aug 2022 01:24:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbiHLFYw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Aug 2022 01:24:52 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6BFBA00E4
-        for <bpf@vger.kernel.org>; Thu, 11 Aug 2022 22:24:51 -0700 (PDT)
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27BLdcHA013963
-        for <bpf@vger.kernel.org>; Thu, 11 Aug 2022 22:24:51 -0700
+        with ESMTP id S236872AbiHLFY6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Aug 2022 01:24:58 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926E5A00E4
+        for <bpf@vger.kernel.org>; Thu, 11 Aug 2022 22:24:57 -0700 (PDT)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27BLVmuw022741
+        for <bpf@vger.kernel.org>; Thu, 11 Aug 2022 22:24:56 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=W2kitG9IvK8m8vHLDcDAZekjFmUhHc//Sf6vO4wswF4=;
- b=Tml43IBcRtF4rNYLR9Cb91abwTkh5ln3Q5dx5i8aJ+wL2+XA6ryeYMkn1XgH4T1ypfm1
- 3iSgYjUgU8buTbaYtRtumB0Dh6AA9S5Id5VWF6/tVL36ExePdUyx3WuICKJFfUPl2b8A
- kdh7EKNK72D8E1fn7ilHXWCr7QNoTd2559k= 
+ bh=2zI0kgmzuC4c4jq4vXeHlehPAiBccxszLH9IaXjKimA=;
+ b=ZSzVtcd8iEmwxiDt7xp7QTmJ0vKQmfk4VLAnQ3d9YIzaErIQCNQA9jWt91WppDb2HYik
+ 8/oqnzp2/929mlzLLDM4wWjI3mk74tOw2S6KfKoJaMI4CEu/dhesXbxSy/TXsFcMux4+
+ CS1yl8K2OvIIUje95bI9g3jyXXEluW2/qk4= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hw9vgsx3y-1
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hw9rva0e3-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 11 Aug 2022 22:24:51 -0700
-Received: from twshared0646.06.ash9.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Thu, 11 Aug 2022 22:24:56 -0700
+Received: from twshared30313.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 11 Aug 2022 22:24:49 -0700
+ 15.1.2375.31; Thu, 11 Aug 2022 22:24:55 -0700
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id DCFCDDF8C486; Thu, 11 Aug 2022 22:24:45 -0700 (PDT)
+        id 2CB26DF8C49D; Thu, 11 Aug 2022 22:24:51 -0700 (PDT)
 From:   Yonghong Song <yhs@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next v2 5/6] bpf: Populate struct argument info in btf_func_model
-Date:   Thu, 11 Aug 2022 22:24:45 -0700
-Message-ID: <20220812052445.524459-1-yhs@fb.com>
+Subject: [PATCH bpf-next v2 6/6] selftests/bpf: Add struct argument tests with fentry/fexit programs.
+Date:   Thu, 11 Aug 2022 22:24:51 -0700
+Message-ID: <20220812052451.524758-1-yhs@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220812052419.520522-1-yhs@fb.com>
 References: <20220812052419.520522-1-yhs@fb.com>
@@ -49,8 +49,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: aw88Uq-LH8qvDMD22MMOIMoCFwd7toBj
-X-Proofpoint-GUID: aw88Uq-LH8qvDMD22MMOIMoCFwd7toBj
+X-Proofpoint-ORIG-GUID: 2qCCnhgqESC0gbtU2b0sN-NJlilxYnlj
+X-Proofpoint-GUID: 2qCCnhgqESC0gbtU2b0sN-NJlilxYnlj
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
  definitions=2022-08-12_03,2022-08-11_01,2022-06-22_01
@@ -64,115 +64,258 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add struct argument support in btf_ctx_access() and btf_distill_func_prot=
-o().
-The arch-specific code will handle whether and how such struct arguments
-are supported.
+Add various struct argument tests with fentry/fexit programs.
 
 Signed-off-by: Yonghong Song <yhs@fb.com>
 ---
- kernel/bpf/btf.c | 30 ++++++++++++++++++++++++------
- 1 file changed, 24 insertions(+), 6 deletions(-)
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 41 ++++++++
+ .../selftests/bpf/prog_tests/tracing_struct.c | 55 +++++++++++
+ .../selftests/bpf/progs/tracing_struct.c      | 93 +++++++++++++++++++
+ 3 files changed, 189 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/tracing_struct=
+.c
+ create mode 100644 tools/testing/selftests/bpf/progs/tracing_struct.c
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 903719b89238..f38ae0e908fd 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -5339,7 +5339,7 @@ bool btf_ctx_access(int off, int size, enum bpf_acc=
-ess_type type,
- 	struct bpf_verifier_log *log =3D info->log;
- 	const struct btf_param *args;
- 	const char *tag_value;
--	u32 nr_args, arg;
-+	u32 nr_args, arg, curr_tid =3D 0;
- 	int i, ret;
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tool=
+s/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+index 792cb15bac40..11fe9f219a17 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+@@ -18,6 +18,40 @@ typedef int (*func_proto_typedef_nested1)(func_proto_t=
+ypedef);
+ typedef int (*func_proto_typedef_nested2)(func_proto_typedef_nested1);
 =20
- 	if (off % 8) {
-@@ -5385,6 +5385,7 @@ bool btf_ctx_access(int off, int size, enum bpf_acc=
-ess_type type,
- 			 */
- 			if (!t)
- 				return true;
-+			curr_tid =3D t->type;
- 			t =3D btf_type_by_id(btf, t->type);
- 			break;
- 		case BPF_MODIFY_RETURN:
-@@ -5394,7 +5395,7 @@ bool btf_ctx_access(int off, int size, enum bpf_acc=
-ess_type type,
- 			if (!t)
- 				return false;
-=20
--			t =3D btf_type_skip_modifiers(btf, t->type, NULL);
-+			t =3D btf_type_skip_modifiers(btf, t->type, &curr_tid);
- 			if (!btf_type_is_small_int(t)) {
- 				bpf_log(log,
- 					"ret type %s not allowed for fmod_ret\n",
-@@ -5411,15 +5412,25 @@ bool btf_ctx_access(int off, int size, enum bpf_a=
-ccess_type type,
- 		if (!t)
- 			/* Default prog with MAX_BPF_FUNC_REG_ARGS args */
- 			return true;
-+		curr_tid =3D args[arg].type;
- 		t =3D btf_type_by_id(btf, args[arg].type);
- 	}
-=20
- 	/* skip modifiers */
--	while (btf_type_is_modifier(t))
-+	while (btf_type_is_modifier(t)) {
-+		curr_tid =3D t->type;
- 		t =3D btf_type_by_id(btf, t->type);
-+	}
- 	if (btf_type_is_small_int(t) || btf_is_any_enum(t))
- 		/* accessing a scalar */
- 		return true;
-+	if (__btf_type_is_struct(t) && curr_tid) {
-+		info->reg_type =3D PTR_TO_BTF_ID;
-+		info->btf =3D btf;
-+		info->btf_id =3D curr_tid;
-+		return true;
-+	}
+ DEFINE_PER_CPU(int, bpf_testmod_ksym_percpu) =3D 123;
++long bpf_testmod_test_struct_arg_result;
 +
- 	if (!btf_type_is_ptr(t)) {
- 		bpf_log(log,
- 			"func '%s' arg%d '%s' has type %s. Only pointer access is allowed\n",
-@@ -5878,7 +5889,7 @@ static int __get_type_size(struct btf *btf, u32 btf=
-_id,
- 	if (!t)
- 		return -EINVAL;
- 	*ret_type =3D t;
--	if (btf_type_is_ptr(t))
-+	if (btf_type_is_ptr(t) || __btf_type_is_struct(t))
- 		/* kernel size of pointer. Not BPF's size of pointer*/
- 		return sizeof(void *);
- 	if (btf_type_is_int(t) || btf_is_any_enum(t))
-@@ -5901,8 +5912,10 @@ int btf_distill_func_proto(struct bpf_verifier_log=
- *log,
- 		/* BTF function prototype doesn't match the verifier types.
- 		 * Fall back to MAX_BPF_FUNC_REG_ARGS u64 args.
- 		 */
--		for (i =3D 0; i < MAX_BPF_FUNC_REG_ARGS; i++)
-+		for (i =3D 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
- 			m->arg_size[i] =3D 8;
-+			m->arg_flags[i] =3D 0;
-+		}
- 		m->ret_size =3D 8;
- 		m->nr_args =3D MAX_BPF_FUNC_REG_ARGS;
- 		return 0;
-@@ -5944,7 +5957,12 @@ int btf_distill_func_proto(struct bpf_verifier_log=
- *log,
- 				tname);
- 			return -EINVAL;
- 		}
--		m->arg_size[i] =3D ret;
-+		if (__btf_type_is_struct(t)) {
-+			m->arg_flags[i] =3D BTF_FMODEL_STRUCT_ARG;
-+			m->arg_size[i] =3D t->size;
-+		} else {
-+			m->arg_size[i] =3D ret;
-+		}
- 	}
- 	m->nr_args =3D nargs;
- 	return 0;
++struct bpf_testmod_struct_arg_1 {
++	int a;
++};
++struct bpf_testmod_struct_arg_2 {
++	long a;
++	long b;
++};
++
++noinline int
++bpf_testmod_test_struct_arg_1(struct bpf_testmod_struct_arg_2 a, int b, =
+int c) {
++	bpf_testmod_test_struct_arg_result =3D a.a + a.b  + b + c;
++	return bpf_testmod_test_struct_arg_result;
++}
++
++noinline int
++bpf_testmod_test_struct_arg_2(int a, struct bpf_testmod_struct_arg_2 b, =
+int c) {
++	bpf_testmod_test_struct_arg_result =3D a + b.a + b.b + c;
++	return bpf_testmod_test_struct_arg_result;
++}
++
++noinline int
++bpf_testmod_test_struct_arg_3(int a, int b, struct bpf_testmod_struct_ar=
+g_2 c) {
++	bpf_testmod_test_struct_arg_result =3D a + b + c.a + c.b;
++	return bpf_testmod_test_struct_arg_result;
++}
++
++noinline int
++bpf_testmod_test_struct_arg_4(struct bpf_testmod_struct_arg_1 a, int b,
++			      int c, int d, struct bpf_testmod_struct_arg_2 e) {
++	bpf_testmod_test_struct_arg_result =3D a.a + b + c + d + e.a + e.b;
++	return bpf_testmod_test_struct_arg_result;
++}
+=20
+ noinline void
+ bpf_testmod_test_mod_kfunc(int i)
+@@ -98,11 +132,18 @@ bpf_testmod_test_read(struct file *file, struct kobj=
+ect *kobj,
+ 		.off =3D off,
+ 		.len =3D len,
+ 	};
++	struct bpf_testmod_struct_arg_1 struct_arg1 =3D {10};
++	struct bpf_testmod_struct_arg_2 struct_arg2 =3D {2, 3};
+ 	int i =3D 1;
+=20
+ 	while (bpf_testmod_return_ptr(i))
+ 		i++;
+=20
++	(void)bpf_testmod_test_struct_arg_1(struct_arg2, 1, 4);
++	(void)bpf_testmod_test_struct_arg_2(1, struct_arg2, 4);
++	(void)bpf_testmod_test_struct_arg_3(1, 4, struct_arg2);
++	(void)bpf_testmod_test_struct_arg_4(struct_arg1, 1, 2, 3, struct_arg2);
++
+ 	/* This is always true. Use the check to make sure the compiler
+ 	 * doesn't remove bpf_testmod_loop_test.
+ 	 */
+diff --git a/tools/testing/selftests/bpf/prog_tests/tracing_struct.c b/to=
+ols/testing/selftests/bpf/prog_tests/tracing_struct.c
+new file mode 100644
+index 000000000000..8b1fbc3fc463
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/tracing_struct.c
+@@ -0,0 +1,55 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
++
++#include <test_progs.h>
++#include "tracing_struct.skel.h"
++
++static void test_fentry(void)
++{
++	struct tracing_struct *skel;
++	int err;
++
++	skel =3D tracing_struct__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "tracing_struct__open_and_load"))
++		return;
++
++	err =3D tracing_struct__attach(skel);
++	if (!ASSERT_OK(err, "tracing_struct__attach"))
++		return;
++
++	ASSERT_OK(trigger_module_test_read(256), "trigger_read");
++
++	ASSERT_EQ(skel->bss->t1_a_a, 2, "t1:a.a");
++	ASSERT_EQ(skel->bss->t1_a_b, 3, "t1:a.b");
++	ASSERT_EQ(skel->bss->t1_b, 1, "t1:b");
++	ASSERT_EQ(skel->bss->t1_c, 4, "t1:c");
++	ASSERT_EQ(skel->bss->t1_ret, 10, "t1 ret");
++
++	ASSERT_EQ(skel->bss->t2_a, 1, "t2:a");
++	ASSERT_EQ(skel->bss->t2_b_a, 2, "t2:b.a");
++	ASSERT_EQ(skel->bss->t2_b_b, 3, "t2:b.b");
++	ASSERT_EQ(skel->bss->t2_c, 4, "t2:c");
++	ASSERT_EQ(skel->bss->t2_ret, 10, "t2 ret");
++
++	ASSERT_EQ(skel->bss->t3_a, 1, "t3:a");
++	ASSERT_EQ(skel->bss->t3_b, 4, "t3:b");
++	ASSERT_EQ(skel->bss->t3_c_a, 2, "t3:c.a");
++	ASSERT_EQ(skel->bss->t3_c_b, 3, "t3:c.b");
++	ASSERT_EQ(skel->bss->t3_ret, 10, "t3 ret");
++
++	ASSERT_EQ(skel->bss->t4_a_a, 10, "t4:a.a");
++	ASSERT_EQ(skel->bss->t4_b, 1, "t4:b");
++	ASSERT_EQ(skel->bss->t4_c, 2, "t4:c");
++	ASSERT_EQ(skel->bss->t4_d, 3, "t4:d");
++	ASSERT_EQ(skel->bss->t4_e_a, 2, "t4:e.a");
++	ASSERT_EQ(skel->bss->t4_e_b, 3, "t4:e.b");
++	ASSERT_EQ(skel->bss->t4_ret, 21, "t4 ret");
++
++	tracing_struct__detach(skel);
++	tracing_struct__destroy(skel);
++}
++
++void test_tracing_struct(void)
++{
++	test_fentry();
++}
+diff --git a/tools/testing/selftests/bpf/progs/tracing_struct.c b/tools/t=
+esting/selftests/bpf/progs/tracing_struct.c
+new file mode 100644
+index 000000000000..e724c7e1a933
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/tracing_struct.c
+@@ -0,0 +1,93 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
++
++#include <vmlinux.h>
++#include <bpf/bpf_tracing.h>
++#include <bpf/bpf_helpers.h>
++
++struct bpf_testmod_struct_arg_1 {
++	int a;
++};
++struct bpf_testmod_struct_arg_2 {
++	long a;
++	long b;
++};
++
++long t1_a_a, t1_a_b, t1_b, t1_c, t1_ret;
++long t2_a, t2_b_a, t2_b_b, t2_c, t2_ret;
++long t3_a, t3_b, t3_c_a, t3_c_b, t3_ret;
++long t4_a_a, t4_b, t4_c, t4_d, t4_e_a, t4_e_b, t4_ret;
++
++SEC("fentry/bpf_testmod_test_struct_arg_1")
++int BPF_PROG(test_struct_arg_1, struct bpf_testmod_struct_arg_2 *a, int =
+b, int c)
++{
++	t1_a_a =3D a->a;
++	t1_a_b =3D a->b;
++	t1_b =3D b;
++	t1_c =3D c;
++	return 0;
++}
++
++SEC("fexit/bpf_testmod_test_struct_arg_1")
++int BPF_PROG(test_struct_arg_2, struct bpf_testmod_struct_arg_2 *a, int =
+b, int c, int ret)
++{
++	t1_ret =3D ret;
++	return 0;
++}
++
++SEC("fentry/bpf_testmod_test_struct_arg_2")
++int BPF_PROG(test_struct_arg_3, int a, struct bpf_testmod_struct_arg_2 *=
+b, int c)
++{
++	t2_a =3D a;
++	t2_b_a =3D b->a;
++	t2_b_b =3D b->b;
++	t2_c =3D c;
++	return 0;
++}
++
++SEC("fexit/bpf_testmod_test_struct_arg_2")
++int BPF_PROG(test_struct_arg_4, int a, struct bpf_testmod_struct_arg_2 *=
+b, int c, int ret)
++{
++	t2_ret =3D ret;
++	return 0;
++}
++
++SEC("fentry/bpf_testmod_test_struct_arg_3")
++int BPF_PROG(test_struct_arg_5, int a, int b, struct bpf_testmod_struct_=
+arg_2 *c)
++{
++	t3_a =3D a;
++	t3_b =3D b;
++	t3_c_a =3D c->a;
++	t3_c_b =3D c->b;
++	return 0;
++}
++
++SEC("fexit/bpf_testmod_test_struct_arg_3")
++int BPF_PROG(test_struct_arg_6, int a, int b, struct bpf_testmod_struct_=
+arg_2 *c, int ret)
++{
++	t3_ret =3D ret;
++	return 0;
++}
++
++SEC("fentry/bpf_testmod_test_struct_arg_4")
++int BPF_PROG(test_struct_arg_7, struct bpf_testmod_struct_arg_1 *a, int =
+b,
++	     int c, int d, struct bpf_testmod_struct_arg_2 *e)
++{
++	t4_a_a =3D a->a;
++	t4_b =3D b;
++	t4_c =3D c;
++	t4_d =3D d;
++	t4_e_a =3D e->a;
++	t4_e_b =3D e->b;
++	return 0;
++}
++
++SEC("fexit/bpf_testmod_test_struct_arg_4")
++int BPF_PROG(test_struct_arg_8, struct bpf_testmod_struct_arg_1 *a, int =
+b,
++	     int c, int d, struct bpf_testmod_struct_arg_2 *e, int ret)
++{
++	t4_ret =3D ret;
++	return 0;
++}
++
++char _license[] SEC("license") =3D "GPL";
 --=20
 2.30.2
 
