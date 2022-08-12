@@ -2,99 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D7A2590AF4
-	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 06:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12723590B70
+	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 07:21:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234259AbiHLEQf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Aug 2022 00:16:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39626 "EHLO
+        id S235114AbiHLFVg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Aug 2022 01:21:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230271AbiHLEQe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Aug 2022 00:16:34 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85BB1FD37;
-        Thu, 11 Aug 2022 21:16:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1660277793; x=1691813793;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xEKQMRYYwNapwWCbuAHmwaEJwzGtEja9gbRJRyakeJ8=;
-  b=UI5+wn2unGkKbMbQFqbbwPfG6sZYpTcUEf5lmGTMXrnC6SgPPTENMyOu
-   xw7HX8vgUKP7Iow5aQUfV5vOsoL8K8Dnosv6T06RXQQc4P1i7WUSAiaIE
-   NgUzPURsio3xDUxmhtHAe3hlhdYI5M+UcB545h26+lyTZppStQq2AXg2v
-   JsOLsdWuD2e7WAQcx3eShxm8WSg/GHXTpSiECI2/PvkFfep21hGVRIl1X
-   FocypV6CesiAx/gwqc+OvX3w1/K1nAzfczHY4YzFwCkCITey3HFLgO1NV
-   MAogkjdxvZTDH+iWtdJCqv2emuL4jlVO6JJJsW2hCcAGqVDA1OdQXoXgc
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10436"; a="289087908"
-X-IronPort-AV: E=Sophos;i="5.93,231,1654585200"; 
-   d="scan'208";a="289087908"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2022 21:16:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,231,1654585200"; 
-   d="scan'208";a="933578432"
-Received: from lkp-server02.sh.intel.com (HELO 8745164cafc7) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 11 Aug 2022 21:16:31 -0700
-Received: from kbuild by 8745164cafc7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oMM62-00007f-1X;
-        Fri, 12 Aug 2022 04:16:30 +0000
-Date:   Fri, 12 Aug 2022 12:16:25 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Joanne Koong <joannelkoong@gmail.com>, bpf@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, kafai@fb.com, kuba@kernel.org,
-        andrii@kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        netdev@vger.kernel.org, kernel-team@fb.com,
-        Joanne Koong <joannelkoong@gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/3] bpf: Add skb dynptrs
-Message-ID: <202208121214.urSMKXgE-lkp@intel.com>
-References: <20220811230501.2632393-2-joannelkoong@gmail.com>
+        with ESMTP id S233404AbiHLFVf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Aug 2022 01:21:35 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE3692F64
+        for <bpf@vger.kernel.org>; Thu, 11 Aug 2022 22:21:34 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id o2so20938834lfb.1
+        for <bpf@vger.kernel.org>; Thu, 11 Aug 2022 22:21:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:from:to:cc;
+        bh=JfvkqOks6SEsnWBnmoF1stRD9zel/4Vy8jqvru3pmxU=;
+        b=EY3PhBYC+HKoXQSVVBdD2/vi/buDvcQGKTST0UiZjzTdqmpeFkFalfrBZigs7t4dHh
+         5yDkTNEqNmhb9WKKJkoGeBHdqJneCiyeCJWrT+DNm5oex3m6wJcKOsLsl1U/idrtkO4y
+         L657PHcC0e4ACG11c04Y7e88xMRQArXN5pxG7QOlkCLNQfY/7aQ+WJ3NSAhcgMGw1Tvj
+         t0GxfMFxDjIFSkPByTWecgUHbx0NClYWwaEhMapmbHeqxQes+0z6E0XkQFMXmzqTc/Tp
+         VfpjoKkZ+nY88xcysCzbVukjcs7pNoxFYjPodbi9sB8xe4ysg6FY79AJu/Sx0loJxXJd
+         HCxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=JfvkqOks6SEsnWBnmoF1stRD9zel/4Vy8jqvru3pmxU=;
+        b=lz0eUaCo1hEJHF7SCKZWWRXT7pt59N5mw+rS/QSA3nv2EaFjCeM9VCw/wKq4pukP/W
+         1WbddQvJtq4cIeyLc5RfvkqIK2Zi3H90voXp2TrV1CSFcwT7RQUZPZzyszVJkGVbyiVY
+         0SMubKbBEzJFOLZdXWvQo+EjWX5p7OBMmF1otwI3kVWYnU2ZA900Vw5cbRsTLu/5t2yU
+         U/XvLwvWKTQnRNdBPtt/F0sLk6NU/D4KfLghbsASJ0wWSfzDCR0pi5o6ZfKpzgAF0AK2
+         o2+sClXPpkTttbw9hJaXlnnvoMoV7Hz27fT2R9q9gnwVuBwCjPhucQV0YYiD/OQwOI1C
+         Q5xA==
+X-Gm-Message-State: ACgBeo0mi/u+tmnCUDuUhTJAzBLwDIQukn/laAt/i5o2Ax3I2fUA8TjU
+        iV10yGw4nXNQXKrkcbiWoYJLHZY2eFSTGcwO2F8=
+X-Google-Smtp-Source: AA6agR4uiQBt68H0VD3DGgKmVgy+Cu72a/QAhl+1PLYpIMTPrssLkV5tFV7L92fjabsBPWQiGH1BuMvjSMGQg/Q3Rn0=
+X-Received: by 2002:a05:6512:15a7:b0:48b:236c:7302 with SMTP id
+ bp39-20020a05651215a700b0048b236c7302mr702023lfb.264.1660281692635; Thu, 11
+ Aug 2022 22:21:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220811230501.2632393-2-joannelkoong@gmail.com>
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Received: by 2002:aa6:d98f:0:b0:210:affa:b291 with HTTP; Thu, 11 Aug 2022
+ 22:21:31 -0700 (PDT)
+Reply-To: fredrich.david.mail@gmail.com
+From:   Mr Fredrich David <tgfar4131278991@gmail.com>
+Date:   Fri, 12 Aug 2022 05:21:31 +0000
+Message-ID: <CAMSGiNnGzGbgcNJRFNMFX9mGLxspdTB6L_XkbQq-3LMWOvkmBQ@mail.gmail.com>
+Subject: G44S21
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=4.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_HK_NAME_FM_MR_MRS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Joanne,
-
-Thank you for the patch! Yet something to improve:
-
-[auto build test ERROR on bpf-next/master]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Joanne-Koong/Add-skb-xdp-dynptrs/20220812-070634
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-config: um-i386_defconfig (https://download.01.org/0day-ci/archive/20220812/202208121214.urSMKXgE-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-3) 11.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/intel-lab-lkp/linux/commit/ecab09dda7739b27ffd6ed6c93753f6dfd9bdcb2
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Joanne-Koong/Add-skb-xdp-dynptrs/20220812-070634
-        git checkout ecab09dda7739b27ffd6ed6c93753f6dfd9bdcb2
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 O=build_dir ARCH=um SUBARCH=i386 SHELL=/bin/bash
-
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
-   /usr/bin/ld: net/core/filter.o: in function `bpf_dynptr_from_skb':
->> filter.c:(.text+0x4e87): undefined reference to `bpf_dynptr_set_null'
->> /usr/bin/ld: filter.c:(.text+0x4e9e): undefined reference to `bpf_dynptr_init'
->> /usr/bin/ld: filter.c:(.text+0x4eae): undefined reference to `bpf_dynptr_set_rdonly'
-   collect2: error: ld returned 1 exit status
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+To jest w odpowiedzi na Wasze e-maile, pisz=C4=99, aby poinformowa=C4=87, =
+=C5=BCe
+projekty zosta=C5=82y zako=C5=84czone i zosta=C5=82e=C5=9B zaakceptowany !
+Z powa=C5=BCaniem,
+Pan Fredrich David
