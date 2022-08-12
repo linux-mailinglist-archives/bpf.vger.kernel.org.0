@@ -2,173 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E369590B87
-	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 07:34:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5AE7590BAB
+	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 07:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234733AbiHLFex (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Aug 2022 01:34:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40554 "EHLO
+        id S237237AbiHLF7I (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Aug 2022 01:59:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230422AbiHLFex (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Aug 2022 01:34:53 -0400
-Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E643FA287A;
-        Thu, 11 Aug 2022 22:34:51 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1660282490;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eT9oB/Jxs0HX/eo2S3EGE6XjZBx5ygu2ZiQitesEUO4=;
-        b=w2pIQGWCS1/EKSQZpsMmnNHdguMKuLCCLx81UoSZ1cJIns5aJlRW/klnxQxiXEXBqXDzj1
-        /I1800EVWMbwRGR+k99rKu6F5nZla3D0AmNRp7u7RrQnx4XQIv2OWT8dzbMuEXRDZOd6di
-        B6IqiwAAkFlhCc3zqmARwFxJq42GCM0=
+        with ESMTP id S237174AbiHLF6s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Aug 2022 01:58:48 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72450A406B;
+        Thu, 11 Aug 2022 22:58:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1660283916; x=1691819916;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=jpBAt7RrH/lqkglG1A2u8wjELkLgo1HyKTHv7Wsj6AU=;
+  b=mcjZA42qPxSIuK/KWKHP3Uq2X/0gQCiBeMMqBNM00s9kaFCvz2TJSqqB
+   4N3oZjTLaISImnK1zYWfGyYIJsK5CENcyjFe6h7dlZBc7CPFDARU8C3tZ
+   74r2D1iu1GIts5iEERpuefQ56+t834V6Sew7hz/LBnw8pf43AOJUxOhkt
+   +RJiAG9IGGs4NSfvbNo9TRT61vPN1EvGAGh8BOw1wOy7zQxwURSeeU4aR
+   QIosTYl4Rfcf/WBIVGZR1ZTsD4pzEq42hkm8PKl4TCp4sFejRAInif0P7
+   Brv3Md7c22R05iHymo1g3bfEMC9Qemdq8u185V7U9ZYDc5x+jcheOLjN+
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10436"; a="271302299"
+X-IronPort-AV: E=Sophos;i="5.93,231,1654585200"; 
+   d="scan'208";a="271302299"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2022 22:58:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,231,1654585200"; 
+   d="scan'208";a="933599071"
+Received: from lkp-server02.sh.intel.com (HELO 8745164cafc7) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 11 Aug 2022 22:58:33 -0700
+Received: from kbuild by 8745164cafc7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oMNgn-0000Dl-1J;
+        Fri, 12 Aug 2022 05:58:33 +0000
+Date:   Fri, 12 Aug 2022 13:57:58 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Joanne Koong <joannelkoong@gmail.com>, bpf@vger.kernel.org
+Cc:     kbuild-all@lists.01.org, kafai@fb.com, kuba@kernel.org,
+        andrii@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        netdev@vger.kernel.org, kernel-team@fb.com,
+        Joanne Koong <joannelkoong@gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/3] bpf: Add skb dynptrs
+Message-ID: <202208121318.MVYzenNA-lkp@intel.com>
+References: <20220811230501.2632393-2-joannelkoong@gmail.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 05/15] bpf: Fix incorrect mem_cgroup_put
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <CALOAHbCXfRKDEt7jsUBsf-pQ-A7TpXPxGKYxu_GZN-8BUe2auw@mail.gmail.com>
-Date:   Fri, 12 Aug 2022 13:33:54 +0800
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, jolsa@kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <870C70CA-C760-40A5-8A04-F0962EFDF507@linux.dev>
-References: <20220810151840.16394-1-laoar.shao@gmail.com>
- <20220810151840.16394-6-laoar.shao@gmail.com>
- <20220810170706.ikyrsuzupjwt65h7@google.com>
- <CALOAHbBk+komswLqs0KBg8FeFAYpC20HjXrUeZA-=7cWf6nRUw@mail.gmail.com>
- <20220811154731.3smhom6v4qy2u6rd@google.com>
- <CALOAHbCXfRKDEt7jsUBsf-pQ-A7TpXPxGKYxu_GZN-8BUe2auw@mail.gmail.com>
-To:     Yafang Shao <laoar.shao@gmail.com>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220811230501.2632393-2-joannelkoong@gmail.com>
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hi Joanne,
 
+Thank you for the patch! Yet something to improve:
 
-> On Aug 12, 2022, at 08:27, Yafang Shao <laoar.shao@gmail.com> wrote:
->=20
-> On Thu, Aug 11, 2022 at 11:47 PM Shakeel Butt <shakeelb@google.com> =
-wrote:
->>=20
->> On Thu, Aug 11, 2022 at 10:49:13AM +0800, Yafang Shao wrote:
->>> On Thu, Aug 11, 2022 at 1:07 AM Shakeel Butt <shakeelb@google.com> =
-wrote:
->>>>=20
->>>> On Wed, Aug 10, 2022 at 03:18:30PM +0000, Yafang Shao wrote:
->>>>> The memcg may be the root_mem_cgroup, in which case we shouldn't =
-put it.
->>>>=20
->>>> No, it is ok to put root_mem_cgroup. css_put already handles the =
-root
->>>> cgroups.
->>>>=20
->>>=20
->>> Ah, this commit log doesn't describe the issue clearly. I should =
-improve it.
->>> The issue is that in bpf_map_get_memcg() it doesn't get the objcg if
->>> map->objcg is NULL (that can happen if the map belongs to the root
->>> memcg), so we shouldn't put the objcg if map->objcg is NULL neither =
-in
->>> bpf_map_put_memcg().
->>=20
->> Sorry I am still not understanding. We are not 'getting' objcg in
->> bpf_map_get_memcg(). We are 'getting' memcg from map->objcg and if =
-that
->> is NULL the function is returning root memcg and putting root memcg =
-is
->> totally fine.
->=20
-> When the map belongs to root_mem_cgroup, the map->objcg is NULL, right =
-?
-> See also bpf_map_save_memcg() and it describes clearly in the comment =
--
->=20
-> static void bpf_map_save_memcg(struct bpf_map *map)
-> {
->        /* Currently if a map is created by a process belonging to the =
-root
->         * memory cgroup, get_obj_cgroup_from_current() will return =
-NULL.
->         * So we have to check map->objcg for being NULL each time it's
->         * being used.
->         */
->        map->objcg =3D get_obj_cgroup_from_current();
-> }
->=20
-> So for the root_mem_cgroup case, bpf_map_get_memcg() will return
-> root_mem_cgroup directly without getting its css, right ? See below,
->=20
-> static struct mem_cgroup *bpf_map_get_memcg(const struct bpf_map *map)
-> {
->=20
->        if (map->objcg)
->                return get_mem_cgroup_from_objcg(map->objcg);
->=20
->        return root_mem_cgroup;   // without css_get(&memcg->css);
-> }
->=20
-> But it will put the css unconditionally.  See below,
->=20
-> memcg =3D bpf_map_get_memcg(map);
-> ...
-> mem_cgroup_put(memcg);
->=20
-> So we should put it *conditionally* as well.
+[auto build test ERROR on bpf-next/master]
 
-Hi,
+url:    https://github.com/intel-lab-lkp/linux/commits/Joanne-Koong/Add-skb-xdp-dynptrs/20220812-070634
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+config: i386-defconfig (https://download.01.org/0day-ci/archive/20220812/202208121318.MVYzenNA-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-3) 11.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/intel-lab-lkp/linux/commit/ecab09dda7739b27ffd6ed6c93753f6dfd9bdcb2
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Joanne-Koong/Add-skb-xdp-dynptrs/20220812-070634
+        git checkout ecab09dda7739b27ffd6ed6c93753f6dfd9bdcb2
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash
 
-No. We could put root_mem_cgroup unconditionally since the root css
-is treated as no reference css. See css_put().
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
 
-static inline void css_put(struct cgroup_subsys_state *css)
-{
-	// The root memcg=E2=80=99s css has been set with CSS_NO_REF.
-        if (!(css->flags & CSS_NO_REF))
-                percpu_ref_put(&css->refcnt);
-}
+All errors (new ones prefixed by >>):
 
-Muchun,
-Thanks.
+   ld: net/core/filter.o: in function `bpf_dynptr_from_skb':
+>> filter.c:(.text+0x84eb): undefined reference to `bpf_dynptr_init'
+>> ld: filter.c:(.text+0x8511): undefined reference to `bpf_dynptr_set_rdonly'
+>> ld: filter.c:(.text+0x8521): undefined reference to `bpf_dynptr_set_null'
 
->=20
->  memcg =3D bpf_map_get_memcg(map);
->   ...
-> + if (map->objcg)
->       mem_cgroup_put(memcg);
->=20
-> Is it clear to you ?
->=20
->> Or are you saying that root_mem_cgroup is NULL?
->>=20
->=20
-> No
->=20
-> --=20
-> Regards
-> Yafang
-
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
