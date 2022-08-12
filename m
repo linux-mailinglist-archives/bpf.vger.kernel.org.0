@@ -2,81 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90050591641
-	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 22:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35FF05916AE
+	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 23:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234311AbiHLU2w (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Aug 2022 16:28:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51976 "EHLO
+        id S234548AbiHLVSW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Aug 2022 17:18:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234720AbiHLU2a (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Aug 2022 16:28:30 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1960B08A1
-        for <bpf@vger.kernel.org>; Fri, 12 Aug 2022 13:28:19 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-32a115757b6so15775107b3.13
-        for <bpf@vger.kernel.org>; Fri, 12 Aug 2022 13:28:19 -0700 (PDT)
+        with ESMTP id S234546AbiHLVSV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Aug 2022 17:18:21 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 303A47434A
+        for <bpf@vger.kernel.org>; Fri, 12 Aug 2022 14:18:20 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id l4so2367353wrm.13
+        for <bpf@vger.kernel.org>; Fri, 12 Aug 2022 14:18:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:from:to:cc;
-        bh=XQfDrb6wVMNNP/cq2fAsMTsuPaIbNC+E6z0UCLv8q0Y=;
-        b=pa5eNNtMd2LGemYpPsgc7tq3+2eXZwzpbUWMTLhDl+qhuH4UCIfe0JnTA8U/eLFnN5
-         Fk1v6CLryK0kElv7vAk2aSoPqA/K7AIHCaUAH10aZ57rBadWpPXHCZ40bhGqCLwyUyC6
-         +HOMYMELVC7Bue4S0ErUyLyVr4e8eyiijMuDTJJOOvCtiNkydfBFGIKc2jBvI9OpuYaD
-         b7xn366iRhLr4mLEdTtkDMX8T8B9/8ROYdNLsgHz99YC2rfSowYlveTDreNFzzDWSfwg
-         IKIcbDgajhl0tVerijxHuTkixFwtzU/6OPOpERIaBLk6sI1x+bNtNwrj1dCoCzCZgc5L
-         Xceg==
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc;
+        bh=GLX3vdI9yRWeOE5xUvzkSCoOc4PyvTv7yrLldEJz3BA=;
+        b=B7CqyMWAlii+zwhT7OTBdLhaoxMRmn+jIMvX1DH5CQCoODM9ZuUkTc1FLoXdqcheaI
+         60R4tEFhptSxd1HXRAwi2F/G0FzW7chGJFF7xBZd4OhY7uWdakndhWySUj0sKaphoVZn
+         KXt3QJ2QWBHLs4DPKp6SM2EDbbJk68mcgLJZ3aC7vA1T6LGcVItWJLj1NxCEcxb+z93y
+         BAwKPDVipeNHPMolQGKfcyTSwyjuUWBxL2IRAgUxPm1LZJdPkIgql5lf4L9r2mPOOX3n
+         YseLuTyHqVu7pXA+1XdHxll1BM6Ri8kXiVVYVpDqMgMpfesXA8vlss87hkYl1mBSCC5n
+         corA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:x-gm-message-state:from:to:cc;
-        bh=XQfDrb6wVMNNP/cq2fAsMTsuPaIbNC+E6z0UCLv8q0Y=;
-        b=nYhx+1uuwnust8sotQ1c2TTz4IvuFNsoudK4UIJs69/X6aElrUZfwwyzyBciVj3lj3
-         a7M3P3mZPSqb9f65lhGD7UbzSnzsamKNLmQARe+wUxtAONGhKFIVMIhpAkrbiXZ+DQDq
-         9MLqHUvsjuRQodiDG9hBICTycZSmqNE0sySGEBGTwtdyuOEXdNSkgNl4Hz3g+8dMPw79
-         Oizxq3HKmfhvcR8oAahmXFe7qU+ePvOFGsj5Cy2rktWMPFWfID9SMEx+si0xcDwAIH1J
-         GYtifL2RbIX9ztIMKGlGPcLfHDPTUkSgYvtuI1yVFK7QZoYTbVUlrG6ljoqFuzoohJaG
-         vTcw==
-X-Gm-Message-State: ACgBeo0RCzt/ZCKjEjW0o9y+tL3SXt5BaBzCJ9U9dQj6cj32RFMKsLfc
-        BhlWoc5ecUXM+XlN+R1Xw3rBVAnCbvk=
-X-Google-Smtp-Source: AA6agR7wMH+HACSgAgRNJGZoDaXdLyDNeAIA2fYenj//S4S9w0s6WrpJfX3TJGA2BExmeEnBD3JJCbleX7U=
-X-Received: from haoluo.svl.corp.google.com ([2620:15c:2d4:203:da3d:b609:da67:694a])
- (user=haoluo job=sendgmr) by 2002:a25:c287:0:b0:67c:347e:294c with SMTP id
- s129-20020a25c287000000b0067c347e294cmr4777236ybf.317.1660336099569; Fri, 12
- Aug 2022 13:28:19 -0700 (PDT)
-Date:   Fri, 12 Aug 2022 13:28:02 -0700
-In-Reply-To: <20220812202802.3774257-1-haoluo@google.com>
-Message-Id: <20220812202802.3774257-6-haoluo@google.com>
-Mime-Version: 1.0
-References: <20220812202802.3774257-1-haoluo@google.com>
-X-Mailer: git-send-email 2.37.1.595.g718a3a8f04-goog
-Subject: [PATCH bpf-next v8 5/5] selftests/bpf: add a selftest for cgroup
- hierarchical stats collection
-From:   Hao Luo <haoluo@google.com>
-To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        cgroups@vger.kernel.org, netdev@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc;
+        bh=GLX3vdI9yRWeOE5xUvzkSCoOc4PyvTv7yrLldEJz3BA=;
+        b=Y5/WDw22pfe5vbuqK2Hk2g5+3fq9ufuggIVaXp3DAAt0N3+GLD2ODVzcT+JlM8qlH9
+         RVYynZZ0wHgX1vQ0LkojSYltM/LSRhiI85eSdmySBgO4tgSv4VJyWHRhI6WOtz83tVU/
+         gG2l2+2vXXXq86IK9ZjxeeYnrg87YSI000c1FHrLHR1MMxJomQ6nMMe1yoXqzOmbAbga
+         vafVqPUiMj2IILmkFCaSCNnEVvI0SZl/fsDZhs4uok+t3wuNBBM6Fuq1Nq1R5pXiDGr7
+         svMU/xLaQ4X3Nw3e6v2cI0nrreYB1b31ZZpGZl13fw6quHpebUKYtgfdJWZXtoQ0wn9y
+         8l6Q==
+X-Gm-Message-State: ACgBeo0caZT+wgUODG4w7/ALJbfLqESMOoxTAT0q4IfljDTQDejafN+t
+        9qUNfzIBQ71kFgbELScTKsc=
+X-Google-Smtp-Source: AA6agR7zitgqz6b4Cv6enl7puyGiaE+/4eJc5vN9gVS2KTTb6U3qHxMBb6g3HDrt6in/LKfH3eQQkg==
+X-Received: by 2002:a5d:640f:0:b0:220:e5a7:f5e7 with SMTP id z15-20020a5d640f000000b00220e5a7f5e7mr3015429wru.314.1660339098597;
+        Fri, 12 Aug 2022 14:18:18 -0700 (PDT)
+Received: from krava (ip-94-113-247-30.net.vodafone.cz. [94.113.247.30])
+        by smtp.gmail.com with ESMTPSA id bi9-20020a05600c3d8900b003a4efb794d7sm626824wmb.36.2022.08.12.14.18.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Aug 2022 14:18:18 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Fri, 12 Aug 2022 23:18:15 +0200
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Michal Koutny <mkoutny@suse.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        David Rientjes <rientjes@google.com>,
+        KP Singh <kpsingh@chromium.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
         Hao Luo <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+Subject: Re: [RFC] ftrace: Add support to keep some functions out of ftrace
+Message-ID: <YvbDlwJCTDWQ9uJj@krava>
+References: <20220722110811.124515-1-jolsa@kernel.org>
+ <20220722072608.17ef543f@rorschach.local.home>
+ <CAADnVQ+hLnyztCi9aqpptjQk-P+ByAkyj2pjbdD45dsXwpZ0bw@mail.gmail.com>
+ <20220722120854.3cc6ec4b@gandalf.local.home>
+ <20220722122548.2db543ca@gandalf.local.home>
+ <YtsRD1Po3qJy3w3t@krava>
+ <20220722174120.688768a3@gandalf.local.home>
+ <YtxqjxJVbw3RD4jt@krava>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YtxqjxJVbw3RD4jt@krava>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,659 +87,100 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Yosry Ahmed <yosryahmed@google.com>
+On Sat, Jul 23, 2022 at 11:39:27PM +0200, Jiri Olsa wrote:
+> On Fri, Jul 22, 2022 at 05:41:20PM -0400, Steven Rostedt wrote:
+> > On Fri, 22 Jul 2022 23:05:19 +0200
+> > Jiri Olsa <olsajiri@gmail.com> wrote:
+> > 
+> > > ok, I think we could use that, I'll check
+> > > 
+> > > > 
+> > > > But other than that, we don't need infrastructure to hide any mcount/fentry
+> > > > locations from ftrace. Those were add *for* ftrace.  
+> > > 
+> > > I think I understand the fentry/ftrace equivalence you see, I remember
+> > > the perl mcount script ;-)
+> > 
+> > It's even more than that. We worked with the compiler folks to get fentry
+> > for ftrace purposes (namely to speed it up, and not rely on frame
+> > pointers, which mcount did). fentry never existed until then. Like I said.
+> > fentry was created *for* ftrace. And currently it's x86 specific, as it
+> > relies on the calling convention that a call does both, push the return
+> > address onto the  stack, and jump to a function. The blr
+> > (branch-link-register) method is more complex, which is where the
+> > "patchable" work comes from.
+> > 
+> > > 
+> > > still I think we should be able to define function that has fentry
+> > > profile call and be able to manage it without ftrace
+> > > 
+> > > one other thought.. how about adding function that would allow to disable
+> > > function in ftrace, with existing FTRACE_FL_DISABLED or some new flag
+> > > 
+> > > that way ftrace still keeps track of it, but won't allow to use it in
+> > > ftrace infra
+> > 
+> > Another way is to remove it at compile time from the mcount_loc table, and
+> > add it to your own table. I take it, this is for bpf infrastructure code
+> 
+> hm, perhaps we could move it to separate object and switch off
+> -mrecord-mcount for it, I'll check
 
-Add a selftest that tests the whole workflow for collecting,
-aggregating (flushing), and displaying cgroup hierarchical stats.
+the patch below moves the bpf function into sepatate object and switches
+off the -mrecord-mcount for it.. so the function gets profile call
+generated but it's not visible to ftrace
 
-TL;DR:
-- Userspace program creates a cgroup hierarchy and induces memcg reclaim
-  in parts of it.
-- Whenever reclaim happens, vmscan_start and vmscan_end update
-  per-cgroup percpu readings, and tell rstat which (cgroup, cpu) pairs
-  have updates.
-- When userspace tries to read the stats, vmscan_dump calls rstat to flush
-  the stats, and outputs the stats in text format to userspace (similar
-  to cgroupfs stats).
-- rstat calls vmscan_flush once for every (cgroup, cpu) pair that has
-  updates, vmscan_flush aggregates cpu readings and propagates updates
-  to parents.
-- Userspace program makes sure the stats are aggregated and read
-  correctly.
+this seems to work, but it depends on -mrecord-mcount support in gcc and
+it's x86 specific... other archs seems to use -fpatchable-function-entry,
+which does not seem to have option to omit symbol from being collected
+to the section
 
-Detailed explanation:
-- The test loads tracing bpf programs, vmscan_start and vmscan_end, to
-  measure the latency of cgroup reclaim. Per-cgroup readings are stored in
-  percpu maps for efficiency. When a cgroup reading is updated on a cpu,
-  cgroup_rstat_updated(cgroup, cpu) is called to add the cgroup to the
-  rstat updated tree on that cpu.
+disabling specific ftrace symbol with FTRACE_FL_DISABLED flag seems to
+be easir and generic solution.. I'll send RFC for that
 
-- A cgroup_iter program, vmscan_dump, is loaded and pinned to a file, for
-  each cgroup. Reading this file invokes the program, which calls
-  cgroup_rstat_flush(cgroup) to ask rstat to propagate the updates for all
-  cpus and cgroups that have updates in this cgroup's subtree. Afterwards,
-  the stats are exposed to the user. vmscan_dump returns 1 to terminate
-  iteration early, so that we only expose stats for one cgroup per read.
+jirka
 
-- An ftrace program, vmscan_flush, is also loaded and attached to
-  bpf_rstat_flush. When rstat flushing is ongoing, vmscan_flush is invoked
-  once for each (cgroup, cpu) pair that has updates. cgroups are popped
-  from the rstat tree in a bottom-up fashion, so calls will always be
-  made for cgroups that have updates before their parents. The program
-  aggregates percpu readings to a total per-cgroup reading, and also
-  propagates them to the parent cgroup. After rstat flushing is over, all
-  cgroups will have correct updated hierarchical readings (including all
-  cpus and all their descendants).
 
-- Finally, the test creates a cgroup hierarchy and induces memcg reclaim
-  in parts of it, and makes sure that the stats collection, aggregation,
-  and reading workflow works as expected.
-
-Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-Signed-off-by: Hao Luo <haoluo@google.com>
 ---
- .../prog_tests/cgroup_hierarchical_stats.c    | 358 ++++++++++++++++++
- .../bpf/progs/cgroup_hierarchical_stats.c     | 226 +++++++++++
- 2 files changed, 584 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_hierarchical_stats.c
- create mode 100644 tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_hierarchical_stats.c b/tools/testing/selftests/bpf/prog_tests/cgroup_hierarchical_stats.c
+diff --git a/net/core/Makefile b/net/core/Makefile
+index e8ce3bd283a6..7d7ba2038879 100644
+--- a/net/core/Makefile
++++ b/net/core/Makefile
+@@ -12,10 +12,14 @@ obj-$(CONFIG_SYSCTL) += sysctl_net_core.o
+ obj-y		     += dev.o dev_addr_lists.o dst.o netevent.o \
+ 			neighbour.o rtnetlink.o utils.o link_watch.o filter.o \
+ 			sock_diag.o dev_ioctl.o tso.o sock_reuseport.o \
+-			fib_notifier.o xdp.o flow_offload.o gro.o
++			fib_notifier.o xdp.o flow_offload.o gro.o \
++			dispatcher.o
+ 
+ obj-$(CONFIG_NETDEV_ADDR_LIST_TEST) += dev_addr_lists_test.o
+ 
++# remove dispatcher function from ftrace sight
++CFLAGS_REMOVE_dispatcher.o = -mrecord-mcount
++
+ obj-y += net-sysfs.o
+ obj-$(CONFIG_PAGE_POOL) += page_pool.o
+ obj-$(CONFIG_PROC_FS) += net-procfs.o
+diff --git a/net/core/dispatcher.c b/net/core/dispatcher.c
 new file mode 100644
-index 000000000000..66cc124f5e5a
+index 000000000000..7d2730b15de0
 --- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_hierarchical_stats.c
-@@ -0,0 +1,358 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Functions to manage eBPF programs attached to cgroup subsystems
-+ *
-+ * Copyright 2022 Google LLC.
-+ */
-+#include <asm-generic/errno.h>
-+#include <errno.h>
-+#include <sys/types.h>
-+#include <sys/mount.h>
-+#include <sys/stat.h>
-+#include <unistd.h>
-+
-+#include <test_progs.h>
-+#include <bpf/libbpf.h>
-+#include <bpf/bpf.h>
-+
-+#include "cgroup_helpers.h"
-+#include "cgroup_hierarchical_stats.skel.h"
-+
-+#define PAGE_SIZE 4096
-+#define MB(x) (x << 20)
-+
-+#define BPFFS_ROOT "/sys/fs/bpf/"
-+#define BPFFS_VMSCAN BPFFS_ROOT"vmscan/"
-+
-+#define CG_ROOT_NAME "root"
-+#define CG_ROOT_ID 1
-+
-+#define CGROUP_PATH(p, n) {.path = p"/"n, .name = n}
-+
-+static struct {
-+	const char *path, *name;
-+	unsigned long long id;
-+	int fd;
-+} cgroups[] = {
-+	CGROUP_PATH("/", "test"),
-+	CGROUP_PATH("/test", "child1"),
-+	CGROUP_PATH("/test", "child2"),
-+	CGROUP_PATH("/test/child1", "child1_1"),
-+	CGROUP_PATH("/test/child1", "child1_2"),
-+	CGROUP_PATH("/test/child2", "child2_1"),
-+	CGROUP_PATH("/test/child2", "child2_2"),
-+};
-+
-+#define N_CGROUPS ARRAY_SIZE(cgroups)
-+#define N_NON_LEAF_CGROUPS 3
-+
-+static int root_cgroup_fd;
-+static bool mounted_bpffs;
-+
-+/* reads file at 'path' to 'buf', returns 0 on success. */
-+static int read_from_file(const char *path, char *buf, size_t size)
-+{
-+	int fd, len;
-+
-+	fd = open(path, O_RDONLY);
-+	if (fd < 0)
-+		return fd;
-+
-+	len = read(fd, buf, size);
-+	close(fd);
-+	if (len < 0)
-+		return len;
-+
-+	buf[len] = 0;
-+	return 0;
-+}
-+
-+/* mounts bpffs and mkdir for reading stats, returns 0 on success. */
-+static int setup_bpffs(void)
-+{
-+	int err;
-+
-+	/* Mount bpffs */
-+	err = mount("bpf", BPFFS_ROOT, "bpf", 0, NULL);
-+	mounted_bpffs = !err;
-+	if (ASSERT_FALSE(err && errno != EBUSY, "mount"))
-+		return err;
-+
-+	/* Create a directory to contain stat files in bpffs */
-+	err = mkdir(BPFFS_VMSCAN, 0755);
-+	if (!ASSERT_OK(err, "mkdir"))
-+		return err;
-+
-+	return 0;
-+}
-+
-+static void cleanup_bpffs(void)
-+{
-+	/* Remove created directory in bpffs */
-+	ASSERT_OK(rmdir(BPFFS_VMSCAN), "rmdir "BPFFS_VMSCAN);
-+
-+	/* Unmount bpffs, if it wasn't already mounted when we started */
-+	if (mounted_bpffs)
-+		return;
-+
-+	ASSERT_OK(umount(BPFFS_ROOT), "unmount bpffs");
-+}
-+
-+/* sets up cgroups, returns 0 on success. */
-+static int setup_cgroups(void)
-+{
-+	int i, fd, err;
-+
-+	err = setup_cgroup_environment();
-+	if (!ASSERT_OK(err, "setup_cgroup_environment"))
-+		return err;
-+
-+	root_cgroup_fd = get_root_cgroup();
-+	if (!ASSERT_GE(root_cgroup_fd, 0, "get_root_cgroup"))
-+		return root_cgroup_fd;
-+
-+	for (i = 0; i < N_CGROUPS; i++) {
-+		fd = create_and_get_cgroup(cgroups[i].path);
-+		if (!ASSERT_GE(fd, 0, "create_and_get_cgroup"))
-+			return fd;
-+
-+		cgroups[i].fd = fd;
-+		cgroups[i].id = get_cgroup_id(cgroups[i].path);
-+
-+		/*
-+		 * Enable memcg controller for the entire hierarchy.
-+		 * Note that stats are collected for all cgroups in a hierarchy
-+		 * with memcg enabled anyway, but are only exposed for cgroups
-+		 * that have memcg enabled.
-+		 */
-+		if (i < N_NON_LEAF_CGROUPS) {
-+			err = enable_controllers(cgroups[i].path, "memory");
-+			if (!ASSERT_OK(err, "enable_controllers"))
-+				return err;
-+		}
-+	}
-+	return 0;
-+}
-+
-+static void cleanup_cgroups(void)
-+{
-+	close(root_cgroup_fd);
-+	for (int i = 0; i < N_CGROUPS; i++)
-+		close(cgroups[i].fd);
-+	cleanup_cgroup_environment();
-+}
-+
-+/* Sets up cgroup hiearchary, returns 0 on success. */
-+static int setup_hierarchy(void)
-+{
-+	return setup_bpffs() || setup_cgroups();
-+}
-+
-+static void destroy_hierarchy(void)
-+{
-+	cleanup_cgroups();
-+	cleanup_bpffs();
-+}
-+
-+static int reclaimer(const char *cgroup_path, size_t size)
-+{
-+	static char size_buf[128];
-+	char *buf, *ptr;
-+	int err;
-+
-+	/* Join cgroup in the parent process workdir */
-+	if (join_parent_cgroup(cgroup_path))
-+		return EACCES;
-+
-+	/* Allocate memory */
-+	buf = malloc(size);
-+	if (!buf)
-+		return ENOMEM;
-+
-+	/* Write to memory to make sure it's actually allocated */
-+	for (ptr = buf; ptr < buf + size; ptr += PAGE_SIZE)
-+		*ptr = 1;
-+
-+	/* Try to reclaim memory */
-+	snprintf(size_buf, 128, "%lu", size);
-+	err = write_cgroup_file_parent(cgroup_path, "memory.reclaim", size_buf);
-+
-+	free(buf);
-+	/* memory.reclaim returns EAGAIN if the amount is not fully reclaimed */
-+	if (err && errno != EAGAIN)
-+		return errno;
-+
-+	return 0;
-+}
-+
-+static int induce_vmscan(void)
-+{
-+	int i, status;
-+
-+	/*
-+	 * In every leaf cgroup, run a child process that allocates some memory
-+	 * and attempts to reclaim some of it.
-+	 */
-+	for (i = N_NON_LEAF_CGROUPS; i < N_CGROUPS; i++) {
-+		pid_t pid;
-+
-+		/* Create reclaimer child */
-+		pid = fork();
-+		if (pid == 0) {
-+			status = reclaimer(cgroups[i].path, MB(5));
-+			exit(status);
-+		}
-+
-+		/* Cleanup reclaimer child */
-+		waitpid(pid, &status, 0);
-+		ASSERT_TRUE(WIFEXITED(status), "reclaimer exited");
-+		ASSERT_EQ(WEXITSTATUS(status), 0, "reclaim exit code");
-+	}
-+	return 0;
-+}
-+
-+static unsigned long long
-+get_cgroup_vmscan_delay(unsigned long long cgroup_id, const char *file_name)
-+{
-+	unsigned long long vmscan = 0, id = 0;
-+	static char buf[128], path[128];
-+
-+	/* For every cgroup, read the file generated by cgroup_iter */
-+	snprintf(path, 128, "%s%s", BPFFS_VMSCAN, file_name);
-+	if (!ASSERT_OK(read_from_file(path, buf, 128), "read cgroup_iter"))
-+		return 0;
-+
-+	/* Check the output file formatting */
-+	ASSERT_EQ(sscanf(buf, "cg_id: %llu, total_vmscan_delay: %llu\n",
-+			 &id, &vmscan), 2, "output format");
-+
-+	/* Check that the cgroup_id is displayed correctly */
-+	ASSERT_EQ(id, cgroup_id, "cgroup_id");
-+	/* Check that the vmscan reading is non-zero */
-+	ASSERT_GT(vmscan, 0, "vmscan_reading");
-+	return vmscan;
-+}
-+
-+static void check_vmscan_stats(void)
-+{
-+	unsigned long long vmscan_readings[N_CGROUPS], vmscan_root;
-+	int i;
-+
-+	for (i = 0; i < N_CGROUPS; i++) {
-+		vmscan_readings[i] = get_cgroup_vmscan_delay(cgroups[i].id,
-+							     cgroups[i].name);
-+	}
-+
-+	/* Read stats for root too */
-+	vmscan_root = get_cgroup_vmscan_delay(CG_ROOT_ID, CG_ROOT_NAME);
-+
-+	/* Check that child1 == child1_1 + child1_2 */
-+	ASSERT_EQ(vmscan_readings[1], vmscan_readings[3] + vmscan_readings[4],
-+		  "child1_vmscan");
-+	/* Check that child2 == child2_1 + child2_2 */
-+	ASSERT_EQ(vmscan_readings[2], vmscan_readings[5] + vmscan_readings[6],
-+		  "child2_vmscan");
-+	/* Check that test == child1 + child2 */
-+	ASSERT_EQ(vmscan_readings[0], vmscan_readings[1] + vmscan_readings[2],
-+		  "test_vmscan");
-+	/* Check that root >= test */
-+	ASSERT_GE(vmscan_root, vmscan_readings[1], "root_vmscan");
-+}
-+
-+/* Creates iter link and pins in bpffs, returns 0 on success, -errno on failure.
-+ */
-+static int setup_cgroup_iter(struct cgroup_hierarchical_stats *obj,
-+			     int cgroup_fd, const char *file_name)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-+	union bpf_iter_link_info linfo = {};
-+	struct bpf_link *link;
-+	static char path[128];
-+	int err;
-+
-+	/*
-+	 * Create an iter link, parameterized by cgroup_fd.
-+	 * We only want to traverse one cgroup, so set the traversal order to
-+	 * "pre", and return 1 from dump_vmscan to stop iteration after the
-+	 * first cgroup.
-+	 */
-+	linfo.cgroup.cgroup_fd = cgroup_fd;
-+	linfo.cgroup.order = BPF_ITER_SELF_ONLY;
-+	opts.link_info = &linfo;
-+	opts.link_info_len = sizeof(linfo);
-+	link = bpf_program__attach_iter(obj->progs.dump_vmscan, &opts);
-+	if (!ASSERT_OK_PTR(link, "attach iter"))
-+		return -EFAULT;
-+
-+	/* Pin the link to a bpffs file */
-+	snprintf(path, 128, "%s%s", BPFFS_VMSCAN, file_name);
-+	err = bpf_link__pin(link, path);
-+	ASSERT_OK(err, "pin cgroup_iter");
-+
-+	/* Remove the link, leaving only the ref held by the pinned file */
-+	bpf_link__destroy(link);
-+	return err;
-+}
-+
-+/* Sets up programs for collecting stats, returns 0 on success. */
-+static int setup_progs(struct cgroup_hierarchical_stats **skel)
-+{
-+	int i, err;
-+
-+	*skel = cgroup_hierarchical_stats__open_and_load();
-+	if (!ASSERT_OK_PTR(*skel, "open_and_load"))
-+		return 1;
-+
-+	/* Attach cgroup_iter program that will dump the stats to cgroups */
-+	for (i = 0; i < N_CGROUPS; i++) {
-+		err = setup_cgroup_iter(*skel, cgroups[i].fd, cgroups[i].name);
-+		if (!ASSERT_OK(err, "setup_cgroup_iter"))
-+			return err;
-+	}
-+
-+	/* Also dump stats for root */
-+	err = setup_cgroup_iter(*skel, root_cgroup_fd, CG_ROOT_NAME);
-+	if (!ASSERT_OK(err, "setup_cgroup_iter"))
-+		return err;
-+
-+	err = cgroup_hierarchical_stats__attach(*skel);
-+	if (!ASSERT_OK(err, "attach"))
-+		return err;
-+
-+	return 0;
-+}
-+
-+static void destroy_progs(struct cgroup_hierarchical_stats *skel)
-+{
-+	static char path[128];
-+	int i;
-+
-+	for (i = 0; i < N_CGROUPS; i++) {
-+		/* Delete files in bpffs that cgroup_iters are pinned in */
-+		snprintf(path, 128, "%s%s", BPFFS_VMSCAN,
-+			 cgroups[i].name);
-+		ASSERT_OK(remove(path), "remove cgroup_iter pin");
-+	}
-+
-+	/* Delete root file in bpffs */
-+	snprintf(path, 128, "%s%s", BPFFS_VMSCAN, CG_ROOT_NAME);
-+	ASSERT_OK(remove(path), "remove cgroup_iter root pin");
-+	cgroup_hierarchical_stats__destroy(skel);
-+}
-+
-+void test_cgroup_hierarchical_stats(void)
-+{
-+	struct cgroup_hierarchical_stats *skel = NULL;
-+
-+	if (setup_hierarchy())
-+		goto hierarchy_cleanup;
-+	if (setup_progs(&skel))
-+		goto cleanup;
-+	if (induce_vmscan())
-+		goto cleanup;
-+	check_vmscan_stats();
-+cleanup:
-+	destroy_progs(skel);
-+hierarchy_cleanup:
-+	destroy_hierarchy();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c b/tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
-new file mode 100644
-index 000000000000..8ab4253a1592
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
-@@ -0,0 +1,226 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Functions to manage eBPF programs attached to cgroup subsystems
-+ *
-+ * Copyright 2022 Google LLC.
-+ */
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_core_read.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+/*
-+ * Start times are stored per-task, not per-cgroup, as multiple tasks in one
-+ * cgroup can perform reclaim concurrently.
-+ */
-+struct {
-+	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, __u64);
-+} vmscan_start_time SEC(".maps");
-+
-+struct vmscan_percpu {
-+	/* Previous percpu state, to figure out if we have new updates */
-+	__u64 prev;
-+	/* Current percpu state */
-+	__u64 state;
-+};
-+
-+struct vmscan {
-+	/* State propagated through children, pending aggregation */
-+	__u64 pending;
-+	/* Total state, including all cpus and all children */
-+	__u64 state;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_HASH);
-+	__uint(max_entries, 100);
-+	__type(key, __u64);
-+	__type(value, struct vmscan_percpu);
-+} pcpu_cgroup_vmscan_elapsed SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, 100);
-+	__type(key, __u64);
-+	__type(value, struct vmscan);
-+} cgroup_vmscan_elapsed SEC(".maps");
-+
-+extern void cgroup_rstat_updated(struct cgroup *cgrp, int cpu) __ksym;
-+extern void cgroup_rstat_flush(struct cgroup *cgrp) __ksym;
-+
-+static struct cgroup *task_memcg(struct task_struct *task)
-+{
-+	int cgrp_id;
-+
-+#if __has_builtin(__builtin_preserve_enum_value)
-+	cgrp_id = bpf_core_enum_value(enum cgroup_subsys_id, memory_cgrp_id);
-+#else
-+	cgrp_id = memory_cgrp_id;
-+#endif
-+	return task->cgroups->subsys[cgrp_id]->cgroup;
-+}
-+
-+static uint64_t cgroup_id(struct cgroup *cgrp)
-+{
-+	return cgrp->kn->id;
-+}
-+
-+static int create_vmscan_percpu_elem(__u64 cg_id, __u64 state)
-+{
-+	struct vmscan_percpu pcpu_init = {.state = state, .prev = 0};
-+
-+	return bpf_map_update_elem(&pcpu_cgroup_vmscan_elapsed, &cg_id,
-+				   &pcpu_init, BPF_NOEXIST);
-+}
-+
-+static int create_vmscan_elem(__u64 cg_id, __u64 state, __u64 pending)
-+{
-+	struct vmscan init = {.state = state, .pending = pending};
-+
-+	return bpf_map_update_elem(&cgroup_vmscan_elapsed, &cg_id,
-+				   &init, BPF_NOEXIST);
-+}
-+
-+SEC("tp_btf/mm_vmscan_memcg_reclaim_begin")
-+int BPF_PROG(vmscan_start, int order, gfp_t gfp_flags)
-+{
-+	struct task_struct *task = bpf_get_current_task_btf();
-+	__u64 *start_time_ptr;
-+
-+	start_time_ptr = bpf_task_storage_get(&vmscan_start_time, task, 0,
-+					      BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (start_time_ptr)
-+		*start_time_ptr = bpf_ktime_get_ns();
-+	return 0;
-+}
-+
-+SEC("tp_btf/mm_vmscan_memcg_reclaim_end")
-+int BPF_PROG(vmscan_end, unsigned long nr_reclaimed)
-+{
-+	struct vmscan_percpu *pcpu_stat;
-+	struct task_struct *current = bpf_get_current_task_btf();
-+	struct cgroup *cgrp;
-+	__u64 *start_time_ptr;
-+	__u64 current_elapsed, cg_id;
-+	__u64 end_time = bpf_ktime_get_ns();
-+
-+	/*
-+	 * cgrp is the first parent cgroup of current that has memcg enabled in
-+	 * its subtree_control, or NULL if memcg is disabled in the entire tree.
-+	 * In a cgroup hierarchy like this:
-+	 *                               a
-+	 *                              / \
-+	 *                             b   c
-+	 *  If "a" has memcg enabled, while "b" doesn't, then processes in "b"
-+	 *  will accumulate their stats directly to "a". This makes sure that no
-+	 *  stats are lost from processes in leaf cgroups that don't have memcg
-+	 *  enabled, but only exposes stats for cgroups that have memcg enabled.
-+	 */
-+	cgrp = task_memcg(current);
-+	if (!cgrp)
-+		return 0;
-+
-+	cg_id = cgroup_id(cgrp);
-+	start_time_ptr = bpf_task_storage_get(&vmscan_start_time, current, 0,
-+					      BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (!start_time_ptr)
-+		return 0;
-+
-+	current_elapsed = end_time - *start_time_ptr;
-+	pcpu_stat = bpf_map_lookup_elem(&pcpu_cgroup_vmscan_elapsed,
-+					&cg_id);
-+	if (pcpu_stat)
-+		pcpu_stat->state += current_elapsed;
-+	else if (create_vmscan_percpu_elem(cg_id, current_elapsed))
-+		return 0;
-+
-+	cgroup_rstat_updated(cgrp, bpf_get_smp_processor_id());
-+	return 0;
-+}
-+
-+SEC("fentry/bpf_rstat_flush")
-+int BPF_PROG(vmscan_flush, struct cgroup *cgrp, struct cgroup *parent, int cpu)
-+{
-+	struct vmscan_percpu *pcpu_stat;
-+	struct vmscan *total_stat, *parent_stat;
-+	__u64 cg_id = cgroup_id(cgrp);
-+	__u64 parent_cg_id = parent ? cgroup_id(parent) : 0;
-+	__u64 *pcpu_vmscan;
-+	__u64 state;
-+	__u64 delta = 0;
-+
-+	/* Add CPU changes on this level since the last flush */
-+	pcpu_stat = bpf_map_lookup_percpu_elem(&pcpu_cgroup_vmscan_elapsed,
-+					       &cg_id, cpu);
-+	if (pcpu_stat) {
-+		state = pcpu_stat->state;
-+		delta += state - pcpu_stat->prev;
-+		pcpu_stat->prev = state;
-+	}
-+
-+	total_stat = bpf_map_lookup_elem(&cgroup_vmscan_elapsed, &cg_id);
-+	if (!total_stat) {
-+		if (create_vmscan_elem(cg_id, delta, 0))
-+			return 0;
-+
-+		goto update_parent;
-+	}
-+
-+	/* Collect pending stats from subtree */
-+	if (total_stat->pending) {
-+		delta += total_stat->pending;
-+		total_stat->pending = 0;
-+	}
-+
-+	/* Propagate changes to this cgroup's total */
-+	total_stat->state += delta;
-+
-+update_parent:
-+	/* Skip if there are no changes to propagate, or no parent */
-+	if (!delta || !parent_cg_id)
-+		return 0;
-+
-+	/* Propagate changes to cgroup's parent */
-+	parent_stat = bpf_map_lookup_elem(&cgroup_vmscan_elapsed,
-+					  &parent_cg_id);
-+	if (parent_stat)
-+		parent_stat->pending += delta;
-+	else
-+		create_vmscan_elem(parent_cg_id, 0, delta);
-+	return 0;
-+}
-+
-+SEC("iter.s/cgroup")
-+int BPF_PROG(dump_vmscan, struct bpf_iter_meta *meta, struct cgroup *cgrp)
-+{
-+	struct seq_file *seq = meta->seq;
-+	struct vmscan *total_stat;
-+	__u64 cg_id = cgrp ? cgroup_id(cgrp) : 0;
-+
-+	/* Do nothing for the terminal call */
-+	if (!cg_id)
-+		return 1;
-+
-+	/* Flush the stats to make sure we get the most updated numbers */
-+	cgroup_rstat_flush(cgrp);
-+
-+	total_stat = bpf_map_lookup_elem(&cgroup_vmscan_elapsed, &cg_id);
-+	if (!total_stat) {
-+		BPF_SEQ_PRINTF(seq, "cg_id: %llu, total_vmscan_delay: 0\n",
-+			       cg_id);
-+	} else {
-+		BPF_SEQ_PRINTF(seq, "cg_id: %llu, total_vmscan_delay: %llu\n",
-+			       cg_id, total_stat->state);
-+	}
-+
-+	/*
-+	 * We only dump stats for one cgroup here, so return 1 to stop
-+	 * iteration after the first cgroup.
-+	 */
-+	return 1;
-+}
--- 
-2.37.1.595.g718a3a8f04-goog
-
++++ b/net/core/dispatcher.c
+@@ -0,0 +1,3 @@
++#include <linux/bpf.h>
++
++DEFINE_BPF_DISPATCHER(xdp)
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 5669248aff25..23fe2c5dfe9d 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -11333,8 +11333,6 @@ const struct bpf_verifier_ops sk_lookup_verifier_ops = {
+ 
+ #endif /* CONFIG_INET */
+ 
+-DEFINE_BPF_DISPATCHER(xdp)
+-
+ void bpf_prog_change_xdp(struct bpf_prog *prev_prog, struct bpf_prog *prog)
+ {
+ 	bpf_dispatcher_change_prog(BPF_DISPATCHER_PTR(xdp), prev_prog, prog);
