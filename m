@@ -2,456 +2,309 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE8D59099F
-	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 02:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 313015909A4
+	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 02:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234043AbiHLAqb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Aug 2022 20:46:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38318 "EHLO
+        id S234831AbiHLAuH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Aug 2022 20:50:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbiHLAqb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Aug 2022 20:46:31 -0400
-Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47D74A00FC;
-        Thu, 11 Aug 2022 17:46:29 -0700 (PDT)
-Received: by mail-qk1-f169.google.com with SMTP id z7so9397212qki.11;
-        Thu, 11 Aug 2022 17:46:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc;
-        bh=YtiCpQrGuUY4mdD6mLJSDD/cyQnjQEA2au0Dt8ntMMo=;
-        b=ozwYniWCDRySm2XG41U7I8zP4w5ufPtyiDEKyx9oWk/Jv5qBq4vhcj3E7l0zPLfb4e
-         4Enm4V+quLX5x6dVSzaVwKlEnaPAx+KiaE2tdc7/KvrCiEVCN+Sktk3651msIpghZxIF
-         AnLNT/glkoT0fBRtgpS4w2rMKVap4rih7RjcaSgArTTnUnhh8LNHISI2vZUmZUvsQhzm
-         GvGlr+bsdfyR5mjzuPMUdQ50QTsw9PBr/WLIhh5WVm90vP1a7L4XJF0RYaKyuJVkrw/X
-         BC8WrqlO8LLnj70TsLmPrInyK53+B8xNrAy8BZ5FqQQMwQXeW5GNCSmJwRhpY9A4rLs+
-         LERw==
-X-Gm-Message-State: ACgBeo2lHpJgreDZcveO36oujKo2xXEBFmXJDE+58rCgmP6BV8z8IM63
-        kubJCIQC0xBdXLY2K+ag5fTYfpaXXrbXj+uD
-X-Google-Smtp-Source: AA6agR65oiVKe0X0OygvFlOK4qqJxTA1NuJAeFDyor8w1Eo0vMoYoq7p5iDXjPPDPExeqKoD+DuVhA==
-X-Received: by 2002:a05:620a:2a14:b0:6b6:6858:3146 with SMTP id o20-20020a05620a2a1400b006b668583146mr1255864qkp.758.1660265188135;
-        Thu, 11 Aug 2022 17:46:28 -0700 (PDT)
-Received: from maniforge.dhcp.thefacebook.com ([2620:10d:c091:480::bfe0])
-        by smtp.gmail.com with ESMTPSA id o4-20020ac872c4000000b0033fc75c3469sm595366qtp.27.2022.08.11.17.46.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Aug 2022 17:46:27 -0700 (PDT)
-Date:   Thu, 11 Aug 2022 19:46:25 -0500
-From:   David Vernet <void@manifault.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, john.fastabend@gmail.com, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, tj@kernel.org,
-        joannelkoong@gmail.com, linux-kernel@vger.kernel.org,
-        Kernel-team@fb.com
-Subject: Re: [PATCH 3/5] bpf: Add bpf_user_ringbuf_drain() helper
-Message-ID: <YvWi4f1hz/v72Fpc@maniforge.dhcp.thefacebook.com>
-References: <20220808155341.2479054-1-void@manifault.com>
- <20220808155341.2479054-3-void@manifault.com>
- <CAEf4BzZ-m-AUX+1+CGr7nMxMDnT=fjkn8DP9nP21Uts1y7fMyg@mail.gmail.com>
+        with ESMTP id S229524AbiHLAuE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Aug 2022 20:50:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A48D0A1D30
+        for <bpf@vger.kernel.org>; Thu, 11 Aug 2022 17:50:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 247F8615D1
+        for <bpf@vger.kernel.org>; Fri, 12 Aug 2022 00:50:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EF84C4347C
+        for <bpf@vger.kernel.org>; Fri, 12 Aug 2022 00:50:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1660265402;
+        bh=TIQaOoU+pLAcFRM/R/Q7m46Yb2W9R3osC1QlkuW063k=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=URY0PFSv7C3hE/WIg4QU8bzDezkTOv83QB3CiMgs+LML6iEIoYcMg36OVjUqnnWVI
+         0ghOaTkKL55lSk42Joaft22pc0ntcOaqkO6iIbBI5zel88mS/oRZVAvQIMtIQ/g2Po
+         NjMTU2wTpDgwsvTGdKmhEQxZzE8oYozher1EbwMCKxvVyKB7xZ/xZ1m1bdsPIR72qy
+         8WL3Zt/TN+tNA+vxRG0fahkeXhIP3+mS56FH3pgZIr4g2ySh4H8MW8e7tqVnE6Hx/h
+         GnFIa2plJqjWT3eFdXu1jslf1NZ4zrZqz5lWkJHTIOy9F6h57JNpQyqV6oMcVGaURx
+         FG4aEHHVv9hlg==
+Received: by mail-yb1-f177.google.com with SMTP id z5so30816568yba.3
+        for <bpf@vger.kernel.org>; Thu, 11 Aug 2022 17:50:02 -0700 (PDT)
+X-Gm-Message-State: ACgBeo36aa60XWpDK2bG1Vti+2JBBmz6rzWL3PbP5zEEBEnDHmcxcXiU
+        tCZZxM7buETliguOsc7onDdgI781siduM8nkqkzzhg==
+X-Google-Smtp-Source: AA6agR6kD2Pf7FsSFzR6yThkj/UDKvSltMp+bydiWpPs5ohsMOEy7LVYTUeT9gRNRB1PF59zUTpEDQuTixZiBY5yMQI=
+X-Received: by 2002:a25:780e:0:b0:671:3386:8129 with SMTP id
+ t14-20020a25780e000000b0067133868129mr1834812ybc.404.1660265391258; Thu, 11
+ Aug 2022 17:49:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZ-m-AUX+1+CGr7nMxMDnT=fjkn8DP9nP21Uts1y7fMyg@mail.gmail.com>
-User-Agent: Mutt/2.2.7 (2022-08-07)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <20220810165932.2143413-1-roberto.sassu@huawei.com> <20220810165932.2143413-6-roberto.sassu@huawei.com>
+In-Reply-To: <20220810165932.2143413-6-roberto.sassu@huawei.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Fri, 12 Aug 2022 02:49:40 +0200
+X-Gmail-Original-Message-ID: <CACYkzJ718fr2TsvX0JPhTRiMQH8=HwaxLShrETLvrhPUy2p8OQ@mail.gmail.com>
+Message-ID: <CACYkzJ718fr2TsvX0JPhTRiMQH8=HwaxLShrETLvrhPUy2p8OQ@mail.gmail.com>
+Subject: Re: [PATCH v10 5/9] bpf: Add bpf_lookup_*_key() and bpf_key_put() kfuncs
+To:     Roberto Sassu <roberto.sassu@huawei.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, corbet@lwn.net, dhowells@redhat.com,
+        jarkko@kernel.org, rostedt@goodmis.org, mingo@redhat.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        shuah@kernel.org, bpf@vger.kernel.org, linux-doc@vger.kernel.org,
+        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 11, 2022 at 04:22:43PM -0700, Andrii Nakryiko wrote:
-> On Mon, Aug 8, 2022 at 8:54 AM David Vernet <void@manifault.com> wrote:
-> >
-> > Now that we have a BPF_MAP_TYPE_USER_RINGBUF map type, we need to add a
-> > helper function that allows BPF programs to drain samples from the ring
-> > buffer, and invoke a callback for each. This patch adds a new
-> > bpf_user_ringbuf_drain() helper that provides this abstraction.
-> >
-> > In order to support this, we needed to also add a new PTR_TO_DYNPTR
-> > register type to reflect a dynptr that was allocated by a helper function
-> > and passed to a BPF program. The verifier currently only supports
-> > PTR_TO_DYNPTR registers that are also DYNPTR_TYPE_LOCAL and MEM_ALLOC.
-> 
-> This commit message is a bit too laconic. There is a lot of
-> implications of various parts of this patch, it would be great to
-> highlight most important ones. Please consider elaborating a bit more.
+On Wed, Aug 10, 2022 at 7:01 PM Roberto Sassu <roberto.sassu@huawei.com> wrote:
+>
+> Add the bpf_lookup_user_key(), bpf_lookup_system_key() and bpf_key_put()
+> kfuncs, to respectively search a key with a given serial and flags, obtain
 
-Argh, sent my last email too early that only responded to this too early.
-I'll do this in v3, as mentioned in my other email.
+nit: "with a given key handle serial number"
 
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index a341f877b230..ca125648d7fd 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -5332,6 +5332,13 @@ union bpf_attr {
-> >   *             **-EACCES** if the SYN cookie is not valid.
-> >   *
-> >   *             **-EPROTONOSUPPORT** if CONFIG_IPV6 is not builtin.
-> > + *
-> > + * long bpf_user_ringbuf_drain(struct bpf_map *map, void *callback_fn, void *ctx, u64 flags)
-> > + *     Description
-> > + *             Drain samples from the specified user ringbuffer, and invoke the
-> > + *             provided callback for each such sample.
-> 
-> please specify what's the expected signature of callback_fn
+> a key from a pre-determined ID defined in include/linux/verification.h, and
+> cleanup.
+>
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> ---
+>  include/linux/bpf.h      |   6 ++
+>  kernel/trace/bpf_trace.c | 146 +++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 152 insertions(+)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index a82f8c559ae2..d415e5e97551 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -2573,4 +2573,10 @@ static inline void bpf_cgroup_atype_get(u32 attach_btf_id, int cgroup_atype) {}
+>  static inline void bpf_cgroup_atype_put(int cgroup_atype) {}
+>  #endif /* CONFIG_BPF_LSM */
+>
+> +#ifdef CONFIG_KEYS
+> +struct bpf_key {
+> +       struct key *key;
+> +       bool has_ref;
+> +};
+> +#endif /* CONFIG_KEYS */
+>  #endif /* _LINUX_BPF_H */
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 68e5cdd24cef..a607bb0be738 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -20,6 +20,8 @@
+>  #include <linux/fprobe.h>
+>  #include <linux/bsearch.h>
+>  #include <linux/sort.h>
+> +#include <linux/key.h>
+> +#include <linux/verification.h>
+>
+>  #include <net/bpf_sk_storage.h>
+>
+> @@ -1181,6 +1183,150 @@ static const struct bpf_func_proto bpf_get_func_arg_cnt_proto = {
+>         .arg1_type      = ARG_PTR_TO_CTX,
+>  };
+>
+> +#ifdef CONFIG_KEYS
+> +__diag_push();
+> +__diag_ignore_all("-Wmissing-prototypes",
+> +                 "kfuncs which will be used in BPF programs");
+> +
+> +/**
+> + * bpf_lookup_user_key - lookup a key by its serial
+> + * @serial: key serial
 
-Will do, unfortunatley we're inconsistent in doing this in other helper
-functions, so it wasn't clear from context.
+nit: "key handle serial number"
 
-> > + *     Return
-> > + *             An error if a sample could not be drained.
-> 
-> Negative error, right? And might be worth it briefly describing what
-> are the situation(s) when you won't be able to drain a sample?
-> 
-> Also please clarify if having no sample to drain is an error or not?
-> 
-> It's also important to specify that if no error (and -ENODATA
-> shouldn't be an error, actually) occurred then we get number of
-> consumed samples back.
 
-Agreed, I'll add more data here in the next version.
+> + * @flags: lookup-specific flags
+> + *
+> + * Search a key with a given *serial* and the provided *flags*. The
+> + * returned key, if found, has the reference count incremented by
+> + * one, and is stored in a bpf_key structure, returned to the caller.
 
-[...]
+nit: This can be made a little clearer with:
 
-> > +
-> > +static __poll_t ringbuf_map_poll_kern(struct bpf_map *map, struct file *filp,
-> > +                                     struct poll_table_struct *pts)
-> > +{
-> > +       return ringbuf_map_poll(map, filp, pts, true);
-> > +}
-> > +
-> > +static __poll_t ringbuf_map_poll_user(struct bpf_map *map, struct file *filp,
-> > +                                     struct poll_table_struct *pts)
-> > +{
-> > +       return ringbuf_map_poll(map, filp, pts, false);
-> >  }
-> 
-> This is an even stronger case where I think we should keep two
-> implementations completely separate. Please keep existing
-> ringbuf_map_poll as is and just add a user variant as a separate
-> implementation
+Search a key with a given *serial* and the provided *flags*.
+If found, increment the reference count of the key by
+one, and return it in the bpf_key structure.
 
-Agreed, I'll split both this and  into separate functions (and the mmaps)
-into separate functions.
 
-> >  BTF_ID_LIST_SINGLE(ringbuf_map_btf_ids, struct, bpf_ringbuf_map)
-> > @@ -309,7 +326,7 @@ const struct bpf_map_ops ringbuf_map_ops = {
-> >         .map_alloc = ringbuf_map_alloc,
-> >         .map_free = ringbuf_map_free,
-> >         .map_mmap = ringbuf_map_mmap_kern,
-> > -       .map_poll = ringbuf_map_poll,
-> > +       .map_poll = ringbuf_map_poll_kern,
-> >         .map_lookup_elem = ringbuf_map_lookup_elem,
-> >         .map_update_elem = ringbuf_map_update_elem,
-> >         .map_delete_elem = ringbuf_map_delete_elem,
-> > @@ -323,6 +340,7 @@ const struct bpf_map_ops user_ringbuf_map_ops = {
-> >         .map_alloc = ringbuf_map_alloc,
-> >         .map_free = ringbuf_map_free,
-> >         .map_mmap = ringbuf_map_mmap_user,
-> > +       .map_poll = ringbuf_map_poll_user,
-> >         .map_lookup_elem = ringbuf_map_lookup_elem,
-> >         .map_update_elem = ringbuf_map_update_elem,
-> >         .map_delete_elem = ringbuf_map_delete_elem,
-> > @@ -605,3 +623,132 @@ const struct bpf_func_proto bpf_ringbuf_discard_dynptr_proto = {
-> >         .arg1_type      = ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_RINGBUF | OBJ_RELEASE,
-> >         .arg2_type      = ARG_ANYTHING,
-> >  };
-> > +
-> > +static int __bpf_user_ringbuf_poll(struct bpf_ringbuf *rb, void **sample,
-> > +                                  u32 *size)
-> 
-> "poll" part is quite confusing as it has nothing to do with epoll and
-> the other poll implementation. Maybe "peek"? It peek into next sample
-> without consuming it, seems appropriate
-> 
-> nit: this declaration can also stay on single line
+> + * The bpf_key structure must be passed to bpf_key_put() when done
+> + * with it, so that the key reference count is decremented and the
+> + * bpf_key structure is freed.
+> + *
+> + * Permission checks are deferred to the time the key is used by
+> + * one of the available key-specific kfuncs.
+> + *
+> + * Set *flags* with 1, to attempt creating a requested special
+> + * keyring (e.g. session keyring), if it doesn't yet exist. Set
+> + * *flags* with 2 to lookup a key without waiting for the key
+> + * construction, and to retrieve uninstantiated keys (keys without
+> + * data attached to them).
 
-Yeah, I agree that "poll" is confusing. I think "peek" is a good option. I
-was also considering "consume", but I don't think that makes sense given
-that we're not actually done consuming the sample until we release it.
+The 1 and 2 here are so confusing why not just use their actual names here:
+KEY_LOOKUP_CREATE and KEY_LOOKUP_PARTIAL.
 
-> > +{
-> > +       unsigned long cons_pos, prod_pos;
-> > +       u32 sample_len, total_len;
-> > +       u32 *hdr;
-> > +       int err;
-> > +       int busy = 0;
-> 
-> nit: combine matching types:
-> 
-> u32 sample_len, total_len, *hdr;
-> int err, busy = 0;
+> + *
+> + * Return: a bpf_key pointer with a valid key pointer if the key is found, a
+> + *         NULL pointer otherwise.
+> + */
+> +struct bpf_key *bpf_lookup_user_key(u32 serial, u64 flags)
+> +{
+> +       key_ref_t key_ref;
+> +       struct bpf_key *bkey;
+> +
+> +       /* Keep in sync with include/linux/key.h. */
 
-Ack.
+What does this comment mean? Does this mean that more flags may end up in this
+check? if so, let's just put an inline function in include/linux/key.h?
 
-> > +
-> > +       /* If another consumer is already consuming a sample, wait for them to
-> > +        * finish.
-> > +        */
-> > +       if (!atomic_try_cmpxchg(&rb->busy, &busy, 1))
-> > +               return -EBUSY;
-> > +
-> > +       /* Synchronizes with smp_store_release() in user-space. */
-> > +       prod_pos = smp_load_acquire(&rb->producer_pos);
-> 
-> I think we should enforce that prod_pos is a multiple of 8
+> +       if (flags & ~(KEY_LOOKUP_CREATE | KEY_LOOKUP_PARTIAL))
+> +               return NULL;
+> +
+> +       /*
+> +        * Permission check is deferred until actual kfunc using the key,
+> +        * since here the intent of the caller is not yet known.
+> +        *
+> +        * We cannot trust the caller to provide the needed permission as
+> +        * argument, since nothing prevents the caller from using the
+> +        * obtained key for a different purpose than the one declared.
+> +        */
 
-Agreed, I'll add a check and selftest for this.
+nit: This can just be a simple comment.
 
-> > +       /* Synchronizes with smp_store_release() in
-> > +        * __bpf_user_ringbuf_sample_release().
-> > +        */
-> > +       cons_pos = smp_load_acquire(&rb->consumer_pos);
-> > +       if (cons_pos >= prod_pos) {
-> > +               atomic_set(&rb->busy, 0);
-> > +               return -ENODATA;
-> > +       }
-> > +
-> > +       hdr = (u32 *)((uintptr_t)rb->data + (cons_pos & rb->mask));
-> > +       sample_len = *hdr;
-> 
-> do we need smp_load_acquire() here? libbpf's ring_buffer
-> implementation uses load_acquire here
+Permission check is deferred until the key is used as the intent of the
+caller is unknown here.
 
-I thought about this when I was first adding the logic, but I can't
-convince myself that it's necessary and wasn't able to figure out why we
-did a load acquire on the len in libbpf. The kernel doesn't do a store
-release on the header, so I'm not sure what the load acquire in libbpf
-actually accomplishes. I could certainly be missing something, but I
-_think_ the important thing is that we have load-acquire / store-release
-pairs for the consumer and producer positions.
+> +       key_ref = lookup_user_key(serial, flags, KEY_DEFER_PERM_CHECK);
+> +       if (IS_ERR(key_ref))
+> +               return NULL;
+> +
+> +       bkey = kmalloc(sizeof(*bkey), GFP_ATOMIC);
+> +       if (!bkey) {
+> +               key_put(key_ref_to_ptr(key_ref));
+> +               return NULL;
+> +       }
+> +
+> +       bkey->key = key_ref_to_ptr(key_ref);
+> +       bkey->has_ref = true;
+> +
+> +       return bkey;
+> +}
+> +
+> +/**
+> + * bpf_lookup_system_key - lookup a key by a system-defined ID
+> + * @id: key ID
+> + *
+> + * Obtain a bpf_key structure with a key pointer set to the passed key ID.
+> + * The key pointer is marked as invalid, to prevent bpf_key_put() from
+> + * attempting to decrement the key reference count on that pointer. The key
+> + * pointer set in such way is currently understood only by
+> + * verify_pkcs7_signature().
+> + *
+> + * Set *id* to one of the values defined in include/linux/verification.h:
+> + * 0 for the primary keyring (immutable keyring of system keys); 1 for both
 
-> > +       /* Check that the sample can fit into a dynptr. */
-> > +       err = bpf_dynptr_check_size(sample_len);
-> > +       if (err) {
-> > +               atomic_set(&rb->busy, 0);
-> > +               return err;
-> > +       }
-> > +
-> > +       /* Check that the sample fits within the region advertised by the
-> > +        * consumer position.
-> > +        */
-> > +       total_len = sample_len + BPF_RINGBUF_HDR_SZ;
-> 
-> round up to closest multiple of 8? All the pointers into ringbuf data
-> area should be 8-byte aligned
+Please use VERIFY_USE_PLATFORM_KEYRING
+and VERIFY_USE_SECONDARY_KEYRING here instead of 0 and 1
 
-Will do.
 
-> > +       if (total_len > prod_pos - cons_pos) {
-> > +               atomic_set(&rb->busy, 0);
-> > +               return -E2BIG;
-> > +       }
-> > +
-> > +       /* Check that the sample fits within the data region of the ring buffer.
-> > +        */
-> > +       if (total_len > rb->mask + 1) {
-> > +               atomic_set(&rb->busy, 0);
-> > +               return -E2BIG;
-> > +       }
-> > +
-> > +       /* consumer_pos is updated when the sample is released.
-> > +        */
-> > +
-> 
-> nit: unnecessary empty line
-> 
-> and please keep single-line comments as single-line, no */ on separate
-> line in such case
+> + * the primary and secondary keyring (where keys can be added only if they
+> + * are vouched for by existing keys in those keyrings); 2 for the platform
+> + * keyring (primarily used by the integrity subsystem to verify a kexec'ed
+> + * kerned image and, possibly, the initramfs signature).
+> + *
+> + * Return: a bpf_key pointer with an invalid key pointer set from the
+> + *         pre-determined ID on success, a NULL pointer otherwise
+> + */
+> +struct bpf_key *bpf_lookup_system_key(u64 id)
+> +{
+> +       struct bpf_key *bkey;
+> +
+> +       /* Keep in sync with defs in include/linux/verification.h. */
 
-Will do.
+Here too, it's best to introduce a "MAX" value or a small inline helper
+rather than this comment.
 
-> > +       *sample = (void *)((uintptr_t)rb->data +
-> > +                          ((cons_pos + BPF_RINGBUF_HDR_SZ) & rb->mask));
-> > +       *size = sample_len;
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static void
-> > +__bpf_user_ringbuf_sample_release(struct bpf_ringbuf *rb, size_t size,
-> > +                                 u64 flags)
-> 
-> try to keep single lines if they are under 100 characters
+> +       if (id > (unsigned long)VERIFY_USE_PLATFORM_KEYRING)
+> +               return NULL;
+> +
+> +       bkey = kmalloc(sizeof(*bkey), GFP_ATOMIC);
+> +       if (!bkey)
+> +               return NULL;
+> +
+> +       bkey->key = (struct key *)(unsigned long)id;
+> +       bkey->has_ref = false;
+> +
+> +       return bkey;
+> +}
+> +
+> +/**
+> + * bpf_key_put - decrement key reference count if key is valid and free bpf_key
+> + * @bkey: bpf_key structure
+> + *
+> + * Decrement the reference count of the key inside *bkey*, if the pointer
+> + * is valid, and free *bkey*.
+> + */
 
-Ack, this seems to really differ by subsystem. I'll follow this norm for
-BPF.
+This is more of a style thing but your comment literally describes the
+small function
+below. Do we really need this?
 
-> > +{
-> > +
-> > +
-> 
-> empty lines, why?
-
-Apologies, thanks for catching this.
-
-> > +       /* To release the ringbuffer, just increment the producer position to
-> > +        * signal that a new sample can be consumed. The busy bit is cleared by
-> > +        * userspace when posting a new sample to the ringbuffer.
-> > +        */
-> > +       smp_store_release(&rb->consumer_pos, rb->consumer_pos + size +
-> > +                         BPF_RINGBUF_HDR_SZ);
-> > +
-> > +       if (flags & BPF_RB_FORCE_WAKEUP || !(flags & BPF_RB_NO_WAKEUP))
-> 
-> please use () around bit operator expressions
-
-Ack.
-
-> > +               irq_work_queue(&rb->work);
-> > +
-> > +       atomic_set(&rb->busy, 0);
-> 
-> set busy before scheduling irq_work? why delaying?
-
-Yeah, I thought about this. I don't think there's any problem with clearing
-busy before we schedule the irq_work_queue(). I elected to do this to err
-on the side of simpler logic until we observed contention, but yeah, let me
-just do the more performant thing here.
-
-> > +}
-> > +
-> > +BPF_CALL_4(bpf_user_ringbuf_drain, struct bpf_map *, map,
-> > +          void *, callback_fn, void *, callback_ctx, u64, flags)
-> > +{
-> > +       struct bpf_ringbuf *rb;
-> > +       long num_samples = 0, ret = 0;
-> > +       int err;
-> > +       bpf_callback_t callback = (bpf_callback_t)callback_fn;
-> > +       u64 wakeup_flags = BPF_RB_NO_WAKEUP | BPF_RB_FORCE_WAKEUP;
-> > +
-> > +       if (unlikely(flags & ~wakeup_flags))
-> > +               return -EINVAL;
-> > +
-> > +       /* The two wakeup flags are mutually exclusive. */
-> > +       if (unlikely((flags & wakeup_flags) == wakeup_flags))
-> > +               return -EINVAL;
-> 
-> we don't check this for existing ringbuf, so maybe let's keep it
-> consistent? FORCE_WAKEUP is just stronger than NO_WAKEUP
-
-Ack.
-
-> > +
-> > +       rb = container_of(map, struct bpf_ringbuf_map, map)->rb;
-> > +       do {
-> > +               u32 size;
-> > +               void *sample;
-> > +
-> > +               err = __bpf_user_ringbuf_poll(rb, &sample, &size);
-> > +
-> 
-> nit: don't keep empty line between function call and error check
-
-Ack.
-
-> > +               if (!err) {
-> 
-> so -ENODATA is a special error and you should stop if you get that.
-> But for any other error we should propagate error back, not just
-> silently consuming it
-> 
-> maybe
-> 
-> err = ...
-> if (err) {
->     if (err == -ENODATA)
->       break;
->     return err;
-> }
-> 
-> ?
-
-Agreed, I'll fix this.
-
-> > +                       struct bpf_dynptr_kern dynptr;
-> > +
-> > +                       bpf_dynptr_init(&dynptr, sample, BPF_DYNPTR_TYPE_LOCAL,
-> > +                                       0, size);
-> 
-> we should try to avoid unnecessary re-initialization of dynptr, let's
-> initialize it once and then just update data and size field inside the
-> loop?
-
-Hmm ok, let me give that a try. 
-
-> > +                       ret = callback((u64)&dynptr,
-> > +                                       (u64)(uintptr_t)callback_ctx, 0, 0, 0);
-> > +
-> > +                       __bpf_user_ringbuf_sample_release(rb, size, flags);
-> > +                       num_samples++;
-> > +               }
-> > +       } while (err == 0 && num_samples < 4096 && ret == 0);
-> > +
-> 
-> 4096 is pretty arbitrary. Definitely worth noting it somewhere and it
-> seems somewhat low, tbh...
-> 
-> ideally we'd cond_resched() from time to time, but that would require
-> BPF program to be sleepable, so we can't do that :(
-
-Yeah, I knew this would come up in discussion. I would love to do
-cond_resched() here, but as you said, I don't think it's an option :-/ And
-given the fact that we're calling back into the BPF program, we have to be
-cognizant of things taking a while and clogging up the CPU. What do you
-think is a more reasonable number than 4096?
+> +void bpf_key_put(struct bpf_key *bkey)
+> +{
+> +       if (bkey->has_ref)
+> +               key_put(bkey->key);
+> +
+> +       kfree(bkey);
+> +}
+> +
+> +__diag_pop();
+> +
+> +BTF_SET8_START(key_sig_kfunc_set)
+> +BTF_ID_FLAGS(func, bpf_lookup_user_key, KF_ACQUIRE | KF_RET_NULL | KF_SLEEPABLE)
+> +BTF_ID_FLAGS(func, bpf_lookup_system_key, KF_ACQUIRE | KF_RET_NULL)
+> +BTF_ID_FLAGS(func, bpf_key_put, KF_RELEASE)
+> +BTF_SET8_END(key_sig_kfunc_set)
+> +
+> +static const struct btf_kfunc_id_set bpf_key_sig_kfunc_set = {
+> +       .owner = THIS_MODULE,
+> +       .set = &key_sig_kfunc_set,
+> +};
+> +
+> +static int __init bpf_key_sig_kfuncs_init(void)
+> +{
+> +       int ret;
+> +
+> +       ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING,
+> +                                       &bpf_key_sig_kfunc_set);
+> +       if (!ret)
+> +               return 0;
+> +
+> +       return register_btf_kfunc_id_set(BPF_PROG_TYPE_LSM,
+> +                                        &bpf_key_sig_kfunc_set);
+> +}
+> +
+> +late_initcall(bpf_key_sig_kfuncs_init);
+> +#endif /* CONFIG_KEYS */
+> +
+>  static const struct bpf_func_proto *
+>  bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>  {
+> --
+> 2.25.1
+>
 
 [...]
-
-> >         case ARG_PTR_TO_DYNPTR:
-> > +               /* We only need to check for initialized / uninitialized helper
-> > +                * dynptr args if the dynptr is not MEM_ALLOC, as the assumption
-> > +                * is that if it is, that a helper function initialized the
-> > +                * dynptr on behalf of the BPF program.
-> > +                */
-> > +               if (reg->type & MEM_ALLOC)
-> 
-> Isn't PTR_TO_DYNPTR enough indication? Do we need MEM_ALLOC modifier?
-> Normal dynptr created and used inside BPF program on the stack are
-> actually PTR_TO_STACK, so that should be enough distinction? Or am I
-> missing something?
-
-I think this would also work in the current state of the codebase, but IIUC
-it relies on PTR_TO_STACK being the only way that a BPF program could ever
-allocate a dynptr. I was trying to guard against the case of a helper being
-added in the future that e.g. returned a dynamically allocated dynptr that
-the caller would eventually need to release in another helper call.
-MEM_ALLOC seems like the correct modifier to more generally denote that the
-dynptr was externally allocated.  If you think this is overkill I'm totally
-fine with removing MEM_ALLOC. We can always add it down the road if we add
-a new helper that requires it.
-
-[...]
-
-> > @@ -7477,11 +7524,15 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
-> >                 /* Find the id of the dynptr we're acquiring a reference to */
-> >                 for (i = 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
-> >                         if (arg_type_is_dynptr(fn->arg_type[i])) {
-> > +                               struct bpf_reg_state *reg = &regs[BPF_REG_1 + i];
-> > +
-> >                                 if (dynptr_id) {
-> >                                         verbose(env, "verifier internal error: multiple dynptr args in func\n");
-> >                                         return -EFAULT;
-> >                                 }
-> > -                               dynptr_id = stack_slot_get_id(env, &regs[BPF_REG_1 + i]);
-> > +
-> > +                               if (!(reg->type & MEM_ALLOC))
-> > +                                       dynptr_id = stack_slot_get_id(env, reg);
-> 
-> this part has changed in bpf-next
-
-Yeah, this is all rewired in the new version I sent out in v2 (and will
-send out in v3 when I apply your other suggestions).
-
-[...]
-
-Thanks for the thorough review!
-
-- David
