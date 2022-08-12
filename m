@@ -2,105 +2,181 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E18C1591357
-	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 17:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1C755913CC
+	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 18:21:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232003AbiHLPzp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Aug 2022 11:55:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51334 "EHLO
+        id S238967AbiHLQVK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Aug 2022 12:21:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238938AbiHLPze (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Aug 2022 11:55:34 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D2A1EAED;
-        Fri, 12 Aug 2022 08:55:33 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id 17so1101463plj.10;
-        Fri, 12 Aug 2022 08:55:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc;
-        bh=/OXCsoEFS1t2Ps27Ay8CucU2gGUVOh6I1V6v+9hpAN0=;
-        b=FxbUeIeYMDT/MyAtLY2rOj1i1srqsf0p3CVUF8jOAzFwyCYY5dwVs0AKLFlSXzImIL
-         yYEY3Pal4/+jtf6MBcvjvTjzrKFUTooLWqiMf7vyq3JAm+ouJjC7qLdTi5r637p1eqcl
-         smv0udlNm34GgE3mHfYOcBQ4nspubK6jnQOu25aA+XPHQxzAHEf7L9DwAcn9TsrWQ91Y
-         wgW289PXbPOFt9IejisSHfw8lQj67bfjkWHO3J/JUrID28ArKLjRoOQyRfxvyLaNyXj2
-         PN0vAPlEHY8EcbEpGnBqyZmLR1+GVfejPCVIZwsWh3Ta3mwgQyiDkzmkfio5L4WHyfTI
-         lcuw==
+        with ESMTP id S237138AbiHLQVJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Aug 2022 12:21:09 -0400
+Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CBE46A4A5;
+        Fri, 12 Aug 2022 09:21:05 -0700 (PDT)
+Received: by mail-qv1-f45.google.com with SMTP id d1so984155qvs.0;
+        Fri, 12 Aug 2022 09:21:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc;
-        bh=/OXCsoEFS1t2Ps27Ay8CucU2gGUVOh6I1V6v+9hpAN0=;
-        b=H1rGSg75utTR2cVQ9Wl5vyt/ejaEELi7SboztRm/orrTz/gNJ7973+XED50adUpl52
-         HNhfthsGmthke5j89U5Z0hdv5wTpVQ2Zr0sigw5uh0FJChbxryK3pUmnz7xwbYwIcD63
-         6c8vcsnuOSGxXIG9pS9SAriO+BOVLAOegykMwmoTztqjL/1s9Rd2JAVhjV8OrXFCSO+F
-         x/t2OAUGkVdP10kYUwvIOklgo/wdVkvhrJ9IhLG/ggeJ+rkQZ9Hg+g6lpf/90NDftbg8
-         GbBbHbKbmYWBN/57CmI5qM6R7nSCD2ib0RSyoj9sCc6AcJTiD4YU9l9Yd1GJYlfoCL9b
-         iWGA==
-X-Gm-Message-State: ACgBeo3sNJWKim9wgj8wdS0rXnDkIO+bUw8RrFr7PhB23cyLA6+1q4K/
-        e6p92tQ1RdBHCWN4uoRUIcU=
-X-Google-Smtp-Source: AA6agR5MUpUETBIiMk5PZAsfPCi3u/pr+aMUp+dEKeF+hy09OjR+IszK2mpqk6WUVCivhd5AXwDvYA==
-X-Received: by 2002:a17:903:2311:b0:16f:2420:dde4 with SMTP id d17-20020a170903231100b0016f2420dde4mr4526493plh.20.1660319732853;
-        Fri, 12 Aug 2022 08:55:32 -0700 (PDT)
-Received: from localhost ([98.97.34.78])
-        by smtp.gmail.com with ESMTPSA id c70-20020a621c49000000b0052fd43f1747sm1737555pfc.185.2022.08.12.08.55.31
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc;
+        bh=9OfqdCuCD+UHa5XcQtfGcHPlewQVHBoItXj9iDTx07U=;
+        b=eN5ZJpE/aJiYenhpIbXugD1iCuui1hI4excylgfsdztoOGgAvIudDKqlvOjYagNkJd
+         0Ke7/txIw6D1EdezXkazuZV9Si+2BaWCNlq5sI2ivd/fLI0flPHR5390bff0XXv84rbZ
+         KyWY3P2pZ5yaKAxx5N56QXc2ubwhJJlfEz8Kose6hujfazrv5rQguS/FE0Seu+K8CdX0
+         mlFVWhiF/9AQnNUG4mkefNBRF3mpfTAQK8EYdTo/6/O8TIpCl2Si5O3t23X/qr21qH9l
+         5WLoh/5Ffb+ftxBNmpArSsbAH8JcBR6CLEzOfkwXIxMQAlD+jLVn8jEp28PNo0Tvy4bH
+         UAjw==
+X-Gm-Message-State: ACgBeo0hlUVkPzNYZKdQJRkhsk9MlJRk5KNc5b9geAkrOqCD1BFhu5Yt
+        h7jVlGHBA+SePgCbiZPWH/A=
+X-Google-Smtp-Source: AA6agR7Sa3C/LHf+RQuDW7RRH8XzGb3vvnkmOVwBO+STOObVOemEXGttCIQOIPg1O639hfixD4BNew==
+X-Received: by 2002:a0c:ab17:0:b0:474:8a27:ed53 with SMTP id h23-20020a0cab17000000b004748a27ed53mr4089040qvb.56.1660321264457;
+        Fri, 12 Aug 2022 09:21:04 -0700 (PDT)
+Received: from maniforge.dhcp.thefacebook.com ([2620:10d:c091:480::9c4])
+        by smtp.gmail.com with ESMTPSA id 20-20020a370914000000b006b8d1914504sm1880095qkj.22.2022.08.12.09.21.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Aug 2022 08:55:31 -0700 (PDT)
-Date:   Fri, 12 Aug 2022 08:55:30 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Liu Jian <liujian56@huawei.com>, john.fastabend@gmail.com,
-        jakub@cloudflare.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, daniel@iogearbox.net,
-        andrii@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     liujian56@huawei.com
-Message-ID: <62f677f22b20f_2d80c208b9@john.notmuch>
-In-Reply-To: <20220809094915.150391-1-liujian56@huawei.com>
-References: <20220809094915.150391-1-liujian56@huawei.com>
-Subject: RE: [PATCH bpf-next v2] skmsg: Fix wrong last sg check in
- sk_msg_recvmsg()
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 12 Aug 2022 09:21:04 -0700 (PDT)
+Date:   Fri, 12 Aug 2022 11:21:01 -0500
+From:   David Vernet <void@manifault.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, john.fastabend@gmail.com, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, tj@kernel.org,
+        joannelkoong@gmail.com, linux-kernel@vger.kernel.org,
+        Kernel-team@fb.com
+Subject: Re: [PATCH 2/5] bpf: Define new BPF_MAP_TYPE_USER_RINGBUF map type
+Message-ID: <YvZ97XQNRvvA00Xx@maniforge.dhcp.thefacebook.com>
+References: <20220808155341.2479054-1-void@manifault.com>
+ <20220808155341.2479054-2-void@manifault.com>
+ <CAEf4BzbGEQ9rMHBaiex2wPEB2cOMXFNydpPUutko6P7UCK-UyQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzbGEQ9rMHBaiex2wPEB2cOMXFNydpPUutko6P7UCK-UyQ@mail.gmail.com>
+User-Agent: Mutt/2.2.7 (2022-08-07)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Liu Jian wrote:
-> Fix one kernel NULL pointer dereference as below:
+On Thu, Aug 11, 2022 at 04:22:50PM -0700, Andrii Nakryiko wrote:
+> On Mon, Aug 8, 2022 at 8:54 AM David Vernet <void@manifault.com> wrote:
+> >
+> > We want to support a ringbuf map type where samples are published from
+> > user-space to BPF programs. BPF currently supports a kernel -> user-space
+> > circular ringbuffer via the BPF_MAP_TYPE_RINGBUF map type. We'll need to
+> > define a new map type for user-space -> kernel, as none of the helpers
+> > exported for BPF_MAP_TYPE_RINGBUF will apply to a user-space producer
+> > ringbuffer, and we'll want to add one or more helper functions that would
+> > not apply for a kernel-producer ringbuffer.
+> >
+> > This patch therefore adds a new BPF_MAP_TYPE_USER_RINGBUF map type
+> > definition. The map type is useless in its current form, as there is no way
+> > to access or use it for anything until we add more BPF helpers. A follow-on
+> > patch will therefore add a new helper function that allows BPF programs to
+> > run callbacks on samples that are published to the ringbuffer.
+> >
+> > Signed-off-by: David Vernet <void@manifault.com>
+> > ---
+> >  include/linux/bpf_types.h      |  1 +
+> >  include/uapi/linux/bpf.h       |  1 +
+> >  kernel/bpf/ringbuf.c           | 70 +++++++++++++++++++++++++++++-----
+> >  kernel/bpf/verifier.c          |  3 ++
+> >  tools/include/uapi/linux/bpf.h |  1 +
+> >  tools/lib/bpf/libbpf.c         |  1 +
+> >  6 files changed, 68 insertions(+), 9 deletions(-)
+> >
 > 
-> [  224.462334] Call Trace:
-> [  224.462394]  __tcp_bpf_recvmsg+0xd3/0x380
-> [  224.462441]  ? sock_has_perm+0x78/0xa0
-> [  224.462463]  tcp_bpf_recvmsg+0x12e/0x220
-> [  224.462494]  inet_recvmsg+0x5b/0xd0
-> [  224.462534]  __sys_recvfrom+0xc8/0x130
-> [  224.462574]  ? syscall_trace_enter+0x1df/0x2e0
-> [  224.462606]  ? __do_page_fault+0x2de/0x500
-> [  224.462635]  __x64_sys_recvfrom+0x24/0x30
-> [  224.462660]  do_syscall_64+0x5d/0x1d0
-> [  224.462709]  entry_SYSCALL_64_after_hwframe+0x65/0xca
+> [...]
 > 
-> In commit 9974d37ea75f ("skmsg: Fix invalid last sg check in
-> sk_msg_recvmsg()"), we change last sg check to sg_is_last(),
-> but in sockmap redirection case (without stream_parser/stream_verdict/
-> skb_verdict), we did not mark the end of the scatterlist. Check the
-> sk_msg_alloc, sk_msg_page_add, and bpf_msg_push_data functions, they all
-> do not mark the end of sg. They are expected to use sg.end for end
-> judgment. So the judgment of '(i != msg_rx->sg.end)' is added back here.
+> >
+> > -static int ringbuf_map_mmap(struct bpf_map *map, struct vm_area_struct *vma)
+> > +static int ringbuf_map_mmap(struct bpf_map *map, struct vm_area_struct *vma,
+> > +                           bool kernel_producer)
+> >  {
+> >         struct bpf_ringbuf_map *rb_map;
+> >
+> >         rb_map = container_of(map, struct bpf_ringbuf_map, map);
+> >
+> >         if (vma->vm_flags & VM_WRITE) {
+> > -               /* allow writable mapping for the consumer_pos only */
+> > -               if (vma->vm_pgoff != 0 || vma->vm_end - vma->vm_start != PAGE_SIZE)
+> > +               if (kernel_producer) {
+> > +                       /* allow writable mapping for the consumer_pos only */
+> > +                       if (vma->vm_pgoff != 0 || vma->vm_end - vma->vm_start != PAGE_SIZE)
+> > +                               return -EPERM;
+> > +               /* For user ringbufs, disallow writable mappings to the
+> > +                * consumer pointer, and allow writable mappings to both the
+> > +                * producer position, and the ring buffer data itself.
+> > +                */
+> > +               } else if (vma->vm_pgoff == 0)
+> >                         return -EPERM;
 > 
-> Fixes: 9974d37ea75f ("skmsg: Fix invalid last sg check in sk_msg_recvmsg()")
-> Signed-off-by: Liu Jian <liujian56@huawei.com>
-> ---
+> the asymmetrical use of {} in one if branch and not using them in
+> another is extremely confusing, please don't do that
 
-OK lets take this. Thanks.
+Ah, sorry, I misread the style guide and thought this was stipulated there,
+but I now see that it's explicitly stated that you should include a brace
+if only one branch is in a single statement. I'll fix this (by splitting
+these into their own implementations, as mentioned below).
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+> the way you put big comment inside the wrong if branch also throws me
+> off, maybe move it before return -EPERM instead with proper
+> indentation?
+
+Yeah, fair enough.
+
+> sorry for nitpicks, but I've been stuck for a few minutes trying to
+> figure out what exactly is happening here :)
+
+Not a problem at all, sorry for the less-than-readable code.
+
+> >         } else {
+> >                 vma->vm_flags &= ~VM_MAYWRITE;
+> > @@ -242,6 +271,16 @@ static int ringbuf_map_mmap(struct bpf_map *map, struct vm_area_struct *vma)
+> >                                    vma->vm_pgoff + RINGBUF_PGOFF);
+> >  }
+> >
+> > +static int ringbuf_map_mmap_kern(struct bpf_map *map, struct vm_area_struct *vma)
+> > +{
+> > +       return ringbuf_map_mmap(map, vma, true);
+> > +}
+> > +
+> > +static int ringbuf_map_mmap_user(struct bpf_map *map, struct vm_area_struct *vma)
+> > +{
+> > +       return ringbuf_map_mmap(map, vma, false);
+> > +}
+> 
+> I wouldn't mind if you just have two separate implementations of
+> ringbuf_map_mmap for _kern and _user cases, tbh, probably would be
+> clearer as well
+
+Yeah, I can do this. I was trying to avoid any copy-pasta at all cost, but
+I think it's doing more harm than good. I'll just split them into totally
+separate implementations.
+
+> > +
+> >  static unsigned long ringbuf_avail_data_sz(struct bpf_ringbuf *rb)
+> >  {
+> >         unsigned long cons_pos, prod_pos;
+> > @@ -269,7 +308,7 @@ const struct bpf_map_ops ringbuf_map_ops = {
+> >         .map_meta_equal = bpf_map_meta_equal,
+> >         .map_alloc = ringbuf_map_alloc,
+> >         .map_free = ringbuf_map_free,
+> > -       .map_mmap = ringbuf_map_mmap,
+> > +       .map_mmap = ringbuf_map_mmap_kern,
+> >         .map_poll = ringbuf_map_poll,
+> >         .map_lookup_elem = ringbuf_map_lookup_elem,
+> >         .map_update_elem = ringbuf_map_update_elem,
+> > @@ -278,6 +317,19 @@ const struct bpf_map_ops ringbuf_map_ops = {
+> >         .map_btf_id = &ringbuf_map_btf_ids[0],
+> >  };
+> >
+> 
+> [...]
