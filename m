@@ -2,98 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5AE7590BAB
-	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 07:59:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0B8C590D38
+	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 10:11:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237237AbiHLF7I (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Aug 2022 01:59:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33690 "EHLO
+        id S237110AbiHLILE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 12 Aug 2022 04:11:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237174AbiHLF6s (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Aug 2022 01:58:48 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72450A406B;
-        Thu, 11 Aug 2022 22:58:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1660283916; x=1691819916;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=jpBAt7RrH/lqkglG1A2u8wjELkLgo1HyKTHv7Wsj6AU=;
-  b=mcjZA42qPxSIuK/KWKHP3Uq2X/0gQCiBeMMqBNM00s9kaFCvz2TJSqqB
-   4N3oZjTLaISImnK1zYWfGyYIJsK5CENcyjFe6h7dlZBc7CPFDARU8C3tZ
-   74r2D1iu1GIts5iEERpuefQ56+t834V6Sew7hz/LBnw8pf43AOJUxOhkt
-   +RJiAG9IGGs4NSfvbNo9TRT61vPN1EvGAGh8BOw1wOy7zQxwURSeeU4aR
-   QIosTYl4Rfcf/WBIVGZR1ZTsD4pzEq42hkm8PKl4TCp4sFejRAInif0P7
-   Brv3Md7c22R05iHymo1g3bfEMC9Qemdq8u185V7U9ZYDc5x+jcheOLjN+
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10436"; a="271302299"
-X-IronPort-AV: E=Sophos;i="5.93,231,1654585200"; 
-   d="scan'208";a="271302299"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Aug 2022 22:58:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,231,1654585200"; 
-   d="scan'208";a="933599071"
-Received: from lkp-server02.sh.intel.com (HELO 8745164cafc7) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 11 Aug 2022 22:58:33 -0700
-Received: from kbuild by 8745164cafc7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oMNgn-0000Dl-1J;
-        Fri, 12 Aug 2022 05:58:33 +0000
-Date:   Fri, 12 Aug 2022 13:57:58 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Joanne Koong <joannelkoong@gmail.com>, bpf@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, kafai@fb.com, kuba@kernel.org,
-        andrii@kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        netdev@vger.kernel.org, kernel-team@fb.com,
-        Joanne Koong <joannelkoong@gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/3] bpf: Add skb dynptrs
-Message-ID: <202208121318.MVYzenNA-lkp@intel.com>
-References: <20220811230501.2632393-2-joannelkoong@gmail.com>
+        with ESMTP id S230328AbiHLILE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Aug 2022 04:11:04 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 882FE8285B;
+        Fri, 12 Aug 2022 01:11:02 -0700 (PDT)
+Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4M3xBL4ZtPz682wj;
+        Fri, 12 Aug 2022 16:08:10 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Fri, 12 Aug 2022 10:11:00 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2375.024;
+ Fri, 12 Aug 2022 10:11:00 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     =?iso-8859-1?Q?Daniel_M=FCller?= <deso@posteo.net>
+CC:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "martin.lau@linux.dev" <martin.lau@linux.dev>,
+        "song@kernel.org" <song@kernel.org>, "yhs@fb.com" <yhs@fb.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "sdf@google.com" <sdf@google.com>,
+        "haoluo@google.com" <haoluo@google.com>,
+        "jolsa@kernel.org" <jolsa@kernel.org>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "dhowells@redhat.com" <dhowells@redhat.com>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "paul@paul-moore.com" <paul@paul-moore.com>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "serge@hallyn.com" <serge@hallyn.com>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v10 5/9] bpf: Add bpf_lookup_*_key() and bpf_key_put()
+ kfuncs
+Thread-Topic: [PATCH v10 5/9] bpf: Add bpf_lookup_*_key() and bpf_key_put()
+ kfuncs
+Thread-Index: AQHYrNrI3xbltKneMkianwQkzvowha2ohoeAgADLvDCAAEKEEIAAqsgAgACsYtA=
+Date:   Fri, 12 Aug 2022 08:11:00 +0000
+Message-ID: <bff9efc2121046d78e50f0a270d13dc3@huawei.com>
+References: <20220810165932.2143413-1-roberto.sassu@huawei.com>
+ <20220810165932.2143413-6-roberto.sassu@huawei.com>
+ <20220810213351.wm5utltm67q4i6lu@MacBook-Pro-3.local.dhcp.thefacebook.com>
+ <2415f4931a364541b2e6d14a8185ffbb@huawei.com>
+ <f7d401d6ec6c47cbb358046a2d3ca5e8@huawei.com>
+ <20220811235222.inghj73tf6vudoyw@vaio>
+In-Reply-To: <20220811235222.inghj73tf6vudoyw@vaio>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.81.202.96]
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220811230501.2632393-2-joannelkoong@gmail.com>
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Joanne,
+> From: Daniel Müller [mailto:deso@posteo.net]
+> Sent: Friday, August 12, 2022 1:52 AM
+> On Thu, Aug 11, 2022 at 12:02:57PM +0000, Roberto Sassu wrote:
+> > > From: Roberto Sassu [mailto:roberto.sassu@huawei.com]
+> > > Sent: Thursday, August 11, 2022 9:47 AM
+> > > > From: Alexei Starovoitov [mailto:alexei.starovoitov@gmail.com]
+> > > > Sent: Wednesday, August 10, 2022 11:34 PM
+> > > > On Wed, Aug 10, 2022 at 06:59:28PM +0200, Roberto Sassu wrote:
+> > > > > +
+> > > > > +static int __init bpf_key_sig_kfuncs_init(void)
+> > > > > +{
+> > > > > +	int ret;
+> > > > > +
+> > > > > +	ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING,
+> > > > > +					&bpf_key_sig_kfunc_set);
+> > > > > +	if (!ret)
+> > > > > +		return 0;
+> > > > > +
+> > > > > +	return register_btf_kfunc_id_set(BPF_PROG_TYPE_LSM,
+> > > > > +					 &bpf_key_sig_kfunc_set);
+> > > >
+> > > > Isn't this a watery water ?
+> > > > Don't you have a patch 1 ?
+> > > > What am I missing ?
+> > >
+> > > Uhm, yes. I had doubts too. That was what also KP did.
+> > >
+> > > It makes sense to register once, since we mapped LSM to
+> > > TRACING.
+> > >
+> > > Will resend only this patch. And I will figure out why CI failed.
+> >
+> > Adding in CC Daniel Müller, which worked on this.
+> >
+> > I think the issue is that some kernel options are set to =m.
+> > This causes the CI to miss all kernel modules, since they are
+> > not copied to the virtual machine that executes the tests.
+> >
+> > I'm testing this patch:
+> >
+> > https://github.com/robertosassu/libbpf-
+> ci/commit/b665e001b58c4ddb792a2a68098ea5dc6936b15c
+> 
+> I commented on the pull request. Would it make sense to adjust the
+> kernel configuration in this repository instead? I am worried that
+> otherwise everybody may need a similar work around, depending on how
+> selftests are ultimately run.
 
-Thank you for the patch! Yet something to improve:
+The issue seems specific of the eBPF CI. Others might be able to use
+kernel modules.
 
-[auto build test ERROR on bpf-next/master]
+Either choice is fine for me.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Joanne-Koong/Add-skb-xdp-dynptrs/20220812-070634
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-config: i386-defconfig (https://download.01.org/0day-ci/archive/20220812/202208121318.MVYzenNA-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-3) 11.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/intel-lab-lkp/linux/commit/ecab09dda7739b27ffd6ed6c93753f6dfd9bdcb2
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Joanne-Koong/Add-skb-xdp-dynptrs/20220812-070634
-        git checkout ecab09dda7739b27ffd6ed6c93753f6dfd9bdcb2
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash
-
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
-   ld: net/core/filter.o: in function `bpf_dynptr_from_skb':
->> filter.c:(.text+0x84eb): undefined reference to `bpf_dynptr_init'
->> ld: filter.c:(.text+0x8511): undefined reference to `bpf_dynptr_set_rdonly'
->> ld: filter.c:(.text+0x8521): undefined reference to `bpf_dynptr_set_null'
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Roberto
