@@ -2,57 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA9D8590A0E
-	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 03:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64F9F590A58
+	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 04:40:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236459AbiHLB7Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Aug 2022 21:59:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37586 "EHLO
+        id S236698AbiHLCkv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Aug 2022 22:40:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236346AbiHLB7W (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Aug 2022 21:59:22 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97CC2A1D77;
-        Thu, 11 Aug 2022 18:59:20 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id i84so16076930ioa.6;
-        Thu, 11 Aug 2022 18:59:20 -0700 (PDT)
+        with ESMTP id S235200AbiHLCku (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Aug 2022 22:40:50 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1361113E04;
+        Thu, 11 Aug 2022 19:40:49 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id 24so2244187pgr.7;
+        Thu, 11 Aug 2022 19:40:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=kA8/ZzUkIirFuUdvC9t2YcX215gChYzmInjE04Di1Uk=;
-        b=aUfVP5Fy475KqO1Cx89rRHAlbx8ssSfBG0vDEioz80ORKM+spXwwyFBQdhcv/lpt3Y
-         3l6Vupd/y+glwa5tEwE6jGU4R0owP4n6VEoJqZ5gGBIinQ0Fi1HVJFxpbN0InmB/sU9c
-         wcMK1uhRdHNleGASKgZTTjaCNIJOtUAd3vI7NWod9uRfq/0q09Ei9WbxhvNutuafBgWZ
-         yHZhWxhfSkOcfYDBhum+GRhBMNS/PJ1jhlIRKfUB6q1660CaWq2APq67xKGMcBVHEd2y
-         LFE4e/hVeRWgUkC3dGbief7ohaIinrUyRNmZAEY8/T/Vo1c23f2EhtHWCirO37NEBTQL
-         PL4A==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc;
+        bh=DIcwJvYXEEGxgAne15ybzf6JBPEATrgdBirQ9Ch5jbM=;
+        b=I02CZkt3njve4du9UX9KyHovHhOV9kQZ4qS9rM/UOp+zF0v9+7s2dMngx/OeBIkEfb
+         xU8+N/MV2TUOSWTT6CU+//NLmhWYjbTiQ0eq03AS+P0m6nyGMJQ5n4xW5s9VHBd91DJE
+         39ielXTVZztWVWa99fSgga3SkOOz8L3A4CtoJhlE/Bw2/JjXXpNXQ4abrsmsqdb/BR/e
+         v6YOYn5zZ7nl5j6/Rm06sMvZogoQPVEvlqGmmBGbmKRPZXgnxygDGZcc/eVPxHugTnGT
+         psU0Raq8XGQpog3qBmd0KtxJHqqggSPhc5G7RzgRaiicnnRgr7MY6DFtvS4NEkKXQii0
+         IclA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=kA8/ZzUkIirFuUdvC9t2YcX215gChYzmInjE04Di1Uk=;
-        b=c8fKnrlH1v2sl4HXCWrNWdv2U21wE6Ll2DPlqYjK+rrM+KKgrK+qaY0A1wuhHShysW
-         Vc8fo+iR2tHMEsOTSV9+DhxDQ/s+eSspVp1ZXSNS6/jQkeAgGxjJkWbsS6PkUiVhKaX/
-         gysT8AkVRjmTQWp0gypGvEgbeM4C2FtuFw2iVF/UJITImU5vVx855QcP8dk2iOnDHsLJ
-         QGED/4xI5zueyRvp3WKpEporZWwmlXC57YjKq/uxma52olmVt6QqjYIBhvDE39dybcXK
-         ngDQ9OsS3T6t1HbnwkFgQr31fkW69VYM1LRLIP3b03e0rjGN4UgH2a6ZlNRIok/1S9m7
-         UAvQ==
-X-Gm-Message-State: ACgBeo3PwwF1Uxml/LXb/fUPqLfBtOnGUOaJNUt4YcrXb/Ssg0hyumGk
-        eUT07FEmfEh0EHBZqwvhg6WkFNtGM5kxB2wokImG9TAdzqQ=
-X-Google-Smtp-Source: AA6agR6tBLeKEUcisOGjq4NAlEVc/OdfGzJcAV/IdiGqxYK4G7pYE0qYch3ZT9J5QURokvZS077PwiAkNvzMmCC0cpo=
-X-Received: by 2002:a05:6602:2d92:b0:67c:b00:422 with SMTP id
- k18-20020a0566022d9200b0067c0b000422mr776746iow.187.1660269559919; Thu, 11
- Aug 2022 18:59:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220811034020.529685-1-liuhangbin@gmail.com> <CAEf4Bzb+vfjrZv+3fmg8wmDQc5iBXO+xubKCdL-4BsgxGmuyOg@mail.gmail.com>
-In-Reply-To: <CAEf4Bzb+vfjrZv+3fmg8wmDQc5iBXO+xubKCdL-4BsgxGmuyOg@mail.gmail.com>
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc;
+        bh=DIcwJvYXEEGxgAne15ybzf6JBPEATrgdBirQ9Ch5jbM=;
+        b=h1oSr7s6r2BxwVnl08HrrsgxFIIEItiGixmGYIPfHVhi1m0FLk5/SgTDY3RYb7Sct1
+         eIvfedG98V3poBJ/QVkhW9FYZ5Ooc9xtqoGtI019cBgRRTC4IbhfyLlt53Q5HGOXWei8
+         qECukkQMNmsDH1s2tYurwo8ada0kZVOQRFgZIyGjlnqZVtFClLD3GjdGXCzTUYP1vC5Y
+         7VcfMkcOvIElrhcyWQG5oZ1rIxb7qPvtUij1+uJKiW49SLdnfl+boneBzj3X0NF+nQMX
+         eGeY5Duqjb5cdhlkm1IcepiBBhpvhQi6gTR/cNOU8u6zJySzmrRB8fANnOUmuke6NSOf
+         S8Yw==
+X-Gm-Message-State: ACgBeo15r3tRptk4e7c+pM4GQeKhxAJrD0Okfe76tMTmZE7gk0ZGR5Ne
+        /d8zSFh7XDbhHsrOb5ZGabYjMW0yQRk8Qw==
+X-Google-Smtp-Source: AA6agR7dol9FIRvuy+F2aOAUGNCnwh8+KfBElb+iVjcXA9KRSAV/vUTHdofTWWZyz5BT8E+kbODJMQ==
+X-Received: by 2002:a65:6bc4:0:b0:3c2:2f7c:cc74 with SMTP id e4-20020a656bc4000000b003c22f7ccc74mr1475973pgw.307.1660272048407;
+        Thu, 11 Aug 2022 19:40:48 -0700 (PDT)
+Received: from Leo-laptop-t470s.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id b10-20020aa7950a000000b0052d3a442760sm399133pfp.161.2022.08.11.19.40.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Aug 2022 19:40:47 -0700 (PDT)
 From:   Hangbin Liu <liuhangbin@gmail.com>
-Date:   Fri, 12 Aug 2022 09:59:08 +0800
-Message-ID: <CAPwn2JTLZDtq3qc5tNrCkK3_Gqnp2h6vGn2a8q03gZuo_2zC4A@mail.gmail.com>
-Subject: Re: [PATCHv3 bpf-next] libbpf: Add names for auxiliary maps
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     netdev@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>,
+To:     netdev@vger.kernel.org
+Cc:     Quentin Monnet <quentin@isovalent.com>,
         Andrii Nakryiko <andrii@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -62,8 +59,13 @@ Cc:     netdev@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        bpf@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>
+Subject: [PATCH bpf-next] libbpf: making bpf_prog_load() ignore name if kernel doesn't support
+Date:   Fri, 12 Aug 2022 10:40:38 +0800
+Message-Id: <20220812024038.7056-1-liuhangbin@gmail.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -74,12 +76,83 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 12, 2022 at 6:15 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> Applied to bpf-next. But let's also do the same for bpf_prog_load().
-> We can make probe_kern_prog_name() use sys_bpf_prog_load() directly
-> and avoid calling bpf_prog_load() and thus avoiding circular
-> dependency.
+Similar with commit 10b62d6a38f7 ("libbpf: Add names for auxiliary maps"),
+let's make bpf_prog_load() also ignore name if kernel doesn't support
+program name.
 
-Ah, yes, we can do it this way. I will post the patch today.
+To achieve this, we need to call sys_bpf_prog_load() directly in
+probe_kern_prog_name() to avoid circular dependency. sys_bpf_prog_load()
+also need to be exported in the bpf.h file.
+
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+---
+ tools/lib/bpf/bpf.c    |  6 ++----
+ tools/lib/bpf/bpf.h    |  3 +++
+ tools/lib/bpf/libbpf.c | 11 +++++++++--
+ 3 files changed, 14 insertions(+), 6 deletions(-)
+
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index 6a96e665dc5d..575867d69496 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -84,9 +84,7 @@ static inline int sys_bpf_fd(enum bpf_cmd cmd, union bpf_attr *attr,
+ 	return ensure_good_fd(fd);
+ }
+ 
+-#define PROG_LOAD_ATTEMPTS 5
+-
+-static inline int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts)
++int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts)
+ {
+ 	int fd;
+ 
+@@ -263,7 +261,7 @@ int bpf_prog_load(enum bpf_prog_type prog_type,
+ 	attr.prog_ifindex = OPTS_GET(opts, prog_ifindex, 0);
+ 	attr.kern_version = OPTS_GET(opts, kern_version, 0);
+ 
+-	if (prog_name)
++	if (prog_name && kernel_supports(NULL, FEAT_PROG_NAME))
+ 		libbpf_strlcpy(attr.prog_name, prog_name, sizeof(attr.prog_name));
+ 	attr.license = ptr_to_u64(license);
+ 
+diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+index 9c50beabdd14..125c580e45f8 100644
+--- a/tools/lib/bpf/bpf.h
++++ b/tools/lib/bpf/bpf.h
+@@ -35,6 +35,9 @@
+ extern "C" {
+ #endif
+ 
++#define PROG_LOAD_ATTEMPTS 5
++int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts);
++
+ int libbpf_set_memlock_rlim(size_t memlock_bytes);
+ 
+ struct bpf_map_create_opts {
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 3f01f5cd8a4c..1bcb2735d3f1 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -4419,10 +4419,17 @@ static int probe_kern_prog_name(void)
+ 		BPF_MOV64_IMM(BPF_REG_0, 0),
+ 		BPF_EXIT_INSN(),
+ 	};
+-	int ret, insn_cnt = ARRAY_SIZE(insns);
++	union bpf_attr attr = {
++		.prog_type = BPF_PROG_TYPE_SOCKET_FILTER,
++		.prog_name = "test",
++		.license = ptr_to_u64("GPL"),
++		.insns = ptr_to_u64(insns),
++		.insn_cnt = (__u32)ARRAY_SIZE(insns),
++	};
++	int ret;
+ 
+ 	/* make sure loading with name works */
+-	ret = bpf_prog_load(BPF_PROG_TYPE_SOCKET_FILTER, "test", "GPL", insns, insn_cnt, NULL);
++	ret = sys_bpf_prog_load(&attr, sizeof(attr), PROG_LOAD_ATTEMPTS);
+ 	return probe_fd(ret);
+ }
+ 
+-- 
+2.31.1
+
