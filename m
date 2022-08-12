@@ -2,64 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC70F5915C0
-	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 21:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D7DB59163A
+	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 22:28:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237438AbiHLTCv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Aug 2022 15:02:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35648 "EHLO
+        id S233709AbiHLU2K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Aug 2022 16:28:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232812AbiHLTCu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Aug 2022 15:02:50 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC20E2E7
-        for <bpf@vger.kernel.org>; Fri, 12 Aug 2022 12:02:48 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id a186-20020a6390c3000000b00422cc29268eso407831pge.16
-        for <bpf@vger.kernel.org>; Fri, 12 Aug 2022 12:02:48 -0700 (PDT)
+        with ESMTP id S229704AbiHLU2H (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Aug 2022 16:28:07 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6365DA1D56
+        for <bpf@vger.kernel.org>; Fri, 12 Aug 2022 13:28:06 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id k13-20020a056902024d00b0066fa7f50b97so1542916ybs.6
+        for <bpf@vger.kernel.org>; Fri, 12 Aug 2022 13:28:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:from:to:cc;
-        bh=451XEOcpdi8L15HuIBG3e1nRoudM4FMRk+2vKbPEhBQ=;
-        b=ooLbTTw0cdsv814pemxD4sPCVAqk4AqDxaBPOrw/O7kNYl098fKAIexSXRiXYRQwaM
-         a3eCofDiwAsWzFW0uq/zUoHNOUCP059FFoKk2byh/RF+81dGo53CV1/jOiA6kAo6/ClV
-         hvbBGYDAPvFnFhyk1+9+zXi41mxoP4olBw/C6zSSffNdyyzflYmdkiWqObPhsnn+UwOo
-         ZV4+zYrcMhcpZlLdpIX5FZwM9otPrlWJCWWEtJYKVgexL/qn+quYXh034BJj7CnjbiSY
-         mzPzdUvEy8j0UDOUdCxDxPQr+Gq4iTT3u1ni7VHAnwYDRJ5VTq8tdAwhQg7lwxrUZ5Ve
-         AjFw==
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc;
+        bh=y7zyZQpyvwcyrgKQBb7tjr8haOvA6ugjNFKM7h72Cu0=;
+        b=VRTWj8gcht5FdlW2h03vk6MO0i/KKxVvSc+OhyeQUvNmJATUkS3Zo4C3LALOS70zUH
+         +0FHI/IfeBuTVuU7GXnsA3J9XpPwsdqh1iS1aqE94dK38AEC+E2TKWFEiyallg5k97Ig
+         AUp2N9cC/qAaIKMQ0x5C5wcAQtGwxfWt5AS+EFoNNUZUJDthc1QuQxzysJ5v4cI2lAM6
+         SiQVPx6QJKF9y+tQ5r9TQ1qz0EscJiZ5Wrbz3Q1k0oGfXqtDNnlx7ymDJmXDR6UfBvch
+         Juu0QKLeWDfFAJZ2mKG4PHYXfSOV/X6n4z45a7Vn6IayOHgqSzteyYQ2yhoZy7ZlCmS4
+         6Wcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:x-gm-message-state:from:to:cc;
-        bh=451XEOcpdi8L15HuIBG3e1nRoudM4FMRk+2vKbPEhBQ=;
-        b=QmDZkIjZ8ok3FPfylJKXUIlfBBC/AQr8L4fbglj0VeKhSS+baM7EpJ8R/lkqVXvTHG
-         PgLV2QaELlVYwU8ts+K30B3ZcnsnQ2EJhgG0EBsubUHrTJKsp2tpm7E3SOM1bVSYkIvv
-         u5zpXdD1Vn6ZFH/tsm3X9X8uuzGnpdOWcyws71KLM4rqXuNMPEWoazAmzfJyYEdVzrpX
-         W16QUVHApm5ytTBMffo2e2Xba7gTsQdkyC9CZwenghSrrM9p9UxHeEEn6MKJS1WvuiD+
-         yoC5gm8N19sRQdwoPKEb4mfSkpvvtwsZWUbZlBflcEaSeWVh7pSuy9nZGef/9Q5BtGpB
-         7YMg==
-X-Gm-Message-State: ACgBeo3SIioakCYyA1RNNK63Siau1kbkU/8Wu/zT558XIciifD+PDpPe
-        Pw1zXPkfT+WclBwXq5FsfOV6nCod7UprVJVb+rAF18+DX+OocTfMn+gWRIaLCEWLCNn1T+mNJc3
-        5yQxIJeLUr/r+bIX/9Ul593OOBrV7YmVRv/lBVt4xy1THKCVPvg==
-X-Google-Smtp-Source: AA6agR5Rqpxz48AyhS3Sz9N6c0z69xc1mw/yIBTY28vw2KNA04/rWjFVORfPRnf0TE0JdvbPa1za2Rw=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a63:352:0:b0:41d:fe51:7f29 with SMTP id
- 79-20020a630352000000b0041dfe517f29mr4108072pgd.490.1660330968166; Fri, 12
- Aug 2022 12:02:48 -0700 (PDT)
-Date:   Fri, 12 Aug 2022 12:02:41 -0700
-In-Reply-To: <20220812190241.3544528-1-sdf@google.com>
-Message-Id: <20220812190241.3544528-4-sdf@google.com>
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc;
+        bh=y7zyZQpyvwcyrgKQBb7tjr8haOvA6ugjNFKM7h72Cu0=;
+        b=6YjqdiPhn93Yehb9PlQuZbQ0BKmC+tHIEE9Zlb2pMdeA7SnYTt/8ArUZAIVELBZVTs
+         O2sBytt1qoyC2NOrGQm0mFbxduZ20ao/PymsnGPbrt3nbFtBmQ4zHLoCr54IM4uH/oHx
+         /U+VWk3ac1eH5BScICiHu5gF5VtnizNSd8IICsSCFWsb6tKNCFtudErp7EdsD6dxCvfc
+         9CNKm/G/+kB2fueg2kjUmK0K10WIPWhkUiGVJokiSxjfVqz9gk+2cSz6CrgLV8VlKlvs
+         Oju87EQQ4B+CZ1Jo6BnBlr0khhkwpSQJvvewOQoSca6TDjGnuafzDtOmlfpXbzxpoD7s
+         erDQ==
+X-Gm-Message-State: ACgBeo2cKJBqMRrz+LK7TdIcbu50nTwrUtb+foPgwXu7fygwWIoEn1t8
+        WeIpf1lig4w4p63h0R01a4eBsu9DUlI=
+X-Google-Smtp-Source: AA6agR6M2bGeyiIwnjT76vuGf9CRnKkoBAbsu9gZGIuR37Vazxim7ayx9Qvx7ti2V1+kSuWbL7zWU9B2d+A=
+X-Received: from haoluo.svl.corp.google.com ([2620:15c:2d4:203:da3d:b609:da67:694a])
+ (user=haoluo job=sendgmr) by 2002:a0d:d70c:0:b0:31f:5bbc:de13 with SMTP id
+ z12-20020a0dd70c000000b0031f5bbcde13mr5240628ywd.397.1660336085648; Fri, 12
+ Aug 2022 13:28:05 -0700 (PDT)
+Date:   Fri, 12 Aug 2022 13:27:57 -0700
+Message-Id: <20220812202802.3774257-1-haoluo@google.com>
 Mime-Version: 1.0
-References: <20220812190241.3544528-1-sdf@google.com>
 X-Mailer: git-send-email 2.37.1.595.g718a3a8f04-goog
-Subject: [PATCH bpf-next 3/3] selftests/bpf: make sure bpf_{g,s}et_retval is
- exposed everywhere
-From:   Stanislav Fomichev <sdf@google.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org
+Subject: [PATCH bpf-next v8 0/5] bpf: rstat: cgroup hierarchical stats
+From:   Hao Luo <haoluo@google.com>
+To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        cgroups@vger.kernel.org, netdev@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Michal Koutny <mkoutny@suse.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Hao Luo <haoluo@google.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
@@ -71,163 +80,230 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-For each hook, have a simple bpf_set_retval(bpf_get_retval) program
-and make sure it loads for the hooks we want. The exceptions are
-the hooks which don't propagate the error to the callers:
+This patch series allows for using bpf to collect hierarchical cgroup
+stats efficiently by integrating with the rstat framework. The rstat
+framework provides an efficient way to collect cgroup stats percpu and
+propagate them through the cgroup hierarchy.
 
-- sockops
-- recvmsg
-- getpeername
-- getsockname
+The stats are exposed to userspace in textual form by reading files in
+bpffs, similar to cgroupfs stats by using a cgroup_iter program.
+cgroup_iter is a type of bpf_iter. It walks over cgroups in four modes:
+- walking a cgroup's descendants in pre-order.
+- walking a cgroup's descendants in post-order.
+- walking a cgroup's ancestors.
+- process only a single object.
 
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
+When attaching cgroup_iter, one needs to set a cgroup to the iter_link
+created from attaching. This cgroup can be passed either as a file
+descriptor or a cgroup id. That cgroup serves as the starting point of
+the walk.
+
+One can also terminate the walk early by returning 1 from the iter
+program.
+
+Note that because walking cgroup hierarchy holds cgroup_mutex, the iter
+program is called with cgroup_mutex held.
+
+** Background on rstat for stats collection **
+(I am using a subscriber analogy that is not commonly used)
+
+The rstat framework maintains a tree of cgroups that have updates and
+which cpus have updates. A subscriber to the rstat framework maintains
+their own stats. The framework is used to tell the subscriber when
+and what to flush, for the most efficient stats propagation. The
+workflow is as follows:
+
+- When a subscriber updates a cgroup on a cpu, it informs the rstat
+  framework by calling cgroup_rstat_updated(cgrp, cpu).
+
+- When a subscriber wants to read some stats for a cgroup, it asks
+  the rstat framework to initiate a stats flush (propagation) by calling
+  cgroup_rstat_flush(cgrp).
+
+- When the rstat framework initiates a flush, it makes callbacks to
+  subscribers to aggregate stats on cpus that have updates, and
+  propagate updates to their parent.
+
+Currently, the main subscribers to the rstat framework are cgroup
+subsystems (e.g. memory, block). This patch series allow bpf programs to
+become subscribers as well.
+
+Patches in this series are organized as follows:
+* Patches 1-2 introduce cgroup_iter prog, and a selftest.
+* Patches 3-5 allow bpf programs to integrate with rstat by adding the
+  necessary hook points and kfunc. A comprehensive selftest that
+  demonstrates the entire workflow for using bpf and rstat to
+  efficiently collect and output cgroup stats is added.
+
 ---
- tools/testing/selftests/bpf/Makefile          |  1 +
- .../bpf/cgroup_getset_retval_hooks.h          | 25 ++++++++++
- .../bpf/prog_tests/cgroup_getset_retval.c     | 48 +++++++++++++++++++
- .../bpf/progs/cgroup_getset_retval_hooks.c    | 16 +++++++
- 4 files changed, 90 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/cgroup_getset_retval_hooks.h
- create mode 100644 tools/testing/selftests/bpf/progs/cgroup_getset_retval_hooks.c
+Changelog:
+v7 -> v8:
+- Removed the confusing BPF_ITER_DEFAULT (Andrii)
+- s/SELF/SELF_ONLY/g
+- Fixed typo (e.g. outputing) (Andrii)
+- Use "descendants_pre", "descendants_post" etc. instead of "pre",
+  "post" (Andrii)
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 8d59ec7f4c2d..eecad99f1735 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -323,6 +323,7 @@ $(OUTPUT)/test_l4lb_noinline.o: BPF_CFLAGS += -fno-inline
- $(OUTPUT)/test_xdp_noinline.o: BPF_CFLAGS += -fno-inline
- 
- $(OUTPUT)/flow_dissector_load.o: flow_dissector_load.h
-+$(OUTPUT)/cgroup_getset_retval_hooks.o: cgroup_getset_retval_hooks.h
- 
- # Build BPF object using Clang
- # $1 - input .c file
-diff --git a/tools/testing/selftests/bpf/cgroup_getset_retval_hooks.h b/tools/testing/selftests/bpf/cgroup_getset_retval_hooks.h
-new file mode 100644
-index 000000000000..4a8d2063163d
---- /dev/null
-+++ b/tools/testing/selftests/bpf/cgroup_getset_retval_hooks.h
-@@ -0,0 +1,25 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+BPF_RETVAL_HOOK(ingress, "cgroup_skb/ingress", __sk_buff, 0)
-+BPF_RETVAL_HOOK(egress, "cgroup_skb/egress", __sk_buff, 0)
-+BPF_RETVAL_HOOK(sock_create, "cgroup/sock_create", bpf_sock, 0)
-+BPF_RETVAL_HOOK(sock_ops, "sockops", bpf_sock_ops, -EINVAL)
-+BPF_RETVAL_HOOK(dev, "cgroup/dev", bpf_cgroup_dev_ctx, 0)
-+BPF_RETVAL_HOOK(bind4, "cgroup/bind4", bpf_sock_addr, 0)
-+BPF_RETVAL_HOOK(bind6, "cgroup/bind6", bpf_sock_addr, 0)
-+BPF_RETVAL_HOOK(connect4, "cgroup/connect4", bpf_sock_addr, 0)
-+BPF_RETVAL_HOOK(connect6, "cgroup/connect6", bpf_sock_addr, 0)
-+BPF_RETVAL_HOOK(post_bind4, "cgroup/post_bind4", bpf_sock_addr, 0)
-+BPF_RETVAL_HOOK(post_bind6, "cgroup/post_bind6", bpf_sock_addr, 0)
-+BPF_RETVAL_HOOK(sendmsg4, "cgroup/sendmsg4", bpf_sock_addr, 0)
-+BPF_RETVAL_HOOK(sendmsg6, "cgroup/sendmsg6", bpf_sock_addr, 0)
-+BPF_RETVAL_HOOK(sysctl, "cgroup/sysctl", bpf_sysctl, 0)
-+BPF_RETVAL_HOOK(recvmsg4, "cgroup/recvmsg4", bpf_sock_addr, -EINVAL)
-+BPF_RETVAL_HOOK(recvmsg6, "cgroup/recvmsg6", bpf_sock_addr, -EINVAL)
-+BPF_RETVAL_HOOK(getsockopt, "cgroup/getsockopt", bpf_sockopt, 0)
-+BPF_RETVAL_HOOK(setsockopt, "cgroup/setsockopt", bpf_sockopt, 0)
-+BPF_RETVAL_HOOK(getpeername4, "cgroup/getpeername4", bpf_sock_addr, -EINVAL)
-+BPF_RETVAL_HOOK(getpeername6, "cgroup/getpeername6", bpf_sock_addr, -EINVAL)
-+BPF_RETVAL_HOOK(getsockname4, "cgroup/getsockname4", bpf_sock_addr, -EINVAL)
-+BPF_RETVAL_HOOK(getsockname6, "cgroup/getsockname6", bpf_sock_addr, -EINVAL)
-+BPF_RETVAL_HOOK(sock_release, "cgroup/sock_release", bpf_sock, 0)
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_getset_retval.c b/tools/testing/selftests/bpf/prog_tests/cgroup_getset_retval.c
-index 0b47c3c000c7..4d2fa99273d8 100644
---- a/tools/testing/selftests/bpf/prog_tests/cgroup_getset_retval.c
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_getset_retval.c
-@@ -10,6 +10,7 @@
- 
- #include "cgroup_getset_retval_setsockopt.skel.h"
- #include "cgroup_getset_retval_getsockopt.skel.h"
-+#include "cgroup_getset_retval_hooks.skel.h"
- 
- #define SOL_CUSTOM	0xdeadbeef
- 
-@@ -433,6 +434,50 @@ static void test_getsockopt_retval_sync(int cgroup_fd, int sock_fd)
- 	cgroup_getset_retval_getsockopt__destroy(obj);
- }
- 
-+struct exposed_hook {
-+	const char *name;
-+	int expected_err;
-+} exposed_hooks[] = {
-+
-+#define BPF_RETVAL_HOOK(NAME, SECTION, CTX, EXPECTED_ERR) \
-+	{ \
-+		.name = #NAME, \
-+		.expected_err = EXPECTED_ERR, \
-+	},
-+
-+#include "cgroup_getset_retval_hooks.h"
-+
-+#undef BPF_RETVAL_HOOK
-+};
-+
-+static void test_exposed_hooks(int cgroup_fd, int sock_fd)
-+{
-+	struct cgroup_getset_retval_hooks *skel;
-+	struct bpf_program *prog;
-+	int err;
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(exposed_hooks); i++) {
-+		skel = cgroup_getset_retval_hooks__open();
-+		if (!ASSERT_OK_PTR(skel, "cgroup_getset_retval_hooks__open"))
-+			continue;
-+
-+		prog = bpf_object__find_program_by_name(skel->obj, exposed_hooks[i].name);
-+		if (!ASSERT_NEQ(prog, NULL, "bpf_object__find_program_by_name"))
-+			goto close_skel;
-+
-+		err = bpf_program__set_autoload(prog, true);
-+		if (!ASSERT_OK(err, "bpf_program__set_autoload"))
-+			goto close_skel;
-+
-+		err = cgroup_getset_retval_hooks__load(skel);
-+		ASSERT_EQ(err, exposed_hooks[i].expected_err, "expected_err");
-+
-+close_skel:
-+		cgroup_getset_retval_hooks__destroy(skel);
-+	}
-+}
-+
- void test_cgroup_getset_retval(void)
- {
- 	int cgroup_fd = -1;
-@@ -476,6 +521,9 @@ void test_cgroup_getset_retval(void)
- 	if (test__start_subtest("getsockopt-retval_sync"))
- 		test_getsockopt_retval_sync(cgroup_fd, sock_fd);
- 
-+	if (test__start_subtest("exposed_hooks"))
-+		test_exposed_hooks(cgroup_fd, sock_fd);
-+
- close_fd:
- 	close(cgroup_fd);
- }
-diff --git a/tools/testing/selftests/bpf/progs/cgroup_getset_retval_hooks.c b/tools/testing/selftests/bpf/progs/cgroup_getset_retval_hooks.c
-new file mode 100644
-index 000000000000..13dfb4bbfd28
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/cgroup_getset_retval_hooks.c
-@@ -0,0 +1,16 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+#define BPF_RETVAL_HOOK(name, section, ctx, expected_err) \
-+	__attribute__((__section__("?" section))) \
-+	int name(struct ctx *_ctx) \
-+	{ \
-+		bpf_set_retval(bpf_get_retval()); \
-+		return 1; \
-+	}
-+
-+#include "cgroup_getset_retval_hooks.h"
-+
-+#undef BPF_RETVAL_HOOK
+v6 -> v7:
+- Updated commit/comments in cgroup_iter for read() behavior (Yonghong)
+- Extracted BPF_ITER_SELF and other options out of cgroup_iter, so
+  that they can be used in other iters. Also renamed them. (Andrii)
+- Supports both cgroup_fd and cgroup_id when specifying target cgroup.
+  (Andrii)
+- Avoided using macro for formatting expected output in cgroup_iter
+  selftest. (Andrii)
+- Applied 'static' on all vars and functions in cgroup_iter selftest.
+  (Andrii)
+- Fixed broken buf reading in cgroup_iter selftest. (Andrii)
+- Switched to use bpf_link__destroy() unconditionally. (Andrii)
+- Removed 'volatile' for non-const global vars in selftests. (Andrii)
+- Started using bpf_core_enum_value() to get memory_cgrp_id. (Andrii)
+
+v5 -> v6:
+- Rebased on bpf-next
+- Tidy up cgroup_hierarchical_stats test (Andrii)
+  * 'static' and 'inline'
+  * avoid using libbpf_get_error()
+  * string literals of cgroup paths.
+- Rename patch 8/8 to 'selftests/bpf' (Yonghong)
+- Fix cgroup_iter comments (e.g. PAGE_SIZE and uapi) (Yonghong)
+- Make sure further read() returns OK after previous read() finished
+  properly (Yonghong)
+- Release cgroup_mutex before the last call of show() (Kumar)
+
+v4 -> v5:
+- Rebased on top of new kfunc flags infrastructure, updated patch 1 and
+  patch 6 accordingly.
+- Added docs for sleepable kfuncs.
+
+v3 -> v4:
+- cgroup_iter:
+  * reorder fields in bpf_link_info to avoid break uapi (Yonghong)
+  * comment the behavior when cgroup_fd=0 (Yonghong)
+  * comment on the limit of number of cgroups supported by cgroup_iter.
+    (Yonghong)
+- cgroup_hierarchical_stats selftest:
+  * Do not return -1 if stats are not found (causes overflow in userspace).
+  * Check if child process failed to join cgroup.
+  * Make buf and path arrays in get_cgroup_vmscan_delay() static.
+  * Increase the test map sizes to accomodate cgroups that are not
+    created by the test.
+
+v2 -> v3:
+- cgroup_iter:
+  * Added conditional compilation of cgroup_iter.c in kernel/bpf/Makefile
+    (kernel test) and dropped the !CONFIG_CGROUP patch.
+  * Added validation of traversal_order when attaching (Yonghong).
+  * Fixed previous wording "two modes" to "three modes" (Yonghong).
+  * Fixed the btf_dump selftest broken by this patch (Yonghong).
+  * Fixed ctx_arg_info[0] to use "PTR_TO_BTF_ID_OR_NULL" instead of
+    "PTR_TO_BTF_ID", because the "cgroup" pointer passed to iter prog can
+     be null.
+- Use __diag_push to eliminate __weak noinline warning in
+  bpf_rstat_flush().
+- cgroup_hierarchical_stats selftest:
+  * Added write_cgroup_file_parent() helper.
+  * Added error handling for failed map updates.
+  * Added null check for cgroup in vmscan_flush.
+  * Fixed the signature of vmscan_[start/end].
+  * Correctly return error code when attaching trace programs fail.
+  * Make sure all links are destroyed correctly and not leaking in
+    cgroup_hierarchical_stats selftest.
+  * Use memory.reclaim instead of memory.high as a more reliable way to
+    invoke reclaim.
+  * Eliminated sleeps, the test now runs faster.
+
+v1 -> v2:
+- Redesign of cgroup_iter from v1, based on Alexei's idea [1]:
+  * supports walking cgroup subtree.
+  * supports walking ancestors of a cgroup. (Andrii)
+  * supports terminating the walk early.
+  * uses fd instead of cgroup_id as parameter for iter_link. Using fd is
+    a convention in bpf.
+  * gets cgroup's ref at attach time and deref at detach.
+  * brought back cgroup1 support for cgroup_iter.
+- Squashed the patches adding the rstat flush hook points and kfuncs
+  (Tejun).
+- Added a comment explaining why bpf_rstat_flush() needs to be weak
+  (Tejun).
+- Updated the final selftest with the new cgroup_iter design.
+- Changed CHECKs in the selftest with ASSERTs (Yonghong, Andrii).
+- Removed empty line at the end of the selftest (Yonghong).
+- Renamed test files to cgroup_hierarchical_stats.c.
+- Reordered CGROUP_PATH params order to match struct declaration
+  in the selftest (Michal).
+- Removed memory_subsys_enabled() and made sure memcg controller
+  enablement checks make sense and are documented (Michal).
+
+
+RFC v2 -> v1:
+- Instead of introducing a new program type for rstat flushing, add an
+  empty hook point, bpf_rstat_flush(), and use fentry bpf programs to
+  attach to it and flush bpf stats.
+- Instead of using helpers, use kfuncs for rstat functions.
+- These changes simplify the patchset greatly, with minimal changes to
+  uapi.
+
+RFC v1 -> RFC v2:
+- Instead of rstat flush programs attach to subsystems, they now attach
+  to rstat (global flushers, not per-subsystem), based on discussions
+  with Tejun. The first patch is entirely rewritten.
+- Pass cgroup pointers to rstat flushers instead of cgroup ids. This is
+  much more flexibility and less likely to need a uapi update later.
+- rstat helpers are now only defined if CGROUP_CONFIG.
+- Most of the code is now only defined if CGROUP_CONFIG and
+  CONFIG_BPF_SYSCALL.
+- Move rstat helper protos from bpf_base_func_proto() to
+  tracing_prog_func_proto().
+- rstat helpers argument (cgroup pointer) is now ARG_PTR_TO_BTF_ID, not
+  ARG_ANYTHING.
+- Rewrote the selftest to use the cgroup helpers.
+- Dropped bpf_map_lookup_percpu_elem (already added by Feng).
+- Dropped patch to support cgroup v1 for cgroup_iter.
+- Dropped patch to define some cgroup_put() when !CONFIG_CGROUP. The
+  code that calls it is no longer compiled when !CONFIG_CGROUP.
+
+cgroup_iter was originally introduced in a different patch series[2].
+Hao and I agreed that it fits better as part of this series.
+RFC v1 of this patch series had the following changes from [2]:
+- Getting the cgroup's reference at the time at attaching, instead of
+  at the time when iterating. (Yonghong)
+- Remove .init_seq_private and .fini_seq_private callbacks for
+  cgroup_iter. They are not needed now. (Yonghong)
+
+[1] https://lore.kernel.org/bpf/20220520221919.jnqgv52k4ajlgzcl@MBP-98dd607d3435.dhcp.thefacebook.com/
+[2] https://lore.kernel.org/lkml/20220225234339.2386398-9-haoluo@google.com/
+
+Hao Luo (2):
+  bpf: Introduce cgroup iter
+  selftests/bpf: Test cgroup_iter.
+
+Yosry Ahmed (3):
+  cgroup: bpf: enable bpf programs to integrate with rstat
+  selftests/bpf: extend cgroup helpers
+  selftests/bpf: add a selftest for cgroup hierarchical stats collection
+
+ include/linux/bpf.h                           |   8 +
+ include/uapi/linux/bpf.h                      |  35 ++
+ kernel/bpf/Makefile                           |   3 +
+ kernel/bpf/cgroup_iter.c                      | 283 ++++++++++++++
+ kernel/cgroup/rstat.c                         |  48 +++
+ tools/include/uapi/linux/bpf.h                |  35 ++
+ tools/testing/selftests/bpf/cgroup_helpers.c  | 202 ++++++++--
+ tools/testing/selftests/bpf/cgroup_helpers.h  |  19 +-
+ .../selftests/bpf/prog_tests/btf_dump.c       |   4 +-
+ .../prog_tests/cgroup_hierarchical_stats.c    | 358 ++++++++++++++++++
+ .../selftests/bpf/prog_tests/cgroup_iter.c    | 224 +++++++++++
+ tools/testing/selftests/bpf/progs/bpf_iter.h  |   7 +
+ .../bpf/progs/cgroup_hierarchical_stats.c     | 226 +++++++++++
+ .../testing/selftests/bpf/progs/cgroup_iter.c |  39 ++
+ 14 files changed, 1442 insertions(+), 49 deletions(-)
+ create mode 100644 kernel/bpf/cgroup_iter.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_hierarchical_stats.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_iter.c
+ create mode 100644 tools/testing/selftests/bpf/progs/cgroup_hierarchical_stats.c
+ create mode 100644 tools/testing/selftests/bpf/progs/cgroup_iter.c
+
 -- 
 2.37.1.595.g718a3a8f04-goog
 
