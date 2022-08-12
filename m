@@ -2,78 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38243590983
-	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 02:20:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED04659098E
+	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 02:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235888AbiHLAUK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Aug 2022 20:20:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45764 "EHLO
+        id S230006AbiHLA1v (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Aug 2022 20:27:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235750AbiHLAUJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Aug 2022 20:20:09 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87EFFA032A
-        for <bpf@vger.kernel.org>; Thu, 11 Aug 2022 17:20:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 40430B82339
-        for <bpf@vger.kernel.org>; Fri, 12 Aug 2022 00:20:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3369C433D7
-        for <bpf@vger.kernel.org>; Fri, 12 Aug 2022 00:20:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660263605;
-        bh=VcBgOx72SrKAynvtEB4eJUbvGpRlwEh9BrnfUqJELdQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=h24mYW6Smp0tPJ6xgXWsTD3QXIw7kPqDPwYkneA3hzQRvVvbze5cozomfYkvGy6zQ
-         BJDYVZqE2/260gOit/wJe3u2/iSRkTBZdyjo/vRY7lszHpivQm0tNkJASUwN/DAkUr
-         c2eJU1S753riEYBeuFQrUGPT5/Ml18B/RQc3Ys3ueKE9bpZ8PWy97M4ZoQL3w+97pc
-         qE1Ot/2HpT8UgITsXfghDJ9u4gO9ZC2kXNmhI3ljxtHGCfIkPtzxfTgFsDZKjrTTz7
-         bTltCa6Gu7vg8Z8d2nyIbUPfERtmHA6398Q8YAQUj6ZFG4TfV7UtXKWktmo+p/6TJR
-         uG86TM+qvHkug==
-Received: by mail-ot1-f46.google.com with SMTP id l5-20020a05683004a500b0063707ff8244so7254627otd.12
-        for <bpf@vger.kernel.org>; Thu, 11 Aug 2022 17:20:05 -0700 (PDT)
-X-Gm-Message-State: ACgBeo3OzLfhClY/NZ8HFv6MDpmu8FTtN9/WS5A4oHZX2TM/fg3z3tRA
-        Wgj+tw1dc586PtPyPgfzExj3YRMIV3uFRQDfib3otg==
-X-Google-Smtp-Source: AA6agR6dgH9Z0J57ZbSVmYT07RMNRaN2A8XBE58y1N2O6lsg+5CWO9rMzDJgZiq9KCWy3gOsBt3vlp+7vnloPLKLXnU=
-X-Received: by 2002:a0d:d282:0:b0:329:74d3:b0da with SMTP id
- u124-20020a0dd282000000b0032974d3b0damr1809994ywd.340.1660263594446; Thu, 11
- Aug 2022 17:19:54 -0700 (PDT)
+        with ESMTP id S229833AbiHLA1u (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Aug 2022 20:27:50 -0400
+Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F044EA00F1;
+        Thu, 11 Aug 2022 17:27:48 -0700 (PDT)
+Received: by mail-vk1-xa2c.google.com with SMTP id q14so9733893vke.9;
+        Thu, 11 Aug 2022 17:27:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=1EqMW9+sIv7QJbTeZKUHZUM/p01kIgjNDKoKtzHUX6I=;
+        b=M1GNjTX6MjOuuRZWm3CHgm0eqBJRWOE2DYIwkpijn0zr44uLH0SX2pVKsqnu6SKNns
+         crOKzPpxy1RA43nKlwbqOUFzA7HRedMYZ8tQVF/fVGMAyKmhhwsTdSvsU68Ud2Rd1Vvf
+         VGg7iWJFnTpKjk557gHnFc+YZibSg5rVyMlQJaEi3/Ldv14TBB8M/M2PtEJHVInQAn18
+         t0OPuaERFvAALtrbkGhfJXRFwmuZN2S5HT8whf8Ecld+YIN1EMC8dvvmJ1vMiAv3owSc
+         silpXSxehuEjE0NLkaQfkPb9niGhisKpqBCPa6hiJgda+d+CFnoRwtbCafYrK4a9pelF
+         WX2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=1EqMW9+sIv7QJbTeZKUHZUM/p01kIgjNDKoKtzHUX6I=;
+        b=0SqqQmwY5bCS30RwTOuUf75VVJqWlKzO8KAClOZPAWLl9jFHnnG++VOQp3MEaZwy/f
+         +XxVDlDtefO9VbBaFC1IEw0nXy4f8fKVExtSBd13kfzoxeEIQM01hUKP8roAia5iXzQR
+         lDIUTBE6bTjlGXTHsMyumFfV45EO7HgMGtHafabJ3g/Vkfz7XRjnAFmrksJEjXFDsFaS
+         i0r36BdH4YMybtt5+nCCgNcAHA6waOFfHrJHLDkJo17RHMHdkysRvun+uxKglwGQmPg/
+         jm4+piAbJpU2ZntRoaJxiNhw1QXxYnN08mpAzJpBp3GSmmNBygmnb16NS43ov5ahJXPw
+         4oTg==
+X-Gm-Message-State: ACgBeo3bg2alLkwOEEindbxEBQ1rd04KmlWkqk05GFhFln/lDaFucKxE
+        mQxs5dzLVRZFbq32wUMum23ywqXS+i6TlYspBPjPoze9rnJ0Aw==
+X-Google-Smtp-Source: AA6agR6Xxa627apoLE5N7GpRkjtgyd4LlWQoOuRcxBEEqPifbL4QHOVP/BOrxS/OJ4GGBJ0emBtj3jLw3QnSmFAygEI=
+X-Received: by 2002:a1f:1644:0:b0:378:c157:d0f5 with SMTP id
+ 65-20020a1f1644000000b00378c157d0f5mr902289vkw.5.1660264068116; Thu, 11 Aug
+ 2022 17:27:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220810165932.2143413-1-roberto.sassu@huawei.com> <20220810165932.2143413-5-roberto.sassu@huawei.com>
-In-Reply-To: <20220810165932.2143413-5-roberto.sassu@huawei.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Fri, 12 Aug 2022 02:19:43 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ6YC_rkX-DFt28_cbSFU23LV4sqq0PL5F6a=NL8GCRdQQ@mail.gmail.com>
-Message-ID: <CACYkzJ6YC_rkX-DFt28_cbSFU23LV4sqq0PL5F6a=NL8GCRdQQ@mail.gmail.com>
-Subject: Re: [PATCH v10 4/9] KEYS: Move KEY_LOOKUP_ to include/linux/key.h
-To:     Roberto Sassu <roberto.sassu@huawei.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, corbet@lwn.net, dhowells@redhat.com,
-        jarkko@kernel.org, rostedt@goodmis.org, mingo@redhat.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        shuah@kernel.org, bpf@vger.kernel.org, linux-doc@vger.kernel.org,
-        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20220810151840.16394-1-laoar.shao@gmail.com> <20220810151840.16394-6-laoar.shao@gmail.com>
+ <20220810170706.ikyrsuzupjwt65h7@google.com> <CALOAHbBk+komswLqs0KBg8FeFAYpC20HjXrUeZA-=7cWf6nRUw@mail.gmail.com>
+ <20220811154731.3smhom6v4qy2u6rd@google.com>
+In-Reply-To: <20220811154731.3smhom6v4qy2u6rd@google.com>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Fri, 12 Aug 2022 08:27:09 +0800
+Message-ID: <CALOAHbCXfRKDEt7jsUBsf-pQ-A7TpXPxGKYxu_GZN-8BUe2auw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 05/15] bpf: Fix incorrect mem_cgroup_put
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, jolsa@kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 10, 2022 at 6:59 PM Roberto Sassu <roberto.sassu@huawei.com> wrote:
+On Thu, Aug 11, 2022 at 11:47 PM Shakeel Butt <shakeelb@google.com> wrote:
 >
-> In preparation for the patch that introduces the bpf_lookup_user_key() eBPF
-> kfunc, move KEY_LOOKUP_ definitions to include/linux/key.h, to be able to
-> validate the kfunc parameters.
+> On Thu, Aug 11, 2022 at 10:49:13AM +0800, Yafang Shao wrote:
+> > On Thu, Aug 11, 2022 at 1:07 AM Shakeel Butt <shakeelb@google.com> wrote:
+> > >
+> > > On Wed, Aug 10, 2022 at 03:18:30PM +0000, Yafang Shao wrote:
+> > > > The memcg may be the root_mem_cgroup, in which case we shouldn't put it.
+> > >
+> > > No, it is ok to put root_mem_cgroup. css_put already handles the root
+> > > cgroups.
+> > >
+> >
+> > Ah, this commit log doesn't describe the issue clearly. I should improve it.
+> > The issue is that in bpf_map_get_memcg() it doesn't get the objcg if
+> > map->objcg is NULL (that can happen if the map belongs to the root
+> > memcg), so we shouldn't put the objcg if map->objcg is NULL neither in
+> > bpf_map_put_memcg().
 >
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> Sorry I am still not understanding. We are not 'getting' objcg in
+> bpf_map_get_memcg(). We are 'getting' memcg from map->objcg and if that
+> is NULL the function is returning root memcg and putting root memcg is
+> totally fine.
 
-Reviewed-by: KP Singh <kpsingh@kernel.org>
+When the map belongs to root_mem_cgroup, the map->objcg is NULL, right ?
+See also bpf_map_save_memcg() and it describes clearly in the comment -
+
+static void bpf_map_save_memcg(struct bpf_map *map)
+{
+        /* Currently if a map is created by a process belonging to the root
+         * memory cgroup, get_obj_cgroup_from_current() will return NULL.
+         * So we have to check map->objcg for being NULL each time it's
+         * being used.
+         */
+        map->objcg = get_obj_cgroup_from_current();
+}
+
+So for the root_mem_cgroup case, bpf_map_get_memcg() will return
+root_mem_cgroup directly without getting its css, right ? See below,
+
+static struct mem_cgroup *bpf_map_get_memcg(const struct bpf_map *map)
+{
+
+        if (map->objcg)
+                return get_mem_cgroup_from_objcg(map->objcg);
+
+        return root_mem_cgroup;   // without css_get(&memcg->css);
+}
+
+But it will put the css unconditionally.  See below,
+
+memcg = bpf_map_get_memcg(map);
+...
+mem_cgroup_put(memcg);
+
+So we should put it *conditionally* as well.
+
+  memcg = bpf_map_get_memcg(map);
+   ...
++ if (map->objcg)
+       mem_cgroup_put(memcg);
+
+Is it clear to you ?
+
+> Or are you saying that root_mem_cgroup is NULL?
+>
+
+No
+
+-- 
+Regards
+Yafang
