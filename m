@@ -2,64 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03A9D591019
-	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 13:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45EB959107D
+	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 14:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231843AbiHLLd3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Aug 2022 07:33:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38184 "EHLO
+        id S236842AbiHLMGe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Aug 2022 08:06:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237291AbiHLLd3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Aug 2022 07:33:29 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFFAFAED80;
-        Fri, 12 Aug 2022 04:33:26 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id b21-20020a05600c4e1500b003a32bc8612fso402156wmq.3;
-        Fri, 12 Aug 2022 04:33:26 -0700 (PDT)
+        with ESMTP id S236835AbiHLMGX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Aug 2022 08:06:23 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2108A720D;
+        Fri, 12 Aug 2022 05:06:19 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id q16so633773pgq.6;
+        Fri, 12 Aug 2022 05:06:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc;
-        bh=ZNPz8EsVwSSSThSIC0h9EQVjF2F3JLK+jajnfnPNzyY=;
-        b=fnNYoaRrZjQ8pfrBz/z2dHhEePVoQ1Sd0Z0B6tM/a8ZTutO7Fslpx3Hom2qF857KFd
-         46d6xwdVqlh2ywO5AzK/AXoI+uI5PqrypwoK2OmUWyjleO+hedRZju4DAljSFP01nhz8
-         /Dge3NBaNJkbfbDAamppoXnYJrXfftJNJpXIYik9YR+74iCh9fD6BbmMtC5Tyg62zr5P
-         G+v9uKIBveR0VRbWsZuFsCmzUCmOBdbRyLgbP767QbN2CY8w63PzVGhwC3Oyy+zMncRg
-         Q3biaKpmwiGjdRZyVMvwj2tIEKmLl199HFPQX1yeDIaPxQxlDB+JOxmYsSXHDt1a/B1D
-         E8pw==
+        h=to:subject:message-id:date:from:mime-version:from:to:cc;
+        bh=hDC/jUdVYEpp7nT64PmbdcJ0mzLsVPAF89Y4iL2YZbk=;
+        b=fre32HHrKnVEgSnLxQUQfSHOqUBS9X9RzHLf3cW+6kkzb1+GmjQvIheJ96cRLp8i7Z
+         Rcq2R7mDps6GrYyRXUMDCYPaI0FRNfd2hLxOQWtEAZUCWmB8tFZUDSPCRdOY8x0xspQS
+         RdYJSdmD+S+T+i9mxIC8rWqxC1+kykgJHexacDusT2T8Y0ttmawKM1fOTThRB+Fw9RzI
+         n1091vI13eVq7IkN1phM4bT261H9DP0sCkDmcK4owd6pSNHNS3K6PyrEs07F00aBOhGH
+         OwmaByUgzWa45/XMlPCfDytPLVItM7YBcCdQqLFBp+BxzSgaPHp7NISIZc9V6gPxhWqk
+         JgDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc;
-        bh=ZNPz8EsVwSSSThSIC0h9EQVjF2F3JLK+jajnfnPNzyY=;
-        b=w19Qfec0wGKn4nIR9ZVtJmfg7Vo5oM471rEg6BrpqqyEYI85uFwV+k6Le/Mhbc5t1t
-         egSJlsV4L+xXSEt524FnWGS8HD7Tw+/U4QUfRyeq0WyNUFvSOs/YIQAGAb47IM9KouoU
-         OL4jvu0mK7Ql/UHvucWVnUMo4/b59SAzvkAM1drFFxpoWUouAzpRVIyebYqqAYvn10Sh
-         X6O/KGyofv0YhAalzMR9Jt2a1/nbULqkZTwKa6GBuRrwSxqr+SECgrAYo0S1j1Jv/YUv
-         L4AyXAvlh7u887SOzJHP2rb8trffLsvrHIvs3cWs67wVa0b5GzYq5jeXVR5NO+61j19X
-         8CfA==
-X-Gm-Message-State: ACgBeo1RzpB1QSPAgQqXrqTw3GbKkB/STqeHRPZTfLr/qMJhKxc3P4Tn
-        aUsebCkYShobaGqCh+4gyvFTuR92L5r6AUKF
-X-Google-Smtp-Source: AA6agR4GaZ5LW9rSGag7qWb6m2bwdliUnkxFYdbc41iZbMU8HE6bbpAweiUgTYp4tkHmfSXVwrvyGg==
-X-Received: by 2002:a1c:2985:0:b0:3a5:15d6:f71e with SMTP id p127-20020a1c2985000000b003a515d6f71emr2407913wmp.119.1660304005438;
-        Fri, 12 Aug 2022 04:33:25 -0700 (PDT)
-Received: from localhost.localdomain (h-46-59-47-246.A165.priv.bahnhof.se. [46.59.47.246])
-        by smtp.gmail.com with ESMTPSA id a18-20020a05600c069200b003a32490c95dsm8743461wmn.35.2022.08.12.04.33.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 12 Aug 2022 04:33:24 -0700 (PDT)
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-To:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        maciej.fijalkowski@intel.com
-Cc:     jonathan.lemon@gmail.com, bpf@vger.kernel.org,
-        Alasdair McWilliam <alasdair.mcwilliam@outlook.com>,
-        Intrusion Shield Team <dnevil@intrusion.com>
-Subject: [PATCH bpf] xsk: fix corrupted packets for XDP_SHARED_UMEM
-Date:   Fri, 12 Aug 2022 13:32:59 +0200
-Message-Id: <20220812113259.531-1-magnus.karlsson@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc;
+        bh=hDC/jUdVYEpp7nT64PmbdcJ0mzLsVPAF89Y4iL2YZbk=;
+        b=TP0niO60hrMhhxe7/0a+X+IVGSfl/Y0gqBxtHXGmmcIimxyHAWiPSVZL+VNbvD29iC
+         232NnRmoAWZvyd2uSxWj7G/hh93M8WPJ9wR6uy57E0kKYIDzHbYsVFuSy8qG8GQM+8Jp
+         YvsyZNuHkrpNJ1I50aqSDWWm0jAw7Xo4CvsNW/Z2yQiZHCP8uaJ9eHRrebMau/iqus01
+         yfFzie3TMOmUfoZ2+W0w1VKbuwN3fTJW2lc8UM1Vh1rDFXKG44HaEzbtmv5boCxfdpEY
+         EbhaOhVZCeBZjiJErTEl+qQiFWZjJU3p9Tx8Oj/F1xD+9p0q4xERd68ZmqacPOMN/0Th
+         3+Xw==
+X-Gm-Message-State: ACgBeo07edJ1IF4kfIxJ+1IadUGmOj48IWG2S/SA4bylNd0Y9jTB9ZjM
+        s4MQCFCjq7P8CEh0MoSRGeln8WvMsX5UrLa/Ow8A6npeByNyyPnQ
+X-Google-Smtp-Source: AA6agR7/Hv2oTPPw+b0/HN3a3VCUYXPFGKLyuzFg2rEKWEFoZituDQGN/0OTQ5wQlHCRPI7Uz6P3xggMooRoxT2WTBw=
+X-Received: by 2002:a63:5947:0:b0:41d:d4ea:6c87 with SMTP id
+ j7-20020a635947000000b0041dd4ea6c87mr2804394pgm.528.1660305978965; Fri, 12
+ Aug 2022 05:06:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
+Date:   Fri, 12 Aug 2022 05:06:06 -0700
+Message-ID: <CAHo-OoxwQ3fO3brKw0MSNcQtW5Ynr8LUJoANU_TFeOAQkP1RAA@mail.gmail.com>
+Subject: Query on reads being flagged as direct writes...
+To:     Lina Wang <lina.wang@mediatek.com>,
+        Linux NetDev <netdev@vger.kernel.org>,
+        BPF Mailing List <bpf@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Thomas Graf <tgraf@suug.ch>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -70,64 +66,56 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Magnus Karlsson <magnus.karlsson@intel.com>
+From kernel/bpf/verifier.c with some simplifications (removed some of
+the cases to make this shorter):
 
-Fix an issue in XDP_SHARED_UMEM mode together with aligned mode were
-packets are corrupted for the second and any further sockets bound to
-the same umem. In other words, this does not affect the first socket
-bound to the umem. The culprit for this bug is that the initialization
-of the DMA addresses for the pre-populated xsk buffer pool entries was
-not performed for any socket but the first one bound to the umem. Only
-the linear array of DMA addresses was populated. Fix this by
-populating the DMA addresses in the xsk buffer pool for every socket
-bound to the same umem.
+static bool may_access_direct_pkt_data(struct bpf_verifier_env *env,
+const struct bpf_call_arg_meta *meta, enum bpf_access_type t)
+{
+  enum bpf_prog_type prog_type = resolve_prog_type(env->prog);
+  switch (prog_type) {
+    /* Program types only with direct read access go here! */
+    case BPF_PROG_TYPE_CGROUP_SKB: (and some others)
+      if (t == BPF_WRITE) return false;
+      fallthrough;
+    /* Program types with direct read + write access go here! */
+    case BPF_PROG_TYPE_SCHED_CLS: (and some others)
+      if (meta) return meta->pkt_access;
+      env->seen_direct_write = true;
+      return true;
+    case BPF_PROG_TYPE_CGROUP_SOCKOPT:
+      if (t == BPF_WRITE) env->seen_direct_write = true;
+      return true;
+  }
+}
 
-Fixes: 94033cd8e73b8 ("xsk: Optimize for aligned case")
-Reported-by: Alasdair McWilliam <alasdair.mcwilliam@outlook.com>
-Reported-by: Intrusion Shield Team <dnevil@intrusion.com>
-Tested-by: Alasdair McWilliam <alasdair.mcwilliam@outlook.com>
-Link: https://lore.kernel.org/xdp-newbies/6205E10C-292E-4995-9D10-409649354226@outlook.com/
-Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
----
- net/xdp/xsk_buff_pool.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+why does the above set env->seen_direct_write to true even when t !=
+BPF_WRITE, even for programs that only allow (per the comment) direct
+read access.
 
-diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-index f70112176b7c..a71a8c6edf55 100644
---- a/net/xdp/xsk_buff_pool.c
-+++ b/net/xdp/xsk_buff_pool.c
-@@ -379,6 +379,16 @@ static void xp_check_dma_contiguity(struct xsk_dma_map *dma_map)
- 
- static int xp_init_dma_info(struct xsk_buff_pool *pool, struct xsk_dma_map *dma_map)
- {
-+	if (!pool->unaligned) {
-+		u32 i;
-+
-+		for (i = 0; i < pool->heads_cnt; i++) {
-+			struct xdp_buff_xsk *xskb = &pool->heads[i];
-+
-+			xp_init_xskb_dma(xskb, pool, dma_map->dma_pages, xskb->orig_addr);
-+		}
-+	}
-+
- 	pool->dma_pages = kvcalloc(dma_map->dma_pages_cnt, sizeof(*pool->dma_pages), GFP_KERNEL);
- 	if (!pool->dma_pages)
- 		return -ENOMEM;
-@@ -428,12 +438,6 @@ int xp_dma_map(struct xsk_buff_pool *pool, struct device *dev,
- 
- 	if (pool->unaligned)
- 		xp_check_dma_contiguity(dma_map);
--	else
--		for (i = 0; i < pool->heads_cnt; i++) {
--			struct xdp_buff_xsk *xskb = &pool->heads[i];
--
--			xp_init_xskb_dma(xskb, pool, dma_map->dma_pages, xskb->orig_addr);
--		}
- 
- 	err = xp_init_dma_info(pool, dma_map);
- 	if (err) {
+Is this working correctly?  Is there some gotcha this is papering over?
 
-base-commit: 4e4588f1c4d2e67c993208f0550ef3fae33abce4
--- 
-2.34.1
+Should 'env->seen_direct_write = true; return true;' be changed into
+'fallthrough' so that write is only set if t == BPF_WRITE?
 
+This matters because 'env->seen_direct_write = true' then triggers an
+unconditional unclone in the bpf prologue, which I'd like to avoid
+unless I actually need to modify the packet (with
+bpf_skb_store_bytes)...
+
+may_access_direct_pkt_data() has two call sites, in one it only gets
+called with BPF_WRITE so it's ok, but the other one is in
+check_func_arg():
+
+if (type_is_pkt_pointer(type) && !may_access_direct_pkt_data(env,
+meta, BPF_READ)) { verbose(env, "helper access to the packet is not
+allowed\n"); return -EACCES; }
+
+and I'm not really following what this does, but it seems like bpf
+helper read access to the packet triggers unclone?
+
+(side note: all packets ingressing from the rndis gadget driver are
+clones due to how it deals with usb packet deaggregation [not to be
+mistaken with lro/tso])
+
+Confused...
