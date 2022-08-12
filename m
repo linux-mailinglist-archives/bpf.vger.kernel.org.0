@@ -2,93 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A135909B0
-	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 02:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA9D8590A0E
+	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 03:59:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229833AbiHLAyr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Aug 2022 20:54:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42372 "EHLO
+        id S236459AbiHLB7Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Aug 2022 21:59:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234234AbiHLAyq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Aug 2022 20:54:46 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70369A2201
-        for <bpf@vger.kernel.org>; Thu, 11 Aug 2022 17:54:45 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F2F58615D7
-        for <bpf@vger.kernel.org>; Fri, 12 Aug 2022 00:54:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4279C4347C
-        for <bpf@vger.kernel.org>; Fri, 12 Aug 2022 00:54:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660265683;
-        bh=ko4LsCzf56xt2ligcUqqBjSthEnXoJd5Td0ClHErlH0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=oAR26MJNnSfoUozY1EEMzpLLBEWphku2dRq7PjCLW9SAroz2JocVpwvH4UaEQB7ZW
-         aPDnQXr3xrRNgBfgoLDLNVxYWa7qwi7bPrg6AW5NqSjAJHX+XnNy+isMsISdhiD0D1
-         9asy995BAXALl75xSbQYhy9+rn2EbE9AELblFCnNqNr+0CNLWM20qI/gJytvrO3VEn
-         7jUKidSnOBnRzEUhsaCLLRmz2eTjtLEfNiGT5XMpo07gZneCsfh2pF851lF9IlUrVk
-         G+nIP7midkkMqsitmSHixZIayL+q9Pt8dssxsZziD/pxNaoTnnJPj9ZOrqWA0W+QHp
-         IGG2X/HBR30dw==
-Received: by mail-yb1-f178.google.com with SMTP id b144so4170122yba.13
-        for <bpf@vger.kernel.org>; Thu, 11 Aug 2022 17:54:43 -0700 (PDT)
-X-Gm-Message-State: ACgBeo07iNbYBZFn7I7UdPwbeFVVAa+8XHqYWH5Y2vl0VdGmMvRPAFrM
-        952RA9Eb39hbju80cveU6vj31BtdfjhbpnMzL4gk/g==
-X-Google-Smtp-Source: AA6agR7MkYt6y5J9PCZiVOwauRd/hdvFE5aDqGKBjAEfRLqRib+sSpPOU1Cb2FNHuGCtCTe6wX55IJCt1sl1YbwMk1w=
-X-Received: by 2002:a25:bfca:0:b0:676:a583:e215 with SMTP id
- q10-20020a25bfca000000b00676a583e215mr1824268ybm.131.1660265671902; Thu, 11
- Aug 2022 17:54:31 -0700 (PDT)
+        with ESMTP id S236346AbiHLB7W (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Aug 2022 21:59:22 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97CC2A1D77;
+        Thu, 11 Aug 2022 18:59:20 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id i84so16076930ioa.6;
+        Thu, 11 Aug 2022 18:59:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=kA8/ZzUkIirFuUdvC9t2YcX215gChYzmInjE04Di1Uk=;
+        b=aUfVP5Fy475KqO1Cx89rRHAlbx8ssSfBG0vDEioz80ORKM+spXwwyFBQdhcv/lpt3Y
+         3l6Vupd/y+glwa5tEwE6jGU4R0owP4n6VEoJqZ5gGBIinQ0Fi1HVJFxpbN0InmB/sU9c
+         wcMK1uhRdHNleGASKgZTTjaCNIJOtUAd3vI7NWod9uRfq/0q09Ei9WbxhvNutuafBgWZ
+         yHZhWxhfSkOcfYDBhum+GRhBMNS/PJ1jhlIRKfUB6q1660CaWq2APq67xKGMcBVHEd2y
+         LFE4e/hVeRWgUkC3dGbief7ohaIinrUyRNmZAEY8/T/Vo1c23f2EhtHWCirO37NEBTQL
+         PL4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=kA8/ZzUkIirFuUdvC9t2YcX215gChYzmInjE04Di1Uk=;
+        b=c8fKnrlH1v2sl4HXCWrNWdv2U21wE6Ll2DPlqYjK+rrM+KKgrK+qaY0A1wuhHShysW
+         Vc8fo+iR2tHMEsOTSV9+DhxDQ/s+eSspVp1ZXSNS6/jQkeAgGxjJkWbsS6PkUiVhKaX/
+         gysT8AkVRjmTQWp0gypGvEgbeM4C2FtuFw2iVF/UJITImU5vVx855QcP8dk2iOnDHsLJ
+         QGED/4xI5zueyRvp3WKpEporZWwmlXC57YjKq/uxma52olmVt6QqjYIBhvDE39dybcXK
+         ngDQ9OsS3T6t1HbnwkFgQr31fkW69VYM1LRLIP3b03e0rjGN4UgH2a6ZlNRIok/1S9m7
+         UAvQ==
+X-Gm-Message-State: ACgBeo3PwwF1Uxml/LXb/fUPqLfBtOnGUOaJNUt4YcrXb/Ssg0hyumGk
+        eUT07FEmfEh0EHBZqwvhg6WkFNtGM5kxB2wokImG9TAdzqQ=
+X-Google-Smtp-Source: AA6agR6tBLeKEUcisOGjq4NAlEVc/OdfGzJcAV/IdiGqxYK4G7pYE0qYch3ZT9J5QURokvZS077PwiAkNvzMmCC0cpo=
+X-Received: by 2002:a05:6602:2d92:b0:67c:b00:422 with SMTP id
+ k18-20020a0566022d9200b0067c0b000422mr776746iow.187.1660269559919; Thu, 11
+ Aug 2022 18:59:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220810165932.2143413-1-roberto.sassu@huawei.com> <20220810165932.2143413-7-roberto.sassu@huawei.com>
-In-Reply-To: <20220810165932.2143413-7-roberto.sassu@huawei.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Fri, 12 Aug 2022 02:54:21 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ5ZCtgdCz=kBdUAkhD6UyzspqMsNyC32_VR0aLt=a3Okg@mail.gmail.com>
-Message-ID: <CACYkzJ5ZCtgdCz=kBdUAkhD6UyzspqMsNyC32_VR0aLt=a3Okg@mail.gmail.com>
-Subject: Re: [PATCH v10 6/9] bpf: Add bpf_verify_pkcs7_signature() kfunc
-To:     Roberto Sassu <roberto.sassu@huawei.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        john.fastabend@gmail.com, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, corbet@lwn.net, dhowells@redhat.com,
-        jarkko@kernel.org, rostedt@goodmis.org, mingo@redhat.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        shuah@kernel.org, bpf@vger.kernel.org, linux-doc@vger.kernel.org,
-        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20220811034020.529685-1-liuhangbin@gmail.com> <CAEf4Bzb+vfjrZv+3fmg8wmDQc5iBXO+xubKCdL-4BsgxGmuyOg@mail.gmail.com>
+In-Reply-To: <CAEf4Bzb+vfjrZv+3fmg8wmDQc5iBXO+xubKCdL-4BsgxGmuyOg@mail.gmail.com>
+From:   Hangbin Liu <liuhangbin@gmail.com>
+Date:   Fri, 12 Aug 2022 09:59:08 +0800
+Message-ID: <CAPwn2JTLZDtq3qc5tNrCkK3_Gqnp2h6vGn2a8q03gZuo_2zC4A@mail.gmail.com>
+Subject: Re: [PATCHv3 bpf-next] libbpf: Add names for auxiliary maps
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     netdev@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 10, 2022 at 7:01 PM Roberto Sassu <roberto.sassu@huawei.com> wrote:
+On Fri, Aug 12, 2022 at 6:15 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> Add the bpf_verify_pkcs7_signature() kfunc, to give eBPF security modules
-> the ability to check the validity of a signature against supplied data, by
-> using user-provided or system-provided keys as trust anchor.
->
-> The new kfunc makes it possible to enforce mandatory policies, as eBPF
-> programs might be allowed to make security decisions only based on data
-> sources the system administrator approves.
->
-> The caller should provide the data to be verified and the signature as eBPF
-> dynamic pointers (to minimize the number of parameters) and a bpf_key
-> structure containing a reference to the keyring with keys trusted for
-> signature verification, obtained from bpf_lookup_user_key() or
-> bpf_lookup_system_key().
->
-> For bpf_key structures obtained from the former lookup function,
-> bpf_verify_pkcs7_signature() completes the permission check deferred by
-> that function by calling key_validate(). key_task_permission() is already
-> called by the PKCS#7 code.
->
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> Applied to bpf-next. But let's also do the same for bpf_prog_load().
+> We can make probe_kern_prog_name() use sys_bpf_prog_load() directly
+> and avoid calling bpf_prog_load() and thus avoiding circular
+> dependency.
 
-Acked-by: KP Singh <kpsingh@kernel.org>
+Ah, yes, we can do it this way. I will post the patch today.
