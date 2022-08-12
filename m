@@ -2,120 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45EB959107D
-	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 14:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F625910E2
+	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 14:40:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236842AbiHLMGe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Aug 2022 08:06:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48676 "EHLO
+        id S234600AbiHLMkr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Aug 2022 08:40:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236835AbiHLMGX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Aug 2022 08:06:23 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2108A720D;
-        Fri, 12 Aug 2022 05:06:19 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id q16so633773pgq.6;
-        Fri, 12 Aug 2022 05:06:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc;
-        bh=hDC/jUdVYEpp7nT64PmbdcJ0mzLsVPAF89Y4iL2YZbk=;
-        b=fre32HHrKnVEgSnLxQUQfSHOqUBS9X9RzHLf3cW+6kkzb1+GmjQvIheJ96cRLp8i7Z
-         Rcq2R7mDps6GrYyRXUMDCYPaI0FRNfd2hLxOQWtEAZUCWmB8tFZUDSPCRdOY8x0xspQS
-         RdYJSdmD+S+T+i9mxIC8rWqxC1+kykgJHexacDusT2T8Y0ttmawKM1fOTThRB+Fw9RzI
-         n1091vI13eVq7IkN1phM4bT261H9DP0sCkDmcK4owd6pSNHNS3K6PyrEs07F00aBOhGH
-         OwmaByUgzWa45/XMlPCfDytPLVItM7YBcCdQqLFBp+BxzSgaPHp7NISIZc9V6gPxhWqk
-         JgDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc;
-        bh=hDC/jUdVYEpp7nT64PmbdcJ0mzLsVPAF89Y4iL2YZbk=;
-        b=TP0niO60hrMhhxe7/0a+X+IVGSfl/Y0gqBxtHXGmmcIimxyHAWiPSVZL+VNbvD29iC
-         232NnRmoAWZvyd2uSxWj7G/hh93M8WPJ9wR6uy57E0kKYIDzHbYsVFuSy8qG8GQM+8Jp
-         YvsyZNuHkrpNJ1I50aqSDWWm0jAw7Xo4CvsNW/Z2yQiZHCP8uaJ9eHRrebMau/iqus01
-         yfFzie3TMOmUfoZ2+W0w1VKbuwN3fTJW2lc8UM1Vh1rDFXKG44HaEzbtmv5boCxfdpEY
-         EbhaOhVZCeBZjiJErTEl+qQiFWZjJU3p9Tx8Oj/F1xD+9p0q4xERd68ZmqacPOMN/0Th
-         3+Xw==
-X-Gm-Message-State: ACgBeo07edJ1IF4kfIxJ+1IadUGmOj48IWG2S/SA4bylNd0Y9jTB9ZjM
-        s4MQCFCjq7P8CEh0MoSRGeln8WvMsX5UrLa/Ow8A6npeByNyyPnQ
-X-Google-Smtp-Source: AA6agR7/Hv2oTPPw+b0/HN3a3VCUYXPFGKLyuzFg2rEKWEFoZituDQGN/0OTQ5wQlHCRPI7Uz6P3xggMooRoxT2WTBw=
-X-Received: by 2002:a63:5947:0:b0:41d:d4ea:6c87 with SMTP id
- j7-20020a635947000000b0041dd4ea6c87mr2804394pgm.528.1660305978965; Fri, 12
- Aug 2022 05:06:18 -0700 (PDT)
+        with ESMTP id S237442AbiHLMkp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Aug 2022 08:40:45 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5150ABF29;
+        Fri, 12 Aug 2022 05:40:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1660308044; x=1691844044;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=NtvBC+VhizqH+Pv2KAnQiXJfuGki0qroDTYTiguISRE=;
+  b=Vr9wqPfc5n7okvyFgpccTGh7TxDpCAHpYQMYQUsDDH5KupP6b34y7xoj
+   z7YID9VF6zuTcpdW0rYV0nuou8NFWx23EwfMAr/fO3N25LWepX6Oug/It
+   humBeXTI7LJkomjoKj6A/so8OLRaAAL2fNm+QextDvVYaKTIS6OI2uoRE
+   rs6g97niCTTKogDGxekpzDaLhXbWPt4xk1/Qncsh6MsHObFXZ/74aRZNT
+   sbqSVzGfdVDztixXTPNeFjvgZkP6NhDGgasTQxes4r6tzWSEdmUijFdD4
+   bSHibpyrf6StpeYV5D4hbcw3OBGmAdhzjsatHzp1tYMzzRufvSOVJYxjQ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10436"; a="271969883"
+X-IronPort-AV: E=Sophos;i="5.93,231,1654585200"; 
+   d="scan'208";a="271969883"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2022 05:40:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,231,1654585200"; 
+   d="scan'208";a="695254003"
+Received: from lkp-server02.sh.intel.com (HELO 8745164cafc7) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 12 Aug 2022 05:40:42 -0700
+Received: from kbuild by 8745164cafc7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oMTxx-0000W9-1G;
+        Fri, 12 Aug 2022 12:40:41 +0000
+Date:   Fri, 12 Aug 2022 20:39:59 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Joanne Koong <joannelkoong@gmail.com>, bpf@vger.kernel.org
+Cc:     kbuild-all@lists.01.org, kafai@fb.com, kuba@kernel.org,
+        andrii@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        netdev@vger.kernel.org, kernel-team@fb.com,
+        Joanne Koong <joannelkoong@gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/3] bpf: Add xdp dynptrs
+Message-ID: <202208122032.0CZYkZY8-lkp@intel.com>
+References: <20220811230501.2632393-3-joannelkoong@gmail.com>
 MIME-Version: 1.0
-From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
-Date:   Fri, 12 Aug 2022 05:06:06 -0700
-Message-ID: <CAHo-OoxwQ3fO3brKw0MSNcQtW5Ynr8LUJoANU_TFeOAQkP1RAA@mail.gmail.com>
-Subject: Query on reads being flagged as direct writes...
-To:     Lina Wang <lina.wang@mediatek.com>,
-        Linux NetDev <netdev@vger.kernel.org>,
-        BPF Mailing List <bpf@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Thomas Graf <tgraf@suug.ch>,
-        Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220811230501.2632393-3-joannelkoong@gmail.com>
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From kernel/bpf/verifier.c with some simplifications (removed some of
-the cases to make this shorter):
+Hi Joanne,
 
-static bool may_access_direct_pkt_data(struct bpf_verifier_env *env,
-const struct bpf_call_arg_meta *meta, enum bpf_access_type t)
-{
-  enum bpf_prog_type prog_type = resolve_prog_type(env->prog);
-  switch (prog_type) {
-    /* Program types only with direct read access go here! */
-    case BPF_PROG_TYPE_CGROUP_SKB: (and some others)
-      if (t == BPF_WRITE) return false;
-      fallthrough;
-    /* Program types with direct read + write access go here! */
-    case BPF_PROG_TYPE_SCHED_CLS: (and some others)
-      if (meta) return meta->pkt_access;
-      env->seen_direct_write = true;
-      return true;
-    case BPF_PROG_TYPE_CGROUP_SOCKOPT:
-      if (t == BPF_WRITE) env->seen_direct_write = true;
-      return true;
-  }
-}
+Thank you for the patch! Yet something to improve:
 
-why does the above set env->seen_direct_write to true even when t !=
-BPF_WRITE, even for programs that only allow (per the comment) direct
-read access.
+[auto build test ERROR on bpf-next/master]
 
-Is this working correctly?  Is there some gotcha this is papering over?
+url:    https://github.com/intel-lab-lkp/linux/commits/Joanne-Koong/Add-skb-xdp-dynptrs/20220812-070634
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+config: riscv-randconfig-r042-20220812 (https://download.01.org/0day-ci/archive/20220812/202208122032.0CZYkZY8-lkp@intel.com/config)
+compiler: riscv32-linux-gcc (GCC) 12.1.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/20947f78c1a22c16604514fe2b7c222b77f8939b
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Joanne-Koong/Add-skb-xdp-dynptrs/20220812-070634
+        git checkout 20947f78c1a22c16604514fe2b7c222b77f8939b
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=riscv SHELL=/bin/bash
 
-Should 'env->seen_direct_write = true; return true;' be changed into
-'fallthrough' so that write is only set if t == BPF_WRITE?
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
 
-This matters because 'env->seen_direct_write = true' then triggers an
-unconditional unclone in the bpf prologue, which I'd like to avoid
-unless I actually need to modify the packet (with
-bpf_skb_store_bytes)...
+All errors (new ones prefixed by >>):
 
-may_access_direct_pkt_data() has two call sites, in one it only gets
-called with BPF_WRITE so it's ok, but the other one is in
-check_func_arg():
+   riscv32-linux-ld: net/core/filter.o: in function `.L1284':
+   filter.c:(.text+0x5606): undefined reference to `bpf_dynptr_init'
+   riscv32-linux-ld: net/core/filter.o: in function `.L1279':
+   filter.c:(.text+0x561e): undefined reference to `bpf_dynptr_set_null'
+   riscv32-linux-ld: net/core/filter.o: in function `.L1298':
+   filter.c:(.text+0x566c): undefined reference to `bpf_dynptr_init'
+   riscv32-linux-ld: net/core/filter.o: in function `.L1304':
+   filter.c:(.text+0x568e): undefined reference to `bpf_dynptr_set_rdonly'
+>> riscv32-linux-ld: filter.c:(.text+0x569a): undefined reference to `bpf_dynptr_set_null'
 
-if (type_is_pkt_pointer(type) && !may_access_direct_pkt_data(env,
-meta, BPF_READ)) { verbose(env, "helper access to the packet is not
-allowed\n"); return -EACCES; }
-
-and I'm not really following what this does, but it seems like bpf
-helper read access to the packet triggers unclone?
-
-(side note: all packets ingressing from the rndis gadget driver are
-clones due to how it deals with usb packet deaggregation [not to be
-mistaken with lro/tso])
-
-Confused...
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
