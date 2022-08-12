@@ -2,176 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 966F7590D7E
-	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 10:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B99F590E36
+	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 11:36:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230211AbiHLIi2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Aug 2022 04:38:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48608 "EHLO
+        id S238084AbiHLJgb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Aug 2022 05:36:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237134AbiHLIiW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Aug 2022 04:38:22 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD13AA8941
-        for <bpf@vger.kernel.org>; Fri, 12 Aug 2022 01:38:20 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id bv3so425759wrb.5
-        for <bpf@vger.kernel.org>; Fri, 12 Aug 2022 01:38:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc;
-        bh=BVoWrbqmJVd8EYZKtATQPrWe/sHOKUT5xASvY5MnCBs=;
-        b=nP7v0cy0bIPNMehxWeAsXcuE1z/Ds/2vvmhT0dDMcN07e3cO+yVwh6I1lFc13yQrzz
-         xUx1aJnb4rO562vpVJFUdoY9rOtioxEZ09CA+hBTMNXi5lZ8jHhwuZwtBSrzp/Fv+l1h
-         cLj+kas6Fx+VHldt68NQYg1kZ0XnKMZNt6j0YpTmtmosrUf3jUs6DN2qve8s/EtWW1Ku
-         B/b/a7uap4FTsvS+FhMupL06s7TJEwiHnSeQUy0rHZpEeScXX+bzkjRSk0KOhX4+xxeX
-         iydWMxiZpkhxpEDq231GDhOUMF+ChJwYJNB/CM/PaOudEgeOp9qgrc8NHHhPFfeB8417
-         Q1MQ==
+        with ESMTP id S238071AbiHLJga (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Aug 2022 05:36:30 -0400
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38314979D5
+        for <bpf@vger.kernel.org>; Fri, 12 Aug 2022 02:36:29 -0700 (PDT)
+Received: by mail-il1-f198.google.com with SMTP id z17-20020a921a51000000b002ddff313ab2so236979ill.12
+        for <bpf@vger.kernel.org>; Fri, 12 Aug 2022 02:36:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc;
-        bh=BVoWrbqmJVd8EYZKtATQPrWe/sHOKUT5xASvY5MnCBs=;
-        b=Md4vIv7g7t2lRtLh1ZakAWItIQCnA3fWWqS3K/WP96dtjfOxPxkbIMM1luaPkk1zRf
-         A5XUVTAiaqEffzZpJaV7aqbKEXdLa+07Llyz5OLxTIcSE9TGUdtY8n3wZENblqSQqPLn
-         xVtMxWiAAsq2cDcJyXG+2UQD++DsEeJhO0dkRIxHOM7QLYrgTcMLQkl+CVoqyidUj1Ii
-         G1CyS09YmiKLtuJ78LreBvOwY8wevgKy6vw3QWKGDcb9fbe5r6/TDUPpZOFArqorMKtJ
-         mLVORn7S34Q8c4nvcOuJdv3mhQ/z5IJuYFdHKm9RuFwHvj9ln7S2AGU6IFpKWGeN9oFm
-         ogfw==
-X-Gm-Message-State: ACgBeo3bqsJdD+tSDtpDv3EpQvBLzO2Ua8WHD5MSf2oETEhRVWwvpSEY
-        79Fvw4RSoFcNs/QyVZJUVrWxoQ==
-X-Google-Smtp-Source: AA6agR6k0lC1KLMLLmlqpnUJ6hOBMnKiibdJglWu5gWsVe5JfvP53ILE72cbXKNtXGE6JRj31a89ng==
-X-Received: by 2002:a05:6000:2cb:b0:21e:d9bc:7aa2 with SMTP id o11-20020a05600002cb00b0021ed9bc7aa2mr1419251wry.467.1660293499412;
-        Fri, 12 Aug 2022 01:38:19 -0700 (PDT)
-Received: from [192.168.178.32] ([51.155.200.13])
-        by smtp.gmail.com with ESMTPSA id q3-20020adff943000000b00222ed7ea203sm1307274wrr.100.2022.08.12.01.38.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Aug 2022 01:38:19 -0700 (PDT)
-Message-ID: <407e67b7-b4f2-40db-6e13-409784fe32aa@isovalent.com>
-Date:   Fri, 12 Aug 2022 09:38:17 +0100
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc;
+        bh=bPYi2L+v51JCGntT1zZ6lVPE53BP8c9+iw/NkBv0V6I=;
+        b=gsy2yyZzRZ5L62g592Jg2LRdW4Kgs1hkY3xoU62Io7k4Vd1h/A8Ma80WWIUP+3E0sd
+         MqBupbR8sxIwtr4qtMI6X+RVMZhSCFyoPLs3hO/4Wr81WtmVynTtj0AcWfNziHu5oOHf
+         qS6SZND+XK74Kkscci1oXUJFbrzcEWt9aqTiyQuR4L9csOy7oKHKA1B4Ne+vpv9hO1zQ
+         YbB/1KyLq6l4SesdDkDcAupICxYFjXLry4/N1arcmXjRbtccjQ3wZkPjUHaQpzkmDCUn
+         Q/F33dVwzQy19cmlTA2BH6BVfeIy0JMc2FSafxK5B53VD90tm+gajA8eqH0uUG7NLLey
+         m4pw==
+X-Gm-Message-State: ACgBeo1GVjNvPM6FessFyk8lrFSPEOQWDHIeYa2Un3N47xuKOO3iZShv
+        7s+b9v6PgHJ/kD30R3NAxuhkQABDbvk0NRFtn8MQnYbnBCUr
+X-Google-Smtp-Source: AA6agR5VPjqtXl+grCuz01B7ohQPXFQoqRK3BQMiAZRWGjdZ0ZL+ZtYXNONbTw2/Ubtp0Y66pSvJbbhLCChKUsIe422uBS9cEh1Q
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH bpf-next] libbpf: making bpf_prog_load() ignore name if
- kernel doesn't support
-Content-Language: en-GB
-To:     Hangbin Liu <liuhangbin@gmail.com>, netdev@vger.kernel.org
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org
-References: <20220812024038.7056-1-liuhangbin@gmail.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <20220812024038.7056-1-liuhangbin@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a05:6638:380a:b0:343:5bad:bf8d with SMTP id
+ i10-20020a056638380a00b003435badbf8dmr1606271jav.206.1660296988622; Fri, 12
+ Aug 2022 02:36:28 -0700 (PDT)
+Date:   Fri, 12 Aug 2022 02:36:28 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003a85f505e60804db@google.com>
+Subject: [syzbot] linux-next boot error: kernel BUG in __phys_addr
+From:   syzbot <syzbot+c257efdd53a617c7caf7@syzkaller.appspotmail.com>
+To:     bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+        fw@strlen.de, harshit.m.mogalapalli@oracle.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com, sfr@canb.auug.org.au,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/08/2022 03:40, Hangbin Liu wrote:
-> Similar with commit 10b62d6a38f7 ("libbpf: Add names for auxiliary maps"),
-> let's make bpf_prog_load() also ignore name if kernel doesn't support
-> program name.
-> 
-> To achieve this, we need to call sys_bpf_prog_load() directly in
-> probe_kern_prog_name() to avoid circular dependency. sys_bpf_prog_load()
-> also need to be exported in the bpf.h file.
-> 
-> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-> ---
->  tools/lib/bpf/bpf.c    |  6 ++----
->  tools/lib/bpf/bpf.h    |  3 +++
->  tools/lib/bpf/libbpf.c | 11 +++++++++--
->  3 files changed, 14 insertions(+), 6 deletions(-)
-> 
-> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> index 6a96e665dc5d..575867d69496 100644
-> --- a/tools/lib/bpf/bpf.c
-> +++ b/tools/lib/bpf/bpf.c
-> @@ -84,9 +84,7 @@ static inline int sys_bpf_fd(enum bpf_cmd cmd, union bpf_attr *attr,
->  	return ensure_good_fd(fd);
->  }
->  
-> -#define PROG_LOAD_ATTEMPTS 5
-> -
-> -static inline int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts)
-> +int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts)
->  {
->  	int fd;
->  
-> @@ -263,7 +261,7 @@ int bpf_prog_load(enum bpf_prog_type prog_type,
->  	attr.prog_ifindex = OPTS_GET(opts, prog_ifindex, 0);
->  	attr.kern_version = OPTS_GET(opts, kern_version, 0);
->  
-> -	if (prog_name)
-> +	if (prog_name && kernel_supports(NULL, FEAT_PROG_NAME))
->  		libbpf_strlcpy(attr.prog_name, prog_name, sizeof(attr.prog_name));
->  	attr.license = ptr_to_u64(license);
->  
-> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-> index 9c50beabdd14..125c580e45f8 100644
-> --- a/tools/lib/bpf/bpf.h
-> +++ b/tools/lib/bpf/bpf.h
-> @@ -35,6 +35,9 @@
->  extern "C" {
->  #endif
->  
-> +#define PROG_LOAD_ATTEMPTS 5
-> +int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts);
-> +
+Hello,
 
-bpf.h is the user-facing header, should these go into libbpf_internal.h
-instead?
+syzbot found the following issue on:
 
-By the way, I observe that libbpf_set_memlock_rlim() in bpf.h (below) is
-not prefixed with LIBBPF_API, although it is exposed in the libbpf.map,
-Andrii is this expected?
+HEAD commit:    7bb4fa8a025a Add linux-next specific files for 20220812
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=15ddd587080000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a5ae8cfa8d7075d1
+dashboard link: https://syzkaller.appspot.com/bug?extid=c257efdd53a617c7caf7
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
->  int libbpf_set_memlock_rlim(size_t memlock_bytes);
->  
->  struct bpf_map_create_opts {
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 3f01f5cd8a4c..1bcb2735d3f1 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -4419,10 +4419,17 @@ static int probe_kern_prog_name(void)
->  		BPF_MOV64_IMM(BPF_REG_0, 0),
->  		BPF_EXIT_INSN(),
->  	};
-> -	int ret, insn_cnt = ARRAY_SIZE(insns);
-> +	union bpf_attr attr = {
-> +		.prog_type = BPF_PROG_TYPE_SOCKET_FILTER,
-> +		.prog_name = "test",
-> +		.license = ptr_to_u64("GPL"),
-> +		.insns = ptr_to_u64(insns),
-> +		.insn_cnt = (__u32)ARRAY_SIZE(insns),
-> +	};
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c257efdd53a617c7caf7@syzkaller.appspotmail.com
 
-I think you cannot initialise "attr" directly, you need a "memset(&attr,
-0, sizeof(attr));" first, in case the struct contains padding between
-the fields.
+udevd[2975]: starting eudev-3.2.10
+------------[ cut here ]------------
+kernel BUG at arch/x86/mm/physaddr.c:28!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 2975 Comm: udevd Not tainted 5.19.0-next-20220812-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/22/2022
+RIP: 0010:__phys_addr+0xd3/0x140 arch/x86/mm/physaddr.c:28
+Code: e3 44 89 e9 31 ff 48 d3 eb 48 89 de e8 56 21 45 00 48 85 db 75 0f e8 6c 24 45 00 4c 89 e0 5b 5d 41 5c 41 5d c3 e8 5d 24 45 00 <0f> 0b e8 56 24 45 00 48 c7 c0 10 50 cb 8b 48 ba 00 00 00 00 00 fc
+RSP: 0018:ffffc90002dbf8b8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff000000000000 RCX: 0000000000000000
+RDX: ffff88807cd11d80 RSI: ffffffff8136e1c3 RDI: 0000000000000006
+RBP: ffff000080000000 R08: 0000000000000006 R09: ffff000080000000
+R10: ffff778000000000 R11: 0000000000000000 R12: ffff778000000000
+R13: ffffc90002dbf920 R14: ffff000000000000 R15: 0000000000000000
+FS:  00007f9b90cd2840(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055e07825a388 CR3: 000000002641b000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ virt_to_folio include/linux/mm.h:856 [inline]
+ virt_to_slab mm/kasan/../slab.h:175 [inline]
+ qlink_to_cache mm/kasan/quarantine.c:131 [inline]
+ qlist_free_all+0x86/0x170 mm/kasan/quarantine.c:184
+ kasan_quarantine_reduce+0x180/0x200 mm/kasan/quarantine.c:294
+ __kasan_slab_alloc+0xa2/0xc0 mm/kasan/common.c:447
+ kasan_slab_alloc include/linux/kasan.h:224 [inline]
+ slab_post_alloc_hook mm/slab.h:727 [inline]
+ slab_alloc_node mm/slub.c:3243 [inline]
+ kmem_cache_alloc_node+0x2b1/0x3f0 mm/slub.c:3293
+ __alloc_skb+0x210/0x2f0 net/core/skbuff.c:418
+ alloc_skb include/linux/skbuff.h:1257 [inline]
+ netlink_alloc_large_skb net/netlink/af_netlink.c:1191 [inline]
+ netlink_sendmsg+0x9a2/0xe10 net/netlink/af_netlink.c:1896
+ sock_sendmsg_nosec net/socket.c:714 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:734
+ ____sys_sendmsg+0x6eb/0x810 net/socket.c:2482
+ ___sys_sendmsg+0x110/0x1b0 net/socket.c:2536
+ __sys_sendmsg+0xf3/0x1c0 net/socket.c:2565
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f9b90935163
+Code: 64 89 02 48 c7 c0 ff ff ff ff eb b7 66 2e 0f 1f 84 00 00 00 00 00 90 64 8b 04 25 18 00 00 00 85 c0 75 14 b8 2e 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 55 c3 0f 1f 40 00 48 83 ec 28 89 54 24 1c 48
+RSP: 002b:00007ffd32cf5c38 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 000055e078203db0 RCX: 00007f9b90935163
+RDX: 0000000000000000 RSI: 00007ffd32cf5c48 RDI: 0000000000000004
+RBP: 000055e0782390e0 R08: 0000000000000001 R09: 000055e07822f540
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000070 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:__phys_addr+0xd3/0x140 arch/x86/mm/physaddr.c:28
+Code: e3 44 89 e9 31 ff 48 d3 eb 48 89 de e8 56 21 45 00 48 85 db 75 0f e8 6c 24 45 00 4c 89 e0 5b 5d 41 5c 41 5d c3 e8 5d 24 45 00 <0f> 0b e8 56 24 45 00 48 c7 c0 10 50 cb 8b 48 ba 00 00 00 00 00 fc
+RSP: 0018:ffffc90002dbf8b8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff000000000000 RCX: 0000000000000000
+RDX: ffff88807cd11d80 RSI: ffffffff8136e1c3 RDI: 0000000000000006
+RBP: ffff000080000000 R08: 0000000000000006 R09: ffff000080000000
+R10: ffff778000000000 R11: 0000000000000000 R12: ffff778000000000
+R13: ffffc90002dbf920 R14: ffff000000000000 R15: 0000000000000000
+FS:  00007f9b90cd2840(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055d17224b028 CR3: 000000002641b000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-> +	int ret;
->  
->  	/* make sure loading with name works */
-> -	ret = bpf_prog_load(BPF_PROG_TYPE_SOCKET_FILTER, "test", "GPL", insns, insn_cnt, NULL);
-> +	ret = sys_bpf_prog_load(&attr, sizeof(attr), PROG_LOAD_ATTEMPTS);
->  	return probe_fd(ret);
->  }
->  
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
