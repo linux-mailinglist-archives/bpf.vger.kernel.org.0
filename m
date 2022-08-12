@@ -2,126 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B81B591507
-	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 19:40:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 824385915BD
+	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 21:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234923AbiHLRkt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Aug 2022 13:40:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47292 "EHLO
+        id S237220AbiHLTCr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Aug 2022 15:02:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239610AbiHLRke (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Aug 2022 13:40:34 -0400
-Received: from out0.migadu.com (out0.migadu.com [94.23.1.103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39A2BE11;
-        Fri, 12 Aug 2022 10:40:29 -0700 (PDT)
-Date:   Fri, 12 Aug 2022 10:40:20 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1660326026;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=w6Ui6PFQyblCEyPZ57T42coFxoRognQXiZqVXoIWqFs=;
-        b=eo8EzCBX6CNmdTr4sLF70dtLbMt2dPXPD+HVktl34F94LkJrzZnomVdsA1IW+KkSKIhOpX
-        KAGdoooorLo30gCs7Ru+u/ohPX2xxjs9PBmJCpJW1AOPb4axDNy7fCbXgl3mfYn8aJo0pJ
-        rmlvouwRHuE5JLXmMq7k1JcDX4HKc2Y=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, jolsa@kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Subject: Re: [PATCH bpf-next 13/15] mm, memcg: Add new helper
- get_obj_cgroup_from_cgroup
-Message-ID: <YvaQhLk06MHQJWHB@P9FQF9L96D.corp.robot.car>
-References: <20220810151840.16394-1-laoar.shao@gmail.com>
- <20220810151840.16394-14-laoar.shao@gmail.com>
- <YvUrXLJF6qrGOdjP@P9FQF9L96D.corp.robot.car>
- <CALOAHbAj7BymBV7KhzxLfMPue8666V+24TOfqG0XTE4euWyR4Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALOAHbAj7BymBV7KhzxLfMPue8666V+24TOfqG0XTE4euWyR4Q@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        with ESMTP id S234033AbiHLTCq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Aug 2022 15:02:46 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B142E7
+        for <bpf@vger.kernel.org>; Fri, 12 Aug 2022 12:02:43 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-32e6a92567bso14268377b3.10
+        for <bpf@vger.kernel.org>; Fri, 12 Aug 2022 12:02:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc;
+        bh=XPk6FdjwBbwDgBh6u2eyiKeyBm8WmUk2D4CDTXFC/Hg=;
+        b=Blx2XPNRZIFWzQtdxmhfEz7sMu3s8b/7TTxuTkMrGZPR333Sv5luoI9UBXalTAlywv
+         JO8KYA0kuLJuoZ6ZXXKICDRqRXAuLkjeIpOeeDWwu/lCM9mEgsCQeOL1023M1G82Dlrx
+         FjPmaJ4wRc/Plw2SIiqghxoQ61AHDsdqL/PBx7HodntpwZWNyESKHc8RYboRwLEolp7n
+         ezbdosYn+Hu9vVmu/Myjy6Vwnx/UDMA1qr1ashqYFrFyGZzKbr0QEN6rWmbaCGdrR/hq
+         HwLxYeW1HNq7eGPJ6ozhYmsrVWPPov2/M3sDfgWr5z72Zg1mKmtmPpRjI2e3vNKC9moL
+         HYPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc;
+        bh=XPk6FdjwBbwDgBh6u2eyiKeyBm8WmUk2D4CDTXFC/Hg=;
+        b=6Jto3KXS76Wsy/KnrZ83XJAFikO8ENj+wuN9WoJZdadAieXIquF01MD3KADIr0bUFT
+         amQzOM3aFXnDKs5zs7yumF/MYSWyydC4NHd41k7rI1fk+paqCmua6UCC7OWk7csVkKIj
+         5kmgO0nFvdou/pHWsYZj1iCTGekK71RjoLVkQjhcy6mWeu7XGoQkf/vl+0G4HLx4s8p+
+         NiFf5dKkc2z/tzCfb2G2Phee/e5FLxW831OEyNp/StGgPBD8WlfQxnc9K7KFAqWeHu9T
+         s4U/h1cF6aoo4OO7eBZa3WSYGkr+FsqVMFsr04yD1BtrfkTxr7mLIRf3RIWMCNPTVh3Q
+         wfHw==
+X-Gm-Message-State: ACgBeo1iP/eQVItrc+j4Q9ThDJvFqi/rnERbJcaXn/tFS/mPYloWyuYU
+        +N9dswUxXbIzb0Pa0XqMdgoxt/2kYG23gDZbAnLUEEYPHUjLyxyGMBQWrizwd1bq7aPSmMzBMLp
+        rBHTBRxRhwHVCPHPReJbiEocUdSirE7EzWaSpqEEm/Mp6Q4I4sw==
+X-Google-Smtp-Source: AA6agR6In1reqqirhKy5enLlZ9LFRsX4bLO8QI0Nmp8gSIO3knDIBjJm2Gz/euizwqUYGh0vT2Tz98E=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a81:50d4:0:b0:31f:5f85:566a with SMTP id
+ e203-20020a8150d4000000b0031f5f85566amr5000445ywb.218.1660330962896; Fri, 12
+ Aug 2022 12:02:42 -0700 (PDT)
+Date:   Fri, 12 Aug 2022 12:02:38 -0700
+Message-Id: <20220812190241.3544528-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.37.1.595.g718a3a8f04-goog
+Subject: [PATCH bpf-next 0/3] bpf: expose bpf_{g,s}et_retval to more cgroup hooks
+From:   Stanislav Fomichev <sdf@google.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 12, 2022 at 08:35:19AM +0800, Yafang Shao wrote:
-> On Fri, Aug 12, 2022 at 12:16 AM Roman Gushchin
-> <roman.gushchin@linux.dev> wrote:
-> >
-> > On Wed, Aug 10, 2022 at 03:18:38PM +0000, Yafang Shao wrote:
-> > > Introduce new helper get_obj_cgroup_from_cgroup() to get obj_cgroup from
-> > > a specific cgroup.
-> > >
-> > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > > ---
-> > >  include/linux/memcontrol.h |  1 +
-> > >  mm/memcontrol.c            | 41 +++++++++++++++++++++++++++++++++++++++++
-> > >  2 files changed, 42 insertions(+)
-> > >
-> > > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > > index 2f0a611..901a921 100644
-> > > --- a/include/linux/memcontrol.h
-> > > +++ b/include/linux/memcontrol.h
-> > > @@ -1713,6 +1713,7 @@ static inline void set_shrinker_bit(struct mem_cgroup *memcg,
-> > >  int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order);
-> > >  void __memcg_kmem_uncharge_page(struct page *page, int order);
-> > >
-> > > +struct obj_cgroup *get_obj_cgroup_from_cgroup(struct cgroup *cgrp);
-> > >  struct obj_cgroup *get_obj_cgroup_from_current(void);
-> > >  struct obj_cgroup *get_obj_cgroup_from_page(struct page *page);
-> > >
-> > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > > index 618c366..762cffa 100644
-> > > --- a/mm/memcontrol.c
-> > > +++ b/mm/memcontrol.c
-> > > @@ -2908,6 +2908,47 @@ static struct obj_cgroup *__get_obj_cgroup_from_memcg(struct mem_cgroup *memcg)
-> > >       return objcg;
-> > >  }
-> > >
-> > > +static struct obj_cgroup *get_obj_cgroup_from_memcg(struct mem_cgroup *memcg)
-> > > +{
-> > > +     struct obj_cgroup *objcg;
-> > > +
-> > > +     if (memcg_kmem_bypass())
-> > > +             return NULL;
-> > > +
-> > > +     rcu_read_lock();
-> > > +     objcg = __get_obj_cgroup_from_memcg(memcg);
-> > > +     rcu_read_unlock();
-> > > +     return objcg;
-> >
-> > This code doesn't make sense to me. What does rcu read lock protect here?
-> 
-> To protect rcu_dereference(memcg->objcg);.
-> Doesn't it need the read rcu lock ?
+Apparently, only a small subset of cgroup hooks actually falls
+back to cgroup_base_func_proto. This leads to unexpected result
+where not all cgroup helpers have bpf_{g,s}et_retval.
 
-No, it's not how rcu works. Please, take a look at the docs here:
-https://docs.kernel.org/RCU/whatisRCU.html#whatisrcu .
-In particular, it describes this specific case very well.
+It's getting harder and harder to manage which helpers are exported
+to which hooks. We now have the following call chains:
 
-In 2 words, you don't protect the rcu_dereference() call, you protect the pointer
-you get, cause it's valid only inside the rcu read section. After rcu_read_unlock()
-it might point at a random data, because the protected object can be already freed.
+- cg_skb_func_proto
+  - sk_filter_func_proto
+    - bpf_sk_base_func_proto
+      - bpf_base_func_proto
 
-Thanks!
+So by looking at cg_skb_func_proto it's pretty hard to understand
+what's going on.
+
+For cgroup helpers, I'm proposing we do the following instead:
+
+  func_proto = cgroup_common_func_proto();
+  if (func_proto) return func_proto;
+
+  /* optional, if hook has 'current' */
+  func_proto = cgroup_current_func_proto();
+  if (func_proto) return func_proto;
+
+  ...
+
+  switch (func_id) {
+  /* hook specific helpers */
+  case BPF_FUNC_hook_specific_helper:
+    return &xyz;
+  default:
+    /* always fall back to plain bpf_base_func_proto */
+    bpf_base_func_proto(func_id);
+  }
+
+If this turns out more workable, we can follow up with converting
+the rest to the same pattern.
+
+Stanislav Fomichev (3):
+  bpf: introduce cgroup_{common,current}_func_proto
+  bpf: use cgroup_{common,current}_func_proto in more hooks
+  selftests/bpf: make sure bpf_{g,s}et_retval is exposed everywhere
+
+ include/linux/bpf.h                           | 16 +++
+ kernel/bpf/cgroup.c                           | 82 +++++++--------
+ kernel/bpf/helpers.c                          | 99 ++++++++++++++++++-
+ net/core/filter.c                             | 78 ++++++---------
+ tools/testing/selftests/bpf/Makefile          |  1 +
+ .../bpf/cgroup_getset_retval_hooks.h          | 25 +++++
+ .../bpf/prog_tests/cgroup_getset_retval.c     | 48 +++++++++
+ .../bpf/progs/cgroup_getset_retval_hooks.c    | 16 +++
+ 8 files changed, 270 insertions(+), 95 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/cgroup_getset_retval_hooks.h
+ create mode 100644 tools/testing/selftests/bpf/progs/cgroup_getset_retval_hooks.c
+
+-- 
+2.37.1.595.g718a3a8f04-goog
+
