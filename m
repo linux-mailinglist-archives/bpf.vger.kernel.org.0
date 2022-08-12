@@ -2,77 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D28B7591008
-	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 13:27:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03A9D591019
+	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 13:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235147AbiHLL0e (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Aug 2022 07:26:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32774 "EHLO
+        id S231843AbiHLLd3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Aug 2022 07:33:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237217AbiHLL0b (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Aug 2022 07:26:31 -0400
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B607A6C1F;
-        Fri, 12 Aug 2022 04:26:26 -0700 (PDT)
-Received: by mail-vs1-xe36.google.com with SMTP id d126so463221vsd.13;
-        Fri, 12 Aug 2022 04:26:26 -0700 (PDT)
+        with ESMTP id S237291AbiHLLd3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Aug 2022 07:33:29 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFFAFAED80;
+        Fri, 12 Aug 2022 04:33:26 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id b21-20020a05600c4e1500b003a32bc8612fso402156wmq.3;
+        Fri, 12 Aug 2022 04:33:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc;
-        bh=l6ANe7OLSs2lP132priVK+trTtZprCMMHdnLexTkcYs=;
-        b=cbulXJ2X1GM7VeFpFsNH4B5cF+6IIkVya1vFuJ1ZP88Rpim+pn+2xDldVmms9y4fnX
-         PWr8qVMeW00lQq74DTp179OZ52B2HCIVjFWWVg3wQNqQstxvw4HOUIcdtqTsulyCxjtI
-         VY14oyLtqSuMSLjdQ9F8RFYEkYdBuUEKArObuz6kt2IF1j3CF8LxppqcQJqvtzZ3fWYD
-         kKpkc1enVd3Um1F3YBCVq5l9aSuXuAwC1xvOrrVbaA6nooM6VT8oCCOT0TUfa0J1UsAh
-         Es3fM1Z1ZESpa2rrGQn5oz/yfkgJNUWRT7VeJXA2iefTYdshDjvzhMaS89aVCqHJdLKq
-         zXXg==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc;
+        bh=ZNPz8EsVwSSSThSIC0h9EQVjF2F3JLK+jajnfnPNzyY=;
+        b=fnNYoaRrZjQ8pfrBz/z2dHhEePVoQ1Sd0Z0B6tM/a8ZTutO7Fslpx3Hom2qF857KFd
+         46d6xwdVqlh2ywO5AzK/AXoI+uI5PqrypwoK2OmUWyjleO+hedRZju4DAljSFP01nhz8
+         /Dge3NBaNJkbfbDAamppoXnYJrXfftJNJpXIYik9YR+74iCh9fD6BbmMtC5Tyg62zr5P
+         G+v9uKIBveR0VRbWsZuFsCmzUCmOBdbRyLgbP767QbN2CY8w63PzVGhwC3Oyy+zMncRg
+         Q3biaKpmwiGjdRZyVMvwj2tIEKmLl199HFPQX1yeDIaPxQxlDB+JOxmYsSXHDt1a/B1D
+         E8pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
-        bh=l6ANe7OLSs2lP132priVK+trTtZprCMMHdnLexTkcYs=;
-        b=kOzZFvG3EFBg0Jsd5XA8ie8wCWRpXWTAJZw7uAqPYLkaMqThd6lt0pfVoFojI40lia
-         YWrijbXUVcZ+WhxMX18rn3JrDef0wCsovt1/phxUjnka0D+z+S4FA6h60DlVHecBB1zC
-         oAr+fF9g/OKGGrq7lpVTQHEvkspfu1o2LqjIrTSfev/CSG6eSFH44yhDQ7kHFrOISoha
-         CwhPjFlDlLmZHYSL8QU8ille2N74pu6qFsKkcnqgRTO6GMHO0F9aaAFyoyWONTuQ0Vxc
-         o7ok4WepMKSwe8wW0+rogV/hJWFTga6/zrgdtssd5mjc/jPDmz0mcbSYdVeGO/zgj3CJ
-         29EA==
-X-Gm-Message-State: ACgBeo0t/apEPM4vD7wBCKvPTyLhCXYfywegIMJTXGYWz3aIkKFHbBKU
-        aoKEwbOpo/W/Dzp6tybhlv7Q3rYWVGXVw0AEX5s=
-X-Google-Smtp-Source: AA6agR7eRhzJ5qbC7QMZSEHPwBxL98qPwKICiNP035okRK1tdFf5nl4wb5ho1LLXA7DjnWx2GN3yTrW4DRJHQzCGmO4=
-X-Received: by 2002:a05:6102:750:b0:381:feef:d966 with SMTP id
- v16-20020a056102075000b00381feefd966mr1528054vsg.35.1660303584334; Fri, 12
- Aug 2022 04:26:24 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc;
+        bh=ZNPz8EsVwSSSThSIC0h9EQVjF2F3JLK+jajnfnPNzyY=;
+        b=w19Qfec0wGKn4nIR9ZVtJmfg7Vo5oM471rEg6BrpqqyEYI85uFwV+k6Le/Mhbc5t1t
+         egSJlsV4L+xXSEt524FnWGS8HD7Tw+/U4QUfRyeq0WyNUFvSOs/YIQAGAb47IM9KouoU
+         OL4jvu0mK7Ql/UHvucWVnUMo4/b59SAzvkAM1drFFxpoWUouAzpRVIyebYqqAYvn10Sh
+         X6O/KGyofv0YhAalzMR9Jt2a1/nbULqkZTwKa6GBuRrwSxqr+SECgrAYo0S1j1Jv/YUv
+         L4AyXAvlh7u887SOzJHP2rb8trffLsvrHIvs3cWs67wVa0b5GzYq5jeXVR5NO+61j19X
+         8CfA==
+X-Gm-Message-State: ACgBeo1RzpB1QSPAgQqXrqTw3GbKkB/STqeHRPZTfLr/qMJhKxc3P4Tn
+        aUsebCkYShobaGqCh+4gyvFTuR92L5r6AUKF
+X-Google-Smtp-Source: AA6agR4GaZ5LW9rSGag7qWb6m2bwdliUnkxFYdbc41iZbMU8HE6bbpAweiUgTYp4tkHmfSXVwrvyGg==
+X-Received: by 2002:a1c:2985:0:b0:3a5:15d6:f71e with SMTP id p127-20020a1c2985000000b003a515d6f71emr2407913wmp.119.1660304005438;
+        Fri, 12 Aug 2022 04:33:25 -0700 (PDT)
+Received: from localhost.localdomain (h-46-59-47-246.A165.priv.bahnhof.se. [46.59.47.246])
+        by smtp.gmail.com with ESMTPSA id a18-20020a05600c069200b003a32490c95dsm8743461wmn.35.2022.08.12.04.33.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 12 Aug 2022 04:33:24 -0700 (PDT)
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+To:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        maciej.fijalkowski@intel.com
+Cc:     jonathan.lemon@gmail.com, bpf@vger.kernel.org,
+        Alasdair McWilliam <alasdair.mcwilliam@outlook.com>,
+        Intrusion Shield Team <dnevil@intrusion.com>
+Subject: [PATCH bpf] xsk: fix corrupted packets for XDP_SHARED_UMEM
+Date:   Fri, 12 Aug 2022 13:32:59 +0200
+Message-Id: <20220812113259.531-1-magnus.karlsson@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20220810151840.16394-1-laoar.shao@gmail.com> <20220810151840.16394-6-laoar.shao@gmail.com>
- <20220810170706.ikyrsuzupjwt65h7@google.com> <CALOAHbBk+komswLqs0KBg8FeFAYpC20HjXrUeZA-=7cWf6nRUw@mail.gmail.com>
- <20220811154731.3smhom6v4qy2u6rd@google.com> <CALOAHbCXfRKDEt7jsUBsf-pQ-A7TpXPxGKYxu_GZN-8BUe2auw@mail.gmail.com>
- <870C70CA-C760-40A5-8A04-F0962EFDF507@linux.dev>
-In-Reply-To: <870C70CA-C760-40A5-8A04-F0962EFDF507@linux.dev>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Fri, 12 Aug 2022 19:25:46 +0800
-Message-ID: <CALOAHbDHB=ncRfO2ATCmQ0+wvxE62JrRqh_As-CbjMQDAs9oqA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 05/15] bpf: Fix incorrect mem_cgroup_put
-To:     Muchun Song <muchun.song@linux.dev>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, jolsa@kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -83,94 +70,64 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 12, 2022 at 1:34 PM Muchun Song <muchun.song@linux.dev> wrote:
->
->
->
-> > On Aug 12, 2022, at 08:27, Yafang Shao <laoar.shao@gmail.com> wrote:
-> >
-> > On Thu, Aug 11, 2022 at 11:47 PM Shakeel Butt <shakeelb@google.com> wro=
-te:
-> >>
-> >> On Thu, Aug 11, 2022 at 10:49:13AM +0800, Yafang Shao wrote:
-> >>> On Thu, Aug 11, 2022 at 1:07 AM Shakeel Butt <shakeelb@google.com> wr=
-ote:
-> >>>>
-> >>>> On Wed, Aug 10, 2022 at 03:18:30PM +0000, Yafang Shao wrote:
-> >>>>> The memcg may be the root_mem_cgroup, in which case we shouldn't pu=
-t it.
-> >>>>
-> >>>> No, it is ok to put root_mem_cgroup. css_put already handles the roo=
-t
-> >>>> cgroups.
-> >>>>
-> >>>
-> >>> Ah, this commit log doesn't describe the issue clearly. I should impr=
-ove it.
-> >>> The issue is that in bpf_map_get_memcg() it doesn't get the objcg if
-> >>> map->objcg is NULL (that can happen if the map belongs to the root
-> >>> memcg), so we shouldn't put the objcg if map->objcg is NULL neither i=
-n
-> >>> bpf_map_put_memcg().
-> >>
-> >> Sorry I am still not understanding. We are not 'getting' objcg in
-> >> bpf_map_get_memcg(). We are 'getting' memcg from map->objcg and if tha=
-t
-> >> is NULL the function is returning root memcg and putting root memcg is
-> >> totally fine.
-> >
-> > When the map belongs to root_mem_cgroup, the map->objcg is NULL, right =
-?
-> > See also bpf_map_save_memcg() and it describes clearly in the comment -
-> >
-> > static void bpf_map_save_memcg(struct bpf_map *map)
-> > {
-> >        /* Currently if a map is created by a process belonging to the r=
-oot
-> >         * memory cgroup, get_obj_cgroup_from_current() will return NULL=
-.
-> >         * So we have to check map->objcg for being NULL each time it's
-> >         * being used.
-> >         */
-> >        map->objcg =3D get_obj_cgroup_from_current();
-> > }
-> >
-> > So for the root_mem_cgroup case, bpf_map_get_memcg() will return
-> > root_mem_cgroup directly without getting its css, right ? See below,
-> >
-> > static struct mem_cgroup *bpf_map_get_memcg(const struct bpf_map *map)
-> > {
-> >
-> >        if (map->objcg)
-> >                return get_mem_cgroup_from_objcg(map->objcg);
-> >
-> >        return root_mem_cgroup;   // without css_get(&memcg->css);
-> > }
-> >
-> > But it will put the css unconditionally.  See below,
-> >
-> > memcg =3D bpf_map_get_memcg(map);
-> > ...
-> > mem_cgroup_put(memcg);
-> >
-> > So we should put it *conditionally* as well.
->
-> Hi,
->
-> No. We could put root_mem_cgroup unconditionally since the root css
-> is treated as no reference css. See css_put().
->
-> static inline void css_put(struct cgroup_subsys_state *css)
-> {
->         // The root memcg=E2=80=99s css has been set with CSS_NO_REF.
->         if (!(css->flags & CSS_NO_REF))
->                 percpu_ref_put(&css->refcnt);
-> }
+From: Magnus Karlsson <magnus.karlsson@intel.com>
 
-Indeed. I missed that.
-The call stack is so deep that I didn't look into it :(
-Thanks for the information.
+Fix an issue in XDP_SHARED_UMEM mode together with aligned mode were
+packets are corrupted for the second and any further sockets bound to
+the same umem. In other words, this does not affect the first socket
+bound to the umem. The culprit for this bug is that the initialization
+of the DMA addresses for the pre-populated xsk buffer pool entries was
+not performed for any socket but the first one bound to the umem. Only
+the linear array of DMA addresses was populated. Fix this by
+populating the DMA addresses in the xsk buffer pool for every socket
+bound to the same umem.
 
---=20
-Regards
-Yafang
+Fixes: 94033cd8e73b8 ("xsk: Optimize for aligned case")
+Reported-by: Alasdair McWilliam <alasdair.mcwilliam@outlook.com>
+Reported-by: Intrusion Shield Team <dnevil@intrusion.com>
+Tested-by: Alasdair McWilliam <alasdair.mcwilliam@outlook.com>
+Link: https://lore.kernel.org/xdp-newbies/6205E10C-292E-4995-9D10-409649354226@outlook.com/
+Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+---
+ net/xdp/xsk_buff_pool.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
+
+diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
+index f70112176b7c..a71a8c6edf55 100644
+--- a/net/xdp/xsk_buff_pool.c
++++ b/net/xdp/xsk_buff_pool.c
+@@ -379,6 +379,16 @@ static void xp_check_dma_contiguity(struct xsk_dma_map *dma_map)
+ 
+ static int xp_init_dma_info(struct xsk_buff_pool *pool, struct xsk_dma_map *dma_map)
+ {
++	if (!pool->unaligned) {
++		u32 i;
++
++		for (i = 0; i < pool->heads_cnt; i++) {
++			struct xdp_buff_xsk *xskb = &pool->heads[i];
++
++			xp_init_xskb_dma(xskb, pool, dma_map->dma_pages, xskb->orig_addr);
++		}
++	}
++
+ 	pool->dma_pages = kvcalloc(dma_map->dma_pages_cnt, sizeof(*pool->dma_pages), GFP_KERNEL);
+ 	if (!pool->dma_pages)
+ 		return -ENOMEM;
+@@ -428,12 +438,6 @@ int xp_dma_map(struct xsk_buff_pool *pool, struct device *dev,
+ 
+ 	if (pool->unaligned)
+ 		xp_check_dma_contiguity(dma_map);
+-	else
+-		for (i = 0; i < pool->heads_cnt; i++) {
+-			struct xdp_buff_xsk *xskb = &pool->heads[i];
+-
+-			xp_init_xskb_dma(xskb, pool, dma_map->dma_pages, xskb->orig_addr);
+-		}
+ 
+ 	err = xp_init_dma_info(pool, dma_map);
+ 	if (err) {
+
+base-commit: 4e4588f1c4d2e67c993208f0550ef3fae33abce4
+-- 
+2.34.1
+
