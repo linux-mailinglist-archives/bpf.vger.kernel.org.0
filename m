@@ -2,84 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8D5D591438
-	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 18:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31F80591475
+	for <lists+bpf@lfdr.de>; Fri, 12 Aug 2022 18:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239393AbiHLQuT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Aug 2022 12:50:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49454 "EHLO
+        id S239311AbiHLQ6C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Aug 2022 12:58:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239396AbiHLQuS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Aug 2022 12:50:18 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9903E5FAB
-        for <bpf@vger.kernel.org>; Fri, 12 Aug 2022 09:50:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 03891B82476
-        for <bpf@vger.kernel.org>; Fri, 12 Aug 2022 16:50:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B4BB0C433D7;
-        Fri, 12 Aug 2022 16:50:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660323014;
-        bh=QSmSsjCijdrl13JsaW8tnoBT7pKXi4T8Nu+no25W640=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=g288IfhH0w7g/UX7EU8Immm6rEiSYq4n16AdVJptNlOb6jTiwfI6p34QrJdiIgujn
-         lp1ynlMCfEkes6Oybf64QO84VOkq1rIk2HIzY0J/HW9hwE28HYUPyzrJuPUqC5qzIL
-         w2wU8meHSc72tmN0neSNzacFbTYdKC/yw5VAwjf05kEgGqni3zxKZnMCnelrLH6oMG
-         EwTnDg7WmkmRFJKPGct89GW08V/6IR2WZa01/3YWQEDAWt4QTIzu1AcTSIHYpB9tCt
-         sntmrAU/8JdU3GiyvVDupEbnvADjf3qbY/UFePMGnN6qoUcc3cmrwqLkoIdNtctkfq
-         ZY8w/XQFfP6Fg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9A06BC43141;
-        Fri, 12 Aug 2022 16:50:14 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] selftests/bpf: Add lru_bug to s390x deny list
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166032301462.8174.3605479061639065308.git-patchwork-notify@kernel.org>
-Date:   Fri, 12 Aug 2022 16:50:14 +0000
-References: <20220810200710.1300299-1-deso@posteo.net>
-In-Reply-To: <20220810200710.1300299-1-deso@posteo.net>
-To:     =?utf-8?q?Daniel_M=C3=BCller_=3Cdeso=40posteo=2Enet=3E?=@ci.codeaurora.org
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S236554AbiHLQ6A (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Aug 2022 12:58:00 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C80B0B0D
+        for <bpf@vger.kernel.org>; Fri, 12 Aug 2022 09:57:59 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 130-20020a250188000000b006777ce7728cso1142958ybb.4
+        for <bpf@vger.kernel.org>; Fri, 12 Aug 2022 09:57:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
+         :date:from:to:cc;
+        bh=R06lrdYIFgbYGZQBaMs5Tz+QLWy1uP4VRkuAR/ckZ+8=;
+        b=n0KhhCoQu6+2K3yOqGNXdch+D7V/Ekevc0fxste8wMmkb/8TnpmAihLvGSc0h1JtTd
+         EwOFd05EA2wEgAJJDxWuWP5Z7BT1V8+1XAGlKTK4GwzcPc4DVz3UcYP/ifg9/fkZOf6J
+         Xef4us85cJv9lI9o/D4w0JcMWY0vro6AXCpzcNhQCZha2oEUMZKyH7osWxxBFHaqZfFI
+         cKvz3GaE+lku7a6/CLOHGohAA5rgahXSQs2PV6OG5eaMz7kE2gDKIXOYiN4FcshygkIf
+         susCJqBwnuX+JZEl4tAvq0mimSVUrmysEY4GP8JEcPKix7AIF0OPcbgX86u/sTGQeLt9
+         i4OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
+         :date:x-gm-message-state:from:to:cc;
+        bh=R06lrdYIFgbYGZQBaMs5Tz+QLWy1uP4VRkuAR/ckZ+8=;
+        b=ebp08PqBTe3lGI1vSxAWg/itHxP68Cz4BYJfXzvNzAHhkuZvbtP59BExlVtxjOCQta
+         2O0M1sAj28RGp58umhibj5Rs9wsJIzNReG8LUBLqs3uefuaNWKDUJKQCcMX1MGiVWE4y
+         9icPaZiPpYmtfTLCCrYN/jiyyhX594FRUhndH8iE0RNgg+RHFRAshUi4Ay3UlK3YTLX+
+         urARhD61IUWI7+Osbykz43fmBQ0khL5WjW0C6yPTL+wqLTTeFwY7y+t8QZ2i+dVOBTd/
+         UJZqzeOyNhwenGaLPTFRWGqEAJmLph4t3H98WoX/aj3HwmrPHucZYCEns9d3DoeUR2n/
+         IfQQ==
+X-Gm-Message-State: ACgBeo1n4o7AdHhP77U71vOUiaprL+zPnerg1nSmlu08rvyIpMM3ojNt
+        ap0shhlMpU6xa9H683qkWt0rr8u45vlVtQ==
+X-Google-Smtp-Source: AA6agR5eA3zKFSyDylTwjia5RJoC02zN57hFsDAYzxC+KdxlNVOXC54p8q8MygnauAQw7PY7YjFbWWcHGb2j0Q==
+X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:28b])
+ (user=shakeelb job=sendgmr) by 2002:a81:5d07:0:b0:329:8fb8:779 with SMTP id
+ r7-20020a815d07000000b003298fb80779mr4720036ywb.77.1660323479019; Fri, 12 Aug
+ 2022 09:57:59 -0700 (PDT)
+Date:   Fri, 12 Aug 2022 16:57:56 +0000
+In-Reply-To: <20220810151840.16394-14-laoar.shao@gmail.com>
+Message-Id: <20220812165756.dxaqy3go567prr5s@google.com>
+Mime-Version: 1.0
+References: <20220810151840.16394-1-laoar.shao@gmail.com> <20220810151840.16394-14-laoar.shao@gmail.com>
+Subject: Re: [PATCH bpf-next 13/15] mm, memcg: Add new helper get_obj_cgroup_from_cgroup
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, hannes@cmpxchg.org,
+        mhocko@kernel.org, roman.gushchin@linux.dev,
+        songmuchun@bytedance.com, akpm@linux-foundation.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Wed, Aug 10, 2022 at 03:18:38PM +0000, Yafang Shao wrote:
+> Introduce new helper get_obj_cgroup_from_cgroup() to get obj_cgroup from
+> a specific cgroup.
 
-This patch was applied to bpf/bpf.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+Can you please add couple of lines on why you need objcg?
 
-On Wed, 10 Aug 2022 20:07:10 +0000 you wrote:
-> The lru_bug BPF selftest is failing execution on s390x machines. The
-> failure is due to program attachment failing in turn, similar to a bunch
-> of other tests. Those other tests have already been deny-listed and with
-> this change we do the same for the lru_bug test, adding it to the
-> corresponding file.
 > 
-> Fixes: de7b9927105b ("selftests/bpf: Add test for prealloc_lru_pop bug")
-> Signed-off-by: Daniel Müller <deso@posteo.net>
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> ---
+>  include/linux/memcontrol.h |  1 +
+>  mm/memcontrol.c            | 41 +++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 42 insertions(+)
 > 
-> [...]
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 2f0a611..901a921 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -1713,6 +1713,7 @@ static inline void set_shrinker_bit(struct mem_cgroup *memcg,
+>  int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order);
+>  void __memcg_kmem_uncharge_page(struct page *page, int order);
+>  
+> +struct obj_cgroup *get_obj_cgroup_from_cgroup(struct cgroup *cgrp);
+>  struct obj_cgroup *get_obj_cgroup_from_current(void);
+>  struct obj_cgroup *get_obj_cgroup_from_page(struct page *page);
+>  
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 618c366..762cffa 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2908,6 +2908,47 @@ static struct obj_cgroup *__get_obj_cgroup_from_memcg(struct mem_cgroup *memcg)
+>  	return objcg;
+>  }
+>  
+> +static struct obj_cgroup *get_obj_cgroup_from_memcg(struct mem_cgroup *memcg)
+> +{
+> +	struct obj_cgroup *objcg;
+> +
+> +	if (memcg_kmem_bypass())
+> +		return NULL;
+> +
+> +	rcu_read_lock();
+> +	objcg = __get_obj_cgroup_from_memcg(memcg);
+> +	rcu_read_unlock();
+> +	return objcg;
+> +}
+> +
+> +struct obj_cgroup *get_obj_cgroup_from_cgroup(struct cgroup *cgrp)
+> +{
+> +	struct cgroup_subsys_state *css;
+> +	struct mem_cgroup *memcg;
+> +	struct obj_cgroup *objcg;
+> +
+> +	rcu_read_lock();
+> +	css = rcu_dereference(cgrp->subsys[memory_cgrp_id]);
+> +	if (!css || !css_tryget_online(css)) {
+> +		rcu_read_unlock();
+> +		cgroup_put(cgrp);
+> +		return ERR_PTR(-EINVAL);
+> +	}
+> +	rcu_read_unlock();
+> +	cgroup_put(cgrp);
 
-Here is the summary with links:
-  - [bpf] selftests/bpf: Add lru_bug to s390x deny list
-    https://git.kernel.org/bpf/bpf/c/27e23836ce22
+The above put seems out of place and buggy.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+> +
+> +	memcg = mem_cgroup_from_css(css);
+> +	if (!memcg) {
+> +		css_put(css);
+> +		return ERR_PTR(-EINVAL);
+> +	}
+> +
+> +	objcg = get_obj_cgroup_from_memcg(memcg);
+> +	css_put(css);
+> +
+> +	return objcg;
+> +}
+> +
+>  __always_inline struct obj_cgroup *get_obj_cgroup_from_current(void)
+>  {
+>  	struct obj_cgroup *objcg = NULL;
+> -- 
+> 1.8.3.1
+> 
