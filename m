@@ -2,131 +2,179 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B119591906
-	for <lists+bpf@lfdr.de>; Sat, 13 Aug 2022 08:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16A65591953
+	for <lists+bpf@lfdr.de>; Sat, 13 Aug 2022 09:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235435AbiHMG0Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 13 Aug 2022 02:26:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60224 "EHLO
+        id S237374AbiHMHwp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 13 Aug 2022 03:52:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235295AbiHMG0P (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 13 Aug 2022 02:26:15 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FC688E0C0
-        for <bpf@vger.kernel.org>; Fri, 12 Aug 2022 23:26:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1660371974; x=1691907974;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=9T3K+XG447imZFP6sUMqTXxGh+snQ8KBpvMp3XnnRwM=;
-  b=iPfQxWPGS+AZN5EiZPW1RrlPn9iyKt2awvakaxgOlbQWnjHKUcTTWF6y
-   ataaopoqnBjEmVAxRNQzHgWiHPOFTlBvqjAUVNeRaMrUJlPQP3IVmebFE
-   AKLaRvqBpH+3Rvna7mRptwyWF32OrGR1zZPp922IENTsra+mFFx8bqgW2
-   WuMIlsVcT3/Ykiy65JR7zN4MfjDPqbvLQiulUbVzNDNdTN2dpdC1wz/eC
-   SOChDqOw25Z1U5J8N5gtXkMBJokrMbqd8GjQV9d4MdzvYyDz7HaeSvQKI
-   HlGmmdqwK4SUSqVpVSLDh4mIkSnqqob8exW0KW8lL7nT9AXR41rRDvmvv
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10437"; a="289301966"
-X-IronPort-AV: E=Sophos;i="5.93,233,1654585200"; 
-   d="scan'208";a="289301966"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2022 23:26:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,233,1654585200"; 
-   d="scan'208";a="639127027"
-Received: from lkp-server02.sh.intel.com (HELO 8745164cafc7) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 12 Aug 2022 23:26:10 -0700
-Received: from kbuild by 8745164cafc7 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1oMkb3-0001Nu-2X;
-        Sat, 13 Aug 2022 06:26:09 +0000
-Date:   Sat, 13 Aug 2022 14:25:54 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        sdf@google.com, haoluo@google.com, jolsa@kernel.org
-Subject: Re: [PATCH bpf-next 2/3] bpf: use cgroup_{common,current}_func_proto
- in more hooks
-Message-ID: <202208131415.CkdRZBrY-lkp@intel.com>
-References: <20220812190241.3544528-3-sdf@google.com>
+        with ESMTP id S235444AbiHMHwo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 13 Aug 2022 03:52:44 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C88312A85;
+        Sat, 13 Aug 2022 00:52:43 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id q7-20020a17090a7a8700b001f300db8677so2723802pjf.5;
+        Sat, 13 Aug 2022 00:52:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc;
+        bh=maPUir0VcPvhh/9jwsQwdhOHtzFMLZNIvg3FsfxGeqQ=;
+        b=PyhEFXOQG/6/nnY73No372hMsgU2sLjrsbcC1ELl6/y/yDP6JlWtz6hljP4gMYccTB
+         IrerN6OJ32GFm53BmndzfUPYLG83NR514yt+7ueApyCaGPsorfRpxBXT2Y+TYM6CK5zl
+         d85aQBC68LV786pPG0NCD2wy87Wk8ejHA5zksQGtbq5z32/zBuNHhcfLcaT/HP2ZiUeF
+         xHrdm4P4eNIiFEL0hwV6SqplYsSrmMhLv0LBZn4tl7S+Ex/w91YsqDlowtMqr/sfZ2oq
+         n6ouCgsIhLTQE23HWDP2r6ZOWEazgKTo4qsbFd33lRsXnDYw6hYQhk5FtOU3ZQYV7TNC
+         Rjuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
+        bh=maPUir0VcPvhh/9jwsQwdhOHtzFMLZNIvg3FsfxGeqQ=;
+        b=QWCXtSEM+dQTv283d28BMbmnphLOMj43AabJIBDguexmbKcWc+s7345iXCzXP/icLB
+         tA3jjXSKjHID14JLW4W6BYbZm9B0HjMC5OHG80oz0cfgC3y1c/LROUBbtd+956sy8EGm
+         95uURYYz62z7gMYv7foH12wrCjY3qMPKIRDgQPN7QSiMspn2gbXwAHVa66s8i5qKLzmc
+         VsOtMJ08fY8HHfUh5PBXS67mf7nrtw6VA46BSQEBLbTpAzLxwmOvNL6kbyTeSqazr7Zp
+         puN5igbMYoUQ5bb94SxHxfdmxBWPXKJVTX0mbVvAEOqG9Q2IgyOzn5zPGM9pqNWDZfVu
+         WSvQ==
+X-Gm-Message-State: ACgBeo1OjI3Z3pHk7MUxXNks3GUQYAvlj0ZdN6ulVkwXamRgf3xzMMwV
+        hb6KmheHu88Tq9LRX9ZsQ9Smdmy6KHYi7+JMOEY=
+X-Google-Smtp-Source: AA6agR5PeUlpamSOI/dBt37J84Sd28rZQgGA1JKZHmvaJaCcv94r+mo7ciB+NcGP9HAbe2TGFh51is5A8ShkACGEQiQ=
+X-Received: by 2002:a17:902:e805:b0:16f:4a25:b5bd with SMTP id
+ u5-20020a170902e80500b0016f4a25b5bdmr7413389plg.85.1660377162860; Sat, 13 Aug
+ 2022 00:52:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220812190241.3544528-3-sdf@google.com>
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <CAHo-OoxwQ3fO3brKw0MSNcQtW5Ynr8LUJoANU_TFeOAQkP1RAA@mail.gmail.com>
+ <CAKH8qBuiGU91htP5C4N_zCeRVSF9cgPFy7gh55YMA29sbtJHhw@mail.gmail.com>
+In-Reply-To: <CAKH8qBuiGU91htP5C4N_zCeRVSF9cgPFy7gh55YMA29sbtJHhw@mail.gmail.com>
+From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
+Date:   Sat, 13 Aug 2022 00:52:30 -0700
+Message-ID: <CAHo-Oox-rA7qHH+b0EB1U0==eWHSzSt_Z2+OrupOCOHyRu337w@mail.gmail.com>
+Subject: Re: Query on reads being flagged as direct writes...
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Lina Wang <lina.wang@mediatek.com>,
+        Linux NetDev <netdev@vger.kernel.org>,
+        BPF Mailing List <bpf@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Thomas Graf <tgraf@suug.ch>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Stanislav,
+I haven't tried figuring it out yet (via printks)... as I can't
+currently trigger this myself, so I'm basically stuck with code
+spelunking.
+(I do know we currently legitimately do at least one dpa write... and
+converting that one line to use bpf_skb_store_bytes results in the
+program not even loading...
+https://android-review.googlesource.com/c/platform/packages/modules/Connect=
+ivity/+/2181376
+- but I haven't yet had the opportunity to figure out what, likely
+obvious, mistake I made)
 
-I love your patch! Yet something to improve:
+We do make use of at least the following helpers:
 
-[auto build test ERROR on bpf-next/master]
+bpf_map_lookup_elem
+bpf_map_update_elem
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Stanislav-Fomichev/bpf-expose-bpf_-g-s-et_retval-to-more-cgroup-hooks/20220813-030615
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-config: x86_64-randconfig-a013 (https://download.01.org/0day-ci/archive/20220813/202208131415.CkdRZBrY-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-3) 11.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/intel-lab-lkp/linux/commit/0429824054f7a843ee976d48432e825e493a0a7e
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Stanislav-Fomichev/bpf-expose-bpf_-g-s-et_retval-to-more-cgroup-hooks/20220813-030615
-        git checkout 0429824054f7a843ee976d48432e825e493a0a7e
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
+which AFAICT are all marked as pkt_access =3D=3D true, even though we
+don't use them to read nor write to the packet.
 
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
+Having said that, and having dug deeper into the code I think only
+may_access_direct_pkt_data(env, meta, BPF_READ) is the problematic
+call site, and AFAICT it always has meta !=3D NULL since it is called
+via check_func_arg(env, i, &meta, fn).
+So maybe this does just work? even if it is super confusing... and
+should probably be documented better.
 
-All errors (new ones prefixed by >>):
+ie. right now we have two callers of may_access_direct_pkt_data():
+  may_access_direct_pkt_data(env, NULL, BPF_WRITE)
+  may_access_direct_pkt_data(env, non-NULL, BPF_READ)
+so meta !=3D NULL implies t =3D=3D BPF_WRITE, and using fallthrough would b=
+e
+a no-op (with current callers)
 
-   kernel/bpf/helpers.c: In function 'cgroup_current_func_proto':
->> kernel/bpf/helpers.c:1817:25: error: 'bpf_get_cgroup_classid_curr_proto' undeclared (first use in this function)
-    1817 |                 return &bpf_get_cgroup_classid_curr_proto;
-         |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1817:25: note: each undeclared identifier is reported only once for each function it appears in
+Maybe this is just a single function that does two very different
+things in the two call sites...
 
-
-vim +/bpf_get_cgroup_classid_curr_proto +1817 kernel/bpf/helpers.c
-
-  1797	
-  1798	/* Common helpers for cgroup hooks with valid process context. */
-  1799	const struct bpf_func_proto *
-  1800	cgroup_current_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
-  1801	{
-  1802		switch (func_id) {
-  1803	#ifdef CONFIG_CGROUPS
-  1804		case BPF_FUNC_get_current_uid_gid:
-  1805			return &bpf_get_current_uid_gid_proto;
-  1806		case BPF_FUNC_get_current_pid_tgid:
-  1807			return &bpf_get_current_pid_tgid_proto;
-  1808		case BPF_FUNC_get_current_comm:
-  1809			return &bpf_get_current_comm_proto;
-  1810		case BPF_FUNC_get_current_cgroup_id:
-  1811			return &bpf_get_current_cgroup_id_proto;
-  1812		case BPF_FUNC_get_current_ancestor_cgroup_id:
-  1813			return &bpf_get_current_ancestor_cgroup_id_proto;
-  1814	#endif
-  1815	#ifdef CONFIG_CGROUP_NET_CLASSID
-  1816		case BPF_FUNC_get_cgroup_classid:
-> 1817			return &bpf_get_cgroup_classid_curr_proto;
-  1818	#endif
-  1819		default:
-  1820			return NULL;
-  1821		}
-  1822	}
-  1823	
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+On Fri, Aug 12, 2022 at 9:58 AM Stanislav Fomichev <sdf@google.com> wrote:
+>
+> On Fri, Aug 12, 2022 at 5:06 AM Maciej =C5=BBenczykowski
+> <zenczykowski@gmail.com> wrote:
+> >
+> > From kernel/bpf/verifier.c with some simplifications (removed some of
+> > the cases to make this shorter):
+> >
+> > static bool may_access_direct_pkt_data(struct bpf_verifier_env *env,
+> > const struct bpf_call_arg_meta *meta, enum bpf_access_type t)
+> > {
+> >   enum bpf_prog_type prog_type =3D resolve_prog_type(env->prog);
+> >   switch (prog_type) {
+> >     /* Program types only with direct read access go here! */
+> >     case BPF_PROG_TYPE_CGROUP_SKB: (and some others)
+> >       if (t =3D=3D BPF_WRITE) return false;
+> >       fallthrough;
+> >     /* Program types with direct read + write access go here! */
+> >     case BPF_PROG_TYPE_SCHED_CLS: (and some others)
+> >       if (meta) return meta->pkt_access;
+> >       env->seen_direct_write =3D true;
+> >       return true;
+> >     case BPF_PROG_TYPE_CGROUP_SOCKOPT:
+> >       if (t =3D=3D BPF_WRITE) env->seen_direct_write =3D true;
+> >       return true;
+> >   }
+> > }
+> >
+> > why does the above set env->seen_direct_write to true even when t !=3D
+> > BPF_WRITE, even for programs that only allow (per the comment) direct
+> > read access.
+> >
+> > Is this working correctly?  Is there some gotcha this is papering over?
+> >
+> > Should 'env->seen_direct_write =3D true; return true;' be changed into
+> > 'fallthrough' so that write is only set if t =3D=3D BPF_WRITE?
+> >
+> > This matters because 'env->seen_direct_write =3D true' then triggers an
+> > unconditional unclone in the bpf prologue, which I'd like to avoid
+> > unless I actually need to modify the packet (with
+> > bpf_skb_store_bytes)...
+> >
+> > may_access_direct_pkt_data() has two call sites, in one it only gets
+> > called with BPF_WRITE so it's ok, but the other one is in
+> > check_func_arg():
+> >
+> > if (type_is_pkt_pointer(type) && !may_access_direct_pkt_data(env,
+> > meta, BPF_READ)) { verbose(env, "helper access to the packet is not
+> > allowed\n"); return -EACCES; }
+> >
+> > and I'm not really following what this does, but it seems like bpf
+> > helper read access to the packet triggers unclone?
+>
+> There seems to be a set of helpers (pkt_access=3Dtrue) which accept
+> direct packet pointers and are known to be doing only reads of the skb
+> data (safe without clone).
+> You seem to be hitting the case where you're passing that packet
+> pointer to one of the "unsafe" (pkt_acces=3Dfalse) helpers which
+> triggers that seen_direct_write=3Dtrue condition.
+> So it seems like it's by design? Which helper are you calling? Maybe
+> that one should also have pkt_access=3Dtrue?
+>
+> Tangential: I wish there was an explicit BPF_F_MAY_ATTEMPT_TO_CLONE
+> flag that gates this auto-clone. I think at some point we also
+> accidentally hit it :-(
+>
+> > (side note: all packets ingressing from the rndis gadget driver are
+> > clones due to how it deals with usb packet deaggregation [not to be
+> > mistaken with lro/tso])
+> >
+> > Confused...
