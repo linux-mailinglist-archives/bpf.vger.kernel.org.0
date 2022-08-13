@@ -2,64 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D46A591C45
-	for <lists+bpf@lfdr.de>; Sat, 13 Aug 2022 20:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26810591C5F
+	for <lists+bpf@lfdr.de>; Sat, 13 Aug 2022 20:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239747AbiHMSaN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 13 Aug 2022 14:30:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37040 "EHLO
+        id S236805AbiHMS4e (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 13 Aug 2022 14:56:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239428AbiHMSaM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 13 Aug 2022 14:30:12 -0400
-Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E80BBE32;
-        Sat, 13 Aug 2022 11:30:11 -0700 (PDT)
-Date:   Sat, 13 Aug 2022 11:30:04 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1660415410;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=E63Q1bPVq427Ovtaj+mb5uXGGsmTNyBJBlzhvoLTwWg=;
-        b=XdvYQabcYG06stMpL7taZTyyG5P1TGqdnpJqO/xobn+zdaM0gHjKmJS1RiR8q8k7WW5y/z
-        MWC+HwqyGdQgITH4nwfv+7w09IKR7j1EkyVrU+LSEsH2O7ic770M27T3OEBvmLVqryM345
-        2y46qaqEmEAroYsj4l2Fw6+DPT61iSw=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, jolsa@kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Subject: Re: [PATCH bpf-next 13/15] mm, memcg: Add new helper
- get_obj_cgroup_from_cgroup
-Message-ID: <YvftrF7GmqMjvAa+@P9FQF9L96D.corp.robot.car>
-References: <20220810151840.16394-1-laoar.shao@gmail.com>
- <20220810151840.16394-14-laoar.shao@gmail.com>
- <YvUrXLJF6qrGOdjP@P9FQF9L96D.corp.robot.car>
- <CALOAHbAj7BymBV7KhzxLfMPue8666V+24TOfqG0XTE4euWyR4Q@mail.gmail.com>
- <YvaQhLk06MHQJWHB@P9FQF9L96D.corp.robot.car>
- <CALOAHbBh4=yxX5c2_TK8-uf14KKg=Vp1NoHAEZGxS2wAxCnZWA@mail.gmail.com>
+        with ESMTP id S230103AbiHMS4d (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 13 Aug 2022 14:56:33 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E618014D19
+        for <bpf@vger.kernel.org>; Sat, 13 Aug 2022 11:56:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1660416991; x=1691952991;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ZBPDfSeBK9w+B+8JdjaWQ3ncVRB2cbox7kKTBR+j8R4=;
+  b=U2clF9qrE/EVPWPFhcSB+PZCTB+br3ZXDCQSVLXrlHjwjufMmXR0upiH
+   ofVqW40JnVtWAvmtMdrwDr6KBN9sZ9ekTGARXb77iCweQd6GXxxtv+0yg
+   4MaTbfvs8riDSi0dSgyM2YQKqd0K7e8JGwk6q4cDr0gn8xTCw5IKxaZbk
+   yms8N/Ch6XTpgKs76Z52NBfLRyjkDciaNI9ZnChWpNE35RjJeg0kWEip4
+   2t0MV4U6L0+GEOpgylfGjB1cAC3kXRO9laOrxNg0Q9MLFccm/Wo7PZIzT
+   9lSZScKIJeMIOP0tTfEr0mNGBqxo++EZKnhuQzkX0O90KpR971PoPYJo9
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10437"; a="378061747"
+X-IronPort-AV: E=Sophos;i="5.93,235,1654585200"; 
+   d="scan'208";a="378061747"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2022 11:56:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,235,1654585200"; 
+   d="scan'208";a="709345965"
+Received: from lkp-server02.sh.intel.com (HELO 8745164cafc7) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 13 Aug 2022 11:56:28 -0700
+Received: from kbuild by 8745164cafc7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oMwJ9-00020D-1R;
+        Sat, 13 Aug 2022 18:56:27 +0000
+Date:   Sun, 14 Aug 2022 02:55:50 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org
+Subject: Re: [PATCH bpf-next 2/3] bpf: use cgroup_{common,current}_func_proto
+ in more hooks
+Message-ID: <202208140239.yjzPuMmv-lkp@intel.com>
+References: <20220812190241.3544528-3-sdf@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALOAHbBh4=yxX5c2_TK8-uf14KKg=Vp1NoHAEZGxS2wAxCnZWA@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20220812190241.3544528-3-sdf@google.com>
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,79 +67,68 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Aug 13, 2022 at 07:56:54AM +0800, Yafang Shao wrote:
-> On Sat, Aug 13, 2022 at 1:40 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
-> >
-> > On Fri, Aug 12, 2022 at 08:35:19AM +0800, Yafang Shao wrote:
-> > > On Fri, Aug 12, 2022 at 12:16 AM Roman Gushchin
-> > > <roman.gushchin@linux.dev> wrote:
-> > > >
-> > > > On Wed, Aug 10, 2022 at 03:18:38PM +0000, Yafang Shao wrote:
-> > > > > Introduce new helper get_obj_cgroup_from_cgroup() to get obj_cgroup from
-> > > > > a specific cgroup.
-> > > > >
-> > > > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > > > > ---
-> > > > >  include/linux/memcontrol.h |  1 +
-> > > > >  mm/memcontrol.c            | 41 +++++++++++++++++++++++++++++++++++++++++
-> > > > >  2 files changed, 42 insertions(+)
-> > > > >
-> > > > > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > > > > index 2f0a611..901a921 100644
-> > > > > --- a/include/linux/memcontrol.h
-> > > > > +++ b/include/linux/memcontrol.h
-> > > > > @@ -1713,6 +1713,7 @@ static inline void set_shrinker_bit(struct mem_cgroup *memcg,
-> > > > >  int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order);
-> > > > >  void __memcg_kmem_uncharge_page(struct page *page, int order);
-> > > > >
-> > > > > +struct obj_cgroup *get_obj_cgroup_from_cgroup(struct cgroup *cgrp);
-> > > > >  struct obj_cgroup *get_obj_cgroup_from_current(void);
-> > > > >  struct obj_cgroup *get_obj_cgroup_from_page(struct page *page);
-> > > > >
-> > > > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > > > > index 618c366..762cffa 100644
-> > > > > --- a/mm/memcontrol.c
-> > > > > +++ b/mm/memcontrol.c
-> > > > > @@ -2908,6 +2908,47 @@ static struct obj_cgroup *__get_obj_cgroup_from_memcg(struct mem_cgroup *memcg)
-> > > > >       return objcg;
-> > > > >  }
-> > > > >
-> > > > > +static struct obj_cgroup *get_obj_cgroup_from_memcg(struct mem_cgroup *memcg)
-> > > > > +{
-> > > > > +     struct obj_cgroup *objcg;
-> > > > > +
-> > > > > +     if (memcg_kmem_bypass())
-> > > > > +             return NULL;
-> > > > > +
-> > > > > +     rcu_read_lock();
-> > > > > +     objcg = __get_obj_cgroup_from_memcg(memcg);
-> > > > > +     rcu_read_unlock();
-> > > > > +     return objcg;
-> > > >
-> > > > This code doesn't make sense to me. What does rcu read lock protect here?
-> > >
-> > > To protect rcu_dereference(memcg->objcg);.
-> > > Doesn't it need the read rcu lock ?
-> >
-> > No, it's not how rcu works. Please, take a look at the docs here:
-> > https://docs.kernel.org/RCU/whatisRCU.html#whatisrcu .
-> > In particular, it describes this specific case very well.
-> >
-> > In 2 words, you don't protect the rcu_dereference() call, you protect the pointer
-> 
-> I just copied and pasted rcu_dereference(memcg->objcg) there to make it clear.
-> Actually it protects memcg->objcg, doesn't it ?
-> 
-> > you get, cause it's valid only inside the rcu read section. After rcu_read_unlock()
-> > it might point at a random data, because the protected object can be already freed.
-> >
-> 
-> Are you sure?
-> Can't the obj_cgroup_tryget(objcg) prevent it from being freed ?
+Hi Stanislav,
 
-Ok, now I see where it comes from. You copy-pasted it from get_obj_cgroup_from_current()?
-There rcu read lock section protects memcg, not objcg.
-In your case you don't need it, because memcg is passed as a parameter to the function,
-so it's the duty of the caller to ensure the lifetime of memcg.
+I love your patch! Yet something to improve:
 
-Thanks!
+[auto build test ERROR on bpf-next/master]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Stanislav-Fomichev/bpf-expose-bpf_-g-s-et_retval-to-more-cgroup-hooks/20220813-030615
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+config: i386-randconfig-a004 (https://download.01.org/0day-ci/archive/20220814/202208140239.yjzPuMmv-lkp@intel.com/config)
+compiler: clang version 16.0.0 (https://github.com/llvm/llvm-project 3329cec2f79185bafd678f310fafadba2a8c76d2)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/0429824054f7a843ee976d48432e825e493a0a7e
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Stanislav-Fomichev/bpf-expose-bpf_-g-s-et_retval-to-more-cgroup-hooks/20220813-030615
+        git checkout 0429824054f7a843ee976d48432e825e493a0a7e
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=i386 SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+>> kernel/bpf/helpers.c:1817:11: error: use of undeclared identifier 'bpf_get_cgroup_classid_curr_proto'
+                   return &bpf_get_cgroup_classid_curr_proto;
+                           ^
+   1 error generated.
+
+
+vim +/bpf_get_cgroup_classid_curr_proto +1817 kernel/bpf/helpers.c
+
+  1797	
+  1798	/* Common helpers for cgroup hooks with valid process context. */
+  1799	const struct bpf_func_proto *
+  1800	cgroup_current_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+  1801	{
+  1802		switch (func_id) {
+  1803	#ifdef CONFIG_CGROUPS
+  1804		case BPF_FUNC_get_current_uid_gid:
+  1805			return &bpf_get_current_uid_gid_proto;
+  1806		case BPF_FUNC_get_current_pid_tgid:
+  1807			return &bpf_get_current_pid_tgid_proto;
+  1808		case BPF_FUNC_get_current_comm:
+  1809			return &bpf_get_current_comm_proto;
+  1810		case BPF_FUNC_get_current_cgroup_id:
+  1811			return &bpf_get_current_cgroup_id_proto;
+  1812		case BPF_FUNC_get_current_ancestor_cgroup_id:
+  1813			return &bpf_get_current_ancestor_cgroup_id_proto;
+  1814	#endif
+  1815	#ifdef CONFIG_CGROUP_NET_CLASSID
+  1816		case BPF_FUNC_get_cgroup_classid:
+> 1817			return &bpf_get_cgroup_classid_curr_proto;
+  1818	#endif
+  1819		default:
+  1820			return NULL;
+  1821		}
+  1822	}
+  1823	
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
