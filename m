@@ -2,58 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 046E35917AF
-	for <lists+bpf@lfdr.de>; Sat, 13 Aug 2022 01:57:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0487C5917BB
+	for <lists+bpf@lfdr.de>; Sat, 13 Aug 2022 02:07:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233793AbiHLX5e (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Aug 2022 19:57:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57710 "EHLO
+        id S233502AbiHMAHq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Aug 2022 20:07:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbiHLX5d (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Aug 2022 19:57:33 -0400
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B4B774368;
-        Fri, 12 Aug 2022 16:57:32 -0700 (PDT)
-Received: by mail-vs1-xe36.google.com with SMTP id m67so2262489vsc.12;
-        Fri, 12 Aug 2022 16:57:32 -0700 (PDT)
+        with ESMTP id S229802AbiHMAHp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Aug 2022 20:07:45 -0400
+Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAB445C9EB;
+        Fri, 12 Aug 2022 17:07:41 -0700 (PDT)
+Received: by mail-vs1-xe2a.google.com with SMTP id j2so2316336vsp.1;
+        Fri, 12 Aug 2022 17:07:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=MeYInUQzfSsWm4MDFB8EAiQR9dV69NKtPMF/+GmU3iY=;
-        b=MEXEaE6E4+d47+wZBUtJ0+EFnhJO1lregEyMWFfn4t7I5kwQN8VF8nvwVs0vOvQrmw
-         IkYx8UkGnJwTBwAdthWSHRIiFCcoU5rbBu3Pvx60IjVL+5OeXjYlxzKiXi+qSIXH3Wbt
-         HhrgRvTgLNYtydMYmw+VlGEEDb3RvQQ0zJMA7Nu+NEhvITm99dsIJ9/94kzUa+qBBTtO
-         o5k99KWYMPWhxiYnmbgceQ/k0t1oNIsIte1umCWVpP7/Nk/VeBmL23sUekaxwL8T9dhp
-         +GGZ6YvINgevRY+02dZpT76v6uuWN1AtjIseb+SsJY3UspYKvparReJgO5PiRKKs2xXf
-         5ZOw==
+        bh=e/GEPoh9oXwaicH1mqU0UxtQs3rb9zpYq6pzE3gMamU=;
+        b=fI8PvmX9/t2PLgbwoyuy/E4fAMPOov0xE5a7OjGy1WUFHEUxwBcNvvqD5gSGVhNgOK
+         WZw3lzfQQbHfVe/0Qj0NW4OPEGEgpST591KZOPILFcg+sqpKgN0t5MBjxK4tyAD/q4Lj
+         jYCms26OXy4IHggn8pSfZFxRnAWvWI7Hd0dNIjAwzZLlX3bz+1tkMIrMO4RZcom9RklK
+         xQ2xolwtYqrIeEOBL3tL/OTJkhg8kxtJk12IBEeDnKuGQZ6HXGmYTHY59ORJhR5EwtLT
+         gIA0+1VDanZTFu0PZ9dsoj+ehsEartf/DGCZPFSZhYqTJV9VRPoUt4M2MC2+M2m6o8iv
+         0bSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=MeYInUQzfSsWm4MDFB8EAiQR9dV69NKtPMF/+GmU3iY=;
-        b=5OAvNKOAsw/4SGnIrn7Z73IoBuViriXsvwKbKhQhswOwel9Mp/HiLAWouDaJ336161
-         O9sMpN1rRXopl4In/cnUbuyw5nfiX2sgHcm1i5J8pPLP2xXU+DWFF1YJuI/xnb+2PQW5
-         zMCFzeQpg47+RiZjQhax7N7QdoxrXh+HuvEYJXbuWH7+aDMqw6gu2o1MqO5tCUEipeWa
-         UmQJzj1Muo1PO4m2DKtYuCsprjOu2bYrDwH2QDhPke+vjGnZ2Pc+2GWyzMv4uXyIZxt6
-         w4A2ivTBB/Hvd0ZOFfH8VBCrbG6LZFkMxP8MNINUc2j04n3HGqZ1S1iEZ1/IlU7o3M5l
-         syTA==
-X-Gm-Message-State: ACgBeo20ABhvxmZNOW1XsJJ0kN33celduH3x+dCrgdtWwci4pLyN7PII
-        sl8412H7lpR35FUy5M0hoSYTRMVsH1CQKi0+zCU=
-X-Google-Smtp-Source: AA6agR5Zya9iooJwbDf2yPIqfoEWB92eH9GN+9ThnyaWxFKx90q0scS4L2I2612aPP8vvXSr6ijAaYdPe7mVld97RGo=
-X-Received: by 2002:a05:6102:3ec1:b0:358:70a1:3c28 with SMTP id
- n1-20020a0561023ec100b0035870a13c28mr2879758vsv.11.1660348651742; Fri, 12 Aug
- 2022 16:57:31 -0700 (PDT)
+        bh=e/GEPoh9oXwaicH1mqU0UxtQs3rb9zpYq6pzE3gMamU=;
+        b=H3dOLXhiAgOOYfg6sUPNDsDzNfTn1FoPEex2pRWZM8WnGutmmUXiAzXt4nVF59qQJR
+         HU92ZGUYsYGBDbV+cDMmn+c0j15XHIY45b68S3wvy+hO/z17ZxWON691LIZYNXrgA9MG
+         ft+gbFFV1PQf5ibEDObPKv+r22JnyD24pYm/Stk7oGBrmFdbXssRIEVs3llFaNvHgv/L
+         Oe3Q8LtJHYH33DLXYcY93/EvFtXzPfI6RCZ8jh9VYYT3FPy3PNlFsy2BBthy8CnGTiun
+         6DhXjwEPo/hEKiVnMAOlQwvPPl5rNqCwRgajGb1SXuRugIbhMXOb582GWNC3hLs1v+vL
+         xXzA==
+X-Gm-Message-State: ACgBeo3zDVEhFbwn1PMfickt9e3nspwOnRvdjavCqlhnlJPlIO+6j3ge
+        ZAV8W08ZYq0GC6+tKw4NeeWwoZ87n8oETvSGGzI=
+X-Google-Smtp-Source: AA6agR6wxzw7R/QR4+tJWTD/bsN3E+UUPFlZUz6BEsv1/PilpMzsEYhAEcNJpaQv5Ng+IURcAxZqkfJ8+uoYx7n08b8=
+X-Received: by 2002:a05:6102:441c:b0:378:fcdd:d951 with SMTP id
+ df28-20020a056102441c00b00378fcddd951mr2920620vsb.22.1660349261002; Fri, 12
+ Aug 2022 17:07:41 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220810151840.16394-1-laoar.shao@gmail.com> <20220810151840.16394-14-laoar.shao@gmail.com>
- <YvUrXLJF6qrGOdjP@P9FQF9L96D.corp.robot.car> <CALOAHbAj7BymBV7KhzxLfMPue8666V+24TOfqG0XTE4euWyR4Q@mail.gmail.com>
- <YvaQhLk06MHQJWHB@P9FQF9L96D.corp.robot.car>
-In-Reply-To: <YvaQhLk06MHQJWHB@P9FQF9L96D.corp.robot.car>
+ <20220812165756.dxaqy3go567prr5s@google.com>
+In-Reply-To: <20220812165756.dxaqy3go567prr5s@google.com>
 From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Sat, 13 Aug 2022 07:56:54 +0800
-Message-ID: <CALOAHbBh4=yxX5c2_TK8-uf14KKg=Vp1NoHAEZGxS2wAxCnZWA@mail.gmail.com>
+Date:   Sat, 13 Aug 2022 08:07:04 +0800
+Message-ID: <CALOAHbDti1h+T8fWxRHs-ZoE6wacChhe7vfPZaooPutJodFkcw@mail.gmail.com>
 Subject: Re: [PATCH bpf-next 13/15] mm, memcg: Add new helper get_obj_cgroup_from_cgroup
-To:     Roman Gushchin <roman.gushchin@linux.dev>
+To:     Shakeel Butt <shakeelb@google.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
@@ -64,7 +63,7 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Hao Luo <haoluo@google.com>, jolsa@kernel.org,
         Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
         Muchun Song <songmuchun@bytedance.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
@@ -80,74 +79,79 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Aug 13, 2022 at 1:40 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
+On Sat, Aug 13, 2022 at 12:57 AM Shakeel Butt <shakeelb@google.com> wrote:
 >
-> On Fri, Aug 12, 2022 at 08:35:19AM +0800, Yafang Shao wrote:
-> > On Fri, Aug 12, 2022 at 12:16 AM Roman Gushchin
-> > <roman.gushchin@linux.dev> wrote:
-> > >
-> > > On Wed, Aug 10, 2022 at 03:18:38PM +0000, Yafang Shao wrote:
-> > > > Introduce new helper get_obj_cgroup_from_cgroup() to get obj_cgroup from
-> > > > a specific cgroup.
-> > > >
-> > > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > > > ---
-> > > >  include/linux/memcontrol.h |  1 +
-> > > >  mm/memcontrol.c            | 41 +++++++++++++++++++++++++++++++++++++++++
-> > > >  2 files changed, 42 insertions(+)
-> > > >
-> > > > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > > > index 2f0a611..901a921 100644
-> > > > --- a/include/linux/memcontrol.h
-> > > > +++ b/include/linux/memcontrol.h
-> > > > @@ -1713,6 +1713,7 @@ static inline void set_shrinker_bit(struct mem_cgroup *memcg,
-> > > >  int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order);
-> > > >  void __memcg_kmem_uncharge_page(struct page *page, int order);
-> > > >
-> > > > +struct obj_cgroup *get_obj_cgroup_from_cgroup(struct cgroup *cgrp);
-> > > >  struct obj_cgroup *get_obj_cgroup_from_current(void);
-> > > >  struct obj_cgroup *get_obj_cgroup_from_page(struct page *page);
-> > > >
-> > > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > > > index 618c366..762cffa 100644
-> > > > --- a/mm/memcontrol.c
-> > > > +++ b/mm/memcontrol.c
-> > > > @@ -2908,6 +2908,47 @@ static struct obj_cgroup *__get_obj_cgroup_from_memcg(struct mem_cgroup *memcg)
-> > > >       return objcg;
-> > > >  }
-> > > >
-> > > > +static struct obj_cgroup *get_obj_cgroup_from_memcg(struct mem_cgroup *memcg)
-> > > > +{
-> > > > +     struct obj_cgroup *objcg;
-> > > > +
-> > > > +     if (memcg_kmem_bypass())
-> > > > +             return NULL;
-> > > > +
-> > > > +     rcu_read_lock();
-> > > > +     objcg = __get_obj_cgroup_from_memcg(memcg);
-> > > > +     rcu_read_unlock();
-> > > > +     return objcg;
-> > >
-> > > This code doesn't make sense to me. What does rcu read lock protect here?
+> On Wed, Aug 10, 2022 at 03:18:38PM +0000, Yafang Shao wrote:
+> > Introduce new helper get_obj_cgroup_from_cgroup() to get obj_cgroup from
+> > a specific cgroup.
+>
+> Can you please add couple of lines on why you need objcg?
+>
+
+Sure. will update in the next version.
+
 > >
-> > To protect rcu_dereference(memcg->objcg);.
-> > Doesn't it need the read rcu lock ?
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > ---
+> >  include/linux/memcontrol.h |  1 +
+> >  mm/memcontrol.c            | 41 +++++++++++++++++++++++++++++++++++++++++
+> >  2 files changed, 42 insertions(+)
+> >
+> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > index 2f0a611..901a921 100644
+> > --- a/include/linux/memcontrol.h
+> > +++ b/include/linux/memcontrol.h
+> > @@ -1713,6 +1713,7 @@ static inline void set_shrinker_bit(struct mem_cgroup *memcg,
+> >  int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order);
+> >  void __memcg_kmem_uncharge_page(struct page *page, int order);
+> >
+> > +struct obj_cgroup *get_obj_cgroup_from_cgroup(struct cgroup *cgrp);
+> >  struct obj_cgroup *get_obj_cgroup_from_current(void);
+> >  struct obj_cgroup *get_obj_cgroup_from_page(struct page *page);
+> >
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index 618c366..762cffa 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -2908,6 +2908,47 @@ static struct obj_cgroup *__get_obj_cgroup_from_memcg(struct mem_cgroup *memcg)
+> >       return objcg;
+> >  }
+> >
+> > +static struct obj_cgroup *get_obj_cgroup_from_memcg(struct mem_cgroup *memcg)
+> > +{
+> > +     struct obj_cgroup *objcg;
+> > +
+> > +     if (memcg_kmem_bypass())
+> > +             return NULL;
+> > +
+> > +     rcu_read_lock();
+> > +     objcg = __get_obj_cgroup_from_memcg(memcg);
+> > +     rcu_read_unlock();
+> > +     return objcg;
+> > +}
+> > +
+> > +struct obj_cgroup *get_obj_cgroup_from_cgroup(struct cgroup *cgrp)
+> > +{
+> > +     struct cgroup_subsys_state *css;
+> > +     struct mem_cgroup *memcg;
+> > +     struct obj_cgroup *objcg;
+> > +
+> > +     rcu_read_lock();
+> > +     css = rcu_dereference(cgrp->subsys[memory_cgrp_id]);
+> > +     if (!css || !css_tryget_online(css)) {
+> > +             rcu_read_unlock();
+> > +             cgroup_put(cgrp);
+> > +             return ERR_PTR(-EINVAL);
+> > +     }
+> > +     rcu_read_unlock();
+> > +     cgroup_put(cgrp);
 >
-> No, it's not how rcu works. Please, take a look at the docs here:
-> https://docs.kernel.org/RCU/whatisRCU.html#whatisrcu .
-> In particular, it describes this specific case very well.
->
-> In 2 words, you don't protect the rcu_dereference() call, you protect the pointer
-
-I just copied and pasted rcu_dereference(memcg->objcg) there to make it clear.
-Actually it protects memcg->objcg, doesn't it ?
-
-> you get, cause it's valid only inside the rcu read section. After rcu_read_unlock()
-> it might point at a random data, because the protected object can be already freed.
+> The above put seems out of place and buggy.
 >
 
-Are you sure?
-Can't the obj_cgroup_tryget(objcg) prevent it from being freed ?
+Thanks for pointing it out.
+The cgroup_put should be used in bpf_map_save_memcg().
+I will update it.
 
 -- 
 Regards
