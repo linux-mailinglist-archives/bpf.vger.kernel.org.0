@@ -2,159 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 948CB5917BF
-	for <lists+bpf@lfdr.de>; Sat, 13 Aug 2022 02:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B119591906
+	for <lists+bpf@lfdr.de>; Sat, 13 Aug 2022 08:26:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232177AbiHMAJs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Aug 2022 20:09:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37928 "EHLO
+        id S235435AbiHMG0Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 13 Aug 2022 02:26:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbiHMAJr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Aug 2022 20:09:47 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FC2E5C9EB;
-        Fri, 12 Aug 2022 17:09:46 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id r69so2033451pgr.2;
-        Fri, 12 Aug 2022 17:09:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc;
-        bh=QCoo4xxPRwybL2sxSPQ1iW5RKTF4ovgXlfByMe2GkbI=;
-        b=jp6maD3fBFv6j10bcR86+lbrUBhGOg2ESRnNPxHs7PGDGEFqc4APFgGfHXmCDJ9+dI
-         W1U04MMWXVcHUXzjghh2hoDpZWLjMc1JG4DMGJM3GfWGWCzBNst/73ed6A8E6gBvKl2h
-         0ZfxMPrKTScZ2/SWEN+Alm9mgw4Dtu9cbPtnB2bc2y1hyUMvh1AMoNivQRaoeYHMy8lx
-         Q2/unkbFy3m4aKz1bIJZKORvetjIWeSaho2GnDz+fwF7KfGJJy15pnxFCkzz/PAem3e8
-         /rbyyIthTBqHu79vEitQLtqlgD1/Iia2NiWvdXjFXpimt6X4soyrDlSs2nNHtSIB8Oml
-         zI1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc;
-        bh=QCoo4xxPRwybL2sxSPQ1iW5RKTF4ovgXlfByMe2GkbI=;
-        b=Immo2lr/tAYPfx4sWhwox3JLb5w0ZVYnZvRgMoKbMAPqxfSGR0avmi9ieppvjhYg1X
-         odARnXoLgQmtIYb/MwzORLACHyNcZz8u7J6j+ehlpj1HjC+QeKAh26rfg0zfyP6urHHZ
-         Y/+ByjOnvOgMkzBu/k2QvkGG+Fdnl8jbb6li1sC2xWsYykmKi5qOcj6MskukD+DzAVqk
-         PH3Eba3LjOOqKPQk4mbOL1xkmJdoLpPBKk3wM3Gz6ORY0sgeOGeCRLjjm7wCJk8iXV32
-         8fJvlm+JxwqdIQfWMjV/y8biVuc33eezL/muja1oSqi11qdyz2/kK0/XSFTA4nSqVgK4
-         ZXlw==
-X-Gm-Message-State: ACgBeo3y1aDz2iBfCw/jlgcBXifv1EPZYAgfIlXYY60273/HA3UzEcaH
-        ksHGxYZb+GabD1VlRqSdlEKT1a55XkM=
-X-Google-Smtp-Source: AA6agR4yTC76LP8n7ekTN0188JrN9YassrA3PajcVCSIk/YUvAQsSO+rt6w6LWNryozwIVVuU3i/FA==
-X-Received: by 2002:a63:cd4b:0:b0:421:95f3:1431 with SMTP id a11-20020a63cd4b000000b0042195f31431mr5008338pgj.486.1660349385999;
-        Fri, 12 Aug 2022 17:09:45 -0700 (PDT)
-Received: from Leo-laptop-t470s.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id v8-20020a170902b7c800b0016909be39e5sm2315052plz.177.2022.08.12.17.09.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Aug 2022 17:09:45 -0700 (PDT)
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     Quentin Monnet <quentin@isovalent.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>
-Subject: [PATCHv2 bpf-next] libbpf: making bpf_prog_load() ignore name if kernel doesn't support
-Date:   Sat, 13 Aug 2022 08:09:36 +0800
-Message-Id: <20220813000936.6464-1-liuhangbin@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S235295AbiHMG0P (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 13 Aug 2022 02:26:15 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FC688E0C0
+        for <bpf@vger.kernel.org>; Fri, 12 Aug 2022 23:26:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1660371974; x=1691907974;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=9T3K+XG447imZFP6sUMqTXxGh+snQ8KBpvMp3XnnRwM=;
+  b=iPfQxWPGS+AZN5EiZPW1RrlPn9iyKt2awvakaxgOlbQWnjHKUcTTWF6y
+   ataaopoqnBjEmVAxRNQzHgWiHPOFTlBvqjAUVNeRaMrUJlPQP3IVmebFE
+   AKLaRvqBpH+3Rvna7mRptwyWF32OrGR1zZPp922IENTsra+mFFx8bqgW2
+   WuMIlsVcT3/Ykiy65JR7zN4MfjDPqbvLQiulUbVzNDNdTN2dpdC1wz/eC
+   SOChDqOw25Z1U5J8N5gtXkMBJokrMbqd8GjQV9d4MdzvYyDz7HaeSvQKI
+   HlGmmdqwK4SUSqVpVSLDh4mIkSnqqob8exW0KW8lL7nT9AXR41rRDvmvv
+   A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10437"; a="289301966"
+X-IronPort-AV: E=Sophos;i="5.93,233,1654585200"; 
+   d="scan'208";a="289301966"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2022 23:26:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,233,1654585200"; 
+   d="scan'208";a="639127027"
+Received: from lkp-server02.sh.intel.com (HELO 8745164cafc7) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 12 Aug 2022 23:26:10 -0700
+Received: from kbuild by 8745164cafc7 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oMkb3-0001Nu-2X;
+        Sat, 13 Aug 2022 06:26:09 +0000
+Date:   Sat, 13 Aug 2022 14:25:54 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org
+Cc:     kbuild-all@lists.01.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org
+Subject: Re: [PATCH bpf-next 2/3] bpf: use cgroup_{common,current}_func_proto
+ in more hooks
+Message-ID: <202208131415.CkdRZBrY-lkp@intel.com>
+References: <20220812190241.3544528-3-sdf@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220812190241.3544528-3-sdf@google.com>
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Similar with commit 10b62d6a38f7 ("libbpf: Add names for auxiliary maps"),
-let's make bpf_prog_load() also ignore name if kernel doesn't support
-program name.
+Hi Stanislav,
 
-To achieve this, we need to call sys_bpf_prog_load() directly in
-probe_kern_prog_name() to avoid circular dependency. sys_bpf_prog_load()
-also need to be exported in the libbpf_internal.h file.
+I love your patch! Yet something to improve:
 
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
----
-v2: move sys_bpf_prog_load definition to libbpf_internal.h. memset attr
-    to 0 specifically to aviod padding.
----
- tools/lib/bpf/bpf.c             |  6 ++----
- tools/lib/bpf/libbpf.c          | 12 ++++++++++--
- tools/lib/bpf/libbpf_internal.h |  3 +++
- 3 files changed, 15 insertions(+), 6 deletions(-)
+[auto build test ERROR on bpf-next/master]
 
-diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index 6a96e665dc5d..575867d69496 100644
---- a/tools/lib/bpf/bpf.c
-+++ b/tools/lib/bpf/bpf.c
-@@ -84,9 +84,7 @@ static inline int sys_bpf_fd(enum bpf_cmd cmd, union bpf_attr *attr,
- 	return ensure_good_fd(fd);
- }
- 
--#define PROG_LOAD_ATTEMPTS 5
--
--static inline int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts)
-+int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts)
- {
- 	int fd;
- 
-@@ -263,7 +261,7 @@ int bpf_prog_load(enum bpf_prog_type prog_type,
- 	attr.prog_ifindex = OPTS_GET(opts, prog_ifindex, 0);
- 	attr.kern_version = OPTS_GET(opts, kern_version, 0);
- 
--	if (prog_name)
-+	if (prog_name && kernel_supports(NULL, FEAT_PROG_NAME))
- 		libbpf_strlcpy(attr.prog_name, prog_name, sizeof(attr.prog_name));
- 	attr.license = ptr_to_u64(license);
- 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 3f01f5cd8a4c..4a351897bdcc 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -4419,10 +4419,18 @@ static int probe_kern_prog_name(void)
- 		BPF_MOV64_IMM(BPF_REG_0, 0),
- 		BPF_EXIT_INSN(),
- 	};
--	int ret, insn_cnt = ARRAY_SIZE(insns);
-+	union bpf_attr attr;
-+	int ret;
-+
-+	memset(&attr, 0, sizeof(attr));
-+	attr.prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
-+	attr.license = ptr_to_u64("GPL");
-+	attr.insns = ptr_to_u64(insns);
-+	attr.insn_cnt = (__u32)ARRAY_SIZE(insns);
-+	libbpf_strlcpy(attr.prog_name, "test", sizeof(attr.prog_name));
- 
- 	/* make sure loading with name works */
--	ret = bpf_prog_load(BPF_PROG_TYPE_SOCKET_FILTER, "test", "GPL", insns, insn_cnt, NULL);
-+	ret = sys_bpf_prog_load(&attr, sizeof(attr), PROG_LOAD_ATTEMPTS);
- 	return probe_fd(ret);
- }
- 
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-index 4135ae0a2bc3..377642ff51fc 100644
---- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -573,4 +573,7 @@ static inline bool is_pow_of_2(size_t x)
- 	return x && (x & (x - 1)) == 0;
- }
- 
-+#define PROG_LOAD_ATTEMPTS 5
-+int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts);
-+
- #endif /* __LIBBPF_LIBBPF_INTERNAL_H */
+url:    https://github.com/intel-lab-lkp/linux/commits/Stanislav-Fomichev/bpf-expose-bpf_-g-s-et_retval-to-more-cgroup-hooks/20220813-030615
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+config: x86_64-randconfig-a013 (https://download.01.org/0day-ci/archive/20220813/202208131415.CkdRZBrY-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-3) 11.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/intel-lab-lkp/linux/commit/0429824054f7a843ee976d48432e825e493a0a7e
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Stanislav-Fomichev/bpf-expose-bpf_-g-s-et_retval-to-more-cgroup-hooks/20220813-030615
+        git checkout 0429824054f7a843ee976d48432e825e493a0a7e
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   kernel/bpf/helpers.c: In function 'cgroup_current_func_proto':
+>> kernel/bpf/helpers.c:1817:25: error: 'bpf_get_cgroup_classid_curr_proto' undeclared (first use in this function)
+    1817 |                 return &bpf_get_cgroup_classid_curr_proto;
+         |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:1817:25: note: each undeclared identifier is reported only once for each function it appears in
+
+
+vim +/bpf_get_cgroup_classid_curr_proto +1817 kernel/bpf/helpers.c
+
+  1797	
+  1798	/* Common helpers for cgroup hooks with valid process context. */
+  1799	const struct bpf_func_proto *
+  1800	cgroup_current_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+  1801	{
+  1802		switch (func_id) {
+  1803	#ifdef CONFIG_CGROUPS
+  1804		case BPF_FUNC_get_current_uid_gid:
+  1805			return &bpf_get_current_uid_gid_proto;
+  1806		case BPF_FUNC_get_current_pid_tgid:
+  1807			return &bpf_get_current_pid_tgid_proto;
+  1808		case BPF_FUNC_get_current_comm:
+  1809			return &bpf_get_current_comm_proto;
+  1810		case BPF_FUNC_get_current_cgroup_id:
+  1811			return &bpf_get_current_cgroup_id_proto;
+  1812		case BPF_FUNC_get_current_ancestor_cgroup_id:
+  1813			return &bpf_get_current_ancestor_cgroup_id_proto;
+  1814	#endif
+  1815	#ifdef CONFIG_CGROUP_NET_CLASSID
+  1816		case BPF_FUNC_get_cgroup_classid:
+> 1817			return &bpf_get_cgroup_classid_curr_proto;
+  1818	#endif
+  1819		default:
+  1820			return NULL;
+  1821		}
+  1822	}
+  1823	
+
 -- 
-2.31.1
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
