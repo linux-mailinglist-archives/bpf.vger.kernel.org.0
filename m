@@ -2,73 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0487C5917BB
-	for <lists+bpf@lfdr.de>; Sat, 13 Aug 2022 02:07:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 948CB5917BF
+	for <lists+bpf@lfdr.de>; Sat, 13 Aug 2022 02:09:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233502AbiHMAHq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Aug 2022 20:07:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37132 "EHLO
+        id S232177AbiHMAJs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Aug 2022 20:09:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229802AbiHMAHp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Aug 2022 20:07:45 -0400
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAB445C9EB;
-        Fri, 12 Aug 2022 17:07:41 -0700 (PDT)
-Received: by mail-vs1-xe2a.google.com with SMTP id j2so2316336vsp.1;
-        Fri, 12 Aug 2022 17:07:41 -0700 (PDT)
+        with ESMTP id S229719AbiHMAJr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Aug 2022 20:09:47 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FC2E5C9EB;
+        Fri, 12 Aug 2022 17:09:46 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id r69so2033451pgr.2;
+        Fri, 12 Aug 2022 17:09:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=e/GEPoh9oXwaicH1mqU0UxtQs3rb9zpYq6pzE3gMamU=;
-        b=fI8PvmX9/t2PLgbwoyuy/E4fAMPOov0xE5a7OjGy1WUFHEUxwBcNvvqD5gSGVhNgOK
-         WZw3lzfQQbHfVe/0Qj0NW4OPEGEgpST591KZOPILFcg+sqpKgN0t5MBjxK4tyAD/q4Lj
-         jYCms26OXy4IHggn8pSfZFxRnAWvWI7Hd0dNIjAwzZLlX3bz+1tkMIrMO4RZcom9RklK
-         xQ2xolwtYqrIeEOBL3tL/OTJkhg8kxtJk12IBEeDnKuGQZ6HXGmYTHY59ORJhR5EwtLT
-         gIA0+1VDanZTFu0PZ9dsoj+ehsEartf/DGCZPFSZhYqTJV9VRPoUt4M2MC2+M2m6o8iv
-         0bSg==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc;
+        bh=QCoo4xxPRwybL2sxSPQ1iW5RKTF4ovgXlfByMe2GkbI=;
+        b=jp6maD3fBFv6j10bcR86+lbrUBhGOg2ESRnNPxHs7PGDGEFqc4APFgGfHXmCDJ9+dI
+         W1U04MMWXVcHUXzjghh2hoDpZWLjMc1JG4DMGJM3GfWGWCzBNst/73ed6A8E6gBvKl2h
+         0ZfxMPrKTScZ2/SWEN+Alm9mgw4Dtu9cbPtnB2bc2y1hyUMvh1AMoNivQRaoeYHMy8lx
+         Q2/unkbFy3m4aKz1bIJZKORvetjIWeSaho2GnDz+fwF7KfGJJy15pnxFCkzz/PAem3e8
+         /rbyyIthTBqHu79vEitQLtqlgD1/Iia2NiWvdXjFXpimt6X4soyrDlSs2nNHtSIB8Oml
+         zI1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=e/GEPoh9oXwaicH1mqU0UxtQs3rb9zpYq6pzE3gMamU=;
-        b=H3dOLXhiAgOOYfg6sUPNDsDzNfTn1FoPEex2pRWZM8WnGutmmUXiAzXt4nVF59qQJR
-         HU92ZGUYsYGBDbV+cDMmn+c0j15XHIY45b68S3wvy+hO/z17ZxWON691LIZYNXrgA9MG
-         ft+gbFFV1PQf5ibEDObPKv+r22JnyD24pYm/Stk7oGBrmFdbXssRIEVs3llFaNvHgv/L
-         Oe3Q8LtJHYH33DLXYcY93/EvFtXzPfI6RCZ8jh9VYYT3FPy3PNlFsy2BBthy8CnGTiun
-         6DhXjwEPo/hEKiVnMAOlQwvPPl5rNqCwRgajGb1SXuRugIbhMXOb582GWNC3hLs1v+vL
-         xXzA==
-X-Gm-Message-State: ACgBeo3zDVEhFbwn1PMfickt9e3nspwOnRvdjavCqlhnlJPlIO+6j3ge
-        ZAV8W08ZYq0GC6+tKw4NeeWwoZ87n8oETvSGGzI=
-X-Google-Smtp-Source: AA6agR6wxzw7R/QR4+tJWTD/bsN3E+UUPFlZUz6BEsv1/PilpMzsEYhAEcNJpaQv5Ng+IURcAxZqkfJ8+uoYx7n08b8=
-X-Received: by 2002:a05:6102:441c:b0:378:fcdd:d951 with SMTP id
- df28-20020a056102441c00b00378fcddd951mr2920620vsb.22.1660349261002; Fri, 12
- Aug 2022 17:07:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220810151840.16394-1-laoar.shao@gmail.com> <20220810151840.16394-14-laoar.shao@gmail.com>
- <20220812165756.dxaqy3go567prr5s@google.com>
-In-Reply-To: <20220812165756.dxaqy3go567prr5s@google.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Sat, 13 Aug 2022 08:07:04 +0800
-Message-ID: <CALOAHbDti1h+T8fWxRHs-ZoE6wacChhe7vfPZaooPutJodFkcw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 13/15] mm, memcg: Add new helper get_obj_cgroup_from_cgroup
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc;
+        bh=QCoo4xxPRwybL2sxSPQ1iW5RKTF4ovgXlfByMe2GkbI=;
+        b=Immo2lr/tAYPfx4sWhwox3JLb5w0ZVYnZvRgMoKbMAPqxfSGR0avmi9ieppvjhYg1X
+         odARnXoLgQmtIYb/MwzORLACHyNcZz8u7J6j+ehlpj1HjC+QeKAh26rfg0zfyP6urHHZ
+         Y/+ByjOnvOgMkzBu/k2QvkGG+Fdnl8jbb6li1sC2xWsYykmKi5qOcj6MskukD+DzAVqk
+         PH3Eba3LjOOqKPQk4mbOL1xkmJdoLpPBKk3wM3Gz6ORY0sgeOGeCRLjjm7wCJk8iXV32
+         8fJvlm+JxwqdIQfWMjV/y8biVuc33eezL/muja1oSqi11qdyz2/kK0/XSFTA4nSqVgK4
+         ZXlw==
+X-Gm-Message-State: ACgBeo3y1aDz2iBfCw/jlgcBXifv1EPZYAgfIlXYY60273/HA3UzEcaH
+        ksHGxYZb+GabD1VlRqSdlEKT1a55XkM=
+X-Google-Smtp-Source: AA6agR4yTC76LP8n7ekTN0188JrN9YassrA3PajcVCSIk/YUvAQsSO+rt6w6LWNryozwIVVuU3i/FA==
+X-Received: by 2002:a63:cd4b:0:b0:421:95f3:1431 with SMTP id a11-20020a63cd4b000000b0042195f31431mr5008338pgj.486.1660349385999;
+        Fri, 12 Aug 2022 17:09:45 -0700 (PDT)
+Received: from Leo-laptop-t470s.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id v8-20020a170902b7c800b0016909be39e5sm2315052plz.177.2022.08.12.17.09.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Aug 2022 17:09:45 -0700 (PDT)
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Quentin Monnet <quentin@isovalent.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, jolsa@kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>
+Subject: [PATCHv2 bpf-next] libbpf: making bpf_prog_load() ignore name if kernel doesn't support
+Date:   Sat, 13 Aug 2022 08:09:36 +0800
+Message-Id: <20220813000936.6464-1-liuhangbin@gmail.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -79,80 +76,85 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Aug 13, 2022 at 12:57 AM Shakeel Butt <shakeelb@google.com> wrote:
->
-> On Wed, Aug 10, 2022 at 03:18:38PM +0000, Yafang Shao wrote:
-> > Introduce new helper get_obj_cgroup_from_cgroup() to get obj_cgroup from
-> > a specific cgroup.
->
-> Can you please add couple of lines on why you need objcg?
->
+Similar with commit 10b62d6a38f7 ("libbpf: Add names for auxiliary maps"),
+let's make bpf_prog_load() also ignore name if kernel doesn't support
+program name.
 
-Sure. will update in the next version.
+To achieve this, we need to call sys_bpf_prog_load() directly in
+probe_kern_prog_name() to avoid circular dependency. sys_bpf_prog_load()
+also need to be exported in the libbpf_internal.h file.
 
-> >
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > ---
-> >  include/linux/memcontrol.h |  1 +
-> >  mm/memcontrol.c            | 41 +++++++++++++++++++++++++++++++++++++++++
-> >  2 files changed, 42 insertions(+)
-> >
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index 2f0a611..901a921 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -1713,6 +1713,7 @@ static inline void set_shrinker_bit(struct mem_cgroup *memcg,
-> >  int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order);
-> >  void __memcg_kmem_uncharge_page(struct page *page, int order);
-> >
-> > +struct obj_cgroup *get_obj_cgroup_from_cgroup(struct cgroup *cgrp);
-> >  struct obj_cgroup *get_obj_cgroup_from_current(void);
-> >  struct obj_cgroup *get_obj_cgroup_from_page(struct page *page);
-> >
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index 618c366..762cffa 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -2908,6 +2908,47 @@ static struct obj_cgroup *__get_obj_cgroup_from_memcg(struct mem_cgroup *memcg)
-> >       return objcg;
-> >  }
-> >
-> > +static struct obj_cgroup *get_obj_cgroup_from_memcg(struct mem_cgroup *memcg)
-> > +{
-> > +     struct obj_cgroup *objcg;
-> > +
-> > +     if (memcg_kmem_bypass())
-> > +             return NULL;
-> > +
-> > +     rcu_read_lock();
-> > +     objcg = __get_obj_cgroup_from_memcg(memcg);
-> > +     rcu_read_unlock();
-> > +     return objcg;
-> > +}
-> > +
-> > +struct obj_cgroup *get_obj_cgroup_from_cgroup(struct cgroup *cgrp)
-> > +{
-> > +     struct cgroup_subsys_state *css;
-> > +     struct mem_cgroup *memcg;
-> > +     struct obj_cgroup *objcg;
-> > +
-> > +     rcu_read_lock();
-> > +     css = rcu_dereference(cgrp->subsys[memory_cgrp_id]);
-> > +     if (!css || !css_tryget_online(css)) {
-> > +             rcu_read_unlock();
-> > +             cgroup_put(cgrp);
-> > +             return ERR_PTR(-EINVAL);
-> > +     }
-> > +     rcu_read_unlock();
-> > +     cgroup_put(cgrp);
->
-> The above put seems out of place and buggy.
->
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+---
+v2: move sys_bpf_prog_load definition to libbpf_internal.h. memset attr
+    to 0 specifically to aviod padding.
+---
+ tools/lib/bpf/bpf.c             |  6 ++----
+ tools/lib/bpf/libbpf.c          | 12 ++++++++++--
+ tools/lib/bpf/libbpf_internal.h |  3 +++
+ 3 files changed, 15 insertions(+), 6 deletions(-)
 
-Thanks for pointing it out.
-The cgroup_put should be used in bpf_map_save_memcg().
-I will update it.
-
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index 6a96e665dc5d..575867d69496 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -84,9 +84,7 @@ static inline int sys_bpf_fd(enum bpf_cmd cmd, union bpf_attr *attr,
+ 	return ensure_good_fd(fd);
+ }
+ 
+-#define PROG_LOAD_ATTEMPTS 5
+-
+-static inline int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts)
++int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts)
+ {
+ 	int fd;
+ 
+@@ -263,7 +261,7 @@ int bpf_prog_load(enum bpf_prog_type prog_type,
+ 	attr.prog_ifindex = OPTS_GET(opts, prog_ifindex, 0);
+ 	attr.kern_version = OPTS_GET(opts, kern_version, 0);
+ 
+-	if (prog_name)
++	if (prog_name && kernel_supports(NULL, FEAT_PROG_NAME))
+ 		libbpf_strlcpy(attr.prog_name, prog_name, sizeof(attr.prog_name));
+ 	attr.license = ptr_to_u64(license);
+ 
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 3f01f5cd8a4c..4a351897bdcc 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -4419,10 +4419,18 @@ static int probe_kern_prog_name(void)
+ 		BPF_MOV64_IMM(BPF_REG_0, 0),
+ 		BPF_EXIT_INSN(),
+ 	};
+-	int ret, insn_cnt = ARRAY_SIZE(insns);
++	union bpf_attr attr;
++	int ret;
++
++	memset(&attr, 0, sizeof(attr));
++	attr.prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
++	attr.license = ptr_to_u64("GPL");
++	attr.insns = ptr_to_u64(insns);
++	attr.insn_cnt = (__u32)ARRAY_SIZE(insns);
++	libbpf_strlcpy(attr.prog_name, "test", sizeof(attr.prog_name));
+ 
+ 	/* make sure loading with name works */
+-	ret = bpf_prog_load(BPF_PROG_TYPE_SOCKET_FILTER, "test", "GPL", insns, insn_cnt, NULL);
++	ret = sys_bpf_prog_load(&attr, sizeof(attr), PROG_LOAD_ATTEMPTS);
+ 	return probe_fd(ret);
+ }
+ 
+diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+index 4135ae0a2bc3..377642ff51fc 100644
+--- a/tools/lib/bpf/libbpf_internal.h
++++ b/tools/lib/bpf/libbpf_internal.h
+@@ -573,4 +573,7 @@ static inline bool is_pow_of_2(size_t x)
+ 	return x && (x & (x - 1)) == 0;
+ }
+ 
++#define PROG_LOAD_ATTEMPTS 5
++int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts);
++
+ #endif /* __LIBBPF_LIBBPF_INTERNAL_H */
 -- 
-Regards
-Yafang
+2.31.1
+
