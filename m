@@ -2,67 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AECB592649
-	for <lists+bpf@lfdr.de>; Sun, 14 Aug 2022 22:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1A559264C
+	for <lists+bpf@lfdr.de>; Sun, 14 Aug 2022 22:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229783AbiHNUYa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 14 Aug 2022 16:24:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43570 "EHLO
+        id S229806AbiHNUYq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 14 Aug 2022 16:24:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbiHNUY3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 14 Aug 2022 16:24:29 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34B911E3F6
-        for <bpf@vger.kernel.org>; Sun, 14 Aug 2022 13:24:28 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id s11so7362421edd.13
-        for <bpf@vger.kernel.org>; Sun, 14 Aug 2022 13:24:28 -0700 (PDT)
+        with ESMTP id S229479AbiHNUYq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 14 Aug 2022 16:24:46 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1A691E3F6
+        for <bpf@vger.kernel.org>; Sun, 14 Aug 2022 13:24:43 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id j8so10519446ejx.9
+        for <bpf@vger.kernel.org>; Sun, 14 Aug 2022 13:24:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc;
-        bh=tx7ZPmi7etTZwSg5dTQ5XCgwiSXZitCQE8bpHf299+Q=;
-        b=mCRjE6spi40YULCk27MiMzHyZiOrj89Tg/x30HlvdAepuClX5EpoBPpnWqFc3g/TPc
-         CMS7+pw9A85xUbvjzeuiqPGlXPjY8Bb9ZHWo5FuySd0uHhy922g+SnXcISw6boYSCLko
-         Ccv9iaubn3zf5qStd9M1j9Gizebzu57HWjMT6lCTtLaY5dTP1BXKMiCAsn6jzm3AcKsP
-         KJHXbkjFH9DAeExAUIZ+Ngoiw8BviHfjorwOe40oAvAk/7vCxhdYktmCnrg1XGdGRXnL
-         zKOhfUtLWLzkneqxdKxBN2AZp/Z4XO0P7+5h+mO6ionyQk6YUnn1ZSx6bc3gOtcHt+W6
-         jebg==
+        bh=8BlBJbQfYJBvlY7XIY1uOz9iiL65EVgLLYCmr4Ax/G4=;
+        b=o2p9B9ZDMhE1JFMtXPlpe4kQkaV8bQlAr4aoN8MSmPKbj3WunZk0Rq1rfSo4OE03Qj
+         tZURFFTQ1/nI4Dy9Cadg8mE93P0KIWeD9ODORU7IbZgJ+YyMsdVA0tsy/5fYpM8ZWj+w
+         OTeKATsOtURbuJ37WsvQIBLNuMb7bcaW13iB05z8zZ3IP4oScF7IWbX8hS0AO1LilTKl
+         616bNGmyciQ6XoD5HU/T/jkwGdeb6bHXVyBHsU4Uf37kckEUq3zGLOPiCJZYnFUOwaoG
+         KGC1aXPnKmbLMpeV0bhvPWZTRtOV4et03PVQluikbBO+x//1CFlDSijMwAtSxVYj5C+h
+         GCXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc;
-        bh=tx7ZPmi7etTZwSg5dTQ5XCgwiSXZitCQE8bpHf299+Q=;
-        b=GIti6zPASSR2RQUWj98WhCoqFqx1dhiksiGlmkTOv2yH4mIeJLBAflOKSF6Jd792aQ
-         ofaC1ya1huU6FDb6DAHN0qER9feFJZ8lhIn8DFYVHFOOGx58+v71UqkLfLXefz8dyZM1
-         RKGGTmI6MpzGnq2L7heROZoHyfWU14gW64FriJPXSg5tI0YoT04JZIXdM5c1gnu4A7tI
-         Smtq/3xyLpFchOmTufD1oVcWr8r5Weh46LoPl9xjTdnUeSGXkxtdD5PMLB+ZwRIaMq/y
-         8RBeZWVlzDN0MTM2wL0Tz7Lkc4EvBUoE02PKijajmaXLtHlteyond+FQIcCuuRSVSHuc
-         /SYQ==
-X-Gm-Message-State: ACgBeo3H4Zwx1LpDm27Tlnj1mxolAvTK8j08FDSRkfa769QiBsqfGRhp
-        Ob7e03EuxziR9ljZu2Nv9mQ=
-X-Google-Smtp-Source: AA6agR745sy+mi+aSfB6+g5QBOOaaHdSR9OW7C1+nQ7eJB54UgwGwXfgFeE6Zkvu0bsNNakdGoVkKw==
-X-Received: by 2002:aa7:d49a:0:b0:43c:fed4:c656 with SMTP id b26-20020aa7d49a000000b0043cfed4c656mr11556340edr.312.1660508666760;
-        Sun, 14 Aug 2022 13:24:26 -0700 (PDT)
+        bh=8BlBJbQfYJBvlY7XIY1uOz9iiL65EVgLLYCmr4Ax/G4=;
+        b=jMbbvuoD8JWLYb1D7NzTrvtv0gj+wn6yLU5g6RUHJVxQaT2N1CK3qiTFoSEUizKOmb
+         cNtP0v2ORIx8764oZ9lXnfStywzFcg2d5fqimCrvwCt0Cm7agWUTvUUCO6MHHhzCGU05
+         RAcI4kxTWPNayy7YDnHAVCxjBCHIn+SI9w0Njr+/ccDPkOEshDTO1NXqiJUJq2Df578X
+         2V9ypavaAEj6l1wby+LNHnZkUVz4pVw2yGnwcEZuJ+6tZGT+OA5KBwoFdLTFarKcNvtJ
+         CfK9Irg5MzuA3qqSeD22gO22jr3u8DIp7cwRgwAKQw3rRYKUKZ6wSXefRfiQXKXmzzFf
+         HaaA==
+X-Gm-Message-State: ACgBeo1BhRxmyeVaNjJ1CNyHkWA+OuztG26u5Oaid6p6teTh+0bt5noh
+        9skW3qfBC9m5+aEhoU/spPs=
+X-Google-Smtp-Source: AA6agR6jTnoarE1qlIkje6xUB+mBviZnBsTBsr6n/N4vIIS3rulXOi37f2fl37+7C0jYCvRrTzbaRg==
+X-Received: by 2002:a17:906:8a6c:b0:730:a322:6f69 with SMTP id hy12-20020a1709068a6c00b00730a3226f69mr8405641ejc.585.1660508681983;
+        Sun, 14 Aug 2022 13:24:41 -0700 (PDT)
 Received: from krava ([83.240.61.159])
-        by smtp.gmail.com with ESMTPSA id y19-20020a170906071300b007303fe58eb2sm3260375ejb.154.2022.08.14.13.24.25
+        by smtp.gmail.com with ESMTPSA id r9-20020a1709061ba900b00730c3923a2csm3352456ejg.11.2022.08.14.13.24.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Aug 2022 13:24:26 -0700 (PDT)
+        Sun, 14 Aug 2022 13:24:41 -0700 (PDT)
 From:   Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Sun, 14 Aug 2022 22:24:24 +0200
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next v2 3/6] bpf: x86: Support in-register struct
- arguments
-Message-ID: <YvlZ+ETaaTD3hwrM@krava>
-References: <20220812052419.520522-1-yhs@fb.com>
- <20220812052435.523068-1-yhs@fb.com>
+Date:   Sun, 14 Aug 2022 22:24:40 +0200
+To:     Kui-Feng Lee <kuifeng@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kernel-team@fb.com, yhs@fb.com
+Subject: Re: [PATCH bpf-next v5 1/3] bpf: Parameterize task iterators.
+Message-ID: <YvlaCMB6DRIu1vjI@krava>
+References: <20220811001654.1316689-1-kuifeng@fb.com>
+ <20220811001654.1316689-2-kuifeng@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220812052435.523068-1-yhs@fb.com>
+In-Reply-To: <20220811001654.1316689-2-kuifeng@fb.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -73,100 +71,91 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 11, 2022 at 10:24:35PM -0700, Yonghong Song wrote:
+On Wed, Aug 10, 2022 at 05:16:52PM -0700, Kui-Feng Lee wrote:
 
 SNIP
 
->  }
->  
->  static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
-> @@ -2020,6 +2081,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
->  	struct bpf_tramp_links *fentry = &tlinks[BPF_TRAMP_FENTRY];
->  	struct bpf_tramp_links *fexit = &tlinks[BPF_TRAMP_FEXIT];
->  	struct bpf_tramp_links *fmod_ret = &tlinks[BPF_TRAMP_MODIFY_RETURN];
-> +	int struct_val_off, extra_nregs = 0;
->  	u8 **branches = NULL;
->  	u8 *prog;
->  	bool save_ret;
-> @@ -2028,6 +2090,20 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
->  	if (nr_args > 6)
->  		return -ENOTSUPP;
->  
-> +	for (i = 0; i < MAX_BPF_FUNC_ARGS; i++) {
-> +		if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG) {
-> +			/* Only support up to 16 bytes struct which should keep
-> +			 * values in registers.
-> +			 */
-
-it seems that if the struct contains 'double' field, it's passed in
-SSE register, which we don't support is save/restore
-
-we should probably check struct's BTF in btf_distill_func_proto and
-fail if we found anything else than regular regs types?
-
-> +			if (m->arg_size[i] > 16)
-> +				return -ENOTSUPP;
+> +static int bpf_iter_attach_task(struct bpf_prog *prog,
+> +				union bpf_iter_link_info *linfo,
+> +				struct bpf_iter_aux_info *aux)
+> +{
+> +	unsigned int flags;
+> +	struct pid_namespace *ns;
+> +	struct pid *pid;
+> +	pid_t tgid;
 > +
-> +			extra_nregs += (m->arg_size[i] + 7) / 8 - 1;
-> +		}
-> +	}
-> +	if (nr_args + extra_nregs > 6)
-
-should this value be minus the number of actually found struct arguments?
-
-> +		return -ENOTSUPP;
+> +	if (linfo->task.tid != 0) {
+> +		aux->task.type = BPF_TASK_ITER_TID;
+> +		aux->task.tid = linfo->task.tid;
+> +	} else if (linfo->task.tgid != 0) {
+> +		aux->task.type = BPF_TASK_ITER_TGID;
+> +		aux->task.tgid = linfo->task.tgid;
+> +	} else if (linfo->task.pid_fd != 0) {
+> +		aux->task.type = BPF_TASK_ITER_TGID;
+> +		pid = pidfd_get_pid(linfo->task.pid_fd, &flags);
+> +		if (IS_ERR(pid))
+> +			return PTR_ERR(pid);
 > +
->  	/* Generated trampoline stack layout:
->  	 *
->  	 * RBP + 8         [ return address  ]
-> @@ -2066,6 +2142,13 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
->  	stack_size += (sizeof(struct bpf_tramp_run_ctx) + 7) & ~0x7;
->  	run_ctx_off = stack_size;
->  
-> +	/* For structure argument */
-> +	for (i = 0; i < MAX_BPF_FUNC_ARGS; i++) {
-> +		if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG)
-> +			stack_size += (m->arg_size[i] + 7) & ~0x7;
+> +		ns = task_active_pid_ns(current);
+> +		if (IS_ERR(ns))
+> +			return PTR_ERR(ns);
+> +
+> +		tgid = pid_nr_ns(pid, ns);
+> +		if (tgid <= 0)
+> +			return -EINVAL;
+> +
+> +		aux->task.tgid = tgid;
+> +	} else {
+> +		aux->task.type = BPF_TASK_ITER_ALL;
 > +	}
-> +	struct_val_off = stack_size;
+> +
+> +	return 0;
+> +}
+> +
+>  static const struct seq_operations task_seq_ops = {
+>  	.start	= task_seq_start,
+>  	.next	= task_seq_next,
+> @@ -137,8 +198,7 @@ struct bpf_iter_seq_task_file_info {
+>  static struct file *
+>  task_file_seq_get_next(struct bpf_iter_seq_task_file_info *info)
+>  {
+> -	struct pid_namespace *ns = info->common.ns;
+> -	u32 curr_tid = info->tid;
+> +	u32 saved_tid = info->tid;
 
-could you please update the 'Generated trampoline stack layout' table
-above with this offset
+we use 'curr_' prefix for other stuff in the function, like
+curr_task, curr_fd .. I think we should either change all of
+them or actually keep curr_tid, which seem better to me
 
-thanks,
 jirka
 
-> +
->  	if (flags & BPF_TRAMP_F_SKIP_FRAME) {
->  		/* skip patched call instruction and point orig_call to actual
->  		 * body of the kernel function.
-> @@ -2101,7 +2184,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
->  		emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -ip_off);
+>  	struct task_struct *curr_task;
+>  	unsigned int curr_fd = info->fd;
+>  
+> @@ -151,21 +211,18 @@ task_file_seq_get_next(struct bpf_iter_seq_task_file_info *info)
+>  		curr_task = info->task;
+>  		curr_fd = info->fd;
+>  	} else {
+> -                curr_task = task_seq_get_next(ns, &curr_tid, true);
+> +		curr_task = task_seq_get_next(&info->common, &info->tid, true);
+>                  if (!curr_task) {
+>                          info->task = NULL;
+> -                        info->tid = curr_tid;
+>                          return NULL;
+>                  }
+>  
+> -                /* set info->task and info->tid */
+> +		/* set info->task */
+>  		info->task = curr_task;
+> -		if (curr_tid == info->tid) {
+> +		if (saved_tid == info->tid)
+>  			curr_fd = info->fd;
+> -		} else {
+> -			info->tid = curr_tid;
+> +		else
+>  			curr_fd = 0;
+> -		}
 >  	}
 >  
-> -	save_regs(m, &prog, nr_args, regs_off);
-> +	save_regs(m, &prog, nr_args, regs_off, struct_val_off);
->  
->  	if (flags & BPF_TRAMP_F_CALL_ORIG) {
->  		/* arg1: mov rdi, im */
-> @@ -2131,7 +2214,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
->  	}
->  
->  	if (flags & BPF_TRAMP_F_CALL_ORIG) {
-> -		restore_regs(m, &prog, nr_args, regs_off);
-> +		restore_regs(m, &prog, nr_args, regs_off, struct_val_off);
->  
->  		if (flags & BPF_TRAMP_F_ORIG_STACK) {
->  			emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, 8);
-> @@ -2172,7 +2255,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
->  		}
->  
->  	if (flags & BPF_TRAMP_F_RESTORE_REGS)
-> -		restore_regs(m, &prog, nr_args, regs_off);
-> +		restore_regs(m, &prog, nr_args, regs_off, struct_val_off);
->  
->  	/* This needs to be done regardless. If there were fmod_ret programs,
->  	 * the return value is only updated on the stack and still needs to be
-> -- 
-> 2.30.2
-> 
+
+SNIP
