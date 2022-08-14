@@ -2,150 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC4E8591D3A
-	for <lists+bpf@lfdr.de>; Sun, 14 Aug 2022 02:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E558591D99
+	for <lists+bpf@lfdr.de>; Sun, 14 Aug 2022 04:38:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229908AbiHNAL1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 13 Aug 2022 20:11:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54444 "EHLO
+        id S229578AbiHNCge (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 13 Aug 2022 22:36:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbiHNAL0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 13 Aug 2022 20:11:26 -0400
-Received: from mail-oa1-x42.google.com (mail-oa1-x42.google.com [IPv6:2001:4860:4864:20::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 483F21CFE5
-        for <bpf@vger.kernel.org>; Sat, 13 Aug 2022 17:11:25 -0700 (PDT)
-Received: by mail-oa1-x42.google.com with SMTP id 586e51a60fabf-10cf9f5b500so4750784fac.2
-        for <bpf@vger.kernel.org>; Sat, 13 Aug 2022 17:11:25 -0700 (PDT)
+        with ESMTP id S229504AbiHNCgd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 13 Aug 2022 22:36:33 -0400
+Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 202061BE94;
+        Sat, 13 Aug 2022 19:36:30 -0700 (PDT)
+Received: by mail-vs1-xe2c.google.com with SMTP id 67so4343420vsv.2;
+        Sat, 13 Aug 2022 19:36:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=+NyoTrWa+bHRaItdT05SvVLNy2r+kdJC3mJlBlsSK+k=;
-        b=nxMXR9NUTuwM6G2M0aLuf7gbrPArZqPFb1sAvuaQyVXZmDP8yUKy5bXRikoyMQSC5p
-         b/ESGjGWW8VsF7qRSW5U/OJU9kU+avsLpbLVH+QNW1/rDuPNHCbb9adfGtmmLHGkjFI5
-         O/pnIUHpQJA4V7phAH4AicnJ8VBy4wIE5hcK1u/Kjd97w8TiEXeCYwWgXvr4yKu1uK5X
-         4uwY6S358GcIRCZ9MtTlVmuQecaKW8+sKj0B8Wvn+JTnt/BOd2I/rgjiozAcZ2NnZnw1
-         2VX8puOBjtbx1nrV/fd9BNWZW85aKjUuYTWBz6ECxggU8WDGtV7ZGaJU+wJWlRb/eWbL
-         WqrA==
+        bh=CRrhz0BEyIQHXQS7Ebb+dZKjXFqlcQTdj6VUIrrnwgc=;
+        b=ftDvrBkguzbQ/2XyYFCtxaMeZSyG6ASkh0ukfmZpJkaUjIurT935qNLWskNEagEKUO
+         eAhSQQ6MHAEjrmmb753yJmoPqgV4BUf55SDaE0mvKMoLnNLqO2+/+b3eprUZmFPPOJB7
+         aRuCEGm0YL9t4M65uUCjHNhf/quKNJmjuZqfPvTL+EJO16D7I3f4tJbHEI4A0oNT7aMA
+         16sWo4E3+a6uMqMV71ED17WRM71pYSMy+BoUoGfaBjzZn6YIqMfV5me1MASAjIxzcTZe
+         uCYosMs/l7zv8Qri8c6fXcQWHn/z9EzE647USr1P/kYs8jwB0wBu41gtYg2X5FP8lRSv
+         YQ8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=+NyoTrWa+bHRaItdT05SvVLNy2r+kdJC3mJlBlsSK+k=;
-        b=16Bb0D00yL4Iovl/cMxC29ngP61bFZ7Rf3bilYp39mVf2IBbXx++eDWTJt9o2YEjzA
-         47XvMpKN5BTKlTujOa9cEwOQYq7sA3AKz5KaBpNQbsqBctX5plLJlZg29H2YkudHu07Q
-         JBJ6d8dhVsFqkboMjLlCzKsOVun3WVd3tFavnvZ+5Manq2CWjmcZ7SvDCCnbF3poALuX
-         q8lwPvz+utuCdsoMysOfHpotcVdjjeAFmgL6ObkMRjrEAg2b3toj1hFkgwUZcZp/hqMK
-         TiyR/byNXfaG64O3UCaD5gZ1x1TplNsUg6nshmGxzJnOo2vLWmewex+ZlpPU6dn7UoSy
-         J/tg==
-X-Gm-Message-State: ACgBeo3Nk2i6dVtLqDLaYAqEeyInR0apLLujfMzZ1bErUzuJTORdoFiD
-        COWwc3dZMR8eg6GLJSE8OSggYEK2FybGekApp5E=
-X-Google-Smtp-Source: AA6agR4O7Mhyo4Il4qOvT8JIFyKvMl+u8dWC3zxRAbQBVcObkqEuGtmKFzoYcN9DzGm9UT3b3g7L6iffumD1e7ly6VE=
-X-Received: by 2002:a05:6871:79d:b0:10d:6d35:6fae with SMTP id
- o29-20020a056871079d00b0010d6d356faemr4343648oap.113.1660435884599; Sat, 13
- Aug 2022 17:11:24 -0700 (PDT)
+        bh=CRrhz0BEyIQHXQS7Ebb+dZKjXFqlcQTdj6VUIrrnwgc=;
+        b=iYan4EMnCh5bZAgQL1WI/RAa/BF4xX2wg9AzcIr/djvxmDRyX0yA0qeOBQCtWUoVWY
+         K5sInGYC5wrxcDjS6aI819uivdPQCYRT4+vSxquUXlommUb4q1QKRctAvkY7c+TJaq2m
+         JXRKDQIsCJ2GjdYSBHLQQ+V/+1uQxtMrFXSAKn69Yij+LElYYwX/2+2fNdLK/g/m+eWb
+         HMVBIDJYDBbqshCm+k2nQIHkqN7aJFeHwI71RNIaCL1ukR8ECu1BDL498oNpO0M+7lQk
+         YnJeLby2Va1XNCyHm3hqVsT2sxQA1CXKhve2lgGxlmOQh2TqUeAivEDVVdaFe2mwZa1S
+         j7Mw==
+X-Gm-Message-State: ACgBeo2MRGs8MCWMehRB1HXuNzNGafWC0aTvR8Z3P29hA/laXDTFxC4j
+        r9pK1mz8mCz3YJ+kXr6MY3sDnJzPNA/dG2uMyv0=
+X-Google-Smtp-Source: AA6agR6xP+37xYYP/oJC40vFFtEp6SLwnBUAkGWFgSWjlaZv0tT4Jc+Drnc7QA0/YU0vEzbn/ZuaQfUQGqoPH65fG+U=
+X-Received: by 2002:a05:6102:2753:b0:38a:a86f:6ac5 with SMTP id
+ p19-20020a056102275300b0038aa86f6ac5mr3471172vsu.80.1660444589209; Sat, 13
+ Aug 2022 19:36:29 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:ac9:6c8d:0:0:0:0:0 with HTTP; Sat, 13 Aug 2022 17:11:24
- -0700 (PDT)
-Reply-To: mrstheresaheidi8@gmail.com
-From:   Ms Theresa Heidi <sabouzenyanou@gmail.com>
-Date:   Sat, 13 Aug 2022 17:11:24 -0700
-Message-ID: <CAHLk5EOFex+7fwq4p0isv8R=1=E4suKRpmdVhNEwW1dbsUKSsQ@mail.gmail.com>
-Subject: =?UTF-8?B?R0nDmlAgxJDhu6AgS0jhuqhOIEPhuqRQIQ==?=
-To:     undisclosed-recipients:;
+References: <20220810151840.16394-1-laoar.shao@gmail.com> <20220810151840.16394-14-laoar.shao@gmail.com>
+ <YvUrXLJF6qrGOdjP@P9FQF9L96D.corp.robot.car> <CALOAHbAj7BymBV7KhzxLfMPue8666V+24TOfqG0XTE4euWyR4Q@mail.gmail.com>
+ <YvaQhLk06MHQJWHB@P9FQF9L96D.corp.robot.car> <CALOAHbBh4=yxX5c2_TK8-uf14KKg=Vp1NoHAEZGxS2wAxCnZWA@mail.gmail.com>
+ <YvftrF7GmqMjvAa+@P9FQF9L96D.corp.robot.car>
+In-Reply-To: <YvftrF7GmqMjvAa+@P9FQF9L96D.corp.robot.car>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Sun, 14 Aug 2022 10:35:52 +0800
+Message-ID: <CALOAHbDgdpx9ZPsqzfxs3grGhKBhN=zVOtjKRd=mJfT6NLGP_Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 13/15] mm, memcg: Add new helper get_obj_cgroup_from_cgroup
+To:     Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, jolsa@kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-X-Spam-Status: Yes, score=7.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,
-        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM,UNDISC_MONEY autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2001:4860:4864:20:0:0:0:42 listed in]
-        [list.dnswl.org]
-        * -1.9 BAYES_00 BODY: Bayes spam probability is 0 to 1%
-        *      [score: 0.0000]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [sabouzenyanou[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [mrstheresaheidi8[at]gmail.com]
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        *  3.1 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-        *  1.7 MONEY_FREEMAIL_REPTO Lots of money from someone using free
-        *      email?
-        *  3.0 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: *******
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-UVVZw4pOIEfDk1AgVOG7qiBUSEnhu4ZOIQ0KDQpYaW4gdnVpIGzDsm5nIMSR4buNYyBr4bu5LCB0
-w7RpIGJp4bq/dCDEkcO6bmcgbMOgIGLhu6ljIHRoxrAgbsOgeSBjw7MgdGjhu4MgxJHhur9uIHbh
-u5tpIGLhuqFuDQpuaMawIG3hu5l0IMSRaeG7gXUgYuG6pXQgbmfhu50uIFTDtGkgxJHDoyB0w6xt
-IHRo4bqleSBsacOqbiBo4buHIHF1YSBlLW1haWwgY+G7p2EgYuG6oW4gdGjDtG5nDQpxdWEgbeG7
-mXQgY3Xhu5ljIHTDrG0ga2nhur9tIHJpw6puZyB0xrAgdHJvbmcga2hpIGPhuqduIHPhu7EgdHLh
-u6MgZ2nDunAgY+G7p2EgYuG6oW4uIFTDtGkNCnZp4bq/dCB0aMawIG7DoHkgY2hvIGLhuqFuIHbh
-u5tpIG7hu5dpIGJ14buTbiBu4bq3bmcgbuG7gSB0cm9uZyBsw7JuZywgdMO0aSDEkcOjIGNo4buN
-biBjw6FjaA0KbGnDqm4gbOG6oWMgduG7m2kgYuG6oW4gcXVhIEludGVybmV0IHbDrCBuw7MgduG6
-q24gbMOgIHBoxrDGoW5nIHRp4buHbiBsacOqbiBs4bqhYyBuaGFuaA0KbmjhuqV0Lg0KDQpUw7Rp
-IGzDoCBiw6AgVGhlcmVzYSBIZWlkaSA2MiB0deG7lWkgaGnhu4duIMSRYW5nIG7hurFtIHZp4buH
-biB04bqhaSBt4buZdCBi4buHbmggdmnhu4duDQp0xrAgbmjDom4g4bufIElzcmFlbCBkbyBi4buL
-IHVuZyB0aMawIHBo4buVaS4gVMO0aSDEkcaw4bujYyBjaOG6qW4gxJFvw6FuIG3huq9jIGLhu4du
-aCB1bmcNCnRoxrAgcGjhu5VpIGPDoWNoIMSRw6J5IDQgbsSDbSwgbmdheSBzYXUgY8OhaSBjaOG6
-v3QgY+G7p2EgY2jhu5NuZyB0w7RpLCBuZ8aw4budaSDEkcOjIMSR4buDDQps4bqhaSBjaG8gdMO0
-aSB04bqldCBj4bqjIG5o4buvbmcgZ8OsIGFuaCDhuqV5IGPDsy4gVMO0aSDEkWFuZyBtYW5nIHRo
-ZW8gbcOheSB0w61uaA0KeMOhY2ggdGF5IGPhu6dhIG3DrG5oIHRyb25nIG3hu5l0IGLhu4duaCB2
-aeG7h24sIG7GoWkgdMO0aSDEkWFuZyDEkWnhu4F1IHRy4buLIHVuZyB0aMawDQpwaOG7lWkuDQoN
-ClTDtGkgY8OzIG3hu5l0IGtob+G6o24gdGnhu4FuIMSRxrDhu6NjIHRo4burYSBr4bq/IHThu6sg
-bmfGsOG7nWkgY2jhu5NuZyBxdcOhIGPhu5EgY+G7p2EgbcOsbmgsIHPhu5ENCnRp4buBbiBt4buZ
-dCB0cmnhu4d1IGhhaSB0csSDbSBuZ2jDrG4gxJHDtCBsYSBjaOG7iSAoMS4yMDAuMDAwIFVTRCku
-IHRp4buBbiBuw6B5IG7hu69hLg0KQsOhYyBzxKkgxJHDoyBraGnhur9uIHTDtGkgaGnhu4N1IHLh
-urFuZyB0w7RpIHPhur0ga2jDtG5nIHRo4buDIHThu5NuIHThuqFpIHRyb25nIHbDsm5nIG3hu5l0
-DQpuxINtIGRvIHbhuqVuIMSR4buBIHbhu4EgdW5nIHRoxrAgcGjhu5VpLg0KDQpT4buRIHRp4buB
-biBuw6B5IHbhuqtuIMSRYW5nIOG7nyBuZ8OibiBow6BuZyBuxrDhu5tjIG5nb8OgaSB2w6AgYmFu
-IHF14bqjbiBsw70gxJHDoyB2aeG6v3QgdMO0aQ0KbMOgIGNo4bunIHPhu58gaOG7r3UgdGjhu7Fj
-IHPhu7EgxJHhu4MgxJHhur9uIG5o4bqtbiB0aeG7gW4gaGF5IMSRw7puZyBoxqFuIGzDoCBj4bql
-cCBnaeG6pXkg4buneQ0KcXV54buBbiBjaG8gYWkgxJHDsyBuaOG6rW4gdGhheSB2w6wgdMO0aSBr
-aMO0bmcgdGjhu4MgxJHhur9uIG5o4bqtbiB2w6wgYuG7h25oIGPhu6dhIG3DrG5oLg0KLiBO4bq/
-dSBraMO0bmcgdGjhu7FjIGhp4buHbiwgbmfDom4gaMOgbmcgY8OzIHRo4buDIGLhu4sgdOG7i2No
-IHRodSBxdeG7uSB2w6wgxJHDoyBnaeG7ryBuw7MNCnF1w6EgbMOidS4NCg0KVMO0aSBxdXnhur90
-IMSR4buLbmggbGnDqm4gaOG7hyB24bubaSBi4bqhbiBu4bq/dSBi4bqhbiBjw7MgdGhp4buHbiBj
-aMOtIHbDoCBxdWFuIHTDom0gxJHhu4MNCmdpw7pwIHTDtGkgcsO6dCBz4buRIHRp4buBbiBuw6B5
-IHThu6sgbmfDom4gaMOgbmcgbsaw4bubYyBuZ2/DoGkgc2F1IMSRw7Mgc+G7rSBk4bulbmcgcXXh
-u7kgdOG7qw0KdGhp4buHbiDEkeG7gyBnacO6cCDEkeG7oSBuaOG7r25nIG5nxrDhu51pIGvDqW0g
-bWF5IG3huq9uLiBUw7RpIG114buRbiBi4bqhbiB44butIGzDvSBjw6FjIHF14bu5DQrhu6d5IHRo
-w6FjIG7DoHkgbeG7mXQgY8OhY2ggdGhp4buHbiBjaMOtIHRyxrDhu5tjIGtoaSBi4bqldCBj4bup
-IMSRaeG7gXUgZ8OsIHjhuqN5IHJhIHbhu5tpDQp0w7RpLiDEkMOieSBraMO0bmcgcGjhuqNpIGzD
-oCB0aeG7gW4gYuG7iyDEkcOhbmggY+G6r3AgdsOgIGtow7RuZyBjw7Mgbmd1eSBoaeG7g20gbGnD
-qm4NCnF1YW4gdsOgIDEwMCUga2jDtG5nIGPDsyBy4bunaSBybyB24bubaSDEkeG6p3kgxJHhu6cg
-YuG6sW5nIGNo4bupbmcgcGjDoXAgbMO9Lg0KDQpUw7RpIG114buRbiBi4bqhbiBkw6BuaCA0NSUg
-dOG7lW5nIHPhu5EgdGnhu4FuIMSR4buDIHPhu60gZOG7pW5nIGNobyBt4bulYyDEkcOtY2ggY8Oh
-IG5ow6JuIGPhu6dhDQpi4bqhbiB0cm9uZyBraGkgNTUlIHPhu5EgdGnhu4FuIHPhur0gZMOgbmgg
-Y2hvIHZp4buHYyBsw6BtIHThu6sgdGhp4buHbi4gVMO0aSBz4bq9IMSRw6FuaA0KZ2nDoSBjYW8g
-c+G7sSB0aW4gdMaw4bufbmcgdsOgIGLhuqNvIG3huq10IHThu5FpIMSRYSBj4bunYSBi4bqhbiB0
-cm9uZyB24bqlbiDEkeG7gSBuw6B5IMSR4buDDQp0aOG7sWMgaGnhu4duIG1vbmcgbXXhu5FuIGPh
-u6dhIHRyw6FpIHRpbSB0w7RpLCB2w6wgdMO0aSBraMO0bmcgbXXhu5FuIGLhuqV0IGPhu6kgxJFp
-4buBdSBnw6wNCmPDsyB0aOG7gyBnw6J5IG5ndXkgaGnhu4NtIGNobyBtb25nIG114buRbiBjdeG7
-kWkgY8O5bmcgY+G7p2EgdMO0aS4gVMO0aSBy4bqldCB4aW4gbOG7l2kNCm7hur91IGLhuqFuIG5o
-4bqtbiDEkcaw4bujYyB0aMawIG7DoHkgdHJvbmcgdGjGsCByw6FjIGPhu6dhIG3DrG5oLCBsw6Ag
-ZG8gbOG7l2kga+G6v3QgbuG7kWkNCmfhuqduIMSRw6J5IOG7nyBxdeG7kWMgZ2lhIG7DoHkuDQoN
-CkVtIGfDoWkgecOqdSBxdcO9IGPhu6dhIGFuaC4NCkLDoCBUaGVyZXNhIEhlaWRpDQo=
+On Sun, Aug 14, 2022 at 2:30 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
+>
+> On Sat, Aug 13, 2022 at 07:56:54AM +0800, Yafang Shao wrote:
+> > On Sat, Aug 13, 2022 at 1:40 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
+> > >
+> > > On Fri, Aug 12, 2022 at 08:35:19AM +0800, Yafang Shao wrote:
+> > > > On Fri, Aug 12, 2022 at 12:16 AM Roman Gushchin
+> > > > <roman.gushchin@linux.dev> wrote:
+> > > > >
+> > > > > On Wed, Aug 10, 2022 at 03:18:38PM +0000, Yafang Shao wrote:
+> > > > > > Introduce new helper get_obj_cgroup_from_cgroup() to get obj_cgroup from
+> > > > > > a specific cgroup.
+> > > > > >
+> > > > > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > > > > > ---
+> > > > > >  include/linux/memcontrol.h |  1 +
+> > > > > >  mm/memcontrol.c            | 41 +++++++++++++++++++++++++++++++++++++++++
+> > > > > >  2 files changed, 42 insertions(+)
+> > > > > >
+> > > > > > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > > > > > index 2f0a611..901a921 100644
+> > > > > > --- a/include/linux/memcontrol.h
+> > > > > > +++ b/include/linux/memcontrol.h
+> > > > > > @@ -1713,6 +1713,7 @@ static inline void set_shrinker_bit(struct mem_cgroup *memcg,
+> > > > > >  int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order);
+> > > > > >  void __memcg_kmem_uncharge_page(struct page *page, int order);
+> > > > > >
+> > > > > > +struct obj_cgroup *get_obj_cgroup_from_cgroup(struct cgroup *cgrp);
+> > > > > >  struct obj_cgroup *get_obj_cgroup_from_current(void);
+> > > > > >  struct obj_cgroup *get_obj_cgroup_from_page(struct page *page);
+> > > > > >
+> > > > > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > > > > > index 618c366..762cffa 100644
+> > > > > > --- a/mm/memcontrol.c
+> > > > > > +++ b/mm/memcontrol.c
+> > > > > > @@ -2908,6 +2908,47 @@ static struct obj_cgroup *__get_obj_cgroup_from_memcg(struct mem_cgroup *memcg)
+> > > > > >       return objcg;
+> > > > > >  }
+> > > > > >
+> > > > > > +static struct obj_cgroup *get_obj_cgroup_from_memcg(struct mem_cgroup *memcg)
+> > > > > > +{
+> > > > > > +     struct obj_cgroup *objcg;
+> > > > > > +
+> > > > > > +     if (memcg_kmem_bypass())
+> > > > > > +             return NULL;
+> > > > > > +
+> > > > > > +     rcu_read_lock();
+> > > > > > +     objcg = __get_obj_cgroup_from_memcg(memcg);
+> > > > > > +     rcu_read_unlock();
+> > > > > > +     return objcg;
+> > > > >
+> > > > > This code doesn't make sense to me. What does rcu read lock protect here?
+> > > >
+> > > > To protect rcu_dereference(memcg->objcg);.
+> > > > Doesn't it need the read rcu lock ?
+> > >
+> > > No, it's not how rcu works. Please, take a look at the docs here:
+> > > https://docs.kernel.org/RCU/whatisRCU.html#whatisrcu .
+> > > In particular, it describes this specific case very well.
+> > >
+> > > In 2 words, you don't protect the rcu_dereference() call, you protect the pointer
+> >
+> > I just copied and pasted rcu_dereference(memcg->objcg) there to make it clear.
+> > Actually it protects memcg->objcg, doesn't it ?
+> >
+> > > you get, cause it's valid only inside the rcu read section. After rcu_read_unlock()
+> > > it might point at a random data, because the protected object can be already freed.
+> > >
+> >
+> > Are you sure?
+> > Can't the obj_cgroup_tryget(objcg) prevent it from being freed ?
+>
+> Ok, now I see where it comes from. You copy-pasted it from get_obj_cgroup_from_current()?
+> There rcu read lock section protects memcg, not objcg.
+
+Could you pls explain in detail why we should protect memcg instead of objcg ?
+Why does the memcg need the read rcu lock ?
+
+> In your case you don't need it, because memcg is passed as a parameter to the function,
+> so it's the duty of the caller to ensure the lifetime of memcg.
+>
+
+I'm still a bit confused. See below,
+
+objcg = rcu_dereference(memcg->objcg);
+percpu_ref_tryget(&objcg->refcnt);    <<<< what if the objcg is freed
+before this operation ??
+
+
+-- 
+Regards
+Yafang
