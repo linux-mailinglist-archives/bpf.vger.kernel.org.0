@@ -2,124 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A446E5930ED
-	for <lists+bpf@lfdr.de>; Mon, 15 Aug 2022 16:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B8459311A
+	for <lists+bpf@lfdr.de>; Mon, 15 Aug 2022 16:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbiHOOpe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Aug 2022 10:45:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54852 "EHLO
+        id S231392AbiHOO5i (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Aug 2022 10:57:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbiHOOpd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Aug 2022 10:45:33 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E7AF25D5;
-        Mon, 15 Aug 2022 07:45:29 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id y3so9855701eda.6;
-        Mon, 15 Aug 2022 07:45:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=2r6NzV5K6JWHUt1ICx2UuX4Y6Ch+fw7Dtg6Kfge6QGc=;
-        b=GbLvWxDIxgFLq5piP6F2dgRYWQ7rxguDDupe74SrAo+hBy5g3C1mk2+YmJ0k+PTxMQ
-         PL/jU34GR/M47O/iNmJg77vJxUJcZUPo0CyVNv/hL+A+XM9D9ci6LI79UjLt9Scwc/8V
-         Ru6Bds+2ciVWKzxnWXuIHak+rf47n2Hjw+zTz9JEZTyvH11eoEiS+BbTehbWr/9x6E2Y
-         bKatp+ABbIJ3XeAADXbpVBk5aoyFHe6Znbudn5TZapQexuNE6skwj3xkl2eZ8Asrn7Tl
-         JcmmSsWLqGcfrSOH+YpMQQpaSZt72DWQsvafSlK7vSuw0gzoGoqdhLm91dXRnMlIHQT8
-         vL3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=2r6NzV5K6JWHUt1ICx2UuX4Y6Ch+fw7Dtg6Kfge6QGc=;
-        b=rFVUZR5kwK2BSVn9mIuScrhFmsUpADFpjELiHrjLnf3vfBEBVTv5966NF4VxdA1o0G
-         EODqsPILm6p/M8cuVEHEoBHnrQVcZwit7VfOmHp7YU24CrmCIAOr2Y//Jf+2F9fOfJo9
-         rHB9/9aQ0JfT833N6ECkyz9ZZISIxMzxseKk2lSIW9gKCj2BGwtJVe1Mvv17Hd2Yz5YU
-         aBFozAuTI7tKMVDKzgihZDgyjqiOuOMTXzdVAXALdu1D4yYhI0oVA3tBE2tQYsrOnRmo
-         /1ItVg3HeQ5X8h+qw8hNEFvv+hif/DJ9uQ1XgyiERsvj8yKarz32WtLRoZpHlsw3HZCT
-         h0Tg==
-X-Gm-Message-State: ACgBeo16xEkt94tgkCnR82vB0qFE3Q8VT2eDg7fTD9K/naYtpIt5wPdI
-        y27nmrdyG6NdEwo/jylDQESgAGhsNd6UrePKA7Q=
-X-Google-Smtp-Source: AA6agR6sEWTbe+AyeLWfPPx+Mli/Iunqsj4kcwNNs+U3AAwcbcjUBRp3ZwsZF65gr3elWP/aT3KIeEXR6DWqUi1Ibt8=
-X-Received: by 2002:a05:6402:28cb:b0:43b:c6d7:ef92 with SMTP id
- ef11-20020a05640228cb00b0043bc6d7ef92mr15211708edb.333.1660574728199; Mon, 15
- Aug 2022 07:45:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220722122548.2db543ca@gandalf.local.home> <YtsRD1Po3qJy3w3t@krava>
- <20220722174120.688768a3@gandalf.local.home> <YtxqjxJVbw3RD4jt@krava>
- <YvbDlwJCTDWQ9uJj@krava> <20220813150252.5aa63650@rorschach.local.home>
- <Yvn9xR7qhXW7FnFL@worktop.programming.kicks-ass.net> <YvoVgMzMuQbAEayk@krava>
- <Yvo+EpO9dN30G0XE@worktop.programming.kicks-ass.net> <CAADnVQJfvn2RYydqgO-nS_K+C8WJL7BdCnR44MiMF4rnAwWM5A@mail.gmail.com>
- <YvpZJQGQdVaa2Oh4@worktop.programming.kicks-ass.net>
-In-Reply-To: <YvpZJQGQdVaa2Oh4@worktop.programming.kicks-ass.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 15 Aug 2022 07:45:16 -0700
-Message-ID: <CAADnVQKyfrFTZOM9F77i0NbaXLZZ7KbvKBvu7p6kgdnRgG+2=Q@mail.gmail.com>
-Subject: Re: [RFC] ftrace: Add support to keep some functions out of ftrace
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        with ESMTP id S229445AbiHOO5P (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Aug 2022 10:57:15 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E21A1A054;
+        Mon, 15 Aug 2022 07:57:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=35PiSrycvZePEg2FpFCAwxoALwiBP5+CAc/F+ajRY6Q=; b=H7+4HEwwXMWtNjyIxyU/ZlLIAb
+        hFvadehrOwjtz7/deu55E5PKv0Plavk8ONWe0YSNcBsgx/VUhfwP11vMxbM0/33ZJHX0uT40uOM6e
+        lzTre6xcEAoQQW6r/MZEUIsjlTnvaPCahQYYJ11WPCFG+9PO1CJfeKNgMHZcToZ5DerxDQ/eF6rqR
+        AmhzoWf2kC+m3m4k6KKkS44rM4nWNUNXkASGoxuvy24NatNoRUUtCdBD++MTW9iubHl9E8VFaS84I
+        Go8HWhyIUR86GFaeXkdjp6bn5MCI+VJ3kxXf7dCVLrSPowGATmiivPI0HLlOsPYP5dgbc1tfVWDTn
+        usGwN5iA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1oNbWG-002h34-A8; Mon, 15 Aug 2022 14:56:44 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 54C42980153; Mon, 15 Aug 2022 16:56:43 +0200 (CEST)
+Date:   Mon, 15 Aug 2022 16:56:43 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        bpf <bpf@vger.kernel.org>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Edward Cree <ecree@solarflare.com>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <thoiland@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH bpf-next v4 2/6] bpf: introduce BPF dispatcher
+Message-ID: <Yvpeq+vPz63n8gmi@worktop.programming.kicks-ass.net>
+References: <20191211123017.13212-1-bjorn.topel@gmail.com>
+ <20191211123017.13212-3-bjorn.topel@gmail.com>
+ <20220815101303.79ace3f8@gandalf.local.home>
+ <CAADnVQLhHm-gxJXTbWxJN0fFGW_dyVV+5D-JahVA1Wrj2cGu7g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQLhHm-gxJXTbWxJN0fFGW_dyVV+5D-JahVA1Wrj2cGu7g@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 15, 2022 at 7:33 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Mon, Aug 15, 2022 at 07:25:24AM -0700, Alexei Starovoitov wrote:
-> > On Mon, Aug 15, 2022 at 5:37 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> > >
-> > > On Mon, Aug 15, 2022 at 11:44:32AM +0200, Jiri Olsa wrote:
-> > > > On Mon, Aug 15, 2022 at 10:03:17AM +0200, Peter Zijlstra wrote:
-> > > > > On Sat, Aug 13, 2022 at 03:02:52PM -0400, Steven Rostedt wrote:
-> > > > > > On Fri, 12 Aug 2022 23:18:15 +0200
-> > > > > > Jiri Olsa <olsajiri@gmail.com> wrote:
-> > > > > >
-> > > > > > > the patch below moves the bpf function into sepatate object and switches
-> > > > > > > off the -mrecord-mcount for it.. so the function gets profile call
-> > > > > > > generated but it's not visible to ftrace
-> > > > >
-> > > > > Why ?!?
-> > > >
-> > > > there's bpf dispatcher code that updates bpf_dispatcher_xdp_func
-> > > > function with bpf_arch_text_poke and that can race with ftrace update
-> > > > if the function is traced
-> > >
-> > > I thought bpf_arch_text_poke() wasn't allowed to touch kernel code and
-> > > ftrace is in full control of it ?
+On Mon, Aug 15, 2022 at 07:31:23AM -0700, Alexei Starovoitov wrote:
+> On Mon, Aug 15, 2022 at 7:13 AM Steven Rostedt <rostedt@goodmis.org> wrote:
 > >
-> > ftrace is not in "full control" of nop5 and must not be.
->
-> It is in full control of the 'call __fentry__'. Absolute full NAK on you
-> trying to make it otherwise.
+> > On Wed, 11 Dec 2019 13:30:13 +0100
+> > Björn Töpel <bjorn.topel@gmail.com> wrote:
+> >
+> > > From: Björn Töpel <bjorn.topel@intel.com>
+> > >
+> > > The BPF dispatcher is a multi-way branch code generator, mainly
+> > > targeted for XDP programs. When an XDP program is executed via the
+> > > bpf_prog_run_xdp(), it is invoked via an indirect call. The indirect
+> > > call has a substantial performance impact, when retpolines are
+> > > enabled. The dispatcher transform indirect calls to direct calls, and
+> > > therefore avoids the retpoline. The dispatcher is generated using the
+> > > BPF JIT, and relies on text poking provided by bpf_arch_text_poke().
+> > >
+> > > The dispatcher hijacks a trampoline function it via the __fentry__ nop
+> >
+> > Why was the ftrace maintainers not Cc'd on this patch?  I would have NACKED
+> > it. Hell, it wasn't even sent to LKML! This was BPF being sneaky in
+> > updating major infrastructure of the Linux kernel without letting the
+> > stakeholders of this change know about it.
+> >
+> > For some reason, the BPF folks think they own the entire kernel!
+> >
+> > When I heard that ftrace was broken by BPF I thought it was something
+> > unique they were doing, but unfortunately, I didn't investigate what they
+> > were doing at the time.
+> 
+> ftrace is still broken and refusing to accept the fact doesn't make it
+> non-broken.
 
-Don't mix 'call fentry' generated by the compiler with nop5 inserted
-by macroses or JITs.
+Alexei, stop this. The 'call __fentry__' sites are owned by ftrace.
+Always have been. If BPF somehow thinks it can use them without telling
+ftrace then it's BPF that's broken.
 
-> > Soon we will have nop5 in the middle of the function.
-> > ftrace must not touch it.
->
-> How are you generating that NOP and what for?
+> > Then they started sending me patches to hide fentry locations from ftrace.
+> > And even telling me that fentry != ftrace
+> 
+> It sounds that you've invented nop5 and kernel's ability
+> to replace nop5 with a jump or call.
 
-We're generating nop5-s in JITed code to further
-attach to. For example when one bpf prog is being replaced by another.
-Currently it's in the func prologue only.
-In the future it will be anywhere in the body.
+Ftrace has introduced the mcount/fentry patching into the kernel and has
+always owned it for those sites. There is a lot of other text writing
+not owned by ftrace. But the fentry sites are ftrace's.
+
+Ftrace was also the one that got us the text_poke_bp() infrastructure
+and got it reviewed by the CPU vendors.
+
+Since then we've grown static_branch and static_call, they have their
+own patch sites and do no interfere with ftrace.
+
+> ftrace should really stop trying to own all of the kernel text rewrites.
+> It's in the way. Like this case.
+
+It doesn't. It hasn't. But it *does* own the fentry sites.
+
+> It was implemented long before static_calls made it to the kernel
+> and it's different.
+
+It wasn't long before. Yes it landed a few months prior to the
+static_call work, but the whole static_call thing was in progress for a
+long long time.
+
+Anyway, yes it is different. But it's still very much broken. You simply
+cannot step on __fentry__ sites like that.
+
+
