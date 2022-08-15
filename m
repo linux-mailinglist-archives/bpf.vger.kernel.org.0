@@ -2,64 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A4E592909
+	by mail.lfdr.de (Postfix) with ESMTP id 9B4E459290A
 	for <lists+bpf@lfdr.de>; Mon, 15 Aug 2022 07:16:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232982AbiHOFQH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S233117AbiHOFQH (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Mon, 15 Aug 2022 01:16:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57832 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240579AbiHOFPr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Aug 2022 01:15:47 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD471128
-        for <bpf@vger.kernel.org>; Sun, 14 Aug 2022 22:15:45 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id kb8so11810575ejc.4
-        for <bpf@vger.kernel.org>; Sun, 14 Aug 2022 22:15:45 -0700 (PDT)
+        with ESMTP id S240629AbiHOFPs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Aug 2022 01:15:48 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 042A6115D
+        for <bpf@vger.kernel.org>; Sun, 14 Aug 2022 22:15:47 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id z20so8280048edb.9
+        for <bpf@vger.kernel.org>; Sun, 14 Aug 2022 22:15:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc;
-        bh=52ncQDVoLEQypCLCdmrT3cs77W6vwPXVBdFEABVVW3U=;
-        b=NKLhdjdLtFVLDwKvPoxSVykPcweR1euFbusy/LzFNtXemJfOqCC0jXwfsCuaGqq/x3
-         +U01mtgx0OUAh6JdNr/QBCMW4dPsiDmtsy9VunUBLoHOlGYoSkMk1GbCTFsJXMitIa5n
-         YbvuQd436fviSqCwvv2BvAAZkoEBDxtzwJkACSB70RdgN5LZXQ0t7jlA+Hfkz+vwH5kz
-         08QbKjkgwx8V8zn2Jg9L/AwIkpItoqRmw4VcoPaAYRZmx0sfkNStdJL1u/B+3SlJRHw6
-         k7Vn/sGg5TXC2vwZH/d+0O0W6lmNHYiksVMs9oqbll8sCQTiqXeID3NdE8K/3gF/aApo
-         LlMg==
+        bh=WboJMcAwXm+hJMEu30UpiOPSq2qIq1XHhMmoik5uyRo=;
+        b=NY+Y/Og+tYPCd3vAfR3axxYeW3D2bHFIjFkJjaY1BmYQL49Rp1k1Yv3OC+jC/0KSuZ
+         EzSj8RgT5YP7wlk0ggv3M/Ad9Ub/P44DNopi7/3KeQVnAubT+uTexUHrLYmO5xRRnrNA
+         o2midymefFJOdFaZvQ/O5UOVURlnvGjdpYi6V1bPLLaihb0t7IP2dWl0TnMchUESEnYc
+         Mo1wMdEenCk15oxbqbrHdeYUwdDJXw8ygwbTH5sJOvU0opoxEvn/pu2ES3aNKon5pMxs
+         wq+nBl4zjEwPWhd0I45mDYkEzdxcR2nPlEbncx4iKhFC+TitjqE+Adat0pPzxq98YM5r
+         KQ+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
-        bh=52ncQDVoLEQypCLCdmrT3cs77W6vwPXVBdFEABVVW3U=;
-        b=09rfGvhNAW1q7yaqqK519tF5/N7T0uR32+ond+7Uf7+1mGpSlBZ2d0pSzugDJvqQgx
-         vrtBf+bN/1yW5fgkewpT4yjJYJLd7yX/FC2pWtc8tyvV5o/LKyrLGT8hkhQZDXsitEaq
-         NOEvw1wYvl+eFjCkaDCZMUGRE8B+aK75qOFbsZE5t4TC8BGa0I9Mql/G/7wmVR+NR2JK
-         YNS44hf3KFVJqSSx6ol+xlnuj6wVXrAemQLLQuleyDZsPmrSSAMOLbkkDRrVyJgglEU1
-         nvRrXkFu0hXTMDfaOBib81yENcUyr4S7BQurOUzAdaHujzhm38u/LahLLIOccR7pg+ZE
-         A1wQ==
-X-Gm-Message-State: ACgBeo3EkYA2JOldEDyVoLCjjim8scvH44MJO79hE1EAnZieRATCHX7r
-        XkM25ZwXdHHvO2MK4cejQu6ExzP7YLk=
-X-Google-Smtp-Source: AA6agR6o0S0M/TNsL7n32FSUgm4TIiV2zqc8ca6V7hEO6aE68z6AaKWc8P4hl/6nZ7mqfC1Hv3r93g==
-X-Received: by 2002:a17:907:6818:b0:730:d99f:7b91 with SMTP id qz24-20020a170907681800b00730d99f7b91mr9303979ejc.496.1660540544208;
-        Sun, 14 Aug 2022 22:15:44 -0700 (PDT)
+        bh=WboJMcAwXm+hJMEu30UpiOPSq2qIq1XHhMmoik5uyRo=;
+        b=JRXAJvwIwGZBusgVDZEDcWm2gXJIjuBu9UecN8lKLLH6nAdI1itAyY/CXtf6iIgV3a
+         URnD+z5FtN0XcW66xbH2GXq5SWwDiKGeV7kSwpwor0iqB1dcVHiQgsdzrTktc7rBCKQx
+         7vO0JXjtoDlJtDJh1VLZ7UGywvBfSVE2+MNs0EgJTNPZY9zkuluWcbPY/EI45j/oPHGp
+         5i/79JS1aOx2MHep7lwFhYjwnGod2KFkNLnWxVKNSbithb/unOTjdkDfHNJkSgLQKvK1
+         KJOZnam6LrXOvg7VhBWJ0AE48X1yHt7RyVG9siUwGZlN63wlePHHMANKH8bup56Xy0OD
+         s/QQ==
+X-Gm-Message-State: ACgBeo3/1XiVXcwKCwmyeDMZon/YQcwB5GCqueXuaBHOVtX2ltX3pOfn
+        96KASETDTKK0JlXfHcuB6zDXsOxikug=
+X-Google-Smtp-Source: AA6agR7guj41UCzoc0jRQLbApAsb5aoeUjwlOazPNhh5gzPvEyp5BjEW8AvfUY3ql73Iad/osvMCPA==
+X-Received: by 2002:aa7:c78e:0:b0:441:c311:9dcd with SMTP id n14-20020aa7c78e000000b00441c3119dcdmr12766693eds.155.1660540545332;
+        Sun, 14 Aug 2022 22:15:45 -0700 (PDT)
 Received: from localhost (vpn-253-028.epfl.ch. [128.179.253.28])
-        by smtp.gmail.com with ESMTPSA id v1-20020aa7d641000000b004417eeff836sm5994992edr.53.2022.08.14.22.15.43
+        by smtp.gmail.com with ESMTPSA id op9-20020a170906bce900b0072b810897desm3634334ejb.105.2022.08.14.22.15.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Aug 2022 22:15:43 -0700 (PDT)
+        Sun, 14 Aug 2022 22:15:45 -0700 (PDT)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH RFC bpf v1 2/3] bpf: Fix reference state management for synchronous callbacks
-Date:   Mon, 15 Aug 2022 07:15:39 +0200
-Message-Id: <20220815051540.18791-3-memxor@gmail.com>
+Subject: [PATCH RFC bpf v1 3/3] selftests/bpf: Add tests for callbacks fixes
+Date:   Mon, 15 Aug 2022 07:15:40 +0200
+Message-Id: <20220815051540.18791-4-memxor@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220815051540.18791-1-memxor@gmail.com>
 References: <20220815051540.18791-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=7099; i=memxor@gmail.com; h=from:subject; bh=+IBqn92ZFNOVZO9Jc/1W/xdv3IJSIaVeDd6nTi5A5oU=; b=owEBbQKS/ZANAwAKAUzgyIZIvxHKAcsmYgBi+dZIpZoH/oY0RJ0C2k6SLOGWxYi3qCkDRFdS/gwl g/BFeh+JAjMEAAEKAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYvnWSAAKCRBM4MiGSL8RyrKED/ 4w0mhPDimnYNnz18/iZhEhbDlkaJr7T4+0TXrRrqO3zvw4kAqIMXdQU8V1eZBsYmuX/XDwtAVkhfUJ rNVlticiMYcpfFI8PZFu0wryZyEdMJfS4YvlLMcFsMavb+rGWCRUau6uMS7CbYl0grG+FAvhYTgOlW DCkqOlINXez0VZFkJgtf0IQ9wAH7Lh/K8ny4WPAyfBIyMgz1dzdo+Z5p5japL8UDUEadtyZCuaNrxp bA6JUrlDjcWapzLOaP7BYNIyCYE1bGs+RUUdYSVaitNyIOURmkYt5Mqlg/B7owKZrg1luOQ6N5SYBo KxYFeQe/Zs7jm5tzq//bsAfmf290eC8kM/RKmZ54JuN5JwRu+UMfKoccXwAzgh+O+tcEO2DC0vIg0k QRD+7M+azuMjdNaQG32Yd0FVivpMf9rcNFMuHrms97Aq4U2Tt8qVW1aLclyzLLDhZV4yqRiL1TICdb n4YN/UszI4CL4W+rnpwQCYIb8t2UTsrQz7z307VyR87HF2dhnQcuYXCCHkBQN0D792l6B/LDxIChbF GbpNLFxDngsm9AfITNfrB4LzGdCpUzkJeG8LZHEFtfYwF2yTovf8Q2OoYF46Og3ruK5KuTXYBYgrBk rA7+tUgWQCHZFXWr4oLXn8Ud1Dr/Km42gWoW+bMYY/EGfQjvqa+jx9nP0ffw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6036; i=memxor@gmail.com; h=from:subject; bh=99EcuOKPJECuxwRzBUnopm3k2Xtp1EeIE/gex8PFlQw=; b=owEBbQKS/ZANAwAKAUzgyIZIvxHKAcsmYgBi+dZI69t5Yd117iXA+pOzKTtYJiOlxY3ayEhbdNZt FDimeQ6JAjMEAAEKAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYvnWSAAKCRBM4MiGSL8RyqRDD/ 0UGL84Y/MqNVIxkR9F4c4TxMGrGZQ55yOC9WgaKbS3mUc2HOJD4j5Ndvnve0cbAWtLYZN3qIdaceAw FIwtg6Vd1Ze3Gyy160o213sHRYzD9Ons1w538EDm53dcsR+ONr9VntC4ZkdpStxdbOww0l1pdxKg8i diVIxcJoNXEPOl00H2A2o2rI4GwlWQBNbKofAVmKDAaoymjHahoo2uk+yUFcH2Hb7wycd/dxWrFWuS Tq4gkS1N9HC+EoK3FsCj47FmArPwdyv+ADljy6j8wEaM3hOTcJ3y1HMkYpI+hcyGTur5Niu7SMxvrW dyMAjq8/AyjST5n+4fVgbWAxuEp9a7ZvayZs5acidIvrE9OW5/AamcFOr7arB50gq0Ry9NXGK2k6Lb bK1cl+MFZ1in1fU4CFkkRBYy320c1lsN+VKzFF7XW3GwCkSdb0AUZkVeqnMNAixUIBMga6sTEH7Lxb D/hcNNQcZH0cKfR5qIfn1FHL+5zvTmRKUaATK0ScWEoGoueLJeERzT3aIjgj0/D1+pL7e6dqe/2q9R CToMuD2EYflIIT1KbylOYD0G5WxDaW8OnTtNiixmtnLFKTkndFDxgg0wMzDDhJD12kFh/Eir2gr4jc lo4aV4W/qJAYKe/IYA/JbLToNDYW89dM9G5fLObyS2xKq3l/3KM7E7hanQxw==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -72,176 +72,231 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently, verifier verifies callback functions (sync and async) as if
-they will be executed once, (i.e. it explores execution state as if the
-function was being called once). The next insn to explore is set to
-start of subprog and the exit from nested frame is handled using
-curframe > 0 and prepare_func_exit. In case of async callback it uses a
-customized variant of push_stack simulating a kind of branch to set up
-custom state and execution context for the async callback.
+These are regression tests to ensure we don't end up in invalid runtime
+state for helpers that execute callbacks multiple times. It exercises
+the fixes to verifier callback handling in previous patches.
 
-While this approach is simple and works when callback really will be
-executed only once, it is unsafe for all of our current helpers which
-are for_each style, i.e. they execute the callback multiple times.
-
-A callback releasing acquired references of the caller may do so
-multiple times, but currently verifier sees it as one call inside the
-frame, which then returns to caller. Hence, it thinks it released some
-reference that the cb e.g. got access through callback_ctx (register
-filled inside cb from spilled typed register on stack).
-
-Similarly, it may see that an acquire call is unpaired inside the
-callback, so the caller will copy the reference state of callback and
-then will have to release the register with new ref_obj_ids. But again,
-the callback may execute multiple times, but the verifier will only
-account for acquired references for a single symbolic execution of the
-callback.
-
-Note that for async callback case, things are different. While currently
-we have bpf_timer_set_callback which only executes it once, even for
-multiple executions it would be safe, as reference state is NULL and
-check_reference_leak would force program to release state before
-BPF_EXIT. The state is also unaffected by analysis for the caller frame.
-Hence async callback is safe.
-
-To fix this, we disallow callbacks to transfer acquired references back
-to caller. They must be released before callback hits BPF_EXIT, since
-the number of times callback is invoked is not known to the verifier, it
-cannot reliably track how many references will be created. Likewise, it
-is not allowed to release caller reference state, since we don't know
-how many times the callback will be invoked.
-
-Lastly, now that callback function cannot change reference state it
-copied from its parent, there is no need to copy reference state back to
-the parent, since it won't change. It may be changed for the callee
-frame but that state must match parent reference state by the time
-callee exits, and it is going to be discarded anyway. So skip this copy
-too. To be clear, it won't be incorrect if the copy was done, but it
-would be inefficient and may be confusing to people reading the code.
-
-Fixes: 69c87ba6225 ("bpf: Add bpf_for_each_map_elem() helper")
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- include/linux/bpf_verifier.h | 11 ++++++++++
- kernel/bpf/verifier.c        | 42 ++++++++++++++++++++++++++++--------
- 2 files changed, 44 insertions(+), 9 deletions(-)
+ .../selftests/bpf/prog_tests/cb_refs.c        |  49 ++++++
+ tools/testing/selftests/bpf/progs/cb_refs.c   | 152 ++++++++++++++++++
+ 2 files changed, 201 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cb_refs.c
+ create mode 100644 tools/testing/selftests/bpf/progs/cb_refs.c
 
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index 2e3bad8640dc..1fdddbf3546b 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -212,6 +212,17 @@ struct bpf_reference_state {
- 	 * is used purely to inform the user of a reference leak.
- 	 */
- 	int insn_idx;
-+	/* There can be a case like:
-+	 * main (frame 0)
-+	 *  cb (frame 1)
-+	 *   func (frame 3)
-+	 *    cb (frame 4)
-+	 * Hence for frame 4, if callback_ref just stored boolean, it would be
-+	 * impossible to distinguish nested callback refs. Hence store the
-+	 * frameno and compare that to callback_ref in check_reference_leak when
-+	 * exiting a callback function.
-+	 */
-+	int callback_ref;
- };
- 
- /* state of the program:
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 096fdac70165..3e885ba88b02 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -1086,6 +1086,7 @@ static int acquire_reference_state(struct bpf_verifier_env *env, int insn_idx)
- 	id = ++env->id_gen;
- 	state->refs[new_ofs].id = id;
- 	state->refs[new_ofs].insn_idx = insn_idx;
-+	state->refs[new_ofs].callback_ref = state->in_callback_fn ? state->frameno : 0;
- 
- 	return id;
- }
-@@ -1098,6 +1099,9 @@ static int release_reference_state(struct bpf_func_state *state, int ptr_id)
- 	last_idx = state->acquired_refs - 1;
- 	for (i = 0; i < state->acquired_refs; i++) {
- 		if (state->refs[i].id == ptr_id) {
-+			/* Cannot release caller references in callbacks */
-+			if (state->in_callback_fn && state->refs[i].callback_ref != state->frameno)
-+				return -EINVAL;
- 			if (last_idx && i != last_idx)
- 				memcpy(&state->refs[i], &state->refs[last_idx],
- 				       sizeof(*state->refs));
-@@ -6938,10 +6942,17 @@ static int prepare_func_exit(struct bpf_verifier_env *env, int *insn_idx)
- 		caller->regs[BPF_REG_0] = *r0;
- 	}
- 
--	/* Transfer references to the caller */
--	err = copy_reference_state(caller, callee);
--	if (err)
--		return err;
-+	/* callback_fn frame should have released its own additions to parent's
-+	 * reference state at this point, or check_reference_leak would
-+	 * complain, hence it must be the same as the caller. There is no need
-+	 * to copy it back.
-+	 */
-+	if (!callee->in_callback_fn) {
-+		/* Transfer references to the caller */
-+		err = copy_reference_state(caller, callee);
-+		if (err)
-+			return err;
+diff --git a/tools/testing/selftests/bpf/prog_tests/cb_refs.c b/tools/testing/selftests/bpf/prog_tests/cb_refs.c
+new file mode 100644
+index 000000000000..a74ac3ace5c4
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/cb_refs.c
+@@ -0,0 +1,49 @@
++// SPDX-License-Identifier: GPL-2.0
++#include "bpf/libbpf.h"
++#include <test_progs.h>
++#include <network_helpers.h>
++
++#include "cb_refs.skel.h"
++
++static char log_buf[1024 * 1024];
++
++struct {
++	const char *prog_name;
++	const char *err_msg;
++} cb_refs_tests[] = {
++	{ "underflow_prog", "reference has not been acquired before" },
++	{ "leak_prog", "Unreleased reference" },
++	{ "nested_cb", "Unreleased reference id=2 alloc_insn=16" },
++	{ "oob_access", "TBD..." },
++	{ "write", "TBD..." },
++};
++
++void test_cb_refs(void)
++{
++	LIBBPF_OPTS(bpf_object_open_opts, opts, .kernel_log_buf = log_buf,
++						.kernel_log_size = sizeof(log_buf),
++						.kernel_log_level = 1);
++	struct bpf_program *prog;
++	struct cb_refs *skel;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(cb_refs_tests); i++) {
++		LIBBPF_OPTS(bpf_test_run_opts, run_opts,
++			.data_in = &pkt_v4,
++			.data_size_in = sizeof(pkt_v4),
++			.repeat = 1,
++		);
++		skel = cb_refs__open_opts(&opts);
++		if (!ASSERT_OK_PTR(skel, "cb_refs__open_and_load"))
++			return;
++		prog = bpf_object__find_program_by_name(skel->obj, cb_refs_tests[i].prog_name);
++		bpf_program__set_autoload(prog, true);
++		if (!ASSERT_ERR(cb_refs__load(skel), "cb_refs__load"))
++			bpf_prog_test_run_opts(bpf_program__fd(prog), &run_opts);
++		if (!ASSERT_OK_PTR(strstr(log_buf, cb_refs_tests[i].err_msg), "expected error message")) {
++			fprintf(stderr, "Expected: %s\n", cb_refs_tests[i].err_msg);
++			fprintf(stderr, "Verifier: %s\n", log_buf);
++		}
++		cb_refs__destroy(skel);
 +	}
- 
- 	*insn_idx = callee->callsite + 1;
- 	if (env->log.level & BPF_LOG_LEVEL) {
-@@ -7065,13 +7076,20 @@ record_func_key(struct bpf_verifier_env *env, struct bpf_call_arg_meta *meta,
- static int check_reference_leak(struct bpf_verifier_env *env)
- {
- 	struct bpf_func_state *state = cur_func(env);
-+	bool refs_lingering = false;
- 	int i;
- 
-+	if (state->frameno && !state->in_callback_fn)
++}
+diff --git a/tools/testing/selftests/bpf/progs/cb_refs.c b/tools/testing/selftests/bpf/progs/cb_refs.c
+new file mode 100644
+index 000000000000..1f3ce0b4f8b2
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/cb_refs.c
+@@ -0,0 +1,152 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <vmlinux.h>
++#include <bpf/bpf_tracing.h>
++#include <bpf/bpf_helpers.h>
++
++struct map_value {
++	unsigned long data;
++	unsigned long data2;
++	struct prog_test_ref_kfunc __kptr_ref *ptr;
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__type(key, int);
++	__type(value, struct map_value);
++	__uint(max_entries, 16);
++} array_map SEC(".maps");
++
++extern struct prog_test_ref_kfunc *bpf_kfunc_call_test_acquire(unsigned long *sp) __ksym;
++extern void bpf_kfunc_call_test_release(struct prog_test_ref_kfunc *p) __ksym;
++
++static __always_inline int cb1(void *map, void *key, void *value, void *ctx)
++{
++	void *p = *(void **)ctx;
++	bpf_kfunc_call_test_release(p);
++	/* Without the fix this would cause underflow */
++	return 0;
++}
++
++SEC("?tc")
++int underflow_prog(void *ctx)
++{
++	struct prog_test_ref_kfunc *p;
++	unsigned long sl = 0;
++
++	p = bpf_kfunc_call_test_acquire(&sl);
++	if (!p)
++		return 0;
++	bpf_for_each_map_elem(&array_map, cb1, &p, 0);
++	return 0;
++}
++
++static __always_inline int cb2(void *map, void *key, void *value, void *ctx)
++{
++	unsigned long sl = 0;
++
++	*(void **)ctx = bpf_kfunc_call_test_acquire(&sl);
++	/* Without the fix this would leak memory */
++	return 0;
++}
++
++SEC("?tc")
++int leak_prog(void *ctx)
++{
++	struct prog_test_ref_kfunc *p;
++	struct map_value *v;
++	unsigned long sl;
++
++	v = bpf_map_lookup_elem(&array_map, &(int){0});
++	if (!v)
 +		return 0;
 +
- 	for (i = 0; i < state->acquired_refs; i++) {
-+		if (state->in_callback_fn && state->refs[i].callback_ref != state->frameno)
-+			continue;
- 		verbose(env, "Unreleased reference id=%d alloc_insn=%d\n",
- 			state->refs[i].id, state->refs[i].insn_idx);
-+		refs_lingering = true;
- 	}
--	return state->acquired_refs ? -EINVAL : 0;
-+	return refs_lingering ? -EINVAL : 0;
- }
- 
- static int check_bpf_snprintf_call(struct bpf_verifier_env *env,
-@@ -12332,6 +12350,16 @@ static int do_check(struct bpf_verifier_env *env)
- 					return -EINVAL;
- 				}
- 
-+				/* We must do check_reference_leak here before
-+				 * prepare_func_exit to handle the case when
-+				 * state->curframe > 0, it may be a callback
-+				 * function, for which reference_state must
-+				 * match caller reference state when it exits.
-+				 */
-+				err = check_reference_leak(env);
-+				if (err)
-+					return err;
++	p = NULL;
++	bpf_for_each_map_elem(&array_map, cb2, &p, 0);
++	p = bpf_kptr_xchg(&v->ptr, p);
++	if (p)
++		bpf_kfunc_call_test_release(p);
++	return 0;
++}
 +
- 				if (state->curframe) {
- 					/* exit from nested function */
- 					err = prepare_func_exit(env, &env->insn_idx);
-@@ -12341,10 +12369,6 @@ static int do_check(struct bpf_verifier_env *env)
- 					continue;
- 				}
- 
--				err = check_reference_leak(env);
--				if (err)
--					return err;
--
- 				err = check_return_code(env);
- 				if (err)
- 					return err;
++static __always_inline int cb(void *map, void *key, void *value, void *ctx)
++{
++	return 0;
++}
++
++static __always_inline int cb3(void *map, void *key, void *value, void *ctx)
++{
++	unsigned long sl = 0;
++	void *p;
++
++	bpf_kfunc_call_test_acquire(&sl);
++	bpf_for_each_map_elem(&array_map, cb, &p, 0);
++	/* It should only complain here, not in cb. This is why we need
++	 * callback_ref to be set to frameno.
++	 */
++	return 0;
++}
++
++SEC("?tc")
++int nested_cb(void *ctx)
++{
++	int p = 0;
++
++	bpf_for_each_map_elem(&array_map, cb3, &p, 0);
++	return 0;
++}
++
++static __always_inline int lcb(void *map, unsigned long *idx)
++{
++	unsigned long i = *idx;
++	i++;
++	*idx = i;
++	return 0;
++}
++
++SEC("?tc")
++int oob_access(void *ctx)
++{
++	unsigned long idx = 0;
++	struct map_value *v;
++
++	v = bpf_map_lookup_elem(&array_map, &(int){0});
++	if (!v)
++		return 0;
++	bpf_loop(100, lcb, &idx, 0);
++	/* Verifier would think we are accessing using idx=1 without the fix */
++	return ((unsigned long *)&v->data)[idx];
++}
++
++static __always_inline int lcb1(void *map, int *idx)
++{
++	int i = *idx;
++	i--;
++	*idx = i;
++	return 0;
++}
++
++static __always_inline int lcb2(void *map, void **pp)
++{
++	int i = *(int *)(pp + 1);
++	pp[i + 2] = (void *)0xeB9F15D34D;
++	return 0;
++}
++
++SEC("?tc")
++int write(void *ctx)
++{
++	struct {
++		struct map_value *v;
++		int idx;
++	} x = {};
++	x.v = bpf_map_lookup_elem(&array_map, &(int){0});
++	if (!x.v)
++		return 0;
++	bpf_loop(2, &lcb1, &x.idx, 0);
++	/* idx is -2, verifier thinks it is -1 */
++	bpf_loop(1, &lcb2, &x, 0);
++	/* x.v is no longer map value, but verifier thinks so */
++	return x.v->data;
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.34.1
 
