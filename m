@@ -2,71 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00CF1594E7A
-	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 04:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5AE4594E80
+	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 04:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240567AbiHPCIV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Aug 2022 22:08:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34474 "EHLO
+        id S241033AbiHPCJx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Aug 2022 22:09:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233436AbiHPCHx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Aug 2022 22:07:53 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E47AE10E7A1;
-        Mon, 15 Aug 2022 15:00:02 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id y3so11202754eda.6;
-        Mon, 15 Aug 2022 15:00:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=T3BNXnM8/uSXVm7gYnNlnagKr/r09Wg9R1KlljM+2MI=;
-        b=Ru+YRuUfY4mqjyaatb7nZlVXi+2e4yAddoTV+qYz70z9AsblRHunci931h5+VVqL8q
-         xYFTQGRQywswIpVid50GCCRKELYsMCMIcpgsXT34sYX42AQOByUpmBG5oIUlKWD0Pn86
-         pGonC4R1iZMkbYDLcMkgTjE0zlkk7Fg+KotGF61lrCDtZsud8W1hsWVMoaCwKjQLgcCC
-         CFMtEZqdlDf3S+lQZz7UdCoNTb0mylVkYS0Y81KVYbnsSrLggG86u+lz30jkuOOVlujF
-         F2lRzrdsV5Vnh5gbyQrfyBegB4qQceqXOXygo7bO2q/I4Ywx32azEfYAY1drn/laqwEq
-         zsMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=T3BNXnM8/uSXVm7gYnNlnagKr/r09Wg9R1KlljM+2MI=;
-        b=Kl/YqiXQrOnkMQDOFaysuAgqMJpnauWhxY8xAExJ8d9GjqCLBS/PBUloiiJAkjrEzk
-         rZ010J3EJ6PeIq7OgctH9m1NxH4wKmGIrTsTkYkGonzKOWAmFYspM9gxYqxolrxLBsD3
-         xxQ+lc43I8FPo1HZ8hPQiiGxX69GGZdPlvKAz8T3iOcLhCaAo/xy27s+wob8hPcLZ+8V
-         +izVS+oPt0TeblPQzlsfFQAeyxn9YJ7bOEtRVBRIHdVQwQKjl7pVUzshnh9AxQo66YzO
-         uPcl3wi9ZUftjStiGQrorq0skmPqq6/38a89/iLKNXhAODU8cjMVAqL9jQb4UkbR+aDg
-         da9g==
-X-Gm-Message-State: ACgBeo06bNcVGpfYAp2fEqg3L26kY8jplF7pXaZET11xbbAKK/hN5sv1
-        mQvF5RJ4r+1+OaRcpQDYJGZ2m7iEUSlU7Dg5prs=
-X-Google-Smtp-Source: AA6agR4Xpty0a0xX36T/oYkX/50SCihLUbIHHrh4aJgB/OVvGj11f25UJ08jEFHcYWKLZnRnU5RJZtHmYKRi44b2rx4=
-X-Received: by 2002:a50:ed82:0:b0:43d:5334:9d19 with SMTP id
- h2-20020a50ed82000000b0043d53349d19mr16025224edr.232.1660600801439; Mon, 15
- Aug 2022 15:00:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220813000936.6464-1-liuhangbin@gmail.com> <a3c23cfe-061a-1722-8521-26e57b4b2cf4@isovalent.com>
-In-Reply-To: <a3c23cfe-061a-1722-8521-26e57b4b2cf4@isovalent.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 15 Aug 2022 14:59:50 -0700
-Message-ID: <CAEf4BzbXehQtWnocp5KnArd0dq-Wg0ddPOyJZCwGPLO_L7wByg@mail.gmail.com>
-Subject: Re: [PATCHv2 bpf-next] libbpf: making bpf_prog_load() ignore name if
- kernel doesn't support
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Hangbin Liu <liuhangbin@gmail.com>, netdev@vger.kernel.org,
-        Andrii Nakryiko <andrii@kernel.org>,
+        with ESMTP id S241251AbiHPCJ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Aug 2022 22:09:29 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E173722F1F2;
+        Mon, 15 Aug 2022 15:04:57 -0700 (PDT)
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1oNiCb-0002dT-7C; Tue, 16 Aug 2022 00:04:53 +0200
+Received: from [85.1.206.226] (helo=linux-4.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1oNiCa-000N3M-Tl; Tue, 16 Aug 2022 00:04:52 +0200
+Subject: Re: [PATCH v3 bpf-next 00/15] bpf: net: Remove duplicated code from
+ bpf_setsockopt()
+To:     sdf@google.com, Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        Andrii Nakryiko <andrii@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, kernel-team@fb.com,
+        Paolo Abeni <pabeni@redhat.com>
+References: <20220810190724.2692127-1-kafai@fb.com>
+ <YvU2md/W4YSlnkBH@google.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <1b791103-1f8d-bc08-3f65-7c1b2316e2c3@iogearbox.net>
+Date:   Tue, 16 Aug 2022 00:04:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <YvU2md/W4YSlnkBH@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.6/26628/Mon Aug 15 09:51:41 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,122 +57,70 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 15, 2022 at 8:36 AM Quentin Monnet <quentin@isovalent.com> wrote:
->
-> On 13/08/2022 01:09, Hangbin Liu wrote:
-> > Similar with commit 10b62d6a38f7 ("libbpf: Add names for auxiliary maps"),
-> > let's make bpf_prog_load() also ignore name if kernel doesn't support
-> > program name.
-> >
-> > To achieve this, we need to call sys_bpf_prog_load() directly in
-> > probe_kern_prog_name() to avoid circular dependency. sys_bpf_prog_load()
-> > also need to be exported in the libbpf_internal.h file.
-> >
-> > Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-> > ---
-> > v2: move sys_bpf_prog_load definition to libbpf_internal.h. memset attr
-> >     to 0 specifically to aviod padding.
-> > ---
-> >  tools/lib/bpf/bpf.c             |  6 ++----
-> >  tools/lib/bpf/libbpf.c          | 12 ++++++++++--
-> >  tools/lib/bpf/libbpf_internal.h |  3 +++
-> >  3 files changed, 15 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> > index 6a96e665dc5d..575867d69496 100644
-> > --- a/tools/lib/bpf/bpf.c
-> > +++ b/tools/lib/bpf/bpf.c
-> > @@ -84,9 +84,7 @@ static inline int sys_bpf_fd(enum bpf_cmd cmd, union bpf_attr *attr,
-> >       return ensure_good_fd(fd);
-> >  }
-> >
-> > -#define PROG_LOAD_ATTEMPTS 5
-> > -
-> > -static inline int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts)
-> > +int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts)
-> >  {
-> >       int fd;
-> >
-> > @@ -263,7 +261,7 @@ int bpf_prog_load(enum bpf_prog_type prog_type,
-> >       attr.prog_ifindex = OPTS_GET(opts, prog_ifindex, 0);
-> >       attr.kern_version = OPTS_GET(opts, kern_version, 0);
-> >
-> > -     if (prog_name)
-> > +     if (prog_name && kernel_supports(NULL, FEAT_PROG_NAME))
-> >               libbpf_strlcpy(attr.prog_name, prog_name, sizeof(attr.prog_name));
-> >       attr.license = ptr_to_u64(license);
-> >
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index 3f01f5cd8a4c..4a351897bdcc 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -4419,10 +4419,18 @@ static int probe_kern_prog_name(void)
-> >               BPF_MOV64_IMM(BPF_REG_0, 0),
-> >               BPF_EXIT_INSN(),
-> >       };
-> > -     int ret, insn_cnt = ARRAY_SIZE(insns);
-> > +     union bpf_attr attr;
-> > +     int ret;
-> > +
-> > +     memset(&attr, 0, sizeof(attr));
-> > +     attr.prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
-> > +     attr.license = ptr_to_u64("GPL");
-> > +     attr.insns = ptr_to_u64(insns);
-> > +     attr.insn_cnt = (__u32)ARRAY_SIZE(insns);
-> > +     libbpf_strlcpy(attr.prog_name, "test", sizeof(attr.prog_name));
-> >
-> >       /* make sure loading with name works */
-> > -     ret = bpf_prog_load(BPF_PROG_TYPE_SOCKET_FILTER, "test", "GPL", insns, insn_cnt, NULL);
-> > +     ret = sys_bpf_prog_load(&attr, sizeof(attr), PROG_LOAD_ATTEMPTS);
-> >       return probe_fd(ret);
-> >  }
-> >
-> > diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-> > index 4135ae0a2bc3..377642ff51fc 100644
-> > --- a/tools/lib/bpf/libbpf_internal.h
-> > +++ b/tools/lib/bpf/libbpf_internal.h
-> > @@ -573,4 +573,7 @@ static inline bool is_pow_of_2(size_t x)
-> >       return x && (x & (x - 1)) == 0;
-> >  }
-> >
-> > +#define PROG_LOAD_ATTEMPTS 5
-> > +int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts);
-> > +
-> >  #endif /* __LIBBPF_LIBBPF_INTERNAL_H */
->
-> Looks good to me, thanks!
->
-> Acked-by: Quentin Monnet <quentin@isovalent.com>
+On 8/11/22 7:04 PM, sdf@google.com wrote:
+> On 08/10, Martin KaFai Lau wrote:
+>> The code in bpf_setsockopt() is mostly a copy-and-paste from
+>> the sock_setsockopt(), do_tcp_setsockopt(), do_ipv6_setsockopt(),
+>> and do_ip_setsockopt().  As the allowed optnames in bpf_setsockopt()
+>> grows, so are the duplicated code.  The code between the copies
+>> also slowly drifted.
+> 
+>> This set is an effort to clean this up and reuse the existing
+>> {sock,do_tcp,do_ipv6,do_ip}_setsockopt() as much as possible.
+> 
+>> After the clean up, this set also adds a few allowed optnames
+>> that we need to the bpf_setsockopt().
+> 
+>> The initial attempt was to clean up both bpf_setsockopt() and
+>> bpf_getsockopt() together.  However, the patch set was getting
+>> too long.  It is beneficial to leave the bpf_getsockopt()
+>> out for another patch set.  Thus, this set is focusing
+>> on the bpf_setsockopt().
+> 
+>> v3:
+>> - s/in_bpf/has_current_bpf_ctx/ (Andrii)
+>> - Add comments to has_current_bpf_ctx() and sockopt_lock_sock()
+>>    (Stanislav)
+>> - Use vmlinux.h in selftest and add defines to bpf_tracing_net.h
+>>    (Stanislav)
+>> - Use bpf_getsockopt(SO_MARK) in selftest (Stanislav)
+>> - Use BPF_CORE_READ_BITFIELD in selftest (Yonghong)
+> 
+> Reviewed-by: Stanislav Fomichev <sdf@google.com>
+> 
+> (I didn't go super deep on the selftest)
 
-I did a small adjustment to not fill out entire big bpf_attr union
-completely (and added a bit more meaningful "libbpf_nametest" prog
-name):
+Looks like that one throws a build error, fwiw:
 
-$ git diff --staged
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 4a351897bdcc..f05dd61a8a7f 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -4415,6 +4415,7 @@ static int probe_fd(int fd)
+https://github.com/kernel-patches/bpf/runs/7844497492?check_suite_focus=true
 
- static int probe_kern_prog_name(void)
- {
-+       const size_t attr_sz = offsetofend(union bpf_attr, prog_name);
-        struct bpf_insn insns[] = {
-                BPF_MOV64_IMM(BPF_REG_0, 0),
-                BPF_EXIT_INSN(),
-@@ -4422,12 +4423,12 @@ static int probe_kern_prog_name(void)
-        union bpf_attr attr;
-        int ret;
-
--       memset(&attr, 0, sizeof(attr));
-+       memset(&attr, 0, attr_sz);
-        attr.prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
-        attr.license = ptr_to_u64("GPL");
-        attr.insns = ptr_to_u64(insns);
-        attr.insn_cnt = (__u32)ARRAY_SIZE(insns);
--       libbpf_strlcpy(attr.prog_name, "test", sizeof(attr.prog_name));
-+       libbpf_strlcpy(attr.prog_name, "libbpf_nametest",
-sizeof(attr.prog_name));
-
-Pushed to bpf-next, thanks!
+   [...]
+     CLNG-BPF [test_maps] kfunc_call_test_subprog.o
+     CLNG-BPF [test_maps] bpf_iter_test_kern6.o
+   progs/setget_sockopt.c:39:33: error: implicit truncation from 'int' to bit-field changes value from 1 to -1 [-Werror,-Wbitfield-constant-conversion]
+           { .opt = SO_REUSEADDR, .flip = 1, },
+                                          ^
+   progs/setget_sockopt.c:42:33: error: implicit truncation from 'int' to bit-field changes value from 1 to -1 [-Werror,-Wbitfield-constant-conversion]
+           { .opt = SO_KEEPALIVE, .flip = 1, },
+                                          ^
+   progs/setget_sockopt.c:44:33: error: implicit truncation from 'int' to bit-field changes value from 1 to -1 [-Werror,-Wbitfield-constant-conversion]
+           { .opt = SO_REUSEPORT, .flip = 1, },
+                                          ^
+     CLNG-BPF [test_maps] btf__core_reloc_type_id.o
+   progs/setget_sockopt.c:48:32: error: implicit truncation from 'int' to bit-field changes value from 1 to -1 [-Werror,-Wbitfield-constant-conversion]
+           { .opt = SO_TXREHASH, .flip = 1, },
+                                         ^
+   progs/setget_sockopt.c:53:32: error: implicit truncation from 'int' to bit-field changes value from 1 to -1 [-Werror,-Wbitfield-constant-conversion]
+           { .opt = TCP_NODELAY, .flip = 1, },
+                                         ^
+   progs/setget_sockopt.c:61:45: error: implicit truncation from 'int' to bit-field changes value from 1 to -1 [-Werror,-Wbitfield-constant-conversion]
+           { .opt = TCP_THIN_LINEAR_TIMEOUTS, .flip = 1, },
+                                                      ^
+   progs/setget_sockopt.c:75:39: error: implicit truncation from 'int' to bit-field changes value from 1 to -1 [-Werror,-Wbitfield-constant-conversion]
+           { .opt = IPV6_AUTOFLOWLABEL, .flip = 1, },
+                                                ^
+   7 errors generated.
+   make: *** [Makefile:521: /tmp/runner/work/bpf/bpf/tools/testing/selftests/bpf/setget_sockopt.o] Error 1
+   make: *** Waiting for unfinished jobs....
+   make: Leaving directory '/tmp/runner/work/bpf/bpf/tools/testing/selftests/bpf'
+   Error: Process completed with exit code 2.
