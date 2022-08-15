@@ -2,167 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E771593205
-	for <lists+bpf@lfdr.de>; Mon, 15 Aug 2022 17:36:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA60559320F
+	for <lists+bpf@lfdr.de>; Mon, 15 Aug 2022 17:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229918AbiHOPgL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Aug 2022 11:36:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52034 "EHLO
+        id S232630AbiHOPgR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Aug 2022 11:36:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231318AbiHOPgF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Aug 2022 11:36:05 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FDED12AC1
-        for <bpf@vger.kernel.org>; Mon, 15 Aug 2022 08:36:04 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 186-20020a1c02c3000000b003a34ac64bdfso7964683wmc.1
-        for <bpf@vger.kernel.org>; Mon, 15 Aug 2022 08:36:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc;
-        bh=aLIgBOFDINfwWT7sgtqg5VHJeqaHc1mZmgglPh0sAyY=;
-        b=cyPux8RNKFujd9roQpwDZOASW6ijxYgslOXdJqm0R8g26Zi+cI2KkwRECN+52orxyE
-         9Zajuq+yuut4empWdcY3rREB4/K16QGTjzy7oXSanZwPZ38kiaBtECuBaxHV2Al1ZfjB
-         9et+JqHCutUlrmNuWXKYwzOKsF3lC7Ryr7L6uZDBCUs+HHVqp3bnojSOvkNOL+rrkXwG
-         C3LlmbixIKyTCijnk4mDaUHQl+CbVxICM4rBfZ6rsMKiJfXTa67r1jTDXqq7EBiBlksa
-         G3RQfHlT+XrmF8Xe3DpJE9Ki3cOeFnEwLboUEr2D94+0v9YwTYQCWzMuIj6/ZV7VTpIx
-         LXjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc;
-        bh=aLIgBOFDINfwWT7sgtqg5VHJeqaHc1mZmgglPh0sAyY=;
-        b=cDS+sPSGK5+j1o6ybd7YR0rnfiS1IEEWwps1fjEMQk3LBbSSNh2EnwlB92R5F5MI1p
-         q2hPvkcqSfahVMirgxntjsoUCR7tpn2+TP2baZB8wkecvJaer43/svO2hIDLJUEHsL9T
-         PEA8Vzs2M6zKuBex1XXmuOL7UKnemqqrRhWAA7tb3ipjMICQYvvoU0pFERkhcq7HFLQt
-         PM9XcM1ENLb1GZOhjYw50UHF47yTsMBZ9qxQvM1T9PlI9aWI1PElyOSTLiYfzLwsC5w1
-         FJpXaF2PPoN688cUObBYy3o/ry3C4iihPilNhygmbwX8voDtcy4ws0kr6h+Dx7bSBzlQ
-         xCJg==
-X-Gm-Message-State: ACgBeo0mtj79eVD6dMsjhvtH4pTdomkxeYDsF7wFlfV2QXi8XjaOxGu0
-        p8FCla/hQsuQBd1KJbxOdFvJQ8TCUNJqZg==
-X-Google-Smtp-Source: AA6agR6xIRa3yxAc16EqQ9DGTpZo2oUf/GBOyk4W5fy5KqhiMZ4slGdnFP3TOOY7UKY3cY4CQipzug==
-X-Received: by 2002:a05:600c:b4b:b0:3a5:b76e:1350 with SMTP id k11-20020a05600c0b4b00b003a5b76e1350mr10524905wmr.108.1660577762827;
-        Mon, 15 Aug 2022 08:36:02 -0700 (PDT)
-Received: from [192.168.178.32] ([51.155.200.13])
-        by smtp.gmail.com with ESMTPSA id j3-20020a5d5643000000b0021f138e07acsm7689668wrw.35.2022.08.15.08.36.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Aug 2022 08:36:02 -0700 (PDT)
-Message-ID: <a3c23cfe-061a-1722-8521-26e57b4b2cf4@isovalent.com>
-Date:   Mon, 15 Aug 2022 16:36:01 +0100
+        with ESMTP id S232234AbiHOPgM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Aug 2022 11:36:12 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2371B13D39
+        for <bpf@vger.kernel.org>; Mon, 15 Aug 2022 08:36:12 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 73F74CE112D
+        for <bpf@vger.kernel.org>; Mon, 15 Aug 2022 15:36:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B27BFC433C1;
+        Mon, 15 Aug 2022 15:36:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1660577768;
+        bh=mGAY0UJmcFjtex+2QDap/OmBluoeoKaXalX+KShTAww=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=fQEGKsZ52hRcRH3CsV9jb9F6oQQRbhDohvS87mzp6YpsSyUKznPCoYxsq7lBDr5cM
+         yS23j1zYUxOM85KoYdWCg3lQXHYkrA9bh7QrIXdMrZuVZIdoGnx07cSK4omnav8SFd
+         UPbTFirD7GkeGE+G8NltpAdqx07iu70TNfQZ6O24SbZYHzVosTfKk3f15cZR4KVklS
+         gUl1OBDGblDn09OcyDzwO4rWoPHovdNJYwgMp7zeI0UEpj80GL0I7pyy2lu05iLOcP
+         St+wY4d5lmM6TWRhHFCmarxGQ/tGdwpib1FdTPebuM+wOk74aY2k8zHeU10X/DfC/v
+         cbNhjTjjjwu3A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9C4D4E2A050;
+        Mon, 15 Aug 2022 15:36:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCHv2 bpf-next] libbpf: making bpf_prog_load() ignore name if
- kernel doesn't support
-Content-Language: en-GB
-To:     Hangbin Liu <liuhangbin@gmail.com>, netdev@vger.kernel.org
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org
-References: <20220813000936.6464-1-liuhangbin@gmail.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <20220813000936.6464-1-liuhangbin@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] bpf: Clear up confusion in bpf_skb_adjust_room()'s
+ documentation
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <166057776863.2541.17985979200763729909.git-patchwork-notify@kernel.org>
+Date:   Mon, 15 Aug 2022 15:36:08 +0000
+References: <20220812153727.224500-3-quentin@isovalent.com>
+In-Reply-To: <20220812153727.224500-3-quentin@isovalent.com>
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+        rumen.telbizov@menlosecurity.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 13/08/2022 01:09, Hangbin Liu wrote:
-> Similar with commit 10b62d6a38f7 ("libbpf: Add names for auxiliary maps"),
-> let's make bpf_prog_load() also ignore name if kernel doesn't support
-> program name.
-> 
-> To achieve this, we need to call sys_bpf_prog_load() directly in
-> probe_kern_prog_name() to avoid circular dependency. sys_bpf_prog_load()
-> also need to be exported in the libbpf_internal.h file.
-> 
-> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-> ---
-> v2: move sys_bpf_prog_load definition to libbpf_internal.h. memset attr
->     to 0 specifically to aviod padding.
-> ---
->  tools/lib/bpf/bpf.c             |  6 ++----
->  tools/lib/bpf/libbpf.c          | 12 ++++++++++--
->  tools/lib/bpf/libbpf_internal.h |  3 +++
->  3 files changed, 15 insertions(+), 6 deletions(-)
-> 
-> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> index 6a96e665dc5d..575867d69496 100644
-> --- a/tools/lib/bpf/bpf.c
-> +++ b/tools/lib/bpf/bpf.c
-> @@ -84,9 +84,7 @@ static inline int sys_bpf_fd(enum bpf_cmd cmd, union bpf_attr *attr,
->  	return ensure_good_fd(fd);
->  }
->  
-> -#define PROG_LOAD_ATTEMPTS 5
-> -
-> -static inline int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts)
-> +int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts)
->  {
->  	int fd;
->  
-> @@ -263,7 +261,7 @@ int bpf_prog_load(enum bpf_prog_type prog_type,
->  	attr.prog_ifindex = OPTS_GET(opts, prog_ifindex, 0);
->  	attr.kern_version = OPTS_GET(opts, kern_version, 0);
->  
-> -	if (prog_name)
-> +	if (prog_name && kernel_supports(NULL, FEAT_PROG_NAME))
->  		libbpf_strlcpy(attr.prog_name, prog_name, sizeof(attr.prog_name));
->  	attr.license = ptr_to_u64(license);
->  
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 3f01f5cd8a4c..4a351897bdcc 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -4419,10 +4419,18 @@ static int probe_kern_prog_name(void)
->  		BPF_MOV64_IMM(BPF_REG_0, 0),
->  		BPF_EXIT_INSN(),
->  	};
-> -	int ret, insn_cnt = ARRAY_SIZE(insns);
-> +	union bpf_attr attr;
-> +	int ret;
-> +
-> +	memset(&attr, 0, sizeof(attr));
-> +	attr.prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
-> +	attr.license = ptr_to_u64("GPL");
-> +	attr.insns = ptr_to_u64(insns);
-> +	attr.insn_cnt = (__u32)ARRAY_SIZE(insns);
-> +	libbpf_strlcpy(attr.prog_name, "test", sizeof(attr.prog_name));
->  
->  	/* make sure loading with name works */
-> -	ret = bpf_prog_load(BPF_PROG_TYPE_SOCKET_FILTER, "test", "GPL", insns, insn_cnt, NULL);
-> +	ret = sys_bpf_prog_load(&attr, sizeof(attr), PROG_LOAD_ATTEMPTS);
->  	return probe_fd(ret);
->  }
->  
-> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-> index 4135ae0a2bc3..377642ff51fc 100644
-> --- a/tools/lib/bpf/libbpf_internal.h
-> +++ b/tools/lib/bpf/libbpf_internal.h
-> @@ -573,4 +573,7 @@ static inline bool is_pow_of_2(size_t x)
->  	return x && (x & (x - 1)) == 0;
->  }
->  
-> +#define PROG_LOAD_ATTEMPTS 5
-> +int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts);
-> +
->  #endif /* __LIBBPF_LIBBPF_INTERNAL_H */
+Hello:
 
-Looks good to me, thanks!
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-Acked-by: Quentin Monnet <quentin@isovalent.com>
+On Fri, 12 Aug 2022 16:37:27 +0100 you wrote:
+> Adding or removing room space _below_ layers 2 or 3, as the description
+> mentions, is ambiguous. This was written with a mental image of the
+> packet with layer 2 at the top, layer 3 under it, and so on. But it has
+> led users to believe that it was on lower layers (before the beginning
+> of the L2 and L3 headers respectively).
+> 
+> Let's make it more explicit, and specify between which layers the room
+> space is adjusted.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next] bpf: Clear up confusion in bpf_skb_adjust_room()'s documentation
+    https://git.kernel.org/bpf/bpf-next/c/4961d0772578
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
