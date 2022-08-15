@@ -2,114 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7DB3594E56
-	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 03:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDF2B594E78
+	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 04:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237962AbiHPB7E (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Aug 2022 21:59:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53432 "EHLO
+        id S239994AbiHPCH0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Aug 2022 22:07:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233454AbiHPB6l (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Aug 2022 21:58:41 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 714F8106B2C;
-        Mon, 15 Aug 2022 14:52:37 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id w19so15724789ejc.7;
-        Mon, 15 Aug 2022 14:52:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=bWWfdQ1fZAta1+VTRIUNVvKhFu0nb8tEZm/qx3ccvwQ=;
-        b=gMMsNDgAfR3K/kxdlQnHJVEHkeY6aMHWEOiekL+yQtlq1PV4ENY5ZVqeya+0hoGUEV
-         XJraAAmxmMXvqsg0S5gzez+uweUIuY92YzrdO7TTZegDsIaUP1vEjPdvILtxoMZbytWo
-         M2BnOqqKyT8sANIw6rCUUK8RKiQ2KuEPZZLwPI4D1HepWXtB8qWrr+gVtlBWkcC9YdLi
-         joG2kl6qRIK3caOiIgi8Djyy9r12b+aGprexYd+aimOyvKzVAKVm+j/v4faS+u0x4RSe
-         WpL8vospzU1l+kWdNrTbxopLCFMogim4YF03tJfAJQEwGC/MQsWKhXmHOPjQaHANvya2
-         yBtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=bWWfdQ1fZAta1+VTRIUNVvKhFu0nb8tEZm/qx3ccvwQ=;
-        b=6yHhJDYjBR3G9IVnqt2zP3tmVGbXia3e7WEIhrmnMkcu63/2rFECrEwCw+fEnLHCLp
-         ojI/kQxt+Nm5+QqPq/3bZrRV1c4qh0+qbXq6dngYWoJ5za7SKZR2BzKoAeJTldOc8f5G
-         f0xIuv3d200h0SYMKY20r2gWAkpEtMsxTqDYjm68axpHh1QpuJHuKiQ3Fud5DshyRhGB
-         GzwW4s5Kf294+OMRrRECPafU1ti927UYy06COu0W851i3vz0cJcNma2JDK7h5IXZljRt
-         whmN3VbB4ZOz64684YjMcU/sdwfj421fxGkNWz2Z2w5mfvswSWju1Qsh7HCN8/oSwFDB
-         dqLg==
-X-Gm-Message-State: ACgBeo05yjoAFXTT7VtFXUVqFjKt7G4ics7Wt0iwWpYbl6xKmUbYCWoe
-        U01JkXg45I207TYG2sQWHopzSzF2K4kH/dqrfsE=
-X-Google-Smtp-Source: AA6agR5yqc2mW5seoudCFFq9KdHmFHSX/7+isPGDgfz+q+1vriBOt1xoCZ++g1brGIsorwxjXXXf7/sEKshUziqGv+g=
-X-Received: by 2002:a17:907:6e22:b0:731:152:2504 with SMTP id
- sd34-20020a1709076e2200b0073101522504mr11895143ejc.545.1660600353588; Mon, 15
- Aug 2022 14:52:33 -0700 (PDT)
+        with ESMTP id S240287AbiHPCHC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Aug 2022 22:07:02 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B04B1E3991
+        for <bpf@vger.kernel.org>; Mon, 15 Aug 2022 14:58:21 -0700 (PDT)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27FIc4Ct018240;
+        Mon, 15 Aug 2022 14:58:00 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=pwg5Zte/JTHm6Wc4CIc6RQPV4Lr2XuKkhWR7IUvtGgY=;
+ b=HBLSDPmK1GNeHi5zMYWm+6w/3MY6As+2nrGEe6ZMN+cen2LHzxRW9K0ZwQV/sSomQFDy
+ uHD2KDykKXsyRBgxSKu+WUH2qTVdt89ot1tQGj8RX59Xx3i4mMbc3MQ7xcKdgQoS4wzj
+ yOHF1T2XEu1EBTipuaTTYisJ3u1ZjY2CQzk= 
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hx9fynr0q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 15 Aug 2022 14:58:00 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jzwfoJYuKbvaA3XkdbCaAKLJF9UqsxThovXgtd9wCWE6DcTvo6iozWLkLpWzjTBfBZh3etw5VKEvp/JBtC7P5aVRBw5b9Y+4T1sQfzucI2A+DgTToW0ckB+OXFTohB9uKSuVw+k3i4s8XdeRzWjeCT1ZgYIW42bfLm4Tmu0DVVgkCiBaAGfAvmZGrPmMnURkbHllWTl3iFJqraArcPohWSjkQo3DwMH6wz2qBAfpoy1up77LHnVqKjLB9bVe//fuUvjlfIWSHZkVY/HuqsKeTmxUyvHOw52aWkfOVmH3jUlO5kf1oPRnUbnjTFMwRsW0L5Hfdet/K3Mw4jQFkT37Bg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pwg5Zte/JTHm6Wc4CIc6RQPV4Lr2XuKkhWR7IUvtGgY=;
+ b=VEWOjtQXQLuQco6tf01ftG/E6bnxK2RdOHG5bztpXfYTbNrQwbYrh7OdIQwlAa7ldksz8XKA/JK2to2mwIkYBhB6VhKABIGb7rCMH5wmogwk6CIDnVvWRjJyp2Z0LIiYxlvCkSPgfcjZ8zrQe6OjtJpqqokJh4XwyiX6SdkUrccT89cu4Ssn9IDb3NUd9D3Q7vI5ex1xcyANENl6DnhDKw2dOuFWuZkIzZlhCvRLRmLYCDTvJOOFzpBjGirTSc3OCvXN/ZL71Oq/eZA8APXyhZWCw7/5xRr6RiiTGYld62P7ckxjOtjYPbgjg8FG64+cfXU6KdTUT0EfzwvvF4SidQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from MW4PR15MB4475.namprd15.prod.outlook.com (2603:10b6:303:104::16)
+ by DM6PR15MB2651.namprd15.prod.outlook.com (2603:10b6:5:1a3::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5525.10; Mon, 15 Aug
+ 2022 21:57:57 +0000
+Received: from MW4PR15MB4475.namprd15.prod.outlook.com
+ ([fe80::5455:4e3f:a5a2:6a9e]) by MW4PR15MB4475.namprd15.prod.outlook.com
+ ([fe80::5455:4e3f:a5a2:6a9e%4]) with mapi id 15.20.5525.011; Mon, 15 Aug 2022
+ 21:57:56 +0000
+Date:   Mon, 15 Aug 2022 14:57:55 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        haoluo@google.com, jolsa@kernel.org
+Subject: Re: [PATCH bpf-next 2/3] bpf: use cgroup_{common,current}_func_proto
+ in more hooks
+Message-ID: <20220815215755.mzf456mgv3tx4vfe@kafai-mbp>
+References: <20220812190241.3544528-1-sdf@google.com>
+ <20220812190241.3544528-3-sdf@google.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220812190241.3544528-3-sdf@google.com>
+X-ClientProxiedBy: BY5PR04CA0019.namprd04.prod.outlook.com
+ (2603:10b6:a03:1d0::29) To MW4PR15MB4475.namprd15.prod.outlook.com
+ (2603:10b6:303:104::16)
 MIME-Version: 1.0
-References: <20220810171702.74932-1-flaniel@linux.microsoft.com> <20220810171702.74932-2-flaniel@linux.microsoft.com>
-In-Reply-To: <20220810171702.74932-2-flaniel@linux.microsoft.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 15 Aug 2022 14:52:22 -0700
-Message-ID: <CAEf4BzYex03T7aYjLnbkfHb8vUsCHhj_DiMU6KbK29F+DyhXyA@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 1/3] bpf: Make ring buffer overwritable.
-To:     Francis Laniel <flaniel@linux.microsoft.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Joanne Koong <joannelkoong@gmail.com>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Geliang Tang <geliang.tang@suse.com>,
-        Hengqi Chen <hengqi.chen@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4961f178-87ff-438d-2afb-08da7f0935f0
+X-MS-TrafficTypeDiagnostic: DM6PR15MB2651:EE_
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dmzj4Fe0/j/mp4ARBePJzbqprq0rgY4L9rCilFgwv1GrLPcqDLzKgkWdU5v3ZF4W9pT1akiASiInH8TcM8wQL+bJSqlkU1I8pYikDovugJhejDBDelr9Y0e5iljsJpd+AdcvYGt3rh5E+esHDdosa1npcQNzrKYzJv3Je3HLScsD+lzEsna5ZJDdwpDkRlqlCtuVd1oh6LEGxeUKyoWnSmiy0M3VKFYcUCoe74eUkwml00yKDUhVoBrGSumq7ohWAzSDMQpSAkfp/xvJXwOk1vOCaN5giBRkCg4sfZYbDaGHLmaU/ebrP8vN7Idrt7gPFuMKtwBnSpgMTBElxnvqGA1zsr2jJ+/Q73yQiUJXrlOtKBzFNygWoZN/GRF9HLjegqbGhC24QQMsI146KgPl+WfwGW6MlvKRpIRq1dYAVV/Z21c5RhTvWE0KU8NBTfF9SgHHhwWwL3iX6yw7T0ToW9Wo157M149h/B4fHCRgATZOs7R7yf57fLGQh9n/4eq0SGxcrJYBRCc4C/wku+QMYY5q18XhM1G9aL20Z1PSHywwuk+v00eCQSbESCcA6IZbJ2mjomICZaQGbnCYmdw6lZxFC3DRMNl2YEMvXH+9LWCPsi2xwHVIDWVtKDX9cFpxAt4GXfTU71OctYee9ekt14wztufxJnFzp4imn0cWNGZN3lWS23MR6dIYhYWz/D1AeJyBOsH5m9jCvJVJk9oEPALyPu8kdAbiC3Cogu/nyjGMO3H2VqSeNjB3lpGfBZj0
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4475.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(7916004)(346002)(39860400002)(366004)(136003)(396003)(376002)(6506007)(86362001)(41300700001)(9686003)(6512007)(52116002)(478600001)(1076003)(186003)(6486002)(33716001)(316002)(66946007)(6916009)(66556008)(66476007)(8676002)(4326008)(5660300002)(38100700002)(8936002)(7416002)(2906002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?K0bmDZh3ZOIDmzkqWVdG7+6Bj83mq14XznLkHszEnyCqaOEByhOev8caDepX?=
+ =?us-ascii?Q?4WtV/1xggHwxtKW4BGYT9ILVOMbdppC32+Ue4S4CZ/ZFrfw/5QFWNMncbwHQ?=
+ =?us-ascii?Q?KjQF2mUCBkgoDO71OnZ2Ddt8e8rQpEubOxNzWjEEq5n6q+77J2WP5BOrWG8J?=
+ =?us-ascii?Q?pUB6FiKA702pvmNh0+4E2ZtlgcJdiWatgFOE2WtNfuFCbla6A2vZGeBO8LPF?=
+ =?us-ascii?Q?C1sU3RcGGFfmiRq0oznaojAqpN/KyCrZ8dcrCByHrw/iR/3gtvjWDpT25gZF?=
+ =?us-ascii?Q?xLQyah9xzPyAeHhGozix8aZ1A7OfP9ncaueOcKmIZFm3D+QqeYX5j2Cb1t/g?=
+ =?us-ascii?Q?Aq04y60nTq0nbObmCsxzSZdnrtPTnD2N+7W+GxFrDyLIxF8g9rDcvE1wc5/L?=
+ =?us-ascii?Q?Iqf6AGmwghzN3oknEbzdu8ULIdujfbdE+7ZF8d3HiIxDhOJPhw+rJBp6GPCK?=
+ =?us-ascii?Q?Jk9GGqXI15GNu3ewHcOQUGTXRWh/qgqOJlFswSaZmzo3lj6gzN6O499PEHv0?=
+ =?us-ascii?Q?BaRC2JQDI+GrDc6QrdYBl+wQb4qtedAS3BKBu/KoFTpodK9b4U7Ahjc0Y9mm?=
+ =?us-ascii?Q?8yvV097gyk0VaESGSkv/UhnwicwwYISxfCuzTW1D0VNImpkVk6Bful58yx5B?=
+ =?us-ascii?Q?F9Mf9WhZ5ob+bU/ILR8Tx/w5qqaHJmlbJqzKLvggw/xY/u6cCpb9wGdsoieK?=
+ =?us-ascii?Q?ty8VvA8jlZ4YYYH9h6qyG0XqQNfwyYcGlDBxiDy7jp8unJ0vf/o68EvWNmlc?=
+ =?us-ascii?Q?bChe7yV2Vp0UdJyy87fxG60PWchFCRz10RtfMVNDwnDkoX8bRIS33pLGjWO3?=
+ =?us-ascii?Q?kczCBKp2Ppah4B9rRVNDxNP780nPKzIdKCo3aCcK5+vQl7LAWwb6F1nxi+hK?=
+ =?us-ascii?Q?0nQIxQc0s8xYhj6EsmY+zhDA3iX2rXNtBTV1//1pjhju+JKMggG+EK6yXXKw?=
+ =?us-ascii?Q?MW1JUy7VpKxVzV2vdySI+0l2YsoWY/wMJDFmG8NsLdtsXA2gH/GiQqXWY4j1?=
+ =?us-ascii?Q?LUcNd8ipGgJHoHlCiVIlBA2nTA8AMX7XrQ/LhUOqENq/KnkRmtUfwd8L25lZ?=
+ =?us-ascii?Q?F5xVDbLpKksBJNMPs+y/0TT6xHPlr2xciAJIp2siHtGNINneiFbQ2xfvJUKT?=
+ =?us-ascii?Q?PaNMfdybQxWznXJ62N3AXPBcRU2spzjElRhEZebwPAp4Qb7H5U7iMuyQ//7L?=
+ =?us-ascii?Q?VBeNYYAU5wPLwSPCM8tapW6cqnLR29T3gtC4Vl30C0NAhXQE0wLX5JaENHF2?=
+ =?us-ascii?Q?og8Pn8qbjLTVpWq1w0Fpy3/WUAr+cX//Isy+serGeBrHKSnSNBXJfJZr89PX?=
+ =?us-ascii?Q?EqA/nlv+oIQFhdY2GgzNWD2GscVbs5xg86APSKH9ZjPRU9KeNHCIWoL2QKsL?=
+ =?us-ascii?Q?ry1UAFNr9XTXxaqVIKWYOknjGdGR8ZtTRHnj6ntNSdW45LXi0zfSGrxwjpLB?=
+ =?us-ascii?Q?lLYobUxR5pObm6V26nho0Nh2VEEgAc8sGNtybPSAaDQevbRCwM2SBTcGqrIk?=
+ =?us-ascii?Q?8TvZNrFjPVLUc1uLxWQEc1wY/vwqHpOXYrlzqSHs+VX9GjN364CfCs1rspL1?=
+ =?us-ascii?Q?Okk/utyqCvfw11fzc7jrJPQszU3PTx5umMUNEfGto5GRINKdb+lMEuqsmQ6g?=
+ =?us-ascii?Q?Lw=3D=3D?=
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4961f178-87ff-438d-2afb-08da7f0935f0
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4475.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Aug 2022 21:57:56.4742
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: h9UsnxINnCTc+V0x9l16ZCQFHUW7jVrV0BdUoRSBxGuzTMHCdq7l8i/K0sX4EkRz
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB2651
+X-Proofpoint-ORIG-GUID: NACKz5p6Ms7oj425Le7qnJecXwhk61eP
+X-Proofpoint-GUID: NACKz5p6Ms7oj425Le7qnJecXwhk61eP
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-08-15_08,2022-08-15_01,2022-06-22_01
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 10, 2022 at 10:18 AM Francis Laniel
-<flaniel@linux.microsoft.com> wrote:
->
-> By default, BPF ring buffer are size bounded, when producers already filled the
-> buffer, they need to wait for the consumer to get those data before adding new
-> ones.
-> In terms of API, bpf_ringbuf_reserve() returns NULL if the buffer is full.
->
-> This patch permits making BPF ring buffer overwritable.
-> When producers already wrote as many data as the buffer size, they will begin to
-> over write existing data, so the oldest will be replaced.
-> As a result, bpf_ringbuf_reserve() never returns NULL.
->
-
-Part of BPF ringbuf record (first 8 bytes) stores information like
-record size and offset in pages to the beginning of ringbuf map
-metadata. This is used by consumer to know how much data belongs to
-data record, but also for making sure that
-bpf_ringbuf_reserve()/bpf_ringbuf_submit() work correctly and don't
-corrupt kernel memory.
-
-If we simply allow overwriting this information (and no, spinlock
-doesn't protect from that, you can have multiple producers writing to
-different parts of ringbuf data area in parallel after "reserving"
-their respective records), it completely breaks any sort of
-correctness, both for user-space consumer and kernel-side producers.
-
-> Signed-off-by: Francis Laniel <flaniel@linux.microsoft.com>
-> ---
->  include/uapi/linux/bpf.h |  3 +++
->  kernel/bpf/ringbuf.c     | 51 +++++++++++++++++++++++++++++++---------
->  2 files changed, 43 insertions(+), 11 deletions(-)
->
-
-[...]
+On Fri, Aug 12, 2022 at 12:02:40PM -0700, Stanislav Fomichev wrote:
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index de7d2fabb06d..87ce47b13b22 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -1764,9 +1764,31 @@ cgroup_common_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>  	case BPF_FUNC_get_local_storage:
+>  		return &bpf_get_local_storage_proto;
+>  	case BPF_FUNC_get_retval:
+> -		return &bpf_get_retval_proto;
+> +		switch (prog->expected_attach_type) {
+> +		case BPF_CGROUP_SOCK_OPS:
+> +		case BPF_CGROUP_UDP4_RECVMSG:
+> +		case BPF_CGROUP_UDP6_RECVMSG:
+> +		case BPF_CGROUP_INET4_GETPEERNAME:
+> +		case BPF_CGROUP_INET6_GETPEERNAME:
+> +		case BPF_CGROUP_INET4_GETSOCKNAME:
+> +		case BPF_CGROUP_INET6_GETSOCKNAME:
+> +			return NULL;
+> +		default:
+> +			return &bpf_get_retval_proto;
+> +		}
+>  	case BPF_FUNC_set_retval:
+> -		return &bpf_set_retval_proto;
+> +		switch (prog->expected_attach_type) {
+> +		case BPF_CGROUP_SOCK_OPS:
+> +		case BPF_CGROUP_UDP4_RECVMSG:
+> +		case BPF_CGROUP_UDP6_RECVMSG:
+> +		case BPF_CGROUP_INET4_GETPEERNAME:
+> +		case BPF_CGROUP_INET6_GETPEERNAME:
+> +		case BPF_CGROUP_INET4_GETSOCKNAME:
+> +		case BPF_CGROUP_INET6_GETSOCKNAME:
+> +			return NULL;
+> +		default:
+> +			return &bpf_set_retval_proto;
+> +		}
+Does it make sense to have bpf_lsm_func_proto() calling
+cgroup_common_func_proto() also?
