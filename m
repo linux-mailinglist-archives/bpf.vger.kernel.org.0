@@ -2,137 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50DE0593312
-	for <lists+bpf@lfdr.de>; Mon, 15 Aug 2022 18:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E62059331A
+	for <lists+bpf@lfdr.de>; Mon, 15 Aug 2022 18:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233145AbiHOQY2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Aug 2022 12:24:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39534 "EHLO
+        id S234566AbiHOQZH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Aug 2022 12:25:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232514AbiHOQYO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Aug 2022 12:24:14 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51CF729CB8
-        for <bpf@vger.kernel.org>; Mon, 15 Aug 2022 09:22:13 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id m10-20020a05600c3b0a00b003a603fc3f81so173167wms.0
-        for <bpf@vger.kernel.org>; Mon, 15 Aug 2022 09:22:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc;
-        bh=4p2xt3j+BhLytyffk/lmb1GEEiuCcAsHYH43bZ+ctBs=;
-        b=JV5VaFP9fmG4kbi8Y5fQHcPf0cb9hLQaeOrJ8kocgVWqtmDJZPI4j1aYs2o18SFQN7
-         5GlJHnzbc5/rl/yJeAyt+EsNAZBe8UiEbEmP4zZE7qGhj6BbO93V0GEKiVJLtt3HG/eB
-         y6akcSOLvnFKe8h3zcv+wrg7cj6UYrNJ4nYGYZRwZTQSUuZh+hmkHAFaes4kjs62QGmw
-         jr9zJ543RUB67Ch7HS1A3Aakk6WEUav9YRjSmAODS4Hcw1lk+EyGLpAAlVuR3jmtTToU
-         25SyflFq3Vy80Skoa2icWZscB297EuEZg6SeJoWyDGAzpfVAU6t3uvAYvhpo9HbM09lU
-         p8gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc;
-        bh=4p2xt3j+BhLytyffk/lmb1GEEiuCcAsHYH43bZ+ctBs=;
-        b=sb7RZUiWa6RdWQB5CTe/PTkSGVDb0Ak1RxA8rcCh0Wr2JEqVbrd3CyKs/V9DtgZekA
-         yxSgdSCYDYKVNc4boQpOd3Gkvf0CLsbsO2Gk5pw9EoPB7+2DvUhBDbHwstUhn4s89FKI
-         LVvfUIU08Jk99NCadx2+b4jfbLaei82SCLs1fH+xJRasjUGGuvCdt0dKq28iIN6FWffM
-         R3Xljj99sDf+qil6lIvvo7kXl/CYJkuRXiPy5km83ScNJ/rAxpd1Sz4qgnIZIhOlaMnO
-         bXW91IIbeibzTGR/Bc5KO+Id/FtGe8s3J8QEjEOHAgMEKvyJ1N+RZqTdyo30ZyGbQhKV
-         4EzQ==
-X-Gm-Message-State: ACgBeo32pe+L16FuebST/zyI0VnpG17UUaClotajDilaCMiqAF6TJClX
-        iuFdTvHw5kBziANXKj/BOTKTQA==
-X-Google-Smtp-Source: AA6agR4jff+LCebNsywezXexMufeyOLRj/okct8dxgq1DsRZI4q58+KfOesLiehD6poGK3K/2mF+OA==
-X-Received: by 2002:a05:600c:27cb:b0:3a5:cd14:269d with SMTP id l11-20020a05600c27cb00b003a5cd14269dmr9766687wmb.128.1660580530739;
-        Mon, 15 Aug 2022 09:22:10 -0700 (PDT)
-Received: from harfang.fritz.box ([51.155.200.13])
-        by smtp.gmail.com with ESMTPSA id g7-20020a05600c4ec700b003a3170a7af9sm10269028wmq.4.2022.08.15.09.22.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Aug 2022 09:22:10 -0700 (PDT)
-From:   Quentin Monnet <quentin@isovalent.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next v2] bpftool: Clear errno after libcap's checks
-Date:   Mon, 15 Aug 2022 17:22:05 +0100
-Message-Id: <20220815162205.45043-1-quentin@isovalent.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S233178AbiHOQYy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Aug 2022 12:24:54 -0400
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB95C237D4
+        for <bpf@vger.kernel.org>; Mon, 15 Aug 2022 09:22:45 -0700 (PDT)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id 8430D240106
+        for <bpf@vger.kernel.org>; Mon, 15 Aug 2022 18:22:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1660580562; bh=8cGb0tGMTUr7aYZYRErGqjYF93EXWmZWACaf8PVKdlk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Vw+w5Bf0GCOe6almLc4jUmkz5H6QtQprOieEFee5V7NDSGA18FKjJ0FNQ48kR9U2o
+         3MFAjJkXds7I5vSnFz8eKCcyYUa/mbpl2gL9c0g3Lz0lBAKAH/f162w9O2/CTXeD+n
+         1aVKlm5N4xId/MFsp60uOyC8pOuEwAEdyIQILwTO1wfj3SeMoCrEySp5iHgdMTn8EP
+         z7BG7ZT2ly+J2eG5JGPuLKfvOYn+qvJLq/3seXhDtoCjwdE0WoLrLv8Sug3YFfnTd2
+         pwauHHXwgmtJ/LxaJ3024b9ytUPQDEtKJ28WhddppNo7PaKC2cQTNS3tbHTRRH5Wey
+         KVHOZLaO9IvSQ==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4M601L6wxkz6tn9;
+        Mon, 15 Aug 2022 18:22:30 +0200 (CEST)
+Date:   Mon, 15 Aug 2022 16:22:27 +0000
+From:   Daniel =?utf-8?Q?M=C3=BCller?= <deso@posteo.net>
+To:     Roberto Sassu <roberto.sassu@huawei.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "martin.lau@linux.dev" <martin.lau@linux.dev>,
+        "song@kernel.org" <song@kernel.org>, "yhs@fb.com" <yhs@fb.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "sdf@google.com" <sdf@google.com>,
+        "haoluo@google.com" <haoluo@google.com>,
+        "jolsa@kernel.org" <jolsa@kernel.org>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "dhowells@redhat.com" <dhowells@redhat.com>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "paul@paul-moore.com" <paul@paul-moore.com>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "serge@hallyn.com" <serge@hallyn.com>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v10 5/9] bpf: Add bpf_lookup_*_key() and bpf_key_put()
+ kfuncs
+Message-ID: <20220815162227.clqx44cwka7yt2u3@muellerd-fedora-PC2BDTX9>
+References: <20220810165932.2143413-1-roberto.sassu@huawei.com>
+ <20220810165932.2143413-6-roberto.sassu@huawei.com>
+ <20220810213351.wm5utltm67q4i6lu@MacBook-Pro-3.local.dhcp.thefacebook.com>
+ <2415f4931a364541b2e6d14a8185ffbb@huawei.com>
+ <f7d401d6ec6c47cbb358046a2d3ca5e8@huawei.com>
+ <20220811235222.inghj73tf6vudoyw@vaio>
+ <bff9efc2121046d78e50f0a270d13dc3@huawei.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <bff9efc2121046d78e50f0a270d13dc3@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When bpftool is linked against libcap, the library runs a "constructor"
-function to compute the number of capabilities of the running kernel
-[0], at the beginning of the execution of the program. As part of this,
-it performs multiple calls to prctl(). Some of these may fail, and set
-errno to a non-zero value:
+On Fri, Aug 12, 2022 at 08:11:00AM +0000, Roberto Sassu wrote:
+> > From: Daniel Müller [mailto:deso@posteo.net]
+> > Sent: Friday, August 12, 2022 1:52 AM
+> > On Thu, Aug 11, 2022 at 12:02:57PM +0000, Roberto Sassu wrote:
+> > > > From: Roberto Sassu [mailto:roberto.sassu@huawei.com]
+> > > > Sent: Thursday, August 11, 2022 9:47 AM
+> > > > > From: Alexei Starovoitov [mailto:alexei.starovoitov@gmail.com]
+> > > > > Sent: Wednesday, August 10, 2022 11:34 PM
+> > > > > On Wed, Aug 10, 2022 at 06:59:28PM +0200, Roberto Sassu wrote:
+> > > > > > +
+> > > > > > +static int __init bpf_key_sig_kfuncs_init(void)
+> > > > > > +{
+> > > > > > +	int ret;
+> > > > > > +
+> > > > > > +	ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING,
+> > > > > > +					&bpf_key_sig_kfunc_set);
+> > > > > > +	if (!ret)
+> > > > > > +		return 0;
+> > > > > > +
+> > > > > > +	return register_btf_kfunc_id_set(BPF_PROG_TYPE_LSM,
+> > > > > > +					 &bpf_key_sig_kfunc_set);
+> > > > >
+> > > > > Isn't this a watery water ?
+> > > > > Don't you have a patch 1 ?
+> > > > > What am I missing ?
+> > > >
+> > > > Uhm, yes. I had doubts too. That was what also KP did.
+> > > >
+> > > > It makes sense to register once, since we mapped LSM to
+> > > > TRACING.
+> > > >
+> > > > Will resend only this patch. And I will figure out why CI failed.
+> > >
+> > > Adding in CC Daniel Müller, which worked on this.
+> > >
+> > > I think the issue is that some kernel options are set to =m.
+> > > This causes the CI to miss all kernel modules, since they are
+> > > not copied to the virtual machine that executes the tests.
+> > >
+> > > I'm testing this patch:
+> > >
+> > > https://github.com/robertosassu/libbpf-
+> > ci/commit/b665e001b58c4ddb792a2a68098ea5dc6936b15c
+> > 
+> > I commented on the pull request. Would it make sense to adjust the
+> > kernel configuration in this repository instead? I am worried that
+> > otherwise everybody may need a similar work around, depending on how
+> > selftests are ultimately run.
+> 
+> The issue seems specific of the eBPF CI. Others might be able to use
+> kernel modules.
+> 
+> Either choice is fine for me.
 
-    # strace -e prctl ./bpftool version
-    prctl(PR_CAPBSET_READ, CAP_MAC_OVERRIDE) = 1
-    prctl(PR_CAPBSET_READ, 0x30 /* CAP_??? */) = -1 EINVAL (Invalid argument)
-    prctl(PR_CAPBSET_READ, CAP_CHECKPOINT_RESTORE) = 1
-    prctl(PR_CAPBSET_READ, 0x2c /* CAP_??? */) = -1 EINVAL (Invalid argument)
-    prctl(PR_CAPBSET_READ, 0x2a /* CAP_??? */) = -1 EINVAL (Invalid argument)
-    prctl(PR_CAPBSET_READ, 0x29 /* CAP_??? */) = -1 EINVAL (Invalid argument)
-    ** fprintf added at the top of main(): we have errno == 1
-    ./bpftool v7.0.0
-    using libbpf v1.0
-    features: libbfd, libbpf_strict, skeletons
-    +++ exited with 0 +++
+I understand that depending on how tests are run, kernel modules may be
+available to be loaded. My point is that I am not aware of anything that we
+would loose by having the functionality built-in to begin with (others can
+correct me). So it seems as if that's an easy way to sidestep any issues of that
+sort from the start and, hence, would be my preference.
 
-This has been addressed in libcap 2.63 [1], but until this version is
-available everywhere, we can fix it on bpftool side.
-
-Let's clean errno at the beginning of the main() function, to make sure
-that these checks do not interfere with the batch mode, where we error
-out if errno is set after a bpftool command.
-
-[0] https://git.kernel.org/pub/scm/libs/libcap/libcap.git/tree/libcap/cap_alloc.c?h=libcap-2.65#n20
-[1] https://git.kernel.org/pub/scm/libs/libcap/libcap.git/commit/?id=f25a1b7e69f7b33e6afb58b3e38f3450b7d2d9a0
-
-v2:
-- Make the comment more meaningful
-- Comment on v2.63 fixing the issue on libcap side
-- Only reset errno if libcap is in use
-
-Signed-off-by: Quentin Monnet <quentin@isovalent.com>
----
- tools/bpf/bpftool/main.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
-index 451cefc2d0da..ccd7457f92bf 100644
---- a/tools/bpf/bpftool/main.c
-+++ b/tools/bpf/bpftool/main.c
-@@ -435,6 +435,16 @@ int main(int argc, char **argv)
- 
- 	setlinebuf(stdout);
- 
-+#ifdef USE_LIBCAP
-+	/* Libcap < 2.63 hooks before main() to compute the number of
-+	 * capabilities of the running kernel, and doing so it calls prctl()
-+	 * which may fail and set errno to non-zero.
-+	 * Let's reset errno to make sure this does not interfere with the
-+	 * batch mode.
-+	 */
-+	errno = 0;
-+#endif
-+
- 	last_do_help = do_help;
- 	pretty_output = false;
- 	json_output = false;
--- 
-2.25.1
-
+Thanks,
+Daniel
