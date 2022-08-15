@@ -2,110 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EE11592D92
-	for <lists+bpf@lfdr.de>; Mon, 15 Aug 2022 12:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A61592D9D
+	for <lists+bpf@lfdr.de>; Mon, 15 Aug 2022 12:59:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229740AbiHOK5p (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Aug 2022 06:57:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42512 "EHLO
+        id S230462AbiHOK7b (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Aug 2022 06:59:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbiHOK5o (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Aug 2022 06:57:44 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A34601759A
-        for <bpf@vger.kernel.org>; Mon, 15 Aug 2022 03:57:43 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id x21so9108713edd.3
-        for <bpf@vger.kernel.org>; Mon, 15 Aug 2022 03:57:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc;
-        bh=DCxKre2PH1yNlL8gyZexaadTwZ1BjPNLXfT/N5uksE4=;
-        b=GNO8lU40n7f739GoRAJJyw0LtP+70N+9cytU1qRltl3nRLeUzaZ7kYGcONwlrlbJV/
-         i2Kv/aLYH6dTVKQnj30fvyUnAZyWi94lsb+f9Vwl2BeSPYQMIfrS1sJzNVf+Z3nPos45
-         DsTkkCn92NWCB5wWj9Jx2HGtytKJURGD4U495+nhaTwXVZ7hzBYwKcOlboM7iovHuanx
-         AiLOUdbD4pmX3XqGgcbJ1ICExT1l5dfLiUZb59+ryRjNPWgxx8KExrPb/PBfdOoUbKS7
-         LphDurmXjesIcTgPa4ptY80nsPJHPTOhONsVBo8+FhDqxblE2QFdXvrnyzQv5ngxtm7M
-         ChfA==
+        with ESMTP id S231901AbiHOK73 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Aug 2022 06:59:29 -0400
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6345E1DA57
+        for <bpf@vger.kernel.org>; Mon, 15 Aug 2022 03:59:27 -0700 (PDT)
+Received: by mail-io1-f70.google.com with SMTP id w7-20020a5d9607000000b0067c6030dfb8so3987370iol.10
+        for <bpf@vger.kernel.org>; Mon, 15 Aug 2022 03:59:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc;
-        bh=DCxKre2PH1yNlL8gyZexaadTwZ1BjPNLXfT/N5uksE4=;
-        b=hIq8zMgyPkedhcEIAnaXu96nmbCi20A1RbO69sdRVahPq+O3MlSg1QK/fI4rXjB0dT
-         wW8g6lUkNis61bv2NheLIsZUMFqC9/oxXz5PHGbuIY7is9erPO+fKBtGsTPItEuNpxEQ
-         hXWP1m+JCh2O2IH6W2bztn7N44+9AkcPv/WFw4NkTru3gRWHxm6FviDd6T0e3uGRCJU4
-         Z1TiOrHdKbHwV1A6Q7C/vP7BEOdIJtVoCfwBYVm8Ne59mEveDQ/bPLRAEnamX+r/GyWB
-         fPbf0MVSTWrTKW65DoybNen5mODgBsCz0BUtKJ1dZp2VjwPHcWxZ/AZpmyVQbDv5ngCe
-         H+MA==
-X-Gm-Message-State: ACgBeo2Vx8+JXoyVMe6Gv5b5dOZYGKCkFTWukvSUZsdQrS7IoZi6kutL
-        TsozV+2r5xT9yVdyLxAdDBM=
-X-Google-Smtp-Source: AA6agR4jPdLK0+AQrKbGnFGb4R4+QxUu/aIIoS5TiPvreZuQS9xjf1YayE3IA9y/Yb6IZ3/iYWNt2g==
-X-Received: by 2002:a05:6402:2706:b0:43e:5df1:2e04 with SMTP id y6-20020a056402270600b0043e5df12e04mr13790615edd.315.1660561062133;
-        Mon, 15 Aug 2022 03:57:42 -0700 (PDT)
-Received: from krava ([193.85.244.190])
-        by smtp.gmail.com with ESMTPSA id t7-20020a170906948700b0072b32de7794sm3938926ejx.70.2022.08.15.03.57.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Aug 2022 03:57:41 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Mon, 15 Aug 2022 12:57:39 +0200
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Subject: Re: [PATCHv2 bpf-next 3/6] bpf: Use given function address for
- trampoline ip arg
-Message-ID: <YvomoyS/3Op8FAMa@krava>
-References: <20220811091526.172610-1-jolsa@kernel.org>
- <20220811091526.172610-4-jolsa@kernel.org>
- <Yvodfh6OJhSIq8X9@worktop.programming.kicks-ass.net>
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc;
+        bh=DXqErMvUBdHq7OfEGBXknlQpwkkczL+Z3BMMKbEkvyw=;
+        b=Dsi+hFn4J3zr1bY4V/Vf4qRVdlkDN710omKjBfunaJWhjh3HsNMm335P9cY/3L/9QZ
+         1WhFrE8FlhT4uqwG4u6mNOHo7RVAUBgaGJElExcBD/v8pLGQ3yDuiPNyJ40OagWS1Mq6
+         LnXowbnbEM5G4XwPFRtLeugX+OoLVF3MGXma5fRlgkgvAyuR4kzOar5b0tiknxq94iVi
+         BSUiG4pNqtj12PnwA81n8IOeQPV0mMGPwVfScIQrb2mAQVN64bGNWC5UqqSItoHY4v6o
+         XJGVghi7V5lJhKxhg0Z40CWn9F7wgh+lm5ktsfP7q+FsFu/gZrs5oVaLUf9G/beAaIYa
+         CN0g==
+X-Gm-Message-State: ACgBeo3XyAdO/F0c/j0LyFP0Uuzt+F7gDkQ8zAova9cYlkpIe0qV06QD
+        lpn9A0VNpAPXrCthm4U8/AP/lFNcslVR6uRcVYU+UEREWr4H
+X-Google-Smtp-Source: AA6agR6nr9qzB+ba7n1CjJZAcmU7TM9/QbGu1H5oefQBcBU71azSXHjRM3eyCdAMY+CL1szur6nm5b0N4DUgrNCO99LAdDh5sBZ8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Yvodfh6OJhSIq8X9@worktop.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6638:22c8:b0:343:34af:32ff with SMTP id
+ j8-20020a05663822c800b0034334af32ffmr7101249jat.238.1660561166761; Mon, 15
+ Aug 2022 03:59:26 -0700 (PDT)
+Date:   Mon, 15 Aug 2022 03:59:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007902fc05e6458697@google.com>
+Subject: [syzbot] WARNING: suspicious RCU usage in bpf_sk_reuseport_detach
+From:   syzbot <syzbot+24bcff6e82ce253f23ec@syzkaller.appspotmail.com>
+To:     bpf@vger.kernel.org, davem@davemloft.net, ecree.xilinx@gmail.com,
+        edumazet@google.com, habetsm.xilinx@gmail.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 15, 2022 at 12:18:38PM +0200, Peter Zijlstra wrote:
-> On Thu, Aug 11, 2022 at 11:15:23AM +0200, Jiri Olsa wrote:
-> > Using function address given at the generation time as the trampoline
-> > ip argument. This way we get directly the function address that we
-> > need, so we don't need to:
-> >   - read the ip from the stack
-> >   - subtract X86_PATCH_SIZE
-> >   - subtract ENDBR_INSN_SIZE if CONFIG_X86_KERNEL_IBT is enabled
-> >     which is not even implemented yet ;-)
-> 
-> Can you please tell me what all this does and why?
-> 
+Hello,
 
-arch_prepare_bpf_trampoline prepares bpf trampoline for given function
-specified by 'func_addr' argument
+syzbot found the following issue on:
 
-the changed code is storing/preparing caller's 'ip' address on the
-trampoline's stack so the get_func_ip helper can use it
+HEAD commit:    94ce3b64c62d net/tls: Use RCU API to access tls_ctx->netdev
+git tree:       net
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=14641e15080000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=53da55f2bdeb0d4c
+dashboard link: https://syzkaller.appspot.com/bug?extid=24bcff6e82ce253f23ec
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=106c89fd080000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17ead885080000
 
-currently the trampoline code gets the caller's ip address by reading
-caller's return address from stack and subtracting X86_PATCH_SIZE from
-it
+The issue was bisected to:
 
-the change uses 'func_addr' as caller's 'ip' address when trampoline is
-generated .. this way we don't need to retrieve the return address from
-stack and care about endbr instruction if IBT is enabled
+commit f72c38fad234759fe943cb2e40bf3d0f7de1d4d9
+Author: Edward Cree <ecree.xilinx@gmail.com>
+Date:   Wed Jul 20 18:33:48 2022 +0000
 
-jirka
+    sfc: hook up ef100 representor TX
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=125bf9fd080000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=115bf9fd080000
+console output: https://syzkaller.appspot.com/x/log.txt?x=165bf9fd080000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+24bcff6e82ce253f23ec@syzkaller.appspotmail.com
+Fixes: f72c38fad234 ("sfc: hook up ef100 representor TX")
+
+=============================
+WARNING: suspicious RCU usage
+5.19.0-syzkaller-05408-g94ce3b64c62d #0 Not tainted
+-----------------------------
+include/net/sock.h:592 suspicious rcu_dereference_check() usage!
+
+other info that might help us debug this:
+
+
+rcu_scheduler_active = 2, debug_locks = 1
+4 locks held by syz-executor334/3611:
+ #0: ffff888073b7be10 (&sb->s_type->i_mutex_key#10){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:760 [inline]
+ #0: ffff888073b7be10 (&sb->s_type->i_mutex_key#10){+.+.}-{3:3}, at: __sock_release+0x86/0x280 net/socket.c:649
+ #1: ffffc900014e5c28 (&table->hash[i].lock){+...}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:354 [inline]
+ #1: ffffc900014e5c28 (&table->hash[i].lock){+...}-{2:2}, at: udp_lib_unhash net/ipv4/udp.c:2014 [inline]
+ #1: ffffc900014e5c28 (&table->hash[i].lock){+...}-{2:2}, at: udp_lib_unhash+0x1d5/0x730 net/ipv4/udp.c:2004
+ #2: ffffffff8d7a9a78 (reuseport_lock){+...}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:354 [inline]
+ #2: ffffffff8d7a9a78 (reuseport_lock){+...}-{2:2}, at: reuseport_detach_sock+0x22/0x4a0 net/core/sock_reuseport.c:346
+ #3: ffff888145f9a0b8 (clock-AF_INET){++..}-{2:2}, at: bpf_sk_reuseport_detach+0x26/0x190 kernel/bpf/reuseport_array.c:26
+
+stack backtrace:
+CPU: 1 PID: 3611 Comm: syz-executor334 Not tainted 5.19.0-syzkaller-05408-g94ce3b64c62d #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/22/2022
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ __rcu_dereference_sk_user_data_with_flags include/net/sock.h:592 [inline]
+ bpf_sk_reuseport_detach+0x156/0x190 kernel/bpf/reuseport_array.c:27
+ reuseport_detach_sock+0x8c/0x4a0 net/core/sock_reuseport.c:362
+ udp_lib_unhash net/ipv4/udp.c:2016 [inline]
+ udp_lib_unhash+0x210/0x730 net/ipv4/udp.c:2004
+ sk_common_release+0xba/0x390 net/core/sock.c:3600
+ inet_release+0x12e/0x280 net/ipv4/af_inet.c:428
+ __sock_release+0xcd/0x280 net/socket.c:650
+ sock_close+0x18/0x20 net/socket.c:1365
+ __fput+0x277/0x9d0 fs/file_table.c:320
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:177
+ exit_task_work include/linux/task_work.h:38 [inline]
+ do_exit+0xade/0x29d0 kernel/exit.c:795
+ do_group_exit+0xd2/0x2f0 kernel/exit.c:925
+ __do_sys_exit_group kernel/exit.c:936 [inline]
+ __se_sys_exit_group kernel/exit.c:934 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:934
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fe407d09699
+Code: Unable to access opcode bytes at RIP 0x7fe407d0966f.
+RSP: 002b:00007ffc0ff152a8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
