@@ -2,168 +2,195 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDF2B594E78
-	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 04:07:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00CF1594E7A
+	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 04:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239994AbiHPCH0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Aug 2022 22:07:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34064 "EHLO
+        id S240567AbiHPCIV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Aug 2022 22:08:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240287AbiHPCHC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Aug 2022 22:07:02 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B04B1E3991
-        for <bpf@vger.kernel.org>; Mon, 15 Aug 2022 14:58:21 -0700 (PDT)
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27FIc4Ct018240;
-        Mon, 15 Aug 2022 14:58:00 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=pwg5Zte/JTHm6Wc4CIc6RQPV4Lr2XuKkhWR7IUvtGgY=;
- b=HBLSDPmK1GNeHi5zMYWm+6w/3MY6As+2nrGEe6ZMN+cen2LHzxRW9K0ZwQV/sSomQFDy
- uHD2KDykKXsyRBgxSKu+WUH2qTVdt89ot1tQGj8RX59Xx3i4mMbc3MQ7xcKdgQoS4wzj
- yOHF1T2XEu1EBTipuaTTYisJ3u1ZjY2CQzk= 
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hx9fynr0q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 15 Aug 2022 14:58:00 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jzwfoJYuKbvaA3XkdbCaAKLJF9UqsxThovXgtd9wCWE6DcTvo6iozWLkLpWzjTBfBZh3etw5VKEvp/JBtC7P5aVRBw5b9Y+4T1sQfzucI2A+DgTToW0ckB+OXFTohB9uKSuVw+k3i4s8XdeRzWjeCT1ZgYIW42bfLm4Tmu0DVVgkCiBaAGfAvmZGrPmMnURkbHllWTl3iFJqraArcPohWSjkQo3DwMH6wz2qBAfpoy1up77LHnVqKjLB9bVe//fuUvjlfIWSHZkVY/HuqsKeTmxUyvHOw52aWkfOVmH3jUlO5kf1oPRnUbnjTFMwRsW0L5Hfdet/K3Mw4jQFkT37Bg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pwg5Zte/JTHm6Wc4CIc6RQPV4Lr2XuKkhWR7IUvtGgY=;
- b=VEWOjtQXQLuQco6tf01ftG/E6bnxK2RdOHG5bztpXfYTbNrQwbYrh7OdIQwlAa7ldksz8XKA/JK2to2mwIkYBhB6VhKABIGb7rCMH5wmogwk6CIDnVvWRjJyp2Z0LIiYxlvCkSPgfcjZ8zrQe6OjtJpqqokJh4XwyiX6SdkUrccT89cu4Ssn9IDb3NUd9D3Q7vI5ex1xcyANENl6DnhDKw2dOuFWuZkIzZlhCvRLRmLYCDTvJOOFzpBjGirTSc3OCvXN/ZL71Oq/eZA8APXyhZWCw7/5xRr6RiiTGYld62P7ckxjOtjYPbgjg8FG64+cfXU6KdTUT0EfzwvvF4SidQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from MW4PR15MB4475.namprd15.prod.outlook.com (2603:10b6:303:104::16)
- by DM6PR15MB2651.namprd15.prod.outlook.com (2603:10b6:5:1a3::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5525.10; Mon, 15 Aug
- 2022 21:57:57 +0000
-Received: from MW4PR15MB4475.namprd15.prod.outlook.com
- ([fe80::5455:4e3f:a5a2:6a9e]) by MW4PR15MB4475.namprd15.prod.outlook.com
- ([fe80::5455:4e3f:a5a2:6a9e%4]) with mapi id 15.20.5525.011; Mon, 15 Aug 2022
- 21:57:56 +0000
-Date:   Mon, 15 Aug 2022 14:57:55 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
-        haoluo@google.com, jolsa@kernel.org
-Subject: Re: [PATCH bpf-next 2/3] bpf: use cgroup_{common,current}_func_proto
- in more hooks
-Message-ID: <20220815215755.mzf456mgv3tx4vfe@kafai-mbp>
-References: <20220812190241.3544528-1-sdf@google.com>
- <20220812190241.3544528-3-sdf@google.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220812190241.3544528-3-sdf@google.com>
-X-ClientProxiedBy: BY5PR04CA0019.namprd04.prod.outlook.com
- (2603:10b6:a03:1d0::29) To MW4PR15MB4475.namprd15.prod.outlook.com
- (2603:10b6:303:104::16)
+        with ESMTP id S233436AbiHPCHx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Aug 2022 22:07:53 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E47AE10E7A1;
+        Mon, 15 Aug 2022 15:00:02 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id y3so11202754eda.6;
+        Mon, 15 Aug 2022 15:00:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=T3BNXnM8/uSXVm7gYnNlnagKr/r09Wg9R1KlljM+2MI=;
+        b=Ru+YRuUfY4mqjyaatb7nZlVXi+2e4yAddoTV+qYz70z9AsblRHunci931h5+VVqL8q
+         xYFTQGRQywswIpVid50GCCRKELYsMCMIcpgsXT34sYX42AQOByUpmBG5oIUlKWD0Pn86
+         pGonC4R1iZMkbYDLcMkgTjE0zlkk7Fg+KotGF61lrCDtZsud8W1hsWVMoaCwKjQLgcCC
+         CFMtEZqdlDf3S+lQZz7UdCoNTb0mylVkYS0Y81KVYbnsSrLggG86u+lz30jkuOOVlujF
+         F2lRzrdsV5Vnh5gbyQrfyBegB4qQceqXOXygo7bO2q/I4Ywx32azEfYAY1drn/laqwEq
+         zsMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=T3BNXnM8/uSXVm7gYnNlnagKr/r09Wg9R1KlljM+2MI=;
+        b=Kl/YqiXQrOnkMQDOFaysuAgqMJpnauWhxY8xAExJ8d9GjqCLBS/PBUloiiJAkjrEzk
+         rZ010J3EJ6PeIq7OgctH9m1NxH4wKmGIrTsTkYkGonzKOWAmFYspM9gxYqxolrxLBsD3
+         xxQ+lc43I8FPo1HZ8hPQiiGxX69GGZdPlvKAz8T3iOcLhCaAo/xy27s+wob8hPcLZ+8V
+         +izVS+oPt0TeblPQzlsfFQAeyxn9YJ7bOEtRVBRIHdVQwQKjl7pVUzshnh9AxQo66YzO
+         uPcl3wi9ZUftjStiGQrorq0skmPqq6/38a89/iLKNXhAODU8cjMVAqL9jQb4UkbR+aDg
+         da9g==
+X-Gm-Message-State: ACgBeo06bNcVGpfYAp2fEqg3L26kY8jplF7pXaZET11xbbAKK/hN5sv1
+        mQvF5RJ4r+1+OaRcpQDYJGZ2m7iEUSlU7Dg5prs=
+X-Google-Smtp-Source: AA6agR4Xpty0a0xX36T/oYkX/50SCihLUbIHHrh4aJgB/OVvGj11f25UJ08jEFHcYWKLZnRnU5RJZtHmYKRi44b2rx4=
+X-Received: by 2002:a50:ed82:0:b0:43d:5334:9d19 with SMTP id
+ h2-20020a50ed82000000b0043d53349d19mr16025224edr.232.1660600801439; Mon, 15
+ Aug 2022 15:00:01 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4961f178-87ff-438d-2afb-08da7f0935f0
-X-MS-TrafficTypeDiagnostic: DM6PR15MB2651:EE_
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dmzj4Fe0/j/mp4ARBePJzbqprq0rgY4L9rCilFgwv1GrLPcqDLzKgkWdU5v3ZF4W9pT1akiASiInH8TcM8wQL+bJSqlkU1I8pYikDovugJhejDBDelr9Y0e5iljsJpd+AdcvYGt3rh5E+esHDdosa1npcQNzrKYzJv3Je3HLScsD+lzEsna5ZJDdwpDkRlqlCtuVd1oh6LEGxeUKyoWnSmiy0M3VKFYcUCoe74eUkwml00yKDUhVoBrGSumq7ohWAzSDMQpSAkfp/xvJXwOk1vOCaN5giBRkCg4sfZYbDaGHLmaU/ebrP8vN7Idrt7gPFuMKtwBnSpgMTBElxnvqGA1zsr2jJ+/Q73yQiUJXrlOtKBzFNygWoZN/GRF9HLjegqbGhC24QQMsI146KgPl+WfwGW6MlvKRpIRq1dYAVV/Z21c5RhTvWE0KU8NBTfF9SgHHhwWwL3iX6yw7T0ToW9Wo157M149h/B4fHCRgATZOs7R7yf57fLGQh9n/4eq0SGxcrJYBRCc4C/wku+QMYY5q18XhM1G9aL20Z1PSHywwuk+v00eCQSbESCcA6IZbJ2mjomICZaQGbnCYmdw6lZxFC3DRMNl2YEMvXH+9LWCPsi2xwHVIDWVtKDX9cFpxAt4GXfTU71OctYee9ekt14wztufxJnFzp4imn0cWNGZN3lWS23MR6dIYhYWz/D1AeJyBOsH5m9jCvJVJk9oEPALyPu8kdAbiC3Cogu/nyjGMO3H2VqSeNjB3lpGfBZj0
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4475.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(7916004)(346002)(39860400002)(366004)(136003)(396003)(376002)(6506007)(86362001)(41300700001)(9686003)(6512007)(52116002)(478600001)(1076003)(186003)(6486002)(33716001)(316002)(66946007)(6916009)(66556008)(66476007)(8676002)(4326008)(5660300002)(38100700002)(8936002)(7416002)(2906002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?K0bmDZh3ZOIDmzkqWVdG7+6Bj83mq14XznLkHszEnyCqaOEByhOev8caDepX?=
- =?us-ascii?Q?4WtV/1xggHwxtKW4BGYT9ILVOMbdppC32+Ue4S4CZ/ZFrfw/5QFWNMncbwHQ?=
- =?us-ascii?Q?KjQF2mUCBkgoDO71OnZ2Ddt8e8rQpEubOxNzWjEEq5n6q+77J2WP5BOrWG8J?=
- =?us-ascii?Q?pUB6FiKA702pvmNh0+4E2ZtlgcJdiWatgFOE2WtNfuFCbla6A2vZGeBO8LPF?=
- =?us-ascii?Q?C1sU3RcGGFfmiRq0oznaojAqpN/KyCrZ8dcrCByHrw/iR/3gtvjWDpT25gZF?=
- =?us-ascii?Q?xLQyah9xzPyAeHhGozix8aZ1A7OfP9ncaueOcKmIZFm3D+QqeYX5j2Cb1t/g?=
- =?us-ascii?Q?Aq04y60nTq0nbObmCsxzSZdnrtPTnD2N+7W+GxFrDyLIxF8g9rDcvE1wc5/L?=
- =?us-ascii?Q?Iqf6AGmwghzN3oknEbzdu8ULIdujfbdE+7ZF8d3HiIxDhOJPhw+rJBp6GPCK?=
- =?us-ascii?Q?Jk9GGqXI15GNu3ewHcOQUGTXRWh/qgqOJlFswSaZmzo3lj6gzN6O499PEHv0?=
- =?us-ascii?Q?BaRC2JQDI+GrDc6QrdYBl+wQb4qtedAS3BKBu/KoFTpodK9b4U7Ahjc0Y9mm?=
- =?us-ascii?Q?8yvV097gyk0VaESGSkv/UhnwicwwYISxfCuzTW1D0VNImpkVk6Bful58yx5B?=
- =?us-ascii?Q?F9Mf9WhZ5ob+bU/ILR8Tx/w5qqaHJmlbJqzKLvggw/xY/u6cCpb9wGdsoieK?=
- =?us-ascii?Q?ty8VvA8jlZ4YYYH9h6qyG0XqQNfwyYcGlDBxiDy7jp8unJ0vf/o68EvWNmlc?=
- =?us-ascii?Q?bChe7yV2Vp0UdJyy87fxG60PWchFCRz10RtfMVNDwnDkoX8bRIS33pLGjWO3?=
- =?us-ascii?Q?kczCBKp2Ppah4B9rRVNDxNP780nPKzIdKCo3aCcK5+vQl7LAWwb6F1nxi+hK?=
- =?us-ascii?Q?0nQIxQc0s8xYhj6EsmY+zhDA3iX2rXNtBTV1//1pjhju+JKMggG+EK6yXXKw?=
- =?us-ascii?Q?MW1JUy7VpKxVzV2vdySI+0l2YsoWY/wMJDFmG8NsLdtsXA2gH/GiQqXWY4j1?=
- =?us-ascii?Q?LUcNd8ipGgJHoHlCiVIlBA2nTA8AMX7XrQ/LhUOqENq/KnkRmtUfwd8L25lZ?=
- =?us-ascii?Q?F5xVDbLpKksBJNMPs+y/0TT6xHPlr2xciAJIp2siHtGNINneiFbQ2xfvJUKT?=
- =?us-ascii?Q?PaNMfdybQxWznXJ62N3AXPBcRU2spzjElRhEZebwPAp4Qb7H5U7iMuyQ//7L?=
- =?us-ascii?Q?VBeNYYAU5wPLwSPCM8tapW6cqnLR29T3gtC4Vl30C0NAhXQE0wLX5JaENHF2?=
- =?us-ascii?Q?og8Pn8qbjLTVpWq1w0Fpy3/WUAr+cX//Isy+serGeBrHKSnSNBXJfJZr89PX?=
- =?us-ascii?Q?EqA/nlv+oIQFhdY2GgzNWD2GscVbs5xg86APSKH9ZjPRU9KeNHCIWoL2QKsL?=
- =?us-ascii?Q?ry1UAFNr9XTXxaqVIKWYOknjGdGR8ZtTRHnj6ntNSdW45LXi0zfSGrxwjpLB?=
- =?us-ascii?Q?lLYobUxR5pObm6V26nho0Nh2VEEgAc8sGNtybPSAaDQevbRCwM2SBTcGqrIk?=
- =?us-ascii?Q?8TvZNrFjPVLUc1uLxWQEc1wY/vwqHpOXYrlzqSHs+VX9GjN364CfCs1rspL1?=
- =?us-ascii?Q?Okk/utyqCvfw11fzc7jrJPQszU3PTx5umMUNEfGto5GRINKdb+lMEuqsmQ6g?=
- =?us-ascii?Q?Lw=3D=3D?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4961f178-87ff-438d-2afb-08da7f0935f0
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4475.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Aug 2022 21:57:56.4742
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: h9UsnxINnCTc+V0x9l16ZCQFHUW7jVrV0BdUoRSBxGuzTMHCdq7l8i/K0sX4EkRz
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB2651
-X-Proofpoint-ORIG-GUID: NACKz5p6Ms7oj425Le7qnJecXwhk61eP
-X-Proofpoint-GUID: NACKz5p6Ms7oj425Le7qnJecXwhk61eP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-08-15_08,2022-08-15_01,2022-06-22_01
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220813000936.6464-1-liuhangbin@gmail.com> <a3c23cfe-061a-1722-8521-26e57b4b2cf4@isovalent.com>
+In-Reply-To: <a3c23cfe-061a-1722-8521-26e57b4b2cf4@isovalent.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 15 Aug 2022 14:59:50 -0700
+Message-ID: <CAEf4BzbXehQtWnocp5KnArd0dq-Wg0ddPOyJZCwGPLO_L7wByg@mail.gmail.com>
+Subject: Re: [PATCHv2 bpf-next] libbpf: making bpf_prog_load() ignore name if
+ kernel doesn't support
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Hangbin Liu <liuhangbin@gmail.com>, netdev@vger.kernel.org,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Aug 12, 2022 at 12:02:40PM -0700, Stanislav Fomichev wrote:
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index de7d2fabb06d..87ce47b13b22 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -1764,9 +1764,31 @@ cgroup_common_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->  	case BPF_FUNC_get_local_storage:
->  		return &bpf_get_local_storage_proto;
->  	case BPF_FUNC_get_retval:
-> -		return &bpf_get_retval_proto;
-> +		switch (prog->expected_attach_type) {
-> +		case BPF_CGROUP_SOCK_OPS:
-> +		case BPF_CGROUP_UDP4_RECVMSG:
-> +		case BPF_CGROUP_UDP6_RECVMSG:
-> +		case BPF_CGROUP_INET4_GETPEERNAME:
-> +		case BPF_CGROUP_INET6_GETPEERNAME:
-> +		case BPF_CGROUP_INET4_GETSOCKNAME:
-> +		case BPF_CGROUP_INET6_GETSOCKNAME:
-> +			return NULL;
-> +		default:
-> +			return &bpf_get_retval_proto;
-> +		}
->  	case BPF_FUNC_set_retval:
-> -		return &bpf_set_retval_proto;
-> +		switch (prog->expected_attach_type) {
-> +		case BPF_CGROUP_SOCK_OPS:
-> +		case BPF_CGROUP_UDP4_RECVMSG:
-> +		case BPF_CGROUP_UDP6_RECVMSG:
-> +		case BPF_CGROUP_INET4_GETPEERNAME:
-> +		case BPF_CGROUP_INET6_GETPEERNAME:
-> +		case BPF_CGROUP_INET4_GETSOCKNAME:
-> +		case BPF_CGROUP_INET6_GETSOCKNAME:
-> +			return NULL;
-> +		default:
-> +			return &bpf_set_retval_proto;
-> +		}
-Does it make sense to have bpf_lsm_func_proto() calling
-cgroup_common_func_proto() also?
+On Mon, Aug 15, 2022 at 8:36 AM Quentin Monnet <quentin@isovalent.com> wrote:
+>
+> On 13/08/2022 01:09, Hangbin Liu wrote:
+> > Similar with commit 10b62d6a38f7 ("libbpf: Add names for auxiliary maps"),
+> > let's make bpf_prog_load() also ignore name if kernel doesn't support
+> > program name.
+> >
+> > To achieve this, we need to call sys_bpf_prog_load() directly in
+> > probe_kern_prog_name() to avoid circular dependency. sys_bpf_prog_load()
+> > also need to be exported in the libbpf_internal.h file.
+> >
+> > Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+> > ---
+> > v2: move sys_bpf_prog_load definition to libbpf_internal.h. memset attr
+> >     to 0 specifically to aviod padding.
+> > ---
+> >  tools/lib/bpf/bpf.c             |  6 ++----
+> >  tools/lib/bpf/libbpf.c          | 12 ++++++++++--
+> >  tools/lib/bpf/libbpf_internal.h |  3 +++
+> >  3 files changed, 15 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+> > index 6a96e665dc5d..575867d69496 100644
+> > --- a/tools/lib/bpf/bpf.c
+> > +++ b/tools/lib/bpf/bpf.c
+> > @@ -84,9 +84,7 @@ static inline int sys_bpf_fd(enum bpf_cmd cmd, union bpf_attr *attr,
+> >       return ensure_good_fd(fd);
+> >  }
+> >
+> > -#define PROG_LOAD_ATTEMPTS 5
+> > -
+> > -static inline int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts)
+> > +int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts)
+> >  {
+> >       int fd;
+> >
+> > @@ -263,7 +261,7 @@ int bpf_prog_load(enum bpf_prog_type prog_type,
+> >       attr.prog_ifindex = OPTS_GET(opts, prog_ifindex, 0);
+> >       attr.kern_version = OPTS_GET(opts, kern_version, 0);
+> >
+> > -     if (prog_name)
+> > +     if (prog_name && kernel_supports(NULL, FEAT_PROG_NAME))
+> >               libbpf_strlcpy(attr.prog_name, prog_name, sizeof(attr.prog_name));
+> >       attr.license = ptr_to_u64(license);
+> >
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index 3f01f5cd8a4c..4a351897bdcc 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -4419,10 +4419,18 @@ static int probe_kern_prog_name(void)
+> >               BPF_MOV64_IMM(BPF_REG_0, 0),
+> >               BPF_EXIT_INSN(),
+> >       };
+> > -     int ret, insn_cnt = ARRAY_SIZE(insns);
+> > +     union bpf_attr attr;
+> > +     int ret;
+> > +
+> > +     memset(&attr, 0, sizeof(attr));
+> > +     attr.prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
+> > +     attr.license = ptr_to_u64("GPL");
+> > +     attr.insns = ptr_to_u64(insns);
+> > +     attr.insn_cnt = (__u32)ARRAY_SIZE(insns);
+> > +     libbpf_strlcpy(attr.prog_name, "test", sizeof(attr.prog_name));
+> >
+> >       /* make sure loading with name works */
+> > -     ret = bpf_prog_load(BPF_PROG_TYPE_SOCKET_FILTER, "test", "GPL", insns, insn_cnt, NULL);
+> > +     ret = sys_bpf_prog_load(&attr, sizeof(attr), PROG_LOAD_ATTEMPTS);
+> >       return probe_fd(ret);
+> >  }
+> >
+> > diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+> > index 4135ae0a2bc3..377642ff51fc 100644
+> > --- a/tools/lib/bpf/libbpf_internal.h
+> > +++ b/tools/lib/bpf/libbpf_internal.h
+> > @@ -573,4 +573,7 @@ static inline bool is_pow_of_2(size_t x)
+> >       return x && (x & (x - 1)) == 0;
+> >  }
+> >
+> > +#define PROG_LOAD_ATTEMPTS 5
+> > +int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts);
+> > +
+> >  #endif /* __LIBBPF_LIBBPF_INTERNAL_H */
+>
+> Looks good to me, thanks!
+>
+> Acked-by: Quentin Monnet <quentin@isovalent.com>
+
+I did a small adjustment to not fill out entire big bpf_attr union
+completely (and added a bit more meaningful "libbpf_nametest" prog
+name):
+
+$ git diff --staged
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 4a351897bdcc..f05dd61a8a7f 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -4415,6 +4415,7 @@ static int probe_fd(int fd)
+
+ static int probe_kern_prog_name(void)
+ {
++       const size_t attr_sz = offsetofend(union bpf_attr, prog_name);
+        struct bpf_insn insns[] = {
+                BPF_MOV64_IMM(BPF_REG_0, 0),
+                BPF_EXIT_INSN(),
+@@ -4422,12 +4423,12 @@ static int probe_kern_prog_name(void)
+        union bpf_attr attr;
+        int ret;
+
+-       memset(&attr, 0, sizeof(attr));
++       memset(&attr, 0, attr_sz);
+        attr.prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
+        attr.license = ptr_to_u64("GPL");
+        attr.insns = ptr_to_u64(insns);
+        attr.insn_cnt = (__u32)ARRAY_SIZE(insns);
+-       libbpf_strlcpy(attr.prog_name, "test", sizeof(attr.prog_name));
++       libbpf_strlcpy(attr.prog_name, "libbpf_nametest",
+sizeof(attr.prog_name));
+
+Pushed to bpf-next, thanks!
