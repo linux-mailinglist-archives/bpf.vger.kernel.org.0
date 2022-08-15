@@ -2,98 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F950593207
-	for <lists+bpf@lfdr.de>; Mon, 15 Aug 2022 17:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E771593205
+	for <lists+bpf@lfdr.de>; Mon, 15 Aug 2022 17:36:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231659AbiHOPgL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S229918AbiHOPgL (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Mon, 15 Aug 2022 11:36:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52090 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231875AbiHOPgH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Aug 2022 11:36:07 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30BD813D1D;
-        Mon, 15 Aug 2022 08:36:06 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id f22so10022054edc.7;
-        Mon, 15 Aug 2022 08:36:06 -0700 (PDT)
+        with ESMTP id S231318AbiHOPgF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Aug 2022 11:36:05 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FDED12AC1
+        for <bpf@vger.kernel.org>; Mon, 15 Aug 2022 08:36:04 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 186-20020a1c02c3000000b003a34ac64bdfso7964683wmc.1
+        for <bpf@vger.kernel.org>; Mon, 15 Aug 2022 08:36:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=FKHASDkXl4bLy418ZA6s3npFBPp7+iCJrF69vP0vzUE=;
-        b=GGpi0ap4Lo6vZPXfjFFxVlQOJyTAiLSpb8CM+ukdZ0Nii5pstZepWWb6I8QYIQ23QN
-         GEkscnVOirAYIvugFqFxHRvjPQpkdcRuB7t8uSI46kIKD9cymo74iAXddUgiWStY0gcq
-         0DwC8nr/f2Cs5v6CCkHMpF7/q55Uc6zXQVprN7pEtWmM5mZ9gmW5Dk7FEMDXLdO99buS
-         C0D9K8ltHM+nYayVxOADiudOEwGIsZ3LQNVm0kGhCFiaXeDISr3BTX5bWLjoCkcNYhvQ
-         WqRi2GE0qgT9NffPGy9JjuxwKewqqwxp/wHwZk++xk+5ZH1nq0UMzXbPU0ovd25HFMrM
-         VDQw==
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc;
+        bh=aLIgBOFDINfwWT7sgtqg5VHJeqaHc1mZmgglPh0sAyY=;
+        b=cyPux8RNKFujd9roQpwDZOASW6ijxYgslOXdJqm0R8g26Zi+cI2KkwRECN+52orxyE
+         9Zajuq+yuut4empWdcY3rREB4/K16QGTjzy7oXSanZwPZ38kiaBtECuBaxHV2Al1ZfjB
+         9et+JqHCutUlrmNuWXKYwzOKsF3lC7Ryr7L6uZDBCUs+HHVqp3bnojSOvkNOL+rrkXwG
+         C3LlmbixIKyTCijnk4mDaUHQl+CbVxICM4rBfZ6rsMKiJfXTa67r1jTDXqq7EBiBlksa
+         G3RQfHlT+XrmF8Xe3DpJE9Ki3cOeFnEwLboUEr2D94+0v9YwTYQCWzMuIj6/ZV7VTpIx
+         LXjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=FKHASDkXl4bLy418ZA6s3npFBPp7+iCJrF69vP0vzUE=;
-        b=lrwPf7sD54y0k+2NtTpiu+iCTjpWaqoxLYItrX2vEEi7htlZOyF0hZ9s+qbYERnW8e
-         U46RFDk7zBhVd2Y3u3UbdKupGVqzeyZs1dcB4BOA/VMfjH47l6zLKKlrUNk54LKMVCK2
-         1vZd7e31tLR25hDWJm0n6Ah4men6rRY5uDDDlcx1oB+SWSKDwImgxWy6iwdoWMdEnV1R
-         my6p9x4JgMT/igb78+ZN1ts3Oh/HwCuGhqduBCajHWBUHRXL0hLzlxfe+EQqh/MqUpSi
-         2r9PkHM2JWCtDxtPAQDEq8mr0Q1B937aP1hJvlZ2dAAgwU2AsYxYPKG42w5wOI8C6oI5
-         6Lfw==
-X-Gm-Message-State: ACgBeo2rJHHbLoanNuMpaQbm1iQEIcgW3EhI6Oo4VU7ya1+59KgAM1qG
-        8sPy/C1vYBW4YEwDtpIPXZMJRp2XkCc47b7QA7o=
-X-Google-Smtp-Source: AA6agR7fcfRuPgfmPIqcGFYCTdMka4T4vGK+7ARbf+JZe1TmIp3usixCcFZulmjp8ERzCFsjjQfqFqvDL1aaG6QRSGs=
-X-Received: by 2002:aa7:d60b:0:b0:43c:f7ab:3c8f with SMTP id
- c11-20020aa7d60b000000b0043cf7ab3c8fmr15030457edr.6.1660577764810; Mon, 15
- Aug 2022 08:36:04 -0700 (PDT)
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc;
+        bh=aLIgBOFDINfwWT7sgtqg5VHJeqaHc1mZmgglPh0sAyY=;
+        b=cDS+sPSGK5+j1o6ybd7YR0rnfiS1IEEWwps1fjEMQk3LBbSSNh2EnwlB92R5F5MI1p
+         q2hPvkcqSfahVMirgxntjsoUCR7tpn2+TP2baZB8wkecvJaer43/svO2hIDLJUEHsL9T
+         PEA8Vzs2M6zKuBex1XXmuOL7UKnemqqrRhWAA7tb3ipjMICQYvvoU0pFERkhcq7HFLQt
+         PM9XcM1ENLb1GZOhjYw50UHF47yTsMBZ9qxQvM1T9PlI9aWI1PElyOSTLiYfzLwsC5w1
+         FJpXaF2PPoN688cUObBYy3o/ry3C4iihPilNhygmbwX8voDtcy4ws0kr6h+Dx7bSBzlQ
+         xCJg==
+X-Gm-Message-State: ACgBeo0mtj79eVD6dMsjhvtH4pTdomkxeYDsF7wFlfV2QXi8XjaOxGu0
+        p8FCla/hQsuQBd1KJbxOdFvJQ8TCUNJqZg==
+X-Google-Smtp-Source: AA6agR6xIRa3yxAc16EqQ9DGTpZo2oUf/GBOyk4W5fy5KqhiMZ4slGdnFP3TOOY7UKY3cY4CQipzug==
+X-Received: by 2002:a05:600c:b4b:b0:3a5:b76e:1350 with SMTP id k11-20020a05600c0b4b00b003a5b76e1350mr10524905wmr.108.1660577762827;
+        Mon, 15 Aug 2022 08:36:02 -0700 (PDT)
+Received: from [192.168.178.32] ([51.155.200.13])
+        by smtp.gmail.com with ESMTPSA id j3-20020a5d5643000000b0021f138e07acsm7689668wrw.35.2022.08.15.08.36.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Aug 2022 08:36:02 -0700 (PDT)
+Message-ID: <a3c23cfe-061a-1722-8521-26e57b4b2cf4@isovalent.com>
+Date:   Mon, 15 Aug 2022 16:36:01 +0100
 MIME-Version: 1.0
-References: <YvbDlwJCTDWQ9uJj@krava> <20220813150252.5aa63650@rorschach.local.home>
- <Yvn9xR7qhXW7FnFL@worktop.programming.kicks-ass.net> <YvoVgMzMuQbAEayk@krava>
- <Yvo+EpO9dN30G0XE@worktop.programming.kicks-ass.net> <CAADnVQJfvn2RYydqgO-nS_K+C8WJL7BdCnR44MiMF4rnAwWM5A@mail.gmail.com>
- <YvpZJQGQdVaa2Oh4@worktop.programming.kicks-ass.net> <CAADnVQKyfrFTZOM9F77i0NbaXLZZ7KbvKBvu7p6kgdnRgG+2=Q@mail.gmail.com>
- <Yvpf67eCerqaDmlE@worktop.programming.kicks-ass.net> <CAADnVQKX5xJz5N_mVyf7wg4BT8Q2cNh8ze-SxTRfk6KtcFQ0=Q@mail.gmail.com>
- <YvpmAnFldR0iwAFC@worktop.programming.kicks-ass.net>
-In-Reply-To: <YvpmAnFldR0iwAFC@worktop.programming.kicks-ass.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 15 Aug 2022 08:35:53 -0700
-Message-ID: <CAADnVQJuDS22o7fi9wPZx9siAWgu1grQXXB02KfasxZ-RPdRSw@mail.gmail.com>
-Subject: Re: [RFC] ftrace: Add support to keep some functions out of ftrace
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCHv2 bpf-next] libbpf: making bpf_prog_load() ignore name if
+ kernel doesn't support
+Content-Language: en-GB
+To:     Hangbin Liu <liuhangbin@gmail.com>, netdev@vger.kernel.org
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
+        KP Singh <kpsingh@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf@vger.kernel.org
+References: <20220813000936.6464-1-liuhangbin@gmail.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <20220813000936.6464-1-liuhangbin@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 15, 2022 at 8:28 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Mon, Aug 15, 2022 at 08:17:42AM -0700, Alexei Starovoitov wrote:
-> > It's hiding a fake function from ftrace, since it's not a function
-> > and ftrace infra shouldn't show it tracing logs.
-> > In other words it's a _notrace_ function with nop5.
->
-> Then make it a notrace function with a nop5 in it. That isn't hard.
+On 13/08/2022 01:09, Hangbin Liu wrote:
+> Similar with commit 10b62d6a38f7 ("libbpf: Add names for auxiliary maps"),
+> let's make bpf_prog_load() also ignore name if kernel doesn't support
+> program name.
+> 
+> To achieve this, we need to call sys_bpf_prog_load() directly in
+> probe_kern_prog_name() to avoid circular dependency. sys_bpf_prog_load()
+> also need to be exported in the libbpf_internal.h file.
+> 
+> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+> ---
+> v2: move sys_bpf_prog_load definition to libbpf_internal.h. memset attr
+>     to 0 specifically to aviod padding.
+> ---
+>  tools/lib/bpf/bpf.c             |  6 ++----
+>  tools/lib/bpf/libbpf.c          | 12 ++++++++++--
+>  tools/lib/bpf/libbpf_internal.h |  3 +++
+>  3 files changed, 15 insertions(+), 6 deletions(-)
+> 
+> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+> index 6a96e665dc5d..575867d69496 100644
+> --- a/tools/lib/bpf/bpf.c
+> +++ b/tools/lib/bpf/bpf.c
+> @@ -84,9 +84,7 @@ static inline int sys_bpf_fd(enum bpf_cmd cmd, union bpf_attr *attr,
+>  	return ensure_good_fd(fd);
+>  }
+>  
+> -#define PROG_LOAD_ATTEMPTS 5
+> -
+> -static inline int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts)
+> +int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts)
+>  {
+>  	int fd;
+>  
+> @@ -263,7 +261,7 @@ int bpf_prog_load(enum bpf_prog_type prog_type,
+>  	attr.prog_ifindex = OPTS_GET(opts, prog_ifindex, 0);
+>  	attr.kern_version = OPTS_GET(opts, kern_version, 0);
+>  
+> -	if (prog_name)
+> +	if (prog_name && kernel_supports(NULL, FEAT_PROG_NAME))
+>  		libbpf_strlcpy(attr.prog_name, prog_name, sizeof(attr.prog_name));
+>  	attr.license = ptr_to_u64(license);
+>  
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 3f01f5cd8a4c..4a351897bdcc 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -4419,10 +4419,18 @@ static int probe_kern_prog_name(void)
+>  		BPF_MOV64_IMM(BPF_REG_0, 0),
+>  		BPF_EXIT_INSN(),
+>  	};
+> -	int ret, insn_cnt = ARRAY_SIZE(insns);
+> +	union bpf_attr attr;
+> +	int ret;
+> +
+> +	memset(&attr, 0, sizeof(attr));
+> +	attr.prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
+> +	attr.license = ptr_to_u64("GPL");
+> +	attr.insns = ptr_to_u64(insns);
+> +	attr.insn_cnt = (__u32)ARRAY_SIZE(insns);
+> +	libbpf_strlcpy(attr.prog_name, "test", sizeof(attr.prog_name));
+>  
+>  	/* make sure loading with name works */
+> -	ret = bpf_prog_load(BPF_PROG_TYPE_SOCKET_FILTER, "test", "GPL", insns, insn_cnt, NULL);
+> +	ret = sys_bpf_prog_load(&attr, sizeof(attr), PROG_LOAD_ATTEMPTS);
+>  	return probe_fd(ret);
+>  }
+>  
+> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+> index 4135ae0a2bc3..377642ff51fc 100644
+> --- a/tools/lib/bpf/libbpf_internal.h
+> +++ b/tools/lib/bpf/libbpf_internal.h
+> @@ -573,4 +573,7 @@ static inline bool is_pow_of_2(size_t x)
+>  	return x && (x & (x - 1)) == 0;
+>  }
+>  
+> +#define PROG_LOAD_ATTEMPTS 5
+> +int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts);
+> +
+>  #endif /* __LIBBPF_LIBBPF_INTERNAL_H */
 
-That's exactly what we're trying to do.
-Jiri's patch is one way to achieve that.
-What is your suggestion?
-Move it from C to asm ?
-Make it naked function with explicit inline asm?
-What else?
+Looks good to me, thanks!
+
+Acked-by: Quentin Monnet <quentin@isovalent.com>
