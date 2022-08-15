@@ -2,89 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C606593D05
-	for <lists+bpf@lfdr.de>; Mon, 15 Aug 2022 22:39:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF2FE59458B
+	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 01:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345957AbiHOUTZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Aug 2022 16:19:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42588 "EHLO
+        id S1344310AbiHOWCr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Aug 2022 18:02:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242296AbiHOURX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Aug 2022 16:17:23 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24950F46;
-        Mon, 15 Aug 2022 12:00:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 6833FB81113;
-        Mon, 15 Aug 2022 19:00:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 11F38C4347C;
-        Mon, 15 Aug 2022 19:00:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660590014;
-        bh=igEtDFyDX86Zzd6H6ZqMLRuFCiTeU4CezPBsoU96YE4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=c2rm9cGD0iojsVby0QXR3dyizi/DpuQu4QRgtk7T/5+c64xKH/1UTgBzKJOwJTce7
-         ycO2cIRkHEJ1YFpO4iCsDifaTUhMV8Lu46ddd63PL9IwAtXGOHWTbfavSyOLRahHS/
-         Iq7jEBItDlMTbe1b69EMnV0v3BR0ZSFhG5c6Wyf0G1VrRife6W8jXw1eRMTCiFwMIi
-         lO0HswApYjh7bdf8sh6XjCYbQqsNyTLwZ6RTZp13UQdgRNvSiR1PDKVIpettx3iHzT
-         NnbOJfggTIdVmqkulPfaleaZx8/SbdB6gD22nnmQE+5giIX05+2ipMtfdHSyxT0ESr
-         ZvyAQVT001Gww==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EB6DCE2A051;
-        Mon, 15 Aug 2022 19:00:13 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S1350175AbiHOWBx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Aug 2022 18:01:53 -0400
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D0F7112FB9;
+        Mon, 15 Aug 2022 12:36:10 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 2F8FB5C012D;
+        Mon, 15 Aug 2022 15:36:02 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Mon, 15 Aug 2022 15:36:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-transfer-encoding:date:date:from:from:in-reply-to
+        :message-id:mime-version:reply-to:sender:subject:subject:to:to;
+         s=fm3; t=1660592162; x=1660678562; bh=DNdw0j1TNN+ttmL1Ka7ho+2gv
+        Y2WjWAZUT+c7H7rzqU=; b=RodAOIGAhqLLlqeYqORk44XOWjF1OWeuc5D1VMEWM
+        EkMC3eUi+bsKfqg1zm3z6OWoum80cIX3lghOplkMrE6N8RFLJk8xsen9+G931dUG
+        rG9AZa19SBA4YXhO43KCii5/xYxCgy1HbUHcvZEzui1RJqJoB6J9Qoy57nSrQWOV
+        m1UwDbmQns3q1j07RRECMY2WV3lIoEPGkTVcXpJ+TBBC/W/kWWRPLM2ERspCvohv
+        Yu5SGrE6GDS2RWchOiTyLqdcx0QIdmDl5ff5TqNQHoCnCQZqV0Rx5VJZ7VEynhXu
+        MvclqllvQ5YkPIw6sz3VNZbKOqfbJCLytavbaslN5CXNg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:message-id
+        :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1660592162; x=1660678562; bh=DNdw0j1TNN+ttmL1Ka7ho+2gvY2WjWAZUT+
+        c7H7rzqU=; b=fK9aE9yOEgbddZ9PS0h4B8avf1ld4C/7wIaJrfiwTEGk+UJLcla
+        swwEsLLxiMPMazbwiiNDFtaz67aDzpKdxKzpT66NFNLP9ujk7OHopwJTNjl1BOr+
+        eOqd2nD3+QdRZVGSZQqvbpZXas2tUdzCTZQQdJbFeDWUTWMOa3QQ8pTywXZUXkjj
+        bihlm4rpb6cHuOft9kMuF0gJtPJmPNjOKgcKz0aP+EOQeuF24OH7hph8XFEu+GkM
+        IsVqOVLfKah4LmcHnE/SbQH1MpdJNRu2PIwY2A7GWsMhwidbJdlnU0C5GMmjWaAU
+        37u65ENo1uYlIQZdhZyeohlKGMA7sWj3GOA==
+X-ME-Sender: <xms:IaD6YvR9T9igMeY6R5BTc-DCXLNcdIAniqH04D-GjYu32Ihv7llqaQ>
+    <xme:IaD6Ygz154Gp7Xmd7i-O2KnJOzFRu1eoKEuBSayHIM-WHja3tVqMDB3ztTMTw4u7Z
+    MP494iZcHdkjP3TIQ>
+X-ME-Received: <xmr:IaD6Yk12XPyi7R-4FLCssOkpz3Tj6g1ZAjtB9YAEB89cfcsyDMKexkTaRElLmYxCPM3MieZo4wQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrvdehvddgudegudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdejtddmnecujfgurhephf
+    fvvefufffkofgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegu
+    gihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpedvgefgtefgleehhfeufe
+    ekuddvgfeuvdfhgeeljeduudfffffgteeuudeiieekjeenucevlhhushhtvghrufhiiigv
+    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:IaD6YvD4hp8mezAGDamjoAKG43UkTdSrkmyjo5g-Fw3066fSiN3oGw>
+    <xmx:IaD6YohiowkawBZwduAk7NqU894eDTXK380YQNBKk7rg5NPbusLtNg>
+    <xmx:IaD6YjrAXSvmrbVEezLTtZ3n1Lwc4S6xuzHeEXgamd42Wjh800zsFg>
+    <xmx:IqD6YrM1DHk3MhjV9t3-5iSDRptr0mHGYe6x4m0m8s_Wgv7z5pJhEQ>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 15 Aug 2022 15:36:00 -0400 (EDT)
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, memxor@gmail.com
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, pablo@netfilter.org, fw@strlen.de,
+        netfilter-devel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next 0/3] Support direct writes to nf_conn:mark
+Date:   Mon, 15 Aug 2022 13:35:45 -0600
+Message-Id: <cover.1660592020.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v4 0/3] Add more bpf_*_ct_lookup() selftests
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <166059001395.9081.18240847737000160882.git-patchwork-notify@kernel.org>
-Date:   Mon, 15 Aug 2022 19:00:13 +0000
-References: <cover.1660254747.git.dxu@dxuuu.xyz>
-In-Reply-To: <cover.1660254747.git.dxu@dxuuu.xyz>
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, memxor@gmail.com, pablo@netfilter.org,
-        fw@strlen.de, netfilter-devel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_SUSPICIOUS_NTLD,
+        FROM_SUSPICIOUS_NTLD_FP,PDS_OTHER_BAD_TLD,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Support direct writes to nf_conn:mark from TC and XDP prog types. This
+is useful when applications want to store per-connection metadata. This
+is also particularly useful for applications that run both bpf and
+iptables/nftables because the latter can trivially access this metadata.
 
-This series was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+One example use case would be if a bpf prog is responsible for advanced
+packet classification and iptables/nftables is later used for routing
+due to pre-existing/legacy code.
 
-On Thu, 11 Aug 2022 15:55:24 -0600 you wrote:
-> This patchset adds more bpf_*_ct_lookup() selftests. The goal is to test
-> interaction with netfilter subsystem as well as reading from `struct
-> nf_conn`. The first is important when migrating legacy systems towards
-> bpf. The latter is important in general to take full advantage of
-> connection tracking.
-> 
-> I'll follow this patchset up with support for writing to `struct nf_conn`.
-> 
-> [...]
+Daniel Xu (3):
+  bpf: Remove duplicate PTR_TO_BTF_ID RO check
+  bpf: Add support for writing to nf_conn:mark
+  selftests/bpf: Add tests for writing to nf_conn:mark
 
-Here is the summary with links:
-  - [bpf-next,v4,1/3] selftests/bpf: Add existing connection bpf_*_ct_lookup() test
-    https://git.kernel.org/bpf/bpf-next/c/e81fbd4c1ba7
-  - [bpf-next,v4,2/3] selftests/bpf: Add connmark read test
-    https://git.kernel.org/bpf/bpf-next/c/99799de2cba2
-  - [bpf-next,v4,3/3] selftests/bpf: Update CI kconfig
-    https://git.kernel.org/bpf/bpf-next/c/8308bf207ce6
+ include/net/netfilter/nf_conntrack_bpf.h      | 18 +++++++
+ kernel/bpf/verifier.c                         |  3 --
+ net/core/filter.c                             | 34 +++++++++++++
+ net/netfilter/nf_conntrack_bpf.c              | 50 +++++++++++++++++++
+ .../testing/selftests/bpf/prog_tests/bpf_nf.c |  1 +
+ .../testing/selftests/bpf/progs/test_bpf_nf.c |  6 ++-
+ .../selftests/bpf/progs/test_bpf_nf_fail.c    | 14 ++++++
+ 7 files changed, 121 insertions(+), 5 deletions(-)
 
-You are awesome, thank you!
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.37.1
 
