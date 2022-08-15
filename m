@@ -2,52 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83A61592D9D
-	for <lists+bpf@lfdr.de>; Mon, 15 Aug 2022 12:59:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D4C2592DAA
+	for <lists+bpf@lfdr.de>; Mon, 15 Aug 2022 13:01:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230462AbiHOK7b (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Aug 2022 06:59:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43618 "EHLO
+        id S241850AbiHOLBv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Aug 2022 07:01:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231901AbiHOK73 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Aug 2022 06:59:29 -0400
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6345E1DA57
-        for <bpf@vger.kernel.org>; Mon, 15 Aug 2022 03:59:27 -0700 (PDT)
-Received: by mail-io1-f70.google.com with SMTP id w7-20020a5d9607000000b0067c6030dfb8so3987370iol.10
-        for <bpf@vger.kernel.org>; Mon, 15 Aug 2022 03:59:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc;
-        bh=DXqErMvUBdHq7OfEGBXknlQpwkkczL+Z3BMMKbEkvyw=;
-        b=Dsi+hFn4J3zr1bY4V/Vf4qRVdlkDN710omKjBfunaJWhjh3HsNMm335P9cY/3L/9QZ
-         1WhFrE8FlhT4uqwG4u6mNOHo7RVAUBgaGJElExcBD/v8pLGQ3yDuiPNyJ40OagWS1Mq6
-         LnXowbnbEM5G4XwPFRtLeugX+OoLVF3MGXma5fRlgkgvAyuR4kzOar5b0tiknxq94iVi
-         BSUiG4pNqtj12PnwA81n8IOeQPV0mMGPwVfScIQrb2mAQVN64bGNWC5UqqSItoHY4v6o
-         XJGVghi7V5lJhKxhg0Z40CWn9F7wgh+lm5ktsfP7q+FsFu/gZrs5oVaLUf9G/beAaIYa
-         CN0g==
-X-Gm-Message-State: ACgBeo3XyAdO/F0c/j0LyFP0Uuzt+F7gDkQ8zAova9cYlkpIe0qV06QD
-        lpn9A0VNpAPXrCthm4U8/AP/lFNcslVR6uRcVYU+UEREWr4H
-X-Google-Smtp-Source: AA6agR6nr9qzB+ba7n1CjJZAcmU7TM9/QbGu1H5oefQBcBU71azSXHjRM3eyCdAMY+CL1szur6nm5b0N4DUgrNCO99LAdDh5sBZ8
+        with ESMTP id S241757AbiHOLBX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Aug 2022 07:01:23 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C169237ED;
+        Mon, 15 Aug 2022 04:01:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id EDB03B80E1B;
+        Mon, 15 Aug 2022 11:01:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBFF9C43141;
+        Mon, 15 Aug 2022 11:01:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1660561279;
+        bh=cJxtEjsOPdD+28GEo/pZSc8mfFhYYMFZySPDzKfTUaw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=T+/ShaanW8wZOBJ/SIcn5ow+zcCc4WSMhAAdhraztsvUEzTfBrw/wcpqxFD51Jdn+
+         7bhidBpzI8hvyK5ab1oUvOtDcjuV0vC5ApPHUObPTCdgSYcUSIIpttCefWvqXCjMUQ
+         OLuBid0zG2UWb2ZSDz/LA/OOtW4qsN3KEpR/uL0bFBXe2Uyd0Ry85VgXRgZ53Md2Rc
+         MoOvQdy6euZsHrj+SWkH/9HuNq9rATwlDWn//nrkyVNKcSzypdgAUZ3IplfS8iyKdl
+         GFmLCUdyb+LUGMOdy8fJgPf3gd5DWkP8khK82E0kB1o/4DRtg3hLSHtitVSeB9N3xS
+         rpmQM0JThwRcw==
+Received: by mail-ej1-f46.google.com with SMTP id kb8so12943101ejc.4;
+        Mon, 15 Aug 2022 04:01:19 -0700 (PDT)
+X-Gm-Message-State: ACgBeo1T69CkhNJL62Hj1G+DkO448ecLw3sO1zZntuKkpTPQ8wsPPmUR
+        KhBvIb0V/AlXmJKaPWKy4Inm2UZAOHrqNi7j6HA=
+X-Google-Smtp-Source: AA6agR6TXzByijRnQWrhX/xMZDPr0y7EqMxYTzHa5iTd0WrjHBxMUttMH/b1n+vQ8+rWBMd1wvlgn58BPbChUscUnR4=
+X-Received: by 2002:a17:907:1c26:b0:730:960f:118 with SMTP id
+ nc38-20020a1709071c2600b00730960f0118mr9975626ejc.650.1660561277990; Mon, 15
+ Aug 2022 04:01:17 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:22c8:b0:343:34af:32ff with SMTP id
- j8-20020a05663822c800b0034334af32ffmr7101249jat.238.1660561166761; Mon, 15
- Aug 2022 03:59:26 -0700 (PDT)
-Date:   Mon, 15 Aug 2022 03:59:26 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007902fc05e6458697@google.com>
-Subject: [syzbot] WARNING: suspicious RCU usage in bpf_sk_reuseport_detach
-From:   syzbot <syzbot+24bcff6e82ce253f23ec@syzkaller.appspotmail.com>
-To:     bpf@vger.kernel.org, davem@davemloft.net, ecree.xilinx@gmail.com,
-        edumazet@google.com, habetsm.xilinx@gmail.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+References: <CAADnVQ+hLnyztCi9aqpptjQk-P+ByAkyj2pjbdD45dsXwpZ0bw@mail.gmail.com>
+ <20220722120854.3cc6ec4b@gandalf.local.home> <20220722122548.2db543ca@gandalf.local.home>
+ <YtsRD1Po3qJy3w3t@krava> <20220722174120.688768a3@gandalf.local.home>
+ <YtxqjxJVbw3RD4jt@krava> <YvbDlwJCTDWQ9uJj@krava> <20220813150252.5aa63650@rorschach.local.home>
+ <YvkTLziHX4BINnla@krava> <77477710-c383-73b1-4f78-fe65a81c09b7@huawei.com> <Yvn+En35XDqKWptm@krava>
+In-Reply-To: <Yvn+En35XDqKWptm@krava>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Date:   Mon, 15 Aug 2022 13:01:06 +0200
+X-Gmail-Original-Message-ID: <CAJ+HfNjLbsDuE4EB_1jwSOnyaUdjejMZJP6U=zcKvZd=iwhhDQ@mail.gmail.com>
+Message-ID: <CAJ+HfNjLbsDuE4EB_1jwSOnyaUdjejMZJP6U=zcKvZd=iwhhDQ@mail.gmail.com>
+Subject: Re: [RFC] ftrace: Add support to keep some functions out of ftrace
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Chen Zhongjin <chenzhongjin@huawei.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,94 +80,30 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Mon, 15 Aug 2022 at 10:04, Jiri Olsa <olsajiri@gmail.com> wrote:
+[...]
+> > > >
+> > > > Today, objtool has also got involved, and added an "--mcount" optio=
+n
+> > > > that will create the section too.
+> > > I overlooked that objtool is involved as well,
+> > > will check on that
+> >
+> > objtool --mcount option only involves mcount_loc generation (see
+> > annotate_call_site) and other validation check call destination directl=
+y
+> > (see is_fentry_call).
+> >
+> > Some simply removing --mcount option dose work for this.
+> >
+> >
+> > Another question, it seems we can export and use DEFINE_BPF_DISPATCHER =
+out
+> > of kernel, does that means we should add NO_MCOUNT_FILES for these sing=
+le
+> > uages as well?
+>
+> yes, cc-ing Bj=C3=B6rn to make sure it's valid use case for dispatcher
+>
 
-syzbot found the following issue on:
-
-HEAD commit:    94ce3b64c62d net/tls: Use RCU API to access tls_ctx->netdev
-git tree:       net
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=14641e15080000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=53da55f2bdeb0d4c
-dashboard link: https://syzkaller.appspot.com/bug?extid=24bcff6e82ce253f23ec
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=106c89fd080000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17ead885080000
-
-The issue was bisected to:
-
-commit f72c38fad234759fe943cb2e40bf3d0f7de1d4d9
-Author: Edward Cree <ecree.xilinx@gmail.com>
-Date:   Wed Jul 20 18:33:48 2022 +0000
-
-    sfc: hook up ef100 representor TX
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=125bf9fd080000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=115bf9fd080000
-console output: https://syzkaller.appspot.com/x/log.txt?x=165bf9fd080000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+24bcff6e82ce253f23ec@syzkaller.appspotmail.com
-Fixes: f72c38fad234 ("sfc: hook up ef100 representor TX")
-
-=============================
-WARNING: suspicious RCU usage
-5.19.0-syzkaller-05408-g94ce3b64c62d #0 Not tainted
------------------------------
-include/net/sock.h:592 suspicious rcu_dereference_check() usage!
-
-other info that might help us debug this:
-
-
-rcu_scheduler_active = 2, debug_locks = 1
-4 locks held by syz-executor334/3611:
- #0: ffff888073b7be10 (&sb->s_type->i_mutex_key#10){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:760 [inline]
- #0: ffff888073b7be10 (&sb->s_type->i_mutex_key#10){+.+.}-{3:3}, at: __sock_release+0x86/0x280 net/socket.c:649
- #1: ffffc900014e5c28 (&table->hash[i].lock){+...}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:354 [inline]
- #1: ffffc900014e5c28 (&table->hash[i].lock){+...}-{2:2}, at: udp_lib_unhash net/ipv4/udp.c:2014 [inline]
- #1: ffffc900014e5c28 (&table->hash[i].lock){+...}-{2:2}, at: udp_lib_unhash+0x1d5/0x730 net/ipv4/udp.c:2004
- #2: ffffffff8d7a9a78 (reuseport_lock){+...}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:354 [inline]
- #2: ffffffff8d7a9a78 (reuseport_lock){+...}-{2:2}, at: reuseport_detach_sock+0x22/0x4a0 net/core/sock_reuseport.c:346
- #3: ffff888145f9a0b8 (clock-AF_INET){++..}-{2:2}, at: bpf_sk_reuseport_detach+0x26/0x190 kernel/bpf/reuseport_array.c:26
-
-stack backtrace:
-CPU: 1 PID: 3611 Comm: syz-executor334 Not tainted 5.19.0-syzkaller-05408-g94ce3b64c62d #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/22/2022
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- __rcu_dereference_sk_user_data_with_flags include/net/sock.h:592 [inline]
- bpf_sk_reuseport_detach+0x156/0x190 kernel/bpf/reuseport_array.c:27
- reuseport_detach_sock+0x8c/0x4a0 net/core/sock_reuseport.c:362
- udp_lib_unhash net/ipv4/udp.c:2016 [inline]
- udp_lib_unhash+0x210/0x730 net/ipv4/udp.c:2004
- sk_common_release+0xba/0x390 net/core/sock.c:3600
- inet_release+0x12e/0x280 net/ipv4/af_inet.c:428
- __sock_release+0xcd/0x280 net/socket.c:650
- sock_close+0x18/0x20 net/socket.c:1365
- __fput+0x277/0x9d0 fs/file_table.c:320
- task_work_run+0xdd/0x1a0 kernel/task_work.c:177
- exit_task_work include/linux/task_work.h:38 [inline]
- do_exit+0xade/0x29d0 kernel/exit.c:795
- do_group_exit+0xd2/0x2f0 kernel/exit.c:925
- __do_sys_exit_group kernel/exit.c:936 [inline]
- __se_sys_exit_group kernel/exit.c:934 [inline]
- __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:934
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fe407d09699
-Code: Unable to access opcode bytes at RIP 0x7fe407d0966f.
-RSP: 002b:00007ffc0ff152a8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Hmm, could you expand a bit on how this would work?
