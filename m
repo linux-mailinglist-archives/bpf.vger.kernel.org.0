@@ -2,125 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E71594B4D
-	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 02:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF69B594CF5
+	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 03:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351797AbiHPAOf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Aug 2022 20:14:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37164 "EHLO
+        id S244164AbiHPBXT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Aug 2022 21:23:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356609AbiHPAMH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Aug 2022 20:12:07 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BD7ACCE36
-        for <bpf@vger.kernel.org>; Mon, 15 Aug 2022 13:29:32 -0700 (PDT)
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27FIbwYf014763
-        for <bpf@vger.kernel.org>; Mon, 15 Aug 2022 13:29:31 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=zrAu2d6Awa3DTHIWUHb462duCgxHnfPFFfUZlSOGOdk=;
- b=oyYACSCpPU418kbuX5HnHwP0VwsFL2GVaC6E8GVNeMhNomimS3MT9MlZWIlBSNcHSvMO
- o3dkrbeWxU6FFw9diVrI2pP5H/d3ZLZPPrGE+O6x+YpP1QjxRPpVlyxC9ORJzPSZnK9M
- 9MwhhKiWS+SDqcCK7wunnKN5eRWoOqkkn8E= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hyry8t3vw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 15 Aug 2022 13:29:30 -0700
-Received: from twshared22246.03.prn5.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 15 Aug 2022 13:29:30 -0700
-Received: by devbig150.prn5.facebook.com (Postfix, from userid 187975)
-        id BC718DF6F050; Mon, 15 Aug 2022 13:29:18 -0700 (PDT)
-From:   Jie Meng <jmeng@fb.com>
-To:     <netdev@vger.kernel.org>
-CC:     <kafai@fb.com>, <kuba@kernel.org>, <edumazet@google.com>,
-        <bpf@vger.kernel.org>, Jie Meng <jmeng@fb.com>
-Subject: [PATCH net-next] tcp: Make SYN ACK RTO tunable by BPF programs with TFO
-Date:   Mon, 15 Aug 2022 13:29:00 -0700
-Message-ID: <20220815202900.3961097-1-jmeng@fb.com>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S244210AbiHPBW7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Aug 2022 21:22:59 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE6F61C6AD8
+        for <bpf@vger.kernel.org>; Mon, 15 Aug 2022 14:13:27 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id w18so1576010qki.8
+        for <bpf@vger.kernel.org>; Mon, 15 Aug 2022 14:13:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=i1YnZDU4kGkUqvV68QP5vWBRPLjGwIcMu76nuGXlI1w=;
+        b=i9KT+nlIeo4sOmKbkuU5XWL5+h8V3JdrhAle4xxsyCRvLbFhGDB7sd4z19BwiNcfaE
+         4EuGTaG3d7cpnzjaB4g7LUVMlrmZnq/REudt4tOlnQ75HLaAHtI2trxUKf2mMLisTboI
+         pVukSq5zi8A+93NLG9Ap70JSEVpKq4zTdmIilCVRWTG+SW2oDqlIDXvcW1n/6zB+Sl26
+         EBGy2zwla+bX6tB4cJ1jT5fMYh8Q1YUIi18LfdnHXP7jKChD7WaUMdSehjflR9yiZJeS
+         /LyJZNHx/L9681CppzBG+eBfI8aRp6JatjQhBY3b6qw3PT77qMJg2oTXwGcA/DbD35zK
+         HqUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=i1YnZDU4kGkUqvV68QP5vWBRPLjGwIcMu76nuGXlI1w=;
+        b=JKfRdtvoNFS377hzCEin131oZ1aFqjAAj/5enmv0bKRd3bYyPFwjf52SQ0Z0Dnh4YI
+         5M+yC+ZrB4h1whSLmmoignxNCZo0KK3W+FVjEVOGkxv8LCNvndYnEzm96YI0JN83Cbm4
+         5dMl1Na64zoVSxqIs9xELyBodCoKXX3xMArsvun6bmJs7muVYje6+pekb1RvEO6TkQIe
+         +48GLViHa6+rl5hJ5dTqW6AOAZ6gz/MFnEuREUS2TI/O7sAuCSXfV0/uvOUZvZL9GBok
+         VkbUFr3jwuhxi1ugWysK4IWNZvzHYu9K7fgAhi26r3LI2v8xu4B+fSrNo+QMIl+6++9e
+         sBFQ==
+X-Gm-Message-State: ACgBeo0KrEiluAot8/AlzDRQLNnklMP3p32JVhJ+6ZiuqjZOdLnP8LH0
+        4j7fgOIpHcNKJXV1ssuL+i9fAaSNS8dsn7jOzAaczg==
+X-Google-Smtp-Source: AA6agR5pzAAJiuU9oX7Kdy38RRItPdNJmP3D71vCHcN9IBFjaFJ7BYZAyyUaT85g2vLwlvmgqg2PHrRSMbAXXhk1Sng=
+X-Received: by 2002:a05:620a:459e:b0:6ba:c5a7:485c with SMTP id
+ bp30-20020a05620a459e00b006bac5a7485cmr12410926qkb.267.1660598004119; Mon, 15
+ Aug 2022 14:13:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: fvPNfJGLsoNEHDw3r82auZZVrdTVX3iG
-X-Proofpoint-ORIG-GUID: fvPNfJGLsoNEHDw3r82auZZVrdTVX3iG
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-08-15_08,2022-08-15_01,2022-06-22_01
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20220808155248.2475981-1-void@manifault.com> <CA+khW7iuENZHvbyWUkq1T1ieV9Yz+MJyRs=7Kd6N59kPTjz7Rg@mail.gmail.com>
+ <20220810011510.c3chrli27e6ebftt@maniforge>
+In-Reply-To: <20220810011510.c3chrli27e6ebftt@maniforge>
+From:   Hao Luo <haoluo@google.com>
+Date:   Mon, 15 Aug 2022 14:13:13 -0700
+Message-ID: <CA+khW7iBeAW9tzuZqVaafcAFQZhNwjdEBwE8C-zAaq8gkyujFQ@mail.gmail.com>
+Subject: Re: [PATCH 0/5] bpf: Add user-space-publisher ringbuffer map type
+To:     David Vernet <void@manifault.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, john.fastabend@gmail.com, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, kpsingh@kernel.org, sdf@google.com,
+        jolsa@kernel.org, tj@kernel.org, joannelkoong@gmail.com,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Instead of the hardcoded TCP_TIMEOUT_INIT, this diff calls tcp_timeout_in=
-it
-to initiate req->timeout like the non TFO SYN ACK case.
+On Tue, Aug 9, 2022 at 6:15 PM David Vernet <void@manifault.com> wrote:
+>
+> Hi Hao,
+>
+> On Mon, Aug 08, 2022 at 11:57:53AM -0700, Hao Luo wrote:
+> > > Note that one thing that is not included in this patch-set is the ability
+> > > to kick the kernel from user-space to have it drain messages. The selftests
+> > > included in this patch-set currently just use progs with syscall hooks to
+> > > "kick" the kernel and have it drain samples from a user-producer
+> > > ringbuffer, but being able to kick the kernel using some other mechanism
+> > > that doesn't rely on such hooks would be very useful as well. I'm planning
+> > > on adding this in a future patch-set.
+> > >
+> >
+> > This could be done using iters. Basically, you can perform draining in
+> > bpf_iter programs and export iter links as bpffs files. Then to kick
+> > the kernel, you simply just read() the file.
+>
+> Thanks for pointing this out. I agree that iters could be used this way to
+> kick the kernel, and perhaps that would be a sufficient solution. My
+> thinking, however, was that it would be useful to provide some APIs that
+> are a bit more ergonomic, and specifically meant to enable kicking
+> arbitrary "pre-attached" callbacks in a BPF prog, possibly along with some
+> payload from userspace.
 
-Tested using the following packetdrill script, on a host with a BPF
-program that sets the initial connect timeout to 10ms.
+David, very sorry about the late reply. Thank you for sharing your
+thoughts. I am looking at your v2 and understand you need a way to
+trigger the kernel to consume samples in the ringbuf, which seems a
+reasonable motivation to me.
 
-`../../common/defaults.sh`
+>
+> Iters allow userspace to kick the kernel, but IMO they're meant to enable
+> data extraction from the kernel, and dumping kernel data into user-space.
 
-// Initialize connection
-    0 socket(..., SOCK_STREAM, IPPROTO_TCP) =3D 3
-   +0 setsockopt(3, SOL_TCP, TCP_FASTOPEN, [1], 4) =3D 0
-   +0 bind(3, ..., ...) =3D 0
-   +0 listen(3, 1) =3D 0
+Not necessarily extracting data and dumping data. It could be used to
+do operations on a set of objects, the operation could be
+notification. Iterating and notifying are orthogonal IMHO.
 
-   +0 < S 0:0(0) win 32792 <mss 1000,sackOK,FO TFO_COOKIE>
-   +0 > S. 0:0(0) ack 1 <mss 1460,nop,nop,sackOK>
-   +.01 > S. 0:0(0) ack 1 <mss 1460,nop,nop,sackOK>
-   +.02 > S. 0:0(0) ack 1 <mss 1460,nop,nop,sackOK>
-   +.04 > S. 0:0(0) ack 1 <mss 1460,nop,nop,sackOK>
-   +.01 < . 1:1(0) ack 1 win 32792
+> What I'm proposing is a more generalizable way of driving logic in the
+> kernel from user-space.
+> Does that make sense? Looking forward to hearing your thoughts.
 
-   +0 accept(3, ..., ...) =3D 4
+Yes, sort of. I see the difference between iter and the proposed
+interface. But I am not clear about the motivation of a new APis for
+kicking callbacks from userspace. I guess maybe it will become clear,
+when you publish a concerte RFC of that interface and integrates with
+your userspace publisher.
 
-Signed-off-by: Jie Meng <jmeng@fb.com>
----
- net/ipv4/tcp_fastopen.c | 3 ++-
- net/ipv4/tcp_timer.c    | 2 +-
- 2 files changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/net/ipv4/tcp_fastopen.c b/net/ipv4/tcp_fastopen.c
-index 825b216d11f5..45cc7f1ca296 100644
---- a/net/ipv4/tcp_fastopen.c
-+++ b/net/ipv4/tcp_fastopen.c
-@@ -272,8 +272,9 @@ static struct sock *tcp_fastopen_create_child(struct =
-sock *sk,
- 	 * The request socket is not added to the ehash
- 	 * because it's been added to the accept queue directly.
- 	 */
-+	req->timeout =3D tcp_timeout_init(child);
- 	inet_csk_reset_xmit_timer(child, ICSK_TIME_RETRANS,
--				  TCP_TIMEOUT_INIT, TCP_RTO_MAX);
-+				  req->timeout, TCP_RTO_MAX);
-=20
- 	refcount_set(&req->rsk_refcnt, 2);
-=20
-diff --git a/net/ipv4/tcp_timer.c b/net/ipv4/tcp_timer.c
-index b4dfb82d6ecb..cb79127f45c3 100644
---- a/net/ipv4/tcp_timer.c
-+++ b/net/ipv4/tcp_timer.c
-@@ -428,7 +428,7 @@ static void tcp_fastopen_synack_timer(struct sock *sk=
-, struct request_sock *req)
- 	if (!tp->retrans_stamp)
- 		tp->retrans_stamp =3D tcp_time_stamp(tp);
- 	inet_csk_reset_xmit_timer(sk, ICSK_TIME_RETRANS,
--			  TCP_TIMEOUT_INIT << req->num_timeout, TCP_RTO_MAX);
-+			  req->timeout << req->num_timeout, TCP_RTO_MAX);
- }
-=20
-=20
---=20
-2.30.2
-
+Hao
