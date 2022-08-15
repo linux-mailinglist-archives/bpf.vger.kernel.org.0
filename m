@@ -2,301 +2,258 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B4E459290A
-	for <lists+bpf@lfdr.de>; Mon, 15 Aug 2022 07:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 304EE592912
+	for <lists+bpf@lfdr.de>; Mon, 15 Aug 2022 07:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233117AbiHOFQH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Aug 2022 01:16:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57846 "EHLO
+        id S231204AbiHOF3d (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Aug 2022 01:29:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240629AbiHOFPs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Aug 2022 01:15:48 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 042A6115D
-        for <bpf@vger.kernel.org>; Sun, 14 Aug 2022 22:15:47 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id z20so8280048edb.9
-        for <bpf@vger.kernel.org>; Sun, 14 Aug 2022 22:15:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc;
-        bh=WboJMcAwXm+hJMEu30UpiOPSq2qIq1XHhMmoik5uyRo=;
-        b=NY+Y/Og+tYPCd3vAfR3axxYeW3D2bHFIjFkJjaY1BmYQL49Rp1k1Yv3OC+jC/0KSuZ
-         EzSj8RgT5YP7wlk0ggv3M/Ad9Ub/P44DNopi7/3KeQVnAubT+uTexUHrLYmO5xRRnrNA
-         o2midymefFJOdFaZvQ/O5UOVURlnvGjdpYi6V1bPLLaihb0t7IP2dWl0TnMchUESEnYc
-         Mo1wMdEenCk15oxbqbrHdeYUwdDJXw8ygwbTH5sJOvU0opoxEvn/pu2ES3aNKon5pMxs
-         wq+nBl4zjEwPWhd0I45mDYkEzdxcR2nPlEbncx4iKhFC+TitjqE+Adat0pPzxq98YM5r
-         KQ+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
-        bh=WboJMcAwXm+hJMEu30UpiOPSq2qIq1XHhMmoik5uyRo=;
-        b=JRXAJvwIwGZBusgVDZEDcWm2gXJIjuBu9UecN8lKLLH6nAdI1itAyY/CXtf6iIgV3a
-         URnD+z5FtN0XcW66xbH2GXq5SWwDiKGeV7kSwpwor0iqB1dcVHiQgsdzrTktc7rBCKQx
-         7vO0JXjtoDlJtDJh1VLZ7UGywvBfSVE2+MNs0EgJTNPZY9zkuluWcbPY/EI45j/oPHGp
-         5i/79JS1aOx2MHep7lwFhYjwnGod2KFkNLnWxVKNSbithb/unOTjdkDfHNJkSgLQKvK1
-         KJOZnam6LrXOvg7VhBWJ0AE48X1yHt7RyVG9siUwGZlN63wlePHHMANKH8bup56Xy0OD
-         s/QQ==
-X-Gm-Message-State: ACgBeo3/1XiVXcwKCwmyeDMZon/YQcwB5GCqueXuaBHOVtX2ltX3pOfn
-        96KASETDTKK0JlXfHcuB6zDXsOxikug=
-X-Google-Smtp-Source: AA6agR7guj41UCzoc0jRQLbApAsb5aoeUjwlOazPNhh5gzPvEyp5BjEW8AvfUY3ql73Iad/osvMCPA==
-X-Received: by 2002:aa7:c78e:0:b0:441:c311:9dcd with SMTP id n14-20020aa7c78e000000b00441c3119dcdmr12766693eds.155.1660540545332;
-        Sun, 14 Aug 2022 22:15:45 -0700 (PDT)
-Received: from localhost (vpn-253-028.epfl.ch. [128.179.253.28])
-        by smtp.gmail.com with ESMTPSA id op9-20020a170906bce900b0072b810897desm3634334ejb.105.2022.08.14.22.15.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Aug 2022 22:15:45 -0700 (PDT)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
+        with ESMTP id S229915AbiHOF3c (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Aug 2022 01:29:32 -0400
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 461A01582B
+        for <bpf@vger.kernel.org>; Sun, 14 Aug 2022 22:29:31 -0700 (PDT)
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27E41Nr0026595;
+        Sun, 14 Aug 2022 22:29:16 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=buZFJh19S49KUVwuwZTkyEGPyRJEkoIKSPyqMTd+BGQ=;
+ b=fG6zS3LqxqqjUaD9EgGUdWndvYX2J9PxH4eloSFZi2GhP7WEsmYHbbHosNzhyX4AfXNn
+ PCM8dadCkPW10Kq2QWYv7CJtfl/EhK48XUoJqkNq18e7hva4JuWKNoepLDpYGNBInahf
+ pCSKEblf7d79dnS//WAW6Zi/cAu6B7nPrTY= 
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hx9pyg9ya-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 14 Aug 2022 22:29:16 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MqBVplZGso4KWmh9sBmXs51r0FP5rdpwrWEwd2zwbm+Yab4XKX3daHFrJ9XQ9ChYhWRbQCcOdixehmBHN2278R/L6HrmnjI7bt7FhUOXmqZBLsbKxRUCGiH94AjIu+1PWaBaFUTKjJ/9LG4T/d/9UYfANP6tIyiNdK4vsMC/6gTKj2K0/xhhhrgaoR8Cy83SADTQ8gry3E6IZVJS42Yc6cFX8ROh5BXQsbaDABmMIjPBO+vF7kbPu3az6cZbtFgts4Y1wgD3v8wOoGQov/Ci79SgvyYl/nBDc3ktiaiKSE/RAOrogG8l1+9WBiJLfEDEn+PjO0GT+StvHw+7RekyDg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=buZFJh19S49KUVwuwZTkyEGPyRJEkoIKSPyqMTd+BGQ=;
+ b=dHtsN11wqKT/k8E8fH1dOtqG7iNRocnZ975ZV3TZQ5ZJwNMFmGg8LPb/jwTs8Q34JGpGB0DlEDW3Iajea9dhwvKtPiX3qodAia8+7qnOPPo2rSbQjpbPiObdPO/wJtAVOZJtbBzhEVvf8g1GfiQdb1KyjRQe+YxHSTs8PwMBms1Jz1PAjyUHKQq57j6UnfJI6QjktwQvPC8p0bHDL8M0eWDcLHmMt/7IV2h6x5gvgaMmc7O/YfpuM+gdjMaUObHXilPCoFcKMxyT6VixUcgKEFEwQDl1Kg2G/1Q+JTEt5hlP/wQPcwqGdTp7RKxW0fUTgaA9t8UCCECy0nVRiNUo1w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SJ0PR15MB4581.namprd15.prod.outlook.com (2603:10b6:a03:377::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5504.28; Mon, 15 Aug
+ 2022 05:29:14 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::dde5:25a3:a125:7bc7]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::dde5:25a3:a125:7bc7%2]) with mapi id 15.20.5525.010; Mon, 15 Aug 2022
+ 05:29:14 +0000
+Message-ID: <ddc5550d-b820-6975-a4dc-53e3656a66d0@fb.com>
+Date:   Sun, 14 Aug 2022 22:29:11 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.12.0
+Subject: Re: [PATCH bpf-next v2 3/6] bpf: x86: Support in-register struct
+ arguments
+Content-Language: en-US
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH RFC bpf v1 3/3] selftests/bpf: Add tests for callbacks fixes
-Date:   Mon, 15 Aug 2022 07:15:40 +0200
-Message-Id: <20220815051540.18791-4-memxor@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220815051540.18791-1-memxor@gmail.com>
-References: <20220815051540.18791-1-memxor@gmail.com>
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
+References: <20220812052419.520522-1-yhs@fb.com>
+ <20220812052435.523068-1-yhs@fb.com> <YvlZ+ETaaTD3hwrM@krava>
+From:   Yonghong Song <yhs@fb.com>
+In-Reply-To: <YvlZ+ETaaTD3hwrM@krava>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BY3PR03CA0028.namprd03.prod.outlook.com
+ (2603:10b6:a03:39a::33) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6036; i=memxor@gmail.com; h=from:subject; bh=99EcuOKPJECuxwRzBUnopm3k2Xtp1EeIE/gex8PFlQw=; b=owEBbQKS/ZANAwAKAUzgyIZIvxHKAcsmYgBi+dZI69t5Yd117iXA+pOzKTtYJiOlxY3ayEhbdNZt FDimeQ6JAjMEAAEKAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYvnWSAAKCRBM4MiGSL8RyqRDD/ 0UGL84Y/MqNVIxkR9F4c4TxMGrGZQ55yOC9WgaKbS3mUc2HOJD4j5Ndvnve0cbAWtLYZN3qIdaceAw FIwtg6Vd1Ze3Gyy160o213sHRYzD9Ons1w538EDm53dcsR+ONr9VntC4ZkdpStxdbOww0l1pdxKg8i diVIxcJoNXEPOl00H2A2o2rI4GwlWQBNbKofAVmKDAaoymjHahoo2uk+yUFcH2Hb7wycd/dxWrFWuS Tq4gkS1N9HC+EoK3FsCj47FmArPwdyv+ADljy6j8wEaM3hOTcJ3y1HMkYpI+hcyGTur5Niu7SMxvrW dyMAjq8/AyjST5n+4fVgbWAxuEp9a7ZvayZs5acidIvrE9OW5/AamcFOr7arB50gq0Ry9NXGK2k6Lb bK1cl+MFZ1in1fU4CFkkRBYy320c1lsN+VKzFF7XW3GwCkSdb0AUZkVeqnMNAixUIBMga6sTEH7Lxb D/hcNNQcZH0cKfR5qIfn1FHL+5zvTmRKUaATK0ScWEoGoueLJeERzT3aIjgj0/D1+pL7e6dqe/2q9R CToMuD2EYflIIT1KbylOYD0G5WxDaW8OnTtNiixmtnLFKTkndFDxgg0wMzDDhJD12kFh/Eir2gr4jc lo4aV4W/qJAYKe/IYA/JbLToNDYW89dM9G5fLObyS2xKq3l/3KM7E7hanQxw==
-X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 21cd525b-4fbb-407b-21d6-08da7e7f171c
+X-MS-TrafficTypeDiagnostic: SJ0PR15MB4581:EE_
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vwKB7v2usbenC6XmpljterTQBmGCN64wnxUIgzxW4/QZ+pOX7IpH/Gi1Xpj0fVozx39PTxItysJRyvuZITsqgvpd9vgH0nNhjy2gCuiqcnbyt7HVD8TRHTbemgGHG4Fn6VMTrl5To6qZ7/MnOEQjQuHYGk7r6s/Cw67s4HhOSY9OJWkR77HxNbpHOkW2wyDKrF8rYPSNrZD2KvOKaxQyVQGtIyasZn072wBVkBRvHSDB4a+I9CHdkO8Bc1Af0BpXCgbkV+eUBP1c+kcyA/0cYvKh3p5q/uRK34I8iqMvY/mU9rD0x+aEptPc7iYxWJE9BwS1kjlt2/ugD7hsBml33Vm3rtj7TYi9IwZv1Nn05vVZbG2jq0SgHh+Hk785piTn3vbkYJR5p8LpRP3ptk5PpTwWxoY3w/YuFBHeFU6tfXJazNW0NUmgS3IIaHRPQRU18ObHnCan1taBPMBlqoxC/CrdnOpJ1AxItF09kZe+/hjbOplQZtR5bB5Mcymq9wqSYfMz4Lj9LJAHSL4pvnYQBfykpo8Tvb1RtkiLWRGRa37BNon2LSkU+YyVYmFtAcUY7YreS5uHZ1GdzmKS/eZAyjK794OD16H1IgONnzEIM4WRdWjsJfOv6wKrOmP942fEy8b9kM2G5jOMfTJ/4kStK7bA9JlCCLt0dfoy6jv8HPveOIQgWqSx1g2/xpaIkdF+Ia4QUcWmXYdZyXHa4nsP9aps4NftLFNjKP/7rU6NpXOGh5jWIWEZr48LoAwvnTj8uOQj9ggXuA+jiTlMEudpCmTMxu9KAAD5533yeOa6ot2F37PadU/lYHE1TnhoeVQawaW3KzgrN0roDaf9/xkA/w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(376002)(136003)(366004)(346002)(39860400002)(396003)(6486002)(31696002)(478600001)(5660300002)(86362001)(31686004)(2906002)(8936002)(66556008)(4326008)(66946007)(66476007)(8676002)(38100700002)(54906003)(316002)(6916009)(36756003)(2616005)(41300700001)(186003)(83380400001)(53546011)(6506007)(6512007)(6666004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dDBzdVFLdVc3ajhERnd1R1JJNXN2YXNSNHdVMGtCd3loVEZoV1pTN2d6WlRK?=
+ =?utf-8?B?VmpxWmlyVENCT3dka284T0l5SGdDT296ZFBNenBaZytYbW11dXc3QlRERzZC?=
+ =?utf-8?B?Wk54MHdxejBtN2tlN21rbDJ4bEhGK3N2dWhFdEtybHhmYUo0YUZ5a09YQWll?=
+ =?utf-8?B?b29XZ3d2OFRoRTB2TnE3R3o1dzVtRElWWS82YXJOUGlMS3dMb2x6bmJhSmdn?=
+ =?utf-8?B?MjcwK3p2ZzVVZmQvcWFvYlEwKzYrQ2VDNVRDcUtEZXR0cmt0dUJSa2luM3Fi?=
+ =?utf-8?B?aWw0dllMSzM0MjFBN01kczJxM0Q4ek5MVW5aM2FOeWxNTjF4V2pTbnpxNkFH?=
+ =?utf-8?B?UDFwRUVhZTJjUWQwbzR2dFdTTm5ncjNjWjMvU2o3Z2tQdlA2WXlPZjViQmho?=
+ =?utf-8?B?bWR1V0pyVkYvc0U3N21ldnNjZnNQM0prNk1OTStLaHhHMDA3Yk9hTTJkSmpv?=
+ =?utf-8?B?Sm9GUzdiVHR3Zi9xRnVvUW1PdUFVcGxVcjNycHk2eUUrWUw2OFljNFh3VUNQ?=
+ =?utf-8?B?TzhCcWF5SzVHY0QwRkUzc1Bua3VuODR3TUtPSkVqUTlRdFR0Z2wrbTlKc1VB?=
+ =?utf-8?B?MG1NK3ByRndUV2RlS0RXT04rQmZWTll0eUxLbEEvN3d2ZUYyUzB5Y04vZmJZ?=
+ =?utf-8?B?bWtVWUI2bWVCTm0xOHhKR1p2OXBOUEJ5YnFsVVZ2blRnNm03RnVZWVZpUFVv?=
+ =?utf-8?B?ZHF1ZkZRVFR5bTB3dktLTmt0ejRhQXZPSGxwVDdnT0hyYzhFdnNIUkd0bmlx?=
+ =?utf-8?B?VDFFVG4zVVdySjVLVkV1ZVp6TTNYdHdmeUZuTks1dER5L1J3eXZ3endOK1No?=
+ =?utf-8?B?V3RaUmZzc1FHU1EwOGdXbmxjODVDWVRXTTZzWlk0ZGF6Nnp3NGYzclB2SlVC?=
+ =?utf-8?B?dFdTSkhIR1VQSkdpT2lpV0JZT2VWK3pBTUE5SHJsNFBKL2VlRldTT29rdXV4?=
+ =?utf-8?B?UUwvVmIycThubFUzZGFIcHl4NHhWdGRURnJiaC9mVUV1SWtsMkRLTkUyblp1?=
+ =?utf-8?B?MXI1ajdXS0VjZnhQVFNCTUdLdS9FYWVoaGhuWmpITEw5NzFLcXRYbHRWUUho?=
+ =?utf-8?B?ajFnVHBuREFLUnQ1TjFyM2pnZlZIM1RmNkhsMVYyQWlCVkNZaTFTTmNHK1By?=
+ =?utf-8?B?ajhPT05FT1lrbzRMWVRMT0ZveHlBNU1rZ0ZINEFZbG9zL0lsRjcreFVITzZL?=
+ =?utf-8?B?cng2dVJ2YlJmeW1HdGsrOUltakxBZmQ4OGNmOHNQeTJIdGZ1elRXM2Jwckk4?=
+ =?utf-8?B?WnF0Q0ErZmpSMVhzaUwvRzFGbytrUnRwcGl1MnByeHVwUHl1eUdiQXpyK2dJ?=
+ =?utf-8?B?VXJOYTVwMWN0WXhKZkZMYW5wNGhCRkN3TW9ua3hyamxQcWJjeGVVQXJzajB2?=
+ =?utf-8?B?bU5pL0hKNktnVSthYlFPSjlNQjRRRUVGMFZMK3U3d1pRTzRnSTN5KzlmVktQ?=
+ =?utf-8?B?NE1FWi9BRkFqUEZIeGNLYmpUVnRBTytVeDB1YmhpN1JLVEpKY1RlVjlRVm9P?=
+ =?utf-8?B?WFEwVFNKZ09xemZYYzJiVGFUenRSeUVBS243c1N6Q1NDQnkzUFNLQzJBMGNl?=
+ =?utf-8?B?NXpXZ0JsODNGRm1DSVZtVUdmR2tMTkZReUEraDdXeFFnVU8wWGtBR3NGS3hV?=
+ =?utf-8?B?c1FVbjd3UWdxd3BvaEtORDlSTStMNkRVT2dWaGNoTUs0UHZxc21xak9jczdB?=
+ =?utf-8?B?MWhHdzlQK05UY2Z0RkFwNExiemNjQW10TjQzQjRBOXVvM2ZMQVJma1NXc0lp?=
+ =?utf-8?B?MWNEL1M2NGJQeWVnVHBMOEN3V3JneWZBU1NSZGNRand0ZmFuVmdQS3FKT3hv?=
+ =?utf-8?B?VkRzOU9Lb3BxdkxUMjN6NWJxWWJoNEN5Q2d2eURVMkpBcnZuUGFIdDltaWM2?=
+ =?utf-8?B?ZUxLeXpObUl1aGpMemZFWkhKS3RMRTlXbTJybFB2QXIxaGREN2N0RGR5RXZq?=
+ =?utf-8?B?Z0xIMG1WWWNlVGFBTXJsZW9RTlNhSm9lMTM0TXd1anlkWUkrWUxVZEZtRkFl?=
+ =?utf-8?B?Y3RUK0NGbk8vZTdXN1ZYaFRYR2hiQ0s4RnYyRlRGNzhwNmxqZExFM1k0YkYv?=
+ =?utf-8?B?R2FIRTNyU1ZBSjdTd0l4WVVSc1l6Qk5LVTQxb1FIOEJwQnE2NkE5K0d1RFUx?=
+ =?utf-8?Q?RK5W3nCxBaqjDyeFbJ+HGmPnp?=
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 21cd525b-4fbb-407b-21d6-08da7e7f171c
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Aug 2022 05:29:14.1731
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vFG1fy9censNv2Md2A2cy0+eMXwBmB+HirwyjZqgwL5kt2NUtDI9d1FxS6T56Ak6
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4581
+X-Proofpoint-GUID: Zp20pFEOwpoBs4sbOmYaBn4KufQBS8Nx
+X-Proofpoint-ORIG-GUID: Zp20pFEOwpoBs4sbOmYaBn4KufQBS8Nx
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-08-15_03,2022-08-11_01,2022-06-22_01
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-These are regression tests to ensure we don't end up in invalid runtime
-state for helpers that execute callbacks multiple times. It exercises
-the fixes to verifier callback handling in previous patches.
 
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- .../selftests/bpf/prog_tests/cb_refs.c        |  49 ++++++
- tools/testing/selftests/bpf/progs/cb_refs.c   | 152 ++++++++++++++++++
- 2 files changed, 201 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cb_refs.c
- create mode 100644 tools/testing/selftests/bpf/progs/cb_refs.c
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/cb_refs.c b/tools/testing/selftests/bpf/prog_tests/cb_refs.c
-new file mode 100644
-index 000000000000..a74ac3ace5c4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/cb_refs.c
-@@ -0,0 +1,49 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include "bpf/libbpf.h"
-+#include <test_progs.h>
-+#include <network_helpers.h>
-+
-+#include "cb_refs.skel.h"
-+
-+static char log_buf[1024 * 1024];
-+
-+struct {
-+	const char *prog_name;
-+	const char *err_msg;
-+} cb_refs_tests[] = {
-+	{ "underflow_prog", "reference has not been acquired before" },
-+	{ "leak_prog", "Unreleased reference" },
-+	{ "nested_cb", "Unreleased reference id=2 alloc_insn=16" },
-+	{ "oob_access", "TBD..." },
-+	{ "write", "TBD..." },
-+};
-+
-+void test_cb_refs(void)
-+{
-+	LIBBPF_OPTS(bpf_object_open_opts, opts, .kernel_log_buf = log_buf,
-+						.kernel_log_size = sizeof(log_buf),
-+						.kernel_log_level = 1);
-+	struct bpf_program *prog;
-+	struct cb_refs *skel;
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(cb_refs_tests); i++) {
-+		LIBBPF_OPTS(bpf_test_run_opts, run_opts,
-+			.data_in = &pkt_v4,
-+			.data_size_in = sizeof(pkt_v4),
-+			.repeat = 1,
-+		);
-+		skel = cb_refs__open_opts(&opts);
-+		if (!ASSERT_OK_PTR(skel, "cb_refs__open_and_load"))
-+			return;
-+		prog = bpf_object__find_program_by_name(skel->obj, cb_refs_tests[i].prog_name);
-+		bpf_program__set_autoload(prog, true);
-+		if (!ASSERT_ERR(cb_refs__load(skel), "cb_refs__load"))
-+			bpf_prog_test_run_opts(bpf_program__fd(prog), &run_opts);
-+		if (!ASSERT_OK_PTR(strstr(log_buf, cb_refs_tests[i].err_msg), "expected error message")) {
-+			fprintf(stderr, "Expected: %s\n", cb_refs_tests[i].err_msg);
-+			fprintf(stderr, "Verifier: %s\n", log_buf);
-+		}
-+		cb_refs__destroy(skel);
-+	}
-+}
-diff --git a/tools/testing/selftests/bpf/progs/cb_refs.c b/tools/testing/selftests/bpf/progs/cb_refs.c
-new file mode 100644
-index 000000000000..1f3ce0b4f8b2
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/cb_refs.c
-@@ -0,0 +1,152 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <vmlinux.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_helpers.h>
-+
-+struct map_value {
-+	unsigned long data;
-+	unsigned long data2;
-+	struct prog_test_ref_kfunc __kptr_ref *ptr;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__type(key, int);
-+	__type(value, struct map_value);
-+	__uint(max_entries, 16);
-+} array_map SEC(".maps");
-+
-+extern struct prog_test_ref_kfunc *bpf_kfunc_call_test_acquire(unsigned long *sp) __ksym;
-+extern void bpf_kfunc_call_test_release(struct prog_test_ref_kfunc *p) __ksym;
-+
-+static __always_inline int cb1(void *map, void *key, void *value, void *ctx)
-+{
-+	void *p = *(void **)ctx;
-+	bpf_kfunc_call_test_release(p);
-+	/* Without the fix this would cause underflow */
-+	return 0;
-+}
-+
-+SEC("?tc")
-+int underflow_prog(void *ctx)
-+{
-+	struct prog_test_ref_kfunc *p;
-+	unsigned long sl = 0;
-+
-+	p = bpf_kfunc_call_test_acquire(&sl);
-+	if (!p)
-+		return 0;
-+	bpf_for_each_map_elem(&array_map, cb1, &p, 0);
-+	return 0;
-+}
-+
-+static __always_inline int cb2(void *map, void *key, void *value, void *ctx)
-+{
-+	unsigned long sl = 0;
-+
-+	*(void **)ctx = bpf_kfunc_call_test_acquire(&sl);
-+	/* Without the fix this would leak memory */
-+	return 0;
-+}
-+
-+SEC("?tc")
-+int leak_prog(void *ctx)
-+{
-+	struct prog_test_ref_kfunc *p;
-+	struct map_value *v;
-+	unsigned long sl;
-+
-+	v = bpf_map_lookup_elem(&array_map, &(int){0});
-+	if (!v)
-+		return 0;
-+
-+	p = NULL;
-+	bpf_for_each_map_elem(&array_map, cb2, &p, 0);
-+	p = bpf_kptr_xchg(&v->ptr, p);
-+	if (p)
-+		bpf_kfunc_call_test_release(p);
-+	return 0;
-+}
-+
-+static __always_inline int cb(void *map, void *key, void *value, void *ctx)
-+{
-+	return 0;
-+}
-+
-+static __always_inline int cb3(void *map, void *key, void *value, void *ctx)
-+{
-+	unsigned long sl = 0;
-+	void *p;
-+
-+	bpf_kfunc_call_test_acquire(&sl);
-+	bpf_for_each_map_elem(&array_map, cb, &p, 0);
-+	/* It should only complain here, not in cb. This is why we need
-+	 * callback_ref to be set to frameno.
-+	 */
-+	return 0;
-+}
-+
-+SEC("?tc")
-+int nested_cb(void *ctx)
-+{
-+	int p = 0;
-+
-+	bpf_for_each_map_elem(&array_map, cb3, &p, 0);
-+	return 0;
-+}
-+
-+static __always_inline int lcb(void *map, unsigned long *idx)
-+{
-+	unsigned long i = *idx;
-+	i++;
-+	*idx = i;
-+	return 0;
-+}
-+
-+SEC("?tc")
-+int oob_access(void *ctx)
-+{
-+	unsigned long idx = 0;
-+	struct map_value *v;
-+
-+	v = bpf_map_lookup_elem(&array_map, &(int){0});
-+	if (!v)
-+		return 0;
-+	bpf_loop(100, lcb, &idx, 0);
-+	/* Verifier would think we are accessing using idx=1 without the fix */
-+	return ((unsigned long *)&v->data)[idx];
-+}
-+
-+static __always_inline int lcb1(void *map, int *idx)
-+{
-+	int i = *idx;
-+	i--;
-+	*idx = i;
-+	return 0;
-+}
-+
-+static __always_inline int lcb2(void *map, void **pp)
-+{
-+	int i = *(int *)(pp + 1);
-+	pp[i + 2] = (void *)0xeB9F15D34D;
-+	return 0;
-+}
-+
-+SEC("?tc")
-+int write(void *ctx)
-+{
-+	struct {
-+		struct map_value *v;
-+		int idx;
-+	} x = {};
-+	x.v = bpf_map_lookup_elem(&array_map, &(int){0});
-+	if (!x.v)
-+		return 0;
-+	bpf_loop(2, &lcb1, &x.idx, 0);
-+	/* idx is -2, verifier thinks it is -1 */
-+	bpf_loop(1, &lcb2, &x, 0);
-+	/* x.v is no longer map value, but verifier thinks so */
-+	return x.v->data;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.34.1
+On 8/14/22 1:24 PM, Jiri Olsa wrote:
+> On Thu, Aug 11, 2022 at 10:24:35PM -0700, Yonghong Song wrote:
+> 
+> SNIP
+> 
+>>   }
+>>   
+>>   static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
+>> @@ -2020,6 +2081,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+>>   	struct bpf_tramp_links *fentry = &tlinks[BPF_TRAMP_FENTRY];
+>>   	struct bpf_tramp_links *fexit = &tlinks[BPF_TRAMP_FEXIT];
+>>   	struct bpf_tramp_links *fmod_ret = &tlinks[BPF_TRAMP_MODIFY_RETURN];
+>> +	int struct_val_off, extra_nregs = 0;
+>>   	u8 **branches = NULL;
+>>   	u8 *prog;
+>>   	bool save_ret;
+>> @@ -2028,6 +2090,20 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+>>   	if (nr_args > 6)
+>>   		return -ENOTSUPP;
+>>   
+>> +	for (i = 0; i < MAX_BPF_FUNC_ARGS; i++) {
+>> +		if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG) {
+>> +			/* Only support up to 16 bytes struct which should keep
+>> +			 * values in registers.
+>> +			 */
+> 
+> it seems that if the struct contains 'double' field, it's passed in
+> SSE register, which we don't support is save/restore
 
+That is right.
+
+> 
+> we should probably check struct's BTF in btf_distill_func_proto and
+> fail if we found anything else than regular regs types?
+
+The reason I didn't add float/double checking is that I didn't actually
+find any float/double struct members in either vmlinux.h or in
+arch/x86 directory. Could you help double check as well?
+
+> 
+>> +			if (m->arg_size[i] > 16)
+>> +				return -ENOTSUPP;
+>> +
+>> +			extra_nregs += (m->arg_size[i] + 7) / 8 - 1;
+>> +		}
+>> +	}
+>> +	if (nr_args + extra_nregs > 6)
+> 
+> should this value be minus the number of actually found struct arguments?
+
+In the above we have
+	extra_nregs += (m->arg_size[i] + 7) / 8 - 1;
+already did the 'minus' part.
+
+> 
+>> +		return -ENOTSUPP;
+>> +
+>>   	/* Generated trampoline stack layout:
+>>   	 *
+>>   	 * RBP + 8         [ return address  ]
+>> @@ -2066,6 +2142,13 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+>>   	stack_size += (sizeof(struct bpf_tramp_run_ctx) + 7) & ~0x7;
+>>   	run_ctx_off = stack_size;
+>>   
+>> +	/* For structure argument */
+>> +	for (i = 0; i < MAX_BPF_FUNC_ARGS; i++) {
+>> +		if (m->arg_flags[i] & BTF_FMODEL_STRUCT_ARG)
+>> +			stack_size += (m->arg_size[i] + 7) & ~0x7;
+>> +	}
+>> +	struct_val_off = stack_size;
+> 
+> could you please update the 'Generated trampoline stack layout' table
+> above with this offset
+
+Okay, will do in the next revision.
+
+> 
+> thanks,
+> jirka
+> 
+>> +
+>>   	if (flags & BPF_TRAMP_F_SKIP_FRAME) {
+>>   		/* skip patched call instruction and point orig_call to actual
+>>   		 * body of the kernel function.
+>> @@ -2101,7 +2184,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+>>   		emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -ip_off);
+>>   	}
+>>   
+>> -	save_regs(m, &prog, nr_args, regs_off);
+>> +	save_regs(m, &prog, nr_args, regs_off, struct_val_off);
+>>   
+>>   	if (flags & BPF_TRAMP_F_CALL_ORIG) {
+>>   		/* arg1: mov rdi, im */
+>> @@ -2131,7 +2214,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+>>   	}
+>>   
+>>   	if (flags & BPF_TRAMP_F_CALL_ORIG) {
+>> -		restore_regs(m, &prog, nr_args, regs_off);
+>> +		restore_regs(m, &prog, nr_args, regs_off, struct_val_off);
+>>   
+>>   		if (flags & BPF_TRAMP_F_ORIG_STACK) {
+>>   			emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, 8);
+>> @@ -2172,7 +2255,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+>>   		}
+>>   
+>>   	if (flags & BPF_TRAMP_F_RESTORE_REGS)
+>> -		restore_regs(m, &prog, nr_args, regs_off);
+>> +		restore_regs(m, &prog, nr_args, regs_off, struct_val_off);
+>>   
+>>   	/* This needs to be done regardless. If there were fmod_ret programs,
+>>   	 * the return value is only updated on the stack and still needs to be
+>> -- 
+>> 2.30.2
+>>
