@@ -2,64 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D3C595EB8
-	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 17:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC165595EC6
+	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 17:10:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235700AbiHPPEw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Aug 2022 11:04:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38712 "EHLO
+        id S229809AbiHPPKG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Aug 2022 11:10:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235848AbiHPPEc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Aug 2022 11:04:32 -0400
-Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F418FD47
-        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 08:01:59 -0700 (PDT)
-Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-10ee900cce0so11915572fac.5
-        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 08:01:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=1ugMil36Xtwd1/JKqCHKq4YVp/gm6cZn6rXrNAhsLYg=;
-        b=YonhW7ZsvSSq1LlU1473zmh9bn8mDEW3u3IBe61E0fEG6iCtfKHZ61zAZ9ZaQI+yvU
-         W+uVY2FriHHxRqPHB1StJ7rHgZYPYHvmIW1PMemedTOOycvqaMNzEdpim3vX8vKmlGsD
-         3vQn1Za+7NBq9+e1Xz1DSVkKlIdplv+E5zhbCksYOQ+/tO4tN4e3sHq4Co/D61htJyed
-         TArsJUh1fr0Ixfqxczvz+pYCu/+iVUOI1z8ZJ//eR5zOXnSnSd7ETu2K6X8+sxdRONBF
-         44eaS+/X5OgA6XllGhpd5gah5I0HB637F6aI8EB2OqViU1w6n1Q1A7OBcxRmB7u/D6JT
-         f0Sw==
+        with ESMTP id S230009AbiHPPKE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Aug 2022 11:10:04 -0400
+Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB4E2543CF;
+        Tue, 16 Aug 2022 08:10:02 -0700 (PDT)
+Received: by mail-qv1-f42.google.com with SMTP id mk9so8048858qvb.11;
+        Tue, 16 Aug 2022 08:10:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=1ugMil36Xtwd1/JKqCHKq4YVp/gm6cZn6rXrNAhsLYg=;
-        b=zKg2mpeZ3VILz4Rqg5hDWleHqNM4WsGzg6yN+50nXRIBB155VZ0O5Y0d6tmWc4BXgT
-         NuWfdktaMGgFEBiqLIPimSoODB74dkQziY95IwgW8mMIyBoBiokqy7bvyxeej+sug8kB
-         5p8CeHOw8rOh0xuseYdDMg47PKy9nAeRfup1Eli0LP3cC+hPiZ4WiZlPNNQNvQ3tpUpg
-         wTWsn/MGM38QVLVbIrFjQIngDHv6U/Fm5KMZoqORlLLwjRuqK+CgkH7ITYuDzJqRbunK
-         7YvSqFm0UVTQzfuN9UgtdKyURxPHpGCxVwDmUoKBl4TRuimrv9VbXyEsG8RFG4JJqotH
-         S0qA==
-X-Gm-Message-State: ACgBeo00V+9tj8/IJYbdS2XLFO7+7gh82/JiMmJORaGmlXKBTRFWA77i
-        K1jDWG45PgN6b6XkstB+gfdEZy0VEvtkXFaCkKZqMnnEsQ==
-X-Google-Smtp-Source: AA6agR47lZNuu4bYrC/2xpGEcKzszPSh01aBKHkSmrxNtTp8FF+IfEotviWQNwGdbw0s4mwvXylXOvGRgb9GIueL0YM=
-X-Received: by 2002:a05:6870:9588:b0:101:c003:bfe6 with SMTP id
- k8-20020a056870958800b00101c003bfe6mr13535837oao.41.1660662119002; Tue, 16
- Aug 2022 08:01:59 -0700 (PDT)
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc;
+        bh=dmgWwEwfSK7FGsGGvHTpCWRuqiYbuUsXIkCtXthtW4o=;
+        b=h64S4wkiwJ9kr5LkPNu1MnA4VHptnYRU5RBoLqa6wrSsRQxzuQyzGWVpo2sCiG13KX
+         ogJBJ9XN2yee8BRFyZ5CQ8LP2SEqtCk8DrtlBMOO/HwxlLjJ+a08aWTE9uE6wFTxq5Bo
+         7uk2LpAKGZyxL8A1k/JGCGcrQJZe/Owec0uPZhnPyKBFAiV7nNth7sG9jd6KggEpjf6F
+         AH5w9W1gWm3Yy3KZ9wt2pDzRt4IWOxf/JSK3ElWDFU9DTZ6EekuuMvBYTgokQHXvUgyN
+         hkMiCFuntWmNG0fJFJXgP0BdxhvmiqPM0FsBDa7A5buVP3UdQrPR038PFeioPhS+y9ca
+         E2+A==
+X-Gm-Message-State: ACgBeo0QyT0R1xQ/d9vQ8zgUBHp34V6TwXXJBuU6Na2r2LJvRhVgBFem
+        qnoee4Bt/Ooiu3YKrlI3B+sYq6TnAFfKcJxm
+X-Google-Smtp-Source: AA6agR4EeFp05FpPHq8UdmVOXNNu464JjT1fmdsjyoMQjlwI69GiHM8ow57TAxJ2PMe6tP3RBnqjVw==
+X-Received: by 2002:a05:6214:c6c:b0:496:8e7:a93b with SMTP id t12-20020a0562140c6c00b0049608e7a93bmr1193772qvj.97.1660662601979;
+        Tue, 16 Aug 2022 08:10:01 -0700 (PDT)
+Received: from maniforge.dhcp.thefacebook.com ([2620:10d:c091:480::a5ed])
+        by smtp.gmail.com with ESMTPSA id dm14-20020a05620a1d4e00b006bad20a6cfesm10794561qkb.102.2022.08.16.08.10.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Aug 2022 08:10:01 -0700 (PDT)
+Date:   Tue, 16 Aug 2022 10:09:41 -0500
+From:   David Vernet <void@manifault.com>
+To:     Hao Luo <haoluo@google.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, john.fastabend@gmail.com, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, kpsingh@kernel.org, sdf@google.com,
+        jolsa@kernel.org, tj@kernel.org, joannelkoong@gmail.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/5] bpf: Add user-space-publisher ringbuffer map type
+Message-ID: <YvuzNaam90n4AJcm@maniforge.dhcp.thefacebook.com>
+References: <20220808155248.2475981-1-void@manifault.com>
+ <CA+khW7iuENZHvbyWUkq1T1ieV9Yz+MJyRs=7Kd6N59kPTjz7Rg@mail.gmail.com>
+ <20220810011510.c3chrli27e6ebftt@maniforge>
+ <CA+khW7iBeAW9tzuZqVaafcAFQZhNwjdEBwE8C-zAaq8gkyujFQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <0000000000002c46ec05e6572415@google.com>
-In-Reply-To: <0000000000002c46ec05e6572415@google.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 16 Aug 2022 11:01:48 -0400
-Message-ID: <CAHC9VhQmtggv-P9RoG9mHp8JJMUB-qTWNiKVh8q4ygmdi-x2rA@mail.gmail.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in sock_has_perm
-To:     syzbot <syzbot+2f2c6bea25b08dc06f86@syzkaller.appspotmail.com>
-Cc:     anton@enomsg.org, bpf@vger.kernel.org, ccross@android.com,
-        eparis@parisplace.org, keescook@chromium.org,
-        linux-kernel@vger.kernel.org, selinux@vger.kernel.org,
-        stephen.smalley.work@gmail.com, syzkaller-bugs@googlegroups.com,
-        tony.luck@intel.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,SPF_HELO_NONE,SPF_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+khW7iBeAW9tzuZqVaafcAFQZhNwjdEBwE8C-zAaq8gkyujFQ@mail.gmail.com>
+User-Agent: Mutt/2.2.7 (2022-08-07)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,63 +65,29 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 16, 2022 at 4:00 AM syzbot
-<syzbot+2f2c6bea25b08dc06f86@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    200e340f2196 Merge tag 'pull-work.dcache' of git://git.ker..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=16021dfd080000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=f2886ebe3c7b3459
-> dashboard link: https://syzkaller.appspot.com/bug?extid=2f2c6bea25b08dc06f86
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+2f2c6bea25b08dc06f86@syzkaller.appspotmail.com
->
-> ==================================================================
-> BUG: KASAN: use-after-free in sock_has_perm+0x258/0x280 security/selinux/hooks.c:4532
-> Read of size 8 at addr ffff88807630e480 by task syz-executor.0/8123
->
-> CPU: 1 PID: 8123 Comm: syz-executor.0 Not tainted 5.19.0-syzkaller-02972-g200e340f2196 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/22/2022
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
->  print_address_description.constprop.0.cold+0xeb/0x467 mm/kasan/report.c:313
->  print_report mm/kasan/report.c:429 [inline]
->  kasan_report.cold+0xf4/0x1c6 mm/kasan/report.c:491
->  sock_has_perm+0x258/0x280 security/selinux/hooks.c:4532
->  selinux_socket_setsockopt+0x3e/0x80 security/selinux/hooks.c:4913
->  security_socket_setsockopt+0x50/0xb0 security/security.c:2249
->  __sys_setsockopt+0x107/0x6a0 net/socket.c:2233
->  __do_sys_setsockopt net/socket.c:2266 [inline]
->  __se_sys_setsockopt net/socket.c:2263 [inline]
->  __x64_sys_setsockopt+0xba/0x150 net/socket.c:2263
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> RIP: 0033:0x7f96c7289279
-> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007f96c842f168 EFLAGS: 00000246 ORIG_RAX: 0000000000000036
-> RAX: ffffffffffffffda RBX: 00007f96c739c050 RCX: 00007f96c7289279
-> RDX: 0000000000000007 RSI: 0000000000000103 RDI: 0000000000000004
-> RBP: 00007f96c72e3189 R08: 0000000000000004 R09: 0000000000000000
-> R10: 0000000020000000 R11: 0000000000000246 R12: 0000000000000000
-> R13: 00007ffe7030593f R14: 00007f96c842f300 R15: 0000000000022000
->  </TASK>
+On Mon, Aug 15, 2022 at 02:13:13PM -0700, Hao Luo wrote:
+> >
+> > Iters allow userspace to kick the kernel, but IMO they're meant to enable
+> > data extraction from the kernel, and dumping kernel data into user-space.
+> 
+> Not necessarily extracting data and dumping data. It could be used to
+> do operations on a set of objects, the operation could be
+> notification. Iterating and notifying are orthogonal IMHO.
+> 
+> > What I'm proposing is a more generalizable way of driving logic in the
+> > kernel from user-space.
+> > Does that make sense? Looking forward to hearing your thoughts.
+> 
+> Yes, sort of. I see the difference between iter and the proposed
+> interface. But I am not clear about the motivation of a new APis for
+> kicking callbacks from userspace. I guess maybe it will become clear,
+> when you publish a concerte RFC of that interface and integrates with
+> your userspace publisher.
 
-SELinux hasn't changed anything in this area for a while, and looking
-over everything again just now it still looks sane to me.  I suspect
-there is something else going on with respect to socket lifetimes and
-SELinux just happens to be the one that catches the use-after-free
-first.
+Fair enough -- let me remove this from the cover letter in future
+versions of the patch-set. To your point, there's probably little to be
+gained in debating the merits of adding such APIs until there's a
+concrete use-case.
 
--- 
-paul-moore.com
+Thanks,
+David
