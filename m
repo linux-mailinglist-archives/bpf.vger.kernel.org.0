@@ -2,92 +2,339 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC165595EC6
-	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 17:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C99595EAC
+	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 17:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbiHPPKG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Aug 2022 11:10:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60278 "EHLO
+        id S232365AbiHPPAO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Aug 2022 11:00:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230009AbiHPPKE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Aug 2022 11:10:04 -0400
-Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB4E2543CF;
-        Tue, 16 Aug 2022 08:10:02 -0700 (PDT)
-Received: by mail-qv1-f42.google.com with SMTP id mk9so8048858qvb.11;
-        Tue, 16 Aug 2022 08:10:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc;
-        bh=dmgWwEwfSK7FGsGGvHTpCWRuqiYbuUsXIkCtXthtW4o=;
-        b=h64S4wkiwJ9kr5LkPNu1MnA4VHptnYRU5RBoLqa6wrSsRQxzuQyzGWVpo2sCiG13KX
-         ogJBJ9XN2yee8BRFyZ5CQ8LP2SEqtCk8DrtlBMOO/HwxlLjJ+a08aWTE9uE6wFTxq5Bo
-         7uk2LpAKGZyxL8A1k/JGCGcrQJZe/Owec0uPZhnPyKBFAiV7nNth7sG9jd6KggEpjf6F
-         AH5w9W1gWm3Yy3KZ9wt2pDzRt4IWOxf/JSK3ElWDFU9DTZ6EekuuMvBYTgokQHXvUgyN
-         hkMiCFuntWmNG0fJFJXgP0BdxhvmiqPM0FsBDa7A5buVP3UdQrPR038PFeioPhS+y9ca
-         E2+A==
-X-Gm-Message-State: ACgBeo0QyT0R1xQ/d9vQ8zgUBHp34V6TwXXJBuU6Na2r2LJvRhVgBFem
-        qnoee4Bt/Ooiu3YKrlI3B+sYq6TnAFfKcJxm
-X-Google-Smtp-Source: AA6agR4EeFp05FpPHq8UdmVOXNNu464JjT1fmdsjyoMQjlwI69GiHM8ow57TAxJ2PMe6tP3RBnqjVw==
-X-Received: by 2002:a05:6214:c6c:b0:496:8e7:a93b with SMTP id t12-20020a0562140c6c00b0049608e7a93bmr1193772qvj.97.1660662601979;
-        Tue, 16 Aug 2022 08:10:01 -0700 (PDT)
-Received: from maniforge.dhcp.thefacebook.com ([2620:10d:c091:480::a5ed])
-        by smtp.gmail.com with ESMTPSA id dm14-20020a05620a1d4e00b006bad20a6cfesm10794561qkb.102.2022.08.16.08.10.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Aug 2022 08:10:01 -0700 (PDT)
-Date:   Tue, 16 Aug 2022 10:09:41 -0500
-From:   David Vernet <void@manifault.com>
-To:     Hao Luo <haoluo@google.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, john.fastabend@gmail.com, martin.lau@linux.dev,
-        song@kernel.org, yhs@fb.com, kpsingh@kernel.org, sdf@google.com,
-        jolsa@kernel.org, tj@kernel.org, joannelkoong@gmail.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/5] bpf: Add user-space-publisher ringbuffer map type
-Message-ID: <YvuzNaam90n4AJcm@maniforge.dhcp.thefacebook.com>
-References: <20220808155248.2475981-1-void@manifault.com>
- <CA+khW7iuENZHvbyWUkq1T1ieV9Yz+MJyRs=7Kd6N59kPTjz7Rg@mail.gmail.com>
- <20220810011510.c3chrli27e6ebftt@maniforge>
- <CA+khW7iBeAW9tzuZqVaafcAFQZhNwjdEBwE8C-zAaq8gkyujFQ@mail.gmail.com>
+        with ESMTP id S236074AbiHPO7h (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Aug 2022 10:59:37 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8475D52DD9
+        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 07:59:22 -0700 (PDT)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4M6Z3P0jqgzlW2X;
+        Tue, 16 Aug 2022 22:56:17 +0800 (CST)
+Received: from CHINA (10.175.102.38) by canpemm500009.china.huawei.com
+ (7.192.105.203) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Tue, 16 Aug
+ 2022 22:59:19 +0800
+From:   Wei Yongjun <weiyongjun1@huawei.com>
+To:     <bpf@vger.kernel.org>
+CC:     Wei Yongjun <weiyongjun1@huawei.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+Subject: [PATCH bpf-next] bpftool: Add trace subcommand
+Date:   Tue, 16 Aug 2022 15:17:25 +0000
+Message-ID: <20220816151725.153343-1-weiyongjun1@huawei.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+khW7iBeAW9tzuZqVaafcAFQZhNwjdEBwE8C-zAaq8gkyujFQ@mail.gmail.com>
-User-Agent: Mutt/2.2.7 (2022-08-07)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.102.38]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500009.china.huawei.com (7.192.105.203)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 15, 2022 at 02:13:13PM -0700, Hao Luo wrote:
-> >
-> > Iters allow userspace to kick the kernel, but IMO they're meant to enable
-> > data extraction from the kernel, and dumping kernel data into user-space.
-> 
-> Not necessarily extracting data and dumping data. It could be used to
-> do operations on a set of objects, the operation could be
-> notification. Iterating and notifying are orthogonal IMHO.
-> 
-> > What I'm proposing is a more generalizable way of driving logic in the
-> > kernel from user-space.
-> > Does that make sense? Looking forward to hearing your thoughts.
-> 
-> Yes, sort of. I see the difference between iter and the proposed
-> interface. But I am not clear about the motivation of a new APis for
-> kicking callbacks from userspace. I guess maybe it will become clear,
-> when you publish a concerte RFC of that interface and integrates with
-> your userspace publisher.
+Currently, only one command is supported
+  bpftool trace pin <bpf_prog.o> <path>
 
-Fair enough -- let me remove this from the cover letter in future
-versions of the patch-set. To your point, there's probably little to be
-gained in debating the merits of adding such APIs until there's a
-concrete use-case.
+It will pin the trace bpf program in the object file <bpf_prog.o>
+to the <path> where <path> should be on a bpffs mount.
 
-Thanks,
-David
+For example,
+  $ bpftool trace pin ./mtd_mchp23k256.o /sys/fs/bpf/mchp23k256
+
+The implementation a BPF based backend for mockup mchp23k256 mtd
+SPI device.
+
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+---
+ .../bpftool/Documentation/bpftool-trace.rst   |  57 +++++++++
+ tools/bpf/bpftool/Documentation/bpftool.rst   |   4 +-
+ tools/bpf/bpftool/bash-completion/bpftool     |  13 ++
+ tools/bpf/bpftool/main.c                      |   1 +
+ tools/bpf/bpftool/main.h                      |   1 +
+ tools/bpf/bpftool/trace.c                     | 120 ++++++++++++++++++
+ 6 files changed, 195 insertions(+), 1 deletion(-)
+
+diff --git a/tools/bpf/bpftool/Documentation/bpftool-trace.rst b/tools/bpf/bpftool/Documentation/bpftool-trace.rst
+new file mode 100644
+index 000000000000..d44256f6a021
+--- /dev/null
++++ b/tools/bpf/bpftool/Documentation/bpftool-trace.rst
+@@ -0,0 +1,57 @@
++.. SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++
++============
++bpftool-trace
++============
++-------------------------------------------------------------------------------
++tool to create BPF tracepoints
++-------------------------------------------------------------------------------
++
++:Manual section: 8
++
++.. include:: substitutions.rst
++
++SYNOPSIS
++========
++
++	**bpftool** [*OPTIONS*] **trace** *COMMAND*
++
++	*OPTIONS* := { |COMMON_OPTIONS| }
++
++	*COMMANDS* := { **pin** | **help** }
++
++ITER COMMANDS
++===================
++
++|	**bpftool** **trace pin** *OBJ* *PATH*
++|	**bpftool** **trace help**
++|
++|	*OBJ* := /a/file/of/bpf_tp_target.o
++
++DESCRIPTION
++===========
++	**bpftool trace pin** *OBJ* *PATH*
++                  A bpf raw tracepoint allows a tracepoint to provide a safe
++                  buffer that can be read or written from a bpf program.
++
++		  The *pin* command attaches a bpf raw tracepoint from *OBJ*,
++		  and pin it to *PATH*. The *PATH* should be located
++		  in *bpffs* mount. It must not contain a dot
++		  character ('.'), which is reserved for future extensions
++		  of *bpffs*.
++
++	**bpftool trace help**
++		  Print short help message.
++
++OPTIONS
++=======
++	.. include:: common_options.rst
++
++EXAMPLES
++========
++**# bpftool trace pin bpf_mtd_chip_mockup.o /sys/fs/bpf/mtd_chip_mockup**
++
++::
++
++   Attach to the raw tracepoint from bpf_mtd_chip_mockup.o and pin it
++   to /sys/fs/bpf/mtd_chip_mockup
+diff --git a/tools/bpf/bpftool/Documentation/bpftool.rst b/tools/bpf/bpftool/Documentation/bpftool.rst
+index 6965c94dfdaf..aae13255a8cb 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool.rst
+@@ -21,7 +21,7 @@ SYNOPSIS
+ 	**bpftool** **version**
+ 
+ 	*OBJECT* := { **map** | **program** | **link** | **cgroup** | **perf** | **net** | **feature** |
+-	**btf** | **gen** | **struct_ops** | **iter** }
++	**btf** | **gen** | **struct_ops** | **iter** | **trace** }
+ 
+ 	*OPTIONS* := { { **-V** | **--version** } | |COMMON_OPTIONS| }
+ 
+@@ -50,6 +50,8 @@ SYNOPSIS
+ 
+ 	*ITER-COMMANDS* := { **pin** | **help** }
+ 
++	*TRACE-COMMANDS* := { **pin** | **help** }
++
+ DESCRIPTION
+ ===========
+ 	*bpftool* allows for inspection and simple modification of BPF objects
+diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
+index dc1641e3670e..1c0442ed7436 100644
+--- a/tools/bpf/bpftool/bash-completion/bpftool
++++ b/tools/bpf/bpftool/bash-completion/bpftool
+@@ -646,6 +646,19 @@ _bpftool()
+                     ;;
+             esac
+             ;;
++        trace)
++            case $command in
++                pin)
++                    _filedir
++                    return 0
++                    ;;
++                *)
++                    [[ $prev == $object ]] && \
++                        COMPREPLY=( $( compgen -W 'pin help' \
++                            -- "$cur" ) )
++                    ;;
++            esac
++            ;;
+         map)
+             local MAP_TYPE='id pinned name'
+             case $command in
+diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
+index ccd7457f92bf..d24373f4e957 100644
+--- a/tools/bpf/bpftool/main.c
++++ b/tools/bpf/bpftool/main.c
+@@ -295,6 +295,7 @@ static const struct cmd cmds[] = {
+ 	{ "gen",	do_gen },
+ 	{ "struct_ops",	do_struct_ops },
+ 	{ "iter",	do_iter },
++	{ "trace",	do_trace },
+ 	{ "version",	do_version },
+ 	{ 0 }
+ };
+diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
+index 5e5060c2ac04..7ff53de4f718 100644
+--- a/tools/bpf/bpftool/main.h
++++ b/tools/bpf/bpftool/main.h
+@@ -163,6 +163,7 @@ int do_tracelog(int argc, char **arg) __weak;
+ int do_feature(int argc, char **argv) __weak;
+ int do_struct_ops(int argc, char **argv) __weak;
+ int do_iter(int argc, char **argv) __weak;
++int do_trace(int argc, char **arg) __weak;
+ 
+ int parse_u32_arg(int *argc, char ***argv, __u32 *val, const char *what);
+ int prog_parse_fd(int *argc, char ***argv);
+diff --git a/tools/bpf/bpftool/trace.c b/tools/bpf/bpftool/trace.c
+new file mode 100644
+index 000000000000..08dd6e1d8f39
+--- /dev/null
++++ b/tools/bpf/bpftool/trace.c
+@@ -0,0 +1,120 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++// Copyright (C) 2022 Huawei Technologies Co., Ltd.
++
++#include <stdio.h>
++#include <unistd.h>
++#include <errno.h>
++#include <bpf/libbpf.h>
++
++#include "json_writer.h"
++#include "main.h"
++
++static bool is_trace_program_type(struct bpf_program *prog)
++{
++	enum bpf_prog_type trace_types[] = {
++		BPF_PROG_TYPE_RAW_TRACEPOINT,
++		BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE,
++	};
++	enum bpf_prog_type prog_type;
++	size_t i;
++
++	prog_type = bpf_program__type(prog);
++	for (i = 0; i < ARRAY_SIZE(trace_types); i++) {
++		if (prog_type == trace_types[i])
++			return true;
++	}
++
++	return false;
++}
++
++static int do_pin(int argc, char **argv)
++{
++	const char *objfile, *path;
++	struct bpf_program *prog;
++	struct bpf_object *obj;
++	struct bpf_link *link;
++	int err;
++
++	if (!REQ_ARGS(2))
++		usage();
++
++	objfile = GET_ARG();
++	path = GET_ARG();
++
++	obj = bpf_object__open(objfile);
++	err = libbpf_get_error(obj);
++	if (err) {
++		p_err("can't open objfile %s", objfile);
++		return err;
++	}
++
++	err = bpf_object__load(obj);
++	if (err) {
++		p_err("can't load objfile %s", objfile);
++		goto close_obj;
++	}
++
++	prog = bpf_object__next_program(obj, NULL);
++	if (!prog) {
++		p_err("can't find bpf program in objfile %s", objfile);
++		goto close_obj;
++	}
++
++	if (!is_trace_program_type(prog)) {
++		p_err("invalid bpf program type");
++		err = -EINVAL;
++		goto close_obj;
++	}
++
++	link = bpf_program__attach(prog);
++	err = libbpf_get_error(link);
++	if (err) {
++		p_err("can't attach program %s", bpf_program__name(prog));
++		goto close_obj;
++	}
++
++	err = mount_bpffs_for_pin(path);
++	if (err)
++		goto close_link;
++
++	err = bpf_link__pin(link, path);
++	if (err) {
++		p_err("pin failed for program %s to path %s",
++		      bpf_program__name(prog), path);
++		goto close_link;
++	}
++
++close_link:
++	bpf_link__destroy(link);
++close_obj:
++	bpf_object__close(obj);
++	return err;
++}
++
++static int do_help(int argc, char **argv)
++{
++	if (json_output) {
++		jsonw_null(json_wtr);
++		return 0;
++	}
++
++	fprintf(stderr,
++		"Usage: %1$s %2$s pin OBJ PATH\n"
++		"       %1$s %2$s help\n"
++		"\n"
++		"",
++		bin_name, "trace");
++
++	return 0;
++}
++
++static const struct cmd cmds[] = {
++	{ "help",	do_help },
++	{ "pin",	do_pin },
++	{ 0 }
++};
++
++int do_trace(int argc, char **argv)
++{
++	return cmd_select(cmds, argc, argv, do_help);
++}
+-- 
+2.34.1
+
