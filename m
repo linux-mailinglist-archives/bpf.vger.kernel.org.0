@@ -2,56 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2315955A3
-	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 10:54:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B25F45955A2
+	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 10:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230004AbiHPIyk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Aug 2022 04:54:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60194 "EHLO
+        id S232011AbiHPIyP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Aug 2022 04:54:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231393AbiHPIyM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Aug 2022 04:54:12 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B1675488
-        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 00:00:24 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id y3so12299631eda.6
-        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 00:00:24 -0700 (PDT)
+        with ESMTP id S232135AbiHPIxr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Aug 2022 04:53:47 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06F6712CDEE
+        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 00:01:44 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id k26so17239695ejx.5
+        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 00:01:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc;
-        bh=vYSbRkDh7WDNcTFq/f9J5mYyoHioqnJ1nlRmfXFQdbA=;
-        b=n59pImx7Tf6JZhDNZYpZ2DCxKjBWues8u8nUZu75fTQUIeZkBxuZ+CXbWP1bshVOLP
-         9vpUVfmNMMqvxt0ZZPtcp7cFjh4DpJ3Hz/IbaSXsgYJz1zNkY/cwXfgZBFtSq1TpPrbq
-         uezLprjiNnukNBf0DkB2z0Oy20vRsjOYUI5H7ssP0qe0rZdviUPxhGDNKH3ONFi9Fbof
-         s1FozsmZFhvI7CPKm5gKOHQTmwfE2w8w05OjqVzdjwPOCcjjOmucMcea0v9tReHgLrpy
-         iQ2+d8Ym3FOqAaNohzGDsbEAgk6dY8eT62PuFKX9OrQYKxZb0086MjAeEI7eTxVoZ2Hi
-         jbcw==
+        bh=m6ZHyK+/Iux+/YsDxRibeREkrEtoT0lj4fXrnKXJwvg=;
+        b=h37oCKJknx4V/Rcus00RBYx0oJS45ySnEuOUT/Umxl8SHG4ZGFSqZFa3Ulq/lG7e0p
+         u7JSi3aScIxnj+J4c2Pc3pR1+qCdxNTLdQsyOjlH8DDdqtddhq8epxBe9xUfS8I8LrII
+         Zd4bB3dURrphJuZOz9942xXuBqkqMGYTCZkWhfxvRxDCJ37vMsbJIPLJVzS1jaSy9XmU
+         5q4NSKbfFg92d7Wn6k32guTiiBeKhaZwplnRt2qz9GY35NIi0x0dKHdDbapUB3F8g+Qu
+         25hl2bS5POz8GeEpHXoYmwBYEizOBRPmv62BsWehtCIutHHpPX0fGanurYasi8pz1J7f
+         vY2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc;
-        bh=vYSbRkDh7WDNcTFq/f9J5mYyoHioqnJ1nlRmfXFQdbA=;
-        b=pjgJMDS+rxeyBtZlo2scfRSF+Qrviip/FVuYRKRTbxw6VugUeObNFZRY8nUQ2xEmZE
-         55mgE92FJoDTYgbTuQ+yLIVDv8gW0mTZddNJ+VIxNtiOQvDtYCrAp0UBui9pKgs3nnEl
-         wFnpa3Pi/6yTxxNkrBX19nFgk7E2mmgrQfMTPvSATcdXLR9gHmpucsfe8gWFPXluux82
-         vbd9CxAcgsDk8fraGoTZPF1JQzrVhrpVqER7QwICAZ4PqWgpEp6qszvQc0oI+d6iRsHS
-         sMTM1ilBBMHcmra+uVYUKLH9LgJAp05ScGzzgca8TOkgY9nuYzfZYnk8GF+T4trQasFp
-         Es7g==
-X-Gm-Message-State: ACgBeo0yWgJPzB2rxvHbvrVSGDLnrALTynlDw7WM/ygdZvLUW/4gVpOY
-        gMoCVvP4grmw+hVSEg6rlvo=
-X-Google-Smtp-Source: AA6agR4tiOgVCNJcw8j/Eh5YsinYUjeYyyDNkaYd4jsvaTdW0h+u2258Mg3lyFpKyPIVM9Kt5piBiA==
-X-Received: by 2002:a05:6402:254b:b0:43e:7c6a:f431 with SMTP id l11-20020a056402254b00b0043e7c6af431mr17984031edb.305.1660633222789;
-        Tue, 16 Aug 2022 00:00:22 -0700 (PDT)
+        bh=m6ZHyK+/Iux+/YsDxRibeREkrEtoT0lj4fXrnKXJwvg=;
+        b=TjiZx7Bpp8/AOI4nAFWBow8zfoQWK7Hzfw6wWWMM0fJf1egEHo70+EgfGQoBG+AgAN
+         fAwsNBg/dE+m1favuxPCI9COeXgAFctnhyc5Bi/pRhgTqqAq9iIHqmDA8iFpkfeDjPPC
+         47xRedvJlESx5lgNM/v1Dc928swySWG+szScwStr06o9fD4/JXO5o8Dd75436+OI29m7
+         dLziUGKFJifHgXQu1mYQcA/eV8j1ZNsno5axhWw2Efs0uGSgo9iYgjCUpSWq6HTk8KKH
+         B8cKeb9IIJhgU6jsT+sJQ6qEFMbsOQ/2GEwIKAIch/YTSzDpnjPYfBhGXxjDId75SDp3
+         neoA==
+X-Gm-Message-State: ACgBeo3dIyGvqjVNgmmtc5tB8R1gvf7jT3FpPQGiIHXTGcUFCFtTXWlw
+        OWu1mdqAK3zF/6LbcrhYM+Bbz7pJgheFVw==
+X-Google-Smtp-Source: AA6agR7o8nw1CDFkBFN6hiepBpoaRFG0zwt459Eg5+kX1n5KDhN5sviqh3msW61fl7Kdjoo065mmgw==
+X-Received: by 2002:a17:907:a044:b0:730:a18b:5b89 with SMTP id gz4-20020a170907a04400b00730a18b5b89mr12460080ejc.489.1660633303078;
+        Tue, 16 Aug 2022 00:01:43 -0700 (PDT)
 Received: from krava ([193.85.244.190])
-        by smtp.gmail.com with ESMTPSA id x23-20020aa7dad7000000b0043a85d7d15esm7916491eds.12.2022.08.16.00.00.21
+        by smtp.gmail.com with ESMTPSA id i21-20020a17090685d500b0073073ce488asm4961750ejy.45.2022.08.16.00.01.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Aug 2022 00:00:22 -0700 (PDT)
+        Tue, 16 Aug 2022 00:01:42 -0700 (PDT)
 From:   Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Tue, 16 Aug 2022 09:00:20 +0200
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Tue, 16 Aug 2022 09:01:40 +0200
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Jiri Olsa <olsajiri@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
         Martin KaFai Lau <kafai@fb.com>,
@@ -60,18 +61,19 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         KP Singh <kpsingh@chromium.org>,
         Stanislav Fomichev <sdf@google.com>,
         Hao Luo <haoluo@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
         "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Subject: Re: [PATCHv2 bpf-next 6/6] selftests/bpf: Fix get_func_ip offset
- test for CONFIG_X86_KERNEL_IBT
-Message-ID: <YvtAhPyiWDbTzCdA@krava>
+Subject: Re: [PATCHv2 bpf-next 1/6] kprobes: Add new
+ KPROBE_FLAG_ON_FUNC_ENTRY kprobe flag
+Message-ID: <YvtA1EHgQi3XQXG/@krava>
 References: <20220811091526.172610-1-jolsa@kernel.org>
- <20220811091526.172610-7-jolsa@kernel.org>
- <CAEf4BzbXBsL8zrCDEP-+VsKseEQ1fWTRvUkJtwxX5r8q9hf1OA@mail.gmail.com>
+ <20220811091526.172610-2-jolsa@kernel.org>
+ <YvoYlCz0Ej7t9yDV@worktop.programming.kicks-ass.net>
+ <YvobjEIHV3XPSeez@krava>
+ <Yvo+vQ+egjJBOmP+@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzbXBsL8zrCDEP-+VsKseEQ1fWTRvUkJtwxX5r8q9hf1OA@mail.gmail.com>
+In-Reply-To: <Yvo+vQ+egjJBOmP+@worktop.programming.kicks-ass.net>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -82,136 +84,26 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 15, 2022 at 08:25:51PM -0700, Andrii Nakryiko wrote:
-> On Thu, Aug 11, 2022 at 2:16 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > With CONFIG_X86_KERNEL_IBT enabled the test for kprobe with offset
-> > won't work because of the extra endbr instruction.
-> >
-> > As suggested by Andrii adding CONFIG_X86_KERNEL_IBT detection
-> > and using appropriate offset value based on that.
-> >
-> > Also removing test7 program, because it does the same as test6.
-> >
-> > Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  .../bpf/prog_tests/get_func_ip_test.c         | 62 +++++++++++++++----
-> >  .../selftests/bpf/progs/get_func_ip_test.c    | 20 +++---
-> >  2 files changed, 60 insertions(+), 22 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c b/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
-> > index 938dbd4d7c2f..a4dab2fa2258 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c
-> > @@ -2,7 +2,9 @@
-> >  #include <test_progs.h>
-> >  #include "get_func_ip_test.skel.h"
-> >
-> > -void test_get_func_ip_test(void)
-> > +static int config_ibt;
-> > +
-> > +static void test_function_entry(void)
-> >  {
-> >         struct get_func_ip_test *skel = NULL;
-> >         int err, prog_fd;
-> > @@ -12,14 +14,6 @@ void test_get_func_ip_test(void)
-> >         if (!ASSERT_OK_PTR(skel, "get_func_ip_test__open"))
-> >                 return;
-> >
-> > -       /* test6 is x86_64 specifc because of the instruction
-> > -        * offset, disabling it for all other archs
-> > -        */
-> > -#ifndef __x86_64__
-> > -       bpf_program__set_autoload(skel->progs.test6, false);
-> > -       bpf_program__set_autoload(skel->progs.test7, false);
-> > -#endif
-> > -
-> >         err = get_func_ip_test__load(skel);
-> >         if (!ASSERT_OK(err, "get_func_ip_test__load"))
-> >                 goto cleanup;
-> > @@ -38,16 +32,62 @@ void test_get_func_ip_test(void)
-> >
-> >         ASSERT_OK(err, "test_run");
-> >
-> > +       config_ibt = skel->bss->config_ibt;
+On Mon, Aug 15, 2022 at 02:40:29PM +0200, Peter Zijlstra wrote:
+> On Mon, Aug 15, 2022 at 12:10:20PM +0200, Jiri Olsa wrote:
+> > On Mon, Aug 15, 2022 at 11:57:40AM +0200, Peter Zijlstra wrote:
+> > > On Thu, Aug 11, 2022 at 11:15:21AM +0200, Jiri Olsa wrote:
+> > > > Adding KPROBE_FLAG_ON_FUNC_ENTRY kprobe flag to indicate that
+> > > > attach address is on function entry. This is used in following
+> > > > changes in get_func_ip helper to return correct function address.
+> > > 
+> > > IIRC (and I've not digested patch) the intent was to have func+0 mean
+> > > this. x86-IBT is not the only case where this applies, there are
+> > > multiple architectures where function entry is not +0.
+> > 
+> > we can have kprobe created by user passing just the address
+> > 
+> > in this case _kprobe_addr still computes the address's offset
+> > from the symbol but does not store it back to 'struct kprobe'
 > 
-> skel->bss->config_ibt isn't actually necessary, you can just check
-> skel->kconfig->CONFIG_X86_KERNEL_IBT directly. And you won't need to
-> trigger BPF program unnecessary, libbpf will fill out kconfig section
-> during object/skeleton load phase.
+> Ah, this is an internal thing to record, in the struct kprobe if the
+> thing is on the function entry or not?
 
-nice, did not know that ;-) will remove it
+yes, exactly.. it's flag saying the kprobe is on function entry
 
-> 
-> > +       ASSERT_TRUE(config_ibt == 0 || config_ibt == 1, "config_ibt");
-> 
-> you won't need this anymore
-> 
-> > +       printf("%s:config_ibt %d\n", __func__, config_ibt);
-> 
-> and this is just debug leftover
-
-it's intentional to find out quickly what config we are failing on
-
-> 
-> > +
-> >         ASSERT_EQ(skel->bss->test1_result, 1, "test1_result");
-> >         ASSERT_EQ(skel->bss->test2_result, 1, "test2_result");
-> >         ASSERT_EQ(skel->bss->test3_result, 1, "test3_result");
-> >         ASSERT_EQ(skel->bss->test4_result, 1, "test4_result");
-> >         ASSERT_EQ(skel->bss->test5_result, 1, "test5_result");
-> > +
-> 
-> [...]
-> 
-> > diff --git a/tools/testing/selftests/bpf/progs/get_func_ip_test.c b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-> > index 6db70757bc8b..cb8e58183d46 100644
-> > --- a/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-> > +++ b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-> > @@ -2,6 +2,7 @@
-> >  #include <linux/bpf.h>
-> >  #include <bpf/bpf_helpers.h>
-> >  #include <bpf/bpf_tracing.h>
-> > +#include <stdbool.h>
-> >
-> >  char _license[] SEC("license") = "GPL";
-> >
-> > @@ -13,12 +14,19 @@ extern const void bpf_modify_return_test __ksym;
-> >  extern const void bpf_fentry_test6 __ksym;
-> >  extern const void bpf_fentry_test7 __ksym;
-> >
-> > +extern bool CONFIG_X86_KERNEL_IBT __kconfig __weak;
-> > +
-> > +bool config_ibt;
-> > +
-> >  __u64 test1_result = 0;
-> >  SEC("fentry/bpf_fentry_test1")
-> >  int BPF_PROG(test1, int a)
-> >  {
-> >         __u64 addr = bpf_get_func_ip(ctx);
-> >
-> > +       /* just to propagate config option value to user space */
-> > +       config_ibt = CONFIG_X86_KERNEL_IBT;
-> > +
-> 
-> as mentioned above, you shouldn't need it, just read
-> CONFIG_X86_KERNEL_IBT directly through skeleton
-> 
-> >         test1_result = (const void *) addr == &bpf_fentry_test1;
-> >         return 0;
-> >  }
-> > @@ -64,7 +72,7 @@ int BPF_PROG(test5, int a, int *b, int ret)
-> >  }
-> >
-> >  __u64 test6_result = 0;
-> > -SEC("kprobe/bpf_fentry_test6+0x5")
-> > +SEC("?kprobe/")
-> 
-> don't leave / at the end (and I thought that libbpf rejects this,
-> isn't that a case?...), just SEC("?kprobe")
-
-yes, will remove
-
-thanks,
 jirka
