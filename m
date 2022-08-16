@@ -2,68 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95F9059529D
-	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 08:38:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07F545953A4
+	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 09:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbiHPGh6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Aug 2022 02:37:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40664 "EHLO
+        id S231792AbiHPHYp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Aug 2022 03:24:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230079AbiHPGhk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Aug 2022 02:37:40 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0747A16304F
-        for <bpf@vger.kernel.org>; Mon, 15 Aug 2022 20:27:13 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id dc19so16623710ejb.12
-        for <bpf@vger.kernel.org>; Mon, 15 Aug 2022 20:27:13 -0700 (PDT)
+        with ESMTP id S231795AbiHPHY3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Aug 2022 03:24:29 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B10312BE419;
+        Mon, 15 Aug 2022 20:29:17 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id gj1so8657859pjb.0;
+        Mon, 15 Aug 2022 20:29:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=ci9V0ccH7yrdscDREP9JziE1sny4lsTm9XGKbaKxzsE=;
-        b=AWAof5gHQz0xpGuyBT2QgdnmvwmRWHIEynw3oQgIJqIsK3CNb4xJe+gU0jPpvrttOa
-         kGmfDHe6Ys8ooFwxLTe9OT5ZVuBJpWKB48FBGQ8kccCD8ZXayDGPy7Nk59wi5SeHBTy+
-         zz5Mth61HPXpu3s5u+yxCHmE2seoKtOFqxLcnVFjb92Z/hOMiV00JRin2Mpij5FqOIJs
-         SLSZ/Vm73qURJTy/AHcQck/U73yYonIYFqhry4bOJNo8kkoCyIqMn7374fC35ddP6Pyu
-         ssh0jzHk4au1xfcVgQGz7S1V870FKncspYXg9NsjEqkWqXtkhNpxgE+Ghv9inzts6Tp0
-         wiqw==
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc;
+        bh=jZcr1tOq0vbhHXHGg5bDK0b4NIp4TukEuBKXw3l7dfI=;
+        b=ERJ7vJZeTim5sgAxkYZv/avydlfMQG7+oYbOjD1Hz4D+hI9BkkUQAf6gMcERPk1PLt
+         pXI8XXUL1dLSbcUupVZ34mKpr3G53N3AH4Li7CkPy26KweLx7w6j0zOkjwQSQ/ooCG4Y
+         ZaXo3XEbyYuyrZXV8C98dqsS04a1TIoEkfos7ny5zrenPSG+pCX0l3js3ZIuK5M8ePtG
+         NI5+rCDzCkxwv/OUvFGRef/LU3grXwNHbci0anBlzZwScKFwClCHhJBFIHibxGYboel7
+         p4Xb1o7Kig9IQ6hQrdh8oWXJ60IJ/R2+4D7stmuN+e3L4UYOMjV+1kT6956sKvOkuE0r
+         QQLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=ci9V0ccH7yrdscDREP9JziE1sny4lsTm9XGKbaKxzsE=;
-        b=SrV+HTYbSzLV+6bUR5fblOlBPN08IVoD/cuhBvjdBmDII2NT+kkFBH8q41R5ZF2Fs6
-         VPWCvN1ingkNGGEMssmvFothaha22hOTOpRJZhdhudD/jgBJBd5frbsgKPkWrh+lXgH+
-         cy3yJlGLrnKBVWVorvZizfKC7BfDbvOkO/4EX+7bV7Sco80o+EVsbajlrHWlZkybi4Wp
-         ukvWu/TLgQ1Bo/rMVHBm68tacgK/TrGdUn9jo1OQFyDN0I+Ime+gtiY/3Y469hff2sdt
-         jBBFxpxLow2Zs+jEvULfkUOpA11rmVv/QGjH6eEtndhPSMcy+dBthtviNvOziG3o21bL
-         E2LA==
-X-Gm-Message-State: ACgBeo2qLfmvYqIr6la8NDAenihxjYZ+8wu7oLqBCV14VnDRQ8N9oaGG
-        7a3KC/tp85nVLv+2iDZtMXIdHRAiQeE7uSDSEsE=
-X-Google-Smtp-Source: AA6agR6OF0dOaiYdXXon1R3LWzSvArgxp5jMPL0Sb1Ke/3PqGV8ka5UrihCw47wUh00gu+K8FpGxSCync2Q6IENAL+w=
-X-Received: by 2002:a17:907:3d90:b0:730:a937:fb04 with SMTP id
- he16-20020a1709073d9000b00730a937fb04mr12437332ejc.176.1660620431604; Mon, 15
- Aug 2022 20:27:11 -0700 (PDT)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
+        bh=jZcr1tOq0vbhHXHGg5bDK0b4NIp4TukEuBKXw3l7dfI=;
+        b=y9fn12wn980QZoGxjbI65KC9cGQdo9W8r5QhzCV/kEsnT5NJ6HUhSderqRy66BqdZw
+         c/yluF4Eg1paFCtcqEvDYF76IT+/RGt5b3N1mc+tWHP/YbimofrLrqpeLCNUkaW3QHwg
+         oT5hOaRdyfX/NQVK2amtKo2P/GNhtLfzYf076BRopesX1PEcFDthc2w0cnZ4eEBVzRwt
+         BPFneROyH5nlzcx8J9xgdzupkcoKk1XK4ld2520zfRsjkYCkS3TOXQ4TATpmaJIQNTUa
+         Rj0q0T4306OANsYIqNl6tvZLZaj3YvVV+Bd6i1miPJNw2a6ob0kSlvrnSc9Rzu9NqJ7L
+         HCSA==
+X-Gm-Message-State: ACgBeo2kKPUKSvCuyp4tSTcUgwqgUbX8yYFQ/Oylr5YfUgKT+pK9s+np
+        ECi3hIKTU1M08hEzNWK0FKg=
+X-Google-Smtp-Source: AA6agR40lfsWmAPWuJCQp8pcf8t1MyaRAbeI0StBD0MztAVOqdtVvEtKngl93CFdt2d1KdaNYm+k2A==
+X-Received: by 2002:a17:90a:e611:b0:1f4:f03b:affd with SMTP id j17-20020a17090ae61100b001f4f03baffdmr20961637pjy.85.1660620556443;
+        Mon, 15 Aug 2022 20:29:16 -0700 (PDT)
+Received: from Laptop-X1 ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id ci11-20020a17090afc8b00b001fa9e7b0c47sm30110pjb.46.2022.08.15.20.29.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Aug 2022 20:29:15 -0700 (PDT)
+Date:   Tue, 16 Aug 2022 11:29:10 +0800
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Quentin Monnet <quentin@isovalent.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCHv2 bpf-next] libbpf: making bpf_prog_load() ignore name if
+ kernel doesn't support
+Message-ID: <YvsPBk4Wo3Iw7spd@Laptop-X1>
+References: <20220813000936.6464-1-liuhangbin@gmail.com>
+ <a3c23cfe-061a-1722-8521-26e57b4b2cf4@isovalent.com>
+ <CAEf4BzbXehQtWnocp5KnArd0dq-Wg0ddPOyJZCwGPLO_L7wByg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20220811091526.172610-1-jolsa@kernel.org>
-In-Reply-To: <20220811091526.172610-1-jolsa@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 15 Aug 2022 20:27:00 -0700
-Message-ID: <CAEf4BzaKWQtwki8oDcp+rh8c-kMmZcc1ok+zs=GvMCndN8UnyA@mail.gmail.com>
-Subject: Re: [PATCHv2 bpf-next 0/6] bpf: Fixes for CONFIG_X86_KERNEL_IBT
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzbXehQtWnocp5KnArd0dq-Wg0ddPOyJZCwGPLO_L7wByg@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -74,53 +72,41 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Aug 11, 2022 at 2:15 AM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> hi,
-> Martynas reported bpf_get_func_ip returning +4 address when
-> CONFIG_X86_KERNEL_IBT option is enabled and I found there are
-> some failing bpf tests when this option is enabled.
->
-> The CONFIG_X86_KERNEL_IBT option adds endbr instruction at the
-> function entry, so the idea is to 'fix' entry ip for kprobe_multi
-> and trampoline probes, because they are placed on the function
-> entry.
->
-> v2 changes:
->   - change kprobes get_func_ip to return zero for kprobes
->     attached within the function body [Andrii]
->   - detect IBT config and properly test kprobe with offset
->     [Andrii]
->
-> v1 changes:
->   - read previous instruction in kprobe_multi link handler
->     and adjust entry_ip for CONFIG_X86_KERNEL_IBT option
->   - split first patch into 2 separate changes
->   - update changelogs
->
-> thanks,
-> jirka
->
->
-> ---
-> Jiri Olsa (6):
->       kprobes: Add new KPROBE_FLAG_ON_FUNC_ENTRY kprobe flag
->       ftrace: Keep the resolved addr in kallsyms_callback
->       bpf: Use given function address for trampoline ip arg
->       bpf: Adjust kprobe_multi entry_ip for CONFIG_X86_KERNEL_IBT
->       bpf: Return value in kprobe get_func_ip only for entry address
->       selftests/bpf: Fix get_func_ip offset test for CONFIG_X86_KERNEL_IBT
->
->  arch/x86/net/bpf_jit_comp.c                               |  9 ++++-----
->  include/linux/kprobes.h                                   |  1 +
->  kernel/kprobes.c                                          |  6 +++++-
->  kernel/trace/bpf_trace.c                                  | 15 ++++++++++++++-
->  kernel/trace/ftrace.c                                     |  3 +--
->  tools/testing/selftests/bpf/prog_tests/get_func_ip_test.c | 62 +++++++++++++++++++++++++++++++++++++++++++++++++++-----------
->  tools/testing/selftests/bpf/progs/get_func_ip_test.c      | 22 ++++++++++------------
->  tools/testing/selftests/bpf/progs/kprobe_multi.c          |  4 +---
->  8 files changed, 87 insertions(+), 35 deletions(-)
+On Mon, Aug 15, 2022 at 02:59:50PM -0700, Andrii Nakryiko wrote:
+> I did a small adjustment to not fill out entire big bpf_attr union
+> completely (and added a bit more meaningful "libbpf_nametest" prog
+> name):
+> 
 
-Overall LGTM, please address Peter's questions and request for some
-more comments and context. Few nits to simplify selftests further, but
-looks great. Thanks!
+Thanks for the adjustment.
+
+Hangbin
+
+> $ git diff --staged
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 4a351897bdcc..f05dd61a8a7f 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -4415,6 +4415,7 @@ static int probe_fd(int fd)
+> 
+>  static int probe_kern_prog_name(void)
+>  {
+> +       const size_t attr_sz = offsetofend(union bpf_attr, prog_name);
+>         struct bpf_insn insns[] = {
+>                 BPF_MOV64_IMM(BPF_REG_0, 0),
+>                 BPF_EXIT_INSN(),
+> @@ -4422,12 +4423,12 @@ static int probe_kern_prog_name(void)
+>         union bpf_attr attr;
+>         int ret;
+> 
+> -       memset(&attr, 0, sizeof(attr));
+> +       memset(&attr, 0, attr_sz);
+>         attr.prog_type = BPF_PROG_TYPE_SOCKET_FILTER;
+>         attr.license = ptr_to_u64("GPL");
+>         attr.insns = ptr_to_u64(insns);
+>         attr.insn_cnt = (__u32)ARRAY_SIZE(insns);
+> -       libbpf_strlcpy(attr.prog_name, "test", sizeof(attr.prog_name));
+> +       libbpf_strlcpy(attr.prog_name, "libbpf_nametest",
+> sizeof(attr.prog_name));
+> 
+> Pushed to bpf-next, thanks!
