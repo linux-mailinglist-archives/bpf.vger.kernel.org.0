@@ -2,190 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA54A595F36
-	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 17:36:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A4E7595F53
+	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 17:39:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235839AbiHPPgR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Aug 2022 11:36:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49520 "EHLO
+        id S236222AbiHPPip (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Aug 2022 11:38:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235817AbiHPPgA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Aug 2022 11:36:00 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD257FE43
-        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 08:34:57 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id u2-20020a17090a2b8200b001f74f05c1a7so4266484pjd.2
-        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 08:34:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=content-transfer-encoding:cc:to:from:subject:mime-version
-         :message-id:date:from:to:cc;
-        bh=L+xobS5y5Ec7VAq1FxaOkxSFabwHd5aQYcMyJajK4oo=;
-        b=Zq/zzA4FtSl6ULJysM43vn8cKKIlXu+inY1vRHHMg1a7HOQN56N0NBOpvKhjdPtGwK
-         URjBEUVePYFZuk/gmNfDxawiJk/yh8WqRe0t2/nxEdhUN4Vi3cYXoYKtHF4A/q2BjbpN
-         fxnFVwjQJrAiC5tYE2KtezVieyFf18wC5N4Pzwf9q/WdMz3XBTuKj6iPc/2RBH/xoY/7
-         lKPjZeF2+M9CCs3R6xnaIowgDCwP8A2/Ys37YbxTicfU+Azb+V97YYkE08VDqlu34ktn
-         11dfLZaVQ7ciOAwp4zkofofSokExrd4GS+ol6WDuvmsx8dWTOttbLqxsZdAH3jsN8Duy
-         /Ucw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:cc:to:from:subject:mime-version
-         :message-id:date:x-gm-message-state:from:to:cc;
-        bh=L+xobS5y5Ec7VAq1FxaOkxSFabwHd5aQYcMyJajK4oo=;
-        b=GAe41vcQ+iRtYklaa3Je+ydpShNNXxXhmIQ1l2txWoqGgMTFDyun71bp4DDSFj7Ylr
-         CHZxKlnOESIjlxgv+NCiT5/+3t8EEYbE7x47IcbKQ498cU4/+MFkI3tdBFH7Lioeouf8
-         7aNXDrkHxTVb3UbM8ITOFDvn9ri/fNXFr7B3Aj9algt7ViLXGXmKDCRU93jDH1zDMZhT
-         VKMj08fMI0P+OGW1fzFT7ZfaMCh+KG7U23C0AWUJVyQ5UkgrXJ9j75Ik03eC4EK9RE/k
-         9hDybD2HrlBOP7dg75BQt52WZoAm3sdJdi63zZR9z1U/ko8FtMP9QzZ+JcHpf3vkJjGE
-         +Dmg==
-X-Gm-Message-State: ACgBeo1OGgeW8EXlJ4GQCxPw46EK+WrJqn4oaeQtD976Ovy8CNVvw1Zs
-        zlvIkzKDP0Ge4BClQQT1M18Wsi0Inmog3ErbX9W+ow==
-X-Google-Smtp-Source: AA6agR7PcAiX5mlJ0MbRBRpZYKtYWPIflsN2NzjzOR29+X1HAiUm9BblVn9n/I8ODS22EQxQT3PGpnKvdh/06rRPRzGSdw==
-X-Received: from sagarika.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5714])
- (user=sharmasagarika job=sendgmr) by 2002:a65:41ca:0:b0:41d:17df:1d0e with
- SMTP id b10-20020a6541ca000000b0041d17df1d0emr18846473pgq.112.1660664096796;
- Tue, 16 Aug 2022 08:34:56 -0700 (PDT)
-Date:   Tue, 16 Aug 2022 15:34:31 +0000
-Message-Id: <20220816153431.1479265-2-sharmasagarika@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.37.1.595.g718a3a8f04-goog
-Subject: [PATCH bpf-next 2/2] use prefetch function in bpf_map_lookup_batch()
-From:   Sagarika Sharma <sharmasagarika@google.com>
-To:     Brian Vazquez <brianvv@google.com>,
-        Sagarika Sharma <sagarikashar@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Luigi Rizzo <lrizzo@google.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Sagarika Sharma <sharmasagarika@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        with ESMTP id S235902AbiHPPiQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Aug 2022 11:38:16 -0400
+Received: from sonic308-15.consmr.mail.ne1.yahoo.com (sonic308-15.consmr.mail.ne1.yahoo.com [66.163.187.38])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAEC185FB0
+        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 08:37:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1660664242; bh=h2+uBqaU3QflZmlGyWerTZwwwL4BbriDFECIpmxJNr8=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=MjpUlhRJ7bxNQtLy/RUjvucD7+fGPiZ/vVFga2/0Y9AnnNB8KKasHS1aamU3UEHH3PVlP7ZnglmiXJ+lnxVanUvkUIdJPC/sbThpnKOv5YZ8M0K0MAIAWOD8Rtxp0mptqpmGPWTD0aJELpHW3VHR8Krfrd9cW+xvam+KiLq0hUzk5sC80egBaAKtqGbqzdt1EmPBea5E2rSAYGq6q++5V6SzcI6UouKYXYkDyRgCwQnylNHWkkCg3jwjKGyb+3XTB6iwZuBYWLiiyfNcOkeD5LlujZdQYUUcdevFs8GKvdR9wga9vaM3SgGFdsqLl/LQjnIFxLEtvDbZ9OgWr5oDlQ==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1660664242; bh=WS516hGrFdeCGL4ttL+UaT0Lc+5piOM8lLS07F7rE38=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=VTmALvToRZiHrBFGD1brprH96U97LQQhtzK4GSWzUavDz9UAiIfl+Hvq+Hegq+9FzB5FMm7JFT5cKZaxsC+z96/VRJ9fHWq0eo/NupTHleknEpryUh4Cs7/ZzA/Runxp3s22g9r91R2yCxkuL1qmbAwNC2OHN+lyq+MjSgzLg7zQ14mIPu9stsC6CeQpJASPadejesAlJtrDJT2tkcypKNUpKlBILBSTw0gsnqgwvobtX1lHCQAPf2nuXH3t7PB7AfFAdIoWO/JOd9WBufZor74nFji/7ToDfh7v+RGeiyOGMCvL/m5hhtH4xgVxDd09e0slGiShOPnaNkjyNtRC+g==
+X-YMail-OSG: ztHmSBoVM1lV4DhoZ5snreo83bJ9zEUVgF5RBvD_kqlgH2dpUDDhqnhxVXAvKgG
+ JZzlOMha8I7q52bA1YHQuzB6UIwdQ0AzBbBVNfySUMjDxN9cC7KBhHhlOEZr6LVsxVFKWQhv_mGD
+ ysguAWxV6VeBc_Er2Kr82xHcib76zHK3LONqaKZNK3h5RG.Yj7PIMwIv9WSIk3UtGzlPrJ0tA1Np
+ jSF0ivecSeM_ym5pyokWsm_9OZa1Oa6BgPKoT5NBABFEJcT_f8Byd19QFhHgTH8vwY_8uR8Acj1I
+ dZt6aD_l7OQV3j20ZizrP7ll8RdFBw8IbeyoN3f4cwDzi0yDWD37VuVFJckftJRO.5HjE4HHhlTY
+ zX8kfbvlU6Ukn935hWJfeZstLEL3EgO.ndAQlNLoinYWVpKqldiwHdrrxLMXIk.UIOmmGHjjSWb8
+ 4tHCOrDVCaCThwlNxlwN2XgfHGhy44U0Xx9y1m7EBg4JuD1gSTcWNxVUkmwTM8dlWcI8K2BCkKUQ
+ 5JW.oX_dljIKtQ10.k4Dx4C7XUdlmaqXCuvyaZy1YviGXkODHE_XBavuy2Aimp4pQ9oU.CJM_N_i
+ Hg8CWHjxU4gaImxWN6HylCS3Z.p0EqGKwNLJfYG5P0LMTz6wneDp9bVT7HXaBzAnacQ9H_vv.s8s
+ aJYPkeDffKlKCy_GBzDf191wPdvHDlTR1pt.nS2OBewg0D7TtEFve7ATT3FNRrXLGqhbcXMNHmjI
+ qzMxDyqG.uh96zZ87ZiUKyhKedDCDQSDhfanQ1Z60DiB_sD1C9dz9ZxV8DpbCDfbxojbQDN_ZZTd
+ hDO2mx9d243pfaF2kGP1WvJh4Recp39dyhgo.d.PY3FGZocSybyCvoRkBqnl2mf_h5ZFMJV9Wqv8
+ yL6avlOmQIMuTdBycIY0rUmhc1Um3u7TthYpfGVw79alFamSOlmyv.Amk4gQEOucWEvUDNcZyg95
+ x2EsUlKv4nGMPvLJe1vssYd294Kfnp94k6ZGAmmv5QENogTDgH9KMjd3xUxoEOpRo5gq8F1VvkPw
+ g5sT4MXpVnR1IVuxNKUpJA.ARZEgATPi0waf5AK85oyVnGkQT4tIC0kwzNPb__wf3V1mN3ZgV.wM
+ qrrsWc0nwHrd_dK7RFNx1c0pBtBzNFXoL8UKiy3NIFRqS1dxSnzbIwddX_tqqGObPr41o_Z7Ad7L
+ pBBpmZ4NtVY_4KS4nPCWUjELgnifolRCWFCG8vClVgzUinj9AUvvqcRWgOWvNB792x5IPP2szhBa
+ Xag0bMpFEYmsTuNzZJHvbzAyUoSsVG.k01Pw3p6JBf1DUAU.FmM8H7LwbQBuIWA1XiLtAn9qxrz3
+ 4YeKtXM._a0Ju4esGrloiNY5AfJmWY5QjZvTOzcdrVaCQQsrG8kjpiZ8BYpFPXeI2.8HbZojZJHM
+ GgtHQp9dZ6PJVtX6pKk04VgzhRf7WbhQiYU4nCUW.e1ossWQl9Fh_dSLrjP4KvZx7qjzOzD9W_ZG
+ 4pJbXS8A8Ue5gy0il0mhzzlqti5JwdAp8arPGubAHea2CSoQH2ItT37re9yJrdHSeywvA1MlkEoy
+ zVn5biBq6IG23Ix33F8gyob8r0U1wlJTKUnPclH7TuX9yFc73E.sQuY6Okm6po048RU0Xr9yRbQ8
+ 2lfBgFO4YGWOGlijranm5Q37czPf.nTJlRb6SBRUAT5lKCUkNOWOem1Vvdo5Gzf.ncAVD5t7fhiE
+ vA3Tfm3hsjE1.P.e84Y9kwpZ1Izc_cVrZKyvbWvuWFI2ogQn_tM8m7lBoK_3zyhja80bm8B2GboQ
+ gCn4YZ2jP7saXy1l1IP9bBpb1Zj3HKv5exWkmAPwok3ZWM5pNB3hPssQ_hLxKqwJfy.6oLlRvG0y
+ f.6La3YpLJd9h_TMWwzyfek.fn6nA.eu50I7gqdvI.HnCEm2jAhB_ToLODG5CYASarjkNgDtbRjn
+ NaNQ.MQD2Y2fMV_h7Nu2.vAu8smOPZjSasxUKV5mictTTvImEGAF4HBFL127NlJg0gYGGqNweXPk
+ rtnHPrDIgTHyCkNA.crojlF4P.yyy4_RsFBhZLdG5kyyndZhJOHUyAgpJpUSHVwlv1Z0V58sJ.9n
+ dKbfX1jj4yIljmipvCC_nO4zoc3vEUfHItN2Hs3TG4s29p7p7jPuYNrzAP_RDMybpOQUvv6ai8Rk
+ RtAgaQb2WMbULh0mbyJA4VbDyz5awbzLhxP1Sfm04Bb.6fyAFSTId3KgRlkOi3ER0jDRrAlWzogP
+ KJ.9jwF_p7qySuk0IHOBSisIGNdMikdozh0qayF7Y2_BnF5FvipAimnwkHQ--
+X-Sonic-MF: <casey@schaufler-ca.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic308.consmr.mail.ne1.yahoo.com with HTTP; Tue, 16 Aug 2022 15:37:22 +0000
+Received: by hermes--production-bf1-7586675c46-b9v2k (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID f402ac616ebbedac2673a1c80cf846d4;
+          Tue, 16 Aug 2022 15:37:21 +0000 (UTC)
+Message-ID: <73ae74de-a1eb-b118-3e74-61f14b5561af@schaufler-ca.com>
+Date:   Tue, 16 Aug 2022 08:37:17 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.12.0
+Subject: Re: [syzbot] KASAN: use-after-free Read in sock_has_perm
+Content-Language: en-US
+To:     Paul Moore <paul@paul-moore.com>,
+        syzbot <syzbot+2f2c6bea25b08dc06f86@syzkaller.appspotmail.com>
+Cc:     anton@enomsg.org, bpf@vger.kernel.org, ccross@android.com,
+        eparis@parisplace.org, keescook@chromium.org,
+        linux-kernel@vger.kernel.org, selinux@vger.kernel.org,
+        stephen.smalley.work@gmail.com, syzkaller-bugs@googlegroups.com,
+        tony.luck@intel.com, casey@schaufler-ca.com
+References: <0000000000002c46ec05e6572415@google.com>
+ <CAHC9VhQmtggv-P9RoG9mHp8JJMUB-qTWNiKVh8q4ygmdi-x2rA@mail.gmail.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <CAHC9VhQmtggv-P9RoG9mHp8JJMUB-qTWNiKVh8q4ygmdi-x2rA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Mailer: WebService/1.1.20531 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch introduces the use of a module parameter n_prefetch
-which enables prefetching within the bpf_map_lookup_batch function
-for a faster lookup. Benefits depend on the platform, relative
-density of the map, and the setting of the module parameter as
-described below.
+On 8/16/2022 8:01 AM, Paul Moore wrote:
+> On Tue, Aug 16, 2022 at 4:00 AM syzbot
+> <syzbot+2f2c6bea25b08dc06f86@syzkaller.appspotmail.com> wrote:
+>> Hello,
+>>
+>> syzbot found the following issue on:
+>>
+>> HEAD commit:    200e340f2196 Merge tag 'pull-work.dcache' of git://git.ker..
+>> git tree:       upstream
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=16021dfd080000
+>> kernel config:  https://syzkaller.appspot.com/x/.config?x=f2886ebe3c7b3459
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=2f2c6bea25b08dc06f86
+>> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+>>
+>> Unfortunately, I don't have any reproducer for this issue yet.
+>>
+>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>> Reported-by: syzbot+2f2c6bea25b08dc06f86@syzkaller.appspotmail.com
+>>
+>> ==================================================================
+>> BUG: KASAN: use-after-free in sock_has_perm+0x258/0x280 security/selinux/hooks.c:4532
+>> Read of size 8 at addr ffff88807630e480 by task syz-executor.0/8123
+>>
+>> CPU: 1 PID: 8123 Comm: syz-executor.0 Not tainted 5.19.0-syzkaller-02972-g200e340f2196 #0
+>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/22/2022
+>> Call Trace:
+>>  <TASK>
+>>  __dump_stack lib/dump_stack.c:88 [inline]
+>>  dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+>>  print_address_description.constprop.0.cold+0xeb/0x467 mm/kasan/report.c:313
+>>  print_report mm/kasan/report.c:429 [inline]
+>>  kasan_report.cold+0xf4/0x1c6 mm/kasan/report.c:491
+>>  sock_has_perm+0x258/0x280 security/selinux/hooks.c:4532
+>>  selinux_socket_setsockopt+0x3e/0x80 security/selinux/hooks.c:4913
+>>  security_socket_setsockopt+0x50/0xb0 security/security.c:2249
+>>  __sys_setsockopt+0x107/0x6a0 net/socket.c:2233
+>>  __do_sys_setsockopt net/socket.c:2266 [inline]
+>>  __se_sys_setsockopt net/socket.c:2263 [inline]
+>>  __x64_sys_setsockopt+0xba/0x150 net/socket.c:2263
+>>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>>  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>>  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>> RIP: 0033:0x7f96c7289279
+>> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+>> RSP: 002b:00007f96c842f168 EFLAGS: 00000246 ORIG_RAX: 0000000000000036
+>> RAX: ffffffffffffffda RBX: 00007f96c739c050 RCX: 00007f96c7289279
+>> RDX: 0000000000000007 RSI: 0000000000000103 RDI: 0000000000000004
+>> RBP: 00007f96c72e3189 R08: 0000000000000004 R09: 0000000000000000
+>> R10: 0000000020000000 R11: 0000000000000246 R12: 0000000000000000
+>> R13: 00007ffe7030593f R14: 00007f96c842f300 R15: 0000000000022000
+>>  </TASK>
+> SELinux hasn't changed anything in this area for a while, and looking
+> over everything again just now it still looks sane to me.  I suspect
+> there is something else going on with respect to socket lifetimes and
+> SELinux just happens to be the one that catches the use-after-free
+> first.
 
-For multiprocessor machines, for a particular key in a bpf map,
-each cpu has a value associated with that key. This patch=E2=80=99s
-change is as follows: when copying each of these values to
-userspace in bpf_map_lookup_batch, the value for a cpu
-n_prefetch ahead is prefetched.
-
-MEASUREMENTS:
-The benchmark test added in this patch series was used to
-measure the effect of prefetching as well as determine the
-optimal setting of n_prefetch given the different parameters:
-the test was run on many different platforms (with varying
-number of cpus), with a range of settings of n_prefetch, and with
-saturated, dense, and sparse maps (num_entries/capacity_of_map).
-The benchmark test measures the average time for a single entry
-lookup (t =3D num_entries_looked_up/total_time) given the varied
-factors as mentioned above. The overhead of the
-bpf_map_lookup_batch syscall introduces some error.
-
-Here are the experimental results:
-
-amd machine with 256 cores (rome zen 2)
-Density of map	n_prefetch	single entry lookup time (ns/op)
---------------------------------------------------------------------
-40k / 40k	0		16176.471
-		1		13095.238
-		5		7432.432
-		12		5188.679
-		20		9482.759
-
-10k / 40k	0		13253.012
-		5		7482.993
-		12		5164.319
-		20		9649.123
-
-2.5k / 40k	0		7394.958
-		5		7201.309
-		13		4721.030
-		20		8118.081
-
-For denser maps, the experiments suggest that as n_prefetch
-increases, there is a significant time benefit (~66% decrease)
-until a certain point after which the time benefit begins to
-decrease. For sparser maps, there is a less pronounced speedup
-from prefetching. Additionally, this experiment seems to suggest
-the optimal n_prefetch range on this particular machine is 12-13,
-but a setting of n_prefetch =3D 5 can still improve the single
-entry lookup time.
-
-intel-skylake (with 112 cores)
-Density of map	n_prefetch	single entry lookup time (ns/op)
-------------------------------------------------------------------
-40k / 40k	0		5729.167
-		1		5092.593
-		5		3395.062
-		20		6875.000
-
-10k / 40k	0		2029.520
-		5		2989.130
-		20		5820.106
-
-2.5k / 40k	0		1598.256
-		5		2935.290
-		20		4867.257
-
-For this particular machine, the experimental results suggest that
-there is only a significant benefit in prefetching with denser maps.
-Prefetching within bpf_map_lookup_batch can provide significant
-benefit depending on the use case. Across the many different
-platforms experiments were performed on, a setting of n_prefetch =3D 5,
-although not the optimal setting, significantly decreased the single
-entry lookup time for denser maps.
-
-Signed-off-by: Sagarika Sharma <sharmasagarika@google.com>
----
- kernel/bpf/hashtab.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 8392f7f8a8ac..eb70c4bbe246 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -15,6 +15,9 @@
- #include "bpf_lru_list.h"
- #include "map_in_map.h"
-=20
-+static uint n_prefetch;
-+module_param(n_prefetch, uint, 0644);
-+
- #define HTAB_CREATE_FLAG_MASK						\
- 	(BPF_F_NO_PREALLOC | BPF_F_NO_COMMON_LRU | BPF_F_NUMA_NODE |	\
- 	 BPF_F_ACCESS_MASK | BPF_F_ZERO_SEED)
-@@ -1743,9 +1746,13 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *m=
-ap,
- 		if (is_percpu) {
- 			int off =3D 0, cpu;
- 			void __percpu *pptr;
-+			int num_cpus =3D num_possible_cpus();
-=20
- 			pptr =3D htab_elem_get_ptr(l, map->key_size);
- 			for_each_possible_cpu(cpu) {
-+				if (n_prefetch > 0 && (cpu + n_prefetch) <=3D num_cpus)
-+					prefetch(per_cpu_ptr(pptr, cpu + n_prefetch));
-+
- 				bpf_long_memcpy(dst_val + off,
- 						per_cpu_ptr(pptr, cpu), size);
- 				off +=3D size;
---=20
-2.37.1.595.g718a3a8f04-goog
+I am trying to track down an intermittent UDP peersec failure in the
+Smack stack as well. It could be related. There are no changes in the
+Smack code that would account for it. 
 
