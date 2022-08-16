@@ -2,54 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE765956FF
-	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 11:49:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EFF7595817
+	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 12:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234011AbiHPJs4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Aug 2022 05:48:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39886 "EHLO
+        id S234468AbiHPKYF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Aug 2022 06:24:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233863AbiHPJsZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Aug 2022 05:48:25 -0400
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D2C55F21C
-        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 01:41:35 -0700 (PDT)
-Received: by mail-il1-f199.google.com with SMTP id d6-20020a056e020be600b002dcc7977592so6616383ilu.17
-        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 01:41:35 -0700 (PDT)
+        with ESMTP id S234211AbiHPKXg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Aug 2022 06:23:36 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75ED9116EE6;
+        Tue, 16 Aug 2022 01:13:53 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d16so8523400pll.11;
+        Tue, 16 Aug 2022 01:13:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc;
+        bh=HaNa5Lj7TflIsF441E038f4wpAfhumsnkH45RU607sM=;
+        b=Ww0bVrST1e5NUEUTrrq+iIFizUm7dif9ZWs/qC/0+v0oYqNsPQgUzmHmengaPvV1/s
+         JIBIzjKY729iRHUZMD7mivMzVkjgF4p6SyVWQFs9UFGeOh41T15QyQ4izQR9Ihn3H5FD
+         NyxpBtwQgCV+UL6wGus1uFHVaZ6Mi0HR0CGki6oJqqVF2CJJyQtyTDFUpBjBCapCjBYK
+         c/7jh+DTayooy/abN6tPsz98QnZ8vQOe4iKeKV+AD4VRCX9sNkwiRjwr9QIrmftu/DXM
+         /9Ffo9O8sq9oDuvYw9Vnx6Q0+oy9xTIRkZF2Tf2Siuqhmtv48BphvxP7ooDLwp3GgTtA
+         2F/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
          :from:to:cc;
-        bh=QoJU5GGMy8v8yEZNFxM99bTCjQW1eFlhk+iiG3fJdLI=;
-        b=xa6TI666q/D5FPjkY6MOU5RHJU8tLpP+JTyvK33DU0IoDGCjBc7XzEfOdhAloAYk2t
-         e/XVTCKbExzYFLJlpuitwAldJgxrKIBssbIQ8/W7U8+CN+x9v5bwrY2xIVzbCnesjC+0
-         RumjTG/PSEf7nTaWqUFUP7hTdmdta+H6EzKXjN7zVXxmg0akBPvtdYV/MLgWnLnVQV+B
-         ia1bvRHV6b/vew5BxnIngkUL4tCdi5hYrMeH06s6UiOhcoC5wg4blbNkWurvvvdDmh78
-         1cONR73RfiswWRFJr1WjQ5mHaHHYWCPawLD425u4nqu+fhdR0iDAi3OXlSl3s1XxqOKw
-         ImWw==
-X-Gm-Message-State: ACgBeo12rUcx1h+EzkyRTqcqNKUtbSsCGn37d7qcj1fWXt74LPtu3jFk
-        ybwOU7L9OB8PJhZ80k6HX7/57aUfVKf0PnkcE7FlwgMTNb1U
-X-Google-Smtp-Source: AA6agR72pfTFc5Nk70AuqknQizPu6jLKL7iJFFPqgDk7a5kQ7izKd/NlV+VSVv6WZrRf/Lm1ZySMpdIMRZk6PsLGPasFpCgAOzQH
+        bh=HaNa5Lj7TflIsF441E038f4wpAfhumsnkH45RU607sM=;
+        b=yTjdAh58GdVxgq9lOKpv23YBVfhsfkrhdTFN7FA2KGgYXsC39+3/vuEJkxM5/B0Qi9
+         ytk2Q7rlU5lAis7p+sivX+SHQZ/9a3nFEyY4hxu0zfQ7+5UCpzclLw/vXa8euND32NMm
+         bd8VOXYaatYqfY7n7qaUxxAmH+TPXPkwt5LOoNPRLjhcgqKtyl9WD/RRebsO/0t/8Bg3
+         Z1on0Gds35vDvwRS9aIF4suTOrYKz7+Z4PSj96Aw0jRTj/jSJX0YiJOx1JbkSCS6HhXE
+         3Z7klCHuX5gY+lnal8fHbG0EPiCj4l3hu699e6qJpfOz+9zr9q7I32GqXu8yYacJpZV4
+         Dkug==
+X-Gm-Message-State: ACgBeo31MGM+S/fZNPD4ZLTza7D3tixJ4g/LrBFA8iPsNTMUD1Du+S2c
+        qHR5m7RJ8iaqhwUa8Lr6ORq7Eb4pisrtgYq3fVRD1Uu7v//9gW4=
+X-Google-Smtp-Source: AA6agR7yu8H4/ggphVQvnzGDYaE0m6ytOr7ga/16iVCtxT7N/L8vPgzY1qvU0c8CdIJkIaxTn6om5QAkBJ3RjCObDmY=
+X-Received: by 2002:a17:902:720b:b0:16d:2c4c:b52a with SMTP id
+ ba11-20020a170902720b00b0016d2c4cb52amr20409714plb.155.1660637633487; Tue, 16
+ Aug 2022 01:13:53 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:2145:b0:2e4:b2f3:d6fb with SMTP id
- d5-20020a056e02214500b002e4b2f3d6fbmr7270506ilv.163.1660639294552; Tue, 16
- Aug 2022 01:41:34 -0700 (PDT)
-Date:   Tue, 16 Aug 2022 01:41:34 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000040801b05e657b77f@google.com>
-Subject: [syzbot] upstream boot error: BUG: unable to handle kernel paging
- request in __rhashtable_lookup
-From:   syzbot <syzbot+6fccf62d7c237e1b4c85@syzkaller.appspotmail.com>
-To:     bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
-        fw@strlen.de, harshit.m.mogalapalli@oracle.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Tue, 16 Aug 2022 08:13:42 +0800
+Message-ID: <CACkBjsbuxaR6cv0kXJoVnBfL9ZJXjjoUcMpw_Ogc313jSrg14A@mail.gmail.com>
+Subject: KASAN: slab-out-of-bounds Read in __htab_map_lookup_and_delete_batch
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -58,111 +66,138 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Hello,
 
-syzbot found the following issue on:
+Last email was not formatted correctly, resend it here. The following
+crash can be triggered on:
 
-HEAD commit:    4a9350597aff Merge tag 'sound-fix-6.0-rc1' of git://git.ke..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16259e35080000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5d647c9572405910
-dashboard link: https://syzkaller.appspot.com/bug?extid=6fccf62d7c237e1b4c85
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+HEAD commit: ffcf9c5700e4  x86: link vdso and boot
+git tree: upstream
+console output: https://pastebin.com/raw/ngeVmgpK
+kernel config: https://pastebin.com/raw/3JYdi5mp
+C reproducer: https://paste.ubuntu.com/p/D2sz87PQ4k/
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6fccf62d7c237e1b4c85@syzkaller.appspotmail.com
+==================================================================
+BUG: KASAN: slab-out-of-bounds in instrument_copy_to_user
+include/linux/instrumented.h:118 [inline]
+BUG: KASAN: slab-out-of-bounds in _copy_to_user lib/usercopy.c:32 [inline]
+BUG: KASAN: slab-out-of-bounds in _copy_to_user+0x9c/0xc0 lib/usercopy.c:26
+Read of size 54 at addr ffff8881055c0100 by task syz-executor382/8357
 
-8021q: adding VLAN 0 to HW filter on device bond0
-eql: remember to turn off Van-Jacobson compression on your slave devices
-BUG: unable to handle page fault for address: ffffdbffffffffc8
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD 11825067 P4D 11825067 PUD 0 
-Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 3187 Comm: dhcpcd Not tainted 5.19.0-syzkaller-14090-g4a9350597aff #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/22/2022
-RIP: 0010:netlink_compare net/netlink/af_netlink.c:500 [inline]
-RIP: 0010:__rhashtable_lookup.constprop.0+0x2ae/0x5e0 include/linux/rhashtable.h:601
-Code: 01 44 89 e6 e8 83 19 e8 f9 45 84 e4 0f 85 8f 01 00 00 e8 f5 1c e8 f9 4d 8d 24 1f 49 8d bc 24 00 05 00 00 48 89 f8 48 c1 e8 03 <42> 0f b6 04 30 84 c0 74 08 3c 03 0f 8e 9c 02 00 00 45 8b ac 24 00
-RSP: 0018:ffffc9000351f818 EFLAGS: 00010a02
-RAX: 1fffdfffffffffc8 RBX: fffffffffffff940 RCX: 0000000000000000
-RDX: ffff88807cc7c140 RSI: ffffffff879318cb RDI: fffefffffffffe40
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: fffefffffffff940
-R13: ffffffff9152ccc0 R14: dffffc0000000000 R15: ffff000000000000
-FS:  00007fbe244b5740(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffdbffffffffc8 CR3: 0000000021e67000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+CPU: 1 PID: 8357 Comm: syz-executor382 Not tainted
+5.19.0-13666-gffcf9c5700e4-dirty #15
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+1.13.0-1ubuntu1.1 04/01/2014
 Call Trace:
  <TASK>
- rhashtable_lookup include/linux/rhashtable.h:638 [inline]
- rhashtable_lookup_fast include/linux/rhashtable.h:664 [inline]
- __netlink_lookup net/netlink/af_netlink.c:518 [inline]
- netlink_lookup+0x130/0x470 net/netlink/af_netlink.c:538
- netlink_getsockbyportid net/netlink/af_netlink.c:1154 [inline]
- netlink_unicast+0x244/0x7f0 net/netlink/af_netlink.c:1339
- netlink_sendmsg+0x917/0xe10 net/netlink/af_netlink.c:1921
- sock_sendmsg_nosec net/socket.c:714 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:734
- ____sys_sendmsg+0x6eb/0x810 net/socket.c:2482
- ___sys_sendmsg+0x110/0x1b0 net/socket.c:2536
- __sys_sendmsg+0xf3/0x1c0 net/socket.c:2565
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x57/0x7d lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:317 [inline]
+ print_report.cold+0xe5/0x66d mm/kasan/report.c:433
+ kasan_report+0x8a/0x1b0 mm/kasan/report.c:495
+ check_region_inline mm/kasan/generic.c:183 [inline]
+ kasan_check_range+0x13b/0x190 mm/kasan/generic.c:189
+ instrument_copy_to_user include/linux/instrumented.h:118 [inline]
+ _copy_to_user lib/usercopy.c:32 [inline]
+ _copy_to_user+0x9c/0xc0 lib/usercopy.c:26
+ copy_to_user include/linux/uaccess.h:160 [inline]
+ __htab_map_lookup_and_delete_batch+0x1169/0x1cf0 kernel/bpf/hashtab.c:1809
+ bpf_map_do_batch+0x2d6/0x590 kernel/bpf/syscall.c:4498
+ __sys_bpf+0x1193/0x48b0 kernel/bpf/syscall.c:5014
+ __do_sys_bpf kernel/bpf/syscall.c:5058 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5056 [inline]
+ __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:5056
  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fbe245ad163
-Code: 64 89 02 48 c7 c0 ff ff ff ff eb b7 66 2e 0f 1f 84 00 00 00 00 00 90 64 8b 04 25 18 00 00 00 85 c0 75 14 b8 2e 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 55 c3 0f 1f 40 00 48 83 ec 28 89 54 24 1c 48
-RSP: 002b:00007ffd4a7738f8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007fbe244b56c8 RCX: 00007fbe245ad163
-RDX: 0000000000000000 RSI: 00007ffd4a787aa8 RDI: 0000000000000005
-RBP: 0000000000000005 R08: 0000000000000000 R09: 00007ffd4a787aa8
-R10: 0000000000000000 R11: 0000000000000246 R12: ffffffffffffffff
-R13: 00007ffd4a787aa8 R14: 0000000000000030 R15: 0000000000000001
+RIP: 0033:0x7f797e7e5b9d
+Code: c3 e8 97 2a 00 00 0f 1f 80 00 00 00 00 f3 0f 1e fa 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f797e76ad78 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007f797e87a2d0 RCX: 00007f797e7e5b9d
+RDX: 0000000000000038 RSI: 0000000020000680 RDI: 0000000000000019
+RBP: 00007f797e84700c R08: 00007f797e76b700 R09: 0000000000000000
+R10: 00007f797e76b700 R11: 0000000000000246 R12: 00007f797e87a2d8
+R13: 00007f797e87a2dc R14: 00000000200014c0 R15: 00007f797e846008
  </TASK>
-Modules linked in:
-CR2: ffffdbffffffffc8
----[ end trace 0000000000000000 ]---
-RIP: 0010:netlink_compare net/netlink/af_netlink.c:500 [inline]
-RIP: 0010:__rhashtable_lookup.constprop.0+0x2ae/0x5e0 include/linux/rhashtable.h:601
-Code: 01 44 89 e6 e8 83 19 e8 f9 45 84 e4 0f 85 8f 01 00 00 e8 f5 1c e8 f9 4d 8d 24 1f 49 8d bc 24 00 05 00 00 48 89 f8 48 c1 e8 03 <42> 0f b6 04 30 84 c0 74 08 3c 03 0f 8e 9c 02 00 00 45 8b ac 24 00
-RSP: 0018:ffffc9000351f818 EFLAGS: 00010a02
-RAX: 1fffdfffffffffc8 RBX: fffffffffffff940 RCX: 0000000000000000
-RDX: ffff88807cc7c140 RSI: ffffffff879318cb RDI: fffefffffffffe40
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: fffefffffffff940
-R13: ffffffff9152ccc0 R14: dffffc0000000000 R15: ffff000000000000
-FS:  00007fbe244b5740(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffdbffffffffc8 CR3: 0000000021e67000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	01 44 89 e6          	add    %eax,-0x1a(%rcx,%rcx,4)
-   4:	e8 83 19 e8 f9       	callq  0xf9e8198c
-   9:	45 84 e4             	test   %r12b,%r12b
-   c:	0f 85 8f 01 00 00    	jne    0x1a1
-  12:	e8 f5 1c e8 f9       	callq  0xf9e81d0c
-  17:	4d 8d 24 1f          	lea    (%r15,%rbx,1),%r12
-  1b:	49 8d bc 24 00 05 00 	lea    0x500(%r12),%rdi
-  22:	00
-  23:	48 89 f8             	mov    %rdi,%rax
-  26:	48 c1 e8 03          	shr    $0x3,%rax
-* 2a:	42 0f b6 04 30       	movzbl (%rax,%r14,1),%eax <-- trapping instruction
-  2f:	84 c0                	test   %al,%al
-  31:	74 08                	je     0x3b
-  33:	3c 03                	cmp    $0x3,%al
-  35:	0f 8e 9c 02 00 00    	jle    0x2d7
-  3b:	45                   	rex.RB
-  3c:	8b                   	.byte 0x8b
-  3d:	ac                   	lods   %ds:(%rsi),%al
-  3e:	24 00                	and    $0x0,%al
 
+Allocated by task 8357:
+ kasan_save_stack+0x1e/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:45 [inline]
+ set_alloc_info mm/kasan/common.c:437 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:516 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:475 [inline]
+ __kasan_kmalloc+0xa9/0xd0 mm/kasan/common.c:525
+ kasan_kmalloc include/linux/kasan.h:234 [inline]
+ __kmalloc_node+0x1e9/0x360 mm/slub.c:4472
+ kvmalloc include/linux/slab.h:750 [inline]
+ kvmalloc_array include/linux/slab.h:768 [inline]
+ __htab_map_lookup_and_delete_batch+0x538/0x1cf0 kernel/bpf/hashtab.c:1680
+ bpf_map_do_batch+0x2d6/0x590 kernel/bpf/syscall.c:4498
+ __sys_bpf+0x1193/0x48b0 kernel/bpf/syscall.c:5014
+ __do_sys_bpf kernel/bpf/syscall.c:5058 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5056 [inline]
+ __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:5056
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+The buggy address belongs to the object at ffff8881055c0100
+ which belongs to the cache kmalloc-64 of size 64
+The buggy address is located 0 bytes inside of
+ 64-byte region [ffff8881055c0100, ffff8881055c0140)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+The buggy address belongs to the physical page:
+page:ffffea0004157000 refcount:1 mapcount:0 mapping:0000000000000000
+index:0x0 pfn:0x1055c0
+flags: 0x57ff00000000200(slab|node=1|zone=2|lastcpupid=0x7ff)
+raw: 057ff00000000200 0000000000000000 dead000000000122 ffff888010c42640
+raw: 0000000000000000 0000000080200020 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 0, migratetype Unmovable, gfp_mask
+0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 6756, tgid 6756
+(syz-executor382), ts 131529364832, free_ts 131498233118
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook mm/page_alloc.c:2525 [inline]
+ prep_new_page+0x2c6/0x350 mm/page_alloc.c:2532
+ get_page_from_freelist+0xae9/0x3a80 mm/page_alloc.c:4283
+ __alloc_pages+0x321/0x710 mm/page_alloc.c:5515
+ alloc_slab_page mm/slub.c:1824 [inline]
+ allocate_slab mm/slub.c:1969 [inline]
+ new_slab+0x246/0x3a0 mm/slub.c:2029
+ ___slab_alloc+0xa50/0x1060 mm/slub.c:3031
+ __slab_alloc.isra.0+0x4d/0xa0 mm/slub.c:3118
+ slab_alloc_node mm/slub.c:3209 [inline]
+ __kmalloc_node+0x2ed/0x360 mm/slub.c:4468
+ kmalloc_node include/linux/slab.h:623 [inline]
+ __vmalloc_area_node mm/vmalloc.c:3012 [inline]
+ __vmalloc_node_range+0x30a/0xf70 mm/vmalloc.c:3196
+ alloc_thread_stack_node kernel/fork.c:312 [inline]
+ dup_task_struct kernel/fork.c:977 [inline]
+ copy_process+0x4069/0x6660 kernel/fork.c:2087
+ kernel_clone+0xba/0xba0 kernel/fork.c:2673
+ __do_sys_clone+0xa1/0xe0 kernel/fork.c:2807
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1449 [inline]
+ free_pcp_prepare+0x5ab/0xd00 mm/page_alloc.c:1499
+ free_unref_page_prepare mm/page_alloc.c:3380 [inline]
+ free_unref_page+0x19/0x410 mm/page_alloc.c:3476
+ __tlb_remove_table arch/x86/include/asm/tlb.h:34 [inline]
+ __tlb_remove_table_free mm/mmu_gather.c:114 [inline]
+ tlb_remove_table_rcu+0x6e/0xb0 mm/mmu_gather.c:169
+ rcu_do_batch kernel/rcu/tree.c:2245 [inline]
+ rcu_core+0x785/0x1720 kernel/rcu/tree.c:2505
+ __do_softirq+0x1d0/0x908 kernel/softirq.c:571
+
+Memory state around the buggy address:
+ ffff8881055c0000: 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc
+ ffff8881055c0080: 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc fc
+>ffff8881055c0100: 00 00 00 00 00 05 fc fc fc fc fc fc fc fc fc fc
+                                  ^
+ ffff8881055c0180: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff8881055c0200: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+==================================================================
