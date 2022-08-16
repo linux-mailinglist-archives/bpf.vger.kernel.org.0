@@ -2,58 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D1C595A17
-	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 13:29:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32A3B595A30
+	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 13:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232292AbiHPL22 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Aug 2022 07:28:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48988 "EHLO
+        id S232542AbiHPLdA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Aug 2022 07:33:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234125AbiHPL2E (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Aug 2022 07:28:04 -0400
+        with ESMTP id S234434AbiHPLcr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Aug 2022 07:32:47 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ADAA2CDF7;
-        Tue, 16 Aug 2022 03:43:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71AF419030
+        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 03:52:26 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 03D99B8165D;
-        Tue, 16 Aug 2022 10:43:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86EA3C433C1;
-        Tue, 16 Aug 2022 10:43:34 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2D30AB8169C
+        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 10:52:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B49B8C433C1;
+        Tue, 16 Aug 2022 10:52:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660646614;
-        bh=yqe/EMQmD3VLnGHghypui0+k7E1d1JAMjbBdNpJp/Ac=;
+        s=k20201202; t=1660647143;
+        bh=akFmCyQTW6LSo0XRAuEr92evm+Lp8AoGLKIuEvbzwkY=;
         h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=WmDtk6Cf5S1czeeVK0DAKEntmyWn/ucxbgRUOJ7EvCnJ+hlnMmXKs7d2LzLusOWjG
-         P9BZUnyFCygTSaBGyI+/ZMRsimDcw4lKZrmIl00p7YDKYDDZRS07+VkGYYjkDQNVZE
-         /NHOq/5udUF8/K0YgcGNQGgSV+Ea36YQkWf7qRPhQgneFDWP9m6nB5Vly8RrTfkWTj
-         Gx54EcrUu0WWbaHKs8uubbJDflr8MXwUMFtLvri3hNPrkYfanr9K/Ae48SXOeGfelg
-         0y7pVw8dF2stIh5VXYLv1fnS+4FQo+ZvQ2DKZC+sGfyc7TYLSt7uY6amkS3OtqU5wE
-         xT3sWq5r6idFg==
+        b=i61g6lB2uocqJPk5OWE4MQMtwOlP+SL2GZnFU8apErEHbN4m6sGfDN6wilPXvG6ob
+         dYpHV4FedO9nYVq5XdAmRK0LuJGFUJzTDOqHDjlPu0EZw2krVEC2Fe/hhkXmy8iq4t
+         vrlRSKWFVADrvo6DcajdyMwPWMpRmxsShYuSwEJt1Cu80Eun2PTPLgDdddcMkmuHb2
+         W6AY/cSj3ls0/BkxVwnGwDyxbqt7X4RcBahSFJbHlbY/8FhFCTPASlMq96M/FgTAce
+         2Yyt2+boWP7dARfjqQDVy6nM+Iis34liVn642k3ZipnDmWJxj1rDhN7yRxGSnohTmp
+         xwemwkNLE4nyA==
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 0ED1D55F5FC; Tue, 16 Aug 2022 12:43:32 +0200 (CEST)
+        id 945B455F601; Tue, 16 Aug 2022 12:52:20 +0200 (CEST)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Florian Westphal <fw@strlen.de>
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 2/3] bpf: Add support for writing to nf_conn:mark
-In-Reply-To: <CAADnVQLB1SQoYAYEzU_VuJ=q3azeyhBiK-NkU5OZC7rrumi0xQ@mail.gmail.com>
-References: <CAADnVQLB1SQoYAYEzU_VuJ=q3azeyhBiK-NkU5OZC7rrumi0xQ@mail.gmail.com>
+To:     Vincent Li <vincent.mc.li@gmail.com>,
+        Quentin Monnet <quentin@isovalent.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Subject: Re: Error: bug: failed to retrieve CAP_BPF status: Invalid argument
+In-Reply-To: <CAK3+h2zH+KoJ1FwYsFVk3H5N0D5JdVMkEh4PzvsRQ5fymCY_Dw@mail.gmail.com>
+References: <CAK3+h2zUvfa8pQ37h3ZzSx9n34sTPSUAmSR8grvwQU3OtksiTg@mail.gmail.com>
+ <CACdoK4LOu7S5GzDwjEBkOyFqEo2uG-0c7AQF7nN0Fif6rbHFKA@mail.gmail.com>
+ <CAK3+h2x2dVepRCtt6MDQ-S_0HDxR1V9ZN2tHXHpfCDWuXW88Rw@mail.gmail.com>
+ <CACdoK4+__ROeqa+P5jPvmVXMW4J48d1RUCW6czyZEKJQbv3mSg@mail.gmail.com>
+ <CAK3+h2zH+KoJ1FwYsFVk3H5N0D5JdVMkEh4PzvsRQ5fymCY_Dw@mail.gmail.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 16 Aug 2022 12:43:32 +0200
-Message-ID: <87v8qswjsb.fsf@toke.dk>
+Date:   Tue, 16 Aug 2022 12:52:20 +0200
+Message-ID: <87sflwwjdn.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -64,55 +59,86 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>Vincent Li <vincent.mc.li@gmail.com> writes:
 
-> On Mon, Aug 15, 2022 at 3:40 PM Florian Westphal <fw@strlen.de> wrote:
+> On Mon, Aug 15, 2022 at 5:05 PM Quentin Monnet <quentin@isovalent.com> wrote:
 >>
->> Toke H=C3=B8iland-J=C3=B8rgensen <toke@kernel.org> wrote:
->> > > Support direct writes to nf_conn:mark from TC and XDP prog types. Th=
-is
->> > > is useful when applications want to store per-connection metadata. T=
-his
->> > > is also particularly useful for applications that run both bpf and
->> > > iptables/nftables because the latter can trivially access this metad=
-ata.
->> > >
->> > > One example use case would be if a bpf prog is responsible for advan=
-ced
->> > > packet classification and iptables/nftables is later used for routing
->> > > due to pre-existing/legacy code.
->> > >
->> > > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+>> On Mon, 15 Aug 2022 at 23:26, Vincent Li <vincent.mc.li@gmail.com> wrote:
 >> >
->> > Didn't we agree the last time around that all field access should be
->> > using helper kfuncs instead of allowing direct writes to struct nf_con=
-n?
+>> > On Mon, Aug 15, 2022 at 3:18 PM Quentin Monnet <quentin@isovalent.com> wrote:
+>> > >
+>> > > Hi Vincent,
+>> > >
+>> > > On Mon, 15 Aug 2022 at 18:46, Vincent Li <vincent.mc.li@gmail.com> wrote:
+>> > > >
+>> > > > Hi,
+>> > > >
+>> > > > I compile and run kernel 5.18.0 in Centos 8 from bpf-next in my dev
+>> > > > machine, I also compiled bpftool from bpf-next on same machine, when
+>> > > > run bpftool on same machine, I got :
+>> > > >
+>> > > > ./bpftool feature probe
+>> > > >
+>> > > > Error: bug: failed to retrieve CAP_BPF status: Invalid argument
+>> > > >
+>> > > > where bpftool to retrieve CAP_BPF ? from running kernel or from somewhere else?
+>> > >
+>> > > Yes, bpftool calls cap_get_proc() to get the capabilities of the
+>> > > current process. From what I understand of your output, it looks like
+>> > > capget() returns CAP_BPF: I believe the "0x1c0" value at the end is
+>> > > (1<<(CAP_CHECKPOINT_RESTORE-32)) + (1<<(CAP_BPF-32)) +
+>> > > (1<<(CAP_PERFMON-32)). You could probably check this with a more
+>> > > recent version of strace.
+>> > >
+>> > > Then assuming you do retrieve CAP_BPF from capget(), I don't know why
+>> > > cap_get_flag() in bpftool fails to retrieve the capability state. It
+>> > > would be worth running bpftool in GDB to check what happens. The check
+>> > > in libcap is here [0] but I don't see where we would fail to provide
+>> > > valid arguments. Just in case, could you please let me know what
+>> > > version of libcap you're using when compiling bpftool?
+>> >
+>> > I think I installed libcap through centos distro
+>> >
+>> > [root@centos-dev ~]# rpm -qi libcap.x86_64
+>> >
+>> > Name        : libcap
+>> >
+>> > Version     : 2.26
 >>
->> I don't see why ct->mark needs special handling.
+>> So we investigated this on Slack. The issue is related to libcap (and
+>> to how libcap is built on CentOS); it is fixed in libcap 2.30 and
+>> older.
 >>
->> It might be possible we need to change accesses on nf/tc side to use
->> READ/WRITE_ONCE though.
+>> For the record, this is the commit that fixed it:
+>> https://git.kernel.org/pub/scm/libs/libcap/libcap.git/commit/?id=f1f62a748d7c67361e91e32d26abafbfb03eeee4
+>>
+>> Before this, cap_get_flag() would compare its argument "value" (in our
+>> case, CAP_BPF == 39) with __CAP_BITS. This __CAP_BITS constant is
+>> defined in libcap/cap_names.h, generated by libcap/_makenames.c from
+>> the list in libcap/cap_names.list.h. The latter header file is itself
+>> generated in libcap/Makefile from the UAPI header at
+>> $(KERNEL_HEADERS)/linux/capability.h, which defaults to the local
+>> libcap/include/uapi/linux/capability.h.
+>>
+>> On your CentOS, the libcap version may have been compiled without
+>> setting KERNEL_HEADERS to make it point to the correct system UAPI
+>> header (or the header could be too old, but looking at it, it seems
+>> that it does have CAP_BPF), in which case it defaulted to libcap's
+>> version of the header, which in 2.26 stops at CAP_AUDIT (37). In that
+>> case, __CAP_BITS is worth 37 and is lower than CAP_BPF, the check in
+>> cap_get_flag() fails and we get -EINVAL.
+>>
+>> The commit referenced above changed the comparison for libcap 2.30+ to
+>> compare "value" with __CAP_MAXBITS == 64 instead, which works
+>> correctly.
+>>
+>> Thanks for the report and the shared debug session!
+>> Quentin
 >
-> +1
-> I don't think we need to have a hard rule.
-> If fields is safe to access directly than it's faster
-> to let bpf prog read/write it.
-> There are no backward compat concerns. If conntrack side decides
-> to make that field special we can disallow direct writes in
-> the same kernel version.
+> Thanks Quentin for your quick response and analysis :)
 
-Right, I was under the impression we wanted all fields to be wrapper by
-helpers so that the struct owner could change their semantics without
-affecting users (and solve the performance issue by figuring out a
-generic way to inline those helpers). I guess there could also be an API
-consistency argument for doing this.
-
-However, I don't have a strong opinion on this, so if y'all prefer
-keeping these as direct field writes, that's OK with me.
-
-> These accesses, just like kfuncs, are unstable.
-
-Well, it will be interesting to see how that plays out the first time
-an application relying on one of these breaks on a kernel upgrade :)
+FYI, CAP_BPF should also be fixed in the version of libcap shipped with
+RHEL8.5 (version libcap-2.26-5.el8). This should be available in CentOS
+Stream as well, so just updating the package should be enough...
 
 -Toke
