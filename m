@@ -2,88 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F23C595278
-	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 08:21:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 229A75952A3
+	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 08:38:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229753AbiHPGVx convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 16 Aug 2022 02:21:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45912 "EHLO
+        id S230115AbiHPGiM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Aug 2022 02:38:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230016AbiHPGVa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Aug 2022 02:21:30 -0400
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F92DCD523
-        for <bpf@vger.kernel.org>; Mon, 15 Aug 2022 17:14:03 -0700 (PDT)
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27FIbxJu010563
-        for <bpf@vger.kernel.org>; Mon, 15 Aug 2022 17:14:02 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3hx9pypbks-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 15 Aug 2022 17:14:02 -0700
-Received: from twshared6447.05.prn5.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 15 Aug 2022 17:14:01 -0700
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 1DF691DAC778A; Mon, 15 Aug 2022 17:13:49 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next 0/4] Preparatory libbpf fixes and clean ups
-Date:   Mon, 15 Aug 2022 17:13:48 -0700
-Message-ID: <20220816001348.347435-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S229772AbiHPGh6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Aug 2022 02:37:58 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE1C9C3F6D;
+        Mon, 15 Aug 2022 18:16:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1660612605; x=1692148605;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=LGPJbg4YSGE8kGvV/+MMwres2qQJGjWYu0L1b7FKRhE=;
+  b=ELRkR2j1k99KuJmwKFAuMd3EZk19xB9XFwD1m3elDOIJ/99+sIdebamR
+   BPlxiwKrSATGt8r0FVnjxTZg2R9AnPplI3rWDKZl93hNRipjow5kb5V3y
+   jZoUzRg5s82gd6CunLWVcSV0iTKD/QIO6FXUx7iYPO4JGCD3q66DZ6I2n
+   dsCBypP0P08a85N7ywODoZLQyacGutLWasCv1Juw7vCsoeTEmlssEY1cp
+   t8d2L6lZzlp/dYoxYTxYNwKE6EcpGn090h7gPqU7pgfMDGt/kPyB8QZzC
+   klr52tGFjSaa8NXxv5oSnV1j9tvcpwIY/mIXXzG9Ne3RrK+YdCwXZngay
+   w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10440"; a="293368083"
+X-IronPort-AV: E=Sophos;i="5.93,239,1654585200"; 
+   d="scan'208";a="293368083"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2022 18:16:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,239,1654585200"; 
+   d="scan'208";a="639838790"
+Received: from lkp-server02.sh.intel.com (HELO 3d2a4d02a2a9) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 15 Aug 2022 18:16:42 -0700
+Received: from kbuild by 3d2a4d02a2a9 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1oNlCD-0001KD-2Z;
+        Tue, 16 Aug 2022 01:16:41 +0000
+Date:   Tue, 16 Aug 2022 09:15:50 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Daniel Xu <dxu@dxuuu.xyz>, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, memxor@gmail.com
+Cc:     kbuild-all@lists.01.org, Daniel Xu <dxu@dxuuu.xyz>,
+        pablo@netfilter.org, fw@strlen.de, netfilter-devel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next 2/3] bpf: Add support for writing to nf_conn:mark
+Message-ID: <202208160931.5FG8tZ8G-lkp@intel.com>
+References: <f850bb7e20950736d9175c61d7e0691098e06182.1660592020.git.dxu@dxuuu.xyz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: ooEBwdsMLW1gRiYGAYkhbjmQ5ZsaaY8A
-X-Proofpoint-ORIG-GUID: ooEBwdsMLW1gRiYGAYkhbjmQ5ZsaaY8A
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-08-15_08,2022-08-15_01,2022-06-22_01
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f850bb7e20950736d9175c61d7e0691098e06182.1660592020.git.dxu@dxuuu.xyz>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Few fixes and clean up in preparation for finalizing libbpf 1.0.
+Hi Daniel,
 
-Main change is switching libbpf to initializing only relevant portions of
-union bpf_attr for any given BPF command. This has been on a wishlist for
-a while, so finally this is done. While cleaning this up, I've also cleaned up
-few other placed were we didn't use explicit memset() with kernel UAPI structs
-(perf_event_attr, bpf_map_info, bpf_prog_info, etc).
+Thank you for the patch! Yet something to improve:
 
-Also few fixes to test_progs that came up while testing selftests in release
-mode.
+[auto build test ERROR on bpf-next/master]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Daniel-Xu/Support-direct-writes-to-nf_conn-mark/20220816-060429
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+config: um-x86_64_defconfig (https://download.01.org/0day-ci/archive/20220816/202208160931.5FG8tZ8G-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-5) 11.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/intel-lab-lkp/linux/commit/c7b21d163eb9c61514dd86baf4281deb4d4387bb
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Daniel-Xu/Support-direct-writes-to-nf_conn-mark/20220816-060429
+        git checkout c7b21d163eb9c61514dd86baf4281deb4d4387bb
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        make W=1 O=build_dir ARCH=um SUBARCH=x86_64 SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   net/core/filter.c: In function 'tc_cls_act_btf_struct_access':
+>> net/core/filter.c:8723:24: error: implicit declaration of function 'btf_struct_access' [-Werror=implicit-function-declaration]
+    8723 |                 return btf_struct_access(log, btf, t, off, size, atype, next_btf_id,
+         |                        ^~~~~~~~~~~~~~~~~
+   cc1: some warnings being treated as errors
 
 
-Andrii Nakryiko (4):
-  libbpf: fix potential NULL dereference when parsing ELF
-  libbpf: streamline bpf_attr and perf_event_attr initialization
-  libbpf: clean up deprecated and legacy aliases
-  selftests/bpf: few fixes for selftests/bpf built in release mode
+vim +/btf_struct_access +8723 net/core/filter.c
 
- tools/lib/bpf/bpf.c                           | 178 ++++++++++--------
- tools/lib/bpf/btf.c                           |   2 -
- tools/lib/bpf/btf.h                           |   1 -
- tools/lib/bpf/libbpf.c                        |  47 +++--
- tools/lib/bpf/libbpf_legacy.h                 |   2 +
- tools/lib/bpf/netlink.c                       |   3 +-
- tools/lib/bpf/skel_internal.h                 |  10 +-
- .../selftests/bpf/prog_tests/attach_probe.c   |   6 +-
- .../selftests/bpf/prog_tests/bpf_cookie.c     |   2 +-
- .../selftests/bpf/prog_tests/task_pt_regs.c   |   2 +-
- tools/testing/selftests/bpf/xskxceiver.c      |   2 +-
- 11 files changed, 147 insertions(+), 108 deletions(-)
+  8714	
+  8715	static int tc_cls_act_btf_struct_access(struct bpf_verifier_log *log,
+  8716						const struct btf *btf,
+  8717						const struct btf_type *t, int off,
+  8718						int size, enum bpf_access_type atype,
+  8719						u32 *next_btf_id,
+  8720						enum bpf_type_flag *flag)
+  8721	{
+  8722		if (atype == BPF_READ)
+> 8723			return btf_struct_access(log, btf, t, off, size, atype, next_btf_id,
+  8724						 flag);
+  8725	
+  8726		return nf_conntrack_btf_struct_access(log, btf, t, off, size, atype,
+  8727						      next_btf_id, flag);
+  8728	}
+  8729	
 
 -- 
-2.30.2
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
