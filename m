@@ -2,100 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FB0C59647C
-	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 23:18:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 940105964A2
+	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 23:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237438AbiHPVRc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Aug 2022 17:17:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58086 "EHLO
+        id S232185AbiHPVcF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Aug 2022 17:32:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237592AbiHPVRQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Aug 2022 17:17:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCCC58A7E7
-        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 14:16:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1660684613;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2iqj6YUSsuItIPg1WhM2vpcdPov5sWXfn7fAfkdN2WE=;
-        b=Wn9XUu50xNoPmZLjBbu066Xse0UHbe5amKgB3Z4IV5Ww2nkhgT0JFlgibS9a8uAg7wwGHL
-        YfuF5XMJOhFTAobW7J4upzZJdRqjMinKXWuVSKq9LY252uUDhDZb3nZ3/+fRgDn0bT4LCy
-        XgN6YsJOP0WqoXEQPfQCEdNIQUMl8SQ=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-111-60_09m4xMDqeYoZnVse8mQ-1; Tue, 16 Aug 2022 17:16:50 -0400
-X-MC-Unique: 60_09m4xMDqeYoZnVse8mQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A80E61C13945;
-        Tue, 16 Aug 2022 21:16:48 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.72])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B088518ECC;
-        Tue, 16 Aug 2022 21:16:46 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20220816103452.479281-1-yin31149@gmail.com>
-References: <20220816103452.479281-1-yin31149@gmail.com> <166064248071.3502205.10036394558814861778.stgit@warthog.procyon.org.uk>
-To:     Hawkins Jiawei <yin31149@gmail.com>
-Cc:     dhowells@redhat.com, "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] net: Fix suspicious RCU usage in bpf_sk_reuseport_detach()
+        with ESMTP id S229472AbiHPVcF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Aug 2022 17:32:05 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7ADD89CF6
+        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 14:32:03 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id j17so9146192qtp.12
+        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 14:32:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=pFzVOu3hVK0yb7sEGfFTFE8wv5SAKyPxZ+6D+5zxSaQ=;
+        b=XxQeepEaE0eo4PRbZ619lKy0njo0bdg7+GHJ4Ms4OkBwT2lfazJKfDE31dgkb1XSnW
+         ScIMcqpDvW2PvZaRQJyEKIDxaxhK8voX2qqbFC/OyK51JdKSHNMgmjoqM4Y2AZvDp+Nt
+         4EMUKN0PYAT2RYqxm2t4o3/70m66VvvhAetkl1VQQDZGSr0cPtt8yWcdSC7Kr1whBGWN
+         FXkWjB/ipbxNnELLpZ1zuWcW3M4pxdXmHPoUUH6HZ3IeUnwrnc/PQpOUG7BgJRlJfn/j
+         FcMwV99hMG4uOYiLAoj85HOosKPzhAGveEygn1kygLksotMoMJrRQQ8CPpPz74iYty0t
+         2Auw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=pFzVOu3hVK0yb7sEGfFTFE8wv5SAKyPxZ+6D+5zxSaQ=;
+        b=PI3SfkiP0g2Q0KV4EFGKeZoS2VEmUiefB0rSZ8MiM2Mxh+ywZI90rT+0FvGPDDq7Rv
+         dlX2KwH22bweGWz5AuWlC5f8VHb8AVnwaeeoiGoLnUdG9TophFfEaAvLMK4y84TPO79f
+         KBiH0fx7+DNyYsR8zuQ44mkRWcAmpyJ9gQR8yM4rSuFDL8mr6/5H9SuJvG5fjkbzFVF9
+         +6ns6eQI+xxkrKjs7PFqTDJLLTR2zBYYFrAyUZC4jxx8lMwXz7wmQ+Tf6oWMNXld4g54
+         Myj3SxC+/odIi6z6ZXOPzFTzu6mBWIMd28EWdu9ZhOqf7SU3D6L/wOiJiwzwfGyCgtNr
+         KfLQ==
+X-Gm-Message-State: ACgBeo1wEaInhDNTFPmfbyDtwnlOh/Z8bII2d8DnrPWLjx2x4p9iX76Z
+        detlPSrU01I79n1P9AV3f/S6DVePjITleaFuF2f2oA==
+X-Google-Smtp-Source: AA6agR6BJ7XgLyOromS5YWAPjXOYRnC1zxnFkTgtACKHMrnj8SwzFe+oTAuG/AaF1L6cxiwSy13L3sXSHdrULa1s4KA=
+X-Received: by 2002:ac8:7f04:0:b0:343:36d:9a1f with SMTP id
+ f4-20020ac87f04000000b00343036d9a1fmr19861941qtk.566.1660685522945; Tue, 16
+ Aug 2022 14:32:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <804152.1660684606.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Tue, 16 Aug 2022 22:16:46 +0100
-Message-ID: <804153.1660684606@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.11.54.5
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220816001929.369487-1-andrii@kernel.org> <20220816001929.369487-2-andrii@kernel.org>
+In-Reply-To: <20220816001929.369487-2-andrii@kernel.org>
+From:   Hao Luo <haoluo@google.com>
+Date:   Tue, 16 Aug 2022 14:31:52 -0700
+Message-ID: <CA+khW7i-7PEMjPfn3JE=Woa-iAX7ddyO9zxFuxgvRAPL0jpkFQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/4] libbpf: fix potential NULL dereference when
+ parsing ELF
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hawkins Jiawei <yin31149@gmail.com> wrote:
+On Mon, Aug 15, 2022 at 8:52 PM Andrii Nakryiko <andrii@kernel.org> wrote:
+>
+> Fix if condition filtering empty ELF sections to prevent NULL
+> dereference.
+>
+> Fixes: 47ea7417b074 ("libbpf: Skip empty sections in bpf_object__init_global_data_maps")
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
-> +__rcu_dereference_sk_user_data_with_flags_check(const struct sock *sk,
-> +						uintptr_t flags, bool condition)
+Acked-by: Hao Luo <haoluo@google.com>
 
-That doesn't work.  RCU_LOCKDEP_WARN() relies on anything passing on a
-condition down to it to be a macro so that it can vanish the 'condition'
-argument without causing an undefined symbol for 'lockdep_is_held' if lock=
-dep
-is disabled:
-
-x86_64-linux-gnu-ld: kernel/bpf/reuseport_array.o: in function `bpf_sk_reu=
-seport_detach':
-/data/fs/linux-fs/build3/../kernel/bpf/reuseport_array.c:28: undefined ref=
-erence to `lockdep_is_held'
-
-So either __rcu_dereference_sk_user_data_with_flags_check() has to be a ma=
-cro,
-or we need to go with something like the first version of my patch where I
-don't pass the condition through.  Do you have a preference?
-
-David
-
+> ---
+>  tools/lib/bpf/libbpf.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index aa05a99b913d..5f0281e61437 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -1646,7 +1646,7 @@ static int bpf_object__init_global_data_maps(struct bpf_object *obj)
+>                 sec_desc = &obj->efile.secs[sec_idx];
+>
+>                 /* Skip recognized sections with size 0. */
+> -               if (sec_desc->data && sec_desc->data->d_size == 0)
+> +               if (!sec_desc->data || sec_desc->data->d_size == 0)
+>                         continue;
+>
+>                 switch (sec_desc->sec_type) {
+> --
+> 2.30.2
+>
