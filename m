@@ -2,339 +2,459 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36C99595EAC
-	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 17:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 227A9595F1E
+	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 17:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232365AbiHPPAO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Aug 2022 11:00:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54718 "EHLO
+        id S235727AbiHPPd4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Aug 2022 11:33:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236074AbiHPO7h (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Aug 2022 10:59:37 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8475D52DD9
-        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 07:59:22 -0700 (PDT)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4M6Z3P0jqgzlW2X;
-        Tue, 16 Aug 2022 22:56:17 +0800 (CST)
-Received: from CHINA (10.175.102.38) by canpemm500009.china.huawei.com
- (7.192.105.203) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Tue, 16 Aug
- 2022 22:59:19 +0800
-From:   Wei Yongjun <weiyongjun1@huawei.com>
-To:     <bpf@vger.kernel.org>
-CC:     Wei Yongjun <weiyongjun1@huawei.com>,
-        Quentin Monnet <quentin@isovalent.com>,
+        with ESMTP id S235713AbiHPPdl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Aug 2022 11:33:41 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 022075C953
+        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 08:33:24 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id y9-20020a17090322c900b0016f8fdcc3b1so6755958plg.6
+        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 08:33:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc;
+        bh=hWy/bky5ij4Fq019kN/Eoim7rgLKUQHE3Pxq9PEt+N4=;
+        b=dZLYGjBsJQEFyvLvwzJi71Lm4aVcp+v9jpcvAepnhj8Mw+nl4m5eOaJk+KmsxT0HEs
+         DtC3QJk33/pn7TT65fsc47N/3WN/cBj6hQUPCtDGzxCs4858QPwc4/p+e7qVyYmPhRwq
+         tm4mIkLudQ7NrUAjE0ocKQKgtMzW6pCqkJdvJwQhIEEw9mLoIhGT+tZQtbaHgZ8pY/gK
+         6UVlQ7kxNjVB7I4o91NUqsO1KNhFARD+dpOk15lsmF26aVAYz9dir4L/b7KsqokdhhPZ
+         xrnPvDQGaJjyLmUp8ymm/WoZfIKcCRko/J/cEixrTk3lOxlDipC9Nodz21HMwAH7guhI
+         J/jQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc;
+        bh=hWy/bky5ij4Fq019kN/Eoim7rgLKUQHE3Pxq9PEt+N4=;
+        b=bYeGPQXU3O6Wj0/iecbFLxanyQndKxalxooX7NWSU2gDkBt6iy7OeifOlIdU6XGyfe
+         CbSMTty5/4GJx0nFd1xwsG9ZOaQquxXdkx8Ei47LjLX1PYiWEaCQCpCYbuWMhOAEm6ec
+         Xh0Cy59p0UyE8pxwWK+ZPqgUPjENnlUc69D30wh3FFqdL6zC46W9z85h89QzhSA2OLS0
+         FMx0QNNFJ/e4OL17EaK5mBPk6O+PKCX70CMKvMaAPda0CLRE/ehWYILSzar6ULWNYtoD
+         WsPKRr8VPbDr+03e+HHeiMDeFc4VVQZNP0Y/HVZgAfFebkLHhDXm1uujI2YrnNKjIbK8
+         FdgA==
+X-Gm-Message-State: ACgBeo3YcNr8iwb3jIE+yPAiwJN4bdabzZMOt874O/pyMdZm38A+Rtyw
+        +CWVujZRp3q/NI0mqdfmilmG7fpakU/upgYi1FAx7w==
+X-Google-Smtp-Source: AA6agR43H1WEzEHDPciCug0nTkf/X0Yq+Oh7uhDDklGKSMamxC7Tb9t/fgB6rbF1dQBaV6phM/wqQAHnPkOJX6M+/fBkMg==
+X-Received: from sagarika.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5714])
+ (user=sharmasagarika job=sendgmr) by 2002:a17:902:d50a:b0:16e:e1c1:dfa7 with
+ SMTP id b10-20020a170902d50a00b0016ee1c1dfa7mr22504683plg.160.1660664004410;
+ Tue, 16 Aug 2022 08:33:24 -0700 (PDT)
+Date:   Tue, 16 Aug 2022 15:33:19 +0000
+Message-Id: <20220816153320.1478209-1-sharmasagarika@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.37.1.595.g718a3a8f04-goog
+Subject: [PATCH bpf-next 1/2] Benchmark test added: bench_bpf_htab_batch_ops
+From:   Sagarika Sharma <sharmasagarika@google.com>
+To:     Brian Vazquez <brianvv@google.com>,
+        Sagarika Sharma <sagarikashar@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
         Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Subject: [PATCH bpf-next] bpftool: Add trace subcommand
-Date:   Tue, 16 Aug 2022 15:17:25 +0000
-Message-ID: <20220816151725.153343-1-weiyongjun1@huawei.com>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.102.38]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500009.china.huawei.com (7.192.105.203)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Luigi Rizzo <lrizzo@google.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Sagarika Sharma <sharmasagarika@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently, only one command is supported
-  bpftool trace pin <bpf_prog.o> <path>
+The benchmark test is a tool to measure the different methods
+of iterating through bpf hashmaps, specifically the function
+bpf_map_lookup_batch() and the combination of the two functions
+bpf_get_next_key()/bpf_map_lookup_elem(). The test will be
+extended to also measure bpf_iter. The shell script
+bench_bpf_htab_batch_ops.sh runs the benchmark test with a range
+of parameters (e.g. the capacity of the hashmap, the number of
+entries put in the map, and the setting of the n_prefetch module
+parameter)
 
-It will pin the trace bpf program in the object file <bpf_prog.o>
-to the <path> where <path> should be on a bpffs mount.
-
-For example,
-  $ bpftool trace pin ./mtd_mchp23k256.o /sys/fs/bpf/mchp23k256
-
-The implementation a BPF based backend for mockup mchp23k256 mtd
-SPI device.
-
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Signed-off-by: Sagarika Sharma <sharmasagarika@google.com>
 ---
- .../bpftool/Documentation/bpftool-trace.rst   |  57 +++++++++
- tools/bpf/bpftool/Documentation/bpftool.rst   |   4 +-
- tools/bpf/bpftool/bash-completion/bpftool     |  13 ++
- tools/bpf/bpftool/main.c                      |   1 +
- tools/bpf/bpftool/main.h                      |   1 +
- tools/bpf/bpftool/trace.c                     | 120 ++++++++++++++++++
- 6 files changed, 195 insertions(+), 1 deletion(-)
+ tools/testing/selftests/bpf/Makefile          |   3 +-
+ tools/testing/selftests/bpf/bench.c           |  26 +-
+ .../bpf/benchs/bench_bpf_htab_batch_ops.c     | 237 ++++++++++++++++++
+ .../benchs/run_bench_bpf_htab_batch_ops.sh    |  28 +++
+ 4 files changed, 292 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/benchs/bench_bpf_htab_batch_ops.c
+ create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_bpf_htab_batch_ops.sh
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-trace.rst b/tools/bpf/bpftool/Documentation/bpftool-trace.rst
-new file mode 100644
-index 000000000000..d44256f6a021
---- /dev/null
-+++ b/tools/bpf/bpftool/Documentation/bpftool-trace.rst
-@@ -0,0 +1,57 @@
-+.. SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+
-+============
-+bpftool-trace
-+============
-+-------------------------------------------------------------------------------
-+tool to create BPF tracepoints
-+-------------------------------------------------------------------------------
-+
-+:Manual section: 8
-+
-+.. include:: substitutions.rst
-+
-+SYNOPSIS
-+========
-+
-+	**bpftool** [*OPTIONS*] **trace** *COMMAND*
-+
-+	*OPTIONS* := { |COMMON_OPTIONS| }
-+
-+	*COMMANDS* := { **pin** | **help** }
-+
-+ITER COMMANDS
-+===================
-+
-+|	**bpftool** **trace pin** *OBJ* *PATH*
-+|	**bpftool** **trace help**
-+|
-+|	*OBJ* := /a/file/of/bpf_tp_target.o
-+
-+DESCRIPTION
-+===========
-+	**bpftool trace pin** *OBJ* *PATH*
-+                  A bpf raw tracepoint allows a tracepoint to provide a safe
-+                  buffer that can be read or written from a bpf program.
-+
-+		  The *pin* command attaches a bpf raw tracepoint from *OBJ*,
-+		  and pin it to *PATH*. The *PATH* should be located
-+		  in *bpffs* mount. It must not contain a dot
-+		  character ('.'), which is reserved for future extensions
-+		  of *bpffs*.
-+
-+	**bpftool trace help**
-+		  Print short help message.
-+
-+OPTIONS
-+=======
-+	.. include:: common_options.rst
-+
-+EXAMPLES
-+========
-+**# bpftool trace pin bpf_mtd_chip_mockup.o /sys/fs/bpf/mtd_chip_mockup**
-+
-+::
-+
-+   Attach to the raw tracepoint from bpf_mtd_chip_mockup.o and pin it
-+   to /sys/fs/bpf/mtd_chip_mockup
-diff --git a/tools/bpf/bpftool/Documentation/bpftool.rst b/tools/bpf/bpftool/Documentation/bpftool.rst
-index 6965c94dfdaf..aae13255a8cb 100644
---- a/tools/bpf/bpftool/Documentation/bpftool.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool.rst
-@@ -21,7 +21,7 @@ SYNOPSIS
- 	**bpftool** **version**
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 8d59ec7f4c2d..772d8339c400 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -589,7 +589,8 @@ $(OUTPUT)/bench: $(OUTPUT)/bench.o \
+ 		 $(OUTPUT)/bench_strncmp.o \
+ 		 $(OUTPUT)/bench_bpf_hashmap_full_update.o \
+ 		 $(OUTPUT)/bench_local_storage.o \
+-		 $(OUTPUT)/bench_local_storage_rcu_tasks_trace.o
++		 $(OUTPUT)/bench_local_storage_rcu_tasks_trace.o \
++		 $(OUTPUT)/bench_bpf_htab_batch_ops.o
+ 	$(call msg,BINARY,,$@)
+ 	$(Q)$(CC) $(CFLAGS) $(LDFLAGS) $(filter %.a %.o,$^) $(LDLIBS) -o $@
  
- 	*OBJECT* := { **map** | **program** | **link** | **cgroup** | **perf** | **net** | **feature** |
--	**btf** | **gen** | **struct_ops** | **iter** }
-+	**btf** | **gen** | **struct_ops** | **iter** | **trace** }
+diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftests/bpf/bench.c
+index c1f20a147462..55714e8071c8 100644
+--- a/tools/testing/selftests/bpf/bench.c
++++ b/tools/testing/selftests/bpf/bench.c
+@@ -12,6 +12,8 @@
+ #include "bench.h"
+ #include "testing_helpers.h"
  
- 	*OPTIONS* := { { **-V** | **--version** } | |COMMON_OPTIONS| }
- 
-@@ -50,6 +50,8 @@ SYNOPSIS
- 
- 	*ITER-COMMANDS* := { **pin** | **help** }
- 
-+	*TRACE-COMMANDS* := { **pin** | **help** }
++#define STK_SIZE (0xfffffff)
 +
- DESCRIPTION
- ===========
- 	*bpftool* allows for inspection and simple modification of BPF objects
-diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-index dc1641e3670e..1c0442ed7436 100644
---- a/tools/bpf/bpftool/bash-completion/bpftool
-+++ b/tools/bpf/bpftool/bash-completion/bpftool
-@@ -646,6 +646,19 @@ _bpftool()
-                     ;;
-             esac
-             ;;
-+        trace)
-+            case $command in
-+                pin)
-+                    _filedir
-+                    return 0
-+                    ;;
-+                *)
-+                    [[ $prev == $object ]] && \
-+                        COMPREPLY=( $( compgen -W 'pin help' \
-+                            -- "$cur" ) )
-+                    ;;
-+            esac
-+            ;;
-         map)
-             local MAP_TYPE='id pinned name'
-             case $command in
-diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
-index ccd7457f92bf..d24373f4e957 100644
---- a/tools/bpf/bpftool/main.c
-+++ b/tools/bpf/bpftool/main.c
-@@ -295,6 +295,7 @@ static const struct cmd cmds[] = {
- 	{ "gen",	do_gen },
- 	{ "struct_ops",	do_struct_ops },
- 	{ "iter",	do_iter },
-+	{ "trace",	do_trace },
- 	{ "version",	do_version },
- 	{ 0 }
+ struct env env = {
+ 	.warmup_sec = 1,
+ 	.duration_sec = 5,
+@@ -275,6 +277,7 @@ extern struct argp bench_bpf_loop_argp;
+ extern struct argp bench_local_storage_argp;
+ extern struct argp bench_local_storage_rcu_tasks_trace_argp;
+ extern struct argp bench_strncmp_argp;
++extern struct argp bench_bpf_htab_batch_ops_argp;
+ 
+ static const struct argp_child bench_parsers[] = {
+ 	{ &bench_ringbufs_argp, 0, "Ring buffers benchmark", 0 },
+@@ -284,6 +287,7 @@ static const struct argp_child bench_parsers[] = {
+ 	{ &bench_strncmp_argp, 0, "bpf_strncmp helper benchmark", 0 },
+ 	{ &bench_local_storage_rcu_tasks_trace_argp, 0,
+ 		"local_storage RCU Tasks Trace slowdown benchmark", 0 },
++	{ &bench_bpf_htab_batch_ops_argp, 0, "bpf_htab_ops benchmark", 0},
+ 	{},
  };
-diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-index 5e5060c2ac04..7ff53de4f718 100644
---- a/tools/bpf/bpftool/main.h
-+++ b/tools/bpf/bpftool/main.h
-@@ -163,6 +163,7 @@ int do_tracelog(int argc, char **arg) __weak;
- int do_feature(int argc, char **argv) __weak;
- int do_struct_ops(int argc, char **argv) __weak;
- int do_iter(int argc, char **argv) __weak;
-+int do_trace(int argc, char **arg) __weak;
  
- int parse_u32_arg(int *argc, char ***argv, __u32 *val, const char *what);
- int prog_parse_fd(int *argc, char ***argv);
-diff --git a/tools/bpf/bpftool/trace.c b/tools/bpf/bpftool/trace.c
+@@ -490,6 +494,8 @@ extern const struct bench bench_local_storage_cache_seq_get;
+ extern const struct bench bench_local_storage_cache_interleaved_get;
+ extern const struct bench bench_local_storage_cache_hashmap_control;
+ extern const struct bench bench_local_storage_tasks_trace;
++extern const struct bench bench_bpf_htab_batch_ops;
++extern const struct bench bench_bpf_htab_element_ops;
+ 
+ static const struct bench *benchs[] = {
+ 	&bench_count_global,
+@@ -529,6 +535,8 @@ static const struct bench *benchs[] = {
+ 	&bench_local_storage_cache_interleaved_get,
+ 	&bench_local_storage_cache_hashmap_control,
+ 	&bench_local_storage_tasks_trace,
++	&bench_bpf_htab_batch_ops,
++	&bench_bpf_htab_element_ops,
+ };
+ 
+ static void setup_benchmark()
+@@ -585,7 +593,23 @@ static void setup_benchmark()
+ 		env.prod_cpus.next_cpu = env.cons_cpus.next_cpu;
+ 
+ 	for (i = 0; i < env.producer_cnt; i++) {
+-		err = pthread_create(&state.producers[i], NULL,
++		pthread_attr_t attr_producer;
++
++		err = pthread_attr_init(&attr_producer);
++		if (err) {
++			fprintf(stderr, "failed to initialize pthread attr #%d: %d\n",
++				i, -errno);
++			exit(1);
++		}
++
++		err = pthread_attr_setstacksize(&attr_producer, STK_SIZE);
++		if (err) {
++			fprintf(stderr, "failed to set pthread stacksize #%d: %d\n",
++				i, -errno);
++			exit(1);
++		}
++
++		err = pthread_create(&state.producers[i], &attr_producer,
+ 				     bench->producer_thread, (void *)(long)i);
+ 		if (err) {
+ 			fprintf(stderr, "failed to create producer thread #%d: %d\n",
+diff --git a/tools/testing/selftests/bpf/benchs/bench_bpf_htab_batch_ops.c b/tools/testing/selftests/bpf/benchs/bench_bpf_htab_batch_ops.c
 new file mode 100644
-index 000000000000..08dd6e1d8f39
+index 000000000000..ea98c2e97bff
 --- /dev/null
-+++ b/tools/bpf/bpftool/trace.c
-@@ -0,0 +1,120 @@
-+// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+// Copyright (C) 2022 Huawei Technologies Co., Ltd.
++++ b/tools/testing/selftests/bpf/benchs/bench_bpf_htab_batch_ops.c
+@@ -0,0 +1,237 @@
++// SPDX-License-Identifier: GPL-2.0
 +
-+#include <stdio.h>
-+#include <unistd.h>
 +#include <errno.h>
++#include <bpf/bpf.h>
 +#include <bpf/libbpf.h>
++#include <argp.h>
++#include "bench.h"
++#include <bpf_util.h>
 +
-+#include "json_writer.h"
-+#include "main.h"
++/* A hash table of the size DEFAULT_NUM_ENTRIES
++ * makes evident the effect of optimizing
++ * functions that iterate through the map
++ */
++#define DEFAULT_NUM_ENTRIES 40000
++#define VALUE_SIZE 4
 +
-+static bool is_trace_program_type(struct bpf_program *prog)
++int map_fd, method_flag, hits;
++
++static struct {
++	__u32 capacity;
++	__u32 num_entries;
++} args = {
++	.capacity = DEFAULT_NUM_ENTRIES,
++	.num_entries = DEFAULT_NUM_ENTRIES,
++};
++
++enum {
++	ARG_CAPACITY = 8000,
++	ARG_NUM_ENTRIES = 8001,
++};
++
++static const struct argp_option opts[] = {
++	{ "capacity", ARG_CAPACITY, "capacity", 0,
++		"Set hashtable capacity"},
++	{"num_entries", ARG_NUM_ENTRIES, "num_entries", 0,
++		"Set number of entries in the hashtable"},
++	{}
++};
++
++static error_t parse_arg(int key, char *arg, struct argp_state *state)
 +{
-+	enum bpf_prog_type trace_types[] = {
-+		BPF_PROG_TYPE_RAW_TRACEPOINT,
-+		BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE,
-+	};
-+	enum bpf_prog_type prog_type;
-+	size_t i;
-+
-+	prog_type = bpf_program__type(prog);
-+	for (i = 0; i < ARRAY_SIZE(trace_types); i++) {
-+		if (prog_type == trace_types[i])
-+			return true;
++	switch (key) {
++	case ARG_CAPACITY:
++		args.capacity = strtol(arg, NULL, 10);
++		break;
++	case ARG_NUM_ENTRIES:
++		args.num_entries = strtol(arg, NULL, 10);
++		break;
++	default:
++		return ARGP_ERR_UNKNOWN;
 +	}
-+
-+	return false;
-+}
-+
-+static int do_pin(int argc, char **argv)
-+{
-+	const char *objfile, *path;
-+	struct bpf_program *prog;
-+	struct bpf_object *obj;
-+	struct bpf_link *link;
-+	int err;
-+
-+	if (!REQ_ARGS(2))
-+		usage();
-+
-+	objfile = GET_ARG();
-+	path = GET_ARG();
-+
-+	obj = bpf_object__open(objfile);
-+	err = libbpf_get_error(obj);
-+	if (err) {
-+		p_err("can't open objfile %s", objfile);
-+		return err;
-+	}
-+
-+	err = bpf_object__load(obj);
-+	if (err) {
-+		p_err("can't load objfile %s", objfile);
-+		goto close_obj;
-+	}
-+
-+	prog = bpf_object__next_program(obj, NULL);
-+	if (!prog) {
-+		p_err("can't find bpf program in objfile %s", objfile);
-+		goto close_obj;
-+	}
-+
-+	if (!is_trace_program_type(prog)) {
-+		p_err("invalid bpf program type");
-+		err = -EINVAL;
-+		goto close_obj;
-+	}
-+
-+	link = bpf_program__attach(prog);
-+	err = libbpf_get_error(link);
-+	if (err) {
-+		p_err("can't attach program %s", bpf_program__name(prog));
-+		goto close_obj;
-+	}
-+
-+	err = mount_bpffs_for_pin(path);
-+	if (err)
-+		goto close_link;
-+
-+	err = bpf_link__pin(link, path);
-+	if (err) {
-+		p_err("pin failed for program %s to path %s",
-+		      bpf_program__name(prog), path);
-+		goto close_link;
-+	}
-+
-+close_link:
-+	bpf_link__destroy(link);
-+close_obj:
-+	bpf_object__close(obj);
-+	return err;
-+}
-+
-+static int do_help(int argc, char **argv)
-+{
-+	if (json_output) {
-+		jsonw_null(json_wtr);
-+		return 0;
-+	}
-+
-+	fprintf(stderr,
-+		"Usage: %1$s %2$s pin OBJ PATH\n"
-+		"       %1$s %2$s help\n"
-+		"\n"
-+		"",
-+		bin_name, "trace");
 +
 +	return 0;
 +}
 +
-+static const struct cmd cmds[] = {
-+	{ "help",	do_help },
-+	{ "pin",	do_pin },
-+	{ 0 }
++const struct argp bench_bpf_htab_batch_ops_argp = {
++	.options = opts,
++	.parser = parse_arg,
 +};
 +
-+int do_trace(int argc, char **argv)
++static void validate(void)
 +{
-+	return cmd_select(cmds, argc, argv, do_help);
++	if (args.num_entries > args.capacity) {
++		fprintf(stderr, "num_entries must be less than hash table capacity");
++		exit(1);
++	}
++
++	if (env.producer_cnt != 1) {
++		fprintf(stderr, "benchmark doesn't support multi-producer!\n");
++		exit(1);
++	}
++
++	if (env.consumer_cnt != 1) {
++		fprintf(stderr, "benchmark doesn't support multi-consumer!\n");
++		exit(1);
++	}
 +}
++
++static inline void loop_bpf_map_lookup_batch(void)
++{
++	int num_cpus = bpf_num_possible_cpus();
++	typedef struct { int v[VALUE_SIZE]; /* padding */ } __bpf_percpu_val_align value[num_cpus];
++	int offset = 0, out_batch = 0, in_batch = 0;
++	DECLARE_LIBBPF_OPTS(bpf_map_batch_opts, operts,
++		.elem_flags = 0,
++		.flags = 0,
++	);
++	value pcpu_values[args.num_entries];
++	__u32 count = args.num_entries;
++	double keys[args.num_entries];
++	int *in_batch_ptr = NULL;
++	int err;
++
++	while (true) {
++		err = bpf_map_lookup_batch(map_fd, in_batch_ptr, &out_batch,
++			keys + offset, pcpu_values + offset, &count, &operts);
++
++		if (err && errno != ENOENT) {
++			fprintf(stderr, "Failed to lookup entries using bpf_map_lookup_batch\n");
++			exit(1);
++		}
++
++		hits += count;
++
++		if (count == args.num_entries) {
++			count = args.num_entries;
++			offset = out_batch = 0;
++			in_batch_ptr = NULL;
++		} else {
++			offset = count;
++			count = args.num_entries - count;
++			in_batch = out_batch;
++			in_batch_ptr = &in_batch;
++		}
++	}
++
++}
++
++static inline void loop_bpf_element_lookup(void)
++{
++	int num_cpus = bpf_num_possible_cpus();
++	typedef struct { int v[VALUE_SIZE]; /* padding */ } __bpf_percpu_val_align value[num_cpus];
++	double prev_key = -1, key;
++	value value_of_key;
++	int err;
++
++	while (true) {
++
++		while (bpf_map_get_next_key(map_fd, &prev_key, &key) == 0) {
++			err = bpf_map_lookup_elem(map_fd, &key, &value_of_key);
++			if (err) {
++				fprintf(stderr, "failed to lookup element using bpf_map_lookup_elem\n");
++				exit(1);
++			}
++			hits += 1;
++			prev_key = key;
++		}
++		prev_key = -1;
++
++	}
++
++}
++
++static void *producer(void *input)
++{
++	switch (method_flag) {
++	case 0:
++		loop_bpf_map_lookup_batch();
++		break;
++	case 1:
++		loop_bpf_element_lookup();
++		break;
++	}
++	return NULL;
++}
++
++static void *consumer(void *input)
++{
++	return NULL;
++}
++
++static void measure(struct bench_res *res)
++{
++	res->hits = hits;
++	hits = 0;
++}
++
++
++static void setup(void)
++{
++
++	typedef struct { int v[VALUE_SIZE]; /* padding */ } __bpf_percpu_val_align value[bpf_num_possible_cpus()];
++	DECLARE_LIBBPF_OPTS(bpf_map_batch_opts, operts,
++		.elem_flags = 0,
++		.flags = 0,
++	);
++	value pcpu_values[args.num_entries];
++	__u32 count = args.num_entries;
++	double keys[args.num_entries];
++	int err;
++
++	map_fd = bpf_map_create(BPF_MAP_TYPE_PERCPU_HASH, "hash_map", sizeof(double),
++		(VALUE_SIZE*sizeof(int)), args.capacity, NULL);
++	if (map_fd < 0) {
++		fprintf(stderr, "error creating map using bpf_map_create\n");
++		exit(1);
++	}
++
++	for (double i = 0; i < args.num_entries; i++) {
++		keys[(int)i] = i + 1;
++		for (int j = 0; j < bpf_num_possible_cpus(); j++) {
++			for (int k = 0; k < VALUE_SIZE; k++)
++				bpf_percpu(pcpu_values[(int)i], j)[k] = (int)i + j + k;
++		}
++	}
++
++	err = bpf_map_update_batch(map_fd, keys, pcpu_values, &count, &operts);
++	if (err < 0) {
++		fprintf(stderr, "Failed to populate map using bpf_map_update_batch\n");
++		exit(1);
++	}
++
++}
++
++static void bench_bpf_map_lookup_batch_setup(void)
++{
++	setup();
++	method_flag = 0;
++}
++
++static void bench_element_lookup_setup(void)
++{
++	setup();
++	method_flag = 1;
++}
++
++const struct bench bench_bpf_htab_batch_ops = {
++	.name = "htab-batch-ops",
++	.validate = validate,
++	.setup = bench_bpf_map_lookup_batch_setup,
++	.producer_thread = producer,
++	.consumer_thread = consumer,
++	.measure = measure,
++	.report_progress = ops_report_progress,
++	.report_final = ops_report_final,
++};
++
++const struct bench bench_bpf_htab_element_ops = {
++	.name = "htab-element-ops",
++	.validate = validate,
++	.setup = bench_element_lookup_setup,
++	.producer_thread = producer,
++	.consumer_thread = consumer,
++	.measure = measure,
++	.report_progress = ops_report_progress,
++	.report_final = ops_report_final,
++};
+diff --git a/tools/testing/selftests/bpf/benchs/run_bench_bpf_htab_batch_ops.sh b/tools/testing/selftests/bpf/benchs/run_bench_bpf_htab_batch_ops.sh
+new file mode 100755
+index 000000000000..624f403c1865
+--- /dev/null
++++ b/tools/testing/selftests/bpf/benchs/run_bench_bpf_htab_batch_ops.sh
+@@ -0,0 +1,28 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0
++
++source ./benchs/run_common.sh
++
++set -eufo pipefail
++
++map_capacity=40000
++header "bpf_get_next_key & bpf_map_lookup_elem"
++for t in 40000 10000 2500; do
++subtitle "map capacity: $map_capacity, num_entries: $t"
++        summarize_ops "bpf_element_ops: " \
++                "$($RUN_BENCH -p 1 --num_entries $t htab-element-ops)"
++        printf "\n"
++done
++
++header "bpf_map_lookup_batch with prefetch"
++for t in 40000 10000 2500; do
++for n in {0..20}; do
++#this range of n_prefetch shows the speedup and subsequent
++#deterioration as n_prefetch grows larger
++subtitle "map capacity: $map_capacity, num_entries: $t, n_prefetch: $n"
++        echo $n > /sys/module/hashtab/parameters/n_prefetch
++        summarize_ops "bpf_batch_ops: " \
++                "$($RUN_BENCH -p 1 --num_entries $t htab-batch-ops)"
++        printf "\n"
++done
++done
 -- 
-2.34.1
+2.37.1.595.g718a3a8f04-goog
 
