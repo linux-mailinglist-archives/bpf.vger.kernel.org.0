@@ -2,211 +2,519 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08FDF5962A0
-	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 20:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A92CE5962BD
+	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 20:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232099AbiHPSpV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Aug 2022 14:45:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34746 "EHLO
+        id S232540AbiHPS5Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Aug 2022 14:57:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236010AbiHPSpQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Aug 2022 14:45:16 -0400
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDB9C753BC
-        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 11:45:14 -0700 (PDT)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27GIhh3W031806
-        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 11:45:14 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=4nd6YAYXDjYQaFxP+GJ+sehyWWDB0BOBEQKAIAW7hQs=;
- b=hMHLI4w/R6om8e0SlfstC0AJNr73A7rNosKgOVWFQ4NZPr0iVViljrRqwEBj6nKboOcN
- kC57/SEeWoA8dw2RQqsbejMG7yjsBTUboyiqCQ26OTY4si89EU7i0/FCchPq7h7zfKtX
- pYOknheewulMp12vzRNEJ+QWyWXg3syyBng= 
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2109.outbound.protection.outlook.com [104.47.70.109])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3j030hn7se-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 11:45:14 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JGYQwvx9QpUD/VgTXq44lgjtCmQZdP23UWZXDxVXCrfqS5fTwa5qkxR/jHFXndPp4YpkIE9aWLDFGREN/g64ryZo9Jb/RpAkxiBtkZ/v+zNlRjOSsHLffcMC6/tVYFJHLb/bETGKuhsnbYm4ydbGESmuMfAffmUhXUWaANhPcYjXvt2U3ALg5XvRgWqGfG/8eS1R3QFLMsw0t9k6mIsSnMsiI4AZpCa+pdHGeluJtiNMX6RMsUxGagoYauhgUITZIY6abDo/B7hCueRoSKUNzFaT9YCJvmLoHQzO6jyXuP/Dx2kFkJZWZcSR3BJVcny2IWncK3X4kKj/Q/OQofPGTw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4nd6YAYXDjYQaFxP+GJ+sehyWWDB0BOBEQKAIAW7hQs=;
- b=eGRqRvYMENJpRTW35K0XJR32Yw7AwkiLEH0HSElrSrljcYBXwsMg4b2Xf87H351PWNCy3THMGPscDLx8b1BzULh3hoNxyhDKgSoUMaY8BRePrvDCXqIpV0gcjzNQN9bxgAf9swxfCjBS3vEFGQTMHeo/30Qg57cIEbkIE8e9fwB2ngmRPUYlB4QdQJw7I88Je3aB0TsnryrUdp3yFq/Ds8tTqpgpGu2uy1HFHwtvL0cKVOkP7N9qiylrz4oF14T9kpktj22OpF64x3qe4FoosJZlShBgS53UZPIQ9kaXnzrIXNu6e18da4uPzofeY4KSckWBR3ju3E0S3zi8DPXrUw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from BY5PR15MB3651.namprd15.prod.outlook.com (2603:10b6:a03:1f7::15)
- by MN2PR15MB3167.namprd15.prod.outlook.com (2603:10b6:208:a3::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5525.10; Tue, 16 Aug
- 2022 18:45:08 +0000
-Received: from BY5PR15MB3651.namprd15.prod.outlook.com
- ([fe80::14b0:8f09:488d:f55f]) by BY5PR15MB3651.namprd15.prod.outlook.com
- ([fe80::14b0:8f09:488d:f55f%6]) with mapi id 15.20.5525.011; Tue, 16 Aug 2022
- 18:45:08 +0000
-From:   Kui-Feng Lee <kuifeng@fb.com>
-To:     "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>
-CC:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v5 1/3] bpf: Parameterize task iterators.
-Thread-Topic: [PATCH bpf-next v5 1/3] bpf: Parameterize task iterators.
-Thread-Index: AQHYrRe9v9ijmk2lSUWcf88n0+KKiq2xAH4AgADl7wA=
-Date:   Tue, 16 Aug 2022 18:45:08 +0000
-Message-ID: <8b351e7a743b9195f2dc96f22c342bb9147689a4.camel@fb.com>
-References: <20220811001654.1316689-1-kuifeng@fb.com>
-         <20220811001654.1316689-2-kuifeng@fb.com>
-         <CAEf4Bzab06-dfmd3CpRekdQJ1gw5yFJJGJ5G-vN05Dx3+AOkGQ@mail.gmail.com>
-In-Reply-To: <CAEf4Bzab06-dfmd3CpRekdQJ1gw5yFJJGJ5G-vN05Dx3+AOkGQ@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a3661e8a-a269-4a0b-485d-08da7fb77189
-x-ms-traffictypediagnostic: MN2PR15MB3167:EE_
-x-fb-source: Internal
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: OybSR/rBO45O7jsB7gaq9HOuH/noy2D92D27NyS1j0arEZKBtXKJAmuT6txUCBz7ixmhG7yGsDp4nuUgYO8E89HcyNEn1ZTwC+ehHCaqxJVl+dwg2KTGIWwR0+3l2mqrl6x4BZgkoaoPsqiet8feeHwuQmW6srEJj+eIprfchoOr8hOJlfa6LnG1++TClnz9TH2tprCvpvvNi1RyKv8NydzB1sN0IGfPgABrFCKL7kJUQ9/gcBxravAnju6IHICB3ftlV3BNfyEoDxKOtEH9HFIBaBty5Nh+GVJZoLjdWX4zswa0ukN6khtq3/kT3Fbj4rn5j1hjfM0z0lUGQa9huBV6aHoPys3LAyTnaeo0tpwHMl7nQc+HQBY5gIYWIh7YsgOKYJaBASOQDKnOApNAoVvW5CUS5++GSiR7V+WW9YqHJs6wDgp8EUbNrM4mD96nzYxNVRxG/41ZcT+YxvgmZxrhxkxWbiN/IHzjHt80qMVyXoWxZ0Z8It647uZ5BRR9PQs2LhvCl1dELrcwT/NH6lOTvXWPEGk7e9NsB0d+anFj+ExdFQU06xQuM2Wux1Ue2rZFmAdAY0dkG1sMuaP10kNHob4EGBCZQ7cnWBjymoBg+8Jh3TkH9D8MYaLviTb/wa/dnUNlETaLzErjkRsyD1Nim4kJhC48VUzJm8sHm6eqENjolGsRv6BcEVC5xfVsY9ZQDKRhYgummltYdjDX5oisnsShDY1TKv3Lms8PtKWNUa+fgrelVqEnOoGLepZGcp9PWj8txDM6M3br7pXIN0SEKIyKTzU2l9QHGmszDtAlTYv8s2j6gsVOjlvxus8S
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3651.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(136003)(346002)(366004)(376002)(39860400002)(396003)(316002)(71200400001)(6486002)(41300700001)(53546011)(6512007)(83380400001)(5660300002)(2906002)(6506007)(186003)(2616005)(478600001)(4326008)(66556008)(8676002)(76116006)(54906003)(64756008)(66476007)(66446008)(36756003)(66946007)(86362001)(122000001)(8936002)(38100700002)(38070700005)(6916009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?YTkweGNsS0pMWXdsandLejVUVnhvLzE0UDM2RU41M3hrQWs0c3B3Y1g2Ri9E?=
- =?utf-8?B?eDhnRjRQUU5ZdzdFV3h2YjNhdGNUNUlBQlVQbE9mSmwyd1ovdm1wTlVaMENK?=
- =?utf-8?B?YjU4bjhLQ3NlM2FsR0lzL2hDWFluUnJzbnFGb0dFc1VBUGp4dVBjNXFiK0Zy?=
- =?utf-8?B?MElqNXBTQWNORmxGaW9WU2JJaGtIb0RrNUQ5NENBdzJtd3ErVVdTNVpOOHA5?=
- =?utf-8?B?cDlKYWtkQ3NtYi9ZZk92ekw0MjI1L25hdDZ4di9RVEU2ZXFkYUViN2xBRU9W?=
- =?utf-8?B?dk1ud3ptSmRkdDlkRHZUSStzNDkwdEZJaDh5cFJSODJkSTRjUTNoTEp2TjRH?=
- =?utf-8?B?UUlYcmdYNjRnSVRCZ1o4NGFPZ2x2Y0x1aE0ydTBGQi9HQUtLREJVTFkrRSth?=
- =?utf-8?B?VmVxRldHTDhlbU1nYnhFekE5K3dVbWxDb21IQUIvQnh4b1o1d0JNZUhqa3Ax?=
- =?utf-8?B?cTA2TU1DWFhsdmJzK1JBaXlpMDVEUnN0S2gyRERYY0x2NmFWdjlITEV3QmY3?=
- =?utf-8?B?Q0w2WlFZQThsbHRnR1p3VGc1VUJHd0lvRlpFUWROTk43REtUWThqK2ErbjBH?=
- =?utf-8?B?SXp0TGcwT1g3TTNXLzYrSFFKVDA4K0EyUlRWOFQrSno1ek5XdjZpYlpTTXJq?=
- =?utf-8?B?TXhObzRuRktPZW9CVzltY3R0T2VXUWtGR2FYMSszdk9ReEF1UHFpWU9wSCtV?=
- =?utf-8?B?dllxTUk3Kzl1a0J5MEY3dUV1cVg3YzBTcmhxS2dUU3dFMHFHZFFFNXNPTHUv?=
- =?utf-8?B?bjcrOGRTM3lsUTcrcXpIUVNFR0duVjFndzhZcnBNY2pSOEVIblJhc21OSS9n?=
- =?utf-8?B?YmdNWmREUUdyQ0V5SXpySzliRHdUdXhEMGlOMkNickRrcldVeGRoYStxUTBv?=
- =?utf-8?B?MkdzcExLeUdRZkxJcFkydWZocDlaNTdpZjZoVGhtVE5QRWRBWW5VLzdLSWVT?=
- =?utf-8?B?SWhObzR6dnMxdTJ5SWovNUlwWUp4OGlORzZOdTN6M0ttbVcxQTIzdjRFUUZ3?=
- =?utf-8?B?Z2laNm8vZGsvM2V3WGw2dncvV2dRaSt6ZitFSkNnSU5xQ0NRUzhSWk5ORlZu?=
- =?utf-8?B?eVJMRTRVQzl4Rmh6aDdNWU5WVEVQd3FVYlFNOEJSVDErT3lwYWhsTHRGRGpa?=
- =?utf-8?B?MEtQc2RjbkdrZnRQVlJubi8vVUlubHdLckNoaHlDWEc4eUNobmJRSlV6S2VU?=
- =?utf-8?B?QmhaZjEwY1Z3b1ZEUjVVWGVRME5qdS92NldkcWp2enJyWS9CTkVOQmtIblRJ?=
- =?utf-8?B?Nk9ZZXFQTWt0ZFZiN0lTRnZEOXh4UFZvbXdMOWMreE5iYXJHYkdpMmRvdGtD?=
- =?utf-8?B?bUtyY0ZSc1VuWjVvODBsejJ4Z3NQOUJYTXhNWE50UmQ0NWRXRDhLOHpyZ0tC?=
- =?utf-8?B?V0M4dXFweU9MRWtiK3FwMmh0VWNGZHNlalFUSm5uRXlUOVZIc3VjZ3VmQXdk?=
- =?utf-8?B?U3QyeTRxY2lQb2VVejRzZklGY0UyUGVjTTlHVit6RVc1dXVpMVBHQzM3cm91?=
- =?utf-8?B?Y21YNkpadGlBU0xzNk1GamI0WUJHd3lmdnB4dkllSC9STUpubVEvN2tNd2VC?=
- =?utf-8?B?bE9HV1ZJc2h3cmtzL3UrZlpkNFRtTzBBaTZRREVtdGVTZzlFRmZTSXc1ME5H?=
- =?utf-8?B?VjZGTkJSMEdOajNnazdsL28zU2tXZVZjRE1hV056YU14aWI5QXF0NitsUlY4?=
- =?utf-8?B?ZTNCcGR1bm9PbkZ3Q3BMTERlZW1ob1FHR0Z3Rm5sSk5DQ3FWYnI3ak9mT2o3?=
- =?utf-8?B?Z1owOGVhbWFmTVhEN3BJNW9UaG9Ud0IzZmpWUXdSWU1UbEhyTE9ReDRVR3VS?=
- =?utf-8?B?Q0FIaFVsN0FNdjJ6d3QyejRPd2FCU2h3TC8vZTd5MytkdERhbUs5TzZKdG9C?=
- =?utf-8?B?aEZOcWxaUmdielZ6bmxta05rU1ExYzBkSlJ4K0wyWDNNN3JMeHVveUJqc1dQ?=
- =?utf-8?B?V0QxOGNQRHE1Qy95SVNXVnZNMXg1OUVFSFVXSThBN0F2T2p0V0pBSnIyNDJC?=
- =?utf-8?B?YWp5aEZTSTFxQVc2NGNNc2J0TjNORUQzUm05UVVPTXpjVWFsdW5qbjMwa0lG?=
- =?utf-8?B?b1paQ1U1YmJjSFNxNG9JT1FyZ3ludzB5Z0p2UWNsWXgrcFF1cDdDTXNOY1U5?=
- =?utf-8?B?Y1Zib0c1VjJmRTc0Q2Ruc2swcVE2YmpnTlpSLy8zcndLd1ZpaE1SSGEzbVFz?=
- =?utf-8?B?bXc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <D0E0E8919FCA92419B8A112F26C81D76@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        with ESMTP id S232426AbiHPS5Z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Aug 2022 14:57:25 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 422C77C181;
+        Tue, 16 Aug 2022 11:57:23 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id z2so14694457edc.1;
+        Tue, 16 Aug 2022 11:57:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=IrK7aStOUSz9d6HbUcyl4FiA430LtDiibBZMVO6SgZI=;
+        b=B1U5TdCBWhAc2w2NTY44DMdZUw4X7JkG4DqCfvCkjlPVjdaicAXOgEcDjdSIxYyBDu
+         5gJn8ZUsZBeaa3sLGCzuzKk0qDnFbmwN27Gjtq7YyPjFOBtY3xDpYhRzOxZfRG7xz1po
+         FZpOcvgiONztSJ5Vm9dxHrnFRaYn0PZxaxGrF5FoPg/DShcyj+3tBIFMKu6qG0H77UWQ
+         puZm/+eaTthL4vgbp3nAF5ifw3Qgq+rM31snzwLbkfnx1y0CFjQKI2SDsIT9ZaVh7vew
+         bfgHHUd+qj9XchBJhXSZcQRTR0H36j+9RJlS3jIln5/aYrlu8tN/BdvBzQ/ohyaVUVMk
+         CPEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=IrK7aStOUSz9d6HbUcyl4FiA430LtDiibBZMVO6SgZI=;
+        b=huEEnxkNaqcZQEtve2J9IYqXDjYrFsU3uwfwR9liWOO7vhKc0ijAsTxSHwxBKCp1z6
+         byL8cp2GJIfE5xEXkoCmt/jhZwqaPO8bKpJTaiNm0Qa/nJNR6TyYskT4yl76OY/DINxA
+         F7RZk2EzNYT2qZCAOcgoWivAWDNeBgmPEZQeMHHarMkHrn2sZsblL46GAjfyGCwD2QaP
+         sdSABr61QAhpurrIgYosbG09tLq8avH393OWoUlFf+FC6cBY5vUVnHYz4PclbgL9YJ+d
+         hoRgmy6GftvwKjHuVzi6GimdcbNQIQh4b7vnlLWQJFm+JZooNZhddIkwxRDou6K5sH1x
+         nUBg==
+X-Gm-Message-State: ACgBeo36KRqIqD4OfWA7rdvLHL1qonLhIfPZvivjC6YEif/Og3a4JCfm
+        LMlZNXgnmX1281POsPB/XYlxy01k0pjsz1NUSEo=
+X-Google-Smtp-Source: AA6agR4ZLkb0ZxTQEmGPKiOGrLw8RN3+2W3Ou6XDTgw5SGVlGPx7IRCPBCxD/SZHk+AddlmtmU8ZUupLIl6Tqq5hl94=
+X-Received: by 2002:aa7:de18:0:b0:43d:30e2:d22b with SMTP id
+ h24-20020aa7de18000000b0043d30e2d22bmr20117477edv.224.1660676241693; Tue, 16
+ Aug 2022 11:57:21 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3651.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a3661e8a-a269-4a0b-485d-08da7fb77189
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Aug 2022 18:45:08.6286
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: vonqdG4XsfQY9NZsekJx66evcrJqgMBSsPMHUh41E1PhVSoMwDLnXnQLSfi5aA1P
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB3167
-X-Proofpoint-GUID: dK3V6PZiNqHDsqPpyL-aLE_ehoTSu-1R
-X-Proofpoint-ORIG-GUID: dK3V6PZiNqHDsqPpyL-aLE_ehoTSu-1R
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-08-16_08,2022-08-16_02,2022-06-22_01
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220808155341.2479054-1-void@manifault.com> <20220808155341.2479054-3-void@manifault.com>
+ <CAEf4BzZ-m-AUX+1+CGr7nMxMDnT=fjkn8DP9nP21Uts1y7fMyg@mail.gmail.com> <YvWi4f1hz/v72Fpc@maniforge.dhcp.thefacebook.com>
+In-Reply-To: <YvWi4f1hz/v72Fpc@maniforge.dhcp.thefacebook.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 16 Aug 2022 11:57:10 -0700
+Message-ID: <CAEf4BzZ6aaFqF0DvhEeKaMfSZiFdMjr3=YzX6oEmz8rCRuSFaA@mail.gmail.com>
+Subject: Re: [PATCH 3/5] bpf: Add bpf_user_ringbuf_drain() helper
+To:     David Vernet <void@manifault.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, john.fastabend@gmail.com, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, tj@kernel.org,
+        joannelkoong@gmail.com, linux-kernel@vger.kernel.org,
+        Kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gTW9uLCAyMDIyLTA4LTE1IGF0IDIyOjAyIC0wNzAwLCBBbmRyaWkgTmFrcnlpa28gd3JvdGU6
-Cj4gT24gV2VkLCBBdWcgMTAsIDIwMjIgYXQgNToxNyBQTSBLdWktRmVuZyBMZWUgPGt1aWZlbmdA
-ZmIuY29tPiB3cm90ZToKPiA+IAo+ID4gQWxsb3cgY3JlYXRpbmcgYW4gaXRlcmF0b3IgdGhhdCBs
-b29wcyB0aHJvdWdoIHJlc291cmNlcyBvZiBvbmUKPiA+IHRhc2svdGhyZWFkLgo+ID4gCj4gPiBQ
-ZW9wbGUgY291bGQgb25seSBjcmVhdGUgaXRlcmF0b3JzIHRvIGxvb3AgdGhyb3VnaCBhbGwgcmVz
-b3VyY2VzIG9mCj4gPiBmaWxlcywgdm1hLCBhbmQgdGFza3MgaW4gdGhlIHN5c3RlbSwgZXZlbiB0
-aG91Z2ggdGhleSB3ZXJlCj4gPiBpbnRlcmVzdGVkCj4gPiBpbiBvbmx5IHRoZSByZXNvdXJjZXMg
-b2YgYSBzcGVjaWZpYyB0YXNrIG9yIHByb2Nlc3MuwqAgUGFzc2luZyB0aGUKPiA+IGFkZGl0aW9u
-YWwgcGFyYW1ldGVycywgcGVvcGxlIGNhbiBub3cgY3JlYXRlIGFuIGl0ZXJhdG9yIHRvIGdvCj4g
-PiB0aHJvdWdoIGFsbCByZXNvdXJjZXMgb3Igb25seSB0aGUgcmVzb3VyY2VzIG9mIGEgdGFzay4K
-PiA+IAo+ID4gU2lnbmVkLW9mZi1ieTogS3VpLUZlbmcgTGVlIDxrdWlmZW5nQGZiLmNvbT4KPiA+
-IC0tLQo+ID4gwqBpbmNsdWRlL2xpbnV4L2JwZi5owqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8wqAg
-MjkgKysrKysrKysKPiA+IMKgaW5jbHVkZS91YXBpL2xpbnV4L2JwZi5owqDCoMKgwqDCoMKgIHzC
-oMKgIDggKysrCj4gPiDCoGtlcm5lbC9icGYvdGFza19pdGVyLmPCoMKgwqDCoMKgwqDCoMKgIHwg
-MTI2ICsrKysrKysrKysrKysrKysrKysrKysrKysrLS0tCj4gPiAtLS0tCj4gPiDCoHRvb2xzL2lu
-Y2x1ZGUvdWFwaS9saW51eC9icGYuaCB8wqDCoCA4ICsrKwo+ID4gwqA0IGZpbGVzIGNoYW5nZWQs
-IDE0NyBpbnNlcnRpb25zKCspLCAyNCBkZWxldGlvbnMoLSkKPiA+IAo+ID4gZGlmZiAtLWdpdCBh
-L2luY2x1ZGUvbGludXgvYnBmLmggYi9pbmNsdWRlL2xpbnV4L2JwZi5oCj4gPiBpbmRleCAxMTk1
-MDAyOTI4NGYuLjZiYmU1M2QwNmZhYSAxMDA2NDQKPiA+IC0tLSBhL2luY2x1ZGUvbGludXgvYnBm
-LmgKPiA+ICsrKyBiL2luY2x1ZGUvbGludXgvYnBmLmgKPiA+IEBAIC0xNzE2LDggKzE3MTYsMzcg
-QEAgaW50IGJwZl9vYmpfZ2V0X3VzZXIoY29uc3QgY2hhciBfX3VzZXIKPiA+ICpwYXRobmFtZSwg
-aW50IGZsYWdzKTsKPiA+IMKgwqDCoMKgwqDCoMKgIGV4dGVybiBpbnQgYnBmX2l0ZXJfICMjIHRh
-cmdldChhcmdzKTvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgXAo+ID4gwqDC
-oMKgwqDCoMKgwqAgaW50IF9faW5pdCBicGZfaXRlcl8gIyMgdGFyZ2V0KGFyZ3MpIHsgcmV0dXJu
-IDA7IH0KPiA+IAo+ID4gKy8qCj4gPiArICogVGhlIHRhc2sgdHlwZSBvZiBpdGVyYXRvcnMuCj4g
-PiArICoKPiA+ICsgKiBGb3IgQlBGIHRhc2sgaXRlcmF0b3JzLCB0aGV5IGNhbiBiZSBwYXJhbWV0
-ZXJpemVkIHdpdGggdmFyaW91cwo+ID4gKyAqIHBhcmFtZXRlcnMgdG8gdmlzaXQgb25seSBzb21l
-IG9mIHRhc2tzLgo+ID4gKyAqCj4gPiArICogQlBGX1RBU0tfSVRFUl9BTEwgKGRlZmF1bHQpCj4g
-PiArICrCoMKgwqDCoCBJdGVyYXRlIG92ZXIgcmVzb3VyY2VzIG9mIGV2ZXJ5IHRhc2suCj4gPiAr
-ICoKPiA+ICsgKiBCUEZfVEFTS19JVEVSX1RJRAo+ID4gKyAqwqDCoMKgwqAgSXRlcmF0ZSBvdmVy
-IHJlc291cmNlcyBvZiBhIHRhc2svdGlkLgo+ID4gKyAqCj4gPiArICogQlBGX1RBU0tfSVRFUl9U
-R0lECj4gPiArICrCoMKgwqDCoCBJdGVyYXRlIG92ZXIgcmVvc3VyY2VzIG9mIGV2ZXZyeSB0YXNr
-IG9mIGEgcHJvY2VzcyAvIHRhc2sKPiA+IGdyb3VwLgo+ID4gKyAqLwo+ID4gK2VudW0gYnBmX2l0
-ZXJfdGFza190eXBlIHsKPiA+ICvCoMKgwqDCoMKgwqAgQlBGX1RBU0tfSVRFUl9BTEwgPSAwLAo+
-ID4gK8KgwqDCoMKgwqDCoCBCUEZfVEFTS19JVEVSX1RJRCwKPiA+ICvCoMKgwqDCoMKgwqAgQlBG
-X1RBU0tfSVRFUl9UR0lELAo+ID4gK307Cj4gPiArCj4gPiDCoHN0cnVjdCBicGZfaXRlcl9hdXhf
-aW5mbyB7Cj4gPiDCoMKgwqDCoMKgwqDCoCBzdHJ1Y3QgYnBmX21hcCAqbWFwOwo+ID4gK8KgwqDC
-oMKgwqDCoCBzdHJ1Y3Qgewo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZW51bSBi
-cGZfaXRlcl90YXNrX3R5cGUgdHlwZTsKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IHVuaW9uIHsKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oCB1MzIgdGlkOwo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgIHUzMiB0Z2lkOwo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIHUzMiBwaWRfZmQ7Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB9Owo+
-ID4gK8KgwqDCoMKgwqDCoCB9IHRhc2s7Cj4gCj4gWW91IGRvbid0IHNlZW0gdG8gdXNlIHBpZF9m
-ZCBpbiBicGZfaXRlcl9hdXhfaW5mbyBhdCBhbGwsIGlzIHRoYXQKPiByaWdodD8gRHJvcCBpdD8g
-QW5kIGZvciB0aWQvdGdpZCwgSSdkIHVzZSBrZXJuZWwtc2lkZSB0ZXJtaW5vbG9neSBmb3IKPiB0
-aGlzIGludGVybmFsIGRhdGEgc3RydWN0dXJlIGFuZCBqdXN0IGhhdmUgc2luZ2xlIHUzMiBwaWQg
-aGVyZS4gVGhlbgo+IHR5cGUgZGV0ZXJtaW5lcyB3aGV0aGVyIHlvdSBhcmUgaXRlcmF0aW5nIHRh
-c2tzIG9yIHRhc2sgbGVhZGVycwo+IChwcm9jZXNzZXMpLCBubyBhbWJpZ3VpdHkuCgpZZXMsIGl0
-IHNob3VsZCBiZSByZW1vdmVkIGZyb20gc3RydWN0IGJwZl9pdGVyX2F1eF9pbmZvLgoKVXNpbmcg
-anVzdCBzaW5nbGUgdTMyIHBpZCBoZXJlIGlzIGFsc28gZmluZSB0byBkaXN0aW5ndWlzaCBmaWVs
-ZCBuYW1lcwpieSB0aGUgdHlwZSBvZiBkYXRhIGluc3RlYWQgb2YgdGhlIHB1cnBvc2Ugb2YgZGF0
-YS4KCj4gCj4gPiDCoH07Cj4gPiAKPiA+IMKgdHlwZWRlZiBpbnQgKCpicGZfaXRlcl9hdHRhY2hf
-dGFyZ2V0X3QpKHN0cnVjdCBicGZfcHJvZyAqcHJvZywKPiA+IGRpZmYgLS1naXQgYS9pbmNsdWRl
-L3VhcGkvbGludXgvYnBmLmggYi9pbmNsdWRlL3VhcGkvbGludXgvYnBmLmgKPiA+IGluZGV4IGZm
-Y2JmNzlhNTU2Yi4uNjMyOGFjYTBjZjVjIDEwMDY0NAo+ID4gLS0tIGEvaW5jbHVkZS91YXBpL2xp
-bnV4L2JwZi5oCj4gPiArKysgYi9pbmNsdWRlL3VhcGkvbGludXgvYnBmLmgKPiA+IEBAIC05MSw2
-ICs5MSwxNCBAQCB1bmlvbiBicGZfaXRlcl9saW5rX2luZm8gewo+ID4gwqDCoMKgwqDCoMKgwqAg
-c3RydWN0IHsKPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBfX3UzMsKgwqAgbWFw
-X2ZkOwo+ID4gwqDCoMKgwqDCoMKgwqAgfSBtYXA7Cj4gPiArwqDCoMKgwqDCoMKgIC8qCj4gPiAr
-wqDCoMKgwqDCoMKgwqAgKiBQYXJhbWV0ZXJzIG9mIHRhc2sgaXRlcmF0b3JzLgo+ID4gK8KgwqDC
-oMKgwqDCoMKgICovCj4gPiArwqDCoMKgwqDCoMKgIHN0cnVjdCB7Cj4gPiArwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCBfX3UzMsKgwqAgdGlkOwo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgX191MzLCoMKgIHRnaWQ7Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oCBfX3UzMsKgwqAgcGlkX2ZkOwo+ID4gK8KgwqDCoMKgwqDCoCB9IHRhc2s7Cj4gPiDCoH07Cj4g
-PiAKPiAKPiBbLi4uXQoK
+On Thu, Aug 11, 2022 at 5:46 PM David Vernet <void@manifault.com> wrote:
+>
+> On Thu, Aug 11, 2022 at 04:22:43PM -0700, Andrii Nakryiko wrote:
+> > On Mon, Aug 8, 2022 at 8:54 AM David Vernet <void@manifault.com> wrote:
+> > >
+> > > Now that we have a BPF_MAP_TYPE_USER_RINGBUF map type, we need to add a
+> > > helper function that allows BPF programs to drain samples from the ring
+> > > buffer, and invoke a callback for each. This patch adds a new
+> > > bpf_user_ringbuf_drain() helper that provides this abstraction.
+> > >
+> > > In order to support this, we needed to also add a new PTR_TO_DYNPTR
+> > > register type to reflect a dynptr that was allocated by a helper function
+> > > and passed to a BPF program. The verifier currently only supports
+> > > PTR_TO_DYNPTR registers that are also DYNPTR_TYPE_LOCAL and MEM_ALLOC.
+> >
+> > This commit message is a bit too laconic. There is a lot of
+> > implications of various parts of this patch, it would be great to
+> > highlight most important ones. Please consider elaborating a bit more.
+>
+> Argh, sent my last email too early that only responded to this too early.
+> I'll do this in v3, as mentioned in my other email.
+>
+
+no worries
+
+> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > > index a341f877b230..ca125648d7fd 100644
+> > > --- a/include/uapi/linux/bpf.h
+> > > +++ b/include/uapi/linux/bpf.h
+> > > @@ -5332,6 +5332,13 @@ union bpf_attr {
+> > >   *             **-EACCES** if the SYN cookie is not valid.
+> > >   *
+> > >   *             **-EPROTONOSUPPORT** if CONFIG_IPV6 is not builtin.
+> > > + *
+> > > + * long bpf_user_ringbuf_drain(struct bpf_map *map, void *callback_fn, void *ctx, u64 flags)
+> > > + *     Description
+> > > + *             Drain samples from the specified user ringbuffer, and invoke the
+> > > + *             provided callback for each such sample.
+> >
+> > please specify what's the expected signature of callback_fn
+>
+> Will do, unfortunatley we're inconsistent in doing this in other helper
+> functions, so it wasn't clear from context.
+
+That means we missed it for other helpers. The idea was to always
+specify expected signature in UAPI comment, ideally we fix all the
+missing cases.
+
+>
+> > > + *     Return
+> > > + *             An error if a sample could not be drained.
+> >
+> > Negative error, right? And might be worth it briefly describing what
+> > are the situation(s) when you won't be able to drain a sample?
+> >
+> > Also please clarify if having no sample to drain is an error or not?
+> >
+> > It's also important to specify that if no error (and -ENODATA
+> > shouldn't be an error, actually) occurred then we get number of
+> > consumed samples back.
+>
+> Agreed, I'll add more data here in the next version.
+>
+> [...]
+>
+> > > +
+> > > +static __poll_t ringbuf_map_poll_kern(struct bpf_map *map, struct file *filp,
+> > > +                                     struct poll_table_struct *pts)
+> > > +{
+> > > +       return ringbuf_map_poll(map, filp, pts, true);
+> > > +}
+> > > +
+> > > +static __poll_t ringbuf_map_poll_user(struct bpf_map *map, struct file *filp,
+> > > +                                     struct poll_table_struct *pts)
+> > > +{
+> > > +       return ringbuf_map_poll(map, filp, pts, false);
+> > >  }
+> >
+> > This is an even stronger case where I think we should keep two
+> > implementations completely separate. Please keep existing
+> > ringbuf_map_poll as is and just add a user variant as a separate
+> > implementation
+>
+> Agreed, I'll split both this and  into separate functions (and the mmaps)
+> into separate functions.
+>
+> > >  BTF_ID_LIST_SINGLE(ringbuf_map_btf_ids, struct, bpf_ringbuf_map)
+> > > @@ -309,7 +326,7 @@ const struct bpf_map_ops ringbuf_map_ops = {
+> > >         .map_alloc = ringbuf_map_alloc,
+> > >         .map_free = ringbuf_map_free,
+> > >         .map_mmap = ringbuf_map_mmap_kern,
+> > > -       .map_poll = ringbuf_map_poll,
+> > > +       .map_poll = ringbuf_map_poll_kern,
+> > >         .map_lookup_elem = ringbuf_map_lookup_elem,
+> > >         .map_update_elem = ringbuf_map_update_elem,
+> > >         .map_delete_elem = ringbuf_map_delete_elem,
+> > > @@ -323,6 +340,7 @@ const struct bpf_map_ops user_ringbuf_map_ops = {
+> > >         .map_alloc = ringbuf_map_alloc,
+> > >         .map_free = ringbuf_map_free,
+> > >         .map_mmap = ringbuf_map_mmap_user,
+> > > +       .map_poll = ringbuf_map_poll_user,
+> > >         .map_lookup_elem = ringbuf_map_lookup_elem,
+> > >         .map_update_elem = ringbuf_map_update_elem,
+> > >         .map_delete_elem = ringbuf_map_delete_elem,
+> > > @@ -605,3 +623,132 @@ const struct bpf_func_proto bpf_ringbuf_discard_dynptr_proto = {
+> > >         .arg1_type      = ARG_PTR_TO_DYNPTR | DYNPTR_TYPE_RINGBUF | OBJ_RELEASE,
+> > >         .arg2_type      = ARG_ANYTHING,
+> > >  };
+> > > +
+> > > +static int __bpf_user_ringbuf_poll(struct bpf_ringbuf *rb, void **sample,
+> > > +                                  u32 *size)
+> >
+> > "poll" part is quite confusing as it has nothing to do with epoll and
+> > the other poll implementation. Maybe "peek"? It peek into next sample
+> > without consuming it, seems appropriate
+> >
+> > nit: this declaration can also stay on single line
+>
+> Yeah, I agree that "poll" is confusing. I think "peek" is a good option. I
+> was also considering "consume", but I don't think that makes sense given
+> that we're not actually done consuming the sample until we release it.
+
+Exactly, consume is very bad as we don't "consume" it in the sense of
+making that space available for reuse.
+
+>
+> > > +{
+> > > +       unsigned long cons_pos, prod_pos;
+> > > +       u32 sample_len, total_len;
+> > > +       u32 *hdr;
+> > > +       int err;
+> > > +       int busy = 0;
+> >
+> > nit: combine matching types:
+> >
+> > u32 sample_len, total_len, *hdr;
+> > int err, busy = 0;
+>
+> Ack.
+>
+> > > +
+> > > +       /* If another consumer is already consuming a sample, wait for them to
+> > > +        * finish.
+> > > +        */
+> > > +       if (!atomic_try_cmpxchg(&rb->busy, &busy, 1))
+> > > +               return -EBUSY;
+> > > +
+> > > +       /* Synchronizes with smp_store_release() in user-space. */
+> > > +       prod_pos = smp_load_acquire(&rb->producer_pos);
+> >
+> > I think we should enforce that prod_pos is a multiple of 8
+>
+> Agreed, I'll add a check and selftest for this.
+
+Yep, consider also adding few tests where user-space intentionally
+breaks the contract to make sure that kernel stays intact (if you
+already did that, apologies, I haven't looked at selftests much).
+
+>
+> > > +       /* Synchronizes with smp_store_release() in
+> > > +        * __bpf_user_ringbuf_sample_release().
+> > > +        */
+> > > +       cons_pos = smp_load_acquire(&rb->consumer_pos);
+> > > +       if (cons_pos >= prod_pos) {
+> > > +               atomic_set(&rb->busy, 0);
+> > > +               return -ENODATA;
+> > > +       }
+> > > +
+> > > +       hdr = (u32 *)((uintptr_t)rb->data + (cons_pos & rb->mask));
+> > > +       sample_len = *hdr;
+> >
+> > do we need smp_load_acquire() here? libbpf's ring_buffer
+> > implementation uses load_acquire here
+>
+> I thought about this when I was first adding the logic, but I can't
+> convince myself that it's necessary and wasn't able to figure out why we
+> did a load acquire on the len in libbpf. The kernel doesn't do a store
+> release on the header, so I'm not sure what the load acquire in libbpf
+> actually accomplishes. I could certainly be missing something, but I
+> _think_ the important thing is that we have load-acquire / store-release
+> pairs for the consumer and producer positions.
+
+kernel does xchg on len on the kernel side, which is stronger than
+smp_store_release (I think it was Paul's suggestion instead of doing
+explicit memory barrier, but my memories are hazy for exact reasons).
+
+Right now this might not be necessary, but if we add support for busy
+bit in a sample header, it will be closer to what BPF ringbuf is doing
+right now, with producer position being a reservation pointer, but
+sample itself won't be "readable" until sample header is updated and
+its busy bit is unset.
+
+>
+> > > +       /* Check that the sample can fit into a dynptr. */
+> > > +       err = bpf_dynptr_check_size(sample_len);
+> > > +       if (err) {
+> > > +               atomic_set(&rb->busy, 0);
+> > > +               return err;
+> > > +       }
+> > > +
+> > > +       /* Check that the sample fits within the region advertised by the
+> > > +        * consumer position.
+> > > +        */
+> > > +       total_len = sample_len + BPF_RINGBUF_HDR_SZ;
+> >
+> > round up to closest multiple of 8? All the pointers into ringbuf data
+> > area should be 8-byte aligned
+>
+> Will do.
+>
+> > > +       if (total_len > prod_pos - cons_pos) {
+> > > +               atomic_set(&rb->busy, 0);
+> > > +               return -E2BIG;
+> > > +       }
+> > > +
+> > > +       /* Check that the sample fits within the data region of the ring buffer.
+> > > +        */
+> > > +       if (total_len > rb->mask + 1) {
+> > > +               atomic_set(&rb->busy, 0);
+> > > +               return -E2BIG;
+> > > +       }
+> > > +
+> > > +       /* consumer_pos is updated when the sample is released.
+> > > +        */
+> > > +
+> >
+> > nit: unnecessary empty line
+> >
+> > and please keep single-line comments as single-line, no */ on separate
+> > line in such case
+>
+> Will do.
+>
+> > > +       *sample = (void *)((uintptr_t)rb->data +
+> > > +                          ((cons_pos + BPF_RINGBUF_HDR_SZ) & rb->mask));
+> > > +       *size = sample_len;
+> > > +
+> > > +       return 0;
+> > > +}
+> > > +
+> > > +static void
+> > > +__bpf_user_ringbuf_sample_release(struct bpf_ringbuf *rb, size_t size,
+> > > +                                 u64 flags)
+> >
+> > try to keep single lines if they are under 100 characters
+>
+> Ack, this seems to really differ by subsystem. I'll follow this norm for
+> BPF.
+
+It's a relatively recent relaxation (like a year old or something) in
+kernel coding style. Single-line usually has much better readability,
+so I prefer that while staying within reasonable limits.
+
+>
+> > > +{
+> > > +
+> > > +
+> >
+> > empty lines, why?
+>
+> Apologies, thanks for catching this.
+>
+> > > +       /* To release the ringbuffer, just increment the producer position to
+> > > +        * signal that a new sample can be consumed. The busy bit is cleared by
+> > > +        * userspace when posting a new sample to the ringbuffer.
+> > > +        */
+> > > +       smp_store_release(&rb->consumer_pos, rb->consumer_pos + size +
+> > > +                         BPF_RINGBUF_HDR_SZ);
+> > > +
+> > > +       if (flags & BPF_RB_FORCE_WAKEUP || !(flags & BPF_RB_NO_WAKEUP))
+> >
+> > please use () around bit operator expressions
+>
+> Ack.
+>
+> > > +               irq_work_queue(&rb->work);
+> > > +
+> > > +       atomic_set(&rb->busy, 0);
+> >
+> > set busy before scheduling irq_work? why delaying?
+>
+> Yeah, I thought about this. I don't think there's any problem with clearing
+> busy before we schedule the irq_work_queue(). I elected to do this to err
+> on the side of simpler logic until we observed contention, but yeah, let me
+> just do the more performant thing here.
+
+busy is like a global lock, so freeing it ASAP is good, so yeah,
+unless there are some bad implications, let's do it early
+
+>
+> > > +}
+> > > +
+> > > +BPF_CALL_4(bpf_user_ringbuf_drain, struct bpf_map *, map,
+> > > +          void *, callback_fn, void *, callback_ctx, u64, flags)
+> > > +{
+> > > +       struct bpf_ringbuf *rb;
+> > > +       long num_samples = 0, ret = 0;
+> > > +       int err;
+> > > +       bpf_callback_t callback = (bpf_callback_t)callback_fn;
+> > > +       u64 wakeup_flags = BPF_RB_NO_WAKEUP | BPF_RB_FORCE_WAKEUP;
+> > > +
+> > > +       if (unlikely(flags & ~wakeup_flags))
+> > > +               return -EINVAL;
+> > > +
+> > > +       /* The two wakeup flags are mutually exclusive. */
+> > > +       if (unlikely((flags & wakeup_flags) == wakeup_flags))
+> > > +               return -EINVAL;
+> >
+> > we don't check this for existing ringbuf, so maybe let's keep it
+> > consistent? FORCE_WAKEUP is just stronger than NO_WAKEUP
+>
+> Ack.
+>
+> > > +
+> > > +       rb = container_of(map, struct bpf_ringbuf_map, map)->rb;
+> > > +       do {
+> > > +               u32 size;
+> > > +               void *sample;
+> > > +
+> > > +               err = __bpf_user_ringbuf_poll(rb, &sample, &size);
+> > > +
+> >
+> > nit: don't keep empty line between function call and error check
+>
+> Ack.
+>
+> > > +               if (!err) {
+> >
+> > so -ENODATA is a special error and you should stop if you get that.
+> > But for any other error we should propagate error back, not just
+> > silently consuming it
+> >
+> > maybe
+> >
+> > err = ...
+> > if (err) {
+> >     if (err == -ENODATA)
+> >       break;
+> >     return err;
+> > }
+> >
+> > ?
+>
+> Agreed, I'll fix this.
+>
+> > > +                       struct bpf_dynptr_kern dynptr;
+> > > +
+> > > +                       bpf_dynptr_init(&dynptr, sample, BPF_DYNPTR_TYPE_LOCAL,
+> > > +                                       0, size);
+> >
+> > we should try to avoid unnecessary re-initialization of dynptr, let's
+> > initialize it once and then just update data and size field inside the
+> > loop?
+>
+> Hmm ok, let me give that a try.
+>
+
+discussed this offline, it might not be worth the hassle given dynptr
+init is just setting 4 fields
+
+> > > +                       ret = callback((u64)&dynptr,
+> > > +                                       (u64)(uintptr_t)callback_ctx, 0, 0, 0);
+> > > +
+> > > +                       __bpf_user_ringbuf_sample_release(rb, size, flags);
+> > > +                       num_samples++;
+> > > +               }
+> > > +       } while (err == 0 && num_samples < 4096 && ret == 0);
+> > > +
+> >
+> > 4096 is pretty arbitrary. Definitely worth noting it somewhere and it
+> > seems somewhat low, tbh...
+> >
+> > ideally we'd cond_resched() from time to time, but that would require
+> > BPF program to be sleepable, so we can't do that :(
+>
+> Yeah, I knew this would come up in discussion. I would love to do
+> cond_resched() here, but as you said, I don't think it's an option :-/ And
+> given the fact that we're calling back into the BPF program, we have to be
+> cognizant of things taking a while and clogging up the CPU. What do you
+> think is a more reasonable number than 4096?
+
+I don't know, tbh, but 4096 seems pretty low. For bpf_loop() we allow
+up to 2mln iterations. I'd bump it up to 64-128K range, probably. But
+also please move it into some internal #define'd constant, not some
+integer literal buried in a code
+
+>
+> [...]
+>
+> > >         case ARG_PTR_TO_DYNPTR:
+> > > +               /* We only need to check for initialized / uninitialized helper
+> > > +                * dynptr args if the dynptr is not MEM_ALLOC, as the assumption
+> > > +                * is that if it is, that a helper function initialized the
+> > > +                * dynptr on behalf of the BPF program.
+> > > +                */
+> > > +               if (reg->type & MEM_ALLOC)
+> >
+> > Isn't PTR_TO_DYNPTR enough indication? Do we need MEM_ALLOC modifier?
+> > Normal dynptr created and used inside BPF program on the stack are
+> > actually PTR_TO_STACK, so that should be enough distinction? Or am I
+> > missing something?
+>
+> I think this would also work in the current state of the codebase, but IIUC
+> it relies on PTR_TO_STACK being the only way that a BPF program could ever
+> allocate a dynptr. I was trying to guard against the case of a helper being
+> added in the future that e.g. returned a dynamically allocated dynptr that
+> the caller would eventually need to release in another helper call.
+> MEM_ALLOC seems like the correct modifier to more generally denote that the
+> dynptr was externally allocated.  If you think this is overkill I'm totally
+> fine with removing MEM_ALLOC. We can always add it down the road if we add
+> a new helper that requires it.
+>
+
+Hm.. I don't see a huge need for more flags for this, so I'd keep it
+simple for now and if in the future we do have such a use case, we'll
+address it at that time?
+
+
+> [...]
+>
+> > > @@ -7477,11 +7524,15 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+> > >                 /* Find the id of the dynptr we're acquiring a reference to */
+> > >                 for (i = 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
+> > >                         if (arg_type_is_dynptr(fn->arg_type[i])) {
+> > > +                               struct bpf_reg_state *reg = &regs[BPF_REG_1 + i];
+> > > +
+> > >                                 if (dynptr_id) {
+> > >                                         verbose(env, "verifier internal error: multiple dynptr args in func\n");
+> > >                                         return -EFAULT;
+> > >                                 }
+> > > -                               dynptr_id = stack_slot_get_id(env, &regs[BPF_REG_1 + i]);
+> > > +
+> > > +                               if (!(reg->type & MEM_ALLOC))
+> > > +                                       dynptr_id = stack_slot_get_id(env, reg);
+> >
+> > this part has changed in bpf-next
+>
+> Yeah, this is all rewired in the new version I sent out in v2 (and will
+> send out in v3 when I apply your other suggestions).
+
+Cool, thanks. It was a pretty tight race between my comments and your v2 :)
+
+>
+> [...]
+>
+> Thanks for the thorough review!
+>
+> - David
