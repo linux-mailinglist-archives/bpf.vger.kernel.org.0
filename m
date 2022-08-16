@@ -2,152 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B29C459654E
-	for <lists+bpf@lfdr.de>; Wed, 17 Aug 2022 00:17:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51E38596593
+	for <lists+bpf@lfdr.de>; Wed, 17 Aug 2022 00:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237480AbiHPWQz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Aug 2022 18:16:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38620 "EHLO
+        id S237776AbiHPWjd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Aug 2022 18:39:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237960AbiHPWQv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Aug 2022 18:16:51 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96E86786D9
-        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 15:16:50 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id y11so8912896qvn.3
-        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 15:16:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=zAVoK2y0IblTkUtCF2+DJlXYzSXXXw12A5petDOhN5E=;
-        b=IP+BohMQzQjIx2VjirAenZa/lMePA7zPokS9BlYFTRN8m/nGjLgAQ/rTpaE9elClY7
-         LeObnzazdZXAcQxZ+7mv03rgF3EcrZsMotDhbdt4jZQ4KtN3R6y57tuD8Cy3ZbBotVZh
-         GrBeWl3KTeEfYXH606jCLEHMaBIYhCD6+bi2duKLThctxnxDArlUqsAV2s2IRzoJA514
-         5l0EOsva/nmhAYKFZdRuXIEZeGB90/CTD/gGDevfLJ/ymkbVc0dUR6DnN/BaNX6zZo59
-         BLMxOxTSp3Uqccmqb3QyNVBDXliGREWGBITeNloI4zvjEj0ZmJXkIL1/xqUMdZC6/ogh
-         Rrwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=zAVoK2y0IblTkUtCF2+DJlXYzSXXXw12A5petDOhN5E=;
-        b=oJVaxgrNYAR07fheM0330tpulTKug0Mbt6xryY3gAbnc/pG5LYF4LWfgy8SpBx+xsw
-         FX8AhuYTKGOGNmbMyulELv1wEUg2oeY6OD/mdxS4vo7VWPLojc60tW9BSj1Hr4vdJji8
-         FOkK0aIxyIhhmoTysQXfA9DJLZmBecTzp3gcTDguDGblH+/PvuwjoJ1m97msg/6bjKaD
-         h30M6Ifh9RF2oADxaBUPQYmLhhM6eKYTXeNWX3FoQRgxPrg2uOItEs1YbhQ2GmkXKV4w
-         Otq91Vv7tU4/RiLqy9Hod5E/3E820Ee7b/oYnKwRF7FwEHyc98+4KZvkCBygqOJmNzx2
-         m+IA==
-X-Gm-Message-State: ACgBeo1DaiLM8bY8POQnkOmTDuqKblnySHbIF6CTDtlrskcffcHGd+hG
-        Hky3TuYVlToDNSlwvB2y2YHmbzvalMGk04Q8cjvlPw==
-X-Google-Smtp-Source: AA6agR4rcZ3y0cSZ5tIp/Q/Gtnd8PqnUBfvhciEjwRRV0JFXzi+SKPnM81czOBZvk96BaLNcdiEFk8k8DislOFP+L+8=
-X-Received: by 2002:a05:6214:20a8:b0:477:1882:3e7 with SMTP id
- 8-20020a05621420a800b00477188203e7mr19871631qvd.44.1660688209597; Tue, 16 Aug
- 2022 15:16:49 -0700 (PDT)
+        with ESMTP id S237111AbiHPWjc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Aug 2022 18:39:32 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F5127963B;
+        Tue, 16 Aug 2022 15:39:31 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2A141B81ABE;
+        Tue, 16 Aug 2022 22:39:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6F7EC433D6;
+        Tue, 16 Aug 2022 22:39:27 +0000 (UTC)
+Date:   Tue, 16 Aug 2022 18:39:35 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Guangbin Huang <huangguangbin2@huawei.com>
+Cc:     <pmladek@suse.com>, <senozhatsky@chromium.org>,
+        <andriy.shevchenko@linux.intel.com>, <linux@rasmusvillemoes.dk>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <lipeng321@huawei.com>, <shenjian15@huawei.com>
+Subject: Re: [PATCH] lib/vnsprintf: add const modifier for param 'bitmap'
+Message-ID: <20220816183935.2039e0ed@gandalf.local.home>
+In-Reply-To: <20220816144557.30779-1-huangguangbin2@huawei.com>
+References: <20220816144557.30779-1-huangguangbin2@huawei.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20220816214945.742924-1-haoluo@google.com> <CAEf4Bza1SMFvzofz4RkBF=pByFHp+Z1v16Z+TMAQZ6rD2m9Lxg@mail.gmail.com>
-In-Reply-To: <CAEf4Bza1SMFvzofz4RkBF=pByFHp+Z1v16Z+TMAQZ6rD2m9Lxg@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Tue, 16 Aug 2022 15:16:38 -0700
-Message-ID: <CA+khW7hHGL1DAMSOjbJSj21wJYY=j4VrRJcFB1zv52Db20_MGA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: allow disabling auto attach
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Jiri Olsa <jolsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Aug 16, 2022 at 3:01 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Tue, Aug 16, 2022 at 2:49 PM Hao Luo <haoluo@google.com> wrote:
-> >
-> > Add libbpf APIs for disabling auto-attach for individual functions.
-> > This is motivated by the use case of cgroup iter [1]. Some iter
-> > types require their parameters to be non-zero, therefore applying
-> > auto-attach on them will fail. With these two new APIs, Users who
-> > want to use auto-attach and these types of iters can disable
-> > auto-attach for them and perform manual attach.
-> >
-> > [1] https://lore.kernel.org/bpf/CAEf4BzZ+a2uDo_t6kGBziqdz--m2gh2_EUwkGLDtMd65uwxUjA@mail.gmail.com/
-> >
-> > Signed-off-by: Hao Luo <haoluo@google.com>
-> > ---
-> >  tools/lib/bpf/libbpf.c | 16 ++++++++++++++++
-> >  tools/lib/bpf/libbpf.h |  2 ++
-> >  2 files changed, 18 insertions(+)
-> >
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index aa05a99b913d..25f654d25b46 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
-[...]
-> >  const struct bpf_insn *bpf_program__insns(const struct bpf_program *prog)
-> >  {
-> >         return prog->insns;
-> > @@ -12349,6 +12362,9 @@ int bpf_object__attach_skeleton(struct bpf_object_skeleton *s)
-> >                 if (!prog->autoload)
-> >                         continue;
-> >
-> > +               if (!prog->autoattach)
-> > +                       continue;
-> > +
->
-> nit: I'd combine as if (!prog->autoload || !prog->autoattach), they
-> are very coupled in this sense
->
+On Tue, 16 Aug 2022 22:45:57 +0800
+Guangbin Huang <huangguangbin2@huawei.com> wrote:
 
-Sure.
+> From: Jian Shen <shenjian15@huawei.com>
+> 
+> There is no modification for param bitmap in function
+> bitmap_string() and bitmap_list_string(), so add const
+> modifier for it.
 
-> >                 /* auto-attaching not supported for this program */
-> >                 if (!prog->sec_def || !prog->sec_def->prog_attach_fn)
-> >                         continue;
-> > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> > index 61493c4cddac..88a1ac34b12a 100644
-> > --- a/tools/lib/bpf/libbpf.h
-> > +++ b/tools/lib/bpf/libbpf.h
-> > @@ -260,6 +260,8 @@ LIBBPF_API const char *bpf_program__name(const struct bpf_program *prog);
-> >  LIBBPF_API const char *bpf_program__section_name(const struct bpf_program *prog);
-> >  LIBBPF_API bool bpf_program__autoload(const struct bpf_program *prog);
-> >  LIBBPF_API int bpf_program__set_autoload(struct bpf_program *prog, bool autoload);
-> > +LIBBPF_API bool bpf_program__autoattach(const struct bpf_program *prog);
-> > +LIBBPF_API void bpf_program__set_autoattach(struct bpf_program *prog, bool autoattach);
->
-> please add these APIs to libbpf.map as well
->
+Yep, seems so.
 
-Ok. Which section? LIBBPF_1.0.0? Do the items in each section have a
-particular order?
+Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-> it would be also nice to have a simple test validating that skeleton's
-> auto-attach doesn't attach program (no link will be created) if
-> bpf_program__set_autoattach(false) is called before. Can you please
-> add that as well?
->
+-- Steve
 
-Ok. Will add a test and send v2.
-
-> >
-> >  struct bpf_insn;
-> >
-> > --
-> > 2.37.1.595.g718a3a8f04-goog
-> >
+> 
+> Signed-off-by: Jian Shen <shenjian15@huawei.com>
+> Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
