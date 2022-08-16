@@ -2,56 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0B79596503
-	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 23:57:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D52596509
+	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 23:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237628AbiHPV4A (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Aug 2022 17:56:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50264 "EHLO
+        id S236837AbiHPV6r (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Aug 2022 17:58:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237809AbiHPV4A (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Aug 2022 17:56:00 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 517A68670E
-        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 14:55:59 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id w3so15222077edc.2
-        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 14:55:59 -0700 (PDT)
+        with ESMTP id S237762AbiHPV6o (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Aug 2022 17:58:44 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27A528983B
+        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 14:58:41 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id tl27so21417695ejc.1
+        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 14:58:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc;
-        bh=fXKX027W2rKXVI5yjTLWPgg8XFeY4LZisVfhTYNuKGM=;
-        b=pQGbJOWsj/9EOSD9IgtrlqYC16eakLaES7j2gL75t22BK1BApEIKI5LN0bUeTikTAt
-         Kk0kaU6Pq6fQYPWjtT6p4VYpN4yFVYVJDMGviRXC3X5irDSHhv/E/mwc5Y4TJNn0JQtm
-         CeUqT8Gvg2GqB83EyrbhEeyTozlBmMUu56WyIbOBGAjNaMGMi4mNcP7WfhYAbPKV8CT4
-         QetgG9UgsaN2IBVuj8Foz1+iaUbl1+Dp7IwGo4fghBQ7oOY6f9OhaKXAzeYphyAguYh0
-         +BkSbyurlgl6CYlOpqX+n/R8CPaDj4Kdg9ZYrsh1CVvk3kUjNN2mr65+WthE6zAZIL4V
-         jywA==
+        bh=ZePXSsb+bZ2CUm4HD2KZp6gtGsoBd5wLdsRrfQSCzNI=;
+        b=nRvazCYgNyznAjbNVqFFzzOKMwgcRrJiFtdANXFOH+IdnbXYkAm7ErcmBWDWQ9WZ/N
+         ov0XPVyq6Zy1Y7nPlKH9/4G/k2Rw1P/ME1Wpuw01zipiqt+7jx8hp4lKHy8ry43Zz4Fl
+         NMai7h0DT1NNe2UA9xGXTUi0KIhOQ4Vo7Z38nGMkbkHWg6qP+BZ10aYc9tdVzjhPOdQ6
+         BtILlryg4E1WRv/XBGnzC8yxP34XqmPZui417cVCLmLWk2XBQsizIqTrHR9MpTZD4c3z
+         W7jD/yLU4gdjbR7rE+Ig5SoAcgmdyquZkVOvYelDrCNrVFX58OkVr0RSqjp098CQRhAk
+         43Ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc;
-        bh=fXKX027W2rKXVI5yjTLWPgg8XFeY4LZisVfhTYNuKGM=;
-        b=C75ph2ok1Dx/0NzwtCvk70ByzjhGH8I2CC4yd5pwKtFi2bzKpgXm6YimCqXqJSFhKv
-         ft80sT2wEvNSDkFQM1de4s0kJGRqMqKrRgS8MAolo79RdZA3sGw9WNLJtkD6pJkoZXu3
-         de+i5Rb1JITZa+OyS8YqXVq6t7a6UOKyjXD8JzKorTL5fzDllryg0YXsVKYhdabZOtlZ
-         JX4meHqzHkbrjaEqEMH0X7xN7ZLg5CvWSQJeyTDeksELNjeJDzPFuOCXc52D8lOZx8N5
-         ocnq5h7BadyS218L18hVg+esRv5+Hsbp1w+8ZphLMV+/zhYtmoy5yVBpNCrDrNst0aPh
-         9AOw==
-X-Gm-Message-State: ACgBeo1sExDUr/eFBZsDs892KkfsTWHxJIlgViae33YsGJkubb7pxQnX
-        PUXykj/hHH2QPsRBzsBboPBoxdu45wWaPdgfdIZFLSCp
-X-Google-Smtp-Source: AA6agR6ogmtDMkUolGsZtiXCPazfkchymuKpwY/IoaFIKBQQi58F5fNeANb8pnaQz80GLoAt9HCL6OEBdFo3e/icX84=
-X-Received: by 2002:aa7:de8c:0:b0:440:3516:1813 with SMTP id
- j12-20020aa7de8c000000b0044035161813mr21304021edv.260.1660686957876; Tue, 16
- Aug 2022 14:55:57 -0700 (PDT)
+        bh=ZePXSsb+bZ2CUm4HD2KZp6gtGsoBd5wLdsRrfQSCzNI=;
+        b=Igpxr9NsfXBESfDiodGbd9k/fVmGptfJNIuAuxZBcPPS7NPavSbv4clRpLp1/j6cmz
+         d3H8cbul+e3e+Di1JQhM1CMZlgJ+anf5B49dYXmI4o4dgyR7Qe8u+F6hf8WKhVQSAUfD
+         XdRhqvY6uoNOkCV3Aig+vhVfWjanXw+2o/fiMjs6Qkw2aIgjiFeXyuh0lJnwKg1Q5lFO
+         zGjEWzWn1jArHzpdvS7pfDPi8zGUke5gVQzSFQmv0ZZiWU/XQhXqsw3atefUYQZpelhZ
+         00QwNWvxqiy5sQsCdxbN+qEqib+ozqLynoqgLy2OvxQSgHSlS/tcvnBoQUIQ6aYrxB9b
+         /7UQ==
+X-Gm-Message-State: ACgBeo3xguNn3QAHF0+WtsB5zEissDGAKY1c/8dHb4CZMffXbesNEq9X
+        2G//d7FQPx9lAbDPTpL+3cPjqNdm2rlUEMhfB2s=
+X-Google-Smtp-Source: AA6agR7Vbjy21RmhY8fa8VY4vJWxO1HOQRc/XGM+a2MaOYGpSKxvgPh4L9uGxJLjbxnx35sofOft+RH4N1WozqpBG94=
+X-Received: by 2002:a17:907:1361:b0:730:8f59:6434 with SMTP id
+ yo1-20020a170907136100b007308f596434mr14989455ejb.745.1660687119679; Tue, 16
+ Aug 2022 14:58:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220816001929.369487-1-andrii@kernel.org> <20220816001929.369487-4-andrii@kernel.org>
- <CA+khW7h1n1fA53B-2SDc2z-sVOCFVt8f9pBPT1D_sbJ4T63PdQ@mail.gmail.com>
-In-Reply-To: <CA+khW7h1n1fA53B-2SDc2z-sVOCFVt8f9pBPT1D_sbJ4T63PdQ@mail.gmail.com>
+References: <20220816001929.369487-1-andrii@kernel.org> <20220816001929.369487-5-andrii@kernel.org>
+ <CA+khW7jdztV3XgdVJy7t8jwr8iheTMjQMYnioLBVX3xxBRRKjw@mail.gmail.com>
+In-Reply-To: <CA+khW7jdztV3XgdVJy7t8jwr8iheTMjQMYnioLBVX3xxBRRKjw@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 16 Aug 2022 14:55:46 -0700
-Message-ID: <CAEf4BzbGLzD3oLGxCOvyRO4HWZf6Oz9-uyCZRTqi6OOcBYdT=Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/4] libbpf: clean up deprecated and legacy aliases
+Date:   Tue, 16 Aug 2022 14:58:28 -0700
+Message-ID: <CAEf4Bzbze6cDTaEPUY07zwj1_e2sYbNWpFb+9v=JuhuzbM2=9g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 4/4] selftests/bpf: few fixes for selftests/bpf
+ built in release mode
 To:     Hao Luo <haoluo@google.com>
 Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
         ast@kernel.org, daniel@iogearbox.net, kernel-team@fb.com
@@ -68,37 +69,41 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Tue, Aug 16, 2022 at 2:34 PM Hao Luo <haoluo@google.com> wrote:
 >
-> On Mon, Aug 15, 2022 at 9:23 PM Andrii Nakryiko <andrii@kernel.org> wrote:
+> On Mon, Aug 15, 2022 at 8:52 PM Andrii Nakryiko <andrii@kernel.org> wrote:
 > >
-> > Remove two missed deprecated APIs that were aliased to new APIs:
-> > bpf_object__unload and bpf_prog_attach_xattr.
+> > Fix few issues found when building and running test_progs in release
+> > mode.
 > >
->
-> Three functions? Missing btf__load()?
-
-Apparently I suck at counting, thanks for spotting. It doesn't seem
-worth it to send v2 just for this, maybe Alexei or Daniel can fix it
-up while applying.
-
->
-> > Also move legacy API libbpf_find_kernel_btf (aliased to
-> > btf__load_vmlinux_btf) into libbpf_legacy.h.
+> > First, potentially uninitialized idx variable in xskxceiver,
+> > force-initialize to zero to satisfy compiler.
+> >
+> > Few instances of defining uprobe trigger functions break in release mode
+> > unless marked as noinline, due to being static. Add noinline to make
+> > sure everything works.
 > >
 > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 > > ---
 >
-> The change itself looks good to me. Verified these functions are no
-> longer used in the source file.
+> I can't say for the noinline change, I trust it works. The fix for
+> uninitialized use looks good to me.
+
+yeah, I tested noinline with both default debug (-O0) build and
+release build (-O2).
+
+noinline itself was interesting, apparently GCC doesn't support
+__attribute__((noinline)) for static functions, but noinline is fine.
+I was scratching my head for a while, didn't find any good explanation
+and just went with `noinline`.
+
 >
 > Acked-by: Hao Luo <haoluo@google.com>
 >
 >
-> >  tools/lib/bpf/bpf.c           | 5 -----
-> >  tools/lib/bpf/btf.c           | 2 --
-> >  tools/lib/bpf/btf.h           | 1 -
-> >  tools/lib/bpf/libbpf.c        | 2 --
-> >  tools/lib/bpf/libbpf_legacy.h | 2 ++
-> >  5 files changed, 2 insertions(+), 10 deletions(-)
+> >  tools/testing/selftests/bpf/prog_tests/attach_probe.c | 6 +++---
+> >  tools/testing/selftests/bpf/prog_tests/bpf_cookie.c   | 2 +-
+> >  tools/testing/selftests/bpf/prog_tests/task_pt_regs.c | 2 +-
+> >  tools/testing/selftests/bpf/xskxceiver.c              | 2 +-
+> >  4 files changed, 6 insertions(+), 6 deletions(-)
 > >
 
 [...]
