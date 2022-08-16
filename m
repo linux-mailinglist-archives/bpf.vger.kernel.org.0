@@ -2,111 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D44A59640C
-	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 22:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FB0C59647C
+	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 23:18:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236675AbiHPUzr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Aug 2022 16:55:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45574 "EHLO
+        id S237438AbiHPVRc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Aug 2022 17:17:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233785AbiHPUzq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Aug 2022 16:55:46 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 467F074376
-        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 13:55:46 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id v65-20020a626144000000b0052f89472f54so4216417pfb.11
-        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 13:55:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:from:to:cc;
-        bh=Tnxh09mMigEObNT8d1AOsWhAz1/ozMeGIpXEVIgkx7Y=;
-        b=E1r9/o0vUU2ivMM7W+AZ6k7lK/mBTiLQceLw2XRFWxAFs+1iXzHTxF5vfe4Y1vV3cL
-         kIPf4uBI0iNjd3WuYSHNECs2/CC6fwh2DgkSRnxh1V9myuzEkfQdJRw7J0la6mAsmmR+
-         AtWvJ/IJewHpUeQyQ2BlnrOpO7Xqya/tWMasAkZpgCNrMRmoys4QN5OoXkmeJdLoCvOj
-         FDqMNITTc2XjHsSL31fqhxCHqx+HCwA9j6h+ufIqcSbGs0fed0IJOSkYueyPTkcZgqqt
-         YHQmq0Ioj2/zr7od+qRea42Cf0SP8AK8dqvrr7GZyOfRYYPCbaCr/e9i6/yNUzKq0iy5
-         6Plg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:x-gm-message-state:from:to:cc;
-        bh=Tnxh09mMigEObNT8d1AOsWhAz1/ozMeGIpXEVIgkx7Y=;
-        b=rB3WFl0L+r3NSBLmoTdFv+kR+V8+iEeq8p/C6w9wySJkeUdP/3nzAmrPF0QDtNDHpq
-         KnNgBHefZ+vjeTU2cpJKF0MVdj7aH5EnpnSFDRaws3Ks6WAzE3YIbMfRuElUa++xGLyo
-         Olb8TixwDA7G+1gIhAILottzRK+G3AgHnBdbVQpCU5o8J01HumOkqGGubLbPYLlNg6zO
-         5SUPTMTY8RlWluXIxvFRlpJtaBLWdJTSkVjxld2vjN6M7R7iLgueIAX5NFszV4vwVtQ8
-         jOPTrpZG3RqlBckzQm7LbwfYRW4W5sSOJbxTAH/X2t4ai3ghfA55RFiO2QrZNUMO+LkY
-         4KrQ==
-X-Gm-Message-State: ACgBeo2IXdhqJab7nR7uGAEYMZ9X/iJS64GC1EvqzQ9S4vTgXuL8Dj5V
-        t24ikpcW1HGO3RifKqtAWUCJnDlLR2qwQXh/QBN1anHRo72HNeaUBsRU/dPut5TrTiYlTUJF9qp
-        6rXeIn2ePgJoNCBivP/klrkyw4j5MgI/SyrtJ4uc9MHRoq9ZAq2dMDp7FCy9Gqag=
-X-Google-Smtp-Source: AA6agR4kh46MfTnNmY7hWP81gqMBgXm5cam87S6Es8noSzU4cYxWReBe+XMNXF/oqNh1EvxwKx0vuh6G7ffXqg==
-X-Received: from zhuyifei-kvm.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2edc])
- (user=zhuyifei job=sendgmr) by 2002:aa7:88d3:0:b0:52e:ade6:6192 with SMTP id
- k19-20020aa788d3000000b0052eade66192mr22776201pff.41.1660683345768; Tue, 16
- Aug 2022 13:55:45 -0700 (PDT)
-Date:   Tue, 16 Aug 2022 20:55:17 +0000
-In-Reply-To: <20220816205517.682470-1-zhuyifei@google.com>
-Message-Id: <20220816205517.682470-2-zhuyifei@google.com>
-Mime-Version: 1.0
-References: <20220816205517.682470-1-zhuyifei@google.com>
-X-Mailer: git-send-email 2.37.1.595.g718a3a8f04-goog
-Subject: [PATCH bpf 2/2] bpf: Add WARN_ON for recursive prog_run invocation
-From:   YiFei Zhu <zhuyifei@google.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jinghao Jia <jinghao7@illinois.edu>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S237592AbiHPVRQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Aug 2022 17:17:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCCC58A7E7
+        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 14:16:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1660684613;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2iqj6YUSsuItIPg1WhM2vpcdPov5sWXfn7fAfkdN2WE=;
+        b=Wn9XUu50xNoPmZLjBbu066Xse0UHbe5amKgB3Z4IV5Ww2nkhgT0JFlgibS9a8uAg7wwGHL
+        YfuF5XMJOhFTAobW7J4upzZJdRqjMinKXWuVSKq9LY252uUDhDZb3nZ3/+fRgDn0bT4LCy
+        XgN6YsJOP0WqoXEQPfQCEdNIQUMl8SQ=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-111-60_09m4xMDqeYoZnVse8mQ-1; Tue, 16 Aug 2022 17:16:50 -0400
+X-MC-Unique: 60_09m4xMDqeYoZnVse8mQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A80E61C13945;
+        Tue, 16 Aug 2022 21:16:48 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.33.36.72])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B088518ECC;
+        Tue, 16 Aug 2022 21:16:46 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20220816103452.479281-1-yin31149@gmail.com>
+References: <20220816103452.479281-1-yin31149@gmail.com> <166064248071.3502205.10036394558814861778.stgit@warthog.procyon.org.uk>
+To:     Hawkins Jiawei <yin31149@gmail.com>
+Cc:     dhowells@redhat.com, "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <song@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jason Zhang <jdz@google.com>, Jann Horn <jannh@google.com>,
-        mvle@us.ibm.com, zohar@linux.ibm.com, tyxu.uiuc@gmail.com,
-        security@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org, bpf@vger.kernel.org
+Subject: Re: [PATCH] net: Fix suspicious RCU usage in bpf_sk_reuseport_detach()
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <804152.1660684606.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Tue, 16 Aug 2022 22:16:46 +0100
+Message-ID: <804153.1660684606@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.11.54.5
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Recursive invocation should not happen after commit 86f44fcec22c
-("bpf: Disallow bpf programs call prog_run command."), unlike what
-is suggested in the comment. The only way to I can see this
-condition trigger is if userspace fetches an fd of a kernel-loaded
-lskel and attempt to race the kernel to execute that lskel... which
-also shouldn't happen under normal circumstances.
+Hawkins Jiawei <yin31149@gmail.com> wrote:
 
-To make this "should never happen" explicit, clarify this in the
-comment and add a WARN_ON.
+> +__rcu_dereference_sk_user_data_with_flags_check(const struct sock *sk,
+> +						uintptr_t flags, bool condition)
 
-Fixes: 86f44fcec22c ("bpf: Disallow bpf programs call prog_run command.")
-Signed-off-by: YiFei Zhu <zhuyifei@google.com>
----
- kernel/bpf/syscall.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+That doesn't work.  RCU_LOCKDEP_WARN() relies on anything passing on a
+condition down to it to be a macro so that it can vanish the 'condition'
+argument without causing an undefined symbol for 'lockdep_is_held' if lock=
+dep
+is disabled:
 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 27760627370d..9cac9402c0bf 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -5119,8 +5119,8 @@ int kern_sys_bpf(int cmd, union bpf_attr *attr, unsigned int size)
- 
- 		run_ctx.bpf_cookie = 0;
- 		run_ctx.saved_run_ctx = NULL;
--		if (!__bpf_prog_enter_sleepable(prog, &run_ctx)) {
--			/* recursion detected */
-+		if (WARN_ON(!__bpf_prog_enter_sleepable(prog, &run_ctx))) {
-+			/* recursion detected, should never happen */
- 			bpf_prog_put(prog);
- 			return -EBUSY;
- 		}
--- 
-2.37.1.595.g718a3a8f04-goog
+x86_64-linux-gnu-ld: kernel/bpf/reuseport_array.o: in function `bpf_sk_reu=
+seport_detach':
+/data/fs/linux-fs/build3/../kernel/bpf/reuseport_array.c:28: undefined ref=
+erence to `lockdep_is_held'
+
+So either __rcu_dereference_sk_user_data_with_flags_check() has to be a ma=
+cro,
+or we need to go with something like the first version of my patch where I
+don't pass the condition through.  Do you have a preference?
+
+David
 
