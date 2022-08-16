@@ -2,53 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 227A9595F1E
-	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 17:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA54A595F36
+	for <lists+bpf@lfdr.de>; Tue, 16 Aug 2022 17:36:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235727AbiHPPd4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Aug 2022 11:33:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51374 "EHLO
+        id S235839AbiHPPgR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Aug 2022 11:36:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235713AbiHPPdl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Aug 2022 11:33:41 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 022075C953
-        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 08:33:24 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id y9-20020a17090322c900b0016f8fdcc3b1so6755958plg.6
-        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 08:33:24 -0700 (PDT)
+        with ESMTP id S235817AbiHPPgA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Aug 2022 11:36:00 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD257FE43
+        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 08:34:57 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id u2-20020a17090a2b8200b001f74f05c1a7so4266484pjd.2
+        for <bpf@vger.kernel.org>; Tue, 16 Aug 2022 08:34:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc;
-        bh=hWy/bky5ij4Fq019kN/Eoim7rgLKUQHE3Pxq9PEt+N4=;
-        b=dZLYGjBsJQEFyvLvwzJi71Lm4aVcp+v9jpcvAepnhj8Mw+nl4m5eOaJk+KmsxT0HEs
-         DtC3QJk33/pn7TT65fsc47N/3WN/cBj6hQUPCtDGzxCs4858QPwc4/p+e7qVyYmPhRwq
-         tm4mIkLudQ7NrUAjE0ocKQKgtMzW6pCqkJdvJwQhIEEw9mLoIhGT+tZQtbaHgZ8pY/gK
-         6UVlQ7kxNjVB7I4o91NUqsO1KNhFARD+dpOk15lsmF26aVAYz9dir4L/b7KsqokdhhPZ
-         xrnPvDQGaJjyLmUp8ymm/WoZfIKcCRko/J/cEixrTk3lOxlDipC9Nodz21HMwAH7guhI
-         J/jQ==
+        h=content-transfer-encoding:cc:to:from:subject:mime-version
+         :message-id:date:from:to:cc;
+        bh=L+xobS5y5Ec7VAq1FxaOkxSFabwHd5aQYcMyJajK4oo=;
+        b=Zq/zzA4FtSl6ULJysM43vn8cKKIlXu+inY1vRHHMg1a7HOQN56N0NBOpvKhjdPtGwK
+         URjBEUVePYFZuk/gmNfDxawiJk/yh8WqRe0t2/nxEdhUN4Vi3cYXoYKtHF4A/q2BjbpN
+         fxnFVwjQJrAiC5tYE2KtezVieyFf18wC5N4Pzwf9q/WdMz3XBTuKj6iPc/2RBH/xoY/7
+         lKPjZeF2+M9CCs3R6xnaIowgDCwP8A2/Ys37YbxTicfU+Azb+V97YYkE08VDqlu34ktn
+         11dfLZaVQ7ciOAwp4zkofofSokExrd4GS+ol6WDuvmsx8dWTOttbLqxsZdAH3jsN8Duy
+         /Ucw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc;
-        bh=hWy/bky5ij4Fq019kN/Eoim7rgLKUQHE3Pxq9PEt+N4=;
-        b=bYeGPQXU3O6Wj0/iecbFLxanyQndKxalxooX7NWSU2gDkBt6iy7OeifOlIdU6XGyfe
-         CbSMTty5/4GJx0nFd1xwsG9ZOaQquxXdkx8Ei47LjLX1PYiWEaCQCpCYbuWMhOAEm6ec
-         Xh0Cy59p0UyE8pxwWK+ZPqgUPjENnlUc69D30wh3FFqdL6zC46W9z85h89QzhSA2OLS0
-         FMx0QNNFJ/e4OL17EaK5mBPk6O+PKCX70CMKvMaAPda0CLRE/ehWYILSzar6ULWNYtoD
-         WsPKRr8VPbDr+03e+HHeiMDeFc4VVQZNP0Y/HVZgAfFebkLHhDXm1uujI2YrnNKjIbK8
-         FdgA==
-X-Gm-Message-State: ACgBeo3YcNr8iwb3jIE+yPAiwJN4bdabzZMOt874O/pyMdZm38A+Rtyw
-        +CWVujZRp3q/NI0mqdfmilmG7fpakU/upgYi1FAx7w==
-X-Google-Smtp-Source: AA6agR43H1WEzEHDPciCug0nTkf/X0Yq+Oh7uhDDklGKSMamxC7Tb9t/fgB6rbF1dQBaV6phM/wqQAHnPkOJX6M+/fBkMg==
+        h=content-transfer-encoding:cc:to:from:subject:mime-version
+         :message-id:date:x-gm-message-state:from:to:cc;
+        bh=L+xobS5y5Ec7VAq1FxaOkxSFabwHd5aQYcMyJajK4oo=;
+        b=GAe41vcQ+iRtYklaa3Je+ydpShNNXxXhmIQ1l2txWoqGgMTFDyun71bp4DDSFj7Ylr
+         CHZxKlnOESIjlxgv+NCiT5/+3t8EEYbE7x47IcbKQ498cU4/+MFkI3tdBFH7Lioeouf8
+         7aNXDrkHxTVb3UbM8ITOFDvn9ri/fNXFr7B3Aj9algt7ViLXGXmKDCRU93jDH1zDMZhT
+         VKMj08fMI0P+OGW1fzFT7ZfaMCh+KG7U23C0AWUJVyQ5UkgrXJ9j75Ik03eC4EK9RE/k
+         9hDybD2HrlBOP7dg75BQt52WZoAm3sdJdi63zZR9z1U/ko8FtMP9QzZ+JcHpf3vkJjGE
+         +Dmg==
+X-Gm-Message-State: ACgBeo1OGgeW8EXlJ4GQCxPw46EK+WrJqn4oaeQtD976Ovy8CNVvw1Zs
+        zlvIkzKDP0Ge4BClQQT1M18Wsi0Inmog3ErbX9W+ow==
+X-Google-Smtp-Source: AA6agR7PcAiX5mlJ0MbRBRpZYKtYWPIflsN2NzjzOR29+X1HAiUm9BblVn9n/I8ODS22EQxQT3PGpnKvdh/06rRPRzGSdw==
 X-Received: from sagarika.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5714])
- (user=sharmasagarika job=sendgmr) by 2002:a17:902:d50a:b0:16e:e1c1:dfa7 with
- SMTP id b10-20020a170902d50a00b0016ee1c1dfa7mr22504683plg.160.1660664004410;
- Tue, 16 Aug 2022 08:33:24 -0700 (PDT)
-Date:   Tue, 16 Aug 2022 15:33:19 +0000
-Message-Id: <20220816153320.1478209-1-sharmasagarika@google.com>
+ (user=sharmasagarika job=sendgmr) by 2002:a65:41ca:0:b0:41d:17df:1d0e with
+ SMTP id b10-20020a6541ca000000b0041d17df1d0emr18846473pgq.112.1660664096796;
+ Tue, 16 Aug 2022 08:34:56 -0700 (PDT)
+Date:   Tue, 16 Aug 2022 15:34:31 +0000
+Message-Id: <20220816153431.1479265-2-sharmasagarika@google.com>
 Mime-Version: 1.0
 X-Mailer: git-send-email 2.37.1.595.g718a3a8f04-goog
-Subject: [PATCH bpf-next 1/2] Benchmark test added: bench_bpf_htab_batch_ops
+Subject: [PATCH bpf-next 2/2] use prefetch function in bpf_map_lookup_batch()
 From:   Sagarika Sharma <sharmasagarika@google.com>
 To:     Brian Vazquez <brianvv@google.com>,
         Sagarika Sharma <sagarikashar@gmail.com>,
@@ -62,6 +63,7 @@ To:     Brian Vazquez <brianvv@google.com>,
 Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         bpf@vger.kernel.org, Sagarika Sharma <sharmasagarika@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
@@ -72,389 +74,118 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The benchmark test is a tool to measure the different methods
-of iterating through bpf hashmaps, specifically the function
-bpf_map_lookup_batch() and the combination of the two functions
-bpf_get_next_key()/bpf_map_lookup_elem(). The test will be
-extended to also measure bpf_iter. The shell script
-bench_bpf_htab_batch_ops.sh runs the benchmark test with a range
-of parameters (e.g. the capacity of the hashmap, the number of
-entries put in the map, and the setting of the n_prefetch module
-parameter)
+This patch introduces the use of a module parameter n_prefetch
+which enables prefetching within the bpf_map_lookup_batch function
+for a faster lookup. Benefits depend on the platform, relative
+density of the map, and the setting of the module parameter as
+described below.
+
+For multiprocessor machines, for a particular key in a bpf map,
+each cpu has a value associated with that key. This patch=E2=80=99s
+change is as follows: when copying each of these values to
+userspace in bpf_map_lookup_batch, the value for a cpu
+n_prefetch ahead is prefetched.
+
+MEASUREMENTS:
+The benchmark test added in this patch series was used to
+measure the effect of prefetching as well as determine the
+optimal setting of n_prefetch given the different parameters:
+the test was run on many different platforms (with varying
+number of cpus), with a range of settings of n_prefetch, and with
+saturated, dense, and sparse maps (num_entries/capacity_of_map).
+The benchmark test measures the average time for a single entry
+lookup (t =3D num_entries_looked_up/total_time) given the varied
+factors as mentioned above. The overhead of the
+bpf_map_lookup_batch syscall introduces some error.
+
+Here are the experimental results:
+
+amd machine with 256 cores (rome zen 2)
+Density of map	n_prefetch	single entry lookup time (ns/op)
+--------------------------------------------------------------------
+40k / 40k	0		16176.471
+		1		13095.238
+		5		7432.432
+		12		5188.679
+		20		9482.759
+
+10k / 40k	0		13253.012
+		5		7482.993
+		12		5164.319
+		20		9649.123
+
+2.5k / 40k	0		7394.958
+		5		7201.309
+		13		4721.030
+		20		8118.081
+
+For denser maps, the experiments suggest that as n_prefetch
+increases, there is a significant time benefit (~66% decrease)
+until a certain point after which the time benefit begins to
+decrease. For sparser maps, there is a less pronounced speedup
+from prefetching. Additionally, this experiment seems to suggest
+the optimal n_prefetch range on this particular machine is 12-13,
+but a setting of n_prefetch =3D 5 can still improve the single
+entry lookup time.
+
+intel-skylake (with 112 cores)
+Density of map	n_prefetch	single entry lookup time (ns/op)
+------------------------------------------------------------------
+40k / 40k	0		5729.167
+		1		5092.593
+		5		3395.062
+		20		6875.000
+
+10k / 40k	0		2029.520
+		5		2989.130
+		20		5820.106
+
+2.5k / 40k	0		1598.256
+		5		2935.290
+		20		4867.257
+
+For this particular machine, the experimental results suggest that
+there is only a significant benefit in prefetching with denser maps.
+Prefetching within bpf_map_lookup_batch can provide significant
+benefit depending on the use case. Across the many different
+platforms experiments were performed on, a setting of n_prefetch =3D 5,
+although not the optimal setting, significantly decreased the single
+entry lookup time for denser maps.
 
 Signed-off-by: Sagarika Sharma <sharmasagarika@google.com>
 ---
- tools/testing/selftests/bpf/Makefile          |   3 +-
- tools/testing/selftests/bpf/bench.c           |  26 +-
- .../bpf/benchs/bench_bpf_htab_batch_ops.c     | 237 ++++++++++++++++++
- .../benchs/run_bench_bpf_htab_batch_ops.sh    |  28 +++
- 4 files changed, 292 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/benchs/bench_bpf_htab_batch_ops.c
- create mode 100755 tools/testing/selftests/bpf/benchs/run_bench_bpf_htab_batch_ops.sh
+ kernel/bpf/hashtab.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 8d59ec7f4c2d..772d8339c400 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -589,7 +589,8 @@ $(OUTPUT)/bench: $(OUTPUT)/bench.o \
- 		 $(OUTPUT)/bench_strncmp.o \
- 		 $(OUTPUT)/bench_bpf_hashmap_full_update.o \
- 		 $(OUTPUT)/bench_local_storage.o \
--		 $(OUTPUT)/bench_local_storage_rcu_tasks_trace.o
-+		 $(OUTPUT)/bench_local_storage_rcu_tasks_trace.o \
-+		 $(OUTPUT)/bench_bpf_htab_batch_ops.o
- 	$(call msg,BINARY,,$@)
- 	$(Q)$(CC) $(CFLAGS) $(LDFLAGS) $(filter %.a %.o,$^) $(LDLIBS) -o $@
- 
-diff --git a/tools/testing/selftests/bpf/bench.c b/tools/testing/selftests/bpf/bench.c
-index c1f20a147462..55714e8071c8 100644
---- a/tools/testing/selftests/bpf/bench.c
-+++ b/tools/testing/selftests/bpf/bench.c
-@@ -12,6 +12,8 @@
- #include "bench.h"
- #include "testing_helpers.h"
- 
-+#define STK_SIZE (0xfffffff)
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index 8392f7f8a8ac..eb70c4bbe246 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -15,6 +15,9 @@
+ #include "bpf_lru_list.h"
+ #include "map_in_map.h"
+=20
++static uint n_prefetch;
++module_param(n_prefetch, uint, 0644);
 +
- struct env env = {
- 	.warmup_sec = 1,
- 	.duration_sec = 5,
-@@ -275,6 +277,7 @@ extern struct argp bench_bpf_loop_argp;
- extern struct argp bench_local_storage_argp;
- extern struct argp bench_local_storage_rcu_tasks_trace_argp;
- extern struct argp bench_strncmp_argp;
-+extern struct argp bench_bpf_htab_batch_ops_argp;
- 
- static const struct argp_child bench_parsers[] = {
- 	{ &bench_ringbufs_argp, 0, "Ring buffers benchmark", 0 },
-@@ -284,6 +287,7 @@ static const struct argp_child bench_parsers[] = {
- 	{ &bench_strncmp_argp, 0, "bpf_strncmp helper benchmark", 0 },
- 	{ &bench_local_storage_rcu_tasks_trace_argp, 0,
- 		"local_storage RCU Tasks Trace slowdown benchmark", 0 },
-+	{ &bench_bpf_htab_batch_ops_argp, 0, "bpf_htab_ops benchmark", 0},
- 	{},
- };
- 
-@@ -490,6 +494,8 @@ extern const struct bench bench_local_storage_cache_seq_get;
- extern const struct bench bench_local_storage_cache_interleaved_get;
- extern const struct bench bench_local_storage_cache_hashmap_control;
- extern const struct bench bench_local_storage_tasks_trace;
-+extern const struct bench bench_bpf_htab_batch_ops;
-+extern const struct bench bench_bpf_htab_element_ops;
- 
- static const struct bench *benchs[] = {
- 	&bench_count_global,
-@@ -529,6 +535,8 @@ static const struct bench *benchs[] = {
- 	&bench_local_storage_cache_interleaved_get,
- 	&bench_local_storage_cache_hashmap_control,
- 	&bench_local_storage_tasks_trace,
-+	&bench_bpf_htab_batch_ops,
-+	&bench_bpf_htab_element_ops,
- };
- 
- static void setup_benchmark()
-@@ -585,7 +593,23 @@ static void setup_benchmark()
- 		env.prod_cpus.next_cpu = env.cons_cpus.next_cpu;
- 
- 	for (i = 0; i < env.producer_cnt; i++) {
--		err = pthread_create(&state.producers[i], NULL,
-+		pthread_attr_t attr_producer;
+ #define HTAB_CREATE_FLAG_MASK						\
+ 	(BPF_F_NO_PREALLOC | BPF_F_NO_COMMON_LRU | BPF_F_NUMA_NODE |	\
+ 	 BPF_F_ACCESS_MASK | BPF_F_ZERO_SEED)
+@@ -1743,9 +1746,13 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *m=
+ap,
+ 		if (is_percpu) {
+ 			int off =3D 0, cpu;
+ 			void __percpu *pptr;
++			int num_cpus =3D num_possible_cpus();
+=20
+ 			pptr =3D htab_elem_get_ptr(l, map->key_size);
+ 			for_each_possible_cpu(cpu) {
++				if (n_prefetch > 0 && (cpu + n_prefetch) <=3D num_cpus)
++					prefetch(per_cpu_ptr(pptr, cpu + n_prefetch));
 +
-+		err = pthread_attr_init(&attr_producer);
-+		if (err) {
-+			fprintf(stderr, "failed to initialize pthread attr #%d: %d\n",
-+				i, -errno);
-+			exit(1);
-+		}
-+
-+		err = pthread_attr_setstacksize(&attr_producer, STK_SIZE);
-+		if (err) {
-+			fprintf(stderr, "failed to set pthread stacksize #%d: %d\n",
-+				i, -errno);
-+			exit(1);
-+		}
-+
-+		err = pthread_create(&state.producers[i], &attr_producer,
- 				     bench->producer_thread, (void *)(long)i);
- 		if (err) {
- 			fprintf(stderr, "failed to create producer thread #%d: %d\n",
-diff --git a/tools/testing/selftests/bpf/benchs/bench_bpf_htab_batch_ops.c b/tools/testing/selftests/bpf/benchs/bench_bpf_htab_batch_ops.c
-new file mode 100644
-index 000000000000..ea98c2e97bff
---- /dev/null
-+++ b/tools/testing/selftests/bpf/benchs/bench_bpf_htab_batch_ops.c
-@@ -0,0 +1,237 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <errno.h>
-+#include <bpf/bpf.h>
-+#include <bpf/libbpf.h>
-+#include <argp.h>
-+#include "bench.h"
-+#include <bpf_util.h>
-+
-+/* A hash table of the size DEFAULT_NUM_ENTRIES
-+ * makes evident the effect of optimizing
-+ * functions that iterate through the map
-+ */
-+#define DEFAULT_NUM_ENTRIES 40000
-+#define VALUE_SIZE 4
-+
-+int map_fd, method_flag, hits;
-+
-+static struct {
-+	__u32 capacity;
-+	__u32 num_entries;
-+} args = {
-+	.capacity = DEFAULT_NUM_ENTRIES,
-+	.num_entries = DEFAULT_NUM_ENTRIES,
-+};
-+
-+enum {
-+	ARG_CAPACITY = 8000,
-+	ARG_NUM_ENTRIES = 8001,
-+};
-+
-+static const struct argp_option opts[] = {
-+	{ "capacity", ARG_CAPACITY, "capacity", 0,
-+		"Set hashtable capacity"},
-+	{"num_entries", ARG_NUM_ENTRIES, "num_entries", 0,
-+		"Set number of entries in the hashtable"},
-+	{}
-+};
-+
-+static error_t parse_arg(int key, char *arg, struct argp_state *state)
-+{
-+	switch (key) {
-+	case ARG_CAPACITY:
-+		args.capacity = strtol(arg, NULL, 10);
-+		break;
-+	case ARG_NUM_ENTRIES:
-+		args.num_entries = strtol(arg, NULL, 10);
-+		break;
-+	default:
-+		return ARGP_ERR_UNKNOWN;
-+	}
-+
-+	return 0;
-+}
-+
-+const struct argp bench_bpf_htab_batch_ops_argp = {
-+	.options = opts,
-+	.parser = parse_arg,
-+};
-+
-+static void validate(void)
-+{
-+	if (args.num_entries > args.capacity) {
-+		fprintf(stderr, "num_entries must be less than hash table capacity");
-+		exit(1);
-+	}
-+
-+	if (env.producer_cnt != 1) {
-+		fprintf(stderr, "benchmark doesn't support multi-producer!\n");
-+		exit(1);
-+	}
-+
-+	if (env.consumer_cnt != 1) {
-+		fprintf(stderr, "benchmark doesn't support multi-consumer!\n");
-+		exit(1);
-+	}
-+}
-+
-+static inline void loop_bpf_map_lookup_batch(void)
-+{
-+	int num_cpus = bpf_num_possible_cpus();
-+	typedef struct { int v[VALUE_SIZE]; /* padding */ } __bpf_percpu_val_align value[num_cpus];
-+	int offset = 0, out_batch = 0, in_batch = 0;
-+	DECLARE_LIBBPF_OPTS(bpf_map_batch_opts, operts,
-+		.elem_flags = 0,
-+		.flags = 0,
-+	);
-+	value pcpu_values[args.num_entries];
-+	__u32 count = args.num_entries;
-+	double keys[args.num_entries];
-+	int *in_batch_ptr = NULL;
-+	int err;
-+
-+	while (true) {
-+		err = bpf_map_lookup_batch(map_fd, in_batch_ptr, &out_batch,
-+			keys + offset, pcpu_values + offset, &count, &operts);
-+
-+		if (err && errno != ENOENT) {
-+			fprintf(stderr, "Failed to lookup entries using bpf_map_lookup_batch\n");
-+			exit(1);
-+		}
-+
-+		hits += count;
-+
-+		if (count == args.num_entries) {
-+			count = args.num_entries;
-+			offset = out_batch = 0;
-+			in_batch_ptr = NULL;
-+		} else {
-+			offset = count;
-+			count = args.num_entries - count;
-+			in_batch = out_batch;
-+			in_batch_ptr = &in_batch;
-+		}
-+	}
-+
-+}
-+
-+static inline void loop_bpf_element_lookup(void)
-+{
-+	int num_cpus = bpf_num_possible_cpus();
-+	typedef struct { int v[VALUE_SIZE]; /* padding */ } __bpf_percpu_val_align value[num_cpus];
-+	double prev_key = -1, key;
-+	value value_of_key;
-+	int err;
-+
-+	while (true) {
-+
-+		while (bpf_map_get_next_key(map_fd, &prev_key, &key) == 0) {
-+			err = bpf_map_lookup_elem(map_fd, &key, &value_of_key);
-+			if (err) {
-+				fprintf(stderr, "failed to lookup element using bpf_map_lookup_elem\n");
-+				exit(1);
-+			}
-+			hits += 1;
-+			prev_key = key;
-+		}
-+		prev_key = -1;
-+
-+	}
-+
-+}
-+
-+static void *producer(void *input)
-+{
-+	switch (method_flag) {
-+	case 0:
-+		loop_bpf_map_lookup_batch();
-+		break;
-+	case 1:
-+		loop_bpf_element_lookup();
-+		break;
-+	}
-+	return NULL;
-+}
-+
-+static void *consumer(void *input)
-+{
-+	return NULL;
-+}
-+
-+static void measure(struct bench_res *res)
-+{
-+	res->hits = hits;
-+	hits = 0;
-+}
-+
-+
-+static void setup(void)
-+{
-+
-+	typedef struct { int v[VALUE_SIZE]; /* padding */ } __bpf_percpu_val_align value[bpf_num_possible_cpus()];
-+	DECLARE_LIBBPF_OPTS(bpf_map_batch_opts, operts,
-+		.elem_flags = 0,
-+		.flags = 0,
-+	);
-+	value pcpu_values[args.num_entries];
-+	__u32 count = args.num_entries;
-+	double keys[args.num_entries];
-+	int err;
-+
-+	map_fd = bpf_map_create(BPF_MAP_TYPE_PERCPU_HASH, "hash_map", sizeof(double),
-+		(VALUE_SIZE*sizeof(int)), args.capacity, NULL);
-+	if (map_fd < 0) {
-+		fprintf(stderr, "error creating map using bpf_map_create\n");
-+		exit(1);
-+	}
-+
-+	for (double i = 0; i < args.num_entries; i++) {
-+		keys[(int)i] = i + 1;
-+		for (int j = 0; j < bpf_num_possible_cpus(); j++) {
-+			for (int k = 0; k < VALUE_SIZE; k++)
-+				bpf_percpu(pcpu_values[(int)i], j)[k] = (int)i + j + k;
-+		}
-+	}
-+
-+	err = bpf_map_update_batch(map_fd, keys, pcpu_values, &count, &operts);
-+	if (err < 0) {
-+		fprintf(stderr, "Failed to populate map using bpf_map_update_batch\n");
-+		exit(1);
-+	}
-+
-+}
-+
-+static void bench_bpf_map_lookup_batch_setup(void)
-+{
-+	setup();
-+	method_flag = 0;
-+}
-+
-+static void bench_element_lookup_setup(void)
-+{
-+	setup();
-+	method_flag = 1;
-+}
-+
-+const struct bench bench_bpf_htab_batch_ops = {
-+	.name = "htab-batch-ops",
-+	.validate = validate,
-+	.setup = bench_bpf_map_lookup_batch_setup,
-+	.producer_thread = producer,
-+	.consumer_thread = consumer,
-+	.measure = measure,
-+	.report_progress = ops_report_progress,
-+	.report_final = ops_report_final,
-+};
-+
-+const struct bench bench_bpf_htab_element_ops = {
-+	.name = "htab-element-ops",
-+	.validate = validate,
-+	.setup = bench_element_lookup_setup,
-+	.producer_thread = producer,
-+	.consumer_thread = consumer,
-+	.measure = measure,
-+	.report_progress = ops_report_progress,
-+	.report_final = ops_report_final,
-+};
-diff --git a/tools/testing/selftests/bpf/benchs/run_bench_bpf_htab_batch_ops.sh b/tools/testing/selftests/bpf/benchs/run_bench_bpf_htab_batch_ops.sh
-new file mode 100755
-index 000000000000..624f403c1865
---- /dev/null
-+++ b/tools/testing/selftests/bpf/benchs/run_bench_bpf_htab_batch_ops.sh
-@@ -0,0 +1,28 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+
-+source ./benchs/run_common.sh
-+
-+set -eufo pipefail
-+
-+map_capacity=40000
-+header "bpf_get_next_key & bpf_map_lookup_elem"
-+for t in 40000 10000 2500; do
-+subtitle "map capacity: $map_capacity, num_entries: $t"
-+        summarize_ops "bpf_element_ops: " \
-+                "$($RUN_BENCH -p 1 --num_entries $t htab-element-ops)"
-+        printf "\n"
-+done
-+
-+header "bpf_map_lookup_batch with prefetch"
-+for t in 40000 10000 2500; do
-+for n in {0..20}; do
-+#this range of n_prefetch shows the speedup and subsequent
-+#deterioration as n_prefetch grows larger
-+subtitle "map capacity: $map_capacity, num_entries: $t, n_prefetch: $n"
-+        echo $n > /sys/module/hashtab/parameters/n_prefetch
-+        summarize_ops "bpf_batch_ops: " \
-+                "$($RUN_BENCH -p 1 --num_entries $t htab-batch-ops)"
-+        printf "\n"
-+done
-+done
--- 
+ 				bpf_long_memcpy(dst_val + off,
+ 						per_cpu_ptr(pptr, cpu), size);
+ 				off +=3D size;
+--=20
 2.37.1.595.g718a3a8f04-goog
 
