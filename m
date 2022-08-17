@@ -2,135 +2,289 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDAD6597951
-	for <lists+bpf@lfdr.de>; Wed, 17 Aug 2022 23:55:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD12597962
+	for <lists+bpf@lfdr.de>; Wed, 17 Aug 2022 23:59:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241786AbiHQVvS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Aug 2022 17:51:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54850 "EHLO
+        id S242252AbiHQV5J convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 17 Aug 2022 17:57:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238984AbiHQVvN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Aug 2022 17:51:13 -0400
-Received: from mail-oa1-x2d.google.com (mail-oa1-x2d.google.com [IPv6:2001:4860:4864:20::2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2529731EDF
-        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 14:51:11 -0700 (PDT)
-Received: by mail-oa1-x2d.google.com with SMTP id 586e51a60fabf-11c59785966so2982589fac.11
-        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 14:51:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=/CTcFk+7lIOz0f66/sW+yd0rIladiacxraDVQHveddU=;
-        b=Z37nNyL7fO7ofqzBqhsC8MAbzHXk1QozG1ARlNgf2r4n9sGA4oerk97YgCUalxM2mT
-         fhO9INMD4HzzQ1aPLW8N0XehhCLxHPUPhhB2ZRsd51SQdMmoonliVtb6BNO3XaXqioUP
-         yEQ/n8yVyhV7BjCADUL3h32ZxYj9GekLs3//TVqThFKgw9sZdbJf86XYIr1DAlZ8bmwG
-         xzmKfuAuIDGZVS8TsOPgiMbuIvDri9visdfG8qtZqt2pulyENYyUXIOotM2uhDYmrwUt
-         GN+YjefZ6mInoiQ6Eclx15Ltm0cQmwqruPbM5Tyh00SFGnU2OPWk4LHlvYLnPX/vMlx7
-         IPbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=/CTcFk+7lIOz0f66/sW+yd0rIladiacxraDVQHveddU=;
-        b=MxOgn678wSfORGBmav/agUFu92GoCBvJIjuUJWNZHpNBnq9KjMs+y9hVWI3/YNM66D
-         QG7lDC5idxo6P6mP7daD856jG+rzegVqHXXCi6pN3nlVYHJw34ONVCcDys343ItkBUxE
-         YvlTq0XmDsXequtJchRZegEpDsDHXM1B9PTyQEe7kyrM70GSvh+L+d09VtfpyhlgNUyp
-         R7b8LVYqSl/UXOsZgQyyzBsco6IJ1ncQaEvMxBvV/ij4RnHvLBDY8ZjzQi79MITy3iga
-         UNhstrc2KypGxfIk9h8Xod6whmGmtoC9oDzaCFncmQSTKiueN1bgycA7ja8b35GAlGNo
-         4Gag==
-X-Gm-Message-State: ACgBeo1NiUt0CB31lF2uwNsnsAARnI5+Dw76Jp1MuHWeXg8nF1xNHKu4
-        pH4+/0QceFM9JBTYP3LQqvgc8EMVFbgRa4TyTXiKX9q10CGG25U=
-X-Google-Smtp-Source: AA6agR50Tcanb0vgcmzi8OeuXVsdfxGnJyO8cUD9VxdPHwqqDOjJ8rNBXuNdMQ+4DIsaFAJLlr1YMLOTZC7fMkQtyMY=
-X-Received: by 2002:a05:6870:9588:b0:101:c003:bfe6 with SMTP id
- k8-20020a056870958800b00101c003bfe6mr2769479oao.41.1660773070428; Wed, 17 Aug
- 2022 14:51:10 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220815162028.926858-1-fred@cloudflare.com> <CAHC9VhTuxxRfJg=Ax5z87Jz6tq1oVRcppB444dHM2gP-FZrkTQ@mail.gmail.com>
- <8735dux60p.fsf@email.froward.int.ebiederm.org> <CAHC9VhSHJNLS-KJ-Rz1R12PQbqACSksLYLbymF78d5hMkSGc-g@mail.gmail.com>
- <871qte8wy3.fsf@email.froward.int.ebiederm.org> <CAHC9VhSU_sqMQwdoh0nAFdURqs_cVFbva8=otjcZUo8s+xyC9A@mail.gmail.com>
- <8735du7fnp.fsf@email.froward.int.ebiederm.org> <CAHC9VhQuRNxzgVeNhDy=p5+RHz5+bTH6zFdU=UvvEhyH1e962A@mail.gmail.com>
- <87tu6a4l83.fsf@email.froward.int.ebiederm.org>
-In-Reply-To: <87tu6a4l83.fsf@email.froward.int.ebiederm.org>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 17 Aug 2022 17:50:59 -0400
-Message-ID: <CAHC9VhQnPAsmjmKo-e84XDJ1wmaOFkTKPjjztsOa9Yrq+AeAQA@mail.gmail.com>
-Subject: Re: [PATCH v5 0/4] Introduce security_create_user_ns()
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Frederick Lawler <fred@cloudflare.com>, kpsingh@kernel.org,
-        revest@chromium.org, jackmanb@chromium.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        jmorris@namei.org, serge@hallyn.com,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        shuah@kernel.org, brauner@kernel.org, casey@schaufler-ca.com,
-        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        kernel-team@cloudflare.com, cgzones@googlemail.com,
-        karl@bigbadwolfsecurity.com, tixxdz@gmail.com
+        with ESMTP id S238344AbiHQV5J (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Aug 2022 17:57:09 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF9ECA9241
+        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 14:57:07 -0700 (PDT)
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.17.1.5/8.17.1.5) with ESMTP id 27HHrrio016926
+        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 14:57:07 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net (PPS) with ESMTPS id 3j0nvjph83-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 14:57:06 -0700
+Received: from twshared18213.14.prn3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Wed, 17 Aug 2022 14:57:05 -0700
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id E17D91DC1B0A3; Wed, 17 Aug 2022 14:56:56 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <davem@davemloft.net>
+CC:     <kuba@kernel.org>, <pabeni@redhat.com>, <edumazet@google.com>,
+        <daniel@iogearbox.net>, <ast@kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: pull-request: bpf-next 2022-08-17
+Date:   Wed, 17 Aug 2022 14:56:56 -0700
+Message-ID: <20220817215656.1180215-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-FB-Internal: Safe
+X-Proofpoint-GUID: JMINZHxqY8aSJd0KINBNEkEte4S3OUWk
+X-Proofpoint-ORIG-GUID: JMINZHxqY8aSJd0KINBNEkEte4S3OUWk
+Content-Transfer-Encoding: 8BIT
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-08-17_15,2022-08-16_02,2022-06-22_01
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 17, 2022 at 5:24 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
-> I object to adding the new system configuration knob.
->
-> Especially when I don't see people explaining why such a knob is a good
-> idea.  What is userspace going to do with this new feature that makes it
-> worth maintaining in the kernel?
+Hi David, hi Jakub, hi Paolo, hi Eric,
 
-From https://lore.kernel.org/all/CAEiveUdPhEPAk7Y0ZXjPsD=Vb5hn453CHzS9aG-tkyRa8bf_eg@mail.gmail.com/
+The following pull-request contains BPF updates for your *net-next* tree.
 
- "We have valid use cases not specifically related to the
-  attack surface, but go into the middle from bpf observability
-  to enforcement. As we want to track namespace creation, changes,
-  nesting and per task creds context depending on the nature of
-  the workload."
- -Djalal Harouni
+We've added 45 non-merge commits during the last 14 day(s) which contain
+a total of 61 files changed, 986 insertions(+), 372 deletions(-).
 
-From https://lore.kernel.org/linux-security-module/CALrw=nGT0kcHh4wyBwUF-Q8+v8DgnyEJM55vfmABwfU67EQn=g@mail.gmail.com/
+The main changes are:
 
- "[W]e do want to embrace user namespaces in our code and some of
-  our workloads already depend on it. Hence we didn't agree to
-  Debian's approach of just having a global sysctl. But there is
-  "our code" and there is "third party" code, which might not even
-  be open source due to various reasons. And while the path exists
-  for that code to do something bad - we want to block it."
- -Ignat Korchagin
+1) New bpf_ktime_get_tai_ns() BPF helper to access CLOCK_TAI, from Kurt
+   Kanzenbach and Jesper Dangaard Brouer.
 
-From https://lore.kernel.org/linux-security-module/CAHC9VhSKmqn5wxF3BZ67Z+-CV7sZzdnO+JODq48rZJ4WAe8ULA@mail.gmail.com/
+2) Few clean ups and improvements for libbpf 1.0, from Andrii Nakryiko.
 
- "I've heard you talk about bugs being the only reason why people
-  would want to ever block user namespaces, but I think we've all
-  seen use cases now where it goes beyond that.  However, even if
-  it didn't, the need to build high confidence/assurance systems
-  where big chunks of functionality can be disabled based on a
-  security policy is a very real use case, and this patchset would
-  help enable that."
- -Paul Moore (with apologies for self-quoting)
+3) Expose crash_kexec() as kfunc for BPF programs, from Artem Savkov.
 
-From https://lore.kernel.org/linux-security-module/CAHC9VhRSCXCM51xpOT95G_WVi=UQ44gNV=uvvG23p8wn16uYSA@mail.gmail.com/
+4) Add ability to define sleepable-only kfuncs, from Benjamin Tissoires.
 
- "One of the selling points of the BPF LSM is that it allows for
-  various different ways of reporting and logging beyond audit.
-  However, even if it was limited to just audit I believe that
-  provides some useful justification as auditing fork()/clone()
-  isn't quite the same and could be difficult to do at scale in
-  some configurations."
- -Paul Moore (my apologies again)
+5) Teach libbpf's bpf_prog_load() and bpf_map_create() to gracefully handle
+   unsupported names on old kernels, from Hangbin Liu.
 
-From https://lore.kernel.org/linux-security-module/20220722082159.jgvw7jgds3qwfyqk@wittgenstein/
+6) Allow opting out from auto-attaching BPF programs by libbpf's BPF skeleton,
+   from Hao Luo.
 
- "Nice and straightforward."
- -Christian Brauner
+7) Relax libbpf's requirement for shared libs to be marked executable, from
+   Henqgi Chen.
 
--- 
-paul-moore.com
+8) Improve bpf_iter internals handling of error returns, from Hao Luo.
+
+9) Few accommodations in libbpf to support GCC-BPF quirks, from James Hilliard.
+
+10) Fix BPF verifier logic around tracking dynptr ref_obj_id, from Joanne Koong.
+
+11) bpftool improvements to handle full BPF program names better, from Manu
+    Bretelle.
+
+12) bpftool fixes around libcap use, from Quentin Monnet.
+
+13) BPF map internals clean ups and improvements around memory allocations,
+    from Yafang Shao.
+
+14) Allow to use cgroup_get_from_file() on cgroupv1, allowing BPF cgroup
+    iterator to work on cgroupv1, from Yosry Ahmed.
+
+15) BPF verifier internal clean ups, from Dave Marchevsky and Joanne Koong.
+
+16) Various fixes and clean ups for selftests/bpf and vmtest.sh, from Daniel
+    Xu, Artem Savkov, Joanne Koong, Andrii Nakryiko, Shibin Koikkara Reeny.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Daniel Müller, David Vernet, Goro Fuji, Hao Luo, Jiri Olsa, Joanne 
+Koong, Kumar Kartikeya Dwivedi, Maciej Fijalkowski, Martin KaFai Lau, 
+Quentin Monnet, Rumen Telbizov, Tejun Heo, Yonghong Song
+
+----------------------------------------------------------------
+
+The following changes since commit f86d1fbbe7858884d6754534a0afbb74fc30bc26:
+
+  Merge tag 'net-next-6.0' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next (2022-08-03 16:29:08 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git 
+
+for you to fetch changes up to df78da27260c915039b348b164bbc53fa372ba70:
+
+  selftests/bpf: Few fixes for selftests/bpf built in release mode (2022-08-17 22:43:58 +0200)
+
+----------------------------------------------------------------
+Alexei Starovoitov (2):
+      Merge branch 'Add BPF-helper for accessing CLOCK_TAI'
+      Merge branch 'destructive bpf_kfuncs'
+
+Andrii Nakryiko (6):
+      libbpf: Reject legacy 'maps' ELF section
+      libbpf: preserve errno across pr_warn/pr_info/pr_debug
+      libbpf: Fix potential NULL dereference when parsing ELF
+      libbpf: Streamline bpf_attr and perf_event_attr initialization
+      libbpf: Clean up deprecated and legacy aliases
+      selftests/bpf: Few fixes for selftests/bpf built in release mode
+
+Artem Savkov (4):
+      bpf: add destructive kfunc flag
+      bpf: export crash_kexec() as destructive kfunc
+      selftests/bpf: add destructive kfunc test
+      selftests/bpf: Fix attach point for non-x86 arches in test_progs/lsm
+
+Benjamin Tissoires (1):
+      btf: Add a new kfunc flag which allows to mark a function to be sleepable
+
+Daniel Xu (5):
+      selftests/bpf: Fix vmtest.sh -h to not require root
+      selftests/bpf: Fix vmtest.sh getopts optstring
+      selftests/bpf: Add existing connection bpf_*_ct_lookup() test
+      selftests/bpf: Add connmark read test
+      selftests/bpf: Update CI kconfig
+
+Dave Marchevsky (2):
+      bpf: Improve docstring for BPF_F_USER_BUILD_ID flag
+      bpf: Cleanup check_refcount_ok
+
+Florian Fainelli (1):
+      libbpf: Initialize err in probe_map_create
+
+Hangbin Liu (2):
+      libbpf: Add names for auxiliary maps
+      libbpf: Making bpf_prog_load() ignore name if kernel doesn't support
+
+Hao Luo (3):
+      bpf, iter: Fix the condition on p when calling stop.
+      libbpf: Allows disabling auto attach
+      selftests/bpf: Tests libbpf autoattach APIs
+
+Hengqi Chen (1):
+      libbpf: Do not require executable permission for shared libraries
+
+James Hilliard (2):
+      libbpf: Skip empty sections in bpf_object__init_global_data_maps
+      libbpf: Ensure functions with always_inline attribute are inline
+
+Jesper Dangaard Brouer (1):
+      bpf: Add BPF-helper for accessing CLOCK_TAI
+
+Joanne Koong (4):
+      selftests/bpf: Clean up sys_nanosleep uses
+      bpf: Verifier cleanups
+      bpf: Fix ref_obj_id for dynptr data slices in verifier
+      selftests/bpf: add extra test for using dynptr data slice after release
+
+Kumar Kartikeya Dwivedi (1):
+      net: netfilter: Remove ifdefs for code shared by BPF and ctnetlink
+
+Kurt Kanzenbach (1):
+      selftests/bpf: Add BPF-helper test for CLOCK_TAI access
+
+Manu Bretelle (1):
+      bpftool: Remove BPF_OBJ_NAME_LEN restriction when looking up bpf program by name
+
+Quentin Monnet (3):
+      bpftool: Fix a typo in a comment
+      bpf: Clear up confusion in bpf_skb_adjust_room()'s documentation
+      bpftool: Clear errno after libcap's checks
+
+Shibin Koikkara Reeny (1):
+      selftests/xsk: Update poll test cases
+
+Yafang Shao (4):
+      bpf: Remove unneeded memset in queue_stack_map creation
+      bpf: Use bpf_map_area_free instread of kvfree
+      bpf: Make __GFP_NOWARN consistent in bpf map creation
+      bpf: Use bpf_map_area_alloc consistently on bpf map creation
+
+Yonghong Song (1):
+      bpf: Always return corresponding btf_type in __get_type_size()
+
+Yosry Ahmed (1):
+      cgroup: enable cgroup_get_from_file() on cgroup1
+
+ Documentation/bpf/kfuncs.rst                       |  15 ++
+ include/linux/bpf.h                                |   1 +
+ include/linux/btf.h                                |   2 +
+ include/net/netfilter/nf_conntrack_core.h          |   6 -
+ include/uapi/linux/bpf.h                           |  33 +++-
+ kernel/bpf/bpf_iter.c                              |   5 +
+ kernel/bpf/bpf_local_storage.c                     |   6 +-
+ kernel/bpf/btf.c                                   |  18 +-
+ kernel/bpf/core.c                                  |   1 +
+ kernel/bpf/cpumap.c                                |   6 +-
+ kernel/bpf/devmap.c                                |   6 +-
+ kernel/bpf/hashtab.c                               |   6 +-
+ kernel/bpf/helpers.c                               |  32 ++++
+ kernel/bpf/local_storage.c                         |   5 +-
+ kernel/bpf/lpm_trie.c                              |   4 +-
+ kernel/bpf/offload.c                               |   6 +-
+ kernel/bpf/queue_stack_maps.c                      |   2 -
+ kernel/bpf/ringbuf.c                               |  10 +-
+ kernel/bpf/verifier.c                              | 159 +++++++++---------
+ kernel/cgroup/cgroup.c                             |   5 -
+ net/bpf/test_run.c                                 |   5 +
+ net/core/sock_map.c                                |  12 +-
+ net/netfilter/nf_conntrack_core.c                  |   6 -
+ tools/bpf/bpftool/common.c                         |  15 +-
+ tools/bpf/bpftool/feature.c                        |   2 +-
+ tools/bpf/bpftool/main.c                           |  10 ++
+ tools/include/uapi/linux/bpf.h                     |  33 +++-
+ tools/lib/bpf/bpf.c                                | 186 ++++++++++++---------
+ tools/lib/bpf/bpf_tracing.h                        |  14 +-
+ tools/lib/bpf/btf.c                                |   2 -
+ tools/lib/bpf/btf.h                                |   1 -
+ tools/lib/bpf/libbpf.c                             | 104 ++++++++----
+ tools/lib/bpf/libbpf.h                             |   2 +
+ tools/lib/bpf/libbpf.map                           |   2 +
+ tools/lib/bpf/libbpf_internal.h                    |   3 +
+ tools/lib/bpf/libbpf_legacy.h                      |   2 +
+ tools/lib/bpf/libbpf_probes.c                      |   2 +-
+ tools/lib/bpf/netlink.c                            |   3 +-
+ tools/lib/bpf/skel_internal.h                      |  10 +-
+ tools/lib/bpf/usdt.bpf.h                           |   4 +-
+ tools/testing/selftests/bpf/DENYLIST.s390x         |   2 +-
+ tools/testing/selftests/bpf/config                 |   2 +
+ .../selftests/bpf/prog_tests/attach_probe.c        |   6 +-
+ .../testing/selftests/bpf/prog_tests/autoattach.c  |  30 ++++
+ .../testing/selftests/bpf/prog_tests/bpf_cookie.c  |   2 +-
+ tools/testing/selftests/bpf/prog_tests/bpf_nf.c    |  60 +++++++
+ tools/testing/selftests/bpf/prog_tests/dynptr.c    |   3 +-
+ .../testing/selftests/bpf/prog_tests/kfunc_call.c  |  36 ++++
+ .../selftests/bpf/prog_tests/task_pt_regs.c        |   2 +-
+ tools/testing/selftests/bpf/prog_tests/time_tai.c  |  74 ++++++++
+ tools/testing/selftests/bpf/progs/dynptr_fail.c    |  94 +++++++----
+ .../selftests/bpf/progs/kfunc_call_destructive.c   |  14 ++
+ tools/testing/selftests/bpf/progs/lsm.c            |   3 +-
+ .../testing/selftests/bpf/progs/test_autoattach.c  |  23 +++
+ .../testing/selftests/bpf/progs/test_bpf_cookie.c  |   4 +-
+ tools/testing/selftests/bpf/progs/test_bpf_nf.c    |  21 +++
+ .../selftests/bpf/progs/test_helper_restricted.c   |   4 +-
+ tools/testing/selftests/bpf/progs/test_time_tai.c  |  24 +++
+ tools/testing/selftests/bpf/vmtest.sh              |  34 ++--
+ tools/testing/selftests/bpf/xskxceiver.c           | 166 +++++++++++++-----
+ tools/testing/selftests/bpf/xskxceiver.h           |   8 +-
+ 61 files changed, 986 insertions(+), 372 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/autoattach.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/time_tai.c
+ create mode 100644 tools/testing/selftests/bpf/progs/kfunc_call_destructive.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_autoattach.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_time_tai.c
