@@ -2,59 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B3A6597897
-	for <lists+bpf@lfdr.de>; Wed, 17 Aug 2022 23:07:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5C835978B1
+	for <lists+bpf@lfdr.de>; Wed, 17 Aug 2022 23:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242256AbiHQVE4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Aug 2022 17:04:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60012 "EHLO
+        id S242287AbiHQVE7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Aug 2022 17:04:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234082AbiHQVEy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Aug 2022 17:04:54 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B719DAB4E5
-        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 14:04:52 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id g18so4599211pju.0
-        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 14:04:52 -0700 (PDT)
+        with ESMTP id S234082AbiHQVE6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Aug 2022 17:04:58 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E295AB422
+        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 14:04:56 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id s36-20020a17090a69a700b001faad0a7a34so2925434pjj.4
+        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 14:04:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc;
-        bh=CqItYD5FIMTqL735q4RzdfGMBe2ezI24gvr9zo137dQ=;
-        b=Ix9FtXEe9O4LvS7HxcGkD5ryZ2d6IEyvzm7T6nS9/vzVIg/95jivgmzzrBZiPu66sM
-         soKCJQl5rIWYyIaq5MpE/lKVfQag3/Y2ba6VUNViE9RQeWAsXw2dsU5h7G4BxoJuG9aw
-         WyIKdjqeevpmNB9AJXLlJj1w9NS9STwKDKv51GCEOPvPeYruzfEdqpxq0RN50WIywKuN
-         kzdXCFmZO9coSK1kES9iFKyi1J4LO+P/jt3ywKeWfigT+wGdI227haKBDCFaTV4aYe43
-         JHs/GxZEzz/veMVyJiZTWepRCTYKoyURcXfDXSslxoxoF7uksYU+wvJC8vrqkX5S6mcf
-         wzhg==
+        bh=eC2rtkVbVwNuBSQ3V1/X4MqvRMlFh39VvvUQCY2nUqM=;
+        b=ZODVqnfokgzR6xAOLe1TR5kgjT+E1Py99cY5RCQvlvoxhbEJsXhjwpvdDEW7mEhEMi
+         EQel2tKcUTK+YTD80kM9f2qh3socQ5OOtAQPa8YG55jVh1J4ITLcjY/hJY/LFye8V00S
+         QAqlvB7HR5ZWoM17s5K1pZGKJzsgTbD+dbKJt7WVCuW4yMiq390J/0ZiGxPpJ+b+4ulr
+         4T8tvQ4ukZrlU4ypzs98d2gXeQB13zXMW/vgCPWkwEjRuoXKvg4D7O2xBQkYrj/VVDxP
+         yXHmc5q5YaPLtpzugqED2ETClH9M5SWrHUaCOtlWKEKTNM0GrEmQyCfLZa4CW+zngrEq
+         XO7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
-        bh=CqItYD5FIMTqL735q4RzdfGMBe2ezI24gvr9zo137dQ=;
-        b=H9qWpliPlyFBuDvSDPD7B91V/Y/yHJX8Vvy+o0NbfdDtgyabtxU1OUafLozWLwvNq7
-         S3dl/zFvKr9W9GyhvW4vBgqeTVWtJVbNvlVXBXiDX1zzkeNPz7qQ7KMke2MEuhc3cvYl
-         FKgbMXu0hcsGlkVDW4hETWpjdrKq+M+crHgR5J5ii26nHIWuBqmzNw8KpqecjaC1F+IE
-         /6gGxtUkdcCpZ07xGLhUxNjpuNxo31Sa+SIcmgmRUYe+8p543L0Rbo+KvBaqLxNUAXzu
-         KxokEhANm/wUbjaU+jwzNTesMzY7/lUioJxalvJMHDFsGZzzveVe1Ah8kJiwUFOQHQPm
-         csUw==
-X-Gm-Message-State: ACgBeo0cyJWpaGw3gl13RqdpYds5wEtglmL/Ba5QzQgwwbE2unnh2rbs
-        yhZMTkPtLj+UGGh4jo6DomE=
-X-Google-Smtp-Source: AA6agR4qqQ/vAvMyyxhIFskV/Nf8U14xtKT5zSR0M/4ctfttbF7UcUwMENRPo8U4t7RHZZCr57WBsw==
-X-Received: by 2002:a17:90a:a08:b0:1fa:b43d:68cf with SMTP id o8-20020a17090a0a0800b001fab43d68cfmr4873035pjo.41.1660770292085;
-        Wed, 17 Aug 2022 14:04:52 -0700 (PDT)
+        bh=eC2rtkVbVwNuBSQ3V1/X4MqvRMlFh39VvvUQCY2nUqM=;
+        b=V9GpUns5yOJmO0s5VLlbd3hlnZoGgvxmHGq1fc1ytdbSmXyPfKE5HcXZd14342/kFS
+         DegS6eTlnfNPP+ZtMbpFF3IMv32nX6CiSnT0HPMPr94/3okgMIe1lPkHKG9tUfK+FPPe
+         qcHa9FpNXzAvdMDNt5jCwdEKPXBliURQ7w2+hvuSWLvMXMYn1wca1sB+hQcxBzpu5cfo
+         YE5qet2a39XOJwhjCayR+MDlrCgT4w7kV/X90aIdh8vLtfVYCQbYhZGAAZOKpYaR45SB
+         q8G5CP3XYnLgoh2MopXq5s1UihPilHbQubjPWqE5Wboe91PO5cGOR/9E67CTZt5XM8/X
+         dTXg==
+X-Gm-Message-State: ACgBeo257a8/20/0Q4746UDfBHIjnSIa8Y0JGe/1uRrTc02ETil58MJg
+        GizX3yyfv8Ef0beXNWMJAE4=
+X-Google-Smtp-Source: AA6agR6igdPjlVXHt861XtWddd3bEdvSscIUU3Taah7nMW3P5IM4zXUDgmqGFd5YcSA2Iaf7izwODA==
+X-Received: by 2002:a17:90b:350d:b0:1f4:f6a5:a281 with SMTP id ls13-20020a17090b350d00b001f4f6a5a281mr5386216pjb.99.1660770295857;
+        Wed, 17 Aug 2022 14:04:55 -0700 (PDT)
 Received: from localhost.localdomain ([2620:10d:c090:500::1:ccd6])
-        by smtp.gmail.com with ESMTPSA id x7-20020a628607000000b0053554e0e950sm149572pfd.147.2022.08.17.14.04.50
+        by smtp.gmail.com with ESMTPSA id i16-20020a056a00005000b0052d82ce65a9sm11309230pfk.143.2022.08.17.14.04.54
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Wed, 17 Aug 2022 14:04:51 -0700 (PDT)
+        Wed, 17 Aug 2022 14:04:55 -0700 (PDT)
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     davem@davemloft.net
 Cc:     daniel@iogearbox.net, andrii@kernel.org, tj@kernel.org,
         memxor@gmail.com, delyank@fb.com, linux-mm@kvack.org,
         bpf@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 bpf-next 08/12] bpf: Adjust low/high watermarks in bpf_mem_cache
-Date:   Wed, 17 Aug 2022 14:04:15 -0700
-Message-Id: <20220817210419.95560-9-alexei.starovoitov@gmail.com>
+Subject: [PATCH v2 bpf-next 09/12] bpf: Batch call_rcu callbacks instead of SLAB_TYPESAFE_BY_RCU.
+Date:   Wed, 17 Aug 2022 14:04:16 -0700
+Message-Id: <20220817210419.95560-10-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20220817210419.95560-1-alexei.starovoitov@gmail.com>
 References: <20220817210419.95560-1-alexei.starovoitov@gmail.com>
@@ -72,158 +72,140 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Same low/high watermarks for every bucket in bpf_mem_cache consume
-significant amount of memory. Preallocating 64 elements of PAGE_SIZE
-to the free list is not efficient.
-Make low/high watermarks and batching value depend on element size.
-This change brings significant memory savings.
+SLAB_TYPESAFE_BY_RCU makes kmem_caches non mergeable and slows down
+kmem_cache_destroy. All bpf_mem_cache are safe to share across different maps
+and programs. Convert SLAB_TYPESAFE_BY_RCU to batched call_rcu. This change
+solves the memory consumption issue, avoids kmem_cache_destroy latency and
+keeps bpf hash map performance the same.
 
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- kernel/bpf/memalloc.c | 64 ++++++++++++++++++++++++++++++-------------
- 1 file changed, 45 insertions(+), 19 deletions(-)
+ kernel/bpf/memalloc.c | 58 ++++++++++++++++++++++++++++++++++++++++---
+ kernel/bpf/syscall.c  |  5 +++-
+ 2 files changed, 59 insertions(+), 4 deletions(-)
 
 diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-index a43630371b9f..be8262f5c9ec 100644
+index be8262f5c9ec..ae4cdc9493c3 100644
 --- a/kernel/bpf/memalloc.c
 +++ b/kernel/bpf/memalloc.c
-@@ -105,6 +105,7 @@ struct bpf_mem_cache {
- 	atomic_t free_cnt_nmi;
+@@ -106,6 +106,11 @@ struct bpf_mem_cache {
  	/* flag to refill nmi list too */
  	bool refill_nmi_list;
-+	int low_watermark, high_watermark, batch;
+ 	int low_watermark, high_watermark, batch;
++
++	struct rcu_head rcu;
++	struct llist_head free_by_rcu;
++	struct llist_head waiting_for_gp;
++	atomic_t call_rcu_in_progress;
  };
  
  struct bpf_mem_caches {
-@@ -123,14 +124,6 @@ static struct llist_node notrace *__llist_del_first(struct llist_head *head)
- 	return entry;
+@@ -214,6 +219,39 @@ static void free_one(struct bpf_mem_cache *c, void *obj)
+ 		kfree(obj);
  }
  
--#define BATCH 48
--#define LOW_WATERMARK 32
--#define HIGH_WATERMARK 96
--/* Assuming the average number of elements per bucket is 64, when all buckets
-- * are used the total memory will be: 64*16*32 + 64*32*32 + 64*64*32 + ... +
-- * 64*4096*32 ~ 20Mbyte
-- */
--
- /* extra macro useful for testing by randomizing in_nmi condition */
- #define bpf_in_nmi() in_nmi()
- 
-@@ -238,7 +231,7 @@ static void free_bulk(struct bpf_mem_cache *c)
++static void __free_rcu(struct rcu_head *head)
++{
++	struct bpf_mem_cache *c = container_of(head, struct bpf_mem_cache, rcu);
++	struct llist_node *llnode = __llist_del_all(&c->waiting_for_gp);
++	struct llist_node *pos, *t;
++
++	llist_for_each_safe(pos, t, llnode)
++		free_one(c, pos);
++	atomic_set(&c->call_rcu_in_progress, 0);
++}
++
++static void enque_to_free(struct bpf_mem_cache *c, void *obj)
++{
++	struct llist_node *llnode = obj;
++
++	/* bpf_mem_cache is a per-cpu object. Freeing happens in irq_work.
++	 * Nothing races to add to free_by_rcu list.
++	 */
++	__llist_add(llnode, &c->free_by_rcu);
++}
++
++static void do_call_rcu(struct bpf_mem_cache *c)
++{
++	struct llist_node *llnode, *t;
++
++	if (atomic_xchg(&c->call_rcu_in_progress, 1))
++		return;
++
++	llist_for_each_safe(llnode, t, __llist_del_all(&c->free_by_rcu))
++		__llist_add(llnode, &c->waiting_for_gp);
++	call_rcu(&c->rcu, __free_rcu);
++}
++
+ static void free_bulk(struct bpf_mem_cache *c)
+ {
+ 	struct llist_node *llnode;
+@@ -230,8 +268,9 @@ static void free_bulk(struct bpf_mem_cache *c)
+ 			cnt = 0;
  		if (IS_ENABLED(CONFIG_PREEMPT_RT))
  			local_irq_restore(flags);
- 		free_one(c, llnode);
--	} while (cnt > (HIGH_WATERMARK + LOW_WATERMARK) / 2);
-+	} while (cnt > (c->high_watermark + c->low_watermark) / 2);
+-		free_one(c, llnode);
++		enque_to_free(c, llnode);
+ 	} while (cnt > (c->high_watermark + c->low_watermark) / 2);
++	do_call_rcu(c);
  }
  
  static void free_bulk_nmi(struct bpf_mem_cache *c)
-@@ -253,7 +246,7 @@ static void free_bulk_nmi(struct bpf_mem_cache *c)
+@@ -245,8 +284,9 @@ static void free_bulk_nmi(struct bpf_mem_cache *c)
+ 			cnt = atomic_dec_return(&c->free_cnt_nmi);
  		else
  			cnt = 0;
- 		free_one(c, llnode);
--	} while (cnt > (HIGH_WATERMARK + LOW_WATERMARK) / 2);
-+	} while (cnt > (c->high_watermark + c->low_watermark) / 2);
+-		free_one(c, llnode);
++		enque_to_free(c, llnode);
+ 	} while (cnt > (c->high_watermark + c->low_watermark) / 2);
++	do_call_rcu(c);
  }
  
  static void bpf_mem_refill(struct irq_work *work)
-@@ -262,12 +255,12 @@ static void bpf_mem_refill(struct irq_work *work)
- 	int cnt;
- 
- 	cnt = c->free_cnt;
--	if (cnt < LOW_WATERMARK)
-+	if (cnt < c->low_watermark)
- 		/* irq_work runs on this cpu and kmalloc will allocate
- 		 * from the current numa node which is what we want here.
- 		 */
--		alloc_bulk(c, BATCH, NUMA_NO_NODE);
--	else if (cnt > HIGH_WATERMARK)
-+		alloc_bulk(c, c->batch, NUMA_NO_NODE);
-+	else if (cnt > c->high_watermark)
- 		free_bulk(c);
- 
- 	if (!c->refill_nmi_list)
-@@ -276,9 +269,9 @@ static void bpf_mem_refill(struct irq_work *work)
- 		 */
- 		return;
- 	cnt = atomic_read(&c->free_cnt_nmi);
--	if (cnt < LOW_WATERMARK)
--		alloc_bulk_nmi(c, BATCH, NUMA_NO_NODE);
--	else if (cnt > HIGH_WATERMARK)
-+	if (cnt < c->low_watermark)
-+		alloc_bulk_nmi(c, c->batch, NUMA_NO_NODE);
-+	else if (cnt > c->high_watermark)
- 		free_bulk_nmi(c);
- 	c->refill_nmi_list = false;
- }
-@@ -294,14 +287,47 @@ static void notrace irq_work_raise(struct bpf_mem_cache *c, bool in_nmi)
- 	irq_work_queue(&c->refill_work);
- }
- 
-+/* For typical bpf map case that uses bpf_mem_cache_alloc and single bucket
-+ * the freelist cache will be elem_size * 64 (or less) on each cpu.
-+ *
-+ * For bpf programs that don't have statically known allocation sizes and
-+ * assuming (low_mark + high_mark) / 2 as an average number of elements per
-+ * bucket and all buckets are used the total amount of memory in freelists
-+ * on each cpu will be:
-+ * 64*16 + 64*32 + 64*64 + 64*96 + 64*128 + 64*196 + 64*256 + 32*512 + 16*1024 + 8*2048 + 4*4096
-+ * + nmi's reserves
-+ * 1*16 + 1*32 + 1*64 + 1*96 + 1*128 + 1*196 + 1*256 + 1*512 + 1*1024 + 1*2048 + 1*4096
-+ * == ~ 122 Kbyte using below heuristic.
-+ * In unlikely worst case where bpf progs used all allocations sizes from
-+ * non-NMI and from NMI too: ~ 227 Kbyte per cpu.
-+ * Initialized, but unused bpf allocator (not bpf map specific one) will
-+ * consume ~ 19 Kbyte per cpu.
-+ * Typical case will be between 19K and 122K closer to 19K.
-+ * bpf progs can and should share bpf_mem_cache when possible.
-+ */
-+
- static void prefill_mem_cache(struct bpf_mem_cache *c, int cpu)
+@@ -358,7 +398,7 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size)
+ 			return -ENOMEM;
+ 		size += LLIST_NODE_SZ; /* room for llist_node */
+ 		snprintf(buf, sizeof(buf), "bpf-%u", size);
+-		kmem_cache = kmem_cache_create(buf, size, 8, SLAB_TYPESAFE_BY_RCU, NULL);
++		kmem_cache = kmem_cache_create(buf, size, 8, 0, NULL);
+ 		if (!kmem_cache) {
+ 			free_percpu(pc);
+ 			return -ENOMEM;
+@@ -400,6 +440,18 @@ static void drain_mem_cache(struct bpf_mem_cache *c)
  {
- 	init_irq_work(&c->refill_work, bpf_mem_refill);
-+	if (c->unit_size <= 256) {
-+		c->low_watermark = 32;
-+		c->high_watermark = 96;
-+	} else {
-+		/* When page_size == 4k, order-0 cache will have low_mark == 2
-+		 * and high_mark == 6 with batch alloc of 3 individual pages at
-+		 * a time.
-+		 * 8k allocs and above low == 1, high == 3, batch == 1.
-+		 */
-+		c->low_watermark = max(32 * 256 / c->unit_size, 1);
-+		c->high_watermark = max(96 * 256 / c->unit_size, 3);
-+	}
-+	c->batch = max((c->high_watermark - c->low_watermark) / 4 * 3, 1);
+ 	struct llist_node *llnode;
+ 
++	/* The caller has done rcu_barrier() and no progs are using this
++	 * bpf_mem_cache, but htab_map_free() called bpf_mem_cache_free() for
++	 * all remaining elements and they can be in free_by_rcu or in
++	 * waiting_for_gp lists, so drain accumulating free_by_rcu list and
++	 * optionally wait for callbacks to finish.
++	 */
++	while ((llnode = __llist_del_first(&c->free_by_rcu)))
++		free_one(c, llnode);
++	if (atomic_xchg(&c->call_rcu_in_progress, 1))
++		rcu_barrier();
++	WARN_ON_ONCE(!llist_empty(&c->waiting_for_gp));
 +
- 	/* To avoid consuming memory assume that 1st run of bpf
- 	 * prog won't be doing more than 4 map_update_elem from
- 	 * irq disabled region
- 	 */
--	alloc_bulk(c, c->unit_size < 256 ? 4 : 1, cpu_to_node(cpu));
-+	alloc_bulk(c, c->unit_size <= 256 ? 4 : 1, cpu_to_node(cpu));
- 
- 	/* NMI progs are rare. Assume they have one map_update
- 	 * per prog at the very beginning.
-@@ -442,7 +468,7 @@ static void notrace *unit_alloc(struct bpf_mem_cache *c)
+ 	while ((llnode = llist_del_first(&c->free_llist_nmi)))
+ 		free_one(c, llnode);
+ 	while ((llnode = __llist_del_first(&c->free_llist)))
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 83c7136c5788..eeef64b27683 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -638,7 +638,10 @@ static void __bpf_map_put(struct bpf_map *map, bool do_idr_lock)
+ 		bpf_map_free_id(map, do_idr_lock);
+ 		btf_put(map->btf);
+ 		INIT_WORK(&map->work, bpf_map_free_deferred);
+-		schedule_work(&map->work);
++		/* Avoid spawning kworkers, since they all might contend
++		 * for the same mutex like slab_mutex.
++		 */
++		queue_work(system_unbound_wq, &map->work);
  	}
- 	WARN_ON(cnt < 0);
- 
--	if (cnt < LOW_WATERMARK)
-+	if (cnt < c->low_watermark)
- 		irq_work_raise(c, in_nmi);
- 	return llnode;
  }
-@@ -471,7 +497,7 @@ static void notrace unit_free(struct bpf_mem_cache *c, void *ptr)
- 	}
- 	WARN_ON(cnt <= 0);
  
--	if (cnt > HIGH_WATERMARK)
-+	if (cnt > c->high_watermark)
- 		/* free few objects from current cpu into global kmalloc pool */
- 		irq_work_raise(c, in_nmi);
- }
 -- 
 2.30.2
 
