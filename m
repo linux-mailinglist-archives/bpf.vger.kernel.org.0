@@ -2,148 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D23A596EA2
-	for <lists+bpf@lfdr.de>; Wed, 17 Aug 2022 14:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86FC5596F6C
+	for <lists+bpf@lfdr.de>; Wed, 17 Aug 2022 15:19:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239501AbiHQMju (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Aug 2022 08:39:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38000 "EHLO
+        id S239682AbiHQNJz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Aug 2022 09:09:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239496AbiHQMjt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Aug 2022 08:39:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76FB089830
-        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 05:39:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1660739985;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JwKPyzScM59FLZHLxOO0xf1R9fwVOLoeTkdmVolB6/w=;
-        b=cpEd3QT70rNULPG1l3YfMu+1mzW7JzAkCncblMiKv2AOCN1ZqkPgdsrS2fkr65kigQaIXR
-        u8UX0ViLYfzoXC44WoVAcHBV7fLV7Gdggp+oktP2plT+/MsMfARdIEfnv98r61+Vi5XJzA
-        e7kTSXKU9s3ntd0zmCf+ZtoMlfOfWis=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-441-SsRPL_-OPvGyiJzOlUdWIw-1; Wed, 17 Aug 2022 08:39:43 -0400
-X-MC-Unique: SsRPL_-OPvGyiJzOlUdWIw-1
-Received: by mail-lj1-f199.google.com with SMTP id s8-20020a2e9c08000000b0025e5c453a63so4216590lji.21
-        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 05:39:43 -0700 (PDT)
+        with ESMTP id S239715AbiHQNJb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Aug 2022 09:09:31 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCCF862C2
+        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 06:08:17 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id k16so959488wrx.11
+        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 06:08:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc;
+        bh=yZJd/ZKQ9mlwmL6Q+KyC3+p6JDQdyYFK//6TmktPmuw=;
+        b=HERUzvZz3x8ABix1FIP+TbJTfGTZSruRspdVloO6vi7RWmlGqoJmzN70Ij2hspbPJT
+         c5ruJI2w1d72QpHUIQzNapLkpbd8W+R5kUpQq8OZy/xpjSxyFxwUjqUq4Ll0aNS62fLX
+         Hp5m43Zhd4CWh+N0k3+kP+yqyekOnt+SSewVnnNM9rBGfWRwvG4tRgfzOzRIZCMu0COE
+         0Mc3H0y+J1cNy349Zq0uBntKkGLFXnrQTUe3DoIpBRuSgua891UW+ZP5P8M2fODV9MGb
+         RVlTmADNsfLN3L2Z/67fCbGQfG6IMOinMxBcHwqCVpI6AVRgvqgXcWKDLolIgbSbcjHc
+         TdHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:references:to
-         :content-language:subject:cc:user-agent:mime-version:date:message-id
-         :from:x-gm-message-state:from:to:cc;
-        bh=JwKPyzScM59FLZHLxOO0xf1R9fwVOLoeTkdmVolB6/w=;
-        b=2ChZbADja92mObmNEgpC1M1yGT6PmWZP7PhwwceBynYGM9gA2QS9Mu7M90YHOP1Oyh
-         CKnmzsixAjn7OlCvavtjLDrhKhQD3Sw7psbuOIPPHv81V22C7cOm69wQkO+LTnsAzpGX
-         7Uk7xuivGkAsOtQXhLMrF/ZPZOKp9xShvx0kB+YZ1XHB43PmWpptADr/IwsmW867VB85
-         ind252zMvYXFe+6cgqLnZ8ZJKZqD19UdXHYk6NliLZoOh6P3h6qXd628rLSO+Mfv3X4E
-         ykUs+ZVMwB7ASFqjpRqeDW7SmKlCRnNNoVtULDHB+F57GKI5PsGLPjo1k75Z7dYkeKjf
-         Ju7g==
-X-Gm-Message-State: ACgBeo3ZTd1PboZGgrVwQVMykU/B0ZuO9juBX8nBWUgws1uFOTIHKmtB
-        zu65/3K8k7VDsLvUKGLTkn9AP74/5I96g9XcGb5XvJHxZyV/UKBrXRmEDQ0OIIqW0DAnTZ4EQck
-        PTIuOFkasZMjo
-X-Received: by 2002:ac2:4f03:0:b0:48b:2179:5249 with SMTP id k3-20020ac24f03000000b0048b21795249mr9740399lfr.356.1660739981904;
-        Wed, 17 Aug 2022 05:39:41 -0700 (PDT)
-X-Google-Smtp-Source: AA6agR58xHZn9gJ2qlq86ZhVT+Zb4shOgNxCPnvgwc1PTXkQDRKcSy3JRIL52Sr6r7ctMoqTNstOoQ==
-X-Received: by 2002:ac2:4f03:0:b0:48b:2179:5249 with SMTP id k3-20020ac24f03000000b0048b21795249mr9740386lfr.356.1660739981715;
-        Wed, 17 Aug 2022 05:39:41 -0700 (PDT)
-Received: from [192.168.41.81] (83-90-141-187-cable.dk.customer.tdc.net. [83.90.141.187])
-        by smtp.gmail.com with ESMTPSA id a24-20020a19ca18000000b0048a7ce3ff84sm1663398lfg.285.2022.08.17.05.39.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Aug 2022 05:39:41 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <1a22e7e9-e6ef-028f-dffa-e954207dc24d@redhat.com>
-Date:   Wed, 17 Aug 2022 14:39:39 +0200
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc;
+        bh=yZJd/ZKQ9mlwmL6Q+KyC3+p6JDQdyYFK//6TmktPmuw=;
+        b=ULgWo7RRpncGd2X3M45ZSnMiv3oIRR8xTZP/mJkt6QeSlE/HHykEPjLbuXKI6Rs3tn
+         xbpy8IZzIAit6pYH3dE3BeWiLYO5x4Fx6gUL09IPlkpq16rPwM8uwuIS00FRbS6IrDxb
+         x89l/ZMenRqDUBYV0SLEFmJ1cL/6K1eHRJhnI+3OnrXAg5VuDmbnhYT/evBqiNbZvgM6
+         mZE+Vn94o7pQcQYSABy5MgxgclDD8cxEArVYnFWectqWtuuL6WbK7d0Bg6yqEoiaeIPg
+         4nyBeOA+bD/F3Qzq5SnUs7ZBogcAhWTqStBSrB1kV1XvdlHuDXXZ/Tn607ttO5KY05xh
+         JVDw==
+X-Gm-Message-State: ACgBeo3LAmQCDMU+kJUomqpS3wC1BZEnMWNxG/uRnqYiAjv23w62jGGD
+        t5DDXNfG/zr3lH/mfJaD197Vtw==
+X-Google-Smtp-Source: AA6agR7Bz9c08dnhsKjG95ErmPIkScVNcf3tP2jSx1acZbBbcuGlSunXlydBesdvB/bT9w9X0zBFsQ==
+X-Received: by 2002:adf:e710:0:b0:225:109d:456d with SMTP id c16-20020adfe710000000b00225109d456dmr5510742wrm.589.1660741695800;
+        Wed, 17 Aug 2022 06:08:15 -0700 (PDT)
+Received: from localhost ([109.180.234.208])
+        by smtp.gmail.com with ESMTPSA id j25-20020a05600c1c1900b003a5ce167a68sm2198796wms.7.2022.08.17.06.08.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Aug 2022 06:08:14 -0700 (PDT)
+From:   Punit Agrawal <punit.agrawal@bytedance.com>
+To:     ast@kernel.org
+Cc:     Punit Agrawal <punit.agrawal@bytedance.com>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zhoufeng.zf@bytedance.com,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, jolsa@kernel.org
+Subject: [PATCH] bpf: Simplify code by using for_each_cpu_wrap()
+Date:   Wed, 17 Aug 2022 14:08:07 +0100
+Message-Id: <20220817130807.68279-1-punit.agrawal@bytedance.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.12.0
-Cc:     brouer@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
-        kuba@kernel.org, edumazet@google.com, pabeni@redhat.com,
-        hawk@kernel.org, john.fastabend@gmail.com,
-        lorenzo.bianconi@redhat.com
-Subject: Re: [PATCH v2 bpf-next] xdp: report rx queue index in xdp_frame
-Content-Language: en-US
-To:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org
-References: <3923222d836b104232ee70eef34ce2aa454ef9db.1660721856.git.lorenzo@kernel.org>
-In-Reply-To: <3923222d836b104232ee70eef34ce2aa454ef9db.1660721856.git.lorenzo@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+In the percpu freelist code, it is a common pattern to iterate over
+the possible CPUs mask starting with the current CPU. The pattern is
+implemented using a hand rolled while loop with the loop variable
+increment being open-coded.
 
-On 17/08/2022 09.40, Lorenzo Bianconi wrote:
-> Report rx queue index in xdp_frame according to the xdp_buff xdp_rxq_info
-> pointer. xdp_frame queue_index is currently used in cpumap code to convert
-> the xdp_frame into a xdp_buff and allow the ebpf program attached to the
-> map entry to differentiate traffic according to the receiving hw queue.
-> xdp_frame size is not increased adding queue_index since an alignment
-> padding in the structure is used to insert queue_index field.
-> 
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Simplify the code by replacing the while() loops with
+for_each_cpu_wrap() helper to iterate over the possible cpus starting
+with the current CPU. As a result, some of the special-casing in the
+loop also gets simplified.
 
-(Sorry, I replied to v1 and not this v2.)
+No functional change intended.
 
-I'm still unsure about this change, because the XDP-hints will also
-contain the rx_queue number.  And placing it in XDP-hints automatically
-makes it avail for AF_XDP consumers.
+Signed-off-by: Punit Agrawal <punit.agrawal@bytedance.com>
+---
+Hi,
 
-I do think it is relevant for the BPF-prog to get access to the rx_queue
-index, because it can be used for scaling the workload.
+I noticed an opportunity for simplifying the code while reviewing a
+backport for one of the commits in this area.
 
+Please consider merging.
 
-> ---
-> Changes since v1:
-> - rebase on top of bpf-next
-> ---
->   include/net/xdp.h   | 2 ++
->   kernel/bpf/cpumap.c | 2 +-
->   2 files changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/net/xdp.h b/include/net/xdp.h
-> index 04c852c7a77f..3567866b0af5 100644
-> --- a/include/net/xdp.h
-> +++ b/include/net/xdp.h
-> @@ -172,6 +172,7 @@ struct xdp_frame {
->   	struct xdp_mem_info mem;
->   	struct net_device *dev_rx; /* used by cpumap */
->   	u32 flags; /* supported values defined in xdp_buff_flags */
-> +	u32 queue_index;
->   };
->   
->   static __always_inline bool xdp_frame_has_frags(struct xdp_frame *frame)
-> @@ -301,6 +302,7 @@ struct xdp_frame *xdp_convert_buff_to_frame(struct xdp_buff *xdp)
->   
->   	/* rxq only valid until napi_schedule ends, convert to xdp_mem_info */
->   	xdp_frame->mem = xdp->rxq->mem;
-> +	xdp_frame->queue_index = xdp->rxq->queue_index;
->   
->   	return xdp_frame;
->   }
-> diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-> index b5ba34ddd4b6..48003450c98c 100644
-> --- a/kernel/bpf/cpumap.c
-> +++ b/kernel/bpf/cpumap.c
-> @@ -228,7 +228,7 @@ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
->   
->   		rxq.dev = xdpf->dev_rx;
->   		rxq.mem = xdpf->mem;
-> -		/* TODO: report queue_index to xdp_rxq_info */
-> +		rxq.queue_index = xdpf->queue_index;
->   
->   		xdp_convert_frame_to_buff(xdpf, &xdp);
->   
+Thanks,
+Punit
+
+ kernel/bpf/percpu_freelist.c | 42 ++++++++++--------------------------
+ 1 file changed, 11 insertions(+), 31 deletions(-)
+
+diff --git a/kernel/bpf/percpu_freelist.c b/kernel/bpf/percpu_freelist.c
+index 00b874c8e889..9dd9201c6f07 100644
+--- a/kernel/bpf/percpu_freelist.c
++++ b/kernel/bpf/percpu_freelist.c
+@@ -56,10 +56,9 @@ static inline bool pcpu_freelist_try_push_extra(struct pcpu_freelist *s,
+ static inline void ___pcpu_freelist_push_nmi(struct pcpu_freelist *s,
+ 					     struct pcpu_freelist_node *node)
+ {
+-	int cpu, orig_cpu;
++	int cpu;
+ 
+-	orig_cpu = cpu = raw_smp_processor_id();
+-	while (1) {
++	for_each_cpu_wrap(cpu, cpu_possible_mask, raw_smp_processor_id()) {
+ 		struct pcpu_freelist_head *head;
+ 
+ 		head = per_cpu_ptr(s->freelist, cpu);
+@@ -68,15 +67,10 @@ static inline void ___pcpu_freelist_push_nmi(struct pcpu_freelist *s,
+ 			raw_spin_unlock(&head->lock);
+ 			return;
+ 		}
+-		cpu = cpumask_next(cpu, cpu_possible_mask);
+-		if (cpu >= nr_cpu_ids)
+-			cpu = 0;
+-
+-		/* cannot lock any per cpu lock, try extralist */
+-		if (cpu == orig_cpu &&
+-		    pcpu_freelist_try_push_extra(s, node))
+-			return;
+ 	}
++
++	/* cannot lock any per cpu lock, try extralist */
++	pcpu_freelist_try_push_extra(s, node);
+ }
+ 
+ void __pcpu_freelist_push(struct pcpu_freelist *s,
+@@ -125,13 +119,12 @@ static struct pcpu_freelist_node *___pcpu_freelist_pop(struct pcpu_freelist *s)
+ {
+ 	struct pcpu_freelist_head *head;
+ 	struct pcpu_freelist_node *node;
+-	int orig_cpu, cpu;
++	int cpu;
+ 
+-	orig_cpu = cpu = raw_smp_processor_id();
+-	while (1) {
++	for_each_cpu_wrap(cpu, cpu_possible_mask, raw_smp_processor_id()) {
+ 		head = per_cpu_ptr(s->freelist, cpu);
+ 		if (!READ_ONCE(head->first))
+-			goto next_cpu;
++			continue;
+ 		raw_spin_lock(&head->lock);
+ 		node = head->first;
+ 		if (node) {
+@@ -140,12 +133,6 @@ static struct pcpu_freelist_node *___pcpu_freelist_pop(struct pcpu_freelist *s)
+ 			return node;
+ 		}
+ 		raw_spin_unlock(&head->lock);
+-next_cpu:
+-		cpu = cpumask_next(cpu, cpu_possible_mask);
+-		if (cpu >= nr_cpu_ids)
+-			cpu = 0;
+-		if (cpu == orig_cpu)
+-			break;
+ 	}
+ 
+ 	/* per cpu lists are all empty, try extralist */
+@@ -164,13 +151,12 @@ ___pcpu_freelist_pop_nmi(struct pcpu_freelist *s)
+ {
+ 	struct pcpu_freelist_head *head;
+ 	struct pcpu_freelist_node *node;
+-	int orig_cpu, cpu;
++	int cpu;
+ 
+-	orig_cpu = cpu = raw_smp_processor_id();
+-	while (1) {
++	for_each_cpu_wrap(cpu, cpu_possible_mask, raw_smp_processor_id()) {
+ 		head = per_cpu_ptr(s->freelist, cpu);
+ 		if (!READ_ONCE(head->first))
+-			goto next_cpu;
++			continue;
+ 		if (raw_spin_trylock(&head->lock)) {
+ 			node = head->first;
+ 			if (node) {
+@@ -180,12 +166,6 @@ ___pcpu_freelist_pop_nmi(struct pcpu_freelist *s)
+ 			}
+ 			raw_spin_unlock(&head->lock);
+ 		}
+-next_cpu:
+-		cpu = cpumask_next(cpu, cpu_possible_mask);
+-		if (cpu >= nr_cpu_ids)
+-			cpu = 0;
+-		if (cpu == orig_cpu)
+-			break;
+ 	}
+ 
+ 	/* cannot pop from per cpu lists, try extralist */
+-- 
+2.35.1
 
