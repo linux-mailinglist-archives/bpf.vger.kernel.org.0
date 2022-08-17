@@ -2,158 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4964C5974AC
-	for <lists+bpf@lfdr.de>; Wed, 17 Aug 2022 18:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FC1D5974F9
+	for <lists+bpf@lfdr.de>; Wed, 17 Aug 2022 19:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236938AbiHQQ6B (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Aug 2022 12:58:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36354 "EHLO
+        id S237833AbiHQRUC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Aug 2022 13:20:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236230AbiHQQ57 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Aug 2022 12:57:59 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B1B296741;
-        Wed, 17 Aug 2022 09:57:58 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a7so25638955ejp.2;
-        Wed, 17 Aug 2022 09:57:58 -0700 (PDT)
+        with ESMTP id S238406AbiHQRUB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Aug 2022 13:20:01 -0400
+Received: from mail-oa1-x32.google.com (mail-oa1-x32.google.com [IPv6:2001:4860:4864:20::32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A0839D64E
+        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 10:20:00 -0700 (PDT)
+Received: by mail-oa1-x32.google.com with SMTP id 586e51a60fabf-f2a4c51c45so15876872fac.9
+        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 10:20:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=hLP+S6kLRjuwIdqWwvBk1ZHMXAyy6jMYUeclPfetyb4=;
-        b=CABvHkYbt6HHL0PGpdkXgPFufbFV/cofEg85u1v0buP7XK0lICkl7kUZlTxcHZegJj
-         cZW+tKjiPbAjRhaQGOFrNm9FwB/gxp5OijPbB3udxyQau6MB60fjbweWg7oDKTEo89Dd
-         CEfS6/k5W6G9zLHbbFf7Xw917G9w1aRcdUkh9T4NO9GUtZ6XwHspod1bEXbZdozHzkJT
-         G8JcvnwJlFs6zmTN9y0npRmA28pFv7S6zVuboX79RFMNGAwUTKaela0GfWbqCfgl3FpD
-         4qGsu20V4+SyyjUuNhrzZnGw/LmXZPO6nCeu2CuQNjjkvhLSo8l0uGo4hrdkiapePfGP
-         uyaQ==
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc;
+        bh=J3VPAc5hc1beoFQlEY8UmpcylWVa8Cg5xRcsnWIJYsU=;
+        b=SCfTwXbWYFitH2mVeMfBTd8oUH/KXZXgT8BIHGPDHUz6Dh2NBNFER7vPRljNHOMTFo
+         KXtqFlvPL4lL17cgNJvrWIL+oBZBL3hfA/4TF/6agOW/b0NEbp1HDA65CyIc4aI0Hg4O
+         9QrN64jfHSs2gwNJ6GG6Moo1MesbpkxU5f5zMP9wBarJTL4boyoERBQqemFIZS8kZ7sq
+         fYCsSrGuWP1ZKJPDDW1ZXKSMmIYtQKUqVlrehGPAX1JkUdATUfmohOtCPObMo0gcVykX
+         EIK5RsltW8fLfHbazgsMlFWQRFdlFS9An0Zq+IChTVai5fJHiFS7XsnFqGx3Ls8l9FJ0
+         go0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=hLP+S6kLRjuwIdqWwvBk1ZHMXAyy6jMYUeclPfetyb4=;
-        b=7/JnLB83h+igf62hk+Y0LZfBB16X6dX4nB5ZOP5OffRljt2eQSDy5C90wG3ohMI5L1
-         0BWcz599RQuhbIudfidBfzm5PuHFYoK/gm/dZizEzhcBzj/U7rIenZm8hzNIiX3Du5ng
-         VhW9vCXrD6Int03nmmebots4wNoRenUqwdmp3yzJyqUkm84lrVKQrh+MwV+ZuosNz4+V
-         xTM+04l0n9/4se2uzWupR8c77emKJZW+AzGA6cdcPRAURstRRr8ORFAGTdtzJ8NTtlsp
-         oqUJBmpcknv+PYuAgLn7ZFjsKvb6rQsKhev7sKTSXsUj0ore05stma1j5VI4GkFPzAcV
-         9+3A==
-X-Gm-Message-State: ACgBeo0fKmDPRvergaOMVhXCXtFkcL1e4rdlrg/BXx5+/cx+Ag8+7+tZ
-        GZCX6a0uMEJ+WcYmzBCW4o7bT5p9t5X7BHo94Ro=
-X-Google-Smtp-Source: AA6agR5ieMUt/MmXkjYZqJwZ521wXlpUeKLFoOdOl83nnnlV172csCWd7y557vyYHMDmXtjCAVg6XgLdrh1G22S6oVo=
-X-Received: by 2002:a17:907:7612:b0:738:5087:9a65 with SMTP id
- jx18-20020a170907761200b0073850879a65mr10009582ejc.327.1660755476560; Wed, 17
- Aug 2022 09:57:56 -0700 (PDT)
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
+        bh=J3VPAc5hc1beoFQlEY8UmpcylWVa8Cg5xRcsnWIJYsU=;
+        b=8IF1CDRVCQOCxNxxhIkxU5lzu5MGFIVLtnM3FuKglVQM3JjWgHwKrr0Pvt8e79LnwG
+         gca28yxQKEpV4ZNrwFVA2LGk8+OlomCd8roZSfqrpWu9sf7DmE8frClH+pTSj7ZpRdgc
+         IuUTMJiC1yq6K6gsUppD2pBagv3Piu/6hoeKfc1zT7WCLwpSYoKufqk19h+KTa0lcUk9
+         /yu6zsyfgqij1NHQbF5laXIGN2Vw2whLNEmlIC/vsmXq/WT6Uirk8WykPZpAQUsqcPVl
+         BohQot0gv0hMYssEItFvhYH6B9Vcyuawy5VxSEBjAPBhR+LZ/h5HAkrryx2oQ4WBGbeW
+         LACw==
+X-Gm-Message-State: ACgBeo0cLSGcNoXPqoQXR3Q2eqmKO+fH8E0n4MuAtZupvPvi8JffJmhm
+        h+L8KMRr7WUC+k6OFCjHWxkCioCuFJbwq0jOKAy4
+X-Google-Smtp-Source: AA6agR4mv9lGti64tQ+RWhXl/XpvBG3lv2fsN8uSnflhqV/wjKZTydMt1AJ/vsLoMQnvVJvZroCrD9DZ9AMStnXqZ4c=
+X-Received: by 2002:a05:6870:a78d:b0:11c:437b:ec70 with SMTP id
+ x13-20020a056870a78d00b0011c437bec70mr2325509oao.136.1660756799347; Wed, 17
+ Aug 2022 10:19:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <Yvo+EpO9dN30G0XE@worktop.programming.kicks-ass.net>
- <CAADnVQJfvn2RYydqgO-nS_K+C8WJL7BdCnR44MiMF4rnAwWM5A@mail.gmail.com>
- <YvpZJQGQdVaa2Oh4@worktop.programming.kicks-ass.net> <CAADnVQKyfrFTZOM9F77i0NbaXLZZ7KbvKBvu7p6kgdnRgG+2=Q@mail.gmail.com>
- <Yvpf67eCerqaDmlE@worktop.programming.kicks-ass.net> <CAADnVQKX5xJz5N_mVyf7wg4BT8Q2cNh8ze-SxTRfk6KtcFQ0=Q@mail.gmail.com>
- <YvpmAnFldR0iwAFC@worktop.programming.kicks-ass.net> <CAADnVQJuDS22o7fi9wPZx9siAWgu1grQXXB02KfasxZ-RPdRSw@mail.gmail.com>
- <Yvpq3JDk8fTgdMv8@worktop.programming.kicks-ass.net> <Yvs/oey1NUlkI30d@krava> <Yvy06GPn45D0rD7n@krava>
-In-Reply-To: <Yvy06GPn45D0rD7n@krava>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 17 Aug 2022 09:57:45 -0700
-Message-ID: <CAADnVQ+SJ7VjeXgz-wcN9OGPpfTaJVKhoyKDm895Q60C8T4-QA@mail.gmail.com>
-Subject: Re: [RFC] ftrace: Add support to keep some functions out of ftrace
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+References: <20220725124123.12975-1-flaniel@linux.microsoft.com>
+ <CAHC9VhTmgMfzc+QY8kr+BYQyd_5nEis0Y632w4S2_PGudTRT7g@mail.gmail.com>
+ <4420381.LvFx2qVVIh@pwmachine> <CAHC9VhSMeefG5W_uuTNQYmUUZ1xcuqArxYs5sL9KOzUO_skCZw@mail.gmail.com>
+ <ab1bbd48-c48d-5f5a-f090-428ffd54c07e@schaufler-ca.com> <CAHC9VhTxYaLXFbS6JnpskOkADNbL8BA5614VuK3sDTHW6DE3uQ@mail.gmail.com>
+ <664f29c3-77a6-2ed9-5c55-f181397b09a2@schaufler-ca.com>
+In-Reply-To: <664f29c3-77a6-2ed9-5c55-f181397b09a2@schaufler-ca.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 17 Aug 2022 13:19:48 -0400
+Message-ID: <CAHC9VhTkkhgmj8R6fmuoffLUU+UnYqxOi-kDWmJQ9F9jtwuLxg@mail.gmail.com>
+Subject: Re: [RFC PATCH v4 0/2] Add capabilities file to securityfs
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Francis Laniel <flaniel@linux.microsoft.com>,
+        linux-security-module@vger.kernel.org,
+        Eric Biederman <ebiederm@xmission.com>,
+        Serge Hallyn <serge@hallyn.com>,
+        James Morris <jmorris@namei.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:BPF [MISC]" <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 17, 2022 at 2:29 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+On Wed, Aug 17, 2022 at 12:49 PM Casey Schaufler <casey@schaufler-ca.com> w=
+rote:
+> On 8/17/2022 9:10 AM, Paul Moore wrote:
+> > On Wed, Aug 17, 2022 at 11:50 AM Casey Schaufler <casey@schaufler-ca.co=
+m> wrote:
+> >> On 8/17/2022 7:52 AM, Paul Moore wrote:
+> >>> On Wed, Aug 17, 2022 at 7:53 AM Francis Laniel
+> >>> <flaniel@linux.microsoft.com> wrote:
+> >>>> Le mardi 16 ao=C3=BBt 2022, 23:59:41 CEST Paul Moore a =C3=A9crit :
+> >>>>> On Mon, Jul 25, 2022 at 8:42 AM Francis Laniel
+> >>>>>
+> >>>>> <flaniel@linux.microsoft.com> wrote:
+> >>>>>> Hi.
+> >>>>>>
+> >>>>>> First, I hope you are fine and the same for your relatives.
+> >>>>> Hi Francis :)
+> >>>>>
+> >>>>>> A solution to this problem could be to add a way for the userspace=
+ to ask
+> >>>>>> the kernel about the capabilities it offers.
+> >>>>>> So, in this series, I added a new file to securityfs:
+> >>>>>> /sys/kernel/security/capabilities.
+> >>>>>> The goal of this file is to be used by "container world" software =
+to know
+> >>>>>> kernel capabilities at run time instead of compile time.
+> >>>>> ...
+> >>>>>
+> >>>>>> The kernel already exposes the last capability number under:
+> >>>>>> /proc/sys/kernel/cap_last_cap
+> >>>>> I'm not clear on why this patchset is needed, why can't the
+> >>>>> application simply read from "cap_last_cap" to determine what
+> >>>>> capabilities the kernel supports?
+> >>>> When you capabilities with, for example, docker, you will fill capab=
+ilities
+> >>>> like this:
+> >>>> docker run --rm --cap-add SYS_ADMIN debian:latest echo foo
+> >>>> As a consequence, the "echo foo" will be run with CAP_SYS_ADMIN set.
+> >>>>
+> >>>> Sadly, each time a new capability is added to the kernel, it means "=
+container
+> >>>> stack" software should add a new string corresponding to the number =
+of the
+> >>>> capabilities [1].
+> >>> Thanks for clarifying things, I thought you were more concerned about
+> >>> detecting what capabilities the running kernel supported, I didn't
+> >>> realize it was getting a string literal for each supported capability=
+.
+> >>> Unless there is a significant show of support for this
+> >> I believe this could be a significant help in encouraging the use of
+> >> capabilities. An application that has to know the list of capabilities
+> >> at compile time but is expected to run unmodified for decades isn't
+> >> going to be satisfied with cap_last_cap. The best it can do with that
+> >> is abort, not being able to ask an admin what to do in the presence of
+> >> a capability that wasn't around before because the name isn't known.
+> > An application isn't going to be able to deduce the semantic value of
+> > a capability based solely on a string value,
 >
-> On Tue, Aug 16, 2022 at 08:56:33AM +0200, Jiri Olsa wrote:
-> > On Mon, Aug 15, 2022 at 05:48:44PM +0200, Peter Zijlstra wrote:
-> > > On Mon, Aug 15, 2022 at 08:35:53AM -0700, Alexei Starovoitov wrote:
-> > > > On Mon, Aug 15, 2022 at 8:28 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> > > > >
-> > > > > On Mon, Aug 15, 2022 at 08:17:42AM -0700, Alexei Starovoitov wrote:
-> > > > > > It's hiding a fake function from ftrace, since it's not a function
-> > > > > > and ftrace infra shouldn't show it tracing logs.
-> > > > > > In other words it's a _notrace_ function with nop5.
-> > > > >
-> > > > > Then make it a notrace function with a nop5 in it. That isn't hard.
-> > > >
-> > > > That's exactly what we're trying to do.
-> > >
-> > > All the while claiming ftrace is broken while it is not.
-> > >
-> > > > Jiri's patch is one way to achieve that.
-> > >
-> > > Fairly horrible way.
-> > >
-> > > > What is your suggestion?
-> > >
-> > > Mailed it already.
-> > >
-> > > > Move it from C to asm ?
-> > >
-> > > Would be much better than proposed IMO.
-> >
-> > nice, that would be independent of the compiler atributes
-> > and config checking..  will check on this one ;-)
->
-> how about something like below?
->
-> dispatcher code is generated only for x86_64, so that will be covered
-> by the assembly version (free of ftrace table) other archs stay same
->
-> jirka
->
->
-> ----
-> diff --git a/arch/x86/net/Makefile b/arch/x86/net/Makefile
-> index 383c87300b0d..94964002eaae 100644
-> --- a/arch/x86/net/Makefile
-> +++ b/arch/x86/net/Makefile
-> @@ -7,4 +7,5 @@ ifeq ($(CONFIG_X86_32),y)
->          obj-$(CONFIG_BPF_JIT) += bpf_jit_comp32.o
->  else
->          obj-$(CONFIG_BPF_JIT) += bpf_jit_comp.o
-> +        obj-$(CONFIG_BPF_JIT) += bpf_dispatcher.o
->  endif
-> diff --git a/arch/x86/net/bpf_dispatcher.S b/arch/x86/net/bpf_dispatcher.S
-> new file mode 100644
-> index 000000000000..65790a1286e8
-> --- /dev/null
-> +++ b/arch/x86/net/bpf_dispatcher.S
-> @@ -0,0 +1,10 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#include <linux/linkage.h>
-> +#include <asm/nops.h>
-> +#include <asm/nospec-branch.h>
-> +
-> +       .text
-> +SYM_FUNC_START(bpf_dispatcher_xdp_func)
-> +       ASM_NOP5
-> +       JMP_NOSPEC rdx
-> +SYM_FUNC_END(bpf_dispatcher_xdp_func)
+> True, but it can ask someone what to do, and in that case a string is
+> much better than a number ...
 
-Wait. Why asm ? Did you try Peter's suggestion:
-__attribute__((__no_instrument_function__))
-__attribute__((patchable_function_entry(5)))
+If you are asking a user what to do, that user can just as easily look
+up the capability list to translate numbers to intent.  If your
+security approach requires a user knowing all of the subtle details
+around a capability based on 10~15 character string, I wish you the
+best of luck :)
 
-?
+--=20
+paul-moore.com
