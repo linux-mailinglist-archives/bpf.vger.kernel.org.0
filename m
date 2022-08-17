@@ -2,68 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF3D5978EB
-	for <lists+bpf@lfdr.de>; Wed, 17 Aug 2022 23:32:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F27055978F4
+	for <lists+bpf@lfdr.de>; Wed, 17 Aug 2022 23:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238639AbiHQVaR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Aug 2022 17:30:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49630 "EHLO
+        id S241456AbiHQVct (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Aug 2022 17:32:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241766AbiHQVaQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Aug 2022 17:30:16 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C764390C56;
-        Wed, 17 Aug 2022 14:30:14 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a7so26797366ejp.2;
-        Wed, 17 Aug 2022 14:30:14 -0700 (PDT)
+        with ESMTP id S237975AbiHQVcs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Aug 2022 17:32:48 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72470A8CE1;
+        Wed, 17 Aug 2022 14:32:45 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id bu15so9105722wrb.7;
+        Wed, 17 Aug 2022 14:32:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=1WahhERX691CESd1ffbJud3Y+oZ8wMt9XQmOZisGAO4=;
-        b=Qe9HJqjJVkpt9ngOfi1SC4JuyFO279d6GmPGr+m7JUf5xARUiAYC82F8IYAoMRWUuH
-         Ick6Mncg5vhH1GPIkrgWo0M3oeah3nV7VGow9GlBeWAwGf+ptHvRze9Viu7DtJLqzEyq
-         CdbFGYMxHNVCCc3G2N/Xi6DssMJwvB5vrLa4dGm6j/oitdez+dT5fwD6PZxMXsvMObTS
-         gJHBo4eqg3dVCiio9YPKDBRvAe3YEttVP3X0KAJ1jA06JCwWql7+8EuLhq3JuX/N5w0O
-         +Tz9RP5geRhjqgeApy/HhGtteAUCvkF7Rob7w9WBr/ymI91naRV0C5rMz3Bjw1i+UiTE
-         yvLQ==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc;
+        bh=cL70TvnaPfbrnYSXL9vjl4iww1REMOrIoq/dv3e3TcY=;
+        b=YEeJ9soDolxKR+ZHOjZVYmAlkqw1K2yVq7ThasfGOhMvW7U7OLERhOj6FJ1ZUOBYAV
+         6gb6pP/Lg9gQsBGQ4mhlEcJk8Nh6jqoS7D+KCh2TX9kl84Lyl4N5cKf0XhtFKrtNkyjE
+         ZmXWU4sum0rkPhdtot85YUMqxz5B57HEtpevyWs+nJfE+/SFh1osDlRpI4rLkx0vHBrp
+         5UtN9mk2jw8EcJMPemIs9cBh7/Tx2YsuCLGIYm8yiehyAF6MF224rgXBbbmh3DWee4Wo
+         ydzQMJSvbDVrs23rMSzBow+0VmcjGGZulM7bM3FbRYMnkkQWZI6Nx8RE5Z1+19K31N7v
+         z8MA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=1WahhERX691CESd1ffbJud3Y+oZ8wMt9XQmOZisGAO4=;
-        b=Ku0H0BW1ly9Ul5dyGBXjn1SFfNu4t3imCAqcu6umXyZ0ToXgHrMLN7bnrNr0chUyJw
-         cTKxqMOXbJupBisn2gLi5QQg8p521LC7Jx+CI8uFPESY69l+EHzywrOdUObYdYiEgLEe
-         l25J/X8r30smy2n6y+9Ei4mo+NjX8/XFBKAfZxibIhBj5AAgcXTLjgM4BAVsn4FaGhsO
-         UWyikRPDRq8OaAp888WAtIOawmKGKW9VH8IvgxN8hp9o15p07V67piFKdJxlFREH49Tp
-         Mf9EadQ13ttVNRuGw0M+sicnhPTx+Akb7ZKaDEQdure26IDZ1XutAPrXWa2O8VV2r+tS
-         YiEg==
-X-Gm-Message-State: ACgBeo3Gf2oE9kw4lgD+k9UadN7z05F+0AULaaK8l+bInIgDVxfMvLc0
-        cTGpb0gyxP85RNPk3Qskv8rEVkUOQWgzr/rka3o=
-X-Google-Smtp-Source: AA6agR4CMlusqqwkMYPqZBWzDqnHs10L6iaVvsd1N80IUKEqJWg8pd0K6sV2lnzisB10uvUvY41yjFw1xWJS629TJC4=
-X-Received: by 2002:a17:907:272a:b0:731:4699:b375 with SMTP id
- d10-20020a170907272a00b007314699b375mr17814804ejl.633.1660771813165; Wed, 17
- Aug 2022 14:30:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1660761470.git.dxu@dxuuu.xyz> <edbca42217a73161903a50ba07ec63c5fa5fde00.1660761470.git.dxu@dxuuu.xyz>
-In-Reply-To: <edbca42217a73161903a50ba07ec63c5fa5fde00.1660761470.git.dxu@dxuuu.xyz>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 17 Aug 2022 14:30:01 -0700
-Message-ID: <CAADnVQ+G0Hju-OeN6e=JLPQzODxGXCsP7OuVbex1y-EYr6Z5Yw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/4] bpf: Add support for writing to nf_conn:mark
-To:     Daniel Xu <dxu@dxuuu.xyz>, Martin KaFai Lau <martin.lau@linux.dev>,
-        Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc;
+        bh=cL70TvnaPfbrnYSXL9vjl4iww1REMOrIoq/dv3e3TcY=;
+        b=vsPO3nxzIayaLLX8/MhsUwKW5H7UCQgpCPUGiIxjq8WGMD5wysXeYiIcR2xuweQTu/
+         pFpAVtLHa37YJdg5kFqcsqXO39n2cTL6ljMWeInofn2A2o7h8XRPcdGEHTBsOd4C9rRk
+         I7yLjoMPusTEbK8zdeB+pRVYv37soB7fktzuWUkqWhqnvxJdrYzVsqkWMMmtbpZoYb7i
+         Ch8bvUYrgbagySD/8DiDehzBpxnJaEpw81h2LeTGRiq7DFFBMDmiuxpfH0htepGN1g3v
+         d6OPLcA+6aTr2/pJhk/eUjgQu8HW5tjiS/5Qxgl2cvL645Mf4z3Z6dReySYDBlATQgI6
+         F+PA==
+X-Gm-Message-State: ACgBeo0ezguqtK/EB6iC8VkZtYmvTWyDaJxkKaHKYS5r4DUXu34vh1Lc
+        2Frv0W6+Makb4KTxWdmiMHo=
+X-Google-Smtp-Source: AA6agR6qS6ZVDuEnJKMtHXZM4wNDGT5ZMnPAaW+jXSXHVgn0D3gPsE/CXh1pvH/fAI+zP0shUPLahw==
+X-Received: by 2002:a5d:6da1:0:b0:220:b328:e4d4 with SMTP id u1-20020a5d6da1000000b00220b328e4d4mr13179wrs.14.1660771963622;
+        Wed, 17 Aug 2022 14:32:43 -0700 (PDT)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id l5-20020a05600c47c500b003a3561d4f3fsm3043954wmo.43.2022.08.17.14.32.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Aug 2022 14:32:43 -0700 (PDT)
+From:   Colin Ian King <colin.i.king@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][V2][next] selftests/bpf: Fix spelling mistake "succesful" (kfunc_call.c)
+Date:   Wed, 17 Aug 2022 22:32:42 +0100
+Message-Id: <20220817213242.101277-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.37.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -74,64 +76,28 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 17, 2022 at 11:43 AM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> +/* Check writes into `struct nf_conn` */
-> +int nf_conntrack_btf_struct_access(struct bpf_verifier_log *log,
-> +                                  const struct btf *btf,
-> +                                  const struct btf_type *t, int off,
-> +                                  int size, enum bpf_access_type atype,
-> +                                  u32 *next_btf_id,
-> +                                  enum bpf_type_flag *flag)
-> +{
-> +       const struct btf_type *nct = READ_ONCE(nf_conn_type);
-> +       s32 type_id;
-> +       size_t end;
-> +
-> +       if (!nct) {
-> +               type_id = btf_find_by_name_kind(btf, "nf_conn", BTF_KIND_STRUCT);
-> +               if (type_id < 0)
-> +                       return -EINVAL;
-> +
-> +               nct = btf_type_by_id(btf, type_id);
-> +               WRITE_ONCE(nf_conn_type, nct);
-> +       }
-> +
-> +       if (t != nct) {
-> +               bpf_log(log, "only read is supported\n");
-> +               return -EACCES;
-> +       }
-> +
-> +       switch (off) {
-> +#if defined(CONFIG_NF_CONNTRACK_MARK)
-> +       case offsetof(struct nf_conn, mark):
-> +               end = offsetofend(struct nf_conn, mark);
-> +               break;
-> +#endif
-> +       default:
-> +               bpf_log(log, "no write support to nf_conn at off %d\n", off);
-> +               return -EACCES;
-> +       }
-> +
-> +       if (off + size > end) {
-> +               bpf_log(log,
-> +                       "write access at off %d with size %d beyond the member of nf_conn ended at %zu\n",
-> +                       off, size, end);
-> +               return -EACCES;
-> +       }
-> +
-> +       return NOT_INIT;
+There is a spelling mistake in an ASSERT_OK literal string. Fix it.
 
-Took me a long time to realize that this is a copy-paste
-from net/ipv4/bpf_tcp_ca.c.
-It's not wrong, but misleading.
-When atype == BPF_READ the return value from
-btf_struct_access should only be error<0, SCALAR_VALUE, PTR_TO_BTF_ID.
-For atype == BPF_WRITE we should probably standardize on
-error<0, or 0.
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+V2: change subject line as per Mykola Lysenko's recommendation
+---
+ tools/testing/selftests/bpf/prog_tests/kfunc_call.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The NOT_INIT happens to be zero, but explicit 0
-is cleaner to avoid confusion that this is somehow enum bpf_reg_type.
+diff --git a/tools/testing/selftests/bpf/prog_tests/kfunc_call.c b/tools/testing/selftests/bpf/prog_tests/kfunc_call.c
+index 351fafa006fb..eede7c304f86 100644
+--- a/tools/testing/selftests/bpf/prog_tests/kfunc_call.c
++++ b/tools/testing/selftests/bpf/prog_tests/kfunc_call.c
+@@ -109,7 +109,7 @@ static void test_destructive(void)
+ {
+ 	__u64 save_caps = 0;
+ 
+-	ASSERT_OK(test_destructive_open_and_load(), "succesful_load");
++	ASSERT_OK(test_destructive_open_and_load(), "successful_load");
+ 
+ 	if (!ASSERT_OK(cap_disable_effective(1ULL << CAP_SYS_BOOT, &save_caps), "drop_caps"))
+ 		return;
+-- 
+2.37.1
 
-Martin,
-since you've added this code in bpf_tcp_ca, wdyt?
