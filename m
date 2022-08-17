@@ -2,21 +2,21 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E696596A2B
-	for <lists+bpf@lfdr.de>; Wed, 17 Aug 2022 09:17:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2FC0596A1B
+	for <lists+bpf@lfdr.de>; Wed, 17 Aug 2022 09:11:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230157AbiHQHRG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Aug 2022 03:17:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38316 "EHLO
+        id S238911AbiHQHLU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Aug 2022 03:11:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231743AbiHQHRC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Aug 2022 03:17:02 -0400
+        with ESMTP id S238915AbiHQHLL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Aug 2022 03:11:11 -0400
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B43386BCD5
-        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 00:17:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3366361B18
+        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 00:11:08 -0700 (PDT)
 Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27H0NukD031115
-        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 00:17:00 -0700
+        by mx0a-00082601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27H0NWAj030401
+        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 00:11:08 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
@@ -25,13 +25,17 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc
  xRwMmC7LDoL/o2j+omdFwheC03scd8pI0Mpp7K/g5GFj2VEceNzc8fVUPN3WE0Q3W5zK
  341hsms94rCBYOeIRj7DQ8FmjGyKd4KK2tU= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3j0nrf9dxf-2
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3j0nrf9d5j-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 00:17:00 -0700
-Received: from twshared5413.23.frc3.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 00:11:07 -0700
+Received: from snc-exhub201.TheFacebook.com (2620:10d:c085:21d::7) by
+ snc-exhub204.TheFacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Wed, 17 Aug 2022 00:11:07 -0700
+Received: from twshared30313.14.frc2.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 17 Aug 2022 00:16:59 -0700
+ 15.1.2375.31; Wed, 17 Aug 2022 00:11:07 -0700
 Received: by devbig933.frc1.facebook.com (Postfix, from userid 6611)
         id DF8BB825DE4D; Tue, 16 Aug 2022 23:18:47 -0700 (PDT)
 From:   Martin KaFai Lau <kafai@fb.com>
@@ -54,8 +58,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: tDEejSrLkL802bLkDDSguPQBZlN-8rLt
-X-Proofpoint-GUID: tDEejSrLkL802bLkDDSguPQBZlN-8rLt
+X-Proofpoint-ORIG-GUID: ioUZ0qdsklzQsSAJbApO6oq7AwR8D4BL
+X-Proofpoint-GUID: ioUZ0qdsklzQsSAJbApO6oq7AwR8D4BL
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
  definitions=2022-08-17_04,2022-08-16_02,2022-06-22_01
