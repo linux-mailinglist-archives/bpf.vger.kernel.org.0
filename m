@@ -2,153 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 885245971F6
-	for <lists+bpf@lfdr.de>; Wed, 17 Aug 2022 16:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 241D75971F8
+	for <lists+bpf@lfdr.de>; Wed, 17 Aug 2022 16:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240202AbiHQOwH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Aug 2022 10:52:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37996 "EHLO
+        id S236963AbiHQOwr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Aug 2022 10:52:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbiHQOwH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Aug 2022 10:52:07 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA5D76478
-        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 07:52:04 -0700 (PDT)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4M79sR092gzmVpk;
-        Wed, 17 Aug 2022 22:49:47 +0800 (CST)
-Received: from [10.174.178.165] (10.174.178.165) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Wed, 17 Aug 2022 22:51:58 +0800
-Subject: Re: [PATCH bpf-next] bpftool: Add trace subcommand
-To:     Quentin Monnet <quentin@isovalent.com>, <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-References: <20220816151725.153343-1-weiyongjun1@huawei.com>
- <2ee546ac-cd2d-8418-1a54-7c799b626fa2@isovalent.com>
-From:   "weiyongjun (A)" <weiyongjun1@huawei.com>
-Message-ID: <e5968763-6ced-0f5e-9a2d-094b39e91256@huawei.com>
-Date:   Wed, 17 Aug 2022 22:51:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        with ESMTP id S236318AbiHQOwr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Aug 2022 10:52:47 -0400
+Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E89A091D2B
+        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 07:52:45 -0700 (PDT)
+Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-f2a4c51c45so15397628fac.9
+        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 07:52:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc;
+        bh=p6elRDyP8NYnM4v7agKH/wBfu4apiNL55+e+soKTTbc=;
+        b=5EuNmx6MxrW8SWGqqbCOqzQ+s8Te51T3R6xgbA89Sk211auzMweoYrkEzMxjTE222U
+         6ajGCVZpwYoATV1wudJViEWYzHdMWE8hUymF6A4XgcUut55VxyH8THN525b59Ojd7Ztx
+         YU+CVtzxve+a5I1GgsWNYnyT1oNDagT7mlXZ9R6nnZeAGKKjXnfRsVUK4PBaSC71+tNX
+         umoDlvWCN6b+g0o5fhq9JbSNm22rqjIfhohpDpUGJAdGySjc8SFqxKoevcEfRIkUrP3f
+         +D9Flane7vSbSlWpkP8LIEc1QAsQGoaS5RHdk8l+M97CO/LUjpNHZfVyR2Ej6JHu0Mxz
+         Ei3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
+        bh=p6elRDyP8NYnM4v7agKH/wBfu4apiNL55+e+soKTTbc=;
+        b=Wh1WiTokYDEtVuUCYvDNoJtyI63h9uooE7WZAMl++7wc+0Qim91nEuz/yQ0RDTuce7
+         j6jiTSn7ROVqwNkIxHLGU0np4oMA2hv3KQZw790NlK25xgQEttiROXZWHxVgYYPWnv60
+         kuFhaB98KTD04pHTWInxKP6BwkiFBfVih19nseGikmk4+4L5ZoqDYrQWv8iN/esV11mN
+         mUX7eDHcfRpgIwUJzKHQnzfvL/BCCr7TPIrbG6eQc2SEo5X4cNnO2it55Cd9IgPZ5UXQ
+         FD2Sj8PzV0TSZ631tHleItt5iXc4LcnKw8Cto61MhEHl4p6PUdHXwfGpCrYgPZp2I/U1
+         fg4Q==
+X-Gm-Message-State: ACgBeo2sw1AEbKgZ2iJB2fU3YS2BoX620hf3E6HVMpnZ+Z8A93Sb0eRV
+        CpRRLxEaSqLQl1PLnU4bazUITGuZqA3bx0vaU7BTa1t7xA==
+X-Google-Smtp-Source: AA6agR6jYL1Jhtyl77hp193lRTLCWuiKZuNGi023Wb2umOc1iVGeV0Q1gFXBlEJPHu1RAENEGyZZMACGud4kfjvweVc=
+X-Received: by 2002:a05:6870:9588:b0:101:c003:bfe6 with SMTP id
+ k8-20020a056870958800b00101c003bfe6mr1902929oao.41.1660747965093; Wed, 17 Aug
+ 2022 07:52:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <2ee546ac-cd2d-8418-1a54-7c799b626fa2@isovalent.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.165]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500009.china.huawei.com (7.192.105.203)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20220725124123.12975-1-flaniel@linux.microsoft.com>
+ <CAHC9VhTmgMfzc+QY8kr+BYQyd_5nEis0Y632w4S2_PGudTRT7g@mail.gmail.com> <4420381.LvFx2qVVIh@pwmachine>
+In-Reply-To: <4420381.LvFx2qVVIh@pwmachine>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 17 Aug 2022 10:52:34 -0400
+Message-ID: <CAHC9VhSMeefG5W_uuTNQYmUUZ1xcuqArxYs5sL9KOzUO_skCZw@mail.gmail.com>
+Subject: Re: [RFC PATCH v4 0/2] Add capabilities file to securityfs
+To:     Francis Laniel <flaniel@linux.microsoft.com>
+Cc:     linux-security-module@vger.kernel.org,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Serge Hallyn <serge@hallyn.com>,
+        James Morris <jmorris@namei.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:BPF [MISC]" <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-On 2022/8/17 18:14, Quentin Monnet wrote:
-> On 16/08/2022 16:17, Wei Yongjun wrote:
->> Currently, only one command is supported
->>    bpftool trace pin <bpf_prog.o> <path>
->>
->> It will pin the trace bpf program in the object file <bpf_prog.o>
->> to the <path> where <path> should be on a bpffs mount.
->>
->> For example,
->>    $ bpftool trace pin ./mtd_mchp23k256.o /sys/fs/bpf/mchp23k256
->>
->> The implementation a BPF based backend for mockup mchp23k256 mtd
->> SPI device.
->>
->> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-> Thanks a lot for the patch.
+On Wed, Aug 17, 2022 at 7:53 AM Francis Laniel
+<flaniel@linux.microsoft.com> wrote:
+> Le mardi 16 ao=C3=BBt 2022, 23:59:41 CEST Paul Moore a =C3=A9crit :
+> > On Mon, Jul 25, 2022 at 8:42 AM Francis Laniel
+> >
+> > <flaniel@linux.microsoft.com> wrote:
+> > > Hi.
+> > >
+> > > First, I hope you are fine and the same for your relatives.
+> >
+> > Hi Francis :)
+> >
+> > > A solution to this problem could be to add a way for the userspace to=
+ ask
+> > > the kernel about the capabilities it offers.
+> > > So, in this series, I added a new file to securityfs:
+> > > /sys/kernel/security/capabilities.
+> > > The goal of this file is to be used by "container world" software to =
+know
+> > > kernel capabilities at run time instead of compile time.
+> >
+> > ...
+> >
+> > > The kernel already exposes the last capability number under:
+> > > /proc/sys/kernel/cap_last_cap
+> >
+> > I'm not clear on why this patchset is needed, why can't the
+> > application simply read from "cap_last_cap" to determine what
+> > capabilities the kernel supports?
 >
-> However, I don't think it's a good idea to add the new "trace" command
-> just for loading/attaching/pinning tracepoints programs. Instead I see
-> two possible approaches.
+> When you capabilities with, for example, docker, you will fill capabiliti=
+es
+> like this:
+> docker run --rm --cap-add SYS_ADMIN debian:latest echo foo
+> As a consequence, the "echo foo" will be run with CAP_SYS_ADMIN set.
 >
-> The first would be to extend support for program attachment. Bpftool is
-> already able to load programs including tracepoints via "bpftool prog
-> load", and it is able to attach some of them via "bpftool
-> prog/net/cgroup attach". We don't support attaching tracing-related
-> programs because at the time, BPF links didn't exist so we couldn't keep
-> the programs running after bpftool exited, and after links were created
-> nobody implemented it.
->
-> So I would prefer that we extend this, by making bpftool able to attach
-> (and pin the link for) tracing-related programs. Not necessarily just
-> tracepoints by the way, it would be nice to have support for kprobes
-> too. This could be by extending "bpftool prog attach" or creating
-> "bpftool perf attach" ("bpftool perf" already focuses on tracing
-> programs, so no need to add a new "trace" subcommand).
+> Sadly, each time a new capability is added to the kernel, it means "conta=
+iner
+> stack" software should add a new string corresponding to the number of th=
+e
+> capabilities [1].
 
+Thanks for clarifying things, I thought you were more concerned about
+detecting what capabilities the running kernel supported, I didn't
+realize it was getting a string literal for each supported capability.
+Unless there is a significant show of support for this - and I'm
+guessing there isn't due to the lack of comments - I don't think this
+is something we want to add to the kernel, especially since the kernel
+doesn't really care about the capabilities' names, it's the number
+that matters.
 
-Thanks for your suggestion. I tried to make sense of what you mean.
-
-With the first approach , we can attach program with following commands:
-
-$ bpftool prog load smbus-xfer-default.o /sys/fs/bpf/testprog
-
-$ bpftool prog
-
-302: raw_tracepoint_writable  name smbus_xfer_default  tag 
-90c6bea70fef5b14  gpl
-         loaded_at 2022-08-17T14:17:44+0000  uid 0
-         xlated 816B  not jited  memlock 4096B  map_ids 296,294,297
-         btf_id 500
-
-$ bpftool perf attach id 302 spi_transfer_writeable /sys/fs/bpf/tplink
-
-Note: spi_transfer_writeable is the name of tracepoint
-
-
->
-> Second approach: I realise that the above adds a constraint, because if
-> we attach a program that was already loaded, we can't get the attach
-> point from the section name in the ELF file, we need to pass it on the
-> command line instead. I understand the desire for a one-step
-> load-attach-pin_link, but with your new subcommand it would ignore all
-> the work we've done on "bpftool prog load": support loading multiple
-> programs from an ELF file, for reusing or pinning the maps, etc. So I
-> would rather extend the existing "bpftool prog load(_all)" with a new
-> keyword to tell bpftool to attach and create the link(s), if possible
-> (when all relevant info for attaching is present in the ELF file), after
-> loading the program(s).
-
-
-Or add new keyword like 'pintp' to do one-step load-attach-pin_link:
-
-$ bpftool prog load smbus-xfer-default.o /sys/fs/bpf/testprog pintp
-
-and
-
-$ bpftool prog loadall smbus-xfer-default.o /sys/fs/bpf/testprog pintp
-
-
->
-> I'd really have the first approach in bpftool at some point, I haven't
-> found the time to look into it just yet. The second one is probably
-> closer to what you're looking to achieve, and would be nice to have as
-> well. What do you think?
-
-
-I will try to create the "bpftool perf attach" approach, if you agree 
-with it.
-
-
-Thanks,
-
-Wei Yongjun
-
-
+--=20
+paul-moore.com
