@@ -2,63 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F400259739A
-	for <lists+bpf@lfdr.de>; Wed, 17 Aug 2022 18:07:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E4D5973B7
+	for <lists+bpf@lfdr.de>; Wed, 17 Aug 2022 18:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240682AbiHQQF0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Aug 2022 12:05:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47324 "EHLO
+        id S239804AbiHQQK4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Aug 2022 12:10:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240529AbiHQQFB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Aug 2022 12:05:01 -0400
-Received: from smtp-fw-6002.amazon.com (smtp-fw-6002.amazon.com [52.95.49.90])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D6E58DDD;
-        Wed, 17 Aug 2022 09:04:40 -0700 (PDT)
+        with ESMTP id S241019AbiHQQKi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Aug 2022 12:10:38 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FBFE98CB5
+        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 09:10:37 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id q39-20020a056830442700b0063889adc0ddso8777025otv.1
+        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 09:10:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1660752284; x=1692288284;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=jSMzJmsv5zZdwNsDf2ZAA/OBZAeYGW+qRikDM2IiA44=;
-  b=gg4BigT/8QvdhEnEJb1bA/q+k31jmPrFBGfM3wml/ZfoYzk5z4Nb1yLd
-   PA++PeszdfKvXIC5QqQ30ISztMIgDu63Zju24r1m99yD/4ZsWvqcFSyie
-   w2XyFtKNuA/NBoqvUHWAlXBjLPXq2ktVSulgfqy9UEUGDhf7oaW/iRAhH
-   w=;
-X-IronPort-AV: E=Sophos;i="5.93,243,1654560000"; 
-   d="scan'208";a="234163189"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-718d0906.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-6002.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2022 16:04:25 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-pdx-2b-718d0906.us-west-2.amazon.com (Postfix) with ESMTPS id 3DE783E0446;
-        Wed, 17 Aug 2022 16:04:24 +0000 (UTC)
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.38; Wed, 17 Aug 2022 16:04:23 +0000
-Received: from 88665a182662.ant.amazon.com.com (10.43.160.201) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1118.12;
- Wed, 17 Aug 2022 16:04:20 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.com>
-To:     <kuba@kernel.org>
-CC:     <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuni1840@gmail.com>,
-        <kuniyu@amazon.com>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <pabeni@redhat.com>
-Subject: Re: [PATCH v1 net 00/15] sysctl: Fix data-races around net.core.XXX (Round 1)
-Date:   Wed, 17 Aug 2022 09:04:11 -0700
-Message-ID: <20220817160411.53641-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220817085841.60ef3b85@kernel.org>
-References: <20220817085841.60ef3b85@kernel.org>
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc;
+        bh=BaWHsWTr1OobN9zZcMtlpkKkIKQywBqe+CFVwSFeHqY=;
+        b=eRiLLz7igQjPx0JfYU8PprZO3DUuncdUb7Tmo9iIYCYI+dN3Mb88vbr7mMmOqEoI9q
+         V2xWtfyfn4pLjjCSnsdRdW0UgmXWRJjLodEmXleglMWoLXvrMcgu7nf1/qbfr92RQjau
+         ozNy8u7Jf3k2Xo3rUlZEDr/LYZC5sPGnLXykRG5ptTl0KmS4eJnGbHduTKQfDhC32+TK
+         4yShcnI/yVwlATurSSk/wAYIJt6Vlg3cHeoUqPO4xbn1CzYdtYEaXnbaIvZ2/AVnpmZD
+         +vuNmhpsMagPEXW16q6VZZHO7gnyu6hbN/eCO0l94Z1+JaCbeoRbF4dpjn59CfcFBybA
+         xqkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc;
+        bh=BaWHsWTr1OobN9zZcMtlpkKkIKQywBqe+CFVwSFeHqY=;
+        b=JMclytT2QEVJDTNxr7mufvIqymTrPppMDf3xpyUOEzZo9DdllDcqycZOfO9XYyhoMq
+         8o92iCbk6SlBTXcyhC1j7vn0BHB8FH0BuasszJ/ZfCkFn9XebVyoecFrwvQloi7hjzM9
+         dBlyBAPFwFR8RFf4iIAcvaj+6x6xnMNTRbSBsW6b+pxd6uWb809TcanUNeSLBB3xORui
+         O5u3urhJwU5XgHevkhGttYEhjFb61C96AB2ioeTaW3ylQbVdQOwaRhayhFEvfLQd2pFV
+         RN4MyjGFs9rOj1otiLHGfVxavRiVJ6y4mjV3qXZnYNScFNYqPHui+SVcswoNXHHy5f/T
+         tXCQ==
+X-Gm-Message-State: ACgBeo1UI42NWHl+o2reVTIrBtO9SShelKNPclijsotI82r7bGmO1dP3
+        Rb78wQgeJVZsibzAFJxZPGO+8dobeO4CZ6mvCUFJ
+X-Google-Smtp-Source: AA6agR4guGUn+QZf7mZb1RCMpp4j6JVXXiQZ0eZ2IgE1A3BOC2yeXgx7CL2eOB5cx4+WzLPUD0gqxUDN0g6skinQzwk=
+X-Received: by 2002:a05:6830:449e:b0:638:c72b:68ff with SMTP id
+ r30-20020a056830449e00b00638c72b68ffmr3556247otv.26.1660752636346; Wed, 17
+ Aug 2022 09:10:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.201]
-X-ClientProxiedBy: EX13D38UWB004.ant.amazon.com (10.43.161.30) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+References: <20220725124123.12975-1-flaniel@linux.microsoft.com>
+ <CAHC9VhTmgMfzc+QY8kr+BYQyd_5nEis0Y632w4S2_PGudTRT7g@mail.gmail.com>
+ <4420381.LvFx2qVVIh@pwmachine> <CAHC9VhSMeefG5W_uuTNQYmUUZ1xcuqArxYs5sL9KOzUO_skCZw@mail.gmail.com>
+ <ab1bbd48-c48d-5f5a-f090-428ffd54c07e@schaufler-ca.com>
+In-Reply-To: <ab1bbd48-c48d-5f5a-f090-428ffd54c07e@schaufler-ca.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 17 Aug 2022 12:10:25 -0400
+Message-ID: <CAHC9VhTxYaLXFbS6JnpskOkADNbL8BA5614VuK3sDTHW6DE3uQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v4 0/2] Add capabilities file to securityfs
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Francis Laniel <flaniel@linux.microsoft.com>,
+        linux-security-module@vger.kernel.org,
+        Eric Biederman <ebiederm@xmission.com>,
+        Serge Hallyn <serge@hallyn.com>,
+        James Morris <jmorris@namei.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:BPF [MISC]" <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -67,27 +74,67 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From:   Jakub Kicinski <kuba@kernel.org>
-Date:   Wed, 17 Aug 2022 08:58:41 -0700
-> On Tue, 16 Aug 2022 09:58:48 -0700 Kuniyuki Iwashima wrote:
-> > From:   Jakub Kicinski <kuba@kernel.org>
-> > Date:   Tue, 16 Aug 2022 09:27:03 -0700
-> > > On Mon, 15 Aug 2022 22:23:32 -0700 Kuniyuki Iwashima wrote:  
-> > > >   bpf: Fix data-races around bpf_jit_enable.
-> > > >   bpf: Fix data-races around bpf_jit_harden.
-> > > >   bpf: Fix data-races around bpf_jit_kallsyms.
-> > > >   bpf: Fix a data-race around bpf_jit_limit.  
-> > > 
-> > > The BPF stuff needs to go via the BPF tree, or get an ack from the BPF
-> > > maintainers. I see Daniel is CCed on some of the patches but not all.  
-> > 
-> > Sorry, I just added the author in CC.
-> > Thanks for CCing bpf mailing list, I'll wait an ACK from them.
-> 
-> So we got no reply from BPF folks and the patch got marked as Changes
-> Requested overnight, so probably best if you split the series up 
-> and send to appropriate trees.
+On Wed, Aug 17, 2022 at 11:50 AM Casey Schaufler <casey@schaufler-ca.com> w=
+rote:
+> On 8/17/2022 7:52 AM, Paul Moore wrote:
+> > On Wed, Aug 17, 2022 at 7:53 AM Francis Laniel
+> > <flaniel@linux.microsoft.com> wrote:
+> >> Le mardi 16 ao=C3=BBt 2022, 23:59:41 CEST Paul Moore a =C3=A9crit :
+> >>> On Mon, Jul 25, 2022 at 8:42 AM Francis Laniel
+> >>>
+> >>> <flaniel@linux.microsoft.com> wrote:
+> >>>> Hi.
+> >>>>
+> >>>> First, I hope you are fine and the same for your relatives.
+> >>> Hi Francis :)
+> >>>
+> >>>> A solution to this problem could be to add a way for the userspace t=
+o ask
+> >>>> the kernel about the capabilities it offers.
+> >>>> So, in this series, I added a new file to securityfs:
+> >>>> /sys/kernel/security/capabilities.
+> >>>> The goal of this file is to be used by "container world" software to=
+ know
+> >>>> kernel capabilities at run time instead of compile time.
+> >>> ...
+> >>>
+> >>>> The kernel already exposes the last capability number under:
+> >>>> /proc/sys/kernel/cap_last_cap
+> >>> I'm not clear on why this patchset is needed, why can't the
+> >>> application simply read from "cap_last_cap" to determine what
+> >>> capabilities the kernel supports?
+> >> When you capabilities with, for example, docker, you will fill capabil=
+ities
+> >> like this:
+> >> docker run --rm --cap-add SYS_ADMIN debian:latest echo foo
+> >> As a consequence, the "echo foo" will be run with CAP_SYS_ADMIN set.
+> >>
+> >> Sadly, each time a new capability is added to the kernel, it means "co=
+ntainer
+> >> stack" software should add a new string corresponding to the number of=
+ the
+> >> capabilities [1].
+> > Thanks for clarifying things, I thought you were more concerned about
+> > detecting what capabilities the running kernel supported, I didn't
+> > realize it was getting a string literal for each supported capability.
+> > Unless there is a significant show of support for this
+>
+> I believe this could be a significant help in encouraging the use of
+> capabilities. An application that has to know the list of capabilities
+> at compile time but is expected to run unmodified for decades isn't
+> going to be satisfied with cap_last_cap. The best it can do with that
+> is abort, not being able to ask an admin what to do in the presence of
+> a capability that wasn't around before because the name isn't known.
 
-I see, I'll do so.
-Sorry for bothering you.
+An application isn't going to be able to deduce the semantic value of
+a capability based solely on a string value, an integer is just as
+meaningful in that regard.  What might be useful is if the application
+simply accepts a set of capabilities from the user and then checks
+those against the maximum supported by the kernel, but once again that
+doesn't require a string value, it just requires the application
+taking a set of integers and passing those into the kernel when a
+capability set is required.  I still don't see how adding the
+capability string names to the kernel is useful here.
 
+--=20
+paul-moore.com
