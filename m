@@ -2,139 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D117597885
-	for <lists+bpf@lfdr.de>; Wed, 17 Aug 2022 23:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C225978C0
+	for <lists+bpf@lfdr.de>; Wed, 17 Aug 2022 23:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242277AbiHQVFM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Aug 2022 17:05:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32954 "EHLO
+        id S242321AbiHQVJS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Aug 2022 17:09:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242291AbiHQVFK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Aug 2022 17:05:10 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB630AB4EA
-        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 14:05:07 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d10so13001725plr.6
-        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 14:05:07 -0700 (PDT)
+        with ESMTP id S242318AbiHQVJR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Aug 2022 17:09:17 -0400
+Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com [IPv6:2001:4860:4864:20::35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA843DF0E
+        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 14:09:14 -0700 (PDT)
+Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-11be650aaccso9145947fac.6
+        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 14:09:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc;
-        bh=ZBI+fwy76bkYY8LVV14e2AjKMWsYkt0VzLIv3m+2oj8=;
-        b=WWKi4wI8r69uN3XJ0TC1pEJIpFbczA4APGAcyEcd85IDHK1d0qgmvHQGgGWL29zF80
-         h6GVEVP662vDxI0f1Ihp9BP9SNsUKr/sAaalCilStw2HtG+V91lr9Y+ThIEzl9CEgiVe
-         x+xHcMTAqaqDqV2aqjtTd/xGI5qKv1LxiJ27F32wwTMARWO03anfgcCy+u55VZcY1QuN
-         zJJh3bmyUuq6wgP3xmlIPUTYPYPUAdYWM0aCL76A31OJ5tFL6pl54wF0Kl9LKhXA9ckl
-         BQmX+AWaxGxV2iGQawz9rTaK9CSK38EjvwR2IDHqzxs54KW9Zub5bvmqUHzoIW7nrDeq
-         g+YA==
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=3nAF7A4zag+lbZIR/JeYceDw3xmVGJHxEljejc4+EMk=;
+        b=drRJBjO8ZtYFWGv/xY6rGxrJuTubV5RfziGsueXADRqxRSQZsg8Dcv7T6sgwov1s1o
+         1cugYMMRd9VAhocoLUz+CFVkc+pIiqYIShCZewfgGMwc27fEMcjrr5tkVochcYJsr2K7
+         Qf4YzeaH+UsGXUNG07W+7MayVhDPPoAtkLY1RJPexfHPes+hA1COp3Qu+PUiivC7z3g9
+         FmozmoPv+QeTerF12DpUIbJfigr83yCgiygRITJISaSSQMkmvVaNi87LBM1O+/3HCh+T
+         mrLIGsrXUBqW4+AvRNyY435qZuTangAOUK/Jd69gqGcD9APbQFG+UhAiY9ZXBiucW8cR
+         H3/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
-        bh=ZBI+fwy76bkYY8LVV14e2AjKMWsYkt0VzLIv3m+2oj8=;
-        b=JPisQGOc4VnTKFeYA/Ly10jNfeRb+V/mTmOY8yMIem/Vjq4JWEGT9pEiOXZo7CdRXD
-         r5Ow0s1JCwy3qw7FMG5cYeFVUxQOtJ7QDHxRro1/uu2F8lRSHNqwwdOESGlfytkcZWqF
-         lr6y44JyWG2D27uyJz3qbDu0jZu79aqCPNryW8qox/VLLJnERYOmTeQqg3sN0J14hgRR
-         6+FZFjHnDrkBz4Tyx/n20LblRCLn+3s/dAL7Di9txwNZpt4ZJoCgR2a5IDifHh+NXJB+
-         A5DMeFIpZwE/VWCDYTFTgBcu8lKCNEMXLneY0Lc5qOmB5j0BQ5S3V7C9unu1qF8Bkb4+
-         Bz6Q==
-X-Gm-Message-State: ACgBeo05Mp8PHWm/6Ng0ACFr3d3Ix0WT6g0UVZeUhDxkYr3XgWUDB0CR
-        QUn2SPStfzH2MGNAW1VVgWg=
-X-Google-Smtp-Source: AA6agR7gJR7MOvq7/smgPOcBfW8hZe45QZI7aUrmByAEqpEfPv1pIsb0aEpqc9BmPebRsePmQkj86Q==
-X-Received: by 2002:a17:90b:1b05:b0:1fa:c33e:9137 with SMTP id nu5-20020a17090b1b0500b001fac33e9137mr1728268pjb.59.1660770306969;
-        Wed, 17 Aug 2022 14:05:06 -0700 (PDT)
-Received: from localhost.localdomain ([2620:10d:c090:500::1:ccd6])
-        by smtp.gmail.com with ESMTPSA id 72-20020a62174b000000b005349f259457sm8204082pfx.160.2022.08.17.14.05.05
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Wed, 17 Aug 2022 14:05:06 -0700 (PDT)
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     davem@davemloft.net
-Cc:     daniel@iogearbox.net, andrii@kernel.org, tj@kernel.org,
-        memxor@gmail.com, delyank@fb.com, linux-mm@kvack.org,
-        bpf@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v2 bpf-next 12/12] bpf: Remove tracing program restriction on map types
-Date:   Wed, 17 Aug 2022 14:04:19 -0700
-Message-Id: <20220817210419.95560-13-alexei.starovoitov@gmail.com>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20220817210419.95560-1-alexei.starovoitov@gmail.com>
-References: <20220817210419.95560-1-alexei.starovoitov@gmail.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=3nAF7A4zag+lbZIR/JeYceDw3xmVGJHxEljejc4+EMk=;
+        b=V0AvsPxo/KK5DgygCwnUrD99N5IzenyNAwlIcwCwh1lHBfYD9tqh0k7o5s5G+Ev3C3
+         IWfqKUNJJVHKogi0FzCmmJw+P8Npjv9X0M2X4HlRJ6LwVmHW73ixMkZV2O5uiRXyE61i
+         sMU3PLNlt4Phl/eTmrUCSjxo/74Ig7UI85mtxqhZL6Sge8Pjk0vpIRCCBzuKybJ5c+MZ
+         xM3kGCmh7WciItwDMlURPxDG9n2J52KeyhRSEejpJqRKwCOrpJCIiAfv2WzHVSLzRCK/
+         4s8J9jzIzlfcbegio8ZpGIhNnIpeKp/XpCbVt830AgZauEPUoHkfeQ11XogoOr0Qf3VD
+         sh/g==
+X-Gm-Message-State: ACgBeo2CDvVeq71tzvPLJg9h+DyGvcaHdcweaDEHChvmnz+0O37F7fXU
+        CUAbdGkbwT5gybQHNFCHwlyuWt8UKJsrxafQpCzK
+X-Google-Smtp-Source: AA6agR6UtJcD0LCRVD5ZxpCbZU30Dth24rP1kcXpw+C/3aIhO30r/ueUbSJqc2APx0isNDq4wdyzZLK541ijjU5Fhd4=
+X-Received: by 2002:a05:6870:a78d:b0:11c:437b:ec70 with SMTP id
+ x13-20020a056870a78d00b0011c437bec70mr2771915oao.136.1660770553733; Wed, 17
+ Aug 2022 14:09:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20220815162028.926858-1-fred@cloudflare.com> <CAHC9VhTuxxRfJg=Ax5z87Jz6tq1oVRcppB444dHM2gP-FZrkTQ@mail.gmail.com>
+ <8735dux60p.fsf@email.froward.int.ebiederm.org> <CAHC9VhSHJNLS-KJ-Rz1R12PQbqACSksLYLbymF78d5hMkSGc-g@mail.gmail.com>
+ <871qte8wy3.fsf@email.froward.int.ebiederm.org> <CAHC9VhSU_sqMQwdoh0nAFdURqs_cVFbva8=otjcZUo8s+xyC9A@mail.gmail.com>
+ <8735du7fnp.fsf@email.froward.int.ebiederm.org>
+In-Reply-To: <8735du7fnp.fsf@email.froward.int.ebiederm.org>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 17 Aug 2022 17:09:07 -0400
+Message-ID: <CAHC9VhQuRNxzgVeNhDy=p5+RHz5+bTH6zFdU=UvvEhyH1e962A@mail.gmail.com>
+Subject: Re: [PATCH v5 0/4] Introduce security_create_user_ns()
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Frederick Lawler <fred@cloudflare.com>, kpsingh@kernel.org,
+        revest@chromium.org, jackmanb@chromium.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        jmorris@namei.org, serge@hallyn.com,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        shuah@kernel.org, brauner@kernel.org, casey@schaufler-ca.com,
+        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-team@cloudflare.com, cgzones@googlemail.com,
+        karl@bigbadwolfsecurity.com, tixxdz@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Alexei Starovoitov <ast@kernel.org>
+On Wed, Aug 17, 2022 at 4:56 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+> Paul Moore <paul@paul-moore.com> writes:
+> > On Wed, Aug 17, 2022 at 3:58 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+> >> Paul Moore <paul@paul-moore.com> writes:
+> >>
+> >> > At the end of the v4 patchset I suggested merging this into lsm/next
+> >> > so it could get a full -rc cycle in linux-next, assuming no issues
+> >> > were uncovered during testing
+> >>
+> >> What in the world can be uncovered in linux-next for code that has no in
+> >> tree users.
+> >
+> > The patchset provides both BPF LSM and SELinux implementations of the
+> > hooks along with a BPF LSM test under tools/testing/selftests/bpf/.
+> > If no one beats me to it, I plan to work on adding a test to the
+> > selinux-testsuite as soon as I'm done dealing with other urgent
+> > LSM/SELinux issues (io_uring CMD passthrough, SCTP problems, etc.); I
+> > run these tests multiple times a week (multiple times a day sometimes)
+> > against the -rcX kernels with the lsm/next, selinux/next, and
+> > audit/next branches applied on top.  I know others do similar things.
+>
+> A layer of hooks that leaves all of the logic to userspace is not an
+> in-tree user for purposes of understanding the logic of the code.
 
-The hash map is now fully converted to bpf_mem_alloc. Its implementation is not
-allocating synchronously and not calling call_rcu() directly. It's now safe to
-use non-preallocated hash maps in all types of tracing programs including
-BPF_PROG_TYPE_PERF_EVENT that runs out of NMI context.
+The BPF LSM selftests which are part of this patchset live in-tree.
+The SELinux hook implementation is completely in-tree with the
+subject/verb/object relationship clearly described by the code itself.
+After all, the selinux_userns_create() function consists of only two
+lines, one of which is an assignment.  Yes, it is true that the
+SELinux policy lives outside the kernel, but that is because there is
+no singular SELinux policy for everyone.  From a practical
+perspective, the SELinux policy is really just a configuration file
+used to setup the kernel at runtime; it is not significantly different
+than an iptables script, /etc/sysctl.conf, or any of the other myriad
+of configuration files used to configure the kernel during boot.
 
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
----
- kernel/bpf/verifier.c | 42 ------------------------------------------
- 1 file changed, 42 deletions(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index d785f29047d7..a1ada707c57c 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -12599,48 +12599,6 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
- 
- {
- 	enum bpf_prog_type prog_type = resolve_prog_type(prog);
--	/*
--	 * Validate that trace type programs use preallocated hash maps.
--	 *
--	 * For programs attached to PERF events this is mandatory as the
--	 * perf NMI can hit any arbitrary code sequence.
--	 *
--	 * All other trace types using non-preallocated per-cpu hash maps are
--	 * unsafe as well because tracepoint or kprobes can be inside locked
--	 * regions of the per-cpu memory allocator or at a place where a
--	 * recursion into the per-cpu memory allocator would see inconsistent
--	 * state. Non per-cpu hash maps are using bpf_mem_alloc-tor which is
--	 * safe to use from kprobe/fentry and in RT.
--	 *
--	 * On RT enabled kernels run-time allocation of all trace type
--	 * programs is strictly prohibited due to lock type constraints. On
--	 * !RT kernels it is allowed for backwards compatibility reasons for
--	 * now, but warnings are emitted so developers are made aware of
--	 * the unsafety and can fix their programs before this is enforced.
--	 */
--	if (is_tracing_prog_type(prog_type) && !is_preallocated_map(map)) {
--		if (prog_type == BPF_PROG_TYPE_PERF_EVENT) {
--			/* perf_event bpf progs have to use preallocated hash maps
--			 * because non-prealloc is still relying on call_rcu to free
--			 * elements.
--			 */
--			verbose(env, "perf_event programs can only use preallocated hash map\n");
--			return -EINVAL;
--		}
--		if (map->map_type == BPF_MAP_TYPE_PERCPU_HASH ||
--		    (map->inner_map_meta &&
--		     map->inner_map_meta->map_type == BPF_MAP_TYPE_PERCPU_HASH)) {
--			if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
--				verbose(env,
--					"trace type programs can only use preallocated per-cpu hash map\n");
--				return -EINVAL;
--			}
--			WARN_ONCE(1, "trace type BPF program uses run-time allocation\n");
--			verbose(env,
--				"trace type programs with run-time allocated per-cpu hash maps are unsafe."
--				" Switch to preallocated hash maps.\n");
--		}
--	}
- 
- 	if (map_value_has_spin_lock(map)) {
- 		if (prog_type == BPF_PROG_TYPE_SOCKET_FILTER) {
 -- 
-2.30.2
-
+paul-moore.com
