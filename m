@@ -2,107 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F82759793A
-	for <lists+bpf@lfdr.de>; Wed, 17 Aug 2022 23:50:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDAD6597951
+	for <lists+bpf@lfdr.de>; Wed, 17 Aug 2022 23:55:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242364AbiHQVtr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Aug 2022 17:49:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52858 "EHLO
+        id S241786AbiHQVvS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Aug 2022 17:51:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242425AbiHQVtZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Aug 2022 17:49:25 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E8DBAE216
-        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 14:49:01 -0700 (PDT)
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oOQuJ-0006lb-3s; Wed, 17 Aug 2022 23:48:59 +0200
-Received: from [85.1.206.226] (helo=linux-4.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1oOQuI-000RP8-Tp; Wed, 17 Aug 2022 23:48:58 +0200
-Subject: Re: [PATCH bpf-next] bpf: Sync include/uapi/linux/bpf.h with
- tools/include/uapi/linux/bpf.h
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     Dave Marchevsky <davemarchevsky@fb.com>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-References: <20220817010504.4072757-1-davemarchevsky@fb.com>
- <22aebc88-da67-f086-e620-dd4a16e2bc69@iogearbox.net>
-Message-ID: <dbe69cc8-30d7-7cfb-9652-f0763dfd1c01@iogearbox.net>
-Date:   Wed, 17 Aug 2022 23:48:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S238984AbiHQVvN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Aug 2022 17:51:13 -0400
+Received: from mail-oa1-x2d.google.com (mail-oa1-x2d.google.com [IPv6:2001:4860:4864:20::2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2529731EDF
+        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 14:51:11 -0700 (PDT)
+Received: by mail-oa1-x2d.google.com with SMTP id 586e51a60fabf-11c59785966so2982589fac.11
+        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 14:51:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc;
+        bh=/CTcFk+7lIOz0f66/sW+yd0rIladiacxraDVQHveddU=;
+        b=Z37nNyL7fO7ofqzBqhsC8MAbzHXk1QozG1ARlNgf2r4n9sGA4oerk97YgCUalxM2mT
+         fhO9INMD4HzzQ1aPLW8N0XehhCLxHPUPhhB2ZRsd51SQdMmoonliVtb6BNO3XaXqioUP
+         yEQ/n8yVyhV7BjCADUL3h32ZxYj9GekLs3//TVqThFKgw9sZdbJf86XYIr1DAlZ8bmwG
+         xzmKfuAuIDGZVS8TsOPgiMbuIvDri9visdfG8qtZqt2pulyENYyUXIOotM2uhDYmrwUt
+         GN+YjefZ6mInoiQ6Eclx15Ltm0cQmwqruPbM5Tyh00SFGnU2OPWk4LHlvYLnPX/vMlx7
+         IPbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc;
+        bh=/CTcFk+7lIOz0f66/sW+yd0rIladiacxraDVQHveddU=;
+        b=MxOgn678wSfORGBmav/agUFu92GoCBvJIjuUJWNZHpNBnq9KjMs+y9hVWI3/YNM66D
+         QG7lDC5idxo6P6mP7daD856jG+rzegVqHXXCi6pN3nlVYHJw34ONVCcDys343ItkBUxE
+         YvlTq0XmDsXequtJchRZegEpDsDHXM1B9PTyQEe7kyrM70GSvh+L+d09VtfpyhlgNUyp
+         R7b8LVYqSl/UXOsZgQyyzBsco6IJ1ncQaEvMxBvV/ij4RnHvLBDY8ZjzQi79MITy3iga
+         UNhstrc2KypGxfIk9h8Xod6whmGmtoC9oDzaCFncmQSTKiueN1bgycA7ja8b35GAlGNo
+         4Gag==
+X-Gm-Message-State: ACgBeo1NiUt0CB31lF2uwNsnsAARnI5+Dw76Jp1MuHWeXg8nF1xNHKu4
+        pH4+/0QceFM9JBTYP3LQqvgc8EMVFbgRa4TyTXiKX9q10CGG25U=
+X-Google-Smtp-Source: AA6agR50Tcanb0vgcmzi8OeuXVsdfxGnJyO8cUD9VxdPHwqqDOjJ8rNBXuNdMQ+4DIsaFAJLlr1YMLOTZC7fMkQtyMY=
+X-Received: by 2002:a05:6870:9588:b0:101:c003:bfe6 with SMTP id
+ k8-20020a056870958800b00101c003bfe6mr2769479oao.41.1660773070428; Wed, 17 Aug
+ 2022 14:51:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <22aebc88-da67-f086-e620-dd4a16e2bc69@iogearbox.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.6/26630/Wed Aug 17 09:53:39 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20220815162028.926858-1-fred@cloudflare.com> <CAHC9VhTuxxRfJg=Ax5z87Jz6tq1oVRcppB444dHM2gP-FZrkTQ@mail.gmail.com>
+ <8735dux60p.fsf@email.froward.int.ebiederm.org> <CAHC9VhSHJNLS-KJ-Rz1R12PQbqACSksLYLbymF78d5hMkSGc-g@mail.gmail.com>
+ <871qte8wy3.fsf@email.froward.int.ebiederm.org> <CAHC9VhSU_sqMQwdoh0nAFdURqs_cVFbva8=otjcZUo8s+xyC9A@mail.gmail.com>
+ <8735du7fnp.fsf@email.froward.int.ebiederm.org> <CAHC9VhQuRNxzgVeNhDy=p5+RHz5+bTH6zFdU=UvvEhyH1e962A@mail.gmail.com>
+ <87tu6a4l83.fsf@email.froward.int.ebiederm.org>
+In-Reply-To: <87tu6a4l83.fsf@email.froward.int.ebiederm.org>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 17 Aug 2022 17:50:59 -0400
+Message-ID: <CAHC9VhQnPAsmjmKo-e84XDJ1wmaOFkTKPjjztsOa9Yrq+AeAQA@mail.gmail.com>
+Subject: Re: [PATCH v5 0/4] Introduce security_create_user_ns()
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Frederick Lawler <fred@cloudflare.com>, kpsingh@kernel.org,
+        revest@chromium.org, jackmanb@chromium.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        jmorris@namei.org, serge@hallyn.com,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        shuah@kernel.org, brauner@kernel.org, casey@schaufler-ca.com,
+        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-team@cloudflare.com, cgzones@googlemail.com,
+        karl@bigbadwolfsecurity.com, tixxdz@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 8/17/22 11:21 PM, Daniel Borkmann wrote:
-> [ +Gustavo ]
-> 
-> On 8/17/22 3:05 AM, Dave Marchevsky wrote:
->> Commit 94dfc73e7cf4 ("treewide: uapi: Replace zero-length arrays with
->> flexible-array members") modified bpf_lpm_trie_key struct's data member
->> in include/uapi/linux/bpf.h, but didn't make the same change in tools
->> dir's copy. Propagate it over and fix comment indentation as well.
->>
->> This is a nonfunctional change.
->>
->> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-> 
-> Gustavo, 94dfc73e7cf4 ("treewide: uapi: Replace zero-length arrays with flexible-array members")
-> breaks BPF when copied from include/uapi/linux/bpf.h to tools/include/uapi/linux/bpf.h :
-> 
-> CI: https://github.com/kernel-patches/bpf/runs/7885234999?check_suite_focus=true
-> 
->    [...]
->      CLNG-BPF [test_maps] map_ptr_kern.o
->      CLNG-BPF [test_maps] btf__core_reloc_arrays___diff_arr_val_sz.o
->      CLNG-BPF [test_maps] test_bpf_cookie.o
->    progs/map_ptr_kern.c:314:26: error: field 'trie_key' with variable sized type 'struct bpf_lpm_trie_key' not at the end of a struct or class is a GNU extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
->            struct bpf_lpm_trie_key trie_key;
->                                    ^
->      CLNG-BPF [test_maps] btf__core_reloc_type_based___diff.o
->    1 error generated.
->    make: *** [Makefile:521: /tmp/runner/work/bpf/bpf/tools/testing/selftests/bpf/map_ptr_kern.o] Error 1
->    make: *** Waiting for unfinished jobs....
-> 
-> If you look at the selftest tools/testing/selftests/bpf/progs/map_ptr_kern.c +314 :
-> 
->    /* Key of an a BPF_MAP_TYPE_LPM_TRIE entry */
->    struct bpf_lpm_trie_key {
->          __u32   prefixlen;      /* up to 32 for AF_INET, 128 for AF_INET6 */
->          __u8    data[];         /* Arbitrary size */
->    };
-> 
->    struct lpm_key {
->          struct bpf_lpm_trie_key trie_key;
->          __u32 data;
->    };
-> 
-> Did you try to compile the tree (or selftests) with LLVM? I doubt the UX will be nice if everyone
-> now has to add -Wno-gnu-variable-sized-type-not-at-end ..
+On Wed, Aug 17, 2022 at 5:24 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+> I object to adding the new system configuration knob.
+>
+> Especially when I don't see people explaining why such a knob is a good
+> idea.  What is userspace going to do with this new feature that makes it
+> worth maintaining in the kernel?
 
-Undone here until a different workaround can be found (affects both bpf and bpf-next):
+From https://lore.kernel.org/all/CAEiveUdPhEPAk7Y0ZXjPsD=Vb5hn453CHzS9aG-tkyRa8bf_eg@mail.gmail.com/
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/commit/?id=3024d95a4c521c278a7504ee9e80c57c3a9750e0
+ "We have valid use cases not specifically related to the
+  attack surface, but go into the middle from bpf observability
+  to enforcement. As we want to track namespace creation, changes,
+  nesting and per task creds context depending on the nature of
+  the workload."
+ -Djalal Harouni
 
-Thanks,
-Daniel
+From https://lore.kernel.org/linux-security-module/CALrw=nGT0kcHh4wyBwUF-Q8+v8DgnyEJM55vfmABwfU67EQn=g@mail.gmail.com/
+
+ "[W]e do want to embrace user namespaces in our code and some of
+  our workloads already depend on it. Hence we didn't agree to
+  Debian's approach of just having a global sysctl. But there is
+  "our code" and there is "third party" code, which might not even
+  be open source due to various reasons. And while the path exists
+  for that code to do something bad - we want to block it."
+ -Ignat Korchagin
+
+From https://lore.kernel.org/linux-security-module/CAHC9VhSKmqn5wxF3BZ67Z+-CV7sZzdnO+JODq48rZJ4WAe8ULA@mail.gmail.com/
+
+ "I've heard you talk about bugs being the only reason why people
+  would want to ever block user namespaces, but I think we've all
+  seen use cases now where it goes beyond that.  However, even if
+  it didn't, the need to build high confidence/assurance systems
+  where big chunks of functionality can be disabled based on a
+  security policy is a very real use case, and this patchset would
+  help enable that."
+ -Paul Moore (with apologies for self-quoting)
+
+From https://lore.kernel.org/linux-security-module/CAHC9VhRSCXCM51xpOT95G_WVi=UQ44gNV=uvvG23p8wn16uYSA@mail.gmail.com/
+
+ "One of the selling points of the BPF LSM is that it allows for
+  various different ways of reporting and logging beyond audit.
+  However, even if it was limited to just audit I believe that
+  provides some useful justification as auditing fork()/clone()
+  isn't quite the same and could be difficult to do at scale in
+  some configurations."
+ -Paul Moore (my apologies again)
+
+From https://lore.kernel.org/linux-security-module/20220722082159.jgvw7jgds3qwfyqk@wittgenstein/
+
+ "Nice and straightforward."
+ -Christian Brauner
+
+-- 
+paul-moore.com
