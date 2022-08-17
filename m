@@ -2,118 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C225978C0
-	for <lists+bpf@lfdr.de>; Wed, 17 Aug 2022 23:12:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 621315978DA
+	for <lists+bpf@lfdr.de>; Wed, 17 Aug 2022 23:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242321AbiHQVJS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Aug 2022 17:09:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40008 "EHLO
+        id S241317AbiHQVVv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Aug 2022 17:21:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242318AbiHQVJR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Aug 2022 17:09:17 -0400
-Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com [IPv6:2001:4860:4864:20::35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA843DF0E
-        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 14:09:14 -0700 (PDT)
-Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-11be650aaccso9145947fac.6
-        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 14:09:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=3nAF7A4zag+lbZIR/JeYceDw3xmVGJHxEljejc4+EMk=;
-        b=drRJBjO8ZtYFWGv/xY6rGxrJuTubV5RfziGsueXADRqxRSQZsg8Dcv7T6sgwov1s1o
-         1cugYMMRd9VAhocoLUz+CFVkc+pIiqYIShCZewfgGMwc27fEMcjrr5tkVochcYJsr2K7
-         Qf4YzeaH+UsGXUNG07W+7MayVhDPPoAtkLY1RJPexfHPes+hA1COp3Qu+PUiivC7z3g9
-         FmozmoPv+QeTerF12DpUIbJfigr83yCgiygRITJISaSSQMkmvVaNi87LBM1O+/3HCh+T
-         mrLIGsrXUBqW4+AvRNyY435qZuTangAOUK/Jd69gqGcD9APbQFG+UhAiY9ZXBiucW8cR
-         H3/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=3nAF7A4zag+lbZIR/JeYceDw3xmVGJHxEljejc4+EMk=;
-        b=V0AvsPxo/KK5DgygCwnUrD99N5IzenyNAwlIcwCwh1lHBfYD9tqh0k7o5s5G+Ev3C3
-         IWfqKUNJJVHKogi0FzCmmJw+P8Npjv9X0M2X4HlRJ6LwVmHW73ixMkZV2O5uiRXyE61i
-         sMU3PLNlt4Phl/eTmrUCSjxo/74Ig7UI85mtxqhZL6Sge8Pjk0vpIRCCBzuKybJ5c+MZ
-         xM3kGCmh7WciItwDMlURPxDG9n2J52KeyhRSEejpJqRKwCOrpJCIiAfv2WzHVSLzRCK/
-         4s8J9jzIzlfcbegio8ZpGIhNnIpeKp/XpCbVt830AgZauEPUoHkfeQ11XogoOr0Qf3VD
-         sh/g==
-X-Gm-Message-State: ACgBeo2CDvVeq71tzvPLJg9h+DyGvcaHdcweaDEHChvmnz+0O37F7fXU
-        CUAbdGkbwT5gybQHNFCHwlyuWt8UKJsrxafQpCzK
-X-Google-Smtp-Source: AA6agR6UtJcD0LCRVD5ZxpCbZU30Dth24rP1kcXpw+C/3aIhO30r/ueUbSJqc2APx0isNDq4wdyzZLK541ijjU5Fhd4=
-X-Received: by 2002:a05:6870:a78d:b0:11c:437b:ec70 with SMTP id
- x13-20020a056870a78d00b0011c437bec70mr2771915oao.136.1660770553733; Wed, 17
- Aug 2022 14:09:13 -0700 (PDT)
+        with ESMTP id S233446AbiHQVVu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Aug 2022 17:21:50 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51914A5992
+        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 14:21:49 -0700 (PDT)
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1oOQTz-0004Wo-BI; Wed, 17 Aug 2022 23:21:47 +0200
+Received: from [85.1.206.226] (helo=linux-4.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1oOQTz-0004du-40; Wed, 17 Aug 2022 23:21:47 +0200
+Subject: Re: [PATCH bpf-next] bpf: Sync include/uapi/linux/bpf.h with
+ tools/include/uapi/linux/bpf.h
+To:     Dave Marchevsky <davemarchevsky@fb.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+References: <20220817010504.4072757-1-davemarchevsky@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <22aebc88-da67-f086-e620-dd4a16e2bc69@iogearbox.net>
+Date:   Wed, 17 Aug 2022 23:21:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20220815162028.926858-1-fred@cloudflare.com> <CAHC9VhTuxxRfJg=Ax5z87Jz6tq1oVRcppB444dHM2gP-FZrkTQ@mail.gmail.com>
- <8735dux60p.fsf@email.froward.int.ebiederm.org> <CAHC9VhSHJNLS-KJ-Rz1R12PQbqACSksLYLbymF78d5hMkSGc-g@mail.gmail.com>
- <871qte8wy3.fsf@email.froward.int.ebiederm.org> <CAHC9VhSU_sqMQwdoh0nAFdURqs_cVFbva8=otjcZUo8s+xyC9A@mail.gmail.com>
- <8735du7fnp.fsf@email.froward.int.ebiederm.org>
-In-Reply-To: <8735du7fnp.fsf@email.froward.int.ebiederm.org>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 17 Aug 2022 17:09:07 -0400
-Message-ID: <CAHC9VhQuRNxzgVeNhDy=p5+RHz5+bTH6zFdU=UvvEhyH1e962A@mail.gmail.com>
-Subject: Re: [PATCH v5 0/4] Introduce security_create_user_ns()
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Frederick Lawler <fred@cloudflare.com>, kpsingh@kernel.org,
-        revest@chromium.org, jackmanb@chromium.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        jmorris@namei.org, serge@hallyn.com,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        shuah@kernel.org, brauner@kernel.org, casey@schaufler-ca.com,
-        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        kernel-team@cloudflare.com, cgzones@googlemail.com,
-        karl@bigbadwolfsecurity.com, tixxdz@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20220817010504.4072757-1-davemarchevsky@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.6/26630/Wed Aug 17 09:53:39 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Aug 17, 2022 at 4:56 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
-> Paul Moore <paul@paul-moore.com> writes:
-> > On Wed, Aug 17, 2022 at 3:58 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
-> >> Paul Moore <paul@paul-moore.com> writes:
-> >>
-> >> > At the end of the v4 patchset I suggested merging this into lsm/next
-> >> > so it could get a full -rc cycle in linux-next, assuming no issues
-> >> > were uncovered during testing
-> >>
-> >> What in the world can be uncovered in linux-next for code that has no in
-> >> tree users.
-> >
-> > The patchset provides both BPF LSM and SELinux implementations of the
-> > hooks along with a BPF LSM test under tools/testing/selftests/bpf/.
-> > If no one beats me to it, I plan to work on adding a test to the
-> > selinux-testsuite as soon as I'm done dealing with other urgent
-> > LSM/SELinux issues (io_uring CMD passthrough, SCTP problems, etc.); I
-> > run these tests multiple times a week (multiple times a day sometimes)
-> > against the -rcX kernels with the lsm/next, selinux/next, and
-> > audit/next branches applied on top.  I know others do similar things.
->
-> A layer of hooks that leaves all of the logic to userspace is not an
-> in-tree user for purposes of understanding the logic of the code.
+[ +Gustavo ]
 
-The BPF LSM selftests which are part of this patchset live in-tree.
-The SELinux hook implementation is completely in-tree with the
-subject/verb/object relationship clearly described by the code itself.
-After all, the selinux_userns_create() function consists of only two
-lines, one of which is an assignment.  Yes, it is true that the
-SELinux policy lives outside the kernel, but that is because there is
-no singular SELinux policy for everyone.  From a practical
-perspective, the SELinux policy is really just a configuration file
-used to setup the kernel at runtime; it is not significantly different
-than an iptables script, /etc/sysctl.conf, or any of the other myriad
-of configuration files used to configure the kernel during boot.
+On 8/17/22 3:05 AM, Dave Marchevsky wrote:
+> Commit 94dfc73e7cf4 ("treewide: uapi: Replace zero-length arrays with
+> flexible-array members") modified bpf_lpm_trie_key struct's data member
+> in include/uapi/linux/bpf.h, but didn't make the same change in tools
+> dir's copy. Propagate it over and fix comment indentation as well.
+> 
+> This is a nonfunctional change.
+> 
+> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
 
--- 
-paul-moore.com
+Gustavo, 94dfc73e7cf4 ("treewide: uapi: Replace zero-length arrays with flexible-array members")
+breaks BPF when copied from include/uapi/linux/bpf.h to tools/include/uapi/linux/bpf.h :
+
+CI: https://github.com/kernel-patches/bpf/runs/7885234999?check_suite_focus=true
+
+   [...]
+     CLNG-BPF [test_maps] map_ptr_kern.o
+     CLNG-BPF [test_maps] btf__core_reloc_arrays___diff_arr_val_sz.o
+     CLNG-BPF [test_maps] test_bpf_cookie.o
+   progs/map_ptr_kern.c:314:26: error: field 'trie_key' with variable sized type 'struct bpf_lpm_trie_key' not at the end of a struct or class is a GNU extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
+           struct bpf_lpm_trie_key trie_key;
+                                   ^
+     CLNG-BPF [test_maps] btf__core_reloc_type_based___diff.o
+   1 error generated.
+   make: *** [Makefile:521: /tmp/runner/work/bpf/bpf/tools/testing/selftests/bpf/map_ptr_kern.o] Error 1
+   make: *** Waiting for unfinished jobs....
+
+If you look at the selftest tools/testing/selftests/bpf/progs/map_ptr_kern.c +314 :
+
+   /* Key of an a BPF_MAP_TYPE_LPM_TRIE entry */
+   struct bpf_lpm_trie_key {
+         __u32   prefixlen;      /* up to 32 for AF_INET, 128 for AF_INET6 */
+         __u8    data[];         /* Arbitrary size */
+   };
+
+   struct lpm_key {
+         struct bpf_lpm_trie_key trie_key;
+         __u32 data;
+   };
+
+Did you try to compile the tree (or selftests) with LLVM? I doubt the UX will be nice if everyone
+now has to add -Wno-gnu-variable-sized-type-not-at-end ..
+
+> ---
+>   include/uapi/linux/bpf.h       | 2 +-
+>   tools/include/uapi/linux/bpf.h | 2 +-
+>   2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 934a2a8beb87..0b09b5463afd 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -79,7 +79,7 @@ struct bpf_insn {
+>   /* Key of an a BPF_MAP_TYPE_LPM_TRIE entry */
+>   struct bpf_lpm_trie_key {
+>   	__u32	prefixlen;	/* up to 32 for AF_INET, 128 for AF_INET6 */
+> -	__u8	data[];	/* Arbitrary size */
+> +	__u8	data[];		/* Arbitrary size */
+>   };
+>   
+>   struct bpf_cgroup_storage_key {
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index 1d6085e15fc8..0b09b5463afd 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -79,7 +79,7 @@ struct bpf_insn {
+>   /* Key of an a BPF_MAP_TYPE_LPM_TRIE entry */
+>   struct bpf_lpm_trie_key {
+>   	__u32	prefixlen;	/* up to 32 for AF_INET, 128 for AF_INET6 */
+> -	__u8	data[0];	/* Arbitrary size */
+> +	__u8	data[];		/* Arbitrary size */
+>   };
+>   
+>   struct bpf_cgroup_storage_key {
+> 
+
