@@ -2,129 +2,224 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3917B597018
-	for <lists+bpf@lfdr.de>; Wed, 17 Aug 2022 15:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 110B0597091
+	for <lists+bpf@lfdr.de>; Wed, 17 Aug 2022 16:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239220AbiHQNkW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Aug 2022 09:40:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59792 "EHLO
+        id S236996AbiHQOEB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Aug 2022 10:04:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236670AbiHQNkV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Aug 2022 09:40:21 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11546558FD
-        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 06:40:21 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id e13so17505866edj.12
-        for <bpf@vger.kernel.org>; Wed, 17 Aug 2022 06:40:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc;
-        bh=/shrZJ8ddaMQ6sZoDylnaXiWZxyzOFcpivKKuT6fMyc=;
-        b=d2pOrog5idCTUDSEE8SNuCAEey6Re8+jl66OsZa0J+kjVyIf/QlO8eABaK+0uSE7BK
-         Pb74SqJ8H/ehXxQ38mpjJeUpWo6KkdG9DU6a7yX0gwhng0v60vBLDPMF09twEnzboqLu
-         sUF+281dMUFKHQxw7xkguYsy8iQZJGZbH+1Nh3ajBBS8KPlwaMwn/+jmlern9j9jjHFB
-         sAJ2D+Co2jy55FjSOK9IqnY5vL/vH6VH7vmmRpp+q7AzM7Ou+9/m5MzYm+1h9xcvJuC9
-         UlNmM1+iVZui5QIe/1ujDyza9i2blGOclYEqCNLiU1nTXhi8y+cgmVze9xA7d26hWpaZ
-         ob3Q==
+        with ESMTP id S237149AbiHQOD2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Aug 2022 10:03:28 -0400
+Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D3889751D;
+        Wed, 17 Aug 2022 07:02:49 -0700 (PDT)
+Received: by mail-qk1-f175.google.com with SMTP id w18so5409234qki.8;
+        Wed, 17 Aug 2022 07:02:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc;
-        bh=/shrZJ8ddaMQ6sZoDylnaXiWZxyzOFcpivKKuT6fMyc=;
-        b=LRgRahs74XSS6m/NTPxviu0Vulx9GigkSr0Fy0grVZBuAN8Hoo6kAaslg0TVpPB+FN
-         gHG7AStA+UvrsbrvPlTynj5X8sQgKEJ8bgp+mQsIsoccK5xR2xG8zWqWVUXxA7xdNWRv
-         nHaHQvjJ7U4+ny8dbaKQ31D5Jscr50wibKxMnLx0aaDJZhkLUWsIqcGhxHEjyvj4pjuc
-         fCgmcSY0hPdoFOTv8k0gRJh5iTB+a8z0dcaharLrFCRPVUcSrjBVfrBLuOeH73WcYW5G
-         i5wVYGeSLth002jtWPkpinQRV+gKLx+H67As004uBxheBP1ExB471g9dvnjXbL+ShdZk
-         oRtQ==
-X-Gm-Message-State: ACgBeo34MrMo2uC2oGJbdUuwy2gN31pFMCBx4KCylc13+1RW7M0Intxr
-        vYsWZkXatpdgyTGrLzBzLk8=
-X-Google-Smtp-Source: AA6agR4akAXaXh8blxMq4TScZ5jaCIIhjuLgcYlA35CSSLgg57fjKfw3fSL+5FhSfSAc6JI8gCHO7A==
-X-Received: by 2002:a05:6402:331a:b0:445:f60e:48cd with SMTP id e26-20020a056402331a00b00445f60e48cdmr352090eda.201.1660743619662;
-        Wed, 17 Aug 2022 06:40:19 -0700 (PDT)
-Received: from krava ([193.85.244.190])
-        by smtp.gmail.com with ESMTPSA id a14-20020aa7cf0e000000b0043acddee068sm10674256edy.83.2022.08.17.06.40.18
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc;
+        bh=xGvnP+cdj8d4VtMasuJ9qa53U1HW/oz4CJM0XoL8DpQ=;
+        b=lOiOaS6e7h4vD0B7jSJpY6ndyKSDzVyVSOtkgpMd0CNGivDrFSSdfGczY3l1ZgzTm0
+         98Cs3GeG5hLa/G2UaliDkSKvHSLqu7kVK1ROs9PvI9Dfe67jzWL/jB2BWeeESABNHMe3
+         xGdTm4w2YKYD5igykgi7PPEB2781qIULkJtNKhZhJHAKDiYrKDs1GI0SoBTTsf0PQY3r
+         Jtvdjzq1H/ws+vlAy63bbzsypDHdgypPwiJlbOihqZ1eQo/LuXWZLlaZ5twssfXwWwBE
+         7aTm8iU1xG6lwjBZ1NBuHHapxpo13js5gVeYYfonYZws2dnxVgxyYK4qWN0o2hIGAiV0
+         ROZg==
+X-Gm-Message-State: ACgBeo1ParTKyuC3BIUjBftuY0fBx84qOmibcgu4EDy6RzC0X4qatEK6
+        BxKXvoDITzmAmYCL1d0qzaY=
+X-Google-Smtp-Source: AA6agR74DS2PNIIKBQpO17xcS4vPE532nPqUfxppaZozIy/EOk3nhyCLshXcmNALm6l8AQDlTqQFDg==
+X-Received: by 2002:a37:bb05:0:b0:6b9:629e:f46b with SMTP id l5-20020a37bb05000000b006b9629ef46bmr8604510qkf.521.1660744967470;
+        Wed, 17 Aug 2022 07:02:47 -0700 (PDT)
+Received: from maniforge.DHCP.thefacebook.com ([2620:10d:c091:480::a5ed])
+        by smtp.gmail.com with ESMTPSA id bt14-20020ac8690e000000b00342f6c31da7sm12336226qtb.94.2022.08.17.07.02.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Aug 2022 06:40:19 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Wed, 17 Aug 2022 15:40:16 +0200
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Subject: Re: [PATCHv2 bpf-next 3/6] bpf: Use given function address for
- trampoline ip arg
-Message-ID: <YvzvwJr+TneJi3Eo@krava>
-References: <20220811091526.172610-1-jolsa@kernel.org>
- <20220811091526.172610-4-jolsa@kernel.org>
- <Yvodfh6OJhSIq8X9@worktop.programming.kicks-ass.net>
- <YvomoyS/3Op8FAMa@krava>
- <YvpBVDP3FydnAtHA@worktop.programming.kicks-ass.net>
+        Wed, 17 Aug 2022 07:02:47 -0700 (PDT)
+Date:   Wed, 17 Aug 2022 09:02:14 -0500
+From:   David Vernet <void@manifault.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, john.fastabend@gmail.com, martin.lau@linux.dev,
+        song@kernel.org, yhs@fb.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, tj@kernel.org,
+        joannelkoong@gmail.com, linux-kernel@vger.kernel.org,
+        Kernel-team@fb.com
+Subject: Re: [PATCH 4/5] bpf: Add libbpf logic for user-space ring buffer
+Message-ID: <Yvz05lW8tCJFKrUO@maniforge.DHCP.thefacebook.com>
+References: <20220808155341.2479054-1-void@manifault.com>
+ <20220808155341.2479054-4-void@manifault.com>
+ <CAEf4BzYVLgd=rHaxzZjyv0WJBzBpMqGSStgVhXG9XOHpB7qDRQ@mail.gmail.com>
+ <YvaNx8L076scJR4K@maniforge.dhcp.thefacebook.com>
+ <CAEf4BzbH-=hifMj9dnGoUkOR-JUkn+wuNMrM2w97FtbjnN=-CQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YvpBVDP3FydnAtHA@worktop.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAEf4BzbH-=hifMj9dnGoUkOR-JUkn+wuNMrM2w97FtbjnN=-CQ@mail.gmail.com>
+User-Agent: Mutt/2.2.7 (2022-08-07)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Aug 15, 2022 at 02:51:32PM +0200, Peter Zijlstra wrote:
-> On Mon, Aug 15, 2022 at 12:57:39PM +0200, Jiri Olsa wrote:
-> > On Mon, Aug 15, 2022 at 12:18:38PM +0200, Peter Zijlstra wrote:
-> > > On Thu, Aug 11, 2022 at 11:15:23AM +0200, Jiri Olsa wrote:
-> > > > Using function address given at the generation time as the trampoline
-> > > > ip argument. This way we get directly the function address that we
-> > > > need, so we don't need to:
-> > > >   - read the ip from the stack
-> > > >   - subtract X86_PATCH_SIZE
-> > > >   - subtract ENDBR_INSN_SIZE if CONFIG_X86_KERNEL_IBT is enabled
-> > > >     which is not even implemented yet ;-)
-> > > 
-> > > Can you please tell me what all this does and why?
-> > > 
-> > 
-> > arch_prepare_bpf_trampoline prepares bpf trampoline for given function
-> > specified by 'func_addr' argument
+On Tue, Aug 16, 2022 at 12:09:53PM -0700, Andrii Nakryiko wrote:
+> > > > +void ring_buffer_user__submit(struct ring_buffer_user *rb, void *sample)
+> > > > +{
+> > > > +       __ring_buffer_user__commit(rb);
+> > > > +}
+> > >
+> > > this made me think that it's probably best to add kernel support for
+> > > busy bit anyways (just like for existing ringbuf), so that we can
+> > > eventually turn this into multi-producer on user-space side (all we
+> > > need is a lock, really). So let's anticipate that on kernel side from
+> > > the very beginning
+> >
+> > Hmm, yeah, fair enough. We have the extra space in the sample header to OR the
+> > busy bit, and we already have a 2-stage reserve -> commit workflow, so we might
+> > as well. I'll go ahead and add this, and then hopefully someday we can just add
+> > a lock, as you mentioned.
 > 
-> The bpf trampoline is what's used for ftrace direct call, no?
+> Right. We can probably also just document that reserve() step is the
+> only one that needs serialization among multiple producers (and
+> currently is required to taken care of by user app), while commit
+> (submit/discard) operation is thread-safe and needs no
+> synchronization.
 
-sorry I forgot to answer this one.. yes ;-)
+Sounds good.
 
+> The only reason we don't add it to libbpf right now is because we are
+> unsure about taking explicit dependency on pthread library. But I also
+> just found [0], so I don't know, maybe we should use that? I wonder if
+> it's supported by musl and other less full-featured libc
+> implementations, though.
 > 
-> > the changed code is storing/preparing caller's 'ip' address on the
-> > trampoline's stack so the get_func_ip helper can use it
-> 
-> I've no idea what get_func_ip() helper is...
+>   [0] https://www.gnu.org/software/libc/manual/html_node/ISO-C-Mutexes.html
 
-it's kernel code that can be executed by bpf program,
-get_func_ip returns ip address of the probed function
-that triggered bpf program
+IMHO, and others may disagree, if it's in the C standard it seems like it
+should be fair game to add to libbpf? Also FWIW, it looks like musl does
+support it.  See mtx_*.c in [0].
 
-jirka
+[0] https://git.musl-libc.org/cgit/musl/tree/src/thread
 
+That being said, I would like to try and keep this decision outside the
+scope of user-ringbuf though, if possible. Would you be OK this landing
+as is (modulo further discussion, revisions, etc, of course), and then
+we can update this implementation to be multi-producer if and when we've
+added something like mtx_t support in a follow-on patch-set?
+
+[...]
+
+> > > > +/* Poll for available space in the ringbuffer, and reserve a record when it
+> > > > + * becomes available.
+> > > > + */
+> > > > +void *ring_buffer_user__poll(struct ring_buffer_user *rb, uint32_t size,
+> > > > +                            int timeout_ms)
+> > > > +{
+> > > > +       int cnt;
+> > > > +
+> > > > +       cnt = epoll_wait(rb->epoll_fd, &rb->event, 1, timeout_ms);
+> > > > +       if (cnt < 0)
+> > > > +               return NULL;
+> > > > +
+> > > > +       return ring_buffer_user__reserve(rb, size);
+> > >
+> > > it's not clear how just doing epoll_wait() guarantees that we have >=
+> > > size of space available?.. Seems like some tests are missing?
+> >
+> > Right now, the kernel only kicks the polling writer once it's drained all
+> > of the samples from the ring buffer. So at this point, if there's not
+> > enough size in the buffer, there would be nothing we could do regardless.
+> > This seemed like reasonable, simple behavior for the initial
+> > implementation. I can make it a bit more intelligent if you'd like, and
+> > return EPOLLRWNORM as soon as there is any space in the buffer, and have
+> > libbpf potentially make multiple calls to epoll_wait() until enough space
+> > has become available.
 > 
-> > currently the trampoline code gets the caller's ip address by reading
-> > caller's return address from stack and subtracting X86_PATCH_SIZE from
-> > it
-> > 
-> > the change uses 'func_addr' as caller's 'ip' address when trampoline is
-> > generated .. this way we don't need to retrieve the return address from
-> > stack and care about endbr instruction if IBT is enabled
-> 
-> Ok, I *think* I sorta understand that.
+> So this "drain all samples" notion is not great: you can end drain
+> prematurely and thus not really drain all the data in ringbuf.With
+> multiple producers there could also be always more data coming in in
+> parallel. Plus, when in the future we'll have BPF program associated
+> with such ringbuf on the kernel side, we won't have a notion of
+> draining queue, we'll be just submitting record and letting kernel
+> handle it eventually.
+
+I don't disagree with any of your points. I think what we'll have to
+decide-on is a trade-off between performance and usability. As you pointed
+out, if we only kick user-space once the ringbuffer is empty, that imposes
+the requirement on the kernel that it will always drain the ringbuffer.
+That might not even be possible though if we have multiple producers
+posting data in parallel.
+
+More on this below, but the TL;DR is that I agree with you, and I think
+having a model where we kick user-space whenever a sample is consumed from
+the buffer is a lot easier to reason about, and probably our only option if
+our plan is to make the ringbuffer MPMC. I'll make this change in v3.
+
+> So I think yeah, you'd have to send notification when at least one
+> sample gets consumed. The problem is that it's going to be a
+> performance hit, potentially, if you are going to do this notification
+> for each consumed sample. BPF ringbuf gets somewhat around that by
+> using heuristic to avoid notification if we see that consumer is still
+> behind kernel when kernel submits a new sample.
+
+Something perhaps worth pointing out here is that this heuristic works
+because the kernel-producer ringbuffer is MPSC. If it were MPMC, we'd
+potentially have the same problem you pointed out above where you'd never
+wake up an epoll-waiter because other consumers would drain the buffer, and
+by the time the kernel got around to posting another sample, could observe
+that consumer_pos == producer_pos, and either wouldn't wake up anyone on
+the waitq, or wouldn't return any events from ringbuf_map_poll(). If our
+intention is to make user-space ringbuffers MPMC, it becomes more difficult
+to use these nice heuristics.
+
+> I don't know if we can do anything clever here for waiting for some
+> space to be available...  Any thoughts?
+
+Hmmm, yeah, nothing clever is coming to mind. The problem is that we can't
+make assumptions about why user-space would be epoll-waiting on the
+ringbuffer because because it's a producer, and the user-space producer is
+free to post variably sized samples.
+
+For example, I was initially considering whether we could do a heuristic
+where we notify the producer only if the buffer was previously full /
+producer_pos was ringbuf size away from consumer_pos when we drained a
+sample, but that doesn't work at all because there could be space in the
+ringbuffer, but user-space is epoll-waiting for *more* space to become
+available for some large sample that it wants to publish.
+
+I think the only options we have are:
+
+1. Send a notification (i.e. schedule bpf_ringbuf_notify() using
+   irq_work_queue(), and then return EPOLLOUT | EPOLLWRNORM if
+   the ringbuffer is not full), every time a sample is drained.
+
+2. Keep the behavior in v1, wherein we have a contract that the kernel will
+   always eventually drain the ringbuffer, and will kick user-space when the
+   buffer is empty. I think a requirement here would also be that the
+   ringbuffer would be SPMC, or we decide that it's acceptable for some
+   producers to sleep indefinitely if other producers keep reading samples,
+   and that the caller just needs to be aware of this as a possibility.
+
+My two cents are that we go with (1), and then consider our options later
+if we need to optimize.
+
+> As for making libbpf loop until enough space is available... I guess
+> that would be the only reasonable implementation, right? I wonder if
+> calling it "user_ring_buffer__reserve_blocking()" would be a better
+> name than just "poll", though?
+
+I went with user_ring_buffer__poll() to match the complementary function
+for the user-space consumer function for kernel-producer ringbuffers:
+ring_buffer__poll(). I personally prefer
+user_ring_buffer__reserve_blocking() because the fact that it's doing an
+epoll-wait is entirely an implementation detail. I'll go ahead and make
+that change in v3.
+
+Thanks,
+David
