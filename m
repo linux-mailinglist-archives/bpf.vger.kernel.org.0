@@ -2,138 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4189159840D
-	for <lists+bpf@lfdr.de>; Thu, 18 Aug 2022 15:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB40359843A
+	for <lists+bpf@lfdr.de>; Thu, 18 Aug 2022 15:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245088AbiHRN0W (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Aug 2022 09:26:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53630 "EHLO
+        id S244117AbiHRNcQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Aug 2022 09:32:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245076AbiHRN0Q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Aug 2022 09:26:16 -0400
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C6CAB3B37;
-        Thu, 18 Aug 2022 06:26:13 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.227])
-        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4M7lrW4NjZz9xHdY;
-        Thu, 18 Aug 2022 21:20:59 +0800 (CST)
-Received: from roberto-ThinkStation-P620 (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwB3RhLaPf5iVW0wAA--.23197S2;
-        Thu, 18 Aug 2022 14:25:54 +0100 (CET)
-Message-ID: <71544d2970e246e1f0d5f5ec065ea2437df58cd9.camel@huaweicloud.com>
-Subject: Re: [PATCH 3/3] tools/build: Display logical OR of a feature flavors
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, quentin@isovalent.com,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Thu, 18 Aug 2022 15:25:36 +0200
-In-Reply-To: <Yv46EW6KbUe9zjur@kernel.org>
-References: <20220818120957.319995-1-roberto.sassu@huaweicloud.com>
-         <20220818120957.319995-3-roberto.sassu@huaweicloud.com>
-         <Yv46EW6KbUe9zjur@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        with ESMTP id S243613AbiHRNcP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Aug 2022 09:32:15 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C340B90807
+        for <bpf@vger.kernel.org>; Thu, 18 Aug 2022 06:32:14 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id x10so1737677ljq.4
+        for <bpf@vger.kernel.org>; Thu, 18 Aug 2022 06:32:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc;
+        bh=mm+CIi+eTqS+IJJSFN2zOluKJ3THx8ghvQL/UiT4BIA=;
+        b=hycS8Bgar8HWXzk0HRu5TgUPzOSn584mePOMu7IxMkWasKtRbqVuh/LS+bjcY7iQF5
+         08BM90sVj27zPXCHC6dMe73ami+RZnm1892KFLWbao/LaCG0OQuWH3OH6Hk2qKPKJAga
+         sOSnxI1OGDxFUJpeQX8uKn/6g+BvFL2Redq0sLP0PdMGHfb/VDcD+pyNbDWHo6cedrFL
+         ax01skNXYlUVJa6WrriXTvUKkkWQxDtXkVIAPWerpmqpZ1HcPM/z4f0Hljkk/Uw55qIq
+         sOUR+88I4P6e0LrZuGtF0Qa/czejFs0USVk4FWXK7QEl+qzOMiGSFSX3C0PcNKIMYaia
+         pVRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
+        bh=mm+CIi+eTqS+IJJSFN2zOluKJ3THx8ghvQL/UiT4BIA=;
+        b=c9f3YawUhhpvntCAEA5QLuA85JQUuLWi+RNc/H9sbzxgrvxnRFizS8GG2zbIHuxTMk
+         Zawbu7CfuD9rARz3kYVJdYHhITQUzBm72UXi7kT9t4NtvU54IpD00sWCIX+boyoFRBYj
+         D/x0w2ZSDu7qTspbF4/eTjsasLZcIAd6CnIm5uw/60bSMKc8MPeF+HpqQnuh/V9twIkB
+         ClDYF3aIKuoD9TnTQDcnSCnLmcxsXDTkfNKxUajaBx/g5AqYX8fjpA3e75KUS2w7+tKj
+         wkNRbgvTv9DP2EuyaFeTEmWZMQ5dH18TDcgF5FhOQBDfPLedUex+6gvGv/90Le+n0E7U
+         qOYg==
+X-Gm-Message-State: ACgBeo3OfJ5BhCsOX+3j8l/byd7idRqZaHu8+u4+pE1CCksY9E9rDcJS
+        2nNZ6g71Qz2C3yXNbuL83xE/sTKek9pAhwc=
+X-Google-Smtp-Source: AA6agR5UaQ2TuK+k7OQHLit1V5LGJEn1wYG32ouP39jCWRH0Zc62Y7v9UqOpETmF8sLSIQ3l+5dFDQ==
+X-Received: by 2002:a2e:a551:0:b0:25f:eb63:2588 with SMTP id e17-20020a2ea551000000b0025feb632588mr898325ljn.9.1660829533017;
+        Thu, 18 Aug 2022 06:32:13 -0700 (PDT)
+Received: from Mem (2a01cb0890e29600d12d396dd3345aed.ipv6.abo.wanadoo.fr. [2a01:cb08:90e2:9600:d12d:396d:d334:5aed])
+        by smtp.gmail.com with ESMTPSA id b12-20020a05651c032c00b0025e040510e7sm231087ljp.74.2022.08.18.06.32.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Aug 2022 06:32:12 -0700 (PDT)
+Date:   Thu, 18 Aug 2022 15:32:09 +0200
+From:   Paul Chaignon <paul@isovalent.com>
+To:     Eyal Birger <eyal.birger@gmail.com>, idosch@nvidia.com,
+        petrm@nvidia.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, yoshfuji@linux-ipv6.org,
+        dsahern@kernel.org, razor@blackwall.org, daniel@iogearbox.net,
+        kafai@fb.com
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf] ip_tunnel: respect tunnel key's "flow_flags" in IP
+ tunnels
+Message-ID: <20220818133209.GA80579@Mem>
+References: <20220818074118.726639-1-eyal.birger@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LxC2BwB3RhLaPf5iVW0wAA--.23197S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7urW8ZF48ZF15WrWkXw47urg_yoW8urW8pa
-        4rG3WUKrsrKr1Ikw42kr18ta1F9w4Iy3yUXFy0yw17AF4UWF17KF1a9FWrWFyDurn3u3Wa
-        vrWSq34ru3WDZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1j6r18M7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
-        7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
-        Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY
-        6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6x
-        AIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280
-        aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UR7KsUUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAIBF1jj34VsAAAsk
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220818074118.726639-1-eyal.birger@gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 2022-08-18 at 10:09 -0300, Arnaldo Carvalho de Melo wrote:
-> Em Thu, Aug 18, 2022 at 02:09:57PM +0200, 
-> roberto.sassu@huaweicloud.com escreveu:
-> > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > 
-> > Sometimes, features are simply different flavors of another
-> > feature, to
-> > properly detect the exact dependencies needed by different Linux
-> > distributions.
-> > 
-> > For example, libbfd has three flavors: libbfd if the distro does
-> > not
-> > require any additional dependency; libbfd-liberty if it requires
-> > libiberty;
-> > libbfd-liberty-z if it requires libiberty and libz.
-> > 
-> > It might not be clear to the user whether a feature has been
-> > successfully
-> > detected or not, given that some of its flavors will be set to OFF,
-> > others
-> > to ON.
-> > 
-> > Instead, display only the feature main flavor if not in verbose
-> > mode
-> > (VF != 1), and set it to ON if at least one of its flavors has been
-> > successfully detected (logical OR), OFF otherwise. Omit the other
-> > flavors.
-> > 
-> > Accomplish that by declaring a FEATURE_GROUP_MEMBERS-<feature main
-> > flavor>
-> > variable, with the list of the other flavors as variable value. For
-> > now, do
-> > it just for libbfd.
-> > 
-> > In verbose mode, of if no group is defined for a feature, show the
-> > feature
-> > detection result as before.
+On Thu, Aug 18, 2022 at 10:41:18AM +0300, Eyal Birger wrote:
+> Commit 451ef36bd229 ("ip_tunnels: Add new flow flags field to ip_tunnel_key")
+> added a "flow_flags" member to struct ip_tunnel_key which was later used by
+> the commit in the fixes tag to avoid dropping packets with sources that
+> aren't locally configured when set in bpf_set_tunnel_key().
 > 
-> Looks cool, tested and added this to the commit log message here in
-> my
-> local branch, that will go public after further tests for the other
-> csets in it:
+> VXLAN and GENEVE were made to respect this flag, ip tunnels like IPIP and GRE
+> were not.
 > 
-> Committer testing:
+> This commit fixes this omission by making ip_tunnel_init_flow() receive
+> the flow flags from the tunnel key in the relevant collect_md paths.
 > 
-> Collecting the output from:
-> 
->   $ make -C tools/bpf/bpftool/ clean
->   $ make -C tools/bpf/bpftool/ |& grep "Auto-detecting system
-> features" -A10
-> 
->   $ diff -u before after
->   --- before    2022-08-18 10:06:40.422086966 -0300
->   +++ after     2022-08-18 10:07:59.202138282 -0300
->   @@ -1,6 +1,4 @@
->    Auto-detecting system features:
->    ...                                  libbfd: [ on  ]
->   -...                          libbfd-liberty: [ on  ]
->   -...                        libbfd-liberty-z: [ on  ]
->    ...                                  libcap: [ on  ]
->    ...                         clang-bpf-co-re: [ on  ]
->   $
-> 
-> Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> 
-> Thanks for working on this!
+> Fixes: b8fff748521c ("bpf: Set flow flag to allow any source IP in bpf_tunnel_key")
+> Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
+> ---
+>  drivers/net/ethernet/mellanox/mlxsw/spectrum_span.c | 3 ++-
+>  include/net/ip_tunnels.h                            | 4 +++-
+>  net/ipv4/ip_gre.c                                   | 2 +-
+>  net/ipv4/ip_tunnel.c                                | 7 ++++---
+>  4 files changed, 10 insertions(+), 6 deletions(-)
 
-Thanks for testing and for adapting/pushing the other patches!
+Thanks for the fix!
 
-Roberto
+Reviewed-by: Paul Chaignon <paul@isovalent.com>
 
