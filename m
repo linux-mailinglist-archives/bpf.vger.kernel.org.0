@@ -2,175 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 950F1597F60
-	for <lists+bpf@lfdr.de>; Thu, 18 Aug 2022 09:42:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D783059832E
+	for <lists+bpf@lfdr.de>; Thu, 18 Aug 2022 14:31:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231408AbiHRHlj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Aug 2022 03:41:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53938 "EHLO
+        id S244685AbiHRMad (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Aug 2022 08:30:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243631AbiHRHli (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Aug 2022 03:41:38 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA5EF5727A;
-        Thu, 18 Aug 2022 00:41:36 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id m10-20020a05600c3b0a00b003a603fc3f81so499606wms.0;
-        Thu, 18 Aug 2022 00:41:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc;
-        bh=/g4km6FxDiqO++AcbVWHXR1P5CevBxANAOiKHbix4ck=;
-        b=DJVlCrI7UI6SX23b+6S0oqa6DloKDWoOMA+3yumzI4YXQ5oyOz6A7BDdzo7TZu1vB8
-         DKn4TAlTrhQ5+dzpBi0zsxAAeAYmAGFEjN+ZoWvcR72l225WgyxkhLOgjV3PCdK0Di6S
-         2qFkdEOH1hdBFiYx9aHgOpFTnhYK4hZ6aTuT8XNdHHq0bJxrQlTYAC8rsFPeNaxabFjT
-         ZRCp6earwpFA2pGebTo9I4VQul09aODYvIL4ESEgdSEMdjSGBHANNo52Uo80T0eJgTrB
-         tlP3YwZMHK4OJ5GvOYu230UoRbGSgV5U4qH/AmztA2Pa4b5ksXXhsO7YWI390LVACyG6
-         jzdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc;
-        bh=/g4km6FxDiqO++AcbVWHXR1P5CevBxANAOiKHbix4ck=;
-        b=FBDrlBO9eEabh8M520GrfaRhnwxHSnlCYOQvCeL2zOni/2oUiR/NjU9C/4JeYpmBv+
-         MQv18iFZh1P9AS1lob9FUWNpbHDBTbOOMtWuJoaoNCqPFiWdBgcr3/C4uVsJdb380+U7
-         Ut7K/q9k2POW7gG7XMQSjlQRnQBt4CxTIcLNmHRyuKiHUFAFNY72lT60/mrSP+kYkUT4
-         DAC3He6Zey3mGsw5SZLQ9as2vqBoiqUw4BoWvtNicdThQPRENhgeQ69QvzsDQuUPUgAH
-         XsQWYxAPIHKlzHs4WZtYSW5WqrtFyNmVfyE4Egqimie+BMU4LtIitX9Y2UoLV8YG5Gyg
-         66UQ==
-X-Gm-Message-State: ACgBeo2PlZE7leue8F2DdMwmDbdnbiPnFjVPFQ26WVSZUSxltj8YPa8+
-        zQhxvdOkuF7y1S7zVXjvmwBNnYf0xAorGA==
-X-Google-Smtp-Source: AA6agR4m5C7RuMvGPEDoDPeUEWS69lYE8TAFKSos2KXhmbfMRSAI6r9Z7J0Rs8bAcXCa8M3bohQMcg==
-X-Received: by 2002:a7b:ce12:0:b0:3a5:4d8b:65df with SMTP id m18-20020a7bce12000000b003a54d8b65dfmr1011183wmc.27.1660808495347;
-        Thu, 18 Aug 2022 00:41:35 -0700 (PDT)
-Received: from localhost.localdomain ([213.57.189.88])
-        by smtp.gmail.com with ESMTPSA id r28-20020adfb1dc000000b00225232154d7sm643158wra.110.2022.08.18.00.41.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Aug 2022 00:41:34 -0700 (PDT)
-From:   Eyal Birger <eyal.birger@gmail.com>
-To:     idosch@nvidia.com, petrm@nvidia.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org, razor@blackwall.org,
-        daniel@iogearbox.net, kafai@fb.com, paul@isovalent.com
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Eyal Birger <eyal.birger@gmail.com>
-Subject: [PATCH bpf] ip_tunnel: respect tunnel key's "flow_flags" in IP tunnels
-Date:   Thu, 18 Aug 2022 10:41:18 +0300
-Message-Id: <20220818074118.726639-1-eyal.birger@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S243967AbiHRMac (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Aug 2022 08:30:32 -0400
+X-Greylist: delayed 93 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 18 Aug 2022 05:30:31 PDT
+Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A8BAA1D7C;
+        Thu, 18 Aug 2022 05:30:31 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.228])
+        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4M7kDd51zfz9v7Gc;
+        Thu, 18 Aug 2022 20:08:17 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwA38hluLP5ipRkyAA--.42926S2;
+        Thu, 18 Aug 2022 13:11:34 +0100 (CET)
+From:   roberto.sassu@huaweicloud.com
+To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@kernel.org, namhyung@kernel.org, quentin@isovalent.com
+Cc:     linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH 1/3] tools/build: Fix feature detection output due to eval expansion
+Date:   Thu, 18 Aug 2022 14:09:55 +0200
+Message-Id: <20220818120957.319995-1-roberto.sassu@huaweicloud.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: GxC2BwA38hluLP5ipRkyAA--.42926S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxuFy7KryDCFWxKFW7Xr15twb_yoW7XF1kpa
+        yrCF1UAr4DGF4Fya18Ar4UuF45Gr4fJay3J3sIk34UA3WUGrnI9r4ayFWvvFZ3u3y3XF13
+        KF13KFWUAw1UCwUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9ab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1j6r18M7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8C
+        rVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4
+        IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwAKzVCY
+        07xG64k0F24lc7CjxVAaw2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x
+        0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
+        zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
+        4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_Wr1j
+        6rW3Jr1lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8Jr
+        UvcSsGvfC2KfnxnUUI43ZEXa7IU0fb1UUUUUU==
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Commit 451ef36bd229 ("ip_tunnels: Add new flow flags field to ip_tunnel_key")
-added a "flow_flags" member to struct ip_tunnel_key which was later used by
-the commit in the fixes tag to avoid dropping packets with sources that
-aren't locally configured when set in bpf_set_tunnel_key().
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-VXLAN and GENEVE were made to respect this flag, ip tunnels like IPIP and GRE
-were not.
+As the first eval expansion is used only to generate Makefile statements,
+messages should not be displayed at this stage, as for example conditional
+expressions are not evaluated.
 
-This commit fixes this omission by making ip_tunnel_init_flow() receive
-the flow flags from the tunnel key in the relevant collect_md paths.
+It can be seen for example in the output of feature detection for bpftool,
+where the number of detected features does not change, despite turning on
+the verbose mode (VF = 1) and there are additional features to display.
 
-Fixes: b8fff748521c ("bpf: Set flow flag to allow any source IP in bpf_tunnel_key")
-Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
+Fix this issue by escaping the $ before $(info) statements, to ensure that
+messages are printed only when the function containing them is actually
+executed, and not when it is expanded.
+
+In addition, move the $(info) statement out of feature_print_status, due to
+the fact that is called both inside and outside an eval context, and place
+it to the caller so that the $ can be escaped when necessary. For symmetry,
+move the $(info) statement also out of feature_print_text, and place it to
+the caller.
+
+Force the TMP variable evaluation in verbose mode, to display the features
+in FEATURE_TESTS that are not in FEATURE_DISPLAY.
+
+Reorder perf feature detection messages (first non-verbose, then verbose
+ones) by moving the call to feature_display_entries earlier, before the VF
+environment variable check.
+
+Also, remove the newline from that function, as perf might display
+additional messages. Move the newline to perf Makefile, and display another
+one if displaying the detection result is not deferred as in the case of
+bpftool.
+
+Fixes: 0afc5cad387db ("perf build: Separate feature make support into config/Makefile.feature")
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 ---
- drivers/net/ethernet/mellanox/mlxsw/spectrum_span.c | 3 ++-
- include/net/ip_tunnels.h                            | 4 +++-
- net/ipv4/ip_gre.c                                   | 2 +-
- net/ipv4/ip_tunnel.c                                | 7 ++++---
- 4 files changed, 10 insertions(+), 6 deletions(-)
+ tools/build/Makefile.feature | 19 ++++++++-----------
+ tools/perf/Makefile.config   | 15 ++++++++-------
+ 2 files changed, 16 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_span.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_span.c
-index 39904dacf4f0..b3472fb94617 100644
---- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_span.c
-+++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_span.c
-@@ -423,7 +423,8 @@ mlxsw_sp_span_gretap4_route(const struct net_device *to_dev,
+diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
+index fc6ce0b2535a..9d3afbc37e15 100644
+--- a/tools/build/Makefile.feature
++++ b/tools/build/Makefile.feature
+@@ -177,7 +177,7 @@ endif
+ #
+ # Print the result of the feature test:
+ #
+-feature_print_status = $(eval $(feature_print_status_code)) $(info $(MSG))
++feature_print_status = $(eval $(feature_print_status_code))
  
- 	parms = mlxsw_sp_ipip_netdev_parms4(to_dev);
- 	ip_tunnel_init_flow(&fl4, parms.iph.protocol, *daddrp, *saddrp,
--			    0, 0, dev_net(to_dev), parms.link, tun->fwmark, 0);
-+			    0, 0, dev_net(to_dev), parms.link, tun->fwmark, 0,
-+			    0);
+ define feature_print_status_code
+   ifeq ($(feature-$(1)), 1)
+@@ -187,7 +187,7 @@ define feature_print_status_code
+   endif
+ endef
  
- 	rt = ip_route_output_key(tun->net, &fl4);
- 	if (IS_ERR(rt))
-diff --git a/include/net/ip_tunnels.h b/include/net/ip_tunnels.h
-index 63fac94f9ace..ced80e2f8b58 100644
---- a/include/net/ip_tunnels.h
-+++ b/include/net/ip_tunnels.h
-@@ -246,7 +246,8 @@ static inline void ip_tunnel_init_flow(struct flowi4 *fl4,
- 				       __be32 daddr, __be32 saddr,
- 				       __be32 key, __u8 tos,
- 				       struct net *net, int oif,
--				       __u32 mark, __u32 tun_inner_hash)
-+				       __u32 mark, __u32 tun_inner_hash,
-+				       __u8 flow_flags)
- {
- 	memset(fl4, 0, sizeof(*fl4));
+-feature_print_text = $(eval $(feature_print_text_code)) $(info $(MSG))
++feature_print_text = $(eval $(feature_print_text_code))
+ define feature_print_text_code
+     MSG = $(shell printf '...%30s: %s' $(1) $(2))
+ endef
+@@ -247,21 +247,18 @@ endif
+ feature_display_entries = $(eval $(feature_display_entries_code))
+ define feature_display_entries_code
+   ifeq ($(feature_display),1)
+-    $(info )
+-    $(info Auto-detecting system features:)
+-    $(foreach feat,$(FEATURE_DISPLAY),$(call feature_print_status,$(feat),))
+-    ifneq ($(feature_verbose),1)
+-      $(info )
+-    endif
++    $$(info )
++    $$(info Auto-detecting system features:)
++    $(foreach feat,$(FEATURE_DISPLAY),$(call feature_print_status,$(feat),) $$(info $(MSG)))
+   endif
  
-@@ -263,6 +264,7 @@ static inline void ip_tunnel_init_flow(struct flowi4 *fl4,
- 	fl4->fl4_gre_key = key;
- 	fl4->flowi4_mark = mark;
- 	fl4->flowi4_multipath_hash = tun_inner_hash;
-+	fl4->flowi4_flags = flow_flags;
- }
+   ifeq ($(feature_verbose),1)
+-    TMP := $(filter-out $(FEATURE_DISPLAY),$(FEATURE_TESTS))
+-    $(foreach feat,$(TMP),$(call feature_print_status,$(feat),))
+-    $(info )
++    $(eval TMP := $(filter-out $(FEATURE_DISPLAY),$(FEATURE_TESTS)))
++    $(foreach feat,$(TMP),$(call feature_print_status,$(feat),) $$(info $(MSG)))
+   endif
+ endef
  
- int ip_tunnel_init(struct net_device *dev);
-diff --git a/net/ipv4/ip_gre.c b/net/ipv4/ip_gre.c
-index 5c58e21f724e..f866d6282b2b 100644
---- a/net/ipv4/ip_gre.c
-+++ b/net/ipv4/ip_gre.c
-@@ -609,7 +609,7 @@ static int gre_fill_metadata_dst(struct net_device *dev, struct sk_buff *skb)
- 	ip_tunnel_init_flow(&fl4, IPPROTO_GRE, key->u.ipv4.dst, key->u.ipv4.src,
- 			    tunnel_id_to_key32(key->tun_id),
- 			    key->tos & ~INET_ECN_MASK, dev_net(dev), 0,
--			    skb->mark, skb_get_hash(skb));
-+			    skb->mark, skb_get_hash(skb), key->flow_flags);
- 	rt = ip_route_output_key(dev_net(dev), &fl4);
- 	if (IS_ERR(rt))
- 		return PTR_ERR(rt);
-diff --git a/net/ipv4/ip_tunnel.c b/net/ipv4/ip_tunnel.c
-index e65e948cab9f..019f3b0839c5 100644
---- a/net/ipv4/ip_tunnel.c
-+++ b/net/ipv4/ip_tunnel.c
-@@ -295,7 +295,7 @@ static int ip_tunnel_bind_dev(struct net_device *dev)
- 		ip_tunnel_init_flow(&fl4, iph->protocol, iph->daddr,
- 				    iph->saddr, tunnel->parms.o_key,
- 				    RT_TOS(iph->tos), dev_net(dev),
--				    tunnel->parms.link, tunnel->fwmark, 0);
-+				    tunnel->parms.link, tunnel->fwmark, 0, 0);
- 		rt = ip_route_output_key(tunnel->net, &fl4);
+ ifeq ($(FEATURE_DISPLAY_DEFERRED),)
+   $(call feature_display_entries)
++  $(info )
+ endif
+diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+index 0661a1cf9855..f4de6e16fbe2 100644
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -1304,11 +1304,15 @@ define print_var_code
+     MSG = $(shell printf '...%30s: %s' $(1) $($(1)))
+ endef
  
- 		if (!IS_ERR(rt)) {
-@@ -570,7 +570,8 @@ void ip_md_tunnel_xmit(struct sk_buff *skb, struct net_device *dev,
- 	}
- 	ip_tunnel_init_flow(&fl4, proto, key->u.ipv4.dst, key->u.ipv4.src,
- 			    tunnel_id_to_key32(key->tun_id), RT_TOS(tos),
--			    dev_net(dev), 0, skb->mark, skb_get_hash(skb));
-+			    dev_net(dev), 0, skb->mark, skb_get_hash(skb),
-+			    key->flow_flags);
- 	if (tunnel->encap.type != TUNNEL_ENCAP_NONE)
- 		goto tx_error;
++ifeq ($(feature_display),1)
++  $(call feature_display_entries)
++endif
++
+ ifeq ($(VF),1)
+   # Display EXTRA features which are detected manualy
+   # from here with feature_check call and thus cannot
+   # be partof global state output.
+-  $(foreach feat,$(FEATURE_TESTS_EXTRA),$(call feature_print_status,$(feat),))
++  $(foreach feat,$(FEATURE_TESTS_EXTRA),$(call feature_print_status,$(feat),) $(info $(MSG)))
+   $(call print_var,prefix)
+   $(call print_var,bindir)
+   $(call print_var,libdir)
+@@ -1318,11 +1322,12 @@ ifeq ($(VF),1)
+   $(call print_var,JDIR)
  
-@@ -729,7 +730,7 @@ void ip_tunnel_xmit(struct sk_buff *skb, struct net_device *dev,
- 	ip_tunnel_init_flow(&fl4, protocol, dst, tnl_params->saddr,
- 			    tunnel->parms.o_key, RT_TOS(tos),
- 			    dev_net(dev), tunnel->parms.link,
--			    tunnel->fwmark, skb_get_hash(skb));
-+			    tunnel->fwmark, skb_get_hash(skb), 0);
+   ifeq ($(dwarf-post-unwind),1)
+-    $(call feature_print_text,"DWARF post unwind library", $(dwarf-post-unwind-text))
++    $(call feature_print_text,"DWARF post unwind library", $(dwarf-post-unwind-text)) $(info $(MSG))
+   endif
+-  $(info )
+ endif
  
- 	if (ip_tunnel_encap(skb, tunnel, &protocol, &fl4) < 0)
- 		goto tx_error;
++$(info )
++
+ $(call detected_var,bindir_SQ)
+ $(call detected_var,PYTHON_WORD)
+ ifneq ($(OUTPUT),)
+@@ -1352,7 +1357,3 @@ endif
+ # tests.
+ $(shell rm -f $(FEATURE_DUMP_FILENAME))
+ $(foreach feat,$(FEATURE_TESTS),$(shell echo "$(call feature_assign,$(feat))" >> $(FEATURE_DUMP_FILENAME)))
+-
+-ifeq ($(feature_display),1)
+-  $(call feature_display_entries)
+-endif
 -- 
-2.34.1
+2.25.1
 
