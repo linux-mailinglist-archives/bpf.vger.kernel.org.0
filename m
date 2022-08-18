@@ -2,72 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DF7359905A
-	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 00:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D472599071
+	for <lists+bpf@lfdr.de>; Fri, 19 Aug 2022 00:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346382AbiHRWPy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Aug 2022 18:15:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34176 "EHLO
+        id S243267AbiHRWUk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Aug 2022 18:20:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346383AbiHRWPw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Aug 2022 18:15:52 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 922ECD7CD1
-        for <bpf@vger.kernel.org>; Thu, 18 Aug 2022 15:15:51 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id l5so2203616qtv.4
-        for <bpf@vger.kernel.org>; Thu, 18 Aug 2022 15:15:51 -0700 (PDT)
+        with ESMTP id S1346323AbiHRWUh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Aug 2022 18:20:37 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C66D7CFA;
+        Thu, 18 Aug 2022 15:20:36 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id x63-20020a17090a6c4500b001fabbf8debfso3167097pjj.4;
+        Thu, 18 Aug 2022 15:20:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=M/XssIYSX7PJg8XX/OCwv5wRKVVolBwpSHoWeNBAk0o=;
-        b=xoHgdM10FkEZrJRvbAzjNs+u9Vf/qJ1doeu8xZyyXN6mMoz8mDgrZUodjLXDlk+GDt
-         N5r/Q1l6A1v9GdZTNIkDwjaS4G5ZMBpXUS5pCfQWAxa+UhYzbUiVIY1xUt92TdOheSwX
-         3fn9RG63YVwPngMu1rk6XeZXjNxIMeLWCo1x3BVFIM6V/ZLl+beToVE0Oql0StwL68bw
-         WBxa5CzdmnKq5ouC29fRL+MJ1o1ggXw3N0kK6QEGL5YeqCCy8RU+z/hP5ZL3i+uaHl0g
-         /hCyvxpWCyCmIk566j8mEBzvzZFg8u5SWskVtjZureKGqNhqJSp5BfVurThxg0d6PgtA
-         f2BQ==
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc;
+        bh=tr2YfKFFpUU37xf4ManQv+y3/4pV4AbAVOF71yP0UDM=;
+        b=KY80Ec2EYHn5WFnbgKROZvwVrPBKR9TCPDJ4Bw/+YH1nWvZ8zBC4HiM3kL62FVSIHI
+         V0sdJqE1+X9/hYSAmkHX0ttVunBfUUbxdDrijYE1S/aTAyrKetMJtSJdoIjYHfPOQ3gD
+         BQwpS4K/1PXEiiH3xvM+lKbDEHg7ytztTUVJXVqOAJI9gHejz/CO3QZAQx8IfbGXsn4J
+         5bGMKpnl8EWu/l4SxhTYFUOiXMIhjxYbCo3JCHVlgJw0rKdbSnaJKuxVV3Hg2XNzKGy/
+         ykd1zcDd2xq+d6sycmuHscFeHGXchvlK3L+cVKS4i45SaDcrLIhwWniy+rYMw7SUKrM1
+         BomA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=M/XssIYSX7PJg8XX/OCwv5wRKVVolBwpSHoWeNBAk0o=;
-        b=zydoCgJmdI6OVqM9o/o/3jA6Rl/h3gI3HNz0V+gwM45zJcKrRtwCRCQta5qITi7b2z
-         Jx8dPiMLcnzaMaziIhc9krrI2O/a48BNDjZ3K4TkQmBTLrQPpF6VfxJFad6uAbLI7PAJ
-         QCq36fXLxIufiP5UGFqNnNcenWg3zu/xVzsbpePc8OqIkCiUjVzajic1C5lt9zV9X53K
-         GE6X9tPJzy47Rtzr/N/+Y2Nh61BDWfZtcDCwyOSWm6WL77rXzTSBGXZN5GX/FmdW+G1J
-         epCYzvw0V9EPbKeXhOvyBDPTewOWd8kvv2PrCmGcWDqj+OPAKl81r6Z69LMADUZDRpEF
-         ywqg==
-X-Gm-Message-State: ACgBeo1hXezSrjoVYEIkmI4i8UTiu1MGP9BaaSw6Ql16HP6COQ5DOTj9
-        YwgfRFLsDqHGUZAKyyI2xawm8nlN9IRjThQsnVpQTg==
-X-Google-Smtp-Source: AA6agR6U7sSVnmtcyjZ12uDaiox6o3b0HNoOrrTnSONCtwkuDnMGLQqWGXAZtpVkEMp71YegJeJwVyN3DbKZMBcbE5I=
-X-Received: by 2002:ac8:570e:0:b0:344:88d7:5ee3 with SMTP id
- 14-20020ac8570e000000b0034488d75ee3mr4317394qtw.522.1660860950704; Thu, 18
- Aug 2022 15:15:50 -0700 (PDT)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc;
+        bh=tr2YfKFFpUU37xf4ManQv+y3/4pV4AbAVOF71yP0UDM=;
+        b=z0UhjmP5LdmQ5rGHxrmwXyOq+OfvzIABtUiGs2ftqK4Tpib4tS2NIqoYjtavXcCg9H
+         1Mq5MY/5cG26pJbqVM1klgtOau92NoKPqpsGg+W4sMA+rDVPq1ZB6myxCwmV83XAx0XF
+         FnAmVVx/aALCYRcPaLQnHlAPtF1CkPQHpKy1qJ+5JODX7ekkA86bMY6grosWq1/jXtQO
+         kie+eoEq1SzlJW4aii902J8gvN7VQPwAjsy+LXNjYyhblocfRCsfo3FU9EcJPhU6+NX9
+         Kpc3UGV+P/Ob3vyFGPG4z8m3XR6G/EZFifl/THsOiS4iUmrI1YAHnBCTV66iS9jBYol/
+         ftyA==
+X-Gm-Message-State: ACgBeo3sJyMcLvTZP8AjqNph6PxLB4WHciQIgeScNLYlLtBZRLpC/CHq
+        3A5awWQOXX/YMljr3yLYOxE=
+X-Google-Smtp-Source: AA6agR6n9/ROxNFwoI1/6v2qOdwWNT55R5GNh1WmF2RNjQvaps8yoCjJOuhOltGV9kEx+rTK8QvldQ==
+X-Received: by 2002:a17:903:1205:b0:171:4f8d:22a8 with SMTP id l5-20020a170903120500b001714f8d22a8mr4336955plh.11.1660861235443;
+        Thu, 18 Aug 2022 15:20:35 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:3b7])
+        by smtp.gmail.com with ESMTPSA id j2-20020a63fc02000000b0041a615381d5sm1736207pgi.4.2022.08.18.15.20.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Aug 2022 15:20:34 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 18 Aug 2022 12:20:33 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, hannes@cmpxchg.org,
+        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+        songmuchun@bytedance.com, akpm@linux-foundation.org,
+        lizefan.x@bytedance.com, cgroups@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH bpf-next v2 00/12] bpf: Introduce selectable memcg for
+ bpf map
+Message-ID: <Yv67MRQLPreR9GU5@slm.duckdns.org>
+References: <20220818143118.17733-1-laoar.shao@gmail.com>
 MIME-Version: 1.0
-References: <20220818120957.319995-1-roberto.sassu@huaweicloud.com>
- <20220818120957.319995-3-roberto.sassu@huaweicloud.com> <Yv46EW6KbUe9zjur@kernel.org>
- <71544d2970e246e1f0d5f5ec065ea2437df58cd9.camel@huaweicloud.com>
- <23da162e-1018-9bfa-bc5c-ec09eba9428b@isovalent.com> <Yv6BaHgC4E4J0TTT@kernel.org>
-In-Reply-To: <Yv6BaHgC4E4J0TTT@kernel.org>
-From:   Quentin Monnet <quentin@isovalent.com>
-Date:   Thu, 18 Aug 2022 23:15:39 +0100
-Message-ID: <CACdoK4LLuxCd49y3dUoi7wyq-OLF2xjurvpc5C3n15bsYeMNKg@mail.gmail.com>
-Subject: Re: [PATCH 3/3] tools/build: Display logical OR of a feature flavors
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220818143118.17733-1-laoar.shao@gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,87 +78,44 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 18 Aug 2022 at 19:14, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
->
-> Em Thu, Aug 18, 2022 at 05:40:04PM +0100, Quentin Monnet escreveu:
-> > On 18/08/2022 14:25, Roberto Sassu wrote:
-> > > On Thu, 2022-08-18 at 10:09 -0300, Arnaldo Carvalho de Melo wrote:
-> > >> Em Thu, Aug 18, 2022 at 02:09:57PM +0200,
-> > >> roberto.sassu@huaweicloud.com escreveu:
-> > >>> From: Roberto Sassu <roberto.sassu@huawei.com>
-> > >>>
-> > >>> Sometimes, features are simply different flavors of another
-> > >>> feature, to
-> > >>> properly detect the exact dependencies needed by different Linux
-> > >>> distributions.
-> > >>>
-> > >>> For example, libbfd has three flavors: libbfd if the distro does
-> > >>> not
-> > >>> require any additional dependency; libbfd-liberty if it requires
-> > >>> libiberty;
-> > >>> libbfd-liberty-z if it requires libiberty and libz.
-> > >>>
-> > >>> It might not be clear to the user whether a feature has been
-> > >>> successfully
-> > >>> detected or not, given that some of its flavors will be set to OFF,
-> > >>> others
-> > >>> to ON.
-> > >>>
-> > >>> Instead, display only the feature main flavor if not in verbose
-> > >>> mode
-> > >>> (VF != 1), and set it to ON if at least one of its flavors has been
-> > >>> successfully detected (logical OR), OFF otherwise. Omit the other
-> > >>> flavors.
-> > >>>
-> > >>> Accomplish that by declaring a FEATURE_GROUP_MEMBERS-<feature main
-> > >>> flavor>
-> > >>> variable, with the list of the other flavors as variable value. For
-> > >>> now, do
-> > >>> it just for libbfd.
-> > >>>
-> > >>> In verbose mode, of if no group is defined for a feature, show the
-> > >>> feature
-> > >>> detection result as before.
-> > >>
-> > >> Looks cool, tested and added this to the commit log message here in
-> > >> my
-> > >> local branch, that will go public after further tests for the other
-> > >> csets in it:
-> > >>
-> > >> Committer testing:
-> > >>
-> > >> Collecting the output from:
-> > >>
-> > >>   $ make -C tools/bpf/bpftool/ clean
-> > >>   $ make -C tools/bpf/bpftool/ |& grep "Auto-detecting system
-> > >> features" -A10
-> > >>
-> > >>   $ diff -u before after
-> > >>   --- before    2022-08-18 10:06:40.422086966 -0300
-> > >>   +++ after     2022-08-18 10:07:59.202138282 -0300
-> > >>   @@ -1,6 +1,4 @@
-> > >>    Auto-detecting system features:
-> > >>    ...                                  libbfd: [ on  ]
-> > >>   -...                          libbfd-liberty: [ on  ]
-> > >>   -...                        libbfd-liberty-z: [ on  ]
-> > >>    ...                                  libcap: [ on  ]
-> > >>    ...                         clang-bpf-co-re: [ on  ]
-> > >>   $
-> > >>
-> > >> Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> > >>
-> > >> Thanks for working on this!
-> > >
-> > > Thanks for testing and for adapting/pushing the other patches!
-> > >
-> > > Roberto
-> > >
-> >
-> > Tested locally for bpftool and I also observe "libbfd: [ on  ]" only.
-> > This looks much better, thank you Roberto for following up on this!
->
-> So I'll add your Tested-by: to this one as well, maybe to all the
-> patches in this series?
+Hello,
 
-Sorry, I haven't tested the first two patches other than by applying
-them, so just for the third one preferably. Thanks!
+On Thu, Aug 18, 2022 at 02:31:06PM +0000, Yafang Shao wrote:
+> After switching to memcg-based bpf memory accounting to limit the bpf
+> memory, some unexpected issues jumped out at us.
+> 1. The memory usage is not consistent between the first generation and
+> new generations.
+> 2. After the first generation is destroyed, the bpf memory can't be
+> limited if the bpf maps are not preallocated, because they will be
+> reparented.
+> 
+> This patchset tries to resolve these issues by introducing an
+> independent memcg to limit the bpf memory.
+
+memcg folks would have better informed opinions but from generic cgroup pov
+I don't think this is a good direction to take. This isn't a problem limited
+to bpf progs and it doesn't make whole lot of sense to solve this for bpf.
+
+We have the exact same problem for any resources which span multiple
+instances of a service including page cache, tmpfs instances and any other
+thing which can persist longer than procss life time. My current opinion is
+that this is best solved by introducing an extra cgroup layer to represent
+the persistent entity and put the per-instance cgroup under it.
+
+It does require reorganizing how things are organized from userspace POV but
+the end result is really desirable. We get entities accurately representing
+what needs to be tracked and control over the granularity of accounting and
+control (e.g. folks who don't care about telling apart the current
+instance's usage can simply not enable controllers at the persistent entity
+level).
+
+We surely can discuss other approaches but my current intuition is that it'd
+be really difficult to come up with a better solution than layering to
+introduce persistent service entities.
+
+So, please consider the approach nacked for the time being.
+
+Thanks.
+
+-- 
+tejun
